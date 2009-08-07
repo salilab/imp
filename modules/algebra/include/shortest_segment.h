@@ -15,10 +15,11 @@ IMPALGEBRA_BEGIN_NAMESPACE
 
 /** \name Shortest segments
 
-    These methods return the shortest segment connecting two
-    geometric objects. Such segments can be used to give the
-    direction of the derivative of the distance between the
-    two objects.
+    These methods return the shortest segment connecting two geometric
+    objects. Such segments can be used to give the direction of the
+    derivative of the distance between the two objects. The 0 point on
+    the segment is in the first passed object and the 1 point is in
+    the second.
 */
 /** \relatesalso Segment3D
     \relatesalso Vector3D
