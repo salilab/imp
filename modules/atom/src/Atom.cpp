@@ -193,17 +193,17 @@ TYPE_DEF(H73);
 
 TYPE_DEF(UNKNOWN);
 
-Atom Atom::create(Particle *p, AtomType t) {
+Atom Atom::setup_particle(Particle *p, AtomType t) {
   p->add_attribute(get_type_key(), t.get_index());
-  Hierarchy::create(p, Hierarchy::ATOM);
+  Hierarchy::setup_particle(p, Hierarchy::ATOM);
   Atom ret(p);
   ret.set_atom_type(t);
   return ret;
 }
 
-Atom Atom::create(Particle *p, Atom o) {
+Atom Atom::setup_particle(Particle *p, Atom o) {
   p->add_attribute(get_type_key(), o.get_atom_type().get_index());
-  Hierarchy::create(p, Hierarchy::ATOM);
+  Hierarchy::setup_particle(p, Hierarchy::ATOM);
   Atom ret(p);
   if (o.get_element() != UNKNOWN_ELEMENT) {
     ret.set_element(o.get_element());
@@ -282,7 +282,7 @@ Residue get_residue(Atom d) {
     if (mhd== Hierarchy()) {
       throw InvalidStateException("Atom is not the child of a residue");
     }
-  } while (!Residue::is_instance_of(mhd.get_particle()));
+  } while (!Residue::particle_is_instance(mhd.get_particle()));
   Residue rd(mhd.get_particle());
   return rd;
 }
@@ -360,7 +360,7 @@ std::string Atom::get_pdb_string(int index) {
   out << get_residue(*this).get_insertion_code();
   out.setf(std::ios::fixed, std::ios::floatfield);
   out << "   "; // skip 3 undefined positions (28-30)
-  core::XYZ xyz= core::XYZ::cast(p);
+  core::XYZ xyz= core::XYZ::decorate_particle(p);
   // coordinates (31-38,39-46,47-54)
   out.width(8);
   out.precision(3);

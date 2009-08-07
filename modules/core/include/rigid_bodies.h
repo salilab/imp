@@ -80,13 +80,13 @@ public:
       Use the function IMP::core::create_rigid_body() to create the needed
       score states in order to keep the rigid body rigid.
    */
-  static RigidBody create(Particle *p,
+  static RigidBody setup_particle(Particle *p,
                           const XYZs &members);
 
   ~RigidBody();
 
   //!Return true of the particle is a rigid body
-  static bool is_instance_of(Particle *p) {
+  static bool particle_is_instance(Particle *p) {
     return internal::get_has_required_attributes_for_body(p);
   }
 
@@ -179,7 +179,7 @@ class IMPCOREEXPORT RigidMember: public XYZ {
   ~RigidMember();
 
   //! return true if it is a rigid member
-  static bool is_instance_of(Particle *p) {
+  static bool particle_is_instance(Particle *p) {
     return internal::get_has_required_attributes_for_member(p);
   }
 };

@@ -16,7 +16,7 @@ class ConnectivityTests(IMP.test.TestCase):
         m = IMP.Model()
 
         ps= self.create_particles_in_box(m,4)
-        ds= map(lambda p: IMP.core.XYZ.cast(p), ps)
+        ds= map(lambda p: IMP.core.XYZ.decorate_particle(p), ps)
         o = IMP.core.ConjugateGradients()
         o.set_threshold(1e-4)
         o.set_model(m)

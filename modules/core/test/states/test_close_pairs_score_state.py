@@ -56,13 +56,13 @@ class TestBL(IMP.test.TestCase):
         print "adding a radius"
         cpss.set_distance(5)
         for p in ps:
-            d= IMP.core.XYZR.create(p)
+            d= IMP.core.XYZR.setup_particle(p)
             d.set_radius(random.uniform(0,2))
         cpss.set_radius_key(IMP.core.XYZR.get_default_radius_key())
         self._compare_lists(m, cpss)
 
         for p in ps:
-            d= IMP.core.XYZR.cast(p)
+            d= IMP.core.XYZR.decorate_particle(p)
             d.set_coordinates(IMP.algebra.random_vector_in_unit_box())
         self._compare_lists(m, cpss)
         print "changing radius"

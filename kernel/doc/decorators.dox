@@ -1,32 +1,32 @@
 /** \page decorators Decorators
-Decorators wrap particles in order to provide a nicer interface to
-manipulate the attributes of the particle. For example, a decorator
-can be used to manipulate an appropriate particle as a sphere, allowing
-the user to get the radius or compute the distance between two such
-wrapped particles.
 
-When talking about a decorator, for example, an XYZDecorator, we say
-- a particle is an XYZ particle if it can be used with an XYZ decorator
-- we create an XYZ particle when we have the decorator add the needed
-  attributes (data) to the particle
-- we can wrap a particle in an XYZDecorator if the particle is already
-  an XYZ particle
+
+Decorators wrap particles in order to provide a nicer interface to
+manipulate the attributes of the particle. For example, an
+IMP::core::XYZ decorator can be used get and set the cartesian
+coordinates of a particle in a single operation..
+
+When talking about a decorator, for example, an IMP::core::XYZ, we say
+- we setup a particle to be an XYZ particle when we call
+  IMP::core::XYZ::setup_particle() to add the required attributes
+- such a a particle is an XYZ particle
+- we can decorate an XYZ  particle in an IMP::core::XYZ decorator
 
 The general usage of the decorators is quite simple
-- Create an XYZ particle from a particle which does \e not have the needed attributes to be an XYZ particle:
+- Setup a non-XYZ particle to be an XYZ particle:
 \verbatim
-d= IMP.core.XYZDecorator.create(p, Vector3D(0,2,3))
+d= IMP.core.XYZ.setup_particle(p, Vector3D(0,2,3))
 \endverbatim
 - Check whether a particle is an XYZ particle
 \verbatim
-if IMP.core.XYZDecorator.is_instance_of(p):
+if IMP.core.XYZ.particle_is_instance(p):
    blah
 \endverbatim
-- Wrap a particle which is known to be an XYZ particle
+- Decorate a particle which is known to be an XYZ particle
 \verbatim
-d= IMP.core.XYZDecorator(p)
+d= IMP.core.XYZ.decorate(p)
 \endverbatim
-- Access and manipulate the particle through an XYZDecorator
+- Access and manipulate the particle through an IMP::core::XYZ decorator
 \verbatim
 coords=d.get_coordinates()
 d.set_coordinates(IMP.algebra.Vector3D(0,4,5))

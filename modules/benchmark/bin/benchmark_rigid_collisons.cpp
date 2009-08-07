@@ -70,7 +70,7 @@ int main() {
     cover_members(rbs.back());
   }
   for (unsigned int i=0; i< atoms.size(); ++i) {
-    XYZR::create(atoms[i], 1);
+    XYZR::setup_particle(atoms[i], 1);
   }
   IMP_NEW(ListSingletonContainer, lsc, (atoms));
   IMP_NEW(ClosePairsScoreState, cpss, (lsc));

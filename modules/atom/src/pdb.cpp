@@ -36,8 +36,8 @@ Particle* atom_particle(Model *m, const String& pdb_line)
   AtomType atom_type = AtomType(atom_name.c_str());
 
   // atom decorator
-  Atom d = Atom::create(p, atom_type);
-  core::XYZ::create(p, v).set_coordinates_are_optimized(true);
+  Atom d = Atom::setup_particle(p, atom_type);
+  core::XYZ::setup_particle(p, v).set_coordinates_are_optimized(true);
   d.set_input_index(internal::atom_number(pdb_line));
 
   // element and mass
@@ -65,7 +65,7 @@ Particle* residue_particle(Model *m, const String& pdb_line)
 
   // residue decorator
   Residue rd =
-    Residue::create(p, residue_type,
+    Residue::setup_particle(p, residue_type,
                              residue_index, (int)residue_icode);
 
   p->set_name(residue_name);
@@ -79,7 +79,7 @@ Particle* root_particle(Model *m)
 
   // hierarchy decorator
   Hierarchy hd =
-    Hierarchy::create(p,
+    Hierarchy::setup_particle(p,
                Hierarchy::PROTEIN);
   return p;
 }
@@ -87,7 +87,7 @@ Particle* root_particle(Model *m)
 Particle* chain_particle(Model *m, char chain_id)
 {
   Particle* p = new Particle(m);
-  Chain::create(p, chain_id);
+  Chain::setup_particle(p, chain_id);
 
   return p;
 }
@@ -132,7 +132,7 @@ Hierarchy read_pdb(std::istream &in, Model *model,
   // create root particle
   Particle* root_p = root_particle(model);
   Hierarchy root_d =
-    Hierarchy::cast(root_p);
+    Hierarchy::decorate_particle(root_p);
 
   Particle* cp = NULL;
   Particle* rp = NULL;
@@ -169,18 +169,18 @@ Hierarchy read_pdb(std::istream &in, Model *model,
         // create new chain particle
         cp = chain_particle(model, chain);
         chain_type_set = false;
-        hcd = Hierarchy::cast(cp);
+        hcd = Hierarchy::decorate_particle(cp);
         root_d.add_child(hcd);
       }
 
       // check if new residue
       if (rp == NULL ||
-          residue_index != Residue::cast(rp).get_index() ||
+          residue_index != Residue::decorate_particle(rp).get_index() ||
           residue_icode != curr_residue_icode) {
         curr_residue_icode = residue_icode;
         // create new residue particle
         rp = residue_particle(model, line);
-        hrd = Hierarchy::cast(rp);
+        hrd = Hierarchy::decorate_particle(rp);
         hcd.add_child(hrd);
       }
 
@@ -197,7 +197,7 @@ Hierarchy read_pdb(std::istream &in, Model *model,
       // create atom particle
       Particle* ap = atom_particle(model, line);
       Hierarchy had =
-        Hierarchy::cast(ap);
+        Hierarchy::decorate_particle(ap);
         hrd.add_child(had);
     }
   }
@@ -207,7 +207,7 @@ Hierarchy read_pdb(std::istream &in, Model *model,
 void write_pdb(const Particles& ps, std::ostream &out)
 {
   for (unsigned int i=0; i< ps.size(); ++i) {
-    if (Atom::is_instance_of(ps[i])) {
+    if (Atom::particle_is_instance(ps[i])) {
       Atom ad(ps[i]);
       out << ad.get_pdb_string();
     }

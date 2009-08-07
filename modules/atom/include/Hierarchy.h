@@ -106,7 +106,7 @@ public:
    */
   Hierarchy(Particle *p):
     P(p,get_traits()){
-    IMP_assert(is_instance_of(p), "Missing required attributes for "
+    IMP_assert(particle_is_instance(p), "Missing required attributes for "
                << "Hierarchy" << *p);
   }
 
@@ -114,8 +114,8 @@ public:
   Hierarchy() {}
 
   //! cast a particle which has the needed attributes
-  static Hierarchy cast(Particle *p) {
-    IMP::core::Hierarchy::cast(p, get_traits());
+  static Hierarchy decorate_particle(Particle *p) {
+    IMP::core::Hierarchy::decorate_particle(p, get_traits());
     IMP_check(p->has_attribute(get_type_key()), "Particle is missing attribute "
               << get_type_key(),
               InvalidStateException);
@@ -124,17 +124,17 @@ public:
 
   /** Create a Hierarchy of level t by adding the needed
       attributes. */
-  static Hierarchy create(Particle *p,
+  static Hierarchy setup_particle(Particle *p,
                                             Type t= UNKNOWN) {
-    IMP::core::Hierarchy::create(p, get_traits());
+    IMP::core::Hierarchy::setup_particle(p, get_traits());
     p->add_attribute(get_type_key(), t);
     return Hierarchy(p);
   }
 
   /** Check if the particle has the needed attributes for a
    cast to succeed */
-  static bool is_instance_of(Particle *p){
-    return P::is_instance_of(p, get_traits())
+  static bool particle_is_instance(Particle *p){
+    return P::particle_is_instance(p, get_traits())
       && p->has_attribute(get_type_key());
   }
 
@@ -230,7 +230,7 @@ public:
   /** Get the ith child */
   Hierarchy get_child(unsigned int i) const {
     IMP::core::Hierarchy hd= P::get_child(i);
-    return cast(hd.get_particle());
+    return decorate_particle(hd.get_particle());
   }
 
   Hierarchies get_children() const {
@@ -252,7 +252,7 @@ public:
     if (hd == Hierarchy()) {
       return Hierarchy();
     } else {
-      return cast(hd.get_particle());
+      return decorate_particle(hd.get_particle());
     }
   }
 

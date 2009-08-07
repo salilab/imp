@@ -48,7 +48,7 @@ inline bool get_has_required_attributes_for_body(Particle *p) {
             && p->has_attribute(rigid_body_data().quaternion_[1])
             && p->has_attribute(rigid_body_data().quaternion_[2])
             && p->has_attribute(rigid_body_data().quaternion_[3])
-             && XYZ::is_instance_of(p))
+             && XYZ::particle_is_instance(p))
             || (!p->has_attribute(rigid_body_data().quaternion_[0])
                 && !p->has_attribute(rigid_body_data().quaternion_[1])
                 && !p->has_attribute(rigid_body_data().quaternion_[2])
@@ -76,9 +76,9 @@ inline void add_required_attributes_for_body(Particle *p) {
   for (unsigned int i=0; i< 4; ++i) {
     p->add_attribute(rigid_body_data().quaternion_[i], 0);
   }
-  Hierarchy::create(p, rigid_body_data().htraits_);
-  if (!XYZ::is_instance_of(p)) {
-      XYZ::create(p);
+  Hierarchy::setup_particle(p, rigid_body_data().htraits_);
+  if (!XYZ::particle_is_instance(p)) {
+      XYZ::setup_particle(p);
   }
 }
 
@@ -86,8 +86,8 @@ inline void add_required_attributes_for_member(Particle *p) {
   for (unsigned int i=0; i< 3; ++i) {
     p->add_attribute(rigid_body_data().child_keys_[i], 0);
   }
-  Hierarchy::create(p, rigid_body_data().htraits_);
-  XYZ::cast(p);
+  Hierarchy::setup_particle(p, rigid_body_data().htraits_);
+  XYZ::decorate_particle(p);
 }
 
 

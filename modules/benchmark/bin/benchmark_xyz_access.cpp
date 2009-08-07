@@ -108,7 +108,7 @@ void do_benchmark(std::string descr, std::string fname) {
     std::vector < MyParticle * > my_particles;
     for (unsigned int i = 0; i < particles.size(); i++) {
       MyParticle *p = new MyParticle(model);
-      p->v_ = IMP::core::XYZ::cast(particles[i]).get_coordinates();
+      p->v_ = IMP::core::XYZ::decorate_particle(particles[i]).get_coordinates();
       my_particles.push_back(p);
     }
     double runtime, dist;
@@ -127,7 +127,8 @@ void do_benchmark(std::string descr, std::string fname) {
     std::vector < MyParticle2 * > my_particles;
     for (unsigned int i = 0; i < particles.size(); i++) {
       MyParticle2 *p = new MyParticle2(model);
-      *p->v_ = IMP::core::XYZ::cast(particles[i]).get_coordinates();
+      *p->v_
+        = IMP::core::XYZ::decorate_particle(particles[i]).get_coordinates();
       my_particles.push_back(p);
     }
     double runtime, dist;
@@ -144,7 +145,7 @@ void do_benchmark(std::string descr, std::string fname) {
   {
     std::vector<IMP::algebra::Vector3D> coordinates;
     for (unsigned int i = 0; i < particles.size(); i++) {
-      coordinates.push_back(IMP::core::XYZ::cast(particles[i]).
+      coordinates.push_back(IMP::core::XYZ::decorate_particle(particles[i]).
                             get_coordinates());
     }
     double runtime, dist;

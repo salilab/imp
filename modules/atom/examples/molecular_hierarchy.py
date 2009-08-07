@@ -19,7 +19,7 @@ print len(atoms)
 residues= IMP.atom.get_by_type(mp0, IMP.atom.Hierarchy.RESIDUE)
 # set the coordinates and radius of each residue to enclose its atoms
 for r in residues:
-    d= IMP.core.XYZR.create(r.get_particle())
+    d= IMP.core.XYZR.setup_particle(r.get_particle())
     atoms= IMP.atom.get_by_type(IMP.atom.Hierarchy(r),
                                 IMP.atom.Hierarchy.ATOM)
     IMP.core.set_enclosing_sphere(d, IMP.core.XYZs(atoms))
@@ -29,6 +29,6 @@ mp1= IMP.atom.read_pdb(IMP.get_data_directory() \
                        + '/atom/example_protein.pdb', m)
 
 p = IMP.Particle(m)
-rmp= IMP.atom.Hierarchy.create(p, IMP.atom.Hierarchy.ASSEMBLY)
+rmp= IMP.atom.Hierarchy.setup_particle(p, IMP.atom.Hierarchy.ASSEMBLY)
 rmp.add_child(mp0)
 rmp.add_child(mp1)

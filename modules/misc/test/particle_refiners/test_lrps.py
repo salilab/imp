@@ -17,15 +17,15 @@ class Test(IMP.test.TestCase):
         m= IMP.Model()
         pp0= IMP.Particle(m)
         pp1= IMP.Particle(m)
-        hpp= [IMP.core.Hierarchy.create(pp0),
-              IMP.core.Hierarchy.create(pp1)]
+        hpp= [IMP.core.Hierarchy.setup_particle(pp0),
+              IMP.core.Hierarchy.setup_particle(pp1)]
         ds=[[],[]]
         for i in range(0,10):
             p= IMP.Particle(m)
-            d= IMP.core.XYZ.create(p)
+            d= IMP.core.XYZ.setup_particle(p)
             d.set_coordinates(IMP.algebra.random_vector_in_unit_box())
             ds[i%2].append(d)
-            hp= IMP.core.Hierarchy.create(p)
+            hp= IMP.core.Hierarchy.setup_particle(p)
             hpp[i%2].add_child(hp)
         # could be more clever
         md= 1000000

@@ -143,8 +143,8 @@ class TestCPFL(IMP.test.TestCase):
                 ps[i].set_name("rbpb"+str(i))
             else:
                 fps.append(ps[i])
-        rba= IMP.core.RigidBody.create(IMP.Particle(m), IMP.core.XYZs(rbpsa))
-        rbb= IMP.core.RigidBody.create(IMP.Particle(m), IMP.core.XYZs(rbpsb))
+        rba= IMP.core.RigidBody.setup_particle(IMP.Particle(m), IMP.core.XYZs(rbpsa))
+        rbb= IMP.core.RigidBody.setup_particle(IMP.Particle(m), IMP.core.XYZs(rbpsb))
         rba.get_particle().set_name("rba")
         rbb.get_particle().set_name("rbb")
         IMP.helper.cover_members(rba, rk)
@@ -176,8 +176,8 @@ class TestCPFL(IMP.test.TestCase):
                 rbpsb2.append(ps2[i])
             else:
                 fps2.append(ps2[i])
-        rba2= IMP.core.RigidBody.create(IMP.Particle(m), IMP.core.XYZs(rbpsa2))
-        rbb2= IMP.core.RigidBody.create(IMP.Particle(m), IMP.core.XYZs(rbpsb2))
+        rba2= IMP.core.RigidBody.setup_particle(IMP.Particle(m), IMP.core.XYZs(rbpsa2))
+        rbb2= IMP.core.RigidBody.setup_particle(IMP.Particle(m), IMP.core.XYZs(rbpsb2))
         IMP.helper.cover_members(rba2, rk)
         IMP.helper.cover_members(rbb2, rk)
         fps.append(rba2.get_particle())

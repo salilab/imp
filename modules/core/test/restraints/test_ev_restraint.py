@@ -19,7 +19,7 @@ class AngleRestraintTests(IMP.test.TestCase):
                                         IMP.core.XYZs(IMP.core.get_leaves(p1)))
         for p in IMP.core.get_leaves(p0)+IMP.core.get_leaves(p1):
             print p.get_particle().get_name()
-            d= IMP.core.XYZR.create(p.get_particle())
+            d= IMP.core.XYZR.setup_particle(p.get_particle())
             d.set_radius(1)
         m.add_score_state(r0s)
         m.add_score_state(r1s)
@@ -31,7 +31,7 @@ class AngleRestraintTests(IMP.test.TestCase):
         fps=IMP.core.XYZRs()
         for i in range(0,10):
             p= IMP.Particle(m)
-            d= IMP.core.XYZR.create(p)
+            d= IMP.core.XYZR.setup_particle(p)
             d.set_radius(10)
             sc.add_particle(p)
             fps.append(d)

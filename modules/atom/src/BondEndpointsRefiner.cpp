@@ -17,7 +17,7 @@ BondEndpointsRefiner::BondEndpointsRefiner()
 
 bool BondEndpointsRefiner::get_can_refine(Particle *p) const
 {
-  return atom::Bond::is_instance_of(p);
+  return atom::Bond::particle_is_instance(p);
 }
 
 Particle* BondEndpointsRefiner::get_refined(Particle *p, unsigned int i) const

@@ -19,7 +19,7 @@
 IMPATOM_BEGIN_NAMESPACE
 
 
-SimulationParameters SimulationParameters::create(Particle *p,
+SimulationParameters SimulationParameters::setup_particle(Particle *p,
                                                   double dt, double T) {
   p->add_attribute(get_current_time_key(), 0, false);
   p->add_attribute(get_last_time_step_key(), 0, false);

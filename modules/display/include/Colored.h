@@ -25,7 +25,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
 class IMPDISPLAYEXPORT Colored: public Decorator
 {
 public:
-  static Colored create(Particle *p, Color c) {
+  static Colored setup_particle(Particle *p, Color c) {
     p->add_attribute(get_color_keys()[0], c.get_red(), false);
     p->add_attribute(get_color_keys()[1], c.get_green(), false);
     p->add_attribute(get_color_keys()[2], c.get_blue(), false);
@@ -44,7 +44,7 @@ public:
                  get_particle()->get_value(get_color_keys()[2]));
   }
 
-  static bool is_instance_of(Particle *p) {
+  static bool particle_is_instance(Particle *p) {
     IMP_check((!p->has_attribute(get_color_keys()[0])
                && !p->has_attribute(get_color_keys()[1])
                && !p->has_attribute(get_color_keys()[2]))

@@ -39,7 +39,7 @@ class IMPCOREEXPORT XYZ: public Decorator
   IMP_DECORATOR(XYZ, Decorator)
 
   /** Create a decorator with the passed coordinates. */
-  static XYZ create(Particle *p,
+  static XYZ setup_particle(Particle *p,
                     const algebra::Vector3D &v=
                     algebra::Vector3D(0,0,0)) {
     p->add_attribute(get_coordinate_key(0),v[0]);
@@ -122,7 +122,7 @@ class IMPCOREEXPORT XYZ: public Decorator
                              get_derivative(2));
   }
 
-  static bool is_instance_of(Particle *p) {
+  static bool particle_is_instance(Particle *p) {
     IMP_check((p->has_attribute(get_coordinate_key(2))
                && p->has_attribute(get_coordinate_key(0))
                && p->has_attribute(get_coordinate_key(1)))

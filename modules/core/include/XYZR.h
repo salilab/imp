@@ -33,10 +33,10 @@ public:
      \param[in] radius_key The (optional) key name to use.
      The default is "radius".
    */
-  static XYZR create(Particle *p,
+  static XYZR setup_particle(Particle *p,
                      FloatKey radius_key= get_default_radius_key()) {
-    if (!XYZ::is_instance_of(p)) {
-      XYZ::create(p);
+    if (!XYZ::particle_is_instance(p)) {
+      XYZ::setup_particle(p);
     }
     p->add_attribute(radius_key, 0, false);
     return XYZR(p, radius_key);
@@ -50,7 +50,7 @@ public:
      \param[in] radius_key The (optional) key name to use.
      The default is "radius".
    */
-  static XYZR create(Particle *p,
+  static XYZR setup_particle(Particle *p,
                      Float radius,
                      FloatKey radius_key= get_default_radius_key()) {
     p->add_attribute(radius_key, radius, false);
@@ -63,16 +63,16 @@ public:
      \param[in] radius_key The (optional) key name to use.
      The default is "radius".
    */
-  static XYZR create(Particle *p,
+  static XYZR setup_particle(Particle *p,
                      const algebra::Sphere3D &s,
                      FloatKey radius_key= get_default_radius_key()) {
-    XYZ::create(p, s.get_center());
+    XYZ::setup_particle(p, s.get_center());
     p->add_attribute(radius_key, s.get_radius(), false);
     return XYZR(p, radius_key);
   }
 
   //! Check if the particle has the required attributes
-  static bool is_instance_of(Particle *p,
+  static bool particle_is_instance(Particle *p,
                              FloatKey radius_key= get_default_radius_key()) {
     return p->has_attribute(radius_key);
   }

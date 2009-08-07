@@ -86,7 +86,7 @@ for (int i=0; i< 100; ++i) {
     IMP::Particle* p=new IMP::Particle();
     ps->add_particle(p);
     m->add_particles(p);
-    IMP::core::XYZRDecorator d= IMP::core::XYZRDecorator::create(p);
+    IMP::core::XYZRDecorator d= IMP::core::XYZRDecorator::setup_particle(p);
     d.set_coordinates_are_optimized(true);
     d.set_coordinates(IMP::random_vector_in_box());
     d.set_radius(1.0);

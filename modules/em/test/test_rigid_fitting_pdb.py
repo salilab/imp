@@ -41,7 +41,7 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         #create a rigid body
         rb_p = IMP.Particle(self.imp_model)
         rb_state = IMP.helper.create_rigid_body(rb_p,IMP.core.XYZs(self.particles))
-        rb_d = IMP.core.RigidBody.cast(rb_p);
+        rb_d = IMP.core.RigidBody.decorate_particle(rb_p);
         ref_trans = rb_d.get_transformation()
         fr = IMP.em.FittingSolutions()
         IMP.em.local_rigid_fitting_around_point(

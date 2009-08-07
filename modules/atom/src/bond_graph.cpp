@@ -24,8 +24,8 @@ BondGraph::BondGraph(Hierarchy bd):
    for (core::ListSingletonContainer::ParticleIterator
          it= sc_->particles_begin();
        it != sc_->particles_end(); ++it) {
-    if (!Bonded::is_instance_of(*it)) {
-      Bonded::create(*it);
+    if (!Bonded::particle_is_instance(*it)) {
+      Bonded::setup_particle(*it);
     }
   }
 }

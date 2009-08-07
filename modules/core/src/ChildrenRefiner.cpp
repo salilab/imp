@@ -19,7 +19,7 @@ ChildrenRefiner
 
 bool ChildrenRefiner::get_can_refine(Particle *p) const
 {
-  if (!core::Hierarchy::is_instance_of(p, traits_)) return false;
+  if (!core::Hierarchy::particle_is_instance(p, traits_)) return false;
   return core::Hierarchy(p, traits_).get_number_of_children() != 0;
 
 }

@@ -16,7 +16,7 @@ class PDBReadTest(IMP.test.TestCase):
         m = IMP.Model()
         mp= IMP.modeller.read_pdb(
                        self.get_input_file_name('single_protein.pdb'), m)
-        #mp= IMP.core.Hierarchy.cast(p)
+        #mp= IMP.core.Hierarchy.decorate_particle(p)
         #mp.show()
         #IMP.core.show_molecular_hierarchy(mp)
         mp.validate()
@@ -45,7 +45,7 @@ class PDBReadTest(IMP.test.TestCase):
         m = IMP.Model()
         mp= IMP.modeller.read_pdb(
                       self.get_input_file_name('single_protein.pdb'), m)
-        #mp= IMP.core.Hierarchy.cast(p)
+        #mp= IMP.core.Hierarchy.decorate_particle(p)
         all_atoms= IMP.atom.get_by_type(mp,
                              IMP.atom.Hierarchy.ATOM)
         self.assertEqual(1221, len(all_atoms),
@@ -62,7 +62,7 @@ class PDBReadTest(IMP.test.TestCase):
                                   m, na_patches)
         print "done reading"
         #IMP.core.show_molecular_hierarchy(mp)
-        #mp= IMP.core.Hierarchy.cast(p)
+        #mp= IMP.core.Hierarchy.decorate_particle(p)
         #mp.show()
         #IMP.core.show_molecular_hierarchy(mp)
         mp.validate()

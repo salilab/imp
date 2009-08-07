@@ -125,7 +125,7 @@ public:
 
 
   //! Add the needed attributes to a particle
-  static Hierarchy create(Particle *p,
+  static Hierarchy setup_particle(Particle *p,
                           HierarchyTraits traits
                           =Hierarchy::get_default_traits()) {
     add_required_attributes_for_child(p, traits);
@@ -136,14 +136,14 @@ public:
   /** The particles can be, but don't have to be Hierarchy particles
       already.
   */
-  static Hierarchy create(Particle *p,
+  static Hierarchy setup_particle(Particle *p,
                           const Particles &children,
                           HierarchyTraits traits
                           =Hierarchy::get_default_traits()) {
     add_required_attributes_for_child(p, traits);
     Hierarchy h(p, traits);
     for (unsigned int i=0; i< children.size(); ++i) {
-      if (!Hierarchy::is_instance_of(children[i], traits)) {
+      if (!Hierarchy::particle_is_instance(children[i], traits)) {
         add_required_attributes_for_child(children[i], traits);
       }
       Hierarchy c(children[i], traits);
@@ -154,7 +154,7 @@ public:
 
   /** Check if the particle has the needed attributes for a
    cast to succeed */
-  static bool is_instance_of(Particle *p,
+  static bool particle_is_instance(Particle *p,
                              HierarchyTraits traits
                              =Hierarchy::get_default_traits()){
     return has_required_attributes_for_child(p, traits);
@@ -416,7 +416,7 @@ struct HierarchyPrinter
     }
     out_ << "Particle " << hd.get_particle()->get_name() << std::endl;
     prefix += "  ";
-    PD nd= PD::cast(hd.get_particle());
+    PD nd= PD::decorate_particle(hd.get_particle());
     if (nd != PD()) {
       nd.show(out_, prefix);
     } else {

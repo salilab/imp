@@ -54,7 +54,7 @@ Matrix compute_I(const std::vector<RigidMember> &ds,
 
 
 
-RigidBody RigidBody::create(Particle *p,
+RigidBody RigidBody::setup_particle(Particle *p,
                             const XYZs &members){
   IMP_check(!internal::get_has_required_attributes_for_body(p),
             "The RigidBody is already set up.",

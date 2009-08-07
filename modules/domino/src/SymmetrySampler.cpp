@@ -31,7 +31,7 @@ SymmetrySampler::SymmetrySampler(Particles *ps,
     atom::get_by_type((*ps_)[0], atom::Hierarchy::ATOM);
 
   for(Particles::iterator it=ps1.begin();it!=ps1.end();it++) {
-    ref_positions.push_back(core::XYZ::cast(*it).get_coordinates());
+   ref_positions.push_back(core::XYZ::decorate_particle(*it).get_coordinates());
   }
 
   for(unsigned int i=1;i<ps_->size();i++) {
@@ -40,7 +40,7 @@ SymmetrySampler::SymmetrySampler(Particles *ps,
       atom::get_by_type((*ps_)[i], atom::Hierarchy::ATOM);
     for(Particles::iterator it=ps2.begin();it!=ps2.end();it++) {
       other_positions.push_back(
-         core::XYZ::cast(*it).get_coordinates());
+         core::XYZ::decorate_particle(*it).get_coordinates());
     }
     ref_[(*ps_)[i]]=
       algebra::rigid_align_first_to_second(other_positions,ref_positions);
@@ -75,7 +75,7 @@ void SymmetrySampler::reset_placement(const CombState *cs) {
         it != cs->get_data()->end(); it++) {
     p = it->first;
     IMP_LOG_WRITE(VERBOSE,p->show(IMP_STREAM));
-    for_each(core::get_leaves(atom::Hierarchy::cast(p)),
+    for_each(core::get_leaves(atom::Hierarchy::decorate_particle(p)),
              SingletonFunctor(new core::Transform(ref_[p])));
     IMP_LOG(VERBOSE,"end loop iteration"<<std::endl);
   }
@@ -100,14 +100,14 @@ void SymmetrySampler::move2state(const CombState *cs) {
       =compose(algebra::rotation_in_radians_about_axis(
                                      cyl_.get_segment().get_direction(),
                                                        angle),t);
-    for_each(core::get_leaves(atom::Hierarchy::cast(p)),
+    for_each(core::get_leaves(atom::Hierarchy::decorate_particle(p)),
              SingletonFunctor(new core::Transform(tr)));
     ref_[p]= compose(algebra::rotation_in_radians_about_axis(
                       cyl_.get_segment().get_direction(),
                       angle),t).get_inverse();
  //    std::stringstream name;
 //     name<<p->get_value(StringKey("name"))<<"__"<<cs->key()<<".pdb";
-//     atom::write_pdb(atom::Hierarchy::cast(p),name.str());
+//     atom::write_pdb(atom::Hierarchy::decorate_particle(p),name.str());
   }
   IMP_LOG(VERBOSE,"SymmetrySampler:: end moving to state"<<std::endl);
 }

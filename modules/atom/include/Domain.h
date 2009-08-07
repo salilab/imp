@@ -29,22 +29,22 @@ class IMPATOMEXPORT Domain: public Hierarchy
   static const Data &get_data();
 public:
   //! Create a domain covering the range [b, e)
-  static Domain create(Particle *p, Int b, Int e) {
+  static Domain setup_particle(Particle *p, Int b, Int e) {
     p->add_attribute(get_data().begin, b);
     p->add_attribute(get_data().end, e);
-    if (!Hierarchy::is_instance_of(p)) {
-      Hierarchy::create(p,
+    if (!Hierarchy::particle_is_instance(p)) {
+      Hierarchy::setup_particle(p,
                      Hierarchy::FRAGMENT);
     }
     return Domain(p);
   }
 
   //! Create a domain by copying from o
-  static Domain create(Particle *p, Domain o) {
+  static Domain setup_particle(Particle *p, Domain o) {
     p->add_attribute(get_data().begin, o.get_begin_index());
     p->add_attribute(get_data().end, o.get_end_index());
-    if (!Hierarchy::is_instance_of(p)) {
-      Hierarchy::create(p,
+    if (!Hierarchy::particle_is_instance(p)) {
+      Hierarchy::setup_particle(p,
                Hierarchy::FRAGMENT);
     }
     return Domain(p);
@@ -52,10 +52,10 @@ public:
 
   virtual ~Domain();
 
-  static bool is_instance_of(Particle *p) {
+  static bool particle_is_instance(Particle *p) {
     return p->has_attribute(get_data().begin)
       && p->has_attribute(get_data().end)
-      && Hierarchy::is_instance_of(p);
+      && Hierarchy::particle_is_instance(p);
   }
 
   //! Get the index of the first residue in the domain

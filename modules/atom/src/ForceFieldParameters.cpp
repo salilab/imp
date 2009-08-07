@@ -34,7 +34,7 @@ void ForceFieldParameters::add_radii(Hierarchy mhd, FloatKey radius_key) const
   for(unsigned int i=0; i<ps.size(); i++) {
     Float radius = get_radius(Atom(ps[i]).get_atom_type(),
                               get_residue_type(Atom(ps[i])));
-    core::XYZR::create(ps[i], radius, radius_key);
+    core::XYZR::setup_particle(ps[i], radius, radius_key);
   }
   // TODO: handle N-term and C-term
 }
@@ -78,7 +78,7 @@ void ForceFieldParameters::add_bonds(Hierarchy mhd,
   Particles ps = get_by_type(mhd, type);
   Residue prev_rd;
   for(unsigned int i=0; i<ps.size(); i++) {
-    Residue rd = Residue::cast(ps[i]);
+    Residue rd = Residue::decorate_particle(ps[i]);
     // add bonds to the current residue
     add_bonds(rd);
     // add bond between the residues (if same chain)
@@ -108,11 +108,11 @@ void ForceFieldParameters::add_bonds(Residue rd1, Residue rd2) const {
   Particle* p2 = ad2.get_particle();
 
   Bonded b1,b2;
-  if(Bonded::is_instance_of(p1)) b1 = Bonded::cast(p1);
-  else b1 = Bonded::create(p1);
+  if(Bonded::particle_is_instance(p1)) b1 = Bonded::decorate_particle(p1);
+  else b1 = Bonded::setup_particle(p1);
 
-  if(Bonded::is_instance_of(p2)) b2 = Bonded::cast(p2);
-  else b2 = Bonded::create(p2);
+  if(Bonded::particle_is_instance(p2)) b2 = Bonded::decorate_particle(p2);
+  else b2 = Bonded::setup_particle(p2);
 
   IMP::atom::Bond bd = bond(b1, b2, IMP::atom::Bond::COVALENT);
 }
@@ -131,11 +131,11 @@ void ForceFieldParameters::add_bonds(Residue rd) const {
     Particle* p2 = ad2.get_particle();
 
     Bonded b1,b2;
-    if(Bonded::is_instance_of(p1)) b1 = Bonded::cast(p1);
-    else b1 = Bonded::create(p1);
+    if(Bonded::particle_is_instance(p1)) b1 = Bonded::decorate_particle(p1);
+    else b1 = Bonded::setup_particle(p1);
 
-    if(Bonded::is_instance_of(p2)) b2 = Bonded::cast(p2);
-    else b2 = Bonded::create(p2);
+    if(Bonded::particle_is_instance(p2)) b2 = Bonded::decorate_particle(p2);
+    else b2 = Bonded::setup_particle(p2);
 
     IMP::atom::Bond bd = bond(b1, b2, bonds[i].bond_type_);
   }

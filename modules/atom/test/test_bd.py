@@ -26,14 +26,14 @@ class MCOptimizerTest(IMP.test.TestCase):
     def test_step_size(self):
         """Testing the step size invariance of free diffusion"""
         m= IMP.Model()
-        si=IMP.atom.SimulationParameters.create(IMP.Particle(m), 1e3)
+        si=IMP.atom.SimulationParameters.setup_particle(IMP.Particle(m), 1e3)
         si.show()
         bd= IMP.atom.BrownianDynamics(si)
         bd.set_model(m)
         radius=2
         ps= IMP.core.create_xyzr_particles(m, 1000, radius)
         for p in ps:
-            d= IMP.atom.Diffusion.create(p.get_particle())
+            d= IMP.atom.Diffusion.setup_particle(p.get_particle())
             d.set_D_from_radius_in_angstroms(radius)
             d.set_coordinates_are_optimized(True)
             d.set_coordinates(IMP.algebra.Vector3D(0,0,0))

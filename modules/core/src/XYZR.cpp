@@ -48,7 +48,7 @@ void set_enclosing_radius(XYZR out,
 {
   double r=0;
   for (unsigned int i=0; i< v.size(); ++i) {
-    if (XYZR::is_instance_of(v[i], out.get_radius_key())) {
+    if (XYZR::particle_is_instance(v[i], out.get_radius_key())) {
       XYZR d(v[i]);
       double dist= distance(static_cast<XYZ>(out), static_cast<XYZ>(d));
       dist+= d.get_radius();
@@ -70,7 +70,7 @@ XYZRs create_xyzr_particles(Model *m,
   XYZRs ret;
   for (unsigned int i=0; i< num; ++i) {
     Particle *p= new Particle(m);
-    XYZR d= XYZR::create(p);
+    XYZR d= XYZR::setup_particle(p);
     d.set_coordinates(algebra::random_vector_in_box(
                             algebra::Vector3D(-box_side, -box_side, -box_side),
                             algebra::Vector3D(box_side, box_side, box_side)));

@@ -13,6 +13,32 @@ using namespace IMP::core;
 using namespace IMP::algebra;
 using namespace IMP::atom;
 
+void time_both(PairContainer *pc, PairScore *ps, std::string name) {
+  {
+    double runtime=0, total=0;
+    IMP_TIME(
+             {
+               total+=pc->evaluate(ps, NULL);
+             }, runtime);
+    std::ostringstream oss;
+    oss << name << " in " << pc->get_number_of_particle_pairs();
+    IMP::benchmark::report(oss.str(), runtime, total);
+  }
+  {
+   double runtime=0, total=0;
+    IMP_TIME(
+             {
+               for (unsigned int i=0; i< pc->get_number_of_particle_pairs();
+                    ++i) {
+                 total+= ps->evaluate(pc->get_particle_pair(i)[0],
+                                      pc->get_particle_pair(i)[1], NULL);
+               }
+             }, runtime);
+    std::ostringstream oss;
+    oss << name << " out " << pc->get_number_of_particle_pairs();
+    IMP::benchmark::report(oss.str(), runtime, total);
+  }
+}
 
 void test(int n) {
   set_log_level(SILENT);
@@ -27,16 +53,7 @@ void test(int n) {
   }
   lpc->set_is_editing(false);
   IMP_NEW(DistancePairScore, dps, (new HarmonicLowerBound(0, 1)));
-  IMP_NEW(PairsRestraint, pr, (dps, lpc));
-  m->add_restraint(pr);
-  double runtime=0, total=0;
-  IMP_TIME(
-             {
-               total+=m->evaluate(true);
-             }, runtime);
-  std::ostringstream oss;
-  oss << "evaluate " << n;
-  IMP::benchmark::report(oss.str(), runtime, total);
+  time_both(lpc, dps, "list");
 }
 
 void test_set(int n) {
@@ -65,16 +82,7 @@ void test_set(int n) {
   pcs->add_pair_container(lpc1);
 
   IMP_NEW(DistancePairScore, dps, (new HarmonicLowerBound(0, 1)));
-  IMP_NEW(PairsRestraint, pr, (dps, pcs));
-  m->add_restraint(pr);
-  double runtime=0, total=0;
-  IMP_TIME(
-             {
-               total+=m->evaluate(true);
-             }, runtime);
-  std::ostringstream oss;
-  oss << "evaluate set" << n;
-  IMP::benchmark::report(oss.str(), runtime, total);
+  time_both(pcs, dps, "set");
 }
 
 

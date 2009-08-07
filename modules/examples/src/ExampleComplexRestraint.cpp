@@ -38,7 +38,7 @@ void ExampleComplexRestraint::set_model(Model *m) {
     Model *m= sc_->get_particle(0)->get_model();
 
     p_= new Particle(m);
-    core::XYZR d= core::XYZR::create(p_, dr_);
+    core::XYZR d= core::XYZR::setup_particle(p_, dr_);
     d.set_coordinates_are_optimized(false);
     core::CoverRefined *cr
       = new core::CoverRefined(
