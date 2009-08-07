@@ -39,20 +39,18 @@ PatchSwig = Builder(action=Action(_action_patch_swig_wrap,
 
 def _action_simple_swig(target, source, env):
     vars= imp_module.make_vars(env)
-    #print [x.abspath for x in source]
     cppflags= ""
     for x in env.get('CPPFLAGS', []):
         if x.startswith("-I") or x.startswith("-D"):
             cppflags= cppflags+" " + x
-    base="swig -interface _IMP%(module_suffix)s -DPySwigIterator=%(PREPROC)s_PySwigIterator -DSwigPyIterator=%(PREPROC)s_SwigPyIterator -Ibuild/include -python -c++ -naturalvar "%vars
+    base="swig -interface _IMP%(module_suffix)s -DPySwigIterator=%(PREPROC)s_PySwigIterator -DSwigPyIterator=%(PREPROC)s_SwigPyIterator -python -c++ -naturalvar "%vars
     #print base
     out= "-o "+ target[0].abspath
     doti= source[0].abspath
-    includes= " ".join(["-I"+str(x) for x in env['CPPPATH']])\
-        +" -I"+Dir("#/build/swig").abspath #+ " -I"+Dir("#/build/include").abspath
+    includes= " -I"+Dir("#/build/swig").abspath+" "+" ".join(["-I"+str(x) for x in env.get('CPPPATH', []) if not x.startswith("#")]) #+ " -I"+Dir("#/build/include").abspath
+    # scons puts cppflags before includes, so we should too
     command=base + " " +out + " "\
-         + " "+ includes + " " +cppflags + "-DIMP_SWIG " + doti
-    #print command
+         + " " +cppflags+ " -Ibuild/include "+ includes + "-DIMP_SWIG " + doti
     env.Execute(command)
 
 def _print_simple_swig(target, source, env):
