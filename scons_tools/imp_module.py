@@ -179,6 +179,10 @@ namespace internal {
 """ %vars
 
     print >> h, """
+
+#include <%(module_include_path)s/internal/version_info.h>
+#include <IMP/internal/config.h>
+
 #endif  /* %(PREPROC)s_CONFIG_H */""" % vars
 
 
@@ -211,11 +215,17 @@ def action_version_info(target, source, env):
 
 #include "../config.h"
 
-#include <IMP/VersionInfo.h>
 """ % vars
 
-    print >> cpp, '#include <%(module_include_path)s/internal/version_info.h>\n' \
+    print >> cpp, """#include <%(module_include_path)s/internal/version_info.h>
+#include <IMP/VersionInfo.h>
+""" \
                   % vars
+
+    print >> h, """namespace IMP {
+class VersionInfo;
+}
+""" %vars
 
     for f in (h, cpp):
         print >> f, "%(PREPROC)s_BEGIN_INTERNAL_NAMESPACE\n" % vars
