@@ -17,10 +17,6 @@ DerivativesFromRefined
 {
 }
 
-DerivativesFromRefined
-::~DerivativesFromRefined()
-{
-}
 
 void DerivativesFromRefined
 ::apply(Particle *p,

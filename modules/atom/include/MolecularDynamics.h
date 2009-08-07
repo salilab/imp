@@ -31,7 +31,6 @@ class IMPATOMEXPORT MolecularDynamics : public Optimizer
 public:
   /** */
   MolecularDynamics();
-  virtual ~MolecularDynamics();
 
   //! \return the current kinetic energy of the system, in kcal/mol
   Float get_kinetic_energy() const;
@@ -41,7 +40,7 @@ public:
    */
   Float get_kinetic_temperature(Float ekinetic) const;
 
-  IMP_OPTIMIZER(internal::version_info)
+  IMP_OPTIMIZER(MolecularDynamics, internal::version_info)
 
   //! Set time step in fs
   void set_time_step(Float t) { time_step_ = t; }

@@ -33,6 +33,7 @@ class IMPCOREEXPORT RemoveInactiveSingletonsOptimizerState :
   Pointer<ListSingletonContainer> c_;
 public:
   /** \param[in] c The Container to hold the elements to process
+      \param[in] name The name to use for this Object
    */
   RemoveInactiveSingletonsOptimizerState(ListSingletonContainer *c,
                                          std::string name

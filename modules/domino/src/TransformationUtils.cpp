@@ -43,13 +43,13 @@ void TransformationUtils::move2state(Particle *p_sample, Particle *p_trans) {
 
 void TransformationUtils::apply(Particle *p,const algebra::Transformation3D &t)
 {
-  core::Transform tsm(t);
+  IMP_NEW(core::Transform,  tsm, (t));
   Particles ps = core::get_leaves(
                  atom::Hierarchy::cast(p));
 //   core::GravityCenterScoreState g(p, FloatKey(),ps);
 //   g.update_position();
   for (Particles::iterator it = ps.begin(); it != ps.end(); it++) {
-    tsm.apply(*it);
+    tsm->apply(*it);
   }
 }
 

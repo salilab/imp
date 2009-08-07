@@ -55,7 +55,7 @@ class Model;
     set_was_owned(true).
 
     See the examples::ExampleRestraint  example for how to implement
-    a simple restraint.
+    a simple restraint and see IMP_RESTRAINT().
  */
 class IMPEXPORT Restraint : public Object, public Ownable
 {

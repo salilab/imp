@@ -41,7 +41,8 @@ public:
   //! Create the restraint.
   /** \param[in] ss The function to apply to each particle.
       \param[in] ps The list of particles to use in the restraint.
-   */
+      \param[in] name The object name
+  */
   PairsRestraint(PairScore *ss,
                       const ParticlePairs &ps=ParticlePairs(),
                       std::string name="PairsRestraint %1%");
@@ -50,9 +51,11 @@ public:
   /** \param[in] ss The function to apply to each particle.
       \param[in] pc The container containing the stored particles. This
       container is not copied.
+      \param[in] name The object name
    */
   PairsRestraint(PairScore *ss,
-                      PairContainer *pc);
+                      PairContainer *pc,
+                      std::string name="PairsRestraint %1%");
 
   IMP_RESTRAINT(PairsRestraint, internal::version_info);
 

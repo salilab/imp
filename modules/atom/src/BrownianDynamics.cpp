@@ -48,8 +48,8 @@ BrownianDynamics::BrownianDynamics(SimulationParameters si,
 }
 
 
-BrownianDynamics::~BrownianDynamics()
-{
+void BrownianDynamics::show(std::ostream &out) const {
+  out << "BrownianDynamics optimizer" << std::endl;
 }
 
 SingletonContainer *BrownianDynamics::setup_particles()

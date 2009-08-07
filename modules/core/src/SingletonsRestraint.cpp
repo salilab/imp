@@ -31,7 +31,9 @@ SingletonsRestraint
 
 SingletonsRestraint
 ::SingletonsRestraint(SingletonScore *ss,
-                      SingletonContainer *pc): ss_(ss), pc_(pc) {
+                      SingletonContainer *pc,
+                      std::string name): Restraint(name),
+                                         ss_(ss), pc_(pc) {
 
 }
 

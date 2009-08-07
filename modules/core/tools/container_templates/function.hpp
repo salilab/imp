@@ -28,6 +28,9 @@ class Particle;
     GroupnameModifier to a set of Classnames.
 
     \see IMP::GroupnameFunctor
+
+    Implementors should see IMP_GROUPNAME_MODIFIER() and
+    IMP_GROUPNAME_MODIFIER_DA().
  */
 class IMPEXPORT GroupnameModifier : public Object
 {

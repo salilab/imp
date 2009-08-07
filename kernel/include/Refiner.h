@@ -22,6 +22,8 @@ class DerivativeAccumulator;
 //! Abstract class to implement hierarchical methods.
 /** The job of this class is to take a single particle and, if
     appropriate, return a list of particles.
+
+    Implementors should see IMP_REFINER().
 */
 class IMPEXPORT Refiner : public Object
 {

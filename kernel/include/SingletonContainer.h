@@ -29,6 +29,8 @@ IMP_BEGIN_NAMESPACE
 //! A shared container for particles
 /** Stores a searchable shared collection of particles.
     \ingroup restraints
+
+    Implementors should see IMP_SINGLETON_CONTAINER().
  */
 class IMPEXPORT SingletonContainer : public Object
 {

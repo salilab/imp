@@ -37,9 +37,8 @@ public:
   DerivativesFromRefined(Refiner *r,
                                           FloatKeys ks
                                            = XYZ::get_xyz_keys());
-  ~DerivativesFromRefined();
 
-  IMP_SINGLETON_MODIFIER_DA(internal::version_info);
+  IMP_SINGLETON_MODIFIER_DA(DerivativesFromRefined, internal::version_info);
 };
 
 IMPCORE_END_NAMESPACE

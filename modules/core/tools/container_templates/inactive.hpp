@@ -33,6 +33,7 @@ class IMPCOREEXPORT RemoveInactiveGroupnamesOptimizerState :
   Pointer<ListGroupnameContainer> c_;
 public:
   /** \param[in] c The Container to hold the elements to process
+      \param[in] name The name to use for this Object
    */
   RemoveInactiveGroupnamesOptimizerState(ListGroupnameContainer *c,
                                          std::string name

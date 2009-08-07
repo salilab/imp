@@ -23,6 +23,8 @@ IMP_BEGIN_NAMESPACE
     for the passed particles. Use in conjunction with various
     restraints such as IMP::core::SingletonsRestraint or
     IMP::core::SingletonRestraint.
+
+    Implementers should check out IMP_SINGLETON_SCORE().
 */
 class IMPEXPORT SingletonScore : public Object
 {

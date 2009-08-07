@@ -12,5 +12,5 @@ a sub-namespace.
 \license \standard_imp_license
 
 The kernel also provides \ref logging "Logging" and \ref assert "Error Reporting"
-support.
+support as well as \ref object_helpers "macros to help implement objects".
  */

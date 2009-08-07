@@ -21,6 +21,9 @@ namespace {
   }
 }
 
+void DominoOptimizer::show(std::ostream &out) const {
+  out << "DOMINO optimizer" << std::endl;
+}
 
 DominoOptimizer::DominoOptimizer(const JunctionTree &jt, Model *m)
 {

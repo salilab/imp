@@ -36,6 +36,7 @@ class IMPCOREEXPORT GroupnamesOptimizerState : public OptimizerState
 public:
   /** \param[in] c The Container to hold the elements to process
       \param[in] gf The GroupnameModifier to apply to all elements.
+      \param[in] name The name to use for this Object
    */
   GroupnamesOptimizerState(GroupnameContainer *c, GroupnameModifier *gf,
                            std::string name="GroupnamesOptimizerState %1%");

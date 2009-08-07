@@ -30,6 +30,8 @@ class Optimizer;
     in evaluate to reproduce the the entire flow of data in update. When
     logging is TERSE the restraint should print out only a constant number
     of lines per update call.
+
+    Implementors should see IMP_OPTIMIZER_STATE().
  */
 class IMPEXPORT OptimizerState : public Object
 {

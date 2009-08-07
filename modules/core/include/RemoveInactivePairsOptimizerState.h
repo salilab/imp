@@ -33,6 +33,7 @@ class IMPCOREEXPORT RemoveInactivePairsOptimizerState :
   Pointer<ListPairContainer> c_;
 public:
   /** \param[in] c The Container to hold the elements to process
+      \param[in] name The name to use for this Object
    */
   RemoveInactivePairsOptimizerState(ListPairContainer *c,
                                          std::string name

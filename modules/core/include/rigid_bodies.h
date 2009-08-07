@@ -201,7 +201,8 @@ IMP_OUTPUT_OPERATOR(RigidMember);
 class IMPCOREEXPORT UpdateRigidBodyOrientation: public SingletonModifier {
  public:
   UpdateRigidBodyOrientation(){}
-  IMP_SINGLETON_MODIFIER(internal::version_info);
+  IMP_SINGLETON_MODIFIER(UpdateRigidBodyOrientation,
+                         internal::version_info);
 };
 
 //! Accumulate the derivatives from the refined particles in the rigid body
@@ -218,7 +219,8 @@ class IMPCOREEXPORT AccumulateRigidBodyDerivatives:
   public SingletonModifier {
  public:
   AccumulateRigidBodyDerivatives(){}
-  IMP_SINGLETON_MODIFIER_DA(internal::version_info);
+  IMP_SINGLETON_MODIFIER_DA(AccumulateRigidBodyDerivatives,
+                            internal::version_info);
 };
 
 
@@ -233,7 +235,8 @@ class IMPCOREEXPORT AccumulateRigidBodyDerivatives:
 class IMPCOREEXPORT UpdateRigidBodyMembers: public SingletonModifier {
  public:
   UpdateRigidBodyMembers(){}
-  IMP_SINGLETON_MODIFIER(internal::version_info);
+  IMP_SINGLETON_MODIFIER(UpdateRigidBodyMembers,
+                         internal::version_info);
 };
 
 IMPCORE_END_NAMESPACE

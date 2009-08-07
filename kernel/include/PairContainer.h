@@ -29,6 +29,8 @@ IMP_BEGIN_NAMESPACE
 //! A shared container for particle_pairs
 /** Stores a searchable shared collection of particle_pairs.
     \ingroup restraints
+
+    Implementors should see IMP_PAIR_CONTAINER().
  */
 class IMPEXPORT PairContainer : public Object
 {

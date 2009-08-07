@@ -37,8 +37,7 @@ public:
   /** */
   MonteCarlo();
 
-  IMP_OPTIMIZER(internal::version_info)
-    IMP_REF_COUNTED_DESTRUCTOR(MonteCarlo);
+  IMP_OPTIMIZER(MonteCarlo, internal::version_info)
  public:
   //! Return the local optimizer used or NULL
   Optimizer *get_local_optimizer() const {
@@ -99,8 +98,6 @@ public:
   unsigned int get_number_of_upward_steps() const {
     return stat_upward_steps_taken_;
   }
-
-  void show(std::ostream &out= std::cout) const;
 
   /** @name Movers
 

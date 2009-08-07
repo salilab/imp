@@ -212,7 +212,7 @@ public:
 
 IMP_OUTPUT_OPERATOR(Model);
 
-
+#ifndef IMP_DOXYGEN
 // these require Model be defined
 
 inline void Particle::assert_values_mutable() const {
@@ -235,7 +235,7 @@ inline void Particle::assert_can_change_derivatives() const {
              "Derivatives can only be changed during restraint "
              << "evaluation and score state after evaluation calls.");
 }
-
+#endif
 
 IMP_END_NAMESPACE
 

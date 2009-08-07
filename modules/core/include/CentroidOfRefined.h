@@ -40,9 +40,9 @@ public:
                                      FloatKey weight=FloatKey(),
                                      FloatKeys ks
                                       = XYZ::get_xyz_keys());
-  ~CentroidOfRefined();
 
-  IMP_SINGLETON_MODIFIER(internal::version_info);
+  IMP_SINGLETON_MODIFIER(CentroidOfRefined,
+                         internal::version_info);
 };
 
 

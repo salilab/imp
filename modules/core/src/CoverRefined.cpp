@@ -24,10 +24,6 @@ CoverRefined
 {
 }
 
-CoverRefined::~CoverRefined()
-{
-}
-
 void CoverRefined::apply(Particle *p) const
 {
   XYZR dp(p, rk_);
