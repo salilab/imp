@@ -20,6 +20,7 @@ RigidBodyMover::RigidBodyMover(RigidBody d,
 }
 
 void RigidBodyMover::propose_move(Float f) {
+  IMP_LOG(VERBOSE,"RigidBodyMover:: propose move f is  : " << f <<std::endl);
   last_transformation_= d_.get_transformation();
   algebra::Vector3D translation
     = algebra::random_vector_in_sphere(d_.get_coordinates(),
@@ -31,6 +32,7 @@ void RigidBodyMover::propose_move(Float f) {
   algebra::Rotation3D r= algebra::rotation_in_radians_about_axis(axis, angle);
   algebra::Rotation3D rc= compose(r, d_.get_transformation().get_rotation());
   algebra::Transformation3D t(rc, translation);
+  IMP_LOG(VERBOSE,"RigidBodyMover:: propose move : " << t << std::endl);
   d_.set_transformation(t);
 }
 
