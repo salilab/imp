@@ -45,7 +45,7 @@ void TransformationUtils::apply(Particle *p,const algebra::Transformation3D &t)
 {
   IMP_NEW(core::Transform,  tsm, (t));
   Particles ps = core::get_leaves(
-                 atom::Hierarchy::cast(p));
+                 atom::Hierarchy::decorate_particle(p));
 //   core::GravityCenterScoreState g(p, FloatKey(),ps);
 //   g.update_position();
   for (Particles::iterator it = ps.begin(); it != ps.end(); it++) {
@@ -58,7 +58,7 @@ algebra::Transformation3D TransformationUtils::get_trans(Particle *p) const {
       "TransformationUtils::get_trans the attribute list is not initialized");
   algebra::Rotation3D rot(p->get_value(atts_[3]),p->get_value(atts_[4]),
                           p->get_value(atts_[5]),p->get_value(atts_[6]));
-  algebra::Vector3D vec = core::XYZ::cast(p).get_coordinates();
+  algebra::Vector3D vec = core::XYZ::decorate_particle(p).get_coordinates();
   algebra::Transformation3D t3d(rot,vec);
   return t3d;
 }

@@ -34,7 +34,7 @@ class ClassnameContainerTest(IMP.test.TestCase):
 
     def create_particle(self,m):
         p= IMP.Particle(m)
-        d=IMP.core.XYZ.create(p)
+        d=IMP.core.XYZ.setup_particle(p)
         d.set_coordinates(IMP.algebra.random_vector_in_unit_box())
         p.add_attribute(IMP.FloatKey("thekey"), d.get_x())
         return p
@@ -42,8 +42,8 @@ class ClassnameContainerTest(IMP.test.TestCase):
     def create_particle_pair(self,m):
         p0= IMP.Particle(m)
         p1= IMP.Particle(m)
-        d0= IMP.core.XYZ.create(p0)
-        d1= IMP.core.XYZ.create(p1)
+        d0= IMP.core.XYZ.setup_particle(p0)
+        d1= IMP.core.XYZ.setup_particle(p1)
         d0.set_coordinates(IMP.algebra.random_vector_in_unit_box())
         d1.set_coordinates(IMP.algebra.random_vector_in_unit_box())
         return IMP.ParticlePair(p0,p1)

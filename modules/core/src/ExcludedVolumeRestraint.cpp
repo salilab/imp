@@ -40,10 +40,10 @@ void ExcludedVolumeRestraint::set_model(Model *m) {
 
     for (SingletonContainer::ParticleIterator it= sc_->particles_begin();
          it != sc_->particles_end(); ++it) {
-      if (RigidBody::is_instance_of(*it)) {
+      if (RigidBody::particle_is_instance(*it)) {
         RigidBody rb(*it);
-        if (!XYZR::is_instance_of(*it)) {
-          XYZR d= XYZR::create(*it);
+        if (!XYZR::particle_is_instance(*it)) {
+          XYZR d= XYZR::setup_particle(*it);
           set_enclosing_radius(d, core::XYZs(rb.get_members()));
         }
       }

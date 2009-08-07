@@ -44,7 +44,7 @@ public:
       the initial state of the Decorator to be reasonable (i.e.
       make sure there is a non-empty name).
    */
-  static ExampleDecorator create(Particle *p, std::string name) {
+  static ExampleDecorator setup_particle(Particle *p, std::string name) {
     IMP_check(!name.empty(), "The name cannot be empty.",
               ValueException);
     p->add_attribute(get_name_key(), name);
@@ -53,7 +53,7 @@ public:
   }
 
   //! return true if the particle has a name
-  static bool is_instance_of(Particle *p) {
+  static bool particle_is_instance(Particle *p) {
     return p->has_attribute(get_name_key());
   }
   //! Set the name of the particle

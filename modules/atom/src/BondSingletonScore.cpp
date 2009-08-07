@@ -19,7 +19,7 @@ Float BondSingletonScore::evaluate(Particle *b,
                                    DerivativeAccumulator *da) const
 {
   IMP_IF_CHECK(EXPENSIVE) {
-    Bond::cast(b);
+    Bond::decorate_particle(b);
   }
   Bond bd(b);
   Float l= bd.get_length();

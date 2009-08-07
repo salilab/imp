@@ -26,8 +26,8 @@ class MCOptimizerTest(IMP.test.TestCase):
         self.rsrs=IMP.core.RestraintSet()
         self.rsrs.set_model(self.m)
         self.h = IMP.core.HarmonicUpperBound(IMP.algebra.distance(
-            IMP.core.XYZ.cast(self.m1.get_particle()).get_coordinates(),
-            IMP.core.XYZ.cast(self.m2.get_particle()).get_coordinates()),
+            IMP.core.XYZ.decorate_particle(self.m1.get_particle()).get_coordinates(),
+            IMP.core.XYZ.decorate_particle(self.m2.get_particle()).get_coordinates()),
             3.)
 
         self.dr = IMP.core.DistanceRestraint(self.h,self.m1.get_particle(),
@@ -52,8 +52,8 @@ class MCOptimizerTest(IMP.test.TestCase):
         trans2 = IMP.algebra.Transformation3D(
           IMP.algebra.Rotation3D(rot2[0],rot2[1],rot2[2],0.),
           point2)
-        IMP.core.RigidBody.cast(self.m1.get_particle()).set_transformation(trans1)
-        IMP.core.RigidBody.cast(self.m2.get_particle()).set_transformation(trans2)
+        IMP.core.RigidBody.decorate_particle(self.m1.get_particle()).set_transformation(trans1)
+        IMP.core.RigidBody.decorate_particle(self.m2.get_particle()).set_transformation(trans2)
         self.m.evaluate(False) #to transform the children
         #optimize
         opt = IMP.core.MonteCarlo()

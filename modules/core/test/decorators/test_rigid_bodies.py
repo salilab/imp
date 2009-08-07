@@ -24,13 +24,13 @@ class RBDTests(IMP.test.TestCase):
             r= IMP.core.SingletonRestraint(dt, mb.get_particle())
             m.add_restraint(r)
     def _create_hierarchy(self, m, htr, n=10):
-        rd= IMP.core.XYZ.create(IMP.Particle(m),
+        rd= IMP.core.XYZ.setup_particle(IMP.Particle(m),
                                          IMP.algebra.random_vector_in_unit_box())
-        hd= IMP.core.Hierarchy.create(rd.get_particle(), htr)
+        hd= IMP.core.Hierarchy.setup_particle(rd.get_particle(), htr)
         for i in range(0,n):
-            crd= IMP.core.XYZ.create(IMP.Particle(m),
+            crd= IMP.core.XYZ.setup_particle(IMP.Particle(m),
                                               IMP.algebra.random_vector_in_unit_box())
-            chd= IMP.core.Hierarchy.create(crd.get_particle(), htr)
+            chd= IMP.core.Hierarchy.setup_particle(crd.get_particle(), htr)
             hd.add_child(chd)
         return rd.get_particle()
 

@@ -20,7 +20,7 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 /** Stupid hack since I can't change the kernel. This should go away
  and the calls to it above should be replace by P::is_instance_of*/
 template <class T> inline bool parent_instance(::IMP::Particle *p) {
-  return T::is_instance_of(p);
+  return T::particle_is_instance(p);
 }
 /** inline is needed, much to my surprise.
  */

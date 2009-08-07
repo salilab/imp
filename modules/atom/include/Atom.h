@@ -232,15 +232,15 @@ public:
   }
 
   /** Create a decorator with the passed type and coordinates.*/
-  static Atom create(Particle *p, AtomType t= AT_UNKNOWN);
+  static Atom setup_particle(Particle *p, AtomType t= AT_UNKNOWN);
 
   /** Create a decorator by copying from o.*/
-  static Atom create(Particle *p, Atom o);
+  static Atom setup_particle(Particle *p, Atom o);
 
   //! return true if the particle has the needed attributes
-  static bool is_instance_of(Particle *p) {
+  static bool particle_is_instance(Particle *p) {
     return p->has_attribute(get_type_key())
-      && Hierarchy::is_instance_of(p);
+      && Hierarchy::particle_is_instance(p);
   }
 
   AtomType get_atom_type() const {

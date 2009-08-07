@@ -10,7 +10,7 @@ prot= IMP.atom.read_pdb(IMP.get_data_directory()\
 res= IMP.atom.get_by_type(prot, IMP.atom.Hierarchy.RESIDUE)
 rc= IMP.core.ListSingletonContainer(res)
 for p in res:
-    IMP.core.XYZR.create(p.get_particle())
+    IMP.core.XYZR.setup_particle(p.get_particle())
 mtr=IMP.atom.Hierarchy.get_traits()
 pr= IMP.core.ChildrenRefiner(mtr)
 IMP.helper.create_covers(rc, pr)

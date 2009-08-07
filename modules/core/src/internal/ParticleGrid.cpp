@@ -77,7 +77,7 @@ void ParticleGrid::audit_particles(const Storage &ps) const
 {
   for (unsigned int i=0; i< ps.size(); ++i) {
     try {
-      XYZ d= XYZ::cast(ps[i]);
+      XYZ d= XYZ::decorate_particle(ps[i]);
     } catch (...) {
       IMP_WARN("Particle " << ps[i]->get_name()
                << " does not have x,y,z coordinates "

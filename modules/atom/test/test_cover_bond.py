@@ -29,16 +29,16 @@ class TestREFCover(IMP.test.TestCase):
         ds=IMP.core.XYZRs()
         for i in range(0,2):
             p= IMP.Particle(m)
-            d=IMP.core.XYZR.create(p)
+            d=IMP.core.XYZR.setup_particle(p)
             ps.append(p)
             ds.append(d)
             d.set_coordinates(IMP.algebra.random_vector_in_unit_box())
             d.set_radius(0)
         #c= IMP.core.CentroidOfRefined(r)
-        b= IMP.atom.custom_bond(IMP.atom.Bonded.create(ps[0]),
-                                IMP.atom.Bonded.create(ps[1]),
+        b= IMP.atom.custom_bond(IMP.atom.Bonded.setup_particle(ps[0]),
+                                IMP.atom.Bonded.setup_particle(ps[1]),
                                 5, 1)
-        IMP.core.XYZR.create(b.get_particle())
+        IMP.core.XYZR.setup_particle(b.get_particle())
         c= IMP.atom.CoverBond()
         c.apply(b.get_particle())
         self.check_cover(b.get_particle(), ps)

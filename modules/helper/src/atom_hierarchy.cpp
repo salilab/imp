@@ -49,20 +49,20 @@ Restraint* create_protein(Particle *p,
   double overlap_frac=.2;
   std::pair<int, double> nr= compute_n(volume, resolution, overlap_frac);
   atom::Hierarchy pd
-    =atom::Hierarchy::create(p,
+    =atom::Hierarchy::setup_particle(p,
                               atom::Hierarchy::PROTEIN);
   Particles ps;
   for (int i=0; i< nr.first; ++i) {
     Particle *pc= new Particle(p->get_model());
     atom::Hierarchy pcd
-      =atom::Hierarchy::create(pc,
+      =atom::Hierarchy::setup_particle(pc,
                               atom::Hierarchy::FRAGMENT);
     pd.add_child(pcd);
-    core::XYZR xyzd=core::XYZR::create(pc);
+    core::XYZR xyzd=core::XYZR::setup_particle(pc);
     xyzd.set_radius(nr.second);
     xyzd.set_coordinates_are_optimized(true);
     ps.push_back(pc);
-    atom::Domain::create(pc, i*(number_of_residues/nr.first)
+    atom::Domain::setup_particle(pc, i*(number_of_residues/nr.first)
                          + first_residue_index,
                          (i+1)*(number_of_residues/nr.first)
                          + first_residue_index);
@@ -86,7 +86,7 @@ namespace {
   }
 
   algebra::Sphere3D get_sphere(Particle *p) {
-    if (core::XYZR::is_instance_of(p)) {
+    if (core::XYZR::particle_is_instance(p)) {
       return core::XYZR(p).get_sphere();
     } else {
       return algebra::Sphere3D(core::XYZ(p).get_coordinates(),
@@ -432,12 +432,13 @@ atom::Hierarchy simplified(atom::Hierarchy in,
   }
 
   IMP_NEW(Particle, root, (in.get_particle()->get_model()));
-  atom::Hierarchy h= atom::Hierarchy::create(root, in.get_type());
+  atom::Hierarchy h= atom::Hierarchy::setup_particle(root, in.get_type());
   for (unsigned int i=0; i< centers.size(); ++i) {
     IMP_NEW(Particle, c, (in.get_particle()->get_model()));
-    atom::Hierarchy hc= atom::Hierarchy::create(c, atom::Hierarchy::FRAGMENT);
+    atom::Hierarchy hc
+      = atom::Hierarchy::setup_particle(c, atom::Hierarchy::FRAGMENT);
     h.add_child(hc);
-    core::XYZR::create(c, centers[i]);
+    core::XYZR::setup_particle(c, centers[i]);
   }
 
 
@@ -447,20 +448,20 @@ atom::Hierarchy simplified(atom::Hierarchy in,
   std::vector<Ints> residues(centers.size());
   for (unsigned int i=0; i < partitioned.size(); ++i) {
     for (unsigned int j=0; j < partitioned[i].size(); ++j) {
-      if (atom::Atom::is_instance_of(partitioned[i][j])) {
+      if (atom::Atom::particle_is_instance(partitioned[i][j])) {
         atom::Atom at(partitioned[i][j]);
         if (at.get_atom_type() == atom::AT_CA) {
           residues[i].push_back(atom::Residue(at.get_parent()
                                               .get_particle()).get_index());
         }
-      } else if (atom::Residue::is_instance_of(partitioned[i][j])) {
+      } else if (atom::Residue::particle_is_instance(partitioned[i][j])) {
         residues[i].push_back(atom::Residue(partitioned[i][j]).get_index());
-      } else if (atom::Fragment::is_instance_of(partitioned[i][j])) {
+      } else if (atom::Fragment::particle_is_instance(partitioned[i][j])) {
         atom::Fragment f(partitioned[i][j]);
         residues[i].insert(residues[i].end(),
                            f.residue_indexes_begin(),
                            f.residue_indexes_end());
-      } else if (atom::Domain::is_instance_of(partitioned[i][j])) {
+      } else if (atom::Domain::particle_is_instance(partitioned[i][j])) {
         atom::Domain d(partitioned[i][j]);
         for (int k=d.get_begin_index(); k != d.get_end_index(); ++k) {
           residues[i].push_back(k);
@@ -469,7 +470,8 @@ atom::Hierarchy simplified(atom::Hierarchy in,
     }
   }
   for (unsigned int i=0; i< centers.size(); ++i) {
-    atom::Fragment f= atom::Fragment::create(h.get_child(i).get_particle());
+    atom::Fragment f
+      = atom::Fragment::setup_particle(h.get_child(i).get_particle());
     if (!residues[i].empty()) {
       f.set_residue_indexes(residues[i]);
     }
@@ -489,7 +491,7 @@ get_simplified_representation(atom::Hierarchy h) {
     atom::Hierarchy h= front.back();
     front.pop_back();
     //IMP_LOG(VERBOSE, "Trying " << h << std::endl);
-    if (core::XYZ::is_instance_of(h.get_particle())) {
+    if (core::XYZ::particle_is_instance(h.get_particle())) {
       ret.push_back(h.get_particle());
     } else {
       front.insert(front.end(),
@@ -511,27 +513,27 @@ atom::Hierarchy clone_internal(atom::Hierarchy d,
   Particle *p= new Particle(d.get_model());
   map[d.get_particle()]=p;
   atom::Hierarchy nd;
-  if (atom::Atom::is_instance_of(d.get_particle())) {
-    nd= atom::Atom::create(p, atom::Atom(d.get_particle()));
-  } else if (atom::Residue::is_instance_of(d.get_particle())) {
-    nd= atom::Residue::create(p, atom::Residue(d.get_particle()));
-  } else if (atom::Domain::is_instance_of(d.get_particle())) {
-    nd= atom::Domain::create(p, atom::Domain(d.get_particle()));
-  } else if (atom::Chain::is_instance_of(d.get_particle())) {
-    nd= atom::Chain::create(p, atom::Chain(d.get_particle()));
-  } else if (atom::Fragment::is_instance_of(d.get_particle())) {
-    nd= atom::Fragment::create(p, atom::Fragment(d.get_particle()));
+  if (atom::Atom::particle_is_instance(d.get_particle())) {
+    nd= atom::Atom::setup_particle(p, atom::Atom(d.get_particle()));
+  } else if (atom::Residue::particle_is_instance(d.get_particle())) {
+    nd= atom::Residue::setup_particle(p, atom::Residue(d.get_particle()));
+  } else if (atom::Domain::particle_is_instance(d.get_particle())) {
+    nd= atom::Domain::setup_particle(p, atom::Domain(d.get_particle()));
+  } else if (atom::Chain::particle_is_instance(d.get_particle())) {
+    nd= atom::Chain::setup_particle(p, atom::Chain(d.get_particle()));
+  } else if (atom::Fragment::particle_is_instance(d.get_particle())) {
+    nd= atom::Fragment::setup_particle(p, atom::Fragment(d.get_particle()));
   } else {
-    nd=atom::Hierarchy::create(p, d.get_type());
+    nd=atom::Hierarchy::setup_particle(p, d.get_type());
   }
   using core::XYZ;
   using core::XYZR;
-  if (XYZR::is_instance_of(d.get_particle())){
-    XYZR::create(p,
+  if (XYZR::particle_is_instance(d.get_particle())){
+    XYZR::setup_particle(p,
         algebra::Sphere3D(XYZ(d.get_particle()).get_coordinates(),
                           XYZR(d.get_particle()).get_radius()));
-  } else if (XYZ::is_instance_of(d.get_particle())) {
-    XYZ::create(p,
+  } else if (XYZ::particle_is_instance(d.get_particle())) {
+    XYZ::setup_particle(p,
                          XYZ(d.get_particle()).get_coordinates());
   }
   p->set_name(d.get_particle()->get_name());
@@ -554,15 +556,15 @@ atom::Hierarchy clone(atom::Hierarchy d) {
     Particle *np0= map[e0.get_particle()];
     Particle *np1= map[e1.get_particle()];
     atom::Bonded ne0, ne1;
-    if (atom::Bonded::is_instance_of(np0)) {
+    if (atom::Bonded::particle_is_instance(np0)) {
       ne0=atom::Bonded(np0);
     } else {
-      ne0=atom::Bonded::create(np0);
+      ne0=atom::Bonded::setup_particle(np0);
     }
-    if (atom::Bonded::is_instance_of(np1)) {
+    if (atom::Bonded::particle_is_instance(np1)) {
       ne1=atom::Bonded(np1);
     } else {
-      ne1=atom::Bonded::create(np1);
+      ne1=atom::Bonded::setup_particle(np1);
     }
     atom::copy_bond(ne0, ne1, bds[i]);
   }
@@ -577,10 +579,10 @@ algebra::BoundingBox3D bounding_box(const atom::Hierarchy &h,
   Particles rep= get_simplified_representation(h);
   algebra::BoundingBox3D bb;
   for (unsigned int i=0; i< rep.size(); ++i) {
-    core::XYZR xyzr= core::XYZR::cast(rep[i], r);
+    core::XYZR xyzr= core::XYZR::decorate_particle(rep[i], r);
     if (xyzr) {
       bb+= algebra::bounding_box(xyzr.get_sphere());
-    } else if (core::XYZ::is_instance_of(rep[i])) {
+    } else if (core::XYZ::particle_is_instance(rep[i])) {
       bb+= algebra::BoundingBox3D(core::XYZ(rep[i]).get_coordinates());
     }
   }
@@ -593,10 +595,10 @@ algebra::Sphere3D bounding_sphere(const atom::Hierarchy &h,
   Particles rep= get_simplified_representation(h);
   algebra::Sphere3Ds ss;
   for (unsigned int i=0; i< rep.size(); ++i) {
-    core::XYZR xyzr= core::XYZR::cast(rep[i], r);
+    core::XYZR xyzr= core::XYZR::decorate_particle(rep[i], r);
     if (xyzr) {
       ss.push_back(xyzr.get_sphere());
-    } else if (core::XYZ::is_instance_of(rep[i])) {
+    } else if (core::XYZ::particle_is_instance(rep[i])) {
       ss.push_back(algebra::Sphere3D(core::XYZ(rep[i]).get_coordinates(),
                                      0));
     }

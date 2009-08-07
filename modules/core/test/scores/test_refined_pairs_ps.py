@@ -14,11 +14,11 @@ class Test(IMP.test.TestCase):
         IMP.set_log_level(IMP.VERBOSE)
         m= IMP.Model()
         pp= IMP.Particle(m)
-        hpp= IMP.core.Hierarchy.create(pp)
+        hpp= IMP.core.Hierarchy.setup_particle(pp)
         c=[]
         for i in range(0,10):
             p= IMP.Particle(m)
-            hp= IMP.core.Hierarchy.create(p)
+            hp= IMP.core.Hierarchy.setup_particle(p)
             hpp.add_child(hp)
             c.append(p)
         pr= IMP.core.ChildrenRefiner(IMP.core.Hierarchy.get_default_traits())

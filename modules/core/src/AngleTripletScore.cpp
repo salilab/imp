@@ -24,9 +24,9 @@ Float AngleTripletScore::evaluate(Particle *a, Particle *b, Particle *c,
   IMP_CHECK_OBJECT(a);
   IMP_CHECK_OBJECT(b);
   IMP_CHECK_OBJECT(c);
-  XYZ d0 = XYZ::cast(a);
-  XYZ d1 = XYZ::cast(b);
-  XYZ d2 = XYZ::cast(c);
+  XYZ d0 = XYZ::decorate_particle(a);
+  XYZ d1 = XYZ::decorate_particle(b);
+  XYZ d2 = XYZ::decorate_particle(c);
 
   algebra::Vector3D rij = d1.get_vector_to(d0);
   algebra::Vector3D rkj = d1.get_vector_to(d2);

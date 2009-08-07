@@ -43,22 +43,22 @@ class IMPATOMEXPORT Fragment: public Hierarchy
    */
   void add_residue_indexes(int begin, int end);
 public:
-  static Fragment create(Particle *p) {
+  static Fragment setup_particle(Particle *p) {
     add_required_attributes_for_residue_begin(p, btraits_);
     add_required_attributes_for_residue_end(p, etraits_);
-    if (!Hierarchy::is_instance_of(p)) {
-      Hierarchy::create(p,
+    if (!Hierarchy::particle_is_instance(p)) {
+      Hierarchy::setup_particle(p,
                      Hierarchy::FRAGMENT);
     }
     return Fragment(p);
   }
 
   //! Create a domain by copying from o
-  static Fragment create(Particle *p, Fragment o) {
+  static Fragment setup_particle(Particle *p, Fragment o) {
     add_required_attributes_for_residue_begin(p, btraits_);
     add_required_attributes_for_residue_end(p, etraits_);
-    if (!Hierarchy::is_instance_of(p)) {
-      Hierarchy::create(p,
+    if (!Hierarchy::particle_is_instance(p)) {
+      Hierarchy::setup_particle(p,
                         Hierarchy::FRAGMENT);
     }
     Fragment f(p);
@@ -71,9 +71,9 @@ public:
 
   virtual ~Fragment();
 
-  static bool is_instance_of(Particle *p) {
+  static bool particle_is_instance(Particle *p) {
     return has_required_attributes_for_residue_begin(p, btraits_)
-      && Hierarchy::is_instance_of(p);
+      && Hierarchy::particle_is_instance(p);
   }
 
 

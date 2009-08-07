@@ -244,7 +244,7 @@ calculate_derivative_distribution(Particle* particle)
   init();
 
   algebra::Vector3D particle_coordinate =
-    core::XYZ::cast(particle).get_coordinates();
+    core::XYZ::decorate_particle(particle).get_coordinates();
   Float particle_form_factor = ff_table_->get_form_factor(particle);
   for (unsigned int i=0; i<coordinates_.size(); i++) {
     Float dist = distance(coordinates_[i], particle_coordinate);

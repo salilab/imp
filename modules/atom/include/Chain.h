@@ -22,28 +22,28 @@ class IMPATOMEXPORT Chain: public Hierarchy
 {
   IMP_DECORATOR(Chain, Hierarchy);
 public:
-  static Chain create(Particle *p, char id) {
+  static Chain setup_particle(Particle *p, char id) {
     p->add_attribute(get_id_key(), id);
-    if (!Hierarchy::is_instance_of(p)) {
-      Hierarchy::create(p,
+    if (!Hierarchy::particle_is_instance(p)) {
+      Hierarchy::setup_particle(p,
                      Hierarchy::CHAIN);
     }
     return Chain(p);
   }
 
-  static Chain create(Particle *p, Chain o) {
+  static Chain setup_particle(Particle *p, Chain o) {
     p->add_attribute(get_id_key(), o.get_id());
-    if (!Hierarchy::is_instance_of(p)) {
-      Hierarchy::create(p,
+    if (!Hierarchy::particle_is_instance(p)) {
+      Hierarchy::setup_particle(p,
                      Hierarchy::CHAIN);
     }
     return Chain(p);
   }
 
 
-  static bool is_instance_of(Particle *p) {
+  static bool particle_is_instance(Particle *p) {
     return p->has_attribute(get_id_key())
-      &&  Hierarchy::is_instance_of(p);
+      &&  Hierarchy::particle_is_instance(p);
   }
 
   //! Return the chain id

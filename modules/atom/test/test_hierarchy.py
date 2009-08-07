@@ -11,7 +11,7 @@ def _make_hierarchy_decorators(m, *types):
     decorators = []
     for t in types:
         p = IMP.Particle(m)
-        d = IMP.atom.Hierarchy.create(p, t)
+        d = IMP.atom.Hierarchy.setup_particle(p, t)
         decorators.append(d)
     return decorators
 
@@ -23,9 +23,9 @@ def _make_bonded_atoms(m):
         r1.add_child(a)
     for a in atoms2:
         r2.add_child(a)
-    bonded1 = [IMP.atom.Bonded.create(a.get_particle())
+    bonded1 = [IMP.atom.Bonded.setup_particle(a.get_particle())
                for a in atoms1]
-    bonded2 = [IMP.atom.Bonded.create(a.get_particle())
+    bonded2 = [IMP.atom.Bonded.setup_particle(a.get_particle())
                for a in atoms2]
     return r1, r2, bonded1, bonded2
 

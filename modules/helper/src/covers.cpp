@@ -29,8 +29,8 @@ ScoreState* create_covers(SingletonContainer *sc,
   for (SingletonContainer::ParticleIterator pit= sc->particles_begin();
        pit != sc->particles_end(); ++pit) {
     core::XYZR d;
-    if (!core::XYZR::is_instance_of(*pit)) {
-      d= core::XYZR::create(*pit,
+    if (!core::XYZR::particle_is_instance(*pit)) {
+      d= core::XYZR::setup_particle(*pit,
                             algebra::Sphere3D(algebra::Vector3D(0,0,0),0),
                             radius_key);
     } else {
@@ -50,8 +50,8 @@ ScoreState* create_covers(SingletonContainer *sc,
 
 ScoreState *create_cover(Particle *p, Refiner *pr,
                          FloatKey radius_key, Float slack) {
-  if (!core::XYZ::is_instance_of(p)) {
-    core::XYZ::create(p, algebra::Vector3D(0,0,0));
+  if (!core::XYZ::particle_is_instance(p)) {
+    core::XYZ::setup_particle(p, algebra::Vector3D(0,0,0));
   }
   if (!p->has_attribute(radius_key)) {
     p->add_attribute(radius_key, 0);

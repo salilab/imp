@@ -2,6 +2,14 @@
 
 \par Week of August 1
 
+- Containers now have methods IMP::SingletonContainer::evaluate(), IMP::PairContainer::evaluate(),
+  IMP::SingletonContainer::apply() and IMP::PairContainer::apply(). Using these can be significantly
+  faster than looping over the particles externally.
+
+- The decorator functions have been renamed to IMP::Decorator::setup_particle(), IMP::Decorator::decorate_particle()
+  and IMP::Decorator::particle_is_instance(). A shell script \c tools/update-decorators is provided which
+  updates the names in all code in subdirectories of the current directory. Please backup things first.
+
 - a function, Restraint::safe_evaluate() has been added to be used
   when requesting the value of restraints outside of the Model::evaluate().
 

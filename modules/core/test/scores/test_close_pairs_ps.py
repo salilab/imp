@@ -11,16 +11,16 @@ class Test(IMP.test.TestCase):
 
     def _random_hierarchy(self, m, depth=2, width=4):
         p= IMP.Particle(m)
-        h = IMP.core.Hierarchy.create(p)
+        h = IMP.core.Hierarchy.setup_particle(p)
         if depth== 0:
-            d = IMP.core.XYZR.create(p, IMP.algebra.Sphere3D(IMP.algebra.random_vector_in_unit_box(),
+            d = IMP.core.XYZR.setup_particle(p, IMP.algebra.Sphere3D(IMP.algebra.random_vector_in_unit_box(),
                                               .1))
         else:
             children= IMP.core.GenericHierarchies()
             for x in range(0, width):
                 children.append(self._random_hierarchy(m, depth-1))
             #cps= [x.get_particle() for x in children]
-            d= IMP.core.XYZR.create(p)
+            d= IMP.core.XYZR.setup_particle(p)
             print children
             IMP.core.set_enclosing_sphere(d, IMP.core.XYZs(children))
             for c in children:
@@ -46,8 +46,8 @@ class Test(IMP.test.TestCase):
             print
         for l0 in ls0:
             for l1 in ls1:
-                d0= IMP.core.XYZR.cast(l0.get_particle())
-                d1= IMP.core.XYZR.cast(l1.get_particle())
+                d0= IMP.core.XYZR.decorate_particle(l0.get_particle())
+                d1= IMP.core.XYZR.decorate_particle(l1.get_particle())
                 if (IMP.core.distance(d0, d1) < threshold):
                     print l0.get_particle().get_name() + " " \
                         + l1.get_particle().get_name()

@@ -91,7 +91,7 @@ public:
       All decorators must have the following methods. Decorators
       which are parameterized (for example IMP::core::XYZR)
       take an (optional) extra parameter after the Particle in
-      create(), cast() and is_instance_of().
+      setup_particle(), cast() and particle_is_instance().
       Note that these are
       not actually methods of the Decorator class itself.
       @{
@@ -101,17 +101,17 @@ public:
 
       \throw InvalidStateException if the Particle has already been set up
   */
-  static Decorator create(Particle *p, extra_arguments);
+  static Decorator setup_particle(Particle *p, extra_arguments);
 
-  /** Create a decorator from a particle which has already been set up.
-      That is, the Decorator::create() function was previously called with
-      the Particle and so it has all the needed attributes.
+  /** Create a decorator from a particle which has already had
+      Decorator::setup_particle() called on it..
+
       \return The Decorator(p) if p has been set up or Decorator() if not.
   */
   static Decorator cast(Particle *p);
 
   /** Return true if the particle can be cast to the decorator. */
-  static bool is_instance_of(Particle *p);
+  static bool particle_is_instance(Particle *p);
 
   /** Write a description of the wrapped Particle as seen by
       the decorator to a stream. Each line should be prefixed by
@@ -184,7 +184,7 @@ class Decorators: public ParentDecorators {
   typedef const Decorator reference;
   explicit Decorators(const Particles &ps): ParentDecorators(ps) {
     for (unsigned int i=0; i< ps.size(); ++i) {
-      IMP_check(Decorator::is_instance_of(ps[i]), "Particle "
+      IMP_check(Decorator::particle_is_instance(ps[i]), "Particle "
                 << ps[i]->get_name() << " missing required attributes",
                 ValueException);
     }
@@ -196,7 +196,7 @@ class Decorators: public ParentDecorators {
     ParentDecorators::push_back(d);
   }
   void push_back(Particle *p) {
-    IMP_check(Decorator::is_instance_of(p),
+    IMP_check(Decorator::particle_is_instance(p),
               "Particle is missing required attributes",
               ValueException);
     ParentDecorators::push_back(p);
@@ -240,7 +240,7 @@ class Decorators: public ParentDecorators {
   template <class It>
   void insert(iterator loc, It b, It e) {
     for (It c=b; c!= e; ++c) {
-      IMP_check(Decorator::is_instance_of(*c), "Particle "
+      IMP_check(Decorator::particle_is_instance(*c), "Particle "
                 << " missing required attributes",
                 ValueException);
     }
@@ -316,7 +316,7 @@ public:
   void push_back(Particle *p) {
     IMP_check(has_traits_, "Must set traits before adding particles",
               InvalidStateException);
-    IMP_check(Decorator::is_instance_of(p, tr_),
+    IMP_check(Decorator::particle_is_instance(p, tr_),
               "Particle is missing required attributes",
               ValueException);
     ParentDecorators::push_back(p);
@@ -376,7 +376,7 @@ public:
       has_traits_=true;
     }
     for (It c=b; c!= e; ++c) {
-      IMP_check(Decorator::is_instance_of(*c, tr_), "Particle "
+      IMP_check(Decorator::particle_is_instance(*c, tr_), "Particle "
                 << " missing required attributes",
                 ValueException);
     }

@@ -163,7 +163,7 @@ namespace internal {
                "Out of range in particle");
     IMP_assert(data_[ni].storage_[i] < 0,
                "Not a leaf node");
-    if (!RigidBody::is_instance_of(p)) return p;
+    if (!RigidBody::particle_is_instance(p)) return p;
     int index= std::abs(data_[ni].storage_[i])-1;
     return RigidBody(p).get_member(index).get_particle();
   }
@@ -230,7 +230,7 @@ namespace internal {
 const algebra::Sphere3D
 RigidClosePairsFinder::get_transformed(Particle *a,
                                      const algebra::Sphere3D &s) const {
-  if (RigidBody::is_instance_of(a)) {
+  if (RigidBody::particle_is_instance(a)) {
     RigidBody d(a);
     return algebra::Sphere3D(d.get_transformation().transform(s.get_center()),
                              s.get_radius());
@@ -243,7 +243,7 @@ RigidClosePairsFinder::get_transformed(Particle *a,
 
 Particle *RigidClosePairsFinder::get_member(Particle *a,
                                           unsigned int i) const {
-   if (RigidBody::is_instance_of(a)) {
+   if (RigidBody::particle_is_instance(a)) {
      RigidBody d(a);
      return d.get_member(i).get_particle();
    } else {
@@ -286,7 +286,7 @@ RigidClosePairsFinder::setup(const algebra::Sphere3Ds &spheres,
    the index into the array of particles.
  */
 void RigidClosePairsFinder::setup(Particle *p) const {
-  if (RigidBody::is_instance_of(p)) {
+  if (RigidBody::particle_is_instance(p)) {
     // build spheres on internal coordinates
     RigidBody d(p);
     algebra::Sphere3Ds spheres(d.get_number_of_members());
@@ -331,7 +331,7 @@ namespace {
     IMP_IF_CHECK(CHEAP) {
       for (SingletonContainer::ParticleIterator it= sc->particles_begin();
          it != sc->particles_end(); ++it) {
-        if (RigidBody::is_instance_of(*it)
+        if (RigidBody::particle_is_instance(*it)
             && !(*it)->has_attribute(rk)) {
           IMP_WARN("Particle " << (*it)->get_name() << " is a rigid body "
                    << "but does not have a radius. "

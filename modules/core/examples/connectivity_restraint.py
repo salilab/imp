@@ -12,14 +12,14 @@ hs=IMP.Particles()
 # create the molecules
 for i in range(0,10):
     p=IMP.Particle(m)
-    d= IMP.atom.Hierarchy.create(p,
+    d= IMP.atom.Hierarchy.setup_particle(p,
        IMP.atom.Hierarchy.PROTEIN)
     for j in range(0,5):
         p=IMP.Particle(m)
-        cd= IMP.atom.Hierarchy.create(p,
+        cd= IMP.atom.Hierarchy.setup_particle(p,
             IMP.atom.Hierarchy.FRAGMENT)
         d.add_child(cd)
-        xd= IMP.core.XYZR.create(p, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(3*i,j,0), 1))
+        xd= IMP.core.XYZR.setup_particle(p, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(3*i,j,0), 1))
     hs.append(p)
 
 ps= IMP.core.SphereDistancePairScore(IMP.core.HarmonicUpperBound(0,1))

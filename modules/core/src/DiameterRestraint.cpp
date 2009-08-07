@@ -39,7 +39,7 @@ void DiameterRestraint::set_model(Model *m) {
 
     // make pairs from special generator
     p_= new Particle(m);
-    XYZR d= XYZR::create(p_, dr_);
+    XYZR d= XYZR::setup_particle(p_, dr_);
     d.set_coordinates_are_optimized(false);
     core::CoverRefined *cr
       = new core::CoverRefined(

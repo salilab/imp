@@ -44,7 +44,7 @@ public:
 
   /** Create a decorator. Bad constructor, be careful not to switch
       values.*/
-    static SimulationParameters create(Particle *p,
+    static SimulationParameters setup_particle(Particle *p,
                                        double time_step=1e3,
                                        double T
 #ifndef SWIG
@@ -56,7 +56,7 @@ public:
 
 
   //! return true if the particle has the needed attributes
-  static bool is_instance_of(Particle *p) {
+  static bool particle_is_instance(Particle *p) {
     return p->has_attribute(get_current_time_key())
       && p->has_attribute(get_last_time_step_key());
   }

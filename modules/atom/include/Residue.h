@@ -125,13 +125,13 @@ class IMPATOMEXPORT Residue: public Hierarchy
 public:
   IMP_DECORATOR(Residue, Hierarchy)
   //! Add the required attributes to the particle and create a Residue
-  static Residue create(Particle *p, ResidueType t= UNK,
+  static Residue setup_particle(Particle *p, ResidueType t= UNK,
                                  int index=-1, int insertion_code = 32) {
     p->add_attribute(get_type_key(), t.get_index());
     p->add_attribute(get_index_key(), index);
     p->add_attribute(get_insertion_code_key(), insertion_code);
     // insertion code 32 is for space
-    Hierarchy::create(p,
+    Hierarchy::setup_particle(p,
                      Hierarchy::UNKNOWN);
     Residue ret(p);
     ret.set_residue_type(t);
@@ -139,20 +139,20 @@ public:
   }
 
   //! Copy data from the other Residue to the particle p
-  static Residue create(Particle *p, Residue o) {
+  static Residue setup_particle(Particle *p, Residue o) {
     p->add_attribute(get_type_key(), o.get_residue_type().get_index());
     p->add_attribute(get_index_key(), o.get_index());
     p->add_attribute(get_insertion_code_key(), o.get_insertion_code());
-    Hierarchy::create(p,
+    Hierarchy::setup_particle(p,
               static_cast<Hierarchy>(o).get_type());
     return Residue(p);
   }
 
-  static bool is_instance_of(Particle *p) {
+  static bool particle_is_instance(Particle *p) {
     return p->has_attribute(get_type_key())
       && p->has_attribute(get_index_key())
       && p->has_attribute(get_insertion_code_key())
-      && Hierarchy::is_instance_of(p);
+      && Hierarchy::particle_is_instance(p);
   }
 
   ResidueType get_residue_type() const {

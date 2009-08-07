@@ -311,7 +311,7 @@ def _DihedralRestraintGenerator(form, modalities, atoms, parameters):
 def _get_protein_atom_particles(protein):
     """Given a protein particle, get the flattened list of all child atoms"""
     atom_particles = []
-    #protein = IMP.core.Hierarchy.cast(protein)
+    #protein = IMP.core.Hierarchy.decorate_particle(protein)
     for ichain in range(protein.get_number_of_children()):
         chain = protein.get_child(ichain)
         for ires in range(chain.get_number_of_children()):
@@ -377,7 +377,7 @@ def copy_residue(r, model):
     """Copy residue information from modeller to imp"""
     #print "residue "+str(r)
     p=IMP.Particle(model)
-    rp= IMP.atom.Residue.create(p, IMP.atom.ResidueType(r.pdb_name),
+    rp= IMP.atom.Residue.setup_particle(p, IMP.atom.ResidueType(r.pdb_name),
                                          r.index)
     p.set_name(str("residue "+r.num));
     return p
@@ -387,10 +387,10 @@ def copy_atom(a, model):
     """Copy atom information from modeller"""
     #print "atom "+str(a)
     p=IMP.Particle(model)
-    ap= IMP.atom.Atom.create(p)
-    xyzd= IMP.core.XYZ.create(p, IMP.algebra.Vector3D(a.x, a.y, a.z))
+    ap= IMP.atom.Atom.setup_particle(p)
+    xyzd= IMP.core.XYZ.setup_particle(p, IMP.algebra.Vector3D(a.x, a.y, a.z))
     ap.set_atom_type(IMP.atom.AtomType(a.name))
-    #IMP.core.Name.create(p).set_name(str("atom "+a._atom__get_num()));
+    #IMP.core.Name.setup_particle(p).set_name(str("atom "+a._atom__get_num()));
     if (a.charge != 0):
         ap.set_charge(a.charge)
     if (a.mass != 0):
@@ -403,7 +403,7 @@ def copy_chain(c, model):
     #print "atom "+str(a)
     p=IMP.Particle(model)
     #set the chain name
-    cp = IMP.atom.Chain.create(p,c.name)
+    cp = IMP.atom.Chain.setup_particle(p,c.name)
     return p
 
 
@@ -413,14 +413,14 @@ def copy_bonds(pdb, atoms, model):
         mab= b[1]
         pa=atoms[maa.index]
         pb=atoms[mab.index]
-        if IMP.atom.Bonded.is_instance_of(pa):
-            ba= IMP.atom.Bonded.cast(pa)
+        if IMP.atom.Bonded.particle_is_instance(pa):
+            ba= IMP.atom.Bonded.decorate_particle(pa)
         else:
-            ba= IMP.atom.Bonded.create(pa)
-        if IMP.atom.Bonded.is_instance_of(pb):
-            bb= IMP.atom.Bonded.cast(pb)
+            ba= IMP.atom.Bonded.setup_particle(pa)
+        if IMP.atom.Bonded.particle_is_instance(pb):
+            bb= IMP.atom.Bonded.decorate_particle(pb)
         else:
-            bb= IMP.atom.Bonded.create(pb)
+            bb= IMP.atom.Bonded.setup_particle(pb)
         bp= IMP.atom.bond(ba, bb, IMP.atom.Bond.COVALENT)
 
 def read_pdb(name, model, special_patches=None):
@@ -435,24 +435,24 @@ def read_pdb(name, model, special_patches=None):
     pdb = modeller.scripts.complete_pdb(e, name,
                                         special_patches=special_patches)
     pp= IMP.Particle(model)
-    hpp= IMP.atom.Hierarchy.create(pp,
+    hpp= IMP.atom.Hierarchy.setup_particle(pp,
                     IMP.atom.Hierarchy.PROTEIN)
     pp.set_name(name)
     atoms={}
     for chain in pdb.chains:
         cp=IMP.Particle(model)
-        hcp= IMP.atom.Hierarchy.create(cp,
+        hcp= IMP.atom.Hierarchy.setup_particle(cp,
                                    IMP.atom.Hierarchy.FRAGMENT)
         # We don't really know the type yet
         hpp.add_child(hcp)
         cp.set_name(chain.name)
         for residue in chain.residues:
             rp= copy_residue(residue, model)
-            hrp= IMP.atom.Hierarchy.cast(rp)
+            hrp= IMP.atom.Hierarchy.decorate_particle(rp)
             hcp.add_child(hrp)
             for atom in residue.atoms:
                 ap= copy_atom(atom, model)
-                hap= IMP.atom.Hierarchy.cast(ap)
+                hap= IMP.atom.Hierarchy.decorate_particle(ap)
                 hrp.add_child(hap)
                 atoms[atom.index]=ap
             lastres=hrp

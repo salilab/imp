@@ -21,11 +21,11 @@ class TestBL(IMP.test.TestCase):
         ps= IMP.Particles()
         for i in range(0,4):
             p= IMP.Particle(m)
-            d= IMP.core.XYZ.create(p, pts[i])
+            d= IMP.core.XYZ.setup_particle(p, pts[i])
             ps.append(p)
         p= IMP.Particle(m)
-        d= IMP.core.XYZ.create(p)
-        hd= IMP.core.Hierarchy.create(p, ps)
+        d= IMP.core.XYZ.setup_particle(p)
+        hd= IMP.core.Hierarchy.setup_particle(p, ps)
 
         for i in range(0,4):
             u= IMP.core.Harmonic(0,1)

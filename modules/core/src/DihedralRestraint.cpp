@@ -39,10 +39,10 @@ DihedralRestraint::DihedralRestraint(UnaryFunction* score_func,
 Float DihedralRestraint::evaluate(DerivativeAccumulator *accum)
 {
   IMP_CHECK_OBJECT(score_func_);
-  XYZ d0 = XYZ::cast(p_[0]);
-  XYZ d1 = XYZ::cast(p_[1]);
-  XYZ d2 = XYZ::cast(p_[2]);
-  XYZ d3 = XYZ::cast(p_[3]);
+  XYZ d0 = XYZ::decorate_particle(p_[0]);
+  XYZ d1 = XYZ::decorate_particle(p_[1]);
+  XYZ d2 = XYZ::decorate_particle(p_[2]);
+  XYZ d3 = XYZ::decorate_particle(p_[3]);
 
   algebra::Vector3D rij = d1.get_vector_to(d0);
   algebra::Vector3D rkj = d1.get_vector_to(d2);

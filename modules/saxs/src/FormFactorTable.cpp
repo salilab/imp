@@ -546,7 +546,7 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_sulfur_atom_type(
 
 FormFactorTable::FormFactorAtomType FormFactorTable::get_form_factor_atom_type(
                                    Particle *p, FormFactorType ff_type) const {
-  atom::Atom ad = atom::Atom::cast(p);
+  atom::Atom ad = atom::Atom::decorate_particle(p);
   atom::ResidueType residue_type = atom::get_residue_type(ad);
   atom::AtomType atom_type = ad.get_atom_type();
 

@@ -305,27 +305,17 @@ public:                                                      \
  */
 
 //! Define the basic things needed by a Decorator.
-/** The key things this defines are
-    - a default constructor,
-    - a static cast function,
-    - a method get_particle(),
-    - a method get_model()
-    - comparisons.
+/** The macro defines the following methods
+    - a default constructor Decorator::Decorator()
 
-    \param[in] Name is the name of the decorator, such as XYZR
-    \param[in] Parent The class name for the parent of this class,
-    typically Decorator
+    It also declares:
+    - IMP::Decorator::show()
+    - IMP::Decorator::decorate_particle()
+    - IMP::Decorator::Decorator()
 
-    It requires that the implementer of the Decorator implement the static
-    methods:
-
-    - bool is_instance_of(Particle *p) which checks if a particle has
-    needed attributes.
-    - create(Particle *p, other args) which adds the needed attributes
-    to a particle
-
-    In addition, the macro declares a show(std::ostream &out,
-    std::string prefix) method which should be implemented elsewhere.
+    Finally, it expects methods corresponding to
+    - IMP::Decorator::particle_is_instance()
+    - IMP::Decorator::setup_particle()
 
     You also implement static methods \c get_x_key() to return each of the
     keys used. These static methods, which must be defined in the \c .cpp
@@ -334,6 +324,10 @@ public:                                                      \
 
     See \ref decorators "the decorators page" for a more detailed description
     of decorators.
+
+    \param[in] Name is the name of the decorator, such as XYZR
+    \param[in] Parent The class name for the parent of this class,
+    typically Decorator
 
     \see IMP_DECORATOR_TRAITS()
  */
@@ -346,15 +340,15 @@ IMP_NO_DOXYGEN(typedef Name This);                                      \
     pointer in C++. */                                                  \
  Name(): Parent(){}                                                     \
 /** \brief Create a decorator wrapping a particle which already has
-    had create() called on it. */                                       \
+    had setup_particle() called on it. */                               \
 explicit Name(::IMP::Particle *p): Parent(p) {                          \
-   IMP_assert(is_instance_of(p),                                        \
+  IMP_assert(particle_is_instance(p),                                \
               "Particle missing required attributes for decorator "     \
               << #Name << *p << std::endl);                             \
  }                                                                      \
- static Name cast(::IMP::Particle *p) {                                 \
+static Name decorate_particle(::IMP::Particle *p) {                     \
    IMP_CHECK_OBJECT(p);                                                 \
-   if (!is_instance_of(p)) {                                            \
+   if (!particle_is_instance(p)) {                                   \
      return Name();                                                     \
    }                                                                    \
    return Name(p);                                                      \
@@ -366,7 +360,10 @@ explicit Name(::IMP::Particle *p): Parent(p) {                          \
 //! Define the basic things needed by a Decorator which has a traits object.
 /** This macro is the same as IMP_DECORATOR() except that an extra object
     of type TraitsType is passed after the particle to
-    Decorator::is_instance_of(), Decorator::create() and Decorator::cast().
+    - IMP::Decorator::particle_is_instance()
+    - IMP::Decorator::setup_particle()
+    - IMP::Decorator::decorate_particle()
+
     As in the IMP::core::XYZR or IMP::core::Hierarchy,
     this object can be used to parameterize the Decorator. The traits
     object is stored in the decorator and made accessible through
@@ -382,15 +379,16 @@ IMP_NO_DOXYGEN(typedef Name This;)                                      \
      pointer in C++. */                                                 \
 Name(): Parent(){}                                                      \
 /** \brief Create a decorator wrapping a particle which already has
-    had create() called on it with the passed traits. */                \
+    had setup_particle() called on it with the passed traits. */        \
 Name(::IMP::Particle *p, const TraitsType &tr=default_traits): Parent(p), \
                                                    traits_name##_(tr) { \
-  IMP_assert(is_instance_of(p, tr),                                     \
+  IMP_assert(particle_is_instance(p, tr),                            \
              "Particle missing required attributes for decorator "      \
              << #Name << *p << std::endl);                              \
 }                                                                       \
-static Name cast(::IMP::Particle *p, const TraitsType &tr=default_traits) { \
-  if (!is_instance_of(p, tr)) return Name();                            \
+static Name decorate_particle(::IMP::Particle *p,                       \
+                              const TraitsType &tr=default_traits) {    \
+  if (!particle_is_instance(p, tr)) return Name();                   \
   else return Name(p, tr);                                              \
 }                                                                       \
 void show(std::ostream &out=std::cout,                                  \

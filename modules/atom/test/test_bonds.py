@@ -10,8 +10,8 @@ class DecoratorTests(IMP.test.TestCase):
         m = IMP.Model()
         pa=IMP.Particle(m)
         pb=IMP.Particle(m)
-        da= IMP.atom.Bonded.create(pa)
-        db= IMP.atom.Bonded.create(pb)
+        da= IMP.atom.Bonded.setup_particle(pa)
+        db= IMP.atom.Bonded.setup_particle(pb)
         self.assertEqual(da.get_number_of_bonds(), 0,
                          "Wrong number of bonds on initialization")
         IMP.atom.bond(da, db, IMP.atom.Bond.COVALENT)
@@ -29,7 +29,7 @@ class DecoratorTests(IMP.test.TestCase):
         self.assertEqual(da.get_number_of_bonds(), 0,
                          "Expected not to find a bond")
         for p in m.get_particles():
-            self.assert_(IMP.atom.Bond.cast(p) == IMP.atom.Bond())
+            self.assert_(IMP.atom.Bond.decorate_particle(p) == IMP.atom.Bond())
 
 
 

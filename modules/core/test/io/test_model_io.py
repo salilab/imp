@@ -8,9 +8,9 @@ class YamlTests(IMP.test.TestCase):
         IMP.set_log_level(IMP.VERBOSE)
         m = IMP.Model()
         p= IMP.Particle(m)
-        IMP.core.XYZ.create(p)
+        IMP.core.XYZ.setup_particle(p)
         p= IMP.Particle(m)
-        IMP.core.XYZ.create(p)
+        IMP.core.XYZ.setup_particle(p)
         return m
     def test_yaml(self):
         """Check writing to yaml """
@@ -43,9 +43,9 @@ particle: 1324215
         print "m has " + str(m.get_number_of_particles())
         IMP.core.read(open(self.get_tmp_file_name("tmp.yaml")), m)
         ps= m.get_particles()
-        d0= IMP.core.XYZ.cast(ps[0])
+        d0= IMP.core.XYZ.decorate_particle(ps[0])
         self.assertEqual(d0.get_z(), 2)
-        d1= IMP.core.XYZ.cast(ps[1])
+        d1= IMP.core.XYZ.decorate_particle(ps[1])
         self.assertEqual(d1.get_z(), 5)
         self.assertEqual(ps[0].get_name(), "a particle")
         #IMP.core.write(m)

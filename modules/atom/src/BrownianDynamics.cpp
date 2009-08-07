@@ -58,7 +58,7 @@ SingletonContainer *BrownianDynamics::setup_particles()
     // check them
     for (SingletonContainer::ParticleIterator it= sc_->particles_begin();
          it != sc_->particles_end(); ++it) {
-      IMP_check(Diffusion::is_instance_of(*it),
+      IMP_check(Diffusion::particle_is_instance(*it),
                 "Particles must be Diffusion particles to be used in "
                 << "Brownian dynamics. Particle "<< (*it)->get_name()
                 << " is not.",
@@ -70,7 +70,7 @@ SingletonContainer *BrownianDynamics::setup_particles()
     for (Model::ParticleIterator it = get_model()->particles_begin();
          it != get_model()->particles_end(); ++it) {
       Particle *p = *it;
-      Diffusion d= Diffusion::cast(p);
+      Diffusion d= Diffusion::decorate_particle(p);
       if (d && d.get_coordinates_are_optimized()) {
         lsc->add_particle(p);
       }

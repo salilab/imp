@@ -43,7 +43,7 @@ public:
   IMP_DECORATOR(Bond, Decorator)
 
   //! Return true if the particle is a bond.
-  static bool is_instance_of(Particle *p) {
+  static bool particle_is_instance(Particle *p) {
     return IMP::core::internal::graph_is_edge(p,
                                   internal::get_bond_data().graph_);
   }
@@ -114,12 +114,12 @@ class IMPATOMEXPORT Bonded: public Decorator
 public:
   IMP_DECORATOR(Bonded, Decorator)
   //! return true if it is a bonded particle
-  static bool is_instance_of(Particle *p) {
+  static bool particle_is_instance(Particle *p) {
     return IMP::core::internal::graph_is_node(p,
                              internal::get_bond_data().graph_);
   }
 
-  static Bonded create(Particle *p) {
+  static Bonded setup_particle(Particle *p) {
     graph_initialize_node(p, internal::get_bond_data().graph_);
   return Bonded(p);
   }

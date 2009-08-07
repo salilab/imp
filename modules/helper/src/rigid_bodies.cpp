@@ -35,7 +35,7 @@ ScoreState* create_rigid_bodies(SingletonContainer *rbs,
             ValueException);
   for (SingletonContainer::ParticleIterator pit= rbs->particles_begin();
        pit != rbs->particles_end();++pit) {
-    core::RigidBody rbd= core::RigidBody::create(*pit,
+    core::RigidBody rbd= core::RigidBody::setup_particle(*pit,
                                   core::XYZs(pr->get_refined(*pit)));
     rbd.set_coordinates_are_optimized(true, snapping);
   }
@@ -48,7 +48,7 @@ ScoreState* create_rigid_bodies(SingletonContainer *rbs,
 ScoreState* create_rigid_body(Particle *p,
                               const core::XYZs &ps,
                               bool snapping) {
-  core::RigidBody rbd= core::RigidBody::create(p, ps);
+  core::RigidBody rbd= core::RigidBody::setup_particle(p, ps);
   SMP sm= get_modifiers(snapping);
   rbd.set_coordinates_are_optimized(true, snapping);
   core::SingletonScoreState *sss

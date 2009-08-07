@@ -43,7 +43,7 @@ inline void density2particles(DensityMap &dmap, Float threshold,
     z = dmap.voxel2loc(i,2);
     if (dmap.get_value(x,y,z) > threshold) {
       Particle * p = new Particle(m);
-      IMP::core::XYZ::create(p,IMP::algebra::Vector3D(x,y,z));
+      IMP::core::XYZ::setup_particle(p,IMP::algebra::Vector3D(x,y,z));
       p->add_attribute(get_density_key(),
                        dmap.get_value(x,y,z),false);
       ps.push_back(p);

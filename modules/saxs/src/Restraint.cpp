@@ -17,9 +17,9 @@ Restraint::Restraint(const Particles& particles, const Profile& exp_profile,
   saxs_score_ = new Score( (Profile*)&exp_profile, ff_table_);
 
   for(unsigned int i=0; i<particles.size(); i++) {
-    if(core::RigidBody::is_instance_of(particles[i])) {
+    if(core::RigidBody::particle_is_instance(particles[i])) {
       rigid_bodies_decorators_.push_back(
-                              core::RigidBody::cast(particles[i]));
+                              core::RigidBody::decorate_particle(particles[i]));
       rigid_bodies_.push_back(
                      rigid_bodies_decorators_.back().get_members());
       // compute non-changing profile
@@ -27,7 +27,7 @@ Restraint::Restraint(const Particles& particles, const Profile& exp_profile,
       rigid_part_profile.calculate_profile(rigid_bodies_.back());
       rigid_bodies_profile_.add(rigid_part_profile);
     } else {
-      if(atom::Atom::is_instance_of(particles[i])) {
+      if(atom::Atom::particle_is_instance(particles[i])) {
         particles_.push_back(particles[i]);
       }
     }

@@ -9,7 +9,7 @@ class DecoratorTests(IMP.test.TestCase):
         """Check Fragment """
         m = IMP.Model()
         p=IMP.Particle(m)
-        f= IMP.atom.Fragment.create(p)
+        f= IMP.atom.Fragment.setup_particle(p)
         rs= IMP.Ints()
         rs.append(0)
         rs.append(1)

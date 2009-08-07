@@ -46,18 +46,18 @@ void Hierarchy::show(std::ostream &out,
     out << "NULL Molecular Hierarchy node";
     return;
   }
-  if (get_type() == ATOM && Atom::is_instance_of(get_particle())) {
+  if (get_type() == ATOM && Atom::particle_is_instance(get_particle())) {
     Atom ad(get_particle());
     ad.show(out, prefix);
   } else if ((get_type() == RESIDUE || get_type() == NUCLEICACID)
-             && Residue::is_instance_of(get_particle())){
+             && Residue::particle_is_instance(get_particle())){
       Residue adt(get_particle());
       adt.show(out, prefix);
   } else if (get_type() == CHAIN
-             && Chain::is_instance_of(get_particle())){
+             && Chain::particle_is_instance(get_particle())){
       Chain adt(get_particle());
       adt.show(out, prefix);
-  } else if (Domain::is_instance_of(get_particle())) {
+  } else if (Domain::particle_is_instance(get_particle())) {
     Domain dd(get_particle());
     dd.show(out, prefix);
   } else {
@@ -76,7 +76,7 @@ struct MHDMatchingType
   MHDMatchingType(Hierarchy::Type t): t_(t){}
 
   bool operator()(Particle *p) const {
-    Hierarchy mhd= Hierarchy::cast(p);
+    Hierarchy mhd= Hierarchy::decorate_particle(p);
     if (mhd== Hierarchy()) {
       return false;
     } else {
@@ -115,7 +115,7 @@ struct MatchResidueIndex
     } else {
       if (mhd.get_number_of_children()==0) {
         IMP_LOG(VERBOSE, "Trying " << mhd << std::endl);
-        Domain dd= Domain::cast(p);
+        Domain dd= Domain::decorate_particle(p);
         return dd && dd.get_begin_index() <= index_
           && dd.get_end_index()> index_;
       } else {
@@ -152,10 +152,10 @@ bool Hierarchy::get_is_valid(bool print_info) const {
   if (leaves.empty()) {
     return true;
   }
-  bool has_coords= core::XYZ::is_instance_of(leaves[0]);
+  bool has_coords= core::XYZ::particle_is_instance(leaves[0]);
   for (unsigned int i=0; i< leaves.size(); ++i) {
     if (has_coords) {
-      if (!core::XYZ::is_instance_of(leaves[i])) {
+      if (!core::XYZ::particle_is_instance(leaves[i])) {
         if (print_info) {
           IMP_LOG(SILENT, "Leaf " << leaves[i]->get_name()
                   << " does not have coordinates");
@@ -163,7 +163,7 @@ bool Hierarchy::get_is_valid(bool print_info) const {
         return false;
       }
     } else {
-      if (core::XYZ::is_instance_of(leaves[i])) {
+      if (core::XYZ::particle_is_instance(leaves[i])) {
         if (print_info) {
           IMP_LOG(SILENT, "Leaf " << leaves[i]->get_name()
                   << " has coordinates, but other leaves do not.");
@@ -211,7 +211,7 @@ create_fragment(const Hierarchies &ps)
   }
 
   Particle *fp= new Particle(parent.get_particle()->get_model());
-  Hierarchy fd= Hierarchy::create(fp,
+  Hierarchy fd= Hierarchy::setup_particle(fp,
                                        Hierarchy::FRAGMENT);
 
   for (unsigned int i=0; i< ps.size(); ++i) {
@@ -230,7 +230,7 @@ Bonds get_internal_bonds(Hierarchy mhd)
   Bonds ret;
   for (Particles::iterator pit = ps.begin(); pit != ps.end(); ++pit) {
     Particle *p = *pit;
-    if (Bonded::is_instance_of(p)) {
+    if (Bonded::particle_is_instance(p)) {
       Bonded b(p);
       for (unsigned int i=0; i< b.get_number_of_bonds(); ++i) {
         Particle *op = b.get_bonded(i).get_particle();

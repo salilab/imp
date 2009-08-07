@@ -36,10 +36,10 @@ class IMPATOMEXPORT Diffusion:
   /** Create a decorator with the passed coordinates and D.
       D is assumed to be in cm2/sec.
   */
-  static Diffusion create(Particle *p,
+  static Diffusion setup_particle(Particle *p,
                           const algebra::Vector3D &v,
                           Float D) {
-    XYZ::create(p, v);
+    XYZ::setup_particle(p, v);
     p->add_attribute(get_D_key(), D);
     return Diffusion(p);
   }
@@ -48,9 +48,9 @@ class IMPATOMEXPORT Diffusion:
       D is assumed to be in cm2/sec and the particle
       is assumed to already have x,y,z attributes
   */
-  static Diffusion create(Particle *p,
+  static Diffusion setup_particle(Particle *p,
                           Float D=0) {
-    IMP_check(XYZ::is_instance_of(p),
+    IMP_check(XYZ::particle_is_instance(p),
               "Particle must already be an XYZ particle",
               ValueException);
     p->add_attribute(get_D_key(), D);
@@ -70,8 +70,8 @@ class IMPATOMEXPORT Diffusion:
   void set_D_from_radius_in_angstroms(Float r, Float t);
 
   //! Return true if the particle is an instance of an Diffusion
-  static bool is_instance_of(Particle *p) {
-    return XYZ::is_instance_of(p)
+  static bool particle_is_instance(Particle *p) {
+    return XYZ::particle_is_instance(p)
       && p->has_attribute(get_D_key());
   }
 

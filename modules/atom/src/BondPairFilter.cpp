@@ -16,8 +16,8 @@ BondPairFilter
 
 bool BondPairFilter
 ::get_contains_particle_pair(ParticlePair pp) const {
-  if (!Bonded::is_instance_of(pp.first)
-      || ! Bonded::is_instance_of(pp.second)) {
+  if (!Bonded::particle_is_instance(pp.first)
+      || ! Bonded::particle_is_instance(pp.second)) {
     return false;
   }
 

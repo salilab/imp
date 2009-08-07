@@ -40,7 +40,7 @@ unsigned int BondGeometry::get_number_of_vertices() const{
 }
 
 Color BondGeometry::get_color() const {
-  if (Colored::is_instance_of(d_)) return Colored(d_).get_color();
+  if (Colored::particle_is_instance(d_)) return Colored(d_).get_color();
   else return Geometry::get_color();
 }
 

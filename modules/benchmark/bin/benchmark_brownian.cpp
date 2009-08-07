@@ -20,7 +20,7 @@ void test(int n) {
   Particles ps= create_xyzr_particles(m, n, .1);
   IMP_NEW(ListSingletonContainer, lsc, (ps));
   for (unsigned int i=0; i< ps.size(); ++i) {
-    Diffusion::create(ps[i], 1e-6);
+    Diffusion::setup_particle(ps[i], 1e-6);
   }
   IMP_NEW(ClosePairsScoreState, cpss, (lsc));
   m->add_score_state(cpss);
@@ -29,7 +29,8 @@ void test(int n) {
   IMP_NEW(DistancePairScore, dps, (new HarmonicLowerBound(0, 1)));
   IMP_NEW(PairsRestraint, pr, (dps, cpss->get_close_pairs_container()));
   m->add_restraint(pr);
-  SimulationParameters sp= SimulationParameters::create(new Particle(m));
+  SimulationParameters sp
+    = SimulationParameters::setup_particle(new Particle(m));
   sp.set_maximum_time_step_in_femtoseconds(1e3);
   IMP_NEW(BrownianDynamics, bd, (sp, lsc));
   bd->set_model(m);
