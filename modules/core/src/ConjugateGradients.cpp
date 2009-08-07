@@ -44,6 +44,10 @@ void ConjugateGradients::failure() {
 }
 
 
+void ConjugateGradients::show(std::ostream &out) const {
+  out << "ConjugateGradients optimizer" << std::endl;
+}
+
 //! Get the score for a given model state.
 /** \param[in] model The model to score.
     \param[in] model_data The corresponding ModelData.
@@ -255,11 +259,6 @@ ConjugateGradients::ConjugateGradients()
   max_change_ = std::numeric_limits<Float>::max() / 100.0;
 }
 
-
-//! Destructor
-ConjugateGradients::~ConjugateGradients()
-{
-}
 
 
 

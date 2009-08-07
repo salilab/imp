@@ -1,5 +1,5 @@
 /**
- * \file Element \brief
+ * \file element.h \brief
  *
  * Copyright 2007-8 Sali Lab. All rights reserved.
  *

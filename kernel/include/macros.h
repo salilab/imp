@@ -587,288 +587,242 @@ protection:                                                             \
 
 //! @}
 
-/*
- Particles get_##name##_particles() const {                             \
-   Particles ret(get_number_of_##plural());                             \
-   for (unsigned int i=0; i< ret.size(); ++i) {                         \
-     ret[i]= get_##name(i).get_particle();                              \
-   }                                                                    \
-   return ret;                                                          \
- }                                                                      \
-*/
 
 
-/** \name Macros to aid with implementation classes
+/** \defgroup object_helpers Macros to aid with implementation classes
 
-    These macros are here to aid with implementing classes that inherit
-    from the various abstract base classes in the kernel. Each macro,
-    which should be used in the body of the class,
-    declares the set of needed functions. The functions should be defined
-    in the associated \c .cpp file. By using the macros, you ensure
-    that your class gets the names of the functions correct and it
-    makes it easier to update your class if the functions should change.
+    These macros are here to aid with implementing classes that
+    inherit from the various abstract base classes in the kernel. Each
+    macro, which should be used in the body of the class,
+    declares/defines the set of needed functions. The declared
+    functions should be defined in the associated \c .cpp file. By
+    using the macros, you ensure that your class gets the names of the
+    functions correct and it makes it easier to update your class if
+    the functions should change.
+
+    All of the macros define the following methods:
+    - IMP::Object::get_version_info()
+    - an empty virtual destructor
+
+    In addition, they all declare:
+    - IMP::Object::show()
+
+    For all macros, the Name paramete is the name of the class being
+    implemented and the version_info parameter is the IMP::VersionInfo
+    to use (probably internal::version_info).
 
     @{
  */
 
 
-//! Define the basic things you need for a Restraint.
-/** These are: show, evaluate, get_version_info and a empty destructor
-    \param[in] Name The class name
-    \param[in] version_info The version info object to return.
-    \relatesalso IMP::Restraint
-*/
-#define IMP_RESTRAINT(Name, version_info)                                \
-  virtual Float evaluate(DerivativeAccumulator *accum);                 \
+//! Define the basic things needed by any Object
+#define IMP_OBJECT(Name, version_info)                                  \
+  public:                                                               \
   virtual void show(std::ostream &out=std::cout) const;                 \
   virtual IMP::VersionInfo get_version_info() const { return version_info; }\
   IMP_REF_COUNTED_DESTRUCTOR(Name)                                      \
   public:
 
 
-//! Define the basic things you need for an optimizer.
-/** These are: optimize, get_version_info
-    \param[in] version_info The version info object to return.
+//! Define the basic things you need for a Restraint.
+/** In addition to the methods done by all the macros, it declares
+    - IMP::Restraint::evaluate()
 */
-#define IMP_OPTIMIZER(version_info)                                     \
-  /** \short Optimize the model.
-      \param[in] max_steps The maximum number of steps to take.
-      \return The final score.
-   */                                                                   \
+#define IMP_RESTRAINT(Name, version_info)                               \
+  virtual Float evaluate(DerivativeAccumulator *accum);                 \
+  IMP_OBJECT(Name, version_info)
+
+//! Define the basic things you need for an optimizer.
+/** In addition to the methods done by all the macros, it declares
+    - IMP::Optimizer::optimize()
+
+    \relatesalso IMP::Optimizer
+*/
+#define IMP_OPTIMIZER(Name, version_info)                               \
   virtual Float optimize(unsigned int max_steps);                       \
-  /** \return version and authorship information */                     \
-  virtual IMP::VersionInfo get_version_info() const { return version_info; }
+  IMP_OBJECT(Name, version_info)
 
 
 //! Define the basics needed for an OptimizerState
-/** This macro declares the required functions
-    - void update()
-    - void show(std::ostream &out) const
-    and defines the function
-    - get_version_info
-    \param[in] Name The name of the class
-    \param[in] version_info The version info object to return.
+/** In addition to the methods done by all the macros, it declares
+    - IMP::OptimizerState::update()
 */
 #define IMP_OPTIMIZER_STATE(Name, version_info)                         \
   virtual void update();                                                \
-  virtual void show(std::ostream &out=std::cout) const;                 \
-  virtual IMP::VersionInfo get_version_info() const { return version_info; }\
-  IMP_REF_COUNTED_DESTRUCTOR(Name)
+   IMP_OBJECT(Name, version_info)
 
 //! Define the basics needed for a ScoreState
-/** This macro declares the required functions
-    - void do_before_evaluate()
-    - void show(std::ostream &out) const
-    and defines the function
-    - get_version_info
-    - an empty destructor
-
-    \relatesalso IMP::ScoreState
-
-    \param[in] Name the class name
-    \param[in] version_info The version info object to return.
+/** In addition to the methods done by all the macros, it declares
+    - IMP::ScoreState::do_before_evaluate()
+    - IMP::ScoreState::do_after_evaluate()
 */
 #define IMP_SCORE_STATE(Name, version_info)                              \
 protected:                                                              \
  virtual void do_before_evaluate();                                     \
  virtual void do_after_evaluate(DerivativeAccumulator *da);             \
- IMP_REF_COUNTED_DESTRUCTOR(Name)                                      \
-public:                                                                 \
- virtual void show(std::ostream &out=std::cout) const;                  \
-  virtual IMP::VersionInfo get_version_info() const { return version_info; }
+  IMP_OBJECT(Name, version_info)
+
 
 //! Define the basics needed for a particle refiner
-/** This macro declares the following functions
-    - bool get_can_refine(Particle*) const;
-    - unsigned int get_number_of_refined(Particle *) const;
-    - Particle* get_refined(Particle *, unsigned int) const;
-    - const Particles get_refined(Particle *) const;
-    - void show(std::ostream &out) const;
-    - an empty, private destructor
-
-    \param[in] Name The name of the class which this is adding methods to.
-    \param[in] version_info The version info object to return
-
+/** In addition to the methods done by all the macros, it declares
+    - IMP::Refiner::get_can_refine()
+    - IMP::Refiner::get_number_of_refined()
+    - IMP::Refiner::get_refined();
  */
 #define IMP_REFINER(Name, version_info)                                 \
-  public:                                                               \
   virtual bool get_can_refine(Particle*) const;                         \
-  virtual void show(std::ostream &out) const;                           \
   virtual Particle* get_refined(Particle *, unsigned int) const;        \
   virtual const ParticlesTemp get_refined(Particle *) const;       \
   virtual unsigned int get_number_of_refined(Particle *) const;         \
-  virtual IMP::VersionInfo get_version_info() const {                   \
-    return version_info;                                                \
-  }                                                                     \
-  IMP_REF_COUNTED_DESTRUCTOR(Name)
+  IMP_OBJECT(Name, version_info)
+
 
 
 //! Declare the functions needed for a SingletonScore
-/** The declared functions are:
-    - void show(std::ostream &) const
-    - double evaluate(Particle *a, DerivativeAccumulator *da) const
-    The defined function is
-    - VersionInfo get_version_info() const
-    - The destructor
+/** In addition to the methods done by all the macros, it declares
+    - IMP::SingletonScore::evaluate(IMP::Particle*,
+    IMP::DerivativeAccumulator*)
  */
-#define IMP_SINGLETON_SCORE(ClassName, version)  \
-  VersionInfo get_version_info() const {return version;}         \
-  void show(std::ostream &out= std::cout) const;                 \
+#define IMP_SINGLETON_SCORE(Name, version_info)                  \
   double evaluate(Particle *a, DerivativeAccumulator *da) const; \
-  IMP_REF_COUNTED_DESTRUCTOR(ClassName)
+  IMP_OBJECT(Name, version_info)
 
 
 //! Declare the functions needed for a PairScore
-/** The declared functions are:
-    - void show(std::ostream &) const
-    - double evaluate(Particle *a, Particle *b, DerivativeAccumulator *da) const
-    The defined function is
-    - VersionInfo get_version_info() const
-    - The destructor
+/** In addition to the methods done by all the macros, it declares
+    - IMP::PairScore::evaluate(IMP::Particle*,IMP::Particle*,
+    IMP::DerivativeAccumulator*)
  */
-#define IMP_PAIR_SCORE(ClassName, version)  \
-  VersionInfo get_version_info() const {return version;}         \
-  void show(std::ostream &out= std::cout) const;                 \
+#define IMP_PAIR_SCORE(ClassName, version_info)                  \
   double evaluate(Particle *a, Particle *b,                      \
                   DerivativeAccumulator *da) const;              \
-  IMP_REF_COUNTED_DESTRUCTOR(ClassName)
+  IMP_OBJECT(Name, version_info)
 
 
 //! Declare the functions needed for a SingletonModifier
-/** The declared functins are:
-    - void show(std::ostream &) const
-    - void apply(Particle *) const
-    The defined functions are:
-    - get_version_info() const
-    - void apply(Particle *a, DerivativeAccumulator&) const
+/** In addition to the methods done by all the macros, it declares
+    - IMP::SingletonScore::apply(IMP::Particle*)
 
     \see IMP_SINGLETON_MODIFIER_DA
  */
-#define IMP_SINGLETON_MODIFIER(version)                          \
-  VersionInfo get_version_info() const {return version;}         \
-  void show(std::ostream &out= std::cout) const;                 \
+#define IMP_SINGLETON_MODIFIER(Name, version_info)               \
   void apply(Particle *a) const;                                 \
   void apply(Particle *a, DerivativeAccumulator&) const{         \
     apply(a);                                                    \
-  }
+  }                                                              \
+  IMP_OBJECT(Name, version_info)
 
 
 
 //! Declare the functions needed for a PairModifier
-/** The declared functins are:
-    - void show(std::ostream &) const
-    - void apply(Particle *, Particle *b) const
-    The defined functions are:
-    - get_version_info() const
-    - void apply(Particle *, Particle *, DerivativeAccumulator&) const
+/** In addition to the methods done by all the macros, it declares
+    - IMP::PairModifier::apply(IMP::Particle*,IMP::Particle*)
     \see IMP_PAIR_MODIFIER_DA
- */
-#define IMP_PAIR_MODIFIER(version)                                      \
-  VersionInfo get_version_info() const {return version;}                \
-  void show(std::ostream &out= std::cout) const;                        \
+*/
+#define IMP_PAIR_MODIFIER(Name,version_info)                            \
   void apply(Particle *a, Particle *b) const;                           \
-  void apply(Particle *a, Particle *b, DerivativeAccumulator&) const{     \
+  void apply(Particle *a, Particle *b, DerivativeAccumulator&) const{   \
     apply(a,b);                                                         \
-  }
+  }                                                                     \
+  IMP_OBJECT(Name, version_info)
 
 
 //! Declare the functions needed for a SingletonModifier
-/** This version takes a derivative accumulator.
+/** In addition to the methods done by all the macros, it declares
+    - IMP::SingletonModifier::apply(IMP::Particle*,
+    IMP::DerivativeAccumulator&)
    \see IMP_SINGLETON_MODIFIER
  */
-#define IMP_SINGLETON_MODIFIER_DA(version)                              \
-  VersionInfo get_version_info() const {return version;}                \
-  void show(std::ostream &out= std::cout) const;                        \
+#define IMP_SINGLETON_MODIFIER_DA(Name, version_info)                   \
   void apply(Particle *a, DerivativeAccumulator &da) const;             \
   void apply(Particle *) const{                                         \
     IMP_LOG(VERBOSE, "This modifier requires a derivative accumulator " \
             << *this << std::endl);                                     \
- }
+  }                                                                     \
+  IMP_OBJECT(Name, version_info)
+
 
 
 //! Declare the functions needed for a PairModifier
-/** This version takes a derivative accumulator.
+/** In addition to the methods done by all the macros, it declares
+    - IMP::PairModifier::apply(Particle*,Particle*,DerivativeAccumulator&)
     \see IMP_PAIR_MODIFIER
  */
-#define IMP_PAIR_MODIFIER_DA(version) \
-  VersionInfo get_version_info() const {return version;}                \
- void show(std::ostream &out= std::cout) const;                         \
+#define IMP_PAIR_MODIFIER_DA(Name, version_info)                        \
  void apply(Particle *a, Particle *b, DerivativeAccumulator *da) const; \
  void apply(Particle *, Particle *) const{                              \
    IMP_LOG(VERBOSE, "This modifier requires a derivative accumulator "  \
          << *this << std::endl);                                        \
- }
+ }                                                                      \
+  IMP_OBJECT(Name, version_info)
+
+
+
 //! Declare the needed functions for a SingletonContainer
-/** You need to implement
-    - get_contains_particle
-    - get_number_of_particles
-    - get_particle
-    - show
-    A private, empty destructor is provided.
-    \relatesalso IMP::SingletonContainer
+/** In addition to the methods done by all the macros, it declares
+    - IMP::SingletonContainer::get_contains_particle()
+    - IMP::SingletonContainer::get_number_of_particles()
+    - IMP::SingletonContainer::get_particle()
+    - IMP::SingletonContainer::apply()
+    - IMP::SingletonContainer::evaluate()
+    - IMP::SingletonContainer::get_particles()
+    - IMP::SingletonContainer::get_revision()
 */
-#define IMP_SINGLETON_CONTAINER(Name, version_info)                  \
+#define IMP_SINGLETON_CONTAINER(Name, version_info)                 \
   bool get_contains_particle(Particle* p) const;                    \
   unsigned int get_number_of_particles() const;                     \
   Particle* get_particle(unsigned int i) const;                     \
-  void show(std::ostream &out= std::cout) const;                        \
-  IMP::VersionInfo get_version_info() const { return version_info; }\
   void apply(const SingletonModifier *sm);                          \
-  void apply(const SingletonModifier *sm,                            \
+  void apply(const SingletonModifier *sm,                           \
              DerivativeAccumulator *da);                            \
   double evaluate(const SingletonScore *s,                          \
                   DerivativeAccumulator *da) const;                 \
   Particles get_particles() const;                                  \
   unsigned int get_revision() const;                                \
-  IMP_REF_COUNTED_DESTRUCTOR(Name)                                  \
-  public:
+  IMP_OBJECT(Name, version_info)
+
 
 //! Declare the needed functions for a PairContainer
-/** \relatesalso IMP::PairContainer
-    See IMP_SINGLETON_CONTAINER() for full documentation.
+/** In addition to the methods done by all the macros, it declares
+    - IMP::PairContainer::get_contains_particle_pair()
+    - IMP::PairContainer::get_number_of_particle_pairs()
+    - IMP::PairContainer::get_particle_pair()
+    - IMP::PairContainer::apply()
+    - IMP::PairContainer::evaluate()
+    - IMP::PairContainer::get_particle_pairs()
+    - IMP::PairContainer::get_revision()
  */
-#define IMP_PAIR_CONTAINER(Name, version_info)                           \
+#define IMP_PAIR_CONTAINER(Name, version_info)                          \
   bool get_contains_particle_pair(ParticlePair p) const;                \
   unsigned int get_number_of_particle_pairs() const;                    \
   ParticlePair get_particle_pair(unsigned int i) const;                 \
-  void show(std::ostream &out= std::cout) const;                        \
-  IMP::VersionInfo get_version_info() const { return version_info; }    \
   void apply(const PairModifier *sm);                                   \
-  void apply(const PairModifier *sm,                                     \
+  void apply(const PairModifier *sm,                                    \
              DerivativeAccumulator *da);                                \
   double evaluate(const PairScore *s,                                   \
                   DerivativeAccumulator *da) const;                     \
   unsigned int get_revision() const;                                    \
   ParticlePairs get_particle_pairs() const;                             \
-  IMP_REF_COUNTED_DESTRUCTOR(Name)                                      \
-  public:
+  IMP_OBJECT(Name, version_info)
 
 
 
 //! Declare the needed functions for a UnaryFunction
-/** \relatesalso IMP::UnaryFunction
-    This macro declares the methods:
-    - Object::show()
-    - UnaryFunction::evaluate_with_derivative()
-    - UnaryFunction::evaluate()
-
-    It also defines the methods
-    - Object::get_version_info()
+/** In addition to the methods done by all the macros, it declares
+    - IMP::UnaryFunction::evaluate()
+    - IMP::UnaryFunction::evaluate_with_derivatives()
 
     \see IMP_UNARY_FUNCTION_INLINE
 */
 #define IMP_UNARY_FUNCTION(Name, version_info)                          \
   virtual DerivativePair evaluate_with_derivative(double feature) const; \
   virtual double evaluate(double feature) const;                        \
-  virtual void show(std::ostream &out=std::cout) const;                 \
-  IMP::VersionInfo get_version_info() const { return version_info; }    \
-  IMP_REF_COUNTED_DESTRUCTOR(Name)                                      \
-  public:
+  IMP_OBJECT(Name, version_info)
+
+
 
 //! Declare the needed functions for a UnaryFunction which evaluates inline
-/** \relatesalso IMP::UnaryFunction
-
-    This macro declares all the functions needed for an IMP::UnaryFunction
+/** This macro declares all the functions needed for an IMP::UnaryFunction
     inline in the class. There is no need for an associated \c .cpp file.
 
     The last three arguments are expressions that evaluate to the
@@ -895,14 +849,12 @@ public:                                                                 \
 
 
 //! Declare a IMP::FailureHandler
-/** The method bool handle_failure(std::string, const Exception &) needs to
-    be implemented as well as the usual show method.
+/** In addition to the standard methods it declares:
+    - IMP::FailureHandler::handle_failure()
 */
 #define IMP_FAILURE_HANDLER(Name, version_info)                 \
-  VersionInfo get_version_info() const {return version_info;}   \
-  void show(std::ostream &out=std::cout) const;                 \
   void handle_failure();                                        \
-  IMP_REF_COUNTED_DESTRUCTOR(Name)
+  IMP_OBJECT(Name, version_info)
 
 //! @}
 

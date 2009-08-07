@@ -59,9 +59,9 @@ public:
       to move, otherwise the model will be searched.*/
   BrownianDynamics(SimulationParameters si,
                    SingletonContainer *sc=NULL);
-  virtual ~BrownianDynamics();
 
-  IMP_OPTIMIZER(internal::version_info);
+  IMP_OPTIMIZER(BrownianDynamics,
+                internal::version_info);
 
   //! Simulate until the given time in fs
   double simulate(float time_in_fs);

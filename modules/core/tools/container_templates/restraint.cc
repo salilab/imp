@@ -31,7 +31,9 @@ GroupnamesRestraint
 
 GroupnamesRestraint
 ::GroupnamesRestraint(GroupnameScore *ss,
-                      GroupnameContainer *pc): ss_(ss), pc_(pc) {
+                      GroupnameContainer *pc,
+                      std::string name): Restraint(name),
+                                         ss_(ss), pc_(pc) {
 
 }
 

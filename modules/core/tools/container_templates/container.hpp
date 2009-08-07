@@ -29,6 +29,8 @@ IMP_BEGIN_NAMESPACE
 //! A shared container for classnames
 /** Stores a searchable shared collection of classnames.
     \ingroup restraints
+
+    Implementors should see IMP_GROUPNAME_CONTAINER().
  */
 class IMPEXPORT GroupnameContainer : public Object
 {

@@ -28,6 +28,9 @@ class Particle;
     PairModifier to a set of ParticlePairs.
 
     \see IMP::PairFunctor
+
+    Implementors should see IMP_PAIR_MODIFIER() and
+    IMP_PAIR_MODIFIER_DA().
  */
 class IMPEXPORT PairModifier : public Object
 {

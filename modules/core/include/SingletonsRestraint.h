@@ -41,7 +41,8 @@ public:
   //! Create the restraint.
   /** \param[in] ss The function to apply to each particle.
       \param[in] ps The list of particles to use in the restraint.
-   */
+      \param[in] name The object name
+  */
   SingletonsRestraint(SingletonScore *ss,
                       const Particles &ps=Particles(),
                       std::string name="SingletonsRestraint %1%");
@@ -50,9 +51,11 @@ public:
   /** \param[in] ss The function to apply to each particle.
       \param[in] pc The container containing the stored particles. This
       container is not copied.
+      \param[in] name The object name
    */
   SingletonsRestraint(SingletonScore *ss,
-                      SingletonContainer *pc);
+                      SingletonContainer *pc,
+                      std::string name="SingletonsRestraint %1%");
 
   IMP_RESTRAINT(SingletonsRestraint, internal::version_info);
 

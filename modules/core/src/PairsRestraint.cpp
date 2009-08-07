@@ -31,7 +31,9 @@ PairsRestraint
 
 PairsRestraint
 ::PairsRestraint(PairScore *ss,
-                      PairContainer *pc): ss_(ss), pc_(pc) {
+                      PairContainer *pc,
+                      std::string name): Restraint(name),
+                                         ss_(ss), pc_(pc) {
 
 }
 

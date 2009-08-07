@@ -35,7 +35,8 @@ IMPCORE_BEGIN_NAMESPACE
 
     An example showing a how to use such a score state to maintain a cover
     of the atoms of a protein by a sphere per residue.
-    \verbinclude simple_examples/cover_particles.py
+    \verbinclude cover_particles.py
+
     \see GroupnameScoreState
  */
 class IMPCOREEXPORT GroupnamesScoreState : public ScoreState
@@ -46,9 +47,10 @@ class IMPCOREEXPORT GroupnamesScoreState : public ScoreState
 public:
   /** \param[in] c The Container to hold the elements to process
       \param[in] before The GroupnameModifier to apply to all elements
-       before evaluate.
+      before evaluate.
       \param[in] after The GroupnameModifier to apply to all elements
-       after evaluate.
+      after evaluate.
+      \param[in] name The object name
    */
   GroupnamesScoreState(GroupnameContainer *c, GroupnameModifier *before,
                        GroupnameModifier *after,

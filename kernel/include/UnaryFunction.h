@@ -17,6 +17,9 @@ IMP_BEGIN_NAMESPACE
 //! Abstract single variable functor class for score functions.
 /** These functors take a single feature value, and return a corresponding
     score (and optionally also the first derivative).
+
+    Implementers should check out IMP_UNARY_FUNCTION() and
+    IMP_UNARY_FUNCTION_INLINE().
  */
 class IMPEXPORT UnaryFunction : public Object
 {

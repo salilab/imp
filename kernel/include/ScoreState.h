@@ -56,6 +56,7 @@ class Model;
     logging is TERSE the restraint should print out only a constant number
     of lines per update call.
 
+    Implementors should see IMP_SCORE_STATE().
  */
 class IMPEXPORT ScoreState : public Object, public Ownable
 {

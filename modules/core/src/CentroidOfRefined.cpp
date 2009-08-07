@@ -23,9 +23,6 @@ ks_(ks), w_(weight)
 {
 }
 
-CentroidOfRefined::~CentroidOfRefined()
-{
-}
 
 void CentroidOfRefined::apply(Particle *p) const
 {

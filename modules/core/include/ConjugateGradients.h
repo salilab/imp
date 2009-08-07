@@ -33,9 +33,8 @@ class IMPCOREEXPORT ConjugateGradients : public Optimizer
 {
 public:
   ConjugateGradients();
-  virtual ~ConjugateGradients();
 
-  IMP_OPTIMIZER(internal::version_info)
+  IMP_OPTIMIZER(ConjugateGradients, internal::version_info)
 
   //! Set the threshold for the minimum gradient
   void set_threshold(Float t){ threshold_=t;}

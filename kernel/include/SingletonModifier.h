@@ -28,6 +28,9 @@ class Particle;
     SingletonModifier to a set of Particles.
 
     \see IMP::SingletonFunctor
+
+    Implementors should see IMP_SINGLETON_MODIFIER() and
+    IMP_SINGLETON_MODIFIER_DA().
  */
 class IMPEXPORT SingletonModifier : public Object
 {

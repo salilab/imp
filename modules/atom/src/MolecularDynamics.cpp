@@ -31,9 +31,8 @@ MolecularDynamics::MolecularDynamics() :
 }
 
 
-//! Destructor
-MolecularDynamics::~MolecularDynamics()
-{
+void MolecularDynamics::show(std::ostream &out) const {
+  out << "MolecularDynamics optimizer" << std::endl;
 }
 
 IMP_LIST_IMPL(MolecularDynamics, Particle, particle, Particle*,

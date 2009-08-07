@@ -28,11 +28,8 @@ class IMPDOMINOEXPORT DominoOptimizer : public Optimizer
   typedef boost::tuple<Restraint *,Particles,Float> OptTuple;
 public:
   DominoOptimizer(const JunctionTree &jt, Model *m);
-  IMP_OPTIMIZER(internal::version_info)
+  IMP_OPTIMIZER(DominoOptimizer, internal::version_info)
 
-  void show(std::ostream &out = std::cout) const {
-    out << "DOMINO optimizer" << std::endl;
-  }
   void set_sampling_space(DiscreteSampler *ds);
   //TODO : set a discrete sampling space for one node
   //void set_sampling_space(int node_ind, DiscreteSampler *ds);

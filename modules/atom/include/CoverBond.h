@@ -26,7 +26,7 @@ class IMPATOMEXPORT CoverBond: public SingletonModifier
 public:
   CoverBond();
 
-  IMP_SINGLETON_MODIFIER(internal::version_info)
+  IMP_SINGLETON_MODIFIER(CoverBond, internal::version_info)
 };
 
 

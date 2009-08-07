@@ -1,5 +1,5 @@
 /**
- *  \file cgal_predicates.h
+ *  \file shortest_segment.h
  *  \brief predicates implemented using CGAL
  *  Copyright 2007-9 Sali Lab. All rights reserved.
 */

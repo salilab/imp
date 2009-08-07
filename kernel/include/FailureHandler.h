@@ -18,6 +18,7 @@ IMP_BEGIN_NAMESPACE
 /** A class to handle actions to take on check failures.
     The function is called when an assertion or check fails.
     \ingroup assert
+    Implementors should see IMP_FAILURE_HANDLER().
  */
 class IMPEXPORT FailureHandler: public Object {
  public:

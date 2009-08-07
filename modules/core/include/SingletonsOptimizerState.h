@@ -36,6 +36,7 @@ class IMPCOREEXPORT SingletonsOptimizerState : public OptimizerState
 public:
   /** \param[in] c The Container to hold the elements to process
       \param[in] gf The SingletonModifier to apply to all elements.
+      \param[in] name The name to use for this Object
    */
   SingletonsOptimizerState(SingletonContainer *c, SingletonModifier *gf,
                            std::string name="SingletonsOptimizerState %1%");

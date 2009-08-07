@@ -23,6 +23,8 @@ IMP_BEGIN_NAMESPACE
     for the passed particles. Use in conjunction with various
     restraints such as IMP::core::PairsRestraint or
     IMP::core::PairRestraint.
+
+    Implementers should check out IMP_PAIR_SCORE().
 */
 class IMPEXPORT PairScore : public Object
 {

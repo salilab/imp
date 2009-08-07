@@ -36,6 +36,7 @@ class IMPCOREEXPORT PairsOptimizerState : public OptimizerState
 public:
   /** \param[in] c The Container to hold the elements to process
       \param[in] gf The PairModifier to apply to all elements.
+      \param[in] name The name to use for this Object
    */
   PairsOptimizerState(PairContainer *c, PairModifier *gf,
                            std::string name="PairsOptimizerState %1%");

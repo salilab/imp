@@ -23,6 +23,8 @@ IMP_BEGIN_NAMESPACE
     for the passed particles. Use in conjunction with various
     restraints such as IMP::core::GroupnamesRestraint or
     IMP::core::GroupnameRestraint.
+
+    Implementers should check out IMP_GROUPNAME_SCORE().
 */
 class IMPEXPORT GroupnameScore : public Object
 {
