@@ -397,8 +397,10 @@ def IMPModulePython(env):
         penv._IMPSWIG(target=['wrap.cc',
                               'wrap.h'],
                       source=["%(module)s.i"%vars]+deps)
-        penv._IMPPatchSWIG(target=['patched_wrap.cc'], source=['wrap.cc'])
-        penv._IMPPatchSWIG(target=['patched_wrap.h'], source=['wrap.h'])
+        build.append(penv._IMPPatchSWIG(target=['patched_wrap.cc'],
+              source=['wrap.cc']))
+        build.append(penv._IMPPatchSWIG(target=['patched_wrap.h'],
+              source=['wrap.h']))
         buildlib = penv.LoadableModule('#/build/lib/_IMP%s' % module_suffix,
                                        "patched_wrap.cc"%vars)
         # Place the generated Python wrapper in lib directory:
