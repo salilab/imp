@@ -106,7 +106,7 @@ class EMprojectTests(IMP.test.TestCase):
 #        print_matrix2D(result,"test_project_X")
         for i in range(0,dy):
             for j in range(0,dz):
-                self.assertInTolerance(result[i,j],9*(4+i+dz-1-j), 1e-4)
+                self.assertInTolerance(result[i,j],9*(4+i+dz-1-j),1e-5)
 
 
     def test_project_X_opposite(self):
@@ -123,7 +123,7 @@ class EMprojectTests(IMP.test.TestCase):
 #        print_matrix2D(result,"test_project_-X")
         for i in range(0,dy):
             for j in range(0,dz):
-                self.assertInTolerance(result[i,dz-1-j],9*(4+i+dz-1-j), 1e-4)
+                self.assertInTolerance(result[i,dz-1-j],9*(4+i+dz-1-j),1e-5)
 
 
     def test_project_Y(self):
@@ -140,7 +140,7 @@ class EMprojectTests(IMP.test.TestCase):
 #        print_matrix2D(result,"test_project_Y")
         for i in range(0,dx):
             for j in range(0,dz):
-                self.assertEqual(result[i,j],5*(i+j+2))
+                self.assertInTolerance(result[i,j],5*(i+j+2),1e-5)
 
 
     def test_project_Y_opposite(self):
@@ -157,7 +157,7 @@ class EMprojectTests(IMP.test.TestCase):
 #        print_matrix2D(result,"test_project_-Y")
         for i in range(0,dx):
             for j in range(0,dz):
-                self.assertEqual(result[i,dz-1-j],5*(i+j+2))
+                self.assertInTolerance(result[i,dz-1-j],5*(i+j+2),1e-5)
 
     def test_project(self):
         """Check projection of a matrix3D for a vector"""
