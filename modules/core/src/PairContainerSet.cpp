@@ -95,7 +95,7 @@ double PairContainerSet::evaluate(const PairScore *s,
 ParticlePairsTemp PairContainerSet::get_particle_pairs() const {
   ParticlePairsTemp ret;
   for (unsigned int i=0; i< get_number_of_pair_containers(); ++i) {
-    ParticlePairs c= get_pair_container(i)->get_particle_pairs();
+    ParticlePairsTemp c= get_pair_container(i)->get_particle_pairs();
     ret.insert(ret.end(), c.begin(), c.end());
   }
   return ret;

@@ -95,7 +95,7 @@ double GroupnameContainerSet::evaluate(const GroupnameScore *s,
 ClassnamesTemp GroupnameContainerSet::get_classnames() const {
   ClassnamesTemp ret;
   for (unsigned int i=0; i< get_number_of_groupname_containers(); ++i) {
-    Classnames c= get_groupname_container(i)->get_classnames();
+    ClassnamesTemp c= get_groupname_container(i)->get_classnames();
     ret.insert(ret.end(), c.begin(), c.end());
   }
   return ret;
