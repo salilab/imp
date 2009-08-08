@@ -230,4 +230,33 @@ void local_rigid_fitting_grid_search(
    fr.sort();
 }
 
+void compute_fitting_scores(const Particles &ps,
+  DensityMap *em_map,
+  const FloatKey &rad_key, const FloatKey &wei_key,
+  const std::vector<IMP::algebra::Transformation3D>& transformations,
+  FittingSolutions &fr) {
+    std::vector<float> dvx;
+    std::vector<float>dvy;
+    std::vector<float>dvz;
+    IMP::em::IMPParticlesAccessPoint imp_ps(ps,rad_key,wei_key);
+    IMP::em::SampledDensityMap *model_dens_map =
+      new IMP::em::SampledDensityMap(*(em_map->get_header()));
+    float score;
+    for (std::vector<IMP::algebra::Transformation3D>::const_iterator it =
+         transformations.begin(); it != transformations.end();it++) {
+      IMP::algebra::Transformation3D t_inv = it->get_inverse();
+      for(Particles::const_iterator psi = ps.begin(); psi != ps.end(); psi++) {
+        core::XYZ d(*psi);
+        d.set_coordinates(it->transform(d.get_coordinates()));
+      }
+      score  = em::CoarseCC::evaluate(*em_map, *model_dens_map,imp_ps,
+                                      dvx,dvy,dvz,1.0,false,true,true);
+      fr.add_solution(*it,score);
+      for(Particles::const_iterator psi = ps.begin(); psi != ps.end(); psi++) {
+        core::XYZ d(*psi);
+        d.set_coordinates(t_inv.transform(d.get_coordinates()));
+      }
+    }
+}
+
 IMPEM_END_NAMESPACE

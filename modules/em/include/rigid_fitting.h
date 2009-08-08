@@ -185,6 +185,21 @@ IMPEMEXPORT void local_rigid_fitting_grid_search(
    Int translation_step=1, Int number_of_rotations = 200);
 
 
-
+//! Compute fitting scores for a given set of rigid transformations
+/**
+\brief Score how well a set of particles fit to the map in various
+       rigid transformations.
+\param[in] ps       The particles to be fitted (treated rigid)
+\param[in] em_map        The density map to fit to
+\param[in] rad_key  The raidus key of the particles in the rigid body
+\param[in] wei_key  The weight key of the particles in the rigid body
+\param[in] tranformations   A set of rigid transformations
+\param[in] fr   The solutions will be stored in a FittingSolutions data stucture
+ */
+IMPEMEXPORT void compute_fitting_scores(const Particles &ps,
+   DensityMap *em_map,
+   const FloatKey &rad_key, const FloatKey &wei_key,
+   const std::vector<IMP::algebra::Transformation3D>& transformations,
+   FittingSolutions &fr);
 IMPEM_END_NAMESPACE
 #endif  /* IMPEM_RIGID_FITTING_H */
