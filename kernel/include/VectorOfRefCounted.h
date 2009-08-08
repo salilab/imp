@@ -83,6 +83,10 @@ class VectorOfRefCounted {
     ref(data_.begin(), data_.end());
     return *this;
   }
+
+  operator const std::vector<RC>&() const {
+    return data_;
+  }
 #endif
   RC operator[](unsigned int i) const {
     IMP_check(i < size(), "Index out of range", IndexException);

@@ -33,6 +33,10 @@ public:
   //! Compute the score and the derivative if needed.
   virtual Float evaluate(Particle *a, Particle *b,
                          DerivativeAccumulator *da) const = 0;
+
+  virtual Float evaluate(const ParticlePairsTemp &o,
+                         DerivativeAccumulator *da) const = 0;
+
   IMP_REF_COUNTED_DESTRUCTOR(PairScore)
 };
 

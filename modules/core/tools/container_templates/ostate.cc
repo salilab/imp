@@ -33,9 +33,8 @@ void GroupnamesOptimizerState::update()
   IMP_LOG(TERSE, "Begin GroupnamesOptimizerState::update" << std::endl);
   IMP_CHECK_OBJECT(f_);
   IMP_CHECK_OBJECT(c_);
-  Classnames set =c_->get_classnames();
-  std::for_each(set.begin(), set.end(),
-                GroupnameFunctor(f_));
+  ClassnamesTemp set =c_->get_classnames();
+  f_->apply(set);
 
   IMP_LOG(TERSE, "End GroupnamesOptimizerState::update" << std::endl);
 }

@@ -17,7 +17,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 DistanceRestraint::DistanceRestraint(UnaryFunction* score_func,
                                      Particle* p1, Particle* p2) :
-    dp_(score_func)
+  dp_(new DistancePairScore(score_func))
 {
   p_[0]=p1;
   p_[1]=p2;
@@ -30,7 +30,7 @@ DistanceRestraint::DistanceRestraint(UnaryFunction* score_func,
  */
 Float DistanceRestraint::evaluate(DerivativeAccumulator *accum)
 {
-  return dp_.evaluate(p_[0], p_[1], accum);
+  return dp_->evaluate(p_[0], p_[1], accum);
 }
 
 
@@ -49,7 +49,7 @@ void DistanceRestraint::show(std::ostream& out) const
   out << "  particles: " << p_[0]->get_name();
   out << " and " << p_[1]->get_name();
   out << "  ";
-  dp_.show(out);
+  dp_->show(out);
   out << std::endl;
 }
 

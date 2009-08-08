@@ -87,14 +87,14 @@ public:
   virtual void apply(const PairModifier *sm)=0;
 
   //! Apply a SingletonModifier to the contents
-  virtual void apply(const PairModifier *sm, DerivativeAccumulator *da)=0;
+  virtual void apply(const PairModifier *sm, DerivativeAccumulator &da)=0;
 
   //! Avaluate a score on the contents
   virtual double evaluate(const PairScore *s,
                           DerivativeAccumulator *da) const=0;
 
   //! Get all the ParticlePairs from the container
-  virtual ParticlePairs get_particle_pairs() const=0;
+  virtual ParticlePairsTemp get_particle_pairs() const=0;
 
   /** \brief The revision number of a container is incremented every time the
       contents change.

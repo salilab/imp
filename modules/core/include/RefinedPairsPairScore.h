@@ -30,13 +30,7 @@ public:
       \param[in] f The pair score to apply to the generated pairs
    */
   RefinedPairsPairScore(Refiner *r, PairScore *f);
-  virtual ~RefinedPairsPairScore(){}
-  virtual Float evaluate(Particle *a, Particle *b,
-                         DerivativeAccumulator *da) const;
-  virtual void show(std::ostream &out=std::cout) const;
-  VersionInfo get_version_info() const {
-    return internal::version_info;
-  }
+  IMP_PAIR_SCORE(RefinedPairsPairScore, internal::version_info);
 };
 
 IMPCORE_END_NAMESPACE

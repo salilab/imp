@@ -54,11 +54,11 @@ void BondPairContainer
 }
 
 void BondPairContainer
-::apply(const PairModifier *sm, DerivativeAccumulator *da) {
+::apply(const PairModifier *sm, DerivativeAccumulator &da) {
   unsigned int sz= BondPairContainer::get_number_of_particle_pairs();
   for (unsigned int i=0; i< sz; ++i) {
      ParticlePair pp= BondPairContainer::get_particle_pair(i);
-     sm->apply(pp[0], pp[1], *da);
+     sm->apply(pp[0], pp[1], da);
    }
 }
 
@@ -74,8 +74,8 @@ void BondPairContainer
    return score;
  }
 
-ParticlePairs BondPairContainer::get_particle_pairs() const {
-  ParticlePairs ret(BondPairContainer::get_number_of_particle_pairs());
+ParticlePairsTemp BondPairContainer::get_particle_pairs() const {
+  ParticlePairsTemp ret(BondPairContainer::get_number_of_particle_pairs());
   for (unsigned int i=0; i< ret.size(); ++i) {
     ret[i]= BondPairContainer::get_particle_pair(i);
   }

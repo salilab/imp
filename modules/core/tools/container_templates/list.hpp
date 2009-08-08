@@ -73,12 +73,12 @@ public:
 
   virtual void apply(const GroupnameModifier *sm);
 
-  virtual void apply(const GroupnameModifier *sm, DerivativeAccumulator *da);
+  virtual void apply(const GroupnameModifier *sm, DerivativeAccumulator &da);
 
   virtual double evaluate(const GroupnameScore *s,
                           DerivativeAccumulator *da) const;
 
-  virtual Classnames get_classnames() const;
+  virtual ClassnamesTemp get_classnames() const;
 
   virtual unsigned int get_revision() const;
 

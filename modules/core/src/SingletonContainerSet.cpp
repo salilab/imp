@@ -77,7 +77,7 @@ void SingletonContainerSet::apply(const SingletonModifier *sm) {
 }
 
 void SingletonContainerSet::apply(const SingletonModifier *sm,
-                               DerivativeAccumulator *da) {
+                               DerivativeAccumulator &da) {
   for (unsigned int i=0; i< get_number_of_singleton_containers(); ++i) {
     get_singleton_container(i)->apply(sm, da);
   }
@@ -92,8 +92,8 @@ double SingletonContainerSet::evaluate(const SingletonScore *s,
   return score;
 }
 
-Particles SingletonContainerSet::get_particles() const {
-  Particles ret;
+ParticlesTemp SingletonContainerSet::get_particles() const {
+  ParticlesTemp ret;
   for (unsigned int i=0; i< get_number_of_singleton_containers(); ++i) {
     Particles c= get_singleton_container(i)->get_particles();
     ret.insert(ret.end(), c.begin(), c.end());

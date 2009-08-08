@@ -52,7 +52,7 @@ void BondPairFilter
  }
 
 void BondPairFilter
-::apply(const PairModifier *sm, DerivativeAccumulator *da) {
+::apply(const PairModifier *sm, DerivativeAccumulator &da) {
    IMP_failure("Not a real container", ErrorException);
 }
 
@@ -63,9 +63,9 @@ void BondPairFilter
    return 0;
  }
 
-ParticlePairs BondPairFilter::get_particle_pairs() const {
+ParticlePairsTemp BondPairFilter::get_particle_pairs() const {
   IMP_failure("Not a real container", ErrorException);
-  return 0;
+  return ParticlePairsTemp();
 }
 
 

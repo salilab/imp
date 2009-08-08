@@ -683,17 +683,34 @@ protected:                                                              \
  */
 #define IMP_SINGLETON_SCORE(Name, version_info)                  \
   double evaluate(Particle *a, DerivativeAccumulator *da) const; \
+  double evaluate(const ParticlesTemp &ps,                       \
+                  DerivativeAccumulator *da) const {             \
+    double ret=0;                                                \
+    for (unsigned int i=0; i< ps.size(); ++i) {                  \
+      ret+=Name::evaluate(ps[i], da);                            \
+    }                                                            \
+    return ret;                                                  \
+  }                                                              \
   IMP_OBJECT(Name, version_info)
 
 
 //! Declare the functions needed for a PairScore
 /** In addition to the methods done by all the macros, it declares
     - IMP::PairScore::evaluate(IMP::Particle*,IMP::Particle*,
+es
     IMP::DerivativeAccumulator*)
  */
-#define IMP_PAIR_SCORE(ClassName, version_info)                  \
+#define IMP_PAIR_SCORE(Name, version_info)                       \
   double evaluate(Particle *a, Particle *b,                      \
                   DerivativeAccumulator *da) const;              \
+  double evaluate(const ParticlePairsTemp &ps,                   \
+                  DerivativeAccumulator *da) const {             \
+    double ret=0;                                                \
+    for (unsigned int i=0; i< ps.size(); ++i) {                  \
+      ret+=Name::evaluate(ps[i][0], ps[i][1], da);               \
+    }                                                            \
+    return ret;                                                  \
+  }                                                              \
   IMP_OBJECT(Name, version_info)
 
 
@@ -703,11 +720,21 @@ protected:                                                              \
 
     \see IMP_SINGLETON_MODIFIER_DA
  */
-#define IMP_SINGLETON_MODIFIER(Name, version_info)               \
-  void apply(Particle *a) const;                                 \
-  void apply(Particle *a, DerivativeAccumulator&) const{         \
-    apply(a);                                                    \
-  }                                                              \
+#define IMP_SINGLETON_MODIFIER(Name, version_info)                      \
+  void apply(Particle *a) const;                                        \
+  void apply(Particle *a, DerivativeAccumulator&) const{                \
+    apply(a);                                                           \
+  }                                                                     \
+  void apply(const ParticlesTemp &ps) const {                           \
+    for (unsigned int i=0; i< ps.size(); ++i) {                         \
+      Name::apply(ps[i]);                                               \
+    }                                                                   \
+  }                                                                     \
+  void apply(const ParticlesTemp &ps, DerivativeAccumulator &) const {  \
+    for (unsigned int i=0; i< ps.size(); ++i) {                         \
+      Name::apply(ps[i]);                                               \
+    }                                                                   \
+  }                                                                     \
   IMP_OBJECT(Name, version_info)
 
 
@@ -721,6 +748,17 @@ protected:                                                              \
   void apply(Particle *a, Particle *b) const;                           \
   void apply(Particle *a, Particle *b, DerivativeAccumulator&) const{   \
     apply(a,b);                                                         \
+  }                                                                     \
+  void apply(const ParticlePairsTemp &ps) const {                       \
+    for (unsigned int i=0; i< ps.size(); ++i) {                         \
+      Name::apply(ps[i][0], ps[i][1]);                                  \
+    }                                                                   \
+  }                                                                     \
+  void apply(const ParticlePairsTemp &ps,                               \
+             DerivativeAccumulator &) const {                           \
+    for (unsigned int i=0; i< ps.size(); ++i) {                         \
+      Name::apply(ps[i][0], ps[i][1]);                                  \
+    }                                                                   \
   }                                                                     \
   IMP_OBJECT(Name, version_info)
 
@@ -737,6 +775,16 @@ protected:                                                              \
     IMP_LOG(VERBOSE, "This modifier requires a derivative accumulator " \
             << *this << std::endl);                                     \
   }                                                                     \
+  void apply(const ParticlesTemp &ps) const {                           \
+    IMP_LOG(VERBOSE, "This modifier requires a derivative accumulator " \
+            << *this << std::endl);                                     \
+  }                                                                     \
+  void apply(const ParticlesTemp &ps,                                   \
+             DerivativeAccumulator &da) const {                         \
+    for (unsigned int i=0; i< ps.size(); ++i) {                         \
+      Name::apply(ps[i], da);                                           \
+    }                                                                   \
+  }                                                                     \
   IMP_OBJECT(Name, version_info)
 
 
@@ -750,8 +798,18 @@ protected:                                                              \
  void apply(Particle *a, Particle *b, DerivativeAccumulator *da) const; \
  void apply(Particle *, Particle *) const{                              \
    IMP_LOG(VERBOSE, "This modifier requires a derivative accumulator "  \
-         << *this << std::endl);                                        \
+           << *this << std::endl);                                      \
  }                                                                      \
+ void apply(const ParticlePairsTemp &ps) const {                        \
+   IMP_LOG(VERBOSE, "This modifier requires a derivative accumulator "  \
+           << *this << std::endl);                                      \
+ }                                                                      \
+ void apply(const ParticlePairsTemp &ps,                                \
+            DerivativeAccumulator &da) const {                          \
+    for (unsigned int i=0; i< ps.size(); ++i) {                         \
+      Name::apply(ps[i][0], ps[i][1], da);                              \
+    }                                                                   \
+  }                                                                     \
   IMP_OBJECT(Name, version_info)
 
 
@@ -772,10 +830,10 @@ protected:                                                              \
   Particle* get_particle(unsigned int i) const;                     \
   void apply(const SingletonModifier *sm);                          \
   void apply(const SingletonModifier *sm,                           \
-             DerivativeAccumulator *da);                            \
+             DerivativeAccumulator &da);                            \
   double evaluate(const SingletonScore *s,                          \
                   DerivativeAccumulator *da) const;                 \
-  Particles get_particles() const;                                  \
+  ParticlesTemp get_particles() const;                              \
   unsigned int get_revision() const;                                \
   IMP_OBJECT(Name, version_info)
 
@@ -796,11 +854,11 @@ protected:                                                              \
   ParticlePair get_particle_pair(unsigned int i) const;                 \
   void apply(const PairModifier *sm);                                   \
   void apply(const PairModifier *sm,                                    \
-             DerivativeAccumulator *da);                                \
+             DerivativeAccumulator &da);                                \
   double evaluate(const PairScore *s,                                   \
                   DerivativeAccumulator *da) const;                     \
   unsigned int get_revision() const;                                    \
-  ParticlePairs get_particle_pairs() const;                             \
+  ParticlePairsTemp get_particle_pairs() const;                         \
   IMP_OBJECT(Name, version_info)
 
 

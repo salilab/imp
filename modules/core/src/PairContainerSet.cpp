@@ -77,7 +77,7 @@ void PairContainerSet::apply(const PairModifier *sm) {
 }
 
 void PairContainerSet::apply(const PairModifier *sm,
-                               DerivativeAccumulator *da) {
+                               DerivativeAccumulator &da) {
   for (unsigned int i=0; i< get_number_of_pair_containers(); ++i) {
     get_pair_container(i)->apply(sm, da);
   }
@@ -92,8 +92,8 @@ double PairContainerSet::evaluate(const PairScore *s,
   return score;
 }
 
-ParticlePairs PairContainerSet::get_particle_pairs() const {
-  ParticlePairs ret;
+ParticlePairsTemp PairContainerSet::get_particle_pairs() const {
+  ParticlePairsTemp ret;
   for (unsigned int i=0; i< get_number_of_pair_containers(); ++i) {
     ParticlePairs c= get_pair_container(i)->get_particle_pairs();
     ret.insert(ret.end(), c.begin(), c.end());

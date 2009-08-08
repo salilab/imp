@@ -26,17 +26,17 @@ namespace {
                                                                 keys_(keys){
       i_=0;
     }
-    VersionInfo get_version_info() const {return internal::version_info;}
-    void show(std::ostream &out) const{}
-    void apply(Particle *p) const {
-      values_[i_].resize(keys_.size());
-      for (unsigned int i=0; i< keys_.size(); ++i) {
-        values_[i_][i]= p->get_value(keys_[i]);
-      }
-      ++i_;
-    }
-    void apply(Particle*, DerivativeAccumulator&) const {}
+    IMP_SINGLETON_MODIFIER(RecordValues, internal::version_info)
   };
+  void RecordValues::apply(Particle *p) const {
+    values_[i_].resize(keys_.size());
+    for (unsigned int i=0; i< keys_.size(); ++i) {
+      values_[i_][i]= p->get_value(keys_[i]);
+    }
+    ++i_;
+  }
+  void RecordValues::show(std::ostream &out) const{}
+
   class CompareValues:public SingletonModifier {
     std::vector<Floats> &values_;
     FloatKeys &keys_;
@@ -49,18 +49,17 @@ namespace {
       change_=0;
       i_=0;
     }
-    VersionInfo get_version_info() const {return internal::version_info;}
-    void show(std::ostream &out) const{}
-    void apply(Particle *p) const {
-      for (unsigned int i=0; i< keys_.size(); ++i) {
-        change_= std::max(change_,
-                          std::abs(values_[i_][i]-p->get_value(keys_[i])));
-      }
-      ++i_;
-    }
-    void apply(Particle*, DerivativeAccumulator&) const {}
+    IMP_SINGLETON_MODIFIER(CompareValues, internal::version_info);
     double get_change() const {return change_;}
   };
+  void CompareValues::show(std::ostream &out) const{}
+  void CompareValues::apply(Particle *p) const {
+    for (unsigned int i=0; i< keys_.size(); ++i) {
+      change_= std::max(change_,
+                        std::abs(values_[i_][i]-p->get_value(keys_[i])));
+    }
+    ++i_;
+  }
 }
 
 MaximumChangeScoreState::MaximumChangeScoreState(SingletonContainer *pc,

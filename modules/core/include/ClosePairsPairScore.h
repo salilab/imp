@@ -44,13 +44,7 @@ public:
   ClosePairsPairScore(Refiner *r, PairScore *f,
                       Float max_distance,
                       FloatKey rk= XYZR::get_default_radius_key());
-  virtual ~ClosePairsPairScore(){}
-  virtual Float evaluate(Particle *a, Particle *b,
-                         DerivativeAccumulator *da) const;
-  virtual void show(std::ostream &out=std::cout) const;
-  VersionInfo get_version_info() const {
-    return internal::version_info;
-  }
+  IMP_PAIR_SCORE(ClosePairsPairScore, internal::version_info);
 };
 
 IMPCORE_END_NAMESPACE

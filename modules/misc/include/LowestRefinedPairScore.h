@@ -30,14 +30,7 @@ public:
       \param[in] f The pair score to apply to the generated pairs
    */
   LowestRefinedPairScore(Refiner *r, PairScore *f);
-  virtual ~LowestRefinedPairScore(){}
-  virtual Float evaluate(Particle *a, Particle *b,
-                         DerivativeAccumulator *da) const;
-  virtual void show(std::ostream &out=std::cout) const;
-
-  VersionInfo get_version_info() const {
-    return internal::version_info;
-  }
+  IMP_PAIR_SCORE(LowestRefinedPairScore, internal::version_info);
 };
 
 IMPMISC_END_NAMESPACE

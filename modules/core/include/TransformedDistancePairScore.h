@@ -32,20 +32,12 @@ class IMPCOREEXPORT TransformedDistancePairScore : public PairScore
   algebra::Transformation3D t_;
   algebra::Rotation3D ri_;
  public:
-  /** Initialize it/*/
   TransformedDistancePairScore(UnaryFunction *f,
                                const algebra::Transformation3D &transformation);
-  virtual ~TransformedDistancePairScore(){}
-  virtual Float evaluate(Particle *a, Particle *b,
-                         DerivativeAccumulator *da) const;
-
-  virtual void show(std::ostream &out=std::cout) const;
 
   /** Set the transformation object.*/
   void set_transformation(const algebra::Transformation3D &rot);
-  VersionInfo get_version_info() const {
-    return internal::version_info;
-  }
+  IMP_PAIR_SCORE(TransformedDistancePairScore, internal::version_info);
 };
 
 IMPCORE_END_NAMESPACE

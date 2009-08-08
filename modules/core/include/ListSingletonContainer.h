@@ -73,12 +73,12 @@ public:
 
   virtual void apply(const SingletonModifier *sm);
 
-  virtual void apply(const SingletonModifier *sm, DerivativeAccumulator *da);
+  virtual void apply(const SingletonModifier *sm, DerivativeAccumulator &da);
 
   virtual double evaluate(const SingletonScore *s,
                           DerivativeAccumulator *da) const;
 
-  virtual Particles get_particles() const;
+  virtual ParticlesTemp get_particles() const;
 
   virtual unsigned int get_revision() const;
 

@@ -33,9 +33,8 @@ void PairsOptimizerState::update()
   IMP_LOG(TERSE, "Begin PairsOptimizerState::update" << std::endl);
   IMP_CHECK_OBJECT(f_);
   IMP_CHECK_OBJECT(c_);
-  ParticlePairs set =c_->get_particle_pairs();
-  std::for_each(set.begin(), set.end(),
-                PairFunctor(f_));
+  ParticlePairsTemp set =c_->get_particle_pairs();
+  f_->apply(set);
 
   IMP_LOG(TERSE, "End PairsOptimizerState::update" << std::endl);
 }

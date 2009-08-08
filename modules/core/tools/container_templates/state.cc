@@ -43,7 +43,7 @@ void GroupnamesScoreState::do_after_evaluate(DerivativeAccumulator *da)
   IMP_LOG(TERSE, "Begin GroupnamesScoreState::after_evaluate" << std::endl);
   IMP_CHECK_OBJECT(af_);
   IMP_CHECK_OBJECT(c_);
-  if (da) c_->apply(af_, da);
+  if (da) c_->apply(af_, *da);
   IMP_LOG(TERSE, "End GroupnamesScoreState::after_evaluate" << std::endl);
 }
 

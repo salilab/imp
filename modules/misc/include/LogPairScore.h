@@ -24,16 +24,8 @@ class LogPairScore : public PairScore
  public:
   //! create with an empty map
   LogPairScore(){}
-  virtual ~LogPairScore(){}
-  virtual Float evaluate(Particle *a, Particle *b,
-                         DerivativeAccumulator *) const {
-    ParticlePair pp(a,b);
-    if (map_.find(pp) == map_.end()) {
-      map_[pp]=0;
-    }
-    ++map_[pp];
-    return 0.;
-  }
+  IMP_PAIR_SCORE(LogPairScore, internal::version_info);
+
   //! Get a list of all pairs (without multiplicity)
   ParticlePairs get_particle_pairs() const {
     ParticlePairs ret;
@@ -47,17 +39,25 @@ class LogPairScore : public PairScore
   void clear() {
     map_.clear();
   }
-  virtual void show(std::ostream &out=std::cout) const {
-    out << "LogPS"<<std::endl;
-  }
   //! Return true if the pair is in the list
   bool get_contains(const ParticlePair &pp) const {
     return map_.find(pp) != map_.end();
   }
-  VersionInfo get_version_info() const {
-    return internal::version_info;
-  }
 };
+
+inline void LogPairScore::show(std::ostream &out) const {
+  out << "LogPairScore";
+}
+
+inline Float LogPairScore::evaluate(Particle *a, Particle *b,
+                             DerivativeAccumulator *) const {
+  ParticlePair pp(a,b);
+  if (map_.find(pp) == map_.end()) {
+    map_[pp]=0;
+  }
+  ++map_[pp];
+  return 0.;
+}
 
 IMPMISC_END_NAMESPACE
 

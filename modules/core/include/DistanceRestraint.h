@@ -46,7 +46,7 @@ public:
   IMP_RESTRAINT(DistanceRestraint, internal::version_info)
 
 private:
-  DistancePairScore dp_;
+  Pointer<DistancePairScore> dp_;
   Pointer<Particle> p_[2];
 };
 
