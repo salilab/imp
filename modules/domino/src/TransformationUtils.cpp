@@ -48,9 +48,7 @@ void TransformationUtils::apply(Particle *p,const algebra::Transformation3D &t)
                  atom::Hierarchy::decorate_particle(p));
 //   core::GravityCenterScoreState g(p, FloatKey(),ps);
 //   g.update_position();
-  for (Particles::iterator it = ps.begin(); it != ps.end(); it++) {
-    tsm->apply(*it);
-  }
+  tsm->apply(ps);
 }
 
 algebra::Transformation3D TransformationUtils::get_trans(Particle *p) const {
