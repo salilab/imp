@@ -93,7 +93,7 @@ double AllPairsPairContainer::evaluate(const PairScore *s,
 }
 
 ParticlePairsTemp AllPairsPairContainer::get_particle_pairs() const {
-  ParticlePairs ret(AllPairsPairContainer::get_number_of_particle_pairs());
+  ParticlePairsTemp ret(AllPairsPairContainer::get_number_of_particle_pairs());
   for (unsigned int i=0;
        i< AllPairsPairContainer::get_number_of_particle_pairs();
        ++i) {
