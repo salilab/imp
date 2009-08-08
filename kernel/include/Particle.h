@@ -629,7 +629,7 @@ struct RefCountParticlePair {
 #endif
 
 typedef VectorOfRefCounted<ParticlePair, RefCountParticlePair> ParticlePairs;
-
+typedef std::vector<ParticlePair> ParticlePairsTemp;
 
 IMP_OUTPUT_OPERATOR(ParticlePair);
 

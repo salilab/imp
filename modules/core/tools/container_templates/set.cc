@@ -77,7 +77,7 @@ void GroupnameContainerSet::apply(const GroupnameModifier *sm) {
 }
 
 void GroupnameContainerSet::apply(const GroupnameModifier *sm,
-                               DerivativeAccumulator *da) {
+                               DerivativeAccumulator &da) {
   for (unsigned int i=0; i< get_number_of_groupname_containers(); ++i) {
     get_groupname_container(i)->apply(sm, da);
   }
@@ -92,8 +92,8 @@ double GroupnameContainerSet::evaluate(const GroupnameScore *s,
   return score;
 }
 
-Classnames GroupnameContainerSet::get_classnames() const {
-  Classnames ret;
+ClassnamesTemp GroupnameContainerSet::get_classnames() const {
+  ClassnamesTemp ret;
   for (unsigned int i=0; i< get_number_of_groupname_containers(); ++i) {
     Classnames c= get_groupname_container(i)->get_classnames();
     ret.insert(ret.end(), c.begin(), c.end());

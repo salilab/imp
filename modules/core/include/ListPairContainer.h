@@ -73,12 +73,12 @@ public:
 
   virtual void apply(const PairModifier *sm);
 
-  virtual void apply(const PairModifier *sm, DerivativeAccumulator *da);
+  virtual void apply(const PairModifier *sm, DerivativeAccumulator &da);
 
   virtual double evaluate(const PairScore *s,
                           DerivativeAccumulator *da) const;
 
-  virtual ParticlePairs get_particle_pairs() const;
+  virtual ParticlePairsTemp get_particle_pairs() const;
 
   virtual unsigned int get_revision() const;
 

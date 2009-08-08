@@ -30,8 +30,12 @@ class SingletonTestModifier(IMP.SingletonModifier):
         self.k=k
     def show(self, fh):
         fh.write("Test Particle")
-    def apply(self, p):
-        p.add_attribute(self.k, 1)
+    def apply(self, a0, a1=None):
+        if str(type(a0)) == "<class 'IMP.Particle'>":
+            a0.add_attribute(self.k, 1)
+        else:
+            for p in a0:
+                self.apply(p, a1)
     def get_version_info(self):
         return 1
 
@@ -41,9 +45,15 @@ class PairTestModifier(IMP.PairModifier):
         self.k=k
     def show(self, fh):
         fh.write("Test Particle")
-    def apply(self, p0, p1):
-        p0.add_attribute(self.k, 1)
-        p1.add_attribute(self.k, 1)
+    def apply(self, a0, a1=None, a2=None):
+        if type(a0) == type(a1):
+            a0.add_attribute(self.k, 1)
+            a1.add_attribute(self.k, 1)
+        else:
+            print "here"
+            print a0
+            for p in a0:
+                self.apply(p[0], p[1], a1)
     def get_version_info(self):
         return 1
 

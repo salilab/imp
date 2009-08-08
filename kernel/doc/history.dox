@@ -4,7 +4,8 @@
 
 - Containers now have methods IMP::SingletonContainer::evaluate(), IMP::PairContainer::evaluate(),
   IMP::SingletonContainer::apply() and IMP::PairContainer::apply(). Using these can be significantly
-  faster than looping over the particles externally.
+  faster than looping over the particles externally. Similarly, there is IMP::SingletonScore::evaluate(),
+  IMP::PairScore::evaluate(), IMP::SingletonModifier::apply(), IMP::PairModifier::apply().
 
 - The decorator functions have been renamed to IMP::Decorator::setup_particle(), IMP::Decorator::decorate_particle()
   and IMP::Decorator::particle_is_instance(). A shell script \c tools/update-decorators is provided which

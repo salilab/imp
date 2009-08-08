@@ -71,12 +71,12 @@ void AllPairsPairContainer::apply(const PairModifier *sm) {
 }
 
 void AllPairsPairContainer::apply(const PairModifier *sm,
-                                  DerivativeAccumulator *da) {
+                                  DerivativeAccumulator &da) {
   for (unsigned int i=0;
        i< AllPairsPairContainer::get_number_of_particle_pairs();
        ++i) {
     ParticlePair pp= AllPairsPairContainer::get_particle_pair(i);
-    sm->apply(pp[0], pp[1], *da);
+    sm->apply(pp[0], pp[1], da);
   }
 }
 
@@ -92,7 +92,7 @@ double AllPairsPairContainer::evaluate(const PairScore *s,
   return score;
 }
 
-ParticlePairs AllPairsPairContainer::get_particle_pairs() const {
+ParticlePairsTemp AllPairsPairContainer::get_particle_pairs() const {
   ParticlePairs ret(AllPairsPairContainer::get_number_of_particle_pairs());
   for (unsigned int i=0;
        i< AllPairsPairContainer::get_number_of_particle_pairs();

@@ -27,13 +27,7 @@ class IMPCOREEXPORT AttributeSingletonScore : public SingletonScore
 public:
   //! Apply function f to attribete k
   AttributeSingletonScore(UnaryFunction *f, FloatKey k);
-  virtual ~AttributeSingletonScore(){}
-  virtual Float evaluate(Particle *a,
-                         DerivativeAccumulator *da) const;
-  virtual void show(std::ostream &out=std::cout) const;
-  VersionInfo get_version_info() const {
-    return internal::version_info;
-  }
+  IMP_SINGLETON_SCORE(AttributeSingletonScore, internal::version_info);
 };
 
 IMPCORE_END_NAMESPACE

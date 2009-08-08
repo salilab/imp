@@ -31,16 +31,7 @@ public:
                  returned for these pairs is zero. If false, evaluate() raises
                  a ValueException.
    */
-  TypedPairScore(IntKey typekey, bool allow_invalid_types=true)
-      : typekey_(typekey), score_map_(),
-        allow_invalid_types_(allow_invalid_types) {}
-
-  virtual ~TypedPairScore() {}
-
-  virtual Float evaluate(Particle *a, Particle *b,
-                         DerivativeAccumulator *da) const;
-
-  virtual void show(std::ostream &out=std::cout) const;
+  TypedPairScore(IntKey typekey, bool allow_invalid_types=true);
 
   //! Set the particle's type.
   /** At evaluate time, if a given particle does not have the typekey
@@ -60,11 +51,10 @@ public:
                                   std::max(atype, btype))]
         = Pointer<PairScore>(ps);
   }
-  VersionInfo get_version_info() const {
-    return internal::version_info;
-  }
 
-protected:
+  IMP_PAIR_SCORE(TypedPairScore, internal::version_info);
+
+private:
   //! The key used for the particle types.
   IntKey typekey_;
   typedef std::map<std::pair<Int,Int>,

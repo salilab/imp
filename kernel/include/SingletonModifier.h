@@ -23,9 +23,10 @@ class Particle;
 
 //! A base class for modifiers of Particles
 /** The primary function of such a class is to change
-    the passed particles. You can use the associated SingletonFunction
-    along with \c map or \c std::for_each to easily apply a
-    SingletonModifier to a set of Particles.
+    the passed particles.
+
+    A given SingletonModifier may only work when passed a
+    DerivativeAccumulator or when not passed one.
 
     \see IMP::SingletonFunctor
 
@@ -39,10 +40,29 @@ public:
 
   /** Apply the function to a single value*/
   virtual void apply(Particle *a,
-                     DerivativeAccumulator &da) const=0;
+                     DerivativeAccumulator &da) const {
+    IMP_failure("This SingletonModifier must be called without a"
+                << " DerivativeAccumulator.", InvalidStateException);
+  }
 
   /** Apply the function to a single value*/
-  virtual void apply(Particle *a) const=0;
+  virtual void apply(Particle *a) const {
+    IMP_failure("This SingletonModifier must be called with a"
+                << " DerivativeAccumulator.", InvalidStateException);
+  }
+
+  /** Apply the function to a collection of Particles */
+  virtual void apply(const ParticlesTemp &o) const {
+    IMP_failure("This SingletonModifier must be called with a"
+                << " DerivativeAccumulator.", InvalidStateException);
+  }
+
+  /** Apply the function to a collection of Particles */
+  virtual void apply(const ParticlesTemp &o,
+                     DerivativeAccumulator &da) const {
+    IMP_failure("This SingletonModifier must be called without a"
+                << " DerivativeAccumulator.", InvalidStateException);
+  }
 
   /** Print out information about the function, ending in a newline.*/
   virtual void show(std::ostream &out = std::cout) const=0;

@@ -65,36 +65,22 @@ void ListSingletonContainer::show(std::ostream &out) const {
 }
 
 void ListSingletonContainer::apply(const SingletonModifier *sm) {
-
-  std::for_each(ListSingletonContainer::particles_begin(),
-                ListSingletonContainer::particles_end(),
-                SingletonFunctor(sm));
+  sm->apply(access_particles());
 }
 
 void ListSingletonContainer::apply(const SingletonModifier *sm,
-                               DerivativeAccumulator *da) {
-
-  std::for_each(ListSingletonContainer::particles_begin(),
-                ListSingletonContainer::particles_end(),
-                SingletonFunctor(sm, da));
+                               DerivativeAccumulator &da) {
+  sm->apply(access_particles(), da);
 }
 
 double ListSingletonContainer::evaluate(const SingletonScore *s,
-                                    DerivativeAccumulator *da) const {
-  double score=0;
-  for (unsigned int i=0;
-       i< ListSingletonContainer::get_number_of_particles();
-       ++i) {
-    score+= IMP::internal::ContainerTraits<Particle>
-      ::evaluate(s, ListSingletonContainer::get_particle(i), da);
-  }
-  return score;
+                                        DerivativeAccumulator *da) const {
+  return s->evaluate(access_particles(), da);
 }
 
 
-Particles ListSingletonContainer::get_particles() const {
-  return Particles(ListSingletonContainer::particles_begin(),
-                    ListSingletonContainer::particles_end());
+ParticlesTemp ListSingletonContainer::get_particles() const {
+  return access_particles();
 }
 
 unsigned int ListSingletonContainer::get_revision() const {

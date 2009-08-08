@@ -34,13 +34,7 @@ public:
       \param[in] f The pair score to apply to the generated pairs
    */
   RefineOncePairScore(Refiner *r, PairScore *f);
-  /** */
-  virtual ~RefineOncePairScore(){}
-  /** */
-  virtual Float evaluate(Particle *a, Particle *b,
-                         DerivativeAccumulator *da) const;
-  /** */
-  virtual void show(std::ostream &out=std::cout) const;
+  IMP_PAIR_SCORE(RefineOncePairScore, internal::version_info);
 };
 
 #endif // IMP_NO_DEPRECATED

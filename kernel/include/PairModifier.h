@@ -23,9 +23,10 @@ class Particle;
 
 //! A base class for modifiers of ParticlePairs
 /** The primary function of such a class is to change
-    the passed particles. You can use the associated PairFunction
-    along with \c map or \c std::for_each to easily apply a
-    PairModifier to a set of ParticlePairs.
+    the passed particles.
+
+    A given PairModifier may only work when passed a
+    DerivativeAccumulator or when not passed one.
 
     \see IMP::PairFunctor
 
@@ -39,10 +40,29 @@ public:
 
   /** Apply the function to a single value*/
   virtual void apply(Particle *a, Particle *b,
-                     DerivativeAccumulator &da) const=0;
+                     DerivativeAccumulator &da) const {
+    IMP_failure("This PairModifier must be called without a"
+                << " DerivativeAccumulator.", InvalidStateException);
+  }
 
   /** Apply the function to a single value*/
-  virtual void apply(Particle *a, Particle *b) const=0;
+  virtual void apply(Particle *a, Particle *b) const {
+    IMP_failure("This PairModifier must be called with a"
+                << " DerivativeAccumulator.", InvalidStateException);
+  }
+
+  /** Apply the function to a collection of ParticlePairs */
+  virtual void apply(const ParticlePairsTemp &o) const {
+    IMP_failure("This PairModifier must be called with a"
+                << " DerivativeAccumulator.", InvalidStateException);
+  }
+
+  /** Apply the function to a collection of ParticlePairs */
+  virtual void apply(const ParticlePairsTemp &o,
+                     DerivativeAccumulator &da) const {
+    IMP_failure("This PairModifier must be called without a"
+                << " DerivativeAccumulator.", InvalidStateException);
+  }
 
   /** Print out information about the function, ending in a newline.*/
   virtual void show(std::ostream &out = std::cout) const=0;

@@ -28,13 +28,7 @@ public:
   /** */
   SphereDistancePairScore(UnaryFunction *f,
                           FloatKey radius=FloatKey("radius"));
-  virtual ~SphereDistancePairScore(){}
-  virtual Float evaluate(Particle *a, Particle *b,
-                         DerivativeAccumulator *da) const;
-  virtual void show(std::ostream &out=std::cout) const;
-  VersionInfo get_version_info() const {
-    return internal::version_info;
-  }
+  IMP_PAIR_SCORE(SphereDistancePairScore, internal::version_info);
 };
 
 IMPCORE_END_NAMESPACE

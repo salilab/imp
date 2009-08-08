@@ -33,6 +33,10 @@ public:
   //! Compute the score and the derivative if needed.
   virtual Float evaluate(Particle *a,
                          DerivativeAccumulator *da) const = 0;
+
+  virtual Float evaluate(const ParticlesTemp &o,
+                         DerivativeAccumulator *da) const = 0;
+
   IMP_REF_COUNTED_DESTRUCTOR(SingletonScore)
 };
 

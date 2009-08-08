@@ -33,6 +33,10 @@ public:
   //! Compute the score and the derivative if needed.
   virtual Float evaluate(ClassnameArguments,
                          DerivativeAccumulator *da) const = 0;
+
+  virtual Float evaluate(const ClassnamesTemp &o,
+                         DerivativeAccumulator *da) const = 0;
+
   IMP_REF_COUNTED_DESTRUCTOR(GroupnameScore)
 };
 

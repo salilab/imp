@@ -87,14 +87,14 @@ public:
   virtual void apply(const SingletonModifier *sm)=0;
 
   //! Apply a SingletonModifier to the contents
-  virtual void apply(const SingletonModifier *sm, DerivativeAccumulator *da)=0;
+  virtual void apply(const SingletonModifier *sm, DerivativeAccumulator &da)=0;
 
   //! Avaluate a score on the contents
   virtual double evaluate(const SingletonScore *s,
                           DerivativeAccumulator *da) const=0;
 
   //! Get all the Particles from the container
-  virtual Particles get_particles() const=0;
+  virtual ParticlesTemp get_particles() const=0;
 
   /** \brief The revision number of a container is incremented every time the
       contents change.

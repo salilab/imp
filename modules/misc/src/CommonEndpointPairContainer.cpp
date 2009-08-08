@@ -53,7 +53,7 @@ ParticlePair CommonEndpointPairContainer
  }
 
 void CommonEndpointPairContainer
-::apply(const PairModifier *sm, DerivativeAccumulator *da) {
+::apply(const PairModifier *sm, DerivativeAccumulator &da) {
    IMP_failure("Not a real container", ErrorException);
 }
 
@@ -64,9 +64,9 @@ void CommonEndpointPairContainer
    return 0;
  }
 
-ParticlePairs CommonEndpointPairContainer::get_particle_pairs() const {
+ParticlePairsTemp CommonEndpointPairContainer::get_particle_pairs() const {
   IMP_failure("Not a real container", ErrorException);
-  return 0;
+  return ParticlePairsTemp();
 }
 
 unsigned int CommonEndpointPairContainer::get_revision() const {

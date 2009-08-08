@@ -65,36 +65,22 @@ void ListGroupnameContainer::show(std::ostream &out) const {
 }
 
 void ListGroupnameContainer::apply(const GroupnameModifier *sm) {
-
-  std::for_each(ListGroupnameContainer::classnames_begin(),
-                ListGroupnameContainer::classnames_end(),
-                GroupnameFunctor(sm));
+  sm->apply(access_classnames());
 }
 
 void ListGroupnameContainer::apply(const GroupnameModifier *sm,
-                               DerivativeAccumulator *da) {
-
-  std::for_each(ListGroupnameContainer::classnames_begin(),
-                ListGroupnameContainer::classnames_end(),
-                GroupnameFunctor(sm, da));
+                               DerivativeAccumulator &da) {
+  sm->apply(access_classnames(), da);
 }
 
 double ListGroupnameContainer::evaluate(const GroupnameScore *s,
-                                    DerivativeAccumulator *da) const {
-  double score=0;
-  for (unsigned int i=0;
-       i< ListGroupnameContainer::get_number_of_classnames();
-       ++i) {
-    score+= IMP::internal::ContainerTraits<Classname>
-      ::evaluate(s, ListGroupnameContainer::get_classname(i), da);
-  }
-  return score;
+                                        DerivativeAccumulator *da) const {
+  return s->evaluate(access_classnames(), da);
 }
 
 
-Classnames ListGroupnameContainer::get_classnames() const {
-  return Classnames(ListGroupnameContainer::classnames_begin(),
-                    ListGroupnameContainer::classnames_end());
+ClassnamesTemp ListGroupnameContainer::get_classnames() const {
+  return access_classnames();
 }
 
 unsigned int ListGroupnameContainer::get_revision() const {

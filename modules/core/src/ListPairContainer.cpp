@@ -65,36 +65,22 @@ void ListPairContainer::show(std::ostream &out) const {
 }
 
 void ListPairContainer::apply(const PairModifier *sm) {
-
-  std::for_each(ListPairContainer::particle_pairs_begin(),
-                ListPairContainer::particle_pairs_end(),
-                PairFunctor(sm));
+  sm->apply(access_particle_pairs());
 }
 
 void ListPairContainer::apply(const PairModifier *sm,
-                               DerivativeAccumulator *da) {
-
-  std::for_each(ListPairContainer::particle_pairs_begin(),
-                ListPairContainer::particle_pairs_end(),
-                PairFunctor(sm, da));
+                               DerivativeAccumulator &da) {
+  sm->apply(access_particle_pairs(), da);
 }
 
 double ListPairContainer::evaluate(const PairScore *s,
-                                    DerivativeAccumulator *da) const {
-  double score=0;
-  for (unsigned int i=0;
-       i< ListPairContainer::get_number_of_particle_pairs();
-       ++i) {
-    score+= IMP::internal::ContainerTraits<ParticlePair>
-      ::evaluate(s, ListPairContainer::get_particle_pair(i), da);
-  }
-  return score;
+                                        DerivativeAccumulator *da) const {
+  return s->evaluate(access_particle_pairs(), da);
 }
 
 
-ParticlePairs ListPairContainer::get_particle_pairs() const {
-  return ParticlePairs(ListPairContainer::particle_pairs_begin(),
-                    ListPairContainer::particle_pairs_end());
+ParticlePairsTemp ListPairContainer::get_particle_pairs() const {
+  return access_particle_pairs();
 }
 
 unsigned int ListPairContainer::get_revision() const {

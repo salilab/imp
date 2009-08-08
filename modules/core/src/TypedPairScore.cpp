@@ -39,6 +39,9 @@ Float TypedPairScore::evaluate(Particle *a, Particle *b,
   }
 }
 
+TypedPairScore::TypedPairScore(IntKey typekey, bool allow_invalid_types)
+      : typekey_(typekey), score_map_(),
+    allow_invalid_types_(allow_invalid_types) {}
 
 void TypedPairScore::show(std::ostream &out) const
 {

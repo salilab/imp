@@ -31,15 +31,8 @@ class IMPCOREEXPORT DistanceToSingletonScore : public SingletonScore
   Pointer<UnaryFunction> f_;
   algebra::Vector3D pt_;
 public:
-  /** */
   DistanceToSingletonScore(UnaryFunction *f, const algebra::Vector3D& pt);
-  virtual ~DistanceToSingletonScore(){}
-  virtual Float evaluate(Particle *a,
-                         DerivativeAccumulator *da) const;
-  virtual void show(std::ostream &out=std::cout) const;
-  VersionInfo get_version_info() const {
-    return internal::version_info;
-  }
+  IMP_SINGLETON_SCORE(DistanceToSingletonScore, internal::version_info);
 };
 
 IMPCORE_END_NAMESPACE

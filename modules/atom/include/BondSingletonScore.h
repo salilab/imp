@@ -30,13 +30,7 @@ class IMPATOMEXPORT BondSingletonScore : public SingletonScore
 public:
   //! Use f to penalize deviations in length
   BondSingletonScore(UnaryFunction *f);
-  virtual ~BondSingletonScore(){}
-  virtual Float evaluate(Particle *a,
-                         DerivativeAccumulator *da) const;
-  virtual void show(std::ostream &out=std::cout) const;
-  VersionInfo get_version_info() const {
-    return internal::version_info;
-  }
+  IMP_SINGLETON_SCORE(BondSingletonScore, internal::version_info);
 };
 
 IMPATOM_END_NAMESPACE

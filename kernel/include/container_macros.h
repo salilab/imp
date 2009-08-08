@@ -118,6 +118,7 @@ Ucname##ConstIterator lcname##s_begin() const {                         \
 Ucname##ConstIterator lcname##s_end() const {                           \
   return lcname##_vector_.end();}                                       \
 IMP_NO_DOXYGEN(private:)                                                \
+const PluralData &access_##lcname##s() const {return lcname##_vector_;} \
 void handle_remove(Data d);                                             \
 IMP_NO_DOXYGEN(PluralData lcname##_vector_;)                            \
 IMP_PROTECTION(protection)                                              \
