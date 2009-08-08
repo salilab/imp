@@ -379,7 +379,8 @@ def IMPModulePython(env):
     install=[]
     if env['IMP_MODULE_CPP']:
         penv = get_pyext_environment(env, module.upper(), cplusplus=True)
-        penv['LIBS']=[]
+        if penv['CC'] != 'w32cc':
+            penv['LIBS']=[]
         penv.Prepend(LIBS=['imp%s' % module_suffix])
         #penv.Append(CPPPATH=[Dir('#').abspath])
         #penv.Append(SWIGFLAGS='-python -c++ -naturalvar')
