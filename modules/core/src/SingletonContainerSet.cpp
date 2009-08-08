@@ -95,7 +95,7 @@ double SingletonContainerSet::evaluate(const SingletonScore *s,
 ParticlesTemp SingletonContainerSet::get_particles() const {
   ParticlesTemp ret;
   for (unsigned int i=0; i< get_number_of_singleton_containers(); ++i) {
-    Particles c= get_singleton_container(i)->get_particles();
+    ParticlesTemp c= get_singleton_container(i)->get_particles();
     ret.insert(ret.end(), c.begin(), c.end());
   }
   return ret;

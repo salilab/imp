@@ -50,8 +50,6 @@ class PairTestModifier(IMP.PairModifier):
             a0.add_attribute(self.k, 1)
             a1.add_attribute(self.k, 1)
         else:
-            print "here"
-            print a0
             for p in a0:
                 self.apply(p[0], p[1], a1)
     def get_version_info(self):
