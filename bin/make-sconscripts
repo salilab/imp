@@ -78,27 +78,22 @@ def main():
         print "usage: "+sys.argv[0] + " modulename"
         sys.exit(1)
     module = sys.argv[1]
-    if module == 'kernel':
-        cpp_excludes = h_excludes = []
+    h_excludes = ['version_info.h', 'config.h']
+    cpp_excludes = ['version_info.cpp', 'link_0.cpp', 'link_1.cpp']
+
+    if module=='kernel':
+        srcpath=os.path.join('kernel', 'src')
+        includepath= os.path.join('kernel', 'include')
     else:
-        h_excludes = ['version_info.h', 'config.h']
-        cpp_excludes = ['version_info.cpp', 'link_0.cpp', 'link_1.cpp']
-
-    try:
-        os.listdir(os.path.join('modules', module));
-    except:
-        print "Cannot find module " + module +" in modules/"
-        sys.exit(1)
-
-    g = SConscriptGenerator(os.path.join('modules', module, 'src'), '.cpp',
-                            "",
+        srcpath=os.path.join('modules', module, 'src')
+        includepath=os.path.join('modules', module, 'include')
+    g = SConscriptGenerator(srcpath, '.cpp', "",
                             "\n# Build and install the shared library:\n" + \
                             "env.IMPModuleLib(files)",
                             cpp_excludes)
     g.make()
 
-    g = SConscriptGenerator(os.path.join('modules', module, 'include'),
-                            '.h', "",
+    g = SConscriptGenerator(includepath, '.h', "",
                             "\n# Install the include files:\n" + \
                             "env.IMPModuleInclude(files)", h_excludes)
     g.make()
