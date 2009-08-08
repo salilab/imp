@@ -26,18 +26,12 @@ class ElementTableTest(IMP.test.TestCase):
     def test_element_write(self):
         """Check writing to pdb unknown elements"""
         m = IMP.Model()
-        rp = IMP.Particle(m)
-        ap = IMP.Particle(m)
-        cp = IMP.Particle(m);
-        chain = IMP.atom.Chain.create(cp, 'A')
-        residue = IMP.atom.Residue.create(rp)
-        atom = IMP.atom.Atom.create(ap, IMP.atom.AT_CA)
-        xyz = IMP.core.XYZ.create(ap)
-        hcd = IMP.atom.Hierarchy.cast(cp)
-        hrd = IMP.atom.Hierarchy.cast(rp)
-        had = IMP.atom.Hierarchy.cast(ap)
-        hcd.add_child(hrd)
-        hrd.add_child(had)
+        chain = IMP.atom.Chain.setup_particle(IMP.Particle(m), 'A')
+        residue = IMP.atom.Residue.setup_particle(IMP.Particle(m))
+        atom = IMP.atom.Atom.setup_particle(IMP.Particle(m), IMP.atom.AT_CA)
+        xyz = IMP.core.XYZ.setup_particle(ap, algebra::Vector3D(0,0,0))
+        chain.add_child(residue)
+        residue.add_child(atom)
         print atom.get_pdb_string()
 
 if __name__ == '__main__':
