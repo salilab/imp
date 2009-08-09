@@ -307,6 +307,7 @@ def IMPModuleInclude(env, files):
                                          list(files))
     build=hierarchy.InstallHierarchy(env, "#/build/include/"+vars['module_include_path'],
                                      list(files), True)
+    env['IMP_MODULE_HEADERS']= [str(x) for x in files if str(x).find("internal") == -1]
     module_alias(env, 'include', build)
     add_to_global_alias(env, 'all', 'include')
     module_alias(env, 'install-include', install)
@@ -390,11 +391,11 @@ def IMPModulePython(env):
             build.append(cb)
 
         swig_interface=File(module+".i")
-        globlist=["#/build/include/%(module_include_path)s/*.h"%vars]\
-            + ["#/module/"+x+"/pyext/*.i" for x in env['IMP_REQUIRED_MODULES']]\
+        globlist= ["#/module/"+x+"/pyext/*.i" for x in env['IMP_REQUIRED_MODULES']]\
             + ["*.i"]
         #print globlist
-        deps= module_glob(globlist)
+        deps= module_glob(globlist)+["#/build/include/%(module_include_path)s/"%vars + str(x) for x in env['IMP_MODULE_HEADERS']]
+        #print [str(x) for x in deps]
         penv._IMPSWIG(target=['wrap.cc',
                               'wrap.h'],
                       source=["%(module)s.i"%vars]+deps)
