@@ -29,7 +29,7 @@ class ElementTableTest(IMP.test.TestCase):
         chain = IMP.atom.Chain.setup_particle(IMP.Particle(m), 'A')
         residue = IMP.atom.Residue.setup_particle(IMP.Particle(m))
         atom = IMP.atom.Atom.setup_particle(IMP.Particle(m), IMP.atom.AT_CA)
-        xyz = IMP.core.XYZ.setup_particle(ap, algebra::Vector3D(0,0,0))
+        xyz = IMP.core.XYZ.setup_particle(atom.get_particle(), IMP.algebra.Vector3D(0,0,0))
         chain.add_child(residue)
         residue.add_child(atom)
         print atom.get_pdb_string()
