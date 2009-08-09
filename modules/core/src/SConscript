@@ -30,6 +30,7 @@ files = [
          'FixedRefiner.cpp',
          'GridClosePairsFinder.cpp',
          'Hierarchy.cpp',
+         'IncrementalBallMover.cpp',
          'LeavesRefiner.cpp',
          'ListPairContainer.cpp',
          'ListSingletonContainer.cpp',
