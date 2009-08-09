@@ -46,9 +46,10 @@ private:
   unsigned int iteration_;
   ParticleStorage particles_;
   unsigned int next_particle_index_;
+  bool incremental_update_;
   std::map<FloatKey, FloatRange> ranges_;
   enum Stage {NOT_EVALUATING, BEFORE_EVALUATE, EVALUATE, AFTER_EVALUATE};
-  Stage cur_stage_;
+  mutable Stage cur_stage_;
 
   Stage get_stage() const {
     return cur_stage_;
@@ -71,8 +72,22 @@ private:
     oss << "P" << next_particle_index_;
     p->set_name(oss.str());
     ++next_particle_index_;
+
+    if (get_is_incremental()) {
+      p->setup_incremental();
+    }
   }
 
+
+  void before_evaluate() const;
+
+  void after_evaluate(bool calc_derivs) const;
+
+  void zero_derivatives() const;
+
+  double do_evaluate(bool calc_derivs) const;
+
+  double do_evaluate_incremental(bool calc_derivs) const;
 
 #if defined(SWIG)
  public:
@@ -208,6 +223,21 @@ public:
     IMP_CHECK_OBJECT(this);
     return internal::version_info;
   }
+
+  /** \name Incremental Updates
+
+      Control whether incremental updates are being used. See
+      the \ref incremental "incremental updates" page for a more
+      detailed description.
+      @{
+  */
+  /** Turn on or off incremental evaluation. */
+  void set_is_incremental(bool tf);
+
+  bool get_is_incremental() const {
+    return incremental_update_;
+  }
+  /** @} */
 };
 
 IMP_OUTPUT_OPERATOR(Model);
@@ -231,7 +261,16 @@ inline void Particle::assert_can_change_optimization() const {
 }
 
 inline void Particle::assert_can_change_derivatives() const {
-  IMP_assert(get_model()->get_stage() != Model::BEFORE_EVALUATE,
+  IMP_assert(get_model()->get_stage() == Model::EVALUATE
+             || get_model()->get_stage() == Model::AFTER_EVALUATE
+             || get_model()->get_stage() == Model::NOT_EVALUATING,
+             "Derivatives can only be changed during restraint "
+             << "evaluation and score state after evaluation calls.");
+}
+
+inline void Particle::assert_valid_derivatives() const {
+  IMP_assert(get_model()->get_stage() == Model::AFTER_EVALUATE
+             || get_model()->get_stage() == Model::NOT_EVALUATING,
              "Derivatives can only be changed during restraint "
              << "evaluation and score state after evaluation calls.");
 }

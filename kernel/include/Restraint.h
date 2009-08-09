@@ -70,6 +70,39 @@ public:
    */
   virtual Float evaluate(DerivativeAccumulator *accum) = 0;
 
+  /** \name Incremental Evaluation
+
+      When optimizers move the particles a few at a time, scoring can
+      be made more efficient by incremental score evaluation. To do
+      so, a Restraint must implement Restraint::get_is_incremental()
+      so that it returns \c true and implement
+      Restraint::incremental_evaluate() to do the following
+
+      - the return value should be the total score given the new
+        conformation
+
+      - for a Particle \c p, the sum of the derivatives of
+        p->get_prechange_particle()
+
+      and \c p should be equal to the difference in derivatives
+      between the current and prior conformations. This is most easily
+      done by accumulating the negative of the prior derivative in
+      p->get_prechange_particle() and the new derivative in p, for any
+      particle touched.
+
+      @{
+  */
+  //! Return true if the incremental_evaluate() function is implemented
+  bool get_is_incremental() const {return false;}
+  //! Return the restraint score evaluated in an incremental manner
+  double incremental_evaluate(DerivativeAccumulator *) const {
+    IMP_failure(get_name() << " does not support incremental evaluation.",
+                ErrorException);
+    return 0;
+  }
+
+  /** @} */
+
   /** \brief Evaluate the restraint outside of an optimization run.
 
       Use this instead of Restraint::evaluate() when checking the
@@ -84,16 +117,6 @@ public:
     get_model()->evaluate(false);
     return evaluate(NULL);
   }
-
-  //! Set whether the restraint is active i.e. if it should be evaluated.
-  /** \param[in] is_active If true, the restraint is active.
-   */
-  void set_is_active(const bool is_active);
-
-  //! Get whether the restraint is active. i.e. if it should be evaluated.
-  /** \return true if the restraint is active.
-   */
-  bool get_is_active() const;
 
   //! The model the restraint is part of.
   /** \param[in] model The model.
@@ -133,11 +156,6 @@ private:
      pointer to this object. Not that Model is refcounted yet.
    */
   WeakPointer<Model> model_;
-
-  /* True if restraint has not been deactivated.
-     If it is not active, evaluate should not be called
-   */
-  bool is_active_;
 };
 
 IMP_OUTPUT_OPERATOR(Restraint);
