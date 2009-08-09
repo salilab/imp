@@ -43,12 +43,10 @@ Float RestraintSet::evaluate(DerivativeAccumulator *accum)
 
   score = (Float) 0.0;
   for (RestraintIterator it= restraints_begin(); it != restraints_end(); ++it) {
-    if ((*it)->get_is_active()) {
-      IMP_LOG(TERSE, "Evaluate restraint " << (*it)->get_name() << std::endl);
-      double tscore= (*it)->evaluate(ouracc.get());
-      score+=tscore;
-      IMP_LOG(TERSE, "Restraint score is " << tscore << std::endl);
-    }
+    IMP_LOG(TERSE, "Evaluate restraint " << (*it)->get_name() << std::endl);
+    double tscore= (*it)->evaluate(ouracc.get());
+    score+=tscore;
+    IMP_LOG(TERSE, "Restraint score is " << tscore << std::endl);
   }
 
   return score * weight_;

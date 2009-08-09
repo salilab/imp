@@ -89,7 +89,7 @@ class DistanceTests(IMP.test.TestCase):
         r.set_was_owned(True)
         s = StringIO.StringIO()
         r.show(s)
-        self.assertEqual(s.getvalue()[:28], "distance restraint (active):")
+        self.assertEqual(s.getvalue().split('\n')[0], "distance restraint:")
 
     def test_distance(self):
         """Test that distance restraints are reasonable"""

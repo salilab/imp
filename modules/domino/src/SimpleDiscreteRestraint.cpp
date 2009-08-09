@@ -88,11 +88,8 @@ Float SimpleDiscreteRestraint::evaluate(DerivativeAccumulator *accum)
 void SimpleDiscreteRestraint::show(std::ostream& out) const
 {
   std::cout << "=========" << std::endl;
-  if (get_is_active()) {
-    out << "simple discrete restraint (active):" << std::endl;
-  } else {
-    out << "simple discrete restraint (inactive):" << std::endl;
-  }
+  out << "simple discrete restraint:" << std::endl;
+
   get_version_info().show(out);
   out << "  particles: " << get_particle(0)->get_value(node_name_key());
   out << " and " << get_particle(1)->get_value(node_name_key());

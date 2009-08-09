@@ -29,11 +29,7 @@ Float AngleRestraint::evaluate(DerivativeAccumulator *accum)
 
 void AngleRestraint::show(std::ostream& out) const
 {
-  if (get_is_active()) {
-    out << "angle restraint (active):" << std::endl;
-  } else {
-    out << "angle restraint (inactive):" << std::endl;
-  }
+  out << "angle restraint:" << std::endl;
 
   get_version_info().show(out);
   out << "  particles: " << p_[0]->get_name();

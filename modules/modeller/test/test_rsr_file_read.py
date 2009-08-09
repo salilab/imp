@@ -90,7 +90,7 @@ class ModellerRestraintsTests(IMP.test.TestCase):
             for rsr in rsrs:
                 rset.add_restraint(rsr)
             score = m.evaluate(True)
-            rset.set_is_active(False)
+            rset.set_weight(0)
             # Modeller and IMP should give the same score:
             self.assertInTolerance(modenergy, score, 0.1)
 
