@@ -60,7 +60,7 @@ class DihedralRestraintTests(IMP.test.TestCase):
         model, rsr = self._setup_particles(math.pi / 2.0, math.pi / 2.0)
         s = StringIO.StringIO()
         rsr.show(s)
-        self.assertEqual(s.getvalue()[:28], "dihedral restraint (active):")
+        self.assertEqual(s.getvalue().split('\n')[0], "dihedral restraint:")
 
 if __name__ == '__main__':
     unittest.main()

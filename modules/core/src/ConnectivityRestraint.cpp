@@ -129,12 +129,7 @@ ParticlePairs ConnectivityRestraint::get_connected_pairs() const {
 
 void ConnectivityRestraint::show(std::ostream& out) const
 {
-  if (get_is_active()) {
-    out << "connectivity restraint (active):" << std::endl;
-  } else {
-    out << "connectivity restraint (inactive):" << std::endl;
-  }
-
+  out << "connectivity restraint:" << std::endl;
   get_version_info().show(out);
 }
 

@@ -39,11 +39,7 @@ Float DistanceRestraint::evaluate(DerivativeAccumulator *accum)
  */
 void DistanceRestraint::show(std::ostream& out) const
 {
-  if (get_is_active()) {
-    out << "distance restraint (active):" << std::endl;
-  } else {
-    out << "distance restraint (inactive):" << std::endl;
-  }
+  out << "distance restraint:" << std::endl;
 
   get_version_info().show(out);
   out << "  particles: " << p_[0]->get_name();
