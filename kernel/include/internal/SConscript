@@ -1,20 +1,19 @@
 files = [
-    'AttributeTable.h',
-    'ExponentialNumber.h',
-    'IndexingIterator.h',
-    'NestedIterator.h',
-    'Unit.h',
-    'Vector.h',
-    'constants.h',
-    'container_helpers.h',
-    'deprecation.h',
-    'key_helpers.h',
-    'log_internal.h',
-    'ref_counting.h',
-    'units.h',
-    'config.h',
-    'utility.h',
-]
+         'AttributeTable.h',
+         'ExponentialNumber.h',
+         'IndexingIterator.h',
+         'NestedIterator.h',
+         'Unit.h',
+         'Vector.h',
+         'constants.h',
+         'container_helpers.h',
+         'deprecation.h',
+         'key_helpers.h',
+         'log_internal.h',
+         'ref_counting.h',
+         'units.h',
+         'utility.h',
+        ]
 
-files = [File(f) for f in files]
+files = [File(x) for x in files]
 Return('files')
