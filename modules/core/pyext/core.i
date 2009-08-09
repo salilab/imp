@@ -78,6 +78,7 @@ IMP_REFCOUNT_RETURN_SINGLE(IMP::core::Mover)
 %include "IMP/core/AngleTripletScore.h"
 %include "IMP/core/AttributeSingletonScore.h"
 %include "IMP/core/BallMover.h"
+%include "IMP/core/IncrementalBallMover.h"
 %include "IMP/core/BoxSweepClosePairsFinder.h"
 %include "IMP/core/CentroidOfRefined.h"
 %include "IMP/core/ChildrenRefiner.h"
