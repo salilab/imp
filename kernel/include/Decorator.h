@@ -99,16 +99,17 @@ public:
   /** Add the needed attributes to the particle and initialize them
       with values taken from initial_values.
 
-      \throw InvalidStateException if the Particle has already been set up
+      It is an error to call this twice on the same particle for
+      the same type of decorator.
   */
   static Decorator setup_particle(Particle *p, extra_arguments);
 
   /** Create a decorator from a particle which has already had
-      Decorator::setup_particle() called on it..
+      Decorator::setup_particle() called on it.
 
       \return The Decorator(p) if p has been set up or Decorator() if not.
   */
-  static Decorator cast(Particle *p);
+  static Decorator decorate_particle(Particle *p);
 
   /** Return true if the particle can be cast to the decorator. */
   static bool particle_is_instance(Particle *p);
@@ -119,9 +120,10 @@ public:
   */
   void show(std::ostream &out, std::string prefix) const;
 
-  /** Create an instance of the Decorator from the particle which already
-      has the needed attributes. The key difference between this constructor
-      and cast() is that there is not necessarily any error checking performed.
+  /** Create an instance of the Decorator from the particle has
+      already been setup.  The key difference between this constructor
+      and decorate_particle() is that there is not necessarily any
+      error checking performed.
   */
   Decorator(Particle *p);
   /** The default constructor must be defined and create a NULL decorator,
