@@ -21,19 +21,7 @@ namespace {
 
 Restraint::Restraint(std::string name)
 {
-  is_active_ = true; // active by default
   set_name(internal::make_object_name(name, restraint_index++));
-}
-
-void Restraint::set_is_active(const bool is_active)
-{
-  is_active_ = is_active;
-}
-
-
-bool Restraint::get_is_active() const
-{
-  return is_active_;
 }
 
 

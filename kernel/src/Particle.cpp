@@ -12,14 +12,10 @@
 
 IMP_BEGIN_NAMESPACE
 
-namespace {
-  unsigned int next_index=0;
-}
 
 Particle::Particle(Model *m, std::string name)
 {
   m->add_particle_internal(this);
-  set_name(internal::make_object_name(name, next_index++));
 }
 
 
@@ -61,5 +57,44 @@ void Particle::show(std::ostream& out) const
 
   }
 }
+
+
+// methods for incremental
+
+void Particle::copy_derivatives_from(Particle *o) {
+  derivatives_= o->derivatives_;
+}
+
+void Particle::accumulate_derivatives_from(Particle *o,
+                                           DerivativeAccumulator &da) {
+  for (FloatKeyIterator fkit=float_keys_begin();
+       fkit != float_keys_end(); ++fkit) {
+    add_to_derivative(*fkit, o->get_derivative(*fkit), da);
+  }
+}
+
+
+void Particle::copy_from(Particle *o) {
+  floats_=o->floats_;
+  strings_=o->strings_;
+  ints_= o->ints_;
+}
+
+Particle::Particle() {
+}
+
+void Particle::setup_incremental() {
+  old_ = std::auto_ptr<Particle>(new Particle());
+  old_->set_name(get_name()+" history");
+  old_->model_= model_;
+  old_->copy_from(this);
+  // assume that evaluate was called before
+  old_->copy_derivatives_from(this);
+}
+
+void Particle::teardown_incremental() {
+  old_.reset();
+}
+
 
 IMP_END_NAMESPACE

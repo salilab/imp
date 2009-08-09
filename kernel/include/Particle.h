@@ -18,6 +18,7 @@
 #include "DerivativeAccumulator.h"
 #include "Pointer.h"
 #include "VectorOfRefCounted.h"
+#include <utility>
 
 // should use this once we move to a new enough boost (1.35)
 //#include <boost/intrusive/list.hpp>
@@ -26,13 +27,16 @@
 #include <list>
 
 #define IMP_CHECK_ACTIVE                                                \
-  IMP_check(get_is_active(), "Do not touch inactive particles " << get_name(), \
-            InactiveParticleException)
+  IMP_check(get_is_active(), "Do not touch inactive particles "         \
+            << get_name(), InactiveParticleException)
 #define IMP_CHECK_MUTABLE IMP_IF_CHECK(CHEAP) {assert_values_mutable();}
+#define IMP_CHECK_VALID_DERIVATIVES IMP_IF_CHECK(CHEAP) \
+  {assert_valid_derivatives();}
 
 IMP_BEGIN_NAMESPACE
 
 class Model;
+class Changed;
 
 //! Class to handle individual model particles.
 /**
@@ -83,6 +87,7 @@ class IMPEXPORT Particle : public Object
   // doxygen produces funny docs for these things
 #ifndef IMP_DOXYGEN
   friend class Model;
+  friend class Changed;
   //typedef internal::ObjectContainer<Particle, unsigned int> Storage;
   typedef std::list<Particle*> Storage;
 
@@ -94,6 +99,35 @@ class IMPEXPORT Particle : public Object
 
   void assert_can_change_derivatives() const;
 
+  void assert_valid_derivatives() const;
+
+
+ // begin incremental
+  void on_changed() {
+    dirty_=true;
+  }
+
+  void set_is_not_changed() {
+    if (get_is_changed()) {
+      old_->copy_from(this);
+    }
+  }
+
+  void setup_incremental();
+
+  void teardown_incremental();
+
+  // don't add the particle to the model, used for incremental
+  Particle();
+
+  // for Changed, not a general purpose copy
+  void copy_from(Particle *o);
+
+  void copy_derivatives_from(Particle *o);
+
+  void accumulate_derivatives_from(Particle *o, DerivativeAccumulator &da);
+
+  // end incremental
 
   /* This has to be declared here since boost 1.35 wants the full
      definition of Particle to be available when the Pointer
@@ -142,6 +176,11 @@ class IMPEXPORT Particle : public Object
   ParticleTable particles_;
 
   Storage::iterator iterator_;
+
+  // incremental updates
+  bool dirty_;
+  std::auto_ptr<Particle> old_;
+  friend class std::auto_ptr<Particle>;
 #endif
 
   IMP_REF_COUNTED_DESTRUCTOR(Particle)
@@ -355,6 +394,25 @@ class IMPEXPORT Particle : public Object
     return particles_.get_keys();
   }
   /*@}*/
+
+   /** \name Incremental Updates
+
+      Control whether incremental updates are being used. See
+      the \ref incremental "incremental updates" page for a more
+      detailed description.
+      @{
+  */
+  //! Return true if this particle has been changed since the last evaluate call
+  bool get_is_changed() const {
+    return dirty_;
+  }
+  /** \brief Return the shadow particle having attribute values from the last
+      evaluation
+  */
+  Particle *get_prechange_particle() const {
+    return old_.get();
+  }
+  /** @} */
 };
 
 
@@ -385,6 +443,7 @@ inline Float Particle::get_derivative(FloatKey name) const
   IMP_CHECK_ACTIVE;
   IMP_assert(has_attribute(name), "Particle " << get_name()
              << " does not have attribute " << name);
+  IMP_CHECK_VALID_DERIVATIVES;
   return derivatives_.get_value(name);
 }
 
@@ -394,6 +453,7 @@ inline void Particle::set_value(FloatKey name, Float value)
   IMP_assert(has_attribute(name), "Particle " << get_name()
              << " does not have attribute " << name);
   IMP_CHECK_MUTABLE;
+  on_changed();
   floats_.set_value(name, value);
 }
 
@@ -454,6 +514,7 @@ inline void Particle::set_value(IntKey name, Int value)
 {
   IMP_CHECK_ACTIVE;
   IMP_CHECK_MUTABLE;
+  on_changed();
   ints_.set_value(name, value);
 }
 
@@ -475,6 +536,7 @@ inline void Particle::set_value(StringKey name, String value)
 {
   IMP_CHECK_ACTIVE;
   IMP_CHECK_MUTABLE;
+  on_changed();
   strings_.set_value(name, value);
 }
 
@@ -498,6 +560,7 @@ inline void Particle::set_value(ParticleKey name, Particle* value)
 {
   IMP_CHECK_ACTIVE;
   IMP_CHECK_MUTABLE;
+  on_changed();
   particles_.set_value(name, Pointer<Particle>(value));
 }
 
@@ -506,6 +569,7 @@ void inline Particle::add_attribute(FloatKey name, const Float value,
                                     bool is_optimized)
 {
   IMP_CHECK_ACTIVE;
+  on_changed();
   floats_.insert(name, value);
   derivatives_.insert(name, 0);
   if (is_optimized) {
@@ -516,6 +580,7 @@ void inline Particle::add_attribute(FloatKey name, const Float value,
 void inline Particle::remove_attribute(FloatKey name)
 {
   IMP_CHECK_ACTIVE;
+  on_changed();
   floats_.remove(name);
   derivatives_.remove(name);
   optimizeds_.remove_always(name);
@@ -525,12 +590,14 @@ void inline Particle::remove_attribute(FloatKey name)
 void inline Particle::add_attribute(IntKey name, const Int value)
 {
   IMP_CHECK_ACTIVE;
+  on_changed();
   ints_.insert(name, value);
 }
 
 void inline Particle::remove_attribute(IntKey name)
 {
   IMP_CHECK_ACTIVE;
+  on_changed();
   ints_.remove(name);
 }
 
@@ -538,18 +605,21 @@ void inline Particle::remove_attribute(IntKey name)
 void inline Particle::add_attribute(StringKey name, const String value)
 {
   IMP_CHECK_ACTIVE;
+  on_changed();
   strings_.insert(name, value);
 }
 
 void inline Particle::remove_attribute(StringKey name)
 {
   IMP_CHECK_ACTIVE;
+  on_changed();
   strings_.remove(name);
 }
 
 void inline Particle::add_attribute(ParticleKey name, Particle* value)
 {
   IMP_CHECK_ACTIVE;
+  on_changed();
   particles_.insert(name,value);
 }
 
@@ -557,6 +627,7 @@ void inline Particle::add_attribute(ParticleKey name, Particle* value)
 void inline Particle::remove_attribute(ParticleKey name)
 {
   IMP_CHECK_ACTIVE;
+  on_changed();
   particles_.remove(name);
 }
 
@@ -738,6 +809,7 @@ IMP_END_NAMESPACE
 
 #undef IMP_CHECK_ACTIVE
 #undef IMP_CHECK_MUTABLE
+#undef IMP_CHECK_VALID_DERIVATIVES
 
 #include "Model.h"
 

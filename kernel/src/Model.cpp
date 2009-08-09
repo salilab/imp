@@ -21,6 +21,7 @@ Model::Model()
   iteration_ = 0;
   next_particle_index_=0;
   cur_stage_=NOT_EVALUATING;
+  incremental_update_=false;
 }
 
 
@@ -67,74 +68,171 @@ FloatRange Model::get_range(FloatKey k) const {
   }
 }
 
-Float Model::evaluate(bool calc_derivs)
-{
-  IMP_OBJECT_LOG;
-  IMP_CHECK_OBJECT(this);
-  IMP_LOG(TERSE,
-          "Begin Model::evaluate" << std::endl);
-  // If calcualting derivatives, first set all derivatives to zero
-  if (calc_derivs) {
-    for (ParticleIterator pit = particles_begin();
-         pit != particles_end(); ++pit) {
-      (*pit)->zero_derivatives();
-    }
-
-  }
-
+void Model::before_evaluate() const {
   IMP_LOG(TERSE,
           "Begin update ScoreStates " << std::endl);
   cur_stage_= BEFORE_EVALUATE;
-  for (ScoreStateIterator it = score_states_begin(); it != score_states_end();
-       ++it) {
+  for (ScoreStateConstIterator it = score_states_begin();
+       it != score_states_end(); ++it) {
     IMP_CHECK_OBJECT(*it);
     IMP_LOG(TERSE, "Updating " << (*it)->get_name() << std::endl);
     (*it)->before_evaluate(iteration_);
     IMP_LOG(VERBOSE, "." << std::flush);
   }
   IMP_LOG(TERSE, "End update ScoreStates." << std::endl);
+}
 
+void Model::after_evaluate(bool calc_derivs) const {
+  IMP_LOG(TERSE,
+          "Begin after_evaluate of ScoreStates " << std::endl);
+  DerivativeAccumulator accum;
+  cur_stage_= AFTER_EVALUATE;
+  for (ScoreStateConstIterator it = score_states_begin();
+       it != score_states_end(); ++it) {
+    IMP_CHECK_OBJECT(*it);
+    IMP_LOG(TERSE, "Updating " << (*it)->get_name() << std::endl);
+    (*it)->after_evaluate(iteration_, (calc_derivs ? &accum : NULL));
+    IMP_LOG(VERBOSE, "." << std::flush);
+  }
+  IMP_LOG(TERSE, "End after_evaluate of ScoreStates." << std::endl);
+}
+
+void Model::zero_derivatives() const {
+  for (ParticleConstIterator pit = particles_begin();
+       pit != particles_end(); ++pit) {
+    (*pit)->zero_derivatives();
+  }
+}
+
+double Model::do_evaluate(bool calc_derivs) const {
   // evaluate all of the active restraints to get score (and derivatives)
   // for current state of the model
+  if (calc_derivs) {
+    zero_derivatives();
+  }
   double score = 0.0;
   DerivativeAccumulator accum;
-  DerivativeAccumulator *accpt = (calc_derivs ? &accum : NULL);
-
   IMP_LOG(TERSE,
           "Begin evaluate restraints "
           << (calc_derivs?"with derivatives":"without derivatives")
           << std::endl);
   cur_stage_= EVALUATE;
-  for (RestraintIterator it = restraints_begin();
+  for (RestraintConstIterator it = restraints_begin();
        it != restraints_end(); ++it) {
     IMP_CHECK_OBJECT(*it);
-    if ((*it)->get_is_active()) {
+    IMP_LOG(TERSE, "Evaluate restraint " << (*it)->get_name() << std::endl);
+    double tscore = (*it)->evaluate((calc_derivs ? &accum : NULL));
+    IMP_LOG(TERSE, "Restraint score is " << tscore << std::endl);
+    score+= tscore;
+  }
+  IMP_LOG(TERSE, "End evaluate restraints." << std::endl);
+  return score;
+}
+
+
+double Model::do_evaluate_incremental(bool calc_derivs) const {
+  double score = 0.0;
+  DerivativeAccumulator accum;
+  cur_stage_= EVALUATE;
+  IMP_LOG(TERSE,
+          "Begin evaluate incremental restraints "
+          << (calc_derivs?"with derivatives":"without derivatives")
+          << std::endl);
+  for (RestraintConstIterator it = restraints_begin();
+       it != restraints_end(); ++it) {
+    IMP_CHECK_OBJECT(*it);
+    if ((*it)->get_is_incremental()) {
       IMP_LOG(TERSE, "Evaluate restraint " << (*it)->get_name() << std::endl);
-      double tscore = (*it)->evaluate(accpt);
+      double tscore = (*it)->incremental_evaluate((calc_derivs ?
+                                                   &accum : NULL));
       IMP_LOG(TERSE, "Restraint score is " << tscore << std::endl);
       score+= tscore;
     }
   }
 
+  if (calc_derivs) {
+    for (ParticleConstIterator pit = particles_begin();
+         pit != particles_end(); ++pit) {
+      (*pit)->old_->accumulate_derivatives_from(*pit, accum);
+    }
+  }
   IMP_LOG(TERSE, "End evaluate restraints." << std::endl);
-
+  if (calc_derivs) {
+    zero_derivatives();
+  }
   IMP_LOG(TERSE,
-          "Begin after_evaluate of ScoreStates " << std::endl);
-  cur_stage_= AFTER_EVALUATE;
-  for (ScoreStateIterator it = score_states_begin(); it != score_states_end();
-       ++it) {
+          "Begin evaluate non-incremental restraints "
+          << (calc_derivs?"with derivatives":"without derivatives")
+          << std::endl);
+  for (RestraintConstIterator it = restraints_begin();
+       it != restraints_end(); ++it) {
     IMP_CHECK_OBJECT(*it);
-    IMP_LOG(TERSE, "Updating " << (*it)->get_name() << std::endl);
-    (*it)->after_evaluate(iteration_, accpt);
-    IMP_LOG(VERBOSE, "." << std::flush);
+    if (!(*it)->get_is_incremental()) {
+      IMP_LOG(TERSE, "Evaluate restraint " << (*it)->get_name() << std::endl);
+      double tscore = (*it)->evaluate((calc_derivs ? &accum : NULL));
+      IMP_LOG(TERSE, "Restraint score is " << tscore << std::endl);
+      score+= tscore;
+    }
   }
 
-  IMP_LOG(TERSE, "End after_evaluate of ScoreStates." << std::endl);
+  if (calc_derivs) {
+    for (ParticleConstIterator pit = particles_begin();
+         pit != particles_end(); ++pit) {
+      (*pit)->accumulate_derivatives_from((*pit)->old_.get(), accum);
+    }
+  }
+  IMP_LOG(TERSE, "End evaluate restraints." << std::endl);
+  return score;
+}
+
+
+Float Model::evaluate(bool calc_derivs)
+{
+  IMP_OBJECT_LOG;
+  IMP_CHECK_OBJECT(this);
+  IMP_LOG(TERSE,
+          "Begin Model::evaluate" << std::endl);
+
+  before_evaluate();
+
+  double score;
+  if (get_is_incremental()) {
+    score= do_evaluate_incremental(calc_derivs);
+  } else {
+    score= do_evaluate(calc_derivs);
+  }
+
+  after_evaluate(calc_derivs);
 
   IMP_LOG(TERSE, "End Model::evaluate. Final score: " << score << std::endl);
   cur_stage_=NOT_EVALUATING;
   ++iteration_;
   return score;
+}
+
+
+void Model::set_is_incremental(bool tf) {
+  DerivativeAccumulator da;
+  if (tf && !get_is_incremental()) {
+    for (ParticleIterator pit = particles_begin();
+         pit != particles_end(); ++pit) {
+      (*pit)->zero_derivatives();
+    }
+    for (RestraintIterator it= restraints_begin();
+         it != restraints_end(); ++it) {
+      if ((*it)->get_is_incremental()) {
+        (*it)->evaluate(&da);
+      }
+    }
+    for (ParticleIterator it= particles_begin(); it != particles_end(); ++it) {
+      (*it)->setup_incremental();
+    }
+  } else if (!tf && get_is_incremental()) {
+    for (ParticleIterator it= particles_begin(); it != particles_end(); ++it) {
+      (*it)->teardown_incremental();
+    }
+  }
+  incremental_update_=tf;
 }
 
 void Model::show(std::ostream& out) const
