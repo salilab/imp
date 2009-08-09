@@ -76,6 +76,13 @@ public:
   //! Print out one or more lines of text describing the object
   virtual void show(std::ostream &out=std::cout) const=0;
 
+#ifndef IMP_DOXYGEN
+  void pretty_print(std::ostream &out=std::cout) const {
+    out << get_name() << std::endl;
+    show(out);
+  }
+#endif
+
   //! Get information about the author and version of the object
   virtual VersionInfo get_version_info() const=0;
 
@@ -105,8 +112,12 @@ private:
   double check_value_;
 };
 
-
-IMP_OUTPUT_OPERATOR(Object);
+#if !defined(IMP_DOXYGEN) and !defined(IMP_SWIG)
+inline std::ostream &operator<<(std::ostream &out, const Object& o) {
+  o.pretty_print();
+  return out;
+}
+#endif
 
 IMP_END_NAMESPACE
 
