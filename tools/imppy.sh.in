@@ -1,0 +1,11 @@
+#!/bin/sh
+
+@LDPATH@
+
+@PYTHONPATH@
+
+@DATAPATH@
+
+@PRECOMMAND@
+
+exec ${precommand} "$@"
