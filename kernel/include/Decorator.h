@@ -416,6 +416,27 @@ public:
 };
 
 IMP_SWAP_2(DecoratorsWithImplicitTraits);
+
+
+/** A class to add ref counting to a decorator */
+template <class D>
+class RefCountingDecorator: public D {
+public:
+  RefCountingDecorator(){}
+  RefCountingDecorator(const D &d): D(d){internal::ref(D::get_particle());}
+  ~RefCountingDecorator(){ internal::unref(D::get_particle());}
+#ifndef SWIG
+  void operator=(const D &d) {
+    if (*this) {
+      internal::unref(D::get_particle());
+    }
+    D::operator=(d);
+    if (*this) {
+      internal::ref(D::get_particle());
+    }
+  }
+#endif
+};
 #endif
 
 IMP_END_NAMESPACE
