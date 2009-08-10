@@ -43,4 +43,6 @@ def configure_check(env):
     conf = env.Configure(custom_tests=custom_tests)
     if not env.GetOption('clean') and not env.GetOption('help'):
         env['IMP_ENDIAN']=conf.CheckEndian()
+    else:
+        env['IMP_ENDIAN']="not"
     conf.Finish()
