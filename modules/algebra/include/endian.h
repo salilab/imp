@@ -9,6 +9,7 @@
 #define IMPALGEBRA_ENDIAN_H
 
 #include "config.h"
+#include <IMP/config.h>
 #include <IMP/macros.h>
 #include <iostream>
 #include <fstream>
