@@ -142,17 +142,17 @@ double Model::do_evaluate_restraints(bool calc_derivs,
     if ((*it)->get_is_incremental()
         && incremental_restraints != NONINCREMENTAL) {
       if (incremental_evaluation) {
-        double t=(*it)->incremental_evaluate(&accum);
+        double t=(*it)->incremental_evaluate(calc_derivs? &accum:NULL);
         IMP_LOG(TERSE, (*it)->get_name() << " score is " << t << std::endl);
         score+=t;
       } else {
-        double t=(*it)->evaluate(&accum);
+        double t=(*it)->evaluate(calc_derivs? &accum:NULL);
         IMP_LOG(TERSE, (*it)->get_name() << " score is " << t << std::endl);
         score+=t;
       }
     } else if (!(*it)->get_is_incremental()
                && incremental_restraints != INCREMENTAL) {
-      double t=(*it)->evaluate(&accum);
+      double t=(*it)->evaluate(calc_derivs? &accum:NULL);
       IMP_LOG(TERSE, (*it)->get_name()<<  " score is " << t << std::endl);
       score+=t;
     }
@@ -187,8 +187,21 @@ double Model::do_evaluate_incremental(bool calc_derivs) const {
 }
 
 
+namespace {
+  template <class T, int V>
+  struct SetIt {
+    T *t_;
+    SetIt(T *t): t_(t){}
+    ~SetIt() {
+      *t_= T(V);
+    }
+  };
+}
+
 Float Model::evaluate(bool calc_derivs)
 {
+  // make sure stage is restored on an exception
+  SetIt<Stage, NOT_EVALUATING> reset(&cur_stage_);
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(this);
   IMP_LOG(TERSE,
