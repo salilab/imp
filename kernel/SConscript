@@ -3,4 +3,12 @@ import os.path
 
 env.Append(CPPDEFINES=["IMP_DATA_DIRECTORY=\\\""+os.path.join(env['datadir'],"IMP")+"\\\""])
 
-env.IMPModuleBuild(version='SVN', required_modules=None)
+config=[]
+if env['CGAL_LIBS'] != ['']:
+    config.append('IMP_USE_CGAL')
+if not env.get('deprecated', True):
+    config.append('IMP_NO_DEPRECATED')
+if env['IMP_ENDIAN']=='little':
+    config.append("IMP_LITTLE_ENDIAN")
+
+env.IMPModuleBuild(version='SVN', required_modules=None, config_macros=config)

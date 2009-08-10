@@ -1,12 +1,6 @@
 #define IMPEXPORT
 #define IMPLOCAL
 
-#define IMP_BEGIN_NAMESPACE \
-namespace IMP \
-{
-
-#define IMP_END_NAMESPACE \
-} /* namespace IMP */
 
 /* Add additional IMP_CONTAINER methods for scripting languages */
 %define IMP_CONTAINER_SWIG(type, Ucname, lcname)
@@ -20,4 +14,4 @@ namespace IMP \
 
 %include "IMP/macros.h"
 %include "IMP/container_macros.h"
-%include "IMP/internal/config.h"
+%include "IMP/config.h"
