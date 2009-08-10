@@ -11,7 +11,6 @@
 %include "IMP_streams.i"
 %include "IMP_typemaps.i"
 
-%include "algebra_config.i"
 %include "exception.i"
 %include "std_vector.i"
 %include "std_except.i"
@@ -19,6 +18,8 @@
 /* Get definitions of kernel base classes (but do not wrap) */
 %import "kernel.i"
 %import "IMP_keys.i"
+
+%include "IMP/algebra/config.h"
 
 /* Ignore friends */
 %ignore compose(const Rotation3D &a, const Rotation3D &b);

@@ -10,11 +10,13 @@
 %include "IMP_exceptions.i"
 %include "IMP_streams.i"
 
-%include "core_config.i"
 
 %include "std_vector.i"
 %include "std_string.i"
 %include "std_except.i"
+
+%include "IMP/core/config.h"
+%include "IMP/core/macros.h"
 
 %{
 #ifdef NDEBUG
@@ -22,12 +24,6 @@
 #endif
 %}
 
-
-namespace IMP {
-  namespace core {
-    %include "IMP/core/macros.h"
-  }
-}
 
 
 /* Add additional IMPCORE_CONTAINER methods for scripting languages

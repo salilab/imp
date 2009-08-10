@@ -11,7 +11,6 @@
 %include "IMP_exceptions.i"
 %include "IMP_streams.i"
 
-%include "modules/domino/pyext/domino_config.i"
 %include "std_vector.i"
 %include "std_string.i"
 %include "std_except.i"
@@ -24,6 +23,9 @@ IMP_DIRECTOR_MODULE_CLASS(domino, DiscreteSet);
 /* Get definitions of kernel base classes (but do not wrap) */
 %import "kernel.i"
 %import "algebra.i"
+
+%include "IMP/domino/config.h"
+
 /* Wrap our own classes */
 %include "IMP/domino/JunctionTree.h"
 %include "IMP/domino/CombState.h"

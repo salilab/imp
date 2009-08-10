@@ -13,8 +13,6 @@
 %include "IMP_streams.i"
 %include "IMP_decorators.i"
 
-%include "modules/examples/pyext/examples_config.i"
-
 %include "std_vector.i"
 %include "std_string.i"
 %include "std_except.i"
@@ -24,6 +22,8 @@
 %import "kernel.i"
 %import "core.i"
 %import "algebra.i"
+
+%include "IMP/examples/config.h"
 
 /* Wrap our own classes */
 %include "IMP/examples/ExampleRestraint.h"
