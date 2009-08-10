@@ -9,7 +9,7 @@
 %include "IMP_macros.i"
 %include "IMP_exceptions.i"
 
-%include "modules/search/pyext/search_config.i"
+%include "IMP/search/config.h"
 
 %include "std_vector.i"
 %include "std_string.i"

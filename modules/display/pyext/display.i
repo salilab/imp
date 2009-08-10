@@ -13,8 +13,6 @@
 %include "IMP_exceptions.i"
 %include "IMP_streams.i"
 
-%include "modules/display/pyext/display_config.i"
-
 %include "std_vector.i"
 %include "std_string.i"
 %include "std_except.i"
@@ -24,6 +22,8 @@
 %import "core.i"
 %import "atom.i"
 %import "algebra.i"
+
+%include "IMP/display/config.h"
 
 /* Make selected classes extensible in Python */
 %import "IMP_directors.i"

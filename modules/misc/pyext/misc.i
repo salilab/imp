@@ -10,8 +10,6 @@
 %include "IMP_exceptions.i"
 %include "IMP_streams.i"
 
-%include "modules/misc/pyext/misc_config.i"
-
 %include "std_vector.i"
 %include "std_string.i"
 %include "std_except.i"
@@ -19,6 +17,8 @@
 /* Get definitions of base classes (but do not wrap) */
 %import "kernel.i"
 %import "algebra.i"
+
+%include "IMP/misc/config.h"
 
 namespace IMP {
   typedef VectorD<3> Vector3D;

@@ -23,11 +23,11 @@ namespace IMP::em {
 %ignore operator<<(std::ostream&, const EMHeader &);
 %ignore operator<<(std::ostream&, const MRCHeader &);
 
-%include "modules/em/pyext/em_config.i"
-
 %include "std_vector.i"
 %include "std_string.i"
 %include "std_except.i"
+
+%include "IMP/em/config.h"
 
 /* Make selected classes extensible in Python */
 %import "IMP_directors.i"

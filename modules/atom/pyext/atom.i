@@ -12,19 +12,17 @@
 %include "IMP_streams.i"
 %include "IMP_decorators.i"
 
-%include "modules/atom/pyext/atom_config.i"
-
 %include "std_vector.i"
 %include "std_string.i"
 %include "std_except.i"
-
-
 
 /* Get definitions of kernel base classes (but do not wrap) */
 %import "kernel.i"
 %import "IMP_keys.i"
 %import "algebra.i"
 %import "core.i"
+
+%include "IMP/atom/config.h"
 
 
 // must be before hierarchy
