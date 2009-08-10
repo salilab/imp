@@ -112,7 +112,7 @@ private:
   double check_value_;
 };
 
-#if !defined(IMP_DOXYGEN) and !defined(IMP_SWIG)
+#if !defined(IMP_DOXYGEN) && !defined(IMP_SWIG)
 inline std::ostream &operator<<(std::ostream &out, const Object& o) {
   o.pretty_print();
   return out;
