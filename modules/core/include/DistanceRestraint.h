@@ -11,6 +11,7 @@
 #include "config.h"
 #include "internal/version_info.h"
 #include "DistancePairScore.h"
+#include "XYZ.h"
 
 #include <IMP/Restraint.h>
 
@@ -36,7 +37,10 @@ public:
       \param[in] p2 Pointer to second particle in distance restraint.
    */
   DistanceRestraint(UnaryFunction* score_func,
-                    Particle* p1, Particle* p2);
+                    Particle *a, Particle *b);
+
+  DistanceRestraint(UnaryFunction *score_func,
+                    XYZ a, XYZ b);
 
   ParticlesList get_interacting_particles() const {
     ParticlesList ret(1,Particles(p_, p_+2));
@@ -47,7 +51,7 @@ public:
 
 private:
   Pointer<DistancePairScore> dp_;
-  Pointer<Particle> p_[2];
+  RefCountingDecorator<XYZ> p_[2];
 };
 
 IMPCORE_END_NAMESPACE
