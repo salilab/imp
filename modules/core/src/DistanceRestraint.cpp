@@ -19,8 +19,16 @@ DistanceRestraint::DistanceRestraint(UnaryFunction* score_func,
                                      Particle* p1, Particle* p2) :
   dp_(new DistancePairScore(score_func))
 {
-  p_[0]=p1;
-  p_[1]=p2;
+  p_[0]=XYZ(p1);
+  p_[1]=XYZ(p2);
+}
+
+DistanceRestraint::DistanceRestraint(UnaryFunction* score_func,
+                                     XYZ a, XYZ b) :
+  dp_(new DistancePairScore(score_func))
+{
+  p_[0]=a;
+  p_[1]=b;
 }
 
 //! Calculate the score for this distance restraint.
@@ -42,8 +50,8 @@ void DistanceRestraint::show(std::ostream& out) const
   out << "distance restraint:" << std::endl;
 
   get_version_info().show(out);
-  out << "  particles: " << p_[0]->get_name();
-  out << " and " << p_[1]->get_name();
+  out << "  particles: " << p_[0].get_particle()->get_name();
+  out << " and " << p_[1].get_particle()->get_name();
   out << "  ";
   dp_->show(out);
   out << std::endl;

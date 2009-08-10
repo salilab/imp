@@ -11,6 +11,7 @@
 #include "config.h"
 #include "internal/version_info.h"
 #include "AngleTripletScore.h"
+#include "XYZ.h"
 
 #include <IMP/Restraint.h>
 #include <IMP/Pointer.h>
@@ -33,6 +34,9 @@ public:
   AngleRestraint(UnaryFunction* score_func,
                  Particle* p1, Particle* p2, Particle* p3);
 
+  AngleRestraint(UnaryFunction* score_func,
+                 XYZ p0, XYZ p1, XYZ p2);
+
   IMP_RESTRAINT(AngleRestraint, internal::version_info)
 
   ParticlesList get_interacting_particles() const
@@ -41,7 +45,7 @@ public:
   }
 protected:
   Pointer<AngleTripletScore> sf_;
-  Pointer<Particle> p_[3];
+  RefCountingDecorator<XYZ> p_[3];
 };
 
 IMPCORE_END_NAMESPACE
