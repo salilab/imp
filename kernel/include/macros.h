@@ -263,33 +263,55 @@
     friend methods so that the class can be used with ref counting.
     By defining a private destructor, you make it so that the object
     cannot be declared on the stack and so must be ref counted.
+
+    \see IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR
     \see IMP::RefCounted
  */
-#define IMP_REF_COUNTED_DESTRUCTOR
+#define IMP_REF_COUNTED_DESTRUCTOR(Name)
+/** Like IMP_REF_COUNTED_DESTRUCTOR, but the destructor is only
+    declared, not defined.
+*/
+#define IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Name)
 #else
 
 #ifdef _MSC_VER
 // VC doesn't understand friends properly
-#define IMP_REF_COUNTED_DESTRUCTOR(Classname)                   \
+#define IMP_REF_COUNTED_DESTRUCTOR(Name)                        \
 public:                                                         \
- virtual ~Classname(){}
+ virtual ~Name(){}
+
+#define IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Name)             \
+public:                                                         \
+ virtual ~Name()
+
 #else
 
 #if defined(SWIG) || defined(IMP_SWIG_WRAPPER)
 // SWIG doesn't do friends right either, but we don't care as much
-#define IMP_REF_COUNTED_DESTRUCTOR(Classname)                   \
+#define IMP_REF_COUNTED_DESTRUCTOR(Name)                \
 public:                                                      \
- virtual ~Classname(){}
+ virtual ~Name(){}
+#define IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Name)     \
+public:                                                      \
+ virtual ~Name()
+
+
 #else
 /* The destructor is unprotected for SWIG since if it is protected
     SWIG does not wrap the python proxy distruction and so does not
     dereference the ref counted pointer. Swig also gets confused
     on template friends.
  */
-#define IMP_REF_COUNTED_DESTRUCTOR(Classname)                           \
+#define IMP_REF_COUNTED_DESTRUCTOR(Name)                           \
   protected:                                                            \
-  IMP_NO_DOXYGEN(template <class T> friend void IMP::internal::unref(T*);) \
-  IMP_NO_DOXYGEN(virtual ~Classname(){})
+  template <class T> friend void IMP::internal::unref(T*);              \
+  virtual ~Name(){}
+
+#define IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Name)                     \
+  protected:                                                            \
+  template <class T> friend void IMP::internal::unref(T*);              \
+  virtual ~Name()
+
 #endif // SWIG
 #endif // _MSC_VER
 #endif // doxygen
@@ -625,9 +647,26 @@ protection:                                                             \
 //! Define the basic things you need for a Restraint.
 /** In addition to the methods done by all the macros, it declares
     - IMP::Restraint::evaluate()
+
+    It also defines
+    - IMP::Restraint::get_is_incremental() to return 0
+    - IMP::Restraint::incremental_evaluate() to throw an exception
 */
 #define IMP_RESTRAINT(Name, version_info)                               \
   virtual Float evaluate(DerivativeAccumulator *accum);                 \
+  IMP_OBJECT(Name, version_info)
+
+//! Define the basic things you need for a Restraint.
+/** In addition to the methods done by all the macros, it declares
+    - IMP::Restraint::evaluate()
+    - IMP::Restraint::incremental_evaluate()
+    and it defines
+    - IMP::Restraint::get_is_incremental() to return true
+*/
+#define IMP_INCREMENTAL_RESTRAINT(Name, version_info)                   \
+  virtual Float evaluate(DerivativeAccumulator *accum);                 \
+  virtual bool get_is_incremental() const {return true;}                \
+  virtual double incremental_evaluate(DerivativeAccumulator *accum) const; \
   IMP_OBJECT(Name, version_info)
 
 //! Define the basic things you need for an optimizer.

@@ -13,15 +13,19 @@
 IMP_BEGIN_NAMESPACE
 
 
-Particle::Particle(Model *m, std::string name)
+Particle::Particle(Model *m, std::string name): shadow_(NULL)
 {
   m->add_particle_internal(this);
+}
+
+Particle::~Particle(){
+  if (shadow_) internal::unref(shadow_);
 }
 
 
 void Particle::zero_derivatives()
 {
-  derivatives_.set_values(0);
+  std::fill(derivatives_.begin(), derivatives_.end(), 0);
 }
 
 void Particle::show(std::ostream& out) const
@@ -38,10 +42,14 @@ void Particle::show(std::ostream& out) const
 
   if (model_) {
     out << inset << "float attributes:" << std::endl;
-    floats_.show(out, inset+inset);
-
-    out << inset << "float derivatives:" << std::endl;
-    derivatives_.show(out, inset+inset);
+    for (unsigned int i=0; i< derivatives_.size(); ++i) {
+      FloatKey k(i);
+      if (has_attribute(k)) {
+        out << k << ": " << get_value(k) << " ("
+            << derivatives_[i] << ") "
+            << (get_is_optimized(k)?"optimized":"") << std::endl;
+      }
+    }
 
     out << inset << "optimizeds:" << std::endl;
     optimizeds_.show(out, inset+inset);
@@ -61,39 +69,36 @@ void Particle::show(std::ostream& out) const
 
 // methods for incremental
 
-void Particle::copy_derivatives_from(Particle *o) {
-  derivatives_= o->derivatives_;
+void Particle::move_derivatives_to_shadow() {
+  shadow_->derivatives_=std::vector<double>(derivatives_.size(), 0);
+  std::swap(shadow_->derivatives_, derivatives_);
 }
 
-void Particle::accumulate_derivatives_from(Particle *o,
-                                           DerivativeAccumulator &da) {
-  for (FloatKeyIterator fkit=float_keys_begin();
-       fkit != float_keys_end(); ++fkit) {
-    add_to_derivative(*fkit, o->get_derivative(*fkit), da);
+void Particle::accumulate_derivatives_from_shadow() {
+  IMP_assert(derivatives_.size() == shadow_->derivatives_.size(),
+             "The tables do not match on size " << derivatives_.size()
+             << " " << shadow_->derivatives_.size() << std::endl);
+  for (unsigned int i=0; i < derivatives_.size(); ++i) {
+    derivatives_[i]+= shadow_->derivatives_[i];
   }
 }
 
-
-void Particle::copy_from(Particle *o) {
-  floats_=o->floats_;
-  strings_=o->strings_;
-  ints_= o->ints_;
-}
-
-Particle::Particle() {
+Particle::Particle(): shadow_(NULL) {
 }
 
 void Particle::setup_incremental() {
-  old_ = std::auto_ptr<Particle>(new Particle());
-  old_->set_name(get_name()+" history");
-  old_->model_= model_;
-  old_->copy_from(this);
-  // assume that evaluate was called before
-  old_->copy_derivatives_from(this);
+  shadow_ = new Particle();
+  internal::ref(shadow_);
+  shadow_->set_name(get_name()+" history");
+  shadow_->model_= model_;
+  shadow_->dirty_=true;
+  set_is_not_changed();
+  shadow_->derivatives_.resize(derivatives_.size(), 0);
 }
 
 void Particle::teardown_incremental() {
-  old_.reset();
+  internal::unref(shadow_);
+  shadow_=NULL;
 }
 
 

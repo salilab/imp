@@ -47,6 +47,9 @@ private:
   ParticleStorage particles_;
   unsigned int next_particle_index_;
   bool incremental_update_;
+  // true if a regular evaluate needs to be called first
+  bool first_incremental_;
+  bool last_had_derivatives_;
   std::map<FloatKey, FloatRange> ranges_;
   enum Stage {NOT_EVALUATING, BEFORE_EVALUATE, EVALUATE, AFTER_EVALUATE};
   mutable Stage cur_stage_;
@@ -83,11 +86,20 @@ private:
 
   void after_evaluate(bool calc_derivs) const;
 
-  void zero_derivatives() const;
+  void zero_derivatives(bool shadow_too=false) const;
 
   double do_evaluate(bool calc_derivs) const;
 
+  enum WhichRestraints {ALL, INCREMENTAL, NONINCREMENTAL};
+  double do_evaluate_restraints(bool calc_derivs,
+                                WhichRestraints incremental_restraints,
+                                bool incremental_evaluation) const;
+
+  // begin incremental
+
   double do_evaluate_incremental(bool calc_derivs) const;
+
+  // end incremental
 
 #if defined(SWIG)
  public:

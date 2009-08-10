@@ -150,6 +150,9 @@ public:
     check_contains(k);
     return map_[k.get_index()];
   }
+  unsigned int length() const {
+    return map_.size();
+  }
 
 
   void set_value(Key k, PassValue v) {
