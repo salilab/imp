@@ -555,6 +555,9 @@ def add_common_variables(vars, package):
     vars.Add(BoolVariable('dot',
                           'Use dot from graphviz to lay out graphs in the documentation if available. This produces prettier graphs, but is slow.',
                           True))
+    vars.Add(BoolVariable('svn',
+                          'True if this build is from an svn version of IMP. If so, SVN version info is added to the provided version number.',
+                          True))
     vars.Add(BoolVariable('python', 'Whether to build the python libraries ', True))
     vars.Add(BoolVariable('localmodules', 'Whether to build local modules that are not part of the IMP distribution', False))
     vars.Add(PathVariable('repository', 'Where to find the source code to build. This is only needed if building in a different directory than the source.', None, PathVariable.PathIsDir))

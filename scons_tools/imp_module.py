@@ -110,6 +110,7 @@ def IMPModuleLib(envi, files):
     vars= make_vars(env)
     link= env.IMPModuleLinkTest(target=['internal/link_0.cpp', 'internal/link_1.cpp'], source=[])
     version= env.IMPModuleVersionInfoCPP(target=['internal/version_info.cpp'], source=[])
+    env.AlwaysBuild(version)
     files =files+link+ version
     if env.get('static', False) and env['CC'] == 'gcc':
         build = env.StaticLibrary('#/build/lib/imp%s' % module_suffix,
@@ -448,6 +449,17 @@ def IMPModuleBuild(env, version, required_modules=[],
             raise ValueError("Do not understand optional dependency: " +d)
 
     env['IMP_MODULE_CONFIG']=config_macros
+    if env.get('svn', True):
+        if env.get('repository', None) is not None:
+            path=env['repository']
+        else:
+            path="."
+        dir= Dir("#/"+path).abspath
+        try:
+            vr= os.popen('svnversion ' + dir).read()
+            version= version + ' ' + vr.split("\n")[0]
+        except:
+            print "Could not run svnversion."
     env['IMP_MODULE_VERSION'] = version
     vars=make_vars(env)
     env.validate()
