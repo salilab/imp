@@ -462,19 +462,6 @@ void ImageHeader::set_origin_offsets(float Zoff, float Yoff, float Xoff)
   header_.fZoff = Zoff;
 }
 
-void ImageHeader::get_origin_offsets(float &Yoff, float &Xoff) const
-{
-  Xoff =  header_.fXoff;
-  Yoff =  header_.fYoff;
-}
-
-void ImageHeader::get_origin_offsets(float& Zoff,float& Yoff,float& Xoff) const
-{
-  Xoff =  header_.fXoff;
-  Yoff =  header_.fYoff;
-  Zoff =  header_.fZoff;
-}
-
 void ImageHeader::set_euler_angles(float Phi, float Theta, float Psi)
 {
   // sets flag and angles
