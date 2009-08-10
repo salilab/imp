@@ -65,7 +65,7 @@ def handle_example_dir(env, dirpath, name, includepath, files):
             install.append(env.Install(exampledir+"/"+prefix, f.abspath))
         elif str(f).endswith(".readme"):
             install.append(env.Install(exampledir+"/"+prefix, f.abspath))
-    test= env._IMPModuleTest('tests.passed', ["#/bin/imppy.sh", "#/tools/run-all-tests.py"]\
+    test= env._IMPModuleTest('tests.passed', ["#/tools/imppy.sh", "#/scons_tools/run-all-tests.py"]\
                                  +[x for x in files if str(x).endswith(".py") and str(x).find("fragment")==-1])
     env.AlwaysBuild("test.passed")
     doxpage= env._IMPExamplesDox(File(str(dirpath)+"/examples.dox"), files)
