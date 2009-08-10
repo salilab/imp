@@ -411,9 +411,7 @@ public:
 
   // Origin offsets
   void set_origin_offsets(float Yoff, float Xoff);
-  void get_origin_offsets(float& Yoff, float& Xoff) const;
   void set_origin_offsets(float Zoff, float Yoff, float Xoff);
-  void get_origin_offsets(float& Zoff, float& Yoff, float& Xoff) const;
 
   // Euler angles
   void set_euler_angles(float Phi, float Theta, float Psi);
@@ -461,6 +459,19 @@ public:
     Phi2 = (T) header_.fPhi2;
     Theta2 = (T) header_.fTheta2;
     Psi2 = (T) header_.fPsi2;
+  }
+
+  template<typename T>
+  void get_origin_offsets(T &Yoff, T &Xoff) const   {
+    Yoff =  (T) header_.fYoff;
+    Xoff =  (T) header_.fXoff;
+  }
+
+  template<typename T>
+  void get_origin_offsets(T &Zoff,T &Yoff,T &Xoff) const {
+    Zoff =  (T) header_.fZoff;
+    Yoff =  (T) header_.fYoff;
+    Xoff =  (T) header_.fXoff;
   }
 
   void set_Phi(float value) {
