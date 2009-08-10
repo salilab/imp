@@ -108,9 +108,12 @@ class IMPEXPORT Particle : public Object
   }
 
   void set_is_not_changed() {
-    if (get_is_changed()) {
-      old_->copy_from(this);
+    if (dirty_) {
+      shadow_->floats_= floats_;
+      shadow_->strings_= strings_;
+      shadow_->ints_= ints_;
     }
+    dirty_=false;
   }
 
   void setup_incremental();
@@ -120,13 +123,8 @@ class IMPEXPORT Particle : public Object
   // don't add the particle to the model, used for incremental
   Particle();
 
-  // for Changed, not a general purpose copy
-  void copy_from(Particle *o);
-
-  void copy_derivatives_from(Particle *o);
-
-  void accumulate_derivatives_from(Particle *o, DerivativeAccumulator &da);
-
+  void accumulate_derivatives_from_shadow();
+  void move_derivatives_to_shadow();
   // end incremental
 
   /* This has to be declared here since boost 1.35 wants the full
@@ -163,8 +161,8 @@ class IMPEXPORT Particle : public Object
 
   // float attributes associated with the particle
   FloatTable floats_;
-  // float attributes associated with the particle
-  FloatTable derivatives_;
+  // special case the derivatives since we never check for existence
+  std::vector<double> derivatives_;
   // Whether a given float is optimized or not
   OptimizedTable optimizeds_;
 
@@ -179,12 +177,11 @@ class IMPEXPORT Particle : public Object
 
   // incremental updates
   bool dirty_;
-  std::auto_ptr<Particle> old_;
-  friend class std::auto_ptr<Particle>;
+  // manually ref counted since Pointer requires the full definition
+  Particle* shadow_;
 #endif
 
-  IMP_REF_COUNTED_DESTRUCTOR(Particle)
-
+  IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Particle);
  public:
 
   //! Construct a particle and add it to the Model
@@ -410,7 +407,7 @@ class IMPEXPORT Particle : public Object
       evaluation
   */
   Particle *get_prechange_particle() const {
-    return old_.get();
+    return shadow_;
   }
   /** @} */
 };
@@ -444,7 +441,7 @@ inline Float Particle::get_derivative(FloatKey name) const
   IMP_assert(has_attribute(name), "Particle " << get_name()
              << " does not have attribute " << name);
   IMP_CHECK_VALID_DERIVATIVES;
-  return derivatives_.get_value(name);
+  return derivatives_[name.get_index()];
 }
 
 inline void Particle::set_value(FloatKey name, Float value)
@@ -490,7 +487,9 @@ inline void Particle::add_to_derivative(FloatKey name, Float value,
   IMP_assert(has_attribute(name), "Particle " << get_name()
              << " does not have attribute " << name);
   IMP_IF_CHECK(CHEAP) { assert_can_change_derivatives();}
-  derivatives_.set_value(name, derivatives_.get_value(name)+ da(value));
+  IMP_assert(name.get_index() < derivatives_.size(),
+             "Something is wrong with derivative table.");
+  derivatives_[name.get_index()]+= da(value);
 }
 
 inline bool Particle::has_attribute(IntKey name) const
@@ -571,7 +570,7 @@ void inline Particle::add_attribute(FloatKey name, const Float value,
   IMP_CHECK_ACTIVE;
   on_changed();
   floats_.insert(name, value);
-  derivatives_.insert(name, 0);
+  derivatives_.resize(std::max(name.get_index(), floats_.length()), 0);
   if (is_optimized) {
     optimizeds_.insert(name, true);
   }
@@ -582,7 +581,7 @@ void inline Particle::remove_attribute(FloatKey name)
   IMP_CHECK_ACTIVE;
   on_changed();
   floats_.remove(name);
-  derivatives_.remove(name);
+  //derivatives_.remove(name);
   optimizeds_.remove_always(name);
 }
 

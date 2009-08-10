@@ -93,9 +93,9 @@ public:
       @{
   */
   //! Return true if the incremental_evaluate() function is implemented
-  bool get_is_incremental() const {return false;}
+  virtual bool get_is_incremental() const {return false;}
   //! Return the restraint score evaluated in an incremental manner
-  double incremental_evaluate(DerivativeAccumulator *) const {
+  virtual double incremental_evaluate(DerivativeAccumulator *) const {
     IMP_failure(get_name() << " does not support incremental evaluation.",
                 ErrorException);
     return 0;
