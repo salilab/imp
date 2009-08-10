@@ -4,6 +4,7 @@ import scons_tools.boost
 import scons_tools.cgal
 import scons_tools.swig
 import scons_tools.standards
+import scons_tools.endian
 
 # We need scons 0.98 or later
 EnsureSConsVersion(0, 98)
@@ -30,15 +31,7 @@ if env.get('repository', None) is not None:
 scons_tools.boost.configure_check(env, '1.33')
 scons_tools.cgal.configure_check(env)
 scons_tools.swig.configure_check(env)
-
-conf=env.Configure(config_h="kernel/include/internal/config.h")
-if env['CGAL_LIBS'] != ['']:
-    conf.Define("IMP_USE_CGAL")
-
-if not env.get('deprecated', "True"):
-    conf.Define('IMP_NO_DEPRECATED')
-conf.Finish()
-env.AlwaysBuild("build/include/IMP/internal/config.h")
+scons_tools.endian.configure_check(env)
 
 Help("""
 Available command-line options:
@@ -76,9 +69,6 @@ standards = env.CheckStandards(target='standards.passed',
 env.Alias('standards', standards)
 env.AlwaysBuild(standards)
 
-# Subdirectories to build:
-bin = SConscript('bin/SConscript')
-Export('bin')
 env.IMPModuleSetup('kernel', module_suffix="", module_include_path="IMP",
                    module_src_path="kernel", module_preproc="IMP", module_namespace="IMP")
 SConscript('build/SConscript')
@@ -86,18 +76,16 @@ SConscript('modules/SConscript')
 SConscript('applications/SConscript')
 # This must be after the other SConscipt calls so that it knows about all the generated files
 SConscript('doc/SConscript')
+SConscript('tools/SConscript')
+SConscript('bin/SConscript')
 
 env.Alias(env.Alias('test'), [env.Alias('examples-test')])
 
-Clean('build', ['build/tmp/',
+Clean('all', ['build/tmp/',
                 'build/include',
-                'build/lib'])
+                'build/lib',
+                'build/data'])
 Clean('all', Glob('scons_tools/*.pyc')\
-                          + Glob('tools/*.pyc')\
-                          + Glob('bin/*.pyc'))
+          + Glob('tools/*.pyc'))
 
-# bin script first requires kernel libraries to be built:
-#env.Depends(bin, [src, pyext])
-
-# Build the binaries by default:
-env.Default([bin])
+env.Default('tools/imppy.sh')
