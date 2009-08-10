@@ -95,7 +95,7 @@ private:
 
 
   unit::SquareAngstrom feature_size_2_;
-  SimulationParameters si_;
+  RefCountingDecorator<SimulationParameters> si_;
   Pointer<SingletonContainer> sc_;
   unsigned int failed_steps_;
   unsigned int successful_steps_;
