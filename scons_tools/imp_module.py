@@ -109,8 +109,9 @@ def IMPModuleLib(envi, files):
     module_suffix = env['IMP_MODULE_SUFFIX']
     vars= make_vars(env)
     link= env.IMPModuleLinkTest(target=['internal/link_0.cpp', 'internal/link_1.cpp'], source=[])
-    version= env.IMPModuleVersionInfoCPP(target=['internal/version_info.cpp'], source=[])
-    env.AlwaysBuild(version)
+    version= env.IMPModuleVersionInfoCPP(target=['internal/version_info.cpp'],
+                                         source=[env.Value(env['IMP_MODULE_VERSION'])])
+    #env.AlwaysBuild(version)
     files =files+link+ version
     if env.get('static', False) and env['CC'] == 'gcc':
         build = env.StaticLibrary('#/build/lib/imp%s' % module_suffix,
@@ -142,7 +143,7 @@ def IMPModuleInclude(env, files):
     vi=env.IMPModuleVersionInfoH(target=['internal/version_info.h'], source=[])
     # Generate config header and SWIG equivalent
     config=env.IMPModuleConfigH(target=['config.h'],
-    source=[])
+    source=[env.Value(env['IMP_MODULE_CONFIG'])])
     env.AlwaysBuild(config)
     files=files+config+vi
     install = hierarchy.InstallHierarchy(env, includedir+"/"+vars['module_include_path'],
@@ -236,7 +237,10 @@ def IMPModulePython(env):
         globlist= ["#/module/"+x+"/pyext/*.i" for x in env['IMP_REQUIRED_MODULES']]\
             + ["*.i"]
         #print globlist
-        deps= module_glob(globlist)+["#/build/include/%(module_include_path)s/"%vars + str(x) for x in env['IMP_MODULE_HEADERS']]
+        deps= module_glob(globlist)+["#/build/include/%(module_include_path)s/"%vars \
+                                         + str(x) for x in env['IMP_MODULE_HEADERS']] \
+                                         + ['#/build/include/IMP/macros.h'] \
+                                         + ['#/build/include/IMP/container_macros.h']
         #print [str(x) for x in deps]
         penv._IMPSWIG(target=['wrap.cc',
                               'wrap.h'],
