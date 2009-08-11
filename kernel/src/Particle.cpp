@@ -9,11 +9,13 @@
 #include "IMP/log.h"
 #include "IMP/Model.h"
 #include "IMP/internal/utility.h"
+#include "IMP/internal/PrefixStream.h"
 
 IMP_BEGIN_NAMESPACE
 
 
-Particle::Particle(Model *m, std::string name): shadow_(NULL)
+Particle::Particle(Model *m, std::string name): derivatives_(0),
+                                                shadow_(NULL)
 {
   m->add_particle_internal(this);
 }
@@ -25,43 +27,45 @@ Particle::~Particle(){
 
 void Particle::zero_derivatives()
 {
-  std::fill(derivatives_.begin(), derivatives_.end(), 0);
+  derivatives_.fill(0);
 }
 
 void Particle::show(std::ostream& out) const
 {
-  const std::string inset("  ");
-  out << std::endl;
-  out << "Particle: " << get_name() << std::endl;
-  if (get_is_active()) {
-    out << inset << inset << "active";
-  } else {
-    out << inset << inset << "dead";
-  }
-  out << std::endl;
+  internal::PrefixStream preout(&out);
+  preout << "Particle: " << get_name()
+         << (get_is_active()? " (active)":" (dead)") << std::endl;
 
   if (model_) {
-    out << inset << "float attributes:" << std::endl;
-    for (unsigned int i=0; i< derivatives_.size(); ++i) {
+    preout << "float attributes:" << std::endl;
+    preout.set_prefix("  ");
+    for (unsigned int i=0; i< derivatives_.length(); ++i) {
       FloatKey k(i);
       if (has_attribute(k)) {
-        out << k << ": " << get_value(k) << " ("
-            << derivatives_[i] << ") "
+        preout << k << ": " << get_value(k) << " ("
+            << derivatives_.get(i) << ") "
             << (get_is_optimized(k)?"optimized":"") << std::endl;
       }
     }
+    preout.set_prefix("");
+    out << "optimizeds:" << std::endl;
+    preout.set_prefix("  ");
+    optimizeds_.show(preout);
 
-    out << inset << "optimizeds:" << std::endl;
-    optimizeds_.show(out, inset+inset);
+    preout.set_prefix("");
+    out << "int attributes:" << std::endl;
+    preout.set_prefix("  ");
+    ints_.show(preout);
 
-    out << inset << "int attributes:" << std::endl;
-    ints_.show(out, inset+inset);
+    preout.set_prefix("");
+    out << "string attributes:" << std::endl;
+    preout.set_prefix("  ");
+    strings_.show(preout);
 
-    out << inset << "string attributes:" << std::endl;
-    strings_.show(out, inset+inset);
-
-    out << inset << "particle attributes:" << std::endl;
-    particles_.show(out, inset+inset);
+    preout.set_prefix("");
+    out << "particle attributes:" << std::endl;
+    preout.set_prefix("  ");
+    particles_.show(preout);
 
   }
 }
@@ -70,20 +74,20 @@ void Particle::show(std::ostream& out) const
 // methods for incremental
 
 void Particle::move_derivatives_to_shadow() {
-  shadow_->derivatives_=std::vector<double>(derivatives_.size(), 0);
+  shadow_->derivatives_=DerivativeTable(derivatives_.length(), 0);
   std::swap(shadow_->derivatives_, derivatives_);
 }
 
 void Particle::accumulate_derivatives_from_shadow() {
-  IMP_assert(derivatives_.size() == shadow_->derivatives_.size(),
-             "The tables do not match on size " << derivatives_.size()
-             << " " << shadow_->derivatives_.size() << std::endl);
-  for (unsigned int i=0; i < derivatives_.size(); ++i) {
-    derivatives_[i]+= shadow_->derivatives_[i];
+  IMP_assert(derivatives_.length() == shadow_->derivatives_.length(),
+             "The tables do not match on size " << derivatives_.length()
+             << " " << shadow_->derivatives_.length() << std::endl);
+  for (unsigned int i=0; i < derivatives_.length(); ++i) {
+    derivatives_.set(i, derivatives_.get(i)+ shadow_->derivatives_.get(i));
   }
 }
 
-Particle::Particle(): shadow_(NULL) {
+Particle::Particle(): derivatives_(0), shadow_(NULL) {
 }
 
 void Particle::setup_incremental() {
@@ -93,7 +97,7 @@ void Particle::setup_incremental() {
   shadow_->model_= model_;
   shadow_->dirty_=true;
   set_is_not_changed();
-  shadow_->derivatives_.resize(derivatives_.size(), 0);
+  shadow_->derivatives_= DerivativeTable(derivatives_.length(), 0);
 }
 
 void Particle::teardown_incremental() {
