@@ -144,25 +144,29 @@ class IMPEXPORT Particle : public Object
     }
   };
 
-  typedef internal::AttributeTable<internal::FloatAttributeTableTraits>
+  typedef internal::AttributeTable<internal::FloatAttributeTableTraits,
+    internal::VectorStorage<internal::FloatAttributeTableTraits::Value> >
     FloatTable;
-  typedef internal::AttributeTable<internal::DoubleAttributeTableTraits>
-    DerivativeTable;
-  typedef internal::AttributeTable<internal::BoolAttributeTableTraits>
+  typedef internal::AttributeTable<internal::BoolAttributeTableTraits,
+    internal::VectorStorage<internal::BoolAttributeTableTraits::Value> >
     OptimizedTable;
-  typedef internal::AttributeTable<internal::IntAttributeTableTraits>
+  typedef internal::AttributeTable<internal::IntAttributeTableTraits,
+    internal::VectorStorage<internal::IntAttributeTableTraits::Value> >
     IntTable;
-  typedef internal::AttributeTable<internal::StringAttributeTableTraits>
+  typedef internal::AttributeTable<internal::StringAttributeTableTraits,
+    internal::VectorStorage<internal::StringAttributeTableTraits::Value> >
     StringTable;
-  typedef internal::AttributeTable<ParticleAttributeTableTraits>
+  typedef internal::AttributeTable<ParticleAttributeTableTraits,
+    internal::VectorStorage<ParticleAttributeTableTraits::Value> >
     ParticleTable;
+  typedef internal::VectorStorage<double>  DerivativeTable;
 
   WeakPointer<Model> model_;
 
   // float attributes associated with the particle
   FloatTable floats_;
   // special case the derivatives since we never check for existence
-  std::vector<double> derivatives_;
+  DerivativeTable derivatives_;
   // Whether a given float is optimized or not
   OptimizedTable optimizeds_;
 
@@ -441,7 +445,7 @@ inline Float Particle::get_derivative(FloatKey name) const
   IMP_assert(has_attribute(name), "Particle " << get_name()
              << " does not have attribute " << name);
   IMP_CHECK_VALID_DERIVATIVES;
-  return derivatives_[name.get_index()];
+  return derivatives_.get(name.get_index());
 }
 
 inline void Particle::set_value(FloatKey name, Float value)
@@ -487,9 +491,10 @@ inline void Particle::add_to_derivative(FloatKey name, Float value,
   IMP_assert(has_attribute(name), "Particle " << get_name()
              << " does not have attribute " << name);
   IMP_IF_CHECK(CHEAP) { assert_can_change_derivatives();}
-  IMP_assert(name.get_index() < derivatives_.size(),
+  IMP_assert(name.get_index() < derivatives_.length(),
              "Something is wrong with derivative table.");
-  derivatives_[name.get_index()]+= da(value);
+  derivatives_.set(name.get_index(),
+                   derivatives_.get(name.get_index())+ da(value));
 }
 
 inline bool Particle::has_attribute(IntKey name) const
@@ -570,7 +575,7 @@ void inline Particle::add_attribute(FloatKey name, const Float value,
   IMP_CHECK_ACTIVE;
   on_changed();
   floats_.insert(name, value);
-  derivatives_.resize(std::max(name.get_index(), floats_.length()), 0);
+  derivatives_.add(name.get_index(), 0, 0);
   if (is_optimized) {
     optimizeds_.insert(name, true);
   }
