@@ -12,6 +12,7 @@
 #include "../utility.h"
 #include "../log.h"
 #include "../Pointer.h"
+#include "../macros.h"
 
 #include <boost/iterator/filter_iterator.hpp>
 #include <boost/iterator/counting_iterator.hpp>
@@ -106,6 +107,47 @@ struct StringAttributeTableTraits: public DefaultTraits<String, StringKey>
   }
 };
 
+template <class Value>
+class VectorStorage {
+  typedef std::vector<Value> Map;
+  std::vector<Value> map_;
+public:
+  VectorStorage(Value initial_value){}
+  VectorStorage(unsigned int size, Value initial_value): map_(size,
+                                                              initial_value){}
+  typename Map::const_reference get(unsigned int i) const {
+    IMP_check(i < map_.size(), "Out of range traits.", IndexException);
+    return map_[i];
+  }
+  void set(unsigned int i, const Value &v) {
+    IMP_check(i < map_.size(), "Out of range traits.", IndexException);
+    map_[i]=v;
+  }
+  void add(typename Map::size_type i, const Value &v, const Value &fill_value) {
+    map_.resize(std::max(map_.size(), i+1), fill_value);
+    map_[i]= v;
+  }
+  bool fits(unsigned int i) const {
+    return map_.size() > i;
+  }
+  void clear(Value v) {
+    map_.clear();
+  }
+  unsigned int length() const {
+    return map_.size();
+  }
+
+  void swap_with(VectorStorage<Value> &o) {
+    std::swap(map_, o.map_);
+  }
+  void fill(Value v) {
+    std::fill(map_.begin(), map_.end(), v);
+  }
+};
+
+IMP_SWAP_1(VectorStorage);
+
+
 // The traits for the particle class are declared in the Particle.h
 
 /** \internal
@@ -121,52 +163,51 @@ struct StringAttributeTableTraits: public DefaultTraits<String, StringKey>
     values is a checked error. The values are specified by the
     Traits::invalid entry.
  */
-template <class Traits>
+template <class ValueTraits, class Storage>
 class AttributeTable
 {
-  typedef AttributeTable<Traits> This;
+  typedef AttributeTable<ValueTraits, Storage> This;
 
-  typedef std::vector<typename Traits::Value> Map;
-  Map map_;
+  Storage map_;
 
-  void check_contains(typename Traits::Key k) const {
-    IMP_check(map_.size() > k.get_index()
-              && Traits::get_is_valid(map_[k.get_index()]),
+  void check_contains(typename ValueTraits::Key k) const {
+    IMP_check(map_.fits(k.get_index())
+              && ValueTraits::get_is_valid(map_.get(k.get_index())),
               "Attribute \"" << k.get_string()
               << "\" not found in table.",
               IndexException);
   }
 public:
-  typedef typename Traits::Value Value;
-  typedef typename Traits::PassValue PassValue;
-  typedef typename Traits::Key Key;
-  AttributeTable(){}
+  typedef typename ValueTraits::Value Value;
+  typedef typename ValueTraits::PassValue PassValue;
+  typedef typename ValueTraits::Key Key;
+  AttributeTable(): map_(ValueTraits::get_invalid()){}
 
   void clear() {
-    map_.clear();
+    map_.clear(ValueTraits::get_invalid());
   }
 
   const PassValue get_value(Key k) const {
     check_contains(k);
-    return map_[k.get_index()];
+    return map_.get(k.get_index());
   }
   unsigned int length() const {
-    return map_.size();
+    return map_.length();
   }
 
 
   void set_value(Key k, PassValue v) {
     check_contains(k);
     Value vv(v);
-    IMP_check(Traits::get_is_valid(vv),
+    IMP_check(ValueTraits::get_is_valid(vv),
               "Cannot set value of attribute to " << v,
               ValueException);
-    map_[k.get_index()] = vv;
+    map_.set(k.get_index(), vv);
   }
 
   void set_values(PassValue v) {
     for (unsigned int i=0; i< map_.size(); ++i) {
-      map_[i]=v;
+      map_.set(i,v);
     }
   }
 
@@ -177,7 +218,23 @@ public:
     insert_always(k, v);
   }
 
-  void insert_always(Key k, PassValue v);
+  void insert_always(Key k, PassValue v) {
+    /*std::cout << "Insert " << k << " in v of size "
+      << size_ << " " << map_ << " " << k.get_index() << std::endl;*/
+    IMP_assert(k != Key(),
+               "Can't insert default key");
+    Value vv(v);
+    IMP_check(ValueTraits::get_is_valid(vv),
+              "Trying to insert invalid value for attribute "
+              << v << " into attribute " << k,
+              ValueException);
+    unsigned int val
+      =static_cast<unsigned int>(k.get_index());
+    IMP_assert(val <100000, "Bad key index: " << k.get_index()
+               << " " << k.get_string());
+    map_.add(k.get_index(), vv,
+             ValueTraits::get_invalid());
+  }
 
   void remove(Key k) {
     check_contains(k);
@@ -186,31 +243,35 @@ public:
 
   void remove_always(Key k) {
     IMP_assert(k != Key(), "Can't remove invalid key");
-    if (k.get_index() < map_.size()) {
-      map_[k.get_index()]= Traits::get_invalid();
-      // Cleanup loop. Changed in r709 from a simple pop_back() loop, since that
-      // crashed MSVC builds - possibly a hidden corruption bug elsewhere
-      // in the code (as that code appears valid).
-      long i = map_.size() - 1;
-      while (i >= 0 && map_[i] == Traits::get_invalid()) {
-        --i;
-      }
-      map_.erase(map_.begin() + i + 1, map_.end());
+    if (k.get_index() < map_.length()) {
+      map_.set(k.get_index(), ValueTraits::get_invalid());
+      // really, no good reason to shrink
     }
   }
 
 
   bool contains(Key k) const {
     IMP_assert(k != Key(), "Can't search for default key");
-    return k.get_index() < map_.size()
-      && Traits::get_is_valid(map_[k.get_index()]);
+    return k.get_index() < map_.length()
+      && ValueTraits::get_is_valid(map_.get(k.get_index()));
   }
 
 
-  void show(std::ostream &out, const std::string prefix="") const;
+  void show(std::ostream &out) const {
+    for (unsigned int i=0; i< map_.length(); ++i) {
+      if (ValueTraits::get_is_valid(map_.get(i))) {
+        out << Key(i).get_string() << ": ";
+        out << map_.get(i);
+        out << std::endl;
+      }
+    }
+  }
 
 
-  std::vector<Key> get_keys() const;
+  std::vector<Key> get_keys() const {
+    std::vector<Key> ret(attribute_keys_begin(), attribute_keys_end());
+    return ret;
+  }
 
   class IsAttribute
   {
@@ -229,75 +290,31 @@ public:
 
   AttributeKeyIterator attribute_keys_begin() const {
     KeyIterator b(0U);
-    KeyIterator e(map_.size());
+    KeyIterator e(map_.length());
     IMP_assert(std::distance(b,e)
-               == map_.size(), "Something is broken with the iterators");
+               == map_.length(), "Something is broken with the iterators");
     IMP_assert(std::distance(AttributeKeyIterator(IsAttribute(this), b,e),
                              AttributeKeyIterator(IsAttribute(this), e,e))
-                             <= map_.size(), "Broken in filter");
+                             <= map_.length(), "Broken in filter");
     return AttributeKeyIterator(IsAttribute(this),
                                 KeyIterator(Key(0U)),
-                                KeyIterator(Key(map_.size())));
+                                KeyIterator(Key(map_.length())));
   }
   AttributeKeyIterator attribute_keys_end() const {
     return AttributeKeyIterator(IsAttribute(this),
-                                KeyIterator(Key(map_.size())),
-                                KeyIterator(Key(map_.size())));
+                                KeyIterator(Key(map_.length())),
+                                KeyIterator(Key(map_.length())));
+  }
+
+  void swap_with( AttributeTable<ValueTraits, Storage> &o) {
+    swap(map_, o.map_);
   }
 
 };
 
-IMP_OUTPUT_OPERATOR_1(AttributeTable)
+IMP_OUTPUT_OPERATOR_2(AttributeTable)
 
-
-
-
-template <class Traits>
-inline void AttributeTable<Traits>::insert_always(Key k, PassValue v)
-{
-  /*std::cout << "Insert " << k << " in v of size "
-    << size_ << " " << map_ << " " << k.get_index() << std::endl;*/
-  IMP_assert(k != Key(),
-            "Can't insert default key");
-  Value vv(v);
-  IMP_check(Traits::get_is_valid(vv),
-            "Trying to insert invalid value for attribute "
-            << v << " into attribute " << k,
-            ValueException);
-  typename Map::size_type val
-    =static_cast<typename Map::size_type>(k.get_index());
-  IMP_assert(val <100000, "Bad key index: " << k.get_index()
-             << " " << k.get_string());
-  map_.resize(std::max(map_.size(),
-                       val+1),
-              Traits::get_invalid());
-  map_[k.get_index()]= vv;
-}
-
-
-
-template <class Traits>
-inline void AttributeTable<Traits>::show(std::ostream &out,
-                                         const std::string prefix) const
-{
-  for (unsigned int i=0; i< map_.size(); ++i) {
-    if (Traits::get_is_valid(map_[i])) {
-      out << prefix;
-      out << Key(i).get_string() << ": ";
-      out << map_[i];
-      out << std::endl;
-    }
-  }
-}
-
-
-template <class Traits>
-inline std::vector<typename Traits::Key>
-  AttributeTable<Traits>::get_keys() const
-{
-  std::vector<Key> ret(attribute_keys_begin(), attribute_keys_end());
-  return ret;
-}
+IMP_SWAP_2(AttributeTable);
 
 namespace {
   static const FloatKey xyzr_keys[]={FloatKey(0U), FloatKey(1U),
