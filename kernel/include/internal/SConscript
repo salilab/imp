@@ -3,6 +3,7 @@ files = [
          'ExponentialNumber.h',
          'IndexingIterator.h',
          'NestedIterator.h',
+         'PrefixStream.h',
          'Unit.h',
          'Vector.h',
          'constants.h',
