@@ -17,8 +17,8 @@ IntKey Chain::get_id_key() {
   return k;
 }
 
-void Chain::show(std::ostream &out, std::string prefix) const {
-  out << prefix << "Chain: " << get_id() << std::endl;
+void Chain::show(std::ostream &out) const {
+  out << "Chain: " << get_id() << std::endl;
 }
 
 IMPATOM_END_NAMESPACE

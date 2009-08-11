@@ -139,10 +139,8 @@ public:
   }
 
 
-  /** Write information about this decorator to out. Each line should
-   prefixed by prefix*/
-  void show(std::ostream &out=std::cout,
-            std::string prefix=std::string()) const;
+  /** Write information about this decorator to out.*/
+  void show(std::ostream &out=std::cout) const;
 
 
 

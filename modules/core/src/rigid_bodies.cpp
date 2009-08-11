@@ -267,8 +267,8 @@ RigidMember::~RigidMember(){}
 
 
 
-void RigidBody::show(std::ostream &out, std::string prefix) const {
-  out << prefix << "Rigid body " << get_transformation()
+void RigidBody::show(std::ostream &out) const {
+  out << "Rigid body " << get_transformation()
       << "("
       << get_particle()->get_derivative(internal::rigid_body_data()
                                         .quaternion_[0])
@@ -284,8 +284,8 @@ void RigidBody::show(std::ostream &out, std::string prefix) const {
       << ")";
 }
 
-void RigidMember::show(std::ostream &out, std::string prefix) const {
-  out << prefix << "Member at " << get_internal_coordinates();
+void RigidMember::show(std::ostream &out) const {
+  out << "Member at " << get_internal_coordinates();
 }
 
 

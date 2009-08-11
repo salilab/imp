@@ -94,9 +94,9 @@ void Diffusion::set_D_from_radius_in_angstroms(Float ir,
                  unit::Kelvin(it)));
 }
 
-void Diffusion::show(std::ostream &out, std::string prefix) const
+void Diffusion::show(std::ostream &out) const
 {
-  XYZ::show(out, prefix);
+  XYZ::show(out);
   out << "D= " << get_D_in_cm2_per_second() << "cm^2/sec";
 
 }

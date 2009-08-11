@@ -46,7 +46,7 @@ public:
   float get_blue() const {
     return c_[2];
   }
-  //@}
+  //!@}
 
   void show(std::ostream &out=std::cout, std::string delim=" ") const {
     out << get_red() << delim << get_green() << delim << get_blue();

@@ -13,7 +13,7 @@
 IMPDISPLAY_BEGIN_NAMESPACE
 
 
-void Colored::show(std::ostream &out, std::string prefix) const {
+void Colored::show(std::ostream &out) const {
   out << "Colored " << get_color() << std::endl;
 }
 

@@ -1,5 +1,10 @@
 /** \page recent Change History
 
+\par Week of August 8
+
+- IMP::Decorator::show() now just takes the stream (it used to take a prefix also, which was often ignored).
+  Anyone who implemented a decorator will have to delete the second argument of their show function.
+
 \par Week of August 1
 
 - Containers now have methods IMP::SingletonContainer::evaluate(), IMP::PairContainer::evaluate(),

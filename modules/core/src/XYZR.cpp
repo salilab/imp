@@ -12,9 +12,9 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-void XYZR::show(std::ostream &out, std::string prefix) const
+void XYZR::show(std::ostream &out) const
 {
-  out << prefix << "(" << get_x()<< ", "
+  out << "(" << get_x()<< ", "
       << get_y() << ", " << get_z() << ": " << get_radius() << ")";
 
 }

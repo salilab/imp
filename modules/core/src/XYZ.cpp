@@ -11,9 +11,9 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-void XYZ::show(std::ostream &out, std::string prefix) const
+void XYZ::show(std::ostream &out) const
 {
-  out << prefix << "(" <<algebra::commas_io(get_coordinates())<<")";
+  out << "(" <<algebra::commas_io(get_coordinates())<<")";
 
 }
 

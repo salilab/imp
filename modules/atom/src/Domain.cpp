@@ -18,8 +18,8 @@ const Domain::Data& Domain::get_data() {
   return data;
 }
 
-void Domain::show(std::ostream &out, std::string prefix) const {
-  out << prefix << "Domain: " << get_begin_index()
+void Domain::show(std::ostream &out) const {
+  out << "Domain: " << get_begin_index()
       << " to " << get_end_index() << std::endl;
 }
 

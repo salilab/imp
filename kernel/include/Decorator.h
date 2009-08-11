@@ -115,10 +115,9 @@ public:
   static bool particle_is_instance(Particle *p);
 
   /** Write a description of the wrapped Particle as seen by
-      the decorator to a stream. Each line should be prefixed by
-      prefix.
+      the decorator to a stream.
   */
-  void show(std::ostream &out, std::string prefix) const;
+  void show(std::ostream &out) const;
 
   /** Create an instance of the Decorator from the particle has
       already been setup.  The key difference between this constructor

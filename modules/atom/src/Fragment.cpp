@@ -18,8 +18,8 @@ Fragment::Traits Fragment::etraits_("fragment.ends");
 Fragment::~Fragment(){}
 
 
-void Fragment::show(std::ostream &out, std::string prefix) const {
-  out << prefix << "Fragment: ";
+void Fragment::show(std::ostream &out) const {
+  out << "Fragment: ";
   for (unsigned int i=0; i< get_number_of_residue_begins(); ++i) {
     if (get_residue_end(i) != get_residue_begin(i)+1) {
       out << "[" << get_residue_begin(i)

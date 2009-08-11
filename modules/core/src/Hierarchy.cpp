@@ -47,7 +47,7 @@ void Hierarchy::validate_node() const
   }
 }
 
-void Hierarchy::show(std::ostream &out, std::string) const
+void Hierarchy::show(std::ostream &out) const
 {
   out << "Hierarchy";
 }

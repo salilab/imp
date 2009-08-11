@@ -25,7 +25,7 @@ BondData &get_bond_data() {
 } // namespace internal
 
 
-void Bond::show(std::ostream &out, std::string) const
+void Bond::show(std::ostream &out) const
 {
   if (*this == Bond()) {
     out << "Null Bond";
@@ -45,7 +45,7 @@ void Bond::show(std::ostream &out, std::string) const
   out << std::endl;
 }
 
-void Bonded::show(std::ostream &out, std::string) const
+void Bonded::show(std::ostream &out) const
 {
   if (*this == Bonded()) {
     out << "Null Bonded";
