@@ -39,5 +39,10 @@ class PDBReadWriteTest(IMP.test.TestCase):
         IMP.atom.write_pdb(mp, s)
         self.assertEqual(s.getvalue().count('\n'), 129)
 
+    def test_line_write(self):
+        """Simple test of writing a single PDB line"""
+        s = IMP.atom.get_pdb_string(IMP.algebra.Vector3D(0,0,0))
+        print s
+
 if __name__ == '__main__':
     unittest.main()

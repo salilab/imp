@@ -12,6 +12,8 @@
 #include "internal/pdb.h"
 #include "selectors.h"
 #include "Hierarchy.h"
+#include "Atom.h"
+#include "element.h"
 
 #include <IMP/Model.h>
 #include <IMP/Particle.h>
@@ -69,6 +71,18 @@ IMPATOMEXPORT void write_pdb(const Hierarchies &mhd,
 */
 IMPATOMEXPORT void write_pdb(const Hierarchies &mhd,
                              std::string file_name);
+
+/**
+   This function returns a string in PDB ATOM format
+*/
+IMPATOMEXPORT std::string get_pdb_string(const algebra::Vector3D& v,
+                                         int index = -1,
+                                         const AtomType& at = AT_C,
+                                         const ResidueType& rt = atom::ALA,
+                                         char chain = ' ',
+                                         int res_index = 1,
+                                         char res_icode = ' ',
+                                         Element e = (atom::Element)C);
 
 //!@}
 
