@@ -2,6 +2,9 @@
 
 \par Week of August 8
 
+- the contents of bin are moving to tools since the two directories both contained assorted development tools
+  (not all of which were executable). For now, bin/imppy.sh will still work, but that will go away soon.
+
 - IMP::Decorator::show() now just takes the stream (it used to take a prefix also, which was often ignored).
   Anyone who implemented a decorator will have to delete the second argument of their show function.
 
