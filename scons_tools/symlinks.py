@@ -2,6 +2,8 @@
    where symlinks are available."""
 
 import os
+import SCons
+import SCons.Errors
 
 def _linkFunc(dest, source, env):
     """Link a file from source to dest"""
