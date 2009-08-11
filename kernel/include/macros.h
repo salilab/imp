@@ -212,12 +212,28 @@
 
 
 
-//! Use the swap_with member function to swap two objects
-/** The two objects mustbe of the same type (Name) and define
-    the method \c swap_with().
+/** \name Swap helpers
+
+    Use the swap_with member function to swap two objects. The two
+    objects mustbe of the same type (Name) and define
+    the method \c swap_with(). The number suffix is the number of template
+    arguments, all of which must be of class type.
+    @{
 */
-#define IMP_SWAP(Name) \
-  IMP_NO_DOXYGEN(inline void swap(Name &a, Name &b) {a.swap_with(b);})
+#ifdef IMP_DOXYGEN
+#define IMP_SWAP(Name)
+#define IMP_SWAP_1(Name)
+#define IMP_SWAP_2(Name)
+#define IMP_SWAP_3(Name)
+#define IMP_SWAP_4(Name)
+#else
+#define IMP_SWAP(Name)                                  \
+  inline void swap(Name &a, Name &b) {a.swap_with(b);}
+
+#define IMP_SWAP_1(Name)                                        \
+  template <class A>                                            \
+  inline void swap(Name<A> &a, Name<A> &b) {a.swap_with(b);}
+
 
 #define IMP_SWAP_2(Name)                          \
   template <class A, class B>                     \
@@ -230,6 +246,8 @@
   inline void swap(Name<A,B,C> &a, Name<A,B,C> &b) {    \
     a.swap_with(b);                                     \
   }
+#endif
+/** @} */
 
 
 //! swap two member variables assuming the other object is called o
@@ -364,19 +382,18 @@ IMP_NO_DOXYGEN(typedef Name This);                                      \
 /** \brief Create a decorator wrapping a particle which already has
     had setup_particle() called on it. */                               \
 explicit Name(::IMP::Particle *p): Parent(p) {                          \
-  IMP_assert(particle_is_instance(p),                                \
+  IMP_assert(particle_is_instance(p),                                   \
               "Particle missing required attributes for decorator "     \
               << #Name << *p << std::endl);                             \
  }                                                                      \
 static Name decorate_particle(::IMP::Particle *p) {                     \
    IMP_CHECK_OBJECT(p);                                                 \
-   if (!particle_is_instance(p)) {                                   \
+   if (!particle_is_instance(p)) {                                      \
      return Name();                                                     \
    }                                                                    \
    return Name(p);                                                      \
  }                                                                      \
- void show(std::ostream &out=std::cout,                                 \
-           std::string prefix=std::string()) const;                     \
+void show(std::ostream &out=std::cout) const;                           \
 
 
 //! Define the basic things needed by a Decorator which has a traits object.
@@ -404,17 +421,16 @@ Name(): Parent(){}                                                      \
     had setup_particle() called on it with the passed traits. */        \
 Name(::IMP::Particle *p, const TraitsType &tr=default_traits): Parent(p), \
                                                    traits_name##_(tr) { \
-  IMP_assert(particle_is_instance(p, tr),                            \
+  IMP_assert(particle_is_instance(p, tr),                               \
              "Particle missing required attributes for decorator "      \
              << #Name << *p << std::endl);                              \
 }                                                                       \
 static Name decorate_particle(::IMP::Particle *p,                       \
                               const TraitsType &tr=default_traits) {    \
-  if (!particle_is_instance(p, tr)) return Name();                   \
+  if (!particle_is_instance(p, tr)) return Name();                      \
   else return Name(p, tr);                                              \
 }                                                                       \
-void show(std::ostream &out=std::cout,                                  \
-          std::string prefix=std::string()) const;                      \
+void show(std::ostream &out=std::cout) const;                           \
 /** Get the traits object */                                            \
 const TraitsType &get_##traits_name() const {                           \
   return traits_name##_;                                                \

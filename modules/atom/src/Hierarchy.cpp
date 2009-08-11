@@ -39,8 +39,7 @@ IntKey Hierarchy::get_type_key() {
   return k;
 }
 
-void Hierarchy::show(std::ostream &out,
-                     std::string prefix) const
+void Hierarchy::show(std::ostream &out) const
 {
   if (*this == Hierarchy()) {
     out << "NULL Molecular Hierarchy node";
@@ -48,21 +47,21 @@ void Hierarchy::show(std::ostream &out,
   }
   if (get_type() == ATOM && Atom::particle_is_instance(get_particle())) {
     Atom ad(get_particle());
-    ad.show(out, prefix);
+    ad.show(out);
   } else if ((get_type() == RESIDUE || get_type() == NUCLEICACID)
              && Residue::particle_is_instance(get_particle())){
       Residue adt(get_particle());
-      adt.show(out, prefix);
+      adt.show(out);
   } else if (get_type() == CHAIN
              && Chain::particle_is_instance(get_particle())){
       Chain adt(get_particle());
-      adt.show(out, prefix);
+      adt.show(out);
   } else if (Domain::particle_is_instance(get_particle())) {
     Domain dd(get_particle());
-    dd.show(out, prefix);
+    dd.show(out);
   } else {
-    out << prefix << get_type_string() <<std::endl;
-    out << prefix << "\"" <<  get_particle()->get_name() << "\"" << std::endl;
+    out << get_type_string() <<std::endl;
+    out << "\"" <<  get_particle()->get_name() << "\"" << std::endl;
   }
 }
 

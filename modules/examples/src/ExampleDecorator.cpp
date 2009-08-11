@@ -16,11 +16,8 @@ StringKey ExampleDecorator::get_name_key() {
   return mykey;
 }
 
-/* output the prefix first in order to get the spacing right when
-   printing a hierarchy.
- */
-void ExampleDecorator::show(std::ostream &out, std::string prefix) const {
-  out << prefix << get_name();
+void ExampleDecorator::show(std::ostream &out) const {
+  out << get_name();
 }
 
 IMPEXAMPLES_END_NAMESPACE

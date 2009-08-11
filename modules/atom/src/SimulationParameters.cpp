@@ -30,7 +30,7 @@ SimulationParameters SimulationParameters::setup_particle(Particle *p,
   return SimulationParameters(p);
 }
 
-void SimulationParameters::show(std::ostream &out, std::string prefix) const
+void SimulationParameters::show(std::ostream &out) const
 {
   out << "Current time is " << get_current_time() << "\n";
   out << "Last time step was " << get_last_time_step() << "\n";

@@ -74,9 +74,9 @@ ResidueType residue_type_from_pdb_string(std::string nm) {
   return ResidueType(nm.c_str());
 }
 
-void Residue::show(std::ostream &out, std::string pre) const
+void Residue::show(std::ostream &out) const
 {
-  out << pre << "residue #" << get_index() << " of type "
+  out << "residue #" << get_index() << " of type "
       << get_residue_type() << std::endl;
 }
 

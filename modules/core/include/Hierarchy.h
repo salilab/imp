@@ -18,6 +18,7 @@
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
 #include <IMP/Decorator.h>
+#include <IMP/internal/PrefixStream.h>
 
 #include <limits>
 #include <vector>
@@ -395,37 +396,43 @@ F depth_first_traversal_with_data(HD d,  F f, typename F::result_type i)
 template <class PD>
 struct HierarchyPrinter
 {
+private:
+  struct RefCountedStream: public RefCounted,
+                           public IMP::internal::PrefixStream{
+    RefCountedStream(std::ostream *out): IMP::internal::PrefixStream(out){}
+  };
+  mutable Pointer<RefCountedStream> out_;
+public:
   HierarchyPrinter(std::ostream &out,
-                   unsigned int max_depth): out_(out),
-                                            md_(max_depth)
+                   unsigned int max_depth):
+    out_(new RefCountedStream(&out)),
+    md_(max_depth)
   {}
 
   typedef unsigned int result_type;
   int operator()(Hierarchy hd, unsigned int depth) const {
     if (depth > md_) return depth+1;
-
     std::string prefix;
     for (unsigned int i=0; i< depth; ++i) {
-      out_ << " ";
       prefix+=" ";
     }
+    out_->set_prefix(prefix);
     if (hd == Hierarchy() || hd.get_number_of_children()==0) {
-      out_ << "-";
+      *out_ << "-";
     } else {
-      out_ << "+";
+      *out_ << "+";
     }
-    out_ << "Particle " << hd.get_particle()->get_name() << std::endl;
-    prefix += "  ";
+    *out_ << "Particle " << hd.get_particle()->get_name() << std::endl;
+    out_->set_prefix(prefix+" ");
     PD nd= PD::decorate_particle(hd.get_particle());
     if (nd != PD()) {
-      nd.show(out_, prefix);
+      nd.show(*out_);
     } else {
-      out_ << prefix << "*******";
+      *out_ << "*******";
     }
-    out_ << std::endl;
+    *out_ << std::endl;
     return depth+1;
   }
-  std::ostream &out_;
   unsigned int md_;
 };
 

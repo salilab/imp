@@ -230,11 +230,11 @@ AtomType atom_type_from_pdb_string(std::string nm) {
   return AtomType(nm.c_str());
 }
 
-void Atom::show(std::ostream &out, std::string prefix) const
+void Atom::show(std::ostream &out) const
 {
-  out << prefix << "Element:"<< get_element()
+  out << "Element:"<< get_element()
       << " mass " << get_mass() << std::endl;
-  out << prefix << "Type: "<< get_atom_type();
+  out << "Type: "<< get_atom_type();
   if (get_input_index() != -1) {
     out << " atom number: " << get_input_index();
   }
