@@ -1,6 +1,10 @@
 """Simple configure checks for endianness"""
 
-
+import imp_module
+from SCons.Script import Glob, Dir, File, Builder, Action, Exit
+import os
+import sys
+import re
 
 def _check(context):
     context.Message("Checking endianess... ")
