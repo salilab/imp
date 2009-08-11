@@ -33,6 +33,7 @@
 
 /* Wrap our own classes */
 %include "IMP/atom/estimates.h"
+%include "IMP/atom/distance.h"
 %include "IMP/atom/BondEndpointsRefiner.h"
 %include "IMP/atom/BondPairContainer.h"
 %include "IMP/atom/BondPairFilter.h"
