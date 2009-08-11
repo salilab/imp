@@ -69,6 +69,5 @@ bin = env.ScriptFile("imppy.sh",
                       env.Value(ldpath),
                       env.Value(prec)])
 
-env.AlwaysBuild("imppy.sh")
 
 Return('bin')
