@@ -45,6 +45,8 @@
 %include "IMP/atom/MolecularDynamics.h"
 %include "IMP/atom/VelocityScalingOptimizerState.h"
 %include "IMP/atom/selectors.h"
+%include "IMP/atom/Atom.h"
+%include "IMP/atom/element.h"
 %include "IMP/atom/pdb.h"
 %include "IMP/atom/Fragment.h"
 %include "IMP/atom/SimulationParameters.h"

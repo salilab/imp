@@ -67,7 +67,6 @@ Particle* residue_particle(Model *m, const String& pdb_line)
   Residue rd =
     Residue::setup_particle(p, residue_type,
                              residue_index, (int)residue_icode);
-
   p->set_name(residue_name);
 
   return p;
@@ -78,9 +77,7 @@ Particle* root_particle(Model *m)
   Particle* p = new Particle(m);
 
   // hierarchy decorator
-  Hierarchy hd =
-    Hierarchy::setup_particle(p,
-               Hierarchy::PROTEIN);
+  Hierarchy hd = Hierarchy::setup_particle(p, Hierarchy::PROTEIN);
   return p;
 }
 
@@ -92,9 +89,8 @@ Particle* chain_particle(Model *m, char chain_id)
   return p;
 }
 
-void set_chain_type(const Hierarchy& hrd,
-                               Hierarchy& hcd) {
-
+void set_chain_type(const Hierarchy& hrd, Hierarchy& hcd)
+{
   if (hrd.get_type() == Hierarchy::RESIDUE)
     hcd.set_type(Hierarchy::CHAIN);
   else if (hrd.get_type() == Hierarchy::NUCLEICACID)
@@ -105,11 +101,10 @@ void set_chain_type(const Hierarchy& hrd,
 
 }
 
-Hierarchy read_pdb(
-                             String pdb_file_name, Model *model,
-                             const Selector& selector,
-                             bool select_first_model,
-                             bool ignore_alternatives)
+Hierarchy read_pdb(String pdb_file_name, Model *model,
+                   const Selector& selector,
+                   bool select_first_model,
+                   bool ignore_alternatives)
 {
   std::ifstream pdb_file(pdb_file_name.c_str());
   if (!pdb_file) {
@@ -125,18 +120,16 @@ Hierarchy read_pdb(
 }
 
 Hierarchy read_pdb(std::istream &in, Model *model,
-                                     const Selector& selector,
-                                     bool select_first_model,
-                                     bool ignore_alternatives)
+                   const Selector& selector,
+                   bool select_first_model,
+                   bool ignore_alternatives)
 {
   // create root particle
   Particle* root_p = root_particle(model);
   Hierarchy root_d =
     Hierarchy::decorate_particle(root_p);
-
   Particle* cp = NULL;
   Particle* rp = NULL;
-  Hierarchy hcd, hrd;
 
   char curr_residue_icode = '-';
   char curr_chain = '-';
@@ -146,9 +139,6 @@ Hierarchy read_pdb(std::istream &in, Model *model,
   String line;
   while (!in.eof()) {
     getline(in, line);
-    // check that line is an HETATM or ATOM rec and that selector accepts line.
-    // if this is the case construct a new Particle using line and add the
-    // Particle to the Model
 
     // handle MODEL reading
     if (internal::is_MODEL_rec(line)) {
@@ -156,6 +146,9 @@ Hierarchy read_pdb(std::istream &in, Model *model,
       first_model_read = true; continue;
     }
 
+    // check that line is an HETATM or ATOM rec and that selector accepts line.
+    // if this is the case construct a new Particle using line and add the
+    // Particle to the Model
     if ((internal::is_ATOM_rec(line) || internal::is_HETATM_rec(line))
         && selector(line)) {
 
@@ -169,8 +162,7 @@ Hierarchy read_pdb(std::istream &in, Model *model,
         // create new chain particle
         cp = chain_particle(model, chain);
         chain_type_set = false;
-        hcd = Hierarchy::decorate_particle(cp);
-        root_d.add_child(hcd);
+        root_d.add_child(Chain(cp));
       }
 
       // check if new residue
@@ -180,13 +172,13 @@ Hierarchy read_pdb(std::istream &in, Model *model,
         curr_residue_icode = residue_icode;
         // create new residue particle
         rp = residue_particle(model, line);
-        hrd = Hierarchy::decorate_particle(rp);
-        hcd.add_child(hrd);
+        Chain(cp).add_child(Residue(rp));
       }
 
       // set chain type (protein/nucleotide/other) according to residue type
       if (!chain_type_set) {
-        set_chain_type(hrd, hcd);
+        Chain cd(cp);
+        set_chain_type(Residue(rp), cd);
         chain_type_set = true;
       }
 
@@ -196,9 +188,7 @@ Hierarchy read_pdb(std::istream &in, Model *model,
 
       // create atom particle
       Particle* ap = atom_particle(model, line);
-      Hierarchy had =
-        Hierarchy::decorate_particle(ap);
-        hrd.add_child(had);
+      Residue(rp).add_child(Atom(ap));
     }
   }
   return root_d;
@@ -258,6 +248,91 @@ void write_pdb(const Hierarchies& mhd, std::string file_name)
   }
   write_pdb(mhd, out_file);
   out_file.close();
+}
+
+
+std::string get_pdb_string(const algebra::Vector3D& v, int index,
+                           const AtomType& at, const ResidueType& rt,
+                           char chain, int res_index,
+                           char res_icode, Element e) {
+  std::stringstream out;
+  out.setf(std::ios::left, std::ios::adjustfield);
+  out.width(6);
+  if (rt == UNK) {
+    out << "HETATM";
+  } else {
+    out << "ATOM";
+  }
+  //7-11 : atom id
+  out.setf(std::ios::right, std::ios::adjustfield);
+  out.width(5);
+  out << index;
+  // 12: skip an undefined position
+  out.width(1);
+  out << " ";
+  // 13-16: atom type
+  out.setf(std::ios::left, std::ios::adjustfield);
+  out.width(1);
+  std::string atom_type = at.get_string();
+  if (atom_type.size()<4) {
+    out << " ";
+    out.width(3);
+    out << atom_type;
+  } else {
+    out << atom_type;
+  }
+  // 17: skip the alternate indication position
+  out.width(1);
+  out << " ";
+  // 18-20 : residue name
+  out.width(3);
+  out << rt.get_string();
+  //skip 21
+  out.width(1);
+  out << " ";
+  // 22: chain identifier
+  out << chain;
+  //23-26: residue number
+  out.setf(std::ios::right, std::ios::adjustfield);
+  out.width(4);
+  out << res_index;
+  //27: residue insertion code
+  out.width(1);
+  out << res_icode;
+  out.setf(std::ios::fixed, std::ios::floatfield);
+  out << "   "; // skip 3 undefined positions (28-30)
+  // coordinates (31-38,39-46,47-54)
+  out.width(8);
+  out.precision(3);
+  out << v[0];
+  out.width(8);
+  out.precision(3);
+  out << v[1];
+  out.width(8);
+  out.precision(3);
+  out << v[2];
+  //55:60 occupancy
+  out.width(6);
+  out.precision(2);
+  out << ""; //TODO
+  //61-66: temp. factor
+  out.width(6);
+  out.precision(2);
+  out << ""; //TODO
+  // 73 - 76  LString(4)      Segment identifier, left-justified.
+  out.width(10);
+  out << ""; //TODO
+  // 77 - 78  LString(2)      Element symbol, right-justified.
+  out.width(2);
+  out.setf(std::ios::right, std::ios::adjustfield);
+  if(e == UNKNOWN_ELEMENT) { // try to determine element from AtomType
+    e = get_element_table().get_element(at);
+  }
+  out << get_element_table().get_name(e);
+  //     79 - 80        LString(2)      Charge on the atom.
+  out.width(2);
+  out << "" << std::endl; //TODO
+  return out.str();
 }
 
 IMPATOM_END_NAMESPACE

@@ -9,6 +9,7 @@
 #include <IMP/atom/Hierarchy.h>
 #include <IMP/atom/Chain.h>
 #include <IMP/atom/element.h>
+#include <IMP/atom/pdb.h>
 #include <IMP/core/XYZ.h>
 
 #include <IMP/log.h>
@@ -304,97 +305,15 @@ char get_chain(Atom d) {
 
 
 std::string Atom::get_pdb_string(int index) {
-  std::stringstream out;
-  Particle *p = get_particle();
-  out.setf(std::ios::left, std::ios::adjustfield);
-  out.width(6);
-  if (get_residue_type(*this) == UNK) {
-    out << "HETATM";
-  }
-  else {
-    out << "ATOM";
-  }
-  //7-11 : atom id
-  out.setf(std::ios::right, std::ios::adjustfield);
-  out.width(5);
-  if (index==-1) {
-    out << get_input_index();
-  }
-  else {
-    out << index;
-  }
-  // 12: skip an undefined position
-  out.width(1);
-  out<< " ";
-
-  // 13-16: atom type
-  out.setf(std::ios::left, std::ios::adjustfield);
-  out.width(1);
-  std::string atom_type = get_atom_type().get_string();
-  if (atom_type.size()<4) {
-    out << " ";
-    out.width(3);
-    out << atom_type;
-  }
-  else {
-    out << atom_type;
-  }
-  // 17: skip the alternate indication position
-  out.width(1);
-  out << " ";
-
-  // 18-20 : residue name
-  out.width(3);
-  out << get_residue_type(*this).get_string();
-  //skip 21
-  out.width(1);
-  out << " ";
-  // 22: chain identifier
-  out << get_chain(*this);
-  //23-26: residue number
-  out.setf(std::ios::right, std::ios::adjustfield);
-  out.width(4);
-  out << get_residue_index(*this);
-  //27: residue insertion code
-  out.width(1);
-  out << get_residue(*this).get_insertion_code();
-  out.setf(std::ios::fixed, std::ios::floatfield);
-  out << "   "; // skip 3 undefined positions (28-30)
-  core::XYZ xyz= core::XYZ::decorate_particle(p);
-  // coordinates (31-38,39-46,47-54)
-  out.width(8);
-  out.precision(3);
-  out << xyz.get_x();
-  out.width(8);
-  out.precision(3);
-  out << xyz.get_y();
-  out.width(8);
-  out.precision(3);
-  out << xyz.get_z();
-
-  //55:60 occupancy
-  out.width(6);
-  out.precision(2);
-  out << ""; //TODO
-  //61-66: temp. factor
-  out.width(6);
-  out.precision(2);
-  out << ""; //TODO
-  // 73 - 76  LString(4)      Segment identifier, left-justified.
-  out.width(10);
-  out << ""; //TODO
-  // 77 - 78  LString(2)      Element symbol, right-justified.
-  out.width(2);
-  out.setf(std::ios::right, std::ios::adjustfield);
-  Element e = (Element)get_element();
-  if(e == UNKNOWN_ELEMENT) { // try to determine element from AtomType
-    e = get_element_table().get_element(get_atom_type());
-  }
-  out << get_element_table().get_name(e);
-  //     79 - 80        LString(2)      Charge on the atom.
-  out.width(2);
-  out << ""<<std::endl; //TODO
-  return out.str();
+  algebra::Vector3D v =
+    core::XYZ::decorate_particle(get_particle()).get_coordinates();
+  int atom_index = index;
+  if (index==-1) atom_index = get_input_index();
+  return atom::get_pdb_string(v, atom_index, get_atom_type(),
+                              get_residue_type(*this), get_chain(*this),
+                              get_residue_index(*this),
+                              get_residue(*this).get_insertion_code(),
+                              (Element)get_element());
 }
 
 
