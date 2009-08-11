@@ -1,4 +1,5 @@
 files = [
+         'PrefixStream.cpp',
          'constants.cpp',
          'deprecation.cpp',
         ]
