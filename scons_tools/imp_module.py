@@ -144,7 +144,6 @@ def IMPModuleInclude(env, files):
     # Generate config header and SWIG equivalent
     config=env.IMPModuleConfigH(target=['config.h'],
     source=[env.Value(env['IMP_MODULE_CONFIG'])])
-    env.AlwaysBuild(config)
     files=files+config+vi
     install = hierarchy.InstallHierarchy(env, includedir+"/"+vars['module_include_path'],
                                          list(files))
