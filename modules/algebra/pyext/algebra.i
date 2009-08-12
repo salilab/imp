@@ -33,8 +33,11 @@ namespace IMP {
     /* Copy returned references to non-refcounted classes */
     %apply REFCOPY & { const Rotation2D & };
     %apply REFCOPY & { const Rotation3D & };
+    %apply REFCOPY & { const VectorD<3> & };
     %apply REFCOPY & { const Vector3D & };
+    %apply REFCOPY & { const VectorD<4> & };
     %apply REFCOPY & { const Vector4D & };
+    %apply REFCOPY & { const BoundingBoxD<3> & };
     %apply REFCOPY & { const BoundingBox3D & };
   }
 }
