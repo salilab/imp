@@ -69,6 +69,17 @@ public:
   float get_z(unsigned int ind) const {
     return particles_[ind]->get_value(get_z_key());
   }
+
+  //! Get the value of the coordinates of a particle
+  /** \param[in] ind the position of a particle in the stored
+                     vector of particles
+   */
+  algebra::Vector3D get_coordinates(unsigned int ind) const {
+    return algebra::Vector3D(particles_[ind]->get_value(get_x_key()),
+                             particles_[ind]->get_value(get_y_key()),
+                             particles_[ind]->get_value(get_z_key()));
+  }
+
   //! Get the value of the radius attribute of a particle
   /** \param[in] ind the position of a particle in the stored
                      vector of particles
