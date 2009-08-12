@@ -89,11 +89,13 @@ class VectorOfRefCounted {
   }
 #endif
   RC operator[](unsigned int i) const {
-    IMP_check(i < size(), "Index out of range", IndexException);
+    IMP_check(i < size(), "Index out of range in []: "
+              << i << ">=" << size(), IndexException);
     return data_[i];
   }
   void set(unsigned int i, RC p) {
-    IMP_check(i < size(), "Index out of range", IndexException);
+    IMP_check(i < size(), "Index out of range in set "
+              << i << ">=" << size(), IndexException);
     unref(data_[i]);
     data_[i]=p;
     ref(p);
