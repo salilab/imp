@@ -206,8 +206,6 @@ class Decorators: public ParentDecorators {
     return Decorator(ParentDecorators::operator[](i));
   }
   void set(unsigned int i, Decorator d) {
-    IMP_check(i < ParentDecorators::size(), "Index out of range",
-              IndexException);
     ParentDecorators::set(i, d);
   }
   Decorator back() const {
@@ -326,8 +324,6 @@ public:
     return Decorator(ParentDecorators::operator[](i), tr_);
   }
   void set(unsigned int i, Decorator d) {
-    IMP_check(i < ParentDecorators::size(),
-              "Index out of range", IndexException);
     if (!has_traits_) {
       tr_= d.get_traits();
       has_traits_=true;
