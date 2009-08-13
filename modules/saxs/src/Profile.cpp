@@ -279,19 +279,37 @@ void Profile::scale(Float c) {
   }
 }
 
+void Profile::offset(Float c) {
+  for (unsigned int k = 0; k < profile_.size(); k++) {
+    profile_[k].intensity_ -= c;
+  }
+}
+
 void Profile::profile_2_distribution(RadialDistributionFunction& rd,
                                      Float max_distance) const {
   float scale = 1.0/(2*PI*PI);
   unsigned int distribution_size = rd.dist2index(max_distance) + 1;
+
+  // offset profile so that minimal i(q) is zero
+  float min_value = profile_[0].intensity_;
+  for(unsigned int k = 0; k < profile_.size(); k++) {
+    if(profile_[k].intensity_ < min_value)
+      min_value = profile_[k].intensity_;
+  }
+  Profile p(ff_table_, min_q_, max_q_, delta_q_);
+  p.init();
+  for(unsigned int k = 0; k < profile_.size(); k++) {
+    p.profile_[k].intensity_  = profile_[k].intensity_ - min_value;
+  }
 
   // iterate over r
   for(unsigned int i = 0; i < distribution_size; i++) {
     Float r = rd.index2dist(i);
     Float sum = 0.0;
     // sum over q: SUM (I(q)*q*sin(qr))
-    for(unsigned int k = 0; k < profile_.size(); k++) {
-      sum +=
-        profile_[k].intensity_ * profile_[k].q_ * std::sin(profile_[k].q_*r);
+    for(unsigned int k = 0; k < p.profile_.size(); k++) {
+      sum += p.profile_[k].intensity_ *
+        p.profile_[k].q_ * std::sin(p.profile_[k].q_*r);
     }
     rd.add_to_distribution(r, r*scale*sum);
   }
