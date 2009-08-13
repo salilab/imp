@@ -75,7 +75,6 @@ public:
   }
 
   //! convert to real space P(r) function P(r) = 1/2PI^2 Sum(I(q)*qr*sin(qr))
-  //! \untested{profile_2_distribution}
   void profile_2_distribution(RadialDistributionFunction& rd,
                               Float max_distance) const;
 
@@ -87,6 +86,9 @@ public:
 
   //! scale
   void scale(Float c);
+
+  //! offset profile by c, I(q) = I(q) - c
+  void offset(Float c);
 
   //! reads SAXS profile from file
   void read_SAXS_file(const String& file_name);

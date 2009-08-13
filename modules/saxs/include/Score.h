@@ -87,12 +87,12 @@ public:
   //! computes scale factor given offset value
   Float compute_scale_factor(const Profile& model_profile,
                              Float offset = 0.0) const;
+  // computes offset
+  Float compute_offset(const Profile& model_profile) const;
+
  private:
   // required to fit the q values of computational profile to the experimental
   void resample(const Profile& model_profile, Profile& resampled_profile) const;
-
-  // computes offset
-  Float compute_offset(const Profile& model_profile) const;
 
   // computes chi square
   Float compute_chi_square_score_internal(const Profile& model_profile,
