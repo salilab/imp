@@ -50,7 +50,8 @@ class IMPALGEBRAEXPORT Rotation3D: public UninitializedDefault {
   mutable bool has_cache_;
   mutable Vector3D matrix_[3];
 #endif
-  friend Rotation3D compose(const Rotation3D &a, const Rotation3D &b);
+  IMP_NO_SWIG(friend Rotation3D compose(const Rotation3D &a,
+                                        const Rotation3D &b));
   void fill_cache() const {
 #ifdef IMP_ROTATION_CACHE
     if (has_cache_) return;
