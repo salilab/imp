@@ -36,14 +36,14 @@ IMP_BEGIN_NAMESPACE
  */
 #ifndef IMP_DOXYGEN
 #define IMP_DECLARE_KEY_TYPE(Name, Tag)                                 \
-  struct Name: public ::IMP::KeyBase<Tag> {                             \
-  typedef ::IMP::KeyBase<Tag> P;                                        \
+  struct Name: public ::IMP::KeyBase<Tag, true> {                       \
+    typedef ::IMP::KeyBase<Tag, true> P;                                \
   typedef Name This;                                                    \
   Name(){};                                                             \
   Name(unsigned int i): P(i){}                                          \
-  Name(const char *nm): P(nm){}                                         \
-  static Name add_alias(Name nm, const char *new_name) {                \
-    ::IMP::KeyBase<Tag>:: add_alias(nm, new_name);                      \
+  Name(std::string nm): P(nm){}                                         \
+  static Name add_alias(Name nm, std::string new_name) {                \
+    ::IMP::KeyBase<Tag, true>:: add_alias(nm, new_name);                     \
     IMP_assert(Name(new_name) == nm, "Keys don't match after alias.");   \
     return Name(new_name);                                              \
   }                                                                     \
@@ -52,14 +52,51 @@ typedef std::vector<Name> Name##s
 #else
 #define IMP_DECLARE_KEY_TYPE(Name, Tag)                                 \
   /** A string based identifier.*/                                      \
-  struct Name: public ::IMP::KeyBase<ID> {                              \
-  typedef ::IMP::KeyBase<ID> P;                                         \
+  struct Name: public ::IMP::KeyBase<ID, true> {                        \
+    typedef ::IMP::KeyBase<ID, true> P;                                 \
   typedef Name This;                                                    \
   Name(){};                                                             \
   IMP_NO_DOXYGEN(Name(unsigned int i): P(i){})                          \
-  Name(const char *nm): P(nm){}                                         \
+  Name(std::string nm): P(nm){}                                         \
   /** Define the string new_name to refer to the same key as nm. */     \
-  static Name add_alias(Name nm, const char *new_name);                 \
+  static Name add_alias(Name nm, std::string new_name);                 \
+};                                                                      \
+typedef std::vector<Name> Name##s
+#endif
+
+
+/**
+   Define a new key non lazy type where new types have to be created
+   explicitly.
+
+   \see IMP_DECLARE_KEY_TYPE
+ */
+#ifndef IMP_DOXYGEN
+#define IMP_DECLARE_CONTROLLED_KEY_TYPE(Name, Tag)                      \
+  struct Name: public ::IMP::KeyBase<Tag, false> {                      \
+    typedef ::IMP::KeyBase<Tag, false> P;                               \
+  typedef Name This;                                                    \
+  Name(){};                                                             \
+  Name(unsigned int i): P(i){}                                          \
+  Name(std::string nm): P(nm){}                                         \
+  static Name add_alias(Name nm, std::string new_name) {                \
+    ::IMP::KeyBase<Tag, false>:: add_alias(nm, new_name);               \
+    IMP_assert(Name(new_name) == nm, "Keys don't match after alias.");  \
+    return Name(nm.get_index());                                        \
+  }                                                                     \
+};                                                                      \
+typedef std::vector<Name> Name##s
+#else
+#define IMP_DECLARE_CONTROLLED_KEY_TYPE(Name, Tag)                      \
+  /** A string based identifier.*/                                      \
+  struct Name: public ::IMP::KeyBase<ID, false> {                       \
+    typedef ::IMP::KeyBase<ID, false> P;                                \
+  typedef Name This;                                                    \
+  Name(){};                                                             \
+  Name(std::string nm): P(nm){}                                         \
+  IMP_NO_DOXYGEN(Name(unsigned int i): P(i){})                          \
+  /** Define the string new_name to refer to the same key as nm. */     \
+  static Name add_alias(Name nm, std::string new_name);                 \
 };                                                                      \
 typedef std::vector<Name> Name##s
 #endif
@@ -84,9 +121,12 @@ typedef std::vector<Name> Name##s
     initialized. While this is annoying, statically initializing them is bad,
     as unused attribute keys can result in wasted memory in each particle.
 
+    If LazyAdd is true, keys created with a new string will be added,
+    otherwise this is an error.
+
     \note Keys objects are ordered.
  */
-template <unsigned int ID>
+template <unsigned int ID, bool LazyAdd>
 class KeyBase: public NullDefault, public Comparable
 {
   int str_;
@@ -102,6 +142,8 @@ class KeyBase: public NullDefault, public Comparable
 
   static unsigned int find_index(std::string sc) {
     if (get_map().find(sc) == get_map().end()) {
+      IMP_assert(LazyAdd, "You must explicitly create the type"
+                 << " first: " << sc);
       return IMP::internal::get_key_data(ID).add_key(sc);
     } else {
       return get_map().find(sc)->second;
@@ -130,18 +172,18 @@ public:
     }
   }
 
-  typedef KeyBase<ID> This;
+  typedef KeyBase<ID, LazyAdd> This;
 #endif
 
   //! make a default key in a well-defined null state
   KeyBase(): str_(-1) {}
 
-
   //! Generate a key from the given string
   /** This operation can be expensive, so please cache the result.*/
-  explicit KeyBase(const char *c) {
+  explicit KeyBase(std::string c) {
     str_= find_index(c);
   }
+
 
 #ifndef DOXYGEN
   explicit KeyBase(unsigned int i): str_(i) {
@@ -149,6 +191,10 @@ public:
     // cannot check here as we need a past end iterator
   }
 #endif
+
+  static unsigned int add_key(std::string sc) {
+    return IMP::internal::get_key_data(ID).add_key(sc);
+  }
 
   //! Return true if there already is a key with that string
   static bool get_key_exists(std::string sc) {
@@ -174,11 +220,12 @@ public:
       KeyBase<ID>(old_key.get_string()) == KeyBase<ID>(new_name)
       \endcode
    */
-  static KeyBase<ID> add_alias(KeyBase<ID> old_key, std::string new_name) {
+  static KeyBase<ID, LazyAdd> add_alias(KeyBase<ID, LazyAdd> old_key,
+                                        std::string new_name) {
     IMP_assert(get_map().find(new_name) == get_map().end(),
                "The name is already taken with an existing key or alias");
     IMP::internal::get_key_data(ID).add_alias(new_name, old_key.get_index());
-    return KeyBase<ID>(new_name.c_str());
+    return KeyBase<ID, LazyAdd>(new_name.c_str());
   }
 
 #ifndef DOXYGEN
@@ -227,27 +274,27 @@ public:
 };
 
 
-template <unsigned int ID>
-std::ostream &operator<<(std::ostream &out, KeyBase<ID> k) {
+template <unsigned int ID, bool LA>
+std::ostream &operator<<(std::ostream &out, KeyBase<ID, LA> k) {
   k.show(out);
   return out;
 }
 
-template <unsigned int ID>
-inline bool KeyBase<ID>::is_default() const
+template <unsigned int ID, bool LA>
+inline bool KeyBase<ID, LA>::is_default() const
 {
   return str_==-1;
 }
 
 
-template <unsigned int ID>
-inline void KeyBase<ID>::show_all(std::ostream &out)
+template <unsigned int ID, bool LA>
+inline void KeyBase<ID, LA>::show_all(std::ostream &out)
 {
   internal::get_key_data(ID).show(out);
 }
 
-template <unsigned int ID>
-std::vector<std::string> KeyBase<ID>::get_all_strings()
+template <unsigned int ID, bool LA>
+std::vector<std::string> KeyBase<ID, LA>::get_all_strings()
 {
   std::vector<std::string> str;
   for (internal::KeyData::Map::const_iterator it= get_map().begin();
