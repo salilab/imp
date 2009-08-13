@@ -8,7 +8,7 @@
 #define IMPATOM_ELEMENT_H
 
 #include "config.h"
-#include "Atom.h"
+#include <IMP/base_types.h>
 
 #include <IMP/log.h>
 #include <IMP/exception.h>
@@ -47,10 +47,6 @@ public:
 
   //! get element from the string name (PDB columns 77-78)
   Element get_element(const std::string& s) const;
-
-  //! if PDB file doesn't have element column, determine it from atom type
-  //! this is not unique!!!
-  Element get_element(const AtomType& at) const;
 
   //! get string name for Element
   std::string get_name(Element e) const;

@@ -15,7 +15,8 @@ class PDBReadWriteTest(IMP.test.TestCase):
                               m, IMP.atom.NonWaterSelector())
         self.assertEqual(m.get_number_of_particles(), 1132)
         #IMP.atom.show_molecular_hierarchy(mp)
-        print mp
+        mp.show()
+        IMP.atom.show(mp)
         IMP.atom.add_bonds(mp)
         bds = IMP.atom.get_internal_bonds(mp)
         self.assertEqual(bds.size(), 1020)
@@ -38,11 +39,6 @@ class PDBReadWriteTest(IMP.test.TestCase):
         s = StringIO()
         IMP.atom.write_pdb(mp, s)
         self.assertEqual(s.getvalue().count('\n'), 129)
-
-    def test_line_write(self):
-        """Simple test of writing a single PDB line"""
-        s = IMP.atom.get_pdb_string(IMP.algebra.Vector3D(0,0,0))
-        print s
 
 if __name__ == '__main__':
     unittest.main()

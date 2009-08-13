@@ -15,6 +15,7 @@ files = [
          'ForceFieldParameters.h',
          'Fragment.h',
          'Hierarchy.h',
+         'Mass.h',
          'MolecularDynamics.h',
          'Residue.h',
          'SimulationParameters.h',

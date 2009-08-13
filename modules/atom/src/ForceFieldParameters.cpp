@@ -12,16 +12,16 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-Float ForceFieldParameters::get_radius(const AtomType& atom_type,
-                                       const ResidueType& residue_type) const
+Float ForceFieldParameters::get_radius(AtomType atom_type,
+                                       ResidueType residue_type) const
 {
   String force_field_atom_type =
     get_force_field_atom_type(atom_type, residue_type);
   return get_radius(force_field_atom_type);
 }
 
-Float ForceFieldParameters::get_epsilon(const AtomType& atom_type,
-                          const ResidueType& residue_type) const
+Float ForceFieldParameters::get_epsilon(AtomType atom_type,
+                                        ResidueType residue_type) const
 {
   String force_field_atom_type =
     get_force_field_atom_type(atom_type, residue_type);
@@ -33,7 +33,7 @@ void ForceFieldParameters::add_radii(Hierarchy mhd, FloatKey radius_key) const
   Particles ps = get_by_type(mhd, Hierarchy::ATOM);
   for(unsigned int i=0; i<ps.size(); i++) {
     Float radius = get_radius(Atom(ps[i]).get_atom_type(),
-                              get_residue_type(Atom(ps[i])));
+                              get_residue(Atom(ps[i])).get_residue_type());
     core::XYZR::setup_particle(ps[i], radius, radius_key);
   }
   // TODO: handle N-term and C-term
@@ -68,11 +68,12 @@ Float ForceFieldParameters::get_epsilon(
 void ForceFieldParameters::add_bonds(Hierarchy mhd) const {
   add_bonds(mhd, Hierarchy::RESIDUE);
   add_bonds(mhd, Hierarchy::NUCLEICACID);
-  add_bonds(mhd, Hierarchy::FRAGMENT);
+  // will core dump since fragments are not residues
+  // add_bonds(mhd, Hierarchy::FRAGMENT);
 }
 
 void ForceFieldParameters::add_bonds(Hierarchy mhd,
-                         Hierarchy::Type type) const {
+                                     Hierarchy::Type type) const {
   // get all residues
   Particles ps = get_by_type(mhd, type);
   Residue prev_rd;
@@ -102,7 +103,10 @@ void ForceFieldParameters::add_bonds(Residue rd1, Residue rd2) const {
     ad1 = get_atom(rd1, atom::AT_O3p);
     ad2 = get_atom(rd2, atom::AT_P);
   }
-  if(!ad1 || !ad2) return;
+  if(!ad1 || !ad2) {
+    IMP_WARN("Residues incomplete: " << rd1 << " and " << rd2 <<std::endl);
+    return;
+  }
   Particle* p1 = ad1.get_particle();
   Particle* p2 = ad2.get_particle();
 
@@ -124,7 +128,11 @@ void ForceFieldParameters::add_bonds(Residue rd) const {
   for(unsigned int i=0; i<bonds.size(); i++) {
     Atom ad1 = get_atom(rd, bonds[i].type1_);
     Atom ad2 = get_atom(rd, bonds[i].type2_);
-    if(!ad1 || !ad2) continue;
+    if(!ad1 || !ad2) {
+      IMP_WARN("In residue " << rd << " could not find atom " << bonds[i].type1_
+               << " or " << bonds[i].type2_ << std::endl);
+      continue;
+    }
 
     Particle* p1 = ad1.get_particle();
     Particle* p2 = ad2.get_particle();
@@ -141,8 +149,8 @@ void ForceFieldParameters::add_bonds(Residue rd) const {
 }
 
 String ForceFieldParameters::get_force_field_atom_type(
-                                      const AtomType& atom_type,
-                                      const ResidueType& residue_type) const {
+                                      AtomType atom_type,
+                                      ResidueType residue_type) const {
   static String empty_atom_type;
   if(atom_res_type_2_force_field_atom_type_.find(residue_type) ==
      atom_res_type_2_force_field_atom_type_.end()) {
@@ -150,7 +158,7 @@ String ForceFieldParameters::get_force_field_atom_type(
     return empty_atom_type;
   }
 
-  //  string fixedAtomName = fixAtomName(atomName, residueName, NORM);
+  //  string fixedAtomType = fixAtomType(atomName, residueName, NORM);
   const AtomTypeMap& atom_map =
     atom_res_type_2_force_field_atom_type_.find(residue_type)->second;
   if(atom_map.find(atom_type) == atom_map.end()) {

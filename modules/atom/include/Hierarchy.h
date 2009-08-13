@@ -239,10 +239,6 @@ public:
     return ps;
   }
 
-  IMP_DECORATOR_GET_SET_OPT(mass, get_mass_key(),
-                            Float, Float, 0);
-
-  static FloatKey get_mass_key();
 
   /** Get the parent particle. */
   Hierarchy get_parent() const {
@@ -281,6 +277,10 @@ class Residue;
 /** Find the leaf containing the residue with the appropriate index.
     This is the PDB index, not the offset in the chain (if they are different).
 
+    The function returns a Hierarchy, rather than a Residue since the
+    residue may not be explicitly represented and may just be part of some
+    fragment.
+
     \throw ValueException if mhd's type is not one of CHAIN, PROTEIN, NUCLEOTIDE
     \return Hierarchy() if that residue is not found.
 
@@ -288,8 +288,7 @@ class Residue;
     \relatesalso Hierarchy
  */
 IMPATOMEXPORT Hierarchy
-get_residue(Hierarchy mhd,
-            unsigned int index);
+get_residue(Hierarchy mhd, unsigned int index);
 
 
 //! Create a fragment containing the specified nodes
@@ -315,7 +314,7 @@ get_internal_bonds(Hierarchy mhd);
 
 //! Return the root of the hierarchy
 /** \relatesalso Hierarchy */
-inline Hierarchy root(Hierarchy h) {
+inline Hierarchy get_root(Hierarchy h) {
   while (h.has_parent()) {
     h= h.get_parent();
   }
@@ -324,6 +323,11 @@ inline Hierarchy root(Hierarchy h) {
 
 inline Hierarchies get_leaves(Hierarchy h) {
   return Hierarchies(IMP::core::get_leaves(h));
+}
+
+//! Print out a molecular hierarchy
+inline void show(Hierarchy h, std::ostream &out=std::cout) {
+   IMP::core::show<Hierarchy>(h, out);
 }
 
 IMPATOM_END_NAMESPACE

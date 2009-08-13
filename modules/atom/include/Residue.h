@@ -11,6 +11,7 @@
 #include "config.h"
 #include "macros.h"
 #include "Hierarchy.h"
+#include "Chain.h"
 #include <IMP/core/internal/utility.h>
 
 #include <IMP/base_types.h>
@@ -20,13 +21,13 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-IMP_DECLARE_KEY_TYPE(ResidueType, IMP_RESIDUE_TYPE_INDEX);
+IMP_DECLARE_CONTROLLED_KEY_TYPE(ResidueType, IMP_RESIDUE_TYPE_INDEX);
 
 
 /* each static must be on a separate line because of MSVC bug C2487:
    see http://support.microsoft.com/kb/127900/
 */
-/** @name Residue Types
+/** @name Residue types
 
     The standard residue types are provided with names like
     IMP::atom::GLY.  New types can be added simply by creating an
@@ -39,11 +40,11 @@ IMP_DECLARE_KEY_TYPE(ResidueType, IMP_RESIDUE_TYPE_INDEX);
 /*@{*/
 /** Unknown residue */
 IMPATOMEXPORT extern const ResidueType UNK;
+/** glycein G*/
+IMPATOMEXPORT extern const ResidueType GLY;
 #ifndef IMP_DOXYGEN
 /* Code currently assumes that all indices between GLY.get_index()
    and TRP.get_index() being amino acids */
-/** glycein G*/
-IMPATOMEXPORT extern const ResidueType GLY;
 /** alanine A*/
 IMPATOMEXPORT extern const ResidueType ALA;
 /** valine V*/
@@ -114,7 +115,7 @@ IMPATOMEXPORT extern const ResidueType DTHY;
 
 //! A decorator for a residue.
 /**
-   As with the Atom, the types of residues may be expanded
+   As with the Atom, the names of residues may be expanded
    dynamically. This can be easily done in an analogous manner when we
    need it.
    \ingroup hierarchy
@@ -127,7 +128,7 @@ public:
   //! Add the required attributes to the particle and create a Residue
   static Residue setup_particle(Particle *p, ResidueType t= UNK,
                                  int index=-1, int insertion_code = 32) {
-    p->add_attribute(get_type_key(), t.get_index());
+    p->add_attribute(get_residue_type_key(), t.get_index());
     p->add_attribute(get_index_key(), index);
     p->add_attribute(get_insertion_code_key(), insertion_code);
     // insertion code 32 is for space
@@ -140,28 +141,25 @@ public:
 
   //! Copy data from the other Residue to the particle p
   static Residue setup_particle(Particle *p, Residue o) {
-    p->add_attribute(get_type_key(), o.get_residue_type().get_index());
-    p->add_attribute(get_index_key(), o.get_index());
-    p->add_attribute(get_insertion_code_key(), o.get_insertion_code());
-    Hierarchy::setup_particle(p,
-              static_cast<Hierarchy>(o).get_type());
-    return Residue(p);
+    return setup_particle(p, o.get_residue_type(),
+                          o.get_index(),
+                          o.get_insertion_code());
   }
 
   static bool particle_is_instance(Particle *p) {
-    return p->has_attribute(get_type_key())
+    return p->has_attribute(get_residue_type_key())
       && p->has_attribute(get_index_key())
       && p->has_attribute(get_insertion_code_key())
       && Hierarchy::particle_is_instance(p);
   }
 
   ResidueType get_residue_type() const {
-    return ResidueType(get_particle()->get_value(get_type_key()));
+    return ResidueType(get_particle()->get_value(get_residue_type_key()));
   }
 
-  //! Update the stored ResidueType and the atom::Hierarchy::Type.
+  //! Update the stored ResidueType and the atom::Hierarchy::Name.
   void set_residue_type(ResidueType t) {
-    get_particle()->set_value(get_type_key(), t.get_index());
+    get_particle()->set_value(get_residue_type_key(), t.get_index());
     if (get_residue_type().get_index() >= GLY.get_index() &&
         get_residue_type().get_index() <= TRP.get_index()) {
       Hierarchy
@@ -190,7 +188,7 @@ public:
 
   static IntKey get_index_key();
 
-  static IntKey get_type_key();
+  static IntKey get_residue_type_key();
 
   static IntKey get_insertion_code_key();
 };
@@ -200,15 +198,7 @@ IMP_OUTPUT_OPERATOR(Residue);
 
 typedef Decorators<Residue, Hierarchies> Residues;
 
-//! Return the residue type from the three letter code in the PDB
-/** The string should be capitalized, as in the PDB.
-    \throw ValueException if nm is invalid.
-    \relatesalso Residue
-    \relatesalso ResidueType
- */
-IMPATOMEXPORT ResidueType residue_type_from_pdb_string(std::string nm);
-
-IMPATOMEXPORT char get_chain(Residue rd);
+IMPATOMEXPORT Chain get_chain(Residue rd);
 
 IMPATOM_END_NAMESPACE
 

@@ -12,6 +12,7 @@
 #include "macros.h"
 #include "Residue.h"
 #include "Hierarchy.h"
+#include "element.h"
 #include <IMP/core/utility.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/core/macros.h>
@@ -25,15 +26,29 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-IMP_DECLARE_KEY_TYPE(AtomType, IMP_ATOM_TYPE_INDEX);
+IMP_DECLARE_CONTROLLED_KEY_TYPE(AtomType, IMP_ATOM_TYPE_INDEX);
 
 
 /** @name PDB Atom Types
 
+    The standard Atom names in %IMP are derived from the PDB names as follows:
+    - the AtomType of a protein, DNA or RNA atom is the AtomType
+    created from the PDB atom name string with spaces removed. For
+    example, a protein C-alpha has the name AtomType("CA").
+    - the AtomType for a heterogen atom is the AtomType created by
+    prefixing "HET_" to the PBD atom name string (again, with spaced
+    removed). For example, a calcium atom is AtomType("HET_CA").
+
     We provide an AtomType instance for each of the standard PDB %atom types.
     These have names such as IMP::atom::AT_N. The full list is elided for
-    readability. New types can be added using the
-    add_atom_type() function.
+    readability.
+
+    An AtomType implies an element (and hence a mass). While we have the
+    associations set up for protein, DNA and RNA atoms, it may be necessary
+    to add them for heterogen atoms. You can use the add_atom_type() function
+    to do this.
+
+    All atoms have the mass stored internally using a Mass decorator.
 
     \see IMP::atom::Atom
 */
@@ -55,27 +70,27 @@ IMPATOMEXPORT extern const AtomType AT_O;
 /** */
 IMPATOMEXPORT extern const AtomType AT_H;
 /** */
-IMPATOMEXPORT extern const AtomType AT_1H;
+IMPATOMEXPORT extern const AtomType AT_H1;
 /** */
-IMPATOMEXPORT extern const AtomType AT_2H;
+IMPATOMEXPORT extern const AtomType AT_H2;
 /** */
-IMPATOMEXPORT extern const AtomType AT_3H;
+IMPATOMEXPORT extern const AtomType AT_H3;
 /** */
 IMPATOMEXPORT extern const AtomType AT_HA;
 /** */
-IMPATOMEXPORT extern const AtomType AT_1HA;
+IMPATOMEXPORT extern const AtomType AT_HA1;
 /** */
-IMPATOMEXPORT extern const AtomType AT_2HA;
+IMPATOMEXPORT extern const AtomType AT_HA2;
 /** */
 IMPATOMEXPORT extern const AtomType AT_CB;
 /** */
 IMPATOMEXPORT extern const AtomType AT_HB;
 /** */
-IMPATOMEXPORT extern const AtomType AT_1HB;
+IMPATOMEXPORT extern const AtomType AT_HB1;
 /** */
-IMPATOMEXPORT extern const AtomType AT_2HB;
+IMPATOMEXPORT extern const AtomType AT_HB2;
 /** */
-IMPATOMEXPORT extern const AtomType AT_3HB;
+IMPATOMEXPORT extern const AtomType AT_HB3;
 /** */
 IMPATOMEXPORT extern const AtomType AT_OXT;
 /** */
@@ -87,8 +102,9 @@ IMPATOMEXPORT extern const AtomType AT_CG1;
 /** */
 /** */ IMPATOMEXPORT extern const AtomType AT_CG2;
 /** */ IMPATOMEXPORT extern const AtomType AT_HG;
-/** */ IMPATOMEXPORT extern const AtomType AT_1HG;
-/** */ IMPATOMEXPORT extern const AtomType AT_2HG;
+/** */ IMPATOMEXPORT extern const AtomType AT_HG1;
+/** */ IMPATOMEXPORT extern const AtomType AT_HG2;
+/** */ IMPATOMEXPORT extern const AtomType AT_HG3;
 // IMPATOMEXPORT extern const AtomType AT_HG1;
 /** */ IMPATOMEXPORT extern const AtomType AT_1HG1;
 /** */ IMPATOMEXPORT extern const AtomType AT_2HG1;
@@ -105,9 +121,9 @@ IMPATOMEXPORT extern const AtomType AT_CG1;
 /** */ IMPATOMEXPORT extern const AtomType AT_CD1;
 /** */ IMPATOMEXPORT extern const AtomType AT_CD2;
 /** */ IMPATOMEXPORT extern const AtomType AT_HD;
-/** */ IMPATOMEXPORT extern const AtomType AT_1HD;
-/** */ IMPATOMEXPORT extern const AtomType AT_2HD;
-/** */ IMPATOMEXPORT extern const AtomType AT_3HD;
+/** */ IMPATOMEXPORT extern const AtomType AT_HD1;
+/** */ IMPATOMEXPORT extern const AtomType AT_HD2;
+/** */ IMPATOMEXPORT extern const AtomType AT_HD3;
 /** */ IMPATOMEXPORT extern const AtomType AT_1HD1;
 /** */ IMPATOMEXPORT extern const AtomType AT_2HD1;
 /** */ IMPATOMEXPORT extern const AtomType AT_3HD1;
@@ -124,9 +140,9 @@ IMPATOMEXPORT extern const AtomType AT_CG1;
 /** */ IMPATOMEXPORT extern const AtomType AT_CE2;
 /** */ IMPATOMEXPORT extern const AtomType AT_CE3;
 /** */ IMPATOMEXPORT extern const AtomType AT_HE;
-/** */ IMPATOMEXPORT extern const AtomType AT_1HE;
-/** */ IMPATOMEXPORT extern const AtomType AT_2HE;
-/** */ IMPATOMEXPORT extern const AtomType AT_3HE;
+/** */ IMPATOMEXPORT extern const AtomType AT_HE1;
+/** */ IMPATOMEXPORT extern const AtomType AT_HE2;
+/** */ IMPATOMEXPORT extern const AtomType AT_HE3;
 // IMPATOMEXPORT extern const AtomType AT_HE1;
 // IMPATOMEXPORT extern const AtomType AT_HE2;
 // IMPATOMEXPORT extern const AtomType AT_HE3;
@@ -142,9 +158,9 @@ IMPATOMEXPORT extern const AtomType AT_CG1;
 /** */ IMPATOMEXPORT extern const AtomType AT_CZ3;
 /** */ IMPATOMEXPORT extern const AtomType AT_NZ;
 /** */ IMPATOMEXPORT extern const AtomType AT_HZ;
-/** */ IMPATOMEXPORT extern const AtomType AT_1HZ;
-/** */ IMPATOMEXPORT extern const AtomType AT_2HZ;
-/** */ IMPATOMEXPORT extern const AtomType AT_3HZ;
+/** */ IMPATOMEXPORT extern const AtomType AT_HZ1;
+/** */ IMPATOMEXPORT extern const AtomType AT_HZ2;
+/** */ IMPATOMEXPORT extern const AtomType AT_HZ3;
 // IMPATOMEXPORT extern const AtomType AT_HZ2;
 // IMPATOMEXPORT extern const AtomType AT_HZ3;
 /** */ IMPATOMEXPORT extern const AtomType AT_CH2;
@@ -232,27 +248,29 @@ public:
   }
 
   /** Create a decorator with the passed type and coordinates.*/
-  static Atom setup_particle(Particle *p, AtomType t= AT_UNKNOWN);
+  static Atom setup_particle(Particle *p, AtomType t);
 
   /** Create a decorator by copying from o.*/
   static Atom setup_particle(Particle *p, Atom o);
 
   //! return true if the particle has the needed attributes
   static bool particle_is_instance(Particle *p) {
-    return p->has_attribute(get_type_key())
+    return p->has_attribute(get_atom_type_key())
       && Hierarchy::particle_is_instance(p);
   }
 
   AtomType get_atom_type() const {
-    return AtomType(get_particle()->get_value(get_type_key()));
+    return AtomType(get_particle()->get_value(get_atom_type_key()));
   }
 
+  //! Set the name and corresponding element and mass
   void set_atom_type(AtomType t);
 
   IMP_DECORATOR_GET_SET_OPT(charge, get_charge_key(),
                             Float, Float, 0);
-  IMP_DECORATOR_GET_SET_OPT(element, get_element_key(),
-                            Int, Int, 0);
+  Element get_element() const {
+    return Element(get_particle()->get_value(get_element_key()));
+  }
 
   /** @name The atom index in the input file
       This index is not necessarily unique over any particular
@@ -264,21 +282,13 @@ public:
                             Int, Int, -1);
   /* @}*/
 
-  //! shows the Atom record in a PDB format
-  /** \param index the atom index. If index eq -1 than the original
-             atom index (as read from a PDB file) is used.
-      \note  The following fileds are currently not displayed:
-             chain, residue insertion code, occupancy,  temp. factor
-  */
-  std::string get_pdb_string(int index=-1);
-
   /** @name Keys
       These methods provide access to the various keys used to store
       things in the Atom. These can be used if you want to
       use an attribute to search a set of particles.
       @{
    */
-  static IntKey get_type_key();
+  static IntKey get_atom_type_key();
 
   static IntKey get_element_key();
 
@@ -292,33 +302,11 @@ IMP_OUTPUT_OPERATOR(Atom);
 
 typedef IMP::Decorators<Atom, Hierarchies> Atoms;
 
-//! Return the AtomType from the four letter code in the PDB
-/** \throw ValueException if nm is invalid.
-    \relatesalso Atom
-    \relatesalso AtomType
- */
-IMPATOMEXPORT AtomType atom_type_from_pdb_string(std::string nm);
 
-
-//! Return the index of the residue containing this atom
-/** The atom must be part of a molecular hierarchy.
-    \relatesalso Atom
- */
-IMPATOMEXPORT int get_residue_index(Atom d);
 
 #ifdef SWIG
-// ResidueType is a typedef so this is invalid C++ code, but swig needs it
-class ResidueType;
 class Residue;
 #endif
-
-//! Return the type of the residue containing this atom
-/** The atom must be part of a molecular hierarchy.
-    \relatesalso Atom
-    \relatesalso Residue
-    \relatesalso Hierarchy
- */
-IMPATOMEXPORT ResidueType get_residue_type(Atom d);
 
 //! Return the Residue containing this atom
 /** The atom must be part of a molecular hierarchy.
@@ -336,14 +324,6 @@ IMPATOMEXPORT Residue get_residue(Atom d);
  */
 IMPATOMEXPORT Atom get_atom(Residue rd, AtomType at);
 
-//! Return the chain id of this atom
-/** The atom must be part of a molecular hierarchy.
-    \relatesalso Atom
-    \relatesalso Residue
-    \relatesalso Hierarchy
- */
-IMPATOMEXPORT char get_chain(Atom d);
-
 
 //! Create a new AtomType
 /** This creates a new AtomType (returned) and sets up the mapping
@@ -351,8 +331,12 @@ IMPATOMEXPORT char get_chain(Atom d);
     \note This method has not been tested. If you use it, please
     write a test and remove this comment.
     \relatesalso AtomType
+    \see atom_type_exists()
 */
-IMPATOMEXPORT AtomType add_atom_type(std::string name);
+IMPATOMEXPORT AtomType add_atom_type(std::string name, Element e);
+
+//! Return true if that atom type already exists.
+IMPATOMEXPORT bool atom_type_exists(std::string name);
 
 IMPATOM_END_NAMESPACE
 

@@ -87,31 +87,6 @@ Element ElementTable::get_element(const std::string& s) const {
   return string_2_element_.find(copy_s)->second;
 }
 
-Element ElementTable::get_element(const AtomType& at) const {
-  std::string atom_name = at.get_string();
-  IMP_check(atom_name.length() > 0, "Invalid atom name.", ValueException);
-  // H, C, N, O - most likely to occur
-  // we don't want to get Ne element for NE AtomType
-  int name_start = 0;
-  if(isdigit(atom_name[0])) name_start = 1;
-  char first_char = atom_name[name_start];
-  switch (first_char) {
-   case 'H': return H;
-   case 'C': return C;
-   case 'N': return N;
-   case 'O': return O;
-   default: break;
-  }
-  // now try other elements
-  for (unsigned int i = 0; i < string_2_element_.size(); i++) {
-    int comp_length = element_strings_[i].name.length();
-    if (atom_name.substr(name_start, comp_length) == element_strings_[i].name) {
-      return element_strings_[i].e;
-    }
-  }
-  return UNKNOWN_ELEMENT;
-}
-
 std::string ElementTable::get_name(Element e) const {
   IMP_check(element_2_string_.find(e) != element_2_string_.end(),
             "Unknown element in get_element.",
