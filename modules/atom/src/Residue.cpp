@@ -78,7 +78,7 @@ ResidueType residue_name_from_pdb_string(std::string nm) {
 void Residue::show(std::ostream &out) const
 {
   out << "residue #" << get_index() << " of name "
-      << get_residue_type() << std::endl;
+      << get_residue_type();
 }
 
 IntKey Residue::get_index_key() {
