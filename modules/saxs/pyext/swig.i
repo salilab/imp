@@ -1,24 +1,3 @@
-%module(directors="1") "IMP.saxs"
-
-%{
-#include "IMP.h"
-#include "IMP/saxs.h"
-%}
-
-
-%include "IMP_macros.i"
-%include "IMP_exceptions.i"
-%include "IMP_streams.i"
-
-%include "std_vector.i"
-%include "std_string.i"
-%include "std_except.i"
-
-/* Get definitions of base classes (but do not wrap) */
-%import "kernel.i"
-%import "algebra.i"
-
-%import "IMP/saxs/config.h"
 
 /* Ignore some stuff to quell SWIG warnings */
 %ignore operator>>(std::istream& s,

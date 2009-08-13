@@ -37,21 +37,6 @@ def GetInstallDirectory(env, varname, *subdirs):
         installdir = env.Dir('#/' + installdir).abspath
     return os.path.join(installdir, *subdirs)
 
-# On older Pythons that don't have subprocess, fall back to os.popen3
-try:
-    import subprocess
-    def MyPopen(cmd):
-        return subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE,
-                                stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                                close_fds=True)
-except ImportError:
-    class MyPopen(object):
-        def __init__(self, cmd):
-            (self.stdin, self.stdout, self.stderr) \
-                = os.popen3(cmd, 't', -1)
-        def wait(self):
-            return 0
-
 class WineEnvironment(Environment):
     """Environment to build Windows binaries under Linux, by running the
        MSVC compiler (cl) and linker (link) through wine, using the w32cc
@@ -161,98 +146,8 @@ int main(void)
         context.Result("yes")
     return res
 
-def CheckModeller(context):
-    """Find Modeller include and library directories"""
-    context.Message('Checking for MODELLER...')
-    modeller = context.env['modeller']
-    if modeller is False or modeller is 0:
-        context.Result("not found")
-        return False
-    # Find MODELLER script
-    moddir = "%s/bin" % modeller
-    try:
-        files = os.listdir(moddir)
-    except OSError, e:
-        context.Result("could not find MODELLER directory %s: %s" % (moddir, e))
-        return False
-    files.sort()
-    r = re.compile('mod(SVN|\d+v\d+)$')
-    files = [f for f in files if r.match(f)]
-    if len(files) == 0:
-        context.Result("could not find MODELLER script in %s" % moddir)
-        return False
-    # Last matching entry is probably the latest version:
-    modbin = os.path.join(moddir, files[-1])
-    try:
-        p = MyPopen(modbin + " -")
-        print >> p.stdin, "print 'EXE type: ', info.exe_type"
-        p.stdin.close()
-    except IOError, e:
-        context.Result("could not run MODELLER script %s: %s" % (modbin, e))
-        return False
-    err = p.stderr.read()
-    exetype = None
-    for line in p.stdout:
-        if line.startswith("EXE type"):
-            exetype=line[11:].rstrip('\r\n')
-    ret = p.wait()
-    if exetype is None:
-        if err or ret != 0:
-            context.Result("could not run MODELLER script %s: %d, %s" \
-                           % (modbin, ret, err))
-        else:
-            context.Result("unknown error running MODELLER script %s" % modbin)
-        return False
-    include = ['%s/src/include' % modeller,
-               '%s/src/include/%s' % (modeller, exetype)]
-    platform = context.env['PLATFORM']
-    if exetype == 'i386-w32':
-        libpath = ['%s/src/main' % modeller]
-        if platform != 'win32':
-            context.Result("MODELLER is built for Windows, but this is not " + \
-                           "a Windows scons run (tip: can run on Linux " + \
-                           "using Wine with 'scons wine=true'")
-            return False
-    else:
-        libpath = ['%s/lib/%s' % (modeller, exetype)]
-        if platform == 'win32':
-            context.Result("this is a Windows scons run, but this is not a " + \
-                           "Windows MODELLER binary")
-            return False
-    libs = ["modeller", "saxs"]
-    if exetype in ('mac10v4-xlf', 'mac10v4-gnu'):
-        libs += ["hdf5", "hdf5_hl"]
-    elif exetype == 'mac10v4-intel':
-        libs += ["hdf5", "hdf5_hl", "imf", "svml", "ifcore", "irc"]
-    modpy = "%s/bin/modpy.sh" % modeller
-    # If the modpy.sh script doesn't exist, assume that Modeller will work
-    # without it (e.g. on Macs, using the binary .dmg install):
-    if not os.path.exists(modpy):
-        modpy = ''
-    context.env['MODELLER_MODPY'] = modpy
-    context.env['MODELLER_EXETYPE'] = exetype
-    context.env['MODELLER_CPPPATH'] = include
-    context.env['MODELLER_LIBPATH'] = libpath
-    context.env['MODELLER_LIBS'] = libs
-    context.Result(modeller)
-    return True
 
-def _modeller_check_failed(require_modeller):
-    """Print an informative message if the Modeller check failed"""
-    msg = "  Use the modeller command line option (or options file) to\n" + \
-          "  set the directory where Modeller is installed\n" + \
-          "  (run 'scons -h' for help.)"
-
-    print
-    if require_modeller:
-        print "ERROR: MODELLER is required to build this package\n\n" + msg
-        Exit(1)
-    else:
-        print "  MODELLER was not found: build will continue but some"
-        print "  functionality will be missing.\n\n" + msg
-
-
-def MyEnvironment(variables=None, require_modeller=True, *args, **kw):
+def MyEnvironment(variables=None, *args, **kw):
     """Create an environment suitable for building IMP modules"""
     import platform
     # First make a dummy environment in order to evaluate all variables, since
@@ -323,8 +218,7 @@ def MyEnvironment(variables=None, require_modeller=True, *args, **kw):
         env['MODELLER_' + mod] = []
     if not env.GetOption('clean') and not env.GetOption('help'):
         custom_tests = {'CheckGNUHash': CheckGNUHash,
-                        'CheckGCCVisibility': CheckGCCVisibility,
-                        'CheckModeller': CheckModeller}
+                        'CheckGCCVisibility': CheckGCCVisibility}
         conf = env.Configure(custom_tests = custom_tests)
         if sys == 'Linux' and env['linksysv']:
             conf.CheckGNUHash()
@@ -332,8 +226,6 @@ def MyEnvironment(variables=None, require_modeller=True, *args, **kw):
             conf.CheckGCCVisibility()
         # Check explicitly for False, since all checks will return Null if
         # configure has been disabled
-        if conf.CheckModeller() is False:
-            _modeller_check_failed(require_modeller)
         conf.Finish()
     return env
 

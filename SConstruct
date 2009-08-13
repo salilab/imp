@@ -5,6 +5,7 @@ import scons_tools.cgal
 import scons_tools.swig
 import scons_tools.standards
 import scons_tools.endian
+import scons_tools.modeller_test
 
 # We need scons 0.98 or later
 EnsureSConsVersion(0, 98)
@@ -13,10 +14,9 @@ EnsureSConsVersion(0, 98)
 vars = Variables('config.py')
 scons_tools.add_common_variables(vars, "imp")
 vars.Add(BoolVariable('cgal', 'Whether to use the CGAL package', True))
-env = scons_tools.MyEnvironment(variables=vars, require_modeller=False,
-                    tools=["default", "docbook",
-                           "imp_module"],
-                    toolpath=["scons_tools"])
+env = scons_tools.MyEnvironment(variables=vars,
+                                tools=["default", "docbook"],
+                                toolpath=["scons_tools"])
 unknown = vars.UnknownVariables()
 if unknown:
     print "Unknown variables: ", unknown.keys()
@@ -27,10 +27,12 @@ if unknown:
 if env.get('repository', None) is not None:
     Repository(env['repository'])
 
-
+env.AddMethod(scons_tools.imp_module.IMPModuleBuild)
+env['IMP_MODULES_ALL']=[]
 scons_tools.boost.configure_check(env, '1.33')
 scons_tools.cgal.configure_check(env)
 scons_tools.swig.configure_check(env)
+scons_tools.modeller_test.configure_check(env)
 scons_tools.endian.configure_check(env)
 
 Help("""
@@ -69,8 +71,7 @@ standards = env.CheckStandards(target='standards.passed',
 env.Alias('standards', standards)
 env.AlwaysBuild(standards)
 
-env.IMPModuleSetup('kernel', module_suffix="", module_include_path="IMP",
-                   module_src_path="kernel", module_preproc="IMP", module_namespace="IMP")
+SConscript('kernel/SConscript')
 SConscript('build/SConscript')
 SConscript('modules/SConscript')
 SConscript('applications/SConscript')

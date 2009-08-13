@@ -3,6 +3,7 @@
 import math
 import imp
 import os
+import sys
 import IMP
 import IMP.core
 import IMP.atom
@@ -22,6 +23,7 @@ def _import_modeller_scripts_optimizers():
 
 def _import_module(partname, fqname, parent):
     """Import a single Python module, possibly from a parent."""
+    print >> sys.stderr, "parent is "+str(parent)
     fp, pathname, description = imp.find_module(partname,
                                                 parent and parent.__path__)
     try:
@@ -387,14 +389,12 @@ def copy_atom(a, model):
     """Copy atom information from modeller"""
     #print "atom "+str(a)
     p=IMP.Particle(model)
-    ap= IMP.atom.Atom.setup_particle(p)
+    ap= IMP.atom.Atom.setup_particle(p,IMP.atom.AtomType(a.name))
     xyzd= IMP.core.XYZ.setup_particle(p, IMP.algebra.Vector3D(a.x, a.y, a.z))
-    ap.set_atom_type(IMP.atom.AtomType(a.name))
+    #ap.set_atom_type(IMP.atom.AtomType(a.name))
     #IMP.core.Name.setup_particle(p).set_name(str("atom "+a._atom__get_num()));
     if (a.charge != 0):
         ap.set_charge(a.charge)
-    if (a.mass != 0):
-        ap.set_mass(a.mass)
     ap.set_input_index(a.index)
     return p
 

@@ -37,12 +37,70 @@ PatchSwig = Builder(action=Action(_action_patch_swig_wrap,
                                 _print_patch_swig_wrap))
 
 
+def _action_swig_file(target, source, env):
+    vars= imp_module.make_vars(env)
+    alldeps=imp_module.expand_dependencies(env, env['IMP_REQUIRED_MODULES'])
+    preface=["""// Generated file, do not edit, edit the .in instead
+%%module(directors="1") "%s"
+
+%%{
+#include "IMP.h"
+"""%vars['module_include_path'].replace("/", ".")]
+    for d in alldeps:
+        if d != "kernel":
+            preface.append("#include \"IMP/%s.h\""% d)
+    if vars['module'] != 'kernel':
+        preface.append("#include \"%(module_include_path)s.h\""%vars)
+    preface.append("""%%}
+%%include "%(module_include_path)s/config.h"
+%%include "std_vector.i"
+%%include "std_string.i"
+%%include "std_pair.i"
+
+%%include "IMP_macros.i"
+%%include "IMP_exceptions.i"
+%%include "IMP_directors.i"
+%%include "IMP_keys.i"
+%%include "IMP_refcount.i"
+%%include "IMP_streams_kernel.i"
+%%include "IMP_streams.i"
+%%include "IMP_decorators.i"
+%%include "IMP_typemaps.i"
+
+%%include "typemaps.i"
+
+/* Don't wrap classes that provide no methods usable in Python */
+%%ignore IMP::ValidDefault;
+%%ignore IMP::NullDefault;
+%%ignore IMP::UninitializedDefault;
+%%ignore IMP::Comparable;
+"""%vars)
+    preface.append("""%{
+#ifdef NDEBUG
+#error "The python wrappers must not be built with NDEBUG"
+#endif
+%}
+""")
+
+    for d in alldeps:
+        preface.append("%%import %s.i"% d)
+    preface.append(open(source[0].abspath, "r").read())
+    open(target[0].abspath, "w").write("\n".join(preface))
+
+def _print_swig_file(target, source, env):
+    print "Generating swig preface"
+
+SwigPreface = Builder(action=Action(_action_swig_file,
+                                    _print_swig_file))
+
+
 def _action_simple_swig(target, source, env):
     vars= imp_module.make_vars(env)
     cppflags= ""
     for x in env.get('CPPFLAGS', []):
         if x.startswith("-I") or x.startswith("-D"):
             cppflags= cppflags+" " + x
+
     base="swig -interface _IMP%(module_suffix)s -DPySwigIterator=%(PREPROC)s_PySwigIterator -DSwigPyIterator=%(PREPROC)s_SwigPyIterator -python -c++ -naturalvar "%vars
     #print base
     out= "-o "+ target[0].abspath
@@ -50,7 +108,7 @@ def _action_simple_swig(target, source, env):
     includes= " -I"+Dir("#/build/swig").abspath+" "+" ".join(["-I"+str(x) for x in env.get('CPPPATH', []) if not x.startswith("#")]) #+ " -I"+Dir("#/build/include").abspath
     # scons puts cppflags before includes, so we should too
     command=base + " " +out + " "\
-         + " " +cppflags+ " -Ibuild/include "+ includes + "-DIMP_SWIG " + doti
+         + " " +cppflags+ " -Ibuild/include "+ includes + " -DIMP_SWIG " + doti
     env.Execute(command)
 
 def _print_simple_swig(target, source, env):

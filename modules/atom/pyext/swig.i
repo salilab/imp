@@ -1,29 +1,4 @@
-%module(directors="1") "IMP.atom"
-
-%{
-#include "IMP.h"
-#include "IMP/core.h"
-#include "IMP/algebra.h"
-#include "IMP/atom.h"
-%}
-
-%include "IMP_macros.i"
-%include "IMP_exceptions.i"
-%include "IMP_streams.i"
-%include "IMP_decorators.i"
-
-%include "std_vector.i"
-%include "std_string.i"
-%include "std_except.i"
-
-/* Get definitions of kernel base classes (but do not wrap) */
-%import "kernel.i"
-%import "IMP_keys.i"
-%import "algebra.i"
-%import "core.i"
-
-%include "IMP/atom/config.h"
-
+%include "IMP/atom/macros.h"
 
 // must be before hierarchy
 %include "IMP/atom/bond_decorators.h"
@@ -48,22 +23,22 @@
 %include "IMP/atom/selectors.h"
 %include "IMP/atom/Fragment.h"
 %include "IMP/atom/SimulationParameters.h"
-
+%include "IMP/atom/Mass.h"
 
 namespace IMP {
   namespace atom {
     %template(show_molecular_hierarchy) IMP::core::show<IMP::atom::Hierarchy>;
    // swig has random, perplexing issues if these are higher in the file
-   %template(AtomTypeBase) ::IMP::KeyBase<IMP_ATOM_TYPE_INDEX>;
-   %template(ResidueTypeBase) ::IMP::KeyBase<IMP_RESIDUE_TYPE_INDEX>;
+   %template(AtomTypeBase) ::IMP::KeyBase<IMP_ATOM_TYPE_INDEX, false>;
+   %template(ResidueTypeBase) ::IMP::KeyBase<IMP_RESIDUE_TYPE_INDEX, false>;
   }
 }
+%include "IMP/atom/element.h"
 %include "IMP/atom/Atom.h"
 %include "IMP/atom/Residue.h"
 %include "IMP/atom/ForceFieldParameters.h"
 %include "IMP/atom/CharmmParameters.h"
 %include "IMP/atom/force_fields.h"
-%include "IMP/atom/element.h"
 %include "IMP/atom/pdb.h"
 
 

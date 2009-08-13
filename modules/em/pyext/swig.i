@@ -1,20 +1,3 @@
-%module(directors="1") "IMP.em"
-
-%{
-#include "IMP.h"
-#include "IMP/algebra.h"
-#include "IMP/core.h"
-#include "IMP/em.h"
-#include "IMP/algebra.h"
-#include "IMP/core.h"
-#include "IMP/atom.h"
-%}
-
-%include "IMP_macros.i"
-%include "IMP_exceptions.i"
-%include "IMP_streams.i"
-%include "IMP_refcount.i"
-
 /* Ignore things to prevent SWIG warning about them */
 namespace IMP::em {
   %ignore DensityMap::operator =;
@@ -23,25 +6,14 @@ namespace IMP::em {
 %ignore operator<<(std::ostream&, const EMHeader &);
 %ignore operator<<(std::ostream&, const MRCHeader &);
 
-%include "std_vector.i"
-%include "std_string.i"
-%include "std_except.i"
-
-%include "IMP/em/config.h"
 
 /* Make selected classes extensible in Python */
-%import "IMP_directors.i"
 IMP_DIRECTOR_MODULE_CLASS(em, ParticlesAccessPoint);
 IMP_DIRECTOR_MODULE_CLASS(em, IMPParticlesAccessPoint);
 
 IMP_REFCOUNT_RETURN_SINGLE(IMP::em::DensityMap)
 
-/* Get definitions of kernel and module base classes (but do not wrap) */
-%import "kernel.i"
-/* Get definitions of algebra base classes (but do not wrap) */
-%import "algebra.i"
-%import "core.i"
-%import "atom.i"
+
 
 /* Wrap our own classes */
 %include "IMP/em/def.h"

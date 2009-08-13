@@ -1,25 +1,26 @@
 Import('env')
 
+# modules must be listed after modules that use them
 cppmodules=['algebra',
+            'core',
             'atom',
             'benchmark',
-            'core',
             'display',
             'domino',
             'em',
             'examples',
-            'helper',
             'misc',
             'saxs',
             'statistics',
-            'search']
+            'search',
+            'helper']
 pymodules=['modeller']
 
 for p in cppmodules:
-    env.IMPModuleSetup(p)
+    SConscript(p+"/SConscript")
 
 for p in pymodules:
-    env.IMPModuleSetup(p, cpp=False)
+    SConscript(p+"/SConscript")
 
 if env.get('localmodules', False):
     import os.path
@@ -28,4 +29,4 @@ if env.get('localmodules', False):
 
     for m in [os.path.split(str(d))[0] for d in dirs]:
         if m not in cppmodules and m not in pymodules:
-            env.IMPModuleSetup(m)
+            SConscript(m+"/SConscript")

@@ -1,32 +1,3 @@
-%module(directors="1") "IMP.display"
-
-%{
-#include "IMP.h"
-#include "IMP/display.h"
-#include "IMP/algebra.h"
-#include "IMP/core.h"
-#include "IMP/atom.h"
-%}
-
-
-%include "IMP_macros.i"
-%include "IMP_exceptions.i"
-%include "IMP_streams.i"
-
-%include "std_vector.i"
-%include "std_string.i"
-%include "std_except.i"
-
-/* Get definitions of kernel base classes (but do not wrap) */
-%import "kernel.i"
-%import "core.i"
-%import "atom.i"
-%import "algebra.i"
-
-%include "IMP/display/config.h"
-
-/* Make selected classes extensible in Python */
-%import "IMP_directors.i"
 IMP_DIRECTOR_MODULE_CLASS(display, Writer);
 IMP_DIRECTOR_MODULE_CLASS(display, Geometry);
 IMP_DIRECTOR_MODULE_CLASS(display, CompoundGeometry);
