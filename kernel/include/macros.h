@@ -18,7 +18,7 @@
 #define IMP_ONLY_DOXYGEN(x)
 #endif
 
-#if defined(IMP_SWIG_WRAPPER) || defined(SWIG)
+#if defined(SWIG)
 #define IMP_NO_SWIG(x)
 #else
 //! Hide the line when SWIG is compiled or parses it
@@ -655,7 +655,7 @@ protection:                                                             \
 #define IMP_OBJECT(Name, version_info)                                  \
   public:                                                               \
   virtual void show(std::ostream &out=std::cout) const;                 \
-  virtual IMP::VersionInfo get_version_info() const { return version_info; }\
+  virtual ::IMP::VersionInfo get_version_info() const { return version_info; } \
   IMP_REF_COUNTED_DESTRUCTOR(Name)                                      \
   public:
 
@@ -954,7 +954,7 @@ es
   virtual void show(std::ostream &out=std::cout) const {                \
     out << show_expression;                                             \
   }                                                                     \
-  IMP::VersionInfo get_version_info() const { return version_info; }    \
+  ::IMP::VersionInfo get_version_info() const { return version_info; }  \
   IMP_REF_COUNTED_DESTRUCTOR(Name)                                      \
   public:
 
