@@ -3,7 +3,7 @@
 namespace IMP {
   namespace core {
     %extend GroupnameContainerSet {
-       GroupnameContainers get_groupname_containers() const {
+       ::IMP::GroupnameContainers get_groupname_containers() const {
          return IMP::GroupnameContainers(self->groupname_containers_begin(),
          self->groupname_containers_end());
        }
