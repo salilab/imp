@@ -11,4 +11,6 @@ if not env.get('deprecated', True):
 if env['IMP_ENDIAN']=='little':
     config.append("IMP_LITTLE_ENDIAN")
 
-env.IMPModuleBuild(version='SVN', required_modules=None, config_macros=config)
+env.IMPModuleBuild(version='SVN', required_modules=None, config_macros=config,
+                   module='kernel', module_suffix="", module_include_path="IMP",
+                   module_src_path="kernel", module_preproc="IMP", module_namespace="IMP")
