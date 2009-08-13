@@ -101,7 +101,7 @@ def _action_simple_swig(target, source, env):
         if x.startswith("-I") or x.startswith("-D"):
             cppflags= cppflags+" " + x
 
-    base="swig -interface _IMP%(module_suffix)s -DPySwigIterator=%(PREPROC)s_PySwigIterator -DSwigPyIterator=%(PREPROC)s_SwigPyIterator -python -c++ -naturalvar "%vars
+    base = env['SWIG'] + " -interface _IMP%(module_suffix)s -DPySwigIterator=%(PREPROC)s_PySwigIterator -DSwigPyIterator=%(PREPROC)s_SwigPyIterator -python -c++ -naturalvar "%vars
     #print base
     out= "-o "+ target[0].abspath
     doti= source[0].abspath
@@ -120,34 +120,59 @@ SwigIt = Builder(action=Action(_action_simple_swig,
 
 def _get_swig_version(env):
     """Run the SWIG command line tool to get and return the version number"""
-    #print "swig version"
-    out = os.popen('swig' + ' -version').read()
+    if not env['SWIG']:
+        return ""
+    out = os.popen(env['SWIG'] + ' -version').read()
     match = re.search(r'SWIG Version\s+(\S+)$', out, re.MULTILINE)
-    print match
     if match:
-        #print "Found " + match.group(1)
         return match.group(1)
     else:
         return ""
 
+def generate(env):
+    """Add Builders and construction variables for swig to an Environment."""
+    env['SWIG']              = env.WhereIs('swig')
+    env['SWIGVERSION']       = _get_swig_version(env)
+
+def exists(env):
+    return env.Detect(['swig'])
+
 
 def _check(context):
-    context.Message('Checking for swig version ')
+    needversion = [1,3,34]
+    needversion_str = ".".join([str(x) for x in needversion])
+    failmsg = """
+SWIG version %s or later must be installed to support Python, but
+%s.
+Please make sure 'swig' is found in the path passed to scons.
+
+In particular, if you have SWIG installed in a non-standard location,
+please use the 'path' option to add this location to the search path.
+For example, if you have SWIG installed in /usr/local/bin/, edit (or create)
+config.py and add the line
+
+path='/usr/local/bin'
+
+Since SWIG could not be found, proceeding to build IMP without Python support.
+
+"""
+    context.Message('Checking for SWIG version >= %s... ' % needversion_str)
+    version = context.env['SWIGVERSION']
     try:
-        out = os.popen('swig' + ' -version').read()
-        match = re.search(r'SWIG Version\s+(\S+)$', out, re.MULTILINE)
-        version= match.group(1)
-    except:
-        print sys.exc_info()
-        context.Result("failed")
+        v = [int(x) for x in version.split(".")]
+    except ValueError:
+        context.Result('not found')
+        print failmsg % (needversion_str,
+                         "it could not be found on your system")
         return False
-    sv= version.split(".")
-    v= [int(sv[0]), int(sv[1]), int(sv[2])]
-    success = v> [1,3,24]
-    if success:
-        context.Result(version)
+    if v >= needversion:
+        context.Result('ok, %s found' % version)
         return True
     else:
+        context.Result('no, %s found' % version)
+        print failmsg % (needversion_str,
+                         "only an older version (%s) " % version + \
+                         "was found on your system")
         return False
 
 def configure_check(env):
@@ -155,6 +180,5 @@ def configure_check(env):
     conf = env.Configure(custom_tests=custom_tests)
     if not env.GetOption('clean') and not env.GetOption('help') \
        and conf.CheckSWIG() is False:
-        print """SWIG with a version > 1.3.34 must be installed to support python. Please make sure 'swig' is found in the path passed to scons."""
         env['python']=False
     conf.Finish()
