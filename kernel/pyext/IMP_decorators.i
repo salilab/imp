@@ -12,14 +12,16 @@
   Decorator __getitem__(int index) const {
     if (index < 0) index= index+self->size();
     if (index >= static_cast<int>(self->size())) {
-       throw IMP::IndexException("Index out of range");
+       IMP_failure("Index out of range in getitem" << index
+       << self->size(), IMP::IndexException);
     }
     return self->operator[](index);
   }
   void __setitem__(int index, Decorator val) {
     if (index < 0) index= index+self->size();
     if (index >= static_cast<int>(self->size())) {
-       throw IMP::IndexException("Index out of range");
+       IMP_failure("Index out of range in setitem" << index
+       << self->size(), IMP::IndexException);
     }
     self->set(index, val);
   }
@@ -54,6 +56,10 @@
 %extend IMP::DecoratorsWithTraits {
   Decorator __getitem__(int index) const {
     if (index < 0) index=self->size()+index;
+    if (index >= static_cast<int>(self->size())) {
+       IMP_failure("Index out of range in getitem" << index
+       << self->size(), IMP::IndexException);
+    }
     return self->operator[](index);
   }
   std::vector<Decorator> __list__() const {
@@ -62,6 +68,10 @@
   }
   void __setitem__(int index, Decorator val) {
     if (index < 0) index=self->size()+index;
+    if (index >= static_cast<int>(self->size())) {
+       IMP_failure("Index out of range in setitem" << index
+       << self->size(), IMP::IndexException);
+    }
     self->set(index, val);
   }
   int __len__() const {
@@ -95,19 +105,3 @@
 %enddef
 %implicitconv Decorator;
 
-/*%typemap(in) IMP::Particle* {
-  void *argp1=NULL;
-  int res1 = SWIG_ConvertPtr($input, &argp1,SWIGTYPE_p_IMP__Particle, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    IMP::Decorator *d=0;
-    int res2 = SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_IMP__Decorator, 0 | 0 );
-    if (!SWIG_IsOK(res2)) {
-       SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_XYZR" "', argument " "1"" of type '" "IMP::Particle *""'");
-    } else {
-      d= reinterpret_cast<IMP::Decorator*>(argp1);
-      $1= d->get_particle();
-    }
-  } else {
-    $1=reinterpret_cast< IMP::Particle * >(argp1);
-  }
-}*/

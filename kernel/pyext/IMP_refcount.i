@@ -72,14 +72,16 @@ extern "C" {
   RC __getitem__(int index) const {
     if (index < 0) index= index+self->size();
     if (index >= static_cast<int>(self->size())) {
-       throw IMP::IndexException("Index out of range");
+       IMP_failure("Index out of range in getitem" << index
+       << self->size(), IMP::IndexException);
     }
     return self->operator[](index);
   }
   void __setitem__(int index, RC p) {
     if (index < 0) index= index+self->size();
     if (index >= static_cast<int>(self->size())) {
-       throw IMP::IndexException("Index out of range");
+       IMP_failure("Index out of range in setitem " << index
+       << self->size(), IMP::IndexException);
     }
     return self->set(index, p);
   }
