@@ -54,7 +54,6 @@ Particle* atom_particle(Model *m, const String& pdb_line)
                       internal::atom_ycoord(pdb_line),
                       internal::atom_zcoord(pdb_line));
   // atom decorator
-  std::cout << "Creating atom with type " << atom_name << std::endl;
   Atom d = Atom::setup_particle(p, atom_name);
   core::XYZ::setup_particle(p, v).set_coordinates_are_optimized(true);
   d.set_input_index(internal::atom_number(pdb_line));
