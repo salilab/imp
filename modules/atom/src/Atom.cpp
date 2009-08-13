@@ -48,6 +48,7 @@ namespace {
       case 'N': return N;
       case 'O': return O;
       case 'S': return S;
+      case 'P': return P;
       default: break;
       }
       IMP_failure("Could not figure out element for " << at,
