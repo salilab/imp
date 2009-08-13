@@ -4,6 +4,7 @@ import os
 import random
 import IMP
 import time
+import shutil
 
 def numerical_derivative(func, val, step):
     """Calculate the derivative of the single-value function `func` at
@@ -198,6 +199,67 @@ class TestCase(unittest.TestCase):
             p = self.create_point_particle(model, v[0], v[1], v[2])
             ps.append(p)
         return ps
+
+
+try:
+    import subprocess
+    class _SubprocessWrapper(subprocess.Popen):
+        def __init__(self, app, args):
+            appdir, appname = os.path.split(app)
+            self.__appcopy = None
+            # For applications to work on Windows, the application must be
+            # run from the same directory as the DLLs
+            if sys.platform == 'win32':
+                # Hack to find the location of build/lib/
+                libdir = os.environ['PYTHONPATH'].split(':')[0]
+                self.__appcopy = os.path.join(libdir, appname)
+                shutil.copy(app, libdir)
+                app = self.__appcopy
+            subprocess.Popen.__init__(self, [app]+list(args),
+                                      stdin=subprocess.PIPE,
+                                      stdout=subprocess.PIPE,
+                                      stderr=subprocess.PIPE)
+        def __del__(self):
+            self.__delete_copy()
+        def __delete_copy(self):
+            if self.__appcopy:
+                os.unlink(self.__appcopy)
+            self.__appcopy = None
+        def wait(self):
+            ret = subprocess.Popen.wait(self)
+            self.__delete_copy()
+            return ret
+except ImportError:
+    # Provide a subprocess workalike for Python 2.3 systems (e.g. old Macs)
+    class _SubprocessWrapper(object):
+        def __init__(self, app, args):
+            self.stdin, self.stdout, self.stderr = \
+                             os.popen3(app + " " + " ".join(args))
+        def wait(self):
+            return 0
+
+class ApplicationTestCase(TestCase):
+    """Super class for simple IMP application test cases"""
+    def _get_application_file_name(self, filename):
+        # If we ran from run-all-tests.py, it set an env variable for us with
+        # the top-level test directory
+        if 'TEST_DIRECTORY' in os.environ:
+            testdir = os.environ['TEST_DIRECTORY']
+        else:
+            testdir = os.path.dirname(os.path.abspath(sys.argv[0]))
+        dirs = testdir.split(os.path.sep)
+        for i in range(len(dirs), 0, -1):
+            trydir = os.path.sep.join(dirs[:i])
+            if os.path.isdir(os.path.join(trydir, 'test')):
+                return os.path.join(trydir, filename)
+        raise OSError("Cannot find IMP application directory")
+
+    def run_application(self, app, args):
+        """Run an application with the given list of arguments. Return
+           a subprocess.Popen-like object containing the child stdin, stdout
+           and stderr."""
+        filename = self._get_application_file_name(app)
+        return _SubprocessWrapper(filename, args)
 
 
 class ConstPairScore(IMP.PairScore):

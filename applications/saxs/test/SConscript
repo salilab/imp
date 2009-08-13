@@ -1,0 +1,24 @@
+Import('penv', 'all')
+
+def _action_test(target, source, env):
+    app = "%s %s %s %s > /dev/null" \
+          % (source[0].abspath, env['PYTHON'],
+             source[1].abspath,
+             " ".join([x.abspath for x in source[2:]]))
+    if env.Execute(app) == 0:
+        file(str(target[0]), 'w').write('PASSED\n')
+    else:
+        print "IMP applications/saxs tests FAILED"
+        return 1
+def _print_test(target, source, env):
+    print "Testing IMP applications/saxs"
+
+penv.Append(BUILDERS = {'Test': Builder(action=Action(_action_test,
+                                                      _print_test))})
+
+test = penv.Test("test.passed",
+                 ['#/tools/imppy.sh', '#/scons_tools/run-all-tests.py',
+                  'test_saxs.py'])
+penv.AlwaysBuild("test.passed")
+penv.Alias("test", test)
+penv.Depends(test, all)
