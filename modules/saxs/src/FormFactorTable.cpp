@@ -404,8 +404,8 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_carbon_atom_type(
   // C8
   if (atom_type == atom::AT_C8) return CH;
 
-  std::cerr << "Warning carbon atom not found, using default C form factor "
-            << atom_type << " " << residue_type << std::endl;
+  IMP_WARN("Warning carbon atom not found, using default C form factor "
+           << atom_type << " " << residue_type << std::endl);
   return C;
 }
 
@@ -474,8 +474,8 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_nitrogen_atom_type(
   // N7, N9
   if (atom_type == atom::AT_N7 || atom_type == atom::AT_N9) return N;
 
-  std::cerr << "Warning nitrogen atom not found, using default N form factor "
-            << atom_type << " " << residue_type << std::endl;
+  IMP_WARN("Nitrogen atom not found, using default N form factor "
+           << atom_type << " " << residue_type);
   return N;
 }
 
@@ -523,8 +523,8 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_oxygen_atom_type(
     return O;
   }
 
-  std::cerr << "Warning oxygen atom not found, using default O form factor "
-            << atom_type << " " << residue_type << std::endl;
+  IMP_WARN("Oxygen atom not found, using default O form factor "
+           << atom_type << " " << residue_type << std::endl)
   return O;
 }
 
@@ -539,15 +539,15 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_sulfur_atom_type(
     if (residue_type == atom::CYS) return SH;
     return S;
   }
-  std::cerr << "Warning sulfur atom not found, using default S form factor "
-            << atom_type << " " << residue_type << std::endl;
+  IMP_WARN("Warning sulfur atom not found, using default S form factor "
+           << atom_type << " " << residue_type);
   return S;
 }
 
 FormFactorTable::FormFactorAtomType FormFactorTable::get_form_factor_atom_type(
                                    Particle *p, FormFactorType ff_type) const {
   atom::Atom ad = atom::Atom::decorate_particle(p);
-  atom::ResidueType residue_type = atom::get_residue_type(ad);
+  atom::ResidueType residue_type = atom::get_residue(ad).get_residue_type();
   atom::AtomType atom_type = ad.get_atom_type();
 
   // find FormFactorAtomType
