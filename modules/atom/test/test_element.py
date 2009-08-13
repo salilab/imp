@@ -21,7 +21,7 @@ class ElementTableTest(IMP.test.TestCase):
         for a in atoms:
             mass += IMP.atom.Mass(a.get_particle()).get_mass()
         print mass
-        self.assertInTolerance(mass, 12949, 1.0)
+        self.assertInTolerance(mass, 13346, 1.0)
 
     def test_element_write(self):
         """Check writing to pdb unknown elements"""
