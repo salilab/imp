@@ -88,9 +88,7 @@ Element ElementTable::get_element(const std::string& s) const {
 }
 
 std::string ElementTable::get_name(Element e) const {
-  IMP_check(element_2_string_.find(e) != element_2_string_.end(),
-            "Unknown element in get_element.",
-            ValueException);
+  if (e== UNKNOWN_ELEMENT) return "Un";
   return element_2_string_.find(e)->second;
 }
 
