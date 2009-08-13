@@ -16,7 +16,22 @@
 #include <fstream>
 #include <vector>
 #include <string>
-#include <libgen.h>     // Use basename()
+
+#if defined(_WIN32) || defined(_WIN64)
+// Simple basename implementation on platforms that don't have libgen.h
+const char *basename(const char *path)
+{
+  int i;
+  for (i = path ? strlen(path) : 0; i > 0; --i) {
+    if (path[i] == '/' || path[i] == '\\') {
+      return &path[i + 1];
+    }
+  }
+  return path;
+}
+#else
+#include <libgen.h>
+#endif
 
 std::string trim_extension(const std::string file_name) {
  if(file_name[file_name.size()-4] == '.')
