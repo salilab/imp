@@ -44,6 +44,20 @@ def add_to_module_alias(env, target, source):
               [env.Alias(env['IMP_MODULE']+'-'+source)])
 
 
+def expand_dependencies(env, deps):
+    size=-1
+    all=deps
+    while size != len(all):
+        size=len(all)
+        #print "all is "+str(all)
+        for d in all:
+            #print "d is " +str(d)
+            all=all+env[d+"_required_modules"]
+            all=list(set(all))
+    all.sort()
+    return all
+
+
 #def module_deps_depends(env, target, source, dependencies):
 #    env.Depends(target,
 #              [env.Alias(x+'-'+source) for x in dependencies])
@@ -227,14 +241,21 @@ def IMPModulePython(env):
         penv.Prepend(LIBS=['imp%s' % module_suffix])
         #penv.Append(CPPPATH=[Dir('#').abspath])
         #penv.Append(SWIGFLAGS='-python -c++ -naturalvar')
-        interfaces= module_glob(["*.i"])
+        preface= penv._IMPSWIGPreface(target=[File("%(module)s.i"%vars)],
+                                      source=[File("swig.i"%vars),
+                                              env.Value(env['IMP_REQUIRED_MODULES'])])
+        interfaces= module_glob(["*.i"])+["%(module)s.i"%vars]
         for i in interfaces:
-            cb= env.LinkInstallAs("#/build/swig/"+str(i), i)
-            build.append(cb)
-
+            if str(i) != 'swig.i' and str(i) != "%(module)s.i"%vars:
+                cb= env.LinkInstallAs("#/build/swig/"+str(i), i)
+                env.Depends(preface, cb)
+                build.append(cb)
+        cb= env.LinkInstallAs("#/build/swig/%(module)s.i"%vars, "%(module)s.i"%vars)
+        build.append(cb)
         swig_interface=File(module+".i")
         globlist= ["#/module/"+x+"/pyext/*.i" for x in env['IMP_REQUIRED_MODULES']]\
-            + ["*.i"]
+            + ["*.i"] +["#/build/include/"+x+"/*.h" for x in expand_dependencies(env, env['IMP_REQUIRED_MODULES'])]\
+            +["#/build/include/*.h"]
         #print globlist
         deps= module_glob(globlist)+["#/build/include/%(module_include_path)s/"%vars \
                                          + str(x) for x in env['IMP_MODULE_HEADERS']] \
@@ -243,7 +264,7 @@ def IMPModulePython(env):
         #print [str(x) for x in deps]
         penv._IMPSWIG(target=['wrap.cc',
                               'wrap.h'],
-                      source=["%(module)s.i"%vars]+deps)
+                      source=["%(module)s.i"%vars, preface]+deps)
         build.append(penv._IMPPatchSWIG(target=['patched_wrap.cc'],
               source=['wrap.cc']))
         build.append(penv._IMPPatchSWIG(target=['patched_wrap.h'],
@@ -418,84 +439,13 @@ def validate(env):
     env['VALIDATED'] = True
 
 def IMPModuleBuild(env, version, required_modules=[],
-                   optional_dependencies=[], config_macros=[]):
-    print "Configuring module " + env['IMP_MODULE'],
-
-    if not env['IMP_MODULE_CPP']:
-        print " (python only)",
-    if required_modules is not None and len(required_modules) != 0:
-        print "(requires " +", ".join(required_modules) + ")",
-    print
-
-    # Check required modules and add kernel
-    if required_modules is not None:
-        env.Prepend(LIBS=['imp'])
-        env.Prepend(LIBS=['imp_'+x for x in required_modules])
-        for x in required_modules:
-            if x.startswith("imp_"):
-                print "Required modules should have the name of the module (eg 'algebra'), not the name of the library."
-                print required_modules
-                raise ValueError(x)
-            if x=='kernel':
-                print "You do not need to list the kernel as a required module"
-                print required_modules
-                raise ValueError(x)
-        required_modules.append('kernel')
-        env['IMP_REQUIRED_MODULES']= required_modules
-    else:
-        env['IMP_REQUIRED_MODULES']= []
-    for d in optional_dependencies:
-        if d== "CGAL":
-            if env['CGAL_LIBS']:
-                env.Prepend(LIBS=env['CGAL_LIBS'])
-        else:
-            raise ValueError("Do not understand optional dependency: " +d)
-
-    env['IMP_MODULE_CONFIG']=config_macros
-    if env.get('svn', True):
-        if env.get('repository', None) is not None:
-            path=env['repository']
-        else:
-            path="."
-        dir= Dir("#/"+path).abspath
-        try:
-            vr= os.popen('svnversion ' + dir).read()
-            version= version + ' ' + vr.split("\n")[0]
-        except:
-            print "Could not run svnversion."
-    env['IMP_MODULE_VERSION'] = version
-    vars=make_vars(env)
-    env.validate()
-    env.SConscript('doc/SConscript', exports='env')
-    env.SConscript('examples/SConscript', exports='env')
-    env.SConscript('data/SConscript', exports='env')
-
-    if env['IMP_MODULE_CPP']:
-        env.SConscript('include/SConscript', exports='env')
-        env.SConscript('src/SConscript', exports='env')
-        env.SConscript('bin/SConscript', exports='env')
-    if env.get('python', True):
-        env.SConscript('pyext/SConscript', exports='env')
-        env.SConscript('test/SConscript', exports='env')
-
-    add_to_global_alias(env, 'install', 'install')
-
-
-
-def IMPModuleSetup(env, module, cpp=True, module_suffix=None,
+                   optional_dependencies=[], config_macros=[],
+                   module=None, cpp=True, module_suffix=None,
                    module_include_path=None, module_src_path=None, module_preproc=None,
-                   module_namespace=None, module_nicename=None):
-    """Set up an IMP module. The module's SConscript gets its own
-       customized environment ('env') in which the following pseudo-builders
-       or methods are available: IMPPython, IMPModuleTest, validate
-       and invalidate. If `cpp` is True, necessary C++ headers are also
-       automatically generated, and these additional methods are available:
-       IMPSharedLibraryEnvironment, IMPPythonExtensionEnvironment, IMPHeaders,
-       IMPData.
-       Either validate or invalidate must be called in the module's top-level
-       SConscript before setting up any builders, to indicate whether the
-       module's necessary dependencies have been met.
-    """
+                   module_namespace=None, module_nicename=None,
+                   required_dependencies=[]):
+    if module is None:
+        module=Dir('.').abspath.split('/')[-1]
     if module_suffix is None:
         module_suffix="_"+module
     if module_src_path is None:
@@ -508,18 +458,48 @@ def IMPModuleSetup(env, module, cpp=True, module_suffix=None,
         module_namespace="IMP::"+module
     if module_nicename is None:
         module_nicename= "IMP."+module
+    # Check required modules and add kernel
+    if required_modules is not None:
+        for x in required_modules:
+            if x.startswith("imp_"):
+                print "Required modules should have the name of the module (eg 'algebra'), not the name of the library."
+                print required_modules
+                raise ValueError(x)
+            if x=='kernel':
+                print "You do not need to list the kernel as a required module"
+                print required_modules
+                raise ValueError(x)
+        required_modules.append('kernel')
+    else:
+        required_modules=[]
     #print module_suffix
     #print module_src_path
     #print module_include_path
     #print module_preproc
     #print module_namespace
+    env[module+"_required_modules"]=required_modules
+    env[module+"_optional_dependencies"]= optional_dependencies
     env['IMP_MODULES_ALL'].append(module)
+
+
+
     env = env.Clone()
+    if len(required_modules)>0:
+        env.Prepend(LIBS=['imp'])
+    for x in required_modules:
+        if x!="kernel":
+            env.Prepend(LIBS=['imp_'+x])
+    env['IMP_REQUIRED_MODULES']= required_modules
+    for d in optional_dependencies:
+        if d== "CGAL":
+            if env['CGAL_LIBS']:
+                env.Append(LIBS=env['CGAL_LIBS'])
+        else:
+            raise ValueError("Do not understand optional dependency: " +d)
     env.Append(BUILDERS = {'IMPModuleConfigH': config_h.ConfigH,
                            'IMPModuleVersionInfoH': version_info.VersionInfoH,
                            'IMPModuleVersionInfoCPP': version_info.VersionInfoCPP,
                            'IMPModuleLinkTest': link_test.LinkTest})
-
     env['IMP_MODULE'] = module
     env['IMP_MODULE_SUFFIX'] = module_suffix
     env['IMP_MODULE_INCLUDE_PATH'] = module_include_path
@@ -557,17 +537,58 @@ def IMPModuleSetup(env, module, cpp=True, module_suffix=None,
     env.Append(BUILDERS={'_IMPExamplesDox': examples.MakeDox})
     env.Append(BUILDERS={'_IMPSWIG': swig.SwigIt})
     env.Append(BUILDERS={'_IMPPatchSWIG': swig.PatchSwig})
+    env.Append(BUILDERS={'_IMPSWIGPreface': swig.SwigPreface})
     env.AddMethod(validate)
     env.AddMethod(invalidate)
     env['TEST_ENVSCRIPT'] = None
     env['VALIDATED'] = None
-    env.SConscript('%s/SConscript' % module, exports='env')
 
-def generate(env):
-    """Add builders and construction variables for the IMP module tool."""
-    env['IMP_MODULES_ALL'] = []
-    env.AddMethod(IMPModuleSetup)
+    print "Configuring module " + env['IMP_MODULE'],
 
-def exists(env):
-    """Right now no external programs are needed"""
-    return True
+    if not env.GetOption('clean') and not env.GetOption('help'):
+        for x in required_dependencies:
+            if x== "modeller":
+                if not env.get('HAS_MODELLER', False):
+                    print "(modeller missing, disabled)"
+                    Return()
+            else:
+                raise ValueError("Do not know dependency "+x)
+
+    if not env['IMP_MODULE_CPP']:
+        print " (python only)",
+
+    nice_deps = expand_dependencies(env,required_modules)
+    #print "nice is "+str(nice_deps)
+    if len(nice_deps) > 1:
+        nice_deps.remove('kernel')
+        print "(requires " +", ".join(nice_deps) + ")",
+    print
+
+    env['IMP_MODULE_CONFIG']=config_macros
+    if env.get('svn', True):
+        if env.get('repository', None) is not None:
+            path=env['repository']
+        else:
+            path="."
+        dir= Dir("#/"+path).abspath
+        try:
+            vr= os.popen('svnversion ' + dir).read()
+            version= version + ' ' + vr.split("\n")[0]
+        except:
+            print "Could not run svnversion."
+    env['IMP_MODULE_VERSION'] = version
+    vars=make_vars(env)
+    env.validate()
+    env.SConscript('doc/SConscript', exports='env')
+    env.SConscript('examples/SConscript', exports='env')
+    env.SConscript('data/SConscript', exports='env')
+
+    if env['IMP_MODULE_CPP']:
+        env.SConscript('include/SConscript', exports='env')
+        env.SConscript('src/SConscript', exports='env')
+        env.SConscript('bin/SConscript', exports='env')
+    if env.get('python', True):
+        env.SConscript('pyext/SConscript', exports='env')
+        env.SConscript('test/SConscript', exports='env')
+
+    add_to_global_alias(env, 'install', 'install')

@@ -3,8 +3,8 @@
 
 namespace IMP
 {
-  %template(FloatKeyBase) ::IMP::KeyBase<0>;
-  %template(IntKeyBase) ::IMP::KeyBase<1>;
-  %template(StringKeyBase) ::IMP::KeyBase<2>;
-  %template(ParticleKeyBase) ::IMP::KeyBase<3>;
+  %template(FloatKeyBase) ::IMP::KeyBase<0, true>;
+  %template(IntKeyBase) ::IMP::KeyBase<1, true>;
+  %template(StringKeyBase) ::IMP::KeyBase<2, true>;
+  %template(ParticleKeyBase) ::IMP::KeyBase<3, true>;
 }

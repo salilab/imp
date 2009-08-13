@@ -1,29 +1,4 @@
-%module(directors="1") "IMP.core"
-
-%{
-#include "IMP.h"
-#include "IMP/algebra.h"
-#include "IMP/core.h"
-%}
-
-%include "IMP_macros.i"
-%include "IMP_exceptions.i"
-%include "IMP_streams.i"
-
-
-%include "std_vector.i"
-%include "std_string.i"
-%include "std_except.i"
-
-%include "IMP/core/config.h"
 %include "IMP/core/macros.h"
-
-%{
-#ifdef NDEBUG
-#error "The python wrappers must not be built with NDEBUG"
-#endif
-%}
-
 
 
 /* Add additional IMPCORE_CONTAINER methods for scripting languages
@@ -38,10 +13,7 @@
 %enddef
 
 
-/* Get definitions of base classes (but do not wrap) */
-%import "kernel.i"
-%import "IMP_keys.i"
-%import "algebra.i"
+
 %include "singleton_containers.i"
 %include "pair_containers.i"
 

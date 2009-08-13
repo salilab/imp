@@ -1,24 +1,4 @@
-%module(directors="1") IMP
 
-%{
-#include "IMP.h"
-%}
-
-%include "std_vector.i"
-%include "std_map.i"
-%include "std_string.i"
-%include "std_pair.i"
-
-%include "IMP_macros.i"
-%include "IMP_exceptions.i"
-%include "IMP_keys.i"
-%include "IMP_refcount.i"
-%include "IMP_directors.i"
-%include "IMP_streams_kernel.i"
-%include "IMP_streams.i"
-%include "IMP_decorators.i"
-
-%include "typemaps.i"
 
 #ifdef IMP_USE_CGAL
 %pythoncode %{
@@ -46,11 +26,6 @@ IMP_REFCOUNT_RETURN_SINGLE(IMP::Restraint)
 IMP_REFCOUNT_RETURN_SINGLE(IMP::ScoreState)
 IMP_REFCOUNT_RETURN_SINGLE(IMP::OptimizerState)
 
-%{
-#ifdef NDEBUG
-#error "The python wrappers must not be built with NDEBUG"
-#endif
-%}
 
 %ignore IMP::ParticlePair::operator[];
 %ignore IMP::ParticleTriplet::operator[];
@@ -101,16 +76,6 @@ namespace IMP {
 
 %feature("ref")   IMP::RefCounted "IMP::internal::ref($this);"
 %feature("unref") IMP::RefCounted "IMP::internal::unref($this);"
-
-/* Don't wrap internal functions */
-%ignore IMP::internal::check_particles_active;
-
-/* Don't wrap classes that provide no methods usable in Python */
-%ignore IMP::ValidDefault;
-%ignore IMP::NullDefault;
-%ignore IMP::UninitializedDefault;
-%ignore IMP::Comparable;
-%ignore IMP::SetLogState;
 
 /* Make selected classes extensible in Python */
 IMP_DIRECTOR_KERNEL_CLASS(UnaryFunction);
