@@ -36,18 +36,19 @@ namespace {
                   << at,
                   InvalidStateException);
     } else {
-      if (atom_name.find('H') != std::string::npos) {
-        return H;
-      } else if (atom_name.find('C') != std::string::npos) {
-        return C;
-      } else if (atom_name.find('O') != std::string::npos) {
-        return O;
-      } else if (atom_name.find('P') != std::string::npos) {
-        return P;
-      } else if (atom_name.find('N') != std::string::npos) {
-        return N;
-      } else if (atom_name.find('S') != std::string::npos) {
-        return S;
+      char c0=atom_name[0];
+      if (isdigit(c0)) {
+        IMP_check(atom_name.size() >1 && !isdigit(atom_name[1]),
+                  "Invalid atom name " << at, ValueException);
+        c0= atom_name[1];
+      }
+      switch (c0) {
+      case 'H': return H;
+      case 'C': return C;
+      case 'N': return N;
+      case 'O': return O;
+      case 'S': return S;
+      default: break;
       }
       IMP_failure("Could not figure out element for " << at,
                   InvalidStateException);
@@ -94,12 +95,12 @@ NAME_DEF(HG1);
 NAME_DEF(HG2);
 NAME_DEF(HG3);
 //NAME(HG1",Atom::AT_HG1},
-NAME_DEF(1HG1);
-NAME_DEF(2HG1);
-NAME_DEF(3HG1);
-NAME_DEF(1HG2);
-NAME_DEF(2HG2);
-NAME_DEF(3HG2);
+NAME_DEF(HG11);
+NAME_DEF(HG21);
+NAME_DEF(HG31);
+NAME_DEF(HG12);
+NAME_DEF(HG22);
+NAME_DEF(HG32);
 NAME_DEF(OG);
 NAME_DEF(OG1);
 NAME_DEF(SG);
@@ -113,12 +114,12 @@ NAME_DEF(HD);
 NAME_DEF(HD1);
 NAME_DEF(HD2);
 NAME_DEF(HD3);
-NAME_DEF(1HD1);
-NAME_DEF(2HD1);
-NAME_DEF(3HD1);
-NAME_DEF(1HD2);
-NAME_DEF(2HD2);
-NAME_DEF(3HD2);
+NAME_DEF(HD11);
+NAME_DEF(HD21);
+NAME_DEF(HD31);
+NAME_DEF(HD12);
+NAME_DEF(HD22);
+NAME_DEF(HD32);
 NAME_DEF(SD);
 NAME_DEF(OD1);
 NAME_DEF(OD2);
@@ -162,14 +163,14 @@ NAME_DEF(NH2);
 NAME_DEF(OH);
 NAME_DEF(HH);
 
-NAME_DEF(1HH1);
-NAME_DEF(2HH1);
+NAME_DEF(HH11);
+NAME_DEF(HH21);
 NAME_DEF(HH2);
-NAME_DEF(1HH2);
-NAME_DEF(2HH2);
-NAME_DEF(2HH3);
-NAME_DEF(3HH3);
-NAME_DEF(1HH3);
+NAME_DEF(HH12);
+NAME_DEF(HH22);
+NAME_DEF(HH23);
+NAME_DEF(HH33);
+NAME_DEF(HH13);
 //NAME_ALIAS(1HH3, HH31);
 
 //NAME(HH31);
@@ -229,14 +230,6 @@ NAME_DEF(H72);
 NAME_DEF(H73);
 
 // new
-NAME_DEF(HH11);
-NAME_DEF(HH12);
-NAME_DEF(HH21);
-NAME_DEF(HH22);
-NAME_DEF(HD22);
-NAME_DEF(HD11);
-NAME_DEF(HD12);
-NAME_DEF(HD21);
 NAME_DEF(NO2);
 
 NAME_DEF(UNKNOWN);
