@@ -16,4 +16,6 @@ for f in fs:
     prog= penv.Program(f.rstr())
     all.append(prog)
 
+SConscript('test/SConscript', exports=['all', 'penv'])
+
 Return('all')
