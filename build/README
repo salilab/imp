@@ -11,3 +11,6 @@ as C++ Python extensions.
 
 The include directory contains all public header files under the IMP
 subdirectory. Modules are in named subdirectories under that.
+
+The swig directory contains all SWIG interface (.i) files used to build
+the Python interface.
