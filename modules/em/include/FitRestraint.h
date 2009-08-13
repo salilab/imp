@@ -18,6 +18,7 @@
 
 #include <IMP/atom/Hierarchy.h>
 #include <IMP/atom/Atom.h>
+#include <IMP/atom/Mass.h>
 #include <IMP/core/XYZR.h>
 #include <IMP/Model.h>
 #include <IMP/Restraint.h>
@@ -43,7 +44,7 @@ public:
   FitRestraint(const Particles &ps,
                DensityMap *em_map,
                FloatKey radius_key= IMP::core::XYZR::get_default_radius_key(),
-               FloatKey weight_key= IMP::atom::Atom::get_mass_key(),
+               FloatKey weight_key= IMP::atom::Mass::get_mass_key(),
                float scale=-1);
 
   //! \return the predicted density map of the model
