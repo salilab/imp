@@ -75,14 +75,14 @@ IMPATOMEXPORT void write_pdb(const Hierarchies &mhd,
 /**
    This function returns a string in PDB ATOM format
 */
-IMPATOMEXPORT std::string get_pdb_string(const algebra::Vector3D& v,
-                                         int index = -1,
-                                         const AtomType& at = AT_C,
-                                         const ResidueType& rt = atom::ALA,
-                                         char chain = ' ',
-                                         int res_index = 1,
-                                         char res_icode = ' ',
-                                         Element e = (atom::Element)C);
+IMPATOMEXPORT std::string pdb_string(const algebra::Vector3D& v,
+                                     int index = -1,
+                                     const AtomType& at = AT_C,
+                                     const ResidueType& rt = atom::ALA,
+                                     char chain = ' ',
+                                     int res_index = 1,
+                                     char res_icode = ' ',
+                                     Element e = C);
 
 //!@}
 

@@ -17,55 +17,56 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-#define TYPE_DEF(STR) const ResidueType STR(#STR);
-#define TYPE_DEF2(NAME, STR) const ResidueType NAME(STR)
-#define TYPE_ALIAS(OLD_NAME, NAME, STRING) const ResidueType NAME       \
+#define NAME_DEF(STR) const ResidueType STR(ResidueType::add_key(#STR))
+#define NAME_DEF2(NAME, STR) const ResidueType NAME(ResidueType::add_key(STR))
+#define NAME_ALIAS(OLD_NAME, NAME, STRING) const ResidueType NAME       \
   (ResidueType::add_alias(OLD_NAME, STRING))
 
-TYPE_DEF(UNK);
-TYPE_DEF(GLY);
-TYPE_DEF(ALA);
-TYPE_DEF(VAL);
-TYPE_DEF(LEU);
-TYPE_DEF(ILE);
-TYPE_DEF(SER);
-TYPE_DEF(THR);
-TYPE_DEF(CYS);
-TYPE_DEF(MET);
-TYPE_DEF(PRO);
-TYPE_DEF(ASP);
-TYPE_DEF(ASN);
-TYPE_DEF(GLU);
-TYPE_DEF(GLN);
-TYPE_DEF(LYS);
-TYPE_DEF(ARG);
-TYPE_DEF(HIS);
-TYPE_DEF(PHE);
-TYPE_DEF(TYR);
-TYPE_DEF(TRP);
-TYPE_DEF(ACE);
-TYPE_DEF(NH2);
+NAME_DEF(UNK);
+NAME_DEF(GLY);
+NAME_DEF(ALA);
+NAME_DEF(VAL);
+NAME_DEF(LEU);
+NAME_DEF(ILE);
+NAME_DEF(SER);
+NAME_DEF(THR);
+NAME_DEF(CYS);
+NAME_DEF(MET);
+NAME_DEF(PRO);
+NAME_DEF(ASP);
+NAME_DEF(ASN);
+NAME_DEF(GLU);
+NAME_DEF(GLN);
+NAME_DEF(LYS);
+NAME_DEF(ARG);
+NAME_DEF(HIS);
+NAME_DEF(PHE);
+NAME_DEF(TYR);
+NAME_DEF(TRP);
+NAME_DEF(ACE);
+NAME_DEF(NH2);
+
 // RNA/DNA
-TYPE_DEF2(ADE, "A");
-TYPE_DEF2(URA, "U");
-TYPE_DEF2(CYT, "C");
-TYPE_DEF2(GUA, "G");
-TYPE_DEF2(THY, "T");
-TYPE_DEF2(DADE, "DA");
-TYPE_DEF2(DURA, "DU");
-TYPE_DEF2(DCYT, "DC");
-TYPE_DEF2(DGUA, "DG");
-TYPE_DEF2(DTHY, "DT");
+NAME_DEF2(ADE, "A");
+NAME_DEF2(URA, "U");
+NAME_DEF2(CYT, "C");
+NAME_DEF2(GUA, "G");
+NAME_DEF2(THY, "T");
+NAME_DEF2(DADE, "DA");
+NAME_DEF2(DURA, "DU");
+NAME_DEF2(DCYT, "DC");
+NAME_DEF2(DGUA, "DG");
+NAME_DEF2(DTHY, "DT");
 // old format support
 // the second parameter is a dummy name for macro only
-TYPE_ALIAS(ADE, ADE_A, "ADE");
-TYPE_ALIAS(URA, ADE_U, "URA");
-TYPE_ALIAS(CYT, ADE_C, "CYT");
-TYPE_ALIAS(GUA, ADE_G, "GUA");
-TYPE_ALIAS(THY, ADE_T, "THY");
+NAME_ALIAS(ADE, ADE_A, "ADE");
+NAME_ALIAS(URA, ADE_U, "URA");
+NAME_ALIAS(CYT, ADE_C, "CYT");
+NAME_ALIAS(GUA, ADE_G, "GUA");
+NAME_ALIAS(THY, ADE_T, "THY");
 
 
-ResidueType residue_type_from_pdb_string(std::string nm) {
+ResidueType residue_name_from_pdb_string(std::string nm) {
   if (!ResidueType::get_key_exists(nm)) {
     std::ostringstream oss;
     oss<< "ResidueType " << nm << " does not exist.";
@@ -76,7 +77,7 @@ ResidueType residue_type_from_pdb_string(std::string nm) {
 
 void Residue::show(std::ostream &out) const
 {
-  out << "residue #" << get_index() << " of type "
+  out << "residue #" << get_index() << " of name "
       << get_residue_type() << std::endl;
 }
 
@@ -85,7 +86,7 @@ IntKey Residue::get_index_key() {
   return k;
 }
 
-IntKey Residue::get_type_key() {
+IntKey Residue::get_residue_type_key() {
   static IntKey k("residue_type");
   return k;
 }
@@ -95,7 +96,7 @@ IntKey Residue::get_insertion_code_key() {
   return k;
 }
 
-char get_chain(Residue rd) {
+Chain get_chain(Residue rd) {
   Hierarchy mhd(rd.get_particle());
   do {
     mhd= mhd.get_parent();
@@ -106,7 +107,7 @@ char get_chain(Residue rd) {
            mhd.get_type() != Hierarchy::NUCLEOTIDE &&
            mhd.get_type() != Hierarchy::MOLECULE);
   Chain cd(mhd.get_particle());
-  return cd.get_id();
+  return cd;
 }
 
 IMPATOM_END_NAMESPACE

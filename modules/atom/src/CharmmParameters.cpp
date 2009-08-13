@@ -78,11 +78,16 @@ ResidueType CharmmParameters::parse_residue_line(const String& line) {
                boost::token_compress_on);
   if(split_results.size() < 3) return UNK; // RESI line has at least 3 fields
   String curr_residue = split_results[1];
-  return ResidueType(curr_residue.c_str());
+  if (ResidueType::get_key_exists(curr_residue)) {
+       return ResidueType(curr_residue);
+   } else {
+       // assume charmm is correct
+       return ResidueType(ResidueType::add_key(curr_residue));
+   }
 }
 
 void CharmmParameters::parse_atom_line(const String& line,
-                             const ResidueType& curr_res_type)
+                                       ResidueType curr_res_type)
 {
   std::vector<String> split_results;
   boost::split(split_results, line, boost::is_any_of(" "),
@@ -91,8 +96,14 @@ void CharmmParameters::parse_atom_line(const String& line,
   String atom_name = split_results[1];
   String charmm_atom_type = split_results[2];
   float charge = atof(split_results[3].c_str());
-  AtomType imp_atom_type = AtomType(atom_name.c_str());
-
+  AtomType imp_atom_type;
+  if (AtomType::get_key_exists(atom_name)) {
+     imp_atom_type = AtomType(atom_name);
+  } else {
+     // assume charm is correct and this is a ATOM record
+     // and it will be parsed right for elements
+     imp_atom_type= AtomType(AtomType::add_key(atom_name));
+  }
   // save in map
   if(atom_res_type_2_force_field_atom_type_.find(curr_res_type) ==
      atom_res_type_2_force_field_atom_type_.end()) {
@@ -104,7 +115,7 @@ void CharmmParameters::parse_atom_line(const String& line,
 }
 
 void CharmmParameters::parse_bond_line(const String& line,
-                             const ResidueType& curr_res_type)
+                                       ResidueType curr_res_type)
 {
   std::vector<String> split_results;
   boost::split(split_results, line, boost::is_any_of(" "),
@@ -116,8 +127,11 @@ void CharmmParameters::parse_bond_line(const String& line,
     if(split_results[i][0] == '!') return;  // comments start
     // + connects to the next residue
     if(split_results[i][0] == '+' || split_results[i+1][0] == '+') continue;
-    AtomType imp_atom_type1 = AtomType(split_results[i].c_str());
-    AtomType imp_atom_type2 = AtomType(split_results[i+1].c_str());
+    // skip funny added modeller records
+    if (split_results[i].find(':') != std::string::npos
+        || split_results[i+1].find(':') != std::string::npos) continue;
+    AtomType imp_atom_type1 = AtomType(split_results[i]);
+    AtomType imp_atom_type2 = AtomType(split_results[i+1]);
     Bond bond(imp_atom_type1, imp_atom_type2);
     bonds.push_back(bond);
   }
@@ -169,6 +183,11 @@ void CharmmParameters::read_VdW_params(std::ifstream& input_file) {
     IMP_failure("NONBONDED params not found in Charmm parameter file",
                 ErrorException);
   }
+}
+
+
+void CharmmParameters::show(std::ostream &out) const {
+  out << "Charmm parameters\n";
 }
 
 IMPATOM_END_NAMESPACE

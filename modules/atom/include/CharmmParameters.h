@@ -8,9 +8,16 @@
 #define IMPATOM_CHARMM_PARAMETERS_H
 
 #include "ForceFieldParameters.h"
+#include "macros.h"
+#include "internal/version_info.h"
 
 #include <string>
 #include <fstream>
+
+// swig is being dumb
+IMP_BEGIN_NAMESPACE
+class VersionInfo;
+IMP_END_NAMESPACE
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -24,7 +31,7 @@ public:
    */
   CharmmParameters(const String& topology_file_name,
                    const String& par_file_name = std::string());
-  IMP_REF_COUNTED_DESTRUCTOR(CharmmParameters);
+  IMP_FORCE_FIELD_PARAMETERS(CharmmParameters, internal::version_info);
 private:
 
   // read non-bonded parameters for VdW computation
@@ -33,8 +40,8 @@ private:
   void read_topology_file(std::ifstream& input_file);
 
   ResidueType parse_residue_line(const String& line);
-  void parse_atom_line(const String& line, const ResidueType& curr_res_type);
-  void parse_bond_line(const String& line, const ResidueType& curr_res_type);
+  void parse_atom_line(const String& line, ResidueType curr_res_type);
+  void parse_bond_line(const String& line, ResidueType curr_res_type);
 
 };
 

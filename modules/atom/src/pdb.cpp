@@ -25,32 +25,50 @@ namespace {
 
 Particle* atom_particle(Model *m, const String& pdb_line)
 {
+  AtomType atom_name;
+  String string_name = internal::atom_type(pdb_line);
+  boost::trim(string_name);
+  if (pdb_line[0]!='A'){
+    string_name= "HET_"+string_name;
+    if (!atom_type_exists(string_name)) {
+      std::string elem= internal::atom_element(pdb_line);
+      Element e= get_element_table().get_element(elem);
+      if (e == UNKNOWN_ELEMENT) {
+        IMP_WARN("Unable to parse element from line: "
+                 <<pdb_line << "\nSkipping.");
+        return NULL;
+      }
+      atom_name=add_atom_type(string_name, e);
+    }
+  } else {
+    if (!AtomType::get_key_exists(string_name)) {
+      IMP_WARN("ATOM record type not found: \"" << string_name
+               << "\" from " << pdb_line);
+      return NULL;
+    }
+    atom_name = AtomType(string_name);
+  }
   Particle* p = new Particle(m);
 
   algebra::Vector3D v(internal::atom_xcoord(pdb_line),
                       internal::atom_ycoord(pdb_line),
                       internal::atom_zcoord(pdb_line));
-
-  String atom_name = internal::atom_type(pdb_line);
-  boost::trim(atom_name);
-  AtomType atom_type = AtomType(atom_name.c_str());
-
   // atom decorator
-  Atom d = Atom::setup_particle(p, atom_type);
+  std::cout << "Creating atom with type " << atom_name << std::endl;
+  Atom d = Atom::setup_particle(p, atom_name);
   core::XYZ::setup_particle(p, v).set_coordinates_are_optimized(true);
   d.set_input_index(internal::atom_number(pdb_line));
-
-  // element and mass
-  String element_name = internal::atom_element(pdb_line);
-  boost::trim(element_name);
-  ElementTable& e_table = get_element_table();
-  Element e = e_table.get_element(element_name);
-  if(e == UNKNOWN_ELEMENT) { // try to determine element from AtomType
-    e = e_table.get_element(atom_type);
+  IMP_IF_CHECK(CHEAP) {
+    std::string name= internal::atom_element(pdb_line);
+    Element e= get_element_table().get_element(name);
+    if (e != UNKNOWN_ELEMENT) {
+      IMP_check(e== d.get_element(),
+                "Read and computed elements don't match. Read " << e
+                << " Computed " << d.get_element()
+                << " from line " << pdb_line,
+                InvalidStateException);
+    }
   }
-  d.set_element(e);
-  d.set_mass(e_table.get_mass(e));
-
   return p;
 }
 
@@ -60,14 +78,13 @@ Particle* residue_particle(Model *m, const String& pdb_line)
 
   int residue_index = internal::atom_residue_number(pdb_line);
   char residue_icode = internal::atom_residue_icode(pdb_line);
-  String residue_name = internal::atom_residue_name(pdb_line);
-  ResidueType residue_type = ResidueType(residue_name.c_str());
+  String rn = internal::atom_residue_name(pdb_line);
+  ResidueType residue_name = ResidueType(rn);
 
   // residue decorator
   Residue rd =
-    Residue::setup_particle(p, residue_type,
+    Residue::setup_particle(p, residue_name,
                              residue_index, (int)residue_icode);
-  p->set_name(residue_name);
 
   return p;
 }
@@ -89,7 +106,7 @@ Particle* chain_particle(Model *m, char chain_id)
   return p;
 }
 
-void set_chain_type(const Hierarchy& hrd, Hierarchy& hcd)
+void set_chain_name(const Hierarchy& hrd, Hierarchy& hcd)
 {
   if (hrd.get_type() == Hierarchy::RESIDUE)
     hcd.set_type(Hierarchy::CHAIN);
@@ -133,7 +150,7 @@ Hierarchy read_pdb(std::istream &in, Model *model,
 
   char curr_residue_icode = '-';
   char curr_chain = '-';
-  bool chain_type_set = false;
+  bool chain_name_set = false;
   bool first_model_read = false;
 
   String line;
@@ -156,39 +173,44 @@ Hierarchy read_pdb(std::istream &in, Model *model,
       char residue_icode = internal::atom_residue_icode(line);
       char chain = internal::atom_chain_id(line);
 
-      // check if new chain
-      if (cp == NULL || chain != curr_chain) {
-        curr_chain = chain;
-        // create new chain particle
-        cp = chain_particle(model, chain);
-        chain_type_set = false;
-        root_d.add_child(Chain(cp));
-      }
-
-      // check if new residue
-      if (rp == NULL ||
-          residue_index != Residue::decorate_particle(rp).get_index() ||
-          residue_icode != curr_residue_icode) {
-        curr_residue_icode = residue_icode;
-        // create new residue particle
-        rp = residue_particle(model, line);
-        Chain(cp).add_child(Residue(rp));
-      }
-
-      // set chain type (protein/nucleotide/other) according to residue type
-      if (!chain_type_set) {
-        Chain cd(cp);
-        set_chain_type(Residue(rp), cd);
-        chain_type_set = true;
-      }
-
-      // check if alternatives should be skipped
-      IgnoreAlternativesSelector sel;
-      if(ignore_alternatives && !sel(line)) continue;
-
       // create atom particle
       Particle* ap = atom_particle(model, line);
-      Residue(rp).add_child(Atom(ap));
+      // make sure that all children have coordinates,
+      // (no residues without valid atoms)
+      if (ap) {
+        // check if new chain
+        if (cp == NULL || chain != curr_chain) {
+          curr_chain = chain;
+          // create new chain particle
+          cp = chain_particle(model, chain);
+          chain_name_set = false;
+          root_d.add_child(Chain(cp));
+        }
+
+        // check if new residue
+        if (rp == NULL ||
+            residue_index != Residue::decorate_particle(rp).get_index() ||
+            residue_icode != curr_residue_icode) {
+          curr_residue_icode = residue_icode;
+          // create new residue particle
+          rp = residue_particle(model, line);
+          Chain(cp).add_child(Residue(rp));
+        }
+
+        // set chain name (protein/nucleotide/other) according to residue name
+        if (!chain_name_set) {
+          Chain cd(cp);
+          set_chain_name(Residue(rp), cd);
+          chain_name_set = true;
+        }
+
+        // check if alternatives should be skipped
+        IgnoreAlternativesSelector sel;
+        if(ignore_alternatives && !sel(line)) continue;
+
+        Residue(rp).add_child(Atom(ap));
+      }
+
     }
   }
   return root_d;
@@ -196,10 +218,28 @@ Hierarchy read_pdb(std::istream &in, Model *model,
 
 void write_pdb(const Particles& ps, std::ostream &out)
 {
+  int last_index=0;
+  bool use_input_index=true;
+  for (unsigned int i=0; i< ps.size(); ++i) {
+    if (Atom(ps[i]).get_input_index() != last_index+1) {
+      use_input_index=false;
+      break;
+    } else {
+      ++last_index;
+    }
+  }
   for (unsigned int i=0; i< ps.size(); ++i) {
     if (Atom::particle_is_instance(ps[i])) {
       Atom ad(ps[i]);
-      out << ad.get_pdb_string();
+      Residue rd= get_residue(ad);
+      out << pdb_string(core::XYZ(ps[i]).get_coordinates(),
+                        use_input_index? ad.get_input_index(): i,
+                        ad.get_atom_type(),
+                        rd.get_residue_type(),
+                        get_chain(rd).get_id(),
+                        rd.get_index(),
+                        rd.get_insertion_code(),
+                        ad.get_element());
     }
   }
 }
@@ -251,10 +291,10 @@ void write_pdb(const Hierarchies& mhd, std::string file_name)
 }
 
 
-std::string get_pdb_string(const algebra::Vector3D& v, int index,
-                           const AtomType& at, const ResidueType& rt,
-                           char chain, int res_index,
-                           char res_icode, Element e) {
+std::string pdb_string(const algebra::Vector3D& v, int index,
+                       const AtomType& at, const ResidueType& rt,
+                       char chain, int res_index,
+                       char res_icode, Element e) {
   std::stringstream out;
   out.setf(std::ios::left, std::ios::adjustfield);
   out.width(6);
@@ -270,16 +310,16 @@ std::string get_pdb_string(const algebra::Vector3D& v, int index,
   // 12: skip an undefined position
   out.width(1);
   out << " ";
-  // 13-16: atom type
+  // 13-16: atom name
   out.setf(std::ios::left, std::ios::adjustfield);
   out.width(1);
-  std::string atom_type = at.get_string();
-  if (atom_type.size()<4) {
+  std::string atom_name = at.get_string();
+  if (atom_name.size()<4) {
     out << " ";
     out.width(3);
-    out << atom_type;
+    out << atom_name;
   } else {
-    out << atom_type;
+    out << atom_name;
   }
   // 17: skip the alternate indication position
   out.width(1);
@@ -325,9 +365,6 @@ std::string get_pdb_string(const algebra::Vector3D& v, int index,
   // 77 - 78  LString(2)      Element symbol, right-justified.
   out.width(2);
   out.setf(std::ios::right, std::ios::adjustfield);
-  if(e == UNKNOWN_ELEMENT) { // try to determine element from AtomType
-    e = get_element_table().get_element(at);
-  }
   out << get_element_table().get_name(e);
   //     79 - 80        LString(2)      Charge on the atom.
   out.width(2);

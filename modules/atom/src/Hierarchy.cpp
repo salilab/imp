@@ -142,7 +142,7 @@ get_residue(Hierarchy mhd,
   if (hd== IMP::core::Hierarchy()) {
     return Hierarchy();
   } else {
-    return Hierarchy(hd.get_particle());
+    return hd;
   }
 }
 
@@ -244,10 +244,6 @@ Bonds get_internal_bonds(Hierarchy mhd)
 
 
 
-FloatKey Hierarchy::get_mass_key() {
-  static FloatKey k("hierarchy_mass");
-  return k;
-}
 
 
 /*
