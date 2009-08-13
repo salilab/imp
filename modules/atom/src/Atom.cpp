@@ -248,7 +248,6 @@ Atom Atom::setup_particle(Particle *p, AtomType t) {
   Atom ret(p);
   Mass::setup_particle(p, 0);
   ret.set_atom_type(t);
-  ret.show();
   return ret;
 }
 
@@ -276,7 +275,13 @@ void Atom::show(std::ostream &out) const
 void Atom::set_atom_type(AtomType t)
 {
   get_particle()->set_value(get_atom_type_key(), t.get_index());
-  Element e = element_from_name(t);
+  Element e;
+  if (t.get_index() < added_atom_names.size()
+      && added_atom_names[t.get_index()] != UNKNOWN_ELEMENT) {
+    e= added_atom_names[t.get_index()];
+  } else {
+    e=element_from_name(t);
+  }
   IMP_assert(e != UNKNOWN_ELEMENT,
              "Internal error setting element name from " << t);
   get_particle()->set_value(get_element_key(), e);
