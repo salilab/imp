@@ -65,7 +65,7 @@ int main(int argc, char **argv)
   IMP::saxs::FormFactorTable* f_table = IMP::saxs::default_form_factor_table();
 
   // read pdb, prepare particles
-  IMP::Model *model = new IMP::Model();
+  IMP::Pointer<IMP::Model> model(new IMP::Model());
   IMP::atom::Hierarchy mhd =
     IMP::atom::read_pdb(pdb, model, IMP::atom::NonWaterNonHydrogenSelector());
   IMP::Particles particles = get_by_type(mhd, IMP::atom::Hierarchy::ATOM);
@@ -108,5 +108,6 @@ int main(int argc, char **argv)
              << fit_file_name << "' u 1:3 thru log(y)" << std::endl;
     plt_file.close();
   }
+  delete computational_profile;
   return 0;
 }
