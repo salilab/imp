@@ -148,10 +148,10 @@ Please make sure 'swig' is found in the path passed to scons.
 
 In particular, if you have SWIG installed in a non-standard location,
 please use the 'path' option to add this location to the search path.
-For example, if you have SWIG installed in /usr/local/bin/, edit (or create)
+For example, if you have SWIG installed in /opt/local/bin/, edit (or create)
 config.py and add the line
 
-path='/usr/local/bin'
+path='/opt/local/bin'
 
 Since SWIG could not be found, proceeding to build IMP without Python support.
 
