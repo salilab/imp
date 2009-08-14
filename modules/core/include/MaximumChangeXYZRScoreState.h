@@ -1,6 +1,6 @@
 /**
  *  \file MaximumChangeXYZRScoreState.h
- *  \brief Keep track of the Maximumimum change of a set of attributes.
+ *  \brief Keep track of the maximum change of a set of attributes.
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
