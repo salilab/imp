@@ -39,6 +39,8 @@ Particle* atom_particle(Model *m, const String& pdb_line)
         return NULL;
       }
       atom_name=add_atom_type(string_name, e);
+    } else {
+      atom_name=AtomType(string_name);
     }
   } else {
     if (!AtomType::get_key_exists(string_name)) {
@@ -107,7 +109,7 @@ Particle* chain_particle(Model *m, char chain_id)
 
 void set_chain_name(const Hierarchy& hrd, Hierarchy& hcd)
 {
-  if (hrd.get_type() == Hierarchy::RESIDUE)
+  if (hrd.get_type() == Hierarchy::AMINOACID)
     hcd.set_type(Hierarchy::CHAIN);
   else if (hrd.get_type() == Hierarchy::NUCLEICACID)
     hcd.set_type(Hierarchy::NUCLEOTIDE);
@@ -132,6 +134,8 @@ Hierarchy read_pdb(String pdb_file_name, Model *model,
                  ignore_alternatives);
   root_d.get_particle()->set_name(pdb_file_name);
   pdb_file.close();
+  IMP_assert(root_d.get_is_valid(true),
+            "Invalid hierarchy produced");
   return root_d;
 }
 

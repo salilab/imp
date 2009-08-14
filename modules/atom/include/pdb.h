@@ -21,6 +21,15 @@
 IMPATOM_BEGIN_NAMESPACE
 
 /** @name PDB IO
+
+    Reading/writing PDBs produces/expects a Hierarchy that looks as follows:
+    - One Atom per ATOM or HETATM record in the PDB.
+    - All Atom particles have a parent which is a Residue with Hierarchy::Type
+    either Hierarchy::LIGAND, Hierarchy::AMINOACID or Hierarchy::NUCLEICACID
+    as appropriate.
+    - All Residue particles have a parent which is a Chain.
+
+    Waters are currently dropped if they are ATOM records. This can be fixed.
 */
 //!@{
 
