@@ -88,7 +88,8 @@ for h in Glob("#/build/include/*.h") + Glob("#/build/include/IMP/*.h") +Glob("#/
         headers.append(h)
 modexamples=Glob("#/modules/*/examples/*.dox")+['#/kernel/examples/examples.dox']
 sources= headers +Glob("#/kernel/doc/*.dox") + Glob("#/doc/doxygen/*.dox")\
-    +Glob("modules/*/doc/*.dox")+modexamples
+    +Glob("modules/*/doc/*.dox")+modexamples \
+    + Glob("#/build/lib/IMP/modeller/*.py", ondisk=False)
 examples= Glob("#/modules/examples/src/*.cpp") + Glob("#/modules/examples/include/*.h")\
     + Glob("#/modules/*/examples/*.py") + Glob("#/modules/*/examples/*/*.py")\
     + Glob("#/modules/*/examples/*.cpp") + Glob("#/modules/*/examples/*/*.cpp")\

@@ -48,22 +48,19 @@ class IMPRestraints(modeller.terms.energy_term):
     # the eval interface anyway.
     def __init__(self, imp_model, particles):
         modeller.terms.energy_term.__init__(self)
-        self.imp_model = imp_model
-        self.particles = particles
+        self._imp_model = imp_model
+        self._particles = particles
 
     def eval(self, mdl, deriv, indats):
-        """Calculate score of current state of model with respect to the IMP
-           restraints. If calc_deriv, also calculate the partial derivatives
-           associated with these restraints."""
         atoms = self.indices_to_atoms(mdl, indats)
-        copy_modeller_coords_to_imp(atoms, self.particles)
+        copy_modeller_coords_to_imp(atoms, self._particles)
         dvx = [0.] * len(indats)
         dvy = [0.] * len(indats)
         dvz = [0.] * len(indats)
 
-        score = self.imp_model.evaluate(deriv)
+        score = self._imp_model.evaluate(deriv)
         if deriv:
-            get_imp_derivs(self.particles, dvx, dvy, dvz)
+            get_imp_derivs(self._particles, dvx, dvy, dvz)
             return (score, dvx, dvy, dvz)
         else:
             return score
@@ -75,20 +72,17 @@ class ModellerRestraints(IMP.Restraint):
 
     def __init__(self, imp_model, modeller_model, particles):
         IMP.Restraint.__init__(self)
-        self.modeller_model = modeller_model
-        self.imp_model = imp_model
-        self.particles = particles
+        self._modeller_model = modeller_model
+        self._imp_model = imp_model
+        self._particles = particles
 
     def evaluate(self, calc_deriv):
-        """Calculate score of current state of model with respect to the
-           Modeller restraints. If calc_deriv, also calculate the partial
-           derivatives associated with these restraints."""
-        atoms = self.modeller_model.atoms
-        sel = modeller.selection(self.modeller_model)
-        copy_imp_coords_to_modeller(self.particles, atoms)
+        atoms = self._modeller_model.atoms
+        sel = modeller.selection(self._modeller_model)
+        copy_imp_coords_to_modeller(self._particles, atoms)
         energies = sel.energy()
         if calc_deriv:
-            add_modeller_derivs_to_imp(atoms, self.particles)
+            add_modeller_derivs_to_imp(atoms, self._particles)
 
         return energies[0]
 
@@ -96,9 +90,11 @@ class ModellerRestraints(IMP.Restraint):
 # ============== Creating particles ==============
 
 def create_particles(num_particles, env, model, particles):
-    """Create Modeller atoms by building a PDB file, and loading them from the
-       file into Modeller. Additionally, copy them to the IMP model.
-       Returns the Modeller model."""
+    """@deprecated Create Modeller atoms by building a PDB file, and loading
+       them from the file into Modeller. Additionally, copy them to the
+       IMP model.
+       @return the Modeller model.
+    """
     fp = open ("./temp_particles.pdb", "w")
     for i in range(0, num_particles):
         fp.write("ATOM  %5d  N   ALA     0       0.000   0.000   0.000  1.00  0.00           C  \n" % (i))
@@ -110,7 +106,7 @@ def create_particles(num_particles, env, model, particles):
 
 
 def create_particles_from_imp(env, model):
-    """Create Modeller atoms from the current IMP particles.
+    """@deprecated Create Modeller atoms from the current IMP particles.
        (This builds a PDB file, loads the atoms from the file into Modeller,
        and returns the Modeller model."""
     num_particles = len(model.particles)
@@ -126,7 +122,7 @@ def create_particles_from_imp(env, model):
 # ============== Rigid bodies ==============
 
 def add_rigid_body(model, name, value, mdl):
-    """Add rigid body to Modeller model based on given int value"""
+    """@deprecated Add rigid body to Modeller model based on given int value"""
     atoms = mdl.atoms
     atom_idx = 0
     rb_sel = modeller.selection()
@@ -141,7 +137,7 @@ def add_rigid_body(model, name, value, mdl):
 
 
 def add_rigid_body_expr(model, expr, mdl):
-    """Add rigid body to Modeller model based on given expression
+    """@deprecated Add rigid body to Modeller model based on given expression
        (e.g. p.get_float('radius') < 2.0)"""
     atoms = mdl.atoms
     atom_idx = 0
@@ -157,7 +153,7 @@ def add_rigid_body_expr(model, expr, mdl):
 
 
 def move_rigid_body(model, name, value, dx, dy, dz, mdl):
-    """Move all particles in the rigid body by the given amount"""
+    """@deprecated Move all particles in the rigid body by the given amount"""
     atom_idx = 0
     for p in model.particles:
         if p.get_int(name) == value:
@@ -172,7 +168,7 @@ def move_rigid_body(model, name, value, dx, dy, dz, mdl):
 
 
 def move_rigid_body_expr(model, expr, dx, dy, dz, mdl):
-    """Move all particles in the rigid body by the given amount"""
+    """@deprecated Move all particles in the rigid body by the given amount"""
     atom_idx = 0
     for p in model.particles:
         if eval(expr):
@@ -186,7 +182,7 @@ def move_rigid_body_expr(model, expr, dx, dy, dz, mdl):
 
 
 def init_imp_from_modeller(model, particles, atoms):
-    """Init IMP particles from Modeller atoms"""
+    """@deprecated Init IMP particles from Modeller atoms"""
     xk= IMP.FloatKey("x")
     yk= IMP.FloatKey("y")
     zk= IMP.FloatKey("z")
@@ -199,7 +195,7 @@ def init_imp_from_modeller(model, particles, atoms):
 
 
 def copy_imp_coords_to_modeller(particles, atoms):
-    """Copy atom coordinates from IMP to Modeller"""
+    """@deprecated Copy atom coordinates from IMP to Modeller"""
     xkey = IMP.FloatKey("x")
     ykey = IMP.FloatKey("y")
     zkey = IMP.FloatKey("z")
@@ -210,7 +206,7 @@ def copy_imp_coords_to_modeller(particles, atoms):
 
 
 def copy_modeller_coords_to_imp(atoms, particles):
-    """Copy atom coordinates from Modeller to IMP"""
+    """@deprecated Copy atom coordinates from Modeller to IMP"""
     xkey = IMP.FloatKey("x")
     ykey = IMP.FloatKey("y")
     zkey = IMP.FloatKey("z")
@@ -221,7 +217,7 @@ def copy_modeller_coords_to_imp(atoms, particles):
 
 
 def add_modeller_derivs_to_imp(atoms, particles):
-    """Add atom derivatives from Modeller to IMP"""
+    """@deprecated Add atom derivatives from Modeller to IMP"""
     for (num, at) in enumerate(atoms):
         particles[num].add_to_dx(at.dvx)
         particles[num].add_to_dy(at.dvy)
@@ -229,7 +225,7 @@ def add_modeller_derivs_to_imp(atoms, particles):
 
 
 def get_imp_derivs(particles, dvx, dvy, dvz):
-    """Move atom derivatives from IMP to Modeller"""
+    """@deprecated Move atom derivatives from IMP to Modeller"""
     xkey = IMP.FloatKey("x")
     ykey = IMP.FloatKey("y")
     zkey = IMP.FloatKey("z")
@@ -240,7 +236,7 @@ def get_imp_derivs(particles, dvx, dvy, dvz):
 
 
 def show_modeller_and_imp(atoms, particles):
-    """Show Modeller and IMP atoms and their partial derivatives"""
+    """@deprecated Show Modeller and IMP atoms and their partial derivatives"""
     print "Modeller:"
     for (num, at) in enumerate(atoms):
         print "(", at.x, ", ", at.y, ", ", at.z, ") (", at.dvx, ", ", at.dvy, ", ", at.dvz, ")"
@@ -357,11 +353,14 @@ def _load_restraints_line(line, atom_particles, rsr):
 
 
 def load_restraints_file(filename, protein):
-    """Load the specified Modeller restraints file and generate equivalent
-       IMP restraints on `protein` (a protein particle, as returned from
-       `read_pdb`). The Modeller restraints file is assumed to act on
-       the same PDB described by `protein`. The list of all restraints
-       is returned."""
+    """Convert a Modeller restraints file into equivalent IMP::Restraints.
+       @param filename Name of the Modeller restraints file.
+       @param protein An IMP::atom::Hierarchy containing the protein atoms
+                      (e.g. as returned by read_pdb). The Modeller restraints
+                      file is assumed to act on the same PDB described by
+                      protein.
+       @return A Python list of the newly-created IMP::Restraint objects.
+    """
     atoms = _get_protein_atom_particles(protein)
     fh = file(filename, 'r')
     rsr = []
@@ -374,7 +373,7 @@ def load_restraints_file(filename, protein):
     return rsr
 
 
-def copy_residue(r, model):
+def _copy_residue(r, model):
     """Copy residue information from modeller to imp"""
     #print "residue "+str(r)
     p=IMP.Particle(model)
@@ -384,7 +383,7 @@ def copy_residue(r, model):
     return p
 
 
-def copy_atom(a, model):
+def _copy_atom(a, model):
     """Copy atom information from modeller"""
     #print "atom "+str(a)
     p=IMP.Particle(model)
@@ -397,7 +396,7 @@ def copy_atom(a, model):
     ap.set_input_index(a.index)
     return p
 
-def copy_chain(c, model):
+def _copy_chain(c, model):
     """Copy chain information from modeller"""
     #print "atom "+str(a)
     p=IMP.Particle(model)
@@ -406,7 +405,7 @@ def copy_chain(c, model):
     return p
 
 
-def copy_bonds(pdb, atoms, model):
+def _copy_bonds(pdb, atoms, model):
     for b in pdb.bonds:
         maa= b[0]
         mab= b[1]
@@ -423,10 +422,14 @@ def copy_bonds(pdb, atoms, model):
         bp= IMP.atom.bond(ba, bb, IMP.atom.Bond.COVALENT)
 
 def read_pdb(name, model, special_patches=None):
-    """Construct a Hierarchy from a pdb file.
-       The highest level hierarchy node is a PROTEIN. `special_patches`
-       can be a function that applies patches (e.g. nucleic acid termini)
-       to the Modeller model."""
+    """Construct an IMP::atom::Hierarchy from a PDB file.
+       @param name The name of the PDB file to read.
+       @param model The IMP::Model object in which the hierarchy will be
+                    created. The highest level hierarchy node is a PROTEIN.
+       @param special_patches If given, a function that applies patches
+                              (e.g. nucleic acid termini) to the Modeller model.
+       @return the newly-created root IMP::atom::Hierarchy.
+    """
     e = modeller.environ()
     e.libs.topology.read('${LIB}/top_heav.lib')
     e.libs.parameters.read('${LIB}/par.lib')
@@ -446,11 +449,11 @@ def read_pdb(name, model, special_patches=None):
         hpp.add_child(hcp)
         cp.set_name(chain.name)
         for residue in chain.residues:
-            rp= copy_residue(residue, model)
+            rp= _copy_residue(residue, model)
             hrp= IMP.atom.Hierarchy.decorate_particle(rp)
             hcp.add_child(hrp)
             for atom in residue.atoms:
-                ap= copy_atom(atom, model)
+                ap= _copy_atom(atom, model)
                 hap= IMP.atom.Hierarchy.decorate_particle(ap)
                 hrp.add_child(hap)
                 atoms[atom.index]=ap
@@ -463,5 +466,5 @@ def read_pdb(name, model, special_patches=None):
             hcp.set_type(IMP.atom.Hierarchy.NUCLEOTIDE)
         else:
             hcp.set_type(IMP.atom.Hierarchy.MOLECULE)
-    copy_bonds(pdb,atoms, model)
+    _copy_bonds(pdb,atoms, model)
     return hpp
