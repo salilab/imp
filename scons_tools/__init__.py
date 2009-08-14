@@ -216,6 +216,9 @@ def MyEnvironment(variables=None, *args, **kw):
         env['MODELLER_' + mod] = ''
     for mod in ('CPPPATH', 'LIBPATH', 'LIBS'):
         env['MODELLER_' + mod] = []
+    env['SVNVERSION'] = env.WhereIs('svnversion')
+    if env['svn'] and not env['SVNVERSION']:
+        print "Warning: Could not find 'svnversion' binary in path"
     if not env.GetOption('clean') and not env.GetOption('help'):
         custom_tests = {'CheckGNUHash': CheckGNUHash,
                         'CheckGCCVisibility': CheckGCCVisibility}
