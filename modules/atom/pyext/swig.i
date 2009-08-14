@@ -29,8 +29,10 @@ namespace IMP {
   namespace atom {
     %template(show_molecular_hierarchy) IMP::core::show<IMP::atom::Hierarchy>;
    // swig has random, perplexing issues if these are higher in the file
-   %template(AtomTypeBase) ::IMP::KeyBase<IMP_ATOM_TYPE_INDEX, false>;
-   %template(ResidueTypeBase) ::IMP::KeyBase<IMP_RESIDUE_TYPE_INDEX, false>;
+   %template(_KeyBaseAtomf) ::IMP::KeyBase<IMP_ATOM_TYPE_INDEX, false>;
+   %template(_KeyBaseResiduef) ::IMP::KeyBase<IMP_RESIDUE_TYPE_INDEX, false>;
+   %template(_KeyBaseAtomt) ::IMP::KeyBase<IMP_ATOM_TYPE_INDEX, true>;
+   %template(_KeyBaseResiduet) ::IMP::KeyBase<IMP_RESIDUE_TYPE_INDEX, true>;
   }
 }
 %include "IMP/atom/element.h"
