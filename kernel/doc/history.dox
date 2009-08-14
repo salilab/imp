@@ -2,6 +2,8 @@
 
 \par Week of August 8
 
+- Treatment of hetatoms in hierarchies (and hence pdbs) is now documented. See IMP::atom::Hierarchy. This involved broadening IMP::atom::Residue to handle ligands and having IMP::atom::Hierarchy::LIGAND, IMP::atom::Hierarchy::AMINOACID and IMP::atom::Hierarchy::NUCLEICACID be handled by IMP::atom::Residue.
+
 - IMP::atom::read_pdb() currently drops HOH ATOM records on the floor. We should add a IMP::atom::Water decorator if anyone wants to handle them (since they aren't atoms and don't have elements).
 
 - IMP::atom::Mass() has been added to decorating particles with pass. IMP::atom::Atom mass has been moved to that.

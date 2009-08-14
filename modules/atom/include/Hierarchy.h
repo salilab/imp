@@ -38,15 +38,26 @@ typedef Decorators<Hierarchy,
     a child of a RESIDUE or CHAIN or PROTEIN, but a RESIDUE can't
     be a child of an ATOM).
 
+    Layers of the hierarchy are associated with other decorators as
+    follows:
+    - ATOM: Atom
+    - AMINOACID, NUCLEICACID, LIGAND: Residue
+    - FRAGMENT: Fragment
+    - CHAIN: Chain
+    - PROTEIN: no decorator, but the protein name should be stored as
+    the Particle::get_name().
+
     A hierarchy is considered "valid" if:
     - all the leaves have coordinates (or none of the nodes have
-    coordinates)
+    coordinates) and all leaves have mass
     - for any protein in the Hierarchy, each residue in the protein
     either has a Residue particle, or is part of a leaf Domain or
     Fragment
     - all bounding spheres in the hierachy bound their subtrees
     - Any atom that is part of a protein or DNA or RNA has a residue
     as a parent.
+    - All Hierarchy nodes which have associated decorators are set
+    up for the corresponding decorator.
 
     The get_is_valid() method checks some of these.
 
@@ -85,8 +96,8 @@ public:
 
       \note These values may change.
    */
-  enum Type {UNKNOWN=-1, ATOM, RESIDUE, NUCLEICACID, FRAGMENT,
-             CHAIN, PROTEIN, NUCLEOTIDE, MOLECULE, ASSEMBLY,
+  enum Type {UNKNOWN=-1, ATOM, AMINOACID, NUCLEICACID, LIGAND,
+             FRAGMENT, CHAIN, PROTEIN, NUCLEOTIDE, MOLECULE, ASSEMBLY,
              COLLECTION, UNIVERSE, UNIVERSES, TRAJECTORY
             };
 
@@ -165,10 +176,12 @@ public:
       return "unknown";
     case ATOM:
       return "atom";
-    case RESIDUE:
-      return "residue";
+    case AMINOACID:
+      return "amino acid";
     case NUCLEICACID:
       return "nucleic acid";
+    case LIGAND:
+      return "ligand";
     case CHAIN:
       return "chain";
     case FRAGMENT:

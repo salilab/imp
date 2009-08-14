@@ -10,9 +10,12 @@
 #include <IMP/atom/Atom.h>
 #include <IMP/atom/Residue.h>
 #include <IMP/atom/Chain.h>
+#include <IMP/atom/Fragment.h>
 #include <IMP/atom/Domain.h>
+#include <IMP/atom/Mass.h>
 #include <IMP/core/LeavesRefiner.h>
 #include <IMP/core/XYZR.h>
+#include <IMP/core/Hierarchy.h>
 #include <IMP/atom/estimates.h>
 #include <IMP/core/Harmonic.h>
 #include <IMP/core/ConnectivityRestraint.h>
@@ -48,7 +51,8 @@ void Hierarchy::show(std::ostream &out) const
   if (get_type() == ATOM && Atom::particle_is_instance(get_particle())) {
     Atom ad(get_particle());
     ad.show(out);
-  } else if ((get_type() == RESIDUE || get_type() == NUCLEICACID)
+  } else if ((get_type() == AMINOACID || get_type() == NUCLEICACID
+              || get_type() == LIGAND)
              && Residue::particle_is_instance(get_particle())){
       Residue adt(get_particle());
       adt.show(out);
@@ -107,7 +111,7 @@ struct MatchResidueIndex
   MatchResidueIndex(int i): index_(i) {}
   bool operator()(Particle *p) const {
     Hierarchy mhd(p);
-    if (mhd.get_type() == Hierarchy::RESIDUE
+    if (mhd.get_type() == Hierarchy::AMINOACID
         || mhd.get_type() == Hierarchy::NUCLEICACID) {
       Residue rd(p);
       return (rd.get_index() == index_);
@@ -146,50 +150,67 @@ get_residue(Hierarchy mhd,
   }
 }
 
-bool Hierarchy::get_is_valid(bool print_info) const {
-  Particles leaves= get_leaves(*this);
-  if (leaves.empty()) {
-    return true;
-  }
-  bool has_coords= core::XYZ::particle_is_instance(leaves[0]);
-  for (unsigned int i=0; i< leaves.size(); ++i) {
-    if (has_coords) {
-      if (!core::XYZ::particle_is_instance(leaves[i])) {
-        if (print_info) {
-          IMP_LOG(SILENT, "Leaf " << leaves[i]->get_name()
-                  << " does not have coordinates");
+#define TEST_FAIL(msg) \
+  IMP_failure(msg, InvalidStateException)
+
+namespace {
+  struct Validator {
+    typedef bool result_type;
+    bool print_info;
+    Validator(bool pi): print_info(pi){}
+    bool operator()(Hierarchy h, bool) {
+      if (h.get_number_of_children() ==0) {
+        if (!core::XYZ::particle_is_instance(h)) {
+          TEST_FAIL("Leaf " << h << " does not have coordinates");
         }
-        return false;
-      }
-    } else {
-      if (core::XYZ::particle_is_instance(leaves[i])) {
-        if (print_info) {
-          IMP_LOG(SILENT, "Leaf " << leaves[i]->get_name()
-                  << " has coordinates, but other leaves do not.");
+        if (!atom::Mass::particle_is_instance(h)) {
+          TEST_FAIL("Leaf " << h << " does not have mass");
         }
-        return false;
       }
-    }
-  }
-  for (unsigned int i=0; i< leaves.size(); ++i) {
-    bool is_protein=false;
-    Hierarchy cur(leaves[i]);
-    if (cur.get_type() != ATOM) continue;
-    while (cur.get_parent() != Hierarchy()) {
-      cur= cur.get_parent();
-      if (cur.get_type() == PROTEIN || cur.get_type()== NUCLEOTIDE) {
-        is_protein=true;
+      if (h.get_parent() != Hierarchy()) {
+        if (h.get_type()> h.get_parent().get_type()) {
+          TEST_FAIL("Node " << h << " has a type "
+                    << "which cannot be a child of its parent.");
+        }
+      }
+      switch(h.get_type()) {
+      case Hierarchy::ATOM:
+        if (!Atom::particle_is_instance(h)) {
+          TEST_FAIL("ATOM " << h << " is not an Atom");
+        }
+        break;
+      case Hierarchy::AMINOACID:
+      case Hierarchy::NUCLEICACID:
+      case Hierarchy::LIGAND:
+        if (!Residue::particle_is_instance(h)) {
+          TEST_FAIL("Residue " << h << " is not a IMP.atom.Residue");
+        }
+        break;
+      case Hierarchy::CHAIN:
+        if (!Chain::particle_is_instance(h)) {
+          TEST_FAIL("CHAIN " << h << " is not a IMP.atom.Chain");
+        }
+        break;
+      case Hierarchy::FRAGMENT:
+        if (!Fragment::particle_is_instance(h)) {
+          TEST_FAIL("FRAGMENT " << h << " is not a IMP.atom.Fragment");
+        }
+        break;
+      default:
         break;
       }
+      return true;
     }
-    if (is_protein && Hierarchy(leaves[i]).get_parent().get_type()
-        != RESIDUE) {
-      if (print_info) {
-        IMP_LOG(SILENT, "Atom in polymer must have residue parent: "
-                << leaves[i]->get_name());
-      }
-      return false;
-    }
+  };
+}
+
+
+bool Hierarchy::get_is_valid(bool print_info) const {
+  try {
+    IMP::core::depth_first_traversal_with_data(*this, Validator(print_info),
+                                               false);
+  } catch (const InvalidStateException &e) {
+    return false;
   }
   return true;
 }

@@ -28,7 +28,7 @@ namespace {
     std::string atom_name = at.get_string();
     IMP_check(atom_name.length() > 0, "Invalid atom name.", ValueException);
     if (added_atom_names.size() > at.get_index()
-        && added_atom_names[at.get_index()] == UNKNOWN_ELEMENT) {
+        && added_atom_names[at.get_index()] != UNKNOWN_ELEMENT) {
       return added_atom_names[at.get_index()];
     }
     if (atom_name.find("HET_") != std::string::npos) {

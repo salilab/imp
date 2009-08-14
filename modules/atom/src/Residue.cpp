@@ -81,6 +81,22 @@ void Residue::show(std::ostream &out) const
       << get_residue_type();
 }
 
+
+void Residue::set_residue_type(ResidueType t)
+{
+  get_particle()->set_value(get_residue_type_key(), t.get_index());
+  if (get_residue_type().get_index() <= TRP.get_index()) {
+    Hierarchy
+      ::set_type(Hierarchy::AMINOACID);
+  } else if (get_residue_type().get_index() <= DTHY.get_index()) {
+    Hierarchy
+      ::set_type(Hierarchy::NUCLEICACID);
+  } else {
+    Hierarchy
+      ::set_type(Hierarchy::LIGAND);
+  }
+}
+
 IntKey Residue::get_index_key() {
   static IntKey k("residue_index");
   return k;

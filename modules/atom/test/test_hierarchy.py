@@ -4,7 +4,7 @@ import IMP.test
 import IMP.atom
 
 ATOM = IMP.atom.Hierarchy.ATOM
-RESIDUE = IMP.atom.Hierarchy.RESIDUE
+RESIDUE = IMP.atom.Hierarchy.AMINOACID
 UNKNOWN = IMP.atom.Hierarchy.UNKNOWN
 
 def _make_hierarchy_decorators(m, *types):
@@ -78,7 +78,7 @@ class HierarchyTests(IMP.test.TestCase):
         m = IMP.Model()
         (d,) = _make_hierarchy_decorators(m, UNKNOWN)
         self.assertEqual(d.get_type(), UNKNOWN)
-        for (typ, string) in ((ATOM, 'atom'), (RESIDUE, 'residue'),
+        for (typ, string) in ((ATOM, 'atom'), (RESIDUE, 'amino acid'),
                               (UNKNOWN, 'unknown')):
             d.set_type(typ)
             self.assertEqual(d.get_type(), typ)

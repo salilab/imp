@@ -66,10 +66,9 @@ Float ForceFieldParameters::get_epsilon(
 
 
 void ForceFieldParameters::add_bonds(Hierarchy mhd) const {
-  add_bonds(mhd, Hierarchy::RESIDUE);
+  add_bonds(mhd, Hierarchy::AMINOACID);
   add_bonds(mhd, Hierarchy::NUCLEICACID);
-  // will core dump since fragments are not residues
-  // add_bonds(mhd, Hierarchy::FRAGMENT);
+  add_bonds(mhd, Hierarchy::LIGAND);
 }
 
 void ForceFieldParameters::add_bonds(Hierarchy mhd,
@@ -92,8 +91,8 @@ void ForceFieldParameters::add_bonds(Hierarchy mhd,
 void ForceFieldParameters::add_bonds(Residue rd1, Residue rd2) const {
   Atom ad1, ad2;
   // connect two residues by C-N bond
-  if(rd1.get_type() == Hierarchy::RESIDUE &&
-     rd2.get_type() == Hierarchy::RESIDUE) {
+  if(rd1.get_type() == Hierarchy::AMINOACID &&
+     rd2.get_type() == Hierarchy::AMINOACID) {
     ad1 = get_atom(rd1, atom::AT_C);
     ad2 = get_atom(rd2, atom::AT_N);
    }

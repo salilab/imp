@@ -21,19 +21,20 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-IMP_DECLARE_CONTROLLED_KEY_TYPE(ResidueType, IMP_RESIDUE_TYPE_INDEX);
+IMP_DECLARE_KEY_TYPE(ResidueType, IMP_RESIDUE_TYPE_INDEX);
 
 
 /* each static must be on a separate line because of MSVC bug C2487:
    see http://support.microsoft.com/kb/127900/
 */
 /** @name Residue types
+    A given residue is either a Residue::LIGAND, Residue::AMINOACID,
+    or Residue::NUCLEICACID.
 
     The standard residue types are provided with names like
-    IMP::atom::GLY.  New types can be added simply by creating an
-    instance of ResidueType("my_residue_name"). Note that methods such
-    as Residue::get_is_amino_acid() will not work with
-    user-added types.
+    IMP::atom::GLY. New types can be added simply by creating an
+    instance of ResidueType("my_residue_name"). All user-added
+    residues are assumed to be ligands.
 
     \see Residue
 */
@@ -158,21 +159,7 @@ public:
   }
 
   //! Update the stored ResidueType and the atom::Hierarchy::Name.
-  void set_residue_type(ResidueType t) {
-    get_particle()->set_value(get_residue_type_key(), t.get_index());
-    if (get_residue_type().get_index() >= GLY.get_index() &&
-        get_residue_type().get_index() <= TRP.get_index()) {
-      Hierarchy
-        ::set_type(Hierarchy::RESIDUE);
-    } else if (get_residue_type().get_index() >= ADE.get_index() &&
-               get_residue_type().get_index() <= DTHY.get_index()) {
-      Hierarchy
-        ::set_type(Hierarchy::NUCLEICACID);
-    } else {
-      Hierarchy
-        ::set_type(Hierarchy::FRAGMENT);
-    }
-  }
+  void set_residue_type(ResidueType t);
 
   //! The residues index in the chain
   IMP_DECORATOR_GET_SET(index, get_index_key(),

@@ -23,7 +23,7 @@ class MCOptimizerTest(IMP.test.TestCase):
         for i in range(0,3):
             s[i]= s[i]**.5
         return (m[0], m[1], m[2], s[0], s[1], s[2])
-    def test_step_size(self):
+    def _test_step_size(self):
         """Testing the step size invariance of free diffusion"""
         m= IMP.Model()
         si=IMP.atom.SimulationParameters.setup_particle(IMP.Particle(m), 1e3)
