@@ -247,6 +247,9 @@ class ApplicationTestCase(TestCase):
             testdir = os.environ['TEST_DIRECTORY']
         else:
             testdir = os.path.dirname(os.path.abspath(sys.argv[0]))
+        if sys.platform == 'win32':
+            filename += '.exe'
+        testdir = os.path.normpath(testdir)
         dirs = testdir.split(os.path.sep)
         for i in range(len(dirs), 0, -1):
             trydir = os.path.sep.join(dirs[:i])

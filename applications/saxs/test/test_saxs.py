@@ -16,7 +16,7 @@ class SAXSProfileApplicationTest(IMP.test.ApplicationTestCase):
         ret = p.wait()
         sys.stdout.write(err)
         self.assertEqual(ret, 0)
-        m = re.match('Chi\s+=\s+([\d\.]+)$', out[-1])
+        m = re.match('Chi\s+=\s+([\d\.]+)\r?$', out[-1])
         self.assertNotEqual(m, None, msg="Chi output not found in " + str(out))
         self.assertInTolerance(float(m.group(1)), 0.539, 0.001)
         for out in ('6lyz.pdb.dat', '6lyz_lyzexp.dat', '6lyz_lyzexp.plt'):
