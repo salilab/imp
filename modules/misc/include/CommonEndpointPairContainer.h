@@ -2,7 +2,7 @@
  *  \file CommonEndpointPairContainer.h
  *  \brief A fake container that returns true for any pair of bonds with
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPMISC_COMMON_ENDPOINT_PAIR_CONTAINER_H

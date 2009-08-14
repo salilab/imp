@@ -2,7 +2,7 @@
  *  \file Mass.h
  *  \brief A decorator for particles with mass
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPATOM_MASS_H
