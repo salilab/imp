@@ -104,3 +104,12 @@ def configure_check(env):
     else:
         env['HAS_MODELLER']=False
     conf.Finish()
+
+def fail(env, target, source):
+    print """
+  ERROR: Modeller is required to build %s.
+
+  Use the modeller command line option (or options file) to set the
+  directory where Modeller is installed (run 'scons -h' for help.)
+""" % target[0]
+    return 1
