@@ -83,7 +83,9 @@ examplei= env.GenerateExamples("all_examples.dox", Glob("#/modules/*/examples/ex
                                    + Glob("#/kernel/examples/examples.dox"))
 
 headers=[]
-for h in Glob("#/build/include/*.h") + Glob("#/build/include/IMP/*.h") +Glob("#/build/include/IMP/*/*.h"):
+for h in Glob("#/build/include/*.h", ondisk=False) \
+         + Glob("#/build/include/IMP/*.h", ondisk=False) \
+         + Glob("#/build/include/IMP/*/*.h", ondisk=False):
     if h.path.find("internal")==-1:
         headers.append(h)
 modexamples=Glob("#/modules/*/examples/*.dox")+['#/kernel/examples/examples.dox']
