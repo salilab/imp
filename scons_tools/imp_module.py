@@ -567,17 +567,17 @@ def IMPModuleBuild(env, version, required_modules=[],
     print
 
     env['IMP_MODULE_CONFIG']=config_macros
-    if env.get('svn', True):
+    if env.get('svn', True) and env['SVNVERSION']:
         if env.get('repository', None) is not None:
             path=env['repository']
         else:
             path="."
         dir= Dir("#/"+path).abspath
         try:
-            vr= os.popen('svnversion ' + dir).read()
+            vr= os.popen(env['SVNVERSION'] + ' ' + dir).read()
             version= version + ' ' + vr.split("\n")[0]
-        except:
-            print "Could not run svnversion."
+        except OSError, detail:
+            print "Could not run svnversion: %s" % str(detail)
     env['IMP_MODULE_VERSION'] = version
     vars=make_vars(env)
     env.validate()
