@@ -9,6 +9,7 @@ import hierarchy
 import version_info
 import config_h
 import link_test
+import modeller_test
 
 from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir
 
@@ -550,6 +551,7 @@ def IMPModuleBuild(env, version, required_modules=[],
             if x== "modeller":
                 if not env.get('HAS_MODELLER', False):
                     print "(modeller missing, disabled)"
+                    env.invalidate(modeller_test.fail)
                     Return()
             else:
                 raise ValueError("Do not know dependency "+x)
