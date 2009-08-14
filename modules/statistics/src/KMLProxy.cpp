@@ -1,7 +1,7 @@
 /**
  *  \file KMLProxy.cpp  \brief proxy to k-mean algorithm
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #include <IMP/statistics/KMLProxy.h>

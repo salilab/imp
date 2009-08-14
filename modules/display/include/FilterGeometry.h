@@ -2,7 +2,7 @@
  *  \file FilterGeometry.h
  *  \brief Implement FilterGeometry
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPDISPLAY_FILTER_GEOMETRY_H

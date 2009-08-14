@@ -2,7 +2,7 @@
  *  \file PolygonGeometry.h
  *  \brief Implement PolygonGeometry
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPDISPLAY_POLYGON_GEOMETRY_H
