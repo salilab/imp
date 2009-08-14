@@ -139,7 +139,7 @@ def exists(env):
 
 
 def _check(context):
-    needversion = [1,3,34]
+    needversion = [1,3,31]
     needversion_str = ".".join([str(x) for x in needversion])
     failmsg = """
 SWIG version %s or later must be installed to support Python, but
