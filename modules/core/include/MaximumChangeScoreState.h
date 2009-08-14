@@ -1,6 +1,6 @@
 /**
  *  \file MaximumChangeScoreState.h
- *  \brief Keep track of the Maximumimum change of a set of attributes.
+ *  \brief Keep track of the maximum change of a set of attributes.
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
@@ -21,7 +21,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 //! Keeps track of the maximum change of a set of attributes.
 /** The score state maintains a list of particle and a list of
-    Float attribute keys and keeps track of the Maximumimum amount
+    Float attribute keys and keeps track of the maximum amount
     any of these have changed since the last time reset was called.
 
     Adding a new particle to the container without calling reset()
