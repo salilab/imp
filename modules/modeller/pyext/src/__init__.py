@@ -23,7 +23,6 @@ def _import_modeller_scripts_optimizers():
 
 def _import_module(partname, fqname, parent):
     """Import a single Python module, possibly from a parent."""
-    print >> sys.stderr, "parent is "+str(parent)
     fp, pathname, description = imp.find_module(partname,
                                                 parent and parent.__path__)
     try:
@@ -457,7 +456,7 @@ def read_pdb(name, model, special_patches=None):
                 atoms[atom.index]=ap
             lastres=hrp
         # set the type for real
-        if lastres.get_type() == IMP.atom.Hierarchy.RESIDUE:
+        if lastres.get_type() == IMP.atom.Hierarchy.AMINOACID:
             hcp.set_type(IMP.atom.Hierarchy.CHAIN)
         elif lastres.get_type() ==\
                 IMP.atom.Hierarchy.NUCLEICACID:
