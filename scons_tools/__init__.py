@@ -80,7 +80,7 @@ def _add_build_flags(env):
     env.Append(CCFLAGS=[])
     env.Append(LINKFLAGS=[])
     env.Append(LIBPATH=[])
-    if env.get('static', False):
+    if env['static']:
         if env['CC'] == 'gcc':
             env.Append(LINKFLAGS=['-static'])
         else:
@@ -154,7 +154,7 @@ def MyEnvironment(variables=None, *args, **kw):
     # env['wine'] will tell us which 'real' environment to create:
     env = Environment(tools=[], variables=variables)
     newpath = env['ENV']['PATH']
-    if env.get('path', None) is not None:
+    if env.get('path') is not None:
         newpath = env['path'] + os.path.pathsep + newpath
     if env['wine']:
         env = WineEnvironment(variables=variables, ENV = {'PATH': newpath},
@@ -179,35 +179,35 @@ def MyEnvironment(variables=None, *args, **kw):
     env.AddMethod(hierarchy.InstallHierarchy)
     env.AddMethod(GetInstallDirectory)
 
-    if env.get('cxxflags', None) is not None:
+    if env.get('cxxflags'):
         env.Append(CXXFLAGS = [env['cxxflags'].split(" ")])
-    if env.get('linkflags', None) is not None:
+    if env.get('linkflags'):
         env.Append(LINKFLAGS=[env['linkflags'].split(" ")])
 
-    if env.get('includepath', None) is not None:
+    if env.get('includepath') is not None:
         env['includepath'] = [os.path.abspath(x) for x in \
                           env['includepath'].split(os.path.pathsep)]
         env.Prepend(CPPPATH=env['includepath'])
-    if env.get('build', "release") == 'profile':
+    if env['build'] == 'profile':
         env['static']=True
-    if env.get('static', False):
+    if env['static']:
         env['python']=False
     # make sure it is there
     env.Append(LIBPATH=[])
-    if env.get('libpath', None) is not None:
+    if env.get('libpath') is not None:
         env['libpath'] = [os.path.abspath(x) for x in \
                       env['libpath'].split(os.path.pathsep)]
         env.Prepend(LIBPATH=env['libpath'])
     else:
         env['libpath'] = []
-    if env.get('libs', None) is not None:
+    if env.get('libs') is not None:
         libs= env['libs'].split(":")
         env.Append(LIBS=libs);
     _add_build_flags(env)
 
     sys = platform.system()
-    if env.get('ldlibpath', None) is not None:
-        env['ENV']['LD_LIBRARY_PATH'] = env.get('ldlibpath', None)
+    if env.get('ldlibpath') is not None:
+        env['ENV']['LD_LIBRARY_PATH'] = env['ldlibpath']
     # Make Modeller exetype variable available:
     if os.environ.has_key('EXECUTABLE_TYPESVN'):
         env['ENV']['EXECUTABLE_TYPESVN'] = os.environ['EXECUTABLE_TYPESVN']
