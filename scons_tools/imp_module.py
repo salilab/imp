@@ -128,7 +128,7 @@ def IMPModuleLib(envi, files):
                                          source=[env.Value(env['IMP_MODULE_VERSION'])])
     #env.AlwaysBuild(version)
     files =files+link+ version
-    if env.get('static', False) and env['CC'] == 'gcc':
+    if env['static'] and env['CC'] == 'gcc':
         build = env.StaticLibrary('#/build/lib/imp%s' % module_suffix,
                                       list(files))
     else:
@@ -567,8 +567,8 @@ def IMPModuleBuild(env, version, required_modules=[],
     print
 
     env['IMP_MODULE_CONFIG']=config_macros
-    if env.get('svn', True) and env['SVNVERSION']:
-        if env.get('repository', None) is not None:
+    if env['svn'] and env['SVNVERSION']:
+        if env.get('repository'):
             path=env['repository']
         else:
             path="."
@@ -589,7 +589,7 @@ def IMPModuleBuild(env, version, required_modules=[],
         env.SConscript('include/SConscript', exports='env')
         env.SConscript('src/SConscript', exports='env')
         env.SConscript('bin/SConscript', exports='env')
-    if env.get('python', True):
+    if env['python']:
         env.SConscript('pyext/SConscript', exports='env')
         env.SConscript('test/SConscript', exports='env')
 
