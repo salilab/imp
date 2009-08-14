@@ -12,7 +12,7 @@
 
 - IMP::atom::Atom and IMP::atom::Residue have been somewhat restructured. Some of the helper functions have been renamed to be more descriptive or removed (if they duplicated other easily accessible functionality). get_residue_index() has been removed (since you can just call get_index() on the return result of the IMP::atom::get_residue()). IMP::atom::get_chain() now returns an IMP::atom::Chain. root() was renamed to IMP::atom::get_root() for consistency.
 
-- swig files are now generated from a file called swig.i in the pyext directory. This file only has to contain module-specific commands such as lines to wrap headers and instantiate module templates. No more broiler-plate.
+- swig files are now generated from a file called swig.i in the pyext directory. This file only has to contain module-specific commands such as lines to wrap headers and instantiate module templates. No more boilerplate.
 
 - the contents of bin are moving to tools since the two directories both contained assorted development tools
   (not all of which were executable). For now, bin/imppy.sh will still work, but that will go away soon.
