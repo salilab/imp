@@ -6,15 +6,15 @@
 
 - IMP::atom::read_pdb() currently drops HOH ATOM records on the floor. We should add a IMP::atom::Water decorator if anyone wants to handle them (since they aren't atoms and don't have elements).
 
-- IMP::atom::Mass() has been added to decorating particles with pass. IMP::atom::Atom mass has been moved to that.
+- IMP::atom::Mass() has been added for decorating particles with mass. IMP::atom::Atom mass has been moved to that.
 
 - The scheme for generating atom types is now fully specified. See the IMP::atom::AtomType documentation.
 
 - IMP::atom::Atom and IMP::atom::Residue have been somewhat restructured. Some of the helper functions have been renamed to be more descriptive or removed (if they duplicated other easily accessible functionality). get_residue_index() has been removed (since you can just call get_index() on the return result of the IMP::atom::get_residue()). IMP::atom::get_chain() now returns an IMP::atom::Chain. root() was renamed to IMP::atom::get_root() for consistency.
 
-- swig files are now generated from a file called swig.i in the pyext directory. This file only has to contain module-specific commands such as lines to wrap headers and instantiate module templates. No more boilerplate.
+- SWIG files are now generated from a file called swig.i in the pyext directory. This file only has to contain module-specific commands such as lines to wrap headers and instantiate module templates. No more boilerplate.
 
-- the contents of bin are moving to tools since the two directories both contained assorted development tools
+- The contents of bin are moving to tools since the two directories both contained assorted development tools
   (not all of which were executable). For now, bin/imppy.sh will still work, but that will go away soon.
 
 - IMP::Decorator::show() now just takes the stream (it used to take a prefix also, which was often ignored).

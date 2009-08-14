@@ -19,7 +19,7 @@ IMPATOM_BEGIN_NAMESPACE
 /** Selector is a general purpose class used to select records from a PDB
     file. Using descendants of this class one may implement arbitrary
     selection functions with operator() and pass them to PDB reading functions
-    for object selection. Simple selectors can be used to build more compilated
+    for object selection. Simple selectors can be used to build more complicated
     ones.
     \see read_pdb
 */
