@@ -15,7 +15,6 @@ class PDBReadWriteTest(IMP.test.TestCase):
                               m, IMP.atom.NonWaterSelector())
         self.assertEqual(m.get_number_of_particles(), 1132)
         #IMP.atom.show_molecular_hierarchy(mp)
-        mp.show()
         IMP.atom.show(mp)
         IMP.atom.add_bonds(mp)
         bds = IMP.atom.get_internal_bonds(mp)
@@ -30,6 +29,24 @@ class PDBReadWriteTest(IMP.test.TestCase):
         IMP.atom.add_bonds(mp)
         bds = IMP.atom.get_internal_bonds(mp)
         self.assertEqual(bds.size(), 0)
+
+    def test_read_het(self):
+        """Check reading a pdb with one protein and a hetatm"""
+        m = IMP.Model()
+
+        #! read PDB
+        mp= IMP.atom.read_pdb(self.open_input_file("1DQK.pdb"),
+                              m, IMP.atom.NonWaterSelector())
+        print m.get_number_of_particles()
+        #self.assertEqual(m.get_number_of_particles(), 1132)
+        #IMP.atom.show_molecular_hierarchy(mp)
+        IMP.atom.show(mp)
+        IMP.atom.add_bonds(mp)
+        bds = IMP.atom.get_internal_bonds(mp)
+        #self.assertEqual(bds.size(), 1020)
+        IMP.atom.add_radii(mp)
+        IMP.atom.show_molecular_hierarchy(mp)
+
 
     def test_write(self):
         """Simple test of writing a PDB"""
