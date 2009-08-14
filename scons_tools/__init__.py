@@ -413,38 +413,28 @@ def add_common_variables(vars, package):
     vars.Add(BoolVariable('linksysv',
                           'Link with old-style SysV, not GNU hash, for ' + \
                           'binary compatibility', False))
-    vars.Add(PathVariable('includepath', 'Include search path ' + \
-                          '(e.g. "/usr/local/include:/opt/local/include")',
-                          None, PathVariable.PathAccept))
-    vars.Add(PathVariable('libpath', 'Library search path ' + \
-                          '(e.g. "/usr/local/lib:/opt/local/lib")', None,
-                          PathVariable.PathAccept))
-    vars.Add(PathVariable('libs', 'Extra libs to add to link commands ' + \
-                          '(e.g. "efence:pthread")', None,
-                          PathVariable.PathAccept))
+    vars.Add('includepath', 'Include search path ' + \
+             '(e.g. "/usr/local/include:/opt/local/include")', None)
+    vars.Add('libpath', 'Library search path ' + \
+             '(e.g. "/usr/local/lib:/opt/local/lib")', None)
+    vars.Add('libs', 'Extra libs to add to link commands ' + \
+             '(e.g. "efence:pthread")', None)
     vars.Add(BoolVariable('rpath',
                           'Add any entries from libpath to library search ' + \
                           'path (rpath) on Linux systems', True))
-    vars.Add(PathVariable('ldlibpath',
-                          'Add to the runtime library search path ' +\
-                              '(LD_LIBRARY_PATH on linux-like systems) for various ' + \
-                              'build tools and the test cases' ,None,
-                          PathVariable.PathAccept))
-    vars.Add(PathVariable('cxxflags', 'Extra cxx flags ' + \
-                          '(e.g. "-fno-rounding -DFOOBAR")',
-                          None, PathVariable.PathAccept))
-    vars.Add(PathVariable('linkflags', 'Extra link flags ' + \
-                          '(e.g. "-lefence")', None,
-                          PathVariable.PathAccept))
-    vars.Add(PathVariable('path', 'Extra executable path ' + \
-                          '(e.g. "/opt/local/bin/") to search for build tools', None,
-                          PathVariable.PathAccept))
-    vars.Add(PathVariable('precommand', 'A command to be run to wrap program invocations.' + \
-                          'For example, "valgrind --db-attach=yes --suppressions=valgrind-python.supp"', "",
-                          PathVariable.PathAccept))
-    vars.Add(PathVariable('pythonpath', 'Extra python path ' + \
-                          '(e.g. "/opt/local/lib/python-2.5/") to use for tests', None,
-                          PathVariable.PathAccept))
+    vars.Add('ldlibpath', 'Add to the runtime library search path ' +\
+             '(LD_LIBRARY_PATH on linux-like systems) for various ' + \
+             'build tools and the test cases', None)
+    vars.Add('cxxflags', 'Extra cxx flags (e.g. "-fno-rounding -DFOOBAR")',
+             None)
+    vars.Add('linkflags', 'Extra link flags (e.g. "-lefence")', None)
+    vars.Add('path', 'Extra executable path ' + \
+             '(e.g. "/opt/local/bin/") to search for build tools', None)
+    vars.Add('precommand',
+             'A command to be run to wrap program invocations.' + \
+             'For example, "valgrind --db-attach=yes --suppressions=valgrind-python.supp"', "")
+    vars.Add('pythonpath', 'Extra python path ' + \
+             '(e.g. "/opt/local/lib/python-2.5/") to use for tests', None)
     vars.Add(BoolVariable('deprecated',
                           'Build deprecated classes and functions', True))
     vars.Add(BoolVariable('dot',
