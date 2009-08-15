@@ -4,7 +4,7 @@ import IMP.test
 import IMP.atom
 
 ATOM = IMP.atom.Hierarchy.ATOM
-RESIDUE = IMP.atom.Hierarchy.AMINOACID
+AMINOACID = IMP.atom.Hierarchy.AMINOACID
 UNKNOWN = IMP.atom.Hierarchy.UNKNOWN
 
 def _make_hierarchy_decorators(m, *types):
@@ -16,7 +16,7 @@ def _make_hierarchy_decorators(m, *types):
     return decorators
 
 def _make_bonded_atoms(m):
-    r1, r2 = _make_hierarchy_decorators(m, RESIDUE, RESIDUE)
+    r1, r2 = _make_hierarchy_decorators(m, AMINOACID, RESIDUE)
     atoms1 = _make_hierarchy_decorators(m, ATOM, ATOM, ATOM, ATOM)
     atoms2 = _make_hierarchy_decorators(m, ATOM, ATOM, ATOM, ATOM)
     for a in atoms1:
@@ -35,7 +35,7 @@ class HierarchyTests(IMP.test.TestCase):
     def test_get_by_type(self):
         """Check hierarchy get_by_type"""
         m = IMP.Model()
-        r1, r2, a1, a2 = _make_hierarchy_decorators(m, RESIDUE, RESIDUE,
+        r1, r2, a1, a2 = _make_hierarchy_decorators(m, AMINOACID, RESIDUE,
                                                     ATOM, ATOM)
         r1.add_child(a1)
         r1.add_child(a2)
@@ -46,26 +46,26 @@ class HierarchyTests(IMP.test.TestCase):
         self.assertEqual(list(IMP.atom.get_by_type(r2, ATOM)), [])
 
         # Each residue should be found under itself
-        self.assertEqual(list(IMP.atom.get_by_type(r1, RESIDUE)),
+        self.assertEqual(list(IMP.atom.get_by_type(r1, AMINOACID)),
                          [r1.get_particle(),])
-        self.assertEqual(list(IMP.atom.get_by_type(r2, RESIDUE)),
+        self.assertEqual(list(IMP.atom.get_by_type(r2, AMINOACID)),
                          [r2.get_particle(),])
 
         # Neither residue should be found under any atom
-        self.assertEqual(list(IMP.atom.get_by_type(a1, RESIDUE)), [])
-        self.assertEqual(list(IMP.atom.get_by_type(a2, RESIDUE)), [])
+        self.assertEqual(list(IMP.atom.get_by_type(a1, AMINOACID)), [])
+        self.assertEqual(list(IMP.atom.get_by_type(a2, AMINOACID)), [])
 
     def test_get_add_child(self):
         """Check hierarchy get_child and add_child"""
         m = IMP.Model()
-        parent, child = _make_hierarchy_decorators(m, RESIDUE, ATOM)
+        parent, child = _make_hierarchy_decorators(m, AMINOACID, ATOM)
         self.assertEqual(parent.add_child(child), 0)
         self.assertEqual(parent.get_child(0), child)
         self.assertEqual(child.get_parent(), parent)
         self.assertRaises(IndexError, parent.get_child, 1)
 
         # Cannot put a residue under an atom
-        parent, child = _make_hierarchy_decorators(m, ATOM, RESIDUE)
+        parent, child = _make_hierarchy_decorators(m, ATOM, AMINOACID)
         self.assertRaises(ValueError, parent.add_child, child)
         # Neither parent nor child can be UNKNOWN
         parent, child = _make_hierarchy_decorators(m, ATOM, UNKNOWN)
@@ -78,7 +78,7 @@ class HierarchyTests(IMP.test.TestCase):
         m = IMP.Model()
         (d,) = _make_hierarchy_decorators(m, UNKNOWN)
         self.assertEqual(d.get_type(), UNKNOWN)
-        for (typ, string) in ((ATOM, 'atom'), (RESIDUE, 'amino acid'),
+        for (typ, string) in ((ATOM, 'atom'), (AMINOACID, 'amino acid'),
                               (UNKNOWN, 'unknown')):
             d.set_type(typ)
             self.assertEqual(d.get_type(), typ)

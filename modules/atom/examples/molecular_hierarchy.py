@@ -16,7 +16,7 @@ print aa
 print len(atoms)
 
 #get the residues
-residues= IMP.atom.get_by_type(mp0, IMP.atom.Hierarchy.RESIDUE)
+residues= IMP.atom.get_by_type(mp0, IMP.atom.Hierarchy.AMINOACID)
 # set the coordinates and radius of each residue to enclose its atoms
 for r in residues:
     d= IMP.core.XYZR.setup_particle(r.get_particle())
