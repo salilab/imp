@@ -16,7 +16,7 @@ def _make_hierarchy_decorators(m, *types):
     return decorators
 
 def _make_bonded_atoms(m):
-    r1, r2 = _make_hierarchy_decorators(m, AMINOACID, RESIDUE)
+    r1, r2 = _make_hierarchy_decorators(m, AMINOACID, AMINOACID)
     atoms1 = _make_hierarchy_decorators(m, ATOM, ATOM, ATOM, ATOM)
     atoms2 = _make_hierarchy_decorators(m, ATOM, ATOM, ATOM, ATOM)
     for a in atoms1:
@@ -35,7 +35,7 @@ class HierarchyTests(IMP.test.TestCase):
     def test_get_by_type(self):
         """Check hierarchy get_by_type"""
         m = IMP.Model()
-        r1, r2, a1, a2 = _make_hierarchy_decorators(m, AMINOACID, RESIDUE,
+        r1, r2, a1, a2 = _make_hierarchy_decorators(m, AMINOACID, AMINOACID,
                                                     ATOM, ATOM)
         r1.add_child(a1)
         r1.add_child(a2)
