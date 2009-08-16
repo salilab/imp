@@ -211,7 +211,7 @@ try:
             # run from the same directory as the DLLs
             if sys.platform == 'win32':
                 # Hack to find the location of build/lib/
-                libdir = os.environ['PYTHONPATH'].split(':')[0]
+                libdir = os.environ['PYTHONPATH'].split(';')[0]
                 self.__appcopy = os.path.join(libdir, appname)
                 shutil.copy(app, libdir)
                 app = self.__appcopy
