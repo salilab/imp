@@ -111,6 +111,17 @@ class Doxypy(object):
         self.multiline_defclass_start_re = re.compile("^(\s*)(def|class)(\s.*)?$")
         self.multiline_defclass_end_re = re.compile(":\s*$")
 
+        # Some SWIG-generated variables and one-liner methods which should be
+        # excluded from the output
+        self.skip_re = [re.compile('(\S+) = _IMP\S*\.\S+$'),
+                        re.compile('(\S+) = cvar\.\S+$'),
+                        re.compile('    _IMP\S* = swig_import_helper\(\)$'),
+                        re.compile('_director_objects = _DirectorObjects\(\)$'),
+                        re.compile('    _newclass = [01]$'),
+                        re.compile('    weakref_proxy = \S+'),
+                        re.compile('    _swig_property = property$'),
+                        re.compile('    def \S+\(.*\): return _IMP')]
+
         ## Transition list format
         #  ["FROM", "TO", condition, action]
         transitions = [
@@ -203,13 +214,25 @@ class Doxypy(object):
         else:
             return line
 
+    def __skip_line(self, line):
+        """Return True if the output line should be skipped"""
+        for r in self.skip_re:
+            if r.match(line):
+                return True
+        return False
+
     def __flushBuffer(self):
         """Flushes the current outputbuffer to the outstream."""
         if self.output:
             try:
                 if options.debug:
                     print >>sys.stderr, "# OUTPUT: ", self.output
-                print >>self.outstream, "\n".join(self.output)
+                for line in self.output:
+                    if self.__skip_line(line):
+                        if options.debug:
+                            print >>sys.stderr, "# Line skipped: ", line
+                    else:
+                        print >>self.outstream, line
                 self.outstream.flush()
             except IOError:
                 # Fix for FS#33. Catches "broken pipe" when doxygen closes
@@ -252,6 +275,22 @@ class Doxypy(object):
         """
         if options.debug:
             print >>sys.stderr, "# CALLBACK: stopCommentSearch"
+        # doxygen seems to want to document every free Python function, even
+        # if we mark them as internal. So if no comment or docstring was found,
+        # pretend the function is a class instead (so that doxygen's parser
+        # doesn't get confused by the indentation) and explicitly mark it as
+        # internal (internal classes *are* hidden by doxygen).
+        if len(self.comment) == 0 and len(self.defclass) == 1:
+            if self.defclass[0].startswith('def '):
+                self.defclass[0] = 'class UNDOC_' + self.defclass[0][4:]
+                self.comment.append('@internal Undocumented')
+            elif self.defclass[0] == '    def swig_import_helper():':
+                self.defclass[0] = '    class UNDOC_swig_import_helper'
+                self.comment.append('@internal SWIG internal function')
+            # Also hide undocumented constructors
+            elif self.defclass[0].startswith('    def __init__('):
+                self.defclass[0] = '    class UNDOC_swig_init'
+                self.comment.append('@internal SWIG-generated constructor')
         self.__closeComment()
 
         self.defclass = []
