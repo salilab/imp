@@ -61,8 +61,8 @@ For small numbers of director objects (our expected usage) this works well.
 %pythoncode {
 import sys
 class _DirectorObjects(object):
-    """Simple class to keep references to director objects to prevent premature
-       deletion. For internal use only."""
+    """@internal Simple class to keep references to director objects
+       to prevent premature deletion."""
     def __init__(self):
         self._objects = []
     def register(self, obj):
