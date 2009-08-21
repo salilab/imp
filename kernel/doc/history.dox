@@ -158,7 +158,7 @@
 
 - A method has been added to produce a simplified copy of an
   IMP::atom::Hierarchy.  The method is still a bit crude and could
-  benifit from other people inspecting the output and saying how it
+  benefit from other people inspecting the output and saying how it
   should be improved.
 
 - There is now an IMP::algebra::BoundingBoxD (and
@@ -193,7 +193,7 @@
 - there is a function IMP::atom::create_protein() to create a coarse
   grained protein. The function is crude so far, but the idea is that
   we should have standard ways of generating such things so that
-  everyone can benifit from best practices.
+  everyone can benefit from best practices.
 
 - a class IMP::atom::BondGraph has been added so Boost.Graph
   algorithms can be used with bond graphs
