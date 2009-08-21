@@ -1,3 +1,7 @@
+"""@namespace IMP::test
+   @brief Methods and classes for testing the IMP kernel and modules.
+"""
+
 import re, math, unittest
 import sys
 import os
@@ -258,14 +262,16 @@ class ApplicationTestCase(TestCase):
         raise OSError("Cannot find IMP application directory")
 
     def run_application(self, app, args):
-        """Run an application with the given list of arguments. Return
-           a subprocess.Popen-like object containing the child stdin, stdout
-           and stderr."""
+        """Run an application with the given list of arguments.
+           @return a subprocess.Popen-like object containing the child stdin,
+                   stdout and stderr.
+        """
         filename = self._get_application_file_name(app)
         return _SubprocessWrapper(filename, args)
 
 
 class ConstPairScore(IMP.PairScore):
+    """An IMP::PairScore which always returns a constant value."""
     def __init__(self, v):
         IMP.PairScore.__init__(self)
         self.v=v
@@ -277,16 +283,17 @@ class ConstPairScore(IMP.PairScore):
         print >> fh, "ConstPairScore "+ str(self.v)
 
 class LogPairScore(IMP.PairScore):
+    """An IMP::PairScore which logs which Particles it is called with."""
     def __init__(self, v):
         IMP.PairScore.__init__(self)
-        self.log=[]
+        self._log=[]
     def evaluate(self, pa, pb, da):
-        self.log.append((pa,pb))
+        self._log.append((pa,pb))
         return 1
     def get_log(self):
-        return self.log
+        return self._log
     def clear_log(self):
-        self.log=[]
+        self._log=[]
     def get_version_info(self):
         return IMP.VersionInfo("Me", "0.5")
     def show(self, fh):
@@ -294,6 +301,7 @@ class LogPairScore(IMP.PairScore):
 
 
 class ConstUnaryFunction(IMP.UnaryFunction):
+    """An IMP::UnaryFunction which always returns a constant value."""
     def __init__(self, v):
         IMP.UnaryFunction.__init__(self)
         self.v=v
@@ -308,7 +316,7 @@ class ConstUnaryFunction(IMP.UnaryFunction):
 
 
 class TestRefiner(IMP.Refiner):
-    """A class which makes sure that the right particles are passed back"""
+    """A class which makes sure that the right particles are passed back."""
 
     def __init__(self, pr):
         IMP.Refiner.__init__(self)
@@ -347,6 +355,7 @@ class RefCountChecker(object):
         self.__basenum = IMP.RefCounted.get_number_of_live_objects()
 
     def assert_number(self, expected):
+        "Make sure that the number of references matches the expected value."
         t = self.__testcase
         t.assertEqual(IMP.RefCounted.get_number_of_live_objects() \
                       - self.__basenum, expected)
@@ -361,6 +370,10 @@ class DirectorObjectChecker(object):
         self.__basenum = IMP._director_objects.get_object_count()
 
     def assert_number(self, expected, force_cleanup=True):
+        """Make sure that the number of references matches the expected value.
+           If force_cleanup is set, clean up any unused references first before
+           doing the assertion.
+        """
         t = self.__testcase
         if force_cleanup:
             IMP._director_objects.cleanup()
