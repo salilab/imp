@@ -21,6 +21,6 @@
 
     Whenever a particle is changed is marked as dirty, so that IMP::Particle::get_is_changed() returns true.
 
-    A (perhaps partial) list of classes which benifit from incremental evaluation is:
+    A (perhaps partial) list of classes which benefit from incremental evaluation is:
     - IMP::core::IncrementalBallMover
 */
