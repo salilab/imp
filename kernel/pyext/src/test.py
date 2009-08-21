@@ -1,5 +1,6 @@
 """@namespace IMP::test
    @brief Methods and classes for testing the IMP kernel and modules.
+   @ingroup python
 """
 
 import re, math, unittest

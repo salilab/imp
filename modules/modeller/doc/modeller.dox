@@ -1,5 +1,6 @@
 /** \namespace IMP::modeller
 \brief %IMP.%modeller contains functionality for integrating Modeller with IMP. 
+\ingroup python
 
 \author Daniel Russel and Ben Webb
 
