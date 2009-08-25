@@ -10,7 +10,6 @@
 #define IMPATOM_VELOCITY_SCALING_OPTIMIZER_STATE_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include <IMP/Particle.h>
 #include <IMP/base_types.h>
 #include <IMP/OptimizerState.h>
@@ -48,7 +47,7 @@ class IMPATOMEXPORT VelocityScalingOptimizerState : public OptimizerState
   void rescale_velocities() const;
 
   IMP_OPTIMIZER_STATE(VelocityScalingOptimizerState,
-                      internal::version_info)
+                      get_module_version_info())
 
 private:
   Particles pis_;

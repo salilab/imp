@@ -27,7 +27,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 //! A location in 3D space
 /** Stores a 3-vector using cartesian coordinates.
 */
-typedef VectorD<3> Vector3D;
+IMP_NO_SWIG(typedef VectorD<3> Vector3D;)
 
 //! A collection of Vector3D
 /**

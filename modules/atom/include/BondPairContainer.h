@@ -10,7 +10,6 @@
 
 #include "config.h"
 #include "bond_decorators.h"
-#include "internal/version_info.h"
 
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
@@ -31,7 +30,7 @@ public:
   //! The container containing the bonds
   BondPairContainer(SingletonContainer *sc);
 
-  IMP_PAIR_CONTAINER(BondPairContainer, internal::version_info)
+  IMP_PAIR_CONTAINER(BondPairContainer, get_module_version_info())
 };
 
 

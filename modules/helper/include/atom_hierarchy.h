@@ -9,7 +9,6 @@
 #define IMPHELPER_HELPER_ATOM_HIERARCHY_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include <IMP/core/XYZR.h>
 #include <IMP/atom/Hierarchy.h>
 

@@ -9,7 +9,6 @@
 #define IMPATOM_BOND_ENDPOINTS_REFINER_H
 
 #include "config.h"
-#include "internal/version_info.h"
 
 #include <IMP/Refiner.h>
 
@@ -26,7 +25,7 @@ public:
   //! no arguments
   BondEndpointsRefiner();
 
-  IMP_REFINER(BondEndpointsRefiner, internal::version_info);
+  IMP_REFINER(BondEndpointsRefiner, get_module_version_info());
 };
 
 IMPATOM_END_NAMESPACE

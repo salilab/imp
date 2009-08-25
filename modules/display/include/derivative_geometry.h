@@ -11,7 +11,6 @@
 #include "config.h"
 #include "macros.h"
 
-#include "internal/version_info.h"
 #include <IMP/PairContainer.h>
 #include <IMP/core/XYZR.h>
 #include <IMP/core/rigid_bodies.h>
@@ -35,7 +34,7 @@ public:
   std::string get_name() const {
     return d_.get_particle()->get_name();
   }
-  IMP_GEOMETRY(XYZDerivativeGeometry, internal::version_info)
+  IMP_GEOMETRY(XYZDerivativeGeometry, get_module_version_info())
 };
 
 
@@ -48,7 +47,7 @@ class IMPDISPLAYEXPORT XYZsDerivativeGeometry: public CompoundGeometry
 public:
   XYZsDerivativeGeometry(SingletonContainer *d, Float radius=0);
 
-  IMP_COMPOUND_GEOMETRY(XYZsDerivativeGeometry, internal::version_info)
+  IMP_COMPOUND_GEOMETRY(XYZsDerivativeGeometry, get_module_version_info())
 };
 
 
@@ -77,7 +76,7 @@ public:
     qcolor_=c;
   }
 
-  IMP_COMPOUND_GEOMETRY(RigidBodyDerivativeGeometry, internal::version_info);
+  IMP_COMPOUND_GEOMETRY(RigidBodyDerivativeGeometry, get_module_version_info());
 };
 
 

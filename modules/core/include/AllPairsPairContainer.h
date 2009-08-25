@@ -13,7 +13,6 @@
 
 #include "config.h"
 
-#include "internal/version_info.h"
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 
@@ -36,7 +35,7 @@ public:
   //! Get the individual particles from the passed SingletonContainer
   AllPairsPairContainer(SingletonContainer *c);
 
-  IMP_PAIR_CONTAINER(AllPairsPairContainer, internal::version_info);
+  IMP_PAIR_CONTAINER(AllPairsPairContainer, get_module_version_info());
 };
 
 

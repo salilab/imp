@@ -9,7 +9,6 @@
 #define IMPATOM_BOND_SINGLETON_SCORE_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include <IMP/SingletonScore.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/Pointer.h>
@@ -30,7 +29,7 @@ class IMPATOMEXPORT BondSingletonScore : public SingletonScore
 public:
   //! Use f to penalize deviations in length
   BondSingletonScore(UnaryFunction *f);
-  IMP_SINGLETON_SCORE(BondSingletonScore, internal::version_info);
+  IMP_SINGLETON_SCORE(BondSingletonScore, get_module_version_info());
 };
 
 IMPATOM_END_NAMESPACE

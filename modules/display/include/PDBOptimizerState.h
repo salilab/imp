@@ -10,7 +10,6 @@
 
 #include "config.h"
 #include "Writer.h"
-#include "internal/version_info.h"
 #include <IMP/OptimizerState.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/display/geometry.h>
@@ -43,7 +42,7 @@ public:
     skip_steps_=i;
   }
 
-  IMP_OPTIMIZER_STATE(PDBOptimizerState, internal::version_info)
+  IMP_OPTIMIZER_STATE(PDBOptimizerState, get_module_version_info())
 };
 
 

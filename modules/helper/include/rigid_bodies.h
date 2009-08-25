@@ -9,7 +9,6 @@
 #define IMPHELPER_RIGID_BODIES_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include <IMP/core/rigid_bodies.h>
 
 IMPHELPER_BEGIN_NAMESPACE

@@ -10,7 +10,6 @@
 #define IMPCORE_RIGID_BODY_MOVER_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include <IMP/core/MonteCarlo.h>
 #include <IMP/core/Mover.h>
 #include <IMP/algebra/Vector3D.h>
@@ -41,7 +40,7 @@ public:
   }
 
   VersionInfo get_version_info() const {
-    return internal::version_info;
+    return get_module_version_info();
   }
   IMP_REF_COUNTED_DESTRUCTOR(RigidBodyMover)
 private:

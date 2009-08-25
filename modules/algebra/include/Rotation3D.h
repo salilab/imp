@@ -18,7 +18,7 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-#ifndef IMP_DOXYGEN
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
 class Rotation3D;
 Rotation3D compose(const Rotation3D &a, const Rotation3D &b) ;
 #endif

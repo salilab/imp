@@ -10,7 +10,6 @@
 #define IMPATOM_MOLECULAR_DYNAMICS_H
 
 #include "config.h"
-#include "internal/version_info.h"
 
 #include <IMP/Particle.h>
 #include <IMP/Optimizer.h>
@@ -40,7 +39,7 @@ public:
    */
   Float get_kinetic_temperature(Float ekinetic) const;
 
-  IMP_OPTIMIZER(MolecularDynamics, internal::version_info)
+  IMP_OPTIMIZER(MolecularDynamics, get_module_version_info())
 
   //! Set time step in fs
   void set_time_step(Float t) { time_step_ = t; }

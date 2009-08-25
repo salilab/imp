@@ -10,7 +10,6 @@
 #define IMPCORE_CENTROID_OF_REFINED_H
 
 #include "config.h"
-#include "internal/version_info.h"
 
 #include "XYZ.h"
 #include <IMP/Refiner.h>
@@ -42,7 +41,7 @@ public:
                                       = XYZ::get_xyz_keys());
 
   IMP_SINGLETON_MODIFIER(CentroidOfRefined,
-                         internal::version_info);
+                         get_module_version_info());
 };
 
 

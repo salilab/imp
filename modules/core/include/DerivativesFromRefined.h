@@ -9,7 +9,6 @@
 #define IMPCORE_DERIVATIVES_FROM_REFINED_H
 
 #include "config.h"
-#include "internal/version_info.h"
 
 #include "XYZ.h"
 #include <IMP/Refiner.h>
@@ -38,7 +37,7 @@ public:
                                           FloatKeys ks
                                            = XYZ::get_xyz_keys());
 
-  IMP_SINGLETON_MODIFIER_DA(DerivativesFromRefined, internal::version_info);
+  IMP_SINGLETON_MODIFIER_DA(DerivativesFromRefined, get_module_version_info());
 };
 
 IMPCORE_END_NAMESPACE

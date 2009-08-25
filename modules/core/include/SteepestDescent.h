@@ -9,7 +9,6 @@
 #define IMPCORE_STEEPEST_DESCENT_H
 
 #include "config.h"
-#include "internal/version_info.h"
 
 #include <IMP/Optimizer.h>
 
@@ -27,7 +26,7 @@ public:
   /** */
   SteepestDescent();
 
-  IMP_OPTIMIZER(SteepestDescent, internal::version_info)
+  IMP_OPTIMIZER(SteepestDescent, get_module_version_info())
 
   //! Set the minimum gradient threshold
   void set_threshold(Float t) {threshold_=t;}

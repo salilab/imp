@@ -10,7 +10,6 @@
 #define IMPEM_FIT_RESTRAINT_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include "DensityMap.h"
 #include "CoarseCC.h"
 #include "SampledDensityMap.h"
@@ -52,7 +51,7 @@ public:
     return model_dens_map_;
   }
 
-  IMP_RESTRAINT(FitRestraint, internal::version_info)
+  IMP_RESTRAINT(FitRestraint, get_module_version_info())
 
   ParticlesList get_interacting_particles() const
   {

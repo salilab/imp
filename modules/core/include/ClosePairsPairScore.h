@@ -9,7 +9,6 @@
 #define IMPCORE_CLOSE_PAIRS_PAIR_SCORE_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include "XYZR.h"
 
 #include <IMP/PairScore.h>
@@ -44,7 +43,7 @@ public:
   ClosePairsPairScore(Refiner *r, PairScore *f,
                       Float max_distance,
                       FloatKey rk= XYZR::get_default_radius_key());
-  IMP_PAIR_SCORE(ClosePairsPairScore, internal::version_info);
+  IMP_PAIR_SCORE(ClosePairsPairScore, get_module_version_info());
 };
 
 IMPCORE_END_NAMESPACE

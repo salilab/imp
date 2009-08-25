@@ -11,7 +11,6 @@
 #include "config.h"
 #include "macros.h"
 
-#include "internal/version_info.h"
 #include "geometry.h"
 #include <IMP/algebra/Cylinder3D.h>
 
@@ -30,7 +29,7 @@ public:
   */
   CylinderGeometry(const algebra::Cylinder3D &c);
 
-  IMP_GEOMETRY(CylinderGeometry, internal::version_info)
+  IMP_GEOMETRY(CylinderGeometry, get_module_version_info())
 };
 
 
@@ -49,7 +48,7 @@ public:
   PolyCylinderGeometry(const algebra::Vector3Ds &c,
                        double r);
 
-  IMP_GEOMETRY(PolyCylinderGeometry, internal::version_info)
+  IMP_GEOMETRY(PolyCylinderGeometry, get_module_version_info())
 };
 IMPDISPLAY_END_NAMESPACE
 

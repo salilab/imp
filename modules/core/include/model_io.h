@@ -9,7 +9,6 @@
 #define IMPCORE_MODEL_IO_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
 #include <IMP/FailureHandler.h>
@@ -103,7 +102,7 @@ class IMPCOREEXPORT DumpModelOnFailure: public FailureHandler {
   std::string file_name_;
  public:
   DumpModelOnFailure(Model *m, std::string file_name);
-  IMP_FAILURE_HANDLER(DumpModelOnFailure, internal::version_info);
+  IMP_FAILURE_HANDLER(DumpModelOnFailure, get_module_version_info());
 };
 
 

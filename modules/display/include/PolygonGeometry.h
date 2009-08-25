@@ -10,7 +10,6 @@
 
 #include "config.h"
 
-#include "internal/version_info.h"
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 #include "geometry.h"
@@ -30,7 +29,7 @@ public:
   //! The vertices of the polygon in counter clockwise order
   PolygonGeometry(const algebra::Vector3Ds &pts);
 
-  IMP_GEOMETRY(PolygonGeometry, internal::version_info)
+  IMP_GEOMETRY(PolygonGeometry, get_module_version_info())
 };
 
 

@@ -10,7 +10,6 @@
 #define IMPCORE_NORMAL_MOVER_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include "MoverBase.h"
 
 IMPCORE_BEGIN_NAMESPACE
@@ -41,7 +40,7 @@ public:
     out << "NormalMover" << std::endl;
   }
   VersionInfo get_version_info() const {
-    return internal::version_info;
+    return get_module_version_info();
   }
   IMP_REF_COUNTED_DESTRUCTOR(NormalMover)
 protected:

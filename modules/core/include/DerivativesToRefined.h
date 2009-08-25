@@ -9,7 +9,6 @@
 #define IMPCORE_DERIVATIVES_TO_REFINED_H
 
 #include "config.h"
-#include "internal/version_info.h"
 
 #include "XYZ.h"
 #include <IMP/Refiner.h>
@@ -38,7 +37,7 @@ public:
                                         = XYZ::get_xyz_keys());
 
   IMP_SINGLETON_MODIFIER_DA(DerivativesToRefined,
-                            internal::version_info);
+                            get_module_version_info());
 };
 
 IMPCORE_END_NAMESPACE

@@ -8,7 +8,6 @@
 #define IMPCORE_COSINE_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include <IMP/UnaryFunction.h>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -32,7 +31,7 @@ public:
       force_constant_(force_constant), periodicity_(periodicity),
       phase_(phase) {}
 
-  IMP_UNARY_FUNCTION(Cosine, internal::version_info);
+  IMP_UNARY_FUNCTION(Cosine, get_module_version_info());
 private:
   Float force_constant_;
   int periodicity_;

@@ -12,7 +12,6 @@
 #define IMPCORE_CONNECTIVITY_RESTRAINT_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include "DistanceRestraint.h"
 
 #include <IMP/Restraint.h>
@@ -61,7 +60,7 @@ public:
   */
   ParticlePairs get_connected_pairs() const;
 
-  IMP_RESTRAINT(ConnectivityRestraint, internal::version_info)
+  IMP_RESTRAINT(ConnectivityRestraint, get_module_version_info())
 
   //! Return the pair score used for scoring
   PairScore *get_pair_score() const {

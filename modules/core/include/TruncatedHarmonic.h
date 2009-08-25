@@ -8,7 +8,6 @@
 #define IMPCORE_TRUNCATED_HARMONIC_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include "internal/truncated_harmonic.h"
 #include <IMP/UnaryFunction.h>
 #include <IMP/utility.h>
@@ -60,7 +59,7 @@ public:
   }
 
   IMP_UNARY_FUNCTION_INLINE(TruncatedHarmonic,
-                            internal::version_info,
+                            get_module_version_info(),
                             ((DIRECTION == LOWER && (feature > d_.c_))
                              || (DIRECTION == UPPER && (feature < d_.c_)))?
                             0: d_.evaluate(feature),

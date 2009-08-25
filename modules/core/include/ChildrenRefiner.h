@@ -9,7 +9,6 @@
 #define IMPCORE_CHILDREN_REFINER_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include "Hierarchy.h"
 
 #include <IMP/Refiner.h>
@@ -33,7 +32,7 @@ public:
   //! Create a refiner for a particular type of hierarchy
   ChildrenRefiner(HierarchyTraits tr);
 
-  IMP_REFINER(ChildrenRefiner, internal::version_info);
+  IMP_REFINER(ChildrenRefiner, get_module_version_info());
 };
 
 IMPCORE_END_NAMESPACE

@@ -7,7 +7,6 @@
 #ifndef IMPCORE_TRANSFORM_H
 #define IMPCORE_TRANSFORM_H
 #include "config.h"
-#include "internal/version_info.h"
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/SingletonModifier.h>
 
@@ -32,7 +31,7 @@ public:
   Transform(const algebra::Transformation3D &t,
                     bool ignore_non_xyz=false);
 
-  IMP_SINGLETON_MODIFIER(Transform, internal::version_info);
+  IMP_SINGLETON_MODIFIER(Transform, get_module_version_info());
 private:
   algebra::Transformation3D t_;
   bool ignore_non_xyz_;

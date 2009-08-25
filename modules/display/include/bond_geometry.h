@@ -11,7 +11,6 @@
 #include "config.h"
 #include "macros.h"
 
-#include "internal/version_info.h"
 #include <IMP/PairContainer.h>
 #include <IMP/atom/bond_decorators.h>
 #include <IMP/display/geometry.h>
@@ -31,7 +30,7 @@ public:
 
   Color get_color() const;
 
-  IMP_GEOMETRY(BondGeometry, internal::version_info)
+  IMP_GEOMETRY(BondGeometry, get_module_version_info())
 };
 
 //! Represent a set of bonds with segments
@@ -47,7 +46,7 @@ public:
 
   BondsGeometry(SingletonContainer *sc, double r);
 
-  IMP_COMPOUND_GEOMETRY(BondsGeometry, internal::version_info)
+  IMP_COMPOUND_GEOMETRY(BondsGeometry, get_module_version_info())
 };
 
 IMPDISPLAY_END_NAMESPACE

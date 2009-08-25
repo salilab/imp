@@ -26,7 +26,7 @@ namespace {
                     FloatKey rk): values_(values), rk_(rk){
       i_=0;
     }
-    IMP_SINGLETON_MODIFIER(RecordXYZValues,internal::version_info)
+    IMP_SINGLETON_MODIFIER(RecordXYZValues,get_module_version_info())
   };
   void RecordXYZValues::apply(Particle *p) const {
      if (rk_!=FloatKey()) {
@@ -55,7 +55,7 @@ namespace {
       i_=0;
     }
     double get_change() const {return change_;}
-    IMP_SINGLETON_MODIFIER(CompareXYZValues,internal::version_info);
+    IMP_SINGLETON_MODIFIER(CompareXYZValues,get_module_version_info());
   };
   void CompareXYZValues::apply(Particle *p) const {
     XYZ d(p);

@@ -8,7 +8,6 @@
 #define IMPCORE_LINEAR_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include <IMP/UnaryFunction.h>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -23,7 +22,7 @@ public:
   //! Create with the given offset and slope.
   Linear(double offset, double slope) : slope_(slope), offset_(offset) {}
 
-  IMP_UNARY_FUNCTION_INLINE(Linear, internal::version_info,
+  IMP_UNARY_FUNCTION_INLINE(Linear, get_module_version_info(),
                             (feature-offset_)*slope_,
                             slope_,
                             "Linear: " << slope_ << ", " << offset_

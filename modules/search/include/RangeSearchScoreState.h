@@ -10,7 +10,6 @@
 #define IMPSEARCH_RANGE_SEARCH_SCORE_STATE_H
 
 #include "config.h"
-#include "internal/version_info.h"
 
 #include <IMP/ScoreState.h>
 #include <IMP/SingletonContainer.h>
@@ -52,7 +51,7 @@ public:
     return keys_;
   }
 
-  IMP_SCORE_STATE(RangeSearchScoreState, internal::version_info);
+  IMP_SCORE_STATE(RangeSearchScoreState, get_module_version_info());
 };
 
 IMPSEARCH_END_NAMESPACE

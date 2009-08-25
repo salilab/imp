@@ -8,7 +8,6 @@
 #define IMPCORE_OPEN_CUBIC_SPLINE_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include <IMP/UnaryFunction.h>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -33,7 +32,7 @@ public:
   OpenCubicSpline(const Floats &values, Float minrange,
                   Float spacing, bool extend=false);
 
-  IMP_UNARY_FUNCTION(OpenCubicSpline, internal::version_info);
+  IMP_UNARY_FUNCTION(OpenCubicSpline, get_module_version_info());
 private:
   std::vector<Float> values_;
   std::vector<Float> second_derivs_;

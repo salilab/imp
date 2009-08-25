@@ -9,7 +9,6 @@
 #define IMPCORE_DISTANCE_TO_SINGLETON_SCORE_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/SingletonScore.h>
 #include <IMP/Pointer.h>
@@ -32,7 +31,7 @@ class IMPCOREEXPORT DistanceToSingletonScore : public SingletonScore
   algebra::Vector3D pt_;
 public:
   DistanceToSingletonScore(UnaryFunction *f, const algebra::Vector3D& pt);
-  IMP_SINGLETON_SCORE(DistanceToSingletonScore, internal::version_info);
+  IMP_SINGLETON_SCORE(DistanceToSingletonScore, get_module_version_info());
 };
 
 IMPCORE_END_NAMESPACE

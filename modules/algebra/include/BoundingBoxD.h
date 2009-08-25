@@ -87,7 +87,7 @@ inline std::ostream &operator<<(std::ostream &out,
 }
 #endif
 
-typedef BoundingBoxD<3> BoundingBox3D;
+IMP_NO_SWIG(typedef BoundingBoxD<3> BoundingBox3D;)
 
 IMPALGEBRA_END_NAMESPACE
 

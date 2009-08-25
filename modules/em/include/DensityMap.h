@@ -12,7 +12,6 @@
 #include "config.h"
 #include "DensityHeader.h"
 #include "MapReaderWriter.h"
-#include "internal/version_info.h"
 #include <IMP/RefCounted.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/BoundingBoxD.h>
@@ -296,7 +295,7 @@ public:
     out << "DensityMap\n";
   }
   virtual VersionInfo get_version_info() const {
-    return internal::version_info;
+    return get_module_version_info();
   }
 
 protected:

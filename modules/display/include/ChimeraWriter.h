@@ -10,7 +10,6 @@
 
 #include "config.h"
 
-#include "internal/version_info.h"
 #include <IMP/display/Writer.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
@@ -39,7 +38,7 @@ public:
   }
 
 
-  IMP_WRITER(ChimeraWriter, internal::version_info)
+  IMP_WRITER(ChimeraWriter, get_module_version_info())
 };
 
 

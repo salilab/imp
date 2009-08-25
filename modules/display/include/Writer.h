@@ -11,7 +11,6 @@
 #include "config.h"
 #include "geometry.h"
 
-#include "internal/version_info.h"
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/RefCounted.h>

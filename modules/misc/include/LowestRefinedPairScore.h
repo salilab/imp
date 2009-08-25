@@ -9,7 +9,6 @@
 #define IMPMISC_LOWEST_REFINED_PAIR_SCORE_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include <IMP/PairScore.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/Pointer.h>
@@ -30,7 +29,7 @@ public:
       \param[in] f The pair score to apply to the generated pairs
    */
   LowestRefinedPairScore(Refiner *r, PairScore *f);
-  IMP_PAIR_SCORE(LowestRefinedPairScore, internal::version_info);
+  IMP_PAIR_SCORE(LowestRefinedPairScore, get_module_version_info());
 };
 
 IMPMISC_END_NAMESPACE

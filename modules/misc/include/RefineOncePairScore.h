@@ -34,7 +34,7 @@ public:
       \param[in] f The pair score to apply to the generated pairs
    */
   RefineOncePairScore(Refiner *r, PairScore *f);
-  IMP_PAIR_SCORE(RefineOncePairScore, internal::version_info);
+  IMP_PAIR_SCORE(RefineOncePairScore, get_module_version_info());
 };
 
 #endif // IMP_NO_DEPRECATED

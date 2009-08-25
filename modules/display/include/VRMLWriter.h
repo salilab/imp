@@ -11,7 +11,6 @@
 #include "config.h"
 #include "macros.h"
 
-#include "internal/version_info.h"
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/display/Writer.h>
@@ -29,7 +28,7 @@ public:
   //! write to a file with the given name
   VRMLWriter(std::string name=std::string());
 
-  IMP_WRITER(VRMLWriter, internal::version_info)
+  IMP_WRITER(VRMLWriter, get_module_version_info())
 
   IMP_WRITER_ADD_GEOMETRY
 };

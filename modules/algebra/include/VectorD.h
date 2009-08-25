@@ -259,9 +259,11 @@ public:
   typedef double* CoordinateIterator;
   CoordinateIterator coordinates_begin() {return vec_;}
   CoordinateIterator coordinates_end() {return vec_+D;}
+#ifndef SWIG
   typedef const double* CoordinateConstIterator;
   CoordinateConstIterator coordinates_begin() const {return vec_;}
   CoordinateConstIterator coordinates_end() const {return vec_+D;}
+#endif
 
 private:
 

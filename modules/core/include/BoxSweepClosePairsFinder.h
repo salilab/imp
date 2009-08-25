@@ -40,7 +40,7 @@ class IMPCOREEXPORT BoxSweepClosePairsFinder : public ClosePairsFinder
     out << "BoxSweepClosePairsFinder" << std::endl;
   }
   VersionInfo get_version_info() const {
-    return internal::version_info;
+    return get_module_version_info();
   }
 };
 

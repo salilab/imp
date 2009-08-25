@@ -9,7 +9,6 @@
 #define IMPCORE_COVER_REFINED_H
 
 #include "config.h"
-#include "internal/version_info.h"
 
 #include "XYZR.h"
 #include <IMP/Refiner.h>
@@ -54,7 +53,7 @@ public:
                =XYZR::get_default_radius_key(),
                Float slack=0);
 
-  IMP_SINGLETON_MODIFIER(CoverRefined, internal::version_info);
+  IMP_SINGLETON_MODIFIER(CoverRefined, get_module_version_info());
 
   //! Set how nmuch extra to add to the radius.
   void set_slack(Float slack) {

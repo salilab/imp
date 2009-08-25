@@ -8,7 +8,6 @@
 #ifndef IMP_VERSION_INFO_H
 #define IMP_VERSION_INFO_H
 
-#include "config.h"
 #include "utility.h"
 
 #include <iostream>
@@ -17,7 +16,7 @@
 IMP_BEGIN_NAMESPACE
 
 //! Version and authorship of IMP objects
-class IMPEXPORT VersionInfo: public ValidDefault
+class IMPEXPORT VersionInfo: public NullDefault
 {
 public:
   //! Create a VersionInfo object with the given author and version.
