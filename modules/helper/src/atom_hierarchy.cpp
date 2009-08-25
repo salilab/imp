@@ -581,7 +581,7 @@ algebra::BoundingBox3D get_bounding_box(const atom::Hierarchy &h,
   for (unsigned int i=0; i< rep.size(); ++i) {
     core::XYZR xyzr= core::XYZR::decorate_particle(rep[i], r);
     if (xyzr) {
-      bb+= algebra::bounding_box(xyzr.get_sphere());
+      bb+= algebra::get_bounding_box(xyzr.get_sphere());
     } else if (core::XYZ::particle_is_instance(rep[i])) {
       bb+= algebra::BoundingBox3D(core::XYZ(rep[i]).get_coordinates());
     }
