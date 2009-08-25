@@ -26,7 +26,7 @@ namespace {
                                                                 keys_(keys){
       i_=0;
     }
-    IMP_SINGLETON_MODIFIER(RecordValues, internal::version_info)
+    IMP_SINGLETON_MODIFIER(RecordValues, get_module_version_info())
   };
   void RecordValues::apply(Particle *p) const {
     values_[i_].resize(keys_.size());
@@ -49,7 +49,7 @@ namespace {
       change_=0;
       i_=0;
     }
-    IMP_SINGLETON_MODIFIER(CompareValues, internal::version_info);
+    IMP_SINGLETON_MODIFIER(CompareValues, get_module_version_info());
     double get_change() const {return change_;}
   };
   void CompareValues::show(std::ostream &out) const{}

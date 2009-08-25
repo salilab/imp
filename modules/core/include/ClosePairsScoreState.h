@@ -125,7 +125,7 @@ public:
            PairContainer*, PairContainers);
    /**@}*/
 
-  IMP_SCORE_STATE(ClosePairsScoreState, internal::version_info)
+  IMP_SCORE_STATE(ClosePairsScoreState, get_module_version_info())
 };
 
 IMPCORE_END_NAMESPACE

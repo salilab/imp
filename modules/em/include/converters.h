@@ -12,7 +12,6 @@
 #include "config.h"
 #include <IMP/base_types.h>
 #include <IMP/macros.h>
-#include "internal/version_info.h"
 #include "DensityMap.h"
 #include "SampledDensityMap.h"
 #include <IMP/em/IMPParticlesAccessPoint.h>

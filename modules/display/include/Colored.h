@@ -10,7 +10,6 @@
 
 #include "config.h"
 
-#include "internal/version_info.h"
 #include "Color.h"
 #include <IMP/Decorator.h>
 

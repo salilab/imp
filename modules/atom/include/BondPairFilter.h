@@ -10,7 +10,6 @@
 
 #include "config.h"
 #include "bond_decorators.h"
-#include "internal/version_info.h"
 
 #include <IMP/PairContainer.h>
 
@@ -29,7 +28,7 @@ public:
   //! no arguments
   BondPairFilter();
 
-  IMP_PAIR_CONTAINER(BondPairFilter, internal::version_info)
+  IMP_PAIR_CONTAINER(BondPairFilter, get_module_version_info())
 };
 
 

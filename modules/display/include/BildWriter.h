@@ -11,7 +11,6 @@
 #include "config.h"
 #include "macros.h"
 
-#include "internal/version_info.h"
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/display/Writer.h>
@@ -32,7 +31,7 @@ public:
   //! write to a file with the given name
   BildWriter(std::string file_name=std::string());
 
-  IMP_WRITER(BildWriter, internal::version_info)
+  IMP_WRITER(BildWriter, get_module_version_info())
 
   IMP_WRITER_ADD_GEOMETRY
 };

@@ -11,7 +11,6 @@
 #include "config.h"
 #include "macros.h"
 
-#include "internal/version_info.h"
 #include <IMP/PairContainer.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/display/geometry.h>
@@ -35,7 +34,7 @@ public:
     return d0_.get_particle()->get_name();
   }
 
-  IMP_GEOMETRY(PairGeometry, internal::version_info);
+  IMP_GEOMETRY(PairGeometry, get_module_version_info());
 
 };
 
@@ -68,7 +67,7 @@ public:
     threshold_=t;
   }
 
-  IMP_COMPOUND_GEOMETRY(PairsGeometry, internal::version_info)
+  IMP_COMPOUND_GEOMETRY(PairsGeometry, get_module_version_info())
 };
 
 

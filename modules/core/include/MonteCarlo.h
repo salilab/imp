@@ -9,7 +9,6 @@
 #define IMPCORE_MONTE_CARLO_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include "Mover.h"
 
 #include <IMP/Optimizer.h>
@@ -37,7 +36,7 @@ public:
   /** */
   MonteCarlo();
 
-  IMP_OPTIMIZER(MonteCarlo, internal::version_info)
+  IMP_OPTIMIZER(MonteCarlo, get_module_version_info())
  public:
   //! Return the local optimizer used or NULL
   Optimizer *get_local_optimizer() const {

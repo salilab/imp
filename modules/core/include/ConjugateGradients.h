@@ -10,7 +10,6 @@
 #define IMPCORE_CONJUGATE_GRADIENTS_H
 
 #include "config.h"
-#include "internal/version_info.h"
 
 #include <IMP/Optimizer.h>
 
@@ -34,7 +33,7 @@ class IMPCOREEXPORT ConjugateGradients : public Optimizer
 public:
   ConjugateGradients();
 
-  IMP_OPTIMIZER(ConjugateGradients, internal::version_info)
+  IMP_OPTIMIZER(ConjugateGradients, get_module_version_info())
 
   //! Set the threshold for the minimum gradient
   void set_threshold(Float t){ threshold_=t;}

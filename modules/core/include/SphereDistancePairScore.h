@@ -9,7 +9,6 @@
 #define IMPCORE_SPHERE_DISTANCE_PAIR_SCORE_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include <IMP/PairScore.h>
 #include <IMP/Pointer.h>
 #include <IMP/UnaryFunction.h>
@@ -28,7 +27,7 @@ public:
   /** */
   SphereDistancePairScore(UnaryFunction *f,
                           FloatKey radius=FloatKey("radius"));
-  IMP_PAIR_SCORE(SphereDistancePairScore, internal::version_info);
+  IMP_PAIR_SCORE(SphereDistancePairScore, get_module_version_info());
 };
 
 IMPCORE_END_NAMESPACE

@@ -9,7 +9,6 @@
 #define IMPCORE_DISTANCE_RESTRAINT_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include "DistancePairScore.h"
 #include "XYZ.h"
 
@@ -47,7 +46,7 @@ public:
     return ret;
   }
 
-  IMP_RESTRAINT(DistanceRestraint, internal::version_info)
+  IMP_RESTRAINT(DistanceRestraint, get_module_version_info())
 
 private:
   Pointer<DistancePairScore> dp_;

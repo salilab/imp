@@ -10,7 +10,6 @@
 #define IMPSEARCH_ATTRIBUTE_MAP_SCORE_STATE_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include "internal/map_helpers.h"
 #include <IMP/SingletonContainer.h>
 #include <IMP/core/config.h>
@@ -130,7 +129,7 @@ public:
     out << std::endl;
   }
   virtual IMP::VersionInfo get_version_info() const {
-    return internal::version_info;
+    return get_module_version_info();
   }
 
 

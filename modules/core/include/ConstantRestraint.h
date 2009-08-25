@@ -11,7 +11,6 @@
 #define IMPCORE_CONSTANT_RESTRAINT_H
 
 #include "config.h"
-#include "internal/version_info.h"
 
 #include <IMP/Restraint.h>
 #include <IMP/PairScore.h>
@@ -29,7 +28,7 @@ public:
   //! Add v to the total score.
   ConstantRestraint(Float v);
 
-  IMP_RESTRAINT(ConstantRestraint, internal::version_info)
+  IMP_RESTRAINT(ConstantRestraint, get_module_version_info())
 
   ParticlesList get_interacting_particles() const
   {

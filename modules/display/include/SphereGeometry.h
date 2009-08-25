@@ -11,7 +11,6 @@
 #include "config.h"
 #include "macros.h"
 
-#include "internal/version_info.h"
 #include "geometry.h"
 #include <IMP/algebra/Sphere3D.h>
 
@@ -26,7 +25,7 @@ class IMPDISPLAYEXPORT SphereGeometry: public Geometry
 public:
   SphereGeometry(const algebra::Sphere3D &s);
 
-  IMP_GEOMETRY(SphereGeometry, internal::version_info)
+  IMP_GEOMETRY(SphereGeometry, get_module_version_info())
 };
 
 IMPDISPLAY_END_NAMESPACE

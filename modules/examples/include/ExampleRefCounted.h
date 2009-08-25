@@ -10,7 +10,6 @@
 
 #include "config.h"
 
-#include "internal/version_info.h"
 #include <IMP/RefCounted.h>
 
 IMPEXAMPLES_BEGIN_NAMESPACE

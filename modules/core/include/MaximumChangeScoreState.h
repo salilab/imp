@@ -9,7 +9,6 @@
 #define IMPCORE_MAXIMUM_CHANGE_SCORE_STATE_H
 
 #include "config.h"
-#include "internal/version_info.h"
 
 #include <IMP/ScoreState.h>
 #include <IMP/Particle.h>
@@ -42,7 +41,7 @@ public:
   MaximumChangeScoreState(SingletonContainer *pc,
                           const FloatKeys &keys);
 
-  IMP_SCORE_STATE(MaximumChangeScoreState, internal::version_info);
+  IMP_SCORE_STATE(MaximumChangeScoreState, get_module_version_info());
 
   //! Measure differences from the current value.
   void reset();

@@ -645,7 +645,7 @@ protection:                                                             \
 
     For all macros, the Name paramete is the name of the class being
     implemented and the version_info parameter is the IMP::VersionInfo
-    to use (probably internal::version_info).
+    to use (probably get_version_info()).
 
     @{
  */

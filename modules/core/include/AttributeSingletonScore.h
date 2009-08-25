@@ -9,7 +9,6 @@
 #define IMPCORE_ATTRIBUTE_SINGLETON_SCORE_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include <IMP/SingletonScore.h>
 #include <IMP/Pointer.h>
 #include <IMP/UnaryFunction.h>
@@ -27,7 +26,7 @@ class IMPCOREEXPORT AttributeSingletonScore : public SingletonScore
 public:
   //! Apply function f to attribete k
   AttributeSingletonScore(UnaryFunction *f, FloatKey k);
-  IMP_SINGLETON_SCORE(AttributeSingletonScore, internal::version_info);
+  IMP_SINGLETON_SCORE(AttributeSingletonScore, get_module_version_info());
 };
 
 IMPCORE_END_NAMESPACE

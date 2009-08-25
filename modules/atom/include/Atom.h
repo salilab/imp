@@ -87,25 +87,17 @@ IMPATOMEXPORT extern const AtomType AT_CB;
 IMPATOMEXPORT extern const AtomType AT_HB;
 /** */
 IMPATOMEXPORT extern const AtomType AT_HB1;
-/** */
-IMPATOMEXPORT extern const AtomType AT_HB2;
-/** */
-IMPATOMEXPORT extern const AtomType AT_HB3;
-/** */
-IMPATOMEXPORT extern const AtomType AT_OXT;
-/** */
-IMPATOMEXPORT extern const AtomType AT_CH3;
-/** */
-IMPATOMEXPORT extern const AtomType AT_CG;
-/** */
-IMPATOMEXPORT extern const AtomType AT_CG1;
-/** */
+/** */ IMPATOMEXPORT extern const AtomType AT_HB2;
+/** */ IMPATOMEXPORT extern const AtomType AT_HB3;
+/** */ IMPATOMEXPORT extern const AtomType AT_OXT;
+/** */ IMPATOMEXPORT extern const AtomType AT_CH3;
+/** */ IMPATOMEXPORT extern const AtomType AT_CG;
+/** */ IMPATOMEXPORT extern const AtomType AT_CG1;
 /** */ IMPATOMEXPORT extern const AtomType AT_CG2;
 /** */ IMPATOMEXPORT extern const AtomType AT_HG;
 /** */ IMPATOMEXPORT extern const AtomType AT_HG1;
 /** */ IMPATOMEXPORT extern const AtomType AT_HG2;
 /** */ IMPATOMEXPORT extern const AtomType AT_HG3;
-// IMPATOMEXPORT extern const AtomType AT_HG1;
 /** */ IMPATOMEXPORT extern const AtomType AT_HG11;
 /** */ IMPATOMEXPORT extern const AtomType AT_HG21;
 /** */ IMPATOMEXPORT extern const AtomType AT_HG31;
@@ -115,8 +107,6 @@ IMPATOMEXPORT extern const AtomType AT_CG1;
 /** */ IMPATOMEXPORT extern const AtomType AT_OG;
 /** */ IMPATOMEXPORT extern const AtomType AT_OG1;
 /** */ IMPATOMEXPORT extern const AtomType AT_SG;
-// IMPATOMEXPORT extern const AtomType AT_HD1;
-// IMPATOMEXPORT extern const AtomType AT_HD2;
 /** */ IMPATOMEXPORT extern const AtomType AT_CD;
 /** */ IMPATOMEXPORT extern const AtomType AT_CD1;
 /** */ IMPATOMEXPORT extern const AtomType AT_CD2;
@@ -143,9 +133,6 @@ IMPATOMEXPORT extern const AtomType AT_CG1;
 /** */ IMPATOMEXPORT extern const AtomType AT_HE1;
 /** */ IMPATOMEXPORT extern const AtomType AT_HE2;
 /** */ IMPATOMEXPORT extern const AtomType AT_HE3;
-// IMPATOMEXPORT extern const AtomType AT_HE1;
-// IMPATOMEXPORT extern const AtomType AT_HE2;
-// IMPATOMEXPORT extern const AtomType AT_HE3;
 /** */ IMPATOMEXPORT extern const AtomType AT_1HE2;
 /** */ IMPATOMEXPORT extern const AtomType AT_2HE2;
 /** */ IMPATOMEXPORT extern const AtomType AT_OE1;
@@ -161,8 +148,6 @@ IMPATOMEXPORT extern const AtomType AT_CG1;
 /** */ IMPATOMEXPORT extern const AtomType AT_HZ1;
 /** */ IMPATOMEXPORT extern const AtomType AT_HZ2;
 /** */ IMPATOMEXPORT extern const AtomType AT_HZ3;
-// IMPATOMEXPORT extern const AtomType AT_HZ2;
-// IMPATOMEXPORT extern const AtomType AT_HZ3;
 /** */ IMPATOMEXPORT extern const AtomType AT_CH2;
 /** */ IMPATOMEXPORT extern const AtomType AT_NH1;
 /** */ IMPATOMEXPORT extern const AtomType AT_NH2;
@@ -204,14 +189,12 @@ IMPATOMEXPORT extern const AtomType AT_CG1;
 /** */ IMPATOMEXPORT extern const AtomType AT_C4;
 /** */ IMPATOMEXPORT extern const AtomType AT_N3;
 /** */ IMPATOMEXPORT extern const AtomType AT_C2;
-/** */ IMPATOMEXPORT extern const AtomType AT_H2;
 /** */ IMPATOMEXPORT extern const AtomType AT_N1;
 /** */ IMPATOMEXPORT extern const AtomType AT_C6;
 /** */ IMPATOMEXPORT extern const AtomType AT_N6;
 /** */ IMPATOMEXPORT extern const AtomType AT_H61;
 /** */ IMPATOMEXPORT extern const AtomType AT_H62;
 /** */ IMPATOMEXPORT extern const AtomType AT_O6;
-/** */ IMPATOMEXPORT extern const AtomType AT_H1;
 /** */ IMPATOMEXPORT extern const AtomType AT_N2;
 /** */ IMPATOMEXPORT extern const AtomType AT_H21;
 /** */ IMPATOMEXPORT extern const AtomType AT_H22;
@@ -221,7 +204,6 @@ IMPATOMEXPORT extern const AtomType AT_CG1;
 /** */ IMPATOMEXPORT extern const AtomType AT_N4;
 /** */ IMPATOMEXPORT extern const AtomType AT_H41;
 /** */ IMPATOMEXPORT extern const AtomType AT_H42;
-/** */ IMPATOMEXPORT extern const AtomType AT_H3;
 /** */ IMPATOMEXPORT extern const AtomType AT_O4;
 /** */ IMPATOMEXPORT extern const AtomType AT_C7;
 /** */ IMPATOMEXPORT extern const AtomType AT_H71;

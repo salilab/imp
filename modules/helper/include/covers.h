@@ -9,7 +9,6 @@
 #define IMPHELPER_COVERS_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include <IMP/core/XYZR.h>
 
 IMP_BEGIN_NAMESPACE

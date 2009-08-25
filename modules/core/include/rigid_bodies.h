@@ -9,7 +9,6 @@
 #define IMPCORE_RIGID_BODIES_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include "internal/rigid_bodies.h"
 
 #include "XYZ.h"
@@ -202,7 +201,7 @@ class IMPCOREEXPORT UpdateRigidBodyOrientation: public SingletonModifier {
  public:
   UpdateRigidBodyOrientation(){}
   IMP_SINGLETON_MODIFIER(UpdateRigidBodyOrientation,
-                         internal::version_info);
+                         get_module_version_info());
 };
 
 //! Accumulate the derivatives from the refined particles in the rigid body
@@ -220,7 +219,7 @@ class IMPCOREEXPORT AccumulateRigidBodyDerivatives:
  public:
   AccumulateRigidBodyDerivatives(){}
   IMP_SINGLETON_MODIFIER_DA(AccumulateRigidBodyDerivatives,
-                            internal::version_info);
+                            get_module_version_info());
 };
 
 
@@ -236,7 +235,7 @@ class IMPCOREEXPORT UpdateRigidBodyMembers: public SingletonModifier {
  public:
   UpdateRigidBodyMembers(){}
   IMP_SINGLETON_MODIFIER(UpdateRigidBodyMembers,
-                         internal::version_info);
+                         get_module_version_info());
 };
 
 IMPCORE_END_NAMESPACE

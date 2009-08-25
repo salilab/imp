@@ -10,7 +10,6 @@
 
 #include "config.h"
 
-#include "internal/version_info.h"
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/Restraint.h>
@@ -46,7 +45,7 @@ public:
   ExampleComplexRestraint(UnaryFunction *f,
                     SingletonContainer *sc, Float diameter);
 
-  IMP_RESTRAINT(ExampleComplexRestraint, internal::version_info);
+  IMP_RESTRAINT(ExampleComplexRestraint, get_module_version_info());
 
   virtual ParticlesList get_interacting_particles() const;
 

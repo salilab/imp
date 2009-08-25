@@ -38,7 +38,7 @@ public:
   }
 
   IMP_UNARY_FUNCTION_INLINE(ExampleUnaryFunction,
-                            internal::version_info,
+                            get_module_version_info(),
                             .5*k_*square(feature-center_),
                             k_*(feature - center_),
                             "Harmonic: " << center_ << " and " << k_

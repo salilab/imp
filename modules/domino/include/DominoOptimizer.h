@@ -8,7 +8,6 @@
 #define IMPDOMINO_DOMINO_OPTIMIZER_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include "RestraintGraph.h"
 #include "JunctionTree.h"
 
@@ -28,7 +27,7 @@ class IMPDOMINOEXPORT DominoOptimizer : public Optimizer
   typedef boost::tuple<Restraint *,Particles,Float> OptTuple;
 public:
   DominoOptimizer(const JunctionTree &jt, Model *m);
-  IMP_OPTIMIZER(DominoOptimizer, internal::version_info)
+  IMP_OPTIMIZER(DominoOptimizer, get_module_version_info())
 
   void set_sampling_space(DiscreteSampler *ds);
   //TODO : set a discrete sampling space for one node

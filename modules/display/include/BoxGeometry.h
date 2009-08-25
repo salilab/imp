@@ -12,7 +12,6 @@
 #include "macros.h"
 #include "geometry.h"
 #include <IMP/algebra/BoundingBoxD.h>
-#include "internal/version_info.h"
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 IMPDISPLAY_BEGIN_NAMESPACE
@@ -31,7 +30,7 @@ public:
               const algebra::Vector3D &max,
               const Color &color=Color());
 
-  IMP_COMPOUND_GEOMETRY(BoxGeometry, internal::version_info)
+  IMP_COMPOUND_GEOMETRY(BoxGeometry, get_module_version_info())
 };
 
 

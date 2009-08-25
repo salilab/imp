@@ -10,7 +10,6 @@
 
 #include "config.h"
 
-#include "internal/version_info.h"
 #include "geometry.h"
 #include "macros.h"
 
@@ -28,7 +27,7 @@ public:
                    const algebra::Vector3D &b,
                    const algebra::Vector3D &c);
 
-  IMP_GEOMETRY(TriangleGeometry, internal::version_info)
+  IMP_GEOMETRY(TriangleGeometry, get_module_version_info())
 };
 
 

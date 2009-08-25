@@ -10,7 +10,6 @@
 
 #include "config.h"
 
-#include "internal/version_info.h"
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/SingletonModifier.h>
@@ -26,7 +25,7 @@ class IMPATOMEXPORT CoverBond: public SingletonModifier
 public:
   CoverBond();
 
-  IMP_SINGLETON_MODIFIER(CoverBond, internal::version_info)
+  IMP_SINGLETON_MODIFIER(CoverBond, get_module_version_info())
 };
 
 

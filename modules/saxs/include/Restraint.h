@@ -10,7 +10,6 @@
 #define IMPSAXS_RESTRAINT_H
 
 #include "config.h"
-#include "internal/version_info.h"
 
 #include <IMP/saxs/Score.h>
 #include <IMP/saxs/Profile.h>
@@ -46,7 +45,7 @@ class IMPSAXSEXPORT Restraint : public IMP::Restraint
   Restraint(const Particles& particles, const Profile& exp_profile,
             FormFactorTable* ff_table = default_form_factor_table());
 
-  IMP_RESTRAINT(Restraint, internal::version_info)
+  IMP_RESTRAINT(Restraint, get_module_version_info())
 
   //only needed in domino
   ParticlesList get_interacting_particles() const

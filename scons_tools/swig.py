@@ -40,7 +40,10 @@ PatchSwig = Builder(action=Action(_action_patch_swig_wrap,
 def _action_swig_file(target, source, env):
     vars= imp_module.make_vars(env)
     alldeps=imp_module.expand_dependencies(env, env['IMP_REQUIRED_MODULES'])
-    preface=["""// Generated file, do not edit, edit the .in instead
+    preface=["""/*
+ *  WARNING Generated file, do not edit, edit the swig.i instead
+ */
+
 %%module(directors="1") "%s"
 
 %%{
@@ -52,7 +55,6 @@ def _action_swig_file(target, source, env):
     if vars['module'] != 'kernel':
         preface.append("#include \"%(module_include_path)s.h\""%vars)
     preface.append("""%%}
-%%include "%(module_include_path)s/config.h"
 %%include "std_vector.i"
 %%include "std_string.i"
 %%include "std_pair.i"
@@ -75,6 +77,9 @@ def _action_swig_file(target, source, env):
 %%ignore IMP::UninitializedDefault;
 %%ignore IMP::Comparable;
 """%vars)
+
+    # special case the kernel to make sure that VersionInfo is wrapped
+    # before get_version_info() is wrapped.
     preface.append("""%{
 #ifdef NDEBUG
 #error "The python wrappers must not be built with NDEBUG"
@@ -84,7 +89,35 @@ def _action_swig_file(target, source, env):
 
     for d in alldeps:
         preface.append("%%import %s.i"% d)
+
+
+    preface.append("""
+%%include "%(module_include_path)s/config.h"
+"""%vars)
+
     preface.append(open(source[0].abspath, "r").read())
+
+    if vars['module']== 'kernel':
+        preface.append("""
+namespace IMP {
+const VersionInfo& get_module_version_info();
+}
+""")
+    else:
+        preface.append("""
+namespace IMP {
+namespace %(module)s {
+const VersionInfo& get_module_version_info();
+}
+}
+"""%vars)
+
+    preface.append("""
+%%pythoncode {
+if get_module_version_info().get_version() != "%(version)s":
+    sys.stderr.write("WARNING: expected version %(version)s, but got "+ get_module_version_info().get_version())
+}"""%vars)
+
     open(target[0].abspath, "w").write("\n".join(preface))
 
 def _print_swig_file(target, source, env):
@@ -101,7 +134,7 @@ def _action_simple_swig(target, source, env):
         if x.startswith("-I") or x.startswith("-D"):
             cppflags= cppflags+" " + x
 
-    base = env['SWIG'] + " -interface _IMP%(module_suffix)s -DPySwigIterator=%(PREPROC)s_PySwigIterator -DSwigPyIterator=%(PREPROC)s_SwigPyIterator -python -c++ -naturalvar "%vars
+    base = env['SWIG'] + " -Wall -interface _IMP%(module_suffix)s -DPySwigIterator=%(PREPROC)s_PySwigIterator -DSwigPyIterator=%(PREPROC)s_SwigPyIterator -python -c++ -naturalvar "%vars
     #print base
     out= "-o "+ target[0].abspath
     doti= source[0].abspath
@@ -109,7 +142,7 @@ def _action_simple_swig(target, source, env):
     # scons puts cppflags before includes, so we should too
     command=base + " " +out + " "\
          + " " +cppflags+ " -Ibuild/include "+ includes + " -DIMP_SWIG " + doti
-    env.Execute(command)
+    return env.Execute(command)
 
 def _print_simple_swig(target, source, env):
     print "Generating swig file"

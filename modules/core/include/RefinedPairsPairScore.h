@@ -9,7 +9,6 @@
 #define IMPCORE_REFINED_PAIRS_PAIR_SCORE_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include <IMP/PairScore.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/Pointer.h>
@@ -30,7 +29,7 @@ public:
       \param[in] f The pair score to apply to the generated pairs
    */
   RefinedPairsPairScore(Refiner *r, PairScore *f);
-  IMP_PAIR_SCORE(RefinedPairsPairScore, internal::version_info);
+  IMP_PAIR_SCORE(RefinedPairsPairScore, get_module_version_info());
 };
 
 IMPCORE_END_NAMESPACE

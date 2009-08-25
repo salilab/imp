@@ -10,7 +10,6 @@
 
 #include "config.h"
 
-#include "internal/version_info.h"
 #include "internal/remove_pointers.h"
 #include "PairsRestraint.h"
 #include "ClosePairsScoreState.h"
@@ -41,7 +40,7 @@ public:
   ExcludedVolumeRestraint(SingletonContainer *sc,
                           double k=1);
 
-  IMP_RESTRAINT(ExcludedVolumeRestraint, internal::version_info);
+  IMP_RESTRAINT(ExcludedVolumeRestraint, get_module_version_info());
 
   virtual ParticlesList get_interacting_particles() const;
 

@@ -9,7 +9,6 @@
 #define IMPCORE_ANGLE_RESTRAINT_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include "AngleTripletScore.h"
 #include "XYZ.h"
 
@@ -37,7 +36,7 @@ public:
   AngleRestraint(UnaryFunction* score_func,
                  XYZ p0, XYZ p1, XYZ p2);
 
-  IMP_RESTRAINT(AngleRestraint, internal::version_info)
+  IMP_RESTRAINT(AngleRestraint, get_module_version_info())
 
   ParticlesList get_interacting_particles() const
   {

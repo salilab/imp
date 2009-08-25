@@ -8,7 +8,6 @@
 #define IMPMISC_WORM_LIKE_CHAIN_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include <IMP/UnaryFunction.h>
 #include <IMP/internal/constants.h>
 #include <IMP/internal/units.h>
@@ -37,7 +36,7 @@ public:
               ValueException);
   }
 
-  IMP_UNARY_FUNCTION(WormLikeChain, internal::version_info);
+  IMP_UNARY_FUNCTION(WormLikeChain, get_module_version_info());
 
 private:
   unit::Piconewton cderiv(unit::Angstrom l) const {

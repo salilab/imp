@@ -10,7 +10,6 @@
 #define IMPCORE_TRANSFORMED_DISTANCE_PAIR_SCORE_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include <IMP/PairScore.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/Pointer.h>
@@ -37,7 +36,7 @@ class IMPCOREEXPORT TransformedDistancePairScore : public PairScore
 
   /** Set the transformation object.*/
   void set_transformation(const algebra::Transformation3D &rot);
-  IMP_PAIR_SCORE(TransformedDistancePairScore, internal::version_info);
+  IMP_PAIR_SCORE(TransformedDistancePairScore, get_module_version_info());
 };
 
 IMPCORE_END_NAMESPACE

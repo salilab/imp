@@ -10,7 +10,6 @@
 
 #include "config.h"
 
-#include "internal/version_info.h"
 #include <IMP/OptimizerState.h>
 #include <IMP/ScoreState.h>
 
@@ -26,7 +25,7 @@ public:
   //! set the before and after states
   StateAdaptor(OptimizerState *before, OptimizerState *after);
 
-  IMP_SCORE_STATE(StateAdaptor, internal::version_info)
+  IMP_SCORE_STATE(StateAdaptor, get_module_version_info())
 };
 
 

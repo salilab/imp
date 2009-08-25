@@ -86,9 +86,19 @@ namespace internal {
         print >> h, "#define "+d
     print >> h
 
-    print >> h, """
 
-#include <%(module_include_path)s/internal/version_info.h>
+    # This needs to be called get_module_version_info() to make it easy
+    # to call from Objects (which have their own get_version_info() method
+    print >> h, """
+#ifndef SWIG
+namespace IMP {
+  class VersionInfo;
+}
+
+%(PREPROC)s_BEGIN_NAMESPACE
+%(PREPROC)sEXPORT const VersionInfo& get_module_version_info();
+%(PREPROC)s_END_NAMESPACE
+#endif // SWIG
 
 #endif  /* %(PREPROC)s_CONFIG_H */""" % vars
 
@@ -97,3 +107,46 @@ def _print_config_h(target, source, env):
 
 ConfigH = Builder(action=Action(_action_config_h,
                                 _print_config_h))
+
+def _action_config_cpp(target, source, env):
+    vars= imp_module.make_vars(env)
+
+    cpp = file(target[0].abspath, 'w')
+
+    print >> cpp, """/**
+ *  \\file %(module_include_path)s/config.cpp
+ *  \\brief %(module)s module version information.
+ *
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
+ *
+ */
+""" % vars
+
+    print >> cpp, """#include <%(module_include_path)s/config.h>
+#include <IMP/VersionInfo.h>
+"""  % vars
+
+
+    print >> cpp, "%(PREPROC)s_BEGIN_NAMESPACE\n" % vars
+
+
+    print >> cpp, """
+/** Return the version info for the module. Classes in the module
+    can return this as their version info. */
+const VersionInfo& get_module_version_info() {
+    static VersionInfo vi("%(author)s", "%(version)s");
+    return vi;
+}
+""" \
+              %vars
+
+    print >> cpp, "\n%(PREPROC)s_END_NAMESPACE" % vars
+
+
+
+def _print_config_cpp(target, source, env):
+    print "Generating config.cpp"
+
+
+ConfigCPP = Builder(action=Action(_action_config_cpp,
+                                  _print_config_cpp))

@@ -10,7 +10,6 @@
 
 #include "config.h"
 #include "Hierarchy.h"
-#include "internal/version_info.h"
 #include <IMP/Decorator.h>
 #include <IMP/core/internal/ArrayOnAttributesHelper.h>
 

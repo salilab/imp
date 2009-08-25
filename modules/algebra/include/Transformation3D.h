@@ -15,7 +15,7 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-#ifndef IMP_DOXYGEN
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
 class Transformation3D;
 Transformation3D compose(const Transformation3D &a,
                          const Transformation3D &b);

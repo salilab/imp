@@ -9,7 +9,6 @@
 #define IMPMISC_LOG_PAIR_SCORE_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include <IMP/PairScore.h>
 #include <map>
 
@@ -24,7 +23,7 @@ class LogPairScore : public PairScore
  public:
   //! create with an empty map
   LogPairScore(){}
-  IMP_PAIR_SCORE(LogPairScore, internal::version_info);
+  IMP_PAIR_SCORE(LogPairScore, get_module_version_info());
 
   //! Get a list of all pairs (without multiplicity)
   ParticlePairs get_particle_pairs() const {

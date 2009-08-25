@@ -7,7 +7,6 @@
 #ifndef IMPEM_RIGID_FITTING_H
 #define IMPEM_RIGID_FITTING_H
 
-#include "internal/version_info.h"
 #include <IMP/core/MonteCarlo.h>
 #include <IMP/core/ConjugateGradients.h>
 #include <IMP/core/RestraintSet.h>
@@ -18,7 +17,6 @@
 #include "DensityMap.h"
 #include "FitRestraint.h"
 #include "config.h"
-#include "internal/version_info.h"
 #include <IMP/display/LogOptimizerState.h>
 #include <IMP/OptimizerState.h>
 #include <IMP/helper/rigid_bodies.h>

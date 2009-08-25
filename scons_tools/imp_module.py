@@ -124,10 +124,10 @@ def IMPModuleLib(envi, files):
     module_suffix = env['IMP_MODULE_SUFFIX']
     vars= make_vars(env)
     link= env.IMPModuleLinkTest(target=['internal/link_0.cpp', 'internal/link_1.cpp'], source=[])
-    version= env.IMPModuleVersionInfoCPP(target=['internal/version_info.cpp'],
-                                         source=[env.Value(env['IMP_MODULE_VERSION'])])
+    config= env.IMPModuleConfigCPP(target=['config.cpp'],
+                                   source=[env.Value(env['IMP_MODULE_VERSION'])])
     #env.AlwaysBuild(version)
-    files =files+link+ version
+    files =files+link+ config
     if env['static'] and env['CC'] == 'gcc':
         build = env.StaticLibrary('#/build/lib/imp%s' % module_suffix,
                                       list(files))
@@ -155,11 +155,10 @@ def IMPModuleInclude(env, files):
     vars=make_vars(env)
     includedir = env.GetInstallDirectory('includedir')
 
-    vi=env.IMPModuleVersionInfoH(target=['internal/version_info.h'], source=[])
     # Generate config header and SWIG equivalent
     config=env.IMPModuleConfigH(target=['config.h'],
     source=[env.Value(env['IMP_MODULE_CONFIG'])])
-    files=files+config+vi
+    files=files+config
     install = hierarchy.InstallHierarchy(env, includedir+"/"+vars['module_include_path'],
                                          list(files))
     build=hierarchy.InstallHierarchy(env, "#/build/include/"+vars['module_include_path'],
@@ -244,7 +243,8 @@ def IMPModulePython(env):
         #penv.Append(SWIGFLAGS='-python -c++ -naturalvar')
         preface= penv._IMPSWIGPreface(target=[File("%(module)s.i"%vars)],
                                       source=[File("swig.i"%vars),
-                                              env.Value(env['IMP_REQUIRED_MODULES'])])
+                                              env.Value(env['IMP_REQUIRED_MODULES']),
+                                              env.Value(env['IMP_MODULE_VERSION'])])
         interfaces= module_glob(["*.i"])+["%(module)s.i"%vars]
         for i in interfaces:
             if str(i) != 'swig.i' and str(i) != "%(module)s.i"%vars:
@@ -332,8 +332,6 @@ def IMPModuleGetHeaders(env):
         fname= os.path.split(s)[1]
         if fname.startswith("."):
             continue
-        if s== "internal/version_info.h":
-            continue
         if s=="config.h":
             continue
         files.append(f)
@@ -353,7 +351,7 @@ def IMPModuleGetSources(env):
             continue
         if s== "internal/link_1.cpp":
             continue
-        if s=="internal/version_info.cpp":
+        if s=="config.cpp":
             continue
         files.append(f)
     return files
@@ -498,8 +496,7 @@ def IMPModuleBuild(env, version, required_modules=[],
         else:
             raise ValueError("Do not understand optional dependency: " +d)
     env.Append(BUILDERS = {'IMPModuleConfigH': config_h.ConfigH,
-                           'IMPModuleVersionInfoH': version_info.VersionInfoH,
-                           'IMPModuleVersionInfoCPP': version_info.VersionInfoCPP,
+                           'IMPModuleConfigCPP': config_h.ConfigCPP,
                            'IMPModuleLinkTest': link_test.LinkTest})
     env['IMP_MODULE'] = module
     env['IMP_MODULE_SUFFIX'] = module_suffix

@@ -10,7 +10,6 @@
 
 #include "config.h"
 #include "Writer.h"
-#include "internal/version_info.h"
 #include <IMP/OptimizerState.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/display/geometry.h>
@@ -57,7 +56,7 @@ public:
   //! Force writing the a file with the given name
   void write(std::string file_name) const;
 
-  IMP_OPTIMIZER_STATE(LogOptimizerState, internal::version_info)
+  IMP_OPTIMIZER_STATE(LogOptimizerState, get_module_version_info())
 };
 
 
@@ -74,7 +73,7 @@ class IMPDISPLAYEXPORT DisplayModelOnFailure: public FailureHandler {
   std::string file_name_;
  public:
   DisplayModelOnFailure(LogOptimizerState *m, std::string file_name);
-  IMP_FAILURE_HANDLER(DisplayModelOnFailure, internal::version_info);
+  IMP_FAILURE_HANDLER(DisplayModelOnFailure, get_module_version_info());
 };
 
 IMPDISPLAY_END_NAMESPACE

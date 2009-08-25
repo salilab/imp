@@ -9,7 +9,6 @@
 #define IMPCORE_LEAVES_REFINER_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include "Hierarchy.h"
 
 #include <IMP/Refiner.h>
@@ -31,7 +30,7 @@ public:
   //! Create a refiner for a particular type of hierarchy
   LeavesRefiner(HierarchyTraits tr);
 
-  IMP_REFINER(LeavesRefiner, internal::version_info);
+  IMP_REFINER(LeavesRefiner, get_module_version_info());
 };
 
 IMPCORE_END_NAMESPACE

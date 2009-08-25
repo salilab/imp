@@ -9,7 +9,6 @@
 #define IMPCORE_MAXIMUM_CHANGE_XYZR_SCORE_STATE_H
 
 #include "config.h"
-#include "internal/version_info.h"
 
 #include <IMP/ScoreState.h>
 #include <IMP/Particle.h>
@@ -38,7 +37,7 @@ public:
   MaximumChangeXYZRScoreState(SingletonContainer *pc,
                               FloatKey rk);
 
-  IMP_SCORE_STATE(MaximumChangeXYZRScoreState, internal::version_info);
+  IMP_SCORE_STATE(MaximumChangeXYZRScoreState, get_module_version_info());
 
   //! Measure differences from the current value.
   void reset();

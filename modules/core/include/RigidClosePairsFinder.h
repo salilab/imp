@@ -95,7 +95,7 @@ class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder
     out << "RigidClosePairsFinder" << std::endl;
   }
   VersionInfo get_version_info() const {
-    return internal::version_info;
+    return get_module_version_info();
   }
 
   void set_distance(double d) {

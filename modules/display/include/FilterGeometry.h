@@ -10,7 +10,6 @@
 
 #include "config.h"
 
-#include "internal/version_info.h"
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/algebra/Plane3D.h>
@@ -40,7 +39,7 @@ public:
 
   void add_geometry(const Geometries& g);
 
-  IMP_COMPOUND_GEOMETRY(FilterGeometry, internal::version_info)
+  IMP_COMPOUND_GEOMETRY(FilterGeometry, get_module_version_info())
 };
 
 

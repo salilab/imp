@@ -11,7 +11,6 @@
 #include "config.h"
 #include "Color.h"
 #include "macros.h"
-#include "internal/version_info.h"
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/RefCounted.h>
@@ -83,7 +82,9 @@ class IMPDISPLAYEXPORT CompoundGeometry: public Object {
 
   virtual void show(std::ostream &out= std::cout) const{};
 
-  virtual VersionInfo get_version_info() const {return internal::version_info;}
+  virtual VersionInfo get_version_info() const {
+    return get_module_version_info();
+  }
 
   virtual Geometries get_geometry() const =0;
 
@@ -121,11 +122,11 @@ struct NullGeometry: public Geometry {
     return 0;
   }
 
-  void show(std::ostream &out) const {
+  void show(std::ostream &out=std::cout) const {
     out << "Null geometry";
   }
   VersionInfo get_version_info() const {
-    return internal::version_info;
+    return get_module_version_info();
   }
 };
 

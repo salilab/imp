@@ -9,7 +9,6 @@
 #define IMPCORE_TYPED_PAIR_SCORE_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include <IMP/PairScore.h>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -52,7 +51,7 @@ public:
         = Pointer<PairScore>(ps);
   }
 
-  IMP_PAIR_SCORE(TypedPairScore, internal::version_info);
+  IMP_PAIR_SCORE(TypedPairScore, get_module_version_info());
 
 private:
   //! The key used for the particle types.

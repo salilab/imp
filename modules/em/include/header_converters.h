@@ -9,7 +9,6 @@
 #define IMPEM_HEADER_CONVERTERS_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include "ImageHeader.h"
 #include "DensityHeader.h"
 #include <string.h>

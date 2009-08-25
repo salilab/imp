@@ -11,7 +11,6 @@
 #include "config.h"
 #include "macros.h"
 
-#include "internal/version_info.h"
 #include <IMP/PairContainer.h>
 #include <IMP/core/XYZR.h>
 #include <IMP/display/geometry.h>
@@ -31,7 +30,7 @@ public:
 
   Color get_color() const;
 
-  IMP_GEOMETRY(XYZRGeometry, internal::version_info)
+  IMP_GEOMETRY(XYZRGeometry, get_module_version_info())
 };
 
 class IMPDISPLAYEXPORT XYZRsGeometry: public CompoundGeometry {
@@ -40,7 +39,7 @@ class IMPDISPLAYEXPORT XYZRsGeometry: public CompoundGeometry {
  public:
   XYZRsGeometry(SingletonContainer *sc,
                 FloatKey rk=core::XYZR::get_default_radius_key());
-  IMP_COMPOUND_GEOMETRY(XYZRsGeometry, internal::version_info)
+  IMP_COMPOUND_GEOMETRY(XYZRsGeometry, get_module_version_info())
 };
 
 

@@ -8,7 +8,6 @@
 #define IMPCORE_HARMONIC_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include <IMP/UnaryFunction.h>
 #include <IMP/utility.h>
 
@@ -28,7 +27,7 @@ public:
   /** Create with the given mean and the spring constant k */
   Harmonic(Float mean, Float k) : mean_(mean), k_(k) {}
 
-  IMP_UNARY_FUNCTION_INLINE(Harmonic, internal::version_info,
+  IMP_UNARY_FUNCTION_INLINE(Harmonic, get_module_version_info(),
                             0.5 * k_ * square(feature-mean_),
                             k_*(feature - mean_),
                             "Harmonic: " << mean_ << " and " << k_

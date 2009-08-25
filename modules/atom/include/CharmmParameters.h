@@ -9,7 +9,6 @@
 
 #include "ForceFieldParameters.h"
 #include "macros.h"
-#include "internal/version_info.h"
 
 #include <string>
 #include <fstream>
@@ -31,7 +30,7 @@ public:
    */
   CharmmParameters(const String& topology_file_name,
                    const String& par_file_name = std::string());
-  IMP_FORCE_FIELD_PARAMETERS(CharmmParameters, internal::version_info);
+  IMP_FORCE_FIELD_PARAMETERS(CharmmParameters, get_module_version_info());
 private:
 
   // read non-bonded parameters for VdW computation

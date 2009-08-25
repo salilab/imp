@@ -10,7 +10,6 @@
 #define IMPATOM_BROWNIAN_DYNAMICS_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include "Diffusion.h"
 #include "SimulationParameters.h"
 
@@ -61,7 +60,7 @@ public:
                    SingletonContainer *sc=NULL);
 
   IMP_OPTIMIZER(BrownianDynamics,
-                internal::version_info);
+                get_module_version_info());
 
   //! Simulate until the given time in fs
   double simulate(float time_in_fs);

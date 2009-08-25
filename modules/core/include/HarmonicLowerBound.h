@@ -23,7 +23,7 @@ public:
   /** Create with the given mean and the spring constant k */
   HarmonicLowerBound(Float mean, Float k) : Harmonic(mean, k) {}
   IMP_UNARY_FUNCTION_INLINE(HarmonicLowerBound,
-                            internal::version_info,
+                            get_module_version_info(),
                             feature >= Harmonic::get_mean() ?
                             0.0: Harmonic::evaluate(feature),
                             feature >= Harmonic::get_mean() ?

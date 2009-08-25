@@ -10,7 +10,6 @@
 
 #include "config.h"
 
-#include "internal/version_info.h"
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/PairContainer.h>
@@ -25,7 +24,7 @@ class IMPMISCEXPORT CommonEndpointPairContainer: public PairContainer
 public:
   CommonEndpointPairContainer();
 
-  IMP_PAIR_CONTAINER(CommonEndpointPairContainer,internal::version_info)
+  IMP_PAIR_CONTAINER(CommonEndpointPairContainer,get_module_version_info())
 };
 
 

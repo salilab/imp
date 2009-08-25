@@ -10,7 +10,6 @@
 
 #include "config.h"
 
-#include "internal/version_info.h"
 #include "internal/remove_pointers.h"
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
@@ -39,7 +38,7 @@ public:
   DiameterRestraint(UnaryFunction *f,
                     SingletonContainer *sc, Float diameter);
 
-  IMP_RESTRAINT(DiameterRestraint, internal::version_info);
+  IMP_RESTRAINT(DiameterRestraint, get_module_version_info());
 
   virtual ParticlesList get_interacting_particles() const;
 
