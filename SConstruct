@@ -13,7 +13,6 @@ EnsureSConsVersion(0, 98)
 # Set up build environment:
 vars = Variables('config.py')
 scons_tools.add_common_variables(vars, "imp")
-vars.Add(BoolVariable('cgal', 'Whether to use the CGAL package', True))
 env = scons_tools.MyEnvironment(variables=vars,
                                 tools=["default", "docbook", "swig"],
                                 toolpath=["scons_tools"])
