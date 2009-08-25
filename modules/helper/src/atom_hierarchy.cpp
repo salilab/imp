@@ -130,7 +130,7 @@ namespace {
                     Vectors &inside,
                     Vectors &outside) {
 
-    algebra::BoundingBox3D bb= bounding_box(in);
+    algebra::BoundingBox3D bb= get_bounding_box(in);
     bb+= res;
     typedef IMP::core::internal::Grid3D<bool> Grid;
     Grid grid(cell_size(res), bb.get_corner(0), bb.get_corner(1),
@@ -574,7 +574,7 @@ atom::Hierarchy clone(atom::Hierarchy d) {
 
 
 
-algebra::BoundingBox3D bounding_box(const atom::Hierarchy &h,
+algebra::BoundingBox3D get_bounding_box(const atom::Hierarchy &h,
                                     FloatKey r) {
   Particles rep= get_simplified_representation(h);
   algebra::BoundingBox3D bb;

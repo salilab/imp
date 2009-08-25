@@ -111,7 +111,7 @@ atom::Hierarchy clone(atom::Hierarchy d);
     \relatesalso IMP::algebra::BoundingBoxD
  */
 IMPHELPEREXPORT
-algebra::BoundingBox3D bounding_box(const atom::Hierarchy &h,
+algebra::BoundingBox3D get_bounding_box(const atom::Hierarchy &h,
                                     FloatKey r
                                     = core::XYZR::get_default_radius_key());
 
