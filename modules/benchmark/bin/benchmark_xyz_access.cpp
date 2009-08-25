@@ -81,6 +81,26 @@ double compute_distances_direct_access(
   return tdist;
 }
 
+
+
+// TEST 4
+struct VectorHolder {
+  Vector3D c;
+  int a_,b_, c_;
+  void *v_;
+};
+
+double compute_distances_direct_access_space(
+                      const std::vector<VectorHolder>& coordinates) {
+  double tdist=0;
+  for (unsigned int i = 0; i < coordinates.size(); i++) {
+    for (unsigned int j = i + 1; j < coordinates.size(); j++) {
+      tdist+= IMP::algebra::distance(coordinates[i].c, coordinates[j].c);
+    }
+  }
+  return tdist;
+}
+
 void do_benchmark(std::string descr, std::string fname) {
   // read pdb, prepare particles
   Model *model = new IMP::Model();
@@ -101,7 +121,7 @@ void do_benchmark(std::string descr, std::string fname) {
              }, runtime);
     /*std::cout << "TEST1 (decorator_access)  took " << runtime
       << " (" << dist << ")"<< std::endl;*/
-    IMP::benchmark::report("xyz vector "+descr, runtime, dist);
+    IMP::benchmark::report("xyz decorator "+descr, runtime, dist);
   }
   {
     // TEST 2
@@ -156,7 +176,25 @@ void do_benchmark(std::string descr, std::string fname) {
              }, runtime);
     /*std::cout << "TEST3 (direct access) took " << runtime
       << " (" << dist << ")"<< std::endl;*/
-    IMP::benchmark::report("xyz decorator "+descr, runtime, dist);
+    IMP::benchmark::report("xyz vector "+descr, runtime, dist);
+  }
+  // TEST 4
+  {
+    std::vector<VectorHolder> coordinates;
+    for (unsigned int i = 0; i < particles.size(); i++) {
+      coordinates.push_back(VectorHolder());
+      coordinates.back().c=IMP::core::XYZ::decorate_particle(particles[i]).
+        get_coordinates();
+    }
+    double runtime, dist;
+    // measure time
+    IMP_TIME(
+             {
+               dist=compute_distances_direct_access_space(coordinates);
+             }, runtime);
+    /*std::cout << "TEST3 (direct access) took " << runtime
+      << " (" << dist << ")"<< std::endl;*/
+    IMP::benchmark::report("xyz vector space "+descr, runtime, dist);
   }
 }
 
