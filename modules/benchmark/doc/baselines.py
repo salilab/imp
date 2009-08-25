@@ -37,7 +37,7 @@
  "xyz internal small":0.01,
  "xyz *internal small":0.01,
  "xyz decorator small":0.01,
- "xyz vector large":100,
- "xyz internal large":100,
- "xyz *internal large":100,
- "xyz decorator large":100}
+ "xyz vector large":50,
+ "xyz internal large":50,
+ "xyz *internal large":50,
+ "xyz decorator large":50}
