@@ -422,7 +422,9 @@ def _copy_bonds(pdb, atoms, model):
         bp= IMP.atom.bond(ba, bb, IMP.atom.Bond.COVALENT)
 
 def read_pdb(name, model, special_patches=None):
-    """Construct an IMP::atom::Hierarchy from a PDB file.
+    """@deprecated Use IMP::atom::read_pdb() instead.
+
+       Construct an IMP::atom::Hierarchy from a PDB file.
        @param name The name of the PDB file to read.
        @param model The IMP::Model object in which the hierarchy will be
                     created. The highest level hierarchy node is a PROTEIN.
