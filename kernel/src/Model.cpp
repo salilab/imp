@@ -243,6 +243,11 @@ void Model::set_is_incremental(bool tf) {
     for (ParticleIterator it= particles_begin(); it != particles_end(); ++it) {
       (*it)->setup_incremental();
     }
+    // must be done in two passes so that all shadow particles are available
+    // to copy the particles table.
+    for (ParticleIterator it= particles_begin(); it != particles_end(); ++it) {
+      (*it)->set_is_not_changed();
+    }
   } else if (!tf && get_is_incremental()) {
     for (ParticleIterator it= particles_begin(); it != particles_end(); ++it) {
       (*it)->teardown_incremental();

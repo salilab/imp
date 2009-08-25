@@ -12,7 +12,6 @@
 #include "config.h"
 #include "Object.h"
 #include "Particle.h"
-#include "internal/version_info.h"
 #include "container_macros.h"
 #include "base_types.h"
 #include "VersionInfo.h"
@@ -186,12 +185,15 @@ public:
     return particles_.end();
   }
 
+#ifndef SWIG
   ParticleConstIterator particles_begin() const {
     return particles_.begin();
   }
   ParticleConstIterator particles_end() const {
     return particles_.end();
   }
+#endif
+
   /** @} */
 
   /** @name Float Attribute Ranges
@@ -233,7 +235,7 @@ public:
   //! \return version and authorship information.
   VersionInfo get_version_info() const {
     IMP_CHECK_OBJECT(this);
-    return internal::version_info;
+    return IMP::get_module_version_info();
   }
 
   /** \name Incremental Updates
