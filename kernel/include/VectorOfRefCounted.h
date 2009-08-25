@@ -121,8 +121,10 @@ class VectorOfRefCounted {
   class iterator;
   class const_iterator;
 #endif
+#ifndef SWIG
   const_iterator begin() const {return data_.begin();}
   const_iterator end() const {return data_.end();}
+#endif
   iterator begin() {return data_.begin();}
   iterator end() {return data_.end();}
   template <class It>
