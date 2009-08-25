@@ -14,7 +14,6 @@
 #include "utility.h"
 #include "Key.h"
 #include "internal/AttributeTable.h"
-#include "internal/version_info.h"
 #include "DerivativeAccumulator.h"
 #include "Pointer.h"
 #include "VectorOfRefCounted.h"
@@ -112,6 +111,12 @@ class IMPEXPORT Particle : public Object
       shadow_->floats_= floats_;
       shadow_->strings_= strings_;
       shadow_->ints_= ints_;
+      shadow_->particles_.clear();
+      for (ParticleKeyIterator it= particle_keys_begin();
+           it != particle_keys_end(); ++it) {
+        shadow_->particles_.insert_always(*it,
+                                          get_value(*it)->shadow_);
+      }
     }
     dirty_=false;
   }
@@ -144,22 +149,35 @@ class IMPEXPORT Particle : public Object
     }
   };
 
+  struct ParticlesAttributeTableTraits
+  {
+    typedef Particle* Value;
+    typedef Particle* PassValue;
+    typedef ParticleKey Key;
+    static Value get_invalid() {
+      return NULL;
+    }
+    static bool get_is_valid(const Value& f) {
+      return f!= NULL;
+    }
+  };
+
   typedef internal::AttributeTable<internal::FloatAttributeTableTraits,
-    internal::VectorStorage<internal::FloatAttributeTableTraits::Value> >
+    internal::ArrayStorage<internal::FloatAttributeTableTraits::Value> >
     FloatTable;
   typedef internal::AttributeTable<internal::BoolAttributeTableTraits,
-    internal::VectorStorage<internal::BoolAttributeTableTraits::Value> >
+    internal::ArrayStorage<internal::BoolAttributeTableTraits::Value> >
     OptimizedTable;
   typedef internal::AttributeTable<internal::IntAttributeTableTraits,
-    internal::VectorStorage<internal::IntAttributeTableTraits::Value> >
+    internal::ArrayStorage<internal::IntAttributeTableTraits::Value> >
     IntTable;
   typedef internal::AttributeTable<internal::StringAttributeTableTraits,
-    internal::VectorStorage<internal::StringAttributeTableTraits::Value> >
+    internal::ArrayStorage<internal::StringAttributeTableTraits::Value> >
     StringTable;
-  typedef internal::AttributeTable<ParticleAttributeTableTraits,
-    internal::VectorStorage<ParticleAttributeTableTraits::Value> >
+  typedef internal::AttributeTable<ParticlesAttributeTableTraits,
+    internal::ParticlesStorage<Particle*> >
     ParticleTable;
-  typedef internal::VectorStorage<double>  DerivativeTable;
+  typedef internal::ArrayStorage<double>  DerivativeTable;
 
   WeakPointer<Model> model_;
 
@@ -366,7 +384,7 @@ class IMPEXPORT Particle : public Object
   }
 
   VersionInfo get_version_info() const {
-    return internal::version_info;
+    return IMP::get_module_version_info();
   }
 
   //! Show the particle

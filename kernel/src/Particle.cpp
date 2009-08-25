@@ -96,11 +96,15 @@ void Particle::setup_incremental() {
   shadow_->set_name(get_name()+" history");
   shadow_->model_= model_;
   shadow_->dirty_=true;
-  set_is_not_changed();
   shadow_->derivatives_= DerivativeTable(derivatives_.length(), 0);
 }
 
 void Particle::teardown_incremental() {
+  if (!shadow_) {
+    IMP_failure("Shadow particle was not created before disabling "
+                << "incremental for particle " << *this,
+                ErrorException);
+  }
   internal::unref(shadow_);
   shadow_=NULL;
 }
