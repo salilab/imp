@@ -23,9 +23,27 @@
 #define IMP_PROTECTION(protection) protection:
 #endif
 
+#ifndef SWIG
+/** Internal use only. */
+#define IMP_EXPOSE_ITERATORS(ContainerType, container_name, Ucname, lcname) \
+  IMP_NO_DOXYGEN(typedef ContainerType::iterator Ucname##Iterator;)     \
+  IMP_NO_DOXYGEN(typedef ContainerType::const_iterator                  \
+                 Ucname##ConstIterator;)                                \
+  IMP_ONLY_DOXYGEN(class Ucname##Iterator; class Ucname##ConstIterator;) \
+  Ucname##Iterator lcname##s_begin() {return container_name.begin();}   \
+  Ucname##Iterator lcname##s_end() {return container_name.end();}       \
+  Ucname##ConstIterator lcname##s_begin() const {                       \
+    return container_name.begin();                                      \
+  }                                                                     \
+  Ucname##ConstIterator lcname##s_end() const {                         \
+    return container_name.end();}                                       \
 
-
-
+#else
+#define IMP_EXPOSE_ITERATORS(ContainerType, container_name, Ucname, lcname) \
+  IMP_NO_DOXYGEN(typedef ContainerType::iterator Ucname##Iterator;)     \
+  Ucname##Iterator lcname##s_begin() {return container_name.begin();}   \
+  Ucname##Iterator lcname##s_end() {return container_name.end();}
+#endif // SWIG
 
 /**  \brief  A macro to provide a uniform interface for storing lists of
      objects.
@@ -98,7 +116,7 @@ unsigned int get_number_of_##lcname##s() const {                        \
 bool get_has_##lcname##s() const {                                      \
   return !lcname##_vector_.empty();}                                    \
 /** Get the object refered to by the index
-    \throws IndexException if the index is out of range
+    \throws IndexException in Python if the index is out of range
 */                                                                     \
 Data get_##lcname(unsigned int i) const {                              \
   return lcname##_vector_[i];                                          \
@@ -106,17 +124,8 @@ Data get_##lcname(unsigned int i) const {                              \
 void reserve_##lcname##s(unsigned int sz) {                             \
   lcname##_vector_.reserve(sz);                                         \
 }                                                                       \
-IMP_NO_DOXYGEN(typedef IMP::VectorOfRefCounted<Data>                    \
-               ::iterator Ucname##Iterator;)                            \
-IMP_NO_DOXYGEN(typedef IMP::VectorOfRefCounted<Data>::const_iterator    \
-               Ucname##ConstIterator;)                                  \
-IMP_ONLY_DOXYGEN(class Ucname##Iterator; class Ucname##ConstIterator;)  \
-Ucname##Iterator lcname##s_begin() {return lcname##_vector_.begin();}   \
-Ucname##Iterator lcname##s_end() {return lcname##_vector_.end();}       \
-Ucname##ConstIterator lcname##s_begin() const {                         \
-  return lcname##_vector_.begin();}                                     \
-Ucname##ConstIterator lcname##s_end() const {                           \
-  return lcname##_vector_.end();}                                       \
+IMP_EXPOSE_ITERATORS(IMP::VectorOfRefCounted<Data>,                     \
+                     lcname##_vector_, Ucname, lcname);                 \
 IMP_NO_DOXYGEN(private:)                                                \
 const PluralData &access_##lcname##s() const {return lcname##_vector_;} \
 void handle_remove(Data d);                                             \
