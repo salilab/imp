@@ -112,8 +112,7 @@ struct NullDefault{};
     \see NullDefault
     \see ValidDefault
 */
-struct UninitializedDefault{
-};
+struct UninitializedDefault{};
 
 
 /** \brief A base class to declare that the object can be compared against
