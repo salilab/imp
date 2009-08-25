@@ -92,6 +92,16 @@ IMP_DIRECTOR_KERNEL_CLASS(PairContainer);
 IMP_DIRECTOR_KERNEL_CLASS(SingletonModifier);
 IMP_DIRECTOR_KERNEL_CLASS(PairModifier);
 
+%include "IMP/utility.h"
+%include "IMP/Key.h"
+
+namespace IMP {
+  %template(FloatKeyBase) ::IMP::KeyBase<0, true>;
+  %template(IntKeyBase) ::IMP::KeyBase<1, true>;
+  %template(StringKeyBase) ::IMP::KeyBase<2, true>;
+  %template(ParticleKeyBase) ::IMP::KeyBase<3, true>;
+}
+
 %include "IMP/log.h"
 %include "IMP/base_types.h"
 
