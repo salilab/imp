@@ -322,7 +322,7 @@ protected:
 
 };
 
-inline algebra::BoundingBox3D bounding_box(const DensityMap *m) {
+inline algebra::BoundingBox3D get_bounding_box(const DensityMap *m) {
   return algebra::BoundingBox3D(m->get_origin(),
                        m->get_top());
 }
