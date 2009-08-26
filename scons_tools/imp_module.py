@@ -271,7 +271,7 @@ def IMPModulePython(env):
         build.append(penv._IMPPatchSWIG(target=['patched_wrap.h'],
               source=['wrap.h']))
         buildlib = penv.LoadableModule('#/build/lib/_IMP%s' % module_suffix,
-                                       "patched_wrap.cc"%vars)
+                                       "patched_wrap.cc")
         # Place the generated Python wrapper in lib directory:
         gen_pymod = File('IMP%s.py' % module_suffix.replace("_","."))
         env.Depends(gen_pymod, buildlib)
