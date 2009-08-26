@@ -180,7 +180,7 @@ def MyEnvironment(variables=None, *args, **kw):
     env.AddMethod(GetInstallDirectory)
 
     if env.get('cxxflags'):
-        env.Append(CXXFLAGS = [env['cxxflags'].split(" ")])
+        env.Append(CXXFLAGS = env['cxxflags'].split(" "))
     if env.get('linkflags'):
         env.Append(LINKFLAGS=[env['linkflags'].split(" ")])
 
@@ -306,47 +306,39 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
             # building AIX extension modules can find them:
             e['ENV']['PATH'] += ':/usr/vac/bin'
         from distutils.sysconfig import get_config_vars
-        vars = get_config_vars('CC', 'CXX', 'OPT', 'BASECFLAGS', 'LDSHARED',
-                               'SO')
-        (cc, cxx, opt, basecflags, ldshared, so) = vars
+        # cc and cxx better match well enough, otherwise we are screwed
+        # I don't know how to reliably check if they match, so just skip them
+        # LDSHARED is not used, so it is removed
+        (opt, basecflags, so)\
+            = get_config_vars('OPT', 'BASECFLAGS', 'SO')
         # distutils on AIX can get confused if AIX C but GNU C++ is installed:
         if platform == 'aix' and cxx == '':
             cxx = 'g++'
         # Don't require stack protector stuff on Linux, as this adds a
         # requirement for glibc-2.4:
-        opt = opt.replace("-fstack-protector", "")
-        # Remove options that don't work with C++ code:
-        if cplusplus:
-            opt = opt.replace("-Wstrict-prototypes", "")
-        # This is mildly unsafe if there happens to be another compiler which uses these
-        # for something different.
-        opt=opt.replace("-O2", "")
-        opt=opt.replace("-O3", "")
-        opt=opt.replace("-g", "")
-        e.Replace(CC=cc, CXX=cxx, LDMODULESUFFIX=so)
-        e.Replace(CPPFLAGS=basecflags.split() + opt.split())
+        e.Replace(LDMODULESUFFIX=so,CPPFLAGS=basecflags.split() + opt.split())
         if e['PLATFORM'] is 'posix' and e['rpath']:
             for p in e['LIBPATH']:
                 if p[0] is not '#':
                     # append/prepend must match other uses
                     e.Prepend(LINKFLAGS=['-Wl,-rpath,'+p])
-        # Remove NDEBUG preprocessor stuff if defined (we do it ourselves for
-        # release builds)
-        if e.has_key('CPPDEFINES') and 'NDEBUG' in e['CPPDEFINES']:
-            e['CPPDEFINES'].remove('NDEBUG')
-        if '-DNDEBUG' in e['CPPFLAGS']:
-            e['CPPFLAGS'].remove('-DNDEBUG')
-        if '-Wall' in e['CCFLAGS']:
-            e['CCFLAGS'].remove('-Wall')
-
-        # Some gcc versions don't like the code that SWIG generates - but let
-        # that go, because we have no control over it:
-        for (var, f) in (('CCFLAGS', '-Werror'), ('CPPFLAGS', '-Wall'),
-                         ('CCFLAGS', '-Wall')):
+        for f in ['NDEBUG']:
             try:
-                e[var].remove(f)
+                e['CPPDEFINES'].remove(f)
             except ValueError:
                 pass
+            except KeyError:
+                pass
+        # Some gcc versions don't like the code that SWIG generates - but let
+        # that go, because we have no control over it:
+        for v in ['CCFLAGS', 'CPPFLAGS', 'CXXFLAGS']:
+            for f in ['-Werror', '-Wall', '-g', '-O2', '-O3',
+                      '-fstack-protector', '-Wstrict-prototypes',
+                      '-DNDEBUG']:
+                try:
+                    e[v].remove(f)
+                except ValueError:
+                    pass
         # AIX tries to use the C compiler rather than g++, so hardcode it here:
         if platform == 'aix' and cplusplus:
             ldshared = ldshared.replace(' cc_r', ' g++')
