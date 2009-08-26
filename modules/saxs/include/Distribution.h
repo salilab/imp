@@ -60,6 +60,11 @@ protected:
   Float max_distance_;  // parameter for maximum r value for p(r) function
 };
 
+#ifdef SWIG
+%template(FloatDistribution) Distribution<Float>;
+%template(VectorDistribution) Distribution<algebra::Vector3D>;
+#endif
+
 /**
  Radial Distribution class for calculating SAXS Profile
  this is distance distribution multiplied by form factors of atoms
