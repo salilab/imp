@@ -19,8 +19,6 @@ rawheader="""/**
 #define IMPMODULENAME_CLASS_NAME_H
 
 #include "config.h"
-
-#include "internal/version_info.h"
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/classtype.h>
@@ -86,7 +84,7 @@ def main():
 
     if len(sys.argv) >3:
         type= sys.argv[3]
-        typemacro= "IMP_"+type.upper()+"("+ccclassname +", internal::version_info)"
+        typemacro= "IMP_"+type.upper()+"("+ccclassname +", get_module_version_info())"
     else:
         type="RefCountedObject"
         typemacro="IMP_REF_COUNTED_DESTRUCTOR("+ccclassname+")"
