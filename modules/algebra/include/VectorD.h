@@ -98,7 +98,10 @@ public:
     vec_[0] = x0;
     vec_[1] = x1;
     vec_[2] = x2;
-    vec_[3] = x3;
+    if (D==4) {
+      // suppress warning.
+      vec_[3] = x3;
+    }
   }
 
   //! Default constructor
