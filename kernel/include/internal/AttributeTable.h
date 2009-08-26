@@ -390,6 +390,7 @@ public:
               ValueException);
     unsigned int val
       =static_cast<unsigned int>(k.get_index());
+    if (0) std::cout << val;
     IMP_assert(val <100000, "Bad key index: " << k.get_index()
                << " " << k.get_string());
     map_.add(k.get_index(), vv,
