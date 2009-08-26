@@ -12,7 +12,6 @@
 #define IMPCORE_GROUPNAME_CONTAINER_SET_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include <IMP/GroupnameContainer.h>
 #include <IMP/container_macros.h>
 
@@ -29,7 +28,7 @@ public:
   //! Construct and empty set
   GroupnameContainerSet(std::string name="GroupnameContainerSet %1%");
 
-  IMP_GROUPNAME_CONTAINER(GroupnameContainerSet, internal::version_info);
+  IMP_GROUPNAME_CONTAINER(GroupnameContainerSet, get_module_version_info());
  /** @name Methods to control the nested container
 
      This container merges a set of nested containers. To add

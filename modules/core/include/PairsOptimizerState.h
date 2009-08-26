@@ -13,7 +13,6 @@
 #define IMPCORE_PAIRS_OPTIMIZER_STATE_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include <IMP/PairContainer.h>
 #include <IMP/PairModifier.h>
 #include <IMP/OptimizerState.h>
@@ -41,7 +40,7 @@ public:
   PairsOptimizerState(PairContainer *c, PairModifier *gf,
                            std::string name="PairsOptimizerState %1%");
 
-  IMP_OPTIMIZER_STATE(PairsOptimizerState, internal::version_info)
+  IMP_OPTIMIZER_STATE(PairsOptimizerState, get_module_version_info())
 };
 
 

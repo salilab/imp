@@ -13,7 +13,6 @@
 #define IMPCORE_SINGLETONS_SCORE_STATE_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include <IMP/SingletonContainer.h>
 #include <IMP/SingletonModifier.h>
 #include <IMP/ScoreState.h>
@@ -66,7 +65,7 @@ public:
     f_=f;
   }
 
-  IMP_SCORE_STATE(SingletonsScoreState, internal::version_info)
+  IMP_SCORE_STATE(SingletonsScoreState, get_module_version_info())
 };
 
 

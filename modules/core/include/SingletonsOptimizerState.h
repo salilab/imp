@@ -13,7 +13,6 @@
 #define IMPCORE_SINGLETONS_OPTIMIZER_STATE_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include <IMP/SingletonContainer.h>
 #include <IMP/SingletonModifier.h>
 #include <IMP/OptimizerState.h>
@@ -41,7 +40,7 @@ public:
   SingletonsOptimizerState(SingletonContainer *c, SingletonModifier *gf,
                            std::string name="SingletonsOptimizerState %1%");
 
-  IMP_OPTIMIZER_STATE(SingletonsOptimizerState, internal::version_info)
+  IMP_OPTIMIZER_STATE(SingletonsOptimizerState, get_module_version_info())
 };
 
 

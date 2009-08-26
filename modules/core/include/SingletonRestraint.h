@@ -13,7 +13,6 @@
 #define IMPCORE_SINGLETON_RESTRAINT_H
 
 #include "config.h"
-#include "internal/version_info.h"
 
 #include <IMP/Restraint.h>
 #include <IMP/Pointer.h>
@@ -40,7 +39,7 @@ public:
                      Particle *a,
                      std::string name="SingletonRestraint %1%");
 
-  IMP_RESTRAINT(SingletonRestraint, internal::version_info);
+  IMP_RESTRAINT(SingletonRestraint, get_module_version_info());
 
   virtual ParticlesList get_interacting_particles() const;
 };

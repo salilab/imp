@@ -13,7 +13,6 @@
 #define IMPCORE_PAIR_RESTRAINT_H
 
 #include "config.h"
-#include "internal/version_info.h"
 
 #include <IMP/Restraint.h>
 #include <IMP/Pointer.h>
@@ -40,7 +39,7 @@ public:
                      Particle *a, Particle *b,
                      std::string name="PairRestraint %1%");
 
-  IMP_RESTRAINT(PairRestraint, internal::version_info);
+  IMP_RESTRAINT(PairRestraint, get_module_version_info());
 
   virtual ParticlesList get_interacting_particles() const;
 };

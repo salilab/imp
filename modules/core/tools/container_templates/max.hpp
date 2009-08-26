@@ -12,7 +12,6 @@
 #define IMPCORE_MAXIMUM_GROUPNAME_SCORE_RESTRAINT_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include <IMP/Restraint.h>
 #include <IMP/GroupnameScore.h>
 #include <IMP/GroupnameContainer.h>
@@ -42,7 +41,7 @@ public:
                                  std::string name
                                  ="MaximumGroupnameScoreRestraint %1%");
 
-  IMP_RESTRAINT(MaximumGroupnameScoreRestraint, internal::version_info);
+  IMP_RESTRAINT(MaximumGroupnameScoreRestraint, get_module_version_info());
 
   //! Set the number of lowest scores to use.
   void set_n(unsigned int n) { n_=n;}

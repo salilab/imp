@@ -12,7 +12,6 @@
 #define IMPCORE_SINGLETON_CONTAINER_SET_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include <IMP/SingletonContainer.h>
 #include <IMP/container_macros.h>
 
@@ -29,7 +28,7 @@ public:
   //! Construct and empty set
   SingletonContainerSet(std::string name="SingletonContainerSet %1%");
 
-  IMP_SINGLETON_CONTAINER(SingletonContainerSet, internal::version_info);
+  IMP_SINGLETON_CONTAINER(SingletonContainerSet, get_module_version_info());
  /** @name Methods to control the nested container
 
      This container merges a set of nested containers. To add
