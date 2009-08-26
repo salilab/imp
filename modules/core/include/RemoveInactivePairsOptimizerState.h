@@ -13,7 +13,6 @@
 #define IMPCORE_REMOVE_INACTIVE_PAIRS_OPTIMIZER_STATE_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include <IMP/core/ListPairContainer.h>
 #include <IMP/OptimizerState.h>
 
@@ -40,7 +39,7 @@ public:
                                          ="RemoveInactive %1%");
 
   IMP_OPTIMIZER_STATE(RemoveInactivePairsOptimizerState,
-                      internal::version_info)
+                      get_module_version_info())
 };
 
 

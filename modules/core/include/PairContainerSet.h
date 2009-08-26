@@ -12,7 +12,6 @@
 #define IMPCORE_PAIR_CONTAINER_SET_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include <IMP/PairContainer.h>
 #include <IMP/container_macros.h>
 
@@ -29,7 +28,7 @@ public:
   //! Construct and empty set
   PairContainerSet(std::string name="PairContainerSet %1%");
 
-  IMP_PAIR_CONTAINER(PairContainerSet, internal::version_info);
+  IMP_PAIR_CONTAINER(PairContainerSet, get_module_version_info());
  /** @name Methods to control the nested container
 
      This container merges a set of nested containers. To add

@@ -13,7 +13,6 @@
 #define IMPCORE_GROUPNAMES_OPTIMIZER_STATE_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include <IMP/GroupnameContainer.h>
 #include <IMP/GroupnameModifier.h>
 #include <IMP/OptimizerState.h>
@@ -41,7 +40,7 @@ public:
   GroupnamesOptimizerState(GroupnameContainer *c, GroupnameModifier *gf,
                            std::string name="GroupnamesOptimizerState %1%");
 
-  IMP_OPTIMIZER_STATE(GroupnamesOptimizerState, internal::version_info)
+  IMP_OPTIMIZER_STATE(GroupnamesOptimizerState, get_module_version_info())
 };
 
 

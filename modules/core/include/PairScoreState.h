@@ -13,7 +13,6 @@
 #define IMPCORE_PAIR_SCORE_STATE_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include <IMP/PairModifier.h>
 #include <IMP/ScoreState.h>
 
@@ -56,7 +55,7 @@ public:
     f_=f;
   }
 
-  IMP_SCORE_STATE(PairScoreState, internal::version_info)
+  IMP_SCORE_STATE(PairScoreState, get_module_version_info())
 };
 
 

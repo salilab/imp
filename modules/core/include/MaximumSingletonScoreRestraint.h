@@ -12,7 +12,6 @@
 #define IMPCORE_MAXIMUM_SINGLETON_SCORE_RESTRAINT_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include <IMP/Restraint.h>
 #include <IMP/SingletonScore.h>
 #include <IMP/SingletonContainer.h>
@@ -42,7 +41,7 @@ public:
                                  std::string name
                                  ="MaximumSingletonScoreRestraint %1%");
 
-  IMP_RESTRAINT(MaximumSingletonScoreRestraint, internal::version_info);
+  IMP_RESTRAINT(MaximumSingletonScoreRestraint, get_module_version_info());
 
   //! Set the number of lowest scores to use.
   void set_n(unsigned int n) { n_=n;}

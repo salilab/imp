@@ -13,7 +13,6 @@
 #define IMPCORE_PAIRS_RESTRAINT_H
 
 #include "config.h"
-#include "internal/version_info.h"
 
 #include <IMP/Restraint.h>
 #include <IMP/Pointer.h>
@@ -57,7 +56,7 @@ public:
                       PairContainer *pc,
                       std::string name="PairsRestraint %1%");
 
-  IMP_RESTRAINT(PairsRestraint, internal::version_info);
+  IMP_RESTRAINT(PairsRestraint, get_module_version_info());
 
   /** \note This can only be used if the container is a ListPairContainer
   */

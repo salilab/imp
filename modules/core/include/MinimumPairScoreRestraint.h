@@ -12,7 +12,6 @@
 #define IMPCORE_MINIMUM_PAIR_SCORE_RESTRAINT_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include <IMP/Restraint.h>
 #include <IMP/PairScore.h>
 #include <IMP/PairContainer.h>
@@ -41,7 +40,7 @@ public:
                                  std::string name
                                  ="MinimumPairScoreRestraint %1%");
 
-  IMP_RESTRAINT(MinimumPairScoreRestraint, internal::version_info);
+  IMP_RESTRAINT(MinimumPairScoreRestraint, get_module_version_info());
 
   //! Set the number of lowest scores to use.
   void set_n(unsigned int n) { n_=n;}

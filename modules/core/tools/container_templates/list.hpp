@@ -11,7 +11,6 @@
 #define IMPCORE_LIST_GROUPNAME_CONTAINER_H
 
 #include "config.h"
-#include "internal/version_info.h"
 #include <IMP/GroupnameContainer.h>
 #include <IMP/container_macros.h>
 
@@ -66,7 +65,7 @@ public:
   /** @}*/
 
   IMP::VersionInfo get_version_info() const {
-    return internal::version_info;
+    return get_module_version_info();
   }
 
   virtual void show(std::ostream &out = std::cout) const;
