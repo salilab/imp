@@ -102,6 +102,7 @@ void MRCReaderWriter::read_grid(void *pt,size_t size,size_t n)
 {
   fs.read((char *)pt,size*n);
   size_t val = fs.gcount();
+  if (0) std::cout << val;
   IMP_check(val == size*n,
             "MRCReaderWriter::read_grid >> The values read "
             "are not the amount requested", IOException);
