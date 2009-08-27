@@ -306,17 +306,19 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
             # building AIX extension modules can find them:
             e['ENV']['PATH'] += ':/usr/vac/bin'
         from distutils.sysconfig import get_config_vars
-        # cc and cxx better match well enough, otherwise we are screwed
-        # I don't know how to reliably check if they match, so just skip them
-        # LDSHARED is not used, so it is removed
+        # The compile and link programs used by python must both produce outputs
+        # that are compatible with the compiler we are already using as well
+        # as much take all command line options we are already using. As a
+        # result, we might as well used the same compiler as before. It would
+        # be great to check if they match, but that is kind of hard.
         (opt, basecflags, so)\
             = get_config_vars('OPT', 'BASECFLAGS', 'SO')
         # distutils on AIX can get confused if AIX C but GNU C++ is installed:
-        if platform == 'aix' and cxx == '':
-            cxx = 'g++'
-        # Don't require stack protector stuff on Linux, as this adds a
-        # requirement for glibc-2.4:
+        #if platform == 'aix' and cxx == '':
+        #    cxx = 'g++'
+        #    ldshared = ldshared.replace(' cc_r', ' g++')
         e.Replace(LDMODULESUFFIX=so,CPPFLAGS=basecflags.split() + opt.split())
+        #e.Replace(CXX=cxx, LDMODULE=ldshared, SHLINK=ldshared)
         if e['PLATFORM'] is 'posix' and e['rpath']:
             for p in e['LIBPATH']:
                 if p[0] is not '#':
@@ -329,8 +331,10 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
                 pass
             except KeyError:
                 pass
-        # Some gcc versions don't like the code that SWIG generates - but let
-        # that go, because we have no control over it:
+        # Don't require stack protector stuff on Linux, as this adds a
+        # requirement for glibc-2.4:
+        # remove the warnings flags because swig produces code which triggers
+        # tons of them.
         for v in ['CCFLAGS', 'CPPFLAGS', 'CXXFLAGS']:
             for f in ['-Werror', '-Wall', '-g', '-O2', '-O3',
                       '-fstack-protector', '-Wstrict-prototypes',
@@ -339,17 +343,13 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
                     e[v].remove(f)
                 except ValueError:
                     pass
-        # AIX tries to use the C compiler rather than g++, so hardcode it here:
-        if platform == 'aix' and cplusplus:
-            ldshared = ldshared.replace(' cc_r', ' g++')
-        # Default link flags on OS X don't work for us:
         if platform == 'darwin':
             e.Replace(LDMODULEFLAGS= \
                       '$LINKFLAGS -bundle -flat_namespace -undefined suppress')
         # Don't set link flags on Linux, as that would negate our GNU_HASH check
         elif system() != "Linux":
             e['LDMODULEFLAGS'] = []
-            e['SHLINK'] = e['LDMODULE'] = ldshared
+            #e['SHLINK'] = e['LDMODULE'] = ldshared
     e.Append(CPPDEFINES=['IMP_SWIG_WRAPPER'])
     e.Append(CPPPATH=[_get_python_include(e)])
     _fix_aix_cpp_link(e, cplusplus, 'SHLINKFLAGS')
