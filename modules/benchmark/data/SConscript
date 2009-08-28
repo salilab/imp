@@ -1,8 +1,10 @@
 Import('env')
 
 files = [
-         'single_protein.pdb',
-         'big_protein.pdb'
+         'small_protein.pdb',
+         'medium_protein.pdb',
+         'large_protein.pdb',
+         'huge_protein.pdb'
         ]
 
 # Install the data files:
