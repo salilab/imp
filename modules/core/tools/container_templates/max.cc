@@ -81,9 +81,11 @@ ParticlesList MaximumGroupnameScoreRestraint::get_interacting_particles() const
                              c_->classnames_end(), f_.get(), n_);
   ParticlesList ret;
   for (unsigned int i=0; i< bestn.size(); ++i) {
-    Particles c= IMP::internal::ContainerTraits<Classname>
-                         ::create_set(*bestn[i].second);
-    ret.push_back(c);
+    ParticlesTemp pt=IMP::internal
+      ::ContainerTraits<Classname>::create_set(*bestn[i].second);
+    if (!pt.empty()) {
+      ret.push_back(pt);
+    }
   }
 
   return ret;

@@ -41,7 +41,7 @@ private:
   Pointer<SingletonContainer> sc_;
   unsigned int n_;
   Float radius_;
-  Particles moved_;
+  ParticlesTemp moved_;
 };
 
 IMPCORE_END_NAMESPACE

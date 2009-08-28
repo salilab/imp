@@ -55,8 +55,11 @@ ParticlesList SingletonsRestraint::get_interacting_particles() const
     for (SingletonContainer::ParticleIterator it
            = pc_->particles_begin();
          it != pc_->particles_end(); ++it) {
-      ret.push_back(IMP::internal
-                    ::ContainerTraits<Particle>::create_set(*it));
+      ParticlesTemp pt=IMP::internal
+        ::ContainerTraits<Particle>::create_set(*it);
+      if (!pt.empty()) {
+        ret.push_back(pt);
+      }
     }
     return ret;
   } else {
