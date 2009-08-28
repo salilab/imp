@@ -10,6 +10,8 @@
 #include "IMP/log.h"
 #include "IMP/VectorOfRefCounted.h"
 
+#include <boost/lambda/lambda.hpp>
+
 IMP_BEGIN_NAMESPACE
 
 namespace {
@@ -17,6 +19,7 @@ namespace {
   bool print_exceptions=true;
 
   VectorOfRefCounted<FailureHandler*> handlers;
+
 }
 
 namespace internal {
@@ -32,6 +35,11 @@ void assert_fail(const char *msg)
 
 void add_failure_handler(FailureHandler *fh) {
   handlers.push_back(fh);
+}
+
+
+void remove_failure_handler(FailureHandler *fh) {
+  handlers.remove_if(boost::lambda::_1 == fh);
 }
 
 

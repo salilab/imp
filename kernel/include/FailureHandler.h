@@ -35,6 +35,12 @@ class IMPEXPORT FailureHandler: public Object {
 */
 IMPEXPORT void add_failure_handler(FailureHandler *f);
 
+//! Remove a failure handler from the list
+/** \relatesalso FailureHandler
+    \ingroup assert
+*/
+IMPEXPORT void remove_failure_handler(FailureHandler *f);
+
 IMP_END_NAMESPACE
 
 #endif  /* IMP_FAILURE_HANDLER_H */
