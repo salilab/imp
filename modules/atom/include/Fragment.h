@@ -79,6 +79,8 @@ public:
   //! Add the residues whose indexes are listed in the passed vector
   void set_residue_indexes( Ints o);
 
+  Ints get_residue_indexes() const;
+
   //! Return true if this fragment contains a given residue
   /** This could be made more efficient. */
   bool get_contains_residue(int rindex) {
