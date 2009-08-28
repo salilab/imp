@@ -55,8 +55,11 @@ ParticlesList GroupnamesRestraint::get_interacting_particles() const
     for (GroupnameContainer::ClassnameIterator it
            = pc_->classnames_begin();
          it != pc_->classnames_end(); ++it) {
-      ret.push_back(IMP::internal
-                    ::ContainerTraits<Classname>::create_set(*it));
+      ParticlesTemp pt=IMP::internal
+        ::ContainerTraits<Classname>::create_set(*it);
+      if (!pt.empty()) {
+        ret.push_back(pt);
+      }
     }
     return ret;
   } else {

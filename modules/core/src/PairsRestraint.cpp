@@ -55,8 +55,11 @@ ParticlesList PairsRestraint::get_interacting_particles() const
     for (PairContainer::ParticlePairIterator it
            = pc_->particle_pairs_begin();
          it != pc_->particle_pairs_end(); ++it) {
-      ret.push_back(IMP::internal
-                    ::ContainerTraits<ParticlePair>::create_set(*it));
+      ParticlesTemp pt=IMP::internal
+        ::ContainerTraits<ParticlePair>::create_set(*it);
+      if (!pt.empty()) {
+        ret.push_back(pt);
+      }
     }
     return ret;
   } else {
