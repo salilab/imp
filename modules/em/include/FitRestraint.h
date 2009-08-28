@@ -55,7 +55,7 @@ public:
 
   ParticlesList get_interacting_particles() const
   {
-    return ParticlesList(1, Particles(particles_begin(), particles_end()));
+    return ParticlesList(1, ParticlesTemp(particles_begin(), particles_end()));
   }
 
   IMP_LIST(private, Particle, particle, Particle*, Particles)
