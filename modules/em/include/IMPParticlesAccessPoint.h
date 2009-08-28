@@ -11,7 +11,8 @@
 
 #include "config.h"
 #include "ParticlesAccessPoint.h"
-#include <IMP/core/XYZ.h>
+#include <IMP/core/XYZR.h>
+#include <IMP/atom/Mass.h>
 #include <IMP/Model.h>
 #include <IMP/Particle.h>
 
@@ -32,8 +33,10 @@ public:
       \param[in] weight_key the attribute name of the weight
    */
   IMPParticlesAccessPoint(const Particles &particles,
-                          FloatKey radius_key,
-                          FloatKey weight_key);
+                          FloatKey radius_key
+                          = core::XYZR::get_default_radius_key(),
+                          FloatKey weight_key
+                          = atom::Mass::get_mass_key());
   //! Add more particles to the access point.
   /**
   \note Notice that the index of ps[0] will be the current number of particles
