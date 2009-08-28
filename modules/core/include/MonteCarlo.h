@@ -47,6 +47,10 @@ public:
       local optimizer to be used. Steps taken by the local optimizer
       do not count towards the total number of steps passed to the
       Optimizer::optimize() call.
+
+      The local optimizer must not have OptimizerState objects
+      which change the set of optimized particles/attributes. This
+      is not checked.
    */
   void set_local_optimizer(Optimizer* cg);
 
