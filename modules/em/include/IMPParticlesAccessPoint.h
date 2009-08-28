@@ -33,10 +33,8 @@ public:
       \param[in] weight_key the attribute name of the weight
    */
   IMPParticlesAccessPoint(const Particles &particles,
-                          FloatKey radius_key
-                          = core::XYZR::get_default_radius_key(),
-                          FloatKey weight_key
-                          = atom::Mass::get_mass_key());
+                          FloatKey radius_key,
+                          FloatKey weight_key);
   //! Add more particles to the access point.
   /**
   \note Notice that the index of ps[0] will be the current number of particles
