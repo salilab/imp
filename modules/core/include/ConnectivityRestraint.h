@@ -48,10 +48,7 @@ public:
   IMP_LIST(public, Particle, particle, Particle*, Particles)
   /*@}*/
 
-  ParticlesList get_interacting_particles() const
-  {
-    return ParticlesList(1, Particles(particles_begin(), particles_end()));
-  }
+  ParticlesList get_interacting_particles() const;
 
   //! Return the set of pairs which are connected by the restraint
   /** This set of pairs reflects the current configuration at the time of
