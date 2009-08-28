@@ -61,7 +61,24 @@ Float MonteCarlo::optimize(unsigned int max_steps)
       IMP_LOG(TERSE,
               "MC Performing local optimization "<< std::flush);
       IMP_CHECK_OBJECT(cg_.get());
-      next_energy =cg_->optimize(num_local_steps_);
+
+      // if incremental, turn off non-dirty particles
+      if (get_model()->get_is_incremental()) {
+        SaveOptimizeds si(ParticlesTemp(get_model()->particles_begin(),
+                                        get_model()->particles_end()));
+        for (Model::ParticleIterator it= get_model()->particles_begin();
+             it != get_model()->particles_end(); ++it) {
+          if (!(*it)->get_is_changed()) {
+            for (Particle::FloatKeyIterator oit= (*it)->float_keys_begin();
+                 oit != (*it)->float_keys_end(); ++oit) {
+              (*it)->set_is_optimized(*oit, false);
+            }
+          }
+        }
+        next_energy =cg_->optimize(num_local_steps_);
+      } else {
+        next_energy =cg_->optimize(num_local_steps_);
+      }
       IMP_LOG(VERBOSE, next_energy << " done "<< std::endl);
     } else {
       next_energy =  get_model()->evaluate(0);
