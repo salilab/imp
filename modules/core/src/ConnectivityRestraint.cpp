@@ -127,6 +127,18 @@ ParticlePairs ConnectivityRestraint::get_connected_pairs() const {
   return ret;
 }
 
+ParticlesList ConnectivityRestraint::get_interacting_particles() const {
+  ParticlePairs pps= get_connected_pairs();
+  ParticlesList pl(pps.size());
+  for (unsigned int i=0; i< pps.size(); ++i) {
+    ParticlesTemp pt(2);
+    pt[0]= pps[i][0];
+    pt[1]= pps[i][1];
+  }
+  return pl;
+}
+
+
 void ConnectivityRestraint::show(std::ostream& out) const
 {
   out << "connectivity restraint:" << std::endl;
