@@ -35,6 +35,17 @@ void Fragment::add_residue_indexes(int begin, int end) {
   add_residue_begin(begin);
 }
 
+Ints Fragment::get_residue_indexes() const {
+  Ints ret;
+  for (unsigned int i=0; i< get_number_of_residue_begins(); ++i) {
+    for (unsigned int j= get_residue_begin(i); j < get_residue_end(i);
+         ++j) {
+      ret.push_back(j);
+    }
+  }
+  return ret;
+}
+
 void Fragment::set_residue_indexes(Ints o) {
   clear_residue_ends();
   clear_residue_begins();
