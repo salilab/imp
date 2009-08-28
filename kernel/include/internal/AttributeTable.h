@@ -15,8 +15,6 @@
 #include "../macros.h"
 #include "../VectorOfRefCounted.h"
 
-#include <boost/iterator/filter_iterator.hpp>
-#include <boost/iterator/counting_iterator.hpp>
 #include <boost/scoped_array.hpp>
 
 #include <vector>
@@ -24,8 +22,12 @@
 
 IMP_BEGIN_NAMESPACE
 
-namespace internal
-{
+class Particle;
+
+IMP_END_NAMESPACE
+
+
+IMP_BEGIN_INTERNAL_NAMESPACE
 
 template <class T, class K >
 struct DefaultTraits
@@ -56,6 +58,20 @@ struct FloatAttributeTableTraits: public DefaultTraits<float, FloatKey>
   }
 };
 
+
+
+struct ParticlesAttributeTableTraits
+{
+  typedef Particle* Value;
+  typedef Particle* PassValue;
+  typedef ParticleKey Key;
+  static Value get_invalid() {
+    return NULL;
+  }
+  static bool get_is_valid(const Value& f) {
+    return f!= NULL;
+  }
+};
 
 struct DoubleAttributeTableTraits: public DefaultTraits<double, FloatKey>
 {
@@ -135,7 +151,7 @@ public:
   void clear(Value v) {
     map_.clear();
   }
-  unsigned int length() const {
+  unsigned int get_length() const {
     return map_.size();
   }
 
@@ -172,7 +188,7 @@ public:
   void clear(Value v) {
     map_.clear();
   }
-  unsigned int length() const {
+  unsigned int get_length() const {
     return map_.size();
   }
 
@@ -232,7 +248,7 @@ public:
     size_=0;
     data_.reset();
   }
-  unsigned int length() const {
+  unsigned int get_length() const {
     return size_;
   }
 
@@ -244,6 +260,31 @@ public:
     std::fill(data_.get(), data_.get()+size_, v);
   }
 };
+
+template <class Value, unsigned int OFFSET>
+class OffsetArrayStorage: public ArrayStorage<Value> {
+  typedef ArrayStorage<Value> P;
+public:
+  OffsetArrayStorage(Value initial_value): P(initial_value){}
+  OffsetArrayStorage(unsigned int size, Value initial_value):
+    P(size-OFFSET, initial_value) {
+    IMP_assert(size >= OFFSET, "Indexes smaller than "
+               << OFFSET << " should not make it here.");
+  }
+  const Value& get(unsigned int i) const {
+    return P::get(i-OFFSET);
+  }
+  void set(unsigned int i, const Value &v) {
+    return P::set(i-OFFSET);
+  }
+  void add(unsigned int i, const Value &v, const Value &fill_value) {
+    return P::add(i-OFFSET, v, fill_value);
+  }
+  bool fits(unsigned int i) const {
+    return P::fist(i-OFFSET);
+  }
+};
+
 
 
 template <class Value, int SIZE, class Overflow>
@@ -285,8 +326,8 @@ public:
     overflow_.clear(v);
     fill(v);
   }
-  unsigned int length() const {
-    return SIZE+overflow_.length();
+  unsigned int get_length() const {
+    return SIZE+overflow_.get_length();
   }
 
   void swap_with(InlineStorage<Value, SIZE, Overflow> &o) {
@@ -351,8 +392,8 @@ public:
     check_contains(k);
     return map_.get(k.get_index());
   }
-  unsigned int length() const {
-    return map_.length();
+  unsigned int get_length() const {
+    return map_.get_length();
   }
 
 
@@ -404,7 +445,7 @@ public:
 
   void remove_always(Key k) {
     IMP_assert(k != Key(), "Can't remove invalid key");
-    if (k.get_index() < map_.length()) {
+    if (k.get_index() < map_.get_length()) {
       map_.set(k.get_index(), ValueTraits::get_invalid());
       // really, no good reason to shrink
     }
@@ -413,58 +454,19 @@ public:
 
   bool contains(Key k) const {
     IMP_assert(k != Key(), "Can't search for default key");
-    return k.get_index() < map_.length()
+    return k.get_index() < map_.get_length()
       && ValueTraits::get_is_valid(map_.get(k.get_index()));
   }
 
 
   void show(std::ostream &out) const {
-    for (unsigned int i=0; i< map_.length(); ++i) {
+    for (unsigned int i=0; i< map_.get_length(); ++i) {
       if (ValueTraits::get_is_valid(map_.get(i))) {
         out << Key(i).get_string() << ": ";
         out << map_.get(i);
         out << std::endl;
       }
     }
-  }
-
-
-  std::vector<Key> get_keys() const {
-    std::vector<Key> ret(attribute_keys_begin(), attribute_keys_end());
-    return ret;
-  }
-
-  class IsAttribute
-  {
-    const This *map_;
-  public:
-    IsAttribute(): map_(NULL){}
-    IsAttribute(const This *map): map_(map) {}
-    bool operator()(Key k) const {
-      return map_->contains(k);
-    }
-  };
-
-  typedef boost::counting_iterator<Key, boost::forward_traversal_tag,
-                                   unsigned int> KeyIterator;
-  typedef boost::filter_iterator<IsAttribute, KeyIterator> AttributeKeyIterator;
-
-  AttributeKeyIterator attribute_keys_begin() const {
-    KeyIterator b(0U);
-    KeyIterator e(map_.length());
-    IMP_assert(std::distance(b,e)
-               == map_.length(), "Something is broken with the iterators");
-    IMP_assert(std::distance(AttributeKeyIterator(IsAttribute(this), b,e),
-                             AttributeKeyIterator(IsAttribute(this), e,e))
-                             <= map_.length(), "Broken in filter");
-    return AttributeKeyIterator(IsAttribute(this),
-                                KeyIterator(Key(0U)),
-                                KeyIterator(Key(map_.length())));
-  }
-  AttributeKeyIterator attribute_keys_end() const {
-    return AttributeKeyIterator(IsAttribute(this),
-                                KeyIterator(Key(map_.length())),
-                                KeyIterator(Key(map_.length())));
   }
 
   void swap_with( AttributeTable<ValueTraits, Storage> &o) {
@@ -482,8 +484,6 @@ namespace {
                                      FloatKey(2U), FloatKey(3U)};
 }
 
-} // namespace internal
-
-IMP_END_NAMESPACE
+IMP_END_INTERNAL_NAMESPACE
 
 #endif  /* IMP_ATTRIBUTE_TABLE_H */

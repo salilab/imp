@@ -11,6 +11,7 @@ files = [
          'deprecation.h',
          'key_helpers.h',
          'log_internal.h',
+         'particle.h',
          'ref_counting.h',
          'units.h',
          'utility.h',

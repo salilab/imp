@@ -39,7 +39,7 @@ void Particle::show(std::ostream& out) const
   if (model_) {
     preout << "float attributes:" << std::endl;
     preout.set_prefix("  ");
-    for (unsigned int i=0; i< derivatives_.length(); ++i) {
+    for (unsigned int i=0; i< derivatives_.get_length(); ++i) {
       FloatKey k(i);
       if (has_attribute(k)) {
         preout << k << ": " << get_value(k) << " ("
@@ -74,15 +74,15 @@ void Particle::show(std::ostream& out) const
 // methods for incremental
 
 void Particle::move_derivatives_to_shadow() {
-  shadow_->derivatives_=DerivativeTable(derivatives_.length(), 0);
+  shadow_->derivatives_=DerivativeTable(derivatives_.get_length(), 0);
   std::swap(shadow_->derivatives_, derivatives_);
 }
 
 void Particle::accumulate_derivatives_from_shadow() {
-  IMP_assert(derivatives_.length() == shadow_->derivatives_.length(),
-             "The tables do not match on size " << derivatives_.length()
-             << " " << shadow_->derivatives_.length() << std::endl);
-  for (unsigned int i=0; i < derivatives_.length(); ++i) {
+  IMP_assert(derivatives_.get_length() == shadow_->derivatives_.get_length(),
+             "The tables do not match on size " << derivatives_.get_length()
+             << " " << shadow_->derivatives_.get_length() << std::endl);
+  for (unsigned int i=0; i < derivatives_.get_length(); ++i) {
     derivatives_.set(i, derivatives_.get(i)+ shadow_->derivatives_.get(i));
   }
 }
@@ -96,7 +96,8 @@ void Particle::setup_incremental() {
   shadow_->set_name(get_name()+" history");
   shadow_->model_= model_;
   shadow_->dirty_=true;
-  shadow_->derivatives_= DerivativeTable(derivatives_.length(), 0);
+  shadow_->derivatives_= DerivativeTable(derivatives_.get_length(), 0);
+  shadow_->optimizeds_= optimizeds_;
 }
 
 void Particle::teardown_incremental() {
