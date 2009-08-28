@@ -280,6 +280,9 @@ void Atom::set_atom_type(AtomType t)
              "Internal error setting element name from " << t);
   get_particle()->set_value(get_element_key(), e);
   Mass(get_particle()).set_mass(get_element_table().get_mass(e));
+  IMP_assert(Mass(get_particle()).get_mass() != 0,
+             "Error setting mass on atom "
+             << *this);
 }
 
 IntKey Atom::get_atom_type_key() {
