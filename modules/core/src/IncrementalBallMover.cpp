@@ -29,7 +29,7 @@ void IncrementalBallMover::propose_move(Float size) {
   ParticlesTemp pts(sc_->get_particles());
   std::random_shuffle(pts.begin(), pts.end());
   for (unsigned int i=0; i< n_; ++i) {
-    moved_.set(i, pts[i]);
+    moved_[i]= pts[i];
     XYZ d(moved_[i]);
     d.set_coordinates(algebra::random_vector_in_sphere<3>(d.get_coordinates(),
                                                           radius_));
