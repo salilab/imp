@@ -26,8 +26,9 @@
 IMP_BEGIN_NAMESPACE
 
 //! Sets of Particles
-/** This is primarily used for representing lists of interacting particles */
-typedef std::vector<Particles> ParticlesList;
+/** This is primarily used for representing lists of interacting particles. The
+    particles in the list are not reference counted.*/
+typedef std::vector<ParticlesTemp> ParticlesList;
 
 class Model;
 

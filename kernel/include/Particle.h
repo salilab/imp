@@ -11,6 +11,7 @@
 #include "config.h"
 #include "base_types.h"
 #include "Object.h"
+#include "internal/particle.h"
 #include "utility.h"
 #include "Key.h"
 #include "internal/AttributeTable.h"
@@ -87,6 +88,8 @@ class IMPEXPORT Particle : public Object
 #ifndef IMP_DOXYGEN
   friend class Model;
   friend class Changed;
+  friend class SaveOptimizeds;
+  friend class Optimizer;
   //typedef internal::ObjectContainer<Particle, unsigned int> Storage;
   typedef std::list<Particle*> Storage;
 
@@ -111,6 +114,7 @@ class IMPEXPORT Particle : public Object
       shadow_->floats_= floats_;
       shadow_->strings_= strings_;
       shadow_->ints_= ints_;
+      shadow_->optimizeds_= optimizeds_;
       shadow_->particles_.clear();
       for (ParticleKeyIterator it= particle_keys_begin();
            it != particle_keys_end(); ++it) {
@@ -132,6 +136,7 @@ class IMPEXPORT Particle : public Object
   void move_derivatives_to_shadow();
   // end incremental
 
+
   /* This has to be declared here since boost 1.35 wants the full
      definition of Particle to be available when the Pointer
      is declared.
@@ -149,19 +154,6 @@ class IMPEXPORT Particle : public Object
     }
   };
 
-  struct ParticlesAttributeTableTraits
-  {
-    typedef Particle* Value;
-    typedef Particle* PassValue;
-    typedef ParticleKey Key;
-    static Value get_invalid() {
-      return NULL;
-    }
-    static bool get_is_valid(const Value& f) {
-      return f!= NULL;
-    }
-  };
-
   typedef internal::AttributeTable<internal::FloatAttributeTableTraits,
     internal::ArrayStorage<internal::FloatAttributeTableTraits::Value> >
     FloatTable;
@@ -174,10 +166,34 @@ class IMPEXPORT Particle : public Object
   typedef internal::AttributeTable<internal::StringAttributeTableTraits,
     internal::ArrayStorage<internal::StringAttributeTableTraits::Value> >
     StringTable;
-  typedef internal::AttributeTable<ParticlesAttributeTableTraits,
+  typedef internal::AttributeTable<internal::ParticlesAttributeTableTraits,
     internal::ParticlesStorage<Particle*> >
     ParticleTable;
   typedef internal::ArrayStorage<double>  DerivativeTable;
+
+  typedef internal::ParticleKeyIterator<FloatKey, Particle,
+    internal::IsAttribute<FloatKey, Particle> > FloatIteratorTraits;
+  typedef internal::ParticleKeyIterator<IntKey, Particle,
+    internal::IsAttribute<IntKey, Particle> > IntIteratorTraits;
+  typedef internal::ParticleKeyIterator<StringKey, Particle,
+    internal::IsAttribute<StringKey, Particle> > StringIteratorTraits;
+  typedef internal::ParticleKeyIterator<ParticleKey, Particle,
+    internal::IsAttribute<ParticleKey, Particle> > ParticleIteratorTraits;
+
+  typedef internal::ParticleKeyIterator<FloatKey, Particle,
+    internal::IsOptimized<FloatKey, Particle> > OptimizedIteratorTraits;
+
+  typedef OptimizedIteratorTraits::Iterator OptimizedKeyIterator;
+  OptimizedKeyIterator optimized_keys_begin() const {
+    return OptimizedIteratorTraits::create_iterator(this, 0,
+                                                    floats_.get_length());
+  }
+  OptimizedKeyIterator optimized_keys_end() const {
+    return OptimizedIteratorTraits::create_iterator(this,
+                                                    floats_.get_length(),
+                                                    floats_.get_length());
+  }
+
 
   WeakPointer<Model> model_;
 
@@ -258,22 +274,18 @@ class IMPEXPORT Particle : public Object
 
   Float get_derivative(FloatKey name) const;
 
-  IMP_NO_DOXYGEN(typedef FloatTable::AttributeKeyIterator
-                 FloatKeyIterator;)
-    FloatKeyIterator float_keys_begin() const {
-    return floats_.attribute_keys_begin();
+#ifdef IMP_DOXYGEN
+  class FloatKeyIterator;
+#else
+  typedef FloatIteratorTraits::Iterator FloatKeyIterator;
+#endif
+
+  FloatKeyIterator float_keys_begin() const {
+    return FloatIteratorTraits::create_iterator(this, 0, floats_.get_length());
   }
   FloatKeyIterator float_keys_end() const {
-    return floats_.attribute_keys_end();
-  }
-
-  IMP_NO_DOXYGEN(typedef OptimizedTable::AttributeKeyIterator
-                 OptimizedKeyIterator;)
-    OptimizedKeyIterator optimized_keys_begin() const {
-    return optimizeds_.attribute_keys_begin();
-  }
-  OptimizedKeyIterator optimized_keys_end() const {
-    return optimizeds_.attribute_keys_end();
+    return FloatIteratorTraits::create_iterator(this, floats_.get_length(),
+                                                floats_.get_length());
   }
   /*@}*/
 
@@ -296,15 +308,17 @@ class IMPEXPORT Particle : public Object
 #ifdef IMP_DOXYGEN
   class IntKeyIterator;
 #else
-  typedef IntTable::AttributeKeyIterator IntKeyIterator;
+  typedef IntIteratorTraits::Iterator IntKeyIterator;
 #endif
 
   IntKeyIterator int_keys_begin() const {
-    return ints_.attribute_keys_begin();
+    return IntIteratorTraits::create_iterator(this, 0, ints_.get_length());
   }
   IntKeyIterator int_keys_end() const {
-    return ints_.attribute_keys_end();
+    return IntIteratorTraits::create_iterator(this, ints_.get_length(),
+                                                ints_.get_length());
   }
+
   /*@}*/
 
 
@@ -328,13 +342,17 @@ class IMPEXPORT Particle : public Object
 #ifdef IMP_DOXYGEN
   class StringKeyIterator;
 #else
-  typedef StringTable::AttributeKeyIterator StringKeyIterator;
+  typedef StringIteratorTraits::Iterator StringKeyIterator;
 #endif
+
   StringKeyIterator string_keys_begin() const {
-    return strings_.attribute_keys_begin();
+    return StringIteratorTraits::create_iterator(this, 0,
+                                                 strings_.get_length());
   }
   StringKeyIterator string_keys_end() const {
-    return strings_.attribute_keys_end();
+    return StringIteratorTraits::create_iterator(this,
+                                                 strings_.get_length(),
+                                                 strings_.get_length());
   }
   /*@}*/
 
@@ -361,13 +379,17 @@ class IMPEXPORT Particle : public Object
 #ifdef IMP_DOXYGEN
   class ParticleKeyIterator;
 #else
-  typedef ParticleTable::AttributeKeyIterator ParticleKeyIterator;
+  typedef ParticleIteratorTraits::Iterator ParticleKeyIterator;
 #endif
+
   ParticleKeyIterator particle_keys_begin() const {
-    return particles_.attribute_keys_begin();
+    return ParticleIteratorTraits::create_iterator(this, 0,
+                                                   particles_.get_length());
   }
   ParticleKeyIterator particle_keys_end() const {
-    return particles_.attribute_keys_end();
+    return ParticleIteratorTraits::create_iterator(this,
+                                                   particles_.get_length(),
+                                                   particles_.get_length());
   }
   /*@}*/
 
@@ -401,16 +423,16 @@ class IMPEXPORT Particle : public Object
   */
   /*@{*/
   FloatKeys get_float_attributes() const {
-    return floats_.get_keys();
+    return FloatIteratorTraits::get_keys(this, floats_.get_length());
   }
   IntKeys get_int_attributes() const {
-    return ints_.get_keys();
+    return IntIteratorTraits::get_keys(this, ints_.get_length());
   }
   StringKeys get_string_attributes() const {
-    return strings_.get_keys();
+    return StringIteratorTraits::get_keys(this, strings_.get_length());
   }
   ParticleKeys get_particle_attributes() const {
-    return particles_.get_keys();
+    return ParticleIteratorTraits::get_keys(this, particles_.get_length());
   }
   /*@}*/
 
@@ -479,9 +501,9 @@ inline void Particle::set_value(FloatKey name, Float value)
 inline bool Particle::get_is_optimized(FloatKey name) const
 {
   IMP_CHECK_ACTIVE;
-  IMP_check(floats_.contains(name), "get_is_optimized called "
-            << "with invalid attribute" << name,
-            IndexException);
+  /*IMP_check(floats_.contains(name), "get_is_optimized called "
+            << "with invalid attribute " << name,
+            IndexException);*/
   return optimizeds_.contains(name);
 }
 
@@ -509,7 +531,7 @@ inline void Particle::add_to_derivative(FloatKey name, Float value,
   IMP_assert(has_attribute(name), "Particle " << get_name()
              << " does not have attribute " << name);
   IMP_IF_CHECK(CHEAP) { assert_can_change_derivatives();}
-  IMP_assert(name.get_index() < derivatives_.length(),
+  IMP_assert(name.get_index() < derivatives_.get_length(),
              "Something is wrong with derivative table.");
   derivatives_.set(name.get_index(),
                    derivatives_.get(name.get_index())+ da(value));

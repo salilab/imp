@@ -26,7 +26,7 @@ struct ContainerTraits {
 template <>
 struct ContainerTraits<Particle> {
   static const bool is_singleton=true;
-  static Particles create_set(Particle*p) {return Particles();}
+  static ParticlesTemp create_set(Particle*p) {return ParticlesTemp();}
   static Float evaluate(const SingletonScore *ss,
                         Particle *p,
                         DerivativeAccumulator *ac) {
@@ -51,8 +51,8 @@ struct ContainerTraits<Particle> {
 template <>
 struct ContainerTraits<ParticlePair> {
   static const bool is_singleton=false;
-  static Particles create_set(ParticlePair p) {
-    Particles ret;
+  static ParticlesTemp create_set(ParticlePair p) {
+    ParticlesTemp ret;
     ret.push_back(p.first);
     ret.push_back(p.second);
     return ret;
