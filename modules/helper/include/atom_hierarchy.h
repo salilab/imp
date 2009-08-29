@@ -67,9 +67,13 @@ IMPHELPEREXPORT Restraint* create_protein(Particle *p,
     \untested{simplify_protein}
     \relatesalso atom::Hierarchy
  */
-IMPHELPEREXPORT atom::Hierarchy simplified(atom::Hierarchy in,
-                                   double resolution);
+IMPHELPEREXPORT atom::Hierarchy create_simplified(atom::Hierarchy in,
+                                               double resolution);
 
+/** \unstable(get_simplified_2)
+ */
+IMPHELPEREXPORT atom::Hierarchy create_simplified_2(atom::Hierarchy in,
+                                                 double resolution);
 
 
 
