@@ -37,6 +37,8 @@ IMP_BEGIN_NAMESPACE
 
 class Model;
 class Changed;
+class SaveOptimizeds;
+class Optimizer;
 
 //! Class to handle individual model particles.
 /**
