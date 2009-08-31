@@ -967,6 +967,27 @@ es
   void handle_failure();                                        \
   IMP_OBJECT(Name, version_info)
 
+
+
+//! Declare an IMP RAII-style function
+/** Since such classes are typically quite small and simple, all
+    the implementation is inline. The macro declares
+    - constructor
+    - RAII::set()
+    - RAII::reset()
+    - destructor
+    The Set and Reset arguments are the code to run in the respective
+    functions. "args" are the argument string (in parens) for the
+    constructor and set.
+ */
+#define IMP_RAII(Name, args, Initialize, Set, Reset)   \
+  Name() {Initialize;}                                 \
+  explicit Name args {Initialize; Set}                 \
+  void set args {reset();                              \
+    Set;}                                              \
+  void reset() {Reset;}                                \
+  ~Name () {reset();}
+
 //! @}
 
 #ifndef IMP_DOXYGEN

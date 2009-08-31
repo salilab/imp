@@ -25,31 +25,39 @@ class IMPEXPORT SetLogState: public RAII
   LogLevel level_;
   Object* obj_;
 public:
+  IMP_RAII(SetLogState, (Object *o, LogLevel l),
+           {level_= DEFAULT; obj_=NULL;},
+           {
+             obj_=o;
+             if (l != DEFAULT) {
+               level_= obj_->get_log_level();
+               obj_->set_log_level(l);
+             } else {
+               level_=DEFAULT;
+             }
+           },
+           {
+             if (level_ != DEFAULT) {
+               if (obj_) {
+                 obj_->set_log_level(level_);
+               } else {
+                 set_log_level(level_);
+               }
+             }
+           });
+
   //! Construct it with the desired level and target
-  SetLogState(LogLevel l): obj_(NULL) {
+  SetLogState(LogLevel l){
+    obj_=NULL;
+    set(l);
+  }
+  void set(LogLevel l) {
+    reset();
     if (l != DEFAULT) {
       level_= get_log_level();
       set_log_level(l);
     } else {
       level_=DEFAULT;
-    }
-  }
-  //! Control the log level of the object instead of the global one
-  SetLogState(Object *o, LogLevel l): obj_(o) {
-    if (l != DEFAULT) {
-      level_= obj_->get_log_level();
-      obj_->set_log_level(l);
-    } else {
-      level_=DEFAULT;
-    }
-  }
-  ~SetLogState() {
-    if (level_ != DEFAULT) {
-      if (obj_) {
-        obj_->set_log_level(level_);
-      } else {
-        set_log_level(level_);
-      }
     }
   }
 };

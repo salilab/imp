@@ -13,6 +13,7 @@
 #include <boost/version.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits.hpp>
+#include <boost/utility.hpp>
 #include <algorithm>
 
 #if BOOST_VERSION >= 103500
@@ -158,8 +159,19 @@ public:
     Examples include, setting the log level to a particular value and restoring
     the old value when the object goes out of scope (SetLogState) or
     incrementing and decrementing a ref-counted pointer (Pointer).
+
+    RAII objects should either take no arguments and just have a constructor and
+    destructor or should have a constructor, destructor and set and reset
+    functions.
  */
-class RAII {};
+class RAII IMP_NO_SWIG(: public boost::noncopyable) {
+#ifdef DOXYGEN
+  RAII(args);
+  void set(args);
+  void reset();
+  ~RAII();
+#endif
+};
 
 IMP_END_NAMESPACE
 
