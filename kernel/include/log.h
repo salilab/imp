@@ -11,6 +11,7 @@
 #include "config.h"
 #include "internal/log_internal.h"
 #include "utility.h"
+#include "macros.h"
 
 #include <iostream>
 #include <fstream>
@@ -55,7 +56,11 @@ IMP_BEGIN_NAMESPACE
     memory issues
  */
 enum LogLevel {DEFAULT=-1, SILENT=0, WARNING=1, TERSE=2, VERBOSE=3,
-               MEMORY=4};
+               MEMORY=4
+#ifndef IMP_DOXYGEN
+               , ALL_LOG
+#endif
+};
 
 //! The targets for IMP logging
 enum LogTarget {COUT, FILE, CERR};
@@ -72,9 +77,7 @@ namespace internal {
 IMPEXPORT void log_write(std::string to_write);
 
 //! Set the current log level for IMP
-inline void set_log_level(LogLevel l) {
-  internal::log_level=l;
-}
+IMPEXPORT void set_log_level(LogLevel l);
 
 //! Set the target of logs
 IMPEXPORT void set_log_target(LogTarget l);

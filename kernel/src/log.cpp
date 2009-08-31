@@ -26,6 +26,14 @@ namespace {
   internal::PrefixStream stream(&std::cout);
 }
 
+
+void set_log_level(LogLevel l) {
+  IMP_check(l >= SILENT && l < ALL_LOG,
+            "Setting log to invalid level: " << l,
+            ValueException);
+  internal::log_level=l;
+}
+
 void set_log_target(LogTarget l)
 {
   if (l== COUT) {
