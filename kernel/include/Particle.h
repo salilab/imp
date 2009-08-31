@@ -37,8 +37,6 @@ IMP_BEGIN_NAMESPACE
 
 class Model;
 class Changed;
-class SaveOptimizeds;
-class Optimizer;
 
 //! Class to handle individual model particles.
 /**
@@ -90,8 +88,6 @@ class IMPEXPORT Particle : public Object
 #ifndef IMP_DOXYGEN
   friend class Model;
   friend class Changed;
-  friend class SaveOptimizeds;
-  friend class Optimizer;
   //typedef internal::ObjectContainer<Particle, unsigned int> Storage;
   typedef std::list<Particle*> Storage;
 
@@ -182,21 +178,11 @@ class IMPEXPORT Particle : public Object
   typedef internal::ParticleKeyIterator<ParticleKey, Particle,
     internal::IsAttribute<ParticleKey, Particle> > ParticleIteratorTraits;
 
+
   typedef internal::ParticleKeyIterator<FloatKey, Particle,
     internal::IsOptimized<FloatKey, Particle> > OptimizedIteratorTraits;
 
-  typedef OptimizedIteratorTraits::Iterator OptimizedKeyIterator;
-  OptimizedKeyIterator optimized_keys_begin() const {
-    return OptimizedIteratorTraits::create_iterator(this, 0,
-                                                    floats_.get_length());
-  }
-  OptimizedKeyIterator optimized_keys_end() const {
-    return OptimizedIteratorTraits::create_iterator(this,
-                                                    floats_.get_length(),
-                                                    floats_.get_length());
-  }
-
-
+ private:
   WeakPointer<Model> model_;
 
   // float attributes associated with the particle
@@ -288,6 +274,21 @@ class IMPEXPORT Particle : public Object
   FloatKeyIterator float_keys_end() const {
     return FloatIteratorTraits::create_iterator(this, floats_.get_length(),
                                                 floats_.get_length());
+  }
+
+#ifdef IMP_DOXYGEN
+  class OptimizedKeyIterator;
+#else
+  typedef OptimizedIteratorTraits::Iterator OptimizedKeyIterator;
+#endif
+  OptimizedKeyIterator optimized_keys_begin() const {
+    return OptimizedIteratorTraits::create_iterator(this, 0,
+                                                    floats_.get_length());
+  }
+  OptimizedKeyIterator optimized_keys_end() const {
+    return OptimizedIteratorTraits::create_iterator(this,
+                                                    floats_.get_length(),
+                                                    floats_.get_length());
   }
   /*@}*/
 
