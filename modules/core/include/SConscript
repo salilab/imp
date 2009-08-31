@@ -6,6 +6,7 @@ files = [
          'AngleTripletScore.h',
          'AttributeSingletonScore.h',
          'BallMover.h',
+         'BoundingBox3DSingletonScore.h',
          'BoxSweepClosePairsFinder.h',
          'CentroidOfRefined.h',
          'ChildrenRefiner.h',

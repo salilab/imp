@@ -68,6 +68,7 @@ IMP_REFCOUNT_RETURN_SINGLE(IMP::core::Mover)
 %include "IMP/core/DistanceRestraint.h"
 %include "IMP/core/DistanceToSingletonScore.h"
 %include "IMP/core/ExcludedVolumeRestraint.h"
+%include "IMP/core/BoundingBox3DScoreState.h"
 %include "IMP/core/FixedRefiner.h"
 %include "IMP/core/GridClosePairsFinder.h"
 %include "IMP/core/Harmonic.h"

@@ -6,6 +6,7 @@ files = [
          'AngleTripletScore.cpp',
          'AttributeSingletonScore.cpp',
          'BallMover.cpp',
+         'BoundingBox3DSingletonScore.cpp',
          'BoxSweepClosePairsFinder.cpp',
          'CentroidOfRefined.cpp',
          'ChildrenRefiner.cpp',
