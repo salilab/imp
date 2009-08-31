@@ -61,6 +61,15 @@ namespace IMP {
   }
 }
 
+
+%extend IMP::Object {
+   std::string __str__() const {
+     std::ostringstream oss;
+     self->show(oss);
+     return oss.str();
+   }
+}
+
 namespace IMP {
   // special case since particles are ref counted
   %extend Model {
