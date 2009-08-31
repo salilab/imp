@@ -286,16 +286,19 @@ class SaveOptimizeds: public RAII {
   ParticlesTemp pt_;
   std::vector<Particle::OptimizedTable> saved_;
 public:
-  SaveOptimizeds(const ParticlesTemp &pt): pt_(pt), saved_(pt_.size()) {
-    for (unsigned int i=0; i< pt_.size(); ++i) {
-      saved_[i]= pt_[i]->optimizeds_;
-    }
-  }
-  ~SaveOptimizeds() {
-    for (unsigned int i=0; i< pt_.size(); ++i) {
-      pt_[i]->optimizeds_= saved_[i];
-    }
-  }
+  IMP_RAII(SaveOptimizeds, (const ParticlesTemp &pt),,
+           {
+             pt_=pt;
+             saved_= std::vector<Particle::OptimizedTable>(pt_.size());
+             for (unsigned int i=0; i< pt_.size(); ++i) {
+               saved_[i]= pt_[i]->optimizeds_;
+             }
+           },
+           {
+             for (unsigned int i=0; i< pt_.size(); ++i) {
+               pt_[i]->optimizeds_= saved_[i];
+             }
+           });
 };
 
 

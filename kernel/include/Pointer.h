@@ -27,7 +27,7 @@ IMP_BEGIN_NAMESPACE
     \param[in] O The type of IMP::RefCounted-derived object to point to
  */
 template <class O>
-class Pointer: public WeakPointer<O>, public RAII
+class Pointer: public WeakPointer<O>
 {
   typedef WeakPointer<O> P;
   typedef Pointer<O> This;
