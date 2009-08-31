@@ -57,15 +57,15 @@ template <class Container>
 class EditGuard: public RAII {
   Pointer<Container> c_;
 public:
-  EditGuard(Container *c) {
-    if (!c->get_is_editing()) {
-      c_= Pointer<Container>(c);
-      c_->set_is_editing(true);
-    }
-  }
-  ~EditGuard() {
-    if (c_) c_->set_is_editing(false);
-  }
+  IMP_RAII(EditGuard, (Container *c),,
+           {
+             if (!c->get_is_editing()) {
+               c_= Pointer<Container>(c);
+               c_->set_is_editing(true);
+             }
+           },
+           if (c_) c_->set_is_editing(false);
+           )
 };
 
 IMPCORE_END_NAMESPACE
