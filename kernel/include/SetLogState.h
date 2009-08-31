@@ -28,11 +28,12 @@ public:
   IMP_RAII(SetLogState, (Object *o, LogLevel l),
            {level_= DEFAULT; obj_=NULL;},
            {
-             obj_=o;
              if (l != DEFAULT) {
+               obj_=o;
                level_= obj_->get_log_level();
                obj_->set_log_level(l);
              } else {
+               obj_=NULL;
                level_=DEFAULT;
              }
            },
@@ -43,12 +44,15 @@ public:
                } else {
                  set_log_level(level_);
                }
+               obj_=NULL;
+               level_=DEFAULT;
              }
            });
 
   //! Construct it with the desired level and target
   SetLogState(LogLevel l){
     obj_=NULL;
+    level_= DEFAULT;
     set(l);
   }
   void set(LogLevel l) {
