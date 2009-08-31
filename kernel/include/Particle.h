@@ -37,6 +37,7 @@ IMP_BEGIN_NAMESPACE
 
 class Model;
 class Changed;
+class SaveOptimizeds;
 
 //! Class to handle individual model particles.
 /**
@@ -88,6 +89,7 @@ class IMPEXPORT Particle : public Object
 #ifndef IMP_DOXYGEN
   friend class Model;
   friend class Changed;
+  friend class SaveOptimizeds;
   //typedef internal::ObjectContainer<Particle, unsigned int> Storage;
   typedef std::list<Particle*> Storage;
 
