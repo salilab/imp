@@ -101,6 +101,14 @@ class RotationTests(IMP.test.TestCase):
             rot = IMP.algebra.rotation_taking_first_to_second(axis[i],axis[i+1])
             self.assertAlmostEqual(IMP.algebra.distance(rot*axis[i],axis[i+1]),0.0)
 
+    def test_decompose_rotation_into_axis_angle(self):
+        """Check that the function decompose_rotation_into_axis_angle is correct"""
+        r0= IMP.algebra.random_rotation()
+        aa = IMP.algebra.decompose_rotation_into_axis_angle(r0)
+        axis=aa[0];angle=aa[1]
+        r1 = IMP.algebra.rotation_in_radians_about_axis(axis,angle)
+        self.assertInTolerance((r0.get_quaternion()-r1.get_quaternion()).get_squared_magnitude(), 0, .1)
+
     def test_interpolate(self):
         """Check that rotations can be interpolated"""
         r0= IMP.algebra.random_rotation()
