@@ -67,6 +67,8 @@ namespace IMP {
    %template(Sphere3Ds) ::std::vector<IMP::algebra::Sphere3D>;
    %template(SpherePair) ::std::pair<IMP::algebra::Sphere3D,IMP::algebra::Sphere3D>;
    %template(Sphere3DPairs) ::std::vector< SpherePair >;
+
+   %template(AxisAnglePair) ::std::pair<IMP::algebra::Vector3D,double>;
    // rotation operations
    %template(Rotation3Ds) ::std::vector<Rotation3D>;
  }

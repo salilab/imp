@@ -504,5 +504,29 @@ inline Rotation3D interpolate(const Rotation3D &a,
   return f*a.get_quaternion()+(1-f)*b.get_quaternion(a.get_quaternion());
 }
 
+
+//! Decompose a Rotation3D object into a rotation around an axis
+/**
+  \param[in] axis the rotation axis passes through (0,0,0)
+  \param[in] angle the rotation angle in radians
+  \note http://en.wikipedia.org/wiki/Rotation_matrix
+  \note www.euclideanspace.com/maths/geometry/rotations/conversions/
+  angleToQuaternion/index.htm
+  \relatesalso Rotation3D
+*/
+inline std::pair<Vector3D,double> decompose_rotation_into_axis_angle(
+  const Rotation3D &rot) {
+  VectorD<4> q = rot.get_quaternion();
+  double a,b,c,d;
+  a=q[0];b=q[1];c=q[2];d=q[3];
+
+  double angle = std::acos(a)*2;
+  double s = std::sin(angle/2);
+  Vector3D axis(b/s,c/s,d/s);
+  return std::pair<Vector3D,double>(axis.get_unit_vector(),angle);
+}
+
+
+
 IMPALGEBRA_END_NAMESPACE
 #endif  /* IMPALGEBRA_ROTATION_3D_H */
