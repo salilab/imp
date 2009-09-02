@@ -109,6 +109,7 @@ namespace IMP {
   %template(IntKeyBase) ::IMP::KeyBase<1, true>;
   %template(StringKeyBase) ::IMP::KeyBase<2, true>;
   %template(ParticleKeyBase) ::IMP::KeyBase<3, true>;
+  %template(ObjectKeyBase) ::IMP::KeyBase<4, true>;
 }
 
 %include "IMP/log.h"
@@ -159,6 +160,7 @@ namespace IMP {
   %template(StringKeys) ::std::vector<StringKey>;
   %template(IntKeys) ::std::vector<IntKey>;
   %template(ParticleKeys) ::std::vector<ParticleKey>;
+  %template(ObjectKeys) ::std::vector<ObjectKey>;
   %template(Floats) ::std::vector<Float>;
   %template(Strings) ::std::vector<String>;
   %template(Ints) ::std::vector<Int>;
