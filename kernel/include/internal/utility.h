@@ -14,10 +14,7 @@
 #include <algorithm>
 #include <sstream>
 
-IMP_BEGIN_NAMESPACE
-
-namespace internal
-{
+IMP_BEGIN_INTERNAL_NAMESPACE
 
 //! \internal \return true if a passed particle is inactive
 struct IsInactiveParticle
@@ -36,8 +33,19 @@ inline std::string make_object_name(std::string templ, unsigned int index) {
   return oss.str();
 }
 
-} // namespace internal
+struct Counter {
+  unsigned int count;
+  Counter(): count(0){}
+  operator unsigned int () const {return count;}
+  Counter operator++() {
+    ++count;
+    return *this;
+  }
+  void operator=(unsigned int i) {
+    count=i;
+  }
+};
 
-IMP_END_NAMESPACE
+IMP_END_INTERNAL_NAMESPACE
 
 #endif  /* IMP_INTERNAL_UTILITY_H */

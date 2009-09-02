@@ -704,6 +704,35 @@ protection:                                                             \
   virtual void update();                                                \
    IMP_OBJECT(Name, version_info)
 
+
+//! Define the basics needed for an OptimizerState which acts every n steps
+/** In addition to the methods done by all the macros, it declares
+    - do_update(unsigned int call_number) where step number
+    is the number of the optimization step, and call_number is the number
+    of the call to do_update.
+    It also defines
+    - void set_skip_steps(unsigned int)
+
+    If you use this macro, you should also include <IMP/internal/utility.h>.
+*/
+#define IMP_PERIODIC_OPTIMIZER_STATE(Name, version_info)                \
+  virtual void update() {                                               \
+    if (call_number_%(skip_steps_+1) ==0) {                             \
+      do_update(update_number_);                                        \
+      ++update_number_;                                                 \
+    }                                                                   \
+    ++call_number_;                                                     \
+  }                                                                     \
+  void do_update(unsigned int call_number);                             \
+  void set_skip_steps(unsigned int k) {                                 \
+    skip_steps_=k;                                                      \
+    call_number_=0;                                                     \
+  }                                                                     \
+  IMP_OBJECT(Name, version_info)                                        \
+  private:                                                              \
+  ::IMP::internal::Counter skip_steps_, call_number_, update_number_;   \
+
+
 //! Define the basics needed for a ScoreState
 /** In addition to the methods done by all the macros, it declares
     - IMP::ScoreState::do_before_evaluate()

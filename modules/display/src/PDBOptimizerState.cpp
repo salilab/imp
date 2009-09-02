@@ -14,23 +14,17 @@ IMPDISPLAY_BEGIN_NAMESPACE
 
 PDBOptimizerState::PDBOptimizerState(
   const atom::Hierarchies &mh, std::string name ):
-  step_(0), skip_steps_(0), name_template_(name),  mh_(mh){
+  name_template_(name),  mh_(mh){
 }
 
 void PDBOptimizerState::show(std::ostream &out) const {
   out << "PDBOptimizerState" << std::endl;
 }
 
-void PDBOptimizerState::update() {
-  ++step_;
-  if (step_%(skip_steps_+1)==0) {
-    unsigned int n= step_;
-    n/= (skip_steps_+1);
-    --n;
-    char buf[1000];
-    sprintf(buf, name_template_.c_str(), n);
-    IMP_LOG(TERSE, "Writing file " << buf << std::endl);
-    atom::write_pdb(mh_,buf);
-  }
+void PDBOptimizerState::do_update(unsigned int n) {
+  char buf[1000];
+  sprintf(buf, name_template_.c_str(), n);
+  IMP_LOG(TERSE, "Writing file " << buf << std::endl);
+  atom::write_pdb(mh_,buf);
 }
 IMPDISPLAY_END_NAMESPACE
