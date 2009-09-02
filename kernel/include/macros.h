@@ -13,9 +13,12 @@
 #define IMP_NO_DOXYGEN(x)
 //! Only show something to doxygen
 #define IMP_ONLY_DOXYGEN(x) x
+//! Show the first to DOXYGEN and the second to the world
+#define IMP_SWITCH_DOXYGEN(doxygen, nodoxygen) doxygen
 #else
 #define IMP_NO_DOXYGEN(x) x
 #define IMP_ONLY_DOXYGEN(x)
+#define IMP_SWITCH_DOXYGEN(doxygen, nodoxygen) nodoxygen
 #endif
 
 #if defined(SWIG)
@@ -1016,6 +1019,60 @@ es
     Set;}                                              \
   void reset() {Reset;}                                \
   ~Name () {reset();}
+
+
+//! Declare the methods needed by an object than can be printed
+/** This macro declares the method
+    - void show(std::ostream &out) const
+    It also makes it so that the object can be printed
+    in python.
+
+    The <ostream> and <sstream> headers must be included.
+
+    See also IMP_SHOWABLE_INLINE().
+
+    Do not use with IMP::Object objects as they have their
+    own show mechanism.
+*/
+#ifndef IMP_DOXYGEN
+#define IMP_SHOWABLE                            \
+  void show(std::ostream &out=std::cout) const; \
+  std::string __str__() const {                 \
+    std::ostringstream out;                     \
+    show(out);                                  \
+    return out.str();                           \
+  }
+#else
+#define IMP_SHOWABLE                            \
+  void show(std::ostream &out=std::cout) const;
+#endif
+
+//! Declare the methods needed by an object than can be printed
+/** This macro declares the method
+    - void show(std::ostream &out) const
+    It also makes it so that the object can be printed
+    in python.
+
+    The <ostream> and <sstream> headers must be included.
+
+    See also IMP_SHOWABLE_INLINE()
+*/
+#ifndef IMP_DOXYGEN
+#define IMP_SHOWABLE_INLINE(how_to_show)        \
+  void show(std::ostream &out=std::cout) const{ \
+    how_to_show;                                \
+  }                                             \
+  std::string __str__() const {                 \
+    std::ostringstream out;                     \
+    show(out);                                  \
+    return out.str();                           \
+  }
+#else
+#define IMP_SHOWABLE_INLINE(how_to_show)        \
+  void show(std::ostream &out=std::cout) const;
+#endif
+
+
 
 //! @}
 
