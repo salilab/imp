@@ -34,11 +34,11 @@
   {assert_valid_derivatives();}
 #define IMP_PARTICLE_ATTRIBUTE_TYPE(UCName, lcname, Value, add_action,  \
                                     remove_action)                      \
-  void add_attribute(UCName##Key name, Value value){                    \
+  void add_attribute(UCName##Key name, Value initial_value){            \
     IMP_CHECK_ACTIVE;                                                   \
     on_changed();                                                       \
     add_action;                                                         \
-    lcname##s_.insert(name, value);                                     \
+    lcname##s_.insert(name, initial_value);                             \
   }                                                                     \
   void remove_attribute(UCName##Key name) {                             \
     IMP_CHECK_ACTIVE;                                                   \
@@ -262,42 +262,23 @@ class IMPEXPORT Particle : public Object
     return model_;
   }
 
-  /** @name Float Attributes
-      Float attributes can be optimized, meaning the optimizer is
-      allowed to change their value in order to improve the score.
-
-      All distances are assumed to be in angstroms
-      and derivatives in kcal/mol angstrom. This is not enforced.
+#ifdef IMP_DOXYGEN
+  /** @name Attribute manipulation
+      For each type of attribute and their corresponding key type,
+      the Particle provides the following methods. The Type is
+      the type of the attribute (Float, Int, Particle * etc.) and
+      KeyType is the type of the key (FloatKey, IntKey, ParticleKey etc.).
+      @{
   */
-  /*@{*/
+  void add_attribute(KeyType name, Type initial_value);
+  void remove_attribute(KeyType name);
+  bool has_attribute(KeyType name) const;
+  Type get_value(KeyType name) const;
+  /* @} */
+#else
   IMP_PARTICLE_ATTRIBUTE_TYPE(Float, float, Float,
                               { derivatives_.add(name.get_index(), 0, 0);},
                               {optimizeds_.remove_always(name);});
-
-  void add_attribute(FloatKey name, const Float value, bool optimized){
-    IMP_CHECK_ACTIVE;
-    on_changed();
-    floats_.insert(name, value);
-    derivatives_.add(name.get_index(), 0, 0);
-    if (optimized) set_is_optimized(name, optimized);
-  }
-
-  //! Add to the derivative of a specified float.
-  /** \param[in] key Key identifying the attribute.
-      \param[in] value Amount to add to the derivative.
-      \param[in] da The DerivativeAccumulator to scale the value.
-  */
-  void add_to_derivative(FloatKey key, Float value,
-                         const DerivativeAccumulator &da);
-
-  /** Set whether this float attribute will be changed by
-      the optimizer. The attribute value is still allowed
-      to change (for example in initialization or by ScoreStates.*/
-  void set_is_optimized(FloatKey k, bool tf);
-
-  bool get_is_optimized(FloatKey k) const;
-
-  Float get_derivative(FloatKey name) const;
 
 #ifdef IMP_DOXYGEN
   class OptimizedKeyIterator;
@@ -313,40 +294,41 @@ class IMPEXPORT Particle : public Object
                                                     floats_.get_length(),
                                                     floats_.get_length());
   }
-  /*@}*/
 
-
-  /** @name Int Attributes*/
-  /*@{*/
   IMP_PARTICLE_ATTRIBUTE_TYPE(Int, int, Int,,);
-  /*@}*/
-
-
-  /** @name String Attributes*/
-  /*@{*/
   IMP_PARTICLE_ATTRIBUTE_TYPE(String, string, String,,)
-  /*@}*/
+  IMP_PARTICLE_ATTRIBUTE_TYPE(Particle, particle, Particle*,,)
+  IMP_PARTICLE_ATTRIBUTE_TYPE(Object, object, Object*,,);
+#endif
 
+ /** @name Float Attributes
+      Float attributes can be optimized, meaning the optimizer is
+      allowed to change their value in order to improve the score.
+      As a result, there are a number of extra methods to manipulate
+      them.
 
-  /** @name Particle Attributes
-      Particle attributes store a pointer to another particle. They are
-      useful for setting up graphs and hierarchies.
+      All distances are assumed to be in angstroms
+      and derivatives in kcal/mol angstrom. This is not enforced.
   */
   /*@{*/
-    IMP_PARTICLE_ATTRIBUTE_TYPE(Particle, particle, Particle*,,)
-  /*@}*/
+  void add_attribute(FloatKey name, const Float value, bool optimized){
+    IMP_CHECK_ACTIVE;
+    on_changed();
+    floats_.insert(name, value);
+    derivatives_.add(name.get_index(), 0, 0);
+    if (optimized) set_is_optimized(name, optimized);
+  }
 
+  void add_to_derivative(FloatKey key, Float value,
+                         const DerivativeAccumulator &da);
 
-  /** @name Object Attributes
-      Object attributes store a pointer to an IMP::Object. They are
-      useful for associating arbitrary data with a Particle.
+  void set_is_optimized(FloatKey k, bool tf);
 
-      \unstable{Object attributes}
-      \untested{Object attributes}
-  */
-  /*@{*/
-    IMP_PARTICLE_ATTRIBUTE_TYPE(Object, object, Object*,,);
-  /*@}*/
+  bool get_is_optimized(FloatKey k) const;
+
+  Float get_derivative(FloatKey name) const;
+
+  /** @} */
 
   //! Get whether the particle is active.
   /** Restraints referencing the particle are only evaluated for 'active'
