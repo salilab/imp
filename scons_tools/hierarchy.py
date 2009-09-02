@@ -3,29 +3,16 @@
 
 import os
 import UserList
-from SCons.Script import Action, Entry
+from SCons.Script import Action, Entry, File
+import imp_module
 
 # should merge with one in imp_module.py
 
-def make_vars(env):
-    """Make a map which can be used for all string substitutions"""
-    module = env['IMP_MODULE']
-    module_include_path = env['IMP_MODULE_INCLUDE_PATH']
-    module_src_path = env['IMP_MODULE_SRC_PATH']
-    module_preproc = env['IMP_MODULE_PREPROC']
-    module_namespace = env['IMP_MODULE_NAMESPACE']
-    author = env['IMP_MODULE_AUTHOR']#source[0].get_contents()
-    version = env['IMP_MODULE_VERSION']#source[1].get_contents()
-    vars={'module_include_path':module_include_path,
-          'module_src_path':module_src_path, 'module':module,
-          'PREPROC':module_preproc, 'author':author, 'version':version,
-          'namespace':module_namespace}
-    return vars
 
 
 
 def _build_header(target, source, env):
-    vars= make_vars(env);
+    vars= imp_module.make_vars(env);
     fh = file(target[0].abspath, 'w')
     print >> fh, "/**\n *  \\file %(module_include_path)s.h   \\brief Include all the headers\n *" \
              % vars
@@ -34,12 +21,10 @@ def _build_header(target, source, env):
     print >> fh, "#ifndef %(PREPROC)s_H\n#define %(PREPROC)s_H\n" % vars
     # prefix does not work when there are a mix of generated and source files
     #= len(os.path.commonprefix([f.path for f in source]))
-    for f in source:
-        full = f.path
-        src = full[full.find("include")+8:]
+    for f in source[0].get_contents().split(" "):
         #print src
-        if not src.startswith('internal'):
-            vars['header']= src
+        if not f.startswith('internal'):
+            vars['header']= f
             print >> fh, '#include <%(module_include_path)s/%(header)s>' %vars
     print >> fh, "\n#endif  /* %(PREPROC)s_H */" % vars
 
@@ -80,8 +65,9 @@ def InstallHierarchy(env, dir, sources, can_link=False):
        installed headers is returned, suitable for an 'install' alias."""
     targets = \
        _install_hierarchy_internal(env, dir, sources, can_link)
-
-    t = env.Command(dir + '.h', sources,
+    source_list=[str(x) for x in sources]
+    source_list.sort()
+    t = env.Command(dir + '.h', env.Value(" ".join(source_list)),
                     Action(_build_header,
                                'Auto-generating header ${TARGET}'))
 
