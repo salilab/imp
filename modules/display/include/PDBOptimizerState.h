@@ -16,6 +16,7 @@
 #include <IMP/Pointer.h>
 #include <vector>
 #include <IMP/atom/Hierarchy.h>
+#include <IMP/internal/utility.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
@@ -27,8 +28,6 @@ IMPDISPLAY_BEGIN_NAMESPACE
  */
 class IMPDISPLAYEXPORT PDBOptimizerState: public OptimizerState
 {
-  unsigned int step_;
-  unsigned int skip_steps_;
   std::string name_template_;
 
   atom::Hierarchies mh_;
@@ -37,12 +36,7 @@ public:
   PDBOptimizerState(const atom::Hierarchies &mh,
                     std::string name_template);
 
-  //! Set the number of steps to skip
-  void set_skip_steps(unsigned int i) {
-    skip_steps_=i;
-  }
-
-  IMP_OPTIMIZER_STATE(PDBOptimizerState, get_module_version_info())
+  IMP_PERIODIC_OPTIMIZER_STATE(PDBOptimizerState, get_module_version_info())
 };
 
 

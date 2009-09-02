@@ -12,7 +12,7 @@
 IMPDISPLAY_BEGIN_NAMESPACE
 
 LogOptimizerState::LogOptimizerState(Writer *w, std::string name ):
-  writer_(w), step_(0), skip_steps_(0), name_template_(name){
+  writer_(w), name_template_(name){
 }
 
 void LogOptimizerState::show(std::ostream &out) const {
@@ -35,18 +35,12 @@ void LogOptimizerState::write(std::string name) const {
   writer_->set_file_name("");
 }
 
-void LogOptimizerState::update() {
+void LogOptimizerState::do_update(unsigned int n) {
   IMP_OBJECT_LOG;
-  ++step_;
-  if (step_%(skip_steps_+1)==0) {
-    unsigned int n= step_;
-    n/= (skip_steps_+1);
-    --n;
-    char buf[1000];
-    sprintf(buf, name_template_.c_str(), n);
-    IMP_LOG(TERSE, "Writing file " << buf << std::endl);
-    write(buf);
-  }
+  char buf[1000];
+  sprintf(buf, name_template_.c_str(), n);
+  IMP_LOG(TERSE, "Writing file " << buf << std::endl);
+  write(buf);
 }
 
 

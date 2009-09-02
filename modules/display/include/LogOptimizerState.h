@@ -15,6 +15,7 @@
 #include <IMP/display/geometry.h>
 #include <IMP/Pointer.h>
 #include <IMP/FailureHandler.h>
+#include <IMP/internal/utility.h>
 #include <vector>
 
 IMPDISPLAY_BEGIN_NAMESPACE
@@ -29,8 +30,6 @@ IMPDISPLAY_BEGIN_NAMESPACE
 class IMPDISPLAYEXPORT LogOptimizerState: public OptimizerState
 {
   mutable Pointer<Writer> writer_;
-  unsigned int step_;
-  unsigned int skip_steps_;
   std::string name_template_;
 
   CompoundGeometries edata_;
@@ -39,11 +38,6 @@ class IMPDISPLAYEXPORT LogOptimizerState: public OptimizerState
 public:
   //! Write files using name_template as a template (must have a %d in it)
   LogOptimizerState(Writer *writer, std::string name_template);
-
-  //! Set the number of steps to skip
-  void set_skip_steps(unsigned int i) {
-    skip_steps_=i;
-  }
 
   void add_geometry(CompoundGeometry* g);
 
@@ -56,7 +50,8 @@ public:
   //! Force writing the a file with the given name
   void write(std::string file_name) const;
 
-  IMP_OPTIMIZER_STATE(LogOptimizerState, get_module_version_info())
+  IMP_PERIODIC_OPTIMIZER_STATE(LogOptimizerState,
+                               get_module_version_info())
 };
 
 
