@@ -32,6 +32,47 @@
 #define IMP_CHECK_MUTABLE IMP_IF_CHECK(CHEAP) {assert_values_mutable();}
 #define IMP_CHECK_VALID_DERIVATIVES IMP_IF_CHECK(CHEAP) \
   {assert_valid_derivatives();}
+#define IMP_PARTICLE_ATTRIBUTE_TYPE(UCName, lcname, Value, add_action,  \
+                                    remove_action)                      \
+  void add_attribute(UCName##Key name, Value value){                    \
+    IMP_CHECK_ACTIVE;                                                   \
+    on_changed();                                                       \
+    add_action;                                                         \
+    lcname##s_.insert(name, value);                                     \
+  }                                                                     \
+  void remove_attribute(UCName##Key name) {                             \
+    IMP_CHECK_ACTIVE;                                                   \
+    on_changed();                                                       \
+    remove_action;                                                      \
+    lcname##s_.remove(name);                                            \
+  }                                                                     \
+  bool has_attribute(UCName##Key name) const{                           \
+    IMP_CHECK_ACTIVE;                                                   \
+    return lcname##s_.contains(name);                                   \
+  }                                                                     \
+  Value get_value(UCName##Key name) const {                             \
+    IMP_CHECK_ACTIVE;                                                   \
+    return lcname##s_.get_value(name);                                  \
+  }                                                                     \
+  void set_value(UCName##Key name, Value value) {                       \
+    IMP_CHECK_ACTIVE;                                                   \
+    IMP_CHECK_MUTABLE;                                                  \
+    on_changed();                                                       \
+    lcname##s_.set_value(name, value);                                  \
+  }                                                                     \
+  IMP_SWITCH_DOXYGEN(class UCName##KeyIterator,                         \
+         typedef UCName##IteratorTraits::Iterator UCName##KeyIterator); \
+  UCName##KeyIterator lcname##_keys_begin() const {                     \
+    return UCName##IteratorTraits::create_iterator(this, 0,             \
+                                              lcname##s_.get_length()); \
+  }                                                                     \
+  UCName##KeyIterator lcname##_keys_end() const {                       \
+    return UCName##IteratorTraits::create_iterator(this,                \
+                                               lcname##s_.get_length(), \
+                                              lcname##s_.get_length()); \
+  }
+
+
 
 IMP_BEGIN_NAMESPACE
 
@@ -167,8 +208,11 @@ class IMPEXPORT Particle : public Object
     internal::ArrayStorage<internal::StringAttributeTableTraits::Value> >
     StringTable;
   typedef internal::AttributeTable<internal::ParticlesAttributeTableTraits,
-    internal::ParticlesStorage<Particle*> >
+    internal::RefCountedStorage<Particle*> >
     ParticleTable;
+  typedef internal::AttributeTable<internal::ObjectsAttributeTableTraits,
+    internal::RefCountedStorage<Object*> >
+    ObjectTable;
   typedef internal::ArrayStorage<double>  DerivativeTable;
 
   typedef internal::ParticleKeyIterator<FloatKey, Particle,
@@ -179,6 +223,8 @@ class IMPEXPORT Particle : public Object
     internal::IsAttribute<StringKey, Particle> > StringIteratorTraits;
   typedef internal::ParticleKeyIterator<ParticleKey, Particle,
     internal::IsAttribute<ParticleKey, Particle> > ParticleIteratorTraits;
+  typedef internal::ParticleKeyIterator<ObjectKey, Particle,
+    internal::IsAttribute<ObjectKey, Particle> > ObjectIteratorTraits;
 
 
   typedef internal::ParticleKeyIterator<FloatKey, Particle,
@@ -187,19 +233,13 @@ class IMPEXPORT Particle : public Object
  private:
   WeakPointer<Model> model_;
 
-  // float attributes associated with the particle
   FloatTable floats_;
-  // special case the derivatives since we never check for existence
   DerivativeTable derivatives_;
-  // Whether a given float is optimized or not
   OptimizedTable optimizeds_;
-
-  // int attributes associated with the particle
   IntTable ints_;
-  // string attributes associated with the particle
   StringTable  strings_;
-  // particle attributes associated with the particle
   ParticleTable particles_;
+  ObjectTable objects_;
 
   Storage::iterator iterator_;
 
@@ -230,22 +270,17 @@ class IMPEXPORT Particle : public Object
       and derivatives in kcal/mol angstrom. This is not enforced.
   */
   /*@{*/
-  /** \param[in] key The key identifying the float attribute.
-      \param[in] value Initial value of the attribute.
-      \param[in] is_optimized Whether the attribute's value can be
-      changed by the optimizer.
-  */
-  void add_attribute(FloatKey key, const Float value,
-                     const bool is_optimized = false);
+  IMP_PARTICLE_ATTRIBUTE_TYPE(Float, float, Float,
+                              { derivatives_.add(name.get_index(), 0, 0);},
+                              {optimizeds_.remove_always(name);});
 
-  void remove_attribute(FloatKey name);
-
-
-  bool has_attribute(FloatKey name) const;
-
-  Float get_value(FloatKey name) const;
-
-  void set_value(FloatKey name, Float value);
+  void add_attribute(FloatKey name, const Float value, bool optimized){
+    IMP_CHECK_ACTIVE;
+    on_changed();
+    floats_.insert(name, value);
+    derivatives_.add(name.get_index(), 0, 0);
+    if (optimized) set_is_optimized(name, optimized);
+  }
 
   //! Add to the derivative of a specified float.
   /** \param[in] key Key identifying the attribute.
@@ -263,20 +298,6 @@ class IMPEXPORT Particle : public Object
   bool get_is_optimized(FloatKey k) const;
 
   Float get_derivative(FloatKey name) const;
-
-#ifdef IMP_DOXYGEN
-  class FloatKeyIterator;
-#else
-  typedef FloatIteratorTraits::Iterator FloatKeyIterator;
-#endif
-
-  FloatKeyIterator float_keys_begin() const {
-    return FloatIteratorTraits::create_iterator(this, 0, floats_.get_length());
-  }
-  FloatKeyIterator float_keys_end() const {
-    return FloatIteratorTraits::create_iterator(this, floats_.get_length(),
-                                                floats_.get_length());
-  }
 
 #ifdef IMP_DOXYGEN
   class OptimizedKeyIterator;
@@ -297,68 +318,13 @@ class IMPEXPORT Particle : public Object
 
   /** @name Int Attributes*/
   /*@{*/
-  /** \param[in] key The key identifying the attribute being added.
-      \param[in] value Initial value of the attribute.
-  */
-  void add_attribute(IntKey key, const Int value);
-
-  void remove_attribute(IntKey name);
-
-  bool has_attribute(IntKey name) const;
-
-  Int get_value(IntKey name) const;
-
-  void set_value(IntKey name, Int value);
-
-#ifdef IMP_DOXYGEN
-  class IntKeyIterator;
-#else
-  typedef IntIteratorTraits::Iterator IntKeyIterator;
-#endif
-
-  IntKeyIterator int_keys_begin() const {
-    return IntIteratorTraits::create_iterator(this, 0, ints_.get_length());
-  }
-  IntKeyIterator int_keys_end() const {
-    return IntIteratorTraits::create_iterator(this, ints_.get_length(),
-                                                ints_.get_length());
-  }
-
+  IMP_PARTICLE_ATTRIBUTE_TYPE(Int, int, Int,,);
   /*@}*/
 
 
   /** @name String Attributes*/
   /*@{*/
-
-  /** Add a String attribute to this particle.
-      \param[in] name Name of the attribute being added.
-      \param[in] value Initial value of the attribute.
-  */
-  void add_attribute(StringKey name, const String value);
-
-  void remove_attribute(StringKey name);
-
-  bool has_attribute(StringKey name) const;
-
-  String get_value(StringKey name) const;
-
-  void set_value(StringKey name, String value);
-
-#ifdef IMP_DOXYGEN
-  class StringKeyIterator;
-#else
-  typedef StringIteratorTraits::Iterator StringKeyIterator;
-#endif
-
-  StringKeyIterator string_keys_begin() const {
-    return StringIteratorTraits::create_iterator(this, 0,
-                                                 strings_.get_length());
-  }
-  StringKeyIterator string_keys_end() const {
-    return StringIteratorTraits::create_iterator(this,
-                                                 strings_.get_length(),
-                                                 strings_.get_length());
-  }
+  IMP_PARTICLE_ATTRIBUTE_TYPE(String, string, String,,)
   /*@}*/
 
 
@@ -367,35 +333,19 @@ class IMPEXPORT Particle : public Object
       useful for setting up graphs and hierarchies.
   */
   /*@{*/
-  /** Add a Particle attribute to this particle.
-      \param[in] key Name of the attribute being added.
-      \param[in] value Initial value of the attribute.
+    IMP_PARTICLE_ATTRIBUTE_TYPE(Particle, particle, Particle*,,)
+  /*@}*/
+
+
+  /** @name Object Attributes
+      Object attributes store a pointer to an IMP::Object. They are
+      useful for associating arbitrary data with a Particle.
+
+      \unstable{Object attributes}
+      \untested{Object attributes}
   */
-  void add_attribute(ParticleKey key, Particle* value);
-
-  void remove_attribute(ParticleKey name);
-
-  bool has_attribute(ParticleKey name) const;
-
-  Particle* get_value(ParticleKey name) const;
-
-  void set_value(ParticleKey name, Particle* value);
-
-#ifdef IMP_DOXYGEN
-  class ParticleKeyIterator;
-#else
-  typedef ParticleIteratorTraits::Iterator ParticleKeyIterator;
-#endif
-
-  ParticleKeyIterator particle_keys_begin() const {
-    return ParticleIteratorTraits::create_iterator(this, 0,
-                                                   particles_.get_length());
-  }
-  ParticleKeyIterator particle_keys_end() const {
-    return ParticleIteratorTraits::create_iterator(this,
-                                                   particles_.get_length(),
-                                                   particles_.get_length());
-  }
+  /*@{*/
+    IMP_PARTICLE_ATTRIBUTE_TYPE(Object, object, Object*,,);
   /*@}*/
 
   //! Get whether the particle is active.
@@ -464,26 +414,6 @@ class IMPEXPORT Particle : public Object
 
 IMP_OUTPUT_OPERATOR(Particle)
 
-
-
-inline bool Particle::has_attribute(FloatKey name) const
-{
-  IMP_CHECK_ACTIVE;
-  return floats_.contains(name);
-}
-
-
-
-inline Float Particle::get_value(FloatKey name) const
-{
-  IMP_check(get_is_active(), "Do not touch inactive particles "
-            << get_name(),
-            InactiveParticleException);
-  IMP_assert(has_attribute(name), "Particle " << get_name()
-             << " does not have attribute " << name);
-  return floats_.get_value(name);
-}
-
 inline Float Particle::get_derivative(FloatKey name) const
 {
   IMP_CHECK_ACTIVE;
@@ -493,15 +423,6 @@ inline Float Particle::get_derivative(FloatKey name) const
   return derivatives_.get(name.get_index());
 }
 
-inline void Particle::set_value(FloatKey name, Float value)
-{
-  IMP_CHECK_ACTIVE;
-  IMP_assert(has_attribute(name), "Particle " << get_name()
-             << " does not have attribute " << name);
-  IMP_CHECK_MUTABLE;
-  on_changed();
-  floats_.set_value(name, value);
-}
 
 inline bool Particle::get_is_optimized(FloatKey name) const
 {
@@ -540,144 +461,6 @@ inline void Particle::add_to_derivative(FloatKey name, Float value,
              "Something is wrong with derivative table.");
   derivatives_.set(name.get_index(),
                    derivatives_.get(name.get_index())+ da(value));
-}
-
-inline bool Particle::has_attribute(IntKey name) const
-{
-  IMP_CHECK_ACTIVE;
-  return ints_.contains(name);
-}
-
-
-
-inline Int Particle::get_value(IntKey name) const
-{
-  IMP_CHECK_ACTIVE;
-  IMP_assert(has_attribute(name), "Particle " << get_name()
-             << " does not have attribute " << name);
-  return ints_.get_value(name);
-}
-
-
-inline void Particle::set_value(IntKey name, Int value)
-{
-  IMP_CHECK_ACTIVE;
-  IMP_CHECK_MUTABLE;
-  on_changed();
-  ints_.set_value(name, value);
-}
-
-inline bool Particle::has_attribute(StringKey name) const
-{
-  IMP_CHECK_ACTIVE;
-  return strings_.contains(name);
-}
-
-
-
-inline String Particle::get_value(StringKey name) const
-{
-  IMP_CHECK_ACTIVE;
-  return strings_.get_value(name);
-}
-
-inline void Particle::set_value(StringKey name, String value)
-{
-  IMP_CHECK_ACTIVE;
-  IMP_CHECK_MUTABLE;
-  on_changed();
-  strings_.set_value(name, value);
-}
-
-
-inline bool Particle::has_attribute(ParticleKey name) const
-{
-  IMP_CHECK_ACTIVE;
-  return particles_.contains(name);
-}
-
-
-
-inline Particle* Particle::get_value(ParticleKey name) const
-{
-  IMP_CHECK_ACTIVE;
-  return particles_.get_value(name);
-}
-
-
-inline void Particle::set_value(ParticleKey name, Particle* value)
-{
-  IMP_CHECK_ACTIVE;
-  IMP_CHECK_MUTABLE;
-  on_changed();
-  particles_.set_value(name, Pointer<Particle>(value));
-}
-
-
-void inline Particle::add_attribute(FloatKey name, const Float value,
-                                    bool is_optimized)
-{
-  IMP_CHECK_ACTIVE;
-  on_changed();
-  floats_.insert(name, value);
-  derivatives_.add(name.get_index(), 0, 0);
-  if (is_optimized) {
-    optimizeds_.insert(name, true);
-  }
-}
-
-void inline Particle::remove_attribute(FloatKey name)
-{
-  IMP_CHECK_ACTIVE;
-  on_changed();
-  floats_.remove(name);
-  //derivatives_.remove(name);
-  optimizeds_.remove_always(name);
-}
-
-
-void inline Particle::add_attribute(IntKey name, const Int value)
-{
-  IMP_CHECK_ACTIVE;
-  on_changed();
-  ints_.insert(name, value);
-}
-
-void inline Particle::remove_attribute(IntKey name)
-{
-  IMP_CHECK_ACTIVE;
-  on_changed();
-  ints_.remove(name);
-}
-
-
-void inline Particle::add_attribute(StringKey name, const String value)
-{
-  IMP_CHECK_ACTIVE;
-  on_changed();
-  strings_.insert(name, value);
-}
-
-void inline Particle::remove_attribute(StringKey name)
-{
-  IMP_CHECK_ACTIVE;
-  on_changed();
-  strings_.remove(name);
-}
-
-void inline Particle::add_attribute(ParticleKey name, Particle* value)
-{
-  IMP_CHECK_ACTIVE;
-  on_changed();
-  particles_.insert(name,value);
-}
-
-
-void inline Particle::remove_attribute(ParticleKey name)
-{
-  IMP_CHECK_ACTIVE;
-  on_changed();
-  particles_.remove(name);
 }
 
 
