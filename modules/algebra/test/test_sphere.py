@@ -43,5 +43,25 @@ class SphereTests(IMP.test.TestCase):
         sampled_centroid = sampled_centroid * (1.0/len(points))
         self.assertEqual((sampled_centroid-center).get_magnitude() < 1.0,True)
 
+    def test_enclosing(self):
+        """Check enclosing sphere"""
+        ss= IMP.algebra.Sphere3Ds()
+        bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
+                                      IMP.algebra.Vector3D(10,10,10))
+        for i in range(0,20):
+            v= IMP.algebra.random_vector_in_box(bb)
+            r= i
+            s= IMP.algebra.Sphere3D(v,r)
+            ss.append(s)
+        for i in range(1,20):
+            css=ss[0:i]
+            print len(css)
+            es= IMP.algebra.enclosing_sphere(css)
+            es.show(); print
+            for cs in css:
+                d= (cs.get_center()-es.get_center()).get_magnitude()
+                cs.show(); print
+                self.assert_(d+ cs.get_radius()- es.get_radius() < .5)
+
 if __name__ == '__main__':
     unittest.main()
