@@ -73,6 +73,19 @@ struct ParticlesAttributeTableTraits
   }
 };
 
+struct ObjectsAttributeTableTraits
+{
+  typedef Object* Value;
+  typedef Object* PassValue;
+  typedef ObjectKey Key;
+  static Value get_invalid() {
+    return NULL;
+  }
+  static bool get_is_valid(const Value& f) {
+    return f!= NULL;
+  }
+};
+
 struct DoubleAttributeTableTraits: public DefaultTraits<double, FloatKey>
 {
   static double get_invalid() {
@@ -165,11 +178,11 @@ public:
 
 
 template <class Value>
-class ParticlesStorage {
+class RefCountedStorage {
   VectorOfRefCounted<Value> map_;
 public:
-  ParticlesStorage(Value){}
-  ParticlesStorage(unsigned int size, Value): map_(size){}
+  RefCountedStorage(Value){}
+  RefCountedStorage(unsigned int size, Value): map_(size){}
   Value get(unsigned int i) const {
     IMP_check(fits(i), "Out of range traits.", IndexException);
     return map_[i];

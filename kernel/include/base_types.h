@@ -58,6 +58,9 @@ IMP_DECLARE_KEY_TYPE(IntKey, 1);
 IMP_DECLARE_KEY_TYPE(StringKey, 2);
 //! The type used to identify a particle attribute in the Particles
 IMP_DECLARE_KEY_TYPE(ParticleKey, 3);
+//! The type used to identify a particle attribute in the Particles
+IMP_DECLARE_KEY_TYPE(ObjectKey, 4);
+
 /** @} */
 
 IMP_END_NAMESPACE
