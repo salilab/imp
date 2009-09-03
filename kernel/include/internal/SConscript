@@ -6,6 +6,7 @@ files = [
          'PrefixStream.h',
          'Unit.h',
          'Vector.h',
+         'attribute_storage.h',
          'constants.h',
          'container_helpers.h',
          'deprecation.h',
