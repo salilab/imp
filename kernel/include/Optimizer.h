@@ -226,17 +226,18 @@ protected:
   typedef std::vector<FloatIndex> FloatIndexes;
 
   double width(FloatKey k) const {
-    if (!widths_.contains(k)) {
+    if (!widths_.fits(k.get_index())
+        || !FloatTable::Traits::get_is_valid(widths_.get(k.get_index())) ) {
       FloatRange w= model_->get_range(k);
       double wid=static_cast<double>(w.second)- w.first;
       if (wid > .0001) {
         //double nwid= std::pow(2, std::ceil(log2(wid)));
-        widths_.insert(k, wid);
+        widths_.add(k.get_index(), wid);
       } else {
-        widths_.insert(k, 1);
+        widths_.add(k.get_index(), 1);
       }
     }
-    return widths_.get_value(k);
+    return widths_.get(k.get_index());
     //return 1.0;
   }
 
@@ -271,8 +272,7 @@ protected:
   //!@}
 
 private:
-  typedef internal::AttributeTable<
-    internal::VectorStorage<internal::FloatAttributeTableTraits> >
+  typedef internal::VectorStorage<internal::FloatAttributeTableTraits>
    FloatTable;
   mutable FloatTable widths_;
   WeakPointer<Model> model_;

@@ -26,17 +26,20 @@ public:
   VectorStorage(unsigned int size): map_(size,
                                          Traits::get_invalid()){}
   typename Map::const_reference get(unsigned int i) const {
-    IMP_check(i < map_.size(), "Out of range traits.", IndexException);
+    IMP_assert(i < map_.size(), "Out of range traits.");
     return map_[i];
   }
   void set(unsigned int i, typename Traits::PassValue v) {
-    IMP_check(i < map_.size(), "Out of range traits.", IndexException);
+    IMP_assert(i < map_.size(), "Out of range traits.");
     map_[i]=v;
   }
   void add(unsigned int i,  typename Traits::PassValue v) {
     map_.resize(std::max(static_cast<unsigned int>(map_.size()), i+1),
                 Traits::get_invalid());
     map_[i]= v;
+  }
+  void remove(unsigned int i) {
+    map_[i]= Traits::get_invalid();
   }
   bool fits(unsigned int i) const {
     return map_.size() > i;
@@ -67,16 +70,19 @@ public:
   RefCountedStorage(){}
   RefCountedStorage(unsigned int size): map_(size){}
   typename Traits::PassValue get(unsigned int i) const {
-    IMP_check(fits(i), "Out of range traits.", IndexException);
+    IMP_assert(fits(i), "Out of range traits.");
     return map_[i];
   }
   void set(unsigned int i, typename Traits::PassValue v) {
-    IMP_check(fits(i), "Out of range traits.", IndexException);
+    IMP_assert(fits(i), "Out of range traits.");
     map_.set(i,v);
   }
   void add(unsigned int i, typename Traits::PassValue v) {
     map_.resize(std::max(static_cast<unsigned int>(map_.size()), i+1));
     map_.set(i, v);
+  }
+  void remove(unsigned int i) {
+    map_.set(i, NULL);
   }
   bool fits(unsigned int i) const {
     return map_.size() > i;
@@ -121,11 +127,11 @@ public:
     fill(Traits::get_invalid());
   }
   typename Traits::PassValue get(unsigned int i) const {
-    IMP_check(fits(i), "Out of range traits.", IndexException);
+    IMP_assert(fits(i), "Out of range traits.");
     return data_[i];
   }
   void set(unsigned int i, typename Traits::PassValue v) {
-    IMP_check(fits(i), "Out of range traits.", IndexException);
+    IMP_assert(fits(i), "Out of range traits.");
     data_[i]=v;
   }
   void add(unsigned int i, typename Traits::PassValue v) {
@@ -139,6 +145,11 @@ public:
       size_= i+1;
     }
     data_[i]= v;
+  }
+  void remove(unsigned int i) {
+    if (fits(i)) {
+      set(i, Traits::get_invalid());
+    }
   }
   bool fits(unsigned int i) const {
     return size_ > i;
@@ -179,6 +190,9 @@ public:
   void add(unsigned int i, typename Traits::PassValue v) {
     return P::add(i-OFFSET, v);
   }
+  void remove(unsigned int i) {
+    P::remove(i-OFFSET);
+  }
   bool fits(unsigned int i) const {
     return P::fits(i-OFFSET);
   }
@@ -197,17 +211,18 @@ public:
     clear();
   }
   typename Traits::PassValue get(unsigned int i) const {
-    IMP_check(fits(i), "Out of range attribuite: " << i,
-              IndexException);
+    IMP_assert(fits(i), "Out of range attribuite: " << i);
     return data_[i];
   }
   void set(unsigned int i, typename Traits::PassValue v) {
-    IMP_check(fits(i), "Out of range attribuite: " << i,
-              IndexException);
+    IMP_assert(fits(i), "Out of range attribuite: " << i);
     data_[i]=v;
   }
   void add(unsigned int i, typename Traits::PassValue v) {
     set(i, v);
+  }
+  void remove(unsigned int i) {
+    set(i, Traits::get_invalid());
   }
   bool fits(unsigned int i) const {
     return (i < SIZE);
@@ -250,14 +265,12 @@ public:
     overflow_(std::max(0, size-SIZE)){
   }
   typename Traits::PassValue get(unsigned int i) const {
-    IMP_check(fits(i), "Out of range attribuite: " << i,
-              IndexException);
+    IMP_assert(fits(i), "Out of range attribuite: " << i);
     if (i< SIZE) { return P::get(i);}
     else {return overflow_.get(i-SIZE);}
   }
   void set(unsigned int i, typename Traits::PassValue v) {
-    IMP_check(fits(i), "Out of range attribuite: " << i,
-              IndexException);
+    IMP_assert(fits(i), "Out of range attribuite: " << i);
     if (i< SIZE) { P::set(i, v);}
     else {overflow_.set(i-SIZE, v);}
   }
@@ -266,6 +279,13 @@ public:
       overflow_.add(i-SIZE, v);
     }
     set(i, v);
+  }
+  void remove(unsigned int i) {
+    if (i >= SIZE) {
+      overflow_.remove(i-SIZE);
+    } else {
+      P::remove(i);
+    }
   }
   bool fits(unsigned int i) const {
     if (i < SIZE) return true;
