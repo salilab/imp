@@ -42,9 +42,13 @@ void Particle::show(std::ostream& out) const
     for (FloatKeyIterator it= float_keys_begin(); it != float_keys_end();
          ++it) {
       FloatKey k =*it;
-      preout << k << ": " << get_value(k) << " ("
-             << get_derivative(k) << ") "
-             << (get_is_optimized(k)?"optimized":"") << std::endl;
+      preout << k << ": " << get_value(k);
+      if (get_model()->get_stage() == Model::AFTER_EVALUATE
+          || get_model()->get_stage() == Model::NOT_EVALUATING){
+        preout << " ("
+               << get_derivative(k) << ") ";
+      }
+      preout<< (get_is_optimized(k)?"optimized":"") << std::endl;
     }
 
     preout.set_prefix("");
