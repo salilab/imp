@@ -32,8 +32,8 @@
 #define IMP_CHECK_MUTABLE IMP_IF_CHECK(CHEAP) {assert_values_mutable();}
 #define IMP_CHECK_VALID_DERIVATIVES IMP_IF_CHECK(CHEAP) \
   {assert_valid_derivatives();}
-#define IMP_PARTICLE_ATTRIBUTE_TYPE(UCName, lcname, Value, add_action,  \
-                                    remove_action)                      \
+#define IMP_PARTICLE_ATTRIBUTE_TYPE(UCName, lcname, Value, table,       \
+                                    add_action, remove_action)          \
   void add_attribute(UCName##Key name, Value initial_value){            \
     IMP_CHECK_ACTIVE;                                                   \
     IMP_CHECK_MUTABLE;                                                  \
@@ -49,7 +49,7 @@
               ValueException);                                          \
     on_changed();                                                       \
     add_action;                                                         \
-    lcname##s_.add(name.get_index(), initial_value);                    \
+    table.add(name.get_index(), initial_value);                         \
   }                                                                     \
   void remove_attribute(UCName##Key name) {                             \
     IMP_CHECK_ACTIVE;                                                   \
@@ -61,16 +61,16 @@
               "Cannot remove attribute " << name << " from particle "   \
               << get_name() << " as it is not there.",                  \
               InvalidStateException);                                   \
-    lcname##s_.remove(name.get_index());                                \
+    table.remove(name.get_index());                                     \
   }                                                                     \
   bool has_attribute(UCName##Key name) const{                           \
     IMP_check(name != UCName##Key(), "Cannot use attributes without "   \
               << "naming them.", ValueException);                       \
     IMP_CHECK_ACTIVE;                                                   \
-    if (!lcname##s_.fits(name.get_index())) return false;               \
+    if (!table.fits(name.get_index())) return false;                    \
     else {                                                              \
       return UCName##Table::Traits::get_is_valid(                       \
-                                     lcname##s_.get(name.get_index())); \
+                                          table.get(name.get_index())); \
     }                                                                   \
   }                                                                     \
   Value get_value(UCName##Key name) const {                             \
@@ -81,7 +81,7 @@
               "Cannot get value " << name << " from particle "          \
               << get_name() << " as it is not there.",                  \
               InvalidStateException);                                   \
-    return lcname##s_.get(name.get_index());                            \
+    return table.get(name.get_index());                                 \
   }                                                                     \
   void set_value(UCName##Key name, Value value) {                       \
     IMP_check(name != UCName##Key(), "Cannot use attributes without "   \
@@ -97,18 +97,18 @@
               << get_name() << " as it is not there.",                  \
               InvalidStateException);                                   \
     on_changed();                                                       \
-    lcname##s_.set(name.get_index(), value);                            \
+    table.set(name.get_index(), value);                                 \
   }                                                                     \
   IMP_SWITCH_DOXYGEN(class UCName##KeyIterator,                         \
          typedef UCName##IteratorTraits::Iterator UCName##KeyIterator); \
   UCName##KeyIterator lcname##_keys_begin() const {                     \
     return UCName##IteratorTraits::create_iterator(this, 0,             \
-                                              lcname##s_.get_length()); \
+                                                   table.get_length()); \
   }                                                                     \
   UCName##KeyIterator lcname##_keys_end() const {                       \
     return UCName##IteratorTraits::create_iterator(this,                \
-                                               lcname##s_.get_length(), \
-                                              lcname##s_.get_length()); \
+                                                   table.get_length(),  \
+                                                   table.get_length()); \
   }                                                                     \
   UCName##Keys get_##lcname##_attributes() const {                      \
     return UCName##Keys(lcname##_keys_begin(),                          \
@@ -297,7 +297,7 @@ class IMPEXPORT Particle : public Object
   Type get_value(KeyType name) const;
   /* @} */
 #else
-  IMP_PARTICLE_ATTRIBUTE_TYPE(Float, float, Float,
+  IMP_PARTICLE_ATTRIBUTE_TYPE(Float, float, Float, floats_,
                               { derivatives_.add(name.get_index(), 0);},
                               {if (optimizeds_.fits(name.get_index())) {
                                   optimizeds_.remove(name.get_index());
@@ -319,10 +319,10 @@ class IMPEXPORT Particle : public Object
                                                     floats_.get_length());
   }
 
-  IMP_PARTICLE_ATTRIBUTE_TYPE(Int, int, Int,,);
-  IMP_PARTICLE_ATTRIBUTE_TYPE(String, string, String,,)
-  IMP_PARTICLE_ATTRIBUTE_TYPE(Particle, particle, Particle*,,)
-  IMP_PARTICLE_ATTRIBUTE_TYPE(Object, object, Object*,,);
+  IMP_PARTICLE_ATTRIBUTE_TYPE(Int, int, Int,ints_,,);
+  IMP_PARTICLE_ATTRIBUTE_TYPE(String, string, String,strings_,,)
+  IMP_PARTICLE_ATTRIBUTE_TYPE(Particle, particle, Particle*,particles_,,)
+  IMP_PARTICLE_ATTRIBUTE_TYPE(Object, object, Object*,objects_,,);
 #endif
 
  /** @name Float Attributes
