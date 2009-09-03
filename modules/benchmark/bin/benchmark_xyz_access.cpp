@@ -200,8 +200,10 @@ void do_benchmark(std::string descr, std::string fname) {
 
 int main(int argc, char **argv) {
   do_benchmark("small", IMP::get_data_directory()
-               +"/benchmark/single_protein.pdb");
+               +"/benchmark/small_protein.pdb");
   do_benchmark("large", IMP::get_data_directory()
-               +"/benchmark/big_protein.pdb");
+               +"/benchmark/large_protein.pdb");
+ do_benchmark("huge", IMP::get_data_directory()
+               +"/benchmark/huge_protein.pdb");
   return 0;
 }
