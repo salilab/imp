@@ -74,7 +74,8 @@ void Particle::show(std::ostream& out) const
 // methods for incremental
 
 void Particle::move_derivatives_to_shadow() {
-  shadow_->derivatives_=DerivativeTable(derivatives_.get_length(), 0);
+  shadow_->derivatives_=DerivativeTable(derivatives_.get_length());
+  shadow_->derivatives_.fill(0);
   std::swap(shadow_->derivatives_, derivatives_);
 }
 
@@ -96,7 +97,8 @@ void Particle::setup_incremental() {
   shadow_->set_name(get_name()+" history");
   shadow_->model_= model_;
   shadow_->dirty_=true;
-  shadow_->derivatives_= DerivativeTable(derivatives_.get_length(), 0);
+  shadow_->derivatives_= DerivativeTable(derivatives_.get_length());
+  shadow_->derivatives_.fill(0);
   shadow_->optimizeds_= optimizeds_;
 }
 

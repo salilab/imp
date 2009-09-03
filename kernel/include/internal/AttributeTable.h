@@ -14,10 +14,8 @@
 #include "../Pointer.h"
 #include "../macros.h"
 #include "../VectorOfRefCounted.h"
+#include "attribute_storage.h"
 
-#include <boost/scoped_array.hpp>
-
-#include <vector>
 #include <limits>
 
 IMP_BEGIN_NAMESPACE
@@ -36,6 +34,7 @@ struct DefaultTraits
   typedef T PassValue;
   typedef K Key;
 };
+
 
 struct FloatAttributeTableTraits: public DefaultTraits<float, FloatKey>
 {
@@ -137,229 +136,6 @@ struct StringAttributeTableTraits: public DefaultTraits<String, StringKey>
   }
 };
 
-template <class Value>
-class VectorStorage {
-  typedef std::vector<Value> Map;
-  std::vector<Value> map_;
-public:
-  VectorStorage(Value initial_value){}
-  VectorStorage(unsigned int size, Value initial_value): map_(size,
-                                                              initial_value){}
-  typename Map::const_reference get(unsigned int i) const {
-    IMP_check(i < map_.size(), "Out of range traits.", IndexException);
-    return map_[i];
-  }
-  void set(unsigned int i, const Value &v) {
-    IMP_check(i < map_.size(), "Out of range traits.", IndexException);
-    map_[i]=v;
-  }
-  void add(unsigned int i, const Value &v, const Value &fill_value) {
-    map_.resize(std::max(static_cast<unsigned int>(map_.size()), i+1),
-                fill_value);
-    map_[i]= v;
-  }
-  bool fits(unsigned int i) const {
-    return map_.size() > i;
-  }
-  void clear(Value v) {
-    map_.clear();
-  }
-  unsigned int get_length() const {
-    return map_.size();
-  }
-
-  void swap_with(VectorStorage<Value> &o) {
-    std::swap(map_, o.map_);
-  }
-  void fill(Value v) {
-    std::fill(map_.begin(), map_.end(), v);
-  }
-};
-
-
-template <class Value>
-class RefCountedStorage {
-  VectorOfRefCounted<Value> map_;
-public:
-  RefCountedStorage(Value){}
-  RefCountedStorage(unsigned int size, Value): map_(size){}
-  Value get(unsigned int i) const {
-    IMP_check(fits(i), "Out of range traits.", IndexException);
-    return map_[i];
-  }
-  void set(unsigned int i, Value v) {
-    IMP_check(fits(i), "Out of range traits.", IndexException);
-    map_.set(i,v);
-  }
-  void add(unsigned int i, Value v, Value fill) {
-    map_.resize(std::max(static_cast<unsigned int>(map_.size()), i+1));
-    map_.set(i, v);
-  }
-  bool fits(unsigned int i) const {
-    return map_.size() > i;
-  }
-  void clear(Value v) {
-    map_.clear();
-  }
-  unsigned int get_length() const {
-    return map_.size();
-  }
-
-  void swap_with(VectorStorage<Value> &o) {
-    std::swap(map_, o.map_);
-  }
-  void fill(Value v) {
-    std::fill(map_.begin(), map_.end(), v);
-  }
-};
-
-
-// save a word since we don't need separate capacity
-template <class Value>
-class ArrayStorage {
-  boost::scoped_array<Value> data_;
-  unsigned int size_;
-public:
-  ArrayStorage(const ArrayStorage<Value> &o) {
-    operator=(o);
-  }
-  const ArrayStorage<Value>& operator=(const ArrayStorage<Value> &o) {
-    size_= o.size_;
-    if (size_>0) {
-      data_.reset(new Value[size_]);
-      std::copy(o.data_.get(), o.data_.get()+size_, data_.get());
-    }
-    return *this;
-  }
-  ArrayStorage(Value initial_value): size_(0){}
-  ArrayStorage(unsigned int size, Value initial_value):
-    data_(new Value[size]), size_(size){
-    fill(initial_value);
-  }
-  const Value& get(unsigned int i) const {
-    IMP_check(fits(i), "Out of range traits.", IndexException);
-    return data_[i];
-  }
-  void set(unsigned int i, const Value &v) {
-    IMP_check(fits(i), "Out of range traits.", IndexException);
-    data_[i]=v;
-  }
-  void add(unsigned int i, const Value &v, const Value &fill_value) {
-    if (i+1 > size_) {
-      boost::scoped_array<Value> n(new Value[i+1]);
-      std::copy(data_.get(), data_.get()+size_, n.get());
-      std::fill(n.get()+size_, n.get()+i, fill_value); // skip the last
-      data_.swap(n);
-      size_= i+1;
-    }
-    data_[i]= v;
-  }
-  bool fits(unsigned int i) const {
-    return size_ > i;
-  }
-  void clear(Value v) {
-    size_=0;
-    data_.reset();
-  }
-  unsigned int get_length() const {
-    return size_;
-  }
-
-  void swap_with(VectorStorage<Value> &o) {
-    std::swap(data_, o.data_);
-    std::swap(size_, o.size_);
-  }
-  void fill(Value v) {
-    std::fill(data_.get(), data_.get()+size_, v);
-  }
-};
-
-template <class Value, unsigned int OFFSET>
-class OffsetArrayStorage: public ArrayStorage<Value> {
-  typedef ArrayStorage<Value> P;
-public:
-  OffsetArrayStorage(Value initial_value): P(initial_value){}
-  OffsetArrayStorage(unsigned int size, Value initial_value):
-    P(size-OFFSET, initial_value) {
-    IMP_assert(size >= OFFSET, "Indexes smaller than "
-               << OFFSET << " should not make it here.");
-  }
-  const Value& get(unsigned int i) const {
-    return P::get(i-OFFSET);
-  }
-  void set(unsigned int i, const Value &v) {
-    return P::set(i-OFFSET);
-  }
-  void add(unsigned int i, const Value &v, const Value &fill_value) {
-    return P::add(i-OFFSET, v, fill_value);
-  }
-  bool fits(unsigned int i) const {
-    return P::fist(i-OFFSET);
-  }
-};
-
-
-
-template <class Value, int SIZE, class Overflow>
-class InlineStorage {
-  Value data_[SIZE];
-  Overflow overflow_;
-public:
-  InlineStorage(Value initial_value){
-    clear(initial_value);
-  }
-  InlineStorage(int size, Value initial_value):
-    overflow_(std::max(0, size-SIZE),
-              initial_value){
-    clear(initial_value);
-  }
-  Value get(unsigned int i) const {
-    IMP_check(fits(i), "Out of range attribuite: " << i,
-              IndexException);
-    if (i< SIZE) { return data_[i];}
-    else {return overflow_.get(i-SIZE);}
-  }
-  void set(unsigned int i, const Value &v) {
-    IMP_check(fits(i), "Out of range attribuite: " << i,
-              IndexException);
-    if (i< SIZE) { data_[i]=v;}
-    else {overflow_.set(i-SIZE, v);}
-  }
-  void add(unsigned int i, const Value &v, const Value &fill_value) {
-    if (i >= SIZE) {
-      overflow_.add(i-SIZE, v, fill_value);
-    }
-    set(i, v);
-  }
-  bool fits(unsigned int i) const {
-    if (i < SIZE) return true;
-    return overflow_.fits(i-SIZE);
-  }
-  void clear(Value v) {
-    overflow_.clear(v);
-    fill(v);
-  }
-  unsigned int get_length() const {
-    return SIZE+overflow_.get_length();
-  }
-
-  void swap_with(InlineStorage<Value, SIZE, Overflow> &o) {
-    for (unsigned int i=0; i< SIZE; ++i) {
-      std::swap(data_[i], o.data_[i]);
-    }
-    swap(overflow_, o.overflow_);
-  }
-  void fill(Value v) {
-    std::fill(data_, data_+SIZE, v);
-    overflow_.fill(v);
-  }
-};
-
-template <class V, int S, class O>
-void swap(InlineStorage<V,S, O> &a,
-          InlineStorage<V,S, O> &b) {
-  a.swap_with(b);
-}
 
 
 // The traits for the particle class are declared in the Particle.h
@@ -377,10 +153,11 @@ void swap(InlineStorage<V,S, O> &a,
     values is a checked error. The values are specified by the
     Traits::invalid entry.
  */
-template <class ValueTraits, class Storage>
+template <class Storage>
 class AttributeTable
 {
-  typedef AttributeTable<ValueTraits, Storage> This;
+  typedef AttributeTable<Storage> This;
+  typedef typename Storage::Traits ValueTraits;
 
   Storage map_;
 
@@ -395,10 +172,10 @@ public:
   typedef typename ValueTraits::Value Value;
   typedef typename ValueTraits::PassValue PassValue;
   typedef typename ValueTraits::Key Key;
-  AttributeTable(): map_(ValueTraits::get_invalid()){}
+  AttributeTable(Storage s= Storage()): map_(s){}
 
   void clear() {
-    map_.clear(ValueTraits::get_invalid());
+    map_.clear();
   }
 
   const PassValue get_value(Key k) const {
@@ -447,8 +224,7 @@ public:
     if (0) std::cout << val;
     IMP_assert(val <100000, "Bad key index: " << k.get_index()
                << " " << k.get_string());
-    map_.add(k.get_index(), vv,
-             ValueTraits::get_invalid());
+    map_.add(k.get_index(), vv);
   }
 
   void remove(Key k) {
@@ -482,15 +258,15 @@ public:
     }
   }
 
-  void swap_with( AttributeTable<ValueTraits, Storage> &o) {
+  void swap_with( AttributeTable<Storage> &o) {
     swap(map_, o.map_);
   }
 
 };
 
-IMP_OUTPUT_OPERATOR_2(AttributeTable)
+IMP_OUTPUT_OPERATOR_1(AttributeTable)
 
-IMP_SWAP_2(AttributeTable);
+IMP_SWAP_1(AttributeTable);
 
 namespace {
   static const FloatKey xyzr_keys[]={FloatKey(0U), FloatKey(1U),
