@@ -210,7 +210,7 @@ public:
     set(i, v);
   }
   bool fits(unsigned int i) const {
-    if (i < SIZE) return true;
+    return (i < SIZE);
   }
   void clear() {
     fill(Traits::get_invalid());
@@ -294,8 +294,6 @@ void swap(InlineStorage<V,S> &a,
           InlineStorage<V,S> &b) {
   a.swap_with(b);
 }
-
-
 
 
 
