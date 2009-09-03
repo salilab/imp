@@ -271,8 +271,8 @@ protected:
   //!@}
 
 private:
-  typedef internal::AttributeTable<internal::FloatAttributeTableTraits,
-    internal::VectorStorage<Float> >
+  typedef internal::AttributeTable<
+    internal::VectorStorage<internal::FloatAttributeTableTraits> >
    FloatTable;
   mutable FloatTable widths_;
   WeakPointer<Model> model_;

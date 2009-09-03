@@ -82,6 +82,11 @@ class SaveOptimizeds;
 
 //! Class to handle individual model particles.
 /**
+
+   \note Direct manipuation of particles is considered advanced
+   and Particles should only be manipulated through
+   \ref decorators "Decorators".
+
    A IMP::Particle is a mapping between keys and values.
 
    Four possible types of values:
@@ -118,10 +123,6 @@ class SaveOptimizeds;
    or possibly just crash if they are not. Likewise an attempt to touch
    an inactive particle is also undefined (and will throw an exception if
    checks are enabled).
-
-   \note In general, Particles should only be used through
-   \ref decorators "Decorators" as these provide a nice and more reliable
-   interface.
 */
 class IMPEXPORT Particle : public Object
 {
@@ -177,43 +178,26 @@ class IMPEXPORT Particle : public Object
   void move_derivatives_to_shadow();
   // end incremental
 
-
-  /* This has to be declared here since boost 1.35 wants the full
-     definition of Particle to be available when the Pointer
-     is declared.
-  */
-  struct ParticleAttributeTableTraits
-  {
-    typedef Pointer<Particle> Value;
-    typedef Particle* PassValue;
-    typedef ParticleKey Key;
-    static Value get_invalid() {
-      return Value();
-    }
-    static bool get_is_valid(const Value& f) {
-      return f!= Value();
-    }
-  };
-
-  typedef internal::AttributeTable<internal::FloatAttributeTableTraits,
-    internal::ArrayStorage<internal::FloatAttributeTableTraits::Value> >
+  typedef internal::AttributeTable<
+    internal::ArrayStorage<internal::FloatAttributeTableTraits> >
     FloatTable;
-  typedef internal::AttributeTable<internal::BoolAttributeTableTraits,
-    internal::ArrayStorage<internal::BoolAttributeTableTraits::Value> >
+  typedef internal::AttributeTable<
+    internal::ArrayStorage<internal::BoolAttributeTableTraits> >
     OptimizedTable;
-  typedef internal::AttributeTable<internal::IntAttributeTableTraits,
-    internal::ArrayStorage<internal::IntAttributeTableTraits::Value> >
+  typedef internal::AttributeTable<
+    internal::ArrayStorage<internal::IntAttributeTableTraits> >
     IntTable;
-  typedef internal::AttributeTable<internal::StringAttributeTableTraits,
-    internal::ArrayStorage<internal::StringAttributeTableTraits::Value> >
+  typedef internal::AttributeTable<
+    internal::ArrayStorage<internal::StringAttributeTableTraits> >
     StringTable;
-  typedef internal::AttributeTable<internal::ParticlesAttributeTableTraits,
-    internal::RefCountedStorage<Particle*> >
+  typedef internal::AttributeTable<
+    internal::RefCountedStorage<internal::ParticlesAttributeTableTraits> >
     ParticleTable;
-  typedef internal::AttributeTable<internal::ObjectsAttributeTableTraits,
-    internal::RefCountedStorage<Object*> >
+  typedef internal::AttributeTable<
+    internal::RefCountedStorage<internal::ObjectsAttributeTableTraits> >
     ObjectTable;
-  typedef internal::ArrayStorage<double>  DerivativeTable;
+  typedef internal::ArrayStorage<internal::DoubleAttributeTableTraits>
+    DerivativeTable;
 
   typedef internal::ParticleKeyIterator<FloatKey, Particle,
     internal::IsAttribute<FloatKey, Particle> > FloatIteratorTraits;
@@ -277,7 +261,7 @@ class IMPEXPORT Particle : public Object
   /* @} */
 #else
   IMP_PARTICLE_ATTRIBUTE_TYPE(Float, float, Float,
-                              { derivatives_.add(name.get_index(), 0, 0);},
+                              { derivatives_.add(name.get_index(), 0);},
                               {optimizeds_.remove_always(name);});
 
 #ifdef IMP_DOXYGEN
@@ -315,7 +299,7 @@ class IMPEXPORT Particle : public Object
     IMP_CHECK_ACTIVE;
     on_changed();
     floats_.insert(name, value);
-    derivatives_.add(name.get_index(), 0, 0);
+    derivatives_.add(name.get_index(), 0);
     if (optimized) set_is_optimized(name, optimized);
   }
 
