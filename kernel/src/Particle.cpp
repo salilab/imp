@@ -39,34 +39,46 @@ void Particle::show(std::ostream& out) const
   if (model_) {
     preout << "float attributes:" << std::endl;
     preout.set_prefix("  ");
-    for (unsigned int i=0; i< derivatives_.get_length(); ++i) {
-      FloatKey k(i);
-      if (has_attribute(k)) {
-        preout << k << ": " << get_value(k) << " ("
-            << derivatives_.get(i) << ") "
-            << (get_is_optimized(k)?"optimized":"") << std::endl;
-      }
+    for (FloatKeyIterator it= float_keys_begin(); it != float_keys_end();
+         ++it) {
+      FloatKey k =*it;
+      preout << k << ": " << get_value(k) << " ("
+             << get_derivative(k) << ") "
+             << (get_is_optimized(k)?"optimized":"") << std::endl;
     }
-    preout.set_prefix("");
-    out << "optimizeds:" << std::endl;
-    preout.set_prefix("  ");
-    optimizeds_.show(preout);
 
     preout.set_prefix("");
     out << "int attributes:" << std::endl;
     preout.set_prefix("  ");
-    ints_.show(preout);
+    for (IntKeyIterator it= int_keys_begin(); it != int_keys_end();
+         ++it) {
+      preout << *it << ": " << get_value(*it) << std::endl;
+    }
 
     preout.set_prefix("");
     out << "string attributes:" << std::endl;
     preout.set_prefix("  ");
-    strings_.show(preout);
+    for (StringKeyIterator it= string_keys_begin(); it != string_keys_end();
+         ++it) {
+      preout << *it << ": " << get_value(*it) << std::endl;
+    }
 
     preout.set_prefix("");
     out << "particle attributes:" << std::endl;
     preout.set_prefix("  ");
-    particles_.show(preout);
+    for (ParticleKeyIterator it= particle_keys_begin();
+         it != particle_keys_end();
+         ++it) {
+      preout << *it << ": " << get_value(*it)->get_name() << std::endl;
+    }
 
+    preout.set_prefix("");
+    out << "object attributes:" << std::endl;
+    preout.set_prefix("  ");
+    for (ObjectKeyIterator it= object_keys_begin(); it != object_keys_end();
+         ++it) {
+      preout << *it << ": " << get_value(*it)->get_name() << std::endl;
+    }
   }
 }
 
