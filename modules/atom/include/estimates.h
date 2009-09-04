@@ -20,48 +20,17 @@ IMPATOM_BEGIN_NAMESPACE
 //!@{
 
 //! Estimate the volume of a protein from its mass
-/** The estimate uses a formula published in
-
-    <b>Average protein density is a molecular-weight-dependent function.</b>
-
-    Fischer H, Polikarpov I, Craievich AF.
-
-    The mass density of proteins is a relevant basic biophysical
-    quantity. It is also a useful input parameter, for example, for
-    three-dimensional structure determination by protein
-    crystallography and studies of protein oligomers in solution by
-    analytic ultracentrifugation. We have performed a critical
-    analysis of published, theoretical, and experimental
-    investigations about this issue and concluded that the average
-    density of proteins is not a constant as often assumed. For
-    proteins with a molecular weight below 20 kDa, the average density
-    exhibits a positive deviation that increases for decreasing
-    molecular weight. A simple molecular-weight-depending function is
-    proposed that provides a more accurate estimate of the average
-    protein density.
-
-    The volume in is cubic anstroms, as all distances are assumed to
-    be in angstroms.
-
-    \note I don't like the abbreviations in the name, but it is too
-    long without them.
+/** We use the estimate published in Alber et. al, Structure 2005.
 */
-IMPATOMEXPORT double volume_from_mass_in_kDa(double v);
+IMPATOMEXPORT double volume_from_mass(double v);
 
 
 //! Estimate the mass of a protein from the number of amino acids
-/** This function currently uses the numbers from
-    \external{http://en.wikipedia.org/wiki/Protein,wikipedia} that yeast
-    proteins average 53kDa in mass and 466 residues in length.
+/** We use an estimate of 110 Daltons per residue, following Chimera.
+
+    The mass is in Daltons.
  */
-IMPATOMEXPORT double mass_in_kDa_from_number_of_residues(unsigned int num_aa);
-
-//! Estimate the radius of a protein from the number of amino acids
-/** The function uses the formulate:  (n_aa * 33.54 ) **(1./3.)
-       Alber et al, Structure 2005
-*/
-IMPATOMEXPORT double radius_from_number_of_residues(unsigned int num_aa);
-
+IMPATOMEXPORT double mass_from_number_of_residues(unsigned int num_aa);
 
 //!@}
 
