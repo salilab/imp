@@ -47,35 +47,6 @@ IMPHELPEREXPORT Restraint* create_protein(Particle *p,
                                         double spring_strength=1);
 
 
-/** Produce a new atom::Hierarchy which is a simpler copy of the input.
-    The number of balls used is guessed from the resolution. Each
-    a Residue corresponding to each Residue of the input is added as
-    a particle without coordinates to each of the representational
-    spheres of the output hierarchy.
-
-    Things that could be improved:
-    - the resulting protein is always larger than the input since bounding
-    spheres are used. It would be nice to conserve volume. This could either
-    be done from a voxelized representation or via code that computes the
-    volume of a union of balls. The latter is non-trivial.
-    - the way of guessing the number of spheres is pretty crude. One
-    could search for it, but it is not clear what good search parameters
-    are.
-    - the code is really slow, would be nice for it to be faster. The main
-    slowness is from the cost metric which requires sorting lists of outside
-    points based on their distance to each of the current centers.
-    \untested{simplify_protein}
-    \relatesalso atom::Hierarchy
- */
-IMPHELPEREXPORT atom::Hierarchy create_simplified(atom::Hierarchy in,
-                                               double resolution);
-
-/** \unstable(get_simplified_2)
- */
-IMPHELPEREXPORT atom::Hierarchy create_simplified_2(atom::Hierarchy in,
-                                                 double resolution);
-
-
 
 
 
