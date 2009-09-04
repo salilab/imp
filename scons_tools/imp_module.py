@@ -263,9 +263,10 @@ def IMPModulePython(env):
                                          + ['#/build/include/IMP/macros.h'] \
                                          + ['#/build/include/IMP/container_macros.h']
         #print [str(x) for x in deps]
-        penv._IMPSWIG(target=['wrap.cc',
+        gen_pymod = File('IMP%s.py' % module_suffix.replace("_","."))
+        penv._IMPSWIG(target=[gen_pymod, 'wrap.cc',
                               'wrap.h'],
-                      source=["%(module)s.i"%vars, preface]+deps)
+                      source=preface+deps)
         build.append(penv._IMPPatchSWIG(target=['patched_wrap.cc'],
               source=['wrap.cc']))
         build.append(penv._IMPPatchSWIG(target=['patched_wrap.h'],
@@ -273,8 +274,6 @@ def IMPModulePython(env):
         buildlib = penv.LoadableModule('#/build/lib/_IMP%s' % module_suffix,
                                        "patched_wrap.cc")
         # Place the generated Python wrapper in lib directory:
-        gen_pymod = File('IMP%s.py' % module_suffix.replace("_","."))
-        env.Depends(gen_pymod, buildlib)
         buildinit = penv.LinkInstallAs('#/build/lib/%s/__init__.py'
                                       % vars['module_include_path'],
                                       gen_pymod)
