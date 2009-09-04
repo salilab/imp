@@ -23,4 +23,7 @@ double mass_in_kDa_from_number_of_residues(unsigned int num_aa) {
   return factor*num_aa;
 }
 
+double radius_from_number_of_residues(unsigned int num_aa) {
+  return pow((num_aa*33.54),1./3.);
+}
 IMPATOM_END_NAMESPACE
