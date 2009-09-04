@@ -44,9 +44,9 @@ Sphere3D enclosing_sphere(const Sphere3Ds &ss) {
                              ss[i].get_radius()));
   }
   Min_sphere ms(spheres.begin(), spheres.end());
-   Sphere3D s(Vector3D(*ms.center_cartesian_begin(),
-                       *(ms.center_cartesian_begin()+1),
-                       *(ms.center_cartesian_begin()+2)),
+  Sphere3D s(Vector3D(*ms.center_cartesian_begin(),
+                      *(ms.center_cartesian_begin()+1),
+                      *(ms.center_cartesian_begin()+2)),
               ms.radius());
    /*IMP_IF_LOG(VERBOSE) {
      IMP_LOG(VERBOSE, "Enclosing sphere is " << s << " for ");
@@ -57,18 +57,18 @@ Sphere3D enclosing_sphere(const Sphere3Ds &ss) {
      }*/
    return s;
 #else
-  Vector3D c(0,0,0);
-  for (unsigned int i=0; i< ss.size(); ++i) {
-    c+= ss[i].get_center();
-  }
-  c/=ss.size();
-  double r=0;
-  for (unsigned int i=0; i< ss.size(); ++i) {
-    double d= (c- ss[i].get_center()).get_magnitude();
-    d+= ss[i].get_radius();
-    r= std::max(r, d);
-  }
-  return Sphere3D(c, r);
+   BoundingBox3D nb= get_bounding_box(ss[0]);
+   for (unsigned int i=1; i< ss.size(); ++i) {
+     bb+= get_bounding_box(ss[i]);
+   }
+   Vector3D c= .5*(bb.get_corner(0)+ bb.get_corner(1));
+   double r=0;
+   for (unsigned int i=0; i< ss.size(); ++i) {
+     double d= (c- ss[i].get_center()).get_magnitude();
+     d+= ss[i].get_radius();
+     r= std::max(r, d);
+   }
+   return Sphere3D(c, r);
 #endif
 }
 

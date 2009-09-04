@@ -50,11 +50,10 @@ public:
     return ((p-center_).get_squared_magnitude() <= square(radius_));
 #endif
   }
-
-  void show(std::ostream &out=std::cout) const {
-    out << "(" << spaces_io(center_) << ": " << get_radius()
-        << ")";
-  }
+  IMP_SHOWABLE_INLINE({
+      out << "(" << spaces_io(center_) << ": " << get_radius()
+          << ")";
+    })
 private:
   Vector3D center_;
   double radius_;

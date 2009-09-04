@@ -40,6 +40,8 @@ class IMPALGEBRAEXPORT Cylinder3D: public UninitializedDefault
   const Segment3D& get_segment() const {
     return s_;
   }
+  IMP_SHOWABLE_INLINE({out << s_ << ": " << radius_;})
+
  private:
   Segment3D s_;
   double radius_;

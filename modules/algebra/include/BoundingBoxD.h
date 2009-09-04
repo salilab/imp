@@ -69,9 +69,7 @@ public:
     return true;
   }
 
-  void show(std::ostream &out=std::cout) const {
-    out << lb_ << ": " << ub_;
-  }
+  IMP_SHOWABLE_INLINE(out << lb_ << ": " << ub_);
 
 private:
   VectorD<D> lb_, ub_;

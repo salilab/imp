@@ -259,6 +259,14 @@ public:
     if (parens) out << ")";
   }
 
+#ifndef IMP_DOXYGEN
+  std::string __str__() const {
+    std::ostringstream oss;
+    show(oss);
+    return oss.str();
+  }
+#endif
+
   typedef double* CoordinateIterator;
   CoordinateIterator coordinates_begin() {return vec_;}
   CoordinateIterator coordinates_end() {return vec_+D;}

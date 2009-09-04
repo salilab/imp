@@ -126,9 +126,8 @@ public:
     return rotate(v);
   }
 
-  void show(std::ostream& out = std::cout, std::string delim=" ") const {
-    out << v_[0] << delim << v_[1]<< delim <<v_[2]<< delim <<v_[3];
-  }
+  IMP_SHOWABLE_INLINE({out << v_[0] << " " << v_[1]<< " " <<v_[2]
+                           << " " <<v_[3];})
 
   //! Return the rotation which undoes this rotation.
   Rotation3D get_inverse() const;
@@ -442,9 +441,8 @@ public:
   double get_psi() const {
     return v_[2];
   }
-  void show(std::ostream &out=std::cout) const {
-    out << v_[0] << " " << v_[1] << " " << v_[2];
-  }
+  IMP_SHOWABLE_INLINE({out << v_[0] << " " << v_[1]
+                           << " " << v_[2];})
 };
 
 
@@ -469,9 +467,9 @@ public:
   double get_z() const {
     return v_[2];
   }
-  void show(std::ostream &out=std::cout) const {
-    out << v_[0] << " " << v_[1] << " " << v_[2];
-  }
+  IMP_SHOWABLE_INLINE({
+      out << v_[0] << " " << v_[1] << " " << v_[2];
+    })
 };
 
 

@@ -75,10 +75,11 @@ public:
   }
   const Vector3D& get_translation()const{return trans_;}
 
-  void show(std::ostream& out = std::cout) const {
-    rot_.show(out);
-    out<<" || "<<trans_;
-  }
+  IMP_SHOWABLE_INLINE({
+      rot_.show(out);
+      out<<" || "<<trans_;
+    }
+    )
   Transformation3D get_inverse() const;
 private:
   Vector3D trans_; //tranlation

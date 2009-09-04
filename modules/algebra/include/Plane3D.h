@@ -33,7 +33,7 @@ public:
    */
   bool get_is_below(const Vector3D &p) const;
   /** @} */
-  void show(std::ostream &out=std::cout) const;
+  IMP_SHOWABLE
 
   //! Return the plane with the opposite normal
   Plane3D get_opposite() const {
