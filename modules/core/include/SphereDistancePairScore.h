@@ -18,16 +18,34 @@ IMPCORE_BEGIN_NAMESPACE
 //! A score on the distance between the surfaces of two spheres.
 /** \see XYZR
     \see DistancePairScore
+    \see NormalizedSphereDistancePairScore
  */
 class IMPCOREEXPORT SphereDistancePairScore : public PairScore
 {
   Pointer<UnaryFunction> f_;
   FloatKey radius_;
 public:
-  /** */
   SphereDistancePairScore(UnaryFunction *f,
                           FloatKey radius=FloatKey("radius"));
   IMP_PAIR_SCORE(SphereDistancePairScore, get_module_version_info());
+};
+
+
+//! A score on the normalized distance between the surfaces of two spheres
+/** The distance between the surfaces of the two spheres is divided by the
+    smaller radius to normalize it.
+    \see SphereDistancePairScore
+    \see XYZR
+    \see DistancePairScore
+ */
+class IMPCOREEXPORT NormalizedSphereDistancePairScore : public PairScore
+{
+  Pointer<UnaryFunction> f_;
+  FloatKey radius_;
+public:
+  NormalizedSphereDistancePairScore(UnaryFunction *f,
+                                    FloatKey radius=FloatKey("radius"));
+  IMP_PAIR_SCORE(NormalizedSphereDistancePairScore, get_module_version_info());
 };
 
 IMPCORE_END_NAMESPACE
