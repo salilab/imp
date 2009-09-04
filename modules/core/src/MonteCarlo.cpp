@@ -113,7 +113,7 @@ Float MonteCarlo::optimize(unsigned int max_steps)
       if (return_best_ && next_energy < best_energy) {
         best_energy= next_energy;
         std::ostringstream oss;
-        write_optimized_attributes(get_model(), oss);
+        write(get_model(), oss);
         best_state= oss.str();
       }
     } else {
@@ -135,10 +135,20 @@ Float MonteCarlo::optimize(unsigned int max_steps)
   IMP_LOG(TERSE, "MC Final energy is " << prior_energy << std::endl);
   if (return_best_) {
     std::istringstream iss(best_state);
+    SetLogState ll(VERBOSE);
     read(iss, get_model());
     IMP_LOG(TERSE, "MC Returning energy " << best_energy << std::endl);
+    IMP_IF_CHECK(CHEAP) {
+      double e= get_model()->evaluate(false);
+      IMP_LOG(TERSE, "MC Got " << e << std::endl);
+      IMP_assert(std::abs(best_energy - e)
+                 < .1* (best_energy +e), "Energies do not match "
+                 << best_energy << " vs " << e << std::endl);
+    }
+    return best_energy;
+  } else {
+    return get_model()->evaluate(false); //force coordinate update
   }
-  return get_model()->evaluate(false); //force coordinate update
 }
 
 
