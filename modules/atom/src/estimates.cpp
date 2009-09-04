@@ -10,20 +10,13 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-double volume_from_mass_in_kDa(double m) {
-  using namespace IMP::unit;
-  GramPerCubicCentimeter density(1.410+.145 *std::exp(-m/13.0));
-  Kilodalton mkd(m);
-  CubicAngstrom ca(convert_to_mks(mkd)/density);
-  return ca.get_value();
+double volume_from_mass(double m) {
+  // Alber et al r = 0.726*std::pow(m, .3333);
+  return 1.60*m;
 }
 
-double mass_in_kDa_from_number_of_residues(unsigned int num_aa) {
-  static const double factor= 53.0/466.0;
-  return factor*num_aa;
+double mass_from_number_of_residues(unsigned int num_aa) {
+  return 110.0*num_aa;
 }
 
-double radius_from_number_of_residues(unsigned int num_aa) {
-  return pow((num_aa*33.54),1./3.);
-}
 IMPATOM_END_NAMESPACE
