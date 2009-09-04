@@ -36,9 +36,7 @@ class IMPALGEBRAEXPORT Segment3D: public UninitializedDefault
   */
   Vector3D get_direction() const {return (p_[1]-p_[0]).get_unit_vector();}
   double get_length() const;
-  void show(std::ostream &out=std::cout) const {
-    out << spaces_io(p_[0]) << ": " << spaces_io(p_[1]);
-  }
+  IMP_SHOWABLE_INLINE({out << spaces_io(p_[0]) << ": " << spaces_io(p_[1]);})
  private:
   Vector3D p_[2];
 };
