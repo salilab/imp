@@ -1027,7 +1027,7 @@ es
     It also makes it so that the object can be printed
     in python.
 
-    The <ostream> and <sstream> headers must be included.
+    The ostream and sstream headers must be included.
 
     See also IMP_SHOWABLE_INLINE().
 
