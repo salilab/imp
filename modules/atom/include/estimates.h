@@ -56,6 +56,12 @@ IMPATOMEXPORT double volume_from_mass_in_kDa(double v);
  */
 IMPATOMEXPORT double mass_in_kDa_from_number_of_residues(unsigned int num_aa);
 
+//! Estimate the radius of a protein from the number of amino acids
+/** The function uses the formulate:  (n_aa * 33.54 ) **(1./3.)
+       Alber et al, Structure 2005
+*/
+IMPATOMEXPORT double radius_from_number_of_residues(unsigned int num_aa);
+
 
 //!@}
 
