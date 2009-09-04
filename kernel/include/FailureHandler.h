@@ -28,6 +28,22 @@ class IMPEXPORT FailureHandler: public Object {
 };
 
 
+//! A base class to setting up failure handler
+/** The only function you have to implement is handle_failure.
+    \untested{FailureHandlerBase}
+    \unstable{FailureHandlerBase}
+ */
+class FailureHandlerBase: public FailureHandler {
+public:
+  void show(std::ostream &out=std::cout) const {
+    out << "Temporary FailureHandler" << std::endl;
+  }
+  VersionInfo get_version_info() const {
+    return VersionInfo();
+  }
+  IMP_REF_COUNTED_DESTRUCTOR(FailureHandlerBase);
+};
+
 
 //! Add a custom function to be called on an error
 /** \relatesalso FailureHandler
