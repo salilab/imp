@@ -135,7 +135,7 @@ def _action_simple_swig(target, source, env):
 
     base = env['SWIG'] + " -Wall -w473 -interface  _IMP%(module_suffix)s -DPySwigIterator=%(PREPROC)s_PySwigIterator -DSwigPyIterator=%(PREPROC)s_SwigPyIterator -python -c++ -naturalvar "%vars
     #print base
-    out= "-o "+ target[0].abspath
+    out= "-o "+ target[1].abspath
     doti= source[0].abspath
     includes= " -I"+Dir("#/build/swig").abspath+" "+" ".join(["-I"+str(x) for x in env.get('CPPPATH', []) if not x.startswith("#")]) #+ " -I"+Dir("#/build/include").abspath
     # scons puts cppflags before includes, so we should too
