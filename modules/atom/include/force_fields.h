@@ -19,6 +19,7 @@ IMPATOM_BEGIN_NAMESPACE
    Add bonds using definitions from given force field parameters.
 
    \relatesalso Hierarchy
+   \relatesalso ForceFieldParameters
 */
 IMPATOMEXPORT void add_bonds(Hierarchy d,
                              const ForceFieldParameters* ffp
@@ -29,6 +30,7 @@ IMPATOMEXPORT void add_bonds(Hierarchy d,
    Add vdW radius from from given force field.
 
    \relatesalso Hierarchy
+   \relatesalso ForceFieldParameters
 */
 IMPATOMEXPORT void add_radii(Hierarchy d,
                              const ForceFieldParameters *ffp
