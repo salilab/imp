@@ -44,7 +44,7 @@ namespace {
       double md=std::numeric_limits<double>::max();
       int mj=-1;
       for (unsigned int j=0; j< fragments.size(); ++j) {
-        algebra::Sphere3D s= core::XYZR(fragments[i]).get_sphere();
+        algebra::Sphere3D s= core::XYZR(fragments[j]).get_sphere();
         double d= distance(s.get_center(), v)-s.get_radius();
         if (d < md) {
           md=d;
@@ -299,10 +299,14 @@ atom::Hierarchy create_simplified_2(atom::Hierarchy in,
   mc->set_log_level(TERSE);
   m->set_log_level(SILENT);
   cg->set_log_level(SILENT);
-  mc->optimize(1000);
+  for (unsigned int i=0; i< n; ++i) {
+    xyzrs[i].set_coordinates( algebra::random_vector_in_box(bb));
+  }
+  mc->optimize(100);
   em::MRCReaderWriter rw;
   em::write_map(ccr->get_model_dens_map(), "final.mrc", rw);
   los->write("final.py");
+  std::cout << "energy is " << m->evaluate(false) << std::endl;
   /*remove_failure_handler(dmf);
     remove_failure_handler(lof);*/
 
@@ -311,6 +315,7 @@ atom::Hierarchy create_simplified_2(atom::Hierarchy in,
   for (unsigned int i=0; i< n; ++i) {
     frags.set(i, atom::Fragment::setup_particle(new Particle(in.get_model())));
     core::XYZR::setup_particle(frags[i], xyzrs[i].get_sphere());
+    atom::Mass::setup_particle(frags[i], 0);
   }
   // X assign residues and masses
   setup_fragments(frags, leaves);
