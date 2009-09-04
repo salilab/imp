@@ -42,19 +42,48 @@ public:
   Optimizer *get_local_optimizer() const {
     return cg_.get();
   }
-  //! Set the local optimizer
-  /** The number of local steps must be nonzero for the
-      local optimizer to be used. Steps taken by the local optimizer
+
+  /** \name Local optimization
+
+      The MonteCarlo optimizer can run a local optimizer following each
+      Monte-Carlo move and before it decides whether or not to accept
+      the step.
+
+      Steps taken by the local optimizer
       do not count towards the total number of steps passed to the
       Optimizer::optimize() call.
 
       The local optimizer must not have OptimizerState objects
       which change the set of optimized particles/attributes. This
       is not checked.
-   */
+      @{
+  */
   void set_local_optimizer(Optimizer* cg);
 
-  //! Set the temperature for the Metropolis criteria
+  int get_local_steps() const {
+    return num_local_steps_;
+  }
+  void set_local_steps(unsigned int n) {
+    num_local_steps_=n;
+  }
+  /** @} */
+
+  /** By default the Monte Carlo optimizer simply returns the energy
+      of and leaves the Model in the state after the last accepted
+      move. This is not necessarily the lowest energy state visited.
+      If you wish to always return the lowest energy state, set
+      this to true.
+  */
+  void set_return_best(bool tf) {
+    return_best_=tf;
+  }
+
+  /** \name Temperature
+      The temperature has to be on the same scale as the differences
+      in energy between good and bad states (and so the default is
+      likely to not be a good choice).
+      @{.
+  */
   void set_temperature(Float t) {
     IMP_assert(t>0, "Temperature must be positive");
     temp_=t;
@@ -62,6 +91,7 @@ public:
   Float get_temperature() const {
     return temp_;
   }
+  /** @} */
   //! Stop if the optimization falls below this energy
   void set_energy_threshold(Float t) {
     stop_energy_=t;
@@ -69,14 +99,7 @@ public:
   Float get_energy_threshold() const {
     return stop_energy_;
   }
-  //! Take this many steps of the local optimizer for each MC step
-  /** Steps taken by the local optimizer
-      do not count towards the total number of steps passed to the
-      Optimizer::optimize() call.
-   */
-  int get_local_steps() const {
-    return num_local_steps_;
-  }
+
   //! Set the probability of each move being made
   /** Make this low if the space is rough and there are many particles.
       The movers should make each individual move with this probability.
@@ -88,11 +111,9 @@ public:
               ValueException);
     probability_=p;
   }
-
-  //! Take this many steps of the local optimizer for each MC step
-  void set_local_steps(unsigned int n) {
-    num_local_steps_=n;
-  }
+  /** \name Statistics
+      @{
+   */
   //! Return how many times the optimizer has succeeded in taking a step
   unsigned int get_number_of_forward_steps() const {
     return stat_forward_steps_taken_;
@@ -101,6 +122,7 @@ public:
   unsigned int get_number_of_upward_steps() const {
     return stat_upward_steps_taken_;
   }
+  /** @} */
 
   /** @name Movers
 
@@ -113,7 +135,6 @@ public:
   /**@}*/
 private:
   Float temp_;
-  Float prior_energy_;
   Float stop_energy_;
   Float probability_;
   WeakPointer<Optimizer> cg_;
@@ -121,6 +142,7 @@ private:
   unsigned int stat_forward_steps_taken_;
   unsigned int stat_upward_steps_taken_;
   unsigned int stat_num_failures_;
+  bool return_best_;
 };
 
 IMP_OUTPUT_OPERATOR(MonteCarlo);
