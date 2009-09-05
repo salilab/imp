@@ -47,6 +47,7 @@ Ints Fragment::get_residue_indexes() const {
 }
 
 void Fragment::set_residue_indexes(Ints o) {
+  if (o.empty()) return;
   clear_residue_ends();
   clear_residue_begins();
   std::sort(o.begin(), o.end());
