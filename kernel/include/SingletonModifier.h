@@ -89,7 +89,7 @@ typedef VectorOfRefCounted<SingletonModifier*> SingletonModifiers;
     in C++ (the second can be used with when \c particles is a temporary
     value) or
     \verbatim
-    map(particles, SingletonFunctor(Transform(tr)))
+    map(SingletonFunctor(Transform(tr)), particles)
     \endverbatim
     in python.
 
