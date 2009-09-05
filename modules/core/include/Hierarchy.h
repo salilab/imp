@@ -259,12 +259,8 @@ public:
 
 
 
-
-
-//! Collect the matching visiting nodes into a container.
-/** A node is collected if the function evaluates true.
-    \see Hierarchy
- */
+#if !defined (SWIG) and !defined(IMP_DOXYGEN)
+namespace internal {
 template <class F, class Out>
 struct Gather: public HierarchyVisitor
 {
@@ -286,6 +282,8 @@ private:
   Out out_;
 };
 
+}
+#endif
 
 inline const Hierarchy HierarchyTraits::wrap(Particle* p) const {
   return Hierarchy(p, *this);
@@ -482,7 +480,7 @@ private:
 template <class Out, class F>
 Out gather(Hierarchy h, F f, Out out)
 {
-  Gather<F,Out> gather(f,out);
+  internal::Gather<F,Out> gather(f,out);
   depth_first_traversal(h, gather);
   return gather.get_out();
 }
@@ -494,7 +492,7 @@ Out gather(Hierarchy h, F f, Out out)
 template <class Out, class K, class V>
 Out gather_by_attribute(Hierarchy h, K k, V v, Out out)
 {
-  Gather<internal::MatchAttribute<K, V>,Out>
+  internal::Gather<internal::MatchAttribute<K, V>,Out>
     gather(internal::MatchAttribute<K,V>(k,v),
            out);
   depth_first_traversal(h, gather);
@@ -512,7 +510,7 @@ template <class Out, class K0, class V0, class K1, class V1>
 Out gather_by_attributes(Hierarchy h, K0 k0,
                                    V0 v0, K1 k1, V1 v1, Out out)
 {
-  Gather<internal::MatchAttributes<K0, V0, K1, V1>,Out>
+  internal::Gather<internal::MatchAttributes<K0, V0, K1, V1>,Out>
     gather(internal::MatchAttributes<K0,V0, K1, V1>(k0,v0, k1, v1),
            out);
   depth_first_traversal(h, gather);
