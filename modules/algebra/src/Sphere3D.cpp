@@ -57,7 +57,7 @@ Sphere3D enclosing_sphere(const Sphere3Ds &ss) {
      }*/
    return s;
 #else
-   BoundingBox3D nb= get_bounding_box(ss[0]);
+   BoundingBox3D bb= get_bounding_box(ss[0]);
    for (unsigned int i=1; i< ss.size(); ++i) {
      bb+= get_bounding_box(ss[i]);
    }
