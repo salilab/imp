@@ -182,6 +182,31 @@ atom::Hierarchy clone(atom::Hierarchy d) {
 }
 
 
+struct True {
+  template <class T>
+  bool operator()(const T &t) const{ return true;}
+};
+
+void destroy(atom::Hierarchy d) {
+  atom::Hierarchies all;
+  core::gather(d, True(), std::back_inserter(all));
+  for (unsigned int i=0; i< all.size(); ++i) {
+    if (atom::Bonded::particle_is_instance(all[i])) {
+      atom::Bonded b(all[i]);
+      while (b.get_number_of_bonds() > 0) {
+        atom::unbond(b.get_bond(b.get_number_of_bonds()-1));
+      }
+    }
+    while (all[i].get_number_of_children() > 0) {
+      all[i].remove_child(all[i].get_child(all[i].get_number_of_children()-1));
+    }
+  }
+  for (unsigned int i=0; i< all.size(); ++i) {
+    all[i].get_particle()->get_model()->remove_particle(all[i]);
+  }
+}
+
+
 
 
 algebra::BoundingBox3D get_bounding_box(const atom::Hierarchy &h,
