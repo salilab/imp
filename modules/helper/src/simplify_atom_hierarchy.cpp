@@ -168,8 +168,8 @@ namespace {
   n*4/3 pi *r^3=3/2*v
   n= 9/4*v/(pi r^3)
 */
-atom::Hierarchy create_simplified_2(atom::Hierarchy in,
-                                    double resolution) {
+atom::Hierarchy create_simplified(atom::Hierarchy in,
+                                  double resolution) {
   IMP_check(in.get_type() == atom::Hierarchy::PROTEIN,
             "Can only simplify proteins at the moment.",
             ValueException);
@@ -261,19 +261,20 @@ atom::Hierarchy create_simplified_2(atom::Hierarchy in,
   m->add_restraint(pr);
   // create MC
   IMP_NEW(core::MonteCarlo, mc, ());
-  mc->set_energy_threshold(.01);
+  mc->set_energy_threshold(.2);
   mc->set_temperature(.01);
   mc->set_return_best(true);
   ScopedFailureHandler fh0, fh1, fh2;
   IMP_NEW(display::LogOptimizerState, los,
           (new display::ChimeraWriter(), "frame.%04d.py"));
-  {
+  IMP_NEW(display::XYZRsGeometry, xyzrg, (lsc));
+  los->add_geometry(xyzrg);
+  if (0) {
     IMP_NEW(display::LogOptimizerState, plos,
             (new display::CGOWriter(), "frame.%04d.pymol.pym"));
     mc->add_optimizer_state(los);
     mc->add_optimizer_state(plos);
-    IMP_NEW(display::XYZRsGeometry, xyzrg, (lsc));
-    los->add_geometry(xyzrg);
+
     plos->add_geometry(xyzrg);
     los->write("initial.py");
     los->set_skip_steps(0);
@@ -286,6 +287,10 @@ atom::Hierarchy create_simplified_2(atom::Hierarchy in,
   }
   mc->set_model(m);
   IMP_NEW(core::ConjugateGradients, cg, ());
+  /*IMP_NEW(display::LogOptimizerState, los2,
+          (new display::CGOWriter(), "local_frame.%04d.pym"));
+  los2->add_geometry(xyzrg);
+  //cg->add_optimizer_state(los2);*/
   mc->set_local_optimizer(cg);
   mc->set_local_steps(10);
   mc->add_mover(new core::IncrementalBallMover(lsc, 1,

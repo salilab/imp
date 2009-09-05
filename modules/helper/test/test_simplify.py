@@ -13,7 +13,7 @@ class DecoratorTests(IMP.test.TestCase):
         p= IMP.atom.read_pdb(self.get_input_file_name('single_protein.pdb'), m)
         #IMP.atom.show_molecular_hierarchy(p)
         IMP.atom.add_radii(p)
-        s= IMP.helper.create_simplified_2(p, 25)
+        s= IMP.helper.create_simplified(p, 20)
         ls= IMP.core.get_leaves(s)
         for q in []:
             d= IMP.core.XYZR(q.get_particle())
