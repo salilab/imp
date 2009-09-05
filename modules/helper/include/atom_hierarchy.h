@@ -73,6 +73,17 @@ IMPHELPEREXPORT
 atom::Hierarchy clone(atom::Hierarchy d);
 
 
+//! Delete the atom::Hierarchy
+/** All bonds connecting to these atoms are destroyed as are
+    hierarchy links in the Hierarchy and the particles are
+    removed from the Model.
+    \untested{erase}
+    \relatesalso atom::Hierarchy
+*/
+IMPHELPEREXPORT
+void destroy(atom::Hierarchy d);
+
+
 
 //! Get a bounding box for the atom::Hierarchy
 /** This bounding box is that of the highest (in the CS sense of a tree
