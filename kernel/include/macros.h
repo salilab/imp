@@ -716,7 +716,7 @@ protection:                                                             \
     It also defines
     - void set_skip_steps(unsigned int)
 
-    If you use this macro, you should also include <IMP/internal/utility.h>.
+    If you use this macro, you should also include IMP/internal/utility.h.
 */
 #define IMP_PERIODIC_OPTIMIZER_STATE(Name, version_info)                \
   virtual void update() {                                               \
@@ -1027,7 +1027,7 @@ es
     It also makes it so that the object can be printed
     in python.
 
-    The ostream and sstream headers must be included.
+    The \c ostream and \c sstream headers must be included.
 
     See also IMP_SHOWABLE_INLINE().
 
@@ -1049,11 +1049,11 @@ es
 
 //! Declare the methods needed by an object than can be printed
 /** This macro declares the method
-    - void show(std::ostream &out) const
+    - \c void \c show(std::ostream &out) const
     It also makes it so that the object can be printed
     in python.
 
-    The <ostream> and <sstream> headers must be included.
+    The \c ostream and \c sstream headers must be included.
 
     See also IMP_SHOWABLE_INLINE()
 */
