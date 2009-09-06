@@ -23,7 +23,7 @@ IMPHELPER_BEGIN_NAMESPACE
     a particle without coordinates to each of the representational
     spheres of the output hierarchy.
 
-    \unstable(create_simplified_2)
+    \unstable{create_simplified}
  */
 IMPHELPEREXPORT atom::Hierarchy create_simplified(atom::Hierarchy in,
                                                   double resolution);
