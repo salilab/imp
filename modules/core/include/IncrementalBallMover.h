@@ -30,7 +30,6 @@ public:
       given by the number of attributes and radius by the given value.
       \param[in] sc The set of particles to perturb.
       \param[in] n The number of points to move at the same time.
-      \param[in] vars The variables to use (normally the keys for x,y,z)
       \param[in] radius The radius deviation to use.
    */
   IncrementalBallMover(SingletonContainer *sc,
