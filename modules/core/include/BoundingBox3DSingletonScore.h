@@ -1,5 +1,5 @@
 /**
- *  \file BoundingBoxSingletonScore.h
+ *  \file BoundingBox3DSingletonScore.h
  *  \brief Score particles based on a bounding box
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
