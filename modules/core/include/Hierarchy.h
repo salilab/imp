@@ -259,7 +259,7 @@ public:
 
 
 
-#if !defined (SWIG) and !defined(IMP_DOXYGEN)
+#if !defined (SWIG) && !defined(IMP_DOXYGEN)
 namespace internal {
 template <class F, class Out>
 struct Gather: public HierarchyVisitor
