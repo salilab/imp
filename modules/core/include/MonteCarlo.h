@@ -25,15 +25,11 @@ IMPCORE_BEGIN_NAMESPACE
     number of local optimization steps are taken before the MonteCarlo step
     is accepted or rejected.
 
-    \note The local optimizer object will never be freed due to lack
-    of reference counting with SWIG.
-
     \see Mover
  */
 class IMPCOREEXPORT MonteCarlo: public Optimizer
 {
 public:
-  /** */
   MonteCarlo();
 
   IMP_OPTIMIZER(MonteCarlo, get_module_version_info())
@@ -129,15 +125,14 @@ public:
        The following methods are used to manipulate the list of Movers.
        Each mover is called at each optimization step, giving it a chance
        to change the current configuration.
-  */
-  /**@{*/
+       @{*/
   IMP_LIST(public, Mover, mover, Mover*, Movers);
   /**@}*/
 private:
   Float temp_;
   Float stop_energy_;
   Float probability_;
-  WeakPointer<Optimizer> cg_;
+  Pointer<Optimizer> cg_;
   unsigned int num_local_steps_;
   unsigned int stat_forward_steps_taken_;
   unsigned int stat_upward_steps_taken_;
