@@ -130,7 +130,7 @@ env.Depends(doxconf, ['#/build/include'])
 dox = env.RunDoxygen("#/doc/html/index.html", ["doxygen.conf"]+sources)
 
 install=env.Command(Dir(env.subst(docdir)), dox,
-                    "install -d $TARGET && install ${SOURCE.dir}/* $TARGET")
+                    "install -d $TARGET && cp -r ${SOURCE.dir}/* $TARGET")
 env.Alias('doc-install', install)
 env.Alias('doc', dox)
 env.Requires(install, env.Alias('doc'))
