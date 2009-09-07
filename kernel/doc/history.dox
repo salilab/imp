@@ -1,5 +1,15 @@
 /** \page recent Change History
 
+\par Week of August 30
+
+- A new score IMP::core::BoundingBox3DSingletonScore has been added to keep particles
+  in a box.
+
+- str should now work better in python when applied to IMP::Object objects and a few others. Objects
+  should use the new IMP_SHOWABLE and IMP_SHOWABLE_INLINE macros instead of declaring show
+  functions directory to make it so that they work in python. It is now a bug to \c print or \c str
+  to not return something useful in python for any %IMP object.
+
 \par Week of August 23
 
 - each module now has a version, eg IMP::get_module_version_info() which is also returned by the various restraions of the module. The python code checkes that loaded libraries have the expected version numbers to try to provide better messages when runtime linking problems occur.
@@ -70,8 +80,8 @@
 \par Week of July 11
 
 - Per Javi's suggestion, the conventions have been split into \ref
-  coding_conventions "Coding conventions" and \ref conventions "API
-  conventions" and linked from the main page.
+  coding_conventions "Coding conventions" and \ref conventions
+  "API conventions" and linked from the main page.
 
 - benchmarks got moved to their own module, IMP::benchmark and will
   now be tracked over time
