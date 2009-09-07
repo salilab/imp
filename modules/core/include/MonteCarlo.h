@@ -34,27 +34,23 @@ public:
 
   IMP_OPTIMIZER(MonteCarlo, get_module_version_info())
  public:
-  //! Return the local optimizer used or NULL
-  Optimizer *get_local_optimizer() const {
-    return cg_.get();
-  }
-
   /** \name Local optimization
 
-      The MonteCarlo optimizer can run a local optimizer following each
-      Monte-Carlo move and before it decides whether or not to accept
-      the step.
+      The MonteCarlo optimizer can run a local optimizer following
+      each Monte-Carlo move and before it decides whether or not to
+      accept the step. Steps taken by the local optimizer do not count
+      towards the total number of steps passed to the
+      Optimizer::optimize() call. The local optimizer must not have
+      OptimizerState objects which change the set of optimized
+      particles/attributes. This is not checked.
 
-      Steps taken by the local optimizer
-      do not count towards the total number of steps passed to the
-      Optimizer::optimize() call.
-
-      The local optimizer must not have OptimizerState objects
-      which change the set of optimized particles/attributes. This
-      is not checked.
       @{
   */
   void set_local_optimizer(Optimizer* cg);
+
+  Optimizer *get_local_optimizer() const {
+    return cg_.get();
+  }
 
   int get_local_steps() const {
     return num_local_steps_;
@@ -88,13 +84,18 @@ public:
     return temp_;
   }
   /** @} */
-  //! Stop if the optimization falls below this energy
-  void set_energy_threshold(Float t) {
+  /** \name Score threshold
+
+      Optimization will stop if the score falls below the threshold.
+      @{
+  */
+  void set_score_threshold(Float t) {
     stop_energy_=t;
   }
-  Float get_energy_threshold() const {
+  Float get_score_threshold() const {
     return stop_energy_;
   }
+  /** @} */
 
   //! Set the probability of each move being made
   /** Make this low if the space is rough and there are many particles.
