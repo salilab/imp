@@ -261,7 +261,7 @@ atom::Hierarchy create_simplified(atom::Hierarchy in,
   m->add_restraint(pr);
   // create MC
   IMP_NEW(core::MonteCarlo, mc, ());
-  mc->set_energy_threshold(.2);
+  mc->set_score_threshold(.2);
   mc->set_temperature(.01);
   mc->set_return_best(true);
   ScopedFailureHandler fh0, fh1, fh2;
