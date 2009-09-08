@@ -489,15 +489,15 @@ public:
   std::string get_name() const {
     return first->get_name() + " and " +second->get_name();
   }
-  void show(std::ostream &out= std::cout) const {
-    out << "(";
-    if (first) out << first->get_name();
-    else out << "NULL";
-    out << ", ";
-    if (second) out << second->get_name();
-    else out << "NULL";
-    out << ")";
-  }
+  IMP_SHOWABLE_INLINE({
+      out << "(";
+      if (first) out << first->get_name();
+      else out << "NULL";
+      out << ", ";
+      if (second) out << second->get_name();
+      else out << "NULL";
+      out << ")";
+    });
 };
 
 
@@ -560,18 +560,18 @@ public:
       throw IndexException("Invalid member of triplet");
     };
   }
-  void show(std::ostream &out= std::cout) const {
-    out << "(";
-    if (first) out << first->get_name();
-    else out << "NULL";
-    out << ", ";
-    if (second) out << second->get_name();
-    else out << "NULL";
-    out << ", ";
-    if (third) out << third->get_name();
-    else out << "NULL";
-    out << ")";
-  }
+  IMP_SHOWABLE_INLINE({
+      out << "(";
+      if (first) out << first->get_name();
+      else out << "NULL";
+      out << ", ";
+      if (second) out << second->get_name();
+      else out << "NULL";
+      out << ", ";
+      if (third) out << third->get_name();
+      else out << "NULL";
+      out << ")";
+    })
 
 };
 

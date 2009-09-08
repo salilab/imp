@@ -396,7 +396,7 @@ static Name decorate_particle(::IMP::Particle *p) {                     \
    }                                                                    \
    return Name(p);                                                      \
  }                                                                      \
-void show(std::ostream &out=std::cout) const;                           \
+IMP_SHOWABLE
 
 
 //! Define the basic things needed by a Decorator which has a traits object.
@@ -433,7 +433,7 @@ static Name decorate_particle(::IMP::Particle *p,                       \
   if (!particle_is_instance(p, tr)) return Name();                      \
   else return Name(p, tr);                                              \
 }                                                                       \
-void show(std::ostream &out=std::cout) const;                           \
+IMP_SHOWABLE                                                            \
 /** Get the traits object */                                            \
 const TraitsType &get_##traits_name() const {                           \
   return traits_name##_;                                                \
