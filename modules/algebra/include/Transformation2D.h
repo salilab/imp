@@ -168,7 +168,7 @@ inline Transformation2D compose(const Transformation2D &a,
   are conserved
 **/
 IMPALGEBRAEXPORT Transformation2D build_Transformation2D_from_point_sets(
-      const Vector2Ds set1,const Vector2Ds set2);
+      const Vector2Ds set_from,const Vector2Ds set_to);
 
 
 IMPALGEBRA_END_NAMESPACE
