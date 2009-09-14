@@ -19,7 +19,7 @@
 IMPALGEBRA_BEGIN_NAMESPACE
 
 //! A location in 2D (x,y)
-typedef VectorD<2> Vector2D;
+IMP_NO_SWIG(typedef VectorD<2> Vector2D;)
 
 //! A collection of Vector2D
 typedef std::vector<Vector2D> Vector2Ds;

@@ -24,5 +24,46 @@ class ConeTests(IMP.test.TestCase):
         ax.show()
         self.assert_((ax-dbx).get_squared_magnitude() < .1)
 
+
+class Transformation2DTests(IMP.test.TestCase):
+
+    def test_transformation_from_point_sets(self):
+        """Check building a Transformation2D from point sets"""
+        x1 = IMP.algebra.Vector2D(1,2);
+        x2 = IMP.algebra.Vector2D(6,8);
+        angle_applied = math.pi/4.
+        shift_applied = IMP.algebra.Vector2D(-2,4);
+        R = IMP.algebra.Rotation2D(angle_applied);
+        y1 = R.rotate(x1)+shift_applied;
+        y2 = R.rotate(x2)+shift_applied;
+        set1 = IMP.algebra.Vector2Ds(2);
+        set2 = IMP.algebra.Vector2Ds(2);
+        set1[0]=x1; set1[1]=x2;
+        set2[0]=y1; set2[1]=y2;
+        T = IMP.algebra.build_Transformation2D_from_point_sets(set1,set2);
+        self.assertInTolerance(angle_applied,T.get_rotation().get_angle(),.01)
+        self.assertInTolerance(shift_applied[0],T.get_translation()[0],.01)
+        self.assertInTolerance(shift_applied[1],T.get_translation()[1],.01)
+
+
+class Transformation3DTests(IMP.test.TestCase):
+
+    def test_build_from2D(self):
+        """Check building a Transformation3D from Transformation2D"""
+        angle_applied = math.pi/4.
+        shift_applied = IMP.algebra.Vector2D(-2,4);
+        R = IMP.algebra.Rotation2D(angle_applied);
+        t2d = IMP.algebra.Transformation2D(R,shift_applied);
+        t3d = IMP.algebra.build_Transformation3D_from_Transformation2D(t2d)
+        x = IMP.algebra.fixed_zyz_from_rotation(t3d.get_rotation())
+
+        self.assertInTolerance(angle_applied,x.get_rot()+x.get_psi(),.05)
+        self.assertInTolerance(0.0,x.get_tilt(),.05)
+#        self.assertInTolerance(0.0,x.get_psi(),.05)
+        self.assertInTolerance(shift_applied[0],t3d.get_translation()[0],.05)
+        self.assertInTolerance(shift_applied[1],t3d.get_translation()[1],.05)
+        self.assertInTolerance(0.0             ,t3d.get_translation()[2],.05)
+
+
 if __name__ == '__main__':
     unittest.main()

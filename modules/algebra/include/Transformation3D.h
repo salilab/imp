@@ -9,9 +9,9 @@
 #define IMPALGEBRA_TRANSFORMATION_3D_H
 
 #include "config.h"
-
 #include "Vector3D.h"
 #include "Rotation3D.h"
+#include "Transformation2D.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -96,7 +96,7 @@ inline Transformation3D identity_transformation() {
 }
 
 //! Generate a transformation from the natural reference-frame to
-//  a different one
+//!  a different one
 /**
   \param[in] u     vector used to define the new reference frame
   \param[in] w     vector used to define the new reference frame
@@ -150,6 +150,15 @@ inline Transformation3D compose(const Transformation3D &a,
   return Transformation3D(compose(a.get_rotation(), b.get_rotation()),
                           a.transform(b.get_translation()));
 }
+
+
+//! Builds a 3D transformation from a 2D one.
+/**
+  \note The 3D transformation is built with the angle from the 2D transformation
+  as first Euler angle (ZYZ). The other angles are set to 0.
+  **/
+IMPALGEBRAEXPORT Transformation3D build_Transformation3D_from_Transformation2D(
+                                  const Transformation2D &t2d);
 
 
 IMPALGEBRA_END_NAMESPACE

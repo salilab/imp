@@ -61,7 +61,7 @@ inline Vector3D orthogonal_vector(const Vector3D &v) {
 //! Returns the centroid of a set of vectors
 /** \relatesalso Vector3D
  */
-inline algebra::Vector3D centroid(Vector3Ds &ps) {
+inline algebra::Vector3D centroid(const Vector3Ds &ps) {
  algebra::Vector3D cen(0.0,0.0,0.0);
  for (unsigned long i=0;i<ps.size();++i) {
    cen = cen + ps[i];
