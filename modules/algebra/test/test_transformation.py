@@ -52,17 +52,17 @@ class Transformation3DTests(IMP.test.TestCase):
         """Check building a Transformation3D from Transformation2D"""
         angle_applied = math.pi/4.
         shift_applied = IMP.algebra.Vector2D(-2,4);
-        R = IMP.algebra.Rotation2D(angle_applied);
-        t2d = IMP.algebra.Transformation2D(R,shift_applied);
+        r2d = IMP.algebra.Rotation2D(angle_applied);
+        t2d = IMP.algebra.Transformation2D(r2d,shift_applied);
         t3d = IMP.algebra.build_Transformation3D_from_Transformation2D(t2d)
-        x = IMP.algebra.fixed_zyz_from_rotation(t3d.get_rotation())
-
-        self.assertInTolerance(angle_applied,x.get_rot()+x.get_psi(),.05)
-        self.assertInTolerance(0.0,x.get_tilt(),.05)
-#        self.assertInTolerance(0.0,x.get_psi(),.05)
-        self.assertInTolerance(shift_applied[0],t3d.get_translation()[0],.05)
-        self.assertInTolerance(shift_applied[1],t3d.get_translation()[1],.05)
-        self.assertInTolerance(0.0             ,t3d.get_translation()[2],.05)
+        r3d = t3d.get_rotation()
+        p2d = IMP.algebra.Vector2D(9,10.5)
+        p3d = IMP.algebra.Vector3D(9,10.5,0.0)
+        q3d = r3d.rotate(p3d) + t3d.get_translation();
+        q2d = r2d.rotate(p2d) + shift_applied;
+        self.assertInTolerance(q2d[0],q3d[0],.05)
+        self.assertInTolerance(q2d[1],q3d[1],.05)
+        self.assertInTolerance(0.0   ,q3d[2],.05)
 
 
 if __name__ == '__main__':
