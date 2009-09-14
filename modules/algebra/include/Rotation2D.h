@@ -11,10 +11,18 @@
 
 #include "config.h"
 #include "utility.h"
-#include "VectorD.h"
+#include "Vector2D.h"
 #include "Matrix2D.h"
+#include <cmath>
 
 IMPALGEBRA_BEGIN_NAMESPACE
+
+
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+class Rotation2D;
+Rotation2D compose(const Rotation2D &a, const Rotation2D &b) ;
+#endif
+
 
 //! Stores a 2D rotation matrix
 /**
@@ -36,17 +44,17 @@ public:
   /**
   * \param[in] o a 2D vector to be rotated
   */
-  VectorD<2> rotate(const VectorD<2> &o) const {
+   Vector2D rotate(const  Vector2D &o) const {
     IMP_assert(!is_nan(angle_),
                "Attempting to use uninitialized rotation");
     return rotate(o[0],o[1]);
   }
 
   //! rotates a 2D point
-  VectorD<2> rotate(const double x,const double y) const {
+   Vector2D rotate(const double x,const double y) const {
     IMP_assert(!is_nan(angle_),
                "Attempting to use uninitialized rotation");
-    return VectorD<2>(c_*x-s_*y , s_*x+c_*y);
+    return  Vector2D(c_*x-s_*y , s_*x+c_*y);
   }
 
   //! Returns the matrix for the inverse rotation
@@ -87,6 +95,25 @@ private:
 inline Rotation2D identity_rotation2D() {
   return Rotation2D(0.0);
 };
+
+
+//! Builds the rotation that transforms the vector X of the origin
+//! of coordinates into the given vector
+inline Rotation2D build_Rotation2D_from_Vector2D(const Vector2D &v) {
+  return Rotation2D(atan2(v[1],v[0]));
+};
+
+//! compose two rotations a and b
+/**
+  For any vector v (a*b)*v = a*(b*v).
+*/
+inline Rotation2D compose(const Rotation2D &a,const Rotation2D &b) {
+  double new_angle = a.get_angle()+b.get_angle();
+  Rotation2D R(new_angle);
+  return R;
+};
+
+
 
 IMPALGEBRA_END_NAMESPACE
 #endif  /* IMPALGEBRA_ROTATION_2D_H */

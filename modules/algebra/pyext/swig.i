@@ -1,12 +1,15 @@
 namespace IMP {
   namespace algebra {
     typedef BoundingBoxD<3> BoundingBox3D;
+    typedef VectorD<2> Vector2D;
     typedef VectorD<3> Vector3D;
     typedef VectorD<4> Vector4D;
 
     /* Copy returned references to non-refcounted classes */
     %apply REFCOPY & { const Rotation2D & };
     %apply REFCOPY & { const Rotation3D & };
+    %apply REFCOPY & { const VectorD<2> & };
+    %apply REFCOPY & { const Vector2D & };
     %apply REFCOPY & { const VectorD<3> & };
     %apply REFCOPY & { const Vector3D & };
     %apply REFCOPY & { const VectorD<4> & };
@@ -33,6 +36,7 @@ namespace multi_array_types {
 /* Wrap our own classes */
 %include "VectorD.i"
 %include "BoundingBoxD.i"
+%include "Transformation2D.i"
 %include "Transformation3D.i"
 %include "Matrix2D.i"
 %include "Matrix3D.i"
@@ -70,6 +74,7 @@ namespace IMP {
 
    %template(AxisAnglePair) ::std::pair<IMP::algebra::Vector3D,double>;
    // rotation operations
+   %template(Rotation2Ds) ::std::vector<Rotation2D>;
    %template(Rotation3Ds) ::std::vector<Rotation3D>;
  }
 }

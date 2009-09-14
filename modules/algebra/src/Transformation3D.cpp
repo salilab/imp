@@ -14,5 +14,12 @@ Transformation3D Transformation3D::get_inverse() const{
   return Transformation3D(inv_rot,-(inv_rot.rotate(trans_)));
 }
 
+Transformation3D build_Transformation3D_from_Transformation2D(
+                                  const Transformation2D &t2d) {
+  Rotation3D R = rotation_from_fixed_zyz(
+                          t2d.get_rotation().get_angle(),0.0,0.0);
+  Vector3D t(t2d.get_translation()[0],t2d.get_translation()[1],0);
+  return Transformation3D(R,t);
+}
 
 IMPALGEBRA_END_NAMESPACE

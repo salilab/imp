@@ -52,14 +52,17 @@ namespace IMP {
 };
 
 %include "IMP/algebra/VectorD.h"
+%include "IMP/algebra/Vector2D.h"
 %include "IMP/algebra/Vector3D.h"
 
 namespace IMP {
  namespace algebra {
+   %template(Vector2D) VectorD<2>;
    %template(Vector3D) VectorD<3>;
    %template(Vector4D) VectorD<4>;
    %template(distance) distance<3>;
    %template(squared_distance) squared_distance<3>;
    %template(Vector3Ds) ::std::vector<VectorD<3> >;
+   %template(Vector2Ds) ::std::vector<VectorD<2> >;
  }
 }
