@@ -2,7 +2,7 @@ import unittest
 import IMP
 import IMP.test
 import IMP.algebra
-import math
+import math,random
 
 class ConeTests(IMP.test.TestCase):
 
@@ -44,6 +44,23 @@ class Transformation2DTests(IMP.test.TestCase):
         self.assertInTolerance(angle_applied,T.get_rotation().get_angle(),.01)
         self.assertInTolerance(shift_applied[0],T.get_translation()[0],.01)
         self.assertInTolerance(shift_applied[1],T.get_translation()[1],.01)
+
+
+
+    def test_transformation3d_from2d(self):
+        """Check that Z coordinate stays zero after transformation"""
+        v = IMP.algebra.Vector3D(random.uniform(-100.,100.),
+                                 random.uniform(-200.,200.),
+                                 0.)
+        angle_applied = random.uniform(-math.pi,math.pi)
+        shift_applied = IMP.algebra.Vector2D(random.uniform(-10.,10.),
+                                             random.uniform(-10,10))
+        R = IMP.algebra.Rotation2D(angle_applied);
+        t2d = IMP.algebra.Transformation2D(R,shift_applied);
+        t3d=IMP.algebra.build_Transformation3D_from_Transformation2D(t2d)
+        v1 = t3d.transform(v)
+        print "V1: " + str(v1)
+        self.assertInTolerance(v1[2],0.0,.01)
 
 
 class Transformation3DTests(IMP.test.TestCase):
