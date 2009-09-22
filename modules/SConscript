@@ -4,7 +4,6 @@ Import('env')
 cppmodules=['algebra',
             'core',
             'atom',
-            'benchmark',
             'display',
             'domino',
             'em',
@@ -13,7 +12,8 @@ cppmodules=['algebra',
             'saxs',
             'statistics',
             'search',
-            'helper']
+            'helper',
+            'benchmark']
 pymodules=['modeller']
 
 for p in cppmodules:

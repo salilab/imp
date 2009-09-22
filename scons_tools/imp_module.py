@@ -1,5 +1,3 @@
-"""Tools and Builders for IMP modules. See `IMPModule` for more information."""
-
 import os.path
 import pyscanner
 import examples
@@ -17,11 +15,14 @@ from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir
 #    env.Depends(target, [env.Alias(env['IMP_MODULE']+"-"+source)])
 
 def file_compare(a, b):
+    """Check if two files are the same, by comparing the path"""
     pa= a.abspath
     pb= b.abspath
     return cmp(pa,pb)
 
 def module_glob(patterns):
+    """provide a canonical list of files which match the passed list of patterns.
+    Otherwise changes in the ordering will cause scons to rebuild things."""
     ret=[]
     for x in patterns:
         ret= ret+Glob(x)
@@ -29,46 +30,87 @@ def module_glob(patterns):
     return ret
 
 def module_requires(env, target, source):
+    """Make sure that 'module-source' is built before 'module-target'"""
     env.Requires(target, [env.Alias(env['IMP_MODULE']+"-"+source)])
 
 def module_alias(env, target, source, is_default=False):
+    """Add an alias called 'module-target' which builds source"""
     a=env.Alias(env['IMP_MODULE']+"-"+target, [source])
     if is_default:
         env.Default(a)
 
 def add_to_global_alias(env, target, source):
+    """Add the module alias 'module-source' to the global alias list 'target'"""
     env.Alias(env.Alias(target), [env.Alias(env['IMP_MODULE']+'-'+source)])
 
 
 def add_to_module_alias(env, target, source):
+    """Add the alias 'module-source' to the alias 'module-target'"""
     env.Alias(env.Alias(env['IMP_MODULE']+'-'+target),
               [env.Alias(env['IMP_MODULE']+'-'+source)])
 
 
+def module_deps_requires(env, target, source, dependencies):
+    """For each of the module dependency make sure that 'moduledep-source'
+    is built before 'target'"""
+    env.Requires(target,
+              [env.Alias(x+'-'+source) for x in dependencies])
+
+
 def expand_dependencies(env, deps):
+    """Recursively expand the list of dependencies and make sure each dependency is only in the list once.
+    In an effort to make static linking work, only the last copy in the list of dependencies is kept"""
     size=-1
-    all=deps
-    while size != len(all):
-        size=len(all)
-        #print "all is "+str(all)
-        for d in all:
-            #print "d is " +str(d)
-            all=all+env[d+"_required_modules"]
-            all=list(set(all))
-    all.sort()
-    return all
+    all=[]
+    #print "expanding " + str(deps)
+    for d in deps:
+        try:
+            ndeps=env[d+"_required_modules"]
+            all.append(d)
+            for nd in ndeps:
+                #print "trying " +str(nd)
+                nndeps= expand_dependencies(env, [nd])
+                all.append(nd)
+                app= all+nndeps
+        except:
+            print >> sys.stderr, "Module binaries can only depend on modules which are configured before them."
+            print >> sys.stderr, "Specifically module "+str(env['IMP_MODULE']) + " cannot depenend on module " +d
+            raise ValueError("Bad bin depedency")
+    filtered=[]
+    #print "all is " + str(all)
+    for i in range(0, len(all)):
+        v= all[i]
+        try:
+            all[i+1:].index(v)
+        except:
+            filtered.append(v)
+    #all.sort()
+    #print "fiitered is " +str(filtered)
+    return filtered
+
+def add_module_lib_dependencies(env, extra_modules):
+    """Add the list of libs to the environment made by merging
+    the IMP_REQUIRED_MODULES with the extra_modules."""
+    deps= extra_modules+env['IMP_REQUIRED_MODULES']
+    libs=[]
+    #print "deps are "+str(deps)
+    expanded=expand_dependencies(env,deps)
+    #print "expanded are " +str(expanded)
+    for d in expanded:
+        if d != "kernel":
+            libs.append("imp_"+d)
+        else:
+            libs.append("imp")
+    env.Prepend(LIBS=libs)
 
 
 #def module_deps_depends(env, target, source, dependencies):
 #    env.Depends(target,
 #              [env.Alias(x+'-'+source) for x in dependencies])
 
-def module_deps_requires(env, target, source, dependencies):
-    env.Requires(target,
-              [env.Alias(x+'-'+source) for x in dependencies])
-
-
 def do_mac_name_thing(env, source, target):
+    """Set the names and paths for the mac libraries based on the current locations
+    of the libs."""
     targetdir= os.path.split(target[0].abspath)[0]
     sourcedir= os.path.split(source[0].abspath)[0]
     #print targetdir
@@ -132,7 +174,9 @@ def IMPModuleLib(envi, files):
         build = env.StaticLibrary('#/build/lib/imp%s' % module_suffix,
                                       list(files))
     else:
-        build = env.SharedLibrary('#/build/lib/imp%s' % module_suffix,
+        lenv= env.Clone()
+        add_module_lib_dependencies(lenv, [])
+        build = lenv.SharedLibrary('#/build/lib/imp%s' % module_suffix,
                                   list(files) )
         postprocess_lib(env, build)
     install = env.Install(env.GetInstallDirectory('libdir'), build)
@@ -200,7 +244,8 @@ def IMPModuleBin(envi, files, required_modules=[], extra_libs=[], install=True):
     from scons_tools import get_bin_environment
     env= get_bin_environment(envi)
     vars=make_vars(env)
-    env.Prepend(LIBS=(['imp%(module_suffix)s' % vars]+["imp_"+x for x in required_modules]))
+    add_module_lib_dependencies(env, required_modules)
+    env.Prepend(LIBS=['imp%(module_suffix)s' % vars])
     env.Append(LIBS=extra_libs);
     build=[]
     install_list=[]
@@ -482,11 +527,6 @@ def IMPModuleBuild(env, version, required_modules=[],
 
 
     env = env.Clone()
-    if len(required_modules)>0:
-        env.Prepend(LIBS=['imp'])
-    for x in required_modules:
-        if x!="kernel":
-            env.Prepend(LIBS=['imp_'+x])
     env['IMP_REQUIRED_MODULES']= required_modules
     for d in optional_dependencies:
         if d== "CGAL":
