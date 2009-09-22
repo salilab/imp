@@ -39,7 +39,9 @@ PatchSwig = Builder(action=Action(_action_patch_swig_wrap,
 
 def _action_swig_file(target, source, env):
     vars= imp_module.make_vars(env)
-    alldeps=imp_module.expand_dependencies(env, env['IMP_REQUIRED_MODULES'])
+    deps=(imp_module.expand_dependencies(env, env['IMP_REQUIRED_MODULES']))
+    deps.reverse()
+    print "dependencies are " +str(deps)
     preface=["""/*
  *  WARNING Generated file, do not edit, edit the swig.i instead
  */
@@ -49,7 +51,7 @@ def _action_swig_file(target, source, env):
 %%{
 #include "IMP.h"
 """%vars['module_include_path'].replace("/", ".")]
-    for d in alldeps:
+    for d in deps:
         if d != "kernel":
             preface.append("#include \"IMP/%s.h\""% d)
     if vars['module'] != 'kernel':
@@ -86,7 +88,7 @@ def _action_swig_file(target, source, env):
 %}
 """)
 
-    for d in alldeps:
+    for d in deps:
         preface.append("%%import %s.i"% d)
 
 
