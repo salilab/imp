@@ -15,7 +15,7 @@ class WoodsFunc(IMP.Restraint):
         return IMP.VersionInfo("Daniel Russel", "0.5")
 
 
-    def evaluate(self, accum):
+    def unprotected_evaluate(self, accum):
         (x1, x2, x3, x4) = [p.get_value(self.index) for p in self.particles]
         a = x2 - x1 * x1
         b = x4 - x3 * x3
