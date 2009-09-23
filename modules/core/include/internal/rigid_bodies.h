@@ -19,6 +19,7 @@ struct RigidBodyData {
   FloatKeys child_keys_;
   FloatKeys quaternion_;
   HierarchyTraits htraits_;
+  ObjectKey refkey_;
   RigidBodyData(): htraits_("rigid_body") {
     child_keys_.resize(3);
     std::string pre="rigid_body_";
@@ -30,6 +31,7 @@ struct RigidBodyData {
     quaternion_[1]= FloatKey((pre+"quaternion_1").c_str());
     quaternion_[2]= FloatKey((pre+"quaternion_2").c_str());
     quaternion_[3]= FloatKey((pre+"quaternion_3").c_str());
+    refkey_= ObjectKey("rigid body representation");
   }
 };
 

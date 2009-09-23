@@ -99,12 +99,16 @@ public:
   IMP::algebra::Transformation3D get_transformation() const;
 
   //! Set the current orientation and translation
-  /** If the second argument is true, all the member particles are
-      immediately transformed. Otherwise they will be transformed later
-      by a score state as appropriate.
+  /** All members of the rigid body will have their coordinates updated.
+      See lazy_set_transformation() if you can weight until evaluate for
+      that.
    */
-  void set_transformation(const IMP::algebra::Transformation3D &tr,
-                          bool transform_members=false);
+  void set_transformation(const IMP::algebra::Transformation3D &tr);
+
+  //! Change the transformation, but let the score state update the members
+  /** See set_transformation()
+   */
+  void lazy_set_transformation(const IMP::algebra::Transformation3D &tr);
 
   bool get_coordinates_are_optimized() const;
 
@@ -126,16 +130,6 @@ public:
 IMP_OUTPUT_OPERATOR(RigidBody);
 
 typedef Decorators<RigidBody, XYZs> RigidBodies;
-
-
-//! Apply a transformation to the particle
-/** \relatesalso RigidBody
-    \relatesalso Transformation3D
-*/
-inline void transform(RigidBody a, const algebra::Transformation3D &tr) {
-  a.set_transformation(compose(tr, a.get_transformation()), true);
-}
-
 
 //! A decorator for a particle that is part of a rigid body
 /**

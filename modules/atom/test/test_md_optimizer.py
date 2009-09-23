@@ -21,7 +21,7 @@ class XTransRestraint(IMP.Restraint):
         IMP.Restraint.__init__(self)
         self.strength = strength
 
-    def evaluate(self, accum):
+    def unprotected_evaluate(self, accum):
         e = 0.
         for p in self.get_model().get_particles():
             e += p.get_value(xkey) * self.strength
