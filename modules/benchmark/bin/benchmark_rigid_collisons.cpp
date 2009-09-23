@@ -29,7 +29,7 @@ void test_one(std::string name,
                Vector3D t= random_vector_in_box(minc, maxc);
                Rotation3D r= random_rotation();
                Transformation3D tr(r, t);
-               rbs[i].set_transformation(tr, true);
+               rbs[i].set_transformation(tr);
              }
            }, inittime);
   double value=0;
@@ -39,7 +39,7 @@ void test_one(std::string name,
                Vector3D t= random_vector_in_box(minc, maxc);
                Rotation3D r= random_rotation();
                Transformation3D tr(r, t);
-               rbs[i].set_transformation(tr, true);
+               rbs[i].set_transformation(tr);
              }
              value+=m->evaluate(false);
            }, runtime);
