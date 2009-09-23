@@ -1,3 +1,5 @@
+"""Tools and Builders for IMP modules. See `IMPModule` for more information."""
+
 import os.path
 import pyscanner
 import examples
@@ -62,7 +64,6 @@ def expand_dependencies(env, deps):
     In an effort to make static linking work, only the last copy in the list of dependencies is kept"""
     size=-1
     all=[]
-    #print "expanding " + str(deps)
     for d in deps:
         try:
             ndeps=env[d+"_required_modules"]
@@ -88,25 +89,24 @@ def expand_dependencies(env, deps):
     #print "fiitered is " +str(filtered)
     return filtered
 
-def add_module_lib_dependencies(env, extra_modules):
-    """Add the list of libs to the environment made by merging
-    the IMP_REQUIRED_MODULES with the extra_modules."""
-    deps= extra_modules+env['IMP_REQUIRED_MODULES']
-    libs=[]
-    #print "deps are "+str(deps)
-    expanded=expand_dependencies(env,deps)
-    #print "expanded are " +str(expanded)
-    for d in expanded:
-        if d != "kernel":
-            libs.append("imp_"+d)
-        else:
-            libs.append("imp")
-    env.Prepend(LIBS=libs)
 
+def dependencies_to_libs(env, deps):
+    libs=[]
+    deps = env[env['IMP_MODULE']+"_required_modules"] + deps
+    for d in expand_dependencies(env,deps):
+        libs.append("imp_"+d)
+    if env['IMP_MODULE'] != 'kernel':
+        libs.append("imp")
+    return libs
 
 #def module_deps_depends(env, target, source, dependencies):
 #    env.Depends(target,
 #              [env.Alias(x+'-'+source) for x in dependencies])
+
+def module_deps_requires(env, target, source, dependencies):
+    env.Requires(target,
+              [env.Alias(x+'-'+source) for x in dependencies])
+
 
 def do_mac_name_thing(env, source, target):
     """Set the names and paths for the mac libraries based on the current locations
@@ -133,6 +133,13 @@ def postprocess_lib(env, target):
         dir= os.path.split(target[0].abspath)[0]
         env.AddPostAction(target, do_mac_name_thing)
 
+
+def make_static_build(env):
+    """Make the build static if appropriate"""
+    if env['CC'] == 'gcc':
+        env.Append(LINKFLAGS=['-static'])
+    else:
+        print "Static builds only supported with GCC, ignored."
 
 def make_vars(env):
     """Make a map which can be used for all string substitutions"""
@@ -170,17 +177,18 @@ def IMPModuleLib(envi, files):
                                    source=[env.Value(env['IMP_MODULE_VERSION'])])
     #env.AlwaysBuild(version)
     files =files+link+ config
+    env.Prepend(LIBS=dependencies_to_libs(env, []))
+    build=[]
     if env['static'] and env['CC'] == 'gcc':
-        build = env.StaticLibrary('#/build/lib/imp%s' % module_suffix,
-                                      list(files))
-    else:
-        lenv= env.Clone()
-        add_module_lib_dependencies(lenv, [])
-        build = lenv.SharedLibrary('#/build/lib/imp%s' % module_suffix,
-                                  list(files) )
-        postprocess_lib(env, build)
-    install = env.Install(env.GetInstallDirectory('libdir'), build)
-    postprocess_lib(env, install)
+        build.append( env.StaticLibrary('#/build/lib/imp%s' % module_suffix,
+                                      list(files)))
+    build.append(env.SharedLibrary('#/build/lib/imp%s' % module_suffix,
+                                  list(files) ) )
+    postprocess_lib(env, build[-1])
+    install=[]
+    for b in build:
+        install.append(env.Install(env.GetInstallDirectory('libdir'), b) )
+    postprocess_lib(env, install[-1])
     module_requires(env, build, 'include')
     module_requires(env, build, 'data')
     module_alias(env, 'lib', build, True)
@@ -244,8 +252,7 @@ def IMPModuleBin(envi, files, required_modules=[], extra_libs=[], install=True):
     from scons_tools import get_bin_environment
     env= get_bin_environment(envi)
     vars=make_vars(env)
-    add_module_lib_dependencies(env, required_modules)
-    env.Prepend(LIBS=['imp%(module_suffix)s' % vars])
+    env.Prepend(LIBS=(['imp%(module_suffix)s' % vars]+dependencies_to_libs(env, required_modules)))
     env.Append(LIBS=extra_libs);
     build=[]
     install_list=[]
@@ -512,7 +519,7 @@ def IMPModuleBuild(env, version, required_modules=[],
                 print "You do not need to list the kernel as a required module"
                 print required_modules
                 raise ValueError(x)
-        required_modules.append('kernel')
+        #required_modules.append('kernel')
     else:
         required_modules=[]
     #print module_suffix
@@ -597,8 +604,8 @@ def IMPModuleBuild(env, version, required_modules=[],
 
     nice_deps = expand_dependencies(env,required_modules)
     #print "nice is "+str(nice_deps)
-    if len(nice_deps) > 1:
-        nice_deps.remove('kernel')
+    if len(nice_deps) > 0:
+        #nice_deps.remove('kernel')
         print "(requires " +", ".join(nice_deps) + ")",
     print
 
