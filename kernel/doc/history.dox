@@ -2,6 +2,10 @@
 
 \par Week of September 20
 
+- static builds (builds with \c static=True) build both the static and dynamic libraries and just static executables
+
+- the \c profile build target has been removed as \c static=True does the important bit of what is needed. Just do \c linkflags=['-pg'] to add the needed link flag for \c gprof. 
+
 - Restraints should now implement IMP::Restraint::unprotected_evaluate() instead of IMP::Restraint::evaluate(). The latter can now be called outside of IMP::Model::evaluate() and will return the right answer always.
 
 \par Week of August 30

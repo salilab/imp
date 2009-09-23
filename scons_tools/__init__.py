@@ -80,11 +80,6 @@ def _add_build_flags(env):
     env.Append(CCFLAGS=[])
     env.Append(LINKFLAGS=[])
     env.Append(LIBPATH=[])
-    if env['static']:
-        if env['CC'] == 'gcc':
-            env.Append(LINKFLAGS=['-static'])
-        else:
-            print "Static builds only supported with GCC, ignored."
     if env['CC'] == 'gcc':
         env.Append(CCFLAGS=["-Wall"])
     if env['CXX'] == 'g++':
@@ -100,13 +95,6 @@ def _add_build_flags(env):
     elif env['build'] == 'debug':
         if env['CC'] == 'gcc':
             env.Append(CCFLAGS=["-g"])
-    elif env['build'] == 'profile':
-        env.Append(CPPDEFINES=['NDEBUG'])
-        if env['CC'] == 'gcc':
-            env.Append(CCFLAGS=[ "-O3", "-fexpensive-optimizations",
-                                 "-ffast-math"])
-            env.Append(CCFLAGS=['-g', '-pg'])
-            env.Append(LINKFLAGS=['-pg'])
 
 
 def CheckGNUHash(context):
@@ -188,8 +176,6 @@ def MyEnvironment(variables=None, *args, **kw):
         env['includepath'] = [os.path.abspath(x) for x in \
                           env['includepath'].split(os.path.pathsep)]
         env.Prepend(CPPPATH=env['includepath'])
-    if env['build'] == 'profile':
-        env['static']=True
     if env['static']:
         env['python']=False
     # make sure it is there
@@ -276,6 +262,11 @@ def get_sharedlib_environment(env, cppdefine, cplusplus=False):
 def get_bin_environment(envi):
     env= envi.Clone()
     _add_rpath(env)
+    if env['static']:
+        if env['CC'] == 'gcc':
+            env.Append(LINKFLAGS=['-static'])
+        else:
+            print "Static builds only supported with GCC, ignored."
     return env
 
 
@@ -398,10 +389,9 @@ def add_common_variables(vars, package):
     vars.Add(EnumVariable('build',
                           "Set to 'release' for a normal build," \
                           +" 'debug' to disable optimization," \
-                          +" 'fast' to disable most runtime checks," \
-                          +" or 'profile' to disable most runtime checks" \
+                          +" or 'fast' to disable most runtime checks," \
                           +" but keep debugging information",
-                          "release", ['release', 'debug', 'fast', 'profile']))
+                          "release", ['release', 'debug', 'fast']))
     vars.Add(BoolVariable('linksysv',
                           'Link with old-style SysV, not GNU hash, for ' + \
                           'binary compatibility', False))
