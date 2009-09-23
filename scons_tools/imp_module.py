@@ -502,7 +502,7 @@ def IMPModuleBuild(env, version, required_modules=[],
     if module_nicename is None:
         module_nicename= "IMP."+module
     # Check required modules and add kernel
-    if required_modules is not None:
+    if module != 'kernel':
         for x in required_modules:
             if x.startswith("imp_"):
                 print "Required modules should have the name of the module (eg 'algebra'), not the name of the library."
