@@ -66,14 +66,14 @@ void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
     IMP_LOG(VERBOSE, "number of optimization run is : "<< i << std::endl);
     //set the centroid of the rigid body to be on the anchor centroid
     //make sure that all of the members are in the correct transformation
-    rb.set_transformation(rb.get_transformation(),true);
+    rb.set_transformation(rb.get_transformation());
     algebra::Vector3D ps_centroid =
       IMP::core::centroid(core::XYZs(rb.get_members()));
 
     algebra::Transformation3D move2centroid(algebra::identity_rotation(),
                                           anchor_centroid-ps_centroid);
     core::transform(rb,move2centroid);
-    rb.set_transformation(rb.get_transformation(),true);
+    rb.set_transformation(rb.get_transformation());
     ps_centroid =
       IMP::core::centroid(core::XYZs(rb.get_members()));
     IMP_LOG(VERBOSE, "rigid body centroid before optimization : "
@@ -81,7 +81,7 @@ void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
     //optimize
     try {
       e = opt->optimize(number_of_mc_steps);
-      rb.set_transformation(rb.get_transformation(),true);
+      rb.set_transformation(rb.get_transformation());
       ps_centroid =
         IMP::core::centroid(core::XYZs(rb.get_members()));
       IMP_LOG(VERBOSE, "rigid body centroid after optimization : "

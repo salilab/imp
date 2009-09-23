@@ -114,7 +114,7 @@ RigidBody RigidBody::setup_particle(Particle *p,
   Matrix I2= compute_I(ds, v, roti);
   IMP_LOG(VERBOSE, I << std::endl);
   IMP_LOG(VERBOSE, I2 << std::endl);
-  d.set_transformation(IMP::algebra::Transformation3D(rot, v));
+  d.lazy_set_transformation(IMP::algebra::Transformation3D(rot, v));
   IMP_LOG(VERBOSE, "Particle is " << d << std::endl);
 
   for (unsigned int i=0; i< ds.size(); ++i) {
@@ -242,19 +242,21 @@ algebra::Vector3D RigidBody::get_coordinates(RigidMember p)
 }
 
 void RigidBody
-::set_transformation(const IMP::algebra::Transformation3D &tr,
-                     bool transform_now) {
-  algebra::VectorD<4> v= tr.get_rotation().get_quaternion();
+::lazy_set_transformation(const IMP::algebra::Transformation3D &tr) {
+ algebra::VectorD<4> v= tr.get_rotation().get_quaternion();
   get_particle()->set_value(internal::rigid_body_data().quaternion_[0], v[0]);
   get_particle()->set_value(internal::rigid_body_data().quaternion_[1], v[1]);
   get_particle()->set_value(internal::rigid_body_data().quaternion_[2], v[2]);
   get_particle()->set_value(internal::rigid_body_data().quaternion_[3], v[3]);
   set_coordinates(tr.get_translation());
-  if (transform_now) {
-    for (unsigned int i=0; i< get_number_of_members(); ++i) {
-      get_member(i)
-    .set_coordinates(tr.transform(get_member(i).get_internal_coordinates()));
-    }
+}
+
+void RigidBody
+::set_transformation(const IMP::algebra::Transformation3D &tr) {
+  lazy_set_transformation(tr);
+  for (unsigned int i=0; i< get_number_of_members(); ++i) {
+    get_member(i)
+      .set_coordinates(tr.transform(get_member(i).get_internal_coordinates()));
   }
 }
 
@@ -311,10 +313,6 @@ void UpdateRigidBodyOrientation::apply(Particle *p) const {
     }
   }
   rb.set_transformation(tr);
-  for (unsigned int i=0; i< rb.get_number_of_members(); ++i) {
-    rb.get_member(i).set_coordinates(tr.transform(rb.get_member(i)
-                                            .get_internal_coordinates()));
-  }
 }
 
 
