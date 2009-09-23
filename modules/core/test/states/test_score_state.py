@@ -14,7 +14,7 @@ class LoggingRestraint(IMP.Restraint):
     def get_version_info(self):
         return IMP.VersionInfo("Ben Webb", "0.1")
 
-    def evaluate(self, accum):
+    def unprotected_evaluate(self, accum):
         if accum:
             self.log.append('restraint-deriv')
         else:

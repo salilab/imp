@@ -39,7 +39,7 @@ class DistanceTests(IMP.test.TestCase):
                    IMP.core.HarmonicLowerBound(mean, 0.1),
                    IMP.core.Harmonic(mean, 0.1)):
             r = IMP.core.DistanceRestraint(sf, p1, p2)
-            r.set_was_owned(True)
+            p1.get_model().add_restraint(r)
             self.rsrs.append(r)
 
     def _make_restraints(self):
@@ -60,7 +60,7 @@ class DistanceTests(IMP.test.TestCase):
                    IMP.core.Harmonic(3.0, 0.1)):
             r = IMP.core.DistanceRestraint(fs, self.particles[1],
                                            self.particles[0])
-            r.set_was_owned(True)
+            self.particles[1].get_model().add_restraint(r)
             self.rsrs.append(r)
 
         # exceed lower bound
@@ -69,7 +69,7 @@ class DistanceTests(IMP.test.TestCase):
                    IMP.core.Harmonic(5.0, 0.1)):
             r = IMP.core.DistanceRestraint(fs, self.particles[1],
                                            self.particles[2])
-            r.set_was_owned(True)
+            self.particles[1].get_model().add_restraint(r)
             self.rsrs.append(r)
 
         # exceed upper bound
@@ -78,7 +78,7 @@ class DistanceTests(IMP.test.TestCase):
                    IMP.core.Harmonic(4.0, 0.1)):
             r = IMP.core.DistanceRestraint(fs, self.particles[0],
                                            self.particles[2])
-            r.set_was_owned(True)
+            self.particles[0].get_model().add_restraint(r)
             self.rsrs.append(r)
 
     def test_show(self):
@@ -97,9 +97,6 @@ class DistanceTests(IMP.test.TestCase):
 
         # score should not change with deriv calcs
         accum = IMP.DerivativeAccumulator()
-        for rsr in self.rsrs:
-            self.assertAlmostEqual(rsr.evaluate(None), rsr.evaluate(accum),
-                                   places=5)
 
         # score should be equivalent if attribute is used or equivalent hard-coded distance is used
         for i in range(9):

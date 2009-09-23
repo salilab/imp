@@ -8,7 +8,7 @@ class WoodsFunc(IMP.Restraint):
     def __init__(self):
         IMP.Restraint.__init__(self)
         self.index= IMP.FloatKey("x")
-    def evaluate(self, accum):
+    def unprotected_evaluate(self, accum):
         #print "Evaluating in python\n"
         (x1, x2, x3, x4) = [p.get_value(self.index) for p in self.get_model().get_particles()]
         #print "Evaluating at " +str(x1) + " " + str(x2) + " " \
