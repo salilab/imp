@@ -45,8 +45,8 @@ namespace {
   }
 }
 
-Float MinimumSingletonScoreRestraint
-::evaluate(DerivativeAccumulator *da) {
+double MinimumSingletonScoreRestraint
+::unprotected_evaluate(DerivativeAccumulator *da) const {
   MS bestn= find_minimal_set(c_->particles_begin(),
                              c_->particles_end(), f_.get(), n_);
 

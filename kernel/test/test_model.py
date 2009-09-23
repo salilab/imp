@@ -5,7 +5,7 @@ import StringIO
 
 class DummyRestraint(IMP.Restraint):
     """Dummy do-nothing restraint"""
-    def evaluate(self, accum):
+    def unprotected_evaluate(self, accum):
         return 0.
     def show(self, fh):
         fh.write("DummyRestraint")
@@ -17,7 +17,7 @@ class CustomError(Exception):
 
 class FailingRestraint(IMP.Restraint):
     """Restraint that fails in evaluate"""
-    def evaluate(self, accum):
+    def unprotected_evaluate(self, accum):
         raise CustomError("Custom error message")
     def show(self, fh):
         fh.write("FailingRestraint")

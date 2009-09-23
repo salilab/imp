@@ -672,7 +672,7 @@ protection:                                                             \
     - IMP::Restraint::incremental_evaluate() to throw an exception
 */
 #define IMP_RESTRAINT(Name, version_info)                               \
-  virtual Float evaluate(DerivativeAccumulator *accum);                 \
+  virtual double unprotected_evaluate(DerivativeAccumulator *accum) const;   \
   IMP_OBJECT(Name, version_info)
 
 //! Define the basic things you need for a Restraint.
@@ -683,9 +683,10 @@ protection:                                                             \
     - IMP::Restraint::get_is_incremental() to return true
 */
 #define IMP_INCREMENTAL_RESTRAINT(Name, version_info)                   \
-  virtual Float evaluate(DerivativeAccumulator *accum);                 \
+  virtual double unprotected_evaluate(DerivativeAccumulator *accum) const;   \
   virtual bool get_is_incremental() const {return true;}                \
-  virtual double incremental_evaluate(DerivativeAccumulator *accum) const; \
+  virtual double                                                        \
+  unprotected_incremental_evaluate(DerivativeAccumulator *accum) const;      \
   IMP_OBJECT(Name, version_info)
 
 //! Define the basic things you need for an optimizer.

@@ -1,5 +1,9 @@
 /** \page recent Change History
 
+\par Week of September 20
+
+- Restraints should now implement IMP::Restraint::unprotected_evaluate() instead of IMP::Restraint::evaluate(). The latter can now be called outside of IMP::Model::evaluate() and will return the right answer always.
+
 \par Week of August 30
 
 - A new score IMP::core::BoundingBox3DSingletonScore has been added to keep particles

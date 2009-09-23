@@ -67,9 +67,10 @@ public:
   /** \param[in] accum If not NULL, use this object to accumulate partial first
                        derivatives.
       \return Current score.
-      \see Restraint::safe_evaluate()
+
+      This method will update the ScoreStates in the model if necessary.
    */
-  virtual Float evaluate(DerivativeAccumulator *accum) = 0;
+  double evaluate(DerivativeAccumulator *accum) const;
 
   /** \name Incremental Evaluation
 
@@ -96,28 +97,11 @@ public:
   //! Return true if the incremental_evaluate() function is implemented
   virtual bool get_is_incremental() const {return false;}
   //! Return the restraint score evaluated in an incremental manner
-  virtual double incremental_evaluate(DerivativeAccumulator *) const {
-    IMP_failure(get_name() << " does not support incremental evaluation.",
-                ErrorException);
-    return 0;
-  }
+  /** This method will update the ScoreStates in the model if necessary.
+  */
+  double incremental_evaluate(DerivativeAccumulator *) const;
 
   /** @} */
-
-  /** \brief Evaluate the restraint outside of an optimization run.
-
-      Use this instead of Restraint::evaluate() when checking the
-      value of a restraint during setup or debugging.
-
-      Evaluating a Restraint when the various ScoreStates in the model have
-      not been updated does not necessarily return a meaningful answer. For
-      example, the close pairs list may not reflect the current positions of
-      the particles, or might be empty.
-  */
-  virtual Float safe_evaluate() {
-    get_model()->evaluate(false);
-    return evaluate(NULL);
-  }
 
   //! The model the restraint is part of.
   /** \param[in] model The model.
@@ -150,6 +134,17 @@ public:
       particles stored in this restraint.
    */
   virtual ParticlesList get_interacting_particles() const=0;
+
+#ifndef IMP_DOXYGEN
+  virtual double
+    unprotected_incremental_evaluate(DerivativeAccumulator *) const {
+    IMP_failure(get_name() << " does not support incremental evaluation.",
+                ErrorException);
+    return 0;
+  }
+  virtual double unprotected_evaluate(DerivativeAccumulator *) const=0;
+
+#endif
 
   IMP_REF_COUNTED_DESTRUCTOR(Restraint);
 private:

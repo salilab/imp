@@ -66,12 +66,12 @@ void Restraint::compute_profile(Profile& model_profile) {
     \return score associated with this restraint for the given state of
             the model.
 */
-Float Restraint::evaluate(DerivativeAccumulator *acc)
+double Restraint::unprotected_evaluate(DerivativeAccumulator *acc) const
 {
   IMP_LOG(TERSE, "SAXS Restraint::evaluate score\n");
 
   Profile model_profile(ff_table_);
-  compute_profile(model_profile);
+  const_cast<Restraint*>(this)->compute_profile(model_profile);
   Float score = saxs_score_->compute_chi_square_score(model_profile, true);
   bool calc_deriv = acc? true: false;
   if(!calc_deriv) return score;

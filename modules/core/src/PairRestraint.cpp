@@ -27,12 +27,12 @@ PairRestraint
 {
 }
 
-Float PairRestraint::evaluate(DerivativeAccumulator *accum)
+double PairRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(ss_);
 
-  Float score=0;
+  double score=0;
   score += IMP::internal::ContainerTraits<ParticlePair>
     ::evaluate(ss_, v_, accum);
 

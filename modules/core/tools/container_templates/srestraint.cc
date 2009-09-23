@@ -27,12 +27,12 @@ GroupnameRestraint
 {
 }
 
-Float GroupnameRestraint::evaluate(DerivativeAccumulator *accum)
+double GroupnameRestraint::unsafe_evaluate(DerivativeAccumulator *accum) const
 {
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(ss_);
 
-  Float score=0;
+  double score=0;
   score += IMP::internal::ContainerTraits<Classname>
     ::evaluate(ss_, v_, accum);
 

@@ -30,7 +30,7 @@ AngleRestraint::AngleRestraint(UnaryFunction* score_func,
   sf_= new AngleTripletScore(score_func);
 }
 
-Float AngleRestraint::evaluate(DerivativeAccumulator *accum)
+double AngleRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
   return sf_->evaluate(p_[0], p_[1], p_[2],
                        accum);
