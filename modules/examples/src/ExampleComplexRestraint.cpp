@@ -60,7 +60,8 @@ void ExampleComplexRestraint::set_model(Model *m) {
   Restraint::set_model(m);
 }
 
-Float ExampleComplexRestraint::evaluate(DerivativeAccumulator *da) {
+double
+ExampleComplexRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
   IMP_CHECK_OBJECT(sc_.get());
   double v=0;
   core::XYZ dp(p_);

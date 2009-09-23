@@ -63,7 +63,8 @@ void ExcludedVolumeRestraint::set_model(Model *m) {
   Restraint::set_model(m);
 }
 
-Float ExcludedVolumeRestraint::evaluate(DerivativeAccumulator *da) {
+double
+ExcludedVolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(pr_.get());
   return pr_->evaluate(da);

@@ -37,7 +37,8 @@ SingletonsRestraint
 
 }
 
-Float SingletonsRestraint::evaluate(DerivativeAccumulator *accum)
+double
+SingletonsRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(ss_);

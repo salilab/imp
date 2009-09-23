@@ -77,12 +77,14 @@ IMP_LIST_IMPL(SimpleDiscreteRestraint, Particle, particle,Particle*,
 
 
 
-Float SimpleDiscreteRestraint::evaluate(DerivativeAccumulator *accum)
+double SimpleDiscreteRestraint::
+unprotected_evaluate(DerivativeAccumulator *accum) const
 {
   //build state key
   int a1 = int(p1->get_value(SimpleDiscreteSpace::get_optimization_key()));
   int a2 = int(p2->get_value(SimpleDiscreteSpace::get_optimization_key()));
-  return states2values[key][std::pair<int,int>(a1,a2)];
+  return const_cast<SimpleDiscreteRestraint*>(this)
+    ->states2values[key][std::pair<int,int>(a1,a2)];
 }
 
 void SimpleDiscreteRestraint::show(std::ostream& out) const

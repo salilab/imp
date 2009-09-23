@@ -85,7 +85,8 @@ namespace {
 }
 
 
-Float ConnectivityRestraint::evaluate(DerivativeAccumulator *accum)
+double
+ConnectivityRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
   IMP_CHECK_OBJECT(ps_.get());
   std::vector<Edge> mst;

@@ -14,9 +14,10 @@ ExampleRestraint::ExampleRestraint(PairScore* score_func,
                                    PairContainer *pc) : pc_(pc),
                                           f_(score_func) {}
 
-Float ExampleRestraint::evaluate(DerivativeAccumulator *accum)
+double
+ExampleRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
-  Float score=0;
+  double score=0;
   for (PairContainer::ParticlePairIterator
        it= pc_->particle_pairs_begin();
        it != pc_->particle_pairs_end(); ++it) {

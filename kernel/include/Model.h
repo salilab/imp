@@ -85,6 +85,11 @@ private:
 
   void after_evaluate(bool calc_derivs) const;
 
+  void before_evaluate_incremental() const;
+
+  void after_evaluate_incremental(bool calc_derivs) const;
+
+
   void zero_derivatives(bool shadow_too=false) const;
 
   double do_evaluate(bool calc_derivs) const;

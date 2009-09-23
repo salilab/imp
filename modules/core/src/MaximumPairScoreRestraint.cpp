@@ -49,8 +49,8 @@ namespace {
   }
 }
 
-Float MaximumPairScoreRestraint
-::evaluate(DerivativeAccumulator *da) {
+double MaximumPairScoreRestraint
+::unprotected_evaluate(DerivativeAccumulator *da) const {
   MS bestn= find_minimal_set(c_->particle_pairs_begin(),
                              c_->particle_pairs_end(), f_.get(), n_);
 

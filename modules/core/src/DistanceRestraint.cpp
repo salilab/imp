@@ -36,7 +36,8 @@ DistanceRestraint::DistanceRestraint(UnaryFunction* score_func,
                      derivatives.
     \return Current score.
  */
-Float DistanceRestraint::evaluate(DerivativeAccumulator *accum)
+double
+DistanceRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
   return dp_->evaluate(p_[0], p_[1], accum);
 }

@@ -61,7 +61,8 @@ void DiameterRestraint::set_model(Model *m) {
   Restraint::set_model(m);
 }
 
-Float DiameterRestraint::evaluate(DerivativeAccumulator *da) {
+double
+DiameterRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
   IMP_CHECK_OBJECT(sc_.get());
   double v=0;
   XYZ dp(p_);

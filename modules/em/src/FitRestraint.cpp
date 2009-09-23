@@ -83,15 +83,20 @@ IMP_LIST_IMPL(FitRestraint, Particle, particle,Particle*, Particles,
     \return score associated with this restraint for the given state of
             the model.
  */
-Float FitRestraint::evaluate(DerivativeAccumulator *accum)
+double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
   //  IMP_LOG(VERBOSE, "in RSR_EM_Fit::evaluate calc_deriv: " << calc_deriv
   //                   << endl);
 
   Float score;
   bool calc_deriv = accum? true: false;
-  score = CoarseCC::evaluate(*target_dens_map_, *model_dens_map_,
-                             access_p_, dx_, dy_, dz_, scalefac_, calc_deriv);
+  score = CoarseCC::evaluate(const_cast<DensityMap&>(*target_dens_map_),
+                             const_cast<SampledDensityMap&>(*model_dens_map_),
+                             access_p_,
+                             const_cast<FitRestraint*>(this)->dx_,
+                             const_cast<FitRestraint*>(this)->dy_,
+                             const_cast<FitRestraint*>(this)->dz_,
+                             scalefac_, calc_deriv);
 
   // now update the derivatives
   if (calc_deriv) {

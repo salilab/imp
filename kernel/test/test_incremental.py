@@ -16,7 +16,7 @@ class DummyRestraint(IMP.Restraint):
     def __init__(self, p):
         IMP.Restraint.__init__(self)
         self.p=p
-    def evaluate(self, accum):
+    def unprotected_evaluate(self, accum):
         return score(self.p, accum)
     def show(self, fh):
         fh.write("DummyRestraint")
@@ -29,13 +29,13 @@ class DummyIncrementalRestraint(IMP.Restraint):
     def __init__(self, p):
         IMP.Restraint.__init__(self)
         self.p=p
-    def evaluate(self, accum):
+    def unprotected_evaluate(self, accum):
         self.oldvalue= score(self.p, accum)
         print "non-incremental "+ str(self.oldvalue)
         return self.oldvalue
     def get_is_incremental(self):
         return True
-    def incremental_evaluate(self, accum):
+    def unprotected_incremental_evaluate(self, accum):
         print "Particle " +self.p.get_name() + " is " +str(self.p.get_is_changed())
         print "Current " + str(self.p.get_value(fk)) + " old "\
             + str(self.p.get_prechange_particle().get_value(fk))

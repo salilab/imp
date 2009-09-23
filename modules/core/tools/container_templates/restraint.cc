@@ -37,7 +37,7 @@ GroupnamesRestraint
 
 }
 
-Float GroupnamesRestraint::evaluate(DerivativeAccumulator *accum)
+double GroupnamesRestraint::unsafe_evaluate(DerivativeAccumulator *accum) const
 {
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(ss_);

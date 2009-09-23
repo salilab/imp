@@ -29,7 +29,8 @@ IMP_LIST_IMPL(RestraintSet, Restraint, restraint, Restraint*,
               },,obj->set_model(NULL););
 
 
-Float RestraintSet::evaluate(DerivativeAccumulator *accum)
+double
+RestraintSet::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
   if (get_weight() == 0) return 0;
   IMP_OBJECT_LOG;
@@ -42,9 +43,10 @@ Float RestraintSet::evaluate(DerivativeAccumulator *accum)
   }
 
   score = (Float) 0.0;
-  for (RestraintIterator it= restraints_begin(); it != restraints_end(); ++it) {
+  for (RestraintConstIterator it= restraints_begin();
+       it != restraints_end(); ++it) {
     IMP_LOG(TERSE, "Evaluate restraint " << (*it)->get_name() << std::endl);
-    double tscore= (*it)->evaluate(ouracc.get());
+    double tscore= (*it)->unprotected_evaluate(ouracc.get());
     score+=tscore;
     IMP_LOG(TERSE, "Restraint score is " << tscore << std::endl);
   }
