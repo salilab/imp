@@ -138,6 +138,7 @@ int main(void)
 def MyEnvironment(variables=None, *args, **kw):
     """Create an environment suitable for building IMP modules"""
     import platform
+    #import colorizer
     # First make a dummy environment in order to evaluate all variables, since
     # env['wine'] will tell us which 'real' environment to create:
     env = Environment(tools=[], variables=variables)
@@ -156,6 +157,8 @@ def MyEnvironment(variables=None, *args, **kw):
         env['SHLINKFLAGS'] = [ x.replace('-no_archive', '') for x in env['SHLINKFLAGS']]
     except ValueError:
         pass
+    #col = colorizer.colorizer()
+    #col.colorize(env)
     env['PYTHONPATH'] = '#/build/lib'
     if env['rpath']:
         if env['PLATFORM']!= 'posix' and env['PLATFORM'] != 'darwin':
@@ -176,8 +179,6 @@ def MyEnvironment(variables=None, *args, **kw):
         env['includepath'] = [os.path.abspath(x) for x in \
                           env['includepath'].split(os.path.pathsep)]
         env.Prepend(CPPPATH=env['includepath'])
-    if env['static']:
-        env['python']=False
     # make sure it is there
     env.Append(LIBPATH=[])
     if env.get('libpath') is not None:
