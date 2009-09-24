@@ -85,6 +85,9 @@ def expand_dependencies(env, deps):
             all[i+1:].index(v)
         except:
             filtered.append(v)
+    # always depend on kernel
+    if env['IMP_MODULE'] != 'kernel':
+        filtered.append("kernel")
     #all.sort()
     #print "fiitered is " +str(filtered)
     return filtered
@@ -94,9 +97,10 @@ def dependencies_to_libs(env, deps):
     libs=[]
     deps = env[env['IMP_MODULE']+"_required_modules"] + deps
     for d in expand_dependencies(env,deps):
-        libs.append("imp_"+d)
-    if env['IMP_MODULE'] != 'kernel':
-        libs.append("imp")
+        if d== 'kernel':
+            libs.append("imp")
+        else:
+            libs.append("imp_"+d)
     return libs
 
 #def module_deps_depends(env, target, source, dependencies):
@@ -604,8 +608,8 @@ def IMPModuleBuild(env, version, required_modules=[],
 
     nice_deps = expand_dependencies(env,required_modules)
     #print "nice is "+str(nice_deps)
-    if len(nice_deps) > 0:
-        #nice_deps.remove('kernel')
+    if len(nice_deps) > 1:
+        nice_deps.remove('kernel')
         print "(requires " +", ".join(nice_deps) + ")",
     print
 
