@@ -1,11 +1,3 @@
 #!/bin/sh
 
-@LDPATH@
-
-@PYTHONPATH@
-
-@DATAPATH@
-
-@PRECOMMAND@
-
-exec ${precommand} "$@"
+echo "Use tools/imppy.sh instead" >&2
