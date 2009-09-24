@@ -294,6 +294,9 @@ def IMPModulePython(env):
         penv = get_pyext_environment(env, module.upper(), cplusplus=True)
         if penv['CC'] != 'w32cc':
             penv['LIBS']=[]
+        else:
+            # windows needs all of the IMP modules linked in explicitly
+            penv.Prepend(LIBS=dependencies_to_libs(env, []))
         penv.Prepend(LIBS=['imp%s' % module_suffix])
         #penv.Append(CPPPATH=[Dir('#').abspath])
         #penv.Append(SWIGFLAGS='-python -c++ -naturalvar')
