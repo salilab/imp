@@ -14,6 +14,7 @@
 #include "IMP/internal/IndexingIterator.h"
 
 #include <IMP/base_types.h>
+#include <IMP/VectorOfRefCounted.h>
 #include <IMP/Particle.h>
 
 #include <string>
@@ -21,8 +22,12 @@
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
+struct ArrayDataBase: public RefCounted {
+  virtual ~ArrayDataBase(){}
+};
+
 template <class Key, class Value>
-struct ArrayData: public RefCounted {
+struct ArrayData: public ArrayDataBase {
   ArrayData(std::string p):
     num_key((p+"_number").c_str()),
     prefix(p) {
@@ -39,6 +44,9 @@ std::ostream &operator<<(std::ostream &out, const ArrayData<K,V> &d) {
   return out;
 }
 
+// to avoid having memory leaks reported
+IMPCOREEXPORT extern VectorOfRefCounted<ArrayDataBase*> array_datas;
+
 
 template <class KeyT, class ValueT>
 struct ArrayOnAttributesHelper {
@@ -47,7 +55,9 @@ struct ArrayOnAttributesHelper {
   typedef ArrayData<Key, Value> Data;
 
   ArrayOnAttributesHelper(){}
-  ArrayOnAttributesHelper(std::string p): data_(new Data(p)){}
+  ArrayOnAttributesHelper(std::string p): data_(new Data(p)){
+    array_datas.push_back(data_);
+  }
 
   template <class T>
   void audit_value(T) const {}
@@ -185,7 +195,7 @@ private:
     return data_->keys[i];
   }
 
-  mutable Pointer<Data> data_;
+  mutable Data* data_;
 };
 
 IMPCORE_END_INTERNAL_NAMESPACE

@@ -1,4 +1,5 @@
 files = [
+         'ArrayOnAttributesHelper.cpp',
          'ParticleGrid.cpp',
          'graph_base.cpp',
         ]
