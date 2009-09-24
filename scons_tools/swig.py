@@ -41,7 +41,7 @@ def _action_swig_file(target, source, env):
     vars= imp_module.make_vars(env)
     deps=(imp_module.expand_dependencies(env, env['IMP_REQUIRED_MODULES']))
     deps.reverse()
-    print "dependencies are " +str(deps)
+    #print "dependencies are " +str(deps)
     preface=["""/*
  *  WARNING Generated file, do not edit, edit the swig.i instead
  */
