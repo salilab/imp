@@ -7,18 +7,12 @@ from SCons.Script import *
 import hierarchy
 import symlinks
 import standards
+import swig
 
 __all__ = ["add_common_variables", "MyEnvironment", "get_pyext_environment",
            "get_sharedlib_environment"]
 
 import SCons
-_SWIGScanner = SCons.Scanner.ClassicCPP(
-    "SWIGScan",
-    ".i",
-    "SWIGPATH",
-    '^[ \t]*[%,#][ \t]*(?:include|import)[ \t]*(<|")([^>"]+)(>|")'
-)
-
 
 
 def GetInstallDirectory(env, varname, *subdirs):
@@ -169,7 +163,7 @@ def MyEnvironment(variables=None, *args, **kw):
     env.AddMethod(symlinks.LinkInstallAs)
     env.AddMethod(hierarchy.InstallHierarchy)
     env.AddMethod(GetInstallDirectory)
-
+    env.Prepend(SCANNERS = [swig.scanner])
     if env.get('cxxflags'):
         env.Append(CXXFLAGS = env['cxxflags'].split(" "))
     if env.get('linkflags'):

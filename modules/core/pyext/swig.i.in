@@ -14,8 +14,8 @@
 
 
 
-%include "singleton_containers.i"
-%include "pair_containers.i"
+%include "IMP_singleton_containers.i"
+%include "IMP_pair_containers.i"
 
 namespace IMP {
   namespace core {

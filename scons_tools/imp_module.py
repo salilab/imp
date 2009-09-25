@@ -33,7 +33,13 @@ def module_glob(patterns):
 
 def module_requires(env, target, source):
     """Make sure that 'module-source' is built before 'module-target'"""
-    env.Requires(target, [env.Alias(env['IMP_MODULE']+"-"+source)])
+    for t in target:
+        env.Requires(t, [env.Alias(env['IMP_MODULE']+"-"+source)])
+
+
+def module_depends(env, target, source):
+    """Make sure that 'module-source' is built before 'module-target'"""
+    env.Depends(target, [env.Alias(env['IMP_MODULE']+"-"+source)])
 
 def module_alias(env, target, source, is_default=False):
     """Add an alias called 'module-target' which builds source"""
@@ -56,7 +62,7 @@ def module_deps_requires(env, target, source, dependencies):
     """For each of the module dependency make sure that 'moduledep-source'
     is built before 'target'"""
     env.Requires(target,
-              [env.Alias(x+'-'+source) for x in dependencies])
+                 [env.Alias(x+'-'+source) for x in dependencies])
 
 
 def expand_dependencies(env, deps):
@@ -289,6 +295,7 @@ def IMPModulePython(env):
     module_suffix= env['IMP_MODULE_SUFFIX']
     vars=make_vars(env)
     build=[]
+    pybuild=[]
     install=[]
     if env['IMP_MODULE_CPP']:
         penv = get_pyext_environment(env, module.upper(), cplusplus=True)
@@ -300,42 +307,30 @@ def IMPModulePython(env):
         penv.Prepend(LIBS=['imp%s' % module_suffix])
         #penv.Append(CPPPATH=[Dir('#').abspath])
         #penv.Append(SWIGFLAGS='-python -c++ -naturalvar')
-        preface= penv._IMPSWIGPreface(target=[File("%(module)s.i"%vars)],
-                                      source=[File("swig.i"%vars),
+        swigfile= penv._IMPSWIGPreface(target=[File("#/build/swig/IMP_%(module)s.i"%vars)],
+                                      source=[File("swig.i.in"%vars),
                                               env.Value(env['IMP_REQUIRED_MODULES']),
                                               env.Value(env['IMP_MODULE_VERSION'])])
-        interfaces= module_glob(["*.i"])+["%(module)s.i"%vars]
+        interfaces= module_glob(["*.i"])+swigfile
+        swigfiles=[]
         for i in interfaces:
-            if str(i) != 'swig.i' and str(i) != "%(module)s.i"%vars:
-                cb= env.LinkInstallAs("#/build/swig/"+str(i), i)
-                env.Depends(preface, cb)
-                build.append(cb)
-        cb= env.LinkInstallAs("#/build/swig/%(module)s.i"%vars, "%(module)s.i"%vars)
-        build.append(cb)
-        swig_interface=File(module+".i")
-        globlist= ["#/module/"+x+"/pyext/*.i" for x in env['IMP_REQUIRED_MODULES']]\
-            + ["*.i"] +["#/build/include/"+x+"/*.h" for x in expand_dependencies(env, env['IMP_REQUIRED_MODULES'])]\
-            +["#/build/include/*.h"]
-        #print globlist
-        deps= module_glob(globlist)+["#/build/include/%(module_include_path)s/"%vars \
-                                         + str(x) for x in env['IMP_MODULE_HEADERS']] \
-                                         + ['#/build/include/IMP/macros.h'] \
-                                         + ['#/build/include/IMP/container_macros.h']
-        #print [str(x) for x in deps]
+            swigfiles.append( env.LinkInstallAs("#/build/swig/"+str(i), i) )
         gen_pymod = File('IMP%s.py' % module_suffix.replace("_","."))
-        penv._IMPSWIG(target=[gen_pymod, 'wrap.cc',
+        swig=penv._IMPSWIG(target=[gen_pymod, 'wrap.cc',
                               'wrap.h'],
-                      source=preface+deps)
+                           source=swigfile)
+        # this appears to be needed for some reason
+        module_deps_requires(env, swig, "swig", env["IMP_REQUIRED_MODULES"])
         build.append(penv._IMPPatchSWIG(target=['patched_wrap.cc'],
-              source=['wrap.cc']))
+                                        source=['wrap.cc']))
         build.append(penv._IMPPatchSWIG(target=['patched_wrap.h'],
-              source=['wrap.h']))
+                                        source=['wrap.h']))
         buildlib = penv.LoadableModule('#/build/lib/_IMP%s' % module_suffix,
                                        "patched_wrap.cc")
         # Place the generated Python wrapper in lib directory:
         buildinit = penv.LinkInstallAs('#/build/lib/%s/__init__.py'
-                                      % vars['module_include_path'],
-                                      gen_pymod)
+                                       % vars['module_include_path'],
+                                       gen_pymod)
         installinit = penv.InstallAs(penv.GetInstallDirectory('pythondir',
                                                             vars['module_include_path'],
                                                             '__init__.py'),
@@ -343,10 +338,10 @@ def IMPModulePython(env):
         installlib = penv.Install(penv.GetInstallDirectory('pyextdir'), buildlib)
         postprocess_lib(penv, buildlib)
         build.append(buildlib)
-        build.append(buildinit)
+        pybuild.append(buildinit)
         install.append(installinit)
         install.append(installlib)
-        build.append(swig_interface)
+        module_alias(env, 'swig', [swigfile]+swigfiles)
     files = module_glob(['src/*.py'])
     #print [x.path for x in Glob("*")]
     #print Dir("src").path
@@ -356,24 +351,17 @@ def IMPModulePython(env):
         #print f
         nm= os.path.split(f.path)[1]
         #print ('#/build/lib/%s/'+nm) % vars['module_include_path']
-        build.append(env.LinkInstallAs(('#/build/lib/%s/'+nm) % vars['module_include_path'],
+        pybuild.append(env.LinkInstallAs(('#/build/lib/%s/'+nm) % vars['module_include_path'],
                                        f))
         install.append(env.InstallAs(env.GetInstallDirectory('pythondir',
                                                              vars['module_include_path'],
                                                              nm),f))
     # Install the Python extension and module:
     #buildlib = env.Install("#/build/lib", pyext)
-    module_alias(env, 'python', build, True)
+    module_alias(env, 'python', build+pybuild, True)
     add_to_global_alias(env, 'all', 'python')
     module_alias(env, 'install-python', install)
     add_to_module_alias(env, 'install', 'install-python')
-    if env['IMP_MODULE_CPP']:
-        module_requires(env, build, 'include')
-        module_requires(env, build, 'lib')
-        module_requires(env, build, 'config')
-        module_deps_requires(env, build, 'python',env['IMP_REQUIRED_MODULES'] )
-        module_deps_requires(env, build, 'include', env['IMP_REQUIRED_MODULES'])
-        module_deps_requires(env, install, 'install-lib', env['IMP_REQUIRED_MODULES'])
 
 def IMPModuleGetExamples(env):
     vars= make_vars(env)

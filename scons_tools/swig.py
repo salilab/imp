@@ -1,6 +1,6 @@
 
 import imp_module
-from SCons.Script import Glob, Dir, File, Builder, Action, Exit
+from SCons.Script import Glob, Dir, File, Builder, Action, Exit, Scanner
 import os
 import sys
 import re
@@ -31,7 +31,7 @@ def _action_patch_swig_wrap(target, source, env):
     fh.close()
 
 def _print_patch_swig_wrap(target, source, env):
-    print "Patching swig file"
+    print "Patching swig file "+str(target)
 
 PatchSwig = Builder(action=Action(_action_patch_swig_wrap,
                                 _print_patch_swig_wrap))
@@ -89,7 +89,7 @@ def _action_swig_file(target, source, env):
 """)
 
     for d in deps:
-        preface.append("%%import %s.i"% d)
+        preface.append("%%import \"IMP_%s.i\""% d)
 
 
     preface.append("""
@@ -116,13 +116,13 @@ const VersionInfo& get_module_version_info();
     preface.append("""
 %%pythoncode {
 if get_module_version_info().get_version() != "%(version)s":
-    sys.stderr.write("WARNING: expected version %(version)s, but got "+ get_module_version_info().get_version())
+    sys.stderr.write("WARNING: expected version %(version)s, but got "+ get_module_version_info().get_version() +" when loading module %(module)s.")
 }"""%vars)
 
     open(target[0].abspath, "w").write("\n".join(preface))
 
 def _print_swig_file(target, source, env):
-    print "Generating swig preface"
+    print "Generating swig preface "+str(target)
 
 SwigPreface = Builder(action=Action(_action_swig_file,
                                     _print_swig_file))
@@ -146,7 +146,7 @@ def _action_simple_swig(target, source, env):
     return env.Execute(command)
 
 def _print_simple_swig(target, source, env):
-    print "Generating swig file"
+    print "Generating swig file "+str(target[0])
 
 SwigIt = Builder(action=Action(_action_simple_swig,
                                 _print_simple_swig))
@@ -216,3 +216,29 @@ def configure_check(env):
        and conf.CheckSWIG() is False:
         env['python']=False
     conf.Finish()
+
+
+def swig_scanner(node, env, path):
+    import re
+    fname= node.abspath
+    try:
+        contents= open(fname, 'r').read()
+        # swig is dumb and gets the paths wrong
+    except:
+        try:
+            fname=(File("#/"+env['repository']+"/"+str(node))).abspath
+            #os.path.join(env['repository'],str(node))
+            contents= open(fname, 'r').read()
+        except:
+            print "error opening file " +str(node) +" at "+ fname#+ " trying source tree"
+            return []
+    ret= [File("#/build/include/"+x) for x in re.findall('\n%include\s"([^"]*.h)"', contents)]\
+        + [File("#/build/swig/"+x) for x in re.findall('\n%include\s"(IMP_[^"]*.i)"', contents)]\
+        + [File("#/build/swig/"+x) for x in re.findall('\n%import\s"(IMP_[^"]*.i)"', contents)]
+        #\
+            #+ [File('#/build/include/IMP/macros.h')] \
+            #+ [File('#/build/include/IMP/container_macros.h')]
+    #print "deps for " +fname + " are "+str([str(x) for x in ret])
+    return ret
+
+scanner= Scanner(function=swig_scanner, skeys=['.i'], name="IMPSWIG")
