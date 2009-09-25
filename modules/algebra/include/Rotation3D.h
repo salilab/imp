@@ -505,8 +505,6 @@ inline Rotation3D interpolate(const Rotation3D &a,
 
 //! Decompose a Rotation3D object into a rotation around an axis
 /**
-  \param[in] axis the rotation axis passes through (0,0,0)
-  \param[in] angle the rotation angle in radians
   \note http://en.wikipedia.org/wiki/Rotation_matrix
   \note www.euclideanspace.com/maths/geometry/rotations/conversions/
   angleToQuaternion/index.htm
