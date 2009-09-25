@@ -119,6 +119,19 @@ inline std::ostream &operator<<(std::ostream &out, const Object& o) {
 }
 #endif
 
+//! Up (or down) cast an object pointer with checks
+/** When checks are enabled, the result is verified and an exception is
+    thrown if the cast does not succeed.
+ */
+template <class O>
+O* object_cast(Object *o) {
+  O *ret= dynamic_cast<O*>(o);
+  IMP_check(ret, "Object " << o->get_name() << " cannot be cast to "
+            << "desired type.",
+            ValueException);
+  return ret;
+}
+
 IMP_END_NAMESPACE
 
 //! Perform some basic validity checks on the object for memory debugging
