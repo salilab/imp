@@ -62,7 +62,7 @@ def module_deps_requires(env, target, source, dependencies):
     """For each of the module dependency make sure that 'moduledep-source'
     is built before 'target'"""
     env.Requires(target,
-                 [env.Alias(x+'-'+source) for x in dependencies])
+                 [env.Alias(x+'-'+source) for x in dependencies + env['IMP_REQUIRED_MODULES']])
 
 
 def expand_dependencies(env, deps):
@@ -205,9 +205,9 @@ def IMPModuleLib(envi, files):
     add_to_global_alias(env, 'all', 'lib')
     module_alias(env, 'install-lib', install)
     add_to_module_alias(env, 'install', 'install-lib')
-    module_deps_requires(env, build, 'include', env['IMP_REQUIRED_MODULES'])
-    module_deps_requires(env, build, 'lib', env['IMP_REQUIRED_MODULES'])
-    module_deps_requires(env, install, 'install-lib', env['IMP_REQUIRED_MODULES'])
+    module_deps_requires(env, build, 'include', [])
+    module_deps_requires(env, build, 'lib', [])
+    module_deps_requires(env, install, 'install-lib', [])
     env.Requires(build, '#/tools/imppy.sh')
 
 
@@ -320,7 +320,7 @@ def IMPModulePython(env):
                               'wrap.h'],
                            source=swigfile)
         # this appears to be needed for some reason
-        module_deps_requires(env, swig, "swig", env["IMP_REQUIRED_MODULES"])
+        module_deps_requires(env, swig, "swig", [])
         build.append(penv._IMPPatchSWIG(target=['patched_wrap.cc'],
                                         source=['wrap.cc']))
         build.append(penv._IMPPatchSWIG(target=['patched_wrap.h'],
@@ -467,7 +467,6 @@ def IMPModuleTest(env, required_modules=[], **keys):
     add_to_global_alias(env, 'test', 'test')
     module_requires(env, test, 'python')
     module_deps_requires(env, test, 'python', required_modules)
-    module_deps_requires(env, test, 'python', env['IMP_REQUIRED_MODULES'])
 
 def invalidate(env, fail_action):
     """'Break' an environment, so that any builds with it use the fail_action
