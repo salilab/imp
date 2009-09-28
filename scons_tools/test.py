@@ -3,11 +3,15 @@ from SCons.Script import Glob, Dir, File, Builder, Action
 
 
 def _action_unit_test(target, source, env):
-    #app = "cd %s; %s %s %s -v > /dev/null" \
+    #app = "cd %s; %s %s %s -v > /dev/null"
+    fsource=[]
+    for x in source[2:]:
+        if str(x).endswith(".py"):
+            fsource.append(x.abspath)
     app = "%s %s %s %s > /dev/null" \
           % (source[0].abspath, env['PYTHON'],
              source[1].abspath,
-             " ".join([x.abspath for x in source[2:]]))
+             " ".join(fsource))
     if env.Execute(app) == 0:
         file(str(target[0]), 'w').write('PASSED\n')
     else:

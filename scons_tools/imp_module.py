@@ -61,8 +61,10 @@ def add_to_module_alias(env, target, source):
 def module_deps_requires(env, target, source, dependencies):
     """For each of the module dependency make sure that 'moduledep-source'
     is built before 'target'"""
-    env.Requires(target,
-                 [env.Alias(x+'-'+source) for x in dependencies + env['IMP_REQUIRED_MODULES']])
+    #print "alldeps is " +str(dependencies + env['IMP_REQUIRED_MODULES'])
+    for d in dependencies + env['IMP_REQUIRED_MODULES']:
+        #print str(target) + " requires " + d+'-'+source
+        env.Requires(target, env.Alias(d+'-'+source))
 
 
 def expand_dependencies(env, deps):
@@ -112,10 +114,6 @@ def dependencies_to_libs(env, deps):
 #def module_deps_depends(env, target, source, dependencies):
 #    env.Depends(target,
 #              [env.Alias(x+'-'+source) for x in dependencies])
-
-def module_deps_requires(env, target, source, dependencies):
-    env.Requires(target,
-              [env.Alias(x+'-'+source) for x in dependencies])
 
 
 def do_mac_name_thing(env, source, target):
@@ -453,7 +451,7 @@ def IMPModuleDoc(env, files):
 #   files= ["#/bin/imppy.sh", "#/tools/run_all_tests.py"]+\
 #        [x.abspath for x in Glob("test_*.py")+ Glob("*/test_*.py")]
 
-def IMPModuleTest(env, required_modules=[], **keys):
+def IMPModuleTest(env, required_modules=[]):
     """Pseudo-builder to run tests for an IMP module. The single target is
        generally a simple output file, e.g. 'test.passed', while the single
        source is a Python script to run (usually run-all-tests.py).
@@ -464,13 +462,17 @@ def IMPModuleTest(env, required_modules=[], **keys):
        A convenience alias for the tests is added, and they are always run."""
     files= ["#/tools/imppy.sh", "#/scons_tools/run-all-tests.py"]+\
         [x.abspath for x in module_glob(["test_*.py", "*/test_*.py"])]
+    for m in required_modules+env['IMP_REQUIRED_MODULES']:
+        files.append(env.Alias(m+"-python"))
+        files.append(env.Alias(env['IMP_MODULE']+"-python"))
     #print files
-    test = env._IMPModuleTest("test.passed", files, **keys)
+    test = env._IMPModuleTest(target="test.passed", source=files)
     env.AlwaysBuild("test.passed")
     module_alias(env, 'test', test)
     add_to_global_alias(env, 'test', 'test')
-    module_requires(env, test, 'python')
-    module_deps_requires(env, test, 'python', required_modules)
+    #module_requires(env, test, 'python')
+    #print "setting up requires"
+    #module_deps_requires(env, test, 'python', required_modules)
 
 def invalidate(env, fail_action):
     """'Break' an environment, so that any builds with it use the fail_action
