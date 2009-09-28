@@ -163,7 +163,7 @@ def MyEnvironment(variables=None, *args, **kw):
     env.AddMethod(symlinks.LinkInstallAs)
     env.AddMethod(hierarchy.InstallHierarchy)
     env.AddMethod(GetInstallDirectory)
-    env.Prepend(SCANNERS = [swig.scanner])
+    env.Prepend(SCANNERS = [swig.scanner, swig.inscanner])
     if env.get('cxxflags'):
         env.Append(CXXFLAGS = env['cxxflags'].split(" "))
     if env.get('linkflags'):

@@ -1,6 +1,7 @@
 
 import imp_module
 from SCons.Script import Glob, Dir, File, Builder, Action, Exit, Scanner
+import SCons
 import os
 import sys
 import re
@@ -139,10 +140,10 @@ def _action_simple_swig(target, source, env):
     #print base
     out= "-o "+ target[1].abspath
     doti= source[0].abspath
-    includes= " -I"+Dir("#/build/swig").abspath+" "+" ".join(["-I"+str(x) for x in env.get('CPPPATH', []) if not x.startswith("#")]) #+ " -I"+Dir("#/build/include").abspath
+    includes= " -Ibuild/swig"+" "+" ".join(["-I"+str(Dir(x)) for x in env.get('CPPPATH', [])])
     # scons puts cppflags before includes, so we should too
     command=base + " " +out + " "\
-         + " " +cppflags+ " -Ibuild/include "+ includes + " -DIMP_SWIG " + doti
+         + " " +cppflags+ " "+ includes + " -DIMP_SWIG " + doti
     return env.Execute(command)
 
 def _print_simple_swig(target, source, env):
@@ -220,25 +221,65 @@ def configure_check(env):
 
 def swig_scanner(node, env, path):
     import re
-    fname= node.abspath
-    try:
-        contents= open(fname, 'r').read()
-        # swig is dumb and gets the paths wrong
-    except:
-        try:
-            fname=(File("#/"+env['repository']+"/"+str(node))).abspath
-            #os.path.join(env['repository'],str(node))
-            contents= open(fname, 'r').read()
-        except:
-            print "error opening file " +str(node) +" at "+ fname#+ " trying source tree"
-            return []
-    ret= [File("#/build/include/"+x) for x in re.findall('\n%include\s"([^"]*.h)"', contents)]\
-        + [File("#/build/swig/"+x) for x in re.findall('\n%include\s"(IMP_[^"]*.i)"', contents)]\
-        + [File("#/build/swig/"+x) for x in re.findall('\n%import\s"(IMP_[^"]*.i)"', contents)]
+    contents= node.get_contents()
+    # scons recurses with the same scanner, rather than the right one
+    #print "Scanning "+str(node)
+    if str(node).endswith(".h"):
+        """d= "/".join(str(node).split("/")[0:-1])
+        #print d
+        ret= ["#/build/include/"+x for x in re.findall('\n#include\s"(IMP[^"]*.h)"', contents)]\
+            +["#/build/include/"+x for x in re.findall('\n#include\s<(IMP[^"]*.h)>', contents)] \
+            +["#/"+d+"/"+x for x in re.findall('\n#include\s"(../[^"]*.h)"', contents)]\
+            +["#/"+d+"/"+x for x in re.findall('\n#include\s"([^"]*.h)"', contents)] """
+        # we don't care about recursive .hs for running swig
+        return []
+    else :
+        oldret=[]
+        ret= ["#/build/include/"+x for x in re.findall('\n%include\s"([^"]*.h)"', contents)]\
+            + ["#/build/swig/"+x for x in re.findall('\n%include\s"(IMP_[^"]*.i)"', contents)]\
+            + ["#/build/swig/"+x for x in re.findall('\n%import\s"(IMP_[^"]*.i)"', contents)]
+    #print "Initial deps for " + str(node) + " are " +str(ret)
+    #print " for file " + contents
+        retset=set(ret)
+        ret=list(retset)
+        ret.sort()
+        """while oldret != ret:
+        oldret=ret
+        for x in ret:
+        if x.endswith(".i"):
+        ret=ret+swig_scanner(File(x), env, x)
+        retset=set(ret)
+        ret=list(retset)
+        ret.sort()
         #\
-            #+ [File('#/build/include/IMP/macros.h')] \
-            #+ [File('#/build/include/IMP/container_macros.h')]
-    #print "deps for " +fname + " are "+str([str(x) for x in ret])
+        #+ [File('#/build/include/IMP/macros.h')] \
+        #+ [File('#/build/include/IMP/container_macros.h')]"""
+    #print "deps for " +str(node) + " are "+str([str(x) for x in ret])
     return ret
 
-scanner= Scanner(function=swig_scanner, skeys=['.i'], name="IMPSWIG")
+def inswig_scanner(node, env, path):
+    # hack to avoid other generated file types
+    if str(node).endswith(".sh.in"):
+        return []
+    if str(node).endswith(".i") or str(node).endswith(".h"):
+        return swig_scanner(node, env, path)
+    ret= swig_scanner(node, env, path)
+    oinclude=["IMP_macros.i",
+              "IMP_exceptions.i",
+              "IMP_directors.i",
+              "IMP_refcount.i",
+              "IMP_streams_kernel.i",
+              "IMP_streams.i",
+              "IMP_decorators.i",
+              "IMP_typemaps.i"]
+    for i in oinclude:
+        f= "#/build/swig/"+i
+        ret.append(f)
+    for m in env['IMP_REQUIRED_MODULES']:
+        ret.append("#/modules/"+m+"/pyext/swig.i.in")
+    return ret
+
+scanner= Scanner(function=swig_scanner, skeys=['.i'], name="IMPSWIG", recursive=True)
+# scons likes to call the scanner on nodes which do not exist (making it tricky to parse their contents
+# so we have to walk higher up in the tree
+inscanner= Scanner(function=inswig_scanner, skeys=['.in'], name="IMPSWIG", recursive=True)
