@@ -311,8 +311,9 @@ def IMPModulePython(env):
                                       source=[File("swig.i.in"%vars),
                                               env.Value(env['IMP_REQUIRED_MODULES']),
                                               env.Value(env['IMP_MODULE_VERSION'])])
-        interfaces= module_glob(["*.i"])+swigfile
+        interfaces= module_glob(["*.i"])
         swigfiles=[]
+        #print [str(x) for x in interfaces]
         for i in interfaces:
             swigfiles.append( env.LinkInstallAs("#/build/swig/"+str(i), i) )
         gen_pymod = File('IMP%s.py' % module_suffix.replace("_","."))
@@ -320,7 +321,10 @@ def IMPModulePython(env):
                               'wrap.h'],
                            source=swigfile)
         # this appears to be needed for some reason
+        env.Requires(swig, swigfiles)
         module_deps_requires(env, swig, "swig", [])
+        module_deps_requires(env, swig, "include", [])
+        module_requires(env, swig, 'include')
         build.append(penv._IMPPatchSWIG(target=['patched_wrap.cc'],
                                         source=['wrap.cc']))
         build.append(penv._IMPPatchSWIG(target=['patched_wrap.h'],
