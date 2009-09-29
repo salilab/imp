@@ -123,7 +123,7 @@ RigidBody RigidBody::setup_particle(Particle *p,
     algebra::Vector3D cv=cm.get_coordinates()-v;
     algebra::Vector3D lc= roti.rotate(cv);
     cm.set_internal_coordinates(lc);
-    IMP_LOG(VERBOSE, " " << cm << " | " << std::endl);
+    //IMP_LOG(VERBOSE, " " << cm << " | " << std::endl);
   }
 
   IMP_IF_CHECK(EXPENSIVE) {

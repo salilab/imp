@@ -124,7 +124,7 @@ public:
 
   //! Set whether the rigid body coordinates are optimized
   void set_coordinates_are_optimized(bool tf,
-                                     bool snapping=false);
+                                     IMP_NO_DOXYGEN(bool snapping=false));
 
   //! Normalized the quaternion
   void normalize_rotation();
