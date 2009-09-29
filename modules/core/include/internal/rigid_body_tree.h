@@ -48,6 +48,8 @@ class IMPCOREEXPORT RigidBodyHierarchy: public Object {
   RigidBodyHierarchy(RigidBody rb, Refiner *r);
   algebra::Sphere3Ds get_tree() const;
   IMP_OBJECT(RigidBodyHierarchy, get_module_version_info());
+  // for testing
+  ParticlesTemp get_particles(unsigned int i) const;
 };
 
 namespace {
@@ -181,58 +183,12 @@ void apply_to_nearby(const RigidBodyHierarchy *da,
   }
 }
 
+IMPCOREEXPORT Particle* closest_particle(const RigidBodyHierarchy *da,
+                                         XYZR pt);
 
-#if 0
-inline std::pair<double, double>
-distance_bound(XYZR a, XYZ b) {
 
-}
-
-inline std::pair<double, double>
-distance_bound(const RigidBodyHierarchy *da, unsigned int i,
-               XYZ b) {
-
-}
-
-inline Particle* closest_particle(const RigidBodyHierarchy *da,
-                                  XYZ pt) {
-  typedef std::pair<double, int> QP;
-  std::multimap<double, int> queue;
-  std::pair<double, double> d= dist_bounds(da, 0, pt);
-  queue.insert(QP(d.first, 0));
-  double best_d=d.second;
-  double best_p= std::numeric_limits<double>::max();
-  Particle *bp=NULL;
-  do {
-    std::pair<double, int> v= *queue.begin();
-    queue.erase(queue.begin());
-    if (v.first > best_d) break;
-    if (da->get_is_leaf(v.second)) {
-      for (unsigned int i=0; i< da->get_number_of_particles(v.second);
-           ++i) {
-        Particle *p= da->get_particle(v.second, i);
-        XYZR dd(p);
-        std::pair<double, double> d= dist_bounds(dd, pt);
-        if (d.first < best_p) {
-          best_p= d.first;
-          bp= p;
-        }
-      }
-    } else {
-      for (unsigned int i=0; i< da->get_number_of_children(v.second);
-           ++i) {
-        unsigned int c= da->get_child(v.second, i);
-        std::pair<double, double> d= dist_bounds(da, 0, pt);
-        if (d.first < best_d) {
-          queue.insert(QP(d.first, c));
-        }
-        best_d= std::min(best_d, d.second);
-      }
-    }
-  } while (!queue.empty());
-  return bp;
-}
-#endif
+IMPCOREEXPORT ParticlePair closest_pair(const RigidBodyHierarchy *da,
+                                        const RigidBodyHierarchy *db);
 
 
 IMPCOREEXPORT ObjectKey get_rigid_body_hierarchy_key(Refiner *r);

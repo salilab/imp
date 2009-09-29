@@ -56,6 +56,7 @@ files = [
          'RemoveInactivePairsOptimizerState.cpp',
          'RemoveInactiveSingletonsOptimizerState.cpp',
          'RestraintSet.cpp',
+         'RigidBodyDistancePairScore.cpp',
          'RigidBodyMover.cpp',
          'RigidClosePairsFinder.cpp',
          'SingletonContainerSet.cpp',

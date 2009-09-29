@@ -61,6 +61,7 @@ files = [
          'RemoveInactivePairsOptimizerState.h',
          'RemoveInactiveSingletonsOptimizerState.h',
          'RestraintSet.h',
+         'RigidBodyDistancePairScore.h',
          'RigidBodyMover.h',
          'RigidClosePairsFinder.h',
          'SingletonContainerSet.h',

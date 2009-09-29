@@ -92,6 +92,7 @@ IMP_REFCOUNT_RETURN_SINGLE(IMP::core::Mover)
 %include "IMP/core/TransformedDistancePairScore.h"
 %include "IMP/core/TypedPairScore.h"
 %include "IMP/core/XYZR.h"
+%include "IMP/core/RigidBodyDistancePairScore.h>
 %include "IMP/core/model_io.h"
 %include "IMP/core/TableRefiner.h"
 %include "IMP/core/TruncatedHarmonic.h"
