@@ -1,3 +1,3 @@
 Import('env')
 
-env.IMPModulePython()
+env.IMPModulePython(swigfiles=env.IMPModuleGetSwigFiles(), pythonfiles=env.IMPModuleGetPython())

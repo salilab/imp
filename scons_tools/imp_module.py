@@ -293,7 +293,7 @@ def IMPModuleBin(envi, files, required_modules=[], extra_libs=[], install=True):
     module_deps_requires(env, build, 'lib', required_modules)
 
 
-def IMPModulePython(env):
+def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     """Build and install an IMP module's Python extension and the associated
        wrapper file from a SWIG interface file. This is only available from
        within an environment created by `IMPPythonExtensionEnvironment`."""
@@ -317,17 +317,16 @@ def IMPModulePython(env):
                                       source=[File("swig.i-in"),
                                               env.Value(env['IMP_REQUIRED_MODULES']),
                                               env.Value(env['IMP_MODULE_VERSION'])])
-        interfaces= module_glob(["*.i"])
-        swigfiles=[]
+        swiglink=[]
         #print [str(x) for x in interfaces]
-        for i in interfaces:
-            swigfiles.append( env.LinkInstallAs("#/build/swig/"+str(i), i) )
+        for i in swigfiles:
+            swiglink.append( env.LinkInstallAs("#/build/swig/"+str(i), i) )
         gen_pymod = File('IMP%s.py' % module_suffix.replace("_","."))
         swig=penv._IMPSWIG(target=[gen_pymod, 'wrap.cc',
                               'wrap.h'],
                            source=swigfile)
         # this appears to be needed for some reason
-        env.Requires(swig, swigfiles)
+        env.Requires(swig, swiglink)
         module_deps_requires(env, swig, "swig", [])
         module_deps_requires(env, swig, "include", [])
         module_requires(env, swig, 'include')
@@ -352,13 +351,8 @@ def IMPModulePython(env):
         pybuild.append(buildlib)
         install.append(installinit)
         install.append(installlib)
-        module_alias(env, 'swig', [swigfile]+swigfiles)
-    files = module_glob(['src/*.py'])
-    #print [x.path for x in Glob("*")]
-    #print Dir("src").path
-    #print [x.path for x in Glob("src/*")]
-    #print [x.path for x in Glob("src/*.py")]
-    for f in files:
+        module_alias(env, 'swig', [swigfile]+swiglink)
+    for f in pythonfiles:
         #print f
         nm= os.path.split(f.path)[1]
         #print ('#/build/lib/%s/'+nm) % vars['module_include_path']
@@ -394,6 +388,16 @@ def IMPModuleGetHeaders(env):
         if s=="config.h":
             continue
         files.append(f)
+    return files
+
+def IMPModuleGetSwigFiles(env):
+    vars = make_vars(env)
+    files=module_glob(["IMP_*.i"])
+    return files
+
+def IMPModuleGetPython(env):
+    vars = make_vars(env)
+    files=module_glob(["src/*.py"])
     return files
 
 def IMPModuleGetSources(env):
@@ -583,6 +587,8 @@ def IMPModuleBuild(env, version, required_modules=[],
     env.AddMethod(IMPModuleGetExamples)
     env.AddMethod(IMPModuleGetData)
     env.AddMethod(IMPModuleGetSources)
+    env.AddMethod(IMPModuleGetPython)
+    env.AddMethod(IMPModuleGetSwigFiles)
     env.AddMethod(IMPModuleGetBins)
     env.AddMethod(IMPModuleBin)
     env.AddMethod(IMPModuleDoc)
