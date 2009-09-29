@@ -563,3 +563,18 @@
    fun:Py_Main
    fun:(below main)
 }
+
+
+
+{                                                                                    
+   BGL suppression
+   Memcheck:Overlap                                                                  
+   fun:memcpy
+   fun:*matrix_edge_desc_impl*
+   fun:*adj_matrix_edge_property_map*
+   fun:*priority_queue*
+   fun:*kruskal_mst_impl*
+   fun:*kruskal_minimum_spanning_tree*
+   fun:*compute_mst*
+   fun:*ConnectivityRestraint*
+}
