@@ -67,7 +67,7 @@ int main() {
                                       XYZs(catoms));
     m->add_score_state(ss);
     rbs.push_back(RigidBody(mhd.get_particle()));
-    cover_members(rbs.back());
+    cover_rigid_body(rbs.back());
   }
   for (unsigned int i=0; i< atoms.size(); ++i) {
     XYZR::setup_particle(atoms[i], 1);
