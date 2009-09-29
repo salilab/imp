@@ -258,9 +258,6 @@ def swig_scanner(node, env, path):
     return ret
 
 def inswig_scanner(node, env, path):
-    # hack to avoid other generated file types
-    if str(node).endswith(".sh.in"):
-        return []
     if str(node).endswith(".i") or str(node).endswith(".h"):
         return swig_scanner(node, env, path)
     ret= swig_scanner(node, env, path)
@@ -276,10 +273,10 @@ def inswig_scanner(node, env, path):
         f= "#/build/swig/"+i
         ret.append(f)
     for m in env['IMP_REQUIRED_MODULES']:
-        ret.append("#/modules/"+m+"/pyext/swig.i.in")
+        ret.append("#/build/swig/IMP_"+m+".i")
     return ret
 
 scanner= Scanner(function=swig_scanner, skeys=['.i'], name="IMPSWIG", recursive=True)
 # scons likes to call the scanner on nodes which do not exist (making it tricky to parse their contents
 # so we have to walk higher up in the tree
-inscanner= Scanner(function=inswig_scanner, skeys=['.in'], name="IMPSWIG", recursive=True)
+inscanner= Scanner(function=inswig_scanner, skeys=['.i-in'], name="IMPINSWIG", recursive=True)
