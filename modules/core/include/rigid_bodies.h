@@ -41,6 +41,16 @@ typedef Decorators<RigidMember, XYZs> RigidMembers;
     computed and diagonalized, but not stored. It can be stored if
     someone wants it.
 
+    \note In \imp, a rigid body is associated with two, possibly
+    identical, sets of particles
+    - those particles which transform rigidly along with the rigid
+    body, namely the members. The members are accessed through
+    methods on the decorator.
+    - those particles who make up the detailed representation of
+    the rigid body, namely the representation. These are accessed
+    through an associated Refiner. If the RigidMembersRefiner is
+    used, the two sets are identical.
+
     It is often desirable to randomize the orientation of a rigid
     body:
     \verbinclude randomize_rigid_body.py
@@ -230,6 +240,18 @@ class IMPCOREEXPORT UpdateRigidBodyMembers: public SingletonModifier {
   UpdateRigidBodyMembers(){}
   IMP_SINGLETON_MODIFIER(UpdateRigidBodyMembers,
                          get_module_version_info());
+};
+
+
+//! A refiner which returns the members of a rigid body
+/** You can use this to easily define a rigid body when you want the
+    set of particles representing a rigid body to be the same as the
+    set of members.
+ */
+class IMPCOREEXPORT RigidMembersRefiner: public Refiner {
+ public:
+  RigidMembersRefiner(){}
+  IMP_SIMPLE_REFINER(RigidMembersRefiner, get_module_version_info());
 };
 
 IMPCORE_END_NAMESPACE

@@ -23,8 +23,15 @@
 IMPCORE_BEGIN_NAMESPACE
 
 ExcludedVolumeRestraint::ExcludedVolumeRestraint(SingletonContainer *sc,
+                                                 Refiner *r,
                                                  double k):
   sc_(sc), k_(k){
+}
+
+ExcludedVolumeRestraint::ExcludedVolumeRestraint(SingletonContainer *sc,
+                                                 double k):
+  sc_(sc), k_(k){
+  r_= Pointer<Refiner>(new RigidMembersRefiner());
 }
 
 void ExcludedVolumeRestraint::set_model(Model *m) {
@@ -32,9 +39,10 @@ void ExcludedVolumeRestraint::set_model(Model *m) {
     IMP_LOG(TERSE, "Creating components of ExcludedVolumeRestraint"
             << std::endl);
     IMP_NEW(HarmonicLowerBound, hlb, (0,k_));
-    IMP_NEW(RigidClosePairsFinder, rcpf, ());
     ss_= new ClosePairsScoreState(sc_);
-    ss_->set_close_pairs_finder(rcpf);
+    if (r_) {
+      ss_->set_close_pairs_finder(new RigidClosePairsFinder(r_));
+    }
     IMP_NEW(SphereDistancePairScore, sdps, (hlb));
     pr_= new PairsRestraint(sdps, ss_->get_close_pairs_container());
 

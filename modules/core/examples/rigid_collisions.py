@@ -30,7 +30,7 @@ lsc.add_particle(rbp1)
 
 # Set up the nonbonded list
 nbl= IMP.core.ClosePairsScoreState(lsc)
-nbl.set_close_pairs_finder(IMP.core.RigidClosePairsFinder())
+nbl.set_close_pairs_finder(IMP.core.RigidClosePairsFinder(IMP.core.RigidMembersRefiner()))
 m.add_score_state(nbl)
 # Set the amount particles need to move before the list is updated
 nbl.set_slack(2.0)

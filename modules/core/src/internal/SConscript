@@ -2,6 +2,7 @@ files = [
          'ArrayOnAttributesHelper.cpp',
          'ParticleGrid.cpp',
          'graph_base.cpp',
+         'rigid_body_tree.cpp',
         ]
 
 files = [File(x) for x in files]

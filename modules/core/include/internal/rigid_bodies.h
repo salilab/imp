@@ -93,7 +93,6 @@ inline void add_required_attributes_for_member(Particle *p) {
 }
 
 
-
 IMPCORE_END_INTERNAL_NAMESPACE
 
 #endif  /* IMPCORE_INTERNAL_RIGID_BODIES_H */

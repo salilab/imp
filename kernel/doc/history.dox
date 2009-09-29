@@ -1,12 +1,22 @@
 /** \page recent Change History
 
+\par Week of September 27
+
+- The swig input files were renamed from swig.i to swig.i.in to aid in dependency tracking.
+
+- rigid bodies now have two sets of particles associated with them in the various places they are used. One is the members, as was previously the case. Functions that use rigid bodies now take a IMP::Refiner to define the other set, which is the set of particles used as the representation for the rigid body. This can be the IMP::core::RigidMembersRefiner to use all rigid members, but could also be some alternative definition (for example if you want to have coordinates associated with residues or domains in a rigid protein). 
+
 \par Week of September 20
+
+- all \c .i files have been renamed to start with \c IMP_ to help make dependency tracking easier.
 
 - static builds (builds with \c static=True) build both the static and dynamic libraries and just static executables
 
 - the \c profile build target has been removed as \c static=True does the important bit of what is needed. Just do \c linkflags=['-pg'] to add the needed link flag for \c gprof. 
 
 - Restraints should now implement IMP::Restraint::unprotected_evaluate() instead of IMP::Restraint::evaluate(). The latter can now be called outside of IMP::Model::evaluate() and will return the right answer always.
+
+- \c bin/imppy.sh no longer works, as was previously warned. Use \c tools/imppy.sh instead. The bin directory will go away eventually, for now the script just tells you to use the tools version.
 
 \par Week of August 30
 

@@ -13,10 +13,12 @@
 #include "internal/remove_pointers.h"
 #include "PairsRestraint.h"
 #include "ClosePairsScoreState.h"
+#include "rigid_bodies.h"
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/Restraint.h>
 #include <IMP/UnaryFunction.h>
+#include <IMP/Refiner.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -33,10 +35,16 @@ class IMPCOREEXPORT ExcludedVolumeRestraint: public Restraint
   Pointer<ClosePairsScoreState> ss_;
   Pointer<SingletonContainer> sc_;
   Pointer<PairsRestraint> pr_;
+  Pointer<Refiner> r_;
   double k_;
 public:
   /** The SingletonContainer contains a set of XYZR particles and RigidBody
       particles. The spring constant used is k.*/
+  ExcludedVolumeRestraint(SingletonContainer *sc,
+                          Refiner *r,
+                          double k=1);
+
+  //! Use the default RigidMembersRefiner.
   ExcludedVolumeRestraint(SingletonContainer *sc,
                           double k=1);
 

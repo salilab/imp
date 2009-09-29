@@ -9,7 +9,8 @@
 #define IMPCORE_RIGID_CLOSE_PAIRS_FINDER_H
 
 #include "ClosePairsFinder.h"
-#include "internal/rigid_pair_score.h"
+#include "rigid_bodies.h"
+#include <IMP/Refiner.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -57,27 +58,16 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder
 {
-  mutable internal::RigidBodyCollisionData data_;
   Pointer<ClosePairsFinder> cpf_;
   Pointer<ListPairContainer> cpfout_;
-
-  void setup(Particle *) const;
-  void setup(const algebra::Sphere3Ds &spheres,
-             unsigned int node_index,
-             const internal::SphereIndexes &leaves,
-             internal::RigidBodyParticleData &data) const;
-  Particle *get_member(Particle *a, unsigned int i) const;
-  const algebra::Sphere3D get_transformed(Particle *a,
-                                          const algebra::Sphere3D &s) const;
-  void process_one(Particle *a, Particle *b,
-                   ListPairContainer *out,
-                   const internal::RigidBodyParticleData &da,
-                   const internal::RigidBodyParticleData &db,
-                   unsigned int ci,
-                   unsigned int cj,
-                   std::vector<std::pair<int, int> > &stack) const;
+  Pointer<Refiner> r_;
+  ObjectKey k_;
  public:
   //! Use the default choice for the ClosePairsFinder
+  /** Use rep to generate the list of representation particles. */
+  RigidClosePairsFinder(Refiner *r);
+  RigidClosePairsFinder(ClosePairsFinder *cpf,
+                        Refiner *r);
   RigidClosePairsFinder();
   RigidClosePairsFinder(ClosePairsFinder *cpf);
   ~RigidClosePairsFinder();
@@ -99,19 +89,15 @@ class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder
   }
 
   void set_distance(double d) {
-    data_.clear();
     cpf_->set_distance(d);
     ClosePairsFinder::set_distance(d);
   }
   void set_radius_key(FloatKey d) {
-    data_.clear();
+    IMP_assert(d== core::XYZR::get_default_radius_key(),
+               "Only the default radius key is supported.");
     cpf_->set_radius_key(d);
     ClosePairsFinder::set_radius_key(d);
   }
-#ifndef IMP_DOXYGEN
-  std::vector<algebra::Sphere3D> get_tree(Particle *p) const;
-  void show_tree(Particle *p, std::ostream &out=std::cout) const;
-#endif
 };
 
 IMPCORE_END_NAMESPACE
