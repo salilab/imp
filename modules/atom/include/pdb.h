@@ -30,6 +30,8 @@ IMPATOM_BEGIN_NAMESPACE
     - All Residue particles have a parent which is a Chain.
 
     Waters are currently dropped if they are ATOM records. This can be fixed.
+
+    Set the IMP::LogLevel to IMP::VERBOSE to see details of parse errors.
 */
 //!@{
 

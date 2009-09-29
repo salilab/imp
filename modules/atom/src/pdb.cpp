@@ -34,8 +34,8 @@ Particle* atom_particle(Model *m, const String& pdb_line)
       std::string elem= internal::atom_element(pdb_line);
       Element e= get_element_table().get_element(elem);
       if (e == UNKNOWN_ELEMENT) {
-        IMP_WARN("Unable to parse element from line: "
-                 <<pdb_line << "\nSkipping.");
+        IMP_LOG(VERBOSE,"Unable to parse element from line: "
+                <<pdb_line << "\nSkipping.");
         return NULL;
       }
       atom_name=add_atom_type(string_name, e);
@@ -44,8 +44,8 @@ Particle* atom_particle(Model *m, const String& pdb_line)
     }
   } else {
     if (!AtomType::get_key_exists(string_name)) {
-      IMP_WARN("ATOM record type not found: \"" << string_name
-               << "\" from " << pdb_line);
+      IMP_LOG(VERBOSE, "ATOM record type not found: \"" << string_name
+              << "\" from " << pdb_line);
       return NULL;
     }
     atom_name = AtomType(string_name);
