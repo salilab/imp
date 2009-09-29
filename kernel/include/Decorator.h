@@ -193,6 +193,8 @@ class Decorators: public ParentDecorators {
   explicit Decorators(unsigned int i): ParentDecorators(i){}
   explicit Decorators(Decorator d): ParentDecorators(d){}
   Decorators(){}
+  //! For python, cast to base type
+  const Particles &get_particles() const {return *this;}
   void push_back(Decorator d) {
     ParentDecorators::push_back(d);
   }
@@ -333,6 +335,10 @@ public:
                 ValueException);
     }
     ParentDecorators::set(i, d);
+  }
+  //! For python, convert it to a container of plain particles
+  const Particles &get_particles() const {
+    return *this;
   }
   Decorator back() const {
     IMP_check(!ParentDecorators::empty(),
