@@ -9,7 +9,7 @@ files = [
          'hierarchy_helpers.h',
          'remove_pointers.h',
          'rigid_bodies.h',
-         'rigid_pair_score.h',
+         'rigid_body_tree.h',
          'truncated_harmonic.h',
          'utility.h',
         ]

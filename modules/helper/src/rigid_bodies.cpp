@@ -11,6 +11,8 @@
 #include <IMP/core/FixedRefiner.h>
 #include <IMP/core/SingletonsScoreState.h>
 #include <IMP/core/SingletonScoreState.h>
+#include <IMP/core/LeavesRefiner.h>
+#include <IMP/atom/Hierarchy.h>
 IMPHELPER_BEGIN_NAMESPACE
 
 
@@ -56,18 +58,51 @@ ScoreState* create_rigid_body(Particle *p,
   return sss;
 }
 
+namespace {
+  struct IsXYZ {
+    template <class H>
+    bool operator()(H h) const {
+      return core::XYZ::particle_is_instance(h);
+    }
+  };
+}
+
+ScoreState* create_rigid_body(atom::Hierarchy h) {
+  Particles eps;
+  core::gather(h, core::XYZ::particle_is_instance, std::back_inserter(eps));
+  core::XYZs extra_members(eps);
+  if (!core::XYZ::particle_is_instance(h)) {
+    core::XYZR d= core::XYZR::setup_particle(h);
+  }
+  core::RigidBody rbd
+    = core::RigidBody::setup_particle(h, extra_members);
+  SMP sm= get_modifiers(false);
+  rbd.set_coordinates_are_optimized(true, false);
+  core::SingletonScoreState *sss
+    = new core::SingletonScoreState(sm.first, sm.second, h);
+  cover_rigid_body(rbd, new core::LeavesRefiner(h.get_traits()));
+  return sss;
+}
 
 
-void cover_members(core::RigidBody d, FloatKey rk) {
+
+void cover_rigid_body(core::RigidBody d, Refiner *ref, FloatKey rk) {
   double md=0;
-  for (unsigned int i=0; i< d.get_number_of_members(); ++i) {
-    double cd= d.get_member(i).get_internal_coordinates().get_magnitude();
-    if (d.get_member(i).get_particle()->has_attribute(rk)) {
-      cd+= d.get_member(i).get_particle()->get_value(rk);
+  // make sure it gets cleaned up properly
+  Pointer<Refiner> rp(ref);
+  for (unsigned int i=0; i< ref->get_number_of_refined(d); ++i) {
+    core::RigidMember rm(ref->get_refined(d,i));
+    double cd= rm.get_internal_coordinates().get_magnitude();
+    if (rm.get_particle()->has_attribute(rk)) {
+      cd+= rm.get_particle()->get_value(rk);
     }
     md=std::max(cd, md);
   }
-  d.get_particle()->add_attribute(rk, md);
+  if (d.get_particle()->has_attribute(rk)) {
+    d.get_particle()->set_value(rk, md);
+  } else {
+    d.get_particle()->add_attribute(rk, md);
+  }
 }
 
 IMPHELPER_END_NAMESPACE

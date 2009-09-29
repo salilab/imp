@@ -96,6 +96,34 @@ class RBDTests(IMP.test.TestCase):
         htr= IMP.core.Hierarchy.get_default_traits()
         self._test_create_many(htr, True)
 
+    def _test_create_one_from_pdb(self):
+        """Testing create_rigid_bodies"""
+        m= IMP.Model()
+        h= IMP.atom.read_pdb(self.get_input_file_name("input.pdb"), m)
+        print "done reading"
+        rs= IMP.helper.create_rigid_body(h)
+        IMP.core.RigidBody(h.get_particle()).set_coordinates_are_optimized(True)
+        print "done setting up"
+        m.add_score_state(rs)
+        ls= IMP.core.get_leaves(h)
+        keypts= [ls[0], ls[-1], ls[len(ls)/3], ls[len(ls)/3*2]]
+        tr= IMP.algebra.Transformation3D(IMP.algebra.random_rotation(),
+                                         IMP.algebra.random_vector_in_box(IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0), IMP.algebra.Vector3D(500, 500, 500))))
+        for p in keypts:
+            mp= IMP.core.RigidMember(p.get_particle())
+            ic= mp.get_internal_coordinates()
+            nic= tr.transform(ic)
+            dt= IMP.core.DistanceToSingletonScore(IMP.core.Harmonic(0,1), nic)
+            r= IMP.core.SingletonRestraint(dt, p.get_particle())
+            m.add_restraint(r)
+        cg= IMP.core.ConjugateGradients()
+        cg.set_model(m)
+        cg.optimize(100)
+        rb= IMP.core.RigidBody(h.get_particle())
+        ntr= rb.get_transformation()
+        print ntr
+        print tr
+        self.assert_((ntr.get_translation()- tr.get_translation()).get_magnitude() < 1)
 
     # test one with snap and non-snap
     # test setting things to be optimized or not

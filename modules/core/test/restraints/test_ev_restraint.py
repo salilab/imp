@@ -42,7 +42,7 @@ class AngleRestraintTests(IMP.test.TestCase):
                                                                IMP.algebra.Vector3D(20,20,20)))
         sc.add_particle(rb0.get_particle())
         sc.add_particle(rb1.get_particle())
-        r= IMP.core.ExcludedVolumeRestraint(sc)
+        r= IMP.core.ExcludedVolumeRestraint(sc, IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits()))
         r.set_log_level(IMP.SILENT)
         m.add_restraint(r)
         o= IMP.core.MonteCarlo()

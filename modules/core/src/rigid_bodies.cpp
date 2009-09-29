@@ -390,4 +390,22 @@ void UpdateRigidBodyMembers
 }
 
 
+
+bool RigidMembersRefiner::get_can_refine(Particle *p) const {
+  return RigidBody::particle_is_instance(p);
+}
+unsigned int RigidMembersRefiner::get_number_of_refined(Particle *p) const {
+  return RigidBody(p).get_number_of_members();
+}
+Particle* RigidMembersRefiner::get_refined(Particle *p, unsigned int i) const {
+  return RigidBody(p).get_member(i);
+}
+
+void RigidMembersRefiner::show(std::ostream &out) const {
+  out << "RigidMembersRefiner";
+}
+
+
+
+
 IMPCORE_END_NAMESPACE
