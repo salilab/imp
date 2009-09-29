@@ -3,71 +3,14 @@ import sys
 
 # Custom builder to generate file:
 def builder_script_file(target, source, env):
-    infile = file(source[0].abspath, 'r')
-    outfile = file(target[0].abspath, 'w')
-
-    sep=":"
-    varname=None
-    if env['PLATFORM'] == 'posix' or env['PLATFORM']=='sunos':
-        varname= "LD_LIBRARY_PATH"
-    elif env['PLATFORM'] == 'darwin':
-        varname= "DYLIB_LIBRARY_PATH"
-    elif env['PLATFORM'] == 'win32':
-        sep=";"
-
-    for line in infile:
-        line = line.rstrip('\r\n')
-        if line == "@LDPATH@":
-            if varname:
-                libs= sep+source[5].get_contents()
-                if source[4].get_contents() != "":
-                    libs= libs+sep+source[4].get_contents()
-                line = varname + "='"+source[1].get_contents()+"/build/lib"+\
-                    libs+"'\nexport " + varname
-            else:
-                line=""
-        if line == "@PYTHONPATH@":
-            pl=[source[1].get_contents()+"/build/lib"]
-            if source[2].get_contents() != "":
-                pl.append(source[2].get_contents().replace(":", sep))
-            line= "PYTHONPATH='"+\
-                sep.join(pl)+\
-                          "'\nexport PYTHONPATH"
-        if line == "@DATAPATH@":
-            pl=[source[1].get_contents()+"/build/data/IMP"]
-            line= "IMP_DATA_DIRECTORY='%s/build/data/IMP'" \
-                  % source[1].get_contents() + "\nexport IMP_DATA_DIRECTORY"
-        if line == "@PRECOMMAND@":
-            line="precommand='"
-            if len(source[3].get_contents())!=0:
-                line = line + source[3].get_contents()+" "
-            if len(source[6].get_contents()) != 0:
-                line = line+ source[6].get_contents()
-            line=line+"'"
-        print >> outfile, line
-    outfile.close()
-    infile.close()
+    open(target[0].abspath, "w").write(open(source[0].abspath, "r").read())
     env.Execute(Chmod(str(target[0]), 0755))
 
 env.Append(BUILDERS = {'ScriptFile': Builder(action=builder_script_file)})
 
-libpath=""
-ldpath=""
-prec=""
-if not env['rpath']:
-    libpath=":".join(env['libpath'])
-if env.get('ldlibpath', None) is not None:
-    ldpath= env.get('ldlibpath', "")
-prec=""
-if env.get('precommand', None) is not None:
-    prec= env['precommand']
+
 bin = env.ScriptFile("imppy.sh",
-                     ["imppy.sh.in", env.Value(env.Dir('#').abspath),
-                      env.Value(env.get('pythonpath', "")),
-                      env.Value(env['MODELLER_MODPY']),
-                      env.Value(libpath),
-                      env.Value(ldpath),
-                      env.Value(prec)])
+                     ["imppy.sh-in"])
 
 env.AlwaysBuild("imppy.sh")
 
