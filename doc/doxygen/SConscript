@@ -124,7 +124,7 @@ sources.sort()
 examples.sort()
 
 env.Depends(examplei, modexamples)
-doxconf=env.GenerateDoxygen("doxygen.conf", ["doxygen.conf.in"] +sources+examples)
+doxconf=env.GenerateDoxygen("doxygen.conf", ["doxygen.conf-in"] +sources+examples)
 env.Depends(doxconf, ['#/build/include'])
 
 dox = env.RunDoxygen("#/doc/html/index.html", ["doxygen.conf"]+sources)

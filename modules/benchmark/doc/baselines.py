@@ -34,10 +34,12 @@
  "rotation (cache)":0.0005,
  "rotation (nocache)":0.0005,
  "xyz vector small":0.01,
+"xyz vector space small":0.01,
  "xyz internal small":0.01,
  "xyz *internal small":0.01,
  "xyz decorator small":0.01,
  "xyz vector large":50,
  "xyz internal large":50,
  "xyz *internal large":50,
- "xyz decorator large":50}
+ "xyz decorator large":50,
+ "xyz vector space large":50}
