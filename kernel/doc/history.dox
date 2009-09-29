@@ -2,7 +2,9 @@
 
 \par Week of September 27
 
-- The swig input files were renamed from swig.i to swig.i.in to aid in dependency tracking.
+- A class IMP::core::RigidBodyDistancePairScore has been added which provides accelerated computations for the distance between two rigid bodies.
+
+- The swig input files were renamed from swig.i to swig.i-in to aid in dependency tracking.
 
 - rigid bodies now have two sets of particles associated with them in the various places they are used. One is the members, as was previously the case. Functions that use rigid bodies now take a IMP::Refiner to define the other set, which is the set of particles used as the representation for the rigid body. This can be the IMP::core::RigidMembersRefiner to use all rigid members, but could also be some alternative definition (for example if you want to have coordinates associated with residues or domains in a rigid protein). 
 
