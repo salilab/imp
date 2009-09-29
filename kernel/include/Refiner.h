@@ -39,7 +39,6 @@ public:
   /** As a precondition can_refine_particle(a) should be true.
    */
   virtual const ParticlesTemp get_refined(Particle *a) const=0;
-
   //! Get the ith refined particle.
   /** As a precondition can_refine_particle(a) should be true.
    */

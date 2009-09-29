@@ -754,11 +754,35 @@ protected:                                                              \
     - IMP::Refiner::get_can_refine()
     - IMP::Refiner::get_number_of_refined()
     - IMP::Refiner::get_refined();
+
+    \see IMP_SIMPLE_REFINER
  */
 #define IMP_REFINER(Name, version_info)                                 \
   virtual bool get_can_refine(Particle*) const;                         \
   virtual Particle* get_refined(Particle *, unsigned int) const;        \
-  virtual const ParticlesTemp get_refined(Particle *) const;       \
+  virtual const ParticlesTemp get_refined(Particle *) const;            \
+  virtual unsigned int get_number_of_refined(Particle *) const;         \
+  IMP_OBJECT(Name, version_info)
+
+
+//! Define the basics needed for a particle refiner
+/** In contrast to IMP_REFINER, if this macro is used, the
+    Refiner::get_refined(Particle*) method is implemented using the
+    other Refiner::get_refined() method and so does not have to be
+    provided.
+
+    \see IMP_REFINER
+ */
+#define IMP_SIMPLE_REFINER(Name, version_info)                          \
+  virtual bool get_can_refine(Particle*) const;                         \
+  virtual Particle* get_refined(Particle *, unsigned int) const;        \
+  virtual const ParticlesTemp get_refined(Particle *a) const {           \
+    ParticlesTemp ret(get_number_of_refined(a));                        \
+    for (unsigned int i=0; i< ret.size(); ++i) {                        \
+      ret[i]= get_refined(a,i);                                         \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
   virtual unsigned int get_number_of_refined(Particle *) const;         \
   IMP_OBJECT(Name, version_info)
 
