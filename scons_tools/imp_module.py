@@ -65,6 +65,8 @@ def module_deps_requires(env, target, source, dependencies):
     for d in dependencies + env['IMP_REQUIRED_MODULES']:
         #print str(target) + " requires " + d+'-'+source
         env.Requires(target, env.Alias(d+'-'+source))
+    if env['IMP_MODULE'] != 'kernel':
+        env.Requires(target, env.Alias("kernel-"+source))
 
 
 
@@ -479,9 +481,9 @@ def IMPModuleTest(env, required_modules=[]):
     env.AlwaysBuild("test.passed")
     module_alias(env, 'test', test)
     add_to_global_alias(env, 'test', 'test')
-    #module_requires(env, test, 'python')
+    module_requires(env, test, 'python')
     #print "setting up requires"
-    #module_deps_requires(env, test, 'python', required_modules)
+    module_deps_requires(env, test, 'python', required_modules)
 
 def invalidate(env, fail_action):
     """'Break' an environment, so that any builds with it use the fail_action
