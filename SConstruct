@@ -88,5 +88,5 @@ Clean('all', ['build/tmp/',
 Clean('all', Glob('scons_tools/*.pyc')\
           + Glob('tools/*.pyc'))
 
-env.Default('tools/imppy.sh')
 env.Default('bin')
+env.Default('tools')
