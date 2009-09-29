@@ -16,29 +16,14 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-/*
-P\left(\mathop{\arg\min}_{p_0 \in R_0, p_1 \in R_1}
-    \mathop{distance}\left(\mathop{XYZR}\left(p_0 \right),
-    \mathop{XYZR}\left(p_1 \right) \right)\right)
-
-\operatornamewithlimits{argmax}_{p_0 \in R_0, p_1 \in R_1}
-    \operatorname{distance}\left( p_0, p_1\right)
-
-\left( p_0, p_1\right)
-*/
-
 //! Accelerated computation of the distance between two rigid bodies
 /** Rigid bodies are made of a collection of particles whose internal
     relationships don't change. The distance between two rigid bodies
     can be defined as the minimal distance over all bipartite pairs
     with one particle taken from each rigid body. This computation can
-    be accelerated (similarly to the RigidClosePairsFinder).
-
-    Specifically, given a PairScore, \f$P\f$ and two rigid bodies
-    \f$R_0,\R_1\f$, this score computes
-    \f[
-    P\left(\operatorname{distance}  \right)
-    \f]
+    be accelerated (similarly to the RigidClosePairsFinder). The passed
+    PairScore is then applied to this minimal pair to give the returned
+    score.
  */
 class IMPCOREEXPORT RigidBodyDistancePairScore: public PairScore
 {
