@@ -3,6 +3,7 @@
 %include "IMP/examples/ExampleDecorator.h"
 %include "IMP/examples/ExampleUnaryFunction.h"
 %include "IMP/examples/ExampleRefCounted.h"
+%include "IMP/examples/ExampleSingletonModifier.h"
 
 namespace IMP {
   namespace examples {
