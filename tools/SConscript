@@ -62,7 +62,7 @@ prec=""
 if env.get('precommand', None) is not None:
     prec= env['precommand']
 bin = env.ScriptFile("imppy.sh",
-                     ["imppy.sh.in", env.Value(env.Dir('#').abspath),
+                     ["imppy.sh-in", env.Value(env.Dir('#').abspath),
                       env.Value(env.get('pythonpath', "")),
                       env.Value(env['MODELLER_MODPY']),
                       env.Value(libpath),
