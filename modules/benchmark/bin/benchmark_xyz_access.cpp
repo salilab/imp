@@ -57,6 +57,7 @@ void DistanceScore::apply(Particle *p) const {
   score_+= distance(d.get_coordinates(), v_);
 }
 
+#if 0
 double compute_distances_decorator_access(
                         PackedSingletonContainer *ps,
                         DistanceScore *ds) ATTRIBUTES;
@@ -72,6 +73,7 @@ double compute_distances_decorator_access(
   }
   return ds->score_;
 }
+#endif
 
 // TEST 2
 class MyParticle : public IMP::Particle {
@@ -260,6 +262,7 @@ void do_benchmark(std::string descr, std::string fname) {
       << " (" << dist << ")"<< std::endl;*/
     IMP::benchmark::report("xyz vector space "+descr, runtime, dist);
   }
+#if 0
   // TEST 5
   {
     double runtime, dist;
@@ -281,6 +284,7 @@ void do_benchmark(std::string descr, std::string fname) {
       model->remove_particle(psc->get_particle(i));
     }
   }
+#endif
 }
 
 int main(int argc, char **argv) {
