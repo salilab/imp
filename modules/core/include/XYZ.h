@@ -146,7 +146,9 @@ IMP_OUTPUT_OPERATOR(XYZ);
 /** \ingroup helper
     \relatesalso XYZ
  */
-IMPCOREEXPORT Float distance(XYZ a, XYZ b);
+inline double distance(XYZ a, XYZ b) {
+  return algebra::distance(a.get_coordinates(),b.get_coordinates());
+}
 
 //! Apply a transformation to the particle
 /** \relatesalso RigidBody

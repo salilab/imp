@@ -102,7 +102,9 @@ typedef Decorators< XYZR, XYZs > XYZRs;
 //! Compute the distance between a pair of particles
 /** \relatesalso XYZR
  */
-IMPCOREEXPORT Float distance(XYZR a, XYZR b);
+inline double distance(XYZR a, XYZR b) {
+  return distance(a.get_sphere(), b.get_sphere());
+}
 
 //! Set the coordinates and radius of the first to enclose the list
 /** \param[in] v The vector of XYZ or XYZR particles to enclose
@@ -144,16 +146,6 @@ IMPCOREEXPORT XYZRs create_xyzr_particles(Model *m,
                                           unsigned int num,
                                           Float radius,
                                           Float box_side=10);
-
-class HierarchyTraits;
-class Hierarchy;
-
-//! Create a hierarchical cover of a set of XYZR particles
-/** \unimplemented{create_sphere_hierarchy}
-*/
-IMPCOREEXPORT Hierarchy
-create_sphere_hierarchy(const XYZRs &ps,
-                        const HierarchyTraits &traits);
 
 IMPCORE_END_NAMESPACE
 

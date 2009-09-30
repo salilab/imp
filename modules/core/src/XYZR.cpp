@@ -20,12 +20,6 @@ void XYZR::show(std::ostream &out) const
 }
 
 
-Float distance(XYZR a, XYZR b)
-{
-  return distance(a.get_sphere(), b.get_sphere());
-}
-
-
 void set_enclosing_sphere(XYZR out,
                           const XYZs &v)
 {
@@ -80,23 +74,6 @@ XYZRs create_xyzr_particles(Model *m,
   }
   return ret;
 }
-
-
-
-Hierarchy
-create_sphere_hierarchy(const XYZRs &ps,
-                        const HierarchyTraits& traits) {
-  IMP_failure("Not Implemented", InvalidStateException);
-  /* - if ps is empty, return
-     - create a new XYZR and Hierarchy particle
-     - set its enclosing sphere to the enclosing sphere of ps
-     - find the largest extent of x,y,z
-     - divide the points at the midpoint (of one or more directions)
-     - recurse and add the two return values as children to the new particle
-   */
-  return Hierarchy();
-}
-
 
 
 

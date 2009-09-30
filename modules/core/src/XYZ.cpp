@@ -23,9 +23,4 @@ const FloatKeys& XYZ::get_xyz_keys() {
   return fks;
 }
 
-Float distance(XYZ a, XYZ b)
-{
-  return algebra::distance(a.get_coordinates(),b.get_coordinates());
-}
-
 IMPCORE_END_NAMESPACE
