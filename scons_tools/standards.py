@@ -29,7 +29,9 @@ def get_standards_files(env):
         + Glob("#/kernel/include/*.h")\
         + Glob("#/kernel/include/*/*.h")\
         + Glob("#/kernel/examples/*.py")\
-        + Glob("#/kernel/examples/*/*.py")
+        + Glob("#/kernel/examples/*/*.py")\
+        + Glob("#/modules/*/bin/*.cpp")\
+        + Glob("#/kernel/bin/*.cpp")
     outfiles=[]
     for f in files:
         if str(f).endswith("config.h") or str(f).endswith("version_info.h"):
