@@ -56,6 +56,7 @@ class VectorOfRefCounted {
  public:
   typedef RC const_reference;
   typedef RC value_type;
+  typedef RC& reference;
   VectorOfRefCounted(const std::vector<RC> &o):data_(o) {
     ref(o.begin(), o.end());
   }
