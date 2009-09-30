@@ -8,6 +8,8 @@
 #ifndef IMP_BASE_TYPES_H
 #define IMP_BASE_TYPES_H
 
+#define IMP_NUM_INLINE 5
+
 #include "config.h"
 #include "Key.h"
 

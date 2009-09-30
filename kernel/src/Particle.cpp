@@ -14,20 +14,19 @@
 IMP_BEGIN_NAMESPACE
 
 
-Particle::Particle(Model *m, std::string name): derivatives_(0),
-                                                shadow_(NULL)
+Particle::Particle(Model *m, std::string name):
+  ps_(new internal::ParticleStorage())
 {
   m->add_particle_internal(this);
 }
 
 Particle::~Particle(){
-  if (shadow_) internal::unref(shadow_);
 }
 
 
 void Particle::zero_derivatives()
 {
-  derivatives_.fill(0);
+  ps_->derivatives_.fill(0);
 }
 
 void Particle::show(std::ostream& out) const
@@ -36,7 +35,7 @@ void Particle::show(std::ostream& out) const
   preout << "Particle: " << get_name()
          << (get_is_active()? " (active)":" (dead)") << std::endl;
 
-  if (model_) {
+  if (ps_->model_) {
     preout << "float attributes:" << std::endl;
     preout.set_prefix("  ");
     for (FloatKeyIterator it= float_keys_begin(); it != float_keys_end();
@@ -48,8 +47,9 @@ void Particle::show(std::ostream& out) const
         preout << " ("
                << get_derivative(k) << ") ";
       }
-      preout<< (get_is_optimized(k)?"optimized":"") << std::endl;
+      preout << (get_is_optimized(k)?"optimized":"") << std::endl;
     }
+
 
     preout.set_prefix("");
     out << "int attributes:" << std::endl;
@@ -90,43 +90,123 @@ void Particle::show(std::ostream& out) const
 // methods for incremental
 
 void Particle::move_derivatives_to_shadow() {
-  shadow_->derivatives_=DerivativeTable(derivatives_.get_length());
-  shadow_->derivatives_.fill(0);
-  std::swap(shadow_->derivatives_, derivatives_);
+  ps_->shadow_->ps_->derivatives_
+    =internal::ParticleStorage::DerivativeTable(ps_->derivatives_.get_length());
+  ps_->shadow_->ps_->derivatives_.fill(0);
+  std::swap(ps_->shadow_->ps_->derivatives_, ps_->derivatives_);
 }
 
 void Particle::accumulate_derivatives_from_shadow() {
-  IMP_assert(derivatives_.get_length() == shadow_->derivatives_.get_length(),
-             "The tables do not match on size " << derivatives_.get_length()
-             << " " << shadow_->derivatives_.get_length() << std::endl);
-  for (unsigned int i=0; i < derivatives_.get_length(); ++i) {
-    derivatives_.set(i, derivatives_.get(i)+ shadow_->derivatives_.get(i));
+  IMP_assert(ps_->derivatives_.get_length()
+             == ps_->shadow_->ps_->derivatives_.get_length(),
+             "The tables do not match on size "
+             << ps_->derivatives_.get_length()
+             << " " << ps_->shadow_->ps_->derivatives_.get_length()
+             << std::endl);
+  for (unsigned int i=0; i < ps_->derivatives_.get_length(); ++i) {
+    ps_->derivatives_.set(i, ps_->derivatives_.get(i)
+                          + ps_->shadow_->ps_->derivatives_.get(i));
   }
 }
 
-Particle::Particle(): derivatives_(0), shadow_(NULL) {
+Particle::Particle():
+  ps_(new internal::ParticleStorage()) {
 }
 
 void Particle::setup_incremental() {
-  shadow_ = new Particle();
-  internal::ref(shadow_);
-  shadow_->set_name(get_name()+" history");
-  shadow_->model_= model_;
-  shadow_->dirty_=true;
-  shadow_->derivatives_= DerivativeTable(derivatives_.get_length());
-  shadow_->derivatives_.fill(0);
-  shadow_->optimizeds_= optimizeds_;
+  ps_->shadow_ = new Particle();
+  internal::ref(ps_->shadow_);
+  ps_->shadow_->set_name(get_name()+" history");
+  ps_->shadow_->ps_->model_= ps_->model_;
+  //ps_->shadow_->dirty_=true;
+  ps_->dirty_=true;
+  ps_->shadow_->ps_->derivatives_
+    = internal::ParticleStorage::
+    DerivativeTable(ps_->derivatives_.get_length());
+  ps_->shadow_->ps_->derivatives_.fill(0);
+  ps_->shadow_->ps_->optimizeds_= ps_->optimizeds_;
 }
 
 void Particle::teardown_incremental() {
-  if (!shadow_) {
+  if (!ps_->shadow_) {
     IMP_failure("Shadow particle was not created before disabling "
                 << "incremental for particle " << *this,
                 ErrorException);
   }
-  internal::unref(shadow_);
-  shadow_=NULL;
+  internal::unref(ps_->shadow_);
+  ps_->shadow_=NULL;
 }
 
+
+
+namespace {
+  const std::size_t num_blocks=150000;
+  const std::size_t int_size= sizeof(int);
+  // add the ability to add a new list later
+  std::vector<unsigned int> free_list;
+  unsigned int next_to_allocate=0;
+  char particles[num_blocks*sizeof(Particle)];
+  unsigned int block_size() {
+    return sizeof(Particle);
+  }
+  unsigned int offset(void *p) {
+    return static_cast<char*>(p)- particles;
+  }
+  unsigned int index(void *p) {
+    IMP_assert(offset(p) % block_size() ==0,
+               "There are alignment issues");
+    return offset(p)/block_size();
+  }
+  void *address(unsigned int i) {
+    return particles+i*block_size();
+  }
+}
+
+
+void *Particle::operator new(std::size_t sz) {
+  IMP_assert(sz <= block_size(),
+             "Expected request of size " << block_size()
+             << " got request of size " << sz);
+  if (free_list.empty() && next_to_allocate==num_blocks) {
+    IMP_failure("Can only allocate " << num_blocks
+                << " particles. Yell at Daniel.",
+                InvalidStateException);
+  }
+  unsigned int slot;
+  if (!free_list.empty()) {
+    slot= free_list.back();
+    free_list.pop_back();
+  } else {
+    slot= next_to_allocate;
+    ++next_to_allocate;
+  }
+  return address(slot);
+}
+
+void *Particle::operator new(std::size_t sz, void*p) {
+  return p;
+}
+
+void Particle::operator delete(void *p) {
+  free_list.push_back(index(p));
+}
+
+
+namespace internal {
+  Particle* create_particles(Model *m, unsigned int n) {
+    IMP_check(n>0, "Can't create 0 particles",
+              ValueException);
+    if (next_to_allocate + n > num_blocks) {
+      IMP_failure("Out of particles. Yell at Daniel.", ErrorException);
+    }
+    for (unsigned int i=0; i< n; ++i) {
+      Particle *cur= new(address(next_to_allocate+i)) Particle(m);
+      if (0) std::cout << cur;
+    }
+    Particle *ret= static_cast<Particle*>(address(next_to_allocate));
+    next_to_allocate+=n;
+    return ret;
+  }
+}
 
 IMP_END_NAMESPACE

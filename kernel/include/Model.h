@@ -67,8 +67,8 @@ private:
       }
     }
     particles_.push_back(p);
-    p->iterator_= --particles_.end();
-    p->model_= this;
+    p->ps_->iterator_= --particles_.end();
+    p->ps_->model_= this;
     internal::ref(p);
     std::ostringstream oss;
     oss << "P" << next_particle_index_;
@@ -160,8 +160,8 @@ public:
             << std::endl);
     IMP_assert(get_stage() == Model::NOT_EVALUATING,
                "Particles cannot be removed from the model during evaluation");
-    particles_.erase(p->iterator_);
-    p->model_=NULL;
+    particles_.erase(p->ps_->iterator_);
+    p->ps_->model_=NULL;
     internal::unref(p);
   }
 
