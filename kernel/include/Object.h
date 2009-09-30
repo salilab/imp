@@ -81,6 +81,13 @@ public:
     out << get_name() << std::endl;
     show(out);
   }
+
+  //! Return a string version of the object, can be used in the debugger
+  std::string get_string() const {
+    std::ostringstream oss;
+    show(oss);
+    return oss.str();
+  }
 #endif
 
   //! Get information about the author and version of the object
