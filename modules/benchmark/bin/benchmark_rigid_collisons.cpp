@@ -9,6 +9,7 @@
 #include <IMP/helper.h>
 #include <boost/timer.hpp>
 #include <IMP/benchmark/utility.h>
+#include <IMP/benchmark/macros.h>
 
 using namespace IMP;
 using namespace IMP::core;
@@ -59,7 +60,7 @@ int main() {
   std::vector<RigidBody> rbs;
   for (int i=0; i< 5; ++i) {
     atom::Hierarchy mhd
-      = read_pdb(IMP::get_data_directory()+"/benchmark/single_protein.pdb", m);
+      = read_pdb(IMP::get_data_directory()+"/benchmark/small_protein.pdb", m);
     Particles catoms= get_by_type(mhd, atom::Hierarchy::ATOM);
     IMP_assert(catoms.size() != 0, "What happened to the atoms?");
     atoms.insert(atoms.end(), catoms.begin(), catoms.end());
