@@ -154,6 +154,7 @@ struct StringAttributeTableTraits: public DefaultTraits<String, StringKey>
     Traits::invalid entry.
  */
 
+
 namespace {
   static const FloatKey xyzr_keys[]={FloatKey(0U), FloatKey(1U),
                                      FloatKey(2U), FloatKey(3U)};

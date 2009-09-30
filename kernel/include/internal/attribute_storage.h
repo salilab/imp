@@ -196,6 +196,9 @@ public:
   bool fits(unsigned int i) const {
     return P::fits(i-OFFSET);
   }
+  unsigned int get_length() const {
+    return OFFSET+P::get_length();
+  }
 };
 
 

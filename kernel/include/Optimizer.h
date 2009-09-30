@@ -284,19 +284,20 @@ IMP_OUTPUT_OPERATOR(Optimizer);
 //! Save and restore the set of optimized attributes for a set of particles
 class SaveOptimizeds: public RAII {
   ParticlesTemp pt_;
-  std::vector<Particle::OptimizedTable> saved_;
+  std::vector<internal::ParticleStorage::OptimizedTable> saved_;
 public:
   IMP_RAII(SaveOptimizeds, (const ParticlesTemp &pt),,
            {
              pt_=pt;
-             saved_= std::vector<Particle::OptimizedTable>(pt_.size());
+             saved_= std::vector<internal::ParticleStorage::OptimizedTable>
+               (pt_.size());
              for (unsigned int i=0; i< pt_.size(); ++i) {
-               saved_[i]= pt_[i]->optimizeds_;
+               saved_[i]= pt_[i]->ps_->optimizeds_;
              }
            },
            {
              for (unsigned int i=0; i< pt_.size(); ++i) {
-               pt_[i]->optimizeds_= saved_[i];
+               pt_[i]->ps_->optimizeds_= saved_[i];
              }
            });
 };

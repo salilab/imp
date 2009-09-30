@@ -19,20 +19,29 @@
 #include "Pointer.h"
 #include "VectorOfRefCounted.h"
 #include <utility>
+#include <memory>
 
 // should use this once we move to a new enough boost (1.35)
 //#include <boost/intrusive/list.hpp>
 
-#include <limits>
 #include <list>
 
+#define IMP_PI(func) if (name.get_index() < IMP_NUM_INLINE) floats_.func;\
+  else ps_->floats_.func;
+#define IMP_RPI(func) if (name.get_index() < IMP_NUM_INLINE) {  \
+    return floats_.func;                                        \
+  }                                                             \
+  else return ps_->floats_.func;
+
 #define IMP_CHECK_ACTIVE                                                \
-  IMP_check(get_is_active(), "Do not touch inactive particles "         \
-            << get_name(), InactiveParticleException)
+  IMP_check(get_is_active(), "Particle " << get_name() << " is inactive" \
+            , InactiveParticleException)
 #define IMP_CHECK_MUTABLE IMP_IF_CHECK(CHEAP) {assert_values_mutable();}
 #define IMP_CHECK_VALID_DERIVATIVES IMP_IF_CHECK(CHEAP) \
   {assert_valid_derivatives();}
-#define IMP_PARTICLE_ATTRIBUTE_TYPE(UCName, lcname, Value, table,       \
+
+#define IMP_PARTICLE_ATTRIBUTE_TYPE(UCName, lcname, Value, cond,\
+                                    table0, table1,                     \
                                     add_action, remove_action)          \
   void add_attribute(UCName##Key name, Value initial_value){            \
     IMP_CHECK_ACTIVE;                                                   \
@@ -49,7 +58,8 @@
               ValueException);                                          \
     on_changed();                                                       \
     add_action;                                                         \
-    table.add(name.get_index(), initial_value);                         \
+    if (cond) table0.add(name.get_index(), initial_value);              \
+    else table1.add(name.get_index(), initial_value);                   \
   }                                                                     \
   void remove_attribute(UCName##Key name) {                             \
     IMP_CHECK_ACTIVE;                                                   \
@@ -61,16 +71,25 @@
               "Cannot remove attribute " << name << " from particle "   \
               << get_name() << " as it is not there.",                  \
               InvalidStateException);                                   \
-    table.remove(name.get_index());                                     \
+    if (cond) table0.remove(name.get_index());                          \
+    else table1.remove(name.get_index());                               \
   }                                                                     \
   bool has_attribute(UCName##Key name) const{                           \
     IMP_check(name != UCName##Key(), "Cannot use attributes without "   \
               << "naming them.", ValueException);                       \
     IMP_CHECK_ACTIVE;                                                   \
-    if (!table.fits(name.get_index())) return false;                    \
-    else {                                                              \
-      return UCName##Table::Traits::get_is_valid(                       \
-                                          table.get(name.get_index())); \
+    if (cond) {                                                         \
+      if (!table0.fits(name.get_index())) return false;                 \
+      else {                                                            \
+        return UCName##Table::Traits::get_is_valid(                     \
+                                         table0.get(name.get_index())); \
+      }                                                                 \
+    } else {                                                            \
+      if (!table1.fits(name.get_index())) return false;                 \
+      else {                                                            \
+        return UCName##Table::Traits::get_is_valid(                     \
+                                         table1.get(name.get_index())); \
+      }                                                                 \
     }                                                                   \
   }                                                                     \
   Value get_value(UCName##Key name) const {                             \
@@ -81,7 +100,8 @@
               "Cannot get value " << name << " from particle "          \
               << get_name() << " as it is not there.",                  \
               InvalidStateException);                                   \
-    return table.get(name.get_index());                                 \
+    if (cond) return table0.get(name.get_index());                      \
+    else return table1.get(name.get_index());                           \
   }                                                                     \
   void set_value(UCName##Key name, Value value) {                       \
     IMP_check(name != UCName##Key(), "Cannot use attributes without "   \
@@ -97,18 +117,19 @@
               << get_name() << " as it is not there.",                  \
               InvalidStateException);                                   \
     on_changed();                                                       \
-    table.set(name.get_index(), value);                                 \
+    if (cond) table0.set(name.get_index(), value);                      \
+    else table1.set(name.get_index(), value);                           \
   }                                                                     \
   IMP_SWITCH_DOXYGEN(class UCName##KeyIterator,                         \
          typedef UCName##IteratorTraits::Iterator UCName##KeyIterator); \
   UCName##KeyIterator lcname##_keys_begin() const {                     \
     return UCName##IteratorTraits::create_iterator(this, 0,             \
-                                                   table.get_length()); \
+                                                   table1.get_length()); \
   }                                                                     \
   UCName##KeyIterator lcname##_keys_end() const {                       \
     return UCName##IteratorTraits::create_iterator(this,                \
-                                                   table.get_length(),  \
-                                                   table.get_length()); \
+                                                   table1.get_length(), \
+                                                   table1.get_length()); \
   }                                                                     \
   UCName##Keys get_##lcname##_attributes() const {                      \
     return UCName##Keys(lcname##_keys_begin(),                          \
@@ -176,8 +197,7 @@ class IMPEXPORT Particle : public Object
   friend class Changed;
   friend class SaveOptimizeds;
   //typedef internal::ObjectContainer<Particle, unsigned int> Storage;
-  typedef std::list<Particle*> Storage;
-
+  typedef internal::ParticleStorage::Storage Storage;
   void zero_derivatives();
 
   void assert_values_mutable() const;
@@ -188,26 +208,26 @@ class IMPEXPORT Particle : public Object
 
   void assert_valid_derivatives() const;
 
-
  // begin incremental
   void on_changed() {
-    dirty_=true;
+    ps_->dirty_=true;
   }
 
   void set_is_not_changed() {
-    if (dirty_) {
-      shadow_->floats_= floats_;
-      shadow_->strings_= strings_;
-      shadow_->ints_= ints_;
-      shadow_->optimizeds_= optimizeds_;
-      shadow_->particles_.clear();
+    if (ps_->dirty_) {
+      ps_->shadow_->floats_= floats_;
+      ps_->shadow_->ps_->floats_= ps_->floats_;
+      ps_->shadow_->ps_->strings_= ps_->strings_;
+      ps_->shadow_->ps_->ints_= ps_->ints_;
+      ps_->shadow_->ps_->optimizeds_= ps_->optimizeds_;
+      ps_->shadow_->ps_->particles_.clear();
       for (ParticleKeyIterator it= particle_keys_begin();
            it != particle_keys_end(); ++it) {
-        shadow_->particles_.add(it->get_index(),
-                                get_value(*it)->shadow_);
+        ps_->shadow_->ps_->particles_.add(it->get_index(),
+                                          get_value(*it)->ps_->shadow_);
       }
     }
-    dirty_=false;
+    ps_->dirty_=false;
   }
 
   void setup_incremental();
@@ -221,20 +241,13 @@ class IMPEXPORT Particle : public Object
   void move_derivatives_to_shadow();
   // end incremental
 
-  typedef internal::ArrayStorage<internal::FloatAttributeTableTraits>
+  typedef internal::FixedInlineStorage<internal::FloatAttributeTableTraits,
+    IMP_NUM_INLINE>
     FloatTable;
-  typedef internal::ArrayStorage<internal::BoolAttributeTableTraits>
-    OptimizedTable;
-  typedef internal::ArrayStorage<internal::IntAttributeTableTraits>
-    IntTable;
-  typedef internal::ArrayStorage<internal::StringAttributeTableTraits>
-    StringTable;
-  typedef internal::RefCountedStorage<internal::ParticlesAttributeTableTraits>
-    ParticleTable;
-  typedef internal::RefCountedStorage<internal::ObjectsAttributeTableTraits>
-    ObjectTable;
-  typedef internal::ArrayStorage<internal::DoubleAttributeTableTraits>
-    DerivativeTable;
+  typedef internal::ParticleStorage::IntTable IntTable;
+  typedef internal::ParticleStorage::StringTable StringTable;
+  typedef internal::ParticleStorage::ParticleTable ParticleTable;
+  typedef internal::ParticleStorage::ObjectTable ObjectTable;
 
   typedef internal::ParticleKeyIterator<FloatKey, Particle,
     internal::IsAttribute<FloatKey, Particle> > FloatIteratorTraits;
@@ -252,22 +265,8 @@ class IMPEXPORT Particle : public Object
     internal::IsOptimized<FloatKey, Particle> > OptimizedIteratorTraits;
 
  private:
-  WeakPointer<Model> model_;
-
   FloatTable floats_;
-  DerivativeTable derivatives_;
-  OptimizedTable optimizeds_;
-  IntTable ints_;
-  StringTable  strings_;
-  ParticleTable particles_;
-  ObjectTable objects_;
-
-  Storage::iterator iterator_;
-
-  // incremental updates
-  bool dirty_;
-  // manually ref counted since Pointer requires the full definition
-  Particle* shadow_;
+  std::auto_ptr<internal::ParticleStorage> ps_;
 #endif
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Particle);
@@ -280,7 +279,7 @@ class IMPEXPORT Particle : public Object
       \throw InvalidStateException if now Model contains this particle.
   */
   Model* get_model() const {
-    return model_;
+    return ps_->model_;
   }
 
 #ifdef IMP_DOXYGEN
@@ -297,18 +296,23 @@ class IMPEXPORT Particle : public Object
   Type get_value(KeyType name) const;
   /* @} */
 #else
-  IMP_PARTICLE_ATTRIBUTE_TYPE(Float, float, Float, floats_,
-                              { derivatives_.add(name.get_index(), 0);},
-                              {if (optimizeds_.fits(name.get_index())) {
-                                  optimizeds_.remove(name.get_index());
+
+  IMP_PARTICLE_ATTRIBUTE_TYPE(Float, float, Float,
+                              name.get_index() < IMP_NUM_INLINE,
+                              floats_, ps_->floats_,
+                              { ps_->derivatives_.add(name.get_index(), 0);},
+                              {if (ps_->optimizeds_.fits(name.get_index())) {
+                                  ps_->optimizeds_.remove(name.get_index());
                                 }
-                                derivatives_.remove(name.get_index());});
+                                ps_->derivatives_.remove(name.get_index());});
 
 #ifdef IMP_DOXYGEN
   class OptimizedKeyIterator;
 #else
   typedef OptimizedIteratorTraits::Iterator OptimizedKeyIterator;
 #endif
+
+
   OptimizedKeyIterator optimized_keys_begin() const {
     return OptimizedIteratorTraits::create_iterator(this, 0,
                                                     floats_.get_length());
@@ -319,10 +323,14 @@ class IMPEXPORT Particle : public Object
                                                     floats_.get_length());
   }
 
-  IMP_PARTICLE_ATTRIBUTE_TYPE(Int, int, Int,ints_,,);
-  IMP_PARTICLE_ATTRIBUTE_TYPE(String, string, String,strings_,,)
-  IMP_PARTICLE_ATTRIBUTE_TYPE(Particle, particle, Particle*,particles_,,)
-  IMP_PARTICLE_ATTRIBUTE_TYPE(Object, object, Object*,objects_,,);
+  IMP_PARTICLE_ATTRIBUTE_TYPE(Int, int, Int,
+                              true, ps_->ints_,ps_->ints_,,);
+  IMP_PARTICLE_ATTRIBUTE_TYPE(String, string, String,
+                              true,ps_->strings_,ps_->strings_,,)
+    IMP_PARTICLE_ATTRIBUTE_TYPE(Particle, particle, Particle*,
+                                true,ps_->particles_,ps_->particles_,,)
+    IMP_PARTICLE_ATTRIBUTE_TYPE(Object, object, Object*,
+                                true,ps_->objects_,ps_->objects_,,);
 #endif
 
  /** @name Float Attributes
@@ -360,7 +368,7 @@ class IMPEXPORT Particle : public Object
     IMP_IF_CHECK(EXPENSIVE) {
       IMP_assert(get_is_valid(), "Particle has been previously freed.");
     }
-    return model_;
+    return ps_->model_;
   }
 
   VersionInfo get_version_info() const {
@@ -384,15 +392,21 @@ class IMPEXPORT Particle : public Object
   */
   //! Return true if this particle has been changed since the last evaluate call
   bool get_is_changed() const {
-    return dirty_;
+    return ps_->dirty_;
   }
   /** \brief Return the shadow particle having attribute values from the last
       evaluation
   */
   Particle *get_prechange_particle() const {
-    return shadow_;
+    return ps_->shadow_;
   }
   /** @} */
+
+#if !defined(IMP_DOXYGEN)&& !defined(SWIG)
+  void *operator new(std::size_t sz, void*p);
+  void operator delete(void *p);
+  void *operator new(std::size_t sz);
+#endif
 };
 
 
@@ -404,7 +418,7 @@ inline Float Particle::get_derivative(FloatKey name) const
   IMP_assert(has_attribute(name), "Particle " << get_name()
              << " does not have attribute " << name);
   IMP_CHECK_VALID_DERIVATIVES;
-  return derivatives_.get(name.get_index());
+  return ps_->derivatives_.get(name.get_index());
 }
 
 
@@ -414,8 +428,8 @@ inline bool Particle::get_is_optimized(FloatKey name) const
   /*IMP_check(floats_.contains(name), "get_is_optimized called "
             << "with invalid attribute " << name,
             IndexException);*/
-  if (!optimizeds_.fits(name.get_index())) return false;
-  else return optimizeds_.get(name.get_index());
+  if (!ps_->optimizeds_.fits(name.get_index())) return false;
+  else return ps_->optimizeds_.get(name.get_index());
 }
 
 inline void Particle::set_is_optimized(FloatKey name, bool tf)
@@ -427,9 +441,9 @@ inline void Particle::set_is_optimized(FloatKey name, bool tf)
   IMP_IF_CHECK(CHEAP) {assert_can_change_optimization();}
 
   if (tf) {
-    optimizeds_.add(name.get_index(), true);
+    ps_->optimizeds_.add(name.get_index(), true);
   } else {
-    optimizeds_.remove(name.get_index());
+    ps_->optimizeds_.remove(name.get_index());
   }
 }
 
@@ -442,10 +456,11 @@ inline void Particle::add_to_derivative(FloatKey name, Float value,
   IMP_assert(has_attribute(name), "Particle " << get_name()
              << " does not have attribute " << name);
   IMP_IF_CHECK(CHEAP) { assert_can_change_derivatives();}
-  IMP_assert(name.get_index() < derivatives_.get_length(),
+  IMP_assert(name.get_index() < ps_->derivatives_.get_length(),
              "Something is wrong with derivative table.");
-  derivatives_.set(name.get_index(),
-                   derivatives_.get(name.get_index())+ da(value));
+  ps_->derivatives_.set(name.get_index(),
+                        ps_->derivatives_.get(name.get_index())
+                        + da(value));
 }
 
 

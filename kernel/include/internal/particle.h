@@ -9,9 +9,14 @@
 #define IMP_INTERNAL_PARTICLE_H
 
 #include "../config.h"
+#include "AttributeTable.h"
 #include <boost/iterator/filter_iterator.hpp>
 #include <boost/iterator/counting_iterator.hpp>
+#include <list>
 
+IMP_BEGIN_NAMESPACE
+class Model;
+IMP_END_NAMESPACE
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 
@@ -57,6 +62,48 @@ struct ParticleKeyIterator {
                          create_iterator(p, len, len));
     return ret;
   }
+};
+
+
+
+struct ParticleStorage {
+  ParticleStorage(): shadow_(NULL), dirty_(false){}
+  ~ParticleStorage(){
+    if (shadow_) internal::unref(shadow_);
+  }
+  typedef std::list<Particle*> Storage;
+  typedef  internal::OffsetStorage<
+    internal::ArrayStorage<internal::FloatAttributeTableTraits>, IMP_NUM_INLINE>
+    FloatTable;
+  typedef internal::ArrayStorage<internal::BoolAttributeTableTraits>
+    OptimizedTable;
+  typedef internal::ArrayStorage<internal::IntAttributeTableTraits>
+    IntTable;
+  typedef internal::ArrayStorage<internal::StringAttributeTableTraits>
+    StringTable;
+  typedef internal::RefCountedStorage<internal::ParticlesAttributeTableTraits>
+    ParticleTable;
+  typedef internal::RefCountedStorage<internal::ObjectsAttributeTableTraits>
+    ObjectTable;
+  typedef internal::ArrayStorage<internal::DoubleAttributeTableTraits>
+    DerivativeTable;
+
+  WeakPointer<Model> model_;
+
+  FloatTable floats_;
+  DerivativeTable derivatives_;
+  OptimizedTable optimizeds_;
+  IntTable ints_;
+  StringTable  strings_;
+  ParticleTable particles_;
+  ObjectTable objects_;
+
+  Storage::iterator iterator_;
+  // manually ref counted since Pointer requires the full definition
+  Particle* shadow_;
+
+  // incremental updates
+  bool dirty_;
 };
 
 IMP_END_INTERNAL_NAMESPACE
