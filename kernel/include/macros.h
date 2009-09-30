@@ -1133,19 +1133,6 @@ es
 #define IMP_WARN_UNUSED_RESULT
 #endif
 
-//! Time the given command and assign the time of one iteration to the variable
-/** The units for the time are in seconds. */
-#define IMP_TIME(block, timev)                  \
-  {                                             \
-    boost::timer imp_timer;                     \
-    unsigned int imp_reps=0;                    \
-    do {                                        \
-      block;                                    \
-      ++imp_reps;                               \
-    } while (imp_timer.elapsed() < 2.5);        \
-    timev= imp_timer.elapsed()/imp_reps;        \
-  }
-
 #endif
 
 #endif  /* IMP_MACROS_H */
