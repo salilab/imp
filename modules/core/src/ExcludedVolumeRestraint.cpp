@@ -43,7 +43,7 @@ void ExcludedVolumeRestraint::set_model(Model *m) {
     if (r_) {
       ss_->set_close_pairs_finder(new RigidClosePairsFinder(r_));
     }
-    ss_->set_name("close pairs for excluded volume")
+    ss_->set_name("close pairs for excluded volume");
     IMP_NEW(SphereDistancePairScore, sdps, (hlb));
     pr_= new PairsRestraint(sdps, ss_->get_close_pairs_container());
     pr_->set_name("excluded volume");
