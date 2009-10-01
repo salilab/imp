@@ -2,6 +2,8 @@
 
 \par Week of September 27
 
+- Some support for gather statistics has been added to Model (see IMP::Model::set_gather_statistics()). If requested, an API can be provided so that the individual data points can be returned to programs.
+
 - A class IMP::core::RigidBodyDistancePairScore has been added which provides accelerated computations for the distance between two rigid bodies.
 
 - The swig input files were renamed from swig.i to swig.i-in to aid in dependency tracking.
