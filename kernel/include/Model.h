@@ -49,6 +49,7 @@ private:
   // true if a regular evaluate needs to be called first
   bool first_incremental_;
   bool last_had_derivatives_;
+  bool gather_statistics_;
   std::map<FloatKey, FloatRange> ranges_;
   enum Stage {NOT_EVALUATING, BEFORE_EVALUATE, EVALUATE, AFTER_EVALUATE};
   mutable Stage cur_stage_;
@@ -256,6 +257,21 @@ public:
   bool get_is_incremental() const {
     return incremental_update_;
   }
+  /** @} */
+
+
+  /** \name Statistics
+
+      The Model can gather various statistics about the restraints and
+      score states used. To use this feature, first turn on statistics
+      gather and then run your optimization (or just call evaluate).
+
+      \note Telling the model not to gather statistics does not clear
+      existing statistics.
+      @{
+  */
+  void set_gather_statistics(bool tf);
+  void show_statistics_summary(std::ostream &out=std::cout) const;
   /** @} */
 };
 

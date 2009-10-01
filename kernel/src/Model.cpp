@@ -12,8 +12,41 @@
 #include "IMP/Restraint.h"
 #include "IMP/DerivativeAccumulator.h"
 #include "IMP/ScoreState.h"
+#include <boost/timer.hpp>
 
 IMP_BEGIN_NAMESPACE
+
+namespace {
+  struct Statistics {
+    double total_time_;
+    double total_time_after_;
+    unsigned int calls_;
+    double total_value_;
+    double min_value_;
+    double max_value_;
+    Statistics(): total_time_(0), total_time_after_(0),
+                  calls_(0), total_value_(0),
+                  min_value_(std::numeric_limits<double>::max()),
+                  max_value_(-std::numeric_limits<double>::max())
+    {}
+    void update_state_before(double t) {
+      total_time_+=t;
+    }
+    void update_state_after(double t) {
+      total_time_after_+=t;
+      ++calls_;
+    }
+    void update_restraint(double t, double v) {
+      total_time_+= t;
+      min_value_= std::min(v, min_value_);
+      max_value_= std::max(v, max_value_);
+      ++calls_;
+    }
+  };
+
+  std::map<Object*, Statistics> stats_data_;
+}
+
 
 //! Constructor
 Model::Model()
@@ -23,6 +56,7 @@ Model::Model()
   cur_stage_=NOT_EVALUATING;
   incremental_update_=false;
   first_incremental_=true;
+  gather_statistics_=false;
 }
 
 
@@ -74,11 +108,16 @@ void Model::before_evaluate() const {
   IMP_LOG(TERSE,
           "Begin update ScoreStates " << std::endl);
   cur_stage_= BEFORE_EVALUATE;
+  boost::timer timer;
   for (ScoreStateConstIterator it = score_states_begin();
        it != score_states_end(); ++it) {
     IMP_CHECK_OBJECT(*it);
     IMP_LOG(TERSE, "Updating " << (*it)->get_name() << std::endl);
+    if (gather_statistics_) timer.restart();
     (*it)->before_evaluate(iteration_);
+    if (gather_statistics_) {
+      stats_data_[*it].update_state_before(timer.elapsed());
+    }
     IMP_LOG(VERBOSE, "." << std::flush);
   }
   IMP_LOG(TERSE, "End update ScoreStates." << std::endl);
@@ -89,11 +128,16 @@ void Model::after_evaluate(bool calc_derivs) const {
           "Begin after_evaluate of ScoreStates " << std::endl);
   DerivativeAccumulator accum;
   cur_stage_= AFTER_EVALUATE;
+  boost::timer timer;
   for (ScoreStateConstIterator it = score_states_begin();
        it != score_states_end(); ++it) {
     IMP_CHECK_OBJECT(*it);
     IMP_LOG(TERSE, "Updating " << (*it)->get_name() << std::endl);
+    if (gather_statistics_) timer.restart();
     (*it)->after_evaluate(iteration_, (calc_derivs ? &accum : NULL));
+    if (gather_statistics_) {
+      stats_data_[*it].update_state_after(timer.elapsed());
+    }
     IMP_LOG(VERBOSE, "." << std::flush);
   }
   IMP_LOG(TERSE, "End after_evaluate of ScoreStates." << std::endl);
@@ -137,25 +181,29 @@ double Model::do_evaluate_restraints(bool calc_derivs,
   }
   double score=0;
   DerivativeAccumulator accum;
+  boost::timer timer;
   for (RestraintConstIterator it= restraints_begin();
        it != restraints_end(); ++it) {
+    double value;
+    if (gather_statistics_) timer.restart();
     if ((*it)->get_is_incremental()
         && incremental_restraints != NONINCREMENTAL) {
       if (incremental_evaluation) {
-        double t=(*it)->incremental_evaluate(calc_derivs? &accum:NULL);
-        IMP_LOG(TERSE, (*it)->get_name() << " score is " << t << std::endl);
-        score+=t;
+        value=(*it)->incremental_evaluate(calc_derivs? &accum:NULL);
+        IMP_LOG(TERSE, (*it)->get_name() << " score is " << value << std::endl);
       } else {
-        double t=(*it)->evaluate(calc_derivs? &accum:NULL);
-        IMP_LOG(TERSE, (*it)->get_name() << " score is " << t << std::endl);
-        score+=t;
+        value=(*it)->evaluate(calc_derivs? &accum:NULL);
+        IMP_LOG(TERSE, (*it)->get_name() << " score is " << value << std::endl);
       }
     } else if (!(*it)->get_is_incremental()
                && incremental_restraints != INCREMENTAL) {
-      double t=(*it)->evaluate(calc_derivs? &accum:NULL);
-      IMP_LOG(TERSE, (*it)->get_name()<<  " score is " << t << std::endl);
-      score+=t;
+      value=(*it)->evaluate(calc_derivs? &accum:NULL);
+      IMP_LOG(TERSE, (*it)->get_name()<<  " score is " << value << std::endl);
     }
+    if (gather_statistics_) {
+      stats_data_[*it].update_restraint(timer.elapsed(), value);
+    }
+    score+= value;
   }
   IMP_LOG(TERSE, "End evaluate restraints." << std::endl);
   return score;
@@ -270,5 +318,49 @@ void Model::show(std::ostream& out) const
   out << std::endl;
   IMP_CHECK_OBJECT(this);
 }
+
+
+
+
+
+
+
+
+
+
+
+void Model::set_gather_statistics(bool tf) {
+  gather_statistics_=tf;
+}
+
+
+void Model::show_statistics_summary(std::ostream &out) const {
+  out << "ScoreStates: running_time_before running_time_after\n";
+  for (ScoreStateConstIterator it= score_states_begin();
+       it != score_states_end(); ++it) {
+    if (stats_data_.find(*it) != stats_data_.end()) {
+      out << "  " << (*it)->get_name() << ": ";
+      out << stats_data_[*it].total_time_/ stats_data_[*it].calls_
+          << "s "
+          << stats_data_[*it].total_time_after_/ stats_data_[*it].calls_
+          << "s\n";
+    }
+  }
+
+  out << "Restraints: running_time min_value max_value average_value\n";
+  for (RestraintConstIterator it= restraints_begin();
+       it != restraints_end(); ++it) {
+    if (stats_data_.find(*it) != stats_data_.end()) {
+      out << "  " << (*it)->get_name() << ": ";
+      out << stats_data_[*it].total_time_/ stats_data_[*it].calls_
+          << "s "
+          << stats_data_[*it].min_value_ << " "
+          << stats_data_[*it].max_value_ << " "
+          << stats_data_[*it].total_value_/ stats_data_[*it].calls_ << "\n";
+    }
+  }
+}
+
+
 
 IMP_END_NAMESPACE
