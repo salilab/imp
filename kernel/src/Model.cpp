@@ -195,15 +195,19 @@ double Model::do_evaluate_restraints(bool calc_derivs,
         value=(*it)->evaluate(calc_derivs? &accum:NULL);
         IMP_LOG(TERSE, (*it)->get_name() << " score is " << value << std::endl);
       }
+      if (gather_statistics_) {
+        stats_data_[*it].update_restraint(timer.elapsed(), value);
+      }
+      score+= value;
     } else if (!(*it)->get_is_incremental()
                && incremental_restraints != INCREMENTAL) {
       value=(*it)->evaluate(calc_derivs? &accum:NULL);
       IMP_LOG(TERSE, (*it)->get_name()<<  " score is " << value << std::endl);
+      if (gather_statistics_) {
+        stats_data_[*it].update_restraint(timer.elapsed(), value);
+      }
+      score+= value;
     }
-    if (gather_statistics_) {
-      stats_data_[*it].update_restraint(timer.elapsed(), value);
-    }
-    score+= value;
   }
   IMP_LOG(TERSE, "End evaluate restraints." << std::endl);
   return score;
