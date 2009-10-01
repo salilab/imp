@@ -315,12 +315,12 @@ class IMPEXPORT Particle : public Object
 
   OptimizedKeyIterator optimized_keys_begin() const {
     return OptimizedIteratorTraits::create_iterator(this, 0,
-                                                    floats_.get_length());
+                                                    ps_->floats_.get_length());
   }
   OptimizedKeyIterator optimized_keys_end() const {
     return OptimizedIteratorTraits::create_iterator(this,
-                                                    floats_.get_length(),
-                                                    floats_.get_length());
+                                                    ps_->floats_.get_length(),
+                                                    ps_->floats_.get_length());
   }
 
   IMP_PARTICLE_ATTRIBUTE_TYPE(Int, int, Int,
