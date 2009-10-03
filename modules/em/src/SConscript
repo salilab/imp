@@ -16,6 +16,7 @@ files = [
          'SpiderReaderWriter.cpp',
          'SurfaceShellDensityMap.cpp',
          'XplorReaderWriter.cpp',
+         'Voxel.cpp',
          'converters.cpp',
          'header_converters.cpp',
          'filters.cpp',

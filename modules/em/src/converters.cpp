@@ -5,12 +5,26 @@
 */
 
 #include <IMP/em/converters.h>
+#include <IMP/em/Voxel.h>
 
 IMPEM_BEGIN_NAMESPACE
 
-FloatKey get_density_key() {
-  static FloatKey dv("density_val");
-  return dv;
+
+void density2particles(DensityMap &dmap, Float threshold,
+                              Particles &ps, Model *m) {
+  Float x,y,z,val;
+  FloatKey dens_key = Voxel::get_density_key();
+  for (long i=0;i<dmap.get_number_of_voxels();i++) {
+    val = dmap.get_value(i);
+    if (val > threshold) {
+      Particle * p = new Particle(m);
+      x = dmap.voxel2loc(i,0);
+      y = dmap.voxel2loc(i,1);
+      z = dmap.voxel2loc(i,2);
+      Voxel::setup_particle(p,IMP::algebra::Vector3D(x,y,z),val);
+      ps.push_back(p);
+    }
+  }
 }
 
 IMPEM_END_NAMESPACE
