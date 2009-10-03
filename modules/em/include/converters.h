@@ -21,9 +21,6 @@
 
 IMPEM_BEGIN_NAMESPACE
 
-//! Return the key used to store the density attribute
-IMPEMEXPORT FloatKey get_density_key();
-
 //! Converts a density grid to a set of paritlces
 /**
 Each such particle will be have xyz attributes and a density_val attribute of
@@ -33,22 +30,8 @@ type Float.
            be converted to particles
 /param[in] the new density based particles will be converted to particles.
  */
-inline void density2particles(DensityMap &dmap, Float threshold,
-                              Particles &ps, Model *m) {
-  Float x,y,z;
-  for (long i=0;i<dmap.get_number_of_voxels();i++) {
-    x = dmap.voxel2loc(i,0);
-    y = dmap.voxel2loc(i,1);
-    z = dmap.voxel2loc(i,2);
-    if (dmap.get_value(x,y,z) > threshold) {
-      Particle * p = new Particle(m);
-      IMP::core::XYZ::setup_particle(p,IMP::algebra::Vector3D(x,y,z));
-      p->add_attribute(get_density_key(),
-                       dmap.get_value(x,y,z),false);
-      ps.push_back(p);
-    }
-  }
-}
+IMPEMEXPORT void density2particles(DensityMap &dmap, Float threshold,
+                                   Particles &ps, Model *m);
 
 
 //! Resample a set of particles into a density grid
