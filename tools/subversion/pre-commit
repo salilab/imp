@@ -8,6 +8,12 @@ import cpp_format
 
 svnlook = "/usr/bin/svnlook"
 
+def _check_do_not_commit(line, filename, num, errors):
+    marker = 'DO NOT' + ' COMMIT'
+    if line.find(marker) >= 0:
+        errors.append('%s:%d: Line contains the string "%s"' \
+                      % (filename, num+1, marker));
+
 def get_modified_files(txn, repos):
     """Get a list of all files modified or added in this transaction"""
     modfiles = []
@@ -32,8 +38,7 @@ def check_c_file(filename, txn, repos, errors):
                           % (filename, num+1))
         if line.find('\t') >= 0:
             errors.append('%s:%d: Line contains tabs.' % (filename, num+1))
-        if line.find('DO NOT COMMIT'):
-            errors.append('%s:%d: Line contains the string "DO NOT SUBMIT"'% (filename, num+1));
+        _check_do_not_commit(line, filename, num, errors)
         if srch.search(line):
             errors.append('%s:%d: Line has trailing whitespace' \
                           % (filename, num+1))
@@ -53,8 +58,7 @@ def check_python_file(filename, txn, repos, errors):
     cmd = [svnlook, 'cat', '-t', txn, repos, filename]
     temptest = re.compile('\s+def\s+temp_hide_test.*')
     for (num, line) in enumerate(Popen(cmd, shell=False, stdout=PIPE).stdout):
-        if line.find('DO NOT COMMIT'):
-            errors.append('%s:%d: Line contains the string "DO NOT SUBMIT"'% (filename, num+1));
+        _check_do_not_commit(line, filename, num, errors)
 
     p1 = Popen(cmd, shell=False, stdout=PIPE).stdout
     r = Reindenter(p1)
