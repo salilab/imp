@@ -21,23 +21,36 @@ StringKey node_name_key() {
 }
 
 void RestraintGraph::load_data(const JunctionTree &jt,Model *mdl) {
+
+  IMP_assert(jt.get_number_of_nodes()>0, "empty junction tree" << std::endl);
   initialize_graph(jt.get_number_of_nodes());
-  std::map<std::string, Particle *> p_map;
+  std::map<std::string, Particle*> p_map;
+  //a mapping between names and particles. Notice that the name
+  // is not the default particle one, but a string name attribute
   IMP_LOG(VERBOSE,"RestraintGraph::load_data with : " <<
                   mdl->get_number_of_particles() << " particles "<<std::endl);
   for (Model::ParticleIterator it = mdl->particles_begin();
          it != mdl->particles_end(); it++ ) {
     if ((*it)->has_attribute(node_name_key())) {
+      IMP_LOG(VERBOSE,"adding particle with key: " <<
+              (*it)->get_value(node_name_key())<<std::endl);
       p_map[(*it)->get_value(node_name_key())] = *it;
     }
   }
+  IMP_assert(p_map.size()>0,
+             "no node was assigned with name attribute" << std::endl);
+  std::cout<<"map size: " << p_map.size()<<std::endl;
   // load nodes
   for(int i=0;i<jt.get_number_of_nodes();i++) {
     Particles ps;
     for(int j=0;j<jt.get_number_of_components(i);j++) {
       std::string comp_name = jt.get_component_name(i,j);
-      IMP_assert(p_map.find(comp_name) != p_map.end(), "node with key : " <<
+      //TODO - talk with Ben about problems with this assert check!
+      IMP_assert(p_map.find(comp_name) != p_map.end(),
+                 "node with key : " <<
                  comp_name << " was not found" << std::endl);
+      IMP_LOG(VERBOSE,"comp: " << comp_name << " is mapped to : " <<
+              p_map[comp_name]->get_name()<<std::endl);
       ps.push_back(p_map[comp_name]);
     }
     add_node(i, ps);
@@ -184,7 +197,7 @@ void RestraintGraph::initialize_potentials(Restraint *r, Particles *ps,
                                            Float weight) {
   JNode *jn = get_node(*ps);
   if (jn == NULL) {
-    std::cerr << "PROBLEM - no node - the restraint : ";
+    std::cerr << "WARNING - no node - the restraint : ";
     r->show(std::cerr);
     std::cerr << " between particles: ";
     for (Particles::const_iterator ii = ps->begin();ii < ps->end();ii++) {
@@ -194,9 +207,10 @@ void RestraintGraph::initialize_potentials(Restraint *r, Particles *ps,
     std::cerr << " has not been realized." << std::endl;
   }
   else {
-    IMP_LOG(VERBOSE,"restraint : " );
-    IMP_LOG_WRITE(VERBOSE,r->show(IMP_STREAM));
-    IMP_LOG(VERBOSE,"is optimized by node with index : "<<jn->get_node_index());
+    IMP_LOG(TERSE,"restraint : " );
+    IMP_LOG_WRITE(TERSE,r->show(IMP_STREAM));
+    IMP_LOG(TERSE,"is realized by node with index : "<<
+                     jn->get_node_index()<<std::endl);
     jn->realize(r, ps, weight);
   }
 }
@@ -213,13 +227,13 @@ void RestraintGraph::dfs_order(unsigned int root_ind)
   // use std::sort to order the vertices by their discover time
   std::vector < size_type > discover_order(num_vertices(g_));
   boost::integer_range < size_type > r(0, num_vertices(g_));
-  discover_time.insert(discover_time.begin(), num_vertices(g_), 0);
+  discover_time_.insert(discover_time_.begin(), num_vertices(g_), 0);
   typedef size_type* Iiter;
   std::copy(r.begin(), r.end(), discover_order.begin());
   std::sort(discover_order.begin(), discover_order.end(),
             boost::indirect_cmp < Iiter, std::less < size_type > >(&dtime[0]));
   for (unsigned int i = 0; i < num_vertices(g_); ++i) {
-    discover_time[discover_order[i]] = i;
+    discover_time_[discover_order[i]] = i;
   }
 }
 
@@ -244,7 +258,7 @@ void  RestraintGraph::infer(unsigned int num_of_solutions)
       node_data_[root_]->find_minimum(false,num_of_solutions);
   IMP_assert(temp_min_combs->size()>0, "RestraintGraph::infer the number of"
              <<" minimum solutions is 0");
-  // distribute the minimu combinations and return the final full comb state.
+  // distribute the minimum combinations and return the final full comb state.
   CombState *min_comb;
   for(std::vector<CombState *>::iterator it =  temp_min_combs->begin();
       it != temp_min_combs->end(); it++) {
@@ -252,14 +266,15 @@ void  RestraintGraph::infer(unsigned int num_of_solutions)
     distribute_minimum(root_, min_comb);
     IMP_LOG(TERSE,"====MINIMUM COMBINATION number " <<
             it-temp_min_combs->begin()<<" : ============== " << std::endl);
-    IMP_LOG_WRITE(VERBOSE,min_comb->show(IMP_STREAM));
+    IMP_LOG_WRITE(TERSE,min_comb->show(IMP_STREAM));
     min_combs_->push_back(min_comb);
   }
   delete temp_min_combs;
   infered_ = true;
-  IMP_LOG(VERBOSE,"going to move to global minimum"<< std::endl);
+  IMP_LOG(VERBOSE,"RestraintGraph::going to move to global minimum"
+                  << std::endl);
   move_model2global_minimum();
-  IMP_LOG(VERBOSE,"the model is at his global minimum"<< std::endl);
+  IMP_LOG(VERBOSE,"the model is at its global minimum"<< std::endl);
 }
 
 void RestraintGraph::distribute_minimum(unsigned int father_ind,
@@ -274,9 +289,9 @@ void RestraintGraph::distribute_minimum(unsigned int father_ind,
   for (boost::graph_traits<Graph>::adjacency_iterator child_it = adj_first;
        child_it != adj_last;  child_it++) {
     IMP_LOG(VERBOSE,"discover time of father : (" << father_ind << ") is : "
-            << discover_time[father_ind] << " discover time of child (" <<
-            *child_it << ") is: " << discover_time[*child_it] << std::endl);
-    if (!(discover_time[*child_it] > discover_time[father_ind])) {
+            << discover_time_[father_ind] << " discover time of child (" <<
+            *child_it << ") is: " << discover_time_[*child_it] << std::endl);
+    if (!(discover_time_[*child_it] > discover_time_[father_ind])) {
       continue;
     }
     JNode *child_data = node_data_[*child_it];
@@ -305,14 +320,14 @@ void RestraintGraph::distribute_minimum(unsigned int father_ind,
 
 unsigned int RestraintGraph::collect_evidence(unsigned int father_ind)
 {
-  //go over all of the childs and collect evidence
+  //go over all of the children and collect evidence
   boost::graph_traits<Graph>::adjacency_iterator adj_first, adj_last;
   boost::tie(adj_first, adj_last) = adjacent_vertices(father_ind, g_);
   for (boost::graph_traits<Graph>::adjacency_iterator child_it = adj_first;
        child_it != adj_last;  child_it++) {
     // if the child appears before the father in the dfs doscovery order,
     //continue
-    if (discover_time[*child_it] <= discover_time[father_ind]) {
+    if (discover_time_[*child_it] <= discover_time_[father_ind]) {
       continue;
     }
     update(father_ind, collect_evidence(*child_it));
@@ -328,7 +343,7 @@ void RestraintGraph::distribute_evidence(unsigned int father_ind)
        child_it != adj_last; child_it++) {
     // if the child appears before the father in the dfs doscovery
     //order, continue
-    if (!(discover_time[*child_it] < discover_time[father_ind])) {
+    if (!(discover_time_[*child_it] < discover_time_[father_ind])) {
       continue;
     }
     update(*child_it, father_ind);
@@ -342,12 +357,11 @@ void RestraintGraph::update(unsigned int w, unsigned int v)
                   <<v<< std::endl);
   // update node with index w  based on node with index: v
   // check if there is an edge between w and v
-  std::stringstream error_message;
-  error_message << " RestraintGraph::update the nodes with indexes : "
-                << w << " and " << v
-                << " are not neighbors. Can not perform the update" ;
   IMP_assert(edge_data_.find(get_edge_key(w, v)) != edge_data_.end(),
-             error_message.str());
+             " RestraintGraph::update the nodes with indexes : "
+             << w << " and " << v
+             << " are not neighbors. Can not perform the update"
+             <<std::endl);
   JNode *w_data = node_data_[w];
   JNode *v_data = node_data_[v];
   //minimize over all sub-configurations in  v that do not involve the w
