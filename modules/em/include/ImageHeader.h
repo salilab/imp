@@ -153,6 +153,12 @@ public:
   //! Prints a reduced set of information (debugging purposes)
   void print_hard(std::ostream& out) const;
 
+  //! Shows only the projection parameters
+  inline void show_projection_params(std::ostream& out) const {
+    out << "(Phi,Theta,Psi) = ( " << header_.fPhi << " , " << header_.fTheta
+        << " , " << header_.fPsi << " ) " << " (y,x) = ( " << header_.fYoff
+        << " , " << header_.fXoff << " ) " <<  std::endl;
+  }
 
   //! Reads the header of a EM image
   // \note reversed is only used in case that the type_check is skipped
