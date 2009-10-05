@@ -19,6 +19,16 @@
 IMPDOMINO_BEGIN_NAMESPACE
 
 //! Stores a junction tree
+/**
+\note A junction tree T of an arbitrary graph G is a tree decomposition that has
+these three properties:
+ 1. singly connected: there is exactly one path between each pair of subsets.
+ 2. covering: for each clique A of G there is some subset C such that A ⊆ C.
+ 3. running intersection: for each pair of clusters B and C that contain i,
+    each cluster on the unique path between B and C also contains i.
+ Further reading:
+ Jordan (1999) Learning in graphical models
+ */
 class IMPDOMINOEXPORT JunctionTree {
 public:
   typedef boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS>
@@ -57,6 +67,16 @@ public:
               "input component index is out of range",ValueException);
     return data_[vi][ci];
   }
+
+  void set_component_name(int vi,int ci,const std::string &name)  {
+    IMP_check(static_cast<unsigned int>(vi) < boost::num_vertices(g_),
+              "input node index (" << vi << ") is out of range ("
+              << boost::num_vertices(g_) <<")" <<std::endl,ValueException);
+    IMP_check(ci < get_number_of_components(vi),
+              "input component index is out of range",ValueException);
+    data_[vi][ci]=name;
+  }
+
   int get_number_of_nodes() const {return boost::num_vertices(g_);}
   void add_component_to_node(int vi, const std::string &name) {
      data_[vi].push_back(name);}
@@ -73,7 +93,6 @@ protected:
   Graph g_;
   NodeData data_;
 };
-
 
 
 IMPDOMINOEXPORT void read_junction_tree(

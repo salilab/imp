@@ -55,7 +55,7 @@ void read_junction_tree(const std::string &filename, JunctionTree *jt) {
                    boost::lexical_cast<int>(ls[1]));
       }
       else {
-        IMP_WARN("edge line was not parsed: ");
+        IMP_WARN("edge line was not parsed: "<<line<<std::endl);
       }
     }
   }
