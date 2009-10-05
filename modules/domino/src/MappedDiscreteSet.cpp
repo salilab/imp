@@ -22,11 +22,11 @@ MappedDiscreteSet::MappedDiscreteSet(Particles *ps_target,
     states_map_[*it] = std::vector<Particle *>();
   }
 }
-void MappedDiscreteSet::add_mapped_state(Particle* p_target,Particle *p_src)
+void MappedDiscreteSet::add_mapped_state(Particle* sampled_p,Particle *state)
 {
-  IMP_assert(states_map_.find(p_target) != states_map_.end(),
+  IMP_assert(states_map_.find(sampled_p) != states_map_.end(),
      "The model particle is not part of the mapping particles.");
-  states_map_[p_target].push_back(p_src);
+  states_map_[sampled_p].push_back(state);
 }
 
 long MappedDiscreteSet::get_number_of_mapped_states(Particle *p_target) const
@@ -36,11 +36,10 @@ long MappedDiscreteSet::get_number_of_mapped_states(Particle *p_target) const
 
 Particle * MappedDiscreteSet::get_mapped_state(Particle *p_target,
                                                long state_ind) const {
-  std::stringstream err_msg;
-  err_msg <<"MappedDiscreteSet::get_mapped_state the input state index: ";
-  err_msg << state_ind << " is out of range ( " << states_.size() << " ) ";
   IMP_assert(static_cast<unsigned int>(state_ind)
-             <states_map_.find(p_target)->second.size(),err_msg.str());
+        <states_map_.find(p_target)->second.size(),
+        "MappedDiscreteSet::get_mapped_state the input state index: "
+        << state_ind << " is out of range ( " << states_.size() << " ) ");
   return (states_map_.find(p_target)->second)[state_ind];
 }
 
@@ -58,13 +57,14 @@ Float MappedDiscreteSet::get_mapped_state_val(Particle* p_target,
 }
 
 void MappedDiscreteSet::show(std::ostream& out) const {
-  out<<"MappedDiscreteSet::show number of states : ";
-  out<<get_number_of_states()<<std::endl;
   for(std::map<Particle*, std::vector<Particle *> >::const_iterator
       it1 = states_map_.begin(); it1 != states_map_.end(); it1++) {
-    out << "states for : ";
-    it1->first->show(out);
-    out << " :: " << std::endl;
+    out << "There are " << get_number_of_mapped_states(it1->first)
+        << " states for : "<< it1->first->get_name()<<"  :: " << std::endl;
+    for(std::vector<Particle *> ::const_iterator
+      it2 = it1->second.begin(); it2 != it1->second.end(); it2++) {
+      (*it2)->show(out);
+    }
   }
 }
 IMPDOMINO_END_NAMESPACE
