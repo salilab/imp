@@ -1,14 +1,17 @@
 /** \page recent Change History
 
+\par Week of October 1
+- .cpp, .h, .py and SConscript files which contain the string "DO NOT COMMIT" will be rejected on checkin. Use this to make experimental or debugging changes you are making so you don't accidentally commit them.
+
 \par Week of September 27
 
-- Some support for gather statistics has been added to Model (see IMP::Model::set_gather_statistics()). If requested, an API can be provided so that the individual data points can be returned to programs.
+- Some support for gather statistics has been added to IMP::Model (see IMP::Model::set_gather_statistics()). If requested, an API can be provided so that the individual data points can be returned to programs.
 
 - A class IMP::core::RigidBodyDistancePairScore has been added which provides accelerated computations for the distance between two rigid bodies.
 
 - The swig input files were renamed from swig.i to swig.i-in to aid in dependency tracking.
 
-- rigid bodies now have two sets of particles associated with them in the various places they are used. One is the members, as was previously the case. Functions that use rigid bodies now take a IMP::Refiner to define the other set, which is the set of particles used as the representation for the rigid body. This can be the IMP::core::RigidMembersRefiner to use all rigid members, but could also be some alternative definition (for example if you want to have coordinates associated with residues or domains in a rigid protein). 
+- rigid bodies now have two sets of particles associated with them in the various places they are used. One is the IMP::core::RigidBodyMember particles, as was previously the case. The other is defined through a refiner (and could be the RigidBodyMember particles if a IMP::core::RigidMembersRefiner is used). The idea is that you sometimes want some particles which are transformed along with the rigid body, but which are not really part of the representation of the rigid body. Examples would include marker points or multiresolution representations of proteins.
 
 \par Week of September 20
 
