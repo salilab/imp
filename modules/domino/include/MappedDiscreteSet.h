@@ -39,8 +39,10 @@ public:
   //! Add a new state to the set.
   /** \exception if the new state does not have values for all of the
                  attributes of the set.
+      \param[in] sampled_p The sampled particle
+      \param[in] state     A state the sampled particle can have.
    */
-  void add_mapped_state(Particle* p_taret,Particle *p_src);
+  void add_mapped_state(Particle* sampled_p,Particle *state);
   //! Get a state
   /**
     \param[in] state_ind the index of the state
@@ -67,8 +69,8 @@ public:
 
 protected:
   std::map<Particle *, std::vector<Particle *> > states_map_;
-    // mapping between target partices to states
-  //  std::map<Particle *, Particle *> states_map_rev_;
+   // mapping between target partices to states
+   //  std::map<Particle *, Particle *> states_map_rev_;
 };
 
 IMPDOMINO_END_NAMESPACE
