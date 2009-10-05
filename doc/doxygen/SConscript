@@ -8,6 +8,9 @@ def run_doxygen(target, source, env):
     env.Execute("doxygen "+source[0].abspath)
 
 
+def make_output(nodes):
+    return "     "+"\\\n     ".join(['"'+x.abspath+'"' for x in nodes])
+
 # Generate doxygen.conf from doxygen.conf.in
 def generate_doxygen(target, source, env):
     print "generatind doxygen conf"
@@ -35,14 +38,11 @@ def generate_doxygen(target, source, env):
                 print >> sys.stderr, "Warning, do not know what to do with the file "+ str(s)
     for line in infile:
         if '@IMP_IMAGES@' in line:
-            for s in images:
-                outfile.write("     \""+s.abspath + "\"\\\n")
+            outfile.write(make_output(images))
         elif '@INPUTS@' in line:
-            for s in inputs:
-                outfile.write("     \""+s.abspath + "\"\\\n")
+            outfile.write(make_output(inputs))
         elif '@IMP_EXAMPLES@' in line:
-            for s in examples:
-                outfile.write("     \""+s.abspath + "\"\\\n")
+            outfile.write(make_output(examples))
         elif '@IMP_SOURCE_PATH@' in line:
             outfile.write(line.replace('@IMP_SOURCE_PATH@', source_path))
         elif '@IMP_TARGET_PATH@' in line:
