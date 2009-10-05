@@ -13,7 +13,9 @@
 #include "utility.h"
 #include "Vector2D.h"
 #include "Matrix2D.h"
+#include "IMP/constants.h"
 #include <cmath>
+#include <stdlib.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -94,6 +96,11 @@ private:
 //! Builds an identity rotation in 2D
 inline Rotation2D identity_rotation2D() {
   return Rotation2D(0.0);
+};
+
+//! Builds an identity rotation in 2D
+inline Rotation2D random_rotation2D() {
+  return Rotation2D(2*PI*((double)rand() /((double)RAND_MAX+1)));
 };
 
 
