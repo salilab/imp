@@ -130,10 +130,11 @@ public:
     IMP_assert(infered_, err_msg.str());
     return (*(min_combs_->begin()))->get_total_score();
   }
+
   void clear();
-  //! Get an optimal combination of states
+  //! Get the i'th best combination
   /**
-  \param[in] i the number of best combinations.
+  \param[in] i the i'th best combination
   \exception if no combinations have been infered or if i is out of range.
   \return the i'th best combination
    */
@@ -207,7 +208,7 @@ protected:
   std::map<int, int> particle2node; //for quick graph building
   std::vector<int> node2particle;
   //inference support data structures
-  std::vector<unsigned int> discover_time;
+  std::vector<unsigned int> discover_time_;
   // discover_order[i] , the discover time of node number i
   unsigned int root_;
   bool infered_;
