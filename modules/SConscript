@@ -1,7 +1,6 @@
 Import('env')
 
 # modules must be listed after modules that use them
-# DO NOT SUBMIT
 cppmodules=['algebra',
             'core',
             'atom',
@@ -12,6 +11,8 @@ cppmodules=['algebra',
             'misc',
             'saxs',
             'helper',
+            'search',
+            'statistics',
             'benchmark']
 pymodules=['modeller']
 
@@ -21,8 +22,7 @@ for p in cppmodules:
 for p in pymodules:
     SConscript(p+"/SConscript")
 
-if False:
-# env.get('localmodules', False):
+if env.get('localmodules', False):
     import os.path
 
     dirs= Glob("*/SConscript")
