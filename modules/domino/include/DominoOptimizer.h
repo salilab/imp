@@ -26,6 +26,13 @@ class IMPDOMINOEXPORT DominoOptimizer : public Optimizer
 {
   typedef boost::tuple<Restraint *,Particles,Float> OptTuple;
 public:
+  //! Constructor
+  /**
+  \param[in] jt A special type of tree decomposition that holds the
+                graph on which inference will be run
+  \param[in] m  The model
+   */
+  //TODO - add here much more!
   DominoOptimizer(const JunctionTree &jt, Model *m);
   IMP_OPTIMIZER(DominoOptimizer, get_module_version_info())
 
@@ -54,10 +61,11 @@ public:
   To support hierarchy, some time the particles of the restraint are a
   refined set of the particles represented in the restraint graph.
   In this function the user set the particles of the restraint (as interpert
-  by the restraint graph). It is up to the use to make sure that pl represent a
-  coarser set of particles than the ones actually used in the restraint.
+  by the restraint graph). It is up to the user to make sure that ps represents
+  a coarser set of particles than the ones actually used in the restraint.
    */
-  void add_restraint(Restraint *r,Particles ps);
+  void add_restraint(Restraint *r,Particles ps,float weight=1.);
+
 protected:
   //! Recursivly add restraints
   /*
@@ -82,7 +90,6 @@ protected:
    */
   void add_jt_edge(int node1_ind, int node2_ind);
 
-  //  void realize_rec(IMP::core::RestraintSet *rs, Float weight);
   void initialize_jt_graph(int number_of_nodes);
   DiscreteSampler *ds_;
   RestraintGraph *g_;

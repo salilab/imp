@@ -43,6 +43,9 @@ void DominoOptimizer::set_sampling_space(DiscreteSampler *ds)
     w = boost::get<2>(*it);
     g_->initialize_potentials(r,&ps,w);
   }
+  IMP_LOG(VERBOSE,"DominoOptimizer::set_sampling_space after potential"
+          << " initialization"<<std::endl);
+  IMP_LOG_WRITE(VERBOSE,g_->show());
 }
 
 void DominoOptimizer::initialize_jt_graph(int number_of_nodes)
@@ -96,12 +99,16 @@ void DominoOptimizer::add_restraint_recursive(Restraint *rs, Float weight)
 {
   core::RestraintSet *rs_set = dynamic_cast<core::RestraintSet*>(rs);
    if (rs_set) {
+     IMP_LOG(VERBOSE,"adding a restraint set"<<std::endl);
      for (Model::RestraintIterator it = rs_set->restraints_begin();
           it != rs_set->restraints_end(); it++) {
        add_restraint_recursive(*it, weight*rs_set->get_weight());
      }
    }
    else {
+     IMP_LOG(VERBOSE,"adding a single restraint " << std::endl);
+     IMP_LOG(VERBOSE,"number of interacting particles is :"
+             <<rs->get_interacting_particles().size()<<std::endl);
      IMP_check(rs->get_interacting_particles().size()==1,
                "DominoOptimizer::add_restraint_recursive dose not support"
                <<" lists with more than one set of particles for a single "
@@ -114,7 +121,7 @@ void DominoOptimizer::add_restraint_recursive(Restraint *rs, Float weight)
 void DominoOptimizer::add_restraint(Restraint *r) {
   add_restraint_recursive(r,1.0);
 }
-void DominoOptimizer::add_restraint(Restraint *r,Particles ps) {
-  rs_.push_back(OptTuple(r,ps,1.0));
+void DominoOptimizer::add_restraint(Restraint *r,Particles ps,float weight) {
+  rs_.push_back(OptTuple(r,ps,weight));
 }
 IMPDOMINO_END_NAMESPACE
