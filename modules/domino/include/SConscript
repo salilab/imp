@@ -1,6 +1,7 @@
 Import('env')
 
 files = [
+         'Transformation.h',
          'JunctionTree.h',
          'CartesianProductSampler.h',
          'CombState.h',

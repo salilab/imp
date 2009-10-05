@@ -1,6 +1,7 @@
 Import('env')
 
 files = [
+         'Transformation.cpp',
          'JunctionTree.cpp',
          'CartesianProductSampler.cpp',
          'CombState.cpp',
