@@ -33,7 +33,7 @@ public:
   //! Create the distance restraint.
   /** \param[in] score_func Scoring function for the restraint.
       \param[in] a Pointer to first particle in distance restraint.
-      \param[in] a Pointer to second particle in distance restraint.
+      \param[in] b Pointer to second particle in distance restraint.
    */
   DistanceRestraint(UnaryFunction* score_func,
                     Particle *a, Particle *b);
