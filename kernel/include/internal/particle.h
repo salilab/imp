@@ -67,7 +67,11 @@ struct ParticleKeyIterator {
 
 
 struct ParticleStorage {
-  ParticleStorage(): shadow_(NULL), dirty_(false){}
+  ParticleStorage(): shadow_(NULL), dirty_(false){
+#ifndef IMP_NDEBUG
+    read_locked_=false;
+#endif
+  }
   ~ParticleStorage(){
     if (shadow_) internal::unref(shadow_);
   }
@@ -104,6 +108,11 @@ struct ParticleStorage {
 
   // incremental updates
   bool dirty_;
+
+#ifndef IMP_NDEBUG
+  // for testing get_used_particles()
+  bool read_locked_;
+#endif
 };
 
 IMP_END_INTERNAL_NAMESPACE

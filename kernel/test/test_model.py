@@ -11,6 +11,8 @@ class DummyRestraint(IMP.Restraint):
         fh.write("DummyRestraint")
     def get_version_info(self):
         return IMP.VersionInfo("Me", "0.5")
+    def get_used_particles(self):
+        return IMP.ParticlesTemp()
 
 class CustomError(Exception):
     pass
@@ -23,6 +25,8 @@ class FailingRestraint(IMP.Restraint):
         fh.write("FailingRestraint")
     def get_version_info(self):
         return IMP.VersionInfo("Me", "0.5")
+    def get_used_particles(self):
+        return IMP.ParticlesTemp()
 
 class DummyScoreState(IMP.ScoreState):
     """Dummy do-nothing score state"""
@@ -32,6 +36,8 @@ class DummyScoreState(IMP.ScoreState):
         fh.write("DummyScoreState")
     def get_version_info(self):
         return IMP.VersionInfo("Me", "0.5")
+    def get_used_particles(self):
+        return IMP.ParticlesTemp()
 
 class ClassScoreState(IMP.ScoreState):
     """Score state that shows the filehandle class"""
@@ -42,6 +48,8 @@ class ClassScoreState(IMP.ScoreState):
         fh.write("; ")
     def get_version_info(self):
         return IMP.VersionInfo("Me", "0.5")
+    def get_used_particles(self):
+        return IMP.ParticlesTemp()
 
 class ModelTests(IMP.test.TestCase):
     def test_state_show(self):

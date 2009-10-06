@@ -32,6 +32,8 @@ class WoodsFunc(IMP.Restraint):
             #for (i, d) in zip(self.indices, dx):
             #    accum.add_to_deriv(i, d)
         return e
+    def get_used_particles(self):
+        return IMP.ParticlesTemp([x for x in self.get_model().get_particles()])
 
 class CGOptimizerTests(IMP.test.TestCase):
     def test_cg_woods_func(self):

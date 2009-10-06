@@ -22,6 +22,8 @@ class DummyRestraint(IMP.Restraint):
         fh.write("DummyRestraint")
     def get_version_info(self):
         return IMP.VersionInfo("Me", "0.5")
+    def get_used_particles(self):
+        return IMP.ParticlesTemp(1,self.p)
 
 
 class DummyIncrementalRestraint(IMP.Restraint):
@@ -56,6 +58,8 @@ class DummyIncrementalRestraint(IMP.Restraint):
         fh.write("DummyRestraint")
     def get_version_info(self):
         return IMP.VersionInfo("Me", "0.5")
+    def get_used_particles(self):
+        return IMP.ParticlesTemp(1,self.p)
 
 
 class ModelTests(IMP.test.TestCase):

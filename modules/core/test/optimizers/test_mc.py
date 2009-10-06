@@ -30,6 +30,8 @@ class WoodsFunc(IMP.Restraint):
         return IMP.VersionInfo("Daniel Russel", "0.5")
     def show(self, fh):
         fh.write("WoodsFunc")
+    def get_used_particles(self):
+        return IMP.ParticlesTemp([x for x in self.get_model().get_particles()])
 
 class MCOptimizerTest(IMP.test.TestCase):
     def setUp(self):
