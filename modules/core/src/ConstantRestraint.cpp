@@ -19,6 +19,17 @@ ConstantRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   return v_;
 }
 
+
+ParticlesList ConstantRestraint::get_interacting_particles() const
+{
+  return ParticlesList();
+}
+
+
+ParticlesTemp ConstantRestraint::get_used_particles() const
+{
+  return ParticlesTemp();
+}
 void ConstantRestraint::show(std::ostream& out) const
 {
   out << "Constant restraint :" << v_ << std::endl;

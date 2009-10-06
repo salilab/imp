@@ -37,11 +37,6 @@ public:
                  XYZ p0, XYZ p1, XYZ p2);
 
   IMP_RESTRAINT(AngleRestraint, get_module_version_info())
-
-  ParticlesList get_interacting_particles() const
-  {
-    return ParticlesList(1, Particles(p_, p_+3));
-  }
 protected:
   Pointer<AngleTripletScore> sf_;
   RefCountingDecorator<XYZ> p_[3];

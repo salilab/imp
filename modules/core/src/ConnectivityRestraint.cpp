@@ -132,12 +132,26 @@ ParticlesList ConnectivityRestraint::get_interacting_particles() const {
   ParticlePairs pps= get_connected_pairs();
   ParticlesList pl(pps.size());
   for (unsigned int i=0; i< pps.size(); ++i) {
-    ParticlesTemp pt(2);
-    pt[0]= pps[i][0];
-    pt[1]= pps[i][1];
+    pl[i]= get_union(ps_->get_interacting_particles(pps[i][0],
+                                                    pps[i][1]));
   }
   return pl;
 }
+
+ParticlesTemp ConnectivityRestraint::get_used_particles() const {
+  ParticlesTemp ret;
+  for (unsigned int i=0; i< get_number_of_particles(); ++i) {
+    for (unsigned int j=0; j<i; ++j) {
+      ParticlesTemp cs= ps_->get_used_particles(get_particle(i),
+                                                get_particle(j));
+      ret.insert(ret.end(), cs.begin(), cs.end());
+      ret.push_back(get_particle(i));
+      ret.push_back(get_particle(j));
+    }
+  }
+  return ret;
+}
+
 
 
 void ConnectivityRestraint::show(std::ostream& out) const

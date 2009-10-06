@@ -82,15 +82,13 @@ void DiameterRestraint::show(std::ostream &out) const {
 }
 
 ParticlesList DiameterRestraint::get_interacting_particles() const {
-  ParticlesList ret;
-  for (SingletonContainer::ParticleIterator pit= sc_->particles_begin();
-       pit != sc_->particles_end(); ++pit) {
-    Particles ps(2);
-    ps.set(0, p_);
-    ps.set(1,*pit);
-    ret.push_back(ps);
-  }
-  return ret;
+  return ParticlesList(1, get_used_particles());
+}
+
+ParticlesTemp DiameterRestraint::get_used_particles() const {
+  ParticlesTemp t(sc_->particles_begin(), sc_->particles_end());
+  t.push_back(p_);
+  return t;
 }
 
 IMPCORE_END_NAMESPACE

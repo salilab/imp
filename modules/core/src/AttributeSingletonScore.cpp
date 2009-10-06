@@ -38,4 +38,14 @@ void AttributeSingletonScore::show(std::ostream &out) const
   out << " on " << k_;
 }
 
+ParticlesList
+AttributeSingletonScore::get_interacting_particles(Particle*) const {
+  return ParticlesList();
+}
+
+ParticlesTemp
+AttributeSingletonScore::get_used_particles(Particle* p) const {
+  return ParticlesTemp(1, p);
+}
+
 IMPCORE_END_NAMESPACE

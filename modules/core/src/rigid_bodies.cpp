@@ -26,6 +26,22 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 IMPCORE_END_INTERNAL_NAMESPACE
 IMPCORE_BEGIN_NAMESPACE
 
+namespace {
+  ParticlesTemp get_rigid_body_used_particles(Particle *p) {
+    RigidBody b(p);
+    ParticlesTemp ret(1+b.get_number_of_members());
+    ret[0]=p;
+    for (unsigned int i=0; i< b.get_number_of_members(); ++i) {
+      ret[i+1]= b.get_member(i);
+    }
+    return ret;
+  }
+
+  ParticlesList get_rigid_body_interacting_particles(Particle *p) {
+    return ParticlesList(1, get_rigid_body_used_particles(p));
+  }
+}
+
 typedef IMP::algebra::internal::TNT::Array2D<double> Matrix;
 
 Matrix compute_I(const std::vector<RigidMember> &ds,
@@ -316,6 +332,16 @@ void UpdateRigidBodyOrientation::apply(Particle *p) const {
 }
 
 
+ParticlesList
+UpdateRigidBodyOrientation::get_interacting_particles(Particle *p) const {
+  return get_rigid_body_interacting_particles(p);
+}
+
+ParticlesTemp
+UpdateRigidBodyOrientation::get_used_particles(Particle *p) const {
+  return get_rigid_body_used_particles(p);
+}
+
 
 void UpdateRigidBodyOrientation::show(std::ostream &out) const {
   out << "RigidBodyUpdateSingletonModifier " << std::endl;
@@ -365,6 +391,15 @@ void AccumulateRigidBodyDerivatives::apply(Particle *p,
 }
 
 
+ParticlesList
+AccumulateRigidBodyDerivatives::get_interacting_particles(Particle *p) const {
+  return get_rigid_body_interacting_particles(p);
+}
+
+ParticlesTemp
+AccumulateRigidBodyDerivatives::get_used_particles(Particle *p) const {
+  return get_rigid_body_used_particles(p);
+}
 
 void AccumulateRigidBodyDerivatives
 ::show(std::ostream &out) const {
@@ -381,7 +416,15 @@ void UpdateRigidBodyMembers::apply(Particle *p) const {
   }
 }
 
+ParticlesList
+UpdateRigidBodyMembers::get_interacting_particles(Particle *p) const {
+  return get_rigid_body_interacting_particles(p);
+}
 
+ParticlesTemp
+UpdateRigidBodyMembers::get_used_particles(Particle *p) const {
+  return get_rigid_body_used_particles(p);
+}
 
 void UpdateRigidBodyMembers
 ::show(std::ostream &out) const {

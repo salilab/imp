@@ -114,6 +114,16 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   return score;
 }
 
+ParticlesList FitRestraint::get_interacting_particles() const
+{
+  return ParticlesList(1, get_used_particles());
+}
+
+ParticlesTemp FitRestraint::get_used_particles() const
+{
+  return ParticlesTemp(particles_begin(), particles_end());
+}
+
 void FitRestraint::show(std::ostream& out) const
 {
   // TODO - add implementation

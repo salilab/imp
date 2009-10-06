@@ -23,6 +23,20 @@ void CoverBond::apply(Particle *p) const {
   r.set_radius((r.get_coordinates()- ea.get_coordinates()).get_magnitude());
 }
 
+ParticlesList CoverBond::get_interacting_particles(Particle *p) const {
+  return ParticlesList(1, get_used_particles(p));
+}
+
+ParticlesTemp CoverBond::get_used_particles(Particle *p) const {
+  Bond bd(p);
+  ParticlesTemp ret(3);
+  ret[0]=p;
+  ret[1]= bd.get_bonded(0);
+  ret[2]= bd.get_bonded(1);
+  return ret;
+}
+
+
 
 void CoverBond::show(std::ostream &out) const {
   out << "CoverBond" << std::endl;

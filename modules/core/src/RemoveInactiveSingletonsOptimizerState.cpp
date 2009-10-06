@@ -11,6 +11,7 @@
  */
 
 #include "IMP/core/RemoveInactiveSingletonsOptimizerState.h"
+#include "IMP/internal/container_helpers.h"
 #include <utility>
 
 IMPCORE_BEGIN_NAMESPACE

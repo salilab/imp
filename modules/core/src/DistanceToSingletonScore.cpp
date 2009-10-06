@@ -41,6 +41,16 @@ Float DistanceToSingletonScore::evaluate(Particle *b,
   return v;
 }
 
+ParticlesList
+DistanceToSingletonScore::get_interacting_particles(Particle *) const {
+  return ParticlesList();
+}
+
+ParticlesTemp
+DistanceToSingletonScore::get_used_particles(Particle* p) const {
+  return ParticlesTemp(1, p);
+}
+
 void DistanceToSingletonScore::show(std::ostream &out) const
 {
   out << "DistanceToSingletonScore using ";

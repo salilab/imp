@@ -28,6 +28,15 @@ void Transform::apply(Particle *p) const
   XYZ xyz = XYZ(p);
   xyz.set_coordinates(t_.transform(xyz.get_coordinates()));
 }
+
+ParticlesList Transform::get_interacting_particles(Particle *) const {
+  return ParticlesList();
+}
+
+ParticlesTemp Transform::get_used_particles(Particle *p) const {
+  return ParticlesTemp(1,p);
+}
+
 void Transform::show(std::ostream &out) const
 {
   out<<"TransformParticle :";

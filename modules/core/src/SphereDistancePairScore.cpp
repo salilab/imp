@@ -46,6 +46,21 @@ Float SphereDistancePairScore::evaluate(Particle *a, Particle *b,
                                                 boost::lambda::_1-(ra+rb));
 }
 
+ParticlesList
+SphereDistancePairScore::get_interacting_particles(Particle *a,
+                                                   Particle *b) const {
+  return ParticlesList(1, get_used_particles(a,b));
+}
+
+ParticlesTemp SphereDistancePairScore::get_used_particles(Particle *a,
+                                                          Particle *b) const {
+  ParticlesTemp ret(2);
+  ret[0]=a;
+  ret[1]=b;
+  return ret;
+}
+
+
 void SphereDistancePairScore::show(std::ostream &out) const
 {
   out << "SphereDistancePairScore using ";
@@ -83,6 +98,22 @@ Float NormalizedSphereDistancePairScore::evaluate(Particle *a, Particle *b,
                                                 da, f_.get(),
                                          boost::lambda::_1/mr-(ra+rb)/mr);
 }
+
+ParticlesList
+NormalizedSphereDistancePairScore::get_interacting_particles(Particle *a,
+                                                       Particle *b) const {
+  return ParticlesList(1, get_used_particles(a,b));
+}
+
+ParticlesTemp
+NormalizedSphereDistancePairScore::get_used_particles(Particle *a,
+                                                      Particle *b) const {
+  ParticlesTemp ret(2);
+  ret[0]=a;
+  ret[1]=b;
+  return ret;
+}
+
 
 void NormalizedSphereDistancePairScore::show(std::ostream &out) const
 {

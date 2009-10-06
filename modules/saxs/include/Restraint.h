@@ -47,12 +47,6 @@ class IMPSAXSEXPORT Restraint : public IMP::Restraint
 
   IMP_RESTRAINT(Restraint, get_module_version_info())
 
-  //only needed in domino
-  ParticlesList get_interacting_particles() const
-  {
-    return ParticlesList(1, Particles(particles_.begin(), particles_.end()));
-  }
-
  private:
   void compute_profile(Profile& model_profile);
  private:

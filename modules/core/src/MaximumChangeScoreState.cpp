@@ -7,7 +7,7 @@
 
 
 #include <IMP/core/MaximumChangeScoreState.h>
-
+#include "IMP/SingletonModifier.h"
 #include <IMP/internal/utility.h>
 
 #include <algorithm>
@@ -26,16 +26,15 @@ namespace {
                                                                 keys_(keys){
       i_=0;
     }
-    IMP_SINGLETON_MODIFIER(RecordValues, get_module_version_info())
-  };
-  void RecordValues::apply(Particle *p) const {
+    IMP_INTERNAL_SINGLETON_MODIFIER(RecordValues, get_module_version_info(),
+                                    {
     values_[i_].resize(keys_.size());
     for (unsigned int i=0; i< keys_.size(); ++i) {
       values_[i_][i]= p->get_value(keys_[i]);
     }
     ++i_;
-  }
-  void RecordValues::show(std::ostream &out) const{}
+  })
+  };
 
   class CompareValues:public SingletonModifier {
     std::vector<Floats> &values_;
@@ -49,17 +48,17 @@ namespace {
       change_=0;
       i_=0;
     }
-    IMP_SINGLETON_MODIFIER(CompareValues, get_module_version_info());
+    IMP_INTERNAL_SINGLETON_MODIFIER(CompareValues, get_module_version_info(),
+                                    {
+                                      for (unsigned int i=0;
+                                           i< keys_.size(); ++i) {
+                                        change_= std::max(change_,
+                           std::abs(values_[i_][i]-p->get_value(keys_[i])));
+                                      }
+                                      ++i_;
+                                    });
     double get_change() const {return change_;}
   };
-  void CompareValues::show(std::ostream &out) const{}
-  void CompareValues::apply(Particle *p) const {
-    for (unsigned int i=0; i< keys_.size(); ++i) {
-      change_= std::max(change_,
-                        std::abs(values_[i_][i]-p->get_value(keys_[i])));
-    }
-    ++i_;
-  }
 }
 
 MaximumChangeScoreState::MaximumChangeScoreState(SingletonContainer *pc,
@@ -99,6 +98,10 @@ void MaximumChangeScoreState::reset()
 
 ParticlesList MaximumChangeScoreState::get_interacting_particles() const {
   return ParticlesList();
+}
+
+ParticlesTemp MaximumChangeScoreState::get_used_particles() const {
+  return ParticlesTemp(pc_->particles_begin(), pc_->particles_end());
 }
 
 void MaximumChangeScoreState::show(std::ostream &out) const

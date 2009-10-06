@@ -40,8 +40,6 @@ public:
                      std::string name="PairRestraint %1%");
 
   IMP_RESTRAINT(PairRestraint, get_module_version_info());
-
-  virtual ParticlesList get_interacting_particles() const;
 };
 
 IMPCORE_END_NAMESPACE

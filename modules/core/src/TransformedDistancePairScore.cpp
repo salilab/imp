@@ -61,6 +61,23 @@ Float TransformedDistancePairScore::evaluate(Particle *a, Particle *b,
 }
 
 
+
+ParticlesList
+TransformedDistancePairScore::get_interacting_particles(Particle *a,
+                                                        Particle *b) const {
+  return ParticlesList(1, get_used_particles(a,b));
+}
+
+ParticlesTemp
+TransformedDistancePairScore::get_used_particles(Particle *a,
+                                                 Particle *b) const {
+  ParticlesTemp ret(2);
+  ret[0]=a;
+  ret[1]=b;
+  return ret;
+}
+
+
 void TransformedDistancePairScore::set_transformation(
                                          const algebra::Transformation3D &t)
 {

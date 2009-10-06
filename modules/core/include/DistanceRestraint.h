@@ -41,11 +41,6 @@ public:
   DistanceRestraint(UnaryFunction *score_func,
                     XYZ a, XYZ b);
 
-  ParticlesList get_interacting_particles() const {
-    ParticlesList ret(1,Particles(p_, p_+2));
-    return ret;
-  }
-
   IMP_RESTRAINT(DistanceRestraint, get_module_version_info())
 
 private:

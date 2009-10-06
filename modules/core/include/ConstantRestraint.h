@@ -29,11 +29,6 @@ public:
   ConstantRestraint(Float v);
 
   IMP_RESTRAINT(ConstantRestraint, get_module_version_info())
-
-  ParticlesList get_interacting_particles() const
-  {
-    return ParticlesList();
-  }
 };
 
 IMPCORE_END_NAMESPACE

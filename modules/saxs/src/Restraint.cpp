@@ -36,6 +36,18 @@ Restraint::Restraint(const Particles& particles, const Profile& exp_profile,
           << " atom particles " << rigid_bodies_.size() << " rigid bodies\n");
 }
 
+ParticlesList Restraint::get_interacting_particles() const
+{
+  return ParticlesList(1, get_used_particles());
+}
+
+ParticlesTemp Restraint::get_used_particles() const
+{
+  return ParticlesTemp(particles_.begin(), particles_.end());
+}
+
+
+
 void Restraint::compute_profile(Profile& model_profile) {
   // add non-changing profile
   model_profile.add(rigid_bodies_profile_);

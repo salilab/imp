@@ -43,6 +43,14 @@ DistanceRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 }
 
 
+ParticlesList DistanceRestraint::get_interacting_particles() const {
+  return dp_->get_interacting_particles(p_[0], p_[1]);
+}
+
+ParticlesTemp DistanceRestraint::get_used_particles() const {
+  return dp_->get_used_particles(p_[0], p_[1]);
+}
+
 //! Show the current restraint.
 /** \param[in] out Stream to send restraint description to.
  */

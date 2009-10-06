@@ -9,6 +9,8 @@
  */
 
 #include "IMP/core/ListPairContainer.h"
+#include "IMP/PairModifier.h"
+#include "IMP/PairScore.h"
 #include <algorithm>
 
 

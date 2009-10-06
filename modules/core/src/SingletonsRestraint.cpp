@@ -51,21 +51,15 @@ double SingletonsRestraint
 ParticlesList SingletonsRestraint::get_interacting_particles() const
 {
   IMP_OBJECT_LOG;
-  if (!IMP::internal::ContainerTraits<Particle>::is_singleton) {
-    ParticlesList ret;
-    for (SingletonContainer::ParticleIterator it
-           = pc_->particles_begin();
-         it != pc_->particles_end(); ++it) {
-      ParticlesTemp pt=IMP::internal
-        ::ContainerTraits<Particle>::create_set(*it);
-      if (!pt.empty()) {
-        ret.push_back(pt);
-      }
-    }
-    return ret;
-  } else {
-    return ParticlesList();
-  }
+  ParticlesList ret0= IMP::internal::get_interacting_particles(pc_, ss_.get());
+  return ret0;
+}
+
+ParticlesTemp SingletonsRestraint::get_used_particles() const
+{
+  IMP_OBJECT_LOG;
+  ParticlesTemp ret0= IMP::internal::get_used_particles(pc_, ss_.get());
+  return ret0;
 }
 
 namespace {

@@ -81,14 +81,14 @@ void ExampleComplexRestraint::show(std::ostream &out) const {
 }
 
 ParticlesList ExampleComplexRestraint::get_interacting_particles() const {
-  ParticlesList ret;
-  for (SingletonContainer::ParticleIterator pit= sc_->particles_begin();
-       pit != sc_->particles_end(); ++pit) {
-    Particles ps(2);
-    ps.set(0,p_);
-    ps.set(1,*pit);
-    ret.push_back(ps);
-  }
+  return ParticlesList(1, get_used_particles());
+}
+
+
+ParticlesTemp ExampleComplexRestraint::get_used_particles() const {
+  ParticlesTemp ret(sc_->particles_begin(),
+                    sc_->particles_end());
+  ret.push_back(p_);
   return ret;
 }
 

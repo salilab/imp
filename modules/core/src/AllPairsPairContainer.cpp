@@ -9,6 +9,7 @@
  */
 
 #include "IMP/core/AllPairsPairContainer.h"
+#include <IMP/PairModifier.h>
 #include <algorithm>
 
 

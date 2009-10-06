@@ -35,6 +35,17 @@ void CoverRefined::apply(Particle *p) const
   dp.set_radius(dp.get_radius()+slack_);
 }
 
+ParticlesList CoverRefined::get_interacting_particles(Particle*p) const {
+  return ParticlesList(1, get_used_particles(p));
+}
+
+ParticlesTemp CoverRefined::get_used_particles(Particle*p) const {
+  ParticlesTemp t(1, p);
+  ParticlesTemp ps = ref_->get_refined(p);
+  t.insert(t.end(), ps.begin(), ps.end());
+  return t;
+}
+
 void CoverRefined::show(std::ostream &out) const
 {
   out << "CoverRefined with "

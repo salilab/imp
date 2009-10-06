@@ -11,6 +11,7 @@
  */
 
 #include "IMP/core/PairsScoreState.h"
+#include "IMP/internal/container_helpers.h"
 #include <utility>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -48,8 +49,18 @@ void PairsScoreState::do_after_evaluate(DerivativeAccumulator *da)
 }
 
 ParticlesList PairsScoreState::get_interacting_particles() const {
-  IMP_failure("not implemented", ErrorException);
-  return ParticlesList();
+  ParticlesList ret0= IMP::internal::get_interacting_particles(c_, f_.get());
+  ParticlesList ret1= IMP::internal::get_interacting_particles(c_, af_.get());
+  ret0.insert(ret0.end(), ret1.begin(), ret1.end());
+  return ret0;
+}
+
+
+ParticlesTemp PairsScoreState::get_used_particles() const {
+  ParticlesTemp ret0= IMP::internal::get_used_particles(c_, f_.get());
+  ParticlesTemp ret1= IMP::internal::get_used_particles(c_, af_.get());
+  ret0.insert(ret0.end(), ret1.begin(), ret1.end());
+  return ret0;
 }
 
 void PairsScoreState::show(std::ostream &out) const {

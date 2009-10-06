@@ -14,6 +14,7 @@
 #include <IMP/PairContainer.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/display/geometry.h>
+#include <IMP/PairScore.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
 

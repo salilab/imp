@@ -10,6 +10,7 @@
 
 #include "IMP/SingletonContainer.h"
 #include "IMP/internal/utility.h"
+#include "IMP/SingletonModifier.h"
 
 IMP_BEGIN_NAMESPACE
 

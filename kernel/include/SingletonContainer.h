@@ -12,7 +12,6 @@
 
 #include "config.h"
 #include "internal/IndexingIterator.h"
-#include "internal/container_helpers.h"
 #include "Particle.h"
 #include "utility.h"
 #include "VersionInfo.h"
@@ -20,11 +19,12 @@
 #include "Pointer.h"
 #include "VectorOfRefCounted.h"
 #include "VersionInfo.h"
-#include "SingletonModifier.h"
-#include "SingletonScore.h"
 #include "DerivativeAccumulator.h"
 
 IMP_BEGIN_NAMESPACE
+class SingletonModifier;
+class SingletonScore;
+
 
 //! A shared container for particles
 /** Stores a searchable shared collection of particles.

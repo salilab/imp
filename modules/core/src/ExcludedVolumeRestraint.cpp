@@ -87,4 +87,8 @@ ParticlesList ExcludedVolumeRestraint::get_interacting_particles() const {
   return pr_->get_interacting_particles();
 }
 
+ParticlesTemp ExcludedVolumeRestraint::get_used_particles() const {
+  return pr_->get_used_particles();
+}
+
 IMPCORE_END_NAMESPACE

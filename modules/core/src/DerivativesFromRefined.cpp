@@ -13,7 +13,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 DerivativesFromRefined
 ::DerivativesFromRefined(Refiner *r,
-                                          FloatKeys ks): r_(r), ks_(ks)
+                         FloatKeys ks): r_(r), ks_(ks)
 {
 }
 
@@ -31,6 +31,22 @@ void DerivativesFromRefined
     }
   }
 }
+
+
+ParticlesList
+DerivativesFromRefined::get_interacting_particles(Particle*p) const {
+  return ParticlesList(1, get_used_particles(p));
+}
+
+
+ParticlesTemp
+DerivativesFromRefined::get_used_particles(Particle*p) const {
+  ParticlesTemp t(1, p);
+  ParticlesTemp ps = r_->get_refined(p);
+  t.insert(t.end(), ps.begin(), ps.end());
+  return t;
+}
+
 
 void DerivativesFromRefined::show(std::ostream &out) const
 {

@@ -9,6 +9,7 @@
 #include <IMP/core/MaximumChangeXYZRScoreState.h>
 #include <IMP/core/XYZR.h>
 #include <IMP/internal/utility.h>
+#include <IMP/SingletonModifier.h>
 
 #include <algorithm>
 #include <sstream>
@@ -26,22 +27,18 @@ namespace {
                     FloatKey rk): values_(values), rk_(rk){
       i_=0;
     }
-    IMP_SINGLETON_MODIFIER(RecordXYZValues,get_module_version_info())
+    IMP_INTERNAL_SINGLETON_MODIFIER(RecordXYZValues,get_module_version_info(),
+                                    {   if (rk_!=FloatKey()) {
+                                        XYZR d(p, rk_);
+                                        values_[i_]= d.get_sphere();
+                                      } else {
+                                        XYZ d(p);
+                                        values_[i_]
+                                = algebra::Sphere3D(d.get_coordinates(),
+                                                              0);
+                                      }
+                                      ++i_;})
   };
-  void RecordXYZValues::apply(Particle *p) const {
-     if (rk_!=FloatKey()) {
-       XYZR d(p, rk_);
-       values_[i_]= d.get_sphere();
-     } else {
-       XYZ d(p);
-       values_[i_]
-         = algebra::Sphere3D(d.get_coordinates(),
-                             0);
-     }
-     ++i_;
-  }
-  void RecordXYZValues::show(std::ostream &out) const {
-  }
 
   class CompareXYZValues:public SingletonModifier {
     std::vector<algebra::Sphere3D> &values_;
@@ -55,28 +52,29 @@ namespace {
       i_=0;
     }
     double get_change() const {return change_;}
-    IMP_SINGLETON_MODIFIER(CompareXYZValues,get_module_version_info());
+    IMP_INTERNAL_SINGLETON_MODIFIER(CompareXYZValues,get_module_version_info(),
+                                    {
+                                      XYZ d(p);
+                                      double lchange
+                                        =std::abs(d.get_coordinate(0)
+                                              - values_[i_].get_center()[0]);
+                                      for (unsigned int i=1; i< 3; ++i) {
+                                        lchange
+                                          = std::max(lchange,
+                                           std::abs(d.get_coordinate(i)
+                                             - values_[i_].get_center()[i]));
+                                      }
+                                      if (rk_!= FloatKey()) {
+                                        XYZR d(p, rk_);
+                                        change_=std::max(change_,
+                                                         lchange
+                      +std::abs(values_[i_].get_radius()-d.get_radius()));
+                                      } else {
+                                        change_= std::max(change_, lchange);
+                                      }
+                                      ++i_;
+                                    });
   };
-  void CompareXYZValues::apply(Particle *p) const {
-    XYZ d(p);
-    double lchange=std::abs(d.get_coordinate(0)
-                            - values_[i_].get_center()[0]);
-    for (unsigned int i=1; i< 3; ++i) {
-      lchange= std::max(lchange,
-                        std::abs(d.get_coordinate(i)
-                                 - values_[i_].get_center()[i]));
-    }
-    if (rk_!= FloatKey()) {
-      XYZR d(p, rk_);
-      change_=std::max(change_,
-                       lchange
-                       +std::abs(values_[i_].get_radius()-d.get_radius()));
-    } else {
-      change_= std::max(change_, lchange);
-    }
-    ++i_;
-  }
-  void CompareXYZValues::show(std::ostream &out)const{}
 }
 
 MaximumChangeXYZRScoreState::MaximumChangeXYZRScoreState(SingletonContainer *pc,
@@ -121,6 +119,10 @@ void MaximumChangeXYZRScoreState::reset()
 
 ParticlesList MaximumChangeXYZRScoreState::get_interacting_particles() const {
   return ParticlesList();
+}
+
+ParticlesTemp MaximumChangeXYZRScoreState::get_used_particles() const {
+  return ParticlesTemp(pc_->particles_begin(), pc_->particles_end());
 }
 
 void MaximumChangeXYZRScoreState::show(std::ostream &out) const

@@ -36,6 +36,15 @@ double AngleRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
                        accum);
 }
 
+ParticlesList AngleRestraint::get_interacting_particles() const
+{
+  return ParticlesList(1, get_used_particles());
+}
+
+ParticlesTemp AngleRestraint::get_used_particles() const
+{
+  return ParticlesTemp(p_, p_+3);
+}
 
 void AngleRestraint::show(std::ostream& out) const
 {

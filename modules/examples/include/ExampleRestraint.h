@@ -13,6 +13,7 @@
 #include <IMP/SingletonScore.h>
 #include <IMP/Restraint.h>
 #include <IMP/PairContainer.h>
+#include <IMP/PairScore.h>
 
 IMPEXAMPLES_BEGIN_NAMESPACE
 
@@ -48,11 +49,6 @@ public:
   /** This macro declares the basic needed methods: evaluate and show
    */
   IMP_RESTRAINT(ExampleRestraint, get_module_version_info());
-
-  /** Return the list of interacting sets of particles defined
-      by this restraint. In this case, it is the list of
-      pairs stored in the passed PairContainer. */
-  ParticlesList get_interacting_particles() const;
 };
 
 IMPEXAMPLES_END_NAMESPACE

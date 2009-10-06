@@ -26,7 +26,7 @@ ks_(ks), w_(weight)
 
 void CentroidOfRefined::apply(Particle *p) const
 {
-  Particles ps = r_->get_refined(p);
+  ParticlesTemp ps = r_->get_refined(p);
   unsigned int n= ps.size();
   double tw=0;
   if (w_ != FloatKey()) {
@@ -50,6 +50,18 @@ void CentroidOfRefined::apply(Particle *p) const
     p->set_value(ks_[j], v);
   }
 }
+
+ParticlesList CentroidOfRefined::get_interacting_particles(Particle*p) const {
+  return ParticlesList(1, get_used_particles(p));
+}
+
+ParticlesTemp CentroidOfRefined::get_used_particles(Particle*p) const {
+  ParticlesTemp t(1, p);
+  ParticlesTemp ps = r_->get_refined(p);
+  t.insert(t.end(), ps.begin(), ps.end());
+  return t;
+}
+
 
 void CentroidOfRefined::show(std::ostream &out) const
 {

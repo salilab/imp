@@ -77,13 +77,19 @@ ParticlesList MinimumPairScoreRestraint::get_interacting_particles() const
                              c_->particle_pairs_end(), f_.get(), n_);
   ParticlesList ret;
   for (unsigned int i=0; i< bestn.size(); ++i) {
-    ParticlesTemp pt=IMP::internal
-      ::ContainerTraits<ParticlePair>::create_set(*bestn[i].second);
+    ParticlesList pt=IMP::internal::get_interacting_particles(*bestn[i].second,
+                                                              f_.get());
     if (!pt.empty()) {
-      ret.push_back(pt);
+      ret.push_back(get_union(pt));
     }
   }
 
   return ret;
+}
+
+
+ParticlesTemp MinimumPairScoreRestraint::get_used_particles() const
+{
+  return IMP::internal::get_used_particles(c_, f_.get());
 }
 IMPCORE_END_NAMESPACE

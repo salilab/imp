@@ -10,6 +10,7 @@
 
 #include "IMP/PairContainer.h"
 #include "IMP/internal/utility.h"
+#include "IMP/PairModifier.h"
 
 IMP_BEGIN_NAMESPACE
 
