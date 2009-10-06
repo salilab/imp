@@ -42,7 +42,6 @@ IMP_BEGIN_NAMESPACE
 class IMPEXPORT Object: public RefCounted
 {
   // hide the inheritance from RefCounted as it is a detail
-  LogLevel log_level_;
   std::string name_;
 protected:
   IMP_NO_DOXYGEN(Object());
@@ -52,7 +51,11 @@ public:
 #ifndef IMP_DOXYGEN
   // Return whether the object already been freed
   bool get_is_valid() const {
+#ifdef IMP_NDEBUG
+    return true;
+#else
     return check_value_==111111111;
+#endif
   }
 #endif
 
@@ -68,10 +71,20 @@ public:
   void set_log_level(LogLevel l) {
     IMP_check(l <= MEMORY && l >= DEFAULT, "Setting to invalid log level "
               << l, ValueException);
+#ifndef IMP_NDEBUG
     log_level_=l;
+#endif
   }
 
-  IMP_NO_DOXYGEN(LogLevel get_log_level() const { return log_level_;});
+#ifndef IMP_DOXYGEN
+  LogLevel get_log_level() const {
+#ifdef IMP_NDEBUG
+      return SILENT;
+#else
+      return log_level_;
+#endif
+  }
+#endif
 
   //! Print out one or more lines of text describing the object
   virtual void show(std::ostream &out=std::cout) const=0;
@@ -113,10 +126,10 @@ private:
   Object(const Object &o) {}
   const Object& operator=(const Object &o) {return *this;}
 
-  /* Do not use IMP_NDEBUG to remove check_value_ as that changes the memory
-   layout and causes bad things to happen. It should get wrapped in some
-   sort of macro later. */
+#ifndef IMP_NDEBUG
+  LogLevel log_level_;
   double check_value_;
+#endif
 };
 
 #if !defined(IMP_DOXYGEN) && !defined(IMP_SWIG)
