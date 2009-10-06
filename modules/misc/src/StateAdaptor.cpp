@@ -28,4 +28,8 @@ void StateAdaptor::do_after_evaluate(DerivativeAccumulator*) {
 }
 
 
+ParticlesList StateAdaptor::get_interacting_particles() const {
+  return ParticlesList();
+}
+
 IMPMISC_END_NAMESPACE

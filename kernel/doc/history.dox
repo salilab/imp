@@ -3,6 +3,10 @@
 \par Week of October 1
 - .cpp, .h, .py and SConscript files which contain the string "DO NOT COMMIT" will be rejected on checkin. Use this to make experimental or debugging changes you are making so you don't accidentally commit them.
 
+- The search module is no longer built by default and is not longer supported. It will get moved out of svn shortly.
+
+- IMP::ScoreState objects now also have IMP::Interacting::get_interacting_particles() methods. Soon IMP::PairScore and IMP::SingletonScore objects will too.
+
 \par Week of September 27
 
 - Some support for gather statistics has been added to IMP::Model (see IMP::Model::set_gather_statistics()). If requested, an API can be provided so that the individual data points can be returned to programs.

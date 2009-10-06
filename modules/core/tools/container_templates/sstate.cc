@@ -49,6 +49,11 @@ void GroupnameScoreState::do_after_evaluate(DerivativeAccumulator *da)
   IMP_LOG(TERSE, "End GroupnamesScoreState::after_evaluate" << std::endl);
 }
 
+ParticlesList GroupnameScoreState::get_interacting_particles() const {
+  IMP_failure("not implemented", ErrorException);
+  return ParticlesList();
+}
+
 void GroupnameScoreState::show(std::ostream &out) const {
   out << "GroupnameScoreState with ";
   if (f_) out << *f_;

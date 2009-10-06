@@ -4,6 +4,7 @@ files = [
          'Decorator.h',
          'DerivativeAccumulator.h',
          'FailureHandler.h',
+         'Interaction.h',
          'Key.h',
          'Model.h',
          'Object.h',

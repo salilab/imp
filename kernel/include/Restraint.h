@@ -18,6 +18,7 @@
 #include "log.h"
 #include "utility.h"
 #include "container_macros.h"
+#include "Interaction.h"
 
 #include <vector>
 #include <iostream>
@@ -25,10 +26,6 @@
 
 IMP_BEGIN_NAMESPACE
 
-//! Sets of Particles
-/** This is primarily used for representing lists of interacting particles. The
-    particles in the list are not reference counted.*/
-typedef std::vector<ParticlesTemp> ParticlesList;
 
 class Model;
 
@@ -58,7 +55,8 @@ class Model;
     See the examples::ExampleRestraint  example for how to implement
     a simple restraint and see IMP_RESTRAINT().
  */
-class IMPEXPORT Restraint : public Object, public Ownable
+class IMPEXPORT Restraint : public Ownable,
+                            public Interaction
 {
 public:
   Restraint(std::string name="Restraint %1%");
@@ -122,18 +120,6 @@ public:
   bool get_is_part_of_model() const {
     return model_;
   }
-
-  //! Return a list of sets of particles that are restrained by this restraint
-  /** This function returns a list of sets of particles that are
-      interacting within this restraint. Particles can appear in more
-      than one set. However, if two particles never appear in the same
-      set, then changing one of the particles should not change the
-      derivatives of the other particle.
-
-      The default implementation returns a single set containing all
-      particles stored in this restraint.
-   */
-  virtual ParticlesList get_interacting_particles() const=0;
 
 #ifndef IMP_DOXYGEN
   virtual double

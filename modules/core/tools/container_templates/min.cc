@@ -46,7 +46,7 @@ namespace {
 }
 
 double MinimumGroupnameScoreRestraint
-::unsafe_evaluate(DerivativeAccumulator *da) const {
+::unprotected_evaluate(DerivativeAccumulator *da) const {
   MS bestn= find_minimal_set(c_->classnames_begin(),
                              c_->classnames_end(), f_.get(), n_);
 

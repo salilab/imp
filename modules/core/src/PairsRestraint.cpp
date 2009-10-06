@@ -37,7 +37,8 @@ PairsRestraint
 
 }
 
-double PairsRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
+double PairsRestraint
+::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(ss_);

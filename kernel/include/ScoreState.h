@@ -15,6 +15,7 @@
 #include "DerivativeAccumulator.h"
 #include "VersionInfo.h"
 #include "utility.h"
+#include "Interaction.h"
 
 #include <iostream>
 
@@ -58,7 +59,7 @@ class Model;
 
     Implementors should see IMP_SCORE_STATE().
  */
-class IMPEXPORT ScoreState : public Object, public Ownable
+class IMPEXPORT ScoreState : public Interaction, public Ownable
 {
   friend class Model;
   void set_model(Model* model);

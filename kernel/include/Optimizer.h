@@ -110,6 +110,9 @@ protected:
     FloatIndex(Model::ParticleConstIterator p): p_(p){}
   public:
     FloatIndex() {}
+    std::string get_string() const {
+      return (*p_)->get_name() + ": " + fk_->get_string();
+    }
   };
 
 

@@ -119,6 +119,10 @@ void MaximumChangeXYZRScoreState::reset()
   rev_=pc_->get_revision();
 }
 
+ParticlesList MaximumChangeXYZRScoreState::get_interacting_particles() const {
+  return ParticlesList();
+}
+
 void MaximumChangeXYZRScoreState::show(std::ostream &out) const
 {
   out << "MaximumChangeXYScoreState" << std::endl;

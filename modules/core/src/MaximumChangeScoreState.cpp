@@ -97,6 +97,10 @@ void MaximumChangeScoreState::reset()
   rev_=pc_->get_revision();
 }
 
+ParticlesList MaximumChangeScoreState::get_interacting_particles() const {
+  return ParticlesList();
+}
+
 void MaximumChangeScoreState::show(std::ostream &out) const
 {
   out << "MaximumChangeScoreState" << std::endl;
