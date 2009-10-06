@@ -13,6 +13,34 @@
 #include "IMP/DerivativeAccumulator.h"
 #include "IMP/ScoreState.h"
 #include <boost/timer.hpp>
+#include <set>
+
+#ifndef IMP_NDEBUG
+#define WRAP_CALL(restraint, expr)                                   \
+  {                                                                  \
+    std::set<Particle*> ips;                                         \
+    IMP_IF_CHECK(EXPENSIVE) {                                        \
+      ParticlesTemp pl= (restraint)->get_used_particles();           \
+      ips.insert(pl.begin(), pl.end());                              \
+      for (ParticleConstIterator pit = particles_begin();            \
+           pit != particles_end(); ++pit) {                          \
+        if (ips.find(*pit) == ips.end()) {                           \
+          (*pit)->ps_->read_locked_=true;                            \
+        }                                                            \
+      }                                                              \
+      expr;                                                          \
+      for (ParticleConstIterator pit = particles_begin();            \
+           pit != particles_end(); ++pit) {                          \
+        (*pit)->ps_->read_locked_=false;                             \
+      }                                                              \
+    } else {                                                         \
+      expr;                                                          \
+    }                                                                \
+  }
+#else
+#define WRAP_CALL(restraint, expr) expr
+#endif
+
 
 IMP_BEGIN_NAMESPACE
 
@@ -114,7 +142,7 @@ void Model::before_evaluate() const {
     IMP_CHECK_OBJECT(*it);
     IMP_LOG(TERSE, "Updating " << (*it)->get_name() << std::endl);
     if (gather_statistics_) timer.restart();
-    (*it)->before_evaluate(iteration_);
+    WRAP_CALL(*it, (*it)->before_evaluate(iteration_));
     if (gather_statistics_) {
       stats_data_[*it].update_state_before(timer.elapsed());
     }
@@ -134,7 +162,8 @@ void Model::after_evaluate(bool calc_derivs) const {
     IMP_CHECK_OBJECT(*it);
     IMP_LOG(TERSE, "Updating " << (*it)->get_name() << std::endl);
     if (gather_statistics_) timer.restart();
-    (*it)->after_evaluate(iteration_, (calc_derivs ? &accum : NULL));
+    WRAP_CALL(*it, (*it)->after_evaluate(iteration_,
+                                         (calc_derivs ? &accum : NULL)));
     if (gather_statistics_) {
       stats_data_[*it].update_state_after(timer.elapsed());
     }
@@ -189,10 +218,12 @@ double Model::do_evaluate_restraints(bool calc_derivs,
     if ((*it)->get_is_incremental()
         && incremental_restraints != NONINCREMENTAL) {
       if (incremental_evaluation) {
-        value=(*it)->incremental_evaluate(calc_derivs? &accum:NULL);
+        WRAP_CALL(*it,
+                  value=(*it)->incremental_evaluate(calc_derivs? &accum:NULL));
         IMP_LOG(TERSE, (*it)->get_name() << " score is " << value << std::endl);
       } else {
-        value=(*it)->evaluate(calc_derivs? &accum:NULL);
+        WRAP_CALL(*it,
+                  value=(*it)->evaluate(calc_derivs? &accum:NULL));
         IMP_LOG(TERSE, (*it)->get_name() << " score is " << value << std::endl);
       }
       if (gather_statistics_) {
@@ -201,7 +232,8 @@ double Model::do_evaluate_restraints(bool calc_derivs,
       score+= value;
     } else if (!(*it)->get_is_incremental()
                && incremental_restraints != INCREMENTAL) {
-      value=(*it)->evaluate(calc_derivs? &accum:NULL);
+      WRAP_CALL(*it,
+                value=(*it)->evaluate(calc_derivs? &accum:NULL));
       IMP_LOG(TERSE, (*it)->get_name()<<  " score is " << value << std::endl);
       if (gather_statistics_) {
         stats_data_[*it].update_restraint(timer.elapsed(), value);

@@ -33,9 +33,19 @@
   }                                                             \
   else return ps_->floats_.func;
 
+
+#ifndef IMP_NDEBUG
 #define IMP_CHECK_ACTIVE                                                \
   IMP_check(get_is_active(), "Particle " << get_name() << " is inactive" \
-            , InactiveParticleException)
+            , InactiveParticleException);                               \
+  IMP_check(!ps_->read_locked_, "Particle " << get_name()               \
+            << " is not part of the set of used particles for the "     \
+            << "current restraint or score state.",                     \
+            InvalidStateException)
+#else
+#define IMP_CHECK_ACTIVE
+#endif
+
 #define IMP_CHECK_MUTABLE IMP_IF_CHECK(CHEAP) {assert_values_mutable();}
 #define IMP_CHECK_VALID_DERIVATIVES IMP_IF_CHECK(CHEAP) \
   {assert_valid_derivatives();}

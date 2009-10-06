@@ -36,6 +36,9 @@ IMP_BEGIN_NAMESPACE
 
     People implementing IMP::Object classes should also see IMP_OBJECT_LOG()
     and IMP::SetLogState.
+
+    All logging is disabled when \imp is built with IMP_NDEBUG or
+    (equivalently) \c build='fast'
     @{
  */
 
@@ -99,7 +102,7 @@ inline bool is_log_output(LogLevel l)
 #endif
 
 
-#ifndef IMP_DISABLE_LOGGING
+#ifndef IMP_NDEBUG
 
 
 //! Execute the code block if a certain level logging is on
