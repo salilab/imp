@@ -7,6 +7,8 @@
  */
 
 #include "IMP/atom/BondPairContainer.h"
+#include "IMP/PairModifier.h"
+#include "IMP/PairScore.h"
 
 IMPATOM_BEGIN_NAMESPACE
 

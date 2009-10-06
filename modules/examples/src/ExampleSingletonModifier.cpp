@@ -31,6 +31,18 @@ void ExampleSingletonModifier::apply(Particle *p) const {
   }
 }
 
+/* There are no interactions created by this modifier */
+ParticlesList
+ExampleSingletonModifier::get_interacting_particles(Particle *) const {
+  return ParticlesList();
+}
+
+/* Only the passed particle is used */
+ParticlesTemp
+ExampleSingletonModifier::get_used_particles(Particle *p) const {
+  return ParticlesTemp(1, p);
+}
+
 void ExampleSingletonModifier::show(std::ostream &out) const {
   out << "ExampleSingletonModifier" << std::endl;
 }

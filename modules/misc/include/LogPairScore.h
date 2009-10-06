@@ -58,6 +58,21 @@ inline Float LogPairScore::evaluate(Particle *a, Particle *b,
   return 0.;
 }
 
+inline ParticlesList
+LogPairScore::get_interacting_particles(Particle *a,
+                                        Particle *b) const {
+  return ParticlesList(1, get_used_particles(a,b));
+}
+
+inline ParticlesTemp LogPairScore::get_used_particles(Particle *a,
+                                                      Particle *b) const {
+  ParticlesTemp t(2);
+  t[0]= a;
+  t[1]= b;
+  return t;
+}
+
+
 IMPMISC_END_NAMESPACE
 
 #endif  /* IMPMISC_LOG_PAIR_SCORE_H */

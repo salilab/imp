@@ -44,8 +44,6 @@ public:
 
   //! Set the number of lowest scores to use.
   void set_n(unsigned int n) { n_=n;}
-
-  ParticlesList get_interacting_particles() const;
 };
 
 

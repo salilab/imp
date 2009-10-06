@@ -40,8 +40,6 @@ public:
                      std::string name="SingletonRestraint %1%");
 
   IMP_RESTRAINT(SingletonRestraint, get_module_version_info());
-
-  virtual ParticlesList get_interacting_particles() const;
 };
 
 IMPCORE_END_NAMESPACE

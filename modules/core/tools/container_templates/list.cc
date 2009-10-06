@@ -9,6 +9,8 @@
  */
 
 #include "IMP/core/ListGroupnameContainer.h"
+#include "IMP/GroupnameModifier.h"
+#include "IMP/GroupnameScore.h"
 #include <algorithm>
 
 

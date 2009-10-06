@@ -13,6 +13,7 @@
 #include "config.h"
 #include "internal/container_helpers.h"
 #include "DerivativeAccumulator.h"
+#include "Interaction.h"
 #include "base_types.h"
 #include "VectorOfRefCounted.h"
 
@@ -63,13 +64,14 @@ public:
                 << " DerivativeAccumulator.", InvalidStateException);
   }
 
-  /** Print out information about the function, ending in a newline.*/
-  virtual void show(std::ostream &out = std::cout) const=0;
+  /** Get the set of interactions induced by applying to the
+      argument.*/
+  virtual ParticlesList
+    get_interacting_particles(Particle *a) const =0;
 
-  /** return information about the authors */
-  virtual VersionInfo get_version_info() const = 0;
-
-  IMP_REF_COUNTED_DESTRUCTOR(SingletonModifier);
+  /** Get the set of particles used when applied to the arguments.*/
+  virtual ParticlesTemp
+    get_used_particles(Particle *a) const =0;
 };
 
 IMP_OUTPUT_OPERATOR(SingletonModifier)

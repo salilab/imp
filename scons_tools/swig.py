@@ -123,7 +123,7 @@ if get_module_version_info().get_version() != "%(version)s":
     open(target[0].abspath, "w").write("\n".join(preface))
 
 def _print_swig_file(target, source, env):
-    print "Generating swig preface "+str(target)
+    print "Generating swig interface "+str(target[0]) + " from " +str(source[0])
 
 SwigPreface = Builder(action=Action(_action_swig_file,
                                     _print_swig_file))
@@ -147,7 +147,7 @@ def _action_simple_swig(target, source, env):
     return env.Execute(command)
 
 def _print_simple_swig(target, source, env):
-    print "Generating swig file "+str(target[0])
+    print "Running swig on file "+str(source[0].path)
 
 SwigIt = Builder(action=Action(_action_simple_swig,
                                 _print_simple_swig))

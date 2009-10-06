@@ -9,6 +9,8 @@
  */
 
 #include "IMP/core/ListSingletonContainer.h"
+#include "IMP/SingletonModifier.h"
+#include "IMP/SingletonScore.h"
 #include <algorithm>
 
 

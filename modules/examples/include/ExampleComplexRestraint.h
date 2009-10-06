@@ -47,8 +47,6 @@ public:
 
   IMP_RESTRAINT(ExampleComplexRestraint, get_module_version_info());
 
-  virtual ParticlesList get_interacting_particles() const;
-
   void set_model(Model *m);
 };
 

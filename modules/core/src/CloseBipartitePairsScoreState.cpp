@@ -158,16 +158,12 @@ void CloseBipartitePairsScoreState
 
 
 ParticlesList CloseBipartitePairsScoreState::get_interacting_particles() const {
-  IMP_OBJECT_LOG;
-  ParticlesList ret;
-  for (ListPairContainer::ParticlePairConstIterator it
-         = out_->particle_pairs_begin();
-       it != out_->particle_pairs_end(); ++it) {
-    ParticlesTemp pt(2);
-    pt[0]= (*it)[0];
-    pt[1]= (*it)[1];
-    ret.push_back(pt);
-  }
+  return ParticlesList();
+}
+
+ParticlesTemp CloseBipartitePairsScoreState::get_used_particles() const {
+  ParticlesTemp ret(in_[0]->particles_begin(), in_[0]->particles_end());
+  ret.insert(ret.end(), in_[1]->particles_begin(), in_[1]->particles_end());
   return ret;
 }
 

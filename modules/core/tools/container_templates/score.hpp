@@ -12,7 +12,7 @@
 
 #include "config.h"
 #include "base_types.h"
-#include "RefCounted.h"
+#include "Interaction.h"
 #include "Particle.h"
 #include "DerivativeAccumulator.h"
 
@@ -36,6 +36,15 @@ public:
 
   virtual Float evaluate(const ClassnamesTemp &o,
                          DerivativeAccumulator *da) const = 0;
+
+  /** Get the set of interaction induced by applying to the
+      argument. */
+  virtual ParticlesList
+    get_interacting_particles(ClassnameArguments) const =0;
+
+  /** Get the set of particles used when applied to the arguments. */
+  virtual ParticlesTemp
+    get_used_particles(ClassnameArguments) const =0;
 
   IMP_REF_COUNTED_DESTRUCTOR(GroupnameScore)
 };

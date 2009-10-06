@@ -50,8 +50,17 @@ void SingletonScoreState::do_after_evaluate(DerivativeAccumulator *da)
 }
 
 ParticlesList SingletonScoreState::get_interacting_particles() const {
-  IMP_failure("not implemented", ErrorException);
-  return ParticlesList();
+  ParticlesList ret0= IMP::internal::get_interacting_particles(v_, f_.get());
+  ParticlesList ret1= IMP::internal::get_interacting_particles(v_, af_.get());
+  ret0.insert(ret0.end(), ret1.begin(), ret1.end());
+  return ret0;
+}
+
+ParticlesTemp SingletonScoreState::get_used_particles() const {
+  ParticlesTemp ret0= IMP::internal::get_used_particles(v_, f_.get());
+  ParticlesTemp ret1= IMP::internal::get_used_particles(v_, af_.get());
+  ret0.insert(ret0.end(), ret1.begin(), ret1.end());
+  return ret0;
 }
 
 void SingletonScoreState::show(std::ostream &out) const {

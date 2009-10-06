@@ -82,8 +82,6 @@ public:
     pc_=pc;
   }
 
-  virtual ParticlesList get_interacting_particles() const;
-
   SingletonScore* get_singleton_score() const {
     return ss_;
   }

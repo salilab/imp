@@ -43,15 +43,12 @@ SingletonRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 
 ParticlesList SingletonRestraint::get_interacting_particles() const
 {
-  IMP_OBJECT_LOG;
-  if (!IMP::internal::ContainerTraits<Particle>::is_singleton) {
-    ParticlesList ret;
-    ret.push_back(IMP::internal
-                  ::ContainerTraits<Particle>::create_set(v_));
-    return ret;
-  } else {
-    return ParticlesList();
-  }
+  return IMP::internal::get_interacting_particles(v_, ss_.get());
+}
+
+ParticlesTemp SingletonRestraint::get_used_particles() const
+{
+  return IMP::internal::get_used_particles(v_, ss_.get());
 }
 
 void SingletonRestraint::show(std::ostream& out) const

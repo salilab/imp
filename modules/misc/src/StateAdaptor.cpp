@@ -32,4 +32,9 @@ ParticlesList StateAdaptor::get_interacting_particles() const {
   return ParticlesList();
 }
 
+ParticlesTemp StateAdaptor::get_used_particles() const {
+  return ParticlesTemp(get_model()->particles_begin(),
+                       get_model()->particles_end());
+}
+
 IMPMISC_END_NAMESPACE

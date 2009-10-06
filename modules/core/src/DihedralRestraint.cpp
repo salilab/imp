@@ -109,6 +109,15 @@ DihedralRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 }
 
 
+ParticlesList DihedralRestraint::get_interacting_particles() const {
+  return ParticlesList(1, get_used_particles());
+}
+
+ParticlesTemp DihedralRestraint::get_used_particles() const {
+  ParticlesTemp ret(p_, p_+4);
+  return ret;
+}
+
 //! Show the current restraint.
 /** \param[in] out Stream to send restraint description to.
  */

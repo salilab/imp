@@ -53,11 +53,6 @@ public:
 
   IMP_RESTRAINT(FitRestraint, get_module_version_info())
 
-  ParticlesList get_interacting_particles() const
-  {
-    return ParticlesList(1, ParticlesTemp(particles_begin(), particles_end()));
-  }
-
   IMP_LIST(private, Particle, particle, Particle*, Particles)
 private:
     Pointer<DensityMap> target_dens_map_;

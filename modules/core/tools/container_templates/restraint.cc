@@ -51,21 +51,15 @@ double GroupnamesRestraint
 ParticlesList GroupnamesRestraint::get_interacting_particles() const
 {
   IMP_OBJECT_LOG;
-  if (!IMP::internal::ContainerTraits<Classname>::is_singleton) {
-    ParticlesList ret;
-    for (GroupnameContainer::ClassnameIterator it
-           = pc_->classnames_begin();
-         it != pc_->classnames_end(); ++it) {
-      ParticlesTemp pt=IMP::internal
-        ::ContainerTraits<Classname>::create_set(*it);
-      if (!pt.empty()) {
-        ret.push_back(pt);
-      }
-    }
-    return ret;
-  } else {
-    return ParticlesList();
-  }
+  ParticlesList ret0= IMP::internal::get_interacting_particles(pc_, ss_.get());
+  return ret0;
+}
+
+ParticlesTemp GroupnamesRestraint::get_used_particles() const
+{
+  IMP_OBJECT_LOG;
+  ParticlesTemp ret0= IMP::internal::get_used_particles(pc_, ss_.get());
+  return ret0;
 }
 
 namespace {

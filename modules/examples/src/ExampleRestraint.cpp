@@ -6,6 +6,7 @@
  */
 
 #include <IMP/examples/ExampleRestraint.h>
+#include <IMP/PairScore.h>
 #include <IMP/log.h>
 
 IMPEXAMPLES_BEGIN_NAMESPACE
@@ -27,18 +28,33 @@ ExampleRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   return score;
 }
 
-/* Return a list of interacting sets. In this case it is pairs
-   of particles so all the sets are of size 2. */
+/* Return a list of interacting sets. The PairScore defines
+   the interactions so defer to it.*/
 ParticlesList ExampleRestraint::get_interacting_particles() const
 {
   ParticlesList ret;
   for (PairContainer::ParticlePairIterator it
        = pc_->particle_pairs_begin();
        it != pc_->particle_pairs_end(); ++it) {
-    Particles s;
-    s.push_back(it->first);
-    s.push_back(it->second);
-    ret.push_back(s);
+    ParticlePair pp= *it;
+    ret.push_back(get_union(f_->get_interacting_particles(pp[0],
+                                                          pp[1])));
+  }
+  return ret;
+}
+
+/* We also need to know which particles are used (as some are
+   used, but don't create interactions. */
+ParticlesTemp ExampleRestraint::get_used_particles() const
+{
+  ParticlesTemp ret;
+  for (PairContainer::ParticlePairIterator it
+       = pc_->particle_pairs_begin();
+       it != pc_->particle_pairs_end(); ++it) {
+    ParticlePair pp= *it;
+    ParticlesTemp t= f_->get_used_particles(pp[0],
+                                            pp[1]);
+    ret.insert(ret.end(), t.begin(), t.end());
   }
   return ret;
 }

@@ -9,6 +9,7 @@
 #include "IMP/display/pair_geometry.h"
 #include <IMP/core/XYZ.h>
 #include <IMP/display/CylinderGeometry.h>
+#include <IMP/PairScore.h>
 
 
 IMPDISPLAY_BEGIN_NAMESPACE

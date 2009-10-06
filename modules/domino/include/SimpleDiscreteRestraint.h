@@ -30,10 +30,7 @@ public:
   SimpleDiscreteRestraint(Model& model_, std::string restraint_filename,
                           Particle *p1, Particle *p2);
   IMP_RESTRAINT(SimpleDiscreteRestraint, get_module_version_info())
-  ParticlesList get_interacting_particles() const
-  {
-    return ParticlesList(1, Particles(particles_begin(), particles_end()));
-  }
+
   IMP_LIST(private, Particle, particle, Particle*, Particles)
 protected:
   void load_restraints(std::string restraint_filename);

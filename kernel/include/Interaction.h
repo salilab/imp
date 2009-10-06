@@ -35,12 +35,24 @@ class Interaction: public Object
       than one set. However, if two particles never appear in the same
       set, then changing one of the particles should not change the
       derivatives of the other particle.
-
-      The default implementation returns a single set containing all
-      particles stored in this restraint.
    */
   virtual ParticlesList get_interacting_particles() const=0;
+
+  /** Return the list of particles that this object depends on.*/
+  virtual ParticlesTemp get_used_particles() const =0;
 };
+
+#ifndef IMP_DOXYGEN
+inline
+ParticlesTemp get_union(const ParticlesList &pl) {
+  ParticlesTemp ret=pl[0];
+  for (unsigned int i=1; i < pl.size(); ++i) {
+    ret.insert(ret.end(), pl[i].begin(), pl[i].end());
+  }
+  return ret;
+}
+#endif
+
 IMP_END_NAMESPACE
 
 #endif  /* IMP_INTERACTION_H */

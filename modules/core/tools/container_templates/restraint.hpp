@@ -82,8 +82,6 @@ public:
     pc_=pc;
   }
 
-  virtual ParticlesList get_interacting_particles() const;
-
   GroupnameScore* get_groupname_score() const {
     return ss_;
   }

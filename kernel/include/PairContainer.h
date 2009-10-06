@@ -12,7 +12,6 @@
 
 #include "config.h"
 #include "internal/IndexingIterator.h"
-#include "internal/container_helpers.h"
 #include "Particle.h"
 #include "utility.h"
 #include "VersionInfo.h"
@@ -20,11 +19,12 @@
 #include "Pointer.h"
 #include "VectorOfRefCounted.h"
 #include "VersionInfo.h"
-#include "PairModifier.h"
-#include "PairScore.h"
 #include "DerivativeAccumulator.h"
 
 IMP_BEGIN_NAMESPACE
+class PairModifier;
+class PairScore;
+
 
 //! A shared container for particle_pairs
 /** Stores a searchable shared collection of particle_pairs.

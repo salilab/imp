@@ -43,6 +43,21 @@ TypedPairScore::TypedPairScore(IntKey typekey, bool allow_invalid_types)
       : typekey_(typekey), score_map_(),
     allow_invalid_types_(allow_invalid_types) {}
 
+
+ParticlesList TypedPairScore::get_interacting_particles(Particle *a,
+                                                        Particle *b) const {
+  return ParticlesList(1, get_used_particles(a,b));
+}
+
+ParticlesTemp TypedPairScore::get_used_particles(Particle *a,
+                                                 Particle *b) const {
+  ParticlesTemp ret(2);
+  ret[0]=a;
+  ret[1]=b;
+  return ret;
+}
+
+
 void TypedPairScore::show(std::ostream &out) const
 {
   out << "TypedPairScore with type key " << typekey_;

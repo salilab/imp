@@ -52,6 +52,17 @@ double BoundingBox3DSingletonScore::evaluate(Particle *p,
   }
 }
 
+
+ParticlesList
+BoundingBox3DSingletonScore::get_interacting_particles(Particle*) const {
+  return ParticlesList();
+}
+
+ParticlesTemp
+BoundingBox3DSingletonScore::get_used_particles(Particle* p) const {
+  return ParticlesTemp(1, p);
+}
+
 void BoundingBox3DSingletonScore::show(std::ostream &out) const {
   out << "BoundingBox3DSingletonScore" << std::endl;
 }

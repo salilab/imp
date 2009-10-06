@@ -10,6 +10,7 @@
 
 #include "IMP/GroupnameContainer.h"
 #include "IMP/internal/utility.h"
+#include "IMP/GroupnameModifier.h"
 
 IMP_BEGIN_NAMESPACE
 
