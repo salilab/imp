@@ -22,7 +22,7 @@ def _action_link_test(target, source, env):
 """ % vars
 
         print >> cpp, """
-#ifndef NDEBUG
+#ifndef IMP_NDEBUG
 #include "%(module_include_path)s.h"
 #endif""" % vars
 
