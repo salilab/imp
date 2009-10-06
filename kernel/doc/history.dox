@@ -1,6 +1,8 @@
 /** \page recent Change History
 
 \par Week of October 1
+- IMP::ScoreState and IMP::Restraint now better track the set of particles that they use and the dependencies between the particles. To this end, a new base class IMP::Interaction has been added with methods to get the inter-particle interactions and the set of particles used.
+
 - .cpp, .h, .py and SConscript files which contain the string "DO NOT COMMIT" will be rejected on checkin. Use this to make experimental or debugging changes you are making so you don't accidentally commit them.
 
 - The search module is no longer built by default and is not longer supported. It will get moved out of svn shortly.
