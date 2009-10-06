@@ -57,6 +57,15 @@ void DistanceScore::apply(Particle *p) const {
   score_+= distance(d.get_coordinates(), v_);
 }
 
+ParticlesList DistanceScore::get_interacting_particles(Particle *p) const {
+  return ParticlesList();
+}
+
+ParticlesTemp DistanceScore::get_used_particles(Particle *p) const {
+  return ParticlesTemp();
+}
+
+
 #if 0
 double compute_distances_decorator_access(
                         PackedSingletonContainer *ps,
