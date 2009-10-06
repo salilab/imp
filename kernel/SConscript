@@ -10,6 +10,8 @@ if not env.get('deprecated', True):
     config.append('IMP_NO_DEPRECATED')
 if env['IMP_ENDIAN']=='little':
     config.append("IMP_LITTLE_ENDIAN")
+if env['build'] == 'fast':
+    config.append("IMP_NDEBUG")
 
 env.IMPModuleBuild(version='SVN', required_modules=None, config_macros=config,
                    module='kernel', module_suffix="", module_include_path="IMP",

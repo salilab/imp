@@ -113,7 +113,7 @@ private:
   Object(const Object &o) {}
   const Object& operator=(const Object &o) {return *this;}
 
-  /* Do not use NDEBUG to remove check_value_ as that changes the memory
+  /* Do not use IMP_NDEBUG to remove check_value_ as that changes the memory
    layout and causes bad things to happen. It should get wrapped in some
    sort of macro later. */
   double check_value_;
@@ -149,7 +149,7 @@ IMP_END_NAMESPACE
 
 #include "SetLogState.h"
 
-#ifndef NDEBUG
+#ifndef IMP_NDEBUG
 //! Set the log level to the objects log level.
 /** All non-trivial Object methods should start with this. It creates a
     RAII-style object which sets the log level to the local one,
