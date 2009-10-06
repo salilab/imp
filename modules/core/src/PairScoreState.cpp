@@ -49,6 +49,11 @@ void PairScoreState::do_after_evaluate(DerivativeAccumulator *da)
   IMP_LOG(TERSE, "End PairsScoreState::after_evaluate" << std::endl);
 }
 
+ParticlesList PairScoreState::get_interacting_particles() const {
+  IMP_failure("not implemented", ErrorException);
+  return ParticlesList();
+}
+
 void PairScoreState::show(std::ostream &out) const {
   out << "PairScoreState with ";
   if (f_) out << *f_;

@@ -168,6 +168,20 @@ void ClosePairsScoreState::do_before_evaluate()
 void ClosePairsScoreState::do_after_evaluate(DerivativeAccumulator*){
 }
 
+ParticlesList ClosePairsScoreState::get_interacting_particles() const {
+  IMP_OBJECT_LOG;
+  ParticlesList ret;
+  for (ListPairContainer::ParticlePairConstIterator it
+         = out_->particle_pairs_begin();
+       it != out_->particle_pairs_end(); ++it) {
+    ParticlesTemp pt(2);
+    pt[0]= (*it)[0];
+    pt[1]= (*it)[1];
+    ret.push_back(pt);
+  }
+  return ret;
+}
+
 
 void ClosePairsScoreState::show(std::ostream &out) const
 {

@@ -62,14 +62,6 @@ namespace IMP {
 }
 
 
-%extend IMP::Object {
-   std::string __str__() const {
-     std::ostringstream oss;
-     self->show(oss);
-     return oss.str();
-   }
-}
-
 namespace IMP {
   // special case since particles are ref counted
   %extend Model {
@@ -100,6 +92,7 @@ IMP_DIRECTOR_KERNEL_CLASS(SingletonContainer);
 IMP_DIRECTOR_KERNEL_CLASS(PairContainer);
 IMP_DIRECTOR_KERNEL_CLASS(SingletonModifier);
 IMP_DIRECTOR_KERNEL_CLASS(PairModifier);
+IMP_DIRECTOR_KERNEL_CLASS(Interaction);
 
 %include "IMP/utility.h"
 %include "IMP/Key.h"
@@ -127,6 +120,7 @@ namespace IMP {
 %include "IMP_particle.i"
 %include "IMP/Decorator.h"
 
+%include "IMP/Interaction.h"
 
 %include "IMP/UnaryFunction.h"
 %include "IMP_restraint.i"

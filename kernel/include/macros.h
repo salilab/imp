@@ -741,12 +741,14 @@ protection:                                                             \
 /** In addition to the methods done by all the macros, it declares
     - IMP::ScoreState::do_before_evaluate()
     - IMP::ScoreState::do_after_evaluate()
+    - IMP::Interaction::get_interacting_particles()
 */
-#define IMP_SCORE_STATE(Name, version_info)                              \
+#define IMP_SCORE_STATE(Name, version_info)                             \
 protected:                                                              \
  virtual void do_before_evaluate();                                     \
  virtual void do_after_evaluate(DerivativeAccumulator *da);             \
-  IMP_OBJECT(Name, version_info)
+ virtual ParticlesList get_interacting_particles() const;               \
+ IMP_OBJECT(Name, version_info)
 
 
 //! Define the basics needed for a particle refiner

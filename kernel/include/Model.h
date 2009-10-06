@@ -127,7 +127,7 @@ public:
       methods below to manipulate the list of ScoreState objects.
   */
   /**@{*/
-  IMP_LIST(public, ScoreState, score_state, ScoreState*, ScoreStates);
+  IMP_LIST(public, ScoreState, score_state, ScoreState*, ScoreStates)
   /**@}*/
 
   /** @name Restraints
@@ -171,8 +171,6 @@ public:
       debugging. These methods allow you to do that.
       \note Only use this if you really know what you are doing as
       Particles can be added to the object from many different places.
-      As a result, the list of Particles should only be used for
-      debugging.
    */
   /**@{*/
   unsigned int get_number_of_particles() const {

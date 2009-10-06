@@ -49,6 +49,11 @@ void SingletonScoreState::do_after_evaluate(DerivativeAccumulator *da)
   IMP_LOG(TERSE, "End SingletonsScoreState::after_evaluate" << std::endl);
 }
 
+ParticlesList SingletonScoreState::get_interacting_particles() const {
+  IMP_failure("not implemented", ErrorException);
+  return ParticlesList();
+}
+
 void SingletonScoreState::show(std::ostream &out) const {
   out << "SingletonScoreState with ";
   if (f_) out << *f_;
