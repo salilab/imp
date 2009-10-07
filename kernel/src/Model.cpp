@@ -16,26 +16,32 @@
 #include <set>
 
 #ifndef IMP_NDEBUG
-#define WRAP_CALL(restraint, expr)                                   \
-  {                                                                  \
-    std::set<Particle*> ips;                                         \
-    IMP_IF_CHECK(EXPENSIVE) {                                        \
-      ParticlesTemp pl= (restraint)->get_used_particles();           \
-      ips.insert(pl.begin(), pl.end());                              \
-      for (ParticleConstIterator pit = particles_begin();            \
-           pit != particles_end(); ++pit) {                          \
-        if (ips.find(*pit) == ips.end()) {                           \
-          (*pit)->ps_->read_locked_=true;                            \
-        }                                                            \
-      }                                                              \
-      expr;                                                          \
-      for (ParticleConstIterator pit = particles_begin();            \
-           pit != particles_end(); ++pit) {                          \
-        (*pit)->ps_->read_locked_=false;                             \
-      }                                                              \
-    } else {                                                         \
-      expr;                                                          \
-    }                                                                \
+#define WRAP_CALL(restraint, expr)                                      \
+  {                                                                     \
+  std::set<Particle*> ips;                                              \
+    IMP_IF_CHECK(EXPENSIVE) {                                           \
+      ParticlesTemp pl= (restraint)->get_used_particles();              \
+      ips.insert(pl.begin(), pl.end());                                 \
+      for (ParticleConstIterator pit = particles_begin();               \
+           pit != particles_end(); ++pit) {                             \
+        if (ips.find(*pit) == ips.end()) {                              \
+          (*pit)->ps_->read_locked_=true;                               \
+        }                                                               \
+      }                                                                 \
+      try {                                                             \
+        expr;                                                           \
+      } catch (const internal::LockedParticleException& e) {            \
+        IMP_ERROR("Particle " << e.p_->get_name()                       \
+                  << " is not in the used particles list of restraint " \
+                  << (*it)->get_name() << " but should be.");           \
+      }                                                                 \
+      for (ParticleConstIterator pit = particles_begin();               \
+           pit != particles_end(); ++pit) {                             \
+        (*pit)->ps_->read_locked_=false;                                \
+      }                                                                 \
+    } else {                                                            \
+      expr;                                                             \
+    }                                                                   \
   }
 #else
 #define WRAP_CALL(restraint, expr) expr
