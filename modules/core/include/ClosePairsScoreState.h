@@ -12,6 +12,7 @@
 #include "ClosePairsFinder.h"
 #include "ListPairContainer.h"
 #include <IMP/ScoreState.h>
+#include <IMP/PairFilter.h>
 
 #include <IMP/SingletonContainer.h>
 
@@ -122,7 +123,7 @@ public:
   */
   /**@{*/
   IMP_LIST(public, ClosePairFilter, close_pair_filter,
-           PairContainer*, PairContainers);
+           PairFilter*, PairFilters);
    /**@}*/
 
   IMP_SCORE_STATE(ClosePairsScoreState, get_module_version_info())

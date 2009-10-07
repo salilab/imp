@@ -1,3 +1,9 @@
+namespace IMP {
+namespace atom {
+%warnfilter(403) ForceFieldParameters;
+}
+}
+
 %include "IMP/atom/macros.h"
 
 // must be before hierarchy

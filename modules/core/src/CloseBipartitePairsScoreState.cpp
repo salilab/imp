@@ -162,9 +162,22 @@ ParticlesList CloseBipartitePairsScoreState::get_interacting_particles() const {
 }
 
 ParticlesTemp CloseBipartitePairsScoreState::get_used_particles() const {
-  ParticlesTemp ret(in_[0]->particles_begin(), in_[0]->particles_end());
-  ret.insert(ret.end(), in_[1]->particles_begin(), in_[1]->particles_end());
-  return ret;
+  ParticlesTemp ret0(in_[0]->particles_begin(), in_[0]->particles_end());
+  ParticlesTemp ret1(in_[1]->particles_begin(), in_[1]->particles_end());
+  ret0.insert(ret0.end(), ret1.begin(), ret1.end());
+  ParticlePairsTemp all_pairs;
+  for (unsigned int i=0; i< ret0.size(); ++i) {
+    for (unsigned int j=0; j< ret1.size(); ++j) {
+      all_pairs.push_back(ParticlePair(ret0[i], ret1[j]));
+    }
+  }
+  for (ClosePairFilterConstIterator it= close_pair_filters_begin();
+       it != close_pair_filters_end(); ++it) {
+    ParticlesTemp cur= (*it)->get_used_particles(all_pairs);
+    ret0.insert(ret0.end(), cur.begin(), cur.end());
+  }
+  ret0.insert(ret0.end(), ret1.begin(), ret1.end());
+  return ret0;
 }
 
 void CloseBipartitePairsScoreState::show(std::ostream &out) const
@@ -177,7 +190,7 @@ void CloseBipartitePairsScoreState::show(std::ostream &out) const
 IMP_LIST_IMPL(CloseBipartitePairsScoreState,
               ClosePairFilter,
               close_pair_filter,
-              PairContainer*,
-              PairContainers,,,)
+              PairFilter*,
+              PairFilters,,,)
 
 IMPCORE_END_NAMESPACE

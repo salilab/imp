@@ -14,6 +14,7 @@
 #include "ListPairContainer.h"
 #include <IMP/ScoreState.h>
 #include <IMP/SingletonContainer.h>
+#include <IMP/PairFilter.h>
 
 
 IMPCORE_BEGIN_NAMESPACE
@@ -122,7 +123,7 @@ public:
   */
   /**@{*/
   IMP_LIST(public, ClosePairFilter, close_pair_filter,
-           PairContainer*, PairContainers);
+           PairFilter*, PairFilters);
   /**@}*/
 
   IMP_SCORE_STATE(CloseBipartitePairsScoreState, get_module_version_info())

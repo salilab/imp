@@ -11,24 +11,23 @@
 #include "config.h"
 #include "bond_decorators.h"
 
-#include <IMP/PairContainer.h>
+#include <IMP/PairFilter.h>
 
 IMPATOM_BEGIN_NAMESPACE
 
-//! A "container" that pretends to contain all bonds.
+//! A filter for bonds.
 /** This is to be used with a core::ClosePairsScoreState to exclude all
     bonded pairs.
     \ingroup bond
     \see Bonded
  */
-class IMPATOMEXPORT BondPairFilter :
-  public PairContainer
+class IMPATOMEXPORT BondPairFilter : public PairFilter
 {
 public:
   //! no arguments
   BondPairFilter();
 
-  IMP_PAIR_CONTAINER(BondPairFilter, get_module_version_info())
+  IMP_PAIR_FILTER(BondPairFilter, get_module_version_info())
 };
 
 

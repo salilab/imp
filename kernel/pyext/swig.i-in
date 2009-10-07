@@ -20,6 +20,22 @@ have_modeller=False
 %}
 #endif
 
+#ifdef IMP_NDEBUG
+%pythoncode %{
+have_tests=False
+%}
+#else
+%pythoncode %{
+have_tests=True
+%}
+#endif
+
+%warnfilter(403) FailureHandler;
+%warnfilter(403) FailureHandlerBase;
+%warnfilter(473) Refiner
+%warnfilter(473) SingletonContainer
+%warnfilter(473) PairContainer
+
 // Make sure that Python refcounts any returned pointers to IMP types
 IMP_REFCOUNT_RETURN_SINGLE(IMP::Particle)
 IMP_REFCOUNT_RETURN_SINGLE(IMP::Restraint)
@@ -93,6 +109,8 @@ IMP_DIRECTOR_KERNEL_CLASS(PairContainer);
 IMP_DIRECTOR_KERNEL_CLASS(SingletonModifier);
 IMP_DIRECTOR_KERNEL_CLASS(PairModifier);
 IMP_DIRECTOR_KERNEL_CLASS(Interaction);
+IMP_DIRECTOR_KERNEL_CLASS(PairFilter);
+IMP_DIRECTOR_KERNEL_CLASS(SingletonFilter);
 
 %include "IMP/utility.h"
 %include "IMP/Key.h"
@@ -137,6 +155,8 @@ namespace IMP {
 %include "IMP/PairModifier.h"
 %include "IMP/SingletonContainer.h"
 %include "IMP/PairContainer.h"
+%include "IMP/SingletonFilter.h"
+%include "IMP/PairFilter.h"
 
 
 namespace IMP {
