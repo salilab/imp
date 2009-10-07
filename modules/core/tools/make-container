@@ -74,6 +74,13 @@ def make_one(name, value, multi, args, fromargs, asargs, ):
                path+"/modules/core/tools/container_templates/function.hpp"),
               ("kernel/src/"+multi + "Modifier.cpp",
                path+"/modules/core/tools/container_templates/function.cc"),
+
+              ("kernel/include/"+multi + "Filter.h",
+               path+"/modules/core/tools/container_templates/filter.hpp"),
+              ("kernel/src/"+multi + "Filter.cpp",
+               path+"/modules/core/tools/container_templates/filter.cc"),
+
+
               ("kernel/include/"+multi + "Score.h",
                path+"/modules/core/tools/container_templates/score.hpp"),
               ("kernel/src/"+multi + "Score.cpp",

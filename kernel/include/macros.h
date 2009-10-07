@@ -1071,6 +1071,29 @@ es
 
 
 
+//! Declare the needed functions for a SingletonFilter
+/** In addition to the methods done by all the macros, it declares
+    - IMP::SingletonFilter::get_contains_particle()
+    - IMP::SingletonFilter::get_used_particles()
+*/
+#define IMP_SINGLETON_FILTER(Name, version_info)                    \
+  bool get_contains_particle(Particle* p) const;                    \
+  ParticlesTemp get_used_particles(const ParticlesTemp &t) const;   \
+  IMP_OBJECT(Name, version_info)
+
+
+//! Declare the needed functions for a PairFilter
+/** In addition to the methods done by all the macros, it declares
+    - IMP::PairFilter::get_contains_particle_pair()
+    - IMP::PairFilter::get_used_particles(const ParticlesTemp &t)
+ */
+#define IMP_PAIR_FILTER(Name, version_info)                             \
+  bool get_contains_particle_pair(ParticlePair p) const;                \
+  ParticlesTemp get_used_particles(const ParticlePairsTemp &t) const;   \
+  IMP_OBJECT(Name, version_info)
+
+
+
 //! Declare the needed functions for a UnaryFunction
 /** In addition to the methods done by all the macros, it declares
     - IMP::UnaryFunction::evaluate()
