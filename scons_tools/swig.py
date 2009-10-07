@@ -32,7 +32,7 @@ def _action_patch_swig_wrap(target, source, env):
     fh.close()
 
 def _print_patch_swig_wrap(target, source, env):
-    print "Patching swig file "+str(target)
+    print "Patching swig file "+str(target[0])
 
 PatchSwig = Builder(action=Action(_action_patch_swig_wrap,
                                 _print_patch_swig_wrap))
