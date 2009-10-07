@@ -20,6 +20,10 @@ IMP_END_NAMESPACE
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 
+struct LockedParticleException{
+  const Particle *p_;
+  LockedParticleException(const Particle *p): p_(p){};
+};
 
 template <class Key, class Particle>
 class IsAttribute

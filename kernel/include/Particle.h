@@ -38,10 +38,9 @@
 #define IMP_CHECK_ACTIVE                                                \
   IMP_check(get_is_active(), "Particle " << get_name() << " is inactive" \
             , InactiveParticleException);                               \
-  IMP_check(!ps_->read_locked_, "Particle " << get_name()               \
-            << " is not part of the set of used particles for the "     \
-            << "current restraint or score state.",                     \
-            InvalidStateException)
+  IMP_IF_CHECK(EXPENSIVE) {                                             \
+    if (ps_->read_locked_) throw internal::LockedParticleException(this); \
+  }
 #else
 #define IMP_CHECK_ACTIVE
 #endif
