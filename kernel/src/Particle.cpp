@@ -11,6 +11,15 @@
 #include "IMP/internal/utility.h"
 #include "IMP/internal/PrefixStream.h"
 
+IMP_BEGIN_INTERNAL_NAMESPACE
+LockedParticleException::LockedParticleException(const Particle *p): p_(p){};
+LockedParticleException::~LockedParticleException() throw(){}
+
+ParticleStorage::~ParticleStorage(){
+  if (shadow_) internal::unref(shadow_);
+}
+IMP_END_INTERNAL_NAMESPACE
+
 IMP_BEGIN_NAMESPACE
 
 
