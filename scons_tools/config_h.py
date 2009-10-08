@@ -47,6 +47,8 @@ def _action_config_h(target, source, env):
 #ifndef %(PREPROC)s_CONFIG_H
 #define %(PREPROC)s_CONFIG_H
 
+#include <boost/static_assert.hpp>
+
 #ifdef _MSC_VER
 #ifdef %(PREPROC)s_EXPORTS
 #define %(PREPROC)sEXPORT __declspec(dllexport)
@@ -83,6 +85,18 @@ namespace internal {
 """ %vars
     print >> h
     for d in env['IMP_MODULE_CONFIG']:
+        nd= d.replace("_USE_","_NO_")
+        if nd==d:
+            nd= d.replace("_NO_", "_USE_")
+        if nd != d:
+            print >> h, "#ifdef "+nd
+            print >> h, "/* Do not define IMP config macros directly */"
+            print >> h, "BOOST_STATIC_ASSERT(false)"
+            print >> h, "#endif"
+        print >> h, "#ifdef "+d
+        print >> h, "/* Do not define IMP config macros directly */"
+        print >> h, "BOOST_STATIC_ASSERT(false)"
+        print >> h, "#endif"
         print >> h, "#define "+d
     print >> h
 
