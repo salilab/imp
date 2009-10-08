@@ -5,6 +5,7 @@
  *
  */
 #include <IMP/atom/pdb.h>
+#include <IMP/atom/internal/pdb.h>
 
 #include <IMP/atom/Atom.h>
 #include <IMP/atom/Residue.h>
@@ -57,6 +58,7 @@ Particle* atom_particle(Model *m, const String& pdb_line)
                       internal::atom_zcoord(pdb_line));
   // atom decorator
   Atom d = Atom::setup_particle(p, atom_name);
+  p->set_name(std::string("Atom "+ atom_name.get_string()));
   core::XYZ::setup_particle(p, v).set_coordinates_are_optimized(true);
   d.set_input_index(internal::atom_number(pdb_line));
   IMP_IF_CHECK(CHEAP) {
@@ -86,16 +88,7 @@ Particle* residue_particle(Model *m, const String& pdb_line)
   Residue rd =
     Residue::setup_particle(p, residue_name,
                              residue_index, (int)residue_icode);
-
-  return p;
-}
-
-Particle* root_particle(Model *m)
-{
-  Particle* p = new Particle(m);
-
-  // hierarchy decorator
-  Hierarchy hd = Hierarchy::setup_particle(p, Hierarchy::PROTEIN);
+  p->set_name(residue_name.get_string());
   return p;
 }
 
@@ -103,7 +96,7 @@ Particle* chain_particle(Model *m, char chain_id)
 {
   Particle* p = new Particle(m);
   Chain::setup_particle(p, chain_id);
-
+  p->set_name(std::string("Chain "+std::string(1, chain_id)));
   return p;
 }
 
@@ -134,8 +127,6 @@ Hierarchy read_pdb(String pdb_file_name, Model *model,
                  ignore_alternatives);
   root_d.get_particle()->set_name(pdb_file_name);
   pdb_file.close();
-  IMP_assert(root_d.get_is_valid(true),
-            "Invalid hierarchy produced");
   return root_d;
 }
 
@@ -145,9 +136,10 @@ Hierarchy read_pdb(std::istream &in, Model *model,
                    bool ignore_alternatives)
 {
   // create root particle
-  Particle* root_p = root_particle(model);
-  Hierarchy root_d =
-    Hierarchy::decorate_particle(root_p);
+  Particle* root_p = new Particle(model);
+
+  // hierarchy decorator
+  Hierarchy root_d = Hierarchy::setup_particle(root_p, UNIVERSE);
   Particle* cp = NULL;
   Particle* rp = NULL;
 
@@ -214,6 +206,14 @@ Hierarchy read_pdb(std::istream &in, Model *model,
         Residue(rp).add_child(Atom(ap));
       }
 
+    }
+  }
+  IMP_IF_CHECK(EXPENSIVE) {
+    if (!root_d.get_is_valid(true)) {
+      IMP_ERROR("Invalid hierarchy produced ");
+      IMP::core::show<Hierarchy>(root_d);
+      throw InvalidStateException("Bad hierarchy");
+      // should clean up
     }
   }
   return root_d;
