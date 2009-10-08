@@ -170,9 +170,6 @@ namespace {
 */
 atom::Hierarchy create_simplified(atom::Hierarchy in,
                                   double resolution) {
-  IMP_check(in.get_type() == atom::Hierarchy::PROTEIN,
-            "Can only simplify proteins at the moment.",
-            ValueException);
   atom::Hierarchies leaves= atom::get_leaves(in);
 
   // rasterize protein to grid with size resolution/2.0
