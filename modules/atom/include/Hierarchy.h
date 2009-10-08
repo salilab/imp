@@ -24,6 +24,44 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
+/** \name Hierarchy Types
+    The various valid levels for the atom Hierarchy:
+    - ATOM (0) an atom
+    - RESIDUE (1) a residue
+    - NUCLEICACID (2) a nucleic acid
+    - FRAGMENT (3) an arbitrary fragment
+    - DOMAIN (4) a chain of a protein
+    - CHAIN (5) a chain of a protein
+    - PROTEIN (6) a protein
+    - NUCLEOTIDE (7) a nucleotide
+    - MOLECULE (8) an arbitrary molecule
+    - ASSEMBLY (9) an assembly
+    - COLLECTION (10) a group of assemblies
+    - UNIVERSE is all the molecules in existance at once.
+    - UNIVERSES is a set of universes
+    - TRAJECTORY is an ordered set of UNIVERSES
+
+    \note These values may change.
+    @{
+   */
+IMP_DECLARE_CONTROLLED_KEY_TYPE(HierarchyType, IMP_HIERARCHY_TYPE_INDEX);
+
+IMPATOMEXPORT extern const HierarchyType HIERARCHY_UNKNOWN;
+IMPATOMEXPORT extern const HierarchyType ATOM;
+IMPATOMEXPORT extern const HierarchyType AMINOACID;
+IMPATOMEXPORT extern const HierarchyType NUCLEICACID;
+IMPATOMEXPORT extern const HierarchyType LIGAND;
+IMPATOMEXPORT extern const HierarchyType FRAGMENT;
+IMPATOMEXPORT extern const HierarchyType CHAIN;
+IMPATOMEXPORT extern const HierarchyType PROTEIN;
+IMPATOMEXPORT extern const HierarchyType NUCLEOTIDE;
+IMPATOMEXPORT extern const HierarchyType MOLECULE;
+IMPATOMEXPORT extern const HierarchyType ASSEMBLY;
+IMPATOMEXPORT extern const HierarchyType COLLECTION;
+IMPATOMEXPORT extern const HierarchyType UNIVERSE;
+IMPATOMEXPORT extern const HierarchyType UNIVERSES;
+IMPATOMEXPORT extern const HierarchyType TRAJECTORY;
+/** @} */
 
 class Hierarchy;
 /** A collecton of Hierarchies. */
@@ -77,29 +115,25 @@ class IMPATOMEXPORT Hierarchy:
   typedef IMP::core::Hierarchy P;
 public:
 
-  //! The various values for levels of the hierarchy
-  /**
-      - ATOM (0) an atom
-      - RESIDUE (1) a residue
-      - NUCLEICACID (2) a nucleic acid
-      - FRAGMENT (3) an arbitrary fragment
-      - DOMAIN (4) a chain of a protein
-      - CHAIN (5) a chain of a protein
-      - PROTEIN (6) a protein
-      - NUCLEOTIDE (7) a nucleotide
-      - MOLECULE (8) an arbitrary molecule
-      - ASSEMBLY (9) an assembly
-      - COLLECTION (10) a group of assemblies
-      - UNIVERSE is all the molecules in existance at once.
-      - UNIVERSES is a set of universes
-      - TRAJECTORY is an ordered set of UNIVERSES
+  typedef HierarchyType Type;
 
-      \note These values may change.
-   */
-  enum Type {UNKNOWN=-1, ATOM, AMINOACID, NUCLEICACID, LIGAND,
-             FRAGMENT, CHAIN, PROTEIN, NUCLEOTIDE, MOLECULE, ASSEMBLY,
-             COLLECTION, UNIVERSE, UNIVERSES, TRAJECTORY
-            };
+#ifndef IMP_DOXYGEN
+  static const HierarchyType UNKNOWN;
+  static const HierarchyType ATOM;
+  static const HierarchyType AMINOACID;
+  static const HierarchyType NUCLEICACID;
+  static const HierarchyType LIGAND;
+  static const HierarchyType FRAGMENT;
+  static const HierarchyType CHAIN;
+  static const HierarchyType PROTEIN;
+  static const HierarchyType NUCLEOTIDE;
+  static const HierarchyType MOLECULE;
+  static const HierarchyType ASSEMBLY;
+  static const HierarchyType COLLECTION;
+  static const HierarchyType UNIVERSE;
+  static const HierarchyType UNIVERSES;
+  static const HierarchyType TRAJECTORY;
+#endif
 
   // swig gets unhappy if it is private
   IMP_NO_DOXYGEN(typedef Hierarchy This;)
@@ -136,9 +170,9 @@ public:
   /** Create a Hierarchy of level t by adding the needed
       attributes. */
   static Hierarchy setup_particle(Particle *p,
-                                            Type t= UNKNOWN) {
+                                  Type t= UNKNOWN) {
     IMP::core::Hierarchy::setup_particle(p, get_traits());
-    p->add_attribute(get_type_key(), t);
+    p->add_attribute(get_type_key(), t.get_index());
     return Hierarchy(p);
   }
 
@@ -159,7 +193,7 @@ public:
     return Type(get_particle()->get_value(get_type_key()));
   }
   void set_type(Type t) {
-    get_particle()->set_value(get_type_key(), t);
+    get_particle()->set_value(get_type_key(), t.get_index());
   }
 
   //! Return true if the hierarchy is valid.
@@ -168,45 +202,6 @@ public:
       \note Returning true only means that no problems were
       found, it can't check everything.*/
   bool get_is_valid(bool print_info) const;
-
-  //! Return a string representation of the current level of the hierarchy
-  std::string get_type_string() const {
-    switch (get_type()) {
-    case UNKNOWN:
-      return "unknown";
-    case ATOM:
-      return "atom";
-    case AMINOACID:
-      return "amino acid";
-    case NUCLEICACID:
-      return "nucleic acid";
-    case LIGAND:
-      return "ligand";
-    case CHAIN:
-      return "chain";
-    case FRAGMENT:
-      return "fragment";
-    case PROTEIN:
-      return "protein";
-    case NUCLEOTIDE:
-      return "nucleotide";
-    case MOLECULE:
-      return "molecule";
-    case ASSEMBLY:
-      return "assembly";
-    case COLLECTION:
-      return "collection";
-    case UNIVERSE:
-      return "universe";
-    case UNIVERSES:
-      return "universes";
-    case TRAJECTORY:
-      return "trajectory";
-    default:
-      IMP_assert(0, "Invalid Hierarchy type");
-      return std::string();
-    }
-  }
 
   //! Add a child and check that the types are appropriate
   /** A child must have a type that is listed before the parent in the
