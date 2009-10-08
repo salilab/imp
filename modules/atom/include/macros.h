@@ -11,7 +11,7 @@
 
 #define IMP_ATOM_TYPE_INDEX 8974343
 #define IMP_RESIDUE_TYPE_INDEX 90784334
-
+#define IMP_HIERARCHY_TYPE_INDEX 90784335
 //! Define the basic things you need for a ForceFieldParameters.
 /** In addition to the methods done by all the macros, it declares
     - IMP::Restraint::evaluate()

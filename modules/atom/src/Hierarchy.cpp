@@ -31,6 +31,40 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
+
+const HierarchyType HIERARCHY_UNKNOWN(HierarchyType::add_key("UNKNOWN"));
+const HierarchyType ATOM(HierarchyType::add_key("ATOM"));
+const HierarchyType AMINOACID(HierarchyType::add_key("AMINOACID"));
+const HierarchyType NUCLEICACID(HierarchyType::add_key("NUCLEICACID"));
+const HierarchyType LIGAND(HierarchyType::add_key("LIGAND"));
+const HierarchyType FRAGMENT(HierarchyType::add_key("FRAGMENT"));
+const HierarchyType CHAIN(HierarchyType::add_key("CHAIN"));
+const HierarchyType PROTEIN(HierarchyType::add_key("PROTEIN"));
+const HierarchyType NUCLEOTIDE(HierarchyType::add_key("NUCLEOTIDE"));
+const HierarchyType MOLECULE(HierarchyType::add_key("MOLECULE"));
+const HierarchyType ASSEMBLY(HierarchyType::add_key("ASSEMBLY"));
+const HierarchyType COLLECTION(HierarchyType::add_key("COLLECTION"));
+const HierarchyType UNIVERSE(HierarchyType::add_key("UNIVERSE"));
+const HierarchyType UNIVERSES(HierarchyType::add_key("UNIVERSES"));
+const HierarchyType TRAJECTORY(HierarchyType::add_key("TRAJECTORY"));
+
+
+const HierarchyType Hierarchy::UNKNOWN= IMP::atom::HIERARCHY_UNKNOWN;
+const HierarchyType Hierarchy::ATOM= IMP::atom::ATOM;
+const HierarchyType Hierarchy::AMINOACID= IMP::atom::AMINOACID;
+const HierarchyType Hierarchy::NUCLEICACID= IMP::atom::NUCLEICACID;
+const HierarchyType Hierarchy::LIGAND= IMP::atom::LIGAND;
+const HierarchyType Hierarchy::FRAGMENT= IMP::atom::FRAGMENT;
+const HierarchyType Hierarchy::CHAIN= IMP::atom::CHAIN;
+const HierarchyType Hierarchy::PROTEIN= IMP::atom::PROTEIN;
+const HierarchyType Hierarchy::NUCLEOTIDE= IMP::atom::NUCLEOTIDE;
+const HierarchyType Hierarchy::MOLECULE= IMP::atom::MOLECULE;
+const HierarchyType Hierarchy::ASSEMBLY= IMP::atom::ASSEMBLY;
+const HierarchyType Hierarchy::COLLECTION= IMP::atom::COLLECTION;
+const HierarchyType Hierarchy::UNIVERSE= IMP::atom::UNIVERSE;
+const HierarchyType Hierarchy::UNIVERSES= IMP::atom::UNIVERSES;
+const HierarchyType Hierarchy::TRAJECTORY= IMP::atom::TRAJECTORY;
+
 const IMP::core::HierarchyTraits&
 Hierarchy::get_traits() {
   static IMP::core::HierarchyTraits ret("molecular_hierarchy");
@@ -64,8 +98,8 @@ void Hierarchy::show(std::ostream &out) const
     Domain dd(get_particle());
     dd.show(out);
   } else {
-    out << get_type_string() <<std::endl;
-    out << "\"" <<  get_particle()->get_name() << "\"" << std::endl;
+    out << get_type() << " \"" <<  get_particle()->get_name()
+        << "\"" << std::endl;
   }
 }
 
@@ -150,7 +184,8 @@ get_residue(Hierarchy mhd,
   }
 }
 
-#define TEST_FAIL(msg) \
+#define TEST_FAIL(msg)                          \
+  IMP_ERROR(msg);                               \
   IMP_failure(msg, InvalidStateException)
 
 namespace {
@@ -169,35 +204,30 @@ namespace {
       }
       if (h.get_parent() != Hierarchy()) {
         if (h.get_type()> h.get_parent().get_type()) {
-          TEST_FAIL("Node " << h << " has a type "
-                    << "which cannot be a child of its parent.");
+          TEST_FAIL("Node " << h.get_particle()->get_name() << " has a type "
+                    << "which cannot be a child of its parent ("
+                    << h.get_parent().get_particle()->get_name() << "): "
+                    << h.get_type() << " vs " << h.get_parent().get_type());
         }
       }
-      switch(h.get_type()) {
-      case Hierarchy::ATOM:
+      if  (h.get_type()==Hierarchy::ATOM) {
         if (!Atom::particle_is_instance(h)) {
           TEST_FAIL("ATOM " << h << " is not an Atom");
+        } else if (h.get_type()==Hierarchy::AMINOACID
+                 || h.get_type()== Hierarchy::NUCLEICACID
+                 || h.get_type()== Hierarchy::LIGAND) {
+          if (!Residue::particle_is_instance(h)) {
+            TEST_FAIL("Residue " << h << " is not a IMP.atom.Residue");
+          }
+        } else if (h.get_type()==Hierarchy::CHAIN) {
+          if (!Chain::particle_is_instance(h)) {
+            TEST_FAIL("CHAIN " << h << " is not a IMP.atom.Chain");
+          }
+        } else if (h.get_type()== Hierarchy::FRAGMENT) {
+          if (!Fragment::particle_is_instance(h)) {
+            TEST_FAIL("FRAGMENT " << h << " is not a IMP.atom.Fragment");
+          }
         }
-        break;
-      case Hierarchy::AMINOACID:
-      case Hierarchy::NUCLEICACID:
-      case Hierarchy::LIGAND:
-        if (!Residue::particle_is_instance(h)) {
-          TEST_FAIL("Residue " << h << " is not a IMP.atom.Residue");
-        }
-        break;
-      case Hierarchy::CHAIN:
-        if (!Chain::particle_is_instance(h)) {
-          TEST_FAIL("CHAIN " << h << " is not a IMP.atom.Chain");
-        }
-        break;
-      case Hierarchy::FRAGMENT:
-        if (!Fragment::particle_is_instance(h)) {
-          TEST_FAIL("FRAGMENT " << h << " is not a IMP.atom.Fragment");
-        }
-        break;
-      default:
-        break;
       }
       return true;
     }
