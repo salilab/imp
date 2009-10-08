@@ -30,11 +30,12 @@ have_tests=True
 %}
 #endif
 
-%warnfilter(403) FailureHandler;
+namespace IMP {
 %warnfilter(403) FailureHandlerBase;
-%warnfilter(473) Refiner
-%warnfilter(473) SingletonContainer
-%warnfilter(473) PairContainer
+%warnfilter(473) Refiner;
+%warnfilter(473) SingletonContainer;
+%warnfilter(473) PairContainer;
+}
 
 // Make sure that Python refcounts any returned pointers to IMP types
 IMP_REFCOUNT_RETURN_SINGLE(IMP::Particle)

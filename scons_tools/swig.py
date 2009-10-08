@@ -136,7 +136,7 @@ def _action_simple_swig(target, source, env):
         if x.startswith("-I") or x.startswith("-D"):
             cppflags= cppflags+" " + x
 
-    base = env['SWIG'] + " -Wall -w473 -interface  _IMP%(module_suffix)s -DPySwigIterator=%(PREPROC)s_PySwigIterator -DSwigPyIterator=%(PREPROC)s_SwigPyIterator -python -c++ -naturalvar "%vars
+    base = env['SWIG'] + " -Wextra -interface  _IMP%(module_suffix)s -DPySwigIterator=%(PREPROC)s_PySwigIterator -DSwigPyIterator=%(PREPROC)s_SwigPyIterator -python -c++ -naturalvar "%vars
     #print base
     out= "-o "+ target[1].abspath
     doti= source[0].abspath
