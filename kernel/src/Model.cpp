@@ -18,26 +18,17 @@
 #ifndef IMP_NO_DEBUG
 #define WRAP_CALL(restraint, expr)                                      \
   {                                                                     \
-  std::set<Particle*> ips;                                              \
     IMP_IF_CHECK(EXPENSIVE) {                                           \
       ParticlesTemp pl= (restraint)->get_used_particles();              \
-      ips.insert(pl.begin(), pl.end());                                 \
-      for (ParticleConstIterator pit = particles_begin();               \
-           pit != particles_end(); ++pit) {                             \
-        if (ips.find(*pit) == ips.end()) {                              \
-          (*pit)->ps_->read_locked_=true;                               \
-        }                                                               \
-      }                                                                 \
+      internal::ReadLock rl(particles_begin(), particles_end(),         \
+                            pl.begin(), pl.end());                      \
       try {                                                             \
         expr;                                                           \
-      } catch (const internal::LockedParticleException& e) {            \
+      } catch (internal::LockedParticleException e) {                   \
         IMP_ERROR("Particle " << e.p_->get_name()                       \
                   << " is not in the used particles list of restraint " \
                   << (*it)->get_name() << " but should be.");           \
-      }                                                                 \
-      for (ParticleConstIterator pit = particles_begin();               \
-           pit != particles_end(); ++pit) {                             \
-        (*pit)->ps_->read_locked_=false;                                \
+        throw InvalidStateException("Invalid particle used");           \
       }                                                                 \
     } else {                                                            \
       expr;                                                             \
@@ -47,6 +38,30 @@
 #define WRAP_CALL(restraint, expr) expr
 #endif
 
+
+IMP_BEGIN_INTERNAL_NAMESPACE
+struct ReadLock{
+  ParticlesTemp p_;
+  std::set<Particle *> allowed_;
+public:
+  template <class It, class It1>
+  ReadLock(It1 pa, It1 pb,
+           It ab, It ae): p_(pa, pb),
+                          allowed_(ab, ae){
+    for (unsigned int i=0; i< p_.size(); ++i) {
+      if (allowed_.find(p_[i]) == allowed_.end()) {
+        p_[i]->ps_->read_locked_=true;
+      }
+    }
+  }
+  ~ReadLock() {
+    for (unsigned int i=0; i< p_.size(); ++i) {
+      p_[i]->ps_->read_locked_=false;
+    }
+  }
+};
+
+IMP_END_INTERNAL_NAMESPACE
 
 IMP_BEGIN_NAMESPACE
 

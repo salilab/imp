@@ -20,9 +20,10 @@ IMP_END_NAMESPACE
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 
-struct LockedParticleException{
+struct IMPEXPORT LockedParticleException{
   const Particle *p_;
-  LockedParticleException(const Particle *p): p_(p){};
+  LockedParticleException(const Particle *p);
+  virtual ~LockedParticleException() throw();
 };
 
 template <class Key, class Particle>
@@ -69,16 +70,15 @@ struct ParticleKeyIterator {
 };
 
 
+struct ReadLock;
 
-struct ParticleStorage {
+struct IMPEXPORT ParticleStorage {
   ParticleStorage(): shadow_(NULL), dirty_(false){
 #ifndef IMP_NO_DEBUG
     read_locked_=false;
 #endif
   }
-  ~ParticleStorage(){
-    if (shadow_) internal::unref(shadow_);
-  }
+  ~ParticleStorage();
   typedef std::list<Particle*> Storage;
   typedef  internal::OffsetStorage<
     internal::ArrayStorage<internal::FloatAttributeTableTraits>, IMP_NUM_INLINE>
