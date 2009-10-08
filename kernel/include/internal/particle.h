@@ -72,7 +72,7 @@ struct ParticleKeyIterator {
 
 struct ParticleStorage {
   ParticleStorage(): shadow_(NULL), dirty_(false){
-#ifndef IMP_NDEBUG
+#ifndef IMP_NO_DEBUG
     read_locked_=false;
 #endif
   }
@@ -113,7 +113,7 @@ struct ParticleStorage {
   // incremental updates
   bool dirty_;
 
-#ifndef IMP_NDEBUG
+#ifndef IMP_NO_DEBUG
   // for testing get_used_particles()
   bool read_locked_;
 #endif

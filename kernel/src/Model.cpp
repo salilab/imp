@@ -15,7 +15,7 @@
 #include <boost/timer.hpp>
 #include <set>
 
-#ifndef IMP_NDEBUG
+#ifndef IMP_NO_DEBUG
 #define WRAP_CALL(restraint, expr)                                      \
   {                                                                     \
   std::set<Particle*> ips;                                              \

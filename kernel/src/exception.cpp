@@ -45,7 +45,7 @@ void remove_failure_handler(FailureHandler *fh) {
 
 namespace internal {
  CheckLevel check_mode =
-#ifdef IMP_NDEBUG
+#ifdef IMP_NO_DEBUG
     NONE;
 #else
   EXPENSIVE;
