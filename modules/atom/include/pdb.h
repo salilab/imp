@@ -9,7 +9,6 @@
 #define IMPATOM_PDB_H
 
 #include "config.h"
-#include "internal/pdb.h"
 #include "selectors.h"
 #include "Hierarchy.h"
 #include "Atom.h"
