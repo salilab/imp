@@ -10,7 +10,6 @@
 
 #include "config.h"
 #include "bond_decorators.h"
-
 #include <IMP/PairFilter.h>
 
 IMPATOM_BEGIN_NAMESPACE
