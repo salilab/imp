@@ -51,7 +51,7 @@ public:
 #ifndef IMP_DOXYGEN
   // Return whether the object already been freed
   bool get_is_valid() const {
-#ifdef IMP_NDEBUG
+#ifdef IMP_NO_DEBUG
     return true;
 #else
     return check_value_==111111111;
@@ -71,14 +71,14 @@ public:
   void set_log_level(LogLevel l) {
     IMP_check(l <= MEMORY && l >= DEFAULT, "Setting to invalid log level "
               << l, ValueException);
-#ifndef IMP_NDEBUG
+#ifndef IMP_NO_DEBUG
     log_level_=l;
 #endif
   }
 
 #ifndef IMP_DOXYGEN
   LogLevel get_log_level() const {
-#ifdef IMP_NDEBUG
+#ifdef IMP_NO_DEBUG
       return SILENT;
 #else
       return log_level_;
@@ -126,7 +126,7 @@ private:
   Object(const Object &o) {}
   const Object& operator=(const Object &o) {return *this;}
 
-#ifndef IMP_NDEBUG
+#ifndef IMP_NO_DEBUG
   LogLevel log_level_;
   double check_value_;
 #endif
@@ -162,7 +162,7 @@ IMP_END_NAMESPACE
 
 #include "SetLogState.h"
 
-#ifndef IMP_NDEBUG
+#ifndef IMP_NO_DEBUG
 //! Set the log level to the objects log level.
 /** All non-trivial Object methods should start with this. It creates a
     RAII-style object which sets the log level to the local one,

@@ -126,7 +126,7 @@ inline CheckLevel get_check_level() {
 */
 IMPEXPORT void set_print_exceptions(bool tf);
 
-#ifndef IMP_NDEBUG
+#ifndef IMP_NO_DEBUG
 //! Execute the code block if a certain level checks are on
 /**
    The next code block (delimited by { }) is executed if
@@ -145,7 +145,7 @@ IMPEXPORT void assert_fail(const char *msg);
 #endif
 
 
-#ifndef IMP_NDEBUG
+#ifndef IMP_NO_DEBUG
 
 /** \brief An assertion to check for internal errors in \imp. An
     IMP::ErrorException will be thrown.
@@ -153,7 +153,7 @@ IMPEXPORT void assert_fail(const char *msg);
     Since it is a debug-only check and no attempt should be made to
     recover from it, the exception type cannot be specified.
 
-    \note if the code is compiled with IMP_NDEBUG, or the check level
+    \note if the code is compiled with IMP_NO_DEBUG, or the check level
     is less than EXPENSIVE, the check is not performed. Do not use
     asserts as a shorthand to throw exceptions (throw the exception
     yourself); use them only to check for logic errors.
@@ -176,14 +176,14 @@ IMPEXPORT void assert_fail(const char *msg);
 #define IMP_assert(expr, message)
 #endif
 
-#ifndef IMP_NDEBUG
+#ifndef IMP_NO_DEBUG
 //! A runtime test for incorrect usage of a class or method.
 /** \param[in] expr The assertion expression.
     \param[in] message Write this message if the assertion fails.
     \param[in] ExceptionType Throw an exception of this type. The exception
     must be constructable from a char *.
 
-    \note if the code is compiled with IMP_NDEBUG, or the check level
+    \note if the code is compiled with IMP_NO_DEBUG, or the check level
     is less than CHEAP, the check is not performed. Do not use these
     checks as a shorthand to throw necessary exceptions (throw the
     exception yourself); use them only to check for errors, such as

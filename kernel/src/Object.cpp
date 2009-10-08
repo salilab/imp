@@ -21,7 +21,7 @@ RefCounted::~ RefCounted() {
 
 Object::Object()
 {
-#ifndef IMP_NDEBUG
+#ifndef IMP_NO_DEBUG
   log_level_=DEFAULT;
   check_value_=111111111;
 #endif
@@ -32,7 +32,7 @@ Object::~Object()
 {
   IMP_OBJECT_LOG;
   IMP_assert(get_is_valid(), "Object " << this << " previously freed.");
-#ifndef IMP_NDEBUG
+#ifndef IMP_NO_DEBUG
   check_value_=666666666;
 #endif
   IMP_LOG(MEMORY, "Destroying object " << this << std::endl);

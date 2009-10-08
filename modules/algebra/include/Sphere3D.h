@@ -20,7 +20,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 class IMPALGEBRAEXPORT Sphere3D: public UninitializedDefault {
 public:
   Sphere3D(){
-#ifndef IMP_NDEBUG
+#ifndef IMP_NO_DEBUG
     radius_= std::numeric_limits<double>::quiet_NaN();
 #endif
   }

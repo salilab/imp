@@ -106,7 +106,7 @@ public:
 
   //! Default constructor
   VectorD() {
-#ifndef IMP_NDEBUG
+#ifndef IMP_NO_DEBUG
     for (unsigned int i=0; i< D; ++i) {
       vec_[i]= std::numeric_limits<double>::quiet_NaN();
     }

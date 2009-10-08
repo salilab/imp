@@ -34,7 +34,7 @@
   else return ps_->floats_.func;
 
 
-#ifndef IMP_NDEBUG
+#ifndef IMP_NO_DEBUG
 #define IMP_CHECK_ACTIVE                                                \
   IMP_check(get_is_active(), "Particle " << get_name() << " is inactive" \
             , InactiveParticleException);                               \
