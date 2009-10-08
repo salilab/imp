@@ -17,7 +17,6 @@ namespace atom {
 %include "IMP/atom/distance.h"
 %include "IMP/atom/BondEndpointsRefiner.h"
 %include "IMP/atom/BondPairContainer.h"
-%include "IMP/atom/BondPairFilter.h"
 %include "IMP/atom/BondSingletonScore.h"
 %include "IMP/atom/CoverBond.h"
 %include "IMP/atom/BrownianDynamics.h"
