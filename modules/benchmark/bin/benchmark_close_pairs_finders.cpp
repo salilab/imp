@@ -33,8 +33,8 @@ void test_one(std::string name,
   double result=0;
   double runtime;
   IMP_TIME({
-      cpf->add_close_pairs(lsc, out);
-      result+= out->get_number_of_particle_pairs();
+      ParticlePairsTemp ret=cpf->get_close_pairs(lsc, out);
+      result+= ret.size();
       out->clear_particle_pairs();
     }, runtime);
   std::ostringstream oss;
