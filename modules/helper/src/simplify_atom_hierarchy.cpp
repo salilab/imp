@@ -20,6 +20,7 @@
 #include <IMP/em/FitRestraint.h>
 #include <IMP/em/MRCReaderWriter.h>
 #include <IMP/em/SampledDensityMap.h>
+#include <algorithm>
 
 IMPHELPER_BEGIN_NAMESPACE
 
@@ -332,6 +333,68 @@ atom::Hierarchy create_simplified(atom::Hierarchy in,
 }
 
 
+atom::Hierarchy create_simplified_chain_by_residue(atom::Hierarchy in,
+                                                  int res_step) {
+  atom::Hierarchies residues= atom::get_by_type(in,atom::Hierarchy::AMINOACID);
+  IMP_check(residues.size() > 0,
+            "Can only simplify a chain with no residues.",
+            ValueException);
+  int num_res_iter=0;
+  int num_res=residues.size();
+  Model *m=in.get_model();
+  // create a coarser model
+  atom::Fragments frags;
+  while(num_res_iter<num_res) {
+    core::XYZRs fragment_xyz;//will contain all xyz of the relevant
+                             //fragment of residues
+    double total_mass=0.;
+    for(int i=num_res_iter;i<std::min(num_res,num_res_iter+res_step);i++) {
+      core::XYZs res_atoms(core::get_leaves(residues[i]));
+      fragment_xyz.insert(fragment_xyz.end(),res_atoms.begin(),res_atoms.end());
+      //update the total_mass
+      for(core::XYZs::const_iterator it= res_atoms.begin();
+          it != res_atoms.end(); it++) {
+        total_mass += atom::Mass(it->get_particle()).get_mass();
+      }
+    }
+    //set a new particle to be the sphere cover of fragment_xyz
+    IMP_NEW(IMP::Particle,fp,(m));
+    core::XYZR::setup_particle(fp);
+    set_enclosing_sphere(core::XYZR(fp),fragment_xyz);
+    atom::Mass::setup_particle(fp,total_mass);
+    atom::Fragment::setup_particle(fp);
+    frags.push_back(atom::Fragment(fp));
+    num_res_iter+=res_step;
+  }
+  // create hierarchy
+  atom::Hierarchy ret
+    = atom::Chain::setup_particle(new Particle(m),atom::Chain(in));
+  for (unsigned int i=0; i< frags.size(); ++i) {
+    ret.add_child(frags[i]);
+  }
+  return ret;
+}
 
+atom::Hierarchy create_simplified_by_residue(atom::Hierarchy in,
+                                             int res_step){
+  IMP_check(in.get_type() == atom::Hierarchy::PROTEIN,
+            "Can only simplify proteins at the moment.",
+            ValueException);
+  atom::Hierarchies in_chains= atom::get_by_type(in,atom::Hierarchy::CHAIN);
+  atom::Hierarchies out_chains;
+  for(atom::Hierarchies::iterator it = in_chains.begin();
+      it != in_chains.end();it++) {
+    out_chains.push_back(create_simplified_chain_by_residue(*it,res_step));
+  }
+  // create hierarchy
+  atom::Hierarchy ret
+    = atom::Hierarchy::setup_particle(new Particle(in.get_model()),
+                                      atom::Hierarchy::PROTEIN);
+  for(atom::Hierarchies::iterator it = out_chains.begin();
+      it != out_chains.end();it++) {
+    ret.add_child(*it);
+  }
+  return ret;
+}
 
 IMPHELPER_END_NAMESPACE

@@ -28,6 +28,17 @@ IMPHELPER_BEGIN_NAMESPACE
 IMPHELPEREXPORT atom::Hierarchy create_simplified(atom::Hierarchy in,
                                                   double resolution);
 
+
+/** Produce a coarser molecule by covering every consecutive num_res with
+   a sphere. The radius of each new sphere is the sum of the masses of
+   its covered particles.
+   In case the input Hierarchy consist of multiple chains,
+   spheres will not cover atoms of different chains.
+    \unstable{create_simplified}
+ */
+IMPHELPEREXPORT atom::Hierarchy create_simplified_by_residue(atom::Hierarchy in,
+                                                  int num_res);
+
 IMPHELPER_END_NAMESPACE
 
 #endif  /* IMPHELPER_HELPER_SIMPLIFY_ATOM_HIERARCHY_H */
