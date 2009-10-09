@@ -29,7 +29,7 @@ namespace atom {
 %include "IMP/atom/Fragment.h"
 %include "IMP/atom/SimulationParameters.h"
 %include "IMP/atom/Mass.h"
-%include "IMP/atom/BondPairFilter.h"
+%include "IMP/atom/BondedPairFilter.h"
 
 namespace IMP {
   namespace atom {

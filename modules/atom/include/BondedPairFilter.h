@@ -5,8 +5,8 @@
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
-#ifndef IMPATOM_BOND_PAIR_FILTER_H
-#define IMPATOM_BOND_PAIR_FILTER_H
+#ifndef IMPATOM_BONDED_PAIR_FILTER_H
+#define IMPATOM_BONDED_PAIR_FILTER_H
 
 #include "config.h"
 #include "bond_decorators.h"
@@ -32,4 +32,4 @@ public:
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_BOND_PAIR_FILTER_H */
+#endif  /* IMPATOM_BONDED_PAIR_FILTER_H */
