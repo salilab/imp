@@ -240,13 +240,16 @@ public:
   }
 
   Hierarchies get_children() const {
-    Hierarchies ps;
-    for (unsigned int i=0; i< get_number_of_children(); ++i) {
-      ps.push_back( get_child(i) );
-    }
-    return ps;
+    return Hierarchies(IMP::core::Hierarchy::get_children());
   }
 
+  void steal_children(Hierarchy o) {
+    while (o.get_number_of_children() != 0) {
+      Hierarchy c= o.get_child(o.get_number_of_children()-1);
+      o.remove_child(c);
+      add_child(c);
+    }
+  }
 
   /** Get the parent particle. */
   Hierarchy get_parent() const {

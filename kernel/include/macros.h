@@ -549,7 +549,7 @@ const TraitsType &get_##traits_name() const {                           \
  */
 #define IMP_DECORATOR_ARRAY_DECL(protection, Class,                     \
                                  Name, name, plural,                    \
-                                 traits, ExternalType)                  \
+                                 traits, ExternalType, ExternalTypes)    \
 private:                                                                \
  template <class T>                                                     \
  static bool has_required_attributes_for_##name(Particle *p,            \
@@ -606,6 +606,18 @@ protection:                                                             \
      traits.on_change(get_particle(),                                   \
                       traits.get_value( get_particle(), i),             \
                       i-1, i);                                          \
+   }                                                                    \
+ }                                                                      \
+ ExternalTypes get_##plural() const {                                   \
+   ExternalTypes ret;                                                   \
+   for (unsigned int i=0; i< get_number_of_##plural(); ++i) {           \
+     ret.push_back(get_##name(i));                                      \
+   }                                                                    \
+   return ret;                                                          \
+ }                                                                      \
+ void add_##plural(const ExternalTypes &et) {                           \
+   for (unsigned int i=0; i< et.size(); ++i) {                          \
+     add_##name(et[i]);                                                 \
    }                                                                    \
  }                                                                      \
  void remove_##name(ExternalType t) {                                   \
@@ -1234,6 +1246,91 @@ es
  */
 #define IMP_NEW(Typename, varname, args)        \
   Pointer<Typename> varname(new Typename args)
+
+
+
+/**
+   Define a new key type.
+
+   It defines two public types Name, which is an instantiation of KeyBase and
+   Names which is a vector of Name.
+
+   \param[in] Name The name for the new type.
+   \param[in] Tag A (hopefully) unique integer to define this key type.
+
+   \note We define a new class rather than use a typedef since SWIG has a
+   bug dealing with names that start with ::. A fix has been commited to SVN
+   for swig.
+
+   \note The name in the typedef would have to start with ::IMP so it
+   could be used out of the IMP namespace.
+ */
+#ifndef IMP_DOXYGEN
+#define IMP_DECLARE_KEY_TYPE(Name, Tag)                                 \
+  struct Name: public ::IMP::KeyBase<Tag, true> {                       \
+    typedef ::IMP::KeyBase<Tag, true> P;                                \
+  typedef Name This;                                                    \
+  Name(){};                                                             \
+  Name(unsigned int i): P(i){}                                          \
+  Name(std::string nm): P(nm){}                                         \
+  static Name add_alias(Name nm, std::string new_name) {                \
+    ::IMP::KeyBase<Tag, true>:: add_alias(nm, new_name);                     \
+    IMP_assert(Name(new_name) == nm, "Keys don't match after alias.");   \
+    return Name(new_name);                                              \
+  }                                                                     \
+};                                                                      \
+typedef std::vector<Name> Name##s
+#else
+#define IMP_DECLARE_KEY_TYPE(Name, Tag)                                 \
+  /** A string based identifier.*/                                      \
+  struct Name: public ::IMP::KeyBase<ID, true> {                        \
+    typedef ::IMP::KeyBase<ID, true> P;                                 \
+  typedef Name This;                                                    \
+  Name(){};                                                             \
+  IMP_NO_DOXYGEN(Name(unsigned int i): P(i){})                          \
+  Name(std::string nm): P(nm){}                                         \
+  /** Define the string new_name to refer to the same key as nm. */     \
+  static Name add_alias(Name nm, std::string new_name);                 \
+};                                                                      \
+typedef std::vector<Name> Name##s
+#endif
+
+
+/**
+   Define a new key non lazy type where new types have to be created
+   explicitly.
+
+   \see IMP_DECLARE_KEY_TYPE
+ */
+#ifndef IMP_DOXYGEN
+#define IMP_DECLARE_CONTROLLED_KEY_TYPE(Name, Tag)                      \
+  struct Name: public ::IMP::KeyBase<Tag, false> {                      \
+    typedef ::IMP::KeyBase<Tag, false> P;                               \
+  typedef Name This;                                                    \
+  Name(){};                                                             \
+  Name(unsigned int i): P(i){}                                          \
+  Name(std::string nm): P(nm){}                                         \
+  static Name add_alias(Name nm, std::string new_name) {                \
+    ::IMP::KeyBase<Tag, false>:: add_alias(nm, new_name);               \
+    IMP_assert(Name(new_name) == nm, "Keys don't match after alias.");  \
+    return Name(nm.get_index());                                        \
+  }                                                                     \
+};                                                                      \
+typedef std::vector<Name> Name##s
+#else
+#define IMP_DECLARE_CONTROLLED_KEY_TYPE(Name, Tag)                      \
+  /** A string based identifier.*/                                      \
+  struct Name: public ::IMP::KeyBase<ID, false> {                       \
+    typedef ::IMP::KeyBase<ID, false> P;                                \
+  typedef Name This;                                                    \
+  Name(){};                                                             \
+  Name(std::string nm): P(nm){}                                         \
+  IMP_NO_DOXYGEN(Name(unsigned int i): P(i){})                          \
+  /** Define the string new_name to refer to the same key as nm. */     \
+  static Name add_alias(Name nm, std::string new_name);                 \
+};                                                                      \
+typedef std::vector<Name> Name##s
+#endif
 
 
 

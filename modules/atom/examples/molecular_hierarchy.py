@@ -6,7 +6,8 @@ m = IMP.Model()
 mp0= IMP.atom.read_pdb(IMP.get_data_directory()\
                            +'/atom/example_protein.pdb', m)
 # get the 16th residue
-r16 = IMP.atom.get_residue(mp0, 16)
+chain= mp0.get_child(0)
+r16 = IMP.atom.get_residue(chain, 16)
 r16.show()
 
 atoms= IMP.atom.get_by_type(mp0, IMP.atom.Hierarchy.ATOM)
@@ -30,5 +31,5 @@ mp1= IMP.atom.read_pdb(IMP.get_data_directory() \
 
 p = IMP.Particle(m)
 rmp= IMP.atom.Hierarchy.setup_particle(p, IMP.atom.Hierarchy.ASSEMBLY)
-rmp.add_child(mp0)
-rmp.add_child(mp1)
+rmp.steal_children(mp0)
+rmp.steal_children(mp1)
