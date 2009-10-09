@@ -9,6 +9,8 @@
 #define IMPCORE_QUADRATIC_CLOSE_PAIRS_FINDER_H
 
 #include "ClosePairsFinder.h"
+#include "macros.h"
+#include "config.h"
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -19,23 +21,9 @@ class IMPCOREEXPORT QuadraticClosePairsFinder : public ClosePairsFinder
 {
  public:
   QuadraticClosePairsFinder();
-  ~QuadraticClosePairsFinder();
-
-  void add_close_pairs(SingletonContainer *pc,
-                       ListPairContainer *out) const;
-
-  void add_close_pairs(SingletonContainer *pca,
-                       SingletonContainer *pcb,
-                       ListPairContainer *out) const;
-  //! Return true if the two particles are closer than distance.
   bool get_are_close(Particle *a, Particle *b) const;
+  IMP_CLOSE_PAIRS_FINDER(QuadraticClosePairsFinder, get_module_version_info());
 
-  void show(std::ostream &out= std::cout) const {
-    out << "QuadraticClosePairsFinder" << std::endl;
-  }
-  VersionInfo get_version_info() const {
-    return get_module_version_info();
-  }
 };
 
 IMPCORE_END_NAMESPACE

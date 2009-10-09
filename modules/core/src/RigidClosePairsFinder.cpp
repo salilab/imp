@@ -22,7 +22,6 @@ IMPCORE_BEGIN_NAMESPACE
 
 
 RigidClosePairsFinder::RigidClosePairsFinder(Refiner *r):
-  cpfout_(new ListPairContainer()),
   r_(r){
 #ifdef IMP_USE_CGAL
   cpf_=Pointer<ClosePairsFinder>(new BoxSweepClosePairsFinder());
@@ -34,14 +33,12 @@ RigidClosePairsFinder::RigidClosePairsFinder(Refiner *r):
 RigidClosePairsFinder
 ::RigidClosePairsFinder(ClosePairsFinder *cpf, Refiner *r):
   cpf_(cpf),
-  cpfout_(new ListPairContainer()),
   r_(r){
   k_= internal::get_rigid_body_hierarchy_key(r_);
 }
 
 
 RigidClosePairsFinder::RigidClosePairsFinder():
-  cpfout_(new ListPairContainer()),
   r_(new RigidMembersRefiner()){
 #ifdef IMP_USE_CGAL
   cpf_=Pointer<ClosePairsFinder>(new BoxSweepClosePairsFinder());
@@ -53,16 +50,9 @@ RigidClosePairsFinder::RigidClosePairsFinder():
 RigidClosePairsFinder
 ::RigidClosePairsFinder(ClosePairsFinder *cpf):
   cpf_(cpf),
-  cpfout_(new ListPairContainer()),
   r_(new RigidMembersRefiner()){
   k_= internal::get_rigid_body_hierarchy_key(r_);
 }
-
-
-RigidClosePairsFinder::~RigidClosePairsFinder(){}
-
-
-
 
 
 
@@ -83,67 +73,69 @@ namespace {
 }
 
 
-void RigidClosePairsFinder
-::add_close_pairs(SingletonContainer *ca,
-                  SingletonContainer *cb,
-                  ListPairContainer *out) const {
+ParticlePairsTemp RigidClosePairsFinder
+::get_close_pairs(SingletonContainer *ca,
+                  SingletonContainer *cb) const {
   IMP_LOG(TERSE, "Rigid add_close_pairs called with "
           << ca->get_number_of_particles() << " and "
           << cb->get_number_of_particles() << std::endl);
-  EditGuard<ListPairContainer> e(out);
   check_particles(ca, get_radius_key());
   check_particles(cb, get_radius_key());
-  cpf_->add_close_pairs(ca,cb, cpfout_);
-  for (ListPairContainer::ParticlePairConstIterator
-         it= cpfout_->particle_pairs_begin();
-       it != cpfout_->particle_pairs_end(); ++it) {
-    add_close_pairs(it->first, it->second, out);
+  ParticlePairsTemp ppt= cpf_->get_close_pairs(ca,cb);
+  ParticlePairsTemp ret;
+  for (ParticlePairsTemp::const_iterator
+         it= ppt.begin();
+       it != ppt.end(); ++it) {
+    ParticlePairsTemp c=get_close_pairs(it->first, it->second);
+    ret.insert(ret.end(),
+               c.begin(), c.end());
   }
+  return ret;
 }
 
-void RigidClosePairsFinder
-::add_close_pairs(SingletonContainer *c,
-                  ListPairContainer *out) const {
+ParticlePairsTemp RigidClosePairsFinder
+::get_close_pairs(SingletonContainer *c) const {
   IMP_LOG(TERSE, "Adding close pairs from "
           << c->get_number_of_particles() << " particles." << std::endl);
-  EditGuard<ListPairContainer> e(out);
   check_particles(c, get_radius_key());
-  cpf_->add_close_pairs(c, cpfout_);
-  for (ListPairContainer::ParticlePairConstIterator
-         it= cpfout_->particle_pairs_begin();
-       it != cpfout_->particle_pairs_end(); ++it) {
-     add_close_pairs(it->first, it->second, out);
+  ParticlePairsTemp ppt= cpf_->get_close_pairs(c);
+  ParticlePairsTemp ret;
+  for (ParticlePairsTemp::const_iterator it= ppt.begin();
+       it != ppt.end(); ++it) {
+    ParticlePairsTemp c=get_close_pairs(it->first, it->second);
+    ret.insert(ret.end(), c.begin(), c.end());
   }
+  return ret;
 }
 
 
 namespace {
   struct AddToContainer {
     bool swap_;
-    mutable ListPairContainer *out_;
-    AddToContainer(ListPairContainer *out, bool swap=false): swap_(swap),
+    mutable ParticlePairsTemp &out_;
+    AddToContainer(ParticlePairsTemp &out, bool swap=false): swap_(swap),
                                                              out_(out){}
     void operator()(Particle *a, Particle *b) const {
       if (swap_) {
-        out_->add_particle_pair(ParticlePair(b,a));
+        out_.push_back(ParticlePair(b,a));
       } else {
-        out_->add_particle_pair(ParticlePair(a,b));
+        out_.push_back(ParticlePair(a,b));
       }
     }
   };
 }
 
 
-void RigidClosePairsFinder::add_close_pairs(Particle *a, Particle *b,
-                                            ListPairContainer *out) const {
+ParticlePairsTemp RigidClosePairsFinder::get_close_pairs(Particle *a,
+                                                         Particle *b) const {
   internal::RigidBodyHierarchy *da=NULL, *db=NULL;
+  ParticlePairsTemp out;
   if (RigidBody::particle_is_instance(a)) {
     da= internal::get_rigid_body_hierarchy(RigidBody(a), r_, k_);
   }
   if (RigidBody::particle_is_instance(b)) {
     db= internal::get_rigid_body_hierarchy(RigidBody(b), r_, k_);
   }
-  EditGuard<ListPairContainer> e(out);
   if (da && db) {
     internal::apply_to_nearby(da, db, get_distance(),
                               AddToContainer(out));
@@ -154,8 +146,44 @@ void RigidClosePairsFinder::add_close_pairs(Particle *a, Particle *b,
     internal::apply_to_nearby<AddToContainer, true>(db, XYZR(a), get_distance(),
                                     AddToContainer(out, true));
   } else {
-    out->add_particle_pair(ParticlePair(a,b));
+    out.push_back(ParticlePair(a,b));
   }
+  return out;
+}
+
+void RigidClosePairsFinder::show(std::ostream &out) const {
+  out << "RigidClosePairsFinder\n";
+}
+
+namespace {
+  ParticlesTemp fill_list(SingletonContainer *sc) {
+    ParticlesTemp ret=sc->get_particles();
+    ParticlesTemp members;
+    for (unsigned int i=0; i< ret.size(); ++i) {
+      if (RigidBody::particle_is_instance(ret[i])) {
+        RigidBody d(ret[i]);
+        ParticlesTemp m= d.get_members();
+        members.insert(members.end(), m.begin(), m.end());
+      }
+    }
+    ret.insert(ret.end(), members.begin(), members.end());
+    return ret;
+  }
+}
+
+ParticlesTemp
+RigidClosePairsFinder::get_used_particles(SingletonContainer *sc) const {
+  ParticlesTemp ret= fill_list(sc);
+  return ret;
+}
+
+ParticlesTemp
+RigidClosePairsFinder::get_used_particles(SingletonContainer *a,
+                                          SingletonContainer *b) const {
+  ParticlesTemp ret0= fill_list(a);
+  ParticlesTemp ret1= fill_list(b);
+  ret0.insert(ret0.end(), ret1.begin(), ret1.end());
+  return ret0;
 }
 
 IMPCORE_END_NAMESPACE

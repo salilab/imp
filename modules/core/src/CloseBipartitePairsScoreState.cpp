@@ -130,9 +130,13 @@ void CloseBipartitePairsScoreState::do_before_evaluate()
     xyzc_[1] =new MaximumChangeXYZRScoreState(in_[1],rk_);
     IMP_LOG(TERSE, "adding pairs" << std::endl);
     out_->clear_particle_pairs();
-    f_->add_close_pairs(in_[0], in_[1],out_);
-    out_->remove_particle_pairs_if(Found(close_pair_filters_begin(),
-                                         close_pair_filters_end()));
+    ParticlePairsTemp cp= f_->get_close_pairs(in_[0], in_[1]);
+    cp.erase(std::remove_if(cp.begin(),
+                            cp.end(),
+                            Found(close_pair_filters_begin(),
+                                  close_pair_filters_end())),
+             cp.end());
+    out_->set_particle_pairs(cp);
     IMP_LOG(TERSE, "done"<< std::endl);
     return;
   } else {
@@ -143,9 +147,13 @@ void CloseBipartitePairsScoreState::do_before_evaluate()
 
     if (delta > slack_) {
       out_->clear_particle_pairs();
-      f_->add_close_pairs(in_[0], in_[1],out_);
-      out_->remove_particle_pairs_if(Found(close_pair_filters_begin(),
-                                           close_pair_filters_end()));
+      ParticlePairsTemp cp= f_->get_close_pairs(in_[0], in_[1]);
+      cp.erase(std::remove_if(cp.begin(),
+                              cp.end(),
+                              Found(close_pair_filters_begin(),
+                                    close_pair_filters_end())),
+               cp.end());
+      out_->set_particle_pairs(cp);
       xyzc_[0]->reset();
       xyzc_[1]->reset();
     }
@@ -162,8 +170,8 @@ ParticlesList CloseBipartitePairsScoreState::get_interacting_particles() const {
 }
 
 ParticlesTemp CloseBipartitePairsScoreState::get_used_particles() const {
-  ParticlesTemp ret0(in_[0]->particles_begin(), in_[0]->particles_end());
-  ParticlesTemp ret1(in_[1]->particles_begin(), in_[1]->particles_end());
+  ParticlesTemp ret0(f_->get_used_particles(in_[0]));
+  ParticlesTemp ret1(f_->get_used_particles(in_[1]));
   ret0.insert(ret0.end(), ret1.begin(), ret1.end());
   ParticlePairsTemp all_pairs;
   for (unsigned int i=0; i< ret0.size(); ++i) {

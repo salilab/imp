@@ -117,50 +117,25 @@ void ClosePairsScoreState::do_before_evaluate()
     unsigned int sz= out_->get_number_of_particle_pairs();
     out_->clear_particle_pairs();
     out_->reserve_particle_pairs(sz);
-    IMP_LOG(VERBOSE, "Computing close pairs" << std::endl);
-    f_->add_close_pairs(in_,out_);
-    IMP_LOG(VERBOSE, "Removing unneeded pairs" << std::endl);
-    out_->remove_particle_pairs_if(Found(close_pair_filters_begin(),
-                                         close_pair_filters_end()));
-    IMP_LOG(VERBOSE, "Done" << std::endl);
-    //std::cout << "done"<< std::endl;
+    ParticlePairsTemp cp= f_->get_close_pairs(in_);
+    cp.erase(std::remove_if(cp.begin(),
+                            cp.end(),
+                            Found(close_pair_filters_begin(),
+                                  close_pair_filters_end())),
+             cp.end());
+    out_->set_particle_pairs(cp);
     return;
   } else {
     xyzc_->before_evaluate(ScoreState::get_before_evaluate_iteration());
     Float delta= xyzc_->get_maximum_change();
     if (delta*2 > slack_) {
-      unsigned int sz= out_->get_number_of_particle_pairs();
-      IMP_IF_LOG(VERBOSE) {
-        for (unsigned int i=0; i< out_->get_number_of_particle_pairs(); ++i) {
-          IMP_LOG(VERBOSE, "(" << out_->get_particle_pair(i)[0]
-                  << ", " << out_->get_particle_pair(i)[1] << ") ");
-        }
-        IMP_LOG(VERBOSE, std::endl);
-      }
-      IMP_LOG(VERBOSE, "clearing" << std::endl);
-      out_->clear_particle_pairs();
-      IMP_LOG(VERBOSE, "reserving pairs" << std::endl);
-      out_->reserve_particle_pairs(sz);
-      IMP_LOG(VERBOSE, "Computing close pairs" << std::endl);
-      f_->add_close_pairs(in_, out_);
-      IMP_LOG(VERBOSE, "Removing unneeded pairs" << std::endl);
-      IMP_IF_LOG(VERBOSE) {
-        for (unsigned int i=0; i< out_->get_number_of_particle_pairs(); ++i) {
-          IMP_LOG(VERBOSE, "(" << out_->get_particle_pair(i)[0]->get_name()
-                  << ", " << out_->get_particle_pair(i)[1]->get_name() << ") ");
-        }
-        IMP_LOG(VERBOSE, std::endl);
-      }
-      out_->remove_particle_pairs_if(Found(close_pair_filters_begin(),
-                                           close_pair_filters_end()));
-      IMP_LOG(VERBOSE, "Done" << std::endl);
-      IMP_IF_LOG(VERBOSE) {
-        for (unsigned int i=0; i< out_->get_number_of_particle_pairs(); ++i) {
-          IMP_LOG(VERBOSE, "(" << out_->get_particle_pair(i)[0]->get_name()
-                  << ", " << out_->get_particle_pair(i)[1]->get_name() << ") ");
-        }
-        IMP_LOG(VERBOSE, std::endl);
-      }
+      ParticlePairsTemp cp= f_->get_close_pairs(in_);
+      cp.erase(std::remove_if(cp.begin(),
+                              cp.end(),
+                              Found(close_pair_filters_begin(),
+                                    close_pair_filters_end())),
+               cp.end());
+      out_->set_particle_pairs(cp);
       xyzc_->reset();
     }
   }
@@ -173,7 +148,7 @@ ParticlesList ClosePairsScoreState::get_interacting_particles() const {
 }
 
 ParticlesTemp ClosePairsScoreState::get_used_particles() const {
-  ParticlesTemp ret(in_->particles_begin(), in_->particles_end());
+  ParticlesTemp ret(f_->get_used_particles(in_));
   ParticlePairsTemp all_pairs;
   for (unsigned int i=0; i< ret.size(); ++i) {
     for (unsigned int j=0; j< i; ++j) {
