@@ -15,8 +15,7 @@
 #include <boost/timer.hpp>
 #include <set>
 
-//#ifndef IMP_NO_DEBUG
-#if 0
+#ifndef IMP_NO_DEBUG
 #define WRAP_CALL(restraint, expr)                                      \
   {                                                                     \
     IMP_IF_CHECK(EXPENSIVE) {                                           \
