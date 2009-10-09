@@ -9,6 +9,7 @@
 #ifndef IMP_OBJECT_H
 #define IMP_OBJECT_H
 
+#include "config.h"
 #include "RefCounted.h"
 #include "exception.h"
 #include "VersionInfo.h"
@@ -156,8 +157,9 @@ IMP_END_NAMESPACE
 
 //! Perform some basic validity checks on the object for memory debugging
 #define IMP_CHECK_OBJECT(obj) do {                                      \
-    IMP_assert((obj) != NULL, "NULL object");                             \
-    IMP_assert((obj)->get_is_valid(), "Object was previously freed");     \
+    IMP_assert((obj) != NULL, "NULL object");                           \
+    IMP_assert((obj)->get_is_valid(), "Check object " << obj            \
+               << " was previously freed");                             \
 } while (false)
 
 #include "SetLogState.h"
