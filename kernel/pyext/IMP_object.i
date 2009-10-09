@@ -5,11 +5,7 @@
 %extend IMP::Object {
   %pythoncode {
     def __str__(self):
-        import StringIO
-        s = StringIO.StringIO()
-        self.show(s)
-        spl = [x for x in s.getvalue().split('\n') if x != '']
-        return '<' + '; '.join(spl) + '>'
+        return self.get_name()
   }
 }
 
