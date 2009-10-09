@@ -6,12 +6,20 @@ env.Append(CPPDEFINES=["IMP_DATA_DIRECTORY=\\\""+os.path.join(env['datadir'],"IM
 config=[]
 if env['CGAL_LIBS'] != ['']:
     config.append('IMP_USE_CGAL')
+else:
+    config.append('IMP_NO_CGAL')
 if not env.get('deprecated', True):
     config.append('IMP_NO_DEPRECATED')
+else:
+    config.append('IMP_USE_DEPRECATED')
 if env['IMP_ENDIAN']=='little':
     config.append("IMP_LITTLE_ENDIAN")
+else:
+    config.append('IMP_BIG_ENDIAN')
 if env['build'] == 'fast':
-    config.append("IMP_NDEBUG")
+    config.append("IMP_NO_DEBUG")
+else:
+    config.append('IMP_USE_DEBUG')
 
 env.IMPModuleBuild(version='SVN', required_modules=None, config_macros=config,
                    module='kernel', module_suffix="", module_include_path="IMP",
