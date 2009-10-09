@@ -49,6 +49,9 @@ struct ContainerTraits<Particle> {
   static bool is_inactive(const Particle* p) {
     return !p->get_is_active();
   }
+  static bool is_dirty(const Particle *p) {
+    return p->get_is_changed();
+  }
 };
 
 template <>
@@ -78,6 +81,10 @@ struct ContainerTraits<ParticlePair> {
   }
   static bool is_inactive(const ParticlePair &p) {
     return !p[0]->get_is_active() || !p[1]->get_is_active();
+  }
+  static bool is_dirty(const ParticlePair &p) {
+    return p[0]->get_is_changed()
+      || p[1]->get_is_changed();
   }
 };
 
