@@ -9,6 +9,8 @@
 #define IMPCORE_GRID_CLOSE_PAIRS_FINDER_H
 
 #include "ClosePairsFinder.h"
+#include "macros.h"
+#include "config.h"
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -19,24 +21,9 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT GridClosePairsFinder : public ClosePairsFinder
 {
  public:
-  /** */
   GridClosePairsFinder();
-  ~GridClosePairsFinder();
 
-  void add_close_pairs(SingletonContainer *pc,
-                       ListPairContainer *out) const;
-
-  void add_close_pairs(SingletonContainer *pca,
-                       SingletonContainer *pcb,
-                       ListPairContainer *out) const;
-
-
-  void show(std::ostream &out= std::cout) const {
-    out << "GridClosePairsFinder" << std::endl;
-  }
-  VersionInfo get_version_info() const {
-    return get_module_version_info();
-  }
+  IMP_CLOSE_PAIRS_FINDER(GridClosePairsFinder, get_module_version_info());
 };
 
 IMPCORE_END_NAMESPACE

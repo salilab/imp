@@ -50,17 +50,13 @@ class IMPCOREEXPORT ClosePairsFinder : public Object
   /** \name Methods to find close pairs
       The methods add apprioriately close pairs of particles from the
       input list (or lists, for the bipartite version) to the out
-      list. You can add filters to the out list to prevent centerain
-      pairs or types of pairs from being added to the list of close
-      pairs. For example, see IMP::atom::BondPairFilter.
+      list.
       @{
    */
-  virtual void add_close_pairs(SingletonContainer *pc,
-                               ListPairContainer *out) const =0;
+  virtual ParticlePairsTemp get_close_pairs(SingletonContainer *pc) const =0;
 
-  virtual void add_close_pairs(SingletonContainer *pca,
-                               SingletonContainer *pcb,
-                               ListPairContainer *out) const =0;
+  virtual ParticlePairsTemp get_close_pairs(SingletonContainer *pca,
+                                            SingletonContainer *pcb) const =0;
   /** @} */
   /** \name The radius key
       If the radius key is non-default, then all particles must have
@@ -89,6 +85,15 @@ class IMPCOREEXPORT ClosePairsFinder : public Object
   double get_distance() const {
     return distance_;
   }
+  /** @} */
+  /** \name Used particles
+
+      Return all the particles touched in processing the passed ones.
+      @{
+  */
+  virtual ParticlesTemp get_used_particles(SingletonContainer *pc) const=0;
+  virtual ParticlesTemp get_used_particles(SingletonContainer *a,
+                                   SingletonContainer *b) const=0;
   /** @} */
 };
 

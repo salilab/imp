@@ -59,7 +59,6 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder
 {
   Pointer<ClosePairsFinder> cpf_;
-  Pointer<ListPairContainer> cpfout_;
   Pointer<Refiner> r_;
   ObjectKey k_;
  public:
@@ -70,23 +69,9 @@ class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder
                         Refiner *r);
   RigidClosePairsFinder();
   RigidClosePairsFinder(ClosePairsFinder *cpf);
-  ~RigidClosePairsFinder();
+  IMP_CLOSE_PAIRS_FINDER(RigidClosePairsFinder, get_module_version_info());
 
-  void add_close_pairs(SingletonContainer *pc,
-                       ListPairContainer *out) const;
-
-  void add_close_pairs(SingletonContainer *pca,
-                       SingletonContainer *pcb,
-                       ListPairContainer *out) const;
-  void add_close_pairs(Particle *a, Particle *b,
-                       ListPairContainer *out) const;
-
-  void show(std::ostream &out= std::cout) const {
-    out << "RigidClosePairsFinder" << std::endl;
-  }
-  VersionInfo get_version_info() const {
-    return get_module_version_info();
-  }
+  ParticlePairsTemp get_close_pairs(Particle *a, Particle *b) const;
 
   void set_distance(double d) {
     cpf_->set_distance(d);

@@ -67,13 +67,13 @@ static void copy_particles_to_boxes(const SingletonContainer *ps,
 }
 
 struct AddToList {
-  ListPairContainer *out_;
-  AddToList(ListPairContainer *out): out_(out){}
+  ParticlePairsTemp &out_;
+  AddToList(ParticlePairsTemp &out): out_(out){}
   void operator()(const NBLBbox &a, const NBLBbox &b) {
     if (squared_distance(XYZ(a).get_coordinates(),
                          XYZ(b).get_coordinates())
         < square(a.r_ + b.r_)) {
-      out_->add_particle_pair(ParticlePair(a,b));
+      out_.push_back(ParticlePair(a,b));
     }
   }
 };
@@ -83,34 +83,49 @@ struct AddToList {
 
 BoxSweepClosePairsFinder::BoxSweepClosePairsFinder(){}
 
-BoxSweepClosePairsFinder::~BoxSweepClosePairsFinder(){}
-
-void BoxSweepClosePairsFinder
-::add_close_pairs(SingletonContainer *ca,
-                  SingletonContainer *cb,
-                  ListPairContainer *out) const {
+ParticlePairsTemp BoxSweepClosePairsFinder
+::get_close_pairs(SingletonContainer *ca,
+                  SingletonContainer *cb) const {
   std::vector<NBLBbox> boxes0, boxes1;
   copy_particles_to_boxes(ca, get_radius_key(), get_distance(), boxes0);
   copy_particles_to_boxes(cb, get_radius_key(), get_distance(), boxes1);
 
-  EditGuard<ListPairContainer> guard(out);
+  ParticlePairsTemp out;
 
   CGAL::box_intersection_d( boxes0.begin(), boxes0.end(),
                             boxes1.begin(), boxes1.end(), AddToList(out));
+  return out;
 }
 
-void BoxSweepClosePairsFinder
-::add_close_pairs(SingletonContainer *c,
-                  ListPairContainer *out) const {
+ParticlePairsTemp BoxSweepClosePairsFinder
+::get_close_pairs(SingletonContainer *c) const {
+  ParticlePairsTemp out;
   std::vector<NBLBbox> boxes;
   copy_particles_to_boxes(c, get_radius_key(), get_distance(), boxes);
 
-  EditGuard<ListPairContainer> guard(out);
-
   CGAL::box_self_intersection_d( boxes.begin(), boxes.end(), AddToList(out));
-
+  return out;
 }
 
+void BoxSweepClosePairsFinder::show(std::ostream &out) const {
+  out << "BoxSweepClosePairsFinder" << std::endl;
+}
+
+
+ParticlesTemp
+BoxSweepClosePairsFinder::get_used_particles(SingletonContainer *sc) const {
+  ParticlesTemp ret= sc->get_particles();
+  return ret;
+}
+
+ParticlesTemp
+BoxSweepClosePairsFinder::get_used_particles(SingletonContainer *a,
+                                             SingletonContainer *b) const {
+  ParticlesTemp ret0= a->get_particles();
+  ParticlesTemp ret1= b->get_particles();
+  ret0.insert(ret0.end(), ret1.begin(), ret1.end());
+  return ret0;
+}
 
 IMPCORE_END_NAMESPACE
 #endif /* IMP_USE_CGAL */

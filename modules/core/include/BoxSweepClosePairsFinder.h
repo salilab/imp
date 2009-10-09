@@ -9,6 +9,8 @@
 #define IMPCORE_BOX_SWEEP_CLOSE_PAIRS_FINDER_H
 
 #include "ClosePairsFinder.h"
+#include "macros.h"
+#include "config.h"
 
 
 #ifdef IMP_USE_CGAL
@@ -26,22 +28,9 @@ class IMPCOREEXPORT BoxSweepClosePairsFinder : public ClosePairsFinder
 {
  public:
   BoxSweepClosePairsFinder();
-  ~BoxSweepClosePairsFinder();
 
-  void add_close_pairs(SingletonContainer *pc,
-                       ListPairContainer *out) const;
-
-  void add_close_pairs(SingletonContainer *pca,
-                       SingletonContainer *pcb,
-                       ListPairContainer *out) const;
-
-
-  void show(std::ostream &out= std::cout) const {
-    out << "BoxSweepClosePairsFinder" << std::endl;
-  }
-  VersionInfo get_version_info() const {
-    return get_module_version_info();
-  }
+  IMP_CLOSE_PAIRS_FINDER(BoxSweepClosePairsFinder,
+                         get_module_version_info());
 };
 
 IMPCORE_END_NAMESPACE
