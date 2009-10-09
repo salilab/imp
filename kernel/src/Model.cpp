@@ -328,6 +328,43 @@ Float Model::evaluate(bool calc_derivs)
   if (get_is_incremental()) {
     score= do_evaluate_incremental(calc_derivs);
     first_incremental_=false;
+    IMP_IF_CHECK(EXPENSIVE) {
+      std::vector<internal::ParticleStorage::DerivativeTable>
+        derivs;
+      derivs.reserve(get_number_of_particles());
+      for (ParticleIterator it= particles_begin();
+           it != particles_end(); ++it) {
+        derivs.push_back((*it)->ps_->derivatives_);
+        (*it)->zero_derivatives();
+      }
+      double nscore= do_evaluate(calc_derivs);
+      IMP_assert(std::abs(nscore -score) < .001+.1*std::abs(nscore+score),
+                 "Incremental and non-incremental evaluation do not agree."
+                 << " Incremental gets " << score << " but non-incremental "
+                 << "gets " << nscore);
+      if (calc_derivs) {
+        unsigned int i=0;
+        for (ParticleIterator it= particles_begin();
+             it != particles_end(); ++it) {
+          for (unsigned int j=0; j< derivs[i].get_length(); ++j) {
+            IMP_assert(std::abs(derivs[i].get(j)
+                                -(*it)->ps_->derivatives_.get(j))
+                       < .001 + .01*std::abs(derivs[i].get(j)
+                                             +(*it)->ps_->derivatives_.get(j)),
+                       "Derivatives do not match in incremental "
+                       << "vs non-incremental " <<
+                       "for particle " << (*it)->get_name() << " on attribute "
+                       << FloatKey(j) << ". Incremental was "
+                       << derivs[i].get(j)
+                       << " where as regular was "
+                       << (*it)->ps_->derivatives_.get(j));
+          }
+          (*it)->ps_->derivatives_=derivs[i];
+          ++i;
+        }
+        IMP_assert(i== derivs.size(), "Number of particles changed.");
+      }
+    }
   } else {
     score= do_evaluate(calc_derivs);
   }
