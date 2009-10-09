@@ -25,9 +25,11 @@
 #include <boost/graph/depth_first_search.hpp>
 IMPDOMINO_BEGIN_NAMESPACE
 
-
+// it is declared in several places
+#ifndef IMP_SWIG
 //! The key for the string Domino uses as a unique index
 IMPDOMINOEXPORT StringKey node_name_key();
+#endif
 
 template < typename TimeMap > class dfs_time_visitor :
       public boost::default_dfs_visitor
