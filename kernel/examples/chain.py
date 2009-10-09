@@ -32,7 +32,7 @@ nbl= IMP.core.ClosePairsScoreState(chain)
 m.add_score_state(nbl)
 # Exclude bonds from closest pairs
 fl= nbl.get_close_pairs_container()
-bpc=IMP.atom.BondPairFilter()
+bpc=IMP.atom.BondedPairFilter()
 nbl.add_close_pair_filter(bpc)
 
 # Set up excluded volume

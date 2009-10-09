@@ -6,7 +6,7 @@
  *
  */
 
-#include "IMP/atom/BondPairFilter.h"
+#include "IMP/atom/BondedPairFilter.h"
 
 IMPATOM_BEGIN_NAMESPACE
 
