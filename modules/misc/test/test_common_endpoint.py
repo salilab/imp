@@ -21,7 +21,7 @@ class TunnelTest(IMP.test.TestCase):
                 bonds.append(IMP.atom.custom_bond(lbp, bp, 1,1))
             lbp= bp
             ps.append(p)
-        cepc= IMP.misc.CommonEndpointPairContainer()
+        cepc= IMP.misc.CommonEndpointPairFilter()
         self.assert_(cepc.get_contains_particle_pair(IMP.ParticlePair(bonds[0].get_particle(),
                                                               bonds[1].get_particle())))
         self.assert_(cepc.get_contains_particle_pair(IMP.ParticlePair(bonds[2].get_particle(),
