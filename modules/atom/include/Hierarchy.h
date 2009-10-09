@@ -110,9 +110,9 @@ typedef Decorators<Hierarchy,
     \see read_pdb
  */
 class IMPATOMEXPORT Hierarchy:
-  public IMP::core::Hierarchy
+  public ::IMP::core::Hierarchy
 {
-  typedef IMP::core::Hierarchy P;
+  typedef ::IMP::core::Hierarchy P;
 public:
 
   typedef HierarchyType Type;
