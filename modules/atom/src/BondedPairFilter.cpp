@@ -10,11 +10,11 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-BondPairFilter
-::BondPairFilter(){
+BondedPairFilter
+::BondedPairFilter(){
 }
 
-bool BondPairFilter
+bool BondedPairFilter
 ::get_contains_particle_pair(ParticlePair pp) const {
   if (!Bonded::particle_is_instance(pp.first)
       || ! Bonded::particle_is_instance(pp.second)) {
@@ -27,7 +27,7 @@ bool BondPairFilter
   return bd != Bond();
 }
 
-ParticlesTemp BondPairFilter
+ParticlesTemp BondedPairFilter
 ::get_used_particles(const ParticlePairsTemp &t) const {
   ParticlesTemp ret;
   ret.reserve(t.size()*3);
@@ -47,7 +47,7 @@ ParticlesTemp BondPairFilter
   return ret;
 }
 
-void BondPairFilter::show(std::ostream &out) const {
+void BondedPairFilter::show(std::ostream &out) const {
   out << "BondPairFilter" << std::endl;
 }
 
