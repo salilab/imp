@@ -143,6 +143,20 @@ protected:
 
 IMP_OUTPUT_OPERATOR(ScoreState);
 
+//! Removes the ScoreState when the RIAA object is destroyed
+class ScoreStatePointer: public RAII {
+  Pointer<ScoreState> ss_;
+public:
+  IMP_RAII(ScoreStatePointer, (ScoreState *ss, Model *m),, {
+      ss_=ss;
+      m->add_score_state(ss);
+    }, {
+      ss_->get_model()->remove_score_state(ss_);
+      ss_=NULL;
+    });
+};
+
+
 IMP_END_NAMESPACE
 
 #endif  /* IMP_SCORE_STATE_H */
