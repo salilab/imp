@@ -20,13 +20,13 @@ IMPATOM_BEGIN_NAMESPACE
     \ingroup bond
     \see Bonded
  */
-class IMPATOMEXPORT BondPairFilter : public PairFilter
+class IMPATOMEXPORT BondedPairFilter : public PairFilter
 {
 public:
   //! no arguments
-  BondPairFilter();
+  BondedPairFilter();
 
-  IMP_PAIR_FILTER(BondPairFilter, get_module_version_info())
+  IMP_PAIR_FILTER(BondedPairFilter, get_module_version_info())
 };
 
 
