@@ -104,6 +104,9 @@ public:
 };
 
 
+class Hierarchy;
+typedef DecoratorsWithTraits<Hierarchy, Particles,
+                             HierarchyTraits> GenericHierarchies;
 
 
 //! A decorator for helping deal with a hierarchy.
@@ -118,7 +121,7 @@ class IMPCOREEXPORT Hierarchy: public Decorator
   typedef Decorator P;
 
   IMP_DECORATOR_ARRAY_DECL(public, Hierarchy, Child, child, children,
-                           traits_, Hierarchy)
+                           traits_, Hierarchy, GenericHierarchies)
 public:
   IMP_DECORATOR_TRAITS(Hierarchy, Decorator,
                        HierarchyTraits, traits,
@@ -160,7 +163,7 @@ public:
                              =Hierarchy::get_default_traits()){
     return has_required_attributes_for_child(p, traits);
   }
-
+#if 0
   /** Return the particles of the children
    */
   DecoratorsWithTraits<Hierarchy, Particles,
@@ -172,6 +175,7 @@ public:
     }
     return ps;
   }
+#endif
 
   /** \return the parent particle, or Hierarchy()
       if it has no parent.
@@ -215,8 +219,7 @@ public:
 
 IMP_OUTPUT_OPERATOR(Hierarchy);
 
-typedef DecoratorsWithTraits<Hierarchy, Particles,
-                             HierarchyTraits> GenericHierarchies;
+
 
 //! A visitor for traversal of a hierarchy
 /** This works from both C++ and Python

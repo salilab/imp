@@ -14,7 +14,8 @@ class PDBReadWriteTest(IMP.test.TestCase):
         #! read PDB
         mp= IMP.atom.read_pdb(self.open_input_file("input.pdb"),
                               m, IMP.atom.NonWaterSelector())
-        r= IMP.atom.get_residue(mp, 10)
+        chain= mp.get_child(0)
+        r= IMP.atom.get_residue(chain, 10)
         self.assert_(r != IMP.atom.Hierarchy())
         r.show()
         rr= IMP.atom.Residue(r.get_particle())
