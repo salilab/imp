@@ -1,7 +1,7 @@
 Import('env')
 
 files = [
-         'CommonEndpointPairContainer.cpp',
+         'CommonEndpointPairFilter.cpp',
          'LowestRefinedPairScore.cpp',
          'RefineOncePairScore.cpp',
          'StateAdaptor.cpp',
