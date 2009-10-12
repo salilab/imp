@@ -125,6 +125,8 @@ public:
       opportunity to update the stored Particles and their internal
       state before and after the restraints are evaluated. Use the
       methods below to manipulate the list of ScoreState objects.
+
+      The value type for the iterators is a ScoreState*.
   */
   /**@{*/
   IMP_LIST(public, ScoreState, score_state, ScoreState*, ScoreStates)
@@ -134,6 +136,8 @@ public:
 
       The Model scores the current configuration use the stored Restraint
       objects. Use the methods below to manipulate the list.
+
+      The value type for the iterators is a Restraint*.
    */
   /**@{*/
   IMP_LIST(public, Restraint, restraint, Restraint*, Restraints);
@@ -149,6 +153,7 @@ public:
       Restraint evaluation or ScoreState evaluation. It is OK to
       remove them during OptimizerState updates, although not all
       optimizers support this yet.
+
   */
   void remove_particle(Particle *p) {
     IMP_OBJECT_LOG;
@@ -171,6 +176,8 @@ public:
       debugging. These methods allow you to do that.
       \note Only use this if you really know what you are doing as
       Particles can be added to the object from many different places.
+
+      The value type for the iterators is a Particle*.
    */
   /**@{*/
   unsigned int get_number_of_particles() const {
