@@ -101,10 +101,16 @@ public:
 
   /** @} */
 
-  //! The model the restraint is part of.
-  /** \param[in] model The model.
-      Restraints that want to take action when they are added to the model
-      can override this method (but be sure to call Restraint::set_model()
+  /** \brief The restraint can override this in order to take action
+      when added to a Model
+
+      Users should generally not call this method directly, instead
+      they should just used Model::add_restraint() to add the
+      restraint to the Model.
+
+      Restraints
+      that want to take action when they are added to the model can
+      override this method (but be sure to call Restraint::set_model()
       to set the actual model pointer).
    */
   virtual void set_model(Model* model);
