@@ -38,7 +38,7 @@ void SimpleDiscreteRestraint::load_restraints(std::string restraint_filename)
       std::ostringstream msg;
       msg << "SimpleDiscreteRestraint::load_restraints the line : "
           << line << " is of the wrong format";
-      IMP_failure(msg.str().c_str(), ErrorException);
+      IMP_FAILURE(msg.str().c_str(), ErrorException);
     }
   }
 }
@@ -67,7 +67,7 @@ SimpleDiscreteRestraint::SimpleDiscreteRestraint(Model& model_,
 
 IMP_LIST_IMPL(SimpleDiscreteRestraint, Particle, particle,Particle*,
               Particles, {
-              IMP_assert(get_number_of_particles()==0
+              IMP_INTERNAL_CHECK(get_number_of_particles()==0
                          || obj->get_model()
                          == (*particles_begin())->get_model(),
                          "All particles in Restraint must belong to the "

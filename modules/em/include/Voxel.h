@@ -42,7 +42,7 @@ class IMPEMEXPORT Voxel: public Decorator
 
   static bool particle_is_instance(Particle *p) {
     core::XYZ::particle_is_instance(p);
-    IMP_check( p->has_attribute(get_density_key()),
+    IMP_USAGE_CHECK( p->has_attribute(get_density_key()),
               "Particle is expected to have density attribute.",
                InvalidStateException);
     return true;

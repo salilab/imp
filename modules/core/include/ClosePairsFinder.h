@@ -78,7 +78,7 @@ class IMPCOREEXPORT ClosePairsFinder : public Object
       @{
   */
   virtual void set_distance(double d) {
-    IMP_check(d>=0, "Distance cannot be negative " << d,
+    IMP_USAGE_CHECK(d>=0, "Distance cannot be negative " << d,
               ValueException);
     distance_=d;
   }

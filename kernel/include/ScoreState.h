@@ -94,7 +94,7 @@ public:
 
   //! return the stored model data
   Model *get_model() const {
-    IMP_assert(model_,
+    IMP_INTERNAL_CHECK(model_,
                "Must call set_model before get_model on state");
     return model_.get();
   }

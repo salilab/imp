@@ -85,19 +85,28 @@ namespace internal {
 """ %vars
     print >> h
     for d in env['IMP_MODULE_CONFIG']:
-        nd= d.replace("_USE_","_NO_")
-        if nd==d:
-            nd= d.replace("_NO_", "_USE_")
-        if nd != d:
+        if type(d) == type([]):
+            name=d[0]
+            value=d[1]
+        else:
+            name=d
+            value=None
+        nd= name.replace("_USE_","_NO_")
+        if nd==name:
+            nd= name.replace("_NO_", "_USE_")
+        if nd != name:
             print >> h, "#ifdef "+nd
             print >> h, "/* Do not define IMP config macros directly */"
             print >> h, "BOOST_STATIC_ASSERT(false)"
             print >> h, "#endif"
-        print >> h, "#ifdef "+d
+        print >> h, "#ifdef "+name
         print >> h, "/* Do not define IMP config macros directly */"
         print >> h, "BOOST_STATIC_ASSERT(false)"
         print >> h, "#endif"
-        print >> h, "#define "+d
+        if value is not None:
+            print >> h, "#define "+name+" "+value
+        else:
+            print >> h, "#define "+name
     print >> h
 
 

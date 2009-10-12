@@ -59,7 +59,7 @@ public:
    */
   emreal get_top(int ind) const
   {
-    IMP_check(top_calculated_,
+    IMP_USAGE_CHECK(top_calculated_,
                " DensityHeader::get_top  the top coordinates of the map "
                << "have not been setup yet " << std::endl,ValueException);
     if (ind==0) return xtop_;
@@ -198,7 +198,7 @@ public:
   \exception ValueException if the value of i is out of range.
   */
   inline float get_origin(int i) const {
-    IMP_check(i >= 0 && i <= 2,
+    IMP_USAGE_CHECK(i >= 0 && i <= 2,
               "The origin coordinate should be between 0 and 2",
               ValueException);
     switch (i) {

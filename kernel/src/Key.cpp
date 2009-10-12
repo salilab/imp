@@ -18,7 +18,7 @@ KeyData::KeyData(): heuristic_(heuristic_value){}
 
 void KeyData::assert_is_initialized() const
 {
-  IMP_assert(heuristic_== heuristic_value,
+  IMP_INTERNAL_CHECK(heuristic_== heuristic_value,
              "Uninitialized KeyData. Do not initialize Keys statically.");
 }
 

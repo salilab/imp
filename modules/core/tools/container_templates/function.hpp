@@ -41,26 +41,26 @@ public:
   /** Apply the function to a single value*/
   virtual void apply(ClassnameArguments,
                      DerivativeAccumulator &da) const {
-    IMP_failure("This GroupnameModifier must be called without a"
+    IMP_FAILURE("This GroupnameModifier must be called without a"
                 << " DerivativeAccumulator.", InvalidStateException);
   }
 
   /** Apply the function to a single value*/
   virtual void apply(ClassnameArguments) const {
-    IMP_failure("This GroupnameModifier must be called with a"
+    IMP_FAILURE("This GroupnameModifier must be called with a"
                 << " DerivativeAccumulator.", InvalidStateException);
   }
 
   /** Apply the function to a collection of Classnames */
   virtual void apply(const ClassnamesTemp &o) const {
-    IMP_failure("This GroupnameModifier must be called with a"
+    IMP_FAILURE("This GroupnameModifier must be called with a"
                 << " DerivativeAccumulator.", InvalidStateException);
   }
 
   /** Apply the function to a collection of Classnames */
   virtual void apply(const ClassnamesTemp &o,
                      DerivativeAccumulator &da) const {
-    IMP_failure("This GroupnameModifier must be called without a"
+    IMP_FAILURE("This GroupnameModifier must be called without a"
                 << " DerivativeAccumulator.", InvalidStateException);
   }
 
@@ -105,7 +105,7 @@ public:
   GroupnameFunctor(const GroupnameModifier *f): f_(f), da_(NULL){}
   GroupnameFunctor(const GroupnameModifier *f,
                    DerivativeAccumulator *da): f_(f), da_(da){
-    IMP_check(da_, "The passed derivative accumulator should not be null.",
+    IMP_USAGE_CHECK(da_, "The passed derivative accumulator should not be null.",
               InvalidStateException);
   }
   void operator()( Value p) const {

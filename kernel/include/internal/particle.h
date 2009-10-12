@@ -74,7 +74,7 @@ struct ReadLock;
 
 struct IMPEXPORT ParticleStorage {
   ParticleStorage(): shadow_(NULL), dirty_(false){
-#ifndef IMP_NO_DEBUG
+#if IMP_BUILD < IMP_FAST
     read_locked_=false;
 #endif
   }
@@ -113,7 +113,7 @@ struct IMPEXPORT ParticleStorage {
   // incremental updates
   bool dirty_;
 
-#ifndef IMP_NO_DEBUG
+#if IMP_BUILD < IMP_FAST
   // for testing get_used_particles()
   bool read_locked_;
 #endif

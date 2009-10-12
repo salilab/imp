@@ -170,7 +170,7 @@ Hierarchy
 get_residue(Hierarchy mhd,
             unsigned int index)
 {
-  IMP_check(mhd.get_type() == Hierarchy::PROTEIN
+  IMP_USAGE_CHECK(mhd.get_type() == Hierarchy::PROTEIN
             || mhd.get_type() == Hierarchy::CHAIN
             || mhd.get_type() == Hierarchy::NUCLEOTIDE,
             "Invalid type of Hierarchy passed to get_residue",
@@ -186,7 +186,7 @@ get_residue(Hierarchy mhd,
 
 #define TEST_FAIL(msg)                          \
   IMP_ERROR(msg);                               \
-  IMP_failure(msg, InvalidStateException)
+  IMP_FAILURE(msg, InvalidStateException)
 
 namespace {
   struct Validator {
@@ -248,13 +248,13 @@ bool Hierarchy::get_is_valid(bool print_info) const {
 Hierarchy
 create_fragment(const Hierarchies &ps)
 {
-  IMP_check(!ps.empty(), "Need some particles",
+  IMP_USAGE_CHECK(!ps.empty(), "Need some particles",
             ValueException);
   Hierarchy parent= ps[0].get_parent();
   unsigned int index= ps[0].get_parent_index();
-  IMP_IF_CHECK(CHEAP) {
+  IMP_IF_CHECK(USAGE) {
     for (unsigned int i=0; i< ps.size(); ++i) {
-      IMP_check(ps[i].get_parent() == parent,
+      IMP_USAGE_CHECK(ps[i].get_parent() == parent,
                 "Parents don't match",
                 ValueException);
     }

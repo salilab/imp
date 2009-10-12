@@ -19,7 +19,7 @@ Float PolygonGeometry::get_size() const {
 }
 
 algebra::Vector3D PolygonGeometry::get_vertex(unsigned int i) const {
-  IMP_check(i < pts_.size(), "Out of range vertex in triangle " << i,
+  IMP_USAGE_CHECK(i < pts_.size(), "Out of range vertex in triangle " << i,
            IndexException);
   return pts_[i];
 }

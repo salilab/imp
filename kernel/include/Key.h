@@ -59,7 +59,7 @@ class KeyBase: public NullDefault, public Comparable
 
   static unsigned int find_index(std::string sc) {
     if (get_map().find(sc) == get_map().end()) {
-      IMP_assert(LazyAdd, "You must explicitly create the type"
+      IMP_INTERNAL_CHECK(LazyAdd, "You must explicitly create the type"
                  << " first: " << sc);
       return IMP::internal::get_key_data(ID).add_key(sc);
     } else {
@@ -104,7 +104,7 @@ public:
 
 #ifndef DOXYGEN
   explicit KeyBase(unsigned int i): str_(i) {
-    IMP_assert(str_ >= 0, "Invalid initializer " << i);
+    IMP_INTERNAL_CHECK(str_ >= 0, "Invalid initializer " << i);
     // cannot check here as we need a past end iterator
   }
 #endif
@@ -139,7 +139,7 @@ public:
    */
   static KeyBase<ID, LazyAdd> add_alias(KeyBase<ID, LazyAdd> old_key,
                                         std::string new_name) {
-    IMP_assert(get_map().find(new_name) == get_map().end(),
+    IMP_INTERNAL_CHECK(get_map().find(new_name) == get_map().end(),
                "The name is already taken with an existing key or alias");
     IMP::internal::get_key_data(ID).add_alias(new_name, old_key.get_index());
     return KeyBase<ID, LazyAdd>(new_name.c_str());
@@ -147,7 +147,7 @@ public:
 
 #ifndef DOXYGEN
   unsigned int get_index() const {
-    IMP_assert(!is_default(),
+    IMP_INTERNAL_CHECK(!is_default(),
                "Cannot get index on defaultly constructed Key");
     return str_;
   }

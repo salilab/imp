@@ -22,6 +22,14 @@ namespace {
 
 }
 
+CheckLevel get_maximum_check_level() {
+#if IMP_BUILD == IMP_FAST
+  return NONE;
+#else
+  return USAGE_AND_INTERNAL;
+#endif
+}
+
 namespace internal {
 void assert_fail(const char *msg)
 {
@@ -45,10 +53,12 @@ void remove_failure_handler(FailureHandler *fh) {
 
 namespace internal {
  CheckLevel check_mode =
-#ifdef IMP_NO_DEBUG
-    NONE;
+#if IMP_BUILD == IMP_FAST
+   NONE;
+#elif IMP_BUILD == IMP_RELEASE
+  USAGE;
 #else
-  EXPENSIVE;
+  USAGE_AND_INTERNAL;
 #endif
 }
 

@@ -45,11 +45,11 @@ public:
   virtual void update() = 0;
 
   Optimizer *get_optimizer() const {
-    IMP_assert(optimizer_,
+    IMP_INTERNAL_CHECK(optimizer_,
                "Must call set_optimizer before get_optimizer on state");
     return optimizer_.get();
   }
-  IMP_REF_COUNTED_DESTRUCTOR(OptimizerState)
+  IMP_REF_COUNTED_DESTRUCTOR(OptimizerState);
 protected:
   WeakPointer<Optimizer> optimizer_;
 };

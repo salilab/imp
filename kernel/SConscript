@@ -16,10 +16,18 @@ if env['IMP_ENDIAN']=='little':
     config.append("IMP_LITTLE_ENDIAN")
 else:
     config.append('IMP_BIG_ENDIAN')
+
+config.append(["IMP_DEBUG", "0"])
+config.append(["IMP_RELEASE", "1"])
+config.append(["IMP_FAST", "2"])
+
 if env['build'] == 'fast':
-    config.append("IMP_NO_DEBUG")
-else:
-    config.append('IMP_USE_DEBUG')
+    config.append(["IMP_BUILD", "IMP_FAST"])
+elif env['build'] == 'release':
+    config.append(["IMP_BUILD", "IMP_RELEASE"])
+elif env['build'] == 'debug':
+    config.append(["IMP_BUILD", "IMP_DEBUG"])
+
 
 env.IMPModuleBuild(version='SVN', required_modules=None, config_macros=config,
                    module='kernel', module_suffix="", module_include_path="IMP",

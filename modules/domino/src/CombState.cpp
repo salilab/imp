@@ -16,7 +16,7 @@ unsigned int CombState::get_state_num(Particle *p) {
           << p->get_value(node_name_key());
   //  p->show(err_msg);
   err_msg << " is not found in the combstate data : ";
-  IMP_assert(data_.find(p) != data_.end(), err_msg.str());
+  IMP_INTERNAL_CHECK(data_.find(p) != data_.end(), err_msg.str());
   return data_[p];
 }
 
@@ -36,7 +36,7 @@ CombState *CombState::get_partial(const Particles &ps) const {
   CombState *part_state = new CombState();
   for (Particles::const_iterator it = ps.begin(); it != ps.end(); it++) {
     Particle *p = *it;
-    IMP_assert(data_.find(p) != data_.end(),
+    IMP_INTERNAL_CHECK(data_.find(p) != data_.end(),
     "CombState::get_partial particle with name "
     << p->get_value(node_name_key()) << " was not found ");
     (part_state->data_)[p] = data_.find(p)->second;

@@ -46,6 +46,7 @@
  - \salilab{imp/doc/doxygen/deprecated.html,
    Deprecated functionality list}
  - \ref devguide "Developer guide"
+ - \ref differences "Differences using \imp between C++ and Python"
  - \ref examples "Examples"
  - \wiki{FAQ, FAQ}
  - \salilab{imp/archives/imp-dev/,imp-dev list archive}

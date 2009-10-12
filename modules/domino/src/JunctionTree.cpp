@@ -28,7 +28,7 @@ void read_junction_tree(const std::string &filename, JunctionTree *jt) {
         jt->set_nodes(boost::lexical_cast<int>(ls[1]));
       }
       else {
-        IMP_assert(true, "wrong junction tree format");
+        IMP_INTERNAL_CHECK(true, "wrong junction tree format");
       }
     }
     else if (status == 1) {
@@ -59,7 +59,7 @@ void read_junction_tree(const std::string &filename, JunctionTree *jt) {
       }
     }
   }
-  IMP_check(status==2,"wrong junction tree format",ValueException);
+  IMP_USAGE_CHECK(status==2,"wrong junction tree format",ValueException);
   jt_f.close();
 }
 

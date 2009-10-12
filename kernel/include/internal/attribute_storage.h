@@ -26,11 +26,11 @@ public:
   VectorStorage(unsigned int size): map_(size,
                                          Traits::get_invalid()){}
   typename Map::const_reference get(unsigned int i) const {
-    IMP_assert(i < map_.size(), "Out of range traits.");
+    IMP_INTERNAL_CHECK(i < map_.size(), "Out of range traits.");
     return map_[i];
   }
   void set(unsigned int i, typename Traits::PassValue v) {
-    IMP_assert(i < map_.size(), "Out of range traits.");
+    IMP_INTERNAL_CHECK(i < map_.size(), "Out of range traits.");
     map_[i]=v;
   }
   void add(unsigned int i,  typename Traits::PassValue v) {
@@ -70,11 +70,11 @@ public:
   RefCountedStorage(){}
   RefCountedStorage(unsigned int size): map_(size){}
   typename Traits::PassValue get(unsigned int i) const {
-    IMP_assert(fits(i), "Out of range traits.");
+    IMP_INTERNAL_CHECK(fits(i), "Out of range traits.");
     return map_[i];
   }
   void set(unsigned int i, typename Traits::PassValue v) {
-    IMP_assert(fits(i), "Out of range traits.");
+    IMP_INTERNAL_CHECK(fits(i), "Out of range traits.");
     map_.set(i,v);
   }
   void add(unsigned int i, typename Traits::PassValue v) {
@@ -127,11 +127,11 @@ public:
     fill(Traits::get_invalid());
   }
   typename Traits::PassValue get(unsigned int i) const {
-    IMP_assert(fits(i), "Out of range traits.");
+    IMP_INTERNAL_CHECK(fits(i), "Out of range traits.");
     return data_[i];
   }
   void set(unsigned int i, typename Traits::PassValue v) {
-    IMP_assert(fits(i), "Out of range traits.");
+    IMP_INTERNAL_CHECK(fits(i), "Out of range traits.");
     data_[i]=v;
   }
   void add(unsigned int i, typename Traits::PassValue v) {
@@ -178,7 +178,7 @@ public:
   OffsetStorage(){}
   OffsetStorage(unsigned int size):
     P(size-OFFSET) {
-    IMP_assert(size >= OFFSET, "Indexes smaller than "
+    IMP_INTERNAL_CHECK(size >= OFFSET, "Indexes smaller than "
                << OFFSET << " should not make it here.");
   }
   typename Traits::PassValue get(unsigned int i) const {
@@ -214,11 +214,11 @@ public:
     clear();
   }
   typename Traits::PassValue get(unsigned int i) const {
-    IMP_assert(fits(i), "Out of range attribuite: " << i);
+    IMP_INTERNAL_CHECK(fits(i), "Out of range attribuite: " << i);
     return data_[i];
   }
   void set(unsigned int i, typename Traits::PassValue v) {
-    IMP_assert(fits(i), "Out of range attribuite: " << i);
+    IMP_INTERNAL_CHECK(fits(i), "Out of range attribuite: " << i);
     data_[i]=v;
   }
   void add(unsigned int i, typename Traits::PassValue v) {
@@ -268,12 +268,12 @@ public:
     overflow_(std::max(0, size-SIZE)){
   }
   typename Traits::PassValue get(unsigned int i) const {
-    IMP_assert(fits(i), "Out of range attribuite: " << i);
+    IMP_INTERNAL_CHECK(fits(i), "Out of range attribuite: " << i);
     if (i< SIZE) { return P::get(i);}
     else {return overflow_.get(i-SIZE);}
   }
   void set(unsigned int i, typename Traits::PassValue v) {
-    IMP_assert(fits(i), "Out of range attribuite: " << i);
+    IMP_INTERNAL_CHECK(fits(i), "Out of range attribuite: " << i);
     if (i< SIZE) { P::set(i, v);}
     else {overflow_.set(i-SIZE, v);}
   }

@@ -33,7 +33,7 @@ class VectorD: public UninitializedDefault
 {
   void check_vector() const {
     for (unsigned int i=0; i< D; ++i) {
-      IMP_check(!is_nan(vec_[i]),
+      IMP_USAGE_CHECK(!is_nan(vec_[i]),
                 "Attempt to use uninitialized vector.",
                 InvalidStateException);
     }
@@ -46,7 +46,7 @@ public:
    */
   template <class It>
   VectorD(It b, It e) {
-    IMP_assert(std::distance(b,e) == D,
+    IMP_INTERNAL_CHECK(std::distance(b,e) == D,
                "The size of the range must match the dimension");
     std::copy(b,e, vec_);
   }
@@ -54,7 +54,7 @@ public:
   //! Initialize the 1-vector from its value.
   VectorD(double x) {
 #ifdef IMP_SWIG_WRAPPER
-    IMP_check(D==1, "Need " << D << " to construct a "
+    IMP_USAGE_CHECK(D==1, "Need " << D << " to construct a "
               << D << "-vector.", ValueException);
 #else
     BOOST_STATIC_ASSERT(D==1);
@@ -65,7 +65,7 @@ public:
   //! Initialize a 2-vector from separate x,y values.
   VectorD(double x, double y) {
 #ifdef IMP_SWIG_WRAPPER
-    IMP_check(D==2, "Need " << D << " to construct a "
+    IMP_USAGE_CHECK(D==2, "Need " << D << " to construct a "
               << D << "-vector.", ValueException);
 #else
     BOOST_STATIC_ASSERT(D==2);
@@ -77,7 +77,7 @@ public:
   //! Initialize a 3-vector from separate x,y,z values.
   VectorD(double x, double y, double z) {
 #ifdef IMP_SWIG_WRAPPER
-    IMP_check(D==3, "Need " << D << " to construct a "
+    IMP_USAGE_CHECK(D==3, "Need " << D << " to construct a "
               << D << "-vector.", ValueException);
 #else
     BOOST_STATIC_ASSERT(D==3);
@@ -90,7 +90,7 @@ public:
   //! Initialize a 4-vector from separate w,x,y,z values.
   VectorD(double x0, double x1, double x2, double x3) {
 #ifdef IMP_SWIG_WRAPPER
-    IMP_check(D==4, "Need " << D << " to construct a "
+    IMP_USAGE_CHECK(D==4, "Need " << D << " to construct a "
               << D << "-vector.", ValueException);
 #else
     BOOST_STATIC_ASSERT(D==4);
@@ -106,7 +106,7 @@ public:
 
   //! Default constructor
   VectorD() {
-#ifndef IMP_NO_DEBUG
+#if IMP_BUILD < IMP_FAST
     for (unsigned int i=0; i< D; ++i) {
       vec_[i]= std::numeric_limits<double>::quiet_NaN();
     }
@@ -115,7 +115,7 @@ public:
   /** Return the ith Cartesian coordinate. In 3D use [0] to get
       the x coordinate etc.*/
   double operator[](unsigned int i) const {
-    IMP_assert(i < D, "Invalid component of vector requested: "
+    IMP_INTERNAL_CHECK(i < D, "Invalid component of vector requested: "
                << i << " of " << D);
     check_vector();
     return vec_[i];
@@ -123,7 +123,7 @@ public:
   /** Return the ith Cartesian coordinate. In 3D use [0] to get
       the x coordinate etc. */
   double& operator[](unsigned int i) {
-    IMP_assert(i < D, "Invalid component of vector requested: "
+    IMP_INTERNAL_CHECK(i < D, "Invalid component of vector requested: "
                << i << " of " << D);
     return vec_[i];
   }
@@ -348,7 +348,7 @@ double distance(const VectorD<D> &v1, const VectorD<D> &v2) {
  */
 template <unsigned int D>
 VectorD<D> basis_vector(unsigned int coordinate) {
-  IMP_check(coordinate<D, "There are only " << D << " basis vectors",
+  IMP_USAGE_CHECK(coordinate<D, "There are only " << D << " basis vectors",
             IndexException);
   double vs[D]={0.0};
   vs[coordinate]=1;

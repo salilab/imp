@@ -34,7 +34,7 @@ ConnectivityRestraint::ConnectivityRestraint(PairScore *ps):
 IMP_LIST_IMPL(ConnectivityRestraint, Particle, particle,Particle*,
               Particles,
               {
-              IMP_assert(get_number_of_particles()==0
+              IMP_INTERNAL_CHECK(get_number_of_particles()==0
                          || obj->get_model()
                           == (*particles_begin())->get_model(),
                          "All particles in Restraint must belong to the "

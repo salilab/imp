@@ -22,9 +22,9 @@ class IMPALGEBRAEXPORT Segment3D: public UninitializedDefault
   //! Get the start=0/end=1 point of the segment
   const Vector3D& get_point(unsigned int i) const {
 #if IMP_SWIG_WRAPPER
-    IMP_check(i<2,"invalid point index",ValueException);
+    IMP_USAGE_CHECK(i<2,"invalid point index",ValueException);
 #else
-    IMP_assert(i<2, "Invalid point index");
+    IMP_INTERNAL_CHECK(i<2, "Invalid point index");
 #endif
     return p_[i];
   }

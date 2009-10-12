@@ -87,7 +87,7 @@ public:
   }
 
   void set_pair_score(PairScore* ss) {
-    IMP_check(ss, "The PairScore must be non-null",
+    IMP_USAGE_CHECK(ss, "The PairScore must be non-null",
               IndexException);
     ss_= ss;
   }

@@ -19,21 +19,23 @@ struct TruncatedHarmonicData {
   TruncatedHarmonicData(double center, double k,
                         double threshold, double limit): c_(center),
   l_(limit), k_(k), t_(threshold) {
-    IMP_check(.5*k*square(threshold) < limit,
+    IMP_USAGE_CHECK(.5*k*square(threshold) < limit,
               "The limit must be larger than the harmonic at the threshold",
               ValueException);
-    IMP_check(k > 0, "The spring constant must be positive",
+    IMP_USAGE_CHECK(k > 0, "The spring constant must be positive",
               ValueException);
-    IMP_check(threshold >= 0, "The threshold must be non-negative.",
+    IMP_USAGE_CHECK(threshold >= 0, "The threshold must be non-negative.",
               ValueException);
     b_= .5*(-k_*k_*k_*square(t_*t_*t_)+6*square(k_)*square(t_*t_)*l_
         -12*k_*square(t_*l_)+8*l_*l_*l_)/square(k_*t_);
     o_= 2*(k_*square(t_) -l_)/(k_*t_);
-    IMP_assert(std::abs(evaluate(center+t_+.001)- evaluate(center+t_-.001))
+    IMP_INTERNAL_CHECK(std::abs(evaluate(center+t_+.001)
+                                - evaluate(center+t_-.001))
                < .1*evaluate(center+t_)+.01, "Values do not match at threshold "
                << evaluate(center+t_+.001) << " and "
                << evaluate(center+t_-.001));
-    IMP_assert(o_ <t_, "Something wrong with computed values for intermediates "
+    IMP_INTERNAL_CHECK(o_ <t_,
+                       "Something wrong with computed values for intermediates "
                << o_ << " " << b_);
     std::cout << o_ << " " << b_ << std::endl;
   }

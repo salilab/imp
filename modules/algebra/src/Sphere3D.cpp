@@ -26,7 +26,8 @@ double Sphere3D::get_surface_area() const {
 }
 
 Sphere3D enclosing_sphere(const Sphere3Ds &ss) {
-  IMP_check(!ss.empty(), "Must pass some spheres to have a bounding sphere",
+  IMP_USAGE_CHECK(!ss.empty(),
+                  "Must pass some spheres to have a bounding sphere",
             ValueException);
 #ifdef IMP_USE_CGAL
   typedef CGAL::Exact_predicates_inexact_constructions_kernel             K;

@@ -85,8 +85,8 @@ class AttributeMapNUMScoreState : public ScoreState
     Bin bvs(vs);
     typename Map::iterator it = std::lower_bound(map_.begin(), map_.end(),
                                                  bvs);
-    IMP_assert(it != map_.end(), "Value not found in map on update");
-    IMP_assert(*it == bvs, "Values to not match on map update");
+    IMP_INTERNAL_CHECK(it != map_.end(), "Value not found in map on update");
+    IMP_INTERNAL_CHECK(*it == bvs, "Values to not match on map update");
     return it->particles;
   }
 
@@ -121,7 +121,7 @@ public:
    */
   const Particle* get_particle(VALARGS)  const {
     Values vs(VALPARAMS);
-    IMP_assert(get_particles_internal(vs).size() == 1,
+    IMP_INTERNAL_CHECK(get_particles_internal(vs).size() == 1,
                "There must be exactly one particle.");
     return get_particles_internal(vs)[0];
   }

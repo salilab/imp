@@ -18,7 +18,7 @@ BondSingletonScore::BondSingletonScore(UnaryFunction *f): f_(f){}
 Float BondSingletonScore::evaluate(Particle *b,
                                    DerivativeAccumulator *da) const
 {
-  IMP_IF_CHECK(EXPENSIVE) {
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     Bond::decorate_particle(b);
   }
   Bond bd(b);

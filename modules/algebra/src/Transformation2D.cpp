@@ -18,7 +18,7 @@ Transformation2D Transformation2D::get_inverse() const{
 
 Transformation2D build_Transformation2D_from_point_sets(
           const Vector2Ds set_from,const Vector2Ds set_to) {
-  IMP_assert(set_from.size()==2 && set_to.size()==2,
+  IMP_INTERNAL_CHECK(set_from.size()==2 && set_to.size()==2,
       "build_Transformation2D_from_point_sets:: The number of points "
       "in both sets must be 2");
   // v1 and v2 should be similar

@@ -41,26 +41,26 @@ public:
   /** Apply the function to a single value*/
   virtual void apply(Particle *a,
                      DerivativeAccumulator &da) const {
-    IMP_failure("This SingletonModifier must be called without a"
+    IMP_FAILURE("This SingletonModifier must be called without a"
                 << " DerivativeAccumulator.", InvalidStateException);
   }
 
   /** Apply the function to a single value*/
   virtual void apply(Particle *a) const {
-    IMP_failure("This SingletonModifier must be called with a"
+    IMP_FAILURE("This SingletonModifier must be called with a"
                 << " DerivativeAccumulator.", InvalidStateException);
   }
 
   /** Apply the function to a collection of Particles */
   virtual void apply(const ParticlesTemp &o) const {
-    IMP_failure("This SingletonModifier must be called with a"
+    IMP_FAILURE("This SingletonModifier must be called with a"
                 << " DerivativeAccumulator.", InvalidStateException);
   }
 
   /** Apply the function to a collection of Particles */
   virtual void apply(const ParticlesTemp &o,
                      DerivativeAccumulator &da) const {
-    IMP_failure("This SingletonModifier must be called without a"
+    IMP_FAILURE("This SingletonModifier must be called without a"
                 << " DerivativeAccumulator.", InvalidStateException);
   }
 
@@ -105,7 +105,8 @@ public:
   SingletonFunctor(const SingletonModifier *f): f_(f), da_(NULL){}
   SingletonFunctor(const SingletonModifier *f,
                    DerivativeAccumulator *da): f_(f), da_(da){
-    IMP_check(da_, "The passed derivative accumulator should not be null.",
+    IMP_USAGE_CHECK(da_,
+                    "The passed derivative accumulator should not be null.",
               InvalidStateException);
   }
   void operator()( Particle* p) const {

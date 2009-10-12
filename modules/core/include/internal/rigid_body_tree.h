@@ -34,7 +34,7 @@ class IMPCOREEXPORT RigidBodyHierarchy: public Object {
   unsigned int add_children(unsigned int ni, unsigned int num_children);
  public:
   algebra::Sphere3D get_sphere(unsigned int i) const {
-    IMP_assert(i < tree_.size(), "Out of spheres vector");
+    IMP_INTERNAL_CHECK(i < tree_.size(), "Out of spheres vector");
     return algebra::Sphere3D(rb_.get_transformation()
                              .transform(tree_[i].s_.get_center()),
                              tree_[i].s_.get_radius());

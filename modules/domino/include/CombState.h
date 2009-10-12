@@ -23,7 +23,7 @@ inline  unsigned int particle_index(Particle *p) {
   while (*pit != p) {
     ++pit;
     ++ret;
-    IMP_assert(pit != p->get_model()->particles_end(),
+    IMP_INTERNAL_CHECK(pit != p->get_model()->particles_end(),
                "Particle not found");
     }
 
@@ -63,7 +63,7 @@ public:
   total_score_ = other.total_score_;
   }
   void add_data_item(Particle *p, unsigned int val) {
-    IMP_assert(data_.find(p) == data_.end(),
+    IMP_INTERNAL_CHECK(data_.find(p) == data_.end(),
              "CombState::add_data_item the particle is already part"
              << "CombState : " << p <<std::endl);
     data_[p] = val;
@@ -82,7 +82,7 @@ public:
        it != data_.end(); it++) {
     Particle *p = it->first;
     unsigned int p_index= internal::particle_index(p);
-    IMP_assert(data_.find(p) != data_.end(),
+    IMP_INTERNAL_CHECK(data_.find(p) != data_.end(),
                "CombState::key particle with index " << p_index
                << " was not found ");
     s << p_index << ":" << it->second << "_";
@@ -141,7 +141,7 @@ public:
       data_[p] = it->second;
     } else {
       std::stringstream error_message;
-      IMP_assert(data_[p] == it->second,
+      IMP_INTERNAL_CHECK(data_[p] == it->second,
                  " CombState::combine the state of particle with name :"
                  << p->get_value(node_name_key()) << " is wrong"
                  << " - expect ( " << it->second << " instead of "

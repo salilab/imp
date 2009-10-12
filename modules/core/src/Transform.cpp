@@ -22,7 +22,8 @@ Transform::Transform(
 void Transform::apply(Particle *p) const
 {
   if (!XYZ::particle_is_instance(p)) {
-    IMP_assert(ignore_non_xyz_,"The particle does not have XYZ attributes");
+    IMP_INTERNAL_CHECK(ignore_non_xyz_,
+                       "The particle does not have XYZ attributes");
     return;
   }
   XYZ xyz = XYZ(p);

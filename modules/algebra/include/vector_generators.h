@@ -145,7 +145,7 @@ template <unsigned int D>
 VectorD<D>
 random_vector_in_sphere(const VectorD<D> &center,
                         double radius){
-  IMP_check(radius > 0, "Radius in randomize must be postive",
+  IMP_USAGE_CHECK(radius > 0, "Radius in randomize must be postive",
             ValueException);
   VectorD<D> rad= constant_vector<D>(radius);
   VectorD<D> min= center - rad;
@@ -175,7 +175,7 @@ random_vector_on_sphere(const VectorD<D> &center,
                         double radius) {
   // could be made general
   BOOST_STATIC_ASSERT(D>0);
-  IMP_check(radius > 0, "Radius in randomize must be postive",
+  IMP_USAGE_CHECK(radius > 0, "Radius in randomize must be postive",
             ValueException);
   double cur_radius2=square(radius);
   VectorD<D> up;
@@ -193,7 +193,7 @@ random_vector_on_sphere(const VectorD<D> &center,
   }
   up[0]=x;
 
-  IMP_assert(std::abs(up.get_magnitude() -radius) < .1,
+  IMP_INTERNAL_CHECK(std::abs(up.get_magnitude() -radius) < .1,
              "Error generating vector on sphere: "
              << up << " for " << radius);
   //IMP_LOG(VERBOSE, "Random vector on sphere is " << up << std::endl);

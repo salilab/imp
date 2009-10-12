@@ -53,13 +53,13 @@ class IMPALGEBRAEXPORT SphericalVector3D: public UninitializedDefault
   }
 
   double operator[](unsigned int i) const {
-    IMP_check(i < 3, "Invalid component of SphericalCoords requested: "
+    IMP_USAGE_CHECK(i < 3, "Invalid component of SphericalCoords requested: "
               << i << " of " << 3, IndexException);
     return v_[i];
   }
 
   double& operator[](unsigned int i) {
-    IMP_check(i < 3, "Invalid component of SphericalCoords requested: "
+    IMP_USAGE_CHECK(i < 3, "Invalid component of SphericalCoords requested: "
               << i << " of " << 3, IndexException);
     return v_[i];
   }

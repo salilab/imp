@@ -32,7 +32,7 @@ void VelocityScalingOptimizerState::update()
 void VelocityScalingOptimizerState::rescale_velocities() const
 {
   MolecularDynamics *md = dynamic_cast<MolecularDynamics *>(get_optimizer());
-  IMP_assert(md, "Can only use velocity scaling with "
+  IMP_INTERNAL_CHECK(md, "Can only use velocity scaling with "
              "the molecular dynamics optimizer.");
 
   Float ekinetic = md->get_kinetic_energy();

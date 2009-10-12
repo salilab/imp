@@ -53,7 +53,7 @@ void KMCentersNodeLeaf::get_neighbors(const std::vector<int> &cands,
     return;
   }
   //find the closest centers for each point in the bucket
-  IMP_assert((unsigned int)n_data_ == data_ps_.size(),
+  IMP_INTERNAL_CHECK((unsigned int)n_data_ == data_ps_.size(),
              "KMCentersNodeLeaf::get_neighbors inconsistency in sizes \n");
   for (int i=0;i<n_data_;i++) {
     KMPoint *data_p = (*(centers_->get_data()))[data_ps_[i]];

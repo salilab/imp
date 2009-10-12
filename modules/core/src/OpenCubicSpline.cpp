@@ -15,9 +15,9 @@ OpenCubicSpline::OpenCubicSpline(const std::vector<Float> &values,
   values_(values), minrange_(minrange), spacing_(spacing),
   extend_(extend)
 {
-  IMP_check(spacing >0, "The spacing between values must be positive.",
+  IMP_USAGE_CHECK(spacing >0, "The spacing between values must be positive.",
             ValueException);
-  IMP_check(values.size() >=1, "You must provide at least one value.",
+  IMP_USAGE_CHECK(values.size() >=1, "You must provide at least one value.",
             ValueException);
   int npoints = values_.size();
   maxrange_ = minrange_ + spacing_ * (npoints - 1);

@@ -31,7 +31,7 @@ class IMPCOREEXPORT XYZ: public Decorator
  public:
 
   static FloatKey get_coordinate_key(unsigned int i) {
-    IMP_check(i <3, "Out of range coordinate",
+    IMP_USAGE_CHECK(i <3, "Out of range coordinate",
               IndexException);
     return IMP::internal::xyzr_keys[i];
   }
@@ -123,7 +123,7 @@ class IMPCOREEXPORT XYZ: public Decorator
   }
 
   static bool particle_is_instance(Particle *p) {
-    IMP_check((p->has_attribute(get_coordinate_key(2))
+    IMP_USAGE_CHECK((p->has_attribute(get_coordinate_key(2))
                && p->has_attribute(get_coordinate_key(0))
                && p->has_attribute(get_coordinate_key(1)))
               || (!p->has_attribute(get_coordinate_key(2))

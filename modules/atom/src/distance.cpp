@@ -9,7 +9,7 @@
 IMPATOM_BEGIN_NAMESPACE
 
 double rmsd(const core::XYZs& m1 ,const core::XYZs& m2) {
-  IMP_check(m1.size()==m2.size(),
+  IMP_USAGE_CHECK(m1.size()==m2.size(),
             "The input sets of XYZ points "
             <<"should be of the same size", ValueException);
   float rmsd=0.0;

@@ -22,7 +22,7 @@ bool BondEndpointsRefiner::get_can_refine(Particle *p) const
 
 Particle* BondEndpointsRefiner::get_refined(Particle *p, unsigned int i) const
 {
-  IMP_assert(get_can_refine(p), "Trying to refine the unrefinable");
+  IMP_INTERNAL_CHECK(get_can_refine(p), "Trying to refine the unrefinable");
   Bond d(p);
   return d.get_bonded(i).get_particle();
 }
@@ -33,7 +33,7 @@ unsigned int BondEndpointsRefiner::get_number_of_refined(Particle *p) const {
 
 const ParticlesTemp BondEndpointsRefiner::get_refined(Particle *p) const
 {
-  IMP_assert(get_can_refine(p), "Trying to refine the unrefinable");
+  IMP_INTERNAL_CHECK(get_can_refine(p), "Trying to refine the unrefinable");
   Bond d(p);
   ParticlesTemp ps(2);
   ps[0]= d.get_bonded(0);

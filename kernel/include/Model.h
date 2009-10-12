@@ -60,10 +60,10 @@ private:
 
   void add_particle_internal(Particle *p) {
     IMP_CHECK_OBJECT(this);
-    IMP_IF_CHECK(EXPENSIVE) {
+    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
       for (ParticleStorage::const_iterator it= particles_.begin();
            it != particles_.end(); ++it) {
-        IMP_check(*it != p, "Particle already in Model",
+        IMP_USAGE_CHECK(*it != p, "Particle already in Model",
                   ValueException);
       }
     }
@@ -110,7 +110,7 @@ private:
  public:
 #else
  private:
-  IMP_NO_DOXYGEN(template <class T> friend void IMP::internal::unref(T*);)
+  IMP_NO_DOXYGEN(template <class T> friend void IMP::internal::unref(T*));
 #endif
 
   virtual ~Model();
@@ -129,7 +129,7 @@ public:
       The value type for the iterators is a ScoreState*.
   */
   /**@{*/
-  IMP_LIST(public, ScoreState, score_state, ScoreState*, ScoreStates)
+  IMP_LIST(public, ScoreState, score_state, ScoreState*, ScoreStates);
   /**@}*/
 
   /** @name Restraints
@@ -159,12 +159,12 @@ public:
     IMP_OBJECT_LOG;
     IMP_CHECK_OBJECT(this);
     IMP_CHECK_OBJECT(p);
-    IMP_check(p->get_model() == this,
+    IMP_USAGE_CHECK(p->get_model() == this,
               "The particle does not belong to this model",
               ValueException);
     IMP_LOG(VERBOSE, "Removing particle " << p->get_name()
             << std::endl);
-    IMP_assert(get_stage() == Model::NOT_EVALUATING,
+    IMP_INTERNAL_CHECK(get_stage() == Model::NOT_EVALUATING,
                "Particles cannot be removed from the model during evaluation");
     particles_.erase(p->ps_->iterator_);
     p->ps_->model_=NULL;
@@ -286,22 +286,22 @@ IMP_OUTPUT_OPERATOR(Model);
 // these require Model be defined
 
 inline void Particle::assert_values_mutable() const {
-  IMP_assert(get_model()->get_stage() != Model::EVALUATE,
+  IMP_INTERNAL_CHECK(get_model()->get_stage() != Model::EVALUATE,
              "Restraints are not allowed to change attribute values during "
              << "evaluation.");
-  IMP_assert(get_model()->get_stage() != Model::AFTER_EVALUATE,
+  IMP_INTERNAL_CHECK(get_model()->get_stage() != Model::AFTER_EVALUATE,
              "ScoreStates are not allowed to change attribute values after "
              << "evaluation.");
 }
 
 inline void Particle::assert_can_change_optimization() const {
-  IMP_assert(get_model()->get_stage() == Model::NOT_EVALUATING,
+  IMP_INTERNAL_CHECK(get_model()->get_stage() == Model::NOT_EVALUATING,
              "The set of optimized attributes cannot be changed during "
              << "evaluation.");
 }
 
 inline void Particle::assert_can_change_derivatives() const {
-  IMP_assert(get_model()->get_stage() == Model::EVALUATE
+  IMP_INTERNAL_CHECK(get_model()->get_stage() == Model::EVALUATE
              || get_model()->get_stage() == Model::AFTER_EVALUATE
              || get_model()->get_stage() == Model::NOT_EVALUATING,
              "Derivatives can only be changed during restraint "
@@ -309,7 +309,7 @@ inline void Particle::assert_can_change_derivatives() const {
 }
 
 inline void Particle::assert_valid_derivatives() const {
-  IMP_assert(get_model()->get_stage() == Model::AFTER_EVALUATE
+  IMP_INTERNAL_CHECK(get_model()->get_stage() == Model::AFTER_EVALUATE
              || get_model()->get_stage() == Model::NOT_EVALUATING,
              "Derivatives can only be changed during restraint "
              << "evaluation and score state after evaluation calls.");

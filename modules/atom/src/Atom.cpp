@@ -26,19 +26,20 @@ namespace {
 
   Element element_from_name(const AtomType& at) {
     std::string atom_name = at.get_string();
-    IMP_check(atom_name.length() > 0, "Invalid atom name.", ValueException);
+    IMP_USAGE_CHECK(atom_name.length() > 0,
+                    "Invalid atom name.", ValueException);
     if (added_atom_names.size() > at.get_index()
         && added_atom_names[at.get_index()] != UNKNOWN_ELEMENT) {
       return added_atom_names[at.get_index()];
     }
     if (atom_name.find("HET_") != std::string::npos) {
-      IMP_failure("You must call add_atom_name() to create a new atom name: "
+      IMP_FAILURE("You must call add_atom_name() to create a new atom name: "
                   << at,
                   InvalidStateException);
     } else {
       char c0=atom_name[0];
       if (isdigit(c0)) {
-        IMP_check(atom_name.size() >1 && !isdigit(atom_name[1]),
+        IMP_USAGE_CHECK(atom_name.size() >1 && !isdigit(atom_name[1]),
                   "Invalid atom name " << at, ValueException);
         c0= atom_name[1];
       }
@@ -51,7 +52,7 @@ namespace {
       case 'P': return P;
       default: break;
       }
-      IMP_failure("Could not figure out element for " << at,
+      IMP_FAILURE("Could not figure out element for " << at,
                   InvalidStateException);
     }
   }
@@ -276,11 +277,11 @@ void Atom::set_atom_type(AtomType t)
   } else {
     e=element_from_name(t);
   }
-  IMP_assert(e != UNKNOWN_ELEMENT,
+  IMP_INTERNAL_CHECK(e != UNKNOWN_ELEMENT,
              "Internal error setting element name from " << t);
   get_particle()->set_value(get_element_key(), e);
   Mass(get_particle()).set_mass(get_element_table().get_mass(e));
-  IMP_assert(Mass(get_particle()).get_mass() != 0,
+  IMP_INTERNAL_CHECK(Mass(get_particle()).get_mass() != 0,
              "Error setting mass on atom "
              << *this);
 }
@@ -329,10 +330,10 @@ Atom get_atom(Residue rd, AtomType at) {
 
 
 AtomType add_atom_type(std::string name, Element e) {
-  IMP_check(!AtomType::get_key_exists(name),
+  IMP_USAGE_CHECK(!AtomType::get_key_exists(name),
             "An AtomType with that name already exists: "
             << name, ValueException);
-  IMP_check(e != UNKNOWN_ELEMENT, "Atom type must have element: " << name,
+  IMP_USAGE_CHECK(e != UNKNOWN_ELEMENT, "Atom type must have element: " << name,
             ValueException);
   AtomType ret= AtomType::add_key(name.c_str());
   added_atom_names.resize(std::max(added_atom_names.size(),

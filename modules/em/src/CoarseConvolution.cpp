@@ -21,14 +21,14 @@ float CoarseConvolution::convolution(const DensityMap &f, DensityMap &g,
   const emreal *g_data = g.get_data();
 
   //validity checks
-  IMP_check(f.same_dimensions(g),
+  IMP_USAGE_CHECK(f.same_dimensions(g),
             "This function cannot handle density maps of different size. "
             << "First map dimensions : " << f_header->nx << " x "
             << f_header->ny << " x " << f_header->nz
             << "; Second map dimensions: " << g_header->nx << " x "
             << g_header->ny << " x " << g_header->nz,
             InvalidStateException);
-  IMP_check(f.same_voxel_size(g),
+  IMP_USAGE_CHECK(f.same_voxel_size(g),
             "This function cannot handle density maps of different pixelsize. "
             << "First map pixelsize : " << f_header->Objectpixelsize
             << "; Second map pixelsize: " << g_header->Objectpixelsize,

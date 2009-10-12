@@ -117,7 +117,7 @@ public:
 
   //! Return the model containing this restraint
   Model *get_model() const {
-    IMP_assert(model_,
+    IMP_INTERNAL_CHECK(model_,
                "get_model() called before set_model()");
     return model_;
   }
@@ -130,7 +130,7 @@ public:
 #ifndef IMP_DOXYGEN
   virtual double
     unprotected_incremental_evaluate(DerivativeAccumulator *) const {
-    IMP_failure(get_name() << " does not support incremental evaluation.",
+    IMP_FAILURE(get_name() << " does not support incremental evaluation.",
                 ErrorException);
     return 0;
   }

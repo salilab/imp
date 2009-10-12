@@ -68,18 +68,18 @@ struct ArrayOnAttributesHelper {
   }
 
   unsigned int get_size(const Particle *p) const {
-    IMP_assert(data_, "Cannot used uninitialized HierarchyTraits");
+    IMP_INTERNAL_CHECK(data_, "Cannot used uninitialized HierarchyTraits");
     return p->get_value(data_->num_key);
   }
 
   void initialize_particle(Particle *p) {
-    IMP_assert(data_, "Cannot used uninitialized HierarchyTraits");
+    IMP_INTERNAL_CHECK(data_, "Cannot used uninitialized HierarchyTraits");
     p->add_attribute(data_->num_key, 0);
   }
 
   Value get_value(const Particle *p, unsigned int i) const {
-    IMP_assert(data_, "Cannot used uninitialized ArryHelper traits");
-    IMP_check(static_cast<unsigned int>(p->get_value(data_->num_key)) > i,
+    IMP_INTERNAL_CHECK(data_, "Cannot used uninitialized ArryHelper traits");
+    IMP_USAGE_CHECK(static_cast<unsigned int>(p->get_value(data_->num_key)) > i,
               "Out of range attribute in array",
               IndexException);
     return p->get_value(get_key(i));
@@ -92,10 +92,10 @@ struct ArrayOnAttributesHelper {
   void set_value(Particle *p,
                  unsigned int i,
                  Value v) const {
-    IMP_assert(data_, "Cannot used uninitialized ArrayHelper traits");
-    IMP_check(data_->keys.size() > i, "Out of range attribute in array",
+    IMP_INTERNAL_CHECK(data_, "Cannot used uninitialized ArrayHelper traits");
+    IMP_USAGE_CHECK(data_->keys.size() > i, "Out of range attribute in array",
               IndexException);
-    IMP_check(p->get_value(data_->num_key) > i,
+    IMP_USAGE_CHECK(p->get_value(data_->num_key) > i,
               "Out of range attribute in array",
               IndexException);
     p->set_value(data_->keys[i], v);
@@ -103,7 +103,7 @@ struct ArrayOnAttributesHelper {
 
   unsigned int push_back(Particle *p,
                          Value v) {
-    IMP_assert(data_, "Cannot used uninitialized ArrayHelper traits");
+    IMP_INTERNAL_CHECK(data_, "Cannot used uninitialized ArrayHelper traits");
     unsigned int osz= p->get_value(data_->num_key);
     Key k= get_key(osz);
     p->add_attribute(k, v);
@@ -114,9 +114,9 @@ struct ArrayOnAttributesHelper {
   void insert(Particle *p,
               unsigned int loc,
               Value v) {
-    IMP_assert(data_, "Cannot used uninitialized HierarchyTraits");
+    IMP_INTERNAL_CHECK(data_, "Cannot used uninitialized HierarchyTraits");
     unsigned int osz= p->get_value(data_->num_key);
-    IMP_check(loc <= osz, "Attribute array must be contiguous",
+    IMP_USAGE_CHECK(loc <= osz, "Attribute array must be contiguous",
               IndexException);
     for (unsigned int i=loc; i < osz; ++i) {
       Key k= get_key(i);
@@ -132,9 +132,9 @@ struct ArrayOnAttributesHelper {
 
   void erase(Particle *p,
              unsigned int loc) const {
-    IMP_assert(data_, "Cannot used uninitialized HierarchyTraits");
+    IMP_INTERNAL_CHECK(data_, "Cannot used uninitialized HierarchyTraits");
     unsigned int osz= p->get_value(data_->num_key);
-    IMP_check(loc <= osz, "Can only erase values in array",
+    IMP_USAGE_CHECK(loc <= osz, "Can only erase values in array",
               IndexException);
     for (unsigned int i=loc+1; i < osz; ++i) {
       Key k= data_->keys[i];
@@ -147,7 +147,7 @@ struct ArrayOnAttributesHelper {
   }
 
   void clear(Particle *p) const {
-    IMP_assert(data_, "Cannot used uninitialized HierarchyTraits");
+    IMP_INTERNAL_CHECK(data_, "Cannot used uninitialized HierarchyTraits");
     unsigned int osz= p->get_value(data_->num_key);
     for (unsigned int i=0; i < osz; ++i) {
       Key kl= data_->keys[i];
@@ -157,18 +157,18 @@ struct ArrayOnAttributesHelper {
   }
 
   std::string get_prefix() const {
-    IMP_assert(data_, "Cannot used uninitialized HierarchyTraits");
+    IMP_INTERNAL_CHECK(data_, "Cannot used uninitialized HierarchyTraits");
     return data_->prefix;
   }
 
 
   bool has_required_attributes(Particle *p) const {
-    IMP_assert(data_, "Cannot used uninitialized HierarchyTraits");
+    IMP_INTERNAL_CHECK(data_, "Cannot used uninitialized HierarchyTraits");
     return p->has_attribute(data_->num_key);
   }
 
   void add_required_attributes(Particle *p) const {
-    IMP_assert(data_, "Cannot used uninitialized HierarchyTraits");
+    IMP_INTERNAL_CHECK(data_, "Cannot used uninitialized HierarchyTraits");
     p->add_attribute(data_->num_key, 0);
   }
 
@@ -181,12 +181,12 @@ struct ArrayOnAttributesHelper {
     for (unsigned int i=0; i< get_size(p); ++i) {
       if (get_value(p, i) ==v) return i;
     }
-    IMP_failure("Not found "  << v, ValueException);
+    IMP_FAILURE("Not found "  << v, ValueException);
   }
 
 private:
   Key get_key(unsigned int i) const {
-    IMP_assert(data_, "Cannot used uninitialized HierarchyTraits");
+    IMP_INTERNAL_CHECK(data_, "Cannot used uninitialized HierarchyTraits");
     while (!(i < data_->keys.size())) {
       std::ostringstream oss;
       oss << data_->prefix << data_->keys.size();

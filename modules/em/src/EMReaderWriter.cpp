@@ -88,7 +88,7 @@ void EMReaderWriter::Read(const char *filename, float **data,
 {
   std::ifstream file;
   file.open(filename, std::ifstream::in | std::ifstream::binary);
-  IMP_check(file.good(),
+  IMP_USAGE_CHECK(file.good(),
             "EMReaderWriter::Read >> The file " << filename
             << " was not found.", IOException);
   file.exceptions(std::ifstream::eofbit | std::ifstream::failbit
@@ -177,7 +177,7 @@ void EMReaderWriter::WriteHeader(std::ostream& s, const EMHeader &header)
 #endif
 
   s.write((char *) &ehp,sizeof(EMHeader::EMHeaderParse));
-  IMP_check(!s.bad(),
+  IMP_USAGE_CHECK(!s.bad(),
             "EMReaderWriter::WriteHeader >> Error writing header to file.",
             IOException);
 }
@@ -214,7 +214,7 @@ void EMReaderWriter::ReadData(std::ifstream &file, float **data,
 
     // allocate data
     *data = new float[nvox];
-    IMP_check(*data,
+    IMP_USAGE_CHECK(*data,
               "EMReaderWriter::ReadData >> can not allocated space for data. "
               "Requested size: " << nvox*sizeof(float), IOException);
 
@@ -233,7 +233,7 @@ void EMReaderWriter::ReadData(std::ifstream &file, float **data,
         voxel_data_size =sizeof(float);
       break;
     default:
-      IMP_failure("EMReaderWriter::ReadData the requested data type "
+      IMP_FAILURE("EMReaderWriter::ReadData the requested data type "
                   << header.type << " is not implemented.",
                   IOException);
     }

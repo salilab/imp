@@ -22,7 +22,8 @@ StringKey node_name_key() {
 
 void RestraintGraph::load_data(const JunctionTree &jt,Model *mdl) {
 
-  IMP_assert(jt.get_number_of_nodes()>0, "empty junction tree" << std::endl);
+  IMP_INTERNAL_CHECK(jt.get_number_of_nodes()>0,
+                     "empty junction tree" << std::endl);
   initialize_graph(jt.get_number_of_nodes());
   std::map<std::string, Particle*> p_map;
   //a mapping between names and particles. Notice that the name
@@ -37,7 +38,7 @@ void RestraintGraph::load_data(const JunctionTree &jt,Model *mdl) {
       p_map[(*it)->get_value(node_name_key())] = *it;
     }
   }
-  IMP_assert(p_map.size()>0,
+  IMP_INTERNAL_CHECK(p_map.size()>0,
              "no node was assigned with name attribute" << std::endl);
   std::cout<<"map size: " << p_map.size()<<std::endl;
   // load nodes
@@ -46,7 +47,7 @@ void RestraintGraph::load_data(const JunctionTree &jt,Model *mdl) {
     for(int j=0;j<jt.get_number_of_components(i);j++) {
       std::string comp_name = jt.get_component_name(i,j);
       //TODO - talk with Ben about problems with this assert check!
-      IMP_assert(p_map.find(comp_name) != p_map.end(),
+      IMP_INTERNAL_CHECK(p_map.find(comp_name) != p_map.end(),
                  "node with key : " <<
                  comp_name << " was not found" << std::endl);
       IMP_LOG(VERBOSE,"comp: " << comp_name << " is mapped to : " <<
@@ -89,7 +90,7 @@ void RestraintGraph::add_node(unsigned int node_index,
   error_message << " RestraintGraph::add_node the input node_index: "
                 << node_index << " is out of range ( " << num_vertices(g_)
                 << " ) " ;
-  IMP_assert(node_index < num_vertices(g_), error_message.str());
+  IMP_INTERNAL_CHECK(node_index < num_vertices(g_), error_message.str());
   node_data_[node_index] = new JNode(particles,
                                     node_index);
 }
@@ -100,7 +101,7 @@ RestraintGraph::Pair RestraintGraph::get_edge_key(unsigned int node1_ind,
   std::stringstream error_message;
   error_message << " RestraintGraph::get_edge_key trying to create a self"
                 << " loop for node " << node1_ind;
-  IMP_assert(node1_ind != node2_ind, error_message.str());
+  IMP_INTERNAL_CHECK(node1_ind != node2_ind, error_message.str());
   if (node1_ind < node2_ind) {
     return Pair(node1_ind, node2_ind);
   }
@@ -109,10 +110,10 @@ RestraintGraph::Pair RestraintGraph::get_edge_key(unsigned int node1_ind,
 
 void RestraintGraph::add_edge(unsigned int node1_ind, unsigned int node2_ind)
 {
-  IMP_assert(node1_ind < num_vertices(g_),
+  IMP_INTERNAL_CHECK(node1_ind < num_vertices(g_),
              "RestraintGraph::add_node the input node_index: "
              << node1_ind << " is out of range ( " << num_vertices(g_)<<" )");
-  IMP_assert(node2_ind < num_vertices(g_),
+  IMP_INTERNAL_CHECK(node2_ind < num_vertices(g_),
              " RestraintGraph::add_node the input node_index: "
              << node2_ind << " is out of range ( " << num_vertices(g_)<<" )");
   boost::add_edge(node1_ind, node2_ind, g_);
@@ -150,7 +151,7 @@ void RestraintGraph::set_sampling_space(DiscreteSampler &ds_)
   for (unsigned int vi = 0; vi < num_vertices(g_); vi++) {
     IMP_LOG(VERBOSE,"Initializing node number " << vi <<std::endl);
     JNode *j = node_data_[vi];
-    IMP_check(j != NULL,
+    IMP_USAGE_CHECK(j != NULL,
              "the nodes of the restraint graph have not been initialized",
              ErrorException);
     j->init_sampling(ds_);
@@ -189,7 +190,7 @@ JNode * RestraintGraph::get_node(const Particles &ps)
   std::stringstream error_message;
   error_message << "RestraintGraph::get_node the input set of particles"
                 << " is not part of any of the nodes in the graph";
-  IMP_assert(true, error_message.str());
+  IMP_INTERNAL_CHECK(true, error_message.str());
   return NULL;
 }
 
@@ -244,7 +245,7 @@ void  RestraintGraph::infer(unsigned int num_of_solutions)
   std::stringstream err_msg;
   err_msg << "RestraintGraph::infer the graph has already been infered."
           << " Please reset the graph before calling infer";
-  IMP_assert(infered_ == false, err_msg.str());
+  IMP_INTERNAL_CHECK(infered_ == false, err_msg.str());
   root_ = 0;
   IMP_LOG(VERBOSE,"RestraintGraph::infer before dfs_order " << std::endl);
   dfs_order(root_);
@@ -256,7 +257,8 @@ void  RestraintGraph::infer(unsigned int num_of_solutions)
   IMP_LOG(VERBOSE,"RestraintGraph::infer after distribute_evidence"<<std::endl);
   std::vector<CombState *>*  temp_min_combs =
       node_data_[root_]->find_minimum(false,num_of_solutions);
-  IMP_assert(temp_min_combs->size()>0, "RestraintGraph::infer the number of"
+  IMP_INTERNAL_CHECK(temp_min_combs->size()>0,
+                     "RestraintGraph::infer the number of"
              <<" minimum solutions is 0");
   // distribute the minimum combinations and return the final full comb state.
   CombState *min_comb;
@@ -311,7 +313,8 @@ void RestraintGraph::distribute_minimum(unsigned int father_ind,
         }
       it++;
     }
-    IMP_assert(passed,"could not combine any of the " << child_min_state.size()
+    IMP_INTERNAL_CHECK(passed,
+                       "could not combine any of the " << child_min_state.size()
                << " states " << std::endl);
     //TODO - should we free here min_father_separator  and child_min_state
     distribute_minimum(*child_it, min_comb);
@@ -357,7 +360,7 @@ void RestraintGraph::update(unsigned int w, unsigned int v)
                   <<v<< std::endl);
   // update node with index w  based on node with index: v
   // check if there is an edge between w and v
-  IMP_assert(edge_data_.find(get_edge_key(w, v)) != edge_data_.end(),
+  IMP_INTERNAL_CHECK(edge_data_.find(get_edge_key(w, v)) != edge_data_.end(),
              " RestraintGraph::update the nodes with indexes : "
              << w << " and " << v
              << " are not neighbors. Can not perform the update"
@@ -393,7 +396,7 @@ void RestraintGraph::move_model2state_rec(unsigned int father_ind,
 }
 void RestraintGraph::move_model2global_minimum() const
 {
-  IMP_assert(infered_, "RestraintGraph::move_model2global_minimum the "
+  IMP_INTERNAL_CHECK(infered_, "RestraintGraph::move_model2global_minimum the "
              << "graph has not been infered");
   CombState *best_state = *(min_combs_->begin());
   move_model2state_rec(root_, *best_state);
@@ -403,7 +406,7 @@ CombState *RestraintGraph::get_minimum_comb() const
   std::stringstream err_msg;
   err_msg << "RestraintGraph::move_model2global_minimum the "
           << "graph has not been infered";
-  IMP_assert(infered_, err_msg.str());
+  IMP_INTERNAL_CHECK(infered_, err_msg.str());
   return *(min_combs_->begin());
 }
 void RestraintGraph::clear() {
@@ -422,11 +425,11 @@ const CombState *RestraintGraph::get_opt_combination(unsigned int i) const {
   std::stringstream err_msg;
   err_msg << "RestraintGraph::get_opt_combination no combinations have ";
   err_msg <<" been infered";
-  IMP_assert(infered_, err_msg.str());
+  IMP_INTERNAL_CHECK(infered_, err_msg.str());
   err_msg.clear();
   err_msg << "RestraintGraph::get_opt_combination the requested combination";
   err_msg <<" index is out of range " << i << " >= " << min_combs_->size();
-  IMP_assert(i<min_combs_->size(), err_msg.str());
+  IMP_INTERNAL_CHECK(i<min_combs_->size(), err_msg.str());
   return (*min_combs_)[i];
 }
 

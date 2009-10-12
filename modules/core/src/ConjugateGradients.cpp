@@ -14,7 +14,7 @@
 #include <limits>
 #include <cmath>
 
-#define IMP_CHECK_VALUE(n) IMP_IF_CHECK(CHEAP) {        \
+#define IMP_CHECK_VALUE(n) IMP_IF_CHECK(USAGE) {        \
     if (!is_good_value(n)) {                         \
       IMP_LOG(TERSE, #n << " is " << n << std::endl);   \
       failure();                                        \
@@ -94,7 +94,7 @@ ConjugateGradients::get_score(std::vector<FloatIndex> float_indices,
 #else
     dscore[i] = get_derivative(float_indices[i]); //scaled
 #endif
-    IMP_check(is_good_value(dscore[i]),
+    IMP_USAGE_CHECK(is_good_value(dscore[i]),
               "Bad input to CG", ValueException);
   }
   return score;
@@ -265,7 +265,7 @@ ConjugateGradients::ConjugateGradients()
 Float ConjugateGradients::optimize(unsigned int max_steps)
 {
   IMP_OBJECT_LOG;
-  IMP_check(get_model(),
+  IMP_USAGE_CHECK(get_model(),
             "Must set the model on the optimizer before optimizing",
             ValueException);
   clear_range_cache();
@@ -286,7 +286,7 @@ Float ConjugateGradients::optimize(unsigned int max_steps)
 #else
     x[i] = get_value(float_indices[i]); //scaled
 #endif
-    IMP_check(x[i] == x[i] && x[i] != std::numeric_limits<NT>::infinity()
+    IMP_USAGE_CHECK(x[i] == x[i] && x[i] != std::numeric_limits<NT>::infinity()
               && x[i] != - std::numeric_limits<NT>::infinity(),
               "Bad input to CG", ValueException);
   }

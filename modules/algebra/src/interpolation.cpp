@@ -91,7 +91,7 @@ double Bspline_interpolation(Matrix2D<double>& m,
                   bool wrap,
                   double outside) {
   // TODO: Implement B-spline interpolation
-  IMP_not_implemented;
+  IMP_NOT_IMPLEMENTED;
   return 0.0;
 }
 

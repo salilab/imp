@@ -23,13 +23,13 @@ TransformationDiscreteSet::TransformationDiscreteSet(){
 
 algebra::Transformation3D
   TransformationDiscreteSet::get_transformation(long state_ind) const {
-  IMP_assert(static_cast<unsigned int>(state_ind)<trans_.size(),
+  IMP_INTERNAL_CHECK(static_cast<unsigned int>(state_ind)<trans_.size(),
              "the input index is out of range");
   return trans_[state_ind];
 }
 void TransformationDiscreteSet::add_transformation(
          const algebra::Transformation3D &t) {
-  IMP_assert(m_!=NULL,"need to set the model first");
+  IMP_INTERNAL_CHECK(m_!=NULL,"need to set the model first");
   trans_.push_back(t);
   Particle *p = new Particle(m_);
   for(int i=0;i<3;i++){

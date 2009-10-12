@@ -20,7 +20,7 @@ KMCentersTree::KMCentersTree( KMData *data_points,KMCenters *centers,
   IMP_LOG(VERBOSE,"KMCentersTree const end compute sums "<< std::endl);
   //TODO - should we use the ignore stuff
   //  root_->compute_sums(ignoreMe1, ignoreMe2, ignoreMe3);
-  //  IMP_assert(ignoreMe1 == data_points_->get_number_of_points(),
+  //  IMP_INTERNAL_CHECK(ignoreMe1 == data_points_->get_number_of_points(),
   // "calculate sums should have included all of the points");
 }
 //TODO: check if we need to add anything
@@ -35,7 +35,7 @@ KMPoint KMCentersTree::sample_center()
   KMPoint p = root_->sample_center();
   //TODO - should we have this ?
 //   for (int i = 0; i < dim_; i++) {
-//     IMP_assert( bb_save.lo[i] == bnd_box_.lo[i] &&
+//     IMP_INTERNAL_CHECK( bb_save.lo[i] == bnd_box_.lo[i] &&
 //     bb_save.hi[i] == bnd_box_.hi[i],
 //     "the bounding box was changed during sample_center");
 //  }
@@ -71,7 +71,8 @@ void KMCentersTree::get_assignments(std::vector<int> &close_center)
 void KMCentersTree::skeleton_tree(const std::vector<int> &p_id,
   KMPoint *bb_lo,KMPoint *bb_hi) {
   //TODO: where do get n from ?
-  IMP_assert(data_points_ != NULL,"Points must be supplied to construct tree.");
+  IMP_INTERNAL_CHECK(data_points_ != NULL,
+                     "Points must be supplied to construct tree.");
   if (p_id.size() == 0) {
     for (int i = 0; i < data_points_->get_number_of_points(); i++)
       p_id_.push_back(i);

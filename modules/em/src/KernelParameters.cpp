@@ -54,12 +54,12 @@ void KernelParameters::init(float resolution_)
 
 
 void KernelParameters::set_params(float radius) {
-  IMP_check(initialized,
+  IMP_USAGE_CHECK(initialized,
             "The Kernel Parameters are not initialized",
             InvalidStateException);
   std::map<float ,const KernelParameters::Parameters *>::iterator iter =
                    radii2params.find(radius);
-  IMP_check(iter == radii2params.end(),
+  IMP_USAGE_CHECK(iter == radii2params.end(),
             "The Kernel Parameters for the radius " << radius
             << " have already been calculated",
             InvalidStateException);

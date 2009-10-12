@@ -131,7 +131,7 @@ public:
       return v_;
     }
     bool operator==(const ResidueIndexIterator &o) const {
-      IMP_assert(f_ == o.f_, "Can't compare iterators from different "
+      IMP_INTERNAL_CHECK(f_ == o.f_, "Can't compare iterators from different "
                  << "containers");
       return i_ == o.i_ && j_== o.j_;
     }

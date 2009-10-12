@@ -32,7 +32,7 @@ public:
   BallMover(SingletonContainer *sc, const FloatKeys &vars,
             Float radius);
   void set_radius(Float radius) {
-    IMP_check(radius > 0, "The radius must be positive",
+    IMP_USAGE_CHECK(radius > 0, "The radius must be positive",
               ValueException);
     radius_=radius;
   }

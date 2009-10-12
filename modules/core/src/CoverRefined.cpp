@@ -28,7 +28,7 @@ void CoverRefined::apply(Particle *p) const
 {
   XYZR dp(p, rk_);
   IMP_CHECK_OBJECT(ref_.get());
-  IMP_check(ref_->get_can_refine(p), "Passed particles cannot be refined",
+  IMP_USAGE_CHECK(ref_->get_can_refine(p), "Passed particles cannot be refined",
             ValueException);
   XYZs ps(ref_->get_refined(p));
   set_enclosing_sphere(dp, ps);

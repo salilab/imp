@@ -42,16 +42,16 @@ public:
   void set_nodes(int number_of_nodes);
 
   void add_edge(int v1,int v2) {
-    IMP_assert(static_cast<unsigned int>(v1) < boost::num_vertices(g_),
+    IMP_INTERNAL_CHECK(static_cast<unsigned int>(v1) < boost::num_vertices(g_),
                "input node index (" << v1 << ") is out of range ("
                << boost::num_vertices(g_) << std::endl);
-    IMP_assert(static_cast<unsigned int>(v2) < boost::num_vertices(g_),
+    IMP_INTERNAL_CHECK(static_cast<unsigned int>(v2) < boost::num_vertices(g_),
                "input node index (" << v2 << ") is out of range ("
                << boost::num_vertices(g_) << std::endl);
     boost::add_edge(v1,v2,g_);
   }
   void set_node_name(int vi, const std::string &name) {
-    IMP_check(static_cast<unsigned int>(vi) < boost::num_vertices(g_),
+    IMP_USAGE_CHECK(static_cast<unsigned int>(vi) < boost::num_vertices(g_),
               "input node index (" << vi << ") is out of range ("
               << boost::num_vertices(g_) << ")"<<std::endl,ValueException);
     data_[vi].push_back(name);
@@ -60,19 +60,19 @@ public:
   int get_number_of_components(int vi) const {return data_[vi].size();}
 
   const std::string get_component_name(int vi,int ci) const {
-    IMP_check(static_cast<unsigned int>(vi) < boost::num_vertices(g_),
+    IMP_USAGE_CHECK(static_cast<unsigned int>(vi) < boost::num_vertices(g_),
               "input node index (" << vi << ") is out of range ("
               << boost::num_vertices(g_) <<")" <<std::endl,ValueException);
-    IMP_check(ci < get_number_of_components(vi),
+    IMP_USAGE_CHECK(ci < get_number_of_components(vi),
               "input component index is out of range",ValueException);
     return data_[vi][ci];
   }
 
   void set_component_name(int vi,int ci,const std::string &name)  {
-    IMP_check(static_cast<unsigned int>(vi) < boost::num_vertices(g_),
+    IMP_USAGE_CHECK(static_cast<unsigned int>(vi) < boost::num_vertices(g_),
               "input node index (" << vi << ") is out of range ("
               << boost::num_vertices(g_) <<")" <<std::endl,ValueException);
-    IMP_check(ci < get_number_of_components(vi),
+    IMP_USAGE_CHECK(ci < get_number_of_components(vi),
               "input component index is out of range",ValueException);
     data_[vi][ci]=name;
   }

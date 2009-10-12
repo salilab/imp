@@ -81,7 +81,7 @@ class IMPCOREEXPORT HierarchyTraits
 
   template <class T>
   void audit_value(T t) const {
-    IMP_check(t.get_traits().get_name() == get_name(),
+    IMP_USAGE_CHECK(t.get_traits().get_name() == get_name(),
               "Mixing hierarchies of type " << get_name()
               << " and type " << t.get_traits().get_name(),
               ValueException);

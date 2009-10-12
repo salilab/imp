@@ -69,14 +69,14 @@ IMPCOREEXPORT unsigned int graph_get_number_of_edges(Particle *a,
 inline Particle* graph_get_node(Particle *a, int i,
                                       const GraphData &d)
 {
-  IMP_assert(i<2, "bad node requested");
+  IMP_INTERNAL_CHECK(i<2, "bad node requested");
   return a->get_value(d.node_keys_[i]);
 }
 
 
 /** \internal */
 inline bool graph_is_edge(Particle *a, const GraphData &d) {
-  IMP_assert((a->has_attribute(d.node_keys_[0])
+  IMP_INTERNAL_CHECK((a->has_attribute(d.node_keys_[0])
               && a->has_attribute(d.node_keys_[1])) ||
              (!a->has_attribute(d.node_keys_[0])
               && !a->has_attribute(d.node_keys_[1])),

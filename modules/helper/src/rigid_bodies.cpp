@@ -32,7 +32,7 @@ namespace {
 ScoreState* create_rigid_bodies(SingletonContainer *rbs,
                                 Refiner *pr,
                                 bool snapping) {
-  IMP_check(rbs->get_number_of_particles() >0,
+  IMP_USAGE_CHECK(rbs->get_number_of_particles() >0,
             "Need some particles to make rigid bodies",
             ValueException);
   for (SingletonContainer::ParticleIterator pit= rbs->particles_begin();

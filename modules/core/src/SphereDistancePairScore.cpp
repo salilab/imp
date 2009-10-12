@@ -32,10 +32,10 @@ struct Shift
 Float SphereDistancePairScore::evaluate(Particle *a, Particle *b,
                                         DerivativeAccumulator *da) const
 {
-  IMP_check(a->has_attribute(radius_), "Particle " << a->get_name()
+  IMP_USAGE_CHECK(a->has_attribute(radius_), "Particle " << a->get_name()
             << "missing radius in SphereDistancePairScore",
             ValueException);
-  IMP_check(b->has_attribute(radius_), "Particle " << b->get_name()
+  IMP_USAGE_CHECK(b->has_attribute(radius_), "Particle " << b->get_name()
             << "missing radius in SphereDistancePairScore",
             ValueException);
   Float ra = a->get_value(radius_);
@@ -84,10 +84,10 @@ NormalizedSphereDistancePairScore
 Float NormalizedSphereDistancePairScore::evaluate(Particle *a, Particle *b,
                                         DerivativeAccumulator *da) const
 {
-  IMP_check(a->has_attribute(radius_), "Particle " << a->get_name()
+  IMP_USAGE_CHECK(a->has_attribute(radius_), "Particle " << a->get_name()
             << "missing radius in NormalizedSphereDistancePairScore",
             ValueException);
-  IMP_check(b->has_attribute(radius_), "Particle " << b->get_name()
+  IMP_USAGE_CHECK(b->has_attribute(radius_), "Particle " << b->get_name()
             << "missing radius in NormalizedSphereDistancePairScore",
             ValueException);
   Float ra = a->get_value(radius_);

@@ -58,7 +58,7 @@ RigidClosePairsFinder
 
 namespace {
   void check_particles(SingletonContainer *sc, FloatKey rk) {
-    IMP_IF_CHECK(CHEAP) {
+    IMP_IF_CHECK(USAGE) {
       for (SingletonContainer::ParticleIterator it= sc->particles_begin();
          it != sc->particles_end(); ++it) {
         if (RigidBody::particle_is_instance(*it)

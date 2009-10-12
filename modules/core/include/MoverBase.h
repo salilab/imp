@@ -65,7 +65,7 @@ protected:
       \param [in] j The index of the attribute.
    */
   Float get_float(unsigned int i, unsigned int j) const {
-    IMP_assert(pc_->get_number_of_particles() == floats_.size(),
+    IMP_INTERNAL_CHECK(pc_->get_number_of_particles() == floats_.size(),
                "Only call get_float from within generate_proposal");
     return pc_->get_particle(i)->get_value(get_float_key(j));
   }
@@ -75,7 +75,7 @@ protected:
       \param [in] j The index of the attribute.
    */
   Int get_int(unsigned int i, unsigned int j) const {
-    IMP_assert(pc_->get_number_of_particles() == ints_.size(),
+    IMP_INTERNAL_CHECK(pc_->get_number_of_particles() == ints_.size(),
                "Only call get_int from within generate_proposal");
     return pc_->get_particle(i)->get_value(get_int_key(j));
   }

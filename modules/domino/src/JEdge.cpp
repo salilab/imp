@@ -103,7 +103,8 @@ CombState * JEdge::get_separator(const CombState &other_comb) const
   std::stringstream error_message;
   error_message << " JEdge::get_separator a combination with index  : "
                 << key << " is not part of the edge separators" ;
-  IMP_assert(separators_.find(key) != separators_.end(), error_message.str());
+  IMP_INTERNAL_CHECK(separators_.find(key) != separators_.end(),
+                     error_message.str());
   return separators_.find(key)->second;
 }
 

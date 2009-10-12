@@ -61,12 +61,13 @@ public:
   }
 
   unsigned int operator-(const This &o) const {
-    IMP_assert(a_== o.a_, "Don't subtract iterators from different containers");
+    IMP_INTERNAL_CHECK(a_== o.a_,
+                       "Don't subtract iterators from different containers");
     return i_- o.i_;
   }
 
   bool operator==(const This &o) const {
-    IMP_assert(a_ == o.a_,
+    IMP_INTERNAL_CHECK(a_ == o.a_,
                "Can only compare iterators from the same container");
     return (i_== o.i_);
   }
@@ -76,33 +77,33 @@ public:
   }
 
   bool operator<(const This &o) const {
-    IMP_assert(a_ == o.a_,
+    IMP_INTERNAL_CHECK(a_ == o.a_,
                "Can only compare iterators from the same container");
-    IMP_assert(!is_default() && !o.is_default(),
+    IMP_INTERNAL_CHECK(!is_default() && !o.is_default(),
                "Ordering with uninitialized index is undefined");
     return (i_< o.i_);
   }
 
   bool operator>(const This &o) const {
-    IMP_assert(a_ == o.a_,
+    IMP_INTERNAL_CHECK(a_ == o.a_,
                "Can only compare iterators from the same container");
-    IMP_assert(!is_default() && !o.is_default(),
+    IMP_INTERNAL_CHECK(!is_default() && !o.is_default(),
                "Ordering with uninitialized index is undefined");
     return (i_> o.i_);
   }
 
   bool operator>=(const This &o) const {
-    IMP_assert(a_ == o.a_,
+    IMP_INTERNAL_CHECK(a_ == o.a_,
                "Can only compare iterators from the same container");
-    IMP_assert(!is_default() && !o.is_default(),
+    IMP_INTERNAL_CHECK(!is_default() && !o.is_default(),
                "Ordering with uninitialized index is undefined");
     return (i_>= o.i_);
   }
 
   bool operator<=(const This &o) const {
-    IMP_assert(a_ == o.a_,
+    IMP_INTERNAL_CHECK(a_ == o.a_,
                "Can only compare iterators from the same container");
-    IMP_assert(!is_default() && !o.is_default(),
+    IMP_INTERNAL_CHECK(!is_default() && !o.is_default(),
                "Ordering with uninitialized index is undefined");
     return (i_<= o.i_);
   }

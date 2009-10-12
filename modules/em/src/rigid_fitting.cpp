@@ -111,7 +111,7 @@ void local_rigid_fitting_around_point(
           " Monte Carlo steps , each with " << number_of_cg_steps <<
           " Conjugate Gradients rounds. " << std::endl
            <<" The anchor point is : " << anchor_centroid << std::endl);
-   IMP_assert(dmap->is_part_of_volume(anchor_centroid),
+   IMP_INTERNAL_CHECK(dmap->is_part_of_volume(anchor_centroid),
               "The centroid is not part of the map");
    //add restraints
    Model *model = rb.get_members()[0].get_particle()->get_model();
@@ -154,7 +154,7 @@ void local_rigid_fitting_around_points(
 
    for(algebra::Vector3Ds::const_iterator it = anchor_centroids.begin();
                                           it != anchor_centroids.end(); it++) {
-     IMP_assert(dmap->is_part_of_volume(*it),
+     IMP_INTERNAL_CHECK(dmap->is_part_of_volume(*it),
                 "The centroid is not part of the map");
      IMP_LOG(VERBOSE, "optimizing around anchor point " << *it << std::endl);
      optimize(number_of_optimization_runs,

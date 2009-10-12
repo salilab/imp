@@ -52,7 +52,7 @@ public:
 #ifndef IMP_DOXYGEN
   // Return whether the object already been freed
   bool get_is_valid() const {
-#ifdef IMP_NO_DEBUG
+#if IMP_BUILD >= IMP_FAST
     return true;
 #else
     return check_value_==111111111;
@@ -70,16 +70,16 @@ public:
       level to the local one for this object.
    */
   void set_log_level(LogLevel l) {
-    IMP_check(l <= MEMORY && l >= DEFAULT, "Setting to invalid log level "
+    IMP_USAGE_CHECK(l <= MEMORY && l >= DEFAULT, "Setting to invalid log level "
               << l, ValueException);
-#ifndef IMP_NO_DEBUG
+#if IMP_BUILD < IMP_FAST
     log_level_=l;
 #endif
   }
 
 #ifndef IMP_DOXYGEN
   LogLevel get_log_level() const {
-#ifdef IMP_NO_DEBUG
+#if IMP_BUILD >= IMP_FAST
       return SILENT;
 #else
       return log_level_;
@@ -127,7 +127,7 @@ private:
   Object(const Object &o) {}
   const Object& operator=(const Object &o) {return *this;}
 
-#ifndef IMP_NO_DEBUG
+#if IMP_BUILD < IMP_FAST
   LogLevel log_level_;
   double check_value_;
 #endif
@@ -147,7 +147,7 @@ inline std::ostream &operator<<(std::ostream &out, const Object& o) {
 template <class O>
 O* object_cast(Object *o) {
   O *ret= dynamic_cast<O*>(o);
-  IMP_check(ret, "Object " << o->get_name() << " cannot be cast to "
+  IMP_USAGE_CHECK(ret, "Object " << o->get_name() << " cannot be cast to "
             << "desired type.",
             ValueException);
   return ret;
@@ -157,14 +157,14 @@ IMP_END_NAMESPACE
 
 //! Perform some basic validity checks on the object for memory debugging
 #define IMP_CHECK_OBJECT(obj) do {                                      \
-    IMP_assert((obj) != NULL, "NULL object");                           \
-    IMP_assert((obj)->get_is_valid(), "Check object " << obj            \
+    IMP_INTERNAL_CHECK((obj) != NULL, "NULL object");                   \
+    IMP_INTERNAL_CHECK((obj)->get_is_valid(), "Check object " << obj    \
                << " was previously freed");                             \
 } while (false)
 
 #include "SetLogState.h"
 
-#ifndef IMP_NO_DEBUG
+#if IMP_BUILD < IMP_FAST
 //! Set the log level to the objects log level.
 /** All non-trivial Object methods should start with this. It creates a
     RAII-style object which sets the log level to the local one,

@@ -71,7 +71,7 @@ public:
       this in a single step. This ensures that objects cannot pass through
       one another or miss important features of the force field. */
   void set_minimum_feature_size(double df) {
-    IMP_check(df > 0, "The max change must be positive",
+    IMP_USAGE_CHECK(df > 0, "The max change must be positive",
               ValueException);
     feature_size_2_=unit::SquareAngstrom(square(df));
   }

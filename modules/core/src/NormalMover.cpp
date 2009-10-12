@@ -37,8 +37,8 @@ void NormalMover::generate_move(Float probability)
       Float c = get_float(i, j);
       Float r = sampler();
       // Check for NaN (x!=x when x==NaN) (can only use std::isnan with C99)
-      IMP_assert(r == r, "Bad random");
-      IMP_assert(c == c, "Bad stored");
+      IMP_INTERNAL_CHECK(r == r, "Bad random");
+      IMP_INTERNAL_CHECK(c == c, "Bad stored");
       propose_value(i, j, c + r);
     }
   }

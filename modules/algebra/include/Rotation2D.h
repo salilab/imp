@@ -47,21 +47,21 @@ public:
   * \param[in] o a 2D vector to be rotated
   */
    Vector2D rotate(const  Vector2D &o) const {
-    IMP_assert(!is_nan(angle_),
+    IMP_INTERNAL_CHECK(!is_nan(angle_),
                "Attempting to use uninitialized rotation");
     return rotate(o[0],o[1]);
   }
 
   //! rotates a 2D point
    Vector2D rotate(const double x,const double y) const {
-    IMP_assert(!is_nan(angle_),
+    IMP_INTERNAL_CHECK(!is_nan(angle_),
                "Attempting to use uninitialized rotation");
     return  Vector2D(c_*x-s_*y , s_*x+c_*y);
   }
 
   //! Returns the matrix for the inverse rotation
   Rotation2D get_inverse() const {
-    IMP_assert(!is_nan(angle_),
+    IMP_INTERNAL_CHECK(!is_nan(angle_),
                "Attempting to use uninitialized rotation");
     return Rotation2D(-angle_);
   }

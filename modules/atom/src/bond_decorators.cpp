@@ -66,7 +66,7 @@ void Bonded::show(std::ostream &out) const
 
 Bond bond(Bonded a, Bonded b, Int t)
 {
-  IMP_check(a.get_particle() != b.get_particle(),
+  IMP_USAGE_CHECK(a.get_particle() != b.get_particle(),
             "The endpoints of a bond must be disjoint",
             ValueException);
 

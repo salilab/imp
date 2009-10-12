@@ -57,12 +57,12 @@ public:
   KMRectangle expand(double x);
   int get_dim(){return lo_.size();}
   KMPoint *get_point(int i) {
-    IMP_assert(i==0 || i==1,"wrong index");
+    IMP_INTERNAL_CHECK(i==0 || i==1,"wrong index");
     if (i==0) return &lo_;
     return &hi_;
   }
   const KMPoint *get_point(int i) const {
-    IMP_assert(i==0 || i==1,"wrong index");
+    IMP_INTERNAL_CHECK(i==0 || i==1,"wrong index");
     if (i==0) return &lo_;
     return &hi_;
   }
@@ -79,7 +79,7 @@ public:
     return max_length;
   }
   KMPoint find_closest_vertex(const KMPoint &p){
-    IMP_assert(p.size() == (unsigned int)get_dim(),
+    IMP_INTERNAL_CHECK(p.size() == (unsigned int)get_dim(),
     "KMRectangle::find_closest_vertex the"
     <<" input point is of the wrong dimension" << p.size() << " != "
      << get_dim()<<std::endl);

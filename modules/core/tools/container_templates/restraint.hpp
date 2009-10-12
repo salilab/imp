@@ -87,7 +87,7 @@ public:
   }
 
   void set_groupname_score(GroupnameScore* ss) {
-    IMP_check(ss, "The GroupnameScore must be non-null",
+    IMP_USAGE_CHECK(ss, "The GroupnameScore must be non-null",
               IndexException);
     ss_= ss;
   }

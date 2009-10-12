@@ -41,26 +41,26 @@ public:
   /** Apply the function to a single value*/
   virtual void apply(Particle *a, Particle *b,
                      DerivativeAccumulator &da) const {
-    IMP_failure("This PairModifier must be called without a"
+    IMP_FAILURE("This PairModifier must be called without a"
                 << " DerivativeAccumulator.", InvalidStateException);
   }
 
   /** Apply the function to a single value*/
   virtual void apply(Particle *a, Particle *b) const {
-    IMP_failure("This PairModifier must be called with a"
+    IMP_FAILURE("This PairModifier must be called with a"
                 << " DerivativeAccumulator.", InvalidStateException);
   }
 
   /** Apply the function to a collection of ParticlePairs */
   virtual void apply(const ParticlePairsTemp &o) const {
-    IMP_failure("This PairModifier must be called with a"
+    IMP_FAILURE("This PairModifier must be called with a"
                 << " DerivativeAccumulator.", InvalidStateException);
   }
 
   /** Apply the function to a collection of ParticlePairs */
   virtual void apply(const ParticlePairsTemp &o,
                      DerivativeAccumulator &da) const {
-    IMP_failure("This PairModifier must be called without a"
+    IMP_FAILURE("This PairModifier must be called without a"
                 << " DerivativeAccumulator.", InvalidStateException);
   }
 
@@ -105,7 +105,8 @@ public:
   PairFunctor(const PairModifier *f): f_(f), da_(NULL){}
   PairFunctor(const PairModifier *f,
                    DerivativeAccumulator *da): f_(f), da_(da){
-    IMP_check(da_, "The passed derivative accumulator should not be null.",
+    IMP_USAGE_CHECK(da_,
+                    "The passed derivative accumulator should not be null.",
               InvalidStateException);
   }
   void operator()( ParticlePair p) const {

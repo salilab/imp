@@ -152,7 +152,7 @@ namespace {
       std::istringstream iss(value.c_str());
       V v;
       iss >> v;
-      IMP_check(iss, "Error reading value. Got " << v , ValueException);
+      IMP_USAGE_CHECK(iss, "Error reading value. Got " << v , ValueException);
       p->set_value(k, v);
     }
   };
@@ -169,7 +169,7 @@ namespace {
         std::istringstream iss(value.c_str());
         Float v;
         iss >> v;
-        IMP_check(iss, "Error reading value. Got " << v , ValueException);
+        IMP_USAGE_CHECK(iss, "Error reading value. Got " << v , ValueException);
         p->set_value(k, v);
       } else {
         IMP_LOG(VERBOSE, "Skipping reading attribute "
@@ -235,10 +235,10 @@ namespace {
     LineStream::LinePair lp=in.get_line(indent);
     if (lp.first.empty()) return;
     //IMP_LOG(VERBOSE, "Got line " << buf << std::endl);
-    //IMP_check(in, "Error reading particle line from yaml", ValueException);
-    IMP_check(lp.first== "particle", "Error reading particle line: \""
+    IMP_USAGE_CHECK(lp.first== "particle", "Error reading particle line: \""
               << lp.first << "\" got " << lp.first, InvalidStateException);
-    IMP_check(!lp.second.empty(), "Couldn't read id", InvalidStateException);
+    IMP_USAGE_CHECK(!lp.second.empty(), "Couldn't read id",
+                    InvalidStateException);
     IMP_LOG(VERBOSE, "Reading particle " << lp.second << std::endl);
     pr.add_particle(lp.second, p);
     unsigned int nindent= in.get_next_indent();
@@ -281,7 +281,7 @@ namespace {
       ++pit;
       ++nump;
     } while (r);
-    IMP_check(pit== m->particles_end(),
+    IMP_USAGE_CHECK(pit== m->particles_end(),
               "Read wrong number of particles. Got " << nump
               << " but expected " << m->get_number_of_particles()
               << " Model is probably corrupt.",
@@ -350,7 +350,7 @@ void write_optimized_attributes(Model *m,
 void write(Model *m, std::string out) {
   std::ofstream outf(out.c_str());
   if (!outf) {
-    IMP_failure("Could not open file " << out << " for writing",
+    IMP_FAILURE("Could not open file " << out << " for writing",
                 ValueException);
   }
   write(m, outf, "");
@@ -373,7 +373,7 @@ void read(std::string in,
           Model *m) {
   std::ifstream iss(in.c_str());
   if (!iss) {
-    IMP_failure("Could not open file " << in << " for reading",
+    IMP_FAILURE("Could not open file " << in << " for reading",
                 ValueException);
   }
   read(iss, m);

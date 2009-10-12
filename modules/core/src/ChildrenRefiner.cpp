@@ -26,7 +26,7 @@ bool ChildrenRefiner::get_can_refine(Particle *p) const
 
 Particle* ChildrenRefiner::get_refined(Particle *p, unsigned int i) const
 {
-  IMP_assert(get_can_refine(p), "Trying to refine the unrefinable");
+  IMP_INTERNAL_CHECK(get_can_refine(p), "Trying to refine the unrefinable");
   core::Hierarchy d(p, traits_);
   return d.get_child(i).get_particle();
 }
@@ -34,7 +34,7 @@ Particle* ChildrenRefiner::get_refined(Particle *p, unsigned int i) const
 
 unsigned int ChildrenRefiner::get_number_of_refined(Particle *p) const
 {
-  IMP_assert(get_can_refine(p), "Trying to refine the unrefinable");
+  IMP_INTERNAL_CHECK(get_can_refine(p), "Trying to refine the unrefinable");
   core::Hierarchy d(p, traits_);
   return d.get_number_of_children();
 }

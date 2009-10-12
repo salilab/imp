@@ -42,7 +42,7 @@ Float MonteCarlo::optimize(unsigned int max_steps)
 
   if (cg_) {
     IMP_CHECK_OBJECT(cg_.get());
-    IMP_check(cg_->get_model() == get_model(),
+    IMP_USAGE_CHECK(cg_->get_model() == get_model(),
                "The model used by the local optimizer does not match "\
               " that used by the montecarlo optimizer",
               InvalidStateException);
@@ -138,10 +138,10 @@ Float MonteCarlo::optimize(unsigned int max_steps)
     SetLogState ll(VERBOSE);
     read(iss, get_model());
     IMP_LOG(TERSE, "MC Returning energy " << best_energy << std::endl);
-    IMP_IF_CHECK(CHEAP) {
+    IMP_IF_CHECK(USAGE) {
       double e= get_model()->evaluate(false);
       IMP_LOG(TERSE, "MC Got " << e << std::endl);
-      IMP_assert(std::abs(best_energy - e)
+      IMP_INTERNAL_CHECK(std::abs(best_energy - e)
                  < .1* (best_energy +e), "Energies do not match "
                  << best_energy << " vs " << e << std::endl);
     }

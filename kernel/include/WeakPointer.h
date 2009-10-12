@@ -43,7 +43,7 @@ class WeakPointer: public NullDefault, public Comparable
   }
 
   void audit() const {
-    IMP_assert(o_ != NULL, "Pointer is NULL");
+    IMP_INTERNAL_CHECK(o_ != NULL, "Pointer is NULL");
     //IMP_CHECK_OBJECT(o_);
   }
 protected:
@@ -53,7 +53,7 @@ public:
   WeakPointer(): o_(NULL) {}
   /** initialize from a pointer */
   explicit WeakPointer(O* o): o_(NULL) {
-    IMP_assert(o, "Can't initialize with NULL pointer");
+    IMP_INTERNAL_CHECK(o, "Can't initialize with NULL pointer");
     set_pointer(o);
   }
   /** it's a pointer */
