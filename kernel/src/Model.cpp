@@ -48,16 +48,20 @@ public:
   ReadLock(It1 pa, It1 pb,
            It ab, It ae): p_(pa, pb),
                           allowed_(ab, ae){
+#ifndef IMP_NO_DEBUG
     for (unsigned int i=0; i< p_.size(); ++i) {
       if (allowed_.find(p_[i]) == allowed_.end()) {
         p_[i]->ps_->read_locked_=true;
       }
     }
+#endif
   }
   ~ReadLock() {
+#ifndef IMP_NO_DEBUG
     for (unsigned int i=0; i< p_.size(); ++i) {
       p_[i]->ps_->read_locked_=false;
     }
+#endif
   }
 };
 
