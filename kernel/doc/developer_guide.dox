@@ -13,6 +13,10 @@ build='release') from the same set of sources. To do this:
 directory. Let the path from the build directory, \c debug, to the
 source directory, \c svn, be \c{../svn}.
 
+- make sure that the \imp source directory is clean. If you just checked
+  out form \c svn, then it is. Otherwise, do \command{scons -c all} in
+  the source directory.
+
 - In the build directory link to \c SConstruct and \c scons_tools in
   \c svn. eg \command{ln -s ../svn/SConstruct; ln -s
   ../svn/scons_tools}
