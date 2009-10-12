@@ -140,12 +140,12 @@ public:
                           const Grid *grid): cvoxel_(c),
                                              evoxel_(e),
                                              grid_(grid) {
-      IMP_assert(grid_, "NULL grid");
+      IMP_INTERNAL_CHECK(grid_, "NULL grid");
       find_voxel();
     }
 
     void operator++() {
-      IMP_assert(cvoxel_ != evoxel_, "Too many increments");
+      IMP_INTERNAL_CHECK(cvoxel_ != evoxel_, "Too many increments");
       ++curp_;
       if (curp_== grid_->get_voxel(*cvoxel_).end()) {
         ++cvoxel_;

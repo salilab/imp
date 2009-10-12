@@ -20,11 +20,11 @@ FitRestraint::FitRestraint(const Particles &ps,
 {
   target_dens_map_ = em_map;
   for (unsigned int i=0; i< ps.size(); ++i) {
-      IMP_check(ps[i]->has_attribute(radius_key),
+      IMP_USAGE_CHECK(ps[i]->has_attribute(radius_key),
                 "Particle " << ps[i]->get_name()
                 << " is missing the radius "<< radius_key
                 << std::endl, ValueException);
-      IMP_check(ps[i]->has_attribute(radius_key),
+      IMP_USAGE_CHECK(ps[i]->has_attribute(radius_key),
                 "Particle " << ps[i]->get_name()
                 << " is missing the mass "<< weight_key
                 << std::endl, ValueException);
@@ -70,7 +70,7 @@ FitRestraint::FitRestraint(const Particles &ps,
 
 IMP_LIST_IMPL(FitRestraint, Particle, particle,Particle*, Particles,
               {
-              IMP_assert(get_number_of_particles()==0
+              IMP_INTERNAL_CHECK(get_number_of_particles()==0
                          || obj->get_model()
                          == (*particles_begin())->get_model(),
                          "All particles in FitRestraint must belong to the "

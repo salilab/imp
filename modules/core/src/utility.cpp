@@ -30,7 +30,7 @@ void transform(const XYZs &ps,
 }
 
 algebra::Segment3D diameter(const XYZs &ps) {
-  IMP_check(!ps.empty(), "Can't compute the diameter if you don't give "
+  IMP_USAGE_CHECK(!ps.empty(), "Can't compute the diameter if you don't give "
             "me any particles.", ValueException);
   XYZ p1,p2;
   double max_squared_dist=0.0;

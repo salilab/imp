@@ -25,10 +25,10 @@ DiameterRestraint::DiameterRestraint(UnaryFunction *f,
                                      Float diameter):diameter_(diameter),
                                                      sc_(sc), f_(f),
                                                      dr_("diameter_radius"){
-  IMP_check(sc->get_number_of_particles()>2,
+  IMP_USAGE_CHECK(sc->get_number_of_particles()>2,
             "Need at least two particles to restrain diameter",
             ValueException);
-  IMP_check(diameter>0, "The diameter must be positive",
+  IMP_USAGE_CHECK(diameter>0, "The diameter must be positive",
             ValueException);
 }
 

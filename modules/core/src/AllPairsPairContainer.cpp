@@ -28,7 +28,8 @@ unsigned int AllPairsPairContainer::get_number_of_particle_pairs() const {
 
 //!
 ParticlePair AllPairsPairContainer::get_particle_pair(unsigned int i) const {
-  IMP_assert(i <  get_number_of_particle_pairs(), "Invalid pair requested");
+  IMP_INTERNAL_CHECK(i <  get_number_of_particle_pairs(),
+                     "Invalid pair requested");
   IMP_LOG(VERBOSE, "All pairs asked for pair " << i << " current state is "
     << i_ << "= " << a_ << " " << b_ << std::endl);
   // dumb method, just increase the current pair until we get to the desired one

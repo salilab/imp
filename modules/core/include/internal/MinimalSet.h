@@ -45,7 +45,7 @@ public:
   }
 
   void insert(Score s, const Data &d) {
-    IMP_assert(can_insert(s), "Invalid insert");
+    IMP_INTERNAL_CHECK(can_insert(s), "Invalid insert");
     std::pair<Score, Data> pair(s, d);
     typename Vector::iterator it=
       std::upper_bound(data_.begin(), data_.end(), pair,
@@ -61,7 +61,7 @@ public:
   }
 
   const MP &operator[](unsigned int i) const {
-    IMP_check(i < data_.size(), "Index out of range in MinimalSet",
+    IMP_USAGE_CHECK(i < data_.size(), "Index out of range in MinimalSet",
               IndexException);
     return data_[i];
   }

@@ -108,7 +108,7 @@ inline CommasIO commas_io(const Color &v) {
 /** \unstable{Color multiplication}
  */
 inline Color operator*(double d, Color c) {
-  IMP_check(d <=1 && d>=0, "Colors can only fade with multiplication",
+  IMP_USAGE_CHECK(d <=1 && d>=0, "Colors can only fade with multiplication",
             ValueException);
   return Color(c.get_red()*d, c.get_green()*d, c.get_blue()*d);
 }

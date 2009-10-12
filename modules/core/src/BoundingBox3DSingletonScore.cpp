@@ -17,7 +17,8 @@ IMPCORE_BEGIN_NAMESPACE
 BoundingBox3DSingletonScore
 ::BoundingBox3DSingletonScore(UnaryFunction *f,
                             const algebra::BoundingBox3D &bb ): f_(f), bb_(bb){
-  IMP_check(std::abs(f_->evaluate(0)) <.1, "The unary function should return "
+  IMP_USAGE_CHECK(std::abs(f_->evaluate(0)) <.1,
+                  "The unary function should return "
             " 0 when passed a value of 0. Not " << f_->evaluate(0),
             InvalidStateException);
 }

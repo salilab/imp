@@ -72,7 +72,7 @@ Matrix compute_I(const std::vector<RigidMember> &ds,
 
 RigidBody RigidBody::setup_particle(Particle *p,
                             const XYZs &members){
-  IMP_check(!internal::get_has_required_attributes_for_body(p),
+  IMP_USAGE_CHECK(!internal::get_has_required_attributes_for_body(p),
             "The RigidBody is already set up.",
             InvalidStateException);
   internal::add_required_attributes_for_body(p);
@@ -82,13 +82,14 @@ RigidBody RigidBody::setup_particle(Particle *p,
 
   Hierarchy hd(p, internal::rigid_body_data().htraits_);
 
-  IMP_check(!members.empty(), "There must be particles to make a rigid body",
+  IMP_USAGE_CHECK(!members.empty(),
+                  "There must be particles to make a rigid body",
             InvalidStateException);
   for (unsigned int i=0; i< members.size(); ++i) {
     Particle *mp= members[i];
-    IMP_check(mp != p, "A rigid body cannot have itself as a member "
+    IMP_USAGE_CHECK(mp != p, "A rigid body cannot have itself as a member "
               << p->get_name(), ValueException);
-    IMP_check(!internal::get_has_required_attributes_for_member(p),
+    IMP_USAGE_CHECK(!internal::get_has_required_attributes_for_member(p),
               "Particle " << p->get_name() << " is already part of "
               << "a conflicting rigid body",
               InvalidStateException);
@@ -142,12 +143,12 @@ RigidBody RigidBody::setup_particle(Particle *p,
     //IMP_LOG(VERBOSE, " " << cm << " | " << std::endl);
   }
 
-  IMP_IF_CHECK(EXPENSIVE) {
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     for (unsigned int i=0; i< ds.size(); ++i) {
       RigidMember cm= ds[i];
       algebra::Vector3D v= cm.get_coordinates();
       algebra::Vector3D nv= d.get_coordinates(cm);
-      IMP_assert((v-nv).get_squared_magnitude() < .1,
+      IMP_INTERNAL_CHECK((v-nv).get_squared_magnitude() < .1,
                  "Bad initial orientation "
                  << d.get_transformation() << std::endl
                  << v << std::endl

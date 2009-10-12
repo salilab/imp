@@ -20,7 +20,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 class IMPALGEBRAEXPORT Sphere3D: public UninitializedDefault {
 public:
   Sphere3D(){
-#ifndef IMP_NO_DEBUG
+#if IMP_BUILD < IMP_FAST
     radius_= std::numeric_limits<double>::quiet_NaN();
 #endif
   }
@@ -28,7 +28,7 @@ public:
   double get_volume() const;
   double get_surface_area() const;
   double get_radius() const {
-    IMP_check(!is_nan(radius_),
+    IMP_USAGE_CHECK(!is_nan(radius_),
               "Attempt to use uninitialized sphere.",
               InvalidStateException);
     return radius_;

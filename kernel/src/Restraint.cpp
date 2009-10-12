@@ -27,7 +27,7 @@ Restraint::Restraint(std::string name)
 
 void Restraint::set_model(Model* model)
 {
-  IMP_check(model==NULL || model_==NULL
+  IMP_USAGE_CHECK(model==NULL || model_==NULL
             || (model_ && model_ == model),
             "Model* different from already stored model "
             << model << " " << model_,
@@ -37,7 +37,7 @@ void Restraint::set_model(Model* model)
 }
 
 double Restraint::evaluate(DerivativeAccumulator *accum) const {
-  IMP_check(get_model()->get_stage()== Model::EVALUATE
+  IMP_USAGE_CHECK(get_model()->get_stage()== Model::EVALUATE
             || get_model()->get_stage()==Model::NOT_EVALUATING,
             "Restraint::evaluate() cannot be called during model evaluation",
             InvalidStateException);
@@ -54,11 +54,11 @@ double Restraint::evaluate(DerivativeAccumulator *accum) const {
 }
 
 double Restraint::incremental_evaluate(DerivativeAccumulator *accum) const {
-  IMP_check(get_model()->get_stage()== Model::EVALUATE
+  IMP_USAGE_CHECK(get_model()->get_stage()== Model::EVALUATE
             || get_model()->get_stage()==Model::NOT_EVALUATING,
             "Restraint::evaluate() cannot be called during model evaluation",
             InvalidStateException);
-  IMP_check(get_model()->get_stage()== Model::EVALUATE
+  IMP_USAGE_CHECK(get_model()->get_stage()== Model::EVALUATE
             || !accum, "Evaluation with derivatives is not supported.",
             ValueException);
   bool not_eval=get_model()->get_stage() != Model::EVALUATE;

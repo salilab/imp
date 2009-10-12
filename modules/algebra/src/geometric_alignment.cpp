@@ -18,7 +18,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 Transformation3D
 rigid_align_first_to_second(const std::vector<Vector3D> &from,
                             const std::vector<Vector3D> &to) {
-  IMP_assert(from.size() == to.size(), "sizes don't match");
+  IMP_INTERNAL_CHECK(from.size() == to.size(), "sizes don't match");
   // compute the centroid of the points and transform
   // pointsets so that their centroids coinside
 
@@ -67,7 +67,7 @@ rigid_align_first_to_second(const std::vector<Vector3D> &from,
   internal::TNT::Array1D<double> SV;
   svd.getSingularValues(SV);
   double det= SV[0]*SV[1]*SV[2];
-  IMP_IF_CHECK(CHEAP) {
+  IMP_IF_CHECK(USAGE) {
     if (det < .00001) {
       IMP_LOG(TERSE, "FROM:\n");
       for (unsigned int i=0; i< from.size(); ++i) {

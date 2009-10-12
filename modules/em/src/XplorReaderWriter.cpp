@@ -23,7 +23,7 @@ void XplorReaderWriter::Read(const char *filename, float **data,
   //data
   int size = xheader.extent[0]*xheader.extent[1]*xheader.extent[2];
   *data =  new float[size];
-  IMP_check(*data,
+  IMP_USAGE_CHECK(*data,
             "XplorReader::Read can not allocated space for data - the "
             << "requested size: " << size * sizeof(float),
             IOException);

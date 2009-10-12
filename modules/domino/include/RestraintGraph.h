@@ -129,7 +129,7 @@ public:
     std::stringstream err_msg;
     err_msg << "RestraintGraph::get_minimum_score the graph has not been"
             << " infered";
-    IMP_assert(infered_, err_msg.str());
+    IMP_INTERNAL_CHECK(infered_, err_msg.str());
     return (*(min_combs_->begin()))->get_total_score();
   }
 

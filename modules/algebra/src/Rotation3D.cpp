@@ -15,7 +15,7 @@ Rotation3D::~Rotation3D() {
 }
 
 Rotation3D Rotation3D::get_inverse() const {
-  IMP_check(v_.get_squared_magnitude() != 0,
+  IMP_USAGE_CHECK(v_.get_squared_magnitude() != 0,
             "Attempting to invert uninitialized rotation",
             InvalidStateException);
   Rotation3D ret(v_[0], -v_[1], -v_[2], -v_[3]);
@@ -27,47 +27,47 @@ Rotation3D Rotation3D::get_inverse() const {
 Rotation3D rotation_from_matrix(double m11,double m12,double m13,
                                 double m21,double m22,double m23,
                                 double m31,double m32,double m33) {
-  IMP_IF_CHECK(EXPENSIVE) {
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     Vector3D v0(m11, m12, m13);
     Vector3D v1(m21, m22, m23);
     Vector3D v2(m31, m32, m33);
-    IMP_check(std::abs(v0.get_squared_magnitude()-1) < .1,
+    IMP_USAGE_CHECK(std::abs(v0.get_squared_magnitude()-1) < .1,
               "The passed matrix is not a rotation matrix (row 0).",
               ValueException);
-    IMP_check(std::abs(v1.get_squared_magnitude()-1) < .1,
+    IMP_USAGE_CHECK(std::abs(v1.get_squared_magnitude()-1) < .1,
               "The passed matrix is not a rotation matrix (row 1).",
               ValueException);
-    IMP_check(std::abs(v2.get_squared_magnitude()-1) < .1,
+    IMP_USAGE_CHECK(std::abs(v2.get_squared_magnitude()-1) < .1,
               "The passed matrix is not a rotation matrix (row 2).",
               ValueException);
-    IMP_check(std::abs(v0 *v1) < .1,
+    IMP_USAGE_CHECK(std::abs(v0 *v1) < .1,
               "The passed matrix is not a rotation matrix (row 0, row 1).",
               ValueException);
-    IMP_check(std::abs(v0 *v2) < .1,
+    IMP_USAGE_CHECK(std::abs(v0 *v2) < .1,
               "The passed matrix is not a rotation matrix (row 0, row 2).",
               ValueException);
-    IMP_check(std::abs(v1 *v2) < .1,
+    IMP_USAGE_CHECK(std::abs(v1 *v2) < .1,
               "The passed matrix is not a rotation matrix (row 1, row 2).",
               ValueException);
     Vector3D c0(m11, m21, m31);
     Vector3D c1(m12, m22, m32);
     Vector3D c2(m13, m23, m33);
-    IMP_check(std::abs(c0.get_squared_magnitude()-1) < .1,
+    IMP_USAGE_CHECK(std::abs(c0.get_squared_magnitude()-1) < .1,
               "The passed matrix is not a rotation matrix (col 0).",
               ValueException);
-    IMP_check(std::abs(c1.get_squared_magnitude()-1) < .1,
+    IMP_USAGE_CHECK(std::abs(c1.get_squared_magnitude()-1) < .1,
               "The passed matrix is not a rotation matrix (col 1).",
               ValueException);
-    IMP_check(std::abs(c2.get_squared_magnitude()-1) < .1,
+    IMP_USAGE_CHECK(std::abs(c2.get_squared_magnitude()-1) < .1,
               "The passed matrix is not a rotation matrix (col 2).",
               ValueException);
-    IMP_check(std::abs(c0 *c1) < .1,
+    IMP_USAGE_CHECK(std::abs(c0 *c1) < .1,
               "The passed matrix is not a rotation matrix (col 0, col 1).",
               ValueException);
-    IMP_check(std::abs(c0 *c2) < .1,
+    IMP_USAGE_CHECK(std::abs(c0 *c2) < .1,
               "The passed matrix is not a rotation matrix (col 0, col 2).",
               ValueException);
-    IMP_check(std::abs(c1 *c2) < .1,
+    IMP_USAGE_CHECK(std::abs(c1 *c2) < .1,
               "The passed matrix is not a rotation matrix (col 1, col 2).",
               ValueException);
   }
@@ -128,7 +128,7 @@ Rotation3D random_rotation(const Rotation3D &center,
     }
     ++count;
   }
-  IMP_failure("Unable to find a suitably close rotation",
+  IMP_FAILURE("Unable to find a suitably close rotation",
               ValueException);
 }
 
@@ -215,11 +215,11 @@ FixedZYZ fixed_zyz_from_rotation(const Rotation3D &r) {
           << cos_psi_sin_tilt/sin_tilt << "\n"
           << sin_rot << " " << sin_tilt << " "
           << sin_tilt_sin_psi/sin_tilt << std::endl);*/
-  IMP_IF_CHECK(CHEAP) {
+  IMP_IF_CHECK(USAGE) {
     Rotation3D rrot= rotation_from_fixed_zyz(rot, tilt, psi);
     IMP_LOG(VERBOSE,
             "Input is " << r << " output results in " << rrot << std::endl);
-    IMP_assert((rrot.get_quaternion()
+    IMP_INTERNAL_CHECK((rrot.get_quaternion()
                 -r.get_quaternion()).get_squared_magnitude() < .1,
                "The input and output rotations are far apart " << r
                << " and " << rrot << std::endl);

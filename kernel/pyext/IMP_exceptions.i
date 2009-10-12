@@ -3,7 +3,7 @@
 /* Runtime check functions from exception.h */
 namespace IMP
 {
-enum CheckLevel {NONE=0, CHEAP=1, EXPENSIVE=2};
+enum CheckLevel {NONE=0, USAGE=1, USAGE_AND_INTERNAL=2};
 void set_check_level(CheckLevel tf);
 CheckLevel get_check_level();
 void set_print_exceptions(bool tf);

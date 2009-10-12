@@ -94,7 +94,8 @@ Vector3Ds uniform_cover(const Sphere3DPatch &sph,
     Vector3D rp = random_vector_on_sphere(sph.get_sphere().get_center(),
                                           sph.get_sphere().get_radius());
     double r2= (rp-sph.get_sphere().get_center()).get_squared_magnitude();
-    IMP_assert(std::abs(r2- square(sph.get_sphere().get_radius())) < .05 *r2,
+    IMP_INTERNAL_CHECK(std::abs(r2- square(sph.get_sphere().get_radius()))
+                       < .05 *r2,
                "Bad point on sphere " << r2
                << " " << square(sph.get_sphere().get_radius()) << std::endl);
     // suppress warning
@@ -126,7 +127,7 @@ IMPALGEBRAEXPORT Vector3Ds uniform_cover(const Cone3D &cone,
 IMPALGEBRAEXPORT Vector3Ds random_chain(unsigned int n, double r,
                                         const Vector3D &start,
                                         const Sphere3Ds &obstacles) {
-  IMP_check(r>.00001,
+  IMP_USAGE_CHECK(r>.00001,
             "If r is too small, it won't succeed in placing the spheres",
             ValueException);
   unsigned int max_failures=30;
@@ -136,7 +137,7 @@ IMPALGEBRAEXPORT Vector3Ds random_chain(unsigned int n, double r,
   failures.push_back(0);
   while (ret.size() != n) {
     if (ret.empty()) {
-      IMP_failure("Cannot place first random point",
+      IMP_FAILURE("Cannot place first random point",
                   ValueException);
     }
     if (failures.back() > max_failures) {

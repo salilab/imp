@@ -24,7 +24,7 @@ Float TriangleGeometry::get_size() const {
 }
 
 algebra::Vector3D TriangleGeometry::get_vertex(unsigned int i) const {
-  IMP_check(i < 3, "Out of range vertex in triangle " << i,
+  IMP_USAGE_CHECK(i < 3, "Out of range vertex in triangle " << i,
            IndexException);
   return v_[i];
 }

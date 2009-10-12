@@ -61,11 +61,11 @@ Particle* atom_particle(Model *m, const String& pdb_line)
   p->set_name(std::string("Atom "+ atom_name.get_string()));
   core::XYZ::setup_particle(p, v).set_coordinates_are_optimized(true);
   d.set_input_index(internal::atom_number(pdb_line));
-  IMP_IF_CHECK(CHEAP) {
+  IMP_IF_CHECK(USAGE) {
     std::string name= internal::atom_element(pdb_line);
     Element e= get_element_table().get_element(name);
     if (e != UNKNOWN_ELEMENT) {
-      IMP_check(e== d.get_element(),
+      IMP_USAGE_CHECK(e== d.get_element(),
                 "Read and computed elements don't match. Read " << e
                 << " Computed " << d.get_element()
                 << " from line " << pdb_line,
@@ -119,7 +119,7 @@ Hierarchy read_pdb(String pdb_file_name, Model *model,
 {
   std::ifstream pdb_file(pdb_file_name.c_str());
   if (!pdb_file) {
-    IMP_failure("No such PDB file " << pdb_file_name,
+    IMP_FAILURE("No such PDB file " << pdb_file_name,
                 ValueException);
   }
   Hierarchy root_d
@@ -208,7 +208,7 @@ Hierarchy read_pdb(std::istream &in, Model *model,
 
     }
   }
-  IMP_IF_CHECK(EXPENSIVE) {
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     if (!root_d.get_is_valid(true)) {
       IMP_ERROR("Invalid hierarchy produced ");
       IMP::core::show<Hierarchy>(root_d);
@@ -251,7 +251,7 @@ void write_pdb(const Particles& ps, std::string file_name)
 {
   std::ofstream out_file(file_name.c_str());
   if (!out_file) {
-    IMP_failure("Can't open file " << file_name << " for writing",
+    IMP_FAILURE("Can't open file " << file_name << " for writing",
                 ValueException);
   }
   write_pdb(ps, out_file);
@@ -262,7 +262,7 @@ void write_pdb(Hierarchy mhd, std::string file_name)
 {
   std::ofstream out_file(file_name.c_str());
   if (!out_file) {
-    IMP_failure("Can't open file " << file_name << " for writing",
+    IMP_FAILURE("Can't open file " << file_name << " for writing",
                 ValueException);
   }
   write_pdb(mhd, out_file);
@@ -286,7 +286,7 @@ void write_pdb(const Hierarchies& mhd, std::string file_name)
 {
   std::ofstream out_file(file_name.c_str());
   if (!out_file) {
-    IMP_failure("Can't open file " << file_name << " for writing",
+    IMP_FAILURE("Can't open file " << file_name << " for writing",
                 ValueException);
   }
   write_pdb(mhd, out_file);

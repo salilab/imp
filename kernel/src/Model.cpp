@@ -15,10 +15,10 @@
 #include <boost/timer.hpp>
 #include <set>
 
-#ifndef IMP_NO_DEBUG
+#if IMP_BUILD < IMP_FAST
 #define WRAP_CALL(restraint, expr)                                      \
   {                                                                     \
-    IMP_IF_CHECK(EXPENSIVE) {                                           \
+    IMP_IF_CHECK(USAGE_AND_INTERNAL) {                                  \
       ParticlesTemp pl= (restraint)->get_used_particles();              \
       internal::ReadLock rl(particles_begin(), particles_end(),         \
                             pl.begin(), pl.end());                      \
@@ -48,7 +48,7 @@ public:
   ReadLock(It1 pa, It1 pb,
            It ab, It ae): p_(pa, pb),
                           allowed_(ab, ae){
-#ifndef IMP_NO_DEBUG
+#if IMP_BUILD < IMP_FAST
     for (unsigned int i=0; i< p_.size(); ++i) {
       if (allowed_.find(p_[i]) == allowed_.end()) {
         p_[i]->ps_->read_locked_=true;
@@ -57,7 +57,7 @@ public:
 #endif
   }
   ~ReadLock() {
-#ifndef IMP_NO_DEBUG
+#if IMP_BUILD < IMP_FAST
     for (unsigned int i=0; i< p_.size(); ++i) {
       p_[i]->ps_->read_locked_=false;
     }
@@ -332,7 +332,7 @@ Float Model::evaluate(bool calc_derivs)
   if (get_is_incremental()) {
     score= do_evaluate_incremental(calc_derivs);
     first_incremental_=false;
-    IMP_IF_CHECK(EXPENSIVE) {
+    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
       std::vector<internal::ParticleStorage::DerivativeTable>
         derivs;
       derivs.reserve(get_number_of_particles());
@@ -342,7 +342,8 @@ Float Model::evaluate(bool calc_derivs)
         (*it)->zero_derivatives();
       }
       double nscore= do_evaluate(calc_derivs);
-      IMP_assert(std::abs(nscore -score) < .001+.1*std::abs(nscore+score),
+      IMP_INTERNAL_CHECK(std::abs(nscore -score)
+                         < .001+.1*std::abs(nscore+score),
                  "Incremental and non-incremental evaluation do not agree."
                  << " Incremental gets " << score << " but non-incremental "
                  << "gets " << nscore);
@@ -351,7 +352,7 @@ Float Model::evaluate(bool calc_derivs)
         for (ParticleIterator it= particles_begin();
              it != particles_end(); ++it) {
           for (unsigned int j=0; j< derivs[i].get_length(); ++j) {
-            IMP_assert(std::abs(derivs[i].get(j)
+            IMP_INTERNAL_CHECK(std::abs(derivs[i].get(j)
                                 -(*it)->ps_->derivatives_.get(j))
                        < .001 + .01*std::abs(derivs[i].get(j)
                                              +(*it)->ps_->derivatives_.get(j)),
@@ -366,7 +367,7 @@ Float Model::evaluate(bool calc_derivs)
           (*it)->ps_->derivatives_=derivs[i];
           ++i;
         }
-        IMP_assert(i== derivs.size(), "Number of particles changed.");
+        IMP_INTERNAL_CHECK(i== derivs.size(), "Number of particles changed.");
       }
     }
   } else {

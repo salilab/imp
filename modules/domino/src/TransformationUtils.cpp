@@ -32,7 +32,7 @@ TransformationUtils::TransformationUtils(Particles *ps, bool trans_from_orig)
 
 void TransformationUtils::move2state(Particle *p_sample, Particle *p_trans) {
   if (go_back_) {
-    IMP_assert(last_transform_.find(p_sample) != last_transform_.end(),
+    IMP_INTERNAL_CHECK(last_transform_.find(p_sample) != last_transform_.end(),
                " TransformationUtils::move2state the particle is not found");
     apply(p_sample,last_transform_[p_sample]);
     last_transform_[p_sample]=get_trans(p_trans).get_inverse();
@@ -52,7 +52,7 @@ void TransformationUtils::apply(Particle *p,const algebra::Transformation3D &t)
 }
 
 algebra::Transformation3D TransformationUtils::get_trans(Particle *p) const {
-  IMP_assert(atts_.size()==7,
+  IMP_INTERNAL_CHECK(atts_.size()==7,
       "TransformationUtils::get_trans the attribute list is not initialized");
   algebra::Rotation3D rot(p->get_value(atts_[3]),p->get_value(atts_[4]),
                           p->get_value(atts_[5]),p->get_value(atts_[6]));

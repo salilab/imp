@@ -55,7 +55,7 @@ IMP_LOG(TERSE, "Something interesting has occurred with variable "
      some checks are performed. Make sure to turn them off if for maximum speed.
 \code
 IMP::set_check_level(IMP.EXPENSIVE);
-IMP_check(boolean_condition, "An error has occurred with value "
+IMP_USAGE_CHECK(boolean_condition, "An error has occurred with value "
                              << some_value,
                              ExceptionType);
 \endcode
@@ -250,7 +250,9 @@ Most code maps trivially from one to the other as you can see in the examples.
 <tr><td>debugging</td><td>use gdb</td><td>hard to inspect IMP objects from Python</td></tr>
 </table>
 
-Normal python usage expects a few things that we do not currently offer from out objects such as doc strings and support for the \c str method.
+Normal python usage expects a few things that we do not currently offer from out objects such as doc strings.
+See \ref differences "Python/C++ differences" for a full description of the differences between the Python and C++
+interfaces to \imp.
 
 Recommendations:
 - write restraints and decorators in C++

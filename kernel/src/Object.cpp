@@ -14,14 +14,15 @@ IMP_BEGIN_NAMESPACE
 unsigned int RefCounted::live_objects_=0;
 
 RefCounted::~ RefCounted() {
-  IMP_assert(get_ref_count()== 0, "Deleting object which still has references");
+  IMP_INTERNAL_CHECK(get_ref_count()== 0,
+                     "Deleting object which still has references");
     IMP_LOG(MEMORY, "Deleting ref counted object " << this << std::endl);
     --live_objects_;
   }
 
 Object::Object()
 {
-#ifndef IMP_NO_DEBUG
+#if IMP_BUILD < IMP_FAST
   log_level_=DEFAULT;
   check_value_=111111111;
 #endif
@@ -31,8 +32,8 @@ Object::Object()
 Object::~Object()
 {
   IMP_OBJECT_LOG;
-  IMP_assert(get_is_valid(), "Object " << this << " previously freed.");
-#ifndef IMP_NO_DEBUG
+  IMP_INTERNAL_CHECK(get_is_valid(), "Object " << this << " previously freed.");
+#if IMP_BUILD < IMP_FAST
   check_value_=666666666;
 #endif
   IMP_LOG(MEMORY, "Destroying object " << this << std::endl);

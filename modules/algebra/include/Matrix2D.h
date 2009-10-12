@@ -115,7 +115,7 @@ public:
 
   //! Set the matrix to be an indentity matrix.
   void set_identity() {
-    IMP_assert(is_square(), "the matrix must be square");
+    IMP_INTERNAL_CHECK(is_square(), "the matrix must be square");
     this->init_zeros();
     for (int i = 0; i < get_number_of_rows(); i++) {
       (*this)(i,i)=1.;
@@ -380,8 +380,9 @@ public:
 
   //! Determinant (only for 2x2)
   double det() const {
-    IMP_assert(get_number_of_rows() == 2,"works only for 2x2 matrices");
-    IMP_assert(get_number_of_columns() == 2,"works only for 2x2 matrices");
+    IMP_INTERNAL_CHECK(get_number_of_rows() == 2,"works only for 2x2 matrices");
+    IMP_INTERNAL_CHECK(get_number_of_columns() == 2,
+                       "works only for 2x2 matrices");
     return (double)(physical_get(0,0)*physical_get(1,1) -
                     physical_get(1,0)*physical_get(0,1));
   }

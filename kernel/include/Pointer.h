@@ -58,7 +58,7 @@ public:
   Pointer() {}
   /** initialize from a pointer */
   Pointer(O* o) {
-    IMP_assert(o, "Can't initialize with NULL pointer");
+    IMP_INTERNAL_CHECK(o, "Can't initialize with NULL pointer");
     set_pointer(o);
   }
   /** drop control of the object */

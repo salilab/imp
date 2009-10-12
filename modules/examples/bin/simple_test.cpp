@@ -24,6 +24,6 @@ int main(){
   d1.set_coordinates(algebra::Vector3D(0,0,1));
 
   m->add_restraint(r);
-  IMP_assert(std::abs(m->evaluate(false) -1) < .01, "Out of range");
+  IMP_INTERNAL_CHECK(std::abs(m->evaluate(false) -1) < .01, "Out of range");
   return 0;
 }

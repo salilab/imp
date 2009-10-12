@@ -60,14 +60,14 @@ void Fragment::set_residue_indexes(Ints o) {
     }
   }
   add_residue_indexes(o[begin], o.back()+1);
-  IMP_IF_CHECK(EXPENSIVE) {
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     Ints check(residue_indexes_begin(),
                residue_indexes_end());
-    IMP_assert(check.size() == o.size(),
+    IMP_INTERNAL_CHECK(check.size() == o.size(),
                "Didn't start and end with the name number of indexes "
                << check.size() << " " << o.size());
     for (unsigned int i=0; i< check.size(); ++i) {
-      IMP_assert(check[i] == o[i], "Expected residue " << check[i]
+      IMP_INTERNAL_CHECK(check[i] == o[i], "Expected residue " << check[i]
                  << " got residue " << o[i]);
     }
   }

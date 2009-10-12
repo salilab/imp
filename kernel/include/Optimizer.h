@@ -92,7 +92,7 @@ public:
   /**@}*/
 
 
-  IMP_REF_COUNTED_DESTRUCTOR(Optimizer)
+  IMP_REF_COUNTED_DESTRUCTOR(Optimizer);
 
 protected:
   //! Update optimizer state, should be called at each successful step
@@ -134,10 +134,10 @@ protected:
           ++i_.fk_;
         }
       }
-      IMP_assert(i_.p_ != pe_, "Should have just returned");
-      IMP_assert(i_.fk_ != (*i_.p_)->optimized_keys_end(),
+      IMP_INTERNAL_CHECK(i_.p_ != pe_, "Should have just returned");
+      IMP_INTERNAL_CHECK(i_.fk_ != (*i_.p_)->optimized_keys_end(),
                  "Broken iterator end");
-      IMP_assert((*i_.p_)->get_is_optimized(*i_.fk_),
+      IMP_INTERNAL_CHECK((*i_.p_)->get_is_optimized(*i_.fk_),
                    "Why did the loop end?");
     }
     void find_next() const {
@@ -163,7 +163,7 @@ protected:
       return *this;
     }
     reference operator*() const {
-      IMP_assert((*i_.p_)->get_is_optimized(*i_.fk_),
+      IMP_INTERNAL_CHECK((*i_.p_)->get_is_optimized(*i_.fk_),
                  "The iterator is broken");
       return i_;
     }
@@ -202,9 +202,9 @@ protected:
   }
 
   void set_value(FloatIndex fi, Float v) const {
-    IMP_assert(fi.p_ != model_->particles_end(),
+    IMP_INTERNAL_CHECK(fi.p_ != model_->particles_end(),
                "Out of range FloatIndex in Optimizer");
-    IMP_assert((*fi.p_)->get_is_optimized(*fi.fk_),
+    IMP_INTERNAL_CHECK((*fi.p_)->get_is_optimized(*fi.fk_),
                "Keep your mits off unoptimized attributes "
                << (*fi.p_)->get_name() << " " << *fi.fk_ << std::endl);
     (*fi.p_)->set_value(*fi.fk_, v);
@@ -212,14 +212,14 @@ protected:
 
   Float get_value(FloatIndex fi) const {
     /* cast to const needed here to help MSVC */
-    IMP_assert(static_cast<Model::ParticleConstIterator>(fi.p_)
+    IMP_INTERNAL_CHECK(static_cast<Model::ParticleConstIterator>(fi.p_)
                != model_->particles_end(),
                "Out of range FloatIndex in Optimizer");
     return (*fi.p_)->get_value(*fi.fk_);
   }
 
   Float get_derivative(FloatIndex fi) const {
-    IMP_assert(fi.p_ != model_->particles_end(),
+    IMP_INTERNAL_CHECK(fi.p_ != model_->particles_end(),
                "Out of range FloatIndex in Optimizer");
     return (*fi.p_)->get_derivative(*fi.fk_);
   }

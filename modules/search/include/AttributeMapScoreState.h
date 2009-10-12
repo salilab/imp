@@ -72,8 +72,8 @@ private:
     Bin bvs(vs);
     typename Map::iterator it = std::lower_bound(map_.begin(), map_.end(),
                                                  bvs);
-    IMP_assert(it != map_.end(), "Value not found in map on update");
-    IMP_assert(*it == bvs, "Values to not match on map update");
+    IMP_INTERNAL_CHECK(it != map_.end(), "Value not found in map on update");
+    IMP_INTERNAL_CHECK(*it == bvs, "Values to not match on map update");
     return it->ps_;
   }
 
@@ -99,7 +99,7 @@ public:
   /** It is an error if there is not a unique particle.
    */
   const Particle* get_particle(const Value &v)  const {
-    IMP_assert(get_particles_internal(v).size() == 1,
+    IMP_INTERNAL_CHECK(get_particles_internal(v).size() == 1,
                "There must be exactly one particle.");
     return get_particles_internal(v)[0];
   }

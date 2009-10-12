@@ -28,7 +28,7 @@ namespace {
 
 
 void set_log_level(LogLevel l) {
-  IMP_check(l >= SILENT && l < ALL_LOG,
+  IMP_USAGE_CHECK(l >= SILENT && l < ALL_LOG,
             "Setting log to invalid level: " << l,
             ValueException);
   internal::log_level=l;
@@ -49,7 +49,7 @@ void set_log_file(std::string l) {
   if (!l.empty()) {
     fstream.open(l.c_str());
     if (!fstream.is_open()) {
-      IMP_failure("Error opening log file " << l, ValueException);
+      IMP_FAILURE("Error opening log file " << l, ValueException);
     } else {
       internal::log_target=FILE;
     }
@@ -60,7 +60,7 @@ void set_log_file(std::string l) {
 }
 
 void log_write(std::string str) {
-  IMP_assert(initialized=11111111,
+  IMP_INTERNAL_CHECK(initialized=11111111,
              "You connot use the log before main is called.");
   stream.write(str.c_str(), str.size());
   stream.strict_sync();

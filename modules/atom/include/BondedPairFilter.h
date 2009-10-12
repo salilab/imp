@@ -1,5 +1,5 @@
 /**
- *  \file atom/BondPairFilter.h
+ *  \file atom/BondedPairFilter.h
  *  \brief A fake container for bonds
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.

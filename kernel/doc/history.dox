@@ -1,5 +1,21 @@
 /** \page recent Change History
 
+\par Week of October 8
+
+- IMP_check() and IMP_assert() have been
+replaced with IMP_USAGE_CHECK() and IMP_INTERNAL_CHECK()
+respectively. Hopefully this makes it clearer when to use
+which. IMP::set_check_level() has been revised accordingly (to use
+IMP::USAGE and IMP::USAGE_AND_INTERNAL). Also, IMP_failure() and
+IMP_not_implemented() have been renamed to IMP_FAILURE() and
+IMP_NOT_IMPLEMENTED() to make all macros be all caps. To update
+external code,
+      - replace IMP.EXPENSIVE with IMP.USAGE_AND_INTERNAL
+      - replace IMP.CHEAP with IMP.USAGE
+      - replace IMP_assert and IMP_check as above.
+
+- A \ref differences "page" has been added on the differences between the python and C++ interfaces of \imp. Please add salient points as they come up.
+
 \par Week of October 1
 - IMP::ScoreState and IMP::Restraint now better track the set of particles that they use and the dependencies between the particles. To this end, a new base class IMP::Interaction has been added with methods to get the inter-particle interactions and the set of particles used.
 

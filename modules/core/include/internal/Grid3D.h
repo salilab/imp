@@ -47,7 +47,7 @@ public:
   }
   //! Get the ith component (i=0,1,2)
   int operator[](unsigned int i) const {
-    IMP_assert(i <3, "Bad i");
+    IMP_INTERNAL_CHECK(i <3, "Bad i");
     return d_[i];
   }
   IMP_COMPARISONS_3(d_[0], d_[1], d_[2]);
@@ -76,7 +76,7 @@ class GridIndexIterator: public NullDefault
   GridIndexIterator(VirtualGridIndex lb,
                     VirtualGridIndex ub): lb_(lb),
                                           ub_(ub), cur_(lb[0], lb[1], lb[2]) {
-    IMP_assert(ub_.strictly_larger_than(lb_),
+    IMP_INTERNAL_CHECK(ub_.strictly_larger_than(lb_),
                "Invalid range in GridIndexIterator");
   }
 public:
@@ -91,9 +91,10 @@ public:
   IMP_COMPARISONS_1(cur_);
 
   This operator++() {
-    IMP_assert(*this != GridIndexIterator(), "Incrementing invalid iterator");
-    IMP_assert(cur_ >= lb_, "cur out of range");
-    IMP_assert(cur_ < ub_, "cur out of range");
+    IMP_INTERNAL_CHECK(*this != GridIndexIterator(),
+                       "Incrementing invalid iterator");
+    IMP_INTERNAL_CHECK(cur_ >= lb_, "cur out of range");
+    IMP_INTERNAL_CHECK(cur_ < ub_, "cur out of range");
     int r[3];
     unsigned int carry=1;
     for (int i=2; i>=0; --i) {
@@ -109,25 +110,27 @@ public:
       cur_= GI();
     } else {
       GI nc= GI(r[0], r[1], r[2]);
-      IMP_assert(nc > cur_, "Nonfunctional increment");
-      IMP_assert(nc > lb_, "Problems advancing");
-      IMP_assert(ub_.strictly_larger_than(nc), "Problems advancing");
+      IMP_INTERNAL_CHECK(nc > cur_, "Nonfunctional increment");
+      IMP_INTERNAL_CHECK(nc > lb_, "Problems advancing");
+      IMP_INTERNAL_CHECK(ub_.strictly_larger_than(nc), "Problems advancing");
       cur_= nc;
     }
     return *this;
   }
   This operator++(int) {
-    IMP_assert(*this != GI(), "Incrementing invalid iterator");
+    IMP_INTERNAL_CHECK(*this != GI(), "Incrementing invalid iterator");
     This o= *this;
     operator++;
     return o;
   }
   reference_type operator*() const {
-    IMP_assert(*this != GridIndexIterator(), "Dereferencing invalid iterator");
+    IMP_INTERNAL_CHECK(*this != GridIndexIterator(),
+                       "Dereferencing invalid iterator");
     return cur_;
   }
   pointer_type operator->() const {
-    IMP_assert(*this != GridIndexIterator(), "Dereferencing invalid iterator");
+    IMP_INTERNAL_CHECK(*this != GridIndexIterator(),
+                       "Dereferencing invalid iterator");
     return &cur_;
   }
 };
@@ -147,7 +150,7 @@ protected:
   template <class G>
   friend class GridIndexIterator;
   GridIndex(int x, int y, int z): VirtualGridIndex(x,y,z) {
-    IMP_check(x>=0 && y>=0 && z>=0, "Bad indexes in grid index",
+    IMP_USAGE_CHECK(x>=0 && y>=0 && z>=0, "Bad indexes in grid index",
               IndexException);
   }
 };
@@ -178,7 +181,7 @@ private:
 
   unsigned int index(const Index &i) const {
     unsigned int ii= i[2]*d_[0]*d_[1] + i[1]*d_[0]+i[0];
-    IMP_assert(ii < data_.size(), "Invalid grid index "
+    IMP_INTERNAL_CHECK(ii < data_.size(), "Invalid grid index "
                << i[0] << " " << i[1] << " " << i[2]
                << ": " << d_[0] << " " << d_[1] << " " << d_[2]);
     return ii;
@@ -187,12 +190,12 @@ private:
   IndexType get_index_t(algebra::Vector3D pt) const {
     int index[3];
     for (unsigned int i=0; i< 3; ++i ) {
-      IMP_assert(d_[i] != 0, "Invalid grid in Index");
+      IMP_INTERNAL_CHECK(d_[i] != 0, "Invalid grid in Index");
       float d = pt[i] - min_[i];
       float fi= d/edge_size_[i];
       index[i]= static_cast<int>(std::floor(fi));
 
-      IMP_assert(std::abs(index[i]) < 200000000,
+      IMP_INTERNAL_CHECK(std::abs(index[i]) < 200000000,
                  "Something is probably wrong " << d
                  << " " << pt[i]
                  << " " << min_[i]
@@ -202,7 +205,7 @@ private:
   }
 
   int snap(unsigned int dim, int v) const {
-    IMP_assert(dim <3, "Invalid dim");
+    IMP_INTERNAL_CHECK(dim <3, "Invalid dim");
     if (v < 0) return 0;
     else if (v > d_[dim]) return d_[dim];
     else return v;
@@ -270,7 +273,7 @@ public:
          VoxelData def) {
     min_=minc;
     for (unsigned int i=0; i< 3; ++i ) {
-      IMP_assert(minc[i] <= maxc[i], "Min must not be larger than max");
+      IMP_INTERNAL_CHECK(minc[i] <= maxc[i], "Min must not be larger than max");
       // add 10% to handle rounding errors
       d_[i]= std::max(static_cast<int>(std::ceil(1.1*(maxc[i] - minc[i])
                                                  / side)),
@@ -301,7 +304,7 @@ public:
 
   //! Return the number of voxels in a certain direction
   unsigned int get_number_of_voxels(unsigned int i) const {
-    IMP_assert(i < 3, "Only 3D");
+    IMP_INTERNAL_CHECK(i < 3, "Only 3D");
     return d_[i];
   }
 
@@ -363,13 +366,14 @@ public:
     if (bp.first== bp.second) {
       return IndexIterator();
     } else {
-      IMP_assert(bp.second.strictly_larger_than(bp.first), "empty range");
+      IMP_INTERNAL_CHECK(bp.second.strictly_larger_than(bp.first),
+                         "empty range");
       return IndexIterator(bp.first, bp.second);
     }
   }
   IndexIterator indexes_end(VirtualIndex,
                             VirtualIndex) const {
-    //IMP_assert(lb <= ub, "empty range");
+    //IMP_INTERNAL_CHECK(lb <= ub, "empty range");
     return IndexIterator();
   }
 

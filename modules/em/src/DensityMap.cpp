@@ -161,12 +161,12 @@ long DensityMap::get_number_of_voxels() const {
 
 float DensityMap::voxel2loc(const int &index, int dim) const
 {
-  IMP_check(loc_calculated_,
+  IMP_USAGE_CHECK(loc_calculated_,
             "locations should be calculated prior to calling this function",
             InvalidStateException);
 //   if (!loc_calculated_)
 //     calc_all_voxel2loc();
-  IMP_check(dim >= 0 && dim <= 2,
+  IMP_USAGE_CHECK(dim >= 0 && dim <= 2,
             "the dim index should be 0-2 (x-z) dim value:" << dim,
             ValueException);
   if (dim==0) {
@@ -184,7 +184,7 @@ long DensityMap::xyz_ind2voxel(int voxx,int voxy,int voxz) const{
 
 long DensityMap::loc2voxel(float x,float y,float z) const
 {
-  IMP_check(is_part_of_volume(x,y,z),
+  IMP_USAGE_CHECK(is_part_of_volume(x,y,z),
             "The point is not part of the grid", IndexException);
   int ivoxx=(int)floor((x-header_.get_xorigin())/header_.Objectpixelsize);
   int ivoxy=(int)floor((y-header_.get_yorigin())/header_.Objectpixelsize);
@@ -221,14 +221,14 @@ emreal DensityMap::get_value(float x, float y, float z) const {
 }
 
 emreal DensityMap::get_value(long index) const {
-  IMP_check(index >= 0 && index < get_number_of_voxels(),
+  IMP_USAGE_CHECK(index >= 0 && index < get_number_of_voxels(),
             "The index " << index << " is not part of the grid",
             IndexException);
   return data_[index];
 }
 
 void DensityMap::set_value(long index,emreal value) {
-  IMP_check(index >= 0 && index < get_number_of_voxels(),
+  IMP_USAGE_CHECK(index >= 0 && index < get_number_of_voxels(),
             "The index " << index << " is not part of the grid",
             IndexException);
   data_[index]=value;
@@ -391,7 +391,7 @@ bool DensityMap::same_voxel_size(const DensityMap &other) const
 
 algebra::Vector3D DensityMap::get_centroid(emreal threshold)  const{
   emreal max_val = get_max_value();
-  IMP_check(threshold < max_val,
+  IMP_USAGE_CHECK(threshold < max_val,
             "The input threshold with value " << threshold
             << " is higher than the maximum density in the map " << max_val,
             ValueException);
@@ -462,13 +462,13 @@ void DensityMap::multiply(float factor) {
 
 void DensityMap::add(const DensityMap &other) {
   //check that the two maps have the same dimensions
-  IMP_check(same_dimensions(other),
+  IMP_USAGE_CHECK(same_dimensions(other),
             "The dimensions of the two maps differ ( " << header_.nx
             << "," << header_.ny << "," << header_.nz << ") != ("
             << other.header_.nx << "," << other.header_.ny << ","
             << other.header_.nz << " ) ", ValueException);
   // check that the two maps have the same voxel size
-  IMP_check(same_voxel_size(other),
+  IMP_USAGE_CHECK(same_voxel_size(other),
             "The voxel sizes of the two maps differ ( "
             << header_.Objectpixelsize << " != "
             << other.header_.Objectpixelsize, ValueException);
@@ -481,7 +481,7 @@ void DensityMap::add(const DensityMap &other) {
 
 void DensityMap::pad(int nx, int ny, int nz,float val) {
 
-  IMP_check(nx >= header_.nx && ny >= header_.ny && nz >= header_.nz,
+  IMP_USAGE_CHECK(nx >= header_.nx && ny >= header_.ny && nz >= header_.nz,
             "The requested volume is smaller than the existing one",
             InvalidStateException);
 

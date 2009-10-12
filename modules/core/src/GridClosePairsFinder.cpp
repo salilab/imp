@@ -88,14 +88,14 @@ namespace {
       double r= c->get_particle(i)->get_value(rk);
       bool found=false;
       for (unsigned int j=0; ; ++j) {
-      IMP_assert(j< cuts.size(), "Internal error in ASNBLSS");
+      IMP_INTERNAL_CHECK(j< cuts.size(), "Internal error in ASNBLSS");
       if (cuts[j] >= r) {
         ops[j].push_back(c->get_particle(i));
         found=true;
         break;
       }
     }
-    IMP_assert(found, "Didn't put particle anywhere");
+    IMP_INTERNAL_CHECK(found, "Didn't put particle anywhere");
   }
   // consolidate
   for (unsigned int i=1; i< ops.size(); ++i) {

@@ -62,7 +62,7 @@ int main() {
     atom::Hierarchy mhd
       = read_pdb(IMP::get_data_directory()+"/benchmark/small_protein.pdb", m);
     Particles catoms= get_by_type(mhd, atom::Hierarchy::ATOM);
-    IMP_assert(catoms.size() != 0, "What happened to the atoms?");
+    IMP_INTERNAL_CHECK(catoms.size() != 0, "What happened to the atoms?");
     atoms.insert(atoms.end(), catoms.begin(), catoms.end());
     ScoreState *ss= create_rigid_body(mhd.get_particle(),
                                       XYZs(catoms));

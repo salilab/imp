@@ -14,14 +14,15 @@ DiscreteSet::DiscreteSet(const std::vector<FloatKey> &atts) {
 }
 void DiscreteSet::add_state(Particle* p) {
   //check that the particle holds of the necessary attributes
-  //TODO - this loop should probably not be there all of the times-use IMP_check
+  //TODO - this loop should probably not be there all of the times
+  // -use IMP_USAGE_CHECK
   std::stringstream err_msg;
   for (std::vector<FloatKey>::iterator it = atts_.begin(); it != atts_.end();
        it++) {
     err_msg.clear();
     err_msg <<"DiscreteSet::add_state The particle does not have the attribute";
     it->show(err_msg);
-    IMP_assert(p->has_attribute(*it),err_msg.str());
+    IMP_INTERNAL_CHECK(p->has_attribute(*it),err_msg.str());
     //p->get_value(*it);
   }
   states_.push_back(p);
@@ -31,7 +32,8 @@ Particle * DiscreteSet::get_state(long state_ind) const {
   std::stringstream err_msg;
   err_msg <<"DiscreteSet::get_state the input state index: " << state_ind;
   err_msg << " is out of range ( " << states_.size() << " ) " ;
-  IMP_assert(static_cast<unsigned int>(state_ind)<states_.size(),err_msg.str());
+  IMP_INTERNAL_CHECK(static_cast<unsigned int>(state_ind)<states_.size(),
+                     err_msg.str());
   return states_[state_ind];
 }
 
@@ -39,7 +41,7 @@ Float DiscreteSet::get_state_val(long state_ind, IMP::FloatKey key) const {
   std::stringstream err_msg;
   err_msg <<"DiscreteSet::get_state_val the input state index: " << state_ind;
   err_msg << " is out of range ( " << states_.size() << " ) " ;
-  IMP_assert(static_cast<unsigned int>(state_ind)
+  IMP_INTERNAL_CHECK(static_cast<unsigned int>(state_ind)
              <states_.size(),err_msg.str());
   return states_[state_ind]->get_value(key);
   // if the key does not exist Particle will raise an exception

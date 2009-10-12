@@ -33,12 +33,12 @@ void KMLProxy::initialize(Model *m,const Particles &ps,
 }
 
 void KMLProxy::run(Particles *initial_centers) {
-  IMP_assert(is_init_,"The proxy was not initialized");
+  IMP_INTERNAL_CHECK(is_init_,"The proxy was not initialized");
   IMP_LOG(VERBOSE,"KMLProxy::run start \n");
   //use the initial centers if provided
   KMPointArray *kmc=NULL;
   if (initial_centers != NULL)  {
-    IMP_assert(kcenters_ == initial_centers->size(),
+    IMP_INTERNAL_CHECK(kcenters_ == initial_centers->size(),
     "the number of initial points differs from the number of required"
     <<" centers\n");
     IMP_LOG(VERBOSE,"KMLProxy::run initial centers provided : \n");
@@ -67,9 +67,10 @@ void KMLProxy::run(Particles *initial_centers) {
   // print summary
   IMP_LOG_WRITE(TERSE,log_summary(&best_clusters,exec_time));
   IMP_LOG_WRITE(TERSE,best_clusters.show(IMP_STREAM));
-  IMP_assert(kcenters_ == (unsigned int) best_clusters.get_number_of_centers(),
+  IMP_INTERNAL_CHECK(kcenters_
+                     == (unsigned int) best_clusters.get_number_of_centers(),
              "The final number of centers does not match the requested one");
-  IMP_assert (dim_ == (unsigned int) best_clusters.get_dim(),
+  IMP_INTERNAL_CHECK (dim_ == (unsigned int) best_clusters.get_dim(),
               "The dimension of the final clusters is wrong");
   //TODO clear the centroids list
   //set the centroids:

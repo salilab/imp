@@ -62,14 +62,14 @@ float CoarseCC::cross_correlation_coefficient(const DensityMap &em_map,
   const emreal *model_data = model_map.get_data();
 
   //validity checks
-  IMP_check(em_map.same_dimensions(model_map),
+  IMP_USAGE_CHECK(em_map.same_dimensions(model_map),
             "This function cannot handle density maps of different size. "
             << "First map dimensions : " << em_header->nx << " x "
             << em_header->ny << " x " << em_header->nz << "; "
             << "Second map dimensions: " << model_header->nx << " x "
             << model_header->ny << " x " << model_header->nz,
             InvalidStateException);
-  IMP_check(em_map.same_voxel_size(model_map),
+  IMP_USAGE_CHECK(em_map.same_voxel_size(model_map),
             "This function cannot handle density maps of different pixelsize. "
             << "First map pixelsize : " << em_header->Objectpixelsize << "; "
             << "Second map pixelsize: " << model_header->Objectpixelsize,
@@ -173,10 +173,10 @@ void CoarseCC::calc_derivatives(const DensityMap &em_map,
   int ivox;
 
   // validate that the model and em maps are not empty
-  IMP_check(em_header->rms >= EPS,
+  IMP_USAGE_CHECK(em_header->rms >= EPS,
             "EM map is empty ! em_header->rms = " << em_header->rms,
             InvalidStateException);
-  IMP_check(model_header->rms >= EPS,
+  IMP_USAGE_CHECK(model_header->rms >= EPS,
             "Model map is empty ! model_header->rms = " << model_header->rms
             <<" the model centroid is : " << access_p.get_centroid() <<
             " the map centroid is " << em_map.get_centroid() <<std::endl,

@@ -13,10 +13,9 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-/**
-   There should be methods like get_bounding_box() which get bounding boxes
-   of objects.
-   \untested{BoundingBoxD}
+/** The BoundingBoxD class provides a unified representation for bounding
+    boxes in \imp. Geometric objects should have an associated method like
+    get_bounding_box() which creates the bounding boxes of objects.
 */
 template <unsigned int D>
 class BoundingBoxD: public ValidDefault
@@ -32,12 +31,14 @@ public:
       ub_[i]=-std::numeric_limits<double>::max();
     }
   }
-
+  //! Make from the lower and upper corners
   BoundingBoxD(const VectorD<D> &lb,
                const VectorD<D> &ub): lb_(lb), ub_(ub) {
   }
+  //! Creating a bounding box containing one point
   BoundingBoxD(const VectorD<D> &v): lb_(v), ub_(v){}
 
+  //! merge two bounding boxes
   const BoundingBoxD<D>& operator+=(const BoundingBoxD<D> &o) {
     for (unsigned int i=0; i< D; ++i) {
       lb_[i]= std::min(o.get_corner(0)[i], get_corner(0)[i]);
@@ -56,7 +57,7 @@ public:
 
   //! For 0 return lower corner and 1 upper corner
   const VectorD<D>& get_corner(unsigned int i) const {
-    IMP_check(i < 2, "Can only use 0 or 1", IndexException);
+    IMP_USAGE_CHECK(i < 2, "Can only use 0 or 1", IndexException);
     if (i==0) return lb_;
     else return ub_;
   }

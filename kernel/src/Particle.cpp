@@ -106,7 +106,7 @@ void Particle::move_derivatives_to_shadow() {
 }
 
 void Particle::accumulate_derivatives_from_shadow() {
-  IMP_assert(ps_->derivatives_.get_length()
+  IMP_INTERNAL_CHECK(ps_->derivatives_.get_length()
              == ps_->shadow_->ps_->derivatives_.get_length(),
              "The tables do not match on size "
              << ps_->derivatives_.get_length()
@@ -138,7 +138,7 @@ void Particle::setup_incremental() {
 
 void Particle::teardown_incremental() {
   if (!ps_->shadow_) {
-    IMP_failure("Shadow particle was not created before disabling "
+    IMP_FAILURE("Shadow particle was not created before disabling "
                 << "incremental for particle " << *this,
                 ErrorException);
   }
@@ -162,7 +162,7 @@ namespace {
     return static_cast<char*>(p)- particles;
   }
   unsigned int index(void *p) {
-    IMP_assert(offset(p) % block_size() ==0,
+    IMP_INTERNAL_CHECK(offset(p) % block_size() ==0,
                "There are alignment issues");
     return offset(p)/block_size();
   }
@@ -173,11 +173,11 @@ namespace {
 
 
 void *Particle::operator new(std::size_t sz) {
-  IMP_assert(sz <= block_size(),
+  IMP_INTERNAL_CHECK(sz <= block_size(),
              "Expected request of size " << block_size()
              << " got request of size " << sz);
   if (free_list.empty() && next_to_allocate==num_blocks) {
-    IMP_failure("Can only allocate " << num_blocks
+    IMP_FAILURE("Can only allocate " << num_blocks
                 << " particles. Yell at Daniel.",
                 InvalidStateException);
   }
@@ -203,10 +203,10 @@ void Particle::operator delete(void *p) {
 
 namespace internal {
   Particle* create_particles(Model *m, unsigned int n) {
-    IMP_check(n>0, "Can't create 0 particles",
+    IMP_USAGE_CHECK(n>0, "Can't create 0 particles",
               ValueException);
     if (next_to_allocate + n > num_blocks) {
-      IMP_failure("Out of particles. Yell at Daniel.", ErrorException);
+      IMP_FAILURE("Out of particles. Yell at Daniel.", ErrorException);
     }
     for (unsigned int i=0; i< n; ++i) {
       Particle *cur= new(address(next_to_allocate+i)) Particle(m);

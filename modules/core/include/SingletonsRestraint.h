@@ -87,7 +87,7 @@ public:
   }
 
   void set_singleton_score(SingletonScore* ss) {
-    IMP_check(ss, "The SingletonScore must be non-null",
+    IMP_USAGE_CHECK(ss, "The SingletonScore must be non-null",
               IndexException);
     ss_= ss;
   }

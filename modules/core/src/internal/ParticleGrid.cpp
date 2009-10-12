@@ -21,7 +21,7 @@ static const int target_cell_occupancy=10;
 ParticleGrid::ParticleGrid(Float tvs,
                            const Storage &ps): target_voxel_side_(tvs)
 {
-  IMP_assert(tvs >0, "Target voxel edge size must be positive");
+  IMP_INTERNAL_CHECK(tvs >0, "Target voxel edge size must be positive");
   build_grid(ps);
 }
 

@@ -60,7 +60,7 @@ void JNode::populate_states_of_particles(Particles *particles,
                                          CombState *> *states)
 {
   ds_->populate_states_of_particles(particles, states);
-  IMP_check(comb_states_.size()>0,"no state added to node: "
+  IMP_USAGE_CHECK(comb_states_.size()>0,"no state added to node: "
             << node_ind_ << std::endl,ValueException);
 }
 void JNode::show_sampling_space(std::ostream& out) const
@@ -209,7 +209,7 @@ std::vector<CombState *> JNode::min_marginalize(const CombState &s,
   s.show(error_message);
   error_message << " in node with index : " << node_ind_;
   error_message << " the minimum score is : " << min_score << std::endl;
-  IMP_assert(min_score < INT_MAX, error_message.str());
+  IMP_INTERNAL_CHECK(min_score < INT_MAX, error_message.str());
   if (move_to_state) {
     move2state(min_comb[0]);
   }
@@ -255,7 +255,7 @@ std::vector<CombState *>* JNode::find_minimum(bool move_to_state,
   err_msg<<"JNode::find_minimum the number of requested solutions (";
   err_msg<<num_of_solutions << ")is larger than the enumerated solution ";
   err_msg<<"by the node (" << all_states.size() << ")";
-  IMP_assert(all_states.size()>num_of_solutions,err_msg.str().c_str());
+  IMP_INTERNAL_CHECK(all_states.size()>num_of_solutions,err_msg.str().c_str());
   //allocate min_combs with the top best solutions
   //  int min_num = all_states.size() * (all_states.size() < num_of_solutions) +
   //              num_of_solutions * (all_states.size() >= num_of_solutions);

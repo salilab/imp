@@ -196,7 +196,7 @@ public:
   \exception InvalidStateException The locations have not been calculated.
   */
   float* get_x_loc() const {
-    IMP_check(loc_calculated_,
+    IMP_USAGE_CHECK(loc_calculated_,
               "x location requested before being calculated",
               InvalidStateException);
     return x_loc_;
@@ -206,7 +206,7 @@ public:
   \exception InvalidStateException The locations have not been calculated.
   */
   float* get_y_loc() const {
-    IMP_check(loc_calculated_,
+    IMP_USAGE_CHECK(loc_calculated_,
               "y location requested before being calculated",
               InvalidStateException);
     return y_loc_;
@@ -216,7 +216,7 @@ public:
   \exception InvalidStateException The locations have not been calculated.
   */
   float* get_z_loc() const {
-    IMP_check(loc_calculated_,
+    IMP_USAGE_CHECK(loc_calculated_,
               "z location requested before being calculated",
               InvalidStateException);
     return z_loc_;

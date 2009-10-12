@@ -37,7 +37,7 @@ public:
     return &ret_;
   }
   const This& operator++() {
-    IMP_assert(ait_ != aend_, "Empty range");
+    IMP_INTERNAL_CHECK(ait_ != aend_, "Empty range");
     ++ait_;
     while (ait_== aend_) {
       ++rit_;

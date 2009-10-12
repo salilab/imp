@@ -29,7 +29,7 @@ public:
   ExampleRefCounted(const std::vector<double> &data);
 
   double get_data(unsigned int i) const {
-    IMP_check(i < data_.size(), "Index " << i
+    IMP_USAGE_CHECK(i < data_.size(), "Index " << i
               << " out of range.", IndexException);
     return data_[i];
   }

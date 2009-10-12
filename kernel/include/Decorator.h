@@ -61,7 +61,8 @@ public:
 
   /** \return the particle wrapped by this decorator*/
   Particle *get_particle() const {
-    IMP_check(particle_, "You must give the decorator a particle to decorate.",
+    IMP_USAGE_CHECK(particle_,
+                    "You must give the decorator a particle to decorate.",
               InvalidStateException);
     IMP_CHECK_OBJECT(particle_);
     return particle_;
@@ -82,7 +83,7 @@ public:
   }
   // here just to make the docs symmetric
 private:
-  IMP_ONLY_DOXYGEN(int blah_;)
+  IMP_ONLY_DOXYGEN(int blah_;);
   //! @}
 public:
 #ifdef IMP_DOXYGEN
@@ -185,7 +186,7 @@ class Decorators: public ParentDecorators {
   typedef const Decorator reference;
   explicit Decorators(const Particles &ps): ParentDecorators(ps) {
     for (unsigned int i=0; i< ps.size(); ++i) {
-      IMP_check(Decorator::particle_is_instance(ps[i]), "Particle "
+      IMP_USAGE_CHECK(Decorator::particle_is_instance(ps[i]), "Particle "
                 << ps[i]->get_name() << " missing required attributes",
                 ValueException);
     }
@@ -199,7 +200,7 @@ class Decorators: public ParentDecorators {
     ParentDecorators::push_back(d);
   }
   void push_back(Particle *p) {
-    IMP_check(Decorator::particle_is_instance(p),
+    IMP_USAGE_CHECK(Decorator::particle_is_instance(p),
               "Particle is missing required attributes",
               ValueException);
     ParentDecorators::push_back(p);
@@ -211,13 +212,13 @@ class Decorators: public ParentDecorators {
     ParentDecorators::set(i, d);
   }
   Decorator back() const {
-    IMP_check(!ParentDecorators::empty(),
+    IMP_USAGE_CHECK(!ParentDecorators::empty(),
               "Can't call back on empty Decorators",
               InvalidStateException);
     return Decorator(ParentDecorators::back());
   }
   Decorator front() const {
-    IMP_check(!ParentDecorators::empty(),
+    IMP_USAGE_CHECK(!ParentDecorators::empty(),
               "Can't call front on empty Decorators",
               InvalidStateException);
     return Decorator(ParentDecorators::front());
@@ -241,7 +242,7 @@ class Decorators: public ParentDecorators {
   template <class It>
   void insert(iterator loc, It b, It e) {
     for (It c=b; c!= e; ++c) {
-      IMP_check(Decorator::particle_is_instance(*c), "Particle "
+      IMP_USAGE_CHECK(Decorator::particle_is_instance(*c), "Particle "
                 << " missing required attributes",
                 ValueException);
     }
@@ -308,16 +309,16 @@ public:
       tr_= d.get_traits();
       has_traits_=true;
     } else {
-      IMP_check(tr_ == d.get_traits(),
+      IMP_USAGE_CHECK(tr_ == d.get_traits(),
                 "Traits don't match",
                 ValueException);
     }
     ParentDecorators::push_back(d);
   }
   void push_back(Particle *p) {
-    IMP_check(has_traits_, "Must set traits before adding particles",
+    IMP_USAGE_CHECK(has_traits_, "Must set traits before adding particles",
               InvalidStateException);
-    IMP_check(Decorator::particle_is_instance(p, tr_),
+    IMP_USAGE_CHECK(Decorator::particle_is_instance(p, tr_),
               "Particle is missing required attributes",
               ValueException);
     ParentDecorators::push_back(p);
@@ -330,7 +331,7 @@ public:
       tr_= d.get_traits();
       has_traits_=true;
     } else {
-      IMP_check(tr_ == d.get_traits(),
+      IMP_USAGE_CHECK(tr_ == d.get_traits(),
                 "Traits don't match",
                 ValueException);
     }
@@ -341,13 +342,13 @@ public:
     return *this;
   }
   Decorator back() const {
-    IMP_check(!ParentDecorators::empty(),
+    IMP_USAGE_CHECK(!ParentDecorators::empty(),
               "Can't call back on empty Decorators",
               InvalidStateException);
     return Decorator(ParentDecorators::back(), tr_);
   }
   Decorator front() const {
-    IMP_check(!ParentDecorators::empty(),
+    IMP_USAGE_CHECK(!ParentDecorators::empty(),
               "Can't call back on empty Decorators",
               InvalidStateException);
     return Decorator(ParentDecorators::front(), tr_);
@@ -379,7 +380,7 @@ public:
       has_traits_=true;
     }
     for (It c=b; c!= e; ++c) {
-      IMP_check(Decorator::particle_is_instance(*c, tr_), "Particle "
+      IMP_USAGE_CHECK(Decorator::particle_is_instance(*c, tr_), "Particle "
                 << " missing required attributes",
                 ValueException);
     }

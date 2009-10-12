@@ -309,11 +309,11 @@ public:                                                         \
 
 #if defined(SWIG) || defined(IMP_SWIG_WRAPPER)
 // SWIG doesn't do friends right either, but we don't care as much
-#define IMP_REF_COUNTED_DESTRUCTOR(Name)                \
+#define IMP_REF_COUNTED_DESTRUCTOR(Name)                     \
 public:                                                      \
  virtual ~Name(){}
 #define IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Name)     \
-public:                                                      \
+  public:                                               \
  virtual ~Name()
 
 
@@ -385,7 +385,7 @@ IMP_NO_DOXYGEN(typedef Name This);                                      \
 /** \brief Create a decorator wrapping a particle which already has
     had setup_particle() called on it. */                               \
 explicit Name(::IMP::Particle *p): Parent(p) {                          \
-  IMP_assert(particle_is_instance(p),                                   \
+  IMP_INTERNAL_CHECK(particle_is_instance(p),                           \
               "Particle missing required attributes for decorator "     \
               << #Name << *p << std::endl);                             \
  }                                                                      \
@@ -424,7 +424,7 @@ Name(): Parent(){}                                                      \
     had setup_particle() called on it with the passed traits. */        \
 Name(::IMP::Particle *p, const TraitsType &tr=default_traits): Parent(p), \
                                                    traits_name##_(tr) { \
-  IMP_assert(particle_is_instance(p, tr),                               \
+  IMP_INTERNAL_CHECK(particle_is_instance(p, tr),                       \
              "Particle missing required attributes for decorator "      \
              << #Name << *p << std::endl);                              \
 }                                                                       \
@@ -433,7 +433,7 @@ static Name decorate_particle(::IMP::Particle *p,                       \
   if (!particle_is_instance(p, tr)) return Name();                      \
   else return Name(p, tr);                                              \
 }                                                                       \
-IMP_SHOWABLE                                                            \
+IMP_SHOWABLE;                                                           \
 /** Get the traits object */                                            \
 const TraitsType &get_##traits_name() const {                           \
   return traits_name##_;                                                \
@@ -495,7 +495,7 @@ const TraitsType &get_##traits_name() const {                           \
   ReturnType get_##name() const {                                       \
     return static_cast<ReturnType>(get_particle()->get_value(AttributeKey)); \
   }                                                                     \
-  void set_##name(ReturnType t) {                                             \
+  void set_##name(ReturnType t) {                                       \
     get_particle()->set_value(AttributeKey, t);                         \
   }
 
@@ -546,10 +546,11 @@ const TraitsType &get_##traits_name() const {                           \
    \param[in] traits the traits object to use to manipulate things. This should
    inherit from or implement the interface of internal::ArrayOnAttributesHelper
    \param[in] ExternalType The name of the type to wrap the return type with.
+   \param[in] ExternalTypes A vector of the return type.
  */
 #define IMP_DECORATOR_ARRAY_DECL(protection, Class,                     \
                                  Name, name, plural,                    \
-                                 traits, ExternalType, ExternalTypes)    \
+                                 traits, ExternalType, ExternalTypes)   \
 private:                                                                \
  template <class T>                                                     \
  static bool has_required_attributes_for_##name(Particle *p,            \
@@ -690,7 +691,7 @@ protection:                                                             \
   virtual void show(std::ostream &out=std::cout) const {\
     out << #Name << std::endl;}                                         \
   virtual ::IMP::VersionInfo get_version_info() const { return version_info; } \
-  IMP_REF_COUNTED_DESTRUCTOR(Name)                                      \
+  IMP_REF_COUNTED_DESTRUCTOR(Name);                                     \
   public:
 
 
@@ -709,7 +710,7 @@ protection:                                                             \
   virtual double unprotected_evaluate(DerivativeAccumulator *accum) const;   \
   ParticlesList get_interacting_particles() const;                      \
   ParticlesTemp get_used_particles() const;                             \
-  IMP_OBJECT(Name, version_info)
+  IMP_OBJECT(Name, version_info);
 
 //! Define the basic things you need for a Restraint.
 /** In addition to the methods done by all the macros, it declares
@@ -727,7 +728,7 @@ protection:                                                             \
   unprotected_incremental_evaluate(DerivativeAccumulator *accum) const; \
   ParticlesList get_interacting_particles() const;                      \
   ParticlesTemp get_used_particles() const;                             \
-  IMP_OBJECT(Name, version_info)
+  IMP_OBJECT(Name, version_info);
 
 //! Define the basic things you need for an optimizer.
 /** In addition to the methods done by all the macros, it declares
@@ -737,7 +738,7 @@ protection:                                                             \
 */
 #define IMP_OPTIMIZER(Name, version_info)                               \
   virtual Float optimize(unsigned int max_steps);                       \
-  IMP_OBJECT(Name, version_info)
+  IMP_OBJECT(Name, version_info);
 
 
 //! Define the basics needed for an OptimizerState
@@ -746,7 +747,7 @@ protection:                                                             \
 */
 #define IMP_OPTIMIZER_STATE(Name, version_info)                         \
   virtual void update();                                                \
-   IMP_OBJECT(Name, version_info)
+  IMP_OBJECT(Name, version_info);
 
 
 //! Define the basics needed for an OptimizerState which acts every n steps
@@ -807,7 +808,7 @@ protected:                                                              \
   virtual Particle* get_refined(Particle *, unsigned int) const;        \
   virtual const ParticlesTemp get_refined(Particle *) const;            \
   virtual unsigned int get_number_of_refined(Particle *) const;         \
-  IMP_OBJECT(Name, version_info)
+  IMP_OBJECT(Name, version_info);
 
 
 //! Define the basics needed for a particle refiner
@@ -829,7 +830,7 @@ protected:                                                              \
     return ret;                                                         \
   }                                                                     \
   virtual unsigned int get_number_of_refined(Particle *) const;         \
-  IMP_OBJECT(Name, version_info)
+  IMP_OBJECT(Name, version_info);
 
 
 
@@ -852,7 +853,7 @@ protected:                                                              \
   }                                                              \
   ParticlesList get_interacting_particles(Particle*) const;      \
   ParticlesTemp get_used_particles(Particle *) const;            \
-  IMP_OBJECT(Name, version_info)
+  IMP_OBJECT(Name, version_info);
 
 
 //! Declare the functions needed for a PairScore
@@ -877,7 +878,7 @@ es
   ParticlesList get_interacting_particles(Particle*,             \
                                           Particle*) const;      \
   ParticlesTemp get_used_particles(Particle*,Particle*) const;   \
-  IMP_OBJECT(Name, version_info)
+  IMP_OBJECT(Name, version_info);
 
 
 //! Declare the functions needed for a SingletonModifier
@@ -904,7 +905,7 @@ es
   }                                                                     \
   ParticlesList get_interacting_particles(Particle*) const;             \
   ParticlesTemp get_used_particles(Particle*) const;                    \
-  IMP_OBJECT(Name, version_info)
+  IMP_OBJECT(Name, version_info);
 
 
 
@@ -933,7 +934,7 @@ es
   }                                                                     \
   ParticlesList get_interacting_particles(Particle *, Particle*) const; \
   ParticlesTemp get_used_particles(Particle*, Particle*) const;         \
-  IMP_OBJECT(Name, version_info)
+  IMP_OBJECT(Name, version_info);
 
 
 //! Declare the functions needed for a SingletonModifier
@@ -962,7 +963,7 @@ es
   }                                                                     \
   ParticlesList get_interacting_particles(Particle *) const;            \
   ParticlesTemp get_used_particles(Particle *) const;                   \
-  IMP_OBJECT(Name, version_info)
+  IMP_OBJECT(Name, version_info);
 
 
 
@@ -1030,7 +1031,7 @@ es
   ParticlesTemp get_used_particles(Particle*p) const {                  \
     return ParticlesTemp(1,p);                                          \
   }                                                                     \
-  IMP_INTERNAL_OBJECT(Name, version_info)
+  IMP_INTERNAL_OBJECT(Name, version_info);
 
 
 
@@ -1055,7 +1056,7 @@ es
                   DerivativeAccumulator *da) const;                 \
   ParticlesTemp get_particles() const;                              \
   unsigned int get_revision() const;                                \
-  IMP_OBJECT(Name, version_info)
+  IMP_OBJECT(Name, version_info);
 
 
 //! Declare the needed functions for a PairContainer
@@ -1102,7 +1103,7 @@ es
 #define IMP_PAIR_FILTER(Name, version_info)                             \
   bool get_contains_particle_pair(ParticlePair p) const;                \
   ParticlesTemp get_used_particles(const ParticlePairsTemp &t) const;   \
-  IMP_OBJECT(Name, version_info)
+  IMP_OBJECT(Name, version_info);
 
 
 
@@ -1143,7 +1144,7 @@ es
     out << show_expression;                                             \
   }                                                                     \
   ::IMP::VersionInfo get_version_info() const { return version_info; }  \
-  IMP_REF_COUNTED_DESTRUCTOR(Name)                                      \
+  IMP_REF_COUNTED_DESTRUCTOR(Name);                                     \
   public:
 
 
@@ -1274,8 +1275,9 @@ es
   Name(unsigned int i): P(i){}                                          \
   Name(std::string nm): P(nm){}                                         \
   static Name add_alias(Name nm, std::string new_name) {                \
-    ::IMP::KeyBase<Tag, true>:: add_alias(nm, new_name);                     \
-    IMP_assert(Name(new_name) == nm, "Keys don't match after alias.");   \
+    ::IMP::KeyBase<Tag, true>:: add_alias(nm, new_name);                \
+    IMP_INTERNAL_CHECK(Name(new_name) == nm,                            \
+                       "Keys don't match after alias.");                \
     return Name(new_name);                                              \
   }                                                                     \
 };                                                                      \
@@ -1312,7 +1314,8 @@ typedef std::vector<Name> Name##s
   Name(std::string nm): P(nm){}                                         \
   static Name add_alias(Name nm, std::string new_name) {                \
     ::IMP::KeyBase<Tag, false>:: add_alias(nm, new_name);               \
-    IMP_assert(Name(new_name) == nm, "Keys don't match after alias.");  \
+    IMP_INTERNAL_CHECK(Name(new_name) == nm,                            \
+                       "Keys don't match after alias.");                \
     return Name(nm.get_index());                                        \
   }                                                                     \
 };                                                                      \

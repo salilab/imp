@@ -35,7 +35,7 @@ public:
   IncrementalBallMover(SingletonContainer *sc,
                        unsigned int n,
                        Float radius);
-  IMP_MOVER(IncrementalBallMover, get_module_version_info())
+  IMP_MOVER(IncrementalBallMover, get_module_version_info());
 private:
   Pointer<SingletonContainer> sc_;
   unsigned int n_;

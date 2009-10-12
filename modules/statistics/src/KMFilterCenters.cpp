@@ -76,8 +76,8 @@ void KMFilterCenters::clear_data() {
 }
 void KMFilterCenters::compute_distortion()
 {
-  IMP_assert(tree_ != NULL,"The tree should be initialized");
-  IMP_assert(sums_!=NULL,"sums_ were not allocated\n");
+  IMP_INTERNAL_CHECK(tree_ != NULL,"The tree should be initialized");
+  IMP_INTERNAL_CHECK(sums_!=NULL,"sums_ were not allocated\n");
   clear_data();
   tree_->get_neighbors(sums_,&sum_sqs_,&weights_);
   curr_dist_=0.;
@@ -99,7 +99,7 @@ void KMFilterCenters::compute_distortion()
 
 void KMFilterCenters::get_assignments(std::vector<int> &close_center)
 {
-  IMP_assert(tree_ != NULL,"The tree is NULL");
+  IMP_INTERNAL_CHECK(tree_ != NULL,"The tree is NULL");
   tree_->get_assignments(close_center);
 }
 

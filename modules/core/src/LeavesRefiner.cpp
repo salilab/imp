@@ -33,7 +33,7 @@ Particle* LeavesRefiner::get_refined(Particle *p, unsigned int i) const
 {
   // force filling of the cache, yeah, its not good organization
   get_can_refine(p);
-  IMP_assert(get_can_refine(p), "Trying to refine the unrefinable");
+  IMP_INTERNAL_CHECK(get_can_refine(p), "Trying to refine the unrefinable");
   return cache_[p][i];
 }
 
@@ -41,7 +41,7 @@ unsigned int LeavesRefiner::get_number_of_refined(Particle *p) const
 {
   // force filling of the cache, yeah, its not good organization
   get_can_refine(p);
-  IMP_assert(get_can_refine(p), "Trying to refine the unrefinable");
+  IMP_INTERNAL_CHECK(get_can_refine(p), "Trying to refine the unrefinable");
   return cache_[p].size();
 }
 
@@ -50,7 +50,7 @@ unsigned int LeavesRefiner::get_number_of_refined(Particle *p) const
 const ParticlesTemp LeavesRefiner::get_refined(Particle *p) const{
   // force filling of the cache, yeah, its not good organization
   get_can_refine(p);
-  IMP_assert(get_can_refine(p), "Trying to refine the unrefinable");
+  IMP_INTERNAL_CHECK(get_can_refine(p), "Trying to refine the unrefinable");
   return ParticlesTemp(cache_[p].begin(), cache_[p].end());
 }
 

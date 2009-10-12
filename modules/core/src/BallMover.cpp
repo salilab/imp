@@ -19,7 +19,7 @@ void random_point_in_sphere(unsigned int D,
                                    Float radius,
                                    std::vector<Float> &v)
 {
-  IMP_assert(radius > 0, "No volume there");
+  IMP_INTERNAL_CHECK(radius > 0, "No volume there");
   ::boost::uniform_real<> rand(-radius, radius);
   Float norm;
   do {
@@ -35,7 +35,7 @@ std::vector<Float>
 random_point_in_sphere(const std::vector<Float> &center,
                        Float radius)
 {
-  IMP_assert(radius > 0, "No volume there");
+  IMP_INTERNAL_CHECK(radius > 0, "No volume there");
   std::vector<Float> v(center.size());
   random_point_in_sphere(center.size(), radius, v);
   std::vector<Float> r(center.size());

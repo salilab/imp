@@ -140,7 +140,7 @@ public:
 
   //! The traits must match
   Hierarchy(IMP::core::Hierarchy h): P(h) {
-    IMP_check(h.get_traits() == get_traits(),
+    IMP_USAGE_CHECK(h.get_traits() == get_traits(),
               "Cannot construct a IMP.atom.Hierarchy from a general "
               " IMP.core.Hierarchy",
               ValueException);
@@ -151,7 +151,8 @@ public:
    */
   Hierarchy(Particle *p):
     P(p,get_traits()){
-    IMP_assert(particle_is_instance(p), "Missing required attributes for "
+    IMP_INTERNAL_CHECK(particle_is_instance(p),
+                       "Missing required attributes for "
                << "Hierarchy" << *p);
   }
 
@@ -161,7 +162,8 @@ public:
   //! cast a particle which has the needed attributes
   static Hierarchy decorate_particle(Particle *p) {
     IMP::core::Hierarchy::decorate_particle(p, get_traits());
-    IMP_check(p->has_attribute(get_type_key()), "Particle is missing attribute "
+    IMP_USAGE_CHECK(p->has_attribute(get_type_key()),
+                    "Particle is missing attribute "
               << get_type_key(),
               InvalidStateException);
     return Hierarchy(p);
@@ -208,12 +210,12 @@ public:
       Type enum list.
    */
   unsigned int add_child(Hierarchy o) {
-    IMP_check(get_type() > o.get_type(),
+    IMP_USAGE_CHECK(get_type() > o.get_type(),
               "Parent type must subsume child type",
               InvalidStateException);
-    IMP_check(get_type() != UNKNOWN, "Parent must have known type",
+    IMP_USAGE_CHECK(get_type() != UNKNOWN, "Parent must have known type",
               InvalidStateException);
-    IMP_check(o.get_type() != UNKNOWN, "Child must have known type",
+    IMP_USAGE_CHECK(o.get_type() != UNKNOWN, "Child must have known type",
               InvalidStateException);
     return P::add_child(o);
   }
@@ -223,12 +225,12 @@ public:
       Type enum list.
    */
   void add_child_at(Hierarchy o, unsigned int i) {
-    IMP_check(get_type() > o.get_type(),
+    IMP_USAGE_CHECK(get_type() > o.get_type(),
               "Parent type must subsume child type",
               InvalidStateException);
-    IMP_check(get_type() != UNKNOWN, "Parent must have known type",
+    IMP_USAGE_CHECK(get_type() != UNKNOWN, "Parent must have known type",
               InvalidStateException);
-    IMP_check(o.get_type() != UNKNOWN, "Child must have known type",
+    IMP_USAGE_CHECK(o.get_type() != UNKNOWN, "Child must have known type",
               InvalidStateException);
     P::add_child_at(o, i);
   }

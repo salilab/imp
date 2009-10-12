@@ -90,12 +90,19 @@ class IMPEXPORT Exception
 };
 
 //! Determine the level of runtime checks performed
-/** NONE means that minimial checks are used. CHEAP
-    means that only constant time checks are performed
-    and with EXPENSIVE non-linear time checks will be run.
+/** - NONE means that minimial checks are used.
+    - USAGE means that checks of input values to functions
+    and classes are verified.
+    - USAGE_AND_INTERNAL adds checks that \imp itself is
+    correct. Turn these on if you suspect an \imp bug or are
+    developing Restraints or other \imp classes.
 */
-enum CheckLevel {NONE=0, CHEAP=1, EXPENSIVE=2};
+enum CheckLevel {NONE=0, USAGE=1, USAGE_AND_INTERNAL=2};
 
+//! Determine the maximum check level that can be used for this build
+/** For example, 'fast' builds can't used any checks.
+ */
+IMPEXPORT CheckLevel get_maximum_check_level();
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 namespace internal {
@@ -105,7 +112,8 @@ namespace internal {
 
 
 //! Control runtime checks in the code
-/** The default level of checks is CHEAP.
+/** The default level of checks is USAGE for release builds and
+    USAGE_AND_INTERNAL for debug builds.
 */
 inline void set_check_level(CheckLevel tf) {
   internal::check_mode= tf;
@@ -126,7 +134,7 @@ inline CheckLevel get_check_level() {
 */
 IMPEXPORT void set_print_exceptions(bool tf);
 
-#ifndef IMP_NO_DEBUG
+#if IMP_BUILD < IMP_FAST
 //! Execute the code block if a certain level checks are on
 /**
    The next code block (delimited by { }) is executed if
@@ -145,7 +153,7 @@ IMPEXPORT void assert_fail(const char *msg);
 #endif
 
 
-#ifndef IMP_NO_DEBUG
+#if IMP_BUILD < IMP_FAST
 
 /** \brief An assertion to check for internal errors in \imp. An
     IMP::ErrorException will be thrown.
@@ -153,17 +161,17 @@ IMPEXPORT void assert_fail(const char *msg);
     Since it is a debug-only check and no attempt should be made to
     recover from it, the exception type cannot be specified.
 
-    \note if the code is compiled with IMP_NO_DEBUG, or the check level
-    is less than EXPENSIVE, the check is not performed. Do not use
-    asserts as a shorthand to throw exceptions (throw the exception
-    yourself); use them only to check for logic errors.
+    \note if the code is compiled with 'fast', or the check level is
+    less than IMP::USAGE_AND_INTERNAL, the check is not performed.  Do
+    not use asserts as a shorthand to throw exceptions (throw the
+    exception yourself); use them only to check for logic errors.
 
     \param[in] expr The assertion expression.
     \param[in] message Write this message if the assertion fails.
 */
-#define IMP_assert(expr, message)                               \
+#define IMP_INTERNAL_CHECK(expr, message)                       \
   do {                                                          \
-    if (IMP::get_check_level() >= IMP::EXPENSIVE && !(expr)) {  \
+    if (IMP::get_check_level() >= IMP::USAGE_AND_INTERNAL && !(expr)) { \
       std::ostringstream oss;                                   \
       oss << message << std::endl                               \
           << "  File \"" << __FILE__ << "\", line " << __LINE__ \
@@ -173,32 +181,34 @@ IMPEXPORT void assert_fail(const char *msg);
     }                                                           \
   } while(false)
 #else
-#define IMP_assert(expr, message)
+#define IMP_INTERNAL_CHECK(expr, message)
 #endif
 
-#ifndef IMP_NO_DEBUG
+#if IMP_BUILD < IMP_FAST
 //! A runtime test for incorrect usage of a class or method.
 /** \param[in] expr The assertion expression.
     \param[in] message Write this message if the assertion fails.
-    \param[in] ExceptionType Throw an exception of this type. The exception
-    must be constructable from a char *.
+    \param[in] ExceptionType this is now ignored and will go away.
 
-    \note if the code is compiled with IMP_NO_DEBUG, or the check level
-    is less than CHEAP, the check is not performed. Do not use these
+    \note if the build is 'fast', or the check level
+    is less than IMP::USAGE, the check is not performed. Do not use these
     checks as a shorthand to throw necessary exceptions (throw the
     exception yourself); use them only to check for errors, such as
-    inappropriate input.  */
-#define IMP_check(expr, message, ExceptionType)                 \
+    inappropriate input.
+
+    \note The ExceptionType is ignored.
+ */
+#define IMP_USAGE_CHECK(expr, message, ExceptionType)           \
   do {                                                          \
-    if (IMP::get_check_level() >= IMP::CHEAP && !(expr)) {      \
+    if (IMP::get_check_level() >= IMP::USAGE && !(expr)) {      \
       std::ostringstream oss;                                   \
       oss << message << std::endl;                              \
       IMP::internal::assert_fail(oss.str().c_str());            \
-      throw ExceptionType(oss.str().c_str());                   \
+      throw ValueException(oss.str().c_str());                  \
     }                                                           \
   } while (false)
 #else
-#define IMP_check(e,m,E)
+#define IMP_USAGE_CHECK(e,m,E)
 #endif
 
 //! A runtime failure for IMP.
@@ -206,7 +216,7 @@ IMPEXPORT void assert_fail(const char *msg);
     \param[in] ExceptionType Throw an exception of this type. The exception
     must be constructable from a char *.
 */
-#define IMP_failure(message, ExceptionType) do {                        \
+#define IMP_FAILURE(message, ExceptionType) do {                        \
   std::ostringstream oss;                                               \
   oss << message << std::endl;                                          \
   IMP::internal::assert_fail(oss.str().c_str());                        \
@@ -216,7 +226,7 @@ IMPEXPORT void assert_fail(const char *msg);
 //! Use this to make that the method is not implemented yet
 /**
  */
-#define IMP_not_implemented do {                                        \
+#define IMP_NOT_IMPLEMENTED do {                                        \
     IMP::internal::assert_fail("This method is not implemented.");      \
     throw ErrorException("Not implemented");                            \
   } while(true)

@@ -35,7 +35,7 @@ public:
    */
   Float operator()(const Float value) const {
     // x!=x when x==NaN (can only use std::isnan on gcc C99 systems)
-    IMP_assert(!is_nan(value), "Can't set derivative to NaN.");
+    IMP_INTERNAL_CHECK(!is_nan(value), "Can't set derivative to NaN.");
     return value * weight_;
   }
 

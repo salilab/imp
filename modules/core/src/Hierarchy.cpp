@@ -36,12 +36,12 @@ void Hierarchy::validate_node() const
 {
   //get_particle()->get_model()->show(std::cerr);
   if (has_parent()) {
-    IMP_assert(get_parent_index() >= 0,
+    IMP_INTERNAL_CHECK(get_parent_index() >= 0,
                "The parent index must be positive if it is there");
     This p= get_parent();
-    IMP_assert(p.get_particle() != get_particle(),
+    IMP_INTERNAL_CHECK(p.get_particle() != get_particle(),
                "A particle can't be its own parent " << *p.get_particle());
-    IMP_assert(p.get_child_index(*this) == get_parent_index(),
+    IMP_INTERNAL_CHECK(p.get_child_index(*this) == get_parent_index(),
                "Incorrect parent index in particle "
                << *get_particle());
   }
@@ -88,7 +88,7 @@ void Hierarchy::validate() const
 
 int Hierarchy::get_child_index(Hierarchy c) const
 {
-  IMP_check(traits_.get_name() == c.traits_.get_name(),
+  IMP_USAGE_CHECK(traits_.get_name() == c.traits_.get_name(),
             "Attemping to mix hierarchy of type " << traits_.get_name()
             << " with one of type " << c.traits_.get_name(),
             InvalidStateException);

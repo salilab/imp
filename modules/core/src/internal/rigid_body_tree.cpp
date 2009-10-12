@@ -110,7 +110,7 @@ RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
     Node cur;
     std::swap(cur,stack.back());
     stack.pop_back();
-    IMP_assert(!cur.second.empty(), "Don't call me with no spheres");
+    IMP_INTERNAL_CHECK(!cur.second.empty(), "Don't call me with no spheres");
     algebra::Sphere3Ds ss(cur.second.size());
     for (unsigned int i=0; i< cur.second.size(); ++i) {
       ss[i]= spheres[cur.second[i]];
@@ -133,12 +133,12 @@ RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
 
 void RigidBodyHierarchy::set_sphere(unsigned int ni,
                                     const algebra::Sphere3D &s) {
-  IMP_assert(ni < tree_.size(), "Out of range");
+  IMP_INTERNAL_CHECK(ni < tree_.size(), "Out of range");
   tree_[ni].s_=s;
 }
 void RigidBodyHierarchy::set_leaf(unsigned int ni,
                                   const std::vector<unsigned int> &ids) {
-  IMP_assert(ni < tree_.size(), "Out of range");
+  IMP_INTERNAL_CHECK(ni < tree_.size(), "Out of range");
   tree_[ni].children_.resize(ids.size());
   for (unsigned int i=0; i< ids.size(); ++i) {
     tree_[ni].children_[i]= -ids[i]-1;
@@ -146,8 +146,8 @@ void RigidBodyHierarchy::set_leaf(unsigned int ni,
 }
 unsigned int RigidBodyHierarchy::add_children(unsigned int ni,
                                               unsigned int num_children)  {
-  IMP_assert(ni < tree_.size(), "Out of range");
-  IMP_assert(num_children >1, "Need to have children");
+  IMP_INTERNAL_CHECK(ni < tree_.size(), "Out of range");
+  IMP_INTERNAL_CHECK(num_children >1, "Need to have children");
   unsigned int ret= tree_.size();
   tree_.insert(tree_.end(), num_children, Data());
   tree_[ni].children_.resize(num_children);
@@ -157,20 +157,20 @@ unsigned int RigidBodyHierarchy::add_children(unsigned int ni,
   return ret;
 }
 bool RigidBodyHierarchy::get_is_leaf(unsigned int ni) const {
-  IMP_assert(ni < tree_.size(), "Out of range");
-  IMP_assert(!tree_[ni].children_.empty(),
+  IMP_INTERNAL_CHECK(ni < tree_.size(), "Out of range");
+  IMP_INTERNAL_CHECK(!tree_[ni].children_.empty(),
              "Everything must have particles or children");
   return tree_[ni].children_[0] < 0;
 }
 unsigned int
 RigidBodyHierarchy::get_number_of_particles(unsigned int ni) const  {
-  IMP_assert(ni < tree_.size(), "Out of range");
-  IMP_assert(get_is_leaf(ni), "Only leaves have particles");
+  IMP_INTERNAL_CHECK(ni < tree_.size(), "Out of range");
+  IMP_INTERNAL_CHECK(get_is_leaf(ni), "Only leaves have particles");
   return tree_[ni].children_.size();
 }
 unsigned int
 RigidBodyHierarchy::get_number_of_children(unsigned int ni) const  {
-  IMP_assert(ni < tree_.size(), "Out of range");
+  IMP_INTERNAL_CHECK(ni < tree_.size(), "Out of range");
   if (!get_is_leaf(ni)) {
     return tree_[ni].children_.size();
   } else {
@@ -179,8 +179,8 @@ RigidBodyHierarchy::get_number_of_children(unsigned int ni) const  {
 }
 unsigned int RigidBodyHierarchy::get_child(unsigned int ni,
                                            unsigned int i) const  {
-  IMP_assert(ni < tree_.size(), "Out of range");
-  IMP_assert(tree_[ni].children_.size() > i,
+  IMP_INTERNAL_CHECK(ni < tree_.size(), "Out of range");
+  IMP_INTERNAL_CHECK(tree_[ni].children_.size() > i,
              "Out of range in particle");
   if (!get_is_leaf(ni)) {
     return tree_[ni].children_[i];
@@ -192,10 +192,10 @@ unsigned int RigidBodyHierarchy::get_child(unsigned int ni,
 
 Particle* RigidBodyHierarchy::get_particle(unsigned int ni,
                                            unsigned int i) const  {
-  IMP_assert(ni < tree_.size(), "Out of range");
-  IMP_assert(tree_[ni].children_.size() > i,
+  IMP_INTERNAL_CHECK(ni < tree_.size(), "Out of range");
+  IMP_INTERNAL_CHECK(tree_[ni].children_.size() > i,
              "Out of range in particle");
-  IMP_assert(tree_[ni].children_[i] < 0,
+  IMP_INTERNAL_CHECK(tree_[ni].children_[i] < 0,
              "Not a leaf node");
   int index= std::abs(tree_[ni].children_[i])-1;
   return r_->get_refined(rb_, index);
@@ -278,7 +278,7 @@ distance_bound(const RigidBodyHierarchy *da, unsigned int i,
 
   for (unsigned int ii=0; ii< ta.size(); ++ii) {
     double td= distance(XYZR(ta[ii]).get_sphere(),b.get_sphere());
-    IMP_assert(td >= .95*rd, "Error in bounds");
+    IMP_INTERNAL_CHECK(td >= .95*rd, "Error in bounds");
   }
 #endif
   return rd;
@@ -297,7 +297,7 @@ distance_bound(const RigidBodyHierarchy *da, unsigned int i,
   for (unsigned int ii=0; ii< ta.size(); ++ii) {
     for (unsigned int ij=0; ij< tb.size(); ++ij) {
       double td= distance(XYZR(ta[ii]), XYZR(tb[ij]));
-      IMP_assert(td >= .95*rd, "Error in bounds "
+      IMP_INTERNAL_CHECK(td >= .95*rd, "Error in bounds "
                  << " the pair " << ParticlePair(ta[ii], tb[ij])
                  << " has distance " << td << " but the sphere "
                  << " bound is " << rd << ". Spheres are "

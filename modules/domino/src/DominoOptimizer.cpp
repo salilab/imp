@@ -10,7 +10,7 @@ IMPDOMINO_BEGIN_NAMESPACE
 
 namespace {
   Particle* get_particle(Model *m, unsigned int i) {
-    IMP_assert(i>=1, "Out of range index in hacked function");
+    IMP_INTERNAL_CHECK(i>=1, "Out of range index in hacked function");
     --i;
     Model::ParticleIterator pit= m->particles_begin();
     while (i != 0) {
@@ -55,7 +55,7 @@ void DominoOptimizer::initialize_jt_graph(int number_of_nodes)
 
 Float DominoOptimizer::optimize(unsigned int max_steps)
 {
-  IMP_assert(ds_ != NULL,
+  IMP_INTERNAL_CHECK(ds_ != NULL,
              "DominoOptimizer::optimize the sampling space was not set"
              <<std::endl);
   //init all the potentials
@@ -109,7 +109,7 @@ void DominoOptimizer::add_restraint_recursive(Restraint *rs, Float weight)
      IMP_LOG(VERBOSE,"adding a single restraint " << std::endl);
      IMP_LOG(VERBOSE,"number of interacting particles is :"
              <<rs->get_interacting_particles().size()<<std::endl);
-     IMP_check(rs->get_interacting_particles().size()==1,
+     IMP_USAGE_CHECK(rs->get_interacting_particles().size()==1,
                "DominoOptimizer::add_restraint_recursive dose not support"
                <<" lists with more than one set of particles for a single "
                <<"restraint: "

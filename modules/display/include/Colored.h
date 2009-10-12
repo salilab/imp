@@ -44,7 +44,7 @@ public:
   }
 
   static bool particle_is_instance(Particle *p) {
-    IMP_check((!p->has_attribute(get_color_keys()[0])
+    IMP_USAGE_CHECK((!p->has_attribute(get_color_keys()[0])
                && !p->has_attribute(get_color_keys()[1])
                && !p->has_attribute(get_color_keys()[2]))
               || (p->has_attribute(get_color_keys()[0])

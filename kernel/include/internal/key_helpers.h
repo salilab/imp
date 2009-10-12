@@ -30,7 +30,7 @@ struct IMPEXPORT KeyData
     return i;
   }
   unsigned int add_alias(std::string str, unsigned int i) {
-    IMP_assert(rmap_.size() > i, "The aliased key doesn't exist");
+    IMP_INTERNAL_CHECK(rmap_.size() > i, "The aliased key doesn't exist");
     map_[str]=i;
     return i;
   }

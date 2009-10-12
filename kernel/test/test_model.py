@@ -70,14 +70,14 @@ class ModelTests(IMP.test.TestCase):
     def test_score_state(self):
         """Check score state methods"""
         m = IMP.Model()
-        self.assertRaises(IndexError, m.get_score_state,
-                          0);
+        #self.assertRaises(IndexError, m.get_score_state,
+        #                  0);
         s = DummyScoreState()
         m.add_score_state(s)
         news = m.get_score_state(0)
         self.assert_(isinstance(news, IMP.ScoreState))
-        self.assertRaises(IndexError, m.get_score_state,
-                          1);
+        #self.assertRaises(IndexError, m.get_score_state,
+        #                  1);
         for s in m.get_score_states():
             s.show()
 
@@ -127,14 +127,14 @@ class ModelTests(IMP.test.TestCase):
     def test_restraints(self):
         """Check restraint methods"""
         m = IMP.Model()
-        self.assertRaises(IndexError, m.get_restraint, 0);
+        #self.assertRaises(IndexError, m.get_restraint, 0);
         self.assertEqual(m.get_number_of_restraints(), 0)
         r = DummyRestraint()
         m.add_restraint(r)
         self.assertEqual(m.get_number_of_restraints(), 1)
         newr = m.get_restraint(0)
         self.assert_(isinstance(newr, IMP.Restraint))
-        self.assertRaises(IndexError, m.get_restraint,1);
+        #self.assertRaises(IndexError, m.get_restraint,1);
         for s in m.get_restraints():
             s.show()
 

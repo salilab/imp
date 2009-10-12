@@ -336,7 +336,7 @@ atom::Hierarchy create_simplified(atom::Hierarchy in,
 atom::Hierarchy create_simplified_chain_by_residue(atom::Hierarchy in,
                                                   int res_step) {
   atom::Hierarchies residues= atom::get_by_type(in,atom::Hierarchy::AMINOACID);
-  IMP_check(residues.size() > 0,
+  IMP_USAGE_CHECK(residues.size() > 0,
             "Can only simplify a chain with no residues.",
             ValueException);
   int num_res_iter=0;
@@ -377,7 +377,7 @@ atom::Hierarchy create_simplified_chain_by_residue(atom::Hierarchy in,
 
 atom::Hierarchy create_simplified_by_residue(atom::Hierarchy in,
                                              int res_step){
-  IMP_check(in.get_type() == atom::Hierarchy::PROTEIN,
+  IMP_USAGE_CHECK(in.get_type() == atom::Hierarchy::PROTEIN,
             "Can only simplify proteins at the moment.",
             ValueException);
   atom::Hierarchies in_chains= atom::get_by_type(in,atom::Hierarchy::CHAIN);

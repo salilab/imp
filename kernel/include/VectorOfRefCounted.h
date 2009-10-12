@@ -90,24 +90,24 @@ class VectorOfRefCounted {
   }
 #endif
   RC operator[](unsigned int i) const {
-    IMP_check(i < size(), "Index out of range in []: "
+    IMP_USAGE_CHECK(i < size(), "Index out of range in []: "
               << i << ">=" << size(), IndexException);
     return data_[i];
   }
   void set(unsigned int i, RC p) {
-    IMP_check(i < size(), "Index out of range in set "
+    IMP_USAGE_CHECK(i < size(), "Index out of range in set "
               << i << ">=" << size(), IndexException);
     unref(data_[i]);
     data_[i]=p;
     ref(p);
   }
   RC back() const {
-    IMP_check(!empty(), "Can't call back on empty container",
+    IMP_USAGE_CHECK(!empty(), "Can't call back on empty container",
               InvalidStateException);
     return data_.back();
   }
   RC front() const {
-    IMP_check(!empty(), "Can't call front on empty container",
+    IMP_USAGE_CHECK(!empty(), "Can't call front on empty container",
               InvalidStateException);
     return data_.front();
   }

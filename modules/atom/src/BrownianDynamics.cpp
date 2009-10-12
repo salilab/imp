@@ -58,7 +58,7 @@ SingletonContainer *BrownianDynamics::setup_particles()
     // check them
     for (SingletonContainer::ParticleIterator it= sc_->particles_begin();
          it != sc_->particles_end(); ++it) {
-      IMP_check(Diffusion::particle_is_instance(*it),
+      IMP_USAGE_CHECK(Diffusion::particle_is_instance(*it),
                 "Particles must be Diffusion particles to be used in "
                 << "Brownian dynamics. Particle "<< (*it)->get_name()
                 << " is not.",
@@ -116,7 +116,7 @@ void BrownianDynamics::revert_coordinates(SingletonContainer *sc,
  */
 Float BrownianDynamics::optimize(unsigned int max_steps)
 {
- IMP_check(get_model() != NULL, "Must set model before calling optimize",
+ IMP_USAGE_CHECK(get_model() != NULL, "Must set model before calling optimize",
            ValueException);
  return simulate(si_.get_current_time().get_value()
                  +max_steps*si_.get_maximum_time_step().get_value());
@@ -152,7 +152,7 @@ void BrownianDynamics::take_step(SingletonContainer *sc,
     Particle *p= sc->get_particle(i);
     Diffusion d(p);
 
-    IMP_IF_CHECK(CHEAP) {
+    IMP_IF_CHECK(USAGE) {
       for (unsigned int j=0; j< 3; ++j) {
         // GDB 6.6 prints infinity as 0 on 64 bit machines. Grumble.
         /*int szf= sizeof(Float);
@@ -171,7 +171,7 @@ void BrownianDynamics::take_step(SingletonContainer *sc,
       }
     }
 
-    IMP_check(unit::strip_units(d.get_D()) > 0
+    IMP_USAGE_CHECK(unit::strip_units(d.get_D()) > 0
               && unit::strip_units(d.get_D())
               < std::numeric_limits<Float>::max(),
               "Bad diffusion coefficient on particle " << p->get_name(),
@@ -229,7 +229,7 @@ double BrownianDynamics::simulate(float max_time_nu)
 {
   unit::Femtosecond max_time(max_time_nu);
   IMP_OBJECT_LOG;
-  IMP_check(get_model() != NULL, "Must set model before calling simulate",
+  IMP_USAGE_CHECK(get_model() != NULL, "Must set model before calling simulate",
             ValueException);
   Pointer<SingletonContainer> sc
     = Pointer<SingletonContainer>(setup_particles());
@@ -273,7 +273,7 @@ double BrownianDynamics::simulate(float max_time_nu)
       get_model()->evaluate(true);
       dt= dt*.5;
       if (dt < unit::Femtosecond(1)) {
-        IMP_failure("Something is wrong with the restraints"
+        IMP_FAILURE("Something is wrong with the restraints"
                     << " and they are highly discontinuous due"
                     << " to particle " << *e.blamed
                     << "\n" << *get_model(),

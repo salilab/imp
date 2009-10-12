@@ -27,7 +27,7 @@ void unref(O* o)
   // need to know about possible virtual destructors
   // or the correct non-virtual one
   const RefCounted *rc= o;
-  IMP_assert(rc->count_ !=0, "Too many unrefs on object");
+  IMP_INTERNAL_CHECK(rc->count_ !=0, "Too many unrefs on object");
   --rc->count_;
   IMP_LOG(MEMORY, "Unrefing object " << rc << std::endl);
   if (rc->count_==0) {

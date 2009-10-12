@@ -56,7 +56,7 @@ void ScoreState::after_evaluate(DerivativeAccumulator *da) {
  */
 void ScoreState::set_model(Model* model)
 {
-  IMP_check(model==NULL || model_==NULL
+  IMP_USAGE_CHECK(model==NULL || model_==NULL
             || (model_ && model_ == model),
             "Model* different from already stored model "
             << model << " " << model_,

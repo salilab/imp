@@ -178,7 +178,8 @@ void Profile::calculate_profile_real(const Particles& particles,
 void Profile::calculate_profile_real(const Particles& particles,
                                      unsigned int n)
 {
-  IMP_check(n > 1, "Attempting to use symmetric computation, symmetry order"
+  IMP_USAGE_CHECK(n > 1,
+                  "Attempting to use symmetric computation, symmetry order"
             << " should be > 1. Got: " << n, ValueException);
   IMP_LOG(TERSE, "start real profile calculation for " << particles.size()
           << " particles with symmetry = " << n << std::endl);

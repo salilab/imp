@@ -77,7 +77,7 @@ public:
       @{.
   */
   void set_temperature(Float t) {
-    IMP_assert(t>0, "Temperature must be positive");
+    IMP_INTERNAL_CHECK(t>0, "Temperature must be positive");
     temp_=t;
   }
   Float get_temperature() const {
@@ -104,7 +104,7 @@ public:
       with probability p.
    */
   void set_move_probability(Float p) {
-    IMP_check(p > 0 && p <= 1, "Not a valid probability",
+    IMP_USAGE_CHECK(p > 0 && p <= 1, "Not a valid probability",
               ValueException);
     probability_=p;
   }

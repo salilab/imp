@@ -78,7 +78,7 @@ public:
    */
   Rotation3D(double a, double b, double c, double d): v_(a,b,c,d),
     has_cache_(false) {
-    IMP_check(std::abs(v_.get_squared_magnitude() - 1.0) < .05,
+    IMP_USAGE_CHECK(std::abs(v_.get_squared_magnitude() - 1.0) < .05,
               "Attempting to construct a rotation from a non-quaternion value."
               << " The coefficient vector must have a length of 1. Got: "
               << a << " " << b << " " << c << " " << d,
@@ -108,7 +108,7 @@ public:
 
   //! Rotate a vector around the origin
   Vector3D rotate(const Vector3D &o) const {
-    IMP_check(v_.get_squared_magnitude() >0,
+    IMP_USAGE_CHECK(v_.get_squared_magnitude() >0,
               "Attempting to apply uninitialized rotation",
               InvalidStateException);
 #ifdef IMP_ROTATION_CACHE

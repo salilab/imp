@@ -21,7 +21,7 @@ int main() {
   ConnectivityRestraint* r= new ConnectivityRestraint(ss);
   r->set_particles(ps);
   m->add_restraint(r);
-  set_check_level(EXPENSIVE);
+  set_check_level(USAGE_AND_INTERNAL);
   //set_log_level(VERBOSE);
   m->evaluate(NULL);
 

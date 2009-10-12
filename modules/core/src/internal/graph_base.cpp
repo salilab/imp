@@ -67,7 +67,7 @@ Particle* graph_get_neighbor(Particle* a, int i, const GraphData &d)
   if (graph_get_node(edge, 0, d) == a) {
     return graph_get_node(edge, 1, d);
   } else {
-    IMP_assert(graph_get_node(edge, 1, d) == a,
+    IMP_INTERNAL_CHECK(graph_get_node(edge, 1, d) == a,
                "Broken graph");
     return graph_get_node(edge, 0, d);
   }

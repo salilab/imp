@@ -22,7 +22,7 @@ IMPHELPER_BEGIN_NAMESPACE
 ScoreState* create_covers(SingletonContainer *sc,
                   Refiner *pr,
                   FloatKey radius_key, Float slack) {
-  IMP_check(sc->get_number_of_particles() >0,
+  IMP_USAGE_CHECK(sc->get_number_of_particles() >0,
             "Need some particles to set up as centroid",
             ValueException);
   Model *m= sc->get_particle(0)->get_model();
@@ -74,7 +74,7 @@ ScoreState* create_centroids(SingletonContainer *sc,
                       Refiner *pr,
                       FloatKey weight,
                       FloatKeys ks) {
-  IMP_check(sc->get_number_of_particles() >0,
+  IMP_USAGE_CHECK(sc->get_number_of_particles() >0,
             "Need some particles to set up as centroid",
             ValueException);
   for (SingletonContainer::ParticleIterator pit= sc->particles_begin();
@@ -107,7 +107,7 @@ ScoreState* create_centroid(Particle *p, Refiner *pr,
   core::CentroidOfRefined *cr= new core::CentroidOfRefined(pr, weight, ks);
   core::DerivativesToRefined *dtr= new core::DerivativesToRefined(pr,ks);
   core::SingletonScoreState *sss= new core::SingletonScoreState(cr, dtr, p);
-  IMP_check(pr->get_refined(p).size()>0,
+  IMP_USAGE_CHECK(pr->get_refined(p).size()>0,
              "Need particles to compute the centroid of",
              ValueException);
   return sss;

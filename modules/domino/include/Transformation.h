@@ -25,13 +25,13 @@ class IMPDOMINOEXPORT Transformation: public Decorator
  public:
 
   static FloatKey get_translation_key(unsigned int i) {
-    IMP_check(i <3, "Out of range coordinate",
+    IMP_USAGE_CHECK(i <3, "Out of range coordinate",
               IndexException);
     return IMP::internal::xyzr_keys[i];
   }
 
   static FloatKey get_rotation_key(unsigned int i) {
-    IMP_check(i <4, "Out of range coordinate",
+    IMP_USAGE_CHECK(i <4, "Out of range coordinate",
               IndexException);
     return get_rotation_keys()[i];
   }
@@ -65,7 +65,7 @@ class IMPDOMINOEXPORT Transformation: public Decorator
   IMP_DECORATOR_GET_SET(d, get_rotation_key(3), Float, Float);
 
   static bool particle_is_instance(Particle *p) {
-    IMP_check(    p->has_attribute(get_translation_key(0))
+    IMP_USAGE_CHECK(    p->has_attribute(get_translation_key(0))
                && p->has_attribute(get_translation_key(1))
                && p->has_attribute(get_translation_key(2))
                && p->has_attribute(get_rotation_key(0))

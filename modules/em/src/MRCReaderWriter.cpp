@@ -31,7 +31,7 @@ void MRCReaderWriter::Write(const char *fn_out, const float *data,
 void MRCReaderWriter::read(float **pt)
 {
   fs.open(filename.c_str(), std::fstream::in | std::fstream::binary);
-  IMP_check(fs.good(), "The file " << filename << " was not found.",
+  IMP_USAGE_CHECK(fs.good(), "The file " << filename << " was not found.",
             IOException);
   // Read header
   read_header();
@@ -51,7 +51,7 @@ void MRCReaderWriter::read_data(float *pt)
     return read_32_data(pt);
   }
   else {
-    IMP_failure("MRCReaderWriter::read_data >> This routine can only read "
+    IMP_FAILURE("MRCReaderWriter::read_data >> This routine can only read "
                 << "8-bit or 32-bit MRC files. Unknown mode for "
                 << filename, IOException);
   }
@@ -103,7 +103,7 @@ void MRCReaderWriter::read_grid(void *pt,size_t size,size_t n)
   fs.read((char *)pt,size*n);
   size_t val = fs.gcount();
   if (0) std::cout << val;
-  IMP_check(val == size*n,
+  IMP_USAGE_CHECK(val == size*n,
             "MRCReaderWriter::read_grid >> The values read "
             "are not the amount requested", IOException);
 }
@@ -111,7 +111,7 @@ void MRCReaderWriter::read_grid(void *pt,size_t size,size_t n)
 void MRCReaderWriter::seek_to_data()
 {
   fs.seekg(sizeof(MRCHeader)+header.nsymbt, std::ios::beg);
-  IMP_check(!fs.fail(),
+  IMP_USAGE_CHECK(!fs.fail(),
             "MRCReaderWriter::seek_to_data. Cannot find MRC data in file "
             << filename, IOException);
 }
@@ -120,7 +120,7 @@ void  MRCReaderWriter::read_header()
 {
   // Read header
   fs.read((char *) &header,sizeof(MRCHeader));
-  IMP_check(fs.gcount() == sizeof(MRCHeader),
+  IMP_USAGE_CHECK(fs.gcount() == sizeof(MRCHeader),
             "MRCReaderWriter::read_header >> Error reading MRC header of file: "
             << filename, IOException);
 
@@ -131,7 +131,7 @@ void  MRCReaderWriter::read_header()
     byte_swap(ch, 56);
     header.machinestamp = machinestamp;
   }
-  IMP_check(header.mapc == 1 && header.mapr == 2 && header.maps == 3,
+  IMP_USAGE_CHECK(header.mapc == 1 && header.mapr == 2 && header.maps == 3,
             "MRCReaderWriter::read_header >> Error reading MRC header of file: "
             << filename <<  "; Non-standard MRC file: column, row, section "
             << "indices are not (1,2,3) but (" << header.mapc << ","
@@ -187,7 +187,7 @@ void MRCReaderWriter::write_header(std::ofstream &s)
   s.write((char *) &header.nlabl,wordsize);
   s.write((char *) &header.labels,
           sizeof(char)*IMP_MRC_NUM_LABELS*IMP_MRC_LABEL_SIZE);
-  IMP_check(!s.bad(),
+  IMP_USAGE_CHECK(!s.bad(),
             "MRCReaderWriter::write_header >> Error writing MRC header",
             IOException);
 }
@@ -197,7 +197,7 @@ void MRCReaderWriter::write_data(std::ofstream &s,const float *pt)
 {
 
   s.write((char *)pt,sizeof(float)*header.nx * header.ny * header.nz);
-  IMP_check(!s.bad(),
+  IMP_USAGE_CHECK(!s.bad(),
             "MRCReaderWriter::write_data >> Error writing MRC data.",
             IOException);
   std::cout << "MRC file written: grid " << header.nx << "x" << header.ny

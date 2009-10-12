@@ -20,9 +20,9 @@ ClosePairsPairScore::ClosePairsPairScore(Refiner *r,
                                          Float thre,
                                          FloatKey rk): r_(r), f_(f),
                                                        th_(thre), rk_(rk){
-  IMP_check(thre >= 0, "The threshold must be non-negative.",
+  IMP_USAGE_CHECK(thre >= 0, "The threshold must be non-negative.",
             ValueException);
-  IMP_check(rk != FloatKey(), "The radius-key must be non-default. "
+  IMP_USAGE_CHECK(rk != FloatKey(), "The radius-key must be non-default. "
             << "This is primarily a matter of laziness.",
             ValueException);
 }

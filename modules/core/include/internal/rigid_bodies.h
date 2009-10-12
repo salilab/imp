@@ -46,7 +46,7 @@ inline void set_model_ranges(Model *m) {
 }
 
 inline bool get_has_required_attributes_for_body(Particle *p) {
-  IMP_check((p->has_attribute(rigid_body_data().quaternion_[0])
+  IMP_USAGE_CHECK((p->has_attribute(rigid_body_data().quaternion_[0])
             && p->has_attribute(rigid_body_data().quaternion_[1])
             && p->has_attribute(rigid_body_data().quaternion_[2])
             && p->has_attribute(rigid_body_data().quaternion_[3])
