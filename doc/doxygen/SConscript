@@ -93,15 +93,26 @@ env.Append(BUILDERS = {'GenerateExamples': Builder(action=generate_example_index
 examplei= env.GenerateExamples("all_examples.dox", Glob("#/modules/*/examples/examples.dox")\
                                    + Glob("#/kernel/examples/examples.dox"))
 
-headers=[]
+rawheaders=[]
 for h in Glob("#/build/include/*.h", ondisk=False) \
          + Glob("#/build/include/IMP/*.h", ondisk=False) \
          + Glob("#/build/include/IMP/*/*.h", ondisk=False):
     if h.path.find("internal")==-1:
+        rawheaders.append(h)
+headers=[]
+# doxygen 1.6.1 now wants macros first. Ick.
+for h in rawheaders:
+    if h.path.find('macros') != -1:
         headers.append(h)
-modexamples=Glob("#/modules/*/examples/*.dox")+['#/kernel/examples/examples.dox']
+for h in rawheaders:
+    if h.path.find('macros') == -1:
+        headers.append(h)
+
+modexamples=Glob("#/modules/*/examples/*.dox")\
+    +['#/kernel/examples/examples.dox']
 sources= headers +Glob("#/kernel/doc/*.dox") + Glob("#/doc/doxygen/*.dox")\
     +Glob("modules/*/doc/*.dox")+modexamples
+
 if env['python']:
     sources += Glob("#/build/lib/IMP/*.py", ondisk=False) \
                + Glob("#/build/lib/IMP/*/*.py", ondisk=False)
@@ -120,7 +131,7 @@ examples= Glob("#/modules/examples/src/*.cpp") + Glob("#/build/include/IMP/examp
     + Glob("#/kernel/doc/*.html") + Glob("#/kernel/doc/*/*.html")\
 
 modexamples.sort()
-sources.sort()
+#sources.sort()
 examples.sort()
 
 env.Depends(examplei, modexamples)
