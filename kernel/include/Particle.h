@@ -629,7 +629,8 @@ typedef VectorOfRefCounted<Particle*> Particles;
 
 
 //! A type to use when returning sets of particles so as to avoid refcounting
-/** Always store using Particles instead.
+/** Always store using Particles instead, but return ParticlesTemp. Particles
+    can be constructed from a ParticlesTemp.
  */
 typedef std::vector<Particle*> ParticlesTemp;
 

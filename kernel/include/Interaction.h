@@ -35,10 +35,16 @@ class Interaction: public Object
       than one set. However, if two particles never appear in the same
       set, then changing one of the particles should not change the
       derivatives of the other particle.
+
+      It is always correct, if not optimal, to return
+      \c ParticlesList(1, get_used_particles()).
+      That is, one set, containing all the used particles.
    */
   virtual ParticlesList get_interacting_particles() const=0;
 
-  /** Return the list of particles that this object depends on.*/
+  /** Return the list of particles that this object depends on. This should
+      include all particles whose attributes are read or written during
+      the update calls.*/
   virtual ParticlesTemp get_used_particles() const =0;
 };
 
