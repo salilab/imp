@@ -33,7 +33,7 @@ void test_one(std::string name,
   double result=0;
   double runtime;
   IMP_TIME({
-      ParticlePairsTemp ret=cpf->get_close_pairs(lsc, out);
+      ParticlePairsTemp ret=cpf->get_close_pairs(lsc);
       result+= ret.size();
       out->clear_particle_pairs();
     }, runtime);
