@@ -1,30 +1,32 @@
-/**\page devguide Guide for Developers
+/**\page devguide  Developer Guide
 
 Developers must familiarize themselves with the guidelines presented in this page.
 
-\section building Building \imp
+\section building Building IMP
 
-\section building Building \imp
-
-Developers should read \ref installation "the installation guide". In addition we
-recommend doing an out of source build so you can easily build multiple build types
-(\c build='fast', \c build='debug',  or \c build='release') from the same set of sources. To do this:
+Developers should read \ref installation "the installation guide". We
+recommend doing an out of source build so you can easily
+build multiple build types (\c build='fast', \c build='debug', or \c
+build='release') from the same set of sources. To do this:
 
 - make a second directory (say \c debug) outside of the \imp source
 directory. Let the path from the build directory, \c debug, to the
-source directory, \c svn, be \c ../svn.
+source directory, \c svn, be \c{../svn}.
 
-- In the build directory link to \c SConstruct and \c scons_tools in 'svn'.
+- In the build directory link to \c SConstruct and \c scons_tools in
+  \c svn. eg \command{ln -s ../svn/SConstruct; ln -s
+  ../svn/scons_tools}
 
-- Put \c repository="../svn" in your \c config.py in the \c debug directory. All the
-built files will be put in \c debug. Also put \c build='debug' to tell \c scons to do
-a debug build
+- Put \c repository="../svn" in your \c config.py in the \c debug
+  directory. Also put \c build='debug' to tell \c scons to do a debug
+  build
 
-- Run \c scons to build things. All the build files will be put in subdirectories of
-\c debug (mostly in \c debug/build).
+- Run \c scons to build things. All the build files will be put in
+subdirectories of \c debug (mostly in \c debug/build).
 
-- You can then create a second build directory, say called \c fast, to hold
-on optimized build. Put \c build='fast' in the \c config.py for that build directory.
+- You can then create a second build directory, say called \c fast, to
+hold on optimized build. Put \c build='fast' in the \c config.py for
+that build directory.
 
 \section usage Usage
 
