@@ -6,6 +6,17 @@ import os
 import sys
 import re
 
+# standard include files
+base_includes= ["IMP_macros.i",
+                "IMP_exceptions.i",
+                "IMP_directors.i",
+                "IMP_refcount.i",
+                "IMP_streams_kernel.i",
+                "IMP_streams.i",
+                "IMP_decorators.i",
+                "IMP_typemaps.i"]
+
+
 # 1. Workaround for SWIG bug #1863647: Ensure that the PySwigIterator class
 #    (SwigPyIterator in 1.3.38 or later) is renamed with a module-specific
 #    prefix, to avoid collisions when using multiple modules
@@ -57,20 +68,15 @@ def _action_swig_file(target, source, env):
             preface.append("#include \"IMP/%s.h\""% d)
     if vars['module'] != 'kernel':
         preface.append("#include \"%(module_include_path)s.h\""%vars)
-    preface.append("""%%}
-%%include "std_vector.i"
-%%include "std_string.i"
-%%include "std_pair.i"
+    preface.append("""%}
+%include "std_vector.i"
+%include "std_string.i"
+%include "std_pair.i"
 
-%%include "IMP_macros.i"
-%%include "IMP_exceptions.i"
-%%include "IMP_directors.i"
-%%include "IMP_refcount.i"
-%%include "IMP_streams_kernel.i"
-%%include "IMP_streams.i"
-%%include "IMP_decorators.i"
-%%include "IMP_typemaps.i"
-
+""")
+    for i in base_includes:
+        preface.append('%include "'+ i + '"')
+    preface.append("""
 %%include "typemaps.i"
 
 /* Don't wrap classes that provide no methods usable in Python */
@@ -230,12 +236,6 @@ def swig_scanner(node, env, path):
     # scons recurses with the same scanner, rather than the right one
     #print "Scanning "+str(node)
     if str(node).endswith(".h"):
-        """d= "/".join(str(node).split("/")[0:-1])
-        #print d
-        ret= ["#/build/include/"+x for x in re.findall('\n#include\s"(IMP[^"]*.h)"', contents)]\
-            +["#/build/include/"+x for x in re.findall('\n#include\s<(IMP[^"]*.h)>', contents)] \
-            +["#/"+d+"/"+x for x in re.findall('\n#include\s"(../[^"]*.h)"', contents)]\
-            +["#/"+d+"/"+x for x in re.findall('\n#include\s"([^"]*.h)"', contents)] """
         # we don't care about recursive .hs for running swig
         return []
     else :
@@ -243,38 +243,16 @@ def swig_scanner(node, env, path):
         ret= ["#/build/include/"+x for x in re.findall('\n%include\s"([^"]*.h)"', contents)]\
             + ["#/build/swig/"+x for x in re.findall('\n%include\s"(IMP_[^"]*.i)"', contents)]\
             + ["#/build/swig/"+x for x in re.findall('\n%import\s"(IMP_[^"]*.i)"', contents)]
-    #print "Initial deps for " + str(node) + " are " +str(ret)
-    #print " for file " + contents
         retset=set(ret)
         ret=list(retset)
         ret.sort()
-        """while oldret != ret:
-        oldret=ret
-        for x in ret:
-        if x.endswith(".i"):
-        ret=ret+swig_scanner(File(x), env, x)
-        retset=set(ret)
-        ret=list(retset)
-        ret.sort()
-        #\
-        #+ [File('#/build/include/IMP/macros.h')] \
-        #+ [File('#/build/include/IMP/container_macros.h')]"""
-    #print "deps for " +str(node) + " are "+str([str(x) for x in ret])
     return ret
 
 def inswig_scanner(node, env, path):
     if str(node).endswith(".i") or str(node).endswith(".h"):
         return swig_scanner(node, env, path)
     ret= swig_scanner(node, env, path)
-    oinclude=["IMP_macros.i",
-              "IMP_exceptions.i",
-              "IMP_directors.i",
-              "IMP_refcount.i",
-              "IMP_streams_kernel.i",
-              "IMP_streams.i",
-              "IMP_decorators.i",
-              "IMP_typemaps.i"]
-    for i in oinclude:
+    for i in base_includes:
         f= "#/build/swig/"+i
         ret.append(f)
     for m in env['IMP_REQUIRED_MODULES']:
