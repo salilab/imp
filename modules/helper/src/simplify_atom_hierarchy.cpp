@@ -221,91 +221,106 @@ atom::Hierarchy create_simplified(atom::Hierarchy in,
   double m0= 2.0*total_mass/n;
   IMP_LOG(TERSE, "Using " << n << " spheres." << std::endl);
 
-  // create new model and particles to optimize
-  // TODO use qmm or something to pick starting points
-  IMP_NEW(Model, m, ());
-  m->set_is_incremental(true);
-  core::XYZRs xyzrs(n);
-  for (unsigned int i=0; i< n; ++i) {
-    xyzrs.set(i,
-              core::XYZR::setup_particle(new Particle(m),
+    // create new model and particles to optimize
+    // TODO use qmm or something to pick starting points
+    IMP_NEW(Model, m, ());
+    m->set_is_incremental(true);
+    core::XYZRs xyzrs(n);
+    for (unsigned int i=0; i< n; ++i) {
+      xyzrs.set(i,
+                core::XYZR::setup_particle(new Particle(m),
                     algebra::Sphere3D(algebra::random_vector_in_box(bb),
-                                      r0)));
-    xyzrs[i].set_coordinates_are_optimized(true);
-    atom::Mass::setup_particle(xyzrs[i], m0);
-    //xyzrs[i].get_particle()->add_attribute(weight, 1, false);
-  }
+                                                             r0)));
+      xyzrs[i].set_coordinates_are_optimized(true);
+      atom::Mass::setup_particle(xyzrs[i], m0);
+      //xyzrs[i].get_particle()->add_attribute(weight, 1, false);
+    }
 
 
 
 
 
-  IMP_NEW(core::ListSingletonContainer, lsc, (xyzrs));
-  IMP_NEW(core::BoundingBox3DSingletonScore, bss,
-          (new core::HarmonicUpperBound(0,1), bb));
-  IMP_NEW(core::SingletonsRestraint, sr, (bss, lsc));
-  IMP_NEW(em::FitRestraint, ccr, (xyzrs, sdm,
-                                  core::XYZR::get_default_radius_key(),
-                                  atom::Mass::get_mass_key(),
-                                  1.0));
-  m->add_restraint(sr);
-  m->add_restraint(ccr);
+    IMP_NEW(core::ListSingletonContainer, lsc, (xyzrs));
+    IMP_NEW(core::BoundingBox3DSingletonScore, bss,
+            (new core::HarmonicUpperBound(0,1), bb));
+    IMP_NEW(core::SingletonsRestraint, sr, (bss, lsc));
+    IMP_NEW(em::FitRestraint, ccr, (xyzrs, sdm,
+                                    core::XYZR::get_default_radius_key(),
+                                    atom::Mass::get_mass_key(),
+                                    1.0));
+    m->add_restraint(sr);
+    m->add_restraint(ccr);
 
 
-  IMP_NEW(core::AllPairsPairContainer, appc, (lsc));
-  IMP_NEW(core::NormalizedSphereDistancePairScore, nsdp,
-          (new core::HarmonicLowerBound(-1,1)));
-  IMP_NEW(core::PairsRestraint, pr, (nsdp, appc));
-  m->add_restraint(pr);
-  // create MC
-  IMP_NEW(core::MonteCarlo, mc, ());
-  mc->set_score_threshold(.2);
-  mc->set_temperature(.01);
-  mc->set_return_best(true);
-  ScopedFailureHandler fh0, fh1, fh2;
-  IMP_NEW(display::LogOptimizerState, los,
-          (new display::ChimeraWriter(), "frame.%04d.py"));
-  IMP_NEW(display::XYZRsGeometry, xyzrg, (lsc));
-  los->add_geometry(xyzrg);
-  if (0) {
-    IMP_NEW(display::LogOptimizerState, plos,
-            (new display::CGOWriter(), "frame.%04d.pymol.pym"));
-    mc->add_optimizer_state(los);
-    mc->add_optimizer_state(plos);
+    IMP_NEW(core::AllPairsPairContainer, appc, (lsc));
+    IMP_NEW(core::NormalizedSphereDistancePairScore, nsdp,
+            (new core::HarmonicLowerBound(-1,1)));
+    IMP_NEW(core::PairsRestraint, pr, (nsdp, appc));
+    m->add_restraint(pr);
+    // create MC
+    IMP_NEW(core::MonteCarlo, mc, ());
+    mc->set_score_threshold(.2);
+    mc->set_temperature(.01);
+    mc->set_return_best(true);
+    ScopedFailureHandler fh0, fh1, fh2;
+    IMP_NEW(display::LogOptimizerState, los,
+            (new display::ChimeraWriter(), "frame.%04d.py"));
+    IMP_NEW(display::XYZRsGeometry, xyzrg, (lsc));
+    los->add_geometry(xyzrg);
+    if (0) {
+      IMP_NEW(display::LogOptimizerState, plos,
+              (new display::CGOWriter(), "frame.%04d.pymol.pym"));
+      mc->add_optimizer_state(los);
+      mc->add_optimizer_state(plos);
 
-    plos->add_geometry(xyzrg);
-    los->write("initial.py");
-    los->set_skip_steps(0);
-    IMP_NEW(core::DumpModelOnFailure, dmf, (m, "error.imp"));
-    fh0.set(dmf);
-    IMP_NEW(display::DisplayModelOnFailure, lof,
-            (los, "error.py"));
-    fh1.set(lof);
-    fh2.set(new WriteMap(ccr->get_model_dens_map(), "error.mrc"));
-  }
-  mc->set_model(m);
-  IMP_NEW(core::ConjugateGradients, cg, ());
-  /*IMP_NEW(display::LogOptimizerState, los2,
-          (new display::CGOWriter(), "local_frame.%04d.pym"));
-  los2->add_geometry(xyzrg);
-  //cg->add_optimizer_state(los2);*/
-  mc->set_local_optimizer(cg);
-  mc->set_local_steps(10);
-  mc->add_mover(new core::IncrementalBallMover(lsc, 1,
-                                               resolution/2.0));
-  mc->add_mover(new IncrementalRadiusMassMover(lsc, 1, resolution/10.0,
-                                               resolution/2.0, 4*resolution));
-  // set up fit restraint
+      plos->add_geometry(xyzrg);
+      los->write("initial.py");
+      los->set_skip_steps(0);
+      IMP_NEW(core::DumpModelOnFailure, dmf, (m, "error.imp"));
+      fh0.set(dmf);
+      IMP_NEW(display::DisplayModelOnFailure, lof,
+              (los, "error.py"));
+      fh1.set(lof);
+      fh2.set(new WriteMap(ccr->get_model_dens_map(), "error.mrc"));
+    }
+    mc->set_model(m);
+    IMP_NEW(core::ConjugateGradients, cg, ());
+    /*IMP_NEW(display::LogOptimizerState, los2,
+      (new display::CGOWriter(), "local_frame.%04d.pym"));
+      los2->add_geometry(xyzrg);
+      //cg->add_optimizer_state(los2);*/
+    mc->set_local_optimizer(cg);
+    mc->set_local_steps(10);
+    mc->add_mover(new core::IncrementalBallMover(lsc, 1,
+                                                 resolution/2.0));
+    mc->add_mover(new IncrementalRadiusMassMover(lsc, 1, resolution/10.0,
+                                                 resolution/2.0, 4*resolution));
+    // set up fit restraint
 
-  // run MC
-  set_log_level(SILENT);
-  mc->set_log_level(TERSE);
-  m->set_log_level(SILENT);
-  cg->set_log_level(SILENT);
-  for (unsigned int i=0; i< n; ++i) {
-    xyzrs[i].set_coordinates( algebra::random_vector_in_box(bb));
-  }
-  mc->optimize(100);
+    // run MC
+    set_log_level(SILENT);
+    mc->set_log_level(TERSE);
+    m->set_log_level(SILENT);
+    cg->set_log_level(SILENT);
+    // try several times if optimization fails
+    unsigned int trial_count=0;
+    do {
+      for (unsigned int i=0; i< n; ++i) {
+        xyzrs[i].set_coordinates( algebra::random_vector_in_box(bb));
+      }
+      try {
+        mc->optimize(100);
+      } catch (const InvalidStateException &e) {
+        ++trial_count;
+        if (trial_count==10) {
+          IMP_FAILURE("Unable to simplify protein for some reason. "
+                      << " Please send us your input.",
+                      ValueException);
+        }
+        continue;
+      }
+      break;
+    } while (true);
   em::MRCReaderWriter rw;
   em::write_map(ccr->get_model_dens_map(), "final.mrc", rw);
   los->write("final.py");
