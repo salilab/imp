@@ -126,13 +126,17 @@ Model::~Model()
 
 IMP_LIST_IMPL(Model, Restraint, restraint, Restraint*,
               Restraints,
-              {obj->set_model(this);
+              {IMP_INTERNAL_CHECK(cur_stage_== NOT_EVALUATING,
+           "The set of restraints cannot be changed during evaluation.");
+                obj->set_model(this);
                 first_incremental_=true;},,
               {obj->set_model(NULL);});
 
 IMP_LIST_IMPL(Model, ScoreState, score_state, ScoreState*,
               ScoreStates,
-              {obj->set_model(this);},,
+              {IMP_INTERNAL_CHECK(cur_stage_== NOT_EVALUATING,
+           "The set of score states cannot be changed during evaluation.");
+                obj->set_model(this);},,
               {obj->set_model(NULL);});
 
 
@@ -309,6 +313,37 @@ namespace {
 
 Float Model::evaluate(bool calc_derivs)
 {
+
+  // validate values
+  {
+    std::string message;
+    for (ParticleIterator it= particles_begin();
+         it != particles_end(); ++it) {
+      Particle *p= *it;
+      for (Particle::FloatKeyIterator kit= p->float_keys_begin();
+           kit != p->float_keys_end(); ++kit) {
+        double d= p->get_value(*kit);
+        if (is_nan(d) || std::abs(d) > std::numeric_limits<double>::max()) {
+          IMP_IF_CHECK(USAGE) {
+            std::ostringstream oss;
+            oss << message << "Particle " << p->get_name()
+                << " attribute " << *kit << " has derivative of "
+                << d << std::endl;
+            message= oss.str();
+          }
+          IMP_IF_CHECK(NONE) {
+            message= "Bad particle value";
+          }
+        }
+      }
+    }
+    if (!message.empty()) {
+      throw InvalidStateException(message.c_str());
+    }
+  }
+
+
+
   // make sure stage is restored on an exception
   SetIt<Stage, NOT_EVALUATING> reset(&cur_stage_);
   IMP_OBJECT_LOG;
@@ -375,6 +410,34 @@ Float Model::evaluate(bool calc_derivs)
   }
 
   after_evaluate(calc_derivs);
+
+  // validate derivatives
+  {
+    std::string message;
+    for (ParticleIterator it= particles_begin();
+         it != particles_end(); ++it) {
+      Particle *p= *it;
+      for (Particle::FloatKeyIterator kit= p->float_keys_begin();
+           kit != p->float_keys_end(); ++kit) {
+        double d= p->get_derivative(*kit);
+        if (is_nan(d) || std::abs(d) > std::numeric_limits<double>::max()) {
+          IMP_IF_CHECK(USAGE) {
+            std::ostringstream oss;
+            oss << message << "Particle " << p->get_name()
+                << " attribute " << *kit << " has derivative of "
+                << d << std::endl;
+            message= oss.str();
+          }
+          IMP_IF_CHECK(NONE) {
+            message= "Bad particle derivative";
+          }
+        }
+      }
+    }
+    if (!message.empty()) {
+      throw InvalidStateException(message.c_str());
+    }
+  }
 
   IMP_LOG(TERSE, "End Model::evaluate. Final score: " << score << std::endl);
   cur_stage_=NOT_EVALUATING;

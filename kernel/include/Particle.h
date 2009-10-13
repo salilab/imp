@@ -461,11 +461,18 @@ inline void Particle::add_to_derivative(FloatKey name, Float value,
                                         const DerivativeAccumulator &da)
 {
   IMP_CHECK_ACTIVE;
-  IMP_INTERNAL_CHECK(!is_nan(value), "Can't add NaN to derivative in particle "
-             << *this);
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    if (is_nan(value)) {
+      std::string message
+        =std::string("Can't add NaN to derivative in particle ")+
+        get_name();
+      internal::assert_fail(message.c_str());
+      throw InvalidStateException(message.c_str());
+    }
+  }
   IMP_INTERNAL_CHECK(has_attribute(name), "Particle " << get_name()
              << " does not have attribute " << name);
-  IMP_IF_CHECK(USAGE) { assert_can_change_derivatives();}
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) { assert_can_change_derivatives();}
   IMP_INTERNAL_CHECK(name.get_index() < ps_->derivatives_.get_length(),
              "Something is wrong with derivative table.");
   ps_->derivatives_.set(name.get_index(),
