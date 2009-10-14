@@ -35,7 +35,8 @@ def check_tokens(scan, filename, header, errors):
         check_header_start_end(scan, filename, errors)
 
 def check_comment_header(scan, filename, errors):
-    if len(scan) < 1 or scan[0][0] != token.Comment:
+    if len(scan) < 1 or scan[0][0] not in (token.Comment,
+                                           token.Comment.Multiline):
         errors.append('%s:1: First line should be a comment ' % filename + \
                       'with a copyright notice and a description of the file')
 
@@ -56,7 +57,7 @@ def have_header_guard(scan):
            and scan[6][1].startswith('define') \
            and scan[-3][0] == token.Comment.Preproc \
            and scan[-3][1].startswith('endif') \
-           and scan[-2][0] == token.Comment
+           and scan[-2][0] in (token.Comment, token.Comment.Multiline)
 
 def header_guard_ok(scan, guard_prefix, guard_suffix):
     """Make sure the guard has the correct prefix and suffix, and is consistent
