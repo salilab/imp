@@ -91,10 +91,12 @@ def file_matches_re(pathname, excludes):
 
 def get_all_files():
     modfiles = []
-    excludes = ['\.\/kernel\/pyext\/IMP_wrap\.[h|cc]',
+    excludes = ['\.\/kernel\/pyext\/patched_wrap\.[h|cc]',
+                '\.\/kernel\/pyext\/wrap\.[h|cc]',
                 '\.\/kernel\/pyext\/IMP\.py',
                 '\.\/kernel\/include\/internal\/config\.h',
-                '\.\/modules\/\w+\/pyext\/\w+_wrap\.[h|cc]',
+                '\.\/modules\/\w+\/pyext\/patched_wrap\.[h|cc]',
+                '\.\/modules\/\w+\/pyext\/wrap\.[h|cc]',
                 '\.\/modules\/\w+\/pyext\/IMP\.\w+\.py']
     excludes = [re.compile(x) for x in excludes]
     for root, dirs, files in os.walk('.'):
