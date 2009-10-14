@@ -133,8 +133,9 @@ public:
     p->add_attribute(get_index_key(), index);
     p->add_attribute(get_insertion_code_key(), insertion_code);
     // insertion code 32 is for space
-    Hierarchy::setup_particle(p,
-                     Hierarchy::UNKNOWN);
+    if (!Hierarchy::particle_is_instance(p)) {
+      Hierarchy::setup_particle(p);
+    }
     Residue ret(p);
     ret.set_residue_type(t);
     return ret;
@@ -161,6 +162,20 @@ public:
   //! Update the stored ResidueType and the atom::Hierarchy::Name.
   void set_residue_type(ResidueType t);
 
+  bool get_is_protein() const {
+    return get_residue_type().get_index() < ADE.get_index();
+  }
+
+  bool get_is_dna() const {
+    return get_residue_type().get_index() >= DADE.get_index()
+      && get_residue_type().get_index() <= DTHY.get_index();
+  }
+
+  bool get_is_rna() const {
+    return get_residue_type().get_index() >= ADE.get_index()
+      && get_residue_type().get_index() < DADE.get_index();
+  }
+
   //! The residues index in the chain
   IMP_DECORATOR_GET_SET(index, get_index_key(),
                         Int, Int);
@@ -185,7 +200,23 @@ IMP_OUTPUT_OPERATOR(Residue);
 
 typedef Decorators<Residue, Hierarchies> Residues;
 
+/** \relatesalso Residue */
 IMPATOMEXPORT Chain get_chain(Residue rd);
+
+/** \relatesalso Residue
+
+    Return the residue from the same chain with one
+    higher index, or Residue().
+
+    \note Currently, this function only works if
+    the parent of rd is the chain. This should be fixed
+    later. Ask if you need it.
+
+    The return type is Hierarchy since the particle
+    representing the next residue might not
+    be a Residue particle.
+ */
+IMPATOMEXPORT Hierarchy get_next_residue(Residue rd);
 
 IMPATOM_END_NAMESPACE
 

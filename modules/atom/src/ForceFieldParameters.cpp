@@ -30,7 +30,7 @@ Float ForceFieldParameters::get_epsilon(AtomType atom_type,
 
 void ForceFieldParameters::add_radii(Hierarchy mhd, FloatKey radius_key) const
 {
-  Particles ps = get_by_type(mhd, Hierarchy::ATOM);
+  Particles ps = get_by_type(mhd, ATOM_TYPE);
   for(unsigned int i=0; i<ps.size(); i++) {
     Float radius = get_radius(Atom(ps[i]).get_atom_type(),
                               get_residue(Atom(ps[i])).get_residue_type());
@@ -67,39 +67,31 @@ Float ForceFieldParameters::get_epsilon(
 
 
 void ForceFieldParameters::add_bonds(Hierarchy mhd) const {
-  add_bonds(mhd, Hierarchy::AMINOACID);
-  add_bonds(mhd, Hierarchy::NUCLEICACID);
-  add_bonds(mhd, Hierarchy::LIGAND);
-}
-
-void ForceFieldParameters::add_bonds(Hierarchy mhd,
-                                     Hierarchy::Type type) const {
-  // get all residues
-  Particles ps = get_by_type(mhd, type);
-  Residue prev_rd;
-  for(unsigned int i=0; i<ps.size(); i++) {
-    Residue rd = Residue::decorate_particle(ps[i]);
-    // add bonds to the current residue
-    add_bonds(rd);
-    // add bond between the residues (if same chain)
-    if(i>0 && get_chain(prev_rd) == get_chain(rd) &&
-       prev_rd.get_index() <= rd.get_index())
-      add_bonds(prev_rd, rd);
-    prev_rd = rd;
+  Hierarchies rs= get_by_type(mhd, RESIDUE_TYPE);
+  for (unsigned int i=0;i < rs.size(); ++i) {
+    add_bonds(rs[i].get_as_residue());
+    Hierarchy rn= get_next_residue(rs[i].get_as_residue());
+    if (rn) {
+      add_bonds(rs[i].get_as_residue(), rn.get_as_residue());
+    }
   }
 }
 
+
 void ForceFieldParameters::add_bonds(Residue rd1, Residue rd2) const {
+  if (!rd1 || !rd2) return; // if they aren't value residues.
   Atom ad1, ad2;
   // connect two residues by C-N bond
-  if(rd1.get_type() == Hierarchy::AMINOACID &&
-     rd2.get_type() == Hierarchy::AMINOACID) {
+  if(rd1.get_is_protein()
+     && rd2.get_is_protein()) {
     ad1 = get_atom(rd1, atom::AT_C);
     ad2 = get_atom(rd2, atom::AT_N);
    }
   // connect two nucleic acids by O3'-P bond
-  if(rd1.get_type() == Hierarchy::NUCLEICACID &&
-     rd2.get_type() == Hierarchy::NUCLEICACID) {
+  if(rd1.get_is_dna() &&
+     rd2.get_is_dna()
+     || rd1.get_is_rna() &&
+     rd2.get_is_rna() ) {
     ad1 = get_atom(rd1, atom::AT_O3p);
     ad2 = get_atom(rd2, atom::AT_P);
   }
@@ -121,6 +113,7 @@ void ForceFieldParameters::add_bonds(Residue rd1, Residue rd2) const {
 }
 
 void ForceFieldParameters::add_bonds(Residue rd) const {
+  if (!rd) return;
   ResidueType type = rd.get_residue_type();
   if(residue_bonds_.find(type) == residue_bonds_.end()) return;
 

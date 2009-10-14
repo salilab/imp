@@ -12,12 +12,10 @@ hs=IMP.Particles()
 # create the molecules
 for i in range(0,10):
     p=IMP.Particle(m)
-    d= IMP.atom.Hierarchy.setup_particle(p,
-       IMP.atom.Hierarchy.PROTEIN)
+    d= IMP.atom.Hierarchy.setup_particle(p)
     for j in range(0,5):
         p=IMP.Particle(m)
-        cd= IMP.atom.Hierarchy.setup_particle(p,
-            IMP.atom.Hierarchy.FRAGMENT)
+        cd= IMP.atom.Fragment.setup_particle(p)
         d.add_child(cd)
         xd= IMP.core.XYZR.setup_particle(p, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(3*i,j,0), 1))
     hs.append(p)

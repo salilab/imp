@@ -28,7 +28,7 @@ SymmetrySampler::SymmetrySampler(Particles *ps,
   ref_[(*ps_)[0]]=algebra::identity_transformation();
   algebra::Vector3Ds ref_positions;
   Particles ps1 =
-    atom::get_by_type((*ps_)[0], atom::Hierarchy::ATOM);
+    atom::get_by_type((*ps_)[0], atom::ATOM_TYPE);
 
   for(Particles::iterator it=ps1.begin();it!=ps1.end();it++) {
    ref_positions.push_back(core::XYZ::decorate_particle(*it).get_coordinates());
@@ -37,7 +37,7 @@ SymmetrySampler::SymmetrySampler(Particles *ps,
   for(unsigned int i=1;i<ps_->size();i++) {
     algebra::Vector3Ds other_positions;
     Particles ps2 =
-      atom::get_by_type((*ps_)[i], atom::Hierarchy::ATOM);
+      atom::get_by_type((*ps_)[i], atom::ATOM_TYPE);
     for(Particles::iterator it=ps2.begin();it!=ps2.end();it++) {
       other_positions.push_back(
          core::XYZ::decorate_particle(*it).get_coordinates());

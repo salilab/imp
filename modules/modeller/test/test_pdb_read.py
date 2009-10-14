@@ -47,7 +47,7 @@ class PDBReadTest(IMP.test.TestCase):
                       self.get_input_file_name('single_protein.pdb'), m)
         #mp= IMP.core.Hierarchy.decorate_particle(p)
         all_atoms= IMP.atom.get_by_type(mp,
-                             IMP.atom.Hierarchy.ATOM)
+                             IMP.atom.ATOM_TYPE)
         self.assertEqual(1221, len(all_atoms),
                          "Wrong number of atoms found in protein")
 

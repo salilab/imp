@@ -46,8 +46,7 @@ public:
     add_required_attributes_for_residue_begin(p, btraits_);
     add_required_attributes_for_residue_end(p, etraits_);
     if (!Hierarchy::particle_is_instance(p)) {
-      Hierarchy::setup_particle(p,
-                     Hierarchy::FRAGMENT);
+      Hierarchy::setup_particle(p);
     }
     return Fragment(p);
   }
@@ -57,8 +56,7 @@ public:
     add_required_attributes_for_residue_begin(p, btraits_);
     add_required_attributes_for_residue_end(p, etraits_);
     if (!Hierarchy::particle_is_instance(p)) {
-      Hierarchy::setup_particle(p,
-                        Hierarchy::FRAGMENT);
+      Hierarchy::setup_particle(p);
     }
     Fragment f(p);
     for (unsigned int i=0; i< o.get_number_of_residue_begins(); ++i) {
@@ -159,6 +157,9 @@ public:
 
 
 typedef Decorators<Fragment, Hierarchies> Fragments;
+
+
+IMP_OUTPUT_OPERATOR(Fragment);
 
 IMPATOM_END_NAMESPACE
 

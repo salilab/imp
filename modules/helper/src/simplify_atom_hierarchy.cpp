@@ -339,8 +339,7 @@ atom::Hierarchy create_simplified(atom::Hierarchy in,
   setup_fragments(frags, leaves);
   // create hierarchy
   atom::Hierarchy ret
-    = atom::Hierarchy::setup_particle(new Particle(in.get_model()),
-                                      atom::Hierarchy::PROTEIN);
+    = atom::Hierarchy::setup_particle(new Particle(in.get_model()));
   for (unsigned int i=0; i< frags.size(); ++i) {
     ret.add_child(frags[i]);
   }
@@ -350,7 +349,7 @@ atom::Hierarchy create_simplified(atom::Hierarchy in,
 
 atom::Hierarchy create_simplified_chain_by_residue(atom::Hierarchy in,
                                                   int res_step) {
-  atom::Hierarchies residues= atom::get_by_type(in,atom::Hierarchy::AMINOACID);
+  atom::Hierarchies residues= atom::get_by_type(in,atom::RESIDUE_TYPE);
   IMP_USAGE_CHECK(residues.size() > 0,
             "Can only simplify a chain with no residues.",
             ValueException);
@@ -392,10 +391,7 @@ atom::Hierarchy create_simplified_chain_by_residue(atom::Hierarchy in,
 
 atom::Hierarchy create_simplified_by_residue(atom::Hierarchy in,
                                              int res_step){
-  IMP_USAGE_CHECK(in.get_type() == atom::Hierarchy::PROTEIN,
-            "Can only simplify proteins at the moment.",
-            ValueException);
-  atom::Hierarchies in_chains= atom::get_by_type(in,atom::Hierarchy::CHAIN);
+  atom::Hierarchies in_chains= atom::get_by_type(in,atom::CHAIN_TYPE);
   atom::Hierarchies out_chains;
   for(atom::Hierarchies::iterator it = in_chains.begin();
       it != in_chains.end();it++) {
@@ -403,8 +399,7 @@ atom::Hierarchy create_simplified_by_residue(atom::Hierarchy in,
   }
   // create hierarchy
   atom::Hierarchy ret
-    = atom::Hierarchy::setup_particle(new Particle(in.get_model()),
-                                      atom::Hierarchy::PROTEIN);
+    = atom::Hierarchy::setup_particle(new Particle(in.get_model()));
   for(atom::Hierarchies::iterator it = out_chains.begin();
       it != out_chains.end();it++) {
     ret.add_child(*it);

@@ -61,7 +61,7 @@ int main() {
   for (int i=0; i< 5; ++i) {
     atom::Hierarchy mhd
       = read_pdb(IMP::get_data_directory()+"/benchmark/small_protein.pdb", m);
-    Particles catoms= get_by_type(mhd, atom::Hierarchy::ATOM);
+    Particles catoms= get_by_type(mhd, atom::ATOM_TYPE);
     IMP_INTERNAL_CHECK(catoms.size() != 0, "What happened to the atoms?");
     atoms.insert(atoms.end(), catoms.begin(), catoms.end());
     ScoreState *ss= create_rigid_body(mhd.get_particle(),

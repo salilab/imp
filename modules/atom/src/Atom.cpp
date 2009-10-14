@@ -238,7 +238,9 @@ NAME_DEF(UNKNOWN);
 
 Atom Atom::setup_particle(Particle *p, AtomType t) {
   p->add_attribute(get_atom_type_key(), t.get_index());
-  Hierarchy::setup_particle(p, Hierarchy::ATOM);
+  if (!Hierarchy::particle_is_instance(p)) {
+    Hierarchy::setup_particle(p);
+  }
   p->add_attribute(get_element_key(), UNKNOWN_ELEMENT);
   Atom ret(p);
   Mass::setup_particle(p, 0);

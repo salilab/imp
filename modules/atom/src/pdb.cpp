@@ -102,12 +102,6 @@ Particle* chain_particle(Model *m, char chain_id)
 
 void set_chain_name(const Hierarchy& hrd, Hierarchy& hcd)
 {
-  if (hrd.get_type() == Hierarchy::AMINOACID)
-    hcd.set_type(Hierarchy::CHAIN);
-  else if (hrd.get_type() == Hierarchy::NUCLEICACID)
-    hcd.set_type(Hierarchy::NUCLEOTIDE);
-  else
-    hcd.set_type(Hierarchy::MOLECULE);
 }
 
 }
@@ -139,7 +133,7 @@ Hierarchy read_pdb(std::istream &in, Model *model,
   Particle* root_p = new Particle(model);
 
   // hierarchy decorator
-  Hierarchy root_d = Hierarchy::setup_particle(root_p, UNIVERSE);
+  Hierarchy root_d = Hierarchy::setup_particle(root_p);
   Particle* cp = NULL;
   Particle* rp = NULL;
 

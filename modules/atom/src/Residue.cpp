@@ -85,16 +85,6 @@ void Residue::show(std::ostream &out) const
 void Residue::set_residue_type(ResidueType t)
 {
   get_particle()->set_value(get_residue_type_key(), t.get_index());
-  if (get_residue_type().get_index() <= TRP.get_index()) {
-    Hierarchy
-      ::set_type(Hierarchy::AMINOACID);
-  } else if (get_residue_type().get_index() <= DTHY.get_index()) {
-    Hierarchy
-      ::set_type(Hierarchy::NUCLEICACID);
-  } else {
-    Hierarchy
-      ::set_type(Hierarchy::LIGAND);
-  }
 }
 
 IntKey Residue::get_index_key() {
@@ -119,11 +109,21 @@ Chain get_chain(Residue rd) {
     if (mhd == Hierarchy()) {
       throw InvalidStateException("Residue is not the child of a chain");
     }
-  } while (mhd.get_type() != Hierarchy::CHAIN &&
-           mhd.get_type() != Hierarchy::NUCLEOTIDE &&
-           mhd.get_type() != Hierarchy::MOLECULE);
+  } while (!mhd.get_as_chain());
   Chain cd(mhd.get_particle());
   return cd;
+}
+
+Hierarchy get_next_residue(Residue rd) {
+  // only handle simple case so far
+  Hierarchy p= rd.get_parent();
+  /*if (!p.get_as_chain()) {
+    IMP_NOT_IMPLEMENTED("get_next_residue() only handles the simple case"
+                        << " so far. Complain about it.");
+                        }*/
+  Chain c= p.get_as_chain();
+  Hierarchy r=get_residue(c, rd.get_index()+1);
+  return r;
 }
 
 IMPATOM_END_NAMESPACE

@@ -64,14 +64,12 @@ Restraint* create_protein(Particle *p,
   double overlap_frac=.2;
   std::pair<int, double> nr= compute_n(volume, resolution, overlap_frac);
   atom::Hierarchy pd
-    =atom::Hierarchy::setup_particle(p,
-                                     atom::Hierarchy::PROTEIN);
+    =atom::Hierarchy::setup_particle(p);
   Particles ps;
   for (int i=0; i< nr.first; ++i) {
     Particle *pc= new Particle(p->get_model());
     atom::Hierarchy pcd
-      =atom::Hierarchy::setup_particle(pc,
-                                       atom::Hierarchy::FRAGMENT);
+      =atom::Fragment::setup_particle(pc);
     pd.add_child(pcd);
     core::XYZR xyzd=core::XYZR::setup_particle(pc);
     xyzd.set_radius(nr.second);
@@ -132,7 +130,7 @@ namespace {
     } else if (atom::Fragment::particle_is_instance(d.get_particle())) {
       nd= atom::Fragment::setup_particle(p, atom::Fragment(d.get_particle()));
     } else {
-      nd=atom::Hierarchy::setup_particle(p, d.get_type());
+      nd=atom::Hierarchy::setup_particle(p);
     }
     using core::XYZ;
     using core::XYZR;

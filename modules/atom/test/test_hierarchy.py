@@ -3,22 +3,18 @@ import IMP
 import IMP.test
 import IMP.atom
 
-ATOM = IMP.atom.Hierarchy.ATOM
-AMINOACID = IMP.atom.Hierarchy.AMINOACID
-UNKNOWN = IMP.atom.Hierarchy.UNKNOWN
-
 def _make_hierarchy_decorators(m, *types):
     decorators = []
     for t in types:
         p = IMP.Particle(m)
-        d = IMP.atom.Hierarchy.setup_particle(p, t)
+        d = t[0].setup_particle(p, t[1])
         decorators.append(d)
     return decorators
 
 def _make_bonded_atoms(m):
-    r1, r2 = _make_hierarchy_decorators(m, AMINOACID, AMINOACID)
-    atoms1 = _make_hierarchy_decorators(m, ATOM, ATOM, ATOM, ATOM)
-    atoms2 = _make_hierarchy_decorators(m, ATOM, ATOM, ATOM, ATOM)
+    r1, r2 = _make_hierarchy_decorators(m, (IMP.atom.Residue, IMP.atom.VAL), (IMP.atom.Residue, IMP.atom.VAL))
+    atoms1 = _make_hierarchy_decorators(m, (IMP.atom.Atom, IMP.atom.AT_C), (IMP.atom.Atom, IMP.atom.AT_C), (IMP.atom.Atom, IMP.atom.AT_C), (IMP.atom.Atom, IMP.atom.AT_C))
+    atoms2 = _make_hierarchy_decorators(m, (IMP.atom.Atom, IMP.atom.AT_C), (IMP.atom.Atom, IMP.atom.AT_C), (IMP.atom.Atom, IMP.atom.AT_C), (IMP.atom.Atom, IMP.atom.AT_C))
     for a in atoms1:
         r1.add_child(a)
     for a in atoms2:
@@ -35,54 +31,25 @@ class HierarchyTests(IMP.test.TestCase):
     def test_get_by_type(self):
         """Check hierarchy get_by_type"""
         m = IMP.Model()
-        r1, r2, a1, a2 = _make_hierarchy_decorators(m, AMINOACID, AMINOACID,
-                                                    ATOM, ATOM)
+        r1, r2, a1, a2 = _make_hierarchy_decorators(m, (IMP.atom.Residue, IMP.atom.VAL), (IMP.atom.Residue, IMP.atom.VAL),
+                                                    (IMP.atom.Atom, IMP.atom.AT_C), (IMP.atom.Atom, IMP.atom.AT_C))
         r1.add_child(a1)
         r1.add_child(a2)
         self.assertEqual(r1, IMP.atom.get_root(a1))
         # Both atoms should be found under r1 (none under r2)
-        self.assertEqual(list(IMP.atom.get_by_type(r1, ATOM)),
+        self.assertEqual(list(IMP.atom.get_by_type(r1, IMP.atom.ATOM_TYPE)),
                          [a1.get_particle(), a2.get_particle()])
-        self.assertEqual(list(IMP.atom.get_by_type(r2, ATOM)), [])
+        self.assertEqual(list(IMP.atom.get_by_type(r2, IMP.atom.ATOM_TYPE)), [])
 
         # Each residue should be found under itself
-        self.assertEqual(list(IMP.atom.get_by_type(r1, AMINOACID)),
+        self.assertEqual(list(IMP.atom.get_by_type(r1, IMP.atom.RESIDUE_TYPE)),
                          [r1.get_particle(),])
-        self.assertEqual(list(IMP.atom.get_by_type(r2, AMINOACID)),
+        self.assertEqual(list(IMP.atom.get_by_type(r2, IMP.atom.RESIDUE_TYPE)),
                          [r2.get_particle(),])
 
         # Neither residue should be found under any atom
-        self.assertEqual(list(IMP.atom.get_by_type(a1, AMINOACID)), [])
-        self.assertEqual(list(IMP.atom.get_by_type(a2, AMINOACID)), [])
-
-    def test_get_add_child(self):
-        """Check hierarchy get_child and add_child"""
-        m = IMP.Model()
-        parent, child = _make_hierarchy_decorators(m, AMINOACID, ATOM)
-        self.assertEqual(parent.add_child(child), 0)
-        self.assertEqual(parent.get_child(0), child)
-        self.assertEqual(child.get_parent(), parent)
-        #self.assertRaises(IndexError, parent.get_child, 1)
-
-        # Cannot put a residue under an atom
-        parent, child = _make_hierarchy_decorators(m, ATOM, AMINOACID)
-        self.assertRaises(ValueError, parent.add_child, child)
-        # Neither parent nor child can be UNKNOWN
-        #parent, child = _make_hierarchy_decorators(m, ATOM, UNKNOWN)
-        #self.assertRaises(ValueError, parent.add_child, child)
-        #parent, child = _make_hierarchy_decorators(m, UNKNOWN, ATOM)
-        #self.assertRaises(ValueError, parent.add_child, child)
-
-    def test_get_set_type(self):
-        """Check hierarchy get_type, get_type_string and set_type"""
-        m = IMP.Model()
-        (d,) = _make_hierarchy_decorators(m, UNKNOWN)
-        #self.assertEqual(d.get_type(), UNKNOWN)
-        for (typ, string) in ((ATOM, 'atom'), (AMINOACID, 'amino acid'),
-                              (UNKNOWN, 'unknown')):
-            d.set_type(typ)
-            #self.assertEqual(d.get_type(), typ)
-            #self.assertEqual(d.get_type().get_string(), string)
+        self.assertEqual(list(IMP.atom.get_by_type(a1, IMP.atom.RESIDUE_TYPE)), [])
+        self.assertEqual(list(IMP.atom.get_by_type(a2, IMP.atom.RESIDUE_TYPE)), [])
 
     def test_get_internal_bonds(self):
         """Check hierarchy get_internal_bonds"""
