@@ -49,7 +49,6 @@ protected:
   String get_force_field_atom_type(AtomType atom_type,
                                    ResidueType residue_type) const;
   void add_bonds(Residue rd) const;
-  void add_bonds(Hierarchy mhd, Hierarchy::Type type) const;
   void add_bonds(Residue rd1, Residue rd2) const;
 
 

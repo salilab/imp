@@ -2,6 +2,8 @@
 
 \par Week of October 8
 
+- IMP::atom::Hierarchy has been modifier to get rid of the IMP::atom::Hierarchy::Type. Instead, all types are contained in the decorators. IMP::atom::get_by_type() was also updated to reflect this.
+
 - IMP_check() and IMP_assert() have been
 replaced with IMP_USAGE_CHECK() and IMP_INTERNAL_CHECK()
 respectively. Hopefully this makes it clearer when to use

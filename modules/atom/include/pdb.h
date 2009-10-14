@@ -23,12 +23,14 @@ IMPATOM_BEGIN_NAMESPACE
 
     Reading/writing PDBs produces/expects a Hierarchy that looks as follows:
     - One Atom per ATOM or HETATM record in the PDB.
-    - All Atom particles have a parent which is a Residue with Hierarchy::Type
-    either Hierarchy::LIGAND, Hierarchy::AMINOACID or Hierarchy::NUCLEICACID
-    as appropriate.
+    - All Atom particles have a parent which is a Residue.
     - All Residue particles have a parent which is a Chain.
 
     Waters are currently dropped if they are ATOM records. This can be fixed.
+
+    The read_pdb() functions should successfully parse all valid pdb files. It
+    can produce warnings on files which are not valid. It will attempt to read
+    such files, but all bets are off.
 
     Set the IMP::LogLevel to IMP::VERBOSE to see details of parse errors.
 */

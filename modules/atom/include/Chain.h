@@ -25,8 +25,7 @@ public:
   static Chain setup_particle(Particle *p, char id) {
     p->add_attribute(get_id_key(), id);
     if (!Hierarchy::particle_is_instance(p)) {
-      Hierarchy::setup_particle(p,
-                     Hierarchy::CHAIN);
+      Hierarchy::setup_particle(p);
     }
     return Chain(p);
   }
@@ -34,8 +33,7 @@ public:
   static Chain setup_particle(Particle *p, Chain o) {
     p->add_attribute(get_id_key(), o.get_id());
     if (!Hierarchy::particle_is_instance(p)) {
-      Hierarchy::setup_particle(p,
-                     Hierarchy::CHAIN);
+      Hierarchy::setup_particle(p);
     }
     return Chain(p);
   }
@@ -61,6 +59,8 @@ public:
 };
 
 typedef Decorators<Chain, Hierarchies> Chains;
+
+IMP_OUTPUT_OPERATOR(Chain);
 
 IMPATOM_END_NAMESPACE
 

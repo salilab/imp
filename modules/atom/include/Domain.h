@@ -32,8 +32,7 @@ public:
     p->add_attribute(get_data().begin, b);
     p->add_attribute(get_data().end, e);
     if (!Hierarchy::particle_is_instance(p)) {
-      Hierarchy::setup_particle(p,
-                     Hierarchy::FRAGMENT);
+      Hierarchy::setup_particle(p);
     }
     return Domain(p);
   }
@@ -43,8 +42,7 @@ public:
     p->add_attribute(get_data().begin, o.get_begin_index());
     p->add_attribute(get_data().end, o.get_end_index());
     if (!Hierarchy::particle_is_instance(p)) {
-      Hierarchy::setup_particle(p,
-               Hierarchy::FRAGMENT);
+      Hierarchy::setup_particle(p);
     }
     return Domain(p);
   }
@@ -71,6 +69,8 @@ public:
 };
 
 typedef Decorators<Domain, Hierarchies> Domains;
+
+IMP_OUTPUT_OPERATOR(Domain);
 
 IMPATOM_END_NAMESPACE
 

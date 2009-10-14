@@ -439,17 +439,14 @@ def read_pdb(name, model, special_patches=None):
     pdb = modeller.scripts.complete_pdb(e, name,
                                         special_patches=special_patches)
     pp= IMP.Particle(model)
-    hpp= IMP.atom.Hierarchy.setup_particle(pp,
-                    IMP.atom.Hierarchy.PROTEIN)
+    hpp= IMP.atom.Hierarchy.setup_particle(pp)
     pp.set_name(name)
     atoms={}
     for chain in pdb.chains:
         cp=IMP.Particle(model)
-        hcp= IMP.atom.Hierarchy.setup_particle(cp,
-                                   IMP.atom.Hierarchy.FRAGMENT)
+        hcp= IMP.atom.Chain.setup_particle(cp, chain.name)
         # We don't really know the type yet
         hpp.add_child(hcp)
-        cp.set_name(chain.name)
         for residue in chain.residues:
             rp= _copy_residue(residue, model)
             hrp= IMP.atom.Hierarchy.decorate_particle(rp)
@@ -460,13 +457,5 @@ def read_pdb(name, model, special_patches=None):
                 hrp.add_child(hap)
                 atoms[atom.index]=ap
             lastres=hrp
-        # set the type for real
-        if lastres.get_type() == IMP.atom.Hierarchy.AMINOACID:
-            hcp.set_type(IMP.atom.Hierarchy.CHAIN)
-        elif lastres.get_type() ==\
-                IMP.atom.Hierarchy.NUCLEICACID:
-            hcp.set_type(IMP.atom.Hierarchy.NUCLEOTIDE)
-        else:
-            hcp.set_type(IMP.atom.Hierarchy.MOLECULE)
     _copy_bonds(pdb,atoms, model)
     return hpp

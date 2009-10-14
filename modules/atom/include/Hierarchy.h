@@ -15,6 +15,7 @@
 #include "bond_decorators.h"
 #include <IMP/core/rigid_bodies.h>
 #include "macros.h"
+#include <IMP/core/XYZR.h>
 
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
@@ -22,46 +23,43 @@
 #include <vector>
 #include <deque>
 
+
+#define IMP_GET_AS_DECL(UCName, lcname, CAPSNAME)       \
+  UCName get_as_##lcname() const;
+
+// figure out how to inline
+#define IMP_GET_AS_DEF(UCName, lcname, CAPSNAME)        \
+  UCName Hierarchy::get_as_##lcname() const {           \
+    if (UCName::particle_is_instance(get_particle())) { \
+      return UCName(get_particle());                    \
+    } else {                                            \
+      return UCName();                                  \
+    }                                                   \
+  }
+
+
+// DOMAIN is defined to be 1 by a fedora math header
+#define IMP_FOREACH_HIERARCHY_TYPE(macro)      \
+  macro(Atom, atom, ATOM_TYPE)                 \
+  macro(Residue, residue, RESIDUE_TYPE)        \
+  macro(Chain, chain, CHAIN_TYPE)              \
+  macro(Domain, domain, DOMAIN_TYPE)           \
+  macro(Fragment, fragment, FRAGMENT_TYPE)     \
+  macro(core::XYZ, xyz, XYZ_TYPE)              \
+  macro(core::XYZR, xyzr, XYZR_TYPE)           \
+  macro(Mass, mass, MASS_TYPE)
+
+#define IMP_CAPS_NAME(UCName, lcname, CAPSNAME) \
+  CAPSNAME,
+
+
 IMPATOM_BEGIN_NAMESPACE
-
-/** \name Hierarchy Types
-    The various valid levels for the atom Hierarchy:
-    - ATOM (0) an atom
-    - RESIDUE (1) a residue
-    - NUCLEICACID (2) a nucleic acid
-    - FRAGMENT (3) an arbitrary fragment
-    - DOMAIN (4) a chain of a protein
-    - CHAIN (5) a chain of a protein
-    - PROTEIN (6) a protein
-    - NUCLEOTIDE (7) a nucleotide
-    - MOLECULE (8) an arbitrary molecule
-    - ASSEMBLY (9) an assembly
-    - COLLECTION (10) a group of assemblies
-    - UNIVERSE is all the molecules in existance at once.
-    - UNIVERSES is a set of universes
-    - TRAJECTORY is an ordered set of UNIVERSES
-
-    \note These values may change.
-    @{
-   */
-IMP_DECLARE_CONTROLLED_KEY_TYPE(HierarchyType, IMP_HIERARCHY_TYPE_INDEX);
-
-IMPATOMEXPORT extern const HierarchyType HIERARCHY_UNKNOWN;
-IMPATOMEXPORT extern const HierarchyType ATOM;
-IMPATOMEXPORT extern const HierarchyType AMINOACID;
-IMPATOMEXPORT extern const HierarchyType NUCLEICACID;
-IMPATOMEXPORT extern const HierarchyType LIGAND;
-IMPATOMEXPORT extern const HierarchyType FRAGMENT;
-IMPATOMEXPORT extern const HierarchyType CHAIN;
-IMPATOMEXPORT extern const HierarchyType PROTEIN;
-IMPATOMEXPORT extern const HierarchyType NUCLEOTIDE;
-IMPATOMEXPORT extern const HierarchyType MOLECULE;
-IMPATOMEXPORT extern const HierarchyType ASSEMBLY;
-IMPATOMEXPORT extern const HierarchyType COLLECTION;
-IMPATOMEXPORT extern const HierarchyType UNIVERSE;
-IMPATOMEXPORT extern const HierarchyType UNIVERSES;
-IMPATOMEXPORT extern const HierarchyType TRAJECTORY;
-/** @} */
+class Atom;
+class Residue;
+class Domain;
+class Fragment;
+class Chain;
+class Mass;
 
 class Hierarchy;
 /** A collecton of Hierarchies. */
@@ -71,41 +69,24 @@ typedef Decorators<Hierarchy,
 
 
 //! A decorator for helping deal with a hierarchy of molecules
-/** A hierarchy can have any tree structure as long as child nodes
-    are valid subtypes of their parents (for example, an ATOM can be
-    a child of a RESIDUE or CHAIN or PROTEIN, but a RESIDUE can't
-    be a child of an ATOM).
-
-    Layers of the hierarchy are associated with other decorators as
-    follows:
-    - ATOM: Atom
-    - AMINOACID, NUCLEICACID, LIGAND: Residue
-    - FRAGMENT: Fragment
-    - CHAIN: Chain
-    - PROTEIN: no decorator, but the protein name should be stored as
-    the Particle::get_name().
-
-    A hierarchy is considered "valid" if:
-    - all the leaves have coordinates (or none of the nodes have
-    coordinates) and all leaves have mass
-    - for any protein in the Hierarchy, each residue in the protein
-    either has a Residue particle, or is part of a leaf Domain or
-    Fragment
-    - all bounding spheres in the hierachy bound their subtrees
-    - Any atom that is part of a protein or DNA or RNA has a residue
-    as a parent.
-    - All Hierarchy nodes which have associated decorators are set
-    up for the corresponding decorator.
+/** A hierarchy can have any tree structure as long as:
+    - the type of the parent makes sense for the child: eg a Residue
+    cannot be the parent of a Chain.
+    - the leaves always have coordinates and mass
+    - all particles in hierarchy are from the same model
+    - any Atom that is part of a protein, DNA or RNA has a Residue
+    for as parent
 
     The get_is_valid() method checks some of these.
 
+    A number of decorator types are associated with the Hierarchy.
+    We provide a get_as_x() function for each such decorator which
+    returns either X() (a null type) if the node is not a particle
+    of type x, or an X decorator wrapping the current particle if
+    it is.
+
     \ingroup hierarchy
     \ingroup decorators
-    \see Atom
-    \see Chain
-    \see Domain
-    \see Fragment
-    \see Residue
     \see write_pdb
     \see read_pdb
  */
@@ -114,26 +95,6 @@ class IMPATOMEXPORT Hierarchy:
 {
   typedef ::IMP::core::Hierarchy P;
 public:
-
-  typedef HierarchyType Type;
-
-#ifndef IMP_DOXYGEN
-  static const HierarchyType UNKNOWN;
-  static const HierarchyType ATOM;
-  static const HierarchyType AMINOACID;
-  static const HierarchyType NUCLEICACID;
-  static const HierarchyType LIGAND;
-  static const HierarchyType FRAGMENT;
-  static const HierarchyType CHAIN;
-  static const HierarchyType PROTEIN;
-  static const HierarchyType NUCLEOTIDE;
-  static const HierarchyType MOLECULE;
-  static const HierarchyType ASSEMBLY;
-  static const HierarchyType COLLECTION;
-  static const HierarchyType UNIVERSE;
-  static const HierarchyType UNIVERSES;
-  static const HierarchyType TRAJECTORY;
-#endif
 
   // swig gets unhappy if it is private
   IMP_NO_DOXYGEN(typedef Hierarchy This;)
@@ -162,41 +123,25 @@ public:
   //! cast a particle which has the needed attributes
   static Hierarchy decorate_particle(Particle *p) {
     IMP::core::Hierarchy::decorate_particle(p, get_traits());
-    IMP_USAGE_CHECK(p->has_attribute(get_type_key()),
-                    "Particle is missing attribute "
-              << get_type_key(),
-              InvalidStateException);
     return Hierarchy(p);
   }
 
   /** Create a Hierarchy of level t by adding the needed
       attributes. */
-  static Hierarchy setup_particle(Particle *p,
-                                  Type t= UNKNOWN) {
+  static Hierarchy setup_particle(Particle *p) {
     IMP::core::Hierarchy::setup_particle(p, get_traits());
-    p->add_attribute(get_type_key(), t.get_index());
     return Hierarchy(p);
   }
 
   /** Check if the particle has the needed attributes for a
    cast to succeed */
   static bool particle_is_instance(Particle *p){
-    return P::particle_is_instance(p, get_traits())
-      && p->has_attribute(get_type_key());
+    return P::particle_is_instance(p, get_traits());
   }
 
 
   /** Write information about this decorator to out.*/
   void show(std::ostream &out=std::cout) const;
-
-
-
-  Type get_type() const {
-    return Type(get_particle()->get_value(get_type_key()));
-  }
-  void set_type(Type t) {
-    get_particle()->set_value(get_type_key(), t.get_index());
-  }
 
   //! Return true if the hierarchy is valid.
   /** Print information about the hierarchy if print_info is
@@ -210,14 +155,12 @@ public:
       Type enum list.
    */
   unsigned int add_child(Hierarchy o) {
-    IMP_USAGE_CHECK(get_type() > o.get_type(),
-              "Parent type must subsume child type",
-              InvalidStateException);
-    IMP_USAGE_CHECK(get_type() != UNKNOWN, "Parent must have known type",
-              InvalidStateException);
-    IMP_USAGE_CHECK(o.get_type() != UNKNOWN, "Child must have known type",
-              InvalidStateException);
-    return P::add_child(o);
+    IMP_USAGE_CHECK(o.get_particle()->get_model()
+                    == get_particle()->get_model(),
+                    "All particles in hierarchy must have same Model",
+                    ValueException);
+    unsigned int ret= P::add_child(o);
+    return ret;
   }
 
   //! Add a child and check that the types are appropriate
@@ -225,13 +168,10 @@ public:
       Type enum list.
    */
   void add_child_at(Hierarchy o, unsigned int i) {
-    IMP_USAGE_CHECK(get_type() > o.get_type(),
-              "Parent type must subsume child type",
-              InvalidStateException);
-    IMP_USAGE_CHECK(get_type() != UNKNOWN, "Parent must have known type",
-              InvalidStateException);
-    IMP_USAGE_CHECK(o.get_type() != UNKNOWN, "Child must have known type",
-              InvalidStateException);
+    IMP_USAGE_CHECK(o.get_particle()->get_model()
+                    == get_particle()->get_model(),
+                    "All particles in hierarchy must have same Model",
+                    ValueException);
     P::add_child_at(o, i);
   }
 
@@ -245,14 +185,6 @@ public:
     return Hierarchies(IMP::core::Hierarchy::get_children());
   }
 
-  void steal_children(Hierarchy o) {
-    while (o.get_number_of_children() != 0) {
-      Hierarchy c= o.get_child(o.get_number_of_children()-1);
-      o.remove_child(c);
-      add_child(c);
-    }
-  }
-
   /** Get the parent particle. */
   Hierarchy get_parent() const {
     IMP::core::Hierarchy hd= P::get_parent();
@@ -263,8 +195,18 @@ public:
     }
   }
 
-  /** Gets the key used to store the type. */
-  static IntKey get_type_key() ;
+  /** \name Methods to get associated decorators
+
+      We provide a number of helper methods to get associated
+      decorators for the current node in the hierarchy. As an
+      example, if the particle decorated by this decorator is
+      a Residue particle, then get_as_residue() return
+      Residue(get_particle()), if not it returns Residue().
+      @{
+   */
+  IMP_FOREACH_HIERARCHY_TYPE(IMP_GET_AS_DECL)
+  /** @} */
+
   //! Get the molecular hierarchy HierararchyTraits.
   static const IMP::core::HierarchyTraits& get_traits();
 
@@ -272,6 +214,9 @@ public:
 
 IMP_OUTPUT_OPERATOR(Hierarchy);
 
+enum GetByType {
+  IMP_FOREACH_HIERARCHY_TYPE(IMP_CAPS_NAME)
+};
 
 /**
    Gather all the molecular particles of a certain level
@@ -281,10 +226,8 @@ IMP_OUTPUT_OPERATOR(Hierarchy);
 */
 IMPATOMEXPORT Hierarchies
 get_by_type(Hierarchy mhd,
-            Hierarchy::Type t);
+            GetByType t);
 
-
-class Residue;
 
 //! Get the residue with the specified index
 /** Find the leaf containing the residue with the appropriate index.
@@ -344,7 +287,5 @@ inline void show(Hierarchy h, std::ostream &out=std::cout) {
 }
 
 IMPATOM_END_NAMESPACE
-
-
 
 #endif  /* IMPATOM_HIERARCHY_H */
