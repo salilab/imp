@@ -177,7 +177,7 @@ IMPEXPORT void assert_fail(const char *msg);
           << "  File \"" << __FILE__ << "\", line " << __LINE__ \
           << std::endl;                                         \
       IMP::internal::assert_fail(oss.str().c_str());            \
-      throw ErrorException(oss.str().c_str());                  \
+      throw IMP::ErrorException(oss.str().c_str());             \
     }                                                           \
   } while(false)
 #else
@@ -204,7 +204,7 @@ IMPEXPORT void assert_fail(const char *msg);
       std::ostringstream oss;                                   \
       oss << message << std::endl;                              \
       IMP::internal::assert_fail(oss.str().c_str());            \
-      throw ValueException(oss.str().c_str());                  \
+      throw IMP::ValueException(oss.str().c_str());             \
     }                                                           \
   } while (false)
 #else
