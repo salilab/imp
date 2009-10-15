@@ -57,10 +57,18 @@ ParticlesList SingletonScoreState::get_interacting_particles() const {
   return ret0;
 }
 
-ParticlesTemp SingletonScoreState::get_used_particles() const {
+ParticlesTemp SingletonScoreState::get_read_particles() const {
   ParticlesTemp ret0, ret1;
-  if (f_) ret0= IMP::internal::get_used_particles(v_, f_.get());
-  if (af_) ret1= IMP::internal::get_used_particles(v_, af_.get());
+  if (f_) ret0= IMP::internal::get_read_particles(v_, f_.get());
+  if (af_) ret1= IMP::internal::get_read_particles(v_, af_.get());
+  ret0.insert(ret0.end(), ret1.begin(), ret1.end());
+  return ret0;
+}
+
+ParticlesTemp SingletonScoreState::get_write_particles() const {
+  ParticlesTemp ret0, ret1;
+  if (f_) ret0= IMP::internal::get_write_particles(v_, f_.get());
+  if (af_) ret1= IMP::internal::get_write_particles(v_, af_.get());
   ret0.insert(ret0.end(), ret1.begin(), ret1.end());
   return ret0;
 }

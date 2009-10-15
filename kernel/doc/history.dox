@@ -2,6 +2,8 @@
 
 \par Week of October 8
 
+- IMP::Interaction was modified to split IMP::interaction::get_used_particles() into IMP::interaction::get_read_particles() and IMP::interaction::get_write_particles(). This makes it possible to check for IMP::ScoreState objects being in an inconsistent order (so that the input to one is updated after it is read). Later, we will be able to automatically order the score states ensure that there are no problems.
+
 - IMP::atom::Hierarchy has been modifier to get rid of the IMP::atom::Hierarchy::Type. Instead, all types are contained in the decorators. IMP::atom::get_by_type() was also updated to reflect this.
 
 - IMP_check() and IMP_assert() have been

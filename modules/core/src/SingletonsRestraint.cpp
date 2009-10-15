@@ -55,11 +55,16 @@ ParticlesList SingletonsRestraint::get_interacting_particles() const
   return ret0;
 }
 
-ParticlesTemp SingletonsRestraint::get_used_particles() const
+ParticlesTemp SingletonsRestraint::get_read_particles() const
 {
   IMP_OBJECT_LOG;
-  ParticlesTemp ret0= IMP::internal::get_used_particles(pc_, ss_.get());
+  ParticlesTemp ret0= IMP::internal::get_read_particles(pc_, ss_.get());
   return ret0;
+}
+
+ParticlesTemp SingletonsRestraint::get_write_particles() const
+{
+  return get_read_particles();
 }
 
 namespace {

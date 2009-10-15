@@ -100,8 +100,12 @@ ParticlesList MaximumChangeScoreState::get_interacting_particles() const {
   return ParticlesList();
 }
 
-ParticlesTemp MaximumChangeScoreState::get_used_particles() const {
+ParticlesTemp MaximumChangeScoreState::get_read_particles() const {
   return ParticlesTemp(pc_->particles_begin(), pc_->particles_end());
+}
+
+ParticlesTemp MaximumChangeScoreState::get_write_particles() const {
+  return ParticlesTemp();
 }
 
 void MaximumChangeScoreState::show(std::ostream &out) const

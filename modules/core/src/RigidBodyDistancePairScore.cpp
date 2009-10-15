@@ -62,7 +62,7 @@ RigidBodyDistancePairScore::get_interacting_particles(Particle *a,
 }
 
 ParticlesTemp
-RigidBodyDistancePairScore::get_used_particles(Particle *a,
+RigidBodyDistancePairScore::get_write_particles(Particle *a,
                                                Particle *b) const {
   ParticlesTemp ret(2);
   ret[0]=a;
@@ -74,6 +74,11 @@ RigidBodyDistancePairScore::get_used_particles(Particle *a,
   return ret;
 }
 
+ParticlesTemp
+RigidBodyDistancePairScore::get_read_particles(Particle *a,
+                                                Particle *b) const {
+  return get_write_particles(a,b);
+}
 
 
 

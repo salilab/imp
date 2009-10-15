@@ -24,16 +24,20 @@ void CoverBond::apply(Particle *p) const {
 }
 
 ParticlesList CoverBond::get_interacting_particles(Particle *p) const {
-  return ParticlesList(1, get_used_particles(p));
+  return ParticlesList(1, get_read_particles(p));
 }
 
-ParticlesTemp CoverBond::get_used_particles(Particle *p) const {
+ParticlesTemp CoverBond::get_read_particles(Particle *p) const {
   Bond bd(p);
   ParticlesTemp ret(3);
   ret[0]=p;
   ret[1]= bd.get_bonded(0);
   ret[2]= bd.get_bonded(1);
   return ret;
+}
+
+ParticlesTemp CoverBond::get_write_particles(Particle *p) const {
+  return ParticlesTemp(1,p);
 }
 
 

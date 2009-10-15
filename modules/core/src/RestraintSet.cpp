@@ -73,12 +73,23 @@ ParticlesList RestraintSet::get_interacting_particles() const
   return ret;
 }
 
-ParticlesTemp RestraintSet::get_used_particles() const
+ParticlesTemp RestraintSet::get_read_particles() const
 {
   ParticlesTemp ret;
   for (RestraintConstIterator it= restraints_begin();
        it != restraints_end(); ++it) {
-    ParticlesTemp c= (*it)->get_used_particles();
+    ParticlesTemp c= (*it)->get_read_particles();
+    ret.insert(ret.end(), c.begin(), c.end());
+  }
+  return ret;
+}
+
+ParticlesTemp RestraintSet::get_write_particles() const
+{
+  ParticlesTemp ret;
+  for (RestraintConstIterator it= restraints_begin();
+       it != restraints_end(); ++it) {
+    ParticlesTemp c= (*it)->get_write_particles();
     ret.insert(ret.end(), c.begin(), c.end());
   }
   return ret;

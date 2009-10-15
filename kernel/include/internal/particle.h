@@ -20,10 +20,16 @@ IMP_END_NAMESPACE
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 
-struct IMPEXPORT LockedParticleException{
+struct IMPEXPORT ReadLockedParticleException{
   const Particle *p_;
-  LockedParticleException(const Particle *p);
-  virtual ~LockedParticleException() throw();
+  ReadLockedParticleException(const Particle *p);
+  virtual ~ReadLockedParticleException() throw();
+};
+
+struct IMPEXPORT WriteLockedParticleException{
+  const Particle *p_;
+  WriteLockedParticleException(const Particle *p);
+  virtual ~WriteLockedParticleException() throw();
 };
 
 template <class Key, class Particle>
@@ -71,11 +77,13 @@ struct ParticleKeyIterator {
 
 
 struct ReadLock;
+struct WriteLock;
 
 struct IMPEXPORT ParticleStorage {
   ParticleStorage(): shadow_(NULL), dirty_(false){
 #if IMP_BUILD < IMP_FAST
     read_locked_=false;
+    write_locked_=false;
 #endif
   }
   ~ParticleStorage();
@@ -114,8 +122,9 @@ struct IMPEXPORT ParticleStorage {
   bool dirty_;
 
 #if IMP_BUILD < IMP_FAST
-  // for testing get_used_particles()
+  // for testing get_read/written_particles()
   bool read_locked_;
+  bool write_locked_;
 #endif
 };
 

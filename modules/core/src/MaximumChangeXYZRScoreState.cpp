@@ -121,8 +121,12 @@ ParticlesList MaximumChangeXYZRScoreState::get_interacting_particles() const {
   return ParticlesList();
 }
 
-ParticlesTemp MaximumChangeXYZRScoreState::get_used_particles() const {
+ParticlesTemp MaximumChangeXYZRScoreState::get_read_particles() const {
   return ParticlesTemp(pc_->particles_begin(), pc_->particles_end());
+}
+
+ParticlesTemp MaximumChangeXYZRScoreState::get_write_particles() const {
+  return ParticlesTemp();
 }
 
 void MaximumChangeXYZRScoreState::show(std::ostream &out) const

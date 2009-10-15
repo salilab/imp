@@ -147,7 +147,7 @@ ParticlesList ClosePairsScoreState::get_interacting_particles() const {
   return ParticlesList();
 }
 
-ParticlesTemp ClosePairsScoreState::get_used_particles() const {
+ParticlesTemp ClosePairsScoreState::get_read_particles() const {
   ParticlesTemp ret(f_->get_used_particles(in_));
   ParticlePairsTemp all_pairs;
   for (unsigned int i=0; i< ret.size(); ++i) {
@@ -161,6 +161,10 @@ ParticlesTemp ClosePairsScoreState::get_used_particles() const {
     ret.insert(ret.end(), cur.begin(), cur.end());
   }
   return ret;
+}
+
+ParticlesTemp ClosePairsScoreState::get_write_particles() const {
+  return ParticlesTemp();
 }
 
 

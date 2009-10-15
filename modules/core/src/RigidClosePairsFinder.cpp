@@ -162,7 +162,7 @@ namespace {
     for (unsigned int i=0; i< ret.size(); ++i) {
       if (RigidBody::particle_is_instance(ret[i])) {
         RigidBody d(ret[i]);
-        ParticlesTemp m= d.get_members();
+        RigidMembers m= d.get_members();
         members.insert(members.end(), m.begin(), m.end());
       }
     }

@@ -35,16 +35,21 @@ void DerivativesFromRefined
 
 ParticlesList
 DerivativesFromRefined::get_interacting_particles(Particle*p) const {
-  return ParticlesList(1, get_used_particles(p));
+  ParticlesTemp pt=get_read_particles(p);
+  pt.push_back(get_write_particles(p)[0]);
+  return ParticlesList(1, pt);
 }
 
 
 ParticlesTemp
-DerivativesFromRefined::get_used_particles(Particle*p) const {
-  ParticlesTemp t(1, p);
+DerivativesFromRefined::get_read_particles(Particle*p) const {
   ParticlesTemp ps = r_->get_refined(p);
-  t.insert(t.end(), ps.begin(), ps.end());
-  return t;
+  return ps;
+}
+
+ParticlesTemp
+DerivativesFromRefined::get_write_particles(Particle*p) const {
+  return ParticlesTemp(1,p);
 }
 
 

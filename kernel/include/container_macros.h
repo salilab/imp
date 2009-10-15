@@ -99,6 +99,8 @@
   /** Set the contents of the container to ps removing all its current
       contents. */                                                      \
 void set_##lcname##s(const PluralData &ps) {                            \
+  /* Bad things can happen if we use a Temp, as things get unreffed
+     before being reffed if they are in both lists */                   \
     clear_##lcname##s();                                                \
     add_##lcname##s(ps);                                                \
   }                                                                     \

@@ -40,6 +40,7 @@ void DiameterRestraint::set_model(Model *m) {
     // make pairs from special generator
     p_= new Particle(m);
     XYZR d= XYZR::setup_particle(p_, dr_);
+    p_->set_name("DiameterRestraint center");
     d.set_coordinates_are_optimized(false);
     core::CoverRefined *cr
       = new core::CoverRefined(
@@ -82,13 +83,17 @@ void DiameterRestraint::show(std::ostream &out) const {
 }
 
 ParticlesList DiameterRestraint::get_interacting_particles() const {
-  return ParticlesList(1, get_used_particles());
+  return ParticlesList(1, get_read_particles());
 }
 
-ParticlesTemp DiameterRestraint::get_used_particles() const {
+ParticlesTemp DiameterRestraint::get_read_particles() const {
   ParticlesTemp t(sc_->particles_begin(), sc_->particles_end());
   t.push_back(p_);
   return t;
+}
+
+ParticlesTemp DiameterRestraint::get_write_particles() const {
+  return get_read_particles();
 }
 
 IMPCORE_END_NAMESPACE

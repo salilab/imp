@@ -71,13 +71,28 @@ LowestRefinedPairScore::get_interacting_particles(Particle *a,
   return f_->get_interacting_particles(r.second.first, r.second.second);
 }
 
-ParticlesTemp LowestRefinedPairScore::get_used_particles(Particle *a,
+ParticlesTemp LowestRefinedPairScore::get_read_particles(Particle *a,
                                                          Particle *b) const {
   Particles ps[2]={get_set(a, r_), get_set(b, r_)};
   ParticlesTemp ret;
   for (unsigned int i=0; i< ps[0].size(); ++i) {
     for (unsigned int j=0; j< ps[1].size(); ++j) {
-      ParticlesTemp cpt= f_->get_used_particles(ps[0][i], ps[1][j]);
+      ParticlesTemp cpt= f_->get_read_particles(ps[0][i], ps[1][j]);
+      ret.insert(ret.end(), cpt.begin(), cpt.end());
+    }
+  }
+  ret.push_back(a);
+  ret.push_back(b);
+  return ret;
+}
+
+ParticlesTemp LowestRefinedPairScore::get_write_particles(Particle *a,
+                                                         Particle *b) const {
+  Particles ps[2]={get_set(a, r_), get_set(b, r_)};
+  ParticlesTemp ret;
+  for (unsigned int i=0; i< ps[0].size(); ++i) {
+    for (unsigned int j=0; j< ps[1].size(); ++j) {
+      ParticlesTemp cpt= f_->get_write_particles(ps[0][i], ps[1][j]);
       ret.insert(ret.end(), cpt.begin(), cpt.end());
     }
   }

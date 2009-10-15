@@ -116,12 +116,17 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 
 ParticlesList FitRestraint::get_interacting_particles() const
 {
-  return ParticlesList(1, get_used_particles());
+  return ParticlesList(1, get_read_particles());
 }
 
-ParticlesTemp FitRestraint::get_used_particles() const
+ParticlesTemp FitRestraint::get_read_particles() const
 {
   return ParticlesTemp(particles_begin(), particles_end());
+}
+
+ParticlesTemp FitRestraint::get_write_particles() const
+{
+  return get_read_particles();
 }
 
 void FitRestraint::show(std::ostream& out) const

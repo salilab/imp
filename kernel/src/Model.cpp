@@ -19,14 +19,22 @@
 #define WRAP_CALL(restraint, expr)                                      \
   {                                                                     \
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {                                  \
-      ParticlesTemp pl= (restraint)->get_used_particles();              \
+      ParticlesTemp rpl= (restraint)->get_read_particles();             \
       internal::ReadLock rl(particles_begin(), particles_end(),         \
-                            pl.begin(), pl.end());                      \
+                            rpl.begin(), rpl.end());                    \
+      ParticlesTemp wpl= (restraint)->get_write_particles();            \
+      internal::WriteLock wl(particles_begin(), particles_end(),        \
+                             wpl.begin(), wpl.end());                   \
       try {                                                             \
         expr;                                                           \
-      } catch (internal::LockedParticleException e) {                   \
+      } catch (internal::ReadLockedParticleException e) {               \
         IMP_ERROR("Particle " << e.p_->get_name()                       \
-                  << " is not in the used particles list of restraint " \
+                  << " is not in the read particles list of "           \
+                  << (*it)->get_name() << " but should be.");           \
+        throw InvalidStateException("Invalid particle used");           \
+      } catch (internal::WriteLockedParticleException e) {              \
+        IMP_ERROR("Particle " << e.p_->get_name()                       \
+                  << " is not in the write particles list of "          \
                   << (*it)->get_name() << " but should be.");           \
         throw InvalidStateException("Invalid particle used");           \
       }                                                                 \
@@ -64,6 +72,33 @@ public:
 #endif
   }
 };
+
+
+struct WriteLock{
+  ParticlesTemp p_;
+  std::set<Particle *> allowed_;
+public:
+  template <class It, class It1>
+  WriteLock(It1 pa, It1 pb,
+           It ab, It ae): p_(pa, pb),
+                          allowed_(ab, ae){
+#if IMP_BUILD < IMP_FAST
+    for (unsigned int i=0; i< p_.size(); ++i) {
+      if (allowed_.find(p_[i]) == allowed_.end()) {
+        p_[i]->ps_->write_locked_=true;
+      }
+    }
+#endif
+  }
+  ~WriteLock() {
+#if IMP_BUILD < IMP_FAST
+    for (unsigned int i=0; i< p_.size(); ++i) {
+      p_[i]->ps_->write_locked_=false;
+    }
+#endif
+  }
+};
+
 
 IMP_END_INTERNAL_NAMESPACE
 
@@ -110,6 +145,7 @@ Model::Model()
   incremental_update_=false;
   first_incremental_=true;
   gather_statistics_=false;
+  score_states_ordered_=false;
 }
 
 
@@ -136,9 +172,63 @@ IMP_LIST_IMPL(Model, ScoreState, score_state, ScoreState*,
               ScoreStates,
               {IMP_INTERNAL_CHECK(cur_stage_== NOT_EVALUATING,
            "The set of score states cannot be changed during evaluation.");
-                obj->set_model(this);},,
+                obj->set_model(this);
+                score_states_ordered_=false;
+              },,
               {obj->set_model(NULL);});
 
+
+void Model::order_score_states() {
+  // go away once the ordering below happens
+  IMP_IF_CHECK(USAGE) {
+    std::set<Particle*> read_particles;
+    for (ScoreStateConstIterator it = score_states_begin();
+         it != score_states_end(); ++it) {
+      ParticlesTemp wp= (*it)->get_write_particles();
+      for (unsigned int i=0; i< wp.size(); ++i) {
+        if (read_particles.find(wp[i]) != read_particles.end()) {
+          IMP_WARN("Particle " << wp[i]->get_name()
+                   << " was changed by score state "
+                   << (*it)->get_name()
+                   << " after it was read by another score state."
+                   << " This may result in score states not being"
+                   << " updated properly. Eventually they will be"
+                   << " reordered automatically, but for now "
+                   << "you have to do it yourself.");
+        }
+      }
+      ParticlesTemp rp= (*it)->get_read_particles();
+      read_particles.insert(rp.begin(), rp.end());
+    }
+  }
+
+  ScoreStates new_order;
+  new_order.reserve(get_number_of_score_states());
+  /*
+    generate bipartite graph with write_ss, read_ss
+    for each writer, for each particle it writes,
+    connect the writer to all readers of that particle
+
+    iteratively chose a reader with no in edges,
+    remove it and its writer and all edges
+
+    produce error if anything is left
+   */
+  //std::map<Particle*, std::vector<Node> > readers;
+  //std::map<ScoreState*, Node> reader_map, writer_map;
+  for (ScoreStateIterator it= score_states_begin();
+       it != score_states_end(); ++it) {
+    // reader_map[*it]= create_node();
+    // writer_map[*it]= create_node();
+  }
+  for (ScoreStateIterator it= score_states_begin();
+       it != score_states_end(); ++it) {
+    ParticlesTemp read= (*it)->get_read_particles();
+    for (unsigned int i=0; i< read.size(); ++i) {
+    }
+  }
+  score_states_ordered_=true;
+}
 
 FloatRange Model::get_range(FloatKey k) const {
   IMP_CHECK_OBJECT(this);
@@ -313,7 +403,7 @@ namespace {
 
 Float Model::evaluate(bool calc_derivs)
 {
-
+  if (!score_states_ordered_) order_score_states();
   // validate values
   {
     std::string message;

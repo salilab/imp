@@ -15,6 +15,7 @@
 #include "../PairScore.h"
 #include "../SingletonContainer.h"
 #include "../PairContainer.h"
+#include "utility.h"
 
 #include <boost/tuple/tuple.hpp>
 
@@ -165,23 +166,23 @@ ParticlesList get_interacting_particles(ParticlePair p,
 
 
 template <class F>
-ParticlesTemp get_used_particles(SingletonContainer *sc,
+ParticlesTemp get_read_particles(SingletonContainer *sc,
                                         F *f) {
   ParticlesTemp ret;
   for (unsigned int i=0; i< sc->get_number_of_particles(); ++i) {
-    ParticlesTemp t= f->get_used_particles(sc->get_particle(i));
+    ParticlesTemp t= f->get_read_particles(sc->get_particle(i));
     ret.insert(ret.end(), t.begin(), t.end());
   }
   return ret;
 }
 
 template <class F>
-ParticlesTemp get_used_particles(PairContainer *sc,
+ParticlesTemp get_read_particles(PairContainer *sc,
                                         F *f) {
   ParticlesTemp ret;
   for (unsigned int i=0; i< sc->get_number_of_particle_pairs(); ++i) {
     ParticlePair pp=sc->get_particle_pair(i);
-    ParticlesTemp t= f->get_used_particles(pp[0], pp[1]);
+    ParticlesTemp t= f->get_read_particles(pp[0], pp[1]);
     ret.insert(ret.end(), t.begin(), t.end());
   }
   return ret;
@@ -189,18 +190,60 @@ ParticlesTemp get_used_particles(PairContainer *sc,
 
 
 template <class F>
-ParticlesTemp get_used_particles(Particle *p,
+ParticlesTemp get_read_particles(Particle *p,
                                  F *f) {
-  ParticlesTemp t= f->get_used_particles(p);
+  ParticlesTemp t= f->get_read_particles(p);
   return t;
 }
 
 template <class F>
-ParticlesTemp get_used_particles(ParticlePair p,
+ParticlesTemp get_read_particles(ParticlePair p,
                                         F *f) {
-  ParticlesTemp t= f->get_used_particles(p[0], p[1]);
+  ParticlesTemp t= f->get_read_particles(p[0], p[1]);
   return t;
 }
+
+
+
+template <class F>
+ParticlesTemp get_write_particles(SingletonContainer *sc,
+                                        F *f) {
+  ParticlesTemp ret;
+  for (unsigned int i=0; i< sc->get_number_of_particles(); ++i) {
+    ParticlesTemp t= f->get_write_particles(sc->get_particle(i));
+    ret.insert(ret.end(), t.begin(), t.end());
+  }
+  return ret;
+}
+
+template <class F>
+ParticlesTemp get_write_particles(PairContainer *sc,
+                                        F *f) {
+  ParticlesTemp ret;
+  for (unsigned int i=0; i< sc->get_number_of_particle_pairs(); ++i) {
+    ParticlePair pp=sc->get_particle_pair(i);
+    ParticlesTemp t= f->get_write_particles(pp[0], pp[1]);
+    ret.insert(ret.end(), t.begin(), t.end());
+  }
+  return ret;
+}
+
+
+template <class F>
+ParticlesTemp get_write_particles(Particle *p,
+                                 F *f) {
+  ParticlesTemp t= f->get_write_particles(p);
+  return t;
+}
+
+template <class F>
+ParticlesTemp get_write_particles(ParticlePair p,
+                                        F *f) {
+  ParticlesTemp t= f->get_write_particles(p[0], p[1]);
+  return t;
+}
+
+
 
 IMP_END_INTERNAL_NAMESPACE
 

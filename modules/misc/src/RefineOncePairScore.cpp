@@ -54,7 +54,7 @@ RefineOncePairScore::get_interacting_particles(Particle *a,
   ParticlesList ret;
   for (unsigned int i=0; i< ps[0].size(); ++i) {
     for (unsigned int j=0; j< ps[1].size(); ++j) {
-      ret.push_back(get_union(IMP::internal
+      ret.push_back(IMP::internal::get_union(IMP::internal
                      ::get_interacting_particles(ParticlePair(ps[0][i],
                                                               ps[1][j]),
                                                           f_.get())));
@@ -63,14 +63,14 @@ RefineOncePairScore::get_interacting_particles(Particle *a,
   return ret;
 }
 
-ParticlesTemp RefineOncePairScore::get_used_particles(Particle *a,
+ParticlesTemp RefineOncePairScore::get_read_particles(Particle *a,
                                                       Particle *b) const {
   Particles ps[2]={get_set(a, r_), get_set(b, r_)};
   ParticlesTemp ret;
   for (unsigned int i=0; i< ps[0].size(); ++i) {
     for (unsigned int j=0; j< ps[1].size(); ++j) {
       ParticlesTemp cps= IMP::internal
-        ::get_used_particles(ParticlePair(ps[0][i],
+        ::get_read_particles(ParticlePair(ps[0][i],
                                           ps[1][j]), f_.get());
       ret.insert(ret.end(), cps.begin(), cps.end());
     }
@@ -78,6 +78,12 @@ ParticlesTemp RefineOncePairScore::get_used_particles(Particle *a,
   ret.push_back(a);
   ret.push_back(b);
   return ret;
+}
+
+ParticlesTemp RefineOncePairScore::get_write_particles(Particle *a,
+                                                       Particle *b) const {
+  // lazy
+  return get_read_particles(a,b);
 }
 
 
