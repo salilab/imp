@@ -27,7 +27,7 @@ class SAXSProfileTest(IMP.test.TestCase):
         print 'delta_q = ' + str(exp_profile.get_delta_q())
 
         #! select particles from the model
-        particles = IMP.atom.get_by_type(mp, IMP.atom.Hierarchy.ATOM)
+        particles = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
 
         #! calculate SAXS profile
         model_profile = IMP.saxs.Profile()
@@ -70,7 +70,7 @@ class SAXSProfileTest(IMP.test.TestCase):
         exp_profile = IMP.saxs.Profile(self.get_input_file_name('lyzexp.dat'))
 
         #! select particles from the model
-        particles = IMP.atom.get_by_type(mp, IMP.atom.Hierarchy.ATOM)
+        particles = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
 
         #! calculate SAXS profile
         model_profile = IMP.saxs.Profile()
