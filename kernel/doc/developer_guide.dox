@@ -104,8 +104,21 @@ When designing the interface for your new code, you should
 
 You may want to read \ref design_example "the design example".
 
-\section testing Testing
+\section testing Debugging and Testing
 
+Code, espectially code which is shared with other people, needs to be extensively
+tested. There are two sorts of tests that are used in \imp:
+- internal tests: these are checks contained in the code itself which verify that
+the code is (a) used correctly and (b) working correctly. Such checks are usually
+implemented using the IMP_USAGE_CHECK() and IMP_INTERNAL_CHECK() macros, respectively.
+See the \ref assert "Error reporting/checking" page for more details. One should aim
+for all impropper usage to produce at least a warning and that any value returned by
+a function has been check to be correct.
+- unit tests: these are external, python, code which calls the function to be tested
+and verifies the output. The code is located in the \c test directory for the module.
+
+
+\subsection unittest Unit Testing
 Each class and method should have one or more associated tests in the
 \c test directory of its module. These tests should try, as much as
 possible to provide independent verification of the correctness of the
