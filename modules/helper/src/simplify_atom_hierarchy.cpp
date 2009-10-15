@@ -353,6 +353,9 @@ atom::Hierarchy create_simplified_chain_by_residue(atom::Hierarchy in,
   IMP_USAGE_CHECK(residues.size() > 0,
             "Can only simplify a chain with no residues.",
             ValueException);
+  IMP_LOG(VERBOSE,"starting create_simplified_chain_by_residue with " <<
+          residues.size() << " residues"<<std::endl);
+
   int num_res_iter=0;
   int num_res=residues.size();
   Model *m=in.get_model();
@@ -378,6 +381,12 @@ atom::Hierarchy create_simplified_chain_by_residue(atom::Hierarchy in,
     atom::Mass::setup_particle(fp,total_mass);
     atom::Fragment::setup_particle(fp);
     frags.push_back(atom::Fragment(fp));
+    IMP_IF_LOG(VERBOSE) {
+      IMP_LOG(VERBOSE,"adding a fragment: ");
+      IMP_LOG_WRITE(VERBOSE,fp->show());
+      IMP_LOG(VERBOSE,std::endl);
+    }
+
     num_res_iter+=res_step;
   }
   // create hierarchy
@@ -391,6 +400,10 @@ atom::Hierarchy create_simplified_chain_by_residue(atom::Hierarchy in,
 
 atom::Hierarchy create_simplified_by_residue(atom::Hierarchy in,
                                              int res_step){
+  //TODO - return when the atom hierarchy will be sorted out
+  // IMP_check(in.get_type() == atom::Hierarchy::PROTEIN,
+  //           "Can only simplify proteins at the moment.",
+  //           ValueException);
   atom::Hierarchies in_chains= atom::get_by_type(in,atom::CHAIN_TYPE);
   atom::Hierarchies out_chains;
   for(atom::Hierarchies::iterator it = in_chains.begin();
