@@ -5,7 +5,7 @@ import IMP.core
 import IMP.atom
 import IMP.helper
 
-class DecoratorTests(IMP.test.TestCase):
+class SimplifyTests(IMP.test.TestCase):
     def test_simplify_2(self):
         """Test protein simplification 2"""
         IMP.set_log_level(IMP.VERBOSE)
@@ -23,5 +23,17 @@ class DecoratorTests(IMP.test.TestCase):
                 + str(d.get_radius())
         print "level is " +str(IMP.get_log_level())
 
+
+    def test_simplify_by_residue(self):
+        """Test protein simplification by residues"""
+        IMP.set_log_level(IMP.SILENT)#VERBOSE)
+        m= IMP.Model()
+        mh= IMP.atom.read_pdb(self.get_input_file_name('single_protein.pdb'), m)
+        num_residues=len(IMP.atom.get_by_type(mh,IMP.atom.RESIDUE_TYPE))
+        IMP.atom.add_radii(mh)
+        residual_cond=lambda x: x if x==0 else 1
+        for res_segment in [5,10,20,30,num_residues]:
+            mh_simp= IMP.helper.create_simplified_by_residue(mh, res_segment)
+            self.assertEqual(num_residues/res_segment+1*residual_cond(num_residues%res_segment), len(IMP.core.get_leaves(mh_simp)))
 if __name__ == '__main__':
     unittest.main()
