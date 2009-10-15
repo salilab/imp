@@ -61,7 +61,12 @@ ParticlesList DistanceScore::get_interacting_particles(Particle *p) const {
   return ParticlesList();
 }
 
-ParticlesTemp DistanceScore::get_used_particles(Particle *p) const {
+ParticlesTemp DistanceScore::get_read_particles(Particle *p) const {
+  return ParticlesTemp();
+}
+
+
+ParticlesTemp DistanceScore::get_write_particles(Particle *p) const {
   return ParticlesTemp();
 }
 

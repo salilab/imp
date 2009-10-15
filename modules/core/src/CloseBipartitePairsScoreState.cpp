@@ -169,7 +169,7 @@ ParticlesList CloseBipartitePairsScoreState::get_interacting_particles() const {
   return ParticlesList();
 }
 
-ParticlesTemp CloseBipartitePairsScoreState::get_used_particles() const {
+ParticlesTemp CloseBipartitePairsScoreState::get_read_particles() const {
   ParticlesTemp ret0(f_->get_used_particles(in_[0]));
   ParticlesTemp ret1(f_->get_used_particles(in_[1]));
   ret0.insert(ret0.end(), ret1.begin(), ret1.end());
@@ -186,6 +186,11 @@ ParticlesTemp CloseBipartitePairsScoreState::get_used_particles() const {
   }
   ret0.insert(ret0.end(), ret1.begin(), ret1.end());
   return ret0;
+}
+
+ParticlesTemp
+CloseBipartitePairsScoreState::get_write_particles() const {
+  return ParticlesTemp();
 }
 
 void CloseBipartitePairsScoreState::show(std::ostream &out) const

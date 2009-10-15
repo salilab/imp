@@ -36,14 +36,19 @@ void CoverRefined::apply(Particle *p) const
 }
 
 ParticlesList CoverRefined::get_interacting_particles(Particle*p) const {
-  return ParticlesList(1, get_used_particles(p));
+  ParticlesTemp pt=get_read_particles(p);
+  pt.push_back(get_write_particles(p)[0]);
+  return ParticlesList(1, pt);
 }
 
-ParticlesTemp CoverRefined::get_used_particles(Particle*p) const {
-  ParticlesTemp t(1, p);
+ParticlesTemp CoverRefined::get_read_particles(Particle*p) const {
   ParticlesTemp ps = ref_->get_refined(p);
-  t.insert(t.end(), ps.begin(), ps.end());
-  return t;
+  ps.push_back(p);
+  return ps;
+}
+
+ParticlesTemp CoverRefined::get_write_particles(Particle*p) const {
+  return ParticlesTemp(1,p);
 }
 
 void CoverRefined::show(std::ostream &out) const

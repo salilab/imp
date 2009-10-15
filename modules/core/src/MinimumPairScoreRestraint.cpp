@@ -12,6 +12,7 @@
 #include "IMP/core/MinimumPairScoreRestraint.h"
 #include "IMP/core/internal/MinimalSet.h"
 #include <IMP/internal/container_helpers.h>
+#include <IMP/internal/utility.h>
 
 
 IMPCORE_BEGIN_NAMESPACE
@@ -80,7 +81,7 @@ ParticlesList MinimumPairScoreRestraint::get_interacting_particles() const
     ParticlesList pt=IMP::internal::get_interacting_particles(*bestn[i].second,
                                                               f_.get());
     if (!pt.empty()) {
-      ret.push_back(get_union(pt));
+      ret.push_back(IMP::internal::get_union(pt));
     }
   }
 
@@ -88,8 +89,15 @@ ParticlesList MinimumPairScoreRestraint::get_interacting_particles() const
 }
 
 
-ParticlesTemp MinimumPairScoreRestraint::get_used_particles() const
+ParticlesTemp MinimumPairScoreRestraint::get_read_particles() const
 {
-  return IMP::internal::get_used_particles(c_, f_.get());
+  return IMP::internal::get_read_particles(c_, f_.get());
 }
+
+
+ParticlesTemp MinimumPairScoreRestraint::get_write_particles() const
+{
+  return IMP::internal::get_write_particles(c_, f_.get());
+}
+
 IMPCORE_END_NAMESPACE

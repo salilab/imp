@@ -42,9 +42,13 @@ public:
   virtual ParticlesList
     get_interacting_particles(Particle *a) const =0;
 
-  /** Get the set of particles used when applied to the arguments. */
+  /** Get the set of particles read when applied to the arguments. */
   virtual ParticlesTemp
-    get_used_particles(Particle *a) const =0;
+    get_read_particles(Particle *a) const =0;
+
+  /** Get the set of particles writen when applied to the arguments. */
+  virtual ParticlesTemp
+    get_write_particles(Particle *a) const =0;
 
   IMP_REF_COUNTED_DESTRUCTOR(SingletonScore)
 };

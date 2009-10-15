@@ -100,7 +100,7 @@ class DOMINOTests(IMP.test.TestCase):
         """Set up model and particles"""
         IMP.test.TestCase.setUp(self)
         self.imp_model = IMP.Model()
-        IMP.set_check_level(IMP.NONE)
+        IMP.set_check_level(IMP.USAGE_AND_INTERNAL)
         self.__set_attributes__()
         self.__set_representation__()
         self.__set_optimizer__()

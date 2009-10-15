@@ -29,9 +29,10 @@ IMPCORE_BEGIN_NAMESPACE
 namespace {
   ParticlesTemp get_rigid_body_used_particles(Particle *p) {
     RigidBody b(p);
-    ParticlesTemp ret(1+b.get_number_of_members());
+    unsigned int n=b.get_number_of_members();
+    ParticlesTemp ret(1+n);
     ret[0]=p;
-    for (unsigned int i=0; i< b.get_number_of_members(); ++i) {
+    for (unsigned int i=0; i< n; ++i) {
       ret[i+1]= b.get_member(i);
     }
     return ret;
@@ -181,12 +182,11 @@ RigidBody::normalize_rotation() {
 
 IMP::algebra::Transformation3D
 RigidBody::get_transformation() const {
-  algebra::VectorD<4>
-    v(get_particle()->get_value(internal::rigid_body_data().quaternion_[0]),
-      get_particle()->get_value(internal::rigid_body_data().quaternion_[1]),
-      get_particle()->get_value(internal::rigid_body_data().quaternion_[2]),
-      get_particle()->get_value(internal::rigid_body_data().quaternion_[3]));
-  IMP::algebra::Rotation3D rot(v[0], v[1], v[2], v[3]);
+  IMP::algebra::Rotation3D
+    rot(get_particle()->get_value(internal::rigid_body_data().quaternion_[0]),
+        get_particle()->get_value(internal::rigid_body_data().quaternion_[1]),
+        get_particle()->get_value(internal::rigid_body_data().quaternion_[2]),
+        get_particle()->get_value(internal::rigid_body_data().quaternion_[3]));
   return IMP::algebra::Transformation3D(rot, get_coordinates());
 }
 
@@ -339,7 +339,12 @@ UpdateRigidBodyOrientation::get_interacting_particles(Particle *p) const {
 }
 
 ParticlesTemp
-UpdateRigidBodyOrientation::get_used_particles(Particle *p) const {
+UpdateRigidBodyOrientation::get_read_particles(Particle *p) const {
+  return get_rigid_body_used_particles(p);
+}
+
+ParticlesTemp
+UpdateRigidBodyOrientation::get_write_particles(Particle *p) const {
   return get_rigid_body_used_particles(p);
 }
 
@@ -398,8 +403,13 @@ AccumulateRigidBodyDerivatives::get_interacting_particles(Particle *p) const {
 }
 
 ParticlesTemp
-AccumulateRigidBodyDerivatives::get_used_particles(Particle *p) const {
+AccumulateRigidBodyDerivatives::get_read_particles(Particle *p) const {
   return get_rigid_body_used_particles(p);
+}
+
+ParticlesTemp
+AccumulateRigidBodyDerivatives::get_write_particles(Particle *p) const {
+  return ParticlesTemp(1,p);
 }
 
 void AccumulateRigidBodyDerivatives
@@ -423,8 +433,15 @@ UpdateRigidBodyMembers::get_interacting_particles(Particle *p) const {
 }
 
 ParticlesTemp
-UpdateRigidBodyMembers::get_used_particles(Particle *p) const {
+UpdateRigidBodyMembers::get_read_particles(Particle *p) const {
   return get_rigid_body_used_particles(p);
+}
+
+ParticlesTemp
+UpdateRigidBodyMembers::get_write_particles(Particle *p) const {
+  RigidMembers rm= RigidBody(p).get_members();
+  ParticlesTemp ret(rm.begin(), rm.end());
+  return ret;
 }
 
 void UpdateRigidBodyMembers

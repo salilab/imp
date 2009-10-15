@@ -20,8 +20,11 @@ class LoggingRestraint(IMP.Restraint):
         else:
             self.log.append('restraint-score')
         return 0.0
-    def get_used_particles(self):
+    def get_read_particles(self):
         return IMP.ParticlesTemp()
+    def get_write_particles(self):
+        return IMP.ParticlesTemp()
+
 
 class LoggingScoreState(IMP.ScoreState):
     """ScoreState that logs all calls"""
@@ -39,7 +42,9 @@ class LoggingScoreState(IMP.ScoreState):
         fh.write("LoggingScoreState")
     def get_version_info(self):
         return IMP.VersionInfo("Ben Webb", "0.1")
-    def get_used_particles(self):
+    def get_read_particles(self):
+        return IMP.ParticlesTemp()
+    def get_write_particles(self):
         return IMP.ParticlesTemp()
 
 

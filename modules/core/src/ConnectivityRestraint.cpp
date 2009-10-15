@@ -14,6 +14,7 @@
 #include <IMP/Particle.h>
 #include <IMP/log.h>
 #include <IMP/PairScore.h>
+#include <IMP/internal/utility.h>
 
 #include <climits>
 #include <boost/graph/kruskal_min_spanning_tree.hpp>
@@ -132,17 +133,17 @@ ParticlesList ConnectivityRestraint::get_interacting_particles() const {
   ParticlePairs pps= get_connected_pairs();
   ParticlesList pl(pps.size());
   for (unsigned int i=0; i< pps.size(); ++i) {
-    pl[i]= get_union(ps_->get_interacting_particles(pps[i][0],
-                                                    pps[i][1]));
+    pl[i]= IMP::internal::get_union(ps_->get_interacting_particles(pps[i][0],
+                                                              pps[i][1]));
   }
   return pl;
 }
 
-ParticlesTemp ConnectivityRestraint::get_used_particles() const {
+ParticlesTemp ConnectivityRestraint::get_read_particles() const {
   ParticlesTemp ret;
   for (unsigned int i=0; i< get_number_of_particles(); ++i) {
     for (unsigned int j=0; j<i; ++j) {
-      ParticlesTemp cs= ps_->get_used_particles(get_particle(i),
+      ParticlesTemp cs= ps_->get_read_particles(get_particle(i),
                                                 get_particle(j));
       ret.insert(ret.end(), cs.begin(), cs.end());
       ret.push_back(get_particle(i));
@@ -152,6 +153,10 @@ ParticlesTemp ConnectivityRestraint::get_used_particles() const {
   return ret;
 }
 
+
+ParticlesTemp ConnectivityRestraint::get_write_particles() const {
+  return get_read_particles();
+}
 
 
 void ConnectivityRestraint::show(std::ostream& out) const

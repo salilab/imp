@@ -37,22 +37,37 @@ ParticlesList ExampleRestraint::get_interacting_particles() const
        = pc_->particle_pairs_begin();
        it != pc_->particle_pairs_end(); ++it) {
     ParticlePair pp= *it;
-    ret.push_back(get_union(f_->get_interacting_particles(pp[0],
-                                                          pp[1])));
+    ParticlesList all=f_->get_interacting_particles(pp[0],
+                                                    pp[1]);
+    ret.insert(ret.end(), all.begin(), all.end());
   }
   return ret;
 }
 
 /* We also need to know which particles are used (as some are
    used, but don't create interactions. */
-ParticlesTemp ExampleRestraint::get_used_particles() const
+ParticlesTemp ExampleRestraint::get_read_particles() const
 {
   ParticlesTemp ret;
   for (PairContainer::ParticlePairIterator it
        = pc_->particle_pairs_begin();
        it != pc_->particle_pairs_end(); ++it) {
     ParticlePair pp= *it;
-    ParticlesTemp t= f_->get_used_particles(pp[0],
+    ParticlesTemp t= f_->get_read_particles(pp[0],
+                                            pp[1]);
+    ret.insert(ret.end(), t.begin(), t.end());
+  }
+  return ret;
+}
+
+ParticlesTemp ExampleRestraint::get_write_particles() const
+{
+  ParticlesTemp ret;
+  for (PairContainer::ParticlePairIterator it
+       = pc_->particle_pairs_begin();
+       it != pc_->particle_pairs_end(); ++it) {
+    ParticlePair pp= *it;
+    ParticlesTemp t= f_->get_write_particles(pp[0],
                                             pp[1]);
     ret.insert(ret.end(), t.begin(), t.end());
   }

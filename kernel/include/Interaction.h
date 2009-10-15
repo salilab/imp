@@ -37,27 +37,21 @@ class Interaction: public Object
       derivatives of the other particle.
 
       It is always correct, if not optimal, to return
-      \c ParticlesList(1, get_used_particles()).
+      \c ParticlesList(1, get_read_particles()+get_written_particles()).
       That is, one set, containing all the used particles.
    */
   virtual ParticlesList get_interacting_particles() const=0;
 
   /** Return the list of particles that this object depends on. This should
-      include all particles whose attributes are read or written during
-      the update calls.*/
-  virtual ParticlesTemp get_used_particles() const =0;
-};
+      include all particles whose attributes are read during
+      the update/evaluate calls.*/
+  virtual ParticlesTemp get_read_particles() const =0;
 
-#ifndef IMP_DOXYGEN
-inline
-ParticlesTemp get_union(const ParticlesList &pl) {
-  ParticlesTemp ret=pl[0];
-  for (unsigned int i=1; i < pl.size(); ++i) {
-    ret.insert(ret.end(), pl[i].begin(), pl[i].end());
-  }
-  return ret;
-}
-#endif
+  /** Return the list of particles that this object modifiers. This should
+      include all particles whose attributes or derivatives are written during
+      the update/evaluate calls.*/
+  virtual ParticlesTemp get_write_particles() const =0;
+};
 
 IMP_END_NAMESPACE
 

@@ -46,9 +46,14 @@ ParticlesList GroupnameRestraint::get_interacting_particles() const
   return IMP::internal::get_interacting_particles(v_, ss_.get());
 }
 
-ParticlesTemp GroupnameRestraint::get_used_particles() const
+ParticlesTemp GroupnameRestraint::get_read_particles() const
 {
-  return IMP::internal::get_used_particles(v_, ss_.get());
+  return IMP::internal::get_read_particles(v_, ss_.get());
+}
+
+ParticlesTemp GroupnameRestraint::get_write_particles() const
+{
+  return IMP::internal::get_write_particles(v_, ss_.get());
 }
 
 void GroupnameRestraint::show(std::ostream& out) const

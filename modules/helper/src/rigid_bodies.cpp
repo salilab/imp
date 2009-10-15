@@ -43,7 +43,8 @@ ScoreState* create_rigid_bodies(SingletonContainer *rbs,
   }
   SMP sm= get_modifiers(snapping);
   core::SingletonsScoreState *sss
-    = new core::SingletonsScoreState(rbs, sm.first, sm.second);
+    = new core::SingletonsScoreState(rbs, sm.first, sm.second,
+                                     "Rigid bodies");
   return sss;
 }
 
@@ -54,7 +55,8 @@ ScoreState* create_rigid_body(Particle *p,
   SMP sm= get_modifiers(snapping);
   rbd.set_coordinates_are_optimized(true, snapping);
   core::SingletonScoreState *sss
-    = new core::SingletonScoreState(sm.first, sm.second, p);
+    = new core::SingletonScoreState(sm.first, sm.second, p,
+                                    std::string("Rigid body ")+ p->get_name());
   return sss;
 }
 

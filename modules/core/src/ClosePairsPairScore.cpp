@@ -10,6 +10,7 @@
 
 #include <IMP/exception.h>
 #include <IMP/log.h>
+#include <IMP/internal/utility.h>
 
 #include <cmath>
 
@@ -88,8 +89,9 @@ ClosePairsPairScore::get_interacting_particles(Particle *a,
   ParticlePairsTemp ppt= get_close_pairs(a,b, th_, r_);
   ParticlesList ret;
   for (unsigned int i=0; i< ppt.size(); ++i) {
-    ret.push_back( get_union(f_->get_interacting_particles(ppt[i][0],
-                                                           ppt[i][1])));
+    ret.push_back( IMP::internal::get_union(
+                         f_->get_interacting_particles(ppt[i][0],
+                                                       ppt[i][1])));
   }
   return ret;
 }
@@ -114,18 +116,23 @@ namespace {
 }
 
 
-ParticlesTemp ClosePairsPairScore::get_used_particles(Particle *a,
+ParticlesTemp ClosePairsPairScore::get_read_particles(Particle *a,
                                                       Particle *b) const {
   ParticlesTemp ret;
   ParticlesTemp ea=expand(a, r_);
   ParticlesTemp eb=expand(b, r_);
   for (unsigned int i=0; i< ea.size(); ++i) {
     for (unsigned int j=0; j< eb.size(); ++j) {
-      ParticlesTemp c= f_->get_used_particles(ea[i], eb[j]);
+      ParticlesTemp c= f_->get_read_particles(ea[i], eb[j]);
       ret.insert(ret.end(), c.begin(), c.end());
     }
   }
   return ret;
+}
+
+ParticlesTemp
+ClosePairsPairScore::get_write_particles(Particle *, Particle*) const {
+  return ParticlesTemp();
 }
 
 void ClosePairsPairScore::show(std::ostream &out) const

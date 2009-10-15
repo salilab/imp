@@ -50,6 +50,7 @@ private:
   bool first_incremental_;
   bool last_had_derivatives_;
   bool gather_statistics_;
+  bool score_states_ordered_;
   std::map<FloatKey, FloatRange> ranges_;
   enum Stage {NOT_EVALUATING, BEFORE_EVALUATE, EVALUATE, AFTER_EVALUATE};
   mutable Stage cur_stage_;
@@ -57,6 +58,8 @@ private:
   Stage get_stage() const {
     return cur_stage_;
   }
+
+  void order_score_states();
 
   void add_particle_internal(Particle *p) {
     IMP_CHECK_OBJECT(this);
@@ -292,6 +295,15 @@ inline void Particle::assert_values_mutable() const {
   IMP_INTERNAL_CHECK(get_model()->get_stage() != Model::AFTER_EVALUATE,
              "ScoreStates are not allowed to change attribute values after "
              << "evaluation.");
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    if (ps_->write_locked_) throw internal::WriteLockedParticleException(this);
+  }
+}
+
+inline void Particle::assert_values_readable() const {
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    if (ps_->read_locked_) throw internal::ReadLockedParticleException(this);
+  }
 }
 
 inline void Particle::assert_can_change_optimization() const {

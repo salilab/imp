@@ -47,7 +47,12 @@ DistanceToSingletonScore::get_interacting_particles(Particle *) const {
 }
 
 ParticlesTemp
-DistanceToSingletonScore::get_used_particles(Particle* p) const {
+DistanceToSingletonScore::get_read_particles(Particle* p) const {
+  return ParticlesTemp(1, p);
+}
+
+ParticlesTemp
+DistanceToSingletonScore::get_write_particles(Particle* p) const {
   return ParticlesTemp(1, p);
 }
 

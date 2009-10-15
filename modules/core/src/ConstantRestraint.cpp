@@ -26,10 +26,16 @@ ParticlesList ConstantRestraint::get_interacting_particles() const
 }
 
 
-ParticlesTemp ConstantRestraint::get_used_particles() const
+ParticlesTemp ConstantRestraint::get_read_particles() const
 {
   return ParticlesTemp();
 }
+
+ParticlesTemp ConstantRestraint::get_write_particles() const
+{
+  return ParticlesTemp();
+}
+
 void ConstantRestraint::show(std::ostream& out) const
 {
   out << "Constant restraint :" << v_ << std::endl;

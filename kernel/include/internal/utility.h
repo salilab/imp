@@ -10,6 +10,7 @@
 
 #include "../config.h"
 #include "../Particle.h"
+#include "../Interaction.h"
 #include <boost/format.hpp>
 #include <algorithm>
 #include <sstream>
@@ -45,6 +46,16 @@ struct Counter {
     count=i;
   }
 };
+
+
+inline
+ParticlesTemp get_union(const ParticlesList &pl) {
+  ParticlesTemp ret=pl[0];
+  for (unsigned int i=1; i < pl.size(); ++i) {
+    ret.insert(ret.end(), pl[i].begin(), pl[i].end());
+  }
+  return ret;
+}
 
 IMP_END_INTERNAL_NAMESPACE
 
