@@ -353,6 +353,9 @@ atom::Hierarchy create_simplified_chain_by_residue(atom::Hierarchy in,
   IMP_USAGE_CHECK(residues.size() > 0,
             "Can only simplify a chain with no residues.",
             ValueException);
+  IMP_USAGE_CHECK(res_step>0,
+            "can not simplify a chain with residue step of zero",
+            ValueException);
   IMP_LOG(VERBOSE,"starting create_simplified_chain_by_residue with " <<
           residues.size() << " residues"<<std::endl);
 
