@@ -18,7 +18,7 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 class IMPCOREEXPORT RigidBodyHierarchy: public Object {
   RigidBody rb_;
-  Pointer<Refiner> r_;
+  IMP::internal::OwnerPointer<Refiner> r_;
   struct Data {
     std::vector<int> children_;
     algebra::Sphere3D s_;

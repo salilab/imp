@@ -67,7 +67,10 @@ IMP_LIST_IMPL(SingletonContainerSet,
               SingletonContainer,
               singleton_container,
               SingletonContainer*,
-              SingletonContainers,++rev_,++rev_,++rev_)
+              SingletonContainers,{
+                obj->set_was_owned(true);
+                ++rev_;
+              },++rev_,++rev_)
 
 
 void SingletonContainerSet::apply(const SingletonModifier *sm) {

@@ -40,9 +40,9 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT GroupnamesScoreState : public ScoreState
 {
-  Pointer<GroupnameModifier> f_;
-  Pointer<GroupnameModifier> af_;
-  Pointer<GroupnameContainer> c_;
+  IMP::internal::OwnerPointer<GroupnameModifier> f_;
+  IMP::internal::OwnerPointer<GroupnameModifier> af_;
+  IMP::internal::OwnerPointer<GroupnameContainer> c_;
 public:
   /** \param[in] c The Container to hold the elements to process
       \param[in] before The GroupnameModifier to apply to all elements

@@ -28,7 +28,7 @@ IMPSEARCH_BEGIN_NAMESPACE
 class RangeSearchScoreState:
 public ScoreState
 {
-  Pointer<IMP::SingletonContainer> pc_;
+  IMP::internal::OwnerPointer<IMP::SingletonContainer> pc_;
   FloatKeys keys_;
 public:
 

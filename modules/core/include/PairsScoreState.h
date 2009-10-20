@@ -40,9 +40,9 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT PairsScoreState : public ScoreState
 {
-  Pointer<PairModifier> f_;
-  Pointer<PairModifier> af_;
-  Pointer<PairContainer> c_;
+  IMP::internal::OwnerPointer<PairModifier> f_;
+  IMP::internal::OwnerPointer<PairModifier> af_;
+  IMP::internal::OwnerPointer<PairContainer> c_;
 public:
   /** \param[in] c The Container to hold the elements to process
       \param[in] before The PairModifier to apply to all elements

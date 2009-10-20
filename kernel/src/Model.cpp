@@ -146,6 +146,7 @@ Model::Model()
   first_incremental_=true;
   gather_statistics_=false;
   score_states_ordered_=false;
+  set_was_owned(true);
 }
 
 
@@ -165,6 +166,7 @@ IMP_LIST_IMPL(Model, Restraint, restraint, Restraint*,
               {IMP_INTERNAL_CHECK(cur_stage_== NOT_EVALUATING,
            "The set of restraints cannot be changed during evaluation.");
                 obj->set_model(this);
+                obj->set_was_owned(true);
                 first_incremental_=true;},,
               {obj->set_model(NULL);});
 
@@ -174,6 +176,7 @@ IMP_LIST_IMPL(Model, ScoreState, score_state, ScoreState*,
            "The set of score states cannot be changed during evaluation.");
                 obj->set_model(this);
                 score_states_ordered_=false;
+                obj->set_was_owned(true);
               },,
               {obj->set_model(NULL);});
 

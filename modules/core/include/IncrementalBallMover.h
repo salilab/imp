@@ -37,7 +37,7 @@ public:
                        Float radius);
   IMP_MOVER(IncrementalBallMover, get_module_version_info());
 private:
-  Pointer<SingletonContainer> sc_;
+  IMP::internal::OwnerPointer<SingletonContainer> sc_;
   unsigned int n_;
   Float radius_;
   ParticlesTemp moved_;

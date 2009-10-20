@@ -34,8 +34,8 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT PairsRestraint : public Restraint
 {
-  Pointer<PairScore> ss_;
-  Pointer<PairContainer> pc_;
+  IMP::internal::OwnerPointer<PairScore> ss_;
+  IMP::internal::OwnerPointer<PairContainer> pc_;
 public:
   //! Create the restraint.
   /** \param[in] ss The function to apply to each particle.

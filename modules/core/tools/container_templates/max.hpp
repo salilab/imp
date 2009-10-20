@@ -29,8 +29,8 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT MaximumGroupnameScoreRestraint
 : public Restraint
 {
-  Pointer<GroupnameScore> f_;
-  Pointer<GroupnameContainer> c_;
+  IMP::internal::OwnerPointer<GroupnameScore> f_;
+  IMP::internal::OwnerPointer<GroupnameContainer> c_;
   unsigned int n_;
 public:
   /** n is the number of minimumal scores to use.

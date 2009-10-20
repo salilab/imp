@@ -20,7 +20,7 @@ IMPCORE_BEGIN_NAMESPACE
 */
 class IMPCOREEXPORT DistancePairScore : public PairScore
 {
-  Pointer<UnaryFunction> f_;
+  IMP::internal::OwnerPointer<UnaryFunction> f_;
 public:
   DistancePairScore(UnaryFunction *f);
   IMP_PAIR_SCORE(DistancePairScore, get_module_version_info())

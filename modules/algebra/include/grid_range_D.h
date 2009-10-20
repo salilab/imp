@@ -109,7 +109,7 @@ std::ostream &operator<<(std::ostream &out, const GridIteratorD<D> &v) {
 template <int D>
 class GridRangeD {
 private:
-  Pointer<GridRangeData<D> > data_;
+  IMP::internal::OwnerPointer<GridRangeData<D> > data_;
 public:
   typedef GridIteratorD<D> iterator;
   typedef iterator const_iterator;

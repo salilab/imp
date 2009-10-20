@@ -17,10 +17,12 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-Mover::Mover() {}
+Mover::Mover(std::string name):Object(name) {}
 
 IMP_LIST_IMPL(MonteCarlo, Mover, mover, Mover*, Movers,
-              obj->set_optimizer(this),,);
+              {obj->set_optimizer(this);
+                obj->set_was_owned(true);
+              },,);
 
 MonteCarlo::MonteCarlo(): temp_(1),
                           stop_energy_(-std::numeric_limits<Float>::max()),

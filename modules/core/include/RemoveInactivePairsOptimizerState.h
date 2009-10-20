@@ -29,7 +29,7 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT RemoveInactivePairsOptimizerState :
   public OptimizerState
 {
-  Pointer<ListPairContainer> c_;
+  IMP::internal::OwnerPointer<ListPairContainer> c_;
 public:
   /** \param[in] c The Container to hold the elements to process
       \param[in] name The name to use for this Object

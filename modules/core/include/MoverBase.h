@@ -30,7 +30,7 @@ class IMPCOREEXPORT MoverBase: public Mover
 {
   std::vector<Floats> floats_;
   std::vector<Ints> ints_;
-  Pointer<SingletonContainer> pc_;
+  IMP::internal::OwnerPointer<SingletonContainer> pc_;
 public:
   virtual void accept_move(){}
   virtual void reject_move();

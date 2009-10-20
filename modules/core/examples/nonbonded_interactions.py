@@ -10,24 +10,21 @@ m= IMP.Model()
 ps = IMP.core.ListSingletonContainer(IMP.core.create_xyzr_particles(m, 20, 1.0))
 
 # create a bond between two particles
-bonds= IMP.core.ListSingletonContainer()
 bd0= IMP.atom.Bonded.setup_particle(ps.get_particle(0))
 bd1= IMP.atom.Bonded.setup_particle(ps.get_particle(1))
-bonds.add_particle(IMP.atom.custom_bond(bd0, bd1, 2.0).get_particle())
+IMP.atom.custom_bond(bd0, bd1, 2.0)
 
 # Set up the nonbonded list
 nbl= IMP.core.ClosePairsScoreState(ps)
 m.add_score_state(nbl)
-# Exclude bonds from closest pairs
-fl= nbl.get_close_pairs_container()
 nbl.add_close_pair_filter(IMP.atom.BondedPairFilter())
 # Set the amount particles need to move before the list is updated
 nbl.set_slack(2.0)
 
 # Set up excluded volume
-ps= IMP.core.SphereDistancePairScore(IMP.core.HarmonicLowerBound(0,1))
-evr= IMP.core.PairsRestraint(ps, fl)
-evri= m.add_restraint(evr)
+sdps= IMP.core.SphereDistancePairScore(IMP.core.HarmonicLowerBound(0,1))
+evr= IMP.core.PairsRestraint(sdps, nbl.get_close_pairs_container())
+m.add_restraint(evr)
 
 # Set up optimizer
 o= IMP.core.ConjugateGradients()

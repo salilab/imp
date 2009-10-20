@@ -34,8 +34,8 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT SingletonScoreState : public ScoreState
 {
-  Pointer<SingletonModifier> f_;
-  Pointer<SingletonModifier> af_;
+  IMP::internal::OwnerPointer<SingletonModifier> f_;
+  IMP::internal::OwnerPointer<SingletonModifier> af_;
   Particle* v_;
 public:
   /** before and after are the modifiers to apply before and after

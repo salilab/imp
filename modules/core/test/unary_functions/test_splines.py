@@ -23,6 +23,8 @@ class CubicSplineTests(IMP.test.TestCase):
         floats.append(0.)
         open_spline = IMP.core.OpenCubicSpline(floats, 10.0, 5.0)
         closed_spline = IMP.core.ClosedCubicSpline(floats, 10.0, 5.0)
+        open_spline.set_was_owned(True)
+        closed_spline.set_was_owned(True)
         self.assertEqual(open_spline.evaluate(10.0), 0.0)
         self.assertEqual(open_spline.evaluate(20.0), 0.0)
         self.assertRaises(ValueError, open_spline.evaluate, 9.9)
@@ -49,6 +51,7 @@ class CubicSplineTests(IMP.test.TestCase):
         for i in range(10):
             floats.append(test_func(minrange + spline_spacing * i)[0])
         spline = spline_func(floats, minrange, spline_spacing)
+        spline_func.set_was_owned(True)
 
         # Now test the spline against the test function for intermediate points
         for i in range(30):
@@ -68,6 +71,8 @@ class CubicSplineTests(IMP.test.TestCase):
         floats.append(0.)
         open_spline = IMP.core.OpenCubicSpline(floats, 10.0, 10.0)
         closed_spline = IMP.core.ClosedCubicSpline(floats, 10.0, 10.0)
+        open_spline.set_was_owned(True)
+        closed_spline.set_was_owned(False)
         open_spline.show()
         closed_spline.show()
 

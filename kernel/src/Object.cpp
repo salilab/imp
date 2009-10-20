@@ -20,11 +20,12 @@ RefCounted::~ RefCounted() {
     --live_objects_;
   }
 
-Object::Object()
+Object::Object(std::string name): name_(name)
 {
 #if IMP_BUILD < IMP_FAST
   log_level_=DEFAULT;
   check_value_=111111111;
+  was_owned_=false;
 #endif
   IMP_LOG(MEMORY, "Creating object " << this << std::endl);
 }
@@ -35,6 +36,11 @@ Object::~Object()
   IMP_INTERNAL_CHECK(get_is_valid(), "Object " << this << " previously freed.");
 #if IMP_BUILD < IMP_FAST
   check_value_=666666666;
+  if (!was_owned_) {
+    IMP_WARN("Object \"" << get_name() << "\" was never owned."
+             << " See the IMP::Object documentation for an explaination."
+             << std::endl);
+  }
 #endif
   IMP_LOG(MEMORY, "Destroying object " << this << std::endl);
 }

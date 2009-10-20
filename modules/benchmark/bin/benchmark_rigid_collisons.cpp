@@ -55,7 +55,7 @@ void test_one(std::string name,
 int main() {
   set_log_level(SILENT);
   set_check_level(IMP::NONE);
-  Pointer<Model> m(new Model());
+  IMP::internal::OwnerPointer<Model> m(new Model());
   Particles atoms;
   std::vector<RigidBody> rbs;
   for (int i=0; i< 5; ++i) {

@@ -29,7 +29,7 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT AllPairsPairContainer : public PairContainer
 {
-  Pointer<SingletonContainer> c_;
+  IMP::internal::OwnerPointer<SingletonContainer> c_;
   mutable int a_, b_, i_;
 public:
   //! Get the individual particles from the passed SingletonContainer

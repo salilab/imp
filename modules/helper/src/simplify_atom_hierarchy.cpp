@@ -89,7 +89,7 @@ namespace {
                                Float min, Float max);
     IMP_MOVER(IncrementalRadiusMassMover, get_module_version_info())
     private:
-    Pointer<SingletonContainer> sc_;
+    IMP::internal::OwnerPointer<SingletonContainer> sc_;
     unsigned int n_;
     Float radius_delta_;
     ParticlesTemp moved_;
@@ -152,7 +152,7 @@ namespace {
 
 
   class WriteMap:public FailureHandlerBase {
-    Pointer<em::DensityMap> dm_;
+    IMP::internal::OwnerPointer<em::DensityMap> dm_;
     std::string file_name_;
   public:
     WriteMap(em::DensityMap *dm, std::string fn): dm_(dm), file_name_(fn){}

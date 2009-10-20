@@ -34,8 +34,8 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT PairScoreState : public ScoreState
 {
-  Pointer<PairModifier> f_;
-  Pointer<PairModifier> af_;
+  IMP::internal::OwnerPointer<PairModifier> f_;
+  IMP::internal::OwnerPointer<PairModifier> af_;
   ParticlePair v_;
 public:
   /** before and after are the modifiers to apply before and after

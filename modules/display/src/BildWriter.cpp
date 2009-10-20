@@ -26,7 +26,7 @@ void BildWriter::on_close() {
 
 void BildWriter::add_geometry(Geometry *g) {
   IMP_CHECK_OBJECT(g);
-  Pointer<Geometry> gp(g);
+  IMP::internal::OwnerPointer<Geometry> gp(g);
   get_stream() << ".color " << g->get_color()
                    << "\n";
   if (gp->get_dimension() ==0) {

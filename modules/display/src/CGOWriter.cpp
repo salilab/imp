@@ -32,7 +32,7 @@ void CGOWriter::on_close() {
 }
 
 void CGOWriter::add_geometry(CompoundGeometry* cg) {
-  Pointer<CompoundGeometry> cgp(cg);
+  IMP::internal::OwnerPointer<CompoundGeometry> cgp(cg);
   Geometries g= cgp->get_geometry();
   if (g.empty() && !cg->get_name().empty()) {
     get_stream() << "k= '" << cg->get_name() << "'\n";

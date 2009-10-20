@@ -32,8 +32,8 @@ public:
   IMP_RESTRAINT(DihedralRestraint, get_module_version_info())
 
 private:
-  Pointer<UnaryFunction> score_func_;
-  Pointer<Particle> p_[4];
+  IMP::internal::OwnerPointer<UnaryFunction> score_func_;
+  IMP::internal::OwnerPointer<Particle> p_[4];
 };
 
 IMPCORE_END_NAMESPACE

@@ -58,8 +58,8 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder
 {
-  Pointer<ClosePairsFinder> cpf_;
-  Pointer<Refiner> r_;
+  IMP::internal::OwnerPointer<ClosePairsFinder> cpf_;
+  IMP::internal::OwnerPointer<Refiner> r_;
   ObjectKey k_;
  public:
   //! Use the default choice for the ClosePairsFinder

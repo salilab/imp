@@ -29,8 +29,8 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT ClosePairsPairScore : public PairScore
 {
-  Pointer<Refiner> r_;
-  Pointer<PairScore> f_;
+  IMP::internal::OwnerPointer<Refiner> r_;
+  IMP::internal::OwnerPointer<PairScore> f_;
   Float th_;
   FloatKey rk_;
 public:

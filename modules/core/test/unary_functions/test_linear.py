@@ -11,6 +11,7 @@ class LinearTests(IMP.test.TestCase):
         for offset in (0.0, -1.0):
             for slope in (0.0, -5.0, 3.5):
                 func = IMP.core.Linear(offset, slope)
+                func.set_was_owned(True)
                 for i in range(15):
                     val = -10.0 + 3.5 * i
                     scoreonly = func.evaluate(val)
@@ -22,6 +23,7 @@ class LinearTests(IMP.test.TestCase):
     def test_accessors(self):
         """Test Linear accessors"""
         func = IMP.core.Linear(0, 0)
+        func.set_was_owned(True)
         self.assertEqual(func.evaluate(1), 0)
         func.set_slope(10)
         self.assertEqual(func.evaluate(1), 10)
@@ -31,6 +33,7 @@ class LinearTests(IMP.test.TestCase):
     def test_show(self):
         """Check Linear::show() method"""
         func = IMP.core.Linear(0, 1.0)
+        func.set_was_owned(True)
         func.show()
 
 if __name__ == '__main__':

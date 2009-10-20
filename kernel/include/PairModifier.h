@@ -110,7 +110,7 @@ public:
                    DerivativeAccumulator *da): f_(f), da_(da){
     IMP_USAGE_CHECK(da_,
                     "The passed derivative accumulator should not be null.",
-              InvalidStateException);
+                    InvalidStateException);
   }
   void operator()( ParticlePair p) const {
     if (da_) {

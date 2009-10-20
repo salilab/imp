@@ -43,6 +43,7 @@ void assert_fail(const char *msg)
 
 void add_failure_handler(FailureHandler *fh) {
   handlers.push_back(fh);
+  fh->set_was_owned(true);
 }
 
 

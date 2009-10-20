@@ -29,8 +29,8 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT MaximumSingletonScoreRestraint
 : public Restraint
 {
-  Pointer<SingletonScore> f_;
-  Pointer<SingletonContainer> c_;
+  IMP::internal::OwnerPointer<SingletonScore> f_;
+  IMP::internal::OwnerPointer<SingletonContainer> c_;
   unsigned int n_;
 public:
   /** n is the number of minimumal scores to use.

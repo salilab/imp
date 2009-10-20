@@ -40,9 +40,9 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT SingletonsScoreState : public ScoreState
 {
-  Pointer<SingletonModifier> f_;
-  Pointer<SingletonModifier> af_;
-  Pointer<SingletonContainer> c_;
+  IMP::internal::OwnerPointer<SingletonModifier> f_;
+  IMP::internal::OwnerPointer<SingletonModifier> af_;
+  IMP::internal::OwnerPointer<SingletonContainer> c_;
 public:
   /** \param[in] c The Container to hold the elements to process
       \param[in] before The SingletonModifier to apply to all elements

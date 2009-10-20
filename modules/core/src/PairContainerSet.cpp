@@ -67,7 +67,10 @@ IMP_LIST_IMPL(PairContainerSet,
               PairContainer,
               pair_container,
               PairContainer*,
-              PairContainers,++rev_,++rev_,++rev_)
+              PairContainers,{
+                obj->set_was_owned(true);
+                ++rev_;
+              },++rev_,++rev_)
 
 
 void PairContainerSet::apply(const PairModifier *sm) {

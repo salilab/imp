@@ -50,8 +50,8 @@ public:
  */
 class IMPDISPLAYEXPORT PairsGeometry: public CompoundGeometry
 {
-  Pointer<PairScore> f_;
-  Pointer<PairContainer> c_;
+  IMP::internal::OwnerPointer<PairScore> f_;
+  IMP::internal::OwnerPointer<PairContainer> c_;
   double threshold_;
   double radius_;
 public:

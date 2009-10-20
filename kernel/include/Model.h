@@ -70,6 +70,7 @@ private:
                   ValueException);
       }
     }
+    p->set_was_owned(true);
     particles_.push_back(p);
     p->ps_->iterator_= --particles_.end();
     p->ps_->model_= this;

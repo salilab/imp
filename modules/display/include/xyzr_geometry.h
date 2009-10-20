@@ -34,7 +34,7 @@ public:
 };
 
 class IMPDISPLAYEXPORT XYZRsGeometry: public CompoundGeometry {
-  Pointer<SingletonContainer> sc_;
+  IMP::internal::OwnerPointer<SingletonContainer> sc_;
   FloatKey rk_;
  public:
   XYZRsGeometry(SingletonContainer *sc,

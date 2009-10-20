@@ -31,7 +31,7 @@ ExcludedVolumeRestraint::ExcludedVolumeRestraint(SingletonContainer *sc,
 ExcludedVolumeRestraint::ExcludedVolumeRestraint(SingletonContainer *sc,
                                                  double k):
   sc_(sc), k_(k){
-  r_= Pointer<Refiner>(new RigidMembersRefiner());
+  r_= IMP::internal::OwnerPointer<Refiner>(new RigidMembersRefiner());
 }
 
 void ExcludedVolumeRestraint::set_model(Model *m) {

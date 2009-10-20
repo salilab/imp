@@ -50,7 +50,7 @@ private:
   typedef typename Traits::Bin Bin;
   typedef typename std::vector<Bin> Map;
   Map map_;
-  Pointer<IMP::SingletonContainer> pc_;
+  IMP::internal::OwnerPointer<IMP::SingletonContainer> pc_;
   Key keys_;
 
   typename Map::const_iterator get_iterator(const Value &vs) const {

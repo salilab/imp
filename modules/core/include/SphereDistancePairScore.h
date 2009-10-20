@@ -22,7 +22,7 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT SphereDistancePairScore : public PairScore
 {
-  Pointer<UnaryFunction> f_;
+  IMP::internal::OwnerPointer<UnaryFunction> f_;
   FloatKey radius_;
 public:
   SphereDistancePairScore(UnaryFunction *f,
@@ -40,7 +40,7 @@ public:
  */
 class IMPCOREEXPORT NormalizedSphereDistancePairScore : public PairScore
 {
-  Pointer<UnaryFunction> f_;
+  IMP::internal::OwnerPointer<UnaryFunction> f_;
   FloatKey radius_;
 public:
   NormalizedSphereDistancePairScore(UnaryFunction *f,

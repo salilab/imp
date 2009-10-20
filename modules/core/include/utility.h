@@ -55,12 +55,12 @@ algebra::Segment3D diameter(const XYZs &ps);
 */
 template <class Container>
 class EditGuard: public RAII {
-  Pointer<Container> c_;
+  IMP::internal::OwnerPointer<Container> c_;
 public:
   IMP_RAII(EditGuard, (Container *c),,
            {
              if (!c->get_is_editing()) {
-               c_= Pointer<Container>(c);
+               c_= IMP::internal::OwnerPointer<Container>(c);
                c_->set_is_editing(true);
              }
            },

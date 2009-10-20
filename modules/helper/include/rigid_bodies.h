@@ -96,7 +96,7 @@ IMPHELPEREXPORT void cover_rigid_body(core::RigidBody d,
 inline void cover_rigid_body(core::RigidBody d,
                      FloatKey rk= core::XYZR::get_default_radius_key())
 {
-  Pointer<Refiner> ref(new core::RigidMembersRefiner());
+  IMP::internal::OwnerPointer<Refiner> ref(new core::RigidMembersRefiner());
   cover_rigid_body(d, ref, rk);
 }
 

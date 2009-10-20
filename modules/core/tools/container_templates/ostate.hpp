@@ -30,8 +30,8 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT GroupnamesOptimizerState : public OptimizerState
 {
-  Pointer<GroupnameModifier> f_;
-  Pointer<GroupnameContainer> c_;
+  IMP::internal::OwnerPointer<GroupnameModifier> f_;
+  IMP::internal::OwnerPointer<GroupnameContainer> c_;
 public:
   /** \param[in] c The Container to hold the elements to process
       \param[in] gf The GroupnameModifier to apply to all elements.

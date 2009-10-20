@@ -11,10 +11,4 @@
 IMP_BEGIN_NAMESPACE
 
 
-Ownable::~Ownable() {
-  if (!was_owned_) {
-    IMP_WARN("Object " << this << " destroyed without being owned");
-  }
-}
-
 IMP_END_NAMESPACE
