@@ -13,6 +13,7 @@
 #include "config.h"
 #include "internal/IndexingIterator.h"
 #include "Particle.h"
+#include "Interaction.h"
 #include "utility.h"
 #include "VersionInfo.h"
 #include "base_types.h"
@@ -32,7 +33,7 @@ class SingletonScore;
 
     Implementors should see IMP_SINGLETON_CONTAINER().
  */
-class IMPEXPORT SingletonContainer : public Object
+class IMPEXPORT SingletonContainer : public Interaction
 {
   struct Accessor: public NullDefault {
     typedef Accessor This;
@@ -96,13 +97,22 @@ public:
   //! Get all the Particles from the container
   virtual ParticlesTemp get_particles() const=0;
 
-  /** \brief The revision number of a container is incremented every time the
-      contents change.
-
-      Anything wishing to monitor a container can simply check if the revision
-      number is different than the last one it saw.
-  */
-  virtual unsigned int get_revision() const =0;
+  //! Containers do not induce interactions
+  ParticlesList get_interacting_particles() const {
+    return ParticlesList();
+  }
+  //! Containers do not modify other things
+  ObjectsTemp get_output_objects() const {
+    return ObjectsTemp();
+  }
+  //! Particles do not, themselves, depend on particle attributes
+  ParticlesTemp get_input_particles() const {
+    return ParticlesTemp();
+  }
+  //! Particles do not, themselves, change particle attributes
+  ParticlesTemp get_output_particles() const {
+    return ParticlesTemp();
+  }
 
   IMP_REF_COUNTED_DESTRUCTOR(SingletonContainer)
 };

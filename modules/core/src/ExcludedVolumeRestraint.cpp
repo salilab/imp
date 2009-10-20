@@ -87,12 +87,13 @@ ParticlesList ExcludedVolumeRestraint::get_interacting_particles() const {
   return pr_->get_interacting_particles();
 }
 
-ParticlesTemp ExcludedVolumeRestraint::get_read_particles() const {
-  return pr_->get_read_particles();
+ParticlesTemp ExcludedVolumeRestraint::get_input_particles() const {
+  return pr_->get_input_particles();
 }
 
-ParticlesTemp ExcludedVolumeRestraint::get_write_particles() const {
-  return pr_->get_write_particles();
+
+ObjectsTemp ExcludedVolumeRestraint::get_input_objects() const {
+  return pr_->get_input_objects();
 }
 
 

@@ -34,7 +34,7 @@ class RBDTests(IMP.test.TestCase):
             hd.add_child(chd)
         return rd.get_particle()
 
-    def _test_create_one(self, htr, snap):
+    def _test_create_one(self, htr):
         count=1
         success=0
         for i in range(0, count):
@@ -42,12 +42,11 @@ class RBDTests(IMP.test.TestCase):
             IMP.set_log_level(IMP.SILENT)
             p= self._create_hierarchy(m,  htr)
             ss=IMP.helper.create_rigid_body(p,
-                                            IMP.core.XYZs(IMP.core.Hierarchy(p, htr).get_children()),
-                                            snap)
+                                            IMP.core.XYZs(IMP.core.Hierarchy(p, htr).get_children()))
             m.add_score_state(ss)
             rbd= IMP.core.RigidBody(p)
             p.show()
-            rbd.set_coordinates_are_optimized(True, snap)
+            rbd.set_coordinates_are_optimized(True)
             self. _add_rb_restraints(rbd)
             cg= IMP.core.ConjugateGradients()
             cg.set_model(m)
@@ -57,7 +56,7 @@ class RBDTests(IMP.test.TestCase):
                 success=success+1
         self.assert_(success > count/2)
 
-    def _test_create_many(self, htr, snap):
+    def _test_create_many(self, htr):
         count=10
         success=0
         for i in range(0, count):
@@ -67,7 +66,7 @@ class RBDTests(IMP.test.TestCase):
             for i in range(0,2):
                 p= self._create_hierarchy(m, htr)
                 l.add_particle(p)
-            ss=IMP.helper.create_rigid_bodies(l, IMP.core.ChildrenRefiner(htr), snap)
+            ss=IMP.helper.create_rigid_bodies(l, IMP.core.ChildrenRefiner(htr))
             m.add_score_state(ss)
             for p in l.get_particles():
                 rbd= IMP.core.RigidBody(p)
@@ -84,17 +83,13 @@ class RBDTests(IMP.test.TestCase):
     def test_create_one(self):
         """Testing create_rigid_body"""
         htr= IMP.core.Hierarchy.get_default_traits()
-        self._test_create_one(htr, False)
+        self._test_create_one(htr)
         htr= IMP.atom.Hierarchy.get_traits()
-        self._test_create_one(htr, False)
-        htr= IMP.atom.Hierarchy.get_traits()
-        self._test_create_one(htr, True)
+        self._test_create_one(htr)
     def test_create_many(self):
         """Testing create_rigid_bodies"""
         htr= IMP.core.Hierarchy.get_default_traits()
-        self._test_create_many(htr, False)
-        htr= IMP.core.Hierarchy.get_default_traits()
-        self._test_create_many(htr, True)
+        self._test_create_many(htr)
 
     def _test_create_one_from_pdb(self):
         """Testing create_rigid_bodies"""

@@ -39,12 +39,12 @@ ExampleSingletonModifier::get_interacting_particles(Particle *) const {
 
 /* Only the passed particle is used */
 ParticlesTemp
-ExampleSingletonModifier::get_read_particles(Particle *p) const {
+ExampleSingletonModifier::get_input_particles(Particle *p) const {
   return ParticlesTemp(1, p);
 }
 
 ParticlesTemp
-ExampleSingletonModifier::get_write_particles(Particle *p) const {
+ExampleSingletonModifier::get_output_particles(Particle *p) const {
   return ParticlesTemp(1, p);
 }
 

@@ -88,7 +88,8 @@ MaximumChangeXYZRScoreState::MaximumChangeXYZRScoreState(SingletonContainer *pc,
 void MaximumChangeXYZRScoreState::do_before_evaluate()
 {
   IMP_CHECK_OBJECT(pc_);
-  if (rev_ != pc_->get_revision()) {
+  // broken, will be fixed with container versioning
+  if (false) {
     reset();
     maximum_change_= std::numeric_limits<double>::max();
   } else {
@@ -116,18 +117,25 @@ void MaximumChangeXYZRScoreState::reset()
   for (unsigned int i=0; i< pc_->get_number_of_particles(); ++i) {
     rv->apply(pc_->get_particle(i));
   }
-  rev_=pc_->get_revision();
 }
 
 ParticlesList MaximumChangeXYZRScoreState::get_interacting_particles() const {
   return ParticlesList();
 }
 
-ParticlesTemp MaximumChangeXYZRScoreState::get_read_particles() const {
+ObjectsTemp MaximumChangeXYZRScoreState::get_input_objects() const {
+  return ObjectsTemp(1, pc_);
+}
+
+ObjectsTemp MaximumChangeXYZRScoreState::get_output_objects() const {
+  return ObjectsTemp();
+}
+
+ParticlesTemp MaximumChangeXYZRScoreState::get_input_particles() const {
   return ParticlesTemp(pc_->particles_begin(), pc_->particles_end());
 }
 
-ParticlesTemp MaximumChangeXYZRScoreState::get_write_particles() const {
+ParticlesTemp MaximumChangeXYZRScoreState::get_output_particles() const {
   return ParticlesTemp();
 }
 

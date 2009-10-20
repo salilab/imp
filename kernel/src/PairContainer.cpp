@@ -19,8 +19,8 @@ namespace {
 }
 
 
-PairContainer::PairContainer(std::string name) {
-  set_name(internal::make_object_name(name, next_index++));
+PairContainer::PairContainer(std::string name):
+  Interaction(internal::make_object_name(name, next_index++)){
 }
 
 IMP_END_NAMESPACE

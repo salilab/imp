@@ -34,11 +34,11 @@ ParticlesList Transform::get_interacting_particles(Particle *) const {
   return ParticlesList();
 }
 
-ParticlesTemp Transform::get_read_particles(Particle *p) const {
+ParticlesTemp Transform::get_input_particles(Particle *p) const {
   return ParticlesTemp(1,p);
 }
 
-ParticlesTemp Transform::get_write_particles(Particle *p) const {
+ParticlesTemp Transform::get_output_particles(Particle *p) const {
   return ParticlesTemp(1,p);
 }
 

@@ -77,14 +77,14 @@ void QuadraticClosePairsFinder::show(std::ostream &out) const {
 
 
 ParticlesTemp
-QuadraticClosePairsFinder::get_used_particles(SingletonContainer *sc) const {
+QuadraticClosePairsFinder::get_input_particles(SingletonContainer *sc) const {
   ParticlesTemp ret= sc->get_particles();
   return ret;
 }
 
 ParticlesTemp
-QuadraticClosePairsFinder::get_used_particles(SingletonContainer *a,
-                                              SingletonContainer *b) const {
+QuadraticClosePairsFinder::get_input_particles(SingletonContainer *a,
+                                               SingletonContainer *b) const {
   ParticlesTemp ret0= a->get_particles();
   ParticlesTemp ret1= b->get_particles();
   ret0.insert(ret0.end(), ret1.begin(), ret1.end());

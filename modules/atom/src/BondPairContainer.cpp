@@ -84,9 +84,14 @@ ParticlePairsTemp BondPairContainer::get_particle_pairs() const {
   return ret;
 }
 
-unsigned int BondPairContainer::get_revision() const {
-  return sc_->get_revision();
-}
 
+ObjectsTemp BondPairContainer::get_input_objects() const {
+  ObjectsTemp ret(get_number_of_particle_pairs()+1);
+  for (unsigned int i=0; i< ret.size(); ++i) {
+    ret[i]= sc_->get_particle(i);
+  }
+  ret.back()= sc_;
+  return ret;
+}
 
 IMPATOM_END_NAMESPACE

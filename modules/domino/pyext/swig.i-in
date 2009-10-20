@@ -19,5 +19,6 @@ IMP_DIRECTOR_MODULE_CLASS(domino, DiscreteSet);
 %include "IMP/domino/TransformationCartesianProductSampler.h"
 %include "IMP/domino/TransformationPermutationSampler.h"
 %include "IMP/domino/TransformationDiscreteSet.h"
+%include "IMP/domino/TransformationUtils.h"
 %include "IMP/domino/SymmetrySampler.h"
 

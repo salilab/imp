@@ -61,10 +61,10 @@ inline Float LogPairScore::evaluate(Particle *a, Particle *b,
 inline ParticlesList
 LogPairScore::get_interacting_particles(Particle *a,
                                         Particle *b) const {
-  return ParticlesList(1, get_read_particles(a,b));
+  return ParticlesList(1, get_input_particles(a,b));
 }
 
-inline ParticlesTemp LogPairScore::get_read_particles(Particle *a,
+inline ParticlesTemp LogPairScore::get_input_particles(Particle *a,
                                                       Particle *b) const {
   ParticlesTemp t(2);
   t[0]= a;
@@ -72,10 +72,6 @@ inline ParticlesTemp LogPairScore::get_read_particles(Particle *a,
   return t;
 }
 
-inline ParticlesTemp LogPairScore::get_write_particles(Particle *a,
-                                                      Particle *b) const {
-  return get_read_particles(a,b);
-}
 
 
 

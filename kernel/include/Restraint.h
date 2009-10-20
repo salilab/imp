@@ -137,6 +137,15 @@ public:
 
 #endif
 
+  //! Restraints cannot update other objects
+  ObjectsTemp get_output_objects() const {
+    return ObjectsTemp();
+  }
+  //! Restraints cannot update other particles
+  ParticlesTemp get_output_particles() const {
+    return ParticlesTemp();
+  }
+
   IMP_REF_COUNTED_DESTRUCTOR(Restraint);
 private:
   /* This pointer should never be ref counted as Model has a

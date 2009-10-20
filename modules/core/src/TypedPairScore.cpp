@@ -46,20 +46,15 @@ TypedPairScore::TypedPairScore(IntKey typekey, bool allow_invalid_types)
 
 ParticlesList TypedPairScore::get_interacting_particles(Particle *a,
                                                         Particle *b) const {
-  return ParticlesList(1, get_read_particles(a,b));
+  return ParticlesList(1, get_input_particles(a,b));
 }
 
-ParticlesTemp TypedPairScore::get_read_particles(Particle *a,
-                                                 Particle *b) const {
+ParticlesTemp TypedPairScore::get_input_particles(Particle *a,
+                                                  Particle *b) const {
   ParticlesTemp ret(2);
   ret[0]=a;
   ret[1]=b;
   return ret;
-}
-
-ParticlesTemp TypedPairScore::get_write_particles(Particle *a,
-                                                  Particle *b) const {
-  return get_read_particles(a,b);
 }
 
 

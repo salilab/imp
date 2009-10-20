@@ -12,7 +12,7 @@
 #include "config.h"
 #include "DensityHeader.h"
 #include "MapReaderWriter.h"
-#include <IMP/RefCounted.h>
+#include <IMP/Object.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/BoundingBoxD.h>
 #include <IMP/VectorOfRefCounted.h>

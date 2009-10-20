@@ -44,11 +44,7 @@ public:
 
   /** Get the set of particles read when applied to the arguments. */
   virtual ParticlesTemp
-    get_read_particles(Particle *a, Particle *b) const =0;
-
-  /** Get the set of particles writen when applied to the arguments. */
-  virtual ParticlesTemp
-    get_write_particles(Particle *a, Particle *b) const =0;
+    get_input_particles(Particle *a, Particle *b) const =0;
 
   IMP_REF_COUNTED_DESTRUCTOR(PairScore)
 };

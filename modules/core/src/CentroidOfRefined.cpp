@@ -17,16 +17,16 @@ IMPCORE_BEGIN_NAMESPACE
 
 CentroidOfRefined
 ::CentroidOfRefined(Refiner *r,
-                                     FloatKey weight,
-                                     FloatKeys ks): r_(r),
-ks_(ks), w_(weight)
+                    FloatKey weight,
+                    FloatKeys ks):
+  refiner_(r), ks_(ks), w_(weight)
 {
 }
 
 
 void CentroidOfRefined::apply(Particle *p) const
 {
-  ParticlesTemp ps = r_->get_refined(p);
+  ParticlesTemp ps = refiner_->get_refined(p);
   unsigned int n= ps.size();
   double tw=0;
   if (w_ != FloatKey()) {
@@ -51,26 +51,6 @@ void CentroidOfRefined::apply(Particle *p) const
   }
 }
 
-ParticlesList CentroidOfRefined::get_interacting_particles(Particle*p) const {
-  ParticlesTemp pt=get_read_particles(p);
-  pt.push_back(get_write_particles(p)[0]);
-  return ParticlesList(1, pt);
-}
-
-ParticlesTemp CentroidOfRefined::get_read_particles(Particle*p) const {
-  ParticlesTemp ps = r_->get_refined(p);
-  ps.push_back(p);
-  return ps;
-}
-
-ParticlesTemp CentroidOfRefined::get_write_particles(Particle*p) const {
-  return ParticlesTemp(1,p);
-}
-
-void CentroidOfRefined::show(std::ostream &out) const
-{
-  out << "CentroidOfRefined" << std::endl;
-}
-
+IMP_SINGLETON_MODIFIER_FROM_REFINED(CentroidOfRefined, refiner_)
 
 IMPCORE_END_NAMESPACE

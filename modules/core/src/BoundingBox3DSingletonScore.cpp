@@ -60,14 +60,10 @@ BoundingBox3DSingletonScore::get_interacting_particles(Particle*) const {
 }
 
 ParticlesTemp
-BoundingBox3DSingletonScore::get_read_particles(Particle* p) const {
+BoundingBox3DSingletonScore::get_input_particles(Particle* p) const {
   return ParticlesTemp(1, p);
 }
 
-ParticlesTemp
-BoundingBox3DSingletonScore::get_write_particles(Particle* p) const {
-  return ParticlesTemp(1, p);
-}
 
 void BoundingBox3DSingletonScore::show(std::ostream &out) const {
   out << "BoundingBox3DSingletonScore" << std::endl;

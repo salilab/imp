@@ -30,8 +30,8 @@
   ParticlePairsTemp get_close_pairs(SingletonContainer *pc) const;      \
   ParticlePairsTemp get_close_pairs(SingletonContainer *pca,            \
                                     SingletonContainer *pcb) const;     \
-  ParticlesTemp get_used_particles(SingletonContainer *pc) const;       \
-  ParticlesTemp get_used_particles(SingletonContainer *a,               \
+  ParticlesTemp get_input_particles(SingletonContainer *pc) const;      \
+  ParticlesTemp get_input_particles(SingletonContainer *a,              \
                                    SingletonContainer *b) const;        \
   IMP_OBJECT(Name, version_info)
 

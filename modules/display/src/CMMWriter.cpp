@@ -32,6 +32,7 @@ void CMMWriter::add_geometry(Geometry *g) {
   if (g->get_dimension() != 0) return;
   std::string name=g->get_name();
   Float radius = g->get_size();
+  g->set_was_owned(true);
 
   for (unsigned int i=0; i< g->get_number_of_vertices(); ++i) {
     algebra::Vector3D v= g->get_vertex(i);

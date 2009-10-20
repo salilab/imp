@@ -49,20 +49,15 @@ Float SphereDistancePairScore::evaluate(Particle *a, Particle *b,
 ParticlesList
 SphereDistancePairScore::get_interacting_particles(Particle *a,
                                                    Particle *b) const {
-  return ParticlesList(1, get_read_particles(a,b));
+  return ParticlesList(1, get_input_particles(a,b));
 }
 
-ParticlesTemp SphereDistancePairScore::get_read_particles(Particle *a,
+ParticlesTemp SphereDistancePairScore::get_input_particles(Particle *a,
                                                           Particle *b) const {
   ParticlesTemp ret(2);
   ret[0]=a;
   ret[1]=b;
   return ret;
-}
-
-ParticlesTemp SphereDistancePairScore::get_write_particles(Particle *a,
-                                                           Particle *b) const {
-  return get_read_particles(a,b);
 }
 
 
@@ -108,12 +103,12 @@ Float NormalizedSphereDistancePairScore::evaluate(Particle *a, Particle *b,
 ParticlesList
 NormalizedSphereDistancePairScore::get_interacting_particles(Particle *a,
                                                        Particle *b) const {
-  return ParticlesList(1, get_read_particles(a,b));
+  return ParticlesList(1, get_input_particles(a,b));
 }
 
 ParticlesTemp
-NormalizedSphereDistancePairScore::get_read_particles(Particle *a,
-                                                      Particle *b) const {
+NormalizedSphereDistancePairScore::get_input_particles(Particle *a,
+                                                       Particle *b) const {
   ParticlesTemp ret(2);
   ret[0]=a;
   ret[1]=b;
@@ -121,11 +116,6 @@ NormalizedSphereDistancePairScore::get_read_particles(Particle *a,
 }
 
 
-ParticlesTemp
-NormalizedSphereDistancePairScore::get_write_particles(Particle *a,
-                                                       Particle *b) const {
-  return get_read_particles(a,b);
-}
 
 
 void NormalizedSphereDistancePairScore::show(std::ostream &out) const

@@ -18,43 +18,22 @@ IMPCORE_BEGIN_NAMESPACE
 CoverRefined
 ::CoverRefined(Refiner *ref,
                FloatKey rk,
-               Float slack): ref_(ref),
-                             rk_(rk),
+               Float slack): rk_(rk),
                              slack_(slack)
 {
+  refiner_=ref;
 }
+
+IMP_SINGLETON_MODIFIER_FROM_REFINED(CoverRefined, refiner_)
+
 
 void CoverRefined::apply(Particle *p) const
 {
   XYZR dp(p, rk_);
-  IMP_CHECK_OBJECT(ref_.get());
-  IMP_USAGE_CHECK(ref_->get_can_refine(p), "Passed particles cannot be refined",
-            ValueException);
-  XYZs ps(ref_->get_refined(p));
+  XYZs ps(refiner_->get_refined(p));
   set_enclosing_sphere(dp, ps);
   dp.set_radius(dp.get_radius()+slack_);
 }
 
-ParticlesList CoverRefined::get_interacting_particles(Particle*p) const {
-  ParticlesTemp pt=get_read_particles(p);
-  pt.push_back(get_write_particles(p)[0]);
-  return ParticlesList(1, pt);
-}
-
-ParticlesTemp CoverRefined::get_read_particles(Particle*p) const {
-  ParticlesTemp ps = ref_->get_refined(p);
-  ps.push_back(p);
-  return ps;
-}
-
-ParticlesTemp CoverRefined::get_write_particles(Particle*p) const {
-  return ParticlesTemp(1,p);
-}
-
-void CoverRefined::show(std::ostream &out) const
-{
-  out << "CoverRefined with "
-      << *ref_ << " and " << rk_ << std::endl;
-}
 
 IMPCORE_END_NAMESPACE

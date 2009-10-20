@@ -80,14 +80,14 @@ ParticlesList SimpleDiscreteRestraint::get_interacting_particles() const
   return ParticlesList(1, ParticlesTemp(particles_begin(), particles_end()));
 }
 
-ParticlesTemp SimpleDiscreteRestraint::get_read_particles() const
+ParticlesTemp SimpleDiscreteRestraint::get_input_particles() const
 {
   return ParticlesTemp(particles_begin(), particles_end());
 }
 
-ParticlesTemp SimpleDiscreteRestraint::get_write_particles() const
+ObjectsTemp SimpleDiscreteRestraint::get_input_objects() const
 {
-  return ParticlesTemp(particles_begin(), particles_end());
+  return ObjectsTemp();
 }
 
 

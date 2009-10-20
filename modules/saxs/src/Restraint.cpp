@@ -38,18 +38,18 @@ Restraint::Restraint(const Particles& particles, const Profile& exp_profile,
 
 ParticlesList Restraint::get_interacting_particles() const
 {
-  return ParticlesList(1, get_read_particles());
+  return ParticlesList(1, get_input_particles());
 }
 
-ParticlesTemp Restraint::get_read_particles() const
+ParticlesTemp Restraint::get_input_particles() const
 {
   return ParticlesTemp(particles_.begin(), particles_.end());
 }
 
 
-ParticlesTemp Restraint::get_write_particles() const
+ObjectsTemp Restraint::get_input_objects() const
 {
-  return get_read_particles();
+  return ObjectsTemp();
 }
 
 

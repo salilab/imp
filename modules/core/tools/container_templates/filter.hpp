@@ -41,7 +41,8 @@ public:
       list.
       @{
   */
-  virtual ParticlesTemp get_used_particles(const ClassnamesTemp &vs) const=0;
+  virtual ParticlesTemp get_input_particles(Value p) const=0;
+  virtual ObjectsTemp get_input_objects(Value p) const=0;
   /** @} */
 
   IMP_REF_COUNTED_DESTRUCTOR(GroupnameFilter)

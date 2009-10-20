@@ -26,15 +26,15 @@ ParticlesList ConstantRestraint::get_interacting_particles() const
 }
 
 
-ParticlesTemp ConstantRestraint::get_read_particles() const
+ParticlesTemp ConstantRestraint::get_input_particles() const
 {
   return ParticlesTemp();
 }
 
-ParticlesTemp ConstantRestraint::get_write_particles() const
-{
-  return ParticlesTemp();
+ObjectsTemp ConstantRestraint::get_input_objects() const {
+  return ObjectsTemp();
 }
+
 
 void ConstantRestraint::show(std::ostream& out) const
 {

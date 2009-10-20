@@ -1,4 +1,7 @@
 namespace IMP {
+%warnfilter(401) DecoratorsWithImplicitTraits< IMP::atom::Hierarchy,IMP::core::GenericHierarchies >;
+%warnfilter(401) DecoratorsWithImplicitTraits< IMP::atom::Hierarchy,IMP::core::GenericHierarchies >
+%warnfilter(401) IMP::Decorators< IMP::atom::Hierarchy,IMP::DecoratorsWithImplicitTraits< IMP::atom::Hierarchy,IMP::DecoratorsWithTraits< IMP::core::Hierarchy,IMP::VectorOfRefCounted< IMP::Particle * >,IMP::core::HierarchyTraits > > >
 namespace atom {
 %warnfilter(403) ForceFieldParameters;
 }

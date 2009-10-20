@@ -41,7 +41,8 @@ public:
       list.
       @{
   */
-  virtual ParticlesTemp get_used_particles(const ParticlePairsTemp &vs) const=0;
+  virtual ParticlesTemp get_input_particles(ParticlePair p) const=0;
+  virtual ObjectsTemp get_input_objects(ParticlePair p) const=0;
   /** @} */
 
   IMP_REF_COUNTED_DESTRUCTOR(PairFilter)

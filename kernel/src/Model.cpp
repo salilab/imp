@@ -15,14 +15,18 @@
 #include <boost/timer.hpp>
 #include <set>
 
+// for now make all readable particles writeable to get around
+// hierarchy issue
+
 #if IMP_BUILD < IMP_FAST
-#define WRAP_CALL(restraint, expr)                                      \
+#define WRAP_UPDATE_CALL(restraint, expr)                               \
   {                                                                     \
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {                                  \
-      ParticlesTemp rpl= (restraint)->get_read_particles();             \
+      ParticlesTemp rpl= (restraint)->get_input_particles();            \
       internal::ReadLock rl(particles_begin(), particles_end(),         \
                             rpl.begin(), rpl.end());                    \
-      ParticlesTemp wpl= (restraint)->get_write_particles();            \
+      ParticlesTemp wpl= (restraint)->get_output_particles();           \
+      wpl.insert(wpl.end(), rpl.begin(), rpl.end());                    \
       internal::WriteLock wl(particles_begin(), particles_end(),        \
                              wpl.begin(), wpl.end());                   \
       try {                                                             \
@@ -42,15 +46,42 @@
       expr;                                                             \
     }                                                                   \
   }
+
+#define WRAP_EVALUATE_CALL(restraint, expr)                             \
+  {                                                                     \
+    IMP_IF_CHECK(USAGE_AND_INTERNAL) {                                  \
+      ParticlesTemp rpl= (restraint)->get_input_particles();            \
+      internal::ReadLock rl(particles_begin(), particles_end(),         \
+                            rpl.begin(), rpl.end());                    \
+      internal::WriteLock wl(particles_begin(), particles_end(),        \
+                             rpl.begin(), rpl.end());                   \
+      try {                                                             \
+        expr;                                                           \
+      } catch (internal::ReadLockedParticleException e) {               \
+        IMP_ERROR("Particle " << e.p_->get_name()                       \
+                  << " is not in the read particles list of "           \
+                  << (*it)->get_name() << " but should be.");           \
+        throw InvalidStateException("Invalid particle used");           \
+      } catch (internal::WriteLockedParticleException e) {              \
+        IMP_ERROR("Particle " << e.p_->get_name()                       \
+                  << " is not in the write particles list of "          \
+                  << (*it)->get_name() << " but should be.");           \
+        throw InvalidStateException("Invalid particle used");           \
+      }                                                                 \
+    } else {                                                            \
+      expr;                                                             \
+    }                                                                   \
+  }
 #else
-#define WRAP_CALL(restraint, expr) expr
+#define WRAP_UPDATE_CALL(restraint, expr) expr
+#define WRAP_EVALUATE_CALL(restraint, expr) expr
 #endif
 
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 struct ReadLock{
   ParticlesTemp p_;
-  std::set<Particle *> allowed_;
+  std::set<Object *> allowed_;
 public:
   template <class It, class It1>
   ReadLock(It1 pa, It1 pb,
@@ -76,7 +107,7 @@ public:
 
 struct WriteLock{
   ParticlesTemp p_;
-  std::set<Particle *> allowed_;
+  std::set<Object *> allowed_;
 public:
   template <class It, class It1>
   WriteLock(It1 pa, It1 pb,
@@ -184,12 +215,14 @@ IMP_LIST_IMPL(Model, ScoreState, score_state, ScoreState*,
 void Model::order_score_states() {
   // go away once the ordering below happens
   IMP_IF_CHECK(USAGE) {
-    std::set<Particle*> read_particles;
+    std::set<Object*> read_objects;
     for (ScoreStateConstIterator it = score_states_begin();
          it != score_states_end(); ++it) {
-      ParticlesTemp wp= (*it)->get_write_particles();
+      ObjectsTemp wp= (*it)->get_output_objects();
+      ParticlesTemp wpp= (*it)->get_output_particles();
+      wp.insert(wp.end(), wpp.begin(), wpp.end());
       for (unsigned int i=0; i< wp.size(); ++i) {
-        if (read_particles.find(wp[i]) != read_particles.end()) {
+        if (read_objects.find(wp[i]) != read_objects.end()) {
           IMP_WARN("Particle " << wp[i]->get_name()
                    << " was changed by score state "
                    << (*it)->get_name()
@@ -200,8 +233,10 @@ void Model::order_score_states() {
                    << "you have to do it yourself.");
         }
       }
-      ParticlesTemp rp= (*it)->get_read_particles();
-      read_particles.insert(rp.begin(), rp.end());
+      ObjectsTemp rp= (*it)->get_input_objects();
+      read_objects.insert(rp.begin(), rp.end());
+      ParticlesTemp rpp= (*it)->get_input_particles();
+      read_objects.insert(rpp.begin(), rpp.end());
     }
   }
 
@@ -226,7 +261,7 @@ void Model::order_score_states() {
   }
   for (ScoreStateIterator it= score_states_begin();
        it != score_states_end(); ++it) {
-    ParticlesTemp read= (*it)->get_read_particles();
+    ObjectsTemp read= (*it)->get_input_objects();
     for (unsigned int i=0; i< read.size(); ++i) {
     }
   }
@@ -264,7 +299,7 @@ void Model::before_evaluate() const {
     IMP_CHECK_OBJECT(*it);
     IMP_LOG(TERSE, "Updating " << (*it)->get_name() << std::endl);
     if (gather_statistics_) timer.restart();
-    WRAP_CALL(*it, (*it)->before_evaluate(iteration_));
+    WRAP_UPDATE_CALL(*it, (*it)->before_evaluate(iteration_));
     if (gather_statistics_) {
       stats_data_[*it].update_state_before(timer.elapsed());
     }
@@ -284,7 +319,7 @@ void Model::after_evaluate(bool calc_derivs) const {
     IMP_CHECK_OBJECT(*it);
     IMP_LOG(TERSE, "Updating " << (*it)->get_name() << std::endl);
     if (gather_statistics_) timer.restart();
-    WRAP_CALL(*it, (*it)->after_evaluate(iteration_,
+    WRAP_UPDATE_CALL(*it, (*it)->after_evaluate(iteration_,
                                          (calc_derivs ? &accum : NULL)));
     if (gather_statistics_) {
       stats_data_[*it].update_state_after(timer.elapsed());
@@ -340,11 +375,11 @@ double Model::do_evaluate_restraints(bool calc_derivs,
     if ((*it)->get_is_incremental()
         && incremental_restraints != NONINCREMENTAL) {
       if (incremental_evaluation) {
-        WRAP_CALL(*it,
+        WRAP_EVALUATE_CALL(*it,
                   value=(*it)->incremental_evaluate(calc_derivs? &accum:NULL));
         IMP_LOG(TERSE, (*it)->get_name() << " score is " << value << std::endl);
       } else {
-        WRAP_CALL(*it,
+        WRAP_EVALUATE_CALL(*it,
                   value=(*it)->evaluate(calc_derivs? &accum:NULL));
         IMP_LOG(TERSE, (*it)->get_name() << " score is " << value << std::endl);
       }
@@ -354,7 +389,7 @@ double Model::do_evaluate_restraints(bool calc_derivs,
       score+= value;
     } else if (!(*it)->get_is_incremental()
                && incremental_restraints != INCREMENTAL) {
-      WRAP_CALL(*it,
+      WRAP_EVALUATE_CALL(*it,
                 value=(*it)->evaluate(calc_derivs? &accum:NULL));
       IMP_LOG(TERSE, (*it)->get_name()<<  " score is " << value << std::endl);
       if (gather_statistics_) {

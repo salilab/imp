@@ -83,17 +83,17 @@ void DiameterRestraint::show(std::ostream &out) const {
 }
 
 ParticlesList DiameterRestraint::get_interacting_particles() const {
-  return ParticlesList(1, get_read_particles());
+  return ParticlesList(1, get_input_particles());
 }
 
-ParticlesTemp DiameterRestraint::get_read_particles() const {
+ParticlesTemp DiameterRestraint::get_input_particles() const {
   ParticlesTemp t(sc_->particles_begin(), sc_->particles_end());
   t.push_back(p_);
   return t;
 }
 
-ParticlesTemp DiameterRestraint::get_write_particles() const {
-  return get_read_particles();
+ObjectsTemp DiameterRestraint::get_input_objects() const {
+  return ObjectsTemp(1, sc_);
 }
 
 IMPCORE_END_NAMESPACE

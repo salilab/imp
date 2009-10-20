@@ -23,7 +23,6 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT PairContainerSet
   : public PairContainer
 {
-  unsigned int rev_;
 public:
   //! Construct and empty set
   PairContainerSet(std::string name="PairContainerSet %1%");

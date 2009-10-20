@@ -35,26 +35,30 @@ bool CommonEndpointPairFilter
   }
 }
 
+
 ParticlesTemp
-CommonEndpointPairFilter::get_used_particles(const ParticlePairsTemp &pt)
+CommonEndpointPairFilter::get_input_particles(ParticlePair pt)
   const {
   ParticlesTemp ret;
-  ret.reserve(pt.size()*3);
-  for (unsigned int i=0; i< pt.size(); ++i) {
-    ret.push_back(pt[i][0]);
-    ret.push_back(pt[i][1]);
-    if (IMP::atom::Bond::particle_is_instance(pt[i][0])){
-      IMP::atom::Bond b(pt[i][0]);
-      ret.push_back(b.get_bonded(0));
-      ret.push_back(b.get_bonded(1));
-    }
-    if (IMP::atom::Bond::particle_is_instance(pt[i][1])){
-      IMP::atom::Bond b(pt[i][1]);
-      ret.push_back(b.get_bonded(0));
-      ret.push_back(b.get_bonded(1));
-    }
+  ret.reserve(3);
+  ret.push_back(pt[0]);
+  ret.push_back(pt[1]);
+  if (IMP::atom::Bond::particle_is_instance(pt[0])){
+    IMP::atom::Bond b(pt[0]);
+    ret.push_back(b.get_bonded(0));
+    ret.push_back(b.get_bonded(1));
+  }
+  if (IMP::atom::Bond::particle_is_instance(pt[1])){
+    IMP::atom::Bond b(pt[1]);
+    ret.push_back(b.get_bonded(0));
+    ret.push_back(b.get_bonded(1));
   }
   return ret;
+}
+
+ObjectsTemp
+CommonEndpointPairFilter::get_input_objects(ParticlePair pt) const {
+  return ObjectsTemp();
 }
 
 IMPMISC_END_NAMESPACE

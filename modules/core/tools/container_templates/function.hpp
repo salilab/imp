@@ -71,10 +71,10 @@ public:
 
   /** Get the set of particles read when applied to the arguments.*/
   virtual ParticlesTemp
-    get_read_particles(ClassnameArguments) const =0;
+    get_input_particles(ClassnameArguments) const =0;
   /** Get the set of particles modifier when applied to the arguments.*/
   virtual ParticlesTemp
-    get_write_particles(ClassnameArguments) const =0;
+    get_output_particles(ClassnameArguments) const =0;
 };
 
 IMP_OUTPUT_OPERATOR(GroupnameModifier)
@@ -108,8 +108,9 @@ public:
   GroupnameFunctor(const GroupnameModifier *f): f_(f), da_(NULL){}
   GroupnameFunctor(const GroupnameModifier *f,
                    DerivativeAccumulator *da): f_(f), da_(da){
-    IMP_USAGE_CHECK(da_, "The passed derivative accumulator should not be null.",
-              InvalidStateException);
+    IMP_USAGE_CHECK(da_,
+                    "The passed derivative accumulator should not be null.",
+                    InvalidStateException);
   }
   void operator()( Value p) const {
     if (da_) {
