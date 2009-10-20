@@ -15,6 +15,7 @@
 #include "config.h"
 #include "DiscreteSet.h"
 #include <IMP/algebra/Transformation3D.h>
+#include <IMP/domino/Transformation.h>
 #include "IMP/domino/MappedDiscreteSet.h"
 
 IMPDOMINO_BEGIN_NAMESPACE

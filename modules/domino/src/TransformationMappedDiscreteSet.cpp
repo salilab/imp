@@ -4,6 +4,7 @@
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
+
 #include "IMP/domino/TransformationMappedDiscreteSet.h"
 #include <IMP/algebra/Rotation3D.h>
 #include <IMP/algebra/Transformation3D.h>
@@ -12,14 +13,11 @@ TransformationMappedDiscreteSet::TransformationMappedDiscreteSet
    (Particles *ps_target): MappedDiscreteSet(ps_target)
 {
   //translation attributes
-  atts_.push_back(FloatKey("x"));
-  atts_.push_back(FloatKey("y"));
-  atts_.push_back(FloatKey("z"));
+  FloatKeys xyz = IMP::domino::Transformation::get_translation_keys();
+  atts_.insert(atts_.end(),xyz.begin(),xyz.end());
   //rotation attributes
-  atts_.push_back(FloatKey("a"));
-  atts_.push_back(FloatKey("b"));
-  atts_.push_back(FloatKey("c"));
-  atts_.push_back(FloatKey("d"));
+  FloatKeys abcd = IMP::domino::Transformation::get_rotation_keys();
+  atts_.insert(atts_.end(),abcd.begin(),abcd.end());
 }
 
 IMPDOMINO_END_NAMESPACE
