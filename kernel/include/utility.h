@@ -144,7 +144,7 @@ int compare(const T &a, const T &b) {
 class IMPEXPORT Ownable {
   bool was_owned_;
 public:
-  Ownable(): was_owned_(true){}
+  Ownable(): was_owned_(false){}
   void set_was_owned(bool tf) {
     was_owned_=tf;
   }
