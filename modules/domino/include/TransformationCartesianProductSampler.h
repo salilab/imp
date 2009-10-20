@@ -1,6 +1,6 @@
 /**
  *  \file TransformationCartesianProductSampler.h
- *  \brief The class samples all  combinations in a discrete set of
+ *  \brief The class samples all combinations in a discrete set of
  *    transformatios.
  *    For example, for a discrete set of trasnformations:
  *    t11,t12       for particle p1
@@ -28,7 +28,7 @@ class  IMPDOMINOEXPORT TransformationCartesianProductSampler :
 {
 public:
   TransformationCartesianProductSampler(){}
-  //! Create a combination sampler.
+  //! Create the sampler.
   /**
     \param[in] ds              the discrete sampling space
     \param[in] ps              the sampled particles
@@ -40,7 +40,7 @@ public:
                                         Particles *ps,
                                         bool trans_from_orig = false);
   void move2state(const CombState *cs) ;
-
+  void show(std::ostream& out=std::cout) const;
 protected:
   TransformationUtils tu_;
 };
