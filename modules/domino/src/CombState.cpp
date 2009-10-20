@@ -26,6 +26,7 @@ void CombState::show(std::ostream& out) const {
   for (CombData::const_iterator it = data_.begin();
        it != data_.end(); it++) {
     out << it->first->get_value(node_name_key());
+    out<< " ( "<< it->first->get_name() << ")";
     out << " ||| " << it->second << " , ";
   }
   out << " total_score : " << total_score_ << std::endl;

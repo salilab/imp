@@ -17,6 +17,8 @@
 IMPDOMINO_BEGIN_INTERNAL_NAMESPACE
 
 // backwards compatibility functions
+//TODO - I think I solved the problem, see if the new version is stable
+//and then remove evil hack
 inline  unsigned int particle_index(Particle *p) {
   Model::ParticleIterator pit= p->get_model()->particles_begin();
   unsigned int ret=0;
@@ -33,7 +35,8 @@ inline  unsigned int particle_index(Particle *p) {
      the tests are broken. It is awaiting discussion with Keren.
 
   ****************************************************************/
-  return ret+1;
+  //return ret+1;
+  return ret;
 }
 IMPDOMINO_END_INTERNAL_NAMESPACE
 
@@ -42,6 +45,11 @@ IMPDOMINO_BEGIN_NAMESPACE
 IMPDOMINOEXPORT StringKey node_name_key();
 
 typedef std::map<Particle *, unsigned int> CombData;
+//! Holds a combination of states for each particle in the restraint graph
+/**
+Holds an index for fast merge and split operations ans well as for
+is_subset queries
+ **/
 class IMPDOMINOEXPORT CombState
 {
 public:
