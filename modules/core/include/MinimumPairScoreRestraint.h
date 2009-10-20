@@ -28,8 +28,8 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT MinimumPairScoreRestraint
 : public Restraint
 {
-  Pointer<PairScore> f_;
-  Pointer<PairContainer> c_;
+  IMP::internal::OwnerPointer<PairScore> f_;
+  IMP::internal::OwnerPointer<PairContainer> c_;
   unsigned int n_;
 public:
   /** n is the number of minimumal scores to use.

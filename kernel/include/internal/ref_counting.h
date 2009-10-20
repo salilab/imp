@@ -19,7 +19,6 @@
 IMP_BEGIN_INTERNAL_NAMESPACE
 
 
-// Can be called on any object and will only unref it if appropriate
 template <class O>
 void unref(O* o)
 {
@@ -36,7 +35,6 @@ void unref(O* o)
 }
 
 
-// Can be called on any object and will only ref it if appropriate
 template <class O>
 void ref(O* o)
 {

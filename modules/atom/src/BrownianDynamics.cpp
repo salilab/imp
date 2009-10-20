@@ -231,8 +231,8 @@ double BrownianDynamics::simulate(float max_time_nu)
   IMP_OBJECT_LOG;
   IMP_USAGE_CHECK(get_model() != NULL, "Must set model before calling simulate",
             ValueException);
-  Pointer<SingletonContainer> sc
-    = Pointer<SingletonContainer>(setup_particles());
+  IMP::internal::OwnerPointer<SingletonContainer> sc
+    = IMP::internal::OwnerPointer<SingletonContainer>(setup_particles());
   IMP_LOG(TERSE, "Running brownian dynamics on "
           << sc->get_number_of_particles()
           << " particles with a step of " << si_.get_maximum_time_step()

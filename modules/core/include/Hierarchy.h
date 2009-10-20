@@ -250,7 +250,7 @@ public:
  */
 class IMPCOREEXPORT ModifierVisitor: public HierarchyVisitor
 {
-  Pointer<SingletonModifier> sm_;
+  IMP::internal::OwnerPointer<SingletonModifier> sm_;
 public:
   ModifierVisitor(SingletonModifier *sm): sm_(sm) {}
   virtual bool visit(Hierarchy p) {

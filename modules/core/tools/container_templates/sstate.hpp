@@ -34,8 +34,8 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT GroupnameScoreState : public ScoreState
 {
-  Pointer<GroupnameModifier> f_;
-  Pointer<GroupnameModifier> af_;
+  IMP::internal::OwnerPointer<GroupnameModifier> f_;
+  IMP::internal::OwnerPointer<GroupnameModifier> af_;
   Value v_;
 public:
   /** before and after are the modifiers to apply before and after

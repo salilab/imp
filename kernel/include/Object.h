@@ -45,7 +45,7 @@ class IMPEXPORT Object: public RefCounted
   // hide the inheritance from RefCounted as it is a detail
   std::string name_;
 protected:
-  IMP_NO_DOXYGEN(Object());
+  IMP_NO_DOXYGEN(Object(std::string name=std::string()));
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Object);
 
 public:
@@ -123,12 +123,30 @@ public:
   /* @} */
 
 
+  /** @name Ownership
+
+      Most objects (other than Optimizers and Models) are designed to
+      be owned by other objects. For example, you need to add a Restraint
+      to a Model in order to use it. Since it is a common error to
+      neglect to pass ownership, we print a warning if this is never
+      done before the object is destroyed. To disable this warning
+      for a particular object, call set_was_owned(true).
+      @{
+  */
+  void set_was_owned(bool tf) {
+#if IMP_BUILD < IMP_FAST
+    was_owned_=true;
+#endif
+}
+  /** @} */
+
 private:
   Object(const Object &o) {}
   const Object& operator=(const Object &o) {return *this;}
 
 #if IMP_BUILD < IMP_FAST
   LogLevel log_level_;
+  bool was_owned_;
   double check_value_;
 #endif
 };

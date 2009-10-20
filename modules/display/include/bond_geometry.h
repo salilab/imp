@@ -38,7 +38,7 @@ public:
  */
 class IMPDISPLAYEXPORT BondsGeometry: public CompoundGeometry
 {
-  Pointer<SingletonContainer> sc_;
+  IMP::internal::OwnerPointer<SingletonContainer> sc_;
   double r_;
   FloatKey rk_;
 public:

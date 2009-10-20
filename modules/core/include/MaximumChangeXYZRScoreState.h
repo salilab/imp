@@ -29,7 +29,7 @@ class IMPCOREEXPORT MaximumChangeXYZRScoreState: public ScoreState
 {
   std::vector<algebra::Sphere3D> orig_values_;
   Float maximum_change_;
-  Pointer<SingletonContainer> pc_;
+  IMP::internal::OwnerPointer<SingletonContainer> pc_;
   unsigned int rev_;
   FloatKey rk_;
 public:

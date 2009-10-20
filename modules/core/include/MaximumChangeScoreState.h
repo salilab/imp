@@ -34,7 +34,7 @@ class IMPCOREEXPORT MaximumChangeScoreState: public ScoreState
   FloatKeys keys_;
   std::vector<Floats> orig_values_;
   Float maximum_change_;
-  Pointer<SingletonContainer> pc_;
+  IMP::internal::OwnerPointer<SingletonContainer> pc_;
   unsigned int rev_;
 public:
   //! Track the changes with the specified keys.

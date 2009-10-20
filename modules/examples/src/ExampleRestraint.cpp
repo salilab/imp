@@ -13,7 +13,10 @@ IMPEXAMPLES_BEGIN_NAMESPACE
 
 ExampleRestraint::ExampleRestraint(PairScore* score_func,
                                    PairContainer *pc) : pc_(pc),
-                                          f_(score_func) {}
+                                          f_(score_func) {
+  pc_->set_was_owned(true);
+  f_->set_was_owned(true);
+}
 
 double
 ExampleRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const

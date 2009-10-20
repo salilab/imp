@@ -21,7 +21,7 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT AttributeSingletonScore : public SingletonScore
 {
-  Pointer<UnaryFunction> f_;
+  IMP::internal::OwnerPointer<UnaryFunction> f_;
   FloatKey k_;
 public:
   //! Apply function f to attribete k

@@ -88,13 +88,13 @@ class IMPDISPLAYEXPORT Writer: public Object
   virtual void add_geometry(const Geometries &g) {
     for (unsigned int i=0; i< g.size(); ++i) {
       IMP_CHECK_OBJECT(g[i]);
-      Pointer<Geometry> gp(g[i]);
+      IMP::internal::OwnerPointer<Geometry> gp(g[i]);
       add_geometry(gp);
     }
   }
 
   virtual void add_geometry(CompoundGeometry* cg) {
-    Pointer<CompoundGeometry> cgp(cg);
+    IMP::internal::OwnerPointer<CompoundGeometry> cgp(cg);
     Geometries g= cgp->get_geometry();
     for (unsigned int i=0; i< g.size(); ++i) {
       IMP_CHECK_OBJECT(g[i]);

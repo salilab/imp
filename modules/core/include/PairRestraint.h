@@ -28,7 +28,7 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT PairRestraint : public Restraint
 {
-  Pointer<PairScore> ss_;
+  IMP::internal::OwnerPointer<PairScore> ss_;
   ParticlePair v_;
 public:
   //! Create the restraint.

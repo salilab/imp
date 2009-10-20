@@ -30,8 +30,8 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT SingletonsOptimizerState : public OptimizerState
 {
-  Pointer<SingletonModifier> f_;
-  Pointer<SingletonContainer> c_;
+  IMP::internal::OwnerPointer<SingletonModifier> f_;
+  IMP::internal::OwnerPointer<SingletonContainer> c_;
 public:
   /** \param[in] c The Container to hold the elements to process
       \param[in] gf The SingletonModifier to apply to all elements.

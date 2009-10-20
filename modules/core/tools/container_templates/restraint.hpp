@@ -34,8 +34,8 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT GroupnamesRestraint : public Restraint
 {
-  Pointer<GroupnameScore> ss_;
-  Pointer<GroupnameContainer> pc_;
+  IMP::internal::OwnerPointer<GroupnameScore> ss_;
+  IMP::internal::OwnerPointer<GroupnameContainer> pc_;
 public:
   //! Create the restraint.
   /** \param[in] ss The function to apply to each particle.

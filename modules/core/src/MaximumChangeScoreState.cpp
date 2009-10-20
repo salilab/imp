@@ -76,6 +76,7 @@ void MaximumChangeScoreState::do_before_evaluate()
     maximum_change_= std::numeric_limits<double>::max();
   } else {
     IMP_NEW(CompareValues,  cv, (orig_values_, keys_));
+    cv->set_was_owned(true);
     pc_->apply(cv);
     maximum_change_= cv->get_change();
   }
@@ -92,6 +93,7 @@ void MaximumChangeScoreState::reset()
   orig_values_.clear();
   orig_values_.resize(pc_->get_number_of_particles());
   IMP_NEW(RecordValues, rv, (orig_values_, keys_));
+  rv->set_was_owned(true);
   pc_->apply(rv);
   rev_=pc_->get_revision();
 }

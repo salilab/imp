@@ -21,6 +21,7 @@ class CosineTests(IMP.test.TestCase):
             for periodicity in (1, 2, 3, 4):
                 for phase in (0.0, math.pi / 2.0, math.pi):
                     func = IMP.core.Cosine(force_constant, periodicity, phase)
+                    func.set_was_owned(True)
                     for i in range(15):
                         val = -math.pi + math.pi * 15.0 / (i + 1.0)
                         expscore, expderiv = _cosfunc(val, force_constant,
@@ -34,6 +35,7 @@ class CosineTests(IMP.test.TestCase):
     def test_show(self):
         """Check Cosine::show() method"""
         func = IMP.core.Cosine(10.0, 1, 0.0)
+        func.set_was_owned(True)
         s = StringIO.StringIO()
         func.show(s)
         self.assertEqual(s.getvalue()[:26], 'Cosine function with force')

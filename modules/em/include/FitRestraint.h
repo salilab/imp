@@ -55,8 +55,8 @@ public:
 
   IMP_LIST(private, Particle, particle, Particle*, Particles)
 private:
-    Pointer<DensityMap> target_dens_map_;
-  Pointer<SampledDensityMap> model_dens_map_;
+    IMP::internal::OwnerPointer<DensityMap> target_dens_map_;
+  IMP::internal::OwnerPointer<SampledDensityMap> model_dens_map_;
   // reference to the IMP environment
   float scalefac_;
   int num_particles_; // can it be removed ?

@@ -29,7 +29,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
  */
 class IMPDISPLAYEXPORT LogOptimizerState: public OptimizerState
 {
-  mutable Pointer<Writer> writer_;
+  mutable IMP::internal::OwnerPointer<Writer> writer_;
   std::string name_template_;
 
   CompoundGeometries edata_;
@@ -64,7 +64,7 @@ public:
     LogOptimizerState.
  */
 class IMPDISPLAYEXPORT DisplayModelOnFailure: public FailureHandler {
-  Pointer<LogOptimizerState> s_;
+  IMP::internal::OwnerPointer<LogOptimizerState> s_;
   std::string file_name_;
  public:
   DisplayModelOnFailure(LogOptimizerState *m, std::string file_name);

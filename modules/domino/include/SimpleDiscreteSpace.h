@@ -35,7 +35,7 @@ public:
   ~SimpleDiscreteSpace();
 
 protected:
-  Pointer<Model> m_;
+  IMP::internal::OwnerPointer<Model> m_;
 };
 
 IMPDOMINO_END_NAMESPACE

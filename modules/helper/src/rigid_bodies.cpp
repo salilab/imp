@@ -35,6 +35,7 @@ ScoreState* create_rigid_bodies(SingletonContainer *rbs,
   IMP_USAGE_CHECK(rbs->get_number_of_particles() >0,
             "Need some particles to make rigid bodies",
             ValueException);
+  IMP::internal::OwnerPointer<Refiner> ref(pr);
   for (SingletonContainer::ParticleIterator pit= rbs->particles_begin();
        pit != rbs->particles_end();++pit) {
     core::RigidBody rbd= core::RigidBody::setup_particle(*pit,
@@ -91,7 +92,7 @@ ScoreState* create_rigid_body(atom::Hierarchy h) {
 void cover_rigid_body(core::RigidBody d, Refiner *ref, FloatKey rk) {
   double md=0;
   // make sure it gets cleaned up properly
-  Pointer<Refiner> rp(ref);
+  IMP::internal::OwnerPointer<Refiner> rp(ref);
   for (unsigned int i=0; i< ref->get_number_of_refined(d); ++i) {
     core::RigidMember rm(ref->get_refined(d,i));
     double cd= rm.get_internal_coordinates().get_magnitude();

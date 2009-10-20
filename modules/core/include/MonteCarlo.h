@@ -133,7 +133,7 @@ private:
   Float temp_;
   Float stop_energy_;
   Float probability_;
-  Pointer<Optimizer> cg_;
+  IMP::internal::OwnerPointer<Optimizer> cg_;
   unsigned int num_local_steps_;
   unsigned int stat_forward_steps_taken_;
   unsigned int stat_upward_steps_taken_;

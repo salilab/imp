@@ -28,7 +28,7 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT GroupnameRestraint : public Restraint
 {
-  Pointer<GroupnameScore> ss_;
+  IMP::internal::OwnerPointer<GroupnameScore> ss_;
   Value v_;
 public:
   //! Create the restraint.

@@ -30,8 +30,8 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT PairsOptimizerState : public OptimizerState
 {
-  Pointer<PairModifier> f_;
-  Pointer<PairContainer> c_;
+  IMP::internal::OwnerPointer<PairModifier> f_;
+  IMP::internal::OwnerPointer<PairContainer> c_;
 public:
   /** \param[in] c The Container to hold the elements to process
       \param[in] gf The PairModifier to apply to all elements.

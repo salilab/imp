@@ -55,8 +55,7 @@ class Model;
     See the examples::ExampleRestraint  example for how to implement
     a simple restraint and see IMP_RESTRAINT().
  */
-class IMPEXPORT Restraint : public Ownable,
-                            public Interaction
+class IMPEXPORT Restraint : public Interaction
 {
 public:
   Restraint(std::string name="Restraint %1%");

@@ -59,7 +59,7 @@ class Model;
 
     Implementors should see IMP_SCORE_STATE().
  */
-class IMPEXPORT ScoreState : public Interaction, public Ownable
+class IMPEXPORT ScoreState : public Interaction
 {
   friend class Model;
   void set_model(Model* model);

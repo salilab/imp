@@ -52,10 +52,10 @@ class ClosePairsFinder;
  */
 class IMPCOREEXPORT ClosePairsScoreState : public ScoreState
 {
-  Pointer<MaximumChangeXYZRScoreState> xyzc_;
-  Pointer<ClosePairsFinder> f_;
-  Pointer<SingletonContainer> in_;
-  Pointer<ListPairContainer> out_;
+  IMP::internal::OwnerPointer<MaximumChangeXYZRScoreState> xyzc_;
+  IMP::internal::OwnerPointer<ClosePairsFinder> f_;
+  IMP::internal::OwnerPointer<SingletonContainer> in_;
+  IMP::internal::OwnerPointer<ListPairContainer> out_;
   Float distance_, slack_;
   FloatKey rk_;
 

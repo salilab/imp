@@ -133,25 +133,6 @@ int compare(const T &a, const T &b) {
 }
 
 
-/** \brief A base class which provides a warning if the object is never passed
-    to another before being destroyed.
-
-    This base class provides an automatic check to make sure that Restraint
-    or similar objects actually get added to the model. It will print a warning
-    if they are not. To turn off this warning for a particular object, call
-    the set_was_owned() method with true.
-*/
-class IMPEXPORT Ownable {
-  bool was_owned_;
-public:
-  Ownable(): was_owned_(false){}
-  void set_was_owned(bool tf) {
-    was_owned_=tf;
-  }
-  ~Ownable();
-};
-
-
 /** \brief RAII-style objects
 
     RAII-style are a convenient way of controlling a resource. They assume

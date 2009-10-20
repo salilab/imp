@@ -45,11 +45,13 @@ void LogOptimizerState::do_update(unsigned int n) {
 
 
 void LogOptimizerState::add_geometry(CompoundGeometry* g) {
-  edata_.push_back(Pointer<CompoundGeometry>(g));
+  edata_.push_back(g);
+  g->set_was_owned(true);
 }
 
 void LogOptimizerState::add_geometry(Geometry* g) {
-  gdata_.push_back(Pointer<Geometry>(g));
+  gdata_.push_back(g);
+  g->set_was_owned(true);
 }
 
 void LogOptimizerState::add_geometry(const CompoundGeometries& g) {

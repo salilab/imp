@@ -27,8 +27,8 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT RigidBodyDistancePairScore: public PairScore
 {
-  Pointer<Refiner> r_;
-  Pointer<PairScore> ps_;
+  IMP::internal::OwnerPointer<Refiner> r_;
+  IMP::internal::OwnerPointer<PairScore> ps_;
   ObjectKey k_;
 public:
   //! XXXX

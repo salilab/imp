@@ -29,6 +29,8 @@ ExampleComplexRestraint::ExampleComplexRestraint(UnaryFunction *f,
             ValueException);
   IMP_USAGE_CHECK(diameter>0, "The diameter must be positive",
             ValueException);
+  f_->set_was_owned(true);
+  sc_->set_was_owned(true);
 }
 
 void ExampleComplexRestraint::set_model(Model *m) {

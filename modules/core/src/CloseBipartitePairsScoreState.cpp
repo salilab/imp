@@ -204,6 +204,6 @@ IMP_LIST_IMPL(CloseBipartitePairsScoreState,
               ClosePairFilter,
               close_pair_filter,
               PairFilter*,
-              PairFilters,,,)
+              PairFilters,obj->set_was_owned(true);,,)
 
 IMPCORE_END_NAMESPACE

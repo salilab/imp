@@ -490,7 +490,7 @@ inline void Particle::add_to_derivative(FloatKey name, Float value,
 
 //! A class to store a pair of particles.
 /** \note These do not due ref counting currently. SWIG prevents
-    use of Pointer<Particle> as the storage type without some
+    use of internal::OwnerPointer<Particle> as the storage type without some
     gynmastics.
 
     \note ParticlePair objects are ordered.

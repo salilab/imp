@@ -44,7 +44,7 @@ public:
   IMP_RESTRAINT(DistanceRestraint, get_module_version_info())
 
 private:
-  Pointer<DistancePairScore> dp_;
+  IMP::internal::OwnerPointer<DistancePairScore> dp_;
   RefCountingDecorator<XYZ> p_[2];
 };
 

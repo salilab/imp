@@ -34,10 +34,10 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT ExcludedVolumeRestraint: public Restraint
 {
-  Pointer<ClosePairsScoreState> ss_;
-  Pointer<SingletonContainer> sc_;
-  Pointer<PairsRestraint> pr_;
-  Pointer<Refiner> r_;
+  IMP::internal::OwnerPointer<ClosePairsScoreState> ss_;
+  IMP::internal::OwnerPointer<SingletonContainer> sc_;
+  IMP::internal::OwnerPointer<PairsRestraint> pr_;
+  IMP::internal::OwnerPointer<Refiner> r_;
   double k_;
 public:
   /** The SingletonContainer contains a set of XYZR particles and RigidBody

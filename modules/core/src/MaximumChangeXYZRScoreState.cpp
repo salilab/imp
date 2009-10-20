@@ -93,6 +93,7 @@ void MaximumChangeXYZRScoreState::do_before_evaluate()
     maximum_change_= std::numeric_limits<double>::max();
   } else {
     IMP_NEW(CompareXYZValues,  cv, (orig_values_, rk_));
+    cv->set_was_owned(true);
     for (unsigned int i=0; i< pc_->get_number_of_particles(); ++i) {
       cv->apply(pc_->get_particle(i));
     }
@@ -111,6 +112,7 @@ void MaximumChangeXYZRScoreState::reset()
   orig_values_.clear();
   orig_values_.resize(pc_->get_number_of_particles());
   IMP_NEW(RecordXYZValues, rv, (orig_values_, rk_));
+  rv->set_was_owned(true);
   for (unsigned int i=0; i< pc_->get_number_of_particles(); ++i) {
     rv->apply(pc_->get_particle(i));
   }

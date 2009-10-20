@@ -16,11 +16,13 @@ FilterGeometry::FilterGeometry(const algebra::Plane3D &p): p_(p){
 
 
 void FilterGeometry::add_geometry(CompoundGeometry* g) {
-  edata_.push_back(Pointer<CompoundGeometry>(g));
+  edata_.push_back(g);
+  g->set_was_owned(true);
 }
 
 void FilterGeometry::add_geometry(Geometry* g) {
-  gdata_.push_back(Pointer<Geometry>(g));
+  gdata_.push_back(g);
+  g->set_was_owned(true);
 }
 
 void FilterGeometry::add_geometry(const CompoundGeometries& g) {

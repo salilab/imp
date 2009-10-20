@@ -25,7 +25,7 @@ class MonteCarlo;
 /** You probably want to use MoverBase if you are implementing a Mover.
     \see MonteCarlo
  */
-class IMPCOREEXPORT Mover: public Object, public Ownable
+class IMPCOREEXPORT Mover: public Object
 {
   friend class MonteCarlo;
   void set_optimizer(Optimizer *c) {
@@ -35,7 +35,7 @@ class IMPCOREEXPORT Mover: public Object, public Ownable
 
   WeakPointer<Optimizer> opt_;
 public:
-  Mover();
+  Mover(std::string name=std::string("Mover"));
 
   //! propose a modification
   /** \param[in] size A number between 0 and 1 used to scale the proposed

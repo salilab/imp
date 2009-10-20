@@ -42,7 +42,7 @@ public:
 //! Display the derivatives of a set of XYZ particles
 class IMPDISPLAYEXPORT XYZsDerivativeGeometry: public CompoundGeometry
 {
-  Pointer<SingletonContainer> sc_;
+  IMP::internal::OwnerPointer<SingletonContainer> sc_;
   Float radius_;
 public:
   XYZsDerivativeGeometry(SingletonContainer *d, Float radius=0);

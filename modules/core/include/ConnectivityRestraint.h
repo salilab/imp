@@ -34,7 +34,7 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT ConnectivityRestraint : public Restraint
 {
-  Pointer<PairScore> ps_;
+  IMP::internal::OwnerPointer<PairScore> ps_;
 public:
   //! Use the given PairScore
   ConnectivityRestraint(PairScore* ps);

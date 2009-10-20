@@ -38,7 +38,7 @@ public:
 
   IMP_RESTRAINT(AngleRestraint, get_module_version_info())
 protected:
-  Pointer<AngleTripletScore> sf_;
+  IMP::internal::OwnerPointer<AngleTripletScore> sf_;
   RefCountingDecorator<XYZ> p_[3];
 };
 

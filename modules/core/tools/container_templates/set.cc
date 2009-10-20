@@ -67,7 +67,10 @@ IMP_LIST_IMPL(GroupnameContainerSet,
               GroupnameContainer,
               groupname_container,
               GroupnameContainer*,
-              GroupnameContainers,++rev_,++rev_,++rev_)
+              GroupnameContainers,{
+                obj->set_was_owned(true);
+                ++rev_;
+              },++rev_,++rev_)
 
 
 void GroupnameContainerSet::apply(const GroupnameModifier *sm) {
