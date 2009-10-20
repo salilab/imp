@@ -172,14 +172,14 @@ namespace {
 }
 
 ParticlesTemp
-RigidClosePairsFinder::get_used_particles(SingletonContainer *sc) const {
+RigidClosePairsFinder::get_input_particles(SingletonContainer *sc) const {
   ParticlesTemp ret= fill_list(sc);
   return ret;
 }
 
 ParticlesTemp
-RigidClosePairsFinder::get_used_particles(SingletonContainer *a,
-                                          SingletonContainer *b) const {
+RigidClosePairsFinder::get_input_particles(SingletonContainer *a,
+                                           SingletonContainer *b) const {
   ParticlesTemp ret0= fill_list(a);
   ParticlesTemp ret1= fill_list(b);
   ret0.insert(ret0.end(), ret1.begin(), ret1.end());

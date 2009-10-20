@@ -47,13 +47,15 @@ ParticlesList DistanceRestraint::get_interacting_particles() const {
   return dp_->get_interacting_particles(p_[0], p_[1]);
 }
 
-ParticlesTemp DistanceRestraint::get_read_particles() const {
-  return dp_->get_read_particles(p_[0], p_[1]);
+ParticlesTemp DistanceRestraint::get_input_particles() const {
+  return dp_->get_input_particles(p_[0], p_[1]);
 }
 
-ParticlesTemp DistanceRestraint::get_write_particles() const {
-  return dp_->get_write_particles(p_[0], p_[1]);
+
+ObjectsTemp DistanceRestraint::get_input_objects() const {
+  return ObjectsTemp();
 }
+
 
 //! Show the current restraint.
 /** \param[in] out Stream to send restraint description to.

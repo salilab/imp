@@ -38,9 +38,9 @@ class SingletonTestModifier(IMP.SingletonModifier):
                 self.apply(p, a1)
     def get_version_info(self):
         return 1
-    def get_read_particles(self, p):
+    def get_input_particles(self, p):
         return IMP.ParticlesTemp(1,p)
-    def get_write_particles(self, p):
+    def get_output_particles(self, p):
         return IMP.ParticlesTemp(1,p)
 
 
@@ -59,9 +59,9 @@ class PairTestModifier(IMP.PairModifier):
                 self.apply(p[0], p[1], a1)
     def get_version_info(self):
         return 1
-    def get_read_particles(self, p, q):
+    def get_input_particles(self, p, q):
         return IMP.ParticlesTemp([p,q])
-    def get_write_particles(self, p, q):
+    def get_output_particles(self, p, q):
         return IMP.ParticlesTemp([p,q])
 
 

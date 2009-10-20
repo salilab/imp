@@ -115,24 +115,18 @@ namespace {
   }
 }
 
-
-ParticlesTemp ClosePairsPairScore::get_read_particles(Particle *a,
-                                                      Particle *b) const {
+ParticlesTemp ClosePairsPairScore::get_input_particles(Particle *a,
+                                                       Particle *b) const {
   ParticlesTemp ret;
   ParticlesTemp ea=expand(a, r_);
   ParticlesTemp eb=expand(b, r_);
   for (unsigned int i=0; i< ea.size(); ++i) {
     for (unsigned int j=0; j< eb.size(); ++j) {
-      ParticlesTemp c= f_->get_read_particles(ea[i], eb[j]);
+      ParticlesTemp c= f_->get_input_particles(ea[i], eb[j]);
       ret.insert(ret.end(), c.begin(), c.end());
     }
   }
   return ret;
-}
-
-ParticlesTemp
-ClosePairsPairScore::get_write_particles(Particle *, Particle*) const {
-  return ParticlesTemp();
 }
 
 void ClosePairsPairScore::show(std::ostream &out) const

@@ -119,6 +119,7 @@ void CGOWriter::write_geometry(Geometry *g, std::ostream &out) {
 
 void CGOWriter::add_geometry(Geometry *g) {
   IMP_CHECK_OBJECT(g);
+  g->set_was_owned(true);
   write_geometry(g, get_stream());
 }
 

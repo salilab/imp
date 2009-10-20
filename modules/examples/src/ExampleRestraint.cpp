@@ -48,33 +48,24 @@ ParticlesList ExampleRestraint::get_interacting_particles() const
 }
 
 /* We also need to know which particles are used (as some are
-   used, but don't create interactions. */
-ParticlesTemp ExampleRestraint::get_read_particles() const
+   used, but don't create interactions). */
+ParticlesTemp ExampleRestraint::get_input_particles() const
 {
   ParticlesTemp ret;
   for (PairContainer::ParticlePairIterator it
        = pc_->particle_pairs_begin();
        it != pc_->particle_pairs_end(); ++it) {
     ParticlePair pp= *it;
-    ParticlesTemp t= f_->get_read_particles(pp[0],
+    ParticlesTemp t= f_->get_input_particles(pp[0],
                                             pp[1]);
     ret.insert(ret.end(), t.begin(), t.end());
   }
   return ret;
 }
 
-ParticlesTemp ExampleRestraint::get_write_particles() const
+ObjectsTemp ExampleRestraint::get_input_objects() const
 {
-  ParticlesTemp ret;
-  for (PairContainer::ParticlePairIterator it
-       = pc_->particle_pairs_begin();
-       it != pc_->particle_pairs_end(); ++it) {
-    ParticlePair pp= *it;
-    ParticlesTemp t= f_->get_write_particles(pp[0],
-                                            pp[1]);
-    ret.insert(ret.end(), t.begin(), t.end());
-  }
-  return ret;
+  return ObjectsTemp(1, pc_);
 }
 
 void ExampleRestraint::show(std::ostream& out) const

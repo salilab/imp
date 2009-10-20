@@ -28,25 +28,26 @@ bool BondedPairFilter
 }
 
 ParticlesTemp BondedPairFilter
-::get_used_particles(const ParticlePairsTemp &t) const {
+::get_input_particles(ParticlePair t) const {
   ParticlesTemp ret;
-  ret.reserve(t.size()*3);
-  for (unsigned int i=0; i< t.size(); ++i) {
-    ret.push_back(t[i][0]);
-    ret.push_back(t[i][1]);
-    if (!Bonded::particle_is_instance(t[i][1])
-        || ! Bonded::particle_is_instance(t[i][0])) {
-      continue;
-    }
-
-    Bonded ba(t[i][0]);
-    Bonded bb(t[i][1]);
+  ret.push_back(t[0]);
+  ret.push_back(t[1]);
+  if (!Bonded::particle_is_instance(t[1])
+      || ! Bonded::particle_is_instance(t[0])) {
+  } else {
+    Bonded ba(t[0]);
+    Bonded bb(t[1]);
     Bond bd=get_bond(ba, bb);
     if (bd) ret.push_back(bd);
   }
   return ret;
 }
 
+
+ObjectsTemp
+BondedPairFilter::get_input_objects(ParticlePair pt) const {
+  return ObjectsTemp();
+}
 void BondedPairFilter::show(std::ostream &out) const {
   out << "BondPairFilter" << std::endl;
 }

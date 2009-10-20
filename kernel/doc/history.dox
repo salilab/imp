@@ -1,5 +1,9 @@
 /** \page recent Change History
 
+\par Week of October 15
+
+- The set of functions needed to get meta information about IMP::Restraint and IMP::ScoreState objects has hopefully stabilized. Sorry about the thrashing. If you have restraints or score states not in SVN, see the corresponding IMP_RESTRAINT type macros, the IMP::Interaction class and base classes for what exactly you need to implement.
+
 \par Week of October 8
 
 - IMP::Interaction was modified to split IMP::interaction::get_used_particles() into IMP::interaction::get_read_particles() and IMP::interaction::get_write_particles(). This makes it possible to check for IMP::ScoreState objects being in an inconsistent order (so that the input to one is updated after it is read). Later, we will be able to automatically order the score states ensure that there are no problems.

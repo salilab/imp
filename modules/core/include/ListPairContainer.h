@@ -23,7 +23,6 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT ListPairContainer : public PairContainer
 {
   bool sorted_;
-  unsigned int rev_;
 public:
   //! construct and pass an initial set of particle_pairs
   ListPairContainer(const ParticlePairs &ps,
@@ -79,7 +78,7 @@ public:
 
   virtual ParticlePairsTemp get_particle_pairs() const;
 
-  virtual unsigned int get_revision() const;
+  ObjectsTemp get_input_objects() const {return ObjectsTemp();}
 
   // for some reason swig gets this wrong
   //IMP_REF_COUNTED_DESTRUCTOR(ListPairContainer)

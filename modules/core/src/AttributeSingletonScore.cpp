@@ -44,12 +44,7 @@ AttributeSingletonScore::get_interacting_particles(Particle*) const {
 }
 
 ParticlesTemp
-AttributeSingletonScore::get_read_particles(Particle* p) const {
-  return ParticlesTemp(1, p);
-}
-
-ParticlesTemp
-AttributeSingletonScore::get_write_particles(Particle* p) const {
+AttributeSingletonScore::get_input_particles(Particle* p) const {
   return ParticlesTemp(1, p);
 }
 

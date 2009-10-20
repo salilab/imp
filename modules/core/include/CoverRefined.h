@@ -42,7 +42,7 @@ class XYZR;
  */
 class IMPCOREEXPORT CoverRefined: public SingletonModifier
 {
-  IMP::internal::OwnerPointer<Refiner> ref_;
+  IMP::internal::OwnerPointer<Refiner> refiner_;
   FloatKey rk_;
   Float slack_;
 public:

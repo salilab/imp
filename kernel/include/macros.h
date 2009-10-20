@@ -688,9 +688,12 @@ protection:                                                             \
  */
 #define IMP_INTERNAL_OBJECT(Name, version_info)                         \
   public:                                                               \
-  virtual void show(std::ostream &out=std::cout) const {\
-    out << #Name << std::endl;}                                         \
-  virtual ::IMP::VersionInfo get_version_info() const { return version_info; } \
+  virtual void show(std::ostream &out=std::cout) const {                \
+    out << #Name << std::endl;                                          \
+  }                                                                     \
+  virtual ::IMP::VersionInfo get_version_info() const {                 \
+    return version_info;                                                \
+  }                                                                     \
   IMP_REF_COUNTED_DESTRUCTOR(Name);                                     \
   public:
 
@@ -699,19 +702,26 @@ protection:                                                             \
 /** In addition to the types needed by IMP::Object (see IMP_OBJECT),
     it declares:
     - IMP::Interaction::get_interacting_particles()
-    - IMP::Interaction::get_read_particles()
-    - IMP::Interaction::get_write_particles()
+    - IMP::Interaction::get_input_objects()
+    - IMP::Interaction::get_output_objects()
+    - IMP::Interaction::get_input_particles()
+    - IMP::Interaction::get_output_particles()
 */
-#define IMP_INTERACTION(Name, version_info)     \
-  ParticlesList get_interacting_particles() const;                      \
-  ParticlesTemp get_read_particles() const;                             \
-  ParticlesTemp get_write_particles() const;                            \
+#define IMP_INTERACTION(Name, version_info)                          \
+  ParticlesList get_interacting_particles() const;                   \
+  ObjectsTemp get_input_objects() const;                             \
+  ObjectsTemp get_output_objects() const;                            \
+  ParticlesTemp get_input_particles() const;                         \
+  ParticlesTemp get_output_particles() const;                        \
   IMP_OBJECT(Name, version_info)
 
 //! Define the basic things you need for a Restraint.
 /** In addition to the methods defined by IMP::Interaction
     (see IMP_INTERACTION), it declares
     - IMP::Restraint::unprotected_evaluate()
+    - IMP::Interaction::get_input_objects()
+    - IMP::Interaction::get_interacting_particles()
+    - IMP::Interaction::get_input_particles()
 
     It also defines
     - IMP::Restraint::get_is_incremental() to return 0
@@ -719,12 +729,19 @@ protection:                                                             \
 */
 #define IMP_RESTRAINT(Name, version_info)                               \
   virtual double unprotected_evaluate(DerivativeAccumulator *accum) const;   \
-  IMP_INTERACTION(Name, version_info);
+  ObjectsTemp get_input_objects() const;                                \
+  ParticlesList get_interacting_particles() const;                      \
+  ParticlesTemp get_input_particles() const;                            \
+  IMP_OBJECT(Name, version_info);
 
 //! Define the basic things you need for a Restraint.
-/** In addition to the methods done by IMP_INTERACTION, it declares
+/** In addition to the methods done by IMP_OBJECT, it declares
     - IMP::Restraint::unprotected_evaluate()
     - IMP::Restraint::unprotected_incremental_evaluate()
+    - IMP::Interaction::get_input_objects()
+    - IMP::Interaction::get_interacting_particles()
+    - IMP::Interaction::get_input_particles()
+    - IMP::Interaction::get_output_particles()
 
     and it defines
     - IMP::Restraint::get_is_incremental() to return true
@@ -734,7 +751,10 @@ protection:                                                             \
   virtual bool get_is_incremental() const {return true;}                \
   virtual double                                                        \
   unprotected_incremental_evaluate(DerivativeAccumulator *accum) const; \
-  IMP_INTERACTION(Name, version_info);
+  ObjectsTemp get_input_objects() const;                                \
+  ParticlesList get_interacting_particles() const;                      \
+  ParticlesTemp get_input_particles() const;                            \
+  IMP_OBJECT(Name, version_info);
 
 //! Define the basic things you need for an optimizer.
 /** In addition to the methods done by IMP_OBJECT, it declares
@@ -841,22 +861,21 @@ protected:                                                              \
     IMP::DerivativeAccumulator*)
     - IMP::SingletonScore::get_interacting_particles()
     IMP::DerivativeAccumulator*)
-    - IMP::SingletonScore::get_read_particles()
-    - IMP::SingletonScore::get_write_particles()
+    - IMP::SingletonScore::get_input_particles()
+    - IMP::SingletonScore::get_output_particles()
  */
-#define IMP_SINGLETON_SCORE(Name, version_info)                  \
-  double evaluate(Particle *a, DerivativeAccumulator *da) const; \
-  double evaluate(const ParticlesTemp &ps,                       \
-                  DerivativeAccumulator *da) const {             \
-    double ret=0;                                                \
-    for (unsigned int i=0; i< ps.size(); ++i) {                  \
-      ret+=Name::evaluate(ps[i], da);                            \
-    }                                                            \
-    return ret;                                                  \
-  }                                                              \
-  ParticlesList get_interacting_particles(Particle*) const;      \
-  ParticlesTemp get_read_particles(Particle*) const;             \
-  ParticlesTemp get_write_particles(Particle*) const;            \
+#define IMP_SINGLETON_SCORE(Name, version_info)                    \
+  double evaluate(Particle *a, DerivativeAccumulator *da) const;   \
+  double evaluate(const ParticlesTemp &ps,                         \
+                  DerivativeAccumulator *da) const {               \
+    double ret=0;                                                  \
+    for (unsigned int i=0; i< ps.size(); ++i) {                    \
+      ret+=Name::evaluate(ps[i], da);                              \
+    }                                                              \
+    return ret;                                                    \
+  }                                                                \
+  ParticlesList get_interacting_particles(Particle*) const;        \
+  ParticlesTemp get_input_particles(Particle*) const;              \
   IMP_OBJECT(Name, version_info);
 
 
@@ -866,8 +885,8 @@ protected:                                                              \
 es
     - IMP::PairScore::get_interacting_particles()
     IMP::DerivativeAccumulator*)
-    - IMP::PairScore::get_read_particles()
-    - IMP::PairScore::get_write_particles()
+    - IMP::PairScore::get_input_particles()
+    - IMP::PairScore::get_output_particles()
 */
 #define IMP_PAIR_SCORE(Name, version_info)                              \
   double evaluate(Particle *a, Particle *b,                             \
@@ -881,8 +900,7 @@ es
     return ret;                                                         \
   }                                                                     \
   ParticlesList get_interacting_particles(Particle*, Particle*) const;  \
-  ParticlesTemp get_read_particles(Particle*, Particle*) const;         \
-  ParticlesTemp get_write_particles(Particle*, Particle*) const;        \
+  ParticlesTemp get_input_particles(Particle*, Particle*) const;        \
   IMP_OBJECT(Name, version_info);
 
 
@@ -890,8 +908,8 @@ es
 /** In addition to the methods done by IMP_OBJECT, it declares
     - IMP::SingletonModifier::apply(IMP::Particle*)
     - IMP::SingletonModifier::get_interacting_particles()
-    - IMP::SingletonModifier::get_read_particles()
-    - IMP::SingletonModifier::get_write_particles()
+    - IMP::SingletonModifier::get_input_particles()
+    - IMP::SingletonModifier::get_output_particles()
     \see IMP_SINGLETON_MODIFIER_DA
  */
 #define IMP_SINGLETON_MODIFIER(Name, version_info)                      \
@@ -910,8 +928,8 @@ es
     }                                                                   \
   }                                                                     \
   ParticlesList get_interacting_particles(Particle*) const;             \
-  ParticlesTemp get_read_particles(Particle*) const;                    \
-  ParticlesTemp get_write_particles(Particle*) const;                   \
+  ParticlesTemp get_input_particles(Particle*) const;                   \
+  ParticlesTemp get_output_particles(Particle*) const;                  \
   IMP_OBJECT(Name, version_info);
 
 
@@ -920,8 +938,8 @@ es
 /** In addition to the methods done by IMP_OBJECT, it declares
     - IMP::PairModifier::apply(IMP::Particle*,IMP::Particle*)
     - IMP::PairModifier::get_interacting_particles()
-    - IMP::PairModifier::get_read_particles()
-    - IMP::PairModifier::get_write_particles()
+    - IMP::PairModifier::get_input_particles()
+    - IMP::PairModifier::get_output_particles()
     \see IMP_PAIR_MODIFIER_DA
 */
 #define IMP_PAIR_MODIFIER(Name,version_info)                            \
@@ -941,8 +959,8 @@ es
     }                                                                   \
   }                                                                     \
   ParticlesList get_interacting_particles(Particle*, Particle*) const;  \
-  ParticlesTemp get_read_particles(Particle*, Particle*) const;         \
-  ParticlesTemp get_write_particles(Particle*, Particle*) const;        \
+  ParticlesTemp get_input_particles(Particle*, Particle*) const;        \
+  ParticlesTemp get_output_particles(Particle*, Particle*) const;       \
   IMP_OBJECT(Name, version_info);
 
 
@@ -951,8 +969,8 @@ es
     - IMP::SingletonModifier::apply(IMP::Particle*,
     IMP::DerivativeAccumulator&)
     - IMP::SingletonModifier::get_interacting_particles()
-    - IMP::SingletonModifier::get_read_particles()
-    - IMP::SingletonModifier::get_write_particles()
+    - IMP::SingletonModifier::get_input_particles()
+    - IMP::SingletonModifier::get_output_particles()
 
    \see IMP_SINGLETON_MODIFIER
  */
@@ -973,18 +991,80 @@ es
     }                                                                   \
   }                                                                     \
   ParticlesList get_interacting_particles(Particle*) const;             \
-  ParticlesTemp get_read_particles(Particle*) const;                    \
-  ParticlesTemp get_write_particles(Particle*) const;                   \
+  ParticlesTemp get_input_particles(Particle*) const;                   \
+  ParticlesTemp get_output_particles(Particle*) const;                  \
   IMP_OBJECT(Name, version_info);
 
+
+//! Add interaction methods to a SingletonModifer
+/** This macro is designed to be used in conjunction with
+ IMP_SINGLETON_MODIFIER or IMP_SINGLETON_MODIFIER_DA. It adds
+ definitions for the methods:
+ - IMP::SingletonModifier::get_interacting_particles()
+ - IMP::SingletonModifier::get_input_particles()
+ - IMP::SingletonModifier::get_output_particles()
+ for a modifier which updates the passed particle based on the results
+ of refinement.
+*/
+#define IMP_SINGLETON_MODIFIER_FROM_REFINED(Name, refiner)              \
+  ParticlesList Name::get_interacting_particles(Particle *p) const {    \
+    ParticlesTemp pt= refiner->get_refined(p);                          \
+    pt.push_back(p);                                                    \
+    return ParticlesList(1,pt);                                         \
+  }                                                                     \
+  ParticlesTemp Name::get_input_particles(Particle *p) const {          \
+    ParticlesTemp ret= refiner->get_refined(p);                         \
+    ret.push_back(p);                                                   \
+    return ret;                                                         \
+  }                                                                     \
+  ParticlesTemp Name::get_output_particles(Particle *p) const {         \
+    ParticlesTemp ret(1,p);                                             \
+    return ret;                                                         \
+  }                                                                     \
+  void Name::show(std::ostream &out) const {                            \
+    out << #Name << " with refiner " << *refiner << std::endl;          \
+  }                                                                     \
+
+
+//! Add interaction methods to a SingletonModifer
+/** This macro is designed to be used in conjunction with
+ IMP_SINGLETON_MODIFIER or IMP_SINGLETON_MODIFIER_DA. It adds
+ definitions for the methods:
+ - IMP::SingletonModifier::get_interacting_particles()
+ - IMP::SingletonModifier::get_input_particles()
+ - IMP::SingletonModifier::get_output_particles()
+ - IMP::Object::show()
+ for a modifier which updates the refined particles based on the one
+ they are refined from.
+
+ This macro should appear a .cpp file.
+*/
+#define IMP_SINGLETON_MODIFIER_TO_REFINED(Name, refiner)                \
+  ParticlesList Name::get_interacting_particles(Particle *p) const {    \
+    ParticlesTemp pt= refiner->get_refined(p);                          \
+    pt.push_back(p);                                                    \
+    return ParticlesList(1,pt);                                         \
+  }                                                                     \
+  ParticlesTemp Name::get_input_particles(Particle *p) const {          \
+    ParticlesTemp ret= refiner->get_refined(p);                         \
+    ret.push_back(p);                                                   \
+    return ret;                                                         \
+  }                                                                     \
+  ParticlesTemp Name::get_output_particles(Particle *p) const {         \
+    ParticlesTemp ret= refiner->get_refined(p);                         \
+    return ret;                                                         \
+  }                                                                     \
+  void Name::show(std::ostream &out) const {                            \
+    out << #Name << " with refiner " << *refiner << std::endl;          \
+  }                                                                     \
 
 
 //! Declare the functions needed for a PairModifier
 /** In addition to the methods done by IMP_OBJECT, it declares
     - IMP::PairModifier::apply(Particle*,Particle*,DerivativeAccumulator&)
     - IMP::PairModifier::get_interacting_particles()
-    - IMP::PairModifier::get_read_particles()
-    - IMP::PairModifier::get_write_particles()
+    - IMP::PairModifier::get_input_particles()
+    - IMP::PairModifier::get_output_particles()
     \see IMP_PAIR_MODIFIER
  */
 #define IMP_PAIR_MODIFIER_DA(Name, version_info)                        \
@@ -1004,8 +1084,8 @@ es
     }                                                                   \
  }                                                                      \
  ParticlesList get_interacting_particles(Particle*, Particle*) const;   \
- ParticlesTemp get_read_particles(Particle*, Particle*) const;          \
- ParticlesTemp get_write_particles(Particle*, Particle*) const;         \
+ ParticlesTemp get_input_particles(Particle*, Particle*) const;         \
+ ParticlesTemp get_output_particles(Particle*, Particle*) const;        \
  IMP_OBJECT(Name, version_info)
 
 
@@ -1014,8 +1094,8 @@ es
 /** In addition to the methods done by IMP_OBJECT, it defines
     - IMP::SingletonModifier::apply(IMP::Particle*) to the provided value
     - IMP::SingletonModifier::get_interacting_particles() to return None
-    - IMP::SingletonModifier::get_read_particles() to return the particle
-    - IMP::SingletonModifier::get_write_particles() to return the particle
+    - IMP::SingletonModifier::get_input_particles() to return the particle
+    - IMP::SingletonModifier::get_output_particles() to return the particle
     - IMP::Object::show()
     This macro should only be used to define types which are used
     internally in algorithms and data structures.
@@ -1043,10 +1123,10 @@ es
   ParticlesList get_interacting_particles(Particle*) const {            \
     return ParticlesList();                                             \
   }                                                                     \
-  ParticlesTemp get_read_particles(Particle*p) const {                  \
+  ParticlesTemp get_input_particles(Particle*p) const {                 \
     return ParticlesTemp(1,p);                                          \
   }                                                                     \
-  ParticlesTemp get_write_particles(Particle*p) const {                 \
+  ParticlesTemp get_output_particles(Particle*p) const {                \
     return ParticlesTemp(1,p);                                          \
   }                                                                     \
   IMP_INTERNAL_OBJECT(Name, version_info);
@@ -1054,14 +1134,14 @@ es
 
 
 //! Declare the needed functions for a SingletonContainer
-/** In addition to the methods done by all the macros, it declares
+/** In addition to the methods done by IMP_OBJECT, it declares
     - IMP::SingletonContainer::get_contains_particle()
     - IMP::SingletonContainer::get_number_of_particles()
     - IMP::SingletonContainer::get_particle()
     - IMP::SingletonContainer::apply()
     - IMP::SingletonContainer::evaluate()
     - IMP::SingletonContainer::get_particles()
-    - IMP::SingletonContainer::get_revision()
+    - IMP::Interaction::get_input_objects()
 */
 #define IMP_SINGLETON_CONTAINER(Name, version_info)                 \
   bool get_contains_particle(Particle* p) const;                    \
@@ -1073,19 +1153,19 @@ es
   double evaluate(const SingletonScore *s,                          \
                   DerivativeAccumulator *da) const;                 \
   ParticlesTemp get_particles() const;                              \
-  unsigned int get_revision() const;                                \
+  ObjectsTemp get_input_objects() const;                            \
   IMP_OBJECT(Name, version_info);
 
 
 //! Declare the needed functions for a PairContainer
-/** In addition to the methods done by all the macros, it declares
+/** In addition to the methods of IMP_OBJECT, it declares
     - IMP::PairContainer::get_contains_particle_pair()
     - IMP::PairContainer::get_number_of_particle_pairs()
     - IMP::PairContainer::get_particle_pair()
     - IMP::PairContainer::apply()
     - IMP::PairContainer::evaluate()
     - IMP::PairContainer::get_particle_pairs()
-    - IMP::PairContainer::get_revision()
+    - IMP::Interaction::get_input_objects()
  */
 #define IMP_PAIR_CONTAINER(Name, version_info)                          \
   bool get_contains_particle_pair(ParticlePair p) const;                \
@@ -1096,8 +1176,8 @@ es
              DerivativeAccumulator &da);                                \
   double evaluate(const PairScore *s,                                   \
                   DerivativeAccumulator *da) const;                     \
-  unsigned int get_revision() const;                                    \
   ParticlePairsTemp get_particle_pairs() const;                         \
+  ObjectsTemp get_input_objects() const;                                \
   IMP_OBJECT(Name, version_info)
 
 
@@ -1105,22 +1185,24 @@ es
 //! Declare the needed functions for a SingletonFilter
 /** In addition to the methods done by all the macros, it declares
     - IMP::SingletonFilter::get_contains_particle()
-    - IMP::SingletonFilter::get_used_particles()
+    - IMP::SingletonFilter::get_input_particles()
 */
 #define IMP_SINGLETON_FILTER(Name, version_info)                    \
   bool get_contains_particle(Particle* p) const;                    \
-  ParticlesTemp get_used_particles(const ParticlesTemp &t) const;   \
+  ParticlesTemp get_input_particles(Particle*t) const;              \
+  ObjectsTemp get_input_objects(Particle*t) const;                  \
   IMP_OBJECT(Name, version_info)
 
 
 //! Declare the needed functions for a PairFilter
 /** In addition to the methods done by all the macros, it declares
     - IMP::PairFilter::get_contains_particle_pair()
-    - IMP::PairFilter::get_used_particles(const ParticlesTemp &t)
+    - IMP::PairFilter::get_input_particles()
  */
 #define IMP_PAIR_FILTER(Name, version_info)                             \
   bool get_contains_particle_pair(ParticlePair p) const;                \
-  ParticlesTemp get_used_particles(const ParticlePairsTemp &t) const;   \
+  ParticlesTemp get_input_particles(ParticlePair t) const;              \
+  ObjectsTemp get_input_objects(ParticlePair t) const;                  \
   IMP_OBJECT(Name, version_info);
 
 

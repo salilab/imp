@@ -11,10 +11,10 @@ class DummyRestraint(IMP.Restraint):
         fh.write("DummyRestraint")
     def get_version_info(self):
         return IMP.VersionInfo("Me", "0.5")
-    def get_read_particles(self):
+    def get_input_particles(self):
         return IMP.ParticlesTemp()
-    def get_write_particles(self):
-        return IMP.ParticlesTemp()
+    def get_input_objects(self):
+        return IMP.ObjectsTemp()
 
 
 class CustomError(Exception):
@@ -28,10 +28,10 @@ class FailingRestraint(IMP.Restraint):
         fh.write("FailingRestraint")
     def get_version_info(self):
         return IMP.VersionInfo("Me", "0.5")
-    def get_read_particles(self):
+    def get_input_particles(self):
         return IMP.ParticlesTemp()
-    def get_write_particles(self):
-        return IMP.ParticlesTemp()
+    def get_input_objects(self):
+        return IMP.ObjectsTemp()
 
 
 
@@ -43,10 +43,14 @@ class DummyScoreState(IMP.ScoreState):
         fh.write("DummyScoreState")
     def get_version_info(self):
         return IMP.VersionInfo("Me", "0.5")
-    def get_read_particles(self):
+    def get_input_particles(self):
         return IMP.ParticlesTemp()
-    def get_write_particles(self):
+    def get_output_particles(self):
         return IMP.ParticlesTemp()
+    def get_input_objects(self):
+        return IMP.ObjectsTemp()
+    def get_output_objects(self):
+        return IMP.ObjectsTemp()
 
 
 class ClassScoreState(IMP.ScoreState):
@@ -58,10 +62,15 @@ class ClassScoreState(IMP.ScoreState):
         fh.write("; ")
     def get_version_info(self):
         return IMP.VersionInfo("Me", "0.5")
-    def get_read_particles(self):
+    def get_input_particles(self):
         return IMP.ParticlesTemp()
-    def get_write_particles(self):
+    def get_output_particles(self):
         return IMP.ParticlesTemp()
+    def get_input_objects(self):
+        return IMP.ObjectsTemp()
+    def get_output_objects(self):
+        return IMP.ObjectsTemp()
+
 
 
 class ModelTests(IMP.test.TestCase):

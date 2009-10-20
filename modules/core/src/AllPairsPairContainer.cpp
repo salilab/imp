@@ -104,8 +104,9 @@ ParticlePairsTemp AllPairsPairContainer::get_particle_pairs() const {
   return ret;
 }
 
-unsigned int AllPairsPairContainer::get_revision() const {
-  return c_->get_revision();
+
+ObjectsTemp AllPairsPairContainer::get_input_objects() const {
+  return ObjectsTemp(1,c_);
 }
 
 IMPCORE_END_NAMESPACE

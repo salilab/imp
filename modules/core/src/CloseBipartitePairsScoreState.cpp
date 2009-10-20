@@ -169,9 +169,17 @@ ParticlesList CloseBipartitePairsScoreState::get_interacting_particles() const {
   return ParticlesList();
 }
 
-ParticlesTemp CloseBipartitePairsScoreState::get_read_particles() const {
-  ParticlesTemp ret0(f_->get_used_particles(in_[0]));
-  ParticlesTemp ret1(f_->get_used_particles(in_[1]));
+ObjectsTemp CloseBipartitePairsScoreState::get_input_objects() const {
+  return ObjectsTemp(in_, in_+2);
+}
+
+ObjectsTemp CloseBipartitePairsScoreState::get_output_objects() const {
+  return ObjectsTemp(1, out_);
+}
+
+ParticlesTemp CloseBipartitePairsScoreState::get_input_particles() const {
+  ParticlesTemp ret0(f_->get_input_particles(in_[0]));
+  ParticlesTemp ret1(f_->get_input_particles(in_[1]));
   ret0.insert(ret0.end(), ret1.begin(), ret1.end());
   ParticlePairsTemp all_pairs;
   for (unsigned int i=0; i< ret0.size(); ++i) {
@@ -181,15 +189,17 @@ ParticlesTemp CloseBipartitePairsScoreState::get_read_particles() const {
   }
   for (ClosePairFilterConstIterator it= close_pair_filters_begin();
        it != close_pair_filters_end(); ++it) {
-    ParticlesTemp cur= (*it)->get_used_particles(all_pairs);
-    ret0.insert(ret0.end(), cur.begin(), cur.end());
+    for (unsigned int i=0; i< all_pairs.size(); ++i) {
+      ParticlesTemp cur= (*it)->get_input_particles(all_pairs[i]);
+      ret0.insert(ret0.end(), cur.begin(), cur.end());
+    }
   }
   ret0.insert(ret0.end(), ret1.begin(), ret1.end());
   return ret0;
 }
 
 ParticlesTemp
-CloseBipartitePairsScoreState::get_write_particles() const {
+CloseBipartitePairsScoreState::get_output_particles() const {
   return ParticlesTemp();
 }
 

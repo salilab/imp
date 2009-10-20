@@ -333,27 +333,6 @@ void UpdateRigidBodyOrientation::apply(Particle *p) const {
 }
 
 
-ParticlesList
-UpdateRigidBodyOrientation::get_interacting_particles(Particle *p) const {
-  return get_rigid_body_interacting_particles(p);
-}
-
-ParticlesTemp
-UpdateRigidBodyOrientation::get_read_particles(Particle *p) const {
-  return get_rigid_body_used_particles(p);
-}
-
-ParticlesTemp
-UpdateRigidBodyOrientation::get_write_particles(Particle *p) const {
-  return get_rigid_body_used_particles(p);
-}
-
-
-void UpdateRigidBodyOrientation::show(std::ostream &out) const {
-  out << "RigidBodyUpdateSingletonModifier " << std::endl;
-}
-
-
 
 void AccumulateRigidBodyDerivatives::apply(Particle *p,
                                            DerivativeAccumulator &da) const {
@@ -397,27 +376,6 @@ void AccumulateRigidBodyDerivatives::apply(Particle *p,
 }
 
 
-ParticlesList
-AccumulateRigidBodyDerivatives::get_interacting_particles(Particle *p) const {
-  return get_rigid_body_interacting_particles(p);
-}
-
-ParticlesTemp
-AccumulateRigidBodyDerivatives::get_read_particles(Particle *p) const {
-  return get_rigid_body_used_particles(p);
-}
-
-ParticlesTemp
-AccumulateRigidBodyDerivatives::get_write_particles(Particle *p) const {
-  return ParticlesTemp(1,p);
-}
-
-void AccumulateRigidBodyDerivatives
-::show(std::ostream &out) const {
-  out << "RigidBodyAccumulateDerivativesSingletonModifier " << std::endl;
-}
-
-
 void UpdateRigidBodyMembers::apply(Particle *p) const {
   RigidBody rb(p);
   rb.normalize_rotation();
@@ -427,28 +385,6 @@ void UpdateRigidBodyMembers::apply(Particle *p) const {
   }
 }
 
-ParticlesList
-UpdateRigidBodyMembers::get_interacting_particles(Particle *p) const {
-  return get_rigid_body_interacting_particles(p);
-}
-
-ParticlesTemp
-UpdateRigidBodyMembers::get_read_particles(Particle *p) const {
-  return get_rigid_body_used_particles(p);
-}
-
-ParticlesTemp
-UpdateRigidBodyMembers::get_write_particles(Particle *p) const {
-  RigidMembers rm= RigidBody(p).get_members();
-  ParticlesTemp ret(rm.begin(), rm.end());
-  return ret;
-}
-
-void UpdateRigidBodyMembers
-::show(std::ostream &out) const {
-  out << "RigidBodyUpdateMembersSingletonModifier "
-      << std::endl;
-}
 
 
 
@@ -466,6 +402,23 @@ void RigidMembersRefiner::show(std::ostream &out) const {
   out << "RigidMembersRefiner";
 }
 
+
+IMP_SINGLETON_MODIFIER_FROM_REFINED(UpdateRigidBodyOrientation,
+                             internal::get_rigid_members_refiner());
+
+
+IMP_SINGLETON_MODIFIER_FROM_REFINED(AccumulateRigidBodyDerivatives,
+                                    internal::get_rigid_members_refiner());
+
+IMP_SINGLETON_MODIFIER_TO_REFINED(UpdateRigidBodyMembers,
+                                  internal::get_rigid_members_refiner());
+
+namespace internal {
+  IMPCOREEXPORT RigidMembersRefiner* get_rigid_members_refiner() {
+    static Pointer<RigidMembersRefiner> pt= new RigidMembersRefiner();
+    return pt;
+  }
+}
 
 
 

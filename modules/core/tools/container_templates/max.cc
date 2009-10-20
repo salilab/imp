@@ -92,14 +92,15 @@ ParticlesList MaximumGroupnameScoreRestraint::get_interacting_particles() const
   return ret;
 }
 
-ParticlesTemp MaximumGroupnameScoreRestraint::get_read_particles() const
+ParticlesTemp MaximumGroupnameScoreRestraint::get_input_particles() const
 {
-  return IMP::internal::get_read_particles(c_, f_.get());
+  return IMP::internal::get_input_particles(c_, f_.get());
 }
 
-ParticlesTemp MaximumGroupnameScoreRestraint::get_write_particles() const
+
+ObjectsTemp MaximumGroupnameScoreRestraint::get_input_objects() const
 {
-  return IMP::internal::get_write_particles(c_, f_.get());
+  return ObjectsTemp(1, c_);
 }
 
 IMPCORE_END_NAMESPACE

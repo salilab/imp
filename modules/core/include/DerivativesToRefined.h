@@ -28,13 +28,13 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT DerivativesToRefined:
 public SingletonModifier
 {
-  IMP::internal::OwnerPointer<Refiner> r_;
+  IMP::internal::OwnerPointer<Refiner> refiner_;
   FloatKeys ks_;
 public:
   //! Copy ks to the particles returned by r.
   DerivativesToRefined(Refiner *r,
-                                        FloatKeys ks
-                                        = XYZ::get_xyz_keys());
+                       FloatKeys ks
+                       = XYZ::get_xyz_keys());
 
   IMP_SINGLETON_MODIFIER_DA(DerivativesToRefined,
                             get_module_version_info());

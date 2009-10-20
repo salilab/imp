@@ -13,6 +13,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
 
 LogOptimizerState::LogOptimizerState(Writer *w, std::string name ):
   writer_(w), name_template_(name){
+  set_name(std::string("Log to ") + name);
 }
 
 void LogOptimizerState::show(std::ostream &out) const {

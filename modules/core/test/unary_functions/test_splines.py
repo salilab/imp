@@ -51,7 +51,7 @@ class CubicSplineTests(IMP.test.TestCase):
         for i in range(10):
             floats.append(test_func(minrange + spline_spacing * i)[0])
         spline = spline_func(floats, minrange, spline_spacing)
-        spline_func.set_was_owned(True)
+        spline.set_was_owned(True)
 
         # Now test the spline against the test function for intermediate points
         for i in range(30):

@@ -35,10 +35,10 @@ class XTransRestraint(IMP.Restraint):
         return IMP.VersionInfo("Daniel Russel", "0.5")
     def show(self, fh):
         fh.write("Test restraint")
-    def get_read_particles(self):
+    def get_input_particles(self):
         return IMP.ParticlesTemp([x for x in self.get_model().get_particles()])
-    def get_write_particles(self):
-        return IMP.ParticlesTemp([x for x in self.get_model().get_particles()])
+    def get_output_particles(self):
+        return IMP.ObjectsTemp()
 
 
 class WriteTrajState(IMP.OptimizerState):

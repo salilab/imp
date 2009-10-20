@@ -139,11 +139,11 @@ ParticlesList ConnectivityRestraint::get_interacting_particles() const {
   return pl;
 }
 
-ParticlesTemp ConnectivityRestraint::get_read_particles() const {
+ParticlesTemp ConnectivityRestraint::get_input_particles() const {
   ParticlesTemp ret;
   for (unsigned int i=0; i< get_number_of_particles(); ++i) {
     for (unsigned int j=0; j<i; ++j) {
-      ParticlesTemp cs= ps_->get_read_particles(get_particle(i),
+      ParticlesTemp cs= ps_->get_input_particles(get_particle(i),
                                                 get_particle(j));
       ret.insert(ret.end(), cs.begin(), cs.end());
       ret.push_back(get_particle(i));
@@ -153,9 +153,8 @@ ParticlesTemp ConnectivityRestraint::get_read_particles() const {
   return ret;
 }
 
-
-ParticlesTemp ConnectivityRestraint::get_write_particles() const {
-  return get_read_particles();
+ObjectsTemp ConnectivityRestraint::get_input_objects() const {
+  return ObjectsTemp();
 }
 
 

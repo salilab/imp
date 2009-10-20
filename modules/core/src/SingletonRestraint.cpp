@@ -46,14 +46,14 @@ ParticlesList SingletonRestraint::get_interacting_particles() const
   return IMP::internal::get_interacting_particles(v_, ss_.get());
 }
 
-ParticlesTemp SingletonRestraint::get_read_particles() const
+ParticlesTemp SingletonRestraint::get_input_particles() const
 {
-  return IMP::internal::get_read_particles(v_, ss_.get());
+  return IMP::internal::get_input_particles(v_, ss_.get());
 }
 
-ParticlesTemp SingletonRestraint::get_write_particles() const
+ObjectsTemp SingletonRestraint::get_input_objects() const
 {
-  return IMP::internal::get_write_particles(v_, ss_.get());
+  return ObjectsTemp();
 }
 
 void SingletonRestraint::show(std::ostream& out) const

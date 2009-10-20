@@ -189,6 +189,25 @@ class IMPCOREEXPORT RigidMember: public XYZ {
 
 IMP_OUTPUT_OPERATOR(RigidMember);
 
+
+
+//! A refiner which returns the members of a rigid body
+/** You can use this to easily define a rigid body when you want the
+    set of particles representing a rigid body to be the same as the
+    set of members.
+ */
+class IMPCOREEXPORT RigidMembersRefiner: public Refiner {
+ public:
+  RigidMembersRefiner(){}
+  IMP_SIMPLE_REFINER(RigidMembersRefiner, get_module_version_info());
+};
+
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+namespace internal {
+  IMPCOREEXPORT RigidMembersRefiner* get_rigid_members_refiner();
+}
+#endif
+
 //! Compute the orientation of the rigid body from the refined particles
 /** This should be applied before evaluate to keep the bodies rigid. It
     computes the optimal orientation given the position of the members and
@@ -240,18 +259,6 @@ class IMPCOREEXPORT UpdateRigidBodyMembers: public SingletonModifier {
   UpdateRigidBodyMembers(){}
   IMP_SINGLETON_MODIFIER(UpdateRigidBodyMembers,
                          get_module_version_info());
-};
-
-
-//! A refiner which returns the members of a rigid body
-/** You can use this to easily define a rigid body when you want the
-    set of particles representing a rigid body to be the same as the
-    set of members.
- */
-class IMPCOREEXPORT RigidMembersRefiner: public Refiner {
- public:
-  RigidMembersRefiner(){}
-  IMP_SIMPLE_REFINER(RigidMembersRefiner, get_module_version_info());
 };
 
 IMPCORE_END_NAMESPACE

@@ -18,7 +18,6 @@ IMPCORE_BEGIN_NAMESPACE
 SingletonContainerSet
 ::SingletonContainerSet(std::string name):
   SingletonContainer(name) {
-  rev_=0;
 }
 
 bool
@@ -69,8 +68,7 @@ IMP_LIST_IMPL(SingletonContainerSet,
               SingletonContainer*,
               SingletonContainers,{
                 obj->set_was_owned(true);
-                ++rev_;
-              },++rev_,++rev_)
+              },,)
 
 
 void SingletonContainerSet::apply(const SingletonModifier *sm) {
@@ -104,13 +102,9 @@ ParticlesTemp SingletonContainerSet::get_particles() const {
   return ret;
 }
 
-
-unsigned int SingletonContainerSet::get_revision() const {
-  unsigned int ret=rev_;
-  for (unsigned int i=0; i< get_number_of_singleton_containers(); ++i) {
-    ret+= get_singleton_container(i)->get_revision();
-  }
-  return ret;
+ObjectsTemp SingletonContainerSet::get_input_objects() const {
+  return ObjectsTemp(singleton_containers_begin(),
+                     singleton_containers_end());
 }
 
 IMPCORE_END_NAMESPACE

@@ -32,14 +32,23 @@ ParticlesList StateAdaptor::get_interacting_particles() const {
   return ParticlesList();
 }
 
-ParticlesTemp StateAdaptor::get_read_particles() const {
+ParticlesTemp StateAdaptor::get_input_particles() const {
   return ParticlesTemp(get_model()->particles_begin(),
                        get_model()->particles_end());
 }
 
 
-ParticlesTemp StateAdaptor::get_write_particles() const {
+ParticlesTemp StateAdaptor::get_output_particles() const {
   return ParticlesTemp();
+}
+
+ObjectsTemp StateAdaptor::get_input_objects() const {
+  return ObjectsTemp();
+}
+
+
+ObjectsTemp StateAdaptor::get_output_objects() const {
+  return ObjectsTemp();
 }
 
 IMPMISC_END_NAMESPACE

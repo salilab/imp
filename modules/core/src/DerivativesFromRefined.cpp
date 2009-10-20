@@ -13,7 +13,8 @@ IMPCORE_BEGIN_NAMESPACE
 
 DerivativesFromRefined
 ::DerivativesFromRefined(Refiner *r,
-                         FloatKeys ks): r_(r), ks_(ks)
+                         FloatKeys ks): refiner_(r),
+                                        ks_(ks)
 {
 }
 
@@ -22,7 +23,7 @@ void DerivativesFromRefined
 ::apply(Particle *p,
         DerivativeAccumulator &da) const
 {
-  Particles ps = r_->get_refined(p);
+  Particles ps = refiner_->get_refined(p);
 
   for (unsigned int i=0; i< ps.size(); ++i) {
     for (unsigned int j=0; j< ks_.size(); ++j) {
@@ -33,29 +34,7 @@ void DerivativesFromRefined
 }
 
 
-ParticlesList
-DerivativesFromRefined::get_interacting_particles(Particle*p) const {
-  ParticlesTemp pt=get_read_particles(p);
-  pt.push_back(get_write_particles(p)[0]);
-  return ParticlesList(1, pt);
-}
+IMP_SINGLETON_MODIFIER_FROM_REFINED(DerivativesFromRefined, refiner_);
 
-
-ParticlesTemp
-DerivativesFromRefined::get_read_particles(Particle*p) const {
-  ParticlesTemp ps = r_->get_refined(p);
-  return ps;
-}
-
-ParticlesTemp
-DerivativesFromRefined::get_write_particles(Particle*p) const {
-  return ParticlesTemp(1,p);
-}
-
-
-void DerivativesFromRefined::show(std::ostream &out) const
-{
-  out << "DerivativesFromRefined" << std::endl;
-}
 
 IMPCORE_END_NAMESPACE

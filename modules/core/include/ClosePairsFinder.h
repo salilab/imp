@@ -91,9 +91,9 @@ class IMPCOREEXPORT ClosePairsFinder : public Object
       Return all the particles touched in processing the passed ones.
       @{
   */
-  virtual ParticlesTemp get_used_particles(SingletonContainer *pc) const=0;
-  virtual ParticlesTemp get_used_particles(SingletonContainer *a,
-                                   SingletonContainer *b) const=0;
+  virtual ParticlesTemp get_input_particles(SingletonContainer *pc) const=0;
+  virtual ParticlesTemp get_input_particles(SingletonContainer *a,
+                                            SingletonContainer *b) const=0;
   /** @} */
 };
 

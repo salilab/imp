@@ -15,6 +15,9 @@
 #include "VersionInfo.h"
 #include "macros.h"
 #include "log.h"
+#include "VectorOfRefCounted.h"
+
+#include <vector>
 
 IMP_BEGIN_NAMESPACE
 
@@ -158,18 +161,101 @@ inline std::ostream &operator<<(std::ostream &out, const Object& o) {
 }
 #endif
 
-//! Up (or down) cast an object pointer with checks
-/** When checks are enabled, the result is verified and an exception is
-    thrown if the cast does not succeed.
+
+
+//! A class which is used for representing collections of Object s
+typedef VectorOfRefCounted<Object*> Objects;
+
+//! A type to use when returning sets of objects so as to avoid refcounting
+/** Always store using Objects instead, but return ObjectsTemp. Objects
+    can be constructed from a ObjectsTemp and vice versa.
  */
-template <class O>
-O* object_cast(Object *o) {
+typedef std::vector<Object*> ObjectsTemp;
+
+
+/** \name Casting objects
+
+    Up (or down) cast a an Object or a set of objects.
+    When checks are enabled, the result is verified and an exception is
+    thrown if the cast does not succeed.
+    @{
+ */
+
+template <class O, class I>
+O* object_cast(I *o) {
   O *ret= dynamic_cast<O*>(o);
   IMP_USAGE_CHECK(ret, "Object " << o->get_name() << " cannot be cast to "
             << "desired type.",
             ValueException);
   return ret;
 }
+
+
+template <class O, class I>
+const std::vector<O*>& objects_cast(const std::vector<I*>& o) {
+  IMP_IF_CHECK(USAGE) {
+    for (unsigned int i=0; i< o.size(); ++i) {
+      IMP_USAGE_CHECK(dynamic_cast<O*>(o[i]),
+                      "Object " << o[i]->get_name()
+                      << " cannot be cast.", ValueException);
+    }
+  }
+  BOOST_STATIC_ASSERT(sizeof(std::vector<O*>) == sizeof(std::vector<I*>));
+  BOOST_STATIC_ASSERT(sizeof(O*) == sizeof(I*));
+  BOOST_STATIC_ASSERT(sizeof(O[5]) == sizeof(I[5]));
+  return reinterpret_cast<const std::vector<O*>& >(o);
+}
+
+
+template <class O, class I>
+const VectorOfRefCounted<O*>& objects_cast(const VectorOfRefCounted<I*>& o) {
+  IMP_IF_CHECK(USAGE) {
+    for (unsigned int i=0; i< o.size(); ++i) {
+      IMP_USAGE_CHECK(dynamic_cast<O*>(o[i]),
+                      "Object " << o[i]->get_name()
+                      << " cannot be cast.", ValueException);
+    }
+  }
+  BOOST_STATIC_ASSERT(sizeof(VectorOfRefCounted<O*>)
+                      == sizeof(VectorOfRefCounted<I*>));
+  BOOST_STATIC_ASSERT(sizeof(O*) == sizeof(I*));
+  BOOST_STATIC_ASSERT(sizeof(O[5]) == sizeof(I[5]));
+  return reinterpret_cast<const VectorOfRefCounted<O*>& >(o);
+}
+
+template <class O, class I>
+std::vector<O*>& objects_cast( std::vector<I*>& o) {
+  IMP_IF_CHECK(USAGE) {
+    for (unsigned int i=0; i< o.size(); ++i) {
+      IMP_USAGE_CHECK(dynamic_cast<O*>(o[i]),
+                      "Object " << o[i]->get_name()
+                      << " cannot be cast.", ValueException);
+    }
+  }
+  BOOST_STATIC_ASSERT(sizeof(std::vector<O*>) == sizeof(std::vector<I*>));
+  BOOST_STATIC_ASSERT(sizeof(O*) == sizeof(I*));
+  BOOST_STATIC_ASSERT(sizeof(O[5]) == sizeof(I[5]));
+  return reinterpret_cast< std::vector<O*>& >(o);
+}
+
+
+template <class O, class I>
+VectorOfRefCounted<O*>& objects_cast(VectorOfRefCounted<I*>& o) {
+  IMP_IF_CHECK(USAGE) {
+    for (unsigned int i=0; i< o.size(); ++i) {
+      IMP_USAGE_CHECK(dynamic_cast<O*>(o[i]),
+                      "Object " << o[i]->get_name()
+                      << " cannot be cast.", ValueException);
+    }
+  }
+  BOOST_STATIC_ASSERT(sizeof(VectorOfRefCounted<O*>)
+                      == sizeof(VectorOfRefCounted<I*>));
+  BOOST_STATIC_ASSERT(sizeof(O*) == sizeof(I*));
+  BOOST_STATIC_ASSERT(sizeof(O[5]) == sizeof(I[5]));
+  return reinterpret_cast< VectorOfRefCounted<O*>& >(o);
+}
+
+/** @} */
 
 IMP_END_NAMESPACE
 

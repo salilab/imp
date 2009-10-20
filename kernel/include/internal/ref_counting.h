@@ -9,7 +9,6 @@
 #ifndef IMP_REF_COUNTING_H
 #define IMP_REF_COUNTING_H
 
-#include "../Object.h"
 #include "../RefCounted.h"
 #include "../log.h"
 

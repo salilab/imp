@@ -57,18 +57,26 @@ ParticlesList GroupnamesScoreState::get_interacting_particles() const {
 }
 
 
-ParticlesTemp GroupnamesScoreState::get_read_particles() const {
+ObjectsTemp GroupnamesScoreState::get_input_objects() const {
+  return ObjectsTemp(1, c_);
+}
+
+ObjectsTemp GroupnamesScoreState::get_output_objects() const {
+  return ObjectsTemp();
+}
+
+ParticlesTemp GroupnamesScoreState::get_input_particles() const {
   ParticlesTemp ret0, ret1;
-  if (f_) ret0= IMP::internal::get_read_particles(c_, f_.get());
-  if (af_) ret1= IMP::internal::get_read_particles(c_, af_.get());
+  if (f_) ret0= IMP::internal::get_input_particles(c_, f_.get());
+  if (af_) ret1= IMP::internal::get_input_particles(c_, af_.get());
   ret0.insert(ret0.end(), ret1.begin(), ret1.end());
   return ret0;
 }
 
-ParticlesTemp GroupnamesScoreState::get_write_particles() const {
+ParticlesTemp GroupnamesScoreState::get_output_particles() const {
   ParticlesTemp ret0, ret1;
-  if (f_) ret0= IMP::internal::get_write_particles(c_, f_.get());
-  if (af_) ret1= IMP::internal::get_write_particles(c_, af_.get());
+  if (f_) ret0= IMP::internal::get_output_particles(c_, f_.get());
+  if (af_) ret1= IMP::internal::get_output_particles(c_, af_.get());
   ret0.insert(ret0.end(), ret1.begin(), ret1.end());
   return ret0;
 }

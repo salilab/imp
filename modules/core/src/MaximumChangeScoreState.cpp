@@ -71,7 +71,8 @@ MaximumChangeScoreState::MaximumChangeScoreState(SingletonContainer *pc,
 void MaximumChangeScoreState::do_before_evaluate()
 {
   IMP_CHECK_OBJECT(pc_);
-  if (rev_ != pc_->get_revision()) {
+  // will be fixed when container version appear
+  if (false) {
     reset();
     maximum_change_= std::numeric_limits<double>::max();
   } else {
@@ -95,19 +96,26 @@ void MaximumChangeScoreState::reset()
   IMP_NEW(RecordValues, rv, (orig_values_, keys_));
   rv->set_was_owned(true);
   pc_->apply(rv);
-  rev_=pc_->get_revision();
 }
 
 ParticlesList MaximumChangeScoreState::get_interacting_particles() const {
   return ParticlesList();
 }
 
-ParticlesTemp MaximumChangeScoreState::get_read_particles() const {
+ParticlesTemp MaximumChangeScoreState::get_input_particles() const {
   return ParticlesTemp(pc_->particles_begin(), pc_->particles_end());
 }
 
-ParticlesTemp MaximumChangeScoreState::get_write_particles() const {
+ParticlesTemp MaximumChangeScoreState::get_output_particles() const {
   return ParticlesTemp();
+}
+
+ObjectsTemp MaximumChangeScoreState::get_input_objects() const {
+  return ObjectsTemp(1, pc_);
+}
+
+ObjectsTemp MaximumChangeScoreState::get_output_objects() const {
+  return ObjectsTemp();
 }
 
 void MaximumChangeScoreState::show(std::ostream &out) const

@@ -23,7 +23,6 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT GroupnameContainerSet
   : public GroupnameContainer
 {
-  unsigned int rev_;
 public:
   //! Construct and empty set
   GroupnameContainerSet(std::string name="GroupnameContainerSet %1%");

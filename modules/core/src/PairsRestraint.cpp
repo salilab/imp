@@ -55,16 +55,16 @@ ParticlesList PairsRestraint::get_interacting_particles() const
   return ret0;
 }
 
-ParticlesTemp PairsRestraint::get_read_particles() const
+ParticlesTemp PairsRestraint::get_input_particles() const
 {
   IMP_OBJECT_LOG;
-  ParticlesTemp ret0= IMP::internal::get_read_particles(pc_, ss_.get());
+  ParticlesTemp ret0= IMP::internal::get_input_particles(pc_, ss_.get());
   return ret0;
 }
 
-ParticlesTemp PairsRestraint::get_write_particles() const
+ObjectsTemp PairsRestraint::get_input_objects() const
 {
-  return get_read_particles();
+  return ObjectsTemp(1, pc_);
 }
 
 namespace {

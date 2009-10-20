@@ -171,6 +171,7 @@ namespace IMP {
 namespace IMP {
   %template(Particles) ::IMP::VectorOfRefCounted<Particle*> ;
   %template(ParticlesTemp) ::std::vector<Particle*>;
+  %template(ObjectsTemp) ::std::vector<Object*>;
   %template(ParticlesList) ::std::vector<ParticlesTemp>;
   %template(ParticlesPairsTemp) ::std::vector<ParticlePair>;
   %template(ParticlePairs) ::IMP::VectorOfRefCounted< ParticlePair, RefCountParticlePair>;
