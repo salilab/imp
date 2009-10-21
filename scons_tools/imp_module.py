@@ -489,6 +489,47 @@ def IMPModuleTest(env, required_modules=[]):
     #print "setting up requires"
     module_deps_requires(env, test, 'python', required_modules)
 
+def check_libraries_and_headers(env, libraries, headers):
+    rlibraries=[x for x in libraries]
+    rlibraries.reverse();
+    def hname(h):
+        return h.replace("/","").replace(".", "")
+    custom_tests={}
+    for l in libraries:
+        def libtest(context):
+            ret = context.sconf.CheckLib(library=l, language='C++',
+                                         autoadd=True)
+            context.did_show_result=True
+            context.Result(ret)
+            return ret
+        custom_tests["Check"+l]= libtest
+    for h in headers:
+        def libtest(context):
+            ret = context.sconf.CheckHeader(header=h, language='C++')
+            context.did_show_result=True
+            context.Result(ret)
+            return ret
+        custom_tests["Check"+hname(h)]= libtest
+    conf=env.Configure(custom_tests= custom_tests)
+    for l in rlibraries:
+        r= eval("conf.Check"+l+"()")
+        if not r:
+            def fail(env, target, source):
+                print "The library " +l +" is required by module but could "\
+                    + "not be linked."
+                return 1
+            env.invalidate(fail)
+            return
+    for h in headers:
+        r= eval("conf.Check"+hname(h)+"()")
+        if not r:
+            def fail(env, target, source):
+                print "The header "+ h +" is required by module but could "\
+                    + "not be found."
+                return 1
+            env.invalidate(fail)
+            return
+
 def invalidate(env, fail_action):
     """'Break' an environment, so that any builds with it use the fail_action
        function (which should be an Action which terminates the build)"""
@@ -508,7 +549,8 @@ def IMPModuleBuild(env, version, required_modules=[],
                    module=None, cpp=True, module_suffix=None,
                    module_include_path=None, module_src_path=None, module_preproc=None,
                    module_namespace=None, module_nicename=None,
-                   required_dependencies=[]):
+                   required_dependencies=[],
+                   required_libraries=[], required_headers=[]):
     if module is None:
         module=Dir('.').abspath.split('/')[-1]
     if module_suffix is None:
@@ -605,26 +647,34 @@ def IMPModuleBuild(env, version, required_modules=[],
     env['TEST_ENVSCRIPT'] = None
     env['VALIDATED'] = None
 
-    print "Configuring module " + env['IMP_MODULE'],
 
     if not env.GetOption('clean') and not env.GetOption('help'):
+        if len(required_libraries)+len(required_headers) > 0:
+            check_libraries_and_headers(env, required_libraries, required_headers)
         for x in required_dependencies:
             if x== "modeller":
                 if not env.get('HAS_MODELLER', False):
-                    print "(modeller missing, disabled)"
+                    print "  (modeller missing, disabled)"
                     env.invalidate(modeller_test.fail)
-                    Return()
             else:
                 raise ValueError("Do not know dependency "+x)
 
+    if env['VALIDATED'] is not None:
+        print "IMP."+env['IMP_MODULE']+" is disabled"
+        Return()
+    else:
+        print "Configuring module IMP." + env['IMP_MODULE'],
     if not env['IMP_MODULE_CPP']:
         print " (python only)",
 
+
+
     nice_deps = expand_dependencies(env,required_modules)
     #print "nice is "+str(nice_deps)
-    if len(nice_deps) > 1:
+    all_deps=["IMP."+x for x in nice_deps if x is not "kernel"]+required_libraries
+    if len(all_deps) > 1:
         nice_deps.remove('kernel')
-        print "(requires " +", ".join(nice_deps) + ")",
+        print "(requires " +", ".join(all_deps) +")",
     print
 
     env['IMP_MODULE_CONFIG']=config_macros
