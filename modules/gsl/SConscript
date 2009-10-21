@@ -1,0 +1,7 @@
+Import('env')
+
+
+env.IMPModuleBuild(version='SVN',
+                   required_modules=['algebra'],
+                   required_libraries=['gsl', 'gslcblas'],
+                   required_headers=['gsl/gsl_multimin.h'])

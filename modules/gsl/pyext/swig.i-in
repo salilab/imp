@@ -1,0 +1,11 @@
+namespace IMP {
+namespace gsl {
+%warnfilter(403) GSLOptimizer;
+}
+}
+
+/* Wrap our own classes */
+%include "IMP/gsl/GSLOptimizer.h"
+%include "IMP/gsl/ConjugateGradients.h"
+%include "IMP/gsl/QuasiNewton.h"
+%include "IMP/gsl/Simplex.h"
