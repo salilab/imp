@@ -1,0 +1,4 @@
+Import('env')
+
+# Build and install the shared library:
+env.IMPModuleLib(env.IMPModuleGetSources())
