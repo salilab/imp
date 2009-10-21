@@ -12,6 +12,7 @@ cppmodules=['algebra',
             'saxs',
             'helper',
             'statistics',
+            'gsl',
             'benchmark']
 pymodules=['modeller']
 
