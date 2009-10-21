@@ -18,7 +18,7 @@ IntKey Chain::get_id_key() {
 }
 
 void Chain::show(std::ostream &out) const {
-  out << "Chain: " << get_id() << std::endl;
+  out << "Chain " << get_id();
 }
 
 IMPATOM_END_NAMESPACE
