@@ -200,7 +200,7 @@ RigidBodyHierarchy *get_rigid_body_hierarchy(RigidBody rb,
     return object_cast<RigidBodyHierarchy>(rb.get_particle()->get_value(k));
   } else {
     RigidBodyHierarchy *h= new RigidBodyHierarchy(rb, r);
-    rb.get_particle()->add_attribute(k, h);
+    rb.get_particle()->add_cache_attribute(k, h);
     return h;
   }
 }

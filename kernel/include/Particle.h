@@ -48,7 +48,7 @@
 #define IMP_CHECK_VALID_DERIVATIVES IMP_IF_CHECK(USAGE) \
   {assert_valid_derivatives();}
 
-#define IMP_PARTICLE_ATTRIBUTE_TYPE(UCName, lcname, Value, cond,\
+#define IMP_PARTICLE_ATTRIBUTE_TYPE(UCName, lcname, Value, cond,        \
                                     table0, table1,                     \
                                     add_action, remove_action)          \
   void add_attribute(UCName##Key name, Value initial_value){            \
@@ -126,7 +126,7 @@
               ValueException);                                          \
     IMP_CHECK_ACTIVE;                                                   \
     IMP_CHECK_MUTABLE;                                                  \
-    IMP_USAGE_CHECK(has_attribute(name),                                      \
+    IMP_USAGE_CHECK(has_attribute(name),                                \
               "Cannot set value " << name << " from particle "          \
               << get_name() << " as it is not there.",                  \
               InvalidStateException);                                   \
@@ -348,6 +348,26 @@ class IMPEXPORT Particle : public Object
                                 true,ps_->particles_,ps_->particles_,,)
     IMP_PARTICLE_ATTRIBUTE_TYPE(Object, object, Object*,
                                 true,ps_->objects_,ps_->objects_,,);
+  //! Add cached data to a particle
+  /** Restraints can cache data in a particle in order to accelerate
+      computations. This data must obey a the following rules:
+      - it must be optional
+      - if multiple restraints add the same attribute, it must all be equivalent
+  */
+  void add_cache_attribute(ObjectKey name, Object *value) {
+    IMP_CHECK_ACTIVE;
+    IMP_USAGE_CHECK(name != ObjectKey(), "Cannot use attributes without "
+                    << "naming them.", ValueException);
+    IMP_USAGE_CHECK(!has_attribute(name),
+                    "Cannot add attribute " << name << " to particle "
+                    << get_name() << " twice.",
+                    InvalidStateException);
+    IMP_USAGE_CHECK(ObjectTable::Traits::get_is_valid(value),
+                    "Initial value is not valid when adding attribute"
+                    << name << " to particle " << get_name(),
+                    ValueException);
+    ps_->objects_.add(name.get_index(), value);
+  }
 #endif
 
  /** @name Float Attributes
