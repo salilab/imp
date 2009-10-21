@@ -48,7 +48,7 @@ class CGOptimizerTests(IMP.test.TestCase):
         print "creating"
         opt = IMP.gsl.Simplex()
         opt.set_minimum_size(.000001)
-        opt.set_initial_length(10)
+        opt.set_initial_length(1)
         opt.set_model(model)
         #opt.set_threshold(1e-5)
         print "optimize"
