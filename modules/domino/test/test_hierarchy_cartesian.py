@@ -5,36 +5,25 @@ import IMP.test
 import IMP.domino
 import IMP.core
 import IMP.atom
+import IMP.helper
 import time
 
 class DOMINOTests(IMP.test.TestCase):
-
-    def __set_attributes__(self):
-        self.atts=IMP.FloatKeys()
-        self.atts.append(IMP.FloatKey("x"))
-        self.atts.append(IMP.FloatKey("y"))
-        self.atts.append(IMP.FloatKey("z"))
-        self.atts.append(IMP.FloatKey("a"))
-        self.atts.append(IMP.FloatKey("b"))
-        self.atts.append(IMP.FloatKey("c"))
-        self.atts.append(IMP.FloatKey("d"))
-
 
     #set representation and scoring
     def __set_representation__(self):
         #load three proteins
         self.particles = IMP.Particles() #the particles to be optimized
-        self.h_particles = []  #thier molecular hierarchy decorator
-
+        self.h_particles = []  #their molecular hierarchy decorator
+        self.states=[]
         for s in ['1','2','3']:
             mp = IMP.atom.read_pdb(
                 self.get_input_file_name('prot'+s+'.pdb'), self.imp_model)
             self.h_particles.append(mp)
-            p = mp.get_particle()
-            p.add_attribute(IMP.domino.node_name_key(),"prot"+s)
-            self.particles.append(p)
-            for att in self.atts[0:3]:
-                p.add_attribute(att,0.0)
+            rb_p = IMP.Particle(self.imp_model)
+            self.imp_model.add_score_state(IMP.helper.create_rigid_body(mp))
+            mp.get_particle().add_attribute(IMP.domino.node_name_key(),"prot"+s)
+            self.particles.append(mp.get_particle())
 
     def __set_restraints__(self):
         rsrs=[]
@@ -52,7 +41,6 @@ class DOMINOTests(IMP.test.TestCase):
             for e in ps_refined:
                 r.add_particles(e)
             self.imp_model.add_restraint(r)
-            r.set_was_owned(True)
             self.d_opt.add_restraint(r,ps)
 #             beg  = time.time()
             self.opt_score = self.opt_score + r.evaluate(None)
@@ -66,8 +54,6 @@ class DOMINOTests(IMP.test.TestCase):
         IMP.domino.read_junction_tree(jt_filename,self.jt)
         self.d_opt = IMP.domino.DominoOptimizer(self.jt,self.imp_model)
 
-
-
     def __set_discrete_sampling_space__(self):
         self.m_discrete_set = IMP.domino.TransformationMappedDiscreteSet(self.particles)
         #set 4 optinal centroids for each of the particles
@@ -75,20 +61,15 @@ class DOMINOTests(IMP.test.TestCase):
             for i in range(3):
                 new_p=IMP.Particle(self.imp_model)
                 if (i==j):
-                    new_p.add_attribute(self.atts[0],0.0,True)
-                    new_p.add_attribute(self.atts[1],0.0,True)
-                    new_p.add_attribute(self.atts[2],0.0,True)
-                    rt = IMP.algebra.identity_rotation()
+                    IMP.domino.Transformation.setup_particle(new_p,
+                      IMP.algebra.identity_transformation())
                 else:
-                    new_p.add_attribute(self.atts[0],30*i+5*j,True)
-                    new_p.add_attribute(self.atts[1],8*i*i+12*j,True)
-                    new_p.add_attribute(self.atts[2],12*i+j*j,True)
-                    rt = IMP.algebra.rotation_from_fixed_xyz( 0.3*i+0.5*j,i+j*j,i*i+1.2*j)
-                abcd=rt.get_quaternion()
-                new_p.add_attribute(self.atts[3],abcd[0],True)
-                new_p.add_attribute(self.atts[4],abcd[1],True)
-                new_p.add_attribute(self.atts[5],abcd[2],True)
-                new_p.add_attribute(self.atts[6],abcd[3],True)
+                    IMP.domino.Transformation.setup_particle(new_p,
+                        IMP.algebra.Transformation3D(
+                        IMP.algebra.rotation_from_fixed_xyz( 0.3*i+0.5*j,i+j*j,i*i+1.2*j),
+                        IMP.algebra.Vector3D(30*i+5*j,
+                                             8*i*i+12*j,
+                                             12*i+j*j)))
 
                 self.m_discrete_set.add_state(new_p)
                 self.m_discrete_set.add_mapped_state(p,new_p)
@@ -101,7 +82,6 @@ class DOMINOTests(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         self.imp_model = IMP.Model()
         IMP.set_check_level(IMP.USAGE_AND_INTERNAL)
-        self.__set_attributes__()
         self.__set_representation__()
         self.__set_optimizer__()
         self.__set_discrete_sampling_space__()
