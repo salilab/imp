@@ -310,12 +310,12 @@ atom::Hierarchy create_simplified(atom::Hierarchy in,
       }
       try {
         mc->optimize(100);
-      } catch (const InvalidStateException &e) {
+      } catch (const ModelException &e) {
         ++trial_count;
         if (trial_count==10) {
-          IMP_FAILURE("Unable to simplify protein for some reason. "
-                      << " Please send us your input.",
-                      ValueException);
+          IMP_THROW("Unable to simplify protein for some reason. "
+                    << " Please send us your input.",
+                    ValueException);
         }
         continue;
       }

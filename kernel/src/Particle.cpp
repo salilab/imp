@@ -147,8 +147,7 @@ void Particle::setup_incremental() {
 void Particle::teardown_incremental() {
   if (!ps_->shadow_) {
     IMP_FAILURE("Shadow particle was not created before disabling "
-                << "incremental for particle " << *this,
-                ErrorException);
+                << "incremental for particle " << *this);
   }
   internal::unref(ps_->shadow_);
   ps_->shadow_=NULL;
@@ -186,8 +185,7 @@ void *Particle::operator new(std::size_t sz) {
              << " got request of size " << sz);
   if (free_list.empty() && next_to_allocate==num_blocks) {
     IMP_FAILURE("Can only allocate " << num_blocks
-                << " particles. Yell at Daniel.",
-                InvalidStateException);
+                << " particles. Yell at Daniel.");
   }
   unsigned int slot;
   if (!free_list.empty()) {
@@ -214,7 +212,7 @@ namespace internal {
     IMP_USAGE_CHECK(n>0, "Can't create 0 particles",
               ValueException);
     if (next_to_allocate + n > num_blocks) {
-      IMP_FAILURE("Out of particles. Yell at Daniel.", ErrorException);
+      IMP_FAILURE("Out of particles. Yell at Daniel.");
     }
     for (unsigned int i=0; i< n; ++i) {
       Particle *cur= new(address(next_to_allocate+i)) Particle(m);

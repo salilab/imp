@@ -273,11 +273,11 @@ double BrownianDynamics::simulate(float max_time_nu)
       get_model()->evaluate(true);
       dt= dt*.5;
       if (dt < unit::Femtosecond(1)) {
-        IMP_FAILURE("Something is wrong with the restraints"
+        IMP_THROW("Something is wrong with the restraints"
                     << " and they are highly discontinuous due"
                     << " to particle " << *e.blamed
                     << "\n" << *get_model(),
-                    InvalidStateException);
+                    UsageException);
       }
       success=false;
     }

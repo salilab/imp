@@ -88,7 +88,7 @@ void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
                         << ps_centroid << std::endl);
       fr.add_solution(rb.get_transformation(),e);
     }
-    catch (InvalidStateException err) {
+    catch (UsageException err) {
       IMP_WARN("rigid fitting around anchor point " << anchor_centroid <<
                " was not possible as the structure was outside of the map"
                << std::endl);

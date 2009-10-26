@@ -113,8 +113,8 @@ Hierarchy read_pdb(String pdb_file_name, Model *model,
 {
   std::ifstream pdb_file(pdb_file_name.c_str());
   if (!pdb_file) {
-    IMP_FAILURE("No such PDB file " << pdb_file_name,
-                ValueException);
+    IMP_THROW("No such PDB file " << pdb_file_name,
+              IOException);
   }
   Hierarchy root_d
       = read_pdb(pdb_file, model, selector, select_first_model,
@@ -206,7 +206,7 @@ Hierarchy read_pdb(std::istream &in, Model *model,
     if (!root_d.get_is_valid(true)) {
       IMP_ERROR("Invalid hierarchy produced ");
       IMP::core::show<Hierarchy>(root_d);
-      throw InvalidStateException("Bad hierarchy");
+      throw InternalException("Bad hierarchy");
       // should clean up
     }
   }
@@ -245,8 +245,8 @@ void write_pdb(const Particles& ps, std::string file_name)
 {
   std::ofstream out_file(file_name.c_str());
   if (!out_file) {
-    IMP_FAILURE("Can't open file " << file_name << " for writing",
-                ValueException);
+    IMP_THROW("Can't open file " << file_name << " for writing",
+              IOException);
   }
   write_pdb(ps, out_file);
   out_file.close();
@@ -256,8 +256,8 @@ void write_pdb(Hierarchy mhd, std::string file_name)
 {
   std::ofstream out_file(file_name.c_str());
   if (!out_file) {
-    IMP_FAILURE("Can't open file " << file_name << " for writing",
-                ValueException);
+    IMP_THROW("Can't open file " << file_name << " for writing",
+              IOException);
   }
   write_pdb(mhd, out_file);
   out_file.close();
@@ -280,8 +280,8 @@ void write_pdb(const Hierarchies& mhd, std::string file_name)
 {
   std::ofstream out_file(file_name.c_str());
   if (!out_file) {
-    IMP_FAILURE("Can't open file " << file_name << " for writing",
-                ValueException);
+    IMP_THROW("Can't open file " << file_name << " for writing",
+              IOException);
   }
   write_pdb(mhd, out_file);
   out_file.close();

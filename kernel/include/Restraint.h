@@ -129,8 +129,7 @@ public:
 #ifndef IMP_DOXYGEN
   virtual double
     unprotected_incremental_evaluate(DerivativeAccumulator *) const {
-    IMP_FAILURE(get_name() << " does not support incremental evaluation.",
-                ErrorException);
+    IMP_FAILURE(get_name() << " does not support incremental evaluation.");
     return 0;
   }
   virtual double unprotected_evaluate(DerivativeAccumulator *) const=0;

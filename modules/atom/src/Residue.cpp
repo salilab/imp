@@ -107,7 +107,7 @@ Chain get_chain(Residue rd) {
   do {
     mhd= mhd.get_parent();
     if (mhd == Hierarchy()) {
-      throw InvalidStateException("Residue is not the child of a chain");
+      throw UsageException("Residue is not the child of a chain");
     }
   } while (!mhd.get_as_chain());
   Chain cd(mhd.get_particle());

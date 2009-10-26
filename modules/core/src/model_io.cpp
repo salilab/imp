@@ -98,7 +98,7 @@ namespace {
         line.pop_back();
         std::size_t pos= ret.find_first_of(":");
         if (pos == std::string::npos) {
-          throw InvalidStateException("No colon in line");
+          IMP_THROW("No colon in line", IOException);
         }
         IMP_LOG(VERBOSE, "Found colon at position " << pos
                 << " of \"" << ret << "\"" <<std::endl);
@@ -350,8 +350,8 @@ void write_optimized_attributes(Model *m,
 void write(Model *m, std::string out) {
   std::ofstream outf(out.c_str());
   if (!outf) {
-    IMP_FAILURE("Could not open file " << out << " for writing",
-                ValueException);
+    IMP_THROW("Could not open file " << out << " for writing",
+              IOException);
   }
   write(m, outf, "");
 }
@@ -373,8 +373,8 @@ void read(std::string in,
           Model *m) {
   std::ifstream iss(in.c_str());
   if (!iss) {
-    IMP_FAILURE("Could not open file " << in << " for reading",
-                ValueException);
+    IMP_THROW("Could not open file " << in << " for reading",
+                IOException);
   }
   read(iss, m);
 }

@@ -51,9 +51,9 @@ void MRCReaderWriter::read_data(float *pt)
     return read_32_data(pt);
   }
   else {
-    IMP_FAILURE("MRCReaderWriter::read_data >> This routine can only read "
-                << "8-bit or 32-bit MRC files. Unknown mode for "
-                << filename, IOException);
+    IMP_THROW("MRCReaderWriter::read_data >> This routine can only read "
+              << "8-bit or 32-bit MRC files. Unknown mode for "
+              << filename, IOException);
   }
 }
 

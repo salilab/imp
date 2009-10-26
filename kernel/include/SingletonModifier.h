@@ -42,26 +42,26 @@ public:
   virtual void apply(Particle *a,
                      DerivativeAccumulator &da) const {
     IMP_FAILURE("This SingletonModifier must be called without a"
-                << " DerivativeAccumulator.", InvalidStateException);
+                << " DerivativeAccumulator.");
   }
 
   /** Apply the function to a single value*/
   virtual void apply(Particle *a) const {
     IMP_FAILURE("This SingletonModifier must be called with a"
-                << " DerivativeAccumulator.", InvalidStateException);
+                << " DerivativeAccumulator.");
   }
 
   /** Apply the function to a collection of Particles */
   virtual void apply(const ParticlesTemp &o) const {
     IMP_FAILURE("This SingletonModifier must be called with a"
-                << " DerivativeAccumulator.", InvalidStateException);
+                << " DerivativeAccumulator.");
   }
 
   /** Apply the function to a collection of Particles */
   virtual void apply(const ParticlesTemp &o,
                      DerivativeAccumulator &da) const {
     IMP_FAILURE("This SingletonModifier must be called without a"
-                << " DerivativeAccumulator.", InvalidStateException);
+                << " DerivativeAccumulator.");
   }
 
   /** Get the set of interactions induced by applying to the

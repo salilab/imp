@@ -77,7 +77,7 @@ namespace {
       oss << "Method PairsRestraint::" << str
           << " can only be called if the PairContainer "
           << " is a ListPairContainer.";
-      throw InvalidStateException(oss.str().c_str());
+      throw UsageException(oss.str().c_str());
     }
     return ret;
   }

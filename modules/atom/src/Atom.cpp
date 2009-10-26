@@ -33,9 +33,9 @@ namespace {
       return added_atom_names[at.get_index()];
     }
     if (atom_name.find("HET_") != std::string::npos) {
-      IMP_FAILURE("You must call add_atom_name() to create a new atom name: "
+      IMP_THROW("You must call add_atom_name() to create a new atom name: "
                   << at,
-                  InvalidStateException);
+                  UsageException);
     } else {
       char c0=atom_name[0];
       if (isdigit(c0)) {
@@ -52,8 +52,8 @@ namespace {
       case 'P': return P;
       default: break;
       }
-      IMP_FAILURE("Could not figure out element for " << at,
-                  InvalidStateException);
+      IMP_THROW("Could not figure out element for " << at,
+           UsageException);
     }
   }
 }
@@ -313,7 +313,7 @@ Residue get_residue(Atom d) {
   do {
     mhd= mhd.get_parent();
     if (mhd== Hierarchy()) {
-      throw InvalidStateException("Atom is not the child of a residue");
+      throw UsageException("Atom is not the child of a residue");
     }
   } while (!Residue::particle_is_instance(mhd.get_particle()));
   Residue rd(mhd.get_particle());

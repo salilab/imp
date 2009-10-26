@@ -69,9 +69,8 @@ void operate_arrays(const MultiArray<T, D>& a1, const MultiArray<T, D>& a2,
 {
   if (!(a1.same_shape(a2) && a1.same_shape(result))) {
     String op(&operation);
-    String msg = "operate_arrays:: Operator "+op+" not supported with arrays "
-       "of different shape size and origin).";
-    throw ErrorException(msg.c_str());
+    IMP_FAILURE("operate_arrays:: Operator "+op+" not supported with arrays "
+       "of different shape size and origin).");
   }
   for (unsigned long i=0;i<a1.num_elements();i++) {
     switch (operation) {

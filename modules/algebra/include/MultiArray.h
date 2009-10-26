@@ -487,9 +487,8 @@ public:
   */
   T squared_difference(const This& v) const {
     if(!this->same_shape(v)) {
-      String msg = "squared_difference:: operation not supported with arrays "
-                   "of different shape (size and origin).";
-      throw ErrorException(msg.c_str());
+      IMP_FAILURE("squared_difference:: operation not supported with arrays "
+                   "of different shape (size and origin).");
     } else {
       T sum = 0,aux;
       for (unsigned long i=0;i<this->num_elements();i++) {
@@ -533,9 +532,8 @@ public:
                                       double avg_v=0.0,
                                       double stddev_v=0.0) {
     if(this->same_size(v)==false) {
-      String msg = "cross_correlation_coefficient:: operation "
-                   "not supported with arrays of different size. ";
-      throw ErrorException(msg.c_str());
+      IMP_FAILURE("cross_correlation_coefficient:: operation "
+                   "not supported with arrays of different size. ");
     }
 
     double t_avg,t_stddev,v_avg,v_stddev;
@@ -643,8 +641,7 @@ public:
     std::ifstream in;
     in.open(filename.c_str(), std::ios::in);
     if (!in) {
-      String msg = "MultiArray::read: File " + filename + " not found" ;
-      throw ErrorException(msg.c_str());
+      IMP_FAILURE("MultiArray::read: File " + filename + " not found");
     }
     in >> *this;
     in.close();
@@ -658,8 +655,7 @@ public:
     std::ifstream in;
     in.open(filename.c_str(), std::ios::in | std::ios::binary);
     if (!in) {
-      String msg = "MultiArray::read_binary: File " + filename + " not found" ;
-      throw ErrorException(msg.c_str());
+      IMP_FAILURE("MultiArray::read_binary: File " + filename + " not found");
     }
     read_binary(in,reversed);
     in.close();
@@ -685,9 +681,8 @@ public:
     std::ofstream out;
     out.open(filename.c_str(), std::ios::out);
     if (!out) {
-      String msg = "MultiArray::write: "+
-                    filename+" cannot be opened for output" ;
-      throw ErrorException(msg.c_str());
+      IMP_FAILURE("MultiArray::write: "+
+                  filename+" cannot be opened for output");
     }
     out << *this;
     out.close();
@@ -698,9 +693,8 @@ public:
     std::ofstream out;
     out.open(filename.c_str(), std::ios::out | std::ios::binary);
     if (!out) {
-      String msg = "MultiArray::write: " +
-                  filename +" cannot be opened for output" ;
-      throw ErrorException(msg.c_str());
+      IMP_FAILURE("MultiArray::write: " +
+                  filename +" cannot be opened for output");
     }
     write_binary(out,reversed);
     out.close();

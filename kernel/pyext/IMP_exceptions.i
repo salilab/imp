@@ -29,13 +29,13 @@ set_print_exceptions(False)
       SWIG_exception(SWIG_IOError, e.what());
     } catch (IMP::IndexException &e) {
       SWIG_exception(SWIG_IndexError, e.what());
-    } catch (IMP::InvalidStateException &e) {
-      SWIG_exception(SWIG_ValueError, e.what());
-    } catch (IMP::InactiveParticleException &e) {
-      SWIG_exception(SWIG_ValueError, e.what());
-    } catch (IMP::ErrorException &e) {
-      SWIG_exception(SWIG_RuntimeError, e.what());
     } catch (IMP::ValueException &e) {
+      SWIG_exception(SWIG_ValueError, e.what());
+    } catch (IMP::InternalException &e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    } catch (IMP::ModelException &e) {
+      SWIG_exception(SWIG_RuntimeError, e.what());
+    } catch (IMP::UsageException &e) {
       SWIG_exception(SWIG_ValueError, e.what());
     } catch (IMP::IOException &e) {
       SWIG_exception(SWIG_IOError, e.what());
