@@ -38,31 +38,49 @@ public:
   IndexingIterator(Accessor a,
                    unsigned int i): a_(a), i_(i){}
 
-  // check which is which
   const This& operator++() {
     ++i_;
     return *this;
   }
 
-  // check which is which
   This operator++(int) {
     This o= *this;
-    ++i_;
+   --i_;
     return o;
   }
 
-  This operator+(unsigned int i) const {
+  const This& operator--() {
+    ++i_;
+    return *this;
+  }
+
+  This operator--(int) {
+    This o= *this;
+    --i_;
+    return o;
+  }
+
+  This operator+( int i) const {
     return This(a_, i_+i);
   }
 
-  const This& operator+=(unsigned int i) {
+  This operator-( int i) const {
+    return This(a_, i_-i);
+  }
+
+  const This& operator+=( int i) {
     i_+= i;
+    return *this;
+  }
+
+  const This& operator-=( int i) {
+    i_-= i;
     return *this;
   }
 
   unsigned int operator-(const This &o) const {
     IMP_INTERNAL_CHECK(a_== o.a_,
-                       "Don't subtract iterators from different containers");
+               "Don't subtract iterators from different containers");
     return i_- o.i_;
   }
 
@@ -108,6 +126,11 @@ public:
     return (i_<= o.i_);
   }
 
+  reference operator[](unsigned int i) {
+    This t=*this+i;
+    return *t;
+  }
+
   reference operator*() const {
     return a_(i_);
   }
@@ -118,6 +141,18 @@ public:
   }
 };
 
+
+/*template <class A>
+IndexingIterator<A> operator-(int i,
+                              IndexingIterator<A> in) {
+  return in+ (-i);
+  }*/
+
+template <class A>
+IndexingIterator<A> operator+(int i,
+                              IndexingIterator<A> in) {
+  return in+ (i);
+}
 
 IMP_END_INTERNAL_NAMESPACE
 
