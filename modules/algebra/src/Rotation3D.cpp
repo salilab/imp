@@ -128,8 +128,7 @@ Rotation3D random_rotation(const Rotation3D &center,
     }
     ++count;
   }
-  IMP_FAILURE("Unable to find a suitably close rotation",
-              ValueException);
+  IMP_FAILURE("Unable to find a suitably close rotation");
 }
 
 Rotation3D rotation_from_fixed_xyz(double xr,double yr, double zr)

@@ -233,9 +233,9 @@ void EMReaderWriter::ReadData(std::ifstream &file, float **data,
         voxel_data_size =sizeof(float);
       break;
     default:
-      IMP_FAILURE("EMReaderWriter::ReadData the requested data type "
-                  << header.type << " is not implemented.",
-                  IOException);
+      IMP_THROW("EMReaderWriter::ReadData the requested data type "
+                << header.type << " is not implemented.",
+                IOException);
     }
 
     char *voxeldata = new char[nvox * voxel_data_size];

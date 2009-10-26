@@ -77,7 +77,7 @@ namespace {
       oss << "Method SingletonsRestraint::" << str
           << " can only be called if the SingletonContainer "
           << " is a ListSingletonContainer.";
-      throw InvalidStateException(oss.str().c_str());
+      throw UsageException(oss.str().c_str());
     }
     return ret;
   }

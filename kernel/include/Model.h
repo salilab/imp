@@ -239,6 +239,9 @@ public:
       - Restraint::evaluate() is called on all Restraints
       - ScoreState::after_evaluate() is called on all ScoreStates
       The sum of the Restraint::evaluate() return values is returned.
+
+      \throw ModelException if a Particle attribute value becomes
+      invalid (NaN, infinity etc.)
    */
   Float evaluate(bool calc_derivs);
 

@@ -77,7 +77,7 @@ namespace {
       oss << "Method GroupnamesRestraint::" << str
           << " can only be called if the GroupnameContainer "
           << " is a ListGroupnameContainer.";
-      throw InvalidStateException(oss.str().c_str());
+      throw UsageException(oss.str().c_str());
     }
     return ret;
   }

@@ -38,7 +38,7 @@
 #if IMP_BUILD < IMP_FAST
 #define IMP_CHECK_ACTIVE                                                \
   IMP_USAGE_CHECK(get_is_active(), "Particle " << get_name() << " is inactive" \
-            , InactiveParticleException);
+            , InternalException);
 #else
 #define IMP_CHECK_ACTIVE
 #endif
@@ -494,7 +494,7 @@ inline void Particle::add_to_derivative(FloatKey name, Float value,
         =std::string("Can't add NaN to derivative in particle ")+
         get_name();
       internal::assert_fail(message.c_str());
-      throw InvalidStateException(message.c_str());
+      throw ModelException(message.c_str());
     }
   }
   IMP_INTERNAL_CHECK(has_attribute(name), "Particle " << get_name()

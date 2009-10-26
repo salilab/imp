@@ -12,7 +12,7 @@
   Decorator __getitem__(int index) const {
     if (index < 0) index= index+self->size();
     if (index >= static_cast<int>(self->size())) {
-       IMP_FAILURE("Index out of range in getitem" << index
+       IMP_THROW("Index out of range in getitem" << index
        << self->size(), IMP::IndexException);
     }
     return self->operator[](index);
@@ -20,7 +20,7 @@
   void __setitem__(int index, Decorator val) {
     if (index < 0) index= index+self->size();
     if (index >= static_cast<int>(self->size())) {
-       IMP_FAILURE("Index out of range in setitem" << index
+       IMP_THROW("Index out of range in setitem" << index
        << self->size(), IMP::IndexException);
     }
     self->set(index, val);
@@ -57,7 +57,7 @@
   Decorator __getitem__(int index) const {
     if (index < 0) index=self->size()+index;
     if (index >= static_cast<int>(self->size())) {
-       IMP_FAILURE("Index out of range in getitem" << index
+       IMP_THROW("Index out of range in getitem" << index
        << self->size(), IMP::IndexException);
     }
     return self->operator[](index);
@@ -69,7 +69,7 @@
   void __setitem__(int index, Decorator val) {
     if (index < 0) index=self->size()+index;
     if (index >= static_cast<int>(self->size())) {
-       IMP_FAILURE("Index out of range in setitem" << index
+       IMP_THROW("Index out of range in setitem" << index
        << self->size(), IMP::IndexException);
     }
     self->set(index, val);

@@ -70,21 +70,27 @@ Float MonteCarlo::optimize(unsigned int max_steps)
         IMP_CHECK_OBJECT(cg_.get());
 
         // if incremental, turn off non-dirty particles
-        if (get_model()->get_is_incremental()) {
-          SaveOptimizeds si(ParticlesTemp(get_model()->particles_begin(),
-                                          get_model()->particles_end()));
-          for (Model::ParticleIterator it= get_model()->particles_begin();
-               it != get_model()->particles_end(); ++it) {
-            if (!(*it)->get_is_changed()) {
-              for (Particle::FloatKeyIterator oit= (*it)->float_keys_begin();
-                   oit != (*it)->float_keys_end(); ++oit) {
-              (*it)->set_is_optimized(*oit, false);
+        try {
+          if (get_model()->get_is_incremental()) {
+            SaveOptimizeds si(ParticlesTemp(get_model()->particles_begin(),
+                                            get_model()->particles_end()));
+            for (Model::ParticleIterator it= get_model()->particles_begin();
+                 it != get_model()->particles_end(); ++it) {
+              if (!(*it)->get_is_changed()) {
+                for (Particle::FloatKeyIterator oit= (*it)->float_keys_begin();
+                     oit != (*it)->float_keys_end(); ++oit) {
+                  (*it)->set_is_optimized(*oit, false);
+                }
               }
             }
+            next_energy =cg_->optimize(num_local_steps_);
+          } else {
+            next_energy =cg_->optimize(num_local_steps_);
           }
-          next_energy =cg_->optimize(num_local_steps_);
-        } else {
-          next_energy =cg_->optimize(num_local_steps_);
+        } catch (const ModelException &e) {
+          // make sure the move is rejected if the model gets in
+          // an invalid state
+          next_energy= std::numeric_limits<double>::infinity();
         }
       }
       IMP_LOG(VERBOSE, next_energy << " done "<< std::endl);

@@ -38,7 +38,7 @@ void SimpleDiscreteRestraint::load_restraints(std::string restraint_filename)
       std::ostringstream msg;
       msg << "SimpleDiscreteRestraint::load_restraints the line : "
           << line << " is of the wrong format";
-      IMP_FAILURE(msg.str().c_str(), ErrorException);
+      IMP_THROW(msg.str().c_str(), IOException);
     }
   }
 }

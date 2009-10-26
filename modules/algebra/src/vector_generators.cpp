@@ -137,8 +137,7 @@ IMPALGEBRAEXPORT Vector3Ds random_chain(unsigned int n, double r,
   failures.push_back(0);
   while (ret.size() != n) {
     if (ret.empty()) {
-      IMP_FAILURE("Cannot place first random point",
-                  ValueException);
+      IMP_FAILURE("Cannot place first random point");
     }
     if (failures.back() > max_failures) {
       IMP_LOG(VERBOSE, "Popping " << ret.back() << std::endl);

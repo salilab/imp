@@ -16,8 +16,8 @@ CharmmParameters::CharmmParameters(const String& top_file_name,
 {
   std::ifstream top_file(top_file_name.c_str());
   if(!top_file) {
-    IMP_FAILURE("Can't open topology file " << top_file_name,
-                ErrorException);
+    IMP_THROW("Can't open topology file " << top_file_name,
+              IOException);
   }
   read_topology_file(top_file);
   top_file.close();
@@ -25,8 +25,8 @@ CharmmParameters::CharmmParameters(const String& top_file_name,
   if(!par_file_name.empty()) {
     std::ifstream par_file(par_file_name.c_str());
     if(!par_file) {
-      IMP_FAILURE("Can't open charmm file " << par_file_name,
-                  ErrorException);
+      IMP_THROW("Can't open charmm file " << par_file_name,
+                  IOException);
     }
     read_VdW_params(par_file);
     par_file.close();
@@ -180,8 +180,7 @@ void CharmmParameters::read_VdW_params(std::ifstream& input_file) {
   }
 
   if(force_field_2_vdW_.size() == 0) {
-    IMP_FAILURE("NONBONDED params not found in Charmm parameter file",
-                ErrorException);
+    IMP_FAILURE("NONBONDED params not found in Charmm parameter file");
   }
 }
 

@@ -250,8 +250,8 @@ int ImageHeader::read(const String filename, bool skip_type_check,
   // Read
   f.open(filename.c_str(), std::ios::in | std::ios::binary);
   if (f.fail()) {
-    String msg = "ImageHeader::read: file " + filename + " not found";
-    throw ErrorException(msg.c_str());
+    IMP_THROW("ImageHeader::read: file " + filename + " not found",
+              IOException);
   }
   result = read(f, force_reversed);
   f.close();
@@ -302,8 +302,8 @@ void ImageHeader::write(const String &filename, bool force_reversed)
   std::ofstream f;
   f.open(filename.c_str(), std::ios::out | std::ios::binary);
   if (f.fail()) {
-    String msg = "ImageHeader::write: file " + filename + " not found";
-    throw ErrorException(msg.c_str());
+    IMP_THROW("ImageHeader::write: file " + filename + " not found",
+              IOException);
   }
   write(f, force_reversed);
   f.close();

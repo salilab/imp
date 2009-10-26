@@ -35,12 +35,12 @@
         IMP_ERROR("Particle " << e.p_->get_name()                       \
                   << " is not in the read particles list of "           \
                   << (*it)->get_name() << " but should be.");           \
-        throw InvalidStateException("Invalid particle used");           \
+        throw InternalException("Invalid particle used");               \
       } catch (internal::WriteLockedParticleException e) {              \
         IMP_ERROR("Particle " << e.p_->get_name()                       \
                   << " is not in the write particles list of "          \
                   << (*it)->get_name() << " but should be.");           \
-        throw InvalidStateException("Invalid particle used");           \
+        throw InternalException("Invalid particle used");               \
       }                                                                 \
     } else {                                                            \
       expr;                                                             \
@@ -61,12 +61,12 @@
         IMP_ERROR("Particle " << e.p_->get_name()                       \
                   << " is not in the read particles list of "           \
                   << (*it)->get_name() << " but should be.");           \
-        throw InvalidStateException("Invalid particle used");           \
+        throw InternalException("Invalid particle used");               \
       } catch (internal::WriteLockedParticleException e) {              \
         IMP_ERROR("Particle " << e.p_->get_name()                       \
                   << " is not in the write particles list of "          \
                   << (*it)->get_name() << " but should be.");           \
-        throw InvalidStateException("Invalid particle used");           \
+        throw InternalException("Invalid particle used");               \
       }                                                                 \
     } else {                                                            \
       expr;                                                             \
@@ -466,7 +466,7 @@ Float Model::evaluate(bool calc_derivs)
       }
     }
     if (!message.empty()) {
-      throw InvalidStateException(message.c_str());
+      throw ModelException(message.c_str());
     }
   }
 
@@ -563,7 +563,7 @@ Float Model::evaluate(bool calc_derivs)
       }
     }
     if (!message.empty()) {
-      throw InvalidStateException(message.c_str());
+      throw ModelException(message.c_str());
     }
   }
 

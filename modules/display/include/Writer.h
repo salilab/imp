@@ -33,8 +33,8 @@ class IMPDISPLAYEXPORT Writer: public Object
     if (!out_.is_open() && !file_name_.empty()) {
       out_.open(file_name_.c_str());
       if (!out_.is_open()) {
-        IMP_FAILURE("Could not open output file " << file_name_,
-                    InvalidStateException);
+        IMP_THROW("Could not open output file " << file_name_,
+                  IOException);
       }
       on_open();
     }

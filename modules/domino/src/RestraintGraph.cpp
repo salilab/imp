@@ -308,7 +308,7 @@ void RestraintGraph::distribute_minimum(unsigned int father_ind,
       try {
         min_comb->combine(*it);
         passed = true;
-      } catch (IMP::ErrorException e) {
+      } catch (IMP::InternalException e) {
          IMP_WARN("problem distributing minimum");
         }
       it++;

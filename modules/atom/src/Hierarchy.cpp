@@ -79,7 +79,7 @@ struct MHDMatchingType
     switch(t_) {
       IMP_FOREACH_HIERARCHY_TYPE(IMP_IMPL_MATCH_TYPE)
     }
-    IMP_FAILURE("Unhandled type in get_by_type.", ErrorException);
+    IMP_FAILURE("Unhandled type in get_by_type.");
     return false;
   }
 
@@ -145,9 +145,11 @@ get_residue(Hierarchy mhd,
 
 #define TEST_FAIL(msg)                          \
   IMP_ERROR(msg);                               \
-  IMP_FAILURE(msg, InvalidStateException)
+  IMP_THROW(msg, BadHierarchy)
 
 namespace {
+  struct BadHierarchy:public Exception
+  {BadHierarchy(const char *str):Exception(str){}};
   struct Validator {
     typedef bool result_type;
     bool print_info;
@@ -196,7 +198,7 @@ bool Hierarchy::get_is_valid(bool print_info) const {
   try {
     IMP::core::depth_first_traversal_with_data(*this, Validator(print_info),
                                                false);
-  } catch (const InvalidStateException &e) {
+  } catch (const BadHierarchy &) {
     return false;
   }
   return true;

@@ -113,8 +113,8 @@ void add_noise(T& v, double op1, double op2,
     for (unsigned long i=0;i<v.num_elements();++i) {v.data()[i]+=random_var();}
   } else if (mode == "student") {
   } else {
-    String msg = "MultiArray::add_noise: Mode " + mode + " not supported.";
-    throw ErrorException(msg.c_str());
+    IMP_THROW("MultiArray::add_noise: Mode " + mode + " not supported.",
+              UsageException);
   }
 
 

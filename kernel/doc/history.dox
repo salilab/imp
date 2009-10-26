@@ -1,4 +1,8 @@
 /** \page recent Change History
+\par week of October 22
+- The set of exceptions has been simplified to go along with simplification of the checks. We now have IMP::InternalException and IMP::UsageException which are thrown by the respective checks (and the former is thrown by IMP_FAILURE()). When you want to to pass an exception back to python use one of IMP::ValueException or IMP::IndexException or IMP::IOException. There is also a new macro, IMP_THROW() to be used when you want to throw an exception with a nice error message. Please look at code you have worked on and make sure that the exceptions make sense given the new clarifications.
+
+- An IMP::ModelException is now thrown when IMP::Particle attributes attain invalid values. This exception can be caught to recover from failures of IMP::core::ConjugateGradients or difficult restraints.
 
 \par Week of October 15
 

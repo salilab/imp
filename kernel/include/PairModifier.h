@@ -42,26 +42,26 @@ public:
   virtual void apply(Particle *a, Particle *b,
                      DerivativeAccumulator &da) const {
     IMP_FAILURE("This PairModifier must be called without a"
-                << " DerivativeAccumulator.", InvalidStateException);
+                << " DerivativeAccumulator.");
   }
 
   /** Apply the function to a single value*/
   virtual void apply(Particle *a, Particle *b) const {
     IMP_FAILURE("This PairModifier must be called with a"
-                << " DerivativeAccumulator.", InvalidStateException);
+                << " DerivativeAccumulator.");
   }
 
   /** Apply the function to a collection of ParticlePairs */
   virtual void apply(const ParticlePairsTemp &o) const {
     IMP_FAILURE("This PairModifier must be called with a"
-                << " DerivativeAccumulator.", InvalidStateException);
+                << " DerivativeAccumulator.");
   }
 
   /** Apply the function to a collection of ParticlePairs */
   virtual void apply(const ParticlePairsTemp &o,
                      DerivativeAccumulator &da) const {
     IMP_FAILURE("This PairModifier must be called without a"
-                << " DerivativeAccumulator.", InvalidStateException);
+                << " DerivativeAccumulator.");
   }
 
   /** Get the set of interactions induced by applying to the

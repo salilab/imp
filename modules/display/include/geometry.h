@@ -115,7 +115,7 @@ struct NullGeometry: public Geometry {
   unsigned int get_dimension() const {return 0;}
 
   algebra::Vector3D get_vertex(unsigned int i) const {
-    throw InvalidStateException("No vertices");
+    throw UsageException("No vertices");
   }
 
   unsigned int get_number_of_vertices() const {

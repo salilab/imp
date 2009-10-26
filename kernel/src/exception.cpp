@@ -69,15 +69,11 @@ Exception::~Exception() throw()
   destroy();
 }
 
-ErrorException::~ErrorException() throw()
+InternalException::~InternalException() throw()
 {
 }
 
-InvalidStateException::~InvalidStateException() throw()
-{
-}
-
-InactiveParticleException::~InactiveParticleException() throw()
+UsageException::~UsageException() throw()
 {
 }
 
@@ -86,6 +82,10 @@ IndexException::~IndexException() throw()
 }
 
 ValueException::~ValueException() throw()
+{
+}
+
+ModelException::~ModelException() throw()
 {
 }
 

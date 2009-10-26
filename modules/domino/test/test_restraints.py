@@ -15,7 +15,7 @@ class RestraintTests(IMP.test.TestCase):
         p2 = IMP.Particle(m)
 
         print >> file(fname, "w"), "garbage"
-        self.assertRaises(RuntimeError, IMP.domino.SimpleDiscreteRestraint,
+        self.assertRaises(IOError, IMP.domino.SimpleDiscreteRestraint,
                           m, fname, p1, p2)
         os.unlink(fname)
 

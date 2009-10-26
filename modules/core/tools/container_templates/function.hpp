@@ -42,26 +42,26 @@ public:
   virtual void apply(ClassnameArguments,
                      DerivativeAccumulator &da) const {
     IMP_FAILURE("This GroupnameModifier must be called without a"
-                << " DerivativeAccumulator.", InvalidStateException);
+                << " DerivativeAccumulator.");
   }
 
   /** Apply the function to a single value*/
   virtual void apply(ClassnameArguments) const {
     IMP_FAILURE("This GroupnameModifier must be called with a"
-                << " DerivativeAccumulator.", InvalidStateException);
+                << " DerivativeAccumulator.");
   }
 
   /** Apply the function to a collection of Classnames */
   virtual void apply(const ClassnamesTemp &o) const {
     IMP_FAILURE("This GroupnameModifier must be called with a"
-                << " DerivativeAccumulator.", InvalidStateException);
+                << " DerivativeAccumulator.");
   }
 
   /** Apply the function to a collection of Classnames */
   virtual void apply(const ClassnamesTemp &o,
                      DerivativeAccumulator &da) const {
     IMP_FAILURE("This GroupnameModifier must be called without a"
-                << " DerivativeAccumulator.", InvalidStateException);
+                << " DerivativeAccumulator.");
   }
 
   /** Get the set of interactions induced by applying to the

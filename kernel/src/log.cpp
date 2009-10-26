@@ -49,7 +49,7 @@ void set_log_file(std::string l) {
   if (!l.empty()) {
     fstream.open(l.c_str());
     if (!fstream.is_open()) {
-      IMP_FAILURE("Error opening log file " << l, ValueException);
+      IMP_FAILURE("Error opening log file " << l);
     } else {
       internal::log_target=FILE;
     }

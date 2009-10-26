@@ -177,7 +177,7 @@ IMPEXPORT void assert_fail(const char *msg);
           << "  File \"" << __FILE__ << "\", line " << __LINE__ \
           << std::endl;                                         \
       IMP::internal::assert_fail(oss.str().c_str());            \
-      throw IMP::ErrorException(oss.str().c_str());             \
+      throw IMP::InternalException(oss.str().c_str());          \
     }                                                           \
   } while(false)
 #else
@@ -204,23 +204,31 @@ IMPEXPORT void assert_fail(const char *msg);
       std::ostringstream oss;                                   \
       oss << message << std::endl;                              \
       IMP::internal::assert_fail(oss.str().c_str());            \
-      throw IMP::ValueException(oss.str().c_str());             \
+      throw IMP::UsageException(oss.str().c_str());             \
     }                                                           \
   } while (false)
 #else
 #define IMP_USAGE_CHECK(e,m,E)
 #endif
 
+//! Throw an exception with a message
+#define IMP_THROW(message, exception_name)do {                          \
+  std::ostringstream oss;                                               \
+  oss << message << std::endl;                                          \
+  throw exception_name(oss.str().c_str());                              \
+  } while (true)
+
 //! A runtime failure for IMP.
 /** \param[in] message Failure message to write.
-    \param[in] ExceptionType Throw an exception of this type. The exception
-    must be constructable from a char *.
+    This macro is used to provide nice error messages when there is
+    an internal error in \imp. It causes an IMP::InternalException to be
+    thrown.
 */
-#define IMP_FAILURE(message, ExceptionType) do {                        \
+#define IMP_FAILURE(message) do {                                       \
   std::ostringstream oss;                                               \
   oss << message << std::endl;                                          \
   IMP::internal::assert_fail(oss.str().c_str());                        \
-  throw ExceptionType(oss.str().c_str());                               \
+  throw InternalException(oss.str().c_str());                           \
   } while (true)
 
 //! Use this to make that the method is not implemented yet
@@ -228,7 +236,7 @@ IMPEXPORT void assert_fail(const char *msg);
  */
 #define IMP_NOT_IMPLEMENTED do {                                        \
     IMP::internal::assert_fail("This method is not implemented.");      \
-    throw ErrorException("Not implemented");                            \
+    throw InternalException("Not implemented");                         \
   } while(true)
 
 
@@ -236,42 +244,42 @@ IMPEXPORT void assert_fail(const char *msg);
 
 
 
-//! A general exception for an error in IMP.
-/**
+//! A general exception for an intenal error in IMP.
+/** This exception is thrown by the IMP_INTERNAL_CHECK() and
+    IMP_FAILURE() macros. It should never be caught.
  */
-struct IMPEXPORT ErrorException: public Exception
+struct IMPEXPORT InternalException: public Exception
 {
-  //! Create exception with an error message
-  ErrorException(const char *msg="Fatal error"): Exception(msg){}
-  ~ErrorException() throw();
+  InternalException(const char *msg="Fatal error"): Exception(msg){}
+  ~InternalException() throw();
 };
 
-//! An exception for an invalid model state
-/**
+//! An exception for an invalid usage of \imp
+/** It is thrown by the IMP_USAGE_CHECK() macro. It should never be
+    caught internally to \imp, but it one may be able to recover from
+    it being thrown.
  */
-class IMPEXPORT InvalidStateException : public Exception
+class IMPEXPORT UsageException : public Exception
 {
  public:
-  //! Create exception with an error message
-  InvalidStateException(const char *t): Exception(t){}
-  ~InvalidStateException() throw();
+  UsageException(const char *t): Exception(t){}
+  ~UsageException() throw();
 };
 
-//! An exception for trying to access an inactive particle
-/**
+//! An exception for an invalid value being passed to \imp
+/** This exception will be passed back to python as a value error.
  */
-class IMPEXPORT InactiveParticleException : public Exception
+class IMPEXPORT ValueException : public Exception
 {
  public:
-  //! Create exception with an error message
-  InactiveParticleException(const char *msg
-                            ="Attempting to use inactive particle"):
-    Exception(msg){}
-  ~InactiveParticleException() throw();
+  ValueException(const char *t): Exception(t){}
+  ~ValueException() throw();
 };
+
 
 //! An exception for a request for an invalid member of a container
-/**
+/** This exception should be used when a python index error is
+    to be thrown.
  */
 class IMPEXPORT IndexException: public Exception
 {
@@ -281,26 +289,33 @@ class IMPEXPORT IndexException: public Exception
   ~IndexException() throw();
 };
 
-//! An exception for a passing an out of range value
-/**
- */
-class IMPEXPORT ValueException: public Exception
-{
- public:
-  //! Create exception with an error message
-  ValueException(const char *t): Exception(t){}
-  ~ValueException() throw();
-};
-
 //! An input/output exception
-/**
+/** This exception should be used when an IO
+    operation fails in a way that leaves the internal state OK. For
+    example, failure to open a file should result in an IOException.
+
+    It is OK to catch such exceptions in \imp.
  */
 class IMPEXPORT IOException: public Exception
 {
  public:
-  //! Create exception with an error message
   IOException(const char *t): Exception(t){}
   ~IOException() throw();
+};
+
+
+/** \brief An exception which is thrown when the Model has
+    attributes with invalid values.
+
+    It may be OK to catch a in \imp ModelException, when, for example,
+    the catcher can simply re-randomize the optimized coordinates and
+    restart the optimization.  */
+class IMPEXPORT ModelException: public Exception
+{
+ public:
+  //! Create exception with an error message
+  ModelException(const char *t): Exception(t){}
+  ~ModelException() throw();
 };
 
 IMP_END_NAMESPACE
