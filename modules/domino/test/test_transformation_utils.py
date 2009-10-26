@@ -12,17 +12,17 @@ import my_helpers
 class TransformationUtilsTests(IMP.test.TestCase):
 
     def __set_rigid_bodies__(self):
-        self.rbs=helpers.set_rigid_bodies(self.mhs,self.mdl)
+        self.rbs=my_helpers.set_rigid_bodies(self.mhs,self.mdl)
 
     def __set_components__(self):
-        self.mhs = helpers.read_components([
+        self.mhs = my_helpers.read_components([
             self.open_input_file("1z5s_A.pdb"),
             self.open_input_file("1z5s_B.pdb"),
             self.open_input_file("1z5s_C.pdb"),
             self.open_input_file("1z5s_D.pdb")],self.mdl)
 
     def __set_components_copy__(self):
-        self.mhs_copy = helpers.read_components([
+        self.mhs_copy = my_helpers.read_components([
             self.open_input_file("1z5s_A.pdb"),
             self.open_input_file("1z5s_B.pdb"),
             self.open_input_file("1z5s_C.pdb"),
@@ -92,7 +92,7 @@ class TransformationUtilsTests(IMP.test.TestCase):
         tu = IMP.domino.TransformationUtils(self.rbs)
         for j in range(5):
             for i in range(4):
-                trans = helpers.create_random_transformation()
+                trans = my_helpers.create_random_transformation()
                 state_p=IMP.Particle(self.mdl)
                 IMP.domino.Transformation.setup_particle(state_p,trans)
 
