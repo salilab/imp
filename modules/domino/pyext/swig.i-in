@@ -2,8 +2,10 @@ IMP_DIRECTOR_MODULE_CLASS(domino, DiscreteSampler);
 IMP_DIRECTOR_MODULE_CLASS(domino, DiscreteSet);
 
 /* Wrap our own classes */
-%include "IMP/domino/JunctionTree.h"
 %include "IMP/domino/CombState.h"
+%include "IMP/domino/Transformation.h"
+%include "IMP/domino/TransformationUtils.h"
+%include "IMP/domino/JunctionTree.h"
 %include "IMP/domino/DiscreteSampler.h"
 %include "IMP/domino/JNode.h"
 %include "IMP/domino/RestraintGraph.h"
