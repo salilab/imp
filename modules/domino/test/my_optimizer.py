@@ -69,7 +69,10 @@ class my_optimizer:
         for r in self.all_restraints:
             self.d_opt.add_restraint(r)
         self.d_opt.set_sampling_space(self.discrete_sampler)
-        return self.d_opt.optimize(1)
+        min_score = self.d_opt.optimize(1)
+        min_combination = self.d_opt.get_graph().get_opt_combination(0)
+        print min_combination
+        return min_score
 
     def init_sampling_space(self):
         self.discrete_sampler = IMP.domino.SimpleDiscreteSampler()
