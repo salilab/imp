@@ -329,12 +329,7 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
                     ov.remove(f)
                 except ValueError:
                     pass
-            print v
-            print e[v]
-            e.Replace(v=ov)
-            print e[v]
             e[v]=ov
-            print e[v]
         if platform == 'darwin':
             e.Replace(LDMODULEFLAGS= \
                       '$LINKFLAGS -bundle -flat_namespace -undefined suppress')
