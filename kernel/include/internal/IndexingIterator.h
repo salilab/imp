@@ -45,12 +45,12 @@ public:
 
   This operator++(int) {
     This o= *this;
-   --i_;
+   ++i_;
     return o;
   }
 
   const This& operator--() {
-    ++i_;
+    --i_;
     return *this;
   }
 
