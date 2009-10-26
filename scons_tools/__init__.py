@@ -321,13 +321,20 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
         # remove the warnings flags because swig produces code which triggers
         # tons of them.
         for v in ['CCFLAGS', 'CPPFLAGS', 'CXXFLAGS']:
-            for f in ['-Werror', '-Wall', '-g', '-O2', '-O3',
+            ov= [x for x in e[v]]
+            for f in ['-Werror', '-Wall','-g', '-O2', '-O3',
                       '-fstack-protector', '-Wstrict-prototypes',
                       '-DNDEBUG']:
                 try:
-                    e[v].remove(f)
+                    ov.remove(f)
                 except ValueError:
                     pass
+            print v
+            print e[v]
+            e.Replace(v=ov)
+            print e[v]
+            e[v]=ov
+            print e[v]
         if platform == 'darwin':
             e.Replace(LDMODULEFLAGS= \
                       '$LINKFLAGS -bundle -flat_namespace -undefined suppress')
