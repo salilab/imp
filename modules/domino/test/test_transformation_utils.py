@@ -7,7 +7,7 @@ import IMP.core
 import IMP.atom
 import IMP.helper
 import time
-import helpers
+import my_helpers
 
 class TransformationUtilsTests(IMP.test.TestCase):
 
