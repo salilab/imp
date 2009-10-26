@@ -322,7 +322,7 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
         # tons of them.
         for v in ['CCFLAGS', 'CPPFLAGS', 'CXXFLAGS']:
             ov= [x for x in e[v]]
-            for f in ['-Werror', '-Wall','-g', '-O2', '-O3',
+            for f in ['-Werror', '-Wall','-O2', '-O3',
                       '-fstack-protector', '-Wstrict-prototypes',
                       '-DNDEBUG']:
                 try:
