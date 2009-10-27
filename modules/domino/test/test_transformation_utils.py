@@ -54,7 +54,7 @@ class TransformationUtilsTests(IMP.test.TestCase):
                 xyz_orig=IMP.core.XYZs(IMP.core.get_leaves(self.mhs[i]))
                 rand_t_p = IMP.domino.Transformation.setup_particle(IMP.Particle(self.mdl),rand_t)
                 self.tu.move2state(self.rbs[i],rand_t_p.get_particle())
-                self.mdl.evaluate(None) #to make sure that the rigid bodies score states are updated
+                self.mdl.evaluate(False) #to make sure that the rigid bodies score states are updated
                 #check that the rmsd is 0
                 self.assert_(IMP.atom.rmsd(xyz_copy,xyz_orig) < 0.001,
                            "the molecules are expected to have the same placement")
@@ -105,7 +105,7 @@ class TransformationUtilsTests(IMP.test.TestCase):
                 #transform the rigid body
                 xyz_orig=IMP.core.XYZs(IMP.core.get_leaves(self.mhs[i]))
                 self.tu.move2state(self.rbs[i],state_p)
-            self.mdl.evaluate(None) #to make sure that the rigid bodies score states are updated
+            self.mdl.evaluate(False) #to make sure that the rigid bodies score states are updated
             #check that the rmsd is 0
             self.assert_(IMP.atom.rmsd(xyz_copy,xyz_orig) < 0.001,
                          "the molecules are expected to have the same placement")
