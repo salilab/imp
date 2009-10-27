@@ -13,7 +13,7 @@ def make_output(nodes):
 
 # Generate doxygen.conf from doxygen.conf.in
 def generate_doxygen(target, source, env):
-    print "generatind doxygen conf"
+    print "generating doxygen.conf"
     infile = file(source[0].path, 'r')
     outfile = file(target[0].path, 'w')
     source_path= os.path.split(os.path.split(os.path.split(source[0].abspath)[0])[0])[0]
