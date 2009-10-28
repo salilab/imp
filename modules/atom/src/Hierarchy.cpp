@@ -169,8 +169,8 @@ namespace {
       if (h.get_parent() != Hierarchy()) {
         Hierarchy p = h.get_parent();
         if (h.get_as_atom() && !p.get_as_residue()
-            || p.get_as_residue() &&
-            (h.get_as_chain() || h.get_as_domain())
+            || (p.get_as_residue() &&
+                (h.get_as_chain() || h.get_as_domain()))
             ){
           TEST_FAIL("Node " << h
                     << " cannot be a child of its parent "
