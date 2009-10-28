@@ -19,13 +19,13 @@
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 template <class SD>
-Float compute_distance_pair_score(const algebra::Vector3D &delta,
+double compute_distance_pair_score(const algebra::Vector3D &delta,
                                   const UnaryFunction *f,
                                   algebra::Vector3D *d,
                                   SD sd) {
   static const Float MIN_DISTANCE = .00001;
-  Float distance= delta.get_magnitude();
-  Float shifted_distance = sd(distance);
+  double distance= delta.get_magnitude();
+  double shifted_distance = sd(distance);
 
   // if needed, calculate the partial derivatives of the scores with respect
   // to the particle attributes
@@ -44,7 +44,7 @@ Float compute_distance_pair_score(const algebra::Vector3D &delta,
 
 
 template <class W0, class W1, class SD>
-Float evaluate_distance_pair_score(W0 d0, W1 d1,
+double evaluate_distance_pair_score(W0 d0, W1 d1,
                                    DerivativeAccumulator *da,
                                    const UnaryFunction *f, SD sd)
 {
@@ -57,8 +57,7 @@ Float evaluate_distance_pair_score(W0 d0, W1 d1,
   }
 
   algebra::Vector3D d;
-  Float score= compute_distance_pair_score(delta, f, (da? &d : NULL), sd);
-
+  double score= compute_distance_pair_score(delta, f, (da? &d : NULL), sd);
 
   if (da) {
     d0.add_to_derivatives(d, *da);
