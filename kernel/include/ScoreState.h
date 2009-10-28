@@ -62,7 +62,10 @@ class Model;
 class IMPEXPORT ScoreState : public Interaction
 {
   friend class Model;
-  void set_model(Model* model);
+ protected:
+  /** Override this method to take action when the score stated is added to
+      a model. */
+  virtual void set_model(Model* model);
 
 public:
   ScoreState(std::string name=std::string());
@@ -82,15 +85,6 @@ public:
 
   //! Force update of the structure
   void after_evaluate(DerivativeAccumulator *accpt);
-
-  //! Get the name of the state
-  const std::string& get_name() const {
-    return name_;
-  }
-  //! Set the name of the state
-  void set_name(const std::string &name) {
-    name_=name;
-  }
 
   //! return the stored model data
   Model *get_model() const {
@@ -138,7 +132,6 @@ protected:
   unsigned int after_iteration_;
   // all of the particle data
   WeakPointer<Model> model_;
-  std::string name_;
 };
 
 IMP_OUTPUT_OPERATOR(ScoreState);
@@ -146,14 +139,27 @@ IMP_OUTPUT_OPERATOR(ScoreState);
 //! Removes the ScoreState when the RIAA object is destroyed
 class ScoreStatePointer: public RAII {
   Pointer<ScoreState> ss_;
+  /* keep the model alive so unregister doesn't crash */
+  Pointer<Model> model_;
 public:
   IMP_RAII(ScoreStatePointer, (ScoreState *ss, Model *m),, {
       ss_=ss;
+      model_=m;
       m->add_score_state(ss);
     }, {
-      ss_->get_model()->remove_score_state(ss_);
-      ss_=NULL;
+      if (ss_) {
+        ss_->get_model()->remove_score_state(ss_);
+        ss_=NULL;
+        model_=NULL;
+      }
     });
+  bool get_is_set() const {return ss_;}
+  Model * get_model() const {
+    return model_;
+  }
+  ScoreState* get_score_state() const {
+    return ss_;
+  }
 };
 
 
