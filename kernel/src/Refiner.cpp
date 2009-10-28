@@ -15,8 +15,8 @@ namespace {
 }
 
 
-Refiner::Refiner(std::string name) {
-  set_name(internal::make_object_name(name, next_index++));
+Refiner::Refiner(std::string name):
+  Object(internal::make_object_name(name, next_index++)){
 }
 
 IMP_END_NAMESPACE
