@@ -17,11 +17,11 @@ namespace {
   unsigned int scorestate_index=0;
 }
 
-ScoreState::ScoreState(std::string name) : name_(name)
+ScoreState::ScoreState(std::string name) :
+  Interaction(internal::make_object_name(name, scorestate_index++))
 {
   update_iteration_= std::numeric_limits<unsigned int>::max();
   after_iteration_= std::numeric_limits<unsigned int>::max();
-  set_name(internal::make_object_name(name, scorestate_index++));
 }
 
 
