@@ -33,9 +33,7 @@ class EasyCubeFunc(IMP.Restraint):
 
 
 class CGOptimizerTests(IMP.test.TestCase):
-    def test_starting_conditions(self):
-        """Test the simplex optimizer with given starting conditions"""
-        print "setting up"
+    def _test_it(self):
         model = IMP.Model()
         particles = []
 
@@ -54,6 +52,9 @@ class CGOptimizerTests(IMP.test.TestCase):
         print "optimize"
         e = opt.optimize(1000000)
         self.assertAlmostEqual(e, 0.0, places=1)
+    def test_starting_conditions(self):
+        """Test the simplex optimizer with given starting conditions"""
+        self.probabilistic_test("self._test_it", .5)
 
 if __name__ == '__main__':
     unittest.main()
