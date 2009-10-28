@@ -48,7 +48,7 @@ class IMPEXPORT Object: public RefCounted
   // hide the inheritance from RefCounted as it is a detail
   std::string name_;
 protected:
-  IMP_NO_DOXYGEN(Object(std::string name=std::string()));
+  IMP_NO_DOXYGEN(Object(std::string name="Nameless"));
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Object);
 
 public:
@@ -154,6 +154,7 @@ private:
 #endif
 };
 
+
 #if !defined(IMP_DOXYGEN) && !defined(IMP_SWIG)
 inline std::ostream &operator<<(std::ostream &out, const Object& o) {
   o.pretty_print();
@@ -163,7 +164,7 @@ inline std::ostream &operator<<(std::ostream &out, const Object& o) {
 
 
 
-//! A class which is used for representing collections of Object s
+//! A class which is used for representing collections of Object objects
 typedef VectorOfRefCounted<Object*> Objects;
 
 //! A type to use when returning sets of objects so as to avoid refcounting
