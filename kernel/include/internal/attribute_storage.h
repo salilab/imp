@@ -135,15 +135,7 @@ public:
     data_[i]=v;
   }
   void add(unsigned int i, typename Traits::PassValue v) {
-    if (i+1 > size_) {
-      boost::scoped_array<typename Traits::Value>
-        n(new typename Traits::Value[i+1]);
-      std::copy(data_.get(), data_.get()+size_, n.get());
-      std::fill(n.get()+size_, n.get()+i,
-                Traits::get_invalid()); // skip the last
-      data_.swap(n);
-      size_= i+1;
-    }
+    if (!fits(i)) resize(i+1, Traits::get_invalid());
     data_[i]= v;
   }
   void remove(unsigned int i) {
@@ -168,6 +160,19 @@ public:
   }
   void fill(typename Traits::Value v) {
     std::fill(data_.get(), data_.get()+size_, v);
+  }
+  void resize(unsigned int sz, typename Traits::PassValue pv) {
+    if (size_ >= sz) {
+      size_=sz;
+    } else {
+      boost::scoped_array<typename Traits::Value>
+        n(new typename Traits::Value[sz]);
+      std::copy(data_.get(), data_.get()+size_, n.get());
+      std::fill(n.get()+size_, n.get()+sz,
+                pv);
+      data_.swap(n);
+      size_=sz;
+    }
   }
 };
 
