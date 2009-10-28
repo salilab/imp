@@ -36,6 +36,7 @@ class IMPCOREEXPORT GroupnamesRestraint : public Restraint
 {
   IMP::internal::OwnerPointer<GroupnameScore> ss_;
   IMP::internal::OwnerPointer<GroupnameContainer> pc_;
+  mutable double score_;
 public:
   //! Create the restraint.
   /** \param[in] ss The function to apply to each particle.
@@ -56,7 +57,7 @@ public:
                       GroupnameContainer *pc,
                       std::string name="GroupnamesRestraint %1%");
 
-  IMP_RESTRAINT(GroupnamesRestraint, get_module_version_info());
+  IMP_INCREMENTAL_RESTRAINT(GroupnamesRestraint, get_module_version_info());
 
   /** \note This can only be used if the container is a ListGroupnameContainer
   */

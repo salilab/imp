@@ -29,7 +29,8 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT GroupnameRestraint : public Restraint
 {
   IMP::internal::OwnerPointer<GroupnameScore> ss_;
-  Value v_;
+  StoreValue v_;
+  mutable double score_;
 public:
   //! Create the restraint.
   /** This function takes the function to apply to the
@@ -39,7 +40,7 @@ public:
                      ClassnameArguments,
                      std::string name="GroupnameRestraint %1%");
 
-  IMP_RESTRAINT(GroupnameRestraint, get_module_version_info());
+  IMP_INCREMENTAL_RESTRAINT(GroupnameRestraint, get_module_version_info());
 };
 
 IMPCORE_END_NAMESPACE

@@ -12,7 +12,8 @@
 
 #include "config.h"
 #include <IMP/GroupnameContainer.h>
-#include <IMP/container_macros.h>
+#include <IMP/internal/container_helpers.h>
+#include <IMP/ScoreState.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -22,13 +23,17 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT ListGroupnameContainer : public GroupnameContainer
 {
-  bool sorted_;
+  Classnames data_;
+  IMP_ACTIVE_CONTAINER_DECL(ListGroupnameContainer);
+  // for the change versions
+  ListGroupnameContainer(bool);
 public:
   //! construct and pass an initial set of classnames
   ListGroupnameContainer(const Classnames &ps,
                          std::string name= "ListGroupnameContainer %1%");
 
   ListGroupnameContainer(std::string name= "ListGroupnameContainer %1%");
+  ListGroupnameContainer(const char *name);
 
  /** @name Methods to control the contained objects
 
@@ -36,53 +41,36 @@ public:
      the list use these methods.
   */
   /**@{*/
-  IMP_LIST(public, Classname, classname, Value, Classnames);
+  void add_classname(Value vt);
+  void add_classnames(const ClassnamesTemp &c);
+  void set_classnames(ClassnamesTemp c);
+  IMP_NO_DOXYGEN(void add_classnames(const Classnames &c) {
+      add_classnames(static_cast<const ClassnamesTemp&>(c));
+    })
+  IMP_NO_DOXYGEN(void set_classnames(const Classnames &c) {
+      set_classnames(static_cast<ClassnamesTemp>(c));
+    })
+  void clear_classnames();
+#ifndef IMP_DOXYGEN
+  typedef Classnames::const_iterator ClassnameIterator;
+#else
+  class ClassnameIterator;
+#endif
+  ClassnameIterator classnames_begin() const {
+    return data_.begin();
+  }
+  ClassnameIterator classnames_end() const {
+    return data_.end();
+  }
   /**@}*/
 
-  //! log n time
-  virtual bool get_contains_classname(Value vt) const;
-
-  /** @name Faster editing
-
-      The container keeps it list of elements in a sorted order.
-      As this can make for slow insertions, the user has the option
-      of disabling the sorting while inserting many objects. To do this,
-      call
-      \code
-      set_is_editing(true);
-      // do stuff
-      set_is_editing(false);
-      \endcode
-      \see ListGroupnameContainerEditor
-      @{
-   */
-  void set_is_editing( bool tf);
-
- bool get_is_editing() const {
-    return !sorted_;
-  }
-  /** @}*/
-
-  IMP::VersionInfo get_version_info() const {
-    return get_module_version_info();
+  static ListGroupnameContainer *create_untracked_container() {
+    ListGroupnameContainer *lsc = new ListGroupnameContainer(false);
+    return lsc;
   }
 
-  virtual void show(std::ostream &out = std::cout) const;
 
-  virtual void apply(const GroupnameModifier *sm);
-
-  virtual void apply(const GroupnameModifier *sm, DerivativeAccumulator &da);
-
-  virtual double evaluate(const GroupnameScore *s,
-                          DerivativeAccumulator *da) const;
-
-  virtual ClassnamesTemp get_classnames() const;
-
-  ObjectsTemp get_input_objects() const {return ObjectsTemp();}
-
-  // for some reason swig gets this wrong
-  //IMP_REF_COUNTED_DESTRUCTOR(ListGroupnameContainer)
-  ~ListGroupnameContainer(){}
+  IMP_GROUPNAME_CONTAINER(ListGroupnameContainer, get_module_version_info());
 };
 
 
