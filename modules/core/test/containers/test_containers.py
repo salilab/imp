@@ -7,7 +7,7 @@ import IMP.core
 
 class RefCountTests(IMP.test.TestCase):
     """Test refcounting of particles"""
-    def _test_refcount_container(self):
+    def test_refcount_container(self):
         """Check that Particles is ref counted"""
         refcnt = IMP.test.RefCountChecker(self)
         m= IMP.Model()

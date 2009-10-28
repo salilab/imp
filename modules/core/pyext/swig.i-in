@@ -41,7 +41,10 @@ IMP_REFCOUNT_RETURN_SINGLE(IMP::core::Mover)
 %include "IMP/core/XYZ.h"
 
 /* Wrap the final classes */
-%include "IMP/core/AllPairsPairContainer.h"
+%include "IMP/core/AllBipartitePairContainer.h"
+%include "IMP/core/AllPairContainer.h"
+%include "IMP/core/CloseBipartitePairContainer.h"
+%include "IMP/core/ClosePairContainer.h"
 %include "IMP/core/AngleRestraint.h"
 %include "IMP/core/AngleTripletScore.h"
 %include "IMP/core/AttributeSingletonScore.h"
@@ -77,8 +80,6 @@ IMP_REFCOUNT_RETURN_SINGLE(IMP::core::Mover)
 %include "IMP/core/Hierarchy.h"
 %include "IMP/core/LeavesRefiner.h"
 %include "IMP/core/Linear.h"
-%include "IMP/core/MaximumChangeScoreState.h"
-%include "IMP/core/MaximumChangeXYZRScoreState.h"
 %include "IMP/core/MonteCarlo.h"
 %include "IMP/core/NormalMover.h"
 %include "IMP/core/OpenCubicSpline.h"
@@ -115,8 +116,6 @@ IMP_REFCOUNT_RETURN_SINGLE(IMP::core::Mover)
 %include "IMP/core/MinimumPairScoreRestraint.h"
 %include "IMP/core/MaximumSingletonScoreRestraint.h"
 %include "IMP/core/MaximumPairScoreRestraint.h"
-%include "IMP/core/RemoveInactiveSingletonsOptimizerState.h"
-%include "IMP/core/RemoveInactivePairsOptimizerState.h"
 %include "IMP/core/RigidBodyMover.h"
 %include "IMP/core/utility.h"
 

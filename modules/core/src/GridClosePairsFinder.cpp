@@ -24,14 +24,13 @@ namespace {
   struct AddToList {
     ParticlePairsTemp &out_;
     Particle *p_;
-    FloatKey rk_;
     double d_;
     AddToList(ParticlePairsTemp &o,
-              Particle *p, FloatKey rk, double d): out_(o), p_(p),
-                                                   rk_(rk), d_(d){}
+              Particle *p, double d): out_(o), p_(p),
+                                      d_(d){}
     void operator()(Particle *p) {
-      if (distance(XYZR(p_, rk_),
-                   XYZR(p, rk_)) < d_) {
+      if (distance(XYZR(p_),
+                   XYZR(p)) < d_) {
         out_.push_back(ParticlePair(p_, p));
       }
     }
@@ -39,14 +38,12 @@ namespace {
 
   struct AddToList2 {
     ParticlePairsTemp &out_;
-    FloatKey rk_;
     double d_;
     AddToList2(ParticlePairsTemp &o,
-               FloatKey rk, double d): out_(o),
-                                       rk_(rk), d_(d){}
+               double d): out_(o),d_(d){}
     void operator()(Particle *a, Particle *b) {
-      if (distance(XYZR(a, rk_),
-                   XYZR(b, rk_)) < d_) {
+      if (distance(XYZR(a),
+                   XYZR(b)) < d_) {
         out_.push_back(ParticlePair(a, b));
       }
     }
@@ -62,14 +59,13 @@ namespace {
 
   void grid_partition_points(SingletonContainer *c,
                              double distance,
-                             FloatKey rk,
                              GVector &bins)
   {
     if (c->get_number_of_particles() ==0) return;
 
     double minr=std::numeric_limits<double>::max(), maxr=0;
     for (unsigned int i=0; i< c->get_number_of_particles(); ++i) {
-      double r= c->get_particle(i)->get_value(rk);
+      double r= c->get_particle(i)->get_value(XYZR::get_default_radius_key());
       if ( r > maxr) maxr=r;
       if ( r > 0 && r < minr) minr=r;
     }
@@ -85,7 +81,7 @@ namespace {
 
     std::vector<internal::ParticleGrid::Storage> ops(cuts.size());
     for (unsigned int i=0; i< c->get_number_of_particles(); ++i) {
-      double r= c->get_particle(i)->get_value(rk);
+      double r= c->get_particle(i)->get_value(XYZR::get_default_radius_key());
       bool found=false;
       for (unsigned int j=0; ; ++j) {
       IMP_INTERNAL_CHECK(j< cuts.size(), "Internal error in ASNBLSS");
@@ -108,7 +104,8 @@ namespace {
     if (ops[i].empty()) continue;
     Float rmax=0;
     for (unsigned int j=0; j< ops[i].size(); ++j) {
-      rmax= std::max(rmax, ops[i][j]->get_value(rk));
+      rmax= std::max(rmax,
+                     ops[i][j]->get_value(XYZR::get_default_radius_key()));
     }
     bins.push_back(new internal::ParticleGrid(grid_side_from_r(rmax
                                                                +distance),
@@ -124,7 +121,6 @@ namespace {
 void grid_generate_nbl(const internal::ParticleGrid *particle_bin,
                        const internal::ParticleGrid *grid_bin,
                        Float distance,
-                       FloatKey rk,
                        ParticlePairsTemp &out)
 {
   IMP_LOG(VERBOSE, "Generate nbl for pair " << std::endl);
@@ -132,7 +128,7 @@ void grid_generate_nbl(const internal::ParticleGrid *particle_bin,
          it= particle_bin->particle_voxels_begin();
        it != particle_bin->particle_voxels_end(); ++it) {
     Particle *p= it->first;
-    AddToList f(out, p, rk, distance);
+    AddToList f(out, p, distance);
     XYZ d(p);
     internal::ParticleGrid::VirtualIndex index
       = grid_bin->get_virtual_index(d.get_coordinates());
@@ -152,7 +148,6 @@ ParticlePairsTemp GridClosePairsFinder
 ::get_close_pairs(SingletonContainer *ca,
                   SingletonContainer *cb) const {
   IMP_NEW(QuadraticClosePairsFinder, qp, ());
-  qp->set_radius_key(get_radius_key());
   qp->set_distance(get_distance());
   return qp->get_close_pairs(ca, cb);
 }
@@ -162,23 +157,16 @@ ParticlePairsTemp GridClosePairsFinder
   IMP_LOG(TERSE, "Rebuilding NBL with Grid and cutoff "
           << get_distance() << std::endl );
 
-    IMP::VectorOfRefCounted<internal::ParticleGrid*> bins;
+  IMP::VectorOfRefCounted<internal::ParticleGrid*> bins;
 
-  if (get_radius_key()== FloatKey()) {
-    internal::ParticleGrid::Storage ps(c->particles_begin(),
-                                       c->particles_end());
-    /** \todo need to pick better value here.
-     */
-    bins.push_back(new internal::ParticleGrid(1.0, ps));
 
-  } else {
-    grid_partition_points(c, get_distance(), get_radius_key(), bins);
-  }
+  grid_partition_points(c, get_distance(), bins);
+
   ParticlePairsTemp out;
   for (unsigned int i=0; i< bins.size(); ++i) {
     for (unsigned int j=i+1; j< bins.size(); ++j) {
       grid_generate_nbl(bins[i], bins[j], get_distance(),
-                        get_radius_key(), out);
+                        out);
     }
 
     internal::ParticleGrid::Index last_index;
@@ -187,13 +175,13 @@ ParticlePairsTemp GridClosePairsFinder
          it != bins[i]->particle_voxels_end(); ++it) {
       IMP_LOG(VERBOSE, "Searching with particle " << it->first->get_name()
               << std::endl);
-      AddToList f(out, it->first, get_radius_key(), get_distance());
+      AddToList f(out, it->first, get_distance());
       bins[i]->apply_to_nearby(f, it->second,
                                get_distance(),
                                true);
 
       if (it->second != last_index) {
-        AddToList2 fp(out, get_radius_key(), get_distance());
+        AddToList2 fp(out, get_distance());
         IMP_LOG(VERBOSE, "Searching in " << it->second
                 << std::endl);
         bins[i]->apply_to_cell_pairs(fp, it->second);

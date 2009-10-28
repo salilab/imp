@@ -23,6 +23,8 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT SingletonContainerSet
   : public SingletonContainer
 {
+ // to not have added and removed
+ SingletonContainerSet(bool);
 public:
   //! Construct and empty set
   SingletonContainerSet(std::string name="SingletonContainerSet %1%");
@@ -37,6 +39,11 @@ public:
   IMP_LIST(public, SingletonContainer, singleton_container,
            SingletonContainer*, SingletonContainers);
   /**@}*/
+
+  static SingletonContainerSet *create_untracked_container() {
+    SingletonContainerSet *lsc = new SingletonContainerSet(false);
+    return lsc;
+  }
 };
 
 

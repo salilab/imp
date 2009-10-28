@@ -11,6 +11,7 @@
 #include "config.h"
 #include "XYZR.h"
 #include "ListPairContainer.h"
+#include "internal/MovedSingletonContainer.h"
 
 #include <IMP/RefCounted.h>
 #include <IMP/SingletonContainer.h>
@@ -31,16 +32,11 @@ class ListPairContainer;
  */
 class IMPCOREEXPORT ClosePairsFinder : public Object
 {
-  FloatKey rk_;
   double distance_;
  protected:
   //! Get the radius if get_radius_key() is non-default, otherwise 0.
   Float get_radius(Particle *p) const {
-    if (rk_ != FloatKey()) {
-      return p->get_value(rk_);
-    } else {
-      return 0;
-    }
+    return XYZR(p).get_radius();
   }
 
  public:
@@ -58,20 +54,7 @@ class IMPCOREEXPORT ClosePairsFinder : public Object
   virtual ParticlePairsTemp get_close_pairs(SingletonContainer *pca,
                                             SingletonContainer *pcb) const =0;
   /** @} */
-  /** \name The radius key
-      If the radius key is non-default, then all particles must have
-      that attribute and the particles are assumed to be bounded by
-      a sphere with the given radius. If it is default, the particles
-      are all treated as points.
-      @{
-   */
-  virtual void set_radius_key(FloatKey rk) {
-    rk_=rk;
-  }
-  FloatKey get_radius_key() const {
-    return rk_;
-  }
-  /** @} */
+
   /** \name The distance threshold
       All pairs within this distance threshold are added to the output
       list.
@@ -95,6 +78,15 @@ class IMPCOREEXPORT ClosePairsFinder : public Object
   virtual ParticlesTemp get_input_particles(SingletonContainer *a,
                                             SingletonContainer *b) const=0;
   /** @} */
+#ifndef SWIG
+  /** \brief Return a container which lists all particles which moved more
+      than threshold
+  */
+  virtual internal::MovedSingletonContainer*
+    get_moved_singleton_container(SingletonContainer *in,
+                                  Model *m,
+                                  double threshold)const;
+#endif
 };
 
 IMP_OUTPUT_OPERATOR(ClosePairsFinder);

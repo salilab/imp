@@ -21,6 +21,7 @@
 #include "VectorOfRefCounted.h"
 #include "VersionInfo.h"
 #include "DerivativeAccumulator.h"
+#include "internal/OwnerPointer.h"
 
 IMP_BEGIN_NAMESPACE
 class PairModifier;
@@ -35,6 +36,7 @@ class PairScore;
  */
 class IMPEXPORT PairContainer : public Interaction
 {
+  internal::OwnerPointer<Interaction> added_, removed_;
   struct Accessor: public NullDefault {
     typedef Accessor This;
     typedef ParticlePair result_type;
@@ -49,8 +51,27 @@ class IMPEXPORT PairContainer : public Interaction
     // This should be ref counted, but swig memory management is broken
     PairContainer* o_;
   };
+ protected:
+  /** Containers must have containers that keep track of the particles
+      which have been added or since the last step. These containers
+      must be registered with the parent PairContainer.
+
+      Containers which are themselves returned by the get_added/removed
+      functions do not have to register such containers.
+  */
+  void set_added_and_removed_containers(PairContainer* added,
+                                        PairContainer* removed) {
+    added_=added;
+    removed_=removed;
+  }
 
 public:
+#ifndef IMP_DOXYGEN
+  bool get_is_added_or_removed_container() {
+    return !added_;
+  }
+#endif
+
   PairContainer(std::string name="PairContainer %1%");
 
   /** \note This function may be linear. Be aware of the complexity
@@ -94,9 +115,6 @@ public:
   virtual double evaluate(const PairScore *s,
                           DerivativeAccumulator *da) const=0;
 
-  //! Get all the ParticlePairs from the container
-  virtual ParticlePairsTemp get_particle_pairs() const=0;
-
   //! Containers do not induce interactions
   ParticlesList get_interacting_particles() const {
     return ParticlesList();
@@ -113,6 +131,45 @@ public:
   ParticlesTemp get_output_particles() const {
     return ParticlesTemp();
   }
+
+  /** \name Incremental Scoring
+      When incremental scoring is used, the container keeps track of
+      changes to it since the last Model::evaluate() call.
+      \unstable{ParticlePairContainer::get_removed_pairs_container()}
+      The address of the objects returned should not change over the lifetime
+      of this container (but, of course, their contents will).
+      @{
+  */
+  PairContainer* get_removed_pairs_container() const {
+    IMP_USAGE_CHECK(added_, "The containers returned by "
+                    << " get_added_pairs_container() do not "
+                    << " track their own added and removed contents.",
+                    ParticlePairException);
+    return dynamic_cast<PairContainer*>(added_.get());
+  }
+  PairContainer* get_added_pairs_container() const {
+    IMP_USAGE_CHECK(added_, "The containers returned by "
+                    << " get_added_pairs_container() do not "
+                    << " track their own added and removed contents.",
+                    ParticlePairException);
+    return dynamic_cast<PairContainer*>(removed_.get());
+  }
+  /** Return the change in score (and derivatives) since the last
+      evaluate of the current contents of the container.
+  */
+  virtual double evaluate_change(const PairScore *o,
+                                DerivativeAccumulator *da) const = 0;
+
+
+  /** Return the score of the last evaluate for the current contents of the
+      container.
+  */
+  virtual double evaluate_prechange(const PairScore *o,
+                                    DerivativeAccumulator *da) const = 0;
+  /** @} */
+
+  //! Get all the ParticlePairs from the container
+  virtual ParticlePairsTemp get_particle_pairs() const=0;
 
   IMP_REF_COUNTED_DESTRUCTOR(PairContainer)
 };

@@ -31,11 +31,34 @@ class IMPEXPORT SingletonScore : public Object
 public:
   SingletonScore(std::string name="SingletonScore %1%");
   //! Compute the score and the derivative if needed.
-  virtual Float evaluate(Particle *a,
-                         DerivativeAccumulator *da) const = 0;
+  virtual double evaluate(Particle *a,
+                          DerivativeAccumulator *da) const = 0;
 
-  virtual Float evaluate(const ParticlesTemp &o,
-                         DerivativeAccumulator *da) const = 0;
+  /** An implementations
+      for this is provided by the IMP_SINGLETON_SCORE,
+      IMP_PAIR_SCORE macros.
+  */
+  virtual double evaluate(const ParticlesTemp &o,
+                          DerivativeAccumulator *da) const = 0;
+
+  /** \name Incremental evaluation
+      Compute how much the score has changed since the last evaluate
+      (and writing derivatives if they have changed). Implementations
+      for these are provided by the IMP_SINGLETON_SCORE,
+      IMP_PAIR_SCORE macros.
+      @{
+  */
+  virtual double evaluate_change(Particle *a,
+                                 DerivativeAccumulator *da) const = 0;
+
+  virtual double evaluate_change(const ParticlesTemp &o,
+                                 DerivativeAccumulator *da) const = 0;
+  virtual double evaluate_prechange(Particle *a,
+                                    DerivativeAccumulator *da) const = 0;
+  virtual double evaluate_prechange(const ParticlesTemp &o,
+                                    DerivativeAccumulator *da) const = 0;
+
+  /** @} */
 
   /** Get the set of interaction induced by applying to the
       argument. */

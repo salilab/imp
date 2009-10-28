@@ -44,9 +44,34 @@ double PairsRestraint
   IMP_CHECK_OBJECT(ss_);
   IMP_CHECK_OBJECT(pc_);
 
-  return pc_->evaluate(ss_, accum);
+  score_= pc_->evaluate(ss_, accum);
+  return score_;
 }
 
+double PairsRestraint
+::unprotected_incremental_evaluate(DerivativeAccumulator *accum) const
+{
+  IMP_OBJECT_LOG;
+  IMP_CHECK_OBJECT(ss_);
+  IMP_CHECK_OBJECT(pc_);
+  IMP_LOG(VERBOSE, "Scores are " << score_);
+  score_+=pc_->evaluate_change(ss_, accum);
+  // compute the base for the added ones
+  IMP_LOG(VERBOSE, " " << score_);
+  score_ +=pc_->get_added_pairs_container()
+    ->evaluate_prechange(ss_, accum);
+  IMP_LOG(VERBOSE," " << score_);
+  if (accum) {
+    DerivativeAccumulator nda(*accum, -1);
+    score_ -=pc_->get_removed_pairs_container()
+      ->evaluate_prechange(ss_, &nda);
+  } else {
+    score_ -=pc_->get_removed_pairs_container()
+      ->evaluate_prechange(ss_, NULL);
+  }
+  IMP_LOG(VERBOSE," " << score_ << std::endl);
+  return score_;
+}
 
 ParticlesList PairsRestraint::get_interacting_particles() const
 {

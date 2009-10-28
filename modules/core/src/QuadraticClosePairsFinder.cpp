@@ -38,7 +38,8 @@ ParticlePairsTemp QuadraticClosePairsFinder
 ParticlePairsTemp QuadraticClosePairsFinder
 ::get_close_pairs(SingletonContainer *c) const {
   IMP_LOG(TERSE, "Adding close pairs from "
-          << c->get_number_of_particles() << " particles." << std::endl);
+          << c->get_number_of_particles() << " particles with threshold "
+          << get_distance() << std::endl);
   ParticlePairsTemp ret;
   for (SingletonContainer::ParticleIterator it = c->particles_begin();
        it != c->particles_end(); ++it) {

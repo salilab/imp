@@ -1,5 +1,7 @@
 files = [
          'ArrayOnAttributesHelper.cpp',
+         'DifferenceSingletonContainer.cpp',
+         'MovedSingletonContainer.cpp',
          'ParticleGrid.cpp',
          'graph_base.cpp',
          'rigid_body_tree.cpp',

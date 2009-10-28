@@ -563,11 +563,12 @@ private:                                                                \
    return traits.add_required_attributes(p);                            \
  }                                                                      \
  struct Name##AttrArrayAccessor {                                       \
-   const Class &d_;                                                     \
-   Name##AttrArrayAccessor(const Class &d): d_(d){}                     \
+   const Class *d_;                                                     \
+   Name##AttrArrayAccessor(const Class *d): d_(d){}                     \
+   Name##AttrArrayAccessor(): d_(NULL){}                                \
    typedef ExternalType result_type;                                    \
    result_type operator()(unsigned int i) const {                       \
-     return d_.get_##name(i);                                           \
+     return d_->get_##name(i);                                          \
    }                                                                    \
    bool operator==(const Name##AttrArrayAccessor &o) const {            \
      return d_== o.d_;                                                  \
@@ -578,10 +579,10 @@ protection:                                                             \
              ::IndexingIterator<Name##AttrArrayAccessor>                \
              Name##Iterator;)                                           \
  IMP_NO_SWIG(Name##Iterator plural##_begin() const {                    \
-     return Name##Iterator(Name##AttrArrayAccessor(*this));             \
+     return Name##Iterator(Name##AttrArrayAccessor(this));              \
  }                                                                      \
  Name##Iterator plural##_end() const {                                  \
-   return Name##Iterator(Name##AttrArrayAccessor(*this),                \
+   return Name##Iterator(Name##AttrArrayAccessor(this),                 \
                          get_number_of_##plural());                     \
  })                                                                     \
  ExternalType get_##name(unsigned int i) const {                        \
@@ -863,28 +864,60 @@ protected:                                                              \
     IMP::DerivativeAccumulator*)
     - IMP::SingletonScore::get_input_particles()
     - IMP::SingletonScore::get_output_particles()
- */
-#define IMP_SINGLETON_SCORE(Name, version_info)                    \
-  double evaluate(Particle *a, DerivativeAccumulator *da) const;   \
-  double evaluate(const ParticlesTemp &ps,                         \
-                  DerivativeAccumulator *da) const {               \
-    double ret=0;                                                  \
-    for (unsigned int i=0; i< ps.size(); ++i) {                    \
-      ret+=Name::evaluate(ps[i], da);                              \
-    }                                                              \
-    return ret;                                                    \
-  }                                                                \
-  ParticlesList get_interacting_particles(Particle*) const;        \
-  ParticlesTemp get_input_particles(Particle*) const;              \
+*/
+#define IMP_SINGLETON_SCORE(Name, version_info)                         \
+  double evaluate(Particle *a, DerivativeAccumulator *da) const;        \
+  double evaluate(const ParticlesTemp &ps,                              \
+                  DerivativeAccumulator *da) const {                    \
+    double ret=0;                                                       \
+    for (unsigned int i=0; i< ps.size(); ++i) {                         \
+      ret+=Name::evaluate(ps[i], da);                                   \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
+  double evaluate_change(Particle *a,                                   \
+                         DerivativeAccumulator *da) const {             \
+    if (a->get_is_changed()) {                                          \
+      DerivativeAccumulator nda;                                        \
+      if (da) nda= DerivativeAccumulator(*da, -1);                      \
+      double v= Name::evaluate(a->get_prechange_particle(),             \
+                               da? &nda:NULL);                          \
+      double rv= Name::evaluate(a, da)-v;                               \
+      return rv;                                                        \
+    } else {                                                            \
+      return 0;                                                         \
+    }                                                                   \
+  }                                                                     \
+  double evaluate_change(const ParticlesTemp &ps,                       \
+                         DerivativeAccumulator *da) const {             \
+    double ret=0;                                                       \
+    for (unsigned int i=0; i< ps.size(); ++i) {                         \
+      ret+=Name::evaluate_change(ps[i], da);                            \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
+  double evaluate_prechange(Particle *a,                                \
+                            DerivativeAccumulator *da) const {          \
+    return Name::evaluate(a->get_prechange_particle(),                  \
+                          da);                                          \
+  }                                                                     \
+  double evaluate_prechange(const ParticlesTemp &ps,                    \
+                            DerivativeAccumulator *da) const {          \
+    double ret=0;                                                       \
+    for (unsigned int i=0; i< ps.size(); ++i) {                         \
+      ret+=Name::evaluate_prechange(ps[i], da);                         \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
+  ParticlesList get_interacting_particles(Particle*) const;             \
+  ParticlesTemp get_input_particles(Particle*) const;                   \
   IMP_OBJECT(Name, version_info);
 
 
 //! Declare the functions needed for a PairScore
-/** In addition to the methods done by IMP_OBJECT, it declares
-    - IMP::PairScore::evaluate(IMP::Particle*,IMP::Particle*,
-es
+/** In addition to the methods done by IMP_OBJECT(), it declares
+    - IMP::PairScore::evaluate()
     - IMP::PairScore::get_interacting_particles()
-    IMP::DerivativeAccumulator*)
     - IMP::PairScore::get_input_particles()
     - IMP::PairScore::get_output_particles()
 */
@@ -899,7 +932,44 @@ es
     }                                                                   \
     return ret;                                                         \
   }                                                                     \
-  ParticlesList get_interacting_particles(Particle*, Particle*) const;  \
+  double evaluate_change(Particle *a, Particle *b,                      \
+                         DerivativeAccumulator *da) const {             \
+    if (a->get_is_changed() || b->get_is_changed()) {                   \
+      DerivativeAccumulator nda;                                        \
+      if (da) nda= DerivativeAccumulator(*da, -1);                      \
+      double v= Name::evaluate(a->get_prechange_particle(),             \
+                               b->get_prechange_particle(),             \
+                               da? &nda:NULL);                          \
+      double rv= Name::evaluate(a, b, da)-v;                            \
+      return rv;                                                        \
+    } else {                                                            \
+      return 0;                                                         \
+    }                                                                   \
+  }                                                                     \
+  double evaluate_change(const ParticlePairsTemp &ps,                   \
+                         DerivativeAccumulator *da) const {             \
+    double ret=0;                                                       \
+    for (unsigned int i=0; i< ps.size(); ++i) {                         \
+      ret+=Name::evaluate_change(ps[i][0], ps[i][1], da);               \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
+  double evaluate_prechange(Particle *a, Particle *b,                   \
+                         DerivativeAccumulator *da) const {             \
+    return Name::evaluate(a->get_prechange_particle(),                  \
+                           b->get_prechange_particle(),                 \
+                          da);                                          \
+  }                                                                     \
+  double evaluate_prechange(const ParticlePairsTemp &ps,                \
+                            DerivativeAccumulator *da) const {          \
+    double ret=0;                                                       \
+    for (unsigned int i=0; i< ps.size(); ++i) {                         \
+      ret+=Name::evaluate_prechange(ps[i][0], ps[i][1], da);            \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
+  ParticlesList get_interacting_particles(Particle*,                    \
+                                          Particle*) const;             \
   ParticlesTemp get_input_particles(Particle*, Particle*) const;        \
   IMP_OBJECT(Name, version_info);
 
@@ -1143,17 +1213,21 @@ es
     - IMP::SingletonContainer::get_particles()
     - IMP::Interaction::get_input_objects()
 */
-#define IMP_SINGLETON_CONTAINER(Name, version_info)                 \
-  bool get_contains_particle(Particle* p) const;                    \
-  unsigned int get_number_of_particles() const;                     \
-  Particle* get_particle(unsigned int i) const;                     \
-  void apply(const SingletonModifier *sm);                          \
-  void apply(const SingletonModifier *sm,                           \
-             DerivativeAccumulator &da);                            \
-  double evaluate(const SingletonScore *s,                          \
-                  DerivativeAccumulator *da) const;                 \
-  ParticlesTemp get_particles() const;                              \
-  ObjectsTemp get_input_objects() const;                            \
+#define IMP_SINGLETON_CONTAINER(Name, version_info)                     \
+  bool get_contains_particle(Particle* p) const;                        \
+  unsigned int get_number_of_particles() const;                         \
+  Particle* get_particle(unsigned int i) const;                         \
+  void apply(const SingletonModifier *sm);                              \
+  void apply(const SingletonModifier *sm,                               \
+             DerivativeAccumulator &da);                                \
+  double evaluate(const SingletonScore *s,                              \
+                  DerivativeAccumulator *da) const;                     \
+  double evaluate_change(const SingletonScore *s,                       \
+                         DerivativeAccumulator *da) const;              \
+  double evaluate_prechange(const SingletonScore *s,                    \
+                            DerivativeAccumulator *da) const;           \
+  ParticlesTemp get_particles() const;                                  \
+  ObjectsTemp get_input_objects() const;                                \
   IMP_OBJECT(Name, version_info);
 
 
@@ -1176,6 +1250,10 @@ es
              DerivativeAccumulator &da);                                \
   double evaluate(const PairScore *s,                                   \
                   DerivativeAccumulator *da) const;                     \
+  double evaluate_change(const PairScore *s,                            \
+                         DerivativeAccumulator *da) const;              \
+  double evaluate_prechange(const PairScore *s,                         \
+                            DerivativeAccumulator *da) const;           \
   ParticlePairsTemp get_particle_pairs() const;                         \
   ObjectsTemp get_input_objects() const;                                \
   IMP_OBJECT(Name, version_info)

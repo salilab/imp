@@ -57,12 +57,12 @@ RigidClosePairsFinder
 
 
 namespace {
-  void check_particles(SingletonContainer *sc, FloatKey rk) {
+  void check_particles(SingletonContainer *sc) {
     IMP_IF_CHECK(USAGE) {
       for (SingletonContainer::ParticleIterator it= sc->particles_begin();
          it != sc->particles_end(); ++it) {
         if (RigidBody::particle_is_instance(*it)
-            && !(*it)->has_attribute(rk)) {
+            && !(*it)->has_attribute(XYZR::get_default_radius_key())) {
           IMP_WARN("Particle " << (*it)->get_name() << " is a rigid body "
                    << "but does not have a radius. "
                    << "Collision detection is unlikely to work.");
@@ -79,8 +79,8 @@ ParticlePairsTemp RigidClosePairsFinder
   IMP_LOG(TERSE, "Rigid add_close_pairs called with "
           << ca->get_number_of_particles() << " and "
           << cb->get_number_of_particles() << std::endl);
-  check_particles(ca, get_radius_key());
-  check_particles(cb, get_radius_key());
+  check_particles(ca);
+  check_particles(cb);
   ParticlePairsTemp ppt= cpf_->get_close_pairs(ca,cb);
   ParticlePairsTemp ret;
   for (ParticlePairsTemp::const_iterator
@@ -97,7 +97,7 @@ ParticlePairsTemp RigidClosePairsFinder
 ::get_close_pairs(SingletonContainer *c) const {
   IMP_LOG(TERSE, "Adding close pairs from "
           << c->get_number_of_particles() << " particles." << std::endl);
-  check_particles(c, get_radius_key());
+  check_particles(c);
   ParticlePairsTemp ppt= cpf_->get_close_pairs(c);
   ParticlePairsTemp ret;
   for (ParticlePairsTemp::const_iterator it= ppt.begin();
@@ -184,6 +184,17 @@ RigidClosePairsFinder::get_input_particles(SingletonContainer *a,
   ParticlesTemp ret1= fill_list(b);
   ret0.insert(ret0.end(), ret1.begin(), ret1.end());
   return ret0;
+}
+
+internal::MovedSingletonContainer*
+RigidClosePairsFinder::get_moved_singleton_container(SingletonContainer *in,
+                                                 Model *m,
+                                                 double threshold) const {
+  return new internal::MovedSingletonContainerImpl<std::pair<algebra::Sphere3D,
+    algebra::Rotation3D>,
+    internal::SaveXYZRRotValues,
+    internal::SaveMovedValues<internal::SaveXYZRRotValues>,
+    internal::ListXYZRRotMovedParticles>(m, in, threshold);
 }
 
 IMPCORE_END_NAMESPACE

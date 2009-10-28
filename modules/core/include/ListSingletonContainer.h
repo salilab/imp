@@ -12,7 +12,8 @@
 
 #include "config.h"
 #include <IMP/SingletonContainer.h>
-#include <IMP/container_macros.h>
+#include <IMP/internal/container_helpers.h>
+#include <IMP/ScoreState.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -22,13 +23,17 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT ListSingletonContainer : public SingletonContainer
 {
-  bool sorted_;
+  Particles data_;
+  IMP_ACTIVE_CONTAINER_DECL(ListSingletonContainer);
+  // for the change versions
+  ListSingletonContainer(bool);
 public:
   //! construct and pass an initial set of particles
   ListSingletonContainer(const Particles &ps,
                          std::string name= "ListSingletonContainer %1%");
 
   ListSingletonContainer(std::string name= "ListSingletonContainer %1%");
+  ListSingletonContainer(const char *name);
 
  /** @name Methods to control the contained objects
 
@@ -36,53 +41,36 @@ public:
      the list use these methods.
   */
   /**@{*/
-  IMP_LIST(public, Particle, particle, Particle*, Particles);
+  void add_particle(Particle* vt);
+  void add_particles(const ParticlesTemp &c);
+  void set_particles(ParticlesTemp c);
+  IMP_NO_DOXYGEN(void add_particles(const Particles &c) {
+      add_particles(static_cast<const ParticlesTemp&>(c));
+    })
+  IMP_NO_DOXYGEN(void set_particles(const Particles &c) {
+      set_particles(static_cast<ParticlesTemp>(c));
+    })
+  void clear_particles();
+#ifndef IMP_DOXYGEN
+  typedef Particles::const_iterator ParticleIterator;
+#else
+  class ParticleIterator;
+#endif
+  ParticleIterator particles_begin() const {
+    return data_.begin();
+  }
+  ParticleIterator particles_end() const {
+    return data_.end();
+  }
   /**@}*/
 
-  //! log n time
-  virtual bool get_contains_particle(Particle* vt) const;
-
-  /** @name Faster editing
-
-      The container keeps it list of elements in a sorted order.
-      As this can make for slow insertions, the user has the option
-      of disabling the sorting while inserting many objects. To do this,
-      call
-      \code
-      set_is_editing(true);
-      // do stuff
-      set_is_editing(false);
-      \endcode
-      \see ListSingletonContainerEditor
-      @{
-   */
-  void set_is_editing( bool tf);
-
- bool get_is_editing() const {
-    return !sorted_;
-  }
-  /** @}*/
-
-  IMP::VersionInfo get_version_info() const {
-    return get_module_version_info();
+  static ListSingletonContainer *create_untracked_container() {
+    ListSingletonContainer *lsc = new ListSingletonContainer(false);
+    return lsc;
   }
 
-  virtual void show(std::ostream &out = std::cout) const;
 
-  virtual void apply(const SingletonModifier *sm);
-
-  virtual void apply(const SingletonModifier *sm, DerivativeAccumulator &da);
-
-  virtual double evaluate(const SingletonScore *s,
-                          DerivativeAccumulator *da) const;
-
-  virtual ParticlesTemp get_particles() const;
-
-  ObjectsTemp get_input_objects() const {return ObjectsTemp();}
-
-  // for some reason swig gets this wrong
-  //IMP_REF_COUNTED_DESTRUCTOR(ListSingletonContainer)
-  ~ListSingletonContainer(){}
+  IMP_SINGLETON_CONTAINER(ListSingletonContainer, get_module_version_info());
 };
 
 

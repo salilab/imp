@@ -17,6 +17,7 @@ class DistanceTests(IMP.test.TestCase):
         t=IMP.algebra.Vector3D(0,1,0)
         tr= IMP.algebra.Transformation3D(IMP.algebra.identity_rotation(), t)
         tps= IMP.core.TransformedDistancePairScore(IMP.core.Harmonic(0,1), tr)
+        tps.set_was_owned(True)
         d0.set_coordinates(IMP.algebra.Vector3D(2,3,4))
         d1.set_coordinates(IMP.algebra.Vector3D(2,2,4))
         self.assertEqual(tps.evaluate(p0, p1, None), 0)

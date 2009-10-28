@@ -15,9 +15,21 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+namespace {
+  PairContainerSet* get_set(PairContainer* c) {
+    return dynamic_cast<PairContainerSet*>(c);
+  }
+}
+
+PairContainerSet
+::PairContainerSet(bool): PairContainer("added or removed for set") {
+}
+
 PairContainerSet
 ::PairContainerSet(std::string name):
   PairContainer(name) {
+  set_added_and_removed_containers( create_untracked_container(),
+                                    create_untracked_container());
 }
 
 bool
@@ -66,9 +78,20 @@ IMP_LIST_IMPL(PairContainerSet,
               PairContainer,
               pair_container,
               PairContainer*,
-              PairContainers,{
+              PairContainers,
+              {
+                if (!get_is_added_or_removed_container()) {
+                  get_set(get_added_pairs_container())
+                    ->add_pair_container(obj
+                           ->get_added_pairs_container());
+                }
                 obj->set_was_owned(true);
-              },,)
+              },,
+              if (!get_is_added_or_removed_container()) {
+                get_set(get_removed_pairs_container())
+                  ->add_pair_container(obj
+                       ->get_removed_pairs_container());
+              })
 
 
 void PairContainerSet::apply(const PairModifier *sm) {
@@ -93,6 +116,27 @@ double PairContainerSet::evaluate(const PairScore *s,
   return score;
 }
 
+
+double PairContainerSet::evaluate_change(const PairScore *s,
+                                              DerivativeAccumulator *da) const {
+  double score=0;
+  for (unsigned int i=0; i< get_number_of_pair_containers(); ++i) {
+    score+=get_pair_container(i)->evaluate_change(s, da);
+  }
+  return score;
+}
+
+double PairContainerSet::evaluate_prechange(const PairScore *s,
+                                             DerivativeAccumulator *da) const {
+  double score=0;
+  for (unsigned int i=0; i< get_number_of_pair_containers(); ++i) {
+    score+=get_pair_container(i)->evaluate_prechange(s, da);
+  }
+  return score;
+}
+
+
+
 ParticlePairsTemp PairContainerSet::get_particle_pairs() const {
   ParticlePairsTemp ret;
   for (unsigned int i=0; i< get_number_of_pair_containers(); ++i) {
@@ -102,9 +146,11 @@ ParticlePairsTemp PairContainerSet::get_particle_pairs() const {
   return ret;
 }
 
+
 ObjectsTemp PairContainerSet::get_input_objects() const {
   return ObjectsTemp(pair_containers_begin(),
                      pair_containers_end());
 }
+
 
 IMPCORE_END_NAMESPACE

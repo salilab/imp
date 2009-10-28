@@ -46,13 +46,11 @@ void test(int n) {
   IMP_NEW(Model, m, ());
   Particles ps= create_xyzr_particles(m, n, .1);
   IMP_NEW(ListPairContainer, lpc, ());
-  lpc->set_is_editing(true);
   for (unsigned int i=0; i< ps.size(); ++i) {
     for (unsigned int j=0; j< i; ++j) {
       lpc->add_particle_pair(ParticlePair(ps[i], ps[j]));
     }
   }
-  lpc->set_is_editing(false);
   IMP_NEW(DistancePairScore, dps, (new HarmonicLowerBound(0, 1)));
   time_both(lpc, dps, "list");
 }
@@ -62,22 +60,18 @@ void test_set(int n) {
   IMP_NEW(Model, m, ());
   Particles ps= create_xyzr_particles(m, n, .1);
   IMP_NEW(ListPairContainer, lpc0, ());
-  lpc0->set_is_editing(true);
   for (unsigned int i=0; i< ps.size()/2; ++i) {
     for (unsigned int j=0; j< i; ++j) {
       lpc0->add_particle_pair(ParticlePair(ps[i], ps[j]));
     }
   }
-  lpc0->set_is_editing(false);
 
   IMP_NEW(ListPairContainer, lpc1, ());
-  lpc1->set_is_editing(true);
   for (unsigned int i=ps.size()/2; i< ps.size(); ++i) {
     for (unsigned int j=ps.size()/2; j< i; ++j) {
       lpc1->add_particle_pair(ParticlePair(ps[i], ps[j]));
     }
   }
-  lpc1->set_is_editing(false);
   IMP_NEW(PairContainerSet, pcs, ());
   pcs->add_pair_container(lpc0);
   pcs->add_pair_container(lpc1);

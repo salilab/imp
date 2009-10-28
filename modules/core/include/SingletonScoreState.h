@@ -15,6 +15,7 @@
 #include "config.h"
 #include <IMP/SingletonModifier.h>
 #include <IMP/ScoreState.h>
+#include <IMP/Particle.h>
 
 IMP_BEGIN_NAMESPACE
 // for swig
@@ -36,7 +37,7 @@ class IMPCOREEXPORT SingletonScoreState : public ScoreState
 {
   IMP::internal::OwnerPointer<SingletonModifier> f_;
   IMP::internal::OwnerPointer<SingletonModifier> af_;
-  Particle* v_;
+  Pointer<Particle> v_;
 public:
   /** before and after are the modifiers to apply before and after
       evaluate.

@@ -30,6 +30,7 @@ class IMPCOREEXPORT PairRestraint : public Restraint
 {
   IMP::internal::OwnerPointer<PairScore> ss_;
   ParticlePair v_;
+  mutable double score_;
 public:
   //! Create the restraint.
   /** This function takes the function to apply to the
@@ -39,7 +40,7 @@ public:
                      Particle *a, Particle *b,
                      std::string name="PairRestraint %1%");
 
-  IMP_RESTRAINT(PairRestraint, get_module_version_info());
+  IMP_INCREMENTAL_RESTRAINT(PairRestraint, get_module_version_info());
 };
 
 IMPCORE_END_NAMESPACE

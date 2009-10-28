@@ -12,11 +12,12 @@ class RefCountTests(IMP.test.TestCase):
         print "m"
         m = IMP.Model()
         print "c"
-        c = IMP.core.SingletonContainerSet()
         print "s"
-        s = IMP.core.ClosePairsScoreState(c)
+        print "p"
+        p=IMP.Particle(m)
+        s = IMP.core.SingletonScoreState(None, None, p)
         m.add_score_state(s)
-        # Reference to c is not kept
+        # Reference to p is not kept
         return refcnt, m, s
 
     def test_simple(self):
@@ -25,12 +26,12 @@ class RefCountTests(IMP.test.TestCase):
         # ClosePairsScoreState also creates a PairContainer and
         # a ClosePairsFinder (and holds a reference to the SingletonContainer)
         # so 5 objects in total
-        refcnt.assert_number(5)
+        refcnt.assert_number(3)
         # Model should hold a ref to state, so nothing should be freed
         # until it is
         print "del s"
         del s
-        refcnt.assert_number(5)
+        refcnt.assert_number(3)
         print "del m"
         del m
         refcnt.assert_number(0)
@@ -39,10 +40,10 @@ class RefCountTests(IMP.test.TestCase):
         """Constructed Python states should survive model deletion"""
         refcnt, m, s = self._make_objects()
         self.assertEqual(s.get_ref_count(), 2)
-        refcnt.assert_number(5)
+        refcnt.assert_number(3)
         # New state s should not go away until we free the Python reference
         del m
-        refcnt.assert_number(4)
+        refcnt.assert_number(2)
         self.assertEqual(s.get_ref_count(), 1)
         del s
         refcnt.assert_number(0)
@@ -60,7 +61,7 @@ class RefCountTests(IMP.test.TestCase):
         del m
         # Now only the Python reference s should survive
         self.assertEqual(s.get_ref_count(), 1)
-        refcnt.assert_number(4)
+        refcnt.assert_number(2)
         del s
         refcnt.assert_number(0)
 

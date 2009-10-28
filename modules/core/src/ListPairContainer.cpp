@@ -11,50 +11,58 @@
 #include "IMP/core/ListPairContainer.h"
 #include "IMP/PairModifier.h"
 #include "IMP/PairScore.h"
+#include <IMP/core/internal/pair_helpers.h>
 #include <algorithm>
 
 
 IMPCORE_BEGIN_NAMESPACE
 
+namespace {
+  ListPairContainer* get_list(PairContainer *g) {
+    return dynamic_cast<ListPairContainer*>(g);
+  }
+}
+
+IMP_ACTIVE_CONTAINER_DEF(ListPairContainer);
+
+ListPairContainer
+::ListPairContainer(bool):
+  PairContainer("added or removed list"){}
+
 ListPairContainer
 ::ListPairContainer(const ParticlePairs &ps,
                          std::string name):
-  PairContainer(name){
-  sorted_=false;
+  PairContainer(name)
+{
+  if (ps.empty()) return;
+  for (unsigned int i=0; i< ps.size(); ++i) {
+    IMP_USAGE_CHECK(IMP::internal::get_model(ps[i])
+                    == IMP::internal::get_model(ps[0]),
+                    "All particles in container must have the same model. "
+                    << "Particle " << IMP::internal::get_name(ps[i])
+                    << " does not.",
+                    ParticlePairException);
+  }
   set_particle_pairs(ps);
-  set_is_editing(false);
+  set_added_and_removed_containers( create_untracked_container(),
+                                    create_untracked_container());
 }
 
 ListPairContainer
 ::ListPairContainer(std::string name):
   PairContainer(name){
-  sorted_=true;
+  set_added_and_removed_containers( create_untracked_container(),
+                                    create_untracked_container());
 }
 
-
-IMP_LIST_IMPL(ListPairContainer, ParticlePair,
-              particle_pair, ParticlePair,ParticlePairs,, {
-                if (sorted_) std::sort(particle_pairs_begin(),
-                                       particle_pairs_end());
-              },);
-
-
-void ListPairContainer::set_is_editing(bool tf) {
-  if (tf== !sorted_) return;
-  else {
-    sorted_=!tf;
-    if (sorted_) {
-      std::sort(particle_pairs_begin(), particle_pairs_end());
-    }
-  }
+ListPairContainer
+::ListPairContainer(const char *name):
+  PairContainer(name){
+  set_added_and_removed_containers( create_untracked_container(),
+                                    create_untracked_container());
 }
 
-
-bool
-ListPairContainer::get_contains_particle_pair(ParticlePair vt) const {
-  IMP_CHECK_OBJECT(this);
-  return std::binary_search(particle_pairs_begin(), particle_pairs_end(), vt);
-}
+IMP_LISTLIKE_PAIR_CONTAINER_DEF(ListPairContainer)
 
 void ListPairContainer::show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
@@ -62,23 +70,79 @@ void ListPairContainer::show(std::ostream &out) const {
       << " particle_pairs." << std::endl;
 }
 
-void ListPairContainer::apply(const PairModifier *sm) {
-  sm->apply(access_particle_pairs());
-}
 
-void ListPairContainer::apply(const PairModifier *sm,
-                               DerivativeAccumulator &da) {
-  sm->apply(access_particle_pairs(), da);
-}
 
-double ListPairContainer::evaluate(const PairScore *s,
-                                        DerivativeAccumulator *da) const {
-  return s->evaluate(access_particle_pairs(), da);
+void ListPairContainer::set_particle_pairs(ParticlePairsTemp sc) {
+  if (!get_has_model() && !get_is_added_or_removed_container()
+      && !sc.empty()) {
+    set_model(IMP::internal::get_model(sc[0]));
+  }
+  internal::update_list(data_, sc, this);
 }
 
 
-ParticlePairsTemp ListPairContainer::get_particle_pairs() const {
-  return access_particle_pairs();
+void ListPairContainer::clear_particle_pairs() {
+  if (!get_is_added_or_removed_container()) {
+    get_list(get_removed_pairs_container())->add_particle_pairs(data_);
+  }
+  data_.clear();
+}
+
+
+void ListPairContainer::add_particle_pair(ParticlePair vt) {
+  if (!get_has_model() && !get_is_added_or_removed_container()) {
+    set_model(IMP::internal::get_model(vt));
+  }
+  data_.insert(std::lower_bound(data_.begin(),
+                                data_.end(), vt), vt);
+  if (!get_is_added_or_removed_container()) {
+    get_list(get_added_pairs_container())->add_particle_pair(vt);
+  }
+  IMP_USAGE_CHECK(get_is_added_or_removed_container()
+                  || !get_removed_pairs_container()
+                  ->get_contains_particle_pair(vt),
+                  "You cannot remove and add the same item in one time step.",
+                  ParticlePairException);
+}
+void ListPairContainer::add_particle_pairs(const ParticlePairsTemp &c) {
+  if (c.empty()) return;
+  if (!get_has_model() && !get_is_added_or_removed_container()) {
+    set_model(IMP::internal::get_model(c[0]));
+  }
+  data_.insert(data_.end(), c.begin(), c.end());
+  std::sort(data_.begin(), data_.end());
+  if (!get_is_added_or_removed_container()) {
+    get_list(get_added_pairs_container())->add_particle_pairs(c);
+  }
+  IMP_IF_CHECK(USAGE) {
+    for (unsigned int i=0; i< c.size(); ++i) {
+      IMP_USAGE_CHECK(get_is_added_or_removed_container()
+                      || !get_removed_pairs_container()
+                      ->get_contains_particle_pair(c[i]),
+            "You cannot remove and add the same item in one time step.",
+                      ParticlePairException);
+    }
+  }
+}
+
+
+ObjectsTemp ListPairContainer::get_input_objects() const {
+  return ObjectsTemp();
+}
+
+
+void ListPairContainer::do_before_evaluate() {
+  std::remove_if(data_.begin(), data_.end(),
+                 IMP::internal::ContainerTraits<ParticlePair>::IsInactive());
+}
+
+void ListPairContainer::do_after_evaluate() {
+  get_list(get_added_pairs_container())->clear_particle_pairs();
+  get_list(get_removed_pairs_container())->clear_particle_pairs();
+}
+
+ParticlesTemp ListPairContainer::get_state_input_particles() const {
+  return ParticlesTemp();
 }
 
 IMPCORE_END_NAMESPACE

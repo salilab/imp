@@ -12,7 +12,8 @@
 
 #include "config.h"
 #include <IMP/PairContainer.h>
-#include <IMP/container_macros.h>
+#include <IMP/internal/container_helpers.h>
+#include <IMP/ScoreState.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -22,13 +23,17 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT ListPairContainer : public PairContainer
 {
-  bool sorted_;
+  ParticlePairs data_;
+  IMP_ACTIVE_CONTAINER_DECL(ListPairContainer);
+  // for the change versions
+  ListPairContainer(bool);
 public:
   //! construct and pass an initial set of particle_pairs
   ListPairContainer(const ParticlePairs &ps,
                          std::string name= "ListPairContainer %1%");
 
   ListPairContainer(std::string name= "ListPairContainer %1%");
+  ListPairContainer(const char *name);
 
  /** @name Methods to control the contained objects
 
@@ -36,53 +41,36 @@ public:
      the list use these methods.
   */
   /**@{*/
-  IMP_LIST(public, ParticlePair, particle_pair, ParticlePair, ParticlePairs);
+  void add_particle_pair(ParticlePair vt);
+  void add_particle_pairs(const ParticlePairsTemp &c);
+  void set_particle_pairs(ParticlePairsTemp c);
+  IMP_NO_DOXYGEN(void add_particle_pairs(const ParticlePairs &c) {
+      add_particle_pairs(static_cast<const ParticlePairsTemp&>(c));
+    })
+  IMP_NO_DOXYGEN(void set_particle_pairs(const ParticlePairs &c) {
+      set_particle_pairs(static_cast<ParticlePairsTemp>(c));
+    })
+  void clear_particle_pairs();
+#ifndef IMP_DOXYGEN
+  typedef ParticlePairs::const_iterator ParticlePairIterator;
+#else
+  class ParticlePairIterator;
+#endif
+  ParticlePairIterator particle_pairs_begin() const {
+    return data_.begin();
+  }
+  ParticlePairIterator particle_pairs_end() const {
+    return data_.end();
+  }
   /**@}*/
 
-  //! log n time
-  virtual bool get_contains_particle_pair(ParticlePair vt) const;
-
-  /** @name Faster editing
-
-      The container keeps it list of elements in a sorted order.
-      As this can make for slow insertions, the user has the option
-      of disabling the sorting while inserting many objects. To do this,
-      call
-      \code
-      set_is_editing(true);
-      // do stuff
-      set_is_editing(false);
-      \endcode
-      \see ListPairContainerEditor
-      @{
-   */
-  void set_is_editing( bool tf);
-
- bool get_is_editing() const {
-    return !sorted_;
-  }
-  /** @}*/
-
-  IMP::VersionInfo get_version_info() const {
-    return get_module_version_info();
+  static ListPairContainer *create_untracked_container() {
+    ListPairContainer *lsc = new ListPairContainer(false);
+    return lsc;
   }
 
-  virtual void show(std::ostream &out = std::cout) const;
 
-  virtual void apply(const PairModifier *sm);
-
-  virtual void apply(const PairModifier *sm, DerivativeAccumulator &da);
-
-  virtual double evaluate(const PairScore *s,
-                          DerivativeAccumulator *da) const;
-
-  virtual ParticlePairsTemp get_particle_pairs() const;
-
-  ObjectsTemp get_input_objects() const {return ObjectsTemp();}
-
-  // for some reason swig gets this wrong
-  //IMP_REF_COUNTED_DESTRUCTOR(ListPairContainer)
-  ~ListPairContainer(){}
+  IMP_PAIR_CONTAINER(ListPairContainer, get_module_version_info());
 };
 
 

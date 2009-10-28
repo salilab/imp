@@ -29,15 +29,11 @@ lsc.add_particle(rbp0)
 lsc.add_particle(rbp1)
 
 # Set up the nonbonded list
-nbl= IMP.core.ClosePairsScoreState(lsc)
-nbl.set_close_pairs_finder(IMP.core.RigidClosePairsFinder(IMP.core.RigidMembersRefiner()))
-m.add_score_state(nbl)
-# Set the amount particles need to move before the list is updated
-nbl.set_slack(2.0)
+nbl= IMP.core.ClosePairContainer(lsc, 0, IMP.core.RigidClosePairsFinder(IMP.core.RigidMembersRefiner()), 2.0)
 
 # Set up excluded volume
 ps= IMP.core.SphereDistancePairScore(IMP.core.HarmonicLowerBound(0,1))
-evr= IMP.core.PairsRestraint(ps, nbl.get_close_pairs_container())
+evr= IMP.core.PairsRestraint(ps, nbl)
 evri= m.add_restraint(evr)
 
 # Set up optimizer

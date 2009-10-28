@@ -12,7 +12,8 @@
 
 #include "internal/remove_pointers.h"
 #include "PairsRestraint.h"
-#include "ClosePairsScoreState.h"
+#include "ClosePairContainer.h"
+#include "PairsRestraint.h"
 #include "rigid_bodies.h"
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
@@ -34,7 +35,7 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT ExcludedVolumeRestraint: public Restraint
 {
-  IMP::internal::OwnerPointer<ClosePairsScoreState> ss_;
+  IMP::internal::OwnerPointer<ClosePairContainer> ss_;
   IMP::internal::OwnerPointer<SingletonContainer> sc_;
   IMP::internal::OwnerPointer<PairsRestraint> pr_;
   IMP::internal::OwnerPointer<Refiner> r_;

@@ -36,6 +36,7 @@ class IMPCOREEXPORT PairsRestraint : public Restraint
 {
   IMP::internal::OwnerPointer<PairScore> ss_;
   IMP::internal::OwnerPointer<PairContainer> pc_;
+  mutable double score_;
 public:
   //! Create the restraint.
   /** \param[in] ss The function to apply to each particle.
@@ -56,7 +57,7 @@ public:
                       PairContainer *pc,
                       std::string name="PairsRestraint %1%");
 
-  IMP_RESTRAINT(PairsRestraint, get_module_version_info());
+  IMP_INCREMENTAL_RESTRAINT(PairsRestraint, get_module_version_info());
 
   /** \note This can only be used if the container is a ListPairContainer
   */

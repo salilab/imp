@@ -17,29 +17,39 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+namespace {
+  typedef IMP::internal::ContainerTraits<Particle> Traits;
+}
+
 SingletonRestraint
 ::SingletonRestraint(SingletonScore *ss,
                      Particle *a,
                      std::string name):
   Restraint(name),
   ss_(ss),
-  v_(a)
+  v_(a),
+  score_(std::numeric_limits<double>::quiet_NaN())
 {
 }
 
-double
-SingletonRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
+double SingletonRestraint
+::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(ss_);
+  score_ = Traits::evaluate(ss_, v_, accum);
 
-  double score=0;
-  score += IMP::internal::ContainerTraits<Particle>
-    ::evaluate(ss_, v_, accum);
-
-  return score;
+  return score_;
 }
 
+double SingletonRestraint
+::unprotected_incremental_evaluate(DerivativeAccumulator *accum) const
+{
+  if (IMP::internal::ContainerTraits<Particle>::is_dirty(v_)) {
+    score_+=Traits::evaluate_change(ss_, v_, accum);
+  }
+  return score_;
+}
 
 ParticlesList SingletonRestraint::get_interacting_particles() const
 {

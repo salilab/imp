@@ -232,8 +232,10 @@ atom::Hierarchy create_simplified(atom::Hierarchy in,
                     algebra::Sphere3D(algebra::random_vector_in_box(bb),
                                                              r0)));
       xyzrs[i].set_coordinates_are_optimized(true);
+      std::ostringstream oss;
+      oss << "simplified fragment " << i;
+      xyzrs[i].get_particle()->set_name(oss.str());
       atom::Mass::setup_particle(xyzrs[i], m0);
-      //xyzrs[i].get_particle()->add_attribute(weight, 1, false);
     }
 
 
@@ -252,7 +254,7 @@ atom::Hierarchy create_simplified(atom::Hierarchy in,
     m->add_restraint(ccr);
 
 
-    IMP_NEW(core::AllPairsPairContainer, appc, (lsc));
+    IMP_NEW(core::AllPairContainer, appc, (lsc));
     IMP_NEW(core::NormalizedSphereDistancePairScore, nsdp,
             (new core::HarmonicLowerBound(-1,1)));
     IMP_NEW(core::PairsRestraint, pr, (nsdp, appc));

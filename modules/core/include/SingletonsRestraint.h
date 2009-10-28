@@ -36,6 +36,7 @@ class IMPCOREEXPORT SingletonsRestraint : public Restraint
 {
   IMP::internal::OwnerPointer<SingletonScore> ss_;
   IMP::internal::OwnerPointer<SingletonContainer> pc_;
+  mutable double score_;
 public:
   //! Create the restraint.
   /** \param[in] ss The function to apply to each particle.
@@ -56,7 +57,7 @@ public:
                       SingletonContainer *pc,
                       std::string name="SingletonsRestraint %1%");
 
-  IMP_RESTRAINT(SingletonsRestraint, get_module_version_info());
+  IMP_INCREMENTAL_RESTRAINT(SingletonsRestraint, get_module_version_info());
 
   /** \note This can only be used if the container is a ListSingletonContainer
   */
