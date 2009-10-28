@@ -41,20 +41,20 @@ typedef VectorOfRefCounted<OptimizerState*> OptimizerStates;
     computes the score by calling Restraint::evaluate(). It then gives
     the score states a chance to propagate derivatives using
     ScoreState::after_evaluate().:
-     <img src="http://www.websequencediagrams.com/cgi-bin/cdraw?lz=cGFydGljaXBhbnQgT3B0aW1pemVyCgAKDE1vZGVsAAUNU2NvcmVTdGF0ZQAcDVJlc3RyYWludAAyDVAAXAVsZQpsb29wIG8AXQZhdGlvbiBzdGVwcwoAbQktPgBmBTogZXZhbHVhdGUKYWN0aXZhdGUAfQcAPQVhbGwAdgtzCgCBGgUtPgCBCgo6IGJlZm9yZV8ANRIAgS4LAIEPCAAsDmF0dHJpYnV0ZSB2YWx1ZXMKbm90ZSByaWdodCBvZgCBbQxjb21wdXRlIGludmFyaWFudHMKYW5kIHVwZGEAEQV0ZXJuYWwKcwCCIQVlbmQgbm90ZQoAgjAKLT4AghEIOiBtb2RpZmllZAB1CnMKZGUAgSIUZW5kAIF8CgCCZwkAgXwJAIJ5CQCCMBQAgxUKAIFyCgAmCwCBXBUAg0kKICAAgWoIc2NvcmUKICBhbmQgZGVyaXZhdGl2ZXMAgVsKAIN_CQCBWAwAHgwAFgsAg2sHcgCEMwgAVwcAgXMLAIRMCgCBcA0Ag2QfYWZ0ZXIAg040AIFHCwCBXQUAhAEHAIMjFgCBcwwAgxcaAIUbBwCGVQk6IHRvdGFsAIFZEgCGZAYAhRAKACcLAIJdDACFBg4AhysKAIUMBwoAhlMRAIR2CgCGYQsAhHUKAIVkB2VuZA&s=modern-blue"></img>
-     \endhtmlonly
+    <img src="http://www.websequencediagrams.com/cgi-bin/cdraw?lz=cGFydGljaXBhbnQgT3B0aW1pemVyCgAKDE1vZGVsAAUNU2NvcmVTdGF0ZQAcDVJlc3RyYWludAAyDVAAXAVsZQpsb29wIG8AXQZhdGlvbiBzdGVwcwoAbQktPgBmBTogZXZhbHVhdGUKYWN0aXZhdGUAfQcAPQVhbGwAdgtzCgCBGgUtPgCBCgo6IGJlZm9yZV8ANRIAgS4LAIEPCAAsDmF0dHJpYnV0ZSB2YWx1ZXMKbm90ZSByaWdodCBvZgCBbQxjb21wdXRlIGludmFyaWFudHMKYW5kIHVwZGEAEQV0ZXJuYWwKcwCCIQVlbmQgbm90ZQoAgjAKLT4AghEIOiBtb2RpZmllZAB1CnMKZGUAgSIUZW5kAIF8CgCCZwkAgXwJAIJ5CQCCMBQAgxUKAIFyCgAmCwCBXBUAg0kKICAAgWoIc2NvcmUKICBhbmQgZGVyaXZhdGl2ZXMAgVsKAIN_CQCBWAwAHgwAFgsAg2sHcgCEMwgAVwcAgXMLAIRMCgCBcA0Ag2QfYWZ0ZXIAg040AIFHCwCBXQUAhAEHAIMjFgCBcwwAgxcaAIUbBwCGVQk6IHRvdGFsAIFZEgCGZAYAhRAKACcLAIJdDACFBg4AhysKAIUMBwoAhlMRAIR2CgCGYQsAhHUKAIVkB2VuZA&s=modern-blue"></img>
+    \endhtmlonly
 
-     Implementors should see IMP_OPTIMIZER().
- */
+    Implementors should see IMP_OPTIMIZER().
+*/
 class IMPEXPORT Optimizer: public Object
 {
-public:
+ public:
   Optimizer(std::string name="Optimizer %1%");
 
   /** Optimize the model
       \param[in] max_steps The maximum number of steps to take.
       \return The final score.
-   */
+  */
   virtual Float optimize(unsigned int max_steps) = 0;
 
   //! \return version and authorship information.
@@ -71,7 +71,7 @@ public:
      deleted when the optimizer is deleted. Further, the Optimizer
      does not prevent the model from being deleted when all python
      references go away.
-   */
+  */
   void set_model(Model *m) {model_=m;}
 
   //! Print info about the optimizer state
@@ -82,9 +82,9 @@ public:
 
   /** @name States
 
-       The stored OptimizerState objects are updated each time the
-       Optimizer decides to accept a new configuration of the Model.
-       To manipulate the list of optimizer states use the methods below.
+      The stored OptimizerState objects are updated each time the
+      Optimizer decides to accept a new configuration of the Model.
+      To manipulate the list of optimizer states use the methods below.
   */
   /**@{*/
   IMP_LIST(public, OptimizerState, optimizer_state, OptimizerState*,
@@ -94,15 +94,15 @@ public:
 
   IMP_REF_COUNTED_DESTRUCTOR(Optimizer);
 
-protected:
+ protected:
   //! Update optimizer state, should be called at each successful step
   void update_states() const ;
 
- struct FloatIndex
+  struct FloatIndex
   {
     /**
        \todo mac gcc breaks on the protection and friends here
-     */
+    */
     friend class Optimizer;
     friend class FloatIndexIterator;
     Model::ParticleConstIterator p_;
@@ -117,7 +117,7 @@ protected:
 
 
   class FloatIndexIterator
-   {
+  {
     typedef FloatIndexIterator This;
     Model::ParticleConstIterator pe_;
     mutable FloatIndex i_;
@@ -136,9 +136,9 @@ protected:
       }
       IMP_INTERNAL_CHECK(i_.p_ != pe_, "Should have just returned");
       IMP_INTERNAL_CHECK(i_.fk_ != (*i_.p_)->optimized_keys_end(),
-                 "Broken iterator end");
+                         "Broken iterator end");
       IMP_INTERNAL_CHECK((*i_.p_)->get_is_optimized(*i_.fk_),
-                   "Why did the loop end?");
+                         "Why did the loop end?");
     }
     void find_next() const {
       ++i_.fk_;
@@ -162,9 +162,14 @@ protected:
       find_next();
       return *this;
     }
+    This operator++(int) {
+      This ret=*this;
+      find_next();
+      return ret;
+    }
     reference operator*() const {
       IMP_INTERNAL_CHECK((*i_.p_)->get_is_optimized(*i_.fk_),
-                 "The iterator is broken");
+                         "The iterator is broken");
       return i_;
     }
     pointer operator->() const {
@@ -181,7 +186,7 @@ protected:
   };
 
 
-/** @name Methods for getting and setting optimized attributes
+  /** @name Methods for getting and setting optimized attributes
       Optimizers don't have to go through the particles themselves
       looking for values to optimize unless they care about special
       properties of the optimized values. Instead they can iterate
@@ -203,24 +208,24 @@ protected:
 
   void set_value(FloatIndex fi, Float v) const {
     IMP_INTERNAL_CHECK(fi.p_ != model_->particles_end(),
-               "Out of range FloatIndex in Optimizer");
+                       "Out of range FloatIndex in Optimizer");
     IMP_INTERNAL_CHECK((*fi.p_)->get_is_optimized(*fi.fk_),
-               "Keep your mits off unoptimized attributes "
-               << (*fi.p_)->get_name() << " " << *fi.fk_ << std::endl);
+                       "Keep your mits off unoptimized attributes "
+                       << (*fi.p_)->get_name() << " " << *fi.fk_ << std::endl);
     (*fi.p_)->set_value(*fi.fk_, v);
   }
 
   Float get_value(FloatIndex fi) const {
     /* cast to const needed here to help MSVC */
     IMP_INTERNAL_CHECK(static_cast<Model::ParticleConstIterator>(fi.p_)
-               != model_->particles_end(),
-               "Out of range FloatIndex in Optimizer");
+                       != model_->particles_end(),
+                       "Out of range FloatIndex in Optimizer");
     return (*fi.p_)->get_value(*fi.fk_);
   }
 
   Float get_derivative(FloatIndex fi) const {
     IMP_INTERNAL_CHECK(fi.p_ != model_->particles_end(),
-               "Out of range FloatIndex in Optimizer");
+                       "Out of range FloatIndex in Optimizer");
     return (*fi.p_)->get_derivative(*fi.fk_);
   }
 
@@ -274,9 +279,9 @@ protected:
   }
   //!@}
 
-private:
+ private:
   typedef internal::VectorStorage<internal::FloatAttributeTableTraits>
-   FloatTable;
+    FloatTable;
   mutable FloatTable widths_;
   WeakPointer<Model> model_;
 };
