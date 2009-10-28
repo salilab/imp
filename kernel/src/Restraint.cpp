@@ -19,9 +19,9 @@ namespace {
   unsigned int restraint_index=0;
 }
 
-Restraint::Restraint(std::string name)
+Restraint::Restraint(std::string name):
+  Interaction(internal::make_object_name(name, restraint_index++))
 {
-  set_name(internal::make_object_name(name, restraint_index++));
 }
 
 
