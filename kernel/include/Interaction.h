@@ -27,9 +27,9 @@ typedef std::vector<ParticlesTemp> ParticlesList;
  the get_interacting_particles() method. This method, which can be expensive
 returns the sets of interacting particles induced by the object.*/
 class Interaction: public Object
-{
- public:
+{protected:
   Interaction(std::string name=""): Object(name){}
+ public:
 
   //! Return a list of sets of particles that are restrained by this restraint
   /** This function returns a list of sets of particles that are
