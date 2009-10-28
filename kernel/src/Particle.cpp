@@ -30,8 +30,13 @@ IMP_END_INTERNAL_NAMESPACE
 
 IMP_BEGIN_NAMESPACE
 
+namespace {
+  unsigned int particle_index=0;
+}
+
 
 Particle::Particle(Model *m, std::string name):
+  Object(internal::make_object_name(name, particle_index++)),
   ps_(new internal::ParticleStorage())
 {
   m->add_particle_internal(this);
@@ -50,7 +55,12 @@ void Particle::show(std::ostream& out) const
 {
   internal::PrefixStream preout(&out);
   preout << "Particle: " << get_name()
-         << (get_is_active()? " (active)":" (dead)") << std::endl;
+         << (get_is_active()? " (active)":" (dead)");
+  if (get_is_active() && get_model()->get_is_incremental()) {
+    if (ps_->dirty_) preout << " (changed)";
+    else preout << " (unchanged)";
+  }
+  preout << std::endl;
 
   if (ps_->model_) {
     preout << "float attributes:" << std::endl;
@@ -59,12 +69,25 @@ void Particle::show(std::ostream& out) const
          ++it) {
       FloatKey k =*it;
       preout << k << ": " << get_value(k);
-      if (get_model()->get_stage() == Model::AFTER_EVALUATE
-          || get_model()->get_stage() == Model::NOT_EVALUATING){
+      if (ps_->derivatives_.fits(k.get_index())){
         preout << " ("
-               << get_derivative(k) << ") ";
+               << ps_->derivatives_.get(k.get_index()) << ") ";
+      } else {
+        preout << " (-) ";
       }
-      preout << (get_is_optimized(k)?"optimized":"") << std::endl;
+      preout << (get_is_optimized(k)?" (optimized)":"");
+      if (get_model()->get_is_incremental()
+          && get_prechange_particle()->has_attribute(k)) {
+        preout << " was " << get_prechange_particle()->get_value(k);
+        if (get_prechange_particle()->ps_->derivatives_.fits(k.get_index())){
+          preout << " ("
+                 << get_prechange_particle()
+            ->ps_->derivatives_.get(k.get_index()) << ") ";
+        } else {
+          preout << " (-) ";
+        }
+      }
+      preout << std::endl;
     }
 
 
@@ -107,10 +130,13 @@ void Particle::show(std::ostream& out) const
 // methods for incremental
 
 void Particle::move_derivatives_to_shadow() {
-  ps_->shadow_->ps_->derivatives_
-    =internal::ParticleStorage::DerivativeTable(ps_->derivatives_.get_length());
-  ps_->shadow_->ps_->derivatives_.fill(0);
-  std::swap(ps_->shadow_->ps_->derivatives_, ps_->derivatives_);
+  ps_->shadow_->ps_->derivatives_.resize(ps_->derivatives_.get_length(), 0);
+  for (unsigned int i=0; i< ps_->derivatives_.get_length(); ++i) {
+    ps_->shadow_->ps_->derivatives_.set(i,
+                                        ps_->shadow_->ps_->derivatives_.get(i)
+                                        + ps_->derivatives_.get(i));
+    ps_->derivatives_.set(i, 0);
+  }
 }
 
 void Particle::accumulate_derivatives_from_shadow() {
@@ -132,6 +158,7 @@ Particle::Particle():
 
 void Particle::setup_incremental() {
   ps_->shadow_ = new Particle();
+  ps_->shadow_->set_was_owned(true);
   internal::ref(ps_->shadow_);
   ps_->shadow_->set_name(get_name()+" history");
   ps_->shadow_->ps_->model_= ps_->model_;
