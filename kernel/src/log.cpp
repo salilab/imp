@@ -8,13 +8,65 @@
 #include "IMP/log.h"
 #include "IMP/internal/log_internal.h"
 #include "IMP/exception.h"
-#include "IMP/internal/PrefixStream.h"
+
+#include <boost/iostreams/categories.hpp>
+#include <boost/iostreams/operations.hpp>
+#include <boost/iostreams/filtering_stream.hpp>
+
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 
 LogLevel log_level= TERSE;
 LogTarget log_target= COUT;
 unsigned int log_indent=0;
+
+namespace {
+class LogStream:
+  public boost::iostreams::filtering_stream<boost::iostreams::output>,
+  public boost::noncopyable  {
+  typedef boost::iostreams::filtering_stream<boost::iostreams::output> P;
+  std::ostream *out_;
+  std::string prefix_;
+
+  struct IndentFilter: public boost::iostreams::output_filter {
+    LogStream *ps_;
+    bool to_indent_;
+    IndentFilter(LogStream *ps): ps_(ps), to_indent_(false){};
+    template <typename Sink>
+    bool put(Sink &sink, char c) {
+      if (c=='\n') {
+        to_indent_=true;
+      } else if (to_indent_) {
+        for (unsigned int i=0; i< log_indent; ++i) {
+          boost::iostreams::put(sink, ' ');
+        }
+        to_indent_=false;
+      }
+      return boost::iostreams::put(sink, c);
+    }
+  };
+
+  struct LogSink: boost::iostreams::sink {
+    LogStream *ps_;
+    LogSink(LogStream *ps): ps_(ps){}
+    unsigned int write(const char *s, std::streamsize n) {
+      ps_->out_->write(s, n);
+      return n;
+    }
+  };
+  friend class LogSink;
+  friend class IndentFilter;
+ public:
+  LogStream(std::ostream *out): out_(out) {
+    P::push(IndentFilter(this));
+    P::push(LogSink(this));
+  }
+  void set_stream(std::ostream *out) {
+    out_=out;
+  }
+};
+}
+
 
 IMP_END_INTERNAL_NAMESPACE
 
@@ -23,7 +75,7 @@ IMP_BEGIN_NAMESPACE
 namespace {
   double initialized=11111111;
   std::ofstream fstream;
-  internal::PrefixStream stream(&std::cout);
+  internal::LogStream stream(&std::cout);
 }
 
 
