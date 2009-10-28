@@ -44,7 +44,6 @@ private:
 
   unsigned int iteration_;
   ParticleStorage particles_;
-  unsigned int next_particle_index_;
   bool incremental_update_;
   // true if a regular evaluate needs to be called first
   bool first_incremental_;
@@ -75,11 +74,8 @@ private:
     p->ps_->iterator_= --particles_.end();
     p->ps_->model_= this;
     internal::ref(p);
-    std::ostringstream oss;
-    oss << "P" << next_particle_index_;
-    p->set_name(oss.str());
-    ++next_particle_index_;
-
+    // particles will not be backed up properly, so don't do incremental
+    first_incremental_=true;
     if (get_is_incremental()) {
       p->setup_incremental();
     }
