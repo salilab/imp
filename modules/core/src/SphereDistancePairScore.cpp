@@ -94,6 +94,7 @@ Float NormalizedSphereDistancePairScore::evaluate(Particle *a, Particle *b,
   Float ra = a->get_value(radius_);
   Float rb = b->get_value(radius_);
   Float mr= std::min(ra, rb);
+  // lambda is inefficient due to laziness
   return internal::evaluate_distance_pair_score(XYZ(a),
                                                 XYZ(b),
                                                 da, f_.get(),
