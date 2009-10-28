@@ -15,6 +15,13 @@ except ImportError:
           "to 'svn ci' time..."
     print
 
+def _check_do_not_commit(line, filename, num, errors):
+    marker = 'DO NOT' + ' COMMIT'
+    if line.find(marker) >= 0:
+        errors.append('%s:%d: Line contains the string "%s"' \
+                      % (filename, num+1, marker));
+
+
 def check_c_file(filename, errors):
     """Check each modified C file to make sure it adheres to the standards"""
     fh = file(filename, "r")
@@ -30,6 +37,7 @@ def check_c_file(filename, errors):
                           % (filename, num+1))
         if line.find('\t') >= 0:
             errors.append('%s:%d: error: Line contains tabs.' % (filename, num+1))
+        _check_do_not_commit(line, filename, num, errors)
         if srch.search(line):
             errors.append('%s:%d: error: Line has trailing whitespace' \
                           % (filename, num+1))
@@ -54,6 +62,7 @@ def check_python_file(filename, errors):
        standards"""
     temptest = re.compile('\s+def\s+temp_hide_test.*')
     for (num, line) in enumerate(file(filename, "r")):
+        _check_do_not_commit(line, filename, num, errors)
         if temptest.match(line):
             errors.append('%s:%d: Test case has the temp_hide_ prefix' \
                           % (filename, num+1))
