@@ -94,6 +94,37 @@ class ClassnameContainerTest(IMP.test.TestCase):
         self.assertInTolerance(m.evaluate(False), f, .1*f)
 
 
+    def test_irestraint(self):
+        """Test the incremental evaluation of the GroupnamesRestraint"""
+        m= IMP.Model()
+        m.set_log_level(IMP.TERSE)
+        gs=self.create_groupname_score()
+        c= IMP.core.ListGroupnameContainer()
+        ps=IMP.Classnames()
+        ps2= IMP.Classnames()
+        f=0
+        for i in range(0,20):
+            p=self.create_classname(m)
+            ps.append(p)
+            f=f+evaluate_groupname_score(gs, p)
+        for i in range(0,10):
+            p=self.create_classname(m)
+            ps2.append(p)
+            #f=f+evaluate_groupname_score(gs, p)
+        c.set_classnames(ps)
+        r= IMP.core.GroupnamesRestraint(gs, c)
+        m.add_restraint(r)
+        m.set_is_incremental(True)
+        self.assertInTolerance(m.evaluate(False), f, .1*f)
+        self.assertInTolerance(m.evaluate(False), f, .1*f)
+        ps= ps+ps2
+        f=0
+        for p in ps:
+            f=f+ evaluate_groupname_score(gs, p)
+        c.set_classnames(ps)
+        self.assertInTolerance(m.evaluate(False), f, .1*f)
+
+
     def test_srestraint(self):
         """Test the GroupnameRestraint"""
         m= IMP.Model()

@@ -2,7 +2,8 @@
 import sys
 import os
 
-def filter(name, value, scorename, args, fromargs, asargs,infile):
+def filter(name, value, storevalue,
+           scorename, args, fromargs, asargs,infile):
     cname= name.title().replace(' ', '')
     ucname= name.upper().replace(' ', '_') 
     lcname= name.lower().replace(' ', '_')
@@ -12,13 +13,14 @@ def filter(name, value, scorename, args, fromargs, asargs,infile):
         .replace("ClassnameArguments", args)\
         .replace("Classname", cname) \
         .replace("classname", lcname) \
+        .replace("StoreValue", storevalue)\
         .replace("Value", value) \
         .replace("Groupname", scorename) \
         .replace("GROUPNAME", scorename.upper()) \
         .replace("groupname", scorename.lower())
 
 
-def make_one(name, value, multi, args, fromargs, asargs, ):
+def make_one(name, value, storevalue, multi, args, fromargs, asargs, ):
     path= os.getcwd()+"/"
     cname= name.title().replace(' ', '')
     lcvalue= value.lower().replace(' ', '_').replace('*','')
@@ -32,6 +34,8 @@ def make_one(name, value, multi, args, fromargs, asargs, ):
                path+"modules/core/tools/container_templates/container.hpp"),
               ("kernel/src/"+multi + "Container.cpp",
                path+"/modules/core/tools/container_templates/container.cc"),
+              ("modules/core/include/internal/"+multi.lower() + "_helpers.h",
+               path+"modules/core/tools/container_templates/helper.hpp"),
               ("modules/core/include/List"+multi + "Container.h",
                path+"/modules/core/tools/container_templates/list.hpp"),
               ("modules/core/src/List"+multi + "Container.cpp",
@@ -60,10 +64,10 @@ def make_one(name, value, multi, args, fromargs, asargs, ):
               ("modules/core/src/"+multi + "sOptimizerState.cpp",
                path+"/modules/core/tools/container_templates/ostate.cc"),
 
-              ("modules/core/include/RemoveInactive"+multi + "sOptimizerState.h",
-               path+"/modules/core/tools/container_templates/inactive.hpp"),
-              ("modules/core/src/RemoveInactive"+multi + "sOptimizerState.cpp",
-               path+"/modules/core/tools/container_templates/inactive.cc"),
+              #("modules/core/include/RemoveInactive"+multi + "sOptimizerState.h",
+              # path+"/modules/core/tools/container_templates/inactive.hpp"),
+              #("modules/core/src/RemoveInactive"+multi + "sOptimizerState.cpp",
+              # path+"/modules/core/tools/container_templates/inactive.cc"),
   
               ("modules/core/include/"+multi + "ScoreState.h",
                path+"/modules/core/tools/container_templates/sstate.hpp"),
@@ -95,7 +99,7 @@ def make_one(name, value, multi, args, fromargs, asargs, ):
                path+"/modules/core/tools/container_templates/max.cc"),
               ("modules/core/test/containers/test_"+cname + "_restraint.py",
                path+"/modules/core/tools/container_templates/test.py"),
-              ("modules/core/pyext/"+lcname+"_containers.i",
+              ("modules/core/pyext/IMP_"+lcname+"_containers.i",
                path+"/modules/core/tools/container_templates/swig.i"),
               ("modules/core/test/containers/test_"+cname + "_state.py",
                path+"/modules/core/tools/container_templates/test_state.py"),
@@ -104,11 +108,13 @@ def make_one(name, value, multi, args, fromargs, asargs, ):
         ifile= open(p[1], 'r')
         contents= ifile.read()
         print "writing " + p[0]
-        ofile.write(filter(name, value, multi, args, fromargs, asargs, contents))
+        ofile.write(filter(name, value, storevalue, multi, args, fromargs, asargs, contents))
 
 def main():
-    make_one("particle", "Particle*", "Singleton", "Particle *a", "a", "a")
-    make_one("particle pair", "ParticlePair",  "Pair", "Particle *a, Particle *b",
+    make_one("particle", "Particle*", "Pointer<Particle>",
+             "Singleton", "Particle *a", "a", "a")
+    make_one("particle pair", "ParticlePair", "ParticlePair",
+             "Pair", "Particle *a, Particle *b",
              "ParticlePair(a,b)", "a,b")
     #make_one("particle triplet", "ParticleTriplet", "Triplet", "Particle *a, Particle *b, Particle *c")
 

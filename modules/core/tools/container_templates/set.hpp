@@ -23,6 +23,8 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT GroupnameContainerSet
   : public GroupnameContainer
 {
+ // to not have added and removed
+ GroupnameContainerSet(bool);
 public:
   //! Construct and empty set
   GroupnameContainerSet(std::string name="GroupnameContainerSet %1%");
@@ -37,6 +39,11 @@ public:
   IMP_LIST(public, GroupnameContainer, groupname_container,
            GroupnameContainer*, GroupnameContainers);
   /**@}*/
+
+  static GroupnameContainerSet *create_untracked_container() {
+    GroupnameContainerSet *lsc = new GroupnameContainerSet(false);
+    return lsc;
+  }
 };
 
 

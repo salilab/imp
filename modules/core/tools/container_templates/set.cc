@@ -15,9 +15,21 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+namespace {
+  GroupnameContainerSet* get_set(GroupnameContainer* c) {
+    return dynamic_cast<GroupnameContainerSet*>(c);
+  }
+}
+
+GroupnameContainerSet
+::GroupnameContainerSet(bool): GroupnameContainer("added or removed for set") {
+}
+
 GroupnameContainerSet
 ::GroupnameContainerSet(std::string name):
   GroupnameContainer(name) {
+  set_added_and_removed_containers( create_untracked_container(),
+                                    create_untracked_container());
 }
 
 bool
@@ -66,9 +78,20 @@ IMP_LIST_IMPL(GroupnameContainerSet,
               GroupnameContainer,
               groupname_container,
               GroupnameContainer*,
-              GroupnameContainers,{
+              GroupnameContainers,
+              {
+                if (!get_is_added_or_removed_container()) {
+                  get_set(get_added_groupnames_container())
+                    ->add_groupname_container(obj
+                           ->get_added_groupnames_container());
+                }
                 obj->set_was_owned(true);
-              },,)
+              },,
+              if (!get_is_added_or_removed_container()) {
+                get_set(get_removed_groupnames_container())
+                  ->add_groupname_container(obj
+                       ->get_removed_groupnames_container());
+              })
 
 
 void GroupnameContainerSet::apply(const GroupnameModifier *sm) {
@@ -93,6 +116,27 @@ double GroupnameContainerSet::evaluate(const GroupnameScore *s,
   return score;
 }
 
+
+double GroupnameContainerSet::evaluate_change(const GroupnameScore *s,
+                                              DerivativeAccumulator *da) const {
+  double score=0;
+  for (unsigned int i=0; i< get_number_of_groupname_containers(); ++i) {
+    score+=get_groupname_container(i)->evaluate_change(s, da);
+  }
+  return score;
+}
+
+double GroupnameContainerSet::evaluate_prechange(const GroupnameScore *s,
+                                             DerivativeAccumulator *da) const {
+  double score=0;
+  for (unsigned int i=0; i< get_number_of_groupname_containers(); ++i) {
+    score+=get_groupname_container(i)->evaluate_prechange(s, da);
+  }
+  return score;
+}
+
+
+
 ClassnamesTemp GroupnameContainerSet::get_classnames() const {
   ClassnamesTemp ret;
   for (unsigned int i=0; i< get_number_of_groupname_containers(); ++i) {
@@ -102,9 +146,11 @@ ClassnamesTemp GroupnameContainerSet::get_classnames() const {
   return ret;
 }
 
+
 ObjectsTemp GroupnameContainerSet::get_input_objects() const {
   return ObjectsTemp(groupname_containers_begin(),
                      groupname_containers_end());
 }
+
 
 IMPCORE_END_NAMESPACE

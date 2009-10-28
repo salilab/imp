@@ -31,11 +31,34 @@ class IMPEXPORT GroupnameScore : public Object
 public:
   GroupnameScore(std::string name="GroupnameScore %1%");
   //! Compute the score and the derivative if needed.
-  virtual Float evaluate(ClassnameArguments,
-                         DerivativeAccumulator *da) const = 0;
+  virtual double evaluate(ClassnameArguments,
+                          DerivativeAccumulator *da) const = 0;
 
-  virtual Float evaluate(const ClassnamesTemp &o,
-                         DerivativeAccumulator *da) const = 0;
+  /** An implementations
+      for this is provided by the IMP_SINGLETON_SCORE,
+      IMP_PAIR_SCORE macros.
+  */
+  virtual double evaluate(const ClassnamesTemp &o,
+                          DerivativeAccumulator *da) const = 0;
+
+  /** \name Incremental evaluation
+      Compute how much the score has changed since the last evaluate
+      (and writing derivatives if they have changed). Implementations
+      for these are provided by the IMP_SINGLETON_SCORE,
+      IMP_PAIR_SCORE macros.
+      @{
+  */
+  virtual double evaluate_change(ClassnameArguments,
+                                 DerivativeAccumulator *da) const = 0;
+
+  virtual double evaluate_change(const ClassnamesTemp &o,
+                                 DerivativeAccumulator *da) const = 0;
+  virtual double evaluate_prechange(ClassnameArguments,
+                                    DerivativeAccumulator *da) const = 0;
+  virtual double evaluate_prechange(const ClassnamesTemp &o,
+                                    DerivativeAccumulator *da) const = 0;
+
+  /** @} */
 
   /** Get the set of interaction induced by applying to the
       argument. */

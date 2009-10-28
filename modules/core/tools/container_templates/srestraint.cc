@@ -17,29 +17,39 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+namespace {
+  typedef IMP::internal::ContainerTraits<Classname> Traits;
+}
+
 GroupnameRestraint
 ::GroupnameRestraint(GroupnameScore *ss,
                      ClassnameArguments,
                      std::string name):
   Restraint(name),
   ss_(ss),
-  v_(FromClassnameArguments)
+  v_(FromClassnameArguments),
+  score_(std::numeric_limits<double>::quiet_NaN())
 {
 }
 
-double
-GroupnameRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
+double GroupnameRestraint
+::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(ss_);
+  score_ = Traits::evaluate(ss_, v_, accum);
 
-  double score=0;
-  score += IMP::internal::ContainerTraits<Classname>
-    ::evaluate(ss_, v_, accum);
-
-  return score;
+  return score_;
 }
 
+double GroupnameRestraint
+::unprotected_incremental_evaluate(DerivativeAccumulator *accum) const
+{
+  if (IMP::internal::ContainerTraits<Classname>::is_dirty(v_)) {
+    score_+=Traits::evaluate_change(ss_, v_, accum);
+  }
+  return score_;
+}
 
 ParticlesList GroupnameRestraint::get_interacting_particles() const
 {

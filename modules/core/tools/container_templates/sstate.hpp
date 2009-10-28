@@ -15,6 +15,7 @@
 #include "config.h"
 #include <IMP/GroupnameModifier.h>
 #include <IMP/ScoreState.h>
+#include <IMP/Particle.h>
 
 IMP_BEGIN_NAMESPACE
 // for swig
@@ -36,7 +37,7 @@ class IMPCOREEXPORT GroupnameScoreState : public ScoreState
 {
   IMP::internal::OwnerPointer<GroupnameModifier> f_;
   IMP::internal::OwnerPointer<GroupnameModifier> af_;
-  Value v_;
+  StoreValue v_;
 public:
   /** before and after are the modifiers to apply before and after
       evaluate.
