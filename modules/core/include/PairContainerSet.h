@@ -23,6 +23,8 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT PairContainerSet
   : public PairContainer
 {
+ // to not have added and removed
+ PairContainerSet(bool);
 public:
   //! Construct and empty set
   PairContainerSet(std::string name="PairContainerSet %1%");
@@ -37,6 +39,11 @@ public:
   IMP_LIST(public, PairContainer, pair_container,
            PairContainer*, PairContainers);
   /**@}*/
+
+  static PairContainerSet *create_untracked_container() {
+    PairContainerSet *lsc = new PairContainerSet(false);
+    return lsc;
+  }
 };
 
 

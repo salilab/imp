@@ -8,7 +8,7 @@
 
 #include <IMP/base_types.h>
 #include "IMP/core/BoxSweepClosePairsFinder.h"
-#include "IMP/core/XYZ.h"
+#include "IMP/core/XYZR.h"
 #include "IMP/core/utility.h"
 
 #ifdef IMP_USE_CGAL
@@ -51,7 +51,7 @@ struct NBLBbox
 };
 
 static void copy_particles_to_boxes(const SingletonContainer *ps,
-                                    FloatKey rk, Float distance,
+                                    Float distance,
                                     std::vector<NBLBbox> &boxes)
 {
   boxes.resize(ps->get_number_of_particles());
@@ -59,9 +59,7 @@ static void copy_particles_to_boxes(const SingletonContainer *ps,
     Particle *p= ps->get_particle(i);
 
     Float r= distance/2.0;
-    if (rk != FloatKey() && p->has_attribute(rk)) {
-      r+= p->get_value(rk);
-    }
+    r+= p->get_value(XYZR::get_default_radius_key());
     boxes[i]=NBLBbox(p, r);
   }
 }
@@ -87,8 +85,8 @@ ParticlePairsTemp BoxSweepClosePairsFinder
 ::get_close_pairs(SingletonContainer *ca,
                   SingletonContainer *cb) const {
   std::vector<NBLBbox> boxes0, boxes1;
-  copy_particles_to_boxes(ca, get_radius_key(), get_distance(), boxes0);
-  copy_particles_to_boxes(cb, get_radius_key(), get_distance(), boxes1);
+  copy_particles_to_boxes(ca, get_distance(), boxes0);
+  copy_particles_to_boxes(cb, get_distance(), boxes1);
 
   ParticlePairsTemp out;
 
@@ -101,7 +99,7 @@ ParticlePairsTemp BoxSweepClosePairsFinder
 ::get_close_pairs(SingletonContainer *c) const {
   ParticlePairsTemp out;
   std::vector<NBLBbox> boxes;
-  copy_particles_to_boxes(c, get_radius_key(), get_distance(), boxes);
+  copy_particles_to_boxes(c, get_distance(), boxes);
 
   CGAL::box_self_intersection_d( boxes.begin(), boxes.end(), AddToList(out));
   return out;
@@ -113,13 +111,13 @@ void BoxSweepClosePairsFinder::show(std::ostream &out) const {
 
 
 ParticlesTemp
-BoxSweepClosePairsFinder::get_used_particles(SingletonContainer *sc) const {
+BoxSweepClosePairsFinder::get_input_particles(SingletonContainer *sc) const {
   ParticlesTemp ret= sc->get_particles();
   return ret;
 }
 
 ParticlesTemp
-BoxSweepClosePairsFinder::get_used_particles(SingletonContainer *a,
+BoxSweepClosePairsFinder::get_input_particles(SingletonContainer *a,
                                              SingletonContainer *b) const {
   ParticlesTemp ret0= a->get_particles();
   ParticlesTemp ret1= b->get_particles();

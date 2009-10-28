@@ -15,9 +15,21 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+namespace {
+  SingletonContainerSet* get_set(SingletonContainer* c) {
+    return dynamic_cast<SingletonContainerSet*>(c);
+  }
+}
+
+SingletonContainerSet
+::SingletonContainerSet(bool): SingletonContainer("added or removed for set") {
+}
+
 SingletonContainerSet
 ::SingletonContainerSet(std::string name):
   SingletonContainer(name) {
+  set_added_and_removed_containers( create_untracked_container(),
+                                    create_untracked_container());
 }
 
 bool
@@ -66,9 +78,20 @@ IMP_LIST_IMPL(SingletonContainerSet,
               SingletonContainer,
               singleton_container,
               SingletonContainer*,
-              SingletonContainers,{
+              SingletonContainers,
+              {
+                if (!get_is_added_or_removed_container()) {
+                  get_set(get_added_singletons_container())
+                    ->add_singleton_container(obj
+                           ->get_added_singletons_container());
+                }
                 obj->set_was_owned(true);
-              },,)
+              },,
+              if (!get_is_added_or_removed_container()) {
+                get_set(get_removed_singletons_container())
+                  ->add_singleton_container(obj
+                       ->get_removed_singletons_container());
+              })
 
 
 void SingletonContainerSet::apply(const SingletonModifier *sm) {
@@ -93,6 +116,27 @@ double SingletonContainerSet::evaluate(const SingletonScore *s,
   return score;
 }
 
+
+double SingletonContainerSet::evaluate_change(const SingletonScore *s,
+                                              DerivativeAccumulator *da) const {
+  double score=0;
+  for (unsigned int i=0; i< get_number_of_singleton_containers(); ++i) {
+    score+=get_singleton_container(i)->evaluate_change(s, da);
+  }
+  return score;
+}
+
+double SingletonContainerSet::evaluate_prechange(const SingletonScore *s,
+                                             DerivativeAccumulator *da) const {
+  double score=0;
+  for (unsigned int i=0; i< get_number_of_singleton_containers(); ++i) {
+    score+=get_singleton_container(i)->evaluate_prechange(s, da);
+  }
+  return score;
+}
+
+
+
 ParticlesTemp SingletonContainerSet::get_particles() const {
   ParticlesTemp ret;
   for (unsigned int i=0; i< get_number_of_singleton_containers(); ++i) {
@@ -102,9 +146,11 @@ ParticlesTemp SingletonContainerSet::get_particles() const {
   return ret;
 }
 
+
 ObjectsTemp SingletonContainerSet::get_input_objects() const {
   return ObjectsTemp(singleton_containers_begin(),
                      singleton_containers_end());
 }
+
 
 IMPCORE_END_NAMESPACE

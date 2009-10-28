@@ -26,9 +26,15 @@ class IMPATOMEXPORT BondPairContainer :
   public PairContainer
 {
   IMP::internal::OwnerPointer<SingletonContainer> sc_;
+  BondPairContainer(SingletonContainer *sc, bool);
 public:
   //! The container containing the bonds
   BondPairContainer(SingletonContainer *sc);
+
+  static BondPairContainer *create_untracked_container(SingletonContainer *c) {
+    BondPairContainer *lsc = new BondPairContainer(c, false);
+    return lsc;
+  }
 
   IMP_PAIR_CONTAINER(BondPairContainer, get_module_version_info())
 };

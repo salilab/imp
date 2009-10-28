@@ -1,7 +1,8 @@
 Import('env')
 
 files = [
-         'AllPairsPairContainer.cpp',
+         'AllBipartitePairContainer.cpp',
+         'AllPairContainer.cpp',
          'AngleRestraint.cpp',
          'AngleTripletScore.cpp',
          'AttributeSingletonScore.cpp',
@@ -10,7 +11,9 @@ files = [
          'BoxSweepClosePairsFinder.cpp',
          'CentroidOfRefined.cpp',
          'ChildrenRefiner.cpp',
+         'CloseBipartitePairContainer.cpp',
          'CloseBipartitePairsScoreState.cpp',
+         'ClosePairContainer.cpp',
          'ClosePairsFinder.cpp',
          'ClosePairsPairScore.cpp',
          'ClosePairsScoreState.cpp',
@@ -35,8 +38,6 @@ files = [
          'LeavesRefiner.cpp',
          'ListPairContainer.cpp',
          'ListSingletonContainer.cpp',
-         'MaximumChangeScoreState.cpp',
-         'MaximumChangeXYZRScoreState.cpp',
          'MaximumPairScoreRestraint.cpp',
          'MaximumSingletonScoreRestraint.cpp',
          'MinimumPairScoreRestraint.cpp',
@@ -53,8 +54,6 @@ files = [
          'PairsScoreState.cpp',
          'QuadraticClosePairsFinder.cpp',
          'RefinedPairsPairScore.cpp',
-         'RemoveInactivePairsOptimizerState.cpp',
-         'RemoveInactiveSingletonsOptimizerState.cpp',
          'RestraintSet.cpp',
          'RigidBodyDistancePairScore.cpp',
          'RigidBodyMover.cpp',

@@ -94,6 +94,37 @@ class ParticlePairContainerTest(IMP.test.TestCase):
         self.assertInTolerance(m.evaluate(False), f, .1*f)
 
 
+    def test_irestraint(self):
+        """Test the incremental evaluation of the PairsRestraint"""
+        m= IMP.Model()
+        m.set_log_level(IMP.TERSE)
+        gs=self.create_pair_score()
+        c= IMP.core.ListPairContainer()
+        ps=IMP.ParticlePairs()
+        ps2= IMP.ParticlePairs()
+        f=0
+        for i in range(0,20):
+            p=self.create_particle_pair(m)
+            ps.append(p)
+            f=f+evaluate_pair_score(gs, p)
+        for i in range(0,10):
+            p=self.create_particle_pair(m)
+            ps2.append(p)
+            #f=f+evaluate_pair_score(gs, p)
+        c.set_particle_pairs(ps)
+        r= IMP.core.PairsRestraint(gs, c)
+        m.add_restraint(r)
+        m.set_is_incremental(True)
+        self.assertInTolerance(m.evaluate(False), f, .1*f)
+        self.assertInTolerance(m.evaluate(False), f, .1*f)
+        ps= ps+ps2
+        f=0
+        for p in ps:
+            f=f+ evaluate_pair_score(gs, p)
+        c.set_particle_pairs(ps)
+        self.assertInTolerance(m.evaluate(False), f, .1*f)
+
+
     def test_srestraint(self):
         """Test the PairRestraint"""
         m= IMP.Model()

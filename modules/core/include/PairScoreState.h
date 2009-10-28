@@ -15,6 +15,7 @@
 #include "config.h"
 #include <IMP/PairModifier.h>
 #include <IMP/ScoreState.h>
+#include <IMP/Particle.h>
 
 IMP_BEGIN_NAMESPACE
 // for swig

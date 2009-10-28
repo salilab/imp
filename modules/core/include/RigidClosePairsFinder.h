@@ -77,12 +77,11 @@ class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder
     cpf_->set_distance(d);
     ClosePairsFinder::set_distance(d);
   }
-  void set_radius_key(FloatKey d) {
-    IMP_INTERNAL_CHECK(d== core::XYZR::get_default_radius_key(),
-               "Only the default radius key is supported.");
-    cpf_->set_radius_key(d);
-    ClosePairsFinder::set_radius_key(d);
-  }
+#ifndef IMP_SWIG
+  internal::MovedSingletonContainer *
+    get_moved_singleton_container(SingletonContainer *c,
+                                  Model *m, double thresold) const;
+#endif
 };
 
 IMPCORE_END_NAMESPACE

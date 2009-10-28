@@ -57,5 +57,11 @@ class PDBReadWriteTest(IMP.test.TestCase):
         IMP.atom.write_pdb(mp, s)
         self.assertEqual(s.getvalue().count('\n'), 129)
 
+    def test_regression(self):
+        """Test reading previously problematic pdbs"""
+        m= IMP.Model()
+        mp = IMP.atom.read_pdb(self.open_input_file("regression_0.pdb"),
+                               m)
+
 if __name__ == '__main__':
     unittest.main()

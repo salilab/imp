@@ -16,9 +16,9 @@ namespace {
   unsigned int next_index=0;
 }
 
-SingletonScore::SingletonScore(std::string name)
+SingletonScore::SingletonScore(std::string name):
+  Object(internal::make_object_name(name, next_index++))
 {
-  set_name(internal::make_object_name(name, next_index++));
   /* Implemented here rather than in the header so that PairScore
      symbols are present in the kernel DSO */
 }

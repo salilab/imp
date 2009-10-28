@@ -1,7 +1,8 @@
 Import('env')
 
 files = [
-         'AllPairsPairContainer.h',
+         'AllBipartitePairContainer.h',
+         'AllPairContainer.h',
          'AngleRestraint.h',
          'AngleTripletScore.h',
          'AttributeSingletonScore.h',
@@ -10,7 +11,9 @@ files = [
          'BoxSweepClosePairsFinder.h',
          'CentroidOfRefined.h',
          'ChildrenRefiner.h',
+         'CloseBipartitePairContainer.h',
          'CloseBipartitePairsScoreState.h',
+         'ClosePairContainer.h',
          'ClosePairsFinder.h',
          'ClosePairsPairScore.h',
          'ClosePairsScoreState.h',
@@ -39,8 +42,6 @@ files = [
          'Linear.h',
          'ListPairContainer.h',
          'ListSingletonContainer.h',
-         'MaximumChangeScoreState.h',
-         'MaximumChangeXYZRScoreState.h',
          'MaximumPairScoreRestraint.h',
          'MaximumSingletonScoreRestraint.h',
          'MinimumPairScoreRestraint.h',
@@ -58,8 +59,6 @@ files = [
          'PairsScoreState.h',
          'QuadraticClosePairsFinder.h',
          'RefinedPairsPairScore.h',
-         'RemoveInactivePairsOptimizerState.h',
-         'RemoveInactiveSingletonsOptimizerState.h',
          'RestraintSet.h',
          'RigidBodyDistancePairScore.h',
          'RigidBodyMover.h',

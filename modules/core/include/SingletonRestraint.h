@@ -29,7 +29,8 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT SingletonRestraint : public Restraint
 {
   IMP::internal::OwnerPointer<SingletonScore> ss_;
-  Particle* v_;
+  Pointer<Particle> v_;
+  mutable double score_;
 public:
   //! Create the restraint.
   /** This function takes the function to apply to the
@@ -39,7 +40,7 @@ public:
                      Particle *a,
                      std::string name="SingletonRestraint %1%");
 
-  IMP_RESTRAINT(SingletonRestraint, get_module_version_info());
+  IMP_INCREMENTAL_RESTRAINT(SingletonRestraint, get_module_version_info());
 };
 
 IMPCORE_END_NAMESPACE

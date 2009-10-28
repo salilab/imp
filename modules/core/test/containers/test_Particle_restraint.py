@@ -94,6 +94,37 @@ class ParticleContainerTest(IMP.test.TestCase):
         self.assertInTolerance(m.evaluate(False), f, .1*f)
 
 
+    def test_irestraint(self):
+        """Test the incremental evaluation of the SingletonsRestraint"""
+        m= IMP.Model()
+        m.set_log_level(IMP.TERSE)
+        gs=self.create_singleton_score()
+        c= IMP.core.ListSingletonContainer()
+        ps=IMP.Particles()
+        ps2= IMP.Particles()
+        f=0
+        for i in range(0,20):
+            p=self.create_particle(m)
+            ps.append(p)
+            f=f+evaluate_singleton_score(gs, p)
+        for i in range(0,10):
+            p=self.create_particle(m)
+            ps2.append(p)
+            #f=f+evaluate_singleton_score(gs, p)
+        c.set_particles(ps)
+        r= IMP.core.SingletonsRestraint(gs, c)
+        m.add_restraint(r)
+        m.set_is_incremental(True)
+        self.assertInTolerance(m.evaluate(False), f, .1*f)
+        self.assertInTolerance(m.evaluate(False), f, .1*f)
+        ps= ps+ps2
+        f=0
+        for p in ps:
+            f=f+ evaluate_singleton_score(gs, p)
+        c.set_particles(ps)
+        self.assertInTolerance(m.evaluate(False), f, .1*f)
+
+
     def test_srestraint(self):
         """Test the SingletonRestraint"""
         m= IMP.Model()

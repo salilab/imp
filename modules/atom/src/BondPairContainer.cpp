@@ -10,10 +10,27 @@
 #include "IMP/PairModifier.h"
 #include "IMP/PairScore.h"
 
+#define FOREACH(expr)\
+  unsigned int sz= BondPairContainer::get_number_of_particle_pairs();   \
+  for (unsigned int i=0; i< sz; ++i) {                                  \
+    ParticlePair pp= BondPairContainer::get_particle_pair(i);           \
+    Particle *a= pp[0];                                                 \
+    Particle *b= pp[1];                                                 \
+    expr;                                                               \
+  }
+
+
 IMPATOM_BEGIN_NAMESPACE
 
 BondPairContainer
+::BondPairContainer(SingletonContainer *sc, bool): sc_(sc){
+}
+
+BondPairContainer
 ::BondPairContainer(SingletonContainer *sc): sc_(sc){
+  set_added_and_removed_containers(
+       create_untracked_container(sc_->get_removed_singletons_container()),
+       create_untracked_container(sc_->get_added_singletons_container()));
 }
 
 bool BondPairContainer
@@ -45,45 +62,7 @@ void BondPairContainer::show(std::ostream &out) const {
   out << "BondPairContainer" << std::endl;
 }
 
-
-void BondPairContainer
-::apply(const PairModifier *sm) {
-  unsigned int sz= BondPairContainer::get_number_of_particle_pairs();
-  for (unsigned int i=0; i< sz; ++i) {
-     ParticlePair pp= BondPairContainer::get_particle_pair(i);
-     sm->apply(pp[0], pp[1]);
-   }
-}
-
-void BondPairContainer
-::apply(const PairModifier *sm, DerivativeAccumulator &da) {
-  unsigned int sz= BondPairContainer::get_number_of_particle_pairs();
-  for (unsigned int i=0; i< sz; ++i) {
-     ParticlePair pp= BondPairContainer::get_particle_pair(i);
-     sm->apply(pp[0], pp[1], da);
-   }
-}
-
- double BondPairContainer
-::evaluate(const PairScore *s,
-           DerivativeAccumulator *da) const {
-   unsigned int sz= BondPairContainer::get_number_of_particle_pairs();
-   double score=0;
-   for (unsigned int i=0; i< sz; ++i) {
-     ParticlePair pp= BondPairContainer::get_particle_pair(i);
-     score+=s->evaluate(pp[0], pp[1], da);
-   }
-   return score;
- }
-
-ParticlePairsTemp BondPairContainer::get_particle_pairs() const {
-  ParticlePairsTemp ret(BondPairContainer::get_number_of_particle_pairs());
-  for (unsigned int i=0; i< ret.size(); ++i) {
-    ret[i]= BondPairContainer::get_particle_pair(i);
-  }
-  return ret;
-}
-
+IMP_PAIR_CONTAINER_METHODS_FROM_FOREACH(BondPairContainer);
 
 ObjectsTemp BondPairContainer::get_input_objects() const {
   ObjectsTemp ret(get_number_of_particle_pairs()+1);

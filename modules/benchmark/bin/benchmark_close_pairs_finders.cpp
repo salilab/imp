@@ -29,13 +29,10 @@ void test_one(std::string name,
   IMP_NEW(ListSingletonContainer, lsc, (ps));
   IMP_NEW(ListPairContainer, out, ());
   cpf->set_distance(0);
-  cpf->set_radius_key(XYZR::get_default_radius_key());
   double result=0;
   double runtime;
   IMP_TIME({
-      ParticlePairsTemp ret=cpf->get_close_pairs(lsc);
-      result+= ret.size();
-      out->clear_particle_pairs();
+      result+=cpf->get_close_pairs(lsc).size();
     }, runtime);
   std::ostringstream oss;
   oss << name << " cpf " << n << " " << rmax;
