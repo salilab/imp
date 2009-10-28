@@ -133,6 +133,10 @@ class VectorOfRefCounted {
     data_.insert(data_.begin()+(loc-data_.begin()), b, e);
     ref(b,e);
   }
+  void insert(iterator loc, RC p) {
+    data_.insert(loc, p);
+    ref(p);
+  }
   void push_back(RC p) {
     data_.push_back(p);
     ref(p);
@@ -141,6 +145,11 @@ class VectorOfRefCounted {
 #ifndef IMP_DOXYGEN
   void swap_with(VectorOfRefCounted<RC, Policy> &a) {
     std::swap(a.data_, data_);
+  }
+  void swap_with(std::vector<RC> &a) {
+    std::swap(a, data_);
+    ref(data_.begin(), data_.end());
+    unref(a.begin(), a.end());
   }
 #endif
   void clear(){
@@ -175,6 +184,14 @@ class VectorOfRefCounted {
       unref(bye.begin(), bye.end());
     }
   }
+  void remove(RC r) {
+    for (unsigned int i=0; i< data_.size(); ++i) {
+      if (data_[i]==r) {
+        unref(r);
+        data_.erase(data_.begin()+i);
+      }
+    }
+  }
 };
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
@@ -188,6 +205,17 @@ std::ostream &operator<<(std::ostream &out,
 template <class RC, class Policy>
 void swap(VectorOfRefCounted<RC, Policy> &a,
           VectorOfRefCounted<RC, Policy> &b) {
+  a.swap_with(b);
+}
+
+template <class RC, class Policy>
+void swap(VectorOfRefCounted<RC, Policy> &a,
+          std::vector<RC> &b) {
+  a.swap_with(b);
+}
+template <class RC, class Policy>
+void swap(std::vector<RC> &b,
+          VectorOfRefCounted<RC, Policy> &a) {
   a.swap_with(b);
 }
 #endif
