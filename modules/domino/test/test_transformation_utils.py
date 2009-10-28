@@ -40,57 +40,12 @@ class TransformationUtilsTests(IMP.test.TestCase):
         self.tu = IMP.domino.TransformationUtils(self.rbs,True)
 
     def test_transformation_on_rigid_bodies(self):
-        '''test transformation utils on rigid bodies'''
-        for j in range(5): # 5 test cases
-            for i in range(4):
-                #generate random transformation
-                rand_t=IMP.algebra.Transformation3D(IMP.algebra.random_rotation(),
-                                                    IMP.algebra.random_vector_in_unit_box())
-                #transform the copy molecule
-                xyz_copy=IMP.core.XYZs(IMP.core.get_leaves(self.mhs_copy[i]))
-                for xyz in xyz_copy:
-                    xyz.set_coordinates(rand_t.transform(xyz.get_coordinates()))
-                #transform the rigid body
-                xyz_orig=IMP.core.XYZs(IMP.core.get_leaves(self.mhs[i]))
-                rand_t_p = IMP.domino.Transformation.setup_particle(IMP.Particle(self.mdl),rand_t)
-                self.tu.move2state(self.rbs[i],rand_t_p.get_particle())
-                self.mdl.evaluate(False) #to make sure that the rigid bodies score states are updated
-                #check that the rmsd is 0
-                self.assert_(IMP.atom.rmsd(xyz_copy,xyz_orig) < 0.001,
-                           "the molecules are expected to have the same placement")
-                #return the copy to ref for the next round
-                for xyz in xyz_copy:
-                    xyz.set_coordinates(rand_t.get_inverse().transform(xyz.get_coordinates()))
-
-
-    def test_transformation_on_rigid_bodies(self):
-        '''test transformation utils on rigid bodies'''
-        for j in range(5): # 5 test cases
-            for i in range(4):
-                #generate random transformation
-                rand_t=IMP.algebra.Transformation3D(IMP.algebra.random_rotation(),
-                                                    IMP.algebra.random_vector_in_unit_box())
-                #transform the copy molecule
-                xyz_copy=IMP.core.XYZs(IMP.core.get_leaves(self.mhs_copy[i]))
-                for xyz in xyz_copy:
-                    xyz.set_coordinates(rand_t.transform(xyz.get_coordinates()))
-                #transform the rigid body
-                xyz_orig=IMP.core.XYZs(IMP.core.get_leaves(self.mhs[i]))
-                rand_t_p = IMP.domino.Transformation.setup_particle(IMP.Particle(self.mdl),rand_t)
-                self.tu.move2state(self.rbs[i],rand_t_p.get_particle())
-                self.mdl.evaluate(False) #to make sure that the rigid bodies score states are updated
-                #check that the rmsd is 0
-                self.assert_(IMP.atom.rmsd(xyz_copy,xyz_orig) < 0.001,
-                           "the molecules are expected to have the same placement")
-                #return the copy to ref for the next round
-                for xyz in xyz_copy:
-                    xyz.set_coordinates(rand_t.get_inverse().transform(xyz.get_coordinates()))
-
-
-    def test_transformation_on_rigid_bodies2(self):
-        '''test transformation utils on rigid bodies'''
+        '''test that move2state sets the correct transformation for rigid bodies.
+           For now Model.evaluate() makes sure that the transformation actually occurs,
+           in the near future will be a better solution.'''
         tu = IMP.domino.TransformationUtils(self.rbs)
         for j in range(5):
+            #transform all rigid bodies
             for i in range(4):
                 trans = my_helpers.create_random_transformation()
                 state_p=IMP.Particle(self.mdl)
@@ -112,8 +67,6 @@ class TransformationUtilsTests(IMP.test.TestCase):
             #return the copy to ref for the next round
             for xyz in xyz_copy:
                 xyz.set_coordinates(trans.get_inverse().transform(xyz.get_coordinates()))
-
-
 
 
 
