@@ -101,8 +101,9 @@ class ModelTests(IMP.test.TestCase):
         """Test that particles become dirty"""
         (m, ps)= self._setup_model()
         m.set_is_incremental(True)
-        ps[0].set_value(fk, 2)
         self.assert_(ps[0].get_is_changed())
+        m.evaluate(False)
+        ps[0].set_value(fk, 2)
         self.assertEqual(ps[0].get_prechange_particle().get_value(fk), 0)
     def test_evaluate(self):
         """Test incremental evaluation without derivatives"""
