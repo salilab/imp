@@ -28,16 +28,14 @@ for p in m.get_particles():
     p.show()
 
 # Set up the nonbonded list
-nbl= IMP.core.ClosePairsScoreState(chain)
-m.add_score_state(nbl)
+nbl= IMP.core.ClosePairContainer(chain, 0,2)
 # Exclude bonds from closest pairs
-fl= nbl.get_close_pairs_container()
 bpc=IMP.atom.BondedPairFilter()
-nbl.add_close_pair_filter(bpc)
+nbl.add_pair_filter(bpc)
 
 # Set up excluded volume
 ps= IMP.core.SphereDistancePairScore(IMP.core.HarmonicLowerBound(0,1))
-evr= IMP.core.PairsRestraint(ps, fl)
+evr= IMP.core.PairsRestraint(ps, nbl)
 m.add_restraint(evr)
 
 # Restraint for bonds
