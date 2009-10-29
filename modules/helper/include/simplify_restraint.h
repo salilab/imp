@@ -19,6 +19,38 @@
 
 IMPHELPER_BEGIN_NAMESPACE
 
+class SimpleCollision;
+class SimpleConnectivity;
+class SimpleDistance;
+class SimpleDiameter;
+class SimpleExcludedVolume;
+
+IMPHELPEREXPORT SimpleCollision create_simple_collision_on_rigid_bodies(
+                core::RigidBodies *rbs);
+
+IMPHELPEREXPORT SimpleConnectivity create_simple_connectivity_on_rigid_bodies(
+                core::RigidBodies *rbs);
+
+IMPHELPEREXPORT SimpleConnectivity create_simple_connectivity_on_molecules(
+                Particles *ps);
+
+IMPHELPEREXPORT SimpleDistance create_simple_distance(Particles *ps);
+
+IMPHELPEREXPORT SimpleDiameter create_simple_diameter(
+                Particles *ps, Float diameter);
+
+IMPHELPEREXPORT SimpleExcludedVolume
+                create_simple_excluded_volume_on_rigid_bodies(
+                core::RigidBodies *rbs);
+
+IMPHELPEREXPORT em::DensityMap *load_map(
+                char const *map_fn, double spacing, double resolution);
+
+IMPHELPEREXPORT em::FitRestraint *create_em_restraint(
+                atom::Hierarchies const &mhs, em::DensityMap *dmap);
+
+IMPHELPEREXPORT Particles set_rigid_bodies(atom::Hierarchies const &mhs);
+
 
 //! Simple collision detection.
 /**
@@ -418,32 +450,6 @@ private:
 
   IMP::Pointer<core::ExcludedVolumeRestraint> excluded_volume_restraint_;
 };
-
-IMPHELPEREXPORT SimpleCollision create_simple_collision_on_rigid_bodies(
-                core::RigidBodies *rbs);
-
-IMPHELPEREXPORT SimpleConnectivity create_simple_connectivity_on_rigid_bodies(
-                core::RigidBodies *rbs);
-
-IMPHELPEREXPORT SimpleConnectivity create_simple_connectivity_on_molecules(
-                Particles *ps);
-
-IMPHELPEREXPORT SimpleDistance create_simple_distance(Particles *ps);
-
-IMPHELPEREXPORT SimpleDiameter create_simple_diameter(
-                Particles *ps, Float diameter);
-
-IMPHELPEREXPORT SimpleExcludedVolume
-                create_simple_excluded_volume_on_rigid_bodies(
-                core::RigidBodies *rbs);
-
-IMPHELPEREXPORT em::DensityMap *load_map(
-                char const *map_fn, double spacing, double resolution);
-
-IMPHELPEREXPORT em::FitRestraint *create_em_restraint(
-                atom::Hierarchies const &mhs, em::DensityMap *dmap);
-
-IMPHELPEREXPORT Particles set_rigid_bodies(atom::Hierarchies const &mhs);
 
 IMPHELPER_END_NAMESPACE
 
