@@ -16,17 +16,17 @@ class TransformationUtilsTests(IMP.test.TestCase):
 
     def __set_components__(self):
         self.mhs = my_helpers.read_components([
-            self.open_input_file("1z5s_A.pdb"),
-            self.open_input_file("1z5s_B.pdb"),
-            self.open_input_file("1z5s_C.pdb"),
-            self.open_input_file("1z5s_D.pdb")],self.mdl)
+            self.get_input_file_name("1z5s_A.pdb"),
+            self.get_input_file_name("1z5s_B.pdb"),
+            self.get_input_file_name("1z5s_C.pdb"),
+            self.get_input_file_name("1z5s_D.pdb")],self.mdl)
 
     def __set_components_copy__(self):
         self.mhs_copy = my_helpers.read_components([
-            self.open_input_file("1z5s_A.pdb"),
-            self.open_input_file("1z5s_B.pdb"),
-            self.open_input_file("1z5s_C.pdb"),
-            self.open_input_file("1z5s_D.pdb")],self.mdl)
+            self.get_input_file_name("1z5s_A.pdb"),
+            self.get_input_file_name("1z5s_B.pdb"),
+            self.get_input_file_name("1z5s_C.pdb"),
+            self.get_input_file_name("1z5s_D.pdb")],self.mdl)
 
     def setUp(self):
 
