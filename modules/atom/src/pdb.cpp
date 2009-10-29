@@ -141,10 +141,11 @@ Hierarchy read_pdb(std::istream &in, Model *model,
   char curr_chain = '-';
   bool chain_name_set = false;
   bool first_model_read = false;
+  bool has_atom=false;
 
   String line;
   while (!in.eof()) {
-    getline(in, line);
+    if (!getline(in, line)) break;
 
     // handle MODEL reading
     if (internal::is_MODEL_rec(line)) {
@@ -198,9 +199,15 @@ Hierarchy read_pdb(std::istream &in, Model *model,
         if(ignore_alternatives && !sel(line)) continue;
 
         Residue(rp).add_child(Atom(ap));
+        has_atom=true;
       }
 
     }
+  }
+  if (!has_atom) {
+    model->remove_particle(root_d);
+    throw IOException("Sorry, unable to read atoms from PDB file."
+                      " Thanks for the effort.");
   }
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     if (!root_d.get_is_valid(true)) {

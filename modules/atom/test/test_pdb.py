@@ -5,6 +5,13 @@ import IMP.test
 import IMP.atom
 
 class PDBReadWriteTest(IMP.test.TestCase):
+    def test_bad_read(self):
+        """Check that read_pdb behaves OK on invalid files"""
+        m= IMP.Model()
+        self.assertRaises(IOError,
+                          IMP.atom.read_pdb,
+                          self.open_input_file("notapdb.pdb"),
+                          m)
 
     def test_read(self):
         """Check reading a pdb with one protein"""
