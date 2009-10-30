@@ -168,7 +168,7 @@
   }
 #endif
 
-#ifdef IMP_DOXYGEN                                                         \
+#if defined(IMP_DOXYGEN) || defined(SWIG)
 //! Implement operator<< on class name, assuming it has one template argument
 /** \copydetails IMP_OUTPUT_OPERATOR
  */
@@ -183,7 +183,7 @@
   }
 #endif
 
-#ifdef IMP_DOXYGEN
+#if defined(IMP_DOXYGEN) || defined(SWIG)
 //! Implement operator<< on class name, assuming it has two template arguments
 /** \copydetails IMP_OUTPUT_OPERATOR
  */
@@ -198,7 +198,7 @@
   }
 #endif
 
-#ifdef IMP_DOXYGEN
+#if defined(IMP_DOXYGEN) || defined(SWIG)
 //! Implement operator<< on class name
 /** The class named should define the method
     \c void \c show(std::ostream&).
