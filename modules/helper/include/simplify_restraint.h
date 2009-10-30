@@ -96,6 +96,13 @@ IMPHELPEREXPORT SimpleExcludedVolume
                 create_simple_excluded_volume_on_rigid_bodies(
                 core::RigidBodies *rbs);
 
+
+
+/** Creates EM FitRestraint.
+    \see FitRestraint
+    \see DensityMap
+    \relates SimpleEMFit
+*/
 IMPHELPEREXPORT SimpleEMFit create_simple_em_fit(
                 atom::Hierarchies const &mhs, em::DensityMap *dmap);
 
@@ -486,15 +493,9 @@ private:
  */
 class IMPHELPEREXPORT SimpleEMFit
 {
+  IMP_NO_SWIG(friend SimpleEMFit create_simple_em_fit(
+              atom::Hierarchies const &mhs, em::DensityMap *dmap));
 public:
-
-  /** Creates EM FitRestraint.
-   \see FitRestraint
-   \see DensityMap
-  */
-  friend SimpleEMFit create_simple_em_fit(atom::Hierarchies const &mhs,
-                                            em::DensityMap *dmap);
-
   em::FitRestraint *restraint()
   {
     return fit_restraint_;
