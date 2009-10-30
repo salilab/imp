@@ -207,6 +207,13 @@ IMP_LIST_IMPL(Model, ScoreState, score_state, ScoreState*,
                 obj->set_model(this);
                 score_states_ordered_=false;
                 obj->set_was_owned(true);
+                IMP_IF_CHECK(USAGE) {
+                  std::set<ScoreState*> in(score_states_begin(),
+                                          score_states_end());
+                  IMP_USAGE_CHECK(in.size() == get_number_of_score_states(),
+                                  "Score state already in model "
+                                  << obj->get_name(), UsageException);
+                }
               },,
               {obj->set_model(NULL);});
 
