@@ -7,6 +7,10 @@
  */
 
 #include <IMP/em/DensityMap.h>
+#include <IMP/em/MRCReaderWriter.h>
+#include <IMP/em/XplorReaderWriter.h>
+#include <IMP/em/EMReaderWriter.h>
+#include <boost/algorithm/string/predicate.hpp>
 #include <climits>
 
 IMPEM_BEGIN_NAMESPACE
@@ -100,6 +104,23 @@ void DensityMap::Read(const char *filename, MapReaderWriter &reader) {
   }
 }
 #endif
+
+DensityMap* read_map(const char *filename) {
+  std::string name(filename);
+  if (boost::algorithm::ends_with(name, std::string(".mrc"))) {
+    MRCReaderWriter rw;
+    return read_map(filename, rw);
+  } else if (boost::algorithm::ends_with(name, std::string(".em"))) {
+    EMReaderWriter rw;
+    return read_map(filename, rw);
+  } else if (boost::algorithm::ends_with(name, std::string(".xplor"))) {
+    XplorReaderWriter rw;
+    return read_map(filename, rw);
+  } else {
+    IMP_THROW("Unable to determine type for file "<< filename,
+              IOException);
+  }
+}
 
 DensityMap* read_map(const char *filename, MapReaderWriter &reader)
 {
