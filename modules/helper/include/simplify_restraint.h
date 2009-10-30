@@ -100,12 +100,8 @@ IMPHELPEREXPORT SimpleEMFit create_simple_em_fit(
                 atom::Hierarchies const &mhs, em::DensityMap *dmap);
 
 
-/** Load MRC file. */
-IMPHELPEREXPORT em::DensityMap *load_mrc_density_map(
-                char const *map_fn, float spacing, float resolution);
-
-/** Load density files in EM format. */
-IMPHELPEREXPORT em::DensityMap *load_erw_density_map(
+/** Load EM density file (.mrc or .em file). */
+IMPHELPEREXPORT em::DensityMap *load_em_density_map(
                 char const *map_fn, float spacing, float resolution);
 
 IMPHELPEREXPORT Particles set_rigid_bodies(atom::Hierarchies const &mhs);

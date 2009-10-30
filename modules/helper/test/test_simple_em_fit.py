@@ -46,7 +46,7 @@ class SimpleEMFitTest(IMP.test.TestCase):
                            (12.+origin, 3.+origin, 3.+origin),
                            (3.+origin, 12.+origin, 12.+origin)])
 
-        self.dmap = IMP.helper.load_erw_density_map (
+        self.dmap = IMP.helper.load_em_density_map (
                         self.get_input_file_name("in.em"), 1.0, 3.0)
 
 
@@ -90,7 +90,7 @@ class SimpleEMFitTest(IMP.test.TestCase):
         self.assert_(isinstance(r1.get_model_dens_map(),
                                 IMP.em.SampledDensityMap))
 
-        test_mrc = IMP.helper.load_mrc_density_map (
+        test_mrc = IMP.helper.load_em_density_map (
                         self.get_input_file_name("1z5s.mrc"), 1.0, 3.0)
 
         se2 = IMP.helper.create_simple_em_fit(self.mhs, test_mrc)
