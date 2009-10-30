@@ -26,20 +26,72 @@ class SimpleDiameter;
 class SimpleExcludedVolume;
 class SimpleEMFit;
 
+/** Creates collision detection on rigid bodies using
+    SphereDistancePairScore and ClosePairsScoreState.
+    The nonbonded list defined for the score state is refined using
+    RigidClosePairsFinder.
+
+    \see SphereDistancePairScore
+    \see HarmonicLowerBound
+    \see ClosePairsScoreState
+    \see ListSingletonContainer
+    \see RigidClosePairsFinder
+    \relates SimpleCollision
+  */
 IMPHELPEREXPORT SimpleCollision create_simple_collision_on_rigid_bodies(
                 core::RigidBodies *rbs);
 
+/** Creates ConnectivityRestraint on rigid bodies using
+    RigidBodyDistancePairScore and RigidMembersRefiner.
+
+    \see RigidBodyDistancePairScore
+    \see SphereDistancePairScore
+    \see HarmonicUpperBound
+    \see core::RigidMembersRefiner
+    \relates SimpleConnectivity
+  */
 IMPHELPEREXPORT SimpleConnectivity create_simple_connectivity_on_rigid_bodies(
                 core::RigidBodies *rbs);
 
+
+/** Creates ConnectivityRestraint on molecules using LowestRefinedPairScore
+    and LeavesRefiner.
+
+    \see LowestRefinedPairScore
+    \see SphereDistancePairScore
+    \see HarmonicUpperBound
+    \see LeavesRefiner
+    \relates SimpleConnectivity
+  */
 IMPHELPEREXPORT SimpleConnectivity create_simple_connectivity_on_molecules(
                 Particles *ps);
 
+
+/** Creates DistanceRestraint using HarmonicUpperBound scoring function
+    as default.
+    \param[in] ps Pointer to two particles in distance restraint.
+    \relates SimpleDistance
+*/
 IMPHELPEREXPORT SimpleDistance create_simple_distance(Particles *ps);
 
+
+
+/** Creates DiameterRestraint using HarmonicUpperBound scoring function
+    as default.
+    \param[in] ps Pointer to particles in diameter restraint.
+    \param[in] diameter Diameter.
+    \see ListSingletonContainer
+    \relates SimpleDiameter
+  */
 IMPHELPEREXPORT SimpleDiameter create_simple_diameter(
                 Particles *ps, Float diameter);
 
+
+
+/** Creates ExcludedVolumeRestraint using LeavesRefiner.
+    \see ListSingletonContainer
+    \relates SimpleExcludedVolume
+*/
 IMPHELPEREXPORT SimpleExcludedVolume
                 create_simple_excluded_volume_on_rigid_bodies(
                 core::RigidBodies *rbs);
@@ -69,21 +121,9 @@ IMPHELPEREXPORT Particles set_rigid_bodies(atom::Hierarchies const &mhs);
  */
 class IMPHELPEREXPORT SimpleCollision
 {
+  IMP_NO_SWIG(friend SimpleCollision create_simple_collision_on_rigid_bodies(
+                                                   core::RigidBodies *rbs));
 public:
-  /** Creates collision detection on rigid bodies using
-      SphereDistancePairScore and ClosePairsScoreState.
-      The nonbonded list defined for the score state is refined using
-      RigidClosePairsFinder.
-
-    \see SphereDistancePairScore
-    \see HarmonicLowerBound
-    \see ClosePairsScoreState
-    \see ListSingletonContainer
-    \see RigidClosePairsFinder
-  */
-  friend SimpleCollision create_simple_collision_on_rigid_bodies(
-         core::RigidBodies *rbs);
-
   core::PairsRestraint *restraint()
   {
     return pairs_restraint_;
@@ -184,30 +224,13 @@ private:
  */
 class IMPHELPEREXPORT SimpleConnectivity
 {
-public:
-
-  /** Creates ConnectivityRestraint on rigid bodies using
-      RigidBodyDistancePairScore and RigidMembersRefiner.
-
-    \see RigidBodyDistancePairScore
-    \see SphereDistancePairScore
-    \see HarmonicUpperBound
-    \see core::RigidMembersRefiner
-  */
+  IMP_NO_SWIG(
   friend SimpleConnectivity create_simple_connectivity_on_rigid_bodies(
          core::RigidBodies *rbs);
-
-  /** Creates ConnectivityRestraint on molecules using LowestRefinedPairScore
-      and LeavesRefiner.
-
-    \see LowestRefinedPairScore
-    \see SphereDistancePairScore
-    \see HarmonicUpperBound
-    \see LeavesRefiner
-  */
   friend SimpleConnectivity create_simple_connectivity_on_molecules(
          Particles *ps);
-
+              )
+ public:
   core::ConnectivityRestraint *restraint()
   {
     return connectivity_restraint_;
@@ -286,14 +309,8 @@ private:
  */
 class IMPHELPEREXPORT SimpleDistance
 {
-public:
-
-  /** Creates DistanceRestraint using HarmonicUpperBound scoring function
-      as default.
-      \param[in] ps Pointer to two particles in distance restraint.
-  */
-  friend SimpleDistance create_simple_distance(Particles *ps);
-
+  IMP_NO_SWIG(friend SimpleDistance create_simple_distance(Particles *ps));
+ public:
   core::DistanceRestraint *restraint()
   {
     return distance_restraint_;
@@ -363,15 +380,9 @@ private:
  */
 class IMPHELPEREXPORT SimpleDiameter
 {
-public:
-
-  /** Creates DiameterRestraint using HarmonicUpperBound scoring function
-      as default.
-      \param[in] ps Pointer to particles in diameter restraint.
-      \param[in] diameter Diameter.
-     \see ListSingletonContainer
-  */
-  friend SimpleDiameter create_simple_diameter(Particles *ps, Float diameter);
+  IMP_NO_SWIG(friend SimpleDiameter create_simple_diameter(Particles *ps,
+                                                           Float diameter));
+ public:
 
   core::DiameterRestraint *restraint()
   {
@@ -438,13 +449,11 @@ private:
  */
 class IMPHELPEREXPORT SimpleExcludedVolume
 {
-public:
-
-  /** Creates ExcludedVolumeRestraint using LeavesRefiner.
-   \see ListSingletonContainer
-  */
-  friend SimpleExcludedVolume create_simple_excluded_volume_on_rigid_bodies(
+  IMP_NO_SWIG(friend SimpleExcludedVolume
+              create_simple_excluded_volume_on_rigid_bodies(
          core::RigidBodies *rbs);
+              )
+ public:
 
   core::ExcludedVolumeRestraint *restraint()
   {
