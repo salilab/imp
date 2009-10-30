@@ -145,7 +145,7 @@ void SampledDensityMap::resample(const ParticlesAccessPoint &access_p)
 
     params = kernel_params_.find_params(access_p.get_r(ii));
     if (!params) {
-      IMP_LOG(SILENT, "Using default params" << std::endl);
+      IMP_LOG(TERSE, "EM map is using default params" << std::endl);
       kernel_params_.set_params(access_p.get_r(ii));
       params = kernel_params_.find_params(access_p.get_r(ii));
     }
