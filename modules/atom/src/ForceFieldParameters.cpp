@@ -88,10 +88,10 @@ void ForceFieldParameters::add_bonds(Residue rd1, Residue rd2) const {
     ad2 = get_atom(rd2, atom::AT_N);
    }
   // connect two nucleic acids by O3'-P bond
-  if(rd1.get_is_dna() &&
-     rd2.get_is_dna()
-     || rd1.get_is_rna() &&
-     rd2.get_is_rna() ) {
+  if((rd1.get_is_dna() &&
+      rd2.get_is_dna())
+     || (rd1.get_is_rna() &&
+         rd2.get_is_rna()) ) {
     ad1 = get_atom(rd1, atom::AT_O3p);
     ad2 = get_atom(rd2, atom::AT_P);
   }

@@ -168,7 +168,7 @@ namespace {
       }
       if (h.get_parent() != Hierarchy()) {
         Hierarchy p = h.get_parent();
-        if (h.get_as_atom() && !p.get_as_residue()
+        if ((h.get_as_atom() && !p.get_as_residue())
             || (p.get_as_residue() &&
                 (h.get_as_chain() || h.get_as_domain()))
             ){
@@ -177,15 +177,15 @@ namespace {
                     << h.get_parent());
         }
       }
-      if (h.get_as_atom() && (h.get_as_residue()
+      if ((h.get_as_atom() && (h.get_as_residue()
                               || h.get_as_domain()
                               || h.get_as_chain()
-                              || h.get_as_fragment())
-          || h.get_as_fragment() && (h.get_as_domain()
+                               || h.get_as_fragment()))
+          || (h.get_as_fragment() && (h.get_as_domain()
                                      || h.get_as_chain()
-                                     || h.get_as_fragment())
-          || h.get_as_domain() && ( h.get_as_chain()
-                                    || h.get_as_fragment())) {
+                                      || h.get_as_fragment()))
+          || (h.get_as_domain() && ( h.get_as_chain()
+                                     || h.get_as_fragment()))) {
         TEST_FAIL("Node cannot have more than onetype at once");
       }
       return true;
