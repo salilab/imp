@@ -556,11 +556,13 @@ const TraitsType &get_##traits_name() const {                           \
   Name Name::setup_particle(Particle *p, const Members &ps) {           \
     Refiner *ref=new FixedRefiner(ps);                                  \
     create_modifier;                                                    \
+    if (!Parent::particle_is_instance(p)) Parent::setup_particle(p);    \
     set_score_state(mod, new DerivativesToRefined(ref), p);             \
     return Name(p);                                                     \
   }                                                                     \
   Name Name::setup_particle(Particle *p, Refiner *ref) {                \
     create_modifier;                                                    \
+    if (!Parent::particle_is_instance(p)) Parent::setup_particle(p);    \
     set_score_state(mod, new DerivativesToRefined(ref), p);             \
     return Name(p);                                                     \
   }                                                                     \
