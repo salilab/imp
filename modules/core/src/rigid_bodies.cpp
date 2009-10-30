@@ -27,6 +27,30 @@ IMPCORE_END_INTERNAL_NAMESPACE
 IMPCORE_BEGIN_NAMESPACE
 
 namespace {
+
+
+
+void cover_rigid_body(core::RigidBody d, Refiner *ref) {
+  double md=0;
+  // make sure it gets cleaned up properly
+  IMP::internal::OwnerPointer<Refiner> rp(ref);
+  for (unsigned int i=0; i< ref->get_number_of_refined(d); ++i) {
+    core::RigidMember rm(ref->get_refined(d,i));
+    double cd= rm.get_internal_coordinates().get_magnitude();
+    if (rm.get_particle()->has_attribute(XYZR::get_default_radius_key())) {
+      cd+= rm.get_particle()->get_value(XYZR::get_default_radius_key());
+    }
+    md=std::max(cd, md);
+  }
+  if (d.get_particle()->has_attribute(XYZR::get_default_radius_key())) {
+    d.get_particle()->set_value(XYZR::get_default_radius_key(), md);
+  } else {
+    d.get_particle()->add_attribute(XYZR::get_default_radius_key(), md);
+  }
+}
+
+
+
   ParticlesTemp get_rigid_body_used_particles(Particle *p) {
     RigidBody b(p);
     unsigned int n=b.get_number_of_members();
@@ -41,6 +65,101 @@ namespace {
   ParticlesList get_rigid_body_interacting_particles(Particle *p) {
     return ParticlesList(1, get_rigid_body_used_particles(p));
   }
+
+//! Accumulate the derivatives from the refined particles in the rigid body
+/** You can
+    use the setup_rigid_bodies and setup_rigid_body methods instead of
+    creating these objects yourself.
+    \see setup_rigid_bodies
+    \see setup_rigid_body
+    \see RigidBody
+    \verbinclude rigid_bodies.py
+    \see UpdateRigidBodyMembers
+ */
+class AccumulateRigidBodyDerivatives:
+  public SingletonModifier {
+ public:
+  AccumulateRigidBodyDerivatives(){}
+  IMP_SINGLETON_MODIFIER_DA(AccumulateRigidBodyDerivatives,
+                            get_module_version_info());
+};
+
+
+//! Compute the coordinates of the RigidMember objects bases on the orientation
+/** This should be applied after evaluate to keep the bodies rigid. You can
+    use the setup_rigid_bodies and setup_rigid_body methods instead of
+    creating these objects yourself.
+    \see setup_rigid_bodies
+    \see setup_rigid_body
+    \see RigidBody
+    \see AccumulateRigidBodyDerivatives */
+class UpdateRigidBodyMembers: public SingletonModifier {
+ public:
+  UpdateRigidBodyMembers(){}
+  IMP_SINGLETON_MODIFIER(UpdateRigidBodyMembers,
+                         get_module_version_info());
+};
+
+
+
+void AccumulateRigidBodyDerivatives::apply(Particle *p,
+                                           DerivativeAccumulator &da) const {
+  RigidBody rb(p);
+  algebra::Rotation3D rot= rb.get_transformation().get_rotation();
+  IMP_LOG(TERSE, "Accumulating rigid body derivatives" << std::endl);
+  algebra::Vector3D v(0,0,0);
+  algebra::VectorD<4> q(0,0,0,0);
+  for (unsigned int i=0; i< rb.get_number_of_members(); ++i) {
+    RigidMember d= rb.get_member(i);
+    algebra::Vector3D dv= d.get_derivatives();
+    v+=dv;
+    IMP_LOG(TERSE, "Adding " << dv << " to derivative" << std::endl);
+    for (unsigned int j=0; j< 4; ++j) {
+      algebra::Vector3D v= rot.get_derivative(d.get_internal_coordinates(),
+                                              j);
+      IMP_LOG(VERBOSE, "Adding " << dv*v << " to quaternion deriv " << j
+              << std::endl);
+      q[j]+= dv*v;
+    }
+  }
+  static_cast<XYZ>(rb).add_to_derivatives(v, da);
+  for (unsigned int j=0; j< 4; ++j) {
+    rb.get_particle()->add_to_derivative(internal::rigid_body_data()
+                                         .quaternion_[j], q[j],da);
+  }
+
+  IMP_LOG(TERSE, "Derivative is "
+          << p->get_derivative(internal::rigid_body_data().quaternion_[0])
+          << " "
+          << p->get_derivative(internal::rigid_body_data().quaternion_[1])
+          << " "
+          << p->get_derivative(internal::rigid_body_data().quaternion_[2])
+          << " "
+          << p->get_derivative(internal::rigid_body_data().quaternion_[3])
+          << std::endl);
+
+  IMP_LOG(TERSE, "Translation deriv is "
+          << static_cast<XYZ>(rb).get_derivatives()
+          << "" << std::endl);
+}
+
+
+void UpdateRigidBodyMembers::apply(Particle *p) const {
+  RigidBody rb(p);
+  rb.normalize_rotation();
+  algebra::Transformation3D tr= rb.get_transformation();
+  for (unsigned int i=0; i<rb.get_number_of_members(); ++i) {
+    rb.get_member(i).set_coordinates(tr);
+  }
+}
+
+
+IMP_SINGLETON_MODIFIER_FROM_REFINED(AccumulateRigidBodyDerivatives,
+                                    internal::get_rigid_members_refiner());
+
+IMP_SINGLETON_MODIFIER_TO_REFINED(UpdateRigidBodyMembers,
+                                  internal::get_rigid_members_refiner());
+
 }
 
 typedef IMP::algebra::internal::TNT::Array2D<double> Matrix;
@@ -70,9 +189,10 @@ Matrix compute_I(const std::vector<RigidMember> &ds,
 }
 
 
+IMP_SCORE_STATE_DECORATOR_DEF(RigidBody);
 
 RigidBody RigidBody::setup_particle(Particle *p,
-                            const XYZs &members){
+                                    const XYZs &members){
   IMP_USAGE_CHECK(!internal::get_has_required_attributes_for_body(p),
             "The RigidBody is already set up.",
             InvalidStateException);
@@ -156,6 +276,9 @@ RigidBody RigidBody::setup_particle(Particle *p,
                  << nv);
     }
   }
+  set_score_state(new UpdateRigidBodyMembers(),
+                  new AccumulateRigidBodyDerivatives(), p);
+  cover_rigid_body(d, internal::get_rigid_members_refiner());
   return d;
 }
 
@@ -232,15 +355,9 @@ bool RigidBody::get_coordinates_are_optimized() const {
   return XYZ::get_coordinates_are_optimized();
 }
 
-void RigidBody::set_coordinates_are_optimized(bool tf, bool snapping) {
-  bool body, member;
-  if (snapping) {
-    body=false;
-    member= tf;
-  } else {
-    body=tf;
-    member=false;
-  }
+void RigidBody::set_coordinates_are_optimized(bool tf) {
+  const bool body=tf;
+  const bool member=false;
   for (unsigned int i=0; i< 4; ++i) {
     get_particle()->set_is_optimized(internal::rigid_body_data().quaternion_[i],
                                      body);
@@ -308,82 +425,6 @@ void RigidMember::show(std::ostream &out) const {
 }
 
 
-void UpdateRigidBodyOrientation::apply(Particle *p) const {
-  RigidBody rb(p);
-  algebra::Vector3Ds cur, local;
-  for (unsigned int i=0; i< rb.get_number_of_members(); ++i) {
-    cur.push_back(rb.get_member(i).get_coordinates());
-    local.push_back(rb.get_member(i).get_internal_coordinates());
-  }
-  IMP::algebra::Transformation3D tr
-    = IMP::algebra::rigid_align_first_to_second(local, cur);
-  IMP_LOG(VERBOSE, "Alignment is " << tr << std::endl);
-  IMP_IF_LOG(VERBOSE) {
-    IMP_LOG(VERBOSE, ".color 1 0 0\n");
-    for (unsigned int i=0; i< cur.size(); ++i) {
-      IMP_LOG(VERBOSE, ".sphere " << algebra::spaces_io(cur[i]) << " .1\n");
-    }
-    IMP_LOG(VERBOSE, ".color 0 1 0\n");
-    for (unsigned int i=0; i< cur.size(); ++i) {
-      IMP_LOG(VERBOSE, ".sphere " << algebra::spaces_io(tr.transform(local[i]))
-              << " .1\n");
-    }
-  }
-  rb.set_transformation(tr);
-}
-
-
-
-void AccumulateRigidBodyDerivatives::apply(Particle *p,
-                                           DerivativeAccumulator &da) const {
-  RigidBody rb(p);
-  algebra::Rotation3D rot= rb.get_transformation().get_rotation();
-  IMP_LOG(TERSE, "Accumulating rigid body derivatives" << std::endl);
-  algebra::Vector3D v(0,0,0);
-  algebra::VectorD<4> q(0,0,0,0);
-  for (unsigned int i=0; i< rb.get_number_of_members(); ++i) {
-    RigidMember d= rb.get_member(i);
-    algebra::Vector3D dv= d.get_derivatives();
-    v+=dv;
-    IMP_LOG(TERSE, "Adding " << dv << " to derivative" << std::endl);
-    for (unsigned int j=0; j< 4; ++j) {
-      algebra::Vector3D v= rot.get_derivative(d.get_internal_coordinates(),
-                                              j);
-      IMP_LOG(VERBOSE, "Adding " << dv*v << " to quaternion deriv " << j
-              << std::endl);
-      q[j]+= dv*v;
-    }
-  }
-  static_cast<XYZ>(rb).add_to_derivatives(v, da);
-  for (unsigned int j=0; j< 4; ++j) {
-    rb.get_particle()->add_to_derivative(internal::rigid_body_data()
-                                         .quaternion_[j], q[j],da);
-  }
-
-  IMP_LOG(TERSE, "Derivative is "
-          << p->get_derivative(internal::rigid_body_data().quaternion_[0])
-          << " "
-          << p->get_derivative(internal::rigid_body_data().quaternion_[1])
-          << " "
-          << p->get_derivative(internal::rigid_body_data().quaternion_[2])
-          << " "
-          << p->get_derivative(internal::rigid_body_data().quaternion_[3])
-          << std::endl);
-
-  IMP_LOG(TERSE, "Translation deriv is "
-          << static_cast<XYZ>(rb).get_derivatives()
-          << "" << std::endl);
-}
-
-
-void UpdateRigidBodyMembers::apply(Particle *p) const {
-  RigidBody rb(p);
-  rb.normalize_rotation();
-  algebra::Transformation3D tr= rb.get_transformation();
-  for (unsigned int i=0; i<rb.get_number_of_members(); ++i) {
-    rb.get_member(i).set_coordinates(tr);
-  }
-}
 
 
 
@@ -403,19 +444,10 @@ void RigidMembersRefiner::show(std::ostream &out) const {
 }
 
 
-IMP_SINGLETON_MODIFIER_FROM_REFINED(UpdateRigidBodyOrientation,
-                             internal::get_rigid_members_refiner());
-
-
-IMP_SINGLETON_MODIFIER_FROM_REFINED(AccumulateRigidBodyDerivatives,
-                                    internal::get_rigid_members_refiner());
-
-IMP_SINGLETON_MODIFIER_TO_REFINED(UpdateRigidBodyMembers,
-                                  internal::get_rigid_members_refiner());
-
 namespace internal {
   IMPCOREEXPORT RigidMembersRefiner* get_rigid_members_refiner() {
-    static Pointer<RigidMembersRefiner> pt= new RigidMembersRefiner();
+    static IMP::internal::OwnerPointer<RigidMembersRefiner> pt
+      = new RigidMembersRefiner();
     return pt;
   }
 }

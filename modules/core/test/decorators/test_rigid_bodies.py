@@ -41,10 +41,8 @@ class RBDTests(IMP.test.TestCase):
             m= IMP.Model()
             IMP.set_log_level(IMP.SILENT)
             p= self._create_hierarchy(m,  htr)
-            ss=IMP.helper.create_rigid_body(p,
+            rbd=IMP.core.RigidBody.setup_particle(p,
                                             IMP.core.XYZs(IMP.core.Hierarchy(p, htr).get_children()))
-            m.add_score_state(ss)
-            rbd= IMP.core.RigidBody(p)
             p.show()
             rbd.set_coordinates_are_optimized(True)
             self. _add_rb_restraints(rbd)
@@ -86,10 +84,6 @@ class RBDTests(IMP.test.TestCase):
         self._test_create_one(htr)
         htr= IMP.atom.Hierarchy.get_traits()
         self._test_create_one(htr)
-    def test_create_many(self):
-        """Testing create_rigid_bodies"""
-        htr= IMP.core.Hierarchy.get_default_traits()
-        self._test_create_many(htr)
 
     def _test_create_one_from_pdb(self):
         """Testing create_rigid_bodies"""

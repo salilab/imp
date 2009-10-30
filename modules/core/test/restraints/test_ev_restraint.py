@@ -15,18 +15,15 @@ class AngleRestraintTests(IMP.test.TestCase):
         p0= IMP.atom.read_pdb(self.get_input_file_name("input.pdb"), m)
         p1= IMP.atom.read_pdb(self.get_input_file_name("input.pdb"), m)
         print 'create'
-        r0s= IMP.helper.create_rigid_body(p0.get_particle(),
+        r0s= IMP.core.RigidBody.setup_particle(p0.get_particle(),
                                         IMP.core.XYZs(IMP.core.get_leaves(p0)))
-        r1s= IMP.helper.create_rigid_body(p1.get_particle(),
+        r1s= IMP.core.RigidBody.setup_particle(p1.get_particle(),
                                         IMP.core.XYZs(IMP.core.get_leaves(p1)))
         print "radius"
         for p in IMP.core.get_leaves(p0)+IMP.core.get_leaves(p1):
             #print p.get_particle().get_name()
             d= IMP.core.XYZR.setup_particle(p.get_particle())
             d.set_radius(1)
-        print "add ss"
-        m.add_score_state(r0s)
-        m.add_score_state(r1s)
         rb0= IMP.core.RigidBody(p0.get_particle())
         rb1= IMP.core.RigidBody(p1.get_particle())
         rb0.set_coordinates_are_optimized(True)

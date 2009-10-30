@@ -8,21 +8,15 @@ import IMP.helper
 
 m= IMP.Model()
 # The particles in the rigid bodies
-rbps0= IMP.core.create_xyzr_particles(m, 50, 1)
-rbps1= IMP.core.create_xyzr_particles(m, 50, 1)
+rbps0= IMP.core.create_xyzr_particles(m, 5, 1)
+rbps1= IMP.core.create_xyzr_particles(m, 5, 1)
 
 rbp0= IMP.Particle(m)
 rbp1= IMP.Particle(m)
 
-rbss0 = IMP.helper.create_rigid_body(rbp0, IMP.core.XYZs(rbps0))
-m.add_score_state(rbss0)
+rbss0 = IMP.core.RigidBody.setup_particle(rbp0, IMP.core.XYZs(rbps0))
 
-rbss1 = IMP.helper.create_rigid_body(rbp1, IMP.core.XYZs(rbps1))
-m.add_score_state(rbss1)
-
-# make sure the rigid bodies have a large enough radius to include their members
-IMP.helper.cover_rigid_body(IMP.core.RigidBody(rbp0))
-IMP.helper.cover_rigid_body(IMP.core.RigidBody(rbp1))
+rbss1 = IMP.core.RigidBody.setup_particle(rbp1, IMP.core.XYZs(rbps1))
 
 lsc= IMP.core.ListSingletonContainer()
 lsc.add_particle(rbp0)
