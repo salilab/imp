@@ -522,6 +522,54 @@ const TraitsType &get_##traits_name() const {                           \
   }
 
 
+//! Create a decorator that computes some sort of summary info on a set
+/** Examples include a centroid or a cover for a set of particles.
+
+    \param[in] Name The name for the decorator
+    \param[in] Parent the parent decorator type
+    \param[in] create_modifier the statements to create the modifier
+    which computes the summary info. It should be called mod.
+    \param[in] Members the way to pass a set of particles in
+ */
+#define IMP_SUMMARY_DECORATOR_DECL(Name, Parent, Members)                \
+  class IMPCOREEXPORT Name: public Parent {                             \
+    IMP_SCORE_STATE_DECORATOR_DECL(Name);                               \
+  public:                                                               \
+    IMP_DECORATOR(Name, Parent)                                         \
+      static Name setup_particle(Particle *p,                           \
+                                 const Members &members);               \
+    static Name setup_particle(Particle *p,                             \
+                               Refiner *ref);                           \
+    ~Name();                                                            \
+    static bool particle_is_instance(Particle *p) {                     \
+      return p->has_attribute(get_score_state_key());                   \
+    }                                                                   \
+  };                                                                    \
+
+/** See IMP_SUMMARY_DECORATOR_DECL()
+
+    \param[in] create_modifier the statements to create the modifier
+    which computes the summary info. It should be called mod.
+ */
+#define IMP_SUMMARY_DECORATOR_DEF(Name, Parent, Members, create_modifier) \
+  IMP_SCORE_STATE_DECORATOR_DEF(Name)                                   \
+  Name Name::setup_particle(Particle *p, const Members &ps) {           \
+    Refiner *ref=new FixedRefiner(ps);                                  \
+    create_modifier;                                                    \
+    set_score_state(mod, new DerivativesToRefined(ref), p);             \
+    return Name(p);                                                     \
+  }                                                                     \
+  Name Name::setup_particle(Particle *p, Refiner *ref) {                \
+    create_modifier;                                                    \
+    set_score_state(mod, new DerivativesToRefined(ref), p);             \
+    return Name(p);                                                     \
+  }                                                                     \
+  Name::~Name(){}                                                       \
+  void Name::show(std::ostream &out) const {                            \
+    out << #Name << " at " << static_cast<Parent>(*this);               \
+  }
+
+
 //! Define a set of attributes which form an array
 /**
    The macro defines a set of functions for using the array:
