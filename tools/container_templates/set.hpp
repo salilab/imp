@@ -29,6 +29,9 @@ public:
   //! Construct and empty set
   GroupnameContainerSet(std::string name="GroupnameContainerSet %1%");
 
+  GroupnameContainerSet(const GroupnameContainers &in,
+                        std::string name="GroupnameContainerSet %1%");
+
   IMP_GROUPNAME_CONTAINER(GroupnameContainerSet, get_module_version_info());
  /** @name Methods to control the nested container
 
