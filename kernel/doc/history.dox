@@ -1,5 +1,13 @@
 /** \page recent Change History
 \par week of October 22
+- IMP::ScoreStates are further hidden. Namely, IMP::core::RigidBody constructures the needed score states internally, doing away with the need for the create functions (which have been done away with). In addition there are new decorators IMP::core::Cover and IMP::core::Centroid which manage their respective score states, further doing away with more create methods. The hierarchy-based create mehtod for rigid bodies has been moved to the atom module and is called IMP::atom::rigid_body_setup_hierarchy().
+
+- IMP::em::read_map() will figure out the file type to use automatically from the extension. Other such methods should follow suite.
+
+- A class IMP::core::StructureSet has been added to provide a convenient way to manage solutions of optimization runs.
+
+- IMP::core::RigidBodyMover now takes its angle argument in radians and is documented as such.
+
 - IMP::core::ClosePairsScoreState and IMP::core::CloseBipartitePairsScoreState have been replaced by IMP::core::ClosePairContainer and IMP::core::CloseBipartitePairContainer. The score states have been marked as deprecated and are mostly still there, but are more limited than they were.
 
 - IMP::core::AllPairsPairContainer has been renamed to IMP::core::AllPairContainer and a bipartite version has been added.
