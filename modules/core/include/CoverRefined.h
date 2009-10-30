@@ -13,8 +13,8 @@
 #include "XYZR.h"
 #include <IMP/Refiner.h>
 #include <IMP/Pointer.h>
+#include <IMP/Decorator.h>
 #include <IMP/SingletonModifier.h>
-#include <IMP/SingletonContainer.h>
 
 
 IMPCORE_BEGIN_NAMESPACE
@@ -60,6 +60,11 @@ public:
     slack_=slack;
   }
 };
+
+/** A decorator which sets up a particle to cover a
+    set of other particles.
+*/
+IMP_SUMMARY_DECORATOR_DECL(Cover, XYZR, XYZs);
 
 
 IMPCORE_END_NAMESPACE

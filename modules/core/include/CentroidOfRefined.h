@@ -10,10 +10,11 @@
 #define IMPCORE_CENTROID_OF_REFINED_H
 
 #include "config.h"
-
 #include "XYZ.h"
 #include <IMP/Refiner.h>
+#include <IMP/macros.h>
 #include <IMP/Pointer.h>
+#include <IMP/Decorator.h>
 #include <IMP/SingletonModifier.h>
 
 
@@ -44,6 +45,11 @@ public:
                          get_module_version_info());
 };
 
+
+/** A decorator which sets up a particle to be the centroid of a
+    set of other particles.
+*/
+IMP_SUMMARY_DECORATOR_DECL(Centroid, XYZ, XYZs);
 
 
 IMPCORE_END_NAMESPACE
