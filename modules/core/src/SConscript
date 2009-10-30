@@ -66,6 +66,7 @@ files = [
          'SingletonsScoreState.cpp',
          'SphereDistancePairScore.cpp',
          'SteepestDescent.cpp',
+         'StructureSet.cpp',
          'TableRefiner.cpp',
          'Transform.cpp',
          'TransformedDistancePairScore.cpp',
