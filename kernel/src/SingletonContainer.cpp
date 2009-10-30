@@ -23,4 +23,7 @@ SingletonContainer::SingletonContainer(std::string name):
   Interaction(internal::make_object_name(name, next_index++)){
 }
 
+ParticlesList SingletonContainer::get_interacting_particles() const {
+  return ParticlesList();
+}
 IMP_END_NAMESPACE
