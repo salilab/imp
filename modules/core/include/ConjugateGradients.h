@@ -31,7 +31,7 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT ConjugateGradients : public Optimizer
 {
 public:
-  ConjugateGradients();
+  ConjugateGradients(Model *m=NULL);
 
   IMP_OPTIMIZER(ConjugateGradients, get_module_version_info())
 

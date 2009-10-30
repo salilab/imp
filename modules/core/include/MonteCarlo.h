@@ -30,7 +30,7 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT MonteCarlo: public Optimizer
 {
 public:
-  MonteCarlo();
+  MonteCarlo(Model *m=NULL);
 
   IMP_OPTIMIZER(MonteCarlo, get_module_version_info())
  public:
