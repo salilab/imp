@@ -9,8 +9,6 @@
 #include "IMP/helper/simplify_restraint.h"
 #include "IMP/helper/rigid_bodies.h"
 #include <IMP/em/DensityMap.h>
-#include <IMP/em/MRCReaderWriter.h>
-#include <IMP/em/EMReaderWriter.h>
 
 IMPHELPER_BEGIN_NAMESPACE
 
@@ -228,23 +226,10 @@ Particles set_rigid_bodies(atom::Hierarchies const &mhs)
   return rbs;
 }
 
-em::DensityMap *load_mrc_density_map(char const *map_fn, float spacing,
+em::DensityMap *load_em_density_map(char const *map_fn, float spacing,
                                     float resolution)
 {
-  em::MRCReaderWriter mrw;
-  em::DensityMap *dmap = em::read_map(map_fn, mrw);
-  em::DensityHeader *dmap_header = dmap->get_header_writable();
-  dmap_header->set_spacing(spacing);
-  dmap_header->set_resolution(resolution);
-
-  return dmap;
-}
-
-em::DensityMap *load_erw_density_map(char const *map_fn, float spacing,
-                                    float resolution)
-{
-  em::EMReaderWriter erw;
-  em::DensityMap *dmap = em::read_map(map_fn, erw);
+  em::DensityMap *dmap = em::read_map(map_fn);
   em::DensityHeader *dmap_header = dmap->get_header_writable();
   dmap_header->set_spacing(spacing);
   dmap_header->set_resolution(resolution);
