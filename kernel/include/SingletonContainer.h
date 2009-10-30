@@ -115,10 +115,11 @@ public:
   virtual double evaluate(const SingletonScore *s,
                           DerivativeAccumulator *da) const=0;
 
+  // use this method to define the typeinfo in gcc
+
   //! Containers do not induce interactions
-  ParticlesList get_interacting_particles() const {
-    return ParticlesList();
-  }
+  ParticlesList get_interacting_particles() const;
+
   //! Containers do not modify other things
   ObjectsTemp get_output_objects() const {
     return ObjectsTemp();
@@ -145,14 +146,20 @@ public:
                     << " get_added_singletons_container() do not "
                     << " track their own added and removed contents.",
                     Particle*Exception);
-    return dynamic_cast<SingletonContainer*>(added_.get());
+    SingletonContainer *ret= dynamic_cast<SingletonContainer*>(removed_.get());
+    IMP_INTERNAL_CHECK(ret, "Cannot cast object " << removed_->get_name()
+                       << " to a SingletonContainer.");
+    return ret;
   }
   SingletonContainer* get_added_singletons_container() const {
     IMP_USAGE_CHECK(added_, "The containers returned by "
                     << " get_added_singletons_container() do not "
                     << " track their own added and removed contents.",
                     Particle*Exception);
-    return dynamic_cast<SingletonContainer*>(removed_.get());
+    SingletonContainer *ret= dynamic_cast<SingletonContainer*>(added_.get());
+    IMP_INTERNAL_CHECK(ret, "Cannot cast object " << added_->get_name()
+                       << " to a SingletonContainer.");
+    return ret;
   }
   /** Return the change in score (and derivatives) since the last
       evaluate of the current contents of the container.

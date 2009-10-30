@@ -23,4 +23,7 @@ GroupnameContainer::GroupnameContainer(std::string name):
   Interaction(internal::make_object_name(name, next_index++)){
 }
 
+ParticlesList GroupnameContainer::get_interacting_particles() const {
+  return ParticlesList();
+}
 IMP_END_NAMESPACE
