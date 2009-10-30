@@ -24,14 +24,15 @@ IMP_LIST_IMPL(MonteCarlo, Mover, mover, Mover*, Movers,
                 obj->set_was_owned(true);
               },,);
 
-MonteCarlo::MonteCarlo(): temp_(1),
-                          stop_energy_(-std::numeric_limits<Float>::max()),
-                          probability_(1),
-                          num_local_steps_(50),
-                          stat_forward_steps_taken_(0),
-                          stat_upward_steps_taken_(0),
-                          stat_num_failures_(0),
-                          return_best_(false) {}
+MonteCarlo::MonteCarlo(Model *m): Optimizer(m, "MonteCarlo"),
+                                  temp_(1),
+                     stop_energy_(-std::numeric_limits<Float>::max()),
+                                  probability_(1),
+                                  num_local_steps_(50),
+                                  stat_forward_steps_taken_(0),
+                                  stat_upward_steps_taken_(0),
+                                  stat_num_failures_(0),
+                                  return_best_(false) {}
 
 
 Float MonteCarlo::optimize(unsigned int max_steps)
