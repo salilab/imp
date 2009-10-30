@@ -10,6 +10,7 @@
 #include "IMP/helper/rigid_bodies.h"
 #include <IMP/em/DensityMap.h>
 #include <IMP/em/MRCReaderWriter.h>
+#include <IMP/em/EMReaderWriter.h>
 
 IMPHELPER_BEGIN_NAMESPACE
 
@@ -64,7 +65,7 @@ SimpleCollision create_simple_collision_on_rigid_bodies(core::RigidBodies *rbs)
 
   /****** Return a SimpleCollision object ******/
 
-  return SimpleCollision(evr, h, nbl);
+  return SimpleCollision(evr, h, sdps, nbl);
 }
 
 SimpleConnectivity create_simple_connectivity_on_rigid_bodies(
@@ -101,7 +102,7 @@ SimpleConnectivity create_simple_connectivity_on_rigid_bodies(
 
   /****** Return a SimpleConnectivity object ******/
 
-  return SimpleConnectivity(cr, h);
+  return SimpleConnectivity(cr, h, sdps);
 }
 
 SimpleConnectivity create_simple_connectivity_on_molecules(Particles *ps)
@@ -134,7 +135,7 @@ SimpleConnectivity create_simple_connectivity_on_molecules(Particles *ps)
 
   /****** Return a SimpleConnectivity object ******/
 
-  return SimpleConnectivity(cr, h);
+  return SimpleConnectivity(cr, h, sdps);
 }
 
 SimpleDistance create_simple_distance(Particles *ps)
@@ -227,7 +228,8 @@ Particles set_rigid_bodies(atom::Hierarchies const &mhs)
   return rbs;
 }
 
-em::DensityMap *load_map(char const *map_fn, double spacing, double resolution)
+em::DensityMap *load_mrc_density_map(char const *map_fn, float spacing,
+                                    float resolution)
 {
   em::MRCReaderWriter mrw;
   em::DensityMap *dmap = em::read_map(map_fn, mrw);
@@ -238,13 +240,25 @@ em::DensityMap *load_map(char const *map_fn, double spacing, double resolution)
   return dmap;
 }
 
-em::FitRestraint *create_em_restraint(
-    atom::Hierarchies const &mhs, em::DensityMap *dmap)
+em::DensityMap *load_erw_density_map(char const *map_fn, float spacing,
+                                    float resolution)
+{
+  em::EMReaderWriter erw;
+  em::DensityMap *dmap = em::read_map(map_fn, erw);
+  em::DensityHeader *dmap_header = dmap->get_header_writable();
+  dmap_header->set_spacing(spacing);
+  dmap_header->set_resolution(resolution);
+
+  return dmap;
+}
+
+SimpleEMFit create_simple_em_fit(atom::Hierarchies const &mhs,
+                                   em::DensityMap *dmap)
 {
   size_t mhs_size = mhs.size();
 
   IMP_USAGE_CHECK(mhs_size > 0, "At least one hierarchy should be given",
-     runtime_error);
+     ValueException);
 
   Particles ps;
   for ( size_t i=0; i<mhs_size; ++i )
@@ -255,9 +269,13 @@ em::FitRestraint *create_em_restraint(
   }
   IMP_NEW(em::FitRestraint, fit_rs, (ps, dmap,
         core::XYZR::get_default_radius_key(),
-        atom::Mass::get_mass_key(), 1.0));
-  fit_rs->set_model(mhs[0].get_particle()->get_model());
-  return fit_rs;
+        atom::Mass::get_mass_key(),
+        1.0));
+  Model *mdl = mhs[0].get_particle()->get_model();
+  fit_rs->set_model(mdl);
+  mdl->add_restraint(fit_rs);
+
+  return SimpleEMFit(fit_rs);
 }
 
 IMPHELPER_END_NAMESPACE

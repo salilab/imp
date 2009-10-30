@@ -24,6 +24,7 @@ class SimpleConnectivity;
 class SimpleDistance;
 class SimpleDiameter;
 class SimpleExcludedVolume;
+class SimpleEMFit;
 
 IMPHELPEREXPORT SimpleCollision create_simple_collision_on_rigid_bodies(
                 core::RigidBodies *rbs);
@@ -43,11 +44,17 @@ IMPHELPEREXPORT SimpleExcludedVolume
                 create_simple_excluded_volume_on_rigid_bodies(
                 core::RigidBodies *rbs);
 
-IMPHELPEREXPORT em::DensityMap *load_map(
-                char const *map_fn, double spacing, double resolution);
-
-IMPHELPEREXPORT em::FitRestraint *create_em_restraint(
+IMPHELPEREXPORT SimpleEMFit create_simple_em_fit(
                 atom::Hierarchies const &mhs, em::DensityMap *dmap);
+
+
+/** Load MRC file. */
+IMPHELPEREXPORT em::DensityMap *load_mrc_density_map(
+                char const *map_fn, float spacing, float resolution);
+
+/** Load density files in EM format. */
+IMPHELPEREXPORT em::DensityMap *load_erw_density_map(
+                char const *map_fn, float spacing, float resolution);
 
 IMPHELPEREXPORT Particles set_rigid_bodies(atom::Hierarchies const &mhs);
 
@@ -55,7 +62,7 @@ IMPHELPEREXPORT Particles set_rigid_bodies(atom::Hierarchies const &mhs);
 //! Simple collision detection.
 /**
   \note SimpleCollision stores pointers to PairsRestraint, HarmonicLowerBound,
-        and ClosePairsScoreState.
+        SphereDistancePairScore, and ClosePairsScoreState.
   \note It provides convenient methods to change mean, k, standard deviation,
         slack and distance.
   \see PairsRestraint
@@ -85,6 +92,11 @@ public:
   core::HarmonicLowerBound *harmonic_lower_bound()
   {
     return harmonic_lower_bound_;
+  }
+
+  core::SphereDistancePairScore *sphere_distance_pair_score()
+  {
+    return sphere_distance_pair_score_;
   }
 
   core::ClosePairsScoreState *close_pairs_score_state()
@@ -148,21 +160,24 @@ private:
   // prevent unauthorized creation
   SimpleCollision(core::PairsRestraint *pairs_restraint,
       core::HarmonicLowerBound *harmonic_lower_bound,
+      core::SphereDistancePairScore *sphere_distance_pair_score,
       core::ClosePairsScoreState *close_pairs_score_state)
     : pairs_restraint_(pairs_restraint)
     , harmonic_lower_bound_(harmonic_lower_bound)
+    , sphere_distance_pair_score_(sphere_distance_pair_score)
     , close_pairs_score_state_(close_pairs_score_state)
   {}
 
   IMP::Pointer<core::PairsRestraint> pairs_restraint_;
   IMP::Pointer<core::HarmonicLowerBound> harmonic_lower_bound_;
+  IMP::Pointer<core::SphereDistancePairScore> sphere_distance_pair_score_;
   IMP::Pointer<core::ClosePairsScoreState> close_pairs_score_state_;
 };
 
 //! Simple connectivity restraint.
 /**
   \note SimpleConnectivity stores pointers to ConnectivityRestraint,
-        and HarmonicUpperBound.
+        HarmonicUpperBound, and SphereDistancePairScore.
   \note It provides convenient methods to change mean, k,
         and standard deviation.
   \see ConnectivityRestraint
@@ -201,6 +216,11 @@ public:
   core::HarmonicUpperBound *harmonic_upper_bound()
   {
     return harmonic_upper_bound_;
+  }
+
+  core::SphereDistancePairScore *sphere_distance_pair_score()
+  {
+    return sphere_distance_pair_score_;
   }
 
   //! Set the mean for the HarmonicUpperBound.
@@ -243,13 +263,16 @@ private:
   // prevent unauthorized creation
   SimpleConnectivity(
       core::ConnectivityRestraint *connectivity_restraint,
-      core::HarmonicUpperBound *harmonic_upper_bound)
+      core::HarmonicUpperBound *harmonic_upper_bound,
+      core::SphereDistancePairScore *sphere_distance_pair_score)
     : connectivity_restraint_(connectivity_restraint)
     , harmonic_upper_bound_(harmonic_upper_bound)
+    , sphere_distance_pair_score_(sphere_distance_pair_score)
   {}
 
   IMP::Pointer<core::ConnectivityRestraint> connectivity_restraint_;
   IMP::Pointer<core::HarmonicUpperBound> harmonic_upper_bound_;
+  IMP::Pointer<core::SphereDistancePairScore> sphere_distance_pair_score_;
 };
 
 //! Simple distance restraint between two particles.
@@ -449,6 +472,50 @@ private:
   {}
 
   IMP::Pointer<core::ExcludedVolumeRestraint> excluded_volume_restraint_;
+};
+
+//! Simple EM fit restraint.
+/**
+  \note SimpleEMFit stores pointer to FitRestraint.
+  \see FitRestraint
+ */
+class IMPHELPEREXPORT SimpleEMFit
+{
+public:
+
+  /** Creates EM FitRestraint.
+   \see FitRestraint
+   \see DensityMap
+  */
+  friend SimpleEMFit create_simple_em_fit(atom::Hierarchies const &mhs,
+                                            em::DensityMap *dmap);
+
+  em::FitRestraint *restraint()
+  {
+    return fit_restraint_;
+  }
+
+  VersionInfo get_version_info() const
+  {
+    return IMP::get_module_version_info();
+  }
+
+  void show(std::ostream &out = std::cout) const
+  {
+    out << "SimpleEMFit(";
+    if ( fit_restraint_ )
+      fit_restraint_->show(out);
+    out << ")";
+  }
+
+private:
+  // prevent unauthorized creation
+  SimpleEMFit(
+      em::FitRestraint *fit_restraint)
+    : fit_restraint_(fit_restraint)
+  {}
+
+  IMP::Pointer<em::FitRestraint> fit_restraint_;
 };
 
 IMPHELPER_END_NAMESPACE
