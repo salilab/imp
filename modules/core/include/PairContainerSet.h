@@ -29,6 +29,9 @@ public:
   //! Construct and empty set
   PairContainerSet(std::string name="PairContainerSet %1%");
 
+  PairContainerSet(const PairContainers &in,
+                        std::string name="PairContainerSet %1%");
+
   IMP_PAIR_CONTAINER(PairContainerSet, get_module_version_info());
  /** @name Methods to control the nested container
 

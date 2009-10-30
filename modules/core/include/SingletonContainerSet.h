@@ -29,6 +29,9 @@ public:
   //! Construct and empty set
   SingletonContainerSet(std::string name="SingletonContainerSet %1%");
 
+  SingletonContainerSet(const SingletonContainers &in,
+                        std::string name="SingletonContainerSet %1%");
+
   IMP_SINGLETON_CONTAINER(SingletonContainerSet, get_module_version_info());
  /** @name Methods to control the nested container
 

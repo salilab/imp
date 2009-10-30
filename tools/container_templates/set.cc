@@ -32,6 +32,16 @@ GroupnameContainerSet
                                     create_untracked_container());
 }
 
+GroupnameContainerSet
+::GroupnameContainerSet(const GroupnameContainers& in,
+                        std::string name):
+  GroupnameContainer(name) {
+  set_groupname_containers(in);
+  set_added_and_removed_containers( create_untracked_container(),
+                                    create_untracked_container());
+}
+
+
 bool
 GroupnameContainerSet
 ::get_contains_classname(Value vt) const {

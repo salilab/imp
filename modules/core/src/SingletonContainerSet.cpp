@@ -32,6 +32,16 @@ SingletonContainerSet
                                     create_untracked_container());
 }
 
+SingletonContainerSet
+::SingletonContainerSet(const SingletonContainers& in,
+                        std::string name):
+  SingletonContainer(name) {
+  set_singleton_containers(in);
+  set_added_and_removed_containers( create_untracked_container(),
+                                    create_untracked_container());
+}
+
+
 bool
 SingletonContainerSet
 ::get_contains_particle(Particle* vt) const {
