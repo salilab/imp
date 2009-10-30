@@ -22,8 +22,6 @@ core::RestraintSet * add_restraints(Model *model, DensityMap *dmap,
   core::RestraintSet *rsrs = new core::RestraintSet();
    rsrs->set_model(model);
    model->add_restraint(rsrs);
-   //add the rigid body restraint
-   model->add_score_state(rb_state);
    //add fitting restraint
    FitRestraint *fit_rs =
      new FitRestraint( rb.get_members(),dmap,rad_key,wei_key,1.0);

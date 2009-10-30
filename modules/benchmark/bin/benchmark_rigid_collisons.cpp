@@ -64,11 +64,9 @@ int main() {
     Particles catoms= get_by_type(mhd, atom::ATOM_TYPE);
     IMP_INTERNAL_CHECK(catoms.size() != 0, "What happened to the atoms?");
     atoms.insert(atoms.end(), catoms.begin(), catoms.end());
-    ScoreState *ss= create_rigid_body(mhd.get_particle(),
-                                      XYZs(catoms));
-    m->add_score_state(ss);
-    rbs.push_back(RigidBody(mhd.get_particle()));
-    cover_rigid_body(rbs.back());
+    RigidBody rbd=RigidBody::setup_particle(mhd.get_particle(),
+                                            XYZs(catoms));
+    rbs.push_back(rbd);
   }
   for (unsigned int i=0; i< atoms.size(); ++i) {
     XYZR::setup_particle(atoms[i], 1);
