@@ -53,4 +53,9 @@ void CentroidOfRefined::apply(Particle *p) const
 
 IMP_SINGLETON_MODIFIER_FROM_REFINED(CentroidOfRefined, refiner_)
 
+IMP_SUMMARY_DECORATOR_DEF(Centroid, XYZ, XYZs,
+                          SingletonModifier *mod
+                          = new CentroidOfRefined(ref, FloatKey(),
+                                                  XYZ::get_xyz_keys()))
+
 IMPCORE_END_NAMESPACE
