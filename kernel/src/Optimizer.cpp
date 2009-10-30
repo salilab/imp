@@ -16,8 +16,9 @@ namespace {
   unsigned int optimizer_index=0;
 }
 
-Optimizer::Optimizer(std::string name)
+Optimizer::Optimizer(Model *m, std::string name)
 {
+  if (m) set_model(m);
   set_name(internal::make_object_name(name, optimizer_index++));
   set_was_owned(true);
 }
