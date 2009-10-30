@@ -49,7 +49,7 @@ typedef VectorOfRefCounted<OptimizerState*> OptimizerStates;
 class IMPEXPORT Optimizer: public Object
 {
  public:
-  Optimizer(std::string name="Optimizer %1%");
+  Optimizer(Model *m= NULL, std::string name="Optimizer %1%");
 
   /** Optimize the model
       \param[in] max_steps The maximum number of steps to take.
