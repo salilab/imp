@@ -71,6 +71,7 @@ files = [
          'SingletonsScoreState.h',
          'SphereDistancePairScore.h',
          'SteepestDescent.h',
+         'StructureSet.h',
          'TableRefiner.h',
          'Transform.h',
          'TransformedDistancePairScore.h',
