@@ -13,5 +13,6 @@ for p in res:
     IMP.core.XYZR.setup_particle(p.get_particle())
 mtr=IMP.atom.Hierarchy.get_traits()
 pr= IMP.core.ChildrenRefiner(mtr)
-IMP.helper.create_covers(rc, pr)
+for r in rc.get_particles:
+    IMP.core.Cover.setup_particle(r, pr)
 m.evaluate(False)
