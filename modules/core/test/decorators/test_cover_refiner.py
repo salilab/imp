@@ -10,13 +10,15 @@ class TestREFCover(IMP.test.TestCase):
 
     def check_cover(self, p, ps):
         d= IMP.core.XYZR(p)
+        s= IMP.algebra.Sphere3D(d.get_coordinates(),
+                                d.get_radius()*1.1)
         d.show()
         for cp in ps:
             dc= IMP.core.XYZR(cp.get_particle())
             dc.show()
             #d.get_sphere().get_center().show()
             #dc.get_sphere().get_center().show()
-            self.assert_(d.get_sphere().get_contains(dc.get_sphere()))
+            self.assert_(s.get_contains(dc.get_sphere()))
     def test_it(self):
         """Test cover refined decorator"""
         m= IMP.Model()
