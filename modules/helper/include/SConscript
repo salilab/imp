@@ -1,4 +1,10 @@
 Import('env')
 
+files = [
+         'atom_hierarchy.h',
+         'simplify_atom_hierarchy.h',
+         'simplify_restraint.h',
+        ]
+
 # Install the include files:
-env.IMPModuleInclude(env.IMPModuleGetHeaders())
+env.IMPModuleInclude(files)
