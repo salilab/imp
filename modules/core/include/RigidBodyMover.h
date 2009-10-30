@@ -19,7 +19,8 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! Modify the transformation of a rigid body
-/** The particles are treated as rigid.
+/** The transformation of a rigid body is moved in a ball of given
+    size. The probability distribution is uniform over the ball.
     \see MonteCarlo
  */
 class IMPCOREEXPORT RigidBodyMover : public Mover
@@ -27,8 +28,8 @@ class IMPCOREEXPORT RigidBodyMover : public Mover
 public:
   /** The rigid body is rotated and translated to move
       \param[in] d   the rigid body decorator
-      \param[in] max_translation maximum translation sampling step
-      \param[in] max_rotation maximum rotation sampling step
+      \param[in] max_translation maximum translation during a step
+      \param[in] max_rotation maximum rotation angle in radians
    */
   RigidBodyMover(RigidBody d,Float max_translation,
                  Float max_rotation);

@@ -25,9 +25,6 @@ IMPCORE_BEGIN_NAMESPACE
 
 
 class RigidMember;
-class UpdateRigidBodyOrientation;
-class AccumulateRigidBodyDerivatives;
-class UpdateRigidBodyMembers;
 
 typedef Decorators<RigidMember, XYZs> RigidMembers;
 
@@ -61,16 +58,12 @@ typedef Decorators<RigidMember, XYZs> RigidMembers;
     \see UpdateRigidBodyOrientation
  */
 class IMPCOREEXPORT RigidBody: public XYZ {
-#ifndef SWIG
-  friend class AccumulateRigidBodyDerivatives;
-  friend class UpdateRigidBodyOrientation;
-  friend class UpdateRigidBodyMembers;
-#endif
   //! Return the location of a member particle given the current position
   /** This method computes the coordinates of p given its internal coordinates
       and the current position and orientation of the rigid body.
    */
   algebra::Vector3D get_coordinates(RigidMember p) const;
+  IMP_SCORE_STATE_DECORATOR_DECL(RigidBody);
 public:
 
   RigidMembers get_members() const;
@@ -123,8 +116,7 @@ public:
   bool get_coordinates_are_optimized() const;
 
   //! Set whether the rigid body coordinates are optimized
-  void set_coordinates_are_optimized(bool tf,
-                                     IMP_NO_DOXYGEN(bool snapping=false));
+  void set_coordinates_are_optimized(bool tf);
 
   //! Normalized the quaternion
   void normalize_rotation();
@@ -208,58 +200,6 @@ namespace internal {
 }
 #endif
 
-//! Compute the orientation of the rigid body from the refined particles
-/** This should be applied before evaluate to keep the bodies rigid. It
-    computes the optimal orientation given the position of the members and
-    then snaps the members to their rigid locations. You can
-    use the setup_rigid_bodies and setup_rigid_body methods instead of
-    creating these objects yourself.
-    \see setup_rigid_bodies
-    \see setup_rigid_body
-    \verbinclude rigid_bodies.py
-
-    \see RigidBody
-*/
-class IMPCOREEXPORT UpdateRigidBodyOrientation: public SingletonModifier {
- public:
-  UpdateRigidBodyOrientation(){}
-  IMP_SINGLETON_MODIFIER(UpdateRigidBodyOrientation,
-                         get_module_version_info());
-};
-
-//! Accumulate the derivatives from the refined particles in the rigid body
-/** You can
-    use the setup_rigid_bodies and setup_rigid_body methods instead of
-    creating these objects yourself.
-    \see setup_rigid_bodies
-    \see setup_rigid_body
-    \see RigidBody
-    \verbinclude rigid_bodies.py
-    \see UpdateRigidBodyMembers
- */
-class IMPCOREEXPORT AccumulateRigidBodyDerivatives:
-  public SingletonModifier {
- public:
-  AccumulateRigidBodyDerivatives(){}
-  IMP_SINGLETON_MODIFIER_DA(AccumulateRigidBodyDerivatives,
-                            get_module_version_info());
-};
-
-
-//! Compute the coordinates of the RigidMember objects bases on the orientation
-/** This should be applied after evaluate to keep the bodies rigid. You can
-    use the setup_rigid_bodies and setup_rigid_body methods instead of
-    creating these objects yourself.
-    \see setup_rigid_bodies
-    \see setup_rigid_body
-    \see RigidBody
-    \see AccumulateRigidBodyDerivatives */
-class IMPCOREEXPORT UpdateRigidBodyMembers: public SingletonModifier {
- public:
-  UpdateRigidBodyMembers(){}
-  IMP_SINGLETON_MODIFIER(UpdateRigidBodyMembers,
-                         get_module_version_info());
-};
 
 IMPCORE_END_NAMESPACE
 

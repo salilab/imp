@@ -14,7 +14,7 @@ RigidBodyMover::RigidBodyMover(RigidBody d,
                                Float max_translation, Float max_angle) {
   IMP_LOG(VERBOSE,"start RigidBodyMover constructor");
   max_translation_=max_translation;
-  max_angle_ =max_angle*PI/180.;
+  max_angle_ =max_angle;
   d_= d;
   IMP_LOG(VERBOSE,"finish mover construction" << std::endl);
 }
