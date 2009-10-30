@@ -1,4 +1,10 @@
 Import('env')
 
+files = [
+         'atom_hierarchy.cpp',
+         'simplify_atom_hierarchy.cpp',
+         'simplify_restraint.cpp',
+        ]
+
 # Build and install the shared library:
-env.IMPModuleLib(env.IMPModuleGetSources())
+env.IMPModuleLib(files)
