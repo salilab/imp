@@ -267,6 +267,31 @@ Bonds get_internal_bonds(Hierarchy mhd)
  */
 
 
+
+namespace {
+  struct IsXYZ {
+    template <class H>
+    bool operator()(H h) const {
+      return core::XYZ::particle_is_instance(h);
+    }
+  };
+}
+
+core::RigidBody rigid_body_setup_hierarchy(Hierarchy h) {
+  Particles eps;
+  core::gather(h, core::XYZ::particle_is_instance, std::back_inserter(eps));
+  core::XYZs extra_members(eps);
+  if (!core::XYZ::particle_is_instance(h)) {
+    core::XYZR d= core::XYZR::setup_particle(h);
+  }
+  core::RigidBody rbd
+    = core::RigidBody::setup_particle(h, extra_members);
+  rbd.set_coordinates_are_optimized(true);
+  return rbd;
+}
+
+
+
 IMP_FOREACH_HIERARCHY_TYPE(IMP_GET_AS_DEF)
 
 IMPATOM_END_NAMESPACE

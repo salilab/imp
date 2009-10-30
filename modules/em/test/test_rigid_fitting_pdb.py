@@ -17,9 +17,8 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         self.scene.get_header_writable().set_spacing(2.0)
         self.scene.set_origin(34.0,8.0,-92.0)
     def load_protein(self,pdb_filename):
-        self.m = IMP.Model()
         self.mp= IMP.atom.read_pdb(self.open_input_file(pdb_filename),
-                              self.m, IMP.atom.CAlphaSelector())#IMP.atom.NonWaterSelector())
+                              self.imp_model, IMP.atom.CAlphaSelector())#IMP.atom.NonWaterSelector())
         self.radius_key = IMP.FloatKey("radius")
         self.weight_key = IMP.FloatKey("weight")
         #add radius and weight attributes
@@ -40,8 +39,8 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         """Check that local rigid fitting around a point works"""
         #create a rigid body
         rb_p = IMP.Particle(self.imp_model)
-        rb_state = IMP.helper.create_rigid_body(rb_p,IMP.core.XYZs(self.particles))
-        rb_d = IMP.core.RigidBody.decorate_particle(rb_p);
+        rb_d = IMP.core.RigidBody.setup_particle(rb_p,IMP.core.XYZs(self.particles))
+        rb_state= rb_d.get_score_state()
         ref_trans = rb_d.get_transformation()
         fr = IMP.em.FittingSolutions()
         IMP.em.local_rigid_fitting_around_point(

@@ -19,7 +19,7 @@
 #include "config.h"
 #include <IMP/display/LogOptimizerState.h>
 #include <IMP/OptimizerState.h>
-#include <IMP/helper/rigid_bodies.h>
+#include <IMP/core/rigid_bodies.h>
 #include <IMP/ScoreState.h>
 #include <algorithm>
 IMPEM_BEGIN_NAMESPACE

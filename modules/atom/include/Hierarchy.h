@@ -16,6 +16,7 @@
 #include <IMP/core/rigid_bodies.h>
 #include "macros.h"
 #include <IMP/core/XYZR.h>
+#include <IMP/core/rigid_bodies.h>
 
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
@@ -263,6 +264,7 @@ create_fragment(const Hierarchies &ps);
 //! Get the bonds internal to this tree
 /**     \relatesalso Hierarchy
         \see Bond
+        \relatesalso Bond
  */
 IMPATOMEXPORT Bonds
 get_internal_bonds(Hierarchy mhd);
@@ -277,14 +279,25 @@ inline Hierarchy get_root(Hierarchy h) {
   return h;
 }
 
+/** \relatesalso Hierarchy */
 inline Hierarchies get_leaves(Hierarchy h) {
   return Hierarchies(IMP::core::get_leaves(h));
 }
 
 //! Print out a molecular hierarchy
+/** \relatesalso Hierarchy
+ */
 inline void show(Hierarchy h, std::ostream &out=std::cout) {
    IMP::core::show<Hierarchy>(h, out);
 }
+
+//! make the given hierarchy move rigidly
+/** All particles in the hierarchy with cartesian coordinates at
+    the time of the function call are made to move rigidly.
+    \relatesalso Hierarchy
+    \relatesalso IMP::core::RigidBody
+*/
+IMPATOMEXPORT IMP::core::RigidBody rigid_body_setup_hierarchy(Hierarchy h);
 
 IMPATOM_END_NAMESPACE
 

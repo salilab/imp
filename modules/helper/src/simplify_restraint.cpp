@@ -7,7 +7,7 @@
     */
 
 #include "IMP/helper/simplify_restraint.h"
-#include "IMP/helper/rigid_bodies.h"
+#include "IMP/core/rigid_bodies.h"
 #include <IMP/em/DensityMap.h>
 
 IMPHELPER_BEGIN_NAMESPACE
@@ -210,16 +210,11 @@ Particles set_rigid_bodies(atom::Hierarchies const &mhs)
      ValueException);
 
   Particles rbs;
-  Model *mdl = mhs[0].get_model();
 
   for ( size_t i=0; i<mhs_size; ++i )
   {
     // The rigid body is set to be optimized
-    ScoreState *rb_state = create_rigid_body(mhs[i]);
-
-    // Add the score state to the model to make the body rigid
-    // Remove the score state from the model to stop keeping the body rigid
-    mdl->add_score_state(rb_state);
+    IMP::atom::rigid_body_setup_hierarchy(mhs[i]);
 
     rbs.push_back(mhs[i].get_particle());
   }

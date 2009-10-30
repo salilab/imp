@@ -15,10 +15,10 @@ def set_rigid_bodies(mhs,mdl):
     rbs = IMP.Particles()
     for i,mh in enumerate(mhs):
         rb_p = IMP.Particle(mdl)
-        rb_state = IMP.helper.create_rigid_body(rb_p,
-                       IMP.core.XYZs(IMP.core.get_leaves(mh)))
+        IMP.core.RigidBody.setup_particle(rb_p,
+                                          IMP.core.XYZs(IMP.core.get_leaves(mh)))
         #mdl.add_score_state(rb_state)
-        IMP.helper.create_cover(rb_p,IMP.core.RigidMembersRefiner())
+        #IMP.core.Cover.setup_particle(rb_p,IMP.core.RigidMembersRefiner())
         rbs.append(rb_p)
     return rbs
 def set_colision_detection_between_rigid_bodies(rb1,rb2):
