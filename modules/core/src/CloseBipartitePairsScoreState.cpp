@@ -16,7 +16,7 @@ CloseBipartitePairsScoreState
 ::CloseBipartitePairsScoreState(SingletonContainer *a,
                                 SingletonContainer *b):
   ScoreState("CloseBipartitePairsScoreState %1%"),
-  a_(a), b_(b)
+  a_(a), b_(b), distance_(0), slack_(0)
 {
 }
 
