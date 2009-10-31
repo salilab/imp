@@ -15,7 +15,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 ClosePairsScoreState::ClosePairsScoreState(SingletonContainer *pc):
   ScoreState("ClosePairsScoreState %1%"),
-  in_(pc)
+  in_(pc), distance_(0), slack_(0)
 {
 }
 
