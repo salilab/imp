@@ -30,8 +30,6 @@ IMPCORE_BEGIN_NAMESPACE
     If any of the rigid bodies don't have radii, an appropriate radius
     will be added. Note, to take advantage of this, the RigidBody
     must be in the container before the Restraint is added to the model.
-
-    Rotations of rigid bodies are not currently picked up properly.
  */
 class IMPCOREEXPORT ExcludedVolumeRestraint: public Restraint
 {
