@@ -211,6 +211,39 @@ SimpleExcludedVolume create_simple_excluded_volume_on_rigid_bodies(
   return SimpleExcludedVolume(evr);
 }
 
+SimpleExcludedVolume create_simple_excluded_volume_on_molecules(
+                     atom::Hierarchies const &mhs)
+{
+  size_t mhs_size = mhs.size();
+
+  IMP_USAGE_CHECK(mhs_size > 0, "At least one hierarchy should be given",
+     ValueException);
+
+  Particles ps;
+
+  for ( size_t i=0; i<mhs_size; ++i )
+  {
+    ps.push_back(mhs[i].get_particle());
+  }
+
+  /****** Set the restraint ******/
+
+  IMP_NEW(core::ListSingletonContainer, lsc, ());
+  lsc->add_particles(ps);
+
+  IMP_NEW(core::LeavesRefiner, lr, (atom::Hierarchy::get_traits()));
+  IMP_NEW(core::ExcludedVolumeRestraint, evr, (lsc, lr));
+
+  /****** Add restraint to the model ******/
+
+  Model *mdl = mhs[0].get_particle()->get_model();
+  mdl->add_restraint(evr);
+
+  /****** Return a SimpleExcludedVolume object ******/
+
+  return SimpleExcludedVolume(evr);
+}
+
 Particles set_rigid_bodies(atom::Hierarchies const &mhs)
 {
   size_t mhs_size = mhs.size();

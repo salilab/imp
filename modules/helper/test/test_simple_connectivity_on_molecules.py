@@ -35,8 +35,8 @@ class SimpleConnectivityTests(IMP.test.TestCase):
         # add connectivity restraints
 
         sc= IMP.helper.create_simple_connectivity_on_molecules(self.mhs)
-        r = sc.restraint()
-        sdps= sc.sphere_distance_pair_score()
+        r = sc.get_restraint()
+        sdps= sc.get_sphere_distance_pair_score()
 
         self.o.optimize(1000)
 
@@ -84,9 +84,9 @@ class SimpleConnectivityTests(IMP.test.TestCase):
         """Check SimpleConnectivity's methods for molecules"""
 
         sc = IMP.helper.create_simple_connectivity_on_molecules(self.mhs)
-        r = sc.restraint()
-        h = sc.harmonic_upper_bound()
-        sdps = sc.sphere_distance_pair_score()
+        r = sc.get_restraint()
+        h = sc.get_harmonic_upper_bound()
+        sdps = sc.get_sphere_distance_pair_score()
 
         sc.set_mean(10.0)
         self.assertInTolerance (h.get_mean(), 10.0, 1e-4)
