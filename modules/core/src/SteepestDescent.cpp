@@ -13,8 +13,9 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! Constructor
-SteepestDescent::SteepestDescent() : step_size_(0.01), threshold_(0.)
+SteepestDescent::SteepestDescent(Model *m) : step_size_(0.01), threshold_(0.)
 {
+  if (m) set_model(m);
 }
 void SteepestDescent::show(std::ostream &out) const {
   out << "SteepestDescent optimizer" << std::endl;

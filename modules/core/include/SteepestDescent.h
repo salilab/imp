@@ -22,9 +22,8 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT SteepestDescent : public Optimizer
 {
-public:
-  /** */
-  SteepestDescent();
+ public:
+  SteepestDescent(Model *m= NULL);
 
   IMP_OPTIMIZER(SteepestDescent, get_module_version_info())
 
