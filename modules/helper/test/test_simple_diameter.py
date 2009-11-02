@@ -42,8 +42,8 @@ class SimpleDiameterTest(IMP.test.TestCase):
         """Check SimpleDiameter's methods"""
 
         sd = IMP.helper.create_simple_diameter(self.ps, self.diameter)
-        r = sd.restraint()
-        h = sd.harmonic_upper_bound()
+        r = sd.get_restraint()
+        h = sd.get_harmonic_upper_bound()
 
         sd.set_mean(10.0)
         self.assertInTolerance (h.get_mean(), 10.0, 1e-4)

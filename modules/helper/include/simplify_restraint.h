@@ -98,6 +98,16 @@ IMPHELPEREXPORT SimpleExcludedVolume
 
 
 
+/** Creates ExcludedVolumeRestraint using LeavesRefiner.
+    \see ListSingletonContainer
+    \relates SimpleExcludedVolume
+*/
+IMPHELPEREXPORT SimpleExcludedVolume
+                create_simple_excluded_volume_on_molecules(
+                atom::Hierarchies const &mhs);
+
+
+
 /** Creates EM FitRestraint.
     \see FitRestraint
     \see DensityMap
@@ -127,22 +137,22 @@ class IMPHELPEREXPORT SimpleCollision
   IMP_NO_SWIG(friend SimpleCollision create_simple_collision_on_rigid_bodies(
                                                    core::RigidBodies *rbs));
 public:
-  core::PairsRestraint *restraint()
+  core::PairsRestraint *get_restraint()
   {
     return pairs_restraint_;
   }
 
-  core::HarmonicLowerBound *harmonic_lower_bound()
+  core::HarmonicLowerBound *get_harmonic_lower_bound()
   {
     return harmonic_lower_bound_;
   }
 
-  core::SphereDistancePairScore *sphere_distance_pair_score()
+  core::SphereDistancePairScore *get_sphere_distance_pair_score()
   {
     return sphere_distance_pair_score_;
   }
 
-  core::ClosePairsScoreState *close_pairs_score_state()
+  core::ClosePairsScoreState *get_close_pairs_score_state()
   {
     return close_pairs_score_state_;
   }
@@ -234,17 +244,17 @@ class IMPHELPEREXPORT SimpleConnectivity
          atom::Hierarchies const &mhs);
               )
  public:
-  core::ConnectivityRestraint *restraint()
+  core::ConnectivityRestraint *get_restraint()
   {
     return connectivity_restraint_;
   }
 
-  core::HarmonicUpperBound *harmonic_upper_bound()
+  core::HarmonicUpperBound *get_harmonic_upper_bound()
   {
     return harmonic_upper_bound_;
   }
 
-  core::SphereDistancePairScore *sphere_distance_pair_score()
+  core::SphereDistancePairScore *get_sphere_distance_pair_score()
   {
     return sphere_distance_pair_score_;
   }
@@ -314,12 +324,12 @@ class IMPHELPEREXPORT SimpleDistance
 {
   IMP_NO_SWIG(friend SimpleDistance create_simple_distance(Particles *ps));
  public:
-  core::DistanceRestraint *restraint()
+  core::DistanceRestraint *get_restraint()
   {
     return distance_restraint_;
   }
 
-  core::HarmonicUpperBound *harmonic_upper_bound()
+  core::HarmonicUpperBound *get_harmonic_upper_bound()
   {
     return harmonic_upper_bound_;
   }
@@ -387,12 +397,12 @@ class IMPHELPEREXPORT SimpleDiameter
                                                            Float diameter));
  public:
 
-  core::DiameterRestraint *restraint()
+  core::DiameterRestraint *get_restraint()
   {
     return diameter_restraint_;
   }
 
-  core::HarmonicUpperBound *harmonic_upper_bound()
+  core::HarmonicUpperBound *get_harmonic_upper_bound()
   {
     return harmonic_upper_bound_;
   }
@@ -454,11 +464,15 @@ class IMPHELPEREXPORT SimpleExcludedVolume
 {
   IMP_NO_SWIG(friend SimpleExcludedVolume
               create_simple_excluded_volume_on_rigid_bodies(
-         core::RigidBodies *rbs);
+              core::RigidBodies *rbs);
+              )
+  IMP_NO_SWIG(friend SimpleExcludedVolume
+              create_simple_excluded_volume_on_molecules(
+              atom::Hierarchies const &mhs);
               )
  public:
 
-  core::ExcludedVolumeRestraint *restraint()
+  core::ExcludedVolumeRestraint *get_restraint()
   {
     return excluded_volume_restraint_;
   }
@@ -496,7 +510,7 @@ class IMPHELPEREXPORT SimpleEMFit
   IMP_NO_SWIG(friend SimpleEMFit create_simple_em_fit(
               atom::Hierarchies const &mhs, em::DensityMap *dmap));
 public:
-  em::FitRestraint *restraint()
+  em::FitRestraint *get_restraint()
   {
     return fit_restraint_;
   }

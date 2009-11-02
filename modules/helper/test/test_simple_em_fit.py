@@ -65,8 +65,8 @@ class SimpleEMFitTest(IMP.test.TestCase):
         se = IMP.helper.create_simple_em_fit(self.mhs, self.dmap)
         sd = IMP.helper.create_simple_distance(self.ps_dist)
 
-        r1 = se.restraint()
-        r2 = sd.restraint()
+        r1 = se.get_restraint()
+        r2 = sd.get_restraint()
 
         self.assert_(isinstance(IMP.em.FitRestraint.cast(r1),
                                 IMP.em.FitRestraint))
@@ -84,7 +84,7 @@ class SimpleEMFitTest(IMP.test.TestCase):
         """Check SimpleEMFit's methods"""
 
         se = IMP.helper.create_simple_em_fit(self.mhs, self.dmap)
-        r1 = se.restraint()
+        r1 = se.get_restraint()
 
         r1.set_was_owned(True)
         self.assert_(isinstance(r1.get_model_dens_map(),
@@ -94,7 +94,7 @@ class SimpleEMFitTest(IMP.test.TestCase):
                         self.get_input_file_name("1z5s.mrc"), 1.0, 3.0)
 
         se2 = IMP.helper.create_simple_em_fit(self.mhs, test_mrc)
-        r2 = se.restraint()
+        r2 = se.get_restraint()
         r2.set_was_owned(True)
         self.assert_(isinstance(r2.get_model_dens_map(),
                                 IMP.em.SampledDensityMap))

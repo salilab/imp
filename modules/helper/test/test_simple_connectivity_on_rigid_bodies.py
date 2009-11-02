@@ -33,9 +33,9 @@ class SimpleConnectivityTest(IMP.test.TestCase):
         """Check SimpleConnectivity's methods for rigid bodies"""
 
         sc = IMP.helper.create_simple_connectivity_on_rigid_bodies(self.rbs)
-        r = sc.restraint()
-        h = sc.harmonic_upper_bound()
-        ps = sc.sphere_distance_pair_score()
+        r = sc.get_restraint()
+        h = sc.get_harmonic_upper_bound()
+        ps = sc.get_sphere_distance_pair_score()
 
         sc.set_mean(10.0)
         self.assertInTolerance (h.get_mean(), 10.0, 1e-4)

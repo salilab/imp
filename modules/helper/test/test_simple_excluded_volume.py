@@ -43,8 +43,10 @@ class SimpleExclusionVolumeTests(IMP.test.TestCase):
 
         rbs = IMP.core.RigidBodies(ps)
         sev = IMP.helper.create_simple_excluded_volume_on_rigid_bodies(rbs)
+        test = IMP.helper.create_simple_excluded_volume_on_molecules(mhs)
 
-        r = sev.restraint()
+        r = sev.get_restraint()
+        r_test = test.get_restraint()
 
         r.set_log_level(IMP.SILENT)
 
