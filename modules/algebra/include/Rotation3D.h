@@ -104,6 +104,29 @@ public:
                     + 2*(v_[2]*v_[3]+v_[0]*v_[1])*o[1]
                     + (v_[0]*v_[0]-v_[1]*v_[1]-v_[2]*v_[2]+v_[3]*v_[3])*o[2]);
   }
+
+  //! Gets only the requested rotation coordinate of the vector
+  double rotate_one_coordinate_no_cache(const Vector3D &o,
+                                            unsigned int coord) const {
+    switch(coord) {
+      case 0:
+        return (v_[0]*v_[0]+v_[1]*v_[1]-v_[2]*v_[2]-v_[3]*v_[3])*o[0]
+                    + 2*(v_[1]*v_[2]-v_[0]*v_[3])*o[1]
+                    + 2*(v_[1]*v_[3]+v_[0]*v_[2])*o[2];
+        break;
+      case 1:
+        return 2*(v_[1]*v_[2]+v_[0]*v_[3])*o[0]
+                    + (v_[0]*v_[0]-v_[1]*v_[1]+v_[2]*v_[2]-v_[3]*v_[3])*o[1]
+                    + 2*(v_[2]*v_[3]-v_[0]*v_[1])*o[2];
+
+        break;
+      case 2:
+        return 2*(v_[1]*v_[3]-v_[0]*v_[2])*o[0]
+                    + 2*(v_[2]*v_[3]+v_[0]*v_[1])*o[1]
+                    + (v_[0]*v_[0]-v_[1]*v_[1]-v_[2]*v_[2]+v_[3]*v_[3])*o[2];
+        break;
+    }
+  }
 #endif
 
   //! Rotate a vector around the origin
@@ -118,6 +141,19 @@ public:
                     o*matrix_[2]);
 #else
     return rotate_no_cache(o);
+#endif
+  }
+
+  //! Gets only the requested rotation coordinate of the vector
+  double rotate_one_coordinate(const Vector3D &o,unsigned int coord) const {
+    IMP_USAGE_CHECK(v_.get_squared_magnitude() >0,
+              "Attempting to apply uninitialized rotation",
+              InvalidStateException);
+#ifdef IMP_ROTATION_CACHE
+    fill_cache();
+    return o*matrix_[coord];
+#else
+    return rotate_one_coordinate_no_cache(o,coord);
 #endif
   }
 
