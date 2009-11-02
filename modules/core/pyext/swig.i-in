@@ -119,6 +119,7 @@ IMP_REFCOUNT_RETURN_SINGLE(IMP::core::Mover)
 %include "IMP/core/MaximumSingletonScoreRestraint.h"
 %include "IMP/core/MaximumPairScoreRestraint.h"
 %include "IMP/core/RigidBodyMover.h"
+%include "IMP/core/VolumeRestraint.h"
 %include "IMP/core/utility.h"
 
 
