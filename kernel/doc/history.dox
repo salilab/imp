@@ -1,8 +1,10 @@
 /** \page recent Change History
 \par week of October 22 Update
+
+- Add IMP::core::VolumeRestraint.
+
 - Several functions have been added to help in creating restaints. They are create_simple_connectivity_on_rigid_bodies(), create_simple_connectivitiy_on_molecules(), create_simple_distance(), create_simple_diameter(), create_simple_em_fit(), and create_simple_excluded_volume_on_rigid_bodies(). Functions load_em_density_map() and set_rigid_bodies() are added as well. See IMP::helper for more information.
 
-\par week of October 22
 - IMP::ScoreStates are further hidden. Namely, IMP::core::RigidBody constructures the needed score states internally, doing away with the need for the create functions (which have been done away with). In addition there are new decorators IMP::core::Cover and IMP::core::Centroid which manage their respective score states, further doing away with more create methods. The hierarchy-based create mehtod for rigid bodies has been moved to the atom module and is called IMP::atom::rigid_body_setup_hierarchy().
 
 - IMP::em::read_map() will figure out the file type to use automatically from the extension. Other such methods should follow suite.
