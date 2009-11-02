@@ -12,6 +12,7 @@
 
 #include <IMP/base_types.h>
 #include <IMP/algebra/Vector3D.h>
+#include <IMP/algebra/BoundingBoxD.h>
 
 #include <limits>
 
@@ -302,6 +303,18 @@ public:
                              d_[2]*edge_size_[2]);
   }
 
+  void set_bounding_box(const algebra::BoundingBox3D &bb3) {
+    min_=bb3.get_corner(0);
+    for (unsigned int i=0; i< 3; ++i) {
+      double el= (bb3.get_corner(1)[i]- bb3.get_corner(0)[i])/d_[i];
+      edge_size_[i]=el;
+    }
+  }
+
+  algebra::Vector3D get_edges() const {
+    return algebra::Vector3D(edge_size_[0], edge_size_[1], edge_size_[2]);
+  }
+
   //! Return the number of voxels in a certain direction
   unsigned int get_number_of_voxels(unsigned int i) const {
     IMP_INTERNAL_CHECK(i < 3, "Only 3D");
@@ -323,6 +336,11 @@ public:
     return get_index_t<VirtualIndex>(pt);
   }
 
+  //! increment the index in one coordinate
+  VirtualIndex get_offset(VirtualIndex v, int xi, int yi, int zi) const {
+    return VirtualIndex(v[0]+xi, v[1]+yi, v[2]+zi);
+  }
+
   //! Convert a VirtualIndex into a real Index if possible
   /** \return Index() if not possible
    */
@@ -341,6 +359,10 @@ public:
   //! Get the data in a particular cell
   typename std::vector<VT>::const_reference get_voxel(Index gi) const  {
     return data_[index(gi)];
+  }
+
+  void memset_all_voxels(VT v) {
+    std::fill(data_.begin(), data_.end(), v);
   }
 
   Index get_min_index() const {
