@@ -71,6 +71,7 @@ files = [
          'Transform.cpp',
          'TransformedDistancePairScore.cpp',
          'TypedPairScore.cpp',
+         'VolumeRestraint.cpp',
          'XYZ.cpp',
          'XYZR.cpp',
          'model_io.cpp',
