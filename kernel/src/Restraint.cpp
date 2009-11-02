@@ -37,8 +37,7 @@ void Restraint::set_model(Model* model)
 }
 
 double Restraint::evaluate(DerivativeAccumulator *accum) const {
-  IMP_USAGE_CHECK(get_model()->get_stage()== Model::EVALUATE
-            || get_model()->get_stage()==Model::NOT_EVALUATING,
+  IMP_USAGE_CHECK(get_model()->get_stage()==Model::NOT_EVALUATING,
             "Restraint::evaluate() cannot be called during model evaluation",
             InvalidStateException);
   bool not_eval=get_model()->get_stage() != Model::EVALUATE;

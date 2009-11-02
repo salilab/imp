@@ -296,6 +296,9 @@ FloatRange Model::get_range(FloatKey k) const {
 }
 
 void Model::before_evaluate() const {
+  IMP_USAGE_CHECK(cur_stage_== NOT_EVALUATING,
+                  "Can only call Model::before_evaluate() when not evaluating",
+                  UsageException);
   IMP_LOG(TERSE,
           "Begin update ScoreStates " << std::endl);
   cur_stage_= BEFORE_EVALUATE;
@@ -382,11 +385,11 @@ double Model::do_evaluate_restraints(bool calc_derivs,
         && incremental_restraints != NONINCREMENTAL) {
       if (incremental_evaluation) {
         WRAP_EVALUATE_CALL(*it,
-                  value=(*it)->incremental_evaluate(calc_derivs? &accum:NULL));
+       value=(*it)->unprotected_incremental_evaluate(calc_derivs? &accum:NULL));
         IMP_LOG(TERSE, (*it)->get_name() << " score is " << value << std::endl);
       } else {
         WRAP_EVALUATE_CALL(*it,
-                  value=(*it)->evaluate(calc_derivs? &accum:NULL));
+                  value=(*it)->unprotected_evaluate(calc_derivs? &accum:NULL));
         IMP_LOG(TERSE, (*it)->get_name() << " score is " << value << std::endl);
       }
       if (gather_statistics_) {
@@ -396,7 +399,7 @@ double Model::do_evaluate_restraints(bool calc_derivs,
     } else if (!(*it)->get_is_incremental()
                && incremental_restraints != INCREMENTAL) {
       WRAP_EVALUATE_CALL(*it,
-                value=(*it)->evaluate(calc_derivs? &accum:NULL));
+                value=(*it)->unprotected_evaluate(calc_derivs? &accum:NULL));
       IMP_LOG(TERSE, (*it)->get_name()<<  " score is " << value << std::endl);
       if (gather_statistics_) {
         stats_data_[*it].update_restraint(timer.elapsed(), value);
