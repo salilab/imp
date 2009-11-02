@@ -84,9 +84,14 @@ ConjugateGradients::get_score(std::vector<FloatIndex> float_indices,
 #endif
   }
 
+  NT score;
   /* get score */
-  NT score = get_model()->evaluate(true);
-
+  try {
+    score = get_model()->evaluate(true);
+  } catch (ModelException) {
+    // if we took a bad step, just return a bad score
+    return std::numeric_limits<NT>::infinity();
+  }
   /* get derivatives */
   for (i = 0; i < opt_var_cnt; i++) {
 #ifdef IMP_CG_SCALE
@@ -277,6 +282,10 @@ Float ConjugateGradients::optimize(unsigned int max_steps)
   FloatIndexes float_indices(float_indexes_begin(),
                              float_indexes_end());
   int n = float_indices.size();
+  if (n==0) {
+    IMP_THROW("There are no optimizeable degrees of freedom.",
+              ModelException);
+  }
 
   x.resize(n);
   dx.resize(n);
