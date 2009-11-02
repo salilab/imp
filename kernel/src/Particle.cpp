@@ -185,23 +185,26 @@ void Particle::teardown_incremental() {
 namespace {
   const std::size_t num_blocks=150000;
   const std::size_t int_size= sizeof(int);
-  // add the ability to add a new list later
-  std::vector<unsigned int> free_list;
-  unsigned int next_to_allocate=0;
-  char particles[num_blocks*sizeof(Particle)];
+  struct Chunk {
+    std::vector<unsigned int> free_list;
+    unsigned int next_to_allocate;
+    char particles[num_blocks*sizeof(Particle)];
+    Chunk(): next_to_allocate(0){}
+  };
+  std::vector<Chunk*> chunks(1, new Chunk());
   unsigned int block_size() {
     return sizeof(Particle);
   }
-  unsigned int offset(void *p) {
-    return static_cast<char*>(p)- particles;
+  unsigned int offset(unsigned int i, void *p) {
+    return static_cast<char*>(p)- chunks[i]->particles;
   }
-  unsigned int index(void *p) {
-    IMP_INTERNAL_CHECK(offset(p) % block_size() ==0,
+  unsigned int index(unsigned int i, void *p) {
+    IMP_INTERNAL_CHECK(offset(i, p) % block_size() ==0,
                "There are alignment issues");
-    return offset(p)/block_size();
+    return offset(i, p)/block_size();
   }
-  void *address(unsigned int i) {
-    return particles+i*block_size();
+  void *address(unsigned int i, unsigned int j) {
+    return chunks[i]->particles+j*block_size();
   }
 }
 
@@ -210,19 +213,27 @@ void *Particle::operator new(std::size_t sz) {
   IMP_INTERNAL_CHECK(sz <= block_size(),
              "Expected request of size " << block_size()
              << " got request of size " << sz);
-  if (free_list.empty() && next_to_allocate==num_blocks) {
-    IMP_FAILURE("Can only allocate " << num_blocks
-                << " particles. Yell at Daniel.");
+  unsigned int i=0;
+  for (; i< chunks.size(); ++i) {
+    if (chunks[i]->free_list.empty()
+        && chunks[i]->next_to_allocate==num_blocks) {
+      continue;
+    } else {
+      break;
+    }
+  }
+  if (i== chunks.size()) {
+    chunks.push_back(new Chunk());
   }
   unsigned int slot;
-  if (!free_list.empty()) {
-    slot= free_list.back();
-    free_list.pop_back();
+  if (!chunks[i]->free_list.empty()) {
+    slot= chunks[i]->free_list.back();
+    chunks[i]->free_list.pop_back();
   } else {
-    slot= next_to_allocate;
-    ++next_to_allocate;
+    slot= chunks[i]->next_to_allocate;
+    ++chunks[i]->next_to_allocate;
   }
-  return address(slot);
+  return address(i, slot);
 }
 
 void *Particle::operator new(std::size_t sz, void*p) {
@@ -230,7 +241,13 @@ void *Particle::operator new(std::size_t sz, void*p) {
 }
 
 void Particle::operator delete(void *p) {
-  free_list.push_back(index(p));
+  for (unsigned int i=0; i< chunks.size(); ++i) {
+    if (&chunks[i]->particles <= p && &chunks[i]->particles+ num_blocks > p) {
+      chunks[i]->free_list.push_back(index(i, p));
+      return;
+    }
+  }
+  IMP_FAILURE("Particle being deleted was not allocated properly.");
 }
 
 
@@ -238,15 +255,24 @@ namespace internal {
   Particle* create_particles(Model *m, unsigned int n) {
     IMP_USAGE_CHECK(n>0, "Can't create 0 particles",
               ValueException);
-    if (next_to_allocate + n > num_blocks) {
-      IMP_FAILURE("Out of particles. Yell at Daniel.");
+    unsigned int i=0;
+    for (; i< chunks.size(); ++i) {
+      if (chunks[i]->next_to_allocate + n > num_blocks) {
+        continue;
+      } else {
+        break;
+      }
     }
-    for (unsigned int i=0; i< n; ++i) {
-      Particle *cur= new(address(next_to_allocate+i)) Particle(m);
+    if (i== chunks.size()) {
+      chunks.push_back(new Chunk());
+    }
+    for (unsigned int j=0; j< n; ++j) {
+      Particle *cur= new(address(i, chunks[i]->next_to_allocate+j)) Particle(m);
       if (0) std::cout << cur;
     }
-    Particle *ret= static_cast<Particle*>(address(next_to_allocate));
-    next_to_allocate+=n;
+    Particle *ret
+      = static_cast<Particle*>(address(i, chunks[i]->next_to_allocate));
+    chunks[i]->next_to_allocate+=n;
     return ret;
   }
 }
