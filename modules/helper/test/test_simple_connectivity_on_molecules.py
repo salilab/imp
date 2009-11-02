@@ -16,6 +16,10 @@ class SimpleConnectivityTests(IMP.test.TestCase):
 
         self.ds = IMP.core.create_xyzr_particles(self.m, 4, 1.0)
         self.ps = self.m.get_particles()
+        self.mhs = IMP.atom.Hierarchies()
+        for p in self.ps:
+            mh = IMP.atom.Hierarchy.setup_particle(p)
+            self.mhs.append(mh)
 
         self.o = IMP.core.ConjugateGradients()
         self.o.set_threshold(1e-4)
@@ -30,7 +34,7 @@ class SimpleConnectivityTests(IMP.test.TestCase):
         IMP.set_log_level(IMP.VERBOSE)
         # add connectivity restraints
 
-        sc= IMP.helper.create_simple_connectivity_on_molecules(self.ps)
+        sc= IMP.helper.create_simple_connectivity_on_molecules(self.mhs)
         r = sc.restraint()
         sdps= sc.sphere_distance_pair_score()
 
@@ -79,7 +83,7 @@ class SimpleConnectivityTests(IMP.test.TestCase):
     def test_methods(self):
         """Check SimpleConnectivity's methods for molecules"""
 
-        sc = IMP.helper.create_simple_connectivity_on_molecules(self.ps)
+        sc = IMP.helper.create_simple_connectivity_on_molecules(self.mhs)
         r = sc.restraint()
         h = sc.harmonic_upper_bound()
         sdps = sc.sphere_distance_pair_score()

@@ -47,7 +47,6 @@ class SimpleExclusionVolumeTests(IMP.test.TestCase):
         r = sev.restraint()
 
         r.set_log_level(IMP.SILENT)
-        m.add_restraint(r)
 
         print "mc"
         o= IMP.core.MonteCarlo()
