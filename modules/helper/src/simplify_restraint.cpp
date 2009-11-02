@@ -103,11 +103,20 @@ SimpleConnectivity create_simple_connectivity_on_rigid_bodies(
   return SimpleConnectivity(cr, h, sdps);
 }
 
-SimpleConnectivity create_simple_connectivity_on_molecules(Particles *ps)
+SimpleConnectivity create_simple_connectivity_on_molecules(
+                   atom::Hierarchies const &mhs)
 {
-  IMP_USAGE_CHECK(ps->size() > 0, "At least one particle should be given",
+  size_t mhs_size = mhs.size();
+
+  IMP_USAGE_CHECK(mhs_size > 0, "At least one hierarchy should be given",
      ValueException);
 
+  Particles ps;
+
+  for ( size_t i=0; i<mhs_size; ++i )
+  {
+    ps.push_back(mhs[i].get_particle());
+  }
 
   /****** Define Refiner ******/
   // Use LeavesRefiner for the hierarchy leaves under a particle
@@ -124,11 +133,11 @@ SimpleConnectivity create_simple_connectivity_on_molecules(Particles *ps)
   /****** Set the restraint ******/
 
   IMP_NEW(core::ConnectivityRestraint, cr, (lrps));
-  cr->set_particles((*ps));
+  cr->set_particles((ps));
 
   /****** Add restraint to the model ******/
 
-  Model *mdl = (*ps)[0]->get_model();
+  Model *mdl = mhs[0].get_particle()->get_model();
   mdl->add_restraint(cr);
 
   /****** Return a SimpleConnectivity object ******/
@@ -215,7 +224,6 @@ Particles set_rigid_bodies(atom::Hierarchies const &mhs)
   {
     // The rigid body is set to be optimized
     IMP::atom::rigid_body_setup_hierarchy(mhs[i]);
-
     rbs.push_back(mhs[i].get_particle());
   }
   return rbs;

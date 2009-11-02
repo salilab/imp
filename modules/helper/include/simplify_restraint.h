@@ -64,7 +64,7 @@ IMPHELPEREXPORT SimpleConnectivity create_simple_connectivity_on_rigid_bodies(
     \relates SimpleConnectivity
   */
 IMPHELPEREXPORT SimpleConnectivity create_simple_connectivity_on_molecules(
-                Particles *ps);
+                atom::Hierarchies const &mhs);
 
 
 /** Creates DistanceRestraint using HarmonicUpperBound scoring function
@@ -231,7 +231,7 @@ class IMPHELPEREXPORT SimpleConnectivity
   friend SimpleConnectivity create_simple_connectivity_on_rigid_bodies(
          core::RigidBodies *rbs);
   friend SimpleConnectivity create_simple_connectivity_on_molecules(
-         Particles *ps);
+         atom::Hierarchies const &mhs);
               )
  public:
   core::ConnectivityRestraint *restraint()
