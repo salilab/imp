@@ -76,7 +76,7 @@ double
 ExcludedVolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(pr_.get());
-  return pr_->evaluate(da);
+  return pr_->unprotected_evaluate(da);
 }
 
 void ExcludedVolumeRestraint::show(std::ostream &out) const {
