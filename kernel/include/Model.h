@@ -295,15 +295,19 @@ inline void Particle::assert_values_mutable() const {
   IMP_INTERNAL_CHECK(get_model()->get_stage() != Model::AFTER_EVALUATE,
              "ScoreStates are not allowed to change attribute values after "
              << "evaluation.");
+#if IMP_BUILD < IMP_FAST
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     if (ps_->write_locked_) throw internal::WriteLockedParticleException(this);
   }
+#endif
 }
 
 inline void Particle::assert_values_readable() const {
+#if IMP_BUILD < IMP_FAST
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     if (ps_->read_locked_) throw internal::ReadLockedParticleException(this);
   }
+#endif
 }
 
 inline void Particle::assert_can_change_optimization() const {
