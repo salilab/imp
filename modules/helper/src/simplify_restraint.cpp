@@ -12,60 +12,6 @@
 
 IMPHELPER_BEGIN_NAMESPACE
 
-SimpleCollision create_simple_collision_on_rigid_bodies(core::RigidBodies *rbs)
-{
-  IMP_USAGE_CHECK(rbs->size() > 0, "At least one particle should be given",
-     ValueException);
-
-  /****** Set up the nonbonded list ******/
-  // Tell nbl on which particles you work on
-  // Look for close pairs within the list
-
-  IMP_NEW(core::ListSingletonContainer, lsc, ());
-  lsc->add_particles(*rbs);
-  IMP_NEW(core::ClosePairsScoreState, nbl, (lsc));
-
-  /****** Refine the nonbonded list ******/
-  // Set up the list of close pairs of each pair in NBL
-  // because you want to restraint the actual rigid bodies and not its particles
-  // Look for close members of the rigid bodies, one from each rigid body
-
-  //if set_close_pairs_finder is not called, then use the non refined list
-  //if rcpf omitted, then the score is between 2 spheres
-  IMP_NEW(core::RigidClosePairsFinder, rcpf, ());
-  nbl->set_close_pairs_finder(rcpf);
-  // Set the amount particles need to move before the list is updated
-  nbl->set_slack(2);
-
-  /****** Define the score used on each pair in the refined list ******/
-  // Score the distance between the spheres of each particles
-  // Each particle is required to have x,y,z and a radius
-  // The distance is going to be penalized by a harmonic lower bound with
-  // mean = 0 and force constant (k) = 1 kcal/mol/A/A
-  // The mean and k can be changed later on by calling set_mean and set_k
-  // k can also be obtained given the Gaussian standard deviation (angstroms),
-  // which can be changed using set_stddev
-
-  IMP_NEW(core::HarmonicLowerBound, h, (0, 1)); // (mean, force constant k)
-  IMP_NEW(core::SphereDistancePairScore, sdps, (h));
-
-  /****** Set the restraint ******/
-  // Define the restraint, work on all pairs and score them with sdps
-  // Add the restraint to the model
-
-  IMP_NEW(core::PairsRestraint, evr, (sdps, nbl->get_close_pairs_container()));
-
-  /****** Add score state and restraint to the model ******/
-
-  Model *mdl = (*rbs)[0].get_model();
-  mdl->add_score_state(nbl);
-  mdl->add_restraint(evr);
-
-  /****** Return a SimpleCollision object ******/
-
-  return SimpleCollision(evr, h, sdps, nbl);
-}
-
 SimpleConnectivity create_simple_connectivity_on_rigid_bodies(
                    core::RigidBodies *rbs)
 {
@@ -198,8 +144,7 @@ SimpleExcludedVolume create_simple_excluded_volume_on_rigid_bodies(
   IMP_NEW(core::ListSingletonContainer, lsc, ());
   lsc->add_particles(*rbs);
 
-  IMP_NEW(core::LeavesRefiner, lr, (atom::Hierarchy::get_traits()));
-  IMP_NEW(core::ExcludedVolumeRestraint, evr, (lsc, lr));
+  IMP_NEW(core::ExcludedVolumeRestraint, evr, (lsc));
 
   /****** Add restraint to the model ******/
 
