@@ -19,37 +19,12 @@
 
 IMPHELPER_BEGIN_NAMESPACE
 
-class SimpleCollision;
 class SimpleConnectivity;
 class SimpleDistance;
 class SimpleDiameter;
 class SimpleExcludedVolume;
 class SimpleEMFit;
 
-/** Creates collision detection on rigid bodies using
-    SphereDistancePairScore and ClosePairsScoreState.
-    The nonbonded list defined for the score state is refined using
-    RigidClosePairsFinder.
-
-    \see SphereDistancePairScore
-    \see HarmonicLowerBound
-    \see ClosePairsScoreState
-    \see ListSingletonContainer
-    \see RigidClosePairsFinder
-    \relates SimpleCollision
-  */
-IMPHELPEREXPORT SimpleCollision create_simple_collision_on_rigid_bodies(
-                core::RigidBodies *rbs);
-
-/** Creates ConnectivityRestraint on rigid bodies using
-    RigidBodyDistancePairScore and RigidMembersRefiner.
-
-    \see RigidBodyDistancePairScore
-    \see SphereDistancePairScore
-    \see HarmonicUpperBound
-    \see core::RigidMembersRefiner
-    \relates SimpleConnectivity
-  */
 IMPHELPEREXPORT SimpleConnectivity create_simple_connectivity_on_rigid_bodies(
                 core::RigidBodies *rbs);
 
@@ -98,8 +73,8 @@ IMPHELPEREXPORT SimpleExcludedVolume
 
 
 
-/** Creates ExcludedVolumeRestraint using LeavesRefiner.
-    \see ListSingletonContainer
+/** Creates ExcludedVolumeRestraint using RigidMembersRefiner.
+    \see RigidMembersRefiner
     \relates SimpleExcludedVolume
 */
 IMPHELPEREXPORT SimpleExcludedVolume
@@ -122,110 +97,6 @@ IMPHELPEREXPORT em::DensityMap *load_em_density_map(
                 char const *map_fn, float spacing, float resolution);
 
 IMPHELPEREXPORT Particles set_rigid_bodies(atom::Hierarchies const &mhs);
-
-
-//! Simple collision detection.
-/**
-  \note SimpleCollision stores pointers to PairsRestraint, HarmonicLowerBound,
-        SphereDistancePairScore, and ClosePairsScoreState.
-  \note It provides convenient methods to change mean, k, standard deviation,
-        slack and distance.
-  \see PairsRestraint
- */
-class IMPHELPEREXPORT SimpleCollision
-{
-  IMP_NO_SWIG(friend SimpleCollision create_simple_collision_on_rigid_bodies(
-                                                   core::RigidBodies *rbs));
-public:
-  core::PairsRestraint *get_restraint()
-  {
-    return pairs_restraint_;
-  }
-
-  core::HarmonicLowerBound *get_harmonic_lower_bound()
-  {
-    return harmonic_lower_bound_;
-  }
-
-  core::SphereDistancePairScore *get_sphere_distance_pair_score()
-  {
-    return sphere_distance_pair_score_;
-  }
-
-  core::ClosePairsScoreState *get_close_pairs_score_state()
-  {
-    return close_pairs_score_state_;
-  }
-
-  //! Set the mean for the HarmonicLowerBound.
-  /** The default mean is 0.
-   */
-  void set_mean(Float mean)
-  {
-     harmonic_lower_bound_->set_mean(mean);
-  }
-
-  //! Set the standard deviation for the HarmonicLowerBound.
-  void set_stddev(Float sd)
-  {
-     static Float k = harmonic_lower_bound_->k_from_standard_deviation(sd);
-     harmonic_lower_bound_->set_k(k);
-  }
-
-  //! Set the spring constant for the HarmonicLowerBound.
-  /** The default k is 1.
-   */
-  void set_k(Float k)
-  {
-     harmonic_lower_bound_->set_k(k);
-  }
-
-  //! Set the amount of slack for the ClosePairsScoreState.
-  /** The default slack is 2.
-   */
-  void set_slack(Float slack)
-  {
-     close_pairs_score_state_->set_slack(slack);
-  }
-
-  //! Set the distance threshold for the ClosePairsScoreState.
-  /** Uses the default distance in the ClosePairsScoreState.
-   */
-  void set_distance(Float distance)
-  {
-     close_pairs_score_state_->set_distance(distance);
-  }
-
-  VersionInfo get_version_info() const
-  {
-    return IMP::get_module_version_info();
-  }
-
-  void show(std::ostream &out = std::cout) const
-  {
-    out << "SimpleCollision(";
-    if ( pairs_restraint_ )
-      pairs_restraint_->show(out);
-    out << ")";
-  }
-
-private:
-  // prevent unauthorized creation
-  SimpleCollision(core::PairsRestraint *pairs_restraint,
-      core::HarmonicLowerBound *harmonic_lower_bound,
-      core::SphereDistancePairScore *sphere_distance_pair_score,
-      core::ClosePairsScoreState *close_pairs_score_state)
-    : pairs_restraint_(pairs_restraint)
-    , harmonic_lower_bound_(harmonic_lower_bound)
-    , sphere_distance_pair_score_(sphere_distance_pair_score)
-    , close_pairs_score_state_(close_pairs_score_state)
-  {}
-
-  IMP::Pointer<core::PairsRestraint> pairs_restraint_;
-  IMP::Pointer<core::HarmonicLowerBound> harmonic_lower_bound_;
-  IMP::Pointer<core::SphereDistancePairScore> sphere_distance_pair_score_;
-  IMP::Pointer<core::ClosePairsScoreState> close_pairs_score_state_;
-};
 
 //! Simple connectivity restraint.
 /**
