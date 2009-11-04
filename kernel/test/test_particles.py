@@ -153,18 +153,17 @@ class ParticleTests(IMP.test.TestCase):
     def test_many_particle(self):
         """Test that we can allocate many particles"""
         m= IMP.Model()
-        ps=[]
-        for i in range(0,500000):
+        num=500000
+        for i in range(0,num):
             p= IMP.Particle(m)
-            ps.append(p)
             if i%10000 == 0:
                 print i
         print "removing"
-        while len(ps) >0:
-            if len(ps)%10000 ==0:
-                print len(ps)
-            m.remove_particle(ps[-1])
-            ps.remove(ps[-1])
+        for i in range(0,num):
+            if i%1000==0:
+                m.remove_particle(m.get_particles()[i])
+            if i%10000 ==0:
+                print i
 
 if __name__ == '__main__':
     unittest.main()
