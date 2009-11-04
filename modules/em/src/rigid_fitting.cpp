@@ -179,7 +179,7 @@ void local_rigid_fitting_grid_search(
    IMP_LOG(VERBOSE,
       "going to preform local rigid fitting using a grid search method"
       << " on " << ps.size() << " particles. "<<std::endl
-      <<"The grid search parameters are: " <<" translation bewteen "
+      <<"The grid search parameters are: " <<" translation between "
       << -max_t << " to " << max_t <<" with step : " << step_t
       << " number of rotations : " << number_of_rotations <<std::endl);
 

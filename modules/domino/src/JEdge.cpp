@@ -119,7 +119,7 @@ const std::string JEdge::generate_key(const CombState &other_comb) const
 
 void JEdge::show(std::ostream& out) const
 {
-  out << "=========================JEdge bewteen  "
+  out << "=========================JEdge between  "
       << source_->get_node_index();
   out << " and " << target_->get_node_index()
       << " separator keys and values : " << std::endl;
