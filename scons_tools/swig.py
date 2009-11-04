@@ -69,6 +69,7 @@ def _action_swig_file(target, source, env):
     if vars['module'] != 'kernel':
         preface.append("#include \"%(module_include_path)s.h\""%vars)
     preface.append("""%}
+%implicitconv;
 %include "std_vector.i"
 %include "std_string.i"
 %include "std_pair.i"
