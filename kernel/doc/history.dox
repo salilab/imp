@@ -1,6 +1,8 @@
 /** \page recent Change History
 \par week of October 22 Update
 
+- The code to get bounding volumes for IMP::atom::Hierarchy has been moved to the atom module, as as the clone and destroy code. They can be found at IMP::atom::clone(), IMP::atom::destroy(), IMP::atom::get_bounding_box().
+
 - Add IMP::core::VolumeRestraint.
 
 - Several functions have been added to help in creating restaints. They are create_simple_connectivity_on_rigid_bodies(), create_simple_connectivitiy_on_molecules(), create_simple_distance(), create_simple_diameter(), create_simple_em_fit(), and create_simple_excluded_volume_on_rigid_bodies(). Functions load_em_density_map() and set_rigid_bodies() are added as well. See IMP::helper for more information.
