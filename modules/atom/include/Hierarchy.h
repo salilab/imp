@@ -299,6 +299,52 @@ inline void show(Hierarchy h, std::ostream &out=std::cout) {
 */
 IMPATOMEXPORT IMP::core::RigidBody rigid_body_setup_hierarchy(Hierarchy h);
 
+
+
+//! Clone the Hierarchy
+/** This method copies the Bond, Bonded, Atom,
+    Residue, and Domain data and the particle name to the
+    new copies in addition to the Hierarchy relationships.
+
+    \untested{clone}
+    \relatesalso Hierarchy
+*/
+IMPATOMEXPORT
+Hierarchy clone(Hierarchy d);
+
+
+//! Delete the Hierarchy
+/** All bonds connecting to these atoms are destroyed as are
+    hierarchy links in the Hierarchy and the particles are
+    removed from the Model.
+    \untested{erase}
+    \relatesalso Hierarchy
+*/
+IMPATOMEXPORT
+void destroy(Hierarchy d);
+
+
+
+//! Get a bounding box for the Hierarchy
+/** This bounding box is that of the highest (in the CS sense of a tree
+    growning down from the root) cut
+    through the tree where each node in the cut has x,y,z, and r.
+    That is, if the root has x,y,z,r then it is the bounding box
+    if that sphere. If only the leaves have radii, it is the bounding
+    box of the leaves. If no such cut exists, the behavior is undefined.
+    \relatesalso Hierarchy
+    \relatesalso IMP::algebra::BoundingBoxD
+ */
+IMPATOMEXPORT
+algebra::BoundingBox3D get_bounding_box(const Hierarchy &h);
+
+
+/** See get_bounding_box() for more details.
+    \relatesalso Hierarchy
+ */
+IMPATOMEXPORT
+algebra::Sphere3D get_bounding_sphere(const Hierarchy &h);
+
 IMPATOM_END_NAMESPACE
 
 #endif  /* IMPATOM_HIERARCHY_H */

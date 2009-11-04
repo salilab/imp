@@ -184,10 +184,10 @@ atom::Hierarchy create_simplified(atom::Hierarchy in,
     em::write_map(sdm, "map.mrc", mrc);
 
     IMP_NEW(display::ChimeraWriter, cw, ("mapdata.py"));
-    IMP_NEW(display::BoxGeometry, bbg, (get_bounding_box(sdm)));
+    IMP_NEW(display::BoxGeometry, bbg, (em::get_bounding_box(sdm)));
     bbg->set_name("map_box");
     cw->add_geometry(bbg);
-    IMP_NEW(display::BoxGeometry, bbp, (get_bounding_box(in)));
+    IMP_NEW(display::BoxGeometry, bbp, (atom::get_bounding_box(in)));
     bbp->set_name("protein_box");
     cw->add_geometry(bbp);
     IMP_NEW(display::BoxGeometry, bbv,
