@@ -114,7 +114,7 @@ public:
   }
   void operator()( Value p) const {
     if (da_) {
-      IMP::internal::ContainerTraits<Classname>::apply(f_.get(), p, da_);
+      IMP::internal::ContainerTraits<Classname>::apply(f_.get(), p, *da_);
     } else {
       IMP::internal::ContainerTraits<Classname>::apply(f_.get(), p);
     }
