@@ -39,7 +39,7 @@ Object::~Object()
   check_value_=666666666;
   if (!was_owned_) {
     IMP_WARN("Object \"" << get_name() << "\" was never owned."
-             << " See the IMP::Object documentation for an explaination."
+             << " See the IMP::Object documentation for an explanation."
              << std::endl);
   }
 #endif
