@@ -96,7 +96,8 @@ IMPHELPEREXPORT SimpleEMFit create_simple_em_fit(
 IMPHELPEREXPORT em::DensityMap *load_em_density_map(
                 char const *map_fn, float spacing, float resolution);
 
-IMPHELPEREXPORT Particles set_rigid_bodies(atom::Hierarchies const &mhs);
+IMPHELPEREXPORT core::RigidBodies set_rigid_bodies(
+                atom::Hierarchies const &mhs);
 
 //! Simple connectivity restraint.
 /**

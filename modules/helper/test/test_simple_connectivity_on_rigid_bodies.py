@@ -2,7 +2,6 @@ import unittest
 import os
 import IMP
 import IMP.test
-import IMP.core
 import IMP.atom
 import IMP.helper
 
@@ -25,9 +24,7 @@ class SimpleConnectivityTest(IMP.test.TestCase):
         mhs.append(mh1)
         mhs.append(mh2)
 
-        ps = IMP.helper.set_rigid_bodies(mhs)
-        self.randomize_particles(ps, 50.0)
-        self.rbs = IMP.core.RigidBodies(ps)
+        self.rbs = IMP.helper.set_rigid_bodies(mhs)
 
     def test_methods(self):
         """Check SimpleConnectivity's methods for rigid bodies"""
