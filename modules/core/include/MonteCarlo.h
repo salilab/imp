@@ -74,7 +74,7 @@ public:
       The temperature has to be on the same scale as the differences
       in energy between good and bad states (and so the default is
       likely to not be a good choice).
-      @{.
+      @{
   */
   void set_temperature(Float t) {
     IMP_INTERNAL_CHECK(t>0, "Temperature must be positive");
@@ -126,9 +126,10 @@ public:
        The following methods are used to manipulate the list of Movers.
        Each mover is called at each optimization step, giving it a chance
        to change the current configuration.
-       @{*/
+       @{
+  */
   IMP_LIST(public, Mover, mover, Mover*, Movers);
-  /**@}*/
+  /** @} */
 private:
   Float temp_;
   Float stop_energy_;
