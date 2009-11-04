@@ -90,18 +90,20 @@ ParticlesTemp PairScoreState::get_input_particles() const {
 }
 
 ParticlesTemp PairScoreState::get_output_particles() const {
-   ParticlesTemp ret;
+  ParticlesTemp ret;
   if (f_) {
     ret= IMP::internal::get_output_particles(v_, f_.get());
     IMP_IF_CHECK(USAGE) {
       if (af_) {
         ParticlesTemp oret= IMP::internal::get_input_particles(v_, af_.get());
-        std::sort(ret.begin(), ret.end());
+        ParticlesTemp iret=IMP::internal::get_input_particles(v_, f_.get());
+        iret.insert(iret.end(), ret.begin(), ret.end());
+        std::sort(iret.begin(), iret.end());
         std::sort(oret.begin(), oret.end());
         ParticlesTemp t;
-        std::set_union(ret.begin(), ret.end(), oret.begin(), oret.end(),
+        std::set_union(iret.begin(), iret.end(), oret.begin(), oret.end(),
                        std::back_inserter(t));
-        IMP_USAGE_CHECK(t.size() == ret.size(), "The particles read by "
+        IMP_USAGE_CHECK(t.size() == iret.size(), "The particles read by "
                       << " the after modifier in " << get_name() << " must "
                         << "be a subset of those written by the before"
                         << " modifier.",

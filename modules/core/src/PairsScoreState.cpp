@@ -97,12 +97,14 @@ ParticlesTemp PairsScoreState::get_output_particles() const {
     IMP_IF_CHECK(USAGE) {
       if (af_) {
         ParticlesTemp oret= IMP::internal::get_input_particles(c_, af_.get());
-        std::sort(ret.begin(), ret.end());
+        ParticlesTemp iret=IMP::internal::get_input_particles(c_, f_.get());
+        iret.insert(iret.end(), ret.begin(), ret.end());
+        std::sort(iret.begin(), iret.end());
         std::sort(oret.begin(), oret.end());
         ParticlesTemp t;
-        std::set_union(ret.begin(), ret.end(), oret.begin(), oret.end(),
+        std::set_union(iret.begin(), iret.end(), oret.begin(), oret.end(),
                        std::back_inserter(t));
-        IMP_USAGE_CHECK(t.size() == ret.size(), "The particles read by "
+        IMP_USAGE_CHECK(t.size() == iret.size(), "The particles read by "
                       << " the after modifier in " << get_name() << " must "
                         << "be a subset of those written by the before "
                         << "modifier.",
