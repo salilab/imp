@@ -292,6 +292,139 @@ core::RigidBody rigid_body_setup_hierarchy(Hierarchy h) {
 
 
 
+
+
+
+namespace {
+
+  Hierarchy clone_internal(Hierarchy d,
+                                 std::map<Particle*,
+                                 Particle*> &map) {
+    Particle *p= new Particle(d.get_model());
+    map[d.get_particle()]=p;
+    Hierarchy nd;
+    if (Atom::particle_is_instance(d.get_particle())) {
+      nd= Atom::setup_particle(p, Atom(d.get_particle()));
+    }
+    if (Residue::particle_is_instance(d.get_particle())) {
+      nd= Residue::setup_particle(p, Residue(d.get_particle()));
+    }
+    if (Domain::particle_is_instance(d.get_particle())) {
+      nd= Domain::setup_particle(p, Domain(d.get_particle()));
+    }
+    if (Chain::particle_is_instance(d.get_particle())) {
+      nd= Chain::setup_particle(p, Chain(d.get_particle()));
+    }
+    if (Fragment::particle_is_instance(d.get_particle())) {
+      nd= Fragment::setup_particle(p, Fragment(d.get_particle()));
+    }
+    if (nd== Hierarchy()) nd=Hierarchy::setup_particle(p);
+    using core::XYZ;
+    using core::XYZR;
+    if (XYZR::particle_is_instance(d.get_particle())){
+      XYZR::setup_particle(p,
+                           algebra::Sphere3D(XYZ(d.get_particle())
+                                             .get_coordinates(),
+                                             XYZR(d.get_particle())
+                                             .get_radius()));
+    } else if (XYZ::particle_is_instance(d.get_particle())) {
+      XYZ::setup_particle(p,
+                          XYZ(d.get_particle()).get_coordinates());
+    }
+    p->set_name(d.get_particle()->get_name());
+    for (unsigned int i=0 ;i< d.get_number_of_children(); ++i) {
+      Hierarchy nc= clone_internal(d.get_child(i), map);
+      nd.add_child(nc);
+    }
+    return nd;
+  }
+}
+
+
+Hierarchy clone(Hierarchy d) {
+  std::map<Particle*,Particle*> map;
+  Hierarchy nh= clone_internal(d, map);
+  Bonds bds= get_internal_bonds(d);
+  for (unsigned int i=0; i< bds.size(); ++i) {
+    Bonded e0= bds[i].get_bonded(0);
+    Bonded e1= bds[i].get_bonded(1);
+    Particle *np0= map[e0.get_particle()];
+    Particle *np1= map[e1.get_particle()];
+    Bonded ne0, ne1;
+    if (Bonded::particle_is_instance(np0)) {
+      ne0=Bonded(np0);
+    } else {
+      ne0=Bonded::setup_particle(np0);
+    }
+    if (Bonded::particle_is_instance(np1)) {
+      ne1=Bonded(np1);
+    } else {
+      ne1=Bonded::setup_particle(np1);
+    }
+    copy_bond(ne0, ne1, bds[i]);
+  }
+  return nh;
+}
+
+
+struct True {
+  template <class T>
+  bool operator()(const T &t) const{ return true;}
+};
+
+void destroy(Hierarchy d) {
+  Hierarchies all;
+  core::gather(d, True(), std::back_inserter(all));
+  for (unsigned int i=0; i< all.size(); ++i) {
+    if (Bonded::particle_is_instance(all[i])) {
+     Bonded b(all[i]);
+      while (b.get_number_of_bonds() > 0) {
+        unbond(b.get_bond(b.get_number_of_bonds()-1));
+      }
+    }
+    while (all[i].get_number_of_children() > 0) {
+      all[i].remove_child(all[i].get_child(all[i].get_number_of_children()-1));
+    }
+  }
+  for (unsigned int i=0; i< all.size(); ++i) {
+    all[i].get_particle()->get_model()->remove_particle(all[i]);
+  }
+}
+
+
+
+
+algebra::BoundingBox3D get_bounding_box(const Hierarchy &h) {
+  Particles rep= get_leaves(h);
+  algebra::BoundingBox3D bb;
+  for (unsigned int i=0; i< rep.size(); ++i) {
+    core::XYZR xyzr= core::XYZR::decorate_particle(rep[i]);
+    if (xyzr) {
+      bb+= algebra::get_bounding_box(xyzr.get_sphere());
+    } else if (core::XYZ::particle_is_instance(rep[i])) {
+      bb+= algebra::BoundingBox3D(core::XYZ(rep[i]).get_coordinates());
+    }
+  }
+  IMP_LOG(VERBOSE, "Bounding box is " << bb << std::endl);
+  return bb;
+}
+
+algebra::Sphere3D get_bounding_sphere(const Hierarchy &h) {
+  Particles rep= get_leaves(h);
+  algebra::Sphere3Ds ss;
+  for (unsigned int i=0; i< rep.size(); ++i) {
+    core::XYZR xyzr= core::XYZR::decorate_particle(rep[i]);
+    if (xyzr) {
+      ss.push_back(xyzr.get_sphere());
+    } else if (core::XYZ::particle_is_instance(rep[i])) {
+      ss.push_back(algebra::Sphere3D(core::XYZ(rep[i]).get_coordinates(),
+                                     0));
+    }
+  }
+  return algebra::enclosing_sphere(ss);
+}
+
+
 IMP_FOREACH_HIERARCHY_TYPE(IMP_GET_AS_DEF)
 
 IMPATOM_END_NAMESPACE

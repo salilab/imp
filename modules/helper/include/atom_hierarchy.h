@@ -49,66 +49,6 @@ IMPHELPEREXPORT Restraint* create_protein(Particle *p,
 
 
 
-
-/** Get the set of particles providing the least detailed representation
-    of the structure. That is, a set of particles with x,y,z coordinates
-    which are either the root or have parents without coordinates.
-    \unstable{get_simplified_representation}
-    \untested{get_simplified_representation}
-    \relatesalso atom::Hierarchy
-*/
-IMPHELPEREXPORT Particles
-get_simplified_representation(atom::Hierarchy mhd);
-
-
-//! Clone the atom::Hierarchy
-/** This method copies the atom::Bond, atom::Bonded, atom::Atom,
-    atom::Residue, and atom::Domain data and the particle name to the
-    new copies in addition to the atom::Hierarchy relationships.
-
-    \untested{clone}
-    \relatesalso atom::Hierarchy
-*/
-IMPHELPEREXPORT
-atom::Hierarchy clone(atom::Hierarchy d);
-
-
-//! Delete the atom::Hierarchy
-/** All bonds connecting to these atoms are destroyed as are
-    hierarchy links in the Hierarchy and the particles are
-    removed from the Model.
-    \untested{erase}
-    \relatesalso atom::Hierarchy
-*/
-IMPHELPEREXPORT
-void destroy(atom::Hierarchy d);
-
-
-
-//! Get a bounding box for the atom::Hierarchy
-/** This bounding box is that of the highest (in the CS sense of a tree
-    growning down from the root) cut
-    through the tree where each node in the cut has x,y,z, and r.
-    That is, if the root has x,y,z,r then it is the bounding box
-    if that sphere. If only the leaves have radii, it is the bounding
-    box of the leaves. If no such cut exists, the behavior is undefined.
-    \relatesalso atom::Hierarchy
-    \relatesalso IMP::algebra::BoundingBoxD
- */
-IMPHELPEREXPORT
-algebra::BoundingBox3D get_bounding_box(const atom::Hierarchy &h,
-                                    FloatKey r
-                                    = core::XYZR::get_default_radius_key());
-
-
-/** See get_bounding_box() for more details.
-    \relates atom::Hierarchy
- */
-IMPHELPEREXPORT
-algebra::Sphere3D bounding_sphere(const atom::Hierarchy &h,
-                                    FloatKey r
-                                    = core::XYZR::get_default_radius_key());
-
 IMPHELPER_END_NAMESPACE
 
 #endif  /* IMPHELPER_HELPER_ATOM_HIERARCHY_H */
