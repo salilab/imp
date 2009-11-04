@@ -35,22 +35,9 @@ class Model;
 
     Do do this, ScoreStates have two methods which are called during
     the Model::evaluate() function
-    - before_evaluate()
-    - after_evaluate()
-
-    ScoreStates can change the state of particles and restraints.
-    However, optimizers may not pick up new particles or changes
-    to whether particular attributes are optimized or not.
-
-    The result of a ScoreState computation may be needed by several
-    other ScoreStates or restraints. To ensure that a given ScoreState
-    is updated when needed and only updated once per Model::evaluate()
-    call, each call to Model::evaluate() is assigned a unique ID which
-    is passed to the ScoreState. The ScoreState base uses this ID to
-    make sure that state is only updated once. To use this projection
-    mechanism, inherit from ScoreState and provide implementations of
-    do_before_evaluate() and do_after_evaluate(). Or, better yet, use
-    the IMP_SCORESTATE macro.
+    - before_evaluate() which is allowed to change the contents of
+    containers and the value of attributes of particles and
+    - after_evaluate() which can change particle derivatives
 
     \note When logging is VERBOSE, state should print enough information
     in evaluate to reproduce the the entire flow of data in update. When
@@ -70,20 +57,10 @@ class IMPEXPORT ScoreState : public Interaction
 public:
   ScoreState(std::string name=std::string());
 
-  // Update if needed
-  /* The protected do_before_evaluate method will be called if the iteration
-      count has not yet been seen.
-   */
-  void before_evaluate(unsigned int iteration);
-
   // Force update of the structure.
   void before_evaluate();
 
   // Do post evaluation work if needed
-  void after_evaluate(unsigned int iteration,
-                      DerivativeAccumulator *accpt);
-
-  //! Force update of the structure
   void after_evaluate(DerivativeAccumulator *accpt);
 
   //! return the stored model data
@@ -110,26 +87,9 @@ protected:
    */
   virtual void do_after_evaluate(DerivativeAccumulator *accpt)=0;
 
-  //! Get the current iteration count value.
-  /** The value is updated before update() is called
-   */
-  unsigned int get_before_evaluate_iteration() const {
-    return update_iteration_;
-  }
-
-  //! Get the current after_evaluate iteration count value.
-  /** The value is updated before after_evaluate() is called
-   */
-  unsigned int get_after_evaluate_iteration() const {
-    return after_iteration_;
-  }
-
   IMP_REF_COUNTED_DESTRUCTOR(ScoreState);
 
  private:
-
-  unsigned int update_iteration_;
-  unsigned int after_iteration_;
   // all of the particle data
   WeakPointer<Model> model_;
 };

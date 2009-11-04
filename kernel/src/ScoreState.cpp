@@ -20,25 +20,6 @@ namespace {
 ScoreState::ScoreState(std::string name) :
   Interaction(internal::make_object_name(name, scorestate_index++))
 {
-  update_iteration_= std::numeric_limits<unsigned int>::max();
-  after_iteration_= std::numeric_limits<unsigned int>::max();
-}
-
-
-void ScoreState::before_evaluate(unsigned int iter) {
-  if (update_iteration_ != iter) {
-    update_iteration_= iter;
-    do_before_evaluate();
-  }
-}
-
-
-void ScoreState::after_evaluate(unsigned int iter,
-                                DerivativeAccumulator *da) {
-  if (after_iteration_ != iter) {
-    after_iteration_= iter;
-    do_after_evaluate(da);
-  }
 }
 
 

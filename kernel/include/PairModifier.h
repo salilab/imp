@@ -114,7 +114,7 @@ public:
   }
   void operator()( ParticlePair p) const {
     if (da_) {
-      IMP::internal::ContainerTraits<ParticlePair>::apply(f_.get(), p, da_);
+      IMP::internal::ContainerTraits<ParticlePair>::apply(f_.get(), p, *da_);
     } else {
       IMP::internal::ContainerTraits<ParticlePair>::apply(f_.get(), p);
     }

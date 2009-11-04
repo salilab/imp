@@ -42,7 +42,6 @@ private:
   friend class Particle;
   typedef Particle::Storage ParticleStorage;
 
-  unsigned int iteration_;
   ParticleStorage particles_;
   bool incremental_update_;
   // true if a regular evaluate needs to be called first
