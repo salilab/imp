@@ -15,31 +15,45 @@
 #include <boost/timer.hpp>
 #include <set>
 
-// for now make all readable particles writeable to get around
-// hierarchy issue
-
 #if IMP_BUILD < IMP_FAST
-#define WRAP_UPDATE_CALL(restraint, expr)                               \
+#define WRAP_UPDATE_CALL(restraint, expr, exchange)                     \
   {                                                                     \
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {                                  \
-      ParticlesTemp rpl= (restraint)->get_input_particles();            \
+      ParticlesTemp rpl;                                                \
+      if (!exchange) rpl= (restraint)->get_input_particles();           \
+      else rpl= (restraint)->get_output_particles();                    \
+      ParticlesTemp wpl;                                                \
+      if (!exchange) wpl= (restraint)->get_output_particles();          \
+      else wpl= (restraint)->get_input_particles();                     \
+      wpl.insert(wpl.end(), rpl.begin(), rpl.end());                    \
+      if (exchange) {                                                   \
+        rpl.insert(rpl.end(), wpl.begin(), wpl.end());                  \
+      }                                                                 \
       internal::ReadLock rl(particles_begin(), particles_end(),         \
                             rpl.begin(), rpl.end());                    \
-      ParticlesTemp wpl= (restraint)->get_output_particles();           \
-      wpl.insert(wpl.end(), rpl.begin(), rpl.end());                    \
       internal::WriteLock wl(particles_begin(), particles_end(),        \
                              wpl.begin(), wpl.end());                   \
       try {                                                             \
         expr;                                                           \
-      } catch (internal::ReadLockedParticleException e) {               \
+      } catch (internal::ReadLockedParticleException &e) {              \
+        std::ostringstream oss;                                         \
+        for (unsigned int i=0; i< rpl.size(); ++i) {                    \
+          oss << rpl[i]->get_name() << " ";                             \
+        }                                                               \
         IMP_ERROR("Particle " << e.p_->get_name()                       \
                   << " is not in the read particles list of "           \
-                  << (*it)->get_name() << " but should be.");           \
+                  << (restraint)->get_name() << " but should be. "      \
+                  << "The list contains " << oss.str() );               \
         throw InternalException("Invalid particle used");               \
-      } catch (internal::WriteLockedParticleException e) {              \
+      } catch (internal::WriteLockedParticleException &e) {             \
+        std::ostringstream oss;                                         \
+        for (unsigned int i=0; i< wpl.size(); ++i) {                    \
+          oss << wpl[i]->get_name() << " ";                             \
+        }                                                               \
         IMP_ERROR("Particle " << e.p_->get_name()                       \
                   << " is not in the write particles list of "          \
-                  << (*it)->get_name() << " but should be.");           \
+                  << (restraint)->get_name() << " but should be."       \
+                  << "The list contains " << oss.str() );               \
         throw InternalException("Invalid particle used");               \
       }                                                                 \
     } else {                                                            \
@@ -60,12 +74,12 @@
       } catch (internal::ReadLockedParticleException e) {               \
         IMP_ERROR("Particle " << e.p_->get_name()                       \
                   << " is not in the read particles list of "           \
-                  << (*it)->get_name() << " but should be.");           \
+                  << (restraint)->get_name() << " but should be.");     \
         throw InternalException("Invalid particle used");               \
       } catch (internal::WriteLockedParticleException e) {              \
         IMP_ERROR("Particle " << e.p_->get_name()                       \
                   << " is not in the write particles list of "          \
-                  << (*it)->get_name() << " but should be.");           \
+                  << (restraint)->get_name() << " but should be.");     \
         throw InternalException("Invalid particle used");               \
       }                                                                 \
     } else {                                                            \
@@ -130,7 +144,6 @@ public:
   }
 };
 
-
 IMP_END_INTERNAL_NAMESPACE
 
 IMP_BEGIN_NAMESPACE
@@ -170,7 +183,6 @@ namespace {
 //! Constructor
 Model::Model()
 {
-  iteration_ = 0;
   cur_stage_=NOT_EVALUATING;
   incremental_update_=false;
   first_incremental_=true;
@@ -308,7 +320,7 @@ void Model::before_evaluate() const {
     IMP_CHECK_OBJECT(*it);
     IMP_LOG(TERSE, "Updating " << (*it)->get_name() << std::endl);
     if (gather_statistics_) timer.restart();
-    WRAP_UPDATE_CALL(*it, (*it)->before_evaluate(iteration_));
+    WRAP_UPDATE_CALL(*it, (*it)->before_evaluate(), false);
     if (gather_statistics_) {
       stats_data_[*it].update_state_before(timer.elapsed());
     }
@@ -323,15 +335,14 @@ void Model::after_evaluate(bool calc_derivs) const {
   DerivativeAccumulator accum;
   cur_stage_= AFTER_EVALUATE;
   boost::timer timer;
-  for (ScoreStateConstIterator it = score_states_begin();
-       it != score_states_end(); ++it) {
-    IMP_CHECK_OBJECT(*it);
-    IMP_LOG(TERSE, "Updating " << (*it)->get_name() << std::endl);
+  for (int i= get_number_of_score_states()-1; i >-1; --i) {
+    ScoreState *ss= get_score_state(i);
+    IMP_CHECK_OBJECT(ss);
+    IMP_LOG(TERSE, "Updating " << ss->get_name() << std::endl);
     if (gather_statistics_) timer.restart();
-    WRAP_UPDATE_CALL(*it, (*it)->after_evaluate(iteration_,
-                                         (calc_derivs ? &accum : NULL)));
+    WRAP_UPDATE_CALL(ss, ss->after_evaluate(calc_derivs?&accum:NULL), true);
     if (gather_statistics_) {
-      stats_data_[*it].update_state_after(timer.elapsed());
+      stats_data_[ss].update_state_after(timer.elapsed());
     }
     IMP_LOG(VERBOSE, "." << std::flush);
   }
@@ -595,7 +606,6 @@ Float Model::evaluate(bool calc_derivs)
 
   IMP_LOG(TERSE, "End Model::evaluate. Final score: " << score << std::endl);
   cur_stage_=NOT_EVALUATING;
-  ++iteration_;
   return score;
 }
 

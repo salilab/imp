@@ -79,7 +79,8 @@ ParticlesTemp GroupnamesScoreState::get_input_particles() const {
                        std::back_inserter(t));
         IMP_USAGE_CHECK(t.size() == oret.size(), "The particles written by "
                         << " the after modifier in " << get_name() << " must "
-                        << "be a subset of those read by the before modifier.",
+                        << "be a subset of those read by the before "
+                        << "modifier.",
                         UsageException);
       }
     }
@@ -103,12 +104,13 @@ ParticlesTemp GroupnamesScoreState::get_output_particles() const {
                        std::back_inserter(t));
         IMP_USAGE_CHECK(t.size() == oret.size(), "The particles read by "
                       << " the after modifier in " << get_name() << " must "
-                        << "be a subset of those written by the before modifier.",
+                        << "be a subset of those written by the before "
+                        << "modifier.",
                         UsageException);
       }
     }
   } else {
-    ret= IMP::internal::get_input_particles(c_, af_.get()); 
+    ret= IMP::internal::get_input_particles(c_, af_.get());
   }
   return ret;
 }

@@ -49,8 +49,8 @@ struct ContainerTraits<Particle> {
   template <class SM>
   static void apply(const SM *ss,
                     Particle *p,
-                    DerivativeAccumulator *da) {
-    ss->apply(p, *da);
+                    DerivativeAccumulator da) {
+    ss->apply(p, da);
   }
   static bool is_inactive(const Particle* p) {
     return !p->get_is_active();
@@ -92,8 +92,8 @@ struct ContainerTraits<ParticlePair> {
   template <class PM>
   static void apply(const PM *ss,
                     const ParticlePair &p,
-                    DerivativeAccumulator *da) {
-    ss->apply(p.first, p.second, *da);
+                    DerivativeAccumulator da) {
+    ss->apply(p.first, p.second, da);
   }
   static bool is_inactive(const ParticlePair &p) {
     return !p[0]->get_is_active() || !p[1]->get_is_active();
@@ -256,7 +256,7 @@ ParticlesTemp get_output_particles(PairContainer *sc,
 template <class F>
 ParticlesTemp get_output_particles(Particle *p,
                                    F *f) {
-  ParticlesTemp t= f->get_write_objects(p);
+  ParticlesTemp t= f->get_output_particles(p);
   return t;
 }
 
@@ -308,7 +308,7 @@ inline std::string get_name(ParticlePair p) {
   void Name::Ticker::do_before_evaluate() {                             \
     back_->do_before_evaluate();                                        \
   }                                                                     \
-  void Name::Ticker::do_after_evaluate(DerivativeAccumulator *) {       \
+  void Name::Ticker::do_after_evaluate(DerivativeAccumulator*) {         \
     back_->do_after_evaluate();                                         \
   }                                                                     \
   ObjectsTemp Name::Ticker::get_input_objects() const {                 \
