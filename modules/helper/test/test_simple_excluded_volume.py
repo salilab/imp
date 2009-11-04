@@ -19,7 +19,11 @@ class SimpleExclusionVolumeTests(IMP.test.TestCase):
         mhs = IMP.atom.Hierarchies()
         mhs.append(p0)
         mhs.append(p1)
-        ps = IMP.helper.set_rigid_bodies(mhs)
+        ps = IMP.Particles()
+        for mh in mhs:
+            ps.append(mh.get_particle())
+
+        rbs = IMP.helper.set_rigid_bodies(mhs)
 
         print "radius"
         for p in IMP.core.get_leaves(p0)+IMP.core.get_leaves(p1):
@@ -41,7 +45,6 @@ class SimpleExclusionVolumeTests(IMP.test.TestCase):
                               IMP.algebra.Vector3D(0,0,0),
                               IMP.algebra.Vector3D(20,20,20)))
 
-        rbs = IMP.core.RigidBodies(ps)
         sev = IMP.helper.create_simple_excluded_volume_on_rigid_bodies(rbs)
         test = IMP.helper.create_simple_excluded_volume_on_molecules(mhs)
 

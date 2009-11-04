@@ -189,22 +189,22 @@ SimpleExcludedVolume create_simple_excluded_volume_on_molecules(
   return SimpleExcludedVolume(evr);
 }
 
-Particles set_rigid_bodies(atom::Hierarchies const &mhs)
+core::RigidBodies set_rigid_bodies(atom::Hierarchies const &mhs)
 {
   size_t mhs_size = mhs.size();
 
   IMP_USAGE_CHECK(mhs_size > 0, "At least one hierarchy should be given",
      ValueException);
 
-  Particles rbs;
+  Particles rbps;
 
   for ( size_t i=0; i<mhs_size; ++i )
   {
     // The rigid body is set to be optimized
     IMP::atom::rigid_body_setup_hierarchy(mhs[i]);
-    rbs.push_back(mhs[i].get_particle());
+    rbps.push_back(mhs[i].get_particle());
   }
-  return rbs;
+  return (core::RigidBodies(rbps));
 }
 
 em::DensityMap *load_em_density_map(char const *map_fn, float spacing,
