@@ -87,7 +87,7 @@
     }                                                                   \
   }
 #else
-#define WRAP_UPDATE_CALL(restraint, expr) expr
+#define WRAP_UPDATE_CALL(restraint, expr, exchange) expr
 #define WRAP_EVALUATE_CALL(restraint, expr) expr
 #endif
 
