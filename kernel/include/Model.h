@@ -61,16 +61,12 @@ private:
 
   void add_particle_internal(Particle *p) {
     IMP_CHECK_OBJECT(this);
-    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-      for (ParticleStorage::const_iterator it= particles_.begin();
-           it != particles_.end(); ++it) {
-        IMP_USAGE_CHECK(*it != p, "Particle already in Model",
-                  ValueException);
-      }
-    }
+    IMP_CHECK_OBJECT(p);
     p->set_was_owned(true);
     particles_.push_back(p);
     p->ps_->iterator_= --particles_.end();
+    IMP_USAGE_CHECK(!p->ps_->model_, "Particle " << p->get_name()
+                    << " is already in model.", UsageException);
     p->ps_->model_= this;
     internal::ref(p);
     // particles will not be backed up properly, so don't do incremental
