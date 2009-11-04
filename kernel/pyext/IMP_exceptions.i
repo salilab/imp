@@ -39,6 +39,8 @@ set_print_exceptions(False)
       SWIG_exception(SWIG_ValueError, e.what());
     } catch (IMP::IOException &e) {
       SWIG_exception(SWIG_IOError, e.what());
+    } catch (IMP::Exception &e) {
+      SWIG_exception(SWIG_RuntimeError, (std::string("Error, internal exception leaked out. ")+ e.what()).c_str());
     }
   /* SWIG_exception contains "goto fail" so make sure the label is defined */
   fail:
