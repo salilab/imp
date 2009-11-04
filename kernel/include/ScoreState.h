@@ -39,6 +39,13 @@ class Model;
     containers and the value of attributes of particles and
     - after_evaluate() which can change particle derivatives
 
+    \note The functions Interaction::get_input_particles() and
+    Interaction::get_output_particles() should return the input and
+    output respectively for the before_evaluate() call. The after_evaluate()
+    call must have input particles chosen from among the union of the
+    input and output sets for the before call and output particles chose
+    from among the inputs of the before call.
+
     \note When logging is VERBOSE, state should print enough information
     in evaluate to reproduce the the entire flow of data in update. When
     logging is TERSE the restraint should print out only a constant number
