@@ -1,4 +1,30 @@
 Import('env')
 
+files = [
+         'BildWriter.h',
+         'BoxGeometry.h',
+         'CGOWriter.h',
+         'CMMWriter.h',
+         'ChimeraWriter.h',
+         'Color.h',
+         'Colored.h',
+         'CylinderGeometry.h',
+         'FilterGeometry.h',
+         'LogOptimizerState.h',
+         'PDBOptimizerState.h',
+         'PolygonGeometry.h',
+         'SphereGeometry.h',
+         'TriangleGeometry.h',
+         'VRMLWriter.h',
+         'Writer.h',
+         'bond_geometry.h',
+         'derivative_geometry.h',
+         'geometry.h',
+         'macros.h',
+         'pair_geometry.h',
+         'xyzr_geometry.h',
+        ] \
+        + SConscript('internal/SConscript')
+
 # Install the include files:
-env.IMPModuleInclude(env.IMPModuleGetHeaders())
+env.IMPModuleInclude(files)

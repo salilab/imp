@@ -71,5 +71,6 @@ void BildWriter::add_geometry(Geometry *g) {
   }
 }
 
+IMP_REGISTER_WRITER(BildWriter, ".bild")
 
 IMPDISPLAY_END_NAMESPACE

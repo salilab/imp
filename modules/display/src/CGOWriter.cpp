@@ -123,5 +123,6 @@ void CGOWriter::add_geometry(Geometry *g) {
   write_geometry(g, get_stream());
 }
 
+IMP_REGISTER_WRITER(CGOWriter, ".pym")
 
 IMPDISPLAY_END_NAMESPACE

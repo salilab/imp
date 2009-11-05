@@ -57,5 +57,6 @@ void VRMLWriter::add_geometry(Geometry *g) {
   }
 }
 
+IMP_REGISTER_WRITER(VRMLWriter, ".vrml")
 
 IMPDISPLAY_END_NAMESPACE

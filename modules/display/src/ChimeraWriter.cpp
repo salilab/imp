@@ -130,6 +130,6 @@ void ChimeraWriter::add_geometry(IMP::display::Geometry *g) {
   add_geometry_internal(g, g->get_name());
 }
 
-
+IMP_REGISTER_WRITER(ChimeraWriter, ".py")
 
 IMPDISPLAY_END_NAMESPACE

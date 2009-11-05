@@ -10,6 +10,7 @@
 
 #include "config.h"
 #include "geometry.h"
+#include "internal/writers.h"
 
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
@@ -124,6 +125,16 @@ class IMPDISPLAYEXPORT Writer: public Object
 
 IMP_OUTPUT_OPERATOR(Writer)
 
+/** Create an appropriate writer based on the file suffix. */
+IMPDISPLAYEXPORT Writer *create_writer(std::string filename);
+
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+#define IMP_REGISTER_WRITER(Name, suffix)                               \
+  namespace {                                                           \
+    internal::WriterFactoryRegistrar registrar(suffix,                  \
+                            new internal::WriterFactoryHelper<Name>()); \
+  }
+#endif
 
 IMPDISPLAY_END_NAMESPACE
 
