@@ -24,7 +24,6 @@ IMPDISPLAY_BEGIN_NAMESPACE
 class IMPDISPLAYEXPORT XYZRGeometry: public Geometry
 {
   core::XYZR d_;
-  FloatKey rk_;
 public:
   XYZRGeometry(core::XYZR d);
 
