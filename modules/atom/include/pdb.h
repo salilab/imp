@@ -56,6 +56,20 @@ read_pdb(std::string pdb_file_name,
          bool select_first_model = true,
          bool ignore_alternatives = true);
 
+
+
+/** Selector objects can be used to define which atoms to read.
+    \see write_pdb
+ */
+IMPATOMEXPORT Hierarchies read_multimodel_pdb(std::istream &in, Model *model,
+                   const Selector& selector,
+                   bool ignore_alternatives=true);
+
+IMPATOMEXPORT Hierarchies read_multimodel_pdb(String pdb_file_name,
+                   Model *model,
+                   const Selector& selector,
+                   bool ignore_alternatives=true);
+
 /** \note This function produces files that are not valid PDB files,
     i.e. only ATOM/HETATM lines are printed for all Atom particles
     in the hierarchy. Complain if your favorite program can't read them and
@@ -83,6 +97,21 @@ IMPATOMEXPORT void write_pdb(const Hierarchies &mhd,
 */
 IMPATOMEXPORT void write_pdb(const Hierarchies &mhd,
                              std::string file_name);
+
+
+/**
+\copydetails write_pdb(Hierarchy mhd,std::ostream &out)
+*/
+IMPATOMEXPORT void write_multimodel_pdb(
+                        const Hierarchies& mhd, std::ostream &out);
+
+/**
+\copydetails write_pdb(Hierarchy mhd,std::ostream &out)
+*/
+IMPATOMEXPORT void write_multimodel_pdb(
+                        const Hierarchies& mhd, std::string file_name);
+
+
 
 /**
    This function returns a string in PDB ATOM format

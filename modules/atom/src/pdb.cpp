@@ -124,6 +124,8 @@ Hierarchy read_pdb(String pdb_file_name, Model *model,
   return root_d;
 }
 
+
+
 Hierarchy read_pdb(std::istream &in, Model *model,
                    const Selector& selector,
                    bool select_first_model,
@@ -220,6 +222,110 @@ Hierarchy read_pdb(std::istream &in, Model *model,
   return root_d;
 }
 
+
+
+Hierarchies read_multimodel_pdb(String pdb_file_name, Model *model,
+                   const Selector& selector,
+                   bool ignore_alternatives)
+{
+  std::ifstream pdb_file(pdb_file_name.c_str());
+  IMP_USAGE_CHECK(pdb_file,
+     "read_multimodel_pdb: File not found: " << pdb_file_name,
+     IMP::IOException);
+  Hierarchies pdbmodels_h = read_multimodel_pdb(pdb_file, model,
+                          selector,ignore_alternatives);
+//  root_d.get_particle()->set_name(pdb_file_name);
+  pdb_file.close();
+  return pdbmodels_h;
+}
+
+
+Hierarchies read_multimodel_pdb(std::istream &in, Model *model,
+                   const Selector& selector,
+                   bool ignore_alternatives)
+{
+  Hierarchies pdbmodels_h;
+  Particle* cp = NULL;
+  Particle* rp = NULL;
+
+  char curr_residue_icode = '-';
+  char curr_chain = '-';
+  bool chain_name_set = false;
+  bool has_atom=false;
+
+  String line;
+  Hierarchy pdbmodel_h;
+  Particle* pdbmodel_p;
+  while (!in.eof()) {
+    if (!getline(in, line)) break;
+
+    // handle MODEL reading
+    if (internal::is_MODEL_rec(line)) {
+      pdbmodel_p = new Particle(model);
+      pdbmodel_h = Hierarchy::setup_particle(pdbmodel_p);
+      pdbmodels_h.push_back(pdbmodel_h);
+    }
+    // check that line is an HETATM or ATOM rec and that selector accepts line.
+    // if this is the case construct a new Particle using line and add the
+    // Particle to the Model
+    if ((internal::is_ATOM_rec(line) || internal::is_HETATM_rec(line))
+        && selector(line)) {
+
+      int residue_index = internal::atom_residue_number(line);
+      char residue_icode = internal::atom_residue_icode(line);
+      char chain = internal::atom_chain_id(line);
+
+      // create atom particle
+      Particle* ap = atom_particle(model, line);
+      // make sure that all children have coordinates,
+      // (no residues without valid atoms)
+      if (ap) {
+        // check if new chain
+        if (cp == NULL || chain != curr_chain) {
+          curr_chain = chain;
+          // create new chain particle
+          cp = chain_particle(model, chain);
+          chain_name_set = false;
+          pdbmodel_h.add_child(Chain(cp));
+        }
+
+        // check if new residue
+        if (rp == NULL ||
+            residue_index != Residue::decorate_particle(rp).get_index() ||
+            residue_icode != curr_residue_icode) {
+          curr_residue_icode = residue_icode;
+          // create new residue particle
+          rp = residue_particle(model, line);
+          Chain(cp).add_child(Residue(rp));
+        }
+
+        // set chain name (protein/nucleotide/other) according to residue name
+        if (!chain_name_set) {
+          Chain cd(cp);
+          set_chain_name(Residue(rp), cd);
+          chain_name_set = true;
+        }
+
+        // check if alternatives should be skipped
+        IgnoreAlternativesSelector sel;
+        if(ignore_alternatives && !sel(line)) continue;
+
+        Residue(rp).add_child(Atom(ap));
+        has_atom=true;
+      }
+
+    }
+  }
+  if (!has_atom) {
+    for(unsigned int i=0;i<pdbmodels_h.size();++i) {
+      model->remove_particle(pdbmodels_h[i]);
+    }
+    throw IOException("read_multimodel_pdb: No atoms found in PDB file.");
+  }
+  return pdbmodels_h;
+}
+
+
 void write_pdb(const Particles& ps, std::ostream &out)
 {
   int last_index=0;
@@ -293,6 +399,30 @@ void write_pdb(const Hierarchies& mhd, std::string file_name)
   write_pdb(mhd, out_file);
   out_file.close();
 }
+
+
+void write_multimodel_pdb(const Hierarchies& mhd, std::ostream &out)
+{
+  for (unsigned int i=0; i< mhd.size(); ++i) {
+    out << "MODEL   ";
+    out.setf(std::ios::right, std::ios::adjustfield);
+    out.width(4);
+    out << (i+1) << std::endl;
+    write_pdb(mhd[i], out);
+    out << "ENDMDL" << std::endl;
+  }
+}
+
+void write_multimodel_pdb(const Hierarchies& mhd, std::string file_name)
+{
+  std::ofstream out_file(file_name.c_str());
+  IMP_USAGE_CHECK(out_file,
+     "write_multimodel_pdb: Can't open file: " << file_name << " for writing",
+     IMP::IOException);
+  write_multimodel_pdb(mhd, out_file);
+  out_file.close();
+}
+
 
 
 std::string pdb_string(const algebra::Vector3D& v, int index,
