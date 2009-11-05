@@ -69,8 +69,79 @@ typedef Decorators<Hierarchy,
                               IMP::core::GenericHierarchies> > Hierarchies;
 
 
-//! A decorator for helping deal with a hierarchy of molecules
-/** A hierarchy can have any tree structure as long as:
+//! The standard decorator for manipulating molecular structures.
+/** \imp represents molecular structures using the Hierachy decorator.
+    Using it, molecules and collections of molecules are represented
+    using a hierarchy (or tree) where the level of detail increases
+    as you move further from the root. The leaves of the tree have
+    coordinates, as can internal nodes if the molecules are represented
+    at multiple resolutions.
+
+    \section tree_basics Tree Basics
+    In a tree you have a set of nodes, represented by Hierarchy particles.
+    Each node can have a node can have at most one parent. The node with no
+    parent is known as the root of the tree.
+
+    Here is a simple example with a protein with three residues. Two of the
+    residues have atoms, where as the third is coarse grained.
+    \dot
+    digraph example {
+    node [shape=record, fontname= Helvetica, fontsize=10]
+      a [label="Protein A (the root)", URL="\ref B"];
+      b [label="Residue 0"];
+      c [label="Residue 1"];
+      cp [label="Residue 2"];
+      d0 [label="CA"];
+      e0 [label="CA"];
+      d1 [label="C"];
+      e1 [label="C"];
+      d2 [label="N"];
+      e2 [label="N"];
+      a -> b [arrowhead="open"];
+      a -> c [arrowhead="open"]
+      a -> cp [arrowhead="open"];
+      b -> d0 [arrowhead="open"];
+      c -> e0 [arrowhead="open"];
+      b -> d1 [arrowhead="open"];
+      c -> e1 [arrowhead="open"];
+      b -> d2 [arrowhead="open"];
+      c -> e2 [arrowhead="open"];
+    }
+    \enddot
+
+    The hierarchy can be used to add extra, not-necessarily
+    biological, structure such as domains or other convenient
+    divisions of the molecule. For example, the protein node could
+    have an intermediate layer between it and the first two residues:
+
+ \dot
+    digraph example {
+    node [shape=record, fontname= Helvetica, fontsize=10]
+      a [label="Protein A (the root)", URL="\ref B"];
+      aa [label="Fragment 0"];
+      b [label="Residue 0"];
+      c [label="Residue 1"];
+      cp [label="Residue 2"];
+      d0 [label="CA"];
+      e0 [label="CA"];
+      d1 [label="C"];
+      e1 [label="C"];
+      d2 [label="N"];
+      e2 [label="N"];
+      a -> aa [arrowhead="open"];
+      aa -> b [arrowhead="open"];
+      aa -> c [arrowhead="open"]
+      a -> cp [arrowhead="open"];
+      b -> d0 [arrowhead="open"];
+      c -> e0 [arrowhead="open"];
+      b -> d1 [arrowhead="open"];
+      c -> e1 [arrowhead="open"];
+      b -> d2 [arrowhead="open"];
+      c -> e2 [arrowhead="open"];
+    }
+    \enddot
+
+    A hierarchy can have any tree structure as long as:
     - the type of the parent makes sense for the child: eg a Residue
     cannot be the parent of a Chain.
     - the leaves always have coordinates and mass
@@ -80,7 +151,10 @@ typedef Decorators<Hierarchy,
 
     The get_is_valid() method checks some of these.
 
-    A number of decorator types are associated with the Hierarchy.
+    A number of decorator types are associated with the Hierarchy
+    to store the information associated with that node in the
+    hierarchy. Examples include Residue, Atom, XYZ, Chain, XYZR,
+    Mass, Domain etc.
     We provide a get_as_x() function for each such decorator which
     returns either X() (a null type) if the node is not a particle
     of type x, or an X decorator wrapping the current particle if
