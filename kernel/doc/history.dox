@@ -1,5 +1,7 @@
 /** \page recent Change History
-\par week of October 22 Update
+
+\par week of October 29 Update
+- You can now add members to rigid bodies via IMP::core::RigidBody::add_member().
 
 - The code to get bounding volumes for IMP::atom::Hierarchy has been moved to the atom module, as as the clone and destroy code. They can be found at IMP::atom::clone(), IMP::atom::destroy(), IMP::atom::get_bounding_box().
 
