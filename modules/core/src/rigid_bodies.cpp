@@ -164,12 +164,12 @@ IMP_SINGLETON_MODIFIER_TO_REFINED(UpdateRigidBodyMembers,
 
 typedef IMP::algebra::internal::TNT::Array2D<double> Matrix;
 
-Matrix compute_I(const std::vector<RigidMember> &ds,
+Matrix compute_I(const XYZs &ds,
                  const algebra::Vector3D &center,
                  const IMP::algebra::Rotation3D &rot) {
   Matrix I(3,3, 0.0);
   for (unsigned int i=0; i< ds.size(); ++i) {
-    RigidMember cm= ds[i];
+    XYZ cm= ds[i];
     double m=1;
     double r=0;
     algebra::Vector3D cv=rot.rotate(cm.get_coordinates()-center);
@@ -198,11 +198,10 @@ RigidBody RigidBody::setup_particle(Particle *p,
             InvalidStateException);
   internal::add_required_attributes_for_body(p);
 
-  std::vector<RigidMember> ds;
   RigidBody d(p);
 
   Hierarchy hd(p, internal::rigid_body_data().htraits_);
-
+  XYZs ds;
   IMP_USAGE_CHECK(!members.empty(),
                   "There must be particles to make a rigid body",
             InvalidStateException);
@@ -214,17 +213,14 @@ RigidBody RigidBody::setup_particle(Particle *p,
               "Particle " << p->get_name() << " is already part of "
               << "a conflicting rigid body",
               InvalidStateException);
-    internal::add_required_attributes_for_member(mp);
-    ds.push_back(RigidMember(mp));
-    Hierarchy hc(mp, internal::rigid_body_data().htraits_);
-    hd.add_child(hc);
+    ds.push_back(XYZ(mp));
   }
 
   // compute center of mass
   algebra::Vector3D v(0,0,0);
   Float mass=0;
   for (unsigned int i=0; i< ds.size(); ++i) {
-    RigidMember cm= ds[i];
+    XYZ cm= ds[i];
 
     v+= cm.get_coordinates()*1.0 /*cm.get_mass()*/;
     mass+= 1.0 /*cm.get_mass()*/;
@@ -256,17 +252,13 @@ RigidBody RigidBody::setup_particle(Particle *p,
   IMP_LOG(VERBOSE, "Particle is " << d << std::endl);
 
   for (unsigned int i=0; i< ds.size(); ++i) {
-    RigidMember cm= ds[i];
-
-    algebra::Vector3D cv=cm.get_coordinates()-v;
-    algebra::Vector3D lc= roti.rotate(cv);
-    cm.set_internal_coordinates(lc);
+    d.add_member(ds[i]);
     //IMP_LOG(VERBOSE, " " << cm << " | " << std::endl);
   }
 
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     for (unsigned int i=0; i< ds.size(); ++i) {
-      RigidMember cm= ds[i];
+      RigidMember cm= RigidMember(ds[i]);
       algebra::Vector3D v= cm.get_coordinates();
       algebra::Vector3D nv= d.get_coordinates(cm);
       IMP_INTERNAL_CHECK((v-nv).get_squared_magnitude() < .1,
@@ -331,6 +323,20 @@ unsigned int RigidBody::get_number_of_members() const {
 RigidMember RigidBody::get_member(unsigned int i) const {
   Hierarchy hd(get_particle(), internal::rigid_body_data().htraits_);
   return RigidMember(hd.get_child(i).get_particle());
+}
+
+void RigidBody::add_member(XYZ d) {
+  algebra::Rotation3D roti= get_transformation().get_rotation().get_inverse();
+  internal::add_required_attributes_for_member(d);
+  RigidMember cm(d);
+  Hierarchy hc(d, internal::rigid_body_data().htraits_);
+  Hierarchy hd(*this, internal::rigid_body_data().htraits_);
+  hd.add_child(hc);
+  algebra::Vector3D cv=cm.get_coordinates()
+    -get_transformation().get_translation();
+  algebra::Vector3D lc= roti.rotate(cv);
+  cm.set_internal_coordinates(lc);
+  cover_rigid_body(*this, internal::get_rigid_members_refiner());
 }
 
 algebra::VectorD<4> RigidBody::get_rotational_derivatives() const {

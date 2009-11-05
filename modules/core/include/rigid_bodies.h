@@ -127,6 +127,9 @@ public:
   unsigned int get_number_of_members() const;
 
   RigidMember get_member(unsigned int i) const;
+
+  //! Add a particle as a member
+  void add_member(XYZ d);
 };
 
 IMP_OUTPUT_OPERATOR(RigidBody);
