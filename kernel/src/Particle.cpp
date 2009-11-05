@@ -242,8 +242,8 @@ void *Particle::operator new(std::size_t sz, void*p) {
 
 void Particle::operator delete(void *p) {
   for (unsigned int i=0; i< chunks.size(); ++i) {
-    if (&chunks[i]->particles <= p
-        && &chunks[i]->particles+ num_blocks*sizeof(Particle) > p) {
+    if (&chunks[i]->particles[0] <= p
+        && &chunks[i]->particles[(num_blocks-1)*sizeof(Particle)]>= p) {
       chunks[i]->free_list.push_back(index(i, p));
       return;
     }
