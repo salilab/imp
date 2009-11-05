@@ -64,4 +64,11 @@ const ParticlesTemp TableRefiner::get_refined(Particle *p) const {
                        map_.find(p)->second.end());
 }
 
+ParticlesTemp TableRefiner::get_input_particles(Particle *p) const {
+  ParticlesTemp ret= get_refined(p);
+  ret.push_back(p);
+  return ret;
+}
+
+
 IMPCORE_END_NAMESPACE

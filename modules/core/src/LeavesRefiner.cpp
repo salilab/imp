@@ -54,6 +54,21 @@ const ParticlesTemp LeavesRefiner::get_refined(Particle *p) const{
   return ParticlesTemp(cache_[p].begin(), cache_[p].end());
 }
 
+namespace {
+  struct Yes {
+    bool operator()(Particle *p) {
+      return true;
+    }
+  };
+}
+
+ParticlesTemp LeavesRefiner::get_input_particles(Particle *p) const {
+  core::Hierarchy h(p, traits_);
+  ParticlesTemp ret;
+  gather(h, Yes(), std::back_inserter(ret));
+  return ret;
+}
+
 
 void LeavesRefiner::show(std::ostream &out) const
 {

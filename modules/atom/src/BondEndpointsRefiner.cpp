@@ -41,6 +41,12 @@ const ParticlesTemp BondEndpointsRefiner::get_refined(Particle *p) const
   return ps;
 }
 
+ParticlesTemp BondEndpointsRefiner::get_input_particles(Particle *p) const {
+  ParticlesTemp ret= get_refined(p);
+  ret.push_back(p);
+  return ret;
+}
+
 void BondEndpointsRefiner::show(std::ostream &out) const
 {
   out << "BondEndpointsRefiner" << std::endl;
