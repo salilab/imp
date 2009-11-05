@@ -18,9 +18,12 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 struct RigidBodyData {
   FloatKeys child_keys_;
   FloatKeys quaternion_;
+  FloatKeys lquaternion_;
   HierarchyTraits htraits_;
+  HierarchyTraits hbtraits_;
   ObjectKey refkey_;
-  RigidBodyData(): htraits_("rigid_body") {
+  RigidBodyData(): htraits_("rigid_body"),
+                   hbtraits_("rigid_body_bodies"){
     child_keys_.resize(3);
     std::string pre="rigid_body_";
     child_keys_[0]= FloatKey((pre+"local_x").c_str());
@@ -31,6 +34,11 @@ struct RigidBodyData {
     quaternion_[1]= FloatKey((pre+"quaternion_1").c_str());
     quaternion_[2]= FloatKey((pre+"quaternion_2").c_str());
     quaternion_[3]= FloatKey((pre+"quaternion_3").c_str());
+    lquaternion_.resize(4);
+    lquaternion_[0]= FloatKey((pre+"local_quaternion_0").c_str());
+    lquaternion_[1]= FloatKey((pre+"local_quaternion_1").c_str());
+    lquaternion_[2]= FloatKey((pre+"local_quaternion_2").c_str());
+    lquaternion_[3]= FloatKey((pre+"local_quaternion_3").c_str());
     refkey_= ObjectKey("rigid body representation");
   }
 };
@@ -74,11 +82,22 @@ get_has_required_attributes_for_member(Particle *p) {
   return true;
 }
 
+inline bool
+get_has_required_attributes_for_body_member(Particle *p) {
+  for (unsigned int i=0; i< 4; ++i) {
+    if (!p->has_attribute(rigid_body_data().lquaternion_[i])) return false;
+  }
+  return get_has_required_attributes_for_member(p);
+}
+
 inline void add_required_attributes_for_body(Particle *p) {
   for (unsigned int i=0; i< 4; ++i) {
     p->add_attribute(rigid_body_data().quaternion_[i], 0);
   }
-  Hierarchy::setup_particle(p, rigid_body_data().htraits_);
+  if (!Hierarchy::particle_is_instance(p, rigid_body_data().htraits_)) {
+    Hierarchy::setup_particle(p, rigid_body_data().htraits_);
+  }
+  Hierarchy::setup_particle(p, rigid_body_data().hbtraits_);
   if (!XYZ::particle_is_instance(p)) {
       XYZ::setup_particle(p);
   }
@@ -88,8 +107,17 @@ inline void add_required_attributes_for_member(Particle *p) {
   for (unsigned int i=0; i< 3; ++i) {
     p->add_attribute(rigid_body_data().child_keys_[i], 0);
   }
-  Hierarchy::setup_particle(p, rigid_body_data().htraits_);
+  if (!Hierarchy::particle_is_instance(p, rigid_body_data().htraits_)) {
+    Hierarchy::setup_particle(p, rigid_body_data().htraits_);
+  }
   XYZ::decorate_particle(p);
+}
+
+inline void add_required_attributes_for_body_member(Particle *p) {
+  add_required_attributes_for_member(p);
+  for (unsigned int i=0; i< 4; ++i) {
+    p->add_attribute(rigid_body_data().lquaternion_[i], 0);
+  }
 }
 
 

@@ -37,9 +37,9 @@ public SingletonModifier
 public:
   //! Set the keys ks to be the average of the refined particles.
   CentroidOfRefined(Refiner *r,
-                                     FloatKey weight=FloatKey(),
-                                     FloatKeys ks
-                                      = XYZ::get_xyz_keys());
+                    FloatKey weight=FloatKey(),
+                    FloatKeys ks
+                    = XYZ::get_xyz_keys());
 
   IMP_SINGLETON_MODIFIER(CentroidOfRefined,
                          get_module_version_info());

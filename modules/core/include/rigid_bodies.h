@@ -63,6 +63,11 @@ class IMPCOREEXPORT RigidBody: public XYZ {
       and the current position and orientation of the rigid body.
    */
   algebra::Vector3D get_coordinates(RigidMember p) const;
+
+  void add_member_internal(XYZ d,
+                           const algebra::Rotation3D& roti,
+                           const algebra::Vector3D& transi);
+
   IMP_SCORE_STATE_DECORATOR_DECL(RigidBody);
 public:
 
@@ -84,6 +89,10 @@ public:
    */
   static RigidBody setup_particle(Particle *p,
                           const XYZs &members);
+
+  //! Initialize a rigid body directly
+  static RigidBody setup_particle(Particle *p,
+                                  const algebra::Transformation3D &tr);
 
   ~RigidBody();
 
@@ -121,6 +130,9 @@ public:
   //! Normalized the quaternion
   void normalize_rotation();
 
+  //! Update the coordinates of the members
+  void update_members();
+
   //! Get the derivatives of the quaternion
   algebra::VectorD<4> get_rotational_derivatives() const;
 
@@ -130,6 +142,12 @@ public:
 
   //! Add a particle as a member
   void add_member(XYZ d);
+
+  //! Add another rigid body
+  /** Rigid bodies can be tied together so that one updates
+      the other.
+  */
+  void add_member(RigidBody o);
 };
 
 IMP_OUTPUT_OPERATOR(RigidBody);
@@ -143,6 +161,8 @@ typedef Decorators<RigidBody, XYZs> RigidBodies;
 class IMPCOREEXPORT RigidMember: public XYZ {
  public:
   IMP_DECORATOR(RigidMember, XYZ);
+
+  RigidBody get_rigid_body() const;
 
   //! Return the current orientation of the body
   algebra::Vector3D get_internal_coordinates() const {
@@ -162,6 +182,51 @@ class IMPCOREEXPORT RigidMember: public XYZ {
                               v[1]);
     get_particle()->set_value(internal::rigid_body_data().child_keys_[2],
                               v[2]);
+  }
+  //! Member must be a rigid body
+  void set_internal_transformation(const  algebra::Transformation3D& v) {
+    IMP_USAGE_CHECK(
+ get_particle()->has_attribute(internal::rigid_body_data().lquaternion_[0]),
+         "Can only set the internal transformation if member is"
+         << " a rigid body itself.",
+         UsageException);
+    get_particle()->set_value(internal::rigid_body_data().child_keys_[0],
+                              v.get_translation()[0]);
+    get_particle()->set_value(internal::rigid_body_data().child_keys_[1],
+                              v.get_translation()[1]);
+    get_particle()->set_value(internal::rigid_body_data().child_keys_[2],
+                              v.get_translation()[2]);
+
+    get_particle()->set_value(internal::rigid_body_data().lquaternion_[0],
+                              v.get_rotation().get_quaternion()[0]);
+    get_particle()->set_value(internal::rigid_body_data().lquaternion_[1],
+                              v.get_rotation().get_quaternion()[1]);
+    get_particle()->set_value(internal::rigid_body_data().lquaternion_[2],
+                              v.get_rotation().get_quaternion()[2]);
+    get_particle()->set_value(internal::rigid_body_data().lquaternion_[3],
+                              v.get_rotation().get_quaternion()[3]);
+  }
+
+  algebra::Transformation3D get_internal_transformation() const {
+    IMP_USAGE_CHECK(
+     get_particle()->has_attribute(internal::rigid_body_data().lquaternion_[0]),
+     "Can only set the internal transformation if member is a "
+     << "rigid body itself.",
+     UsageException);
+    algebra::Vector3D
+      tr(get_particle()->get_value(internal::rigid_body_data().child_keys_[0]),
+         get_particle()->get_value(internal::rigid_body_data().child_keys_[1]),
+         get_particle()->get_value(internal::rigid_body_data().child_keys_[2]));
+    algebra::Rotation3D
+      rot(get_particle()->get_value(internal::rigid_body_data()
+                                    .lquaternion_[0]),
+          get_particle()->get_value(internal::rigid_body_data()
+                                    .lquaternion_[1]),
+          get_particle()->get_value(internal::rigid_body_data()
+                                    .lquaternion_[2]),
+          get_particle()->get_value(internal::rigid_body_data()
+                                    .lquaternion_[3]));
+    return algebra::Transformation3D(rot, tr);
   }
 
   //! set the coordinates of the body
