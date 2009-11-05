@@ -94,6 +94,13 @@ RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
     Particle *rp= r->get_refined(d, i);
     double r =XYZR(rp).get_radius();
     algebra::Vector3D v= RigidMember(rp).get_internal_coordinates();
+    // make sure they are relative to this rigid body
+    // I should check that they are connected, too lazy
+    if (RigidMember(rp).get_rigid_body()== d) {
+    } else {
+      v= RigidMember(d).get_internal_transformation()
+        .get_inverse().transform(v);
+    }
     spheres[i]= algebra::Sphere3D(v, r);
   }
   // call internal setup on spheres, 0, all indexes

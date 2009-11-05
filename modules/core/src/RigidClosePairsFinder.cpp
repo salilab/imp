@@ -156,13 +156,12 @@ void RigidClosePairsFinder::show(std::ostream &out) const {
 }
 
 namespace {
-  ParticlesTemp fill_list(SingletonContainer *sc) {
+  ParticlesTemp fill_list(Refiner *r, SingletonContainer *sc) {
     ParticlesTemp ret=sc->get_particles();
     ParticlesTemp members;
     for (unsigned int i=0; i< ret.size(); ++i) {
       if (RigidBody::particle_is_instance(ret[i])) {
-        RigidBody d(ret[i]);
-        RigidMembers m= d.get_members();
+        ParticlesTemp m= r->get_input_particles(ret[i]);
         members.insert(members.end(), m.begin(), m.end());
       }
     }
@@ -173,15 +172,15 @@ namespace {
 
 ParticlesTemp
 RigidClosePairsFinder::get_input_particles(SingletonContainer *sc) const {
-  ParticlesTemp ret= fill_list(sc);
+  ParticlesTemp ret= fill_list(r_, sc);
   return ret;
 }
 
 ParticlesTemp
 RigidClosePairsFinder::get_input_particles(SingletonContainer *a,
                                            SingletonContainer *b) const {
-  ParticlesTemp ret0= fill_list(a);
-  ParticlesTemp ret1= fill_list(b);
+  ParticlesTemp ret0= fill_list(r_, a);
+  ParticlesTemp ret1= fill_list(r_, b);
   ret0.insert(ret0.end(), ret1.begin(), ret1.end());
   return ret0;
 }

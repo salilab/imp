@@ -146,11 +146,7 @@ void AccumulateRigidBodyDerivatives::apply(Particle *p,
 
 void UpdateRigidBodyMembers::apply(Particle *p) const {
   RigidBody rb(p);
-  rb.normalize_rotation();
-  algebra::Transformation3D tr= rb.get_transformation();
-  for (unsigned int i=0; i<rb.get_number_of_members(); ++i) {
-    rb.get_member(i).set_coordinates(tr);
-  }
+  rb.update_members();
 }
 
 
@@ -192,15 +188,20 @@ Matrix compute_I(const XYZs &ds,
 IMP_SCORE_STATE_DECORATOR_DEF(RigidBody);
 
 RigidBody RigidBody::setup_particle(Particle *p,
+                                    const algebra::Transformation3D &tr) {
+  internal::add_required_attributes_for_body(p);
+  RigidBody rb(p);
+  rb.set_transformation(tr);
+  return rb;
+}
+
+
+RigidBody RigidBody::setup_particle(Particle *p,
                                     const XYZs &members){
   IMP_USAGE_CHECK(!internal::get_has_required_attributes_for_body(p),
             "The RigidBody is already set up.",
             InvalidStateException);
-  internal::add_required_attributes_for_body(p);
 
-  RigidBody d(p);
-
-  Hierarchy hd(p, internal::rigid_body_data().htraits_);
   XYZs ds;
   IMP_USAGE_CHECK(!members.empty(),
                   "There must be particles to make a rigid body",
@@ -248,11 +249,11 @@ RigidBody RigidBody::setup_particle(Particle *p,
   Matrix I2= compute_I(ds, v, roti);
   IMP_LOG(VERBOSE, I << std::endl);
   IMP_LOG(VERBOSE, I2 << std::endl);
-  d.lazy_set_transformation(IMP::algebra::Transformation3D(rot, v));
+  RigidBody d= setup_particle(p, IMP::algebra::Transformation3D(rot, v));
   IMP_LOG(VERBOSE, "Particle is " << d << std::endl);
 
   for (unsigned int i=0; i< ds.size(); ++i) {
-    d.add_member(ds[i]);
+    d.add_member_internal(ds[i], roti, -v);
     //IMP_LOG(VERBOSE, " " << cm << " | " << std::endl);
   }
 
@@ -295,6 +296,23 @@ RigidBody::normalize_rotation() {
 }
 
 
+void RigidBody::update_members() {
+  normalize_rotation();
+  algebra::Transformation3D tr= get_transformation();
+  Hierarchy hd(get_particle(), internal::rigid_body_data().htraits_);
+  for (unsigned int i=0; i< hd.get_number_of_children(); ++i) {
+    RigidMember rm(hd.get_child(i));
+    rm.set_coordinates(tr.transform(rm.get_internal_coordinates()));
+  }
+  Hierarchy hdb(get_particle(), internal::rigid_body_data().hbtraits_);
+  for (unsigned int i=0; i< hdb.get_number_of_children(); ++i) {
+    RigidMember rm(hdb.get_child(i));
+    RigidBody rb(rm);
+    rb.set_transformation(tr*rm.get_internal_transformation());
+  }
+}
+
+
 IMP::algebra::Transformation3D
 RigidBody::get_transformation() const {
   IMP::algebra::Rotation3D
@@ -317,25 +335,50 @@ RigidBody::get_members() const {
 
 unsigned int RigidBody::get_number_of_members() const {
   Hierarchy hd(get_particle(), internal::rigid_body_data().htraits_);
-  return hd.get_number_of_children();
+  Hierarchy hdb(get_particle(), internal::rigid_body_data().hbtraits_);
+  return hd.get_number_of_children()+hdb.get_number_of_children();
 }
 
 RigidMember RigidBody::get_member(unsigned int i) const {
   Hierarchy hd(get_particle(), internal::rigid_body_data().htraits_);
-  return RigidMember(hd.get_child(i).get_particle());
+  if (i < hd.get_number_of_children()) {
+    return RigidMember(hd.get_child(i).get_particle());
+  } else {
+    Hierarchy hdb(get_particle(), internal::rigid_body_data().hbtraits_);
+    return RigidMember(hdb.get_child(i
+                              -hd.get_number_of_children()).get_particle());
+  }
 }
 
 void RigidBody::add_member(XYZ d) {
-  algebra::Rotation3D roti= get_transformation().get_rotation().get_inverse();
+  algebra::Transformation3D tr= get_transformation();
+  algebra::Rotation3D roti= tr.get_rotation().get_inverse();
+  add_member_internal(d, roti, -tr.get_translation());
+}
+
+void RigidBody::add_member_internal(XYZ d, const algebra::Rotation3D &roti,
+                                    const algebra::Vector3D &transi) {
   internal::add_required_attributes_for_member(d);
   RigidMember cm(d);
   Hierarchy hc(d, internal::rigid_body_data().htraits_);
   Hierarchy hd(*this, internal::rigid_body_data().htraits_);
   hd.add_child(hc);
-  algebra::Vector3D cv=cm.get_coordinates()
-    -get_transformation().get_translation();
+  algebra::Vector3D cv=cm.get_coordinates()+transi;
   algebra::Vector3D lc= roti.rotate(cv);
   cm.set_internal_coordinates(lc);
+  cover_rigid_body(*this, internal::get_rigid_members_refiner());
+}
+
+void RigidBody::add_member(RigidBody d) {
+  algebra::Transformation3D tri= get_transformation().get_inverse();
+  internal::add_required_attributes_for_body_member(d);
+  RigidMember cm(d);
+  Hierarchy hc(d, internal::rigid_body_data().hbtraits_);
+  Hierarchy hd(*this, internal::rigid_body_data().hbtraits_);
+  hd.add_child(hc);
+  algebra::Transformation3D btr=d.get_transformation();
+  // want tr*ltr= btr, so ltr= tr-1*btr
+  cm.set_internal_transformation(tri*btr);
   cover_rigid_body(*this, internal::get_rigid_members_refiner());
 }
 
@@ -431,7 +474,15 @@ void RigidMember::show(std::ostream &out) const {
 }
 
 
-
+RigidBody RigidMember::get_rigid_body() const {
+  if (internal::get_has_required_attributes_for_body_member(*this)) {
+    Hierarchy hd(*this, internal::rigid_body_data().hbtraits_);
+    return RigidBody(hd.get_parent());
+  } else {
+    Hierarchy hc(*this, internal::rigid_body_data().htraits_);
+    return RigidBody(hc.get_parent());
+  }
+}
 
 
 
