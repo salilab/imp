@@ -43,4 +43,10 @@ const ParticlesTemp FixedRefiner::get_refined(Particle *p) const {
   return ParticlesTemp(particles_begin(), particles_end());
 }
 
+ParticlesTemp FixedRefiner::get_input_particles(Particle *p) const {
+  ParticlesTemp ret= get_refined(p);
+  ret.push_back(p);
+  return ret;
+}
+
 IMPCORE_END_NAMESPACE

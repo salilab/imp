@@ -40,14 +40,20 @@ unsigned int ChildrenRefiner::get_number_of_refined(Particle *p) const
 }
 
 const ParticlesTemp ChildrenRefiner::get_refined(Particle *p) const {
-    Hierarchy hd(p, traits_);
-    ParticlesTemp ret(hd.get_number_of_children());
-    for (unsigned int i=0; i< ret.size(); ++i) {
-      ret[i]= hd.get_child(i);
-    }
-    return ret;
+  Hierarchy hd(p, traits_);
+  ParticlesTemp ret(hd.get_number_of_children());
+  for (unsigned int i=0; i< ret.size(); ++i) {
+    ret[i]= hd.get_child(i);
   }
+  return ret;
+}
 
+
+ParticlesTemp ChildrenRefiner::get_input_particles(Particle *p) const {
+  ParticlesTemp ret= get_refined(p);
+  ret.push_back(p);
+  return ret;
+}
 
 void ChildrenRefiner::show(std::ostream &out) const
 {

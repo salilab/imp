@@ -871,8 +871,8 @@ protected:                                                              \
 /** In addition to the methods done by all the macros, it declares
     - IMP::Refiner::get_can_refine()
     - IMP::Refiner::get_number_of_refined()
-    - IMP::Refiner::get_refined();
-
+    - IMP::Refiner::get_refined()
+    - IMP::Refiner::get_input_particles()
     \see IMP_SIMPLE_REFINER
  */
 #define IMP_REFINER(Name, version_info)                                 \
@@ -880,6 +880,7 @@ protected:                                                              \
   virtual Particle* get_refined(Particle *, unsigned int) const;        \
   virtual const ParticlesTemp get_refined(Particle *) const;            \
   virtual unsigned int get_number_of_refined(Particle *) const;         \
+  virtual ParticlesTemp get_input_particles(Particle *p) const;         \
   IMP_OBJECT(Name, version_info);
 
 
@@ -894,7 +895,7 @@ protected:                                                              \
 #define IMP_SIMPLE_REFINER(Name, version_info)                          \
   virtual bool get_can_refine(Particle*) const;                         \
   virtual Particle* get_refined(Particle *, unsigned int) const;        \
-  virtual const ParticlesTemp get_refined(Particle *a) const {           \
+  virtual const ParticlesTemp get_refined(Particle *a) const {          \
     ParticlesTemp ret(get_number_of_refined(a));                        \
     for (unsigned int i=0; i< ret.size(); ++i) {                        \
       ret[i]= get_refined(a,i);                                         \
@@ -902,6 +903,11 @@ protected:                                                              \
     return ret;                                                         \
   }                                                                     \
   virtual unsigned int get_number_of_refined(Particle *) const;         \
+  virtual ParticlesTemp get_input_particles(Particle *p) const {         \
+    ParticlesTemp ret= get_refined(p);                                  \
+    ret.push_back(p);                                                   \
+    return ret;                                                         \
+  }                                                                     \
   IMP_OBJECT(Name, version_info);
 
 
@@ -1128,13 +1134,11 @@ protected:                                                              \
 */
 #define IMP_SINGLETON_MODIFIER_FROM_REFINED(Name, refiner)              \
   ParticlesList Name::get_interacting_particles(Particle *p) const {    \
-    ParticlesTemp pt= refiner->get_refined(p);                          \
-    pt.push_back(p);                                                    \
+    ParticlesTemp pt= refiner->get_input_particles(p);                  \
     return ParticlesList(1,pt);                                         \
   }                                                                     \
   ParticlesTemp Name::get_input_particles(Particle *p) const {          \
-    ParticlesTemp ret= refiner->get_refined(p);                         \
-    ret.push_back(p);                                                   \
+    ParticlesTemp ret= refiner->get_input_particles(p);                 \
     return ret;                                                         \
   }                                                                     \
   ParticlesTemp Name::get_output_particles(Particle *p) const {         \
@@ -1161,13 +1165,11 @@ protected:                                                              \
 */
 #define IMP_SINGLETON_MODIFIER_TO_REFINED(Name, refiner)                \
   ParticlesList Name::get_interacting_particles(Particle *p) const {    \
-    ParticlesTemp pt= refiner->get_refined(p);                          \
-    pt.push_back(p);                                                    \
+    ParticlesTemp pt= refiner->get_input_particles(p);                  \
     return ParticlesList(1,pt);                                         \
   }                                                                     \
   ParticlesTemp Name::get_input_particles(Particle *p) const {          \
-    ParticlesTemp ret= refiner->get_refined(p);                         \
-    ret.push_back(p);                                                   \
+    ParticlesTemp ret= refiner->get_input_particles(p);                 \
     return ret;                                                         \
   }                                                                     \
   ParticlesTemp Name::get_output_particles(Particle *p) const {         \
