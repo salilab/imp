@@ -7,6 +7,7 @@
  */
 
 #include "IMP/display/Writer.h"
+#include <boost/algorithm/string/predicate.hpp>
 
 
 IMPDISPLAY_BEGIN_NAMESPACE
@@ -20,6 +21,18 @@ Writer::~Writer(){
 
 void Writer::show(std::ostream &out) const {
   out << "Writer" << std::endl;
+}
+
+Writer *create_writer(std::string name) {
+  for (std::map<std::string, internal::WriterFactory *>::iterator
+         it= internal::get_writer_factory_table().begin();
+       it != internal::get_writer_factory_table().end(); ++it) {
+    if (boost::algorithm::ends_with(name, it->first)) {
+      return it->second->create(name);
+    }
+  }
+  IMP_THROW("No writer found for file " << name,
+            UsageException);
 }
 
 IMPDISPLAY_END_NAMESPACE

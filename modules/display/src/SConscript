@@ -1,4 +1,29 @@
 Import('env')
 
+files = [
+         'BildWriter.cpp',
+         'BoxGeometry.cpp',
+         'CGOWriter.cpp',
+         'CMMWriter.cpp',
+         'ChimeraWriter.cpp',
+         'Color.cpp',
+         'Colored.cpp',
+         'CylinderGeometry.cpp',
+         'FilterGeometry.cpp',
+         'LogOptimizerState.cpp',
+         'PDBOptimizerState.cpp',
+         'PolygonGeometry.cpp',
+         'SphereGeometry.cpp',
+         'TriangleGeometry.cpp',
+         'VRMLWriter.cpp',
+         'Writer.cpp',
+         'bond_geometry.cpp',
+         'derivative_geometry.cpp',
+         'geometry.cpp',
+         'pair_geometry.cpp',
+         'xyzr_geometry.cpp',
+        ] \
+        + SConscript('internal/SConscript')
+
 # Build and install the shared library:
-env.IMPModuleLib(env.IMPModuleGetSources())
+env.IMPModuleLib(files)

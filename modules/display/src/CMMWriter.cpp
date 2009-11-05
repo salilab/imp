@@ -48,5 +48,6 @@ void CMMWriter::add_geometry(Geometry *g) {
   }
 }
 
+IMP_REGISTER_WRITER(CMMWriter, ".cmm")
 
 IMPDISPLAY_END_NAMESPACE
