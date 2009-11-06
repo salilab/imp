@@ -90,8 +90,10 @@ env.Append(BUILDERS = {'GenerateDoxygen': Builder(action=generate_doxygen)})
 
 env.Append(BUILDERS = {'GenerateExamples': Builder(action=generate_example_index)})
 
-examplei= env.GenerateExamples("all_examples.dox", Glob("#/modules/*/examples/examples.dox")\
-                                   + Glob("#/kernel/examples/examples.dox"))
+modexamples = Glob("#/modules/*/examples/.generated/examples.dox",
+                   ondisk=False) \
+              + ['#/kernel/examples/.generated/examples.dox']
+example_index = env.GenerateExamples(".generated/all_examples.dox", modexamples)
 
 rawheaders=[]
 for h in Glob("#/build/include/*.h", ondisk=False) \
@@ -108,10 +110,8 @@ for h in rawheaders:
     if h.path.find('macros') == -1:
         headers.append(h)
 
-modexamples=Glob("#/modules/*/examples/*.dox")\
-    +['#/kernel/examples/examples.dox']
-sources= headers +Glob("#/kernel/doc/*.dox") + Glob("#/doc/doxygen/*.dox")\
-    +Glob("modules/*/doc/*.dox")+modexamples
+sources = headers + Glob("#/kernel/doc/*.dox") + [example_index] \
+          + Glob("modules/*/doc/*.dox") + modexamples
 
 if env['python']:
     sources += Glob("#/build/lib/IMP/*.py", ondisk=False) \
@@ -119,10 +119,12 @@ if env['python']:
 examples= Glob("#/modules/examples/src/*.cpp") + Glob("#/build/include/IMP/examples/*.h")\
     + Glob("#/modules/*/examples/*.py") + Glob("#/modules/*/examples/*/*.py")\
     + Glob("#/modules/*/examples/*.cpp") + Glob("#/modules/*/examples/*/*.cpp")\
-    + Glob("#/modules/*/examples/*.html") + Glob("#/modules/*/examples/*/*.html")\
+    + Glob("#/modules/*/examples/.generated/*.html") \
+    + Glob("#/modules/*/examples/*/.generated/*.html")\
     + Glob("#/kernel/examples/*.py") + Glob("#/kernel/examples/*/*.py")\
     + Glob("#/kernel/examples/*.cpp") + Glob("#/kernel/examples/*/*.cpp")\
-    + Glob("#/kernel/examples/*.html") + Glob("#/kernel/examples/*/*.html")\
+    + Glob("#/kernel/examples/.generated/*.html") \
+    + Glob("#/kernel/examples/*/.generated/*.html")\
     + Glob("#/modules/*/doc/*.dox") + Glob("#/modules/*/doc/*/*.dox")\
     + Glob("#/modules/*/doc/*.png") + Glob("#/modules/*/doc/*/*.png")\
     + Glob("#/modules/*/doc/*.html") + Glob("#/modules/*/doc/*/*.html")\
@@ -130,11 +132,9 @@ examples= Glob("#/modules/examples/src/*.cpp") + Glob("#/build/include/IMP/examp
     + Glob("#/kernel/doc/*.png") + Glob("#/kernel/doc/*/*.png")\
     + Glob("#/kernel/doc/*.html") + Glob("#/kernel/doc/*/*.html")\
 
-modexamples.sort()
 #sources.sort()
 examples.sort()
 
-env.Depends(examplei, modexamples)
 doxconf=env.GenerateDoxygen("doxygen.conf", ["doxygen.conf-in"] +sources+examples)
 env.Depends(doxconf, ['#/build/include'])
 

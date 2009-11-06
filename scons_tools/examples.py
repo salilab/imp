@@ -60,7 +60,11 @@ def handle_example_dir(env, dirpath, name, includepath, files):
         prefix=""
     for f in files:
         if str(f).endswith(".py"):
-            c= env._IMPColorizePython(str(f)+".html", f.abspath)
+            c= env._IMPColorizePython(str(dirpath) + '/' \
+                                      + os.path.dirname(str(f)) \
+                                      + '/.generated/' \
+                                      + os.path.basename(str(f))+".html",
+                                      f.abspath)
             build.append(c)
             install.append(env.Install(exampledir+"/"+prefix, f.abspath))
         elif str(f).endswith(".readme"):
@@ -68,6 +72,6 @@ def handle_example_dir(env, dirpath, name, includepath, files):
     test= env._IMPModuleTest('tests.passed', ["#/tools/imppy.sh", "#/scons_tools/run-all-tests.py"]\
                                  +[x for x in files if str(x).endswith(".py") and str(x).find("fragment")==-1])
     env.AlwaysBuild("test.passed")
-    doxpage= env._IMPExamplesDox(File(str(dirpath)+"/examples.dox"), files)
+    doxpage= env._IMPExamplesDox(File(str(dirpath)+"/.generated/examples.dox"), files)
     build.append(doxpage)
     return (build, install, test)
