@@ -83,6 +83,10 @@ ParticlesTemp LowestRefinedPairScore::get_input_particles(Particle *a,
   }
   ret.push_back(a);
   ret.push_back(b);
+  ParticlesTemp ia= r_->get_input_particles(a);
+  ret.insert(ret.end(), ia.begin(), ia.end());
+  ParticlesTemp ib= r_->get_input_particles(a);
+  ret.insert(ret.end(), ib.begin(), ib.end());
   return ret;
 }
 
