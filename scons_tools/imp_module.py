@@ -368,7 +368,6 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     add_to_global_alias(env, 'all', 'python')
     module_alias(env, 'install-python', install)
     add_to_module_alias(env, 'install', 'install-python')
-    module_deps_requires(env, pybuild, 'python', [])
     module_deps_requires(env, install, 'install-python', [])
 
 def IMPModuleGetExamples(env):
