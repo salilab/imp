@@ -1,6 +1,7 @@
 """Tools and Builders for IMP modules. See `IMPModule` for more information."""
 
 import os.path
+import sys
 import pyscanner
 import examples
 import test
