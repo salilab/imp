@@ -100,8 +100,6 @@ namespace {
         if (pos == std::string::npos) {
           IMP_THROW("No colon in line", IOException);
         }
-        IMP_LOG(VERBOSE, "Found colon at position " << pos
-                << " of \"" << ret << "\"" <<std::endl);
         std::string key(ret, 0, pos), value;
         if (ret.size() > pos+2) {
           value= std::string(ret, pos+2);
