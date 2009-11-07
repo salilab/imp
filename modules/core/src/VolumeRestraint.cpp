@@ -152,7 +152,7 @@ VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
       for (unsigned int j=0; j< 3; ++j) {
         double af= os[j][i]/static_cast<double>(areas[i]);
         double d= rv.second*af*4*PI*square(dec.get_radius());
-        dec.add_to_derivative(i, d,*da);
+        dec.add_to_derivative(j, d,*da);
         IMP_LOG(VERBOSE, "Adding " << d << " to coordinate "
                 << j << " derivative"
                 << std::endl);
