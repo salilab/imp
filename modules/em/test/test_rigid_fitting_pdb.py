@@ -35,7 +35,7 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         self.load_density_map()
         self.load_protein("1z5s_A.pdb")
 
-    def test_em_local_rigid_fitting_around_point(self):
+    def _test_em_local_rigid_fitting_around_point(self):
         """Check that local rigid fitting around a point works"""
         #create a rigid body
         rb_p = IMP.Particle(self.imp_model)
