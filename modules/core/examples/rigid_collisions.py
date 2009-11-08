@@ -8,8 +8,8 @@ import IMP.helper
 
 m= IMP.Model()
 # The particles in the rigid bodies
-rbps0= IMP.core.create_xyzr_particles(m, 5, 1)
-rbps1= IMP.core.create_xyzr_particles(m, 5, 1)
+rbps0= IMP.core.create_xyzr_particles(m, 3, 1)
+rbps1= IMP.core.create_xyzr_particles(m, 3, 1)
 
 rbp0= IMP.Particle(m)
 rbp1= IMP.Particle(m)
