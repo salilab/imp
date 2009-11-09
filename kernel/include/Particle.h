@@ -120,10 +120,13 @@
     IMP_USAGE_CHECK(name != UCName##Key(),                              \
                     "Cannot use attributes without "                    \
               << "naming them.", ValueException);                       \
-    IMP_USAGE_CHECK(UCName##Table::Traits::get_is_valid(value),         \
-              "Cannot set value of " << name << " to " << value         \
-              << " on particle " << get_name(),                         \
-              ValueException);                                          \
+    IMP_IF_CHECK(USAGE) {                                               \
+      if (!UCName##Table::Traits::get_is_valid(value)) {                \
+        IMP_THROW("Cannot set value of " << name                        \
+                  << " to " << value                                    \
+                  << " on particle " << get_name(), ModelException);    \
+      }                                                                 \
+    }                                                                   \
     IMP_CHECK_ACTIVE;                                                   \
     IMP_CHECK_MUTABLE;                                                  \
     IMP_USAGE_CHECK(has_attribute(name),                                \
@@ -266,6 +269,8 @@ class IMPEXPORT Particle : public Object
   typedef internal::ParticleStorage::ParticleTable ParticleTable;
   typedef internal::ParticleStorage::ObjectTable ObjectTable;
 
+  typedef internal::ArrayStorage<internal::DoubleAttributeTableTraits>
+    DerivativeTable;
   typedef internal::ParticleKeyIterator<FloatKey, Particle,
     internal::IsAttribute<FloatKey, Particle> > FloatIteratorTraits;
   typedef internal::ParticleKeyIterator<IntKey, Particle,
@@ -489,7 +494,7 @@ inline void Particle::add_to_derivative(FloatKey name, Float value,
 {
   IMP_CHECK_ACTIVE;
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-    if (is_nan(value)) {
+    if (is_nan(value) || !DerivativeTable::Traits::get_is_valid(value)) {
       std::string message
         =std::string("Can't add NaN to derivative in particle ")+
         get_name();
