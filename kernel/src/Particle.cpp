@@ -186,9 +186,9 @@ namespace {
   const std::size_t num_blocks=150000;
   const std::size_t int_size= sizeof(int);
   struct Chunk {
+    char particles[num_blocks*sizeof(Particle)];
     std::vector<unsigned int> free_list;
     unsigned int next_to_allocate;
-    char particles[num_blocks*sizeof(Particle)];
     Chunk(): next_to_allocate(0){}
   };
   std::vector<Chunk*> chunks(1, new Chunk());
