@@ -37,7 +37,8 @@ SimpleConnectivity create_simple_connectivity_on_rigid_bodies(
 
   IMP_NEW(core::ConnectivityRestraint, cr, (rdps));
   for ( size_t i=0; i<rbs->size(); ++i )
-    cr->set_particles((*rbs)[i].get_particle());
+    //cr->set_particles((*rbs)[i].get_particle());
+    cr->add_particle((*rbs)[i].get_particle());
 
   /****** Add restraint to the model ******/
 
