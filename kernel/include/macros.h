@@ -1502,7 +1502,7 @@ protected:                                                              \
     typedef ::IMP::KeyBase<Tag, true> P;                                \
   typedef Name This;                                                    \
   Name(){};                                                             \
-  Name(unsigned int i): P(i){}                                          \
+  explicit Name(unsigned int i): P(i){}                                 \
   Name(std::string nm): P(nm){}                                         \
   static Name add_alias(Name nm, std::string new_name) {                \
     ::IMP::KeyBase<Tag, true>:: add_alias(nm, new_name);                \
@@ -1510,6 +1510,7 @@ protected:                                                              \
                        "Keys don't match after alias.");                \
     return Name(new_name);                                              \
   }                                                                     \
+  std::string __str__() const {return get_string();}                    \
 };                                                                      \
 typedef std::vector<Name> Name##s
 #else
@@ -1519,7 +1520,6 @@ typedef std::vector<Name> Name##s
     typedef ::IMP::KeyBase<ID, true> P;                                 \
   typedef Name This;                                                    \
   Name(){};                                                             \
-  IMP_NO_DOXYGEN(Name(unsigned int i): P(i){})                          \
   Name(std::string nm): P(nm){}                                         \
   /** Define the string new_name to refer to the same key as nm. */     \
   static Name add_alias(Name nm, std::string new_name);                 \

@@ -102,7 +102,7 @@ public:
   }
 
 
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+#if !defined(IMP_DOXYGEN)
   explicit KeyBase(unsigned int i): str_(i) {
     IMP_INTERNAL_CHECK(str_ >= 0, "Invalid initializer " << i);
     // cannot check here as we need a past end iterator
