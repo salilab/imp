@@ -18,8 +18,10 @@ class SimpleConnectivityTest(IMP.test.TestCase):
         mhs = IMP.atom.Hierarchies()
         mh1 = IMP.atom.read_pdb(self.get_input_file_name("input.pdb"),
                               self.m, sel)
+        IMP.atom.add_radii(mh1)
         mh2 = IMP.atom.read_pdb(self.get_input_file_name("input.pdb"),
                               self.m, sel)
+        IMP.atom.add_radii(mh2)
 
         mhs.append(mh1)
         mhs.append(mh2)
