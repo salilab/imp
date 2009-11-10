@@ -262,13 +262,13 @@ class _RestraintRestraint(_RestraintNode):
         self.spacing = float(attributes.get('spacing', -1))
         self.linker_length = float(attributes.get('linker_length', -1))
 
-    @staticmethod
     def extract_atoms(mhs):
         res = IMP.atom.Hierarchies()
         for mh in mhs:
             for atom in IMP.atom.get_by_type(mh, IMP.atom.ATOM_TYPE):
                 res.append(atom)
         return res
+    extract_atoms = staticmethod(extract_atoms)
 
     def create_rigid_body_restraint(self, repr, restraint_sets):
         _RestraintNode.create_restraint(self, repr, restraint_sets)
