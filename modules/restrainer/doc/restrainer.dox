@@ -1,0 +1,9 @@
+/** \namespace IMP::restrainer
+\brief %IMP.%restrainer integrates experimental proteomics data into IMP.
+\ingroup python
+
+\author Elina Tjioe, Keren Lasker, Jeremy Phillips, and Ben Webb 
+
+\overview %IMP.%restrainer will support most (if not all) of the restraints of Frank's Restrainer and Keren's Assembly (minus the optimization part) as an IMP module. The XML schema is provided to check the validation of the xml input data (xmllint --noout --schema IMP_Schema2.xsd *.xml). The visualization of the XML schema can be seen 
+<a href="../../modules/restrainer/test/input/IMP_Schema.png" target="_blank">here</a>.
+*/

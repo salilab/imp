@@ -1,0 +1,744 @@
+import xml.dom.minidom
+from representation import _Representation
+from representation import _RepUniverse
+from representation import _RepCollection
+from representation import _RepAssembly
+from representation import _RepMolecule
+from representation import _RepProtein
+from representation import _RepNucleicAcid
+from representation import _RepChain
+from representation import _RepFragment
+from representation import _RepAtomicRep
+from representation import _RepGeometricShapeRep
+from representation import _RepSphere
+from representation import _RepInitialPosition
+from restraint import _Restraint
+from restraint import _RestraintY2H
+from restraint import _RestraintPulldown
+from restraint import _RestraintArray
+from restraint import _RestraintMSMS
+from restraint import _RestraintXrayStruc
+from restraint import _RestraintCopurification
+from restraint import _RestraintCrossLink
+from restraint import _RestraintDistance
+from restraint import _RestraintDiameter
+from restraint import _RestraintSAXS
+from restraint import _RestraintSANS
+from restraint import _RestraintEM
+from restraint import _RestraintExcludedVolume
+from restraint import _RestraintRestraint
+from restraint import _RestraintParticle
+from restraint import _RestraintSource
+from restraint import _RestraintAuthor
+from restraint import _RestraintJournal
+from restraint import _RestraintTitle
+from restraint import _RestraintYear
+from restraint import _RigidBodyRestraintNode
+
+class XMLRepresentation(object):
+    """Construct Representation from XML file"""
+    def __init__(self, filename):
+        #Define a dictionary with tags as keys and functions as values
+        self.handlers = {
+            'Universe':self.handle_universe,
+            'Collection':self.handle_collection,
+            'Assembly':self.handle_assembly,
+            'Segment':self.handle_segment,
+            'Molecule':self.handle_molecule,
+            'Protein':self.handle_protein,
+            'NucleicAcid':self.handle_nucleic_acid,
+            'Chain':self.handle_chain,
+            'Fragment':self.handle_fragment,
+            'AtomicRep':self.handle_atomic_rep,
+            'GeometricShapeRep':self.handle_geometric_shape_rep,
+            'Sphere':self.handle_sphere,
+            'InitialPosition':self.handle_initial_position}
+        self.filename = filename
+        document = open(filename).read()
+        self.dom = xml.dom.minidom.parseString(document)
+        self.depth = 0
+
+    def run(self):
+        """Return representation object such that each node in the representation
+           corresponds to the node in the XML nodes"""
+        try:
+            representation_dom = self.dom.getElementsByTagName('Representation')[0]
+        except:
+            print "\"%s\" does not contain <Representation> tag." %(
+                self.filename)
+            print "Please check the input file.\nExit..."
+            raise
+        result = _Representation()
+        for node in representation_dom.childNodes:
+            r = self.handle_node(node)
+            if r:
+                result.children.append(r)
+        return result
+
+    def handle_node(self, node):
+        #Return a proper function for the node
+        handler = self.handlers.get(node.nodeName, self.handle_nothing)
+        return handler(node)
+
+    def get_attributes(self, node):
+        #To store node attributes in python dictionary
+        attr_dict = dict()
+        attr_map = node.attributes
+        if attr_map:
+            for i in xrange(attr_map.length):
+                attr = attr_map.item(i)
+                attr_dict[str(attr.name)] = str(attr.value)
+        return attr_dict
+
+    def print_node_info(self, node):
+        #Printing node info for debugging purposes
+        attrs = self.get_attributes(node)
+        attr_list = ['%s=%s' %
+             (at_name, at_val) for (at_name, at_val) in attrs.iteritems()]
+        print '%s%s' % ('  '*(self.depth + 1), ','.join(attr_list))
+
+    def handle_nothing(self, node):
+        #To ignore unwanted nodes
+        pass
+
+    def handle_universe(self, node):
+        #To create object for universe and all of its descendents
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = _RepUniverse(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+    def handle_collection(self, node):
+        #To create object for collection and all of its descendents
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = _RepCollection(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+    def handle_assembly(self, node):
+        #To create object for assembly and all of its descendents
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = _RepAssembly(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+    def handle_segment(self, node):
+        #To create object for segment and all of its descendents
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = _RepSegment(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+    def handle_molecule(self, node):
+        #To create object for molecule and all of its descendents
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = _RepMolecule(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+    def handle_protein(self, node):
+        #To create object for protein and all of its descendents
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = _RepProtein(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+    def handle_nucleic_acid(self, node):
+        #To create object for nucleic acid and all of its descendents
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = _RepNucleicAcid(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+    def handle_chain(self, node):
+        #To create object for chain and all of its descendents
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = _RepChain(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+    def handle_fragment(self, node):
+        #To create object for fragment and all of its descendents
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = _RepFragment(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+    def handle_atomic_rep(self, node):
+        #To create object for atomic rep and all of its descendents
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = _RepAtomicRep(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+    def handle_geometric_shape_rep(self, node):
+        #To create object for geometric shape rep and all of its descendents
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = _RepGeometricShapeRep(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+
+    def handle_sphere(self, node):
+        #To create object for sphere and all of its descendents
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = _RepSphere(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+
+    def handle_initial_position(self, node):
+        #To create object for initial position and all of its descendents
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = _RepInitialPosition(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+class XMLDisplay(object):
+    """Construct Display from XML file"""
+    def __init__(self, filename):
+        self.handlers = {
+            'Universe':self.handle_universe,
+            'Collection':self.handle_collection,
+            'Assembly':self.handle_assembly,
+            'Segment':self.handle_segment,
+            'Molecule':self.handle_molecule,
+            'Protein':self.handle_protein,
+            'NucleicAcid':self.handle_nucleic_acid,
+            'Chain':self.handle_chain,
+            'Fragment':self.handle_fragment,
+            'Color':self.handle_color,
+            'Residue':self.handle_residue}
+        document = open(filename).read()
+        self.dom = xml.dom.minidom.parseString(document)
+        self.depth = 0
+
+    def run(self):
+        """Return display object such that each node in the display
+           corresponds to the node in the XML nodes"""
+        display_dom = self.dom.getElementsByTagName('Display')[0]
+        result = Display()
+        for node in display_dom.childNodes:
+            r = self.handle_node(node)
+            if r:
+                result.children.append(r)
+        return result
+
+    def handle_node(self, node):
+        handler = self.handlers.get(node.nodeName, self.handle_nothing)
+        return handler(node)
+
+    def get_attributes(self, node):
+        attr_dict = dict()
+        attr_map = node.attributes
+        if attr_map:
+            for i in xrange(attr_map.length):
+                attr = attr_map.item(i)
+                attr_dict[str(attr.name)] = str(attr.value)
+        return attr_dict
+
+    def print_node_info(self, node):
+        attrs = self.get_attributes(node)
+        attr_list = ['%s=%s' %
+            (at_name, at_val) for (at_name, at_val) in attrs.iteritems()]
+        print '%s%s' % ('  '*(self.depth + 1), ','.join(attr_list))
+
+    def handle_nothing(self, node):
+        pass
+
+    def handle_universe(self, node):
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = DisplayUniverse(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+    def handle_collection(self, node):
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = DisplayCollection(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+    def handle_assembly(self, node):
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = DisplayAssembly(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+    def handle_segment(self, node):
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = DisplaySegment(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+    def handle_molecule(self, node):
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = DisplayMolecule(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+    def handle_protein(self, node):
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = DisplayProtein(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+    def handle_nucleic_acid(self, node):
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = DisplayNucleicAcid(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+    def handle_chain(self, node):
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = DisplayChain(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+    def handle_fragment(self, node):
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = DisplayFragment(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+    def handle_residue(self, node):
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = DisplayResidue(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+    def handle_color(self, node):
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = DisplayColor(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+class XMLRestraint(object):
+    """Construct Restraint from XML file"""
+    def __init__(self, filename):
+        self.handlers = {
+            'Y2H':self.handle_y2h,
+            'Pulldown':self.handle_pulldown,
+            'RigidBody':self.handle_rigidbody,
+            'XrayStruc':self.handle_xray_struc,
+            'MSMS':self.handle_msms,
+            'Array':self.handle_array,
+            'Copurification':self.handle_copurification,
+            'CrossLink':self.handle_crosslink,
+            'Distance':self.handle_distance,
+            'Diameter':self.handle_diameter,
+            'ExcludedVolume':self.handle_excluded_volume,
+            'SAS':self.handle_sas,
+            'SAXS':self.handle_saxs,
+            'SANS':self.handle_sans,
+            'EM':self.handle_em,
+            'Restraint':self.handle_restraint,
+            'Particle':self.handle_particle,
+            'Source':self.handle_source,
+            'Author':self.handle_author,
+            'Journal':self.handle_journal,
+            'Title':self.handle_title,
+            'Year':self.handle_year}
+        document = open(filename).read()
+        self.dom = xml.dom.minidom.parseString(document)
+        self.depth = 0
+
+    def run(self):
+        """Return restraint object such that each node in the restraint
+           corresponds to the node in the XML nodes"""
+        restraint_dom = self.dom.getElementsByTagName('RestraintSet')[0]
+        result = _Restraint()
+        for node in restraint_dom.childNodes:
+            r = self.handle_node(node)
+            if r:
+                result.children.append(r)
+        return result
+
+    def handle_node(self, node):
+        handler = self.handlers.get(node.nodeName, self.handle_nothing)
+        return handler(node)
+
+    def get_text(self, node):
+        return node.firstChild.wholeText
+
+    def get_attributes(self, node):
+        attr_dict = dict()
+        attr_map = node.attributes
+        if attr_map:
+            for i in xrange(attr_map.length):
+                attr = attr_map.item(i)
+                attr_dict[str(attr.name)] = str(attr.value)
+        return attr_dict
+
+    def print_node_info(self, node):
+        attrs = self.get_attributes(node)
+        attr_list = ['%s=%s' %
+            (at_name, at_val) for (at_name, at_val) in attrs.iteritems()]
+        print '%s%s' % ('  '*(self.depth + 1), ','.join(attr_list))
+
+    def handle_nothing(self, node):
+        pass
+
+    def handle_y2h(self, node):
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = _RestraintY2H(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+    def handle_rigidbody(self, node):
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = _RigidBodyRestraintNode(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+    def handle_excluded_volume(self, node):
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = _RestraintExcludedVolume(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+    def handle_pulldown(self, node):
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = _RestraintPulldown(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+    def handle_xray_struc(self, node):
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = _RestraintXrayStruc(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+    def handle_msms(self, node):
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = _RestraintMSMS(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+    def handle_array(self, node):
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = _RestraintArray(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+    def handle_copurification(self, node):
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = _RestraintCopurification(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+    def handle_crosslink(self, node):
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = _RestraintCrossLink(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+    def handle_distance(self, node):
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = _RestraintDistance(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+    def handle_diameter(self, node):
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = _RestraintDiameter(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+    def handle_sas(self, node):
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = _RestraintSAS(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+    def handle_saxs(self, node):
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = _RestraintSAXS(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+    def handle_sans(self, node):
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = _RestraintSANS(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+    def handle_em(self, node):
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = _RestraintEM(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+    def handle_restraint(self, node):
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = _RestraintRestraint(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+    def handle_particle(self, node):
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = _RestraintParticle(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+    def handle_source(self, node):
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = _RestraintSource(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+    def handle_author(self, node):
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        result = _RestraintAuthor(attrs)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+    def handle_journal(self, node):
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        text  = self.get_text(node)
+        result = _RestraintJournal(attrs, text)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+    def handle_title(self, node):
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        text  = self.get_text(node)
+        result = _RestraintTitle(attrs, text)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result
+
+    def handle_year(self, node):
+        self.depth += 1
+        attrs = self.get_attributes(node)
+        text  = self.get_text(node)
+        result = _RestraintYear(attrs, text)
+        for child in node.childNodes:
+            r = self.handle_node(child)
+            if r:
+                result.children.append(r)
+        self.depth -= 1
+        return result

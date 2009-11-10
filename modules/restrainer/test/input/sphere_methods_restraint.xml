@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RestraintSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="IMP_Schema.xsd">
+	<RigidBody>
+		<Restraint name="rigid_body_restraint">
+			<Particle id="Protein1"></Particle>
+			<Particle id="Protein2"></Particle>
+			<Particle id="Protein3"></Particle>
+			<Particle id="Protein4"></Particle>
+        	</Restraint>
+    	</RigidBody>
+	<ExcludedVolume>
+		<Restraint name="excluded_volume_restraint">
+			<Particle id="Protein1"></Particle>
+			<Particle id="Protein2"></Particle>
+			<Particle id="Protein3"></Particle>
+			<Particle id="Protein4"></Particle>
+        	</Restraint>
+    	</ExcludedVolume>
+	<Y2H>
+		<Restraint name="connectivity_restraint" weight="1.0">
+			<Particle id="Protein1"></Particle>
+			<Particle id="Protein2"></Particle>
+        	</Restraint>
+    	</Y2H>
+	<Distance>
+		<Restraint name="distance_restraint" weight="1.0" distance="5.0" std_dev="0.1">
+			<Particle id="Protein3"></Particle>
+			<Particle id="Protein4"></Particle>
+        	</Restraint>
+    	</Distance>
+	<Diameter>
+		<Restraint name="diameter_restraint" weight="1.0" max_diameter="100">
+			<Particle id="Protein1"></Particle>
+			<Particle id="Protein2"></Particle>
+			<Particle id="Protein3"></Particle>
+			<Particle id="Protein4"></Particle>
+        	</Restraint>
+    	</Diameter>
+</RestraintSet>
