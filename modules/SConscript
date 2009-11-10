@@ -14,7 +14,7 @@ cppmodules=['algebra',
             'statistics',
             'gsl',
             'benchmark']
-pymodules=['modeller']
+pymodules=['modeller', 'restrainer']
 
 for p in cppmodules:
     SConscript(p+"/SConscript")
