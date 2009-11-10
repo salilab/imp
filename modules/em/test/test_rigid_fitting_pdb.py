@@ -35,30 +35,40 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         self.load_density_map()
         self.load_protein("1z5s_A.pdb")
 
-    def _test_em_local_rigid_fitting_around_point(self):
+    def test_em_local_rigid_fitting_around_point(self):
         """Check that local rigid fitting around a point works"""
-        #create a rigid body
-        rb_p = IMP.Particle(self.imp_model)
-        rb_d = IMP.core.RigidBody.setup_particle(rb_p,IMP.core.XYZs(self.particles))
-        rb_state= rb_d.get_score_state()
-        ref_trans = rb_d.get_transformation()
-        fr = IMP.em.FittingSolutions()
-        IMP.em.local_rigid_fitting_around_point(
-            rb_d,rb_state,self.radius_key, self.weight_key,
-            self.scene,IMP.algebra.Vector3D(87.0856,71.7701,-56.3955),
-            fr,None,
-            3,5,50)
+        check = IMP.get_check_level()
+        try:
+            # This test is super-slow, so disable checks to speed it up a little
+            IMP.set_check_level(IMP.NONE)
+            #create a rigid body
+            rb_p = IMP.Particle(self.imp_model)
+            rb_d = IMP.core.RigidBody.setup_particle(
+                                      rb_p,IMP.core.XYZs(self.particles))
+            rb_state= rb_d.get_score_state()
+            ref_trans = rb_d.get_transformation()
+            fr = IMP.em.FittingSolutions()
+            IMP.em.local_rigid_fitting_around_point(
+                rb_d,rb_state,self.radius_key, self.weight_key,
+                self.scene,IMP.algebra.Vector3D(87.0856,71.7701,-56.3955),
+                fr,None,
+                3,5,50)
 
-        #todo - add test that if you apply the transformation on the original configuration you get the same result
-        # (in rmsd and score)
+            #todo - add test that if you apply the transformation on the
+            # original configuration you get the same result
+            # (in rmsd and score)
 
-        #second, test that the optimization gets you close.
-        score = self.imp_model.evaluate(False)
-        self.assert_(fr.get_number_of_solutions() == 3, "not enough solutions returned")
-        self.assert_(fr.get_score(0) < fr.get_score(1), "solutions are not sorted")
-        for i in xrange(3):
-            print fr.get_score(i)
-            self.assert_(fr.get_score(i) < 1.0, "wrong CC values")
+            #second, test that the optimization gets you close.
+            score = self.imp_model.evaluate(False)
+            self.assert_(fr.get_number_of_solutions() == 3,
+                         "not enough solutions returned")
+            self.assert_(fr.get_score(0) < fr.get_score(1),
+                         "solutions are not sorted")
+            for i in xrange(3):
+                print fr.get_score(i)
+                self.assert_(fr.get_score(i) < 1.0, "wrong CC values")
+        finally:
+            IMP.set_check_level(check)
 
 if __name__ == '__main__':
     unittest.main()
