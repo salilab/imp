@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RestraintSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="IMP_Schema.xsd">
+	<RigidBody>
+		<Restraint name="rigid_body_restraint">
+			<Particle id="Protein1"></Particle>
+			<Particle id="Protein2"></Particle>
+			<Particle id="Protein3"></Particle>
+			<Particle id="Protein4"></Particle>
+        	</Restraint>
+    	</RigidBody>
+	<ExcludedVolume>
+		<Restraint name="excluded_volume_restraint">
+			<Particle id="Protein1"></Particle>
+			<Particle id="Protein2"></Particle>
+			<Particle id="Protein3"></Particle>
+			<Particle id="Protein4"></Particle>
+        	</Restraint>
+    	</ExcludedVolume>
+	<Distance>
+		<Restraint name="distance_restraint" weight="1.0" distance="5.0" std_dev="0.1">
+			<Particle id="Protein1"></Particle>
+			<Particle id="Protein2"></Particle>
+        	</Restraint>
+		<Restraint name="distance_restraint" weight="1.0" distance="5.0" std_dev="0.1">
+			<Particle id="Protein3"></Particle>
+			<Particle id="Protein4"></Particle>
+			<Source>
+				<Author first_name="xxx" last_name="xxx"></Author>
+				<Journal>FEBS Lett</Journal>
+				<Year>2200</Year>
+			</Source>
+        	</Restraint>
+	</Distance>
+</RestraintSet>

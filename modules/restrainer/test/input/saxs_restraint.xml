@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RestraintSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="IMP_Schema.xsd">
+	<SAXS> 
+		<Restraint name="saxs_restraint" profile_filename="input/data/lyzexp.dat">
+			<Particle id="6lyz"></Particle>
+		</Restraint>
+	</SAXS>
+</RestraintSet>

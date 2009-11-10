@@ -1,0 +1,4 @@
+Import('env')
+
+# Install the Python files:
+env.IMPModulePython(pythonfiles=env.IMPModuleGetPython())

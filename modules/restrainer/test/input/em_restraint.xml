@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RestraintSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="IMP_Schema.xsd">
+    <EM>
+        <Restraint name="em_restraint" density_filename="input/data/in.em" spacing="1.0" resolution="3.0">
+            <Particle id="frag1"/>
+            <Particle id="frag2"/>
+            <Particle id="frag3"/>
+        </Restraint>
+    </EM>
+</RestraintSet>
