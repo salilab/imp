@@ -14,6 +14,7 @@
 #include "config.h"
 #include "DistanceRestraint.h"
 
+#include <IMP/SingletonContainer.h>
 #include <IMP/Restraint.h>
 #include <IMP/PairScore.h>
 
@@ -35,17 +36,25 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT ConnectivityRestraint : public Restraint
 {
   IMP::internal::OwnerPointer<PairScore> ps_;
+  IMP::internal::OwnerPointer<SingletonContainer> sc_;
 public:
   //! Use the given PairScore
-  ConnectivityRestraint(PairScore* ps);
+  /** If sc is NULL, a ListSingletonContainer is created internally.
+   */
+  ConnectivityRestraint(PairScore* ps, SingletonContainer *sc=NULL);
   /** @name Particles to be connected
 
        The following methods are used to manipulate the list of particles
        that are to be connected. Each particle should have all the
        attributes expected by the PairScore used.
+
+       Ideally, one should pass a singleton container instead. These
+       can only be used if none is passed.
   */
   /*@{*/
-  IMP_LIST(public, Particle, particle, Particle*, Particles)
+  void add_particle(Particle *p);
+  void add_particles(const Particles &ps);
+  void set_particles(const Particles &ps);
   /*@}*/
 
   //! Return the set of pairs which are connected by the restraint
