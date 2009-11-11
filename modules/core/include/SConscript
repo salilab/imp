@@ -10,6 +10,7 @@ files = [
          'BoundingBox3DSingletonScore.h',
          'BoxSweepClosePairsFinder.h',
          'CentroidOfRefined.h',
+         'ChecksScoreState.h',
          'ChildrenRefiner.h',
          'CloseBipartitePairContainer.h',
          'CloseBipartitePairsScoreState.h',

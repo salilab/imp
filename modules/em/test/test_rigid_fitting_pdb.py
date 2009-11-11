@@ -38,9 +38,11 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
     def test_em_local_rigid_fitting_around_point(self):
         """Check that local rigid fitting around a point works"""
         check = IMP.get_check_level()
+        css= IMP.core.ChecksScoreState(.05)
+        self.imp_model.add_score_state(css)
         try:
             # This test is super-slow, so disable checks to speed it up a little
-            IMP.set_check_level(IMP.NONE)
+            #IMP.set_check_level(IMP.NONE)
             #create a rigid body
             rb_p = IMP.Particle(self.imp_model)
             rb_d = IMP.core.RigidBody.setup_particle(
@@ -69,6 +71,7 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
                 self.assert_(fr.get_score(i) < 1.0, "wrong CC values")
         finally:
             IMP.set_check_level(check)
+        print "things were checked " +str(css.get_number_of_checked()) + " times"
 
 if __name__ == '__main__':
     unittest.main()
