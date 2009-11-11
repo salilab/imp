@@ -15,6 +15,7 @@
 #include <IMP/log.h>
 #include <IMP/PairScore.h>
 #include <IMP/internal/utility.h>
+#include <IMP/core/ListSingletonContainer.h>
 
 #include <climits>
 #include <boost/graph/kruskal_min_spanning_tree.hpp>
@@ -26,22 +27,41 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-ConnectivityRestraint::ConnectivityRestraint(PairScore *ps):
+ConnectivityRestraint::ConnectivityRestraint(PairScore *ps,
+                                             SingletonContainer *sc):
   Restraint("ConnectivityRestraint %1%"),
   ps_(ps)
 {
+  if (sc) {
+    sc_= sc;
+  } else {
+    sc_= new ListSingletonContainer();
+  }
 }
 
-IMP_LIST_IMPL(ConnectivityRestraint, Particle, particle,Particle*,
-              Particles,
-              {
-              IMP_INTERNAL_CHECK(get_number_of_particles()==0
-                         || obj->get_model()
-                          == (*particles_begin())->get_model(),
-                         "All particles in Restraint must belong to the "
-                         "same Model.");
-              },,);
+namespace {
+  ListSingletonContainer* get_list(SingletonContainer *sc) {
+    ListSingletonContainer *ret= dynamic_cast<ListSingletonContainer*>(sc);
+    if (!ret) {
+      IMP_THROW("Can only use the set and add methods when no container"
+                << " was passed on construction of ConnectivityRestraint.",
+                UsageException);
+    }
+    return ret;
+  }
+}
 
+void ConnectivityRestraint::set_particles(const Particles &ps) {
+  get_list(sc_)->set_particles(ps);
+}
+
+void ConnectivityRestraint::add_particles(const Particles &ps) {
+  get_list(sc_)->add_particles(ps);
+}
+
+void ConnectivityRestraint::add_particle(Particle *ps) {
+  get_list(sc_)->add_particle(ps);
+}
 
 namespace {
   /*typedef boost::adjacency_list<boost::vecS, boost::vecS,
@@ -53,7 +73,7 @@ namespace {
   typedef Graph::edge_property_type Weight;
   typedef boost::graph_traits<Graph>::vertex_descriptor Vertex;
 
-  void compute_mst(const ConnectivityRestraint *a,
+  void compute_mst(const SingletonContainer *a,
                    PairScore *ps,
                    Graph &g,
                    std::vector<Edge> &mst) {
@@ -92,19 +112,19 @@ ConnectivityRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   IMP_CHECK_OBJECT(ps_.get());
   std::vector<Edge> mst;
 
-  Graph g(get_number_of_particles());
-  compute_mst(this, ps_, g, mst);
+  Graph g(sc_->get_number_of_particles());
+  compute_mst(sc_, ps_, g, mst);
   double sum=0;
   // could be more clever if accum is NULL
   for (unsigned int index=0; index< mst.size(); ++index) {
     int i= boost::target(mst[index], g);
     int j= boost::source(mst[index], g);
     IMP_LOG(VERBOSE, "ConnectivityRestraint edge between "
-            << get_particle(i)->get_name()
-            << " and " << get_particle(j)->get_name() << std::endl);
+            << sc_->get_particle(i)->get_name()
+            << " and " << sc_->get_particle(j)->get_name() << std::endl);
     if (accum) {
-      sum+= ps_->evaluate(get_particle(i),
-                          get_particle(j),
+      sum+= ps_->evaluate(sc_->get_particle(i),
+                          sc_->get_particle(j),
                           accum);
     } else {
       sum += boost::get(boost::edge_weight_t(), g, mst[index]);
@@ -117,14 +137,14 @@ ConnectivityRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 ParticlePairs ConnectivityRestraint::get_connected_pairs() const {
   IMP_CHECK_OBJECT(ps_.get());
   std::vector<Edge> mst;
-  Graph g(get_number_of_particles());
-  compute_mst(this, ps_, g, mst);
+  Graph g(sc_->get_number_of_particles());
+  compute_mst(sc_, ps_, g, mst);
   ParticlePairs ret(mst.size());
   for (unsigned int index=0; index< mst.size(); ++index) {
     int i= boost::target(mst[index], g);
     int j= boost::source(mst[index], g);
-    ret.set(index, ParticlePair(get_particle(i),
-                                get_particle(j)));
+    ret.set(index, ParticlePair(sc_->get_particle(i),
+                                sc_->get_particle(j)));
   }
   return ret;
 }
@@ -141,13 +161,13 @@ ParticlesList ConnectivityRestraint::get_interacting_particles() const {
 
 ParticlesTemp ConnectivityRestraint::get_input_particles() const {
   ParticlesTemp ret;
-  for (unsigned int i=0; i< get_number_of_particles(); ++i) {
+  for (unsigned int i=0; i< sc_->get_number_of_particles(); ++i) {
     for (unsigned int j=0; j<i; ++j) {
-      ParticlesTemp cs= ps_->get_input_particles(get_particle(i),
-                                                get_particle(j));
+      ParticlesTemp cs= ps_->get_input_particles(sc_->get_particle(i),
+                                                sc_->get_particle(j));
       ret.insert(ret.end(), cs.begin(), cs.end());
-      ret.push_back(get_particle(i));
-      ret.push_back(get_particle(j));
+      ret.push_back(sc_->get_particle(i));
+      ret.push_back(sc_->get_particle(j));
     }
   }
   return ret;
