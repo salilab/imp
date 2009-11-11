@@ -12,7 +12,7 @@
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
-Writer::Writer(std::string name){
+Writer::Writer(std::string name): Object(name){
   file_name_=name;
 }
 
