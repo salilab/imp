@@ -37,6 +37,9 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
 
     def test_em_local_rigid_fitting_around_point(self):
         """Check that local rigid fitting around a point works"""
+        if sys.platform == 'sunos5':
+            print >> sys.stderr, "Test skipped: too slow to run on Solaris"
+            return
         check = IMP.get_check_level()
         css= IMP.core.ChecksScoreState(.05)
         self.imp_model.add_score_state(css)
