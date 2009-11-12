@@ -267,7 +267,7 @@ class IMPEXPORT UsageException : public Exception
 };
 
 //! An exception for an invalid value being passed to \imp
-/** This exception will be passed back to python as a value error.
+/** The equivalent Python type also derives from Python's ValueError.
  */
 class IMPEXPORT ValueException : public Exception
 {
@@ -278,8 +278,7 @@ class IMPEXPORT ValueException : public Exception
 
 
 //! An exception for a request for an invalid member of a container
-/** This exception should be used when a python index error is
-    to be thrown.
+/** The equivalent Python type also derives from Python's IndexError.
  */
 class IMPEXPORT IndexException: public Exception
 {
@@ -295,6 +294,8 @@ class IMPEXPORT IndexException: public Exception
     example, failure to open a file should result in an IOException.
 
     It is OK to catch such exceptions in \imp.
+
+    The equivalent Python type also derives from Python's IOError.
  */
 class IMPEXPORT IOException: public Exception
 {
