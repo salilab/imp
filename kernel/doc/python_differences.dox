@@ -13,4 +13,13 @@ due to differences in the languages and limitations of the program used to gener
 - Macros such as IMP_RESTRAINT, IMP_LOG, IMP_USAGE_CHECK are not available in Python. While we could, conceivably, provide python function equivalents, we do not.
 
 - Oddly, the python side is much stricter about converting between different types. In C++ you can call a function that takes a \c Particle* with a \c Decorator and the decorator will automatically be converted. It will not on the python side. Similarly for converting between \c ParticlesTemp and \c Particles.
+
+- All \imp exceptions are exposed as identical Python exception classes. The
+class hierarchy is similar (e.g. all exceptions derive from IMP::Exception,
+so "except IMP.Exception" will catch all IMP exceptions), except for
+convenience some generic IMP exceptions also derive from their standard Python
+equivalents (e.g. IMP.IndexException derives from the standard Python
+IndexError as well as IMP::Exception). Thus, an IMP::IndexException could be
+caught in Python most specifically with "except IMP.IndexException" but also
+with "except IMP.Exception" or "except IndexError".
 */

@@ -1,5 +1,15 @@
 /** \page recent Change History
 
+\par Week of November 12
+
+- All exception types are now mapped to equivalent classes in Python. The
+class hierarchy is similar (e.g. IMP::ModelException derives from IMP::Exception
+in both C++ and Python) so all IMP exceptions can be caught in Python using
+"except IMP.Exception". For convenience, the IMP::IOException,
+IMP::ValueException and IMP::IndexException classes in Python also derive from
+the similarly-named standard Python classes (IOError, ValueError and IndexError
+respectively).
+
 \par week of October 29 Update
 
 - You can now add members to rigid bodies via IMP::core::RigidBody::add_member(). These members can be other rigid bodies (although this functionality is only lightly tested).
