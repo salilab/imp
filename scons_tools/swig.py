@@ -149,6 +149,9 @@ def _action_simple_swig(target, source, env):
         warnings=" -Wextra"
 
     base = env['SWIG'] + warnings+" -interface  _IMP%(module_suffix)s -DPySwigIterator=%(PREPROC)s_PySwigIterator -DSwigPyIterator=%(PREPROC)s_SwigPyIterator -python -c++ -naturalvar "%vars
+    # Signal whether we are building the kernel
+    if env['IMP_MODULE'] == 'kernel':
+        base += '-DIMP_SWIG_KERNEL '
     #print base
     out= "-o "+ target[1].abspath
     doti= source[0].abspath

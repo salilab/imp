@@ -14,11 +14,17 @@ void set_print_exceptions(bool tf);
 set_print_exceptions(False)
 %}
 
-/* Create Python exception classes at startup to mirror C++ classes */
+/* Create Python exception classes at startup to mirror C++ classes, if we're
+   building the kernel. If we're building a module, import these classes from
+   the kernel. */
 %define CREATE_EXCEPTION_CLASS(VAR, CNAME)
+#if defined(IMP_SWIG_KERNEL)
 VAR = PyErr_NewException((char *)"_IMP.CNAME", imp_exception, NULL);
 Py_INCREF(VAR);
 PyModule_AddObject(m, "CNAME", VAR)
+#else
+VAR = PyDict_GetItemString(kernel_dict, "CNAME")
+#endif
 %enddef
 
 /* PyErr_NewException only takes a tuple in Python 2.5 or later. In older
@@ -26,6 +32,9 @@ PyModule_AddObject(m, "CNAME", VAR)
    (but this in turn does not work in newer Pythons, JPython, IronPython etc.)
 */
 %define CREATE_EXCEPTION_CLASS_PYTHON(VAR, CNAME, PYNAME)
+#if !defined(IMP_SWIG_KERNEL)
+CREATE_EXCEPTION_CLASS(VAR, CNAME)
+#else
 %#if PY_VERSION_HEX >= 0x02050000
 do {
   PyObject *base_tuple = PyTuple_Pack(2, imp_exception, PyExc_##PYNAME);
@@ -37,29 +46,43 @@ do {
 %#else
 CREATE_EXCEPTION_CLASS(VAR, CNAME)
 %#endif
+#endif
 %enddef
 
 %init {
-  /* Create base exception class */
-  imp_exception = PyErr_NewException((char *)"_IMP.Exception", NULL, NULL);
-  Py_INCREF(imp_exception);
-  PyModule_AddObject(m, "Exception", imp_exception);
+  {
+    /* Create or load base exception class */
+#ifdef IMP_SWIG_KERNEL
+    imp_exception = PyErr_NewException((char *)"_IMP.Exception", NULL, NULL);
+    Py_INCREF(imp_exception);
+    PyModule_AddObject(m, "Exception", imp_exception);
+#else
+    PyObject *kernel = PyImport_ImportModule("_IMP");
+    PyObject *kernel_dict = PyModule_GetDict(kernel);
+    imp_exception = PyDict_GetItemString(kernel_dict, "Exception");
+#endif
 
-  /* Create exception subclasses */
-  CREATE_EXCEPTION_CLASS(imp_internal_exception, InternalException);
-  CREATE_EXCEPTION_CLASS(imp_model_exception, ModelException);
-  CREATE_EXCEPTION_CLASS(imp_usage_exception, UsageException);
+    /* Create or load exception subclasses */
+    CREATE_EXCEPTION_CLASS(imp_internal_exception, InternalException);
+    CREATE_EXCEPTION_CLASS(imp_model_exception, ModelException);
+    CREATE_EXCEPTION_CLASS(imp_usage_exception, UsageException);
 
-  /* Create subclasses that also derive from Python classes */
-  CREATE_EXCEPTION_CLASS_PYTHON(imp_index_exception, IndexException,
-                                IndexError);
-  CREATE_EXCEPTION_CLASS_PYTHON(imp_io_exception, IOException, IOError);
-  CREATE_EXCEPTION_CLASS_PYTHON(imp_value_exception, ValueException,
-                                ValueError);
+    /* Create or load subclasses that also derive from Python classes */
+    CREATE_EXCEPTION_CLASS_PYTHON(imp_index_exception, IndexException,
+                                  IndexError);
+    CREATE_EXCEPTION_CLASS_PYTHON(imp_io_exception, IOException, IOError);
+    CREATE_EXCEPTION_CLASS_PYTHON(imp_value_exception, ValueException,
+                                  ValueError);
+
+#ifndef IMP_SWIG_KERNEL
+    Py_DECREF(kernel);
+#endif
+  }
 }
 
 /* Make sure that exception classes are visible to Python, and make certain
    subclasses also derive from Python builtins, in Pythons older than 2.5. */
+#ifdef IMP_SWIG_KERNEL
 %pythoncode %{
 from _IMP import Exception, InternalException, ModelException
 from _IMP import UsageException, IndexException, IOException, ValueException
@@ -70,6 +93,7 @@ if sys.version_info[:2] < (2,5):
     IOException.__bases__ += (IOError,)
     ValueException.__bases__ += (ValueError,)
 %}
+#endif
 
 %{
 static PyObject *imp_exception, *imp_internal_exception, *imp_model_exception,
