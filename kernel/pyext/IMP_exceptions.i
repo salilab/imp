@@ -17,22 +17,22 @@ set_print_exceptions(False)
 /* Create Python exception classes at startup to mirror C++ classes */
 %init {
 #define CREATE_EXCEPTION_CLASS(VAR, CNAME) \
-VAR = PyErr_NewException((char *)"_IMP.CNAME", exception, NULL); \
+VAR = PyErr_NewException((char *)"_IMP.CNAME", imp_exception, NULL); \
 Py_INCREF(VAR); \
 PyModule_AddObject(m, "CNAME", VAR)
 
   /* Create base exception class */
-  exception = PyErr_NewException((char *)"_IMP.Exception", NULL, NULL);
-  Py_INCREF(exception);
-  PyModule_AddObject(m, "Exception", exception);
+  imp_exception = PyErr_NewException((char *)"_IMP.Exception", NULL, NULL);
+  Py_INCREF(imp_exception);
+  PyModule_AddObject(m, "Exception", imp_exception);
 
   /* Create exception subclasses */
-  CREATE_EXCEPTION_CLASS(internal_exception, InternalException);
-  CREATE_EXCEPTION_CLASS(model_exception, ModelException);
-  CREATE_EXCEPTION_CLASS(usage_exception, UsageException);
-  CREATE_EXCEPTION_CLASS(index_exception, IndexException);
-  CREATE_EXCEPTION_CLASS(io_exception, IOException);
-  CREATE_EXCEPTION_CLASS(value_exception, ValueException);
+  CREATE_EXCEPTION_CLASS(imp_internal_exception, InternalException);
+  CREATE_EXCEPTION_CLASS(imp_model_exception, ModelException);
+  CREATE_EXCEPTION_CLASS(imp_usage_exception, UsageException);
+  CREATE_EXCEPTION_CLASS(imp_index_exception, IndexException);
+  CREATE_EXCEPTION_CLASS(imp_io_exception, IOException);
+  CREATE_EXCEPTION_CLASS(imp_value_exception, ValueException);
 }
 
 /* Make sure that exception classes are visible to Python, and make certain
@@ -49,9 +49,9 @@ ValueException.__bases__ += (ValueError,)
 %}
 
 %{
-static PyObject *exception, *internal_exception, *model_exception,
-                *usage_exception, *index_exception, *io_exception,
-                *value_exception;
+static PyObject *imp_exception, *imp_internal_exception, *imp_model_exception,
+                *imp_usage_exception, *imp_index_exception, *imp_io_exception,
+                *imp_value_exception;
 %}
 
 %{
@@ -63,26 +63,26 @@ static PyObject *exception, *internal_exception, *model_exception,
       throw;
     /* Map std:: exceptions to IMP equivalents */
     } catch (std::out_of_range &e) {
-      PyErr_SetString(index_exception, e.what());
+      PyErr_SetString(imp_index_exception, e.what());
     } catch (std::domain_error &e) {
-      PyErr_SetString(value_exception, e.what());
+      PyErr_SetString(imp_value_exception, e.what());
     } catch (std::ios::failure &e) {
-      PyErr_SetString(io_exception, e.what());
+      PyErr_SetString(imp_io_exception, e.what());
     /* Map IMP exceptions to Python objects */
     } catch (IMP::IndexException &e) {
-      PyErr_SetString(index_exception, e.what());
+      PyErr_SetString(imp_index_exception, e.what());
     } catch (IMP::ValueException &e) {
-      PyErr_SetString(value_exception, e.what());
+      PyErr_SetString(imp_value_exception, e.what());
     } catch (IMP::InternalException &e) {
-      PyErr_SetString(internal_exception, e.what());
+      PyErr_SetString(imp_internal_exception, e.what());
     } catch (IMP::ModelException &e) {
-      PyErr_SetString(model_exception, e.what());
+      PyErr_SetString(imp_model_exception, e.what());
     } catch (IMP::UsageException &e) {
-      PyErr_SetString(usage_exception, e.what());
+      PyErr_SetString(imp_usage_exception, e.what());
     } catch (IMP::IOException &e) {
-      PyErr_SetString(io_exception, e.what());
+      PyErr_SetString(imp_io_exception, e.what());
     } catch (IMP::Exception &e) {
-      PyErr_SetString(exception, e.what());
+      PyErr_SetString(imp_exception, e.what());
     }
   /* SWIG_exception contains "goto fail" so make sure the label is defined */
   fail:
