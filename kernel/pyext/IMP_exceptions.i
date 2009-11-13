@@ -21,15 +21,6 @@ VAR = PyErr_NewException((char *)"_IMP.CNAME", exception, NULL); \
 Py_INCREF(VAR); \
 PyModule_AddObject(m, "CNAME", VAR)
 
-#define CREATE_EXCEPTION_CLASS_PYTHON(VAR, CNAME, PYNAME) \
-do { \
-  PyObject *base_tuple = PyTuple_Pack(2, exception, PyExc_##PYNAME); \
-  VAR = PyErr_NewException((char *)"_IMP.CNAME", base_tuple, NULL); \
-  Py_INCREF(VAR); \
-  Py_DECREF(base_tuple); \
-  PyModule_AddObject(m, "CNAME", VAR); \
-} while(0)
-
   /* Create base exception class */
   exception = PyErr_NewException((char *)"_IMP.Exception", NULL, NULL);
   Py_INCREF(exception);
@@ -39,17 +30,22 @@ do { \
   CREATE_EXCEPTION_CLASS(internal_exception, InternalException);
   CREATE_EXCEPTION_CLASS(model_exception, ModelException);
   CREATE_EXCEPTION_CLASS(usage_exception, UsageException);
-
-  /* Create subclasses that also derive from Python classes */
-  CREATE_EXCEPTION_CLASS_PYTHON(index_exception, IndexException, IndexError);
-  CREATE_EXCEPTION_CLASS_PYTHON(io_exception, IOException, IOError);
-  CREATE_EXCEPTION_CLASS_PYTHON(value_exception, ValueException, ValueError);
+  CREATE_EXCEPTION_CLASS(index_exception, IndexException);
+  CREATE_EXCEPTION_CLASS(io_exception, IOException);
+  CREATE_EXCEPTION_CLASS(value_exception, ValueException);
 }
 
-/* Make sure that exception classes are visible to Python */
+/* Make sure that exception classes are visible to Python, and make certain
+   subclasses also derive from Python builtins
+   (Note: we can also do this by passing a tuple as the second argument to
+   PyErr_NewException, but that only works with Python 2.5 or later.) */
 %pythoncode %{
 from _IMP import Exception, InternalException, ModelException
 from _IMP import UsageException, IndexException, IOException, ValueException
+
+IndexException.__bases__ += (IndexError,)
+IOException.__bases__ += (IOError,)
+ValueException.__bases__ += (ValueError,)
 %}
 
 %{
