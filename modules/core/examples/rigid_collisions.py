@@ -34,4 +34,14 @@ evri= m.add_restraint(evr)
 o= IMP.core.ConjugateGradients()
 o.set_model(m)
 
-o.optimize(1000)
+done=False
+while not done:
+    try:
+        o.optimize(1000)
+    except IMP.ModelException:
+        for d in [rbss0, rbss1]:
+            d.set_transformation(IMP.algebra.Transformation3D(IMP.algebra.random_rotation(),
+                                                              IMP.algebra.random_vector_in_box(IMP.algebra.Vector3D(0,0,0),
+                                                                                               IMP.algebra.Vector3D(10,10,10))))
+    else:
+        done=True
