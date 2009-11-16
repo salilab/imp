@@ -6,7 +6,7 @@ import IMP.atom
 import IMP.helper
 
 class SimplifyTests(IMP.test.TestCase):
-    def test_simplify_2(self):
+    def disabled_test_simplify_2(self):
         """Test protein simplification 2"""
         IMP.set_log_level(IMP.VERBOSE)
         m= IMP.Model()
