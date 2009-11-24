@@ -3,7 +3,7 @@ Import('env')
 files = [
          'BildWriter.h',
          'BoxGeometry.h',
-         'CGOWriter.h',
+         'PymolWriter.h',
          'CMMWriter.h',
          'ChimeraWriter.h',
          'Color.h',

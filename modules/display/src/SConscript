@@ -3,7 +3,7 @@ Import('env')
 files = [
          'BildWriter.cpp',
          'BoxGeometry.cpp',
-         'CGOWriter.cpp',
+         'PymolWriter.cpp',
          'CMMWriter.cpp',
          'ChimeraWriter.cpp',
          'Color.cpp',

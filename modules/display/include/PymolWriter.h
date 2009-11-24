@@ -1,12 +1,12 @@
 /**
- *  \file CGOWriter.h
- *  \brief XXXXXXXXXXXXXX
+ *  \file PymolWriter.h
+ *  \brief Implement PymolWriter
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
-#ifndef IMPDISPLAY_CGO_WRITER_H
-#define IMPDISPLAY_CGO_WRITER_H
+#ifndef IMPDISPLAY_PYMOL_WRITER_H
+#define IMPDISPLAY_PYMOL_WRITER_H
 
 #include "config.h"
 #include "macros.h"
@@ -29,7 +29,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
     sequentially from the file load order (so they can form a subset of
     the generated files).
  */
-class IMPDISPLAYEXPORT CGOWriter: public Writer
+class IMPDISPLAYEXPORT PymolWriter: public Writer
 {
   friend class CGOAnimationWriter;
   unsigned int count_;
@@ -37,7 +37,7 @@ class IMPDISPLAYEXPORT CGOWriter: public Writer
   static void write_geometry(Geometry *g, std::ostream &out);
 public:
   //! write to a file using the name to  name the files
-  CGOWriter(std::string file_name=std::string());
+  PymolWriter(std::string file_name=std::string());
 
   virtual void add_geometry(CompoundGeometry* cg);
   virtual void add_geometry(const IMP::display::Geometries &g) {
@@ -48,11 +48,11 @@ public:
   }
 
 
-  IMP_WRITER(CGOWriter, get_module_version_info())
+  IMP_WRITER(PymolWriter, get_module_version_info())
 };
 
 
 
 IMPDISPLAY_END_NAMESPACE
 
-#endif  /* IMPDISPLAY_CGO_WRITER_H */
+#endif  /* IMPDISPLAY_PYMOL_WRITER_H */
