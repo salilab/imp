@@ -36,6 +36,10 @@ ListGroupnameContainer
 {
   if (ps.empty()) return;
   for (unsigned int i=0; i< ps.size(); ++i) {
+    IMP_USAGE_CHECK(IMP::internal::ContainerTraits<Classname>
+                    ::is_valid(ps[i]),
+                    "Passed Classname cannot be NULL (or None)",
+                    UsageException);
     IMP_USAGE_CHECK(IMP::internal::get_model(ps[i])
                     == IMP::internal::get_model(ps[0]),
                     "All particles in container must have the same model. "
@@ -90,6 +94,10 @@ void ListGroupnameContainer::clear_classnames() {
 
 
 void ListGroupnameContainer::add_classname(Value vt) {
+  IMP_USAGE_CHECK(IMP::internal::ContainerTraits<Classname>::is_valid(vt),
+                  "Passed Classname cannot be NULL (or None)",
+                  UsageException);
+
   if (!get_has_model() && !get_is_added_or_removed_container()) {
     set_model(IMP::internal::get_model(vt));
   }
@@ -116,11 +124,16 @@ void ListGroupnameContainer::add_classnames(const ClassnamesTemp &c) {
   }
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i=0; i< c.size(); ++i) {
+      IMP_USAGE_CHECK(IMP::internal::ContainerTraits<Classname>
+                      ::is_valid(c[i]),
+                    "Passed Classname cannot be NULL (or None)",
+                    UsageException);
       IMP_USAGE_CHECK(get_is_added_or_removed_container()
                       || !get_removed_groupnames_container()
                       ->get_contains_classname(c[i]),
             "You cannot remove and add the same item in one time step.",
                       ValueException);
+
     }
   }
 }

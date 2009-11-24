@@ -19,6 +19,15 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 template <class OC, class BC>
 void update_list(OC &old, ClassnamesTemp &cur,
                  BC *th) {
+  IMP_IF_CHECK(USAGE) {
+    for (unsigned int i=0; i< cur.size(); ++i) {
+      IMP_USAGE_CHECK(
+            IMP::internal::ContainerTraits<Classname>::is_valid(cur[i]),
+                      "Passed Classname cannot be NULL (or None)",
+                      UsageException);
+
+    }
+  }
   if (th->get_is_added_or_removed_container()) {
     swap(old, cur);
   } else {

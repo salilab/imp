@@ -36,6 +36,10 @@ ListPairContainer
 {
   if (ps.empty()) return;
   for (unsigned int i=0; i< ps.size(); ++i) {
+    IMP_USAGE_CHECK(IMP::internal::ContainerTraits<ParticlePair>
+                    ::is_valid(ps[i]),
+                    "Passed ParticlePair cannot be NULL (or None)",
+                    UsageException);
     IMP_USAGE_CHECK(IMP::internal::get_model(ps[i])
                     == IMP::internal::get_model(ps[0]),
                     "All particles in container must have the same model. "
@@ -90,6 +94,10 @@ void ListPairContainer::clear_particle_pairs() {
 
 
 void ListPairContainer::add_particle_pair(ParticlePair vt) {
+  IMP_USAGE_CHECK(IMP::internal::ContainerTraits<ParticlePair>::is_valid(vt),
+                  "Passed ParticlePair cannot be NULL (or None)",
+                  UsageException);
+
   if (!get_has_model() && !get_is_added_or_removed_container()) {
     set_model(IMP::internal::get_model(vt));
   }
@@ -116,11 +124,16 @@ void ListPairContainer::add_particle_pairs(const ParticlePairsTemp &c) {
   }
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i=0; i< c.size(); ++i) {
+      IMP_USAGE_CHECK(IMP::internal::ContainerTraits<ParticlePair>
+                      ::is_valid(c[i]),
+                    "Passed ParticlePair cannot be NULL (or None)",
+                    UsageException);
       IMP_USAGE_CHECK(get_is_added_or_removed_container()
                       || !get_removed_pairs_container()
                       ->get_contains_particle_pair(c[i]),
             "You cannot remove and add the same item in one time step.",
                       ParticlePairException);
+
     }
   }
 }
