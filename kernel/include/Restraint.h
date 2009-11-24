@@ -153,8 +153,9 @@ private:
   WeakPointer<Model> model_;
 };
 
-IMP_OUTPUT_OPERATOR(Restraint);
-
 IMP_END_NAMESPACE
+
+// for Restraints
+#include "Model.h"
 
 #endif  /* IMP_RESTRAINT_H */

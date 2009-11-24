@@ -12,6 +12,7 @@
 #include "VersionInfo.h"
 #include "RefCounted.h"
 #include "Pointer.h"
+#include "VectorOfRefCounted.h"
 
 #include <iostream>
 
@@ -53,6 +54,8 @@ public:
 protected:
   WeakPointer<Optimizer> optimizer_;
 };
+
+IMP_OBJECTS(OptimizerState);
 
 IMP_END_NAMESPACE
 
