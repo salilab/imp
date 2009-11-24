@@ -42,7 +42,7 @@ void ChimeraWriter::add_geometry_internal(IMP::display::Geometry *g,
   if (gp->get_dimension() ==0) {
     if (!has_ms_) {
       has_ms_=true;
-      get_stream() << "s= d.new_marker_set('" << name
+      get_stream() << "s= new_marker_set('" << name
                    << "')\n";
     }
     for (unsigned int i=0; i< g->get_number_of_vertices(); ++i) {
@@ -52,7 +52,7 @@ void ChimeraWriter::add_geometry_internal(IMP::display::Geometry *g,
   } else if (g->get_dimension() ==1) {
     if (!has_ms_) {
       has_ms_=true;
-      get_stream() << "s= d.new_marker_set('" << name
+      get_stream() << "s= new_marker_set('" << name
                    << "')\n";
     }
     write_marker(get_stream(), g, g->get_vertex(0));
@@ -94,9 +94,12 @@ void ChimeraWriter::on_open() {
   get_stream() << "import _surface\n";
   get_stream() << "import chimera\n";
   get_stream() << "from VolumePath import markerset as ms\n";
-  get_stream() << "from VolumePath import volume_path_dialog\n";
-  get_stream() << "d= volume_path_dialog(True)\n";
-  //get_file_stream() << "m = _surface.SurfaceModel()\n";
+  get_stream() << "try:\n";
+  get_stream() << "  from VolumePath import new_marker_set\n";
+  get_stream() << "except:\n";
+  get_stream() << "  from VolumePath import volume_path_dialog\n";
+  get_stream() << "  d= volume_path_dialog(True)\n";
+  get_stream() << "  new_marker_set= d.new_marker_set\n";
 }
 void ChimeraWriter::on_close() {
   if (has_surf_) {
