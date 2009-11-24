@@ -69,12 +69,13 @@ public:
     return particle_;
   }
 
-#ifndef IMP_DOXYGEN
-#ifndef SWIG
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
   operator Particle*() const {
     return particle_;
   }
-#endif
+  Particle* operator->() const {
+    return particle_;
+  }
 #endif
 
   /** \return the Model containing the particle */
