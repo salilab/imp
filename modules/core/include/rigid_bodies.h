@@ -66,8 +66,9 @@ class IMPCOREEXPORT RigidBody: public XYZ {
 
   void add_member_internal(XYZ d,
                            const algebra::Rotation3D& roti,
-                           const algebra::Vector3D& transi);
-
+                           const algebra::Vector3D& transi, bool cover);
+  static RigidBody internal_setup_particle(Particle *p,
+                                           const XYZs &members);
   IMP_SCORE_STATE_DECORATOR_DECL(RigidBody);
 public:
 
@@ -90,9 +91,14 @@ public:
   static RigidBody setup_particle(Particle *p,
                           const XYZs &members);
 
-  //! Initialize a rigid body directly
+  //! Create a rigid body based on members of another one
+  /** The passed RigidMembers must already be members of
+      one rigid body and are used to define the orientation of
+      the created RigidBody. It is internally added as a member
+      of that RigidBody.
+  */
   static RigidBody setup_particle(Particle *p,
-                                  const algebra::Transformation3D &tr);
+                                const RigidMembers &members);
 
   ~RigidBody();
 
