@@ -95,7 +95,8 @@ void ChimeraWriter::on_open() {
   get_stream() << "import chimera\n";
   get_stream() << "from VolumePath import markerset as ms\n";
   get_stream() << "try:\n";
-  get_stream() << "  from VolumePath import new_marker_set\n";
+  get_stream() << "  from VolumePath import Marker_Set, Link\n";
+  get_stream() << "  new_marker_set=Marker_Set\n";
   get_stream() << "except:\n";
   get_stream() << "  from VolumePath import volume_path_dialog\n";
   get_stream() << "  d= volume_path_dialog(True)\n";
