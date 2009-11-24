@@ -182,10 +182,7 @@ public:
               ValueException);
   }
 
-  //! Create a Hierarchy on the Particle
-  /** A traits class can be specified if the default one is not desired.
-   */
-  Hierarchy(Particle *p):
+  explicit Hierarchy(Particle *p):
     P(p,get_traits()){
     IMP_INTERNAL_CHECK(particle_is_instance(p),
                        "Missing required attributes for "
