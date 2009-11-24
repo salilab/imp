@@ -59,7 +59,7 @@ class TestBL(IMP.test.TestCase):
     def test_5(self):
         """Testing the CGO writer"""
         nm=self.get_tmp_file_name("test.pymol.py")
-        w=IMP.display.CGOWriter()
+        w=IMP.display.PymolWriter()
         w.set_file_name(nm)
         self._testit(w)
 

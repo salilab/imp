@@ -1,37 +1,37 @@
 /**
- *  \file CGOWriter.cpp
+ *  \file PymolWriter.cpp
  *  \brief XXXX.
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 
-#include "IMP/display/CGOWriter.h"
+#include "IMP/display/PymolWriter.h"
 
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
 
 
-CGOWriter::CGOWriter(std::string file_name): Writer(file_name){
+PymolWriter::PymolWriter(std::string file_name): Writer(file_name){
   count_=0;
 }
 
-void CGOWriter::show(std::ostream &out) const {
-  out << "CGOWriter" << std::endl;
+void PymolWriter::show(std::ostream &out) const {
+  out << "PymolWriter" << std::endl;
 }
 
-void CGOWriter::on_open() {
+void PymolWriter::on_open() {
   get_stream() << "from pymol.cgo import *\nfrom pymol import cmd\n";
   get_stream() << "data= {}\n";
 }
 
-void CGOWriter::on_close() {
+void PymolWriter::on_close() {
   get_stream() << "\n\nfor k in data.keys():\n  cmd.load_cgo(data[k], k, 0)\n";
   ++count_;
 }
 
-void CGOWriter::add_geometry(CompoundGeometry* cg) {
+void PymolWriter::add_geometry(CompoundGeometry* cg) {
   IMP::internal::OwnerPointer<CompoundGeometry> cgp(cg);
   Geometries g= cgp->get_geometry();
   if (g.empty() && !cg->get_name().empty()) {
@@ -46,7 +46,7 @@ void CGOWriter::add_geometry(CompoundGeometry* cg) {
   }
 }
 
-void CGOWriter::write_geometry(Geometry *g, std::ostream &out) {
+void PymolWriter::write_geometry(Geometry *g, std::ostream &out) {
   IMP_CHECK_OBJECT(g);
   Color last_color;
   std::string name= g->get_name();
@@ -117,12 +117,12 @@ void CGOWriter::write_geometry(Geometry *g, std::ostream &out) {
       << "   data[k]=curdata\n\n";
 }
 
-void CGOWriter::add_geometry(Geometry *g) {
+void PymolWriter::add_geometry(Geometry *g) {
   IMP_CHECK_OBJECT(g);
   g->set_was_owned(true);
   write_geometry(g, get_stream());
 }
 
-IMP_REGISTER_WRITER(CGOWriter, ".pym")
+IMP_REGISTER_WRITER(PymolWriter, ".pym")
 
 IMPDISPLAY_END_NAMESPACE
