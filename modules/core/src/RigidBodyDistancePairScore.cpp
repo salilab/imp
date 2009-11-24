@@ -14,8 +14,17 @@ IMPCORE_BEGIN_NAMESPACE
 
 RigidBodyDistancePairScore::RigidBodyDistancePairScore(PairScore *ps,
                                                        Refiner *r):
-  r_(r), ps_(ps),
-  k_(internal::get_rigid_body_hierarchy_key(r_)){
+  r0_(r), r1_(r), ps_(ps),
+  k0_(internal::get_rigid_body_hierarchy_key(r0_)),
+  k1_(internal::get_rigid_body_hierarchy_key(r1_)){
+}
+
+RigidBodyDistancePairScore::RigidBodyDistancePairScore(PairScore *ps,
+                                                       Refiner *r0,
+                                                       Refiner *r1):
+  r0_(r0), r1_(r1), ps_(ps),
+  k0_(internal::get_rigid_body_hierarchy_key(r0_)),
+  k1_(internal::get_rigid_body_hierarchy_key(r1_)){
 }
 
 void RigidBodyDistancePairScore::show(std::ostream &out) const {
@@ -24,13 +33,14 @@ void RigidBodyDistancePairScore::show(std::ostream &out) const {
 
 namespace {
   ParticlePair get_closest_pair(Particle *a, Particle *b,
-                                Refiner* r, ObjectKey k) {
+                                Refiner* ra, Refiner *rb, ObjectKey ka,
+                                ObjectKey kb) {
     internal::RigidBodyHierarchy *da=NULL, *db=NULL;
     if (RigidBody::particle_is_instance(a)) {
-      da= internal::get_rigid_body_hierarchy(RigidBody(a), r, k);
+      da= internal::get_rigid_body_hierarchy(RigidBody(a), ra, ka);
     }
     if (RigidBody::particle_is_instance(b)) {
-      db= internal::get_rigid_body_hierarchy(RigidBody(b), r, k);
+      db= internal::get_rigid_body_hierarchy(RigidBody(b), rb, kb);
     }
     if (!da && !db) {
       return ParticlePair(a,b);
@@ -49,7 +59,7 @@ namespace {
 
 double RigidBodyDistancePairScore::evaluate(Particle *a, Particle *b,
                                             DerivativeAccumulator *dera) const {
-  ParticlePair pp= get_closest_pair(a,b, r_, k_);
+  ParticlePair pp= get_closest_pair(a,b, r0_, r1_, k0_, k1_);
   return ps_->evaluate(pp[0], pp[1], dera);
 }
 
@@ -57,7 +67,7 @@ double RigidBodyDistancePairScore::evaluate(Particle *a, Particle *b,
 ParticlesList
 RigidBodyDistancePairScore::get_interacting_particles(Particle *a,
                                                       Particle *b) const {
-  ParticlePair pp= get_closest_pair(a,b, r_, k_);
+  ParticlePair pp= get_closest_pair(a,b, r0_, r1_, k0_, k1_);
   return ps_->get_interacting_particles(pp[0], pp[1]);
 }
 

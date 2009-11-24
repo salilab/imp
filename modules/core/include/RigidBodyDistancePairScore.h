@@ -27,12 +27,14 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT RigidBodyDistancePairScore: public PairScore
 {
-  IMP::internal::OwnerPointer<Refiner> r_;
+  IMP::internal::OwnerPointer<Refiner> r0_, r1_;
   IMP::internal::OwnerPointer<PairScore> ps_;
-  ObjectKey k_;
+  ObjectKey k0_, k1_;
 public:
-  //! XXXX
+  /** Use the passed refiner for both particles. */
   RigidBodyDistancePairScore(PairScore *ps, Refiner *r);
+  /** Use r0 for the first passed particle and r1 for the second. */
+  RigidBodyDistancePairScore(PairScore *ps, Refiner *r0, Refiner *r1);
 
   IMP_PAIR_SCORE(RigidBodyDistancePairScore, get_module_version_info())
 };
