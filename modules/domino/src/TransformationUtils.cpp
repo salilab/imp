@@ -46,9 +46,12 @@ void TransformationUtils::apply(core::RigidBody *rb,
     IMP_LOG(VERBOSE,std::endl);
   }
   rb->set_transformation(t);
-  IMP_LOG(VERBOSE,"TransformationUtils::after move2state t1:");
-  IMP_LOG_WRITE(VERBOSE,IMP::core::XYZ(rb->get_particle()).get_coordinates());
-  IMP_LOG(VERBOSE,std::endl);
+  IMP_IF_LOG(VERBOSE) {
+    IMP_LOG(VERBOSE,"TransformationUtils::after move2state t1:");
+    IMP_LOG_WRITE(
+      VERBOSE,IMP::core::XYZ(rb->get_particle()).get_coordinates());
+    IMP_LOG(VERBOSE,std::endl);
+  }
 }
 
 IMPDOMINO_END_NAMESPACE

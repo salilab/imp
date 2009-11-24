@@ -16,7 +16,9 @@
 #include "JunctionTree.h"
 
 #include <IMP/Model.h>
+#include <IMP/ScoreState.h>
 #include <IMP/Restraint.h>
+#include <IMP/domino/internal/RestraintEvaluator.h>
 
 #include <vector>
 #include <map>
@@ -52,6 +54,8 @@ public:
   T & m_time;
 };
 
+
+
 // should think about something more general here, since each level of
 // hierarchy will have its own state.
 //
@@ -59,31 +63,33 @@ public:
 //! RestraintGraph
 class IMPDOMINOEXPORT RestraintGraph
 {
-
-
   typedef std::pair<unsigned int, unsigned int> Pair;
   typedef boost::adjacency_list < boost::vecS, boost::vecS,
     boost::undirectedS, boost::no_property,
     boost::property<boost::edge_weight_t,
     boost::vecS> > Graph;
-
 public:
   //! Constructor
   /** \param[in] jt Holds the junction tree that represent the
                     system dependencies
       \param[in] mdl The IMP model
    */
-  RestraintGraph(const JunctionTree &jt,Model *mdl);
+  RestraintGraph(const JunctionTree &jt,Model *mdl,
+                 internal::RestraintEvaluator *r_eval);
   //    void clear_states();
   //void set_model(IMP::Model *m_);
   void initialize_graph(int number_of_nodes);
-  void move_model2global_minimum() const;
-  CombState * get_minimum_comb() const;
+  //! Move particles to the the global minimum combination
+  void move_to_global_minimum_configuration() const;
+  //! Move particles to the input combination and return its score
+  Float move_to_configuration(const CombState &comb) const;
+  CombState * get_minimum_configuration() const;
   //! Creates a new node and add it to the graph
   /** \param[in] node_index the index of the node
       \param[in] particles  the particles that are part of the node
    */
-  void add_node(unsigned int node_index, Particles &particles);
+  void add_node(unsigned int node_index, Particles &particles,
+                internal::RestraintEvaluator *rstr_eval);
 
   //! Creates an undirected edge between two nodes
   /** \param[in] node1_ind  the index of the first node
@@ -150,6 +156,7 @@ public:
                 set of particles.
    */
   JNode * get_node(const Particles &p);
+
 protected:
   //! Load junction tree and set the restraint graph
   /**
@@ -157,7 +164,8 @@ protected:
   \param[in] mdl
   \note The function uses the particle name attribute as identifier
    */
-  void load_data(const JunctionTree &jt,Model *mdl);
+  void load_data(const JunctionTree &jt,Model *mdl,
+                 internal::RestraintEvaluator *r_eval);
 
   //! Determine a DFS
   /** \param[in]  root_ind the index of the node from which the DFS starts
@@ -166,8 +174,6 @@ protected:
                   with index i.
    */
   void dfs_order(unsigned int root_ind);
-  void move_model2state_rec(unsigned int father_ind,
-                            CombState &best_state) const;
 
   JEdge* get_edge(unsigned int n1, unsigned int n2) const {
     return edge_data_.find(get_edge_key(n1, n2))->second;
@@ -204,14 +210,12 @@ protected:
   void clear_infered_data();
 
   std::map<Pair, JEdge *> edge_data_;
-  std::vector<JNode *> node_data_; // the i'th entry holds the i'th jnode.
-  //  Model *m_;
+  std::vector<JNode *> node_data_; // the i'th entry holds the i'th jnode.h
   Graph g_;
   std::map<int, int> particle2node; //for quick graph building
   std::vector<int> node2particle;
   //inference support data structures
   std::vector<unsigned int> discover_time_;
-  // discover_order[i] , the discover time of node number i
   unsigned int root_;
   bool infered_;
   std::vector<CombState *> *min_combs_;

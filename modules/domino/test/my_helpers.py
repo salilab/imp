@@ -12,34 +12,16 @@ def read_components(fns,mdl):
     return mhs
 
 def set_rigid_bodies(mhs,mdl):
-    rbs = IMP.Particles()
-    for i,mh in enumerate(mhs):
-        rb_p = IMP.Particle(mdl)
-        IMP.core.RigidBody.setup_particle(rb_p,
-                                          IMP.core.XYZs(IMP.core.get_leaves(mh)))
-        #mdl.add_score_state(rb_state)
-        #IMP.core.Cover.setup_particle(rb_p,IMP.core.RigidMembersRefiner())
-        rbs.append(rb_p)
-    return rbs
+    return IMP.helper.set_rigid_bodies(mhs)
 def set_colision_detection_between_rigid_bodies(rb1,rb2):
-    mdl=rb1.get_model()
-    lsc= IMP.core.ListSingletonContainer()
-    lsc.add_particle(rb1)
-    lsc.add_particle(rb2)
-    #Set up the nonbonded list
-    nbl= IMP.core.ClosePairsScoreState(lsc)
-    #bacause you want to restraint the actual rigid bodies and not the its particles
-    nbl.set_close_pairs_finder(IMP.core.RigidClosePairsFinder())
-    mdl.add_score_state(nbl);
-    #Set the amount particles need to move before the list is updated
-    #nbl.set_slack(2.0);
-    nbl.set_slack(2.0);
-    #Set up excluded volume
-    pss = IMP.core.SphereDistancePairScore(IMP.core.HarmonicLowerBound(0,1))
-    evr = IMP.core.PairsRestraint(pss, nbl.get_close_pairs_container())
-    mdl.add_restraint(evr)
-    evr.evaluate(None)
-    return evr
+    rbs=IMP.core.RigidBodies()
+    rbs.append(rb1)
+    rbs.append(rb2)
+    simple_r = IMP.helper.create_simple_excluded_volume_on_rigid_bodies(rbs)
+    r = simple_r.get_restraint()
+    print r
+    rb1.get_model().add_restraint(r)
+    return r
 
 def create_random_transformation(angle_step=30.,translation_step=4.):
     zero_vec=IMP.algebra.Vector3D(0.,0.,0.)

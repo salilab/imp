@@ -23,7 +23,8 @@ files = [
          'TransformationPermutationSampler.h',
          'TransformationUtils.h',
         ] \
-        + SConscript('boost/SConscript')
+        + SConscript('boost/SConscript')\
+        + SConscript('internal/SConscript')
 
 # Install the include files:
 env.IMPModuleInclude(files)

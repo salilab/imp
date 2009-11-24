@@ -52,7 +52,8 @@ class DOMINOTests(IMP.test.TestCase):
         jt_filename = self.get_input_file_name("hierarchy_jt.txt")
         self.jt = IMP.domino.JunctionTree()
         IMP.domino.read_junction_tree(jt_filename,self.jt)
-        self.d_opt = IMP.domino.DominoOptimizer(self.jt,self.imp_model)
+        self.re=IMP.domino.RestraintEvaluator(self.sampler)
+        self.d_opt = IMP.domino.DominoOptimizer(self.jt,self.imp_model,self.re)
 
     def __set_discrete_sampling_space__(self):
         self.m_discrete_set = IMP.domino.TransformationMappedDiscreteSet(self.particles)
@@ -83,8 +84,8 @@ class DOMINOTests(IMP.test.TestCase):
         self.imp_model = IMP.Model()
         IMP.set_check_level(IMP.USAGE_AND_INTERNAL)
         self.__set_representation__()
-        self.__set_optimizer__()
         self.__set_discrete_sampling_space__()
+        self.__set_optimizer__()
         self.__set_restraints__()
 
 

@@ -43,6 +43,7 @@ class DOMINOTests(IMP.test.TestCase):
 
     def setUp(self):
         """Set up model and particles"""
+        IMP.set_log_level(IMP.VERBOSE)
         IMP.test.TestCase.setUp(self)
         self.imp_model = IMP.Model()
         self.__set_sampling_space__()
@@ -77,7 +78,8 @@ class DOMINOTests(IMP.test.TestCase):
         jt_filename = self.get_input_file_name("permutation_test_jt.txt")
         self.jt = IMP.domino.JunctionTree()
         IMP.domino.read_junction_tree(jt_filename,self.jt)
-        d_opt = IMP.domino.DominoOptimizer(self.jt,self.imp_model)
+        re = IMP.domino.RestraintEvaluator(self.sampler)
+        d_opt = IMP.domino.DominoOptimizer(self.jt,self.imp_model,re)
         for r in self.rsrs:
             d_opt.add_restraint(r)
 

@@ -6,6 +6,7 @@
  */
 
 #include <IMP/domino/JNode.h>
+#include <IMP/ScoreState.h>
 
 
 #include <numeric>
@@ -19,8 +20,14 @@ IMPDOMINO_BEGIN_NAMESPACE
 //nodes come sorted.
 JNode::JNode(const Particles &ps, int node_ind): ds_(NULL)
 {
-  IMP_LOG(VERBOSE,"Constructing a JNode with "<<
-                   ps.size() << " particles "<<std::endl);
+  IMP_IF_LOG(VERBOSE) {
+    IMP_LOG(VERBOSE,"Constructing a JNode with "<<
+                     ps.size() << " particles: ");
+    for(Particles::const_iterator it = ps.begin(); it != ps.end(); it++) {
+      IMP_LOG(VERBOSE,(*it)->get_name()<<",");
+    }
+    IMP_LOG(VERBOSE,std::endl);
+  }
   node_ind_ = node_ind;
   particles_ = Particles();
   for (Particles::const_iterator it = ps.begin(); it != ps.end(); it++) {
@@ -28,6 +35,7 @@ JNode::JNode(const Particles &ps, int node_ind): ds_(NULL)
   }
   std::sort(particles_.begin(), particles_.end());
   comb_states_ = std::map<std::string, CombState *>();
+  rstr_eval_=NULL;
 }
 
 void JNode::init_sampling(DiscreteSampler &ds)
@@ -148,31 +156,30 @@ void JNode::move2state(CombState *cs)
   ds_->move2state(cs);
 }
 
-
 void JNode::realize(Restraint *r, Particles *ps, Float weight)
 {
-  IMP_LOG(VERBOSE,"start realize node : " << node_ind_ << std::endl);
+  IMP_IF_LOG(VERBOSE) {
+    IMP_LOG(VERBOSE,"start realize node: " << node_ind_ << " with restraint: ");
+    IMP_LOG_WRITE(VERBOSE,r->show());
+    IMP_LOG(VERBOSE," , weight : " << weight);
+    IMP_LOG(VERBOSE, " and number of states : " << comb_states_.size());
+    IMP_LOG(VERBOSE,std::endl);
+  }
   std::map<std::string, float> temp_calculations;
   // stores calculated discrete values. It might be that each appears more
   // than once, since the node may contain more particles than the ones
   // indicated by the restraint.
   std::map<std::string, float> result_cache; // to avoid multiple calculation
                                              // of the same configuration.
-  float score;
+  IMP_INTERNAL_CHECK(rstr_eval_!=NULL,
+                     "restraint evaluator was not initialized"<<std::endl);
+  rstr_eval_->calc_scores(comb_states_,result_cache,r,ps);
   std::string partial_key;
+  Float score;
   for (std::map<std::string, CombState *>::iterator it =  comb_states_.begin();
        it != comb_states_.end(); it++) {
     partial_key = it->second->partial_key(ps);
-    //IMP_LOG(VERBOSE,"key : " << partial_key << std::endl);
-    if (result_cache.find(partial_key) == result_cache.end()) {
-      //IMP_LOG(VERBOSE,"key : " << partial_key << std::endl);
-      move2state(it->second);
-      //IMP_LOG(VERBOSE,"after move to state" << std::endl);
-      score = r->evaluate(NULL) * weight;
-      result_cache[partial_key] = score;
-    } else {
-      score = result_cache.find(partial_key)->second;
-    }
+    score = result_cache.find(partial_key)->second;
     it->second->update_total_score(0.0, score);
   }
   IMP_LOG(VERBOSE,"end realize node : " << node_ind_ << std::endl);
@@ -184,8 +191,14 @@ std::vector<CombState *> JNode::min_marginalize(const CombState &s,
   Float min_score = std::numeric_limits<Float>::max();
   std::vector<CombState *> min_comb;
   min_comb = std::vector<CombState *>();
+  IMP_LOG(VERBOSE,"min_marginalize for node : " << node_ind_ <<
+          " number of states: " << comb_states_.size() << std::endl);
   for (std::map<std::string, CombState *>::iterator it =  comb_states_.begin();
        it != comb_states_.end(); it++) {
+    IMP_LOG(VERBOSE,"checking state: " << it->first);
+    IMP_LOG_WRITE(VERBOSE,it->second->show());
+    IMP_LOG(VERBOSE,"std::endl");
+
     if (it->second->is_part(s)) {
       // #TODO: too expensive , should be the other way around -
       // build all combinations according to separator.comb_key
@@ -196,6 +209,8 @@ std::vector<CombState *> JNode::min_marginalize(const CombState &s,
   }
 
   //get all of the combinations of the minimum score
+  IMP_LOG(VERBOSE,"min_marginalize for node : " << node_ind_ <<
+          " the minimum score is : "<<min_score << std::endl);
   for (std::map<std::string, CombState *>::iterator it = comb_states_.begin();
        it != comb_states_.end(); it++) {
     if (it->second->is_part(s)) {
@@ -251,11 +266,11 @@ std::vector<CombState *>* JNode::find_minimum(bool move_to_state,
   }
   std::sort(all_states.begin(),all_states.end());
   std::vector<CombState *>* min_combs = new std::vector<CombState *>;
-  std::stringstream err_msg;
-  err_msg<<"JNode::find_minimum the number of requested solutions (";
-  err_msg<<num_of_solutions << ")is larger than the enumerated solution ";
-  err_msg<<"by the node (" << all_states.size() << ")";
-  IMP_INTERNAL_CHECK(all_states.size()>num_of_solutions,err_msg.str().c_str());
+  IMP_INTERNAL_CHECK(all_states.size()>num_of_solutions,
+             "JNode::find_minimum for node: " << node_ind_
+             <<" the number of requested solutions ("
+             <<num_of_solutions << ")is larger than the enumerated solution "
+             <<"by the node (" << all_states.size() << ")");
   //allocate min_combs with the top best solutions
   //  int min_num = all_states.size() * (all_states.size() < num_of_solutions) +
   //              num_of_solutions * (all_states.size() >= num_of_solutions);
@@ -277,5 +292,24 @@ void JNode::clear() {
   comb_states_.clear();
   ds_=NULL;
 }
+
+//! Get the score for this combination
+Float JNode::get_score(const CombState &comb) {
+  IMP_IF_LOG(VERBOSE){
+    IMP_LOG(VERBOSE,"JNode::get_score for combination:"<<std::endl);
+    IMP_LOG_WRITE(VERBOSE,comb.show());
+    IMP_LOG(VERBOSE,std::endl);
+  }
+
+  std::string key = comb.partial_key(&particles_);
+  IMP_USAGE_CHECK(comb_states_.find(key) != comb_states_.end(),
+       "The combination was not realized by the node"<<std::endl,
+        ValueException);
+  IMP_LOG(VERBOSE,"JNode::get_score partial key: " <<
+          key << " score: " <<
+          comb_states_.find(key)->second->get_total_score() <<std::endl);
+  return comb_states_.find(key)->second->get_total_score();
+}
+
 
 IMPDOMINO_END_NAMESPACE

@@ -50,7 +50,8 @@ void read_junction_tree(const std::string &filename, JunctionTree *jt) {
     }
     else if (status == 2) {
       if (ls.size() == 2) {
-        IMP_LOG(VERBOSE,"adding edge"<<std::endl);
+        IMP_LOG(VERBOSE,"adding edge bewteen " << ls[0]
+                << " and " << ls[1]<< std::endl);
         jt->add_edge(boost::lexical_cast<int>(ls[0]),
                    boost::lexical_cast<int>(ls[1]));
       }
@@ -61,6 +62,8 @@ void read_junction_tree(const std::string &filename, JunctionTree *jt) {
   }
   IMP_USAGE_CHECK(status==2,"wrong junction tree format",ValueException);
   jt_f.close();
+  IMP_LOG(VERBOSE,"finish parsing graph" << std::endl);
+
 }
 
 //! Initialize a graph with N nodes

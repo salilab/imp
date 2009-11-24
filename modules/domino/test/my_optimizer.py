@@ -17,8 +17,8 @@ class my_optimizer:
             self.particles.append(new_p)
             new_p.add_attribute(IMP.domino.node_name_key(),str(i))
             new_p.add_attribute(IMP.FloatKey("OPT"),0,False)
-        self.__jt_setup(jt_filename)
         self.init_sampling_space()
+        self.__jt_setup(jt_filename)
         self.init_restraints(restraints_filename)
 
     def exhaustive_search(self):
@@ -47,7 +47,8 @@ class my_optimizer:
     def __jt_setup(self, jt_filename):
         self.jt = IMP.domino.JunctionTree()
         IMP.domino.read_junction_tree(jt_filename,self.jt)
-        self.d_opt = IMP.domino.DominoOptimizer(self.jt,self.mdl)
+        self.re = IMP.domino.RestraintEvaluator(self.discrete_sampler)
+        self.d_opt = IMP.domino.DominoOptimizer(self.jt,self.mdl,self.re)
 
     def init_restraints(self,restraints_filename):
         self.all_restraints.append(IMP.core.RestraintSet("simple"))

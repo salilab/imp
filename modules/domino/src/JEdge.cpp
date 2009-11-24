@@ -66,10 +66,13 @@ void JEdge::min_marginalize(JNode *from_node, JNode *to_node)
   std::map<std::string, float> *fnoss, *tnoss, *fnnss, *tnnss;
   fn = source_;
   tn = target_;
+
   fnoss = &source_old_score_separators_;
   tnoss = &target_old_score_separators_;
+
   fnnss = &source_new_score_separators_;
   tnnss = &target_new_score_separators_;
+
   if (!(source_->get_node_index() == from_node->get_node_index())) {
     tn = source_;
     fn = target_;
@@ -78,18 +81,27 @@ void JEdge::min_marginalize(JNode *from_node, JNode *to_node)
     tnnss = &source_new_score_separators_;
     fnnss = &target_new_score_separators_;
   }
+
   for (std::map<std::string, CombState *>::iterator e = separators_.begin();
        e != separators_.end(); e++) {
+
+    std::cout<<e->first<<std::endl;
+    e->second->show();
+
     std::vector<CombState *> min_p_all;
     //marginalize over all particles except for those that are part
     //of the separator.
     min_p_all = fn->min_marginalize(*(e->second));
+
     CombState *min_p = min_p_all[0];
+
     //      (*fnmp)[e->first]=min_p;
-    //    std::cout << "JEdge::min_marginalize for separator : " << e->first
-    //    <<  " : the optimal from combination is : " << min_p << std::endl;
+    IMP_LOG(VERBOSE,"JEdge::min_marginalize for separator : " << e->first
+       <<  " : the optimal from combination is : " << min_p << std::endl);
     (*tnoss)[e->first] = (*tnnss)[e->first];
+
     (*tnnss)[e->first] = min_p->get_total_score();
+
     // I think that we should release min_p here - it was allocated
     //in min_marginalize
   }

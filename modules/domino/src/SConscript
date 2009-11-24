@@ -20,7 +20,7 @@ files = [
          'TransformationMappedDiscreteSet.cpp',
          'TransformationPermutationSampler.cpp',
          'TransformationUtils.cpp',
-        ]
-
+        ] \
+        + SConscript('internal/SConscript')
 # Build and install the shared library:
 env.IMPModuleLib(files)
