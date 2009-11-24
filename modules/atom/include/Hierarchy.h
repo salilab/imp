@@ -363,8 +363,12 @@ inline void show(Hierarchy h, std::ostream &out=std::cout) {
 }
 
 //! make the given hierarchy move rigidly
-/** All particles in the hierarchy with cartesian coordinates at
-    the time of the function call are made to move rigidly.
+/** The rigid body created has all the leaves as members and a
+    member rigid body for each internal node in the tree.
+
+    \note any existing coordinates and radii for internal nodes
+    are overwritten.
+
     \relatesalso Hierarchy
     \relatesalso IMP::core::RigidBody
 */

@@ -268,25 +268,18 @@ Bonds get_internal_bonds(Hierarchy mhd)
 
 
 
-namespace {
-  struct IsXYZ {
-    template <class H>
-    bool operator()(H h) const {
-      return core::XYZ::particle_is_instance(h);
-    }
-  };
-}
-
 core::RigidBody rigid_body_setup_hierarchy(Hierarchy h) {
-  Particles eps;
-  core::gather(h, core::XYZ::particle_is_instance, std::back_inserter(eps));
-  core::XYZs extra_members(eps);
-  if (!core::XYZ::particle_is_instance(h)) {
-    core::XYZR d= core::XYZR::setup_particle(h);
-  }
+  core::XYZs leaves(get_leaves(h));
   core::RigidBody rbd
-    = core::RigidBody::setup_particle(h, extra_members);
+    = core::RigidBody::setup_particle(h, leaves);
   rbd.set_coordinates_are_optimized(true);
+  Particles internal= core::get_internal(h);
+  for (unsigned int i=0; i< internal.size(); ++i) {
+    if (internal[i] != h) {
+      core::RigidMembers leaves(get_leaves(Hierarchy(internal[i])));
+      core::RigidBody::setup_particle(internal[i], leaves);
+    }
+  }
   return rbd;
 }
 
