@@ -1,5 +1,5 @@
 /**
- *  \file RestraintEvaluatorFromFiles.h   \brief A restraint evaluataor.
+ *  \file RestraintEvaluatorFromFile.h   \brief A restraint evaluator.
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
@@ -70,7 +70,7 @@ void read_combinations(const std::string &filename, Combinations *combs) {
 //! A read restraint values from precalculated files
 /**
  */
-class IMPDOMINOEXPORT RestraintEvaluatorFromFiles
+class IMPDOMINOEXPORT RestraintEvaluatorFromFile
 {
 public:
   //! Constructor

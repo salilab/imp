@@ -1,6 +1,6 @@
 files =[
  'RestraintEvaluator.h',
- 'RestraintEvaluatorFromFiles.h'
+ 'RestraintEvaluatorFromFile.h'
 ]
 files = [File(x) for x in files]
 Return('files')
