@@ -16,9 +16,7 @@
 IMP_BEGIN_NAMESPACE
 
 //! A vector-like container for reference counted objects
-/** The interface of this class is like that of std::vector except
-    you must use VectorOfRefCounted::set() to change existing members
-    instead of VectorOfRefCounted::operator[]().
+/** The interface of this class is like that of std::vector.
 
     Documentation for std::vector can be found at as part of the SGI
     stl documentation, among other places
@@ -35,20 +33,20 @@ class VectorOfRefCounted {
   typedef std::vector<RC> Data;
   Data data_;
   // make sure they are converted to RC
-  void ref(RC v) {
+  static void ref(RC v) {
     Policy::ref(v);
   }
-  void unref(RC v) {
+  static void unref(RC v) {
     Policy::unref(v);
   }
   template <class It>
-    void ref(It b, It e) {
+  static void ref(It b, It e) {
     for (It c= b; c != e; ++c) {
       ref(*c);
     }
   }
   template <class It>
-    void unref(It b, It e) {
+  static void unref(It b, It e) {
     for (It c= b; c != e; ++c) {
       unref(*c);
     }
@@ -88,6 +86,49 @@ class VectorOfRefCounted {
   operator const std::vector<RC>&() const {
     return data_;
   }
+#ifndef IMP_DOXYGEN
+  template <class T>
+  struct Proxy: public T {
+    T &v_;
+    Proxy(T& v): v_(v){}
+    operator T const() {return v_;}
+    void operator=(T v) {
+      using std::swap;
+      swap(v_, v);
+      ref(v_);
+      unref(v);
+    }
+    /*T& operator->() {
+      return v_;
+      }*/
+  };
+  template <class T>
+  struct Proxy<T*> {
+    T* &v_;
+    Proxy(T*& v): v_(v){}
+    operator T*() {return v_;}
+    void operator=(T* v) {
+      using std::swap;
+      swap(v_, v);
+      ref(v_);
+      unref(v);
+    }
+    T* operator->() {
+      return v_;
+    }
+  };
+  // swig will use __set__ so we don't have to worry about it
+  Proxy<RC> operator[](unsigned int i) {
+    IMP_USAGE_CHECK(i < size(), "Index out of range in []: "
+                    << i << ">=" << size(), IndexException);
+    return Proxy<RC>(data_[i]);
+  }
+#else
+  // pretend it is just a normal reference
+  /** Change a value in the vector (and refcount appropriately). */
+  RC& operator[](unsigned int i);
+#endif
+
 #endif
   RC operator[](unsigned int i) const {
     IMP_USAGE_CHECK(i < size(), "Index out of range in []: "
@@ -97,9 +138,10 @@ class VectorOfRefCounted {
   void set(unsigned int i, RC p) {
     IMP_USAGE_CHECK(i < size(), "Index out of range in set "
               << i << ">=" << size(), IndexException);
-    unref(data_[i]);
-    data_[i]=p;
-    ref(p);
+    using std::swap;
+    swap(data_[i], p);
+    ref(data_[i]);
+    unref(p);
   }
   RC back() const {
     IMP_USAGE_CHECK(!empty(), "Can't call back on empty container",
