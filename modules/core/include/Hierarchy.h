@@ -556,6 +556,12 @@ HD breadth_first_find(HD h, F f)
 IMPCOREEXPORT GenericHierarchies
 get_leaves(Hierarchy mhd);
 
+//! Get all the non-leaves of the bit of hierarchy
+/**     \relatesalso Hierarchy
+ */
+IMPCOREEXPORT GenericHierarchies
+get_internal(Hierarchy mhd);
+
 //! Get all the particles in the subtree
 /**     \relatesalso Hierarchy
  */
