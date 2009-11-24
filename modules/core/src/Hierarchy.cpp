@@ -159,6 +159,34 @@ get_leaves(Hierarchy mhd)
 }
 
 
+
+namespace
+{
+
+struct MHDNotMatchingLeaves
+{
+  HierarchyTraits traits_;
+  MHDNotMatchingLeaves(HierarchyTraits tr): traits_(tr){}
+  bool operator()(Particle *p) const {
+    Hierarchy mhd(p, traits_);
+    return mhd.get_number_of_children()!=0;
+  }
+};
+
+} // namespace
+
+
+GenericHierarchies
+get_internal(Hierarchy mhd)
+{
+  GenericHierarchies out;
+  gather(mhd, MHDNotMatchingLeaves(mhd.get_traits()),
+         std::back_inserter(out));
+  return out;
+}
+
+
+
 namespace
 {
 
