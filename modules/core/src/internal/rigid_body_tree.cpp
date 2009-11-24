@@ -89,6 +89,9 @@ RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
   set_name(std::string("Rigid body hierachy for particle "
                        + d.get_particle()->get_name()));
   // build spheres on internal coordinates
+  IMP_USAGE_CHECK(r->get_number_of_refined(d) > 0,
+                  "Refiner cannot produce any particles for rigid body.",
+                  UsageException);
   algebra::Sphere3Ds spheres(r->get_number_of_refined(d));
   for (unsigned int i=0; i< spheres.size(); ++i) {
     Particle *rp= r->get_refined(d, i);
