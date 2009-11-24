@@ -1480,6 +1480,16 @@ protected:                                                              \
 
 
 
+//! Define the types for storing sets of objects
+/** The macro defines the types Names and NamesTemp.
+ */
+#define IMP_OBJECTS(Name)                               \
+  /** Store a collection. */                            \
+  typedef VectorOfRefCounted<Name*> Name##s;            \
+  /** Use this type to return a collection or store
+      a collection when you know they are ref-counted elsewhere. */     \
+  typedef std::vector<Name*> Name##sTemp
+
 /**
    Define a new key type.
 

@@ -22,10 +22,9 @@ IMP_BEGIN_NAMESPACE
 
 class Particle;
 class Restraint;
+IMP_OBJECTS(Restraint);
 class ScoreState;
-typedef VectorOfRefCounted<Restraint*> Restraints;
-typedef VectorOfRefCounted<ScoreState*> ScoreStates;
-
+IMP_OBJECTS(ScoreState);
 
 //! Class for storing model, its restraints, and particles.
 /** The Model maintains a standard IMP container for each of Particle,

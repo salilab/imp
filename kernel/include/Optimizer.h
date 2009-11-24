@@ -22,8 +22,6 @@
 
 IMP_BEGIN_NAMESPACE
 
-typedef VectorOfRefCounted<OptimizerState*> OptimizerStates;
-
 //! Base class for all optimizers.
 /** The Optimizer maintains a list of OptimizerStates which are
     updated each time the conformation is changed.

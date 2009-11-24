@@ -63,6 +63,9 @@ struct ContainerTraits<Particle> {
   static bool is_dirty(const Particle *p) {
     return p->get_is_changed();
   }
+  static bool is_valid(const Particle* p) {
+    return p;
+  }
 };
 
 template <>
@@ -106,6 +109,9 @@ struct ContainerTraits<ParticlePair> {
   static bool is_dirty(const ParticlePair &p) {
     return p[0]->get_is_changed()
       || p[1]->get_is_changed();
+  }
+  static bool is_valid(const ParticlePair &p) {
+    return p[0] && p[1];
   }
 };
 

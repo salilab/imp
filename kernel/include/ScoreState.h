@@ -129,7 +129,9 @@ public:
   }
 };
 
-
 IMP_END_NAMESPACE
+
+// for ScoreStates
+#include "Model.h"
 
 #endif  /* IMP_SCORE_STATE_H */
