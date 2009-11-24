@@ -2,6 +2,10 @@
 
 \par Week of November 19
 
+- IMP::display::ChimeraWriter now supports the latest version of Chimera
+
+- IMP::display::CGOWriter was renamed to IMP::display::PymolWriter as it can do more than just CGO.
+
 - IMP::VectorOfRefCounted::operator[] can now be used for assignments just like a normal vector. No more need to use the IMP::VectorOfRefCounted::set() method.
 
 - the IMP::atom::Hierarchy constructor from an IMP::Particle* is now explicit (as were the ther decorator constructors)
