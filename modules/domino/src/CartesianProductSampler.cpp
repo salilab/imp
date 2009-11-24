@@ -16,18 +16,28 @@ CartesianProductSampler::CartesianProductSampler(MappedDiscreteSet *ds,
 
 void CartesianProductSampler::show(std::ostream& out) const
 {
-  //  out <<"CartesianProductSampler with " << ds_->get_number_of_states()
-  //  << " states in the set and " << ps_->size() << "particles "<< std::endl;
+  out <<"CartesianProductSampler with " << ds_->get_number_of_states()
+  << " states in the set and " << ps_->size() << "particles: "<< std::endl;
+  for(Particles::const_iterator it = ps_->begin(); it != ps_->end(); it++) {
+    out<<**it<<",";
+  }
+  out<<std::endl;
 }
-void CartesianProductSampler::populate_states_of_particles(Particles *particles,
-                       std::map<std::string,CombState *> *states) const
+void CartesianProductSampler::populate_states_of_particles(
+   Particles *particles,
+   std::map<std::string,CombState *> *states) const
 {
   CombState *calc_state;
-  unsigned int comb_size = particles->size();
-  std::vector<int> v_int(comb_size);
-  std::vector<int> c_int(comb_size);
+  unsigned int comb_size = particles->size();//the size of the combination
+  std::vector<int> v_int(comb_size);//
+  std::vector<int> c_int(comb_size);//
   unsigned int i;
   for(i=0;i<comb_size;i++){
+    //TODO - return!
+    // IMP_check(ds_->get_number_of_mapped_states((*particles)[i])>0,
+    //"CartesianProductSampler::populate_states_of_particles the "
+    //<< i <<"'th particle has no state",
+    //ValueException);
     v_int[i] = ds_->get_number_of_mapped_states((*particles)[i]);
     c_int[i] = 0;
   }

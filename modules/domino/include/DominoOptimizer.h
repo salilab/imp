@@ -33,7 +33,9 @@ public:
   \param[in] m  The model
    */
   //TODO - add here much more!
-  DominoOptimizer(const JunctionTree &jt, Model *m);
+  DominoOptimizer(const JunctionTree &jt, Model *m,
+                  internal::RestraintEvaluator *r_eval);
+
   IMP_OPTIMIZER(DominoOptimizer, get_module_version_info())
 
   void set_sampling_space(DiscreteSampler *ds);
@@ -45,6 +47,9 @@ public:
   }
   DiscreteSampler *get_sampling_space() const {return ds_;}
   RestraintGraph  *get_graph() const {return g_;}
+  void set_restraint_evaluator(internal::RestraintEvaluator *rstr_eval) {
+    rstr_eval_=rstr_eval;
+  }
   inline unsigned int get_number_of_solutions() const {
       return num_of_solutions_;}
   inline void set_number_of_solutions(unsigned int n){num_of_solutions_=n;}
@@ -95,6 +100,7 @@ protected:
   RestraintGraph *g_;
   unsigned int num_of_solutions_;
   std::vector<OptTuple> rs_;
+  internal::RestraintEvaluator *rstr_eval_;
 };
 IMPDOMINO_END_NAMESPACE
 

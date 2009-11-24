@@ -1,0 +1,6 @@
+files =[
+ 'RestraintEvaluator.h',
+ 'RestraintEvaluatorFromFiles.h'
+]
+files = [File(x) for x in files]
+Return('files')

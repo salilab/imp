@@ -65,7 +65,8 @@ class DOMINOTests(IMP.test.TestCase):
         jt_filename = self.get_input_file_name("simple_jt3.txt")
         self.jt = IMP.domino.JunctionTree()
         IMP.domino.read_junction_tree(jt_filename,self.jt)
-        self.d_opt = IMP.domino.DominoOptimizer(self.jt,self.m)
+        self.re=IMP.domino.RestraintEvaluator(self.sampler)
+        self.d_opt = IMP.domino.DominoOptimizer(self.jt,self.m,self.re)
         self.d_opt.set_sampling_space(self.sampler)
 
     def setUp(self):

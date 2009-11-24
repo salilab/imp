@@ -25,13 +25,16 @@ void DominoOptimizer::show(std::ostream &out) const {
   out << "DOMINO optimizer" << std::endl;
 }
 
-DominoOptimizer::DominoOptimizer(const JunctionTree &jt, Model *m)
+DominoOptimizer::DominoOptimizer(const JunctionTree &jt, Model *m,
+                                 internal::RestraintEvaluator *r_eval)
 {
   ds_ = NULL;
-  g_ = new RestraintGraph(jt, m);
+  g_ = new RestraintGraph(jt, m,r_eval);
   set_model(m);
   num_of_solutions_=1;
+  rstr_eval_=r_eval;
 }
+
 void DominoOptimizer::set_sampling_space(DiscreteSampler *ds)
 {
   ds_ = ds;
@@ -68,9 +71,14 @@ Float DominoOptimizer::optimize(unsigned int max_steps)
                   <<std::endl);
   g_->infer(num_of_solutions_);
   //move the model to the states that reach the global minimum
-  IMP_LOG(VERBOSE," DominoOptimizer::optimize going to move the "
-          <<"model to the global minimum"<<std::endl);
-  g_->move_model2global_minimum();
+  g_->move_to_global_minimum_configuration();
+  IMP_IF_LOG(TERSE) {
+    IMP_LOG(TERSE," DominoOptimizer::optimize going to move the "
+            <<"model to the global minimum: "<<std::endl);
+    IMP_LOG_WRITE(TERSE,g_->get_opt_combination(0)->show());
+    IMP_LOG(TERSE,std::endl);
+
+  }
   return g_->get_minimum_score();
 }
 
@@ -82,7 +90,7 @@ void DominoOptimizer::add_jt_node(int node_index,
    it != particles_ind.end(); it++) {
     particles.push_back(get_particle(&m, *it));
   }
-  g_->add_node(node_index,particles);
+  g_->add_node(node_index,particles,rstr_eval_);
 }
 
 void DominoOptimizer::add_jt_edge(int node1_ind, int node2_ind)

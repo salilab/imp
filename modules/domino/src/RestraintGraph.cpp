@@ -20,7 +20,8 @@ StringKey node_name_key() {
   return k;
 }
 
-void RestraintGraph::load_data(const JunctionTree &jt,Model *mdl) {
+void RestraintGraph::load_data(const JunctionTree &jt,Model *mdl,
+                               internal::RestraintEvaluator *r_eval) {
 
   IMP_INTERNAL_CHECK(jt.get_number_of_nodes()>0,
                      "empty junction tree" << std::endl);
@@ -28,19 +29,18 @@ void RestraintGraph::load_data(const JunctionTree &jt,Model *mdl) {
   std::map<std::string, Particle*> p_map;
   //a mapping between names and particles. Notice that the name
   // is not the default particle one, but a string name attribute
-  IMP_LOG(VERBOSE,"RestraintGraph::load_data with : " <<
+  IMP_LOG(VERBOSE,"RestraintGraph::load_data from model with : " <<
                   mdl->get_number_of_particles() << " particles "<<std::endl);
   for (Model::ParticleIterator it = mdl->particles_begin();
          it != mdl->particles_end(); it++ ) {
     if ((*it)->has_attribute(node_name_key())) {
-      IMP_LOG(VERBOSE,"adding particle with key: " <<
+      IMP_LOG(VERBOSE,"adding particle " << **it << " with key: " <<
               (*it)->get_value(node_name_key())<<std::endl);
       p_map[(*it)->get_value(node_name_key())] = *it;
     }
   }
   IMP_INTERNAL_CHECK(p_map.size()>0,
              "no node was assigned with name attribute" << std::endl);
-  std::cout<<"map size: " << p_map.size()<<std::endl;
   // load nodes
   for(int i=0;i<jt.get_number_of_nodes();i++) {
     Particles ps;
@@ -54,7 +54,7 @@ void RestraintGraph::load_data(const JunctionTree &jt,Model *mdl) {
               p_map[comp_name]->get_name()<<std::endl);
       ps.push_back(p_map[comp_name]);
     }
-    add_node(i, ps);
+    add_node(i, ps, r_eval);
   }
   //load edges
   for(int n1=0;n1<jt.get_number_of_nodes();n1++) {
@@ -68,8 +68,9 @@ void RestraintGraph::load_data(const JunctionTree &jt,Model *mdl) {
   }
 }
 
-RestraintGraph::RestraintGraph(const JunctionTree &jt,Model *mdl) {
-  load_data(jt,mdl);
+RestraintGraph::RestraintGraph(const JunctionTree &jt,Model *mdl,
+                 internal::RestraintEvaluator *r_eval) {
+  load_data(jt,mdl,r_eval);
   infered_ = false;
   min_combs_ = new std::vector<CombState *>();
 }
@@ -84,7 +85,8 @@ void RestraintGraph::initialize_graph(int number_of_nodes)
 }
 
 void RestraintGraph::add_node(unsigned int node_index,
-                              Particles &particles)
+                              Particles &particles,
+                              internal::RestraintEvaluator *rstr_eval)
 {
   std::stringstream error_message;
   error_message << " RestraintGraph::add_node the input node_index: "
@@ -93,6 +95,7 @@ void RestraintGraph::add_node(unsigned int node_index,
   IMP_INTERNAL_CHECK(node_index < num_vertices(g_), error_message.str());
   node_data_[node_index] = new JNode(particles,
                                     node_index);
+  node_data_[node_index]->set_restraint_evaluator(rstr_eval);
 }
 
 RestraintGraph::Pair RestraintGraph::get_edge_key(unsigned int node1_ind,
@@ -208,10 +211,12 @@ void RestraintGraph::initialize_potentials(Restraint *r, Particles *ps,
     std::cerr << " has not been realized." << std::endl;
   }
   else {
-    IMP_LOG(TERSE,"restraint : " );
-    IMP_LOG_WRITE(TERSE,r->show(IMP_STREAM));
-    IMP_LOG(TERSE,"is realized by node with index : "<<
+    IMP_IF_LOG(TERSE) {
+      IMP_LOG(TERSE,"restraint : " );
+      IMP_LOG_WRITE(TERSE,r->show(IMP_STREAM));
+      IMP_LOG(TERSE,"is realized by node with index : "<<
                      jn->get_node_index()<<std::endl);
+    }
     jn->realize(r, ps, weight);
   }
 }
@@ -266,16 +271,18 @@ void  RestraintGraph::infer(unsigned int num_of_solutions)
       it != temp_min_combs->end(); it++) {
     min_comb = new CombState(**(it));
     distribute_minimum(root_, min_comb);
-    IMP_LOG(TERSE,"====MINIMUM COMBINATION number " <<
+    IMP_IF_LOG(TERSE) {
+      IMP_LOG(TERSE,"====MINIMUM COMBINATION number " <<
             it-temp_min_combs->begin()<<" : ============== " << std::endl);
-    IMP_LOG_WRITE(TERSE,min_comb->show(IMP_STREAM));
+      IMP_LOG_WRITE(TERSE,min_comb->show(IMP_STREAM));
+    }
     min_combs_->push_back(min_comb);
   }
   delete temp_min_combs;
   infered_ = true;
   IMP_LOG(VERBOSE,"RestraintGraph::going to move to global minimum"
                   << std::endl);
-  move_model2global_minimum();
+  move_to_global_minimum_configuration();
   IMP_LOG(VERBOSE,"the model is at its global minimum"<< std::endl);
 }
 
@@ -384,31 +391,52 @@ void RestraintGraph::update(unsigned int w, unsigned int v)
 
 }
 
-void RestraintGraph::move_model2state_rec(unsigned int father_ind,
-                                          CombState &best_state) const
+void RestraintGraph::move_to_global_minimum_configuration() const
 {
+  IMP_INTERNAL_CHECK(infered_,
+      "RestraintGraph::move_to_global_minimum_configuration "
+      <<" the graph has not been infered");
+  CombState *best_state = *(min_combs_->begin());
+  move_to_configuration(*best_state);
+}
+
+Float RestraintGraph::move_to_configuration(const CombState &comb) const {
+  IMP_IF_LOG(VERBOSE) {
+    IMP_LOG(VERBOSE,
+           "RestraintGraph::move_to_configuration start moving to "
+           << "configuration: "<<std::endl);
+    IMP_LOG_WRITE(VERBOSE,comb.show());
+    IMP_LOG(VERBOSE,std::endl);
+  }
+  Float score=0.0;
   for (std::vector<JNode *>::const_iterator it = node_data_.begin();
        it != node_data_.end(); it++) {
-    CombState *node_state = best_state.get_partial(*((*it)->get_particles()));
+    CombState *node_state = comb.get_partial(*((*it)->get_particles()));
     (*it)->move2state(node_state);
+    score += (*it)->get_score(comb);
     delete(node_state);
   }
+  return score;
 }
-void RestraintGraph::move_model2global_minimum() const
+
+//! TODO - check that this is still correct
+CombState *RestraintGraph::get_minimum_configuration() const
 {
   IMP_INTERNAL_CHECK(infered_, "RestraintGraph::move_model2global_minimum the "
              << "graph has not been infered");
   CombState *best_state = *(min_combs_->begin());
-  move_model2state_rec(root_, *best_state);
+  return best_state;
+  //move_model2state_rec(root_, *best_state);
 }
-CombState *RestraintGraph::get_minimum_comb() const
-{
-  std::stringstream err_msg;
-  err_msg << "RestraintGraph::move_model2global_minimum the "
-          << "graph has not been infered";
-  IMP_INTERNAL_CHECK(infered_, err_msg.str());
-  return *(min_combs_->begin());
-}
+// CombState *RestraintGraph::get_minimum_comb() const
+// {
+// >>>>>>> .r3915
+//   std::stringstream err_msg;
+//   err_msg << "RestraintGraph::move_model2global_minimum the "
+//           << "graph has not been infered";
+//   IMP_INTERNAL_CHECK(infered_, err_msg.str());
+//   return *(min_combs_->begin());
+// }
 void RestraintGraph::clear() {
   for(std::map<Pair, JEdge *>::iterator it = edge_data_.begin();
       it != edge_data_.end();it++) {

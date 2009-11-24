@@ -12,6 +12,7 @@
 #include "DiscreteSampler.h"
 #include "CombState.h"
 #include <IMP/base_types.h>
+#include "internal/RestraintEvaluator.h"
 #include <vector>
 #include <sstream>
 #include <algorithm>
@@ -33,7 +34,9 @@ public:
   ~JNode() {
     //    free(opt_state);
   }
-
+  void set_restraint_evaluator(internal::RestraintEvaluator *rstr_eval) {
+    rstr_eval_=rstr_eval;
+  }
   //! Set the discrete sampling space of each of particles in the node
   /** \param [in] ds the sampler data
    */
@@ -57,7 +60,7 @@ public:
       \param[in] states      the dataset to be filled with states.
    */
   void populate_states_of_particles(Particles *particles,
-          std::map<std::string,CombState *> *states);
+          Combinations *states);
   //! Adds the restraint values to all combinations
   /**\param[in] r      the  restraint
       \param[in] ps     the particles participate in the restraint at the
@@ -109,13 +112,20 @@ public:
   //! Move the system to the state encoded in the class
   void move2state(CombState *cs);
   void clear();
+
+  //! Get the score for this combination
+  Float get_score(const CombState &comb);
+
 protected:
+
   Particles particles_; //a sorted list of particles that are part of the node
   unsigned int node_ind_;
-  std::map<std::string, CombState *> comb_states_;
+  Combinations comb_states_;
   std::vector<std::string> comb_states_keys_;
   DiscreteSampler *ds_;
+  internal::RestraintEvaluator *rstr_eval_;
 };
+
 
 IMPDOMINO_END_NAMESPACE
 

@@ -103,9 +103,7 @@ unprotected_evaluate(DerivativeAccumulator *accum) const
 
 void SimpleDiscreteRestraint::show(std::ostream& out) const
 {
-  std::cout << "=========" << std::endl;
   out << "simple discrete restraint:" << std::endl;
-
   get_version_info().show(out);
   out << "  particles: " << get_particle(0)->get_value(node_name_key());
   out << " and " << get_particle(1)->get_value(node_name_key());
