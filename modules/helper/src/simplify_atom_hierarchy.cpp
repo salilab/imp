@@ -16,7 +16,7 @@
 #include <IMP/display/LogOptimizerState.h>
 #include <IMP/display/ChimeraWriter.h>
 #include <IMP/display/xyzr_geometry.h>
-#include <IMP/display/CGOWriter.h>
+#include <IMP/display/PymolWriter.h>
 #include <IMP/em/FitRestraint.h>
 #include <IMP/em/MRCReaderWriter.h>
 #include <IMP/em/SampledDensityMap.h>
@@ -271,7 +271,7 @@ atom::Hierarchy create_simplified(atom::Hierarchy in,
     los->add_geometry(xyzrg);
     if (0) {
       IMP_NEW(display::LogOptimizerState, plos,
-              (new display::CGOWriter(), "frame.%04d.pymol.pym"));
+              (new display::PymolWriter(), "frame.%04d.pymol.pym"));
       mc->add_optimizer_state(los);
       mc->add_optimizer_state(plos);
 
@@ -288,7 +288,7 @@ atom::Hierarchy create_simplified(atom::Hierarchy in,
     mc->set_model(m);
     IMP_NEW(core::ConjugateGradients, cg, ());
     /*IMP_NEW(display::LogOptimizerState, los2,
-      (new display::CGOWriter(), "local_frame.%04d.pym"));
+      (new display::PymolWriter(), "local_frame.%04d.pym"));
       los2->add_geometry(xyzrg);
       //cg->add_optimizer_state(los2);*/
     mc->set_local_optimizer(cg);
