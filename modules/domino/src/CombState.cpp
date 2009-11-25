@@ -10,14 +10,14 @@
 
 IMPDOMINO_BEGIN_NAMESPACE
 
-unsigned int CombState::get_state_num(Particle *p) {
+unsigned int CombState::get_state_num(Particle *p) const {
   std::stringstream err_msg;
   err_msg << "CombState::get_state_num the particle "
           << p->get_value(node_name_key());
   //  p->show(err_msg);
   err_msg << " is not found in the combstate data : ";
   IMP_INTERNAL_CHECK(data_.find(p) != data_.end(), err_msg.str());
-  return data_[p];
+  return data_.find(p)->second;
 }
 
 void CombState::show(std::ostream& out) const {

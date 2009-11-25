@@ -12,7 +12,7 @@
 #include "DiscreteSampler.h"
 #include "CombState.h"
 #include <IMP/base_types.h>
-#include "internal/RestraintEvaluator.h"
+#include "RestraintEvaluatorI.h"
 #include <vector>
 #include <sstream>
 #include <algorithm>
@@ -34,7 +34,7 @@ public:
   ~JNode() {
     //    free(opt_state);
   }
-  void set_restraint_evaluator(internal::RestraintEvaluator *rstr_eval) {
+  void set_restraint_evaluator(RestraintEvaluatorI *rstr_eval) {
     rstr_eval_=rstr_eval;
   }
   //! Set the discrete sampling space of each of particles in the node
@@ -123,7 +123,7 @@ protected:
   Combinations comb_states_;
   std::vector<std::string> comb_states_keys_;
   DiscreteSampler *ds_;
-  internal::RestraintEvaluator *rstr_eval_;
+  RestraintEvaluatorI *rstr_eval_;
 };
 
 

@@ -7,6 +7,9 @@ files = [
          'CombState.h',
          'DiscreteSampler.h',
          'DiscreteSet.h',
+         'RestraintEvaluatorI.h',
+         'RestraintEvaluator.h',
+         'RestraintEvaluatorFromFile.h',
          'DominoOptimizer.h',
          'JEdge.h',
          'JNode.h',
@@ -23,8 +26,7 @@ files = [
          'TransformationPermutationSampler.h',
          'TransformationUtils.h',
         ] \
-        + SConscript('boost/SConscript')\
-        + SConscript('internal/SConscript')
+        + SConscript('boost/SConscript')
 
 # Install the include files:
 env.IMPModuleInclude(files)

@@ -21,7 +21,7 @@ StringKey node_name_key() {
 }
 
 void RestraintGraph::load_data(const JunctionTree &jt,Model *mdl,
-                               internal::RestraintEvaluator *r_eval) {
+                               RestraintEvaluatorI *r_eval) {
 
   IMP_INTERNAL_CHECK(jt.get_number_of_nodes()>0,
                      "empty junction tree" << std::endl);
@@ -69,7 +69,7 @@ void RestraintGraph::load_data(const JunctionTree &jt,Model *mdl,
 }
 
 RestraintGraph::RestraintGraph(const JunctionTree &jt,Model *mdl,
-                 internal::RestraintEvaluator *r_eval) {
+                 RestraintEvaluatorI *r_eval) {
   load_data(jt,mdl,r_eval);
   infered_ = false;
   min_combs_ = new std::vector<CombState *>();
@@ -86,7 +86,7 @@ void RestraintGraph::initialize_graph(int number_of_nodes)
 
 void RestraintGraph::add_node(unsigned int node_index,
                               Particles &particles,
-                              internal::RestraintEvaluator *rstr_eval)
+                              RestraintEvaluatorI *rstr_eval)
 {
   std::stringstream error_message;
   error_message << " RestraintGraph::add_node the input node_index: "

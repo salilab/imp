@@ -20,7 +20,8 @@ files = [
          'TransformationMappedDiscreteSet.cpp',
          'TransformationPermutationSampler.cpp',
          'TransformationUtils.cpp',
-        ] \
-        + SConscript('internal/SConscript')
+         'RestraintEvaluator.cpp',
+         'RestraintEvaluatorFromFile.cpp'
+        ]
 # Build and install the shared library:
 env.IMPModuleLib(files)

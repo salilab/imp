@@ -1,5 +1,9 @@
 IMP_DIRECTOR_MODULE_CLASS(domino, DiscreteSampler);
 IMP_DIRECTOR_MODULE_CLASS(domino, DiscreteSet);
+IMP_DIRECTOR_MODULE_CLASS(domino, RestraintEvaluatorI);
+
+//%include "std_map.i"
+
 
 /* Wrap our own classes */
 %include "IMP/domino/CombState.h"
@@ -7,6 +11,9 @@ IMP_DIRECTOR_MODULE_CLASS(domino, DiscreteSet);
 %include "IMP/domino/TransformationUtils.h"
 %include "IMP/domino/JunctionTree.h"
 %include "IMP/domino/DiscreteSampler.h"
+%include "IMP/domino/RestraintEvaluatorI.h"
+%include "IMP/domino/RestraintEvaluator.h"
+%include "IMP/domino/RestraintEvaluatorFromFile.h"
 %include "IMP/domino/JNode.h"
 %include "IMP/domino/RestraintGraph.h"
 %include "IMP/domino/DominoOptimizer.h"
@@ -23,5 +30,11 @@ IMP_DIRECTOR_MODULE_CLASS(domino, DiscreteSet);
 %include "IMP/domino/TransformationDiscreteSet.h"
 %include "IMP/domino/TransformationUtils.h"
 %include "IMP/domino/SymmetrySampler.h"
-%include "IMP/domino/internal/RestraintEvaluator.h"
 
+
+// namespace IMP {
+//   namespace domino {
+//     %template(Combinations) ::std::map < ::std::string, ::IMP::domino::CombState * >;
+//     %template(CombinationValues) ::std::map < ::std::string, float >;
+//   }
+// }

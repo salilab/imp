@@ -18,7 +18,7 @@
 #include <IMP/Model.h>
 #include <IMP/ScoreState.h>
 #include <IMP/Restraint.h>
-#include <IMP/domino/internal/RestraintEvaluator.h>
+#include "RestraintEvaluatorI.h"
 
 #include <vector>
 #include <map>
@@ -75,7 +75,7 @@ public:
       \param[in] mdl The IMP model
    */
   RestraintGraph(const JunctionTree &jt,Model *mdl,
-                 internal::RestraintEvaluator *r_eval);
+                 RestraintEvaluatorI *r_eval);
   //    void clear_states();
   //void set_model(IMP::Model *m_);
   void initialize_graph(int number_of_nodes);
@@ -89,7 +89,7 @@ public:
       \param[in] particles  the particles that are part of the node
    */
   void add_node(unsigned int node_index, Particles &particles,
-                internal::RestraintEvaluator *rstr_eval);
+                RestraintEvaluatorI *rstr_eval);
 
   //! Creates an undirected edge between two nodes
   /** \param[in] node1_ind  the index of the first node
@@ -165,7 +165,7 @@ protected:
   \note The function uses the particle name attribute as identifier
    */
   void load_data(const JunctionTree &jt,Model *mdl,
-                 internal::RestraintEvaluator *r_eval);
+                 RestraintEvaluatorI *r_eval);
 
   //! Determine a DFS
   /** \param[in]  root_ind the index of the node from which the DFS starts
