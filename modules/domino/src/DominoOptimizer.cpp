@@ -26,7 +26,7 @@ void DominoOptimizer::show(std::ostream &out) const {
 }
 
 DominoOptimizer::DominoOptimizer(const JunctionTree &jt, Model *m,
-                                 internal::RestraintEvaluator *r_eval)
+                                 RestraintEvaluatorI *r_eval)
 {
   ds_ = NULL;
   g_ = new RestraintGraph(jt, m,r_eval);

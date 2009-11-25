@@ -81,7 +81,7 @@ public:
     return data_.find(p) != data_.end();
   }
 
-  unsigned int get_state_num(Particle *p);
+  unsigned int get_state_num(Particle *p) const;
 
   const std::string key() const {
   std::stringstream s;
@@ -171,6 +171,7 @@ protected:
 
 
 typedef std::map<std::string, CombState *> Combinations;
+typedef std::map<std::string, float> CombinationValues;
 
 IMPDOMINO_END_NAMESPACE
 

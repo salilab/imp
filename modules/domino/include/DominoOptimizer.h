@@ -10,6 +10,7 @@
 #include "config.h"
 #include "RestraintGraph.h"
 #include "JunctionTree.h"
+#include "RestraintEvaluatorI.h"
 
 #include <IMP/core/RestraintSet.h>
 
@@ -34,7 +35,7 @@ public:
    */
   //TODO - add here much more!
   DominoOptimizer(const JunctionTree &jt, Model *m,
-                  internal::RestraintEvaluator *r_eval);
+                  RestraintEvaluatorI *r_eval);
 
   IMP_OPTIMIZER(DominoOptimizer, get_module_version_info())
 
@@ -47,7 +48,7 @@ public:
   }
   DiscreteSampler *get_sampling_space() const {return ds_;}
   RestraintGraph  *get_graph() const {return g_;}
-  void set_restraint_evaluator(internal::RestraintEvaluator *rstr_eval) {
+  void set_restraint_evaluator(RestraintEvaluatorI *rstr_eval) {
     rstr_eval_=rstr_eval;
   }
   inline unsigned int get_number_of_solutions() const {
@@ -100,7 +101,7 @@ protected:
   RestraintGraph *g_;
   unsigned int num_of_solutions_;
   std::vector<OptTuple> rs_;
-  internal::RestraintEvaluator *rstr_eval_;
+  RestraintEvaluatorI *rstr_eval_;
 };
 IMPDOMINO_END_NAMESPACE
 

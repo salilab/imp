@@ -169,11 +169,11 @@ void JNode::realize(Restraint *r, Particles *ps, Float weight)
   // stores calculated discrete values. It might be that each appears more
   // than once, since the node may contain more particles than the ones
   // indicated by the restraint.
-  std::map<std::string, float> result_cache; // to avoid multiple calculation
+  CombinationValues result_cache; // to avoid multiple calculation
                                              // of the same configuration.
   IMP_INTERNAL_CHECK(rstr_eval_!=NULL,
                      "restraint evaluator was not initialized"<<std::endl);
-  rstr_eval_->calc_scores(comb_states_,result_cache,r,ps);
+  rstr_eval_->calc_scores(comb_states_,result_cache,r,*ps);
   std::string partial_key;
   Float score;
   for (std::map<std::string, CombState *>::iterator it =  comb_states_.begin();
