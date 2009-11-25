@@ -158,6 +158,12 @@ struct StringAttributeTableTraits: public DefaultTraits<String, StringKey>
 namespace {
   static const FloatKey xyzr_keys[]={FloatKey(0U), FloatKey(1U),
                                      FloatKey(2U), FloatKey(3U)};
+  // just to disable a warning
+  inline int use_xyz_to_disable_warning() {
+    if (xyzr_keys[0] != FloatKey(0U)) {
+      return 1;
+    } else return 0;
+  }
 }
 
 IMP_END_INTERNAL_NAMESPACE
