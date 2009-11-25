@@ -207,6 +207,14 @@ class Decorators: public ParentDecorators {
               ValueException);
     ParentDecorators::push_back(p);
   }
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+  typename ParentDecorators::template DecoratorProxy<Decorator>
+  operator[](unsigned int i) {
+    return ParentDecorators::template get_decorator_proxy<Decorator>(i);
+  }
+#else
+  IMP_NO_SWIG(Decorator&operator[](unsigned int i));
+#endif
   Decorator operator[](unsigned int i) const {
     return Decorator(ParentDecorators::operator[](i));
   }
@@ -325,6 +333,19 @@ public:
               ValueException);
     ParentDecorators::push_back(p);
   }
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+  typename ParentDecorators::template DecoratorTraitsProxy<Decorator, Traits>
+  operator[](unsigned int i) {
+    IMP_USAGE_CHECK(has_traits_, "Can only use operator[] on a decorator "
+                    << "container "
+                    << "which is non-empty. This is a bug, but hard to fix.",
+                    UsageException);
+    return ParentDecorators
+      ::template get_decorator_traits_proxy<Decorator, Traits>(i, tr_);
+  }
+#else
+  IMP_NO_SWIG(Decorator& operator[](unsigned int i));
+#endif
   Decorator operator[](unsigned int i) const {
     return Decorator(ParentDecorators::operator[](i), tr_);
   }

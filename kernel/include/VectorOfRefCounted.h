@@ -123,6 +123,51 @@ class VectorOfRefCounted {
                     << i << ">=" << size(), IndexException);
     return Proxy<RC>(data_[i]);
   }
+
+  template <class D>
+  struct DecoratorProxy: public D, public Proxy<RC> {
+    DecoratorProxy(RC& t): D(t), Proxy<RC>(t){
+    }
+    DecoratorProxy(RC&p, bool): D(), Proxy<RC>(p){}
+    void operator=(D v) {
+      D::operator=(v);
+      Proxy<RC>::operator=(v.get_particle());
+    }
+  };
+  template <class D>
+  DecoratorProxy<D> get_decorator_proxy(unsigned int i) {
+    IMP_USAGE_CHECK(i < size(), "Index out of range in []: "
+                    << i << ">=" << size(), IndexException);
+    if (data_[i]) {
+      return DecoratorProxy<D>(data_[i]);
+    } else {
+      return DecoratorProxy<D>(data_[i], false);
+    }
+  }
+
+  template <class D, class T>
+  struct DecoratorTraitsProxy: public D, public Proxy<RC> {
+    DecoratorTraitsProxy(RC & t, T tr):
+      D(t, tr), Proxy<RC>(t){
+    }
+    DecoratorTraitsProxy(RC&p, bool): D(), Proxy<RC>(p){}
+    void operator=(D v) {
+      // traits should match, but not checked
+      D::operator=(v);
+      Proxy<RC>::operator=(v.get_particle());
+    }
+  };
+  template <class D, class T>
+  DecoratorTraitsProxy<D, T> get_decorator_traits_proxy(unsigned int i, T t) {
+    IMP_USAGE_CHECK(i < size(), "Index out of range in []: "
+                    << i << ">=" << size(), IndexException);
+    if (data_[i]) {
+      return DecoratorTraitsProxy<D, T>(data_[i], t);
+    } else {
+      return DecoratorTraitsProxy<D, T>(data_[i], false);
+    }
+  }
+
 #else
   // pretend it is just a normal reference
   /** Change a value in the vector (and refcount appropriately). */
