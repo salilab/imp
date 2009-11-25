@@ -339,9 +339,9 @@ RigidBody::get_transformation() const {
 RigidMembers
 RigidBody::get_members() const {
   Hierarchy hd(get_particle(), internal::rigid_body_data().htraits_);
-  RigidMembers rbms(hd.get_number_of_children());
+  RigidMembers rbms(get_number_of_members());
   for (unsigned int i=0; i< rbms.size(); ++i) {
-    rbms.set(i, RigidMember(hd.get_child(i)));
+    rbms[i]= get_member(i);
   }
   return rbms;
 }
