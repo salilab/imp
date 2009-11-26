@@ -63,7 +63,7 @@ class SimpleExclusionVolumeTests(IMP.test.TestCase):
         o.set_model(m)
         IMP.set_log_level(IMP.VERBOSE)
         print "opt"
-        o.optimize(10)
+        o.optimize(100)
         print "inspect"
         pas = fps+ IMP.core.XYZRs(IMP.core.get_leaves(p1))
         pbs = fps+ IMP.core.XYZRs(IMP.core.get_leaves(p0))
