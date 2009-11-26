@@ -59,7 +59,7 @@ class TransformationUtilsTests(IMP.test.TestCase):
 
                 #transform the rigid body
                 xyz_orig=IMP.core.XYZs(IMP.core.get_leaves(self.mhs[i]))
-                self.tu.move2state(self.rbs[i],state_p)
+                self.tu.move2state(self.rbs[i].get_particle(),state_p)
             self.mdl.evaluate(False) #to make sure that the rigid bodies score states are updated
             #check that the rmsd is 0
             self.assert_(IMP.atom.rmsd(xyz_copy,xyz_orig) < 0.001,
