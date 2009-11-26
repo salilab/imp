@@ -21,8 +21,11 @@ IMPALGEBRA_BEGIN_NAMESPACE
 
 /** @name Vector Generators
 
-    These functions generate VectorD or Vector3D objects using
-    a variety of distributions.
+    These functions generate vector objects. Some
+    of the methods, those with random in their name, generate
+    a single vector chosen uniformly from the specified domain.
+    Others, the cover methods, generate a set of points distributed
+    over the domain.
     @{
  */
 
