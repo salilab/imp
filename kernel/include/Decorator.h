@@ -49,13 +49,13 @@ private:
 protected:
   Decorator(Particle *p): particle_(p) {}
   Decorator() :particle_(NULL)
- {}
+  {}
 public:
   IMP_NO_DOXYGEN(typedef Decorator This;)
 
   IMP_COMPARISONS_1(particle_);
 
- /** \name Methods provided by the Decorator class
+  /** \name Methods provided by the Decorator class
       The following methods are provided by the Decorator class.
       @{
   */
@@ -64,7 +64,7 @@ public:
   Particle *get_particle() const {
     IMP_USAGE_CHECK(particle_,
                     "You must give the decorator a particle to decorate.",
-              InvalidStateException);
+                    InvalidStateException);
     IMP_CHECK_OBJECT(particle_);
     return particle_;
   }
@@ -150,6 +150,119 @@ inline bool operator==(Particle *p, Decorator d) {
 }
 #endif
 
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+#define IMP_DECORATORS_METHODS(test, on_add_decorator, on_add_particle, \
+                               swap)                                    \
+  struct Accessor: public NullDefault {                                 \
+  typedef Accessor This;                                                \
+  typedef Decorator result_type;                                        \
+  typedef unsigned int argument_type;                                   \
+  result_type operator()(argument_type i) const {                       \
+    return o_->operator[](i);                                           \
+  }                                                                     \
+  Accessor(ThisDecorators *pc): o_(pc){}                                \
+  Accessor(): o_(NULL){}                                                \
+  IMP_COMPARISONS_1(o_);                                                \
+private:                                                                \
+/* This should be ref counted, but swig memory management
+   is broken */                                                         \
+ThisDecorators* o_;                                                     \
+};                                                                      \
+void check(Particle *p) {                                               \
+  IMP_USAGE_CHECK(test,                                                 \
+                    "Particle \"" << (p)->get_name()                   \
+                    << "\" missing required attributes",                \
+                  ValueException);                                      \
+}                                                                       \
+template <class It>                                                     \
+void check(It b, It e) {                                                \
+  for (It c= b; c!= e; ++c) {                                           \
+    check(*c);                                                          \
+  }                                                                     \
+}                                                                       \
+public:                                                                 \
+typedef const Decorator const_reference;                                \
+typedef Decorator value_type;                                           \
+typedef const Decorator reference;                                      \
+const Particles &get_particles() const {return *this;}                  \
+void push_back(Decorator d) {                                           \
+  on_add_decorator;                                                     \
+  ParentDecorators::push_back(d);                                       \
+}                                                                       \
+void push_back(Particle *p) {                                           \
+  check(p);                                                             \
+  on_add_particle;                                                      \
+  ParentDecorators::push_back(p);                                       \
+}                                                                       \
+void set(unsigned int i, Decorator d) {                                 \
+  ParentDecorators::set(i, d);                                          \
+}                                                                       \
+Decorator back() const {                                                \
+  IMP_USAGE_CHECK(!ParentDecorators::empty(),                           \
+                  "Can't call back on empty Decorators",                \
+                  InvalidStateException);                               \
+  return Decorator(ParentDecorators::back());                           \
+}                                                                       \
+Decorator front() const {                                               \
+  IMP_USAGE_CHECK(!ParentDecorators::empty(),                           \
+                  "Can't call front on empty Decorators",               \
+                  InvalidStateException);                               \
+  return Decorator(ParentDecorators::front());                          \
+}                                                                       \
+typedef internal::IndexingIterator<Accessor> iterator;                  \
+typedef internal::IndexingIterator<Accessor> const_iterator;            \
+iterator begin() const {                                                \
+  return iterator(Accessor(const_cast<ThisDecorators*>(this)), 0);      \
+}                                                                       \
+iterator end() const {                                                  \
+  return iterator(Accessor(const_cast<ThisDecorators*>(this)),          \
+                  ParentDecorators::size());                            \
+}                                                                       \
+template <class It>                                                     \
+void insert(iterator loc, It b, It e) {                                 \
+  check(b,e);                                                           \
+  for (It c=b; c!= e; ++c) {                                            \
+    on_add_particle;                                                    \
+  }                                                                     \
+  ParentDecorators::insert(ParentDecorators::begin()+(loc-begin()),     \
+                           b, e);                                       \
+}                                                                       \
+void swap_with(ThisDecorators &o) {                                     \
+  swap;                                                                 \
+  ParentDecorators::swap_with(o);                                       \
+}                                                                       \
+
+#elif defined(SWIG)
+#define IMP_DECORATORS_METHODS(test, on_add_decorator, on_add_particle, \
+                               swap)                                    \
+  public:                                                               \
+  const Particles &get_particles() const;                               \
+  void push_back(Decorator d);                                          \
+  void push_back(Particle *p);                                          \
+  Decorator back() const;                                               \
+  Decorator front() const;
+
+#else
+// doxygen
+#define IMP_DECORATORS_METHODS(test, on_add_decorator, on_add_particle, \
+                               swap)                                    \
+  public:                                                               \
+  typedef const Decorator const_reference;                              \
+  typedef Decorator value_type;                                         \
+  typedef const Decorator reference;                                    \
+  const Particles &get_particles() const;                               \
+  void push_back(Decorator d);                                          \
+  void push_back(Particle *p);                                          \
+  Decorator &operator[](unsigned int i);                                \
+  Decorator operator[](unsigned int i) const;                           \
+  Decorator back() const;                                               \
+  Decorator front() const;                                              \
+  class const_iterator;                                                 \
+  iterator begin() const;                                               \
+  iterator end() const;                                                 \
+  void insert(iterator loc, It b, It e);
+
+#endif
 /** A collection of Decorator objects. It supports construction
     from a collection of particles. The interface should be that of
     a std::vector or python list, with the exception that changing
@@ -165,102 +278,29 @@ inline bool operator==(Particle *p, Decorator d) {
 */
 template <class Decorator, class ParentDecorators>
 class Decorators: public ParentDecorators {
-  struct Accessor: public NullDefault {
-    typedef Accessor This;
-    typedef Decorator result_type;
-    typedef unsigned int argument_type;
-    result_type operator()(argument_type i) const {
-      return o_->operator[](i);
-    }
-    Accessor(Decorators<Decorator,ParentDecorators> *pc): o_(pc){}
-    Accessor(): o_(NULL){}
-    IMP_COMPARISONS_1(o_);
-  private:
-    // This should be ref counted, but swig memory management is broken
-    Decorators<Decorator,ParentDecorators>* o_;
-  };
-
-
-
- public:
-  typedef const Decorator const_reference;
-  typedef Decorator value_type;
-  typedef const Decorator reference;
+  typedef Decorators<Decorator, ParentDecorators> ThisDecorators;
+  IMP_DECORATORS_METHODS(Decorator::particle_is_instance(p),,,)
+  public:
   explicit Decorators(const Particles &ps): ParentDecorators(ps) {
-    for (unsigned int i=0; i< ps.size(); ++i) {
-      IMP_USAGE_CHECK(Decorator::particle_is_instance(ps[i]), "Particle "
-                << ps[i]->get_name() << " missing required attributes",
-                ValueException);
-    }
+    check(ps.begin(), ps.end());
   }
   explicit Decorators(unsigned int i): ParentDecorators(i){}
   explicit Decorators(Decorator d): ParentDecorators(d){}
   Decorators(){}
-  //! For python, cast to base type
-  const Particles &get_particles() const {return *this;}
-  void push_back(Decorator d) {
-    ParentDecorators::push_back(d);
-  }
-  void push_back(Particle *p) {
-    IMP_USAGE_CHECK(Decorator::particle_is_instance(p),
-              "Particle is missing required attributes",
-              ValueException);
-    ParentDecorators::push_back(p);
-  }
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+#ifndef SWIG
+#ifndef IMP_DOXYGEN
   typename ParentDecorators::template DecoratorProxy<Decorator>
   operator[](unsigned int i) {
     return ParentDecorators::template get_decorator_proxy<Decorator>(i);
   }
 #else
-  IMP_NO_SWIG(Decorator&operator[](unsigned int i));
+  Decorator& operator[](unsigned int i);
 #endif
+#endif
+
+#ifndef SWIG
   Decorator operator[](unsigned int i) const {
     return Decorator(ParentDecorators::operator[](i));
-  }
-  void set(unsigned int i, Decorator d) {
-    ParentDecorators::set(i, d);
-  }
-  Decorator back() const {
-    IMP_USAGE_CHECK(!ParentDecorators::empty(),
-              "Can't call back on empty Decorators",
-              InvalidStateException);
-    return Decorator(ParentDecorators::back());
-  }
-  Decorator front() const {
-    IMP_USAGE_CHECK(!ParentDecorators::empty(),
-              "Can't call front on empty Decorators",
-              InvalidStateException);
-    return Decorator(ParentDecorators::front());
-  }
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  typedef internal::IndexingIterator<Accessor> iterator;
-  typedef internal::IndexingIterator<Accessor> const_iterator;
-#else
-  class iterator;
-  class const_iterator;
-#endif
-  iterator begin() const {
-    return iterator(Accessor(const_cast<Decorators<Decorator,
-                             ParentDecorators>*>(this)), 0);
-  }
-  iterator end() const {
-    return iterator(Accessor(const_cast<Decorators<Decorator,
-                             ParentDecorators>*>(this)),
-                    ParentDecorators::size());
-  }
-  template <class It>
-  void insert(iterator loc, It b, It e) {
-    for (It c=b; c!= e; ++c) {
-      IMP_USAGE_CHECK(Decorator::particle_is_instance(*c), "Particle "
-                << " missing required attributes",
-                ValueException);
-    }
-    ParentDecorators::insert(ParentDecorators::begin()+(loc-begin()), b, e);
-  }
-#ifndef IMP_DOXYGEN
-  void swap_with(Decorators &o) {
-    ParentDecorators::swap_with(o);
   }
 #endif
 };
@@ -277,32 +317,31 @@ IMP_SWAP_2(Decorators);
     \see Decorators*/
 template <class Decorator, class ParentDecorators, class Traits>
 class DecoratorsWithTraits: public ParentDecorators {
+  typedef DecoratorsWithTraits<Decorator, ParentDecorators, Traits>
+  ThisDecorators;
   Traits tr_;
   bool has_traits_;
-  struct Accessor: public NullDefault {
-    typedef Accessor This;
-    typedef Decorator result_type;
-    typedef unsigned int argument_type;
-    result_type operator()(argument_type i) const {
-      return o_->operator[](i);
-    }
-    Accessor(DecoratorsWithTraits<Decorator,ParentDecorators,
-             Traits> *pc): o_(pc){}
-    Accessor(): o_(NULL){}
-    IMP_COMPARISONS_1(o_);
-  private:
-    // This should be ref counted, but swig memory management is broken
-    DecoratorsWithTraits<Decorator,ParentDecorators, Traits>* o_;
-  };
-
-public:
-  typedef const Decorator const_reference;
-  typedef Decorator value_type;
-  typedef const Decorator reference;
+  IMP_DECORATORS_METHODS(Decorator::particle_is_instance(p, tr_),{
+      if (!has_traits_) {
+        tr_= d.get_traits();
+        has_traits_=true;
+      } else {
+        IMP_USAGE_CHECK(tr_ == d.get_traits(),
+                        "Traits don't match",
+                        ValueException);
+      }
+    },{
+      IMP_USAGE_CHECK(has_traits_, "Need to add a decorator first to get "
+                      << "traits class.", UsageException);
+    }, {
+      std::swap(tr_, o.tr_);
+      std::swap(has_traits_, o.has_traits_);
+    })
+  public:
   explicit DecoratorsWithTraits(Traits tr): tr_(tr), has_traits_(true){}
   explicit DecoratorsWithTraits(Decorator d): ParentDecorators(d),
                                               tr_(d.get_traits()),
-                           has_traits_(true){}
+                                              has_traits_(true){}
   DecoratorsWithTraits(const Particles &ps,
                        Traits tr): tr_(tr), has_traits_(true) {
     ParentDecorators::resize(ps.size());
@@ -314,25 +353,7 @@ public:
                        Traits tr): ParentDecorators(i), tr_(tr),
                                    has_traits_(true){}
   DecoratorsWithTraits(): has_traits_(false){}
-  void push_back(Decorator d) {
-    if (!has_traits_) {
-      tr_= d.get_traits();
-      has_traits_=true;
-    } else {
-      IMP_USAGE_CHECK(tr_ == d.get_traits(),
-                "Traits don't match",
-                ValueException);
-    }
-    ParentDecorators::push_back(d);
-  }
-  void push_back(Particle *p) {
-    IMP_USAGE_CHECK(has_traits_, "Must set traits before adding particles",
-              InvalidStateException);
-    IMP_USAGE_CHECK(Decorator::particle_is_instance(p, tr_),
-              "Particle is missing required attributes",
-              ValueException);
-    ParentDecorators::push_back(p);
-  }
+
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
   typename ParentDecorators::template DecoratorTraitsProxy<Decorator, Traits>
   operator[](unsigned int i) {
@@ -346,72 +367,10 @@ public:
 #else
   IMP_NO_SWIG(Decorator& operator[](unsigned int i));
 #endif
+
+#ifndef SWIG
   Decorator operator[](unsigned int i) const {
     return Decorator(ParentDecorators::operator[](i), tr_);
-  }
-  void set(unsigned int i, Decorator d) {
-    if (!has_traits_) {
-      tr_= d.get_traits();
-      has_traits_=true;
-    } else {
-      IMP_USAGE_CHECK(tr_ == d.get_traits(),
-                "Traits don't match",
-                ValueException);
-    }
-    ParentDecorators::set(i, d);
-  }
-  //! For python, convert it to a container of plain particles
-  const Particles &get_particles() const {
-    return *this;
-  }
-  Decorator back() const {
-    IMP_USAGE_CHECK(!ParentDecorators::empty(),
-              "Can't call back on empty Decorators",
-              InvalidStateException);
-    return Decorator(ParentDecorators::back(), tr_);
-  }
-  Decorator front() const {
-    IMP_USAGE_CHECK(!ParentDecorators::empty(),
-              "Can't call back on empty Decorators",
-              InvalidStateException);
-    return Decorator(ParentDecorators::front(), tr_);
-  }
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  typedef internal::IndexingIterator<Accessor> iterator;
-  typedef internal::IndexingIterator<Accessor> const_iterator;
-#else
-  class iterator;
-  class const_iterator;
-#endif
-  iterator begin() const {
-    return iterator(Accessor(const_cast<DecoratorsWithTraits<Decorator,
-                             ParentDecorators,
-                             Traits>* >(this)),
-                    0);
-  }
-  iterator end() const {
-    return iterator(Accessor(const_cast<DecoratorsWithTraits<Decorator,
-                             ParentDecorators,
-                             Traits>* >(this)),
-                    ParentDecorators::size());
-  }
-  template <class It>
-  void insert(iterator loc, It b, It e) {
-    if (b==e) return;
-    if (!has_traits_) {
-      tr_= b->get_traits();
-      has_traits_=true;
-    }
-    for (It c=b; c!= e; ++c) {
-      IMP_USAGE_CHECK(Decorator::particle_is_instance(*c, tr_), "Particle "
-                << " missing required attributes",
-                ValueException);
-    }
-    ParentDecorators::insert(ParentDecorators::begin()+(loc-begin()), b, e);
-  }
-#ifndef IMP_DOXYGEN
-  void swap_with(DecoratorsWithTraits &o) {
-    ParentDecorators::swap_with(o);
   }
 #endif
 };
@@ -426,18 +385,35 @@ IMP_SWAP_3(DecoratorsWithTraits);
     A DecoratorsWithTraits can be cast to a Particles or its parent
     type. All decorators in it must have the same traits.
     \see Decorators*/
-template <class D, class P>
-class DecoratorsWithImplicitTraits: public P {
-public:
-  DecoratorsWithImplicitTraits() {}
+template <class Decorator, class ParentDecorators>
+class DecoratorsWithImplicitTraits: public ParentDecorators {
+  typedef DecoratorsWithImplicitTraits<Decorator, ParentDecorators>
+  ThisDecorators;
+  IMP_DECORATORS_METHODS(Decorator::particle_is_instance(p),,,)
+  public:
+  DecoratorsWithImplicitTraits():ParentDecorators(Decorator::get_traits()) {}
   DecoratorsWithImplicitTraits(const Particles &ps):
-    P(ps, D::get_traits()){
+    ParentDecorators(ps, Decorator::get_traits()){
   }
-  DecoratorsWithImplicitTraits(unsigned int i): P(i, D::get_traits()){}
-  DecoratorsWithImplicitTraits(D d): P(d){}
-  void swap_with(DecoratorsWithImplicitTraits &o) {
-    P::swap_with(o);
+  DecoratorsWithImplicitTraits(unsigned int i):
+    ParentDecorators(i, Decorator::get_traits()){}
+  DecoratorsWithImplicitTraits(Decorator d): ParentDecorators(d){}
+#ifndef SWIG
+#ifndef IMP_DOXYGEN
+  typename ParentDecorators::template DecoratorProxy<Decorator>
+  operator[](unsigned int i) {
+    return ParentDecorators::template get_decorator_proxy<Decorator>(i);
   }
+#else
+  Decorator& operator[](unsigned int i);
+#endif
+#endif
+
+#ifndef SWIG
+  Decorator operator[](unsigned int i) const {
+    return Decorator(ParentDecorators::operator[](i));
+  }
+#endif
 };
 
 IMP_SWAP_2(DecoratorsWithImplicitTraits);
@@ -466,7 +442,7 @@ public:
 
 
 #ifndef IMP_DOXYGEN
-#define IMP_SCORE_STATE_DECORATOR_DECL(Name)                             \
+#define IMP_SCORE_STATE_DECORATOR_DECL(Name)                            \
   private:                                                              \
   static ObjectKey get_score_state_key();                               \
   static void set_score_state(SingletonModifier* before,                \
@@ -474,7 +450,7 @@ public:
 public:                                                                 \
  ScoreState *get_score_state() const {                                  \
    return dynamic_cast<ScoreState*>(get_particle()                      \
-                                    ->get_value(get_score_state_key())); \
+                                   ->get_value(get_score_state_key())); \
  }
 
 
