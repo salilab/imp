@@ -7,7 +7,7 @@
 			<Particle id="Protein3"></Particle>
 			<Particle id="Chain4"></Particle>
 			<Particle id="Chain5a"></Particle>
-			<Particle id="Chain6a"></Particle>
+			<Particle id="Frag6a"></Particle>
         	</Restraint>
     	</RigidBody>
 	<ExcludedVolume>
@@ -17,7 +17,7 @@
 			<Particle id="Protein3"></Particle>
 			<Particle id="Chain4"></Particle>
 			<Particle id="Chain5a"></Particle>
-			<Particle id="Chain6a"></Particle>
+			<Particle id="Frag6a"></Particle>
         	</Restraint>
     	</ExcludedVolume>
 	<Diameter>
@@ -25,16 +25,9 @@
 			<Particle id="Protein1"></Particle>
 			<Particle id="Protein2"></Particle>
 			<Particle id="Protein3"></Particle>
-        	</Restraint>
-		<Restraint name="diameter_restraint" weight="1.0" max_diameter="50.0" std_dev="0.1">
 			<Particle id="Chain4"></Particle>
 			<Particle id="Chain5a"></Particle>
-			<Particle id="Chain6a"></Particle>
-			<Source>
-				<Author first_name="xxx" last_name="xxx"></Author>
-				<Journal>FEBS Lett</Journal>
-				<Year>2200</Year>
-			</Source>
+			<Particle id="Frag6a"></Particle>
         	</Restraint>
 	</Diameter>
 </RestraintSet>
