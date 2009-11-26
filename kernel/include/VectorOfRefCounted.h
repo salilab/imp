@@ -124,6 +124,7 @@ class VectorOfRefCounted {
     return Proxy<RC>(data_[i]);
   }
 
+  // Special handling for Decorators classes, evil but it is easiest this way
   template <class D>
   struct DecoratorProxy: public D, public Proxy<RC> {
     DecoratorProxy(RC& t): D(t), Proxy<RC>(t){
@@ -133,6 +134,12 @@ class VectorOfRefCounted {
       D::operator=(v);
       Proxy<RC>::operator=(v.get_particle());
     }
+#ifdef _MSC_VER
+    // for VC, it can't otherwise figure out the conversion chain
+    operator typename D::ParticleP() {
+      return D::get_particle();
+    }
+#endif
   };
   template <class D>
   DecoratorProxy<D> get_decorator_proxy(unsigned int i) {
@@ -156,6 +163,12 @@ class VectorOfRefCounted {
       D::operator=(v);
       Proxy<RC>::operator=(v.get_particle());
     }
+#ifdef _MSC_VER
+    // for VC, it can't otherwise figure out the conversion chain
+    operator typename D::ParticleP() {
+      return D::get_particle();
+    }
+#endif
   };
   template <class D, class T>
   DecoratorTraitsProxy<D, T> get_decorator_traits_proxy(unsigned int i, T t) {

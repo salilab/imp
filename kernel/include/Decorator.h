@@ -51,6 +51,11 @@ protected:
   Decorator() :particle_(NULL)
   {}
 public:
+#ifdef _MSC_VER
+  // needed to get Particle in VectorOfRefCounted
+  typedef Particle* ParticleP;
+#endif
+
   IMP_NO_DOXYGEN(typedef Decorator This;)
 
   IMP_COMPARISONS_1(particle_);
