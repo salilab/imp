@@ -31,6 +31,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 
 //! create a constant vector
 /** This is not the right name.
+    \relatesalso VectorD
  */
 template <unsigned int D>
 VectorD<D> constant_vector(double s) {
@@ -43,6 +44,9 @@ VectorD<D> constant_vector(double s) {
 
 
 //! Generate a random vector in a box with uniform density
+/** \relatesalso BoundingBoxD
+    \relatesalso VectorD
+ */
 template <unsigned int D>
 VectorD<D>
 random_vector_in_box(const BoundingBoxD<D> &bb) {
@@ -56,6 +60,9 @@ random_vector_in_box(const BoundingBoxD<D> &bb) {
 }
 
 //! Generate a random vector on a box with uniform density
+/** \relatesalso BoundingBoxD
+    \relatesalso VectorD
+ */
 template <unsigned int D>
 VectorD<D>
 random_vector_on_box(const BoundingBoxD<D> &bb) {
@@ -114,6 +121,7 @@ random_vector_on_box(const BoundingBoxD<D> &bb) {
 
     The box defined by the corners min, max must be properly
     oriented and non-empty.
+    \relatesalso VectorD
  */
 template <unsigned int D>
 VectorD<D>
@@ -126,6 +134,7 @@ random_vector_in_box(const VectorD<D>&min,
 
     The box defined by the corners min, max must be properly
     oriented and non-empty.
+    \relatesalso VectorD
  */
 template <unsigned int D>
 VectorD<D>
@@ -136,6 +145,8 @@ random_vector_on_box(const VectorD<D>&min,
 
 
 //! Generate a random vector in a box with uniform density
+/** \relatesalso VectorD
+ */
 template <unsigned int D>
 VectorD<D>
 random_vector_in_unit_box() {
@@ -144,6 +155,9 @@ random_vector_in_unit_box() {
 }
 
 //! Generate a random vector in a sphere with uniform density
+/** \relatesalso VectorD
+    \relatesalso Sphere3D
+ */
 template <unsigned int D>
 VectorD<D>
 random_vector_in_sphere(const VectorD<D> &center,
@@ -165,6 +179,9 @@ random_vector_in_sphere(const VectorD<D> &center,
 }
 
 //! Generate a random vector in a unit sphere with uniform density
+/** \relatesalso VectorD
+    \relatesalso Sphere3D
+ */
 template <unsigned int D>
 VectorD<D>
 random_vector_in_unit_sphere(){
@@ -172,6 +189,9 @@ random_vector_in_unit_sphere(){
 }
 
 //! Generate a random vector on a sphere with uniform density
+/** \relatesalso VectorD
+    \relatesalso Sphere3D
+ */
 template <unsigned int D>
 VectorD<D>
 random_vector_on_sphere(const VectorD<D> &center,
@@ -207,6 +227,9 @@ random_vector_on_sphere(const VectorD<D> &center,
 
 
 //! Generate a random vector on a sphere with uniform density
+/** \relatesalso VectorD
+    \relatesalso Sphere3D
+ */
 template <unsigned int D>
 VectorD<D>
 random_vector_on_unit_sphere() {
@@ -221,6 +244,9 @@ random_vector_on_unit_sphere() {
 
     Creates at least the requested number of points.
     \cgalpredicate
+
+    \relatesalso VectorD
+    \relatesalso Sphere3D
     */
 template <unsigned int D>
 std::vector<VectorD<D> >
@@ -232,25 +258,39 @@ uniform_cover_sphere(unsigned int n,
 
 
 //! Generate a set of 3d points that uniformly cover a cylinder
+/** \relatesalso Vector3D
+    \relatesalso Cylinder3D
+*/
 IMPALGEBRAEXPORT Vector3Ds uniform_cover(const Cylinder3D &cyl,
                         int number_of_points);
 
 //! Generate a grid of 3d points on a cylinder surface
+/** \relatesalso Vector3D
+    \relatesalso Cylinder3D
+*/
 IMPALGEBRAEXPORT Vector3Ds grid_cover(const Cylinder3D &cyl,
                                       int number_of_cycles,
                                       int number_of_points_on_cycle);
 
 //! Generate a set of 3d points that uniformly cover a sphere
 /** Creates at least number_of_points points. */
+/** \relatesalso Vector3D
+    \relatesalso Sphere3D
+*/
 IMPALGEBRAEXPORT Vector3Ds uniform_cover(const Sphere3D &sph,
                                          int number_of_points) ;
 //! Generate a set of 3d points that uniformly cover a patch of a sphere
 /**
-/note the implementation can be improved
+   \note the implementation can be improved
+   \relatesalso Sphere3DPatch
+   \relatesalso Vector3Ds
  */
 IMPALGEBRAEXPORT Vector3Ds uniform_cover(const Sphere3DPatch &sph,
                                          unsigned int number_of_points);
 
+/** \relatesalso Vector3D
+    \relatesalso Cone3D
+*/
 IMPALGEBRAEXPORT Vector3Ds uniform_cover(const Cone3D &cone,
                                          unsigned int number_of_points);
 
