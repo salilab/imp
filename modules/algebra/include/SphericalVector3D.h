@@ -91,6 +91,15 @@ IMPALGEBRAEXPORT void quasi_evenly_spherical_distribution(
                               unsigned long N,
                               SphericalVector3Ds &vs,double r=1.0);
 
+//! quasi-evenly distributes N points into a semi sphere.
+/**
+   \param[in] N number of points
+   \param[out] vs A vector of SphericalVector3D classes
+   \param[in] r radius of the sphere
+**/
+IMPALGEBRAEXPORT void quasi_evenly_semi_spherical_distribution(
+                              unsigned long N,
+                              SphericalVector3Ds &vs,double r=1.0);
 
 IMPALGEBRA_END_NAMESPACE
 
