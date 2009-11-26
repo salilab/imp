@@ -21,7 +21,7 @@ class RepresentationTest(IMP.test.TestCase):
         M = repr.to_model()
         M.show()
         M.evaluate(False)
-        self.assertEqual(len(M.get_particles()), 361)
+        self.assertEqual(len(M.get_particles()), 356)
 
 if __name__ == '__main__':
     unittest.main()

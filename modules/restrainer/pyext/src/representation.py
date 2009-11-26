@@ -170,12 +170,12 @@ class _RepChain(_RepresentationNode):
             self.fragment_decorator = chains[0]
             parent = self.fragment_decorator.get_parent()
             parent.remove_child(self.fragment_decorator)
-        if self.children:
+        if self.children and not self.filename:
             particle = IMP.Particle(model)
             decorator = IMP.atom.Chain.setup_particle(particle,
                 self.chain_label)
         else:
-            if not self.filename:
+            if not self.filename and not self.children:
                 raise Exception, "Filename must be present for childless Chain %s" % self.id
             decorator = self.fragment_decorator
         return decorator
