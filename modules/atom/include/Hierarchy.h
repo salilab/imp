@@ -63,11 +63,24 @@ class Chain;
 class Mass;
 
 class Hierarchy;
-/** A collecton of Hierarchies. */
-typedef Decorators<Hierarchy,
-                   IMP::DecoratorsWithImplicitTraits< Hierarchy,
-                              IMP::core::GenericHierarchies> > Hierarchies;
 
+#ifndef SWIG
+/** A collecton of Hierarchies. */
+typedef IMP::DecoratorsWithImplicitTraits< Hierarchy,
+                              IMP::core::GenericHierarchies> Hierarchies;
+#else
+class Hierarchies: public IMP::core::GenericHierarchies {
+public:
+  Hierarchies(Hierarchy h);
+  Hierarchies();
+  Hierarchies(const Particles &ps);
+  const Particles &get_particles() const;
+  void push_back(Hierarchy d);
+  void push_back(Particle *p);
+  Hierarchy back() const;
+  Hierarchy front() const;
+};
+#endif
 
 //! The standard decorator for manipulating molecular structures.
 /** \imp represents molecular structures using the Hierachy decorator.
@@ -252,7 +265,6 @@ public:
     IMP::core::Hierarchy hd= P::get_child(i);
     return decorate_particle(hd.get_particle());
   }
-
   Hierarchies get_children() const {
     return Hierarchies(IMP::core::Hierarchy::get_children());
   }
@@ -286,6 +298,9 @@ public:
 
 IMP_OUTPUT_OPERATOR(Hierarchy);
 
+
+
+
 enum GetByType {
   IMP_FOREACH_HIERARCHY_TYPE(IMP_CAPS_NAME)
 };
@@ -297,8 +312,7 @@ enum GetByType {
    \relatesalso Hierarchy
 */
 IMPATOMEXPORT Hierarchies
-get_by_type(Hierarchy mhd,
-            GetByType t);
+get_by_type(Hierarchy mhd, GetByType t);
 
 
 //! Get the residue with the specified index
@@ -420,6 +434,8 @@ algebra::BoundingBox3D get_bounding_box(const Hierarchy &h);
 IMPATOMEXPORT
 algebra::Sphere3D get_bounding_sphere(const Hierarchy &h);
 
+
 IMPATOM_END_NAMESPACE
+
 
 #endif  /* IMPATOM_HIERARCHY_H */

@@ -12,6 +12,54 @@ namespace atom {
 // it is used as a base class
 %include "IMP/atom/Hierarchy.h"
 
+// since we have to fake it
+
+%extend IMP::atom::Hierarchies {
+  IMP::atom::Hierarchy __getitem__(int index) const {
+    if (index < 0) index= index+self->size();
+    if (index >= static_cast<int>(self->size())) {
+       IMP_THROW("Index out of range in getitem" << index
+       << self->size(), IMP::IndexException);
+    }
+    return self->operator[](index);
+  }
+  void __setitem__(int index, IMP::atom::Hierarchy val) {
+    if (index < 0) index= index+self->size();
+    if (index >= static_cast<int>(self->size())) {
+       IMP_THROW("Index out of range in setitem" << index
+       << self->size(), IMP::IndexException);
+    }
+    self->set(index, val);
+  }
+  int __len__() const {
+    return self->size();
+  }
+  void append(Decorator d) {
+    self->push_back(d);
+  }
+  IMP::atom::Hierarchies
+   __add__(const IMP::atom::Hierarchies &o) const {
+    IMP::atom::Hierarchies ret(*self);
+    ret.insert(ret.end(), o.begin(), o.end());
+    return ret;
+  }
+  std::vector<IMP::atom::Hierarchy> __list__() const {
+    std::vector<IMP::atom::Hierarchy> ret(self->begin(), self->end());
+    return ret;
+  }
+  IMP::atom::Hierarchies __getslice__(int b, int e) const {
+    if (e < 0) e= self->size()+e;
+    if (b < 0) b= self->size()+b;
+    IMP::atom::Hierarchies ret;
+    ret.insert(ret.end(), self->begin()+b, self->begin()+e);
+    //for ( int c=b; c!= e; ++c) {
+    //   ret.push_back(self->operator[](c));
+    //}
+    return ret;
+  }
+}
+
+
 /* Wrap our own classes */
 %include "IMP/atom/estimates.h"
 %include "IMP/atom/distance.h"
@@ -56,12 +104,8 @@ namespace IMP {
 namespace IMP {
   namespace atom {
    // must go after the above headers
-   %template(HIBase) ::IMP::DecoratorsWithImplicitTraits< IMP::atom::Hierarchy,
-                      IMP::core::GenericHierarchies>;
-   %template(Hierarchies) ::IMP::Decorators< IMP::atom::Hierarchy,
-                                            ::IMP::DecoratorsWithImplicitTraits< IMP::atom::Hierarchy,
-                      IMP::core::GenericHierarchies> >;
    %template(HierarchyVector) ::std::vector<IMP::atom::Hierarchy>;
+   //%implicitconv(Hierarchies)
    IMP_DECORATORS(Atom, Atoms, Hierarchies)
    IMP_DECORATORS(Residue, Residues, Hierarchies)
    IMP_DECORATORS(Fragment, Fragments, Hierarchies)
