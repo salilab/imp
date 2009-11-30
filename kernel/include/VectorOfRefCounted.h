@@ -87,20 +87,20 @@ class VectorOfRefCounted {
     return data_;
   }
 #ifndef IMP_DOXYGEN
+  // need to inherit from T to get methods right
   template <class T>
   struct Proxy: public T {
     T &v_;
-    Proxy(T& v): v_(v){}
-    operator T const() {return v_;}
-    void operator=(T v) {
+    Proxy(T& v): T(v), v_(v){}
+    // return void since chaining won't work right
+    template <class O>
+    void operator=(O ov) {
+      T &v=ov;
       using std::swap;
       swap(v_, v);
       ref(v_);
       unref(v);
     }
-    /*T& operator->() {
-      return v_;
-      }*/
   };
   template <class T>
   struct Proxy<T*> {
