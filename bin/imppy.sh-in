@@ -1,3 +1,0 @@
-#!/bin/sh
-
-echo "Use tools/imppy.sh instead" >&2

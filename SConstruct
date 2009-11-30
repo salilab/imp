@@ -77,7 +77,6 @@ SConscript('applications/SConscript')
 # This must be after the other SConscipt calls so that it knows about all the generated files
 SConscript('doc/SConscript')
 SConscript('tools/SConscript')
-SConscript('bin/SConscript')
 
 env.Alias(env.Alias('test'), [env.Alias('examples-test')])
 
