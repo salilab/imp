@@ -2,6 +2,10 @@
 
 \par Week of November 19
 
+- imp.xcodeproj was moved into tools and updated accordingly
+
+- the bin directory finally went away
+
 - IMP::display::ChimeraWriter now supports the latest version of Chimera
 
 - IMP::display::CGOWriter was renamed to IMP::display::PymolWriter as it can do more than just CGO.
