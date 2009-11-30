@@ -323,20 +323,20 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
         for i in swigfiles:
             swiglink.append( env.LinkInstallAs("#/build/swig/"+str(i), i) )
         gen_pymod = File('IMP%s.py' % module_suffix.replace("_","."))
-        swig=penv._IMPSWIG(target=[gen_pymod, 'wrap.cc',
-                              'wrap.h'],
+        swig=penv._IMPSWIG(target=[gen_pymod, 'wrap.cpp-in',
+                              'wrap.h-in'],
                            source=swigfile)
         # this appears to be needed for some reason
         env.Requires(swig, swiglink)
         module_deps_requires(env, swig, "swig", [])
         module_deps_requires(env, swig, "include", [])
         module_requires(env, swig, 'include')
-        penv._IMPPatchSWIG(target=['patched_wrap.cc'],
-                           source=['wrap.cc'])
-        penv._IMPPatchSWIG(target=['patched_wrap.h'],
-                           source=['wrap.h'])
+        penv._IMPPatchSWIG(target=['wrap.cpp'],
+                           source=['wrap.cpp-in'])
+        penv._IMPPatchSWIG(target=['wrap.h'],
+                           source=['wrap.h-in'])
         buildlib = penv.LoadableModule('#/build/lib/_IMP%s' % module_suffix,
-                                       "patched_wrap.cc")
+                                       "wrap.cpp")
         # Place the generated Python wrapper in lib directory:
         buildinit = penv.LinkInstallAs('#/build/lib/%s/__init__.py'
                                        % vars['module_include_path'],

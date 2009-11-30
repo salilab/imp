@@ -38,7 +38,7 @@ def _action_patch_swig_wrap(target, source, env):
         line = line.replace('"swig::PySwigIterator *"', repl1)
         line = line.replace('"swig::SwigPyIterator *"', repl2)
         line = line.replace(orig, repl)
-        line = line.replace("wrap.h", "patched_wrap.h")
+        line = line.replace("wrap.h-in", "wrap.h")
         fh.write(line.replace('"swig::SwigPyIterator *"', repl2))
     fh.close()
 
@@ -144,22 +144,23 @@ def _action_simple_swig(target, source, env):
             cppflags= cppflags+" " + x
     sv= env['SWIGVERSION'].split(".")
     if sv[0]=="1" and sv[1] == "3" and int(sv[2])<34:
-        warnings=""
+        warnings=[]
     else:
-        warnings=" -Wextra"
+        warnings=["-Wextra"]
 
-    base = env['SWIG'] + warnings+" -interface  _IMP%(module_suffix)s -DPySwigIterator=%(PREPROC)s_PySwigIterator -DSwigPyIterator=%(PREPROC)s_SwigPyIterator -python -c++ -naturalvar "%vars
+    command = [env['SWIG'], "-interface", "_IMP%(module_suffix)s",
+               "-DPySwigIterator=%(PREPROC)s_PySwigIterator",
+               "-DSwigPyIterator=%(PREPROC)s_SwigPyIterator",
+               "-python", "-c++", "-naturalvar"]+warnings
     # Signal whether we are building the kernel
     if env['IMP_MODULE'] == 'kernel':
-        base += '-DIMP_SWIG_KERNEL '
+        command.append('-DIMP_SWIG_KERNEL')
     #print base
-    out= "-o "+ target[1].abspath
-    doti= source[0].abspath
-    includes= " -Ibuild/swig"+" "+" ".join(["-I"+str(Dir(x)) for x in env.get('CPPPATH', [])])
-    # scons puts cppflags before includes, so we should too
-    command=base + " " +out + " "\
-         + " " +cppflags+ " "+ includes + " -DIMP_SWIG " + doti
-    return env.Execute(command)
+    command=command+["-o",target[1].abspath, "-oh",target[2].abspath]
+    command=command+[" -Ibuild/swig"]+ ["-I"+str(Dir(x)) for x in env.get('CPPPATH', [])]
+    command.append("-DIMP_SWIG")
+    command.append(source[0].abspath)
+    return env.Execute(" ".join(command) %vars)
 
 def _print_simple_swig(target, source, env):
     print "Running swig on file "+str(source[0].path)
