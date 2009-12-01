@@ -16,8 +16,7 @@
 
 
 IMPDOMINO_BEGIN_NAMESPACE
-//! Sample discrete states
-IMPDOMINOEXPORT StringKey node_name_key();
+
 class SimpleDiscreteSampler : public DiscreteSampler
 {
 public:
