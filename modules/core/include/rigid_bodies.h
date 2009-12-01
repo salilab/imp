@@ -45,8 +45,7 @@ typedef Decorators<RigidMember, XYZs> RigidMembers;
     methods on the decorator.
     - those particles who make up the detailed representation of
     the rigid body, namely the representation. These are accessed
-    through an associated Refiner. If the RigidMembersRefiner is
-    used, the two sets are identical.
+    through an associated Refiner.
 
     It is often desirable to randomize the orientation of a rigid
     body:
@@ -256,7 +255,7 @@ class IMPCOREEXPORT RigidMember: public XYZ {
 IMP_OUTPUT_OPERATOR(RigidMember);
 
 
-
+#ifndef IMP_DOXYGEN
 //! A refiner which returns the members of a rigid body
 /** You can use this to easily define a rigid body when you want the
     set of particles representing a rigid body to be the same as the
@@ -267,6 +266,7 @@ class IMPCOREEXPORT RigidMembersRefiner: public Refiner {
   RigidMembersRefiner(){}
   IMP_SIMPLE_REFINER(RigidMembersRefiner, get_module_version_info());
 };
+#endif
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 namespace internal {

@@ -45,9 +45,10 @@ public:
                           Refiner *r,
                           double k=1);
 
-  //! Use the default RigidMembersRefiner.
+#ifndef IMP_DOXYGEN
   ExcludedVolumeRestraint(SingletonContainer *sc,
                           double k=1);
+#endif
 
   IMP_RESTRAINT(ExcludedVolumeRestraint, get_module_version_info());
 
