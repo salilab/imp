@@ -29,7 +29,14 @@ class RestraintTest(IMP.test.TestCase):
 
     def test_show(self):
         restraint_name = 'connectivity_restraint'
-        r = self.restraint.get_restraint_by_name(restraint_name)
+        connectivity_restraint = self.restraint.get_restraint_by_name(restraint_name).imp_restraint
+        connectivity_restraint.show()
+
+        protein1_hierarchy = self.representation.find_by_id('Protein1').model_decorator
+        IMP.atom.write_pdb (protein1_hierarchy, "test_protein1.pdb")
+
+        root_hierarchy = self.representation.model_decorator
+        IMP.atom.write_pdb (root_hierarchy, "test_root.pdb")
 
         self.Model.show()
         self.Model.evaluate(False)
