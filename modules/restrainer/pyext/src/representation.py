@@ -51,6 +51,7 @@ class _Representation(object):
             self.model = model
         repr_particle = IMP.Particle(model)
         decorator = IMP.atom.Hierarchy.setup_particle(repr_particle)
+        self.model_decorator = decorator
         for child in self.children:
             child.set_parent(self)
         for child in self.children:
