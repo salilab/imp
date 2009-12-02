@@ -87,16 +87,18 @@ private:
 
   void zero_derivatives(bool shadow_too=false) const;
 
-  double do_evaluate(bool calc_derivs) const;
+  double do_evaluate(const Restraints &restraints, bool calc_derivs) const;
 
   enum WhichRestraints {ALL, INCREMENTAL, NONINCREMENTAL};
-  double do_evaluate_restraints(bool calc_derivs,
+  double do_evaluate_restraints(const Restraints &restraints,
+                                bool calc_derivs,
                                 WhichRestraints incremental_restraints,
                                 bool incremental_evaluation) const;
 
   // begin incremental
 
-  double do_evaluate_incremental(bool calc_derivs) const;
+  double do_evaluate_incremental(const Restraints &restraints,
+                                 bool calc_derivs) const;
 
   // end incremental
 
@@ -233,7 +235,12 @@ public:
       \throw ModelException if a Particle attribute value becomes
       invalid (NaN, infinity etc.)
    */
-  Float evaluate(bool calc_derivs);
+ virtual Float evaluate(bool calc_derivs);
+
+ //! Evaluate a subset of the restraints
+ /** The passed restraints must have been added to this model already.
+  */
+ virtual Float evaluate(const Restraints &restraints, bool calc_derivs);
 
   //! Show the model contents.
   /** \param[in] out Stream to write model description to.
