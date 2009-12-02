@@ -33,7 +33,7 @@ def configure_check(env, version):
        and conf.CheckBoost(version) is 0:
         Exit("""
 Boost version >= %s is required to build IMP, but it could not be
-found on your system. Please see config.log for more details.
+found on your system.
 
 In particular, if you have Boost installed in a non-standard location,
 please use the 'includepath' option to add this location to the search
