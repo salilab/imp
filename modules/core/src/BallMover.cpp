@@ -8,6 +8,7 @@
 #include <IMP/core/BallMover.h>
 
 #include <IMP/random.h>
+#include <IMP/core/XYZ.h>
 
 #include <boost/random/uniform_real.hpp>
 
@@ -51,6 +52,13 @@ BallMover::BallMover(SingletonContainer *sc,
                      Float max): MoverBase(sc)
 {
   add_float_keys(vars);
+  set_radius(max);
+}
+
+BallMover::BallMover(SingletonContainer *sc,
+                     Float max): MoverBase(sc)
+{
+  add_float_keys(XYZ::get_coordinate_keys());
   set_radius(max);
 }
 

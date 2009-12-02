@@ -31,6 +31,13 @@ public:
    */
   BallMover(SingletonContainer *sc, const FloatKeys &vars,
             Float radius);
+
+  /** The x,y,z coorsdinates are perturbed within a ball.
+      \param[in] sc The set of particles to perturb.
+      \param[in] radius The radius deviation to use.
+   */
+  BallMover(SingletonContainer *sc,
+            Float radius);
   void set_radius(Float radius) {
     IMP_USAGE_CHECK(radius > 0, "The radius must be positive",
               ValueException);
