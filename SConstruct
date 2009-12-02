@@ -1,4 +1,4 @@
-# Include IMP build utility functions:
+# include IMP build utility functions:
 import scons_tools
 import scons_tools.boost
 import scons_tools.cgal
@@ -87,5 +87,4 @@ Clean('all', ['build/tmp/',
 Clean('all', Glob('scons_tools/*.pyc')\
           + Glob('tools/*.pyc'))
 
-env.Default('bin')
 env.Default('tools')
