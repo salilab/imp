@@ -7,6 +7,7 @@ from SCons.Script import *
 import hierarchy
 import symlinks
 import standards
+import compilation
 import swig
 
 __all__ = ["add_common_variables", "MyEnvironment", "get_pyext_environment",
@@ -200,6 +201,7 @@ def MyEnvironment(variables=None, *args, **kw):
     if env['svn'] and not env['SVNVERSION']:
         print "Warning: Could not find 'svnversion' binary in path"
     if not env.GetOption('clean') and not env.GetOption('help'):
+        compilation.configure_check(env)
         custom_tests = {'CheckGNUHash': CheckGNUHash,
                         'CheckGCCVisibility': CheckGCCVisibility}
         conf = env.Configure(custom_tests = custom_tests)
