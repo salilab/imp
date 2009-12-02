@@ -32,14 +32,18 @@ def configure_check(env, version):
     if not env.GetOption('clean') and not env.GetOption('help') \
        and conf.CheckBoost(version) is 0:
         Exit("""
-Boost version >= %s is required to build IMP, but it could not be found
-on your system. Please see config.log for more details.
+Boost version >= %s is required to build IMP, but it could not be
+found on your system. Please see config.log for more details.
 
 In particular, if you have Boost installed in a non-standard location,
-please use the 'includepath' option to add this location to the search path.
-For example, a Mac using Boost installed with MacPorts will have the Boost
-headers in /opt/local/include, so edit (or create) config.py and add the line
+please use the 'includepath' option to add this location to the search
+path.  For example, a Mac using Boost installed with MacPorts will
+have the Boost headers in /opt/local/include, so edit (or create)
+config.py and add the line
 
 includepath='/opt/local/include'
+
+You can see the produced config.log for more information as to why
+boost failed to be found.
 """ % version)
     conf.Finish()
