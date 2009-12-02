@@ -11,13 +11,14 @@ IMPEM_BEGIN_NAMESPACE
 
 void Voxel::show(std::ostream &out) const
 {
-  algebra::VectorD<4> v;
+  algebra::VectorD<5> v;
   Particle *p=get_particle();
-  core::XYZ xyz(p);
-  v[0]=xyz.get_x();
-  v[1]=xyz.get_y();
-  v[2]=xyz.get_z();
-  v[3]=p->get_value(get_density_key());
+  core::XYZR xyzr(p);
+  v[0]=xyzr.get_x();
+  v[1]=xyzr.get_y();
+  v[2]=xyzr.get_z();
+  v[3]=xyzr.get_radius();//p->get_value(core::XYZR::get_radius_key());
+  v[4]=p->get_value(get_density_key());
   out << "(" <<algebra::commas_io(v)<<")";
 }
 
@@ -28,6 +29,7 @@ const FloatKey Voxel::get_density_key() {
 
 const FloatKeys Voxel::get_keys() {
   static FloatKeys keys=core::XYZ::get_xyz_keys();
+  keys.push_back(core::XYZR::get_default_radius_key());
   keys.push_back(Voxel::get_density_key());
   return keys;
 }

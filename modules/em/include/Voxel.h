@@ -11,7 +11,9 @@
 #include "config.h"
 #include <IMP/Decorator.h>
 #include <IMP/core/XYZ.h>
+#include <IMP/core/XYZR.h>
 #include <IMP/algebra/Vector3D.h>
+#include <IMP/algebra/Sphere3D.h>
 
 IMPEM_BEGIN_NAMESPACE
 
@@ -32,8 +34,9 @@ class IMPEMEXPORT Voxel: public Decorator
   /** Create a decorator with the passed coordinates. */
   static Voxel setup_particle(Particle *p,
                   const algebra::Vector3D &position,
-                  float density) {
-    core::XYZ::setup_particle(p,position);
+                  Float radius,
+                  Float density) {
+    core::XYZR::setup_particle(p,algebra::Sphere3D(position,radius));
     p->add_attribute(get_density_key(),density,false);
     return Voxel(p);
   }
