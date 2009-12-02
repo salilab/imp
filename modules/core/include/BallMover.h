@@ -32,7 +32,7 @@ public:
   BallMover(SingletonContainer *sc, const FloatKeys &vars,
             Float radius);
 
-  /** The x,y,z coorsdinates are perturbed within a ball.
+  /** The x,y,z coordinates are perturbed within a ball.
       \param[in] sc The set of particles to perturb.
       \param[in] radius The radius deviation to use.
    */
