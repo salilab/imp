@@ -58,7 +58,7 @@ BallMover::BallMover(SingletonContainer *sc,
 BallMover::BallMover(SingletonContainer *sc,
                      Float max): MoverBase(sc)
 {
-  add_float_keys(XYZ::get_coordinate_keys());
+  add_float_keys(XYZ::get_xyz_keys());
   set_radius(max);
 }
 
