@@ -15,17 +15,9 @@ log.write("initial.pym")
 r= IMP.core.ExcludedVolumeRestraint(c)
 m.add_restraint(r)
 
-o= IMP.core.ConjugateGradients()
-o.set_model(m)
+o= IMP.core.MonteCarlo(m)
+mv= IMP.core.BallMover(c, 10)
+o.add_mover(mv)
 o.add_optimizer_state(log)
 
-done=False
-while not done:
-    try:
-        o.optimize(1000)
-    except IMP.ModelException:
-        for d in [IMP.core.XYZ(x) for x in c.get_particles()]:
-            d.set_coordinates(IMP.algebra.random_vector_in_box(IMP.algebra.Vector3D(0,0,0),
-                                                               IMP.algebra.Vector3D(10,10,10)))
-    else:
-        done=True
+o.optimize(1000)
