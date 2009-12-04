@@ -73,4 +73,12 @@ Sphere3D enclosing_sphere(const Sphere3Ds &ss) {
 #endif
 }
 
+Sphere3D enclosing_sphere(const Vector3Ds &vs) {
+  Sphere3Ds ss(vs.size());
+  for (unsigned int i=0; i< vs.size(); ++i) {
+    ss[i]= Sphere3D(vs[i], 0);
+  }
+  return enclosing_sphere(ss);
+}
+
 IMPALGEBRA_END_NAMESPACE
