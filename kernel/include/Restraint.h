@@ -148,7 +148,7 @@ public:
   IMP_REF_COUNTED_DESTRUCTOR(Restraint);
 private:
   /* This pointer should never be ref counted as Model has a
-     pointer to this object. Not that Model is refcounted yet.
+     pointer to this object.
    */
   WeakPointer<Model> model_;
 };
