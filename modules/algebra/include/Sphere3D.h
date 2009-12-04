@@ -81,6 +81,16 @@ inline double distance(const Sphere3D& a, const Sphere3D &b) {
  */
 IMPALGEBRAEXPORT Sphere3D enclosing_sphere(const Sphere3Ds &ss);
 
+//! Return a sphere containing the listed spheres
+/** \relatesalso Sphere3D
+    \relatesalso Vector3D
+    \note This method produces tighter bounding spheres if CGAL
+    is used.
+    \ingroup CGAL
+ */
+IMPALGEBRAEXPORT Sphere3D enclosing_sphere(const Vector3Ds &ss);
+
+
 //! Return the radius of a sphere with a given volume
 /** \relatesalso Sphere3D
  */
