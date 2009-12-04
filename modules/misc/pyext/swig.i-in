@@ -7,3 +7,4 @@
 %include "IMP/misc/LogPairScore.h"
 %include "IMP/misc/StateAdaptor.h"
 %include "IMP/misc/CommonEndpointPairFilter.h"
+%include "IMP/misc/ConnectingPairContainer.h"
