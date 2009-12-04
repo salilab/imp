@@ -28,6 +28,7 @@ files = [
          'shortest_segment.h',
          'utility.h',
          'vector_generators.h',
+         'vector_search.h',
         ] \
         + SConscript('internal/SConscript')
 
