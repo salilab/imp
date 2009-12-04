@@ -54,6 +54,7 @@ namespace multi_array_types {
 %include "IMP/algebra/endian.h"
 %include "IMP/algebra/Rotation2D.h"
 %include "IMP/algebra/shortest_segment.h"
+%include "IMP/algebra/vector_search.h"
 
 namespace IMP {
  namespace algebra {
@@ -65,6 +66,7 @@ namespace IMP {
    %template(random_vector_in_unit_box) random_vector_in_unit_box<3>;
    %template(random_vector_on_box) random_vector_on_box<3>;
    %template(uniform_cover_sphere) uniform_cover_sphere<3>;
+   %template(NearestNeighbor3D) NearestNeighborD<3>;
    %template(basis_vector) basis_vector<3>;
    %template(zeros) zeros<3>;
    // for debugging
