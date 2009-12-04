@@ -15,6 +15,7 @@
 #include <CGAL/basic.h>
 #include <CGAL/Search_traits.h>
 #include <CGAL/Orthogonal_k_neighbor_search.h>
+#include <boost/static_assert.hpp>
 #endif
 
 IMPALGEBRA_BEGIN_NAMESPACE
@@ -37,6 +38,7 @@ class NearestNeighborD {
   struct VectorWithIndex: public VectorD<D> {
     int index;
     VectorWithIndex(unsigned int i, VectorD<D> p): VectorD<D>(p), index(i){}
+    VectorWithIndex(): index(-1){}
   };
   struct Construct_coord_iterator {
     const double* operator()(const VectorD<D>& p) const
@@ -55,13 +57,14 @@ class NearestNeighborD {
     template <class TreeTraits>
     double min_distance_to_rectangle(const VectorD<D>& p,
                         const CGAL::Kd_tree_rectangle<TreeTraits>& b) const {
-      double distance(0.0), h = p.x();
+      BOOST_STATIC_ASSERT(D==3);
+      double distance(0.0), h = p[0];
       if (h < b.min_coord(0)) distance += (b.min_coord(0)-h)*(b.min_coord(0)-h);
       if (h > b.max_coord(0)) distance += (h-b.max_coord(0))*(h-b.max_coord(0));
-      h=p.y();
+      h=p[1];
       if (h < b.min_coord(1)) distance += (b.min_coord(1)-h)*(b.min_coord(1)-h);
       if (h > b.max_coord(1)) distance += (h-b.max_coord(1))*(h-b.min_coord(1));
-      h=p.z();
+      h=p[2];
       if (h < b.min_coord(2)) distance += (b.min_coord(2)-h)*(b.min_coord(2)-h);
       if (h > b.max_coord(2)) distance += (h-b.max_coord(2))*(h-b.max_coord(2));
       return distance;
@@ -70,15 +73,15 @@ class NearestNeighborD {
     template <class TreeTraits>
     double max_distance_to_rectangle(const VectorD<D>& p,
                          const CGAL::Kd_tree_rectangle<TreeTraits>& b) const {
-      double h = p.x();
+      double h = p[0];
       double d0 = (h >= (b.min_coord(0)+b.max_coord(0))/2.0) ?
         (h-b.min_coord(0))*(h-b.min_coord(0))
         : (b.max_coord(0)-h)*(b.max_coord(0)-h);
-      h=p.y();
+      h=p[1];
       double d1 = (h >= (b.min_coord(1)+b.max_coord(1))/2.0) ?
         (h-b.min_coord(1))*(h-b.min_coord(1))
         : (b.max_coord(1)-h)*(b.max_coord(1)-h);
-      h=p.z();
+      h=p[2];
       double d2 = (h >= (b.min_coord(2)+b.max_coord(2))/2.0) ?
         (h-b.min_coord(2))*(h-b.min_coord(2))
         : (b.max_coord(2)-h)*(b.max_coord(2)-h);
@@ -92,13 +95,13 @@ class NearestNeighborD {
     double inverse_of_transformed_distance(double d) { return std::sqrt(d); }
   }; // end of struct Distance
 
-  typedef typename CGAL::Search_traits<double, VectorD<D>,
+  typedef typename CGAL::Search_traits<double, VectorWithIndex,
                               const double*, Construct_coord_iterator> Traits;
   typedef typename CGAL::Orthogonal_k_neighbor_search<Traits,
                                                   Distance> K_neighbor_search;
   typedef typename K_neighbor_search::Tree Tree;
 
-  Tree tree_;
+  mutable Tree tree_;
 #endif
   std::vector<VectorD<D> > data_;
   double eps_;
@@ -118,8 +121,8 @@ public:
 
   unsigned int get_nearest_neighbor(const VectorD<D> &q) const {
 #ifdef IMP_USE_CGAL
-    K_neighbor_search search(tree_, q, 1, eps_);
-    return search.begin().index;
+    K_neighbor_search search(tree_, VectorWithIndex(-1, q), 1, eps_);
+    return search.begin()->first.index;
 #else
     double md= std::numeric_limits<double>::max();
     int imax=-1;
@@ -136,7 +139,7 @@ public:
     unsigned int get_nearest_neighbor(unsigned int index) const {
 #ifdef IMP_USE_CGAL
     K_neighbor_search search(tree_, data_[index], 2, eps_);
-    return (search.begin()+1).index;
+    return (++search.begin())->first.index;
 #else
     double md= std::numeric_limits<double>::max();
     int imax=-1;
