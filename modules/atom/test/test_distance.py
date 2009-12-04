@@ -24,8 +24,8 @@ class DistanceTest(IMP.test.TestCase):
         da=IMP.atom.placement_score(xyz1,xyz)
         d=t.get_translation().get_magnitude()
         a=IMP.algebra.decompose_rotation_into_axis_angle(t.get_rotation()).second
-        self.assertAlmostEqual(da[0],d)
-        self.assertAlmostEqual(da[1],a)
+        self.assertAlmostEqual(da[0],d, .01)
+        self.assertAlmostEqual(da[1],a, .01)
 
 if __name__ == '__main__':
     unittest.main()
