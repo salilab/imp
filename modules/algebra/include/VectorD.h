@@ -276,6 +276,9 @@ public:
   CoordinateConstIterator coordinates_end() const {return vec_+D;}
 #endif
 
+#ifndef IMP_DOXYGEN
+  const double *get_data() const {return vec_;}
+#endif
 private:
 
   double vec_[D];
