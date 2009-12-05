@@ -18,6 +18,7 @@
 #include <IMP/algebra/Matrix2D.h>
 #include <IMP/algebra/utility.h>
 #include <IMP/algebra/endian.h>
+#include <IMP/exception.h>
 #include <typeinfo>
 #include <complex>
 #include <string>
@@ -102,6 +103,10 @@ public:
             algebra::Matrix2D<T>& data) {
     std::ifstream in;
     in.open(filename.c_str(), std::ios::in | std::ios::binary);
+    IMP_USAGE_CHECK(!in.fail(),
+        "SpiderReaderWriter::read_from_floats: The file "+
+                                        filename+" could be found.",
+        IOException());
     //! The header format is already in Spider format, just read it
     header.read(in,skip_type_check_,force_reversed_,skip_extra_checkings_);
 #ifdef DEBUG

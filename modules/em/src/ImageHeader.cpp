@@ -15,8 +15,9 @@ IMPEM_BEGIN_NAMESPACE
 {
   out << "fNslice=" << header_.fNslice << std::endl;
   out << "fNrow=" <<   header_.fNrow << std::endl;
-  out << "fNrec=" <<   header_.fNrec << std::endl;
+  out << "fNcol=" <<   header_.fNcol << std::endl;
   out << "fNlabel=" << header_.fNlabel << std::endl;
+  out << "fNrec=" <<   header_.fNrec << std::endl;
   out << "fIform=" <<  header_.fIform << std::endl;
   out << "fImami=" <<  header_.fImami << std::endl;
   out << "fFmax=" <<   header_.fFmax << std::endl;
@@ -24,7 +25,6 @@ IMPEM_BEGIN_NAMESPACE
   out << "fAv=" <<     header_.fAv << std::endl;
   out << "fSig=" <<    header_.fSig << std::endl;
   out << "fIhist=" <<  header_.fIhist << std::endl;
-  out << "fNcol=" <<   header_.fNcol << std::endl;
   out << "fLabrec=" << header_.fLabrec << std::endl;
   out << "fIangle=" << header_.fIangle << std::endl;
   out << "fPhi=" <<    header_.fPhi << std::endl;
@@ -374,9 +374,6 @@ void ImageHeader::set_header()
       }
     }
   }
-  // Set the statistics to not computed (Spider compatibility again)
-  header_.fSig = -1;
-  header_.fImami = 0;
 }
 
 
