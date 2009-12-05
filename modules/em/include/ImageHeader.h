@@ -314,7 +314,7 @@ public:
   }
 
   void set_fFmax(float value) {
-    header_.fFmax=value;
+    header_.fFmax= value;
   }
 
   float get_fFmin() const {
