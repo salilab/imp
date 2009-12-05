@@ -42,6 +42,7 @@ class MultiArray
 public:
   typedef boost::multi_array_types::index index;
   typedef boost::multi_array_types::size_type size_type;
+//  typedef boost::multi_array_types::iterator iterator;
 //  typedef boost::multi_array_types::extent_gen extent_gen;
   typedef boost::multi_array<T, D> BMA;
   typedef MultiArray<T, D> This;
@@ -368,9 +369,7 @@ public:
   T compute_min() const {
     T minval = first_element();
     for(unsigned long i = 0; i < this->num_elements();i++) {
-      if(this->data()[i] > minval) {
-        minval = this->data()[i];
-      }
+      if(this->data()[i] < minval) { minval = this->data()[i]; }
     }
     return minval;
   }
@@ -386,9 +385,7 @@ public:
     while (internal::roll_inds(idx, this->shape(),this->index_bases())) {
       if ((*this)(idx) < minval) {
         minval = (*this)(idx);
-        for(int i=0;i<D;i++) {
-          min_idx[i]=idx[i];
-        }
+        for(int i=0;i<D;i++) { min_idx[i]=idx[i]; }
       }
     }
     return minval;
@@ -459,6 +456,18 @@ public:
       }
     }
   }
+
+  //! Normalize the values of the MultiArray to mean value 0 and standard
+  //! deviation 1.
+  void normalize() {
+    double avg,stddev;
+    T minval,maxval;
+    compute_stats(avg,stddev,minval,maxval);
+    for (unsigned long i=0;i<this->num_elements();i++) {
+      this->data()[i] = (this->data()[i]-avg)/stddev;
+    }
+  }
+
 
   //! Computes the sum of all the array elements.
   T sum_elements() const {
