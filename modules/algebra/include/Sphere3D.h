@@ -72,6 +72,16 @@ inline double distance(const Sphere3D& a, const Sphere3D &b) {
   return d - a.get_radius() - b.get_radius();
 }
 
+//! Return the power distance between the two spheres
+/** The power distance is the square of the distance between the centers
+    minus the sum of the square of the radii.
+    \relatesalso Sphere3D
+*/
+inline double power_distance(const Sphere3D& a, const Sphere3D &b) {
+  double d= (a.get_center()-b.get_center()).get_squared_magnitude();
+  return d - square(a.get_radius()) - square(b.get_radius());
+}
+
 
 //! Return a sphere containing the listed spheres
 /** \relatesalso Sphere3D
