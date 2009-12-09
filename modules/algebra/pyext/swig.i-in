@@ -46,6 +46,7 @@ namespace multi_array_types {
 %include "IMP/algebra/Segment3D.h"
 %include "IMP/algebra/Plane3D.h"
 %include "IMP/algebra/Cylinder3D.h"
+%include "IMP/algebra/Ellipsoid3D.h"
 %include "IMP/algebra/Sphere3D.h"
 %include "IMP/algebra/Sphere3DPatch.h"
 %include "IMP/algebra/Cone3D.h"
