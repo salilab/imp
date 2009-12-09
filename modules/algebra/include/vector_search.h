@@ -34,6 +34,22 @@ IMPALGEBRA_BEGIN_NAMESPACE
 */
 template <unsigned int D>
 class NearestNeighborD {
+
+  template <bool SKIP>
+  int linear_nearest_neighbor(const VectorD<D> &q, int skip) {
+    double md= std::numeric_limits<double>::max();
+    int imax=-1;
+    for (unsigned int i=0; i< data_.size(); ++i) {
+      if (SKIP && i==skip) continue;
+      double cd=(data_[i]-q).get_squared_magnitude();
+      if (cd < md) {
+        md= cd;
+        imax=i;
+      }
+    }
+    return imax;
+  }
+
 #ifdef IMP_USE_CGAL
   struct VectorWithIndex: public VectorD<D> {
     int index;
@@ -101,7 +117,12 @@ class NearestNeighborD {
                                                   Distance> K_neighbor_search;
   typedef typename K_neighbor_search::Tree Tree;
 
-  mutable Tree tree_;
+  struct RCTree: public Tree, public RefCounted {
+    template <class It>
+    RCTree(It b, It e): Tree(b,e){}
+    virtual ~RCTree(){}
+  };
+  mutable Pointer<RCTree> tree_;
 #endif
   std::vector<VectorD<D> > data_;
   double eps_;
@@ -109,49 +130,31 @@ public:
   NearestNeighborD(const std::vector<VectorD<D> > &vs,
                    double epsilon=0):
     data_(vs),
-    eps_(epsilon) {
+    eps_(epsilon)
+ {
 #ifdef IMP_USE_CGAL
     std::vector<VectorWithIndex> vsi(vs.size());
     for (unsigned int i=0; i< vs.size(); ++i) {
       vsi[i]= VectorWithIndex(i, vs[i]);
     }
-    tree_= Tree(vsi.begin(), vsi.end());
+    tree_= new RCTree(vsi.begin(), vsi.end());
 #endif
   }
 
   unsigned int get_nearest_neighbor(const VectorD<D> &q) const {
 #ifdef IMP_USE_CGAL
-    K_neighbor_search search(tree_, VectorWithIndex(-1, q), 1, eps_);
+    K_neighbor_search search(*tree_, VectorWithIndex(-1, q), 1, eps_);
     return search.begin()->first.index;
 #else
-    double md= std::numeric_limits<double>::max();
-    int imax=-1;
-    for (unsigned int i=0; i< data_.size(); ++i) {
-        double cd=(data_[i]-q).get_squared_magnitude();
-        if (cd < md) {
-          md= cd;
-          imax=i;
-        }
-      }
-           return imax;
+    return linear_nearest_neighbor<false>(q, -1);
 #endif
   }
-    unsigned int get_nearest_neighbor(unsigned int index) const {
+  unsigned int get_nearest_neighbor(unsigned int index) const {
 #ifdef IMP_USE_CGAL
-    K_neighbor_search search(tree_, data_[index], 2, eps_);
+    K_neighbor_search search(*tree_, data_[index], 2, eps_);
     return (++search.begin())->first.index;
 #else
-    double md= std::numeric_limits<double>::max();
-    int imax=-1;
-    for (unsigned int i=0; i< data_.size(); ++i) {
-        if (i==index) continue;
-        double cd=(data_[i]-data_[index]).get_squared_magnitude();
-        if (cd < md) {
-          md= cd;
-          imax=i;
-        }
-      }
-           return imax;
+    return linear_nearest_neighbor<true>(data_[index], index);
 #endif
     }
 };
