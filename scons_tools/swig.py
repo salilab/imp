@@ -39,6 +39,7 @@ def _action_patch_swig_wrap(target, source, env):
         line = line.replace('"swig::SwigPyIterator *"', repl2)
         line = line.replace(orig, repl)
         line = line.replace("wrap.h-in", "wrap.h")
+        line = line.replace("<:", "< :") # swig generates bad C++ code
         fh.write(line.replace('"swig::SwigPyIterator *"', repl2))
     fh.close()
 
@@ -54,9 +55,8 @@ def _action_swig_file(target, source, env):
     deps=(imp_module.expand_dependencies(env, env['IMP_REQUIRED_MODULES']))
     deps.reverse()
     #print "dependencies are " +str(deps)
-    preface=["""/*
- *  WARNING Generated file, do not edit, edit the swig.i instead
- */
+    warning="// WARNING Generated file, do not edit, edit the swig.i-in instead."
+    preface=[warning,"""
 
 %%module(directors="1") "%s"
 
@@ -86,6 +86,7 @@ def _action_swig_file(target, source, env):
 %%ignore IMP::UninitializedDefault;
 %%ignore IMP::Comparable;
 """%vars)
+    preface.append(warning)
 
     # special case the kernel to make sure that VersionInfo is wrapped
     # before get_version_info() is wrapped.
@@ -98,14 +99,14 @@ def _action_swig_file(target, source, env):
 
     for d in deps:
         preface.append("%%import \"IMP_%s.i\""% d)
-
+    preface.append(warning)
 
     preface.append("""
 %%include "%(module_include_path)s/config.h"
 """%vars)
-
+    preface.append(warning)
     preface.append(open(source[0].abspath, "r").read())
-
+    preface.append(warning)
     if vars['module']== 'kernel':
         preface.append("""
 namespace IMP {
@@ -120,7 +121,7 @@ const VersionInfo& get_module_version_info();
 }
 }
 """%vars)
-
+    preface.append(warning)
     preface.append("""
 %%pythoncode {
 if get_module_version_info().get_version() != "%(version)s":
