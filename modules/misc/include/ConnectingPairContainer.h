@@ -10,6 +10,7 @@
 
 #include "config.h"
 #include <IMP/core/internal/MovedSingletonContainer.h>
+#include <IMP/core/internal/pair_helpers.h>
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/macros.h>
@@ -29,19 +30,30 @@ IMPMISC_BEGIN_NAMESPACE
     \unstable{ConnectingPairContainer}
     \untested{ConnectingPairContainer}
  */
-class IMPMISCEXPORT ConnectingPairContainer: public PairContainer
+class IMPMISCEXPORT ConnectingPairContainer:
+#if defined(IMP_DOXYGEN) || defined(SWIG)
+public PairContainer
+#else
+public IMP::core::internal::ListLikePairContainer
+#endif
 {
   IMP::internal::OwnerPointer<SingletonContainer> sc_;
   IMP::internal::OwnerPointer<core::internal::MovedSingletonContainer> mv_;
   ParticlePairsTemp data_;
   double error_;
+  bool mst_;
   IMP_ACTIVE_CONTAINER_DECL(ConnectingPairContainer);
   void initialize(SingletonContainer *sc);
   void fill_list(bool first);
 public:
-  ConnectingPairContainer(SingletonContainer *sc, double error);
+  ConnectingPairContainer(SingletonContainer *sc, double error, bool mst);
 
-  IMP_PAIR_CONTAINER(ConnectingPairContainer, get_module_version_info())
+#if defined(IMP_DOXYGEN) || defined(SWIG)
+  IMP_PAIR_CONTAINER(ConnectingPairContainer, get_module_version_info());
+#else
+  IMP_LISTLIKE_PAIR_CONTAINER(ConnectingPairContainer,
+                              get_module_version_info());
+#endif
 };
 
 
