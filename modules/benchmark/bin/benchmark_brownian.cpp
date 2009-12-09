@@ -22,12 +22,10 @@ void test(int n) {
   for (unsigned int i=0; i< ps.size(); ++i) {
     Diffusion::setup_particle(ps[i], 1e-6);
   }
-  IMP_NEW(ClosePairsScoreState, cpss, (lsc));
-  m->add_score_state(cpss);
-  cpss->set_slack(.1);
+  IMP_NEW(ClosePairContainer, cpss, (lsc, 0.0, .1));
 
   IMP_NEW(DistancePairScore, dps, (new HarmonicLowerBound(0, 1)));
-  IMP_NEW(PairsRestraint, pr, (dps, cpss->get_close_pairs_container()));
+  IMP_NEW(PairsRestraint, pr, (dps, cpss));
   m->add_restraint(pr);
   SimulationParameters sp
     = SimulationParameters::setup_particle(new Particle(m));
