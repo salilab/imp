@@ -51,6 +51,14 @@ class VectorOfRefCounted {
       unref(*c);
     }
   }
+  template <class O>
+  void show(std::ostream &out, const O &o) const {
+    out << o;
+  }
+  template <class O>
+  void show(std::ostream &out, const O* &o) const {
+    out << *o;
+  }
  public:
   typedef RC const_reference;
   typedef RC value_type;
@@ -241,6 +249,10 @@ class VectorOfRefCounted {
     data_.push_back(p);
     ref(p);
   }
+  void pop_back() {
+    unref(data_.back());
+    data_.pop_back();
+  }
   bool empty() const {return data_.empty();}
 #ifndef IMP_DOXYGEN
   void swap_with(VectorOfRefCounted<RC, Policy> &a) {
@@ -256,15 +268,16 @@ class VectorOfRefCounted {
     unref(data_.begin(), data_.end());
     data_.clear();
   }
-  /*void show(std::ostream &out) const {
+  void show(std::ostream &out=std::cout) const {
+    out << "[";
     for (unsigned int i=0; i< size(); ++i) {
-      if (operator[](i)) {
-        out << operator[](i)->get_name() << " ";
-      } else {
-        out << "NULL ";
+      show(out, data_[i]);
+      if (i+1 != size()) {
+        out << ", ";
       }
     }
-    }*/
+    out << "]";
+  }
   void erase(iterator it) {
     unref(*it);
     data_.erase(it);
@@ -295,12 +308,12 @@ class VectorOfRefCounted {
 };
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-/*template <class RC, class Policy>
+template <class RC, class Policy>
 std::ostream &operator<<(std::ostream &out,
                          const VectorOfRefCounted<RC, Policy> &v) {
   v.show(out);
   return out;
-  }*/
+}
 
 template <class RC, class Policy>
 void swap(VectorOfRefCounted<RC, Policy> &a,
