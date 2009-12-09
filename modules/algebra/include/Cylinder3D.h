@@ -47,6 +47,8 @@ class IMPALGEBRAEXPORT Cylinder3D: public UninitializedDefault
   double radius_;
 };
 
+IMP_OUTPUT_OPERATOR(Cylinder3D)
+
 IMPALGEBRA_END_NAMESPACE
 
 #endif /* IMPALGEBRA_CYLINDER_3D_H */
