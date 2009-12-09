@@ -19,6 +19,7 @@
 #include <IMP/SingletonContainer.h>
 #include <IMP/core/ListPairContainer.h>
 #include <IMP/core/PairContainerSet.h>
+#include <IMP/core/internal/pair_helpers.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -29,7 +30,12 @@ IMPCORE_BEGIN_NAMESPACE
     container lists all close pairs of particles where one particle is
     taken from each of the input sets.
  */
-class IMPCOREEXPORT CloseBipartitePairContainer : public PairContainer
+class IMPCOREEXPORT CloseBipartitePairContainer:
+#if defined(IMP_DOXYGEN) || defined(SWIG)
+public PairContainer
+#else
+public internal::ListLikePairContainer
+#endif
 {
   IMP::internal::OwnerPointer<SingletonContainer> a_, b_;
   IMP::internal::OwnerPointer<ClosePairsFinder> cpf_;
@@ -37,7 +43,6 @@ class IMPCOREEXPORT CloseBipartitePairContainer : public PairContainer
     moveda_, movedb_;
   bool first_call_;
   double distance_, slack_;
-  ParticlePairsTemp data_;
   IMP_ACTIVE_CONTAINER_DECL(CloseBipartitePairContainer);
   void initialize(SingletonContainer *a,
                   SingletonContainer *b, double distance,
@@ -79,8 +84,12 @@ public:
            PairFilter*, PairFilters);
    /**@}*/
 
-
+#if defined(IMP_DOXYGEN) || defined(SWIG)
   IMP_PAIR_CONTAINER(CloseBipartitePairContainer, get_module_version_info());
+#else
+  IMP_LISTLIKE_PAIR_CONTAINER(CloseBipartitePairContainer,
+                              get_module_version_info());
+#endif
 };
 
 

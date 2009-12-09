@@ -11,97 +11,154 @@
 #define IMPCORE_INTERNAL_PAIR_HELPERS_H
 
 #include "../config.h"
-#include "../ListPairContainer.h"
+#include <IMP/PairContainer.h>
+#include <IMP/PairContainer.h>
+#include <IMP/PairModifier.h>
+#include <IMP/internal/container_helpers.h>
 #include <algorithm>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
-template <class OC, class BC>
-void update_list(OC &old, ParticlePairsTemp &cur,
-                 BC *th) {
-  IMP_IF_CHECK(USAGE) {
-    for (unsigned int i=0; i< cur.size(); ++i) {
-      IMP_USAGE_CHECK(
-            IMP::internal::ContainerTraits<ParticlePair>::is_valid(cur[i]),
-                      "Passed ParticlePair cannot be NULL (or None)",
-                      UsageException);
-
+class ListLikePairContainer: public PairContainer {
+private:
+  ListLikePairContainer():
+    PairContainer("Added or removed container"){}
+  void set_added_and_removed_containers(PairContainer *,
+                                        PairContainer *){}
+  ListLikePairContainer *get_added() {
+    return dynamic_cast<ListLikePairContainer*>
+      (get_added_pairs_container());
+  }
+  ListLikePairContainer *get_removed() {
+    return dynamic_cast<ListLikePairContainer*>
+      (get_removed_pairs_container());
+  }
+  ParticlePairs data_;
+protected:
+  const ParticlePairs &access() const {return data_;}
+  void update_list(ParticlePairsTemp &cur) {
+    IMP_IF_CHECK(USAGE) {
+      for (unsigned int i=0; i< cur.size(); ++i) {
+        IMP_USAGE_CHECK(
+         IMP::internal::ContainerTraits<ParticlePair>::is_valid(cur[i]),
+                        "Passed ParticlePair cannot be NULL (or None)",
+                        UsageException);
+      }
+    }
+    std::sort(cur.begin(), cur.end());
+    if (!get_is_added_or_removed_container()) {
+      ParticlePairsTemp added, removed;
+      std::set_difference(cur.begin(), cur.end(),
+                          data_.begin(), data_.end(),
+                          std::back_inserter(added));
+      std::set_difference(data_.begin(), data_.end(),
+                          cur.begin(), cur.end(),
+                          std::back_inserter(removed));
+      get_added()->data_=added;
+      get_removed()->data_=removed;
+    }
+    swap(data_, cur);
+  }
+  void add_to_list(ParticlePairsTemp &cur) {
+    std::sort(cur.begin(), cur.end());
+    ParticlePairsTemp added;
+    std::set_difference(cur.begin(), cur.end(),
+                        data_.begin(), data_.end(),
+                        std::back_inserter(added));
+    unsigned int osz= data_.size();
+    data_.insert(data_.end(), added.begin(), added.end());
+    std::inplace_merge(data_.begin(), data_.begin()+osz, data_.end());
+    if (!get_is_added_or_removed_container()) {
+      ListLikePairContainer* ac=get_added();
+      ac->data_.insert(ac->data_.end(), added.begin(), added.end());
     }
   }
-  if (th->get_is_added_or_removed_container()) {
-    swap(old, cur);
-  } else {
-    std::sort(cur.begin(), cur.end());
-    ParticlePairsTemp added, removed;
-    std::set_difference(cur.begin(), cur.end(),
-                        old.begin(), old.end(),
-                        std::back_inserter(added));
-    std::set_difference(old.begin(), old.end(),
-                        cur.begin(), cur.end(),
-                        std::back_inserter(removed));
-    swap(old, cur);
-    dynamic_cast<ListPairContainer*>
-      (th->get_added_pairs_container())->set_particle_pairs(added);
-    dynamic_cast<ListPairContainer*>
-      (th->get_removed_pairs_container())->set_particle_pairs(removed);
+  void add_to_list(ParticlePair cur) {
+    data_.insert(std::lower_bound(data_.begin(),
+                                  data_.end(), cur), cur);
+    if (!get_is_added_or_removed_container()) {
+      ListLikePairContainer* ac=get_added();
+      ac->data_.push_back(cur);
+    }
   }
-}
-
-
-template <class OC, class BC>
-void add_to_list(OC &old, ParticlePairsTemp &cur,
-                 BC *th) {
-  std::sort(cur.begin(), cur.end());
-  ParticlePairsTemp added;
-  std::set_difference(cur.begin(), cur.end(),
-                      old.begin(), old.end(),
-                      std::back_inserter(added));
-  unsigned int osz= old.size();
-  old.insert(old.end(), added.begin(), added.end());
-  std::inplace_merge(old.begin(), old.begin()+osz, old.end());
-  if (!th->get_is_added_or_removed_container()) {
-   dynamic_cast<ListPairContainer*>
-     (th->get_added_pairs_container())->set_particle_pairs(added);
+  ListLikePairContainer(std::string name): PairContainer(name){
+    PairContainer::
+      set_added_and_removed_containers( new ListLikePairContainer(),
+                                        new ListLikePairContainer());
   }
-}
+public:
+   ParticlePairsTemp get_particle_pairs() const {
+    IMP_CHECK_OBJECT(this);
+    return data_;
+  }
+  ParticlePair get_particle_pair(unsigned int i) const {
+    IMP_CHECK_OBJECT(this);
+    return data_[i];
+  }
+  void apply(const PairModifier *sm) {
+    IMP_CHECK_OBJECT(this);
+    IMP_CHECK_OBJECT(sm);
+    sm->apply(data_);
+  }
+  void apply(const PairModifier *sm,
+                   DerivativeAccumulator &da) {
+    IMP_CHECK_OBJECT(this);
+    IMP_CHECK_OBJECT(sm);
+    sm->apply(data_, da);
+  }
+  double evaluate(const PairScore *s,
+                        DerivativeAccumulator *da) const {
+    IMP_CHECK_OBJECT(this);
+    IMP_CHECK_OBJECT(s);
+    return s->evaluate(data_, da);
+  }
+  double evaluate_change(const PairScore *s,
+                               DerivativeAccumulator *da) const {
+    IMP_CHECK_OBJECT(this);
+    IMP_CHECK_OBJECT(s);
+    return s->evaluate_change(data_, da);
+  }
+  double evaluate_prechange(const PairScore *s,
+                                  DerivativeAccumulator *da) const {
+    IMP_CHECK_OBJECT(this);
+    IMP_CHECK_OBJECT(s);
+    return s->evaluate_prechange(data_, da);
+  }
+  unsigned int get_number_of_particle_pairs() const {
+    IMP_CHECK_OBJECT(this);
+    return data_.size();
+  }
+  bool get_contains_particle_pair(ParticlePair vt) const {
+    IMP_CHECK_OBJECT(this);
+    return std::binary_search(data_.begin(), data_.end(), vt);
+  }
+  typedef ParticlePairs::const_iterator ParticlePairIterator;
+  ParticlePairIterator particle_pairs_begin() const {
+    return data_.begin();
+  }
+  ParticlePairIterator particle_pairs_end() const {
+    return data_.end();
+  }
+  ObjectsTemp get_input_objects() const { return ObjectsTemp();}
+  void show(std::ostream &out) const {out << "Container" << std::endl;}
+  VersionInfo get_version_info() const {return get_module_version_info();}
+  void do_after_evaluate() {
+    get_added()->data_.clear();
+    get_removed()->data_.clear();
+  }
+  void do_before_evaluate() {
+    std::remove_if(data_.begin(), data_.end(),
+                   IMP::internal::ContainerTraits<ParticlePair>::IsInactive());
+  }
+};
 
 
 IMPCORE_END_INTERNAL_NAMESPACE
 
-#define IMP_LISTLIKE_PAIR_CONTAINER_DEF(Name)                      \
-  ParticlePairsTemp Name::get_particle_pairs() const {                         \
-    return data_;                                                       \
-  }                                                                     \
-  ParticlePair Name::get_particle_pair(unsigned int i) const {             \
-    return data_[i];                                                    \
-  }                                                                     \
-  void Name::apply(const PairModifier *sm) {                       \
-    sm->apply(data_);                                                   \
-  }                                                                     \
-  void Name::apply(const PairModifier *sm,                         \
-                   DerivativeAccumulator &da) {                         \
-    sm->apply(data_, da);                                               \
-  }                                                                     \
-  double Name::evaluate(const PairScore *s,                        \
-                        DerivativeAccumulator *da) const {              \
-    return s->evaluate(data_, da);                                      \
-  }                                                                     \
-  double Name::evaluate_change(const PairScore *s,                 \
-                               DerivativeAccumulator *da) const {       \
-    return s->evaluate_change(data_, da);                               \
-  }                                                                     \
-  double Name::evaluate_prechange(const PairScore *s,              \
-                                  DerivativeAccumulator *da) const {    \
-    return s->evaluate_prechange(data_, da);                            \
-  }                                                                     \
-  unsigned int Name::get_number_of_particle_pairs() const {                 \
-    return data_.size();                                                \
-  }                                                                     \
-  bool                                                                  \
-  Name::get_contains_particle_pair(ParticlePair vt) const {                 \
-    IMP_CHECK_OBJECT(this);                                             \
-    return std::binary_search(data_.begin(), data_.end(), vt);          \
-  }
+
+#define IMP_LISTLIKE_PAIR_CONTAINER(Name, version_info) \
+  ObjectsTemp get_input_objects() const;                     \
+  IMP_OBJECT(Name, version_info);
 
 
 #endif  /* IMPCORE_INTERNAL_PAIR_HELPERS_H */

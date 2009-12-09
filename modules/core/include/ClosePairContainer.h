@@ -19,6 +19,7 @@
 #include <IMP/SingletonContainer.h>
 #include <IMP/core/ListPairContainer.h>
 #include <IMP/core/PairContainerSet.h>
+#include <IMP/core/internal/pair_helpers.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -46,7 +47,12 @@ IMPCORE_BEGIN_NAMESPACE
     \see ClosePairsFinder
 
  */
-class IMPCOREEXPORT ClosePairContainer : public PairContainer
+class IMPCOREEXPORT ClosePairContainer :
+#if defined(IMP_DOXYGEN) || defined(SWIG)
+public PairContainer
+#else
+public internal::ListLikePairContainer
+#endif
 {
   IMP::internal::OwnerPointer<SingletonContainer> c_;
   IMP::internal::OwnerPointer<ClosePairsFinder> cpf_;
@@ -87,7 +93,11 @@ public:
    /**@}*/
 
 
+#if defined(IMP_DOXYGEN) || defined(SWIG)
   IMP_PAIR_CONTAINER(ClosePairContainer, get_module_version_info());
+#else
+  IMP_LISTLIKE_PAIR_CONTAINER(ClosePairContainer, get_module_version_info());
+#endif
 };
 
 

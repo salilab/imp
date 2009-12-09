@@ -27,12 +27,12 @@ IMP_ACTIVE_CONTAINER_DEF(ListSingletonContainer);
 
 ListSingletonContainer
 ::ListSingletonContainer(bool):
-  SingletonContainer("added or removed list"){}
+  internal::ListLikeSingletonContainer("added or removed list"){}
 
 ListSingletonContainer
 ::ListSingletonContainer(const Particles &ps,
                          std::string name):
-  SingletonContainer(name)
+  internal::ListLikeSingletonContainer(name)
 {
   if (ps.empty()) return;
   for (unsigned int i=0; i< ps.size(); ++i) {
@@ -48,25 +48,17 @@ ListSingletonContainer
                     Particle*Exception);
   }
   set_particles(ps);
-  set_added_and_removed_containers( create_untracked_container(),
-                                    create_untracked_container());
 }
 
 ListSingletonContainer
 ::ListSingletonContainer(std::string name):
-  SingletonContainer(name){
-  set_added_and_removed_containers( create_untracked_container(),
-                                    create_untracked_container());
+  internal::ListLikeSingletonContainer(name){
 }
 
 ListSingletonContainer
 ::ListSingletonContainer(const char *name):
-  SingletonContainer(name){
-  set_added_and_removed_containers( create_untracked_container(),
-                                    create_untracked_container());
+  internal::ListLikeSingletonContainer(name){
 }
-
-IMP_LISTLIKE_SINGLETON_CONTAINER_DEF(ListSingletonContainer)
 
 void ListSingletonContainer::show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
@@ -81,15 +73,13 @@ void ListSingletonContainer::set_particles(ParticlesTemp sc) {
       && !sc.empty()) {
     set_model(IMP::internal::get_model(sc[0]));
   }
-  internal::update_list(data_, sc, this);
+  update_list(sc);
 }
 
 
 void ListSingletonContainer::clear_particles() {
-  if (!get_is_added_or_removed_container()) {
-    get_list(get_removed_singletons_container())->add_particles(data_);
-  }
-  data_.clear();
+  ParticlesTemp t;
+  update_list(t);
 }
 
 
@@ -101,11 +91,7 @@ void ListSingletonContainer::add_particle(Particle* vt) {
   if (!get_has_model() && !get_is_added_or_removed_container()) {
     set_model(IMP::internal::get_model(vt));
   }
-  data_.insert(std::lower_bound(data_.begin(),
-                                data_.end(), vt), vt);
-  if (!get_is_added_or_removed_container()) {
-    get_list(get_added_singletons_container())->add_particle(vt);
-  }
+  add_to_list(vt);
   IMP_USAGE_CHECK(get_is_added_or_removed_container()
                   || !get_removed_singletons_container()
                   ->get_contains_particle(vt),
@@ -117,11 +103,8 @@ void ListSingletonContainer::add_particles(const ParticlesTemp &c) {
   if (!get_has_model() && !get_is_added_or_removed_container()) {
     set_model(IMP::internal::get_model(c[0]));
   }
-  data_.insert(data_.end(), c.begin(), c.end());
-  std::sort(data_.begin(), data_.end());
-  if (!get_is_added_or_removed_container()) {
-    get_list(get_added_singletons_container())->add_particles(c);
-  }
+  ParticlesTemp cp= c;
+  add_to_list(cp);
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i=0; i< c.size(); ++i) {
       IMP_USAGE_CHECK(IMP::internal::ContainerTraits<Particle>
@@ -145,13 +128,11 @@ ObjectsTemp ListSingletonContainer::get_input_objects() const {
 
 
 void ListSingletonContainer::do_before_evaluate() {
-  std::remove_if(data_.begin(), data_.end(),
-                 IMP::internal::ContainerTraits<Particle>::IsInactive());
+  internal::ListLikeSingletonContainer::do_before_evaluate();
 }
 
 void ListSingletonContainer::do_after_evaluate() {
-  get_list(get_added_singletons_container())->clear_particles();
-  get_list(get_removed_singletons_container())->clear_particles();
+  internal::ListLikeSingletonContainer::do_after_evaluate();
 }
 
 ParticlesTemp ListSingletonContainer::get_state_input_particles() const {

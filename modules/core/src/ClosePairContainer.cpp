@@ -30,13 +30,15 @@ IMP_LIST_IMPL(ClosePairContainer,
 
 ClosePairContainer::ClosePairContainer(SingletonContainer *c,
                                                  double distance,
-                                                 double slack) {
+                                       double slack):
+  internal::ListLikePairContainer("CloseBipartitePairContainer") {
   initialize(c, distance, slack, c->get_particle(0)->get_model(),
              internal::default_cpf());
 }
 ClosePairContainer::ClosePairContainer(SingletonContainer *c,
                                                  Model *m, double distance,
-                                                 double slack) {
+                                       double slack):
+  internal::ListLikePairContainer("CloseBipartitePairContainer") {
   initialize(c, distance, slack, m,
              internal::default_cpf());
 }
@@ -44,14 +46,16 @@ ClosePairContainer::ClosePairContainer(SingletonContainer *c,
 ClosePairContainer::ClosePairContainer(SingletonContainer *c,
                                                  double distance,
                                                  ClosePairsFinder *cpf,
-                                                 double slack) {
+                                       double slack):
+  internal::ListLikePairContainer("CloseBipartitePairContainer") {
   initialize(c, distance, slack, c->get_particle(0)->get_model(),
              cpf);
 }
 ClosePairContainer::ClosePairContainer(SingletonContainer *c,
                                                  Model *m, double distance,
                                                  ClosePairsFinder *cpf,
-                                                 double slack) {
+                                       double slack):
+  internal::ListLikePairContainer("CloseBipartitePairContainer") {
  initialize(c, distance, slack, m,
              cpf);
 }
@@ -59,19 +63,15 @@ ClosePairContainer::ClosePairContainer(SingletonContainer *c,
 void ClosePairContainer::initialize(SingletonContainer *c, double distance,
                                          double slack, Model *m,
                                          ClosePairsFinder *cpf) {
-  set_added_and_removed_containers(
-           ListPairContainer::create_untracked_container(),
-           ListPairContainer::create_untracked_container());
   set_model(m);
   slack_=slack;
   distance_=distance;
   c_=c;
   cpf_=cpf;
-  cpf_->set_distance(distance_+slack_);
+  cpf_->set_distance(distance_+2*slack_);
   first_call_=true;
   moved_= cpf_->get_moved_singleton_container(c_, m, slack_);
 }
-IMP_LISTLIKE_PAIR_CONTAINER_DEF(ClosePairContainer);
 
 IMP_ACTIVE_CONTAINER_DEF(ClosePairContainer)
 
@@ -101,11 +101,11 @@ void ClosePairContainer::do_before_evaluate() {
   IMP_CHECK_OBJECT(cpf_);
   if (first_call_) {
     IMP_LOG(TERSE, "Handling first call of ClosePairContainer." << std::endl);
-    data_= cpf_->get_close_pairs(c_);
-    internal::filter_close_pairs(this, data_);
+    ParticlePairsTemp c= cpf_->get_close_pairs(c_);
+    internal::filter_close_pairs(this, c);
     moved_->reset();
-    std::sort(data_.begin(), data_.end());
-    IMP_LOG(TERSE, "Found " << data_.size() << " pairs." << std::endl);
+    IMP_LOG(TERSE, "Found " << c.size() << " pairs." << std::endl);
+    update_list(c);
     first_call_=false;
   } else {
     // hack until we have the dependency graph
@@ -118,26 +118,26 @@ void ClosePairContainer::do_before_evaluate() {
         internal::filter_close_pairs(this, ret);
         internal::filter_same(ret);
         IMP_LOG(TERSE, "Found " << ret.size() << " pairs." << std::endl);
-        internal::add_to_list(data_, ret, this);
+        add_to_list(ret);
         moved_->reset_moved();
       } else {
         IMP_LOG(TERSE, "Handling full update of ClosePairContainer."
                 << std::endl);
         ParticlePairsTemp ret= cpf_->get_close_pairs(c_);
         internal::filter_close_pairs(this, ret);
-        internal::update_list(data_, ret,this);
-        IMP_LOG(TERSE, "Found " << data_.size() << " pairs." << std::endl);
+        IMP_LOG(TERSE, "Found " << ret.size() << " pairs." << std::endl);
+        update_list(ret);
         moved_->reset();
       }
+    } else {
+      IMP_LOG(TERSE, "No particles moved more than " << slack_ << std::endl);
     }
   }
 }
 
 
 void ClosePairContainer::do_after_evaluate() {
-  internal::get_list(get_added_pairs_container())->clear_particle_pairs();
-  internal::get_list(get_removed_pairs_container())
-    ->clear_particle_pairs();
+  internal::ListLikePairContainer::do_after_evaluate();
 }
 
 

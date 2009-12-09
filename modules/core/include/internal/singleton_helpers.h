@@ -11,97 +11,154 @@
 #define IMPCORE_INTERNAL_SINGLETON_HELPERS_H
 
 #include "../config.h"
-#include "../ListSingletonContainer.h"
+#include <IMP/SingletonContainer.h>
+#include <IMP/SingletonContainer.h>
+#include <IMP/SingletonModifier.h>
+#include <IMP/internal/container_helpers.h>
 #include <algorithm>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
-template <class OC, class BC>
-void update_list(OC &old, ParticlesTemp &cur,
-                 BC *th) {
-  IMP_IF_CHECK(USAGE) {
-    for (unsigned int i=0; i< cur.size(); ++i) {
-      IMP_USAGE_CHECK(
-            IMP::internal::ContainerTraits<Particle>::is_valid(cur[i]),
-                      "Passed Particle cannot be NULL (or None)",
-                      UsageException);
-
+class ListLikeSingletonContainer: public SingletonContainer {
+private:
+  ListLikeSingletonContainer():
+    SingletonContainer("Added or removed container"){}
+  void set_added_and_removed_containers(SingletonContainer *,
+                                        SingletonContainer *){}
+  ListLikeSingletonContainer *get_added() {
+    return dynamic_cast<ListLikeSingletonContainer*>
+      (get_added_singletons_container());
+  }
+  ListLikeSingletonContainer *get_removed() {
+    return dynamic_cast<ListLikeSingletonContainer*>
+      (get_removed_singletons_container());
+  }
+  Particles data_;
+protected:
+  const Particles &access() const {return data_;}
+  void update_list(ParticlesTemp &cur) {
+    IMP_IF_CHECK(USAGE) {
+      for (unsigned int i=0; i< cur.size(); ++i) {
+        IMP_USAGE_CHECK(
+         IMP::internal::ContainerTraits<Particle>::is_valid(cur[i]),
+                        "Passed Particle cannot be NULL (or None)",
+                        UsageException);
+      }
+    }
+    std::sort(cur.begin(), cur.end());
+    if (!get_is_added_or_removed_container()) {
+      ParticlesTemp added, removed;
+      std::set_difference(cur.begin(), cur.end(),
+                          data_.begin(), data_.end(),
+                          std::back_inserter(added));
+      std::set_difference(data_.begin(), data_.end(),
+                          cur.begin(), cur.end(),
+                          std::back_inserter(removed));
+      get_added()->data_=added;
+      get_removed()->data_=removed;
+    }
+    swap(data_, cur);
+  }
+  void add_to_list(ParticlesTemp &cur) {
+    std::sort(cur.begin(), cur.end());
+    ParticlesTemp added;
+    std::set_difference(cur.begin(), cur.end(),
+                        data_.begin(), data_.end(),
+                        std::back_inserter(added));
+    unsigned int osz= data_.size();
+    data_.insert(data_.end(), added.begin(), added.end());
+    std::inplace_merge(data_.begin(), data_.begin()+osz, data_.end());
+    if (!get_is_added_or_removed_container()) {
+      ListLikeSingletonContainer* ac=get_added();
+      ac->data_.insert(ac->data_.end(), added.begin(), added.end());
     }
   }
-  if (th->get_is_added_or_removed_container()) {
-    swap(old, cur);
-  } else {
-    std::sort(cur.begin(), cur.end());
-    ParticlesTemp added, removed;
-    std::set_difference(cur.begin(), cur.end(),
-                        old.begin(), old.end(),
-                        std::back_inserter(added));
-    std::set_difference(old.begin(), old.end(),
-                        cur.begin(), cur.end(),
-                        std::back_inserter(removed));
-    swap(old, cur);
-    dynamic_cast<ListSingletonContainer*>
-      (th->get_added_singletons_container())->set_particles(added);
-    dynamic_cast<ListSingletonContainer*>
-      (th->get_removed_singletons_container())->set_particles(removed);
+  void add_to_list(Particle* cur) {
+    data_.insert(std::lower_bound(data_.begin(),
+                                  data_.end(), cur), cur);
+    if (!get_is_added_or_removed_container()) {
+      ListLikeSingletonContainer* ac=get_added();
+      ac->data_.push_back(cur);
+    }
   }
-}
-
-
-template <class OC, class BC>
-void add_to_list(OC &old, ParticlesTemp &cur,
-                 BC *th) {
-  std::sort(cur.begin(), cur.end());
-  ParticlesTemp added;
-  std::set_difference(cur.begin(), cur.end(),
-                      old.begin(), old.end(),
-                      std::back_inserter(added));
-  unsigned int osz= old.size();
-  old.insert(old.end(), added.begin(), added.end());
-  std::inplace_merge(old.begin(), old.begin()+osz, old.end());
-  if (!th->get_is_added_or_removed_container()) {
-   dynamic_cast<ListSingletonContainer*>
-     (th->get_added_singletons_container())->set_particles(added);
+  ListLikeSingletonContainer(std::string name): SingletonContainer(name){
+    SingletonContainer::
+      set_added_and_removed_containers( new ListLikeSingletonContainer(),
+                                        new ListLikeSingletonContainer());
   }
-}
+public:
+   ParticlesTemp get_particles() const {
+    IMP_CHECK_OBJECT(this);
+    return data_;
+  }
+  Particle* get_particle(unsigned int i) const {
+    IMP_CHECK_OBJECT(this);
+    return data_[i];
+  }
+  void apply(const SingletonModifier *sm) {
+    IMP_CHECK_OBJECT(this);
+    IMP_CHECK_OBJECT(sm);
+    sm->apply(data_);
+  }
+  void apply(const SingletonModifier *sm,
+                   DerivativeAccumulator &da) {
+    IMP_CHECK_OBJECT(this);
+    IMP_CHECK_OBJECT(sm);
+    sm->apply(data_, da);
+  }
+  double evaluate(const SingletonScore *s,
+                        DerivativeAccumulator *da) const {
+    IMP_CHECK_OBJECT(this);
+    IMP_CHECK_OBJECT(s);
+    return s->evaluate(data_, da);
+  }
+  double evaluate_change(const SingletonScore *s,
+                               DerivativeAccumulator *da) const {
+    IMP_CHECK_OBJECT(this);
+    IMP_CHECK_OBJECT(s);
+    return s->evaluate_change(data_, da);
+  }
+  double evaluate_prechange(const SingletonScore *s,
+                                  DerivativeAccumulator *da) const {
+    IMP_CHECK_OBJECT(this);
+    IMP_CHECK_OBJECT(s);
+    return s->evaluate_prechange(data_, da);
+  }
+  unsigned int get_number_of_particles() const {
+    IMP_CHECK_OBJECT(this);
+    return data_.size();
+  }
+  bool get_contains_particle(Particle* vt) const {
+    IMP_CHECK_OBJECT(this);
+    return std::binary_search(data_.begin(), data_.end(), vt);
+  }
+  typedef Particles::const_iterator ParticleIterator;
+  ParticleIterator particles_begin() const {
+    return data_.begin();
+  }
+  ParticleIterator particles_end() const {
+    return data_.end();
+  }
+  ObjectsTemp get_input_objects() const { return ObjectsTemp();}
+  void show(std::ostream &out) const {out << "Container" << std::endl;}
+  VersionInfo get_version_info() const {return get_module_version_info();}
+  void do_after_evaluate() {
+    get_added()->data_.clear();
+    get_removed()->data_.clear();
+  }
+  void do_before_evaluate() {
+    std::remove_if(data_.begin(), data_.end(),
+                   IMP::internal::ContainerTraits<Particle>::IsInactive());
+  }
+};
 
 
 IMPCORE_END_INTERNAL_NAMESPACE
 
-#define IMP_LISTLIKE_SINGLETON_CONTAINER_DEF(Name)                      \
-  ParticlesTemp Name::get_particles() const {                         \
-    return data_;                                                       \
-  }                                                                     \
-  Particle* Name::get_particle(unsigned int i) const {             \
-    return data_[i];                                                    \
-  }                                                                     \
-  void Name::apply(const SingletonModifier *sm) {                       \
-    sm->apply(data_);                                                   \
-  }                                                                     \
-  void Name::apply(const SingletonModifier *sm,                         \
-                   DerivativeAccumulator &da) {                         \
-    sm->apply(data_, da);                                               \
-  }                                                                     \
-  double Name::evaluate(const SingletonScore *s,                        \
-                        DerivativeAccumulator *da) const {              \
-    return s->evaluate(data_, da);                                      \
-  }                                                                     \
-  double Name::evaluate_change(const SingletonScore *s,                 \
-                               DerivativeAccumulator *da) const {       \
-    return s->evaluate_change(data_, da);                               \
-  }                                                                     \
-  double Name::evaluate_prechange(const SingletonScore *s,              \
-                                  DerivativeAccumulator *da) const {    \
-    return s->evaluate_prechange(data_, da);                            \
-  }                                                                     \
-  unsigned int Name::get_number_of_particles() const {                 \
-    return data_.size();                                                \
-  }                                                                     \
-  bool                                                                  \
-  Name::get_contains_particle(Particle* vt) const {                 \
-    IMP_CHECK_OBJECT(this);                                             \
-    return std::binary_search(data_.begin(), data_.end(), vt);          \
-  }
+
+#define IMP_LISTLIKE_SINGLETON_CONTAINER(Name, version_info) \
+  ObjectsTemp get_input_objects() const;                     \
+  IMP_OBJECT(Name, version_info);
 
 
 #endif  /* IMPCORE_INTERNAL_SINGLETON_HELPERS_H */
