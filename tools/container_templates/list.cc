@@ -27,12 +27,12 @@ IMP_ACTIVE_CONTAINER_DEF(ListGroupnameContainer);
 
 ListGroupnameContainer
 ::ListGroupnameContainer(bool):
-  GroupnameContainer("added or removed list"){}
+  internal::ListLikeGroupnameContainer("added or removed list"){}
 
 ListGroupnameContainer
 ::ListGroupnameContainer(const Classnames &ps,
                          std::string name):
-  GroupnameContainer(name)
+  internal::ListLikeGroupnameContainer(name)
 {
   if (ps.empty()) return;
   for (unsigned int i=0; i< ps.size(); ++i) {
@@ -48,25 +48,17 @@ ListGroupnameContainer
                     ValueException);
   }
   set_classnames(ps);
-  set_added_and_removed_containers( create_untracked_container(),
-                                    create_untracked_container());
 }
 
 ListGroupnameContainer
 ::ListGroupnameContainer(std::string name):
-  GroupnameContainer(name){
-  set_added_and_removed_containers( create_untracked_container(),
-                                    create_untracked_container());
+  internal::ListLikeGroupnameContainer(name){
 }
 
 ListGroupnameContainer
 ::ListGroupnameContainer(const char *name):
-  GroupnameContainer(name){
-  set_added_and_removed_containers( create_untracked_container(),
-                                    create_untracked_container());
+  internal::ListLikeGroupnameContainer(name){
 }
-
-IMP_LISTLIKE_GROUPNAME_CONTAINER_DEF(ListGroupnameContainer)
 
 void ListGroupnameContainer::show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
@@ -81,15 +73,13 @@ void ListGroupnameContainer::set_classnames(ClassnamesTemp sc) {
       && !sc.empty()) {
     set_model(IMP::internal::get_model(sc[0]));
   }
-  internal::update_list(data_, sc, this);
+  update_list(sc);
 }
 
 
 void ListGroupnameContainer::clear_classnames() {
-  if (!get_is_added_or_removed_container()) {
-    get_list(get_removed_groupnames_container())->add_classnames(data_);
-  }
-  data_.clear();
+  ClassnamesTemp t;
+  update_list(t);
 }
 
 
@@ -101,11 +91,7 @@ void ListGroupnameContainer::add_classname(Value vt) {
   if (!get_has_model() && !get_is_added_or_removed_container()) {
     set_model(IMP::internal::get_model(vt));
   }
-  data_.insert(std::lower_bound(data_.begin(),
-                                data_.end(), vt), vt);
-  if (!get_is_added_or_removed_container()) {
-    get_list(get_added_groupnames_container())->add_classname(vt);
-  }
+  add_to_list(vt);
   IMP_USAGE_CHECK(get_is_added_or_removed_container()
                   || !get_removed_groupnames_container()
                   ->get_contains_classname(vt),
@@ -117,11 +103,8 @@ void ListGroupnameContainer::add_classnames(const ClassnamesTemp &c) {
   if (!get_has_model() && !get_is_added_or_removed_container()) {
     set_model(IMP::internal::get_model(c[0]));
   }
-  data_.insert(data_.end(), c.begin(), c.end());
-  std::sort(data_.begin(), data_.end());
-  if (!get_is_added_or_removed_container()) {
-    get_list(get_added_groupnames_container())->add_classnames(c);
-  }
+  ClassnamesTemp cp= c;
+  add_to_list(cp);
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i=0; i< c.size(); ++i) {
       IMP_USAGE_CHECK(IMP::internal::ContainerTraits<Classname>
@@ -145,13 +128,11 @@ ObjectsTemp ListGroupnameContainer::get_input_objects() const {
 
 
 void ListGroupnameContainer::do_before_evaluate() {
-  std::remove_if(data_.begin(), data_.end(),
-                 IMP::internal::ContainerTraits<Classname>::IsInactive());
+  internal::ListLikeGroupnameContainer::do_before_evaluate();
 }
 
 void ListGroupnameContainer::do_after_evaluate() {
-  get_list(get_added_groupnames_container())->clear_classnames();
-  get_list(get_removed_groupnames_container())->clear_classnames();
+  internal::ListLikeGroupnameContainer::do_after_evaluate();
 }
 
 ParticlesTemp ListGroupnameContainer::get_state_input_particles() const {

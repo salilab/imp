@@ -11,97 +11,150 @@
 #define IMPCORE_INTERNAL_GROUPNAME_HELPERS_H
 
 #include "../config.h"
-#include "../ListGroupnameContainer.h"
+#include <IMP/GroupnameContainer.h>
+#include <IMP/GroupnameContainer.h>
+#include <IMP/GroupnameModifier.h>
+#include <IMP/internal/container_helpers.h>
 #include <algorithm>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
-template <class OC, class BC>
-void update_list(OC &old, ClassnamesTemp &cur,
-                 BC *th) {
-  IMP_IF_CHECK(USAGE) {
-    for (unsigned int i=0; i< cur.size(); ++i) {
-      IMP_USAGE_CHECK(
-            IMP::internal::ContainerTraits<Classname>::is_valid(cur[i]),
-                      "Passed Classname cannot be NULL (or None)",
-                      UsageException);
-
+class ListLikeGroupnameContainer: public GroupnameContainer {
+private:
+  ListLikeGroupnameContainer(): GroupnameContainer("Added or removed container"){}
+  void set_added_and_removed_containers(GroupnameContainer *, GroupnameContainer *){}
+  ListLikeGroupnameContainer *get_added() {
+    return dynamic_cast<ListLikeGroupnameContainer*>(get_added_groupnames_container());
+  }
+  ListLikeGroupnameContainer *get_removed() {
+    return dynamic_cast<ListLikeGroupnameContainer*>(get_removed_groupnames_container());
+  }
+  Classnames data_;
+protected:
+  const Classnames &access() const {return data_;}
+  void update_list(ClassnamesTemp &cur) {
+    IMP_IF_CHECK(USAGE) {
+      for (unsigned int i=0; i< cur.size(); ++i) {
+        IMP_USAGE_CHECK(
+                        IMP::internal::ContainerTraits<Classname>::is_valid(cur[i]),
+                        "Passed Classname cannot be NULL (or None)",
+                        UsageException);   
+      }
+    }
+    std::sort(cur.begin(), cur.end());
+    if (!get_is_added_or_removed_container()) {
+      ClassnamesTemp added, removed;
+      std::set_difference(cur.begin(), cur.end(),
+                          data_.begin(), data_.end(),
+                          std::back_inserter(added));
+      std::set_difference(data_.begin(), data_.end(),
+                          cur.begin(), cur.end(),
+                          std::back_inserter(removed));
+      get_added()->data_=added;
+      get_removed()->data_=removed;
+    }
+    swap(data_, cur);
+  }
+  void add_to_list(ClassnamesTemp &cur) {
+    std::sort(cur.begin(), cur.end());
+    ClassnamesTemp added;
+    std::set_difference(cur.begin(), cur.end(),
+                        data_.begin(), data_.end(),
+                        std::back_inserter(added));
+    unsigned int osz= data_.size();
+    data_.insert(data_.end(), added.begin(), added.end());
+    std::inplace_merge(data_.begin(), data_.begin()+osz, data_.end());
+    if (!get_is_added_or_removed_container()) {
+      ListLikeGroupnameContainer* ac=get_added();
+      ac->data_.insert(ac->data_.end(), added.begin(), added.end());
     }
   }
-  if (th->get_is_added_or_removed_container()) {
-    swap(old, cur);
-  } else {
-    std::sort(cur.begin(), cur.end());
-    ClassnamesTemp added, removed;
-    std::set_difference(cur.begin(), cur.end(),
-                        old.begin(), old.end(),
-                        std::back_inserter(added));
-    std::set_difference(old.begin(), old.end(),
-                        cur.begin(), cur.end(),
-                        std::back_inserter(removed));
-    swap(old, cur);
-    dynamic_cast<ListGroupnameContainer*>
-      (th->get_added_groupnames_container())->set_classnames(added);
-    dynamic_cast<ListGroupnameContainer*>
-      (th->get_removed_groupnames_container())->set_classnames(removed);
+  void add_to_list(Value cur) {
+    data_.insert(std::lower_bound(data_.begin(),
+                                  data_.end(), cur), cur);
+    if (!get_is_added_or_removed_container()) {
+      ListLikeGroupnameContainer* ac=get_added();
+      ac->data_.push_back(cur);
+    }
   }
-}
-
-
-template <class OC, class BC>
-void add_to_list(OC &old, ClassnamesTemp &cur,
-                 BC *th) {
-  std::sort(cur.begin(), cur.end());
-  ClassnamesTemp added;
-  std::set_difference(cur.begin(), cur.end(),
-                      old.begin(), old.end(),
-                      std::back_inserter(added));
-  unsigned int osz= old.size();
-  old.insert(old.end(), added.begin(), added.end());
-  std::inplace_merge(old.begin(), old.begin()+osz, old.end());
-  if (!th->get_is_added_or_removed_container()) {
-   dynamic_cast<ListGroupnameContainer*>
-     (th->get_added_groupnames_container())->set_classnames(added);
+  ListLikeGroupnameContainer(std::string name): GroupnameContainer(name){
+    GroupnameContainer::
+      set_added_and_removed_containers( new ListLikeGroupnameContainer(),
+                                        new ListLikeGroupnameContainer());
   }
-}
+public:
+   ClassnamesTemp get_classnames() const {
+    IMP_CHECK_OBJECT(this);
+    return data_;
+  }
+  Value get_classname(unsigned int i) const {
+    IMP_CHECK_OBJECT(this);
+    return data_[i];
+  }
+  void apply(const GroupnameModifier *sm) {
+    IMP_CHECK_OBJECT(this);
+    IMP_CHECK_OBJECT(sm);
+    sm->apply(data_);
+  }
+  void apply(const GroupnameModifier *sm,
+                   DerivativeAccumulator &da) {
+    IMP_CHECK_OBJECT(this);
+    IMP_CHECK_OBJECT(sm);
+    sm->apply(data_, da);
+  }
+  double evaluate(const GroupnameScore *s,
+                        DerivativeAccumulator *da) const {
+    IMP_CHECK_OBJECT(this);
+    IMP_CHECK_OBJECT(s);
+    return s->evaluate(data_, da);
+  }
+  double evaluate_change(const GroupnameScore *s,
+                               DerivativeAccumulator *da) const {
+    IMP_CHECK_OBJECT(this);
+    IMP_CHECK_OBJECT(s);
+    return s->evaluate_change(data_, da);
+  }
+  double evaluate_prechange(const GroupnameScore *s,
+                                  DerivativeAccumulator *da) const {
+    IMP_CHECK_OBJECT(this);
+    IMP_CHECK_OBJECT(s);
+    return s->evaluate_prechange(data_, da);
+  }
+  unsigned int get_number_of_classnames() const {
+    IMP_CHECK_OBJECT(this);
+    return data_.size();
+  }
+  bool get_contains_classname(Value vt) const {
+    IMP_CHECK_OBJECT(this);
+    return std::binary_search(data_.begin(), data_.end(), vt);
+  }
+  typedef Classnames::const_iterator ClassnameIterator;
+  ClassnameIterator classnames_begin() const {
+    return data_.begin();
+  }
+  ClassnameIterator classnames_end() const {
+    return data_.end();
+  }
+  ObjectsTemp get_input_objects() const { return ObjectsTemp();}
+  void show(std::ostream &out) const {out << "Container" << std::endl;}
+  VersionInfo get_version_info() const {return get_module_version_info();}
+  void do_after_evaluate() {
+    get_added()->data_.clear();
+    get_removed()->data_.clear();
+  }
+  void do_before_evaluate() {
+    std::remove_if(data_.begin(), data_.end(),
+                   IMP::internal::ContainerTraits<Classname>::IsInactive());
+  }
+};
 
 
 IMPCORE_END_INTERNAL_NAMESPACE
 
-#define IMP_LISTLIKE_GROUPNAME_CONTAINER_DEF(Name)                      \
-  ClassnamesTemp Name::get_classnames() const {                         \
-    return data_;                                                       \
-  }                                                                     \
-  Value Name::get_classname(unsigned int i) const {             \
-    return data_[i];                                                    \
-  }                                                                     \
-  void Name::apply(const GroupnameModifier *sm) {                       \
-    sm->apply(data_);                                                   \
-  }                                                                     \
-  void Name::apply(const GroupnameModifier *sm,                         \
-                   DerivativeAccumulator &da) {                         \
-    sm->apply(data_, da);                                               \
-  }                                                                     \
-  double Name::evaluate(const GroupnameScore *s,                        \
-                        DerivativeAccumulator *da) const {              \
-    return s->evaluate(data_, da);                                      \
-  }                                                                     \
-  double Name::evaluate_change(const GroupnameScore *s,                 \
-                               DerivativeAccumulator *da) const {       \
-    return s->evaluate_change(data_, da);                               \
-  }                                                                     \
-  double Name::evaluate_prechange(const GroupnameScore *s,              \
-                                  DerivativeAccumulator *da) const {    \
-    return s->evaluate_prechange(data_, da);                            \
-  }                                                                     \
-  unsigned int Name::get_number_of_classnames() const {                 \
-    return data_.size();                                                \
-  }                                                                     \
-  bool                                                                  \
-  Name::get_contains_classname(Value vt) const {                 \
-    IMP_CHECK_OBJECT(this);                                             \
-    return std::binary_search(data_.begin(), data_.end(), vt);          \
-  }
+
+#define IMP_LISTLIKE_GROUPNAME_CONTAINER(Name, version_info) \
+  ObjectsTemp get_input_objects() const;                     \
+  IMP_OBJECT(Name, version_info);
 
 
 #endif  /* IMPCORE_INTERNAL_GROUPNAME_HELPERS_H */

@@ -13,6 +13,7 @@
 #include "config.h"
 #include <IMP/GroupnameContainer.h>
 #include <IMP/internal/container_helpers.h>
+#include <IMP/core/internal/groupname_helpers.h>
 #include <IMP/ScoreState.h>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -21,9 +22,13 @@ IMPCORE_BEGIN_NAMESPACE
 /** \note The indexes can change when particles are inserted
     as the list is maintained in sorted order.
  */
-class IMPCOREEXPORT ListGroupnameContainer : public GroupnameContainer
+class IMPCOREEXPORT ListGroupnameContainer:
+#if defined(IMP_DOXYGEN) || defined(SWIG)
+public GroupnameContainer
+#else
+public internal::ListLikeGroupnameContainer
+#endif
 {
-  Classnames data_;
   IMP_ACTIVE_CONTAINER_DECL(ListGroupnameContainer);
   // for the change versions
   ListGroupnameContainer(bool);
@@ -51,26 +56,17 @@ public:
       set_classnames(static_cast<ClassnamesTemp>(c));
     })
   void clear_classnames();
-#ifndef IMP_DOXYGEN
-  typedef Classnames::const_iterator ClassnameIterator;
-#else
-  class ClassnameIterator;
-#endif
-  ClassnameIterator classnames_begin() const {
-    return data_.begin();
-  }
-  ClassnameIterator classnames_end() const {
-    return data_.end();
-  }
   /**@}*/
 
   static ListGroupnameContainer *create_untracked_container() {
     ListGroupnameContainer *lsc = new ListGroupnameContainer(false);
     return lsc;
   }
-
-
+#if defined(IMP_DOXYGEN) || defined(SWIG)
   IMP_GROUPNAME_CONTAINER(ListGroupnameContainer, get_module_version_info());
+#else
+  IMP_LISTLIKE_GROUPNAME_CONTAINER(ListGroupnameContainer, get_module_version_info());
+#endif
 };
 
 
