@@ -4,6 +4,7 @@ files = [
          'BoundingBoxD.h',
          'Cone3D.h',
          'Cylinder3D.h',
+         'Ellipsoid3D.h',
          'Matrix2D.h',
          'Matrix3D.h',
          'MultiArray.h',
