@@ -12,6 +12,7 @@
 
 #include "WeakPointer.h"
 #include "RefCounted.h"
+#include "Object.h"
 #include "internal/ref_counting.h"
 #include "internal/OwnerPointer.h"
 
@@ -30,6 +31,11 @@ IMP_BEGIN_NAMESPACE
 template <class O>
 class Pointer: public WeakPointer<O>
 {
+  void check(const RefCounted *){}
+  void check(const Object *o) {
+    if (o) IMP_CHECK_OBJECT(o);
+  }
+
   typedef WeakPointer<O> P;
   typedef Pointer<O> This;
 
@@ -37,6 +43,7 @@ class Pointer: public WeakPointer<O>
     if (p == P::o_) return;
     if (P::o_) internal::unref(P::o_);
     if (p) internal::ref(p);
+    check(p);
     P::o_=p;
   }
   // issue with commas
