@@ -65,7 +65,8 @@ public:
 #if defined(IMP_DOXYGEN) || defined(SWIG)
   IMP_GROUPNAME_CONTAINER(ListGroupnameContainer, get_module_version_info());
 #else
-  IMP_LISTLIKE_GROUPNAME_CONTAINER(ListGroupnameContainer, get_module_version_info());
+  IMP_LISTLIKE_GROUPNAME_CONTAINER(ListGroupnameContainer,
+                                   get_module_version_info());
 #endif
 };
 
