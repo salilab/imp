@@ -13,7 +13,7 @@ class TunnelTest(IMP.test.TestCase):
         m= IMP.Model()
         ps= IMP.core.create_xyzr_particles(m, 10, .1)
         lsc=IMP.core.ListSingletonContainer(ps)
-        cpc=IMP.misc.ConnectingPairContainer(lsc, .1)
+        cpc=IMP.misc.ConnectingPairContainer(lsc, .1, False)
         #m.add_restraint(pr)
         m.evaluate(False)
         for pp in cpc.get_particle_pairs():

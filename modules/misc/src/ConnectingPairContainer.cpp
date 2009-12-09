@@ -15,6 +15,8 @@
 #include <IMP/core/internal/close_pairs_helpers.h>
 #include <IMP/PairModifier.h>
 #include <IMP/algebra/vector_search.h>
+
+
 namespace boost {
   unsigned int get(const std::vector<unsigned int> &v,
                    unsigned int i) {
@@ -27,6 +29,12 @@ namespace boost {
 }
 #include <boost/pending/disjoint_sets.hpp>
 #include <algorithm>
+
+
+#include <boost/graph/kruskal_min_spanning_tree.hpp>
+#include <boost/graph/prim_minimum_spanning_tree.hpp>
+#include <boost/graph/adjacency_list.hpp>
+#include <boost/graph/adjacency_matrix.hpp>
 
 
 IMPMISC_BEGIN_NAMESPACE
@@ -58,19 +66,56 @@ namespace {
       }
       //}
   }
+
+
+
+  /*typedef boost::adjacency_list<boost::vecS, boost::vecS,
+                        boost::undirectedS, boost::no_property,
+                        boost::property<boost::edge_weight_t, double> > Graph;*/
+  typedef boost::adjacency_matrix<boost::undirectedS, boost::no_property,
+                        boost::property<boost::edge_weight_t, double> > Graph;
+  typedef boost::graph_traits<Graph>::edge_descriptor Edge;
+  typedef Graph::edge_property_type Weight;
+  typedef boost::graph_traits<Graph>::vertex_descriptor Vertex;
+
+  void compute_mst(const SingletonContainer *a,
+                   ParticlePairsTemp &out) {
+    unsigned int nump= a->get_number_of_particles();
+    Graph g(nump);
+    for (unsigned int i=0; i< nump; ++i) {
+      core::XYZR di(a->get_particle(i));
+      for (unsigned int j=0; j<i; ++j) {
+        core::XYZR dj(a->get_particle(j));
+        double d=algebra::power_distance(di.get_sphere(), dj.get_sphere());
+        /*Edge e =*/ boost::add_edge(i, j, Weight(d), g);
+        //boost::put(boost::edge_weight_t(), g, e, d);
+      }
+    }
+    std::vector<Edge> mst;
+    mst.resize(nump-1);
+    boost::kruskal_minimum_spanning_tree(g, mst.begin());
+
+    for (unsigned int index=0; index< mst.size(); ++index) {
+      int i= boost::target(mst[index], g);
+      int j= boost::source(mst[index], g);
+      out.push_back(ParticlePair(a->get_particle(i), a->get_particle(j)));
+    }
+  }
+
 }
 
 
+
 ConnectingPairContainer::ConnectingPairContainer(SingletonContainer *c,
-                                                 double error): error_(error) {
+                                                 double error, bool mst):
+  IMP::core::internal::ListLikePairContainer("ConnectingPairContainer"),
+  error_(error),
+  mst_(mst) {
   initialize(c);
 }
 
 void ConnectingPairContainer::initialize(SingletonContainer *sc) {
   sc_=sc;
-  set_added_and_removed_containers(
-           core::ListPairContainer::create_untracked_container(),
-           core::ListPairContainer::create_untracked_container());
   fill_list(true);
   Model *m=sc->get_particle(0)->get_model();
   mv_= new core::internal::MovedSingletonContainerImpl<algebra::Sphere3D,
@@ -79,10 +124,6 @@ void ConnectingPairContainer::initialize(SingletonContainer *sc) {
     core::internal::ListXYZRMovedParticles>(m, sc, error_);
   set_model(m);
 }
-
-
-
-IMP_LISTLIKE_PAIR_CONTAINER_DEF(ConnectingPairContainer);
 
 IMP_ACTIVE_CONTAINER_DEF(ConnectingPairContainer)
 
@@ -93,16 +134,20 @@ ParticlesTemp ConnectingPairContainer::get_state_input_particles() const {
 void ConnectingPairContainer::fill_list(bool first) {
   // if we have a list and nothing moved further than error do nothing
   // otherwise rebuild
-  Index index(sc_->get_number_of_particles());
-  for (unsigned int i=0; i< index.size(); ++i) {
-    index[i]=i;
-  }
-  Parent parent=index;
-  UF uf(index, parent);
   ParticlePairsTemp new_list;
-  build_graph(sc_, new_list, uf);
 
-  core::internal::update_list(data_, new_list, this);
+  if (mst_) {
+    compute_mst(sc_, new_list);
+  } else {
+    Index index(sc_->get_number_of_particles());
+    for (unsigned int i=0; i< index.size(); ++i) {
+      index[i]=i;
+    }
+    Parent parent=index;
+    UF uf(index, parent);
+    build_graph(sc_, new_list, uf);
+  }
+  update_list(new_list);
 }
 
 void ConnectingPairContainer::do_before_evaluate() {
@@ -115,9 +160,7 @@ void ConnectingPairContainer::do_before_evaluate() {
 
 
 void ConnectingPairContainer::do_after_evaluate() {
-  core::internal::get_list(get_added_pairs_container())->clear_particle_pairs();
-  core::internal::get_list(get_removed_pairs_container())
-    ->clear_particle_pairs();
+  IMP::core::internal::ListLikePairContainer::do_after_evaluate();
 }
 
 
