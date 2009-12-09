@@ -21,13 +21,17 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 class ListLikeGroupnameContainer: public GroupnameContainer {
 private:
-  ListLikeGroupnameContainer(): GroupnameContainer("Added or removed container"){}
-  void set_added_and_removed_containers(GroupnameContainer *, GroupnameContainer *){}
+  ListLikeGroupnameContainer():
+    GroupnameContainer("Added or removed container"){}
+  void set_added_and_removed_containers(GroupnameContainer *,
+                                        GroupnameContainer *){}
   ListLikeGroupnameContainer *get_added() {
-    return dynamic_cast<ListLikeGroupnameContainer*>(get_added_groupnames_container());
+    return dynamic_cast<ListLikeGroupnameContainer*>
+      (get_added_groupnames_container());
   }
   ListLikeGroupnameContainer *get_removed() {
-    return dynamic_cast<ListLikeGroupnameContainer*>(get_removed_groupnames_container());
+    return dynamic_cast<ListLikeGroupnameContainer*>
+      (get_removed_groupnames_container());
   }
   Classnames data_;
 protected:
@@ -36,9 +40,9 @@ protected:
     IMP_IF_CHECK(USAGE) {
       for (unsigned int i=0; i< cur.size(); ++i) {
         IMP_USAGE_CHECK(
-                        IMP::internal::ContainerTraits<Classname>::is_valid(cur[i]),
+         IMP::internal::ContainerTraits<Classname>::is_valid(cur[i]),
                         "Passed Classname cannot be NULL (or None)",
-                        UsageException);   
+                        UsageException);
       }
     }
     std::sort(cur.begin(), cur.end());
