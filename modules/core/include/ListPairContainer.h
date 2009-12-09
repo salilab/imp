@@ -13,6 +13,7 @@
 #include "config.h"
 #include <IMP/PairContainer.h>
 #include <IMP/internal/container_helpers.h>
+#include <IMP/core/internal/pair_helpers.h>
 #include <IMP/ScoreState.h>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -21,9 +22,13 @@ IMPCORE_BEGIN_NAMESPACE
 /** \note The indexes can change when particles are inserted
     as the list is maintained in sorted order.
  */
-class IMPCOREEXPORT ListPairContainer : public PairContainer
+class IMPCOREEXPORT ListPairContainer:
+#if defined(IMP_DOXYGEN) || defined(SWIG)
+public PairContainer
+#else
+public internal::ListLikePairContainer
+#endif
 {
-  ParticlePairs data_;
   IMP_ACTIVE_CONTAINER_DECL(ListPairContainer);
   // for the change versions
   ListPairContainer(bool);
@@ -51,26 +56,18 @@ public:
       set_particle_pairs(static_cast<ParticlePairsTemp>(c));
     })
   void clear_particle_pairs();
-#ifndef IMP_DOXYGEN
-  typedef ParticlePairs::const_iterator ParticlePairIterator;
-#else
-  class ParticlePairIterator;
-#endif
-  ParticlePairIterator particle_pairs_begin() const {
-    return data_.begin();
-  }
-  ParticlePairIterator particle_pairs_end() const {
-    return data_.end();
-  }
   /**@}*/
 
   static ListPairContainer *create_untracked_container() {
     ListPairContainer *lsc = new ListPairContainer(false);
     return lsc;
   }
-
-
+#if defined(IMP_DOXYGEN) || defined(SWIG)
   IMP_PAIR_CONTAINER(ListPairContainer, get_module_version_info());
+#else
+  IMP_LISTLIKE_PAIR_CONTAINER(ListPairContainer,
+                                   get_module_version_info());
+#endif
 };
 
 

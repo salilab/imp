@@ -17,6 +17,7 @@
 #include <IMP/algebra/Sphere3D.h>
 #include "../XYZR.h"
 #include "../rigid_bodies.h"
+#include "singleton_helpers.h"
 #include <IMP/internal/container_helpers.h>
 #include <vector>
 
@@ -192,17 +193,17 @@ namespace {
   };
 }
 
-class IMPCOREEXPORT MovedSingletonContainer: public SingletonContainer
+class IMPCOREEXPORT MovedSingletonContainer: public ListLikeSingletonContainer
 {
  protected:
   double threshold_;
   Pointer<SingletonContainer> pc_;
-  ParticlesTemp data_;
   bool first_call_;
   IMP_ACTIVE_CONTAINER_DECL(MovedSingletonContainer);
   virtual void save()=0;
   virtual void save_moved()=0;
   virtual void update_list()=0;
+  using ListLikeSingletonContainer::update_list;
 public:
   //! Track the changes with the specified keys.
   MovedSingletonContainer(Model *m,
@@ -225,19 +226,8 @@ public:
   }
   void set_threshold(double d);
 
-#ifndef IMP_DOXYGEN
-  typedef ParticlesTemp::const_iterator ParticleIterator;
-#else
-  class ParticleIterator;
-#endif
-  ParticleIterator particles_begin() const {
-    return data_.begin();
-  }
-  ParticleIterator particles_end() const {
-    return data_.end();
-  }
-  IMP_SINGLETON_CONTAINER(MovedSingletonContainer,
-                          get_module_version_info());
+  IMP_LISTLIKE_SINGLETON_CONTAINER(MovedSingletonContainer,
+                                   get_module_version_info());
 };
 
 
@@ -256,7 +246,7 @@ class MovedSingletonContainerImpl:
   }
   virtual void save_moved() {
     if (MovedSingletonContainer::pc_->get_number_of_particles() != 0) {
-      IMP_NEW(SaveMoved,  cv, (backup_, data_));
+      IMP_NEW(SaveMoved,  cv, (backup_, access()));
       cv->set_was_owned(true);
       MovedSingletonContainer::pc_->apply(cv);
     }
@@ -265,10 +255,12 @@ class MovedSingletonContainerImpl:
     if (MovedSingletonContainer::pc_->get_number_of_particles() != 0) {
       bool incr= MovedSingletonContainer
         ::pc_->get_particle(0)->get_model()->get_is_incremental();
-      IMP_NEW(ListMoved,  cv, (backup_, MovedSingletonContainer::data_,
+      ParticlesTemp ret;
+      IMP_NEW(ListMoved,  cv, (backup_, ret,
                                MovedSingletonContainer::threshold_, incr));
       cv->set_was_owned(true);
       MovedSingletonContainer::pc_->apply(cv);
+      add_to_list(ret);
     }
   }
 public:

@@ -25,7 +25,7 @@ class TestBL(IMP.test.TestCase):
                     self.assert_(out.get_contains_particle_pair(IMP.ParticlePair(a,b)))
 
     def test_it(self):
-        """Test ClosePairsScoreState"""
+        """Test CloseBipartitePairContainer"""
         m=IMP.Model()
         ps0= self.create_particles_in_box(m, 30)
         ps1= self.create_particles_in_box(m, 30)

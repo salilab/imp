@@ -27,10 +27,12 @@ class TestBL(IMP.test.TestCase):
                 pp= IMP.ParticlePair(a,b)
                 if self._are_close(a,b, d):
                     print "expecting "+str(pp)
+                    print IMP.core.XYZR(a)
+                    print IMP.core.XYZR(b)
+                    print IMP.core.distance(IMP.core.XYZR(a), IMP.core.XYZR(b))
                     self.assert_(out.get_contains_particle_pair(IMP.ParticlePair(a,b))
                                  or out.get_contains_particle_pair(IMP.ParticlePair(b,a)))
-    #DO NOT COMMMIT
-    def _test_it(self):
+    def test_it(self):
         """Test ClosePairContainer"""
         m=IMP.Model()
         IMP.set_log_level(IMP.VERBOSE)
@@ -44,6 +46,7 @@ class TestBL(IMP.test.TestCase):
         cpss= IMP.core.ClosePairContainer(pc, threshold,
                                           IMP.core.QuadraticClosePairsFinder(),
                                           1)
+        cpss.set_was_owned(True)
         for p in ps:
             d= IMP.core.XYZR.setup_particle(p)
             d.set_radius(random.uniform(0,2))
@@ -58,7 +61,7 @@ class TestBL(IMP.test.TestCase):
         self._compare_lists(m, pc, threshold, cpss)
         # move things a lot
         for i in range(0,10):
-            print "moving"
+            print "moving "+str(i)
             for p in ps:
                 d= IMP.core.XYZ(p)
                 d.set_coordinates(d.get_coordinates()

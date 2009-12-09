@@ -13,6 +13,7 @@
 #include "config.h"
 #include <IMP/SingletonContainer.h>
 #include <IMP/internal/container_helpers.h>
+#include <IMP/core/internal/singleton_helpers.h>
 #include <IMP/ScoreState.h>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -21,9 +22,13 @@ IMPCORE_BEGIN_NAMESPACE
 /** \note The indexes can change when particles are inserted
     as the list is maintained in sorted order.
  */
-class IMPCOREEXPORT ListSingletonContainer : public SingletonContainer
+class IMPCOREEXPORT ListSingletonContainer:
+#if defined(IMP_DOXYGEN) || defined(SWIG)
+public SingletonContainer
+#else
+public internal::ListLikeSingletonContainer
+#endif
 {
-  Particles data_;
   IMP_ACTIVE_CONTAINER_DECL(ListSingletonContainer);
   // for the change versions
   ListSingletonContainer(bool);
@@ -51,26 +56,18 @@ public:
       set_particles(static_cast<ParticlesTemp>(c));
     })
   void clear_particles();
-#ifndef IMP_DOXYGEN
-  typedef Particles::const_iterator ParticleIterator;
-#else
-  class ParticleIterator;
-#endif
-  ParticleIterator particles_begin() const {
-    return data_.begin();
-  }
-  ParticleIterator particles_end() const {
-    return data_.end();
-  }
   /**@}*/
 
   static ListSingletonContainer *create_untracked_container() {
     ListSingletonContainer *lsc = new ListSingletonContainer(false);
     return lsc;
   }
-
-
+#if defined(IMP_DOXYGEN) || defined(SWIG)
   IMP_SINGLETON_CONTAINER(ListSingletonContainer, get_module_version_info());
+#else
+  IMP_LISTLIKE_SINGLETON_CONTAINER(ListSingletonContainer,
+                                   get_module_version_info());
+#endif
 };
 
 

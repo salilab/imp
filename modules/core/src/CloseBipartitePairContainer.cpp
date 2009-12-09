@@ -32,7 +32,8 @@ CloseBipartitePairContainer
 ::CloseBipartitePairContainer(SingletonContainer *a,
                                    SingletonContainer *b,
                                    double distance,
-                                   double slack) {
+                              double slack):
+  internal::ListLikePairContainer("CloseBipartitePairContainer") {
   initialize(a,b, distance, slack, a->get_particle(0)->get_model(),
              internal::default_cpf());
 }
@@ -40,7 +41,8 @@ CloseBipartitePairContainer
 ::CloseBipartitePairContainer(SingletonContainer *a,
                                    SingletonContainer *b,
                                    Model *m, double distance,
-                                   double slack) {
+                              double slack):
+  internal::ListLikePairContainer("CloseBipartitePairContainer") {
   initialize(a,b, distance, slack, m,
              internal::default_cpf());
 }
@@ -50,7 +52,8 @@ CloseBipartitePairContainer
                                    SingletonContainer *b,
                                    double distance,
                                    ClosePairsFinder *cpf,
-                                   double slack) {
+                              double slack):
+  internal::ListLikePairContainer("CloseBipartitePairContainer") {
   initialize(a,b, distance, slack, a->get_particle(0)->get_model(),
              cpf);
 }
@@ -59,7 +62,8 @@ CloseBipartitePairContainer
                                    SingletonContainer *b,
                                    Model *m, double distance,
                                    ClosePairsFinder *cpf,
-                                   double slack) {
+                              double slack):
+  internal::ListLikePairContainer("CloseBipartitePairContainer") {
   initialize(a,b, distance, slack, m,
             cpf);
 }
@@ -69,20 +73,16 @@ void CloseBipartitePairContainer::initialize(SingletonContainer *a,
                                                   double distance,
                                                   double slack, Model *m,
                                                   ClosePairsFinder *cpf) {
-  set_added_and_removed_containers(
-           ListPairContainer::create_untracked_container(),
-           ListPairContainer::create_untracked_container());
   set_model(m);
   slack_=slack;
   distance_=distance;
   a_=a; b_=b;
   cpf_=cpf;
-  cpf_->set_distance(distance_+slack_);
+  cpf_->set_distance(distance_+2*slack_);
   first_call_=true;
   moveda_= cpf_->get_moved_singleton_container(a_, m, slack_);
   movedb_= cpf_->get_moved_singleton_container(b_, m, slack_);
 }
-IMP_LISTLIKE_PAIR_CONTAINER_DEF(CloseBipartitePairContainer);
 
 IMP_ACTIVE_CONTAINER_DEF(CloseBipartitePairContainer)
 
@@ -115,11 +115,11 @@ void CloseBipartitePairContainer::do_before_evaluate() {
   IMP_CHECK_OBJECT(b_);
   IMP_CHECK_OBJECT(cpf_);
   if (first_call_) {
-    data_= cpf_->get_close_pairs(a_, b_);
-    internal::filter_close_pairs(this, data_);
+    ParticlePairsTemp t= cpf_->get_close_pairs(a_, b_);
+    internal::filter_close_pairs(this, t);
     moveda_->reset();
     movedb_->reset();
-    std::sort(data_.begin(), data_.end());
+    update_list(t);
     first_call_=false;
   } else {
     // hack until we have the dependency graph
@@ -140,13 +140,13 @@ void CloseBipartitePairContainer::do_before_evaluate() {
         ret.insert(ret.end(), ret1.begin(), ret1.end());
         ret.insert(ret.end(), ret2.begin(), ret2.end());
         internal::filter_close_pairs(this, ret);
-        internal::add_to_list(data_, ret,this);
+        add_to_list(ret);
         moveda_->reset_moved();
         movedb_->reset_moved();
       } else {
         ParticlePairsTemp ret= cpf_->get_close_pairs(a_, b_);
         internal::filter_close_pairs(this, ret);
-        internal::update_list(data_, ret,this);
+        update_list(ret);
         moveda_->reset();
         movedb_->reset();
       }
@@ -156,10 +156,7 @@ void CloseBipartitePairContainer::do_before_evaluate() {
 
 
 void CloseBipartitePairContainer::do_after_evaluate() {
-  internal::get_list(get_added_pairs_container())
-    ->clear_particle_pairs();
-  internal::get_list(get_removed_pairs_container())
-    ->clear_particle_pairs();
+  internal::ListLikePairContainer::do_after_evaluate();
 }
 
 

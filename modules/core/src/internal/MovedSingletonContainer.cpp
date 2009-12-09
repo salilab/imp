@@ -30,19 +30,16 @@ namespace {
 MovedSingletonContainer::MovedSingletonContainer(Model *m,
                                                  SingletonContainer *pc,
                                                  double threshold):
+  internal::ListLikeSingletonContainer("MovedSingletonContainer"),
   threshold_(threshold),
   pc_(pc)
 {
-  set_added_and_removed_containers(new ListSingletonContainer(),
-                                   new ListSingletonContainer());
   IMP_USAGE_CHECK(pc->get_number_of_particles() != 0,
                   "Cannot initialize from empty"
                   << " container.", ValueException);
   set_model(pc->get_particle(0)->get_model());
   first_call_=true;
 }
-
-IMP_LISTLIKE_SINGLETON_CONTAINER_DEF(MovedSingletonContainer);
 
 
 void MovedSingletonContainer::show(std::ostream &out) const
@@ -57,8 +54,7 @@ ObjectsTemp MovedSingletonContainer::get_input_objects() const {
 }
 
 void MovedSingletonContainer::do_after_evaluate() {
-  get_list(get_added_singletons_container())->clear_particles();
-  get_list(get_removed_singletons_container())->clear_particles();
+  internal::ListLikeSingletonContainer::do_after_evaluate();
 }
 
 void MovedSingletonContainer::do_before_evaluate()
@@ -67,17 +63,18 @@ void MovedSingletonContainer::do_before_evaluate()
   if (first_call_) {
     first_call_=false;
     reset();
-    data_=pc_->get_particles();
+    ParticlesTemp t=pc_->get_particles();
+    update_list(t);
   }
   if (pc_->get_added_singletons_container()->get_number_of_particles() != 0
       || pc_->get_removed_singletons_container()->get_number_of_particles()
       != 0) {
     reset();
-    data_ = pc_->get_particles();
+    ParticlesTemp t=pc_->get_particles();
+    update_list(t);
   } else {
     update_list();
   }
-  std::sort(data_.begin(), data_.end());
 }
 
 
@@ -88,7 +85,8 @@ ParticlesTemp MovedSingletonContainer::get_state_input_particles() const {
 void MovedSingletonContainer::reset()
 {
   save();
-  data_.clear();
+  ParticlesTemp t;
+  update_list(t);
   first_call_=false;
 }
 
@@ -96,7 +94,8 @@ void MovedSingletonContainer::reset()
 void MovedSingletonContainer::reset_moved()
 {
   save_moved();
-  data_.clear();
+  ParticlesTemp t;
+  update_list(t);
 }
 
 void MovedSingletonContainer::set_threshold(double d) {
