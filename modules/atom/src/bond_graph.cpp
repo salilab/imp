@@ -16,7 +16,11 @@
 #include <boost/graph/isomorphism.hpp>
 #include <boost/graph/dijkstra_shortest_paths.hpp>
 #include <boost/graph/graph_utility.hpp>
+#if BOOST_VERSION >= 104000
+#include <boost/property_map/property_map.hpp>
+#else
 #include <boost/property_map.hpp>
+#endif
 
 IMPATOM_BEGIN_NAMESPACE
 BondGraph::BondGraph(Hierarchy bd):
