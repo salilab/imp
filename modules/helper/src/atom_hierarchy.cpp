@@ -27,10 +27,6 @@
 #include <IMP/core/MonteCarlo.h>
 #include <IMP/core/Mover.h>
 #include <IMP/core/internal/Grid3D.h>
-#include <IMP/display/BoxGeometry.h>
-#include <IMP/display/LogOptimizerState.h>
-#include <IMP/display/ChimeraWriter.h>
-#include <IMP/display/xyzr_geometry.h>
 #include <IMP/em/FitRestraint.h>
 #include <IMP/em/MRCReaderWriter.h>
 #include <IMP/em/SampledDensityMap.h>
