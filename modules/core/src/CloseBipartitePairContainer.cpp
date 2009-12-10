@@ -114,6 +114,7 @@ void CloseBipartitePairContainer::do_before_evaluate() {
   IMP_CHECK_OBJECT(a_);
   IMP_CHECK_OBJECT(b_);
   IMP_CHECK_OBJECT(cpf_);
+  internal::ListLikePairContainer::do_before_evaluate();
   if (first_call_) {
     ParticlePairsTemp t= cpf_->get_close_pairs(a_, b_);
     internal::filter_close_pairs(this, t);
