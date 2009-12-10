@@ -9,11 +9,12 @@
 #define IMPDISPLAY_FILTER_GEOMETRY_H
 
 #include "config.h"
+#include "geometry.h"
+#include "GeometryProcessor.h"
 
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/algebra/Plane3D.h>
-#include "geometry.h"
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
@@ -21,25 +22,31 @@ IMPDISPLAY_BEGIN_NAMESPACE
 /** Any geometry which is not above the plane is not passed on to the writer
     or log or whatever this CompoundGoemetry is passed to.
  */
-class IMPDISPLAYEXPORT FilterGeometry: public CompoundGeometry
+class IMPDISPLAYEXPORT FilterGeometry: public GeometryProcessor,
+                                       public Geometry
 {
   const algebra::Plane3D &p_;
-  CompoundGeometries edata_;
   Geometries gdata_;
-
+  mutable Geometries filtered_;
+ protected:
+  using GeometryProcessor::process;
+  bool process(SphereGeometry *g,
+                         Color color, std::string name);
+  bool process(CylinderGeometry *g,
+                       Color color, std::string name);
+  bool process(PointGeometry *g,
+                       Color color, std::string name);
+  bool process(SegmentGeometry *g,
+                       Color color, std::string name);
 public:
   //! Pay attention to the orientation of the plane.
   FilterGeometry(const algebra::Plane3D &p);
 
-  void add_geometry(CompoundGeometry* g);
-
   void add_geometry(Geometry* g);
-
-  void add_geometry(const CompoundGeometries& g);
 
   void add_geometry(const Geometries& g);
 
-  IMP_COMPOUND_GEOMETRY(FilterGeometry, get_module_version_info())
+  IMP_GEOMETRY(FilterGeometry, get_module_version_info())
 };
 
 

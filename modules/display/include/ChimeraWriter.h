@@ -21,22 +21,25 @@ IMPDISPLAY_BEGIN_NAMESPACE
  */
 class IMPDISPLAYEXPORT ChimeraWriter: public Writer
 {
-  bool has_ms_;
-  bool has_surf_;
-
-  void add_geometry_internal(IMP::display::Geometry *g, std::string name);
+  void cleanup(std::string name,
+               bool need_ms, bool need_surf=false);
+  bool process(SphereGeometry *g,
+               Color color, std::string name);
+  bool process(CylinderGeometry *g,
+               Color color, std::string name);
+  bool process(PointGeometry *g,
+               Color color, std::string name);
+  bool process(SegmentGeometry *g,
+               Color color, std::string name);
+  bool process(PolygonGeometry *g,
+               Color color, std::string name);
+  bool process(TriangleGeometry *g,
+               Color color, std::string name);
+  bool process(EllipsoidGeometry *g,
+               Color color, std::string name);
 public:
   //! Create a writer with the given file name (or no open file)
   ChimeraWriter(std::string name=std::string());
-
-  virtual void add_geometry(const IMP::display::Geometries &g) {
-    Writer::add_geometry(g);
-  }
-  virtual void add_geometry(IMP::display::CompoundGeometry *cg);
-  virtual void add_geometry(const IMP::display::CompoundGeometries &g) {
-    Writer::add_geometry(g);
-  }
-
 
   IMP_WRITER(ChimeraWriter, get_module_version_info())
 };

@@ -2,27 +2,19 @@ Import('env')
 
 files = [
          'BildWriter.h',
-         'BoxGeometry.h',
-         'PymolWriter.h',
          'CMMWriter.h',
          'ChimeraWriter.h',
          'Color.h',
          'Colored.h',
-         'CylinderGeometry.h',
          'FilterGeometry.h',
+         'GeometryProcessor.h',
          'LogOptimizerState.h',
          'PDBOptimizerState.h',
-         'PolygonGeometry.h',
-         'SphereGeometry.h',
-         'TriangleGeometry.h',
-         'VRMLWriter.h',
+         'PymolWriter.h',
          'Writer.h',
-         'bond_geometry.h',
-         'derivative_geometry.h',
          'geometry.h',
          'macros.h',
-         'pair_geometry.h',
-         'xyzr_geometry.h',
+         'particle_geometry.h',
         ] \
         + SConscript('internal/SConscript')
 

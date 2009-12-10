@@ -11,25 +11,16 @@
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
-FilterGeometry::FilterGeometry(const algebra::Plane3D &p): p_(p){
+FilterGeometry::FilterGeometry(const algebra::Plane3D &p):
+  Geometry("Filter"), p_(p){
 }
 
-
-void FilterGeometry::add_geometry(CompoundGeometry* g) {
-  edata_.push_back(g);
-  g->set_was_owned(true);
-}
 
 void FilterGeometry::add_geometry(Geometry* g) {
   gdata_.push_back(g);
   g->set_was_owned(true);
 }
 
-void FilterGeometry::add_geometry(const CompoundGeometries& g) {
-  for (unsigned int i=0; i< g.size(); ++i) {
-    add_geometry(g);
-  }
-}
 
 void FilterGeometry::add_geometry(const Geometries& g) {
   for (unsigned int i=0; i< g.size(); ++i) {
@@ -37,38 +28,36 @@ void FilterGeometry::add_geometry(const Geometries& g) {
   }
 }
 
-namespace {
-  void filter(const algebra::Plane3D &p,
-              const Geometries &in,
-              Geometries &out) {
-    for (unsigned int i=0; i< in.size(); ++i) {
-      bool failed=false;
-      for (unsigned int j=0; j< in[i]->get_number_of_vertices(); ++j) {
-        if (p.get_is_below(in[i]->get_vertex(j))) {
-        failed=true;
-        break;
-      }
-    }
-    if (!failed) {
-      out.push_back(in[i]);
-    }
+#define PROCESS(Name, test)                                     \
+  bool FilterGeometry::process(Name##Geometry *g,               \
+                               Color color, std::string name) { \
+    if (test) {                                                 \
+      filtered_.push_back(g);                                   \
+      g->set_name(name);                                        \
+      g->set_color(color);                                      \
+    }                                                           \
+    return true;                                                \
   }
-  }
-}
 
-Geometries FilterGeometry::get_geometry() const {
-  Geometries ret;
-  filter(p_, gdata_, ret);
-  for (unsigned int i=0; i< edata_.size(); ++i) {
-    Geometries g= edata_[i]->get_geometry();
-    filter(p_, g, ret);
+PROCESS(Sphere, !p_.get_is_below(g->get_center()));
+PROCESS(Cylinder, !p_.get_is_below(g->get_segment().get_point(0))
+        || !p_.get_is_below(g->get_segment().get_point(1)));
+PROCESS(Point, !p_.get_is_below(*g));
+PROCESS(Segment, !p_.get_is_below(g->get_point(0))
+        || !p_.get_is_below(g->get_point(1)));
+
+
+Geometries FilterGeometry::get_components() const {
+  filtered_.clear();
+  for (unsigned int i=0; i< gdata_.size(); ++i) {
+    const_cast<FilterGeometry*>(this)->process_geometry(gdata_[i]);
   }
-  return ret;
+  return filtered_;
 }
 
 
 void FilterGeometry::show(std::ostream &out) const {
-  out << "FilterGeometry" << std::endl;
+  out << "FilterGeometry " << p_ << std::endl;
 }
 
 IMPDISPLAY_END_NAMESPACE

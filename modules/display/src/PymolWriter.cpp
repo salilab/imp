@@ -31,96 +31,120 @@ void PymolWriter::on_close() {
   ++count_;
 }
 
-void PymolWriter::add_geometry(CompoundGeometry* cg) {
-  IMP::internal::OwnerPointer<CompoundGeometry> cgp(cg);
-  Geometries g= cgp->get_geometry();
-  if (g.empty() && !cg->get_name().empty()) {
-    get_stream() << "k= '" << cg->get_name() << "'\n";
-    get_stream() << "if not k in data.keys():\n"
-                 << "   data[k]=[]\n";
-  } else {
-    for (unsigned int i=0; i< g.size(); ++i) {
-      IMP_CHECK_OBJECT(g[i]);
-      add_geometry(g[i]);
-    }
+
+void PymolWriter::cleanup(std::string name){
+  get_stream() << "]\n";
+  get_stream() << "k= '" << name << "'" << std::endl;
+  get_stream() << "if k in data.keys():\n"
+               << "  data[k]= data[k]+curdata\nelse:\n"
+               << "  data[k]= curdata\n\n";
+}
+void PymolWriter::setup(std::string name){
+  get_stream() << "k= '" << name << "'\n";
+  get_stream() << "if not k in data.keys():\n"
+               << "   data[k]=[]\n";
+  get_stream() << "curdata=[\n";
+}
+namespace {
+  void write_color(std::ostream &out, Color color) {
+    out << "COLOR, " << color.get_red()
+        << ", " << color.get_green()
+        << ", " << color.get_blue()
+        << ",\n";
   }
 }
 
-void PymolWriter::write_geometry(Geometry *g, std::ostream &out) {
-  IMP_CHECK_OBJECT(g);
-  Color last_color;
-  std::string name= g->get_name();
-  if (name.empty()) name= "unnamed";
-  out << "# " << g->get_name() << std::endl;
-  out << "curdata=[\n";
-  if (g->get_dimension() ==0) {
-    for (unsigned int i=0; i< g->get_number_of_vertices(); ++i) {
-      algebra::Vector3D v=g->get_vertex(i);
-      if (g->get_color() != last_color) {
-        out << "COLOR, " << g->get_color().get_red()
-            << ", " << g->get_color().get_green()
-            << ", " << g->get_color().get_blue()
-            << ",\n";
-        last_color= g->get_color();
-      }
-      double r= .1;
-      if (g->get_size() != 0) r= g->get_size();
-      out << "SPHERE, " << algebra::commas_io(v) << ", " << r
-                     << ",\n";
-    }
-  } else if (g->get_dimension() ==1) {
-    for (unsigned int i=1; i< g->get_number_of_vertices(); ++i) {
-      double r;
-      if (g->get_size() != 0) {
-        r= g->get_size();
-      } else {
-        r= .01*(g->get_vertex(i-1)- g->get_vertex(i)).get_magnitude();
-      }
-      out << "CYLINDER,\n"
-                   << algebra::commas_io(g->get_vertex(i-1)) << ",\n"
-                   << algebra::commas_io(g->get_vertex(i)) << ",\n"
-                   << r << ",\n";
-      out << g->get_color().get_red()
-                   << ", " << g->get_color().get_green()
-                   << ", " << g->get_color().get_blue()
-                   << ",\n";
-      out << g->get_color().get_red()
-                   << ", " << g->get_color().get_green()
-                   << ", " << g->get_color().get_blue()
-                   << ",\n";
-    }
-  } else if (g->get_dimension() ==2) {
-    if (g->get_number_of_vertices() >2) {
-      out << "BEGIN, TRIANGLE_FAN, ";
-      algebra::Vector3D n=
-        vector_product(g->get_vertex(1)-g->get_vertex(0),
-                       g->get_vertex(2)-g->get_vertex(0)).get_unit_vector();
-      if (g->get_color() != last_color) {
-        out << "COLOR, " << g->get_color().get_red()
-            << ", " << g->get_color().get_green()
-            << ", " << g->get_color().get_blue()
-            << ",\n";
-        last_color= g->get_color();
-      }
-      out << "NORMAL, " << algebra::commas_io(n)
-                   << ",\n";
-      for (unsigned int i=0; i< g->get_number_of_vertices(); ++i) {
-        out << "VERTEX, " << algebra::commas_io(g->get_vertex(i))
-                     << ", ";
-      }
-      out << "END,\n";
-    }
-  }
-  out << "]\n";
-  out << "k= '" << name << "'" << std::endl;
-  out << "if k in data.keys():\n   data[k]= data[k]+curdata\nelse:\n"
-      << "   data[k]=curdata\n\n";
-}
+bool PymolWriter::process(SphereGeometry *g,
+                            Color color, std::string name) {
+  setup(name);
+  write_color(get_stream(), color);
+  get_stream() << "SPHERE, " << algebra::commas_io(g->get_center()) << ", "
+               << g->get_radius() << ",\n";
+  cleanup(name);
 
-void PymolWriter::add_geometry(Geometry *g) {
-  IMP_CHECK_OBJECT(g);
-  g->set_was_owned(true);
-  write_geometry(g, get_stream());
+  return true;
+}
+bool PymolWriter::process(CylinderGeometry *g,
+                            Color color, std::string name) {
+  setup(name);
+  get_stream() << "CYLINDER,\n"
+               << algebra::commas_io(g->get_segment().get_point(0)) << ",\n"
+               << algebra::commas_io(g->get_segment().get_point(1)) << ",\n"
+               << g->get_radius() << ",\n";
+  get_stream() << color.get_red()
+               << ", " << color.get_green()
+               << ", " << color.get_blue()
+               << ",\n";
+  get_stream() << color.get_red()
+               << ", " << color.get_green()
+               << ", " << color.get_blue()
+               << ",\n";
+  cleanup(name);
+  return true;
+}
+bool PymolWriter::process(PointGeometry *g,
+                            Color color, std::string name) {
+  setup(name);
+  write_color(get_stream(),color);
+  get_stream() << "SPHERE, " << algebra::commas_io(*g) << ", "
+               << .1 << ",\n";
+  cleanup(name);
+  return true;
+}
+bool PymolWriter::process(SegmentGeometry *g,
+                            Color color, std::string name) {
+  setup(name);
+  double r= .01*(g->get_point(0)- g->get_point(1)).get_magnitude();
+  get_stream() << "CYLINDER,\n"
+               << algebra::commas_io(g->get_point(0)) << ",\n"
+               << algebra::commas_io(g->get_point(1)) << ",\n"
+               << r << ",\n";
+  get_stream() << color.get_red()
+               << ", " << color.get_green()
+               << ", " << color.get_blue()
+               << ",\n";
+  get_stream() << color.get_red()
+               << ", " << color.get_green()
+               << ", " << color.get_blue()
+               << ",\n";
+  cleanup(name);
+  return true;
+}
+bool PymolWriter::process(PolygonGeometry *g,
+                            Color color, std::string name) {
+  setup(name);
+  get_stream() << "BEGIN, TRIANGLE_FAN, ";
+  algebra::Vector3D n=
+    vector_product(g->at(1)-g->at(0),
+                   g->at(2)-g->at(0)).get_unit_vector();
+  write_color(get_stream(), color);
+  get_stream() << "NORMAL, " << algebra::commas_io(n)
+               << ",\n";
+  for (unsigned int i=0; i< g->size(); ++i) {
+    get_stream() << "VERTEX, " << algebra::commas_io(g->at(i))
+                 << ", ";
+  }
+  get_stream() << "END,\n";
+  cleanup(name);
+  return true;
+}
+bool PymolWriter::process(TriangleGeometry *g,
+                            Color color, std::string name) {
+  setup(name);
+  get_stream() << "BEGIN, TRIANGLE_FAN, ";
+  algebra::Vector3D n=
+    vector_product(g->at(1)-g->at(0),
+                   g->at(2)-g->at(0)).get_unit_vector();
+  write_color(get_stream(), color);
+  get_stream() << "NORMAL, " << algebra::commas_io(n)
+               << ",\n";
+  for (unsigned int i=0; i< 3; ++i) {
+    get_stream() << "VERTEX, " << algebra::commas_io(g->at(i))
+                 << ", ";
+  }
+  get_stream() << "END,\n";
+  cleanup(name);
+  return true;
 }
 
 IMP_REGISTER_WRITER(PymolWriter, ".pym")
