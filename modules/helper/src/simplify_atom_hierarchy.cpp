@@ -12,10 +12,11 @@
 #include <IMP/algebra/vector_generators.h>
 #include <IMP/atom.h>
 #include <IMP/core.h>
-#include <IMP/display/BoxGeometry.h>
+#include <IMP/display/geometry.h>
+#include <IMP/display/particle_geometry.h>
 #include <IMP/display/LogOptimizerState.h>
 #include <IMP/display/ChimeraWriter.h>
-#include <IMP/display/xyzr_geometry.h>
+#include <IMP/display/particle_geometry.h>
 #include <IMP/display/PymolWriter.h>
 #include <IMP/em/FitRestraint.h>
 #include <IMP/em/MRCReaderWriter.h>
@@ -184,13 +185,15 @@ atom::Hierarchy create_simplified(atom::Hierarchy in,
     em::write_map(sdm, "map.mrc", mrc);
 
     IMP_NEW(display::ChimeraWriter, cw, ("mapdata.py"));
-    IMP_NEW(display::BoxGeometry, bbg, (em::get_bounding_box(sdm)));
+    IMP_NEW(display::BoundingBoxGeometry,
+            bbg, (em::get_bounding_box(sdm)));
     bbg->set_name("map_box");
     cw->add_geometry(bbg);
-    IMP_NEW(display::BoxGeometry, bbp, (atom::get_bounding_box(in)));
+    IMP_NEW(display::BoundingBoxGeometry, bbp,
+            (atom::get_bounding_box(in)));
     bbp->set_name("protein_box");
     cw->add_geometry(bbp);
-    IMP_NEW(display::BoxGeometry, bbv,
+    IMP_NEW(display::BoundingBoxGeometry, bbv,
             (algebra::BoundingBox3D(sdm->get_origin(),
                                     sdm->get_origin()
                                     +algebra::Vector3D(resolution/3.0,
@@ -267,7 +270,8 @@ atom::Hierarchy create_simplified(atom::Hierarchy in,
     ScopedFailureHandler fh0, fh1, fh2;
     IMP_NEW(display::LogOptimizerState, los,
             (new display::ChimeraWriter(), "frame.%04d.py"));
-    IMP_NEW(display::XYZRsGeometry, xyzrg, (lsc));
+    IMP_NEW(display::XYZRsGeometry, xyzrg, (lsc,
+                             core::XYZR::get_default_radius_key()));
     los->add_geometry(xyzrg);
     if (0) {
       IMP_NEW(display::LogOptimizerState, plos,
