@@ -36,7 +36,7 @@ template <unsigned int D>
 class NearestNeighborD {
 
   template <bool SKIP>
-  int linear_nearest_neighbor(const VectorD<D> &q, int skip) {
+  int linear_nearest_neighbor(const VectorD<D> &q, int skip) const {
     double md= std::numeric_limits<double>::max();
     int imax=-1;
     for (unsigned int i=0; i< data_.size(); ++i) {
