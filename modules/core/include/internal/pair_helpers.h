@@ -19,7 +19,7 @@
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
-class ListLikePairContainer: public PairContainer {
+class IMPCOREEXPORT ListLikePairContainer: public PairContainer {
 private:
   ListLikePairContainer():
     PairContainer("Added or removed container"){}
@@ -87,51 +87,19 @@ protected:
                                         new ListLikePairContainer());
   }
 public:
-   ParticlePairsTemp get_particle_pairs() const {
-    IMP_CHECK_OBJECT(this);
-    return data_;
-  }
-  ParticlePair get_particle_pair(unsigned int i) const {
-    IMP_CHECK_OBJECT(this);
-    return data_[i];
-  }
-  void apply(const PairModifier *sm) {
-    IMP_CHECK_OBJECT(this);
-    IMP_CHECK_OBJECT(sm);
-    sm->apply(data_);
-  }
+  ParticlePairsTemp get_particle_pairs() const;
+  ParticlePair get_particle_pair(unsigned int i) const;
+  void apply(const PairModifier *sm);
   void apply(const PairModifier *sm,
-                   DerivativeAccumulator &da) {
-    IMP_CHECK_OBJECT(this);
-    IMP_CHECK_OBJECT(sm);
-    sm->apply(data_, da);
-  }
+             DerivativeAccumulator &da);
   double evaluate(const PairScore *s,
-                        DerivativeAccumulator *da) const {
-    IMP_CHECK_OBJECT(this);
-    IMP_CHECK_OBJECT(s);
-    return s->evaluate(data_, da);
-  }
+                  DerivativeAccumulator *da) const;
   double evaluate_change(const PairScore *s,
-                               DerivativeAccumulator *da) const {
-    IMP_CHECK_OBJECT(this);
-    IMP_CHECK_OBJECT(s);
-    return s->evaluate_change(data_, da);
-  }
+                         DerivativeAccumulator *da) const;
   double evaluate_prechange(const PairScore *s,
-                                  DerivativeAccumulator *da) const {
-    IMP_CHECK_OBJECT(this);
-    IMP_CHECK_OBJECT(s);
-    return s->evaluate_prechange(data_, da);
-  }
-  unsigned int get_number_of_particle_pairs() const {
-    IMP_CHECK_OBJECT(this);
-    return data_.size();
-  }
-  bool get_contains_particle_pair(ParticlePair vt) const {
-    IMP_CHECK_OBJECT(this);
-    return std::binary_search(data_.begin(), data_.end(), vt);
-  }
+                            DerivativeAccumulator *da) const;
+  unsigned int get_number_of_particle_pairs() const;
+  bool get_contains_particle_pair(ParticlePair vt) const;
   typedef ParticlePairs::const_iterator ParticlePairIterator;
   ParticlePairIterator particle_pairs_begin() const {
     return data_.begin();
@@ -139,17 +107,17 @@ public:
   ParticlePairIterator particle_pairs_end() const {
     return data_.end();
   }
-  ObjectsTemp get_input_objects() const { return ObjectsTemp();}
-  void show(std::ostream &out) const {out << "Container" << std::endl;}
-  VersionInfo get_version_info() const {return get_module_version_info();}
+  ObjectsTemp get_input_objects() const;
   void do_after_evaluate() {
     get_added()->data_.clear();
     get_removed()->data_.clear();
   }
   void do_before_evaluate() {
     std::remove_if(data_.begin(), data_.end(),
-                   IMP::internal::ContainerTraits<ParticlePair>::IsInactive());
+         IMP::internal::ContainerTraits<ParticlePair>::IsInactive());
   }
+  VersionInfo get_version_info() const;
+  void show(std::ostream &out=std::cout) const;
 };
 
 
