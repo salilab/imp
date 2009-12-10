@@ -27,25 +27,32 @@ void CMMWriter::on_close() {
   get_stream() << "</marker_set>" << std::endl;
 }
 
-void CMMWriter::add_geometry(Geometry *g) {
-  IMP_CHECK_OBJECT(g);
-  if (g->get_dimension() != 0) return;
-  std::string name=g->get_name();
-  Float radius = g->get_size();
-  g->set_was_owned(true);
+bool CMMWriter::process(SphereGeometry *g, Color color,
+                        std::string name) {
+  get_stream() << "<marker id=\"" << ++marker_index_ << "\""
+               << " x=\"" << g->get_center()[0] << "\""
+               << " y=\"" << g->get_center()[1] << "\""
+               << " z=\"" << g->get_center()[2] << "\""
+               << " radius=\"" << g->get_radius() << "\""
+               << " r=\"" << color.get_red() << "\""
+               << " g=\"" << color.get_green() << "\""
+               << " b=\"" << color.get_blue() <<  "\""
+               << " note=\"" << name <<  "\"/>" << std::endl;
+  return true;
+}
 
-  for (unsigned int i=0; i< g->get_number_of_vertices(); ++i) {
-    algebra::Vector3D v= g->get_vertex(i);
-    get_stream() << "<marker id=\"" << ++marker_index_ << "\""
-                 << " x=\"" << v[0] << "\""
-                 << " y=\"" << v[1] << "\""
-                 << " z=\"" << v[2] << "\""
-                 << " radius=\"" << radius << "\""
-                 << " r=\"" << g->get_color().get_red() << "\""
-                 << " g=\"" << g->get_color().get_green() << "\""
-                 << " b=\"" << g->get_color().get_blue() <<  "\""
-                 << " note=\"" << name <<  "\"/>" << std::endl;
-  }
+bool CMMWriter::process(PointGeometry *g, Color color,
+                        std::string name) {
+  get_stream() << "<marker id=\"" << ++marker_index_ << "\""
+               << " x=\"" << g->operator[](0) << "\""
+               << " y=\"" << g->operator[](1) << "\""
+               << " z=\"" << g->operator[](2) << "\""
+               << " radius=\"" << 1 << "\""
+               << " r=\"" << color.get_red() << "\""
+               << " g=\"" << color.get_green() << "\""
+               << " b=\"" << color.get_blue() <<  "\""
+               << " note=\"" << name <<  "\"/>" << std::endl;
+  return true;
 }
 
 IMP_REGISTER_WRITER(CMMWriter, ".cmm")

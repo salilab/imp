@@ -30,7 +30,7 @@ class TestBL(IMP.test.TestCase):
         d1.set_y(1)
         d1.set_z(1)
         d1.set_radius(1)
-        IMP.set_log_level(IMP.MEMORY)
+        IMP.set_log_level(IMP.VERBOSE)
         a= IMP.display.LogOptimizerState(writer, nm)
         g= IMP.display.XYZRGeometry(d0)
         #ge= IMP.display.XYZRGeometryExtractor(rk)
@@ -44,11 +44,11 @@ class TestBL(IMP.test.TestCase):
         print "name is "+(nm%0)
         os.remove(nm%0)
 
-    def test_1(self):
+    def _test_1(self):
         """Testing the VRML log"""
         self._testit("testvrml", "vrml", IMP.display.VRMLWriter())
 
-    def test_2(self):
+    def _test_2(self):
         """Testing the CMM log"""
         self._testit("testcmm", "cmm", IMP.display.CMMWriter())
 

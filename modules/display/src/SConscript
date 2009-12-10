@@ -2,26 +2,18 @@ Import('env')
 
 files = [
          'BildWriter.cpp',
-         'BoxGeometry.cpp',
-         'PymolWriter.cpp',
          'CMMWriter.cpp',
          'ChimeraWriter.cpp',
          'Color.cpp',
          'Colored.cpp',
-         'CylinderGeometry.cpp',
          'FilterGeometry.cpp',
+         'GeometryProcessor.cpp',
          'LogOptimizerState.cpp',
          'PDBOptimizerState.cpp',
-         'PolygonGeometry.cpp',
-         'SphereGeometry.cpp',
-         'TriangleGeometry.cpp',
-         'VRMLWriter.cpp',
+         'PymolWriter.cpp',
          'Writer.cpp',
-         'bond_geometry.cpp',
-         'derivative_geometry.cpp',
          'geometry.cpp',
-         'pair_geometry.cpp',
-         'xyzr_geometry.cpp',
+         'particle_geometry.cpp',
         ] \
         + SConscript('internal/SConscript')
 

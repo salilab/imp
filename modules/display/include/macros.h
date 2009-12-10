@@ -11,49 +11,207 @@
 //! Define information for an Writer object
 /** This macro declares the methods on_open, on_close, add_geometry
     and show, and defines the destructor and get_version_info.
- */
+*/
 #define IMP_WRITER(Name, version)                                       \
-  virtual void add_geometry(IMP::display::Geometry *g);                 \
-  virtual IMP::VersionInfo get_version_info() const {return version;}   \
-  virtual void show(std::ostream &out=std::cout) const;                 \
   ~Name(){                                                              \
     set_file_name("");                                                  \
   }                                                                     \
+  void show(std::ostream &out=std::cout) const;                         \
+  VersionInfo get_version_info() const {return version;}                \
 protected:                                                              \
+ using Writer::process;                                                 \
  virtual void on_open();                                                \
  virtual void on_close();                                               \
 
 
+//! Define information for an Geometry object
+#define IMP_GEOMETRY(Name, version)             \
+  Geometries get_components() const;            \
+  IMP_OBJECT(Name, version)
 
-//! Since swig doesn't support using, this redefines the geometry methods
-#define IMP_WRITER_ADD_GEOMETRY                                         \
+
+//! Define a geometric object using an IMP::algebra one
+#define IMP_DISPLAY_GEOMETRY_DECL(Name, Type)                           \
+  class IMPDISPLAYEXPORT Name: public Type,                             \
+                               public Geometry {                        \
   public:                                                               \
-  virtual void add_geometry(const IMP::display::Geometries &g) {        \
-    Writer::add_geometry(g);                                            \
+    Name(const Type &v);                                                \
+    Name(const Type &v, const Color &c);                                \
+    Name(const Type &v, const std::string n);                           \
+    Name(const Type &v, const Color &c, std::string n);                 \
+    IMP_GEOMETRY(Name, get_module_version_info());                      \
+  };                                                                    \
+
+
+#define IMP_DISPLAY_GEOMETRY_DEF(Name, Type)                            \
+  Name::Name(const Type &v): Type(v), Geometry(#Name){}                 \
+  Name::Name(const Type &v, const Color &c):                            \
+    Type(v), Geometry(c, #Name) {}                                      \
+  Name::Name(const Type &v, const std::string n):                       \
+    Type(v), Geometry(n) {}                                             \
+  Name::Name(const Type &v, const Color &c, std::string n):             \
+    Type(v), Geometry(c,n) {}                                           \
+  Geometries Name::get_components() const {                             \
+    return Geometries(const_cast<Name*>(this));                         \
   }                                                                     \
-  virtual void add_geometry(IMP::display::CompoundGeometry *cg) {       \
-    Writer::add_geometry(cg);                                           \
+  void Name::show(std::ostream &out) const {                            \
+    out << #Name << "Geometry: " << static_cast<Type>(*this);           \
   }                                                                     \
-  virtual void add_geometry(const IMP::display::CompoundGeometries &g) { \
-    Writer::add_geometry(g);                                            \
+
+
+#define IMP_DISPLAY_GEOMETRY_DECOMPOSABLE_DECL(Name, Type)      \
+  class IMPDISPLAYEXPORT Name: public Type,                     \
+                               public Geometry {                \
+  public:                                                       \
+    Name(const Type &v);                                        \
+    Name(const Type &v, const Color &c);                        \
+    Name(const Type &v, const std::string n);                   \
+    Name(const Type &v, const Color &c, std::string n);         \
+    IMP_GEOMETRY(Name, get_module_version_info());              \
+  };                                                            \
+
+
+#define IMP_DISPLAY_GEOMETRY_DECOMPOSABLE_DEF(Name, Type, decomp)       \
+  Name::Name(const Type &v): Type(v), Geometry(#Name){}                 \
+  Name::Name(const Type &v, const Color &c):                            \
+    Type(v), Geometry(c, #Name) {}                                      \
+  Name::Name(const Type &v, const std::string n):                       \
+    Type(v), Geometry(n) {}                                             \
+  Name::Name(const Type &v, const Color &c, std::string n):             \
+    Type(v), Geometry(c,n) {}                                           \
+  void Name::show(std::ostream &out) const {                            \
+    out << #Name << "Geometry: "                                        \
+        << static_cast<Type>(*this);                                    \
+  }                                                                     \
+  Geometries Name::get_components() const {                             \
+    Geometries ret;                                                     \
+    decomp;                                                             \
+    return ret;                                                         \
   }
 
-//! Define information for an Geometry object
-#define IMP_GEOMETRY(Name, version)                                     \
-  virtual unsigned int get_dimension() const;                           \
-  virtual IMP::algebra::Vector3D get_vertex(unsigned int i) const;      \
-  virtual IMP::VersionInfo get_version_info() const {return version;}   \
-  virtual unsigned int get_number_of_vertices() const;                  \
-  virtual Float get_size() const;                                       \
-  virtual void show(std::ostream &out=std::cout) const;                 \
-  IMP_REF_COUNTED_DESTRUCTOR(Name)
+#define IMP_PARTICLE_GEOMETRY(Name, Decorator, action)                  \
+  class Name##Geometry: public SingletonGeometry {                      \
+  public:                                                               \
+  Name##Geometry(Decorator d): SingletonGeometry(d){}                   \
+  Geometries get_components() const {                                   \
+    Geometries ret;                                                     \
+    Decorator d(get_particle());                                        \
+    action;                                                             \
+    return ret;                                                         \
+  }                                                                     \
+  void show(std::ostream &out=std::cout) const {                        \
+    out << #Name << " " << Decorator(get_particle())<< std::endl;       \
+  }                                                                     \
+  VersionInfo get_version_info() const {                                \
+    return get_module_version_info();                                   \
+  }                                                                     \
+  };                                                                    \
+  class Name##sGeometry: public SingletonsGeometry {                    \
+  public:                                                               \
+  Name##sGeometry(SingletonContainer* sc): SingletonsGeometry(sc){}     \
+  Geometries get_components() const {                                   \
+    Geometries ret;                                                     \
+    for (unsigned int i=0;                                              \
+         i< get_container()->get_number_of_particles();                 \
+         ++i) {                                                         \
+      Decorator d(get_container()->get_particle(i));                    \
+      action;                                                           \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
+  void show(std::ostream &out=std::cout) const {                        \
+    out << #Name << "sGeometries" << std::endl;                         \
+  }                                                                     \
+  VersionInfo get_version_info() const {                                \
+    return get_module_version_info();                                   \
+  }                                                                     \
+ };                                                                    \
 
-//! Define information for an Geometry object
-#define IMP_COMPOUND_GEOMETRY(Name, version)                            \
-  virtual IMP::display::Geometries get_geometry() const;                \
-  virtual IMP::VersionInfo get_version_info() const {return version;}   \
-  virtual void show(std::ostream &out=std::cout) const;                 \
-  IMP_REF_COUNTED_DESTRUCTOR(Name)
+
+#define IMP_PARTICLE_TRAITS_GEOMETRY(Name, Decorator, TraitsName,       \
+                                     traits_name,action)                \
+  class Name##Geometry: public SingletonGeometry {                      \
+    TraitsName traits_;                                                 \
+  public:                                                               \
+  Name##Geometry(Decorator d): SingletonGeometry(d),                    \
+    traits_(d.get_##traits_name()){}                                    \
+  Geometries get_components() const {                                   \
+    Geometries ret;                                                     \
+    Decorator d(get_particle(), traits_);                               \
+    action;                                                             \
+    return ret;                                                         \
+  }                                                                     \
+  void show(std::ostream &out=std::cout) const {                        \
+    out << #Name << " " << Decorator(get_particle())<< std::endl;       \
+  }                                                                     \
+  VersionInfo get_version_info() const {                                \
+    return get_module_version_info();                                   \
+  }                                                                     \
+  };                                                                    \
+  class Name##sGeometry: public SingletonsGeometry {                     \
+    TraitsName traits_;                                                 \
+  public:                                                               \
+  Name##sGeometry(SingletonContainer* sc, TraitsName tr):               \
+  SingletonsGeometry(sc), traits_(tr){}                                  \
+  Geometries get_components() const {                                   \
+    Geometries ret;                                                     \
+    for (unsigned int i=0;                                              \
+         i< get_container()->get_number_of_particles();                 \
+         ++i) {                                                         \
+      Decorator d(get_container()->get_particle(i), traits_);           \
+      action;                                                           \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
+  void show(std::ostream &out=std::cout) const {                        \
+    out << #Name << "sGeometries" << std::endl;                         \
+  }                                                                     \
+  VersionInfo get_version_info() const {                                \
+    return get_module_version_info();                                   \
+  }                                                                     \
+  };                                                                    \
 
 
-#endif /* IMPDISPLAY_MACROS_H */
+#define IMP_PARTICLE_PAIR_GEOMETRY(Name, Decorator, action)             \
+  class Name##Geometry: public PairGeometry {                           \
+  public:                                                               \
+  Name##Geometry(Decorator d0, Decorator d1):                           \
+  PairGeometry(d0, d1){}                                                \
+  Geometries get_components() const {                                   \
+    Geometries ret;                                                     \
+    Decorator d0(get_particle_pair()[0]);                               \
+    Decorator d1(get_particle_pair()[1]);                               \
+    action;                                                             \
+    return ret;                                                         \
+  }                                                                     \
+  void show(std::ostream &out=std::cout) const {                        \
+    out << #Name << " " << Decorator(get_particle_pair()[0])            \
+        << " " << Decorator(get_particle_pair()[1])<< std::endl;        \
+  }                                                                     \
+  VersionInfo get_version_info() const {                                \
+    return get_module_version_info();                                   \
+  }                                                                     \
+  };                                                                    \
+  class Name##sGeometry: public PairsGeometry {                         \
+  public:                                                               \
+  Name##sGeometry(PairContainer* sc): PairsGeometry(sc){}               \
+  Geometries get_components() const {                                   \
+    Geometries ret;                                                     \
+    for (unsigned int i=0;                                              \
+         i< get_container()->get_number_of_particle_pairs();            \
+         ++i) {                                                         \
+      Decorator d0(get_container()->get_particle_pair(i)[0]);           \
+      Decorator d1(get_container()->get_particle_pair(i)[1]);           \
+      action;                                                           \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
+  void show(std::ostream &out=std::cout) const {                        \
+    out << #Name << "sGeometries" << std::endl;                         \
+  }                                                                     \
+  VersionInfo get_version_info() const {                                \
+    return get_module_version_info();                                   \
+  }                                                                     \
+  };
+
+ #endif /* IMPDISPLAY_MACROS_H */

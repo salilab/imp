@@ -7,9 +7,9 @@ import IMP.display
 class TestBL(IMP.test.TestCase):
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        IMP.set_log_level(IMP.TERSE)
+        IMP.set_log_level(IMP.VERBOSE)
 
-    def _testit(self, w):
+    def _testit(self, w, cylinder=True, triangle=True):
         print "create sg"
         sg=IMP.display.SphereGeometry(IMP.algebra.Sphere3D(IMP.algebra.Vector3D(1,2,3), 4))
         sg.set_name("sphere")
@@ -17,30 +17,27 @@ class TestBL(IMP.test.TestCase):
         sg.set_color(IMP.display.Color(1,0,0))
         print "add 0"
         w.add_geometry(sg)
-        sg=IMP.display.CylinderGeometry(IMP.algebra.Cylinder3D(IMP.algebra.Segment3D(IMP.algebra.Vector3D(1,2,3),
+        if cylinder:
+            sg=IMP.display.CylinderGeometry(IMP.algebra.Cylinder3D(IMP.algebra.Segment3D(IMP.algebra.Vector3D(1,2,3),
                                                              IMP.algebra.Vector3D(4,5,6)), 1))
-        sg.set_name("cylinder")
-        sg.set_color(IMP.display.Color(0,1,0))
-        print "add 1"
-        w.add_geometry(sg)
-        sg=IMP.display.TriangleGeometry(IMP.algebra.Vector3D(1,2,3),
-                                        IMP.algebra.Vector3D(4,5,6),
-                                        IMP.algebra.Vector3D(0,8,9))
-        sg.set_color(IMP.display.Color(0,0,1))
-        w.add_geometry(sg)
-    def test_1(self):
-        """Testing the VRML writer"""
-        nm=self.get_tmp_file_name("test.vrml")
-        w=IMP.display.VRMLWriter()
-        w.set_file_name(nm)
-        self._testit(w)
+            sg.set_name("cylinder")
+            sg.set_color(IMP.display.Color(0,1,0))
+            print "add 1"
+            w.add_geometry(sg)
+        if triangle:
+            vs= IMP.algebra.Vector3Ds([IMP.algebra.Vector3D(1,2,3),
+                                       IMP.algebra.Vector3D(4,5,6),
+                                       IMP.algebra.Vector3D(0,8,9)])
+            sg=IMP.display.TriangleGeometry(vs)
+            sg.set_color(IMP.display.Color(0,0,1))
+            w.add_geometry(sg)
 
     def test_2(self):
         """Testing the CMM writer"""
         nm=self.get_tmp_file_name("test.cmm")
         w=IMP.display.CMMWriter()
         w.set_file_name(nm)
-        self._testit(w)
+        self._testit(w, cylinder=False, triangle=False)
 
 
     def test_3(self):
@@ -58,7 +55,7 @@ class TestBL(IMP.test.TestCase):
         self._testit(w)
     def test_5(self):
         """Testing the CGO writer"""
-        nm=self.get_tmp_file_name("test.pymol.py")
+        nm=self.get_tmp_file_name("test.pymol.pym")
         w=IMP.display.PymolWriter()
         w.set_file_name(nm)
         self._testit(w)

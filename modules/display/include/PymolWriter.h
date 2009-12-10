@@ -33,20 +33,24 @@ class IMPDISPLAYEXPORT PymolWriter: public Writer
 {
   friend class CGOAnimationWriter;
   unsigned int count_;
+  void setup(std::string name);
+  void cleanup(std::string name);
+  bool process(SphereGeometry *g,
+               Color color, std::string name);
+  bool process(CylinderGeometry *g,
+               Color color, std::string name);
+  bool process(PointGeometry *g,
+               Color color, std::string name);
+  bool process(SegmentGeometry *g,
+               Color color, std::string name);
+  bool process(PolygonGeometry *g,
+               Color color, std::string name);
+  bool process(TriangleGeometry *g,
+               Color color, std::string name);
 
-  static void write_geometry(Geometry *g, std::ostream &out);
 public:
   //! write to a file using the name to  name the files
   PymolWriter(std::string file_name=std::string());
-
-  virtual void add_geometry(CompoundGeometry* cg);
-  virtual void add_geometry(const IMP::display::Geometries &g) {
-    Writer::add_geometry(g);
-  }
-  virtual void add_geometry(const IMP::display::CompoundGeometries &g) {
-    Writer::add_geometry(g);
-  }
-
 
   IMP_WRITER(PymolWriter, get_module_version_info())
 };

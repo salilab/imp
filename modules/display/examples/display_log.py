@@ -6,7 +6,7 @@ m= IMP.Model()
 c= IMP.core.ListSingletonContainer(IMP.core.create_xyzr_particles(m, 20, 5))
 
 log= IMP.display.LogOptimizerState(IMP.display.PymolWriter(), "log_file.%04d.pym")
-g= IMP.display.XYZRsGeometry(c)
+g= IMP.display.XYZRsGeometry(c, IMP.core.XYZR.get_default_radius_key())
 g.set_name("my particles")
 g.set_color(IMP.display.Color(1,0,0))
 log.add_geometry(g)

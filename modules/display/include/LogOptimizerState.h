@@ -32,18 +32,12 @@ class IMPDISPLAYEXPORT LogOptimizerState: public OptimizerState
   mutable IMP::internal::OwnerPointer<Writer> writer_;
   std::string name_template_;
 
-  CompoundGeometries edata_;
   Geometries gdata_;
 
 public:
   //! Write files using name_template as a template (must have a %d in it)
   LogOptimizerState(Writer *writer, std::string name_template);
-
-  void add_geometry(CompoundGeometry* g);
-
   void add_geometry(Geometry* g);
-
-  void add_geometry(const CompoundGeometries& g);
 
   void add_geometry(const Geometries& g);
 

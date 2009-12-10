@@ -24,11 +24,6 @@ void LogOptimizerState::show(std::ostream &out) const {
 void LogOptimizerState::write(std::string name) const {
   IMP_LOG(TERSE, "Writing log file " << name << std::endl);
   writer_->set_file_name(name);
-  IMP_LOG(VERBOSE, "Writing extractors"<< std::endl);
-  for (unsigned int i=0; i< edata_.size(); ++i) {
-    Geometries gs=edata_[i]->get_geometry();
-    writer_->add_geometry(gs);
-  }
   IMP_LOG(VERBOSE, "Writing geometries"<< std::endl);
   for (unsigned int i=0; i < gdata_.size(); ++i) {
     writer_->add_geometry(gdata_[i]);
@@ -45,20 +40,10 @@ void LogOptimizerState::do_update(unsigned int n) {
 }
 
 
-void LogOptimizerState::add_geometry(CompoundGeometry* g) {
-  edata_.push_back(g);
-  g->set_was_owned(true);
-}
 
 void LogOptimizerState::add_geometry(Geometry* g) {
   gdata_.push_back(g);
   g->set_was_owned(true);
-}
-
-void LogOptimizerState::add_geometry(const CompoundGeometries& g) {
-  for (unsigned int i=0; i< g.size(); ++i) {
-    add_geometry(g);
-  }
 }
 
 void LogOptimizerState::add_geometry(const Geometries& g) {

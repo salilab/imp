@@ -19,9 +19,11 @@ Writer::Writer(std::string name): Object(name){
 Writer::~Writer(){
 }
 
-void Writer::show(std::ostream &out) const {
-  out << "Writer" << std::endl;
+
+void Writer::add_geometry(Geometry *g) {
+  process_geometry(g);
 }
+
 
 Writer *create_writer(std::string name) {
   for (std::map<std::string, internal::WriterFactory *>::iterator

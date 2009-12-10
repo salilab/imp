@@ -2,32 +2,32 @@ IMP_DIRECTOR_MODULE_CLASS(display, Writer);
 IMP_DIRECTOR_MODULE_CLASS(display, Geometry);
 IMP_DIRECTOR_MODULE_CLASS(display, CompoundGeometry);
 
+%warnfilter(403) Geometry;
+%warnfilter(403) Writer;
+%warnfilter(403) SingletonGeometry;
+%warnfilter(403) SingletonsGeometry;
+%warnfilter(403) PairGeometry;
+%warnfilter(403) PairsGeometry;
+
 /* Wrap our own classes */
 %include "IMP/display/macros.h"
 %include "IMP/display/Color.h"
 %include "IMP/display/geometry.h"
+%include "IMP/display/GeometryProcessor.h"
 %include "IMP/display/Writer.h"
 
-%include "IMP/display/xyzr_geometry.h"
-%include "IMP/display/bond_geometry.h"
-%include "IMP/display/derivative_geometry.h"
-%include "IMP/display/VRMLWriter.h"
 %include "IMP/display/BildWriter.h"
+%include "IMP/display/ChimeraWriter.h"
 %include "IMP/display/CMMWriter.h"
 %include "IMP/display/Colored.h"
-%include "IMP/display/PymolWriter.h"
-%include "IMP/display/ChimeraWriter.h"
+%include "IMP/display/FilterGeometry.h"
 %include "IMP/display/LogOptimizerState.h"
-%include "IMP/display/SphereGeometry.h"
-%include "IMP/display/CylinderGeometry.h"
-%include "IMP/display/BoxGeometry.h"
-%include "IMP/display/PolygonGeometry.h"
-%include "IMP/display/TriangleGeometry.h"
+%include "IMP/display/particle_geometry.h"
 %include "IMP/display/PDBOptimizerState.h"
+%include "IMP/display/PymolWriter.h"
 
 namespace IMP {
 namespace display {
   %template(Geometries) ::IMP::VectorOfRefCounted< ::IMP::display::Geometry*>;
-  %template(CompoundGeometries) ::IMP::VectorOfRefCounted< ::IMP::display::CompoundGeometry*>;
  }
 }
