@@ -84,9 +84,9 @@ public:
     std::ifstream in;
     in.open(filename.c_str(), std::ios::in | std::ios::binary);
     header_.read(in,skip_type_check,force_reversed,skip_extra_checkings);
-    data_.resize(header_.get_number_of_slices(),
-                 header_.get_number_of_rows(),
-                 header_.get_number_of_columns());
+    data_.resize((int)header_.get_number_of_slices(),
+                 (int)header_.get_number_of_rows(),
+                 (int)header_.get_number_of_columns());
     data_.read_binary(in);
     in.close();
   }
