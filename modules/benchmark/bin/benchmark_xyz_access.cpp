@@ -303,25 +303,25 @@ int main(int argc, char **argv) {
   if (argc >1) {
     switch (argv[1][0]) {
     case 's':
-      do_benchmark("small", IMP::get_data_directory()
-                 +"/benchmark/small_protein.pdb");
+      do_benchmark("small",
+                   IMP::benchmark::get_data_path("small_protein.pdb"));
       break;
     case 'l':
-      do_benchmark("large", IMP::get_data_directory()
-                   +"/benchmark/small_protein.pdb");
+      do_benchmark("large",
+                   IMP::benchmark::get_data_path("large_protein.pdb"));
       break;
     case 'h':
-      do_benchmark("huge", IMP::get_data_directory()
-                   +"/benchmark/small_protein.pdb");
+      do_benchmark("huge",
+                   IMP::benchmark::get_data_path("huge_protein.pdb"));
       break;
     }
   } else {
-    do_benchmark("small", IMP::get_data_directory()
-                 +"/benchmark/small_protein.pdb");
-    do_benchmark("large", IMP::get_data_directory()
-                 +"/benchmark/large_protein.pdb");
-    do_benchmark("huge", IMP::get_data_directory()
-                 +"/benchmark/huge_protein.pdb");
+    do_benchmark("small",
+                 IMP::benchmark::get_data_path("small_protein.pdb"));
+    do_benchmark("large",
+                 IMP::benchmark::get_data_path("large_protein.pdb"));
+    do_benchmark("huge",
+                 IMP::benchmark::get_data_path("huge_protein.pdb"));
   }
   return 0;
 }

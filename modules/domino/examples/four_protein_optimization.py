@@ -29,7 +29,8 @@ def run():
     ps=IMP.Particles()
     mhs=IMP.atom.Hierarchies()
     for prot_name,chain_id in [["1z5s_A.pdb","A"],["1z5s_B.pdb","B"],["1z5s_C.pdb","C"],["1z5s_D.pdb","D"]]:
-        mhs.append(IMP.atom.read_pdb(prot_name,mdl,sel))
+        mhs.append(IMP.atom.read_pdb(IMP.domino.get_example_path(prot_name),
+                                     mdl,sel))
         mhs[-1].get_particle().add_attribute(IMP.domino.node_name_key(),chain_id)
         IMP.atom.add_radii(mhs[-1])
         ps.append(mhs[-1].get_particle())

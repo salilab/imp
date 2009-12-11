@@ -166,8 +166,8 @@ String ForceFieldParameters::get_force_field_atom_type(
 
 ForceFieldParameters *default_force_field_parameters() {
   static IMP::internal::OwnerPointer<CharmmParameters> cfp
-    (new CharmmParameters(IMP::get_data_directory() +"/atom/top.lib",
-                          IMP::get_data_directory() +"/atom/par.lib"));
+    (new CharmmParameters(get_data_path("top.lib"),
+                          get_data_path("par.lib")));
   return cfp;
 }
 

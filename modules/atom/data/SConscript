@@ -3,7 +3,6 @@ Import('env')
 files = [
          'top.lib',
          'par.lib',
-         'example_protein.pdb'
         ]
 
 # Install the data files:
