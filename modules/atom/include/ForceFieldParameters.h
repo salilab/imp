@@ -10,7 +10,6 @@
 #include "Residue.h"
 #include "Atom.h"
 #include "Hierarchy.h"
-#include <IMP/directories.h>
 #include <IMP/base_types.h>
 
 IMPATOM_BEGIN_NAMESPACE

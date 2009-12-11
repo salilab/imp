@@ -60,7 +60,7 @@ int main() {
   std::vector<RigidBody> rbs;
   for (int i=0; i< 5; ++i) {
     atom::Hierarchy mhd
-      = read_pdb(IMP::get_data_directory()+"/benchmark/small_protein.pdb", m);
+      = read_pdb(IMP::benchmark::get_data_path("small_protein.pdb"), m);
     Particles catoms= get_by_type(mhd, atom::ATOM_TYPE);
     IMP_INTERNAL_CHECK(catoms.size() != 0, "What happened to the atoms?");
     atoms.insert(atoms.end(), catoms.begin(), catoms.end());
