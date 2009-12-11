@@ -354,7 +354,8 @@ def add_common_variables(vars, package):
     vars.Add(PathVariable('prefix', 'Top-level installation directory', '/usr',
                           PathVariable.PathIsDirCreate))
     vars.Add(PathVariable('datadir', 'Data file installation directory',
-                          '${prefix}/share', PathVariable.PathIsDirCreate))
+                          '${prefix}/share/%s'%package,
+                          PathVariable.PathIsDirCreate))
     vars.Add(PathVariable('bindir', 'Executable installation directory',
                           '${prefix}/bin', PathVariable.PathIsDirCreate))
     vars.Add(PathVariable('libdir', 'Shared library installation directory',

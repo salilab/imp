@@ -113,14 +113,46 @@ namespace internal {
     # This needs to be called get_module_version_info() to make it easy
     # to call from Objects (which have their own get_version_info() method
     print >> h, """
+//  functions are defined explicitly for swig
 #ifndef SWIG
 namespace IMP {
   class VersionInfo;
 }
 
+#include <IMP/internal/directories.h>
+#include <IMP/config.h>
+#include <string>
+
+IMP_BEGIN_INTERNAL_NAMESPACE
+IMPEXPORT std::string get_data_path(std::string module_name,
+                                    std::string file_name);
+IMPEXPORT std::string get_example_path(std::string module_name,
+                                       std::string file_name);
+
+IMP_END_INTERNAL_NAMESPACE
+
 %(PREPROC)s_BEGIN_NAMESPACE
 %(PREPROC)sEXPORT const VersionInfo& get_module_version_info();
+
+//! Return the path to installed data for this module
+/** Each module has its own data directory, so be sure to use
+    the version of this function in the correct module.
+*/
+inline std::string get_data_path(std::string file_name) {
+  return IMP::internal::get_data_path("%(module)s", file_name);
+}
+
+//! Return the path to installed example data for this module
+/** Each module has its own example directory, so be sure to use
+    the version of this function in the correct module.
+*/
+inline std::string get_example_path(std::string file_name)  {
+  return IMP::internal::get_example_path("%(module)s", file_name);
+}
+
+
 %(PREPROC)s_END_NAMESPACE
+
 #endif // SWIG
 
 #endif  /* %(PREPROC)s_CONFIG_H */""" % vars

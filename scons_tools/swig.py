@@ -111,6 +111,8 @@ def _action_swig_file(target, source, env):
         preface.append("""
 namespace IMP {
 const VersionInfo& get_module_version_info();
+std::string get_example_path(std::string fname);
+std::string get_data_path(std::string fname);
 }
 """)
     else:
@@ -118,6 +120,8 @@ const VersionInfo& get_module_version_info();
 namespace IMP {
 namespace %(module)s {
 const VersionInfo& get_module_version_info();
+std::string get_example_path(std::string fname);
+std::string get_data_path(std::string fname);
 }
 }
 """%vars)

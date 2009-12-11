@@ -22,7 +22,6 @@ files = [
          'TripletScore.cpp',
          'UnaryFunction.cpp',
          'base_types.cpp',
-         'directories.cpp',
          'exception.cpp',
          'log.cpp',
          'random.cpp',

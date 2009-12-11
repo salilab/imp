@@ -34,9 +34,11 @@ def builder_script_file(target, source, env):
                 sep.join(pl)+\
                           "'\nexport PYTHONPATH"
         if line == "@DATAPATH@":
-            pl=[source[1].get_contents()+"/build/data/IMP"]
-            line= "IMP_DATA_DIRECTORY='%s/build/data/IMP'" \
+            line= "IMP_DATA_DIRECTORY='%s/build/data/'" \
                   % source[1].get_contents() + "\nexport IMP_DATA_DIRECTORY"
+        if line == "@EXAMPLEPATH@":
+            line= "IMP_EXAMPLE_DIRECTORY='%s/build/doc/examples'" \
+                  % source[1].get_contents() + "\nexport IMP_EXAMPLE_DIRECTORY"
         if line == "@PRECOMMAND@":
             line="precommand='"
             if len(source[3].get_contents())!=0:
