@@ -8,6 +8,7 @@ files = [
          'Matrix2D.h',
          'Matrix3D.h',
          'MultiArray.h',
+         'ParabolicFit.h',
          'Plane3D.h',
          'Rotation2D.h',
          'Rotation3D.h',
