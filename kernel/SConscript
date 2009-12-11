@@ -1,13 +1,20 @@
 Import('env')
 import os.path
 
-env.Append(CPPDEFINES=["IMP_DATA_DIRECTORY=\\\""+os.path.join(env['datadir'],"IMP")+"\\\""])
+env.Append(CPPDEFINES=["IMP_DATA_DIRECTORY=\\\""+env['datadir']+"\\\""])
+env.Append(CPPDEFINES=["IMP_EXAMPLE_DIRECTORY=\\\""+os.path.join(env['docdir'],"examples")+"\\\""])
 
 config=[]
 if env['CGAL_LIBS'] != ['']:
     config.append('IMP_USE_CGAL')
 else:
     config.append('IMP_NO_CGAL')
+
+if env['BOOST_LIBS']:
+    config.append('IMP_USE_BOOST_LIBS')
+else:
+    config.append('IMP_NO_BOOST_LIBS')
+
 if not env.get('deprecated', True):
     config.append('IMP_NO_DEPRECATED')
 else:
@@ -31,4 +38,6 @@ elif env['build'] == 'debug':
 
 env.IMPModuleBuild(version='SVN', required_modules=None, config_macros=config,
                    module='kernel', module_suffix="", module_include_path="IMP",
-                   module_src_path="kernel", module_preproc="IMP", module_namespace="IMP")
+                   module_src_path="kernel", module_preproc="IMP",
+                   module_namespace="IMP",
+                   optional_dependencies=['BOOST_FILESYSTEM'])
