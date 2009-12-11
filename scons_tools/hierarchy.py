@@ -50,6 +50,8 @@ def _install_hierarchy_internal(env, dir, sources, can_link):
             src= full[full.find("src")+4]
         elif full.find("data") != -1:
             src= full[full.find("data")+5]
+        elif full.find("examples") != -1:
+            src= full[full.find("examples")+9]
         else:
             raise ValueError(full)
         dest = os.path.join(dir, os.path.dirname(src))
@@ -83,6 +85,14 @@ def InstallPythonHierarchy(env, dir, sources, can_link=False):
     return _install_hierarchy_internal(env, dir, sources, can_link)
 
 def InstallDataHierarchy(env, dir, sources, can_link):
+    """Given a set of data files, install them all under `dir`. They are
+       placed in the `module` subdirectory (common prefix is stripped from the
+       filenames). A list of all installed files is returned, suitable for an
+       'install' alias, plus another list of the files in the build
+       directory."""
+    return _install_hierarchy_internal(env, dir, sources, can_link)
+
+def InstallExampleHierarchy(env, dir, sources, can_link):
     """Given a set of data files, install them all under `dir`. They are
        placed in the `module` subdirectory (common prefix is stripped from the
        filenames). A list of all installed files is returned, suitable for an

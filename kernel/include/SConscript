@@ -34,7 +34,6 @@ files = [
          'constants.h',
          'container_macros.h',
          'deprecation.h',
-         'directories.h',
          'exception.h',
          'log.h',
          'macros.h',

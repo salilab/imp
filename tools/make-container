@@ -36,6 +36,8 @@ def make_one(name, value, storevalue, multi, args, fromargs, asargs, ):
                path+"/tools/container_templates/container.cc"),
               ("modules/core/include/internal/"+multi.lower() + "_helpers.h",
                path+"tools/container_templates/helper.hpp"),
+              ("modules/core/src/internal/"+multi.lower() + "_helpers.cpp",
+               path+"tools/container_templates/helper.cc"),
               ("modules/core/include/List"+multi + "Container.h",
                path+"/tools/container_templates/list.hpp"),
               ("modules/core/src/List"+multi + "Container.cpp",

@@ -11,6 +11,7 @@ import version_info
 import config_h
 import link_test
 import modeller_test
+import run
 
 from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir
 
@@ -117,12 +118,15 @@ def expand_dependencies(env, deps):
 def dependencies_to_libs(env, deps):
     libs=[]
     deps = env[env['IMP_MODULE']+"_required_modules"] + deps
-    for d in expand_dependencies(env,deps):
+    ed=expand_dependencies(env,deps)
+    for d in ed:
         if d== 'kernel':
             libs.append("imp")
         else:
             libs.append("imp_"+d)
-    return libs
+    for d in ed:
+        libs= libs+env[d+"_libs"]
+    return libs+env[env['IMP_MODULE']+"_libs"]
 
 
 
@@ -243,8 +247,12 @@ def IMPModuleData(env, files):
     """Install the given data files for this IMP module."""
     vars=make_vars(env)
     datadir = env.GetInstallDirectory('datadir')
-    install = hierarchy.InstallDataHierarchy(env, datadir+"/"+vars['module_include_path'], files, False)
-    build = hierarchy.InstallDataHierarchy(env, "#/build/data/"+vars['module_include_path'], files, True)
+    if vars['module']== 'kernel':
+        path=""
+    else:
+        path=vars['module']
+    install = hierarchy.InstallDataHierarchy(env, datadir+"/"+path, files, False)
+    build = hierarchy.InstallDataHierarchy(env, "#/build/data/"+path, files, True)
     module_alias(env, 'data', build)
     add_to_global_alias(env, 'all', 'data')
     module_alias(env, 'install-data', install)
@@ -255,15 +263,21 @@ def IMPModuleExamples(env, files, required_modules=[]):
     vars=make_vars(env)
     #for f in files:
     #    print f.abspath
-    (build, install, test)= examples.handle_example_dir(env, Dir("."), vars['module'], vars['module_include_path'], files)
+    if vars['module']== 'kernel':
+        path=""
+    else:
+        path=vars['module']
+    (dox, build, install, test)= examples.handle_example_dir(env, Dir("."), vars['module'], path, files)
     module_alias(env, 'examples', build)
     add_to_global_alias(env, 'all', 'examples')
     module_alias(env, 'install-examples', install)
     add_to_global_alias(env, 'doc-install', 'install-examples')
     module_alias(env, 'test-examples', test)
+    module_alias(env, 'test-examples', build)
     add_to_global_alias(env, 'test', 'test-examples')
+    module_alias(env, 'dox-examples', dox)
     module_requires(env, test, 'python')
-    add_to_global_alias(env, 'doc', 'examples')
+    add_to_global_alias(env, 'doc', 'dox-examples')
     module_deps_requires(env, test, 'python', required_modules)
 
 def IMPModuleBin(envi, files, required_modules=[], extra_libs=[], install=True):
@@ -275,14 +289,17 @@ def IMPModuleBin(envi, files, required_modules=[], extra_libs=[], install=True):
     build=[]
     install_list=[]
     bindir = env.GetInstallDirectory('bindir')
+    allprogs=[]
     for f in files:
         prog= env.Program(f)
+        allprogs.append(prog)
         cb= env.Install("#/build/bin", prog)
         ci= env.Install(bindir, prog)
         build.append(cb)
         if install:
             install_list.append(ci)
         build.append(prog)
+    envi['IMP_MODULE_BINS']= allprogs
     module_alias(env, 'bin', build, True)
     add_to_global_alias(env, 'all', 'bin')
     if install:
@@ -372,7 +389,8 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
 
 def IMPModuleGetExamples(env):
     vars= make_vars(env)
-    files=module_glob(["*.py", "*/*.py","*.readme","*/*.readme"])
+    files=module_glob(["*.py", "*/*.py","*.readme","*/*.readme",
+                       "*.pdb"])
     return files
 
 def IMPModuleGetHeaders(env):
@@ -586,6 +604,7 @@ def IMPModuleBuild(env, version, required_modules=[],
     #print module_namespace
     env[module+"_required_modules"]=required_modules
     env[module+"_optional_dependencies"]= optional_dependencies
+    env[module+"_libs"]= []
     env['IMP_MODULES_ALL'].append(module)
 
 
@@ -596,7 +615,10 @@ def IMPModuleBuild(env, version, required_modules=[],
     for d in optional_dependencies:
         if d== "CGAL":
             if env['CGAL_LIBS']:
-                env.Append(LIBS=env['CGAL_LIBS'])
+                env[module+"_libs"]=env[module+"_libs"]+env['CGAL_LIBS']
+        elif d== "BOOST_FILESYSTEM":
+            if env['BOOST_LIBS']:
+                env[module+"_libs"]=env[module+"_libs"]+env['BOOST_FILESYSTEM_LIBS']
         else:
             raise ValueError("Do not understand optional dependency: " +d)
     env.Append(BUILDERS = {'IMPModuleConfigH': config_h.ConfigH,
@@ -642,6 +664,7 @@ def IMPModuleBuild(env, version, required_modules=[],
     env.Append(BUILDERS={'_IMPSWIG': swig.SwigIt})
     env.Append(BUILDERS={'_IMPPatchSWIG': swig.PatchSwig})
     env.Append(BUILDERS={'_IMPSWIGPreface': swig.SwigPreface})
+    env.Append(BUILDERS={'IMPRun': run.Run})
     env.AddMethod(validate)
     env.AddMethod(invalidate)
     env['TEST_ENVSCRIPT'] = None
@@ -705,3 +728,4 @@ def IMPModuleBuild(env, version, required_modules=[],
         env.SConscript('test/SConscript', exports='env')
 
     add_to_global_alias(env, 'install', 'install')
+    return env

@@ -2,6 +2,7 @@ files = [
          'PrefixStream.cpp',
          'constants.cpp',
          'deprecation.cpp',
+         'directories.cpp',
         ]
 
 files = [File(x) for x in files]

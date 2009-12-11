@@ -6,6 +6,8 @@
 
 @DATAPATH@
 
+@EXAMPLEPATH@
+
 @PRECOMMAND@
 
 exec ${precommand} "$@"
