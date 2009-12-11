@@ -223,9 +223,9 @@ void project_given_rotation1(IMP::algebra::Matrix3D<T>& m3,
           std::cout << "inverted idx " <<
               idx[2] << " " << idx[1] << " " << idx[0] << " | ";
           std::cout << "m3(inverted idx) = " <<
-              m3(idx[2], idx[1], idx[0]) << std::endl;
+              m3((int)idx[2],(int)idx[1],(int)idx[0]) << std::endl;
 #endif
-          ray_sum += diff_alpha * m3(idx[2], idx[1], idx[0]);
+          ray_sum += diff_alpha * m3((int)idx[2],(int)idx[1],(int)idx[0]);
           // update the indexes in the required dimensions
           for (int ii=0;ii < 3;ii++) {
             if (IMP::algebra::almost_equal(diff_alpha, v_diff[ii],

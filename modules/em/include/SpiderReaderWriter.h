@@ -94,7 +94,8 @@ public:
     std::cout << header << std::endl;
 #endif
     // Adjust size of the matrix according to the header
-    data.resize(header.get_number_of_rows(),header.get_number_of_columns());
+    data.resize((int)header.get_number_of_rows(),
+                (int)header.get_number_of_columns());
     data.read_binary(in,force_reversed_ ^ algebra::is_big_endian());
     in.close();
   }
@@ -113,7 +114,8 @@ public:
     std::cout << header << std::endl;
 #endif
     // Adjust size of the matrix according to the header
-    data.resize(header.get_number_of_rows(),header.get_number_of_columns());
+    data.resize((int)header.get_number_of_rows(),
+                (int)header.get_number_of_columns());
     // Read with casting
     float aux;
     for (unsigned long i=0;i<data.num_elements();i++) {
