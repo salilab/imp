@@ -9,7 +9,11 @@
 
 #include <IMP/internal/directories.h>
 #include <IMP/config.h>
+
+#ifdef IMP_USE_BOOST_LIBS
 #include <boost/filesystem.hpp>
+#endif
+
 #include <cstdlib>
 
 IMP_BEGIN_INTERNAL_NAMESPACE
@@ -22,13 +26,13 @@ namespace {
 #ifdef IMP_USE_BOOST_LIBS
       return (basep/module/file_name).file_string();
 #else
-      return basep+"/"+module+"/"+file_name;
+      return basep+std::string("/")+module+std::string("/")+file_name;
 #endif
     } else {
 #ifdef IMP_USE_BOOST_LIBS
       return (basep/file_name).file_string();
 #else
-      return basep+"/"+file_name;
+      return basep+std::string("/")+file_name;
 #endif
     }
   }
