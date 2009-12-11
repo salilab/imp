@@ -55,7 +55,7 @@
   bool operator<=(const This &o) const {                                \
     return !(compare(o) > 0);                                           \
   }                                                                     \
-  IMP_NO_SWIG(template <class T> friend int compare(const T&a, const T&b);
+  IMP_NO_SWIG(template <class T> friend int compare(const T&a, const T&b));
 #endif
 
 #ifdef IMP_DOXYGEN                                                         \
