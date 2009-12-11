@@ -352,12 +352,12 @@ def add_common_variables(vars, package):
         # Install in /usr/lib64 rather than /usr/lib on x86_64 Linux boxes
         libdir += '64'
     vars.Add(PathVariable('prefix', 'Top-level installation directory', '/usr',
-                          PathVariable.PathIsDirCreate))
+                          PathVariable.PathAccept))
     vars.Add(PathVariable('datadir', 'Data file installation directory',
                           '${prefix}/share/%s'%package,
-                          PathVariable.PathIsDirCreate))
+                          PathVariable.PathAccept))
     vars.Add(PathVariable('bindir', 'Executable installation directory',
-                          '${prefix}/bin', PathVariable.PathIsDirCreate))
+                          '${prefix}/bin', PathVariable.PathAccept))
     vars.Add(PathVariable('libdir', 'Shared library installation directory',
                           libdir, PathVariable.PathAccept))
     vars.Add(PathVariable('includedir', 'Include file installation directory',
