@@ -6,7 +6,7 @@ import random,math
 NUM_STATES=5
 
 
-#In this example we are looking for the positions of 6 particles that
+#In this example we are looking for the positions of 4 proteins that
 #optimize a scoring function.
 
 
