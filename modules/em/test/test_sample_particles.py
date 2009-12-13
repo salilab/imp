@@ -49,7 +49,7 @@ class SampleTests(IMP.test.TestCase):
         self.assert_(abs(em_map.get_header().rms - \
                          model_map.get_header().rms) < .000001,
                      "standard deviations of maps differ")
-        #os.unlink("xxx.em")
+        os.unlink("xxx.em")
 
 if __name__ == '__main__':
     unittest.main()
