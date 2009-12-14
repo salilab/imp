@@ -5,6 +5,7 @@ files = [
          'Cone3D.h',
          'Cylinder3D.h',
          'Ellipsoid3D.h',
+         'LinearFit.h',
          'Matrix2D.h',
          'Matrix3D.h',
          'MultiArray.h',
