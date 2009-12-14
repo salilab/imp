@@ -34,9 +34,26 @@ class RestraintTest(IMP.test.TestCase):
 
         protein1_hierarchy = self.representation.find_by_id('Protein1').model_decorator
         IMP.atom.write_pdb (protein1_hierarchy, "test_protein1.pdb")
+        root_hierarchy = self.representation.model_decorator
+        IMP.atom.write_pdb (root_hierarchy, "test_initial.pdb")
+
+        ub = IMP.algebra.Vector3D(-50.0,-50.0,-50.0)
+        lb = IMP.algebra.Vector3D( 50.0, 50.0, 50.0)
+        bb = IMP.algebra.BoundingBox3D(ub, lb)
+
+        for i in xrange (1, 4):
+            name = "Protein" + str(i) + "_rigid"
+            rbs = self.restraint.get_restraint_by_name (name)
+
+            translation = IMP.algebra.random_vector_in_box(bb)
+            rotation = IMP.algebra.random_rotation()
+            transformation = IMP.algebra.Transformation3D(rotation, translation)
+
+            for rbd in rbs.rigid_bodies:
+                rbd.set_transformation(transformation)
 
         root_hierarchy = self.representation.model_decorator
-        IMP.atom.write_pdb (root_hierarchy, "test_root.pdb")
+        IMP.atom.write_pdb (root_hierarchy, "test_after_transformation.pdb")
 
         self.Model.show()
         self.Model.evaluate(False)
