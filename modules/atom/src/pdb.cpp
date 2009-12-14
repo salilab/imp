@@ -33,10 +33,11 @@ Particle* atom_particle(Model *m, const String& pdb_line)
     string_name= "HET_"+string_name;
     if (!atom_type_exists(string_name)) {
       std::string elem= internal::atom_element(pdb_line);
+      boost::trim(elem);
       Element e= get_element_table().get_element(elem);
       if (e == UNKNOWN_ELEMENT) {
         IMP_LOG(VERBOSE,"Unable to parse element from line: "
-                <<pdb_line << "\nSkipping.");
+                <<pdb_line << ": got \"" << elem << "\"\nSkipping.");
         return NULL;
       }
       atom_name=add_atom_type(string_name, e);
