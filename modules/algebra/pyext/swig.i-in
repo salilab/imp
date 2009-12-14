@@ -44,6 +44,7 @@ namespace multi_array_types {
 %include "IMP/algebra/geometric_alignment.h"
 %include "IMP/algebra/eigen_analysis.h"
 %include "IMP/algebra/Segment3D.h"
+%include "IMP/algebra/LinearFit.h"
 %include "IMP/algebra/ParabolicFit.h"
 %include "IMP/algebra/Plane3D.h"
 %include "IMP/algebra/Cylinder3D.h"
