@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RestraintSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="IMP_Schema.xsd">
 	<RigidBody>
-		<Restraint name="rigid_body_restraint">
-			<Particle id="Protein1"></Particle>
-			<Particle id="Protein2"></Particle>
-			<Particle id="Protein3"></Particle>
-			<Particle id="Protein4"></Particle>
-			<Particle id="Protein5"></Particle>
-			<Particle id="Protein6"></Particle>
-        	</Restraint>
+		<Restraint><Particle id="Protein1"/></Restraint>
+		<Restraint><Particle id="Protein2"/></Restraint>
+		<Restraint><Particle id="Protein3"/></Restraint>
+		<Restraint><Particle id="Protein4"/></Restraint>
+		<Restraint><Particle id="Protein5"/></Restraint>
+		<Restraint><Particle id="Protein6"/></Restraint>
     	</RigidBody>
 	<ExcludedVolume>
 		<Restraint name="excluded_volume_restraint">

@@ -267,7 +267,7 @@ class _RestraintRestraint(_RestraintNode):
         self.mhs = IMP.atom.Hierarchies()
         for child in self.child_restraints:
             self.mhs.append(child)
-        IMP.helper.set_rigid_bodies(self.mhs)
+        self.rigid_bodies = IMP.helper.set_rigid_bodies(self.mhs)
         return None
 
 
@@ -346,12 +346,13 @@ class _RestraintRestraint(_RestraintNode):
         _RestraintNode.create_restraint(self, repr, restraint_sets)
         if self.density_filename:
             mhs = IMP.atom.Hierarchies()
-            dmap = IMP.helper.load_em_density_map(self.density_filename,
+            self.dmap = IMP.helper.load_em_density_map(self.density_filename,
                            self.spacing, self.resolution)
+            self.dmap_header = self.dmap.get_header_writable()
             for child in self.child_restraints:
                 mhs.append(child)
             if mhs:
-                sef = IMP.helper.create_simple_em_fit(mhs, dmap)
+                sef = IMP.helper.create_simple_em_fit(mhs, self.dmap)
                 em_restraint = sef.get_restraint()
                 self.imp_restraint = em_restraint
                 return em_restraint
