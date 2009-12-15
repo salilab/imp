@@ -64,6 +64,9 @@ protected:
   // map that holds force_field parameters according to force_field atom types
   // key=force_field_atom_type, value=(epsilon,radius)
   std::map<String, std::pair<float, float> > force_field_2_vdW_;
+
+ private:
+  WarningContext warn_context_;
 };
 
 
