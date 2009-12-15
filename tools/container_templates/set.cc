@@ -44,7 +44,7 @@ GroupnameContainerSet
 
 bool
 GroupnameContainerSet
-::get_contains_classname(Value vt) const {
+::get_contains_classname(PassValue vt) const {
   for (GroupnameContainerConstIterator it= groupname_containers_begin();
        it != groupname_containers_end(); ++it) {
     if ((*it)->get_contains_classname(vt)) return true;

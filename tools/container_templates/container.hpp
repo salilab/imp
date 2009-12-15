@@ -77,7 +77,7 @@ public:
   /** \note This function may be linear. Be aware of the complexity
       bounds of your particular container.
    */
-  virtual bool get_contains_classname(Value p) const =0;
+  virtual bool get_contains_classname(PassValue v) const =0;
   //! return the number of classnames in the container
   /** \note this isn't always constant time
    */
@@ -177,6 +177,14 @@ public:
 
   //! Get all the Classnames from the container
   virtual ClassnamesTemp get_classnames() const=0;
+
+#ifndef IMP_DOXYGEN
+  Value get(unsigned int i) const {return get_classname(i);}
+  bool get_contains(PassValue v) const {
+    return get_contains_classname(v);
+  }
+  unsigned int get_number() const {return get_number_of_classnames();}
+#endif
 
   IMP_REF_COUNTED_DESTRUCTOR(GroupnameContainer)
 };

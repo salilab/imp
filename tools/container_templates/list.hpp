@@ -46,7 +46,7 @@ public:
      the list use these methods.
   */
   /**@{*/
-  void add_classname(Value vt);
+  void add_classname(PassValue vt);
   void add_classnames(const ClassnamesTemp &c);
   void set_classnames(ClassnamesTemp c);
   IMP_NO_DOXYGEN(void add_classnames(const Classnames &c) {

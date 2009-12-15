@@ -9,6 +9,8 @@
  */
 
 #include <IMP/core/internal/groupname_helpers.h>
+#include <IMP/GroupnameModifier.h>
+#include <IMP/GroupnameScore.h>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 void ListLikeGroupnameContainer::apply(const GroupnameModifier *sm) {
@@ -49,7 +51,7 @@ unsigned int ListLikeGroupnameContainer
   return data_.size();
 }
 bool ListLikeGroupnameContainer
-::get_contains_classname(Value vt) const {
+::get_contains_classname(PassValue vt) const {
   IMP_CHECK_OBJECT(this);
   return std::binary_search(data_.begin(), data_.end(), vt);
 }

@@ -2,8 +2,8 @@
 import sys
 import os
 
-def filter(name, value, storevalue,
-           scorename, args, fromargs, asargs,infile):
+def filter(name, value, passvalue, storevalue,
+           scorename, args, fromargs, asargs,decomp, arity, infile):
     cname= name.title().replace(' ', '')
     ucname= name.upper().replace(' ', '_') 
     lcname= name.lower().replace(' ', '_')
@@ -14,13 +14,16 @@ def filter(name, value, storevalue,
         .replace("Classname", cname) \
         .replace("classname", lcname) \
         .replace("StoreValue", storevalue)\
+        .replace("PassValue", passvalue) \
         .replace("Value", value) \
         .replace("Groupname", scorename) \
         .replace("GROUPNAME", scorename.upper()) \
+        .replace("DecomposeArguments", decomp)\
+        .replace("Arity", str(arity))\
         .replace("groupname", scorename.lower())
 
 
-def make_one(name, value, storevalue, multi, args, fromargs, asargs, ):
+def make_one(name, value, passvalue, storevalue, multi, args, fromargs, asargs, decomp, arity):
     path= os.getcwd()+"/"
     cname= name.title().replace(' ', '')
     lcvalue= value.lower().replace(' ', '_').replace('*','')
@@ -110,15 +113,20 @@ def make_one(name, value, storevalue, multi, args, fromargs, asargs, ):
         ifile= open(p[1], 'r')
         contents= ifile.read()
         print "writing " + p[0]
-        ofile.write(filter(name, value, storevalue, multi, args, fromargs, asargs, contents))
+        ofile.write(filter(name, value, passvalue, storevalue, multi, args, fromargs, asargs, decomp, arity, contents))
 
 def main():
-    make_one("particle", "Particle*", "Pointer<Particle>",
-             "Singleton", "Particle *a", "a", "a")
-    make_one("particle pair", "ParticlePair", "ParticlePair",
+    make_one("particle", "Particle*", "Particle*", "Pointer<Particle>",
+             "Singleton", "Particle *a", "a", "a", "v",1)
+    make_one("particle pair", "ParticlePair", "const ParticlePair&", "ParticlePair",
              "Pair", "Particle *a, Particle *b",
-             "ParticlePair(a,b)", "a,b")
-    #make_one("particle triplet", "ParticleTriplet", "Triplet", "Particle *a, Particle *b, Particle *c")
+             "ParticlePair(a,b)", "a,b", "v[0], v[1]",2)
+    make_one("particle triplet", "ParticleTriplet", "const ParticleTriplet&", "ParticleTriplet",
+             "Triplet", "Particle *a, Particle *b, Particle *c",
+             "ParticleTriplet(a,b,c)", "a,b,c", "v[0], v[1], v[2]",3)
+    make_one("particle quad", "ParticleQuad", "const ParticleQuad&", "ParticleQuad",
+             "Quad", "Particle *a, Particle *b, Particle *c, Particle *d",
+             "ParticleQuad(a,b,c,d)", "a,b,c,d", "v[0], v[1], v[2], v[3]",4)
 
   
 

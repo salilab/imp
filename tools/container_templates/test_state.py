@@ -9,19 +9,8 @@ import IMP.core
 import math
 
 
-def singleton_cmp(a,b):
+def compare(a,b):
     return cmp(a.get_name(), b.get_name())
-
-def pair_cmp(a,b):
-    v0= cmp(a[0].get_name(), b[0].get_name())
-    if v0 != 0: return v0
-    return cmp(a[1].get_name(), b[1].get_name())
-
-def triplet_cmp(a,b):
-    v0= cmp(a[0].get_name(), b[0].get_name())
-    if v0 != 0: return v0
-    return pair_cmp([a[1].get_name(), a[2].get_name()],
-                    [b[1].get_name(), b[2].get_name()])
 
 
 class SingletonTestModifier(IMP.SingletonModifier):
@@ -50,31 +39,20 @@ class PairTestModifier(IMP.PairModifier):
         self.k=k
     def show(self, fh):
         fh.write("Test Particle")
-    def apply(self, a0, a1=None, a2=None):
-        if type(a0) == type(a1):
-            a0.add_attribute(self.k, 1)
-            a1.add_attribute(self.k, 1)
+    def apply(self, a0, a2=None):
+        if type(a0) == type(IMP.ParticlePair()):
+            a0[0].add_attribute(self.k, 1)
+            a0[1].add_attribute(self.k, 1)
         else:
             for p in a0:
-                self.apply(p[0], p[1], a1)
+                self.apply(p, a2)
     def get_version_info(self):
         return 1
-    def get_input_particles(self, p, q):
-        return IMP.ParticlesTemp([p,q])
-    def get_output_particles(self, p, q):
-        return IMP.ParticlesTemp([p,q])
+    def get_input_particles(self, p):
+        return IMP.ParticlesTemp([p[0],p[1]])
+    def get_output_particles(self, p):
+        return IMP.ParticlesTemp([p[0],p[1]])
 
-
-#class TripletTestModifier(IMP.core.TripletModifier):
-#    def __init__(self, k):
-#        IMP.core.TripletModifier.__init__(self)
-#        self.k=k
-#    def show(self, j):
-#        print "Test Particle"
-#    def apply(self, p0, p1, p2):
-#        p0.add_attribute(self.k)
-#        p1.add_attribute(self.k)
-#        p2.add_attribute(self.k)
 
 def particle_has_attribute(p, k):
     return p.has_attribute(k)
@@ -104,22 +82,14 @@ class ClassnameContainerTest(IMP.test.TestCase):
         d1.set_coordinates(IMP.algebra.Vector3D(0,0,0))
         return IMP.ParticlePair(p0,p1)
 
-    def same_particle(self, a, b):
-        print str(a.get_name())+ " vs " + str(b.get_name())
+    def same(self, a,b):
         return a.get_name() == b.get_name()
-
-    def same_particle_pair(self, a,b):
-        print str(a[0].get_name())+ ", "\
-            + str(a[1].get_name()) + " vs " \
-            + str(b[0].get_name()) + ", "\
-            + str(b[1].get_name())
-        return self.same_particle(a[0], b[0]) and self.same_particle(a[1], b[1])
 
     def create_singleton_score_state(self, f, a, t):
         return IMP.core.SingletonScoreState(f, a, t)
 
     def create_pair_score_state(self, f, a, t):
-        return IMP.core.PairScoreState(f, a, t.first, t.second)
+        return IMP.core.PairScoreState(f, a, t)
 
     def create_particle_score(self):
         uf= IMP.core.Linear(0,1)

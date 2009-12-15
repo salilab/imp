@@ -37,7 +37,7 @@ public:
       stored Groupname and the Groupname.
    */
   GroupnameRestraint(GroupnameScore *ss,
-                     ClassnameArguments,
+                     PassValue vt,
                      std::string name="GroupnameRestraint %1%");
 
   IMP_INCREMENTAL_RESTRAINT(GroupnameRestraint, get_module_version_info());
