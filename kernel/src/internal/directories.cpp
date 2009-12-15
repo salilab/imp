@@ -11,7 +11,7 @@
 #include <IMP/config.h>
 
 #ifdef IMP_USE_BOOST_LIBS
-#include <boost/filesystem.hpp>
+#include <boost/filesystem/path.hpp>
 #endif
 
 #include <cstdlib>
