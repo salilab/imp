@@ -25,7 +25,7 @@ ExampleRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   for (PairContainer::ParticlePairIterator
        it= pc_->particle_pairs_begin();
        it != pc_->particle_pairs_end(); ++it) {
-    score += f_->evaluate(it->first, it->second, accum);
+    score += f_->evaluate(*it, accum);
   }
 
   return score;
@@ -40,8 +40,8 @@ ParticlesList ExampleRestraint::get_interacting_particles() const
        = pc_->particle_pairs_begin();
        it != pc_->particle_pairs_end(); ++it) {
     ParticlePair pp= *it;
-    ParticlesList all=f_->get_interacting_particles(pp[0],
-                                                    pp[1]);
+    ParticlesList all=f_->get_interacting_particles(ParticlePair(pp[0],
+                                                                 pp[1]));
     ret.insert(ret.end(), all.begin(), all.end());
   }
   return ret;
@@ -56,8 +56,7 @@ ParticlesTemp ExampleRestraint::get_input_particles() const
        = pc_->particle_pairs_begin();
        it != pc_->particle_pairs_end(); ++it) {
     ParticlePair pp= *it;
-    ParticlesTemp t= f_->get_input_particles(pp[0],
-                                            pp[1]);
+    ParticlesTemp t= f_->get_input_particles(pp);
     ret.insert(ret.end(), t.begin(), t.end());
   }
   return ret;
