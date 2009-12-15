@@ -44,31 +44,6 @@ IMP_REFCOUNT_RETURN_SINGLE(IMP::ScoreState)
 IMP_REFCOUNT_RETURN_SINGLE(IMP::OptimizerState)
 
 
-%ignore IMP::ParticlePair::operator[];
-%ignore IMP::ParticleTriplet::operator[];
-%extend IMP::ParticlePair {
-  Particle* __getitem__(unsigned int index) const {
-    return self->operator[](index);
-  }
-  void __setitem__(unsigned int index, Particle* val) {
-    self->operator[](index) = val;
-  }
-  int __len__() const {
-      return 2;
-  }
-}
-%extend IMP::ParticleTriplet {
-  Particle* __getitem__(unsigned int index) const {
-    return self->operator[](index);
-  }
-  void __setitem__(unsigned int index, Particle* val) {
-    self->operator[](index) = val;
-  }
-  int __len__() const {
-      return 3;
-  }
-}  
-
 namespace IMP {
   %typemap(out) std::pair<Float,Float> {
      PyObject *tup= PyTuple_New(2);
@@ -153,18 +128,25 @@ namespace IMP {
 %include "IMP/ScoreState.h"
 %include "IMP/OptimizerState.h"
 %include "IMP/Model.h"
-%include "IMP/PairScore.h"
 %include "IMP/Refiner.h"
-%include "IMP/SingletonScore.h"
-%include "IMP/TripletScore.h"
 %include "IMP_random.i"
 %include "IMP/Optimizer.h"
+%include "IMP/SingletonScore.h"
+%include "IMP/PairScore.h"
 %include "IMP/SingletonModifier.h"
 %include "IMP/PairModifier.h"
 %include "IMP/SingletonContainer.h"
 %include "IMP/PairContainer.h"
 %include "IMP/SingletonFilter.h"
 %include "IMP/PairFilter.h"
+%include "IMP/TripletScore.h"
+%include "IMP/QuadScore.h"
+%include "IMP/TripletModifier.h"
+%include "IMP/QuadModifier.h"
+%include "IMP/TripletContainer.h"
+%include "IMP/QuadContainer.h"
+%include "IMP/TripletFilter.h"
+%include "IMP/QuadFilter.h"
 
 
 namespace IMP {
@@ -172,9 +154,6 @@ namespace IMP {
   %template(ParticlesTemp) ::std::vector<Particle*>;
   %template(ObjectsTemp) ::std::vector<Object*>;
   %template(ParticlesList) ::std::vector<ParticlesTemp>;
-  %template(ParticlesPairsTemp) ::std::vector<ParticlePair>;
-  %template(ParticlePairs) ::IMP::VectorOfRefCounted< ParticlePair, RefCountParticlePair>;
-  %template(ParticleTriplets) ::IMP::VectorOfRefCounted< ParticleTriplet, RefCountParticleTriplet>;
   %template(Restraints) ::IMP::VectorOfRefCounted< Restraint*>;
   %template(ScoreStates) ::IMP::VectorOfRefCounted< ScoreState*>;
   %template(OptimizerStates) ::IMP::VectorOfRefCounted< OptimizerState*>;
@@ -191,4 +170,14 @@ namespace IMP {
   %template(PairContainers) ::IMP::VectorOfRefCounted<PairContainer*>;
   %template(float_pair) ::std::pair<float,float>;
   %template(double_pair) ::std::pair<double, double>;
+
+  %template(ParticlePair) ::IMP::ParticleTuple<2>;
+  %template(ParticlePairsTemp) ::std::vector< ParticlePair >;
+  %template(ParticlePairs) ::IMP::VectorOfRefCounted< ParticlePair, RefCountParticleTuple<2> >;
+  %template(ParticleTriplet) ::IMP::ParticleTuple<3>;
+  %template(ParticleTripletsTemp) ::std::vector< ParticleTriplet >;
+  %template(ParticleTriplets) ::IMP::VectorOfRefCounted< ParticleTriplet, RefCountParticleTuple<3> >;
+  %template(ParticleQuad) ::IMP::ParticleTuple<4>;
+  %template(ParticleQuadsTemp) ::std::vector< ParticleQuad >;
+  %template(ParticleQuads) ::IMP::VectorOfRefCounted< ParticleQuad, RefCountParticleTuple<4> >;
 }

@@ -36,7 +36,7 @@ namespace {
     MS bestn(n);
     for (It it= b; it != e; ++it) {
       double score
-      = IMP::internal::ContainerTraits<ParticlePair>::evaluate(f, *it, NULL);
+        = f->evaluate(*it, NULL);
 
       if (bestn.can_insert(score)) {
         bestn.insert(score, it);
@@ -58,8 +58,7 @@ double MaximumPairScoreRestraint
   double score=0;
   for (unsigned int i=0; i< bestn.size(); ++i) {
     if (da) {
-      IMP::internal::ContainerTraits<ParticlePair>::evaluate(f_.get(),
-                                                     *bestn[i].second, da);
+      f_->evaluate(*bestn[i].second, da);
     }
     score+= bestn[i].first;
   }
@@ -82,8 +81,7 @@ ParticlesList MaximumPairScoreRestraint::get_interacting_particles() const
                              c_->particle_pairs_end(), f_.get(), n_);
   ParticlesList ret;
   for (unsigned int i=0; i< bestn.size(); ++i) {
-    ParticlesList pt=IMP::internal::get_interacting_particles(*bestn[i].second,
-                                                              f_.get());
+    ParticlesList pt=f_->get_interacting_particles(*bestn[i].second);
     if (!pt.empty()) {
       ret.push_back(IMP::internal::get_union(pt));
     }
@@ -94,7 +92,7 @@ ParticlesList MaximumPairScoreRestraint::get_interacting_particles() const
 
 ParticlesTemp MaximumPairScoreRestraint::get_input_particles() const
 {
-  return IMP::internal::get_input_particles(c_, f_.get());
+  return IMP::internal::get_input_particles(c_.get(), f_.get());
 }
 
 

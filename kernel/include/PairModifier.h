@@ -39,14 +39,14 @@ public:
   PairModifier(std::string name="PairModifier %1%");
 
   /** Apply the function to a single value*/
-  virtual void apply(Particle *a, Particle *b,
+  virtual void apply(const ParticlePair& vt,
                      DerivativeAccumulator &da) const {
     IMP_FAILURE("This PairModifier must be called without a"
                 << " DerivativeAccumulator.");
   }
 
   /** Apply the function to a single value*/
-  virtual void apply(Particle *a, Particle *b) const {
+  virtual void apply(const ParticlePair& vt) const {
     IMP_FAILURE("This PairModifier must be called with a"
                 << " DerivativeAccumulator.");
   }
@@ -67,14 +67,14 @@ public:
   /** Get the set of interactions induced by applying to the
       argument.*/
   virtual ParticlesList
-    get_interacting_particles(Particle *a, Particle *b) const =0;
+    get_interacting_particles(const ParticlePair& vt) const =0;
 
   /** Get the set of particles read when applied to the arguments.*/
   virtual ParticlesTemp
-    get_input_particles(Particle *a, Particle *b) const =0;
+    get_input_particles(const ParticlePair& vt) const =0;
   /** Get the set of particles modifier when applied to the arguments.*/
   virtual ParticlesTemp
-    get_output_particles(Particle *a, Particle *b) const =0;
+    get_output_particles(const ParticlePair& vt) const =0;
 };
 
 IMP_OUTPUT_OPERATOR(PairModifier)
@@ -114,9 +114,9 @@ public:
   }
   void operator()( ParticlePair p) const {
     if (da_) {
-      IMP::internal::ContainerTraits<ParticlePair>::apply(f_.get(), p, *da_);
+      f_->apply(p, *da_);
     } else {
-      IMP::internal::ContainerTraits<ParticlePair>::apply(f_.get(), p);
+      f_->apply(p);
     }
   }
 };

@@ -36,8 +36,7 @@ ListPairContainer
 {
   if (ps.empty()) return;
   for (unsigned int i=0; i< ps.size(); ++i) {
-    IMP_USAGE_CHECK(IMP::internal::ContainerTraits<ParticlePair>
-                    ::is_valid(ps[i]),
+    IMP_USAGE_CHECK(IMP::internal::is_valid(ps[i]),
                     "Passed ParticlePair cannot be NULL (or None)",
                     UsageException);
     IMP_USAGE_CHECK(IMP::internal::get_model(ps[i])
@@ -83,8 +82,8 @@ void ListPairContainer::clear_particle_pairs() {
 }
 
 
-void ListPairContainer::add_particle_pair(ParticlePair vt) {
-  IMP_USAGE_CHECK(IMP::internal::ContainerTraits<ParticlePair>::is_valid(vt),
+void ListPairContainer::add_particle_pair(const ParticlePair& vt) {
+  IMP_USAGE_CHECK(IMP::internal::is_valid(vt),
                   "Passed ParticlePair cannot be NULL (or None)",
                   UsageException);
 
@@ -94,11 +93,13 @@ void ListPairContainer::add_particle_pair(ParticlePair vt) {
   add_to_list(vt);
   IMP_USAGE_CHECK(get_is_added_or_removed_container()
                   || !get_removed_pairs_container()
-                  ->get_contains_particle_pair(vt),
+                  ->get_contains(vt),
                   "You cannot remove and add the same item in one time step.",
                   ParticlePairException);
 }
-void ListPairContainer::add_particle_pairs(const ParticlePairsTemp &c) {
+
+void
+ListPairContainer::add_particle_pairs(const ParticlePairsTemp &c) {
   if (c.empty()) return;
   if (!get_has_model() && !get_is_added_or_removed_container()) {
     set_model(IMP::internal::get_model(c[0]));
@@ -107,13 +108,12 @@ void ListPairContainer::add_particle_pairs(const ParticlePairsTemp &c) {
   add_to_list(cp);
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i=0; i< c.size(); ++i) {
-      IMP_USAGE_CHECK(IMP::internal::ContainerTraits<ParticlePair>
-                      ::is_valid(c[i]),
+      IMP_USAGE_CHECK(IMP::internal::is_valid(c[i]),
                     "Passed ParticlePair cannot be NULL (or None)",
                     UsageException);
       IMP_USAGE_CHECK(get_is_added_or_removed_container()
                       || !get_removed_pairs_container()
-                      ->get_contains_particle_pair(c[i]),
+                      ->get_contains(c[i]),
             "You cannot remove and add the same item in one time step.",
                       ParticlePairException);
 

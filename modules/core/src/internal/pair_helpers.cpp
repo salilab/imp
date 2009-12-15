@@ -9,6 +9,8 @@
  */
 
 #include <IMP/core/internal/pair_helpers.h>
+#include <IMP/PairModifier.h>
+#include <IMP/PairScore.h>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 void ListLikePairContainer::apply(const PairModifier *sm) {
@@ -49,7 +51,7 @@ unsigned int ListLikePairContainer
   return data_.size();
 }
 bool ListLikePairContainer
-::get_contains_particle_pair(ParticlePair vt) const {
+::get_contains_particle_pair(const ParticlePair& vt) const {
   IMP_CHECK_OBJECT(this);
   return std::binary_search(data_.begin(), data_.end(), vt);
 }

@@ -22,149 +22,75 @@
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 
-template <class P>
-struct ContainerTraits {
-  static const bool is_singleton=false;
-};
 
-template <>
-struct ContainerTraits<Particle> {
-  static const bool is_singleton=true;
-  static ParticlesTemp create_set(Particle*p) {return ParticlesTemp();}
-  static Float evaluate(const SingletonScore *ss,
-                        Particle *p,
-                        DerivativeAccumulator *ac) {
-    return ss->evaluate(p, ac);
+inline bool is_valid(Particle *p) {
+  return p;
+}
+template <unsigned int D>
+bool is_valid(const ParticleTuple<D> &p) {
+  for (unsigned int i=0; i< D; ++i) {
+    if (!p[i]) return false;
   }
-  static Float evaluate_change(const SingletonScore *ss,
-                               Particle *p,
-                               DerivativeAccumulator *ac) {
-    return ss->evaluate_change(p, ac);
-  }
-  template <class SM>
-  static void apply(const SM *ss,
-                    Particle *p) {
-    ss->apply(p);
-  }
-  template <class SM>
-  static void apply(const SM *ss,
-                    Particle *p,
-                    DerivativeAccumulator da) {
-    ss->apply(p, da);
-  }
-  static bool is_inactive(const Particle* p) {
-    return !p->get_is_active();
-  }
-  struct IsInactive{
-    bool operator()(const Particle* p) const {
-      return is_inactive(p);
-    }
-  };
-  static bool is_dirty(const Particle *p) {
-    return p->get_is_changed();
-  }
-  static bool is_valid(const Particle* p) {
-    return p;
-  }
-};
+  return true;
+}
 
-template <>
-struct ContainerTraits<ParticlePair> {
-  static const bool is_singleton=false;
-  static ParticlesTemp create_set(ParticlePair p) {
-    ParticlesTemp ret;
-    ret.push_back(p.first);
-    ret.push_back(p.second);
-    return ret;
+inline bool is_dirty(Particle *p) {
+  return !p->get_is_changed();
+}
+template <unsigned int D>
+bool is_dirty(const ParticleTuple<D> &p) {
+  for (unsigned int i=0; i< D; ++i) {
+    if (p[i]->get_is_changed()) return true;
   }
-  static Float evaluate(const PairScore *ss,
-                        ParticlePair p,
-                        DerivativeAccumulator *ac) {
-    return ss->evaluate(p.first, p.second, ac);
-  }
-  static Float evaluate_change(const PairScore *ss,
-                               ParticlePair p,
-                               DerivativeAccumulator *ac) {
-    return ss->evaluate_change(p.first, p.second, ac);
-  }
-  template <class PM>
-  static void apply(const PM *ss,
-                    const ParticlePair &p) {
-    ss->apply(p.first, p.second);
-  }
-  template <class PM>
-  static void apply(const PM *ss,
-                    const ParticlePair &p,
-                    DerivativeAccumulator da) {
-    ss->apply(p.first, p.second, da);
-  }
-  static bool is_inactive(const ParticlePair &p) {
-    return !p[0]->get_is_active() || !p[1]->get_is_active();
-  }
-  struct IsInactive{
-    bool operator()(const ParticlePair &p) const {
-      return is_inactive(p);
-    }
-  };
-  static bool is_dirty(const ParticlePair &p) {
-    return p[0]->get_is_changed()
-      || p[1]->get_is_changed();
-  }
-  static bool is_valid(const ParticlePair &p) {
-    return p[0] && p[1];
-  }
-};
+  return false;
+}
 
-/*template <>
-  struct ContainerTraits<ParticleTriplet> {
-  static const bool is_singleton=false;
-  static Particles create_set(ParticleTriplet p) {
-  Particles ret;
-  ret.push_back(p.first);
-  ret.push_back(p.second);
-  ret.push_back(p.third);
+inline Particle* prechange(Particle*p) {
+  return p->get_prechange_particle();
+}
+
+template <unsigned int D>
+ParticleTuple<D> prechange(const ParticleTuple<D> &p) {
+  ParticleTuple<D> ret;
+  for (unsigned int i=0; i< D; ++i) {
+    ret[i]= p[i]->get_prechange_particle();
+  }
   return ret;
-  }
-  static Float evaluate(TripletScore *ss,
-  ParticleTriplet p,
-  DerivativeAccumulator *ac) {
-  return ss->evaluate(p.first, p.second, p.third, ac);
-  }
-  static void apply(TripletModifier *ss,
-  const ParticleTriplet &p) {
-  ss->apply(p.first, p.second, p.third);
-  }
+}
 
-  };*/
+inline bool is_inactive(const Particle *p) {
+  return !p->get_is_active();
+}
+template <unsigned int D>
+bool is_inactive(const ParticleTuple<D> &p) {
+  for (unsigned int i=0; i< D; ++i) {
+    if (!p[i]->get_is_active()) return true;
+  }
+  return false;
+}
+
+struct IsInactive {
+  template <class T>
+  bool operator()(const T& t) {
+    return is_inactive(t);
+  }
+};
 
 inline const Particle& streamable(Particle *p) {
   return *p;
 }
 
-inline const ParticlePair& streamable(const ParticlePair &p) {
+template <unsigned int D>
+inline const ParticleTuple<D>& streamable(const ParticleTuple<D> &p) {
   return p;
 }
 
-template <class F>
-ParticlesList get_interacting_particles(SingletonContainer *sc,
+template <class C, class F>
+ParticlesList get_interacting_particles(C *sc,
                                         F *f) {
   ParticlesList ret;
-  for (unsigned int i=0; i< sc->get_number_of_particles(); ++i) {
-    ParticlesList t= f->get_interacting_particles(sc->get_particle(i));
-    if (!t.empty()) {
-      ret.push_back(get_union(t));
-    }
-  }
-  return ret;
-}
-
-template <class F>
-ParticlesList get_interacting_particles(PairContainer *sc,
-                                        F *f) {
-  ParticlesList ret;
-  for (unsigned int i=0; i< sc->get_number_of_particle_pairs(); ++i) {
-    ParticlePair pp=sc->get_particle_pair(i);
-    ParticlesList t= f->get_interacting_particles(pp[0], pp[1]);
+  for (unsigned int i=0; i< sc->get_number(); ++i) {
+    ParticlesList t= f->get_interacting_particles(sc->get(i));
     if (!t.empty()) {
       ret.push_back(get_union(t));
     }
@@ -173,114 +99,37 @@ ParticlesList get_interacting_particles(PairContainer *sc,
 }
 
 
-template <class F>
-ParticlesList get_interacting_particles(Particle *p,
-                                        F *f) {
-  ParticlesList t= f->get_interacting_particles(p);
-  return t;
-}
-
-template <class F>
-ParticlesList get_interacting_particles(ParticlePair p,
-                                        F *f) {
-  ParticlesList t= f->get_interacting_particles(p[0], p[1]);
-  return t;
-}
-
-
-
-
-template <class F>
-ParticlesTemp get_input_particles(SingletonContainer *sc,
+template <class C, class F>
+ParticlesTemp get_input_particles(C *sc,
                                   F *f) {
   ParticlesTemp ret;
-  for (unsigned int i=0; i< sc->get_number_of_particles(); ++i) {
-    ParticlesTemp t= f->get_input_particles(sc->get_particle(i));
-    ret.insert(ret.end(), t.begin(), t.end());
-  }
-  return ret;
-}
-
-template <class F>
-ParticlesTemp get_input_particles(PairContainer *sc,
-                                  F *f) {
-  ParticlesTemp ret;
-  for (unsigned int i=0; i< sc->get_number_of_particle_pairs(); ++i) {
-    ParticlePair pp=sc->get_particle_pair(i);
-    ParticlesTemp t= f->get_input_particles(pp[0], pp[1]);
+  for (unsigned int i=0; i< sc->get_number(); ++i) {
+    ParticlesTemp t= f->get_input_particles(sc->get(i));
     ret.insert(ret.end(), t.begin(), t.end());
   }
   return ret;
 }
 
 
-template <class F>
-ParticlesTemp get_input_particles(Particle *p,
-                                  F *f) {
-  ParticlesTemp t= f->get_input_particles(p);
-  return t;
-}
 
-
-
-
-template <class F>
-ParticlesTemp get_input_particles(ParticlePair p,
-                                  F *f) {
-  ParticlesTemp t= f->get_input_particles(p[0], p[1]);
-  return t;
-}
-
-
-
-
-
-template <class F>
-ParticlesTemp get_output_particles(SingletonContainer *sc,
+template <class C, class F>
+ParticlesTemp get_output_particles(C *sc,
                                    F *f) {
   ParticlesTemp ret;
-  for (unsigned int i=0; i< sc->get_number_of_particles(); ++i) {
-    ParticlesTemp t= f->get_output_particles(sc->get_particle(i));
+  for (unsigned int i=0; i< sc->get_number(); ++i) {
+    ParticlesTemp t= f->get_output_particles(sc->get(i));
     ret.insert(ret.end(), t.begin(), t.end());
   }
   return ret;
 }
 
-template <class F>
-ParticlesTemp get_output_particles(PairContainer *sc,
-                                   F *f) {
-  ParticlesTemp ret;
-  for (unsigned int i=0; i< sc->get_number_of_particle_pairs(); ++i) {
-    ParticlePair pp=sc->get_particle_pair(i);
-    ParticlesTemp t= f->get_output_particles(pp[0], pp[1]);
-    ret.insert(ret.end(), t.begin(), t.end());
-  }
-  return ret;
-}
-
-
-template <class F>
-ParticlesTemp get_output_particles(Particle *p,
-                                   F *f) {
-  ParticlesTemp t= f->get_output_particles(p);
-  return t;
-}
-
-
-
-
-template <class F>
-ParticlesTemp get_output_particles(ParticlePair p,
-                                   F *f) {
-  ParticlesTemp t= f->get_output_particles(p[0], p[1]);
-  return t;
-}
 
 inline Model *get_model(Particle*p) {
   return p->get_model();
 }
 
-inline Model *get_model(ParticlePair p) {
+template <unsigned int D>
+inline Model *get_model(const ParticleTuple<D>& p) {
   return p[0]->get_model();
 }
 
@@ -288,7 +137,8 @@ inline std::string get_name(Particle*p) {
   return p->get_name();
 }
 
-inline std::string get_name(ParticlePair p) {
+template <unsigned int D>
+inline std::string get_name(const ParticleTuple<D>& p) {
   return p.get_name();
 }
 
@@ -354,34 +204,34 @@ inline std::string get_name(ParticlePair p) {
 
 #define IMP_PAIR_CONTAINER_METHODS_FROM_FOREACH(Name)                   \
   void Name::apply(const PairModifier *sm) {                            \
-    FOREACH(sm->apply(a,b));                                            \
+    FOREACH(sm->apply(p));                                              \
   }                                                                     \
   void Name::apply(const PairModifier *sm,                              \
                    DerivativeAccumulator &da) {                         \
-    FOREACH(sm->apply(a,b, da));                                        \
+    FOREACH(sm->apply(p, da));                                          \
   }                                                                     \
   double Name::evaluate(const PairScore *s,                             \
                         DerivativeAccumulator *da) const {              \
     double score=0;                                                     \
-    FOREACH( score+=s->evaluate(a,b, da));                              \
+    FOREACH( score+=s->evaluate(p, da));                                \
     return score;                                                       \
   }                                                                     \
   double Name::evaluate_change(const PairScore *s,                      \
                                DerivativeAccumulator *da) const {       \
     double score=0;                                                     \
-    FOREACH(score+=s->evaluate_change(a, b, da));                       \
+    FOREACH(score+=s->evaluate_change(p, da));                          \
     return score;                                                       \
   }                                                                     \
   double Name::evaluate_prechange(const PairScore *s,                   \
                                   DerivativeAccumulator *da) const {    \
     double score=0;                                                     \
-    FOREACH(score+=s->evaluate_prechange(a, b, da));                    \
+    FOREACH(score+=s->evaluate_prechange(p, da));                       \
     return score;                                                       \
   }                                                                     \
   ParticlePairsTemp Name::get_particle_pairs() const {                  \
     ParticlePairsTemp ret;                                              \
     ret.reserve(Name::get_number_of_particle_pairs());                  \
-    FOREACH(ret.push_back(ParticlePair(a,b)));                          \
+    FOREACH(ret.push_back(p));                                          \
     return ret;                                                         \
   }                                                                     \
 

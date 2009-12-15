@@ -44,7 +44,7 @@ PairContainerSet
 
 bool
 PairContainerSet
-::get_contains_particle_pair(ParticlePair vt) const {
+::get_contains_particle_pair(const ParticlePair& vt) const {
   for (PairContainerConstIterator it= pair_containers_begin();
        it != pair_containers_end(); ++it) {
     if ((*it)->get_contains_particle_pair(vt)) return true;

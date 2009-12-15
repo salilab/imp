@@ -17,9 +17,9 @@ IMPCORE_BEGIN_NAMESPACE
 
 PairScoreState::PairScoreState(PairModifier *before,
                                          PairModifier *after,
-                                         Particle *a, Particle *b,
+                                         const ParticlePair& vt,
                                          std::string name):
-  ScoreState(name), v_(ParticlePair(a,b)){
+  ScoreState(name), v_(vt){
   if (before) f_=before;
   if (after) af_=after;
 }
@@ -31,8 +31,7 @@ void PairScoreState::do_before_evaluate()
   if (!f_) return;
   IMP_LOG(TERSE, "Begin PairsScoreState::update" << std::endl);
   IMP_CHECK_OBJECT(f_);
-  IMP::internal::ContainerTraits<ParticlePair>
-    ::apply(f_.get(), v_);
+  f_->apply(v_);
   IMP_LOG(TERSE, "End PairsScoreState::update" << std::endl);
 }
 
@@ -43,16 +42,15 @@ void PairScoreState::do_after_evaluate(DerivativeAccumulator *da)
   IMP_LOG(TERSE, "Begin PairsScoreState::after_evaluate" << std::endl);
   IMP_CHECK_OBJECT(af_);
   if (da) {
-    IMP::internal::ContainerTraits<ParticlePair>
-      ::apply(af_.get(), v_, *da);
+    af_->apply(v_, *da);
   }
   IMP_LOG(TERSE, "End PairsScoreState::after_evaluate" << std::endl);
 }
 
 ParticlesList PairScoreState::get_interacting_particles() const {
   ParticlesList ret0, ret1;
-  if (f_) ret0= IMP::internal::get_interacting_particles(v_, f_.get());
-  if (af_) ret1= IMP::internal::get_interacting_particles(v_, af_.get());
+  if (f_) ret0= f_->get_interacting_particles(v_);
+  if (af_) ret1= af_->get_interacting_particles(v_);
   ret0.insert(ret0.end(), ret1.begin(), ret1.end());
   return ret0;
 }
@@ -68,10 +66,10 @@ ObjectsTemp PairScoreState::get_output_objects() const {
 ParticlesTemp PairScoreState::get_input_particles() const {
   ParticlesTemp ret;
   if (f_) {
-    ret= IMP::internal::get_input_particles(v_, f_.get());
+    ret= f_->get_input_particles(v_);
     IMP_IF_CHECK(USAGE) {
       if (af_) {
-        ParticlesTemp oret= IMP::internal::get_output_particles(v_, af_.get());
+        ParticlesTemp oret= af_->get_input_particles(v_);
         std::sort(ret.begin(), ret.end());
         std::sort(oret.begin(), oret.end());
         ParticlesTemp t;
@@ -84,7 +82,7 @@ ParticlesTemp PairScoreState::get_input_particles() const {
       }
     }
   } else {
-    ret= IMP::internal::get_output_particles(v_, af_.get());
+    ret= af_->get_output_particles(v_);
   }
   return ret;
 }
@@ -92,11 +90,11 @@ ParticlesTemp PairScoreState::get_input_particles() const {
 ParticlesTemp PairScoreState::get_output_particles() const {
   ParticlesTemp ret;
   if (f_) {
-    ret= IMP::internal::get_output_particles(v_, f_.get());
+    ret= f_->get_output_particles(v_);
     IMP_IF_CHECK(USAGE) {
       if (af_) {
-        ParticlesTemp oret= IMP::internal::get_input_particles(v_, af_.get());
-        ParticlesTemp iret=IMP::internal::get_input_particles(v_, f_.get());
+        ParticlesTemp oret= af_->get_input_particles(v_);
+        ParticlesTemp iret=f_->get_input_particles(v_);
         iret.insert(iret.end(), ret.begin(), ret.end());
         std::sort(iret.begin(), iret.end());
         std::sort(oret.begin(), oret.end());
@@ -111,7 +109,7 @@ ParticlesTemp PairScoreState::get_output_particles() const {
       }
     }
   } else {
-    ret= IMP::internal::get_input_particles(v_, af_.get());
+    ret= af_->get_input_particles(v_);
   }
   return ret;
 }

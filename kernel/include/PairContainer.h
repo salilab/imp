@@ -77,7 +77,7 @@ public:
   /** \note This function may be linear. Be aware of the complexity
       bounds of your particular container.
    */
-  virtual bool get_contains_particle_pair(ParticlePair p) const =0;
+  virtual bool get_contains_particle_pair(const ParticlePair& v) const =0;
   //! return the number of particle_pairs in the container
   /** \note this isn't always constant time
    */
@@ -177,6 +177,14 @@ public:
 
   //! Get all the ParticlePairs from the container
   virtual ParticlePairsTemp get_particle_pairs() const=0;
+
+#ifndef IMP_DOXYGEN
+  ParticlePair get(unsigned int i) const {return get_particle_pair(i);}
+  bool get_contains(const ParticlePair& v) const {
+    return get_contains_particle_pair(v);
+  }
+  unsigned int get_number() const {return get_number_of_particle_pairs();}
+#endif
 
   IMP_REF_COUNTED_DESTRUCTOR(PairContainer)
 };

@@ -9,6 +9,8 @@
  */
 
 #include <IMP/core/internal/singleton_helpers.h>
+#include <IMP/SingletonModifier.h>
+#include <IMP/SingletonScore.h>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 void ListLikeSingletonContainer::apply(const SingletonModifier *sm) {

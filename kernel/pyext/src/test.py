@@ -276,7 +276,7 @@ class ConstPairScore(IMP.PairScore):
     def __init__(self, v):
         IMP.PairScore.__init__(self)
         self.v=v
-    def evaluate(self, pa, pb, da):
+    def evaluate(self, p, da):
         return self.v
     def get_version_info(self):
         return IMP.VersionInfo("Me", "0.5")
@@ -288,8 +288,8 @@ class LogPairScore(IMP.PairScore):
     def __init__(self, v):
         IMP.PairScore.__init__(self)
         self._log=[]
-    def evaluate(self, pa, pb, da):
-        self._log.append((pa,pb))
+    def evaluate(self, p, da):
+        self._log.append(p)
         return 1
     def get_log(self):
         return self._log

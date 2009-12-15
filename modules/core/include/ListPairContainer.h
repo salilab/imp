@@ -46,7 +46,7 @@ public:
      the list use these methods.
   */
   /**@{*/
-  void add_particle_pair(ParticlePair vt);
+  void add_particle_pair(const ParticlePair& vt);
   void add_particle_pairs(const ParticlePairsTemp &c);
   void set_particle_pairs(ParticlePairsTemp c);
   IMP_NO_DOXYGEN(void add_particle_pairs(const ParticlePairs &c) {

@@ -10,7 +10,7 @@ class Test(IMP.test.TestCase):
 
 
     def test_rops(self):
-        """Checking refine once pair score"""
+        """Checking refine pairs pair score"""
         IMP.set_log_level(IMP.VERBOSE)
         m= IMP.Model()
         pp= IMP.Particle(m)
@@ -24,7 +24,13 @@ class Test(IMP.test.TestCase):
         pr= IMP.core.ChildrenRefiner(IMP.core.Hierarchy.get_default_traits())
         cps= IMP.test.ConstPairScore(1)
         rps= IMP.core.RefinedPairsPairScore(pr, cps)
-        self.assertEqual(rps.evaluate(pp, pp, None), 100)
+        ppp=IMP.ParticlePair(pp, pp)
+        print type(rps)
+        print type(rps.evaluate)
+        da=IMP.DerivativeAccumulator();
+        print type(pp)
+        print type(ppp)
+        self.assertEqual(rps.evaluate(pp, pp, da), 100)
 
 
 

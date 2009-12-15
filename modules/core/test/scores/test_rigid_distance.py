@@ -32,7 +32,7 @@ class Test(IMP.test.TestCase):
         bp=None
         for l0 in IMP.core.get_leaves(p0):
             for l1 in IMP.core.get_leaves(p1):
-                d= sdps.evaluate(l0.get_particle(), l1.get_particle(), None)
+                d= sdps.evaluate(IMP.ParticlePair(l0.get_particle(), l1.get_particle()), None)
                 if d< dm:
                     dm=d
         self.assertInTolerance(v, dm, .1)
@@ -49,11 +49,11 @@ class Test(IMP.test.TestCase):
         IMP.atom.rigid_body_setup_hierarchy(p0)
         sdps= IMP.core.SphereDistancePairScore(IMP.core.Linear(0,1))
         rdps= IMP.core.RigidBodyDistancePairScore(sdps, IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits()))
-        v= rdps.evaluate(p0.get_particle(), p1, None)
+        v= rdps.evaluate(IMP.ParticlePair(p0.get_particle(), p1), None)
         dm= 1000000
         bp=None
         for l0 in IMP.core.get_leaves(p0):
-            d= sdps.evaluate(l0.get_particle(), p1, None)
+            d= sdps.evaluate(IMP.ParticlePair(l0.get_particle(), p1), None)
             if d< dm:
                 dm=d
         self.assertInTolerance(v, dm, .1)

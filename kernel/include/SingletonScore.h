@@ -15,6 +15,7 @@
 #include "Interaction.h"
 #include "Particle.h"
 #include "DerivativeAccumulator.h"
+#include "internal/container_helpers.h"
 
 IMP_BEGIN_NAMESPACE
 
@@ -31,8 +32,16 @@ class IMPEXPORT SingletonScore : public Object
 public:
   SingletonScore(std::string name="SingletonScore %1%");
   //! Compute the score and the derivative if needed.
-  virtual double evaluate(Particle *a,
+  virtual double evaluate(Particle* vt,
                           DerivativeAccumulator *da) const = 0;
+
+#if !defined(IMP_DOXYGEN) && 1 != 1
+  // backwards compatibility
+  virtual double evaluate(Particle *a,
+                          DerivativeAccumulator *da) const {
+    return evaluate(Particle(a), da);
+  }
+#endif
 
   /** An implementations
       for this is provided by the IMP_SINGLETON_SCORE,
@@ -48,12 +57,12 @@ public:
       IMP_PAIR_SCORE macros.
       @{
   */
-  virtual double evaluate_change(Particle *a,
+  virtual double evaluate_change(Particle* vt,
                                  DerivativeAccumulator *da) const = 0;
 
   virtual double evaluate_change(const ParticlesTemp &o,
                                  DerivativeAccumulator *da) const = 0;
-  virtual double evaluate_prechange(Particle *a,
+  virtual double evaluate_prechange(Particle* vt,
                                     DerivativeAccumulator *da) const = 0;
   virtual double evaluate_prechange(const ParticlesTemp &o,
                                     DerivativeAccumulator *da) const = 0;
@@ -63,11 +72,11 @@ public:
   /** Get the set of interaction induced by applying to the
       argument. */
   virtual ParticlesList
-    get_interacting_particles(Particle *a) const =0;
+    get_interacting_particles(Particle* vt) const =0;
 
   /** Get the set of particles read when applied to the arguments. */
   virtual ParticlesTemp
-    get_input_particles(Particle *a) const =0;
+    get_input_particles(Particle* vt) const =0;
 
   IMP_REF_COUNTED_DESTRUCTOR(SingletonScore)
 };

@@ -21,7 +21,7 @@ void CommonEndpointPairFilter::show(std::ostream &out) const {
 }
 
 bool CommonEndpointPairFilter
-::get_contains_particle_pair(ParticlePair p) const {
+::get_contains_particle_pair(const ParticlePair& p) const {
   if (!IMP::atom::Bond::particle_is_instance(p[0])
       || !IMP::atom::Bond::particle_is_instance(p[1])) {
     return false;
@@ -37,7 +37,7 @@ bool CommonEndpointPairFilter
 
 
 ParticlesTemp
-CommonEndpointPairFilter::get_input_particles(ParticlePair pt)
+CommonEndpointPairFilter::get_input_particles(const ParticlePair& pt)
   const {
   ParticlesTemp ret;
   ret.reserve(3);
@@ -57,7 +57,7 @@ CommonEndpointPairFilter::get_input_particles(ParticlePair pt)
 }
 
 ObjectsTemp
-CommonEndpointPairFilter::get_input_objects(ParticlePair pt) const {
+CommonEndpointPairFilter::get_input_objects(const ParticlePair& pt) const {
   return ObjectsTemp();
 }
 

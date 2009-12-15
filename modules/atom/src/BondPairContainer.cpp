@@ -13,9 +13,7 @@
 #define FOREACH(expr)\
   unsigned int sz= BondPairContainer::get_number_of_particle_pairs();   \
   for (unsigned int i=0; i< sz; ++i) {                                  \
-    ParticlePair pp= BondPairContainer::get_particle_pair(i);           \
-    Particle *a= pp[0];                                                 \
-    Particle *b= pp[1];                                                 \
+    ParticlePair p= BondPairContainer::get_particle_pair(i);           \
     expr;                                                               \
   }
 
@@ -34,14 +32,14 @@ BondPairContainer
 }
 
 bool BondPairContainer
-::get_contains_particle_pair(ParticlePair pp) const {
-  if (!Bonded::particle_is_instance(pp.first)
-      || ! Bonded::particle_is_instance(pp.second)) {
+::get_contains_particle_pair(const ParticlePair& pp) const {
+  if (!Bonded::particle_is_instance(pp[0])
+      || ! Bonded::particle_is_instance(pp[1])) {
     return false;
   }
 
-  Bonded ba(pp.first);
-  Bonded bb(pp.second);
+  Bonded ba(pp[0]);
+  Bonded bb(pp[1]);
   Bond bd=get_bond(ba, bb);
   return sc_->get_contains_particle(bd);
 }

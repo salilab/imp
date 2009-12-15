@@ -214,6 +214,23 @@
 #endif
 
 
+#if defined(IMP_DOXYGEN) || defined(SWIG)
+//! Implement operator<< on class name templated by the dimension
+/** The class named should define the method
+    \c void \c show(std::ostream&).
+ */
+#define IMP_OUTPUT_OPERATOR_D(name)
+#else
+#define IMP_OUTPUT_OPERATOR_D(name)                                       \
+  template <unsigned int D>                                             \
+  inline std::ostream &operator<<(std::ostream &out, const name<D> &i)  \
+  {                                                                     \
+    i.show(out);                                                        \
+    return out;                                                         \
+  }
+#endif
+
+
 
 /** \name Swap helpers
 
@@ -978,25 +995,28 @@ protected:                                                              \
     - IMP::PairScore::get_output_particles()
 */
 #define IMP_PAIR_SCORE(Name, version_info)                              \
-  double evaluate(Particle *a, Particle *b,                             \
+  double evaluate(const ParticlePair &p,                                \
                   DerivativeAccumulator *da) const;                     \
+  IMP_NO_DOXYGEN(double evaluate(Particle *a, Particle *b,              \
+                                DerivativeAccumulator *da) const {      \
+    return evaluate(ParticlePair(a,b), da);                             \
+                 })                                                     \
   double evaluate(const ParticlePairsTemp &ps,                          \
                   DerivativeAccumulator *da) const {                    \
     double ret=0;                                                       \
     for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      ret+=Name::evaluate(ps[i][0], ps[i][1], da);                      \
+      ret+=Name::evaluate(ps[i], da);                                   \
     }                                                                   \
     return ret;                                                         \
   }                                                                     \
-  double evaluate_change(Particle *a, Particle *b,                      \
+  double evaluate_change(const ParticlePair &p,                         \
                          DerivativeAccumulator *da) const {             \
-    if (a->get_is_changed() || b->get_is_changed()) {                   \
+    if (IMP::internal::is_dirty(p)){                                    \
       DerivativeAccumulator nda;                                        \
       if (da) nda= DerivativeAccumulator(*da, -1);                      \
-      double v= Name::evaluate(a->get_prechange_particle(),             \
-                               b->get_prechange_particle(),             \
+      double v= Name::evaluate(IMP::internal::prechange(p),             \
                                da? &nda:NULL);                          \
-      double rv= Name::evaluate(a, b, da)-v;                            \
+      double rv= Name::evaluate(p, da)-v;                               \
       return rv;                                                        \
     } else {                                                            \
       return 0;                                                         \
@@ -1006,28 +1026,144 @@ protected:                                                              \
                          DerivativeAccumulator *da) const {             \
     double ret=0;                                                       \
     for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      ret+=Name::evaluate_change(ps[i][0], ps[i][1], da);               \
+      ret+=Name::evaluate_change(ps[i], da);                            \
     }                                                                   \
     return ret;                                                         \
   }                                                                     \
-  double evaluate_prechange(Particle *a, Particle *b,                   \
-                         DerivativeAccumulator *da) const {             \
-    return Name::evaluate(a->get_prechange_particle(),                  \
-                           b->get_prechange_particle(),                 \
+  double evaluate_prechange(const ParticlePair &p,                      \
+                            DerivativeAccumulator *da) const {          \
+    return Name::evaluate(IMP::internal::prechange(p),                  \
                           da);                                          \
   }                                                                     \
   double evaluate_prechange(const ParticlePairsTemp &ps,                \
                             DerivativeAccumulator *da) const {          \
     double ret=0;                                                       \
     for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      ret+=Name::evaluate_prechange(ps[i][0], ps[i][1], da);            \
+      ret+=Name::evaluate_prechange(ps[i], da);                         \
     }                                                                   \
     return ret;                                                         \
   }                                                                     \
-  ParticlesList get_interacting_particles(Particle*,                    \
-                                          Particle*) const;             \
-  ParticlesTemp get_input_particles(Particle*, Particle*) const;        \
+  ParticlesList get_interacting_particles(const ParticlePair &p) const; \
+  ParticlesTemp get_input_particles(const ParticlePair &p) const;       \
   IMP_OBJECT(Name, version_info);
+
+
+//! Declare the functions needed for a TripletScore
+/** In addition to the methods done by IMP_OBJECT(), it declares
+    - IMP::TripletScore::evaluate()
+    - IMP::TripletScore::get_interacting_particles()
+    - IMP::TripletScore::get_input_particles()
+    - IMP::TripletScore::get_output_particles()
+*/
+#define IMP_TRIPLET_SCORE(Name, version_info)                           \
+  double evaluate(const ParticleTriplet &p,                             \
+                  DerivativeAccumulator *da) const;                     \
+  double evaluate(const ParticleTripletsTemp &ps,                       \
+                  DerivativeAccumulator *da) const {                    \
+    double ret=0;                                                       \
+    for (unsigned int i=0; i< ps.size(); ++i) {                         \
+      ret+=Name::evaluate(ps[i],da);                                    \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
+  IMP_NO_DOXYGEN(double evaluate(Particle *a, Particle *b, Particle *c, \
+                                DerivativeAccumulator *da) const {      \
+                   return evaluate(ParticleTriplet(a,b,c), da);         \
+                 })                                                     \
+  double evaluate_change(const ParticleTriplet &p,                      \
+                         DerivativeAccumulator *da) const {             \
+    if (IMP::internal::is_dirty(p)) {                                   \
+      DerivativeAccumulator nda;                                        \
+      if (da) nda= DerivativeAccumulator(*da, -1);                      \
+      double v= Name::evaluate(IMP::internal::prechange(p),             \
+                               da? &nda:NULL);                          \
+      double rv= Name::evaluate(p, da)-v;                               \
+      return rv;                                                        \
+    } else {                                                            \
+      return 0;                                                         \
+    }                                                                   \
+  }                                                                     \
+  double evaluate_change(const ParticleTripletsTemp &ps,                \
+                         DerivativeAccumulator *da) const {             \
+    double ret=0;                                                       \
+    for (unsigned int i=0; i< ps.size(); ++i) {                         \
+      ret+=Name::evaluate_change(ps[i], da);                            \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
+  double evaluate_prechange(const ParticleTriplet &p,                   \
+                         DerivativeAccumulator *da) const {             \
+    return Name::evaluate(p,                                            \
+                          da);                                          \
+  }                                                                     \
+  double evaluate_prechange(const ParticleTripletsTemp &ps,             \
+                            DerivativeAccumulator *da) const {          \
+    double ret=0;                                                       \
+    for (unsigned int i=0; i< ps.size(); ++i) {                         \
+      ret+=Name::evaluate_prechange(ps[i], da);                         \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
+  ParticlesList get_interacting_particles(const ParticleTriplet &p) const; \
+  ParticlesTemp get_input_particles(const ParticleTriplet &p) const;    \
+  IMP_OBJECT(Name, version_info);
+
+//! Declare the functions needed for a QuadScore
+/** In addition to the methods done by IMP_OBJECT(), it declares
+    - IMP::QuadScore::evaluate()
+    - IMP::QuadScore::get_interacting_particles()
+    - IMP::QuadScore::get_input_particles()
+    - IMP::QuadScore::get_output_particles()
+*/
+#define IMP_QUAD_SCORE(Name, version_info)                              \
+  double evaluate(const ParticleQuad &p,                                \
+                  DerivativeAccumulator *da) const;                     \
+  double evaluate(const ParticleQuadsTemp &ps,                          \
+                  DerivativeAccumulator *da) const {                    \
+    double ret=0;                                                       \
+    for (unsigned int i=0; i< ps.size(); ++i) {                         \
+      ret+=Name::evaluate(ps[i], da);                                   \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
+  double evaluate_change(const ParticleQuad &p,                         \
+                         DerivativeAccumulator *da) const {             \
+    if (IMP::internal::is_dirty(p)) {                                   \
+      DerivativeAccumulator nda;                                        \
+      if (da) nda= DerivativeAccumulator(*da, -1);                      \
+      double v= Name::evaluate(IMP::internal::prechange(p),             \
+                               da? &nda:NULL);                          \
+      double rv= Name::evaluate(p, da)-v;                               \
+      return rv;                                                        \
+    } else {                                                            \
+      return 0;                                                         \
+    }                                                                   \
+  }                                                                     \
+  double evaluate_change(const ParticleQuadsTemp &ps,                   \
+                         DerivativeAccumulator *da) const {             \
+    double ret=0;                                                       \
+    for (unsigned int i=0; i< ps.size(); ++i) {                         \
+      ret+=Name::evaluate_change(ps[i], da);                            \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
+  double evaluate_prechange(const ParticleQuad &p,                      \
+                            DerivativeAccumulator *da) const {          \
+    return Name::evaluate(IMP::internal::prechange(p),                  \
+                          da);                                          \
+  }                                                                     \
+  double evaluate_prechange(const ParticleQuadsTemp &ps,                \
+                            DerivativeAccumulator *da) const {          \
+    double ret=0;                                                       \
+    for (unsigned int i=0; i< ps.size(); ++i) {                         \
+      ret+=Name::evaluate_prechange(ps[i], da);                         \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
+  ParticlesList get_interacting_particles(const ParticleQuad &p) const; \
+  ParticlesTemp get_input_particles(const ParticleQuad &p) const;       \
+  IMP_OBJECT(Name, version_info);
+
 
 
 //! Declare the functions needed for a SingletonModifier
@@ -1069,9 +1205,9 @@ protected:                                                              \
     \see IMP_PAIR_MODIFIER_DA
 */
 #define IMP_PAIR_MODIFIER(Name,version_info)                            \
-  void apply(Particle *a, Particle *b) const;                           \
-  void apply(Particle *a, Particle *b, DerivativeAccumulator&) const{   \
-    apply(a,b);                                                         \
+  void apply(const ParticlePair &p) const;                              \
+  void apply(const ParticlePair &p, DerivativeAccumulator&) const{      \
+    apply(p);                                                           \
   }                                                                     \
   void apply(const ParticlePairsTemp &ps) const {                       \
     for (unsigned int i=0; i< ps.size(); ++i) {                         \
@@ -1081,12 +1217,12 @@ protected:                                                              \
   void apply(const ParticlePairsTemp &ps,                               \
              DerivativeAccumulator &) const {                           \
     for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      Name::apply(ps[i][0], ps[i][1]);                                  \
+      Name::apply(ps[i]);                                               \
     }                                                                   \
   }                                                                     \
-  ParticlesList get_interacting_particles(Particle*, Particle*) const;  \
-  ParticlesTemp get_input_particles(Particle*, Particle*) const;        \
-  ParticlesTemp get_output_particles(Particle*, Particle*) const;       \
+  ParticlesList get_interacting_particles(const ParticlePair &p) const; \
+  ParticlesTemp get_input_particles(const ParticlePair &p) const;       \
+  ParticlesTemp get_output_particles(const ParticlePair &p) const;      \
   IMP_OBJECT(Name, version_info);
 
 
@@ -1190,11 +1326,11 @@ protected:                                                              \
     \see IMP_PAIR_MODIFIER
  */
 #define IMP_PAIR_MODIFIER_DA(Name, version_info)                        \
- void apply(Particle *a, Particle *b, DerivativeAccumulator *da) const; \
- void apply(Particle *, Particle *) const{                              \
-   IMP_LOG(VERBOSE, "This modifier requires a derivative accumulator "  \
-           << *this << std::endl);                                      \
- }                                                                      \
+  void apply(const ParticlePair &p, DerivativeAccumulator *da) const;   \
+  void apply(const ParticlePair &p) const{                              \
+    IMP_LOG(VERBOSE, "This modifier requires a derivative accumulator " \
+            << *this << std::endl);                                     \
+  }                                                                     \
  void apply(const ParticlePairsTemp &ps) const {                        \
    IMP_LOG(VERBOSE, "This modifier requires a derivative accumulator "  \
            << *this << std::endl);                                      \
@@ -1205,9 +1341,9 @@ protected:                                                              \
       Name::apply(ps[i][0], ps[i][1], da);                              \
     }                                                                   \
  }                                                                      \
- ParticlesList get_interacting_particles(Particle*, Particle*) const;   \
- ParticlesTemp get_input_particles(Particle*, Particle*) const;         \
- ParticlesTemp get_output_particles(Particle*, Particle*) const;        \
+ ParticlesList get_interacting_particles(const ParticlePair &p) const;  \
+ ParticlesTemp get_input_particles(const ParticlePair &p) const;        \
+ ParticlesTemp get_output_particles(const ParticlePair &p) const;       \
  IMP_OBJECT(Name, version_info)
 
 
@@ -1294,7 +1430,7 @@ protected:                                                              \
     - IMP::Interaction::get_input_objects()
  */
 #define IMP_PAIR_CONTAINER(Name, version_info)                          \
-  bool get_contains_particle_pair(ParticlePair p) const;                \
+  bool get_contains_particle_pair(const ParticlePair &p) const;         \
   unsigned int get_number_of_particle_pairs() const;                    \
   ParticlePair get_particle_pair(unsigned int i) const;                 \
   void apply(const PairModifier *sm);                                   \
@@ -1309,6 +1445,65 @@ protected:                                                              \
   ParticlePairsTemp get_particle_pairs() const;                         \
   ObjectsTemp get_input_objects() const;                                \
   IMP_OBJECT(Name, version_info)
+
+
+
+//! Declare the needed functions for a TripletContainer
+/** In addition to the methods of IMP_OBJECT, it declares
+    - IMP::TripletContainer::get_contains_particle_triplet()
+    - IMP::TripletContainer::get_number_of_particle_triplets()
+    - IMP::TripletContainer::get_particle_triplet()
+    - IMP::TripletContainer::apply()
+    - IMP::TripletContainer::evaluate()
+    - IMP::TripletContainer::get_particle_triplets()
+    - IMP::Interaction::get_input_objects()
+ */
+#define IMP_TRIPLET_CONTAINER(Name, version_info)                       \
+  bool get_contains_particle_triplet(const ParticleTriplet &p) const;   \
+  unsigned int get_number_of_particle_triplets() const;                 \
+  ParticleTriplet get_particle_triplet(unsigned int i) const;           \
+  void apply(const TripletModifier *sm);                                \
+  void apply(const TripletModifier *sm,                                 \
+             DerivativeAccumulator &da);                                \
+  double evaluate(const TripletScore *s,                                \
+                  DerivativeAccumulator *da) const;                     \
+  double evaluate_change(const TripletScore *s,                         \
+                         DerivativeAccumulator *da) const;              \
+  double evaluate_prechange(const TripletScore *s,                      \
+                            DerivativeAccumulator *da) const;           \
+  ParticleTripletsTemp get_particle_triplets() const;                   \
+  ObjectsTemp get_input_objects() const;                                \
+  IMP_OBJECT(Name, version_info)
+
+
+
+//! Declare the needed functions for a QuadContainer
+/** In addition to the methods of IMP_OBJECT, it declares
+    - IMP::QuadContainer::get_contains_particle_quad()
+    - IMP::QuadContainer::get_number_of_particle_quads()
+    - IMP::QuadContainer::get_particle_quad()
+    - IMP::QuadContainer::apply()
+    - IMP::QuadContainer::evaluate()
+    - IMP::QuadContainer::get_particle_quads()
+    - IMP::Interaction::get_input_objects()
+ */
+#define IMP_QUAD_CONTAINER(Name, version_info)                          \
+  bool get_contains_particle_quad(const ParticleQuad &p) const;         \
+  unsigned int get_number_of_particle_quads() const;                    \
+  ParticleQuad get_particle_quad(unsigned int i) const;                 \
+  void apply(const QuadModifier *sm);                                   \
+  void apply(const QuadModifier *sm,                                    \
+             DerivativeAccumulator &da);                                \
+  double evaluate(const QuadScore *s,                                   \
+                  DerivativeAccumulator *da) const;                     \
+  double evaluate_change(const QuadScore *s,                            \
+                         DerivativeAccumulator *da) const;              \
+  double evaluate_prechange(const QuadScore *s,                         \
+                            DerivativeAccumulator *da) const;           \
+  ParticleQuadsTemp get_particle_quads() const;                         \
+  ObjectsTemp get_input_objects() const;                                \
+  IMP_OBJECT(Name, version_info)
+
 
 
 
@@ -1330,9 +1525,35 @@ protected:                                                              \
     - IMP::PairFilter::get_input_particles()
  */
 #define IMP_PAIR_FILTER(Name, version_info)                             \
-  bool get_contains_particle_pair(ParticlePair p) const;                \
-  ParticlesTemp get_input_particles(ParticlePair t) const;              \
-  ObjectsTemp get_input_objects(ParticlePair t) const;                  \
+  bool get_contains_particle_pair(const ParticlePair& p) const;         \
+  ParticlesTemp get_input_particles(const ParticlePair& t) const;       \
+  ObjectsTemp get_input_objects(const ParticlePair& t) const;           \
+  IMP_OBJECT(Name, version_info);
+
+
+
+//! Declare the needed functions for a TripletFilter
+/** In addition to the methods done by all the macros, it declares
+    - IMP::TripletFilter::get_contains_particle_triplet()
+    - IMP::TripletFilter::get_input_particles()
+ */
+#define IMP_TRIPLET_FILTER(Name, version_info)                             \
+  bool get_contains_particle_triplet(ParticleTriplet p) const;                \
+  ParticlesTemp get_input_particles(ParticleTriplet t) const;              \
+  ObjectsTemp get_input_objects(ParticleTriplet t) const;                  \
+  IMP_OBJECT(Name, version_info);
+
+
+
+//! Declare the needed functions for a QuadFilter
+/** In addition to the methods done by all the macros, it declares
+    - IMP::QuadFilter::get_contains_particle_quad()
+    - IMP::QuadFilter::get_input_particles()
+ */
+#define IMP_QUAD_FILTER(Name, version_info)                             \
+  bool get_contains_particle_quad(ParticleQuad p) const;                \
+  ParticlesTemp get_input_particles(ParticleQuad t) const;              \
+  ObjectsTemp get_input_objects(ParticleQuad t) const;                  \
   IMP_OBJECT(Name, version_info);
 
 

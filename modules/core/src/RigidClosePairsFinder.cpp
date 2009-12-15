@@ -86,7 +86,7 @@ ParticlePairsTemp RigidClosePairsFinder
   for (ParticlePairsTemp::const_iterator
          it= ppt.begin();
        it != ppt.end(); ++it) {
-    ParticlePairsTemp c=get_close_pairs(it->first, it->second);
+    ParticlePairsTemp c=get_close_pairs(it->get(0), it->get(1));
     ret.insert(ret.end(),
                c.begin(), c.end());
   }
@@ -102,7 +102,7 @@ ParticlePairsTemp RigidClosePairsFinder
   ParticlePairsTemp ret;
   for (ParticlePairsTemp::const_iterator it= ppt.begin();
        it != ppt.end(); ++it) {
-    ParticlePairsTemp c=get_close_pairs(it->first, it->second);
+    ParticlePairsTemp c=get_close_pairs(it->get(0), it->get(1));
     ret.insert(ret.end(), c.begin(), c.end());
   }
   return ret;

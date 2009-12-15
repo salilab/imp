@@ -39,16 +39,16 @@ DistanceRestraint::DistanceRestraint(UnaryFunction* score_func,
 double
 DistanceRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
-  return dp_->evaluate(p_[0], p_[1], accum);
+  return dp_->evaluate(ParticlePair(p_[0], p_[1]), accum);
 }
 
 
 ParticlesList DistanceRestraint::get_interacting_particles() const {
-  return dp_->get_interacting_particles(p_[0], p_[1]);
+  return dp_->get_interacting_particles(ParticlePair(p_[0], p_[1]));
 }
 
 ParticlesTemp DistanceRestraint::get_input_particles() const {
-  return dp_->get_input_particles(p_[0], p_[1]);
+  return dp_->get_input_particles(ParticlePair(p_[0], p_[1]));
 }
 
 

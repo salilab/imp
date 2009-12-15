@@ -512,170 +512,123 @@ inline void Particle::add_to_derivative(FloatKey name, Float value,
                         + da(value));
 }
 
+IMP_OBJECTS(Particle);
 
-//! A class to store a pair of particles.
-/** \note These do not due ref counting currently. SWIG prevents
+//! A class to store a tuple of particles.
+/** \note These do not ref counting currently. SWIG prevents
     use of internal::OwnerPointer<Particle> as the storage type without some
-    gynmastics.
+    gymnastics.
 
-    \note ParticlePair objects are ordered.
+    Only the constructor with the correct number of arguments for the
+    dimensionality can be used.
+
+    \note ParticleTuple objects are ordered.
 */
-class ParticlePair: public NullDefault,
+template <unsigned int D>
+class ParticleTuple: public NullDefault,
                     public Comparable {
+  Particle *d_[D];
+  int compare(const ParticleTuple<D> &o) const {
+    for (unsigned int i=0;i<D; ++i) {
+      if (d_[i] < o.d_[i]) return -1;
+      else if (d_[i] > o.d_[i]) return 1;
+    }
+    return 0;
+  }
 public:
-  typedef ParticlePair This;
-  Particle *first, *second;
-  ParticlePair(): first(NULL), second(NULL){}
-  ParticlePair(Particle *a, Particle *b):
-    first(a), second(b) {}
-  IMP_COMPARISONS_2(first, second)
-  Particle * operator[](unsigned int i) const {
-    switch (i) {
-    case 0:
-      return first;
-    case 1:
-      return second;
-    default:
-      throw IndexException("Invalid member of pair");
+  typedef ParticleTuple<D> This;
+  ParticleTuple(){
+    for (unsigned int i=0; i< D; ++i) {d_[i]=NULL;}
+  }
+  ParticleTuple(Particle* x, Particle* y) {
+    IMP_USAGE_CHECK(D==2, "Need " << D << " to construct a "
+              << D << "-tuple.", ValueException);
+    d_[0] = x;
+    d_[1] = y;
+  }
+  ParticleTuple(Particle* x, Particle* y, Particle* z) {
+    IMP_USAGE_CHECK(D==3, "Need " << D << " to construct a "
+              << D << "-tuple.", ValueException);
+    d_[0] = x;
+    d_[1] = y;
+    d_[2] = z;
+  }
+  ParticleTuple(Particle* x0, Particle* x1, Particle* x2, Particle* x3) {
+    IMP_USAGE_CHECK(D==4, "Need " << D << " to construct a "
+              << D << "-tuple.", ValueException);
+    d_[0] = x0;
+    d_[1] = x1;
+    d_[2] = x2;
+    if (D==4) {
+      // suppress warning.
+      d_[3] = x3;
     }
   }
+  IMP_COMPARISONS;
+  Particle * operator[](unsigned int i) const {
+    IMP_USAGE_CHECK(i <D, "Out of range member", IndexException);
+    return d_[i];
+  }
   Particle *& operator[](unsigned int i) {
-    switch (i) {
-    case 0:
-      return first;
-    case 1:
-      return second;
-    default:
-      throw IndexException("Invalid member of pair");
-    }
+    IMP_USAGE_CHECK(i <D, "Out of range member", IndexException);
+    return d_[i];
+  }
+
+  Particle *get(unsigned int i) const {
+    return operator[](i);
   }
 
   std::string get_name() const {
-    return first->get_name() + " and " +second->get_name();
+    bool first=true;
+    std::string ret;
+    for (unsigned int i=0; i< D; ++i) {
+      if (!first) {
+        ret+= " and ";
+        first=false;
+      }
+      ret+=d_[i]->get_name();
+    }
+    return ret;
   }
   IMP_SHOWABLE_INLINE({
-      out << "(";
-      if (first) out << first->get_name();
-      else out << "NULL";
-      out << ", ";
-      if (second) out << second->get_name();
-      else out << "NULL";
-      out << ")";
+      out << get_name();
     });
 };
 
+IMP_OUTPUT_OPERATOR_D(ParticleTuple)
 
 #if !defined(IMP_DOXYGEN)
-struct RefCountParticlePair {
+
+template <unsigned int D>
+struct RefCountParticleTuple {
   template <class O>
   static void ref(O o) {
-    internal::ref(o[0]);
-    internal::ref(o[1]);
-  }
-  template <class O>
-  static void unref(O o) {
-    internal::unref(o[0]);
-    internal::unref(o[1]);
-  }
-};
-#endif
-
-typedef VectorOfRefCounted<ParticlePair, RefCountParticlePair> ParticlePairs;
-typedef std::vector<ParticlePair> ParticlePairsTemp;
-
-IMP_OUTPUT_OPERATOR(ParticlePair);
-
-
-//! Store three particles
-/**     \note ParticleTriplet objects are ordered.
-
- */
-class ParticleTriplet: public NullDefault,
-                       public Comparable {
-  bool is_default() const {return false;}
-public:
-  typedef ParticleTriplet This;
-  Particle *first, *second, *third;
-  ParticleTriplet(): first(NULL), second(NULL), third(NULL){}
-  ParticleTriplet(Particle *a, Particle *b, Particle *c):
-    first(a), second(b), third(c) {}
-  IMP_COMPARISONS_3(first, second, third)
-  Particle *operator[](unsigned int i) const {
-    switch (i) {
-    case 0:
-      return first;
-    case 1:
-      return second;
-    case 2:
-      return third;
-    default:
-      throw IndexException("Invalid member of triplet");
-    };
-  }
-  Particle *&operator[](unsigned int i) {
-    switch (i) {
-    case 0:
-      return first;
-    case 1:
-      return second;
-    case 2:
-      return third;
-    default:
-      throw IndexException("Invalid member of triplet");
-    };
-  }
-  IMP_SHOWABLE_INLINE({
-      out << "(";
-      if (first) out << first->get_name();
-      else out << "NULL";
-      out << ", ";
-      if (second) out << second->get_name();
-      else out << "NULL";
-      out << ", ";
-      if (third) out << third->get_name();
-      else out << "NULL";
-      out << ")";
-    })
-
-};
-
-#if!defined(IMP_DOXYGEN)
-struct RefCountParticleTriplet {
-  template <class O>
-  static void ref(O o) {
-    internal::ref(o[0]);
-    internal::ref(o[1]);
-    internal::ref(o[2]);
-  }
-  template <class O>
-  static void unref(O o) {
-    internal::unref(o[0]);
-    internal::unref(o[1]);
-    internal::unref(o[2]);
-  }
-};
-#endif
-
-
-typedef VectorOfRefCounted<ParticleTriplet,
-                           RefCountParticleTriplet> ParticleTriplets;
-
-IMP_OUTPUT_OPERATOR(ParticleTriplet);
-
-IMP_OBJECTS(Particle);
-
-#if !defined(SWIG) && !defined(IMP_DOXYGEN)
-inline std::ostream &operator<<(std::ostream &out, const Particles &ps) {
-  for (unsigned int i=0; i< ps.size(); ++i) {
-    if (ps[i]) {
-      out << ps[i]->get_name() << " ";
-    } else {
-      out << "NULL ";
+    for (unsigned int i=0; i< D; ++i) {
+      internal::ref(o[i]);
     }
   }
-  return out;
-}
+  template <class O>
+  static void unref(O o) {
+    for (unsigned int i=0; i< D; ++i) {
+      internal::unref(o[i]);
+    }
+  }
+};
+
 #endif
+typedef ParticleTuple<2> ParticlePair;
+typedef std::vector<ParticleTuple<2> > ParticlePairsTemp;
+typedef VectorOfRefCounted<ParticleTuple<2>,
+                           RefCountParticleTuple<2> > ParticlePairs;
+typedef ParticleTuple<3> ParticleTriplet;
+typedef std::vector<ParticleTuple<3> > ParticleTripletsTemp;
+typedef VectorOfRefCounted<ParticleTuple<3>,
+                           RefCountParticleTuple<3> > ParticleTriplets;
+typedef ParticleTuple<4> ParticleQuad;
+typedef std::vector<ParticleTuple<4> > ParticleQuadsTemp;
+typedef VectorOfRefCounted<ParticleTuple<4>,
+                           RefCountParticleTuple<4> > ParticleQuads;
+
 
 IMP_END_NAMESPACE
 

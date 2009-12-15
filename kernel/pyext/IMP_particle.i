@@ -94,4 +94,17 @@ namespace IMP {
 
 }
 
+%extend IMP::ParticleTuple {
+  Particle* __getitem__(unsigned int index) const {
+    if (index >= D) throw IMP::IndexException("");
+    return self->operator[](index);
+  }
+  void __setitem__(unsigned int index, Particle* val) {
+    self->operator[](index) = val;
+  }
+  unsigned int __len__() {return D;}
+};
+
+%ignore IMP::ParticleTuple::operator[];
+
 %include "IMP/Particle.h"

@@ -17,16 +17,16 @@ IMPCORE_BEGIN_NAMESPACE
 
 AngleTripletScore::AngleTripletScore(UnaryFunction *f): f_(f){}
 
-Float AngleTripletScore::evaluate(Particle *a, Particle *b, Particle *c,
+Float AngleTripletScore::evaluate(const ParticleTriplet &p,
                                   DerivativeAccumulator *da) const
 {
   IMP_CHECK_OBJECT(f_.get());
-  IMP_CHECK_OBJECT(a);
-  IMP_CHECK_OBJECT(b);
-  IMP_CHECK_OBJECT(c);
-  XYZ d0 = XYZ::decorate_particle(a);
-  XYZ d1 = XYZ::decorate_particle(b);
-  XYZ d2 = XYZ::decorate_particle(c);
+  IMP_CHECK_OBJECT(p[0]);
+  IMP_CHECK_OBJECT(p[1]);
+  IMP_CHECK_OBJECT(p[2]);
+  XYZ d0 = XYZ::decorate_particle(p[0]);
+  XYZ d1 = XYZ::decorate_particle(p[1]);
+  XYZ d2 = XYZ::decorate_particle(p[2]);
 
   algebra::Vector3D rij = d1.get_vector_to(d0);
   algebra::Vector3D rkj = d1.get_vector_to(d2);
@@ -73,6 +73,21 @@ Float AngleTripletScore::evaluate(Particle *a, Particle *b, Particle *c,
     score = f_->evaluate(angle);
   }
   return score;
+}
+
+
+ParticlesList AngleTripletScore
+::get_interacting_particles(const ParticleTriplet &p) const {
+  return ParticlesList(1, get_input_particles(p));
+}
+
+ParticlesTemp AngleTripletScore
+::get_input_particles(const ParticleTriplet &p) const {
+  ParticlesTemp t(3);
+  t[0]=p[0];
+  t[1]=p[1];
+  t[2]=p[2];
+  return t;
 }
 
 void AngleTripletScore::show(std::ostream &out) const

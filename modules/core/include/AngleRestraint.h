@@ -12,7 +12,7 @@
 #include "AngleTripletScore.h"
 #include "XYZ.h"
 
-#include <IMP/Restraint.h>
+#include "TripletRestraint.h"
 #include <IMP/Pointer.h>
 #include <IMP/UnaryFunction.h>
 
@@ -21,7 +21,7 @@ IMPCORE_BEGIN_NAMESPACE
 //! Angle restraint between three particles
 /** \see AngleTripletScore
  */
-class IMPCOREEXPORT AngleRestraint : public Restraint
+class IMPCOREEXPORT AngleRestraint : public TripletRestraint
 {
 public:
   //! Create the angle restraint.
@@ -35,11 +35,6 @@ public:
 
   AngleRestraint(UnaryFunction* score_func,
                  XYZ p0, XYZ p1, XYZ p2);
-
-  IMP_RESTRAINT(AngleRestraint, get_module_version_info())
-protected:
-  IMP::internal::OwnerPointer<AngleTripletScore> sf_;
-  RefCountingDecorator<XYZ> p_[3];
 };
 
 IMPCORE_END_NAMESPACE

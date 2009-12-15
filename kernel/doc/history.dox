@@ -1,5 +1,14 @@
 /** \page recent Change History
 
+\par Week of December 11
+- The interface of IMP::PairScore changed slightly to make the function signatures more uniform across various methods. Now all methods that take a pair of IMP::Particle objects take a const IMP::ParticlePair&. Previously some took that, some took an IMP::ParticlePair and some took two IMP::Particle*s. If you have an implementation of an IMP::PairScore outside of svn, you will have to update your function signatures (the compiler will tell you where). Backward compatible IMP::PairScore::evaluate() methods have been provided, so simple users of pair scores shouldn't see a difference.
+
+- IMP::core::PairRestraint takes a IMP::ParticlePair in the constructor instead of two IMP::Particle*s. A backwards compatible constructor can be added if needed.
+
+- IMP::ParticlePair::first and second went away since no one claimed to be using it and it complicated the implementation. 
+
+- The generic restraints/score states/scores infrastructure has been extended to triplets and quads (for angles and torsion angles).
+
 \par Week of December 4
 
 - \imp now makes use of Boost.Filesystem to manipulate paths. Things may not work well on systems where boost libs are not available which does not support posix paths. But libless boost installs generally don't exist outside of our test systems.

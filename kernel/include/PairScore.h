@@ -15,6 +15,7 @@
 #include "Interaction.h"
 #include "Particle.h"
 #include "DerivativeAccumulator.h"
+#include "internal/container_helpers.h"
 
 IMP_BEGIN_NAMESPACE
 
@@ -31,8 +32,16 @@ class IMPEXPORT PairScore : public Object
 public:
   PairScore(std::string name="PairScore %1%");
   //! Compute the score and the derivative if needed.
-  virtual double evaluate(Particle *a, Particle *b,
+  virtual double evaluate(const ParticlePair& vt,
                           DerivativeAccumulator *da) const = 0;
+
+#if !defined(IMP_DOXYGEN) && 2 != 1
+  // backwards compatibility
+  virtual double evaluate(Particle *a, Particle *b,
+                          DerivativeAccumulator *da) const {
+    return evaluate(ParticlePair(a,b), da);
+  }
+#endif
 
   /** An implementations
       for this is provided by the IMP_SINGLETON_SCORE,
@@ -48,12 +57,12 @@ public:
       IMP_PAIR_SCORE macros.
       @{
   */
-  virtual double evaluate_change(Particle *a, Particle *b,
+  virtual double evaluate_change(const ParticlePair& vt,
                                  DerivativeAccumulator *da) const = 0;
 
   virtual double evaluate_change(const ParticlePairsTemp &o,
                                  DerivativeAccumulator *da) const = 0;
-  virtual double evaluate_prechange(Particle *a, Particle *b,
+  virtual double evaluate_prechange(const ParticlePair& vt,
                                     DerivativeAccumulator *da) const = 0;
   virtual double evaluate_prechange(const ParticlePairsTemp &o,
                                     DerivativeAccumulator *da) const = 0;
@@ -63,11 +72,11 @@ public:
   /** Get the set of interaction induced by applying to the
       argument. */
   virtual ParticlesList
-    get_interacting_particles(Particle *a, Particle *b) const =0;
+    get_interacting_particles(const ParticlePair& vt) const =0;
 
   /** Get the set of particles read when applied to the arguments. */
   virtual ParticlesTemp
-    get_input_particles(Particle *a, Particle *b) const =0;
+    get_input_particles(const ParticlePair& vt) const =0;
 
   IMP_REF_COUNTED_DESTRUCTOR(PairScore)
 };

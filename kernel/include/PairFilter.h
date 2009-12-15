@@ -34,15 +34,15 @@ public:
   /** \note This function may be linear. Be aware of the complexity
       bounds of your particular filter.
    */
-  virtual bool get_contains_particle_pair(ParticlePair p) const =0;
+  virtual bool get_contains_particle_pair(const ParticlePair& p) const =0;
 
   /** \name Interactions
       Return the set of particles used when applied to the passed
       list.
       @{
   */
-  virtual ParticlesTemp get_input_particles(ParticlePair p) const=0;
-  virtual ObjectsTemp get_input_objects(ParticlePair p) const=0;
+  virtual ParticlesTemp get_input_particles(const ParticlePair& p) const=0;
+  virtual ObjectsTemp get_input_objects(const ParticlePair& p) const=0;
   /** @} */
 
   IMP_REF_COUNTED_DESTRUCTOR(PairFilter)
