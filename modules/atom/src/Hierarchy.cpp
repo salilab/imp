@@ -111,7 +111,6 @@ struct MatchResidueIndex
       return (mhd.get_as_residue().get_index() == index_);
     } else {
       if (mhd.get_number_of_children()==0) {
-        IMP_LOG(VERBOSE, "Trying " << mhd << std::endl);
         if (mhd.get_as_domain()) {
           Domain dd= mhd.get_as_domain();
           return  dd.get_begin_index() <= index_
