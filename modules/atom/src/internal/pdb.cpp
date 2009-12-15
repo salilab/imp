@@ -40,6 +40,11 @@ bool is_CONECT_rec(const String& pdb_line)
           pdb_line[3] == 'E' && pdb_line[4] == 'C' && pdb_line[5] == 'T');
 }
 
+int model_index(const String& pdb_line)
+{
+  return atoi(pdb_line.substr(model_index_field_).c_str());
+}
+
 int atom_number(const String& pdb_line)
 {
   return atoi(pdb_line.substr(atom_number_field_).c_str());

@@ -31,6 +31,9 @@ IMPATOMEXPORT bool is_ENDMDL_rec(const String& pdb_line);
 //! Returns true if the given record is a CONECT record.
 IMPATOMEXPORT bool is_CONECT_rec(const String& pdb_line);
 
+//! Returns an the index for a MODEL record.
+IMPATOMEXPORT int model_index(const String& pdb_line);
+
 //! Returns an ATOM record's atom number.
 IMPATOMEXPORT int atom_number(const String& pdb_line);
 
@@ -122,6 +125,7 @@ static const unsigned atom_zcoord_field_ = 46;
 static const unsigned atom_occupancy_field_ = 54;
 static const unsigned atom_temp_factor_field_ = 60;
 static const unsigned atom_element_field_ = 76;
+static const unsigned model_index_field_=6;
 
 IMPATOM_END_INTERNAL_NAMESPACE
 
