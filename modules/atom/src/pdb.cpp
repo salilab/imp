@@ -16,6 +16,7 @@
 #include <boost/algorithm/string.hpp>
 
 #include <fstream>
+#include <iomanip>
 
 IMPATOM_BEGIN_NAMESPACE
 
