@@ -323,7 +323,7 @@ Residue get_residue(Atom d) {
 Atom get_atom(Residue rd, AtomType at) {
   Hierarchy mhd(rd.get_particle());
   for (unsigned int i=0; i< mhd.get_number_of_children(); ++i) {
-    Atom a(mhd.get_child(i).get_particle());
+    Atom a(mhd.get_child(i));
     if (a.get_atom_type() == at) return a;
   }
   IMP_LOG(VERBOSE, "Atom not found " << at << std::endl);
