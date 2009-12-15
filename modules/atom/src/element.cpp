@@ -6,6 +6,7 @@
  */
 
 #include <IMP/atom/element.h>
+#include <boost/algorithm/string.hpp>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -80,6 +81,12 @@ ElementTable::ElementTable() {
 }
 
 Element ElementTable::get_element(const std::string& s) const {
+  IMP_IF_CHECK(USAGE) {
+    std::string ts=s;
+    boost::trim(ts);
+    IMP_USAGE_CHECK(ts == s, "The string passed to get_element"
+                  << " should not contain spaces.", UsageException);
+  }
   std::string copy_s = s;
   boost::to_upper(copy_s);
   if(string_2_element_.find(copy_s) == string_2_element_.end())
