@@ -31,8 +31,7 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
              {
                for (unsigned int i=0; i< pc->get_number_of_particle_pairs();
                     ++i) {
-                 total+= ps->evaluate(pc->get_particle_pair(i)[0],
-                                      pc->get_particle_pair(i)[1], NULL);
+                 total+= ps->evaluate(pc->get_particle_pair(i), NULL);
                }
              }, runtime);
     std::ostringstream oss;
