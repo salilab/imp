@@ -64,13 +64,16 @@ Particle* atom_particle(Model *m, const String& pdb_line)
   d.set_input_index(internal::atom_number(pdb_line));
   IMP_IF_CHECK(USAGE) {
     std::string name= internal::atom_element(pdb_line);
-    Element e= get_element_table().get_element(name);
-    if (e != UNKNOWN_ELEMENT) {
-      IMP_USAGE_CHECK(e== d.get_element(),
-                "Read and computed elements don't match. Read " << e
-                << " Computed " << d.get_element()
-                << " from line " << pdb_line,
-                InvalidStateException);
+    boost::trim(name);
+    if (!name.empty()) {
+      Element e= get_element_table().get_element(name);
+      if (e != UNKNOWN_ELEMENT) {
+        if (e != d.get_element()) {
+          IMP_WARN("Read and computed elements don't match. Read " << e
+                   << " Computed " << d.get_element()
+                   << " from line " << pdb_line << std::endl);
+        }
+      }
     }
   }
   return p;
@@ -83,6 +86,7 @@ Particle* residue_particle(Model *m, const String& pdb_line)
   int residue_index = internal::atom_residue_number(pdb_line);
   char residue_icode = internal::atom_residue_icode(pdb_line);
   String rn = internal::atom_residue_name(pdb_line);
+  boost::trim(rn);
   ResidueType residue_name = ResidueType(rn);
 
   // residue decorator
@@ -107,36 +111,19 @@ void set_chain_name(const Hierarchy& hrd, Hierarchy& hcd)
 
 }
 
-Hierarchy read_pdb(String pdb_file_name, Model *model,
+
+namespace {
+
+Hierarchies read_pdb(std::istream &in, Model *model,
                    const Selector& selector,
                    bool select_first_model,
+                   bool split_models,
                    bool ignore_alternatives)
 {
-  std::ifstream pdb_file(pdb_file_name.c_str());
-  if (!pdb_file) {
-    IMP_THROW("No such PDB file " << pdb_file_name,
-              IOException);
-  }
-  Hierarchy root_d
-      = read_pdb(pdb_file, model, selector, select_first_model,
-                 ignore_alternatives);
-  root_d.get_particle()->set_name(pdb_file_name);
-  pdb_file.close();
-  return root_d;
-}
-
-
-
-Hierarchy read_pdb(std::istream &in, Model *model,
-                   const Selector& selector,
-                   bool select_first_model,
-                   bool ignore_alternatives)
-{
-  // create root particle
-  Particle* root_p = new Particle(model);
-
   // hierarchy decorator
-  Hierarchy root_d = Hierarchy::setup_particle(root_p);
+  Hierarchies ret;
+  std::string root_name;
+  Particle* root_p = NULL;
   Particle* cp = NULL;
   Particle* rp = NULL;
 
@@ -153,7 +140,12 @@ Hierarchy read_pdb(std::istream &in, Model *model,
     // handle MODEL reading
     if (internal::is_MODEL_rec(line)) {
       if(first_model_read && select_first_model) break;
-      first_model_read = true; continue;
+      if (split_models) {
+        std::ostringstream oss;
+        oss << "Model " << internal::model_index(line);
+        root_name= oss.str();
+        root_p=NULL;
+      }
     }
 
     // check that line is an HETATM or ATOM rec and that selector accepts line.
@@ -172,12 +164,21 @@ Hierarchy read_pdb(std::istream &in, Model *model,
       // (no residues without valid atoms)
       if (ap) {
         // check if new chain
+        if (root_p== NULL) {
+          root_p = new Particle(model);
+          ret.push_back(Hierarchy::setup_particle(root_p));
+          if (!root_name.empty()) {
+            root_p->set_name(root_name);
+          }
+        }
+
         if (cp == NULL || chain != curr_chain) {
           curr_chain = chain;
           // create new chain particle
           cp = chain_particle(model, chain);
           chain_name_set = false;
-          root_d.add_child(Chain(cp));
+          Hierarchy(root_p).add_child(Chain(cp));
+          rp=NULL; // make sure we get a new residue
         }
 
         // check if new residue
@@ -208,19 +209,49 @@ Hierarchy read_pdb(std::istream &in, Model *model,
     }
   }
   if (!has_atom) {
-    model->remove_particle(root_d);
     throw IOException("Sorry, unable to read atoms from PDB file."
                       " Thanks for the effort.");
   }
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-    if (!root_d.get_is_valid(true)) {
-      IMP_ERROR("Invalid hierarchy produced ");
-      IMP::core::show<Hierarchy>(root_d);
-      throw InternalException("Bad hierarchy");
-      // should clean up
+    for (unsigned int i=0; i< ret.size(); ++i) {
+      if (!ret[i].get_is_valid(true)) {
+        IMP_ERROR("Invalid hierarchy produced ");
+        IMP_ERROR_WRITE(IMP::core::show<Hierarchy>(ret[i], IMP_STREAM));
+        throw InternalException("Bad hierarchy");
+        // should clean up
+      }
     }
   }
+  return ret;
+}
+}
+
+
+Hierarchy read_pdb(String pdb_file_name, Model *model,
+                   const Selector& selector,
+                   bool select_first_model,
+                   bool ignore_alternatives)
+{
+  std::ifstream pdb_file(pdb_file_name.c_str());
+  if (!pdb_file) {
+    IMP_THROW("No such PDB file " << pdb_file_name,
+              IOException);
+  }
+  Hierarchy root_d
+      = read_pdb(pdb_file, model, selector, select_first_model,
+                 ignore_alternatives);
+  root_d.get_particle()->set_name(pdb_file_name);
+  pdb_file.close();
   return root_d;
+}
+
+Hierarchy read_pdb(std::istream &in, Model *model,
+                   const Selector& selector,
+                   bool select_first_model,
+                   bool ignore_alternatives)
+{
+  return read_pdb(in, model, selector, select_first_model, false,
+                  ignore_alternatives)[0];
 }
 
 
@@ -245,85 +276,7 @@ Hierarchies read_multimodel_pdb(std::istream &in, Model *model,
                    const Selector& selector,
                    bool ignore_alternatives)
 {
-  Hierarchies pdbmodels_h;
-  Particle* cp = NULL;
-  Particle* rp = NULL;
-
-  char curr_residue_icode = '-';
-  char curr_chain = '-';
-  bool chain_name_set = false;
-  bool has_atom=false;
-
-  String line;
-  Hierarchy pdbmodel_h;
-  Particle* pdbmodel_p;
-  while (!in.eof()) {
-    if (!getline(in, line)) break;
-
-    // handle MODEL reading
-    if (internal::is_MODEL_rec(line)) {
-      pdbmodel_p = new Particle(model);
-      pdbmodel_h = Hierarchy::setup_particle(pdbmodel_p);
-      pdbmodels_h.push_back(pdbmodel_h);
-    }
-    // check that line is an HETATM or ATOM rec and that selector accepts line.
-    // if this is the case construct a new Particle using line and add the
-    // Particle to the Model
-    if ((internal::is_ATOM_rec(line) || internal::is_HETATM_rec(line))
-        && selector(line)) {
-
-      int residue_index = internal::atom_residue_number(line);
-      char residue_icode = internal::atom_residue_icode(line);
-      char chain = internal::atom_chain_id(line);
-
-      // create atom particle
-      Particle* ap = atom_particle(model, line);
-      // make sure that all children have coordinates,
-      // (no residues without valid atoms)
-      if (ap) {
-        // check if new chain
-        if (cp == NULL || chain != curr_chain) {
-          curr_chain = chain;
-          // create new chain particle
-          cp = chain_particle(model, chain);
-          chain_name_set = false;
-          pdbmodel_h.add_child(Chain(cp));
-        }
-
-        // check if new residue
-        if (rp == NULL ||
-            residue_index != Residue::decorate_particle(rp).get_index() ||
-            residue_icode != curr_residue_icode) {
-          curr_residue_icode = residue_icode;
-          // create new residue particle
-          rp = residue_particle(model, line);
-          Chain(cp).add_child(Residue(rp));
-        }
-
-        // set chain name (protein/nucleotide/other) according to residue name
-        if (!chain_name_set) {
-          Chain cd(cp);
-          set_chain_name(Residue(rp), cd);
-          chain_name_set = true;
-        }
-
-        // check if alternatives should be skipped
-        IgnoreAlternativesSelector sel;
-        if(ignore_alternatives && !sel(line)) continue;
-
-        Residue(rp).add_child(Atom(ap));
-        has_atom=true;
-      }
-
-    }
-  }
-  if (!has_atom) {
-    for(unsigned int i=0;i<pdbmodels_h.size();++i) {
-      model->remove_particle(pdbmodels_h[i]);
-    }
-    throw IOException("read_multimodel_pdb: No atoms found in PDB file.");
-  }
-  return pdbmodels_h;
+  return read_pdb(in, model, selector, false, true, ignore_alternatives);
 }
 
 
@@ -460,8 +413,7 @@ std::string pdb_string(const algebra::Vector3D& v, int index,
   out.width(1);
   out << " ";
   // 18-20 : residue name
-  out.width(3);
-  out << rt.get_string();
+  out << std::right << std::setw(3) << rt.get_string();
   //skip 21
   out.width(1);
   out << " ";
