@@ -66,14 +66,6 @@ NAME_ALIAS(GUA, ADE_G, "GUA");
 NAME_ALIAS(THY, ADE_T, "THY");
 
 
-ResidueType residue_name_from_pdb_string(std::string nm) {
-  if (!ResidueType::get_key_exists(nm)) {
-    std::ostringstream oss;
-    oss<< "ResidueType " << nm << " does not exist.";
-    throw ValueException(oss.str().c_str());
-  }
-  return ResidueType(nm.c_str());
-}
 
 void Residue::show(std::ostream &out) const
 {
