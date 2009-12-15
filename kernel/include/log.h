@@ -19,6 +19,7 @@
 #include <cassert>
 #include <string>
 #include <sstream>
+#include <map>
 
 IMP_BEGIN_NAMESPACE
 
@@ -151,6 +152,39 @@ inline bool is_log_output(LogLevel l)
       IMP::log_write(oss.str());                             \
     };
 
+
+struct WarningContext {
+public:
+  std::map<std::string, int> data_;
+  void add_warning(std::string str) {
+    if (data_.find(str) == data_.end()) {
+      data_[str]=1;
+    } else {
+      ++data_[str];
+    }
+  }
+  ~WarningContext() {
+    for (std::map<std::string, int>::const_iterator it= data_.begin();
+         it != data_.end(); ++it) {
+      IMP_WARN(it->first << "(" << it->second << " time)" << std::endl);
+    }
+  }
+};
+
+
+//! Write a warning once per context object
+/** Use this macro to, for example, warn on unprocessable fields in a PDB,
+    since they tend to come together.
+
+    Warnings are only output when the context object is destroyed.
+ */
+#define IMP_WARN_ONCE(expr, context) {                       \
+    std::ostringstream oss;                                  \
+    oss << expr << std::flush;                               \
+    context.add_warning(oss.str());                          \
+  }
+
+
 //! Write an entry to a log. This is to be used for objects with no operator<<.
 /** \param[in] expr An expression which writes something to IMP_STREAM.
                     It is prefixed by "WARNING"
@@ -175,7 +209,7 @@ inline bool is_log_output(LogLevel l)
  */
 #define IMP_ERROR_WRITE(expr) {         \
   std::ostream &IMP_STREAM = std::cerr; \
-  std:cerr<< "ERROR ";                  \
+  std::cerr<< "ERROR ";                 \
   expr;                                 \
   std::cerr << std::endl;               \
 }
