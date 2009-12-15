@@ -32,13 +32,13 @@ IMPATOM_BEGIN_NAMESPACE
     can produce warnings on files which are not valid. It will attempt to read
     such files, but all bets are off.
 
+    When reading PDBs, Selector objects can be used to choose to only process
+    certain record types. See the class documentation for more information.
+
     Set the IMP::LogLevel to IMP::VERBOSE to see details of parse errors.
 */
 //!@{
 
-/** Selector objects can be used to define which atoms to read.
-    \see write_pdb
- */
 IMPATOMEXPORT Hierarchy
 read_pdb(std::istream &in,
          Model* model,
@@ -46,9 +46,6 @@ read_pdb(std::istream &in,
          bool select_first_model = true,
          bool ignore_alternatives = true);
 
-/** Selector objects can be used to define which atoms to read.
-    \see write_pdb
- */
 IMPATOMEXPORT Hierarchy
 read_pdb(std::string pdb_file_name,
          Model* model,
@@ -58,9 +55,7 @@ read_pdb(std::string pdb_file_name,
 
 
 
-/** Selector objects can be used to define which atoms to read.
-    \see write_pdb
- */
+
 IMPATOMEXPORT Hierarchies read_multimodel_pdb(std::istream &in, Model *model,
                    const Selector& selector,
                    bool ignore_alternatives=true);
