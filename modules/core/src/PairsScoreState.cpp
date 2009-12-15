@@ -50,8 +50,8 @@ void PairsScoreState::do_after_evaluate(DerivativeAccumulator *da)
 
 ParticlesList PairsScoreState::get_interacting_particles() const {
   ParticlesList ret0, ret1;
-  if (f_) ret0 = IMP::internal::get_interacting_particles(c_, f_.get());
-  if (af_) ret1= IMP::internal::get_interacting_particles(c_, af_.get());
+  if (f_) ret0 = IMP::internal::get_interacting_particles(c_.get(), f_.get());
+  if (af_) ret1= IMP::internal::get_interacting_particles(c_.get(), af_.get());
   ret0.insert(ret0.end(), ret1.begin(), ret1.end());
   return ret0;
 }
@@ -68,10 +68,11 @@ ObjectsTemp PairsScoreState::get_output_objects() const {
 ParticlesTemp PairsScoreState::get_input_particles() const {
   ParticlesTemp ret;
   if (f_) {
-    ret= IMP::internal::get_input_particles(c_, f_.get());
+    ret= IMP::internal::get_input_particles(c_.get(), f_.get());
     IMP_IF_CHECK(USAGE) {
       if (af_) {
-        ParticlesTemp oret= IMP::internal::get_output_particles(c_, af_.get());
+        ParticlesTemp oret= IMP::internal::get_output_particles(c_.get(),
+                                                                af_.get());
         std::sort(ret.begin(), ret.end());
         std::sort(oret.begin(), oret.end());
         ParticlesTemp t;
@@ -85,7 +86,7 @@ ParticlesTemp PairsScoreState::get_input_particles() const {
       }
     }
   } else {
-    ret= IMP::internal::get_output_particles(c_, af_.get());
+    ret= IMP::internal::get_output_particles(c_.get(), af_.get());
   }
   return ret;
 }
@@ -93,11 +94,13 @@ ParticlesTemp PairsScoreState::get_input_particles() const {
 ParticlesTemp PairsScoreState::get_output_particles() const {
   ParticlesTemp ret;
   if (f_) {
-    ret= IMP::internal::get_output_particles(c_, f_.get());
+    ret= IMP::internal::get_output_particles(c_.get(), f_.get());
     IMP_IF_CHECK(USAGE) {
       if (af_) {
-        ParticlesTemp oret= IMP::internal::get_input_particles(c_, af_.get());
-        ParticlesTemp iret=IMP::internal::get_input_particles(c_, f_.get());
+        ParticlesTemp oret= IMP::internal::get_input_particles(c_.get(),
+                                                               af_.get());
+        ParticlesTemp iret=IMP::internal::get_input_particles(c_.get(),
+                                                              f_.get());
         iret.insert(iret.end(), ret.begin(), ret.end());
         std::sort(iret.begin(), iret.end());
         std::sort(oret.begin(), oret.end());
@@ -112,7 +115,7 @@ ParticlesTemp PairsScoreState::get_output_particles() const {
       }
     }
   } else {
-    ret= IMP::internal::get_input_particles(c_, af_.get());
+    ret= IMP::internal::get_input_particles(c_.get(), af_.get());
   }
   return ret;
 }

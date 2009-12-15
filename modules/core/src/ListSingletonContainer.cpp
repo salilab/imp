@@ -36,8 +36,7 @@ ListSingletonContainer
 {
   if (ps.empty()) return;
   for (unsigned int i=0; i< ps.size(); ++i) {
-    IMP_USAGE_CHECK(IMP::internal::ContainerTraits<Particle>
-                    ::is_valid(ps[i]),
+    IMP_USAGE_CHECK(IMP::internal::is_valid(ps[i]),
                     "Passed Particle cannot be NULL (or None)",
                     UsageException);
     IMP_USAGE_CHECK(IMP::internal::get_model(ps[i])
@@ -84,7 +83,7 @@ void ListSingletonContainer::clear_particles() {
 
 
 void ListSingletonContainer::add_particle(Particle* vt) {
-  IMP_USAGE_CHECK(IMP::internal::ContainerTraits<Particle>::is_valid(vt),
+  IMP_USAGE_CHECK(IMP::internal::is_valid(vt),
                   "Passed Particle cannot be NULL (or None)",
                   UsageException);
 
@@ -94,11 +93,13 @@ void ListSingletonContainer::add_particle(Particle* vt) {
   add_to_list(vt);
   IMP_USAGE_CHECK(get_is_added_or_removed_container()
                   || !get_removed_singletons_container()
-                  ->get_contains_particle(vt),
+                  ->get_contains(vt),
                   "You cannot remove and add the same item in one time step.",
                   Particle*Exception);
 }
-void ListSingletonContainer::add_particles(const ParticlesTemp &c) {
+
+void
+ListSingletonContainer::add_particles(const ParticlesTemp &c) {
   if (c.empty()) return;
   if (!get_has_model() && !get_is_added_or_removed_container()) {
     set_model(IMP::internal::get_model(c[0]));
@@ -107,13 +108,12 @@ void ListSingletonContainer::add_particles(const ParticlesTemp &c) {
   add_to_list(cp);
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i=0; i< c.size(); ++i) {
-      IMP_USAGE_CHECK(IMP::internal::ContainerTraits<Particle>
-                      ::is_valid(c[i]),
+      IMP_USAGE_CHECK(IMP::internal::is_valid(c[i]),
                     "Passed Particle cannot be NULL (or None)",
                     UsageException);
       IMP_USAGE_CHECK(get_is_added_or_removed_container()
                       || !get_removed_singletons_container()
-                      ->get_contains_particle(c[i]),
+                      ->get_contains(c[i]),
             "You cannot remove and add the same item in one time step.",
                       Particle*Exception);
 

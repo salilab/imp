@@ -72,7 +72,7 @@ class ConnectivityTests(IMP.test.TestCase):
         pps= r.get_connected_pairs()
         lscore=0
         for p in pps:
-            lscore= lscore+ss.evaluate(p[0], p[1], None)
+            lscore= lscore+ss.evaluate(IMP.ParticlePair(p[0], p[1]), None)
         self.assertInTolerance(score, lscore, .1)
 
 if __name__ == '__main__':

@@ -27,8 +27,10 @@ class TypedPairScoreTests(IMP.test.TestCase):
         pa, pb = self._make_particles(m, (0, 1))
         da = IMP.DerivativeAccumulator()
         # The ordering of the particles should not matter:
-        self.assertEqual(ps.evaluate(pa, pb, da), 5.0)
-        self.assertEqual(ps.evaluate(pb, pa, da), 5.0)
+        pab=IMP.ParticlePair(pa, pb)
+        pba=IMP.ParticlePair(pb, pa)
+        self.assertEqual(ps.evaluate(pab, da), 5.0)
+        self.assertEqual(ps.evaluate(pba, da), 5.0)
 
     def test_invalid_type(self):
         """Check TypedPairScore behavior with invalid particle types"""
@@ -36,9 +38,9 @@ class TypedPairScoreTests(IMP.test.TestCase):
         pa, pb = self._make_particles(m, (0, 1))
         da = IMP.DerivativeAccumulator()
         ps1 = IMP.core.TypedPairScore(typekey, True)
-        self.assertEqual(ps1.evaluate(pa, pb, da), 0.0)
+        self.assertEqual(ps1.evaluate(IMP.ParticlePair(pa, pb), da), 0.0)
         ps2 = IMP.core.TypedPairScore(typekey, False)
-        self.assertRaises(ValueError, ps2.evaluate, pa, pb, da)
+        self.assertRaises(ValueError, ps2.evaluate, IMP.ParticlePair(pa, pb), da)
 
     def test_show(self):
         """Check TypedPairScore::show() method"""

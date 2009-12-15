@@ -39,7 +39,7 @@ class Test(IMP.test.TestCase):
         cpr= IMP.core.ChildrenRefiner(r0.get_traits())
         lps= IMP.misc.LogPairScore()
         cpps= IMP.core.ClosePairsPairScore(cpr, lps, threshold)
-        cpps.evaluate(r0.get_particle(), r1.get_particle(), None)
+        cpps.evaluate(IMP.ParticlePair(r0.get_particle(), r1.get_particle()), None)
         print str(len(lps.get_particle_pairs())) +" pairs"
         for pp in lps.get_particle_pairs():
             pp.show()

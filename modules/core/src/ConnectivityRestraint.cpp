@@ -79,7 +79,8 @@ namespace {
                    std::vector<Edge> &mst) {
     for (unsigned int i=0; i< a->get_number_of_particles(); ++i) {
       for (unsigned int j=0; j<i; ++j) {
-        double d= ps->evaluate(a->get_particle(i), a->get_particle(j), NULL);
+        double d= ps->evaluate(ParticlePair(a->get_particle(i),
+                                            a->get_particle(j)), NULL);
         IMP_LOG(VERBOSE, "ConnectivityRestraint edge between "
                 << a->get_particle(i)->get_name() << " and "
                 << a->get_particle(j)->get_name() << " with weight "
@@ -123,8 +124,8 @@ ConnectivityRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
             << sc_->get_particle(i)->get_name()
             << " and " << sc_->get_particle(j)->get_name() << std::endl);
     if (accum) {
-      sum+= ps_->evaluate(sc_->get_particle(i),
-                          sc_->get_particle(j),
+      sum+= ps_->evaluate(ParticlePair(sc_->get_particle(i),
+                                       sc_->get_particle(j)),
                           accum);
     } else {
       sum += boost::get(boost::edge_weight_t(), g, mst[index]);
@@ -153,8 +154,7 @@ ParticlesList ConnectivityRestraint::get_interacting_particles() const {
   ParticlePairs pps= get_connected_pairs();
   ParticlesList pl(pps.size());
   for (unsigned int i=0; i< pps.size(); ++i) {
-    pl[i]= IMP::internal::get_union(ps_->get_interacting_particles(pps[i][0],
-                                                              pps[i][1]));
+    pl[i]= IMP::internal::get_union(ps_->get_interacting_particles(pps[i]));
   }
   return pl;
 }
@@ -163,8 +163,9 @@ ParticlesTemp ConnectivityRestraint::get_input_particles() const {
   ParticlesTemp ret;
   for (unsigned int i=0; i< sc_->get_number_of_particles(); ++i) {
     for (unsigned int j=0; j<i; ++j) {
-      ParticlesTemp cs= ps_->get_input_particles(sc_->get_particle(i),
-                                                sc_->get_particle(j));
+      ParticlesTemp cs
+        = ps_->get_input_particles(ParticlePair(sc_->get_particle(i),
+                                                sc_->get_particle(j)));
       ret.insert(ret.end(), cs.begin(), cs.end());
       ret.push_back(sc_->get_particle(i));
       ret.push_back(sc_->get_particle(j));

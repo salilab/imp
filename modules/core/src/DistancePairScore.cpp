@@ -18,25 +18,25 @@ IMPCORE_BEGIN_NAMESPACE
 DistancePairScore::DistancePairScore(UnaryFunction *f): f_(f){}
 
 
-Float DistancePairScore::evaluate(Particle *a, Particle *b,
+Float DistancePairScore::evaluate(const ParticlePair &p,
                                   DerivativeAccumulator *da) const
 {
-  return internal::evaluate_distance_pair_score(XYZ(a),
-                                                XYZ(b),
+  return internal::evaluate_distance_pair_score(XYZ(p[0]),
+                                                XYZ(p[1]),
                                                 da, f_.get(),
                                                 boost::lambda::_1);
 }
 
-ParticlesList DistancePairScore::get_interacting_particles(Particle *a,
-                                                           Particle *b) const {
-  return ParticlesList(1, get_input_particles(a,b));
+ParticlesList DistancePairScore
+::get_interacting_particles(const ParticlePair &p) const {
+  return ParticlesList(1, get_input_particles(p));
 }
 
-ParticlesTemp DistancePairScore::get_input_particles(Particle *a,
-                                                     Particle *b) const {
+ParticlesTemp DistancePairScore
+::get_input_particles(const ParticlePair &p) const {
   ParticlesTemp t(2);
-  t[0]=a;
-  t[1]=b;
+  t[0]=p[0];
+  t[1]=p[1];
   return t;
 }
 

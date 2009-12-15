@@ -40,7 +40,7 @@ public:
         It e):
     b_(b), e_(e){}
   bool operator()(ParticlePair vt) const {
-    if (vt.first==vt.second) return true;
+    if (vt[0]==vt[1]) return true;
     for (It c=b_; c != e_; ++c) {
       if ((*c)->get_contains_particle_pair(vt)) return true;
     }

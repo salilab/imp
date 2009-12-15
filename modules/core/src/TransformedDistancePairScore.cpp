@@ -46,14 +46,14 @@ struct TransformParticle
   }
 };
 
-Float TransformedDistancePairScore::evaluate(Particle *a, Particle *b,
+Float TransformedDistancePairScore::evaluate(const ParticlePair &p,
                                              DerivativeAccumulator *da) const
 {
-  TransformParticle tb(t_, ri_, b);
+  TransformParticle tb(t_, ri_, p[1]);
   IMP_LOG(VERBOSE, "Transformed particle is "
           << tb.get_coordinate(0) << " " << tb.get_coordinate(1)
           << " " << tb.get_coordinate(2) << std::endl);
-  Float ret= internal::evaluate_distance_pair_score(XYZ(a),
+  Float ret= internal::evaluate_distance_pair_score(XYZ(p[0]),
                                                     tb,
                                                     da, f_.get(),
                                                     boost::lambda::_1);
@@ -63,17 +63,16 @@ Float TransformedDistancePairScore::evaluate(Particle *a, Particle *b,
 
 
 ParticlesList
-TransformedDistancePairScore::get_interacting_particles(Particle *a,
-                                                        Particle *b) const {
-  return ParticlesList(1, get_input_particles(a,b));
+TransformedDistancePairScore
+::get_interacting_particles(const ParticlePair &p) const {
+  return ParticlesList(1, get_input_particles(p));
 }
 
 ParticlesTemp
-TransformedDistancePairScore::get_input_particles(Particle *a,
-                                                  Particle *b) const {
+TransformedDistancePairScore::get_input_particles(const ParticlePair &p) const {
   ParticlesTemp ret(2);
-  ret[0]=a;
-  ret[1]=b;
+  ret[0]=p[0];
+  ret[1]=p[1];
   return ret;
 }
 

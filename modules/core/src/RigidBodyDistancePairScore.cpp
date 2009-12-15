@@ -57,28 +57,27 @@ namespace {
   }
 }
 
-double RigidBodyDistancePairScore::evaluate(Particle *a, Particle *b,
+double RigidBodyDistancePairScore::evaluate(const ParticlePair &p,
                                             DerivativeAccumulator *dera) const {
-  ParticlePair pp= get_closest_pair(a,b, r0_, r1_, k0_, k1_);
-  return ps_->evaluate(pp[0], pp[1], dera);
+  ParticlePair pp= get_closest_pair(p[0], p[1], r0_, r1_, k0_, k1_);
+  return ps_->evaluate(pp, dera);
 }
 
 
 ParticlesList
-RigidBodyDistancePairScore::get_interacting_particles(Particle *a,
-                                                      Particle *b) const {
-  ParticlePair pp= get_closest_pair(a,b, r0_, r1_, k0_, k1_);
-  return ps_->get_interacting_particles(pp[0], pp[1]);
+RigidBodyDistancePairScore
+::get_interacting_particles(const ParticlePair &p) const {
+  ParticlePair pp= get_closest_pair(p[0],p[1], r0_, r1_, k0_, k1_);
+  return ps_->get_interacting_particles(pp);
 }
 
 ParticlesTemp
-RigidBodyDistancePairScore::get_input_particles(Particle *a,
-                                               Particle *b) const {
+RigidBodyDistancePairScore::get_input_particles(const ParticlePair &p) const {
   ParticlesTemp ret(2);
-  ret[0]=a;
-  ret[1]=b;
-  ParticlesTemp ma= RigidBody(a).get_members();
-  ParticlesTemp mb= RigidBody(b).get_members();
+  ret[0]=p[0];
+  ret[1]=p[1];
+  ParticlesTemp ma= RigidBody(p[0]).get_members();
+  ParticlesTemp mb= RigidBody(p[1]).get_members();
   ret.insert(ret.end(), ma.begin(), ma.end());
   ret.insert(ret.end(), mb.begin(), mb.end());
   return ret;

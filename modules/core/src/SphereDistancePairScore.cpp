@@ -29,34 +29,34 @@ struct Shift
 };
 }
 
-Float SphereDistancePairScore::evaluate(Particle *a, Particle *b,
+Float SphereDistancePairScore::evaluate(const ParticlePair &p,
                                         DerivativeAccumulator *da) const
 {
-  IMP_USAGE_CHECK(a->has_attribute(radius_), "Particle " << a->get_name()
+  IMP_USAGE_CHECK(p[0]->has_attribute(radius_), "Particle " << p[0]->get_name()
             << "missing radius in SphereDistancePairScore",
             ValueException);
-  IMP_USAGE_CHECK(b->has_attribute(radius_), "Particle " << b->get_name()
+  IMP_USAGE_CHECK(p[1]->has_attribute(radius_), "Particle " << p[1]->get_name()
             << "missing radius in SphereDistancePairScore",
             ValueException);
-  Float ra = a->get_value(radius_);
-  Float rb = b->get_value(radius_);
-  return internal::evaluate_distance_pair_score(XYZ(a),
-                                                XYZ(b),
+  Float ra = p[0]->get_value(radius_);
+  Float rb = p[1]->get_value(radius_);
+  return internal::evaluate_distance_pair_score(XYZ(p[0]),
+                                                XYZ(p[1]),
                                                 da, f_.get(),
                                                 boost::lambda::_1-(ra+rb));
 }
 
 ParticlesList
-SphereDistancePairScore::get_interacting_particles(Particle *a,
-                                                   Particle *b) const {
-  return ParticlesList(1, get_input_particles(a,b));
+SphereDistancePairScore
+::get_interacting_particles(const ParticlePair &p) const {
+  return ParticlesList(1, get_input_particles(p));
 }
 
-ParticlesTemp SphereDistancePairScore::get_input_particles(Particle *a,
-                                                          Particle *b) const {
+ParticlesTemp SphereDistancePairScore
+::get_input_particles(const ParticlePair &p) const {
   ParticlesTemp ret(2);
-  ret[0]=a;
-  ret[1]=b;
+  ret[0]=p[0];
+  ret[1]=p[1];
   return ret;
 }
 
@@ -82,37 +82,37 @@ NormalizedSphereDistancePairScore
 }
 
 
-Float NormalizedSphereDistancePairScore::evaluate(Particle *a, Particle *b,
+Float NormalizedSphereDistancePairScore::evaluate(const ParticlePair &p,
                                         DerivativeAccumulator *da) const
 {
-  IMP_USAGE_CHECK(a->has_attribute(radius_), "Particle " << a->get_name()
+  IMP_USAGE_CHECK(p[0]->has_attribute(radius_), "Particle " << p[0]->get_name()
             << "missing radius in NormalizedSphereDistancePairScore",
             ValueException);
-  IMP_USAGE_CHECK(b->has_attribute(radius_), "Particle " << b->get_name()
+  IMP_USAGE_CHECK(p[1]->has_attribute(radius_), "Particle " << p[1]->get_name()
             << "missing radius in NormalizedSphereDistancePairScore",
             ValueException);
-  Float ra = a->get_value(radius_);
-  Float rb = b->get_value(radius_);
+  Float ra = p[0]->get_value(radius_);
+  Float rb = p[1]->get_value(radius_);
   Float mr= std::min(ra, rb);
   // lambda is inefficient due to laziness
-  return internal::evaluate_distance_pair_score(XYZ(a),
-                                                XYZ(b),
+  return internal::evaluate_distance_pair_score(XYZ(p[0]),
+                                                XYZ(p[1]),
                                                 da, f_.get(),
                                          boost::lambda::_1/mr-(ra+rb)/mr);
 }
 
 ParticlesList
-NormalizedSphereDistancePairScore::get_interacting_particles(Particle *a,
-                                                       Particle *b) const {
-  return ParticlesList(1, get_input_particles(a,b));
+NormalizedSphereDistancePairScore
+::get_interacting_particles(const ParticlePair &p) const {
+  return ParticlesList(1, get_input_particles(p));
 }
 
 ParticlesTemp
-NormalizedSphereDistancePairScore::get_input_particles(Particle *a,
-                                                       Particle *b) const {
+NormalizedSphereDistancePairScore
+::get_input_particles(const ParticlePair &p) const {
   ParticlesTemp ret(2);
-  ret[0]=a;
-  ret[1]=b;
+  ret[0]=p[0];
+  ret[1]=p[1];
   return ret;
 }
 

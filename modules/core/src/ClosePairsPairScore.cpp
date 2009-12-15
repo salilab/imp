@@ -72,26 +72,24 @@ namespace {
   }
 }
 
-double ClosePairsPairScore::evaluate(Particle *a, Particle *b,
-                                    DerivativeAccumulator *da) const
+double ClosePairsPairScore::evaluate(const ParticlePair &p,
+                                     DerivativeAccumulator *da) const
 {
-  ParticlePairsTemp ppt= get_close_pairs(a,b, th_, r_);
+  ParticlePairsTemp ppt= get_close_pairs(p[0], p[1], th_, r_);
   double ret=0;
   for (unsigned int i=0; i< ppt.size(); ++i) {
-    ret+= f_->evaluate(ppt[i][0], ppt[i][1], da);
+    ret+= f_->evaluate(ppt[i], da);
   }
   return ret;
 }
 
 ParticlesList
-ClosePairsPairScore::get_interacting_particles(Particle *a,
-                                               Particle *b) const {
-  ParticlePairsTemp ppt= get_close_pairs(a,b, th_, r_);
+ClosePairsPairScore::get_interacting_particles(const ParticlePair &p) const {
+  ParticlePairsTemp ppt= get_close_pairs(p[0], p[1], th_, r_);
   ParticlesList ret;
   for (unsigned int i=0; i< ppt.size(); ++i) {
     ret.push_back( IMP::internal::get_union(
-                         f_->get_interacting_particles(ppt[i][0],
-                                                       ppt[i][1])));
+                         f_->get_interacting_particles(ppt[i])));
   }
   return ret;
 }
@@ -115,14 +113,14 @@ namespace {
   }
 }
 
-ParticlesTemp ClosePairsPairScore::get_input_particles(Particle *a,
-                                                       Particle *b) const {
+ParticlesTemp ClosePairsPairScore
+::get_input_particles(const ParticlePair &p) const {
   ParticlesTemp ret;
-  ParticlesTemp ea=expand(a, r_);
-  ParticlesTemp eb=expand(b, r_);
+  ParticlesTemp ea=expand(p[0], r_);
+  ParticlesTemp eb=expand(p[1], r_);
   for (unsigned int i=0; i< ea.size(); ++i) {
     for (unsigned int j=0; j< eb.size(); ++j) {
-      ParticlesTemp c= f_->get_input_particles(ea[i], eb[j]);
+      ParticlesTemp c= f_->get_input_particles(ParticlePair(ea[i], eb[j]));
       ret.insert(ret.end(), c.begin(), c.end());
     }
   }

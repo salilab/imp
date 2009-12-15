@@ -11,10 +11,12 @@ files = [
          'graph_base.h',
          'hierarchy_helpers.h',
          'pair_helpers.h',
+         'quad_helpers.h',
          'remove_pointers.h',
          'rigid_bodies.h',
          'rigid_body_tree.h',
          'singleton_helpers.h',
+         'triplet_helpers.h',
          'truncated_harmonic.h',
          'utility.h',
         ]

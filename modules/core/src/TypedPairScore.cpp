@@ -9,17 +9,17 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-Float TypedPairScore::evaluate(Particle *a, Particle *b,
+Float TypedPairScore::evaluate(const ParticlePair &p,
                                DerivativeAccumulator *da) const
 {
-  if (!a->has_attribute(typekey_)) {
-    set_particle_type(a);
+  if (!p[0]->has_attribute(typekey_)) {
+    set_particle_type(p[0]);
   }
-  if (!b->has_attribute(typekey_)) {
-    set_particle_type(b);
+  if (!p[1]->has_attribute(typekey_)) {
+    set_particle_type(p[1]);
   }
-  Int atype = a->get_value(typekey_);
-  Int btype = b->get_value(typekey_);
+  Int atype = p[0]->get_value(typekey_);
+  Int btype = p[1]->get_value(typekey_);
 
   ScoreMap::const_iterator psit =
       score_map_.find(std::pair<Int,Int>(std::min(atype, btype),
@@ -35,7 +35,7 @@ Float TypedPairScore::evaluate(Particle *a, Particle *b,
     }
   } else {
     PairScore *ps = psit->second.get();
-    return ps->evaluate(a, b, da);
+    return ps->evaluate(p, da);
   }
 }
 
@@ -44,16 +44,15 @@ TypedPairScore::TypedPairScore(IntKey typekey, bool allow_invalid_types)
     allow_invalid_types_(allow_invalid_types) {}
 
 
-ParticlesList TypedPairScore::get_interacting_particles(Particle *a,
-                                                        Particle *b) const {
-  return ParticlesList(1, get_input_particles(a,b));
+ParticlesList TypedPairScore
+::get_interacting_particles(const ParticlePair &p) const {
+  return ParticlesList(1, get_input_particles(p));
 }
 
-ParticlesTemp TypedPairScore::get_input_particles(Particle *a,
-                                                  Particle *b) const {
+ParticlesTemp TypedPairScore::get_input_particles(const ParticlePair &p) const {
   ParticlesTemp ret(2);
-  ret[0]=a;
-  ret[1]=b;
+  ret[0]=p[0];
+  ret[1]=p[1];
   return ret;
 }
 

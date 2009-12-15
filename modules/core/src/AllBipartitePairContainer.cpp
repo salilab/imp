@@ -23,7 +23,7 @@
   for (unsigned int i=0; i< sza; ++i) {                                 \
     Particle *a= a_->get_particle(i);                                   \
     for (unsigned int j=0; j< szb; ++j) {                               \
-      Particle *b= b_->get_particle(j);                                 \
+      ParticlePair p(a, b_->get_particle(j));                           \
       expr;                                                             \
     }                                                                   \
   }
@@ -99,9 +99,9 @@ ParticlePair AllBipartitePairContainer
 
 bool
 AllBipartitePairContainer
-::get_contains_particle_pair(ParticlePair vt) const {
-  return a_->get_contains_particle(vt.first)
-      && b_->get_contains_particle(vt.second);
+::get_contains_particle_pair(const ParticlePair &p) const {
+  return a_->get_contains_particle(p[0])
+      && b_->get_contains_particle(p[1]);
 }
 
 void AllBipartitePairContainer::show(std::ostream &out) const {

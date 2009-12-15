@@ -19,7 +19,7 @@
   for (unsigned int i=0; i< szc; ++i) {                                 \
     Particle *a= c_->get_particle(i);                                   \
     for (unsigned int j=0; j< i; ++j) {                                 \
-      Particle *b= c_->get_particle(j);                                 \
+      ParticlePair p(a, c_->get_particle(j));                           \
       expr;                                                             \
     }                                                                   \
   }
@@ -96,9 +96,9 @@ ParticlePair AllPairContainer::get_particle_pair(unsigned int i) const {
 }
 
 bool
-AllPairContainer::get_contains_particle_pair(ParticlePair vt) const {
-  return c_->get_contains_particle(vt.first)
-      && c_->get_contains_particle(vt.second);
+AllPairContainer::get_contains_particle_pair(const ParticlePair &p) const {
+  return c_->get_contains_particle(p[0])
+      && c_->get_contains_particle(p[1]);
 }
 
 void AllPairContainer::show(std::ostream &out) const {

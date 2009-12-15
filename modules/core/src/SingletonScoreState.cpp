@@ -17,9 +17,9 @@ IMPCORE_BEGIN_NAMESPACE
 
 SingletonScoreState::SingletonScoreState(SingletonModifier *before,
                                          SingletonModifier *after,
-                                         Particle *a,
+                                         Particle* vt,
                                          std::string name):
-  ScoreState(name), v_(a){
+  ScoreState(name), v_(vt){
   if (before) f_=before;
   if (after) af_=after;
 }
@@ -31,8 +31,7 @@ void SingletonScoreState::do_before_evaluate()
   if (!f_) return;
   IMP_LOG(TERSE, "Begin SingletonsScoreState::update" << std::endl);
   IMP_CHECK_OBJECT(f_);
-  IMP::internal::ContainerTraits<Particle>
-    ::apply(f_.get(), v_);
+  f_->apply(v_);
   IMP_LOG(TERSE, "End SingletonsScoreState::update" << std::endl);
 }
 
@@ -43,16 +42,15 @@ void SingletonScoreState::do_after_evaluate(DerivativeAccumulator *da)
   IMP_LOG(TERSE, "Begin SingletonsScoreState::after_evaluate" << std::endl);
   IMP_CHECK_OBJECT(af_);
   if (da) {
-    IMP::internal::ContainerTraits<Particle>
-      ::apply(af_.get(), v_, *da);
+    af_->apply(v_, *da);
   }
   IMP_LOG(TERSE, "End SingletonsScoreState::after_evaluate" << std::endl);
 }
 
 ParticlesList SingletonScoreState::get_interacting_particles() const {
   ParticlesList ret0, ret1;
-  if (f_) ret0= IMP::internal::get_interacting_particles(v_, f_.get());
-  if (af_) ret1= IMP::internal::get_interacting_particles(v_, af_.get());
+  if (f_) ret0= f_->get_interacting_particles(v_);
+  if (af_) ret1= af_->get_interacting_particles(v_);
   ret0.insert(ret0.end(), ret1.begin(), ret1.end());
   return ret0;
 }
@@ -68,10 +66,10 @@ ObjectsTemp SingletonScoreState::get_output_objects() const {
 ParticlesTemp SingletonScoreState::get_input_particles() const {
   ParticlesTemp ret;
   if (f_) {
-    ret= IMP::internal::get_input_particles(v_, f_.get());
+    ret= f_->get_input_particles(v_);
     IMP_IF_CHECK(USAGE) {
       if (af_) {
-        ParticlesTemp oret= IMP::internal::get_output_particles(v_, af_.get());
+        ParticlesTemp oret= af_->get_input_particles(v_);
         std::sort(ret.begin(), ret.end());
         std::sort(oret.begin(), oret.end());
         ParticlesTemp t;
@@ -84,7 +82,7 @@ ParticlesTemp SingletonScoreState::get_input_particles() const {
       }
     }
   } else {
-    ret= IMP::internal::get_output_particles(v_, af_.get());
+    ret= af_->get_output_particles(v_);
   }
   return ret;
 }
@@ -92,11 +90,11 @@ ParticlesTemp SingletonScoreState::get_input_particles() const {
 ParticlesTemp SingletonScoreState::get_output_particles() const {
   ParticlesTemp ret;
   if (f_) {
-    ret= IMP::internal::get_output_particles(v_, f_.get());
+    ret= f_->get_output_particles(v_);
     IMP_IF_CHECK(USAGE) {
       if (af_) {
-        ParticlesTemp oret= IMP::internal::get_input_particles(v_, af_.get());
-        ParticlesTemp iret=IMP::internal::get_input_particles(v_, f_.get());
+        ParticlesTemp oret= af_->get_input_particles(v_);
+        ParticlesTemp iret=f_->get_input_particles(v_);
         iret.insert(iret.end(), ret.begin(), ret.end());
         std::sort(iret.begin(), iret.end());
         std::sort(oret.begin(), oret.end());
@@ -111,7 +109,7 @@ ParticlesTemp SingletonScoreState::get_output_particles() const {
       }
     }
   } else {
-    ret= IMP::internal::get_input_particles(v_, af_.get());
+    ret= af_->get_input_particles(v_);
   }
   return ret;
 }

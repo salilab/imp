@@ -20,8 +20,8 @@ class DistanceTests(IMP.test.TestCase):
         tps.set_was_owned(True)
         d0.set_coordinates(IMP.algebra.Vector3D(2,3,4))
         d1.set_coordinates(IMP.algebra.Vector3D(2,2,4))
-        self.assertEqual(tps.evaluate(p0, p1, None), 0)
-        self.assert_(tps.evaluate(p1, p0, None) != 0)
+        self.assertEqual(tps.evaluate(IMP.ParticlePair(p0, p1), None), 0)
+        self.assert_(tps.evaluate(IMP.ParticlePair(p1, p0), None) != 0)
 
         print "test rotation"
         rot= IMP.algebra.rotation_from_matrix(0, 0,-1,
@@ -30,8 +30,8 @@ class DistanceTests(IMP.test.TestCase):
         tr= IMP.algebra.Transformation3D(rot, t)
         tps.set_transformation(tr)
         d1.set_coordinates(IMP.algebra.Vector3D(4, 2, -2))
-        self.assertInTolerance(tps.evaluate(p0, p1, None), 0, .01)
-        self.assert_(tps.evaluate(p1, p0, None) != 0)
+        self.assertInTolerance(tps.evaluate(IMP.ParticlePair(p0, p1), None), 0, .01)
+        self.assert_(tps.evaluate(IMP.ParticlePair(p1, p0), None) != 0)
         t=IMP.algebra.Vector3D(0,0,0)
         rot= IMP.algebra.rotation_from_matrix(0,-1, 0,
                                               1, 0, 0,
@@ -42,7 +42,7 @@ class DistanceTests(IMP.test.TestCase):
         # clear derivs
         print "test derivs"
         m.evaluate(True)
-        tps.evaluate(p0, p1, IMP.DerivativeAccumulator(1))
+        tps.evaluate(IMP.ParticlePair(p0, p1), IMP.DerivativeAccumulator(1))
         print d0.get_derivative(0)
         print d0.get_derivative(1)
         print d0.get_derivative(2)

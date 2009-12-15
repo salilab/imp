@@ -21,15 +21,9 @@ class IMPCOREEXPORT AngleTripletScore : public TripletScore
 {
   IMP::internal::OwnerPointer<UnaryFunction> f_;
 public:
-  //! Score the angle (in radius) using f
+  //! Score the angle (in radians) using f
   AngleTripletScore(UnaryFunction *f);
-  virtual ~AngleTripletScore(){}
-  virtual Float evaluate(Particle *a, Particle *b, Particle *c,
-                         DerivativeAccumulator *da) const;
-  virtual void show(std::ostream &out=std::cout) const;
-  VersionInfo get_version_info() const {
-    return get_module_version_info();
-  }
+  IMP_TRIPLET_SCORE(AngleTripletScore, get_module_version_info());
 };
 
 IMPCORE_END_NAMESPACE

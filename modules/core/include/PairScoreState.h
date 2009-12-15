@@ -43,7 +43,7 @@ public:
       evaluate.
    */
   PairScoreState(PairModifier *before,
-                      PairModifier *after, Particle *a, Particle *b,
+                      PairModifier *after, const ParticlePair& vt,
                       std::string name="PairScoreState %1%");
 
   //! Apply this modifier to all the elements after an evaluate

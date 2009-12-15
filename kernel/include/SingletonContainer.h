@@ -77,7 +77,7 @@ public:
   /** \note This function may be linear. Be aware of the complexity
       bounds of your particular container.
    */
-  virtual bool get_contains_particle(Particle* p) const =0;
+  virtual bool get_contains_particle(Particle* v) const =0;
   //! return the number of particles in the container
   /** \note this isn't always constant time
    */
@@ -177,6 +177,14 @@ public:
 
   //! Get all the Particles from the container
   virtual ParticlesTemp get_particles() const=0;
+
+#ifndef IMP_DOXYGEN
+  Particle* get(unsigned int i) const {return get_particle(i);}
+  bool get_contains(Particle* v) const {
+    return get_contains_particle(v);
+  }
+  unsigned int get_number() const {return get_number_of_particles();}
+#endif
 
   IMP_REF_COUNTED_DESTRUCTOR(SingletonContainer)
 };

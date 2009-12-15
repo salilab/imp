@@ -28,50 +28,47 @@ namespace {
   }
 }
 
-Float RefinedPairsPairScore::evaluate(Particle *a, Particle *b,
+Float RefinedPairsPairScore::evaluate(const ParticlePair &p,
                                     DerivativeAccumulator *da) const
 {
-  Particles ps[2]={get_set(a, r_), get_set(b, r_)};
+  Particles ps[2]={get_set(p[0], r_), get_set(p[1], r_)};
   Float ret=0;
   for (unsigned int i=0; i< ps[0].size(); ++i) {
     for (unsigned int j=0; j< ps[1].size(); ++j) {
-      ret+=f_->evaluate(ps[0][i], ps[1][j], da);
+      ret+=f_->evaluate(ParticlePair(ps[0][i], ps[1][j]), da);
     }
   }
   return ret;
 }
 
 ParticlesList
-RefinedPairsPairScore::get_interacting_particles(Particle *a,
-                                                 Particle *b) const {
-  Particles ps[2]={get_set(a, r_), get_set(b, r_)};
+RefinedPairsPairScore::get_interacting_particles(const ParticlePair &p) const {
+  Particles ps[2]={get_set(p[0], r_), get_set(p[1], r_)};
   ParticlesList ret;
   for (unsigned int i=0; i< ps[0].size(); ++i) {
     for (unsigned int j=0; j< ps[1].size(); ++j) {
-      ret.push_back(IMP::internal::get_union(IMP::internal
-                            ::get_interacting_particles(ParticlePair(ps[0][i],
-                                                                     ps[1][j]),
-                                                          f_.get())));
+      ParticlePair pp(ps[0][i],ps[1][j]);
+      ret.push_back(IMP::internal::get_union(
+                       f_->get_interacting_particles(pp)));
     }
   }
   return ret;
 }
 
-ParticlesTemp RefinedPairsPairScore::get_input_particles(Particle *a,
-                                                        Particle *b) const {
-  Particles ps[2]={get_set(a, r_), get_set(b, r_)};
+ParticlesTemp
+RefinedPairsPairScore::get_input_particles(const ParticlePair &p) const {
+  Particles ps[2]={get_set(p[0], r_), get_set(p[1], r_)};
   ParticlesTemp ret;
   for (unsigned int i=0; i< ps[0].size(); ++i) {
     for (unsigned int j=0; j< ps[1].size(); ++j) {
       ParticlesTemp cps
-        = IMP::internal::get_input_particles(ParticlePair(ps[0][i],
-                                                         ps[1][j]),
-                                            f_.get());
+        = f_->get_input_particles(ParticlePair(ps[0][i],
+                                               ps[1][j]));
       ret.insert(ret.end(), cps.begin(), cps.end());
     }
   }
-  ret.push_back(a);
-  ret.push_back(b);
+  ret.push_back(p[0]);
+  ret.push_back(p[1]);
   return ret;
 }
 

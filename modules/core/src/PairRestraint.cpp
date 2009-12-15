@@ -17,17 +17,13 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-namespace {
-  typedef IMP::internal::ContainerTraits<ParticlePair> Traits;
-}
-
 PairRestraint
 ::PairRestraint(PairScore *ss,
-                     Particle *a, Particle *b,
+                     const ParticlePair& vt,
                      std::string name):
   Restraint(name),
   ss_(ss),
-  v_(ParticlePair(a,b)),
+  v_(vt),
   score_(std::numeric_limits<double>::quiet_NaN())
 {
 }
@@ -37,7 +33,7 @@ double PairRestraint
 {
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(ss_);
-  score_ = Traits::evaluate(ss_, v_, accum);
+  score_ = ss_->evaluate(v_, accum);
 
   return score_;
 }
@@ -45,20 +41,20 @@ double PairRestraint
 double PairRestraint
 ::unprotected_incremental_evaluate(DerivativeAccumulator *accum) const
 {
-  if (IMP::internal::ContainerTraits<ParticlePair>::is_dirty(v_)) {
-    score_+=Traits::evaluate_change(ss_, v_, accum);
+  if (IMP::internal::is_dirty(v_)) {
+    score_+=ss_->evaluate_change(v_, accum);
   }
   return score_;
 }
 
 ParticlesList PairRestraint::get_interacting_particles() const
 {
-  return IMP::internal::get_interacting_particles(v_, ss_.get());
+  return ss_->get_interacting_particles(v_);
 }
 
 ParticlesTemp PairRestraint::get_input_particles() const
 {
-  return IMP::internal::get_input_particles(v_, ss_.get());
+  return ss_->get_input_particles(v_);
 }
 
 ObjectsTemp PairRestraint::get_input_objects() const

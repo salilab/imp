@@ -48,9 +48,8 @@ inline void LogPairScore::show(std::ostream &out) const {
   out << "LogPairScore";
 }
 
-inline Float LogPairScore::evaluate(Particle *a, Particle *b,
-                             DerivativeAccumulator *) const {
-  ParticlePair pp(a,b);
+inline Float LogPairScore::evaluate(const ParticlePair &pp,
+                                    DerivativeAccumulator *) const {
   if (map_.find(pp) == map_.end()) {
     map_[pp]=0;
   }
@@ -59,16 +58,15 @@ inline Float LogPairScore::evaluate(Particle *a, Particle *b,
 }
 
 inline ParticlesList
-LogPairScore::get_interacting_particles(Particle *a,
-                                        Particle *b) const {
-  return ParticlesList(1, get_input_particles(a,b));
+LogPairScore::get_interacting_particles(const ParticlePair &p) const {
+  return ParticlesList(1, get_input_particles(p));
 }
 
-inline ParticlesTemp LogPairScore::get_input_particles(Particle *a,
-                                                      Particle *b) const {
+inline ParticlesTemp
+LogPairScore::get_input_particles(const ParticlePair &p) const {
   ParticlesTemp t(2);
-  t[0]= a;
-  t[1]= b;
+  t[0]= p[0];
+  t[1]= p[1];
   return t;
 }
 
