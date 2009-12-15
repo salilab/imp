@@ -76,14 +76,16 @@ double GroupnamesRestraint
 ParticlesList GroupnamesRestraint::get_interacting_particles() const
 {
   IMP_OBJECT_LOG;
-  ParticlesList ret0= IMP::internal::get_interacting_particles(pc_, ss_.get());
+  ParticlesList ret0= IMP::internal::get_interacting_particles(pc_.get(),
+                                                               ss_.get());
   return ret0;
 }
 
 ParticlesTemp GroupnamesRestraint::get_input_particles() const
 {
   IMP_OBJECT_LOG;
-  ParticlesTemp ret0= IMP::internal::get_input_particles(pc_, ss_.get());
+  ParticlesTemp ret0= IMP::internal::get_input_particles(pc_.get(),
+                                                         ss_.get());
   return ret0;
 }
 

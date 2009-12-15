@@ -15,6 +15,7 @@
 #include "Interaction.h"
 #include "Particle.h"
 #include "DerivativeAccumulator.h"
+#include "internal/container_helpers.h"
 
 IMP_BEGIN_NAMESPACE
 
@@ -31,8 +32,16 @@ class IMPEXPORT GroupnameScore : public Object
 public:
   GroupnameScore(std::string name="GroupnameScore %1%");
   //! Compute the score and the derivative if needed.
-  virtual double evaluate(ClassnameArguments,
+  virtual double evaluate(PassValue vt,
                           DerivativeAccumulator *da) const = 0;
+
+#if !defined(IMP_DOXYGEN) && Arity != 1
+  // backwards compatibility
+  virtual double evaluate(ClassnameArguments,
+                          DerivativeAccumulator *da) const {
+    return evaluate(Classname(ClassnameArgumentsAsArguments), da);
+  }
+#endif
 
   /** An implementations
       for this is provided by the IMP_SINGLETON_SCORE,
@@ -48,12 +57,12 @@ public:
       IMP_PAIR_SCORE macros.
       @{
   */
-  virtual double evaluate_change(ClassnameArguments,
+  virtual double evaluate_change(PassValue vt,
                                  DerivativeAccumulator *da) const = 0;
 
   virtual double evaluate_change(const ClassnamesTemp &o,
                                  DerivativeAccumulator *da) const = 0;
-  virtual double evaluate_prechange(ClassnameArguments,
+  virtual double evaluate_prechange(PassValue vt,
                                     DerivativeAccumulator *da) const = 0;
   virtual double evaluate_prechange(const ClassnamesTemp &o,
                                     DerivativeAccumulator *da) const = 0;
@@ -63,11 +72,11 @@ public:
   /** Get the set of interaction induced by applying to the
       argument. */
   virtual ParticlesList
-    get_interacting_particles(ClassnameArguments) const =0;
+    get_interacting_particles(PassValue vt) const =0;
 
   /** Get the set of particles read when applied to the arguments. */
   virtual ParticlesTemp
-    get_input_particles(ClassnameArguments) const =0;
+    get_input_particles(PassValue vt) const =0;
 
   IMP_REF_COUNTED_DESTRUCTOR(GroupnameScore)
 };

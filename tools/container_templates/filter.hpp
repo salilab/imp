@@ -34,15 +34,15 @@ public:
   /** \note This function may be linear. Be aware of the complexity
       bounds of your particular filter.
    */
-  virtual bool get_contains_classname(Value p) const =0;
+  virtual bool get_contains_classname(PassValue p) const =0;
 
   /** \name Interactions
       Return the set of particles used when applied to the passed
       list.
       @{
   */
-  virtual ParticlesTemp get_input_particles(Value p) const=0;
-  virtual ObjectsTemp get_input_objects(Value p) const=0;
+  virtual ParticlesTemp get_input_particles(PassValue p) const=0;
+  virtual ObjectsTemp get_input_objects(PassValue p) const=0;
   /** @} */
 
   IMP_REF_COUNTED_DESTRUCTOR(GroupnameFilter)

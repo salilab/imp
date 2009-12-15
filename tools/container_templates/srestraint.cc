@@ -17,17 +17,13 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-namespace {
-  typedef IMP::internal::ContainerTraits<Classname> Traits;
-}
-
 GroupnameRestraint
 ::GroupnameRestraint(GroupnameScore *ss,
-                     ClassnameArguments,
+                     PassValue vt,
                      std::string name):
   Restraint(name),
   ss_(ss),
-  v_(FromClassnameArguments),
+  v_(vt),
   score_(std::numeric_limits<double>::quiet_NaN())
 {
 }
@@ -37,7 +33,7 @@ double GroupnameRestraint
 {
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(ss_);
-  score_ = Traits::evaluate(ss_, v_, accum);
+  score_ = ss_->evaluate(v_, accum);
 
   return score_;
 }
@@ -45,20 +41,20 @@ double GroupnameRestraint
 double GroupnameRestraint
 ::unprotected_incremental_evaluate(DerivativeAccumulator *accum) const
 {
-  if (IMP::internal::ContainerTraits<Classname>::is_dirty(v_)) {
-    score_+=Traits::evaluate_change(ss_, v_, accum);
+  if (IMP::internal::is_dirty(v_)) {
+    score_+=ss_->evaluate_change(v_, accum);
   }
   return score_;
 }
 
 ParticlesList GroupnameRestraint::get_interacting_particles() const
 {
-  return IMP::internal::get_interacting_particles(v_, ss_.get());
+  return ss_->get_interacting_particles(v_);
 }
 
 ParticlesTemp GroupnameRestraint::get_input_particles() const
 {
-  return IMP::internal::get_input_particles(v_, ss_.get());
+  return ss_->get_input_particles(v_);
 }
 
 ObjectsTemp GroupnameRestraint::get_input_objects() const
