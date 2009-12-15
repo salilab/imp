@@ -37,6 +37,7 @@ void ForceFieldParameters::add_radii(Hierarchy mhd, FloatKey radius_key) const
     core::XYZR::setup_particle(ps[i], radius, radius_key);
   }
   // TODO: handle N-term and C-term
+  warn_context_.dump_warnings();
 }
 
 Float ForceFieldParameters::get_radius(
@@ -47,8 +48,8 @@ Float ForceFieldParameters::get_radius(
      force_field_2_vdW_.end()) {
     return force_field_2_vdW_.find(force_field_atom_type)->second.second;
   }
-  IMP_WARN("Radius not found for type \""
-           << force_field_atom_type << "\"" << std::endl);
+  IMP_WARN_ONCE("Radius not found for type \""
+                << force_field_atom_type << "\"" << std::endl, warn_context_);
   return 0;
 }
 
@@ -75,6 +76,7 @@ void ForceFieldParameters::add_bonds(Hierarchy mhd) const {
       add_bonds(rs[i].get_as_residue(), rn.get_as_residue());
     }
   }
+  warn_context_.dump_warnings();
 }
 
 
@@ -122,8 +124,9 @@ void ForceFieldParameters::add_bonds(Residue rd) const {
     Atom ad1 = get_atom(rd, bonds[i].type1_);
     Atom ad2 = get_atom(rd, bonds[i].type2_);
     if(!ad1 || !ad2) {
-      IMP_WARN("In residue " << rd << " could not find atom " << bonds[i].type1_
-               << " or " << bonds[i].type2_ << std::endl);
+      IMP_WARN_ONCE("In residue " << rd << " could not find atom "
+                    << bonds[i].type1_
+                    << " or " << bonds[i].type2_ << std::endl, warn_context_);
       continue;
     }
 
@@ -147,7 +150,7 @@ String ForceFieldParameters::get_force_field_atom_type(
   static String empty_atom_type;
   if(atom_res_type_2_force_field_atom_type_.find(residue_type) ==
      atom_res_type_2_force_field_atom_type_.end()) {
-    std::cerr << "Warning! Residue not found " << residue_type << std::endl;
+    IMP_WARN_ONCE("Residue not found " << residue_type, warn_context_);
     return empty_atom_type;
   }
 
@@ -155,8 +158,8 @@ String ForceFieldParameters::get_force_field_atom_type(
   const AtomTypeMap& atom_map =
     atom_res_type_2_force_field_atom_type_.find(residue_type)->second;
   if(atom_map.find(atom_type) == atom_map.end()) {
-    IMP_WARN("Atom not found " << atom_type
-             << " residue " << residue_type << std::endl);
+    IMP_WARN_ONCE("Atom not found " << atom_type
+                  << " residue " << residue_type << std::endl, warn_context_);
     return empty_atom_type;
   }
 
