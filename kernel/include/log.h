@@ -154,20 +154,24 @@ inline bool is_log_output(LogLevel l)
 
 
 struct WarningContext {
+  mutable std::map<std::string, int> data_;
 public:
-  std::map<std::string, int> data_;
-  void add_warning(std::string str) {
+  void add_warning(std::string str) const {
     if (data_.find(str) == data_.end()) {
       data_[str]=1;
     } else {
       ++data_[str];
     }
   }
-  ~WarningContext() {
+  void dump_warnings() const {
     for (std::map<std::string, int>::const_iterator it= data_.begin();
          it != data_.end(); ++it) {
-      IMP_WARN(it->first << "(" << it->second << " time)" << std::endl);
+      IMP_WARN(it->first << "(" << it->second << " times)" << std::endl);
     }
+    data_.clear();
+  }
+  ~WarningContext() {
+    dump_warnings();
   }
 };
 
