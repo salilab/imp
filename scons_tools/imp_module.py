@@ -273,7 +273,7 @@ def IMPModuleExamples(env, files, required_modules=[]):
     module_alias(env, 'install-examples', install)
     add_to_global_alias(env, 'doc-install', 'install-examples')
     module_alias(env, 'test-examples', test)
-    module_alias(env, 'test-examples', build)
+    module_requires(env, test, 'examples')
     add_to_global_alias(env, 'test', 'test-examples')
     module_alias(env, 'dox-examples', dox)
     module_requires(env, test, 'python')
