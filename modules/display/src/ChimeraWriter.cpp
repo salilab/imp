@@ -136,7 +136,7 @@ bool ChimeraWriter::process(EllipsoidGeometry *g,
                             Color color, std::string name) {
   cleanup(name, false, false);
   get_stream() << "try:\n";
-  algebra::Vector4D q=g->get_rotation().get_quaternion();
+  algebra::VectorD<4> q=g->get_rotation().get_quaternion();
   get_stream() << "  chimera.runCommand(\"shape ellipsoid radius "
                << g->get_radius(0) << "," << g->get_radius(1)
                << "," << g->get_radius(2) << " qrotation "

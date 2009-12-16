@@ -52,6 +52,8 @@ class TestBL(IMP.test.TestCase):
         nm=self.get_tmp_file_name("test.chimera.py")
         w=IMP.display.ChimeraWriter("hi.py")
         w.set_file_name(nm)
+        e= IMP.algebra.Ellipsoid3D(IMP.algebra.Vector3D(10,10,10), 1,2,3, IMP.algebra.Rotation3D(1,0,0,0))
+        w.add_geometry(IMP.display.EllipsoidGeometry(e))
         self._testit(w)
     def test_5(self):
         """Testing the CGO writer"""
