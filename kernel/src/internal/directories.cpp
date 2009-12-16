@@ -19,6 +19,16 @@
 IMP_BEGIN_INTERNAL_NAMESPACE
 
 namespace {
+#ifdef IMP_USE_BOOST_LIBS
+  std::string to_string(boost::filesystem::path path) {
+#if BOOST_VERSION >= 103400
+    return path.file_string();
+#else
+    return path.native_file_string();
+#endif
+  }
+#endif
+
   std::string path_cat(std::string base, std::string module,
                        std::string file_name) {
 #ifdef IMP_USE_BOOST_LIBS
@@ -26,13 +36,13 @@ namespace {
 #endif
     if (module != "kernel") {
 #ifdef IMP_USE_BOOST_LIBS
-      return (basep/module/file_name).file_string();
+      return to_string(basep/module/file_name);
 #else
       return base+"/"+module+"/"+file_name;
 #endif
     } else {
 #ifdef IMP_USE_BOOST_LIBS
-      return (basep/file_name).file_string();
+      return to_string(basep/file_name);
 #else
       return base+"/"+file_name;
 #endif
