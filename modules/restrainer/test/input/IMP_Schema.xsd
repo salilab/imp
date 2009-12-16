@@ -120,7 +120,7 @@
           <xs:attribute name="name" type="xs:string" />
           <xs:attribute default="1" name="weight">
             <xs:simpleType>
-              <xs:restriction base="xs:double">
+              <xs:restriction base="xs:float">
                 <xs:minInclusive value="0" />
               </xs:restriction>
             </xs:simpleType>
@@ -214,7 +214,7 @@
           </xs:sequence>
           <xs:attribute default="1" name="weight">
             <xs:simpleType>
-              <xs:restriction base="xs:double">
+              <xs:restriction base="xs:float">
                 <xs:minInclusive value="0" />
               </xs:restriction>
             </xs:simpleType>
@@ -301,7 +301,7 @@
           </xs:sequence>
           <xs:attribute default="1" name="weight">
             <xs:simpleType>
-              <xs:restriction base="xs:double">
+              <xs:restriction base="xs:float">
                 <xs:minInclusive value="0" />
               </xs:restriction>
             </xs:simpleType>
@@ -309,12 +309,12 @@
           <xs:attribute name="name" type="xs:string" />
           <xs:attribute name="distance" use="required">
             <xs:simpleType>
-              <xs:restriction base="xs:double">
+              <xs:restriction base="xs:float">
                 <xs:minExclusive value="0" />
               </xs:restriction>
             </xs:simpleType>
           </xs:attribute>
-          <xs:attribute name="std_dev" type="xs:double" />
+          <xs:attribute name="std_dev" type="xs:float" />
         </xs:complexType>
       </xs:element>
     </xs:sequence>
@@ -441,25 +441,28 @@
           </xs:attribute>
           <xs:attribute default="1" name="weight">
             <xs:simpleType>
-              <xs:restriction base="xs:double">
+              <xs:restriction base="xs:float">
                 <xs:minInclusive value="0" />
               </xs:restriction>
             </xs:simpleType>
           </xs:attribute>
           <xs:attribute name="resolution">
             <xs:simpleType>
-              <xs:restriction base="xs:double">
+              <xs:restriction base="xs:float">
                 <xs:minExclusive value="0" />
               </xs:restriction>
             </xs:simpleType>
           </xs:attribute>
           <xs:attribute name="spacing">
             <xs:simpleType>
-              <xs:restriction base="xs:double">
+              <xs:restriction base="xs:float">
                 <xs:minExclusive value="0" />
               </xs:restriction>
             </xs:simpleType>
           </xs:attribute>
+          <xs:attribute name="xorigin" type="xs:float" />
+          <xs:attribute name="yorigin" type="xs:float" />
+          <xs:attribute name="zorigin" type="xs:float" />
         </xs:complexType>
       </xs:element>
     </xs:sequence>
@@ -487,7 +490,7 @@
           </xs:sequence>
           <xs:attribute name="max_diameter" use="required">
             <xs:simpleType>
-              <xs:restriction base="xs:double">
+              <xs:restriction base="xs:float">
                 <xs:minExclusive value="0" />
               </xs:restriction>
             </xs:simpleType>
@@ -495,12 +498,12 @@
           <xs:attribute name="name" type="xs:string" />
           <xs:attribute default="1" name="weight">
             <xs:simpleType>
-              <xs:restriction base="xs:double">
+              <xs:restriction base="xs:float">
                 <xs:minInclusive value="0" />
               </xs:restriction>
             </xs:simpleType>
           </xs:attribute>
-          <xs:attribute name="std_dev" type="xs:double" />
+          <xs:attribute name="std_dev" type="xs:float" />
         </xs:complexType>
       </xs:element>
     </xs:sequence>

@@ -184,7 +184,6 @@ class _SANSRestraintNode(_RestraintNode):
 
     def create_restraint(self, repr, restraint_sets):
         pass
-        #print 'SANS: filename= %s' % (self.filename)
 
 class _EMRestraintNode(_RestraintNode):
     def __init__(self, attributes, restraint_type):
@@ -260,6 +259,9 @@ class _RestraintRestraint(_RestraintNode):
         self.density_filename = attributes.get('density_filename', '')
         self.resolution = float(attributes.get('resolution', -1))
         self.spacing = float(attributes.get('spacing', -1))
+        self.xorigin = float(attributes.get('xorigin', 0.0))
+        self.yorigin = float(attributes.get('yorigin', 0.0))
+        self.zorigin = float(attributes.get('zorigin', 0.0))
         self.linker_length = float(attributes.get('linker_length', -1))
 
     def create_rigid_body_restraint(self, repr, restraint_sets):
@@ -319,26 +321,15 @@ class _RestraintRestraint(_RestraintNode):
 
     def create_saxs_restraint(self, repr, restraint_sets):
         _RestraintNode.create_restraint(self, repr, restraint_sets)
-        #print self.profile_filename
         if self.profile_filename:
             self.exp_profile = IMP.saxs.Profile(self.profile_filename)
-            #print 'min_q = ' + str(exp_profile.get_min_q())
-            #print 'max_q = ' + str(exp_profile.get_max_q())
-            #print 'delta_q = ' + str(exp_profile.get_delta_q())
             particles = IMP.atom.Hierarchies()
             for child in self.child_restraints:
                 for atoms in IMP.atom.get_by_type(child, IMP.atom.ATOM_TYPE):
                     particles.append(atoms)
             if particles:
-                    #model_profile = IMP.saxs.Profile()
-                    #model_profile.calculate_profile(particles)
-                    #saxs_score = IMP.saxs.Score(exp_profile)
-                    #chi = saxs_score.compute_chi_score(model_profile)
-                    #print 'chi = %s' % (chi)
                 saxs_restraint = IMP.saxs.Restraint(particles, self.exp_profile)
                 repr.model.add_restraint(saxs_restraint)
-                #score = saxs_restraint.evaluate(None)
-                #print 'initial score = ' + str(score)
                 self.imp_restraint = saxs_restraint
                 return saxs_restraint
 
@@ -349,6 +340,11 @@ class _RestraintRestraint(_RestraintNode):
             self.dmap = IMP.helper.load_em_density_map(self.density_filename,
                            self.spacing, self.resolution)
             self.dmap_header = self.dmap.get_header_writable()
+
+            self.dmap.set_origin (self.xorigin, self.yorigin, self.zorigin)
+            self.dmap_header.set_spacing (self.spacing)
+            self.dmap_header.set_resolution (self.resolution)
+
             for child in self.child_restraints:
                 mhs.append(child)
             if mhs:
@@ -366,7 +362,6 @@ class _RestraintRestraint(_RestraintNode):
         for child in self.child_restraints:
             ps.append(child.get_particle())
         distance_restraint = IMP.helper.create_simple_distance(ps).get_restraint()
-        #distance_restraint.set_was_owned(True)
         self.imp_restraint = distance_restraint
         return distance_restraint
 

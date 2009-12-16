@@ -32,6 +32,12 @@ class RestraintTest(IMP.test.TestCase):
         r = self.restraint.get_restraint_by_name('em_restraint')
         dmap_header = r.dmap_header
 
+        self.assertInTolerance (dmap_header.get_xorigin(), 0.0, 1e-4)
+        self.assertInTolerance (dmap_header.get_yorigin(), 0.0, 1e-4)
+        self.assertInTolerance (dmap_header.get_zorigin(), 0.0, 1e-4)
+        self.assertInTolerance (dmap_header.get_spacing(), 1.0, 1e-4)
+        self.assertInTolerance (dmap_header.get_resolution(), 3.0, 1e-4)
+
         score = self.Model.evaluate(False)
         print "EM score (1-CC) = "+str(score)
         self.assert_(score < 0.05, "the correlation score is not correct")
