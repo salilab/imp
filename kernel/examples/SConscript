@@ -1,2 +1,2 @@
 Import('env')
-env.IMPModuleExamples(env.IMPModuleGetExamples(), required_modules=['em', 'core', 'display', 'algebra', 'atom'])
+env.IMPModuleExamples(env.IMPModuleGetExamples(), required_modules=['helper', 'em', 'core', 'display', 'algebra', 'atom'])
