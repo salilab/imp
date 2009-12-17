@@ -39,7 +39,9 @@ class SampleTests(IMP.test.TestCase):
                               IMP.FloatKey("radius"), IMP.FloatKey("weight"))
         model_map = IMP.em.SampledDensityMap(access_p, resolution, voxel_size)
         for p in self.particles:
-            self.assert_(model_map.get_value(IMP.core.XYZ(p).get_coordinates())>1.,"map was not sampled correctly")
+            v=IMP.core.XYZ(p).get_coordinates()
+            self.assert_(model_map.get_value(v[0], v[1], v[2])>1.,
+                         "map was not sampled correctly")
         model_map.calcRMS()
         erw = IMP.em.EMReaderWriter()
         IMP.em.write_map(model_map, "xxx.em",erw)
