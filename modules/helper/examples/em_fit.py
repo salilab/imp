@@ -1,8 +1,9 @@
-import IMP.em
-import IMP.core
-import IMP.atom
-import IMP.display
-import IMP.helper
+if False:
+    import IMP.em
+    import IMP.core
+    import IMP.atom
+    import IMP.display
+    import IMP.helper
 
 if False:
     m= IMP.Model()
