@@ -4,6 +4,8 @@ import math
 import imp
 import os
 import sys
+import tempfile
+import shutil
 import IMP
 import IMP.core
 import IMP.atom
@@ -34,6 +36,16 @@ def _import_module(partname, fqname, parent):
     return m
 
 modeller = _import_modeller_scripts_optimizers()
+
+
+class _TempDir(object):
+    """Make a temporary directory that is deleted when the object is."""
+
+    def __init__(self):
+        self.tmpdir = tempfile.mkdtemp()
+
+    def __del__(self):
+        shutil.rmtree(self.tmpdir, ignore_errors=True)
 
 
 class IMPRestraints(modeller.terms.energy_term):
@@ -318,8 +330,9 @@ def _get_protein_atom_particles(protein):
                 atom_particles.append(atom.get_particle())
     return atom_particles
 
-def _load_restraints_line(line, atom_particles, rsr):
-    """Parse a single Modeller restraints file line"""
+def _load_restraints_line(line, atom_particles):
+    """Parse a single Modeller restraints file line and return the
+       corresponding IMP restraint."""
     spl = line.split()
     typ = spl.pop(0)
     if typ == 'MODELLER5':
@@ -349,11 +362,27 @@ def _load_restraints_line(line, atom_particles, rsr):
         3 : _DihedralRestraintGenerator,
     }
     restraint_gen = restraint_generators[features[0]]
-    rsr.append(restraint_gen(form, modalities, atoms, parameters))
+    return restraint_gen(form, modalities, atoms, parameters)
+
+
+def _load_entire_restraints_file(filename, protein):
+    """Yield a set of IMP restraints from a Modeller restraints file."""
+    atoms = _get_protein_atom_particles(protein)
+    fh = open(filename, 'r')
+    for line in fh:
+        try:
+            rsr = _load_restraints_line(line, atoms)
+            if rsr is not None:
+                yield rsr
+        except Exception, err:
+            print "Cannot read restraints file line:\n" + line
+            raise
 
 
 def load_restraints_file(filename, protein):
-    """Convert a Modeller restraints file into equivalent IMP::Restraints.
+    """@deprecated Use ModelLoader instead.
+
+       Convert a Modeller restraints file into equivalent IMP::Restraints.
        @param filename Name of the Modeller restraints file.
        @param protein An IMP::atom::Hierarchy containing the protein atoms
                       (e.g. as returned by read_pdb). The Modeller restraints
@@ -361,16 +390,7 @@ def load_restraints_file(filename, protein):
                       protein.
        @return A Python list of the newly-created IMP::Restraint objects.
     """
-    atoms = _get_protein_atom_particles(protein)
-    fh = file(filename, 'r')
-    rsr = []
-    for line in fh:
-        try:
-            _load_restraints_line(line, atoms, rsr)
-        except Exception, err:
-            print "Cannot read restraints file line:\n" + line
-            raise
-    return rsr
+    return list(_load_entire_restraints_file(filename, protein))
 
 
 def _copy_residue(r, model):
@@ -421,8 +441,98 @@ def _copy_bonds(pdb, atoms, model):
             bb= IMP.atom.Bonded.setup_particle(pb)
         bp= IMP.atom.bond(ba, bb, IMP.atom.Bond.COVALENT)
 
+
+class ModelLoader(object):
+    """Read a Modeller model into IMP. After creating this object, the atoms
+       in the Modeller model can be loaded into IMP using the load_atoms()
+       method, then optionally any Modeller static restraints can be read in
+       with load_static_restraints() or load_static_restraints_file().
+       @param modeller_model The Modeller model object to read.
+    """
+
+    def __init__(self, modeller_model):
+        self._modeller_model = modeller_model
+
+    def load_atoms(self, model):
+        """Construct an IMP::atom::Hierarchy that contains the same atoms as
+           the Modeller model.
+           @param model The IMP::Model object in which the hierarchy will be
+                        created. The highest level hierarchy node is a PROTEIN.
+           @return the newly-created root IMP::atom::Hierarchy.
+        """
+        pp = IMP.Particle(model)
+        hpp = IMP.atom.Hierarchy.setup_particle(pp)
+        atoms = {}
+        for chain in self._modeller_model.chains:
+            cp = IMP.Particle(model)
+            hcp = IMP.atom.Chain.setup_particle(cp, chain.name)
+            # We don't really know the type yet
+            hpp.add_child(hcp)
+            for residue in chain.residues:
+                rp = _copy_residue(residue, model)
+                hrp = IMP.atom.Hierarchy.decorate_particle(rp)
+                hcp.add_child(hrp)
+                for atom in residue.atoms:
+                    ap = _copy_atom(atom, model)
+                    hap = IMP.atom.Hierarchy.decorate_particle(ap)
+                    hrp.add_child(hap)
+                    atoms[atom.index] = ap
+                lastres = hrp
+        _copy_bonds(self._modeller_model, atoms, model)
+        self._modeller_hierarchy = hpp
+        return hpp
+
+    def load_static_restraints_file(self, filename):
+        """Convert a Modeller static restraints file into equivalent
+           IMP::Restraints. load_atoms() must have been called first to read
+           in the atoms that the restraints will act upon.
+           @param filename Name of the Modeller restraints file. The restraints
+                  in this file are assumed to act upon the model read in by
+                  load_atoms(); no checking is done to enforce this.
+           @return A Python generator of the newly-created IMP::Restraint
+                   objects.
+        """
+        if not hasattr(self, '_modeller_hierarchy'):
+            raise ValueError("Call load_atoms() first.")
+        return _load_entire_restraints_file(filename, self._modeller_hierarchy)
+
+
+    def load_static_restraints(self):
+        """Convert the current set of Modeller static restraints into equivalent
+           IMP::Restraints. load_atoms() must have been called first to read
+           in the atoms that the restraints will act upon.
+           @return A Python generator of the newly-created IMP::Restraint
+                   objects.
+        """
+        class _RestraintGenerator(object):
+            """Simple generator wrapper"""
+            def __init__(self, gen):
+                self._gen = gen
+            def __iter__(self, *args, **keys):
+                return self
+            def close(self, *args, **keys):
+                return self._gen.close(*args, **keys)
+            def next(self, *args, **keys):
+                return self._gen.next(*args, **keys)
+            def send(self, *args, **keys):
+                return self._gen.send(*args, **keys)
+            def throw(self, *args, **keys):
+                return self._gen.throw(*args, **keys)
+        # Write current restraints into a temporary file
+        t = _TempDir()
+        rsrfile = os.path.join(t.tmpdir, 'restraints.rsr')
+        self._modeller_model.restraints.write(file=rsrfile)
+        # Read the file back in
+        gen = self.load_static_restraints_file(rsrfile)
+        wrap = _RestraintGenerator(gen)
+        # Ensure that tmpdir remains until we're done with the generator
+        wrap._tempdir = t
+        return wrap
+
+
 def read_pdb(name, model, special_patches=None):
-    """@deprecated Use IMP::atom::read_pdb() instead.
+    """@deprecated Use IMP::atom::read_pdb() instead to read a PDB file,
+                   or ModelLoader to read a Modeller model.
 
        Construct an IMP::atom::Hierarchy from a PDB file.
        @param name The name of the PDB file to read.
@@ -436,26 +546,9 @@ def read_pdb(name, model, special_patches=None):
     e.libs.topology.read('${LIB}/top_heav.lib')
     e.libs.parameters.read('${LIB}/par.lib')
     e.io.hetatm=True
-    pdb = modeller.scripts.complete_pdb(e, name,
-                                        special_patches=special_patches)
-    pp= IMP.Particle(model)
-    hpp= IMP.atom.Hierarchy.setup_particle(pp)
-    pp.set_name(name)
-    atoms={}
-    for chain in pdb.chains:
-        cp=IMP.Particle(model)
-        hcp= IMP.atom.Chain.setup_particle(cp, chain.name)
-        # We don't really know the type yet
-        hpp.add_child(hcp)
-        for residue in chain.residues:
-            rp= _copy_residue(residue, model)
-            hrp= IMP.atom.Hierarchy.decorate_particle(rp)
-            hcp.add_child(hrp)
-            for atom in residue.atoms:
-                ap= _copy_atom(atom, model)
-                hap= IMP.atom.Hierarchy.decorate_particle(ap)
-                hrp.add_child(hap)
-                atoms[atom.index]=ap
-            lastres=hrp
-    _copy_bonds(pdb,atoms, model)
+    modeller_model = modeller.scripts.complete_pdb(e, name,
+                                           special_patches=special_patches)
+    loader = ModelLoader(modeller_model)
+    hpp = loader.load_atoms(model)
+    hpp.get_particle().set_name(name)
     return hpp
