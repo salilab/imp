@@ -8,22 +8,24 @@ import IMP.modeller
 
 class ModellerRestraintsTests(IMP.test.TestCase):
 
-    def test_rsr_file_read(self):
-        """Check reading of Modeller restraint files"""
+    def assertSimilarModellerIMPScores(self, modeller_model, imp_model):
+        """Assert that Modeller and IMP give the same score"""
+        modeller_energy = selection(modeller_model).energy()[0]
+        imp_score = imp_model.evaluate(True)
+        self.assertInTolerance(modeller_energy, imp_score, 0.1)
+
+    def test_read_static_restraints(self):
+        """Check loading of Modeller static restraints"""
         e = environ()
         e.edat.dynamic_sphere = False
         e.libs.topology.read('${LIB}/top_heav.lib')
         e.libs.parameters.read('${LIB}/par.lib')
         modmodel = model(e)
         modmodel.build_sequence('GGCC')
-        modmodel.write(file='test.pdb')
-        # Writing to a PDB truncates the xyz coordinates, so read it back in
-        # here so that the IMP model and Modeller model are the same
-        modmodel.read(file='test.pdb')
 
         m = IMP.Model()
-        protein = IMP.modeller.read_pdb('test.pdb', m)
-        os.unlink('test.pdb')
+        loader = IMP.modeller.ModelLoader(modmodel)
+        protein = loader.load_atoms(m)
 
         at = modmodel.atoms
         restraints = []
@@ -80,19 +82,48 @@ class ModellerRestraintsTests(IMP.test.TestCase):
         for r in restraints:
             modmodel.restraints.clear()
             modmodel.restraints.add(r)
-            modmodel.restraints.write(file='test.rsr')
-            modenergy = selection(modmodel).energy()[0]
 
-            rsrs = IMP.modeller.load_restraints_file('test.rsr', protein)
-            os.unlink('test.rsr')
             rset = IMP.core.RestraintSet()
             m.add_restraint(rset)
-            for rsr in rsrs:
+            for rsr in loader.load_static_restraints():
                 rset.add_restraint(rsr)
-            score = m.evaluate(True)
+            self.assertSimilarModellerIMPScores(modmodel, m)
             rset.set_weight(0)
-            # Modeller and IMP should give the same score:
-            self.assertInTolerance(modenergy, score, 0.1)
+
+    def test_rsr_file_read(self):
+        """Check reading of arbitrary Modeller restraint files"""
+        e = environ()
+        e.edat.dynamic_sphere = False
+        e.libs.topology.read('${LIB}/top_heav.lib')
+        e.libs.parameters.read('${LIB}/par.lib')
+        modmodel = model(e)
+        modmodel.build_sequence('GGCC')
+        open('test.rsr', 'w').write('MODELLER5 VERSION: MODELLER FORMAT\n'
+                                    'R    3   1   1   1   2   2   0     3'
+                                    '     2       1.5380    0.0364')
+        modmodel.restraints.append('test.rsr')
+        # Deprecated interface
+        m = IMP.Model()
+        loader = IMP.modeller.ModelLoader(modmodel)
+        protein = loader.load_atoms(m)
+        r = IMP.modeller.load_restraints_file('test.rsr', protein)
+        self.assert_(isinstance(r, list))
+        for rsr in r:
+            m.add_restraint(rsr)
+        self.assertSimilarModellerIMPScores(modmodel, m)
+
+        # Need atoms before loading restraints
+        m = IMP.Model()
+        loader = IMP.modeller.ModelLoader(modmodel)
+        self.assertRaises(ValueError, loader.load_static_restraints_file,
+                          'test.rsr')
+        # New interface
+        protein = loader.load_atoms(m)
+        for rsr in loader.load_static_restraints_file('test.rsr'):
+            m.add_restraint(rsr)
+        self.assertSimilarModellerIMPScores(modmodel, m)
+        os.unlink('test.rsr')
+
 
 if __name__ == '__main__':
     unittest.main()
