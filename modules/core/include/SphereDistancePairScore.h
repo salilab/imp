@@ -48,6 +48,27 @@ public:
   IMP_PAIR_SCORE(NormalizedSphereDistancePairScore, get_module_version_info());
 };
 
+
+//! A score on a weighted distance between the surfaces of two spheres
+/** The distance between the surfaces of the two spheres is multiplied by
+    the sum of a specific attribute
+    \see SphereDistancePairScore
+    \see XYZR
+    \see DistancePairScore
+ */
+class IMPCOREEXPORT WeightedSphereDistancePairScore : public PairScore
+{
+  IMP::internal::OwnerPointer<UnaryFunction> f_;
+  FloatKey radius_;
+  FloatKey weight_;
+public:
+  WeightedSphereDistancePairScore(UnaryFunction *f,
+               FloatKey weight,
+               FloatKey radius=FloatKey("radius"));
+  IMP_PAIR_SCORE(WeightedSphereDistancePairScore, get_module_version_info());
+};
+
+
 IMPCORE_END_NAMESPACE
 
 #endif  /* IMPCORE_SPHERE_DISTANCE_PAIR_SCORE_H */
