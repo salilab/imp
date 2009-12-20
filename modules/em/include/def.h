@@ -14,7 +14,7 @@
 IMPEM_BEGIN_NAMESPACE
 
 typedef double emreal;
-const  float EPS = 1e-6;
+const double EPS = 1e-16;
 
 IMPEM_END_NAMESPACE
 
