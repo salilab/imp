@@ -540,4 +540,48 @@ void DensityMap::update_voxel_size(float new_apix) {
   calc_all_voxel2loc();
 }
 
+algebra::BoundingBox3D get_bounding_box(DensityMap* d,Float threshold) {
+  Float xmin,xmax,ymin,ymax,zmin,zmax;
+  xmin=INT_MAX;  ymin=INT_MAX;  zmin=INT_MAX;
+  xmax=-INT_MAX;  ymax=-INT_MAX;  zmax=-INT_MAX;
+  Float x,y,z;
+  for(long l=0;l<d->get_number_of_voxels();l++) {
+    if (d->get_value(l) > threshold) {
+      x=d->voxel2loc(l,0);
+      y=d->voxel2loc(l,1);
+      z=d->voxel2loc(l,2);
+      if(x<xmin) xmin=x;
+      if(y<ymin) ymin=y;
+      if(z<zmin) zmin=z;
+      if(x>xmax) xmax=x;
+      if(y>ymax) ymax=y;
+      if(z>zmax) zmax=z;
+     }
+  }
+  return algebra::BoundingBox3D(
+   algebra::Vector3D(xmin,ymin,zmin),
+   algebra::Vector3D(xmax,ymax,zmax));
+}
+
+Float approximate_molecular_mass(DensityMap* d, Float threshold) {
+  long counter=0;//number of voxles above the threshold
+  for(long l=0;l<d->get_number_of_voxels();l++) {
+    if (d->get_value(l) > threshold) {
+      ++counter;
+     }
+   }
+  return d->get_spacing()*counter/1.21;
+ }
+
+/*
+DensityMap* rotate_grid(const DensityMap *orig_dens,
+                        const algebra::Transformation3D &trans) {
+  DensityMap *trans_grid = new DensityMap(*orig_dens);
+  //add the actual rotation
+  // trans_grid->reset_data();
+  // trans_grid->set_origin(trans.transform(orig_dens->get_origin()));
+  // trans_grid->set_origin(trans.transform(orig_dens->get_origin()));
+}
+*/
+
 IMPEM_END_NAMESPACE
