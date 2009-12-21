@@ -15,6 +15,7 @@
 #include <IMP/Object.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/BoundingBoxD.h>
+#include <IMP/algebra/Transformation3D.h>
 #include <IMP/VectorOfRefCounted.h>
 #include <iostream>
 #include <iomanip>
@@ -41,6 +42,21 @@ IMPEMEXPORT DensityMap* read_map(const char *filename);
 */
 IMPEMEXPORT void write_map(DensityMap* m, const char *filename,
                            MapReaderWriter &writer);
+//!
+/**
+\param[in] m a density map
+\param[in] threshold find the boudning box for voxels
+           with value above the threshold
+ */
+IMPEMEXPORT algebra::BoundingBox3D
+   get_bounding_box(DensityMap* m, Float threshold);
+//!
+/**
+\param[in] m a density map
+\param[in] threshold consider volume of only voxels above this threshold
+\note The method assumes 1.21 cubic A per dalton (Harpaz 1994).
+ */
+IMPEMEXPORT Float approximate_molecular_mass(DensityMap* m, Float threshold);
 
 
 //! Class for handling density maps.
@@ -123,6 +139,9 @@ public:
               the boundaries of the map, the function returns -1.
    */
   long loc2voxel(float x, float y, float z) const;
+  long loc2voxel(const algebra::Vector3D &v) const {
+    return loc2voxel(v[0],v[1],v[2]);
+  }
 
   bool is_xyz_ind_part_of_volume(int ix,int iy,int iz) const;
 
@@ -149,6 +168,9 @@ public:
       \exception IndexException The point is not covered by the grid.
    */
   emreal get_value(float x,float y,float z) const;
+  emreal get_value(const algebra::Vector3D &point) const {
+    return get_value(point[0],point[1],point[2]);
+  }
 
 
   //! Gets the value of the voxel at a given index
@@ -301,7 +323,7 @@ public:
   void calc_all_voxel2loc();
 
   virtual void show(std::ostream &out=std::cout) const {
-    out << "DensityMap\n";
+    header_.show(out);
   }
   virtual VersionInfo get_version_info() const {
     return get_module_version_info();
@@ -334,8 +356,14 @@ inline algebra::BoundingBox3D get_bounding_box(const DensityMap *m) {
   return algebra::BoundingBox3D(m->get_origin(),
                        m->get_top());
 }
-
-
+//! rotate a grid
+/**
+/param[in] orig_dens the density map to rotate
+/param[in] trans the transformation
+\note this is a low resolution operation.
+IMPEMEXPORT DensityMap* rotate_grid(const DensityMap *orig_dens,
+                        const algebra::Transformation3D &trans);
+*/
 typedef VectorOfRefCounted<DensityMap*> DensityMaps;
 
 IMPEM_END_NAMESPACE
