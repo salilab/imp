@@ -29,11 +29,10 @@ void SampledDensityMap::calculate_particles_bounding_box(
 {
   //read the points and determine the dimentions of the map
 
-  lower_bound.insert(lower_bound.begin(),3,9999.9);
-  upper_bound.insert(upper_bound.begin(),3,-9999.9);
+  lower_bound.insert(lower_bound.begin(),3,INT_MAX);
+  upper_bound.insert(upper_bound.begin(),3,-INT_MAX);
   maxradius = 0.;
   for ( int i=0;i<access_p.get_size();i++) {
-
     if (access_p.get_x(i) < lower_bound[0]) {
       lower_bound[0]=access_p.get_x(i);
     }
@@ -47,8 +46,6 @@ void SampledDensityMap::calculate_particles_bounding_box(
     if (access_p.get_y(i) > upper_bound[1]) {
       upper_bound[1]=access_p.get_y(i);
     }
-
-
     if (access_p.get_z(i) < lower_bound[2]) {
       lower_bound[2]=access_p.get_z(i);
     }
@@ -124,7 +121,7 @@ SampledDensityMap::SampledDensityMap(const ParticlesAccessPoint &access_p,
 
 void SampledDensityMap::resample(const ParticlesAccessPoint &access_p)
 {
-  IMP_LOG(VERBOSE,"going to resample map" <<std::endl);
+  IMP_LOG(VERBOSE,"going to resample  particles " <<std::endl);
   reset_data();
   calc_all_voxel2loc();
   // TODO - probably the top is not set
