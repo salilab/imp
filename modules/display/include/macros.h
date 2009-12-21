@@ -55,7 +55,7 @@ protected:                                                              \
     return Geometries(const_cast<Name*>(this));                         \
   }                                                                     \
   void Name::show(std::ostream &out) const {                            \
-    out << #Name << "Geometry: " << static_cast<Type>(*this);           \
+    out << #Name << "Geometry: " << static_cast<Type >(*this);          \
   }                                                                     \
 
 
