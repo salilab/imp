@@ -21,11 +21,12 @@ SurfaceShellDensityMap::SurfaceShellDensityMap(const DensityHeader &header)
 
 SurfaceShellDensityMap::SurfaceShellDensityMap(
       const ParticlesAccessPoint &access_p,
-      float voxel_size,int num_shells)
-  :SampledDensityMap(access_p,IMP_RESOLUTION,voxel_size,IMP_SIG_CUTOFF)
+      float resolution, float voxel_size,int num_shells)
+  :SampledDensityMap(access_p,resolution,voxel_size,IMP_SIG_CUTOFF)
 {
   num_shells_=num_shells;
   set_neighbor_mask();
+  resample(access_p);
 }
 
 
@@ -187,6 +188,12 @@ void SurfaceShellDensityMap::resample(const ParticlesAccessPoint &access_p) {
     curr_p->clear();
     tmp_p = curr_p; curr_p = next_p; next_p = tmp_p;
   }
+  //incase we want to keep the shells and not the indexes
+  // //now update the voxel data to be the shell index
+  // for(long i=0;i<shell_voxels.size();i++) {
+  //   data_[i]=shell_voxels[i];
+  // }
 }
+
 
 IMPEM_END_NAMESPACE

@@ -20,7 +20,6 @@
 IMPEM_BEGIN_NAMESPACE
 
 #define IMP_DEFAULT_NUM_SHELLS 5
-#define IMP_RESOLUTION 3.0
 #define IMP_SIG_CUTOFF 3
 #define IMP_BACKGROUND_VAL 0.0
 #define IMP_SURFACE_VAL 1.0
@@ -30,7 +29,6 @@ IMPEM_BEGIN_NAMESPACE
  */
 class IMPEMEXPORT SurfaceShellDensityMap: public SampledDensityMap
 {
-
 public:
 
   //! Creates a new density map.
@@ -55,6 +53,7 @@ public:
                       in the sampling procedure.
    */
   SurfaceShellDensityMap(const ParticlesAccessPoint &access_p,
+                         float resolution,
                          float voxel_size,
                          int num_shells=IMP_DEFAULT_NUM_SHELLS
                          );
@@ -101,8 +100,6 @@ protected:
   std::vector<emreal> neighbor_dist_;
   int num_shells_;
 };
-//TODO : add a static function that given particles returns
-//the particles on the surface, we can give it to non-bonded.
 
 IMPEM_END_NAMESPACE
 
