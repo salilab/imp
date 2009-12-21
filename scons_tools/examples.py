@@ -73,7 +73,7 @@ def handle_example_dir(env, inputpath, name, prefix, files):
                                               "#/scons_tools/run-all-tests.py"]\
                                  +[x for x in files
                                    if str(x).endswith(".py") and str(x).find("fragment")==-1])
-    env.AlwaysBuild("test.passed")
+    env.AlwaysBuild("tests.passed")
     doxpage= env._IMPExamplesDox(File(str(inputpath)+"/.generated/examples.dox"), files)
     dox.append(doxpage)
     return (dox, build, install, test)
