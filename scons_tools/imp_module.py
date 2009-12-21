@@ -259,7 +259,7 @@ def IMPModuleData(env, files):
     add_to_module_alias(env, 'install', 'install-data')
 
 
-def IMPModuleExamples(env, files, required_modules=[]):
+def IMPModuleExamples(env, files):
     vars=make_vars(env)
     #for f in files:
     #    print f.abspath
@@ -278,8 +278,6 @@ def IMPModuleExamples(env, files, required_modules=[]):
     module_alias(env, 'dox-examples', dox)
     module_requires(env, test, 'python')
     add_to_global_alias(env, 'doc', 'dox-examples')
-    module_deps_requires(env, test, 'python', required_modules)
-    module_deps_requires(env, test, 'examples', required_modules)
 
 def IMPModuleBin(envi, files, required_modules=[], extra_libs=[], install=True):
     from scons_tools import get_bin_environment
@@ -359,6 +357,11 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
         buildinit = penv.LinkInstallAs('#/build/lib/%s/__init__.py'
                                        % vars['module_include_path'],
                                        gen_pymod)
+        # Make sure we have example files installed, in case someone says
+        # import IMP.foo; IMP.foo.get_example_file('foo')
+        if module != 'kernel':
+            penv.Requires(buildinit, '#/build/doc/examples/%s' \
+                          % module)
         installinit = penv.InstallAs(penv.GetInstallDirectory('pythondir',
                                                             vars['module_include_path'],
                                                             '__init__.py'),
@@ -485,7 +488,7 @@ def IMPModuleDoc(env, files):
 #   files= ["#/bin/imppy.sh", "#/tools/run_all_tests.py"]+\
 #        [x.abspath for x in Glob("test_*.py")+ Glob("*/test_*.py")]
 
-def IMPModuleTest(env, required_modules=[]):
+def IMPModuleTest(env):
     """Pseudo-builder to run tests for an IMP module. The single target is
        generally a simple output file, e.g. 'test.passed', while the single
        source is a Python script to run (usually run-all-tests.py).
@@ -496,8 +499,6 @@ def IMPModuleTest(env, required_modules=[]):
        A convenience alias for the tests is added, and they are always run."""
     files= ["#/tools/imppy.sh", "#/scons_tools/run-all-tests.py"]+\
         [x.abspath for x in module_glob(["test_*.py", "*/test_*.py"])]
-    for m in required_modules+env['IMP_REQUIRED_MODULES']:
-        files.append(env.Alias(m+"-python"))
     files.append(env.Alias(env['IMP_MODULE']+"-python"))
     #print files
     test = env._IMPModuleTest(target="test.passed", source=files)
@@ -505,8 +506,6 @@ def IMPModuleTest(env, required_modules=[]):
     module_alias(env, 'test', test)
     add_to_global_alias(env, 'test', 'test')
     module_requires(env, test, 'python')
-    #print "setting up requires"
-    module_deps_requires(env, test, 'python', required_modules)
 
 def check_libraries_and_headers(env, libraries, headers):
     rlibraries=[x for x in libraries]

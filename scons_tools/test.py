@@ -1,4 +1,5 @@
 from SCons.Script import Glob, Dir, File, Builder, Action
+import pyscanner
 
 
 
@@ -23,4 +24,5 @@ def _print_unit_test(target, source, env):
     print "Generating unit testing"
 
 UnitTest = Builder(action=Action(_action_unit_test,
-                                _print_unit_test))
+                                _print_unit_test),
+                   source_scanner=pyscanner.PythonScanner)
