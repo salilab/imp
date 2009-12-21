@@ -53,7 +53,10 @@ public:
 
   //! Initialize the 1-vector from its value.
   VectorD(double x) {
-#ifdef IMP_SWIG_WRAPPER
+  /* Note that MSVC gets confused with static asserts if we try to subclass
+     VectorD, as we do for example in the various IMP::display Geometry
+     subclasses, so replace with runtime checks. */
+#if defined(IMP_SWIG_WRAPPER) || defined(_MSC_VER)
     IMP_USAGE_CHECK(D==1, "Need " << D << " to construct a "
               << D << "-vector.", ValueException);
 #else
@@ -64,7 +67,7 @@ public:
 
   //! Initialize a 2-vector from separate x,y values.
   VectorD(double x, double y) {
-#ifdef IMP_SWIG_WRAPPER
+#if defined(IMP_SWIG_WRAPPER) || defined(_MSC_VER)
     IMP_USAGE_CHECK(D==2, "Need " << D << " to construct a "
               << D << "-vector.", ValueException);
 #else
@@ -89,7 +92,7 @@ public:
 
   //! Initialize a 4-vector from separate w,x,y,z values.
   VectorD(double x0, double x1, double x2, double x3) {
-#ifdef IMP_SWIG_WRAPPER
+#if defined(IMP_SWIG_WRAPPER) || defined(_MSC_VER)
     IMP_USAGE_CHECK(D==4, "Need " << D << " to construct a "
               << D << "-vector.", ValueException);
 #else
