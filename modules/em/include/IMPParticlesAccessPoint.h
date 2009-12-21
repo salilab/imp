@@ -134,7 +134,7 @@ public:
   algebra::Vector3D get_centroid() const;
 
   void show(std::ostream &out=std::cout) const{
-    for(int i=0;i<particles_.size();i++){
+    for (unsigned i=0; i<particles_.size(); ++i) {
       out<<"("<<get_x(i)<<","<<get_y(i)<<","<<get_z(i)<<
            ") "<<get_r(i)<<" "<< get_w(i)<<std::endl;
     }
