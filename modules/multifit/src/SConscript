@@ -1,0 +1,6 @@
+Import('env')
+files = [
+         'weighted_excluded_volume.cpp',
+        ]
+# Build and install the shared library:
+env.IMPModuleLib(env.IMPModuleGetSources())
