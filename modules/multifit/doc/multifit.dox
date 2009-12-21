@@ -1,0 +1,12 @@
+/** \namespace IMP::multifit
+\brief %IMP.multifit contains Keren's fitting protocol.
+
+\author Keren Lasker
+
+\overview %IMP.multifit contains Keren's fitting protocol.
+
+\publications
+\standard_imp_publications
+
+\license The %IMP.multifit module's license is to be determined.
+*/
