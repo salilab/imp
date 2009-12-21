@@ -33,9 +33,7 @@ class RestraintTest(IMP.test.TestCase):
         connectivity_restraint.show()
 
         protein1_hierarchy = self.representation.find_by_id('Protein1').model_decorator
-        IMP.atom.write_pdb (protein1_hierarchy, "test_protein1.pdb")
         root_hierarchy = self.representation.model_decorator
-        IMP.atom.write_pdb (root_hierarchy, "test_initial.pdb")
 
         ub = IMP.algebra.Vector3D(-50.0,-50.0,-50.0)
         lb = IMP.algebra.Vector3D( 50.0, 50.0, 50.0)
@@ -53,7 +51,6 @@ class RestraintTest(IMP.test.TestCase):
                 rbd.set_transformation(transformation)
 
         root_hierarchy = self.representation.model_decorator
-        IMP.atom.write_pdb (root_hierarchy, "test_after_transformation.pdb")
 
         self.Model.show()
         self.Model.evaluate(False)
