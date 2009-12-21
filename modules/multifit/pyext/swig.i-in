@@ -1,0 +1,8 @@
+/* Ignore things to prevent SWIG warning about them */
+namespace IMP::multifit {
+}
+/* Make selected classes extensible in Python */
+
+/* Wrap our own classes */
+%include "IMP/multifit/weighted_excluded_volume.h"
+

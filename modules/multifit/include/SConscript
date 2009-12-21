@@ -1,0 +1,6 @@
+Import('env')
+files = [
+         'weighted_excluded_volume.h',
+        ]
+# Install the include files:
+env.IMPModuleInclude(env.IMPModuleGetHeaders())
