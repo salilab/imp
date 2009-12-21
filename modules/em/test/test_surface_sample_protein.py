@@ -35,7 +35,6 @@ class SampleTests(IMP.test.TestCase):
             self.assert_(model_map.get_value(IMP.core.XYZ(p.get_particle()).get_coordinates())>3.,"map was not sampled correctly")
 
         erw = IMP.em.MRCReaderWriter()
-        IMP.em.write_map(model_map, "xxx.mrc",erw)
 
 if __name__ == '__main__':
     unittest.main()
