@@ -83,7 +83,7 @@ ElementTable::ElementTable() {
 Element ElementTable::get_element(const std::string& s) const {
   IMP_IF_CHECK(USAGE) {
     std::string ts=s;
-    boost::trim(ts);
+    boost::trim_if(ts, boost::is_any_of(" "));
     IMP_USAGE_CHECK(ts == s, "The string passed to get_element"
                   << " should not contain spaces.", UsageException);
   }
