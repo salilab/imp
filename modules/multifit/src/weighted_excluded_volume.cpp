@@ -28,7 +28,7 @@ void add_surface_index(core::Hierarchy mh, Float resolution, Float apix,
   em::SurfaceShellDensityMap shell_map(access_p,resolution,apix);
 
   for(unsigned int i=0; i<ps.size(); i++) {
-    IMP_INTERNAL_CHECK(not ps[i]->has_attribute(shell_key),
+    IMP_INTERNAL_CHECK(! ps[i]->has_attribute(shell_key),
      "Particle " << ps[i]->get_name() <<
      " already has shell attribute" << std::endl);
     ps[i]->add_attribute(
