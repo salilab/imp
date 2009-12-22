@@ -130,6 +130,9 @@ static PyObject *imp_exception, *imp_internal_exception, *imp_model_exception,
       PyErr_SetString(imp_io_exception, e.what());
     } catch (IMP::Exception &e) {
       PyErr_SetString(imp_exception, e.what());
+    } catch (...) {
+      PyErr_SetString(PyExc_RuntimeError,
+                      "Unknown error caught by Python wrapper");
     }
   /* SWIG_exception contains "goto fail" so make sure the label is defined */
   fail:
