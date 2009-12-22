@@ -29,12 +29,12 @@ Particle* atom_particle(Model *m, const String& pdb_line)
 {
   AtomType atom_name;
   String string_name = internal::atom_type(pdb_line);
-  boost::trim(string_name);
+  boost::trim_if(string_name, boost::is_any_of(" "));
   if (pdb_line[0]!='A'){
     string_name= "HET_"+string_name;
     if (!atom_type_exists(string_name)) {
       std::string elem= internal::atom_element(pdb_line);
-      boost::trim(elem);
+      boost::trim_if(elem, boost::is_any_of(" "));
       Element e= get_element_table().get_element(elem);
       if (e == UNKNOWN_ELEMENT) {
         IMP_LOG(VERBOSE,"Unable to parse element from line: "
@@ -65,7 +65,7 @@ Particle* atom_particle(Model *m, const String& pdb_line)
   d.set_input_index(internal::atom_number(pdb_line));
   IMP_IF_CHECK(USAGE) {
     std::string name= internal::atom_element(pdb_line);
-    boost::trim(name);
+    boost::trim_if(name, boost::is_any_of(" "));
     if (!name.empty()) {
       Element e= get_element_table().get_element(name);
       if (e != UNKNOWN_ELEMENT) {
@@ -87,7 +87,7 @@ Particle* residue_particle(Model *m, const String& pdb_line)
   int residue_index = internal::atom_residue_number(pdb_line);
   char residue_icode = internal::atom_residue_icode(pdb_line);
   String rn = internal::atom_residue_name(pdb_line);
-  boost::trim(rn);
+  boost::trim_if(rn, boost::is_any_of(" "));
   ResidueType residue_name = ResidueType(rn);
 
   // residue decorator
