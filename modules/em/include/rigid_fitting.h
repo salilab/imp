@@ -17,7 +17,6 @@
 #include "DensityMap.h"
 #include "FitRestraint.h"
 #include "config.h"
-#include <IMP/display/LogOptimizerState.h>
 #include <IMP/OptimizerState.h>
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/ScoreState.h>
