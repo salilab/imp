@@ -36,18 +36,25 @@ template <unsigned int D>
 class NearestNeighborD {
 
   template <bool SKIP>
-  int linear_nearest_neighbor(const VectorD<D> &q, int skip) const {
-    double md= std::numeric_limits<double>::max();
-    int imax=-1;
+  Ints linear_nearest_neighbor(const VectorD<D> &q, int skip,
+                               unsigned int k) const {
+    Ints ret;
+    std::vector<double> retds;
     for (unsigned int i=0; i< data_.size(); ++i) {
       if (SKIP && i==skip) continue;
       double cd=(data_[i]-q).get_squared_magnitude();
-      if (cd < md) {
-        md= cd;
-        imax=i;
+      if (ret.size() < k || cd < retds.back()) {
+        std::vector<double>::iterator it= std::lower_bound(retds.begin(),
+                                                           retds.end(), cd);
+        ret.insert(ret.begin()+(it-retds.begin()), i);
+        retds.insert(it, cd);
+        if (ret.size() > k) {
+          ret.pop_back();
+          retds.pop_back();
+        }
       }
     }
-    return imax;
+    return ret;
   }
 
 #ifdef IMP_USE_CGAL
@@ -146,17 +153,35 @@ public:
     K_neighbor_search search(*tree_, VectorWithIndex(-1, q), 1, eps_);
     return search.begin()->first.index;
 #else
-    return linear_nearest_neighbor<false>(q, -1);
+    return linear_nearest_neighbor<false>(q, -1, 1)[0];
 #endif
   }
-  unsigned int get_nearest_neighbor(unsigned int index) const {
+  /** Search using the ith point in the input set. */
+  unsigned int get_nearest_neighbor(unsigned int i) const {
 #ifdef IMP_USE_CGAL
-    K_neighbor_search search(*tree_, data_[index], 2, eps_);
+    K_neighbor_search search(*tree_, data_[i], 2, eps_);
     return (++search.begin())->first.index;
 #else
-    return linear_nearest_neighbor<true>(data_[index], index);
+    return linear_nearest_neighbor<true>(data_[i], index, 1)[0];
 #endif
+  }
+  /** Search using the ith point in the input set. Return the k
+      nearest neighbors.*/
+  Ints get_nearest_neighbors(unsigned int i, unsigned int k) const {
+    Ints ret(std::min(k, static_cast<unsigned int>(data_.size())));
+#ifdef IMP_USE_CGAL
+    K_neighbor_search search(*tree_, data_[i], k+1, eps_);
+    typename K_neighbor_search::iterator it =search.begin();
+    ++it;
+    for (unsigned int j=0; j< k; ++j) {
+      ret[j]=it->first.index;
+      ++it;
     }
+    return ret;
+#else
+    return linear_nearest_neighbor<true>(data_[i], i, k);
+#endif
+  }
 };
 
 /** @} */
