@@ -138,7 +138,8 @@ DensityMap* read_map(const char *filename, MapReaderWriter &reader)
   m->header_.compute_xyz_top();
   if (m->header_.get_spacing() == 1.0) {
     IMP_WARN("The pixel size is set to the default value 1.0."<<
-              "Please make sure that this is indeed the pixel size of the map");
+              "Please make sure that this is indeed the pixel size of the map"
+             << std::endl);
   }
   return m;
 }
