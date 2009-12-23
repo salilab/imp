@@ -29,6 +29,10 @@ IMPSAXS_BEGIN_NAMESPACE
     to speed up the calculations. Rigid body should be gived as single
     RigidBody Particle. Other, non-rigid body Particles can also be given.
 
+    The shape of a rigid body is assumed to be defined by the set of
+    atom::Hierarchy leaves of the atom::Hierarchy rooted at the rigid body
+    particle.
+
     \par Algorithmic details:
     The distances between the atoms of rigid body do not change, therefore
     their contribution to the profile is pre-computed and stored.
