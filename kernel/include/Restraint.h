@@ -61,13 +61,14 @@ public:
   Restraint(std::string name="Restraint %1%");
 
   //! Return the score for this restraint for the current state of the model.
-  /** \param[in] accum If not NULL, use this object to accumulate partial first
-                       derivatives.
-      \return Current score.
+  /** \return Current score.
 
-      This method will update the ScoreStates in the model if necessary.
+      This method is equivalent to calling:
+      \code
+      model->evaluate(RestraintsTemp(1,this), calc_derivs)
+      \endcode
    */
-  double evaluate(DerivativeAccumulator *accum) const;
+  double evaluate(bool calc_derivs) const;
 
   /** \name Incremental Evaluation
 
@@ -93,10 +94,6 @@ public:
   */
   //! Return true if the incremental_evaluate() function is implemented
   virtual bool get_is_incremental() const {return false;}
-  //! Return the restraint score evaluated in an incremental manner
-  /** This method will update the ScoreStates in the model if necessary.
-  */
-  double incremental_evaluate(DerivativeAccumulator *) const;
 
   /** @} */
 

@@ -36,41 +36,12 @@ void Restraint::set_model(Model* model)
   set_was_owned(true);
 }
 
-double Restraint::evaluate(DerivativeAccumulator *accum) const {
+double Restraint::evaluate(bool calc_derivs) const {
   IMP_USAGE_CHECK(get_model()->get_stage()==Model::NOT_EVALUATING,
             "Restraint::evaluate() cannot be called during model evaluation",
             InvalidStateException);
-  bool not_eval=get_model()->get_stage() != Model::EVALUATE;
-  if (not_eval) {
-    get_model()->before_evaluate();
-  }
-  double ret=unprotected_evaluate(accum);
-  if (not_eval) {
-    get_model()->after_evaluate(accum);
-    get_model()->cur_stage_=Model::NOT_EVALUATING;
-  }
-  return ret;
+  RestraintsTemp rr(1, const_cast<Restraint*>(this));
+  return get_model()->evaluate(rr, calc_derivs);
 }
-
-double Restraint::incremental_evaluate(DerivativeAccumulator *accum) const {
-  IMP_USAGE_CHECK(get_model()->get_stage()== Model::EVALUATE
-            || get_model()->get_stage()==Model::NOT_EVALUATING,
-            "Restraint::evaluate() cannot be called during model evaluation",
-            InvalidStateException);
-  IMP_USAGE_CHECK(get_model()->get_stage()== Model::EVALUATE
-            || !accum, "Evaluation with derivatives is not supported.",
-            ValueException);
-  bool not_eval=get_model()->get_stage() != Model::EVALUATE;
-  if (not_eval) {
-    get_model()->before_evaluate();
-  }
-  double ret=unprotected_incremental_evaluate(accum);
-  if (not_eval) {
-    get_model()->after_evaluate(accum);
-    get_model()->cur_stage_=Model::NOT_EVALUATING;
-  }
-  return ret;
-}
-
 
 IMP_END_NAMESPACE
