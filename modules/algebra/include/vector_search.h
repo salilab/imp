@@ -41,7 +41,7 @@ class NearestNeighborD {
     Ints ret;
     std::vector<double> retds;
     for (unsigned int i=0; i< data_.size(); ++i) {
-      if (SKIP && i==skip) continue;
+      if (SKIP && i==static_cast<unsigned int>(skip)) continue;
       double cd=(data_[i]-q).get_squared_magnitude();
       if (ret.size() < k || cd < retds.back()) {
         std::vector<double>::iterator it= std::lower_bound(retds.begin(),
@@ -162,7 +162,7 @@ public:
     K_neighbor_search search(*tree_, data_[i], 2, eps_);
     return (++search.begin())->first.index;
 #else
-    return linear_nearest_neighbor<true>(data_[i], index, 1)[0];
+    return linear_nearest_neighbor<true>(data_[i], i, 1)[0];
 #endif
   }
   /** Search using the ith point in the input set. Return the k
