@@ -17,7 +17,7 @@
 
 IMPSAXS_BEGIN_NAMESPACE
 
-FloatKey FormFactorTable::form_factor_key_ = FloatKey("form factor key");
+IntKey FormFactorTable::form_factor_key_ = IntKey("form factor key");
 
 std::map<atom::Element, FormFactorTable::FormFactorAtomType>
 FormFactorTable::element_ff_type_map_;
@@ -623,7 +623,7 @@ const Floats& FormFactorTable::get_form_factors(Particle *p,
               << " using default " << std::endl;
     ff_atom_type = N;
   }
-  p->add_attribute(form_factor_key_, ff_atom_type);
+  p->add_cache_attribute(form_factor_key_, ff_atom_type);
   return form_factors_[(int)ff_atom_type];
 }
 

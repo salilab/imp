@@ -67,7 +67,7 @@ private:
   static Float zero_form_factors_[];
 
   // a key for storing zero form factor in Particle as attribute
-  static FloatKey form_factor_key_;
+  static IntKey form_factor_key_;
 
   // class for storing form factors solvation table
   class AtomFactorCoefficients {
