@@ -301,11 +301,17 @@ public:
   std::istream* set_python_file(PyObject *p) {
     // Is the object a 'real' C-style FILE ?
     bool real_file;
+    /* Cannot reliably detect a "real" file pointer on Windows
+       (differing C runtimes) so always use a file-like approach here */
+#ifdef _MSC_VER
+    real_file = false;
+#else
     try {
       real_file = (PyFile_Check(p) && ftell(PyFile_AsFile(p)) != -1);
     } catch(...) {
       real_file = false;
     }
+#endif
 
     if (real_file) {
       streambuf_ = new PyInCFileAdapter(PyFile_AsFile(p));
