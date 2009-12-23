@@ -344,7 +344,6 @@ class IMPEXPORT Particle : public Object
                                                     ps_->floats_.get_length(),
                                                     ps_->floats_.get_length());
   }
-
   IMP_PARTICLE_ATTRIBUTE_TYPE(Int, int, Int,
                               true, ps_->ints_,ps_->ints_,,);
   IMP_PARTICLE_ATTRIBUTE_TYPE(String, string, String,
@@ -353,12 +352,30 @@ class IMPEXPORT Particle : public Object
                                 true,ps_->particles_,ps_->particles_,,)
     IMP_PARTICLE_ATTRIBUTE_TYPE(Object, object, Object*,
                                 true,ps_->objects_,ps_->objects_,,);
-  //! Add cached data to a particle
-  /** Restraints can cache data in a particle in order to accelerate
+
+#endif
+
+  /** \name  Add cached data to a particle
+      Restraints can cache data in a particle in order to accelerate
       computations. This data must obey a the following rules:
       - it must be optional
       - if multiple restraints add the same attribute, it must all be equivalent
+      @{
   */
+  void add_cache_attribute(IntKey name, unsigned int value) {
+    IMP_USAGE_CHECK(name != IntKey(),
+                    "Cannot use attributes without "
+              << "naming them.", ValueException);
+    IMP_USAGE_CHECK(!has_attribute(name),
+              "Cannot add attribute " << name << " to particle "
+                    << get_name() << " twice.",
+              InvalidStateException);
+    IMP_USAGE_CHECK(IntTable::Traits::get_is_valid(value),
+                    "Initial value is not valid when adding attribute"
+                               << name << " to particle " << get_name(),
+              ValueException);
+    ps_->ints_.add(name.get_index(), value);
+  }
   void add_cache_attribute(ObjectKey name, Object *value) {
     IMP_CHECK_ACTIVE;
     IMP_USAGE_CHECK(name != ObjectKey(), "Cannot use attributes without "
@@ -373,7 +390,7 @@ class IMPEXPORT Particle : public Object
                     ValueException);
     ps_->objects_.add(name.get_index(), value);
   }
-#endif
+  /** @} */
 
  /** @name Float Attributes
       Float attributes can be optimized, meaning the optimizer is
