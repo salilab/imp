@@ -604,7 +604,7 @@ Float FormFactorTable::get_form_factor(Particle *p,
   }
   Float form_factor = zero_form_factors_[(int)ff_atom_type];
   //std::cerr << "form_factor " << form_factor << std::endl;
-  p->add_attribute(form_factor_key_, form_factor);
+  p->add_cache_attribute(form_factor_key_, form_factor);
   return form_factor;
 }
 
