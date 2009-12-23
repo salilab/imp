@@ -69,7 +69,7 @@ class SampleTests(IMP.test.TestCase):
             xyz.set_coordinates(t.transform(xyz.get_coordinates()))
             #check that when the proteins are not connected (self.c_r>0) the excluded volume
             #restraint is bigger than 0
-            self.mdl.evaluate(None) #to make sure the coordinates were transformed
+            self.mdl.evaluate(False) #to make sure the coordinates were transformed
             conn_r=self.c_r.evaluate(None)
             w_exc_vol_r=self.wev_r.evaluate(None)
             self.assert_(((conn_r==0.)and(w_exc_vol_r>0.))or((conn_r>0.)and(w_exc_vol_r==0.)),
