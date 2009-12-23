@@ -25,21 +25,21 @@ def _check(context, version):
         """ % version_n, '.cpp')
     context.Result(ret[1].replace("_", ".").split('\n')[0])
     if ret[0]:
-        check_libs=[('BOOST_FILESYSTEM_LIBS', ['libboost_filesystem', 'libboost_system'])]
+        check_libs=[('BOOST_FILESYSTEM_LIBS', 'libboost_filesystem')]
         for l in check_libs:
-            ret1=context.sconf.CheckLib([x+"-mt" for x in l[1]],
+            ret1=context.sconf.CheckLib([l[1]+"-mt"],
                                         language="C++",
                                         autoadd=False)
             if ret1:
                 context.env["BOOST_LIBS"]=True
-                context.env[l[0]]=[x+"-mt" for x in l[1]]
+                context.env[l[0]]=[l[1]+"-mt"]
             else:
-                ret2=context.sconf.CheckLib(l[1],
+                ret2=context.sconf.CheckLib([l[1]],
                                         language="C++",
                                         autoadd=False)
                 if ret2:
                     context.env["BOOST_LIBS"]=True
-                    context.env[l[0]]=l[1]
+                    context.env[l[0]]=[l[1]]
     if not context.env['BOOST_LIBS']:
         print "WARNING, boost libraries not found, some functionality may be missing."
     return ret[0]
