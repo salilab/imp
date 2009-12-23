@@ -9,19 +9,26 @@
 #include <IMP/saxs/Restraint.h>
 #include <IMP/log.h>
 
+#include <IMP/atom/Hierarchy.h>
+#include <IMP/core/LeavesRefiner.h>
+
 IMPSAXS_BEGIN_NAMESPACE
 
 Restraint::Restraint(const Particles& particles, const Profile& exp_profile,
                      FormFactorTable* ff_table) :
+  IMP::Restraint("SAXS restraint"),
   ff_table_(ff_table), rigid_bodies_profile_(ff_table) {
   saxs_score_ = new Score( (Profile*)&exp_profile, ff_table_);
 
+  // for now just use a LeavesRefiner. It should, eventually, be a parameter
+  // or a (not yet existing) AtomsRefiner.
+  IMP::internal::OwnerPointer<Refiner> ref
+    = new core::LeavesRefiner(atom::Hierarchy::get_traits());
   for(unsigned int i=0; i<particles.size(); i++) {
     if(core::RigidBody::particle_is_instance(particles[i])) {
       rigid_bodies_decorators_.push_back(
                               core::RigidBody::decorate_particle(particles[i]));
-      rigid_bodies_.push_back(
-                     rigid_bodies_decorators_.back().get_members());
+     rigid_bodies_.push_back(ref->get_refined(rigid_bodies_decorators_.back()));
       // compute non-changing profile
       Profile rigid_part_profile(ff_table_);
       rigid_part_profile.calculate_profile(rigid_bodies_.back());
@@ -43,7 +50,19 @@ ParticlesList Restraint::get_interacting_particles() const
 
 ParticlesTemp Restraint::get_input_particles() const
 {
-  return ParticlesTemp(particles_.begin(), particles_.end());
+  ParticlesTemp pts(particles_.begin(), particles_.end());
+  unsigned int sz=pts.size();
+  for (unsigned int i=0; i< sz; ++i) {
+    pts.push_back(atom::Hierarchy(pts[i]).get_parent());
+  }
+  for (unsigned int i=0; i< rigid_bodies_.size(); ++i) {
+    pts.insert(pts.end(), rigid_bodies_[i].begin(), rigid_bodies_[i].end());
+    for (unsigned int j=0; j< rigid_bodies_[i].size(); ++j) {
+      // add the residue particle since that is needed too
+      pts.push_back(atom::Hierarchy(rigid_bodies_[i][j]).get_parent());
+    }
+  }
+  return pts;
 }
 
 
