@@ -8,5 +8,12 @@
         return self.get_name()
   }
 }
+%extend IMP::Object {
+    // Two objects count as equal in Python only if their memory
+    // addresses are the same
+    bool __eq__(const Object &other) {
+      return self == &other;
+    }
+  }
 
 %include "IMP/Object.h"
