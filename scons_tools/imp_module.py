@@ -278,6 +278,7 @@ def IMPModuleExamples(env, files):
     module_alias(env, 'dox-examples', dox)
     module_requires(env, test, 'python')
     add_to_global_alias(env, 'doc', 'dox-examples')
+    return test
 
 def IMPModuleBin(envi, files, required_modules=[], extra_libs=[], install=True):
     from scons_tools import get_bin_environment
