@@ -429,4 +429,136 @@ atom::Hierarchy create_simplified_by_residue(atom::Hierarchy in,
   return ret;
 }
 
+
+bool check_residue_segments_validity(
+  atom::Hierarchy &in,
+  const std::vector<std::pair<int,int> > &residue_segments) {
+  IMP_USAGE_CHECK(residue_segments.size()>0,
+    "can not simplify a chain with not residue segmentes",
+    ValueException);
+  atom::Hierarchies residues(atom::get_by_type(in,atom::RESIDUE_TYPE));
+int start_res_ind=IMP::atom::Residue(residues[0]).get_index();
+int end_res_ind=IMP::atom::Residue(residues[residues.size()-1]).get_index();
+  IMP_USAGE_CHECK(residue_segments[0].first >= start_res_ind,
+    "the residue segment indexes exceed the molecule residue",
+    ValueException);
+IMP_USAGE_CHECK(residue_segments[residue_segments.size()-1].second
+                 <= end_res_ind,
+    "the residue segment indexes exceed the molecule residue",
+    ValueException);
+  int last_res=-1;
+  for(std::vector<std::pair<int,int> >::const_iterator
+      it = residue_segments.begin(); it != residue_segments.end(); it++) {
+    IMP_USAGE_CHECK(it->second>it->first,
+"the index of the last residue is smaller then the index of the first residue",
+                    ValueException);
+    IMP_USAGE_CHECK(it->first>last_res,
+    "residue indexes of consecutive segments should be increasing: "
+    << it->first << " is not smaller than " << last_res <<std::endl,
+                    ValueException);
+    last_res=it->second;
+  }
+  return true;
+}
+
+
+//! Group particles into lists according to residue_segments
+std::vector<atom::Residues> group_particles(
+          atom::Hierarchy &in,
+          const ResidueIndexPairVec residue_segments) {
+  IMP_USAGE_CHECK(check_residue_segments_validity(in,residue_segments),
+                  "input residue segments are invalid",
+                  ValueException);
+  IMP_USAGE_CHECK(atom::get_by_type(in,atom::CHAIN_TYPE).size() == 1,
+                  "residue segment based simplification currently"<<
+                  "works on a single Chain",
+                  ValueException);
+  std::vector<atom::Residues> output;
+  Model *m=in.get_model();
+  atom::Hierarchies residues(atom::get_by_type(in,atom::RESIDUE_TYPE));
+  int start_res_ind=IMP::atom::Residue(residues[0]).get_index();
+  int end_res_ind=IMP::atom::Residue(residues[residues.size()-1]).get_index();
+  int curr_ind=start_res_ind;
+  int curr_res_seg_ind=0;
+  atom::Hierarchies simplified_sets;
+  while((curr_ind<end_res_ind)and(curr_res_seg_ind<residue_segments.size())){
+    IMP_LOG(VERBOSE,"working on residue index: " << curr_ind <<std::endl);
+    while( (curr_ind != residue_segments[curr_res_seg_ind].first) and
+           (curr_ind<end_res_ind)) {
+      IMP_WARN("Residue with index: " << curr_ind
+                  << "is not covered"<<std::endl);
+      //TODO - consider adding single residues to output
+      ++curr_ind;
+    }
+    if (curr_ind<end_res_ind) {
+      atom::Residues segment;
+      int start_ind=curr_ind;
+      IMP_LOG(VERBOSE,"trying to create segment bewteen " <<
+              residue_segments[curr_res_seg_ind].first << " and " <<
+              residue_segments[curr_res_seg_ind].second <<std::endl);
+      for (curr_ind=residue_segments[curr_res_seg_ind].first;
+           curr_ind<=residue_segments[curr_res_seg_ind].second;
+           ++curr_ind){
+        segment.push_back(atom::Residue(residues[curr_ind].get_particle()));
+      }
+      IMP_LOG(VERBOSE,"created segment between" << start_ind <<
+                      " and " << curr_ind-1 <<std::endl);
+      //this should not happen, the case of tail residues
+      //should have been handled above
+      IMP_INTERNAL_CHECK(segment.size()>0,
+                         "problem creating group of particles");
+      output.push_back(segment);
+      ++curr_res_seg_ind;
+    }
+  }
+  return output;
+}
+
+atom::Hierarchy create_simplified_by_segments(
+    atom::Hierarchy in,
+    const ResidueIndexPairVec residue_segments) {
+  std::vector<atom::Residues> ps_list = group_particles(in,residue_segments);
+  IMP::Model *m = in.get_model();
+  //we checked calling group_particles that there is a single chain in in
+  atom::Chain in_chain =
+       atom::Chain(atom::get_by_type(in,atom::CHAIN_TYPE)[0].get_particle());
+  atom::Hierarchy ret
+    = atom::Chain::setup_particle(new Particle(m),in_chain);
+  // create a coarser model
+  for(std::vector<atom::Residues>::const_iterator it = ps_list.begin();
+      it != ps_list.end(); it++) {
+    IMP_LOG(VERBOSE,"setting up segment of " <<
+            it->size()<< " residues"<<std::endl);
+    core::XYZRs fragment_xyz;//will contain all xyz of the relevant
+                             //fragment of residues
+    double total_mass=0.;
+    for(atom::Residues::const_iterator it1 = it->begin();
+        it1 != it->end(); it1++) {
+      core::XYZRs res_atoms(core::get_leaves(*it1));
+      fragment_xyz.insert(fragment_xyz.end(),res_atoms.begin(),res_atoms.end());
+      //update the total_mass
+      for(core::XYZRs::const_iterator it2 = res_atoms.begin();
+          it2 != res_atoms.end(); it2++) {
+        total_mass += atom::Mass(it2->get_particle()).get_mass();
+      }
+    }
+    IMP_LOG(VERBOSE,"segment with total mass of: " << total_mass<<std::endl);
+    //set a new particle to be the sphere cover of fragment_xyz
+    IMP_NEW(IMP::Particle,frag_p,(m));
+    core::XYZR::setup_particle(frag_p);
+    set_enclosing_sphere(core::XYZR(frag_p),fragment_xyz);
+    atom::Mass::setup_particle(frag_p,total_mass);
+    atom::Fragment frag = atom::Fragment::setup_particle(frag_p);
+    IMP_IF_LOG(VERBOSE) {
+      IMP_LOG(VERBOSE,"adding a fragment: ");
+      IMP_LOG_WRITE(VERBOSE,frag.show());
+      IMP_LOG(VERBOSE,std::endl);
+    }
+    ret.add_child(frag);
+    IMP_LOG(VERBOSE,"after adding fragment to ret" << total_mass<<std::endl);
+  }
+  return ret;
+}
+
+
 IMPHELPER_END_NAMESPACE

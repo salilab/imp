@@ -39,5 +39,26 @@ class SimplifyTests(IMP.test.TestCase):
         for res_segment in [5,10,20,30,num_residues]:
             mh_simp= IMP.helper.create_simplified_by_residue(mh, res_segment)
             self.assertEqual(num_residues/res_segment+1*residual_cond(num_residues%res_segment), len(IMP.core.get_leaves(mh_simp)))
+
+
+    def test_simplify_by_segments(self):
+        """Test protein simplification by segments"""
+        IMP.set_log_level(IMP.SILENT)#VERBOSE)
+        m= IMP.Model()
+        mh= IMP.atom.read_pdb(self.get_input_file_name('single_protein.pdb'), m)
+        IMP.atom.add_radii(mh)
+        #define the segments
+        segs = IMP.helper.ResidueIndexPairVec()
+        num_res= len(IMP.atom.get_by_type(mh,IMP.atom.RESIDUE_TYPE))
+        start=0
+        step=30
+        while start < num_res:
+            segs.append(IMP.helper.ResidueIndexPair(start,min(start+step,num_res-1)))
+            start=start+step+1
+            #print segs[-1]
+        mh_simp= IMP.helper.create_simplified_by_segments(mh,segs)
+        self.assertEqual(num_res/step,len(IMP.core.get_leaves(mh_simp)))
+
+
 if __name__ == '__main__':
     unittest.main()
