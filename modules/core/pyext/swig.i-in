@@ -147,20 +147,22 @@ IMP_REFCOUNT_RETURN_SINGLE(IMP::core::Mover)
 
 namespace IMP {
   namespace core {
-    %template(Movers) ::IMP::VectorOfRefCounted<Mover*>;
+    %template(Movers) ::IMP::VectorOfRefCounted< IMP::core::Mover*, IMP::RefCounted::Policy >;
+    %template(MoversTemp) ::std::vector<IMP::core::Mover*>;
+    %implicitconv Mover ;
     %template(TruncatedHarmonicLowerBound) ::IMP::core::TruncatedHarmonic<LOWER>;
     %template(TruncatedHarmonicUpperBound) ::IMP::core::TruncatedHarmonic<UPPER>;
     %template(TruncatedHarmonicBound) ::IMP::core::TruncatedHarmonic<BOTH>;
-    IMP_DECORATORS(XYZ, XYZs, Particles)
-    IMP_DECORATORS(XYZR, XYZRs, XYZs)
-    IMP_DECORATORS(RigidBody, RigidBodies, XYZs)
-    IMP_DECORATORS(RigidMember, RigidMembers, XYZs)
+    IMP_SWIG_DECORATORS(XYZ, XYZs, Particles)
+    IMP_SWIG_DECORATORS(XYZR, XYZRs, XYZs)
+    IMP_SWIG_DECORATORS(RigidBody, RigidBodies, XYZs)
+    IMP_SWIG_DECORATORS(RigidMember, RigidMembers, XYZs)
     /* Swig bitches about it having "the same name" as IMP.atom.Hierarchies
        even though it doesn't. */
     %template(GenericHierarchies) ::IMP::DecoratorsWithTraits<IMP::core::Hierarchy,
                                                        IMP::Particles,
                                                        IMP::core::HierarchyTraits>;
-    %template(GenericHierarchyVector) ::std::vector<IMP::core::Hierarchy>;
+    %template(GenericHierarchysTemp) ::IMP::DecoratorsWithTraits<IMP::core::Hierarchy, IMP::ParticlesTemp, IMP::core::HierarchyTraits>;
     // swig screws up on scopes, I can't be bothered to fix it
     //%template(show_named_hierarchy) show<::IMP::core::Name>;
   }
