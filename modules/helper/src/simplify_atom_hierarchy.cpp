@@ -172,7 +172,7 @@ namespace {
 */
 atom::Hierarchy create_simplified(atom::Hierarchy in,
                                   double resolution) {
-  atom::Hierarchies leaves= atom::get_leaves(in);
+  atom::Hierarchies leaves(atom::get_leaves(in));
 
   // rasterize protein to grid with size resolution/2.0
   IMP_NEW(em::SampledDensityMap, sdm,
@@ -355,7 +355,7 @@ atom::Hierarchy create_simplified(atom::Hierarchy in,
 
 atom::Hierarchy create_simplified_chain_by_residue(atom::Hierarchy in,
                                                   int res_step) {
-  atom::Hierarchies residues= atom::get_by_type(in,atom::RESIDUE_TYPE);
+  atom::Hierarchies residues(atom::get_by_type(in,atom::RESIDUE_TYPE));
   IMP_USAGE_CHECK(residues.size() > 0,
             "Can only simplify a chain with no residues.",
             ValueException);
@@ -413,7 +413,7 @@ atom::Hierarchy create_simplified_by_residue(atom::Hierarchy in,
   // IMP_check(in.get_type() == atom::Hierarchy::PROTEIN,
   //           "Can only simplify proteins at the moment.",
   //           ValueException);
-  atom::Hierarchies in_chains= atom::get_by_type(in,atom::CHAIN_TYPE);
+  atom::Hierarchies in_chains(atom::get_by_type(in,atom::CHAIN_TYPE));
   atom::Hierarchies out_chains;
   for(atom::Hierarchies::iterator it = in_chains.begin();
       it != in_chains.end();it++) {
