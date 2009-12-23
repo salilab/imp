@@ -631,12 +631,12 @@ def IMPModuleBuild(env, version, required_modules=[],
     env['IMP_MODULE_PREPROC'] = module_preproc
     env['IMP_MODULE_NAMESPACE'] = module_namespace
     env['IMP_MODULE_NICENAME'] = module_nicename
-    env['IMP_MODULE_VERSION'] = "SVN"
+    #env['IMP_MODULE_VERSION'] = "SVN"
     env['IMP_MODULE_AUTHOR'] = "A. Biologist"
     env['IMP_MODULE_CPP']= cpp
     env.Prepend(CPPPATH=['#/build/include'])
     env.Prepend(LIBPATH=['#/build/lib'])
-    vars=make_vars(env)
+
     if cpp:
         build_config=[]
         # Generate version information
@@ -670,6 +670,22 @@ def IMPModuleBuild(env, version, required_modules=[],
     env['TEST_ENVSCRIPT'] = None
     env['VALIDATED'] = None
 
+    if version == "SVN" and env['svn'] and env['SVNVERSION']:
+        if env.get('repository'):
+            rep=env['repository']
+            dp= os.path.commonprefix([Dir("#/").abspath, Dir(".").abspath])
+            pf=Dir(".").abspath[len(dp)+1:]
+            #print pf
+            reppath=Dir("#/"+rep).abspath
+            path=os.path.join(reppath, pf)
+        else:
+            path=Dir(".").abspath
+        try:
+            vr= os.popen(env['SVNVERSION'] + ' ' + path).read()
+            version= "SVN "+vr.split("\n")[0]
+        except OSError, detail:
+            print "Could not run svnversion: %s" % str(detail)
+    env['IMP_MODULE_VERSION'] = version
 
     if not env.GetOption('clean') and not env.GetOption('help'):
         if len(required_libraries)+len(required_headers) > 0:
@@ -686,7 +702,7 @@ def IMPModuleBuild(env, version, required_modules=[],
         print "IMP."+env['IMP_MODULE']+" is disabled"
         Return()
     else:
-        print "Configuring module IMP." + env['IMP_MODULE'],
+        print "Configuring module IMP." + env['IMP_MODULE']+" version "+env['IMP_MODULE_VERSION'],
     if not env['IMP_MODULE_CPP']:
         print " (python only)",
 
@@ -701,18 +717,7 @@ def IMPModuleBuild(env, version, required_modules=[],
     print
 
     env['IMP_MODULE_CONFIG']=config_macros
-    if env['svn'] and env['SVNVERSION']:
-        if env.get('repository'):
-            path=env['repository']
-        else:
-            path="."
-        dir= Dir("#/"+path).abspath
-        try:
-            vr= os.popen(env['SVNVERSION'] + ' ' + dir).read()
-            version= version + ' ' + vr.split("\n")[0]
-        except OSError, detail:
-            print "Could not run svnversion: %s" % str(detail)
-    env['IMP_MODULE_VERSION'] = version
+
     vars=make_vars(env)
     env.validate()
     env.SConscript('doc/SConscript', exports='env')
