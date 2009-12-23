@@ -16,6 +16,8 @@
 #include "base_types.h"
 #include "VersionInfo.h"
 
+#include <boost/dynamic_bitset.hpp>
+
 #include <limits>
 
 IMP_BEGIN_NAMESPACE
@@ -52,6 +54,10 @@ private:
   enum Stage {NOT_EVALUATING, BEFORE_EVALUATE, EVALUATE, AFTER_EVALUATE};
   mutable Stage cur_stage_;
 
+  typedef boost::dynamic_bitset<> RequiredStates;
+
+  std::map<Restraint*, RequiredStates> restraint_deps_;
+
   Stage get_stage() const {
     return cur_stage_;
   }
@@ -75,32 +81,26 @@ private:
     }
   }
 
+  void validate_attribute_values() const ;
+  void validate_incremental_evaluate(const RestraintsTemp &restraints,
+                                     bool calc_derivs,
+                                     double score);
+  void validate_computed_derivatives() const;
 
-  void before_evaluate() const;
+  void before_evaluate(const ScoreStatesTemp &states) const;
 
-  void after_evaluate(bool calc_derivs) const;
-
-  void before_evaluate_incremental() const;
-
-  void after_evaluate_incremental(bool calc_derivs) const;
-
+  void after_evaluate(const ScoreStatesTemp &states, bool calc_derivs) const;
 
   void zero_derivatives(bool shadow_too=false) const;
 
-  double do_evaluate(const Restraints &restraints, bool calc_derivs) const;
+  double do_evaluate(const RestraintsTemp &restraints,
+                     const ScoreStatesTemp &states, bool calc_derivs);
 
   enum WhichRestraints {ALL, INCREMENTAL, NONINCREMENTAL};
   double do_evaluate_restraints(const Restraints &restraints,
                                 bool calc_derivs,
                                 WhichRestraints incremental_restraints,
                                 bool incremental_evaluation) const;
-
-  // begin incremental
-
-  double do_evaluate_incremental(const Restraints &restraints,
-                                 bool calc_derivs) const;
-
-  // end incremental
 
 #if defined(SWIG)
  public:
@@ -240,7 +240,7 @@ public:
  //! Evaluate a subset of the restraints
  /** The passed restraints must have been added to this model already.
   */
- virtual Float evaluate(const Restraints &restraints, bool calc_derivs);
+ virtual Float evaluate(const RestraintsTemp &restraints, bool calc_derivs);
 
   //! Show the model contents.
   /** \param[in] out Stream to write model description to.
