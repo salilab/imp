@@ -181,7 +181,7 @@ struct ArrayOnAttributesHelper {
     for (unsigned int i=0; i< get_size(p); ++i) {
       if (get_value(p, i) ==v) return i;
     }
-    IMP_USAGE_CHECK(false, "Value not found: "  << v, UsageException);
+    IMP_THROW("Value not found: "  << v, UsageException);
   }
 
 private:
