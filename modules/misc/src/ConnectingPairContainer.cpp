@@ -49,22 +49,31 @@ namespace {
       vs[i]= core::XYZ(sc->get_particle(i)).get_coordinates();
     }
     algebra::NearestNeighborD<3> nn(vs);
+    unsigned int nnn=static_cast<unsigned int>(std::sqrt(vs.size())+1);
     for (unsigned int i=0; i< vs.size(); ++i) {
-      unsigned int ni=nn.get_nearest_neighbor(i);
-      out.push_back(ParticlePair(sc->get_particle(i), sc->get_particle(ni)));
-      uf.union_set(i, ni);
-    }
-    //if (uf.count_sets() > 1) {
-      for (unsigned int i=1; i< vs.size(); ++i) {
-        int si=uf.find_set(i);
-        int si0= uf.find_set(0);
-        if (si != si0) {
-          out.push_back(ParticlePair(sc->get_particle(si),
-                                     sc->get_particle(si0)));
-          uf.union_set(si, si0);
+      Ints ni=nn.get_nearest_neighbors(i, nnn);
+      unsigned int si= uf.find_set(i);
+      for (unsigned int j=0; j< ni.size(); ++j) {
+        unsigned int sj= uf.find_set(ni[j]);
+        if (sj != si) {
+          uf.union_set(si, sj); // more efficient call
+          out.push_back(ParticlePair(sc->get_particle(i),
+                                     sc->get_particle(ni[j])));
+          break;
         }
       }
-      //}
+    }
+    //if (uf.count_sets() > 1) {
+    for (unsigned int i=1; i< vs.size(); ++i) {
+      int si=uf.find_set(i);
+      int si0= uf.find_set(0);
+      if (si != si0) {
+        out.push_back(ParticlePair(sc->get_particle(si),
+                                   sc->get_particle(si0)));
+        uf.union_set(si, si0);
+      }
+    }
+    //}
   }
 
 
@@ -78,27 +87,35 @@ namespace {
   typedef Graph::edge_property_type Weight;
   typedef boost::graph_traits<Graph>::vertex_descriptor Vertex;
 
-  void compute_mst(const SingletonContainer *a,
+  void compute_mst(const SingletonContainer *sc,
                    ParticlePairsTemp &out) {
-    unsigned int nump= a->get_number_of_particles();
-    Graph g(nump);
-    for (unsigned int i=0; i< nump; ++i) {
-      core::XYZR di(a->get_particle(i));
-      for (unsigned int j=0; j<i; ++j) {
-        core::XYZR dj(a->get_particle(j));
-        double d=algebra::power_distance(di.get_sphere(), dj.get_sphere());
-        /*Edge e =*/ boost::add_edge(i, j, Weight(d), g);
-        //boost::put(boost::edge_weight_t(), g, e, d);
+    static unsigned int nnn=10;
+
+    algebra::Vector3Ds vs(sc->get_number_of_particles());
+    for (unsigned int i=0; i< vs.size(); ++i) {
+      vs[i]= core::XYZ(sc->get_particle(i)).get_coordinates();
+    }
+    algebra::NearestNeighborD<3> nn(vs);
+    ///unsigned int nnn=static_cast<unsigned int>(std::sqrt(vs.size())+1);
+    Graph g(vs.size());
+    for (unsigned int i=0; i< vs.size(); ++i) {
+      core::XYZR di(sc->get_particle(i));
+      Ints ni=nn.get_nearest_neighbors(i, nnn);
+      for (unsigned int j=0; j< ni.size(); ++j) {
+        core::XYZR dj(sc->get_particle(ni[j]));
+        double d= algebra::power_distance(di.get_sphere(), dj.get_sphere());
+        boost::add_edge(i, ni[j], Weight(d), g);
       }
     }
+    // count sets as we go along
     std::vector<Edge> mst;
-    mst.resize(nump-1);
+    mst.resize(vs.size()-1);
     boost::kruskal_minimum_spanning_tree(g, mst.begin());
 
     for (unsigned int index=0; index< mst.size(); ++index) {
       int i= boost::target(mst[index], g);
       int j= boost::source(mst[index], g);
-      out.push_back(ParticlePair(a->get_particle(i), a->get_particle(j)));
+      out.push_back(ParticlePair(sc->get_particle(i), sc->get_particle(j)));
     }
   }
 
