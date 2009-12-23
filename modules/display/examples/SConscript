@@ -1,2 +1,15 @@
 Import('env')
-env.IMPModuleExamples(env.IMPModuleGetExamples())
+import os
+import glob
+
+def cleanup(target, source, env):
+    """Clean up example outputs"""
+    for x in glob.glob("log_file*.pym") + ['initial.pym']:
+        try:
+            os.unlink(x)
+        except OSError:
+            pass
+
+ex = env.IMPModuleExamples(env.IMPModuleGetExamples())
+
+env.AddPostAction(ex, cleanup)
