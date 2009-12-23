@@ -18,7 +18,7 @@
 
 %ignore IMP::Decorators::operator[];
 %extend IMP::Decorators {
-  Decorator __getitem__(int index) const {
+  WrappedDecorator __getitem__(int index) const {
     if (index < 0) index= index+self->size();
     if (index >= static_cast<int>(self->size())) {
        IMP_THROW("Index out of range in getitem" << index
@@ -26,7 +26,7 @@
     }
     return self->operator[](index);
   }
-  void __setitem__(int index, Decorator val) {
+  void __setitem__(int index, WrappedDecorator val) {
     if (index < 0) index= index+self->size();
     if (index >= static_cast<int>(self->size())) {
        IMP_THROW("Index out of range in setitem" << index
@@ -37,24 +37,24 @@
   int __len__() const {
     return self->size();
   }
-  void append(Decorator d) {
+  void append(WrappedDecorator d) {
     self->push_back(d);
   }
   void __iter__() const{}
-  Decorators< Decorator, ParentDecorators >
-   __add__(const Decorators< Decorator, ParentDecorators > &o) {
-    IMP::Decorators< Decorator, ParentDecorators > ret(*self);
+  Decorators< WrappedDecorator, ParentDecorators >
+   __add__(const Decorators< WrappedDecorator, ParentDecorators > &o) {
+    IMP::Decorators< WrappedDecorator, ParentDecorators > ret(*self);
     ret.insert(ret.end(), o.begin(), o.end());
     return ret;
   }
-  std::vector<Decorator> __list__() const {
-    std::vector<Decorator> ret(self->begin(), self->end());
+  std::vector<WrappedDecorator> __list__() const {
+    std::vector<WrappedDecorator> ret(self->begin(), self->end());
     return ret;
   }
-  Decorators< Decorator, ParentDecorators > __getslice__(int b, int e) const {
+  Decorators< WrappedDecorator, ParentDecorators > __getslice__(int b, int e) const {
     if (e < 0) e= self->size()+e;
     if (b < 0) b= self->size()+b;
-    IMP::Decorators< Decorator, ParentDecorators > ret;
+    IMP::Decorators< WrappedDecorator, ParentDecorators > ret;
     for ( int c=b; c!= e; ++c) {
        ret.push_back(self->operator[](c));
     }
@@ -64,7 +64,7 @@
 
 %ignore IMP::DecoratorsWithTraits::operator[];
 %extend IMP::DecoratorsWithTraits {
-  Decorator __getitem__(int index) const {
+  WrappedDecorator __getitem__(int index) const {
     if (index < 0) index=self->size()+index;
     if (index >= static_cast<int>(self->size())) {
        IMP_THROW("Index out of range in getitem" << index
@@ -72,11 +72,11 @@
     }
     return self->operator[](index);
   }
-  std::vector<Decorator> __list__() const {
-    std::vector<Decorator> ret(self->begin(), self->end());
+  std::vector<WrappedDecorator> __list__() const {
+    std::vector<WrappedDecorator> ret(self->begin(), self->end());
     return ret;
   }
-  void __setitem__(int index, Decorator val) {
+  void __setitem__(int index, WrappedDecorator val) {
     if (index < 0) index=self->size()+index;
     if (index >= static_cast<int>(self->size())) {
        IMP_THROW("Index out of range in setitem" << index
@@ -87,21 +87,21 @@
   int __len__() const {
     return self->size();
   }
-  void append(Decorator d) {
+  void append(WrappedDecorator d) {
     self->push_back(d);
   }
   void __iter__(){}
-  DecoratorsWithTraits< Decorator, ParentDecorators, Traits >
-  __add__(const DecoratorsWithTraits<Decorator, ParentDecorators, Traits > &o) {
-    IMP::DecoratorsWithTraits< Decorator, ParentDecorators, Traits > ret(*self);
+  DecoratorsWithTraits< WrappedDecorator, ParentDecorators, Traits >
+  __add__(const DecoratorsWithTraits<WrappedDecorator, ParentDecorators, Traits > &o) {
+    IMP::DecoratorsWithTraits< WrappedDecorator, ParentDecorators, Traits > ret(*self);
     ret.insert(ret.end(), o.begin(), o.end());
     return ret;
   }
-  DecoratorsWithTraits< Decorator, ParentDecorators, Traits >
+  DecoratorsWithTraits< WrappedDecorator, ParentDecorators, Traits >
   __getslice__(int b, int e) const {
     if (e < 0) e= self->size()+e;
     if (b < 0) b= self->size()+b;
-    IMP::DecoratorsWithTraits< Decorator, ParentDecorators, Traits > ret;
+    IMP::DecoratorsWithTraits< WrappedDecorator, ParentDecorators, Traits > ret;
     for ( int c=b; c!= e; ++c) {
        ret.push_back(self->operator[](c));
     }
