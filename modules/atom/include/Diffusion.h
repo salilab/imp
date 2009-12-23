@@ -117,7 +117,8 @@ class IMPATOMEXPORT Diffusion:
 
 IMP_OUTPUT_OPERATOR(Diffusion);
 
-typedef Decorators<Diffusion, core::XYZs> Diffusions;
+
+IMP_DECORATORS(Diffusion, core::XYZs);
 
 IMPATOM_END_NAMESPACE
 

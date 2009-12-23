@@ -155,8 +155,7 @@ public:
   IMP_DECORATOR(Fragment, Hierarchy)
 };
 
-
-typedef Decorators<Fragment, Hierarchies> Fragments;
+IMP_DECORATORS(Fragment, Hierarchies);
 
 
 IMP_OUTPUT_OPERATOR(Fragment);

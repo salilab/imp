@@ -1,3 +1,4 @@
+
 %extend IMP::Decorator {
   bool __eq__(Decorator o) {
     return *self == o;
@@ -6,6 +7,14 @@
     return *self == o;
   }
 }
+
+
+%pythonprepend IMP::DecoratorsWithTraits::__iter__ %{
+     return IMP.DecoratorIterator(self)
+%}
+%pythonprepend IMP::Decorators::__iter__ %{
+     return IMP.DecoratorIterator(self)
+%}
 
 %ignore IMP::Decorators::operator[];
 %extend IMP::Decorators {
@@ -31,6 +40,7 @@
   void append(Decorator d) {
     self->push_back(d);
   }
+  void __iter__() const{}
   Decorators< Decorator, ParentDecorators >
    __add__(const Decorators< Decorator, ParentDecorators > &o) {
     IMP::Decorators< Decorator, ParentDecorators > ret(*self);
@@ -80,6 +90,7 @@
   void append(Decorator d) {
     self->push_back(d);
   }
+  void __iter__(){}
   DecoratorsWithTraits< Decorator, ParentDecorators, Traits >
   __add__(const DecoratorsWithTraits<Decorator, ParentDecorators, Traits > &o) {
     IMP::DecoratorsWithTraits< Decorator, ParentDecorators, Traits > ret(*self);
@@ -98,9 +109,10 @@
   }
 }
 
-%define IMP_DECORATORS(Name, PluralName, Parent)
+
+%define IMP_SWIG_DECORATORS(Name, PluralName, Parent)
 %template(PluralName) ::IMP::Decorators< Name, Parent>;
-%template(Name##Vector) ::std::vector<Name>;
+%template(PluralName##Temp) ::IMP::Decorators<Name, Parent##Temp>;
 %implicitconv Name ;
 %enddef
 %implicitconv Decorator;

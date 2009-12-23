@@ -175,7 +175,7 @@ ThisDecorators* o_;                                                     \
 };                                                                      \
 void check(Particle *p) {                                               \
   IMP_USAGE_CHECK(test,                                                 \
-                    "Particle \"" << (p)->get_name()                   \
+                  "Particle \"" << (p)->get_name()                      \
                     << "\" missing required attributes",                \
                   ValueException);                                      \
 }                                                                       \
@@ -188,8 +188,8 @@ void check(It b, It e) {                                                \
 public:                                                                 \
 typedef const Decorator const_reference;                                \
 typedef Decorator value_type;                                           \
-typedef const Decorator reference;                                      \
-const Particles &get_particles() const {return *this;}                  \
+typedef Proxy reference;                                                \
+const ParticlesTemp &get_particles() const {return *this;}              \
 void push_back(Decorator d) {                                           \
   on_add_decorator;                                                     \
   ParentDecorators::push_back(d);                                       \
@@ -200,7 +200,7 @@ void push_back(Particle *p) {                                           \
   ParentDecorators::push_back(p);                                       \
 }                                                                       \
 void set(unsigned int i, Decorator d) {                                 \
-  ParentDecorators::set(i, d);                                          \
+  ParentDecorators::operator[](i)= d;                                   \
 }                                                                       \
 Decorator back() const {                                                \
   IMP_USAGE_CHECK(!ParentDecorators::empty(),                           \
@@ -254,8 +254,8 @@ void swap_with(ThisDecorators &o) {                                     \
   public:                                                               \
   typedef const Decorator const_reference;                              \
   typedef Decorator value_type;                                         \
-  typedef const Decorator reference;                                    \
-  const Particles &get_particles() const;                               \
+  typedef Proxy reference;                                              \
+  const ParticlesTemp &get_particles() const;                           \
   void push_back(Decorator d);                                          \
   void push_back(Particle *p);                                          \
   Decorator &operator[](unsigned int i);                                \
@@ -284,19 +284,49 @@ void swap_with(ThisDecorators &o) {                                     \
 template <class Decorator, class ParentDecorators>
 class Decorators: public ParentDecorators {
   typedef Decorators<Decorator, ParentDecorators> ThisDecorators;
+  struct Proxy: public Decorator {
+    typedef typename ParentDecorators::reference Ref;
+    Ref d_;
+    Proxy(Ref t):
+      Decorator(t), d_(t){
+    }
+    Proxy(Ref p, bool): Decorator(), d_(p){}
+    void operator=(Decorator v) {
+      Decorator::operator=(v);
+      d_=v;
+    }
+#ifdef _MSC_VER
+    // for VC, it can't otherwise figure out the conversion chain
+    operator Particle*() {
+      return Decorator::get_particle();
+    }
+#endif
+  };
+  Proxy get_proxy(unsigned int i) {
+    if (ParentDecorators::operator[](i)) {
+      return Proxy(ParentDecorators::operator[](i));
+    } else {
+      return Proxy(ParentDecorators::operator[](i), false);
+    }
+  }
+
   IMP_DECORATORS_METHODS(Decorator::particle_is_instance(p),,,)
   public:
   explicit Decorators(const Particles &ps): ParentDecorators(ps) {
     check(ps.begin(), ps.end());
   }
+  explicit Decorators(const ParticlesTemp &ds): ParentDecorators(ds){
+    check(ds.begin(), ds.end());
+  }
   explicit Decorators(unsigned int i): ParentDecorators(i){}
-  explicit Decorators(Decorator d): ParentDecorators(d){}
+  explicit Decorators(Decorator d): ParentDecorators(1, d){}
+  explicit Decorators(unsigned int n, Decorator d): ParentDecorators(n, d){}
   Decorators(){}
 #ifndef SWIG
 #ifndef IMP_DOXYGEN
-  typename ParentDecorators::template DecoratorProxy<Decorator>
+  Proxy
   operator[](unsigned int i) {
-    return ParentDecorators::template get_decorator_proxy<Decorator>(i);
+    return get_proxy(i);
   }
 #else
   Decorator& operator[](unsigned int i);
@@ -322,8 +352,35 @@ IMP_SWAP_2(Decorators);
     \see Decorators*/
 template <class Decorator, class ParentDecorators, class Traits>
 class DecoratorsWithTraits: public ParentDecorators {
-  typedef DecoratorsWithTraits<Decorator, ParentDecorators, Traits>
-  ThisDecorators;
+  typedef DecoratorsWithTraits<Decorator, ParentDecorators,
+                               Traits> ThisDecorators;
+
+  struct Proxy: public Decorator {
+    typedef typename ParentDecorators::reference Ref;
+    Ref d_;
+    Proxy(Ref t, Traits tr):
+      Decorator(t, tr), d_(t){
+    }
+    Proxy(Ref p, bool): Decorator(), d_(p){}
+    void operator=(Decorator v) {
+      // traits should match, but not checked
+      Decorator::operator=(v);
+      d_=v;
+    }
+#ifdef _MSC_VER
+    // for VC, it can't otherwise figure out the conversion chain
+    operator Particle*() {
+      return Decorator::get_particle();
+    }
+#endif
+  };
+  Proxy get_proxy(unsigned int i, Traits t) {
+    if (ParentDecorators::operator[](i)) {
+      return Proxy(ParentDecorators::operator[](i), t);
+    } else {
+      return Proxy(ParentDecorators::operator[](i), false);
+    }
+  }
   Traits tr_;
   bool has_traits_;
   IMP_DECORATORS_METHODS(Decorator::particle_is_instance(p, tr_),{
@@ -344,14 +401,18 @@ class DecoratorsWithTraits: public ParentDecorators {
     })
   public:
   explicit DecoratorsWithTraits(Traits tr): tr_(tr), has_traits_(true){}
-  explicit DecoratorsWithTraits(Decorator d): ParentDecorators(d),
+  explicit DecoratorsWithTraits(Decorator d): ParentDecorators(1,d),
                                               tr_(d.get_traits()),
                                               has_traits_(true){}
+  explicit DecoratorsWithTraits(unsigned int n, Decorator d):
+    ParentDecorators(n, d),
+    tr_(d.get_traits()),
+    has_traits_(true) {}
   DecoratorsWithTraits(const Particles &ps,
                        Traits tr): tr_(tr), has_traits_(true) {
     ParentDecorators::resize(ps.size());
     for (unsigned int i=0; i< ps.size(); ++i) {
-      ParentDecorators::set(i, Decorator(ps[i], tr));
+      ParentDecorators::operator[](i)=Decorator(ps[i], tr);
     }
   }
   DecoratorsWithTraits(unsigned int i,
@@ -360,14 +421,13 @@ class DecoratorsWithTraits: public ParentDecorators {
   DecoratorsWithTraits(): has_traits_(false){}
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-  typename ParentDecorators::template DecoratorTraitsProxy<Decorator, Traits>
+  Proxy
   operator[](unsigned int i) {
     IMP_USAGE_CHECK(has_traits_, "Can only use operator[] on a decorator "
                     << "container "
                     << "which is non-empty. This is a bug, but hard to fix.",
                     UsageException);
-    return ParentDecorators
-      ::template get_decorator_traits_proxy<Decorator, Traits>(i, tr_);
+    return get_proxy(i, tr_);
   }
 #else
   IMP_NO_SWIG(Decorator& operator[](unsigned int i));
@@ -392,22 +452,56 @@ IMP_SWAP_3(DecoratorsWithTraits);
     \see Decorators*/
 template <class Decorator, class ParentDecorators>
 class DecoratorsWithImplicitTraits: public ParentDecorators {
+  struct Proxy: public Decorator {
+    typedef typename ParentDecorators::reference Ref;
+    Ref d_;
+    Proxy(Ref t):
+      Decorator(t), d_(t){
+    }
+    Proxy(Ref p, bool): Decorator(), d_(p){}
+    void operator=(Decorator v) {
+      // traits should match, but not checked
+      Decorator::operator=(v);
+      d_=v;
+    }
+#ifdef _MSC_VER
+    // for VC, it can't otherwise figure out the conversion chain
+    operator Particle*() {
+      return Decorator::get_particle();
+    }
+#endif
+  };
+  Proxy get_proxy(unsigned int i) {
+    if (ParentDecorators::operator[](i)) {
+      return Proxy(ParentDecorators::operator[](i));
+    } else {
+      return Proxy(ParentDecorators::operator[](i), false);
+    }
+  }
   typedef DecoratorsWithImplicitTraits<Decorator, ParentDecorators>
   ThisDecorators;
   IMP_DECORATORS_METHODS(Decorator::particle_is_instance(p),,,)
   public:
-  DecoratorsWithImplicitTraits():ParentDecorators(Decorator::get_traits()) {}
-  DecoratorsWithImplicitTraits(const Particles &ps):
+  explicit DecoratorsWithImplicitTraits():
+  ParentDecorators(Decorator::get_traits()) {}
+  explicit DecoratorsWithImplicitTraits(const Particles &ps):
     ParentDecorators(ps, Decorator::get_traits()){
   }
-  DecoratorsWithImplicitTraits(unsigned int i):
+  explicit DecoratorsWithImplicitTraits(unsigned int i):
     ParentDecorators(i, Decorator::get_traits()){}
-  DecoratorsWithImplicitTraits(Decorator d): ParentDecorators(d){}
+  explicit DecoratorsWithImplicitTraits(Decorator d):
+    ParentDecorators(1,d){}
+  explicit DecoratorsWithImplicitTraits(unsigned int n,Decorator d):
+    ParentDecorators(n, d){}
+  explicit DecoratorsWithImplicitTraits(const ParticlesTemp &ds):
+    ParentDecorators(ds, Decorator::get_traits()){
+    check(ds.begin(), ds.end());
+  }
 #ifndef SWIG
 #ifndef IMP_DOXYGEN
-  typename ParentDecorators::template DecoratorProxy<Decorator>
+  Proxy
   operator[](unsigned int i) {
-    return ParentDecorators::template get_decorator_proxy<Decorator>(i);
+    return get_proxy(i);
   }
 #else
   Decorator& operator[](unsigned int i);
