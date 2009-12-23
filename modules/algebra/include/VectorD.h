@@ -52,7 +52,7 @@ public:
   }
 
   //! Initialize the 1-vector from its value.
-  VectorD(double x) {
+  explicit VectorD(double x) {
   /* Note that MSVC gets confused with static asserts if we try to subclass
      VectorD, as we do for example in the various IMP::display Geometry
      subclasses, so replace with runtime checks. */
