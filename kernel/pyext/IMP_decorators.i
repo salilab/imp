@@ -10,10 +10,10 @@
 
 
 %pythonprepend IMP::DecoratorsWithTraits::__iter__ %{
-     return IMP.DecoratorIterator(self)
+        return IMP.DecoratorIterator(self)
 %}
 %pythonprepend IMP::Decorators::__iter__ %{
-     return IMP.DecoratorIterator(self)
+        return IMP.DecoratorIterator(self)
 %}
 
 %ignore IMP::Decorators::operator[];
