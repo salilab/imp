@@ -64,7 +64,6 @@ protected:
       minimize a scroing function. Thus a score of 1 means no-correlation
       and a score of 0. is perfect correlation.
 \param[in] rb          The rigid body to fit
-\param[in] rb_state    The rigid body score state
 \param[in] radius_key  The raidus key of the particles in the rigid body
 \param[in] weight_key  The weight key of the particles in the rigid body
 \param[in] dmap        The density map to fit to
@@ -81,7 +80,7 @@ protected:
 \param[in] max_rotation maximum rotation step in a single MC optimization step
  */
 IMPEMEXPORT void  local_rigid_fitting_around_point(
-   core::RigidBody &rb, ScoreState *rb_state, const FloatKey &rad_key,
+   core::RigidBody &rb, const FloatKey &rad_key,
    const FloatKey &wei_key,
    DensityMap *dmap, const algebra::Vector3D &anchor_centroid,
    FittingSolutions &fr,
@@ -106,7 +105,6 @@ IMPEMEXPORT void  local_rigid_fitting_around_point(
       minimize a scroing function. Thus a score of 1 means no-correlation
       and a score of 0. is perfect correlation.
 \param[in] rb          The rigid body to fit
-\param[in] rb_state    The rigid body score state
 \param[in] radius_key  The raidus key of the particles in the rigid body
 \param[in] weight_key  The weight key of the particles in the rigid body
 \param[in] dmap        The density map to fit to
@@ -123,7 +121,7 @@ IMPEMEXPORT void  local_rigid_fitting_around_point(
  */
 
 inline void local_rigid_fitting(
-   core::RigidBody &rb, ScoreState *rb_state, const FloatKey &rad_key,
+   core::RigidBody &rb, const FloatKey &rad_key,
    const FloatKey &wei_key,
    DensityMap *dmap,
    FittingSolutions &fr,
@@ -134,13 +132,13 @@ inline void local_rigid_fitting(
    algebra::Vector3D rb_cen=
      IMP::core::centroid(core::XYZs(rb.get_members()));
    local_rigid_fitting_around_point(
-     rb, rb_state, rad_key, wei_key,dmap, rb_cen,fr,display_log,
+     rb, rad_key, wei_key,dmap, rb_cen,fr,display_log,
      number_of_optimization_runs, number_of_mc_steps,
      number_of_cg_steps, max_translation, max_rotation);
 }
 
 IMPEMEXPORT void local_rigid_fitting_around_points(
-   core::RigidBody &rb, ScoreState *rb_state,
+   core::RigidBody &rb,
    const FloatKey &rad_key, const FloatKey &wei_key,
    DensityMap *dmap, const algebra::Vector3Ds &anchor_centroid,
    FittingSolutions &fr, OptimizerState *display_log,
@@ -192,11 +190,25 @@ IMPEMEXPORT void local_rigid_fitting_grid_search(
 \param[in] wei_key  The weight key of the particles in the rigid body
 \param[in] tranformations   A set of rigid transformations
 \param[in] fr   The solutions will be stored in a FittingSolutions data stucture
+\note the function assumes the density map holds its density
  */
 IMPEMEXPORT void compute_fitting_scores(const Particles &ps,
    DensityMap *em_map,
    const FloatKey &rad_key, const FloatKey &wei_key,
    const std::vector<IMP::algebra::Transformation3D>& transformations,
    FittingSolutions &fr);
+//! Compute fitting scores for a given set of rigid transformations
+/**
+\brief Score how well a set of particles fit a map
+\param[in] ps       The particles to be fitted
+\param[in] em_map        The density map to fit to
+\param[in] rad_key  The raidus key of the particles in the rigid body
+\param[in] wei_key  The weight key of the particles in the rigid body
+\note the function assumes the density map holds its density
+ */
+IMPEMEXPORT Float compute_fitting_score(const Particles &ps,
+   DensityMap *em_map,
+   FloatKey rad_key=core::XYZR::get_default_radius_key(),
+   FloatKey wei_key=atom::Mass::get_mass_key());
 IMPEM_END_NAMESPACE
 #endif  /* IMPEM_RIGID_FITTING_H */
