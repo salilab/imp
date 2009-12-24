@@ -45,9 +45,11 @@ Each such particle should be have xyz radius and weight attributes
 /param[in] apix the voxel size of the sampled map
 /return the sampled density grid
  */
-inline SampledDensityMap * particles2density(Particles &ps,
-               const FloatKey &rad_key, const FloatKey &weight_key,
-               Float resolution, Float apix) {
+inline SampledDensityMap * particles2density(
+   Particles &ps,
+   Float resolution, Float apix,
+   const FloatKey &rad_key=IMP::core::XYZR::get_default_radius_key(),
+   const FloatKey &weight_key=IMP::atom::Mass::get_mass_key()) {
   IMPParticlesAccessPoint access_p(ps,rad_key,weight_key);
   SampledDensityMap *dmap = new SampledDensityMap(access_p, resolution,
                                                   apix);
