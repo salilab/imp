@@ -50,11 +50,10 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
             rb_p = IMP.Particle(self.imp_model)
             rb_d = IMP.core.RigidBody.setup_particle(
                                       rb_p,IMP.core.XYZs(self.particles))
-            rb_state= rb_d.get_score_state()
             ref_trans = rb_d.get_transformation()
             fr = IMP.em.FittingSolutions()
             IMP.em.local_rigid_fitting_around_point(
-                rb_d,rb_state,self.radius_key, self.weight_key,
+                rb_d,self.radius_key, self.weight_key,
                 self.scene,IMP.algebra.Vector3D(87.0856,71.7701,-56.3955),
                 fr,None,
                 3,5,50)
