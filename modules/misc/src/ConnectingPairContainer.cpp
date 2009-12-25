@@ -49,7 +49,8 @@ namespace {
       vs[i]= core::XYZ(sc->get_particle(i)).get_coordinates();
     }
     algebra::NearestNeighborD<3> nn(vs);
-    unsigned int nnn=static_cast<unsigned int>(std::sqrt(vs.size())+1);
+    unsigned int nnn=static_cast<unsigned int>(
+                                std::sqrt(static_cast<double>(vs.size()))+1);
     for (unsigned int i=0; i< vs.size(); ++i) {
       Ints ni=nn.get_nearest_neighbors(i, nnn);
       unsigned int si= uf.find_set(i);
