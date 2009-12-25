@@ -9,11 +9,13 @@
 }
 
 
-%pythonprepend IMP::DecoratorsWithTraits::__iter__ %{
-        return IMP.DecoratorIterator(self)
+%feature("shadow") IMP::DecoratorsWithTraits::__iter__ %{
+def __iter__(self):
+    return IMP.DecoratorIterator(self)
 %}
-%pythonprepend IMP::Decorators::__iter__ %{
-        return IMP.DecoratorIterator(self)
+%feature("shadow") IMP::Decorators::__iter__ %{
+def __iter__(self):
+    return IMP.DecoratorIterator(self)
 %}
 
 %ignore IMP::Decorators::operator[];
