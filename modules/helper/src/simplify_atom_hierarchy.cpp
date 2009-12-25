@@ -481,9 +481,9 @@ std::vector<atom::Residues> group_particles(
   int curr_ind=start_res_ind;
   int curr_res_seg_ind=0;
   atom::Hierarchies simplified_sets;
-  while((curr_ind<end_res_ind)and(curr_res_seg_ind<residue_segments.size())){
+  while(curr_ind<end_res_ind && curr_res_seg_ind<residue_segments.size()){
     IMP_LOG(VERBOSE,"working on residue index: " << curr_ind <<std::endl);
-    while( (curr_ind != residue_segments[curr_res_seg_ind].first) and
+    while( (curr_ind != residue_segments[curr_res_seg_ind].first) &&
            (curr_ind<end_res_ind)) {
       IMP_WARN("Residue with index: " << curr_ind
                   << "is not covered"<<std::endl);
