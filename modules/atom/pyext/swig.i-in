@@ -15,8 +15,9 @@ namespace atom {
 // since we have to fake it
 
 
-%pythonprepend IMP::atom::Hierarchies::__iter__ %{
-        return IMP.DecoratorIterator(self)
+%feature("shadow") IMP::atom::Hierarchies::__iter__ %{
+def __iter__(self):
+    return IMP.DecoratorIterator(self)
 %}
 
 
@@ -66,9 +67,9 @@ namespace atom {
 }
 
 
-
-%pythonprepend IMP::atom::HierarchiesTemp::__iter__ %{
-        return IMP.DecoratorIterator(self)
+%feature("shadow") IMP::atom::HierarchiesTemp::__iter__ %{
+def __iter__(self):
+    return IMP.DecoratorIterator(self)
 %}
 
 %extend IMP::atom::HierarchiesTemp {
