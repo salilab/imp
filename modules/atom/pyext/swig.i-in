@@ -16,7 +16,7 @@ namespace atom {
 
 
 %pythonprepend IMP::atom::Hierarchies::__iter__ %{
-     return IMP.DecoratorIterator(self)
+        return IMP.DecoratorIterator(self)
 %}
 
 
@@ -68,7 +68,7 @@ namespace atom {
 
 
 %pythonprepend IMP::atom::HierarchiesTemp::__iter__ %{
-     return IMP.DecoratorIterator(self)
+        return IMP.DecoratorIterator(self)
 %}
 
 %extend IMP::atom::HierarchiesTemp {
