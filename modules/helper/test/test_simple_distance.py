@@ -33,7 +33,7 @@ class SimpleDistanceTest(IMP.test.TestCase):
         """Test simple distance restraint"""
         r = IMP.helper.create_simple_distance(self.particles).get_restraint()
         self.opt.optimize(1000)
-        self.assert_(r.evaluate(None) == 0.0, "unexpected distance score")
+        self.assert_(r.evaluate(False) == 0.0, "unexpected distance score")
 
 
     def test_methods(self):

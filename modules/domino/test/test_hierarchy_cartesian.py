@@ -43,7 +43,7 @@ class DOMINOTests(IMP.test.TestCase):
             self.imp_model.add_restraint(r)
             self.d_opt.add_restraint(r,ps)
 #             beg  = time.time()
-            self.opt_score = self.opt_score + r.evaluate(None)
+            self.opt_score = self.opt_score + r.evaluate(False)
 #             end = time.time()
 #             dt    = end - beg
 #             print 'connectivity restraint calculation took %9.6f Seconds' % (dt)

@@ -84,7 +84,7 @@ class SAXSProfileTest(IMP.test.TestCase):
         #! define restraint
         saxs_restraint = IMP.saxs.Restraint(particles, exp_profile)
         m.add_restraint(saxs_restraint)
-        score = saxs_restraint.evaluate(None)
+        score = saxs_restraint.evaluate(False)
         print 'initial score = ' + str(score)
 
 if __name__ == '__main__':
