@@ -460,4 +460,33 @@ std::string pdb_string(const algebra::Vector3D& v, int index,
   return out.str();
 }
 
+std::string conect_record_string(int a1_ind,int a2_ind){
+  //      const IMP::atom::Atom &a1, const IMP::atom::Atom &a2){
+  //  IMP::atom::Atom *a3,IMP::atom::Atom *a4,IMP::atom::Atom *a5) {
+
+  std::stringstream out;
+  out.setf(std::ios::left, std::ios::adjustfield);
+  // 1-6         Record name      "CONECT"
+  out.width(6);
+  out<<"CONECT";
+  //7 - 11 Atom serial number
+  out.width(5);
+  out<<a1_ind;//a1.get_input_index();
+  //12 - 16 Serial number of bonded atom
+  out<<a2_ind;//a2.get_input_index();
+  //17 - 21 Serial number of bonded atom
+  // if(a3 != NULL) {
+  //   out<<a3->get_input_index();
+  // }
+  // //22 - 26  Serial number of bonded atom
+  // if(a4 != NULL) {
+  //   out<<a4->get_input_index();
+  // }
+  // //27 - 31 Serial number of bonded atom
+  // if(a5 != NULL) {
+  //   out<<a5->get_input_index();
+  // }
+  return out.str();
+}
+
 IMPATOM_END_NAMESPACE

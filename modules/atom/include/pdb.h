@@ -120,6 +120,19 @@ IMPATOMEXPORT std::string pdb_string(const algebra::Vector3D& v,
                                      char res_icode = ' ',
                                      Element e = C);
 
+/**
+   This function returns a connectivity string in PDB format
+  /note The CONECT records specify connectivity between atoms for which
+      coordinates are supplied. The connectivity is described using
+      the atom serial number as found in the entry.
+  /note http://www.bmsc.washington.edu/CrystaLinks/man/pdb/guide2.2_frame.html
+*/
+IMPATOMEXPORT std::string conect_record_string(int,int);
+  // const IMP::atom::Atom &a1,
+  // const IMP::atom::Atom &a2);
+  // IMP::atom::Atom *a3 = NULL,
+  // IMP::atom::Atom *a4 = NULL,
+  // IMP::atom::Atom *a5 = NULL);
 //!@}
 
 IMPATOM_END_NAMESPACE
