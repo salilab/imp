@@ -72,6 +72,7 @@ RestraintGraph::RestraintGraph(const JunctionTree &jt,Model *mdl,
                  RestraintEvaluatorI *r_eval) {
   load_data(jt,mdl,r_eval);
   infered_ = false;
+  sampling_space_set_=false;
   min_combs_ = new std::vector<CombState *>();
 }
 
@@ -164,6 +165,7 @@ void RestraintGraph::set_sampling_space(DiscreteSampler &ds_)
     it->second->init_separators();
   }
   clear_infered_data();
+  sampling_space_set_=true;
 }
 void RestraintGraph::clear_infered_data() {
   infered_=false;
@@ -213,7 +215,7 @@ void RestraintGraph::initialize_potentials(Restraint *r, Particles *ps,
   else {
     IMP_IF_LOG(TERSE) {
       IMP_LOG(TERSE,"restraint : " );
-      IMP_LOG_WRITE(TERSE,r->show(IMP_STREAM));
+      IMP_LOG_WRITE(TERSE,r->show());
       IMP_LOG(TERSE,"is realized by node with index : "<<
                      jn->get_node_index()<<std::endl);
     }
@@ -245,6 +247,8 @@ void RestraintGraph::dfs_order(unsigned int root_ind)
 
 void  RestraintGraph::infer(unsigned int num_of_solutions)
 {
+  IMP_INTERNAL_CHECK(sampling_space_set_,
+                     "The sampling space was not set"<<std::endl);
   IMP_LOG(VERBOSE,"RestraintGraph::infer number of solutions : "
           <<num_of_solutions <<std::endl);
   std::stringstream err_msg;
@@ -269,7 +273,7 @@ void  RestraintGraph::infer(unsigned int num_of_solutions)
   CombState *min_comb;
   for(std::vector<CombState *>::iterator it =  temp_min_combs->begin();
       it != temp_min_combs->end(); it++) {
-    min_comb = new CombState(**(it));
+    CombState *min_comb = new CombState(**(it));
     distribute_minimum(root_, min_comb);
     IMP_IF_LOG(TERSE) {
       IMP_LOG(TERSE,"====MINIMUM COMBINATION number " <<
@@ -461,5 +465,20 @@ const CombState *RestraintGraph::get_opt_combination(unsigned int i) const {
   return (*min_combs_)[i];
 }
 
-
+Particles RestraintGraph::get_particles() const {
+  Particles ps;
+  std::map<std::string,Particle *> build_ps;
+  for (unsigned int vi = 0;vi < num_vertices(g_);vi++) {
+    JNode *j = node_data_[vi];
+    const Particles *node_particles = j->get_particles();
+    for(Particles::const_iterator it = node_particles->begin();
+        it != node_particles->end();it++) {
+      if (build_ps.find((*it)->get_name()) == build_ps.end()) {
+        build_ps[(*it)->get_name()]=*it;
+        ps.push_back(*it);
+      }
+    }
+  }
+  return ps;
+}
 IMPDOMINO_END_NAMESPACE

@@ -156,7 +156,12 @@ public:
                 set of particles.
    */
   JNode * get_node(const Particles &p);
-
+  inline bool is_sampling_space_set() const {return sampling_space_set_;}
+  //! Get the particles that are associated to the graph nodes
+  /**
+  \note The function does not consider hierarchies.
+   */
+  Particles get_particles() const;
 protected:
   //! Load junction tree and set the restraint graph
   /**
@@ -217,8 +222,10 @@ protected:
   //inference support data structures
   std::vector<unsigned int> discover_time_;
   unsigned int root_;
-  bool infered_;
   std::vector<CombState *> *min_combs_;
+  //flags for managment
+  bool infered_;
+  bool sampling_space_set_;
 };
 
 IMPDOMINO_END_NAMESPACE
