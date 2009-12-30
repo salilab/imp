@@ -52,10 +52,7 @@ std::string RestraintEvaluatorFromFile::get_restraint_file(Restraint *r) const {
 void read_combinations(const std::string &filename, Combinations *combs,
                        const Particles &ps) {
   std::ifstream scores_file(filename.c_str());
-  if (!scores_file) {
-    IMP_THROW("No such scores file " << filename,
-              IOException);
-  }
+  IMP_INTERNAL_CHECK(scores_file,"No such scores file " << filename<<std::endl);
   //read the file
   //int status;
   std::string line;
@@ -76,7 +73,7 @@ void read_combinations(const std::string &filename, Combinations *combs,
           "wrong particle name:"<<ps[i]->get_value(node_name_key())
            <<":"<<split_vec[i]<<":"<<std::endl);
   }
-  CombState*   calc_state;
+  CombState* calc_state;
   while (!scores_file.eof()) {
     if (!getline(scores_file, line)) break;
     boost::split(split_vec, line, boost::is_any_of("|"));
@@ -88,6 +85,7 @@ void read_combinations(const std::string &filename, Combinations *combs,
                                    atof(split_vec[split_vec.size()-2].c_str()));
     (*combs)[calc_state->partial_key(&ps)]=calc_state;
   }
+  IMP_LOG(IMP::VERBOSE,"read " << combs->size() << " combinations"<<std::endl);
 }
 void RestraintEvaluatorFromFile::calc_scores(const Combinations &comb_states,
                  CombinationValues &comb_values,
@@ -102,6 +100,10 @@ void RestraintEvaluatorFromFile::calc_scores(const Combinations &comb_states,
       it != comb_states.end(); it++) {
     const CombState *cs = it->second;
     key=cs->partial_key(&ps);
+    IMP_INTERNAL_CHECK(read_combs.find(key) != read_combs.end(),
+              "read_combs does not have a key:"<<key<<std::endl);
+    IMP_INTERNAL_CHECK(read_combs.find(key)->second != NULL,
+        "read_combs does not have a NULL value for key:"<<key<<std::endl);
     IMP_LOG(VERBOSE,"key:"<<key<<"value:"
                     <<read_combs[key]->get_total_score()<<std::endl);
     comb_values[key]=read_combs[key]->get_total_score();
