@@ -13,6 +13,7 @@ files = [
          'PermutationSampler.cpp',
          'RestraintGraph.cpp',
          'SimpleDiscreteRestraint.cpp',
+         'SimpleDiscreteSampler.cpp',
          'SimpleDiscreteSpace.cpp',
          'SymmetrySampler.cpp',
          'TransformationCartesianProductSampler.cpp',
