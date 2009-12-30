@@ -73,6 +73,24 @@ void JunctionTree::set_nodes(int number_of_nodes) {
   data_.clear();
   data_.insert(data_.end(),number_of_nodes,std::vector<std::string>());
 }
+void JunctionTree::set_component_name(int vi,int ci,const std::string &name) {
+    IMP_USAGE_CHECK(static_cast<unsigned int>(vi) < boost::num_vertices(g_),
+              "input node index (" << vi << ") is out of range ("
+              << boost::num_vertices(g_) <<")" <<std::endl,ValueException);
+    IMP_USAGE_CHECK(ci < get_number_of_components(vi),
+              "input component index is out of range",ValueException);
+    data_[vi][ci]=name;
+  }
+
+const std::string JunctionTree::get_component_name(int vi,int ci) const {
+  IMP_USAGE_CHECK(static_cast<unsigned int>(vi) < boost::num_vertices(g_),
+           "input node index (" << vi << ") is out of range ("
+           << boost::num_vertices(g_) <<")" <<std::endl,ValueException);
+  IMP_USAGE_CHECK(ci < get_number_of_components(vi),
+           "input component index is out of range",ValueException);
+  return data_[vi][ci];
+}
+
 void JunctionTree::show(std::ostream& out) const {
   out << "===========Junction Tree=========" << std::endl;
   out << " Nodes: " << std::endl;

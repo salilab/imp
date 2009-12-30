@@ -59,23 +59,20 @@ public:
   const Graph *get_graph() const {return &g_;}
   int get_number_of_components(int vi) const {return data_[vi].size();}
 
-  const std::string get_component_name(int vi,int ci) const {
-    IMP_USAGE_CHECK(static_cast<unsigned int>(vi) < boost::num_vertices(g_),
-              "input node index (" << vi << ") is out of range ("
-              << boost::num_vertices(g_) <<")" <<std::endl,ValueException);
-    IMP_USAGE_CHECK(ci < get_number_of_components(vi),
-              "input component index is out of range",ValueException);
-    return data_[vi][ci];
-  }
-
-  void set_component_name(int vi,int ci,const std::string &name)  {
-    IMP_USAGE_CHECK(static_cast<unsigned int>(vi) < boost::num_vertices(g_),
-              "input node index (" << vi << ") is out of range ("
-              << boost::num_vertices(g_) <<")" <<std::endl,ValueException);
-    IMP_USAGE_CHECK(ci < get_number_of_components(vi),
-              "input component index is out of range",ValueException);
-    data_[vi][ci]=name;
-  }
+  //! Get the name of a component
+  /**
+  \param[in] vi the node index
+  \param[in] ci the component index inside the node
+  \return the name of the ci component in the vi node
+   */
+  const std::string get_component_name(int vi,int ci) const;
+  //! Set the name of a component
+  /**
+  \param[in] vi the node index
+  \param[in] ci the component index inside the node
+  \param[in] name the name of the node
+   */
+  void set_component_name(int vi,int ci,const std::string &name);
 
   int get_number_of_nodes() const {return boost::num_vertices(g_);}
   void add_component_to_node(int vi, const std::string &name) {
