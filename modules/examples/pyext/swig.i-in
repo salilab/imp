@@ -7,6 +7,6 @@
 
 namespace IMP {
   namespace examples {
-   IMP_SWIG_DECORATORS(ExampleDecorator, ExampleDecorators, Particles)
+   IMP_DECORATORS(ExampleDecorator, ExampleDecorators, Particles)
   }
 }

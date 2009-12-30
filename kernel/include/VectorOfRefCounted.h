@@ -62,6 +62,7 @@ class VectorOfRefCounted {
  public:
   typedef RC const_reference;
   typedef RC value_type;
+  typedef RC& reference;
   VectorOfRefCounted(const std::vector<RC> &o):data_(o) {
     ref(o.begin(), o.end());
   }
@@ -75,9 +76,6 @@ class VectorOfRefCounted {
   }
   VectorOfRefCounted(RC rc): data_(1, rc) {
     ref(rc);
-  }
-  VectorOfRefCounted(unsigned int n, RC rc): data_(n, rc) {
-    for (unsigned int i=0; i< n; ++i) ref(rc);
   }
   VectorOfRefCounted(unsigned int i): data_(i, RC()){}
   VectorOfRefCounted(){}
@@ -127,15 +125,71 @@ class VectorOfRefCounted {
       return v_;
     }
   };
-  typedef Proxy<RC> reference;
   // swig will use __set__ so we don't have to worry about it
   Proxy<RC> operator[](unsigned int i) {
     IMP_USAGE_CHECK(i < size(), "Index out of range in []: "
                     << i << ">=" << size(), IndexException);
     return Proxy<RC>(data_[i]);
   }
+
+  // Special handling for Decorators classes, evil but it is easiest this way
+  template <class D>
+  struct DecoratorProxy: public D, public Proxy<RC> {
+    DecoratorProxy(RC& t): D(t), Proxy<RC>(t){
+    }
+    DecoratorProxy(RC&p, bool): D(), Proxy<RC>(p){}
+    void operator=(D v) {
+      D::operator=(v);
+      Proxy<RC>::operator=(v.get_particle());
+    }
+#ifdef _MSC_VER
+    // for VC, it can't otherwise figure out the conversion chain
+    operator typename D::ParticleP() {
+      return D::get_particle();
+    }
+#endif
+  };
+  template <class D>
+  DecoratorProxy<D> get_decorator_proxy(unsigned int i) {
+    IMP_USAGE_CHECK(i < size(), "Index out of range in []: "
+                    << i << ">=" << size(), IndexException);
+    if (data_[i]) {
+      return DecoratorProxy<D>(data_[i]);
+    } else {
+      return DecoratorProxy<D>(data_[i], false);
+    }
+  }
+
+  template <class D, class T>
+  struct DecoratorTraitsProxy: public D, public Proxy<RC> {
+    DecoratorTraitsProxy(RC & t, T tr):
+      D(t, tr), Proxy<RC>(t){
+    }
+    DecoratorTraitsProxy(RC&p, bool): D(), Proxy<RC>(p){}
+    void operator=(D v) {
+      // traits should match, but not checked
+      D::operator=(v);
+      Proxy<RC>::operator=(v.get_particle());
+    }
+#ifdef _MSC_VER
+    // for VC, it can't otherwise figure out the conversion chain
+    operator typename D::ParticleP() {
+      return D::get_particle();
+    }
+#endif
+  };
+  template <class D, class T>
+  DecoratorTraitsProxy<D, T> get_decorator_traits_proxy(unsigned int i, T t) {
+    IMP_USAGE_CHECK(i < size(), "Index out of range in []: "
+                    << i << ">=" << size(), IndexException);
+    if (data_[i]) {
+      return DecoratorTraitsProxy<D, T>(data_[i], t);
+    } else {
+      return DecoratorTraitsProxy<D, T>(data_[i], false);
+    }
+  }
+
 #else
-  typedef RC& reference;
   // pretend it is just a normal reference
   /** Change a value in the vector (and refcount appropriately). */
   RC& operator[](unsigned int i);
@@ -146,9 +200,6 @@ class VectorOfRefCounted {
     IMP_USAGE_CHECK(i < size(), "Index out of range in []: "
               << i << ">=" << size(), IndexException);
     return data_[i];
-  }
-  RC get(unsigned int i) const {
-    return operator[](i);
   }
   void set(unsigned int i, RC p) {
     IMP_USAGE_CHECK(i < size(), "Index out of range in set "

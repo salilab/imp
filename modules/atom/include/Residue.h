@@ -197,7 +197,8 @@ public:
 
 IMP_OUTPUT_OPERATOR(Residue);
 
-IMP_DECORATORS(Residue, Hierarchies);
+
+typedef Decorators<Residue, Hierarchies> Residues;
 
 /** \relatesalso Residue */
 IMPATOMEXPORT Chain get_chain(Residue rd);

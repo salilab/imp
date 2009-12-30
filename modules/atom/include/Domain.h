@@ -68,7 +68,7 @@ public:
   IMP_DECORATOR(Domain, Hierarchy)
 };
 
-IMP_DECORATORS(Domain, Hierarchies);
+typedef Decorators<Domain, Hierarchies> Domains;
 
 IMP_OUTPUT_OPERATOR(Domain);
 

@@ -160,7 +160,7 @@ inline bool operator==(Particle *p, Decorator d) {
                                swap)                                    \
   struct Accessor: public NullDefault {                                 \
   typedef Accessor This;                                                \
-  typedef WrappedDecorator result_type;                                 \
+  typedef Decorator result_type;                                        \
   typedef unsigned int argument_type;                                   \
   result_type operator()(argument_type i) const {                       \
     return o_->operator[](i);                                           \
@@ -175,7 +175,7 @@ ThisDecorators* o_;                                                     \
 };                                                                      \
 void check(Particle *p) {                                               \
   IMP_USAGE_CHECK(test,                                                 \
-                  "Particle \"" << (p)->get_name()                      \
+                    "Particle \"" << (p)->get_name()                   \
                     << "\" missing required attributes",                \
                   ValueException);                                      \
 }                                                                       \
@@ -186,11 +186,11 @@ void check(It b, It e) {                                                \
   }                                                                     \
 }                                                                       \
 public:                                                                 \
-typedef const WrappedDecorator const_reference;                         \
-typedef WrappedDecorator value_type;                                    \
-typedef Proxy reference;                                                \
-const ParticlesTemp &get_particles() const {return *this;}              \
-void push_back(WrappedDecorator d) {                                    \
+typedef const Decorator const_reference;                                \
+typedef Decorator value_type;                                           \
+typedef const Decorator reference;                                      \
+const Particles &get_particles() const {return *this;}                  \
+void push_back(Decorator d) {                                           \
   on_add_decorator;                                                     \
   ParentDecorators::push_back(d);                                       \
 }                                                                       \
@@ -199,20 +199,20 @@ void push_back(Particle *p) {                                           \
   on_add_particle;                                                      \
   ParentDecorators::push_back(p);                                       \
 }                                                                       \
-void set(unsigned int i, WrappedDecorator d) {                          \
-  ParentDecorators::operator[](i)= d;                                   \
+void set(unsigned int i, Decorator d) {                                 \
+  ParentDecorators::set(i, d);                                          \
 }                                                                       \
-WrappedDecorator back() const {                                         \
+Decorator back() const {                                                \
   IMP_USAGE_CHECK(!ParentDecorators::empty(),                           \
                   "Can't call back on empty Decorators",                \
                   InvalidStateException);                               \
-  return WrappedDecorator(ParentDecorators::back());                    \
+  return Decorator(ParentDecorators::back());                           \
 }                                                                       \
-WrappedDecorator front() const {                                        \
+Decorator front() const {                                               \
   IMP_USAGE_CHECK(!ParentDecorators::empty(),                           \
                   "Can't call front on empty Decorators",               \
                   InvalidStateException);                               \
-  return WrappedDecorator(ParentDecorators::front());                   \
+  return Decorator(ParentDecorators::front());                          \
 }                                                                       \
 typedef internal::IndexingIterator<Accessor> iterator;                  \
 typedef internal::IndexingIterator<Accessor> const_iterator;            \
@@ -242,26 +242,26 @@ void swap_with(ThisDecorators &o) {                                     \
                                swap)                                    \
   public:                                                               \
   const Particles &get_particles() const;                               \
-  void push_back(WrappedDecorator d);                                   \
+  void push_back(Decorator d);                                          \
   void push_back(Particle *p);                                          \
-  WrappedDecorator back() const;                                        \
-  WrappedDecorator front() const;
+  Decorator back() const;                                               \
+  Decorator front() const;
 
 #else
 // doxygen
 #define IMP_DECORATORS_METHODS(test, on_add_decorator, on_add_particle, \
                                swap)                                    \
   public:                                                               \
-  typedef const WrappedDecorator const_reference;                       \
-  typedef WrappedDecorator value_type;                                  \
-  typedef Proxy reference;                                              \
-  const ParticlesTemp &get_particles() const;                           \
-  void push_back(WrappedDecorator d);                                   \
+  typedef const Decorator const_reference;                              \
+  typedef Decorator value_type;                                         \
+  typedef const Decorator reference;                                    \
+  const Particles &get_particles() const;                               \
+  void push_back(Decorator d);                                          \
   void push_back(Particle *p);                                          \
-  WrappedDecorator &operator[](unsigned int i);                         \
-  WrappedDecorator operator[](unsigned int i) const;                    \
-  WrappedDecorator back() const;                                        \
-  WrappedDecorator front() const;                                       \
+  Decorator &operator[](unsigned int i);                                \
+  Decorator operator[](unsigned int i) const;                           \
+  Decorator back() const;                                               \
+  Decorator front() const;                                              \
   class const_iterator;                                                 \
   iterator begin() const;                                               \
   iterator end() const;                                                 \
@@ -281,62 +281,31 @@ void swap_with(ThisDecorators &o) {                                     \
     \see Decorator
     \see DecoratorsWithTraits
 */
-template <class WrappedDecorator, class ParentDecorators>
+template <class Decorator, class ParentDecorators>
 class Decorators: public ParentDecorators {
-  typedef Decorators<WrappedDecorator, ParentDecorators> ThisDecorators;
-  struct Proxy: public WrappedDecorator {
-    typedef typename ParentDecorators::reference Ref;
-    Ref d_;
-    Proxy(Ref t):
-      WrappedDecorator(t), d_(t){
-    }
-    Proxy(Ref p, bool): WrappedDecorator(), d_(p){}
-    void operator=(WrappedDecorator v) {
-      WrappedDecorator::operator=(v);
-      d_=v;
-    }
-#ifdef _MSC_VER
-    // for VC, it can't otherwise figure out the conversion chain
-    operator Particle*() {
-      return WrappedDecorator::get_particle();
-    }
-#endif
-  };
-  Proxy get_proxy(unsigned int i) {
-    if (ParentDecorators::operator[](i)) {
-      return Proxy(ParentDecorators::operator[](i));
-    } else {
-      return Proxy(ParentDecorators::operator[](i), false);
-    }
-  }
-
-  IMP_DECORATORS_METHODS(WrappedDecorator::particle_is_instance(p),,,)
+  typedef Decorators<Decorator, ParentDecorators> ThisDecorators;
+  IMP_DECORATORS_METHODS(Decorator::particle_is_instance(p),,,)
   public:
   explicit Decorators(const Particles &ps): ParentDecorators(ps) {
     check(ps.begin(), ps.end());
   }
-  explicit Decorators(const ParticlesTemp &ds): ParentDecorators(ds){
-    check(ds.begin(), ds.end());
-  }
   explicit Decorators(unsigned int i): ParentDecorators(i){}
-  explicit Decorators(WrappedDecorator d): ParentDecorators(1, d){}
-  explicit Decorators(unsigned int n,
-                      WrappedDecorator d): ParentDecorators(n, d){}
+  explicit Decorators(Decorator d): ParentDecorators(d){}
   Decorators(){}
 #ifndef SWIG
 #ifndef IMP_DOXYGEN
-  Proxy
+  typename ParentDecorators::template DecoratorProxy<Decorator>
   operator[](unsigned int i) {
-    return get_proxy(i);
+    return ParentDecorators::template get_decorator_proxy<Decorator>(i);
   }
 #else
-  WrappedDecorator& operator[](unsigned int i);
+  Decorator& operator[](unsigned int i);
 #endif
 #endif
 
 #ifndef SWIG
-  WrappedDecorator operator[](unsigned int i) const {
-    return WrappedDecorator(ParentDecorators::operator[](i));
+  Decorator operator[](unsigned int i) const {
+    return Decorator(ParentDecorators::operator[](i));
   }
 #endif
 };
@@ -351,40 +320,13 @@ IMP_SWAP_2(Decorators);
     A DecoratorsWithTraits can be cast to a Particles or its parent
     type. All decorators in it must have the same traits.
     \see Decorators*/
-template <class WrappedDecorator, class ParentDecorators, class Traits>
+template <class Decorator, class ParentDecorators, class Traits>
 class DecoratorsWithTraits: public ParentDecorators {
-  typedef DecoratorsWithTraits<WrappedDecorator, ParentDecorators,
-                               Traits> ThisDecorators;
-
-  struct Proxy: public WrappedDecorator {
-    typedef typename ParentDecorators::reference Ref;
-    Ref d_;
-    Proxy(Ref t, Traits tr):
-      WrappedDecorator(t, tr), d_(t){
-    }
-    Proxy(Ref p, bool): WrappedDecorator(), d_(p){}
-    void operator=(WrappedDecorator v) {
-      // traits should match, but not checked
-      WrappedDecorator::operator=(v);
-      d_=v;
-    }
-#ifdef _MSC_VER
-    // for VC, it can't otherwise figure out the conversion chain
-    operator Particle*() {
-      return WrappedDecorator::get_particle();
-    }
-#endif
-  };
-  Proxy get_proxy(unsigned int i, Traits t) {
-    if (ParentDecorators::operator[](i)) {
-      return Proxy(ParentDecorators::operator[](i), t);
-    } else {
-      return Proxy(ParentDecorators::operator[](i), false);
-    }
-  }
+  typedef DecoratorsWithTraits<Decorator, ParentDecorators, Traits>
+  ThisDecorators;
   Traits tr_;
   bool has_traits_;
-  IMP_DECORATORS_METHODS(WrappedDecorator::particle_is_instance(p, tr_),{
+  IMP_DECORATORS_METHODS(Decorator::particle_is_instance(p, tr_),{
       if (!has_traits_) {
         tr_= d.get_traits();
         has_traits_=true;
@@ -402,18 +344,14 @@ class DecoratorsWithTraits: public ParentDecorators {
     })
   public:
   explicit DecoratorsWithTraits(Traits tr): tr_(tr), has_traits_(true){}
-  explicit DecoratorsWithTraits(WrappedDecorator d): ParentDecorators(1,d),
+  explicit DecoratorsWithTraits(Decorator d): ParentDecorators(d),
                                               tr_(d.get_traits()),
                                               has_traits_(true){}
-  explicit DecoratorsWithTraits(unsigned int n, WrappedDecorator d):
-    ParentDecorators(n, d),
-    tr_(d.get_traits()),
-    has_traits_(true) {}
   DecoratorsWithTraits(const Particles &ps,
                        Traits tr): tr_(tr), has_traits_(true) {
     ParentDecorators::resize(ps.size());
     for (unsigned int i=0; i< ps.size(); ++i) {
-      ParentDecorators::operator[](i)=WrappedDecorator(ps[i], tr);
+      ParentDecorators::set(i, Decorator(ps[i], tr));
     }
   }
   DecoratorsWithTraits(unsigned int i,
@@ -422,21 +360,22 @@ class DecoratorsWithTraits: public ParentDecorators {
   DecoratorsWithTraits(): has_traits_(false){}
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-  Proxy
+  typename ParentDecorators::template DecoratorTraitsProxy<Decorator, Traits>
   operator[](unsigned int i) {
     IMP_USAGE_CHECK(has_traits_, "Can only use operator[] on a decorator "
                     << "container "
                     << "which is non-empty. This is a bug, but hard to fix.",
                     UsageException);
-    return get_proxy(i, tr_);
+    return ParentDecorators
+      ::template get_decorator_traits_proxy<Decorator, Traits>(i, tr_);
   }
 #else
-  IMP_NO_SWIG(WrappedDecorator& operator[](unsigned int i));
+  IMP_NO_SWIG(Decorator& operator[](unsigned int i));
 #endif
 
 #ifndef SWIG
-  WrappedDecorator operator[](unsigned int i) const {
-    return WrappedDecorator(ParentDecorators::operator[](i), tr_);
+  Decorator operator[](unsigned int i) const {
+    return Decorator(ParentDecorators::operator[](i), tr_);
   }
 #endif
 };
@@ -451,67 +390,33 @@ IMP_SWAP_3(DecoratorsWithTraits);
     A DecoratorsWithTraits can be cast to a Particles or its parent
     type. All decorators in it must have the same traits.
     \see Decorators*/
-template <class WrappedDecorator, class ParentDecorators>
+template <class Decorator, class ParentDecorators>
 class DecoratorsWithImplicitTraits: public ParentDecorators {
-  struct Proxy: public WrappedDecorator {
-    typedef typename ParentDecorators::reference Ref;
-    Ref d_;
-    Proxy(Ref t):
-      WrappedDecorator(t), d_(t){
-    }
-    Proxy(Ref p, bool): WrappedDecorator(), d_(p){}
-    void operator=(WrappedDecorator v) {
-      // traits should match, but not checked
-      WrappedDecorator::operator=(v);
-      d_=v;
-    }
-#ifdef _MSC_VER
-    // for VC, it can't otherwise figure out the conversion chain
-    operator Particle*() {
-      return WrappedDecorator::get_particle();
-    }
-#endif
-  };
-  Proxy get_proxy(unsigned int i) {
-    if (ParentDecorators::operator[](i)) {
-      return Proxy(ParentDecorators::operator[](i));
-    } else {
-      return Proxy(ParentDecorators::operator[](i), false);
-    }
-  }
-  typedef DecoratorsWithImplicitTraits<WrappedDecorator, ParentDecorators>
+  typedef DecoratorsWithImplicitTraits<Decorator, ParentDecorators>
   ThisDecorators;
-  IMP_DECORATORS_METHODS(WrappedDecorator::particle_is_instance(p),,,)
+  IMP_DECORATORS_METHODS(Decorator::particle_is_instance(p),,,)
   public:
-  explicit DecoratorsWithImplicitTraits():
-  ParentDecorators(WrappedDecorator::get_traits()) {}
-  explicit DecoratorsWithImplicitTraits(const Particles &ps):
-    ParentDecorators(ps, WrappedDecorator::get_traits()){
+  DecoratorsWithImplicitTraits():ParentDecorators(Decorator::get_traits()) {}
+  DecoratorsWithImplicitTraits(const Particles &ps):
+    ParentDecorators(ps, Decorator::get_traits()){
   }
-  explicit DecoratorsWithImplicitTraits(unsigned int i):
-    ParentDecorators(i, WrappedDecorator::get_traits()){}
-  explicit DecoratorsWithImplicitTraits(WrappedDecorator d):
-    ParentDecorators(1,d){}
-  explicit DecoratorsWithImplicitTraits(unsigned int n,WrappedDecorator d):
-    ParentDecorators(n, d){}
-  explicit DecoratorsWithImplicitTraits(const ParticlesTemp &ds):
-    ParentDecorators(ds, WrappedDecorator::get_traits()){
-    check(ds.begin(), ds.end());
-  }
+  DecoratorsWithImplicitTraits(unsigned int i):
+    ParentDecorators(i, Decorator::get_traits()){}
+  DecoratorsWithImplicitTraits(Decorator d): ParentDecorators(d){}
 #ifndef SWIG
 #ifndef IMP_DOXYGEN
-  Proxy
+  typename ParentDecorators::template DecoratorProxy<Decorator>
   operator[](unsigned int i) {
-    return get_proxy(i);
+    return ParentDecorators::template get_decorator_proxy<Decorator>(i);
   }
 #else
-  WrappedDecorator& operator[](unsigned int i);
+  Decorator& operator[](unsigned int i);
 #endif
 #endif
 
 #ifndef SWIG
-  WrappedDecorator operator[](unsigned int i) const {
-    return WrappedDecorator(ParentDecorators::operator[](i));
+  Decorator operator[](unsigned int i) const {
+    return Decorator(ParentDecorators::operator[](i));
   }
 #endif
 };

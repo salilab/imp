@@ -74,7 +74,7 @@ extern "C" {
     if (index >= static_cast<int>(self->size())) {
       throw IMP::IndexException("Index out of range in getitem");
     }
-    return self->get(index);
+    return self->operator[](index);
   }
   void __setitem__(int index, RC p) {
     if (index < 0) index= index+self->size();
@@ -108,11 +108,3 @@ extern "C" {
     return ret;
   }
 }
-
-
-%define IMP_SWIG_OBJECTS(Name, PluralName)
-%template(PluralName) ::IMP::VectorOfRefCounted< IMP::Name*, IMP::RefCounted::Policy >;
-%template(PluralName##Temp) ::std::vector< IMP::Name* >;
-%implicitconv Name ;
-%enddef
-
