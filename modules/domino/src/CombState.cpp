@@ -26,10 +26,9 @@ void CombState::show(std::ostream& out) const {
   for (CombData::const_iterator it = data_.begin();
        it != data_.end(); it++) {
     out << it->first->get_value(node_name_key());
-    out<< " ( "<< it->first->get_name() << ")";
     out << " ||| " << it->second << " , ";
   }
-  out << " total_score : " << total_score_ << std::endl;
+  out << " total_score : " << total_score_ << " key:" << key()<<std::endl;
 }
 
 
@@ -40,10 +39,16 @@ CombState *CombState::get_partial(const Particles &ps) const {
     IMP_INTERNAL_CHECK(data_.find(p) != data_.end(),
     "CombState::get_partial particle with name "
     << p->get_value(node_name_key()) << " was not found ");
-    (part_state->data_)[p] = data_.find(p)->second;
+    part_state->add_data_item(p, data_.find(p)->second);
   }
   return part_state;
 }
 
+const std::string CombState::partial_key(const Particles *ps) const {
+  CombState *cs = get_partial(*ps);
+  std::string cs_key = cs->key();
+  //delete(cs); //TODO - how to delete something created by IMP_NEW ??
+  return cs_key;
+}
 
 IMPDOMINO_END_NAMESPACE
