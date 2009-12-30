@@ -29,7 +29,7 @@ void PermutationSampler::populate_states_of_particles(Particles *particles,
     v_int[i] = i;
     }
   do {
-    calc_state = new CombState();
+    CombState *calc_state = new CombState();
     for (int j = 0; j < comb_size; j++) {
       calc_state->add_data_item((*particles)[j], v_int[j]);
     }

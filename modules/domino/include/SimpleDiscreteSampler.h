@@ -21,7 +21,6 @@ class SimpleDiscreteSampler : public DiscreteSampler
 {
 public:
   SimpleDiscreteSampler(){}
-  ~SimpleDiscreteSampler() {}
 
   void move2state(const CombState *cs) {
     Particle *p;
@@ -30,7 +29,7 @@ public:
     for (std::map<Particle *,unsigned int>::const_iterator
          it = cs->get_data()->begin();it != cs->get_data()->end(); it++) {
       p = it->first;
-      ds = data.find(p)->second;
+      ds = data_.find(p)->second;
       atts = ds->get_att_keys();
       for (std::vector<FloatKey>::const_iterator k_iter = atts->begin();
         k_iter != atts->end(); k_iter++) {
@@ -42,25 +41,25 @@ public:
     }
   }
   void populate_states_of_particles(Particles *particles,
-                        std::map<std::string, CombState *> *states) const
+          std::map<std::string, CombState *> *states) const
   {
     Int num_states = 1;
     for (Particles::const_iterator it = particles->begin();
          it != particles->end(); it++) {
-      num_states *= data.find(*it)->second->get_number_of_states();
+      num_states *= data_.find(*it)->second->get_number_of_states();
     }
     Int global_iterator, global_index;
     CombState *calc_state;
     Particle* p;
     Int sample_size;
     for (Int state_index = 0;state_index < num_states; state_index++) {
-      calc_state = new CombState();
+      CombState *calc_state = new CombState();
       global_iterator = num_states;
       global_index = state_index;
       for (Particles::const_iterator it = particles->begin();
            it != particles->end(); it++) {
         p = *it;
-        sample_size = data.find(p)->second->get_number_of_states();
+        sample_size = data_.find(p)->second->get_number_of_states();
         global_iterator /= sample_size;
         calc_state->add_data_item(p, global_index / global_iterator);
         global_index -= (global_index / global_iterator) * global_iterator;
@@ -68,13 +67,14 @@ public:
       (*states)[calc_state->partial_key(particles)] = calc_state;
     }
   }
-  virtual void show_space(Particle *p,
-                 std::ostream& out = std::cout) const {}
+
+  void show_space(Particle *p,
+                  std::ostream& out = std::cout) const{}
 
   void show(std::ostream& out=std::cout) const {
     out << "================ show sampling spaces ============== " << std::endl;
     for (std::map<const Particle *,SimpleDiscreteSpace *>::const_iterator it
-         = data.begin(); it != data.end(); it++) {
+         = data_.begin(); it != data_.end(); it++) {
       out << " space for particle with index: "
           << it->first->get_value(node_name_key()) << " is : ";
       it->second->show(out);
@@ -84,23 +84,32 @@ public:
   }
 
   Float get_state_val(Particle *p, unsigned int i, FloatKey key) const {
-    return data.find(p)->second->get_state_val(i, key);
-  }
-  unsigned int get_space_size(Particle *p) const {
-    return data.find(p)->second->get_number_of_states();
-  }
-  FloatKey get_attribute_key(Particle *p, unsigned int att_index) const {
-    return (*(data.find(p)->second->get_att_keys()))[att_index];
-  }
-  unsigned int get_number_of_attributes(Particle *p) const {
-    return data.find(p)->second->get_number_of_attributes();
-  }
-  void add_space(const Particle &p, SimpleDiscreteSpace &sds) {
-    data[&p] = &sds;
+    return data_.find(p)->second->get_state_val(i, key);
   }
 
+  unsigned int get_space_size(Particle *p) const {
+    return data_.find(p)->second->get_number_of_states();
+  }
+
+  FloatKey get_attribute_key(Particle *p, unsigned int att_index) const {
+    return (*(data_.find(p)->second->get_att_keys()))[att_index];
+  }
+
+  unsigned int get_number_of_attributes(Particle *p) const {
+    return data_.find(p)->second->get_number_of_attributes();
+  }
+
+  void add_space(const Particle &p, SimpleDiscreteSpace &sds) {
+    data_[&p] = &sds;
+  }
+  DiscreteSet* get_space(Particle *p) const {
+  IMP_INTERNAL_CHECK(data_.find(p) != data_.end(),
+          "Particle "<<p->get_name() <<
+          "was not found in SimpleDiscreteSampler" <<std::endl);
+  return data_.find(p)->second;
+  }
 protected:
-  std::map<const Particle *, SimpleDiscreteSpace *> data;
+  std::map<const Particle *, SimpleDiscreteSpace *> data_;
 };
 
 IMPDOMINO_END_NAMESPACE

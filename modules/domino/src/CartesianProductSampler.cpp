@@ -27,12 +27,19 @@ void CartesianProductSampler::populate_states_of_particles(
    Particles *particles,
    std::map<std::string,CombState *> *states) const
 {
+  IMP_LOG(IMP::VERBOSE,
+    "start CartesianProductSampler::populate_states_of_particles"<<std::endl);
   CombState *calc_state;
   unsigned int comb_size = particles->size();//the size of the combination
+  IMP_LOG(IMP::VERBOSE,
+          "number of particles: "<<comb_size<<std::endl);
   std::vector<int> v_int(comb_size);//
   std::vector<int> c_int(comb_size);//
   unsigned int i;
   for(i=0;i<comb_size;i++){
+    IMP_LOG(IMP::VERBOSE,"i:"<<i<<" number of mapped states: " <<
+            ds_->get_number_of_mapped_states((*particles)[i])<<std::endl);
+
     //TODO - return!
     // IMP_check(ds_->get_number_of_mapped_states((*particles)[i])>0,
     //"CartesianProductSampler::populate_states_of_particles the "
@@ -42,7 +49,7 @@ void CartesianProductSampler::populate_states_of_particles(
     c_int[i] = 0;
   }
   while(c_int[0] != v_int[0]) {
-    calc_state = new CombState();
+    CombState *calc_state = new CombState();
     for (i = 0; i < c_int.size(); i++) {
       calc_state->add_data_item((*particles)[i], c_int[i]);
     }
@@ -58,6 +65,8 @@ void CartesianProductSampler::populate_states_of_particles(
       i--;
     }
   }
+  IMP_LOG(IMP::VERBOSE,
+    "end CartesianProductSampler::populate_states_of_particles"<<std::endl);
 }
 
 void CartesianProductSampler::move2state(const CombState *cs){

@@ -47,6 +47,7 @@ public:
   void populate_states_of_particles(Particles *particles,
                std::map<std::string, CombState *> *states) const;
   void show(std::ostream& out = std::cout) const {out<<"SymmetrySampler";}
+  DiscreteSet* get_space(Particle *p) const{return ts_;}
  protected:
 
   void reset_placement(const CombState *cs);
