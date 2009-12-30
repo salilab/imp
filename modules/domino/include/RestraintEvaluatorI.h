@@ -36,6 +36,7 @@ public:
   virtual void calc_scores(const Combinations &comb_states,
                          CombinationValues &comb_values,
                          Restraint *r, const Particles &ps){}
+  virtual void show(std::ostream& out = std::cout) const{}
 };
 
 

@@ -56,6 +56,9 @@ public:
   void calc_scores(const Combinations &comb_states,
                    CombinationValues &comb_values,
                    Restraint *r, const Particles &ps);
+  void show(std::ostream& out = std::cout) const{
+    out<<"RestraintEvaluator"<<std::endl;
+  }
 protected:
   //TODO - this function should be changed once we will have the
   //new kernel functionalities.
