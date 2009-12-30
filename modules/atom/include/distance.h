@@ -60,6 +60,29 @@ IMPATOMEXPORT std::pair<double,double> component_placement_score(
       const core::XYZs& ref1 ,const core::XYZs& ref2,
       const core::XYZs& mdl1 ,const core::XYZs& mdl2);
 
+//! Measure the RMSD between two placements of the same set of points
+/**
+\param[in] ref1 The reference placement of the first component represented
+               by XYZ coordinates
+\param[in] ref2 The reference placement of the second component represented
+               by XYZ coordinates
+\param[in] mdl1 The modeled placement of the first component
+           represented by XYZ coordinates
+\param[in] mdl2 The modeled placement of the second component
+           represented by XYZ coordinates
+\note The measure quantifies the RMSD between the relative placements
+      of two components compared to a reference relative placement.
+      First, the two compared structures are brought into
+      the same frame of reference by superposing the first pair of
+      equivalent domains (ref1 and mdl1). Next, the RMSD is calculated
+      for the second component
+\note see Lasker et al JMB, 2009 for details
+ */
+IMPATOMEXPORT Float pairwise_rmsd_score(
+      const core::XYZs& ref1 ,const core::XYZs& ref2,
+      const core::XYZs& mdl1 ,const core::XYZs& mdl2);
+
+
 IMPATOM_END_NAMESPACE
 
 #endif /* IMPATOM_DISTANCE_H */

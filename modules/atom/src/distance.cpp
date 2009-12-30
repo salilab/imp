@@ -39,6 +39,26 @@ IMPATOMEXPORT std::pair<double,double> placement_score(
     algebra::decompose_rotation_into_axis_angle(t.get_rotation()).second);
 }
 
+Float pairwise_rmsd_score(
+      const core::XYZs& ref1 ,const core::XYZs& ref2,
+      const core::XYZs& mdl1 ,const core::XYZs& mdl2) {
+  //calculate the best fit bewteen the reference and model
+  //of the first component
+  algebra::Vector3Ds from_v1,to_v1;
+  for(core::XYZs::const_iterator it = mdl1.begin(); it != mdl1.end(); it++) {
+    from_v1.push_back(it->get_coordinates());
+  }
+  for(core::XYZs::const_iterator it = ref1.begin(); it != ref1.end(); it++) {
+    to_v1.push_back(it->get_coordinates());
+  }
+  algebra::Transformation3D t =
+    algebra::rigid_align_first_to_second(from_v1,to_v1);
+  core::transform(mdl2,t);
+  Float rmsd_score=rmsd(ref2,mdl2);
+  core::transform(mdl2,t.get_inverse());
+  return rmsd_score;
+}
+
 std::pair<double,double> component_placement_score(
       const core::XYZs& ref1 ,const core::XYZs& ref2,
       const core::XYZs& mdl1 ,const core::XYZs& mdl2) {
@@ -67,14 +87,6 @@ std::pair<double,double> component_placement_score(
   //find the best transformation from the new from_v2 to the reference
   algebra::Transformation3D t2 =
     algebra::rigid_align_first_to_second(from_v2,to_v2);
-
-  //transform the model of component 2 back
-  algebra::Transformation3D t_back = t.get_inverse();
-  for(algebra::Vector3Ds::iterator it = from_v2.begin();
-                                 it != from_v2.end(); it++) {
-    *it=t_back.transform(*it);
-  }
-
 
   //return the best fit bewteen
   return std::pair<double,double>(
