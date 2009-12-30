@@ -1,4 +1,3 @@
-
 %extend IMP::Decorator {
   bool __eq__(Decorator o) {
     return *self == o;
@@ -9,18 +8,9 @@
 }
 
 
-%feature("shadow") IMP::DecoratorsWithTraits::__iter__ %{
-def __iter__(self):
-    return IMP.DecoratorIterator(self)
-%}
-%feature("shadow") IMP::Decorators::__iter__ %{
-def __iter__(self):
-    return IMP.DecoratorIterator(self)
-%}
-
 %ignore IMP::Decorators::operator[];
 %extend IMP::Decorators {
-  WrappedDecorator __getitem__(int index) const {
+  Decorator __getitem__(int index) const {
     if (index < 0) index= index+self->size();
     if (index >= static_cast<int>(self->size())) {
        IMP_THROW("Index out of range in getitem" << index
@@ -28,7 +18,7 @@ def __iter__(self):
     }
     return self->operator[](index);
   }
-  void __setitem__(int index, WrappedDecorator val) {
+  void __setitem__(int index, Decorator val) {
     if (index < 0) index= index+self->size();
     if (index >= static_cast<int>(self->size())) {
        IMP_THROW("Index out of range in setitem" << index
@@ -39,24 +29,23 @@ def __iter__(self):
   int __len__() const {
     return self->size();
   }
-  void append(WrappedDecorator d) {
+  void append(Decorator d) {
     self->push_back(d);
   }
-  void __iter__() const{}
-  Decorators< WrappedDecorator, ParentDecorators >
-   __add__(const Decorators< WrappedDecorator, ParentDecorators > &o) {
-    IMP::Decorators< WrappedDecorator, ParentDecorators > ret(*self);
+  Decorators< Decorator, ParentDecorators >
+   __add__(const Decorators< Decorator, ParentDecorators > &o) {
+    IMP::Decorators< Decorator, ParentDecorators > ret(*self);
     ret.insert(ret.end(), o.begin(), o.end());
     return ret;
   }
-  std::vector<WrappedDecorator> __list__() const {
-    std::vector<WrappedDecorator> ret(self->begin(), self->end());
+  std::vector<Decorator> __list__() const {
+    std::vector<Decorator> ret(self->begin(), self->end());
     return ret;
   }
-  Decorators< WrappedDecorator, ParentDecorators > __getslice__(int b, int e) const {
+  Decorators< Decorator, ParentDecorators > __getslice__(int b, int e) const {
     if (e < 0) e= self->size()+e;
     if (b < 0) b= self->size()+b;
-    IMP::Decorators< WrappedDecorator, ParentDecorators > ret;
+    IMP::Decorators< Decorator, ParentDecorators > ret;
     for ( int c=b; c!= e; ++c) {
        ret.push_back(self->operator[](c));
     }
@@ -66,7 +55,7 @@ def __iter__(self):
 
 %ignore IMP::DecoratorsWithTraits::operator[];
 %extend IMP::DecoratorsWithTraits {
-  WrappedDecorator __getitem__(int index) const {
+  Decorator __getitem__(int index) const {
     if (index < 0) index=self->size()+index;
     if (index >= static_cast<int>(self->size())) {
        IMP_THROW("Index out of range in getitem" << index
@@ -74,11 +63,11 @@ def __iter__(self):
     }
     return self->operator[](index);
   }
-  std::vector<WrappedDecorator> __list__() const {
-    std::vector<WrappedDecorator> ret(self->begin(), self->end());
+  std::vector<Decorator> __list__() const {
+    std::vector<Decorator> ret(self->begin(), self->end());
     return ret;
   }
-  void __setitem__(int index, WrappedDecorator val) {
+  void __setitem__(int index, Decorator val) {
     if (index < 0) index=self->size()+index;
     if (index >= static_cast<int>(self->size())) {
        IMP_THROW("Index out of range in setitem" << index
@@ -89,21 +78,20 @@ def __iter__(self):
   int __len__() const {
     return self->size();
   }
-  void append(WrappedDecorator d) {
+  void append(Decorator d) {
     self->push_back(d);
   }
-  void __iter__(){}
-  DecoratorsWithTraits< WrappedDecorator, ParentDecorators, Traits >
-  __add__(const DecoratorsWithTraits<WrappedDecorator, ParentDecorators, Traits > &o) {
-    IMP::DecoratorsWithTraits< WrappedDecorator, ParentDecorators, Traits > ret(*self);
+  DecoratorsWithTraits< Decorator, ParentDecorators, Traits >
+  __add__(const DecoratorsWithTraits<Decorator, ParentDecorators, Traits > &o) {
+    IMP::DecoratorsWithTraits< Decorator, ParentDecorators, Traits > ret(*self);
     ret.insert(ret.end(), o.begin(), o.end());
     return ret;
   }
-  DecoratorsWithTraits< WrappedDecorator, ParentDecorators, Traits >
+  DecoratorsWithTraits< Decorator, ParentDecorators, Traits >
   __getslice__(int b, int e) const {
     if (e < 0) e= self->size()+e;
     if (b < 0) b= self->size()+b;
-    IMP::DecoratorsWithTraits< WrappedDecorator, ParentDecorators, Traits > ret;
+    IMP::DecoratorsWithTraits< Decorator, ParentDecorators, Traits > ret;
     for ( int c=b; c!= e; ++c) {
        ret.push_back(self->operator[](c));
     }
@@ -111,10 +99,9 @@ def __iter__(self):
   }
 }
 
-
-%define IMP_SWIG_DECORATORS(Name, PluralName, Parent)
+%define IMP_DECORATORS(Name, PluralName, Parent)
 %template(PluralName) ::IMP::Decorators< Name, Parent>;
-%template(PluralName##Temp) ::IMP::Decorators<Name, Parent##Temp>;
+%template(Name##Vector) ::std::vector<Name>;
 %implicitconv Name ;
 %enddef
 %implicitconv Decorator;

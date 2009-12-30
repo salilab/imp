@@ -68,7 +68,7 @@ Float ForceFieldParameters::get_epsilon(
 
 
 void ForceFieldParameters::add_bonds(Hierarchy mhd) const {
-  Hierarchies rs(get_by_type(mhd, RESIDUE_TYPE));
+  Hierarchies rs= get_by_type(mhd, RESIDUE_TYPE);
   for (unsigned int i=0;i < rs.size(); ++i) {
     add_bonds(rs[i].get_as_residue());
     Hierarchy rn= get_next_residue(rs[i].get_as_residue());

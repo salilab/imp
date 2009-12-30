@@ -101,7 +101,7 @@ public:
 
 IMP_OUTPUT_OPERATOR(XYZR);
 
-IMP_DECORATORS(XYZR, XYZs);
+typedef Decorators< XYZR, XYZs > XYZRs;
 
 //! Compute the distance between a pair of particles
 /** \relatesalso XYZR

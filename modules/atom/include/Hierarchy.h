@@ -68,26 +68,12 @@ class Hierarchy;
 /** A collecton of Hierarchies. */
 typedef IMP::DecoratorsWithImplicitTraits< Hierarchy,
                               IMP::core::GenericHierarchies> Hierarchies;
-typedef IMP::DecoratorsWithImplicitTraits< Hierarchy,
-                         IMP::core::GenericHierarchiesTemp> HierarchiesTemp;
 #else
 class Hierarchies: public IMP::core::GenericHierarchies {
 public:
   Hierarchies(Hierarchy h);
   Hierarchies();
   Hierarchies(const Particles &ps);
-  const Particles &get_particles() const;
-  void push_back(Hierarchy d);
-  void push_back(Particle *p);
-  Hierarchy back() const;
-  Hierarchy front() const;
-};
-class HierarchiesTemp: public IMP::core::GenericHierarchiesTemp {
-public:
-  HierarchiesTemp(Hierarchy h);
-  HierarchiesTemp(Hierarchies h);
-  HierarchiesTemp();
-  HierarchiesTemp(const Particles &ps);
   const Particles &get_particles() const;
   void push_back(Hierarchy d);
   void push_back(Particle *p);
@@ -279,8 +265,8 @@ public:
     IMP::core::Hierarchy hd= P::get_child(i);
     return decorate_particle(hd.get_particle());
   }
-  HierarchiesTemp get_children() const {
-    return HierarchiesTemp(IMP::core::Hierarchy::get_children());
+  Hierarchies get_children() const {
+    return Hierarchies(IMP::core::Hierarchy::get_children());
   }
 
   /** Get the parent particle. */
@@ -325,7 +311,7 @@ enum GetByType {
    \ingroup hierarchy
    \relatesalso Hierarchy
 */
-IMPATOMEXPORT HierarchiesTemp
+IMPATOMEXPORT Hierarchies
 get_by_type(Hierarchy mhd, GetByType t);
 
 
@@ -358,7 +344,7 @@ get_residue(Hierarchy mhd, unsigned int index);
     \relatesalso Hierarchy
  */
 IMPATOMEXPORT Hierarchy
-create_fragment(const HierarchiesTemp &ps);
+create_fragment(const Hierarchies &ps);
 
 //! Get the bonds internal to this tree
 /**     \relatesalso Hierarchy
@@ -379,8 +365,8 @@ inline Hierarchy get_root(Hierarchy h) {
 }
 
 /** \relatesalso Hierarchy */
-inline HierarchiesTemp get_leaves(Hierarchy h) {
-  return HierarchiesTemp(IMP::core::get_leaves(h));
+inline Hierarchies get_leaves(Hierarchy h) {
+  return Hierarchies(IMP::core::get_leaves(h));
 }
 
 //! Print out a molecular hierarchy

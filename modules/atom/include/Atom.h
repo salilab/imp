@@ -282,7 +282,7 @@ public:
 
 IMP_OUTPUT_OPERATOR(Atom);
 
-IMP_DECORATORS(Atom, Hierarchies);
+typedef IMP::Decorators<Atom, Hierarchies> Atoms;
 
 
 
