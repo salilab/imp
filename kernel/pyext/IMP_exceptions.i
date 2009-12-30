@@ -130,6 +130,10 @@ static PyObject *imp_exception, *imp_internal_exception, *imp_model_exception,
       PyErr_SetString(imp_io_exception, e.what());
     } catch (IMP::Exception &e) {
       PyErr_SetString(imp_exception, e.what());
+    /* Catch memory allocation errors, if raised */
+    } catch (std::bad_alloc &e) {
+      PyErr_SetString(PyExc_MemoryError, e.what());
+    /* Catch any other exceptions raised */
     } catch (...) {
       PyErr_SetString(PyExc_RuntimeError,
                       "Unknown error caught by Python wrapper");
