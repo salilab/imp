@@ -42,7 +42,7 @@ public:
   void populate_states_of_particles(Particles *particles,
                std::map<std::string, CombState *> *states) const;
   virtual void move2state(const CombState *cs);
-
+  DiscreteSet* get_space(Particle *p) const{return ds_;}
 protected:
   MappedDiscreteSet *ds_;
   Particles *ps_;

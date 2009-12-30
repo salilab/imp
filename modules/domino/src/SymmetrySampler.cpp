@@ -58,7 +58,7 @@ void SymmetrySampler::populate_states_of_particles(Particles *particles,
   IMP_LOG(VERBOSE, "Combination size: " << comb_size <<
           " number of states: " << ts_->get_number_of_states());
   for (int i = 0; i < ts_->get_number_of_states(); ++i) {
-    calc_state = new CombState();
+    CombState *calc_state = new CombState();
     for (int j = 0; j < comb_size; j++) {
       calc_state->add_data_item((*particles)[j],i);
     }

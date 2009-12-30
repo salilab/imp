@@ -12,6 +12,7 @@
 #include <IMP/Particle.h>
 #include "CombState.h"
 #include <vector>
+#include "DiscreteSet.h"
 
 IMPDOMINO_BEGIN_NAMESPACE
 
@@ -40,6 +41,10 @@ public:
   virtual void populate_states_of_particles(Particles *particles,
               Combinations *states) const{}
 
+  IMP_NO_SWIG(
+  //! Get the sampling space of a single particle
+  virtual DiscreteSet* get_space(Particle *p) const{}
+             )
   //! Set the attributes of the particles in the combination to the states
   //! indicated in the combination
   virtual void move2state(const CombState *cs) {}

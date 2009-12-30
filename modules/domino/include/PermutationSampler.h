@@ -41,7 +41,7 @@ public:
   //! Show the sampling space of a single particle
   void show_space(Particle *p,
                   std::ostream& out = std::cout) const {}
-
+  DiscreteSet* get_space(Particle *p) const{return ds_;}
 protected:
   //  void construct();
   void clear();
