@@ -56,14 +56,11 @@ public:
   //! Constructor
   CombState() {
   total_score_ = 0.0;
-  data_ = CombData();
-
   }
   //! Copy constructor
   CombState(const CombState &other){
   total_score_ = 0.0;
-  data_ = CombData();
-
+  //  data_ = CombData();
   for(CombData::const_iterator it = other.data_.begin();
       it != other.data_.end(); it++) {
     data_[it->first]=it->second;
@@ -98,17 +95,25 @@ public:
   return s.str();
 
   }
-  const std::string partial_key(const Particles *ps) const {
-    CombState *cs = get_partial(*ps);
-    std::string cs_key = cs->key();
-    delete(cs);
-    return cs_key;
-  }
+  const std::string partial_key(const Particles *ps) const;
   CombState *get_partial(const Particles &ps) const;
   //  void add_term(Restraint *r);
 
+  //Update the total score
+  /**
+    \param[in]  old_val the value to substracte
+    \param[in] new_val the value to add
+    \note the total score is updated to be current - old_val + new_val
+   */
   void update_total_score(float old_val, float new_val) {
     total_score_ += new_val - old_val;
+  }
+  //Update the total score
+  /**
+  \param[in] val the total score is updated to be val
+  */
+  void set_total_score(float val) {
+    total_score_ = val;
   }
 
   Float get_total_score() const {
@@ -134,7 +139,6 @@ public:
 
   //  CombState* find_minimum() const;
   void show(std::ostream& out = std::cout) const;
-
   //! Combine the combination encoded in other
   /** \param[in] other the other combination
    */
@@ -172,6 +176,7 @@ protected:
 
 typedef std::map<std::string, CombState *> Combinations;
 typedef std::map<std::string, float> CombinationValues;
+typedef std::vector<CombState*> CombStates;
 
 IMPDOMINO_END_NAMESPACE
 
