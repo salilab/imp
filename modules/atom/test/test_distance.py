@@ -27,5 +27,36 @@ class DistanceTest(IMP.test.TestCase):
         self.assertAlmostEqual(da[0],d, 2)
         self.assertAlmostEqual(da[1],a, 2)
 
+
+    def test_component_placement_score(self):
+        """Testing that component placement score returns the same transformation if called twice"""
+        m = IMP.Model()
+        # read PDB
+        mp1_ref= IMP.atom.read_pdb(self.open_input_file("1z5s_A.pdb"),
+                              m, IMP.atom.NonWaterSelector())
+        mp1_mdl= IMP.atom.read_pdb(self.open_input_file("1z5s_A.pdb"),
+                              m, IMP.atom.NonWaterSelector())
+        mp2_ref= IMP.atom.read_pdb(self.open_input_file("1z5s_C.pdb"),
+                              m, IMP.atom.NonWaterSelector())
+        mp2_mdl= IMP.atom.read_pdb(self.open_input_file("1z5s_C.pdb"),
+                              m, IMP.atom.NonWaterSelector())
+        xyz1_ref=IMP.core.XYZs(IMP.atom.get_leaves(mp1_ref))
+        xyz1_mdl=IMP.core.XYZs(IMP.atom.get_leaves(mp1_mdl))
+        xyz2_ref=IMP.core.XYZs(IMP.atom.get_leaves(mp2_ref))
+        xyz2_mdl=IMP.core.XYZs(IMP.atom.get_leaves(mp2_mdl))
+
+        #create a random transformation
+        t=IMP.algebra.Transformation3D(IMP.algebra.random_rotation(),
+                                       IMP.algebra.random_vector_in_unit_box())
+        IMP.core.transform(xyz1_mdl,t)
+        t=IMP.algebra.Transformation3D(IMP.algebra.random_rotation(),
+                                       IMP.algebra.random_vector_in_unit_box())
+        IMP.core.transform(xyz2_mdl,t)
+        da1=IMP.atom.component_placement_score(xyz1_ref,xyz2_ref,xyz1_mdl,xyz2_mdl)
+        da2=IMP.atom.component_placement_score(xyz1_ref,xyz2_ref,xyz1_mdl,xyz2_mdl)
+        self.assertAlmostEqual(da1[0],da2[0])
+        self.assertAlmostEqual(da1[1],da2[1])
+
+
 if __name__ == '__main__':
     unittest.main()

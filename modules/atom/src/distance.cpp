@@ -67,6 +67,15 @@ std::pair<double,double> component_placement_score(
   //find the best transformation from the new from_v2 to the reference
   algebra::Transformation3D t2 =
     algebra::rigid_align_first_to_second(from_v2,to_v2);
+
+  //transform the model of component 2 back
+  algebra::Transformation3D t_back = t.get_inverse();
+  for(algebra::Vector3Ds::iterator it = from_v2.begin();
+                                 it != from_v2.end(); it++) {
+    *it=t_back.transform(*it);
+  }
+
+
   //return the best fit bewteen
   return std::pair<double,double>(
    t.get_translation().get_magnitude(),
