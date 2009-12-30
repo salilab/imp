@@ -11,7 +11,7 @@
 #include "RestraintGraph.h"
 #include "JunctionTree.h"
 #include "RestraintEvaluatorI.h"
-
+#include "CombState.h"
 #include <IMP/core/RestraintSet.h>
 
 #include <IMP/Optimizer.h>
@@ -46,6 +46,10 @@ public:
   void show_restraint_graph(std::ostream& out = std::cout) const {
     g_->show(out);
   }
+  void show_optimum_configuration(unsigned int conf_ind,
+                                   std::ostream& out = std::cout) const {
+    g_->get_opt_combination(conf_ind)->show(out);
+  }
   DiscreteSampler *get_sampling_space() const {return ds_;}
   RestraintGraph  *get_graph() const {return g_;}
   void set_restraint_evaluator(RestraintEvaluatorI *rstr_eval) {
@@ -71,6 +75,11 @@ public:
   a coarser set of particles than the ones actually used in the restraint.
    */
   void add_restraint(Restraint *r,Particles ps,float weight=1.);
+
+  //! A function used mostly for debugging and learning purposes.
+  //! Should NOT be used for real optimization protocol.
+  void exhaustive_enumeration(CombStates &states);
+  //  Combinatations *exhaustive_enumeration();
 
 protected:
   //! Recursivly add restraints

@@ -56,6 +56,67 @@ void DominoOptimizer::initialize_jt_graph(int number_of_nodes)
   g_->initialize_graph(number_of_nodes);
 }
 
+void DominoOptimizer::exhaustive_enumeration(CombStates &states) {
+  //Combinations* DominoOptimizer::exhaustive_enumeration() {
+  IMP_LOG(IMP::VERBOSE,
+          "DominoOptimizer::exhaustive_enumeration START"<<std::endl);
+  IMP_INTERNAL_CHECK(ds_ != NULL,
+        "DominoOptimizer::exhaustive_enumeration the sampling"
+        <<" space was not set"<<std::endl);
+  IMP_INTERNAL_CHECK(g_->is_sampling_space_set(),
+        "DominoOptimizer::exhaustive_enumeration the sampling"
+        <<" space was not set"<<std::endl);
+  Particles ps = g_->get_particles();
+  IMP_INTERNAL_CHECK(ps.size()>0,
+        "DominoOptimizer::exhaustive_enumeration no particles found"
+        <<std::endl);
+  Model *mdl=ps[0]->get_model();
+  unsigned int comb_size=ps.size();
+  IMP_LOG(IMP::VERBOSE,
+          "number of particles: "<<comb_size<<std::endl);
+  std::vector<int> v_int(comb_size);
+  std::vector<int> c_int(comb_size);
+  unsigned int i;
+  for(i=0;i<comb_size;i++){
+    ds_->get_space(ps[i])->show();
+    std::cout<<"==========="<<std::endl;
+    v_int[i] = ds_->get_space(ps[i])->get_number_of_states();
+    IMP_LOG(IMP::VERBOSE,"i:"<<i<<" number of states: " <<
+            v_int[i]<<std::endl);
+    c_int[i] = 0;
+  }
+  while(c_int[0] != v_int[0]) {
+    CombState *calc_state = new CombState();
+    for (i = 0; i < c_int.size(); i++) {
+      calc_state->add_data_item(ps[i], c_int[i]);
+    }
+    states.push_back(calc_state);
+    //update the indexes
+    i=c_int.size()-1;
+    if(c_int[i]!=v_int[i]) {
+      c_int[i]++;
+    }
+    while (c_int[i] == v_int[i] && i>0) {
+      c_int[i]=0;
+      c_int[i-1]++;
+      i--;
+    }
+  }
+  //score each of the combinations
+  Float score;
+  IMP_LOG(IMP::VERBOSE,
+    "going to calculate scores for "<<states.size()<<" states"<<std::endl);
+  for(CombStates::iterator it = states.begin();
+      it != states.end();it++) {
+    //move to state
+    g_->move_to_configuration(**it);
+    score=mdl->evaluate(false);
+    (*it)->set_total_score(score);
+  }
+  IMP_LOG(IMP::VERBOSE,
+          "DominoOptimizer::exhaustive_enumeration END"<<std::endl);
+}
+
 Float DominoOptimizer::optimize(unsigned int max_steps)
 {
   IMP_INTERNAL_CHECK(ds_ != NULL,
@@ -63,17 +124,17 @@ Float DominoOptimizer::optimize(unsigned int max_steps)
              <<std::endl);
   //init all the potentials
   g_->clear();
-  IMP_LOG(VERBOSE," DominoOptimizer::optimize going to set sampling space"
+  IMP_LOG(VERBOSE,"DominoOptimizer::optimize going to set sampling space"
                   <<std::endl);
   set_sampling_space(ds_);
   // now infer the minimum
-  IMP_LOG(VERBOSE," DominoOptimizer::optimize going to infer solutions"
+  IMP_LOG(VERBOSE,"DominoOptimizer::optimize going to infer solutions"
                   <<std::endl);
   g_->infer(num_of_solutions_);
   //move the model to the states that reach the global minimum
   g_->move_to_global_minimum_configuration();
   IMP_IF_LOG(TERSE) {
-    IMP_LOG(TERSE," DominoOptimizer::optimize going to move the "
+    IMP_LOG(TERSE,"DominoOptimizer::optimize going to move the "
             <<"model to the global minimum: "<<std::endl);
     IMP_LOG_WRITE(TERSE,g_->get_opt_combination(0)->show());
     IMP_LOG(TERSE,std::endl);
