@@ -106,16 +106,18 @@ bool JNode::is_part(const Particles &ps) const
   for (Particles::const_iterator it = ps.begin(); it != ps.end(); it++) {
     other_sorted_particle_indexes.push_back(*it);
   }
-  IMP_LOG(VERBOSE,"interaction between : " << std::endl);
-  for (Particles::const_iterator it = ps.begin(); it != ps.end(); it++) {
-    IMP_LOG(VERBOSE,(*it)->get_value(node_name_key()) << " : ");
-  }
-  IMP_LOG(VERBOSE,"and : " << std::endl);
-  for (Particles::const_iterator it = particles_.begin();
+  IMP_IF_LOG(VERBOSE) {
+    IMP_LOG(VERBOSE,"check if particles : " << std::endl);
+    for (Particles::const_iterator it = ps.begin(); it != ps.end(); it++) {
+      IMP_LOG(VERBOSE,(*it)->get_value(node_name_key()) << " : ");
+    }
+    IMP_LOG(VERBOSE,"are part of  : " << std::endl);
+    for (Particles::const_iterator it = particles_.begin();
        it != particles_.end(); it++) {
-    IMP_LOG(VERBOSE,(*it)->get_value(node_name_key()) << " : ");
+      IMP_LOG(VERBOSE,(*it)->get_value(node_name_key()) << " : ");
+    }
+    IMP_LOG(VERBOSE,std::endl);
   }
-  IMP_LOG(VERBOSE,std::endl);
   sort(other_sorted_particle_indexes.begin(),
        other_sorted_particle_indexes.end());
   set_intersection(particles_.begin(),
