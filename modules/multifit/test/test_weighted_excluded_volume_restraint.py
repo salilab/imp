@@ -6,6 +6,7 @@ import IMP.multifit
 import IMP.helper
 import unittest
 import os
+import time
 
 class SampleTests(IMP.test.TestCase):
     """Tests for sampled density maps"""
@@ -60,7 +61,7 @@ class SampleTests(IMP.test.TestCase):
                       IMP.algebra.Vector3D(20.1398, 111.715, 60.5263)]
         #move chain A and calculate weighted excluded volume
         ps1=IMP.core.get_leaves(self.mhs[0])
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.set_log_level(IMP.SILENT)#VERBOSE)
         for i in range(10):
             t=IMP.algebra.Transformation3D(
                 IMP.algebra.Rotation3D(rotations[i][0],rotations[i][1],rotations[i][2],rotations[i][3]),
@@ -69,7 +70,10 @@ class SampleTests(IMP.test.TestCase):
             xyz.set_coordinates(t.transform(xyz.get_coordinates()))
             #check that when the proteins are not connected (self.c_r>0) the excluded volume
             #restraint is bigger than 0
+            start = time.clock()
             self.mdl.evaluate(False) #to make sure the coordinates were transformed
+            end = time.clock()
+            print "Time elapsed for PairRestraint evaluatation = ", end - start, "seconds"
             conn_r=self.c_r.evaluate(False)
             w_exc_vol_r=self.wev_r.evaluate(False)
             self.assert_(((conn_r==0.)and(w_exc_vol_r>0.))or((conn_r>0.)and(w_exc_vol_r==0.)),
