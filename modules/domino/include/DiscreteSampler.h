@@ -43,7 +43,7 @@ public:
 
   IMP_NO_SWIG(
   //! Get the sampling space of a single particle
-  virtual DiscreteSet* get_space(Particle *p) const{}
+  virtual DiscreteSet* get_space(Particle *p) const { return NULL; }
              )
   //! Set the attributes of the particles in the combination to the states
   //! indicated in the combination
