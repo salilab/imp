@@ -7,7 +7,7 @@
 IMPDOMINO_BEGIN_NAMESPACE
 
 TransformationCartesianProductSampler::TransformationCartesianProductSampler(
-   TransformationMappedDiscreteSet *ds,Particles *ps,
+   TransformationMappedDiscreteSet *ds,const Particles &ps,
    bool trans_from_orig):CartesianProductSampler(ds,ps),tu_(ps,trans_from_orig)
 {}
 
@@ -28,8 +28,8 @@ void TransformationCartesianProductSampler::show(std::ostream& out) const
 {
   out <<"TransformationCartesianProductSampler with " <<
       ds_->get_number_of_states() << " states in the set and " <<
-      ps_->size() << " particles: "<< std::endl;
-  for(Particles::const_iterator it = ps_->begin(); it != ps_->end(); it++) {
+      ps_.size() << " particles: "<< std::endl;
+  for(Particles::const_iterator it = ps_.begin(); it != ps_.end(); it++) {
     out<<(*it)->get_name()<<",";
   }
   out<<std::endl;

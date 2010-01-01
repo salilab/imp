@@ -24,7 +24,7 @@ public:
                                the original position/orientation rather than
                                the current one.
    */
-  TransformationUtils(Particles *ps,bool trans_from_orig = false);
+  TransformationUtils(const Particles &ps,bool trans_from_orig = false);
   //! Transform a particle
   /**
   /param[in] p_sample The particle to apply the trasnformation on,

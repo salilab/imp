@@ -7,7 +7,7 @@
 IMPDOMINO_BEGIN_NAMESPACE
 
 TransformationPermutationSampler::TransformationPermutationSampler(
-        DiscreteSet *ds,Particles *ps, bool trans_from_orig)
+        DiscreteSet *ds,const Particles &ps, bool trans_from_orig)
         :PermutationSampler(ds,ps),tu_(ps,trans_from_orig)
 {}
 void TransformationPermutationSampler::move2state(const CombState *cs) {

@@ -33,7 +33,7 @@ public:
     \param[in] ds           the discrete sampling space
     \param[in] ps           the sampled particles
   */
-  PermutationSampler(DiscreteSet *ds, Particles *ps);
+  PermutationSampler(DiscreteSet *ds, const Particles &ps);
   void show(std::ostream& out = std::cout) const;
   void populate_states_of_particles(Particles *particles,
                std::map<std::string, CombState *> *states) const;
@@ -46,7 +46,7 @@ protected:
   //  void construct();
   void clear();
   DiscreteSet *ds_;
-  Particles *ps_;
+  Particles ps_;
 };
 
 IMPDOMINO_END_NAMESPACE

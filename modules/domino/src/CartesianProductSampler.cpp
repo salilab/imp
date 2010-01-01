@@ -8,7 +8,7 @@
 IMPDOMINO_BEGIN_NAMESPACE
 
 CartesianProductSampler::CartesianProductSampler(MappedDiscreteSet *ds,
-                                                 Particles *ps)
+                                                 const Particles &ps)
 {
   ds_ = ds;
   ps_=ps;
@@ -17,8 +17,8 @@ CartesianProductSampler::CartesianProductSampler(MappedDiscreteSet *ds,
 void CartesianProductSampler::show(std::ostream& out) const
 {
   out <<"CartesianProductSampler with " << ds_->get_number_of_states()
-  << " states in the set and " << ps_->size() << "particles: "<< std::endl;
-  for(Particles::const_iterator it = ps_->begin(); it != ps_->end(); it++) {
+  << " states in the set and " << ps_.size() << "particles: "<< std::endl;
+  for(Particles::const_iterator it = ps_.begin(); it != ps_.end(); it++) {
     out<<**it<<",";
   }
   out<<std::endl;
@@ -83,4 +83,11 @@ void CartesianProductSampler::move2state(const CombState *cs){
   }
 }
 
+DiscreteSet* CartesianProductSampler::get_space(Particle *p) const {
+  DiscreteSet *ds = new DiscreteSet(*(ds_->get_att_keys()));
+  for (int i=0;i<ds_->get_number_of_mapped_states(p);i++) {
+    ds->add_state(ds_->get_mapped_state(p,i));
+  }
+  return ds;
+}
 IMPDOMINO_END_NAMESPACE

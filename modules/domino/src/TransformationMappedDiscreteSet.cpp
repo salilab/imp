@@ -10,7 +10,7 @@
 #include <IMP/algebra/Transformation3D.h>
 IMPDOMINO_BEGIN_NAMESPACE
 TransformationMappedDiscreteSet::TransformationMappedDiscreteSet
-   (Particles *ps_target): MappedDiscreteSet(ps_target)
+   (const Particles &ps_target): MappedDiscreteSet(ps_target)
 {
   //translation attributes
   FloatKeys xyz = IMP::domino::Transformation::get_translation_keys();

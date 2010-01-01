@@ -31,7 +31,7 @@ public:
     \param[in] trans_from_orig
   */
   TransformationPermutationSampler(DiscreteSet *ds,
-                                   Particles *ps,bool trans_from_orig);
+                                   const Particles &ps,bool trans_from_orig);
   void move2state(const CombState *cs);
 protected:
   TransformationUtils tu_;

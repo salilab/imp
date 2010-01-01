@@ -10,11 +10,12 @@
 #include <IMP/core/XYZ.h>
 
 IMPDOMINO_BEGIN_NAMESPACE
-TransformationUtils::TransformationUtils(Particles *ps, bool trans_from_orig)
+TransformationUtils::TransformationUtils(const Particles &ps,
+                                         bool trans_from_orig)
   :go_back_(trans_from_orig)
 {
   if (go_back_) { //save all initial transformations
-    for (Particles::iterator it = ps->begin(); it != ps->end(); it++) {
+    for (Particles::const_iterator it = ps.begin(); it != ps.end(); it++) {
       starting_transform_[*it]=core::RigidBody(*it).get_transformation();
     }
   }

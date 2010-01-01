@@ -30,7 +30,7 @@ public:
   /**
   /param[in] ps_target particles to be mapped on a discrete set
    */
-  TransformationMappedDiscreteSet(Particles *ps_target);
+  TransformationMappedDiscreteSet(const Particles &ps_target);
 };
 
 IMPDOMINO_END_NAMESPACE

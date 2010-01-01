@@ -8,10 +8,10 @@
 #include "IMP/domino/MappedDiscreteSet.h"
 
 IMPDOMINO_BEGIN_NAMESPACE
-MappedDiscreteSet::MappedDiscreteSet(Particles *ps_target)
+MappedDiscreteSet::MappedDiscreteSet(const Particles &ps_target)
 {
-  for (Particles::const_iterator it = ps_target->begin();
-       it != ps_target->end();it++) {
+  for (Particles::const_iterator it = ps_target.begin();
+       it != ps_target.end();it++) {
     states_map_[*it] = std::vector<Particle *>();
   }
 }
@@ -62,10 +62,10 @@ void MappedDiscreteSet::show(std::ostream& out) const {
       it1 = states_map_.begin(); it1 != states_map_.end(); it1++) {
     out << "There are " << get_number_of_mapped_states(it1->first)
         << " states for : "<< it1->first->get_name()<<"  :: " << std::endl;
-    for(std::vector<Particle *> ::const_iterator
+    /*    for(std::vector<Particle *> ::const_iterator
       it2 = it1->second.begin(); it2 != it1->second.end(); it2++) {
       (*it2)->show(out);
-    }
+      }*/
   }
 }
 IMPDOMINO_END_NAMESPACE
