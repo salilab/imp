@@ -5,6 +5,7 @@
  */
 
 #include <IMP/domino/DominoOptimizer.h>
+#include <numeric>
 
 IMPDOMINO_BEGIN_NAMESPACE
 
@@ -56,7 +57,8 @@ void DominoOptimizer::initialize_jt_graph(int number_of_nodes)
   g_->initialize_graph(number_of_nodes);
 }
 
-void DominoOptimizer::exhaustive_enumeration(CombStates &states) {
+void DominoOptimizer::exhaustive_enumeration(CombStates &states,
+                         bool calc_score,bool use_rsr_eval) {
   //Combinations* DominoOptimizer::exhaustive_enumeration() {
   IMP_LOG(IMP::VERBOSE,
           "DominoOptimizer::exhaustive_enumeration START"<<std::endl);
@@ -79,7 +81,6 @@ void DominoOptimizer::exhaustive_enumeration(CombStates &states) {
   unsigned int i;
   for(i=0;i<comb_size;i++){
     ds_->get_space(ps[i])->show();
-    std::cout<<"==========="<<std::endl;
     v_int[i] = ds_->get_space(ps[i])->get_number_of_states();
     IMP_LOG(IMP::VERBOSE,"i:"<<i<<" number of states: " <<
             v_int[i]<<std::endl);
@@ -102,20 +103,62 @@ void DominoOptimizer::exhaustive_enumeration(CombStates &states) {
       i--;
     }
   }
-  //score each of the combinations
-  Float score;
-  IMP_LOG(IMP::VERBOSE,
-    "going to calculate scores for "<<states.size()<<" states"<<std::endl);
-  for(CombStates::iterator it = states.begin();
-      it != states.end();it++) {
-    //move to state
-    g_->move_to_configuration(**it);
-    score=mdl->evaluate(false);
-    (*it)->set_total_score(score);
+  if (calc_score) {
+    if (not use_rsr_eval) {
+     Float score;
+     //score each of the combinations
+     IMP_LOG(IMP::VERBOSE,
+       "going to calculate scores for "<<states.size()<<" states"<<std::endl);
+     for(CombStates::iterator it = states.begin();
+        it != states.end();it++) {
+        //move to state
+        g_->move_to_configuration(**it);
+        score=mdl->evaluate(false);
+        (*it)->set_total_score(score);
+     }
+    }
+   else  {
+     std::vector<Floats> scores;
+     score_combinations(states,scores);
+     //sum all scores
+     for(int i=0;i<states.size();i++){
+       (states[i])->set_total_score(std::accumulate(scores[i].begin(),
+                                                    scores[i].end(),0.));
+     }
+   }
   }
   IMP_LOG(IMP::VERBOSE,
           "DominoOptimizer::exhaustive_enumeration END"<<std::endl);
 }
+
+void DominoOptimizer::score_combinations(const CombStates &states,
+                                         std::vector<Floats> &scores) {
+   //create temp combinations
+   Combinations combs;
+   for(CombStates::const_iterator it = states.begin();
+        it != states.end();it++) {
+      combs[(*it)->key()]=*it;
+   }
+   //create temp scores
+   std::vector<CombinationValues> comb_values;
+   for(std::vector<OptTuple>::iterator it= rs_.begin(); it != rs_.end();it++) {
+     CombinationValues single_comb_values;
+     rstr_eval_->calc_scores(combs,single_comb_values,
+                             boost::get<0>(*it),boost::get<1>(*it));
+     comb_values.push_back(single_comb_values);
+   }
+   //log  all scores
+   Float score;
+   for(CombStates::const_iterator it = states.begin();it != states.end();it++) {
+     score=0.;
+     scores.push_back(Floats());
+     for (int i=0;i<rs_.size();i++) {
+       std::string partial_key = (*it)->partial_key(&(boost::get<1>(rs_[i])));
+       scores[scores.size()-1].push_back(comb_values[i][partial_key]);
+     }
+   }
+}
+
 
 Float DominoOptimizer::optimize(unsigned int max_steps)
 {
