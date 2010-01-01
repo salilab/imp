@@ -69,6 +69,10 @@ public:
 
   //! Get the number of states held in the set
   long get_number_of_mapped_states(Particle *p_target) const;
+
+  //! Check if each particle has mapped states
+  bool is_valid() const;
+
   void show(std::ostream& out=std::cout) const;
   //get the particles the discrete set covers
   Particles get_particles() const {

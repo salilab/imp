@@ -68,4 +68,17 @@ void MappedDiscreteSet::show(std::ostream& out) const {
       }*/
   }
 }
+
+//! Check if each particle has mapped states
+bool MappedDiscreteSet::is_valid() const {
+  for(std::map<Particle*, std::vector<Particle *> >::const_iterator
+      it1 = states_map_.begin(); it1 != states_map_.end(); it1++) {
+    if(it1->second.size()==0){
+      return false;
+    }
+  }
+  return true;
+}
+
+
 IMPDOMINO_END_NAMESPACE
