@@ -26,13 +26,12 @@ void TransformationCartesianProductSampler::move2state(const CombState *cs) {
 
 void TransformationCartesianProductSampler::show(std::ostream& out) const
 {
-  out <<"TransformationCartesianProductSampler with " <<
-      ds_->get_number_of_states() << " states in the set and " <<
+  out <<"TransformationCartesianProductSampler for  " <<
       ps_.size() << " particles: "<< std::endl;
   for(Particles::const_iterator it = ps_.begin(); it != ps_.end(); it++) {
-    out<<(*it)->get_name()<<",";
+    out<<(*it)->get_name()<<" || "<<
+       ds_->get_number_of_mapped_states(*it)<<std::endl;
   }
-  out<<std::endl;
 }
 
 
