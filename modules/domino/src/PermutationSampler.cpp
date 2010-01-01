@@ -8,7 +8,7 @@
 IMPDOMINO_BEGIN_NAMESPACE
 
 PermutationSampler::PermutationSampler(DiscreteSet *ds,
-                                       Particles *ps)
+                                       const Particles &ps)
 {
   ds_ = ds;
   ps_=ps;
@@ -17,7 +17,7 @@ PermutationSampler::PermutationSampler(DiscreteSet *ds,
 void PermutationSampler::show(std::ostream& out) const
 {
   out <<"PermutationSampler with " << ds_->get_number_of_states()
-      << " states in the set and " << ps_->size() << "particles "<< std::endl;
+      << " states in the set and " << ps_.size() << "particles "<< std::endl;
 }
 void PermutationSampler::populate_states_of_particles(Particles *particles,
          std::map<std::string,CombState *> *states) const

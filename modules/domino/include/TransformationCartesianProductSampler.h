@@ -37,7 +37,7 @@ public:
                                the current one.
   */
   TransformationCartesianProductSampler(TransformationMappedDiscreteSet *ds,
-                                        Particles *ps,
+                                        const Particles &ps,
                                         bool trans_from_orig = false);
   void move2state(const CombState *cs) ;
   void show(std::ostream& out=std::cout) const;

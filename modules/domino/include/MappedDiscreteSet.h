@@ -31,7 +31,7 @@ public:
   /**
   /param[in] ps_target particles to be mapped on a discrete set
    */
-  MappedDiscreteSet(Particles *ps_target);
+  MappedDiscreteSet(const Particles &ps_target);
   //! Create the discrete set
   /** \param[in] ps_target the set of particles to be mapped on a
       discrete set
@@ -70,11 +70,18 @@ public:
   //! Get the number of states held in the set
   long get_number_of_mapped_states(Particle *p_target) const;
   void show(std::ostream& out=std::cout) const;
+  //get the particles the discrete set covers
+  Particles get_particles() const {
+    Particles ps;
+    for(std::map<Particle *, std::vector<Particle *> >::const_iterator it=
+         states_map_.begin(); it != states_map_.end(); it++) {
+      ps.push_back(it->first);
+    }
+    return ps;
+  }
 
 protected:
   std::map<Particle *, std::vector<Particle *> > states_map_;
-   // mapping between target partices to states
-   //  std::map<Particle *, Particle *> states_map_rev_;
 };
 
 IMPDOMINO_END_NAMESPACE

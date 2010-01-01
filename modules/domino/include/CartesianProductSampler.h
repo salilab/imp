@@ -37,15 +37,15 @@ public:
     \param[in] ds           the discrete sampling space
     \param[in] ps           the sampled particles
   */
-  CartesianProductSampler(MappedDiscreteSet *ds, Particles *ps);
+  CartesianProductSampler(MappedDiscreteSet *ds, const Particles &ps);
   void show(std::ostream& out = std::cout) const;
   void populate_states_of_particles(Particles *particles,
                std::map<std::string, CombState *> *states) const;
   virtual void move2state(const CombState *cs);
-  DiscreteSet* get_space(Particle *p) const{return ds_;}
+  DiscreteSet* get_space(Particle *p) const;
 protected:
   MappedDiscreteSet *ds_;
-  Particles *ps_;
+  Particles ps_;
 };
 
 IMPDOMINO_END_NAMESPACE
