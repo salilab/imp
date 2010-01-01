@@ -5,4 +5,5 @@ namespace IMP::multifit {
 
 /* Wrap our own classes */
 %include "IMP/multifit/weighted_excluded_volume.h"
+%include "IMP/multifit/sampling_space.h"
 
