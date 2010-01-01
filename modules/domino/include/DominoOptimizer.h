@@ -78,8 +78,25 @@ public:
 
   //! A function used mostly for debugging and learning purposes.
   //! Should NOT be used for real optimization protocol.
-  void exhaustive_enumeration(CombStates &states);
-  //  Combinatations *exhaustive_enumeration();
+  /**
+  \param[in] states to be filled with all of the combinations encoded
+                    in the restraint graph
+  \param[in] calc_score should scores be calculated for each combination
+  \param[in] use_rsr_eval if True use RestraintEvaluator
+                             else use model.evaluate()
+   */
+  void exhaustive_enumeration(CombStates &states, bool calc_score=false,
+                              bool use_rsr_eval=false);
+
+  //! A function used mostly for debugging and learning purposes.
+  //! Should NOT be used for real optimization protocol.
+  /**
+  \param[in] states states to score
+  \param[out] scores the i'th entry will contain the values
+                     of all restraint for states[i]
+   */
+  void score_combinations(const CombStates &states,
+                          std::vector<Floats> &scores);
 
 protected:
   //! Recursivly add restraints
