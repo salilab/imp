@@ -104,7 +104,7 @@ void DominoOptimizer::exhaustive_enumeration(CombStates &states,
     }
   }
   if (calc_score) {
-    if (not use_rsr_eval) {
+    if (! use_rsr_eval) {
      Float score;
      //score each of the combinations
      IMP_LOG(IMP::VERBOSE,
