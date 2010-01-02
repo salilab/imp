@@ -8,7 +8,7 @@
 
 #include <IMP/statistics/KMCentersNodeLeaf.h>
 #include <IMP/statistics/internal/random_generator.h>
-#include <limits.h>
+#include <limits>
 IMPSTATISTICS_BEGIN_NAMESPACE
 void KMCentersNodeLeaf::compute_sums() {
  sum_sq_ = 0.;
@@ -77,8 +77,8 @@ void KMCentersNodeLeaf::get_assignments(const std::vector<int> &cands,
   KMData *data = centers_->get_data();
   for (int i = 0; i < n_data_; i++) {
     //find the closest center to each data point associated to the node
-    double min_dist = INT_MAX;
-    int closest_ind;
+    double min_dist = std::numeric_limits<double>::max();
+    int closest_ind=-1;
     KMPoint *p = (*data)[data_ps_[i]];
     for (unsigned int j = 0; j < cands.size(); j++) {
       double dist = km_distance2(*((*centers_)[cands[j]]),*p);
