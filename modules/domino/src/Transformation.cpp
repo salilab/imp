@@ -37,7 +37,8 @@ const FloatKeys& Transformation::get_translation_keys() {
   return IMP::core::XYZ::get_xyz_keys();
 }
 const IntKey& Transformation::get_transformation_index_key() {
-  return IMP::IntKey("trans_ind");
+  static IMP::IntKey ret("trans_ind");
+  return ret;
 }
 //! get a Transformation3D object from the decorator
 algebra::Transformation3D Transformation::get_transformation() {
