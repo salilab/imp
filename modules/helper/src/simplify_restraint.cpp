@@ -13,16 +13,11 @@
 IMPHELPER_BEGIN_NAMESPACE
 
 SimpleConnectivity create_simple_connectivity_on_rigid_bodies(
-                   core::RigidBodies *rbs)
+                                       const core::RigidBodies &rbs,
+                                       Refiner *ref)
 {
-  IMP_USAGE_CHECK(rbs->size() > 0, "At least one particle should be given",
+  IMP_USAGE_CHECK(rbs.size() > 0, "At least one particle should be given",
      ValueException);
-
-  /****** Define Refiner ******/
-  // Use RigidMembersRefiner when you want the set of particles representing
-  // a rigid body to be the same as the set of members
-
-  IMP_NEW(core::RigidMembersRefiner, rmr, ());
 
   /****** Define PairScore ******/
   // Use RigidBodyDistancePairScore to accelerate computation of the distance
@@ -31,18 +26,18 @@ SimpleConnectivity create_simple_connectivity_on_rigid_bodies(
 
   IMP_NEW(core::HarmonicUpperBound, h, (0, 1));
   IMP_NEW(core::SphereDistancePairScore, sdps, (h));
-  IMP_NEW(core::RigidBodyDistancePairScore, rdps, (sdps, rmr));
+  IMP_NEW(core::RigidBodyDistancePairScore, rdps, (sdps, ref));
 
   /****** Set the restraint ******/
 
   IMP_NEW(core::ConnectivityRestraint, cr, (rdps));
-  for ( size_t i=0; i<rbs->size(); ++i )
+  for ( size_t i=0; i<rbs.size(); ++i )
     //cr->set_particles((*rbs)[i].get_particle());
-    cr->add_particle((*rbs)[i].get_particle());
+    cr->add_particle(rbs[i].get_particle());
 
   /****** Add restraint to the model ******/
 
-  Model *mdl = (*rbs)[0].get_model();
+  Model *mdl = rbs[0].get_model();
   mdl->add_restraint(cr);
 
   /****** Return a SimpleConnectivity object ******/
@@ -51,7 +46,7 @@ SimpleConnectivity create_simple_connectivity_on_rigid_bodies(
 }
 
 SimpleConnectivity create_simple_connectivity_on_molecules(
-                   atom::Hierarchies const &mhs)
+                   const atom::Hierarchies &mhs)
 {
   size_t mhs_size = mhs.size();
 
@@ -135,21 +130,22 @@ SimpleDiameter create_simple_diameter(Particles *ps, Float diameter)
 }
 
 SimpleExcludedVolume create_simple_excluded_volume_on_rigid_bodies(
-                     core::RigidBodies *rbs)
+                                         const core::RigidBodies &rbs,
+                                         Refiner *ref)
 {
-  IMP_USAGE_CHECK(rbs->size() > 0, "At least one particle should be given",
+  IMP_USAGE_CHECK(rbs.size() > 0, "At least one particle should be given",
      ValueException);
 
   /****** Set the restraint ******/
 
   IMP_NEW(core::ListSingletonContainer, lsc, ());
-  lsc->add_particles(*rbs);
+  lsc->add_particles(rbs);
 
-  IMP_NEW(core::ExcludedVolumeRestraint, evr, (lsc));
+  IMP_NEW(core::ExcludedVolumeRestraint, evr, (lsc, ref));
 
   /****** Add restraint to the model ******/
 
-  Model *mdl = (*rbs)[0].get_model();
+  Model *mdl = rbs[0].get_model();
   mdl->add_restraint(evr);
 
   /****** Return a SimpleExcludedVolume object ******/

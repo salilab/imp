@@ -1,6 +1,10 @@
 /** \page recent Change History
 \par Week of January 1, 2010
 
+- the IMP::helper::create_simple_connectivity_on_rigid_bodies() and IMP::helper::create_simple_excluded_volume_on_rigid_bodies() now both take an IMP::Refiner as an (optional) final argument. This makes it so they can be used with the rigid bodies created from molecular hierarchies. This code still needs to be updated and the docs don't reflect what the code was or is doing, so use with caution (see notes in the header file).
+
+- The IMP::helper create* functions now all take non-Object inputs as const& to make clear what is input and that there are no memory management gotchas.
+
 - a new base class IMP::Constraint has been added for constraints. Various
 other classes have been renamed to be consistent.
 
