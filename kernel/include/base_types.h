@@ -65,6 +65,36 @@ IMP_DECLARE_KEY_TYPE(ObjectKey, 4);
 
 /** @} */
 
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+inline void show(std::ostream &out, int i) {
+  out << i;
+}
+
+inline void show(std::ostream &out, unsigned int i) {
+  out << i;
+}
+
+inline void show(std::ostream &out, std::string i) {
+  out << i;
+}
+
+inline void show(std::ostream &out, double i) {
+  out << i;
+}
+template <class T>
+inline void show(std::ostream &out, const T& i) {
+  out << i;
+}
+template <class T>
+inline void show(std::ostream &out, const T*i) {
+  out << i->get_name();
+}
+template <class T>
+inline void show(std::ostream &out, T*i) {
+  out << i->get_name();
+}
+#endif
+
 IMP_END_NAMESPACE
 
 #endif  /* IMP_BASE_TYPES_H */

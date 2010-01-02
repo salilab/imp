@@ -258,6 +258,12 @@ VectorOfRefCounted<O*>& objects_cast(VectorOfRefCounted<I*>& o) {
 
 /** @} */
 
+#ifndef IMP_DOXYGEN
+inline void show(std::ostream &out, Object *o) {
+  out << o->get_name();
+}
+#endif
+
 IMP_END_NAMESPACE
 
 //! Perform some basic validity checks on the object for memory debugging
