@@ -46,7 +46,7 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         print "start : "
         print fr.get_number_of_solutions()
         IMP.em.local_rigid_fitting_grid_search(
-            self.particles.get_particles(),self.imp_model,
+            IMP.Particles(self.particles.get_particles()),self.imp_model,
             self.radius_key, self.weight_key,
             self.scene,
             fr,7,7,2)
