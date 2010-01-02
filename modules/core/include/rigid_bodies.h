@@ -68,7 +68,7 @@ class IMPCOREEXPORT RigidBody: public XYZ {
                            const algebra::Vector3D& transi, bool cover);
   static RigidBody internal_setup_particle(Particle *p,
                                            const XYZs &members);
-  IMP_SCORE_STATE_DECORATOR_DECL(RigidBody);
+  IMP_CONSTRAINT_DECORATOR_DECL(RigidBody);
 public:
 
   RigidMembers get_members() const;

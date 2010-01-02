@@ -1,5 +1,5 @@
 /**
- *  \file QuadsScoreState.h
+ *  \file QuadsConstraint.h
  *  \brief Use a QuadModifier applied to a ParticleQuads to
  *  maintain an invariant
  *
@@ -9,13 +9,13 @@
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
-#ifndef IMPCORE_QUADS_SCORE_STATE_H
-#define IMPCORE_QUADS_SCORE_STATE_H
+#ifndef IMPCORE_QUADS_CONSTRAINT_H
+#define IMPCORE_QUADS_CONSTRAINT_H
 
 #include "config.h"
 #include <IMP/QuadContainer.h>
 #include <IMP/QuadModifier.h>
-#include <IMP/ScoreState.h>
+#include <IMP/Constraint.h>
 
 IMP_BEGIN_NAMESPACE
 // for swig
@@ -25,7 +25,8 @@ IMP_END_NAMESPACE
 
 IMPCORE_BEGIN_NAMESPACE
 //! Apply a QuadFunction to a QuadContainer to maintain an invariant
-/** \ingroup restraint
+/** \advanced
+
     The score state is passed up to two QuadModifiers, one to
     apply before evaluation and the other after. The one after
     should take a DerivativeAccumulator as its last argument for
@@ -36,9 +37,9 @@ IMPCORE_BEGIN_NAMESPACE
     of the atoms of a protein by a sphere per residue.
     \verbinclude cover_particles.py
 
-    \see QuadScoreState
+    \see QuadConstraint
  */
-class IMPCOREEXPORT QuadsScoreState : public ScoreState
+class IMPCOREEXPORT QuadsConstraint : public Constraint
 {
   IMP::internal::OwnerPointer<QuadModifier> f_;
   IMP::internal::OwnerPointer<QuadModifier> af_;
@@ -51,9 +52,9 @@ public:
       after evaluate.
       \param[in] name The object name
    */
-  QuadsScoreState(QuadContainer *c, QuadModifier *before,
+  QuadsConstraint(QuadContainer *c, QuadModifier *before,
                        QuadModifier *after,
-                       std::string name="QuadScoreState %1%");
+                       std::string name="QuadConstraint %1%");
 
   //! Apply this modifier to all the elements after an evaluate
   void set_after_evaluate_modifier(QuadModifier* f) {
@@ -65,10 +66,10 @@ public:
     f_=f;
   }
 
-  IMP_SCORE_STATE(QuadsScoreState, get_module_version_info())
+  IMP_CONSTRAINT(QuadsConstraint, get_module_version_info())
 };
 
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_QUADS_SCORE_STATE_H */
+#endif  /* IMPCORE_QUADS_CONSTRAINT_H */

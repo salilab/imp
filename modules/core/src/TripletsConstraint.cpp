@@ -1,5 +1,5 @@
 /**
- *  \file TripletsScoreState.cpp
+ *  \file TripletsConstraint.cpp
  *  \brief Use a TripletModifier applied to a TripletContainer to
  *  maintain an invariant
  *
@@ -10,45 +10,45 @@
  *
  */
 
-#include "IMP/core/TripletsScoreState.h"
+#include "IMP/core/TripletsConstraint.h"
 #include "IMP/internal/container_helpers.h"
 #include <utility>
 
 IMPCORE_BEGIN_NAMESPACE
 
-TripletsScoreState::TripletsScoreState(TripletContainer *c,
+TripletsConstraint::TripletsConstraint(TripletContainer *c,
                                            TripletModifier *before,
                                            TripletModifier *after,
                                            std::string name):
-  ScoreState(name), c_(c) {
+  Constraint(name), c_(c) {
   if (before) f_=before;
   if (after) af_=after;
 }
 
 
-void TripletsScoreState::do_before_evaluate()
+void TripletsConstraint::do_update_attributes()
 {
   IMP_OBJECT_LOG;
   if (!f_) return;
-  IMP_LOG(TERSE, "Begin TripletsScoreState::update" << std::endl);
+  IMP_LOG(TERSE, "Begin TripletsConstraint::update" << std::endl);
   IMP_CHECK_OBJECT(f_);
   IMP_CHECK_OBJECT(c_);
   c_->apply(f_);
-  IMP_LOG(TERSE, "End TripletsScoreState::update" << std::endl);
+  IMP_LOG(TERSE, "End TripletsConstraint::update" << std::endl);
 }
 
-void TripletsScoreState::do_after_evaluate(DerivativeAccumulator *da)
+void TripletsConstraint::do_update_derivatives(DerivativeAccumulator *da)
 {
   IMP_OBJECT_LOG;
   if (!af_) return;
-  IMP_LOG(TERSE, "Begin TripletsScoreState::after_evaluate" << std::endl);
+  IMP_LOG(TERSE, "Begin TripletsConstraint::after_evaluate" << std::endl);
   IMP_CHECK_OBJECT(af_);
   IMP_CHECK_OBJECT(c_);
-  if (da) c_->apply(af_, *da);
-  IMP_LOG(TERSE, "End TripletsScoreState::after_evaluate" << std::endl);
+  c_->apply(af_, *da);
+  IMP_LOG(TERSE, "End TripletsConstraint::after_evaluate" << std::endl);
 }
 
-ParticlesList TripletsScoreState::get_interacting_particles() const {
+ParticlesList TripletsConstraint::get_interacting_particles() const {
   ParticlesList ret0, ret1;
   if (f_) ret0 = IMP::internal::get_interacting_particles(c_.get(), f_.get());
   if (af_) ret1= IMP::internal::get_interacting_particles(c_.get(), af_.get());
@@ -57,15 +57,15 @@ ParticlesList TripletsScoreState::get_interacting_particles() const {
 }
 
 
-ObjectsTemp TripletsScoreState::get_input_objects() const {
+ObjectsTemp TripletsConstraint::get_input_objects() const {
   return ObjectsTemp(1, c_);
 }
 
-ObjectsTemp TripletsScoreState::get_output_objects() const {
+ObjectsTemp TripletsConstraint::get_output_objects() const {
   return ObjectsTemp();
 }
 
-ParticlesTemp TripletsScoreState::get_input_particles() const {
+ParticlesTemp TripletsConstraint::get_input_particles() const {
   ParticlesTemp ret;
   if (f_) {
     ret= IMP::internal::get_input_particles(c_.get(), f_.get());
@@ -91,7 +91,7 @@ ParticlesTemp TripletsScoreState::get_input_particles() const {
   return ret;
 }
 
-ParticlesTemp TripletsScoreState::get_output_particles() const {
+ParticlesTemp TripletsConstraint::get_output_particles() const {
   ParticlesTemp ret;
   if (f_) {
     ret= IMP::internal::get_output_particles(c_.get(), f_.get());
@@ -120,8 +120,8 @@ ParticlesTemp TripletsScoreState::get_output_particles() const {
   return ret;
 }
 
-void TripletsScoreState::show(std::ostream &out) const {
-  out << "TripletsScoreState base" << std::endl;
+void TripletsConstraint::show(std::ostream &out) const {
+  out << "TripletsConstraint base" << std::endl;
 }
 
 IMPCORE_END_NAMESPACE

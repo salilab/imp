@@ -1,5 +1,5 @@
 /**
- *  \file TripletScoreState.h
+ *  \file TripletConstraint.h
  *  \brief Use a TripletModifier applied to a ParticleTriplets to
  *  maintain an invariant
  *
@@ -9,12 +9,12 @@
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
-#ifndef IMPCORE_TRIPLET_SCORE_STATE_H
-#define IMPCORE_TRIPLET_SCORE_STATE_H
+#ifndef IMPCORE_TRIPLET_CONSTRAINT_H
+#define IMPCORE_TRIPLET_CONSTRAINT_H
 
 #include "config.h"
 #include <IMP/TripletModifier.h>
-#include <IMP/ScoreState.h>
+#include <IMP/Constraint.h>
 #include <IMP/Particle.h>
 
 IMP_BEGIN_NAMESPACE
@@ -24,16 +24,17 @@ IMP_END_NAMESPACE
 
 IMPCORE_BEGIN_NAMESPACE
 //! Apply a TripletFunction to a Triplet
-/** The score state is passed up to two TripletModifiers, one to
+/** \advanced
+
+    The score state is passed up to two TripletModifiers, one to
     apply before evaluation and the other after. The one after
     should take a DerivativeAccumulator as its last argument for
     TripletModifier::apply() and will only be called if
     the score was computed with derivatives.
 
-    \ingroup restraint
-    \see TripletsScoreState
+    \see TripletsConstraint
  */
-class IMPCOREEXPORT TripletScoreState : public ScoreState
+class IMPCOREEXPORT TripletConstraint : public Constraint
 {
   IMP::internal::OwnerPointer<TripletModifier> f_;
   IMP::internal::OwnerPointer<TripletModifier> af_;
@@ -42,9 +43,9 @@ public:
   /** before and after are the modifiers to apply before and after
       evaluate.
    */
-  TripletScoreState(TripletModifier *before,
+  TripletConstraint(TripletModifier *before,
                       TripletModifier *after, const ParticleTriplet& vt,
-                      std::string name="TripletScoreState %1%");
+                      std::string name="TripletConstraint %1%");
 
   //! Apply this modifier to all the elements after an evaluate
   void set_after_evaluate_modifier(TripletModifier* f) {
@@ -56,10 +57,10 @@ public:
     f_=f;
   }
 
-  IMP_SCORE_STATE(TripletScoreState, get_module_version_info())
+  IMP_CONSTRAINT(TripletConstraint, get_module_version_info())
 };
 
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_TRIPLET_SCORE_STATE_H */
+#endif  /* IMPCORE_TRIPLET_CONSTRAINT_H */

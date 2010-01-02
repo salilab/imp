@@ -1,5 +1,5 @@
 /**
- *  \file QuadScoreState.h
+ *  \file QuadConstraint.h
  *  \brief Use a QuadModifier applied to a ParticleQuads to
  *  maintain an invariant
  *
@@ -9,12 +9,12 @@
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
-#ifndef IMPCORE_QUAD_SCORE_STATE_H
-#define IMPCORE_QUAD_SCORE_STATE_H
+#ifndef IMPCORE_QUAD_CONSTRAINT_H
+#define IMPCORE_QUAD_CONSTRAINT_H
 
 #include "config.h"
 #include <IMP/QuadModifier.h>
-#include <IMP/ScoreState.h>
+#include <IMP/Constraint.h>
 #include <IMP/Particle.h>
 
 IMP_BEGIN_NAMESPACE
@@ -24,16 +24,17 @@ IMP_END_NAMESPACE
 
 IMPCORE_BEGIN_NAMESPACE
 //! Apply a QuadFunction to a Quad
-/** The score state is passed up to two QuadModifiers, one to
+/** \advanced
+
+    The score state is passed up to two QuadModifiers, one to
     apply before evaluation and the other after. The one after
     should take a DerivativeAccumulator as its last argument for
     QuadModifier::apply() and will only be called if
     the score was computed with derivatives.
 
-    \ingroup restraint
-    \see QuadsScoreState
+    \see QuadsConstraint
  */
-class IMPCOREEXPORT QuadScoreState : public ScoreState
+class IMPCOREEXPORT QuadConstraint : public Constraint
 {
   IMP::internal::OwnerPointer<QuadModifier> f_;
   IMP::internal::OwnerPointer<QuadModifier> af_;
@@ -42,9 +43,9 @@ public:
   /** before and after are the modifiers to apply before and after
       evaluate.
    */
-  QuadScoreState(QuadModifier *before,
+  QuadConstraint(QuadModifier *before,
                       QuadModifier *after, const ParticleQuad& vt,
-                      std::string name="QuadScoreState %1%");
+                      std::string name="QuadConstraint %1%");
 
   //! Apply this modifier to all the elements after an evaluate
   void set_after_evaluate_modifier(QuadModifier* f) {
@@ -56,10 +57,10 @@ public:
     f_=f;
   }
 
-  IMP_SCORE_STATE(QuadScoreState, get_module_version_info())
+  IMP_CONSTRAINT(QuadConstraint, get_module_version_info())
 };
 
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_QUAD_SCORE_STATE_H */
+#endif  /* IMPCORE_QUAD_CONSTRAINT_H */

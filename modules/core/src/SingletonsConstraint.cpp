@@ -1,5 +1,5 @@
 /**
- *  \file SingletonsScoreState.cpp
+ *  \file SingletonsConstraint.cpp
  *  \brief Use a SingletonModifier applied to a SingletonContainer to
  *  maintain an invariant
  *
@@ -10,45 +10,45 @@
  *
  */
 
-#include "IMP/core/SingletonsScoreState.h"
+#include "IMP/core/SingletonsConstraint.h"
 #include "IMP/internal/container_helpers.h"
 #include <utility>
 
 IMPCORE_BEGIN_NAMESPACE
 
-SingletonsScoreState::SingletonsScoreState(SingletonContainer *c,
+SingletonsConstraint::SingletonsConstraint(SingletonContainer *c,
                                            SingletonModifier *before,
                                            SingletonModifier *after,
                                            std::string name):
-  ScoreState(name), c_(c) {
+  Constraint(name), c_(c) {
   if (before) f_=before;
   if (after) af_=after;
 }
 
 
-void SingletonsScoreState::do_before_evaluate()
+void SingletonsConstraint::do_update_attributes()
 {
   IMP_OBJECT_LOG;
   if (!f_) return;
-  IMP_LOG(TERSE, "Begin SingletonsScoreState::update" << std::endl);
+  IMP_LOG(TERSE, "Begin SingletonsConstraint::update" << std::endl);
   IMP_CHECK_OBJECT(f_);
   IMP_CHECK_OBJECT(c_);
   c_->apply(f_);
-  IMP_LOG(TERSE, "End SingletonsScoreState::update" << std::endl);
+  IMP_LOG(TERSE, "End SingletonsConstraint::update" << std::endl);
 }
 
-void SingletonsScoreState::do_after_evaluate(DerivativeAccumulator *da)
+void SingletonsConstraint::do_update_derivatives(DerivativeAccumulator *da)
 {
   IMP_OBJECT_LOG;
   if (!af_) return;
-  IMP_LOG(TERSE, "Begin SingletonsScoreState::after_evaluate" << std::endl);
+  IMP_LOG(TERSE, "Begin SingletonsConstraint::after_evaluate" << std::endl);
   IMP_CHECK_OBJECT(af_);
   IMP_CHECK_OBJECT(c_);
-  if (da) c_->apply(af_, *da);
-  IMP_LOG(TERSE, "End SingletonsScoreState::after_evaluate" << std::endl);
+  c_->apply(af_, *da);
+  IMP_LOG(TERSE, "End SingletonsConstraint::after_evaluate" << std::endl);
 }
 
-ParticlesList SingletonsScoreState::get_interacting_particles() const {
+ParticlesList SingletonsConstraint::get_interacting_particles() const {
   ParticlesList ret0, ret1;
   if (f_) ret0 = IMP::internal::get_interacting_particles(c_.get(), f_.get());
   if (af_) ret1= IMP::internal::get_interacting_particles(c_.get(), af_.get());
@@ -57,15 +57,15 @@ ParticlesList SingletonsScoreState::get_interacting_particles() const {
 }
 
 
-ObjectsTemp SingletonsScoreState::get_input_objects() const {
+ObjectsTemp SingletonsConstraint::get_input_objects() const {
   return ObjectsTemp(1, c_);
 }
 
-ObjectsTemp SingletonsScoreState::get_output_objects() const {
+ObjectsTemp SingletonsConstraint::get_output_objects() const {
   return ObjectsTemp();
 }
 
-ParticlesTemp SingletonsScoreState::get_input_particles() const {
+ParticlesTemp SingletonsConstraint::get_input_particles() const {
   ParticlesTemp ret;
   if (f_) {
     ret= IMP::internal::get_input_particles(c_.get(), f_.get());
@@ -91,7 +91,7 @@ ParticlesTemp SingletonsScoreState::get_input_particles() const {
   return ret;
 }
 
-ParticlesTemp SingletonsScoreState::get_output_particles() const {
+ParticlesTemp SingletonsConstraint::get_output_particles() const {
   ParticlesTemp ret;
   if (f_) {
     ret= IMP::internal::get_output_particles(c_.get(), f_.get());
@@ -120,8 +120,8 @@ ParticlesTemp SingletonsScoreState::get_output_particles() const {
   return ret;
 }
 
-void SingletonsScoreState::show(std::ostream &out) const {
-  out << "SingletonsScoreState base" << std::endl;
+void SingletonsConstraint::show(std::ostream &out) const {
+  out << "SingletonsConstraint base" << std::endl;
 }
 
 IMPCORE_END_NAMESPACE

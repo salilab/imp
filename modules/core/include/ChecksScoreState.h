@@ -13,7 +13,9 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-/** Turn checks on with a given probability each evaluate call.
+/** \advanced
+
+    Turn checks on with a given probability each evaluate call.
  */
 class IMPCOREEXPORT ChecksScoreState : public ScoreState
 {

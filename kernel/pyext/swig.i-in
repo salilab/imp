@@ -35,6 +35,7 @@ namespace IMP {
 %warnfilter(473) Refiner;
 %warnfilter(473) SingletonContainer;
 %warnfilter(473) PairContainer;
+%warnfilter(403) Constraint;
 }
 
 // Make sure that Python refcounts any returned pointers to IMP types
@@ -126,6 +127,7 @@ namespace IMP {
 %include "IMP/UnaryFunction.h"
 %include "IMP_restraint.i"
 %include "IMP/ScoreState.h"
+%include "IMP/Constraint.h"
 %include "IMP/OptimizerState.h"
 %include "IMP/Model.h"
 %include "IMP/Refiner.h"

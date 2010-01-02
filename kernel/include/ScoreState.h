@@ -24,16 +24,14 @@ IMP_BEGIN_NAMESPACE
 class Model;
 
 //! Shared score state.
-/** ScoreStates should be used to maintain invariants of the Model.
-    Examples include
-    - ensuring that a particular PairContainer contains all pairs
-    of particles within a certain distance of one another.
-    - ensuring that a particular set of particles moves as a rigid
-    body
-    - ensuring that the forces which act on a centroid are propagated
-    to the constituent particles.
+/** \advanced
 
-    Do do this, ScoreStates have two methods which are called during
+    ScoreStates allow code to be injected before and after the restraint
+    evaluation process. Such code can be used to, for example:
+    - log the optimization process
+    - maintain constraints (see Constraint)
+
+    ScoreStates have two methods which are called during
     the Model::evaluate() function
     - before_evaluate() which is allowed to change the contents of
     containers and the value of attributes of particles and
@@ -101,7 +99,6 @@ protected:
   WeakPointer<Model> model_;
 };
 
-IMP_OUTPUT_OPERATOR(ScoreState);
 
 //! Removes the ScoreState when the RIAA object is destroyed
 class ScoreStatePointer: public RAII {

@@ -1,5 +1,5 @@
 /**
- *  \file SingletonsScoreState.h
+ *  \file SingletonsConstraint.h
  *  \brief Use a SingletonModifier applied to a Particles to
  *  maintain an invariant
  *
@@ -9,13 +9,13 @@
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
-#ifndef IMPCORE_SINGLETONS_SCORE_STATE_H
-#define IMPCORE_SINGLETONS_SCORE_STATE_H
+#ifndef IMPCORE_SINGLETONS_CONSTRAINT_H
+#define IMPCORE_SINGLETONS_CONSTRAINT_H
 
 #include "config.h"
 #include <IMP/SingletonContainer.h>
 #include <IMP/SingletonModifier.h>
-#include <IMP/ScoreState.h>
+#include <IMP/Constraint.h>
 
 IMP_BEGIN_NAMESPACE
 // for swig
@@ -25,7 +25,8 @@ IMP_END_NAMESPACE
 
 IMPCORE_BEGIN_NAMESPACE
 //! Apply a SingletonFunction to a SingletonContainer to maintain an invariant
-/** \ingroup restraint
+/** \advanced
+
     The score state is passed up to two SingletonModifiers, one to
     apply before evaluation and the other after. The one after
     should take a DerivativeAccumulator as its last argument for
@@ -36,9 +37,9 @@ IMPCORE_BEGIN_NAMESPACE
     of the atoms of a protein by a sphere per residue.
     \verbinclude cover_particles.py
 
-    \see SingletonScoreState
+    \see SingletonConstraint
  */
-class IMPCOREEXPORT SingletonsScoreState : public ScoreState
+class IMPCOREEXPORT SingletonsConstraint : public Constraint
 {
   IMP::internal::OwnerPointer<SingletonModifier> f_;
   IMP::internal::OwnerPointer<SingletonModifier> af_;
@@ -51,9 +52,9 @@ public:
       after evaluate.
       \param[in] name The object name
    */
-  SingletonsScoreState(SingletonContainer *c, SingletonModifier *before,
+  SingletonsConstraint(SingletonContainer *c, SingletonModifier *before,
                        SingletonModifier *after,
-                       std::string name="SingletonScoreState %1%");
+                       std::string name="SingletonConstraint %1%");
 
   //! Apply this modifier to all the elements after an evaluate
   void set_after_evaluate_modifier(SingletonModifier* f) {
@@ -65,10 +66,10 @@ public:
     f_=f;
   }
 
-  IMP_SCORE_STATE(SingletonsScoreState, get_module_version_info())
+  IMP_CONSTRAINT(SingletonsConstraint, get_module_version_info())
 };
 
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_SINGLETONS_SCORE_STATE_H */
+#endif  /* IMPCORE_SINGLETONS_CONSTRAINT_H */

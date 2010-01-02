@@ -2,7 +2,7 @@
 %include "IMP/helper/atom_hierarchy.h"
 %include "IMP/helper/simplify_atom_hierarchy.h"
 %include "IMP/helper/simplify_restraint.h"
-/*%include "IMP/helper/writers.h"*/
+%include "IMP/helper/optimization.h"
 namespace IMP {
  namespace helper {
    %template(ResidueIndexPair) ::std::pair<int,int>;

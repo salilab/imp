@@ -1,5 +1,5 @@
 /**
- *  \file GroupnameScoreState.cpp
+ *  \file GroupnameConstraint.cpp
  *  \brief Use a GroupnameModifier applied to a GroupnameContainer to
  *  maintain an invariant
  *
@@ -10,44 +10,42 @@
  *
  */
 
-#include "IMP/core/GroupnameScoreState.h"
+#include "IMP/core/GroupnameConstraint.h"
 #include "IMP/internal/container_helpers.h"
 
 IMPCORE_BEGIN_NAMESPACE
 
-GroupnameScoreState::GroupnameScoreState(GroupnameModifier *before,
+GroupnameConstraint::GroupnameConstraint(GroupnameModifier *before,
                                          GroupnameModifier *after,
                                          PassValue vt,
                                          std::string name):
-  ScoreState(name), v_(vt){
+  Constraint(name), v_(vt){
   if (before) f_=before;
   if (after) af_=after;
 }
 
 
-void GroupnameScoreState::do_before_evaluate()
+void GroupnameConstraint::do_update_attributes()
 {
   IMP_OBJECT_LOG;
   if (!f_) return;
-  IMP_LOG(TERSE, "Begin GroupnamesScoreState::update" << std::endl);
+  IMP_LOG(TERSE, "Begin GroupnamesConstraint::update" << std::endl);
   IMP_CHECK_OBJECT(f_);
   f_->apply(v_);
-  IMP_LOG(TERSE, "End GroupnamesScoreState::update" << std::endl);
+  IMP_LOG(TERSE, "End GroupnamesConstraint::update" << std::endl);
 }
 
-void GroupnameScoreState::do_after_evaluate(DerivativeAccumulator *da)
+void GroupnameConstraint::do_update_derivatives(DerivativeAccumulator *da)
 {
   IMP_OBJECT_LOG;
   if (!af_) return;
-  IMP_LOG(TERSE, "Begin GroupnamesScoreState::after_evaluate" << std::endl);
+  IMP_LOG(TERSE, "Begin GroupnamesConstraint::after_evaluate" << std::endl);
   IMP_CHECK_OBJECT(af_);
-  if (da) {
-    af_->apply(v_, *da);
-  }
-  IMP_LOG(TERSE, "End GroupnamesScoreState::after_evaluate" << std::endl);
+  af_->apply(v_, *da);
+  IMP_LOG(TERSE, "End GroupnamesConstraint::after_evaluate" << std::endl);
 }
 
-ParticlesList GroupnameScoreState::get_interacting_particles() const {
+ParticlesList GroupnameConstraint::get_interacting_particles() const {
   ParticlesList ret0, ret1;
   if (f_) ret0= f_->get_interacting_particles(v_);
   if (af_) ret1= af_->get_interacting_particles(v_);
@@ -55,15 +53,15 @@ ParticlesList GroupnameScoreState::get_interacting_particles() const {
   return ret0;
 }
 
-ObjectsTemp GroupnameScoreState::get_input_objects() const {
+ObjectsTemp GroupnameConstraint::get_input_objects() const {
   return ObjectsTemp();
 }
 
-ObjectsTemp GroupnameScoreState::get_output_objects() const {
+ObjectsTemp GroupnameConstraint::get_output_objects() const {
   return ObjectsTemp();
 }
 
-ParticlesTemp GroupnameScoreState::get_input_particles() const {
+ParticlesTemp GroupnameConstraint::get_input_particles() const {
   ParticlesTemp ret;
   if (f_) {
     ret= f_->get_input_particles(v_);
@@ -87,7 +85,7 @@ ParticlesTemp GroupnameScoreState::get_input_particles() const {
   return ret;
 }
 
-ParticlesTemp GroupnameScoreState::get_output_particles() const {
+ParticlesTemp GroupnameConstraint::get_output_particles() const {
   ParticlesTemp ret;
   if (f_) {
     ret= f_->get_output_particles(v_);
@@ -114,8 +112,8 @@ ParticlesTemp GroupnameScoreState::get_output_particles() const {
   return ret;
 }
 
-void GroupnameScoreState::show(std::ostream &out) const {
-  out << "GroupnameScoreState with ";
+void GroupnameConstraint::show(std::ostream &out) const {
+  out << "GroupnameConstraint with ";
   if (f_) out << *f_;
   else out << "NULL";
   out << " and ";

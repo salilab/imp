@@ -1,0 +1,4 @@
+/** \defgroup implementation Advanced
+    Certainly classes and functionality is only needed by implementers of new
+    functionality in \imp. Such classes are marked below their name and listed below.
+*/

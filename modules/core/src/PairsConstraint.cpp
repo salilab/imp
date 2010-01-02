@@ -1,5 +1,5 @@
 /**
- *  \file PairsScoreState.cpp
+ *  \file PairsConstraint.cpp
  *  \brief Use a PairModifier applied to a PairContainer to
  *  maintain an invariant
  *
@@ -10,45 +10,45 @@
  *
  */
 
-#include "IMP/core/PairsScoreState.h"
+#include "IMP/core/PairsConstraint.h"
 #include "IMP/internal/container_helpers.h"
 #include <utility>
 
 IMPCORE_BEGIN_NAMESPACE
 
-PairsScoreState::PairsScoreState(PairContainer *c,
+PairsConstraint::PairsConstraint(PairContainer *c,
                                            PairModifier *before,
                                            PairModifier *after,
                                            std::string name):
-  ScoreState(name), c_(c) {
+  Constraint(name), c_(c) {
   if (before) f_=before;
   if (after) af_=after;
 }
 
 
-void PairsScoreState::do_before_evaluate()
+void PairsConstraint::do_update_attributes()
 {
   IMP_OBJECT_LOG;
   if (!f_) return;
-  IMP_LOG(TERSE, "Begin PairsScoreState::update" << std::endl);
+  IMP_LOG(TERSE, "Begin PairsConstraint::update" << std::endl);
   IMP_CHECK_OBJECT(f_);
   IMP_CHECK_OBJECT(c_);
   c_->apply(f_);
-  IMP_LOG(TERSE, "End PairsScoreState::update" << std::endl);
+  IMP_LOG(TERSE, "End PairsConstraint::update" << std::endl);
 }
 
-void PairsScoreState::do_after_evaluate(DerivativeAccumulator *da)
+void PairsConstraint::do_update_derivatives(DerivativeAccumulator *da)
 {
   IMP_OBJECT_LOG;
   if (!af_) return;
-  IMP_LOG(TERSE, "Begin PairsScoreState::after_evaluate" << std::endl);
+  IMP_LOG(TERSE, "Begin PairsConstraint::after_evaluate" << std::endl);
   IMP_CHECK_OBJECT(af_);
   IMP_CHECK_OBJECT(c_);
-  if (da) c_->apply(af_, *da);
-  IMP_LOG(TERSE, "End PairsScoreState::after_evaluate" << std::endl);
+  c_->apply(af_, *da);
+  IMP_LOG(TERSE, "End PairsConstraint::after_evaluate" << std::endl);
 }
 
-ParticlesList PairsScoreState::get_interacting_particles() const {
+ParticlesList PairsConstraint::get_interacting_particles() const {
   ParticlesList ret0, ret1;
   if (f_) ret0 = IMP::internal::get_interacting_particles(c_.get(), f_.get());
   if (af_) ret1= IMP::internal::get_interacting_particles(c_.get(), af_.get());
@@ -57,15 +57,15 @@ ParticlesList PairsScoreState::get_interacting_particles() const {
 }
 
 
-ObjectsTemp PairsScoreState::get_input_objects() const {
+ObjectsTemp PairsConstraint::get_input_objects() const {
   return ObjectsTemp(1, c_);
 }
 
-ObjectsTemp PairsScoreState::get_output_objects() const {
+ObjectsTemp PairsConstraint::get_output_objects() const {
   return ObjectsTemp();
 }
 
-ParticlesTemp PairsScoreState::get_input_particles() const {
+ParticlesTemp PairsConstraint::get_input_particles() const {
   ParticlesTemp ret;
   if (f_) {
     ret= IMP::internal::get_input_particles(c_.get(), f_.get());
@@ -91,7 +91,7 @@ ParticlesTemp PairsScoreState::get_input_particles() const {
   return ret;
 }
 
-ParticlesTemp PairsScoreState::get_output_particles() const {
+ParticlesTemp PairsConstraint::get_output_particles() const {
   ParticlesTemp ret;
   if (f_) {
     ret= IMP::internal::get_output_particles(c_.get(), f_.get());
@@ -120,8 +120,8 @@ ParticlesTemp PairsScoreState::get_output_particles() const {
   return ret;
 }
 
-void PairsScoreState::show(std::ostream &out) const {
-  out << "PairsScoreState base" << std::endl;
+void PairsConstraint::show(std::ostream &out) const {
+  out << "PairsConstraint base" << std::endl;
 }
 
 IMPCORE_END_NAMESPACE

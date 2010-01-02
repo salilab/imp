@@ -187,7 +187,7 @@ ALIASES                = "command{1}=\code \1 \endcode" \
                          "string{1}=<tt>\1</tt>" \
                          "impdev=<a href=\"https://salilab.org/mailman/listinfo/imp-dev\">imp-dev</a>" \
                          "impcommits=<a href=\"https://salilab.org/mailman/listinfo/imp-commits\">imp-commits</a>" \
-                         "advanced=\par Advanced:\n" \
+                         "advanced=\ingroup implementation" \
                          "cpp=\par For C++ users:\n" \
                          "overview=\par Overview:\n" \
                          "license=\par License:\n" \
