@@ -37,20 +37,20 @@ def _check(context, version):
                                   header=l[1][1],
                                   extra_libs=[x+"-mt" for x in l[1][2]])
             if ret1[0]:
-                context.env["BOOST_LIBS"]=True and context.env.get('BOOST_LIBS', True)
                 context.env[l[0]]=ret1[1]
             else:
                 ret2= checks.check_lib(context, lib=l[1][0], header=l[1][1], extra_libs=l[1][2])
                 if ret2[0]:
-                    context.env["BOOST_LIBS"]=True and context.env.get('BOOST_LIBS', True)
                     context.env[l[0]]=ret2[1]
+                else:
+                    context.env['BOOST_LIBS']=False
     if not context.env['BOOST_LIBS']:
         print "WARNING, boost libraries not found, some functionality may be missing."
     return ret[0]
 
 def configure_check(env, version):
     custom_tests = {'CheckBoost':_check}
-    env["BOOST_LIBS"]=False
+    env["BOOST_LIBS"]=True
     conf = env.Configure(custom_tests=custom_tests)
     if not env.GetOption('clean') and not env.GetOption('help') \
        and conf.CheckBoost(version) is 0:
