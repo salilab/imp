@@ -122,8 +122,8 @@ ListGroupnameContainer::add_classnames(const ClassnamesTemp &c) {
 }
 
 
-ObjectsTemp ListGroupnameContainer::get_input_objects() const {
-  return ObjectsTemp();
+ContainersTemp ListGroupnameContainer::get_input_containers() const {
+  return ContainersTemp();
 }
 
 
@@ -137,6 +137,10 @@ void ListGroupnameContainer::do_after_evaluate() {
 
 ParticlesTemp ListGroupnameContainer::get_state_input_particles() const {
   return ParticlesTemp();
+}
+
+ContainersTemp ListGroupnameContainer::get_state_input_containers() const {
+  return ContainersTemp();
 }
 
 IMPCORE_END_NAMESPACE

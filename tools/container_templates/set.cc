@@ -157,9 +157,27 @@ ClassnamesTemp GroupnameContainerSet::get_classnames() const {
 }
 
 
-ObjectsTemp GroupnameContainerSet::get_input_objects() const {
-  return ObjectsTemp(groupname_containers_begin(),
-                     groupname_containers_end());
+ContainersTemp GroupnameContainerSet::get_input_containers() const {
+  return ContainersTemp(groupname_containers_begin(),
+                        groupname_containers_end());
+}
+
+ParticlesTemp GroupnameContainerSet::get_contained_particles() const {
+  ParticlesTemp ret;
+  for (unsigned int i=0; i< get_number_of_groupname_containers(); ++i) {
+    ParticlesTemp cur= get_groupname_container(i)->get_contained_particles();
+    ret.insert(ret.end(), cur.begin(), cur.end());
+  }
+  return ret;
+}
+
+bool GroupnameContainerSet::get_contained_particles_changed() const {
+  for (unsigned int i=0; i< get_number_of_groupname_containers(); ++i) {
+    if (get_groupname_container(i)->get_contained_particles_changed()) {
+      return true;
+    }
+  }
+  return false;
 }
 
 

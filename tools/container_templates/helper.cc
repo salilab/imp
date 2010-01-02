@@ -55,9 +55,6 @@ bool ListLikeGroupnameContainer
   IMP_CHECK_OBJECT(this);
   return std::binary_search(data_.begin(), data_.end(), vt);
 }
-ObjectsTemp ListLikeGroupnameContainer
-::get_input_objects() const { return ObjectsTemp();}
-
 ClassnamesTemp ListLikeGroupnameContainer
 ::get_classnames() const {
   IMP_CHECK_OBJECT(this);
@@ -77,6 +74,17 @@ VersionInfo ListLikeGroupnameContainer
 void ListLikeGroupnameContainer
 ::show(std::ostream &out) const {
   out << "ListLikeContainer on " << data_.size() << std::endl;
+}
+
+
+ParticlesTemp ListLikeGroupnameContainer
+::get_contained_particles() const {
+  return IMP::internal::flatten(data_);
+}
+
+bool ListLikeGroupnameContainer
+::get_contained_particles_changed() const {
+  return !get_added()->data_.empty() || !get_removed()->data_.empty();
 }
 
 
