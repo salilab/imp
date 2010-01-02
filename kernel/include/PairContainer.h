@@ -13,7 +13,7 @@
 #include "config.h"
 #include "internal/IndexingIterator.h"
 #include "Particle.h"
-#include "Interaction.h"
+#include "Container.h"
 #include "utility.h"
 #include "VersionInfo.h"
 #include "base_types.h"
@@ -22,6 +22,7 @@
 #include "VersionInfo.h"
 #include "DerivativeAccumulator.h"
 #include "internal/OwnerPointer.h"
+#include "macros.h"
 
 IMP_BEGIN_NAMESPACE
 class PairModifier;
@@ -34,9 +35,9 @@ class PairScore;
 
     Implementors should see IMP_PAIR_CONTAINER().
  */
-class IMPEXPORT PairContainer : public Interaction
+class IMPEXPORT PairContainer : public Container
 {
-  internal::OwnerPointer<Interaction> added_, removed_;
+  internal::OwnerPointer<Container> added_, removed_;
   struct Accessor: public NullDefault {
     typedef Accessor This;
     typedef ParticlePair result_type;
@@ -115,24 +116,6 @@ public:
   virtual double evaluate(const PairScore *s,
                           DerivativeAccumulator *da) const=0;
 
-  // use this method to define the typeinfo in gcc
-
-  //! Containers do not induce interactions
-  ParticlesList get_interacting_particles() const;
-
-  //! Containers do not modify other things
-  ObjectsTemp get_output_objects() const {
-    return ObjectsTemp();
-  }
-  //! Particles do not, themselves, depend on particle attributes
-  ParticlesTemp get_input_particles() const {
-    return ParticlesTemp();
-  }
-  //! Particles do not, themselves, change particle attributes
-  ParticlesTemp get_output_particles() const {
-    return ParticlesTemp();
-  }
-
   /** \name Incremental Scoring
       When incremental scoring is used, the container keeps track of
       changes to it since the last Model::evaluate() call.
@@ -186,7 +169,7 @@ public:
   unsigned int get_number() const {return get_number_of_particle_pairs();}
 #endif
 
-  IMP_REF_COUNTED_DESTRUCTOR(PairContainer)
+  IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(PairContainer);
 };
 
 IMP_OUTPUT_OPERATOR(PairContainer);

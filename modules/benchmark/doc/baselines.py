@@ -42,4 +42,9 @@
  "xyz internal large":50,
  "xyz *internal large":50,
  "xyz decorator large":50,
- "xyz vector space large":50}
+ "xyz vector space large":50,
+ "xyz internal huge":337,
+ "xyz *internal huge":337,
+ "xyz decorator huge":337,
+ "xyz vector huge":337,
+ "xyz vector space huge":337}

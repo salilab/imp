@@ -2,6 +2,7 @@ Import('env')
 
 files = [
          'Constraint.cpp',
+         'Container.cpp',
          'FailureHandler.cpp',
          'Key.cpp',
          'Model.cpp',

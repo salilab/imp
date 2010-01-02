@@ -12,7 +12,8 @@
 IMPCORE_BEGIN_NAMESPACE
 
 ChildrenRefiner
-::ChildrenRefiner(HierarchyTraits traits): traits_(traits)
+::ChildrenRefiner(HierarchyTraits traits): Refiner("Children%d"),
+                                           traits_(traits)
 {
 }
 
@@ -50,9 +51,11 @@ const ParticlesTemp ChildrenRefiner::get_refined(Particle *p) const {
 
 
 ParticlesTemp ChildrenRefiner::get_input_particles(Particle *p) const {
-  ParticlesTemp ret= get_refined(p);
-  ret.push_back(p);
-  return ret;
+  return ParticlesTemp();
+}
+
+ContainersTemp ChildrenRefiner::get_input_containers(Particle *p) const {
+  return ContainersTemp(1, p);
 }
 
 void ChildrenRefiner::show(std::ostream &out) const

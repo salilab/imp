@@ -88,13 +88,12 @@ IMP_ACTIVE_CONTAINER_DEF(CloseBipartitePairContainer)
 
 ParticlesTemp CloseBipartitePairContainer
 ::get_state_input_particles() const {
-  ParticlesTemp reta(cpf_->get_input_particles(a_));
-  ParticlesTemp retb(cpf_->get_input_particles(b_));
+  ParticlesTemp reta(cpf_->get_input_particles(a_, b_));
   if (get_number_of_pair_filters() >0) {
     ParticlePairsTemp all_pairs;
     for (unsigned int i=0; i< reta.size(); ++i) {
-      for (unsigned int j=0; j< retb.size(); ++j) {
-        all_pairs.push_back(ParticlePair(reta[i], retb[j]));
+      for (unsigned int j=0; j< i; ++j) {
+        all_pairs.push_back(ParticlePair(reta[i], reta[j]));
       }
     }
     for (PairFilterConstIterator it= pair_filters_begin();
@@ -105,8 +104,12 @@ ParticlesTemp CloseBipartitePairContainer
       }
     }
   }
-  reta.insert(reta.end(), retb.begin(), retb.end());
   return reta;
+}
+
+ContainersTemp CloseBipartitePairContainer
+::get_state_input_containers() const {
+  return cpf_->get_input_containers(a_, b_);
 }
 
 void CloseBipartitePairContainer::do_before_evaluate() {
@@ -167,12 +170,10 @@ void CloseBipartitePairContainer::show(std::ostream &out) const {
       << *a_ << " and " << *b_ << std::endl;
 }
 
-ObjectsTemp CloseBipartitePairContainer::get_input_objects() const {
-  ObjectsTemp ret(4);
-  ret[0]=a_;
-  ret[1]=b_;
-  ret[2]=moveda_;
-  ret[3]=movedb_;
+ContainersTemp CloseBipartitePairContainer::get_input_containers() const {
+  ContainersTemp ret= cpf_->get_input_containers(a_, b_);
+  ret.push_back(moveda_);
+  ret.push_back(movedb_);
   return ret;
 }
 

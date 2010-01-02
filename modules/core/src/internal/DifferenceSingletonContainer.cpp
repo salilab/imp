@@ -56,11 +56,23 @@ void DifferenceSingletonContainer::show(std::ostream &out) const {
   out << "DifferenceSingletonContainer on " << a_ << " and " << *b_;
 }
 
-ObjectsTemp DifferenceSingletonContainer::get_input_objects() const {
-  ObjectsTemp ret(2);
+ContainersTemp DifferenceSingletonContainer::get_input_containers() const {
+  ContainersTemp ret(2);
   ret[0]=a_;
   ret[1]=b_;
   return ret;
+}
+
+ParticlesTemp DifferenceSingletonContainer::get_contained_particles() const {
+  ParticlesTemp ret= a_->get_contained_particles();
+  ParticlesTemp b= b_->get_contained_particles();
+  ret.insert(ret.end(), b.begin(), b.end());
+  return ret;
+}
+
+bool DifferenceSingletonContainer::get_contained_particles_changed() const {
+  return a_->get_contained_particles_changed()
+    || b_->get_contained_particles_changed();
 }
 
 IMP_SINGLETON_CONTAINER_METHODS_FROM_FOREACH(DifferenceSingletonContainer)

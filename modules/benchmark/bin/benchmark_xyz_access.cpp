@@ -69,6 +69,14 @@ ParticlesTemp DistanceScore::get_output_particles(Particle *p) const {
   return ParticlesTemp();
 }
 
+ContainersTemp DistanceScore::get_input_containers(Particle *p) const {
+  return ContainersTemp();
+}
+
+ContainersTemp DistanceScore::get_output_containers(Particle *p) const {
+  return ContainersTemp();
+}
+
 #if 0
 double compute_distances_decorator_access(
                         PackedSingletonContainer *ps,

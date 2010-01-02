@@ -45,10 +45,12 @@ public:
                           Refiner *r,
                           double k=1);
 
-#ifndef IMP_DOXYGEN
+  /** The SingletonContainer contains a set of XYZR particles. Rigid bodies
+      are not supported.
+
+      The spring constant used is k.*/
   ExcludedVolumeRestraint(SingletonContainer *sc,
                           double k=1);
-#endif
 
   IMP_RESTRAINT(ExcludedVolumeRestraint, get_module_version_info());
 

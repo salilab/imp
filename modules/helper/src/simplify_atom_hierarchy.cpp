@@ -474,14 +474,14 @@ std::vector<atom::Residues> group_particles(
                   "works on a single Chain",
                   ValueException);
   std::vector<atom::Residues> output;
-  Model *m=in.get_model();
   atom::Hierarchies residues(atom::get_by_type(in,atom::RESIDUE_TYPE));
   int start_res_ind=IMP::atom::Residue(residues[0]).get_index();
   int end_res_ind=IMP::atom::Residue(residues[residues.size()-1]).get_index();
   int curr_ind=start_res_ind;
   int curr_res_seg_ind=0;
   atom::Hierarchies simplified_sets;
-  while(curr_ind<end_res_ind && curr_res_seg_ind<residue_segments.size()){
+  while((curr_ind<end_res_ind)
+        && static_cast<unsigned int>(curr_res_seg_ind)<residue_segments.size()){
     IMP_LOG(VERBOSE,"working on residue index: " << curr_ind <<std::endl);
     while( (curr_ind != residue_segments[curr_res_seg_ind].first) &&
            (curr_ind<end_res_ind)) {

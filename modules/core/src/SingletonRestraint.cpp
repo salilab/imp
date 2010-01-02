@@ -57,9 +57,9 @@ ParticlesTemp SingletonRestraint::get_input_particles() const
   return ss_->get_input_particles(v_);
 }
 
-ObjectsTemp SingletonRestraint::get_input_objects() const
+ContainersTemp SingletonRestraint::get_input_containers() const
 {
-  return ObjectsTemp();
+  return ss_->get_input_containers(v_);
 }
 
 void SingletonRestraint::show(std::ostream& out) const

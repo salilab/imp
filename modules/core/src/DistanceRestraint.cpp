@@ -52,8 +52,8 @@ ParticlesTemp DistanceRestraint::get_input_particles() const {
 }
 
 
-ObjectsTemp DistanceRestraint::get_input_objects() const {
-  return ObjectsTemp();
+ContainersTemp DistanceRestraint::get_input_containers() const {
+  return ContainersTemp();
 }
 
 

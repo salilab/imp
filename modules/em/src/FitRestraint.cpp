@@ -124,8 +124,8 @@ ParticlesTemp FitRestraint::get_input_particles() const
   return ParticlesTemp(particles_begin(), particles_end());
 }
 
-ObjectsTemp FitRestraint::get_input_objects() const {
-  return ObjectsTemp();
+ContainersTemp FitRestraint::get_input_containers() const {
+  return ContainersTemp();
 }
 
 void FitRestraint::show(std::ostream& out) const

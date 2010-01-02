@@ -18,7 +18,7 @@ namespace {
 }
 
 ScoreState::ScoreState(std::string name) :
-  Interaction(internal::make_object_name(name, scorestate_index++))
+  Object(internal::make_object_name(name, scorestate_index++))
 {
 }
 

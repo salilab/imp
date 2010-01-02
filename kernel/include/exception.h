@@ -45,7 +45,7 @@ IMP_BEGIN_NAMESPACE
 class IMPEXPORT Exception
 {
   struct refstring {
-    char message_[256];
+    char message_[4096];
     int ct_;
   };
   refstring *str_;
@@ -57,8 +57,8 @@ class IMPEXPORT Exception
     str_= new (std::nothrow) refstring();
     if (str_ != NULL) {
       str_->ct_=0;
-      std::strncpy(str_->message_, message, 255);
-      str_->message_[255]='\0';
+      std::strncpy(str_->message_, message, 4095);
+      str_->message_[4095]='\0';
     }
   }
   /** \note By making the destructor virtual and providing an implementation in

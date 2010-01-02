@@ -94,8 +94,8 @@ ParticlesTemp ExampleComplexRestraint::get_input_particles() const {
   return ret;
 }
 
-ObjectsTemp ExampleComplexRestraint::get_input_objects() const {
-  return ObjectsTemp(1, sc_);
+ContainersTemp ExampleComplexRestraint::get_input_containers() const {
+  return ContainersTemp(1, sc_);
 }
 
 IMPEXAMPLES_END_NAMESPACE

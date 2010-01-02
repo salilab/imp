@@ -76,6 +76,11 @@ TransformedDistancePairScore::get_input_particles(const ParticlePair &p) const {
   return ret;
 }
 
+ContainersTemp TransformedDistancePairScore
+::get_input_containers(const ParticlePair &p) const {
+  return ContainersTemp();
+}
+
 
 void TransformedDistancePairScore::set_transformation(
                                          const algebra::Transformation3D &t)

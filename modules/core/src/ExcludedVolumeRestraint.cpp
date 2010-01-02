@@ -25,14 +25,14 @@ IMPCORE_BEGIN_NAMESPACE
 ExcludedVolumeRestraint::ExcludedVolumeRestraint(SingletonContainer *sc,
                                                  Refiner *r,
                                                  double k):
-  sc_(sc), k_(k){
+  sc_(sc), r_(r), k_(k){
 }
 
 ExcludedVolumeRestraint::ExcludedVolumeRestraint(SingletonContainer *sc,
                                                  double k):
   sc_(sc), k_(k){
-  r_= IMP::internal::OwnerPointer<Refiner>(new RigidMembersRefiner());
 }
+
 
 void ExcludedVolumeRestraint::set_model(Model *m) {
   if (m) {
@@ -88,12 +88,19 @@ ParticlesList ExcludedVolumeRestraint::get_interacting_particles() const {
 }
 
 ParticlesTemp ExcludedVolumeRestraint::get_input_particles() const {
+  for (unsigned int i=0; i< sc_->get_number_of_particles(); ++i) {
+    Particle* p= sc_->get_particle(i);
+    if (RigidBody::particle_is_instance(p) && !r_) {
+      IMP_THROW("RigidBodies cannot be used without a refinr in "
+                << "ExcludedVolumeRestraint.", UsageException);
+    }
+  }
   return pr_->get_input_particles();
 }
 
 
-ObjectsTemp ExcludedVolumeRestraint::get_input_objects() const {
-  return pr_->get_input_objects();
+ContainersTemp ExcludedVolumeRestraint::get_input_containers() const {
+  return pr_->get_input_containers();
 }
 
 

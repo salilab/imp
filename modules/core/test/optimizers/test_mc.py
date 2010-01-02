@@ -32,8 +32,8 @@ class WoodsFunc(IMP.Restraint):
         fh.write("WoodsFunc")
     def get_input_particles(self):
         return IMP.ParticlesTemp([x for x in self.get_model().get_particles()])
-    def get_input_objects(self):
-        return IMP.ObjectsTemp()
+    def get_input_containers(self):
+        return IMP.ContainersTemp()
 
 class MCOptimizerTest(IMP.test.TestCase):
     def setUp(self):

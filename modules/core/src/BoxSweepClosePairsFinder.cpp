@@ -125,5 +125,20 @@ BoxSweepClosePairsFinder::get_input_particles(SingletonContainer *a,
   return ret0;
 }
 
+ContainersTemp
+BoxSweepClosePairsFinder::get_input_containers(SingletonContainer *sc) const {
+  ContainersTemp ret(1,sc);
+  return ret;
+}
+
+ContainersTemp
+BoxSweepClosePairsFinder::get_input_containers(SingletonContainer *a,
+                                              SingletonContainer *b) const {
+  ContainersTemp ret(2);
+  ret[0]= a;
+  ret[1]= b;
+  return ret;
+}
+
 IMPCORE_END_NAMESPACE
 #endif /* IMP_USE_CGAL */

@@ -48,6 +48,16 @@ ExampleSingletonModifier::get_output_particles(Particle *p) const {
   return ParticlesTemp(1, p);
 }
 
+ContainersTemp
+ExampleSingletonModifier::get_input_containers(Particle *p) const {
+  return ContainersTemp();
+}
+
+ContainersTemp
+ExampleSingletonModifier::get_output_containers(Particle *p) const {
+  return ContainersTemp();
+}
+
 void ExampleSingletonModifier::show(std::ostream &out) const {
   out << "ExampleSingletonModifier" << std::endl;
 }

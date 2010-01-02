@@ -20,10 +20,11 @@ namespace {
 
 
 SingletonContainer::SingletonContainer(std::string name):
-  Interaction(internal::make_object_name(name, next_index++)){
+  Container(internal::make_object_name(name, next_index++)){
 }
 
-ParticlesList SingletonContainer::get_interacting_particles() const {
-  return ParticlesList();
+// here for gcc
+SingletonContainer::~SingletonContainer(){
 }
+
 IMP_END_NAMESPACE

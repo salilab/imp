@@ -157,9 +157,27 @@ ParticleQuadsTemp QuadContainerSet::get_particle_quads() const {
 }
 
 
-ObjectsTemp QuadContainerSet::get_input_objects() const {
-  return ObjectsTemp(quad_containers_begin(),
-                     quad_containers_end());
+ContainersTemp QuadContainerSet::get_input_containers() const {
+  return ContainersTemp(quad_containers_begin(),
+                        quad_containers_end());
+}
+
+ParticlesTemp QuadContainerSet::get_contained_particles() const {
+  ParticlesTemp ret;
+  for (unsigned int i=0; i< get_number_of_quad_containers(); ++i) {
+    ParticlesTemp cur= get_quad_container(i)->get_contained_particles();
+    ret.insert(ret.end(), cur.begin(), cur.end());
+  }
+  return ret;
+}
+
+bool QuadContainerSet::get_contained_particles_changed() const {
+  for (unsigned int i=0; i< get_number_of_quad_containers(); ++i) {
+    if (get_quad_container(i)->get_contained_particles_changed()) {
+      return true;
+    }
+  }
+  return false;
 }
 
 

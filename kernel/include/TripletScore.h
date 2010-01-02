@@ -12,7 +12,6 @@
 
 #include "config.h"
 #include "base_types.h"
-#include "Interaction.h"
 #include "Particle.h"
 #include "DerivativeAccumulator.h"
 #include "internal/container_helpers.h"
@@ -77,6 +76,11 @@ public:
   /** Get the set of particles read when applied to the arguments. */
   virtual ParticlesTemp
     get_input_particles(const ParticleTriplet& vt) const =0;
+
+  /** Get the set of input containers when this modifier is applied to
+      the arguments. */
+  virtual ContainersTemp
+    get_input_containers(const ParticleTriplet& vt) const =0;
 
   IMP_REF_COUNTED_DESTRUCTOR(TripletScore)
 };

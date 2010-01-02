@@ -92,8 +92,8 @@ ParticlesTemp DiameterRestraint::get_input_particles() const {
   return t;
 }
 
-ObjectsTemp DiameterRestraint::get_input_objects() const {
-  return ObjectsTemp(1, sc_);
+ContainersTemp DiameterRestraint::get_input_containers() const {
+  return ContainersTemp(1, sc_);
 }
 
 IMPCORE_END_NAMESPACE

@@ -40,6 +40,14 @@ ParticlesTemp CoverBond::get_output_particles(Particle *p) const {
   return ParticlesTemp(1,p);
 }
 
+ContainersTemp CoverBond::get_input_containers(Particle *p) const {
+  return ContainersTemp(1, p);
+}
+
+ContainersTemp CoverBond::get_output_containers(Particle *p) const {
+  return ContainersTemp();
+}
+
 
 
 void CoverBond::show(std::ostream &out) const {

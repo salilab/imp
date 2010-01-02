@@ -149,6 +149,12 @@ ParticlesTemp ConnectingPairContainer::get_state_input_particles() const {
   return sc_->get_particles();
 }
 
+
+ContainersTemp ConnectingPairContainer::get_state_input_containers() const {
+  return ContainersTemp(1, sc_);
+}
+
+
 void ConnectingPairContainer::fill_list(bool first) {
   // if we have a list and nothing moved further than error do nothing
   // otherwise rebuild
@@ -188,10 +194,8 @@ void ConnectingPairContainer::show(std::ostream &out) const {
   sc_->show(out);
 }
 
-ObjectsTemp ConnectingPairContainer::get_input_objects() const {
-  ObjectsTemp ret(2);
-  ret[0]=sc_;
-  return ret;
+ContainersTemp ConnectingPairContainer::get_input_containers() const {
+  return ContainersTemp(1, sc_);
 }
 
 IMPMISC_END_NAMESPACE

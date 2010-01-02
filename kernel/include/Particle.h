@@ -18,6 +18,7 @@
 #include "DerivativeAccumulator.h"
 #include "Pointer.h"
 #include "VectorOfRefCounted.h"
+#include "Container.h"
 #include <utility>
 #include <memory>
 
@@ -205,7 +206,7 @@ class SaveOptimizeds;
    an inactive particle is also undefined (and will throw an exception if
    checks are enabled).
 */
-class IMPEXPORT Particle : public Object
+class IMPEXPORT Particle : public Container
 {
  private:
   // doxygen produces funny docs for these things
@@ -466,6 +467,12 @@ class IMPEXPORT Particle : public Object
   void operator delete(void *p);
   void *operator new(std::size_t sz);
 #endif
+
+#if !defined(IMP_DOXYGEN)
+  ContainersTemp get_input_containers() const;
+  bool get_contained_particles_changed() const;
+  ParticlesTemp get_contained_particles() const;
+#endif
 };
 
 
@@ -529,8 +536,6 @@ inline void Particle::add_to_derivative(FloatKey name, Float value,
                         + da(value));
 }
 
-IMP_OBJECTS(Particle);
-
 //! A class to store a tuple of particles.
 /** \note These do not ref counting currently. SWIG prevents
     use of internal::OwnerPointer<Particle> as the storage type without some
@@ -553,6 +558,7 @@ class ParticleTuple: public NullDefault,
     return 0;
   }
 public:
+  static const unsigned int get_dimension() {return D;};
   typedef ParticleTuple<D> This;
   ParticleTuple(){
     for (unsigned int i=0; i< D; ++i) {d_[i]=NULL;}
@@ -646,6 +652,8 @@ typedef std::vector<ParticleTuple<4> > ParticleQuadsTemp;
 typedef VectorOfRefCounted<ParticleTuple<4>,
                            RefCountParticleTuple<4> > ParticleQuads;
 
+
+typedef std::vector<ParticlesTemp> ParticlesList;
 
 IMP_END_NAMESPACE
 

@@ -174,8 +174,17 @@ ParticlesTemp ConnectivityRestraint::get_input_particles() const {
   return ret;
 }
 
-ObjectsTemp ConnectivityRestraint::get_input_objects() const {
-  return ObjectsTemp();
+ContainersTemp ConnectivityRestraint::get_input_containers() const {
+  ContainersTemp ret;
+  for (unsigned int i=0; i< sc_->get_number_of_particles(); ++i) {
+    for (unsigned int j=0; j<i; ++j) {
+      ContainersTemp cs
+        = ps_->get_input_containers(ParticlePair(sc_->get_particle(i),
+                                                 sc_->get_particle(j)));
+      ret.insert(ret.end(), cs.begin(), cs.end());
+    }
+  }
+  return ret;
 }
 
 

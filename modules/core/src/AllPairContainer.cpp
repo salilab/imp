@@ -107,8 +107,16 @@ void AllPairContainer::show(std::ostream &out) const {
   c_->show(out);
 }
 
-ObjectsTemp AllPairContainer::get_input_objects() const {
-  return ObjectsTemp(1,c_);
+ContainersTemp AllPairContainer::get_input_containers() const {
+  return ContainersTemp(1,c_);
+}
+
+ParticlesTemp AllPairContainer::get_contained_particles() const {
+  return c_->get_contained_particles();
+}
+
+bool AllPairContainer::get_contained_particles_changed() const {
+  return c_->get_contained_particles_changed();
 }
 
 IMP_PAIR_CONTAINER_METHODS_FROM_FOREACH(AllPairContainer)

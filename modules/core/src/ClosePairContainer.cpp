@@ -31,14 +31,14 @@ IMP_LIST_IMPL(ClosePairContainer,
 ClosePairContainer::ClosePairContainer(SingletonContainer *c,
                                                  double distance,
                                        double slack):
-  internal::ListLikePairContainer("CloseBipartitePairContainer") {
+  internal::ListLikePairContainer("ClosePairContainer") {
   initialize(c, distance, slack, c->get_particle(0)->get_model(),
              internal::default_cpf());
 }
 ClosePairContainer::ClosePairContainer(SingletonContainer *c,
                                                  Model *m, double distance,
                                        double slack):
-  internal::ListLikePairContainer("CloseBipartitePairContainer") {
+  internal::ListLikePairContainer("ClosePairContainer") {
   initialize(c, distance, slack, m,
              internal::default_cpf());
 }
@@ -47,7 +47,7 @@ ClosePairContainer::ClosePairContainer(SingletonContainer *c,
                                                  double distance,
                                                  ClosePairsFinder *cpf,
                                        double slack):
-  internal::ListLikePairContainer("CloseBipartitePairContainer") {
+  internal::ListLikePairContainer("ClosePairContainer") {
   initialize(c, distance, slack, c->get_particle(0)->get_model(),
              cpf);
 }
@@ -55,7 +55,7 @@ ClosePairContainer::ClosePairContainer(SingletonContainer *c,
                                                  Model *m, double distance,
                                                  ClosePairsFinder *cpf,
                                        double slack):
-  internal::ListLikePairContainer("CloseBipartitePairContainer") {
+  internal::ListLikePairContainer("ClosePairContainer") {
  initialize(c, distance, slack, m,
              cpf);
 }
@@ -74,6 +74,13 @@ void ClosePairContainer::initialize(SingletonContainer *c, double distance,
 }
 
 IMP_ACTIVE_CONTAINER_DEF(ClosePairContainer)
+
+
+ContainersTemp ClosePairContainer
+::get_state_input_containers() const {
+  return cpf_->get_input_containers(c_);
+}
+
 
 ParticlesTemp ClosePairContainer::get_state_input_particles() const {
   ParticlesTemp ret(cpf_->get_input_particles(c_));
@@ -94,6 +101,7 @@ ParticlesTemp ClosePairContainer::get_state_input_particles() const {
   }
   return ret;
 }
+
 
 void ClosePairContainer::do_before_evaluate() {
   IMP_OBJECT_LOG;
@@ -147,10 +155,9 @@ void ClosePairContainer::show(std::ostream &out) const {
   c_->show(out);
 }
 
-ObjectsTemp ClosePairContainer::get_input_objects() const {
-  ObjectsTemp ret(2);
-  ret[0]=c_;
-  ret[1]=moved_;
+ContainersTemp ClosePairContainer::get_input_containers() const {
+  ContainersTemp ret= cpf_->get_input_containers(c_);
+  ret.push_back(moved_);
   return ret;
 }
 

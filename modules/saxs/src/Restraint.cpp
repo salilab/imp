@@ -66,9 +66,9 @@ ParticlesTemp Restraint::get_input_particles() const
 }
 
 
-ObjectsTemp Restraint::get_input_objects() const
+ContainersTemp Restraint::get_input_containers() const
 {
-  return ObjectsTemp();
+  return ContainersTemp();
 }
 
 

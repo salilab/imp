@@ -49,12 +49,12 @@ ParticlesList ClosePairsScoreState::get_interacting_particles() const {
 }
 
 
-ObjectsTemp ClosePairsScoreState::get_input_objects() const {
-  return ObjectsTemp();
+ContainersTemp ClosePairsScoreState::get_input_containers() const {
+  return ContainersTemp();
 }
 
-ObjectsTemp ClosePairsScoreState::get_output_objects() const {
-  return ObjectsTemp();
+ContainersTemp ClosePairsScoreState::get_output_containers() const {
+  return ContainersTemp();
 }
 
 ParticlesTemp ClosePairsScoreState::get_input_particles() const {

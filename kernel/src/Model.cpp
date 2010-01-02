@@ -15,6 +15,25 @@
 #include <boost/timer.hpp>
 #include <set>
 
+#include <boost/graph/graph_traits.hpp>
+#include <boost/graph/graph_concepts.hpp>
+#include <boost/graph/visitors.hpp>
+#include <boost/graph/named_function_params.hpp>
+#include <boost/graph/overloading.hpp>
+#include <boost/graph/graph_concepts.hpp>
+#include <boost/graph/two_bit_color_map.hpp>
+#include <boost/graph/graphviz.hpp>
+
+
+#include <boost/graph/adjacency_list.hpp>
+#include <boost/graph/adjacency_matrix.hpp>
+#include <boost/graph/graph_traits.hpp>
+#include <boost/graph/directed_graph.hpp>
+#include <boost/graph/topological_sort.hpp>
+
+#include <boost/dynamic_bitset.hpp>
+
+
 #if IMP_BUILD < IMP_FAST
 #define WRAP_UPDATE_CALL(restraint, expr, exchange)                     \
   {                                                                     \
@@ -28,6 +47,26 @@
       wpl.insert(wpl.end(), rpl.begin(), rpl.end());                    \
       if (exchange) {                                                   \
         rpl.insert(rpl.end(), wpl.begin(), wpl.end());                  \
+      }                                                                 \
+      ContainersTemp cpl= (restraint)->get_input_containers();          \
+      for (unsigned int i=0; i < cpl.size(); ++i) {                     \
+        if (dynamic_cast<Particle*>(cpl[i])) {                          \
+          if (exchange) {                                               \
+            wpl.push_back(dynamic_cast<Particle*>(cpl[i]));             \
+          } else {                                                      \
+            rpl.push_back(dynamic_cast<Particle*>(cpl[i]));             \
+          }                                                             \
+        }                                                               \
+      }                                                                 \
+      ContainersTemp cpo= (restraint)->get_output_containers();         \
+      for (unsigned int i=0; i < cpo.size(); ++i) {                     \
+        if (dynamic_cast<Particle*>(cpo[i])) {                          \
+          if (!exchange) {                                              \
+            wpl.push_back(dynamic_cast<Particle*>(cpo[i]));             \
+          } else {                                                      \
+            rpl.push_back(dynamic_cast<Particle*>(cpo[i]));             \
+          }                                                             \
+        }                                                               \
       }                                                                 \
       internal::ReadLock rl(particles_begin(), particles_end(),         \
                             rpl.begin(), rpl.end());                    \
@@ -65,6 +104,12 @@
   {                                                                     \
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {                                  \
       ParticlesTemp rpl= (restraint)->get_input_particles();            \
+      ContainersTemp cpl= (restraint)->get_input_containers();          \
+      for (unsigned int i=0; i < cpl.size(); ++i) {                     \
+        if (dynamic_cast<Particle*>(cpl[i])) {                          \
+          rpl.push_back(dynamic_cast<Particle*>(cpl[i]));               \
+        }                                                               \
+      }                                                                 \
       internal::ReadLock rl(particles_begin(), particles_end(),         \
                             rpl.begin(), rpl.end());                    \
       internal::WriteLock wl(particles_begin(), particles_end(),        \
@@ -148,12 +193,355 @@ IMP_END_INTERNAL_NAMESPACE
 
 IMP_BEGIN_NAMESPACE
 
-/*
+namespace {
 
-  todo
-  - add container base class with method to tell if it changed
-  - remove Interaction base class
-*/
+  typedef boost::adjacency_list<boost::vecS, boost::vecS,
+                                boost::bidirectionalS,
+                                boost::property<boost::vertex_name_t, Object*>,
+                                boost::property<boost::edge_name_t,
+                                                int> > DependencyGraph;
+
+typedef boost::graph_traits<DependencyGraph>::edge_descriptor DependencyEdge;
+typedef boost::graph_traits<DependencyGraph>
+::vertex_descriptor DependencyVertex;
+typedef boost::graph_traits<DependencyGraph> DependencyTraits;
+typedef boost::property_map<DependencyGraph,
+                            boost::vertex_name_t>::type ObjectMap;
+typedef boost::property_map<DependencyGraph,
+                            boost::edge_name_t>::type EdgeMap;
+
+  struct Dependencies {
+    DependencyGraph graph;
+    std::map<Restraint*, DependencyVertex> restraints;
+    std::map<ScoreState*, DependencyVertex> score_states;
+    std::map<Container*, DependencyVertex> containers;
+    std::map<Particle*, DependencyVertex> particles;
+    std::map<Restraint*, boost::dynamic_bitset<> > depends;
+  };
+
+  template <class C>
+  C filter(C c) {
+    std::sort(c.begin(), c.end());
+    c.erase(std::unique(c.begin(), c.end()), c.end());
+    IMP_INTERNAL_CHECK(c.empty() || c[0] != NULL,
+                       "NULL returned for dependencies.");
+    return c;
+  }
+
+  class ObjectNameWriter {
+    ObjectMap &om_;
+  public:
+    ObjectNameWriter(ObjectMap &om): om_(om){}
+    void operator()(std::ostream& out, DependencyVertex v) const {
+      out << "[label=\"" << om_[v]->get_name() << "\"]";
+    }
+  };
+
+  enum EdgeType {PS, SP, CS, SC, CR, PR, CC, CP};
+
+// put it here to keep it out of the header for now
+std::map<Model*, Dependencies> graphs_;
+
+  void write_graph(DependencyGraph &graph, ObjectMap &om, std::string name) {
+    static unsigned int num=0;
+    char buf[1000];
+    sprintf(buf, name.c_str(), num);
+    std::ofstream of(buf);
+    boost::write_graphviz(of, graph, ObjectNameWriter(om));
+    ++num;
+  }
+
+template <class T>
+DependencyVertex get_vertex(DependencyGraph &graph,
+                            T* v,
+                            ObjectMap &om,
+                            std::map<T*, DependencyVertex> &map) {
+  std::map<Container*, DependencyVertex>::iterator it;
+  it = map.find(v);
+  if (it == map.end()) {
+    IMP_LOG(VERBOSE, "On demand adding vertex for \"" << v->get_name()
+            << "\" from " << boost::num_vertices(graph) << std::endl);
+    DependencyVertex cv= boost::add_vertex(graph);
+    IMP_LOG(VERBOSE, "Now " << boost::num_vertices(graph) << std::endl);
+    om[cv]= v;
+    map[v]=cv;
+    return cv;
+  } else {
+    return it->second;
+  }
+}
+
+void add_edge(DependencyGraph &graph,
+              EdgeMap &em,
+              DependencyVertex va,
+              DependencyVertex vb,
+              EdgeType et) {
+  bool inserted;
+  DependencyEdge edge;
+  boost::tie(edge, inserted) =boost::add_edge(va, vb, graph);
+  em[edge]= et;
+}
+
+void build_rsc_dependency_graph(Dependencies &deps) {
+  ObjectMap om= boost::get(boost::vertex_name, deps.graph);
+  EdgeMap em= boost::get(boost::edge_name, deps.graph);
+  ContainersTemp new_containers;
+  for (std::map<Restraint*, DependencyVertex>::iterator it
+         = deps.restraints.begin();
+       it != deps.restraints.end(); ++it) {
+    IMP_LOG(VERBOSE, "Adding node for score state \"" << it->first->get_name()
+            << "\" from " << boost::num_vertices(deps.graph) << std::endl);
+    DependencyVertex vertex= boost::add_vertex(deps.graph);
+    om[vertex]=it->first;
+    it->second=vertex;
+    ContainersTemp ct= filter(it->first->get_input_containers());
+    IMP_LOG(VERBOSE, "Found input containers " << Containers(ct) <<std::endl);
+    new_containers.insert(new_containers.end(), ct.begin(), ct.end());
+    for (unsigned int j=0; j < ct.size(); ++j) {
+      DependencyVertex cv= get_vertex(deps.graph, ct[j], om, deps.containers);
+      add_edge(deps.graph, em, cv, vertex, CR);
+    }
+  }
+  for (std::map<ScoreState*, DependencyVertex> ::iterator
+         it= deps.score_states.begin();
+       it != deps.score_states.end(); ++it) {
+    IMP_LOG(VERBOSE, "Adding node for score state \"" << it->first->get_name()
+            << "\" from " << boost::num_vertices(deps.graph) << std::endl);
+    DependencyVertex vertex= boost::add_vertex(deps.graph);
+    IMP_LOG(VERBOSE, "Now " << boost::num_vertices(deps.graph) << std::endl);
+    om[vertex]=it->first;
+    it->second=vertex;
+    ContainersTemp ict= filter(it->first->get_input_containers());
+    IMP_LOG(VERBOSE, "Found input containers " << Containers(ict) <<std::endl);
+    new_containers.insert(new_containers.end(), ict.begin(), ict.end());
+    for (unsigned int j=0; j < ict.size(); ++j) {
+      DependencyVertex cv= get_vertex(deps.graph, ict[j], om, deps.containers);
+      add_edge(deps.graph, em, cv, vertex, CS);
+    }
+    ContainersTemp oct= filter(it->first->get_output_containers());
+    IMP_LOG(VERBOSE, "Found output containers " << Containers(oct) <<std::endl);
+    new_containers.insert(new_containers.end(), oct.begin(), oct.end());
+    for (unsigned int j=0; j < oct.size(); ++j) {
+      DependencyVertex cv= get_vertex(deps.graph, oct[j], om, deps.containers);
+      IMP_IF_CHECK(USAGE) {
+        DependencyTraits::in_edge_iterator ic, ie;
+        for (boost::tie(ic, ie) = boost::in_edges( cv, deps.graph);
+             ic != ie; ++ic) {
+          if (em[*ic] == SP) {
+            IMP_THROW("Error, " << it->first->get_name() << " and " <<
+                      om[boost::source(*ic, deps.graph)]->get_name()
+                      << " both write particle " << om[cv]->get_name(),
+                      UsageException);
+          }
+        }
+      }
+      add_edge(deps.graph, em, vertex, cv, SC);
+    }
+    //write_graph(deps.graph, om, "intermediate.%d.dot");
+  }
+  while (!new_containers.empty()) {
+    IMP_LOG(VERBOSE, "New containers are " << Containers(new_containers)
+            << std::endl);
+    ContainersTemp cct;
+    std::swap(new_containers, cct);
+    cct= filter(cct);
+    for (unsigned int i=0; i< cct.size(); ++i) {
+      DependencyVertex ccv= deps.containers[cct[i]];
+      ContainersTemp ct= filter(cct[i]->get_input_containers());
+      new_containers.insert(new_containers.end(), ct.begin(), ct.end());
+      for (unsigned int j=0; j < ct.size(); ++j) {
+        DependencyVertex cv= get_vertex(deps.graph, ct[j], om, deps.containers);
+        add_edge(deps.graph, em, cv, ccv, CC);
+    }
+    }
+  }
+}
+
+void update_graph(Dependencies &deps,
+                  Restraint *r,
+                  DependencyVertex dv) {
+  EdgeMap em= boost::get(boost::edge_name, deps.graph);
+  DependencyTraits::in_edge_iterator ic, ie;
+  std::vector<DependencyEdge> to_remove;
+  for (boost::tie(ic, ie) = boost::in_edges( dv, deps.graph); ic != ie; ++ic) {
+    if (em[*ic] == PR) {
+      to_remove.push_back(*ic);
+    }
+  }
+  for (unsigned int i=0; i< to_remove.size(); ++i) {
+    boost::remove_edge(to_remove[i], deps.graph);
+  }
+  ParticlesTemp pt= filter(r->get_input_particles());
+  for (unsigned int i=0; i< pt.size(); ++i) {
+    DependencyVertex pv= deps.particles.find(pt[i])->second;
+    bool inserted;
+    DependencyEdge edge;
+    boost::tie(edge, inserted) =boost::add_edge(pv, dv, deps.graph);
+    em[edge]= PR;
+  }
+}
+
+void update_graph(Dependencies &deps,
+                  ScoreState *r,
+                  DependencyVertex dv) {
+  EdgeMap em= boost::get(boost::edge_name, deps.graph);
+  DependencyTraits::in_edge_iterator ic, ie;
+  std::vector<DependencyEdge> to_remove;
+  for (boost::tie(ic, ie) = boost::in_edges(dv, deps.graph); ic != ie; ++ic) {
+    if (em[*ic] == PR) {
+      to_remove.push_back(*ic);
+    }
+  }
+  for (unsigned int i=0; i< to_remove.size(); ++i) {
+    boost::remove_edge(to_remove[i], deps.graph);
+  }
+  ParticlesTemp opt= filter(r->get_output_particles());
+  std::set<Particle*> output(opt.begin(), opt.end());
+  for (unsigned int i=0; i< opt.size(); ++i) {
+    DependencyVertex pv= deps.particles.find(opt[i])->second;
+    bool inserted;
+    DependencyEdge edge;
+    boost::tie(edge, inserted) =boost::add_edge(dv, pv, deps.graph);
+    em[edge]= SP;
+  }
+  IMP_LOG(VERBOSE, "Outputs are " << Particles(opt) << std::endl);
+  ParticlesTemp ipt= filter(r->get_input_particles());
+  for (unsigned int i=0; i< ipt.size(); ++i) {
+    Particle *p= ipt[i];
+    if (output.find(p) == output.end()) {
+      DependencyVertex pv= deps.particles.find(ipt[i])->second;
+      bool inserted;
+      DependencyEdge edge;
+      boost::tie(edge, inserted) =boost::add_edge(pv, dv, deps.graph);
+      em[edge]= PS;
+    }
+  }
+  IMP_LOG(VERBOSE, "Input are " << Particles(ipt) << std::endl);
+}
+
+
+ScoreStatesTemp sort_score_states( Dependencies &deps) {
+  std::vector<DependencyVertex> out(boost::num_vertices(deps.graph));
+  ObjectMap om= boost::get(boost::vertex_name, deps.graph);
+  ScoreStatesTemp ret;
+  ret.reserve(boost::num_vertices(deps.graph));
+  try {
+    boost::topological_sort(deps.graph, out.begin());
+  } catch (...) {
+    write_graph(deps.graph, om, "model_dependency_graph.dot");
+    IMP_THROW("Topoligical sort failed, probably due to loops in "
+              << " dependency graph. "
+              << " The graph was written to a file "
+              << "\"model_dependency_graph.dot\" in "
+              << "your current directory. Do somethign like "
+              << "\"dot -Tps -o graph.ps model_dependency_graph.dot\" "
+              << "to view it.",
+             UsageException);
+  }
+  for (int i=out.size()-1; i > -1; --i) {
+    Object *o= om[out[i]];
+    IMP_LOG(VERBOSE, "Trying object: " << o->get_name());
+    ScoreState *ss= dynamic_cast<ScoreState*>(o);
+    if (ss) {
+      IMP_LOG(VERBOSE, " yup." << std::endl);
+      ret.push_back(ss);
+    } else {
+      IMP_LOG(VERBOSE, " nope." << std::endl);
+    }
+  }
+  return ret;
+}
+
+
+
+void get_upstream_sc(Dependencies &deps,
+                     const std::vector<DependencyVertex> &starts,
+                     ScoreStatesTemp &ssout, ContainersTemp &cout) {
+  ObjectMap om= boost::get(boost::vertex_name, deps.graph);
+  std::vector<DependencyVertex> front=starts;
+  std::vector<char> visited(boost::num_vertices(deps.graph), false);
+  while (!front.empty()) {
+    DependencyVertex v= front.back();
+    front.pop_back();
+    Object *o= om[v];
+    Container *c= dynamic_cast<Container*>(o);
+    if (c) {
+      cout.push_back(c);
+    } else {
+      ScoreState *s= dynamic_cast<ScoreState*>(o);
+      if (s) {
+        ssout.push_back(s);
+      }
+    }
+    DependencyTraits::in_edge_iterator ic, ie;
+    for (boost::tie(ic, ie) = boost::in_edges(v, deps.graph); ic != ie; ++ic) {
+      DependencyVertex tv= boost::target(*ic, deps.graph);
+      if (!visited[tv]) {
+        visited[tv]=true;
+        front.push_back(tv);
+      }
+    }
+  }
+}
+
+Dependencies make_graph(const RestraintsTemp &rs,
+                        const ScoreStatesTemp &ss,
+                        const ParticlesTemp &ps) {
+  IMP_LOG(VERBOSE, "Making dependency graph on " << rs.size()
+          << " restraints " << ss.size() << " score states "
+          << " and " << ps.size() << " particles." << std::endl);
+  Dependencies deps;
+  for (unsigned int i=0; i< rs.size(); ++i) {
+    deps.restraints.insert(std::make_pair(rs[i], DependencyVertex()));
+  }
+  for (unsigned int i=0; i< ss.size(); ++i) {
+    deps.score_states.insert(std::make_pair(ss[i], DependencyVertex()));
+  }
+  ObjectMap om= boost::get(boost::vertex_name, deps.graph);
+  build_rsc_dependency_graph(deps);
+  for (unsigned int i=0; i< ps.size(); ++i) {
+    DependencyVertex v= boost::add_vertex(deps.graph);
+    deps.particles.insert(std::make_pair(ps[i], v));
+    om[v]=ps[i];
+  }
+  for (unsigned int i=0; i< rs.size(); ++i) {
+    update_graph(deps, rs[i], deps.restraints[rs[i]]);
+  }
+  for (unsigned int i=0; i< ss.size(); ++i) {
+    update_graph(deps, ss[i], deps.score_states[ss[i]]);
+  }
+  IMP_LOG(VERBOSE, "The graph has " << boost::num_vertices(deps.graph)
+          << " vertices" << std::endl);
+  /*IMP_IF_LOG(VERBOSE) {
+    write_graph(deps.graph, om, "dependency_graph.dot");
+    }*/
+  return deps;
+}
+
+
+
+  void make_dependencies(Dependencies &deps, const ScoreStatesTemp &ss) {
+    for (std::map<Restraint*, DependencyVertex>::const_iterator
+           it= deps.restraints.begin();
+         it != deps.restraints.end(); ++it) {
+      ScoreStatesTemp sss;
+      ContainersTemp css;
+      DependencyVertex v= it->second;
+      get_upstream_sc(deps, std::vector<DependencyVertex>(1,v), sss, css);
+      std::set<ScoreState*> sset(sss.begin(), sss.end());
+      boost::dynamic_bitset<> bs(ss.size(), false);
+      for (unsigned int i=0; i< ss.size(); ++i) {
+        if (sset.find(ss[i]) != sset.end()) {
+          bs.set(i);
+        }
+      }
+      deps.depends[it->first]= bs;
+    }
+  }
+
+
+}
+
 
 /*
   types:
@@ -171,16 +559,16 @@ IMP_BEGIN_NAMESPACE
   f() function  call
 
   - GRC: build graph of what Restraints require what containers:
-     nodes(GRC)= R+C, edges(GRC) from {(r,c)}
+  nodes(GRC)= R+C, edges(GRC) from {(r,c)}
   - GRP: build graph of what Restraints require what particles:
-     nodes(GRP) = R+P, edges(GRP) from {(r,p)}
+  nodes(GRP) = R+P, edges(GRP) from {(r,p)}
   - GSC: build graph of what model states read/write what containers:
-     nodes(GSC) = S+C, edges(GSC) from {(s,c)}, {(c,s)}
+  nodes(GSC) = S+C, edges(GSC) from {(s,c)}, {(c,s)}
   - GSP: build graph of what model states read/write what particles:
-     nodes(GSP) = S+P, edges(GSP) from {(s,p)}, {(p,s)}
+  nodes(GSP) = S+P, edges(GSP) from {(s,p)}, {(p,s)}
   - method to produce topological sort from a graph sort(GXY)->LXY
   - method to return dependency nodes of a given type from a graph
-     given an input set dependencies(GXY,{z}, T)->{t} where T is X or Y
+  given an input set dependencies(GXY,{z}, T)->{t} where T is X or Y
   - method update(LXY, {x}) update all x in {x} and in LXY in the order LXY
   - clear(B) clears all the bits in B
 
@@ -188,7 +576,7 @@ IMP_BEGIN_NAMESPACE
   - particles, containers can only be written once
   - the set of outputs cannot change, only the inputs
   - the set of inputs/output objects can only depend on the set of input
-    objects, not the particle attributes
+  objects, not the particle attributes
   - hierarchies and rigid bodies cannot change dynamically
   - finding the list of input/output containers is fast
   - finding the list of input/output particles is slow
@@ -234,23 +622,23 @@ IMP_BEGIN_NAMESPACE
 
 */
 /*
-   try 2:
-   state:
-   order of all score states
-   update when:
-   new score added
-   any score state says that its dependencies changed: punt
-   dependent score states for each restraint
-   update when:
-   above graph changes
-   the restraint reports that its set of inputs has changed
-   evaluate all:
-   get order of all score states and evaluate them in that order
-   evaluate all restraints in that order
+  try 2:
+  state:
+  order of all score states
+  update when:
+  new score added
+  any score state says that its dependencies changed: punt
+  dependent score states for each restraint
+  update when:
+  above graph changes
+  the restraint reports that its set of inputs has changed
+  evaluate all:
+  get order of all score states and evaluate them in that order
+  evaluate all restraints in that order
 
-   evaluate some:
-   merge list of dependent score states for each restraint
-   evaluate them in order of all score states
+  evaluate some:
+  merge list of dependent score states for each restraint
+  evaluate them in order of all score states
 */
 
 namespace {
@@ -318,17 +706,18 @@ IMP_LIST_IMPL(Model, Restraint, restraint, Restraint*,
                 first_incremental_=true;},,
               {
                 obj->set_model(NULL);
-                restraint_deps_.erase(obj);
               });
 
 IMP_LIST_IMPL(Model, ScoreState, score_state, ScoreState*,
               ScoreStates,
               {IMP_INTERNAL_CHECK(cur_stage_== NOT_EVALUATING,
-                            "The set of score states cannot be changed during"
+             "The set of score states cannot be changed during"
                                   << "evaluation.");
                 obj->set_model(this);
                 score_states_ordered_=false;
                 obj->set_was_owned(true);
+                IMP_LOG(VERBOSE, "Added score state " << obj->get_name()
+                        << std::endl);
                 IMP_IF_CHECK(USAGE) {
                   std::set<ScoreState*> in(score_states_begin(),
                                            score_states_end());
@@ -339,195 +728,56 @@ IMP_LIST_IMPL(Model, ScoreState, score_state, ScoreState*,
               },,
               {obj->set_model(NULL);});
 
-#if 0
-namespace {
-  struct Graph {
-    typedef boost::adjacency_list<boost::vecS, boost::vecS,
-                                  boost::directedS,
-                                  boost::property<boost::vertex_id_t, Object*,
-boost::property<boost::mark_t, bool> ,
-                                  boost::no_property> BG;
-    typedef boost::graph_traits<BG>::edge_descriptor Edge;
-    typedef boost::graph_traits<BG>::vertex_descriptor Vertex;
-    std::map<Object*, Vertex> ov_;
-    BG bg_;
-    Vertex get_vertex(Object *a) {
-      if (ov_.find(a) == ov_.end()) {
-        ov_[a]=boost::add_vertex();
-        // set props
-      }
-      return ov_[a];
-    }
-
-    void add_edge(Object *a, Object *b) {
-      boost::add_edge(bg_,get_vertex(a), get_vertex(b));
-    }
-    unsigned int get_number_of_output(Vertex v) {
-      return boost::out_degree(bg_, v);
-    }
-    Vertex get_output_vertex(Vertex v, unsigned int i) {
-      return boost::out_edge(v, i);
-    }
-    unsigned int get_number_of_input(Vertex v) {
-      return boost::in_degree(bg_, v);
-    }
-    Vertex get_input_vertex(Vertex v, unsigned int i) {
-      return boost::in_edge(bg_, v, i);
-    }
-    unsigned int get_number_of_vertices() {
-      return boost::vertex_size(bg_);
-    }
-    Vertex get_vertex(unsigned int i) {
-      return boost::vertex(bg_, i);
-    }
-    Object* get_object(Vertex v) {
-      return;
-    }
-    bool get_mark(Vertex v) {
-
-    }
-    void set_mark(Vertex v, bool tf) {
-
-    }
-  };
-
-  void build_dependency_graph(const RestraintsTemp &rs,
-                              const ScoreStatesTemp &ss,
-                              const ParticlesTemp &ps,
-                              Graph &g) {
-    ContainersTemp cs;
-    for (unsigned int i=0; i< rs.size(); ++i) {
-      ContainersTemp ccs= rs[i]->get_input_containers();
-      cs.insert(cs.end(), ccs.begin(), ccs.end());
-      for (unsigned int j=0; j< ccs.size(); ++j) {
-        g.add_edge(ccs[j], rs[i])
-      }
-    }
-    for (unsigned int i=0; i< ss.size(); ++i) {
-      ContainersTemp ccs= ss[i]->get_input_containers();
-      cs.insert(cs.end(), ccs.begin(), ccs.end());
-      for (unsigned int j=0; j< ccs.size(); ++j) {
-        g.add_edge(ccs[j], ss[i])
-      }
-      ContainersTemp cos= ss[i]->get_output_containers();
-      for (unsigned int j=0; j< cos.size(); ++j) {
-        g.add_edge(ss[i], cos[j])
-      }
-    }
-    for (unsigned int i=0; i< cs.size(); ++i) {
-      ContainersTemp ccs= cs[i]->get_input_containers();
-      cs.insert(cs.end(), ccs.begin(), ccs.end());
-      for (unsigned int j=0; j< ccs.size(); ++j) {
-        g.add_edge(ccs[j], cs[i])
-      }
-      ParticlesTemp cps= cs[i]->get_input_particles();
-      for (unsigned int j=0; j< cps.size(); ++j) {
-        g.add_edge(cps[j], cs[i])
-      }
-    }
-  }
-
-  void sort_score_states(const Graph &g,
-                         ScoreStatesTemp &out) {
-    std::vector<Graph::Vertex> active;
-    for (unsigned int i=0; i < g.get_number_of_vertices(); ++i) {
-      Graph::Vertex v= g.get_vertex(i);
-      unsigned int d =g.get_number_of_input(v);
-      if (d==0){
-        active.push_back(n);
-      }
-    }
-    while (!active.empty()) {
-      Graph::Vertex c= active.back();
-      active.pop_back();
-      g.set_marked(c,true);
-      for (unsigned int i=0; i< g.get_number_of_output(c); ++i) {
-        Graph::Vertex o=g.get_output_vertex(c,i);
-        bool unmarked=false;
-        for (unsigned int j=0; j< g.get_number_of_input(o); ++i) {
-          Graph::Vertex in = g.get_input_vertex(o,j);
-          if (!g.get_marked(in) {
-            unmarked=true;
-            break;
-          }
-        }
-        if (unmarked) {
-          active.push_back(o);
-        }
-      }
-      ScoreState *ss=dynamic_cast<ScoreState*>(get_object(g, c));
-      if (ss) {
-        out.push_back(ss);
-      }
-    }
-  }
-  template <class Type>
-  void get_all_upstream(const Graph g,
-                        Graph::Vertex start,
-                        std::vector<Type*> &out) {
-    std::vector<Graph::Vertex> front(1,start);
-    do {
-      Graph::Vertex cur =front.back();
-      front.pop_back();
-      Type *cs= dynamic_cast<Type*>(g.get_object(cur));
-      if (cs) {
-        out.push_back(cs);
-      }
-      for (unsigned int i=0; i< g.get_number_of_input(cur); ++i) {
-        front.push_back(g.get_input_vertex(i));
-      }
-    } while (!front.empty());
-  }
-
-  void make_required_states(const ScoreStates &all,
-                            const ScoreStates &some,
-                            RequiredStates &rs) {
-    std::map<ScoreState *, int> map;
-    for (unsigned int i=0; i< all.size(); ++i) {
-      map[all[i]] = i;
-    }
-    for (unsigned int i=0; i< some.size(): ++i) {
-      rs[map[some[i]]]=true;
-    }
-  }
-}
-#endif
 
 void Model::order_score_states() {
-  // go away once the ordering below happens
+  if (!score_states_ordered_ || graphs_.find(this) == graphs_.end()) {
+    IMP_LOG(VERBOSE, "Ordering score states. Input list is: ");
+    IMP_IF_LOG(VERBOSE) {
+      for (unsigned int i=0; i< access_score_states().size(); ++i) {
+        IMP_LOG(VERBOSE, "\"" << access_score_states()[i]->get_name()
+                << "\" ");
+      }
+      IMP_LOG(VERBOSE, std::endl);
+    }
+    graphs_[this]= make_graph(access_restraints(), access_score_states(),
+                              ParticlesTemp(particles_.begin(),
+                                            particles_.end()));
+    ScoreStatesTemp sst=sort_score_states(graphs_[this]);
+    make_dependencies(graphs_[this], access_score_states());
+    set_score_states(sst);
+    IMP_LOG(VERBOSE, "Ordering is: ");
+    IMP_IF_LOG(VERBOSE) {
+      for (unsigned int i=0; i< access_score_states().size(); ++i) {
+        IMP_LOG(VERBOSE, "\"" << access_score_states()[i]->get_name()
+                << "\" ");
+      }
+      IMP_LOG(VERBOSE, std::endl);
+    }
+  }
   IMP_IF_CHECK(USAGE) {
     std::set<Object*> read_objects;
     for (ScoreStateConstIterator it = score_states_begin();
          it != score_states_end(); ++it) {
-      ObjectsTemp wp= (*it)->get_output_objects();
+      ObjectsTemp wp;
+      ContainersTemp tp= (*it)->get_output_containers();
       ParticlesTemp wpp= (*it)->get_output_particles();
       wp.insert(wp.end(), wpp.begin(), wpp.end());
+      wp.insert(wp.end(), tp.begin(), tp.end());
       for (unsigned int i=0; i< wp.size(); ++i) {
         if (read_objects.find(wp[i]) != read_objects.end()) {
           IMP_WARN("Particle " << wp[i]->get_name()
                    << " was changed by score state "
                    << (*it)->get_name()
                    << " after it was read by another score state."
-                   << " This may result in score states not being"
-                   << " updated properly. Eventually they will be"
-                   << " reordered automatically, but for now "
-                   << "you have to do it yourself.");
+                   << " This should not happen.");
         }
       }
-      ObjectsTemp rp= (*it)->get_input_objects();
+      ContainersTemp rp= (*it)->get_input_containers();
       read_objects.insert(rp.begin(), rp.end());
       ParticlesTemp rpp= (*it)->get_input_particles();
       read_objects.insert(rpp.begin(), rpp.end());
     }
   }
-
-  restraint_deps_.clear();
-  for (unsigned int i=0; i< get_number_of_restraints(); ++i) {
-    restraint_deps_[get_restraint(i)]
-      = RequiredStates(get_number_of_score_states(),
-                       std::numeric_limits<unsigned long>::max());
-  }
-
   score_states_ordered_=true;
 }
 
@@ -632,13 +882,13 @@ double Model::do_evaluate_restraints(const Restraints &restraints,
         && incremental_restraints != NONINCREMENTAL) {
       if (incremental_evaluation) {
         WRAP_EVALUATE_CALL(*it,
-                 value=(*it)->unprotected_incremental_evaluate(calc_derivs?
-                                                                &accum:NULL));
+             value=(*it)->unprotected_incremental_evaluate(calc_derivs?
+                                                           &accum:NULL));
         IMP_LOG(TERSE, (*it)->get_name() << " score is " << value << std::endl);
       } else {
         WRAP_EVALUATE_CALL(*it,
-                      value=(*it)->unprotected_evaluate(calc_derivs?
-                                                        &accum:NULL));
+                           value=(*it)->unprotected_evaluate(calc_derivs?
+                                                             &accum:NULL));
         IMP_LOG(TERSE, (*it)->get_name() << " score is " << value << std::endl);
       }
       if (gather_statistics_) {
@@ -741,7 +991,7 @@ void Model::validate_incremental_evaluate(const RestraintsTemp &restraints,
 }
 
 void Model::validate_computed_derivatives() const {
-{
+  {
     std::string message;
     for (ParticleConstIterator it= particles_begin();
          it != particles_end(); ++it) {
@@ -871,16 +1121,15 @@ Float Model::evaluate(bool calc_derivs) {
 Float Model::evaluate(const RestraintsTemp &restraints, bool calc_derivs)
 {
   if (!score_states_ordered_) order_score_states();
-  RequiredStates rs(get_number_of_score_states(), 0);
-  ScoreStatesTemp sss;
+  boost::dynamic_bitset<> bs(get_number_of_score_states(), false);
   for (unsigned int i=0; i< restraints.size(); ++i) {
-    rs |= restraint_deps_[restraints[i]];
+    bs|= graphs_[this].depends[restraints[i]];
   }
-  ScoreStatesTemp sst;
+  ScoreStatesTemp ss;
   for (unsigned int i=0; i< get_number_of_score_states(); ++i) {
-    if (rs[i]) sst.push_back(get_score_state(i));
+    if (bs[i]) ss.push_back(get_score_state(i));
   }
-  return do_evaluate(restraints, sst, calc_derivs);
+  return do_evaluate(restraints, ss, calc_derivs);
 }
 
 

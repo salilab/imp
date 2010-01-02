@@ -55,9 +55,6 @@ bool ListLikeQuadContainer
   IMP_CHECK_OBJECT(this);
   return std::binary_search(data_.begin(), data_.end(), vt);
 }
-ObjectsTemp ListLikeQuadContainer
-::get_input_objects() const { return ObjectsTemp();}
-
 ParticleQuadsTemp ListLikeQuadContainer
 ::get_particle_quads() const {
   IMP_CHECK_OBJECT(this);
@@ -77,6 +74,17 @@ VersionInfo ListLikeQuadContainer
 void ListLikeQuadContainer
 ::show(std::ostream &out) const {
   out << "ListLikeContainer on " << data_.size() << std::endl;
+}
+
+
+ParticlesTemp ListLikeQuadContainer
+::get_contained_particles() const {
+  return IMP::internal::flatten(data_);
+}
+
+bool ListLikeQuadContainer
+::get_contained_particles_changed() const {
+  return !get_added()->data_.empty() || !get_removed()->data_.empty();
 }
 
 

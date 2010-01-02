@@ -155,7 +155,10 @@ class TestCPFL(IMP.test.TestCase):
         pc.show()
         out= IMP.core.ListPairContainer()
         out.show()
-        cpf= IMP.core.RigidClosePairsFinder()
+        ref= IMP.core.TableRefiner()
+        for p in [rba, rbb]:
+            ref.add_particle(p.get_particle(), p.get_members().get_particles())
+        cpf= IMP.core.RigidClosePairsFinder(ref)
         cpf.set_distance(dist)
         cps=cpf.get_close_pairs(pc)
         out.set_particle_pairs(IMP.ParticlePairs(cps))

@@ -20,10 +20,11 @@ namespace {
 
 
 PairContainer::PairContainer(std::string name):
-  Interaction(internal::make_object_name(name, next_index++)){
+  Container(internal::make_object_name(name, next_index++)){
 }
 
-ParticlesList PairContainer::get_interacting_particles() const {
-  return ParticlesList();
+// here for gcc
+PairContainer::~PairContainer(){
 }
+
 IMP_END_NAMESPACE

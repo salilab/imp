@@ -122,8 +122,8 @@ ListPairContainer::add_particle_pairs(const ParticlePairsTemp &c) {
 }
 
 
-ObjectsTemp ListPairContainer::get_input_objects() const {
-  return ObjectsTemp();
+ContainersTemp ListPairContainer::get_input_containers() const {
+  return ContainersTemp();
 }
 
 
@@ -137,6 +137,10 @@ void ListPairContainer::do_after_evaluate() {
 
 ParticlesTemp ListPairContainer::get_state_input_particles() const {
   return ParticlesTemp();
+}
+
+ContainersTemp ListPairContainer::get_state_input_containers() const {
+  return ContainersTemp();
 }
 
 IMPCORE_END_NAMESPACE

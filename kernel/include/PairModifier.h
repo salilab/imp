@@ -13,7 +13,6 @@
 #include "config.h"
 #include "internal/container_helpers.h"
 #include "DerivativeAccumulator.h"
-#include "Interaction.h"
 #include "base_types.h"
 #include "VectorOfRefCounted.h"
 
@@ -75,6 +74,14 @@ public:
   /** Get the set of particles modifier when applied to the arguments.*/
   virtual ParticlesTemp
     get_output_particles(const ParticlePair& vt) const =0;
+  /** Get the set of input containers when this modifier is applied to
+      the arguments. */
+  virtual ContainersTemp
+    get_input_containers(const ParticlePair& vt) const =0;
+  /** Get the set of output containers when this modifier is applied to
+      the arguments. */
+  virtual ContainersTemp
+    get_output_containers(const ParticlePair& vt) const =0;
 };
 
 IMP_OUTPUT_OPERATOR(PairModifier)

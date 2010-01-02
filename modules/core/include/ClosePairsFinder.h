@@ -75,6 +75,9 @@ class IMPCOREEXPORT ClosePairsFinder : public Object
   virtual ParticlesTemp get_input_particles(SingletonContainer *pc) const=0;
   virtual ParticlesTemp get_input_particles(SingletonContainer *a,
                                             SingletonContainer *b) const=0;
+  virtual ContainersTemp get_input_containers(SingletonContainer *pc) const=0;
+  virtual ContainersTemp get_input_containers(SingletonContainer *a,
+                                              SingletonContainer *b) const=0;
   /** @} */
 #ifndef SWIG
   /** \brief Return a container which lists all particles which moved more

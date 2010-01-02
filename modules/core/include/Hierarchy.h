@@ -107,6 +107,8 @@ public:
 class Hierarchy;
 typedef DecoratorsWithTraits<Hierarchy, Particles,
                              HierarchyTraits> GenericHierarchies;
+typedef DecoratorsWithTraits<Hierarchy, ParticlesTemp, HierarchyTraits>
+GenericHierarchiesTemp;
 
 
 //! A decorator for helping deal with a hierarchy.
@@ -166,10 +168,8 @@ public:
 #if 0
   /** Return the particles of the children
    */
-  DecoratorsWithTraits<Hierarchy, Particles,
-    HierarchyTraits> get_children() const {
-    DecoratorsWithTraits<Hierarchy, Particles,
-      HierarchyTraits> ps(get_number_of_children(), get_traits());
+  GenericHierarchiesTemp get_children() const {
+    GenericHierarchiesTemp ps(get_number_of_children(), get_traits());
     for (unsigned int i=0; i< get_number_of_children(); ++i) {
       ps.set(i, get_child(i));
     }
@@ -553,19 +553,19 @@ HD breadth_first_find(HD h, F f)
 //! Get all the leaves of the bit of hierarchy
 /**     \relatesalso Hierarchy
  */
-IMPCOREEXPORT GenericHierarchies
+IMPCOREEXPORT GenericHierarchiesTemp
 get_leaves(Hierarchy mhd);
 
 //! Get all the non-leaves of the bit of hierarchy
 /**     \relatesalso Hierarchy
  */
-IMPCOREEXPORT GenericHierarchies
+IMPCOREEXPORT GenericHierarchiesTemp
 get_internal(Hierarchy mhd);
 
 //! Get all the particles in the subtree
 /**     \relatesalso Hierarchy
  */
-IMPCOREEXPORT GenericHierarchies
+IMPCOREEXPORT GenericHierarchiesTemp
 get_all_descendants(Hierarchy mhd);
 
 //! Return the root of the hierarchy

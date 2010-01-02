@@ -85,9 +85,9 @@ ParticlesTemp SimpleDiscreteRestraint::get_input_particles() const
   return ParticlesTemp(particles_begin(), particles_end());
 }
 
-ObjectsTemp SimpleDiscreteRestraint::get_input_objects() const
+ContainersTemp SimpleDiscreteRestraint::get_input_containers() const
 {
-  return ObjectsTemp();
+  return ContainersTemp();
 }
 
 

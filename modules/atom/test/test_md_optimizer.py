@@ -37,8 +37,8 @@ class XTransRestraint(IMP.Restraint):
         fh.write("Test restraint")
     def get_input_particles(self):
         return IMP.ParticlesTemp([x for x in self.get_model().get_particles()])
-    def get_output_particles(self):
-        return IMP.ObjectsTemp()
+    def get_input_containers(self):
+        return IMP.ContainersTemp()
 
 
 class WriteTrajState(IMP.OptimizerState):

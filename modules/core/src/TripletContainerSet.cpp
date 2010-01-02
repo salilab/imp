@@ -157,9 +157,27 @@ ParticleTripletsTemp TripletContainerSet::get_particle_triplets() const {
 }
 
 
-ObjectsTemp TripletContainerSet::get_input_objects() const {
-  return ObjectsTemp(triplet_containers_begin(),
-                     triplet_containers_end());
+ContainersTemp TripletContainerSet::get_input_containers() const {
+  return ContainersTemp(triplet_containers_begin(),
+                        triplet_containers_end());
+}
+
+ParticlesTemp TripletContainerSet::get_contained_particles() const {
+  ParticlesTemp ret;
+  for (unsigned int i=0; i< get_number_of_triplet_containers(); ++i) {
+    ParticlesTemp cur= get_triplet_container(i)->get_contained_particles();
+    ret.insert(ret.end(), cur.begin(), cur.end());
+  }
+  return ret;
+}
+
+bool TripletContainerSet::get_contained_particles_changed() const {
+  for (unsigned int i=0; i< get_number_of_triplet_containers(); ++i) {
+    if (get_triplet_container(i)->get_contained_particles_changed()) {
+      return true;
+    }
+  }
+  return false;
 }
 
 

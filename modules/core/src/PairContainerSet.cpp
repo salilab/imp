@@ -157,9 +157,27 @@ ParticlePairsTemp PairContainerSet::get_particle_pairs() const {
 }
 
 
-ObjectsTemp PairContainerSet::get_input_objects() const {
-  return ObjectsTemp(pair_containers_begin(),
-                     pair_containers_end());
+ContainersTemp PairContainerSet::get_input_containers() const {
+  return ContainersTemp(pair_containers_begin(),
+                        pair_containers_end());
+}
+
+ParticlesTemp PairContainerSet::get_contained_particles() const {
+  ParticlesTemp ret;
+  for (unsigned int i=0; i< get_number_of_pair_containers(); ++i) {
+    ParticlesTemp cur= get_pair_container(i)->get_contained_particles();
+    ret.insert(ret.end(), cur.begin(), cur.end());
+  }
+  return ret;
+}
+
+bool PairContainerSet::get_contained_particles_changed() const {
+  for (unsigned int i=0; i< get_number_of_pair_containers(); ++i) {
+    if (get_pair_container(i)->get_contained_particles_changed()) {
+      return true;
+    }
+  }
+  return false;
 }
 
 

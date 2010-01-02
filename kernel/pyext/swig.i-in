@@ -30,6 +30,21 @@ have_tests=True
 %}
 #endif
 
+%pythoncode %{
+class DecoratorIterator:
+    def __init__(self, ht):
+        self.i=0
+        self.ht=ht
+    def next(self):
+        if self.i == len(self.ht):
+            raise StopIteration
+        r= self.ht.__getitem__(self.i)
+        self.i= self.i+1
+        return r
+    def __iter__(self):
+        return self
+%}
+
 namespace IMP {
 %warnfilter(403) FailureHandlerBase;
 %warnfilter(473) Refiner;
@@ -54,14 +69,14 @@ namespace IMP {
   }
 }
 
-  %extend IMP::KeyBase {
-     bool __eq__(KeyBase<ID, LazyAdd> o) {
-        return self->get_index() == o.get_index();
-     }
-     std::string __str__() const {
-        return self->get_string();
-     }
-  }
+%extend IMP::KeyBase {
+   bool __eq__(KeyBase<ID, LazyAdd> o) {
+      return self->get_index() == o.get_index();
+   }
+   std::string __str__() const {
+      return self->get_string();
+   }
+}
 
 namespace IMP {
   // special case since particles are ref counted
@@ -119,10 +134,9 @@ namespace IMP {
 %include "IMP_object.i"
 %include "IMP/FailureHandler.h"
 %include "IMP/DerivativeAccumulator.h"
+%include "IMP/Container.h"
 %include "IMP_particle.i"
 %include "IMP/Decorator.h"
-
-%include "IMP/Interaction.h"
 
 %include "IMP/UnaryFunction.h"
 %include "IMP_restraint.i"
@@ -152,14 +166,27 @@ namespace IMP {
 
 
 namespace IMP {
-  %template(Particles) ::IMP::VectorOfRefCounted<Particle*> ;
-  %template(ParticlesTemp) ::std::vector<Particle*>;
-  %template(ObjectsTemp) ::std::vector<Object*>;
-  %template(ParticlesList) ::std::vector<ParticlesTemp>;
-  %template(Restraints) ::IMP::VectorOfRefCounted< Restraint*>;
-  %template(ScoreStates) ::IMP::VectorOfRefCounted< ScoreState*>;
-  %template(OptimizerStates) ::IMP::VectorOfRefCounted< OptimizerState*>;
-  %template(Refiners) ::IMP::VectorOfRefCounted< Refiner*>;
+  %template(ParticlePair) ::IMP::ParticleTuple<2>;
+  %template(ParticleTriplet) ::IMP::ParticleTuple<3>;
+  %template(ParticleQuad) ::IMP::ParticleTuple<4>;
+  IMP_SWIG_OBJECTS(Particle, Particles)
+  IMP_SWIG_OBJECTS(Object, Objects)
+  IMP_SWIG_OBJECTS(Restraint, Restraints)
+  IMP_SWIG_OBJECTS(ScoreState, ScoreStates)
+  IMP_SWIG_OBJECTS(OptimizerState, OptimizerStates)
+  IMP_SWIG_OBJECTS(Refiner, Refiners)
+  IMP_SWIG_OBJECTS(SingletonContainer, SingletonContainers)
+  IMP_SWIG_OBJECTS(PairContainer, PairContainers)
+  IMP_SWIG_OBJECTS(TripletContainer, TripletContainers)
+  IMP_SWIG_OBJECTS(QuadContainer, QuadContainers)
+  IMP_SWIG_OBJECTS(Container, Containers)
+  %template(ParticlePairs) ::IMP::VectorOfRefCounted< ParticlePair, IMP::RefCountParticleTuple<2> >;
+  %template(ParticlePairsTemp) ::std::vector<ParticlePair >;
+  %template(ParticleTriplets) ::IMP::VectorOfRefCounted< ParticleTriplet, IMP::RefCountParticleTuple<3> >;
+  %template(ParticleTripletsTemp) ::std::vector<ParticleTriplet >;
+  %template(ParticleQuads) ::IMP::VectorOfRefCounted< ParticleQuad, IMP::RefCountParticleTuple<4> >;
+  %template(ParticleQuadsTemp) ::std::vector<ParticleQuad >;
+  %template(ParticlesList) ::std::vector< ParticlesTemp >;
   %template(FloatKeys) ::std::vector<FloatKey>;
   %template(StringKeys) ::std::vector<StringKey>;
   %template(IntKeys) ::std::vector<IntKey>;
@@ -168,18 +195,8 @@ namespace IMP {
   %template(Floats) ::std::vector<Float>;
   %template(Strings) ::std::vector<String>;
   %template(Ints) ::std::vector<Int>;
-  %template(SingletonContainers) ::IMP::VectorOfRefCounted<SingletonContainer*>;
-  %template(PairContainers) ::IMP::VectorOfRefCounted<PairContainer*>;
   %template(float_pair) ::std::pair<float,float>;
   %template(double_pair) ::std::pair<double, double>;
-
-  %template(ParticlePair) ::IMP::ParticleTuple<2>;
-  %template(ParticlePairsTemp) ::std::vector< ParticlePair >;
-  %template(ParticlePairs) ::IMP::VectorOfRefCounted< ParticlePair, RefCountParticleTuple<2> >;
-  %template(ParticleTriplet) ::IMP::ParticleTuple<3>;
-  %template(ParticleTripletsTemp) ::std::vector< ParticleTriplet >;
-  %template(ParticleTriplets) ::IMP::VectorOfRefCounted< ParticleTriplet, RefCountParticleTuple<3> >;
-  %template(ParticleQuad) ::IMP::ParticleTuple<4>;
-  %template(ParticleQuadsTemp) ::std::vector< ParticleQuad >;
-  %template(ParticleQuads) ::IMP::VectorOfRefCounted< ParticleQuad, RefCountParticleTuple<4> >;
+  %implicitconv Particles;
+  %implicitconv ParticlesTemp;
 }

@@ -49,8 +49,8 @@ void MovedSingletonContainer::show(std::ostream &out) const
 
 
 
-ObjectsTemp MovedSingletonContainer::get_input_objects() const {
-  return ObjectsTemp(1,pc_);
+ContainersTemp MovedSingletonContainer::get_input_containers() const {
+  return ContainersTemp(1,pc_);
 }
 
 void MovedSingletonContainer::do_after_evaluate() {
@@ -80,6 +80,10 @@ void MovedSingletonContainer::do_before_evaluate()
 
 ParticlesTemp MovedSingletonContainer::get_state_input_particles() const {
   return pc_->get_particles();
+}
+
+ContainersTemp MovedSingletonContainer::get_state_input_containers() const {
+  return ContainersTemp(1, pc_);
 }
 
 void MovedSingletonContainer::reset()

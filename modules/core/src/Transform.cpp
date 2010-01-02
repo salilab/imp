@@ -42,6 +42,14 @@ ParticlesTemp Transform::get_output_particles(Particle *p) const {
   return ParticlesTemp(1,p);
 }
 
+ContainersTemp Transform::get_input_containers(Particle *p) const {
+  return ContainersTemp();
+}
+
+ContainersTemp Transform::get_output_containers(Particle *p) const {
+  return ContainersTemp();
+}
+
 void Transform::show(std::ostream &out) const
 {
   out<<"TransformParticle :";

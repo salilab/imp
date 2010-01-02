@@ -62,9 +62,9 @@ ParticlesTemp ExampleRestraint::get_input_particles() const
   return ret;
 }
 
-ObjectsTemp ExampleRestraint::get_input_objects() const
+ContainersTemp ExampleRestraint::get_input_containers() const
 {
-  return ObjectsTemp(1, pc_);
+  return ContainersTemp(1, pc_);
 }
 
 void ExampleRestraint::show(std::ostream& out) const

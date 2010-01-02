@@ -157,9 +157,27 @@ ParticlesTemp SingletonContainerSet::get_particles() const {
 }
 
 
-ObjectsTemp SingletonContainerSet::get_input_objects() const {
-  return ObjectsTemp(singleton_containers_begin(),
-                     singleton_containers_end());
+ContainersTemp SingletonContainerSet::get_input_containers() const {
+  return ContainersTemp(singleton_containers_begin(),
+                        singleton_containers_end());
+}
+
+ParticlesTemp SingletonContainerSet::get_contained_particles() const {
+  ParticlesTemp ret;
+  for (unsigned int i=0; i< get_number_of_singleton_containers(); ++i) {
+    ParticlesTemp cur= get_singleton_container(i)->get_contained_particles();
+    ret.insert(ret.end(), cur.begin(), cur.end());
+  }
+  return ret;
+}
+
+bool SingletonContainerSet::get_contained_particles_changed() const {
+  for (unsigned int i=0; i< get_number_of_singleton_containers(); ++i) {
+    if (get_singleton_container(i)->get_contained_particles_changed()) {
+      return true;
+    }
+  }
+  return false;
 }
 
 

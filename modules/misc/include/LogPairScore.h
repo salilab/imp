@@ -71,6 +71,12 @@ LogPairScore::get_input_particles(const ParticlePair &p) const {
 }
 
 
+inline ContainersTemp
+LogPairScore::get_input_containers(const ParticlePair &p) const {
+  return ContainersTemp();
+}
+
+
 
 
 IMPMISC_END_NAMESPACE

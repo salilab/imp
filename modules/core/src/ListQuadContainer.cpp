@@ -122,8 +122,8 @@ ListQuadContainer::add_particle_quads(const ParticleQuadsTemp &c) {
 }
 
 
-ObjectsTemp ListQuadContainer::get_input_objects() const {
-  return ObjectsTemp();
+ContainersTemp ListQuadContainer::get_input_containers() const {
+  return ContainersTemp();
 }
 
 
@@ -137,6 +137,10 @@ void ListQuadContainer::do_after_evaluate() {
 
 ParticlesTemp ListQuadContainer::get_state_input_particles() const {
   return ParticlesTemp();
+}
+
+ContainersTemp ListQuadContainer::get_state_input_containers() const {
+  return ContainersTemp();
 }
 
 IMPCORE_END_NAMESPACE

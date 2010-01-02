@@ -26,11 +26,11 @@ private:
     PairContainer("Added or removed container"){}
   void set_added_and_removed_containers(PairContainer *,
                                         PairContainer *){}
-  ListLikePairContainer *get_added() {
+  ListLikePairContainer *get_added() const {
     return dynamic_cast<ListLikePairContainer*>
       (get_added_pairs_container());
   }
-  ListLikePairContainer *get_removed() {
+  ListLikePairContainer *get_removed() const {
     return dynamic_cast<ListLikePairContainer*>
       (get_removed_pairs_container());
   }
@@ -119,6 +119,11 @@ public:
   }
   VersionInfo get_version_info() const;
   void show(std::ostream &out=std::cout) const;
+  bool get_contained_particles_changed() const;
+  ParticlesTemp get_contained_particles() const;
+  ContainersTemp get_input_containers() const {
+    return ContainersTemp();
+  }
 };
 
 
@@ -126,7 +131,7 @@ IMPCORE_END_INTERNAL_NAMESPACE
 
 
 #define IMP_LISTLIKE_PAIR_CONTAINER(Name, version_info) \
-  ObjectsTemp get_input_objects() const;                     \
+  ContainersTemp get_input_containers() const;               \
   IMP_OBJECT(Name, version_info);
 
 

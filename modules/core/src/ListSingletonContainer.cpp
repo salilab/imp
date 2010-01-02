@@ -122,8 +122,8 @@ ListSingletonContainer::add_particles(const ParticlesTemp &c) {
 }
 
 
-ObjectsTemp ListSingletonContainer::get_input_objects() const {
-  return ObjectsTemp();
+ContainersTemp ListSingletonContainer::get_input_containers() const {
+  return ContainersTemp();
 }
 
 
@@ -137,6 +137,10 @@ void ListSingletonContainer::do_after_evaluate() {
 
 ParticlesTemp ListSingletonContainer::get_state_input_particles() const {
   return ParticlesTemp();
+}
+
+ContainersTemp ListSingletonContainer::get_state_input_containers() const {
+  return ContainersTemp();
 }
 
 IMPCORE_END_NAMESPACE

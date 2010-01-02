@@ -14,7 +14,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 IMP_LIST_IMPL(FixedRefiner, Particle, particle, Particle*,Particles,,,)
 
-FixedRefiner::FixedRefiner(const Particles &ps){
+  FixedRefiner::FixedRefiner(const Particles &ps): Refiner("FixedRefiner%d"){
   IMP_LOG(VERBOSE, "Created fixed particle refiner with " << ps.size()
           << " particles" << std::endl);
   set_particles(ps);
@@ -44,9 +44,11 @@ const ParticlesTemp FixedRefiner::get_refined(Particle *p) const {
 }
 
 ParticlesTemp FixedRefiner::get_input_particles(Particle *p) const {
-  ParticlesTemp ret= get_refined(p);
-  ret.push_back(p);
-  return ret;
+  return ParticlesTemp();
+}
+
+ContainersTemp FixedRefiner::get_input_containers(Particle *p) const {
+  return ContainersTemp();
 }
 
 IMPCORE_END_NAMESPACE

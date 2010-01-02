@@ -22,8 +22,12 @@ lsc= IMP.core.ListSingletonContainer()
 lsc.add_particle(rbp0)
 lsc.add_particle(rbp1)
 
+tr= IMP.core.TableRefiner()
+tr.add_particle(rbp0, rbps0)
+tr.add_particle(rbp1, rbps1)
+
 # Set up the nonbonded list
-nbl= IMP.core.ClosePairContainer(lsc, 0, IMP.core.RigidClosePairsFinder(IMP.core.RigidMembersRefiner()), 2.0)
+nbl= IMP.core.ClosePairContainer(lsc, 0, IMP.core.RigidClosePairsFinder(tr), 2.0)
 
 # Set up excluded volume
 ps= IMP.core.SphereDistancePairScore(IMP.core.HarmonicLowerBound(0,1))
