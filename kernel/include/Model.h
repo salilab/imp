@@ -16,8 +16,6 @@
 #include "base_types.h"
 #include "VersionInfo.h"
 
-#include <boost/dynamic_bitset.hpp>
-
 #include <limits>
 
 IMP_BEGIN_NAMESPACE
@@ -53,10 +51,6 @@ private:
   std::map<FloatKey, FloatRange> ranges_;
   enum Stage {NOT_EVALUATING, BEFORE_EVALUATE, EVALUATE, AFTER_EVALUATE};
   mutable Stage cur_stage_;
-
-  typedef boost::dynamic_bitset<> RequiredStates;
-
-  std::map<Restraint*, RequiredStates> restraint_deps_;
 
   Stage get_stage() const {
     return cur_stage_;
