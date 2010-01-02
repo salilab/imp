@@ -49,7 +49,7 @@ public:
       num_states *= data_.find(*it)->second->get_number_of_states();
     }
     Int global_iterator, global_index;
-    CombState *calc_state;
+    //CombState *calc_state;
     Particle* p;
     Int sample_size;
     for (Int state_index = 0;state_index < num_states; state_index++) {
