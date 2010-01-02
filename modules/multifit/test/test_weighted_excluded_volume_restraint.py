@@ -31,7 +31,8 @@ class SampleTests(IMP.test.TestCase):
         #set the restraint
         self.wev_r=IMP.multifit.create_weighted_excluded_volume_restraint(
            self.rbs[0],self.rbs[1])
-        sr=IMP.helper.create_simple_connectivity_on_rigid_bodies(self.rbs)
+        sr=IMP.helper.create_simple_connectivity_on_rigid_bodies(self.rbs,
+                                                                 IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits()))
         self.c_r=sr.get_restraint()
 
     def test_weighted_excluded_volume_restraint(self):
