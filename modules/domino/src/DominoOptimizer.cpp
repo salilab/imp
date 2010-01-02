@@ -80,7 +80,7 @@ void DominoOptimizer::exhaustive_enumeration(CombStates &states,
   std::vector<int> c_int(comb_size);
   unsigned int i;
   for(i=0;i<comb_size;i++){
-    ds_->get_space(ps[i])->show();
+    //ds_->get_space(ps[i])->show();
     v_int[i] = ds_->get_space(ps[i])->get_number_of_states();
     IMP_LOG(IMP::VERBOSE,"i:"<<i<<" number of states: " <<
             v_int[i]<<std::endl);

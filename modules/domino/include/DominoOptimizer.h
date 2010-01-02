@@ -48,6 +48,7 @@ public:
   }
   void show_optimum_configuration(unsigned int conf_ind,
                                    std::ostream& out = std::cout) const {
+    out<<"OPT_CONF:";
     g_->get_opt_combination(conf_ind)->show(out);
   }
   DiscreteSampler *get_sampling_space() const {return ds_;}
