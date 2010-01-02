@@ -254,26 +254,18 @@ class IMPCOREEXPORT RigidMember: public XYZ {
 
 IMP_OUTPUT_OPERATOR(RigidMember);
 
-
 #ifndef IMP_DOXYGEN
-//! A refiner which returns the members of a rigid body
-/** You can use this to easily define a rigid body when you want the
-    set of particles representing a rigid body to be the same as the
-    set of members.
- */
+
 class IMPCOREEXPORT RigidMembersRefiner: public Refiner {
  public:
-  RigidMembersRefiner(){}
+  RigidMembersRefiner():Refiner("RigidMembersRefiner%d"){}
   IMP_SIMPLE_REFINER(RigidMembersRefiner, get_module_version_info());
 };
-#endif
 
-#if !defined(SWIG) && !defined(IMP_DOXYGEN)
 namespace internal {
   IMPCOREEXPORT RigidMembersRefiner* get_rigid_members_refiner();
 }
 #endif
-
 
 IMPCORE_END_NAMESPACE
 

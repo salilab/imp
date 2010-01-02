@@ -26,6 +26,7 @@ const RigidBodyData &rigid_body_data() {
 IMPCORE_END_INTERNAL_NAMESPACE
 IMPCORE_BEGIN_NAMESPACE
 
+
 namespace {
 
 
@@ -500,6 +501,8 @@ RigidBody RigidMember::get_rigid_body() const {
 
 
 
+
+
 bool RigidMembersRefiner::get_can_refine(Particle *p) const {
   return RigidBody::particle_is_instance(p);
 }
@@ -508,6 +511,14 @@ unsigned int RigidMembersRefiner::get_number_of_refined(Particle *p) const {
 }
 Particle* RigidMembersRefiner::get_refined(Particle *p, unsigned int i) const {
   return RigidBody(p).get_member(i);
+}
+
+ParticlesTemp RigidMembersRefiner::get_input_particles(Particle *p) const {
+  return ParticlesTemp();
+}
+
+ContainersTemp RigidMembersRefiner::get_input_containers(Particle *p) const {
+  return ContainersTemp(1, p);
 }
 
 void RigidMembersRefiner::show(std::ostream &out) const {

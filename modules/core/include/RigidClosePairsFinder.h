@@ -67,8 +67,6 @@ class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder
   RigidClosePairsFinder(Refiner *r);
   RigidClosePairsFinder(ClosePairsFinder *cpf,
                         Refiner *r);
-  RigidClosePairsFinder();
-  RigidClosePairsFinder(ClosePairsFinder *cpf);
   IMP_CLOSE_PAIRS_FINDER(RigidClosePairsFinder, get_module_version_info());
 
   ParticlePairsTemp get_close_pairs(Particle *a, Particle *b) const;
