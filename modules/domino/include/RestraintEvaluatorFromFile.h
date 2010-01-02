@@ -21,9 +21,14 @@ IMPDOMINO_BEGIN_NAMESPACE
 
 IMPDOMINOEXPORT void write_combinations(const std::string &filename,
                        const Combinations *combs,Particles &ps);
+//! Read a file containing values of a restraint
 /**
-The format of the combinations file is:
-A|B|| (the header line, contains the names of the particles)
+/param[in] filename the name of the restraint file
+/param[out] combs to contain all of the combinations
+/param[out] ps the particles the restraint work on. Notice that the particles
+               should be sorted by their name.
+/note The format of the combinations file is:
+A|B| (the header line, contains the names of the particles)
 0|0|0.3 (data line: For A in state 0, B in state 0, the restraint score is 0.3)
 0|1|1.6
 1|0|2.9
