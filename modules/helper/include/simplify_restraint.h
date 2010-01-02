@@ -25,8 +25,19 @@ class SimpleDiameter;
 class SimpleExcludedVolume;
 class SimpleEMFit;
 
+
+/* Having the default be RigidMembersRefiner is most likely a bad
+   idea, but it is needed to make things work. The refiner should
+   probably be exposed, otherwise this method cannot be used with the
+   rigid bodies created from molecular hierarchies, which is kind of
+   an unintuitive result. A better solution may be to ensure that
+   everything is an atom.Hierarchy and use the LeavesRefiner
+   implicitly.
+
+ */
 IMPHELPEREXPORT SimpleConnectivity create_simple_connectivity_on_rigid_bodies(
-                core::RigidBodies *rbs);
+                                      const core::RigidBodies &rbs,
+               Refiner *ref=IMP::core::internal::get_rigid_members_refiner());
 
 
 /** Creates ConnectivityRestraint on molecules using LowestRefinedPairScore
@@ -39,7 +50,7 @@ IMPHELPEREXPORT SimpleConnectivity create_simple_connectivity_on_rigid_bodies(
     \relates SimpleConnectivity
   */
 IMPHELPEREXPORT SimpleConnectivity create_simple_connectivity_on_molecules(
-                atom::Hierarchies const &mhs);
+                const atom::Hierarchies &mhs);
 
 
 /** Creates DistanceRestraint using HarmonicUpperBound scoring function
@@ -62,6 +73,14 @@ IMPHELPEREXPORT SimpleDiameter create_simple_diameter(
                 Particles *ps, Float diameter);
 
 
+/* Having the default be RigidMembersRefiner is most likely a bad
+   idea, but it is needed to make things work. The refiner should
+   probably be exposed, otherwise this method cannot be used with the
+   rigid bodies created from molecular hierarchies, which is kind of
+   an unintuitive result. A better solution may be to ensure that
+   everything is an atom.Hierarchy and use the LeavesRefiner
+   implicitly (as the docs say, but not as it was doing before).
+ */
 
 /** Creates ExcludedVolumeRestraint using LeavesRefiner.
     \see ListSingletonContainer
@@ -69,7 +88,8 @@ IMPHELPEREXPORT SimpleDiameter create_simple_diameter(
 */
 IMPHELPEREXPORT SimpleExcludedVolume
                 create_simple_excluded_volume_on_rigid_bodies(
-                core::RigidBodies *rbs);
+                               const core::RigidBodies &rbs,
+                Refiner *ref= IMP::core::internal::get_rigid_members_refiner());
 
 
 
@@ -79,7 +99,7 @@ IMPHELPEREXPORT SimpleExcludedVolume
 */
 IMPHELPEREXPORT SimpleExcludedVolume
                 create_simple_excluded_volume_on_molecules(
-                atom::Hierarchies const &mhs);
+                const atom::Hierarchies &mhs);
 
 
 
@@ -111,7 +131,7 @@ class IMPHELPEREXPORT SimpleConnectivity
 {
   IMP_NO_SWIG(
   friend SimpleConnectivity create_simple_connectivity_on_rigid_bodies(
-         core::RigidBodies *rbs);
+                        const core::RigidBodies &rbs, Refiner *ref);
   friend SimpleConnectivity create_simple_connectivity_on_molecules(
          atom::Hierarchies const &mhs);
               )
@@ -336,7 +356,7 @@ class IMPHELPEREXPORT SimpleExcludedVolume
 {
   IMP_NO_SWIG(friend SimpleExcludedVolume
               create_simple_excluded_volume_on_rigid_bodies(
-              core::RigidBodies *rbs);
+                    const core::RigidBodies &rbs, Refiner*ref);
               )
   IMP_NO_SWIG(friend SimpleExcludedVolume
               create_simple_excluded_volume_on_molecules(
