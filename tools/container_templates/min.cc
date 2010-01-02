@@ -91,9 +91,9 @@ ParticlesTemp MinimumGroupnameScoreRestraint::get_input_particles() const
   return IMP::internal::get_input_particles(c_.get(), f_.get());
 }
 
-ObjectsTemp MinimumGroupnameScoreRestraint::get_input_objects() const
+ContainersTemp MinimumGroupnameScoreRestraint::get_input_containers() const
 {
-  return ObjectsTemp(1, c_);
+  return ContainersTemp(1, c_);
 }
 
 

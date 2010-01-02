@@ -89,9 +89,12 @@ ParticlesTemp GroupnamesRestraint::get_input_particles() const
   return ret0;
 }
 
-ObjectsTemp GroupnamesRestraint::get_input_objects() const
+ContainersTemp GroupnamesRestraint::get_input_containers() const
 {
-  return ObjectsTemp(1, pc_);
+  ContainersTemp ret= IMP::internal::get_input_containers(pc_.get(),
+                                                          ss_.get());
+  ret.push_back(pc_);
+  return ret;
 }
 
 namespace {
