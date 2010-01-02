@@ -9,6 +9,7 @@ files = [
          'StateAdaptor.h',
          'WormLikeChain.h',
          'attribute_statistics.h',
+         'interaction_graph.h',
         ]
 
 # Install the include files:
