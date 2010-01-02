@@ -17,7 +17,7 @@
 #include <iostream>
 
 IMPCORE_BEGIN_NAMESPACE
-/** \defgroup yaml Model IO
+/** \name Model IO
     IO is done a model-at-a-time and only supports particles. The
     reason IO of spacific particles is not supported is that such
     can easily break decorator-enforced invariants that the user has
@@ -31,6 +31,7 @@ IMPCORE_BEGIN_NAMESPACE
 
     \note At this point we do not guarantee that the file format will
     not change and loose backward compatibility.
+    @{
 */
 
 //! Write as Model to a file
@@ -39,15 +40,13 @@ IMPCORE_BEGIN_NAMESPACE
 
     \throw ValueException if the file cannot be opened.
     \ingroup helpers
-    \ingroup yaml
 */
 IMPCOREEXPORT void write(Model *m,
                          std::ostream &out,
                          std::string indent=std::string());
 
 //! Write only the optimized attributes
-/** \ingroup yaml
-    \ingroup helpers
+/** \ingroup helpers
  */
 IMPCOREEXPORT void write_optimized_attributes(Model *m,
                                               std::ostream &out);
@@ -73,13 +72,11 @@ IMP_NO_DOXYGEN(IMPCOREEXPORT void write(Model *m,
     \note The base indent is determined from the first line.
 
     \ingroup helpers
-    \ingroup yaml
 */
 IMPCOREEXPORT void read(std::istream &in, Model *m);
 
 //! Only change the values of the optimize attributes
 /** \see read(std::istream&, Model*)
-    \ingroup yaml
     \ingroup helpers
  */
 IMPCOREEXPORT void read_optimized_attributes(std::istream &in, Model *m);
@@ -104,6 +101,8 @@ class IMPCOREEXPORT DumpModelOnFailure: public FailureHandler {
   DumpModelOnFailure(Model *m, std::string file_name);
   IMP_FAILURE_HANDLER(DumpModelOnFailure, get_module_version_info());
 };
+
+/** @} */
 
 
 IMPCORE_END_NAMESPACE
