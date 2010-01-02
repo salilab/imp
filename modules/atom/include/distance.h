@@ -22,8 +22,8 @@ IMPATOMEXPORT double rmsd(const core::XYZs& m1 ,const core::XYZs& m2);
 
 //! Measure the difference between two placements of the same set of points
 /**
-\param[in] ref The reference placement represented by XYZ coordinates
-\param[in] mdl The modeled placement represented by XYZ coordinates
+\param[in] from The reference placement represented by XYZ coordinates
+\param[in] to The modeled placement represented by XYZ coordinates
 \note The measure quantifies the difference between placements
       of the same structure. A rigid transformation that brings mdl1 to
       ref1 is reported.
