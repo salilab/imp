@@ -12,7 +12,7 @@
 #include "Pointer.h"
 #include "utility.h"
 #include "Particle.h"
-#include "ScoreState.h"
+#include "Constraint.h"
 #include "Model.h"
 #include "internal/IndexingIterator.h"
 
@@ -447,30 +447,30 @@ public:
 
 
 #ifndef IMP_DOXYGEN
-#define IMP_SCORE_STATE_DECORATOR_DECL(Name)                            \
+#define IMP_CONSTRAINT_DECORATOR_DECL(Name)                             \
   private:                                                              \
-  static ObjectKey get_score_state_key();                               \
-  static void set_score_state(SingletonModifier* before,                \
-                              SingletonModifier *after, Particle *p);   \
+  static ObjectKey get_constraint_key();                                \
+  static void set_constraint(SingletonModifier* before,                 \
+                             SingletonModifier *after, Particle *p);    \
 public:                                                                 \
- ScoreState *get_score_state() const {                                  \
-   return dynamic_cast<ScoreState*>(get_particle()                      \
-                                   ->get_value(get_score_state_key())); \
+ Constraint *get_constraint() const {                                   \
+   return dynamic_cast<Constraint*>(get_particle()                      \
+                                    ->get_value(get_constraint_key())); \
  }
 
 
-#define IMP_SCORE_STATE_DECORATOR_DEF(Name)                             \
-  ObjectKey Name::get_score_state_key() {                               \
+#define IMP_CONSTRAINT_DECORATOR_DEF(Name)                              \
+  ObjectKey Name::get_constraint_key() {                                \
     static ObjectKey ret(#Name " score state");                         \
     return ret;                                                         \
   }                                                                     \
-  void Name::set_score_state(SingletonModifier* before,                 \
-                             SingletonModifier *after,                  \
-                             Particle *p) {                             \
-    ScoreState *ss= new SingletonScoreState(before,                     \
+  void Name::set_constraint(SingletonModifier* before,                  \
+                            SingletonModifier *after,                   \
+                            Particle *p) {                              \
+    Constraint *ss= new SingletonConstraint(before,                     \
                                             after, p,                   \
                       std::string(#Name "updater for ")+p->get_name()); \
-    p->add_attribute(get_score_state_key(), ss);                        \
+    p->add_attribute(get_constraint_key(), ss);                         \
     p->get_model()->add_score_state(ss);                                \
   }                                                                     \
 

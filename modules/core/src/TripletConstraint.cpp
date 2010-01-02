@@ -1,5 +1,5 @@
 /**
- *  \file TripletScoreState.cpp
+ *  \file TripletConstraint.cpp
  *  \brief Use a TripletModifier applied to a TripletContainer to
  *  maintain an invariant
  *
@@ -10,44 +10,42 @@
  *
  */
 
-#include "IMP/core/TripletScoreState.h"
+#include "IMP/core/TripletConstraint.h"
 #include "IMP/internal/container_helpers.h"
 
 IMPCORE_BEGIN_NAMESPACE
 
-TripletScoreState::TripletScoreState(TripletModifier *before,
+TripletConstraint::TripletConstraint(TripletModifier *before,
                                          TripletModifier *after,
                                          const ParticleTriplet& vt,
                                          std::string name):
-  ScoreState(name), v_(vt){
+  Constraint(name), v_(vt){
   if (before) f_=before;
   if (after) af_=after;
 }
 
 
-void TripletScoreState::do_before_evaluate()
+void TripletConstraint::do_update_attributes()
 {
   IMP_OBJECT_LOG;
   if (!f_) return;
-  IMP_LOG(TERSE, "Begin TripletsScoreState::update" << std::endl);
+  IMP_LOG(TERSE, "Begin TripletsConstraint::update" << std::endl);
   IMP_CHECK_OBJECT(f_);
   f_->apply(v_);
-  IMP_LOG(TERSE, "End TripletsScoreState::update" << std::endl);
+  IMP_LOG(TERSE, "End TripletsConstraint::update" << std::endl);
 }
 
-void TripletScoreState::do_after_evaluate(DerivativeAccumulator *da)
+void TripletConstraint::do_update_derivatives(DerivativeAccumulator *da)
 {
   IMP_OBJECT_LOG;
   if (!af_) return;
-  IMP_LOG(TERSE, "Begin TripletsScoreState::after_evaluate" << std::endl);
+  IMP_LOG(TERSE, "Begin TripletsConstraint::after_evaluate" << std::endl);
   IMP_CHECK_OBJECT(af_);
-  if (da) {
-    af_->apply(v_, *da);
-  }
-  IMP_LOG(TERSE, "End TripletsScoreState::after_evaluate" << std::endl);
+  af_->apply(v_, *da);
+  IMP_LOG(TERSE, "End TripletsConstraint::after_evaluate" << std::endl);
 }
 
-ParticlesList TripletScoreState::get_interacting_particles() const {
+ParticlesList TripletConstraint::get_interacting_particles() const {
   ParticlesList ret0, ret1;
   if (f_) ret0= f_->get_interacting_particles(v_);
   if (af_) ret1= af_->get_interacting_particles(v_);
@@ -55,15 +53,15 @@ ParticlesList TripletScoreState::get_interacting_particles() const {
   return ret0;
 }
 
-ObjectsTemp TripletScoreState::get_input_objects() const {
+ObjectsTemp TripletConstraint::get_input_objects() const {
   return ObjectsTemp();
 }
 
-ObjectsTemp TripletScoreState::get_output_objects() const {
+ObjectsTemp TripletConstraint::get_output_objects() const {
   return ObjectsTemp();
 }
 
-ParticlesTemp TripletScoreState::get_input_particles() const {
+ParticlesTemp TripletConstraint::get_input_particles() const {
   ParticlesTemp ret;
   if (f_) {
     ret= f_->get_input_particles(v_);
@@ -87,7 +85,7 @@ ParticlesTemp TripletScoreState::get_input_particles() const {
   return ret;
 }
 
-ParticlesTemp TripletScoreState::get_output_particles() const {
+ParticlesTemp TripletConstraint::get_output_particles() const {
   ParticlesTemp ret;
   if (f_) {
     ret= f_->get_output_particles(v_);
@@ -114,8 +112,8 @@ ParticlesTemp TripletScoreState::get_output_particles() const {
   return ret;
 }
 
-void TripletScoreState::show(std::ostream &out) const {
-  out << "TripletScoreState with ";
+void TripletConstraint::show(std::ostream &out) const {
+  out << "TripletConstraint with ";
   if (f_) out << *f_;
   else out << "NULL";
   out << " and ";

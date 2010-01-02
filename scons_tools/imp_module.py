@@ -12,6 +12,7 @@ import config_h
 import link_test
 import modeller_test
 import run
+import checks
 
 from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir
 
@@ -125,6 +126,7 @@ def dependencies_to_libs(env, deps):
         else:
             libs.append("imp_"+d)
     for d in ed:
+        #print "libs for " + d + " are " + str(env[d+"_libs"])
         libs= libs+env[d+"_libs"]
     return libs+env[env['IMP_MODULE']+"_libs"]
 
@@ -162,6 +164,16 @@ def make_static_build(env):
         env.Append(LINKFLAGS=['-static'])
     else:
         print "Static builds only supported with GCC, ignored."
+
+def unmake_static_build(env):
+    """Make the build static if appropriate"""
+    if env['CC'] == 'gcc':
+        lf= env['LINKFLAGS']
+        lf.remove('-static')
+        env.Replace(LINKFLAGS=lf)
+    else:
+        print "Static builds only supported with GCC, ignored."
+
 
 def make_vars(env):
     """Make a map which can be used for all string substitutions"""
@@ -516,11 +528,11 @@ def check_libraries_and_headers(env, libraries, headers):
     custom_tests={}
     for l in libraries:
         def libtest(context):
-            ret = context.sconf.CheckLib(library=l, language='C++',
-                                         autoadd=True)
+            ret = checks.check_lib(context, header= headers[0], lib=l)
+            env.Append(LIBS=[l])
             context.did_show_result=True
-            context.Result(ret)
-            return ret
+            context.Result(ret[0])
+            return ret[0]
         custom_tests["Check"+l]= libtest
     for h in headers:
         def libtest(context):
@@ -603,9 +615,19 @@ def IMPModuleBuild(env, version, required_modules=[],
     #print module_include_path
     #print module_preproc
     #print module_namespace
+    m_libs=[]
+    for d in optional_dependencies:
+        if d== "CGAL":
+            if env['CGAL_LIBS']:
+                m_libs=m_libs+env['CGAL_LIBS']
+        elif d== "BOOST_FILESYSTEM":
+            if env['BOOST_LIBS']:
+                m_libs=m_libs+env['BOOST_FILESYSTEM_LIBS']
+        else:
+            raise ValueError("Do not understand optional dependency: " +d)
+    env[module+"_libs"]=m_libs
     env[module+"_required_modules"]=required_modules
     env[module+"_optional_dependencies"]= optional_dependencies
-    env[module+"_libs"]= []
     env['IMP_MODULES_ALL'].append(module)
 
 
@@ -613,15 +635,7 @@ def IMPModuleBuild(env, version, required_modules=[],
 
     env = env.Clone()
     env['IMP_REQUIRED_MODULES']= required_modules
-    for d in optional_dependencies:
-        if d== "CGAL":
-            if env['CGAL_LIBS']:
-                env[module+"_libs"]=env[module+"_libs"]+env['CGAL_LIBS']
-        elif d== "BOOST_FILESYSTEM":
-            if env['BOOST_LIBS']:
-                env[module+"_libs"]=env[module+"_libs"]+env['BOOST_FILESYSTEM_LIBS']
-        else:
-            raise ValueError("Do not understand optional dependency: " +d)
+
     env.Append(BUILDERS = {'IMPModuleConfigH': config_h.ConfigH,
                            'IMPModuleConfigCPP': config_h.ConfigCPP,
                            'IMPModuleLinkTest': link_test.LinkTest})
@@ -706,6 +720,7 @@ def IMPModuleBuild(env, version, required_modules=[],
         print "Configuring module IMP." + env['IMP_MODULE']+" version "+env['IMP_MODULE_VERSION'],
     if not env['IMP_MODULE_CPP']:
         print " (python only)",
+    print
 
 
 
@@ -714,8 +729,7 @@ def IMPModuleBuild(env, version, required_modules=[],
     all_deps=["IMP."+x for x in nice_deps if x is not "kernel"]+required_libraries
     if len(all_deps) > 0:
         nice_deps.remove('kernel')
-        print "(requires " +", ".join(all_deps) +")",
-    print
+        print "  (requires " +", ".join(all_deps) +")"
 
     env['IMP_MODULE_CONFIG']=config_macros
 

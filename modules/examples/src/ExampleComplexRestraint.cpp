@@ -12,7 +12,7 @@
 #include <IMP/core/FixedRefiner.h>
 #include <IMP/core/PairsRestraint.h>
 #include <IMP/core/CoverRefined.h>
-#include <IMP/core/SingletonScoreState.h>
+#include <IMP/core/SingletonConstraint.h>
 #include <IMP/core/DistancePairScore.h>
 #include <IMP/core/internal/evaluate_distance_pair_score.h>
 #include <boost/lambda/lambda.hpp>
@@ -47,7 +47,7 @@ void ExampleComplexRestraint::set_model(Model *m) {
              new core::FixedRefiner(Particles(sc_->particles_begin(),
                                               sc_->particles_end())),
                                dr_, 0);
-    ss_= new core::SingletonScoreState(cr, NULL, p_);
+    ss_= new core::SingletonConstraint(cr, NULL, p_);
     m->add_score_state(ss_);
   } else {
     IMP_LOG(TERSE, "Removing components of ExampleComplexRestraint"

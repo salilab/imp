@@ -1,5 +1,5 @@
 /**
- *  \file GroupnamesScoreState.h
+ *  \file GroupnamesConstraint.h
  *  \brief Use a GroupnameModifier applied to a Classnames to
  *  maintain an invariant
  *
@@ -9,13 +9,13 @@
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
-#ifndef IMPCORE_GROUPNAMES_SCORE_STATE_H
-#define IMPCORE_GROUPNAMES_SCORE_STATE_H
+#ifndef IMPCORE_GROUPNAMES_CONSTRAINT_H
+#define IMPCORE_GROUPNAMES_CONSTRAINT_H
 
 #include "config.h"
 #include <IMP/GroupnameContainer.h>
 #include <IMP/GroupnameModifier.h>
-#include <IMP/ScoreState.h>
+#include <IMP/Constraint.h>
 
 IMP_BEGIN_NAMESPACE
 // for swig
@@ -25,7 +25,8 @@ IMP_END_NAMESPACE
 
 IMPCORE_BEGIN_NAMESPACE
 //! Apply a GroupnameFunction to a GroupnameContainer to maintain an invariant
-/** \ingroup restraint
+/** \advanced
+
     The score state is passed up to two GroupnameModifiers, one to
     apply before evaluation and the other after. The one after
     should take a DerivativeAccumulator as its last argument for
@@ -36,9 +37,9 @@ IMPCORE_BEGIN_NAMESPACE
     of the atoms of a protein by a sphere per residue.
     \verbinclude cover_particles.py
 
-    \see GroupnameScoreState
+    \see GroupnameConstraint
  */
-class IMPCOREEXPORT GroupnamesScoreState : public ScoreState
+class IMPCOREEXPORT GroupnamesConstraint : public Constraint
 {
   IMP::internal::OwnerPointer<GroupnameModifier> f_;
   IMP::internal::OwnerPointer<GroupnameModifier> af_;
@@ -51,9 +52,9 @@ public:
       after evaluate.
       \param[in] name The object name
    */
-  GroupnamesScoreState(GroupnameContainer *c, GroupnameModifier *before,
+  GroupnamesConstraint(GroupnameContainer *c, GroupnameModifier *before,
                        GroupnameModifier *after,
-                       std::string name="GroupnameScoreState %1%");
+                       std::string name="GroupnameConstraint %1%");
 
   //! Apply this modifier to all the elements after an evaluate
   void set_after_evaluate_modifier(GroupnameModifier* f) {
@@ -65,10 +66,10 @@ public:
     f_=f;
   }
 
-  IMP_SCORE_STATE(GroupnamesScoreState, get_module_version_info())
+  IMP_CONSTRAINT(GroupnamesConstraint, get_module_version_info())
 };
 
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_GROUPNAMES_SCORE_STATE_H */
+#endif  /* IMPCORE_GROUPNAMES_CONSTRAINT_H */

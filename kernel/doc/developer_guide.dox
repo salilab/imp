@@ -11,7 +11,7 @@ build='release') from the same set of sources. To do this:
 
 - make a second directory (say \c debug) outside of the \imp source
 directory. Let the path from the build directory, \c debug, to the
-source directory, \c svn, be \c{../svn}.
+source directory, \c svn, be \c ../svn.
 
 - make sure that the \imp source directory is clean. If you just checked
   out form \c svn, then it is. Otherwise, do \command{scons -c all} in

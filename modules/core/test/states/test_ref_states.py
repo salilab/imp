@@ -15,7 +15,7 @@ class RefCountTests(IMP.test.TestCase):
         print "s"
         print "p"
         p=IMP.Particle(m)
-        s = IMP.core.SingletonScoreState(None, None, p)
+        s = IMP.core.SingletonConstraint(None, None, p)
         m.add_score_state(s)
         # Reference to p is not kept
         return refcnt, m, s

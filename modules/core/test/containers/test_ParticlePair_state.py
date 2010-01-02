@@ -86,10 +86,10 @@ class ParticlePairContainerTest(IMP.test.TestCase):
         return a.get_name() == b.get_name()
 
     def create_singleton_score_state(self, f, a, t):
-        return IMP.core.SingletonScoreState(f, a, t)
+        return IMP.core.SingletonConstraint(f, a, t)
 
     def create_pair_score_state(self, f, a, t):
-        return IMP.core.PairScoreState(f, a, t)
+        return IMP.core.PairConstraint(f, a, t)
 
     def create_particle_score(self):
         uf= IMP.core.Linear(0,1)
@@ -100,7 +100,7 @@ class ParticlePairContainerTest(IMP.test.TestCase):
         return IMP.core.DistancePairScore(uf)
 
     def test_set(self):
-        """Testing PairsScoreState"""
+        """Testing PairsConstraint"""
         # write increment an int field
         # call evaluate and check that it is incremented
         IMP.set_log_level(IMP.VERBOSE)
@@ -117,7 +117,7 @@ class ParticlePairContainerTest(IMP.test.TestCase):
         k= IMP.IntKey("thevalue")
         f= PairTestModifier(k)
         print "apply"
-        s= IMP.core.PairsScoreState(c, f, None)
+        s= IMP.core.PairsConstraint(c, f, None)
         print "add"
         m.add_score_state(s)
         m.evaluate(False)
@@ -126,7 +126,7 @@ class ParticlePairContainerTest(IMP.test.TestCase):
         print "done"
 
     def test_sset(self):
-        """Testing PairScoreState"""
+        """Testing PairConstraint"""
         # write increment an int field
         # call evaluate and check that it is incremented
         IMP.set_log_level(IMP.VERBOSE)

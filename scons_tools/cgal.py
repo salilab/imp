@@ -1,4 +1,5 @@
 """Simple configure checks for CGAL"""
+import checks
 
 def _check(context):
     cgal = context.env['cgal']
@@ -7,12 +8,12 @@ def _check(context):
         context.Result("disabled")
         return False
 
-    ret = context.sconf.CheckLibWithHeader(['CGAL'], 'CGAL/basic.h', 'CXX',
-                                           'CGAL_assertion(1);', autoadd=False)
+    ret= checks.check_lib(context, lib='CGAL', header='CGAL/Gmpq.h',
+                          body='CGAL_assertion(1); CGAL::Gmpq q;', extra_libs=['gmp', 'm'])
     context.Message('Checking for CGAL ...')
-    context.Result(ret)
-    if ret:
-        context.env['CGAL_LIBS'] = ['CGAL', 'gmp', 'm']
+    context.Result(ret[0])
+    if ret[0]:
+        context.env['CGAL_LIBS'] = ret[1]
         #context.env.Append(CPPDEFINES=['IMP_USE_CGAL'])
         if context.env['CC'] == 'gcc':
             context.Message('Checking if CGAL needs -frounding-math ...')
@@ -27,7 +28,7 @@ def _check(context):
             if ret34:
                 context.env.Append(CCFLAGS=['-frounding-math'])
         context.Result(ret34)
-    return ret
+    return ret[0]
 
 def configure_check(env):
     env['CGAL_LIBS'] = ['']

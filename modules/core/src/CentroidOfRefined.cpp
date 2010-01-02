@@ -9,8 +9,8 @@
 
 #include "IMP/core/XYZR.h"
 #include "IMP/core/FixedRefiner.h"
-#include "IMP/core/SingletonScoreState.h"
-#include "IMP/core/SingletonsScoreState.h"
+#include "IMP/core/SingletonConstraint.h"
+#include "IMP/core/SingletonsConstraint.h"
 #include "IMP/core/DerivativesToRefined.h"
 
 IMPCORE_BEGIN_NAMESPACE

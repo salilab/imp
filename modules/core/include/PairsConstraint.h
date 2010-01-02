@@ -1,5 +1,5 @@
 /**
- *  \file PairsScoreState.h
+ *  \file PairsConstraint.h
  *  \brief Use a PairModifier applied to a ParticlePairs to
  *  maintain an invariant
  *
@@ -9,13 +9,13 @@
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
-#ifndef IMPCORE_PAIRS_SCORE_STATE_H
-#define IMPCORE_PAIRS_SCORE_STATE_H
+#ifndef IMPCORE_PAIRS_CONSTRAINT_H
+#define IMPCORE_PAIRS_CONSTRAINT_H
 
 #include "config.h"
 #include <IMP/PairContainer.h>
 #include <IMP/PairModifier.h>
-#include <IMP/ScoreState.h>
+#include <IMP/Constraint.h>
 
 IMP_BEGIN_NAMESPACE
 // for swig
@@ -25,7 +25,8 @@ IMP_END_NAMESPACE
 
 IMPCORE_BEGIN_NAMESPACE
 //! Apply a PairFunction to a PairContainer to maintain an invariant
-/** \ingroup restraint
+/** \advanced
+
     The score state is passed up to two PairModifiers, one to
     apply before evaluation and the other after. The one after
     should take a DerivativeAccumulator as its last argument for
@@ -36,9 +37,9 @@ IMPCORE_BEGIN_NAMESPACE
     of the atoms of a protein by a sphere per residue.
     \verbinclude cover_particles.py
 
-    \see PairScoreState
+    \see PairConstraint
  */
-class IMPCOREEXPORT PairsScoreState : public ScoreState
+class IMPCOREEXPORT PairsConstraint : public Constraint
 {
   IMP::internal::OwnerPointer<PairModifier> f_;
   IMP::internal::OwnerPointer<PairModifier> af_;
@@ -51,9 +52,9 @@ public:
       after evaluate.
       \param[in] name The object name
    */
-  PairsScoreState(PairContainer *c, PairModifier *before,
+  PairsConstraint(PairContainer *c, PairModifier *before,
                        PairModifier *after,
-                       std::string name="PairScoreState %1%");
+                       std::string name="PairConstraint %1%");
 
   //! Apply this modifier to all the elements after an evaluate
   void set_after_evaluate_modifier(PairModifier* f) {
@@ -65,10 +66,10 @@ public:
     f_=f;
   }
 
-  IMP_SCORE_STATE(PairsScoreState, get_module_version_info())
+  IMP_CONSTRAINT(PairsConstraint, get_module_version_info())
 };
 
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_PAIRS_SCORE_STATE_H */
+#endif  /* IMPCORE_PAIRS_CONSTRAINT_H */

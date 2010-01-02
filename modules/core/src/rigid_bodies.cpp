@@ -8,8 +8,8 @@
 
 #include "IMP/core/rigid_bodies.h"
 #include "IMP/core/ListSingletonContainer.h"
-#include "IMP/core/SingletonsScoreState.h"
-#include "IMP/core/SingletonScoreState.h"
+#include "IMP/core/SingletonsConstraint.h"
+#include "IMP/core/SingletonConstraint.h"
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/internal/tnt_array2d.h>
 #include <IMP/algebra/internal/tnt_array2d_utils.h>
@@ -186,7 +186,7 @@ Matrix compute_I(const XYZs &ds,
 }
 
 
-IMP_SCORE_STATE_DECORATOR_DEF(RigidBody);
+IMP_CONSTRAINT_DECORATOR_DEF(RigidBody);
 
 
 RigidBody RigidBody::internal_setup_particle(Particle *p,
@@ -254,7 +254,7 @@ RigidBody RigidBody::setup_particle(Particle *p,
                                     const RigidMembers &rms) {
   RigidBody ret=internal_setup_particle(p, rms);
   rms[0].get_rigid_body().add_member(ret);
-  set_score_state(new UpdateRigidBodyMembers(),
+  set_constraint(new UpdateRigidBodyMembers(),
                   new AccumulateRigidBodyDerivatives(), p);
   return ret;
 }
@@ -283,7 +283,7 @@ RigidBody RigidBody::setup_particle(Particle *p,
                          << nv);
     }
   }
-  set_score_state(new UpdateRigidBodyMembers(),
+  set_constraint(new UpdateRigidBodyMembers(),
                   new AccumulateRigidBodyDerivatives(), p);
   return d;
 }

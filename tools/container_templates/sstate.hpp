@@ -1,5 +1,5 @@
 /**
- *  \file GroupnameScoreState.h
+ *  \file GroupnameConstraint.h
  *  \brief Use a GroupnameModifier applied to a Classnames to
  *  maintain an invariant
  *
@@ -9,12 +9,12 @@
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
-#ifndef IMPCORE_GROUPNAME_SCORE_STATE_H
-#define IMPCORE_GROUPNAME_SCORE_STATE_H
+#ifndef IMPCORE_GROUPNAME_CONSTRAINT_H
+#define IMPCORE_GROUPNAME_CONSTRAINT_H
 
 #include "config.h"
 #include <IMP/GroupnameModifier.h>
-#include <IMP/ScoreState.h>
+#include <IMP/Constraint.h>
 #include <IMP/Particle.h>
 
 IMP_BEGIN_NAMESPACE
@@ -24,16 +24,17 @@ IMP_END_NAMESPACE
 
 IMPCORE_BEGIN_NAMESPACE
 //! Apply a GroupnameFunction to a Groupname
-/** The score state is passed up to two GroupnameModifiers, one to
+/** \advanced
+
+    The score state is passed up to two GroupnameModifiers, one to
     apply before evaluation and the other after. The one after
     should take a DerivativeAccumulator as its last argument for
     GroupnameModifier::apply() and will only be called if
     the score was computed with derivatives.
 
-    \ingroup restraint
-    \see GroupnamesScoreState
+    \see GroupnamesConstraint
  */
-class IMPCOREEXPORT GroupnameScoreState : public ScoreState
+class IMPCOREEXPORT GroupnameConstraint : public Constraint
 {
   IMP::internal::OwnerPointer<GroupnameModifier> f_;
   IMP::internal::OwnerPointer<GroupnameModifier> af_;
@@ -42,9 +43,9 @@ public:
   /** before and after are the modifiers to apply before and after
       evaluate.
    */
-  GroupnameScoreState(GroupnameModifier *before,
+  GroupnameConstraint(GroupnameModifier *before,
                       GroupnameModifier *after, PassValue vt,
-                      std::string name="GroupnameScoreState %1%");
+                      std::string name="GroupnameConstraint %1%");
 
   //! Apply this modifier to all the elements after an evaluate
   void set_after_evaluate_modifier(GroupnameModifier* f) {
@@ -56,10 +57,10 @@ public:
     f_=f;
   }
 
-  IMP_SCORE_STATE(GroupnameScoreState, get_module_version_info())
+  IMP_CONSTRAINT(GroupnameConstraint, get_module_version_info())
 };
 
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_GROUPNAME_SCORE_STATE_H */
+#endif  /* IMPCORE_GROUPNAME_CONSTRAINT_H */

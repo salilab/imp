@@ -1,4 +1,8 @@
 /** \page recent Change History
+\par Week of January 1, 2010
+
+- a new base class IMP::Constraint has been added for constraints. Various
+other classes have been renamed to be consistent.
 
 \par Week of December 11
 - The interface of IMP::PairScore changed slightly to make the function signatures more uniform across various methods. Now all methods that take a pair of IMP::Particle objects take a const IMP::ParticlePair&. Previously some took that, some took an IMP::ParticlePair and some took two IMP::Particle*s. If you have an implementation of an IMP::PairScore outside of svn, you will have to update your function signatures (the compiler will tell you where). Backward compatible IMP::PairScore::evaluate() methods have been provided, so simple users of pair scores shouldn't see a difference.

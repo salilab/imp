@@ -1,5 +1,5 @@
 /**
- *  \file QuadsScoreState.cpp
+ *  \file QuadsConstraint.cpp
  *  \brief Use a QuadModifier applied to a QuadContainer to
  *  maintain an invariant
  *
@@ -10,45 +10,45 @@
  *
  */
 
-#include "IMP/core/QuadsScoreState.h"
+#include "IMP/core/QuadsConstraint.h"
 #include "IMP/internal/container_helpers.h"
 #include <utility>
 
 IMPCORE_BEGIN_NAMESPACE
 
-QuadsScoreState::QuadsScoreState(QuadContainer *c,
+QuadsConstraint::QuadsConstraint(QuadContainer *c,
                                            QuadModifier *before,
                                            QuadModifier *after,
                                            std::string name):
-  ScoreState(name), c_(c) {
+  Constraint(name), c_(c) {
   if (before) f_=before;
   if (after) af_=after;
 }
 
 
-void QuadsScoreState::do_before_evaluate()
+void QuadsConstraint::do_update_attributes()
 {
   IMP_OBJECT_LOG;
   if (!f_) return;
-  IMP_LOG(TERSE, "Begin QuadsScoreState::update" << std::endl);
+  IMP_LOG(TERSE, "Begin QuadsConstraint::update" << std::endl);
   IMP_CHECK_OBJECT(f_);
   IMP_CHECK_OBJECT(c_);
   c_->apply(f_);
-  IMP_LOG(TERSE, "End QuadsScoreState::update" << std::endl);
+  IMP_LOG(TERSE, "End QuadsConstraint::update" << std::endl);
 }
 
-void QuadsScoreState::do_after_evaluate(DerivativeAccumulator *da)
+void QuadsConstraint::do_update_derivatives(DerivativeAccumulator *da)
 {
   IMP_OBJECT_LOG;
   if (!af_) return;
-  IMP_LOG(TERSE, "Begin QuadsScoreState::after_evaluate" << std::endl);
+  IMP_LOG(TERSE, "Begin QuadsConstraint::after_evaluate" << std::endl);
   IMP_CHECK_OBJECT(af_);
   IMP_CHECK_OBJECT(c_);
-  if (da) c_->apply(af_, *da);
-  IMP_LOG(TERSE, "End QuadsScoreState::after_evaluate" << std::endl);
+  c_->apply(af_, *da);
+  IMP_LOG(TERSE, "End QuadsConstraint::after_evaluate" << std::endl);
 }
 
-ParticlesList QuadsScoreState::get_interacting_particles() const {
+ParticlesList QuadsConstraint::get_interacting_particles() const {
   ParticlesList ret0, ret1;
   if (f_) ret0 = IMP::internal::get_interacting_particles(c_.get(), f_.get());
   if (af_) ret1= IMP::internal::get_interacting_particles(c_.get(), af_.get());
@@ -57,15 +57,15 @@ ParticlesList QuadsScoreState::get_interacting_particles() const {
 }
 
 
-ObjectsTemp QuadsScoreState::get_input_objects() const {
+ObjectsTemp QuadsConstraint::get_input_objects() const {
   return ObjectsTemp(1, c_);
 }
 
-ObjectsTemp QuadsScoreState::get_output_objects() const {
+ObjectsTemp QuadsConstraint::get_output_objects() const {
   return ObjectsTemp();
 }
 
-ParticlesTemp QuadsScoreState::get_input_particles() const {
+ParticlesTemp QuadsConstraint::get_input_particles() const {
   ParticlesTemp ret;
   if (f_) {
     ret= IMP::internal::get_input_particles(c_.get(), f_.get());
@@ -91,7 +91,7 @@ ParticlesTemp QuadsScoreState::get_input_particles() const {
   return ret;
 }
 
-ParticlesTemp QuadsScoreState::get_output_particles() const {
+ParticlesTemp QuadsConstraint::get_output_particles() const {
   ParticlesTemp ret;
   if (f_) {
     ret= IMP::internal::get_output_particles(c_.get(), f_.get());
@@ -120,8 +120,8 @@ ParticlesTemp QuadsScoreState::get_output_particles() const {
   return ret;
 }
 
-void QuadsScoreState::show(std::ostream &out) const {
-  out << "QuadsScoreState base" << std::endl;
+void QuadsConstraint::show(std::ostream &out) const {
+  out << "QuadsConstraint base" << std::endl;
 }
 
 IMPCORE_END_NAMESPACE
