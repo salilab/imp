@@ -21,7 +21,8 @@ void XYZR::show(std::ostream &out) const
 
 
 void set_enclosing_sphere(XYZR out,
-                          const XYZs &v)
+                          const XYZs &v,
+                          double slack)
 {
   algebra::Sphere3Ds ss(v.size());
   for (unsigned int i=0; i< v.size(); ++i) {
@@ -33,7 +34,8 @@ void set_enclosing_sphere(XYZR out,
     ss[i]= algebra::Sphere3D(d.get_coordinates(), r);
   }
   algebra::Sphere3D s= algebra::enclosing_sphere(ss);
-  out.set_sphere(s);
+  algebra::Sphere3D s2(s.get_center(), s.get_radius()+slack);
+  out.set_sphere(s2);
 }
 
 
