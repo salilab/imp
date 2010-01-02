@@ -15,6 +15,12 @@ namespace atom {
 // since we have to fake it
 
 
+%feature("shadow") IMP::atom::Hierarchies::__iter__ %{
+def __iter__(self):
+    return IMP.DecoratorIterator(self)
+%}
+
+
 %extend IMP::atom::Hierarchies {
   IMP::atom::Hierarchy __getitem__(int index) const {
     if (index < 0) index= index+self->size();
@@ -59,6 +65,62 @@ namespace atom {
     return ret;
   }
 }
+
+
+%feature("shadow") IMP::atom::HierarchiesTemp::__iter__ %{
+def __iter__(self):
+    return IMP.DecoratorIterator(self)
+%}
+
+%extend IMP::atom::HierarchiesTemp {
+  IMP::atom::Hierarchy __getitem__(int index) const {
+    if (index < 0) index= index+self->size();
+    if (index >= static_cast<int>(self->size())) {
+       IMP_THROW("Index out of range in getitem" << index
+       << self->size(), IMP::IndexException);
+    }
+    return self->operator[](index);
+  }
+  void __setitem__(int index, IMP::atom::Hierarchy val) {
+    if (index < 0) index= index+self->size();
+    if (index >= static_cast<int>(self->size())) {
+       IMP_THROW("Index out of range in setitem" << index
+       << self->size(), IMP::IndexException);
+    }
+    self->set(index, val);
+  }
+  int __len__() const {
+    return self->size();
+  }
+  void __iter__() const {
+     //PyErr_SetString(PyExc_NotImplementedError, const_cast<char*>("No such method"));
+  }
+  void append(Decorator d) {
+    self->push_back(d);
+  }
+  IMP::atom::Hierarchies
+   __add__(const IMP::atom::HierarchiesTemp &o) const {
+    IMP::atom::Hierarchies ret(*self);
+    ret.insert(ret.end(), o.begin(), o.end());
+    return ret;
+  }
+  std::vector<IMP::atom::Hierarchy> __list__() const {
+    std::vector<IMP::atom::Hierarchy> ret(self->begin(), self->end());
+    return ret;
+  }
+  IMP::atom::HierarchiesTemp __getslice__(int b, int e) const {
+    if (e < 0) e= self->size()+e;
+    if (b < 0) b= self->size()+b;
+    IMP::atom::HierarchiesTemp ret;
+    ret.insert(ret.end(), self->begin()+b, self->begin()+e);
+    //for ( int c=b; c!= e; ++c) {
+    //   ret.push_back(self->operator[](c));
+    //}
+    return ret;
+  }
+}
+
+
 
 
 /* Wrap our own classes */
@@ -107,14 +169,14 @@ namespace IMP {
    // must go after the above headers
    %template(HierarchyVector) ::std::vector<IMP::atom::Hierarchy>;
    //%implicitconv(Hierarchies)
-   IMP_DECORATORS(Atom, Atoms, Hierarchies)
-   IMP_DECORATORS(Residue, Residues, Hierarchies)
-   IMP_DECORATORS(Fragment, Fragments, Hierarchies)
-   IMP_DECORATORS(Domain, Domains, Hierarchies)
-   IMP_DECORATORS(Chain, Chains, Hierarchies)
-   IMP_DECORATORS(Bond, Bonds, Particles)
-   IMP_DECORATORS(Bonded, Bondeds, Particles)
-   IMP_DECORATORS(Diffusion, Diffusions, core::XYZs)
-   IMP_DECORATORS(SimulationParameters, SimulationParameterss, Particles)
+   IMP_SWIG_DECORATORS(Atom, Atoms, Hierarchies)
+   IMP_SWIG_DECORATORS(Residue, Residues, Hierarchies)
+   IMP_SWIG_DECORATORS(Fragment, Fragments, Hierarchies)
+   IMP_SWIG_DECORATORS(Domain, Domains, Hierarchies)
+   IMP_SWIG_DECORATORS(Chain, Chains, Hierarchies)
+   IMP_SWIG_DECORATORS(Bond, Bonds, Particles)
+   IMP_SWIG_DECORATORS(Bonded, Bondeds, Particles)
+   IMP_SWIG_DECORATORS(Diffusion, Diffusions, core::XYZs)
+   IMP_SWIG_DECORATORS(SimulationParameters, SimulationParameterss, Particles)
   }
 }
