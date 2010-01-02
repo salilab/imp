@@ -101,7 +101,7 @@ public:
 
 IMP_OUTPUT_OPERATOR(XYZR);
 
-typedef Decorators< XYZR, XYZs > XYZRs;
+IMP_DECORATORS(XYZR, XYZs);
 
 //! Compute the distance between a pair of particles
 /** \relatesalso XYZR
@@ -113,6 +113,7 @@ inline double distance(XYZR a, XYZR b) {
 //! Set the coordinates and radius of the first to enclose the list
 /** \param[in] v The vector of XYZ or XYZR particles to enclose
     \param[out] b The one whose values should be set
+    \param[in] slack An amount to add to the radius.
     Any particle which does not have the attribute b.get_radius()
     is assumed to have a radius of 0.
 
@@ -122,7 +123,8 @@ inline double distance(XYZR a, XYZR b) {
     \relatesalso XYZR
  */
 IMPCOREEXPORT void set_enclosing_sphere(XYZR b,
-                                        const XYZs &v);
+                                        const XYZs &v,
+                                        double slack=0);
 
 //! Set the radius of the first to enclose the list
 /** \param[in] v The vector of XYZ or XYZR particles to enclose
