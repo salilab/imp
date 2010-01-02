@@ -88,10 +88,10 @@ struct MHDMatchingType
 
 } // namespace
 
-Hierarchies get_by_type(Hierarchy mhd,
+HierarchiesTemp get_by_type(Hierarchy mhd,
                         GetByType t)
 {
-  Hierarchies out;
+  HierarchiesTemp out;
   gather(mhd, MHDMatchingType(t),
          std::back_inserter(out));
   return out;
@@ -204,7 +204,7 @@ bool Hierarchy::get_is_valid(bool print_info) const {
 }
 
 Hierarchy
-create_fragment(const Hierarchies &ps)
+create_fragment(const HierarchiesTemp &ps)
 {
   IMP_USAGE_CHECK(!ps.empty(), "Need some particles",
             ValueException);
