@@ -53,14 +53,12 @@ void read_combinations(const std::string &filename, Combinations *combs,
                        const Particles &ps) {
   std::ifstream scores_file(filename.c_str());
   IMP_INTERNAL_CHECK(scores_file,"No such scores file " << filename<<std::endl);
+  IMP_LOG(VERBOSE,"reading combinations from file: " << filename<<std::endl);
   //read the file
   //int status;
   std::string line;
   //read the header line
   getline(scores_file, line);
-  //get the particles names
-  //TODO : make sure that the particle names are ok.
-
   //now parse the data
   typedef std::vector<std::string> split_vector_type;
   split_vector_type split_vec;
@@ -90,20 +88,31 @@ void read_combinations(const std::string &filename, Combinations *combs,
 void RestraintEvaluatorFromFile::calc_scores(const Combinations &comb_states,
                  CombinationValues &comb_values,
                  Restraint *r, const Particles &ps) {
+  //sort the particles by their names
+  std::map<std::string,Particle*> to_sort_ps;
+  for(Particles::const_iterator it = ps.begin(); it != ps.end(); it++) {
+    to_sort_ps[(*it)->get_value(node_name_key())]=*it;
+  }
+  Particles sorted_ps;
+  for(std::map<std::string,Particle *>::const_iterator it = to_sort_ps.begin();
+                                             it != to_sort_ps.end(); it++) {
+    sorted_ps.push_back(it->second);
+  }
+
   Combinations read_combs;
   IMP_LOG(VERBOSE,"start calculating scores from file:"
                    <<get_restraint_file(r)<<std::endl);
   std::string r_fn=get_restraint_file(r);
-  read_combinations(r_fn,&read_combs,ps);
+  read_combinations(r_fn,&read_combs,sorted_ps);
   std::string key;
   for(Combinations::const_iterator it = comb_states.begin();
       it != comb_states.end(); it++) {
     const CombState *cs = it->second;
-    key=cs->partial_key(&ps);
+    key=cs->partial_key(&sorted_ps);
     IMP_INTERNAL_CHECK(read_combs.find(key) != read_combs.end(),
               "read_combs does not have a key:"<<key<<std::endl);
     IMP_INTERNAL_CHECK(read_combs.find(key)->second != NULL,
-        "read_combs does not have a NULL value for key:"<<key<<std::endl);
+        "read_combs has a NULL value for key:"<<key<<std::endl);
     IMP_LOG(VERBOSE,"key:"<<key<<"value:"
                     <<read_combs[key]->get_total_score()<<std::endl);
     comb_values[key]=read_combs[key]->get_total_score();
