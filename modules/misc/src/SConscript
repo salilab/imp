@@ -7,6 +7,7 @@ files = [
          'RefineOncePairScore.cpp',
          'StateAdaptor.cpp',
          'attribute_statistics.cpp',
+         'interaction_graph.cpp',
         ]
 
 # Build and install the shared library:
