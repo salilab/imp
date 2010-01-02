@@ -53,12 +53,12 @@ ParticlesList CloseBipartitePairsScoreState
 }
 
 
-ObjectsTemp CloseBipartitePairsScoreState::get_input_objects() const {
-  return ObjectsTemp();
+ContainersTemp CloseBipartitePairsScoreState::get_input_containers() const {
+  return ContainersTemp();
 }
 
-ObjectsTemp CloseBipartitePairsScoreState::get_output_objects() const {
-  return ObjectsTemp();
+ContainersTemp CloseBipartitePairsScoreState::get_output_containers() const {
+  return ContainersTemp();
 }
 
 ParticlesTemp CloseBipartitePairsScoreState::get_input_particles() const {

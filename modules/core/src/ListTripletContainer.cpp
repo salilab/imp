@@ -122,8 +122,8 @@ ListTripletContainer::add_particle_triplets(const ParticleTripletsTemp &c) {
 }
 
 
-ObjectsTemp ListTripletContainer::get_input_objects() const {
-  return ObjectsTemp();
+ContainersTemp ListTripletContainer::get_input_containers() const {
+  return ContainersTemp();
 }
 
 
@@ -137,6 +137,10 @@ void ListTripletContainer::do_after_evaluate() {
 
 ParticlesTemp ListTripletContainer::get_state_input_particles() const {
   return ParticlesTemp();
+}
+
+ContainersTemp ListTripletContainer::get_state_input_containers() const {
+  return ContainersTemp();
 }
 
 IMPCORE_END_NAMESPACE

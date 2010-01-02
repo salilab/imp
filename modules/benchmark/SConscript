@@ -1,6 +1,11 @@
 Import('env')
 
 
-env.IMPModuleBuild(version="SVN",
+module_env=env.IMPModuleBuild(version="SVN",
                    required_modules=['atom', 'core', 'algebra'],
                    optional_dependencies=['CGAL'])
+
+
+#module_env.Alias('benchmark-test', module_env.IMPRun(target="benchmarks.passed",
+#                                                      source=["#/tools/imppy.sh"]+module_env['IMP_MODULE_BINS']))
+#module_env.AlwaysBuild('benchmarks.passed')

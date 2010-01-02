@@ -73,14 +73,22 @@ RigidBodyDistancePairScore
 
 ParticlesTemp
 RigidBodyDistancePairScore::get_input_particles(const ParticlePair &p) const {
-  ParticlesTemp ret(2);
-  ret[0]=p[0];
-  ret[1]=p[1];
-  ParticlesTemp ma= RigidBody(p[0]).get_members();
-  ParticlesTemp mb= RigidBody(p[1]).get_members();
-  ret.insert(ret.end(), ma.begin(), ma.end());
-  ret.insert(ret.end(), mb.begin(), mb.end());
-  return ret;
+  ParticlesTemp ret0= r0_->get_input_particles(p[0]);
+  ParticlesTemp ret1= r1_->get_input_particles(p[1]);
+  ret0.insert(ret0.end(), ret1.begin(), ret1.end());
+  ParticlesTemp ret2= r0_->get_refined(p[0]);
+  ret0.insert(ret0.end(), ret2.begin(), ret2.end());
+  ParticlesTemp ret3= r1_->get_refined(p[1]);
+  ret0.insert(ret0.end(), ret3.begin(), ret3.end());
+  return ret0;
+}
+
+ContainersTemp
+RigidBodyDistancePairScore::get_input_containers(const ParticlePair &p) const {
+  ContainersTemp ret0= r0_->get_input_containers(p[0]);
+  ContainersTemp ret1= r1_->get_input_containers(p[1]);
+  ret0.insert(ret0.end(), ret1.begin(), ret1.end());
+  return ret0;
 }
 
 

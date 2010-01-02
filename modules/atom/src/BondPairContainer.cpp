@@ -62,12 +62,22 @@ void BondPairContainer::show(std::ostream &out) const {
 
 IMP_PAIR_CONTAINER_METHODS_FROM_FOREACH(BondPairContainer);
 
-ObjectsTemp BondPairContainer::get_input_objects() const {
-  ObjectsTemp ret(get_number_of_particle_pairs()+1);
-  for (unsigned int i=0; i< ret.size(); ++i) {
-    ret[i]= sc_->get_particle(i);
+ParticlesTemp BondPairContainer::get_contained_particles() const {
+  ParticlesTemp ret(3*sc_->get_number_of_particles());
+  for (unsigned int i=0; i< sc_->get_number_of_particles(); ++i) {
+    ret[i*3]= sc_->get_particle(i);
+    ret[i*3+1]= Bond(sc_->get_particle(i)).get_bonded(0);
+    ret[i*3+2]= Bond(sc_->get_particle(i)).get_bonded(1);
   }
-  ret.back()= sc_;
+  return ret;
+}
+
+bool BondPairContainer::get_contained_particles_changed() const {
+  return sc_->get_contained_particles_changed();
+}
+
+ContainersTemp BondPairContainer::get_input_containers() const {
+  ContainersTemp ret(1, sc_);
   return ret;
 }
 

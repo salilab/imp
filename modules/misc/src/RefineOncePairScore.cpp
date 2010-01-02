@@ -78,6 +78,14 @@ ParticlesTemp RefineOncePairScore
 }
 
 
+ContainersTemp RefineOncePairScore
+::get_input_containers(const ParticlePair &p) const {
+  ContainersTemp ret= r_->get_input_containers(p[0]);
+  ContainersTemp ret1= r_->get_input_containers(p[1]);
+  ret.insert(ret.end(), ret1.begin(), ret1.end());
+  return ret;
+}
+
 void RefineOncePairScore::show(std::ostream &out) const
 {
   out << "RefineOncePairScore using ";

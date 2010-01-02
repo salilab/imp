@@ -10,7 +10,6 @@
 
 #include "../config.h"
 #include "../Particle.h"
-#include "../Interaction.h"
 #include <boost/format.hpp>
 #include <algorithm>
 #include <sstream>

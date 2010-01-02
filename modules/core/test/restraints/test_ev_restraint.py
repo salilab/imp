@@ -10,6 +10,7 @@ class AngleRestraintTests(IMP.test.TestCase):
     """Tests for angle restraints"""
     def test_ev(self):
         """Testing excluded volume restraint"""
+        IMP.set_log_level(IMP.VERBOSE)
         m= IMP.Model()
         print "read"
         p0= IMP.atom.read_pdb(self.get_input_file_name("input.pdb"), m)

@@ -38,23 +38,6 @@ RigidClosePairsFinder
 }
 
 
-RigidClosePairsFinder::RigidClosePairsFinder():
-  r_(new RigidMembersRefiner()){
-#ifdef IMP_USE_CGAL
-  cpf_=Pointer<ClosePairsFinder>(new BoxSweepClosePairsFinder());
-#else
-  cpf_=Pointer<ClosePairsFinder>(new GridClosePairsFinder());
-#endif
-  k_= internal::get_rigid_body_hierarchy_key(r_);
-}
-RigidClosePairsFinder
-::RigidClosePairsFinder(ClosePairsFinder *cpf):
-  cpf_(cpf),
-  r_(new RigidMembersRefiner()){
-  k_= internal::get_rigid_body_hierarchy_key(r_);
-}
-
-
 
 namespace {
   void check_particles(SingletonContainer *sc) {
@@ -158,14 +141,33 @@ void RigidClosePairsFinder::show(std::ostream &out) const {
 namespace {
   ParticlesTemp fill_list(Refiner *r, SingletonContainer *sc) {
     ParticlesTemp ret=sc->get_particles();
-    ParticlesTemp members;
+    ParticlesTemp ret2;
     for (unsigned int i=0; i< ret.size(); ++i) {
       if (RigidBody::particle_is_instance(ret[i])) {
         ParticlesTemp m= r->get_input_particles(ret[i]);
-        members.insert(members.end(), m.begin(), m.end());
+        ParticlesTemp rm= r->get_refined(ret[i]);
+        m.insert(m.end(), rm.begin(), rm.end());
+        IMP_LOG(VERBOSE, "Used particles for " << ret[i]->get_name() << " are "
+                << Particles(m) << std::endl);
+        ret2.insert(ret2.end(), m.begin(), m.end());
+      } else {
+        ret2.push_back(ret[i]);
       }
     }
-    ret.insert(ret.end(), members.begin(), members.end());
+    ret.insert(ret.end(), ret2.begin(), ret2.end());
+   IMP_LOG(VERBOSE, "Input particles are " << Particles(ret) << std::endl);
+    return ret;
+  }
+
+  ContainersTemp fill_containers(Refiner *r, SingletonContainer *sc) {
+    ContainersTemp ret(1, sc);
+    for (unsigned int i=0; i< sc->get_number_of_particles(); ++i) {
+      if (RigidBody::particle_is_instance(sc->get_particle(i))) {
+        ContainersTemp m= r->get_input_containers(sc->get_particle(i));
+        ret.insert(ret.end(), m.begin(), m.end());
+      }
+    }
+    IMP_LOG(VERBOSE, "Input containers are " << Containers(ret) << std::endl);
     return ret;
   }
 }
@@ -195,5 +197,23 @@ RigidClosePairsFinder::get_moved_singleton_container(SingletonContainer *in,
     internal::SaveMovedValues<internal::SaveXYZRRotValues>,
     internal::ListXYZRRotMovedParticles>(m, in, threshold);
 }
+
+
+
+ContainersTemp
+RigidClosePairsFinder::get_input_containers(SingletonContainer *sc) const {
+  ContainersTemp ret= fill_containers(r_, sc);
+  return ret;
+}
+
+ContainersTemp
+RigidClosePairsFinder::get_input_containers(SingletonContainer *a,
+                                           SingletonContainer *b) const {
+  ContainersTemp ret= fill_containers(r_, a);
+  ContainersTemp retp= fill_containers(r_, b);
+  ret.insert(ret.end(), retp.begin(), retp.end());
+  return ret;
+}
+
 
 IMPCORE_END_NAMESPACE

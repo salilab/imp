@@ -76,6 +76,28 @@ struct IsInactive {
   }
 };
 
+template <class VT>
+ParticlesTemp flatten(const VT &in) {
+  typedef typename VT::value_type T;
+  ParticlesTemp ret(in.size()*T::get_dimension());
+  for (unsigned int i=0; i< in.size(); ++i) {
+    for (unsigned int j=0; j< T::get_dimension(); ++j) {
+      ret[i*T::get_dimension()+j]= in[i][j];
+    }
+  }
+  return ret;
+}
+
+inline const ParticlesTemp& flatten(const ParticlesTemp &in) {
+  return in;
+}
+
+inline const ParticlesTemp& flatten(const Particles &in) {
+  return in;
+}
+
+
+
 inline const Particle& streamable(Particle *p) {
   return *p;
 }
@@ -105,6 +127,18 @@ ParticlesTemp get_input_particles(C *sc,
   ParticlesTemp ret;
   for (unsigned int i=0; i< sc->get_number(); ++i) {
     ParticlesTemp t= f->get_input_particles(sc->get(i));
+    ret.insert(ret.end(), t.begin(), t.end());
+  }
+  return ret;
+}
+
+
+template <class C, class F>
+ContainersTemp get_input_containers(C *sc,
+                                  F *f) {
+  ContainersTemp ret;
+  for (unsigned int i=0; i< sc->get_number(); ++i) {
+    ContainersTemp t= f->get_input_containers(sc->get(i));
     ret.insert(ret.end(), t.begin(), t.end());
   }
   return ret;
@@ -159,19 +193,20 @@ inline std::string get_name(const ParticleTuple<D>& p) {
   void set_model(Model *m);                                     \
   bool get_has_model() const { return ticker_.get_is_set();}    \
   ParticlesTemp get_state_input_particles() const;              \
+  ContainersTemp get_state_input_containers() const;            \
 
 #define IMP_ACTIVE_CONTAINER_DEF(Name)                                  \
   void Name::Ticker::do_before_evaluate() {                             \
     back_->do_before_evaluate();                                        \
   }                                                                     \
-  void Name::Ticker::do_after_evaluate(DerivativeAccumulator*) {         \
+  void Name::Ticker::do_after_evaluate(DerivativeAccumulator*) {        \
     back_->do_after_evaluate();                                         \
   }                                                                     \
-  ObjectsTemp Name::Ticker::get_input_objects() const {                 \
-    return ObjectsTemp();                                               \
+  ContainersTemp Name::Ticker::get_input_containers() const {           \
+    return back_->get_state_input_containers();                        \
   }                                                                     \
-  ObjectsTemp Name::Ticker::get_output_objects() const {                \
-    return ObjectsTemp(1, back_);                                       \
+  ContainersTemp Name::Ticker::get_output_containers() const {          \
+    return ContainersTemp(1, back_);                                    \
   }                                                                     \
   ParticlesTemp Name::Ticker::get_input_particles() const {             \
     return back_->get_state_input_particles();                          \

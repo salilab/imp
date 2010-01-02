@@ -117,6 +117,10 @@ public:
       methods below to manipulate the list of ScoreState objects.
 
       The value type for the iterators is a ScoreState*.
+
+      \note The order of addition of ScoreState objects does not matter.
+
+      \advancedmethods
   */
   /**@{*/
   IMP_LIST(public, ScoreState, score_state, ScoreState*, ScoreStates);
@@ -233,6 +237,10 @@ public:
 
  //! Evaluate a subset of the restraints
  /** The passed restraints must have been added to this model already.
+
+     \note Not all ScoreStates are updated during this call, only the
+     ones which are needed to make sure the particles read by the
+     restraints are up-to-date.
   */
  virtual Float evaluate(const RestraintsTemp &restraints, bool calc_derivs);
 

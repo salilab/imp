@@ -15,7 +15,7 @@
 #include "DerivativeAccumulator.h"
 #include "VersionInfo.h"
 #include "utility.h"
-#include "Interaction.h"
+#include "Container.h"
 
 #include <iostream>
 
@@ -51,7 +51,7 @@ class Model;
 
     Implementors should see IMP_SCORE_STATE().
  */
-class IMPEXPORT ScoreState : public Interaction
+class IMPEXPORT ScoreState : public Object
 {
   friend class Model;
  protected:
@@ -74,6 +74,24 @@ public:
                "Must call set_model before get_model on state");
     return model_.get();
   }
+
+  /** \name Interactions
+      Certain sorts of operations, such as evaluation of restraints in
+      isolation, benifit from being able to determine which containers
+      and particles are needed by which restraints.
+
+      Input and output particles are ones whose attributes are read.
+      @{
+  */
+  virtual ContainersTemp get_input_containers() const=0;
+  virtual ContainersTemp get_output_containers() const=0;
+  /** Given that the containers are up to date.*/
+  virtual ParticlesTemp get_input_particles() const=0;
+  /** Given that the containers are up to date.*/
+  virtual ParticlesTemp get_output_particles() const=0;
+  virtual ParticlesList get_interacting_particles() const=0;
+  /** @} */
+
 
 protected:
   // Update the state given the current state of the model.

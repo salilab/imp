@@ -48,4 +48,9 @@ AttributeSingletonScore::get_input_particles(Particle* p) const {
   return ParticlesTemp(1, p);
 }
 
+ContainersTemp
+AttributeSingletonScore::get_input_containers(Particle* p) const {
+  return ContainersTemp();
+}
+
 IMPCORE_END_NAMESPACE

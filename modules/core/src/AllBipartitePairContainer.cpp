@@ -113,12 +113,27 @@ void AllBipartitePairContainer::show(std::ostream &out) const {
 }
 
 
-ObjectsTemp AllBipartitePairContainer::get_input_objects() const {
-  ObjectsTemp ret(2);
+ContainersTemp AllBipartitePairContainer::get_input_containers() const {
+  ContainersTemp ret(2);
   ret[0]=a_;
   ret[1]=b_;
   return ret;
 }
+
+
+ParticlesTemp AllBipartitePairContainer::get_contained_particles() const {
+  ParticlesTemp ret= a_->get_contained_particles();
+  ParticlesTemp b= b_->get_contained_particles();
+  ret.insert(ret.end(), b.begin(), b.end());
+  return ret;
+}
+
+bool AllBipartitePairContainer::get_contained_particles_changed() const {
+  return a_->get_contained_particles_changed()
+    || b_->get_contained_particles_changed();
+}
+
+
 
 IMP_PAIR_CONTAINER_METHODS_FROM_FOREACH(AllBipartitePairContainer);
 

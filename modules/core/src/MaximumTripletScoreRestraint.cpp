@@ -96,9 +96,9 @@ ParticlesTemp MaximumTripletScoreRestraint::get_input_particles() const
 }
 
 
-ObjectsTemp MaximumTripletScoreRestraint::get_input_objects() const
+ContainersTemp MaximumTripletScoreRestraint::get_input_containers() const
 {
-  return ObjectsTemp(1, c_);
+  return ContainersTemp(1, c_);
 }
 
 IMPCORE_END_NAMESPACE

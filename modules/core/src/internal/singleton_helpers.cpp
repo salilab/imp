@@ -55,9 +55,6 @@ bool ListLikeSingletonContainer
   IMP_CHECK_OBJECT(this);
   return std::binary_search(data_.begin(), data_.end(), vt);
 }
-ObjectsTemp ListLikeSingletonContainer
-::get_input_objects() const { return ObjectsTemp();}
-
 ParticlesTemp ListLikeSingletonContainer
 ::get_particles() const {
   IMP_CHECK_OBJECT(this);
@@ -77,6 +74,17 @@ VersionInfo ListLikeSingletonContainer
 void ListLikeSingletonContainer
 ::show(std::ostream &out) const {
   out << "ListLikeContainer on " << data_.size() << std::endl;
+}
+
+
+ParticlesTemp ListLikeSingletonContainer
+::get_contained_particles() const {
+  return IMP::internal::flatten(data_);
+}
+
+bool ListLikeSingletonContainer
+::get_contained_particles_changed() const {
+  return !get_added()->data_.empty() || !get_removed()->data_.empty();
 }
 
 

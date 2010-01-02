@@ -87,11 +87,11 @@ ParticlesTemp RestraintSet::get_input_particles() const
   return ret;
 }
 
-ObjectsTemp RestraintSet::get_input_objects() const {
-  ObjectsTemp ret;
+ContainersTemp RestraintSet::get_input_containers() const {
+  ContainersTemp ret;
   for (RestraintConstIterator it= restraints_begin();
        it != restraints_end(); ++it) {
-    ObjectsTemp c= (*it)->get_input_objects();
+    ContainersTemp c= (*it)->get_input_containers();
     ret.insert(ret.end(), c.begin(), c.end());
   }
   return ret;

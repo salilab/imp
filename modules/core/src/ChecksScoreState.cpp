@@ -43,12 +43,12 @@ ParticlesList ChecksScoreState::get_interacting_particles() const {
 }
 
 
-ObjectsTemp ChecksScoreState::get_input_objects() const {
-  return ObjectsTemp();
+ContainersTemp ChecksScoreState::get_input_containers() const {
+  return ContainersTemp();
 }
 
-ObjectsTemp ChecksScoreState::get_output_objects() const {
-  return ObjectsTemp();
+ContainersTemp ChecksScoreState::get_output_containers() const {
+  return ContainersTemp();
 }
 
 ParticlesTemp ChecksScoreState::get_input_particles() const {

@@ -60,6 +60,11 @@ ParticlesTemp SphereDistancePairScore
   return ret;
 }
 
+ContainersTemp SphereDistancePairScore
+::get_input_containers(const ParticlePair &p) const {
+  return ContainersTemp();
+}
+
 
 
 void SphereDistancePairScore::show(std::ostream &out) const
@@ -115,7 +120,10 @@ NormalizedSphereDistancePairScore
   ret[1]=p[1];
   return ret;
 }
-
+ContainersTemp NormalizedSphereDistancePairScore
+::get_input_containers(const ParticlePair &p) const {
+  return ContainersTemp();
+}
 
 void NormalizedSphereDistancePairScore::show(std::ostream &out) const
 {
@@ -168,6 +176,11 @@ WeightedSphereDistancePairScore::
   ret[0]=p[0];
   ret[1]=p[1];
   return ret;
+}
+
+ContainersTemp WeightedSphereDistancePairScore
+::get_input_containers(const ParticlePair &p) const {
+  return ContainersTemp();
 }
 
 void WeightedSphereDistancePairScore::show(std::ostream &out) const

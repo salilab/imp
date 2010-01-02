@@ -20,10 +20,11 @@ namespace {
 
 
 QuadContainer::QuadContainer(std::string name):
-  Interaction(internal::make_object_name(name, next_index++)){
+  Container(internal::make_object_name(name, next_index++)){
 }
 
-ParticlesList QuadContainer::get_interacting_particles() const {
-  return ParticlesList();
+// here for gcc
+QuadContainer::~QuadContainer(){
 }
+
 IMP_END_NAMESPACE

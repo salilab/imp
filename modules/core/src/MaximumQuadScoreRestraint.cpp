@@ -96,9 +96,9 @@ ParticlesTemp MaximumQuadScoreRestraint::get_input_particles() const
 }
 
 
-ObjectsTemp MaximumQuadScoreRestraint::get_input_objects() const
+ContainersTemp MaximumQuadScoreRestraint::get_input_containers() const
 {
-  return ObjectsTemp(1, c_);
+  return ContainersTemp(1, c_);
 }
 
 IMPCORE_END_NAMESPACE

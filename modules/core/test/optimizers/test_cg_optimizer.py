@@ -34,8 +34,8 @@ class WoodsFunc(IMP.Restraint):
         return e
     def get_input_particles(self):
         return IMP.ParticlesTemp([x for x in self.get_model().get_particles()])
-    def get_input_objects(self):
-        return IMP.ObjectsTemp()
+    def get_input_containers(self):
+        return IMP.ContainersTemp()
 
 
 class CGOptimizerTests(IMP.test.TestCase):

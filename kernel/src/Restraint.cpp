@@ -20,7 +20,7 @@ namespace {
 }
 
 Restraint::Restraint(std::string name):
-  Interaction(internal::make_object_name(name, restraint_index++))
+  Object(internal::make_object_name(name, restraint_index++))
 {
 }
 

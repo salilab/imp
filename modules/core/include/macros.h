@@ -33,6 +33,9 @@
   ParticlesTemp get_input_particles(SingletonContainer *pc) const;      \
   ParticlesTemp get_input_particles(SingletonContainer *a,              \
                                    SingletonContainer *b) const;        \
+  ContainersTemp get_input_containers(SingletonContainer *pc) const;    \
+  ContainersTemp get_input_containers(SingletonContainer *a,            \
+                                   SingletonContainer *b) const;        \
   IMP_OBJECT(Name, version_info)
 
 #endif  /* IMPCORE_MACROS_H */

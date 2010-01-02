@@ -51,6 +51,11 @@ DistanceToSingletonScore::get_input_particles(Particle* p) const {
   return ParticlesTemp(1, p);
 }
 
+ContainersTemp
+DistanceToSingletonScore::get_input_containers(Particle* p) const {
+  return ContainersTemp();
+}
+
 void DistanceToSingletonScore::show(std::ostream &out) const
 {
   out << "DistanceToSingletonScore using ";
@@ -83,6 +88,11 @@ SphereDistanceToSingletonScore::get_interacting_particles(Particle *) const {
 ParticlesTemp
 SphereDistanceToSingletonScore::get_input_particles(Particle* p) const {
   return ParticlesTemp(1, p);
+}
+
+ContainersTemp
+SphereDistanceToSingletonScore::get_input_containers(Particle* p) const {
+  return ContainersTemp();
 }
 
 void SphereDistanceToSingletonScore::show(std::ostream &out) const

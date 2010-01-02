@@ -26,11 +26,11 @@ private:
     QuadContainer("Added or removed container"){}
   void set_added_and_removed_containers(QuadContainer *,
                                         QuadContainer *){}
-  ListLikeQuadContainer *get_added() {
+  ListLikeQuadContainer *get_added() const {
     return dynamic_cast<ListLikeQuadContainer*>
       (get_added_quads_container());
   }
-  ListLikeQuadContainer *get_removed() {
+  ListLikeQuadContainer *get_removed() const {
     return dynamic_cast<ListLikeQuadContainer*>
       (get_removed_quads_container());
   }
@@ -119,6 +119,11 @@ public:
   }
   VersionInfo get_version_info() const;
   void show(std::ostream &out=std::cout) const;
+  bool get_contained_particles_changed() const;
+  ParticlesTemp get_contained_particles() const;
+  ContainersTemp get_input_containers() const {
+    return ContainersTemp();
+  }
 };
 
 
@@ -126,7 +131,7 @@ IMPCORE_END_INTERNAL_NAMESPACE
 
 
 #define IMP_LISTLIKE_QUAD_CONTAINER(Name, version_info) \
-  ObjectsTemp get_input_objects() const;                     \
+  ContainersTemp get_input_containers() const;               \
   IMP_OBJECT(Name, version_info);
 
 

@@ -26,11 +26,11 @@ private:
     SingletonContainer("Added or removed container"){}
   void set_added_and_removed_containers(SingletonContainer *,
                                         SingletonContainer *){}
-  ListLikeSingletonContainer *get_added() {
+  ListLikeSingletonContainer *get_added() const {
     return dynamic_cast<ListLikeSingletonContainer*>
       (get_added_singletons_container());
   }
-  ListLikeSingletonContainer *get_removed() {
+  ListLikeSingletonContainer *get_removed() const {
     return dynamic_cast<ListLikeSingletonContainer*>
       (get_removed_singletons_container());
   }
@@ -119,6 +119,11 @@ public:
   }
   VersionInfo get_version_info() const;
   void show(std::ostream &out=std::cout) const;
+  bool get_contained_particles_changed() const;
+  ParticlesTemp get_contained_particles() const;
+  ContainersTemp get_input_containers() const {
+    return ContainersTemp();
+  }
 };
 
 
@@ -126,7 +131,7 @@ IMPCORE_END_INTERNAL_NAMESPACE
 
 
 #define IMP_LISTLIKE_SINGLETON_CONTAINER(Name, version_info) \
-  ObjectsTemp get_input_objects() const;                     \
+  ContainersTemp get_input_containers() const;               \
   IMP_OBJECT(Name, version_info);
 
 

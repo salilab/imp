@@ -57,9 +57,9 @@ ParticlesTemp TripletRestraint::get_input_particles() const
   return ss_->get_input_particles(v_);
 }
 
-ObjectsTemp TripletRestraint::get_input_objects() const
+ContainersTemp TripletRestraint::get_input_containers() const
 {
-  return ObjectsTemp();
+  return ss_->get_input_containers(v_);
 }
 
 void TripletRestraint::show(std::ostream& out) const

@@ -42,13 +42,13 @@ ParticlesTemp StateAdaptor::get_output_particles() const {
   return ParticlesTemp();
 }
 
-ObjectsTemp StateAdaptor::get_input_objects() const {
-  return ObjectsTemp();
+ContainersTemp StateAdaptor::get_input_containers() const {
+  return ContainersTemp();
 }
 
 
-ObjectsTemp StateAdaptor::get_output_objects() const {
-  return ObjectsTemp();
+ContainersTemp StateAdaptor::get_output_containers() const {
+  return ContainersTemp();
 }
 
 IMPMISC_END_NAMESPACE

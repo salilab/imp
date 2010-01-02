@@ -118,8 +118,8 @@ ParticlesTemp DihedralRestraint::get_input_particles() const {
   return ret;
 }
 
-ObjectsTemp DihedralRestraint::get_input_objects() const {
-  return ObjectsTemp();
+ContainersTemp DihedralRestraint::get_input_containers() const {
+  return ContainersTemp();
 }
 
 

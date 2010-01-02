@@ -31,8 +31,8 @@ ParticlesTemp ConstantRestraint::get_input_particles() const
   return ParticlesTemp();
 }
 
-ObjectsTemp ConstantRestraint::get_input_objects() const {
-  return ObjectsTemp();
+ContainersTemp ConstantRestraint::get_input_containers() const {
+  return ContainersTemp();
 }
 
 

@@ -18,7 +18,7 @@
 #include "log.h"
 #include "utility.h"
 #include "container_macros.h"
-#include "Interaction.h"
+#include "Container.h"
 
 #include <vector>
 #include <iostream>
@@ -55,7 +55,7 @@ class Model;
     See the examples::ExampleRestraint  example for how to implement
     a simple restraint and see IMP_RESTRAINT().
  */
-class IMPEXPORT Restraint : public Interaction
+class IMPEXPORT Restraint : public Object
 {
 public:
   Restraint(std::string name="Restraint %1%");
@@ -141,6 +141,18 @@ public:
   ParticlesTemp get_output_particles() const {
     return ParticlesTemp();
   }
+
+  /** \name Interactions
+      Certain sorts of operations, such as evaluation of restraints in
+      isolation, benifit from being able to determine which containers
+      and particles are needed by which restraints.
+      @{
+  */
+  virtual ContainersTemp get_input_containers() const=0;
+  /** Given that the containers are up to date.*/
+  virtual ParticlesTemp get_input_particles() const=0;
+  virtual ParticlesList get_interacting_particles() const=0;
+  /** @} */
 
   IMP_REF_COUNTED_DESTRUCTOR(Restraint);
 private:

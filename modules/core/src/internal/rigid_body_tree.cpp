@@ -84,7 +84,8 @@ RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
                                        Refiner *r): rb_(d), r_(r) {
   IMP_LOG(TERSE, "Building rigid body hierarchy for particle "
           << d.get_particle()->get_name() << " with refiner "
-          << r->get_name() << std::endl);
+          << r->get_name() << " and particles " << Particles(r->get_refined(d))
+          << std::endl);
   tree_.push_back(Data());
   set_name(std::string("Rigid body hierachy for particle "
                        + d.get_particle()->get_name()));

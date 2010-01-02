@@ -40,6 +40,11 @@ ParticlesTemp DistancePairScore
   return t;
 }
 
+ContainersTemp DistancePairScore
+::get_input_containers(const ParticlePair &p) const {
+  return ContainersTemp();
+}
+
 
 void DistancePairScore::show(std::ostream &out) const
 {

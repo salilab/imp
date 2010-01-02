@@ -57,7 +57,7 @@ RefinedPairsPairScore::get_interacting_particles(const ParticlePair &p) const {
 
 ParticlesTemp
 RefinedPairsPairScore::get_input_particles(const ParticlePair &p) const {
-  Particles ps[2]={get_set(p[0], r_), get_set(p[1], r_)};
+  ParticlesTemp ps[2]={get_set(p[0], r_), get_set(p[1], r_)};
   ParticlesTemp ret;
   for (unsigned int i=0; i< ps[0].size(); ++i) {
     for (unsigned int j=0; j< ps[1].size(); ++j) {
@@ -69,6 +69,19 @@ RefinedPairsPairScore::get_input_particles(const ParticlePair &p) const {
   }
   ret.push_back(p[0]);
   ret.push_back(p[1]);
+  ParticlesTemp i0= r_->get_input_particles(p[0]);
+  ParticlesTemp i1= r_->get_input_particles(p[1]);
+  ret.insert(ret.end(), i0.begin(), i0.end());
+  ret.insert(ret.end(), i1.begin(), i1.end());
+  return ret;
+}
+
+
+ContainersTemp
+RefinedPairsPairScore::get_input_containers(const ParticlePair &p) const {
+  ContainersTemp ret= r_->get_input_containers(p[0]);
+  ContainersTemp i1= r_->get_input_containers(p[1]);
+  ret.insert(ret.end(), i1.begin(), i1.end());
   return ret;
 }
 

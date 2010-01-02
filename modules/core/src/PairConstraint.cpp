@@ -53,18 +53,20 @@ ParticlesList PairConstraint::get_interacting_particles() const {
   return ret0;
 }
 
-ObjectsTemp PairConstraint::get_input_objects() const {
-  return ObjectsTemp();
+ContainersTemp PairConstraint::get_input_containers() const {
+  return ContainersTemp();
 }
 
-ObjectsTemp PairConstraint::get_output_objects() const {
-  return ObjectsTemp();
+ContainersTemp PairConstraint::get_output_containers() const {
+  return ContainersTemp();
 }
 
 ParticlesTemp PairConstraint::get_input_particles() const {
   ParticlesTemp ret;
   if (f_) {
     ret= f_->get_input_particles(v_);
+    ParticlesTemp o= f_->get_output_particles(v_);
+    ret.insert(ret.end(), o.begin(), o.end());
     IMP_IF_CHECK(USAGE) {
       if (af_) {
         ParticlesTemp oret= af_->get_input_particles(v_);
@@ -73,10 +75,16 @@ ParticlesTemp PairConstraint::get_input_particles() const {
         ParticlesTemp t;
         std::set_union(ret.begin(), ret.end(), oret.begin(), oret.end(),
                        std::back_inserter(t));
-        IMP_USAGE_CHECK(t.size() == ret.size(), "The particles written by "
-                        << " the after modifier in " << get_name() << " must "
-                        << "be a subset of those read by the before modifier.",
-                        UsageException);
+        IMP_IF_CHECK(USAGE) {
+          if (t.size() != ret.size()) {
+            IMP_THROW("The particles written by "
+                      << " the after modifier in " << get_name() << " must "
+                      << "be a subset of those read by the before "
+                      << "modifier. Before: " << Particles(ret) << " and after "
+                      << Particles(oret),
+                      UsageException);
+          }
+        }
       }
     }
   } else {

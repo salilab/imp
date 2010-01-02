@@ -93,7 +93,8 @@ int main() {
       rbsp.set(i, rbs[i].get_particle());
     }
     lsc->set_particles(rbsp);
-    IMP_NEW(RigidClosePairsFinder, rcps, ());
+    IMP_NEW(RigidClosePairsFinder, rcps,
+            (new LeavesRefiner(atom::Hierarchy::get_traits())));
     cpss->set_close_pairs_finder(rcps);
     //std::cout << "Hierarchy:" << std::endl;
     test_one("hierarchy", m, rbs, 100);

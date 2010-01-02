@@ -13,8 +13,8 @@ class DummyRestraint(IMP.Restraint):
         return IMP.VersionInfo("Me", "0.5")
     def get_input_particles(self):
         return IMP.ParticlesTemp()
-    def get_input_objects(self):
-        return IMP.ObjectsTemp()
+    def get_input_containers(self):
+        return IMP.ContainersTemp()
 
 
 class CustomError(Exception):
@@ -30,8 +30,8 @@ class FailingRestraint(IMP.Restraint):
         return IMP.VersionInfo("Me", "0.5")
     def get_input_particles(self):
         return IMP.ParticlesTemp()
-    def get_input_objects(self):
-        return IMP.ObjectsTemp()
+    def get_input_containers(self):
+        return IMP.ContainersTemp()
 
 
 

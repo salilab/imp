@@ -12,7 +12,8 @@
 IMPCORE_BEGIN_NAMESPACE
 
 LeavesRefiner
-::LeavesRefiner(HierarchyTraits traits): traits_(traits)
+::LeavesRefiner(HierarchyTraits traits):
+  Refiner("LeavesRefiner%d"), traits_(traits)
 {
 }
 
@@ -63,10 +64,12 @@ namespace {
 }
 
 ParticlesTemp LeavesRefiner::get_input_particles(Particle *p) const {
-  core::Hierarchy h(p, traits_);
-  ParticlesTemp ret;
-  gather(h, Yes(), std::back_inserter(ret));
-  return ret;
+  return ParticlesTemp();
+}
+
+ContainersTemp LeavesRefiner::get_input_containers(Particle *p) const {
+  GenericHierarchiesTemp t=get_all_descendants(Hierarchy(p, traits_));
+  return ContainersTemp(t.begin(), t.end());
 }
 
 

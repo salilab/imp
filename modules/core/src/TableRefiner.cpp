@@ -11,7 +11,7 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-TableRefiner::TableRefiner( ){
+TableRefiner::TableRefiner( ): Refiner("TableRefiner%d"){
 }
 
 void TableRefiner::show(std::ostream &out) const {
@@ -68,6 +68,10 @@ ParticlesTemp TableRefiner::get_input_particles(Particle *p) const {
   ParticlesTemp ret= get_refined(p);
   ret.push_back(p);
   return ret;
+}
+
+ContainersTemp TableRefiner::get_input_containers(Particle *p) const {
+  return ContainersTemp();
 }
 
 

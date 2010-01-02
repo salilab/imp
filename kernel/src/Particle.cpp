@@ -36,7 +36,7 @@ namespace {
 
 
 Particle::Particle(Model *m, std::string name):
-  Object(internal::make_object_name(name, particle_index++)),
+  Container(internal::make_object_name(name, particle_index++)),
   ps_(new internal::ParticleStorage())
 {
   m->add_particle_internal(this);
@@ -180,6 +180,19 @@ void Particle::teardown_incremental() {
   ps_->shadow_=NULL;
 }
 
+
+ContainersTemp Particle::get_input_containers() const {return ContainersTemp();}
+bool Particle::get_contained_particles_changed() const {
+  return false;
+}
+ParticlesTemp Particle::get_contained_particles() const {
+  ParticlesTemp ret;
+  for (ParticleKeyIterator it= particle_keys_begin();
+       it != particle_keys_end(); ++it) {
+    ret.push_back(get_value(*it));
+  }
+  return ret;
+}
 
 
 namespace {

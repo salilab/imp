@@ -90,6 +90,11 @@ ParticlesTemp AngleTripletScore
   return t;
 }
 
+ContainersTemp AngleTripletScore
+::get_input_containers(const ParticleTriplet &p) const {
+  return ContainersTemp();
+}
+
 void AngleTripletScore::show(std::ostream &out) const
 {
   out << "AngleTripletScore using ";

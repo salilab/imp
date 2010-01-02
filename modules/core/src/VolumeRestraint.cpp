@@ -173,7 +173,7 @@ void VolumeRestraint::show(std::ostream &out) const {
 }
 
 ParticlesList VolumeRestraint::get_interacting_particles() const {
-  return sc_->get_interacting_particles();
+  return ParticlesList(1,sc_->get_contained_particles());
 }
 
 ParticlesTemp VolumeRestraint::get_input_particles() const {
@@ -181,8 +181,8 @@ ParticlesTemp VolumeRestraint::get_input_particles() const {
 }
 
 
-ObjectsTemp VolumeRestraint::get_input_objects() const {
-  return ObjectsTemp(1, sc_);
+ContainersTemp VolumeRestraint::get_input_containers() const {
+  return ContainersTemp(1, sc_);
 }
 
 

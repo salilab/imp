@@ -42,7 +42,7 @@
     The compare function should take a const This & and return -1, 0, 1 as
     appropriate.
     \advanced
- */
+*/
 #define IMP_COMPARISONS
 #else
 #define IMP_COMPARISONS                                                 \
@@ -67,36 +67,36 @@
   IMP_NO_SWIG(template <class T> friend int compare(const T&a, const T&b));
 #endif
 
-#ifdef IMP_DOXYGEN                                                         \
-//! Implement comparison in a class using field as the variable to compare
+#ifdef IMP_DOXYGEN                                                      \
+  //! Implement comparison in a class using field as the variable to compare
 /** The macro requires that This be defined as the type of the current class.
     \advanced
- */
+*/
 #define IMP_COMPARISONS_1(field)
 #else
-#define IMP_COMPARISONS_1(field)                                        \
-  bool operator==(const This &o) const {                                \
-    return (field== o.field);                                           \
-  }                                                                     \
-  bool operator!=(const This &o) const {                                \
-    return (field!= o.field);                                           \
-  }                                                                     \
-  bool operator<(const This &o) const {                                 \
-    return (field< o.field);                                            \
-  }                                                                     \
-  bool operator>(const This &o) const {                                 \
-    return (field> o.field);                                            \
-  }                                                                     \
-  bool operator>=(const This &o) const {                                \
-    return (field>= o.field);                                           \
-  }                                                                     \
-  bool operator<=(const This &o) const {                                \
-    return (field<= o.field);                                           \
-  }                                                                     \
-  int compare(const This &o) const {                                    \
-    if (operator<(o)) return -1;                                        \
-    else if (operator>(o)) return 1;                                    \
-    else return 0;                                                      \
+#define IMP_COMPARISONS_1(field)                \
+  bool operator==(const This &o) const {        \
+    return (field== o.field);                   \
+  }                                             \
+  bool operator!=(const This &o) const {        \
+    return (field!= o.field);                   \
+  }                                             \
+  bool operator<(const This &o) const {         \
+    return (field< o.field);                    \
+  }                                             \
+  bool operator>(const This &o) const {         \
+    return (field> o.field);                    \
+  }                                             \
+  bool operator>=(const This &o) const {        \
+    return (field>= o.field);                   \
+  }                                             \
+  bool operator<=(const This &o) const {        \
+    return (field<= o.field);                   \
+  }                                             \
+  int compare(const This &o) const {            \
+    if (operator<(o)) return -1;                \
+    else if (operator>(o)) return 1;            \
+    else return 0;                              \
   }
 
 #endif
@@ -105,36 +105,36 @@
 //! Implement comparison in a class using field as the variable to compare
 /** The macro requires that This be defined as the type of the current class.
     \advanced
- */
+*/
 #define IMP_COMPARISONS_2(f0, f1)
 #else
-#define IMP_COMPARISONS_2(f0, f1)                                       \
-  bool operator==(const This &o) const {                                \
-    return (f0== o.f0 && f1==o.f1);                                     \
-  }                                                                     \
-  bool operator!=(const This &o) const {                                \
-    return (f0!= o.f0 || f1 != o.f1);                                   \
-  }                                                                     \
-  bool operator<(const This &o) const {                                 \
-    if (f0< o.f0) return true;                                          \
-    else if (f0 > o.f0) return false;                                   \
-    else return f1 < o.f1;                                              \
-  }                                                                     \
-  bool operator>(const This &o) const {                                 \
-    if (f0 > o.f0) return true;                                         \
-    else if (f0 < o.f0) return false;                                   \
-    else return f1 > o.f1;                                              \
-  }                                                                     \
-  bool operator>=(const This &o) const {                                \
-    return operator>(o) || operator==(o);                               \
-  }                                                                     \
-  bool operator<=(const This &o) const {                                \
-    return operator<(o) || operator==(o);                               \
-  }                                                                     \
-  int compare(const This &o) const {                                    \
-    if (operator<(o)) return -1;                                        \
-    else if (operator>(o)) return 1;                                    \
-    else return 0;                                                      \
+#define IMP_COMPARISONS_2(f0, f1)               \
+  bool operator==(const This &o) const {        \
+    return (f0== o.f0 && f1==o.f1);             \
+  }                                             \
+  bool operator!=(const This &o) const {        \
+    return (f0!= o.f0 || f1 != o.f1);           \
+  }                                             \
+  bool operator<(const This &o) const {         \
+    if (f0< o.f0) return true;                  \
+    else if (f0 > o.f0) return false;           \
+    else return f1 < o.f1;                      \
+  }                                             \
+  bool operator>(const This &o) const {         \
+    if (f0 > o.f0) return true;                 \
+    else if (f0 < o.f0) return false;           \
+    else return f1 > o.f1;                      \
+  }                                             \
+  bool operator>=(const This &o) const {        \
+    return operator>(o) || operator==(o);       \
+  }                                             \
+  bool operator<=(const This &o) const {        \
+    return operator<(o) || operator==(o);       \
+  }                                             \
+  int compare(const This &o) const {            \
+    if (operator<(o)) return -1;                \
+    else if (operator>(o)) return 1;            \
+    else return 0;                              \
   }
 #endif
 
@@ -143,40 +143,40 @@
 //! Implement comparison in a class using field as the variable to compare
 /** The macro requires that This be defined as the type of the current class.
     \advanced
- */
+*/
 #define IMP_COMPARISONS_3(f0, f1, f2)
 #else
-#define IMP_COMPARISONS_3(f0, f1, f2)                                   \
-  bool operator==(const This &o) const {                                \
-    return (f0== o.f0 && f1==o.f1 && f2 == o.f2);                       \
-  }                                                                     \
-  bool operator!=(const This &o) const {                                \
-    return (f0!= o.f0 || f1 != o.f1 || f2 != o.f2);                     \
-  }                                                                     \
-  bool operator<(const This &o) const {                                 \
-    if (f0< o.f0) return true;                                          \
-    else if (f0 > o.f0) return false;                                   \
-    if (f1< o.f1) return true;                                          \
-    else if (f1 > o.f1) return false;                                   \
-    else return f2 < o.f2;                                              \
-  }                                                                     \
-  bool operator>(const This &o) const {                                 \
-    if (f0 > o.f0) return true;                                         \
-    else if (f0 < o.f0) return false;                                   \
-    if (f1 > o.f1) return true;                                         \
-    else if (f1 < o.f1) return false;                                   \
-    else return f2 > o.f2;                                              \
-  }                                                                     \
-  bool operator>=(const This &o) const {                                \
-    return operator>(o) || operator==(o);                               \
-  }                                                                     \
-  bool operator<=(const This &o) const {                                \
-    return operator<(o) || operator==(o);                               \
-  }                                                                     \
-  int compare(const This &o) const {                                    \
-    if (operator<(o)) return -1;                                        \
-    else if (operator>(o)) return 1;                                    \
-    else return 0;                                                      \
+#define IMP_COMPARISONS_3(f0, f1, f2)                   \
+  bool operator==(const This &o) const {                \
+    return (f0== o.f0 && f1==o.f1 && f2 == o.f2);       \
+  }                                                     \
+  bool operator!=(const This &o) const {                \
+    return (f0!= o.f0 || f1 != o.f1 || f2 != o.f2);     \
+  }                                                     \
+  bool operator<(const This &o) const {                 \
+    if (f0< o.f0) return true;                          \
+    else if (f0 > o.f0) return false;                   \
+    if (f1< o.f1) return true;                          \
+    else if (f1 > o.f1) return false;                   \
+    else return f2 < o.f2;                              \
+  }                                                     \
+  bool operator>(const This &o) const {                 \
+    if (f0 > o.f0) return true;                         \
+    else if (f0 < o.f0) return false;                   \
+    if (f1 > o.f1) return true;                         \
+    else if (f1 < o.f1) return false;                   \
+    else return f2 > o.f2;                              \
+  }                                                     \
+  bool operator>=(const This &o) const {                \
+    return operator>(o) || operator==(o);               \
+  }                                                     \
+  bool operator<=(const This &o) const {                \
+    return operator<(o) || operator==(o);               \
+  }                                                     \
+  int compare(const This &o) const {                    \
+    if (operator<(o)) return -1;                        \
+    else if (operator>(o)) return 1;                    \
+    else return 0;                                      \
   }
 #endif
 
@@ -192,6 +192,10 @@
   {                                                                     \
     i.show(out);                                                        \
     return out;                                                         \
+  }                                                                     \
+  template <class L>                                                    \
+  inline void show(std::ostream &out, const name<L, M> &i)              \
+    i.show(out);                                                        \
   }
 #endif
 
@@ -207,6 +211,10 @@
   {                                                                     \
     i.show(out);                                                        \
     return out;                                                         \
+  }                                                                     \
+  template <class L, class M>                                           \
+  inline void show(std::ostream &out, const name<L, M> &i)              \
+    i.show(out);                                                        \
   }
 #endif
 
@@ -214,19 +222,18 @@
 //! Implement operator<< on class name
 /** The class named should define the method
     \c void \c show(std::ostream&).
-<<<<<<< .mine
     \advanced
 */
-=======
- */
->>>>>>> .r4362
 #define IMP_OUTPUT_OPERATOR(name)
 #else
 #define IMP_OUTPUT_OPERATOR(name)                                       \
   inline std::ostream &operator<<(std::ostream &out, const name &i)     \
   {                                                                     \
-    i.show(out);                                                 \
-    return out;                                                  \
+    i.show(out);                                                        \
+    return out;                                                         \
+  }                                                                     \
+  inline void show(std::ostream &out, const name &i) {                  \
+    i.show(out);                                                        \
   }
 #endif
 
@@ -235,20 +242,20 @@
 //! Implement operator<< on class name templated by the dimension
 /** The class named should define the method
     \c void \c show(std::ostream&).
-<<<<<<< .mine
     \advanced
 */
-=======
- */
->>>>>>> .r4362
 #define IMP_OUTPUT_OPERATOR_D(name)
 #else
-#define IMP_OUTPUT_OPERATOR_D(name)                                       \
+#define IMP_OUTPUT_OPERATOR_D(name)                                     \
   template <unsigned int D>                                             \
   inline std::ostream &operator<<(std::ostream &out, const name<D> &i)  \
   {                                                                     \
     i.show(out);                                                        \
     return out;                                                         \
+  }                                                                     \
+  template <unsigned int D>                                             \
+  void show(std::ostream &out, const name<D> &i) {                      \
+    i.show(out);                                                        \
   }
 #endif
 
@@ -278,10 +285,10 @@
   inline void swap(Name<A> &a, Name<A> &b) {a.swap_with(b);}
 
 
-#define IMP_SWAP_2(Name)                          \
-  template <class A, class B>                     \
-  inline void swap(Name<A,B> &a, Name<A,B> &b) {  \
-    a.swap_with(b);                               \
+#define IMP_SWAP_2(Name)                                \
+  template <class A, class B>                           \
+  inline void swap(Name<A,B> &a, Name<A,B> &b) {        \
+    a.swap_with(b);                                     \
   }
 
 #define IMP_SWAP_3(Name)                                \
@@ -296,8 +303,8 @@
 //! swap two member variables assuming the other object is called o
 /** Swap the member \c var_name of the two objects (this and o).
     \advanced
- */
-#define IMP_SWAP_MEMBER(var_name) \
+*/
+#define IMP_SWAP_MEMBER(var_name)               \
   std::swap(var_name, o.var_name);
 
 
@@ -313,14 +320,9 @@
     (\external{en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization,
     wikipedia entry}).
 
-<<<<<<< .mine
     \advanced
 */
 #define IMP_COPY_CONSTRUCTOR(TC) TC(const TC &o){copy_from(o);} \
-=======
- */
-#define IMP_COPY_CONSTRUCTOR(TC) TC(const TC &o){copy_from(o);}  \
->>>>>>> .r4362
   TC& operator=(const TC &o) {copy_from(o); return *this;}
 
 
@@ -336,7 +338,7 @@
 
     \see IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR
     \see IMP::RefCounted
- */
+*/
 #define IMP_REF_COUNTED_DESTRUCTOR(Name)
 /** Like IMP_REF_COUNTED_DESTRUCTOR, but the destructor is only
     declared, not defined.
@@ -346,40 +348,40 @@
 
 #ifdef _MSC_VER
 // VC doesn't understand friends properly
-#define IMP_REF_COUNTED_DESTRUCTOR(Name)                        \
-public:                                                         \
- virtual ~Name(){}
+#define IMP_REF_COUNTED_DESTRUCTOR(Name)        \
+  public:                                       \
+  virtual ~Name(){}
 
-#define IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Name)             \
-public:                                                         \
- virtual ~Name()
+#define IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Name)     \
+  public:                                               \
+  virtual ~Name()
 
 #else
 
 #if defined(SWIG) || defined(IMP_SWIG_WRAPPER)
 // SWIG doesn't do friends right either, but we don't care as much
-#define IMP_REF_COUNTED_DESTRUCTOR(Name)                     \
-public:                                                      \
- virtual ~Name(){}
+#define IMP_REF_COUNTED_DESTRUCTOR(Name)        \
+  public:                                       \
+  virtual ~Name(){}
 #define IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Name)     \
   public:                                               \
- virtual ~Name()
+  virtual ~Name()
 
 
 #else
 /* The destructor is unprotected for SWIG since if it is protected
-    SWIG does not wrap the python proxy distruction and so does not
-    dereference the ref counted pointer. Swig also gets confused
-    on template friends.
- */
-#define IMP_REF_COUNTED_DESTRUCTOR(Name)                           \
-  protected:                                                            \
-  template <class T> friend void IMP::internal::unref(T*);              \
+   SWIG does not wrap the python proxy distruction and so does not
+   dereference the ref counted pointer. Swig also gets confused
+   on template friends.
+*/
+#define IMP_REF_COUNTED_DESTRUCTOR(Name)                        \
+  protected:                                                    \
+  template <class T> friend void IMP::internal::unref(T*);      \
   virtual ~Name(){}
 
-#define IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Name)                     \
-  protected:                                                            \
-  template <class T> friend void IMP::internal::unref(T*);              \
+#define IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Name)             \
+  protected:                                                    \
+  template <class T> friend void IMP::internal::unref(T*);      \
   virtual ~Name()
 
 #endif // SWIG
@@ -394,7 +396,7 @@ public:                                                      \
     remainder help implement basic functions.
 
     @{
- */
+*/
 
 //! Define the basic things needed by a Decorator.
 /** \advanced
@@ -424,29 +426,29 @@ public:                                                      \
     typically Decorator
 
     \see IMP_DECORATOR_TRAITS()
- */
+*/
 #define IMP_DECORATOR(Name, Parent)                                     \
-public:                                                                 \
-/* Should be private but SWIG accesses it through the comparison
-    macros*/                                                            \
+  public:                                                               \
+  /* Should be private but SWIG accesses it through the comparison
+     macros*/                                                            \
 IMP_NO_DOXYGEN(typedef Name This);                                      \
 /** \brief Create null decorator. Such a decorator is like a NULL
     pointer in C++. */                                                  \
- Name(): Parent(){}                                                     \
+Name(): Parent(){}                                                     \
 /** \brief Create a decorator wrapping a particle which already has
     had setup_particle() called on it. */                               \
 explicit Name(::IMP::Particle *p): Parent(p) {                          \
   IMP_INTERNAL_CHECK(particle_is_instance(p),                           \
-              "Particle missing required attributes for decorator "     \
-              << #Name << *p << std::endl);                             \
- }                                                                      \
+                     "Particle missing required attributes for decorator "     \
+                     << #Name << *p << std::endl);                             \
+}                                                                      \
 static Name decorate_particle(::IMP::Particle *p) {                     \
-   IMP_CHECK_OBJECT(p);                                                 \
-   if (!particle_is_instance(p)) {                                      \
-     return Name();                                                     \
-   }                                                                    \
-   return Name(p);                                                      \
- }                                                                      \
+  IMP_CHECK_OBJECT(p);                                                 \
+  if (!particle_is_instance(p)) {                                      \
+    return Name();                                                     \
+  }                                                                    \
+  return Name(p);                                                      \
+}                                                                      \
 IMP_SHOWABLE
 
 
@@ -463,23 +465,25 @@ IMP_SHOWABLE
     this object can be used to parameterize the Decorator. The traits
     object is stored in the decorator and made accessible through
     the get_traits() method.
- */
+*/
 #define IMP_DECORATOR_TRAITS(Name, Parent, TraitsType, traits_name,     \
-default_traits)                                                         \
+                             default_traits)                            \
   private:                                                              \
   TraitsType traits_name##_;                                            \
 public:                                                                 \
-IMP_NO_DOXYGEN(typedef Name This;)                                      \
+ IMP_NO_DOXYGEN(typedef Name This;)                                     \
  /** \brief Create null decorator. Such a decorator is like a NULL
      pointer in C++. */                                                 \
 Name(): Parent(){}                                                      \
 /** \brief Create a decorator wrapping a particle which already has
     had setup_particle() called on it with the passed traits. */        \
-Name(::IMP::Particle *p, const TraitsType &tr=default_traits): Parent(p), \
-                                                   traits_name##_(tr) { \
+Name(::IMP::Particle *p,                                                \
+     const TraitsType &tr=default_traits): Parent(p),                   \
+                                           traits_name##_(tr) {         \
   IMP_INTERNAL_CHECK(particle_is_instance(p, tr),                       \
-             "Particle missing required attributes for decorator "      \
-             << #Name << *p << std::endl);                              \
+                     "Particle missing required attributes "            \
+                     << " for decorator "                               \
+                     << #Name << *p << std::endl);                      \
 }                                                                       \
 static Name decorate_particle(::IMP::Particle *p,                       \
                               const TraitsType &tr=default_traits) {    \
@@ -498,19 +502,19 @@ const TraitsType &get_##traits_name() const {                           \
 
     A common pattern is to check if a particle has a particular attribute,
     do one thing if it does and another if it does not. This macro implements
-   that pattern. It requires that the method get_particle() return the
-   particle being used.
+    that pattern. It requires that the method get_particle() return the
+    particle being used.
 
-   \param[in] AttributeKey The key for the attribute
-   \param[in] Type The type for the attribute ("Int", "Float", "String")
-   \param[in] has_action The action to take if the Particle has the attribute.
-                         The attribute value is stored in the variable VALUE.
-   \param[in] not_has_action The action to take if the Particle does not have
-                             the attribute.
-   \see IMP_DECORATOR_GET()
-   \see IMP_DECORATOR_GET_SET()
+    \param[in] AttributeKey The key for the attribute
+    \param[in] Type The type for the attribute ("Int", "Float", "String")
+    \param[in] has_action The action to take if the Particle has the attribute.
+    The attribute value is stored in the variable VALUE.
+    \param[in] not_has_action The action to take if the Particle does not have
+    the attribute.
+    \see IMP_DECORATOR_GET()
+    \see IMP_DECORATOR_GET_SET()
 
- */
+*/
 #define IMP_DECORATOR_GET(AttributeKey, Type, has_action, not_has_action) \
   if (get_particle()->has_attribute(AttributeKey)) {                    \
     Type VALUE =  get_particle()->get_value(AttributeKey);              \
@@ -526,9 +530,9 @@ const TraitsType &get_##traits_name() const {                           \
     Another common pattern is to have an assumed value if the attribute
     is not there. Then, you sometimes need to set the value whether it
     is there or not.
-   \see IMP_DECORATOR_GET()
-   \see IMP_DECORATOR_GET_SET()
- */
+    \see IMP_DECORATOR_GET()
+    \see IMP_DECORATOR_GET_SET()
+*/
 #define IMP_DECORATOR_SET(AttributeKey, value)          \
   if (get_particle()->has_attribute(AttributeKey)) {    \
     get_particle()->set_value(AttributeKey, value)  ;   \
@@ -543,7 +547,7 @@ const TraitsType &get_##traits_name() const {                           \
 
    \param[in] name The lower case name of the attribute
    \param[in] AttributeKey The AttributeKey object controlling
-                           the attribute.
+   the attribute.
    \param[in] Type The type of the attribute (upper case).
    \param[in] ReturnType The type to return from the get.
    \see IMP_DECORATOR_GET()
@@ -559,24 +563,24 @@ const TraitsType &get_##traits_name() const {                           \
 
 //! Define methods for getting and setting an optional simple field.
 /** \advanced
-   See IMP_DECORATOR_GET_SET(). The difference is that here you can provide
-   a default value to use if the decorator does not have the attribute.
+    See IMP_DECORATOR_GET_SET(). The difference is that here you can provide
+    a default value to use if the decorator does not have the attribute.
 
-   \param[in] name The lower case name of the attribute
-   \param[in] AttributeKey The expression to get the required attribute key.
-   \param[in] Type The type of the attribute (upper case).
-   \param[in] ReturnType The type to return from the get.
-   \param[in] default_value The value returned if the attribute is missing.
- */
-#define IMP_DECORATOR_GET_SET_OPT(name, AttributeKey, Type,             \
-                                  ReturnType, default_value)            \
-  ReturnType get_##name() const {                                       \
-    IMP_DECORATOR_GET(AttributeKey, Type,                               \
-                      return static_cast<ReturnType>(VALUE),            \
-                      return default_value);                            \
-  }                                                                     \
-  void set_##name(ReturnType t) {                                       \
-    IMP_DECORATOR_SET(AttributeKey, t);                                 \
+    \param[in] name The lower case name of the attribute
+    \param[in] AttributeKey The expression to get the required attribute key.
+    \param[in] Type The type of the attribute (upper case).
+    \param[in] ReturnType The type to return from the get.
+    \param[in] default_value The value returned if the attribute is missing.
+*/
+#define IMP_DECORATOR_GET_SET_OPT(name, AttributeKey, Type,     \
+                                  ReturnType, default_value)    \
+  ReturnType get_##name() const {                               \
+    IMP_DECORATOR_GET(AttributeKey, Type,                       \
+                      return static_cast<ReturnType>(VALUE),    \
+                      return default_value);                    \
+  }                                                             \
+  void set_##name(ReturnType t) {                               \
+    IMP_DECORATOR_SET(AttributeKey, t);                         \
   }
 
 
@@ -587,7 +591,6 @@ const TraitsType &get_##traits_name() const {                           \
     \param[in] Name The name for the decorator
     \param[in] Parent the parent decorator type
     \param[in] Members the way to pass a set of particles in
-<<<<<<< .mine
 */
 #define IMP_SUMMARY_DECORATOR_DECL(Name, Parent, Members)       \
   class IMPCOREEXPORT Name: public Parent {                     \
@@ -604,33 +607,15 @@ const TraitsType &get_##traits_name() const {                           \
     }                                                           \
   };                                                            \
                                                                 \
-=======
- */
-#define IMP_SUMMARY_DECORATOR_DECL(Name, Parent, Members)                \
-  class IMPCOREEXPORT Name: public Parent {                             \
-    IMP_SCORE_STATE_DECORATOR_DECL(Name);                               \
-  public:                                                               \
-    IMP_DECORATOR(Name, Parent)                                         \
-      static Name setup_particle(Particle *p,                           \
-                                 const Members &members);               \
-    static Name setup_particle(Particle *p,                             \
-                               Refiner *ref);                           \
-    ~Name();                                                            \
-    static bool particle_is_instance(Particle *p) {                     \
-      return p->has_attribute(get_score_state_key());                   \
-    }                                                                   \
-  };                                                                    \
+  /** \advanced
 
->>>>>>> .r4362
-/** \advanced
-
-    See IMP_SUMMARY_DECORATOR_DECL()
-    \param[in] Name The name for the decorator
-    \param[in] Parent the parent decorator type
-    \param[in] Members the way to pass a set of particles in
-    \param[in] create_modifier the statements to create the modifier
-    which computes the summary info. It should be called mod.
- */
+      See IMP_SUMMARY_DECORATOR_DECL()
+      \param[in] Name The name for the decorator
+      \param[in] Parent the parent decorator type
+      \param[in] Members the way to pass a set of particles in
+      \param[in] create_modifier the statements to create the modifier
+      which computes the summary info. It should be called mod.
+  */
 #define IMP_SUMMARY_DECORATOR_DEF(Name, Parent, Members, create_modifier) \
   IMP_CONSTRAINT_DECORATOR_DEF(Name)                                    \
   Name Name::setup_particle(Particle *p, const Members &ps) {           \
@@ -655,67 +640,67 @@ const TraitsType &get_##traits_name() const {                           \
 //! Define a set of attributes which form an array
 /** \advanced
 
-   The macro defines a set of functions for using the array:
-   - get_name(unsigned int)
+    The macro defines a set of functions for using the array:
+    - get_name(unsigned int)
 
-   - get_number_of_name()
+    - get_number_of_name()
 
-   - add_name(ExternalType)
+    - add_name(ExternalType)
 
-   - add_name_at(ExternalType, unsigned int)
+    - add_name_at(ExternalType, unsigned int)
 
-   - remove_name(unsigned int)
+    - remove_name(unsigned int)
 
-   in addition it defines the private methods
-   - add_required_attributes_for_name(Particle *)
+    in addition it defines the private methods
+    - add_required_attributes_for_name(Particle *)
 
-   \param[in] protection Whether it should be public, protected or private
-   \param[in] Class The name of the wrapping class
-   \param[in] Name The capitalized name of the prefix to use
-   \param[in] name the name prefix to use, see the above method names
-   \param[in] plural the plural form of the name
-   \param[in] traits the traits object to use to manipulate things. This should
-   inherit from or implement the interface of internal::ArrayOnAttributesHelper
-   \param[in] ExternalType The name of the type to wrap the return type with.
-   \param[in] ExternalTypes A vector of the return type.
- */
+    \param[in] protection Whether it should be public, protected or private
+    \param[in] Class The name of the wrapping class
+    \param[in] Name The capitalized name of the prefix to use
+    \param[in] name the name prefix to use, see the above method names
+    \param[in] plural the plural form of the name
+    \param[in] traits the traits object to use to manipulate things. This should
+    inherit from or implement the interface of internal::ArrayOnAttributesHelper
+    \param[in] ExternalType The name of the type to wrap the return type with.
+    \param[in] ExternalTypes A vector of the return type.
+*/
 #define IMP_DECORATOR_ARRAY_DECL(protection, Class,                     \
                                  Name, name, plural,                    \
                                  traits, ExternalType, ExternalTypes)   \
-private:                                                                \
- template <class T>                                                     \
- static bool has_required_attributes_for_##name(Particle *p,            \
-                                                const T &traits) {      \
-  return traits.has_required_attributes(p);                             \
- }                                                                      \
- template <class T>                                                     \
- static void add_required_attributes_for_##name(Particle *p,            \
-                                                const T &traits) {      \
-   return traits.add_required_attributes(p);                            \
- }                                                                      \
- struct Name##AttrArrayAccessor {                                       \
-   const Class *d_;                                                     \
-   Name##AttrArrayAccessor(const Class *d): d_(d){}                     \
-   Name##AttrArrayAccessor(): d_(NULL){}                                \
-   typedef ExternalType result_type;                                    \
-   result_type operator()(unsigned int i) const {                       \
-     return d_->get_##name(i);                                          \
-   }                                                                    \
-   bool operator==(const Name##AttrArrayAccessor &o) const {            \
-     return d_== o.d_;                                                  \
-   }                                                                    \
- };                                                                     \
+  private:                                                              \
+  template <class T>                                                    \
+  static bool has_required_attributes_for_##name(Particle *p,           \
+                                                 const T &traits) {     \
+    return traits.has_required_attributes(p);                           \
+  }                                                                     \
+  template <class T>                                                    \
+  static void add_required_attributes_for_##name(Particle *p,           \
+                                                 const T &traits) {     \
+    return traits.add_required_attributes(p);                           \
+  }                                                                     \
+  struct Name##AttrArrayAccessor {                                      \
+    const Class *d_;                                                    \
+    Name##AttrArrayAccessor(const Class *d): d_(d){}                    \
+    Name##AttrArrayAccessor(): d_(NULL){}                               \
+    typedef ExternalType result_type;                                   \
+    result_type operator()(unsigned int i) const {                      \
+      return d_->get_##name(i);                                         \
+    }                                                                   \
+    bool operator==(const Name##AttrArrayAccessor &o) const {           \
+      return d_== o.d_;                                                 \
+    }                                                                   \
+  };                                                                    \
 protection:                                                             \
  IMP_NO_SWIG(typedef IMP::internal                                      \
              ::IndexingIterator<Name##AttrArrayAccessor>                \
              Name##Iterator;)                                           \
  IMP_NO_SWIG(Name##Iterator plural##_begin() const {                    \
      return Name##Iterator(Name##AttrArrayAccessor(this));              \
- }                                                                      \
- Name##Iterator plural##_end() const {                                  \
-   return Name##Iterator(Name##AttrArrayAccessor(this),                 \
-                         get_number_of_##plural());                     \
- })                                                                     \
+   }                                                                    \
+   Name##Iterator plural##_end() const {                                \
+     return Name##Iterator(Name##AttrArrayAccessor(this),               \
+                           get_number_of_##plural());                   \
+   })                                                                   \
  ExternalType get_##name(unsigned int i) const {                        \
    return traits.wrap(traits.get_value(get_particle(), i));             \
  }                                                                      \
@@ -758,11 +743,11 @@ protection:                                                             \
    unsigned int idx= traits.get_index(get_particle(), t);               \
    traits.on_remove(get_particle(), t);                                 \
    traits.erase(get_particle(),                                         \
-                      idx);                                             \
+                idx);                                                   \
    for (unsigned int i= idx; i < get_number_of_##plural(); ++i) {       \
      traits.on_change(get_particle(),                                   \
-                       traits.get_value(get_particle(), i),             \
-                       i+1, i);                                         \
+                      traits.get_value(get_particle(), i),              \
+                      i+1, i);                                          \
    }                                                                    \
  }                                                                      \
  void clear_##plural() {                                                \
@@ -796,18 +781,18 @@ protection:                                                             \
     to use (probably get_version_info()).
 
     @{
- */
+*/
 
 
 //! Define the basic things needed by any Object
 /** \advanced
 
-   This defines
-   - IMP::Object::get_version_info()
-   - a private destructor
-   and declares
-   - IMP::Object::show()
- */
+    This defines
+    - IMP::Object::get_version_info()
+    - a private destructor
+    and declares
+    - IMP::Object::show()
+*/
 #define IMP_OBJECT(Name, version_info)                                  \
   public:                                                               \
   virtual void show(std::ostream &out=std::cout) const;                 \
@@ -820,55 +805,36 @@ protection:                                                             \
 
     \see IMP_OBJECT
     This version also defines IMP::Object::show()
- */
-#define IMP_INTERNAL_OBJECT(Name, version_info)                         \
-  public:                                                               \
-  virtual void show(std::ostream &out=std::cout) const {                \
-    out << #Name << std::endl;                                          \
-  }                                                                     \
-  virtual ::IMP::VersionInfo get_version_info() const {                 \
-    return version_info;                                                \
-  }                                                                     \
-  IMP_REF_COUNTED_DESTRUCTOR(Name);                                     \
-  public:
-
-
-//! Define the basic things needed for an Interaction object
-/** \advanced
-
-    In addition to the types needed by IMP::Object (see IMP_OBJECT),
-    it declares:
-    - IMP::Interaction::get_interacting_particles()
-    - IMP::Interaction::get_input_objects()
-    - IMP::Interaction::get_output_objects()
-    - IMP::Interaction::get_input_particles()
-    - IMP::Interaction::get_output_particles()
 */
-#define IMP_INTERACTION(Name, version_info)                          \
-  ParticlesList get_interacting_particles() const;                   \
-  ObjectsTemp get_input_objects() const;                             \
-  ObjectsTemp get_output_objects() const;                            \
-  ParticlesTemp get_input_particles() const;                         \
-  ParticlesTemp get_output_particles() const;                        \
-  IMP_OBJECT(Name, version_info)
+#define IMP_INTERNAL_OBJECT(Name, version_info)                 \
+  public:                                                       \
+  virtual void show(std::ostream &out=std::cout) const {        \
+    out << #Name << std::endl;                                  \
+  }                                                             \
+  virtual ::IMP::VersionInfo get_version_info() const {         \
+    return version_info;                                        \
+  }                                                             \
+  IMP_REF_COUNTED_DESTRUCTOR(Name);                             \
+public:
+
 
 //! Define the basic things you need for a Restraint.
 /** \advanced
 
-    In addition to the methods defined by IMP::Interaction
-    (see IMP_INTERACTION), it declares
+    In addition to the methods defined by IMP::Object
+    it declares
     - IMP::Restraint::unprotected_evaluate()
-    - IMP::Interaction::get_input_objects()
-    - IMP::Interaction::get_interacting_particles()
-    - IMP::Interaction::get_input_particles()
+    - IMP::Restraint::get_input_containers()
+    - IMP::Restraint::get_interacting_particles()
+    - IMP::Restraint::get_input_particles()
 
     It also defines
     - IMP::Restraint::get_is_incremental() to return 0
     - IMP::Restraint::incremental_evaluate() to throw an exception
 */
 #define IMP_RESTRAINT(Name, version_info)                               \
-  virtual double unprotected_evaluate(DerivativeAccumulator *accum) const;   \
-  ObjectsTemp get_input_objects() const;                                \
+  virtual double unprotected_evaluate(DerivativeAccumulator *accum) const; \
+  ContainersTemp get_input_containers() const;                          \
   ParticlesList get_interacting_particles() const;                      \
   ParticlesTemp get_input_particles() const;                            \
   IMP_OBJECT(Name, version_info);
@@ -879,10 +845,9 @@ protection:                                                             \
     In addition to the methods done by IMP_OBJECT, it declares
     - IMP::Restraint::unprotected_evaluate()
     - IMP::Restraint::unprotected_incremental_evaluate()
-    - IMP::Interaction::get_input_objects()
-    - IMP::Interaction::get_interacting_particles()
-    - IMP::Interaction::get_input_particles()
-    - IMP::Interaction::get_output_particles()
+    - IMP::Restraint::get_input_containers()
+    - IMP::Restraint::get_interacting_particles()
+    - IMP::Restraint::get_input_particles()
 
     and it defines
     - IMP::Restraint::get_is_incremental() to return true
@@ -892,7 +857,7 @@ protection:                                                             \
   virtual bool get_is_incremental() const {return true;}                \
   virtual double                                                        \
   unprotected_incremental_evaluate(DerivativeAccumulator *accum) const; \
-  ObjectsTemp get_input_objects() const;                                \
+  ContainersTemp get_input_containers() const;                          \
   ParticlesList get_interacting_particles() const;                      \
   ParticlesTemp get_input_particles() const;                            \
   IMP_OBJECT(Name, version_info);
@@ -905,8 +870,8 @@ protection:                                                             \
 
     \relatesalso IMP::Optimizer
 */
-#define IMP_OPTIMIZER(Name, version_info)                               \
-  virtual Float optimize(unsigned int max_steps);                       \
+#define IMP_OPTIMIZER(Name, version_info)               \
+  virtual Float optimize(unsigned int max_steps);       \
   IMP_OBJECT(Name, version_info);
 
 
@@ -916,8 +881,8 @@ protection:                                                             \
     In addition to the methods done IMP_OBJECT, it declares
     - IMP::OptimizerState::update()
 */
-#define IMP_OPTIMIZER_STATE(Name, version_info)                         \
-  virtual void update();                                                \
+#define IMP_OPTIMIZER_STATE(Name, version_info) \
+  virtual void update();                        \
   IMP_OBJECT(Name, version_info);
 
 
@@ -949,24 +914,33 @@ protection:                                                             \
   IMP_OBJECT(Name, version_info)                                        \
   private:                                                              \
   ::IMP::internal::Counter skip_steps_, call_number_, update_number_;   \
-
-
-//! Define the basics needed for a ScoreState
-/** In addition to the methods done by IMP_INTERACTION, it declares
+                                                                        \
+                                                                        \
+  //! Define the basics needed for a ScoreState
+/** In addition to the methods done by IMP_OBJECT, it declares
     - IMP::ScoreState::do_before_evaluate()
     - IMP::ScoreState::do_after_evaluate()
+    - IMP::ScoreState::get_input_containers()
+    - IMP::ScoreState::get_output_containers()
+    - IMP::ScoreState::get_input_particles()
+    - IMP::ScoreState::get_output_particles()
 */
-#define IMP_SCORE_STATE(Name, version_info)                             \
-protected:                                                              \
- virtual void do_before_evaluate();                                     \
- virtual void do_after_evaluate(DerivativeAccumulator *da);             \
- IMP_INTERACTION(Name, version_info)
+#define IMP_SCORE_STATE(Name, version_info)                     \
+  protected:                                                    \
+  virtual void do_before_evaluate();                            \
+  virtual void do_after_evaluate(DerivativeAccumulator *da);    \
+  virtual ContainersTemp get_input_containers() const;          \
+  virtual ContainersTemp get_output_containers() const;         \
+  virtual ParticlesTemp get_input_particles() const;            \
+  virtual ParticlesTemp get_output_particles() const;           \
+  virtual ParticlesList get_interacting_particles() const;      \
+  IMP_OBJECT(Name, version_info)
 
 
 //! Define the basics needed for a ScoreState
 /** \advanced
 
-    In addition to the methods done by IMP_INTERACTION, it declares
+    In addition to the methods done by IMP_OBJECT, it declares
     - IMP::Constraint::do_update_attributes()
     - IMP::Constraint::do_update_derivatives()
 */
@@ -977,7 +951,12 @@ protected:                                                              \
   IMP_NO_DOXYGEN(void do_before_evaluate() { Name::do_update_attributes();}) \
   IMP_NO_DOXYGEN(void do_after_evaluate(DerivativeAccumulator*da) {     \
       if (da) Name::do_update_derivatives(da);})                        \
-  IMP_INTERACTION(Name, version_info)
+  virtual ContainersTemp get_input_containers() const;                  \
+  virtual ContainersTemp get_output_containers() const;                 \
+  virtual ParticlesTemp get_input_particles() const;                    \
+  virtual ParticlesTemp get_output_particles() const;                   \
+  virtual ParticlesList get_interacting_particles() const;              \
+  IMP_OBJECT(Name, version_info)
 
 
 //! Define the basics needed for a particle refiner
@@ -989,13 +968,14 @@ protected:                                                              \
     - IMP::Refiner::get_refined()
     - IMP::Refiner::get_input_particles()
     \see IMP_SIMPLE_REFINER
- */
+*/
 #define IMP_REFINER(Name, version_info)                                 \
   virtual bool get_can_refine(Particle*) const;                         \
   virtual Particle* get_refined(Particle *, unsigned int) const;        \
   virtual const ParticlesTemp get_refined(Particle *) const;            \
   virtual unsigned int get_number_of_refined(Particle *) const;         \
   virtual ParticlesTemp get_input_particles(Particle *p) const;         \
+  virtual ContainersTemp get_input_containers(Particle *p) const;       \
   IMP_OBJECT(Name, version_info);
 
 
@@ -1008,7 +988,7 @@ protected:                                                              \
     provided.
 
     \see IMP_REFINER
- */
+*/
 #define IMP_SIMPLE_REFINER(Name, version_info)                          \
   virtual bool get_can_refine(Particle*) const;                         \
   virtual Particle* get_refined(Particle *, unsigned int) const;        \
@@ -1020,11 +1000,8 @@ protected:                                                              \
     return ret;                                                         \
   }                                                                     \
   virtual unsigned int get_number_of_refined(Particle *) const;         \
-  virtual ParticlesTemp get_input_particles(Particle *p) const {         \
-    ParticlesTemp ret= get_refined(p);                                  \
-    ret.push_back(p);                                                   \
-    return ret;                                                         \
-  }                                                                     \
+  virtual ParticlesTemp get_input_particles(Particle *p) const;         \
+  virtual ContainersTemp get_input_containers(Particle *p) const;       \
   IMP_OBJECT(Name, version_info);
 
 
@@ -1086,6 +1063,7 @@ protected:                                                              \
   }                                                                     \
   ParticlesList get_interacting_particles(Particle*) const;             \
   ParticlesTemp get_input_particles(Particle*) const;                   \
+  ContainersTemp get_input_containers(Particle *) const;                \
   IMP_OBJECT(Name, version_info);
 
 
@@ -1102,8 +1080,8 @@ protected:                                                              \
   double evaluate(const ParticlePair &p,                                \
                   DerivativeAccumulator *da) const;                     \
   IMP_NO_DOXYGEN(double evaluate(Particle *a, Particle *b,              \
-                                DerivativeAccumulator *da) const {      \
-    return evaluate(ParticlePair(a,b), da);                             \
+                                 DerivativeAccumulator *da) const {     \
+                   return evaluate(ParticlePair(a,b), da);              \
                  })                                                     \
   double evaluate(const ParticlePairsTemp &ps,                          \
                   DerivativeAccumulator *da) const {                    \
@@ -1149,6 +1127,7 @@ protected:                                                              \
   }                                                                     \
   ParticlesList get_interacting_particles(const ParticlePair &p) const; \
   ParticlesTemp get_input_particles(const ParticlePair &p) const;       \
+  ContainersTemp get_input_containers(const ParticlePair &p) const;     \
   IMP_OBJECT(Name, version_info);
 
 
@@ -1173,7 +1152,7 @@ protected:                                                              \
     return ret;                                                         \
   }                                                                     \
   IMP_NO_DOXYGEN(double evaluate(Particle *a, Particle *b, Particle *c, \
-                                DerivativeAccumulator *da) const {      \
+                                 DerivativeAccumulator *da) const {     \
                    return evaluate(ParticleTriplet(a,b,c), da);         \
                  })                                                     \
   double evaluate_change(const ParticleTriplet &p,                      \
@@ -1198,7 +1177,7 @@ protected:                                                              \
     return ret;                                                         \
   }                                                                     \
   double evaluate_prechange(const ParticleTriplet &p,                   \
-                         DerivativeAccumulator *da) const {             \
+                            DerivativeAccumulator *da) const {          \
     return Name::evaluate(p,                                            \
                           da);                                          \
   }                                                                     \
@@ -1212,6 +1191,7 @@ protected:                                                              \
   }                                                                     \
   ParticlesList get_interacting_particles(const ParticleTriplet &p) const; \
   ParticlesTemp get_input_particles(const ParticleTriplet &p) const;    \
+  ContainersTemp get_input_containers(const ParticleTriplet &p) const;  \
   IMP_OBJECT(Name, version_info);
 
 //! Declare the functions needed for a QuadScore
@@ -1270,6 +1250,7 @@ protected:                                                              \
   }                                                                     \
   ParticlesList get_interacting_particles(const ParticleQuad &p) const; \
   ParticlesTemp get_input_particles(const ParticleQuad &p) const;       \
+  ContainersTemp get_input_containers(const ParticleQuad &p) const;     \
   IMP_OBJECT(Name, version_info);
 
 
@@ -1283,7 +1264,7 @@ protected:                                                              \
     - IMP::SingletonModifier::get_input_particles()
     - IMP::SingletonModifier::get_output_particles()
     \see IMP_SINGLETON_MODIFIER_DA
- */
+*/
 #define IMP_SINGLETON_MODIFIER(Name, version_info)                      \
   void apply(Particle *a) const;                                        \
   void apply(Particle *a, DerivativeAccumulator&) const{                \
@@ -1302,6 +1283,8 @@ protected:                                                              \
   ParticlesList get_interacting_particles(Particle*) const;             \
   ParticlesTemp get_input_particles(Particle*) const;                   \
   ParticlesTemp get_output_particles(Particle*) const;                  \
+  ContainersTemp get_input_containers(Particle*) const;                 \
+  ContainersTemp get_output_containers(Particle*) const;                \
   IMP_OBJECT(Name, version_info);
 
 
@@ -1335,6 +1318,8 @@ protected:                                                              \
   ParticlesList get_interacting_particles(const ParticlePair &p) const; \
   ParticlesTemp get_input_particles(const ParticlePair &p) const;       \
   ParticlesTemp get_output_particles(const ParticlePair &p) const;      \
+  ContainersTemp get_input_containers(const ParticlePair &p) const;     \
+  ContainersTemp get_output_containers(const ParticlePair &p) const;    \
   IMP_OBJECT(Name, version_info);
 
 
@@ -1348,8 +1333,8 @@ protected:                                                              \
     - IMP::SingletonModifier::get_input_particles()
     - IMP::SingletonModifier::get_output_particles()
 
-   \see IMP_SINGLETON_MODIFIER
- */
+    \see IMP_SINGLETON_MODIFIER
+*/
 #define IMP_SINGLETON_MODIFIER_DA(Name, version_info)                   \
   void apply(Particle *a, DerivativeAccumulator &da) const;             \
   void apply(Particle *) const{                                         \
@@ -1369,6 +1354,8 @@ protected:                                                              \
   ParticlesList get_interacting_particles(Particle*) const;             \
   ParticlesTemp get_input_particles(Particle*) const;                   \
   ParticlesTemp get_output_particles(Particle*) const;                  \
+  ContainersTemp get_input_containers(Particle*) const;                 \
+  ContainersTemp get_output_containers(Particle*) const;                \
   IMP_OBJECT(Name, version_info);
 
 
@@ -1376,13 +1363,13 @@ protected:                                                              \
 /** \advanced
 
     This macro is designed to be used in conjunction with
- IMP_SINGLETON_MODIFIER or IMP_SINGLETON_MODIFIER_DA. It adds
- definitions for the methods:
- - IMP::SingletonModifier::get_interacting_particles()
- - IMP::SingletonModifier::get_input_particles()
- - IMP::SingletonModifier::get_output_particles()
- for a modifier which updates the passed particle based on the results
- of refinement.
+    IMP_SINGLETON_MODIFIER or IMP_SINGLETON_MODIFIER_DA. It adds
+    definitions for the methods:
+    - IMP::SingletonModifier::get_interacting_particles()
+    - IMP::SingletonModifier::get_input_particles()
+    - IMP::SingletonModifier::get_output_particles()
+    for a modifier which updates the passed particle based on the results
+    of refinement.
 */
 #define IMP_SINGLETON_MODIFIER_FROM_REFINED(Name, refiner)              \
   ParticlesList Name::get_interacting_particles(Particle *p) const {    \
@@ -1390,52 +1377,69 @@ protected:                                                              \
     return ParticlesList(1,pt);                                         \
   }                                                                     \
   ParticlesTemp Name::get_input_particles(Particle *p) const {          \
-    ParticlesTemp ret= refiner->get_input_particles(p);                 \
+    ParticlesTemp ret= refiner->get_refined(p);                         \
+    ParticlesTemp ret1= refiner->get_input_particles(p);                \
+    ret.insert(ret.end(), ret1.begin(), ret1.end());                    \
     return ret;                                                         \
   }                                                                     \
   ParticlesTemp Name::get_output_particles(Particle *p) const {         \
     ParticlesTemp ret(1,p);                                             \
     return ret;                                                         \
   }                                                                     \
+  ContainersTemp Name::get_input_containers(Particle *p) const {        \
+    return refiner->get_input_containers(p);                            \
+  }                                                                     \
+  ContainersTemp Name::get_output_containers(Particle *p) const {       \
+    return ContainersTemp();                                            \
+  }                                                                     \
   void Name::show(std::ostream &out) const {                            \
     out << #Name << " with refiner " << *refiner << std::endl;          \
   }                                                                     \
-
-
-//! Add interaction methods to a SingletonModifer
+                                                                        \
+                                                                        \
+  //! Add interaction methods to a SingletonModifer
 /** \advanced
 
     This macro is designed to be used in conjunction with
- IMP_SINGLETON_MODIFIER or IMP_SINGLETON_MODIFIER_DA. It adds
- definitions for the methods:
- - IMP::SingletonModifier::get_interacting_particles()
- - IMP::SingletonModifier::get_input_particles()
- - IMP::SingletonModifier::get_output_particles()
- - IMP::Object::show()
- for a modifier which updates the refined particles based on the one
- they are refined from.
+    IMP_SINGLETON_MODIFIER or IMP_SINGLETON_MODIFIER_DA. It adds
+    definitions for the methods:
+    - IMP::SingletonModifier::get_interacting_particles()
+    - IMP::SingletonModifier::get_input_particles()
+    - IMP::SingletonModifier::get_output_particles()
+    - IMP::Object::show()
+    for a modifier which updates the refined particles based on the one
+    they are refined from.
 
- This macro should appear a .cpp file.
+    This macro should appear a .cpp file.
 */
 #define IMP_SINGLETON_MODIFIER_TO_REFINED(Name, refiner)                \
   ParticlesList Name::get_interacting_particles(Particle *p) const {    \
-    ParticlesTemp pt= refiner->get_input_particles(p);                  \
+    ParticlesTemp pt= refiner->get_refined(p);                          \
     return ParticlesList(1,pt);                                         \
   }                                                                     \
   ParticlesTemp Name::get_input_particles(Particle *p) const {          \
     ParticlesTemp ret= refiner->get_input_particles(p);                 \
+    ParticlesTemp ret2= refiner->get_refined(p);                        \
+    ret.push_back(p);                                                   \
+    ret.insert(ret.end(), ret2.begin(), ret2.end());                    \
     return ret;                                                         \
   }                                                                     \
   ParticlesTemp Name::get_output_particles(Particle *p) const {         \
     ParticlesTemp ret= refiner->get_refined(p);                         \
     return ret;                                                         \
   }                                                                     \
+  ContainersTemp Name::get_input_containers(Particle *p) const {        \
+    return refiner->get_input_containers(p);                            \
+  }                                                                     \
+  ContainersTemp Name::get_output_containers(Particle *p) const {       \
+    return ContainersTemp();                                            \
+  }                                                                     \
   void Name::show(std::ostream &out) const {                            \
     out << #Name << " with refiner " << *refiner << std::endl;          \
   }                                                                     \
-
-
-//! Declare the functions needed for a PairModifier
+                                                                        \
+                                                                        \
+  //! Declare the functions needed for a PairModifier
 /** \advanced
 
     In addition to the methods done by IMP_OBJECT, it declares
@@ -1444,27 +1448,29 @@ protected:                                                              \
     - IMP::PairModifier::get_input_particles()
     - IMP::PairModifier::get_output_particles()
     \see IMP_PAIR_MODIFIER
- */
+*/
 #define IMP_PAIR_MODIFIER_DA(Name, version_info)                        \
   void apply(const ParticlePair &p, DerivativeAccumulator *da) const;   \
   void apply(const ParticlePair &p) const{                              \
     IMP_LOG(VERBOSE, "This modifier requires a derivative accumulator " \
             << *this << std::endl);                                     \
   }                                                                     \
- void apply(const ParticlePairsTemp &ps) const {                        \
-   IMP_LOG(VERBOSE, "This modifier requires a derivative accumulator "  \
-           << *this << std::endl);                                      \
- }                                                                      \
- void apply(const ParticlePairsTemp &ps,                                \
-            DerivativeAccumulator &da) const {                          \
+  void apply(const ParticlePairsTemp &ps) const {                       \
+    IMP_LOG(VERBOSE, "This modifier requires a derivative accumulator " \
+            << *this << std::endl);                                     \
+  }                                                                     \
+  void apply(const ParticlePairsTemp &ps,                               \
+             DerivativeAccumulator &da) const {                         \
     for (unsigned int i=0; i< ps.size(); ++i) {                         \
       Name::apply(ps[i][0], ps[i][1], da);                              \
     }                                                                   \
- }                                                                      \
- ParticlesList get_interacting_particles(const ParticlePair &p) const;  \
- ParticlesTemp get_input_particles(const ParticlePair &p) const;        \
- ParticlesTemp get_output_particles(const ParticlePair &p) const;       \
- IMP_OBJECT(Name, version_info)
+  }                                                                     \
+  ParticlesList get_interacting_particles(const ParticlePair &p) const; \
+  ParticlesTemp get_input_particles(const ParticlePair &p) const;       \
+  ParticlesTemp get_output_particles(const ParticlePair &p) const;      \
+  ContainersTemp get_input_containers(const ParticlePair &p) const;     \
+  ContainersTemp get_output_containers(const ParticlePair &p) const;    \
+  IMP_OBJECT(Name, version_info)
 
 
 
@@ -1481,7 +1487,7 @@ protected:                                                              \
     internally in algorithms and data structures.
     \see IMP_SINGLETON_MODIFIER_DA
     \see IMP_SINGLETON_MODIFIER
- */
+*/
 #define IMP_INTERNAL_SINGLETON_MODIFIER(Name, version_info,             \
                                         apply_expr)                     \
   void apply(Particle *p) const {                                       \
@@ -1509,6 +1515,12 @@ protected:                                                              \
   ParticlesTemp get_output_particles(Particle*p) const {                \
     return ParticlesTemp(1,p);                                          \
   }                                                                     \
+  ContainersTemp get_input_containers(Particle*p) const {               \
+    return ContainersTemp();                                            \
+  }                                                                     \
+  ContainersTemp get_output_containers(Particle*p) const {              \
+    return ContainersTemp();                                            \
+  }                                                                     \
   IMP_INTERNAL_OBJECT(Name, version_info);
 
 
@@ -1525,21 +1537,23 @@ protected:                                                              \
     - IMP::SingletonContainer::get_particles()
     - IMP::Interaction::get_input_objects()
 */
-#define IMP_SINGLETON_CONTAINER(Name, version_info)                     \
-  bool get_contains_particle(Particle* p) const;                        \
-  unsigned int get_number_of_particles() const;                         \
-  Particle* get_particle(unsigned int i) const;                         \
-  void apply(const SingletonModifier *sm);                              \
-  void apply(const SingletonModifier *sm,                               \
-             DerivativeAccumulator &da);                                \
-  double evaluate(const SingletonScore *s,                              \
-                  DerivativeAccumulator *da) const;                     \
-  double evaluate_change(const SingletonScore *s,                       \
-                         DerivativeAccumulator *da) const;              \
-  double evaluate_prechange(const SingletonScore *s,                    \
-                            DerivativeAccumulator *da) const;           \
-  ParticlesTemp get_particles() const;                                  \
-  ObjectsTemp get_input_objects() const;                                \
+#define IMP_SINGLETON_CONTAINER(Name, version_info)             \
+  bool get_contains_particle(Particle* p) const;                \
+  unsigned int get_number_of_particles() const;                 \
+  Particle* get_particle(unsigned int i) const;                 \
+  void apply(const SingletonModifier *sm);                      \
+  void apply(const SingletonModifier *sm,                       \
+             DerivativeAccumulator &da);                        \
+  double evaluate(const SingletonScore *s,                      \
+                  DerivativeAccumulator *da) const;             \
+  double evaluate_change(const SingletonScore *s,               \
+                         DerivativeAccumulator *da) const;      \
+  double evaluate_prechange(const SingletonScore *s,            \
+                            DerivativeAccumulator *da) const;   \
+  ParticlesTemp get_particles() const;                          \
+  ParticlesTemp get_contained_particles() const;                \
+  bool get_contained_particles_changed() const;                 \
+  ContainersTemp get_input_containers() const;                  \
   IMP_OBJECT(Name, version_info);
 
 
@@ -1554,22 +1568,24 @@ protected:                                                              \
     - IMP::PairContainer::evaluate()
     - IMP::PairContainer::get_particle_pairs()
     - IMP::Interaction::get_input_objects()
- */
-#define IMP_PAIR_CONTAINER(Name, version_info)                          \
-  bool get_contains_particle_pair(const ParticlePair &p) const;         \
-  unsigned int get_number_of_particle_pairs() const;                    \
-  ParticlePair get_particle_pair(unsigned int i) const;                 \
-  void apply(const PairModifier *sm);                                   \
-  void apply(const PairModifier *sm,                                    \
-             DerivativeAccumulator &da);                                \
-  double evaluate(const PairScore *s,                                   \
-                  DerivativeAccumulator *da) const;                     \
-  double evaluate_change(const PairScore *s,                            \
-                         DerivativeAccumulator *da) const;              \
-  double evaluate_prechange(const PairScore *s,                         \
-                            DerivativeAccumulator *da) const;           \
-  ParticlePairsTemp get_particle_pairs() const;                         \
-  ObjectsTemp get_input_objects() const;                                \
+*/
+#define IMP_PAIR_CONTAINER(Name, version_info)                  \
+  bool get_contains_particle_pair(const ParticlePair &p) const; \
+  unsigned int get_number_of_particle_pairs() const;            \
+  ParticlePair get_particle_pair(unsigned int i) const;         \
+  void apply(const PairModifier *sm);                           \
+  void apply(const PairModifier *sm,                            \
+             DerivativeAccumulator &da);                        \
+  double evaluate(const PairScore *s,                           \
+                  DerivativeAccumulator *da) const;             \
+  double evaluate_change(const PairScore *s,                    \
+                         DerivativeAccumulator *da) const;      \
+  double evaluate_prechange(const PairScore *s,                 \
+                            DerivativeAccumulator *da) const;   \
+  ParticlePairsTemp get_particle_pairs() const;                 \
+  ParticlesTemp get_contained_particles() const;                \
+  bool get_contained_particles_changed() const;                 \
+  ContainersTemp get_input_containers() const;                  \
   IMP_OBJECT(Name, version_info)
 
 
@@ -1585,7 +1601,7 @@ protected:                                                              \
     - IMP::TripletContainer::evaluate()
     - IMP::TripletContainer::get_particle_triplets()
     - IMP::Interaction::get_input_objects()
- */
+*/
 #define IMP_TRIPLET_CONTAINER(Name, version_info)                       \
   bool get_contains_particle_triplet(const ParticleTriplet &p) const;   \
   unsigned int get_number_of_particle_triplets() const;                 \
@@ -1600,7 +1616,9 @@ protected:                                                              \
   double evaluate_prechange(const TripletScore *s,                      \
                             DerivativeAccumulator *da) const;           \
   ParticleTripletsTemp get_particle_triplets() const;                   \
-  ObjectsTemp get_input_objects() const;                                \
+  ParticlesTemp get_contained_particles() const;                        \
+  bool get_contained_particles_changed() const;                         \
+  ContainersTemp get_input_containers() const;                          \
   IMP_OBJECT(Name, version_info)
 
 
@@ -1616,22 +1634,24 @@ protected:                                                              \
     - IMP::QuadContainer::evaluate()
     - IMP::QuadContainer::get_particle_quads()
     - IMP::Interaction::get_input_objects()
- */
-#define IMP_QUAD_CONTAINER(Name, version_info)                          \
-  bool get_contains_particle_quad(const ParticleQuad &p) const;         \
-  unsigned int get_number_of_particle_quads() const;                    \
-  ParticleQuad get_particle_quad(unsigned int i) const;                 \
-  void apply(const QuadModifier *sm);                                   \
-  void apply(const QuadModifier *sm,                                    \
-             DerivativeAccumulator &da);                                \
-  double evaluate(const QuadScore *s,                                   \
-                  DerivativeAccumulator *da) const;                     \
-  double evaluate_change(const QuadScore *s,                            \
-                         DerivativeAccumulator *da) const;              \
-  double evaluate_prechange(const QuadScore *s,                         \
-                            DerivativeAccumulator *da) const;           \
-  ParticleQuadsTemp get_particle_quads() const;                         \
-  ObjectsTemp get_input_objects() const;                                \
+*/
+#define IMP_QUAD_CONTAINER(Name, version_info)                  \
+  bool get_contains_particle_quad(const ParticleQuad &p) const; \
+  unsigned int get_number_of_particle_quads() const;            \
+  ParticleQuad get_particle_quad(unsigned int i) const;         \
+  void apply(const QuadModifier *sm);                           \
+  void apply(const QuadModifier *sm,                            \
+             DerivativeAccumulator &da);                        \
+  double evaluate(const QuadScore *s,                           \
+                  DerivativeAccumulator *da) const;             \
+  double evaluate_change(const QuadScore *s,                    \
+                         DerivativeAccumulator *da) const;      \
+  double evaluate_prechange(const QuadScore *s,                 \
+                            DerivativeAccumulator *da) const;   \
+  ParticleQuadsTemp get_particle_quads() const;                 \
+  ParticlesTemp get_contained_particles() const;                \
+  bool get_contained_particles_changed() const;                 \
+  ContainersTemp get_input_containers() const;                  \
   IMP_OBJECT(Name, version_info)
 
 
@@ -1644,10 +1664,10 @@ protected:                                                              \
     - IMP::SingletonFilter::get_contains_particle()
     - IMP::SingletonFilter::get_input_particles()
 */
-#define IMP_SINGLETON_FILTER(Name, version_info)                    \
-  bool get_contains_particle(Particle* p) const;                    \
-  ParticlesTemp get_input_particles(Particle*t) const;              \
-  ObjectsTemp get_input_objects(Particle*t) const;                  \
+#define IMP_SINGLETON_FILTER(Name, version_info)        \
+  bool get_contains_particle(Particle* p) const;        \
+  ParticlesTemp get_input_particles(Particle*t) const;  \
+  ObjectsTemp get_input_objects(Particle*t) const;      \
   IMP_OBJECT(Name, version_info)
 
 
@@ -1657,7 +1677,7 @@ protected:                                                              \
     In addition to the methods done by all the macros, it declares
     - IMP::PairFilter::get_contains_particle_pair()
     - IMP::PairFilter::get_input_particles()
- */
+*/
 #define IMP_PAIR_FILTER(Name, version_info)                             \
   bool get_contains_particle_pair(const ParticlePair& p) const;         \
   ParticlesTemp get_input_particles(const ParticlePair& t) const;       \
@@ -1672,11 +1692,11 @@ protected:                                                              \
     In addition to the methods done by all the macros, it declares
     - IMP::TripletFilter::get_contains_particle_triplet()
     - IMP::TripletFilter::get_input_particles()
- */
-#define IMP_TRIPLET_FILTER(Name, version_info)                             \
-  bool get_contains_particle_triplet(ParticleTriplet p) const;                \
-  ParticlesTemp get_input_particles(ParticleTriplet t) const;              \
-  ObjectsTemp get_input_objects(ParticleTriplet t) const;                  \
+*/
+#define IMP_TRIPLET_FILTER(Name, version_info)                  \
+  bool get_contains_particle_triplet(ParticleTriplet p) const;  \
+  ParticlesTemp get_input_particles(ParticleTriplet t) const;   \
+  ObjectsTemp get_input_objects(ParticleTriplet t) const;       \
   IMP_OBJECT(Name, version_info);
 
 
@@ -1687,11 +1707,11 @@ protected:                                                              \
     In addition to the methods done by all the macros, it declares
     - IMP::QuadFilter::get_contains_particle_quad()
     - IMP::QuadFilter::get_input_particles()
- */
-#define IMP_QUAD_FILTER(Name, version_info)                             \
-  bool get_contains_particle_quad(ParticleQuad p) const;                \
-  ParticlesTemp get_input_particles(ParticleQuad t) const;              \
-  ObjectsTemp get_input_objects(ParticleQuad t) const;                  \
+*/
+#define IMP_QUAD_FILTER(Name, version_info)                     \
+  bool get_contains_particle_quad(ParticleQuad p) const;        \
+  ParticlesTemp get_input_particles(ParticleQuad t) const;      \
+  ObjectsTemp get_input_objects(ParticleQuad t) const;          \
   IMP_OBJECT(Name, version_info);
 
 
@@ -1726,7 +1746,7 @@ protected:                                                              \
     \see IMP_UNARY_FUNCTION
 */
 #define IMP_UNARY_FUNCTION_INLINE(Name, version_info, value_expression, \
-                           derivative_expression, show_expression)      \
+                                  derivative_expression, show_expression) \
   virtual DerivativePair evaluate_with_derivative(double feature) const { \
     return DerivativePair((value_expression), (derivative_expression)); \
   }                                                                     \
@@ -1738,7 +1758,7 @@ protected:                                                              \
   }                                                                     \
   ::IMP::VersionInfo get_version_info() const { return version_info; }  \
   IMP_REF_COUNTED_DESTRUCTOR(Name);                                     \
-  public:
+public:
 
 
 //! Declare a IMP::FailureHandler
@@ -1747,8 +1767,8 @@ protected:                                                              \
     In addition to the standard methods it declares:
     - IMP::FailureHandler::handle_failure()
 */
-#define IMP_FAILURE_HANDLER(Name, version_info)                 \
-  void handle_failure();                                        \
+#define IMP_FAILURE_HANDLER(Name, version_info) \
+  void handle_failure();                        \
   IMP_OBJECT(Name, version_info)
 
 
@@ -1765,13 +1785,13 @@ protected:                                                              \
     The Set and Reset arguments are the code to run in the respective
     functions. "args" are the argument string (in parens) for the
     constructor and set.
- */
-#define IMP_RAII(Name, args, Initialize, Set, Reset)   \
-  Name() {Initialize;}                                 \
-  explicit Name args {Initialize; Set}                 \
-  void set args {reset();                              \
-    Set;}                                              \
-  void reset() {Reset;}                                \
+*/
+#define IMP_RAII(Name, args, Initialize, Set, Reset)    \
+  Name() {Initialize;}                                  \
+  explicit Name args {Initialize; Set}                  \
+  void set args {reset();                               \
+    Set;}                                               \
+  void reset() {Reset;}                                 \
   ~Name () {reset();}
 
 
@@ -1845,29 +1865,27 @@ protected:                                                              \
     \code
     IMP_NEW(m, IMP::Model, ());
     \endcode
- */
+*/
 #define IMP_NEW(Typename, varname, args)        \
   Pointer<Typename> varname(new Typename args)
-
 
 
 //! Define the types for storing sets of objects
 /** \advanced
     The macro defines the types Names and NamesTemp.
- */
+*/
 #define IMP_OBJECTS(Name)                               \
   /** Store a collection. */                            \
-  typedef VectorOfRefCounted<Name*> Name##s;            \
+  typedef IMP::VectorOfRefCounted<Name*> Name##s;       \
   /** Use this type to return a collection or store
       a collection when you know they are ref-counted elsewhere. */     \
-  typedef std::vector<Name*> Name##sTemp
+typedef std::vector<Name*> Name##sTemp
 
-<<<<<<< .mine
 //! Define the types for storing sets of decorators
 /** \advanced
 
     The macro defines the types Names and NamesTemp.
- */
+*/
 #define IMP_DECORATORS(Name, Parent)                    \
   /** Store a collection. */                            \
   typedef IMP::Decorators<Name, Parent> Name##s;        \
@@ -1875,93 +1893,91 @@ protected:                                                              \
       a collection when you know they are ref-counted elsewhere. */     \
 typedef IMP::Decorators<Name, Parent##Temp> Name##sTemp\
 
-=======
->>>>>>> .r4362
 /** \advanced
 
-   Define a new key type.
+    Define a new key type.
 
-   It defines two public types Name, which is an instantiation of KeyBase and
-   Names which is a vector of Name.
+    It defines two public types Name, which is an instantiation of KeyBase and
+    Names which is a vector of Name.
 
-   \param[in] Name The name for the new type.
-   \param[in] Tag A (hopefully) unique integer to define this key type.
+    \param[in] Name The name for the new type.
+    \param[in] Tag A (hopefully) unique integer to define this key type.
 
-   \note We define a new class rather than use a typedef since SWIG has a
-   bug dealing with names that start with ::. A fix has been commited to SVN
-   for swig.
+    \note We define a new class rather than use a typedef since SWIG has a
+    bug dealing with names that start with ::. A fix has been commited to SVN
+    for swig.
 
-   \note The name in the typedef would have to start with ::IMP so it
-   could be used out of the IMP namespace.
- */
+    \note The name in the typedef would have to start with ::IMP so it
+    could be used out of the IMP namespace.
+*/
 #ifndef IMP_DOXYGEN
-#define IMP_DECLARE_KEY_TYPE(Name, Tag)                                 \
-  struct Name: public ::IMP::KeyBase<Tag, true> {                       \
-    typedef ::IMP::KeyBase<Tag, true> P;                                \
-  typedef Name This;                                                    \
-  Name(){};                                                             \
-  explicit Name(unsigned int i): P(i){}                                 \
-  Name(std::string nm): P(nm){}                                         \
-  static Name add_alias(Name nm, std::string new_name) {                \
-    ::IMP::KeyBase<Tag, true>:: add_alias(nm, new_name);                \
-    IMP_INTERNAL_CHECK(Name(new_name) == nm,                            \
-                       "Keys don't match after alias.");                \
-    return Name(new_name);                                              \
-  }                                                                     \
-  std::string __str__() const {return get_string();}                    \
-};                                                                      \
-typedef std::vector<Name> Name##s
+#define IMP_DECLARE_KEY_TYPE(Name, Tag)                         \
+  struct Name: public ::IMP::KeyBase<Tag, true> {               \
+    typedef ::IMP::KeyBase<Tag, true> P;                        \
+    typedef Name This;                                          \
+    Name(){};                                                   \
+    explicit Name(unsigned int i): P(i){}                       \
+    Name(std::string nm): P(nm){}                               \
+    static Name add_alias(Name nm, std::string new_name) {      \
+      ::IMP::KeyBase<Tag, true>:: add_alias(nm, new_name);      \
+      IMP_INTERNAL_CHECK(Name(new_name) == nm,                  \
+                         "Keys don't match after alias.");      \
+      return Name(new_name);                                    \
+    }                                                           \
+    std::string __str__() const {return get_string();}          \
+  };                                                            \
+  typedef std::vector<Name> Name##s
 #else
 #define IMP_DECLARE_KEY_TYPE(Name, Tag)                                 \
   /** A string based identifier.*/                                      \
   struct Name: public ::IMP::KeyBase<ID, true> {                        \
     typedef ::IMP::KeyBase<ID, true> P;                                 \
-  typedef Name This;                                                    \
-  Name(){};                                                             \
-  Name(std::string nm): P(nm){}                                         \
-  /** Define the string new_name to refer to the same key as nm. */     \
-  static Name add_alias(Name nm, std::string new_name);                 \
-};                                                                      \
-typedef std::vector<Name> Name##s
+    typedef Name This;                                                  \
+    Name(){};                                                           \
+    Name(std::string nm): P(nm){}                                       \
+    /** Define the string new_name to refer to the same key as nm. */   \
+    static Name add_alias(Name nm, std::string new_name);               \
+  };                                                                    \
+  typedef std::vector<Name> Name##s
 #endif
 
 
 /** \advanced
 
-   Define a new key non lazy type where new types have to be created
-   explicitly.
+    Define a new key non lazy type where new types have to be created
+    explicitly.
 
-   \see IMP_DECLARE_KEY_TYPE
- */
+    \see IMP_DECLARE_KEY_TYPE
+*/
 #ifndef IMP_DOXYGEN
-#define IMP_DECLARE_CONTROLLED_KEY_TYPE(Name, Tag)                      \
-  struct Name: public ::IMP::KeyBase<Tag, false> {                      \
-    typedef ::IMP::KeyBase<Tag, false> P;                               \
-  typedef Name This;                                                    \
-  Name(){};                                                             \
-  Name(unsigned int i): P(i){}                                          \
-  Name(std::string nm): P(nm){}                                         \
-  static Name add_alias(Name nm, std::string new_name) {                \
-    ::IMP::KeyBase<Tag, false>:: add_alias(nm, new_name);               \
-    IMP_INTERNAL_CHECK(Name(new_name) == nm,                            \
-                       "Keys don't match after alias.");                \
-    return Name(nm.get_index());                                        \
-  }                                                                     \
-};                                                                      \
-typedef std::vector<Name> Name##s
+#define IMP_DECLARE_CONTROLLED_KEY_TYPE(Name, Tag)              \
+  struct Name: public ::IMP::KeyBase<Tag, false> {              \
+    typedef ::IMP::KeyBase<Tag, false> P;                       \
+    typedef Name This;                                          \
+    Name(){};                                                   \
+    Name(unsigned int i): P(i){}                                \
+    Name(std::string nm): P(nm){}                               \
+    static Name add_alias(Name nm, std::string new_name) {      \
+      ::IMP::KeyBase<Tag, false>:: add_alias(nm, new_name);     \
+      IMP_INTERNAL_CHECK(Name(new_name) == nm,                  \
+                         "Keys don't match after alias.");      \
+      return Name(nm.get_index());                              \
+    }                                                           \
+  };                                                            \
+  typedef std::vector<Name> Name##s
 #else
 #define IMP_DECLARE_CONTROLLED_KEY_TYPE(Name, Tag)                      \
   /** A string based identifier.*/                                      \
   struct Name: public ::IMP::KeyBase<ID, false> {                       \
     typedef ::IMP::KeyBase<ID, false> P;                                \
-  typedef Name This;                                                    \
-  Name(){};                                                             \
-  Name(std::string nm): P(nm){}                                         \
-  IMP_NO_DOXYGEN(Name(unsigned int i): P(i){})                          \
-  /** Define the string new_name to refer to the same key as nm. */     \
-  static Name add_alias(Name nm, std::string new_name);                 \
-};                                                                      \
-typedef std::vector<Name> Name##s
+    typedef Name This;                                                  \
+    Name(){};                                                           \
+    Name(std::string nm): P(nm){}                                       \
+    IMP_NO_DOXYGEN(Name(unsigned int i): P(i){})                        \
+    /** Define the string new_name to refer to the same key as nm. */   \
+    static Name add_alias(Name nm, std::string new_name);               \
+  };                                                                    \
+  typedef std::vector<Name> Name##s
 #endif
 
 

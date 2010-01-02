@@ -127,6 +127,22 @@ ParticlesTemp ClosePairsPairScore
   return ret;
 }
 
+ContainersTemp ClosePairsPairScore
+::get_input_containers(const ParticlePair &p) const {
+  ContainersTemp ret= r_->get_input_containers(p[0]);
+  ContainersTemp t= r_->get_input_containers(p[1]);
+  ret.insert(ret.end(), t.begin(), t.end());
+  ParticlesTemp ea=expand(p[0], r_);
+  ParticlesTemp eb=expand(p[1], r_);
+  for (unsigned int i=0; i< ea.size(); ++i) {
+    for (unsigned int j=0; j< eb.size(); ++j) {
+      ContainersTemp c= f_->get_input_containers(ParticlePair(ea[i], eb[j]));
+      ret.insert(ret.end(), c.begin(), c.end());
+    }
+  }
+  return t;
+}
+
 void ClosePairsPairScore::show(std::ostream &out) const
 {
   out << "ClosePairsPairScore using ";

@@ -10,6 +10,7 @@ class TunnelTest(IMP.test.TestCase):
 
     def test_score(self):
         """Test connectivity"""
+        IMP.set_log_level(IMP.VERBOSE)
         m= IMP.Model()
         ps= IMP.core.create_xyzr_particles(m, 10, .1)
         lsc=IMP.core.ListSingletonContainer(ps)
