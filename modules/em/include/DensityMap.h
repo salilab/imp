@@ -67,10 +67,11 @@ IMPEMEXPORT Float approximate_molecular_mass(DensityMap* m, Float threshold);
  */
 class IMPEMEXPORT DensityMap: public Object
 {
-  IMP_NO_SWIG(friend DensityMap* read_map(const char *filename,
+  IMP_NO_SWIG(friend IMPEMEXPORT DensityMap* read_map(const char *filename,
                                           MapReaderWriter &reader));
-  IMP_NO_SWIG(friend void write_map(DensityMap* m, const char *filename,
-                                    MapReaderWriter &writer));
+  IMP_NO_SWIG(friend IMPEMEXPORT void write_map(DensityMap* m,
+                                                const char *filename,
+                                                MapReaderWriter &writer));
 
 public:
   DensityMap();
