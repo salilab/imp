@@ -182,7 +182,6 @@ void RestraintGraph::show_sampling_space(std::ostream& out) const
     j->show_sampling_space(out);
   }
 }
-
 JNode * RestraintGraph::get_node(const Particles &ps)
 {
   std::vector<int> inter;
@@ -192,17 +191,17 @@ JNode * RestraintGraph::get_node(const Particles &ps)
       return j;
     }
   }
-  std::stringstream error_message;
-  error_message << "RestraintGraph::get_node the input set of particles"
-                << " is not part of any of the nodes in the graph";
-  IMP_INTERNAL_CHECK(true, error_message.str());
+  IMP_INTERNAL_CHECK(true,
+    "RestraintGraph::get_node the input set of particles"
+     << " is not part of any of the nodes in the graph"<<std::endl);
   return NULL;
 }
 
 void RestraintGraph::initialize_potentials(Restraint *r, Particles *ps,
                                            Float weight) {
-  JNode *jn = get_node(*ps);
-  if (jn == NULL) {
+  JNode *jn = NULL;
+  jn = get_node(*ps);
+  if (jn == NULL) { // TODO - should use IMP_INTERNAL_CHECK
     std::cerr << "WARNING - no node - the restraint : ";
     r->show(std::cerr);
     std::cerr << " between particles: ";
