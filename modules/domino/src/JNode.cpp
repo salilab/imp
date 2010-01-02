@@ -182,7 +182,9 @@ void JNode::realize(Restraint *r, Particles *ps, Float weight)
        it != comb_states_.end(); it++) {
     partial_key = it->second->partial_key(ps);
     score = result_cache.find(partial_key)->second;
-    it->second->update_total_score(0.0, score);
+    it->second->update_total_score(0.0, weight*score);
+    //rethink how to handle weights.
+    //should be part of reading restraints directly from the model
   }
   IMP_LOG(VERBOSE,"end realize node : " << node_ind_ << std::endl);
 }
