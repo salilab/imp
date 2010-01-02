@@ -121,7 +121,7 @@ void DominoOptimizer::exhaustive_enumeration(CombStates &states,
      std::vector<Floats> scores;
      score_combinations(states,scores);
      //sum all scores
-     for(int i=0;i<states.size();i++){
+     for(unsigned int i=0;i<states.size();i++){
        (states[i])->set_total_score(std::accumulate(scores[i].begin(),
                                                     scores[i].end(),0.));
      }
@@ -152,7 +152,7 @@ void DominoOptimizer::score_combinations(const CombStates &states,
    for(CombStates::const_iterator it = states.begin();it != states.end();it++) {
      score=0.;
      scores.push_back(Floats());
-     for (int i=0;i<rs_.size();i++) {
+     for (unsigned int i=0;i<rs_.size();i++) {
        std::string partial_key = (*it)->partial_key(&(boost::get<1>(rs_[i])));
        scores[scores.size()-1].push_back(comb_values[i][partial_key]);
      }
