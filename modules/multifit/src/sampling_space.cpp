@@ -23,7 +23,7 @@ domino::TransformationMappedDiscreteSet*
     new domino::TransformationMappedDiscreteSet(components);
   //add valid transformations for each particle
   Float dist;
-  for(int i=0;i<components.size();i++) {
+  for(unsigned int i=0;i<components.size();i++) {
     IMP_LOG(VERBOSE,"working on component:" <<i<< std::endl);
     Particle *comp=components[i];
     algebra::Vector3D comp_cent=
