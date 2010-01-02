@@ -1,5 +1,5 @@
 /**
- *  \file RestraintEvaluatorFromFiles.h   \brief A restraint evaluataor.
+ *  \file RestraintEvaluatorFromFile.h   \brief A restraint evaluataor.
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
