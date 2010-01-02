@@ -19,10 +19,8 @@ def check_lib(context, lib, header, body="", extra_libs=[]):
         return ret
     if context.env['static']:
         imp_module.make_static_build(context.env)
-        bret=context.sconf.CheckLib(ret[1],
-                                   language="C++",
-                                   autoadd=False)
+        bret=_search_for_deps(context, lib, header, body, extra_libs)
         imp_module.unmake_static_build(context.env)
-        if not bret:
-            return (False, None)
+        # should be the sum of the two
+        return (bret[0], ret[1]+bret[1])
     return  (True, ret[1])

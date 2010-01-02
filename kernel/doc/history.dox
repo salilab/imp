@@ -1,6 +1,8 @@
 /** \page recent Change History
 \par Week of January 1, 2010
 
+- boost program options is now a checked for dependency
+
 - The IMP::Model now uses dependency information from IMP::ScoreStates to automatically reorder the IMP::ScoreStates so that they are evaluated in the right order. Also, IMP::Model::evaluate() on a subset of the restraints now only updates the needed score states, not all of them.
 
 - Functions on rigid bodies no longer provide the IMP::core::RigidMemberRefiner as a default as it is, pretty much always, the wrong thing to use. That class may go away without notice in the future and is no longer documented.

@@ -26,23 +26,23 @@ def _check(context, version):
         """ % version_n, '.cpp')
     context.Result(ret[1].replace("_", ".").split('\n')[0])
     if ret[0]:
-        check_libs=[('BOOST_FILESYSTEM_LIBS', (['libboost_filesystem'],
+        check_libs=[('BOOST_FILESYSTEM_LIBS', ('libboost_filesystem',
                                                'boost/filesystem/path.hpp',
                                                ['libboost_system'])),
-                    ('BOOST_PROGRAM_OPTIONS_LIBS', (['libboost_program_options'],
+                    ('BOOST_PROGRAM_OPTIONS_LIBS', ('libboost_program_options',
                                                'boost/program_options.hpp',
                                                []))]
         for l in check_libs:
-            ret1=checks.check_lib(context, lib=[x+"-mt" for x in l[1][0]],
+            ret1=checks.check_lib(context, lib=l[1][0]+"-mt",
                                   header=l[1][1],
                                   extra_libs=[x+"-mt" for x in l[1][2]])
             if ret1[0]:
-                context.env["BOOST_LIBS"]=True or context.env.get('BOOST_LIBS', True)
+                context.env["BOOST_LIBS"]=True and context.env.get('BOOST_LIBS', True)
                 context.env[l[0]]=ret1[1]
             else:
                 ret2= checks.check_lib(context, lib=l[1][0], header=l[1][1], extra_libs=l[1][2])
                 if ret2[0]:
-                    context.env["BOOST_LIBS"]=True or context.env.get('BOOST_LIBS', True)
+                    context.env["BOOST_LIBS"]=True and context.env.get('BOOST_LIBS', True)
                     context.env[l[0]]=ret2[1]
     if not context.env['BOOST_LIBS']:
         print "WARNING, boost libraries not found, some functionality may be missing."
