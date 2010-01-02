@@ -12,14 +12,14 @@ MappedDiscreteSet::MappedDiscreteSet(const Particles &ps_target)
 {
   for (Particles::const_iterator it = ps_target.begin();
        it != ps_target.end();it++) {
-    states_map_[*it] = std::vector<Particle *>();
+    states_map_[*it] = Particles();
   }
 }
 MappedDiscreteSet::MappedDiscreteSet(Particles *ps_target,
         const std::vector<FloatKey> &atts) : DiscreteSet(atts){
   for (Particles::const_iterator it = ps_target->begin();
        it != ps_target->end();it++) {
-    states_map_[*it] = std::vector<Particle *>();
+    states_map_[*it] = Particles();
   }
 }
 void MappedDiscreteSet::add_mapped_state(Particle* sampled_p,Particle *state)
@@ -58,7 +58,7 @@ Float MappedDiscreteSet::get_mapped_state_val(Particle* p_target,
 }
 
 void MappedDiscreteSet::show(std::ostream& out) const {
-  for(std::map<Particle*, std::vector<Particle *> >::const_iterator
+  for(std::map<Particle*, Particles >::const_iterator
       it1 = states_map_.begin(); it1 != states_map_.end(); it1++) {
     out << "There are " << get_number_of_mapped_states(it1->first)
         << " states for : "<< it1->first->get_name()<<"  :: " << std::endl;
@@ -71,7 +71,7 @@ void MappedDiscreteSet::show(std::ostream& out) const {
 
 //! Check if each particle has mapped states
 bool MappedDiscreteSet::is_valid() const {
-  for(std::map<Particle*, std::vector<Particle *> >::const_iterator
+  for(std::map<Particle*, Particles >::const_iterator
       it1 = states_map_.begin(); it1 != states_map_.end(); it1++) {
     if(it1->second.size()==0){
       return false;

@@ -55,7 +55,6 @@ public:
    */
   Particle * get_mapped_state(Particle *p_target,long state_ind) const;
 
-
   //! Get a value of an attribute of a state
   /**
     \param[in] p_target the target particle
@@ -77,15 +76,14 @@ public:
   //get the particles the discrete set covers
   Particles get_particles() const {
     Particles ps;
-    for(std::map<Particle *, std::vector<Particle *> >::const_iterator it=
+    for(std::map<Particle *, Particles >::const_iterator it=
          states_map_.begin(); it != states_map_.end(); it++) {
       ps.push_back(it->first);
     }
     return ps;
   }
-
 protected:
-  std::map<Particle *, std::vector<Particle *> > states_map_;
+  std::map<Particle *, Particles> states_map_;
 };
 
 IMPDOMINO_END_NAMESPACE
