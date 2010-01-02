@@ -38,12 +38,14 @@ class IMPDOMINOEXPORT Transformation: public Decorator
 
   static const FloatKeys &get_rotation_keys();
   static const FloatKeys &get_translation_keys();
+  static const IntKey &get_transformation_index_key();
   IMP_DECORATOR(Transformation, Decorator)
 
   /** Create a decorator with the passed coordinates. */
   static Transformation setup_particle(Particle *p,
                     const algebra::Transformation3D &t=
-                    algebra::identity_transformation()) {
+                    algebra::identity_transformation(),
+                    Int index=0){
     algebra::Vector3D trans=t.get_translation();
     algebra::VectorD<4> rot = t.get_rotation().get_quaternion();
     p->add_attribute(get_translation_key(0),trans[0]);
@@ -53,6 +55,7 @@ class IMPDOMINOEXPORT Transformation: public Decorator
     p->add_attribute(get_rotation_key(1),rot[1]);
     p->add_attribute(get_rotation_key(2),rot[2]);
     p->add_attribute(get_rotation_key(3),rot[3]);
+    p->add_attribute(get_transformation_index_key(),index);
     return Transformation(p);
   }
 
@@ -63,6 +66,7 @@ class IMPDOMINOEXPORT Transformation: public Decorator
   IMP_DECORATOR_GET_SET(b, get_rotation_key(1), Float, Float);
   IMP_DECORATOR_GET_SET(c, get_rotation_key(2), Float, Float);
   IMP_DECORATOR_GET_SET(d, get_rotation_key(3), Float, Float);
+  IMP_DECORATOR_GET_SET(i, get_transformation_index_key(), Int, Int);
 
   static bool particle_is_instance(Particle *p) {
     IMP_USAGE_CHECK(    p->has_attribute(get_translation_key(0))
@@ -71,9 +75,10 @@ class IMPDOMINOEXPORT Transformation: public Decorator
                && p->has_attribute(get_rotation_key(0))
                && p->has_attribute(get_rotation_key(1))
                && p->has_attribute(get_rotation_key(2))
-               && p->has_attribute(get_rotation_key(3)),
+               && p->has_attribute(get_rotation_key(3))
+               && p->has_attribute(get_transformation_index_key()),
               "Particle expected to either have x,y,z,a,b,c,d attributes.",
-              InvalidStateException);
+               InvalidStateException);
     return true;
   }
   //! get a Transformation3D object from the decorator

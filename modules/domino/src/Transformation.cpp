@@ -13,7 +13,7 @@ IMPDOMINO_BEGIN_NAMESPACE
 
 void Transformation::show(std::ostream &out) const
 {
-  algebra::VectorD<7> v;
+  algebra::VectorD<8> v;
   Particle *p=get_particle();
   v[0]=p->get_value(get_rotation_key(0));
   v[1]=p->get_value(get_rotation_key(1));
@@ -22,6 +22,7 @@ void Transformation::show(std::ostream &out) const
   v[4]=p->get_value(get_translation_key(0));
   v[5]=p->get_value(get_translation_key(1));
   v[6]=p->get_value(get_translation_key(2));
+  v[7]=p->get_value(get_transformation_index_key());
   out << "(" <<algebra::commas_io(v)<<")";
 }
 
@@ -35,6 +36,9 @@ const FloatKeys& Transformation::get_rotation_keys() {
 const FloatKeys& Transformation::get_translation_keys() {
   return IMP::core::XYZ::get_xyz_keys();
 }
+const IntKey& Transformation::get_transformation_index_key() {
+  return IMP::IntKey("trans_ind");
+}
 //! get a Transformation3D object from the decorator
 algebra::Transformation3D Transformation::get_transformation() {
   Particle *p=get_particle();
@@ -47,5 +51,4 @@ algebra::Transformation3D Transformation::get_transformation() {
                          p->get_value(get_translation_key(1)),
                          p->get_value(get_translation_key(2))));
 }
-
 IMPDOMINO_END_NAMESPACE
