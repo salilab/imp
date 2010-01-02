@@ -19,7 +19,7 @@
 #include <boost/graph/graph_concepts.hpp>
 #include <boost/graph/visitors.hpp>
 #include <boost/graph/named_function_params.hpp>
-#include <boost/graph/overloading.hpp>
+//#include <boost/graph/overloading.hpp>
 #include <boost/graph/graph_concepts.hpp>
 #include <boost/graph/two_bit_color_map.hpp>
 #include <boost/graph/graphviz.hpp>
@@ -28,7 +28,7 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/adjacency_matrix.hpp>
 #include <boost/graph/graph_traits.hpp>
-#include <boost/graph/directed_graph.hpp>
+//#include <boost/graph/directed_graph.hpp>
 #include <boost/graph/topological_sort.hpp>
 
 #include <boost/dynamic_bitset.hpp>
