@@ -14,7 +14,7 @@ EnsureSConsVersion(0, 98)
 vars = Variables('config.py')
 scons_tools.add_common_variables(vars, "imp")
 env = scons_tools.MyEnvironment(variables=vars,
-                                tools=["default", "docbook", "swig"],
+                                tools=["default", "swig"],
                                 toolpath=["scons_tools"])
 unknown = vars.UnknownVariables()
 if unknown:
