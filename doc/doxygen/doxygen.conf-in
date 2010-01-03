@@ -192,11 +192,9 @@ ALIASES                = "command{1}=\code \1 \endcode" \
                          "cpp=\par For C++ users:\n" \
                          "overview=\par Overview:\n" \
                          "license=\par License:\n" \
-                         "standard_imp_license=To be determined" \
                          "publications=\par Publications:" \
+                         "version=\par Version:" \
                          "warning=\par Warning:" \
-                         "standard_imp_publications=This module will be covered in the upcoming \imp publication" \
-                         "publication{4}=\1. \2. <em>\3</em>. \4" \
                          "cgalpredicate=\note This predicates will produce guaranteed correct results if the \ref CGAL \"CGAL\" library is available (the results will be unreliable if it is not). \ingroup CGAL" \
                          "unstable{1}=\warning \1 has not been stabilized and is likely to change without notice\n See \ref unstable \"unstable functionality\" for more information." \
                          "untested{1}=\warning \1 has not been well tested yet\n  Use with caution and please report any bugs found. See \ref untested \"lightly tested functionality\" for more information." \
@@ -827,11 +825,6 @@ HTML_HEADER            = \
 
 HTML_FOOTER            = \
                        @IMP_SOURCE_PATH@/doc/doxygen/footer.html
-
-# If the HTML_TIMESTAMP tag is set to YES then the generated HTML
-# documentation will contain the timesstamp.
-
-HTML_TIMESTAMP         = YES
 
 # The HTML_STYLESHEET tag can be used to specify a user-defined cascading
 # style sheet that is used by each HTML page. It can be used to

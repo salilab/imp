@@ -2,9 +2,14 @@ Import('env')
 
 import os
 import os.path
+import sys
 
 
 def run_doxygen(target, source, env):
+    os.environ['PATH']=env['ENV']['PATH']
+    ret= os.popen("doxygen --version").read()
+    if ret.find("1.6.1")!= -1:
+        raise RuntimeError("IMP does not work with doxygen 1.6.1 due to preprocessor parsing bugs. Sorry.")
     env.Execute("doxygen "+source[0].abspath)
 
 
