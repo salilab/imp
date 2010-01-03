@@ -47,7 +47,7 @@ IMPATOMEXPORT std::pair<double,double> placement_score(
            represented by XYZ coordinates
 \param[in] mdl2 The modeled placement of the second component
            represented by XYZ coordinates
-\param[out] the function returns (<distance score>,<angle score>)
+\return the function returns (distance score,angle score)
 \note The measure quantifies the difference between the relative placements
       of two components compared to a reference relative placement.
       First, the two compared structures are brought into
