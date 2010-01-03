@@ -1,3 +1,8 @@
 Import('env')
 
-env.IMPModuleDoc(env.IMPModuleGetDocs())
+env.IMPModuleDoc(env.IMPModuleGetDocs(),
+                 authors=["Keren Lasker"],
+                 brief="MODULENAME provides a cool optimizer.",
+                 overview=None,
+                 publications=env.StandardPublications(),
+                 license=env.StandardLicense())

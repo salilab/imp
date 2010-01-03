@@ -1,3 +1,8 @@
 Import('env')
 
-env.IMPModuleDoc(env.IMPModuleGetDocs())
+env.IMPModuleDoc(env.IMPModuleGetDocs(),
+                 authors=["Keren Lasker", "Javier Velazquez-Muriel", "Friedrich Foerster"],
+                 brief="MODULENAME allows density maps to be used to generate restraints.",
+                 overview="MODULENAME provides methods to manipulate EM density maps, and allows these maps to be used as restraints.",
+                 publications=env.StandardPublications(),
+                 license=env.StandardLicense())

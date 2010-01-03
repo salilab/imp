@@ -1,3 +1,9 @@
 Import('env')
 
-env.IMPModuleDoc(env.IMPModuleGetDocs())
+env.IMPModuleDoc(env.IMPModuleGetDocs(),
+                 authors=["Elina Tjioe", "Keren Lasker", "Jeremy Phillips", "Ben Webb"],
+                 brief="""MODULENAME provides a higher level interface for using experimental proteomics data with \\imp""",
+                 overview="""MODULENAME will support most (if not all) of the restraints of Frank's Restrainer and Keren's Assembly (minus the optimization part) as an IMP module. The XML schema is provided to check the validation of the xml input data (xmllint --noout --schema IMP_Schema2.xsd *.xml). The visualization of the XML schema can be seen
+<a href="../../modules/restrainer/test/input/IMP_Schema.png" target="_blank">here</a>.""",
+                 license=None,
+                 publications=env.StandardPublications())

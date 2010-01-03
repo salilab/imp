@@ -1,3 +1,8 @@
 Import('env')
 
-env.IMPModuleDoc(env.IMPModuleGetDocs())
+env.IMPModuleDoc(env.IMPModuleGetDocs(),
+                 authors=["Daniel Russel"],
+                 brief="MODULENAME wraps optimisers from the GNU Scientific Library",
+                 overview="""The \external{http://www.gnu.org/software/gsl/,GSL} provides various general purpose optimizers which this module exposes to \\imp. The most useful is probably the IMP::gsl::Simplex optimizer.""",
+                 publications=[env.Website(url='http://www.gnu.org/software/gsl/', name='The GSL web site')],
+                 license="GPL")

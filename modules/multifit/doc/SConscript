@@ -1,3 +1,8 @@
 Import('env')
 
-env.IMPModuleDoc(env.IMPModuleGetDocs())
+env.IMPModuleDoc(env.IMPModuleGetDocs(),
+                 authors=["Keren Lasker"],
+                 brief="MODULENAME contains a protocol for fitting proteins to EM maps.",
+                 overview=None,
+                 publications=env.StandardPublications(),
+                 license=env.StandardLicense())

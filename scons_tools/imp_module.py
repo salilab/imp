@@ -13,6 +13,7 @@ import link_test
 import modeller_test
 import run
 import checks
+import modpage
 
 from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir
 
@@ -476,16 +477,27 @@ def IMPModuleGetBins(env):
     return raw_files
 
 def IMPModuleGetDocs(env):
-    files=module_glob(["*.dox.in", "*.dox", "*.pdf"])
+    files=module_glob(["*.dox", "*.pdf"])
     return files
 
 
-def IMPModuleDoc(env, files):
+def IMPModuleDoc(env, files, authors,
+                 brief, overview,
+                 publications=None,
+                 license="standard"):
     vars= make_vars(env)
     build=[]
     #install=[]
     docdir=env['docdir']+"/"+vars['module_include_path']
+    build.append(env._IMPMakeModPage(source=[env.Value(authors),
+                                             env.Value(brief),
+                                             env.Value(overview),
+                                             env.Value(publications),
+                                             env.Value(license)],
+                                     target='overview.dox'))
     for f in files:
+        if f== "overview.dox.in":
+            raise ValueError("overview.dox-in is added automatically to files list")
         if str(f).endswith(".dox"):
             pass
         else:
@@ -673,12 +685,17 @@ def IMPModuleBuild(env, version, required_modules=[],
     env.AddMethod(IMPModuleDoc)
     env.AddMethod(IMPModuleExamples)
     env.AddMethod(IMPModuleGetDocs)
+    env.AddMethod(modpage.Publication)
+    env.AddMethod(modpage.Website)
+    env.AddMethod(modpage.StandardPublications)
+    env.AddMethod(modpage.StandardLicense)
     env.Append(BUILDERS={'_IMPModuleTest': test.UnitTest})
     env.Append(BUILDERS={'_IMPColorizePython': examples.ColorizePython})
     env.Append(BUILDERS={'_IMPExamplesDox': examples.MakeDox})
     env.Append(BUILDERS={'_IMPSWIG': swig.SwigIt})
     env.Append(BUILDERS={'_IMPPatchSWIG': swig.PatchSwig})
     env.Append(BUILDERS={'_IMPSWIGPreface': swig.SwigPreface})
+    env.Append(BUILDERS={'_IMPMakeModPage': modpage.MakeModPage})
     env.Append(BUILDERS={'IMPRun': run.Run})
     env.AddMethod(validate)
     env.AddMethod(invalidate)

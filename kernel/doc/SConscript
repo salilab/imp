@@ -1,3 +1,13 @@
 Import('env')
 
-env.IMPModuleDoc(Glob("*.dox")+Glob("*.dox.in"))
+env.IMPModuleDoc(Glob("*.dox"),
+                 authors=["Daniel Russel", "Ben Webb", "Keren Lasker"],
+                 brief='The \imp kernel provides base classes and key shared functionality.',
+                 overview="""All kernel and module classes and functions should be in this namespace or
+a sub-namespace.
+
+The kernel also provides \\ref logging "Logging" and \\ref assert "Error Reporting"
+support as well as \\ref object_helpers "macros to help implement objects".""",
+                 publications=env.StandardPublications(),
+                 license=env.StandardLicense(),
+                 )

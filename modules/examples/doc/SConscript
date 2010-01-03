@@ -1,3 +1,12 @@
 Import('env')
 
-env.IMPModuleDoc(env.IMPModuleGetDocs())
+env.IMPModuleDoc(env.IMPModuleGetDocs(),
+                 authors=["Daniel Russel"],
+                 brief="MODULENAME provides %examples showing how to implement various types of objects and functionality in \\imp.",
+                 overview="The overview section of the module page can contain any doxygen markup as well as references to \\imp classes such as IMP::Model. Remember to escape characters to keep python happy.",
+                 publications=env.StandardPublications()\
+                     + [env.Publication(authors=["Some Person", "Someone Else"],
+                                        title="A silly title of no paper",
+                                        journal="Dev Null", year=2051),
+                        env.Website(url="http://www.salilab.org/imp", name="IMP")],
+                 license=env.StandardLicense())
