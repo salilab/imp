@@ -1,3 +1,8 @@
 Import('env')
 
-env.IMPModuleDoc(env.IMPModuleGetDocs())
+env.IMPModuleDoc(env.IMPModuleGetDocs(),
+                 authors=["Keren Lasker"],
+                 brief="MODULENAME provides methods for clustering.",
+                 overview="This modules is currently in flux and should not be used.",
+                 publications=None,
+                 license=None)

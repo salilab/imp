@@ -1,3 +1,8 @@
 Import('env')
 
-env.IMPModuleDoc(env.IMPModuleGetDocs())
+env.IMPModuleDoc(env.IMPModuleGetDocs(),
+                 authors=['Daniel Russel', 'Ben Webb', 'Dina Schneidman'],
+                 brief='MODULENAME contains functionality for dealing with atoms and proteins.',
+                 overview="""MODULENAME provides a variety of functionality for loading, creating, manipulating and scoring atomic structures. Molecules and collections of molecules are represented using Hierarchy particles.""",
+                 publications=env.StandardPublications(),
+                 license=env.StandardLicense())

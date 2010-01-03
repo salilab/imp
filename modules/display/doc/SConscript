@@ -1,3 +1,9 @@
 Import('env')
 
-env.IMPModuleDoc(env.IMPModuleGetDocs())
+env.IMPModuleDoc(env.IMPModuleGetDocs(),
+                 authors=["Daniel Russel"],
+                 brief="MODULENAME provides support for displaying and exporting \\imp data in various ways.",
+                 overview="""MODULENAME provides code to write various file formats for displaying data
+from \\imp optimizations. The display::Writer classes provides the base class for objects which write to specific file formats and the display::Geometry provide means of describing geometry.""",
+                 publications=env.StandardPublications(),
+                 license=env.StandardLicense())

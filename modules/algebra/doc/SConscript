@@ -1,3 +1,9 @@
 Import('env')
 
-env.IMPModuleDoc(env.IMPModuleGetDocs())
+env.IMPModuleDoc(env.IMPModuleGetDocs(),
+                 authors= ['Daniel Russel', 'Keren Lasker', 'Ben Webb',
+                           'Javier Angel', 'Velazquez-Muriel'],
+                 brief='MODULENAME contains general purpose algebraic methods.',
+                 overview="""MODULENAME contains general purpose algebraic methods that are expected to be used by a wide variety of \\imp users. Since the classes defined here are generally meant to be used as low-level primitives, the default constructors do not initialize them to a know configuration, instead leaving them uninitialized.""",
+                 publications=env.StandardPublications(),
+                 license=env.StandardLicense())

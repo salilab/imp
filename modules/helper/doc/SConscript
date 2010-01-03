@@ -1,3 +1,8 @@
 Import('env')
 
-env.IMPModuleDoc(env.IMPModuleGetDocs())
+env.IMPModuleDoc(env.IMPModuleGetDocs(),
+                 authors=["Daniel Russel", "Elina Tjioe", "Keren Lasker", "Ben Webb"],
+                 brief="MODULENAME provides high level functionality to assist in setting up and manipulating models",
+                 overview="""MODULENAME contains a variety of functionality which encapsulate pieces of standard protocols involving a variety of other modules.""",
+                 publications=env.StandardPublications(),
+                 license=env.StandardLicense())
