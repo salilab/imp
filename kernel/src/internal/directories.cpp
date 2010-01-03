@@ -9,6 +9,8 @@
 
 #include <IMP/internal/directories.h>
 #include <IMP/config.h>
+#include <IMP/exception.h>
+#include <fstream>
 
 #ifdef IMP_USE_BOOST_LIBS
 #include <boost/filesystem/path.hpp>
@@ -64,13 +66,25 @@ namespace {
 
 std::string get_data_path(std::string module, std::string file_name)
 {
-  return get_path("IMP_DATA_DIRECTORY", IMP_DATA_DIRECTORY,
-                  module, file_name);
+  std::string path= get_path("IMP_DATA_DIRECTORY", IMP_DATA_DIRECTORY,
+                             module, file_name);
+  std::ifstream in(path.c_str());
+  if (!in) {
+    IMP_THROW("Unable to find data file "
+              << file_name << " at " << path, IOException);
+  }
+  return path;
 }
 std::string get_example_path(std::string module, std::string file_name)
 {
-  return get_path("IMP_EXAMPLE_DIRECTORY", IMP_EXAMPLE_DIRECTORY,
-                  module, file_name);
+  std::string path= get_path("IMP_EXAMPLE_DIRECTORY", IMP_EXAMPLE_DIRECTORY,
+                             module, file_name);
+  std::ifstream in(path.c_str());
+  if (!in) {
+    IMP_THROW("Unable to find example file "
+              << file_name << " at " << path, IOException);
+  }
+  return path;
 }
 
 IMP_END_INTERNAL_NAMESPACE
