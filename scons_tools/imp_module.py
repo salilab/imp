@@ -371,11 +371,14 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
         buildinit = penv.LinkInstallAs('#/build/lib/%s/__init__.py'
                                        % vars['module_include_path'],
                                        gen_pymod)
-        # Make sure we have example files installed, in case someone says
-        # import IMP.foo; IMP.foo.get_example_file('foo')
+        # Make sure we have example/data files installed, in case someone says
+        # import IMP.foo; IMP.foo.get_example_file('foo'); IMP.get_data_path('')
         if module != 'kernel':
             penv.Requires(buildinit, '#/build/doc/examples/%s' \
                           % module)
+            penv.Requires(buildinit, '#/build/data/%s' % module)
+        else:
+            penv.Requires(buildinit, '#/build/data')
         installinit = penv.InstallAs(penv.GetInstallDirectory('pythondir',
                                                             vars['module_include_path'],
                                                             '__init__.py'),
