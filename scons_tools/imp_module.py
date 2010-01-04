@@ -289,7 +289,6 @@ def IMPModuleExamples(env, files):
     module_requires(env, test, 'examples')
     add_to_global_alias(env, 'test', 'test-examples')
     module_alias(env, 'dox-examples', dox)
-    module_requires(env, test, 'python')
     add_to_global_alias(env, 'doc', 'dox-examples')
     return test
 
@@ -533,7 +532,6 @@ def IMPModuleTest(env):
     env.AlwaysBuild("test.passed")
     module_alias(env, 'test', test)
     add_to_global_alias(env, 'test', 'test')
-    module_requires(env, test, 'python')
 
 def check_libraries_and_headers(env, libraries, headers):
     rlibraries=[x for x in libraries]
