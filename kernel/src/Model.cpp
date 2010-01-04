@@ -19,9 +19,7 @@
 #include <boost/graph/graph_concepts.hpp>
 #include <boost/graph/visitors.hpp>
 #include <boost/graph/named_function_params.hpp>
-//#include <boost/graph/overloading.hpp>
 #include <boost/graph/graph_concepts.hpp>
-#include <boost/graph/two_bit_color_map.hpp>
 #include <boost/graph/graphviz.hpp>
 
 
