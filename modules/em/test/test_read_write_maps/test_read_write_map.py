@@ -46,7 +46,6 @@ class ReadWriteMapsTests(IMP.test.TestCase):
         out_filename = "three_particles_out.em"
 
         xrw = IMP.em.EMReaderWriter()
-
         scene = IMP.em.read_map(in_filename,xrw)
         header = scene.get_header()
         self.assertEqual(header.nx, 55)
@@ -55,10 +54,9 @@ class ReadWriteMapsTests(IMP.test.TestCase):
         self.assertEqual(header.magic, 6)
         self.assertEqual(header.voltage, 0.)
         self.assertEqual(header.Cs, 0.)
-        self.assertEqual(header.Objectpixelsize, 1.)
+        self.assertEqual(header.get_spacing(), 1.)
         self.assertInTolerance(scene.calcRMS(), 404.5, 1.0)
         IMP.em.write_map(scene, out_filename,xrw);
-
         scene2 = IMP.em.read_map(out_filename, xrw)
         header2 = scene2.get_header()
         self.assertEqual(header2.nx, header.nx)
@@ -77,7 +75,6 @@ class ReadWriteMapsTests(IMP.test.TestCase):
         scene = IMP.em.DensityMap()
         mrc_rw = IMP.em.MRCReaderWriter()
         scene= IMP.em.read_map(in_filename,mrc_rw)
-
         # Check header size
         self.assertEqual(74,scene.get_header().nx)
         self.assertEqual(71,scene.get_header().ny)
@@ -94,9 +91,9 @@ class ReadWriteMapsTests(IMP.test.TestCase):
         scene = IMP.em.DensityMap()
         em_rw = IMP.em.EMReaderWriter()
         scene= IMP.em.read_map(in_filename, em_rw)
-        pixsize = scene.get_header().Objectpixelsize
+        pixsize = scene.get_header().get_spacing()
         print "ObjectPixelsize = " + str(pixsize)
-        self.assertInTolerance(3.0, scene.get_header().Objectpixelsize, 0.0001)
+        self.assertInTolerance(3.0, scene.get_header().get_spacing(), 0.0001)
         self.assertInTolerance(300., scene.get_header().voltage, 0.0001)
 
 

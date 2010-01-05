@@ -38,7 +38,7 @@ public:
     mapc =1; mapr=2; maps=3;
     ispg=0;
     nsymbt=0;
-    Objectpixelsize = 1.0;
+    set_spacing(1.0);
     machinestamp = 0;
     nlabl=0;
     strcpy(map,"MAP \0");
@@ -84,6 +84,10 @@ public:
    */
   void update_map_dimensions(int nnx,int nny,int nnz);
 
+  //! Update the cell dimensions of the map multiplying the number of voxels
+  //! along each direction by the Objectpixelsize
+  void update_cell_dimensions();
+
   void show(std::ostream& out=std::cout) const {
     out<< "nx: " << nx << " ny: " << ny << " nz: " << nz << std::endl;
     out<<"data_type: " << data_type << std::endl;
@@ -104,7 +108,7 @@ public:
     out<<"xorigin: " << xorigin_ << " yorigin: "<< yorigin_ <<" zorigin: "
        << zorigin_ << std::endl;
     out<<"map: " << map << std::endl;
-    out<< "Objectpixelsize: " << Objectpixelsize << std::endl;
+    out<< "Objectpixelsize: " << Objectpixelsize_ << std::endl;
     out<< "machinestamp: " << machinestamp << std::endl;
     out<<"rms: " << rms << std::endl;
     out<<"nlabl: " << nlabl <<std::endl;
@@ -162,7 +166,6 @@ public:
   float Magnification;  //Magnification
   float Postmagnification; //Postmagnification (of energy filter)
   float Exposuretime; //Exposuretime
-  float Objectpixelsize; //this is the actual pixelsize
   float Microscope;  //Microscope
   float Pixelsize; //Pixelsize - used for the microscope CCD camera
   float CCDArea;  //CCDArea
@@ -184,8 +187,11 @@ public:
   inline float get_resolution() const { return resolution_;}
   //! Sets the resolution of the map
   void set_resolution(float resolution) { resolution_=resolution;}
-  inline float get_spacing() const {return Objectpixelsize;}
-  inline void set_spacing(float spacing)  {Objectpixelsize = spacing;}
+  inline float get_spacing() const {return Objectpixelsize_;}
+  inline void set_spacing(float spacing)  {
+    Objectpixelsize_ = spacing;
+    update_cell_dimensions();
+  }
   //! Returns the origin on the map (x-coordinate)
   inline float get_xorigin() const {return xorigin_;}
   //! Returns the origin on the map (y-coordinate)
@@ -230,6 +236,7 @@ protected:
   float xorigin_, yorigin_, zorigin_; //Origin used for transforms
   bool top_calculated_;
   float resolution_;
+  float Objectpixelsize_; //this is the actual pixelsize
 };
 
 IMPEM_END_NAMESPACE

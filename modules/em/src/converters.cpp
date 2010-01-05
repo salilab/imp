@@ -13,7 +13,7 @@ IMPEM_BEGIN_NAMESPACE
 void density2particles(DensityMap &dmap, Float threshold,
                               Particles &ps, Model *m) {
   Float x,y,z,val;
-  Float voxel_size=dmap.get_header()->Objectpixelsize;
+  Float voxel_size=dmap.get_header()->get_spacing();
   Float r=sqrt(3.*voxel_size*voxel_size);
   FloatKey dens_key = Voxel::get_density_key();
   for (long i=0;i<dmap.get_number_of_voxels();i++) {

@@ -11,12 +11,13 @@ IMPEM_BEGIN_NAMESPACE
 
 //! Function to transfer the (compatible) information content from ImageHeader
 //! to DensityHeader
-void  ImageHeader_to_DensityHeader(const ImageHeader& h,DensityHeader& dh) {
+void  ImageHeader_to_DensityHeader(const ImageHeader &h,DensityHeader &dh) {
   std::string empty;
-  // map size
+  // map size and voxel size
   dh.nz=h.get_number_of_slices();
   dh.ny=h.get_number_of_rows();
   dh.nx=h.get_number_of_columns();
+  dh.set_spacing(h.get_object_pixel_size());
   // mode
   switch ((int) h.get_fIform()) {
   case ImageHeader::IMG_BYTE:
@@ -38,16 +39,11 @@ void  ImageHeader_to_DensityHeader(const ImageHeader& h,DensityHeader& dh) {
     dh.data_type=2;
     break;
   }
-
   // number of first columns in map (default = 0)
   dh.nxstart=0 ; dh.nystart=0 ; dh.nzstart=0;
   // Number of intervals along each dimension. In DensityHeader it is assumed
   // to be equal to the size of the map
   dh.mx=dh.nx;  dh.my=dh.ny;  dh.mz=dh.nz;
-  // Cell dimensions (angstroms)
-  dh.xlen=h.get_xorigin()+h.get_object_pixel_size()*h.get_number_of_columns();
-  dh.zlen=h.get_yorigin()+h.get_object_pixel_size()*h.get_number_of_rows();
-  dh.ylen=h.get_zorigin()+h.get_object_pixel_size()*h.get_number_of_slices();
   // Cell angles (degrees)
   // Spider format does not have these fields. Filed with default (90 deg)
   dh.alpha=90. ; dh.beta=90. ; dh.gamma=90.;
@@ -128,7 +124,7 @@ void  DensityHeader_to_ImageHeader(const DensityHeader& dh,ImageHeader& h) {
   h.set_xorigin(dh.get_xorigin());
   h.set_yorigin(dh.get_yorigin());
   h.set_zorigin(dh.get_zorigin());
-  h.set_object_pixel_size(dh.Objectpixelsize);
+  h.set_object_pixel_size(dh.get_spacing());
   // Statistical values. There is no field in DensityHeader to guarantee that
   // they are computed or correct, so they are ignored
   h.set_fImami(0.);

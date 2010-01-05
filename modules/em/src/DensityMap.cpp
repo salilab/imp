@@ -208,9 +208,9 @@ long DensityMap::loc2voxel(float x,float y,float z) const
 {
   IMP_USAGE_CHECK(is_part_of_volume(x,y,z),
             "The point is not part of the grid", IndexException);
-  int ivoxx=(int)floor((x-header_.get_xorigin())/header_.Objectpixelsize);
-  int ivoxy=(int)floor((y-header_.get_yorigin())/header_.Objectpixelsize);
-  int ivoxz=(int)floor((z-header_.get_zorigin())/header_.Objectpixelsize);
+  int ivoxx=(int)floor((x-header_.get_xorigin())/header_.get_spacing());
+  int ivoxy=(int)floor((y-header_.get_yorigin())/header_.get_spacing());
+  int ivoxz=(int)floor((z-header_.get_zorigin())/header_.get_spacing());
   return xyz_ind2voxel(ivoxx,ivoxy,ivoxz);
 }
 
@@ -284,9 +284,9 @@ void DensityMap::calc_all_voxel2loc()
 
   int ix=0,iy=0,iz=0;
   for (long ii=0;ii<nvox;ii++) {
-    x_loc_[ii] =  ix * header_.Objectpixelsize + header_.get_xorigin();
-    y_loc_[ii] =  iy * header_.Objectpixelsize + header_.get_yorigin();
-    z_loc_[ii] =  iz * header_.Objectpixelsize + header_.get_zorigin();
+    x_loc_[ii] =  ix * header_.get_spacing() + header_.get_xorigin();
+    y_loc_[ii] =  iy * header_.get_spacing() + header_.get_yorigin();
+    z_loc_[ii] =  iz * header_.get_spacing() + header_.get_zorigin();
 
     // bookkeeping
     ix++;
@@ -405,8 +405,8 @@ bool DensityMap::same_dimensions(const DensityMap &other) const
 
 bool DensityMap::same_voxel_size(const DensityMap &other) const
 {
-  if(fabs(get_header()->Objectpixelsize
-          - other.get_header()->Objectpixelsize) < EPS)
+  if(fabs(get_header()->get_spacing()
+          - other.get_header()->get_spacing()) < EPS)
     return true;
   return false;
 }
@@ -492,8 +492,8 @@ void DensityMap::add(const DensityMap &other) {
   // check that the two maps have the same voxel size
   IMP_USAGE_CHECK(same_voxel_size(other),
             "The voxel sizes of the two maps differ ( "
-            << header_.Objectpixelsize << " != "
-            << other.header_.Objectpixelsize, ValueException);
+            << header_.get_spacing() << " != "
+            << other.header_.get_spacing(), ValueException);
   long size = header_.nx * header_.ny * header_.nz;
   for (long i=0;i<size;i++){
     data_[i]= data_[i] + other.data_[i];
@@ -521,9 +521,9 @@ void DensityMap::pad(int nx, int ny, int nz,float val) {
     float x = voxel2loc(i,0);
     float y = voxel2loc(i,1);
     float z = voxel2loc(i,2);
-    new_vox_x=(int)floor((x-header_.get_xorigin())/header_.Objectpixelsize);
-    new_vox_y=(int)floor((y-header_.get_yorigin())/header_.Objectpixelsize);
-    new_vox_z=(int)floor((z-header_.get_zorigin())/header_.Objectpixelsize);
+    new_vox_x=(int)floor((x-header_.get_xorigin())/header_.get_spacing());
+    new_vox_y=(int)floor((y-header_.get_yorigin())/header_.get_spacing());
+    new_vox_z=(int)floor((z-header_.get_zorigin())/header_.get_spacing());
     new_vox =  new_vox_z * nx * ny + new_vox_y * nx + new_vox_x;
     new_data[new_vox] = data_[i];
   }
@@ -535,7 +535,7 @@ void DensityMap::pad(int nx, int ny, int nz,float val) {
 
 
 void DensityMap::update_voxel_size(float new_apix) {
-  header_.Objectpixelsize = new_apix;
+  header_.set_spacing(new_apix);
   header_.compute_xyz_top(true);
   reset_voxel2loc();
   calc_all_voxel2loc();

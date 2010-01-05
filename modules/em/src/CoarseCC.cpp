@@ -71,8 +71,8 @@ float CoarseCC::cross_correlation_coefficient(const DensityMap &em_map,
             InvalidStateException);
   IMP_USAGE_CHECK(em_map.same_voxel_size(model_map),
             "This function cannot handle density maps of different pixelsize. "
-            << "First map pixelsize : " << em_header->Objectpixelsize << "; "
-            << "Second map pixelsize: " << model_header->Objectpixelsize,
+            << "First map pixelsize : " << em_header->get_spacing() << "; "
+            << "Second map pixelsize: " << model_header->get_spacing(),
             InvalidStateException);
 
   // Take into account the possibility of a model map with zero rms
@@ -105,7 +105,7 @@ float CoarseCC::cross_correlation_coefficient(const DensityMap &em_map,
 
     // calculate the difference in voxels between the origin of the  model map
     // and the origin of the em map.
-    float voxel_size = em_map.get_header()->Objectpixelsize;
+    float voxel_size = em_map.get_header()->get_spacing();
     const DensityHeader *em_header = em_map.get_header();
     const DensityHeader *model_header = model_map.get_header();
     int ivoxx_shift = (int)floor((model_header->get_xorigin()
