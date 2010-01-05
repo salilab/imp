@@ -70,7 +70,6 @@ def _scanfile(node, env, path):
                 modules.extend(_find_python_module(env,
                                                    m.group(1) + '.' + modname,
                                                    dirs))
-    print "for ", str(node), " got ", [str(x) for x in modules]
     return modules
 
 PythonScanner = Scanner(function=_scanfile, skeys=['.py'], recursive=True)
