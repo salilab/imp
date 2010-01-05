@@ -50,11 +50,13 @@ def _check(context, version):
 
 def configure_check(env, version):
     custom_tests = {'CheckBoost':_check}
-    env["BOOST_LIBS"]=True
     conf = env.Configure(custom_tests=custom_tests)
-    if not env.GetOption('clean') and not env.GetOption('help') \
-       and conf.CheckBoost(version) is 0:
-        Exit("""
+    if env.GetOption('clean') or env.GetOption('help'):
+        env['BOOST_LIBS']=False
+    else:
+        env["BOOST_LIBS"]=True
+        if conf.CheckBoost(version) is 0:
+            Exit("""
 Boost version >= %s is required to build IMP, but it could not be
 found on your system.
 
