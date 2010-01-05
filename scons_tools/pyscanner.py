@@ -15,8 +15,9 @@
    module to avoid this.
 """
 
-from SCons.Script import Scanner, Dir, FindPathDirs
+from SCons.Script import Scanner, Dir, FindPathDirs, File
 import SCons.Node.FS
+import bug_fixes
 import os
 import re
 
@@ -49,7 +50,8 @@ def _find_python_module(env, modname, dirs):
 
 def _scanfile(node, env, path):
     # If file does not yet exist, we cannot scan it:
-    if not os.path.exists(node.path):
+    node=bug_fixes.fix_node(env, node)
+    if not os.path.exists(node.abspath):
         return []
     # Get directory of input file (for relative imports)
     dir = os.path.dirname(node.path)
@@ -68,6 +70,7 @@ def _scanfile(node, env, path):
                 modules.extend(_find_python_module(env,
                                                    m.group(1) + '.' + modname,
                                                    dirs))
+    print "for ", str(node), " got ", [str(x) for x in modules]
     return modules
 
 PythonScanner = Scanner(function=_scanfile, skeys=['.py'], recursive=True)
