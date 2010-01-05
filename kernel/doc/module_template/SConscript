@@ -1,3 +1,0 @@
-Import('env')
-
-env.IMPModuleBuild(version="SVN", required_modules=['core'])
