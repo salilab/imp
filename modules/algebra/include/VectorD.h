@@ -344,7 +344,7 @@ double distance(const VectorD<D> &v1, const VectorD<D> &v2) {
   return std::sqrt(squared_distance(v1, v2));
 }
 
-//! Return the a basis vector
+//! Return the basis vector for the given coordinate
 /** Return the unit vector pointing in the direction of the requested
     coordinate. That is
     \code
@@ -356,8 +356,11 @@ template <unsigned int D>
 VectorD<D> basis_vector(unsigned int coordinate) {
   IMP_USAGE_CHECK(coordinate<D, "There are only " << D << " basis vectors",
             IndexException);
-  double vs[D]={0.0};
-  vs[coordinate]=1;
+  double vs[D];
+  for (unsigned int i=0; i< D; ++i) {
+    if (i==coordinate) v[i]=1;
+    else v[i]=0;
+  }
   return VectorD<D>(vs, vs+D);
 }
 
