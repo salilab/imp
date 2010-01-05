@@ -67,7 +67,7 @@ void SampledDensityMap::set_header(const std::vector<emreal> &lower_bound,
   //set the map header
   header_ = DensityHeader();
   header_.set_resolution(resolution);
-  header_.Objectpixelsize = voxel_size;
+  header_.set_spacing(voxel_size);
   header_.nx = int(ceil((1.0*(upper_bound[0]-lower_bound[0]) +
                          2.*sig_cutoff*(resolution+maxradius))/voxel_size));
   header_.ny = int(ceil((1.0*(upper_bound[1]-lower_bound[1]) +
@@ -78,15 +78,11 @@ void SampledDensityMap::set_header(const std::vector<emreal> &lower_bound,
   header_.set_yorigin(lower_bound[1]-sig_cutoff*(resolution + maxradius));
   header_.set_zorigin(lower_bound[2]-sig_cutoff*(resolution + maxradius));
 
-
-  header_.xlen= header_.nx*header_.Objectpixelsize;
-  header_.ylen = header_.ny*header_.Objectpixelsize;
-  header_.zlen = header_.nz*header_.Objectpixelsize;
   header_.alpha = header_.beta = header_.gamma = 90.0;
   // TODO : in MRC format mx equals Grid size in X
   // ( http://bio3d.colorado.edu/imod/doc/mrc_format.txt)
   // We assueme that grid size means number of voxels ( which is the meaning
-  // of nx). It might be worth asking MRC people whather this assumption
+  // of nx). It might be worth asking MRC people whether this assumption
   // is correct.
   header_.mx = header_.nx; header_.my = header_.ny; header_.mz = header_.nz;
   header_.compute_xyz_top();

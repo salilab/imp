@@ -39,16 +39,15 @@ void project_given_rotation(DensityMap& map,
   orig3D[0]=map.get_header()->get_xorigin();
   orig3D[1]=map.get_header()->get_yorigin();
   orig3D[2]=map.get_header()->get_zorigin();
-  float voxelsize=map.get_header()->Objectpixelsize;
+  float voxelsize=map.get_header()->get_spacing();
   // Center the 2D matrix (necessary for the projection algorithm)
   m2.centered_start();
   // Set the pixel size of the map to 1 (necessary for the projection algorithm)
-  map.get_header_writable()->Objectpixelsize=1.0;
+  map.get_header_writable()->set_spacing(1.0);
   // Center the map (necessary for the projection algorithm)
   map.set_origin((-1)*(int)(map.get_header()->nx/2.),
                  (-1)*(int)(map.get_header()->ny/2.),
                  (-1)*(int)(map.get_header()->nz/2.));
-
 
   // Get the rotation and the direction from the Euler angles
   IMP::algebra::Rotation3D InvRot = Rot.get_inverse();
@@ -286,7 +285,7 @@ void project_given_rotation(DensityMap& map,
   // Reindex the matrix again
   m2.reindex(orig2D);
   // Restore the map parameters
-  map.get_header_writable()->Objectpixelsize=voxelsize;
+  map.get_header_writable()->set_spacing(voxelsize);
   map.set_origin(orig3D[0],orig3D[1],orig3D[2]);
 };
 

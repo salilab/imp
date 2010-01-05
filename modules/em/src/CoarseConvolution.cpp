@@ -30,8 +30,8 @@ float CoarseConvolution::convolution(const DensityMap &f, DensityMap &g,
             InvalidStateException);
   IMP_USAGE_CHECK(f.same_voxel_size(g),
             "This function cannot handle density maps of different pixelsize. "
-            << "First map pixelsize : " << f_header->Objectpixelsize
-            << "; Second map pixelsize: " << g_header->Objectpixelsize,
+            << "First map pixelsize : " << f_header->get_spacing()
+            << "; Second map pixelsize: " << g_header->get_spacing(),
             InvalidStateException);
   bool same_origin = f.same_origin(g);
   int  nvox = f_header->nx*f_header->ny*f_header->nz;
@@ -51,7 +51,7 @@ float CoarseConvolution::convolution(const DensityMap &f, DensityMap &g,
 
     // calculate the difference in voxels between the origin of the  model map
     // and the origin of the em map.
-    float voxel_size = f_header->Objectpixelsize;
+    float voxel_size = f_header->get_spacing();
     int ivoxx_shift = (int)floor((g_header->get_xorigin()
                                   - f_header->get_xorigin())
                                  / voxel_size);

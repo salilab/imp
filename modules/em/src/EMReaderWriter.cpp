@@ -27,7 +27,7 @@ EMHeader::EMHeader(const DensityHeader &header) {
   Magnification=header.Magnification;
   Postmagnification=header.Postmagnification;
   Exposuretime=header.Exposuretime;
-  Objectpixelsize=header.Objectpixelsize;
+  Objectpixelsize=header.get_spacing();
   Microscope=header.Microscope;
   Pixelsize=header.Pixelsize;
   CCDArea=header.CCDArea;
@@ -52,6 +52,7 @@ void EMHeader::GenerateCommonHeader(DensityHeader &header) {
   header.nz=nz;
   header.magic=magic;
   header.data_type=type;
+  header.set_spacing(Objectpixelsize);
 
   for (short i=0;i < DensityHeader::COMMENT_FIELD_SINGLE_SIZE; i++) {
     header.comments[0][i]=comment[i];
@@ -63,7 +64,6 @@ void EMHeader::GenerateCommonHeader(DensityHeader &header) {
   header.Magnification=Magnification;
   header.Postmagnification= Postmagnification;
   header.Exposuretime=Exposuretime;
-  header.Objectpixelsize=Objectpixelsize;
   header.Microscope=Microscope;
   header.Pixelsize=Pixelsize;
   header.CCDArea=CCDArea;

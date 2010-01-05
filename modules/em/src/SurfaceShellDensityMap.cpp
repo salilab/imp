@@ -40,7 +40,7 @@ void SurfaceShellDensityMap::set_neighbor_mask() {
         neighbor_shift_.push_back(
               z * header_.nx * header_.ny + y * header_.nx + x);
         neighbor_dist_.push_back(
-            header_.Objectpixelsize * sqrt((1.0*x*x + y*y + z*z)));
+            header_.get_spacing() * sqrt((1.0*x*x + y*y + z*z)));
       }
     }
   }
