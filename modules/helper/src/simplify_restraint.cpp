@@ -37,8 +37,8 @@ SimpleConnectivity create_simple_connectivity_on_rigid_bodies(
 
   /****** Add restraint to the model ******/
 
-  Model *mdl = rbs[0].get_model();
-  mdl->add_restraint(cr);
+  //Model *mdl = rbs[0].get_model();
+  //mdl->add_restraint(cr);
 
   /****** Return a SimpleConnectivity object ******/
 
@@ -79,8 +79,8 @@ SimpleConnectivity create_simple_connectivity_on_molecules(
 
   /****** Add restraint to the model ******/
 
-  Model *mdl = mhs[0].get_particle()->get_model();
-  mdl->add_restraint(cr);
+  //Model *mdl = mhs[0].get_particle()->get_model();
+  //mdl->add_restraint(cr);
 
   /****** Return a SimpleConnectivity object ******/
 
@@ -99,8 +99,8 @@ SimpleDistance create_simple_distance(Particles *ps)
 
   /****** Add restraint to the model ******/
 
-  Model *mdl = (*ps)[0]->get_model();
-  mdl->add_restraint(dr);
+  //Model *mdl = (*ps)[0]->get_model();
+  //mdl->add_restraint(dr);
 
   /****** Return a SimpleDistance object ******/
 
@@ -121,8 +121,8 @@ SimpleDiameter create_simple_diameter(Particles *ps, Float diameter)
 
   /****** Add restraint to the model ******/
 
-  Model *mdl = (*ps)[0]->get_model();
-  mdl->add_restraint(dr);
+  //Model *mdl = (*ps)[0]->get_model();
+  //mdl->add_restraint(dr);
 
   /****** Return a SimpleDiameter object ******/
 
@@ -145,8 +145,8 @@ SimpleExcludedVolume create_simple_excluded_volume_on_rigid_bodies(
 
   /****** Add restraint to the model ******/
 
-  Model *mdl = rbs[0].get_model();
-  mdl->add_restraint(evr);
+  //Model *mdl = rbs[0].get_model();
+  //mdl->add_restraint(evr);
 
   /****** Return a SimpleExcludedVolume object ******/
 
@@ -178,8 +178,8 @@ SimpleExcludedVolume create_simple_excluded_volume_on_molecules(
 
   /****** Add restraint to the model ******/
 
-  Model *mdl = mhs[0].get_particle()->get_model();
-  mdl->add_restraint(evr);
+  //Model *mdl = mhs[0].get_particle()->get_model();
+  //mdl->add_restraint(evr);
 
   /****** Return a SimpleExcludedVolume object ******/
 
@@ -234,9 +234,9 @@ SimpleEMFit create_simple_em_fit(atom::Hierarchies const &mhs,
         core::XYZR::get_default_radius_key(),
         atom::Mass::get_mass_key(),
         1.0));
-  Model *mdl = mhs[0].get_particle()->get_model();
-  fit_rs->set_model(mdl);
-  mdl->add_restraint(fit_rs);
+  //Model *mdl = mhs[0].get_particle()->get_model();
+  //fit_rs->set_model(mdl);
+  //mdl->add_restraint(fit_rs);
 
   return SimpleEMFit(fit_rs);
 }
