@@ -210,7 +210,9 @@ public:
       it can be set to another value. For example, an attribute storing
       an angle should have the range set to eg (0,PI).
 
-      The ranges are not enforced, they are just guidelines.
+      The ranges are not enforced, they are just guidelines. In order to
+      enforce ranges, see, for example,
+      IMP::examples::ExampleSingletonModifier.
       @{
   */
   FloatRange get_range(FloatKey k) const;
@@ -240,7 +242,10 @@ public:
 
      \note Not all ScoreStates are updated during this call, only the
      ones which are needed to make sure the particles read by the
-     restraints are up-to-date.
+     restraints are up-to-date. The list of ScoreStates that needs to
+     be updated for each restraint is currently recomputed when new
+     score states are added, but not when the dependencies of
+     Restraints or ScoreStates change. This can be fixed if requested.
   */
  virtual Float evaluate(const RestraintsTemp &restraints, bool calc_derivs);
 
