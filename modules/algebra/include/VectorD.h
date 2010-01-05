@@ -358,8 +358,8 @@ VectorD<D> basis_vector(unsigned int coordinate) {
             IndexException);
   double vs[D];
   for (unsigned int i=0; i< D; ++i) {
-    if (i==coordinate) v[i]=1;
-    else v[i]=0;
+    if (i==coordinate) vs[i]=1;
+    else vs[i]=0;
   }
   return VectorD<D>(vs, vs+D);
 }
