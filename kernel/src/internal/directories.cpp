@@ -70,8 +70,8 @@ std::string get_data_path(std::string module, std::string file_name)
                              module, file_name);
   std::ifstream in(path.c_str());
   if (!in) {
-    IMP_THROW("Unable to find data file "
-              << file_name << " at " << path, IOException);
+    IMP_FAILURE("Unable to find data file "
+                << file_name << " at " << path);
   }
   return path;
 }
@@ -81,8 +81,8 @@ std::string get_example_path(std::string module, std::string file_name)
                              module, file_name);
   std::ifstream in(path.c_str());
   if (!in) {
-    IMP_THROW("Unable to find example file "
-              << file_name << " at " << path, IOException);
+    IMP_FAILURE("Unable to find example file "
+                << file_name << " at " << path);
   }
   return path;
 }
