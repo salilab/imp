@@ -39,12 +39,6 @@ class MRCWriteTest(IMP.test.TestCase):
 
 
 class ReadWriteMapsTests(IMP.test.TestCase):
-    def assertInTolerance(self, val, expected, tol, msg=None):
-        if msg == None:
-            msg = "%f differs from %f by more than %f" \
-                  % (val, expected, tol)
-        diff = abs(val - expected)
-        self.assert_(diff < tol, msg)
 
     def test_em_read_write(self):
         """test em format read/write """
@@ -102,8 +96,8 @@ class ReadWriteMapsTests(IMP.test.TestCase):
         scene= IMP.em.read_map(in_filename, em_rw)
         pixsize = scene.get_header().Objectpixelsize
         print "ObjectPixelsize = " + str(pixsize)
-        self.assertEqual(3.0 ,scene.get_header().Objectpixelsize)
-        self.assertEqual(300. ,scene.get_header().voltage)
+        self.assertInTolerance(3.0, scene.get_header().Objectpixelsize, 0.0001)
+        self.assertInTolerance(300., scene.get_header().voltage, 0.0001)
 
 
 if __name__ == '__main__':
