@@ -1,4 +1,14 @@
 Import('env')
 
+files = [
+         'ExampleComplexRestraint.h',
+         'ExampleDecorator.h',
+         'ExampleRefCounted.h',
+         'ExampleRestraint.h',
+         'ExampleSingletonModifier.h',
+         'ExampleTemplateClass.h',
+         'ExampleUnaryFunction.h',
+        ]
+
 # Install the include files:
-env.IMPModuleInclude(env.IMPModuleGetHeaders())
+env.IMPModuleInclude(files)
