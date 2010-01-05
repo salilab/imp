@@ -29,7 +29,7 @@ void CartesianProductSampler::populate_states_of_particles(
 {
   IMP_LOG(IMP::VERBOSE,
     "start CartesianProductSampler::populate_states_of_particles"<<std::endl);
-  CombState *calc_state;
+  //CombState *calc_state;
   unsigned int comb_size = particles->size();//the size of the combination
   IMP_LOG(IMP::VERBOSE,
           "number of particles: "<<comb_size<<std::endl);
