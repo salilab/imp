@@ -1,4 +1,6 @@
 Import('env')
 
+# See IMP.gsl for an example of how to add external dependencies to a module
 env.IMPModuleBuild(version='SVN',
+                   # The required modules are the other IMP modules that must be built to use this one
                    required_modules=['core'])

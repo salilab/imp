@@ -1,3 +1,6 @@
 Import('env')
 
-env.IMPModuleBin(env.IMPModuleGetBins(), install=False)
+# Each .cpp file is built into an application.
+env.IMPModuleBin(env.IMPModuleGetBins(),
+                 # Whether the programs built here should be installed when IMP is installed
+                 install=False)

@@ -1,6 +1,10 @@
 /** \page recent Change History
 \par Week of January 1, 2010
 
+- The IMP.examples module now documents the how to use the needed aspects of scons and swig.
+
+- The IMP.examples module is used as the basis for new modules created by the make-module script, so those include more documentation and are tested.
+
 - Module overview pages are now generated from the information passed in the SConscript file, rather than from the (now removed) modulename.dox file. See the examples file for an example of the things you can do there.
 
 - boost program options is now a checked for dependency

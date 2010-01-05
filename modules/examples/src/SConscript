@@ -1,4 +1,12 @@
 Import('env')
 
+files = [
+         'ExampleComplexRestraint.cpp',
+         'ExampleDecorator.cpp',
+         'ExampleRefCounted.cpp',
+         'ExampleRestraint.cpp',
+         'ExampleSingletonModifier.cpp',
+        ]
+
 # Build and install the shared library:
-env.IMPModuleLib(env.IMPModuleGetSources())
+env.IMPModuleLib(files)
