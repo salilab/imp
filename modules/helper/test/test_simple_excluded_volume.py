@@ -51,6 +51,9 @@ class SimpleExclusionVolumeTests(IMP.test.TestCase):
         r = sev.get_restraint()
         r_test = test.get_restraint()
 
+        m.add_restraint(r)
+        m.add_restraint(r_test)
+
         r.set_log_level(IMP.SILENT)
 
         print "mc"

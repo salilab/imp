@@ -23,7 +23,9 @@ class SimpleDiameterTest(IMP.test.TestCase):
 
     def _test_simple_diameter(self):
         """Test simple diameter restraint"""
-        IMP.helper.create_simple_diameter(self.ps, self.diameter)
+        sd = IMP.helper.create_simple_diameter(self.ps, self.diameter)
+        r = sd.get_restraint()
+        self.imp_model.add_restraint(r)
 
         self.opt.optimize(1000)
 
@@ -43,6 +45,7 @@ class SimpleDiameterTest(IMP.test.TestCase):
 
         sd = IMP.helper.create_simple_diameter(self.ps, self.diameter)
         r = sd.get_restraint()
+        self.imp_model.add_restraint(r)
         h = sd.get_harmonic_upper_bound()
 
         sd.set_mean(10.0)
