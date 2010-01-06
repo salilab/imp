@@ -56,6 +56,9 @@ class SimpleEMFitTest(IMP.test.TestCase):
         se = IMP.helper.create_simple_em_fit(self.mhs, self.dmap)
         r = se.get_restraint()
         self.imp_model.add_restraint(r)
+        # Make sure that refcounting is working correctly
+        # refs from Python, the SimpleEMFit object, and the Model
+        self.assertEqual(r.get_ref_count(), 3)
 
         score = self.imp_model.evaluate(False)
         print "EM score (1-CC) = "+str(score)

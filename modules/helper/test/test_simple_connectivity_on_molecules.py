@@ -38,6 +38,11 @@ class SimpleConnectivityTests(IMP.test.TestCase):
         r = sc.get_restraint()
         self.m.add_restraint(r)
         sdps= sc.get_sphere_distance_pair_score()
+        # Make sure that refcounting is working correctly
+        # refs from Python, the SimpleConnectivity object, and the Model
+        self.assertEqual(r.get_ref_count(), 3)
+        # refs from Python, the SimpleConnectivity object, and the Restraint
+        self.assertEqual(sdps.get_ref_count(), 3)
 
         self.o.optimize(1000)
 

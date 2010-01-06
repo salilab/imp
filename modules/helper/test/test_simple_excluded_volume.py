@@ -54,6 +54,10 @@ class SimpleExclusionVolumeTests(IMP.test.TestCase):
         m.add_restraint(r)
         m.add_restraint(r_test)
 
+        # Make sure that refcounting is working correctly
+        # refs from Python, the SimpleExcludedVolume object, and the Model
+        self.assertEqual(r.get_ref_count(), 3)
+
         r.set_log_level(IMP.SILENT)
 
         print "mc"

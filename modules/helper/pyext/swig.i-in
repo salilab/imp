@@ -1,3 +1,11 @@
+IMP_REFCOUNT_RETURN_SINGLE(IMP::core::ConnectivityRestraint)
+IMP_REFCOUNT_RETURN_SINGLE(IMP::core::ExcludedVolumeRestraint)
+IMP_REFCOUNT_RETURN_SINGLE(IMP::em::FitRestraint)
+IMP_REFCOUNT_RETURN_SINGLE(IMP::core::DiameterRestraint)
+IMP_REFCOUNT_RETURN_SINGLE(IMP::core::DistanceRestraint)
+IMP_REFCOUNT_RETURN_SINGLE(IMP::core::HarmonicUpperBound)
+IMP_REFCOUNT_RETURN_SINGLE(IMP::core::SphereDistancePairScore)
+
 /* Wrap our own classes */
 %include "IMP/helper/atom_hierarchy.h"
 %include "IMP/helper/simplify_atom_hierarchy.h"
