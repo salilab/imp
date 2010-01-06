@@ -194,6 +194,13 @@ ParticlesTemp Particle::get_contained_particles() const {
   return ret;
 }
 
+void Particle::clear_caches() {
+  for (unsigned int i=0; i< ps_->cache_objects_.size(); ++i) {
+    ps_->objects_.remove(ps_->cache_objects_[i].get_index());
+  }
+  ps_->cache_objects_.clear();
+}
+
 
 namespace {
   const std::size_t num_blocks=150000;
