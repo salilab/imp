@@ -146,6 +146,13 @@ IMPEXPORT void set_print_exceptions(bool tf);
 #define IMP_IF_CHECK(level) if (0)
 #endif
 
+#if IMP_BUILD < IMP_FAST
+//! Only compile the code if checks are built
+#define IMP_CHECK_CODE(expr) expr
+#else
+#define IMP_CHECK_CODE(expr)
+#endif
+
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 namespace internal {
 IMPEXPORT void assert_fail(const char *msg);
