@@ -17,7 +17,13 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! Container used to hold a set of restraints
-/**
+/** When evaluated, the RestraintSet will evaluate all its
+    member restraints and return the sum, weighted by the
+    provided weight. Derivatives of the contained restraints
+    are also weighted.
+
+    \note RestraintSets do not support incremental evaluation.
+    This is not trivial to fix, but can be fixed if requested.
  */
 class IMPCOREEXPORT RestraintSet : public Restraint
 {
