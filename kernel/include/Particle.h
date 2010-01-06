@@ -397,7 +397,7 @@ class IMPEXPORT Particle : public Container
     ps_->cache_objects_.push_back(name);
   }
 
-  void clear_caches() {};
+  void clear_caches();
   /** @} */
 
  /** @name Float Attributes
