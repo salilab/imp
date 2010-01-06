@@ -5,7 +5,7 @@
  * RadialDistributionFunction required for calculation of SAXS profile
  * DeltaDistributionFunction requires for chi-square derivatives
  *
- * Copyright 2007-9 Sali Lab. All rights reserved.
+ * Copyright 2007-2010 Sali Lab. All rights reserved.
  *
  */
 

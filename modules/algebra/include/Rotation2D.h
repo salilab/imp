@@ -3,7 +3,7 @@
  *  \brief Classes and operations related with rotations
  *  \author Javier Velazquez-Muriel
  *
- *  Copyright 2007-9 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 Sali Lab. All rights reserved.
 */
 
 #ifndef IMPALGEBRA_ROTATION_2D_H

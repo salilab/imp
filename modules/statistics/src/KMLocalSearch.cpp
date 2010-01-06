@@ -2,7 +2,7 @@
  *  \file KMLocalSearch.cpp   \brief Generic algorithm from k-means
  *                                 clustering by local search
  *
- *  Copyright 2007-9 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 Sali Lab. All rights reserved.
  *
  */
 

@@ -1,7 +1,7 @@
 /**
  *  \file constants.h    \brief Various useful constants.
  *
- *  Copyright 2007-9 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 Sali Lab. All rights reserved.
  *
  */
 

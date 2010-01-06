@@ -2,7 +2,7 @@
  *  \file CommonEndpointPairFilter.h
  *  \brief A fake filter that returns true for any pair of bonds with
  *
- *  Copyright 2007-9 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPMISC_COMMON_ENDPOINT_PAIR_FILTER_H

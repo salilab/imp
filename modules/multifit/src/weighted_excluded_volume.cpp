@@ -3,7 +3,7 @@
  *  \brief handles low resolution weighted excluded
  *           volume calculation.
  *
- *  Copyright 2007-9 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 Sali Lab. All rights reserved.
  *
  */
 #include <IMP/multifit/weighted_excluded_volume.h>

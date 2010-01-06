@@ -1,7 +1,7 @@
 /**
  * \file KMCentersNode.h \brief leaf node of the kc-tree
  *
- *  Copyright 2007-9 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 Sali Lab. All rights reserved.
  *
  */
 

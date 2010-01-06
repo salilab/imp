@@ -2,7 +2,7 @@
  *  \file KernelParameters.cpp
  *  \brief Calculates and stores gaussian kernel parameters.
  *
- *  Copyright 2007-9 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 Sali Lab. All rights reserved.
  *
  */
 

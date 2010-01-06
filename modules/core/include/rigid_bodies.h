@@ -2,7 +2,7 @@
  *  \file core/rigid_bodies.h
  *  \brief functionality for defining rigid bodies
  *
- *  Copyright 2007-9 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPCORE_RIGID_BODIES_H

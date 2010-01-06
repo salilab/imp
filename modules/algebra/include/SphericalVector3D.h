@@ -2,7 +2,7 @@
  *  \file  SphericalVector3D.h
  *  \brief stores and converts sperhical coordinates
  *  \author Javier Velazquez-Muriel
- *  Copyright 2007-9 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 Sali Lab. All rights reserved.
 */
 #ifndef IMPALGEBRA_SPHERICAL_VECTOR_3D_H
 #define IMPALGEBRA_SPHERICAL_VECTOR_3D_H

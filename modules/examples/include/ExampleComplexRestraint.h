@@ -2,7 +2,7 @@
  *  \file ExampleComplexRestraint.h
  *  \brief A restraint to maintain the diameter of a set of points
  *
- *  Copyright 2007-9 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPEXAMPLES_EXAMPLE_COMPLEX_RESTRAINT_H

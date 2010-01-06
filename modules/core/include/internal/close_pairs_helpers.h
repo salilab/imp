@@ -2,7 +2,7 @@
  *  \file internal/close_pairs_helpers.h
  *  \brief utilities for rigid bodies.
  *
- *  Copyright 2007-9 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPCORE_INTERNAL_CLOSE_PAIRS_HELPERS_H

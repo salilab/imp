@@ -2,7 +2,7 @@
  *  \file filters.h
  *  \brief Classes to deal with filters
  *  \author Javier Velazquez-Muriel
- *  Copyright 2007-9 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPEM_FILTERS_H

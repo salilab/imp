@@ -2,7 +2,7 @@
  *  \file RestraintEvaluator.cpp
  *  \brief A restraint evaluator file
  *
- *  Copyright 2007-9 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 Sali Lab. All rights reserved.
  *
  */
 #include "IMP/domino/RestraintEvaluator.h"

@@ -3,7 +3,7 @@
  *  \brief Management of IMP volumes for Electron Microscopy. Compatible with
  *  Spider and Xmipp formats
  *  \author Javier Velazquez-Muriel
- *  Copyright 2007-9 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 Sali Lab. All rights reserved.
 */
 
 #ifndef IMPEM_VOLUME_H

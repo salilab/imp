@@ -2,7 +2,7 @@
  *  \file  Ellipsoid3D.cpp
  *  \brief simple implementation of ellipsoids in 3D
  *
- *  Copyright 2007-9 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 Sali Lab. All rights reserved.
  */
 #include <IMP/base_types.h>
 #include <IMP/algebra/Ellipsoid3D.h>

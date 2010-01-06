@@ -1,7 +1,7 @@
 /**
  * \file ForceFieldParameters.h \brief force field base class
  *
- * Copyright 2007-9 Sali Lab. All rights reserved.
+ * Copyright 2007-2010 Sali Lab. All rights reserved.
  *
  */
 #ifndef IMPATOM_FORCE_FIELD_PARAMETERS_H

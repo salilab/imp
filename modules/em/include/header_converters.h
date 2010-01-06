@@ -2,7 +2,7 @@
  *  \file header_converters.h
  *  \brief Functions to convert between ImageHeader and DensityHeader
  *  \author Javier Velazquez-Muriel
- *  Copyright 2007-9 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 Sali Lab. All rights reserved.
 */
 
 #ifndef IMPEM_HEADER_CONVERTERS_H

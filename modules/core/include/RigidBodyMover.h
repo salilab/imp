@@ -2,7 +2,7 @@
  *  \file RigidBodyMover.h
  *  \brief A mover that transform a rigid body
  *
- *  Copyright 2007-9 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 Sali Lab. All rights reserved.
  *
  */
 
