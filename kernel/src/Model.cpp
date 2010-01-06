@@ -951,8 +951,9 @@ void Model::validate_incremental_evaluate(const RestraintsTemp &restraints,
       derivs.push_back((*it)->ps_->derivatives_);
       (*it)->zero_derivatives();
     }
-    double nscore= do_evaluate_restraints(restraints,
-                                          calc_derivs, ALL, false);
+    IMP_CHECK_CODE(double nscore=)
+      do_evaluate_restraints(restraints,
+                             calc_derivs, ALL, false);
     IMP_INTERNAL_CHECK(std::abs(nscore -score)
                        < .001+.1*std::abs(nscore+score),
                        "Incremental and non-incremental evaluation "

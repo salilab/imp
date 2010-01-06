@@ -437,8 +437,10 @@ bool check_residue_segments_validity(
     "can not simplify a chain with not residue segmentes",
     ValueException);
   atom::Hierarchies residues(atom::get_by_type(in,atom::RESIDUE_TYPE));
-int start_res_ind=IMP::atom::Residue(residues[0]).get_index();
-int end_res_ind=IMP::atom::Residue(residues[residues.size()-1]).get_index();
+  IMP_CHECK_CODE(int start_res_ind
+                 =IMP::atom::Residue(residues[0]).get_index());
+  IMP_CHECK_CODE(int end_res_ind
+                 =IMP::atom::Residue(residues[residues.size()-1]).get_index());
   IMP_USAGE_CHECK(residue_segments[0].first >= start_res_ind,
     "the residue segment indexes exceed the molecule residue",
     ValueException);
@@ -492,7 +494,7 @@ std::vector<atom::Residues> group_particles(
     }
     if (curr_ind<end_res_ind) {
       atom::Residues segment;
-      int start_ind=curr_ind;
+      IMP_CHECK_CODE(int start_ind=curr_ind);
       IMP_LOG(VERBOSE,"trying to create segment bewteen " <<
               residue_segments[curr_res_seg_ind].first << " and " <<
               residue_segments[curr_res_seg_ind].second <<std::endl);

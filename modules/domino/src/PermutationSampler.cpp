@@ -22,7 +22,7 @@ void PermutationSampler::show(std::ostream& out) const
 void PermutationSampler::populate_states_of_particles(Particles *particles,
          std::map<std::string,CombState *> *states) const
 {
-  CombState *calc_state;
+  //CombState *calc_state;
   int comb_size = particles->size();
   std::vector<int> v_int(ds_->get_number_of_states());
   for (int i = 0; i < ds_->get_number_of_states(); ++i) {
