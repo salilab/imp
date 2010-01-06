@@ -1,6 +1,8 @@
 /** \page recent Change History
 \par Week of January 1, 2010
 
+- Point out that IMP::core::RestraintSets do not support incremental evaluation.
+
 - The IMP.examples module now documents the how to use the needed aspects of scons and swig.
 
 - The IMP.examples module is used as the basis for new modules created by the make-module script, so those include more documentation and are tested.
