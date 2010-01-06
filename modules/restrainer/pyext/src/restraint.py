@@ -6,18 +6,34 @@ import IMP.helper
 class _RestraintSets(object):
     def __init__(self):
         self.restraint_sets = dict()
-    def add(self, restraint_type, restraint):
+        self.set_by_restraint = dict()
+    def add(self, restraint_type, restraint, model = None):
         if restraint_type is None:
             return
         try:
             current_set = self.restraint_sets[restraint_type]
         except KeyError:
             current_set = self.restraint_sets[restraint_type] = IMP.core.RestraintSet()
+            if model:
+                model.add_restraint(current_set)
         current_set.add_restraint(restraint)
+        self.set_by_restraint[restraint] = current_set
     def set_model(self, model):
         for weight, rest_set in self.restraint_sets.iteritems():
             model.add_restraint(rest_set)
             rest_set.set_weight(float(weight))
+    def remove_restraint(self, restraint):
+        try:
+            current_set = self.set_by_restraint[restraint]
+        except KeyError:
+            return
+        current_set.remove_restraint(restraint)
+    def reset_weight(self, new_weight):
+        try:
+            current_set = self.restraint_sets[str(new_weight)]
+        except KeyError:
+            return
+        current_set.set_weight(float(new_weight))
 
 class _Restraint(object):
     def __init__(self):
@@ -30,6 +46,8 @@ class _Restraint(object):
         for child in self.children:
             child.create_restraint(repr, self.restraint_sets)
         self.restraint_sets.set_model(repr.model)
+        self.set_root()
+        self.model = repr.model
 
 
     def get_all_restraints_by_name(self, name): # assuming there are many obj with the same id
@@ -61,6 +79,17 @@ class _Restraint(object):
             if r:
                 return r
         return None
+
+    def set_root(self):
+
+        def set_root_rec(node):
+            node.root = self
+            for child in node.children:
+                set_root_rec(child)
+
+        for child in self.children:
+            set_root_rec(child)
+
 
 class _RestraintNode(object):
     counter = 0
@@ -273,6 +302,16 @@ class _RestraintRestraint(_RestraintNode):
         self.zorigin = float(attributes.get('zorigin', 0.0))
         self.linker_length = float(attributes.get('linker_length', -1))
 
+    def set_weight(self, new_weight):
+        if self.imp_restraint:
+            self.root.restraint_sets.remove_restraint(self.imp_restraint)
+            self.root.restraint_sets.add(str(new_weight), self.imp_restraint, self.root.model)
+            self.weight = new_weight
+            self.root.restraint_sets.reset_weight(new_weight)
+
+    def get_weight(self):
+        return self.weight
+
     def create_rigid_body_restraint(self, repr, restraint_sets):
         _RestraintNode.create_restraint(self, repr, restraint_sets)
         self.mhs = IMP.atom.Hierarchies()
@@ -337,10 +376,9 @@ class _RestraintRestraint(_RestraintNode):
                 for atoms in IMP.atom.get_by_type(child, IMP.atom.ATOM_TYPE):
                     particles.append(atoms)
             if particles:
-                self.saxs_restraint = IMP.saxs.Restraint(particles, self.exp_profile)
-                #repr.model.add_restraint(saxs_restraint)
+                saxs_restraint = IMP.saxs.Restraint(particles, self.exp_profile)
                 self.imp_restraint = self.saxs_restraint
-                return self.saxs_restraint
+                return saxs_restraint
 
     def create_em_restraint(self, repr, restraint_sets):
         _RestraintNode.create_restraint(self, repr, restraint_sets)

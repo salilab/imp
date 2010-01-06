@@ -28,7 +28,7 @@ class RestraintTest(IMP.test.TestCase):
 
 
     def test_show(self):
-        restraint_name = 'connectivity_restraint'
+        restraint_name = 'connectivity_restraint_1'
         connectivity_restraint = self.restraint.get_restraint_by_name(restraint_name).imp_restraint
         connectivity_restraint.show()
 
@@ -51,6 +51,13 @@ class RestraintTest(IMP.test.TestCase):
                 rbd.set_transformation(transformation)
 
         root_hierarchy = self.representation.model_decorator
+
+        evr = self.restraint.get_restraint_by_name('connectivity_restraint_1')
+        self.assertInTolerance (evr.get_weight(), 1.0, 1e-4)
+        evr = self.restraint.get_restraint_by_name('connectivity_restraint_2')
+        self.assertInTolerance (evr.get_weight(), 1.5, 1e-4)
+        evr.set_weight(0.8)
+        self.assertInTolerance (evr.get_weight(), 0.8, 1e-4)
 
         self.Model.show()
         self.Model.evaluate(False)
