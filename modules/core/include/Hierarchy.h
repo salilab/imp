@@ -45,28 +45,34 @@ class Hierarchy;
 */
 class IMPCOREEXPORT HierarchyTraits
 #ifndef SWIG
-: public internal::ArrayOnAttributesHelper<ParticleKey, Particle*>
+  : public internal::ArrayOnAttributesHelper<ParticleKey, Particle*,
+                                             internal::HierarchyData>
 #endif
 {
+  template <class HD>
+    void clear_caches(HD d) {
+    d.get_particle()->clear_caches();
+    if (d.get_parent()) clear_caches(d.get_parent());
+  }
   friend class Hierarchy;
-  typedef internal::ArrayOnAttributesHelper<ParticleKey, Particle*> P;
-
-  ParticleKey parent_key_;
-  IntKey parent_index_key_;
+  typedef internal::ArrayOnAttributesHelper<ParticleKey, Particle*,
+    internal::HierarchyData> P;
 
   template <class HD>
   void on_add(Particle * p, HD d, unsigned int i) {
-    d.get_particle()->add_attribute(parent_key_, p);
-    d.get_particle()->add_attribute(parent_index_key_, i);
+    d.get_particle()->add_attribute(P::get_data().parent_key_, p);
+    d.get_particle()->add_attribute(P::get_data().parent_index_key_, i);
+    clear_caches(d);
   }
   void on_change(Particle *, Particle* p, unsigned int oi,
                         unsigned int ni) {
-    p->set_value(parent_index_key_, ni);
+    p->set_value(P::get_data().parent_index_key_, ni);
   }
   template <class HD>
   void on_remove(Particle *, HD d) {
-    d.get_particle()->remove_attribute(parent_index_key_);
-    d.get_particle()->remove_attribute(parent_key_);
+    clear_caches(d);
+    d.get_particle()->remove_attribute(P::get_data().parent_index_key_);
+    d.get_particle()->remove_attribute(P::get_data().parent_key_);
   }
   template <class HD>
   Particle *get_value(HD d) const {
@@ -181,7 +187,7 @@ public:
       if it has no parent.
    */
   Hierarchy get_parent() const {
-    IMP_DECORATOR_GET(traits_.parent_key_, Particle*,
+    IMP_DECORATOR_GET(traits_.get_data().parent_key_, Particle*,
                       return This(VALUE, traits_),
                       return This());
   }
@@ -191,13 +197,13 @@ public:
       it does not have a parent.
    */
   int get_parent_index() const {
-    IMP_DECORATOR_GET(traits_.parent_index_key_,
+    IMP_DECORATOR_GET(traits_.get_data().parent_index_key_,
                       Int, return VALUE, return -1);
   }
 
   /** Return true if the parent is not empty */
   bool has_parent() const {
-    return get_particle()->has_attribute(traits_.parent_key_);
+    return get_particle()->has_attribute(traits_.get_data().parent_key_);
   }
 
   //! Get the index of a specific child in this particle.
@@ -214,6 +220,10 @@ public:
 
   //! Get the default hierarchy traits
   static const HierarchyTraits& get_default_traits();
+
+#ifndef IMP_DOXYGEN
+  const ParticlesTemp& get_leaves() const;
+#endif
 };
 
 
@@ -232,10 +242,7 @@ class IMPCOREEXPORT HierarchyVisitor
 public:
   HierarchyVisitor() {}
   //! Return true if the traversal should visit this node's children
-  /** The const is needed to make memory management simple. Just declare
-      internal data mutable.
-   */
-  virtual bool visit(Hierarchy p) = 0;
+  virtual bool operator()(Hierarchy p) = 0;
   virtual ~HierarchyVisitor() {}
 };
 
@@ -253,7 +260,7 @@ class IMPCOREEXPORT ModifierVisitor: public HierarchyVisitor
   IMP::internal::OwnerPointer<SingletonModifier> sm_;
 public:
   ModifierVisitor(SingletonModifier *sm): sm_(sm) {}
-  virtual bool visit(Hierarchy p) {
+  virtual bool operator()(Hierarchy p) {
     sm_->apply(p.get_particle());
     return true;
   }
@@ -269,7 +276,7 @@ struct Gather: public HierarchyVisitor
 {
   //! initialize with the function and the container
   Gather(F f, Out out): f_(f), out_(out) {}
-  bool visit(Hierarchy p) {
+  bool operator()(Hierarchy p) {
     if (f_(p)) {
       *out_=p;
       ++out_;
@@ -295,26 +302,56 @@ inline const Hierarchy HierarchyTraits::wrap(Particle* p) const {
 
 
 
-
-
-
-
 //! Apply the visitor to each particle,  breadth first.
 /** \param[in] d The Hierarchy for the tree in question
-    \param[in] v The visitor to be applied. This is passed by reference.
+    \param[in] f The visitor to be applied. This is passed by reference.
+    A branch of the traversal stops when f returns false.
     \ingroup hierarchy
     \relatesalso Hierarchy
  */
-IMPCOREEXPORT
-void breadth_first_traversal(Hierarchy d,  HierarchyVisitor &v);
+template <class HD, class F>
+F breadth_first_traversal(HD d, F f)
+{
+  std::deque<HD > stack;
+  stack.push_back(d);
+  //d.show(std::cerr);
+  do {
+    HD cur= stack.front();
+    stack.pop_front();
+    if (f(cur)) {
+      //std::cerr << "Visiting particle " << cur.get_particle() << std::endl;
+      for (int i=cur.get_number_of_children()-1; i>=0; --i) {
+        stack.push_back(cur.get_child(i));
+      }
+    }
+  } while (!stack.empty());
+  return f;
+}
 
-//! Depth first traversal of the hierarchy
-/** See breadth_first_traversal and HierarchyVisitor for more information
+
+//! Apply functor F to each particle, traversing the hierarchy depth first.
+/** See breadth_first_traversal() for documentation.
     \ingroup hierarchy
     \relatesalso Hierarchy
  */
-IMPCOREEXPORT
-void depth_first_traversal(Hierarchy d,  HierarchyVisitor &v);
+template <class HD, class F>
+F depth_first_traversal(HD d,  F f)
+{
+  std::vector<HD> stack;
+  stack.push_back(d);
+  //d.show(std::cerr);
+  do {
+    HD cur= stack.back();
+    stack.pop_back();
+    if (f(cur)) {
+      //std::cerr << "Visiting particle " << cur.get_particle() << std::endl;
+      for (int i=cur.get_number_of_children()-1; i>=0; --i) {
+        stack.push_back(cur.get_child(i));
+      }
+    }
+  } while (!stack.empty());
+  return f;
+}
 
 
 //! Apply functor F to each particle, traversing the hierarchy breadth first.
@@ -463,7 +500,7 @@ struct HierarchyCounter: public HierarchyVisitor
   HierarchyCounter(): ct_(0) {}
 
   //! Increment the counter
-  bool visit(Hierarchy) {
+  bool operator()(Hierarchy) {
     ++ct_;
     return true;
   }

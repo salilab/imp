@@ -26,8 +26,11 @@ struct ArrayDataBase: public RefCounted {
   virtual ~ArrayDataBase(){}
 };
 
-template <class Key, class Value>
-struct ArrayData: public ArrayDataBase {
+
+struct Empty{};
+
+template <class Key, class Value, class Data>
+struct ArrayData: public ArrayDataBase, public Data {
   ArrayData(std::string p):
     num_key((p+"_number").c_str()),
     prefix(p) {
@@ -38,8 +41,8 @@ struct ArrayData: public ArrayDataBase {
   const std::string prefix;
 };
 
-template <class K, class V>
-std::ostream &operator<<(std::ostream &out, const ArrayData<K,V> &d) {
+template <class K, class V, class D>
+std::ostream &operator<<(std::ostream &out, const ArrayData<K,V,D> &d) {
   out << d.prefix;
   return out;
 }
@@ -48,11 +51,14 @@ std::ostream &operator<<(std::ostream &out, const ArrayData<K,V> &d) {
 IMPCOREEXPORT extern VectorOfRefCounted<ArrayDataBase*> array_datas;
 
 
-template <class KeyT, class ValueT>
+template <class KeyT, class ValueT, class DataT=Empty>
 struct ArrayOnAttributesHelper {
   typedef KeyT Key;
   typedef ValueT Value;
-  typedef ArrayData<Key, Value> Data;
+  typedef ArrayData<Key, Value, DataT> Data;
+
+  DataT& get_data() {return static_cast<DataT&>(*data_);}
+  const DataT& get_data() const {return static_cast<DataT&>(*data_);}
 
   ArrayOnAttributesHelper(){}
   ArrayOnAttributesHelper(std::string p): data_(new Data(p)){

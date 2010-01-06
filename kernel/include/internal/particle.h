@@ -114,6 +114,8 @@ struct IMPEXPORT ParticleStorage {
   ParticleTable particles_;
   ObjectTable objects_;
 
+  ObjectKeys cache_objects_;
+
   Storage::iterator iterator_;
   // manually ref counted since Pointer requires the full definition
   Particle* shadow_;

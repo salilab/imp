@@ -357,10 +357,14 @@ class IMPEXPORT Particle : public Container
 #endif
 
   /** \name  Add cached data to a particle
-      Restraints can cache data in a particle in order to accelerate
-      computations. This data must obey a the following rules:
+      Restraints and Constraints can cache data in a particle in order
+      to accelerate computations. This data must obey a the following rules:
       - it must be optional
       - if multiple restraints add the same attribute, it must all be equivalent
+
+      When a Particle is changed in such a way that the cached data might
+      be affected, the clear_caches() method should be called. Yes, this
+      is very vague. We don't have a more precise prescription yet.
       @{
   */
   void add_cache_attribute(IntKey name, unsigned int value) {
@@ -390,7 +394,10 @@ class IMPEXPORT Particle : public Container
                     << name << " to particle " << get_name(),
                     ValueException);
     ps_->objects_.add(name.get_index(), value);
+    ps_->cache_objects_.push_back(name);
   }
+
+  void clear_caches();
   /** @} */
 
  /** @name Float Attributes
