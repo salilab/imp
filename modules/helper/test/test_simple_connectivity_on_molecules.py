@@ -36,6 +36,7 @@ class SimpleConnectivityTests(IMP.test.TestCase):
 
         sc= IMP.helper.create_simple_connectivity_on_molecules(self.mhs)
         r = sc.get_restraint()
+        self.m.add_restraint(r)
         sdps= sc.get_sphere_distance_pair_score()
 
         self.o.optimize(1000)

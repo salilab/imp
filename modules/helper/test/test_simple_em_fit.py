@@ -53,7 +53,9 @@ class SimpleEMFitTest(IMP.test.TestCase):
     def test_em_fit(self):
         """Check that correlation of particles with their own density is 1"""
 
-        IMP.helper.create_simple_em_fit(self.mhs, self.dmap)
+        se = IMP.helper.create_simple_em_fit(self.mhs, self.dmap)
+        r = se.get_restraint()
+        self.imp_model.add_restraint(r)
 
         score = self.imp_model.evaluate(False)
         print "EM score (1-CC) = "+str(score)
@@ -67,6 +69,9 @@ class SimpleEMFitTest(IMP.test.TestCase):
 
         r1 = se.get_restraint()
         r2 = sd.get_restraint()
+
+        self.imp_model.add_restraint(r1)
+        self.imp_model.add_restraint(r2)
 
         self.assert_(isinstance(IMP.em.FitRestraint.cast(r1),
                                 IMP.em.FitRestraint))
@@ -85,6 +90,7 @@ class SimpleEMFitTest(IMP.test.TestCase):
 
         se = IMP.helper.create_simple_em_fit(self.mhs, self.dmap)
         r1 = se.get_restraint()
+        self.imp_model.add_restraint(r1)
 
         r1.set_was_owned(True)
         self.assert_(isinstance(r1.get_model_dens_map(),
@@ -95,6 +101,7 @@ class SimpleEMFitTest(IMP.test.TestCase):
 
         se2 = IMP.helper.create_simple_em_fit(self.mhs, test_mrc)
         r2 = se.get_restraint()
+        self.imp_model.add_restraint(r2)
         r2.set_was_owned(True)
         self.assert_(isinstance(r2.get_model_dens_map(),
                                 IMP.em.SampledDensityMap))

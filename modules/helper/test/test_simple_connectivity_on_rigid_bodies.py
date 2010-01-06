@@ -33,6 +33,8 @@ class SimpleConnectivityTest(IMP.test.TestCase):
 
         sc = IMP.helper.create_simple_connectivity_on_rigid_bodies(self.rbs)
         r = sc.get_restraint()
+        self.m.add_restraint(r)
+
         h = sc.get_harmonic_upper_bound()
         ps = sc.get_sphere_distance_pair_score()
 
