@@ -19,12 +19,12 @@
         	</Restraint>
     	</ExcludedVolume>
 	<Pulldown>
-		<Restraint name="connectivity_restraint" weight="1.0">
+		<Restraint name="connectivity_restraint_1">
 			<Particle id="Protein1"></Particle>
 			<Particle id="Protein2"></Particle>
 			<Particle id="Protein3"></Particle>
         	</Restraint>
-		<Restraint name="connectivity_restraint" weight="1.0">
+		<Restraint name="connectivity_restraint_2" weight="1.5">
 			<Particle id="Chain4"></Particle>
 			<Particle id="Chain5a"></Particle>
 			<Particle id="Chain6a"></Particle>
