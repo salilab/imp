@@ -2,7 +2,7 @@
  *  \file Domain.h
  *  \brief A decorator for associating an atom::Hierarchy piece with a domain
  *
- *  Copyright 2007-9 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPATOM_DOMAIN_H

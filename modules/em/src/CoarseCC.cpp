@@ -2,7 +2,7 @@
  *  \file CoarseCC.cpp
  *  \brief Perform coarse fitting between two density objects.
  *
- *  Copyright 2007-9 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 Sali Lab. All rights reserved.
  *
  */
 

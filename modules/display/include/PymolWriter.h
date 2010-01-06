@@ -2,7 +2,7 @@
  *  \file PymolWriter.h
  *  \brief Implement PymolWriter
  *
- *  Copyright 2007-9 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPDISPLAY_PYMOL_WRITER_H

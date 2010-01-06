@@ -2,7 +2,7 @@
  *  \file helper/simplify_restraint.h
  *  \brief Helper functions for restraints
  *
- *  Copyright 2007-9 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPHELPER_SIMPLIFY_RESTRAINT_H

@@ -2,7 +2,7 @@
  *  \file atom/BondedPairFilter.h
  *  \brief A fake container for bonds
  *
- *  Copyright 2007-9 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPATOM_BONDED_PAIR_FILTER_H

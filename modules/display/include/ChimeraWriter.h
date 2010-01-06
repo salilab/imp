@@ -2,7 +2,7 @@
  *  \file ChimeraWriter.h
  *  \brief XXXXXXXXXXXXXX
  *
- *  Copyright 2007-9 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPDISPLAY_CHIMERA_WRITER_H

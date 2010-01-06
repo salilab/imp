@@ -3,7 +3,7 @@
  *  \brief Refine particles at most once with a Refiner.
  *
  *
- *  Copyright 2007-9 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 Sali Lab. All rights reserved.
  */
 
 #include <IMP/core/RefinedPairsPairScore.h>

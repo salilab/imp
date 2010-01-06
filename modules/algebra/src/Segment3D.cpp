@@ -2,7 +2,7 @@
  *  \file  Segment3D.cpp
  *  \brief simple implementation of segments in 3D
  *
- *  Copyright 2007-9 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 Sali Lab. All rights reserved.
  */
 #include <IMP/algebra/shortest_segment.h>
 #include <IMP/log.h>

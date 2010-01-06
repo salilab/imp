@@ -2,7 +2,7 @@
  *  \file ConnectingPairContainer.h
  *  \brief XXXXXXXXXXXXXX
  *
- *  Copyright 2007-9 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPMISC_CONNECTING_PAIR_CONTAINER_H

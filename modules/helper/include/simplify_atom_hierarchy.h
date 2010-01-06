@@ -2,7 +2,7 @@
  *  \file helper/simplify_atom_hierarchy.h
  *  \brief functionality for defining rigid bodies
  *
- *  Copyright 2007-9 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPHELPER_HELPER_SIMPLIFY_ATOM_HIERARCHY_H

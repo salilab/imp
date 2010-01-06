@@ -3,7 +3,7 @@
  *  \brief Simple 2D transformation class.
  *  \author Javier Velazquez-Muriel
  *
- *  Copyright 2007-9 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 Sali Lab. All rights reserved.
  */
 #include "IMP/algebra/Transformation2D.h"
 

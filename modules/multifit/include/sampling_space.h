@@ -2,7 +2,7 @@
  *  \file sampling_space.h
  *  \brief handles settting sampling space for different mappings
  *
- *  Copyright 2007-9 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 Sali Lab. All rights reserved.
  *
  */
 

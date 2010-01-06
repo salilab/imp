@@ -2,7 +2,7 @@
  *  \file RigidClosePairsFinder.h
  *  \brief Handle rigid bodies by looking at their members
  *
- *  Copyright 2007-9 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPCORE_RIGID_CLOSE_PAIRS_FINDER_H

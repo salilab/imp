@@ -2,7 +2,7 @@
  * \file ParabolicFit.h
  * \brief fit the data with parabola
  *
- * Copyright 2007-9 Sali Lab. All rights reserved.
+ * Copyright 2007-2010 Sali Lab. All rights reserved.
  *
  */
 #ifndef IMPALGEBRA_PARABOLIC_FIT_H

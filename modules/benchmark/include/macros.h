@@ -2,7 +2,7 @@
  *  \file IMP/benchmark/macros.h
  *  \brief Various general useful macros for IMP.
  *
- *  Copyright 2007-9 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 Sali Lab. All rights reserved.
  *
  */
 

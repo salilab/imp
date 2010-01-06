@@ -2,7 +2,7 @@
  *  \file hierarchy_helpers.h
  *  \brief Helpers for the Hierarchy.
  *
- *  Copyright 2007-9 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 Sali Lab. All rights reserved.
  *
  */
 

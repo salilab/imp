@@ -1,7 +1,7 @@
 /**
  *  \file Residue.h     \brief A decorator for Residues.
  *
- *  Copyright 2007-9 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 Sali Lab. All rights reserved.
  *
  */
 

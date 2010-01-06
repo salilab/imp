@@ -3,7 +3,7 @@
  *  \brief Classes and operations related with interpolation in 1D and 2D
  *  \author Javier Velazquez-Muriel
  *
- *  Copyright 2007-9 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 Sali Lab. All rights reserved.
 */
 
 #include "IMP/algebra/interpolation.h"

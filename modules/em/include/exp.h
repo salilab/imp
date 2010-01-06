@@ -2,7 +2,7 @@
  *  \file exp.h
  *  \brief An approximation of the exponential function.
  *
- *  Copyright 2007-9 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 Sali Lab. All rights reserved.
  *
  */
 

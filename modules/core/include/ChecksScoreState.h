@@ -1,7 +1,7 @@
 /**
  *  \file ChecksScoreState.h    \brief Turn checks on and off.
  *
- *  Copyright 2007-9 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPCORE_CHECKS_SCORE_STATE_H

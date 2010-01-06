@@ -2,7 +2,7 @@
  * \file  TransformationMappedDiscreteSet.cpp
  * \brief Holds a mapped discrete sampling space of rigid transformations.
  *
- *  Copyright 2007-9 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 Sali Lab. All rights reserved.
  */
 
 #include "IMP/domino/TransformationMappedDiscreteSet.h"

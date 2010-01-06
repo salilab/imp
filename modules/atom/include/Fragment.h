@@ -2,7 +2,7 @@
  *  \file Fragment.h
  *  \brief A decorator for associating a Hierachy piece
  *
- *  Copyright 2007-9 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPATOM_FRAGMENT_H

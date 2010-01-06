@@ -2,7 +2,7 @@
  *  \file FitRestraint.h
  *  \brief Calculate score based on fit to EM map.
  *
- *  Copyright 2007-9 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 Sali Lab. All rights reserved.
  *
  */
 
