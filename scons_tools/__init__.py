@@ -257,14 +257,14 @@ def get_sharedlib_environment(env, cppdefine, cplusplus=False):
 
 def get_bin_environment(envi):
     env= envi.Clone()
-    _add_rpath(env)
     if env['static']:
         if env['CC'] == 'gcc':
             env.Append(LINKFLAGS=['-static'])
+            return env
         else:
             print "Static builds only supported with GCC, ignored."
+    _add_rpath(env)
     return env
-
 
 
 def get_pyext_environment(env, mod_prefix, cplusplus=False):
