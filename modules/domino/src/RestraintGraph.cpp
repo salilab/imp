@@ -269,7 +269,7 @@ void  RestraintGraph::infer(unsigned int num_of_solutions)
                      "RestraintGraph::infer the number of"
              <<" minimum solutions is 0");
   // distribute the minimum combinations and return the final full comb state.
-  CombState *min_comb;
+  //CombState *min_comb;
   for(std::vector<CombState *>::iterator it =  temp_min_combs->begin();
       it != temp_min_combs->end(); it++) {
     CombState *min_comb = new CombState(**(it));

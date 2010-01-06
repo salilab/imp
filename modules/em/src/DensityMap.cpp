@@ -412,7 +412,7 @@ bool DensityMap::same_voxel_size(const DensityMap &other) const
 }
 
 algebra::Vector3D DensityMap::get_centroid(emreal threshold)  const{
-  emreal max_val = get_max_value();
+  IMP_CHECK_CODE(emreal max_val = get_max_value());
   IMP_USAGE_CHECK(threshold < max_val,
             "The input threshold with value " << threshold
             << " is higher than the maximum density in the map " << max_val,

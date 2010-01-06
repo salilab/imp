@@ -125,7 +125,7 @@ namespace {
     mutable unsigned int i_;
     bool incremental_;
     void do_apply(Particle *p) const {
-      double dist2, dr, dist;
+      double dist2=-1, dr, dist;
       bool has_dist=false; // suppress warning
       IMP_INTERNAL_CHECK(values_.size() > i_,
                          "Wrong size of values_.");

@@ -58,12 +58,12 @@ void KMLProxy::run(Particles *initial_centers) {
   IMP_LOG(VERBOSE,"KMLProxy::run load lloyd \n");
   lloyd_alg_ = new KMLocalSearchLloyd(&ctrs,&term_);
   log_header();
-  clock_t start = clock();
+  IMP_CHECK_CODE(clock_t start = clock());
   IMP_LOG(VERBOSE,"KMLProxy::run excute lloyd \n");
   lloyd_alg_->execute();
   IMP_LOG(VERBOSE,"KMLProxy::run analyse \n");
   KMFilterCentersResults best_clusters = lloyd_alg_->get_best();
-  Float exec_time = elapsed_time(start);
+  IMP_CHECK_CODE(Float exec_time = elapsed_time(start));
   // print summary
   IMP_LOG_WRITE(TERSE,log_summary(&best_clusters,exec_time));
   IMP_LOG_WRITE(TERSE,best_clusters.show(IMP_STREAM));
