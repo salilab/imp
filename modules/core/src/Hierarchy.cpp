@@ -17,19 +17,12 @@ const HierarchyTraits& Hierarchy::get_default_traits() {
   return ret;
 }
 
-HierarchyTraits::HierarchyTraits(std::string name): P(name),
-                         parent_key_((name+"_parent").c_str()),
-                         parent_index_key_((name+"_parent_index").c_str()){
+HierarchyTraits::HierarchyTraits(std::string name): P(name)
+{
+  P::get_data().parent_key_=ParticleKey((name+"_parent").c_str());
+  P::get_data().parent_index_key_= IntKey((name+"_parent_index").c_str());
+  P::get_data().cache_key_= ObjectKey((name+"_cache").c_str());
 }
-
-
-/*Hierarchy::Hierarchy(Particle *p,
-                                       HierarchyTraits traits): P(p),
-                                                                traits_(traits){
-}
-
-Hierarchy::Hierarchy(HierarchyTraits traits): traits_(traits){
-}*/
 
 
 void Hierarchy::validate_node() const
@@ -52,6 +45,42 @@ void Hierarchy::show(std::ostream &out) const
   out << "Hierarchy";
 }
 
+namespace {
+  class HierarchyCache: public Object {
+  public:
+    ParticlesTemp leaves;
+    HierarchyCache(): Object("HierarchyCache"){}
+    IMP_OBJECT(HierarchyCache, get_module_version_info());
+  };
+  void HierarchyCache::show(std::ostream &out) const {
+    out << "HierarchyCache";
+  }
+
+  HierarchyCache* get_cache(Hierarchy h) {
+    ObjectKey k= h.get_traits().get_data().cache_key_;
+    if (!h->has_attribute(k)) return NULL;
+    Object *o= h->get_value(k);
+    return dynamic_cast<HierarchyCache*>(o);
+  }
+
+  HierarchyCache* rebuild_cache(Hierarchy h) {
+    HierarchyCache *c= new HierarchyCache();
+    h.get_particle()->add_cache_attribute(h.get_traits().get_data().cache_key_,
+                                          c);
+    c->leaves= get_leaves(h);
+    return c;
+  }
+}
+
+
+
+const ParticlesTemp& Hierarchy::get_leaves() const {
+  HierarchyCache *c= get_cache(*this);
+  if (!c) {
+    c=rebuild_cache(*this);
+  }
+  return c->leaves;
+}
 
 unsigned int count_hierarchy(Hierarchy h)
 {
@@ -69,7 +98,7 @@ namespace internal
 struct AssertHierarchy: public HierarchyVisitor
 {
   AssertHierarchy(){}
-  bool visit(Hierarchy p) {
+  bool operator()(Hierarchy p) {
     p.validate_node();
     return true;
   }
@@ -98,38 +127,6 @@ int Hierarchy::get_child_index(Hierarchy c) const
   return -1;
 }
 
-
-void breadth_first_traversal(Hierarchy d, HierarchyVisitor &f)
-{
-  std::deque<Hierarchy> stack;
-  stack.push_back(d);
-  //d.show(std::cerr);
-  do {
-    Hierarchy cur= stack.front();
-    stack.pop_front();
-    if (f.visit(cur)) {
-      //std::cerr << "Visiting particle " << cur.get_particle() << std::endl;
-      for (int i=cur.get_number_of_children()-1; i>=0; --i) {
-        stack.push_back(cur.get_child(i));
-      }
-    }
-  } while (!stack.empty());
-}
-
-void depth_first_traversal(Hierarchy d, HierarchyVisitor &f)
-{
-  std::vector<Hierarchy> stack;
-  stack.push_back(d);
-  do {
-    Hierarchy cur= stack.back();
-    stack.pop_back();
-    if (f.visit(cur)) {
-      for (int i=cur.get_number_of_children()-1; i>=0; --i) {
-        stack.push_back(cur.get_child(i));
-      }
-    }
-  } while (!stack.empty());
-}
 
 
 

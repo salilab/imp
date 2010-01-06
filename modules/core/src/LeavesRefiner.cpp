@@ -20,47 +20,26 @@ LeavesRefiner
 
 bool LeavesRefiner::get_can_refine(Particle *p) const
 {
-  if (!core::Hierarchy::particle_is_instance(p, traits_)) return false;
-  if (core::Hierarchy(p, traits_).get_number_of_children() != 0) {
-    cache_[p]=get_leaves(core::Hierarchy(p, traits_));
-    return true;
-  } else {
-    return false;
-  }
+  return core::Hierarchy::particle_is_instance(p, traits_);
 
 }
 
 Particle* LeavesRefiner::get_refined(Particle *p, unsigned int i) const
 {
-  // force filling of the cache, yeah, its not good organization
-  get_can_refine(p);
-  IMP_INTERNAL_CHECK(get_can_refine(p), "Trying to refine the unrefinable");
-  return cache_[p][i];
+  return core::Hierarchy(p, traits_).get_leaves()[i];
 }
 
 unsigned int LeavesRefiner::get_number_of_refined(Particle *p) const
 {
-  // force filling of the cache, yeah, its not good organization
-  get_can_refine(p);
-  IMP_INTERNAL_CHECK(get_can_refine(p), "Trying to refine the unrefinable");
-  return cache_[p].size();
+  return core::Hierarchy(p, traits_).get_leaves().size();
 }
 
 
 
 const ParticlesTemp LeavesRefiner::get_refined(Particle *p) const{
   // force filling of the cache, yeah, its not good organization
-  get_can_refine(p);
   IMP_INTERNAL_CHECK(get_can_refine(p), "Trying to refine the unrefinable");
-  return ParticlesTemp(cache_[p].begin(), cache_[p].end());
-}
-
-namespace {
-  struct Yes {
-    bool operator()(Particle *p) {
-      return true;
-    }
-  };
+  return core::Hierarchy(p, traits_).get_leaves();
 }
 
 ParticlesTemp LeavesRefiner::get_input_particles(Particle *p) const {

@@ -54,6 +54,13 @@ struct MatchAttributes
   }
 };
 
+
+struct HierarchyData {
+  ParticleKey parent_key_;
+  IntKey parent_index_key_;
+  ObjectKey cache_key_;
+};
+
 IMPCORE_END_INTERNAL_NAMESPACE
 
 #endif  /* IMPCORE_INTERNAL_HIERARCHY_HELPERS_H */
