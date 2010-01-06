@@ -9,7 +9,8 @@ def _check(context):
         return False
 
     ret= checks.check_lib(context, lib='CGAL', header='CGAL/Gmpq.h',
-                          body='CGAL_assertion(1); CGAL::Gmpq q;', extra_libs=['gmp', 'm'])
+                          body='CGAL_assertion(1); CGAL::Gmpq q;',
+                          extra_libs=['gmp', 'm'])
     context.Message('Checking for CGAL ...')
     context.Result(ret[0])
     if ret[0]:
