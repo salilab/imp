@@ -34,6 +34,7 @@ class SampleTests(IMP.test.TestCase):
         sr=IMP.helper.create_simple_connectivity_on_rigid_bodies(self.rbs,
                                                                  IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits()))
         self.c_r=sr.get_restraint()
+        self.mdl.add_restraint(self.c_r)
 
     def test_weighted_excluded_volume_restraint(self):
 
