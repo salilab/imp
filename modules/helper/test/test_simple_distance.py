@@ -31,9 +31,9 @@ class SimpleDistanceTest(IMP.test.TestCase):
 
     def test_simple_distance(self):
         """Test simple distance restraint"""
-        sd = IMP.helper.create_simple_distance(self.particles)
-        r = sd.get_restraint()
-        r.set_was_owned(True)
+        r = IMP.helper.create_simple_distance(self.particles).get_restraint()
+        # Make sure that refcounting is working
+        self.assertEqual(r.get_ref_count(), 1)
         self.imp_model.add_restraint(r)
         self.opt.optimize(1000)
         self.assert_(r.evaluate(False) == 0.0, "unexpected distance score")
@@ -46,6 +46,11 @@ class SimpleDistanceTest(IMP.test.TestCase):
         r = sd.get_restraint()
         self.imp_model.add_restraint(r)
         h = sd.get_harmonic_upper_bound()
+        # Make sure that refcounting is working
+        # refs from Python, the SimpleDistance object, and the model
+        self.assertEqual(r.get_ref_count(), 3)
+        # refs from Python, the SimpleDistance object, and the Restraint
+        self.assertEqual(h.get_ref_count(), 3)
 
         sd.set_mean(10.0)
         self.assertInTolerance (h.get_mean(), 10.0, 1e-4)

@@ -26,6 +26,12 @@ class SimpleDiameterTest(IMP.test.TestCase):
         sd = IMP.helper.create_simple_diameter(self.ps, self.diameter)
         r = sd.get_restraint()
         self.imp_model.add_restraint(r)
+        # Make sure that refcounting is working
+        # refs from Python, the SimpleDiameter object, and the model
+        self.assertEqual(r.get_ref_count(), 3)
+        # refs from Python, the SimpleDiameter object, and the Restraint
+        h = sd.get_harmonic_upper_bound()
+        self.assertEqual(h.get_ref_count(), 3)
 
         self.opt.optimize(1000)
 
