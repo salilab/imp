@@ -12,11 +12,11 @@ class _RestraintSets(object):
         try:
             current_set = self.restraint_sets[restraint_type]
         except KeyError:
-            current_set = self.restraint_sets[restraint_type] = IMP.core.RestraintSet(restraint_type)
+            current_set = self.restraint_sets[restraint_type] = IMP.core.RestraintSet()
         current_set.add_restraint(restraint)
     def set_model(self, model):
         for weight, rest_set in self.restraint_sets.iteritems():
-            rest_set.set_model(model)
+            model.add_restraint(rest_set)
             rest_set.set_weight(float(weight))
 
 class _Restraint(object):
@@ -300,11 +300,11 @@ class _RestraintRestraint(_RestraintNode):
             for mh in mhs:
                 rbs_tmp.append(mh.get_particle())
             rbs = IMP.core.RigidBodies(rbs_tmp)
-            sc = IMP.helper.create_simple_connectivity_on_rigid_bodies(rbs)
+            self.sc = IMP.helper.create_simple_connectivity_on_rigid_bodies(rbs)
         else:
-            sc = IMP.helper.create_simple_connectivity_on_molecules(mhs)
-        sc.set_k(k)
-        connectivity_restraint = sc.get_restraint()
+            self.sc = IMP.helper.create_simple_connectivity_on_molecules(mhs)
+        self.sc.set_k(k)
+        connectivity_restraint = self.sc.get_restraint()
         self.imp_restraint = connectivity_restraint
         return connectivity_restraint
 
@@ -321,10 +321,10 @@ class _RestraintRestraint(_RestraintNode):
             for mh in mhs:
                 rbs_tmp.append(mh.get_particle())
             rbs = IMP.core.RigidBodies(rbs_tmp)
-            sev = IMP.helper.create_simple_excluded_volume_on_rigid_bodies(rbs)
+            self.sev = IMP.helper.create_simple_excluded_volume_on_rigid_bodies(rbs)
         else:
-            sev = IMP.helper.create_simple_excluded_volume_on_molecules(mhs)
-        ev_restraint = sev.get_restraint()
+            self.sev = IMP.helper.create_simple_excluded_volume_on_molecules(mhs)
+        ev_restraint = self.sev.get_restraint()
         self.imp_restraint = ev_restraint
         return ev_restraint
 
@@ -337,10 +337,10 @@ class _RestraintRestraint(_RestraintNode):
                 for atoms in IMP.atom.get_by_type(child, IMP.atom.ATOM_TYPE):
                     particles.append(atoms)
             if particles:
-                saxs_restraint = IMP.saxs.Restraint(particles, self.exp_profile)
-                repr.model.add_restraint(saxs_restraint)
-                self.imp_restraint = saxs_restraint
-                return saxs_restraint
+                self.saxs_restraint = IMP.saxs.Restraint(particles, self.exp_profile)
+                #repr.model.add_restraint(saxs_restraint)
+                self.imp_restraint = self.saxs_restraint
+                return self.saxs_restraint
 
     def create_em_restraint(self, repr, restraint_sets):
         _RestraintNode.create_restraint(self, repr, restraint_sets)
@@ -357,8 +357,8 @@ class _RestraintRestraint(_RestraintNode):
             for child in self.child_restraints:
                 mhs.append(child)
             if mhs:
-                sef = IMP.helper.create_simple_em_fit(mhs, self.dmap)
-                em_restraint = sef.get_restraint()
+                self.sef = IMP.helper.create_simple_em_fit(mhs, self.dmap)
+                em_restraint = self.sef.get_restraint()
                 self.imp_restraint = em_restraint
                 return em_restraint
 
@@ -370,19 +370,19 @@ class _RestraintRestraint(_RestraintNode):
         ps = IMP.Particles()
         for child in self.child_restraints:
             ps.append(child.get_particle())
-        distance_restraint = IMP.helper.create_simple_distance(ps).get_restraint()
-        self.imp_restraint = distance_restraint
-        return distance_restraint
+        self.distance_restraint = IMP.helper.create_simple_distance(ps)
+        self.imp_restraint = self.distance_restraint.get_restraint()
+        return self.imp_restraint
 
     def create_diameter_restraint(self, repr, restraint_sets):
         _RestraintNode.create_restraint(self, repr, restraint_sets)
         ps = IMP.Particles()
         for child in self.child_restraints:
             ps.append(child.get_particle())
-        diameter_restraint = IMP.helper.create_simple_diameter(
-                                 ps, self.max_diameter).get_restraint()
-        self.imp_restraint = diameter_restraint
-        return diameter_restraint
+        self.diameter_restraint = IMP.helper.create_simple_diameter(
+                                 ps, self.max_diameter)
+        self.imp_restraint = self.diameter_restraint.get_restraint()
+        return self.imp_restraint
 
 class _RestraintSource(_RestraintNode):
     def __init__(self, attributes):
