@@ -71,7 +71,8 @@ void ConfigurationSet::set_base() {
 }
 
 void ConfigurationSet::set_structure(int i) {
-  IMP_USAGE_CHECK(i < get_number_of_configurations()
+  IMP_USAGE_CHECK(static_cast<unsigned int>(i)
+                  < get_number_of_configurations()
                   && i >= -1,
                   "Invalid configuration requested.", IndexException);
   set_base();
