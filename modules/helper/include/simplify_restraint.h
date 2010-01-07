@@ -130,9 +130,11 @@ IMPHELPEREXPORT core::RigidBodies set_rigid_bodies(
 class IMPHELPEREXPORT SimpleConnectivity
 {
   IMP_NO_SWIG(
-  friend SimpleConnectivity create_simple_connectivity_on_rigid_bodies(
+  friend IMPHELPEREXPORT SimpleConnectivity
+  create_simple_connectivity_on_rigid_bodies(
                         const core::RigidBodies &rbs, Refiner *ref);
-  friend SimpleConnectivity create_simple_connectivity_on_molecules(
+  friend IMPHELPEREXPORT SimpleConnectivity
+  create_simple_connectivity_on_molecules(
          atom::Hierarchies const &mhs);
               )
  public:
@@ -214,7 +216,8 @@ private:
  */
 class IMPHELPEREXPORT SimpleDistance
 {
-  IMP_NO_SWIG(friend SimpleDistance create_simple_distance(Particles *ps));
+  IMP_NO_SWIG(friend IMPHELPEREXPORT SimpleDistance
+  create_simple_distance(Particles *ps));
  public:
   core::DistanceRestraint *get_restraint()
   {
@@ -285,7 +288,8 @@ private:
  */
 class IMPHELPEREXPORT SimpleDiameter
 {
-  IMP_NO_SWIG(friend SimpleDiameter create_simple_diameter(Particles *ps,
+  IMP_NO_SWIG(friend IMPHELPEREXPORT SimpleDiameter
+  create_simple_diameter(Particles *ps,
                                                            Float diameter));
  public:
 
@@ -354,11 +358,11 @@ private:
  */
 class IMPHELPEREXPORT SimpleExcludedVolume
 {
-  IMP_NO_SWIG(friend SimpleExcludedVolume
+  IMP_NO_SWIG(friend IMPHELPEREXPORT SimpleExcludedVolume
               create_simple_excluded_volume_on_rigid_bodies(
                     const core::RigidBodies &rbs, Refiner*ref);
               )
-  IMP_NO_SWIG(friend SimpleExcludedVolume
+  IMP_NO_SWIG(friend IMPHELPEREXPORT SimpleExcludedVolume
               create_simple_excluded_volume_on_molecules(
               atom::Hierarchies const &mhs);
               )
@@ -399,7 +403,7 @@ private:
  */
 class IMPHELPEREXPORT SimpleEMFit
 {
-  IMP_NO_SWIG(friend SimpleEMFit create_simple_em_fit(
+  IMP_NO_SWIG(friend IMPHELPEREXPORT SimpleEMFit create_simple_em_fit(
               atom::Hierarchies const &mhs, em::DensityMap *dmap));
 public:
   em::FitRestraint *get_restraint()
