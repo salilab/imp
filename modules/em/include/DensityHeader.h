@@ -25,7 +25,7 @@ class IMPEMEXPORT DensityHeader
 
 public:
   DensityHeader() {
-
+    is_resolution_set_= false;
     top_calculated_ = false;
     // Initialize some of the parameters of the header
     nx=0;ny=0;nz=0;
@@ -184,9 +184,15 @@ public:
   int lswap;
 
   //! Returns the resolution of the map
-  inline float get_resolution() const { return resolution_;}
+  inline float get_resolution() const {
+    IMP_INTERNAL_CHECK(is_resolution_set_,
+                       "The resolution was not set"<<std::endl);
+   return resolution_;
+  }
   //! Sets the resolution of the map
-  void set_resolution(float resolution) { resolution_=resolution;}
+  inline void set_resolution(float resolution) {
+    is_resolution_set_=true;
+    resolution_=resolution;}
   inline float get_spacing() const {return Objectpixelsize_;}
   inline void set_spacing(float spacing)  {
     Objectpixelsize_ = spacing;
@@ -236,6 +242,7 @@ protected:
   float xorigin_, yorigin_, zorigin_; //Origin used for transforms
   bool top_calculated_;
   float resolution_;
+  bool is_resolution_set_;
   float Objectpixelsize_; //this is the actual pixelsize
 };
 
