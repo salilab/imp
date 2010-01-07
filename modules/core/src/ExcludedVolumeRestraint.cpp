@@ -25,6 +25,7 @@ IMPCORE_BEGIN_NAMESPACE
 ExcludedVolumeRestraint::ExcludedVolumeRestraint(SingletonContainer *sc,
                                                  Refiner *r,
                                                  double k):
+  Restraint("ExcludedVolumeRestraint %d"),
   sc_(sc), r_(r), k_(k){
 }
 
