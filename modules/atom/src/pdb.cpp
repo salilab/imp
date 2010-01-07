@@ -262,9 +262,10 @@ Hierarchies read_multimodel_pdb(String pdb_file_name, Model *model,
                    bool ignore_alternatives)
 {
   std::ifstream pdb_file(pdb_file_name.c_str());
-  IMP_USAGE_CHECK(pdb_file,
-     "read_multimodel_pdb: File not found: " << pdb_file_name,
-     IMP::IOException);
+  if (!pdb_file) {
+    IMP_THROW("read_multimodel_pdb: File not found: " << pdb_file_name,
+              IMP::IOException);
+  }
   Hierarchies pdbmodels_h = read_multimodel_pdb(pdb_file, model,
                           selector,ignore_alternatives);
 //  root_d.get_particle()->set_name(pdb_file_name);
@@ -305,6 +306,10 @@ void write_pdb(const Particles& ps, std::ostream &out)
                         rd.get_index(),
                         rd.get_insertion_code(),
                         ad.get_element());
+      if (!out) {
+        IMP_THROW("Error writing to file in write_pdb",
+                  IOException);
+      }
     }
   }
 }
@@ -371,9 +376,10 @@ void write_multimodel_pdb(const Hierarchies& mhd, std::ostream &out)
 void write_multimodel_pdb(const Hierarchies& mhd, std::string file_name)
 {
   std::ofstream out_file(file_name.c_str());
-  IMP_USAGE_CHECK(out_file,
-     "write_multimodel_pdb: Can't open file: " << file_name << " for writing",
-     IMP::IOException);
+  if (!pdb_file) {
+    IMP_THROW("read_multimodel_pdb: Cannot open file: " << pdb_file_name,
+              IMP::IOException);
+  }
   write_multimodel_pdb(mhd, out_file);
   out_file.close();
 }
