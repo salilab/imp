@@ -18,7 +18,7 @@
 			<Particle id="Chain6a"></Particle>
         	</Restraint>
     	</ExcludedVolume>
-	<Pulldown>
+	<Pulldown weight="100">
 		<Restraint name="connectivity_restraint_1">
 			<Particle id="Protein1"></Particle>
 			<Particle id="Protein2"></Particle>
