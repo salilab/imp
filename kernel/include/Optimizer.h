@@ -279,8 +279,6 @@ class IMPEXPORT Optimizer: public Object
   WeakPointer<Model> model_;
 };
 
-IMP_OUTPUT_OPERATOR(Optimizer);
-
 
 //! Save and restore the set of optimized attributes for a set of particles
 class SaveOptimizeds: public RAII {
