@@ -52,8 +52,10 @@ class RestraintTest(IMP.test.TestCase):
 
         root_hierarchy = self.representation.model_decorator
 
-        evr = self.restraint.get_restraint_by_name('connectivity_restraint_1')
+        evr = self.restraint.get_restraint_by_name('excluded_volume_restraint')
         self.assertInTolerance (evr.get_weight(), 1.0, 1e-4)
+        evr = self.restraint.get_restraint_by_name('connectivity_restraint_1')
+        self.assertInTolerance (evr.get_weight(), 100.0, 1e-4)
         evr = self.restraint.get_restraint_by_name('connectivity_restraint_2')
         self.assertInTolerance (evr.get_weight(), 1.5, 1e-4)
         evr.set_weight(0.8)
