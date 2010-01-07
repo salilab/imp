@@ -30,6 +30,11 @@
 #include <iomanip>
 #include <cmath>
 
+// what is wrong with argment-dependent lookup?
+#ifdef _MSC_VER
+#pragma warning (disable : 4675)
+#endif
+
 IMP_BEGIN_NAMESPACE
 
 namespace internal
