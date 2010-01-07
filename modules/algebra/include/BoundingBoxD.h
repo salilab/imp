@@ -86,6 +86,8 @@ inline std::ostream &operator<<(std::ostream &out,
 }
 #endif
 
+IMPALGEBRA_EXPORT_TEMPLATE(BoundingBoxD<3>);
+
 IMP_NO_SWIG(typedef BoundingBoxD<3> BoundingBox3D;)
 
 IMPALGEBRA_END_NAMESPACE
