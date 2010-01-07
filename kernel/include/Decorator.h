@@ -298,7 +298,8 @@ class Decorators: public ParentDecorators {
 #ifdef _MSC_VER
     // for VC, it can't otherwise figure out the conversion chain
     operator Particle*() {
-      return WrappedDecorator::get_particle();
+      if (WrappedDecorator()==*this) return NULL;
+      else return WrappedDecorator::get_particle();
     }
 #endif
   };
@@ -371,7 +372,8 @@ class DecoratorsWithTraits: public ParentDecorators {
 #ifdef _MSC_VER
     // for VC, it can't otherwise figure out the conversion chain
     operator Particle*() {
-      return WrappedDecorator::get_particle();
+      if (WrappedDecorator()==*this) return NULL;
+      else return WrappedDecorator::get_particle();
     }
 #endif
   };
@@ -468,7 +470,8 @@ class DecoratorsWithImplicitTraits: public ParentDecorators {
 #ifdef _MSC_VER
     // for VC, it can't otherwise figure out the conversion chain
     operator Particle*() {
-      return WrappedDecorator::get_particle();
+      if (WrappedDecorator()==*this) return NULL;
+      else return WrappedDecorator::get_particle();
     }
 #endif
   };
