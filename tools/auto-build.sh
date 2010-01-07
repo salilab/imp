@@ -31,6 +31,7 @@ svn export -q -${rev} ${IMPSVNDIR} imp
 # Put version number, date and revision into relevant files
 DATE=`date +'%Y/%m/%d'`
 (cd imp/doc/doxygen && sed -e "s#^PROJECT_NUMBER.*#PROJECT_NUMBER = ${VER}, ${DATE}, ${rev}#" < doxygen.conf-in > .dox && mv .dox doxygen.conf-in)
+perl -pi -e "s/version='SVN'/version='SVN.${rev}'/" imp/kernel/SConscript imp/modules/*/SConscript
 
 # Write out a version file
 verfile="${MODINSTALL}/build/imp-version"
