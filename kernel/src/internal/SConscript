@@ -3,6 +3,7 @@ files = [
          'constants.cpp',
          'deprecation.cpp',
          'directories.cpp',
+         'particle_save.cpp',
         ]
 
 files = [File(x) for x in files]

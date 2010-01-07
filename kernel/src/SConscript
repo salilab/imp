@@ -1,6 +1,7 @@
 Import('env')
 
 files = [
+         'ConfigurationSet.cpp',
          'Constraint.cpp',
          'Container.cpp',
          'FailureHandler.cpp',
@@ -20,6 +21,7 @@ files = [
          'QuadScore.cpp',
          'Refiner.cpp',
          'Restraint.cpp',
+         'Sampler.cpp',
          'ScoreState.cpp',
          'SingletonContainer.cpp',
          'SingletonFilter.cpp',

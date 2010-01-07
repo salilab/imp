@@ -165,6 +165,14 @@ public:
     internal::unref(p);
   }
 
+  //! Sometimes it is useful to put a particle back into a model
+  /** When restoring the state of a Model, it is useful to be able to restore
+      a particle back to the model it used to be part of.
+  */
+  void restore_particle(Particle *p) {
+    add_particle_internal(p);
+  }
+
   /** @name Methods to debug particles
       It is sometimes useful to inspect the list of all particles when
       debugging. These methods allow you to do that.

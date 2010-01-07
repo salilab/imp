@@ -1,6 +1,7 @@
 Import('env')
 
 files = [
+         'ConfigurationSet.h',
          'Constraint.h',
          'Container.h',
          'Decorator.h',
@@ -24,6 +25,7 @@ files = [
          'RefCounted.h',
          'Refiner.h',
          'Restraint.h',
+         'Sampler.h',
          'ScoreState.h',
          'SetLogState.h',
          'SingletonContainer.h',
