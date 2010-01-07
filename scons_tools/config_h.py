@@ -65,6 +65,26 @@ def _action_config_h(target, source, env):
 #define %(PREPROC)sLOCAL
 #endif
 #endif
+
+#if _MSC_VER && !defined(SWIG) && !defined(IMP_DOXYGEN)
+#ifdef %(PREPROC)s_EXPORTS
+
+#define %(PREPROC)s_EXPORT_TEMPLATE(name)       \
+template class __declspec(dllexport) name
+
+#else
+
+#define %(PREPROC)s_EXPORT_TEMPLATE(name)       \
+template class __declspec(dllimport) name
+
+#endif
+
+#else
+#define %(PREPROC)s_EXPORT_TEMPLATE(name)
+
+#endif
+
+
 """ % vars
     print >> h, "#define %(PREPROC)s_BEGIN_NAMESPACE \\"%vars
     for comp in vars['namespace'].split("::"):
