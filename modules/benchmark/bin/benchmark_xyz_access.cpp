@@ -54,7 +54,7 @@ void DistanceScore::show(std::ostream &out) const {}
 
 void DistanceScore::apply(Particle *p) const {
   XYZ d(p);
-  score_+= distance(d.get_coordinates(), v_);
+  score_+= IMP::algebra::distance(d.get_coordinates(), v_);
 }
 
 ParticlesList DistanceScore::get_interacting_particles(Particle *p) const {
