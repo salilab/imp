@@ -35,8 +35,11 @@ IMP_LIST_IMPL(RestraintSet, Restraint, restraint, Restraint*,
 double
 RestraintSet::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
-  if (get_weight() == 0) return 0;
   IMP_OBJECT_LOG;
+  if (get_weight() == 0) {
+    IMP_LOG(TERSE, "Skipping due to weight being 0" << std::endl);
+    return 0;
+  }
   Float score;
   typedef std::auto_ptr<DerivativeAccumulator> DAP;
   // Use a local copy of the accumulator for our sub-restraints
