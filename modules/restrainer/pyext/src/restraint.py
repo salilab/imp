@@ -376,9 +376,9 @@ class _RestraintRestraint(_RestraintNode):
                 for atoms in IMP.atom.get_by_type(child, IMP.atom.ATOM_TYPE):
                     particles.append(atoms)
             if particles:
-                saxs_restraint = IMP.saxs.Restraint(particles, self.exp_profile)
+                self.saxs_restraint = IMP.saxs.Restraint(particles, self.exp_profile)
                 self.imp_restraint = self.saxs_restraint
-                return saxs_restraint, self.weight
+                return self.saxs_restraint, self.weight
 
     def create_em_restraint(self, repr, restraint_sets):
         _RestraintNode.create_restraint(self, repr, restraint_sets)
