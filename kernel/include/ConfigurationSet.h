@@ -45,7 +45,8 @@ class IMPEXPORT ConfigurationSet: public Object
   void save_configuration();
   unsigned int get_number_of_configurations() const;
   //! Load the ith configuration into the Model
-  void set_structure(unsigned int i);
+  /** Passing -1 returns it to the base configuration. */
+  void set_structure(int i);
   IMP_OBJECT(ConfigurationSet, get_module_version_info());
 };
 

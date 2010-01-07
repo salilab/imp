@@ -862,7 +862,7 @@ public:
   ParticlesTemp get_input_particles() const;                            \
   IMP_OBJECT(Name, version_info);
 
-//! Define the basic things you need for an optimizer.
+//! Define the basic things you need for an Optimizer.
 /** \advanced
 
     In addition to the methods done by IMP_OBJECT, it declares
@@ -873,6 +873,19 @@ public:
 #define IMP_OPTIMIZER(Name, version_info)               \
   virtual Float optimize(unsigned int max_steps);       \
   IMP_OBJECT(Name, version_info);
+
+//! Define the basic things you need for a Sampler.
+/** \advanced
+
+    In addition to the methods done by IMP_OBJECT, it declares
+    - IMP::Sampler::sample()
+
+    \relatesalso IMP::Sampler
+*/
+#define IMP_SAMPLER(Name, version_info)                \
+  virtual ConformationSet sample();                    \
+  IMP_OBJECT(Name, version_info);
+
 
 
 //! Define the basics needed for an OptimizerState

@@ -49,6 +49,8 @@ class IMPEXPORT Sampler: public Object
   }
   /** @} */
 
+  Model *get_model() const {return model_;}
+
   // for the vtable
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Sampler);
  protected:
