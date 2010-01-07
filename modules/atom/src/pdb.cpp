@@ -376,8 +376,8 @@ void write_multimodel_pdb(const Hierarchies& mhd, std::ostream &out)
 void write_multimodel_pdb(const Hierarchies& mhd, std::string file_name)
 {
   std::ofstream out_file(file_name.c_str());
-  if (!pdb_file) {
-    IMP_THROW("read_multimodel_pdb: Cannot open file: " << pdb_file_name,
+  if (!out_file) {
+    IMP_THROW("read_multimodel_pdb: Cannot open file: " << file_name,
               IMP::IOException);
   }
   write_multimodel_pdb(mhd, out_file);
