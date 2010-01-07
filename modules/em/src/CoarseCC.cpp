@@ -22,7 +22,7 @@ float CoarseCC::evaluate(DensityMap &em_map,
   //resample the map for the particle provided
   // TODO(frido): rename: resample -> sample
   if (resample) {
-  model_map.resample(access_p);
+     model_map.resample(access_p);
   }
 
   if (divide_by_rms) {
@@ -35,11 +35,19 @@ float CoarseCC::evaluate(DensityMap &em_map,
   // here we ask not to recalculate the rms ( already calculated)
   float escore = cross_correlation_coefficient(em_map, model_map,
                          voxel_data_threshold,false,divide_by_rms);
+  IMP_LOG(VERBOSE, "CoarseCC::evaluate parameters:  threshold:"
+          << voxel_data_threshold << " divide_by_rms: " << divide_by_rms
+          << std::endl);
+  IMP_LOG(VERBOSE, "CoarseCC::evaluate: the score is:" << escore << std::endl);
   escore = scalefac * (1. - escore);
   //compute the derivatives if required
   if (lderiv) {
+  IMP_LOG(VERBOSE, "CoarseCC::evaluate: before calc derivaties:"
+                   << escore << std::endl);
     CoarseCC::calc_derivatives(em_map, model_map, access_p, scalefac,
                               dvx, dvy, dvz);
+  IMP_LOG(VERBOSE, "CoarseCC::evaluate: after calc derivaties:"
+                    << escore << std::endl);
   }
   return escore;
 }
