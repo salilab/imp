@@ -18,6 +18,8 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
+IMPALGEBRA_EXPORT_TEMPLATE(VectorD<3>);
+
 /** \name 3D Vectors
     We provide a specialization of VectorD for 3-space and
     several additional functions on it.
@@ -28,6 +30,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 /** Stores a 3-vector using cartesian coordinates.
 */
 IMP_NO_SWIG(typedef VectorD<3> Vector3D;)
+
 
 //! A collection of Vector3D
 /**
