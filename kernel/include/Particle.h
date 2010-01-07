@@ -299,7 +299,7 @@ class IMPEXPORT Particle : public Container
   Particle(Model *m, std::string name="P%1%");
 
   /** Get pointer to Model containing this particle.
-      \throw InvalidStateException if now Model contains this particle.
+      \throw InvalidStateException if no Model contains this particle.
   */
   Model* get_model() const {
     return ps_->model_;

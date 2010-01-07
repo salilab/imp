@@ -157,12 +157,13 @@ Particle::Particle():
 }
 
 void Particle::setup_incremental() {
-  ps_->shadow_ = new Particle();
-  ps_->shadow_->set_was_owned(true);
-  internal::ref(ps_->shadow_);
-  ps_->shadow_->set_name(get_name()+" history");
-  ps_->shadow_->ps_->model_= ps_->model_;
-  //ps_->shadow_->dirty_=true;
+  if (!ps_->shadow_) {
+    ps_->shadow_ = new Particle();
+    ps_->shadow_->set_was_owned(true);
+    internal::ref(ps_->shadow_);
+    ps_->shadow_->set_name(get_name()+" history");
+    ps_->shadow_->ps_->model_= ps_->model_;
+  }
   ps_->dirty_=true;
   ps_->shadow_->ps_->derivatives_
     = internal::ParticleStorage::
