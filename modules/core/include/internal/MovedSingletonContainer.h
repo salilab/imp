@@ -43,7 +43,8 @@ namespace {
     }
   public:
     typedef std::pair<algebra::Sphere3D, algebra::Rotation3D> Value;
-    SaveXYZRRotValues(std::vector<Value> &values): values_(values) {
+    SaveXYZRRotValues(std::vector<Value> &values):
+      SingletonModifier("SaveXYZRRotValues"), values_(values) {
       i_=0;
     }
     IMP_INTERNAL_SINGLETON_MODIFIER(SaveXYZRRotValues,
@@ -65,6 +66,7 @@ namespace {
   public:
     typedef algebra::Sphere3D Value;
     SaveXYZRValues(std::vector<algebra::Sphere3D> &values):
+      SingletonModifier("SaveXYZRValues"),
       values_(values) {
       i_=0;
     }
@@ -88,8 +90,9 @@ namespace {
     }
   public:
     SaveMovedValues(std::vector<typename P::Value> &values,
-                    const ParticlesTemp &moved): P(values),
-                                                 moved_(moved){
+                    const ParticlesTemp &moved):
+      P(values),
+      moved_(moved){
     }
     IMP_INTERNAL_SINGLETON_MODIFIER(SaveMovedValues,
                                     get_module_version_info(),
@@ -154,9 +157,11 @@ namespace {
                               algebra::Rotation3D> > &values,
                 ParticlesTemp &pt,
                 double threshold,
-                bool incremental): values_(values),
-                                   pt_(pt), threshold_(threshold),
-                                   i_(0), incremental_(incremental){
+                bool incremental):
+      SingletonModifier("ListXYZRRotMoved"),
+      values_(values),
+      pt_(pt), threshold_(threshold),
+      i_(0), incremental_(incremental){
     }
 
     IMP_INTERNAL_SINGLETON_MODIFIER(ListXYZRRotMovedParticles,
@@ -183,9 +188,11 @@ namespace {
     ListXYZRMovedParticles(std::vector<algebra::Sphere3D> &values,
                 ParticlesTemp &pt,
                 double threshold,
-                bool incremental): values_(values),
-                                   pt_(pt), threshold_(threshold),
-                                   i_(0), incremental_(incremental){
+                           bool incremental):
+      SingletonModifier("ListXYZRMoved"),
+      values_(values),
+      pt_(pt), threshold_(threshold),
+      i_(0), incremental_(incremental){
     }
     IMP_INTERNAL_SINGLETON_MODIFIER(ListXYZRMovedParticles,
                                     get_module_version_info(),

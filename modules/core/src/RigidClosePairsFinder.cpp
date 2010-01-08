@@ -22,6 +22,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 
 RigidClosePairsFinder::RigidClosePairsFinder(Refiner *r):
+  ClosePairsFinder("RigidCPF"),
   r_(r){
 #ifdef IMP_USE_CGAL
   cpf_=Pointer<ClosePairsFinder>(new BoxSweepClosePairsFinder());
@@ -32,6 +33,7 @@ RigidClosePairsFinder::RigidClosePairsFinder(Refiner *r):
 }
 RigidClosePairsFinder
 ::RigidClosePairsFinder(ClosePairsFinder *cpf, Refiner *r):
+  ClosePairsFinder("RigidCPF"),
   cpf_(cpf),
   r_(r){
   k_= internal::get_rigid_body_hierarchy_key(r_);

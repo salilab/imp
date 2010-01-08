@@ -40,7 +40,7 @@ class IMPCOREEXPORT ClosePairsFinder : public Object
   }
 
  public:
-  ClosePairsFinder();
+  ClosePairsFinder(std::string name);
   ~ClosePairsFinder();
 
   /** \name Methods to find close pairs

@@ -14,7 +14,8 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-QuadraticClosePairsFinder::QuadraticClosePairsFinder(){}
+QuadraticClosePairsFinder::QuadraticClosePairsFinder():
+  ClosePairsFinder("QuadraticCPF"){}
 
 ParticlePairsTemp QuadraticClosePairsFinder
 ::get_close_pairs(SingletonContainer *ca,

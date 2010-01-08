@@ -13,7 +13,7 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-ClosePairsFinder::ClosePairsFinder():
+ClosePairsFinder::ClosePairsFinder(std::string name): Object(name),
   distance_(std::numeric_limits<double>::quiet_NaN()){}
 
 ClosePairsFinder::~ClosePairsFinder(){}

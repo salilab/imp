@@ -79,7 +79,8 @@ struct AddToList {
 }
 
 
-BoxSweepClosePairsFinder::BoxSweepClosePairsFinder(){}
+BoxSweepClosePairsFinder::BoxSweepClosePairsFinder():
+  ClosePairsFinder("BoxSweepCPF") {}
 
 ParticlePairsTemp BoxSweepClosePairsFinder
 ::get_close_pairs(SingletonContainer *ca,
