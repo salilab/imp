@@ -43,6 +43,9 @@ installint \imp. For example
 runs the example \c chain.py. The \c imppy.sh script is needed to make sure that
 all the \imp libraries can be found when needed.
 
+See comments scattered throughout the examples module for more explaination of
+the build system and python interactions.
+
 \section policies Policies
 
 Checkins  in the \imp repository must compile and tests must pass. Specifically,
