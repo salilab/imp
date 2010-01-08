@@ -45,14 +45,18 @@ IMP_BEGIN_NAMESPACE
     \par Introduction to reference counting:
     Reference counting is a technique for managing memory and
     automatically freeing memory (destroying objects) when it
-    is no longer needed. It is used by Python to do its memory
-    management. In reference counting, each object has a reference
+    is no longer needed. In reference counting, each object has a reference
     count, which tracks how many different places are using the
-    object. When this count goes to 0, the object is freed. The
-    IMP::Pointer class adds one to the reference count of the
-    IMP::RefCounted object it points to (and subtracts one when
-    it no longer points to the object.\n\n Be aware of cycles,
-    since if, for example, object A contains an IMP::Pointer to
+    object. When this count goes to 0, the object is freed.\n\n
+    Python internally refence counts everything. C++, on the other hand, on the
+    requires extra steps be taken to ensure that objects
+    are reference counted properly.\n\n
+    In \imp, reference counting is done through the IMP::Pointer
+    and IMP::RefCounted. The former should be used instead of
+    a raw C++ pointer when storing a pointer to any object
+    inheriting from IMP::RefCounted.\n\n
+    Any time one is using reference counting, one needs to be aware
+    of cycles, since if, for example, object A contains an IMP::Pointer to
     object B and object B contains an IMP::Pointer to object A,
     their reference counts will never go to 0 even if both A
     and B are no longer used. To avoid this, use an
