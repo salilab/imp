@@ -806,18 +806,21 @@ void Model::before_evaluate(const ScoreStatesTemp &states) const {
                   UsageException);
   IMP_LOG(TERSE,
           "Begin update ScoreStates " << std::endl);
-  cur_stage_= BEFORE_EVALUATE;
-  boost::timer timer;
-  for (unsigned int i=0; i< states.size(); ++i) {
-    ScoreState *ss= states[i];
-    IMP_CHECK_OBJECT(ss);
-    IMP_LOG(TERSE, "Updating " << ss->get_name() << std::endl);
-    if (gather_statistics_) timer.restart();
-    WRAP_UPDATE_CALL(ss, ss->before_evaluate(), false);
-    if (gather_statistics_) {
-      stats_data_[ss].update_state_before(timer.elapsed());
+  {
+    IncreaseIndent ii;
+    cur_stage_= BEFORE_EVALUATE;
+    boost::timer timer;
+    for (unsigned int i=0; i< states.size(); ++i) {
+      ScoreState *ss= states[i];
+      IMP_CHECK_OBJECT(ss);
+      IMP_LOG(TERSE, "Updating \"" << ss->get_name() << "\"" << std::endl);
+      if (gather_statistics_) timer.restart();
+      WRAP_UPDATE_CALL(ss, ss->before_evaluate(), false);
+      if (gather_statistics_) {
+        stats_data_[ss].update_state_before(timer.elapsed());
+      }
+      IMP_LOG(VERBOSE, "." << std::flush);
     }
-    IMP_LOG(VERBOSE, "." << std::flush);
   }
   IMP_LOG(TERSE, "End update ScoreStates." << std::endl);
 }
@@ -826,19 +829,22 @@ void Model::after_evaluate(const ScoreStatesTemp &states,
                            bool calc_derivs) const {
   IMP_LOG(TERSE,
           "Begin after_evaluate of ScoreStates " << std::endl);
-  DerivativeAccumulator accum;
-  cur_stage_= AFTER_EVALUATE;
-  boost::timer timer;
-  for (int i=states.size()-1; i>=0; --i) {
-    ScoreState *ss= states[i];
-    IMP_CHECK_OBJECT(ss);
-    IMP_LOG(TERSE, "Updating " << ss->get_name() << std::endl);
-    if (gather_statistics_) timer.restart();
-    WRAP_UPDATE_CALL(ss, ss->after_evaluate(calc_derivs?&accum:NULL), true);
-    if (gather_statistics_) {
-      stats_data_[ss].update_state_after(timer.elapsed());
+  {
+    IncreaseIndent ii;
+    DerivativeAccumulator accum;
+    cur_stage_= AFTER_EVALUATE;
+    boost::timer timer;
+    for (int i=states.size()-1; i>=0; --i) {
+      ScoreState *ss= states[i];
+      IMP_CHECK_OBJECT(ss);
+      IMP_LOG(TERSE, "Updating \"" << ss->get_name() << "\"" << std::endl);
+      if (gather_statistics_) timer.restart();
+      WRAP_UPDATE_CALL(ss, ss->after_evaluate(calc_derivs?&accum:NULL), true);
+      if (gather_statistics_) {
+        stats_data_[ss].update_state_after(timer.elapsed());
+      }
+      IMP_LOG(VERBOSE, "." << std::flush);
     }
-    IMP_LOG(VERBOSE, "." << std::flush);
   }
   IMP_LOG(TERSE, "End after_evaluate of ScoreStates." << std::endl);
 }
