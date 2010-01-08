@@ -9,12 +9,10 @@ class CGOptimizerTests(IMP.test.TestCase):
     def check_model(self, m, lsc, lpc):
         for p0 in lsc.get_particles():
             for p1 in lsc.get_particles():
-                if p0.get_name() != p1.get_name():
+                if p0 != p1:
                     d0= IMP.core.XYZR(p0)
                     d1= IMP.core.XYZR(p1)
                     d= IMP.core.distance(d0,d1)
-                    print d, p0.get_name(), p1.get_name()
-                    print p0, p1
                     if lpc.get_contains_particle_pair(IMP.ParticlePair(p0,p1)) \
                             or lpc.get_contains_particle_pair(IMP.ParticlePair(p1,p0)) :
                         self.assertInTolerance(d, 0, .2)
