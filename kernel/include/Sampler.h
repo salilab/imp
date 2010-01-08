@@ -47,6 +47,7 @@ class IMPEXPORT Sampler: public Object
   void set_maximum_score(Restraint *r, double s) {
     max_scores_[r]=s;
   }
+  double get_maximum_score() const {return max_score_;}
   /** @} */
 
   Model *get_model() const {return model_;}
@@ -59,7 +60,7 @@ class IMPEXPORT Sampler: public Object
       should check that a state passes the filters before adding
       it to the returned ConfigurationSet.
   */
-  bool get_is_good_configuration();
+  bool get_is_good_configuration() const;
 };
 
 
