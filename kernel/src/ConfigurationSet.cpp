@@ -25,6 +25,7 @@ ConfigurationSet::ConfigurationSet(Model *m,
 
 
 void ConfigurationSet::save_configuration() {
+  IMP_LOG(TERSE, "Adding configuration to set " << get_name() << std::endl);
   configurations_.push_back(Diff());
   for (Model::ParticleIterator it= model_->particles_begin();
        it != model_->particles_end(); ++it) {
@@ -70,9 +71,8 @@ void ConfigurationSet::set_base() {
   }
 }
 
-void ConfigurationSet::set_structure(int i) {
-  IMP_USAGE_CHECK(static_cast<unsigned int>(i)
-                  < get_number_of_configurations()
+void ConfigurationSet::set_configuration(int i) {
+  IMP_USAGE_CHECK(i < static_cast<int>(get_number_of_configurations())
                   && i >= -1,
                   "Invalid configuration requested.", IndexException);
   set_base();
