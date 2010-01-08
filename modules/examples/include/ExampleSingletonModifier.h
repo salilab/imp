@@ -1,5 +1,5 @@
 /**
- *  \file ExampleSingletonModifier.h
+ *  \file examples/ExampleSingletonModifier.h
  *  \brief A singleton modifier which wraps an attribute into a
  *  given range.
  *

@@ -1,5 +1,6 @@
 /**
- *  \file ExampleRestraint.cpp \brief Restrain a list of particle pairs.
+ *  \file examples/ExampleRestraint.cpp
+ *  \brief Restrain a list of particle pairs.
  *
  *  Copyright 2007-2010 Sali Lab. All rights reserved.
  *

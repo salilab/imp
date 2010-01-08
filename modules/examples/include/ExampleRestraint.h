@@ -1,5 +1,5 @@
 /**
- *  \file ExampleRestraint.h
+ *  \file examples/ExampleRestraint.h
  *  \brief A restraint on a list of particle pairs.
  *
  *  Copyright 2007-2010 Sali Lab. All rights reserved.

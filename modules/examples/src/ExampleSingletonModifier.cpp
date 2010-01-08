@@ -1,5 +1,5 @@
 /**
- *  \file ExampleSingletonModifier.cpp
+ *  \file examples/ExampleSingletonModifier.cpp
  *  \brief A singleton modifier which wraps an attribute into a
  *  given range.
  *

@@ -1,5 +1,5 @@
 /**
- *  \file ExampleRefCounted.h
+ *  \file examples/ExampleRefCounted.h
  *  \brief An example showing how to make a simple ref counted object
  *
  *  Copyright 2007-2010 Sali Lab. All rights reserved.

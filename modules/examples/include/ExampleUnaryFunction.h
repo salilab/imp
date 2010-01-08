@@ -1,5 +1,5 @@
 /**
- *  \file ExampleUnaryFunction.h
+ *  \file examples/ExampleUnaryFunction.h
  *  \brief A simple unary function.
  *
  *  Copyright 2007-2010 Sali Lab. All rights reserved.
