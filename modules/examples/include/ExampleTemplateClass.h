@@ -27,7 +27,6 @@ IMPEXAMPLES_BEGIN_NAMESPACE
 
     The source code is as follows:
     \include ExampleTemplateClass.h
-    \include ExampleTemplateClass.cpp
 */
 template <unsigned int D>
 class ExampleTemplateClass: public UninitializedDefault
