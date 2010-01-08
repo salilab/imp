@@ -133,7 +133,8 @@ ConfigurationSet *MCCGSampler::sample() const {
   IMP_NEW(ConjugateGradients, cg, (get_model()));
   mc->set_local_optimizer(cg);
   mc->set_local_steps(pms.cg_steps_);
-  mc->set_score_threshold(get_maximum_score());
+  mc->set_score_threshold(get_maximum_score()/2.0);
+  mc->set_return_best(true);
   ListSingletonContainer *sc=set_up_movers(pms, mc);
   int failures=0;
   for (unsigned int i=0; i< pms.attempts_; ++i) {

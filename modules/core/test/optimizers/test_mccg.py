@@ -17,7 +17,7 @@ class CGOptimizerTests(IMP.test.TestCase):
                     print p0, p1
                     if lpc.get_contains_particle_pair(IMP.ParticlePair(p0,p1)) \
                             or lpc.get_contains_particle_pair(IMP.ParticlePair(p1,p0)) :
-                        self.assertInTolerance(d, 0, .1)
+                        self.assertInTolerance(d, 0, .2)
                     else:
                         self.assert_(d >= -.2);
     def test_cg_woods_func(self):
