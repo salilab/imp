@@ -45,7 +45,12 @@ class IMPEXPORT Optimizer: public Object
   Optimizer(Model *m= NULL, std::string name="Optimizer %1%");
 
   /** Optimize the model
-      \param[in] max_steps The maximum number of steps to take.
+
+      \param[in] max_steps The maximum number of iterations of the
+      optimizer to perform. Increasing this number will generally make
+      the optimizer spend more time searching for a solution, but
+      beyond that, the details of what changes will vary.
+
       \return The final score.
   */
   virtual Float optimize(unsigned int max_steps) = 0;
