@@ -14,6 +14,9 @@
     bool __eq__(const Object &other) {
       return self == &other;
     }
+    bool __ne__(const Object &other) {
+      return self != &other;
+    }
   }
 
 %include "IMP/Object.h"
