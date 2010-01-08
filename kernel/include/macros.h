@@ -883,7 +883,7 @@ public:
     \relatesalso IMP::Sampler
 */
 #define IMP_SAMPLER(Name, version_info)                \
-  virtual ConformationSet sample();                    \
+  virtual ConfigurationSet* sample() const;            \
   IMP_OBJECT(Name, version_info);
 
 
