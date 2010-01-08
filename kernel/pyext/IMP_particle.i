@@ -9,17 +9,6 @@ def _check_particle(p, a):
 %}
 
 namespace IMP {
-  %extend Particle {
-    // Two particles count as equal in Python only if their memory
-    // addresses are the same
-    bool __eq__(const Particle *other) {
-      return self == other;
-    }
-/*    bool __eq__(IMP::Decorator other) {
-      return self == other;
-    }*/
-  }
-
   // need to special case particle so can't add this to macro
   %pythonprepend Particle::get_value %{
         try:
