@@ -1,5 +1,5 @@
 /**
- *  \file ExampleDecorator.h     \brief Add a name to a particle.
+ *  \file examples/ExampleDecorator.h     \brief Add a name to a particle.
  *
  *  Copyright 2007-2010 Sali Lab. All rights reserved.
  *

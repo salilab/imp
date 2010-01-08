@@ -1,5 +1,5 @@
 /**
- *  \file ExampleComplexRestraint.cpp
+ *  \file examples/ExampleComplexRestraint.cpp
  *  \brief Restrain the diameter of a set of points.
  *
  *  Copyright 2007-2010 Sali Lab. All rights reserved.
