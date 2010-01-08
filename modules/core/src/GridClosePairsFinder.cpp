@@ -142,7 +142,7 @@ void grid_generate_nbl(const internal::ParticleGrid *particle_bin,
 }
 }
 
-GridClosePairsFinder::GridClosePairsFinder(){}
+GridClosePairsFinder::GridClosePairsFinder(): ClosePairsFinder("GridCPF"){}
 
 ParticlePairsTemp GridClosePairsFinder
 ::get_close_pairs(SingletonContainer *ca,
