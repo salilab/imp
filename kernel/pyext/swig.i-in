@@ -51,6 +51,7 @@ namespace IMP {
 %warnfilter(473) SingletonContainer;
 %warnfilter(473) PairContainer;
 %warnfilter(403) Constraint;
+%warnfilter(473) Sampler;
 }
 
 // Make sure that Python refcounts any returned pointers to IMP types
@@ -110,6 +111,8 @@ IMP_DIRECTOR_KERNEL_CLASS(SingletonModifier);
 IMP_DIRECTOR_KERNEL_CLASS(PairModifier);
 IMP_DIRECTOR_KERNEL_CLASS(PairFilter);
 IMP_DIRECTOR_KERNEL_CLASS(SingletonFilter);
+IMP_DIRECTOR_KERNEL_CLASS(Sampler);
+IMP_DIRECTOR_KERNEL_CLASS(ConfigurationSet);
 
 %include "IMP/utility.h"
 %include "IMP/Key.h"
@@ -146,6 +149,8 @@ namespace IMP {
 %include "IMP/Refiner.h"
 %include "IMP_random.i"
 %include "IMP/Optimizer.h"
+%include "IMP/ConfigurationSet.h"
+%include "IMP/Sampler.h"
 %include "IMP/SingletonScore.h"
 %include "IMP/PairScore.h"
 %include "IMP/SingletonModifier.h"
