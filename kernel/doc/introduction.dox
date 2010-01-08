@@ -1,69 +1,97 @@
 /**
 \page introduction An Introduction to IMP
 
+\imp is a library for solving a a wide variety of molecular structures and
+dynamics using many different data sources. As a result, it is provides a
+great deal of flexibility. In order to best make the required decisions
+about how to use \imp to solve a particular problem, it is useful to
+understand the overall structure of \imp.
+
+\section im1 Theory
+
+Structure and dynamics modeling in \imp proceeds in a five stage iterative process
+ -# Gathering of experimental data
+ -# Choice of the representation scheme for the model
+ -# Encoding of the data as a scoring function on the representation scheme
+ -# Sampling of the possible models in the representation scheme to try to find good models
+ -# Analysis of the found models to determine if more work is needed
+
+\imp provides tools to help address the last four of these stages. Unfortunately, it doesn't offer much help performing the experiments. We are working on that.
+
+Knowledge about the system being modeled enters the process at all stages, but a few need extra note:
+- Certain amount of knowledge is encoded as "constraints". These are choices made in choosing the representation scheme that force relationships between parts to always hold. For example, representing part of the system as a rigid body, means that none of the distances or angles within the rigid body ever change.
+
+- Other knowledge is encloded as restraints via scoring functions that penalize models which don't fit that bit of information.
+
+- Knowledge can also be used to tune the sampling scheme by choosing starting configurations, the discrete sample etc.
 
 \section i0 Architecture
  
- There are several key concepts in \imp:
-  - Representation: all data is stored as attributes of an IMP::Particle
-    - \ref decorators "Decorators" ease use of the particles and help
-    maintain invariants, such as ensuring that a bond is internally consistent
-  - Scoring:
-    - a IMP::Restraint is used to compute the score of the current configuration of some subset of the Particles. The total score is the sum of the various restraint scores.
-  - an IMP::Optimizer optimizes the Particles with respect to the Restraints by changing the Particle attribute values.
+\imp provides a large number of classes and functions from which to choose when solving a particular problem. Fortunately, these classes fall into a variety of categories.
 
+- Representation: The the model in \imp is represented as a collection
+  of IMP::Particle objects, stored in the IMP::Model. The
+  IMP::Particle class provides storage for arbitrary data, as such is
+  not that easy to use directly. To ease use, \imp provides a layer on
+  top of particles called decorators. A decorator wraps and existing
+  particle and provides a simplified interface to access and
+  manipulate a certain type of data. For example, the IMP::core::XYZ
+  decorator decorators a particle to provide easy access to and
+  manipultion of the cartesian coordinates; the IMP::atom::Hierarchy
+  decorator with the assocaited IMP::atom::Atom, IMP::atom::Residue
+  etc. decorators provide a standard representation of molecular
+  structures; the IMP::core::RigidBodyDecorator represents part of the
+  model rigidly etc. See the \ref decorators "Decorators" page for
+  more information.
 
-  - The IMP::Model holds the particles, restraints, and score states.
+- Scoring: Proposed models are scored based in how well they match the
+  data. In \imp the scoring function is the sum of restraint
+  terms. Each restraint term has a corresponding IMP::Restraint object
+  which computes a score and derivatives based on a set of particles
+  in the IMP::Model. Restraints can be such things as how well a set of
+  particles fits an EM density map (IMP::em::FitRestraint), how close
+  the volume of a molecule is to a known value (IMP::core::VolumeRestraint),
+  penalize a set of spheres if they become disconnected
+  (IMP::core::ConnectivityRestraint) etc.
 
+- Sampling: It is then necessary search for conformations of the model that
+  have low scores (and therefore fit the data well). Sampling produces a set of
+  conformations of the model, organized into an IMP::ConformationSet. Currently
+  \imp provides two sampling protocols, IMP::core::MCCGSampler which uses a
+  combination of Monto Carlo and Conjugate Gradients with randomized starting
+  conformations and IMP::domino::DominoOptimizer which uses a graph based
+  inference algorithm.
 
-\section i05 Restraints
+- Analysis: Finally, one needs to analyze the set of conformations produced by
+  sampling. \imp provides a variety of tools to help display the conformations,
+  in IMP::display, and to cluster them, in IMP::statistics.
 
- The scoring function for the particles is created by combining various components.
- For example:
+Coming up with the right choices for representation, scoring and sampling for
+a given system typically takes a few iterations and trial and error. \imp
+provides tools help monitor how things are performing.
 
-  - IMP::core::PairsRestraint applies an arbitrary IMP::PairScore to
-    all the pairs of particles in a list of particles
+- Logging: most actions in \imp can produce logged information to help understand
+  what is going on. The amount of logging information produced can be controlled
+  globally using the IMP.set_log_level() function, passing it one of the IMP::LogLevel
+  values. In addition, restraints, samplers, constraints (and all objects which inherit
+  from IMP::Object) have an internal log level that overrides the global one. To set
+  that call the IMP::Object::set_log_level() function on that object. Setting the log
+  level to IMP::VERBOSE will produce huge amount of information during a typical
+  sampling run. IMP::TERSE is generally better. Make sure to set it to at least
+  IMP::WARNING to make sure that none of the produced warnings are important.
 
-  - this list of particles could be generated from an
-    IMP::core::ClosePairsContainer so that it always contains a list
-    of which particles are close to one another
+- Usage checking: \imp can perform a lot of checks that it is being used correctly
+  as well as that it is behaving correctly. The checks being performed are controlled
+  by the IMP::set_check_level() function call. Set the check level to IMP::USAGE to
+  make sure that all parameters passed are correct. Set it to IMP::USAGE_AND_INTERNAL
+  if you are developing new restraints or sampling protocols or are worried that
+  \imp is malfunctioning.
 
-  - the IMP::PairScore could be an IMP::core::SphereDistancePairScore,
-    which scores the pair of particles on the distance between the two
-    spheres defined by the particles center and radius.
-
-  - the way the IMP::core::SphereDistancePairScore computes a score
-    from the distance could be using an IMP::core::HarmonicLowerBound
-    so that the particles are repelled.
-
-
-\section i5 Other important bits
-There is good \ref log "logging support":
-\code
-IMP::set_log_level(IMP.VERBOSE);
-IMP_LOG(TERSE, "Something interesting has occurred with variable " 
-                 << var << std::endl);
-\endcode
-
-\ref assert "Error reporting/checking" which can be controlled at runtime. By default
-     some checks are performed. Make sure to turn them off if for maximum speed.
-\code
-IMP::set_check_level(IMP.EXPENSIVE);
-IMP_USAGE_CHECK(boolean_condition, "An error has occurred with value "
-                             << some_value,
-                             ExceptionType);
-\endcode
-
-The control functions are accessible from Python, but the check and log macros are not.
-
-Saving state
-\htmlinclude read_write.py.html
-
-\verbatim
-IMP::core::write(my_imp_model, "somefile");
-IMP::core::read("somefile", my_imp_model);
-\endverbatim
-
+- IO: \imp supports I/O to and from a variety of formats. To preserve the maximum amount
+  of information, one can used the IMP::core::read() and IMP::core::write() methods to
+  save and load a whole model to a human (and machine) readable file. IMP::display supports
+  export to a wide variety of graphical display formats and IMP::atom::read_pdb() and
+  IMP::atom::write_pdb() provides PDB-centric I/O.
 
 
 \section i6 Examples
@@ -88,7 +116,7 @@ for (int i=0; i< 100; ++i) {
 
 \endcode
 
-
+See the \ref examples "Examples Page" for a full list of examples.
 
 
 
@@ -225,35 +253,27 @@ Look through the types inherited from these methods to get an idea of the functi
 
 
 \section i125 Modules
-Functionality in \imp is grouped into modules. Each module contails classes,
-methods and data which are related and "owned" by a certain set of people. Examples
-of current modules include
-- IMP.core which includes functionality used by almost all \imp modules
-- IMP.algebra which contains math-related functionality used by other modules
-- IMP.em which contains functionality for fitting moleculars to EM maps
-- IMP.saxs which contains functionality for fitting molecules to SAXS data
+
+Functionality in \imp is grouped into modules, each with its only
+namespace. A module contails classes, methods and data which are
+related and "owned" by a certain set of people. See the "Namespaces"
+tab above for a complete list of modules in this version of \imp.
 
 \section i13 C++ vs Python
 
-Most code maps trivially from one to the other as you can see in the examples.
-<table>
-<tr><td></td><td>C++</td><td>Python</td></tr>
-<tr><td>memory management</td><td>using IMP::Pointer</td><td>automatic</td></tr>
-<tr><td>debugging</td><td>use gdb</td><td>hard to inspect IMP objects from Python</td></tr>
-</table>
-
-Normal python usage expects a few things that we do not currently offer from out objects such as doc strings.
-See \ref differences "Python/C++ differences" for a full description of the differences between the Python and C++
-interfaces to \imp.
+Most code maps trivially from one to the other as you can see in the
+examples.  See \ref differences "Python/C++ differences" for a full
+description of the differences between the Python and C++ interfaces
+to \imp.
 
 Recommendations:
-- write restraints and decorators in C++
-- use python to set up and construct your optimization protocol
+- write new \imp classes in C++
+- use python to put \imp classes together to handle your data and resulting structures
 
 \section i15 Getting started
 
 The easiest way to get started developing with \imp is to use a local module.
-To do this run the \command{./kernel/doc/bin/make-module my_module} in the
+To do this run the \command{./tools/make-module my_module_name} in the
 main \imp directory. This will create a new module in modules/my_module. See
 \ref make_module "Making a module" for more information.
 
