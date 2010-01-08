@@ -45,6 +45,7 @@ files = [
          'ListQuadContainer.h',
          'ListSingletonContainer.h',
          'ListTripletContainer.h',
+         'MCCGSampler.h',
          'MaximumPairScoreRestraint.h',
          'MaximumQuadScoreRestraint.h',
          'MaximumSingletonScoreRestraint.h',

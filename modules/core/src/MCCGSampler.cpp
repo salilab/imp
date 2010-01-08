@@ -1,0 +1,164 @@
+/**
+ *  \file ConjugateGradients.cpp  \brief Simple conjugate gradients optimizer.
+ *
+ *  Copyright 2007-2010 Sali Lab. All rights reserved.
+ *
+ */
+
+#include <IMP/core/MCCGSampler.h>
+
+#include <IMP/core/ConjugateGradients.h>
+#include <IMP/core/MonteCarlo.h>
+#include <IMP/core/BallMover.h>
+#include <IMP/core/XYZ.h>
+#include <IMP/core/ListSingletonContainer.h>
+#include <IMP/core/IncrementalBallMover.h>
+#include <IMP/algebra/vector_generators.h>
+
+
+IMPCORE_BEGIN_NAMESPACE
+
+#define XK XYZ::get_xyz_keys()[0]
+#define YK XYZ::get_xyz_keys()[1]
+#define ZK XYZ::get_xyz_keys()[2]
+
+MCCGSampler::Parameters::Parameters(){
+  cg_steps_=10;
+  attempts_=1000;
+  mc_steps_=10000;
+}
+
+MCCGSampler::MCCGSampler(Model *m): Sampler(m, "MCCG Sampler %1"){
+}
+
+void MCCGSampler::set_bounding_box(const algebra::BoundingBox3D &bb) {
+  FloatKeys xyzks= XYZ::get_xyz_keys();
+  for (unsigned int i=0; i< xyzks.size(); ++i) {
+    default_parameters_.bounds_[xyzks[i]]= std::make_pair(bb.get_corner(0)[i],
+                                      bb.get_corner(1)[i]);
+  }
+}
+
+void MCCGSampler::set_number_of_attempts(unsigned int at) {
+  default_parameters_.attempts_=at;
+}
+
+void MCCGSampler::set_number_of_conjugate_gradient_steps(unsigned int cg) {
+  default_parameters_.cg_steps_=cg;
+}
+
+void MCCGSampler::set_number_of_monte_carlo_steps(unsigned int cg) {
+  default_parameters_.mc_steps_=cg;
+}
+
+void MCCGSampler::set_max_monte_carlo_step_size(double d) {
+  default_parameters_.ball_sizes_[XK]=d;
+  default_parameters_.ball_sizes_[YK]=d;
+  default_parameters_.ball_sizes_[ZK]=d;
+}
+
+void MCCGSampler::set_max_monte_carlo_step_size(FloatKey k, double d) {
+  default_parameters_.ball_sizes_[k]=d;
+}
+
+ListSingletonContainer* MCCGSampler::set_up_movers(const Parameters &pms,
+                                                   MonteCarlo *mc) const {
+  if (pms.opt_keys_[0] != XK
+      && pms.opt_keys_[1] != YK && pms.opt_keys_[2] != ZK){
+    IMP_THROW("Currently, the MCCGSampler can only handle "
+              << "cartesian coordinates",
+              ValueException);
+  }
+  ParticlesTemp ps;
+  for (Model::ParticleIterator pit= mc->get_model()->particles_begin();
+       pit != mc->get_model()->particles_end(); ++pit) {
+    if (XYZ::particle_is_instance(*pit)
+        && XYZ(*pit).get_coordinates_are_optimized()) {
+      ps.push_back(*pit);
+    }
+  }
+  IMP_NEW(ListSingletonContainer, sc, (ps));
+  IMP_NEW(IncrementalBallMover, bm,
+          (sc, 2, pms.ball_sizes_.find(XK)->second));
+  mc->add_mover(bm);
+  return sc;
+}
+
+void MCCGSampler::randomize(const Parameters &pms,
+                            ListSingletonContainer *sc) const {
+  algebra::BoundingBox3D
+    bb(algebra::Vector3D(pms.bounds_.find(XK)->second.first,
+                         pms.bounds_.find(YK)->second.first,
+                         pms.bounds_.find(ZK)->second.first),
+       algebra::Vector3D(pms.bounds_.find(XK)->second.second,
+                         pms.bounds_.find(YK)->second.second,
+                         pms.bounds_.find(ZK)->second.second));
+  for (unsigned int i=0; i< sc->get_number_of_particles(); ++i) {
+    XYZ d(sc->get_particle(i));
+    d.set_coordinates(algebra::random_vector_in_box(bb));
+  }
+}
+
+
+MCCGSampler::Parameters MCCGSampler::fill_in_parameters() const {
+  Parameters pms= default_parameters_;
+  pms.opt_keys_= XYZ::get_xyz_keys();
+  if (pms.bounds_.empty()) {
+    pms.bounds_[XK]= get_model()->get_range(XK);
+    pms.bounds_[YK]= get_model()->get_range(YK);
+    pms.bounds_[ZK]= get_model()->get_range(ZK);
+  }
+  // we have mc_steps_ steps to explore the whole space
+  // each time we move a constant number of the particles
+  // (r/l)^(na*np) is the number of voxels. this number
+  // should be similar to number of steps
+  // so l= r* pow(cg_steps_, 1/(na*np))
+  // for now na=3, assume half the particles are optimized
+  for (Parameters::Bounds::const_iterator it= pms.bounds_.begin();
+       it != pms.bounds_.end(); ++it) {
+    if (pms.ball_sizes_.find(it->first) == pms.ball_sizes_.end()) {
+      double r= it->second.second-it->second.first;
+      double l= r*std::pow(static_cast<double>(pms.cg_steps_), 1.0/(3*1000));
+      pms.ball_sizes_[it->first]=l;
+    }
+  }
+  return pms;
+}
+
+ConfigurationSet *MCCGSampler::sample() const {
+  get_model()->set_is_incremental(true);
+  ConfigurationSet *ret= new ConfigurationSet(get_model());
+  Parameters pms= fill_in_parameters();
+  IMP_NEW(MonteCarlo, mc, (get_model()));
+  IMP_NEW(ConjugateGradients, cg, (get_model()));
+  mc->set_local_optimizer(cg);
+  mc->set_local_steps(pms.cg_steps_);
+  mc->set_score_threshold(get_maximum_score());
+  ListSingletonContainer *sc=set_up_movers(pms, mc);
+  int failures=0;
+  for (unsigned int i=0; i< pms.attempts_; ++i) {
+    randomize(pms,sc);
+    try {
+      mc->optimize(pms.mc_steps_);
+    } catch (ModelException) {
+      IMP_LOG(TERSE, "Optimization ended by exception" << std::endl);
+      ++failures;
+      continue;
+    }
+    if (get_is_good_configuration()) {
+      ret->save_configuration();
+    }
+  }
+  if (failures != 0) {
+    IMP_LOG(WARNING, "The optimization failed " << failures
+            << " times due to invalid attribute values or derivatives."
+            << std::endl);
+  }
+  return ret;
+}
+
+void MCCGSampler::show(std::ostream &out) const {
+  out << "MCCGSampler with " << default_parameters_.attempts_ << std::endl;
+}
+
+IMPCORE_END_NAMESPACE
