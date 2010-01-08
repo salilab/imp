@@ -136,6 +136,7 @@ void depth_first_traversal(Hierarchy d, HierarchyVisitor *f)
 %include "IMP/core/model_io.h"
 %include "IMP/core/TableRefiner.h"
 %include "IMP/core/TruncatedHarmonic.h"
+%include "IMP/core/MCCGSampler.h"
 
 %include "IMP/core/ListPairContainer.h"
 %include "IMP/core/PairsRestraint.h"

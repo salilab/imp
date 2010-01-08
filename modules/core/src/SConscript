@@ -41,6 +41,7 @@ files = [
          'ListQuadContainer.cpp',
          'ListSingletonContainer.cpp',
          'ListTripletContainer.cpp',
+         'MCCGSampler.cpp',
          'MaximumPairScoreRestraint.cpp',
          'MaximumQuadScoreRestraint.cpp',
          'MaximumSingletonScoreRestraint.cpp',
