@@ -19,17 +19,30 @@ Sampler::Sampler(Model *m,
   max_score_= std::numeric_limits<double>::max();
 }
 
-bool Sampler::get_is_good_configuration() {
+bool Sampler::get_is_good_configuration() const {
+  bool ret=true;
   if (max_score_ != std::numeric_limits<double>::max()) {
-    double e= model_->evaluate(false);
-    if (e > max_score_) return false;
+    double e= get_model()->evaluate(false);
+    if (e > max_score_) {
+      ret=false;
+    }
   }
-  for (Maxes::const_iterator it= max_scores_.begin();
-       it != max_scores_.end(); ++it) {
-    double e= model_->evaluate(RestraintsTemp(1, it->first), false);
-    if (e > it->second) return false;
+  if (ret) {
+    for (Maxes::const_iterator it= max_scores_.begin();
+         it != max_scores_.end(); ++it) {
+      double e= get_model()->evaluate(RestraintsTemp(1, it->first), false);
+      if (e > it->second) {
+        ret=false;
+        break;
+      }
+    }
   }
-  return true;
+  if (ret) {
+    IMP_LOG(TERSE, "Configuration accepted."<< std::endl);
+  } else {
+    IMP_LOG(TERSE, "Configuration rejected."<< std::endl);
+  }
+  return ret;
 }
 
 Sampler::~Sampler(){}
