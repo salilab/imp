@@ -331,7 +331,6 @@ class _RestraintRestraint(_RestraintNode):
         if not self.child_restraints:
             raise Exception, "Restraint %s is empty" % self.id
         for child in self.child_restraints:
-            IMP.atom.show_molecular_hierarchy(child)
             mhs.append(child)
         first_particle = self.child_restraints[0].get_particle()
         if IMP.core.RigidBody.particle_is_instance(first_particle):
