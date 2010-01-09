@@ -52,7 +52,7 @@ void EMHeader::GenerateCommonHeader(DensityHeader &header) {
   header.nz=nz;
   header.magic=magic;
   header.data_type=type;
-  header.set_spacing(Objectpixelsize);
+  header.Objectpixelsize_=Objectpixelsize;
 
   for (short i=0;i < DensityHeader::COMMENT_FIELD_SINGLE_SIZE; i++) {
     header.comments[0][i]=comment[i];

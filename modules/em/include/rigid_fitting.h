@@ -147,7 +147,6 @@ IMPEMEXPORT void local_rigid_fitting_around_points(
    Float max_translation=2., Float max_rotation=5.);
 
 
-
 //! Local grid search rigid fitting
 /**
 \brief Fit a set of particles to a density map around their centroid.

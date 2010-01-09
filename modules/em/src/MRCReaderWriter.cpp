@@ -298,7 +298,7 @@ void MRCHeader::ToDensityHeader(DensityHeader &h)
 {
   std::string empty;
   h.nz=nz; h.ny=ny; h.nx=nx; // map size
-  h.set_spacing((float)xlen/nx); // set spacing and cell dimensions
+  h.Objectpixelsize_=((float)xlen)/nx; // set spacing and cell dimensions
   // mode
   if(mode==0)
     h.data_type=1;

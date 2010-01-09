@@ -55,12 +55,15 @@ public:
 
   IMP_LIST(private, Particle, particle, Particle*, Particles)
 private:
-    IMP::internal::OwnerPointer<DensityMap> target_dens_map_;
+  IMP::internal::OwnerPointer<DensityMap> target_dens_map_;
   IMP::internal::OwnerPointer<SampledDensityMap> model_dens_map_;
+  algebra::BoundingBox3D target_bounding_box_;
   // reference to the IMP environment
   float scalefac_;
   int num_particles_; // can it be removed ?
   IMPParticlesAccessPoint access_p_;
+  IMP::core::XYZs xyz_;
+
   // derivatives
   // This must be float rather than Float to preserve compatibility with EMBed
   std::vector<float> dx_, dy_ , dz_;

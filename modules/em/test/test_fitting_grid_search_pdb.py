@@ -14,7 +14,7 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         mrw = IMP.em.MRCReaderWriter()
         self.scene = IMP.em.read_map(self.get_input_file_name("1z5s_10.mrc"), mrw)
         self.scene.get_header_writable().set_resolution(10.)
-        self.scene.get_header_writable().set_spacing(2.0)
+        self.scene.update_voxel_size(2.0)
         self.scene.set_origin(34.0,8.0,-92.0)
 
     def load_protein(self,pdb_filename):
