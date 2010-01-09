@@ -14,18 +14,15 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         mrw = IMP.em.MRCReaderWriter()
         self.scene = IMP.em.read_map(self.get_input_file_name("1z5s_10.mrc"), mrw)
         self.scene.get_header_writable().set_resolution(10.)
-        self.scene.get_header_writable().set_spacing(2.0)
+        self.scene.update_voxel_size(2.0)
         self.scene.set_origin(34.0,8.0,-92.0)
     def load_protein(self,pdb_filename):
         self.mp= IMP.atom.read_pdb(self.open_input_file(pdb_filename),
                               self.imp_model, IMP.atom.CAlphaSelector())#IMP.atom.NonWaterSelector())
-        self.radius_key = IMP.FloatKey("radius")
-        self.weight_key = IMP.FloatKey("weight")
-        #add radius and weight attributes
+        IMP.atom.add_radii(self.mp)
+        self.radius_key = IMP.core.XYZR.get_default_radius_key()
+        self.weight_key = IMP.atom.Mass.get_mass_key()
         self.particles = IMP.core.get_leaves(self.mp)
-        for p in [x.get_particle() for x in self.particles]:
-            p.add_attribute(self.radius_key, 1.5)
-            p.add_attribute(self.weight_key, 1.0)
 
     def setUp(self):
         """Build test model and optimizer"""

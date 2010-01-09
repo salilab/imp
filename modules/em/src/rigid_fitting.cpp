@@ -102,11 +102,6 @@ void local_rigid_fitting_around_point(
    FittingSolutions &fr, OptimizerState *display_log,
    Int number_of_optimization_runs, Int number_of_mc_steps,
    Int number_of_cg_steps, Float max_translation, Float max_rotation) {
-  std::cout<<          "rigid fitting with " << number_of_optimization_runs <<
-          " MC optimization runs, each with " << number_of_mc_steps <<
-          " Monte Carlo steps , each with " << number_of_cg_steps <<
-          " Conjugate Gradients rounds. " << std::endl
-           <<" The anchor point is : " << anchor_centroid << std::endl;
    IMP_LOG(VERBOSE,
           "rigid fitting with " << number_of_optimization_runs <<
           " MC optimization runs, each with " << number_of_mc_steps <<
@@ -124,7 +119,7 @@ void local_rigid_fitting_around_point(
                            number_of_cg_steps, max_translation, max_rotation);
 
    //optimize
-   std::cout<<"before optimizer"<<std::endl;
+   IMP_LOG(VERBOSE,"before optimizer"<<std::endl);
    optimize(number_of_optimization_runs, number_of_mc_steps,
             anchor_centroid, rb, opt, fr, model);
    std::cout<<"after optimizer"<<std::endl;
@@ -252,6 +247,7 @@ void compute_fitting_scores(const Particles &ps,
       }
       score  = em::CoarseCC::evaluate(*em_map, *model_dens_map,imp_ps,
                                       dvx,dvy,dvz,1.0,false,true,true);
+      IMP_LOG(VERBOSE,"adding score:"<<score<<std::endl);
       fr.add_solution(*it,score);
       for(Particles::const_iterator psi = ps.begin(); psi != ps.end(); psi++) {
         core::XYZ d(*psi);

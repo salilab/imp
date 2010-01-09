@@ -17,7 +17,7 @@ void  ImageHeader_to_DensityHeader(const ImageHeader &h,DensityHeader &dh) {
   dh.nz=h.get_number_of_slices();
   dh.ny=h.get_number_of_rows();
   dh.nx=h.get_number_of_columns();
-  dh.set_spacing(h.get_object_pixel_size());
+  dh.Objectpixelsize_=h.get_object_pixel_size();
   // mode
   switch ((int) h.get_fIform()) {
   case ImageHeader::IMG_BYTE:

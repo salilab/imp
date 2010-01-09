@@ -13,12 +13,12 @@ IMPEM_BEGIN_NAMESPACE
 SampledDensityMap::SampledDensityMap(const DensityHeader &header)
 {
   header_ = header;
+  header_.compute_xyz_top();
   kernel_params_ = KernelParameters(header_.get_resolution());
   //allocate the data
   long nvox = get_number_of_voxels();
   data_ = new emreal[nvox];
   calc_all_voxel2loc();
-  header_.compute_xyz_top();
 }
 
 void SampledDensityMap::calculate_particles_bounding_box(
@@ -67,7 +67,7 @@ void SampledDensityMap::set_header(const std::vector<emreal> &lower_bound,
   //set the map header
   header_ = DensityHeader();
   header_.set_resolution(resolution);
-  header_.set_spacing(voxel_size);
+  header_.Objectpixelsize_=voxel_size;
   header_.nx = int(ceil((1.0*(upper_bound[0]-lower_bound[0]) +
                          2.*sig_cutoff*(resolution+maxradius))/voxel_size));
   header_.ny = int(ceil((1.0*(upper_bound[1]-lower_bound[1]) +
@@ -77,7 +77,6 @@ void SampledDensityMap::set_header(const std::vector<emreal> &lower_bound,
   header_.set_xorigin(lower_bound[0]-sig_cutoff*(resolution + maxradius));
   header_.set_yorigin(lower_bound[1]-sig_cutoff*(resolution + maxradius));
   header_.set_zorigin(lower_bound[2]-sig_cutoff*(resolution + maxradius));
-
   header_.alpha = header_.beta = header_.gamma = 90.0;
   // TODO : in MRC format mx equals Grid size in X
   // ( http://bio3d.colorado.edu/imod/doc/mrc_format.txt)

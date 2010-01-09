@@ -43,7 +43,7 @@ void project_given_rotation(DensityMap& map,
   // Center the 2D matrix (necessary for the projection algorithm)
   m2.centered_start();
   // Set the pixel size of the map to 1 (necessary for the projection algorithm)
-  map.get_header_writable()->set_spacing(1.0);
+  map.update_voxel_size(1.0);
   // Center the map (necessary for the projection algorithm)
   map.set_origin((-1)*(int)(map.get_header()->nx/2.),
                  (-1)*(int)(map.get_header()->ny/2.),
@@ -285,7 +285,7 @@ void project_given_rotation(DensityMap& map,
   // Reindex the matrix again
   m2.reindex(orig2D);
   // Restore the map parameters
-  map.get_header_writable()->set_spacing(voxelsize);
+  map.update_voxel_size(voxelsize);
   map.set_origin(orig3D[0],orig3D[1],orig3D[2]);
 };
 

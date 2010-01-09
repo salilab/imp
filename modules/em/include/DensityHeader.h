@@ -38,7 +38,7 @@ public:
     mapc =1; mapr=2; maps=3;
     ispg=0;
     nsymbt=0;
-    set_spacing(1.0);
+    Objectpixelsize_=1.0;
     machinestamp = 0;
     nlabl=0;
     strcpy(map,"MAP \0");
@@ -233,14 +233,13 @@ public:
   inline void set_zorigin(float z)  {zorigin_=z; top_calculated_=false;}
   //! True if the top coodinates (bounding-box) are calculated
   inline bool is_top_calculated() const { return top_calculated_;}
-
+  float Objectpixelsize_; //this is the actual pixelsize
 protected:
   float xtop_, ytop_, ztop_; // The upper bound for the x,y and z grid.
   float xorigin_, yorigin_, zorigin_; //Origin used for transforms
   bool top_calculated_;
   float resolution_;
   bool is_resolution_set_;
-  float Objectpixelsize_; //this is the actual pixelsize
 };
 
 IMPEM_END_NAMESPACE
