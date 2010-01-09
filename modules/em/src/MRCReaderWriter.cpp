@@ -298,7 +298,6 @@ void MRCHeader::ToDensityHeader(DensityHeader &h)
 {
   std::string empty;
   h.nz=nz; h.ny=ny; h.nx=nx; // map size
-  h.Objectpixelsize_=((float)xlen)/nx; // set spacing and cell dimensions
   // mode
   if(mode==0)
     h.data_type=1;
@@ -309,6 +308,7 @@ void MRCHeader::ToDensityHeader(DensityHeader &h)
   // number of first columns in map (default = 0)
   h.nxstart=nxstart ; h.nystart=nystart ; h.nzstart=nzstart;
   h.mx=mx ; h.my=my ; h.mz=mz; // Number of intervals along each dimension
+  h.xlen=xlen;h.ylen=ylen;h.zlen=zlen;//Cell dimentions(amgstroms)
   h.alpha=alpha ; h.beta=beta ; h.gamma=gamma; // Cell angles (degrees)
   /* Axes corresponding to columns (mapc), rows (mapr) and sections (maps)
      (1,2,3 for x,y,z) */
