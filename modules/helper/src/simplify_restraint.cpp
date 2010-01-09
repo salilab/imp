@@ -209,9 +209,8 @@ em::DensityMap *load_em_density_map(char const *map_fn, float spacing,
 {
   em::DensityMap *dmap = em::read_map(map_fn);
   em::DensityHeader *dmap_header = dmap->get_header_writable();
-  dmap_header->set_spacing(spacing);
+  dmap->update_voxel_size(spacing);
   dmap_header->set_resolution(resolution);
-
   return dmap;
 }
 
