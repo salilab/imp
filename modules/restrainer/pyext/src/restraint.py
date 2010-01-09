@@ -388,7 +388,7 @@ class _RestraintRestraint(_RestraintNode):
             self.dmap_header = self.dmap.get_header_writable()
 
             self.dmap.set_origin (self.xorigin, self.yorigin, self.zorigin)
-            self.dmap_header.set_spacing (self.spacing)
+            self.dmap.update_voxel_size(self.spacing)
             self.dmap_header.set_resolution (self.resolution)
 
             for child in self.child_restraints:
