@@ -109,6 +109,7 @@ public:
        << zorigin_ << std::endl;
     out<<"map: " << map << std::endl;
     out<< "Objectpixelsize: " << Objectpixelsize_ << std::endl;
+    out<< "Resolution: " << resolution_ << std::endl;
     out<< "machinestamp: " << machinestamp << std::endl;
     out<<"rms: " << rms << std::endl;
     out<<"nlabl: " << nlabl <<std::endl;
@@ -194,10 +195,6 @@ public:
     is_resolution_set_=true;
     resolution_=resolution;}
   inline float get_spacing() const {return Objectpixelsize_;}
-  inline void set_spacing(float spacing)  {
-    Objectpixelsize_ = spacing;
-    update_cell_dimensions();
-  }
   //! Returns the origin on the map (x-coordinate)
   inline float get_xorigin() const {return xorigin_;}
   //! Returns the origin on the map (y-coordinate)
