@@ -4,9 +4,12 @@ import IMP.test
 import IMP.core
 import IMP.display
 
+max_score=.02
 
 class CGOptimizerTests(IMP.test.TestCase):
     def check_model(self, m, lsc, lpc):
+        s= m.evaluate(False)
+        self.assert_(s <= max_score)
         for p0 in lsc.get_particles():
             for p1 in lsc.get_particles():
                 if p0 != p1:
@@ -45,7 +48,7 @@ class CGOptimizerTests(IMP.test.TestCase):
         pr.set_log_level(IMP.WARNING)
         m.add_restraint(pr)
         s= IMP.core.MCCGSampler(m)
-        s.set_maximum_score(.1)
+        s.set_maximum_score(max_score)
         s.set_number_of_monte_carlo_steps(1000)
         s.set_number_of_conjugate_gradient_steps(100)
         IMP.set_log_level(IMP.WARNING)
