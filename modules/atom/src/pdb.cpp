@@ -227,6 +227,14 @@ Hierarchies read_pdb(std::istream &in, Model *model,
 }
 }
 
+Hierarchy read_pdb(std::istream &in, Model *model) {
+  return read_pdb(in, model, Selector(), true, true)
+}
+
+Hierarchy read_pdb(std::string fn, Model *model) {
+  return read_pdb(fn, model, Selector(), true, true)
+}
+
 
 Hierarchy read_pdb(String pdb_file_name, Model *model,
                    const Selector& selector,

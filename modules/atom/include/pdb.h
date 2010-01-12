@@ -19,9 +19,9 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-/** @name PDB IO
+/** @name PDB Reading
 
-    Reading/writing PDBs produces/expects a Hierarchy that looks as follows:
+   The read PDB methods produce a hierarchy that looks as follows:
     - One Atom per ATOM or HETATM record in the PDB.
     - All Atom particles have a parent which is a Residue.
     - All Residue particles have a parent which is a Chain.
@@ -39,74 +39,94 @@ IMPATOM_BEGIN_NAMESPACE
 */
 //!@{
 
+/** \relatesalso Hierarchy
+ */
+IMPATOMEXPORT Hierarchy read_pdb(std::istream &in,
+                                 Model* model);
+
+/** Read a all the molecules in the first model of the
+    pdb file.
+
+    \relatesalso Hierarchy
+ */
+IMPATOMEXPORT Hierarchy read_pdb(std::string pdb_file_name,
+                                 Model* model);
+
+/** \relatesalso Hierarchy
+ */
 IMPATOMEXPORT Hierarchy
 read_pdb(std::istream &in,
          Model* model,
-         const Selector& selector = Selector(),
+         const Selector& selector,
          bool select_first_model = true,
          bool ignore_alternatives = true);
 
+/** \relatesalso Hierarchy
+ */
 IMPATOMEXPORT Hierarchy
 read_pdb(std::string pdb_file_name,
          Model* model,
-         const Selector& selector = Selector(),
+         const Selector& selector,
          bool select_first_model = true,
          bool ignore_alternatives = true);
 
 
 
-
+/** \relatesalso Hierarchy
+ */
 IMPATOMEXPORT Hierarchies read_multimodel_pdb(std::istream &in, Model *model,
                    const Selector& selector,
                    bool ignore_alternatives=true);
 
+/** \relatesalso Hierarchy
+ */
 IMPATOMEXPORT Hierarchies read_multimodel_pdb(String pdb_file_name,
                    Model *model,
                    const Selector& selector,
                    bool ignore_alternatives=true);
+/** @} */
 
-/** \note This function produces files that are not valid PDB files,
+/** @name PDB Writing
+
+    The methods to write a PDBs expects a Hierarchy that looks as follows:
+    - all leaves are Atom particles
+    - all Atom particles have Residue particles as parents
+    - all Residue particles have Chain particles as an ancestor.
+
+    The functions produce files that are not valid PDB files,
     i.e. only ATOM/HETATM lines are printed for all Atom particles
     in the hierarchy. Complain if your favorite program can't read them and
     we might fix it.
-   \see read_pdb
-   \see write_pdb(const Hierarchys& mhd,std::string file_name)
+*/
+//!@{
+
+/** \relatesalso Hierarchy
 */
 IMPATOMEXPORT void write_pdb(Hierarchy mhd,
                              std::ostream &out);
-
-/**
-\copydetails write_pdb(Hierarchy mhd,std::ostream &out)
+/** \relatesalso Hierarchy
 */
 IMPATOMEXPORT void write_pdb(Hierarchy mhd,
                              std::string file_name);
-
-/**
-\copydetails write_pdb(Hierarchy mhd,std::ostream &out)
+/** \relatesalso Hierarchy
 */
 IMPATOMEXPORT void write_pdb(const Hierarchies &mhd,
                              std::ostream &out);
-
-/**
-\copydetails write_pdb(Hierarchy mhd,std::ostream &out)
+/** \relatesalso Hierarchy
 */
 IMPATOMEXPORT void write_pdb(const Hierarchies &mhd,
                              std::string file_name);
 
-
-/**
-\copydetails write_pdb(Hierarchy mhd,std::ostream &out)
+/** \relatesalso Hierarchy
 */
 IMPATOMEXPORT void write_multimodel_pdb(
                         const Hierarchies& mhd, std::ostream &out);
-
-/**
-\copydetails write_pdb(Hierarchy mhd,std::ostream &out)
+/** \relatesalso Hierarchy
 */
 IMPATOMEXPORT void write_multimodel_pdb(
                         const Hierarchies& mhd, std::string file_name);
 
-
+/** @} */
 
 /**
    This function returns a string in PDB ATOM format
@@ -128,12 +148,7 @@ IMPATOMEXPORT std::string pdb_string(const algebra::Vector3D& v,
   /note http://www.bmsc.washington.edu/CrystaLinks/man/pdb/guide2.2_frame.html
 */
 IMPATOMEXPORT std::string conect_record_string(int,int);
-  // const IMP::atom::Atom &a1,
-  // const IMP::atom::Atom &a2);
-  // IMP::atom::Atom *a3 = NULL,
-  // IMP::atom::Atom *a4 = NULL,
-  // IMP::atom::Atom *a5 = NULL);
-//!@}
+
 
 IMPATOM_END_NAMESPACE
 
