@@ -306,9 +306,9 @@ def IMPModuleBin(envi, files, required_modules=[], extra_libs=[], install=True):
         prog= env.Program(f)
         allprogs.append(prog)
         cb= env.Install("#/build/bin", prog)
-        ci= env.Install(bindir, prog)
         build.append(cb)
         if install:
+            ci= env.Install(bindir, prog)
             install_list.append(ci)
         build.append(prog)
     envi['IMP_MODULE_BINS']= allprogs
@@ -410,7 +410,7 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
 def IMPModuleGetExamples(env):
     vars= make_vars(env)
     files=module_glob(["*.py", "*/*.py","*.readme","*/*.readme",
-                       "*.pdb"])
+                       "*.pdb", "*.mrc"])
     return files
 
 def IMPModuleGetHeaders(env):
@@ -479,7 +479,7 @@ def IMPModuleGetBins(env):
     return raw_files
 
 def IMPModuleGetDocs(env):
-    files=module_glob(["*.dox", "*.pdf"])
+    files=module_glob(["*.dox", "*.pdf", "*.dot"])
     return files
 
 
@@ -500,7 +500,7 @@ def IMPModuleDoc(env, files, authors,
     for f in files:
         if f== "overview.dox.in":
             raise ValueError("overview.dox-in is added automatically to files list")
-        if str(f).endswith(".dox"):
+        if str(f).endswith(".dox") or str(f).endswith(".dot"):
             pass
         else:
             build.append(env.Install(f, "#/doc/html/"+vars['module']))
