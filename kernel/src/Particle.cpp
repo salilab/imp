@@ -204,7 +204,7 @@ void Particle::clear_caches() {
 
 
 namespace {
-  const std::size_t num_blocks=150000;
+  const std::size_t num_blocks=15000;
   const std::size_t int_size= sizeof(int);
   struct Chunk {
     char particles[num_blocks*sizeof(Particle)];
