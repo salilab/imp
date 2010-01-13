@@ -6,6 +6,7 @@ import scons_tools.swig
 import scons_tools.standards
 import scons_tools.endian
 import scons_tools.modeller_test
+import scons_tools.doxygen
 
 # We need scons 0.98 or later
 EnsureSConsVersion(0, 98)
@@ -33,6 +34,8 @@ scons_tools.cgal.configure_check(env)
 scons_tools.swig.configure_check(env)
 scons_tools.modeller_test.configure_check(env)
 scons_tools.endian.configure_check(env)
+scons_tools.doxygen.configure_check_doxygen(env)
+scons_tools.doxygen.configure_check_dot(env)
 
 Help("""
 Available command-line options:
