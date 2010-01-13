@@ -31,8 +31,10 @@ Rotation2D compose(const Rotation2D &a, const Rotation2D &b) ;
   \note This class requires the angles to be given in radians, and the
   convention used is that the rotations are performed rotating counterclockwise
   (right hand side convention).
+
+  \ingroup uninitialized_default
 **/
-class Rotation2D: public UninitializedDefault
+class Rotation2D
 {
 public:
   Rotation2D(): angle_(std::numeric_limits<double>::quiet_NaN()) {};

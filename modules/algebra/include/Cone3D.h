@@ -22,9 +22,10 @@ IMPALGEBRA_BEGIN_NAMESPACE
 In general, a cone is a pyramid with a circular cross section.
 A right cone is a cone with its vertex above the center of its base.
 However, when used without qualification, the term "cone" often means
-"right cone." We have implemented a "right cone"
+"right cone." We have implemented a "right cone".
+\ingroup uninitialized_default
  */
-class IMPALGEBRAEXPORT Cone3D: public UninitializedDefault
+class IMPALGEBRAEXPORT Cone3D
 {
  public:
   // A cone with a top at s.get_point(0) and the given base radius

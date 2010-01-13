@@ -13,8 +13,9 @@
 
 
 IMPALGEBRA_BEGIN_NAMESPACE
-/** */
-class IMPALGEBRAEXPORT Segment3D: public UninitializedDefault
+/**    \ingroup uninitialized_default
+ */
+class IMPALGEBRAEXPORT Segment3D
 {
  public:
   Segment3D(){}

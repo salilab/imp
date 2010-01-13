@@ -38,8 +38,11 @@ IMP_BEGIN_NAMESPACE
     A Decorator can be cast to a Particle*.
     \see Decorators
     \see DecoratorsWithTraits
+
+    \ingroup null_default
+    \ingroup comparable
 */
-class Decorator: public NullDefault, public Comparable
+class Decorator
 {
 private:
   Particle *particle_;
@@ -158,7 +161,7 @@ inline bool operator==(Particle *p, Decorator d) {
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 #define IMP_DECORATORS_METHODS(test, on_add_decorator, on_add_particle, \
                                swap)                                    \
-  struct Accessor: public NullDefault {                                 \
+  struct Accessor {                                                     \
   typedef Accessor This;                                                \
   typedef WrappedDecorator result_type;                                 \
   typedef unsigned int argument_type;                                   \

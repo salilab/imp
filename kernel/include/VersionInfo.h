@@ -16,7 +16,9 @@
 IMP_BEGIN_NAMESPACE
 
 //! Version and authorship of IMP objects
-class IMPEXPORT VersionInfo: public NullDefault
+/** \ingroup null_default
+ */
+class IMPEXPORT VersionInfo
 {
 public:
   //! Create a VersionInfo object with the given author and version.

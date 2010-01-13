@@ -70,21 +70,18 @@ void for_each(const Range &r, const Functor &f) {
   std::for_each(r.begin(), r.end(), f);
 }
 
-/** \brief A base class to declare that a given class is initialized a
-    valid stated by the default constructor.
+/** \defgroup valid_default Valid Default
 
-    Instances of a class inhertiting from IMP::ValidDefault are put into
+    Instances of a class in this group are put into
     a well defined, valid state by the default constructor.
-    \see NullDefault
-    \see UninitializedDefault
+    \see null_default
+    \see uninitialized_default
     */
-struct ValidDefault{};
 
-/** \brief A base class to declare that a given class is initialized to a
-    null state by the dafault constructor.
+/** \defgroup null_default Null Default
 
-    By inheriting from NullDefault, a class asserts that its default
-    constructed value defines a well defined, unique, invalid value
+    The default constructor of classes in this group put the class
+    into a well defined invalid value
     which can be used for comparisons. Such a value should have the
     same semantics as NULL for pointers or 0 for integers. Default
     constructed instances can be compared against, but all other operations
@@ -93,15 +90,13 @@ struct ValidDefault{};
     NullDefault() == NullDefault()
     \endcode
 
-    \see UninitializedDefault
-    \see ValidDefault
+    \see uninitialized_default
+    \see valid_default
 */
-struct NullDefault{};
 
-/** \brief A base class to declare that the default constructor of the
-    class puts it in an unknown invalid state.
+/** \defgroup uninitialized_default Uninitialized Default
 
-    Classes that inherit from NullDefault are put into an unknown state
+    Classes in this group are put into an unknown state
     by their default constructor. Such classes mimic
     POD types (int, float etc) in C++ and are optimized for efficiency.
     All operations on a default initialized instance other than assigning
@@ -110,21 +105,18 @@ struct NullDefault{};
     \code
     UninitializeDefault() != UninitializedDefault()
     \endcode
-    \see NullDefault
-    \see ValidDefault
+    \see null_default
+    \see valid_default
 */
-struct UninitializedDefault{};
 
+/** \defgroup comparable Comparable
 
-/** \brief A base class to declare that the object can be compared against
-    other objects of the same type.
-
-    Objects inheriting from IMP::Comparable should support the operators
-    \c <, \c >, \c ==, \c !=, \c >=, \c <= against other objects of the same
-    type. In addition they support a namespace function \c compare(a,b) which
+    Objects marked comparable can all be compared against other objects
+    of the same type. They support the operators
+    \c <, \c >, \c ==, \c !=, \c >=, \c <=. In addition they support a
+    namespace function \c compare(a,b) which
     return -1,0,1 if \c a \c < \c b, \c a\c == \c b or \c a \c > \c b.
 */
-struct Comparable {};
 
 
 template <class T>

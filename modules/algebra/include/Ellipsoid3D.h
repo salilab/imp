@@ -17,8 +17,9 @@
 IMPALGEBRA_BEGIN_NAMESPACE
 
 /** Represent an ellispoid in 3D.
+    \ingroup uninitialized_default
   */
-class IMPALGEBRAEXPORT Ellipsoid3D: public UninitializedDefault {
+class IMPALGEBRAEXPORT Ellipsoid3D {
 public:
   Ellipsoid3D(){
 #if IMP_BUILD < IMP_FAST

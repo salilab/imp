@@ -26,9 +26,9 @@ Transformation2D compose(const Transformation2D &a,
 #endif
 
 //! Simple 2D transformation class
-/** \see IMP::core::Transform
+/** \ingroup uninitialized_default
 */
-class IMPALGEBRAEXPORT Transformation2D: public UninitializedDefault
+class IMPALGEBRAEXPORT Transformation2D
 {
 public:
   //! public for swig

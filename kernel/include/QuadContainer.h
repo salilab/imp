@@ -38,7 +38,7 @@ class QuadScore;
 class IMPEXPORT QuadContainer : public Container
 {
   internal::OwnerPointer<Container> added_, removed_;
-  struct Accessor: public NullDefault {
+  struct Accessor {
     typedef Accessor This;
     typedef ParticleQuad result_type;
     typedef unsigned int argument_type;

@@ -21,8 +21,9 @@ IMPALGEBRA_BEGIN_NAMESPACE
   and azimuth (r, tetha, psi).
   zenith - angle with axis z
   azimuth - angle with axis x
+  \ingroup uninitialized_default
 */
-class IMPALGEBRAEXPORT SphericalVector3D: public UninitializedDefault
+class IMPALGEBRAEXPORT SphericalVector3D
 {
   bool check(double r, double tetha, double psi);
  public:

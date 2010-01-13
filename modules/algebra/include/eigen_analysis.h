@@ -14,8 +14,9 @@
 #include <IMP/log.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
-class IMPALGEBRAEXPORT PrincipalComponentAnalysis:
-  public UninitializedDefault {
+/**    \ingroup uninitialized_default
+ */
+class IMPALGEBRAEXPORT PrincipalComponentAnalysis {
 public:
   PrincipalComponentAnalysis(){}
   PrincipalComponentAnalysis(const Vector3D &pc1,const Vector3D &pc2,
