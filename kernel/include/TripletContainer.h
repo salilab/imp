@@ -38,7 +38,7 @@ class TripletScore;
 class IMPEXPORT TripletContainer : public Container
 {
   internal::OwnerPointer<Container> added_, removed_;
-  struct Accessor: public NullDefault {
+  struct Accessor {
     typedef Accessor This;
     typedef ParticleTriplet result_type;
     typedef unsigned int argument_type;

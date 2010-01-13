@@ -23,9 +23,10 @@ IMPALGEBRA_BEGIN_NAMESPACE
     todo:
     - document everything
     - fix overview docs
+
+    \ingroup uninitialized_default
 */
-class IMPALGEBRAEXPORT Cylinder3D: public UninitializedDefault
-{
+class IMPALGEBRAEXPORT Cylinder3D {
  public:
   Cylinder3D(const Segment3D &s, double radius);
   //! Get a transformation that places the cylinder direction on Z

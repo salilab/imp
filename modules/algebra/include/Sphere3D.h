@@ -15,9 +15,10 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-/** Represent a sphere using a point and a radius.
+/** Represent a sphere in 3D.
+    \ingroup uninitialized_default
   */
-class IMPALGEBRAEXPORT Sphere3D: public UninitializedDefault {
+class IMPALGEBRAEXPORT Sphere3D {
 public:
   Sphere3D(){
 #if IMP_BUILD < IMP_FAST

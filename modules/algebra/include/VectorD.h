@@ -27,9 +27,11 @@ IMPALGEBRA_BEGIN_NAMESPACE
 /** Store a vector of Cartesian coordinates.
     \see Vector3D
     \see Vector2D
+
+    \addtogroup uninitialized_default
  */
 template <unsigned int D>
-class VectorD: public UninitializedDefault
+class VectorD
 {
   void check_vector() const {
     for (unsigned int i=0; i< D; ++i) {

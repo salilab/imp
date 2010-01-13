@@ -552,10 +552,11 @@ inline void Particle::add_to_derivative(FloatKey name, Float value,
     dimensionality can be used.
 
     \note ParticleTuple objects are ordered.
+    \ingroup comparable
+    \ingroup null_default
 */
 template <unsigned int D>
-class ParticleTuple: public NullDefault,
-                    public Comparable {
+class ParticleTuple {
   Particle *d_[D];
   int compare(const ParticleTuple<D> &o) const {
     for (unsigned int i=0;i<D; ++i) {

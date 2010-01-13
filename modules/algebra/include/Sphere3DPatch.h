@@ -13,9 +13,10 @@
 IMPALGEBRA_BEGIN_NAMESPACE
 
 /**
-A patch of a sphere is defined as all points above the plane and in the sphere
+A patch of a sphere is defined as all points above the plane and on the sphere.
+   \ingroup uninitialized_default
  */
-class IMPALGEBRAEXPORT Sphere3DPatch: public UninitializedDefault {
+class IMPALGEBRAEXPORT Sphere3DPatch {
 public:
   Sphere3DPatch(){}
   //! Constructor
@@ -24,7 +25,7 @@ public:
   /param[in] crossing_plane the plane that crosses the sphere
   */
   Sphere3DPatch(const Sphere3D &sph, const Plane3D& crossing_plane);
-  //! Return true if the point is inside the patch
+  //! Return true if the point is contained in the patch
   /** Note that the point must be on the sphere (this is not necessarily
       checked).
    */

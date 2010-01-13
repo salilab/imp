@@ -43,8 +43,10 @@ Rotation3D compose(const Rotation3D &a, const Rotation3D &b) ;
     - Rotation Matrix
     - Quaternion
     - angle/axis representation
+
+    \ingroup uninitialized_default
 */
-class IMPALGEBRAEXPORT Rotation3D: public UninitializedDefault {
+class IMPALGEBRAEXPORT Rotation3D {
   VectorD<4> v_;
 #ifdef IMP_ROTATION_CACHE
   mutable bool has_cache_;
@@ -422,6 +424,7 @@ inline Rotation3D compose(const Rotation3D &a, const Rotation3D &b) {
     \note The three rotations are represented in the original (fixed)
     coordinate frame.
     \relatesalso Rotation3D
+    \relatesalso FixedXYZ
 */
 IMPALGEBRAEXPORT Rotation3D rotation_from_fixed_xyz(double xr,
                                                     double yr,
@@ -450,6 +453,7 @@ IMPALGEBRAEXPORT Rotation3D rotation_from_fixed_zxz(double phi,
     \param[in] Tilt Second Euler angle (radians) defining the rotation (Y axis)
     \param[in] Psi Third Euler angle (radians) defining the rotation (Z axis)
     \relatesalso Rotation3D
+    \relatesalso FixedZYZ
 */
 IMPALGEBRAEXPORT Rotation3D rotation_from_fixed_zyz(double Rot,
                                                     double Tilt,
@@ -459,10 +463,9 @@ IMPALGEBRAEXPORT Rotation3D rotation_from_fixed_zyz(double Rot,
 
 //! A simple class for returning ZYZ Euler angles
 /**
-   \see rotation_from_fixed_zyz()
-   \see fixed_zyz_from_rotation()
+   \ingroup uninitialized_default
  */
-class FixedZYZ: public UninitializedDefault {
+class FixedZYZ {
   double v_[3];
 public:
   FixedZYZ(){}
@@ -485,10 +488,9 @@ public:
 
 //! A simple class for returning XYZ Euler angles
 /**
-   \see rotation_from_fixed_xyz()
-   \see fixed_xyz_from_rotation()
+   \ingroup uninitialized_default
  */
-class FixedXYZ: public UninitializedDefault {
+class FixedXYZ {
   double v_[3];
 public:
   FixedXYZ(){}
@@ -515,6 +517,7 @@ IMP_OUTPUT_OPERATOR(FixedZYZ);
 /**
    \see rotation_from_fixed_zyz()
    \relatesalso Rotation3D
+   \relatesalso FixedZYZ
  */
 IMPALGEBRAEXPORT FixedZYZ fixed_zyz_from_rotation(const Rotation3D &r);
 
@@ -523,6 +526,7 @@ IMPALGEBRAEXPORT FixedZYZ fixed_zyz_from_rotation(const Rotation3D &r);
 /**
    \see rotation_from_fixed_xyz()
    \relatesalso Rotation3D
+   \relatesalso FixesXYZ
  */
 IMPALGEBRAEXPORT FixedXYZ fixed_xyz_from_rotation(const Rotation3D &r);
 

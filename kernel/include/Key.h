@@ -42,9 +42,11 @@ IMP_BEGIN_NAMESPACE
     otherwise this is an error.
 
     \note Keys objects are ordered.
+    \ingroup comparable
+    \ingroup null_default
  */
 template <unsigned int ID, bool LazyAdd>
-class KeyBase: public NullDefault, public Comparable
+class KeyBase
 {
   int str_;
 

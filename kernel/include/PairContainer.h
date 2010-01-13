@@ -38,7 +38,7 @@ class PairScore;
 class IMPEXPORT PairContainer : public Container
 {
   internal::OwnerPointer<Container> added_, removed_;
-  struct Accessor: public NullDefault {
+  struct Accessor {
     typedef Accessor This;
     typedef ParticlePair result_type;
     typedef unsigned int argument_type;

@@ -11,9 +11,10 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-/** Represent a plane using the distance and a normal.
+/** Represent a plane in 3D.
+   \ingroup uninitialized_default
 */
-class IMPALGEBRAEXPORT Plane3D: public UninitializedDefault {
+class IMPALGEBRAEXPORT Plane3D {
 public:
   Plane3D(){}
   Plane3D(const Vector3D& point_on_plane,const Vector3D &normal_to_plane);

@@ -17,9 +17,10 @@ IMPDISPLAY_BEGIN_NAMESPACE
 
 //! Represent a color
 /**
+    \ingroup comparable
+    \ingroup null_default
  */
-class IMPDISPLAYEXPORT Color: public NullDefault,
-                              public Comparable
+class IMPDISPLAYEXPORT Color
 {
   float c_[3];
 public:

@@ -38,7 +38,7 @@ class SingletonScore;
 class IMPEXPORT SingletonContainer : public Container
 {
   internal::OwnerPointer<Container> added_, removed_;
-  struct Accessor: public NullDefault {
+  struct Accessor {
     typedef Accessor This;
     typedef Particle* result_type;
     typedef unsigned int argument_type;

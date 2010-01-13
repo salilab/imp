@@ -16,9 +16,11 @@ IMPALGEBRA_BEGIN_NAMESPACE
 /** The BoundingBoxD class provides a unified representation for bounding
     boxes in \imp. Geometric objects should have an associated method like
     get_bounding_box() which creates the bounding boxes of objects.
+
+    \ingroup valid_default
 */
 template <unsigned int D>
-class BoundingBoxD: public ValidDefault
+class BoundingBoxD
 {
 public:
   // public for swig
