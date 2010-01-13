@@ -12,6 +12,7 @@ files = [
          'container_helpers.h',
          'deprecation.h',
          'directories.h',
+         'file.h',
          'key_helpers.h',
          'log_internal.h',
          'particle.h',

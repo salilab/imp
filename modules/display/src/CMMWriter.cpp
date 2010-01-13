@@ -11,15 +11,12 @@
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
-CMMWriter::CMMWriter(std::string name): Writer(name){
-}
-
 void CMMWriter::show(std::ostream &out) const {
   out << "CMMWriter" << std::endl;
 }
 
 void CMMWriter::on_open() {
-  get_stream() << "<marker_set name=\"" <<get_file_name() << "\">"<<std::endl;
+  get_stream() << "<marker_set name=\"" <<get_name() << "\">"<<std::endl;
   marker_index_=0;
 }
 

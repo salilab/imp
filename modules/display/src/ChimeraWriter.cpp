@@ -11,9 +11,6 @@
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
-ChimeraWriter::ChimeraWriter(std::string name): Writer(name){
-}
-
 void ChimeraWriter::show(std::ostream &out) const {
   out << "ChimeraWriter" << std::endl;
 }
@@ -68,7 +65,7 @@ bool ChimeraWriter::process(CylinderGeometry *g,
   get_stream() << "ml=mark\n";
   write_marker(get_stream(), g->get_segment().get_point(1),
                color, g->get_radius());
-  get_stream() << "ms.Link(ml, mark, (" << commas_io(color) << ")";
+  get_stream() << "Link(ml, mark, (" << commas_io(color) << ")";
   get_stream() << ", " << g->get_radius();
   get_stream() << ")\n";
   get_stream() << "ml=mark\n";
@@ -89,8 +86,8 @@ bool ChimeraWriter::process(SegmentGeometry *g,
   get_stream() << "ml=mark\n";
   write_marker(get_stream(), g->get_point(1),
                color, 0);
-  get_stream() << "ms.Link(ml, mark, (" << commas_io(color) << ")";
-  get_stream() << ")\n";
+  get_stream() << "Link(ml, mark, (" << commas_io(color) << ")";
+  get_stream() << ", .1)\n";
   get_stream() << "ml=mark\n";
   return true;
 }

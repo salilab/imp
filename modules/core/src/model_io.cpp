@@ -329,7 +329,7 @@ void write(Particle *p,
 }
 
 void write(Model *m,
-           std::ostream &out,
+           TextOutput out,
            std::string indent) {
   for (Model::ParticleIterator pit= m->particles_begin();
        pit != m->particles_end(); ++pit) {
@@ -338,44 +338,26 @@ void write(Model *m,
 }
 
 void write_optimized_attributes(Model *m,
-                                std::ostream &out) {
+                                TextOutput out) {
   for (Model::ParticleIterator pit= m->particles_begin();
        pit != m->particles_end(); ++pit) {
     write(*pit, out, "", true);
   }
 }
 
-void write(Model *m, std::string out) {
-  std::ofstream outf(out.c_str());
-  if (!outf) {
-    IMP_THROW("Could not open file " << out << " for writing",
-              IOException);
-  }
-  write(m, outf, "");
-}
 
 
-
-void read(std::istream &in,
+void read(TextInput in,
           Model *m) {
   read(in, m, false);
 }
 
 
-void read_optimized_attributes(std::istream &in,
+void read_optimized_attributes(TextInput in,
                                Model *m) {
   read(in, m, true);
 }
 
-void read(std::string in,
-          Model *m) {
-  std::ifstream iss(in.c_str());
-  if (!iss) {
-    IMP_THROW("Could not open file " << in << " for reading",
-                IOException);
-  }
-  read(iss, m);
-}
 
 
 DumpModelOnFailure::DumpModelOnFailure(Model *m,

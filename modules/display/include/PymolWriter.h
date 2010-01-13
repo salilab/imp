@@ -32,7 +32,6 @@ IMPDISPLAY_BEGIN_NAMESPACE
 class IMPDISPLAYEXPORT PymolWriter: public Writer
 {
   friend class CGOAnimationWriter;
-  unsigned int count_;
   void setup(std::string name);
   void cleanup(std::string name);
   bool process(SphereGeometry *g,
@@ -49,8 +48,6 @@ class IMPDISPLAYEXPORT PymolWriter: public Writer
                Color color, std::string name);
 
 public:
-  //! write to a file using the name to  name the files
-  PymolWriter(std::string file_name=std::string());
 
   IMP_WRITER(PymolWriter, get_module_version_info())
 };

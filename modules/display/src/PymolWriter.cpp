@@ -12,11 +12,6 @@
 IMPDISPLAY_BEGIN_NAMESPACE
 
 
-
-PymolWriter::PymolWriter(std::string file_name): Writer(file_name){
-  count_=0;
-}
-
 void PymolWriter::show(std::ostream &out) const {
   out << "PymolWriter" << std::endl;
 }
@@ -28,7 +23,6 @@ void PymolWriter::on_open() {
 
 void PymolWriter::on_close() {
   get_stream() << "\n\nfor k in data.keys():\n  cmd.load_cgo(data[k], k, 0)\n";
-  ++count_;
 }
 
 

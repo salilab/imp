@@ -10,6 +10,7 @@
 
 #include "Vector3D.h"
 #include "Sphere3D.h"
+#include <IMP/file.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -24,22 +25,22 @@ IMPALGEBRA_BEGIN_NAMESPACE
 //! Write a set of vector3Ds to a file
 /** \see read_pts
 */
-IMPALGEBRAEXPORT void write_pts(const Vector3Ds &vs, std::ostream &out);
+IMPALGEBRAEXPORT void write_pts(const Vector3Ds &vs, TextOutput out);
 
 //! Read a set of vector3Ds from a file
 /** \see write_pts
 */
-IMPALGEBRAEXPORT Vector3Ds read_pts(std::istream &in);
+IMPALGEBRAEXPORT Vector3Ds read_pts(TextInput in);
 
 //! Write a set of Sphere3Ds to a file
 /** \see read_pts
 */
-IMPALGEBRAEXPORT void write_spheres(const Vector3Ds &vs, std::ostream &out);
+IMPALGEBRAEXPORT void write_spheres(const Vector3Ds &vs, TextOutput out);
 
 //! Read a set of Sphere3Ds from a file
 /** \see write_pts
 */
-IMPALGEBRAEXPORT Sphere3Ds read_spheres(std::istream &in);
+IMPALGEBRAEXPORT Sphere3Ds read_spheres(TextInput in);
 
 /** @} */
 

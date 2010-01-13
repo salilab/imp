@@ -13,7 +13,7 @@
 #include "Hierarchy.h"
 #include "Atom.h"
 #include "element.h"
-
+#include <IMP/file.h>
 #include <IMP/Model.h>
 #include <IMP/Particle.h>
 
@@ -39,32 +39,18 @@ IMPATOM_BEGIN_NAMESPACE
 */
 //!@{
 
-/** \relatesalso Hierarchy
- */
-IMPATOMEXPORT Hierarchy read_pdb(std::istream &in,
-                                 Model* model);
-
 /** Read a all the molecules in the first model of the
     pdb file.
 
     \relatesalso Hierarchy
  */
-IMPATOMEXPORT Hierarchy read_pdb(std::string pdb_file_name,
+IMPATOMEXPORT Hierarchy read_pdb(TextInput in,
                                  Model* model);
 
 /** \relatesalso Hierarchy
  */
 IMPATOMEXPORT Hierarchy
-read_pdb(std::istream &in,
-         Model* model,
-         const Selector& selector,
-         bool select_first_model = true,
-         bool ignore_alternatives = true);
-
-/** \relatesalso Hierarchy
- */
-IMPATOMEXPORT Hierarchy
-read_pdb(std::string pdb_file_name,
+read_pdb(TextInput in,
          Model* model,
          const Selector& selector,
          bool select_first_model = true,
@@ -74,16 +60,10 @@ read_pdb(std::string pdb_file_name,
 
 /** \relatesalso Hierarchy
  */
-IMPATOMEXPORT Hierarchies read_multimodel_pdb(std::istream &in, Model *model,
-                   const Selector& selector,
-                   bool ignore_alternatives=true);
-
-/** \relatesalso Hierarchy
- */
-IMPATOMEXPORT Hierarchies read_multimodel_pdb(String pdb_file_name,
-                   Model *model,
-                   const Selector& selector,
-                   bool ignore_alternatives=true);
+IMPATOMEXPORT Hierarchies read_multimodel_pdb(TextInput in,
+                                              Model *model,
+                                              const Selector& selector,
+                                              bool ignore_alternatives=true);
 /** @} */
 
 /** @name PDB Writing
@@ -94,7 +74,7 @@ IMPATOMEXPORT Hierarchies read_multimodel_pdb(String pdb_file_name,
     - all Residue particles have Chain particles as an ancestor.
 
     The functions produce files that are not valid PDB files,
-    i.e. only ATOM/HETATM lines are printed for all Atom particles
+    eg only ATOM/HETATM lines are printed for all Atom particles
     in the hierarchy. Complain if your favorite program can't read them and
     we might fix it.
 */
@@ -103,28 +83,16 @@ IMPATOMEXPORT Hierarchies read_multimodel_pdb(String pdb_file_name,
 /** \relatesalso Hierarchy
 */
 IMPATOMEXPORT void write_pdb(Hierarchy mhd,
-                             std::ostream &out);
-/** \relatesalso Hierarchy
-*/
-IMPATOMEXPORT void write_pdb(Hierarchy mhd,
-                             std::string file_name);
+                             TextOutput out);
 /** \relatesalso Hierarchy
 */
 IMPATOMEXPORT void write_pdb(const Hierarchies &mhd,
-                             std::ostream &out);
-/** \relatesalso Hierarchy
-*/
-IMPATOMEXPORT void write_pdb(const Hierarchies &mhd,
-                             std::string file_name);
+                             TextOutput out);
 
 /** \relatesalso Hierarchy
 */
 IMPATOMEXPORT void write_multimodel_pdb(
-                        const Hierarchies& mhd, std::ostream &out);
-/** \relatesalso Hierarchy
-*/
-IMPATOMEXPORT void write_multimodel_pdb(
-                        const Hierarchies& mhd, std::string file_name);
+                        const Hierarchies& mhd, TextOutput out);
 
 /** @} */
 

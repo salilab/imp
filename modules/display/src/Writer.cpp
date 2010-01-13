@@ -12,8 +12,10 @@
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
+Writer::Writer(TextOutput fn, std::string name): Object(name), out_(fn){
+  on_open_called_=false;
+}
 Writer::Writer(std::string name): Object(name){
-  file_name_=name;
 }
 
 Writer::~Writer(){

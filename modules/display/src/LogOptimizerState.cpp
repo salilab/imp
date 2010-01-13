@@ -21,14 +21,14 @@ void LogOptimizerState::show(std::ostream &out) const {
 }
 
 
-void LogOptimizerState::write(std::string name) const {
-  IMP_LOG(TERSE, "Writing log file " << name << std::endl);
-  writer_->set_file_name(name);
+void LogOptimizerState::write(TextOutput out) const {
+  IMP_LOG(TERSE, "Writing log file " << std::endl);
+  writer_->set_output(out);
   IMP_LOG(VERBOSE, "Writing geometries"<< std::endl);
   for (unsigned int i=0; i < gdata_.size(); ++i) {
     writer_->add_geometry(gdata_[i]);
   }
-  writer_->set_file_name("");
+  writer_->close();
 }
 
 void LogOptimizerState::do_update(unsigned int n) {

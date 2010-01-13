@@ -38,9 +38,6 @@ class IMPDISPLAYEXPORT ChimeraWriter: public Writer
   bool process(EllipsoidGeometry *g,
                Color color, std::string name);
 public:
-  //! Create a writer with the given file name (or no open file)
-  ChimeraWriter(std::string name=std::string());
-
   IMP_WRITER(ChimeraWriter, get_module_version_info())
 };
 

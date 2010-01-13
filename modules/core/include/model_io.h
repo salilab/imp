@@ -12,6 +12,7 @@
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
 #include <IMP/FailureHandler.h>
+#include <IMP/file.h>
 
 #include <string>
 #include <iostream>
@@ -42,17 +43,14 @@ IMPCORE_BEGIN_NAMESPACE
     \ingroup helpers
 */
 IMPCOREEXPORT void write(Model *m,
-                         std::ostream &out,
+                         TextOutput out,
                          std::string indent=std::string());
 
 //! Write only the optimized attributes
 /** \ingroup helpers
  */
 IMPCOREEXPORT void write_optimized_attributes(Model *m,
-                                              std::ostream &out);
-
-IMP_NO_DOXYGEN(IMPCOREEXPORT void write(Model *m,
-                                     std::string file_name);)
+                                              TextOutput out);
 
 
 //! Read the Model from a stream
@@ -73,16 +71,13 @@ IMP_NO_DOXYGEN(IMPCOREEXPORT void write(Model *m,
 
     \ingroup helpers
 */
-IMPCOREEXPORT void read(std::istream &in, Model *m);
+IMPCOREEXPORT void read(TextInput in, Model *m);
 
 //! Only change the values of the optimize attributes
 /** \see read(std::istream&, Model*)
     \ingroup helpers
  */
-IMPCOREEXPORT void read_optimized_attributes(std::istream &in, Model *m);
-
-
-IMP_NO_DOXYGEN(IMPCOREEXPORT void read(std::string file_name, Model *m);)
+IMPCOREEXPORT void read_optimized_attributes(TextInput in, Model *m);
 
 
 

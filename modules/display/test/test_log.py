@@ -46,16 +46,16 @@ class TestBL(IMP.test.TestCase):
 
     def _test_1(self):
         """Testing the VRML log"""
-        self._testit("testvrml", "vrml", IMP.display.VRMLWriter())
+        self._testit("testvrml", "vrml", IMP.display.VRMLWriter("test"))
 
     def _test_2(self):
         """Testing the CMM log"""
-        self._testit("testcmm", "cmm", IMP.display.CMMWriter())
+        self._testit("testcmm", "cmm", IMP.display.CMMWriter("test"))
 
 
     def test_3(self):
         """Testing the Bild log"""
-        self._testit("testbild", "bild", IMP.display.BildWriter())
+        self._testit("testbild", "bild", IMP.display.BildWriter("test"))
 
 if __name__ == '__main__':
     unittest.main()
