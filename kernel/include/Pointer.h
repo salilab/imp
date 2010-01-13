@@ -31,6 +31,9 @@ IMP_BEGIN_NAMESPACE
 template <class O>
 class Pointer: public WeakPointer<O>
 {
+  // Make sure O is not RefCounted itself as RefCounted is not polymorphic
+  BOOST_STATIC_ASSERT((!boost::is_base_of<O, RefCounted>::value));
+
   void check(const RefCounted *){}
   void check(const Object *o) {
     if (o) IMP_CHECK_OBJECT(o);
@@ -47,9 +50,6 @@ class Pointer: public WeakPointer<O>
     P::o_=p;
   }
   // issue with commas
-  /*struct RefCheck {
-    typedef typename boost::is_base_of<RefCountedObject, O>::value value;
-    };*/
   BOOST_STATIC_ASSERT((boost::is_base_of<RefCounted, O>::value));
 
 public:
@@ -80,6 +80,7 @@ public:
     return *this;
   }
 };
+
 
 //! Make a ref counted pointer to an object. Useful for temporaries.
 template <class T>
