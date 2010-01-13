@@ -1,6 +1,11 @@
 /** \page recent Change History
 \par Week of January 1, 2010
 
+- \imp now has a text i/o layer consisting of IMP::TextInput and IMP::TextOutput. These classes are
+  convertible to C++ streams and implicitly constructable from both streams and file paths. As a result,
+  functions that take them will work when called with a string for a file path, a python file or a
+  C++ stream.
+
 - Point out that IMP::core::RestraintSets do not support incremental evaluation.
 
 - The IMP.examples module now documents the how to use the needed aspects of scons and swig.
