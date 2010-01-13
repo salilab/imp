@@ -1,2 +1,12 @@
 /* Wrap our own classes */
+%include "IMP/statistics/macros.h"
 %include "IMP/statistics/KMLProxy.h"
+
+%include "IMP/statistics/PartitionalClustering.h"
+%include "IMP/statistics/point_clustering.h"
+
+namespace IMP {
+namespace statistics {
+   %template(Vector3DEmbedding) VectorDEmbedding<3>;
+}
+}
