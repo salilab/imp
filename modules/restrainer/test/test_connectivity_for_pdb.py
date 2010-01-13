@@ -61,6 +61,8 @@ class RestraintTest(IMP.test.TestCase):
         evr.set_weight(0.8)
         self.assertInTolerance (evr.get_weight(), 0.8, 1e-4)
 
+        self.restraint.print_all_restraints()
+
         self.Model.show()
         self.Model.evaluate(False)
 
