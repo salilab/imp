@@ -43,8 +43,6 @@
  - \ref conventions "Conventions"
  - \ref coding_conventions "Coding Conventions"
  - \salilab{internal/imp/tests.html,Daily build status}
- - \salilab{imp/doc/doxygen/deprecated.html,
-   Deprecated functionality list}
  - \ref devguide "Developer guide"
  - \ref differences "Differences using \imp between C++ and Python"
  - \ref examples "Examples"
