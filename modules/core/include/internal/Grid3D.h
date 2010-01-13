@@ -31,8 +31,9 @@ class GridIndexIterator;
 /* The index entries can be positive or negative and do not need to correspond
    directly to cells in the grid. They get mapped on to actual grid cells
    by various functions.
+   \ingroup null_default
  */
-  class VirtualGridIndex: public NullDefault
+  class VirtualGridIndex
 {
   typedef VirtualGridIndex This;
   int d_[3];
@@ -64,9 +65,10 @@ IMP_OUTPUT_OPERATOR(VirtualGridIndex);
 
 // Iterate through grid cells in a cube
 /* The order of iteration is unspecified.
+   \ingroup null_default
  */
 template <class GI>
-class GridIndexIterator: public NullDefault
+class GridIndexIterator
 {
   template <class V>
   friend class Grid3D;
