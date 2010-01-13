@@ -184,7 +184,7 @@ atom::Hierarchy create_simplified(atom::Hierarchy in,
     em::MRCReaderWriter mrc; // for some reason it wants a non-const ref
     em::write_map(sdm, "map.mrc", mrc);
 
-    IMP_NEW(display::ChimeraWriter, cw, ("mapdata.py", "mapdata"));
+    IMP_NEW(display::ChimeraWriter, cw, ("mapdata.py"));
     IMP_NEW(display::BoundingBoxGeometry,
             bbg, (em::get_bounding_box(sdm)));
     bbg->set_name("map_box");
@@ -269,13 +269,13 @@ atom::Hierarchy create_simplified(atom::Hierarchy in,
     mc->set_return_best(true);
     ScopedFailureHandler fh0, fh1, fh2;
     IMP_NEW(display::LogOptimizerState, los,
-            (new display::ChimeraWriter("frames"), "frame.%04d.py"));
+            (new display::ChimeraWriter(), "frame.%04d.py"));
     IMP_NEW(display::XYZRsGeometry, xyzrg, (lsc,
                              core::XYZR::get_default_radius_key()));
     los->add_geometry(xyzrg);
     if (0) {
       IMP_NEW(display::LogOptimizerState, plos,
-              (new display::PymolWriter("frames"), "frame.%04d.pymol.pym"));
+              (new display::PymolWriter(), "frame.%04d.pymol.pym"));
       mc->add_optimizer_state(los);
       mc->add_optimizer_state(plos);
 

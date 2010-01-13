@@ -28,7 +28,7 @@ class WriterFactoryHelper: public WriterFactory {
 public:
   WriterFactoryHelper(){}
   Writer *create(std::string name) const {
-    return new Wr(TextOutput(name), name);
+    return new Wr(TextOutput(name));
   }
 };
 
