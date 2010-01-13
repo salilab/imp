@@ -56,6 +56,22 @@ class _Restraint(object):
         self.model = repr.model
 
 
+    def print_all_restraints(self):
+
+        def find_rec(node):
+            if node.imp_restraint is not None:
+                print "Restraint name = ", node.name
+                print "Restraint weight = ", node.root.restraint_sets.get_weight(node.imp_restraint)
+                found.append(node)
+            for child in node.children:
+                find_rec(child)
+
+        found = list()
+        for child in self.children:
+            find_rec(child)
+        return found
+
+
     def get_all_restraints_by_name(self, name): # assuming there are many obj with the same id
 
         def find_rec(node):
@@ -101,6 +117,7 @@ class _RestraintNode(object):
     counter = 0
 
     def __init__(self, attributes, restraint_type=None):
+        self.imp_restraint = None
         name = attributes.get('name')
         self.weight = float(attributes.get('weight', 1))
         if name:
