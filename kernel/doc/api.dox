@@ -9,7 +9,6 @@
     - \ref decorators "Using Decorators"
     - \ref log "Logging Support"
     - \ref assert "Error Reporting Facilities"
-    - \salilab{imp/doc/doxygen/deprecated.html, Deprecated Functionality}
 
     Then look through the examples which can be found at:
     - \ref examples "Examples"
@@ -21,6 +20,7 @@
     - IMP::Decorator
     - IMP::Restraint
     - IMP::ScoreState
+    - IMP::Sampler
     - IMP::Optimizer
     - IMP::SingletonContainer, IMP::PairContainer
     - IMP::SingletonScore, IMP::PairScore, IMP::TripletScore

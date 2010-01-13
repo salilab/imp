@@ -64,7 +64,7 @@ Knowledge about the system being modeled enters the process at all stages, but a
 
 - Analysis: Finally, one needs to analyze the set of conformations produced by
   sampling. \imp provides a variety of tools to help display the conformations,
-  in IMP::display, and to cluster them, in IMP::statistics.
+  in IMP::display, and to cluster them, in IMP::statistics. 
 
 Coming up with the right choices for representation, scoring and sampling for
 a given system typically takes a few iterations and trial and error. \imp
