@@ -13,6 +13,9 @@ files = [
          'KMLocalSearchLloyd.h',
          'KMRectangle.h',
          'KMTerminationCondition.h',
+         'PartitionalClustering.h',
+         'macros.h',
+         'point_clustering.h',
         ] \
         + SConscript('internal/SConscript')
 
