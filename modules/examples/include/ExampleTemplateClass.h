@@ -25,11 +25,16 @@ IMPEXAMPLES_BEGIN_NAMESPACE
 
     The class should be named SegmentD, but it is an example.
 
+    The following command indicates to doxygen to mark the class
+    as being one whose members are left uninitialized by the
+    default constructor:
+    \ingroup uninitialized_default
+
     The source code is as follows:
     \include ExampleTemplateClass.h
 */
 template <unsigned int D>
-class ExampleTemplateClass: public UninitializedDefault
+class ExampleTemplateClass
 {
   IMP::algebra::VectorD<D> eps_[2];
 public:
