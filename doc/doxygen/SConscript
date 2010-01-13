@@ -4,13 +4,12 @@ import os
 import os.path
 import sys
 
-
 def run_doxygen(target, source, env):
-    os.environ['PATH']=env['ENV']['PATH']
-    ret= os.popen("doxygen --version").read()
-    if ret.find("1.6.1")!= -1:
-        raise RuntimeError("IMP does not work with doxygen 1.6.1 due to preprocessor parsing bugs. Sorry.")
     env.Execute("doxygen "+source[0].abspath)
+def print_doxygen(target, source, env):
+    print "running doxygen"
+def print_generate_doxygen(target, source, env):
+    print "generating doxygen configuration"
 
 
 def make_output(nodes):
@@ -28,7 +27,9 @@ def generate_doxygen(target, source, env):
     examples=[]
     inputs=[]
     images=[]
-    for s in source[1:]:
+    dots=[]
+    has_dot=str(source[1].get_contents())
+    for s in source[2:]:
         if str(s).endswith(".png"):
             images.append(s)
         else:
@@ -39,6 +40,9 @@ def generate_doxygen(target, source, env):
             if str(s).endswith(".dox") or str(s).endswith(".py") or str(s).endswith(".h"):
                 inputs.append(s)
                 put=True
+            if str(s).endswith(".dot"):
+                dots.append(s)
+                put=True
             if not put:
                 print >> sys.stderr, "Warning, do not know what to do with the file "+ str(s)
     for line in infile:
@@ -48,12 +52,19 @@ def generate_doxygen(target, source, env):
             outfile.write(make_output(inputs))
         elif '@IMP_EXAMPLES@' in line:
             outfile.write(make_output(examples))
+        elif '@IMP_DOTS@' in line:
+            outfile.write(make_output(dots))
         elif '@IMP_SOURCE_PATH@' in line:
             outfile.write(line.replace('@IMP_SOURCE_PATH@', source_path))
         elif '@IMP_TARGET_PATH@' in line:
             outfile.write(line.replace('@IMP_TARGET_PATH@', target_path))
+        elif '@IMP_ENABLED_SECTIONS@' in line:
+            if has_dot == "True":
+                outfile.write(line.replace('@IMP_ENABLED_SECTIONS@', "graphs"))
+            else:
+                outfile.write("")
         elif '@IMP_HAS_DOT@' in line:
-            if env.get('dot', True) and os.system('dot -V > /dev/null') == 0:
+            if has_dot=="True":
                 outfile.write(line.replace('@IMP_HAS_DOT@', 'YES'))
             else:
                 outfile.write(line.replace('@IMP_HAS_DOT@', 'NO'))
@@ -76,7 +87,12 @@ Each modules has its own set of examples demonstrating how to use the features o
     print >> outfile, "*/"
     print "done generating examples"
 
-env.Append(BUILDERS = {'RunDoxygen': Builder(action=run_doxygen)})
+if not env['doxygen']:
+    print "Warning: IMP documentation requires doxygen."
+    Return
+
+env.Append(BUILDERS = {'RunDoxygen': Builder(action=env.Action(run_doxygen,
+                                                               print_doxygen))})
 
 docdir = env.GetInstallDirectory('docdir', 'html')
 
@@ -87,9 +103,8 @@ input_files=Glob("#/examples/README") +Glob("#/examples/*/README")\
     +Glob("#/examples/*.py") +Glob("#/examples/*/*.py")\
     +Glob("#/examples/*.cpp") +Glob("#/examples/*/*.cpp")
 
-
-
-env.Append(BUILDERS = {'GenerateDoxygen': Builder(action=generate_doxygen)})
+env.Append(BUILDERS = {'GenerateDoxygen': Builder(action=env.Action(generate_doxygen,
+                                                                    print_generate_doxygen))})
 
 
 
@@ -116,7 +131,8 @@ for h in rawheaders:
         headers.append(h)
 
 sources = headers + Glob("#/kernel/doc/*.dox") + [example_index] \
-          + Glob("modules/*/doc/*.dox") + modexamples
+          + Glob("modules/*/doc/*.dox") + modexamples \
+          + Glob("#/modules/*/doc/*.dot") + Glob("#/kernel/doc/*.dot")
 
 if env['python']:
     sources += Glob("#/build/lib/IMP/*.py", ondisk=False) \
@@ -140,7 +156,7 @@ examples= Glob("#/modules/examples/src/*.cpp") + Glob("#/build/include/IMP/examp
 #sources.sort()
 examples.sort()
 
-doxconf=env.GenerateDoxygen("doxygen.conf", ["doxygen.conf-in"] +sources+examples)
+doxconf=env.GenerateDoxygen("doxygen.conf", ["doxygen.conf-in", env.Value(env['dot'])] +sources+examples)
 env.Depends(doxconf, ['#/build/include'])
 
 dox = env.RunDoxygen("#/doc/html/index.html", ["doxygen.conf"]+sources)

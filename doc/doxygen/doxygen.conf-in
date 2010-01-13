@@ -198,7 +198,8 @@ ALIASES                = "command{1}=\code \1 \endcode" \
                          "cgalpredicate=\note This predicates will produce guaranteed correct results if the \ref CGAL \"CGAL\" library is available (the results will be unreliable if it is not). \ingroup CGAL" \
                          "unstable{1}=\warning \1 has not been stabilized and is likely to change without notice\n See \ref unstable \"unstable functionality\" for more information." \
                          "untested{1}=\warning \1 has not been well tested yet\n  Use with caution and please report any bugs found. See \ref untested \"lightly tested functionality\" for more information." \
-                         "unimplemented{1}=\warning \1 has not beeen implemented.\n If you want to use it, ask someone to implement it or do it yourself. See \ref unimplemented \"unimplemented functionality\" for more information."
+                         "unimplemented{1}=\warning \1 has not beeen implemented.\n If you want to use it, ask someone to implement it or do it yourself. See \ref unimplemented \"unimplemented functionality\" for more information."\
+                         "dotgraph{1}=\if graphs \n \1 \n \else \n \note Example graphs require \external{www.graphviz.org, GraphViz}\n\endif"
 
 # Set the OPTIMIZE_OUTPUT_FOR_C tag to YES if your project consists of C
 # sources only. Doxygen will then generate output that is more tailored for C.
@@ -477,7 +478,8 @@ GENERATE_DEPRECATEDLIST= YES
 # The ENABLED_SECTIONS tag can be used to enable conditional
 # documentation sections, marked by \if sectionname ... \endif.
 
-ENABLED_SECTIONS       =
+ENABLED_SECTIONS       = \
+                       @IMP_ENABLED_SECTIONS@
 
 # The MAX_INITIALIZER_LINES tag determines the maximum number of lines
 # the initial value of a variable or define consists of for it to appear in
@@ -1505,7 +1507,8 @@ DOT_PATH               =
 # contain dot files that are included in the documentation (see the
 # \dotfile command).
 
-DOTFILE_DIRS           =
+DOTFILE_DIRS           = \
+                       @IMP_DOTS@
 
 # The DOT_GRAPH_MAX_NODES tag can be used to set the maximum number of
 # nodes that will be shown in the graph. If the number of nodes in a graph
