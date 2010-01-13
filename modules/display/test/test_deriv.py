@@ -34,7 +34,7 @@ class TestBL(IMP.test.TestCase):
             m.add_restraint(r)
 
         m.evaluate(True)
-        w= IMP.display.BildWriter("derivs")
+        w= IMP.display.BildWriter()
         w.set_file_name(self.get_tmp_file_name("deriv.bild"))
         for i in range(0,4):
             w.add_geometry(IMP.display.XYZDerivativeGeometry(IMP.core.XYZ(ps[i])))
@@ -44,7 +44,7 @@ class TestBL(IMP.test.TestCase):
         IMP.set_log_level(IMP.TERSE)
         print "eval"
         m.evaluate(True)
-        w= IMP.display.BildWriter("qderivs")
+        w= IMP.display.BildWriter()
         w.set_file_name(self.get_tmp_file_name("qderiv.bild"))
         #oge= display.XYZRGeometryExtractor(FloatKey("hi"))
         for i in range(0,4):

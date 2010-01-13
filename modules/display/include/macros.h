@@ -13,9 +13,9 @@
     and show, and defines the destructor and get_version_info.
 */
 #define IMP_WRITER(Name, version)                                       \
-  Name(TextOutput of, std::string name): Writer(of, name) \
+  Name(TextOutput of): Writer(of, #Name)                                \
   {}                                                                    \
-  Name(std::string name): Writer(name){}                                \
+  Name(): Writer(#Name){}                                               \
   ~Name(){                                                              \
     close();                                                            \
   }                                                                     \

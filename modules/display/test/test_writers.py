@@ -35,7 +35,7 @@ class TestBL(IMP.test.TestCase):
     def test_2(self):
         """Testing the CMM writer"""
         nm=self.get_tmp_file_name("test.cmm")
-        w=IMP.display.CMMWriter("tester")
+        w=IMP.display.CMMWriter()
         w.set_file_name(nm)
         self._testit(w, cylinder=False, triangle=False)
 
@@ -43,14 +43,14 @@ class TestBL(IMP.test.TestCase):
     def test_3(self):
         """Testing the Bild writer"""
         nm=self.get_tmp_file_name("test.bild")
-        w=IMP.display.BildWriter("tester")
+        w=IMP.display.BildWriter()
         w.set_file_name(nm)
         self._testit(w)
 
     def test_4(self):
         """Testing the chimera writer"""
         nm=self.get_tmp_file_name("test.chimera.py")
-        w=IMP.display.ChimeraWriter("hi.py", "tester")
+        w=IMP.display.ChimeraWriter("hi.py")
         w.set_file_name(nm)
         e= IMP.algebra.Ellipsoid3D(IMP.algebra.Vector3D(10,10,10), 1,2,3, IMP.algebra.Rotation3D(1,0,0,0))
         w.add_geometry(IMP.display.EllipsoidGeometry(e))
@@ -58,7 +58,7 @@ class TestBL(IMP.test.TestCase):
     def test_5(self):
         """Testing the CGO writer"""
         nm=self.get_tmp_file_name("test.pymol.pym")
-        w=IMP.display.PymolWriter("tester")
+        w=IMP.display.PymolWriter()
         w.set_file_name(nm)
         self._testit(w)
 
