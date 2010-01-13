@@ -48,7 +48,7 @@ ParticlesTemp BondEndpointsRefiner::get_input_particles(Particle *p) const {
 }
 
 ContainersTemp BondEndpointsRefiner::get_input_containers(Particle *p) const {
-  return Containers(1,p);
+  return ContainersTemp(1,p);
 }
 
 void BondEndpointsRefiner::show(std::ostream &out) const
