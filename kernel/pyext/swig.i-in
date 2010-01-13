@@ -125,10 +125,13 @@ namespace IMP {
   %template(ObjectKeyBase) ::IMP::KeyBase<4, true>;
   %implicitconv Particles;
   %implicitconv ParticlesTemp;
+  %implicitconv InputFile;
+  %implicitconv OutputFile;
 }
 
 %include "IMP/log.h"
 %include "IMP/base_types.h"
+%include "IMP/file.h"
 
 %include "IMP/utility.h"
 %include "IMP/deprecation.h"
@@ -204,3 +207,18 @@ namespace IMP {
   %template(float_pair) ::std::pair<float,float>;
   %template(double_pair) ::std::pair<double, double>;
 }
+
+
+%inline %{
+namespace IMP {
+inline std::string test_ifile(TextInput a) {
+  std::string str;
+  static_cast<std::istream&>(a) >> str;
+  return str;
+}
+inline std::string test_ofile(TextOutput a) {
+  static_cast<std::ostream &>(a) << "hi" << std::endl;
+  return "hi\n";
+}
+}
+%}

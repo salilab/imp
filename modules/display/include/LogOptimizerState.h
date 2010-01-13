@@ -42,7 +42,7 @@ public:
   void add_geometry(const Geometries& g);
 
   //! Force writing the a file with the given name
-  void write(std::string file_name) const;
+  void write(TextOutput file_name) const;
 
   IMP_PERIODIC_OPTIMIZER_STATE(LogOptimizerState,
                                get_module_version_info())

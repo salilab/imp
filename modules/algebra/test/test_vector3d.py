@@ -19,28 +19,17 @@ class Vector3DTests(IMP.test.TestCase):
         vs1 = IMP.algebra.Vector3Ds()
         vs1.push_back(IMP.algebra.Vector3D(1.0, 2.0, 3.0))
         vs1.push_back(IMP.algebra.Vector3D(4.0, 5.0, 6.0))
-        noncallable = NotAFile()
-        noncallable.write = "foo"
-        noncallable.read = "foo"
-        self.assertRaises(AttributeError, IMP.algebra.write_pts, vs1, None)
-        self.assertRaises(AttributeError, IMP.algebra.write_pts, vs1, "foo")
-        self.assertRaises(TypeError, IMP.algebra.write_pts, vs1, noncallable)
-        self.assertRaises(AttributeError, IMP.algebra.read_pts, None)
-        self.assertRaises(AttributeError, IMP.algebra.read_pts, "foo")
-        self.assertRaises(TypeError, IMP.algebra.read_pts, noncallable)
 
         # Test read/write for regular files and file-like objects
         sio = StringIO.StringIO()
-        IMP.algebra.write_pts(vs1, file('vectors', 'w'))
         IMP.algebra.write_pts(vs1, sio)
         sio.seek(0)
-        for vs2 in (IMP.algebra.read_pts(file('vectors')),
-                    IMP.algebra.read_pts(sio)):
-            for v1, v2 in ((vs1[0], vs2[0]), (vs1[1], vs2[1])):
-                self.assertEqual(v1[0], v2[0])
-                self.assertEqual(v1[1], v2[1])
-                self.assertEqual(v1[2], v2[2])
-        os.unlink('vectors')
+        rpts= IMP.algebra.read_pts(sio)
+        print sio.getvalue()
+        self.assertEqual(len(rpts), len(vs1))
+        for i in range(0, len(rpts)):
+            for j in range(0,3):
+                self.assertInTolerance(rpts[i][j], vs1[i][j], .01)
 
     def test_component(self):
         """Check Vector3D components"""

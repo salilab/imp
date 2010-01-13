@@ -59,7 +59,7 @@ class CGOptimizerTests(IMP.test.TestCase):
         for i in range(-1, cs.get_number_of_configurations()):
             cs.set_configuration(i)
             nm= "config"+str(i)+".pym"
-            w= IMP.display.ChimeraWriter(nm)
+            w= IMP.display.ChimeraWriter(nm, "configuration "+str(i))
             for p in lsc.get_particles():
                 d= IMP.core.XYZR(p)
                 g= IMP.display.XYZRGeometry(d)

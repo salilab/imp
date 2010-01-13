@@ -11,9 +11,6 @@
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
-BildWriter::BildWriter(std::string name): Writer(name){
-}
-
 void BildWriter::show(std::ostream &out) const {
   out << "BildWriter" << std::endl;
 }

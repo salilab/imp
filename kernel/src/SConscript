@@ -34,6 +34,7 @@ files = [
          'UnaryFunction.cpp',
          'base_types.cpp',
          'exception.cpp',
+         'file.cpp',
          'log.cpp',
          'random.cpp',
          'utility.cpp',

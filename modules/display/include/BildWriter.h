@@ -81,8 +81,6 @@ class IMPDISPLAYEXPORT BildWriter: public Writer
     return true;
   }
 public:
-  //! write to a file with the given name
-  BildWriter(std::string file_name=std::string());
 
   IMP_WRITER(BildWriter, get_module_version_info())
 };

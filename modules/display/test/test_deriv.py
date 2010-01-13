@@ -34,24 +34,24 @@ class TestBL(IMP.test.TestCase):
             m.add_restraint(r)
 
         m.evaluate(True)
-        w= IMP.display.BildWriter()
+        w= IMP.display.BildWriter("derivs")
         w.set_file_name(self.get_tmp_file_name("deriv.bild"))
         for i in range(0,4):
             w.add_geometry(IMP.display.XYZDerivativeGeometry(IMP.core.XYZ(ps[i])))
-        w.set_file_name("")
+        del w
 
         rbd= IMP.core.RigidBody.setup_particle(p, IMP.core.XYZs(ps))
         IMP.set_log_level(IMP.TERSE)
         print "eval"
         m.evaluate(True)
-        w= IMP.display.BildWriter()
+        w= IMP.display.BildWriter("qderivs")
         w.set_file_name(self.get_tmp_file_name("qderiv.bild"))
         #oge= display.XYZRGeometryExtractor(FloatKey("hi"))
         for i in range(0,4):
             gs = IMP.display.RigidBodyDerivativeGeometry(rbd)
             w.add_geometry(gs)
             print gs
-        w.set_file_name("")
+        del w
 
 if __name__ == '__main__':
     unittest.main()

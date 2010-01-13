@@ -11,13 +11,14 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-void write_pts(const Vector3Ds &vs, std::ostream &out) {
+void write_pts(const Vector3Ds &vs, TextOutput out) {
   for (unsigned int i=0; i< vs.size(); ++i) {
-    out << spaces_io(vs[i]) << "\n";
+    out.get_stream() << spaces_io(vs[i]) << "\n";
   }
 }
 
-Vector3Ds read_pts(std::istream &in) {
+Vector3Ds read_pts(TextInput oin) {
+  std::istream &in= oin;
   Vector3Ds ret;
   while (true) {
     char buf[2000];
@@ -37,14 +38,15 @@ Vector3Ds read_pts(std::istream &in) {
   return ret;
 }
 
-void write_spheres(const Vector3Ds &vs, std::ostream &out) {
+void write_spheres(const Vector3Ds &vs, TextOutput out) {
   for (unsigned int i=0; i< vs.size(); ++i) {
-    out << spaces_io(vs[i]) << "\n";
+    out.get_stream() << spaces_io(vs[i]) << "\n";
   }
 }
 
-Sphere3Ds read_spheres(std::istream &in) {
+Sphere3Ds read_spheres(TextInput oin) {
   Sphere3Ds ret;
+  std::istream &in=oin;
   while (true) {
     char buf[2000];
     in.getline(buf, 2000);

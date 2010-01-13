@@ -13,6 +13,7 @@
 #include "internal/writers.h"
 #include "GeometryProcessor.h"
 
+#include <IMP/file.h>
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/RefCounted.h>
@@ -28,35 +29,22 @@ IMPDISPLAY_BEGIN_NAMESPACE
  */
 class IMPDISPLAYEXPORT Writer: public GeometryProcessor, public Object
 {
-  std::ofstream out_;
-  std::string file_name_;
+  TextOutput out_;
+  bool on_open_called_;
  protected:
   //! Get the stream for inhereting classes to write to
   std::ostream &get_stream() {
-    if (file_name_.empty()) {
-      IMP_THROW("No file name specified in writer",
-                UsageException);
-    }
-    if (!out_.is_open()) {
-      out_.open(file_name_.c_str());
-      IMP_LOG(VERBOSE, "Trying to open file " << file_name_
-              << " for writing." << std::endl);
-      if (!out_.is_open()) {
-        IMP_THROW("Could not open output file " << file_name_,
-                  IOException);
-      }
+    if (! on_open_called_) {
+      // can't call virtual functions from constructor reliably
+      on_open_called_=true;
       on_open();
     }
     return out_;
   }
 
-  //! Get the name of the file
-  std::string get_file_name() const {
-    return file_name_;
-  }
-
  public:
   //! Create a writer opening the file with the passed name
+  Writer(TextOutput fn, std::string name);
   Writer(std::string name);
 
   // Ideally this would be const, but std::ostream::is_open is unfortunately
@@ -64,23 +52,27 @@ class IMPDISPLAYEXPORT Writer: public GeometryProcessor, public Object
   // this as non-const until we can require g++ later than 3.5.
   //! Return whether a file is open for writing
   bool get_stream_is_open() {
-    return out_.is_open();
+    return out_;
   }
 
   //! Open a new file with the given name
   /** Set it to "" to close. */
   virtual void set_file_name(std::string name) {
-    if (get_stream_is_open()) {
-      on_close();
-      IMP_LOG(VERBOSE, "Closed file name " << file_name_ << std::endl);
-      out_.close();
-    }
-    file_name_=name;
+    if (get_stream_is_open()) on_close();
+    out_= TextOutput(name);
+    if (get_stream_is_open()) on_open();
+  }
+
+  virtual void set_output(TextOutput f) {
+    if (get_stream_is_open()) on_close();
+    out_= f;
+    if (get_stream_is_open()) on_open();
   }
 
   //! Close the stream. You shouldn't need this, but it doesn't hurt
   void close() {
-    set_file_name("");
+    on_close();
+    out_= TextOutput();
   }
 
   //! Write the data and close the file

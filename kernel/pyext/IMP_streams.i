@@ -6,8 +6,36 @@
 // Typemaps to allow Python file-like objects to be used for C++ code that
 // expects a std::ostream
 
-%typemap(in) std::ostream& (PyOutFileAdapter tmp) {
-  $1 = tmp.set_python_file($input);
+%typemap(in) IMP::TextProxy<std::ostream> (IMP::internal::OwnerPointer<PyOutFileAdapter> tmp){
+  tmp=new PyOutFileAdapter();
+    try {
+      $1 = IMP::TextProxy<std::ostream>(tmp->set_python_file($input), tmp);
+    } catch (...) {
+      // If Python error indicator is set (e.g. from a failed director method),
+      // it will be reraised at the end of the method
+      if (!PyErr_Occurred()) {
+        handle_imp_exception();
+      }
+      SWIG_fail;
+    }
+  if (!$1.str_) {
+    SWIG_fail;
+  }
+}
+
+%typemap(in) std::ostream& (IMP::internal::OwnerPointer<PyOutFileAdapter> tmp){
+  tmp=new PyOutFileAdapter();
+  try {
+       $1 = tmp->set_python_file($input);
+    } catch (...) {
+      // If Python error indicator is set (e.g. from a failed director method),
+      // it will be reraised at the end of the method
+      if (!PyErr_Occurred()) {
+        handle_imp_exception();
+      }
+      SWIG_fail;
+    }
+   
   if (!$1) {
     SWIG_fail;
   }
@@ -22,7 +50,7 @@
 // after the ostream.
 %typemap(argout) std::ostream& {
   try {
-    tmp$argnum.pubsync();
+    tmp$argnum->pubsync();
   } catch (...) {
     Py_DECREF($result);
     if (!PyErr_Occurred()) {
@@ -32,101 +60,172 @@
   }
 }
 
+%typemap(argout) TextOutput {
+  try {
+    tmp$argnum->pubsync();
+  } catch (...) {
+    Py_DECREF($result);
+    if (!PyErr_Occurred()) {
+      handle_imp_exception();
+    }
+    SWIG_fail;
+  }
+}
+
+  %typemap(typecheck) IMP::TextOutputProxy = PyObject *;
+
 %typemap(typecheck) std::ostream& = PyObject *;
 
 // Typemaps to allow Python file objects to be used for C++ code that
 // expects a std::istream
-%typemap(in) std::istream& (PyInFileAdapter tmp) {
-  $1 = tmp.set_python_file($input);
+%typemap(in) IMP::TextProxy<std::istream> (IMP::internal::OwnerPointer<PyInFileAdapter> tmp) {
+    tmp=new PyInFileAdapter();
+    $1 = IMP::TextProxy<std::istream>(tmp->set_python_file($input), tmp);
+  if (!$1.str_) {
+    SWIG_fail;
+  }
+}
+
+%typemap(in) std::istream& (IMP::internal::OwnerPointer<PyInFileAdapter> tmp){
+    tmp= new PyInFileAdapter();
+    $1 = tmp->set_python_file($input);
   if (!$1) {
     SWIG_fail;
   }
 }
 
+%typemap(typecheck) IMP::TextProxy<std::istream> = PyObject *;
+%typemap(typecheck) IMP::TextProxy<std::ostream> = PyObject *;
 %typemap(typecheck) std::istream& = PyObject *;
 
 
 %{
 // Adapter class that acts like an output std::streambuf but delegates to
 // a Python file-like object, p
-class PyOutFileAdapter : public std::streambuf
+class PyOutFileAdapter : public IMP::Object
 {
-  std::vector<char> buffer_;
-  std::ostream *ostr_;
-  PyObject *write_method_;
-public:
-  PyOutFileAdapter() : buffer_(1024), ostr_(NULL), write_method_(NULL) {
-    setp(&buffer_.front(), &buffer_.front() + buffer_.size());
-  }
+ 
+  std::auto_ptr<std::ostream> ostr_;
 
-  virtual ~PyOutFileAdapter() { Py_XDECREF(write_method_); delete ostr_; }
-
-  // Given a Python file object, return an ostream that will write to this
-  // object, or NULL if the object is not suitable.
-  std::ostream* set_python_file(PyObject *p) {
-    if (!(write_method_ = PyObject_GetAttrString(p, "write"))) {
-      return NULL;
-    }
-
-    ostr_ = new std::ostream(this);
-    ostr_->exceptions(std::ostream::badbit);
-    return ostr_;
-  }
-
-protected:
-  virtual int_type overflow(int_type c) {
-    if (c != EOF) {
-      sync();
-      *pptr() = c;
-      pbump(1);
-    }
-    return c;
-  }
-
-  virtual int_type sync() {
-    // Python API uses char* arguments rather than const char*, so create
-    // here to quell the compiler warning
-    static char fmt[] = "(s#)";
-    int num = pptr() - pbase();
-    if (num <= 0) {
-      return 0;
-    }
-    PyObject *result = PyObject_CallFunction(write_method_, fmt, pbase(), num);
-    if (!result) {
-      // Python exception will be reraised when SWIG method finishes
-      throw std::ostream::failure("Python error on write");
-    } else {
-      pbump(-num);
-      Py_DECREF(result);
-      return 0;
-    }
-  }
-
-  virtual std::streamsize xsputn(const char *s, std::streamsize n) {
-    if (static_cast<std::size_t>(n) > buffer_.size() * 2) {
-      // Only take this route for large buffers, since two Python calls will
-      // result per call (one here, potentially one in sync) rather than one per
-      // buffer_.size() characters via the regular buffering
-      sync();
+  struct StreamBuf:public std::streambuf {
+    PyObject *write_method_;
+    std::vector<char> buffer_;
+    StreamBuf(PyObject *wm): write_method_(wm),
+                             buffer_(1024){
+      setp(&buffer_.front(), &buffer_.front() + buffer_.size());
+      // to make errors occur earlier
       static char fmt[] = "(s#)";
-      PyObject *result = PyObject_CallFunction(write_method_, fmt, s, n);
+      PyObject *result = PyObject_CallFunction(write_method_, fmt, fmt, 0);
       if (!result) {
+        // Python exception will be reraised when SWIG method finishes
         throw std::ostream::failure("Python error on write");
       } else {
         Py_DECREF(result);
       }
-      return n;
-    } else {
-      // Use the regular buffering mechanism
-      for (std::streamsize i = 0; i < n; ++i) {
-        if (sputc(s[i]) == EOF) {
-          return i;
-        }
-      }
-      return n;
     }
+  protected:
+    virtual int_type overflow(int_type c) {
+      if (c != EOF) {
+        sync();
+        *pptr() = c;
+        pbump(1);
+      }
+      return c;
+    }
+    
+    virtual int_type sync() {
+      // Python API uses char* arguments rather than const char*, so create
+      // here to quell the compiler warning
+      static char fmt[] = "(s#)";
+      int num = pptr() - pbase();
+      if (num <= 0) {
+        return 0;
+      }
+      PyObject *result = PyObject_CallFunction(write_method_, fmt, pbase(), num);
+      if (!result) {
+        // Python exception will be reraised when SWIG method finishes
+        throw std::ostream::failure("Python error on write");
+      } else {
+        pbump(-num);
+        Py_DECREF(result);
+        return 0;
+      }
+    }
+    
+    virtual std::streamsize xsputn(const char *s, std::streamsize n) {
+      if (static_cast<std::size_t>(n) > buffer_.size() * 2) {
+        // Only take this route for large buffers, since two Python calls will
+        // result per call (one here, potentially one in sync) rather than one per
+        // buffer_.size() characters via the regular buffering
+        sync();
+        static char fmt[] = "(s#)";
+        PyObject *result = PyObject_CallFunction(write_method_, fmt, s, n);
+        if (!result) {
+          throw std::ostream::failure("Python error on write");
+        } else {
+          Py_DECREF(result);
+        }
+        return n;
+      } else {
+        // Use the regular buffering mechanism
+        for (std::streamsize i = 0; i < n; ++i) {
+          if (sputc(s[i]) == EOF) {
+            return i;
+          }
+        }
+      return n;
+      }
+    }
+  public:
+    virtual ~StreamBuf() {
+      std::cout << "Deleting streambuf" << std::endl;
+      Py_XDECREF(write_method_);
+    }
+  };
+  std::auto_ptr<StreamBuf> stream_buf_;
+public:
+  PyOutFileAdapter():IMP::Object("PyOutFileAdapter") {
+    std::cout << "Created out adaptor at " << this << std::endl;
+  }
+  IMP::VersionInfo get_version_info() const {
+    return IMP::get_module_version_info();
+  }
+  void show(std::ostream &out= std::cout) const {
+    out << "PyOutFileAdapter" <<std::endl;
+  }
+  void pubsync() {
+    stream_buf_->pubsync();
+  }
+  // Given a Python file object, return an ostream that will write to this
+  // object, or NULL if the object is not suitable.
+  std::ostream* set_python_file(PyObject *p) {
+    PyObject *wm=PyObject_GetAttrString(p, "write");
+    if (!wm) {
+      return NULL;
+    }
+    stream_buf_= std::auto_ptr<StreamBuf>(new StreamBuf(wm));
+    
+    IMP_INTERNAL_CHECK(!ostr_.get(), "Already set the stream.");
+    ostr_ = std::auto_ptr<std::ostream>(new std::ostream(stream_buf_.get()));
+    ostr_->exceptions(std::ostream::badbit);
+    return ostr_.get();
+    fail:
+    return NULL;
+  }
+
+
+ private:
+  template <class T> friend void IMP::internal::unref(T*);
+  virtual ~PyOutFileAdapter() {
+    try {
+      if (stream_buf_.get()) pubsync();
+    } catch (...) {
+      // at this point we have no choice but to eat it
+    }
+    std::cout << "Deleting OutFileAdapter" << std::endl;
   }
 };
+
 %}
 
 %{
@@ -142,9 +241,9 @@ class PyInCFileAdapter : public InAdapter
   FILE *fh_;
 public:
   PyInCFileAdapter(FILE *fh) : fh_(fh) {}
-
-  virtual ~PyInCFileAdapter() {}
-
+  virtual ~PyInCFileAdapter(){
+      std::cout << "Deleting PyInCFileAdapter" << std::endl;
+  }
 protected:
   virtual int_type uflow() {
     return getc(fh_);
@@ -180,16 +279,15 @@ class PyInFilelikeAdapter : public InAdapter
   int peeked_;
 public:
   PyInFilelikeAdapter(PyObject *read_method)
-            : read_method_(read_method), peeked_(-1) {}
-
+    :  read_method_(read_method), peeked_(-1) {}
   virtual ~PyInFilelikeAdapter() {
+    std::cout << "Delting PyInFileLikeAdapter" << std::endl;
     Py_DECREF(read_method_);
     if (peeked_ != -1) {
       IMP_WARN("One excess character read from Python stream - "
                "cannot be put back.")
     }
   }
-
 protected:
   virtual int_type uflow() {
     int c;
@@ -288,13 +386,23 @@ protected:
 //   inputs to seek() that have defined behavior are offsets previously
 //   returned by tell().
 
-class PyInFileAdapter
-{
-  InAdapter *streambuf_;
-  std::istream *istr_;
+class PyInFileAdapter: public IMP::Object
+{ 
+  template <class T> friend void IMP::internal::unref(T*);
+  virtual ~PyInFileAdapter(){
+    std::cout << "Delting PyInFileAdapter" << std::endl;
+  }
+  std::auto_ptr<InAdapter> streambuf_;
+  std::auto_ptr<std::istream> istr_;
 public:
-  PyInFileAdapter() : streambuf_(NULL), istr_(NULL) {}
-  ~PyInFileAdapter() { delete streambuf_; delete istr_; }
+  PyInFileAdapter(): IMP::Object("PyInFileAdapter") {}
+
+  IMP::VersionInfo get_version_info() const {
+    return IMP::get_module_version_info();
+  }
+  void show(std::ostream &out= std::cout) const {
+    out << "PyInFileAdapter" <<std::endl;
+  }
 
   // Given a Python file object, return an istream that will read from this
   // object, or NULL if the object is not suitable.
@@ -314,17 +422,18 @@ public:
 #endif
 
     if (real_file) {
-      streambuf_ = new PyInCFileAdapter(PyFile_AsFile(p));
+      streambuf_ = std::auto_ptr<InAdapter>(new PyInCFileAdapter(PyFile_AsFile(p)));
     } else {
       PyObject *read_method;
       if (!(read_method = PyObject_GetAttrString(p, "read"))) {
         return NULL;
       }
-      streambuf_ = new PyInFilelikeAdapter(read_method);
+      streambuf_ = std::auto_ptr<InAdapter>(new PyInFilelikeAdapter(read_method));
     }
-    istr_ = new std::istream(streambuf_);
+    IMP_INTERNAL_CHECK(!istr_.get(), "Already set the stream.");
+    istr_ = std::auto_ptr<std::istream>(new std::istream(streambuf_.get()));
     istr_->exceptions(std::istream::badbit);
-    return istr_;
+    return istr_.get();
   }
 };
 %}

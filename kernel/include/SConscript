@@ -45,6 +45,7 @@ files = [
          'container_macros.h',
          'deprecation.h',
          'exception.h',
+         'file.h',
          'log.h',
          'macros.h',
          'random.h',

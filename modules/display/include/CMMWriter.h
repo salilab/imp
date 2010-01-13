@@ -33,8 +33,6 @@ class IMPDISPLAYEXPORT CMMWriter: public Writer
   bool process(PointGeometry *g,
                Color color, std::string name);
 public:
-  //! write to a file
-  CMMWriter(std::string name=std::string());
 
   IMP_WRITER(CMMWriter, get_module_version_info())
 };

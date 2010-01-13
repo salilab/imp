@@ -9,6 +9,7 @@
 #define IMPDISPLAY_INTERNAL_WRITERS_H
 
 #include "../config.h"
+#include <IMP/file.h>
 IMPDISPLAY_BEGIN_NAMESPACE
 class Writer;
 IMPDISPLAY_END_NAMESPACE
@@ -27,7 +28,7 @@ class WriterFactoryHelper: public WriterFactory {
 public:
   WriterFactoryHelper(){}
   Writer *create(std::string name) const {
-    return new Wr(name);
+    return new Wr(TextOutput(name), name);
   }
 };
 
