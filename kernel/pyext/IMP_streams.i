@@ -178,14 +178,12 @@ class PyOutFileAdapter : public IMP::Object
     }
   public:
     virtual ~StreamBuf() {
-      std::cout << "Deleting streambuf" << std::endl;
       Py_XDECREF(write_method_);
     }
   };
   std::auto_ptr<StreamBuf> stream_buf_;
 public:
   PyOutFileAdapter():IMP::Object("PyOutFileAdapter") {
-    std::cout << "Created out adaptor at " << this << std::endl;
   }
   IMP::VersionInfo get_version_info() const {
     return IMP::get_module_version_info();
@@ -222,7 +220,6 @@ public:
     } catch (...) {
       // at this point we have no choice but to eat it
     }
-    std::cout << "Deleting OutFileAdapter" << std::endl;
   }
 };
 
@@ -242,7 +239,6 @@ class PyInCFileAdapter : public InAdapter
 public:
   PyInCFileAdapter(FILE *fh) : fh_(fh) {}
   virtual ~PyInCFileAdapter(){
-      std::cout << "Deleting PyInCFileAdapter" << std::endl;
   }
 protected:
   virtual int_type uflow() {
@@ -281,7 +277,6 @@ public:
   PyInFilelikeAdapter(PyObject *read_method)
     :  read_method_(read_method), peeked_(-1) {}
   virtual ~PyInFilelikeAdapter() {
-    std::cout << "Delting PyInFileLikeAdapter" << std::endl;
     Py_DECREF(read_method_);
     if (peeked_ != -1) {
       IMP_WARN("One excess character read from Python stream - "
@@ -390,7 +385,6 @@ class PyInFileAdapter: public IMP::Object
 { 
   template <class T> friend void IMP::internal::unref(T*);
   virtual ~PyInFileAdapter(){
-    std::cout << "Delting PyInFileAdapter" << std::endl;
   }
   std::auto_ptr<InAdapter> streambuf_;
   std::auto_ptr<std::istream> istr_;
