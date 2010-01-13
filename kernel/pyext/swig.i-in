@@ -123,6 +123,8 @@ namespace IMP {
   %template(StringKeyBase) ::IMP::KeyBase<2, true>;
   %template(ParticleKeyBase) ::IMP::KeyBase<3, true>;
   %template(ObjectKeyBase) ::IMP::KeyBase<4, true>;
+  %implicitconv Particles;
+  %implicitconv ParticlesTemp;
 }
 
 %include "IMP/log.h"
@@ -141,7 +143,7 @@ namespace IMP {
 %include "IMP/Decorator.h"
 
 %include "IMP/UnaryFunction.h"
-%include "IMP_restraint.i"
+%include "IMP/Restraint.h"
 %include "IMP/ScoreState.h"
 %include "IMP/Constraint.h"
 %include "IMP/OptimizerState.h"
@@ -201,6 +203,4 @@ namespace IMP {
   %template(Ints) ::std::vector<Int>;
   %template(float_pair) ::std::pair<float,float>;
   %template(double_pair) ::std::pair<double, double>;
-  %implicitconv Particles;
-  %implicitconv ParticlesTemp;
 }
