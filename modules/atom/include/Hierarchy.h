@@ -111,10 +111,10 @@ public:
 
     Here is a simple example with a protein with three residues. Two of the
     residues have atoms, where as the third is coarse grained.
-    \dot
+    \dotgraph{\dot
     digraph example {
-    node [shape=record, fontname= Helvetica, fontsize=10]
-      a [label="Protein A (the root)", URL="\ref B"];
+    node [shape=record\, fontname= Helvetica\, fontsize=10]
+      a [label="Protein A (the root)"\, URL="\ref B"];
       b [label="Residue 0"];
       c [label="Residue 1"];
       cp [label="Residue 2"];
@@ -135,16 +135,17 @@ public:
       c -> e2 [arrowhead="open"];
     }
     \enddot
+    }
+
 
     The hierarchy can be used to add extra, not-necessarily
     biological, structure such as domains or other convenient
     divisions of the molecule. For example, the protein node could
     have an intermediate layer between it and the first two residues:
-
- \dot
+    \dotgraph{\dot
     digraph example {
-    node [shape=record, fontname= Helvetica, fontsize=10]
-      a [label="Protein A (the root)", URL="\ref B"];
+    node [shape=record\, fontname= Helvetica\, fontsize=10]
+      a [label="Protein A (the root)"\, URL="\ref B"];
       aa [label="Fragment 0"];
       b [label="Residue 0"];
       c [label="Residue 1"];
@@ -166,7 +167,8 @@ public:
       b -> d2 [arrowhead="open"];
       c -> e2 [arrowhead="open"];
     }
-    \enddot
+    \enddot}
+
 
     A hierarchy can have any tree structure as long as:
     - the type of the parent makes sense for the child: eg a Residue
@@ -189,11 +191,8 @@ public:
 
     \ingroup hierarchy
     \ingroup decorators
-    \see write_pdb
-    \see read_pdb
  */
-class IMPATOMEXPORT Hierarchy:
-  public ::IMP::core::Hierarchy
+class IMPATOMEXPORT Hierarchy: public ::IMP::core::Hierarchy
 {
   typedef ::IMP::core::Hierarchy P;
 public:
