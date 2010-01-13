@@ -155,7 +155,7 @@ class ParticleTests(IMP.test.TestCase):
     def test_many_particle(self):
         """Test that we can allocate many particles"""
         m= IMP.Model()
-        num=500000
+        num=20000
         for i in range(0,num):
             p= IMP.Particle(m)
             if i%10000 == 0:
