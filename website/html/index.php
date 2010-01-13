@@ -12,6 +12,7 @@
    } elseif ($page == "imp") {
    } elseif ($page == "groups") {
    } elseif ($page == "pubs") {
+   } elseif ($page == "doc") {
    } else {
      #ini_set('display_errors',1);
      #error_reporting(E_ALL|E_STRICT);
@@ -121,6 +122,11 @@ window.onload = linkEmail;
                   echo "<h2>IMP Publications</h2>
                         <div id=\"pubs\">";
                   GetPublications();              
+                  echo "</div>"; 
+               } elseif ($page == "doc") {
+                  echo "<h2>IMP Documentation</h2>
+                        <div id=\"docs\">";
+                  GetDocumentation();              
                   echo "</div>"; 
                } else {
                   error_log("Invalid page snuck through"+$page);
