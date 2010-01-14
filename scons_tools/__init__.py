@@ -80,6 +80,8 @@ def _add_build_flags(env):
     if env['CXX'] == 'g++':
         env.Append(CXXFLAGS=["-Woverloaded-virtual"])
         env['use_pch']=True
+    else:
+        env['use_pch']=False
     if env['build'] == 'fast':
         if env['CC'] == 'gcc':
             env.Append(CCFLAGS=["-O3", "-fexpensive-optimizations",
