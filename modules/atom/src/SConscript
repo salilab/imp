@@ -8,6 +8,7 @@ files = [
          'BondedPairFilter.cpp',
          'BrownianDynamics.cpp',
          'Chain.cpp',
+         'Charged.cpp',
          'CharmmParameters.cpp',
          'CoverBond.cpp',
          'Diffusion.cpp',
