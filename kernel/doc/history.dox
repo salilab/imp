@@ -3,18 +3,18 @@
 
 - \imp now has a text i/o layer consisting of IMP::TextInput and IMP::TextOutput. These classes are
   convertible to C++ streams and implicitly constructable from both streams and file paths. As a result,
-  functions that take them will work when called with a string for a file path, a python file or a
+  functions that take them will work when called with a string for a file path, a Python file or a
   C++ stream.
 
 - Point out that IMP::core::RestraintSets do not support incremental evaluation.
 
-- The IMP.examples module now documents the how to use the needed aspects of scons and swig.
+- The IMP.examples module now documents how to use the needed aspects of scons and SWIG.
 
 - The IMP.examples module is used as the basis for new modules created by the make-module script, so those include more documentation and are tested.
 
 - Module overview pages are now generated from the information passed in the SConscript file, rather than from the (now removed) modulename.dox file. See the examples file for an example of the things you can do there.
 
-- boost program options is now a checked for dependency
+- boost program options is now a checked for dependency.
 
 - The IMP::Model now uses dependency information from IMP::ScoreStates to automatically reorder the IMP::ScoreStates so that they are evaluated in the right order. Also, IMP::Model::evaluate() on a subset of the restraints now only updates the needed score states, not all of them.
 
@@ -96,7 +96,7 @@ respectively).
 
 - The IMP::core::ListPairContainer and IMP::core::ListSingletonContainer have had their interface reduced a bit in order to make implementing change tracking easier.
 
-- The set of exceptions has been simplified to go along with simplification of the checks. We now have IMP::InternalException and IMP::UsageException which are thrown by the respective checks (and the former is thrown by IMP_FAILURE()). When you want to to pass an exception back to python use one of IMP::ValueException or IMP::IndexException or IMP::IOException. There is also a new macro, IMP_THROW() to be used when you want to throw an exception with a nice error message. Please look at code you have worked on and make sure that the exceptions make sense given the new clarifications.
+- The set of exceptions has been simplified to go along with simplification of the checks. We now have IMP::InternalException and IMP::UsageException which are thrown by the respective checks (and the former is thrown by IMP_FAILURE()). When you want to to pass an exception back to Python use one of IMP::ValueException or IMP::IndexException or IMP::IOException. There is also a new macro, IMP_THROW() to be used when you want to throw an exception with a nice error message. Please look at code you have worked on and make sure that the exceptions make sense given the new clarifications.
 
 - An IMP::ModelException is now thrown when IMP::Particle attributes attain invalid values. This exception can be caught to recover from failures of IMP::core::ConjugateGradients or difficult restraints.
 
@@ -122,7 +122,7 @@ external code,
       - replace IMP.CHEAP with IMP.USAGE
       - replace IMP_assert and IMP_check as above.
 
-- A \ref differences "page" has been added on the differences between the python and C++ interfaces of \imp. Please add salient points as they come up.
+- A \ref differences "page" has been added on the differences between the Python and C++ interfaces of \imp. Please add salient points as they come up.
 
 \par Week of October 1
 - IMP::ScoreState and IMP::Restraint now better track the set of particles that they use and the dependencies between the particles. To this end, a new base class IMP::Interaction has been added with methods to get the inter-particle interactions and the set of particles used.
@@ -139,7 +139,7 @@ external code,
 
 - A class IMP::core::RigidBodyDistancePairScore has been added which provides accelerated computations for the distance between two rigid bodies.
 
-- The swig input files were renamed from swig.i to swig.i-in to aid in dependency tracking.
+- The SWIG input files were renamed from swig.i to swig.i-in to aid in dependency tracking.
 
 - rigid bodies now have two sets of particles associated with them in the various places they are used. One is the IMP::core::RigidBodyMember particles, as was previously the case. The other is defined through a refiner (and could be the RigidBodyMember particles if a IMP::core::RigidMembersRefiner is used). The idea is that you sometimes want some particles which are transformed along with the rigid body, but which are not really part of the representation of the rigid body. Examples would include marker points or multiresolution representations of proteins.
 
@@ -160,18 +160,18 @@ external code,
 - A new score IMP::core::BoundingBox3DSingletonScore has been added to keep particles
   in a box.
 
-- str should now work better in python when applied to IMP::Object objects and a few others. Objects
+- str should now work better in Python when applied to IMP::Object objects and a few others. Objects
   should use the new IMP_SHOWABLE and IMP_SHOWABLE_INLINE macros instead of declaring show
-  functions directory to make it so that they work in python. It is now a bug to \c print or \c str
-  to not return something useful in python for any %IMP object.
+  functions directory to make it so that they work in Python. It is now a bug to \c print or \c str
+  to not return something useful in Python for any %IMP object.
 
 \par Week of August 23
 
-- each module now has a version, eg IMP::get_module_version_info() which is also returned by the various restraions of the module. The python code checkes that loaded libraries have the expected version numbers to try to provide better messages when runtime linking problems occur.
+- each module now has a version, eg IMP::get_module_version_info() which is also returned by the various restraions of the module. The Python code checkes that loaded libraries have the expected version numbers to try to provide better messages when runtime linking problems occur.
 
 - the various ::bounding_box() methods have been renamed to ::get_bounding_box() to be more consistent with the other names.
 
-- python documentation is now parsed by doxygen
+- Python documentation is now parsed by doxygen
 
 \par Week of August 15
 
@@ -289,10 +289,10 @@ external code,
 - Hierarchys to IMP::atom::Hierarchies
 
 - IMP::Particles has been changed to a new type. It no longer plays
-  quite so well with python lists (you can't create a part one from an
-  arbitrary python list).
+  quite so well with Python lists (you can't create one from an
+  arbitrary Python list).
 
-- The contains for multiple decorators have been revised to make them
+- The containers for multiple decorators have been revised to make them
   more useful. See IMP::Decorators. You can now implicitly convert,
   for example, a IMP::core::XYZs to an IMP::Particles (as well as use
   IMP::Decorators::get_particles()). All methods that take a
@@ -474,8 +474,8 @@ like \code if (d) { blah } \endcode works.
   way. Run \command{scons doc > /dev/null} before you check in large
   blocks of new code to make sure that you didn't introduce warnings.
 
-- Helper classes have been added to make SingletonModiefier and
-  PairModifier objects look like functors for C++ and python. This
+- Helper classes have been added to make SingletonModifier and
+  PairModifier objects look like functors for C++ and Python. This
   makes it so you can use \c map in Python and \c for_each in C++. See
   IMP::SingletonFunctor and IMP::PairFunctor for more information.
 
