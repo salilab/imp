@@ -6,10 +6,7 @@ import IMP.core
 class RestraintSetTests(IMP.test.TestCase):
     """Test RestraintSets"""
 
-    def setUp(self):
-        """Set up distance restraints"""
-        IMP.test.TestCase.setUp(self)
-
+    def _make_distance_restraints(self):
         self.model = IMP.Model()
         self.particles = []
 
@@ -37,6 +34,7 @@ class RestraintSetTests(IMP.test.TestCase):
 
     def test_weights(self):
         """Test that sets can be weighted"""
+        self._make_distance_restraints()
         e1 = self.model.evaluate(True)
         d1 = self.particles[0].get_derivative(IMP.FloatKey("x"))
         self.rset.set_weight(0.5)
@@ -47,6 +45,7 @@ class RestraintSetTests(IMP.test.TestCase):
 
     def test_interacting_particles(self):
         """Check RestraintSet::get_interacting_particles()"""
+        self._make_distance_restraints()
         ipar = self.rset.get_interacting_particles()
         # Should return the union of the restraint particle sets
         # (i.e. two sets, each containing the particles from one restraint)
@@ -61,6 +60,7 @@ class RestraintSetTests(IMP.test.TestCase):
 
     def test_restraints(self):
         """Check access to RestraintSet's restraints"""
+        self._make_distance_restraints()
         r = self.rset
         rsrs = r.get_restraints()
         self.assertEqual(len(rsrs), len(self.distrsr))
@@ -68,6 +68,23 @@ class RestraintSetTests(IMP.test.TestCase):
             self.assertEqual(r.get_restraint(n), val)
             self.assertEqual(rsrs[n], val)
         #self.assertRaises(IndexError, r.get_restraint, 2)
+
+    def test_evaluate(self):
+        """Test evaluate() of RestraintSets and their children"""
+        m = IMP.Model()
+
+        s = IMP.core.RestraintSet()
+        s.set_weight(0.1)
+        c1 = IMP.core.ConstantRestraint(10.0)
+        c2 = IMP.core.ConstantRestraint(20.0)
+
+        s.add_restraint(c1)
+        s.add_restraint(c2)
+        m.add_restraint(s)
+
+        self.assertEqual(c1.evaluate(False), 10.0)
+        self.assertEqual(c2.evaluate(False), 20.0)
+        self.assertEqual(s.evaluate(False), 3.0)
 
 if __name__ == '__main__':
     unittest.main()
