@@ -32,6 +32,7 @@ class DirectoriesTests(IMP.test.TestCase):
         class NoMethods(object):
             pass
         self.assertRaises(TypeError, IMP.test_ofile, NoMethods)
+        del f
         os.unlink('ofile_test')
         os.unlink('hi')
 
