@@ -8,7 +8,6 @@ class DirectoriesTests(IMP.test.TestCase):
 
     def test_data_directory(self):
         """Test that conversions to input files work properly"""
-        print "begin input"
         IMP.set_log_level(IMP.MEMORY)
         v= IMP.test_ifile(self.get_input_file_name("text"))
         self.assertEqual(v, "word")
@@ -22,20 +21,19 @@ class DirectoriesTests(IMP.test.TestCase):
     def test_odata_directory(self):
         """Test that conversions to output files work properly"""
         IMP.set_log_level(IMP.MEMORY)
-        print IMP.test_ofile("ofile_test")
+        IMP.test_ofile("ofile_test")
         self.assertRaises(IOError, IMP.test_ofile, "nodir/hi" )
-        print "real file"
         f= open("hi", "w")
-        print IMP.test_ofile(f)
-        print "string file"
+        IMP.test_ofile(f)
         s = StringIO()
-        print IMP.test_ofile(s)
-        print s.getvalue()
+        IMP.test_ofile(s)
         self.assert_(s.getvalue()== "hi\n")
         self.assertRaises(IOError, IMP.test_ofile, 1)
         class NoMethods(object):
             pass
         self.assertRaises(TypeError, IMP.test_ofile, NoMethods)
+        os.unlink('ofile_test')
+        os.unlink('hi')
 
 if __name__ == '__main__':
     unittest.main()
