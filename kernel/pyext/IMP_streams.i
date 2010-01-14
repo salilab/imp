@@ -293,7 +293,7 @@ protected:
 
   virtual int_type underflow() {
     static char fmt[] = "(i)";
-    peeked_ = -1;
+    if (peeked_!= -1) return peeked_;
     PyObject *result = PyObject_CallFunction(read_method_, fmt, 1);
     if (!result) {
       // Python exception will be reraised when SWIG method finishes
