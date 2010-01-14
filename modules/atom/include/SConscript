@@ -8,6 +8,7 @@ files = [
          'BondedPairFilter.h',
          'BrownianDynamics.h',
          'Chain.h',
+         'Charged.h',
          'CharmmParameters.h',
          'CoverBond.h',
          'Diffusion.h',
