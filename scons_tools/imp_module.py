@@ -14,6 +14,7 @@ import modeller_test
 import run
 import checks
 import modpage
+import pch
 
 from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir
 
@@ -364,8 +365,20 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
                            source=['wrap.cpp-in'])
         penv._IMPPatchSWIG(target=['wrap.h'],
                            source=['wrap.h-in'])
-        buildlib = penv.LoadableModule('#/build/lib/_IMP%s' % module_suffix,
+        lpenv= penv.Clone()
+        if env['use_pch']:
+            if module=='kernel':
+                pchh= penv.IMPGeneratePCH(target="#/build/swig/pch.h", source=[])
+                bpch= penv.IMPBuildPCH(source=pchh, target="#/build/swig/pch.h.gch")
+                env.Alias('pch', [bpch])
+            #lpenv.Prepend(CPPFLAGS=['-include '+env['pch']])
+            lpenv.Prepend(CPPPATH=['#/build/swig'])
+            lpenv.Prepend(CPPFLAGS=['-include', 'pch.h'])
+            lpenv.Prepend(CXXFLAGS=['-Winvalid-pch'])
+        buildlib = lpenv.LoadableModule('#/build/lib/_IMP%s' % module_suffix,
                                        "wrap.cpp")
+        if env['use_pch']:
+            env.Requires(buildlib, env.Alias('pch'))
         # Place the generated Python wrapper in lib directory:
         buildinit = penv.LinkInstallAs('#/build/lib/%s/__init__.py'
                                        % vars['module_include_path'],
@@ -651,7 +664,9 @@ def IMPModuleBuild(env, version, required_modules=[],
 
     env.Append(BUILDERS = {'IMPModuleConfigH': config_h.ConfigH,
                            'IMPModuleConfigCPP': config_h.ConfigCPP,
-                           'IMPModuleLinkTest': link_test.LinkTest})
+                           'IMPModuleLinkTest': link_test.LinkTest,
+                           'IMPGeneratePCH': pch.GeneratePCH,
+                           'IMPBuildPCH': pch.BuildPCH})
     env['IMP_MODULE'] = module
     env['IMP_MODULE_SUFFIX'] = module_suffix
     env['IMP_MODULE_INCLUDE_PATH'] = module_include_path
