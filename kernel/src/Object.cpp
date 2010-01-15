@@ -27,8 +27,8 @@ Object::Object(std::string name): name_(name)
   check_value_=111111111;
   was_owned_=false;
 #endif
-  IMP_LOG(MEMORY, "Creating object " << name
-          << "(" << this << ")" << std::endl);
+  IMP_LOG(MEMORY, "Creating object \"" << name
+          << "\" (" << this << ")" << std::endl);
 }
 
 Object::~Object()
@@ -43,7 +43,7 @@ Object::~Object()
              << std::endl);
   }
 #endif
-  IMP_LOG(MEMORY, "Destroying object " << get_name() << "("
+  IMP_LOG(MEMORY, "Destroying object \"" << get_name() << "\" ("
           << this << ")" << std::endl);
 }
 
