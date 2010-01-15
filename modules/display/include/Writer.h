@@ -58,15 +58,16 @@ class IMPDISPLAYEXPORT Writer: public GeometryProcessor, public Object
   //! Open a new file with the given name
   /** Set it to "" to close. */
   virtual void set_file_name(std::string name) {
-    if (get_stream_is_open()) on_close();
-    out_= TextOutput(name);
-    if (get_stream_is_open()) on_open();
+    set_output(TextOutput(name));
   }
 
   virtual void set_output(TextOutput f) {
     if (get_stream_is_open()) on_close();
     out_= f;
-    if (get_stream_is_open()) on_open();
+    if (get_stream_is_open()) {
+      set_was_owned(true);
+      on_open();
+    }
   }
 
   //! Close the stream. You shouldn't need this, but it doesn't hurt
