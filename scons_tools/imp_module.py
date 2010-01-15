@@ -371,6 +371,7 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
                 pchh= penv.IMPGeneratePCH(target="#/build/swig/pch.h", source=[])
                 bpch= penv.IMPBuildPCH(source=pchh, target="#/build/swig/pch.h.gch")
                 env.Alias('pch', [bpch])
+                env.Requires(pchh, env.Alias('kernel-include'))
             #lpenv.Prepend(CPPFLAGS=['-include '+env['pch']])
             lpenv.Prepend(CPPPATH=['#/build/swig'])
             lpenv.Prepend(CPPFLAGS=['-include', 'pch.h'])
