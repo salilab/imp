@@ -90,6 +90,9 @@ extern "C" {
   int __len__() const {
     return self->size();
   }
+  int count(RC c) const {
+      return std::count(self->begin(), self->end(), c);
+  }
   void append(RC d) {
     self->push_back(d);
   }
