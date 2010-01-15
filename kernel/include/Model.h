@@ -39,6 +39,7 @@ class IMPEXPORT Model: public Object
 private:
   friend class Restraint;
   friend class Particle;
+  friend class RestraintSet;
   typedef Particle::Storage ParticleStorage;
 
   ParticleStorage particles_;
@@ -75,8 +76,12 @@ private:
     }
   }
 
+
+  typedef std::pair<double, Restraint*> WeightedRestraint;
+  typedef std::vector<WeightedRestraint> WeightedRestraints;
+
   void validate_attribute_values() const ;
-  void validate_incremental_evaluate(const RestraintsTemp &restraints,
+  void validate_incremental_evaluate(const WeightedRestraints &restraints,
                                      bool calc_derivs,
                                      double score);
   void validate_computed_derivatives() const;
@@ -87,14 +92,17 @@ private:
 
   void zero_derivatives(bool shadow_too=false) const;
 
-  double do_evaluate(const RestraintsTemp &restraints,
+  double do_evaluate(const WeightedRestraints &restraints,
                      const ScoreStatesTemp &states, bool calc_derivs);
 
   enum WhichRestraints {ALL, INCREMENTAL, NONINCREMENTAL};
-  double do_evaluate_restraints(const Restraints &restraints,
+  double do_evaluate_restraints(const WeightedRestraints &restraints,
                                 bool calc_derivs,
                                 WhichRestraints incremental_restraints,
                                 bool incremental_evaluation) const;
+
+  void reset_dependencies();
+
 
 #if defined(SWIG)
  public:

@@ -57,6 +57,7 @@ namespace IMP {
       return ret;
     }
   }
+  IMP_CONTAINER_SWIG(RestraintSet, Restraint, restraint)
   IMP_CONTAINER_SWIG(Model, ScoreState, score_state)
   IMP_CONTAINER_SWIG(Model, Restraint, restraint)
   IMP_CONTAINER_SWIG(Optimizer, OptimizerState, optimizer_state)
@@ -124,6 +125,7 @@ namespace IMP {
 %include "IMP/Refiner.h"
 %include "IMP_random.i"
 %include "IMP/Optimizer.h"
+%include "IMP/RestraintSet.h"
 %include "IMP/ConfigurationSet.h"
 %include "IMP/Sampler.h"
 %include "IMP/SingletonScore.h"
@@ -151,6 +153,7 @@ namespace IMP {
   IMP_SWIG_OBJECTS(Particle, Particles)
   IMP_SWIG_OBJECTS(Object, Objects)
   IMP_SWIG_OBJECTS(Restraint, Restraints)
+  IMP_SWIG_OBJECTS(RestraintSet, RestraintSets)
   IMP_SWIG_OBJECTS(ScoreState, ScoreStates)
   IMP_SWIG_OBJECTS(OptimizerState, OptimizerStates)
   IMP_SWIG_OBJECTS(Refiner, Refiners)

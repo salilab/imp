@@ -16,11 +16,10 @@
 IMPEM_BEGIN_NAMESPACE
 
 
-core::RestraintSet * add_restraints(Model *model, DensityMap *dmap,
+RestraintSet * add_restraints(Model *model, DensityMap *dmap,
                     core::RigidBody &rb,
                     const FloatKey &rad_key, const FloatKey &wei_key) {
-  core::RestraintSet *rsrs = new core::RestraintSet();
-   rsrs->set_model(model);
+  RestraintSet *rsrs = new RestraintSet();
    model->add_restraint(rsrs);
    //add fitting restraint
    FitRestraint *fit_rs =
@@ -112,7 +111,7 @@ void local_rigid_fitting_around_point(
               "The centroid is not part of the map");
    //add restraints
    Model *model = rb.get_members()[0].get_particle()->get_model();
-   core::RestraintSet *rsrs = add_restraints(model, dmap, rb,
+   RestraintSet *rsrs = add_restraints(model, dmap, rb,
                                              rad_key, wei_key);
    //create a rigid body mover and set the optimizer
    core::MonteCarlo *opt = set_optimizer(model, display_log, rb,
@@ -144,7 +143,7 @@ void local_rigid_fitting_around_points(
            " Conjugate Gradients rounds. " << std::endl);
    Model *model = rb.get_members()[0].get_particle()->get_model();
 
-   core::RestraintSet *rsrs = add_restraints(model, dmap, rb,
+   RestraintSet *rsrs = add_restraints(model, dmap, rb,
                                              rad_key,wei_key);
    core::MonteCarlo *opt = set_optimizer(model, display_log, rb,
                            number_of_cg_steps,max_translation, max_rotation);

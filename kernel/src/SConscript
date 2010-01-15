@@ -21,6 +21,7 @@ files = [
          'QuadScore.cpp',
          'Refiner.cpp',
          'Restraint.cpp',
+         'RestraintSet.cpp',
          'Sampler.cpp',
          'ScoreState.cpp',
          'SingletonContainer.cpp',

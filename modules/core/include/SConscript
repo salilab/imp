@@ -73,7 +73,6 @@ files = [
          'QuadsOptimizerState.h',
          'QuadsRestraint.h',
          'RefinedPairsPairScore.h',
-         'RestraintSet.h',
          'RigidBodyDistancePairScore.h',
          'RigidBodyMover.h',
          'RigidClosePairsFinder.h',

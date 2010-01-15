@@ -9,7 +9,7 @@
 
 #include <IMP/core/MonteCarlo.h>
 #include <IMP/core/ConjugateGradients.h>
-#include <IMP/core/RestraintSet.h>
+#include <IMP/RestraintSet.h>
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/VersionInfo.h>
 #include <IMP/Particle.h>

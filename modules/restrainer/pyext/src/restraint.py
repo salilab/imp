@@ -13,7 +13,7 @@ class _RestraintSets(object):
         try:
             current_set = self.restraint_sets[restraint_type]
         except KeyError:
-            current_set = self.restraint_sets[restraint_type] = IMP.core.RestraintSet()
+            current_set = self.restraint_sets[restraint_type] = IMP.RestraintSet()
             if model:
                 model.add_restraint(current_set)
         current_set.add_restraint(restraint)

@@ -209,7 +209,7 @@ void DominoOptimizer::move_to_opt_comb(unsigned int i)  const {
 
 void DominoOptimizer::add_restraint_recursive(Restraint *rs, Float weight)
 {
-  core::RestraintSet *rs_set = dynamic_cast<core::RestraintSet*>(rs);
+  RestraintSet *rs_set = dynamic_cast<RestraintSet*>(rs);
    if (rs_set) {
      IMP_LOG(VERBOSE,"adding a restraint set"<<std::endl);
      for (Model::RestraintIterator it = rs_set->restraints_begin();
