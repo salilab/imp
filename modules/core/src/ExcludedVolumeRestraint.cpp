@@ -92,8 +92,8 @@ ParticlesTemp ExcludedVolumeRestraint::get_input_particles() const {
   for (unsigned int i=0; i< sc_->get_number_of_particles(); ++i) {
     Particle* p= sc_->get_particle(i);
     if (RigidBody::particle_is_instance(p) && !r_) {
-      IMP_THROW("RigidBodies cannot be used without a refinr in "
-                << "ExcludedVolumeRestraint.", UsageException);
+      IMP_THROW("RigidBodies cannot be used without a refiner in "
+                << "ExcludedVolumeRestraint.", ValueException);
     }
   }
   return pr_->get_input_particles();

@@ -52,7 +52,7 @@ void GeometryProcessor::process_geometry_internal(Geometry* g,
   Geometries comp= g->get_components();
   if (comp.size()==1 && comp[0]== g) {
     IMP_THROW("Couldn't handle " << *g,
-              UsageException);
+              ValueException);
   } else {
     for (unsigned int i=0; i< comp.size(); ++i) {
       process_geometry_internal(comp[i], has_color, c, name);

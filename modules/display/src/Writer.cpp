@@ -36,7 +36,7 @@ Writer *create_writer(std::string name) {
     }
   }
   IMP_THROW("No writer found for file " << name,
-            UsageException);
+            ValueException);
 }
 
 IMPDISPLAY_END_NAMESPACE
