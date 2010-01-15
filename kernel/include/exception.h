@@ -10,6 +10,9 @@
 
 #include "config.h"
 
+#include <boost/static_assert.hpp>
+#include <boost/type_traits.hpp>
+
 #include <cassert>
 #include <cstring>
 #include <string>
@@ -219,9 +222,20 @@ IMPEXPORT void assert_fail(const char *msg);
 #endif
 
 //! Throw an exception with a message
+/** The exception thrown must inherit from Exception and not be
+    UsageException or InternalException as those are reserved for
+    disableable checks (the IMP_INTERNAL_CHECK() and IMP_USAGE_CHECK()
+    macros).
+ */
 #define IMP_THROW(message, exception_name)do {                          \
   std::ostringstream oss;                                               \
   oss << message << std::endl;                                          \
+  BOOST_STATIC_ASSERT((!(boost::is_base_of<IMP::UsageException,         \
+                          exception_name>::value)                       \
+                       && !(boost::is_base_of<IMP::InternalException,   \
+                             exception_name>::value)                    \
+                       && (boost::is_base_of<IMP::Exception,            \
+                            exception_name>::value)));                  \
   throw exception_name(oss.str().c_str());                              \
   } while (true)
 
@@ -265,6 +279,11 @@ struct IMPEXPORT InternalException: public Exception
 /** It is thrown by the IMP_USAGE_CHECK() macro. It should never be
     caught internally to \imp, but it one may be able to recover from
     it being thrown.
+
+    \advanceddoc
+    As the usage checks are disable in fast mode,
+    UsageExceptions are not considered part of the API and hence
+    should not be documented or checked in test cases.
  */
 class IMPEXPORT UsageException : public Exception
 {
