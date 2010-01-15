@@ -82,8 +82,11 @@ class RestraintSetTests(IMP.test.TestCase):
         s.add_restraint(c2)
         m.add_restraint(s)
 
-        self.assertEqual(c1.evaluate(False), 10.0)
-        self.assertEqual(c2.evaluate(False), 20.0)
+        # Cannot currently call evaluate() on a Restraint inside a RestraintSet
+        # (except in fast mode, where usage checks are disabled).
+        if IMP.has_tests:
+            self.assertRaises(IMP.UsageException, c1.evaluate, False)
+            self.assertRaises(IMP.UsageException, c2.evaluate, False)
         self.assertEqual(s.evaluate(False), 3.0)
 
 if __name__ == '__main__':

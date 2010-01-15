@@ -20,8 +20,9 @@ class ChargedDecoratorTests(IMP.test.TestCase):
         IMP.core.XYZ.setup_particle(p, v)
         IMP.atom.Charged.setup_particle(p, -0.5)
         p = IMP.Particle(m)
-        self.assertRaises(IMP.UsageException,
-                          IMP.atom.Charged.setup_particle, p, -0.5)
+        if IMP.has_tests:
+            self.assertRaises(IMP.UsageException,
+                              IMP.atom.Charged.setup_particle, p, -0.5)
 
     def test_get_set(self):
         """Check get/set methods of Charged decorators"""
