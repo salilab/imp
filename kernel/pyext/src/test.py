@@ -271,6 +271,21 @@ class ApplicationTestCase(TestCase):
         return _SubprocessWrapper(filename, args)
 
 
+class ConstRestraint(IMP.Restraint):
+    def __init__(self, v):
+        IMP.Restraint.__init__(self, "ConstRestraint")
+        self.v=v
+    def unprotected_evaluate(self, da):
+        return self.v
+    def get_version_info(self):
+        return IMP.VersionInfo("Me", "0.5")
+    def show(self, fh):
+        print >> fh, "ConstRestraint "+str(self.v)
+    def get_input_containers(self):
+        return IMP.ContainersTemp()
+    def get_input_particles(self):
+        return IMP.ParticlesTemp()
+
 class ConstPairScore(IMP.PairScore):
     """An IMP::PairScore which always returns a constant value."""
     def __init__(self, v):
