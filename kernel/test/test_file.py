@@ -13,7 +13,7 @@ class DirectoriesTests(IMP.test.TestCase):
         self.assertEqual(v, "word")
         v= IMP.test_ifile(self.open_input_file("text"))
         self.assertEqual(v, "word")
-        self.assertRaises(IOError, IMP.test_ifile, "notafile" )
+        self.assertRaises(TypeError, IMP.test_ifile, "notafile" )
         s=StringIO("hi there")
         v= IMP.test_ifile(s)
         self.assertEqual(v, "hi")
@@ -22,13 +22,13 @@ class DirectoriesTests(IMP.test.TestCase):
         """Test that conversions to output files work properly"""
         IMP.set_log_level(IMP.MEMORY)
         IMP.test_ofile("ofile_test")
-        self.assertRaises(IOError, IMP.test_ofile, "nodir/hi" )
+        self.assertRaises(TypeError, IMP.test_ofile, "nodir/hi" )
         f= open("hi", "w")
         IMP.test_ofile(f)
         s = StringIO()
         IMP.test_ofile(s)
         self.assert_(s.getvalue()== "hi\n")
-        self.assertRaises(IOError, IMP.test_ofile, 1)
+        self.assertRaises(TypeError, IMP.test_ofile, 1)
         class NoMethods(object):
             pass
         self.assertRaises(TypeError, IMP.test_ofile, NoMethods)
