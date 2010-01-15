@@ -35,8 +35,9 @@ class RestraintTest(IMP.test.TestCase):
         r = self.restraint.get_restraint_by_name(restraint_name)
 
         if r:
-            score = r.imp_restraint.evaluate(False)
-            print 'initial score = ' + str(score)
+            self.assertRaises(IMP.UsageException, r.imp_restraint.evaluate, False)
+            #score = r.imp_restraint.evaluate(False)
+            #print 'initial score = ' + str(score)
 
         self.Model.show()
         self.Model.evaluate(False)
