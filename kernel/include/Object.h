@@ -99,6 +99,11 @@ public:
     show(out);
   }
 
+  void debugger_show() const {
+    std::cout<<get_name() << std::endl;
+    show(std::cout);
+  }
+
   //! Return a string version of the object, can be used in the debugger
   std::string get_string() const {
     std::ostringstream oss;
@@ -136,7 +141,7 @@ public:
       for a particular object, call set_was_owned(true).
       @{
   */
-  void set_was_owned(bool tf) {
+  void set_was_owned(bool tf) const {
 #if IMP_BUILD < IMP_FAST
     was_owned_=true;
 #endif
@@ -149,7 +154,7 @@ private:
 
 #if IMP_BUILD < IMP_FAST
   LogLevel log_level_;
-  bool was_owned_;
+  mutable bool was_owned_;
   double check_value_;
 #endif
 };
