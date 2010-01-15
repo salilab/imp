@@ -16,6 +16,7 @@ files = [
          'ForceFieldParameters.cpp',
          'Fragment.cpp',
          'Hierarchy.cpp',
+         'LennardJones.cpp',
          'Mass.cpp',
          'MolecularDynamics.cpp',
          'Residue.cpp',
