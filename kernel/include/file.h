@@ -12,7 +12,7 @@
 #include "config.h"
 #include "Pointer.h"
 #include "macros.h"
-#include "internal/file.h"
+#include "internal/ifile.h"
 #include <fstream>
 #include <iostream>
 
@@ -43,10 +43,10 @@ struct TextProxy {
 */
 class IMPEXPORT TextOutput
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  : public internal::TextIO<std::ostream, std::ofstream>
+  : public internal::TextIO<std::ostream, std::ofstream, 0>
 #endif
 {
-  typedef internal::TextIO<std::ostream, std::ofstream> P;
+  typedef internal::TextIO<std::ostream, std::ofstream, 0> P;
  public:
 #ifndef IMP_DOXYGEN
   // swig needs there here for some bizaare reason
@@ -77,10 +77,10 @@ class IMPEXPORT TextOutput
 */
 class IMPEXPORT TextInput
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  : public internal::TextIO<std::istream, std::ifstream>
+  : public internal::TextIO<std::istream, std::ifstream, 1>
 #endif
 {
-  typedef internal::TextIO<std::istream, std::ifstream> P;
+  typedef internal::TextIO<std::istream, std::ifstream, 1> P;
  public:
 #ifndef IMP_DOXYGEN
   // swig needs there here for some bizaare reason
