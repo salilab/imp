@@ -71,7 +71,7 @@ class IMPDISPLAYEXPORT Writer: public GeometryProcessor, public Object
 
   //! Close the stream. You shouldn't need this, but it doesn't hurt
   void close() {
-    on_close();
+    if (get_stream_is_open()) on_close();
     out_= TextOutput();
   }
 
