@@ -20,7 +20,7 @@ have_modeller=False
 %}
 #endif
 
-#ifdef IMP_NDEBUG
+#ifdef NDEBUG
 %pythoncode %{
 have_tests=False
 %}
