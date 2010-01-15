@@ -33,7 +33,7 @@ void Restraint::set_model(Model* model)
             << model << " " << model_,
             ValueException);
   model_=model;
-  set_was_owned(true);
+  if (model) set_was_owned(true);
 }
 
 double Restraint::evaluate(bool calc_derivs) const {
