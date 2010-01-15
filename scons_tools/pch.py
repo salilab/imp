@@ -1,9 +1,11 @@
 
 import imp_module
-from SCons.Script import Glob, Dir, File, Builder, Action, Exit
+import SCons
+from SCons.Script import Glob, Dir, File, Builder, Action, Exit, Scanner
 import os
 import sys
 import re
+import imp_module
 
 
 def _action_generate_pch_h(target, source, env):
@@ -40,4 +42,39 @@ def _action_build_pch_h(target, source, env):
 def _print_build_pch_h(target,source,env):
     print _get_string(env, source, target)
 
-BuildPCH = Builder(action=Action(_action_build_pch_h, _print_build_pch_h))
+def _emitter_build_pch(target, source, env):
+    SCons.Defaults.SharedObjectEmitter( target, source, env )
+    scanner = SCons.Scanner.C.CScanner()
+    path = scanner.path(env)
+    deps = set([File("#/build/include/IMP.h")])
+    # shortcut since the file we are supposed to be scanning may not
+    # exist
+    toscan=[File("#/build/include/IMP.h")]
+    # for some reason that is beyond me, the presence of this line
+    # or some such call to scanner is essential to the code below
+    # producing the correct result.
+    all= [str(x) for x in scanner(File("#/build/include/IMP.h"), env, path)]
+    while len(toscan) >0:
+        odeps=set(list(deps))
+        #print str(toscan[-1])
+        # skip python for now
+        #print str(toscan[-1])
+        #l=[x  for x in scanner(toscan[-1], env, path) if str(x).find('python')==-1]
+        l= scanner(toscan[-1], env, path)
+        #print [str(x) for x in l]
+        #print "list for "+str(toscan[-1]) + " is " +str([str(x) for x in l])
+        cdeps= set(l)
+        toscan=toscan[:-1]
+        ndeps=cdeps-deps
+        #print "new are "+str([str(x) for x in ndeps])
+        toscan=toscan+list(ndeps)
+        deps=cdeps^deps
+        #print [str(x) for x in deps]
+        #print "queue is " + str([str(x) for x in toscan])
+    #print [str(x) for x in source]
+    #print [str(x) for x in target]
+    #print [str(x) for x in deps]
+    return (target, source+list(deps))
+
+BuildPCH = Builder(action=Action(_action_build_pch_h, _print_build_pch_h),
+                   emitter=_emitter_build_pch)
