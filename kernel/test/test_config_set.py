@@ -108,7 +108,7 @@ class ParticleTests(IMP.test.TestCase):
         cs.set_configuration(-1)
         self._test_base(ps[0], 0, ps[1])
         self._test_base(ps[1], 1, ps[2])
-    def test_diff(self):
+    def _test_diff(self):
         """Testing restore a know state with ConfigurationSet"""
         (m, ps)= self._make_things()
         cs= IMP.ConfigurationSet(m)
