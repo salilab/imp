@@ -16,6 +16,7 @@ files = [
          'ForceFieldParameters.h',
          'Fragment.h',
          'Hierarchy.h',
+         'LennardJones.h',
          'Mass.h',
          'MolecularDynamics.h',
          'Residue.h',
