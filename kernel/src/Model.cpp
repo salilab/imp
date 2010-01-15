@@ -341,7 +341,7 @@ namespace {
               IMP_THROW("Error, " << it->first->get_name() << " and " <<
                         om[boost::source(*ic, deps.graph)]->get_name()
                         << " both write particle " << om[cv]->get_name(),
-                        UsageException);
+                        ValueException);
             }
           }
         }
@@ -448,7 +448,7 @@ namespace {
                 << "your current directory. Do somethign like "
                 << "\"dot -Tps -o graph.ps model_dependency_graph.dot\" "
                 << "to view it.",
-                UsageException);
+                ValueException);
     }
     for (int i=out.size()-1; i > -1; --i) {
       Object *o= om[out[i]];
@@ -1177,13 +1177,12 @@ Float Model::evaluate(const RestraintsTemp &restraints, bool calc_derivs)
   gather_restraints(restraints.begin(), restraints.end(), 1.0, wr);
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i=0; i< wr.size(); ++i) {
-      if (graphs_[this].depends.find(wr[i].second)
-          == graphs_[this].depends.end()) {
-        IMP_THROW("Restraint " << wr[i].second->get_name()
-                  << " has not been directly added to the model "
-                  << " and so cannot be independently evaluated.",
-                  UsageException);
-      }
+      IMP_USAGE_CHECK(graphs_[this].depends.find(wr[i].second)
+                      != graphs_[this].depends.end(),
+                      "Restraint " << wr[i].second->get_name()
+                      << " has not been directly added to the model "
+                      << " and so cannot be independently evaluated.",
+                      UsageException);
     }
   }
   boost::dynamic_bitset<> bs(get_number_of_score_states(), false);
