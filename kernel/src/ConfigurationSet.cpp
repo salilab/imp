@@ -21,10 +21,20 @@ ConfigurationSet::ConfigurationSet(Model *m,
     PP pp(*it);
     base_[pp]= internal::ParticleData(*it);
   }
+  IMP_IF_LOG(TERSE) {
+    IMP_LOG(TERSE, "Base configuration is:\n");
+    for (Model::ParticleIterator it= model_->particles_begin();
+       it != model_->particles_end(); ++it) {
+      IMP_LOG(TERSE, (*it)->get_name() << ":\n");
+      PP pp(*it);
+      IMP_LOG_WRITE(TERSE, base_[pp].show(IMP_STREAM));
+    }
+  }
 }
 
 
 void ConfigurationSet::save_configuration() {
+  set_was_owned(true);
   IMP_LOG(TERSE, "Adding configuration to set " << get_name() << std::endl);
   configurations_.push_back(Diff());
   for (Model::ParticleIterator it= model_->particles_begin();
@@ -36,7 +46,6 @@ void ConfigurationSet::save_configuration() {
     } else {
       configurations_.back().added_[pp]= internal::ParticleData(pp);
     }
-    base_[pp]= internal::ParticleData(pp);
   }
   for (DataMap::iterator it= base_.begin(); it != base_.end(); ++it) {
     PP pp(it->first);

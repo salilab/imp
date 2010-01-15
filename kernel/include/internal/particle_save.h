@@ -31,7 +31,9 @@ public:
   ParticleData(Particle *p);
   //! overwrite the particle
   void apply(Particle *p) const;
+  void show(std::ostream &out=std::cout) const;
 };
+IMP_OUTPUT_OPERATOR(ParticleData);
 
 class IMPEXPORT ParticleDiff {
   typedef std::pair<FloatKey, Float> FloatPair;
@@ -54,7 +56,9 @@ class IMPEXPORT ParticleDiff {
   //! Compute the diff between the two
   ParticleDiff(const ParticleData &base, Particle *p);
   void apply(Particle *p) const;
+  void show(std::ostream &out=std::cout) const;
 };
+IMP_OUTPUT_OPERATOR(ParticleDiff);
 
 
 IMP_END_INTERNAL_NAMESPACE
