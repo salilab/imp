@@ -34,8 +34,8 @@ namespace {
     }
     if (atom_name.find("HET_") != std::string::npos) {
       IMP_THROW("You must call add_atom_name() to create a new atom name: "
-                  << at,
-                  UsageException);
+                << at,
+                ValueException);
     } else {
       char c0=atom_name[0];
       if (isdigit(c0)) {
@@ -53,7 +53,7 @@ namespace {
       default: break;
       }
       IMP_THROW("Could not figure out element for " << at,
-           UsageException);
+                ValueException);
     }
   }
 }

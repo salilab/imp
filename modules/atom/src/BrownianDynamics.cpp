@@ -278,7 +278,7 @@ double BrownianDynamics::simulate(float max_time_nu)
                     << " and they are highly discontinuous due"
                     << " to particle " << *e.blamed
                     << "\n" << *get_model(),
-                    UsageException);
+                    ValueException);
       }
       success=false;
     }

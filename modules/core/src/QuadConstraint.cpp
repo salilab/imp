@@ -75,16 +75,13 @@ ParticlesTemp QuadConstraint::get_input_particles() const {
         ParticlesTemp t;
         std::set_union(ret.begin(), ret.end(), oret.begin(), oret.end(),
                        std::back_inserter(t));
-        IMP_IF_CHECK(USAGE) {
-          if (t.size() != ret.size()) {
-            IMP_THROW("The particles written by "
-                      << " the after modifier in " << get_name() << " must "
-                      << "be a subset of those read by the before "
-                      << "modifier. Before: " << Particles(ret) << " and after "
-                      << Particles(oret),
-                      UsageException);
-          }
-        }
+        IMP_USAGE_CHECK(t.size() == ret.size(),
+                        "The particles written by "
+                        << " the after modifier in " << get_name() << " must "
+                        << "be a subset of those read by the before "
+                        << "modifier. Before: " << Particles(ret)
+                        << " and after " << Particles(oret),
+                        UsageException);
       }
     }
   } else {
@@ -111,7 +108,7 @@ ParticlesTemp QuadConstraint::get_output_particles() const {
                       << " the after modifier in " << get_name() << " must "
                         << "be a subset of those written by the before"
                         << " modifier.",
-                        UsageException);
+                        ParticleQuadException);
       }
     }
   } else {

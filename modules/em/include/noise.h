@@ -114,7 +114,7 @@ void add_noise(T& v, double op1, double op2,
   } else if (mode == "student") {
   } else {
     IMP_THROW("MultiArray::add_noise: Mode " + mode + " not supported.",
-              UsageException);
+              ValueException);
   }
 
 

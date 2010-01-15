@@ -45,7 +45,7 @@ namespace {
     if (!ret) {
       IMP_THROW("Can only use the set and add methods when no container"
                 << " was passed on construction of ConnectivityRestraint.",
-                UsageException);
+                ValueException);
     }
     return ret;
   }
