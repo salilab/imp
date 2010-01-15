@@ -74,7 +74,9 @@ def _emitter_build_pch(target, source, env):
     #print [str(x) for x in source]
     #print [str(x) for x in target]
     #print [str(x) for x in deps]
-    return (target, source+list(deps))
+    sdeps= source+list(deps)
+    sdeps.sort(lambda a,b: cmp(str(a), str(b)))
+    return (target, sdeps)
 
 BuildPCH = Builder(action=Action(_action_build_pch_h, _print_build_pch_h),
                    emitter=_emitter_build_pch)
