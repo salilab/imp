@@ -1,34 +1,4 @@
-
-
-#ifdef IMP_USE_CGAL
-%pythoncode %{
-has_cgal=True
-%}
-#else
-%pythoncode %{
-has_cgal=False
-%}
-#endif
-
-#ifdef IMP_USE_MODELLER
-%pythoncode %{
-have_modeller=True
-%}
-#else
-%pythoncode %{
-have_modeller=False
-%}
-#endif
-
-#ifdef NDEBUG
-%pythoncode %{
-have_tests=False
-%}
-#else
-%pythoncode %{
-have_tests=True
-%}
-#endif
+%include "IMP_config.i"
 
 %pythoncode %{
 class DecoratorIterator:
