@@ -12,7 +12,7 @@
 #include "JunctionTree.h"
 #include "RestraintEvaluatorI.h"
 #include "CombState.h"
-#include <IMP/core/RestraintSet.h>
+#include <IMP/RestraintSet.h>
 
 #include <IMP/Optimizer.h>
 #include <IMP/Restraint.h>

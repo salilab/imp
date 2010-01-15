@@ -51,7 +51,7 @@ class my_optimizer:
         self.d_opt = IMP.domino.DominoOptimizer(self.jt,self.mdl,self.re)
 
     def init_restraints(self,restraints_filename):
-        self.all_restraints.append(IMP.core.RestraintSet("simple"))
+        self.all_restraints.append(IMP.RestraintSet("simple"))
         self.mdl.add_restraint(self.all_restraints[0])
         pair_restraints=[]
         for line in open(restraints_filename):

@@ -25,6 +25,7 @@ files = [
          'RefCounted.h',
          'Refiner.h',
          'Restraint.h',
+         'RestraintSet.h',
          'Sampler.h',
          'ScoreState.h',
          'SetLogState.h',

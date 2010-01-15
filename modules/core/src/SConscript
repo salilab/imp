@@ -68,7 +68,6 @@ files = [
          'QuadsOptimizerState.cpp',
          'QuadsRestraint.cpp',
          'RefinedPairsPairScore.cpp',
-         'RestraintSet.cpp',
          'RigidBodyDistancePairScore.cpp',
          'RigidBodyMover.cpp',
          'RigidClosePairsFinder.cpp',

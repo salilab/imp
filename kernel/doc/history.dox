@@ -1,6 +1,13 @@
 /** \page recent Change History
 \par Week of January 1, 2010
 
+- IMP::core::RestraintSet moved to IMP::RestraintSet. The restraint sets now simply define a tree
+  with weights which the model traverses as opposed to being an opaque IMP::Restraint themselves.
+  This means that incremental evaluation of restraints in restraint sets now works and that
+  restraints in restraint sets can be individually evaluated. Existing working usage should not
+  have changed (so \c sed should manage updates just fine), but the internal
+  implementation is completely new, so pay attention.
+
 - \imp now has a text i/o layer consisting of IMP::TextInput and IMP::TextOutput. These classes are
   convertible to C++ streams and implicitly constructable from both streams and file paths. As a result,
   functions that take them will work when called with a string for a file path, a Python file or a

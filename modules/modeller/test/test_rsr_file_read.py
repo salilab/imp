@@ -83,7 +83,7 @@ class ModellerRestraintsTests(IMP.test.TestCase):
             modmodel.restraints.clear()
             modmodel.restraints.add(r)
 
-            rset = IMP.core.RestraintSet()
+            rset = IMP.RestraintSet()
             m.add_restraint(rset)
             for rsr in loader.load_static_restraints():
                 rset.add_restraint(rsr)

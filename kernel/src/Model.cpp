@@ -12,6 +12,7 @@
 #include "IMP/Restraint.h"
 #include "IMP/DerivativeAccumulator.h"
 #include "IMP/ScoreState.h"
+#include "IMP/RestraintSet.h"
 #include <boost/timer.hpp>
 #include <set>
 
@@ -192,21 +193,27 @@ IMP_END_INTERNAL_NAMESPACE
 IMP_BEGIN_NAMESPACE
 
 namespace {
+  typedef std::pair<double, Restraint*> WeightedRestraint;
+  typedef std::vector<WeightedRestraint> WeightedRestraints;
+
 
   typedef boost::adjacency_list<boost::vecS, boost::vecS,
                                 boost::bidirectionalS,
                                 boost::property<boost::vertex_name_t, Object*>,
                                 boost::property<boost::edge_name_t,
                                                 int> > DependencyGraph;
+}
+// emacs indentations have problems
+namespace {
 
-typedef boost::graph_traits<DependencyGraph>::edge_descriptor DependencyEdge;
-typedef boost::graph_traits<DependencyGraph>
-::vertex_descriptor DependencyVertex;
-typedef boost::graph_traits<DependencyGraph> DependencyTraits;
-typedef boost::property_map<DependencyGraph,
-                            boost::vertex_name_t>::type ObjectMap;
-typedef boost::property_map<DependencyGraph,
-                            boost::edge_name_t>::type EdgeMap;
+  typedef boost::graph_traits<DependencyGraph>::edge_descriptor DependencyEdge;
+  typedef boost::graph_traits<DependencyGraph>
+  ::vertex_descriptor DependencyVertex;
+  typedef boost::graph_traits<DependencyGraph> DependencyTraits;
+  typedef boost::property_map<DependencyGraph,
+                              boost::vertex_name_t>::type ObjectMap;
+  typedef boost::property_map<DependencyGraph,
+                              boost::edge_name_t>::type EdgeMap;
 
   struct Dependencies {
     DependencyGraph graph;
@@ -215,6 +222,7 @@ typedef boost::property_map<DependencyGraph,
     std::map<Container*, DependencyVertex> containers;
     std::map<Particle*, DependencyVertex> particles;
     std::map<Restraint*, boost::dynamic_bitset<> > depends;
+    std::vector<std::pair<double, Restraint*> > weighted;
   };
 
   template <class C>
@@ -237,8 +245,8 @@ typedef boost::property_map<DependencyGraph,
 
   enum EdgeType {PS, SP, CS, SC, CR, PR, CC, CP};
 
-// put it here to keep it out of the header for now
-std::map<Model*, Dependencies> graphs_;
+  // put it here to keep it out of the header for now
+  std::map<Model*, Dependencies> graphs_;
 
   void write_graph(DependencyGraph &graph, ObjectMap &om, std::string name) {
     static unsigned int num=0;
@@ -249,274 +257,305 @@ std::map<Model*, Dependencies> graphs_;
     ++num;
   }
 
-template <class T>
-DependencyVertex get_vertex(DependencyGraph &graph,
-                            T* v,
-                            ObjectMap &om,
-                            std::map<T*, DependencyVertex> &map) {
-  std::map<Container*, DependencyVertex>::iterator it;
-  it = map.find(v);
-  if (it == map.end()) {
-    IMP_LOG(VERBOSE, "On demand adding vertex for \"" << v->get_name()
-            << "\" from " << boost::num_vertices(graph) << std::endl);
-    DependencyVertex cv= boost::add_vertex(graph);
-    IMP_LOG(VERBOSE, "Now " << boost::num_vertices(graph) << std::endl);
-    om[cv]= v;
-    map[v]=cv;
-    return cv;
-  } else {
-    return it->second;
+  template <class T>
+  DependencyVertex get_vertex(DependencyGraph &graph,
+                              T* v,
+                              ObjectMap &om,
+                              std::map<T*, DependencyVertex> &map) {
+    std::map<Container*, DependencyVertex>::iterator it;
+    it = map.find(v);
+    if (it == map.end()) {
+      IMP_LOG(VERBOSE, "On demand adding vertex for \"" << v->get_name()
+              << "\" from " << boost::num_vertices(graph) << std::endl);
+      DependencyVertex cv= boost::add_vertex(graph);
+      IMP_LOG(VERBOSE, "Now " << boost::num_vertices(graph) << std::endl);
+      om[cv]= v;
+      map[v]=cv;
+      return cv;
+    } else {
+      return it->second;
+    }
   }
-}
 
-void add_edge(DependencyGraph &graph,
-              EdgeMap &em,
-              DependencyVertex va,
-              DependencyVertex vb,
-              EdgeType et) {
-  bool inserted;
-  DependencyEdge edge;
-  boost::tie(edge, inserted) =boost::add_edge(va, vb, graph);
-  em[edge]= et;
-}
+  void add_edge(DependencyGraph &graph,
+                EdgeMap &em,
+                DependencyVertex va,
+                DependencyVertex vb,
+                EdgeType et) {
+    bool inserted;
+    DependencyEdge edge;
+    boost::tie(edge, inserted) =boost::add_edge(va, vb, graph);
+    em[edge]= et;
+  }
 
-void build_rsc_dependency_graph(Dependencies &deps) {
-  ObjectMap om= boost::get(boost::vertex_name, deps.graph);
-  EdgeMap em= boost::get(boost::edge_name, deps.graph);
-  ContainersTemp new_containers;
-  for (std::map<Restraint*, DependencyVertex>::iterator it
-         = deps.restraints.begin();
-       it != deps.restraints.end(); ++it) {
-    IMP_LOG(VERBOSE, "Adding node for score state \"" << it->first->get_name()
-            << "\" from " << boost::num_vertices(deps.graph) << std::endl);
-    DependencyVertex vertex= boost::add_vertex(deps.graph);
-    om[vertex]=it->first;
-    it->second=vertex;
-    ContainersTemp ct= filter(it->first->get_input_containers());
-    IMP_LOG(VERBOSE, "Found input containers " << Containers(ct) <<std::endl);
-    new_containers.insert(new_containers.end(), ct.begin(), ct.end());
-    for (unsigned int j=0; j < ct.size(); ++j) {
-      DependencyVertex cv= get_vertex(deps.graph, ct[j], om, deps.containers);
-      add_edge(deps.graph, em, cv, vertex, CR);
-    }
-  }
-  for (std::map<ScoreState*, DependencyVertex> ::iterator
-         it= deps.score_states.begin();
-       it != deps.score_states.end(); ++it) {
-    IMP_LOG(VERBOSE, "Adding node for score state \"" << it->first->get_name()
-            << "\" from " << boost::num_vertices(deps.graph) << std::endl);
-    DependencyVertex vertex= boost::add_vertex(deps.graph);
-    IMP_LOG(VERBOSE, "Now " << boost::num_vertices(deps.graph) << std::endl);
-    om[vertex]=it->first;
-    it->second=vertex;
-    ContainersTemp ict= filter(it->first->get_input_containers());
-    IMP_LOG(VERBOSE, "Found input containers " << Containers(ict) <<std::endl);
-    new_containers.insert(new_containers.end(), ict.begin(), ict.end());
-    for (unsigned int j=0; j < ict.size(); ++j) {
-      DependencyVertex cv= get_vertex(deps.graph, ict[j], om, deps.containers);
-      add_edge(deps.graph, em, cv, vertex, CS);
-    }
-    ContainersTemp oct= filter(it->first->get_output_containers());
-    IMP_LOG(VERBOSE, "Found output containers " << Containers(oct) <<std::endl);
-    new_containers.insert(new_containers.end(), oct.begin(), oct.end());
-    for (unsigned int j=0; j < oct.size(); ++j) {
-      DependencyVertex cv= get_vertex(deps.graph, oct[j], om, deps.containers);
-      IMP_IF_CHECK(USAGE) {
-        DependencyTraits::in_edge_iterator ic, ie;
-        for (boost::tie(ic, ie) = boost::in_edges( cv, deps.graph);
-             ic != ie; ++ic) {
-          if (em[*ic] == SP) {
-            IMP_THROW("Error, " << it->first->get_name() << " and " <<
-                      om[boost::source(*ic, deps.graph)]->get_name()
-                      << " both write particle " << om[cv]->get_name(),
-                      UsageException);
-          }
-        }
-      }
-      add_edge(deps.graph, em, vertex, cv, SC);
-    }
-    //write_graph(deps.graph, om, "intermediate.%d.dot");
-  }
-  while (!new_containers.empty()) {
-    IMP_LOG(VERBOSE, "New containers are " << Containers(new_containers)
-            << std::endl);
-    ContainersTemp cct;
-    std::swap(new_containers, cct);
-    cct= filter(cct);
-    for (unsigned int i=0; i< cct.size(); ++i) {
-      DependencyVertex ccv= deps.containers[cct[i]];
-      ContainersTemp ct= filter(cct[i]->get_input_containers());
+  void build_rsc_dependency_graph(Dependencies &deps) {
+    ObjectMap om= boost::get(boost::vertex_name, deps.graph);
+    EdgeMap em= boost::get(boost::edge_name, deps.graph);
+    ContainersTemp new_containers;
+    for (std::map<Restraint*, DependencyVertex>::iterator it
+           = deps.restraints.begin();
+         it != deps.restraints.end(); ++it) {
+      IMP_LOG(VERBOSE, "Adding node for score state \"" << it->first->get_name()
+              << "\" from " << boost::num_vertices(deps.graph) << std::endl);
+      DependencyVertex vertex= boost::add_vertex(deps.graph);
+      om[vertex]=it->first;
+      it->second=vertex;
+      ContainersTemp ct= filter(it->first->get_input_containers());
+      IMP_LOG(VERBOSE, "Found input containers " << Containers(ct) <<std::endl);
       new_containers.insert(new_containers.end(), ct.begin(), ct.end());
       for (unsigned int j=0; j < ct.size(); ++j) {
         DependencyVertex cv= get_vertex(deps.graph, ct[j], om, deps.containers);
-        add_edge(deps.graph, em, cv, ccv, CC);
+        add_edge(deps.graph, em, cv, vertex, CR);
+      }
     }
+    for (std::map<ScoreState*, DependencyVertex> ::iterator
+           it= deps.score_states.begin();
+         it != deps.score_states.end(); ++it) {
+      IMP_LOG(VERBOSE, "Adding node for score state \"" << it->first->get_name()
+              << "\" from " << boost::num_vertices(deps.graph) << std::endl);
+      DependencyVertex vertex= boost::add_vertex(deps.graph);
+      IMP_LOG(VERBOSE, "Now " << boost::num_vertices(deps.graph) << std::endl);
+      om[vertex]=it->first;
+      it->second=vertex;
+      ContainersTemp ict= filter(it->first->get_input_containers());
+      IMP_LOG(VERBOSE, "Found input containers "
+              << Containers(ict) <<std::endl);
+      new_containers.insert(new_containers.end(), ict.begin(), ict.end());
+      for (unsigned int j=0; j < ict.size(); ++j) {
+        DependencyVertex cv= get_vertex(deps.graph, ict[j],
+                                        om, deps.containers);
+        add_edge(deps.graph, em, cv, vertex, CS);
+      }
+      ContainersTemp oct= filter(it->first->get_output_containers());
+      IMP_LOG(VERBOSE, "Found output containers "
+              << Containers(oct) <<std::endl);
+      new_containers.insert(new_containers.end(), oct.begin(), oct.end());
+      for (unsigned int j=0; j < oct.size(); ++j) {
+        DependencyVertex cv= get_vertex(deps.graph, oct[j],
+                                        om, deps.containers);
+        IMP_IF_CHECK(USAGE) {
+          DependencyTraits::in_edge_iterator ic, ie;
+          for (boost::tie(ic, ie) = boost::in_edges( cv, deps.graph);
+               ic != ie; ++ic) {
+            if (em[*ic] == SP) {
+              IMP_THROW("Error, " << it->first->get_name() << " and " <<
+                        om[boost::source(*ic, deps.graph)]->get_name()
+                        << " both write particle " << om[cv]->get_name(),
+                        UsageException);
+            }
+          }
+        }
+        add_edge(deps.graph, em, vertex, cv, SC);
+      }
+      //write_graph(deps.graph, om, "intermediate.%d.dot");
+    }
+    while (!new_containers.empty()) {
+      IMP_LOG(VERBOSE, "New containers are " << Containers(new_containers)
+              << std::endl);
+      ContainersTemp cct;
+      std::swap(new_containers, cct);
+      cct= filter(cct);
+      for (unsigned int i=0; i< cct.size(); ++i) {
+        DependencyVertex ccv= deps.containers[cct[i]];
+        ContainersTemp ct= filter(cct[i]->get_input_containers());
+        new_containers.insert(new_containers.end(), ct.begin(), ct.end());
+        for (unsigned int j=0; j < ct.size(); ++j) {
+          DependencyVertex cv= get_vertex(deps.graph, ct[j],
+                                          om, deps.containers);
+          add_edge(deps.graph, em, cv, ccv, CC);
+        }
+      }
     }
   }
-}
 
-void update_graph(Dependencies &deps,
-                  Restraint *r,
-                  DependencyVertex dv) {
-  EdgeMap em= boost::get(boost::edge_name, deps.graph);
-  DependencyTraits::in_edge_iterator ic, ie;
-  std::vector<DependencyEdge> to_remove;
-  for (boost::tie(ic, ie) = boost::in_edges( dv, deps.graph); ic != ie; ++ic) {
-    if (em[*ic] == PR) {
-      to_remove.push_back(*ic);
+  void update_graph(Dependencies &deps,
+                    Restraint *r,
+                    DependencyVertex dv) {
+    EdgeMap em= boost::get(boost::edge_name, deps.graph);
+    DependencyTraits::in_edge_iterator ic, ie;
+    std::vector<DependencyEdge> to_remove;
+    for (boost::tie(ic, ie) = boost::in_edges( dv, deps.graph);
+         ic != ie; ++ic) {
+      if (em[*ic] == PR) {
+        to_remove.push_back(*ic);
+      }
     }
-  }
-  for (unsigned int i=0; i< to_remove.size(); ++i) {
-    boost::remove_edge(to_remove[i], deps.graph);
-  }
-  ParticlesTemp pt= filter(r->get_input_particles());
-  for (unsigned int i=0; i< pt.size(); ++i) {
-    DependencyVertex pv= deps.particles.find(pt[i])->second;
-    bool inserted;
-    DependencyEdge edge;
-    boost::tie(edge, inserted) =boost::add_edge(pv, dv, deps.graph);
-    em[edge]= PR;
-  }
-}
-
-void update_graph(Dependencies &deps,
-                  ScoreState *r,
-                  DependencyVertex dv) {
-  EdgeMap em= boost::get(boost::edge_name, deps.graph);
-  DependencyTraits::in_edge_iterator ic, ie;
-  std::vector<DependencyEdge> to_remove;
-  for (boost::tie(ic, ie) = boost::in_edges(dv, deps.graph); ic != ie; ++ic) {
-    if (em[*ic] == PR) {
-      to_remove.push_back(*ic);
+    for (unsigned int i=0; i< to_remove.size(); ++i) {
+      boost::remove_edge(to_remove[i], deps.graph);
     }
-  }
-  for (unsigned int i=0; i< to_remove.size(); ++i) {
-    boost::remove_edge(to_remove[i], deps.graph);
-  }
-  ParticlesTemp opt= filter(r->get_output_particles());
-  std::set<Particle*> output(opt.begin(), opt.end());
-  for (unsigned int i=0; i< opt.size(); ++i) {
-    DependencyVertex pv= deps.particles.find(opt[i])->second;
-    bool inserted;
-    DependencyEdge edge;
-    boost::tie(edge, inserted) =boost::add_edge(dv, pv, deps.graph);
-    em[edge]= SP;
-  }
-  IMP_LOG(VERBOSE, "Outputs are " << Particles(opt) << std::endl);
-  ParticlesTemp ipt= filter(r->get_input_particles());
-  for (unsigned int i=0; i< ipt.size(); ++i) {
-    Particle *p= ipt[i];
-    if (output.find(p) == output.end()) {
-      DependencyVertex pv= deps.particles.find(ipt[i])->second;
+    ParticlesTemp pt= filter(r->get_input_particles());
+    for (unsigned int i=0; i< pt.size(); ++i) {
+      DependencyVertex pv= deps.particles.find(pt[i])->second;
       bool inserted;
       DependencyEdge edge;
       boost::tie(edge, inserted) =boost::add_edge(pv, dv, deps.graph);
-      em[edge]= PS;
+      em[edge]= PR;
     }
   }
-  IMP_LOG(VERBOSE, "Input are " << Particles(ipt) << std::endl);
-}
 
-
-ScoreStatesTemp sort_score_states( Dependencies &deps) {
-  std::vector<DependencyVertex> out(boost::num_vertices(deps.graph));
-  ObjectMap om= boost::get(boost::vertex_name, deps.graph);
-  ScoreStatesTemp ret;
-  ret.reserve(boost::num_vertices(deps.graph));
-  try {
-    boost::topological_sort(deps.graph, out.begin());
-  } catch (...) {
-    write_graph(deps.graph, om, "model_dependency_graph.dot");
-    IMP_THROW("Topoligical sort failed, probably due to loops in "
-              << " dependency graph. "
-              << " The graph was written to a file "
-              << "\"model_dependency_graph.dot\" in "
-              << "your current directory. Do somethign like "
-              << "\"dot -Tps -o graph.ps model_dependency_graph.dot\" "
-              << "to view it.",
-             UsageException);
-  }
-  for (int i=out.size()-1; i > -1; --i) {
-    Object *o= om[out[i]];
-    IMP_LOG(VERBOSE, "Trying object: " << o->get_name());
-    ScoreState *ss= dynamic_cast<ScoreState*>(o);
-    if (ss) {
-      IMP_LOG(VERBOSE, " yup." << std::endl);
-      ret.push_back(ss);
-    } else {
-      IMP_LOG(VERBOSE, " nope." << std::endl);
-    }
-  }
-  return ret;
-}
-
-
-
-void get_upstream_sc(Dependencies &deps,
-                     const std::vector<DependencyVertex> &starts,
-                     ScoreStatesTemp &ssout, ContainersTemp &cout) {
-  ObjectMap om= boost::get(boost::vertex_name, deps.graph);
-  std::vector<DependencyVertex> front=starts;
-  std::vector<char> visited(boost::num_vertices(deps.graph), false);
-  while (!front.empty()) {
-    DependencyVertex v= front.back();
-    front.pop_back();
-    Object *o= om[v];
-    Container *c= dynamic_cast<Container*>(o);
-    if (c) {
-      cout.push_back(c);
-    } else {
-      ScoreState *s= dynamic_cast<ScoreState*>(o);
-      if (s) {
-        ssout.push_back(s);
-      }
-    }
+  void update_graph(Dependencies &deps,
+                    ScoreState *r,
+                    DependencyVertex dv) {
+    EdgeMap em= boost::get(boost::edge_name, deps.graph);
     DependencyTraits::in_edge_iterator ic, ie;
-    for (boost::tie(ic, ie) = boost::in_edges(v, deps.graph); ic != ie; ++ic) {
-      DependencyVertex tv= boost::target(*ic, deps.graph);
-      if (!visited[tv]) {
-        visited[tv]=true;
-        front.push_back(tv);
+    std::vector<DependencyEdge> to_remove;
+    for (boost::tie(ic, ie) = boost::in_edges(dv, deps.graph); ic != ie; ++ic) {
+      if (em[*ic] == PR) {
+        to_remove.push_back(*ic);
+      }
+    }
+    for (unsigned int i=0; i< to_remove.size(); ++i) {
+      boost::remove_edge(to_remove[i], deps.graph);
+    }
+    ParticlesTemp opt= filter(r->get_output_particles());
+    std::set<Particle*> output(opt.begin(), opt.end());
+    for (unsigned int i=0; i< opt.size(); ++i) {
+      DependencyVertex pv= deps.particles.find(opt[i])->second;
+      bool inserted;
+      DependencyEdge edge;
+      boost::tie(edge, inserted) =boost::add_edge(dv, pv, deps.graph);
+      em[edge]= SP;
+    }
+    IMP_LOG(VERBOSE, "Outputs are " << Particles(opt) << std::endl);
+    ParticlesTemp ipt= filter(r->get_input_particles());
+    for (unsigned int i=0; i< ipt.size(); ++i) {
+      Particle *p= ipt[i];
+      if (output.find(p) == output.end()) {
+        DependencyVertex pv= deps.particles.find(ipt[i])->second;
+        bool inserted;
+        DependencyEdge edge;
+        boost::tie(edge, inserted) =boost::add_edge(pv, dv, deps.graph);
+        em[edge]= PS;
+      }
+    }
+    IMP_LOG(VERBOSE, "Input are " << Particles(ipt) << std::endl);
+  }
+
+
+  ScoreStatesTemp sort_score_states( Dependencies &deps) {
+    std::vector<DependencyVertex> out(boost::num_vertices(deps.graph));
+    ObjectMap om= boost::get(boost::vertex_name, deps.graph);
+    ScoreStatesTemp ret;
+    ret.reserve(boost::num_vertices(deps.graph));
+    try {
+      boost::topological_sort(deps.graph, out.begin());
+    } catch (...) {
+      write_graph(deps.graph, om, "model_dependency_graph.dot");
+      IMP_THROW("Topoligical sort failed, probably due to loops in "
+                << " dependency graph. "
+                << " The graph was written to a file "
+                << "\"model_dependency_graph.dot\" in "
+                << "your current directory. Do somethign like "
+                << "\"dot -Tps -o graph.ps model_dependency_graph.dot\" "
+                << "to view it.",
+                UsageException);
+    }
+    for (int i=out.size()-1; i > -1; --i) {
+      Object *o= om[out[i]];
+      IMP_LOG(VERBOSE, "Trying object: " << o->get_name());
+      ScoreState *ss= dynamic_cast<ScoreState*>(o);
+      if (ss) {
+        IMP_LOG(VERBOSE, " yup." << std::endl);
+        ret.push_back(ss);
+      } else {
+        IMP_LOG(VERBOSE, " nope." << std::endl);
+      }
+    }
+    return ret;
+  }
+
+
+
+  void get_upstream_sc(Dependencies &deps,
+                       const std::vector<DependencyVertex> &starts,
+                       ScoreStatesTemp &ssout, ContainersTemp &cout) {
+    ObjectMap om= boost::get(boost::vertex_name, deps.graph);
+    std::vector<DependencyVertex> front=starts;
+    std::vector<char> visited(boost::num_vertices(deps.graph), false);
+    while (!front.empty()) {
+      DependencyVertex v= front.back();
+      front.pop_back();
+      Object *o= om[v];
+      Container *c= dynamic_cast<Container*>(o);
+      if (c) {
+        cout.push_back(c);
+      } else {
+        ScoreState *s= dynamic_cast<ScoreState*>(o);
+        if (s) {
+          ssout.push_back(s);
+        }
+      }
+      DependencyTraits::in_edge_iterator ic, ie;
+      for (boost::tie(ic, ie) = boost::in_edges(v, deps.graph);
+           ic != ie; ++ic) {
+        DependencyVertex tv= boost::target(*ic, deps.graph);
+        if (!visited[tv]) {
+          visited[tv]=true;
+          front.push_back(tv);
+        }
       }
     }
   }
-}
-
-Dependencies make_graph(const RestraintsTemp &rs,
-                        const ScoreStatesTemp &ss,
-                        const ParticlesTemp &ps) {
-  IMP_LOG(VERBOSE, "Making dependency graph on " << rs.size()
-          << " restraints " << ss.size() << " score states "
-          << " and " << ps.size() << " particles." << std::endl);
-  Dependencies deps;
-  for (unsigned int i=0; i< rs.size(); ++i) {
-    deps.restraints.insert(std::make_pair(rs[i], DependencyVertex()));
-  }
-  for (unsigned int i=0; i< ss.size(); ++i) {
-    deps.score_states.insert(std::make_pair(ss[i], DependencyVertex()));
-  }
-  ObjectMap om= boost::get(boost::vertex_name, deps.graph);
-  build_rsc_dependency_graph(deps);
-  for (unsigned int i=0; i< ps.size(); ++i) {
-    DependencyVertex v= boost::add_vertex(deps.graph);
-    deps.particles.insert(std::make_pair(ps[i], v));
-    om[v]=ps[i];
-  }
-  for (unsigned int i=0; i< rs.size(); ++i) {
-    update_graph(deps, rs[i], deps.restraints[rs[i]]);
-  }
-  for (unsigned int i=0; i< ss.size(); ++i) {
-    update_graph(deps, ss[i], deps.score_states[ss[i]]);
-  }
-  IMP_LOG(VERBOSE, "The graph has " << boost::num_vertices(deps.graph)
-          << " vertices" << std::endl);
-  /*IMP_IF_LOG(VERBOSE) {
-    write_graph(deps.graph, om, "dependency_graph.dot");
-    }*/
-  return deps;
-}
 
 
+  template <class It>
+  void gather_restraints(It b, It e,
+                         double weight,
+                         WeightedRestraints &out) {
+    for (It c=b; c!= e; ++c) {
+      RestraintSet *rs=dynamic_cast<RestraintSet*>(*c);
+      if (rs) {
+        IMP_LOG(TERSE, "Restraint set " << rs->get_name()
+                << " has weight " << rs->get_weight() << std::endl);
+        gather_restraints(rs->restraints_begin(),
+                          rs->restraints_end(),
+                          weight*rs->get_weight(),
+                          out);
+      } else {
+        IMP_LOG(TERSE, "Restraint " << (*c)->get_name()
+                << " has weight " << weight << std::endl);
+        out.push_back(WeightedRestraint(weight, *c));
+      }
+    }
+  }
+
+
+  Dependencies make_graph(const RestraintsTemp &rs,
+                          const ScoreStatesTemp &ss,
+                          const ParticlesTemp &ps) {
+    IMP_LOG(VERBOSE, "Making dependency graph on " << rs.size()
+            << " restraints " << ss.size() << " score states "
+            << " and " << ps.size() << " particles." << std::endl);
+    Dependencies deps;
+    gather_restraints(rs.begin(), rs.end(), 1.0, deps.weighted);
+    for (unsigned int i=0; i< deps.weighted.size(); ++i) {
+      deps.restraints.insert(std::make_pair(deps.weighted[i].second,
+                                            DependencyVertex()));
+    }
+    for (unsigned int i=0; i< ss.size(); ++i) {
+      deps.score_states.insert(std::make_pair(ss[i], DependencyVertex()));
+    }
+    ObjectMap om= boost::get(boost::vertex_name, deps.graph);
+    build_rsc_dependency_graph(deps);
+    for (unsigned int i=0; i< ps.size(); ++i) {
+      DependencyVertex v= boost::add_vertex(deps.graph);
+      deps.particles.insert(std::make_pair(ps[i], v));
+      om[v]=ps[i];
+    }
+    for (unsigned int i=0; i< deps.weighted.size(); ++i) {
+      update_graph(deps, deps.weighted[i].second,
+                   deps.restraints[deps.weighted[i].second]);
+    }
+    for (unsigned int i=0; i< ss.size(); ++i) {
+      update_graph(deps, ss[i], deps.score_states[ss[i]]);
+    }
+    IMP_LOG(VERBOSE, "The graph has " << boost::num_vertices(deps.graph)
+            << " vertices" << std::endl);
+    /*IMP_IF_LOG(VERBOSE) {
+      write_graph(deps.graph, om, "dependency_graph.dot");
+      }*/
+    return deps;
+  }
 
   void make_dependencies(Dependencies &deps, const ScoreStatesTemp &ss) {
     for (std::map<Restraint*, DependencyVertex>::const_iterator
@@ -536,8 +575,6 @@ Dependencies make_graph(const RestraintsTemp &rs,
       deps.depends[it->first]= bs;
     }
   }
-
-
 }
 
 
@@ -694,25 +731,29 @@ Model::~Model()
   }
 }
 
+void Model::reset_dependencies() {
+  score_states_ordered_=false;
+}
+
 IMP_LIST_IMPL(Model, Restraint, restraint, Restraint*,
               Restraints,
               {IMP_INTERNAL_CHECK(cur_stage_== NOT_EVALUATING,
-       "The set of restraints cannot be changed during evaluation.");
+        "The set of restraints cannot be changed during evaluation.");
                 obj->set_model(this);
                 obj->set_was_owned(true);
-                score_states_ordered_=false;
                 first_incremental_=true;},,
               {
                 obj->set_model(NULL);
+                reset_dependencies();
               });
 
 IMP_LIST_IMPL(Model, ScoreState, score_state, ScoreState*,
               ScoreStates,
               {IMP_INTERNAL_CHECK(cur_stage_== NOT_EVALUATING,
-             "The set of score states cannot be changed during"
+              "The set of score states cannot be changed during"
                                   << "evaluation.");
                 obj->set_model(this);
-                score_states_ordered_=false;
+                reset_dependencies();
                 obj->set_was_owned(true);
                 IMP_LOG(VERBOSE, "Added score state " << obj->get_name()
                         << std::endl);
@@ -859,7 +900,7 @@ void Model::zero_derivatives(bool st) const {
   }
 }
 
-double Model::do_evaluate_restraints(const Restraints &restraints,
+double Model::do_evaluate_restraints(const WeightedRestraints &restraints,
                                      bool calc_derivs,
                                      WhichRestraints incremental_restraints,
                                      bool incremental_evaluation) const {
@@ -876,37 +917,42 @@ double Model::do_evaluate_restraints(const Restraints &restraints,
             << std::endl);
   }
   double score=0;
-  DerivativeAccumulator accum;
   boost::timer timer;
-  for (Restraints::const_iterator it= restraints.begin();
+  for (WeightedRestraints::const_iterator it= restraints.begin();
        it != restraints.end(); ++it) {
     double value;
     if (gather_statistics_) timer.restart();
-    if ((*it)->get_is_incremental()
+    if (it->second->get_is_incremental()
         && incremental_restraints != NONINCREMENTAL) {
       if (incremental_evaluation) {
-        WRAP_EVALUATE_CALL(*it,
-             value=(*it)->unprotected_incremental_evaluate(calc_derivs?
-                                                           &accum:NULL));
-        IMP_LOG(TERSE, (*it)->get_name() << " score is " << value << std::endl);
+        DerivativeAccumulator accum(it->first);
+        WRAP_EVALUATE_CALL(it->second,
+     value=it->first*it->second->unprotected_incremental_evaluate(calc_derivs?
+                                                              &accum:NULL));
+        IMP_LOG(TERSE, it->second->get_name() << " score is "
+                << value << std::endl);
       } else {
-        WRAP_EVALUATE_CALL(*it,
-                           value=(*it)->unprotected_evaluate(calc_derivs?
+        DerivativeAccumulator accum(it->first);
+        WRAP_EVALUATE_CALL(it->second,
+            value=it->first*it->second->unprotected_evaluate(calc_derivs?
                                                              &accum:NULL));
-        IMP_LOG(TERSE, (*it)->get_name() << " score is " << value << std::endl);
+        IMP_LOG(TERSE, it->second->get_name() << " score is "
+                << value << std::endl);
       }
       if (gather_statistics_) {
-        stats_data_[*it].update_restraint(timer.elapsed(), value);
+        stats_data_[it->second].update_restraint(timer.elapsed(), value);
       }
       score+= value;
-    } else if (!(*it)->get_is_incremental()
+    } else if (!it->second->get_is_incremental()
                && incremental_restraints != INCREMENTAL) {
-      WRAP_EVALUATE_CALL(*it,
-                         value=(*it)->unprotected_evaluate(calc_derivs?
+      DerivativeAccumulator accum(it->first);
+      WRAP_EVALUATE_CALL(it->second,
+             value=it->first*it->second->unprotected_evaluate(calc_derivs?
                                                            &accum:NULL));
-      IMP_LOG(TERSE, (*it)->get_name()<<  " score is " << value << std::endl);
+      IMP_LOG(TERSE, it->second->get_name()<<  " score is "
+              << value << std::endl);
       if (gather_statistics_) {
-        stats_data_[*it].update_restraint(timer.elapsed(), value);
+        stats_data_[it->second].update_restraint(timer.elapsed(), value);
       }
       score+= value;
     }
@@ -943,7 +989,7 @@ void Model::validate_attribute_values() const {
 }
 
 
-void Model::validate_incremental_evaluate(const RestraintsTemp &restraints,
+void Model::validate_incremental_evaluate(const WeightedRestraints &restraints,
                                           bool calc_derivs,
                                           double score) {
   IMP_LOG(TERSE, "Begin checking incremental evaluation"<<std::endl);
@@ -1039,7 +1085,7 @@ namespace {
 
 
 
-double Model::do_evaluate(const RestraintsTemp &restraints,
+double Model::do_evaluate(const WeightedRestraints &restraints,
                           const ScoreStatesTemp &states,
                           bool calc_derivs) {
   // validate values
@@ -1119,18 +1165,21 @@ double Model::do_evaluate(const RestraintsTemp &restraints,
 Float Model::evaluate(bool calc_derivs) {
   if (!score_states_ordered_) order_score_states();
 
-  return do_evaluate(access_restraints(), access_score_states(), calc_derivs);
+  return do_evaluate(graphs_[this].weighted, access_score_states(),
+                     calc_derivs);
 }
 
 
 Float Model::evaluate(const RestraintsTemp &restraints, bool calc_derivs)
 {
   if (!score_states_ordered_) order_score_states();
+  WeightedRestraints wr;
+  gather_restraints(restraints.begin(), restraints.end(), 1.0, wr);
   IMP_IF_CHECK(USAGE) {
-    for (unsigned int i=0; i< restraints.size(); ++i) {
-      if (graphs_[this].depends.find(restraints[i])
+    for (unsigned int i=0; i< wr.size(); ++i) {
+      if (graphs_[this].depends.find(wr[i].second)
           == graphs_[this].depends.end()) {
-        IMP_THROW("Restraint " << restraints[i]->get_name()
+        IMP_THROW("Restraint " << wr[i].second->get_name()
                   << " has not been directly added to the model "
                   << " and so cannot be independently evaluated.",
                   UsageException);
@@ -1138,14 +1187,14 @@ Float Model::evaluate(const RestraintsTemp &restraints, bool calc_derivs)
     }
   }
   boost::dynamic_bitset<> bs(get_number_of_score_states(), false);
-  for (unsigned int i=0; i< restraints.size(); ++i) {
-    bs|= graphs_[this].depends[restraints[i]];
+  for (unsigned int i=0; i< wr.size(); ++i) {
+    bs|= graphs_[this].depends[wr[i].second];
   }
   ScoreStatesTemp ss;
   for (unsigned int i=0; i< get_number_of_score_states(); ++i) {
     if (bs[i]) ss.push_back(get_score_state(i));
   }
-  return do_evaluate(restraints, ss, calc_derivs);
+  return do_evaluate(wr, ss, calc_derivs);
 }
 
 

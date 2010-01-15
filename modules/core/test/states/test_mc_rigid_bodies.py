@@ -21,7 +21,7 @@ class MCOptimizerTest(IMP.test.TestCase):
         IMP.core.RigidBody.setup_particle(self.m2.get_particle(),
                                                      IMP.core.XYZs(IMP.core.get_leaves(self.m2)))
         #add restraints
-        self.rsrs=IMP.core.RestraintSet()
+        self.rsrs=IMP.RestraintSet()
         self.rsrs.set_model(self.m)
         self.h = IMP.core.HarmonicUpperBound(IMP.algebra.distance(
             IMP.core.XYZ.decorate_particle(self.m1.get_particle()).get_coordinates(),

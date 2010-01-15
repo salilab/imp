@@ -41,7 +41,7 @@ class SteepestDescentTests(IMP.test.TestCase):
             self.rsrs.append(rsr)
 
         # add restraints
-        rs = IMP.core.RestraintSet("distance_rsrs")
+        rs = IMP.RestraintSet("distance_rsrs")
         self.imp_model.add_restraint(rs)
         self.restraint_sets.append(rs)
         for i in range(len(self.rsrs)):
