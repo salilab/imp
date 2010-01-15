@@ -1126,6 +1126,17 @@ Float Model::evaluate(bool calc_derivs) {
 Float Model::evaluate(const RestraintsTemp &restraints, bool calc_derivs)
 {
   if (!score_states_ordered_) order_score_states();
+  IMP_IF_CHECK(USAGE) {
+    for (unsigned int i=0; i< restraints.size(); ++i) {
+      if (graphs_[this].depends.find(restraints[i])
+          == graphs_[this].depends.end()) {
+        IMP_THROW("Restraint " << restraints[i]->get_name()
+                  << " has not been directly added to the model "
+                  << " and so cannot be independently evaluated.",
+                  UsageException);
+      }
+    }
+  }
   boost::dynamic_bitset<> bs(get_number_of_score_states(), false);
   for (unsigned int i=0; i< restraints.size(); ++i) {
     bs|= graphs_[this].depends[restraints[i]];
