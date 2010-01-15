@@ -1,4 +1,23 @@
 Import('env')
 
+e = env.Clone()
+# Generate IMP_config.i from configuration info
+def write_config_item(fh, name, is_set):
+    print >> fh, "%pythoncode %{"
+    print >> fh, "%s=%s" % (name, str(is_set))
+    print >> fh, "%}\n"
+
+def builder_config(target, source, env):
+    fh = open(target[0].abspath, 'w')
+    write_config_item(fh, 'has_cgal', env['CGAL_LIBS'] != [''])
+    write_config_item(fh, 'has_modeller', env['HAS_MODELLER'])
+    write_config_item(fh, 'has_tests', 'NDEBUG' not in env['CPPDEFINES'])
+
+e.Append(BUILDERS = {'MakeConfig': Builder(action=builder_config)})
+config = e.MakeConfig("IMP_config.i",
+                      [env.Value(env['CGAL_LIBS']),
+                       env.Value(env['HAS_MODELLER']),
+                       env.Value(env['CPPDEFINES'])])
+#
 # Build the Python extension from SWIG interface file:
 env.IMPModulePython(swigfiles=env.IMPModuleGetSwigFiles(), pythonfiles=env.IMPModuleGetPython())
