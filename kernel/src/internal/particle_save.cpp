@@ -22,7 +22,8 @@ namespace {
     std::vector<typename std::iterator_traits<It>::value_type >
       ks(b,e);
     for (unsigned int i=0; i< ks.size(); ++i) {
-    p->remove_attribute(typename std::iterator_traits<It>::value_type(i));
+      p->remove_attribute(typename std::iterator_traits<It>
+                          ::value_type(ks[i]));
     }
   }
   template <class T>
@@ -35,6 +36,43 @@ namespace {
       if (contains(t, i)) {
         p->add_attribute(Key(i), t.get(i));
       }
+    }
+  }
+
+  template <class T>
+  T pretty(T t) {
+    return t;
+  }
+  std::string pretty(Particle *p) {
+    return p->get_name();
+  }
+  std::string pretty(Object *p) {
+    return p->get_name();
+  }
+
+  template <class T, class Key>
+  void show_table(std::ostream &out, const T &t, Key) {
+    for (unsigned int i=0; i< t.get_length(); ++i) {
+      if (contains(t, i)) {
+        out << "    " << Key(i) << ": " << pretty(t.get(i)) << std::endl;
+      }
+    }
+  }
+
+
+  template <class T>
+  void show_list(std::ostream &out, const T &t) {
+    out << "    ";
+    for (unsigned int i=0; i< t.size(); ++i) {
+      out << t[i] << " ";
+    }
+    out << std::endl;
+  }
+  template <class T>
+  void show_pair_list(std::ostream &out, const T &t) {
+    for (unsigned int i=0; i< t.size(); ++i) {
+      out << "    " << t[i].first << ": " << pretty(t[i].second)
+          << std::endl;
     }
   }
 }
@@ -68,6 +106,20 @@ void ParticleData::apply(Particle *p) const {
 
   clear(objects_, p->object_keys_begin(), p->object_keys_end(), p);
   restore<ObjectKey>(objects_, p);
+}
+
+void ParticleData::show(std::ostream &out) const {
+  out << "Data:\n";
+  out << "  floats:\n";
+  show_table(out, floats_, FloatKey());
+  out << "  ints:\n";
+  show_table(out, ints_, IntKey());
+  out << "  strings:\n";
+  show_table(out, strings_, StringKey());
+  out << "  particles:\n";
+  show_table(out, particles_, ParticleKey());
+  out << "  objects:\n";
+  show_table(out,objects_, ObjectKey());
 }
 
 
@@ -140,6 +192,32 @@ void ParticleDiff::apply(Particle *p) const {
   add(p, particles_a_);
   subtract(p, objects_r_);
   add(p, objects_a_);
+}
+
+
+void ParticleDiff::show(std::ostream &out) const {
+  out << "Added/Changed:\n";
+  out << "  floats:\n";
+  show_pair_list(out, floats_a_);
+  out << "  ints:\n";
+  show_pair_list(out,ints_a_);
+  out << "  strings:\n";
+  show_pair_list(out,strings_a_);
+  out << "  particles:\n";
+  show_pair_list(out,particles_a_);
+  out << "  objects:\n";
+  show_pair_list(out,objects_a_);
+  out << "Removed:\n";
+  out << "  floats:\n";
+  show_list(out, floats_r_);
+  out << "  ints:\n";
+  show_list(out,ints_r_);
+  out << "  strings:\n";
+  show_list(out,strings_r_);
+  out << "  particles:\n";
+  show_list(out,particles_r_);
+  out << "  objects:\n";
+  show_list(out,objects_r_);
 }
 
 IMP_END_INTERNAL_NAMESPACE
