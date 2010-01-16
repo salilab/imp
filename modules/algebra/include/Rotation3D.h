@@ -80,10 +80,12 @@ public:
    */
   Rotation3D(double a, double b, double c, double d): v_(a,b,c,d),
     has_cache_(false) {
-    IMP_USAGE_CHECK(std::abs(v_.get_squared_magnitude() - 1.0) < .05,
-              "Attempting to construct a rotation from a non-quaternion value."
-              << " The coefficient vector must have a length of 1. Got: "
-              << a << " " << b << " " << c << " " << d,
+    IMP_USAGE_CHECK(std::abs(v_.get_squared_magnitude() - 1.0) < .1,
+                    "Attempting to construct a rotation from a "
+                    << " non-quaternion value. The coefficient vector"
+                    << " must have a length of 1. Got: "
+                    << a << " " << b << " " << c << " " << d
+                    << " gives " << v_.get_squared_magnitude(),
               ValueException);
     if (a<0) {
       // make them canonical
