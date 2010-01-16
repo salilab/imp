@@ -17,6 +17,14 @@ pk2= IMP.ParticleKey("p2");
 
 class ParticleTests(IMP.test.TestCase):
     """Test particles"""
+    def _force_set(self, p, k, v):
+        if p.has_attribute(k):
+            p.set_value(k, v)
+        else:
+            p.add_attribute(k,v)
+    def _force_remove(self, p, k):
+        if p.has_attribute(k):
+            p.remove_attribute(k)
     def _add_attributes(self, p, n, op):
         p.add_attribute(fk0, n, True)
         p.add_attribute(fk1, n+1, True)
@@ -36,50 +44,44 @@ class ParticleTests(IMP.test.TestCase):
         self.assertEqual(p.get_value(pk0), p)
         self.assertEqual(p.get_value(pk1), op)
     def _set_attributes(self, p, n, op):
-        p.set_value(fk0, -3)
-        if p.has_attribute(fk1):
-            p.remove_attribute(fk1)
-        if !p.has_attribute(fk2):
-            p.add_attribute(fk2, 666)
-        p.set_value(ik0, -4)
-        p.remove_attribute(ik1)
-        p.add_attribute(ik2, -5)
-        p.set_value(sk0, "hi")
-        p.remove_attribute(sk1)
-        p.add_attribute(sk2, "there")
-        p.set_value(pk0, p.get_value(pk1))
-        p.remove_attribute(pk1)
-        p.add_attribute(pk2, p)
+        p.set_value(fk1, n*3)
+        p.remove_attribute(fk0)
+        p.add_attribute(fk2, n*7)
+        p.set_value(ik1, -4*n)
+        p.remove_attribute(ik0)
+        p.add_attribute(ik2, n*7+2)
+        p.set_value(sk1, "setit")
+        p.remove_attribute(sk0)
+        p.add_attribute(sk2, "alreadythere")
+        p.set_value(pk1, p)
+        p.remove_attribute(pk0)
+        p.add_attribute(pk2, op)
     def _test_set(self, p, n, op):
-        self.assertEqual(p.get_value(fk0), n)
-        self.assertEqual(p.get_value(fk1), n+1)
-        self.assertEqual(p.get_value(ik0), 100*n)
-        self.assertEqual(p.get_value(ik1), 100*n+1)
-        self.assertEqual(p.get_value(sk0), str(100*n))
-        self.assertEqual(p.get_value(sk1), str(100*n+1))
-        self.assertEqual(p.get_value(pk0), p)
-        self.assertEqual(p.get_value(pk1), op)
+        self.assertEqual(p.get_value(fk1), n*3)
+        self.assert_(not p.has_attribute(fk0))
+        self.assertEqual(p.get_value(fk2), n*7)
+        self.assertEqual(p.get_value(ik1), -4*n)
+        self.assert_(not p.has_attribute(ik0))
+        self.assertEqual(p.get_value(ik2), n*7+2)
+        self.assertEqual(p.get_value(sk1), "setit")
+        self.assert_(not p.has_attribute(sk0))
+        self.assertEqual(p.get_value(sk2), "alreadythere")
+        self.assertEqual(p.get_value(pk1), p)
+        self.assert_(not p.has_attribute(pk0))
+        self.assertEqual(p.get_value(pk2), op)
     def _scramble(self, p):
-        p.set_value(fk0, -3)
-        if p.has_attribute(fk1):
-            p.remove_attribute(fk1)
-        if !p.has_attribute(fk2):
-            p.add_attribute(fk2, 666)
-        p.set_value(ik0, -4)
-        if p.has_attribute(ik1):
-            p.remove_attribute(ik1)
-        if !p.has_attribute(ik2):
-            p.add_attribute(ik2, -5)
-        p.set_value(sk0, "hi")
-        if p.has_attribute(sk1):
-            p.remove_attribute(sk1)
-        if !p.has_attribute(sk2):
-            p.add_attribute(sk2, "there")
-        p.set_value(pk0, p.get_value(pk1))
-        if p.has_attribute(pk1):
-            p.remove_attribute(pk1)
-        if !p.has_attribute(pk2):
-            p.add_attribute(pk2, p)
+        self._force_set(p, fk0, -3)
+        self._force_remove(p, fk1)
+        self._force_set(p, fk2, 666)
+        self._force_set(p, ik0, -4)
+        self._force_remove(p, ik1)
+        self._force_set(p, ik2, -5)
+        self._force_set(p,sk0, "hi")
+        self._force_remove(p, sk1)
+        self._force_set(p, sk2, "there")
+        self._force_set(p, pk0, p)
+        self._force_remove(p, pk1)
+        self._force_set(p, pk2, p)
     def _make_things(self):
         m= IMP.Model()
         ps=[IMP.Particle(m), IMP.Particle(m), IMP.Particle(m)]
@@ -108,7 +110,7 @@ class ParticleTests(IMP.test.TestCase):
         cs.set_configuration(-1)
         self._test_base(ps[0], 0, ps[1])
         self._test_base(ps[1], 1, ps[2])
-    def _test_diff(self):
+    def test_diff(self):
         """Testing restore a know state with ConfigurationSet"""
         (m, ps)= self._make_things()
         cs= IMP.ConfigurationSet(m)
@@ -124,6 +126,8 @@ class ParticleTests(IMP.test.TestCase):
         cs.set_configuration(-1)
         self._test_base(ps[0], 0, ps[1])
         self._test_base(ps[1], 1, ps[2])
+        for p in m.get_particles():
+            p.show()
 
 if __name__ == '__main__':
     unittest.main()
