@@ -8,16 +8,16 @@ import IMP.display
 # the head and the tail of the chain are restrained to be close to one
 # another.
 
-#IMP.set_log_level(IMP.VERBOSE)
+IMP.set_log_level(IMP.TERSE)
 m= IMP.Model()
 # The particles in the chain
-chain= IMP.core.ListSingletonContainer(IMP.core.create_xyzr_particles(m, 20, 1.0))
+chain= IMP.core.ListSingletonContainer(IMP.core.create_xyzr_particles(m, 2, 1.0))
 
 # create a bond between successive particles
 IMP.atom.Bonded.setup_particle(chain.get_particle(0))
-bonds= IMP.core.ListSingletonContainer()
+bonds= IMP.core.ListSingletonContainer("particles")
 for i in range(1, chain.get_number_of_particles()):
-    bp= IMP.atom.Bonded.decorate_particle(chain.get_particle(i-1))
+    bp= IMP.atom.Bonded(chain.get_particle(i-1))
     bpr= IMP.atom.Bonded.setup_particle(chain.get_particle(i))
     b= IMP.atom.custom_bond(bp, bpr, 1.5, 10)
     bonds.add_particle(b.get_particle())
@@ -33,10 +33,12 @@ nbl= IMP.core.ClosePairContainer(chain, 0,2)
 bpc=IMP.atom.BondedPairFilter()
 nbl.add_pair_filter(bpc)
 
+
 # Set up excluded volume
 ps= IMP.core.SphereDistancePairScore(IMP.core.HarmonicLowerBound(0,1))
 evr= IMP.core.PairsRestraint(ps, nbl)
 m.add_restraint(evr)
+
 
 # Restraint for bonds
 bss= IMP.atom.BondSingletonScore(IMP.core.Harmonic(0,1))
@@ -44,7 +46,7 @@ br= IMP.core.SingletonsRestraint(bss, bonds)
 m.add_restraint(br)
 
 # Tie the ends of the chain
-# We cound have used a bond instead
+# We could have used a bond instead
 p= IMP.ParticlePair(chain.get_particle(0), chain.get_particle(chain.get_number_of_particles()-1))
 pps= IMP.core.ListPairContainer()
 pps.add_particle_pair(p)
@@ -52,17 +54,14 @@ cr= IMP.core.PairsRestraint(
            IMP.core.SphereDistancePairScore(IMP.core.Harmonic(3,1)), pps)
 m.add_restraint(cr)
 
-# Set up optimizer
-o= IMP.core.ConjugateGradients()
-o.set_model(m)
 
-# Write the progression of states as the system is optimized to
-# the files state.000.vrml, state.001.vrml etc.
-vrml= IMP.display.LogOptimizerState(IMP.display.ChimeraWriter(), "state.%03d.py")
-for p in chain.get_particles():
-    vrml.add_geometry(IMP.display.XYZRGeometry(IMP.core.XYZR(p)))
-vrml.set_skip_steps(100)
-o.add_optimizer_state(vrml)
-
-# We probably don't need this many steps
-o.optimize(1000)
+s= IMP.core.MCCGSampler(m)
+s.set_number_of_attempts(10)
+IMP.set_log_level(IMP.VERBOSE)
+confs= s.sample()
+for i in range(0, confs.get_number_of_configurations()):
+    confs.set_configuration(i)
+    print "Configuration ", i, " has energy ", m.evaluate(False)
+    d=IMP.display.ChimeraWriter("solution"+str(i)+".py")
+    for p in chain.get_particles():
+        d.add_geometry(IMP.display.XYZRGeometry(p))
