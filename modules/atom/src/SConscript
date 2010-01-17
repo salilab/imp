@@ -10,6 +10,7 @@ files = [
          'Chain.cpp',
          'Charged.cpp',
          'CharmmParameters.cpp',
+         'CoulombPairScore.cpp',
          'CoverBond.cpp',
          'Diffusion.cpp',
          'Domain.cpp',

@@ -134,6 +134,7 @@ def __iter__(self):
 %include "IMP/atom/Diffusion.h"
 %include "IMP/atom/Chain.h"
 %include "IMP/atom/Charged.h"
+%include "IMP/atom/CoulombPairScore.h"
 %include "IMP/atom/Domain.h"
 %include "IMP/atom/LennardJones.h"
 %include "IMP/atom/MolecularDynamics.h"

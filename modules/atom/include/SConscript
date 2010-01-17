@@ -10,6 +10,7 @@ files = [
          'Chain.h',
          'Charged.h',
          'CharmmParameters.h',
+         'CoulombPairScore.h',
          'CoverBond.h',
          'Diffusion.h',
          'Domain.h',
