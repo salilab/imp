@@ -126,6 +126,8 @@ MCCGSampler::Parameters MCCGSampler::fill_in_parameters() const {
 }
 
 ConfigurationSet *MCCGSampler::sample() const {
+  IMP_OBJECT_LOG;
+  set_was_owned(true);
   get_model()->set_is_incremental(true);
   ConfigurationSet *ret= new ConfigurationSet(get_model());
   Parameters pms= fill_in_parameters();
@@ -163,13 +165,25 @@ ConfigurationSet *MCCGSampler::sample() const {
     }
     if (get_is_good_configuration()) {
       IMP_IF_LOG(TERSE) {
-        IMP_LOG(TERSE, "Found configuration to:\n");
+        IMP_LOG(TERSE, "Found configuration:\n");
         for (Model::ParticleIterator it= get_model()->particles_begin();
              it != get_model()->particles_end(); ++it) {
           IMP_LOG_WRITE(TERSE, (*it)->show(IMP_STREAM));
         }
+        IMP_LOG(TERSE, "Energy is " << get_model()->evaluate(false)
+                << std::endl);
       }
       ret->save_configuration();
+      IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+        double oe= get_model()->evaluate(false);
+        ret->set_configuration(-1);
+        ret->set_configuration(ret->get_number_of_configurations()-1);
+        double ne= get_model()->evaluate(false);
+        IMP_INTERNAL_CHECK(std::abs(ne-oe) < (ne+oe)*.1+.1,
+                           "Energies to not match before and after save."
+                           << "Expected " << oe << " got " << ne
+                           << std::endl);
+      }
     }
   }
   if (failures != 0) {
