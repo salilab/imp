@@ -138,7 +138,22 @@ ConfigurationSet *MCCGSampler::sample() const {
   ListSingletonContainer *sc=set_up_movers(pms, mc);
   int failures=0;
   for (unsigned int i=0; i< pms.attempts_; ++i) {
+    ret->set_configuration(-1);
+    IMP_IF_LOG(TERSE) {
+      IMP_LOG(TERSE, "Restored configuration to:\n");
+      for (Model::ParticleIterator it= get_model()->particles_begin();
+           it != get_model()->particles_end(); ++it) {
+        IMP_LOG_WRITE(TERSE, (*it)->show(IMP_STREAM));
+      }
+    }
     randomize(pms,sc);
+    IMP_IF_LOG(TERSE) {
+      IMP_LOG(TERSE, "Randomized configuration to:\n");
+      for (Model::ParticleIterator it= get_model()->particles_begin();
+           it != get_model()->particles_end(); ++it) {
+        IMP_LOG_WRITE(TERSE, (*it)->show(IMP_STREAM));
+      }
+    }
     try {
       mc->optimize(pms.mc_steps_);
     } catch (ModelException) {
@@ -147,6 +162,13 @@ ConfigurationSet *MCCGSampler::sample() const {
       continue;
     }
     if (get_is_good_configuration()) {
+      IMP_IF_LOG(TERSE) {
+        IMP_LOG(TERSE, "Found configuration to:\n");
+        for (Model::ParticleIterator it= get_model()->particles_begin();
+             it != get_model()->particles_end(); ++it) {
+          IMP_LOG_WRITE(TERSE, (*it)->show(IMP_STREAM));
+        }
+      }
       ret->save_configuration();
     }
   }
