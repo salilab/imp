@@ -101,6 +101,11 @@ void ConfigurationSet::set_configuration(int i) {
        it != d.removed_.end(); ++it) {
     model_->remove_particle(*it);
   }
+  if (model_->get_is_incremental()) {
+    // things move far so incremental won't be a good idea
+    model_->set_is_incremental(false);
+    model_->set_is_incremental(true);
+  }
 }
 
 
