@@ -47,6 +47,27 @@ def numerical_derivative(func, val, step):
     return retval
 
 
+def xyz_numerical_derivatives(model, xyz, step):
+    """Calculate the x,y and z derivatives of `model`'s scoring function
+       on the `xyz` particle. The derivatives are approximated numerically
+       using the numerical_derivatives() function."""
+    class _XYZDerivativeFunc(object):
+        def __init__(self, xyz, basis_vector):
+            self._xyz = xyz
+            self._model = xyz.get_particle().get_model()
+            self._basis_vector = basis_vector
+            self._starting_coordinates = xyz.get_coordinates()
+
+        def __call__(self, val):
+            self._xyz.set_coordinates(self._starting_coordinates + \
+                                      self._basis_vector * val)
+            return self._model.evaluate(False)
+
+    return tuple(IMP.test.numerical_derivative(_XYZDerivativeFunc(xyz,
+                                          IMP.algebra.Vector3D(*x)), 0, 0.01) \
+                 for x in ((1,0,0), (0,1,0), (0,0,1)))
+
+
 class TestCase(unittest.TestCase):
     """Super class for IMP test cases"""
 
@@ -110,6 +131,16 @@ class TestCase(unittest.TestCase):
         if msg is None:
             msg = "%f != %f within %g" % (num1, num2, tolerance)
         self.assert_(diff < tolerance, msg)
+
+    def assertXYZDerivativesInTolerance(self, model, xyz, tolerance):
+        """Assert that x,y,z analytical derivatives match numerical within
+           a tolerance."""
+        model.evaluate(True)
+        derivs = xyz.get_derivatives()
+        num_derivs = xyz_numerical_derivatives(model, xyz, 0.01)
+        self.assertInTolerance(derivs[0], num_derivs[0], tolerance)
+        self.assertInTolerance(derivs[1], num_derivs[1], tolerance)
+        self.assertInTolerance(derivs[2], num_derivs[2], tolerance)
 
     def create_point_particle(self, model, x, y, z):
         """Make a particle with optimizable x, y and z attributes, and
