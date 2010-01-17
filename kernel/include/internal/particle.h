@@ -88,20 +88,20 @@ struct IMPEXPORT ParticleStorage {
   }
   ~ParticleStorage();
   typedef std::list<Particle*> Storage;
-  typedef  internal::OffsetStorage<
-    internal::ArrayStorage<internal::FloatAttributeTableTraits>, IMP_NUM_INLINE>
+  typedef  OffsetStorage<
+    ArrayStorage<FloatAttributeTableTraits>, IMP_NUM_INLINE>
     FloatTable;
-  typedef internal::ArrayStorage<internal::BoolAttributeTableTraits>
+  typedef ArrayStorage<BoolAttributeTableTraits>
     OptimizedTable;
-  typedef internal::ArrayStorage<internal::IntAttributeTableTraits>
+  typedef ArrayStorage<IntAttributeTableTraits>
     IntTable;
-  typedef internal::ArrayStorage<internal::StringAttributeTableTraits>
+  typedef ArrayStorage<StringAttributeTableTraits>
     StringTable;
-  typedef internal::RefCountedStorage<internal::ParticlesAttributeTableTraits>
+  typedef RefCountedStorage<ParticlesAttributeTableTraits>
     ParticleTable;
-  typedef internal::RefCountedStorage<internal::ObjectsAttributeTableTraits>
+  typedef RefCountedStorage<ObjectsAttributeTableTraits>
     ObjectTable;
-  typedef internal::ArrayStorage<internal::DoubleAttributeTableTraits>
+  typedef ArrayStorage<DoubleAttributeTableTraits>
     DerivativeTable;
 
   WeakPointer<Model> model_;
