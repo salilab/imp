@@ -126,6 +126,7 @@ Float MonteCarlo::optimize(unsigned int max_steps)
       if (return_best_ && next_energy < best_energy) {
         best_energy= next_energy;
         best_state= new ConfigurationSet(get_model());
+        best_state->set_was_owned(true);
       }
     } else {
       IMP_LOG(TERSE,  " reject" << std::endl);
@@ -144,7 +145,7 @@ Float MonteCarlo::optimize(unsigned int max_steps)
     if (prior_energy < stop_energy_) break;
   }
   IMP_LOG(TERSE, "MC Final energy is " << prior_energy << std::endl);
-  if (return_best_) {
+  if (return_best_ && best_state) {
     best_state->set_configuration(-1);
     IMP_LOG(TERSE, "MC Returning energy " << best_energy << std::endl);
     IMP_IF_CHECK(USAGE) {
