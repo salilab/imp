@@ -22,6 +22,10 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT TypedPairScore : public PairScore
 {
+  // always pass the work on to the next pair score
+  bool get_is_changed(const ParticlePair&) const {
+    return true;
+  }
 public:
   //! Constructor.
   /** \param[in] typekey The IntKey used to denote the type of each particle.

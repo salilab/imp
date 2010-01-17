@@ -24,6 +24,7 @@ class IMPCOREEXPORT RefinedPairsPairScore : public PairScore
 {
   IMP::internal::OwnerPointer<Refiner> r_;
   IMP::internal::OwnerPointer<PairScore> f_;
+  bool get_is_changed(const ParticlePair &pp) const;
 public:
   /** \param[in] r The Refiner to call on each particle
       \param[in] f The pair score to apply to the generated pairs

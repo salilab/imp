@@ -28,10 +28,20 @@ namespace {
   }
 }
 
+bool RefinedPairsPairScore::get_is_changed(const ParticlePair &p) const {
+  for (unsigned int i=0; i< 2; ++i) {
+    ParticlesTemp ps=get_set(p[0], r_);
+    for (unsigned int j=0; j< ps.size(); ++j) {
+      if (ps[i]->get_is_changed()) return true;
+    }
+  }
+  return false;
+}
+
 Float RefinedPairsPairScore::evaluate(const ParticlePair &p,
                                     DerivativeAccumulator *da) const
 {
-  Particles ps[2]={get_set(p[0], r_), get_set(p[1], r_)};
+  ParticlesTemp ps[2]={get_set(p[0], r_), get_set(p[1], r_)};
   Float ret=0;
   for (unsigned int i=0; i< ps[0].size(); ++i) {
     for (unsigned int j=0; j< ps[1].size(); ++j) {
@@ -43,7 +53,7 @@ Float RefinedPairsPairScore::evaluate(const ParticlePair &p,
 
 ParticlesList
 RefinedPairsPairScore::get_interacting_particles(const ParticlePair &p) const {
-  Particles ps[2]={get_set(p[0], r_), get_set(p[1], r_)};
+  ParticlesTemp ps[2]={get_set(p[0], r_), get_set(p[1], r_)};
   ParticlesList ret;
   for (unsigned int i=0; i< ps[0].size(); ++i) {
     for (unsigned int j=0; j< ps[1].size(); ++j) {

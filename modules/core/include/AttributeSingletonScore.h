@@ -26,7 +26,8 @@ class IMPCOREEXPORT AttributeSingletonScore : public SingletonScore
 public:
   //! Apply function f to attribete k
   AttributeSingletonScore(UnaryFunction *f, FloatKey k);
-  IMP_SINGLETON_SCORE(AttributeSingletonScore, get_module_version_info());
+  IMP_SIMPLE_SINGLETON_SCORE(AttributeSingletonScore,
+                             get_module_version_info());
 };
 
 IMPCORE_END_NAMESPACE

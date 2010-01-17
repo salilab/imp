@@ -33,6 +33,8 @@ class IMPCOREEXPORT ClosePairsPairScore : public PairScore
   IMP::internal::OwnerPointer<PairScore> f_;
   Float th_;
   FloatKey rk_;
+  // could do better
+  bool get_is_changed(const ParticlePair &) const {return true;}
 public:
   /** \param[in] r The Refiner to call on each particle
       \param[in] f The pair score to apply to the generated pairs

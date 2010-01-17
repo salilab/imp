@@ -1029,6 +1029,13 @@ public:
     IMP::DerivativeAccumulator*)
     - IMP::SingletonScore::get_input_particles()
     - IMP::SingletonScore::get_output_particles()
+
+    The macro expects that a class method
+    - bool get_is_changed(Particle*) which returns true if the score
+    needs to be recalculated.
+
+    See IMP_SIMPLE_SINGLETON_SCORE() for a way of providing an
+    implementation of that method.
 */
 #define IMP_SINGLETON_SCORE(Name, version_info)                         \
   double evaluate(Particle *a, DerivativeAccumulator *da) const;        \
@@ -1042,7 +1049,7 @@ public:
   }                                                                     \
   double evaluate_change(Particle *a,                                   \
                          DerivativeAccumulator *da) const {             \
-    if (a->get_is_changed()) {                                          \
+    if (get_is_changed(a)) {                                            \
       DerivativeAccumulator nda;                                        \
       if (da) nda= DerivativeAccumulator(*da, -1);                      \
       double v= Name::evaluate(a->get_prechange_particle(),             \
@@ -1079,6 +1086,18 @@ public:
   ContainersTemp get_input_containers(Particle *) const;                \
   IMP_OBJECT(Name, version_info);
 
+//! Declare the functions needed for a SingletonScore
+/** \advanced
+    In addition to the methods declared and defined by IMP_SINGLETON_SCORE,
+    the macro provides an implementation of the get_is_changed()
+    method which returns true if the particle has changed.
+*/
+#define IMP_SIMPLE_SINGLETON_SCORE(Name, version_info)  \
+  IMP_SINGLETON_SCORE(Name, version_info);              \
+  bool get_is_changed(Particle *p) const {              \
+    return p->get_is_changed();                         \
+  }
+
 
 //! Declare the functions needed for a PairScore
 /** \advanced
@@ -1088,6 +1107,13 @@ public:
     - IMP::PairScore::get_interacting_particles()
     - IMP::PairScore::get_input_particles()
     - IMP::PairScore::get_output_particles()
+
+    The macro expects that a class method
+    - bool get_is_changed(const ParticlePair&) which returns true if the
+    score needs to be recalculated.
+
+    See IMP_SIMPLE_PAIR_SCORE() for a way of providing an
+    implementation of that method.
 */
 #define IMP_PAIR_SCORE(Name, version_info)                              \
   double evaluate(const ParticlePair &p,                                \
@@ -1106,7 +1132,7 @@ public:
   }                                                                     \
   double evaluate_change(const ParticlePair &p,                         \
                          DerivativeAccumulator *da) const {             \
-    if (IMP::internal::is_dirty(p)){                                    \
+    if (get_is_changed(p)){                                             \
       DerivativeAccumulator nda;                                        \
       if (da) nda= DerivativeAccumulator(*da, -1);                      \
       double v= Name::evaluate(IMP::internal::prechange(p),             \
@@ -1143,6 +1169,20 @@ public:
   ContainersTemp get_input_containers(const ParticlePair &p) const;     \
   IMP_OBJECT(Name, version_info);
 
+//! Declare the functions needed for a SingletonScore
+/** \advanced
+    In addition to the methods declared and defined by IMP_PAIR_SCORE,
+    the macro provides an implementation of the get_is_changed()
+    method which returns true if either particle has changed.
+*/
+#define IMP_SIMPLE_PAIR_SCORE(Name, version_info)               \
+  IMP_PAIR_SCORE(Name, version_info);                           \
+  bool get_is_changed(const ParticlePair &p) const {            \
+    return p[0]->get_is_changed() || p[1]->get_is_changed();    \
+  }
+
+
+
 
 //! Declare the functions needed for a TripletScore
 /** \advanced
@@ -1152,6 +1192,13 @@ public:
     - IMP::TripletScore::get_interacting_particles()
     - IMP::TripletScore::get_input_particles()
     - IMP::TripletScore::get_output_particles()
+
+    The macro expects that a class method
+    - bool get_is_changed(ParticleTriplet) which returns true if the
+    score needs to be recalculated.
+
+    See IMP_SIMPLE_TRIPLET_SCORE() for a way of providing an
+    implementation of that method.
 */
 #define IMP_TRIPLET_SCORE(Name, version_info)                           \
   double evaluate(const ParticleTriplet &p,                             \
@@ -1170,7 +1217,7 @@ public:
                  })                                                     \
   double evaluate_change(const ParticleTriplet &p,                      \
                          DerivativeAccumulator *da) const {             \
-    if (IMP::internal::is_dirty(p)) {                                   \
+    if (get_is_changed(p)) {                                            \
       DerivativeAccumulator nda;                                        \
       if (da) nda= DerivativeAccumulator(*da, -1);                      \
       double v= Name::evaluate(IMP::internal::prechange(p),             \
@@ -1207,6 +1254,21 @@ public:
   ContainersTemp get_input_containers(const ParticleTriplet &p) const;  \
   IMP_OBJECT(Name, version_info);
 
+
+//! Declare the functions needed for a SingletonScore
+/** \advanced
+    In addition to the methods declared and defined by IMP_TRIPLET_SCORE,
+    the macro provides an implementation of the get_is_changed()
+    method which returns true if any of the particles have changed.
+*/
+#define IMP_SIMPLE_TRIPLET_SCORE(Name, version_info)               \
+  IMP_TRIPLET_SCORE(Name, version_info);                           \
+  bool get_is_changed(const ParticleTriplet &p) const {            \
+    return p[0]->get_is_changed() || p[1]->get_is_changed()        \
+    || p[1]->get_is_changed();                                     \
+  }
+
+
 //! Declare the functions needed for a QuadScore
 /** \advanced
 
@@ -1215,6 +1277,10 @@ public:
     - IMP::QuadScore::get_interacting_particles()
     - IMP::QuadScore::get_input_particles()
     - IMP::QuadScore::get_output_particles()
+
+    The macro expects that a class method
+    - bool get_is_changed(ParticleQuad) which returns true if the
+    score needs to be recalculated.
 */
 #define IMP_QUAD_SCORE(Name, version_info)                              \
   double evaluate(const ParticleQuad &p,                                \
