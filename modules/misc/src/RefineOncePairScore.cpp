@@ -34,6 +34,16 @@ namespace {
   }
 }
 
+bool RefineOncePairScore::get_is_changed(const ParticlePair &p) const {
+  for (unsigned int i=0; i< 2; ++i) {
+    ParticlesTemp ps=get_set(p[0], r_);
+    for (unsigned int j=0; j< ps.size(); ++j) {
+      if (ps[i]->get_is_changed()) return true;
+    }
+  }
+  return false;
+}
+
 Float RefineOncePairScore::evaluate(const ParticlePair &p,
                                     DerivativeAccumulator *da) const
 {

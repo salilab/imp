@@ -23,7 +23,7 @@ class LogPairScore : public PairScore
  public:
   //! create with an empty map
   LogPairScore(){}
-  IMP_PAIR_SCORE(LogPairScore, get_module_version_info());
+  IMP_SIMPLE_PAIR_SCORE(LogPairScore, get_module_version_info());
 
   //! Get a list of all pairs (without multiplicity)
   ParticlePairs get_particle_pairs() const {
