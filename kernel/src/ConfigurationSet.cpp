@@ -8,14 +8,18 @@
  */
 
 #include "IMP/ConfigurationSet.h"
-
+#include "IMP/internal/utility.h"
 
 IMP_BEGIN_NAMESPACE
+namespace {
+  unsigned int restraint_index=0;
+}
 
 
 ConfigurationSet::ConfigurationSet(Model *m,
-                                   std::string nm): Object(nm),
-                                                    model_(m){
+                                   std::string nm):
+  Object(internal::make_object_name(nm, restraint_index++)),
+  model_(m){
   for (Model::ParticleIterator it= model_->particles_begin();
        it != model_->particles_end(); ++it) {
     PP pp(*it);
@@ -34,6 +38,7 @@ ConfigurationSet::ConfigurationSet(Model *m,
 
 
 void ConfigurationSet::save_configuration() {
+  IMP_OBJECT_LOG;
   set_was_owned(true);
   IMP_LOG(TERSE, "Adding configuration to set " << get_name() << std::endl);
   configurations_.push_back(Diff());
@@ -62,6 +67,7 @@ unsigned int ConfigurationSet::get_number_of_configurations() const {
 }
 
 void ConfigurationSet::set_base() {
+  IMP_OBJECT_LOG;
   for (Model::ParticleIterator it= model_->particles_begin();
        it != model_->particles_end(); ++it) {
     PP pp(*it);
@@ -81,6 +87,7 @@ void ConfigurationSet::set_base() {
 }
 
 void ConfigurationSet::set_configuration(int i) {
+  IMP_OBJECT_LOG;
   IMP_USAGE_CHECK(i < static_cast<int>(get_number_of_configurations())
                   && i >= -1,
                   "Invalid configuration requested.", IndexException);
