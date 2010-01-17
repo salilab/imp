@@ -182,16 +182,19 @@ ParticleDiff::ParticleDiff(const ParticleData &base,
                  p, floats_a_, floats_r_);
   // dumb impl
   for (unsigned int i=0; i< base.optimizeds_.get_length(); ++i) {
-    if (contains(base.optimizeds_, i) && !p->get_is_optimized(FloatKey(i))) {
+    if (contains(base.optimizeds_, i)
+        && (!p->has_attribute(FloatKey(i))
+            || !p->get_is_optimized(FloatKey(i)))) {
       optimizeds_r_.push_back(FloatKey(i));
     } else if (!contains(base.optimizeds_, i)
+               && p->has_attribute(FloatKey(i))
                && p->get_is_optimized(FloatKey(i))) {
       optimizeds_a_.push_back(FloatKey(i));
     }
   }
   for (Particle::FloatKeyIterator it= p->float_keys_begin();
        it != p->float_keys_end(); ++it) {
-    if (!base.optimizeds_.fits(it->get_index()) && !p->get_is_optimized(*it)) {
+    if (!base.optimizeds_.fits(it->get_index()) && p->get_is_optimized(*it)) {
       optimizeds_a_.push_back(*it);
     }
   }
@@ -215,7 +218,9 @@ void ParticleDiff::apply(Particle *p) const {
     p->set_is_optimized(optimizeds_a_[i], true);
   }
   for (unsigned int i=0; i< optimizeds_r_.size(); ++i) {
-    p->set_is_optimized(optimizeds_r_[i], false);
+    if (p->has_attribute(optimizeds_r_[i])) {
+      p->set_is_optimized(optimizeds_r_[i], false);
+    }
   }
   subtract(p, ints_r_);
   add(p, ints_a_);
