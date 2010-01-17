@@ -28,7 +28,7 @@ namespace {
   }
   template <class T>
   bool contains(const T &t, int i) {
-    return t.get(i) != T::Traits::get_invalid();
+    return t.fits(i) && t.get(i) != T::Traits::get_invalid();
   }
   template <class Key, class T>
   void restore(const T &t, Particle *p) {
@@ -81,6 +81,12 @@ namespace {
 ParticleData::ParticleData(Particle *p) {
   save(floats_, p->float_keys_begin(),
        p->float_keys_end(), p);
+  for (Particle::OptimizedKeyIterator it=p->optimized_keys_begin();
+       it != p->optimized_keys_end(); ++it) {
+    optimizeds_.add(it->get_index(), true);
+  }
+  save(floats_, p->float_keys_begin(),
+       p->float_keys_end(), p);
   save(ints_, p->int_keys_begin(),
        p->int_keys_end(), p);
   save(strings_, p->string_keys_begin(),
@@ -94,6 +100,12 @@ ParticleData::ParticleData(Particle *p) {
 void ParticleData::apply(Particle *p) const {
   clear(floats_, p->float_keys_begin(), p->float_keys_end(), p);
   restore<FloatKey>(floats_, p);
+
+  for (Particle::FloatKeyIterator it= p->float_keys_begin();
+       it != p->float_keys_end(); ++it) {
+    bool opt=contains(optimizeds_, it->get_index());
+    p->set_is_optimized(*it, opt);
+  }
 
   clear(ints_, p->int_keys_begin(), p->int_keys_end(), p);
   restore<IntKey>(ints_, p);
@@ -168,6 +180,21 @@ ParticleDiff::ParticleDiff(const ParticleData &base,
   pdiff<FloatKey>(base.floats_,
                  p->float_keys_begin(), p->float_keys_end(),
                  p, floats_a_, floats_r_);
+  // dumb impl
+  for (unsigned int i=0; i< base.optimizeds_.get_length(); ++i) {
+    if (contains(base.optimizeds_, i) && !p->get_is_optimized(FloatKey(i))) {
+      optimizeds_r_.push_back(FloatKey(i));
+    } else if (!contains(base.optimizeds_, i)
+               && p->get_is_optimized(FloatKey(i))) {
+      optimizeds_a_.push_back(FloatKey(i));
+    }
+  }
+  for (Particle::FloatKeyIterator it= p->float_keys_begin();
+       it != p->float_keys_end(); ++it) {
+    if (!base.optimizeds_.fits(it->get_index()) && !p->get_is_optimized(*it)) {
+      optimizeds_a_.push_back(*it);
+    }
+  }
   pdiff<IntKey>(base.ints_, p->int_keys_begin(), p->int_keys_end(),
                p, ints_a_, ints_r_);
   pdiff<StringKey>(base.strings_,
@@ -184,6 +211,12 @@ ParticleDiff::ParticleDiff(const ParticleData &base,
 void ParticleDiff::apply(Particle *p) const {
   subtract(p, floats_r_);
   add(p, floats_a_);
+  for (unsigned int i=0; i< optimizeds_a_.size(); ++i) {
+    p->set_is_optimized(optimizeds_a_[i], true);
+  }
+  for (unsigned int i=0; i< optimizeds_r_.size(); ++i) {
+    p->set_is_optimized(optimizeds_r_[i], false);
+  }
   subtract(p, ints_r_);
   add(p, ints_a_);
   subtract(p, strings_r_);
