@@ -16,11 +16,14 @@ IMP_BEGIN_INTERNAL_NAMESPACE
 class IMPEXPORT ParticleData {
   friend class ParticleDiff;
   typedef ArrayStorage<FloatAttributeTableTraits> FloatTable;
+  typedef ArrayStorage<internal::BoolAttributeTableTraits>
+    OptimizedTable;
   typedef ArrayStorage<IntAttributeTableTraits> IntTable;
   typedef ArrayStorage<StringAttributeTableTraits> StringTable;
   typedef RefCountedStorage<ParticlesAttributeTableTraits> ParticleTable;
   typedef RefCountedStorage<ObjectsAttributeTableTraits> ObjectTable;
   FloatTable floats_;
+  OptimizedTable optimizeds_;
   IntTable ints_;
   StringTable strings_;
   ParticleTable particles_;
@@ -43,6 +46,7 @@ class IMPEXPORT ParticleDiff {
   typedef std::pair<ObjectKey, Pointer<Object> > ObjectPair;
   std::vector<FloatPair> floats_a_;
   std::vector<FloatKey> floats_r_;
+  std::vector<FloatKey> optimizeds_a_, optimizeds_r_;
   std::vector<IntPair> ints_a_;
   std::vector<IntKey> ints_r_;
   std::vector<StringPair> strings_a_;
