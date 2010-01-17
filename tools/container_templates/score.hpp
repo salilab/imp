@@ -42,9 +42,9 @@ public:
   }
 #endif
 
-  /** An implementations
-      for this is provided by the IMP_SINGLETON_SCORE,
-      IMP_PAIR_SCORE macros.
+  /** Implementations
+      for these are provided by the IMP_GROUPNAME_SCORE()
+      macro.
   */
   virtual double evaluate(const ClassnamesTemp &o,
                           DerivativeAccumulator *da) const = 0;
@@ -52,8 +52,7 @@ public:
   /** \name Incremental evaluation
       Compute how much the score has changed since the last evaluate
       (and writing derivatives if they have changed). Implementations
-      for these are provided by the IMP_SINGLETON_SCORE,
-      IMP_PAIR_SCORE macros.
+      for these are provided by the IMP_GROUPNAME_SCORE() macro.
       @{
   */
   virtual double evaluate_change(PassValue vt,
