@@ -14,6 +14,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
 
 Writer::Writer(TextOutput fn, std::string name): Object(name), out_(fn){
   on_open_called_=false;
+  set_was_owned(true);
 }
 Writer::Writer(std::string name): Object(name){
 }
