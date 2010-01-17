@@ -31,8 +31,15 @@ void IncrementalBallMover::propose_move(Float size) {
   for (unsigned int i=0; i< n_; ++i) {
     moved_[i]= pts[i];
     XYZ d(moved_[i]);
+    IMP_USAGE_CHECK(d.get_coordinates_are_optimized(),
+                    "Particles passed to IncrementalBallMover must have "
+                    << "optimized cartesian coordinates. "
+                    << moved_[i]->get_name() << " does not.",
+                    UsageException);
     d.set_coordinates(algebra::random_vector_in_sphere<3>(d.get_coordinates(),
                                                           radius_));
+    IMP_LOG(VERBOSE, "Proposing move of particle " << d->get_name()
+            << " to " << d.get_coordinates() << std::endl);
   }
 }
 
