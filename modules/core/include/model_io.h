@@ -30,6 +30,10 @@ IMPCORE_BEGIN_NAMESPACE
     "name: value" pairs on separate lines with indentation used to
     indicated nesting (as in python).
 
+    If you are just interested in saving the state of a model during
+    runtime, set IMP::ConfigurationSet instead. It should be
+    substantially faster.
+
     \note At this point we do not guarantee that the file format will
     not change and loose backward compatibility.
     @{
