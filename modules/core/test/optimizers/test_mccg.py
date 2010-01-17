@@ -9,6 +9,9 @@ max_score=.02
 class CGOptimizerTests(IMP.test.TestCase):
     def check_model(self, m, lsc, lpc):
         s= m.evaluate(False)
+        print "score is ", s
+        for p0 in lsc.get_particles():
+            p0.show()
         self.assert_(s <= max_score)
         for p0 in lsc.get_particles():
             for p1 in lsc.get_particles():
@@ -24,7 +27,7 @@ class CGOptimizerTests(IMP.test.TestCase):
     def test_cg_woods_func(self):
         """Check that MCCG can make spheres connect not penetrate"""
         m= IMP.Model()
-        n=30
+        n=10
         print 1
         ds= IMP.core.create_xyzr_particles(m, n, 2)
         lsc= IMP.core.ListSingletonContainer(ds.get_particles())
@@ -51,12 +54,12 @@ class CGOptimizerTests(IMP.test.TestCase):
         s.set_maximum_score(max_score)
         s.set_number_of_monte_carlo_steps(1000)
         s.set_number_of_conjugate_gradient_steps(100)
-        IMP.set_log_level(IMP.WARNING)
+        IMP.set_log_level(IMP.TERSE)
         s.set_number_of_attempts(2)
         print "sampling"
         cs=s.sample()
-        print "found ", cs.get_number_of_configurations()
-        for i in range(-1, cs.get_number_of_configurations()):
+        print "found ", cs.get_number_of_configurations(), cs.get_name()
+        for i in range(0, cs.get_number_of_configurations()):
             cs.set_configuration(i)
             nm= "config"+str(i)+".pym"
             w= IMP.display.ChimeraWriter(nm)
