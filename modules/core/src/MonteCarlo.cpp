@@ -10,6 +10,7 @@
 
 #include <IMP/random.h>
 #include <IMP/Model.h>
+#include <IMP/ConfigurationSet.h>
 
 #include <limits>
 #include <cmath>
@@ -40,7 +41,7 @@ Float MonteCarlo::optimize(unsigned int max_steps)
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(this);
   double best_energy= std::numeric_limits<double>::max();
-  std::string best_state;
+  Pointer<ConfigurationSet> best_state;
   double prior_energy=std::numeric_limits<Float>::max();
 
   if (cg_) {
@@ -82,6 +83,9 @@ Float MonteCarlo::optimize(unsigned int max_steps)
                      oit != (*it)->float_keys_end(); ++oit) {
                   (*it)->set_is_optimized(*oit, false);
                 }
+              } else {
+                IMP_LOG(VERBOSE, "Particle " << (*it)->get_name()
+                        << " was changed " << **it << std::endl);
               }
             }
             next_energy =cg_->optimize(num_local_steps_);
@@ -121,9 +125,7 @@ Float MonteCarlo::optimize(unsigned int max_steps)
 
       if (return_best_ && next_energy < best_energy) {
         best_energy= next_energy;
-        std::ostringstream oss;
-        write(get_model(), oss);
-        best_state= oss.str();
+        best_state= new ConfigurationSet(get_model());
       }
     } else {
       IMP_LOG(TERSE,  " reject" << std::endl);
@@ -143,9 +145,7 @@ Float MonteCarlo::optimize(unsigned int max_steps)
   }
   IMP_LOG(TERSE, "MC Final energy is " << prior_energy << std::endl);
   if (return_best_) {
-    std::istringstream iss(best_state);
-    SetLogState ll(VERBOSE);
-    read(iss, get_model());
+    best_state->set_configuration(-1);
     IMP_LOG(TERSE, "MC Returning energy " << best_energy << std::endl);
     IMP_IF_CHECK(USAGE) {
       IMP_CHECK_CODE(double e=) get_model()->evaluate(false);
