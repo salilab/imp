@@ -6,6 +6,7 @@
  */
 
 #include <IMP/atom/CoulombPairScore.h>
+#include <IMP/atom/smoothing_functions.h>
 #include <IMP/atom/Charged.h>
 #include <IMP/constants.h>
 
@@ -31,16 +32,18 @@ Float CoulombPairScore::evaluate(const ParticlePair &p,
   Charged c0(p[0]);
   Charged c1(p[1]);
   algebra::Vector3D delta = c0.get_coordinates() - c1.get_coordinates();
-  double sqrmag = delta.get_squared_magnitude();
-  double factor = multiplication_factor_ * c0.get_charge() * c1.get_charge()
-                  / std::sqrt(sqrmag);
+  double dist = delta.get_magnitude();
+  double score = multiplication_factor_ * c0.get_charge() * c1.get_charge()
+                 / dist;
   if (da) {
-    algebra::Vector3D d = - factor * delta / sqrmag;
-    c0.add_to_derivatives(d, *da);
-    c1.add_to_derivatives(-d, *da);
+    DerivativePair d = (*smoothing_function_)(score, -score/dist, dist);
+    algebra::Vector3D deriv = d.second * delta / dist;
+    c0.add_to_derivatives(deriv, *da);
+    c1.add_to_derivatives(-deriv, *da);
+    return d.first;
+  } else {
+    return (*smoothing_function_)(score, dist);
   }
-  // todo: switch/shift function
-  return factor;
 }
 
 ParticlesList CoulombPairScore
@@ -63,7 +66,9 @@ ContainersTemp CoulombPairScore
 
 void CoulombPairScore::show(std::ostream &out) const
 {
-  out << "CoulombPairScore with relative dielectric " << relative_dielectric_;
+  out << "CoulombPairScore with relative dielectric " << relative_dielectric_
+      << " using ";
+  (*smoothing_function_).show(out);
 }
 
 IMPATOM_END_NAMESPACE

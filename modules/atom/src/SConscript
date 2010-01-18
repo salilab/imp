@@ -30,6 +30,7 @@ files = [
          'estimates.cpp',
          'force_fields.cpp',
          'pdb.cpp',
+         'smoothing_functions.cpp',
         ] \
         + SConscript('internal/SConscript')
 
