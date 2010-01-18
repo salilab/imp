@@ -41,7 +41,7 @@ public:
 
   double get_relative_dielectric() const { return relative_dielectric_; }
 
-  IMP_PAIR_SCORE(CoulombPairScore, get_module_version_info())
+  IMP_SIMPLE_PAIR_SCORE(CoulombPairScore, get_module_version_info())
 };
 
 IMPATOM_END_NAMESPACE
