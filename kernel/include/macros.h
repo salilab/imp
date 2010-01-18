@@ -1385,7 +1385,7 @@ public:
   }                                                                     \
   void apply(const ParticlePairsTemp &ps) const {                       \
     for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      Name::apply(ps[i][0], ps[i][1]);                                  \
+      Name::apply(ps[i]);                                               \
     }                                                                   \
   }                                                                     \
   void apply(const ParticlePairsTemp &ps,                               \
@@ -1541,7 +1541,7 @@ public:
   void apply(const ParticlePairsTemp &ps,                               \
              DerivativeAccumulator &da) const {                         \
     for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      Name::apply(ps[i][0], ps[i][1], da);                              \
+      Name::apply(ps[i], da);                              \
     }                                                                   \
   }                                                                     \
   ParticlesList get_interacting_particles(const ParticlePair &p) const; \
