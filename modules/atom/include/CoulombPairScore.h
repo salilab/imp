@@ -10,6 +10,8 @@
 
 #include "config.h"
 #include <IMP/PairScore.h>
+#include <IMP/Pointer.h>
+#include <IMP/atom/smoothing_functions.h>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -21,18 +23,19 @@ IMPATOM_BEGIN_NAMESPACE
     \f$epsilon_r\f$ the relative dielectric (adjustable; 1.0 by default),
     \f$q_i\f$ and \f$q_j\f$ the charges on the two particles,
     and \f$|r_{ij}|\f$ the distance between them.
-
-    \todo Shift or switch function to smooth the score near the cutoff.
  */
 class IMPATOMEXPORT CoulombPairScore : public PairScore
 {
+  IMP::internal::OwnerPointer<SmoothingFunction> smoothing_function_;
   double relative_dielectric_;
   double multiplication_factor_;
 
   void calculate_multiplication_factor();
 
 public:
-  CoulombPairScore() { set_relative_dielectric(1.0); }
+  CoulombPairScore(SmoothingFunction *f) : smoothing_function_(f) {
+    set_relative_dielectric(1.0);
+  }
 
   void set_relative_dielectric(double relative_dielectric) {
     relative_dielectric_ = relative_dielectric;
