@@ -37,6 +37,9 @@ void Restraint::set_model(Model* model)
 }
 
 double Restraint::evaluate(bool calc_derivs) const {
+  IMP_USAGE_CHECK(model_,
+                  "The restraint must be added to the model before being "
+                  << "evaluated.", UsageException);
   IMP_USAGE_CHECK(get_model()->get_stage()==Model::NOT_EVALUATING,
             "Restraint::evaluate() cannot be called during model evaluation",
             InvalidStateException);
