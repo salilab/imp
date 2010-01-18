@@ -2,6 +2,7 @@ import unittest
 import IMP
 import IMP.test
 import IMP.core
+from StringIO import StringIO
 
 class YamlTests(IMP.test.TestCase):
     def _create_model(self):
@@ -18,12 +19,13 @@ class YamlTests(IMP.test.TestCase):
         """Check reading and writing optimized attributes of models """
         (m,d0, d1)= self._create_model()
         IMP.set_log_level(IMP.VERBOSE)
-        IMP.core.write_optimized_attributes(m, open(self.get_tmp_file_name("test2.yaml"),
-                                                    "w"))
+        s= StringIO()
+        IMP.core.write_optimized_attributes(m, s)
         d0.set_coordinates(IMP.algebra.Vector3D(0,-1,-2))
         d1.set_coordinates(IMP.algebra.Vector3D(-3,-4,-5))
         d1.get_particle().set_is_optimized(IMP.core.XYZ.get_xyz_keys()[1], False)
-        IMP.core.read_optimized_attributes(open(self.get_tmp_file_name("test2.yaml"), "r"), m)
+        print s.getvalue()
+        IMP.core.read_optimized_attributes(StringIO(s.getvalue()), m)
         self.assertEqual(d0.get_coordinates()[0], 0)
         self.assertEqual(d0.get_coordinates()[1], 1)
         self.assertEqual(d0.get_coordinates()[2], 2)
