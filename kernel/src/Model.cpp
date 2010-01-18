@@ -738,10 +738,11 @@ void Model::reset_dependencies() {
 IMP_LIST_IMPL(Model, Restraint, restraint, Restraint*,
               Restraints,
               {IMP_INTERNAL_CHECK(cur_stage_== NOT_EVALUATING,
-        "The set of restraints cannot be changed during evaluation.");
+    "The set of restraints cannot be changed during evaluation.");
                 obj->set_model(this);
                 obj->set_was_owned(true);
-                first_incremental_=true;},,
+                first_incremental_=true;
+                reset_dependencies();},,
               {
                 obj->set_model(NULL);
                 reset_dependencies();
@@ -1180,8 +1181,8 @@ Float Model::evaluate(const RestraintsTemp &restraints, bool calc_derivs)
       IMP_USAGE_CHECK(graphs_[this].depends.find(wr[i].second)
                       != graphs_[this].depends.end(),
                       "Restraint " << wr[i].second->get_name()
-                      << " has not been directly added to the model "
-                      << " and so cannot be independently evaluated.",
+                      << " has not been added to the model "
+                      << " and so cannot be evaluated.",
                       UsageException);
     }
   }
