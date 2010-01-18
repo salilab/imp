@@ -226,12 +226,12 @@ namespace {
     } while (true);
   }
 
-  void read(Model *m, Particle *p, ParticleRead &pr,
+  bool read(Model *m, Particle *p, ParticleRead &pr,
             LineStream &in,
             unsigned int indent,
             bool opt_only) {
     LineStream::LinePair lp=in.get_line(indent);
-    if (lp.first.empty()) return;
+    if (lp.first.empty()) return false;
     //IMP_LOG(VERBOSE, "Got line " << buf << std::endl);
     IMP_USAGE_CHECK(lp.first== "particle", "Error reading particle line: \""
               << lp.first << "\" got " << lp.first, InvalidStateException);
@@ -240,11 +240,11 @@ namespace {
     IMP_LOG(VERBOSE, "Reading particle " << lp.second << std::endl);
     pr.add_particle(lp.second, p);
     unsigned int nindent= in.get_next_indent();
-    if (nindent <= indent) return;
+    if (nindent <= indent) return false;
     indent=nindent;
     while (in) {
       LineStream::LinePair lp=in.get_line(indent);
-      if (lp.first.empty()) break;
+      if (lp.first.empty()) return true;
 
       IMP_LOG(VERBOSE, "Looking for attributes in line " << lp.first << ": "
               << lp.second << std::endl);
@@ -263,6 +263,7 @@ namespace {
       }
     }
     IMP_LOG(VERBOSE, "Done reading particle " << lp.second << std::endl);
+    return true;
   }
 
   void read(std::istream &in,
@@ -275,7 +276,9 @@ namespace {
     Model::ParticleIterator pit= m->particles_begin();
     int nump=0;
     do {
-      read(m, *pit, pr, r, r.get_next_indent(), opt_only);
+      if (!read(m, *pit, pr, r, r.get_next_indent(), opt_only)) {
+        break;
+      }
       ++pit;
       ++nump;
     } while (r);
