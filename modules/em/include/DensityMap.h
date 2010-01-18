@@ -316,6 +316,8 @@ public:
   void update_voxel_size(float new_apix);
 
   //! Updated the voxel size of the map
+  /** \note Use update_voxel_size() to set the spacing value.
+  */
   Float get_spacing() const {return header_.get_spacing();}
   //! Calculates the coordinates that correspond to all voxels.
   /** Can be precomputed to make corr faster.

@@ -194,6 +194,8 @@ public:
   inline void set_resolution(float resolution) {
     is_resolution_set_=true;
     resolution_=resolution;}
+  /** \note Use DensityMap::update_voxel_size() to set the spacing value.
+  */
   inline float get_spacing() const {return Objectpixelsize_;}
   //! Returns the origin on the map (x-coordinate)
   inline float get_xorigin() const {return xorigin_;}
