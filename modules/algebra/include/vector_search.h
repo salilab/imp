@@ -15,6 +15,7 @@
 #include <CGAL/basic.h>
 #include <CGAL/Search_traits.h>
 #include <CGAL/Orthogonal_k_neighbor_search.h>
+#include <CGAL/K_neighbor_search.h>
 #include <boost/static_assert.hpp>
 #endif
 
@@ -120,7 +121,7 @@ class NearestNeighborD {
 
   typedef typename CGAL::Search_traits<double, VectorWithIndex,
                               const double*, Construct_coord_iterator> Traits;
-  typedef typename CGAL::Orthogonal_k_neighbor_search<Traits,
+  typedef typename CGAL::K_neighbor_search<Traits,
                                                   Distance> K_neighbor_search;
   typedef typename K_neighbor_search::Tree Tree;
 
@@ -172,15 +173,21 @@ public:
 #ifdef IMP_USE_CGAL
     K_neighbor_search search(*tree_, data_[i], k+1, eps_);
     typename K_neighbor_search::iterator it =search.begin();
+    IMP_INTERNAL_CHECK(std::distance(search.begin(), search.end())
+                       == static_cast<int>(ret.size()+1),
+                       "Got the wrong number of points out from CGAL neighbor"
+                       << " search. Expected " << ret.size()+1
+                       << " got "
+                       << std::distance(search.begin(), search.end()));
     ++it;
     for (unsigned int j=0; j< k; ++j) {
       ret[j]=it->first.index;
       ++it;
     }
-    return ret;
 #else
-    return linear_nearest_neighbor<true>(data_[i], i, k);
+    ret= linear_nearest_neighbor<true>(data_[i], i, k);
 #endif
+    return ret;
   }
 };
 
