@@ -22,7 +22,7 @@ IMPCORE_BEGIN_NAMESPACE
 class ListPairContainer;
 class ClosePairsFinder;
 
-/** \deprecated{Use ClosePairContainer instead}
+/** \deprecated Use ClosePairContainer instead.
  */
 class IMPCOREEXPORT ClosePairsScoreState : public ScoreState
 {
