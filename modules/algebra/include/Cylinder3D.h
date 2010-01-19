@@ -28,6 +28,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 */
 class IMPALGEBRAEXPORT Cylinder3D {
  public:
+  Cylinder3D(){}
   Cylinder3D(const Segment3D &s, double radius);
   //! Get a transformation that places the cylinder direction on Z
   /**
@@ -49,6 +50,8 @@ class IMPALGEBRAEXPORT Cylinder3D {
 };
 
 IMP_OUTPUT_OPERATOR(Cylinder3D)
+
+typedef std::vector<Cylinder3D> Cylinder3Ds;
 
 IMPALGEBRA_END_NAMESPACE
 
