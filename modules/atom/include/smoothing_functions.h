@@ -14,14 +14,19 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-//! Class for smoothing nonbonded interactions as a function of distance.
-/** The functors are given the score (and optionally its first derivative)
-    at a given distance (typically from a CoulombPairScore) and return
-    a smoothed form of the score. Such functors are used to avoid a
-    discontinuity in the scoring function at the cutoff distance.
+//! Base class for smoothing nonbonded interactions as a function of distance.
+/** The class is given the score (and optionally its first derivative)
+    at a given distance and returns a smoothed form of the score.
+    Smoothing functions are used to avoid a discontinuity in the scoring
+    function and/or its derivatives at the cutoff distance (the distance
+    threshold used by IMP::core::ClosePairsFinder), as this can lead
+    to nonphysical motions of the system. They are used by physical scoring
+    functions that drop off slowly with distance, such as CoulombPairScore,
+    in combination with a ClosePairsFinder.
+
     Smoothing functions usually offset the score by a constant value
     (a shift function) or smooth it from its normal value to zero over
-    a defined range (a switch function).
+    a defined range (a switch function, such as ForceSwitch).
  */
 class IMPATOMEXPORT SmoothingFunction : public Object
 {
@@ -29,9 +34,14 @@ public:
   SmoothingFunction();
 
   //! Smooth the score at a given distance.
+  /** \return the smoothed score.
+   */
   virtual double operator()(double score, double distance) const = 0;
 
   //! Smooth the score and its first derivative at a given distance.
+  /** \return a DerivativePair containing the smoothed score and its
+              first derivative.
+   */
   virtual DerivativePair operator()(double score, double deriv,
                                     double distance) const = 0;
 
@@ -39,11 +49,24 @@ public:
 };
 
 
-//! Smooth interaction scores by switching the derivatives (force switch)
+//! Smooth interaction scores by switching the derivatives (force switch).
 /** This function leaves the scores unaffected for distances below or equal
-    to min_distance, and then switches the derivatives smoothly to zero between
-    min_distance and max_distance. This is roughly equivalent to CHARMM's
-    force switch nonbonded interaction smoothing.
+    to min_distance, returns zero for distances above max_distance, and between
+    the two thresholds smoothes the score such that its first derivatives drop
+    linearly, i.e. the score is simply multiplied by \f[
+       \left{
+       \begin{array}{ll}
+             1 & d \leq d_{min} \\
+             \frac{(d_{max} - d)^2 (d_{max} + 2d - 3d_{min})}
+                  {(d_{max} - d_{min})^3} & d_{min} < e \leq d_{max} \\
+             0 & d > d_{max} \\
+       \end{array}
+    \f] where \f$d\f$ is the distance, and \f$d_{min}\f$ and \f$d_{max}\f$ are
+    the thresholds set in the ForceSwitch constructor.
+
+    This behavior is roughly equivalent to CHARMM's force switch nonbonded
+    interaction smoothing (which is also the smoothing mechanism used
+    by MODELLER).
  */
 class IMPATOMEXPORT ForceSwitch : public SmoothingFunction
 {
@@ -74,6 +97,9 @@ class IMPATOMEXPORT ForceSwitch : public SmoothingFunction
 public:
   ForceSwitch(double min_distance, double max_distance)
              : min_distance_(min_distance), max_distance_(max_distance) {
+    IMP_USAGE_CHECK(max_distance > min_distance,
+                    "max_distance should be greater than min_distance",
+                    ValueException);
     double dist_dif = max_distance - min_distance;
     value_prefactor_ = 1.0 / (dist_dif * dist_dif * dist_dif);
     deriv_prefactor_ = 6.0 * value_prefactor_;

@@ -7,6 +7,13 @@ import IMP.atom
 class ForceSwitchTests(IMP.test.TestCase):
     """Test ForceSwitch"""
 
+    def test_create(self):
+        """Check ForceSwitch creation"""
+        s = IMP.atom.ForceSwitch(5.0, 6.0)
+        if IMP.has_tests:
+            self.assertRaises(IMP.UsageException, IMP.atom.ForceSwitch,
+                              6.0, 5.0)
+
     def test_methods(self):
         """Check ForceSwitch methods"""
         s = IMP.atom.ForceSwitch(5.0, 6.0)
