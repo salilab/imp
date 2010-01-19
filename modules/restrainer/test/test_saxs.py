@@ -34,10 +34,8 @@ class RestraintTest(IMP.test.TestCase):
         restraint_name = 'saxs_restraint'
         r = self.restraint.get_restraint_by_name(restraint_name)
 
-        if r:
-            self.assertRaises(IMP.UsageException, r.imp_restraint.evaluate, False)
-            #score = r.imp_restraint.evaluate(False)
-            #print 'initial score = ' + str(score)
+        score = r.imp_restraint.evaluate(False)
+        self.assertInTolerance(score, 0.277968, 1e-2)
 
         self.Model.show()
         self.Model.evaluate(False)
