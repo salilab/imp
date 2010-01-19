@@ -20,7 +20,7 @@ IMPATOM_BEGIN_NAMESPACE
     The form of the potential is \f[
        \frac{1}{4\pi\epsilon_0\epsilon_r} \frac{q_i q_j}{|r_{ij}|}
     \f] where \f$\epsilon_0\f$ is the permittivity of vacuum,
-    \f$epsilon_r\f$ the relative dielectric (adjustable; 1.0 by default),
+    \f$\epsilon_r\f$ the relative dielectric (adjustable; 1.0 by default),
     \f$q_i\f$ and \f$q_j\f$ the charges on the two particles,
     and \f$|r_{ij}|\f$ the distance between them.
  */
