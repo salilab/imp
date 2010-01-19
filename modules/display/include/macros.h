@@ -28,8 +28,8 @@ protected:                                                              \
 
 
 //! Define information for an Geometry object
-#define IMP_GEOMETRY(Name, version)             \
-  Geometries get_components() const;            \
+#define IMP_GEOMETRY(Name, version)                     \
+  IMP::display::Geometries get_components() const;      \
   IMP_OBJECT(Name, version)
 
 
