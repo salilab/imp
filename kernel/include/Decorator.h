@@ -247,8 +247,8 @@ void swap_with(ThisDecorators &o) {                                     \
   const ParticlesTemp &get_particles() const;                           \
   void push_back(WrappedDecorator d);                                   \
   void push_back(Particle *p);                                          \
-  Decorator back() const;                                               \
-  Decorator front() const;
+  WrappedDecorator back() const;                                        \
+  WrappedDecorator front() const;
 
 #else
 // doxygen
