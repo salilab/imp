@@ -41,7 +41,7 @@ def __iter__(self):
   int __len__() const {
     return self->size();
   }
-  void append(Decorator d) {
+  void append(IMP::atom::Hierarchy d) {
     self->push_back(d);
   }
   IMP::atom::Hierarchies
@@ -95,7 +95,7 @@ def __iter__(self):
   void __iter__() const {
      //PyErr_SetString(PyExc_NotImplementedError, const_cast<char*>("No such method"));
   }
-  void append(Decorator d) {
+  void append(IMP::atom::Hierarchy d) {
     self->push_back(d);
   }
   IMP::atom::Hierarchies
