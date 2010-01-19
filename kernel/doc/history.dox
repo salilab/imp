@@ -4,8 +4,8 @@
 - IMP::UsageException and IMP::InternalException are now reserved for their respective
   checks (and cannot be thrown by IMP_THROW()). This makes the distinction between API
   exceptions (which are thrown in any build mode and should be documented and tested)
-  and helper exceptions which are only thrown when debug checks are turned on (and hence
-  should not be documented or tested) clearer.
+  and helper exceptions which are only thrown when checks are turned on (and hence
+  should not be documented) clearer.
 
 - IMP::core::RestraintSet moved to IMP::RestraintSet. The restraint sets now simply define a tree
   with weights which the model traverses as opposed to being an opaque IMP::Restraint themselves.
