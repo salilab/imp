@@ -63,9 +63,9 @@ def xyz_numerical_derivatives(model, xyz, step):
                                       self._basis_vector * val)
             return self._model.evaluate(False)
 
-    return tuple(IMP.test.numerical_derivative(_XYZDerivativeFunc(xyz,
+    return tuple([IMP.test.numerical_derivative(_XYZDerivativeFunc(xyz,
                                           IMP.algebra.Vector3D(*x)), 0, 0.01) \
-                 for x in ((1,0,0), (0,1,0), (0,0,1)))
+                  for x in ((1,0,0), (0,1,0), (0,0,1))])
 
 
 class TestCase(unittest.TestCase):
