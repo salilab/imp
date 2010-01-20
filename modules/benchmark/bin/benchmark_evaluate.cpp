@@ -22,7 +22,8 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
                total+=pc->evaluate(ps, NULL);
              }, runtime);
     std::ostringstream oss;
-    oss << name << " in " << pc->get_number_of_particle_pairs();
+    oss << "container " << name << " in "
+        << pc->get_number_of_particle_pairs();
     IMP::benchmark::report(oss.str(), runtime, total);
   }
   {
@@ -35,7 +36,8 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
                }
              }, runtime);
     std::ostringstream oss;
-    oss << name << " out " << pc->get_number_of_particle_pairs();
+    oss << "container " << name << " out "
+        << pc->get_number_of_particle_pairs();
     IMP::benchmark::report(oss.str(), runtime, total);
   }
 }

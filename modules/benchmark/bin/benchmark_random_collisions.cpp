@@ -56,22 +56,22 @@ int main() {
   {
     QuadraticClosePairsFinder *cpf= new QuadraticClosePairsFinder();
     //std::cout << "Quadratic:" << std::endl;
-    test_one("quadratic", cpf, 10000, 0, .1);
-    test_one("quadratic", cpf, 10000, 0, .5);
+    test_one("col quadratic", cpf, 10000, 0, .1);
+    test_one("col quadratic", cpf, 10000, 0, .5);
   }
 #ifdef IMP_USE_CGAL
   {
     BoxSweepClosePairsFinder *cpf= new BoxSweepClosePairsFinder();
     //std::cout << "Box:" << std::endl;
-    test_one("box", cpf, 10000, 0, .1);
-    test_one("box", cpf, 100000, 0, .01);
+    test_one("col box", cpf, 10000, 0, .1);
+    test_one("col box", cpf, 100000, 0, .01);
   }
 #endif
   {
     GridClosePairsFinder *cpf= new GridClosePairsFinder();
     //std::cout << "Grid:" << std::endl;
-    test_one("grid", cpf, 10000, 0, .1);
-    test_one("grid", cpf, 100000, 0, .01);
+    test_one("col grid", cpf, 10000, 0, .1);
+    test_one("col grid", cpf, 100000, 0, .01);
   }
   return 0;
 }
