@@ -43,21 +43,21 @@ int main() {
   {
     ConnectivityRestraint* r= new ConnectivityRestraint(ss, lsc);
     m->add_restraint(r);
-    benchmark_it("connectivity", lsc, m);
+    benchmark_it("connectivity slow", lsc, m);
     m->remove_restraint(r);
   }
   {
     IMP_NEW(ConnectingPairContainer, cpc,(lsc, .1, false));
     IMP_NEW(PairsRestraint, pr, (ss, cpc));
     m->add_restraint(pr);
-    benchmark_it("fast connectivity", lsc, m);
+    benchmark_it("connectivity fast", lsc, m);
     m->remove_restraint(pr);
   }
   {
     IMP_NEW(ConnectingPairContainer, cpc,(lsc, .1, true));
     IMP_NEW(PairsRestraint, pr, (ss, cpc));
     m->add_restraint(pr);
-    benchmark_it("fast mst connectivity", lsc, m);
+    benchmark_it("connectivity fast mst", lsc, m);
     m->remove_restraint(pr);
   }
   return 0;

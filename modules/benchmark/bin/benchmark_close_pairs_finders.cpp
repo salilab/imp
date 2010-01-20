@@ -35,7 +35,7 @@ void test_one(std::string name,
       result+=cpf->get_close_pairs(lsc).size();
     }, runtime);
   std::ostringstream oss;
-  oss << name << " cpf " << n << " " << rmax;
+  oss << "cpf " << name << " " << n << " " << rmax;
   report(oss.str(), runtime, result);
 }
 

@@ -28,20 +28,21 @@ void do_benchmark(std::string name, Model *m,
  // measure time
   double runtime;
   double total=0;
-  IMP_TIME_N(
+  IMP_TIME(
              {
                for (unsigned int i=0; i< ps.size(); ++i) {
                  ParticlesTemp nps= r->get_refined(ps[i]);
                  total+=nps.size();
                }
-             }, runtime, N);
-  IMP::benchmark::report(name+" refiner", runtime, total);
+             }, runtime);
+  IMP::benchmark::report(std::string("refiner ")+name, runtime, total);
 }
 
 
 int main(int argc, char **argv) {
   IMP_NEW(Model, m, ());
   IMP_NEW(LeavesRefiner, lr, (atom::Hierarchy::get_traits()));
+  lr->set_was_owned(true);
   atom::HierarchiesTemp hs;
   for (unsigned int i=0; i< 10; ++i) {
     hs.push_back(
@@ -55,12 +56,13 @@ int main(int argc, char **argv) {
       IMP_NEW(Particle, p, (m));
       ps.push_back(p);
       core::Hierarchy h0= core::Hierarchy::setup_particle(p,tr);
-      Particles ps= lr->get_refined(hs[0]);
-      for (unsigned int i=0; i< ps.size(); ++i) {
-        h0.add_child(core::Hierarchy::setup_particle(ps[i], tr));
+      Particles lps= lr->get_refined(hs[i]);
+      for (unsigned int i=0; i< lps.size(); ++i) {
+        h0.add_child(core::Hierarchy::setup_particle(lps[i], tr));
       }
     }
     IMP_NEW(ChildrenRefiner, cr, (tr));
+    cr->set_was_owned(true);
     do_benchmark("children", m, ps, cr);
   }
   {

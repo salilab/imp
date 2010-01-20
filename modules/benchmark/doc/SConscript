@@ -5,11 +5,62 @@ env.IMPModuleDoc(env.IMPModuleGetDocs(),
                  brief="MODULENAME provides benchmarks of a variety of aspects of \\imp",
                  publications=env.StandardPublications(),
                  license=env.StandardLicense(),
-                 overview="""The benchmarks are run daily on flute.ucsf.edu. The results are displayed
-normalized against the fastest runtime.
+                 overview="""The benchmarks are run daily on
+flute.ucsf.edu.  The results are displayed normalized against the
+fastest runtime in each set (with a few exceptions, noted below).
+Each benchmark is shown first in a "fast" build and second in a
+"release" build with checks disabled to give an idea of the speed
+comparison. The benchmark source codes can be found in the bin
+directory of the benchmark module.
 
-\\image html "benchmark/doc/fast.png"
+A simple Brownian dynamics simulation with the specified number of
+particles
+\\image html "benchmark/doc/bdfast.png"
+\\image html "benchmark/doc/bdrelease.png"
 
-The ratio of of runtimes for fast vs release mode.
+A simple test modifying the particles and (for the 'score' entries)
+evaluating a simple, incremental, score.
+\\image html "benchmark/doc/changingfast.png"
+\\image html "benchmark/doc/changingrelease.png"
 
-\\image html "benchmark/doc/release.png" """)
+The various IMP::core::ClosePairFinder implementations are benchmarked
+on random sets of particles. The benchmarks for the quadratic one are listed as
+taking 10x less time than they did.
+\\image html "benchmark/doc/cpffast.png"
+\\image html "benchmark/doc/cpfrelease.png"
+
+
+A benchmark of the various close pairs finders in the context of
+a simulation. The benchmarks for the quadratic one are listed as
+taking 10x less time than they did.
+\\image html "benchmark/doc/colfast.png"
+\\image html "benchmark/doc/colrelease.png"
+
+A special close pair finder is provided for rigid bodies, name
+IMP::core::RigidClosePairsFinder. Here it is compared against
+using all the member particles.
+\\image html "benchmark/doc/rigidfast.png"
+\\image html "benchmark/doc/rigidrelease.png"
+
+
+There are several ways of doing connectivity restraints in \imp:
+IMP::misc::ConnectedPairContainer and IMP::core::ConnectivityRestraint.
+They are benchmarked here.
+\\image html "benchmark/doc/connectivityfast.png"
+\\image html "benchmark/doc/connectivityrelease.png"
+
+The next benchmark looks at evaluating restraints on various sorts
+of containers, namely IMP::core::ListSingletonContainer and
+IMP::core::SingletonContainerSet.
+\\image html "benchmark/doc/containerfast.png"
+\\image html "benchmark/doc/containerrelease.png"
+
+When peforming lots of operations on a set of cartesian coordinates
+and is faster to copy them into a IMP::algebra::Vector3Ds than
+to access them in the IMP::core::XYZ decorator each time. This
+benchmark gives an idea of the speed tradeoffs involved.
+\\image html "benchmark/doc/xyzfast.png"
+\\image html "benchmark/doc/xyzrelease.png"
+
+
+""")

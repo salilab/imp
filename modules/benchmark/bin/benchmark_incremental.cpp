@@ -39,10 +39,10 @@ void benchmark_baseline() {
     double nonincremental_time, incremental_time;
     double t=0, ti=0;
     IMP_TIME(t+=update_coordinates(m, ps), nonincremental_time);
-    benchmark::report("changing particles", nonincremental_time, t);
+    benchmark::report("changing nonincremental", nonincremental_time, t);
     m->set_is_incremental(true);
     IMP_TIME(ti+=update_coordinates(m, ps), incremental_time);
-    benchmark::report("incremental changing particles", incremental_time, t);
+    benchmark::report("changing incremental", incremental_time, t);
   }
   ParticlePairs pps(ps.size()-1);
   for (unsigned int i=1; i< ps.size(); ++i) {
@@ -59,11 +59,11 @@ void benchmark_baseline() {
     double scored_t=0, scored_ti=0;
     m->set_is_incremental(false);
     IMP_TIME(scored_t+=update_coordinates(m, ps), scored_nonincremental_time);
-    benchmark::report("changing scored particles",
+    benchmark::report("changing nonincremental score",
                       scored_nonincremental_time, scored_t);
     m->set_is_incremental(true);
     IMP_TIME(scored_ti+=update_coordinates(m, ps), scored_incremental_time);
-    benchmark::report("incremental changing scored particles",
+    benchmark::report("changing incremental score",
                       scored_incremental_time, scored_ti);
   }
 }

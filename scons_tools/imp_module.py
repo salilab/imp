@@ -379,7 +379,7 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
         buildlib = lpenv.LoadableModule('#/build/lib/_IMP%s' % module_suffix,
                                        "wrap.cpp")
         if env['use_pch']:
-            env.Depends("wrap.cpp", env.Alias('pch'))
+            env.Depends(buildlib, env.Alias('pch'))
         # Place the generated Python wrapper in lib directory:
         buildinit = penv.LinkInstallAs('#/build/lib/%s/__init__.py'
                                        % vars['module_include_path'],
