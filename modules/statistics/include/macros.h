@@ -17,7 +17,8 @@
     - IMP::statistics::Distance::get_embedding()
 */
 #define IMP_EMBEDDING(Name, version_info)                          \
-  Floats get_embedding(unsigned int i) const;                      \
+  Floats get_point(unsigned int i) const;                          \
+  unsigned int get_number_of_points() const;                       \
   IMP_OBJECT(Name, version_info)
 
 

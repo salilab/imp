@@ -16,6 +16,8 @@
 #include <IMP/ConfigurationSet.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/algebra/Vector3D.h>
+#include <IMP/em/DensityMap.h>
+#include <IMP/core/XYZ.h>
 
 IMPSTATISTICS_BEGIN_NAMESPACE
 
@@ -29,7 +31,8 @@ IMPSTATISTICS_BEGIN_NAMESPACE
 class IMPSTATISTICSEXPORT Embedding: public Object {
  public:
   Embedding(std::string name): Object(name){}
-  virtual Floats get_embedding(unsigned int i) const =0;
+  virtual Floats get_point(unsigned int i) const =0;
+  virtual unsigned int get_number_of_points() const=0;
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Embedding);
 };
 
@@ -64,9 +67,14 @@ class VectorDEmbedding: public Embedding {
 
 #ifndef SWIG
 template <unsigned int D>
-Floats VectorDEmbedding<D>::get_embedding(unsigned int i) const {
+Floats VectorDEmbedding<D>::get_point(unsigned int i) const {
   return Floats(vectors_[i].coordinates_begin(),
                 vectors_[i].coordinates_end());
+}
+
+template <unsigned int D>
+unsigned int VectorDEmbedding<D>::get_number_of_points() const {
+  return vectors_.size();
 }
 
 template <unsigned int D>
@@ -74,6 +82,40 @@ void VectorDEmbedding<D>::show(std::ostream &out) const {
   out << "VectorDEmbedding" << std::endl;
 }
 #endif
+
+/** Embed particles using the values of some of their attributes.
+    By default, the cartesian coordinates are used, but another
+    set of attributes can be chosen. When using attributes that
+    are not equivalent (for example, angular degrees of freedom),
+    it is probably useful to rescale the attributes according
+    to their ranges (see IMP::Model::get_range()). This is
+    done by passing rescale=true to the constructor.
+*/
+class IMPSTATISTICSEXPORT ParticleEmbedding: public Embedding {
+  Particles ps_;
+  FloatKeys ks_;
+  bool rescale_;
+  std::vector<FloatRange> ranges_;
+ public:
+  ParticleEmbedding(const ParticlesTemp &ps,
+                    const FloatKeys& ks=core::XYZ::get_xyz_keys(),
+                    bool rescale=false);
+  IMP_EMBEDDING(ParticleEmbedding, get_module_version_info());
+};
+
+
+
+/** Generate a set of points from the voxels in a em::DensityMap
+    which are above a certain threshold.
+*/
+class IMPSTATISTICSEXPORT HighDensityEmbedding: public Embedding {
+  algebra::Vector3Ds points_;
+ public:
+  HighDensityEmbedding(em::DensityMap *dm,
+                       double threshold);
+  IMP_EMBEDDING(HighDensityEmbedding, get_module_version_info());
+};
+
 
 
 /** In addition to the information in the Clustering base class,
@@ -103,13 +145,13 @@ public:
 };
 
 
-/** Return a kmeans clustering of the input data. Each index in
-    indexes is passed to the embedding object to generate a point.
+/** Return a kmeans clustering of all points contained in the
+    embedding (ie [0... embedding->get_number_of_embeddings())).
     These points are then clustered into k clusters. More iterations
     takes longer but produces a better clustering.
 */
 IMPSTATISTICSEXPORT KMeansClustering*
-get_lloyds_kmeans(const Ints &indexes, Embedding *embedding,
+get_lloyds_kmeans(Embedding *embedding,
                   unsigned int k, unsigned int iterations);
 
 IMPSTATISTICS_END_NAMESPACE
