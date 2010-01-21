@@ -10,11 +10,11 @@ In order to obtain and compile \imp, you will need:
 If you wish to build the Python interfaces, you will also need:
 
  - Python (2.3 or later)
- - SWIG (1.3.31 or later)
+ - SWIG (1.3.40 or later)
 
 If you install headers, libraries or tools anywhere other than the standard locations (i.e. \c /usr/lib and friends) then you need to tell \c SCons where to find them. This is done using the `includepath`, `libpath`, and `path` options (paths are colon-separated). For example:
 
-\command{scons includepath=/usr/local/include:/opt/local/include libpath=/usr/local/lib}
+\command{scons includepath=/usr/local/include:/opt/local/include libpath=/usr/local/lib path=/usr/local/bin}
 
 \subsection mac Mac
 Mac users should use one of the available collections of Unix tools, either \external{www.macports.org/, MacPorts} or \external{www.finkproject.org/, Fink}. If you use MacPorts, you must add \c /opt/local/bin to your path (either by modifying your shell's config file or by making an \c environment.plist file-see the \salilab{imp/wiki/FAQ, FAQ}) and then do
@@ -22,9 +22,10 @@ Mac users should use one of the available collections of Unix tools, either \ext
 to install the needed libraries and tools. Alternatively, you can build the
 packages yourself from source code.
 
-\note Mac OS X 10.5 includes a 'swig' binary, but it is too old to use with
-IMP. If you install SWIG with MacPorts above, you will need to make sure SCons
-picks up your SWIG rather than Apple's.
+\note Mac OS X 10.5 and 10.6 include a 'swig' binary, but it is too old to use
+with IMP. If you install SWIG with MacPorts above, you will need to make sure
+SCons picks up your SWIG rather than Apple's by setting the `path` option when
+running `scons`.
 
 \note Do not install any C++ headers in `/usr/include` on your Mac as the compiler assumes any such headers are C headers. Since both MacPorts and Fink install into non-standard locations, you will need to add these to your SCons search path.
 
