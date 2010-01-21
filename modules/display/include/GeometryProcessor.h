@@ -19,7 +19,9 @@ IMPDISPLAY_BEGIN_NAMESPACE
  */
 class IMPDISPLAYEXPORT GeometryProcessor
 {
- protected:
+protected:
+  virtual ~GeometryProcessor() {}
+
   virtual bool process(SphereGeometry *g,
                        Color color, std::string name) {
     return false;
@@ -56,7 +58,7 @@ class IMPDISPLAYEXPORT GeometryProcessor
     return false;
   }
   void process_geometry(Geometry* g);
- private:
+private:
   void process_geometry_internal(Geometry* g, bool has_color,
                                  Color c,
                                  std::string name);
