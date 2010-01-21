@@ -131,7 +131,9 @@ for h in rawheaders:
         headers.append(h)
 
 sources = headers + Glob("#/kernel/doc/*.dox") + [example_index] \
-          + Glob("modules/*/doc/*.dox") + modexamples \
+          + Glob("#/modules/*/doc/*.dox") \
+          + Glob("#/kernel/doc/.generated/*.dox") \
+          + Glob("#/modules/*/doc/.generated/*.dox") + modexamples \
           + Glob("#/modules/*/doc/*.dot") + Glob("#/kernel/doc/*.dot")
 
 if env['python']:

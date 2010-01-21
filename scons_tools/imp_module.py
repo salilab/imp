@@ -510,7 +510,7 @@ def IMPModuleDoc(env, files, authors,
                                              env.Value(overview),
                                              env.Value(publications),
                                              env.Value(license)],
-                                     target='overview.dox'))
+                                     target='.generated/overview.dox'))
     for f in files:
         if f== "overview.dox.in":
             raise ValueError("overview.dox-in is added automatically to files list")
