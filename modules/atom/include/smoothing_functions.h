@@ -68,6 +68,8 @@ public:
     This behavior is roughly equivalent to CHARMM's force switch nonbonded
     interaction smoothing (which is also the smoothing mechanism used
     by MODELLER).
+
+    \see CoulombPairScore
  */
 class IMPATOMEXPORT ForceSwitch : public SmoothingFunction
 {
