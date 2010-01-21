@@ -19,7 +19,7 @@ ConfigurationSetXYZEmbedding
                                SingletonContainer *sc):
   cs_(cs), sc_(sc){}
 
-Floats ConfigurationSetXYZEmbedding::get_embedding(unsigned int a) const {
+Floats ConfigurationSetXYZEmbedding::get_point(unsigned int a) const {
   cs_->set_configuration(a);
   Floats ret(sc_->get_number_of_particles()*3);
   for (unsigned int i=0; i< sc_->get_number_of_particles(); ++i) {
@@ -30,10 +30,83 @@ Floats ConfigurationSetXYZEmbedding::get_embedding(unsigned int a) const {
   return ret;
 }
 
+unsigned int ConfigurationSetXYZEmbedding::get_number_of_points() const {
+  return cs_->get_number_of_configurations();
+}
+
 void ConfigurationSetXYZEmbedding::show(std::ostream &out) const {
   out << "ConfigurationSetXYZEmbedding with ";
   cs_->show(out);
   sc_->show(out);
+}
+
+
+ParticleEmbedding::ParticleEmbedding(const ParticlesTemp &ps,
+                                     const FloatKeys &ks,
+                                     bool rescale):
+  Embedding("ParticleEmbedding"),
+  ps_(ps), ks_(ks), rescale_(rescale){
+  if (rescale && !ps.empty()) {
+    ranges_.resize(ks.size());
+    for (unsigned int i=0; i< ks.size(); ++i) {
+      FloatRange r=ps[0]->get_model()->get_range(ks[i]);
+      ranges_[i]= FloatRange(r.first, 1.0/(r.second-r.first));
+    }
+  }
+}
+
+Floats ParticleEmbedding::get_point(unsigned int i) const {
+  Floats ret(ks_.size());
+  for (unsigned int j=0; j< ks_.size(); ++j) {
+    ret[j]= ps_[i]->get_value(ks_[j]);
+  }
+  if (rescale_) {
+    for (unsigned int j=0; j< ks_.size(); ++j) {
+      ret[j]= (ret[j]-ranges_[j].first)*ranges_[j].second;
+    }
+  }
+  return ret;
+}
+
+unsigned int ParticleEmbedding::get_number_of_points() const {
+  return ps_.size();
+}
+
+void ParticleEmbedding::show(std::ostream &out) const {
+  out << "ParticleEmbedding with ";
+  for (unsigned int i=0; i< ks_.size(); ++i) {
+    out << ks_[i] << " ";
+  }
+  out << std::endl;
+}
+
+
+HighDensityEmbedding::HighDensityEmbedding(em::DensityMap *dm,
+                                           double threshold):
+  Embedding("HighDensityEmbedding of "+dm->get_name()) {
+  for (unsigned int i=0; i< dm->get_number_of_voxels(); ++i) {
+    if (dm->get_value(i) > threshold) {
+      algebra::Vector3D v(dm->voxel2loc(i, 0),
+                          dm->voxel2loc(i, 1),
+                          dm->voxel2loc(i, 2));
+      points_.push_back(v);
+    }
+  }
+}
+
+Floats HighDensityEmbedding::get_point(unsigned int i) const {
+  return Floats(points_[i].coordinates_begin(),
+                points_[i].coordinates_end());
+}
+
+unsigned int HighDensityEmbedding::get_number_of_points() const {
+  return points_.size();
+}
+
+void HighDensityEmbedding::show(std::ostream &out) const {
+  out << "HighDensityEmbedding with " << points_.size()
+      << " points.";
+  out << std::endl;
 }
 
 
@@ -63,6 +136,9 @@ namespace {
   }
 }
 
+
+
+
 KMeansClustering* get_lloyds_kmeans(const Ints &names, Embedding *metric,
                                     unsigned int k, unsigned int iterations) {
   metric->set_was_owned(true);
@@ -77,7 +153,7 @@ KMeansClustering* get_lloyds_kmeans(const Ints &names, Embedding *metric,
   //load the initail guess
   KMData data(k, names.size());
   for (unsigned int i=0; i< names.size(); ++i) {
-    *(data[i])= metric->get_embedding(names[i]);
+    *(data[i])= metric->get_point(names[i]);
   }
   KMFilterCenters ctrs(k, &data, NULL, 1.0);
 
@@ -126,107 +202,16 @@ KMeansClustering* get_lloyds_kmeans(const Ints &names, Embedding *metric,
   KMeansClustering *cl= new KMeansClustering(clusters, centers, reps);
   return cl;
 }
-/*
-  Pointer<Embedding> pm(metric);
-  boost::uninform_int rng(0, data.size());
-  std::vector<Floats> data(names.size());
+
+
+KMeansClustering* get_lloyds_kmeans(Embedding *metric,
+                                    unsigned int k, unsigned int iterations) {
+  Ints names(metric->get_number_of_points());
   for (unsigned int i=0; i< names.size(); ++i) {
-    data[i]= metric->get_embedding(names[i]);
+    names[i]=i;
   }
-  Int centers(k);
-  for (unsigned int i=0; i< k; ++i) {
-    centers[i]= data[rng(random_number_generator)];
-  }
-  std::vector<Ints> clusters(k);
-  Floats changes(k), averages(k);
-  assign(names, data, centers, clusters, averages);
+  return get_lloyds_kmeans(names, metric, k, iterations);
+}
 
-  for (unsigned int it=0; i< iterations; ++it) {
-    compute_centers(data, clusters, centers, changes);
-    assign(data, centers, clusters, averages);
-    bool changed_enough=false;
-    for (unsigned int i=0;  i< k; ++i) {
-      if (changes[i]*100 > averages[i]) {
-        changed_enough=true;
-        break;
-      }
-    }
-    if (!changed_enough) {
-      IMP_LOG(TERSE, "No large movements, ending lloyds iterations."
-      << std::endl);
-      break;
-    }
-  }
-
-  Ints reps(k);
-  for (unsigned int i=0; i< k; ++i) {
-    int c=-1;
-    double d= std::numeric_limits<double>::max();
-    for (unsigned int j=0; j< clusters[i].size(); ++j) {
-      double cd= distance(data[clusters[i][j]], centers[i]);
-      if (cd < d) {
-        d= cd;
-        c= j;
-      }
-    }
-    reps[i]=names[c];
-  }
-  std::vector<Ints> rclusters(k);
-  for (unsigned int i=0; i< k; ++i) {
-    rclusters[i].resize(clusters[i].size());
-    for (unsigned int j=0; j < clusters[i].size(); ++j) {
-      rclusters[i][j]=name[clusters[i][j]];
-    }
-  }
-  KMeansClustering *cl= new KMeansClustering(rclusters, reps, centers);
-  return cl;
-
-
-
-
-  void accumulate(Floats &a, const Floats &b) {
-    for (unsigned int i=0; i< a.size(); ++i) {
-      a[i]+= b[i];
-    }
-  }
-  void assign(std::vector<Floats> &data,
-              const std::vector<Floats> &centers,
-              std::vector<Ints> &clusters,
-              Floats &averages) {
-    for (unsigned int i=0; i< clusters.size(); ++i) {
-      clusters[i].clear();
-      averages[i]=0;
-    }
-    for (unsigned int i=0; i< data.size(); ++i) {
-      double d= std::numeric_limits<double>::max();
-      int center=-1;
-      for (unsigned int j=0; j< centers.size(); ++j) {
-        double dc= distance(data[i], centers[j]);
-        if (dc <=d) {
-          center=j;
-          d= dc;
-        }
-      }
-      clusters[center].push_back(i);
-      averages[center]+= d;
-    }
-    for (unsigned int i=0; i< clusters.size(); ++i) {
-      averages[i]/= clusters[i].size();
-    }
-  }
-
-  void compute_centers(std::vector<Floats>&data,
-                         const std::vector<Ints> &clusters,
-                         Ints &centers, Floats &moves) {
-    for (unsigned int i=0; i< clusters.size(); ++i) {
-      Floats c(data[0].size(), 0);
-      for (unsigned int j=0; j<  clusters[i].size(); ++j) {
-        accumulate(c, data[clusters[i][j]])
-      }
-      moves[i]= distance(c, centers[i]);
-      centers[i]=c;
-    }
-  }
-*/
 
 IMPSTATISTICS_END_NAMESPACE
