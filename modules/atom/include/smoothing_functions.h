@@ -54,13 +54,14 @@ public:
     to min_distance, returns zero for distances above max_distance, and between
     the two thresholds smoothes the score such that its first derivatives drop
     linearly, i.e. the score is simply multiplied by \f[
-       \left{
+       \left\{
        \begin{array}{ll}
              1 & d \leq d_{min} \\
              \frac{(d_{max} - d)^2 (d_{max} + 2d - 3d_{min})}
                   {(d_{max} - d_{min})^3} & d_{min} < d \leq d_{max} \\
              0 & d > d_{max} \\
        \end{array}
+       \right.
     \f] where \f$d\f$ is the distance, and \f$d_{min}\f$ and \f$d_{max}\f$ are
     the thresholds set in the ForceSwitch constructor.
 
