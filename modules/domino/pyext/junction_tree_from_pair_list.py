@@ -134,7 +134,7 @@ def main():
     pairs=[]
     for p in pair_list:
         s=p.split()
-        pairs.append([int(s[0]),int(s[1])])
+        pairs.append([s[0],s[1]])
     ig = interaction_graph.InteractionGraph()
     ig.init_graph(pairs)
     G = ig
