@@ -190,11 +190,20 @@ class Doxypy(object):
     def __closeComment(self):
         """Appends any open comment block and triggering block to the output."""
 
-        # Hide private Python classes
-        if self.defclass and len(self.defclass) > 0 \
-           and re.match('\s*class\s*_', self.defclass[0]) \
-           and len(self.comment) > 0:
-            self.comment.insert(0, "@internal Private Python class")
+        if self.defclass and len(self.defclass) > 0:
+            # Hide private Python classes
+            if re.match('\s*class\s*_', self.defclass[0]) \
+               and len(self.comment) > 0:
+                self.comment.insert(0, "@internal Private Python class")
+
+            # If the class is not documented in Python, strip any inheritance
+            # information, otherwise doxygen gets confused when building the
+            # class hierarchical index and includes each SWIG class twice
+            elif not self.comment:
+                m = re.match('class\s+(\S+)\((\S+)\):$', self.defclass[0])
+                if m:
+                    self.defclass[0] = 'class ' + m.group(1) + ':'
+
         if options.autobrief:
             if len(self.comment) == 1 \
             or (len(self.comment) > 2 and self.comment[1].strip() == ''):
