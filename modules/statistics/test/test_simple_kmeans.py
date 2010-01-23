@@ -16,7 +16,7 @@ class KMeansTests(IMP.test.TestCase):
                 vs.push_back(IMP.algebra.random_vector_in_sphere(centers[i], 10))
         e= IMP.statistics.Vector3DEmbedding(vs)
         c= IMP.statistics.get_lloyds_kmeans(e,
-                                            3, 1000)
+                                            3, 10000)
         print c.get_cluster_center(0)
         print c.get_cluster_center(1)
         print c.get_cluster_center(2)
