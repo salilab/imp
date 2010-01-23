@@ -44,7 +44,7 @@
  - \ref coding_conventions "Coding Conventions"
  - \salilab{internal/imp/tests.html,Daily build status}
  - \ref devguide "Developer guide"
- - \ref differences "Differences using \imp between C++ and Python"
+ - \ref differences "Differences using IMP between C++ and Python"
  - \ref examples "Examples"
  - \wiki{FAQ, FAQ}
  - \salilab{imp/archives/imp-dev/,imp-dev list archive}
