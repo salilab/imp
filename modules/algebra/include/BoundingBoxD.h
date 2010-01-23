@@ -40,6 +40,27 @@ public:
   //! Creating a bounding box containing one point
   BoundingBoxD(const VectorD<D> &v): lb_(v), ub_(v){}
 
+  //! Creating a bounding box from a set of points
+  BoundingBoxD(const std::vector<VectorD<D> > &points) {
+    VectorD<D> lb,ub;
+    for(int i=0;i<D;i++) {
+      lb[i]=INT_MAX;
+      ub[i]=-INT_MAX;
+    }
+    for(int j=0;j<points.size();j++) {
+      for(int i=0;i<D;i++) {
+        if (lb[i]>points[j][i]) {
+          lb[i]=points[j][i];
+        }
+        if (ub[i]<points[j][i]) {
+          ub[i]=points[j][i];
+        }
+      }
+    }
+    lb_=lb;
+    ub_=ub;
+  }
+
   //! merge two bounding boxes
   const BoundingBoxD<D>& operator+=(const BoundingBoxD<D> &o) {
     for (unsigned int i=0; i< D; ++i) {
@@ -70,6 +91,10 @@ public:
           || o[i] > get_corner(1)[i]) return false;
     }
     return true;
+  }
+  //! True if the input bounding box is contained within this bounding box
+  bool get_contains(const BoundingBoxD &bb) const {
+    return get_contains(bb.get_corner(0)) && get_contains(bb.get_corner(1));
   }
 
   IMP_SHOWABLE_INLINE(out << lb_ << ": " << ub_);
