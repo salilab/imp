@@ -43,12 +43,12 @@ public:
   //! Creating a bounding box from a set of points
   BoundingBoxD(const std::vector<VectorD<D> > &points) {
     VectorD<D> lb,ub;
-    for(int i=0;i<D;i++) {
+    for(unsigned int i=0;i<D;i++) {
       lb[i]=INT_MAX;
       ub[i]=-INT_MAX;
     }
-    for(int j=0;j<points.size();j++) {
-      for(int i=0;i<D;i++) {
+    for(unsigned int j=0;j<points.size();j++) {
+      for(unsigned int i=0;i<D;i++) {
         if (lb[i]>points[j][i]) {
           lb[i]=points[j][i];
         }
