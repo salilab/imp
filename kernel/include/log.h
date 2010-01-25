@@ -65,9 +65,6 @@ enum LogLevel {DEFAULT=-1, SILENT=0, WARNING=1, TERSE=2, VERBOSE=3,
 #endif
 };
 
-//! The targets for IMP logging
-enum LogTarget {COUT, FILE, CERR};
-
 
 #if !defined SWIG && !defined(IMP_DOXYGEN)
 namespace internal {
@@ -82,17 +79,11 @@ IMPEXPORT void log_write(std::string to_write);
 //! Set the current log level for IMP
 IMPEXPORT void set_log_level(LogLevel l);
 
-//! Set the target of logs
-IMPEXPORT void set_log_target(LogTarget l);
-
 //! Get the current log level for IMP
 inline LogLevel get_log_level()
 {
   return internal::log_level;
 }
-
-//! Set the file name for the IMP log; must be called if a file is to be used.
-IMPEXPORT void set_log_file(std::string l);
 
 #ifndef IMP_DOXYGEN
 inline bool is_log_output(LogLevel l)

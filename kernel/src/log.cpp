@@ -8,6 +8,7 @@
 #include "IMP/log.h"
 #include "IMP/internal/log_internal.h"
 #include "IMP/exception.h"
+#include "IMP/file.h"
 
 #include <boost/iostreams/categories.hpp>
 #include <boost/iostreams/operations.hpp>
@@ -17,7 +18,6 @@
 IMP_BEGIN_INTERNAL_NAMESPACE
 
 LogLevel log_level= TERSE;
-LogTarget log_target= COUT;
 unsigned int log_indent=0;
 
 namespace {
@@ -25,7 +25,7 @@ class LogStream:
   public boost::iostreams::filtering_stream<boost::iostreams::output>,
   public boost::noncopyable  {
   typedef boost::iostreams::filtering_stream<boost::iostreams::output> P;
-  std::ostream *out_;
+  TextOutput out_;
   std::string prefix_;
 
   struct IndentFilter: public boost::iostreams::output_filter {
@@ -50,19 +50,22 @@ class LogStream:
     LogStream *ps_;
     LogSink(LogStream *ps): ps_(ps){}
     unsigned int write(const char *s, std::streamsize n) {
-      ps_->out_->write(s, n);
+      ps_->out_.get_stream().write(s, n);
       return n;
     }
   };
   friend class LogSink;
   friend class IndentFilter;
  public:
-  LogStream(std::ostream *out): out_(out) {
+  LogStream(TextOutput out): out_(out) {
     P::push(IndentFilter(this));
     P::push(LogSink(this));
   }
-  void set_stream(std::ostream *out) {
+  void set_stream(TextOutput out) {
     out_=out;
+  }
+  TextOutput get_stream() const {
+    return out_;
   }
 };
 }
@@ -75,7 +78,7 @@ IMP_BEGIN_NAMESPACE
 namespace {
   IMP_CHECK_CODE(double initialized=11111111);
   std::ofstream fstream;
-  internal::LogStream stream(&std::cout);
+  internal::LogStream stream(TextOutput(std::cout));
 }
 
 
@@ -86,30 +89,16 @@ void set_log_level(LogLevel l) {
   internal::log_level=l;
 }
 
-void set_log_target(LogTarget l)
+void set_log_target(TextOutput l)
 {
-  if (l== COUT) {
-    stream.set_stream(&std::cout);
-  } else if (l==CERR) {
-    stream.set_stream(&std::cerr);
-  } else {
-    stream.set_stream(&fstream);
-  }
+  stream.set_stream(l);
 }
 
-void set_log_file(std::string l) {
-  if (!l.empty()) {
-    fstream.open(l.c_str());
-    if (!fstream.is_open()) {
-      IMP_FAILURE("Error opening log file " << l);
-    } else {
-      internal::log_target=FILE;
-    }
-  } else {
-    fstream.close();
-    internal::log_target=COUT;
-  }
+TextOutput get_log_target()
+{
+  return stream.get_stream();
 }
+
 
 void log_write(std::string str) {
   IMP_INTERNAL_CHECK(initialized=11111111,
