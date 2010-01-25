@@ -3,7 +3,7 @@ import IMP.core
 import random
 import IMP.display
 
-# This example constructs a set of particles which are restrained
+# A trivial example that constructs a set of particles which are restrained
 # to form a chain via bonds between successive particles. In addition
 # the head and the tail of the chain are restrained to be close to one
 # another.
@@ -27,41 +27,30 @@ for i in range(1, chain.get_number_of_particles()):
 for p in m.get_particles():
     p.show()
 
-# Set up the nonbonded list
+# Prevent non-bonded particles from penetrating one another
 nbl= IMP.core.ClosePairContainer(chain, 0,2)
-# Exclude bonds from closest pairs
-bpc=IMP.atom.BondedPairFilter()
+bpc=IMP.atom.BondedPairFilter() # exclude existing bonds
 nbl.add_pair_filter(bpc)
-
-
-# Set up excluded volume
 ps= IMP.core.SphereDistancePairScore(IMP.core.HarmonicLowerBound(0,1))
-evr= IMP.core.PairsRestraint(ps, nbl)
-m.add_restraint(evr)
+m.add_restraint(IMP.core.PairsRestraint(ps, nbl))
 
-
-# Restraint for bonds
+# penalize conformations where bond lengths aren't preserved
 bss= IMP.atom.BondSingletonScore(IMP.core.Harmonic(0,1))
-br= IMP.core.SingletonsRestraint(bss, bonds)
-m.add_restraint(br)
+m.add_restraint(IMP.core.SingletonsRestraint(bss, bonds))
 
 # Tie the ends of the chain
-# We could have used a bond instead
-p= IMP.ParticlePair(chain.get_particle(0), chain.get_particle(chain.get_number_of_particles()-1))
+p= IMP.ParticlePair(chain.get_particle(0),
+                    chain.get_particle(chain.get_number_of_particles()-1))
 pps= IMP.core.ListPairContainer()
 pps.add_particle_pair(p)
-cr= IMP.core.PairsRestraint(
-           IMP.core.SphereDistancePairScore(IMP.core.Harmonic(3,1)), pps)
-m.add_restraint(cr)
+m.add_restraint(IMP.core.PairsRestraint(
+           IMP.core.SphereDistancePairScore(IMP.core.Harmonic(3,1)), pps))
 
-
-s= IMP.core.MCCGSampler(m)
+s= IMP.core.MCCGSampler(m) # sample using MC and CG
 s.set_number_of_attempts(10)
-IMP.set_log_level(IMP.VERBOSE)
 confs= s.sample()
 for i in range(0, confs.get_number_of_configurations()):
     confs.set_configuration(i)
-    print "Configuration ", i, " has energy ", m.evaluate(False)
     d=IMP.display.ChimeraWriter("solution"+str(i)+".py")
     for p in chain.get_particles():
         d.add_geometry(IMP.display.XYZRGeometry(p))
