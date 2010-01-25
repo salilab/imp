@@ -1,4 +1,12 @@
 /** \page recent Change History
+\par Week of January 22, 2010
+
+- The macros for Scores changed slightly. Scores not in IMP svn which use the IMP_*_SCORE macros now have to implement the get_is_changed() function outside of the class declaration and scores which use the IMP_SIMPLE_*_SCORE now don't have to implement the functions to get interactions and used particles.
+
+- Rename IMP::core::MinimumPairScoreRestraint (and kin, Maximum, Singleton, Triplet and Quad) to IMP::core::MinimumPairRestraint.
+
+- Add IMP::core::MinumumPairScore (and kin).
+
 \par Week of January 1, 2010
 
 - IMP::UsageException and IMP::InternalException are now reserved for their respective
