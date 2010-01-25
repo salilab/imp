@@ -74,6 +74,7 @@ IMP_DIRECTOR_KERNEL_CLASS(OptimizerState);
 IMP_DIRECTOR_KERNEL_CLASS(SingletonScore);
 IMP_DIRECTOR_KERNEL_CLASS(PairScore);
 IMP_DIRECTOR_KERNEL_CLASS(TripletScore);
+IMP_DIRECTOR_KERNEL_CLASS(QuadScore);
 IMP_DIRECTOR_KERNEL_CLASS(Optimizer);
 IMP_DIRECTOR_KERNEL_CLASS(Refiner);
 IMP_DIRECTOR_KERNEL_CLASS(SingletonContainer);
@@ -162,6 +163,10 @@ namespace IMP {
   IMP_SWIG_OBJECTS(TripletContainer, TripletContainers)
   IMP_SWIG_OBJECTS(QuadContainer, QuadContainers)
   IMP_SWIG_OBJECTS(Container, Containers)
+  IMP_SWIG_OBJECTS(SingletonScore, SingletonScores)
+  IMP_SWIG_OBJECTS(PairScore, PairScores)
+  IMP_SWIG_OBJECTS(TripletScore, TripletScores)
+  IMP_SWIG_OBJECTS(QuadScore, QuadScores)
   %template(ParticlePairs) ::IMP::VectorOfRefCounted< ParticlePair, IMP::RefCountParticleTuple<2> >;
   %template(ParticlePairsTemp) ::std::vector<ParticlePair >;
   %template(ParticleTriplets) ::IMP::VectorOfRefCounted< ParticleTriplet, IMP::RefCountParticleTuple<3> >;
