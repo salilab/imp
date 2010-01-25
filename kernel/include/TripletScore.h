@@ -64,7 +64,8 @@ public:
                                     DerivativeAccumulator *da) const = 0;
   virtual double evaluate_prechange(const ParticleTripletsTemp &o,
                                     DerivativeAccumulator *da) const = 0;
-
+  //! Return true if the score for vt might have changed.
+  virtual bool get_is_changed(const ParticleTriplet& vt) const =0;
   /** @} */
 
   /** Get the set of interaction induced by applying to the
@@ -84,7 +85,7 @@ public:
   IMP_REF_COUNTED_DESTRUCTOR(TripletScore)
 };
 
-IMP_OUTPUT_OPERATOR(TripletScore);
+IMP_OBJECTS(TripletScore);
 
 IMP_END_NAMESPACE
 
