@@ -97,6 +97,32 @@ class IMPEXPORT TextInput
 #endif
 };
 
+
+
+
+//! Set the target for the log.
+/** See TextOutput for options. Python users should use
+    SetLogTarget instead.
+    \ingroup logging
+ */
+#ifndef SWIG
+IMPEXPORT void set_log_target(TextOutput l);
+IMPEXPORT TextOutput get_log_target();
+#endif
+
+/** Set the log target to a given value and reset it
+    when the object is destroyed. Use this in python
+    to set the target of logs.
+    \ingroup logging
+*/
+class SetLogTarget: public RAII {
+  TextOutput old_;
+public:
+  IMP_RAII(SetLogTarget, (TextOutput to),
+           old_=get_log_target();,
+           set_log_target(to);,
+           set_log_target(old_););
+};
 IMP_END_NAMESPACE
 
 #endif /* IMP_FILE_H */
