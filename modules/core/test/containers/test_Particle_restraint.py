@@ -109,7 +109,7 @@ class ParticleContainerTest(IMP.test.TestCase):
         self.assertInTolerance(m.evaluate(False), f, .1*f)
 
     def test_min_restraint(self):
-        """Test the MinimumSingletonScoreRestraint"""
+        """Test the MinimumSingletonRestraint"""
         m= IMP.Model()
         c= IMP.core.ListSingletonContainer()
         self.assertEqual(c.get_ref_count(), 1)
@@ -118,7 +118,7 @@ class ParticleContainerTest(IMP.test.TestCase):
         print c.get_number_of_particles()
         d= self.create_singleton_score()
         self.assertEqual(d.get_ref_count(), 1)
-        r= IMP.core.MinimumSingletonScoreRestraint(d, c)
+        r= IMP.core.MinimumSingletonRestraint(d, c)
         self.assertEqual(d.get_ref_count(), 2)
         self.assertEqual(c.get_ref_count(), 2)
         r.set_n(4)
@@ -140,7 +140,7 @@ class ParticleContainerTest(IMP.test.TestCase):
         self.assertInTolerance(mt, f, .1*f)
 
     def test_max_restraint(self):
-        """Test the MaximumSingletonScoreRestraint"""
+        """Test the MaximumSingletonRestraint"""
         m= IMP.Model()
         c= IMP.core.ListSingletonContainer()
         self.assertEqual(c.get_ref_count(), 1)
@@ -149,7 +149,7 @@ class ParticleContainerTest(IMP.test.TestCase):
         print c.get_number_of_particles()
         d= self.create_singleton_score()
         self.assertEqual(d.get_ref_count(), 1)
-        r= IMP.core.MaximumSingletonScoreRestraint(d, c)
+        r= IMP.core.MaximumSingletonRestraint(d, c)
         self.assertEqual(c.get_ref_count(), 2)
         self.assertEqual(d.get_ref_count(), 2)
         r.set_n(4)
@@ -169,6 +169,28 @@ class ParticleContainerTest(IMP.test.TestCase):
             mt = mt+ ms[-i-1]
         print mt
         self.assertInTolerance(mt, f, .1*f)
+    def test_max_score(self):
+        """Test the MaximumSingletonScore"""
+        m= IMP.Model()
+        s= IMP.SingletonScoresTemp()
+        for i in range(0,5):
+            s.append(IMP.test.ConstSingletonScore(i))
+        ps= IMP.core.MaximumSingletonScore(s, 2)
+        p= self.create_particle(m)
+        ps.set_was_owned(True)
+        v= ps.evaluate(p, None)
+        self.assertEqual(v, 7)
+    def test_min_score(self):
+        """Test the MinimumSingletonScore"""
+        m= IMP.Model()
+        s= IMP.SingletonScoresTemp()
+        for i in range(0,5):
+            s.append(IMP.test.ConstSingletonScore(i))
+        ps= IMP.core.MinimumSingletonScore(s, 3)
+        p= self.create_particle(m)
+        ps.set_was_owned(True)
+        v= ps.evaluate(p, None)
+        self.assertEqual(v, 3)
 
 
     def test_container(self):
