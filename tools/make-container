@@ -3,7 +3,7 @@ import sys
 import os
 
 def filter(name, value, passvalue, storevalue,
-           scorename, args, fromargs, asargs,decomp, arity, infile):
+           scorename, args, fromargs, asargs,decomp, arity, infile, minmax="", comp=""):
     cname= name.title().replace(' ', '')
     ucname= name.upper().replace(' ', '_') 
     lcname= name.lower().replace(' ', '_')
@@ -16,6 +16,10 @@ def filter(name, value, passvalue, storevalue,
         .replace("StoreValue", storevalue)\
         .replace("PassValue", passvalue) \
         .replace("Value", value) \
+        .replace("MinMax", minmax)\
+        .replace("MINMAX", minmax.upper())\
+        .replace("minmax", minmax.lower())\
+        .replace("COMPARATOR", comp)\
         .replace("Groupname", scorename) \
         .replace("GROUPNAME", scorename.upper()) \
         .replace("DecomposeArguments", decomp)\
@@ -89,19 +93,32 @@ def make_one(name, value, passvalue, storevalue, multi, args, fromargs, asargs, 
               ("kernel/src/"+multi + "Filter.cpp",
                path+"/tools/container_templates/filter.cc"),
 
-
               ("kernel/include/"+multi + "Score.h",
                path+"/tools/container_templates/score.hpp"),
               ("kernel/src/"+multi + "Score.cpp",
                path+"/tools/container_templates/score.cc"),
-              ("modules/core/include/Minimum"+multi + "ScoreRestraint.h",
-               path+"/tools/container_templates/min.hpp"),
-              ("modules/core/src/Minimum"+multi + "ScoreRestraint.cpp",
-               path+"/tools/container_templates/min.cc"),
-              ("modules/core/include/Maximum"+multi + "ScoreRestraint.h",
-               path+"/tools/container_templates/max.hpp"),
-              ("modules/core/src/Maximum"+multi + "ScoreRestraint.cpp",
-               path+"/tools/container_templates/max.cc"),
+
+
+              ("modules/core/include/Minimum"+multi + "Restraint.h",
+               path+"/tools/container_templates/min.hpp", "Minimum", "less"),
+              ("modules/core/src/Minimum"+multi + "Restraint.cpp",
+               path+"/tools/container_templates/min.cc", "Minimum", "less"),
+              ("modules/core/include/Maximum"+multi + "Restraint.h",
+               path+"/tools/container_templates/min.hpp", "Maximum", "greater"),
+              ("modules/core/src/Maximum"+multi + "Restraint.cpp",
+               path+"/tools/container_templates/min.cc", "Maximum", "greater"),
+
+
+              ("modules/core/include/Minimum"+multi + "Score.h",
+               path+"/tools/container_templates/minscore.hpp", "Minimum", "less"),
+              ("modules/core/src/Minimum"+multi + "Score.cpp",
+               path+"/tools/container_templates/minscore.cc", "Minimum", "less"),
+              ("modules/core/include/Maximum"+multi + "Score.h",
+               path+"/tools/container_templates/minscore.hpp", "Maximum", "greater"),
+              ("modules/core/src/Maximum"+multi + "Score.cpp",
+               path+"/tools/container_templates/minscore.cc", "Maximum", "greater"),
+
+
               ("modules/core/test/containers/test_"+cname + "_restraint.py",
                path+"/tools/container_templates/test.py"),
               ("modules/core/pyext/IMP_"+lcname+"_containers.i",
@@ -113,7 +130,10 @@ def make_one(name, value, passvalue, storevalue, multi, args, fromargs, asargs, 
         ifile= open(p[1], 'r')
         contents= ifile.read()
         print "writing " + p[0]
-        ofile.write(filter(name, value, passvalue, storevalue, multi, args, fromargs, asargs, decomp, arity, contents))
+        if len(p) > 2:
+            ofile.write(filter(name, value, passvalue, storevalue, multi, args, fromargs, asargs, decomp, arity, contents, minmax=p[2], comp=p[3]))
+        else:
+            ofile.write(filter(name, value, passvalue, storevalue, multi, args, fromargs, asargs, decomp, arity, contents))
 
 def main():
     make_one("particle", "Particle*", "Particle*", "Pointer<Particle>",

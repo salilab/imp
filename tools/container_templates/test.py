@@ -109,7 +109,7 @@ class ClassnameContainerTest(IMP.test.TestCase):
         self.assertInTolerance(m.evaluate(False), f, .1*f)
 
     def test_min_restraint(self):
-        """Test the MinimumGroupnameScoreRestraint"""
+        """Test the MinimumGroupnameRestraint"""
         m= IMP.Model()
         c= IMP.core.ListGroupnameContainer()
         self.assertEqual(c.get_ref_count(), 1)
@@ -118,7 +118,7 @@ class ClassnameContainerTest(IMP.test.TestCase):
         print c.get_number_of_classnames()
         d= self.create_groupname_score()
         self.assertEqual(d.get_ref_count(), 1)
-        r= IMP.core.MinimumGroupnameScoreRestraint(d, c)
+        r= IMP.core.MinimumGroupnameRestraint(d, c)
         self.assertEqual(d.get_ref_count(), 2)
         self.assertEqual(c.get_ref_count(), 2)
         r.set_n(4)
@@ -140,7 +140,7 @@ class ClassnameContainerTest(IMP.test.TestCase):
         self.assertInTolerance(mt, f, .1*f)
 
     def test_max_restraint(self):
-        """Test the MaximumGroupnameScoreRestraint"""
+        """Test the MaximumGroupnameRestraint"""
         m= IMP.Model()
         c= IMP.core.ListGroupnameContainer()
         self.assertEqual(c.get_ref_count(), 1)
@@ -149,7 +149,7 @@ class ClassnameContainerTest(IMP.test.TestCase):
         print c.get_number_of_classnames()
         d= self.create_groupname_score()
         self.assertEqual(d.get_ref_count(), 1)
-        r= IMP.core.MaximumGroupnameScoreRestraint(d, c)
+        r= IMP.core.MaximumGroupnameRestraint(d, c)
         self.assertEqual(c.get_ref_count(), 2)
         self.assertEqual(d.get_ref_count(), 2)
         r.set_n(4)
@@ -169,6 +169,28 @@ class ClassnameContainerTest(IMP.test.TestCase):
             mt = mt+ ms[-i-1]
         print mt
         self.assertInTolerance(mt, f, .1*f)
+    def test_max_score(self):
+        """Test the MaximumGroupnameScore"""
+        m= IMP.Model()
+        s= IMP.GroupnameScores()
+        for i in range(0,5):
+            s.append(self.ConstGroupnameScore(i))
+        ps= IMP.core.MaximumGroupnameScore(s, 2)
+        p= self.create_classname(m)
+        ps.set_was_owned(True)
+        v= ps.evaluate(p)
+        self.assertEqual(v, 7)
+    def test_min_score(self):
+        """Test the MinimumGroupnameScore"""
+        m= IMP.Model()
+        s= IMP.GroupnameScores()
+        for i in range(0,5):
+            s.append(self.ConstGroupnameScore(i))
+        ps= IMP.core.MinimumGroupnameScore(s, 3)
+        p= self.create_classname(m)
+        ps.set_was_owned(True)
+        v= ps.evaluate(p)
+        self.assertEqual(v, 3)
 
 
     def test_container(self):

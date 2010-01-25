@@ -64,7 +64,8 @@ public:
                                     DerivativeAccumulator *da) const = 0;
   virtual double evaluate_prechange(const ClassnamesTemp &o,
                                     DerivativeAccumulator *da) const = 0;
-
+  //! Return true if the score for vt might have changed.
+  virtual bool get_is_changed(PassValue vt) const =0;
   /** @} */
 
   /** Get the set of interaction induced by applying to the
@@ -84,7 +85,7 @@ public:
   IMP_REF_COUNTED_DESTRUCTOR(GroupnameScore)
 };
 
-IMP_OUTPUT_OPERATOR(GroupnameScore);
+IMP_OBJECTS(GroupnameScore);
 
 IMP_END_NAMESPACE
 
