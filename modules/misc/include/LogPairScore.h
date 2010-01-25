@@ -57,26 +57,6 @@ inline Float LogPairScore::evaluate(const ParticlePair &pp,
   return 0.;
 }
 
-inline ParticlesList
-LogPairScore::get_interacting_particles(const ParticlePair &p) const {
-  return ParticlesList(1, get_input_particles(p));
-}
-
-inline ParticlesTemp
-LogPairScore::get_input_particles(const ParticlePair &p) const {
-  ParticlesTemp t(2);
-  t[0]= p[0];
-  t[1]= p[1];
-  return t;
-}
-
-
-inline ContainersTemp
-LogPairScore::get_input_containers(const ParticlePair &p) const {
-  return ContainersTemp();
-}
-
-
 
 
 IMPMISC_END_NAMESPACE

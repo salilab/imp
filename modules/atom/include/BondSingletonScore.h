@@ -27,11 +27,6 @@ IMPATOM_BEGIN_NAMESPACE
 class IMPATOMEXPORT BondSingletonScore : public SingletonScore
 {
   IMP::internal::OwnerPointer<UnaryFunction> f_;
-  bool get_is_changed(Particle *p) const {
-    Bond b(p);
-    return b.get_bonded(0)->get_is_changed()
-      || b.get_bonded(1)->get_is_changed();
-  }
 public:
   //! Use f to penalize deviations in length
   BondSingletonScore(UnaryFunction *f);

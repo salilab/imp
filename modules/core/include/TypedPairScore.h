@@ -22,10 +22,16 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT TypedPairScore : public PairScore
 {
-  // always pass the work on to the next pair score
-  bool get_is_changed(const ParticlePair&) const {
-    return true;
-  }
+  // The key used for the particle types.
+  IntKey typekey_;
+  typedef std::map<std::pair<Int,Int>,
+                   IMP::internal::OwnerPointer<PairScore> > ScoreMap;
+  // Mapping from particle types to PairScores.
+  ScoreMap score_map_;
+  // Whether to throw an exception for invalid particle types.
+  bool allow_invalid_types_;
+
+  PairScore *get_pair_score(const ParticlePair &pp) const;
 public:
   //! Constructor.
   /** \param[in] typekey The IntKey used to denote the type of each particle.
@@ -56,16 +62,6 @@ public:
   }
 
   IMP_PAIR_SCORE(TypedPairScore, get_module_version_info());
-
-private:
-  //! The key used for the particle types.
-  IntKey typekey_;
-  typedef std::map<std::pair<Int,Int>,
-                   IMP::internal::OwnerPointer<PairScore> > ScoreMap;
-  //! Mapping from particle types to PairScores.
-  ScoreMap score_map_;
-  //! Whether to throw an exception for invalid particle types.
-  bool allow_invalid_types_;
 };
 
 IMPCORE_END_NAMESPACE

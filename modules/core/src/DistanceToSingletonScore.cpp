@@ -41,21 +41,6 @@ Float DistanceToSingletonScore::evaluate(Particle *b,
   return v;
 }
 
-ParticlesList
-DistanceToSingletonScore::get_interacting_particles(Particle *) const {
-  return ParticlesList();
-}
-
-ParticlesTemp
-DistanceToSingletonScore::get_input_particles(Particle* p) const {
-  return ParticlesTemp(1, p);
-}
-
-ContainersTemp
-DistanceToSingletonScore::get_input_containers(Particle* p) const {
-  return ContainersTemp();
-}
-
 void DistanceToSingletonScore::show(std::ostream &out) const
 {
   out << "DistanceToSingletonScore using ";
@@ -78,21 +63,6 @@ Float SphereDistanceToSingletonScore::evaluate(Particle *b,
   IMP_LOG(VERBOSE, "SphereDistanceTo from " << XYZR(b) << " to "
           << pt_ << " scored " << v << std::endl);
   return v;
-}
-
-ParticlesList
-SphereDistanceToSingletonScore::get_interacting_particles(Particle *) const {
-  return ParticlesList();
-}
-
-ParticlesTemp
-SphereDistanceToSingletonScore::get_input_particles(Particle* p) const {
-  return ParticlesTemp(1, p);
-}
-
-ContainersTemp
-SphereDistanceToSingletonScore::get_input_containers(Particle* p) const {
-  return ContainersTemp();
 }
 
 void SphereDistanceToSingletonScore::show(std::ostream &out) const

@@ -46,24 +46,6 @@ Float CoulombPairScore::evaluate(const ParticlePair &p,
   }
 }
 
-ParticlesList CoulombPairScore
-::get_interacting_particles(const ParticlePair &p) const {
-  return ParticlesList(1, get_input_particles(p));
-}
-
-ParticlesTemp CoulombPairScore
-::get_input_particles(const ParticlePair &p) const {
-  ParticlesTemp t(2);
-  t[0]=p[0];
-  t[1]=p[1];
-  return t;
-}
-
-ContainersTemp CoulombPairScore
-::get_input_containers(const ParticlePair &p) const {
-  return ContainersTemp();
-}
-
 void CoulombPairScore::show(std::ostream &out) const
 {
   out << "CoulombPairScore with relative dielectric " << relative_dielectric_

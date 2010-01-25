@@ -12,6 +12,23 @@ IMPCORE_BEGIN_NAMESPACE
 Float TypedPairScore::evaluate(const ParticlePair &p,
                                DerivativeAccumulator *da) const
 {
+  PairScore *ps= get_pair_score(p);
+  if (!ps) {
+    if (!allow_invalid_types_) {
+      IMP_THROW("Attempt to evaluate TypedPairScore on "
+                "particles with invalid types ("
+                << p[0]->get_value(typekey_) << ", "
+                << p[1]->get_value(typekey_) << ")",
+                ValueException);
+    } else {
+      return 0.0;
+    }
+  } else {
+    return ps->evaluate(p, da);
+  }
+}
+
+PairScore *TypedPairScore::get_pair_score(const ParticlePair &p) const {
   if (!p[0]->has_attribute(typekey_)) {
     set_particle_type(p[0]);
   }
@@ -25,17 +42,10 @@ Float TypedPairScore::evaluate(const ParticlePair &p,
       score_map_.find(std::pair<Int,Int>(std::min(atype, btype),
                                          std::max(atype, btype)));
   if (psit == score_map_.end()) {
-    if (!allow_invalid_types_) {
-      std::ostringstream oss;
-      oss << "Attempt to evaluate TypedPairScore on "
-          "particles with invalid types (" << atype << ", " << btype << ")";
-      throw ValueException(oss.str().c_str());
-    } else {
-      return 0.;
-    }
+    return NULL;
   } else {
     PairScore *ps = psit->second.get();
-    return ps->evaluate(p, da);
+    return ps;
   }
 }
 
@@ -60,6 +70,13 @@ ParticlesTemp TypedPairScore::get_input_particles(const ParticlePair &p) const {
 ContainersTemp
 TypedPairScore::get_input_containers(const ParticlePair &p) const {
   return ContainersTemp();
+}
+
+bool TypedPairScore::get_is_changed(const ParticlePair&p) const {
+  if (p[0]->get_is_changed() || p[1]->get_is_changed()) return true;
+  PairScore *ps= get_pair_score(p);
+  if (!ps) return false;
+  else return ps->get_is_changed(p);
 }
 
 
