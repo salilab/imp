@@ -1018,26 +1018,8 @@ public:
   IMP_OBJECT(Name, version_info);
 
 
-
-//! Declare the functions needed for a SingletonScore
-/** \advanced
-
-    In addition to the methods done by IMP_INTERACTON, it declares
-    - IMP::SingletonScore::evaluate(IMP::Particle*,
-    IMP::DerivativeAccumulator*)
-    - IMP::SingletonScore::get_interacting_particles()
-    IMP::DerivativeAccumulator*)
-    - IMP::SingletonScore::get_input_particles()
-    - IMP::SingletonScore::get_output_particles()
-
-    The macro expects that a class method
-    - bool get_is_changed(Particle*) which returns true if the score
-    needs to be recalculated.
-
-    See IMP_SIMPLE_SINGLETON_SCORE() for a way of providing an
-    implementation of that method.
-*/
-#define IMP_SINGLETON_SCORE(Name, version_info)                         \
+#ifndef IMP_DOXYGEN
+#define IMP_SINGLETON_SCORE_BASE(Name, version_info)                    \
   double evaluate(Particle *a, DerivativeAccumulator *da) const;        \
   double evaluate(const ParticlesTemp &ps,                              \
                   DerivativeAccumulator *da) const {                    \
@@ -1081,41 +1063,65 @@ public:
     }                                                                   \
     return ret;                                                         \
   }                                                                     \
+  IMP_OBJECT(Name, version_info);
+#endif
+
+
+//! Declare the functions needed for a SingletonScore
+/** \advanced
+
+    In addition to the methods done by IMP_INTERACTON, it declares
+    - IMP::SingletonScore::evaluate(IMP::Particle*,
+    IMP::DerivativeAccumulator*)
+    - IMP::SingletonScore::get_interacting_particles()
+    IMP::DerivativeAccumulator*)
+    - IMP::SingletonScore::get_input_particles()
+    - IMP::SingletonScore::get_is_changed()
+    - IMP::SingletonScore::get_output_particles()
+
+    The macro expects that a class method
+    - bool get_is_changed(Particle*) which returns true if the score
+    needs to be recalculated.
+
+    See IMP_SIMPLE_SINGLETON_SCORE() for a way of providing an
+    implementation of that method.
+*/
+#define IMP_SINGLETON_SCORE(Name, version_info)                         \
+  bool get_is_changed(Particle *p) const;                               \
   ParticlesList get_interacting_particles(Particle*) const;             \
   ParticlesTemp get_input_particles(Particle*) const;                   \
   ContainersTemp get_input_containers(Particle *) const;                \
-  IMP_OBJECT(Name, version_info);
+  IMP_SINGLETON_SCORE_BASE(Name, version_info);
 
 //! Declare the functions needed for a SingletonScore
 /** \advanced
     In addition to the methods declared and defined by IMP_SINGLETON_SCORE,
-    the macro provides an implementation of the get_is_changed()
-    method which returns true if the particle has changed.
+    the macro provides an implementation of
+    - IMP::SingletonScore::get_is_changed()
+    - IMP::SingletonScore::get_interacting_particles()
+    - IMP::SingletonScore::get_input_particles()
+    - IMP::SingletonScore::get_input_containers()
+    which assume that only the passed particle serve as input to the
+    score.
 */
 #define IMP_SIMPLE_SINGLETON_SCORE(Name, version_info)  \
-  IMP_SINGLETON_SCORE(Name, version_info);              \
   bool get_is_changed(Particle *p) const {              \
     return p->get_is_changed();                         \
-  }
+  }                                                     \
+  ParticlesList get_interacting_particles(Particle*) const {            \
+    return ParticlesList();                                             \
+  }                                                                     \
+  ParticlesTemp get_input_particles(Particle*p) const {                  \
+    return ParticlesTemp(1,p);                                          \
+  }                                                                     \
+  ContainersTemp get_input_containers(Particle *) const {               \
+    return ContainersTemp();                                            \
+  }                                                                     \
+  IMP_SINGLETON_SCORE_BASE(Name, version_info)
 
 
-//! Declare the functions needed for a PairScore
-/** \advanced
-
-    In addition to the methods done by IMP_OBJECT(), it declares
-    - IMP::PairScore::evaluate()
-    - IMP::PairScore::get_interacting_particles()
-    - IMP::PairScore::get_input_particles()
-    - IMP::PairScore::get_output_particles()
-
-    The macro expects that a class method
-    - bool get_is_changed(const ParticlePair&) which returns true if the
-    score needs to be recalculated.
-
-    See IMP_SIMPLE_PAIR_SCORE() for a way of providing an
-    implementation of that method.
-*/
-#define IMP_PAIR_SCORE(Name, version_info)                              \
+#ifndef IMP_DOXYGEN
+#define IMP_PAIR_SCORE_BASE(Name, version_info) \
   double evaluate(const ParticlePair &p,                                \
                   DerivativeAccumulator *da) const;                     \
   IMP_NO_DOXYGEN(double evaluate(Particle *a, Particle *b,              \
@@ -1164,43 +1170,63 @@ public:
     }                                                                   \
     return ret;                                                         \
   }                                                                     \
+  IMP_OBJECT(Name, version_info);
+#endif
+
+//! Declare the functions needed for a PairScore
+/** \advanced
+
+    In addition to the methods done by IMP_OBJECT(), it declares
+    - IMP::PairScore::evaluate()
+    - IMP::PairScore::get_interacting_particles()
+    - IMP::PairScore::get_input_particles()
+    - IMP::PairScore::get_output_particles()
+    - IMP::PairScore::get_is_changed()
+
+    The macro expects that a class method
+    - bool get_is_changed(const ParticlePair&) which returns true if the
+    score needs to be recalculated.
+
+    See IMP_SIMPLE_PAIR_SCORE() for a way of providing an
+    implementation of that method.
+*/
+#define IMP_PAIR_SCORE(Name, version_info)              \
+  bool get_is_changed(const ParticlePair &pp) const;    \
   ParticlesList get_interacting_particles(const ParticlePair &p) const; \
   ParticlesTemp get_input_particles(const ParticlePair &p) const;       \
   ContainersTemp get_input_containers(const ParticlePair &p) const;     \
-  IMP_OBJECT(Name, version_info);
+  IMP_PAIR_SCORE_BASE(Name, version_info)
 
 //! Declare the functions needed for a SingletonScore
 /** \advanced
     In addition to the methods declared and defined by IMP_PAIR_SCORE,
-    the macro provides an implementation of the get_is_changed()
-    method which returns true if either particle has changed.
+    the macro provides an implementation of
+    - IMP::PairScore::get_is_changed()
+    - IMP::PairScore::get_interacting_particles()
+    - IMP::PairScore::get_input_particles()
+    - IMP::PairScore::get_input_containers()
+    which assume that only the 2 passed particles serve as inputs to the
+    score.
 */
 #define IMP_SIMPLE_PAIR_SCORE(Name, version_info)               \
-  IMP_PAIR_SCORE(Name, version_info);                           \
   bool get_is_changed(const ParticlePair &p) const {            \
     return p[0]->get_is_changed() || p[1]->get_is_changed();    \
-  }
+  }                                                             \
+  ParticlesList get_interacting_particles(const ParticlePair &p) const { \
+    ParticlesTemp r(2); r[0]=p[0]; r[1]=p[1];                           \
+  return ParticlesList(1, r);                                           \
+  }                                                                     \
+  ParticlesTemp get_input_particles(const ParticlePair &p) const {      \
+    ParticlesTemp r(2); r[0]=p[0]; r[1]=p[1];                           \
+    return r;                                                           \
+  }                                                                     \
+  ContainersTemp get_input_containers(const ParticlePair &p) const {    \
+    return ContainersTemp();                                            \
+  }                                                                     \
+  IMP_PAIR_SCORE_BASE(Name, version_info);                      \
 
-
-
-
-//! Declare the functions needed for a TripletScore
-/** \advanced
-
-    In addition to the methods done by IMP_OBJECT(), it declares
-    - IMP::TripletScore::evaluate()
-    - IMP::TripletScore::get_interacting_particles()
-    - IMP::TripletScore::get_input_particles()
-    - IMP::TripletScore::get_output_particles()
-
-    The macro expects that a class method
-    - bool get_is_changed(ParticleTriplet) which returns true if the
-    score needs to be recalculated.
-
-    See IMP_SIMPLE_TRIPLET_SCORE() for a way of providing an
-    implementation of that method.
-*/
-#define IMP_TRIPLET_SCORE(Name, version_info)                           \
+#ifndef IMP_DOXYGEN
+#define IMP_TRIPLET_SCORE_BASE(Name, version_info)                      \
   double evaluate(const ParticleTriplet &p,                             \
                   DerivativeAccumulator *da) const;                     \
   double evaluate(const ParticleTripletsTemp &ps,                       \
@@ -1249,24 +1275,62 @@ public:
     }                                                                   \
     return ret;                                                         \
   }                                                                     \
+  IMP_OBJECT(Name, version_info)
+#endif
+
+//! Declare the functions needed for a TripletScore
+/** \advanced
+
+    In addition to the methods done by IMP_OBJECT(), it declares
+    - IMP::TripletScore::evaluate()
+    - IMP::TripletScore::get_is_changed()
+    - IMP::TripletScore::get_interacting_particles()
+    - IMP::TripletScore::get_input_particles()
+    - IMP::TripletScore::get_output_particles()
+
+    The macro expects that a class method
+    - bool get_is_changed(ParticleTriplet) which returns true if the
+    score needs to be recalculated.
+
+    See IMP_SIMPLE_TRIPLET_SCORE() for a way of providing an
+    implementation of that method.
+*/
+#define IMP_TRIPLET_SCORE(Name, version_info)                           \
+  bool get_is_changed(const ParticleTriplet &p) const;                  \
   ParticlesList get_interacting_particles(const ParticleTriplet &p) const; \
   ParticlesTemp get_input_particles(const ParticleTriplet &p) const;    \
   ContainersTemp get_input_containers(const ParticleTriplet &p) const;  \
-  IMP_OBJECT(Name, version_info);
+  IMP_TRIPLET_SCORE_BASE(Name, version_info)
 
 
 //! Declare the functions needed for a SingletonScore
 /** \advanced
     In addition to the methods declared and defined by IMP_TRIPLET_SCORE,
-    the macro provides an implementation of the get_is_changed()
-    method which returns true if any of the particles have changed.
+    the macro provides an implementation of
+    - IMP::TripletScore::get_is_changed()
+    - IMP::TripletScore::get_interacting_particles()
+    - IMP::TripletScore::get_input_particles()
+    - IMP::TripletScore::get_input_containers()
+    which assume that only the 3 passed particles serve as inputs to the
+    score.
 */
 #define IMP_SIMPLE_TRIPLET_SCORE(Name, version_info)               \
-  IMP_TRIPLET_SCORE(Name, version_info);                           \
   bool get_is_changed(const ParticleTriplet &p) const {            \
     return p[0]->get_is_changed() || p[1]->get_is_changed()        \
     || p[1]->get_is_changed();                                     \
-  }
+  }                                                                \
+  ParticlesList get_interacting_particles(const ParticleTriplet &p) const { \
+    ParticlesTemp r(3); r[0]=p[0]; r[1]=p[1]; r[2]=p[2];                \
+    return ParticlesList(1,r);                                          \
+  }                                                                     \
+  ParticlesTemp get_input_particles(const ParticleTriplet &p) const {   \
+  ParticlesTemp r(3); r[0]=p[0]; r[1]=p[1]; r[2]=p[2];                  \
+  return r;                                                             \
+  }                                                                     \
+  ContainersTemp get_input_containers(const ParticleTriplet &p) const { \
+  return ContainersTemp();                                              \
+  }                                                                     \
+  IMP_TRIPLET_SCORE_BASE(Name, version_info);                           \
 
 
 //! Declare the functions needed for a QuadScore
@@ -1285,6 +1349,10 @@ public:
 #define IMP_QUAD_SCORE(Name, version_info)                              \
   double evaluate(const ParticleQuad &p,                                \
                   DerivativeAccumulator *da) const;                     \
+  double evaluate(Particle *a, Particle *b, Particle *c, Particle *d,    \
+                  DerivativeAccumulator *da) const {                    \
+    return evaluate(ParticleQuad(a,b,c,d), da);                         \
+  }                                                                     \
   double evaluate(const ParticleQuadsTemp &ps,                          \
                   DerivativeAccumulator *da) const {                    \
     double ret=0;                                                       \
@@ -1327,6 +1395,7 @@ public:
     }                                                                   \
     return ret;                                                         \
   }                                                                     \
+  bool get_is_changed(const ParticleQuad &p) const;                     \
   ParticlesList get_interacting_particles(const ParticleQuad &p) const; \
   ParticlesTemp get_input_particles(const ParticleQuad &p) const;       \
   ContainersTemp get_input_containers(const ParticleQuad &p) const;     \
