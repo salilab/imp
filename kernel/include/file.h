@@ -116,6 +116,12 @@ IMPEXPORT TextOutput get_log_target();
     \ingroup logging
 */
 class SetLogTarget: public RAII {
+  /* Python deletes all python objects before static
+     destructors are called. As a result, having static
+     C++ objects point to python objects is problematic.
+     This class makes sure that the pointer to the
+     python class gets cleaned up when python exits.
+  */
   TextOutput old_;
 public:
   IMP_RAII(SetLogTarget, (TextOutput to),
