@@ -320,7 +320,7 @@ class ConstRestraint(IMP.Restraint):
 class ConstSingletonScore(IMP.SingletonScore):
     """An IMP::SingletonScore which always returns a constant value."""
     def __init__(self, v):
-        IMP.PairScore.__init__(self)
+        IMP.SingletonScore.__init__(self)
         self.v=v
     def evaluate(self, p, da):
         return self.v
