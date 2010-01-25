@@ -75,26 +75,6 @@ Float AngleTripletScore::evaluate(const ParticleTriplet &p,
   return score;
 }
 
-
-ParticlesList AngleTripletScore
-::get_interacting_particles(const ParticleTriplet &p) const {
-  return ParticlesList(1, get_input_particles(p));
-}
-
-ParticlesTemp AngleTripletScore
-::get_input_particles(const ParticleTriplet &p) const {
-  ParticlesTemp t(3);
-  t[0]=p[0];
-  t[1]=p[1];
-  t[2]=p[2];
-  return t;
-}
-
-ContainersTemp AngleTripletScore
-::get_input_containers(const ParticleTriplet &p) const {
-  return ContainersTemp();
-}
-
 void AngleTripletScore::show(std::ostream &out) const
 {
   out << "AngleTripletScore using ";

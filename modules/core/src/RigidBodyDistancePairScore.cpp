@@ -63,6 +63,10 @@ double RigidBodyDistancePairScore::evaluate(const ParticlePair &p,
   return ps_->evaluate(pp, dera);
 }
 
+bool RigidBodyDistancePairScore::get_is_changed(const ParticlePair &p) const {
+  return p[0]->get_is_changed() || p[1]->get_is_changed();
+}
+
 
 ParticlesList
 RigidBodyDistancePairScore

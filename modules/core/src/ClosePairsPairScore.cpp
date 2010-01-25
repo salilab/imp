@@ -143,6 +143,11 @@ ContainersTemp ClosePairsPairScore
   return t;
 }
 
+
+bool ClosePairsPairScore::get_is_changed(const ParticlePair &p) const {
+  return true;
+}
+
 void ClosePairsPairScore::show(std::ostream &out) const
 {
   out << "ClosePairsPairScore using ";

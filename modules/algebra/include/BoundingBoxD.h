@@ -42,23 +42,16 @@ public:
 
   //! Creating a bounding box from a set of points
   BoundingBoxD(const std::vector<VectorD<D> > &points) {
-    VectorD<D> lb,ub;
-    for(unsigned int i=0;i<D;i++) {
-      lb[i]=INT_MAX;
-      ub[i]=-INT_MAX;
+    for (unsigned int i=0; i< D; ++i) {
+      lb_[i]= std::numeric_limits<double>::max();
+      ub_[i]=-std::numeric_limits<double>::max();
     }
     for(unsigned int j=0;j<points.size();j++) {
       for(unsigned int i=0;i<D;i++) {
-        if (lb[i]>points[j][i]) {
-          lb[i]=points[j][i];
-        }
-        if (ub[i]<points[j][i]) {
-          ub[i]=points[j][i];
-        }
+        lb_[i]= std::min(lb_[i], points[j][i]);
+        ub_[i]= std::max(ub_[i], points[j][i]);
       }
     }
-    lb_=lb;
-    ub_=ub;
   }
 
   //! merge two bounding boxes
@@ -70,6 +63,7 @@ public:
     return *this;
   }
 
+  /** Grow the bounding box by o on all sizes. */
   const BoundingBoxD<D>& operator+=(double o) {
     for (unsigned int i=0; i< D; ++i) {
       lb_[i]= lb_[i]-o;

@@ -67,6 +67,12 @@ ParticlesTemp BondSingletonScore::get_input_particles(Particle *p) const {
   return ret;
 }
 
+bool BondSingletonScore::get_is_changed(Particle *p) const {
+  Bond b(p);
+  return b.get_bonded(0)->get_is_changed()
+    || b.get_bonded(1)->get_is_changed();
+}
+
 void BondSingletonScore::show(std::ostream &out) const
 {
   out << "BondSingletonScore using ";

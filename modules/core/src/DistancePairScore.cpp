@@ -27,25 +27,6 @@ Float DistancePairScore::evaluate(const ParticlePair &p,
                                                 boost::lambda::_1);
 }
 
-ParticlesList DistancePairScore
-::get_interacting_particles(const ParticlePair &p) const {
-  return ParticlesList(1, get_input_particles(p));
-}
-
-ParticlesTemp DistancePairScore
-::get_input_particles(const ParticlePair &p) const {
-  ParticlesTemp t(2);
-  t[0]=p[0];
-  t[1]=p[1];
-  return t;
-}
-
-ContainersTemp DistancePairScore
-::get_input_containers(const ParticlePair &p) const {
-  return ContainersTemp();
-}
-
-
 void DistancePairScore::show(std::ostream &out) const
 {
   out << "DistancePairScore using ";

@@ -61,27 +61,6 @@ Float TransformedDistancePairScore::evaluate(const ParticlePair &p,
 }
 
 
-
-ParticlesList
-TransformedDistancePairScore
-::get_interacting_particles(const ParticlePair &p) const {
-  return ParticlesList(1, get_input_particles(p));
-}
-
-ParticlesTemp
-TransformedDistancePairScore::get_input_particles(const ParticlePair &p) const {
-  ParticlesTemp ret(2);
-  ret[0]=p[0];
-  ret[1]=p[1];
-  return ret;
-}
-
-ContainersTemp TransformedDistancePairScore
-::get_input_containers(const ParticlePair &p) const {
-  return ContainersTemp();
-}
-
-
 void TransformedDistancePairScore::set_transformation(
                                          const algebra::Transformation3D &t)
 {
