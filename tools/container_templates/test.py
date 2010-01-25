@@ -172,24 +172,24 @@ class ClassnameContainerTest(IMP.test.TestCase):
     def test_max_score(self):
         """Test the MaximumGroupnameScore"""
         m= IMP.Model()
-        s= IMP.GroupnameScores()
+        s= IMP.GroupnameScoresTemp()
         for i in range(0,5):
-            s.append(self.ConstGroupnameScore(i))
+            s.append(IMP.test.ConstGroupnameScore(i))
         ps= IMP.core.MaximumGroupnameScore(s, 2)
         p= self.create_classname(m)
         ps.set_was_owned(True)
-        v= ps.evaluate(p)
+        v= ps.evaluate(p, None)
         self.assertEqual(v, 7)
     def test_min_score(self):
         """Test the MinimumGroupnameScore"""
         m= IMP.Model()
-        s= IMP.GroupnameScores()
+        s= IMP.GroupnameScoresTemp()
         for i in range(0,5):
-            s.append(self.ConstGroupnameScore(i))
+            s.append(IMP.test.ConstGroupnameScore(i))
         ps= IMP.core.MinimumGroupnameScore(s, 3)
         p= self.create_classname(m)
         ps.set_was_owned(True)
-        v= ps.evaluate(p)
+        v= ps.evaluate(p, None)
         self.assertEqual(v, 3)
 
 

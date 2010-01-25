@@ -109,7 +109,7 @@ class ParticlePairContainerTest(IMP.test.TestCase):
         self.assertInTolerance(m.evaluate(False), f, .1*f)
 
     def test_min_restraint(self):
-        """Test the MinimumPairScoreRestraint"""
+        """Test the MinimumPairRestraint"""
         m= IMP.Model()
         c= IMP.core.ListPairContainer()
         self.assertEqual(c.get_ref_count(), 1)
@@ -118,7 +118,7 @@ class ParticlePairContainerTest(IMP.test.TestCase):
         print c.get_number_of_particle_pairs()
         d= self.create_pair_score()
         self.assertEqual(d.get_ref_count(), 1)
-        r= IMP.core.MinimumPairScoreRestraint(d, c)
+        r= IMP.core.MinimumPairRestraint(d, c)
         self.assertEqual(d.get_ref_count(), 2)
         self.assertEqual(c.get_ref_count(), 2)
         r.set_n(4)
@@ -140,7 +140,7 @@ class ParticlePairContainerTest(IMP.test.TestCase):
         self.assertInTolerance(mt, f, .1*f)
 
     def test_max_restraint(self):
-        """Test the MaximumPairScoreRestraint"""
+        """Test the MaximumPairRestraint"""
         m= IMP.Model()
         c= IMP.core.ListPairContainer()
         self.assertEqual(c.get_ref_count(), 1)
@@ -149,7 +149,7 @@ class ParticlePairContainerTest(IMP.test.TestCase):
         print c.get_number_of_particle_pairs()
         d= self.create_pair_score()
         self.assertEqual(d.get_ref_count(), 1)
-        r= IMP.core.MaximumPairScoreRestraint(d, c)
+        r= IMP.core.MaximumPairRestraint(d, c)
         self.assertEqual(c.get_ref_count(), 2)
         self.assertEqual(d.get_ref_count(), 2)
         r.set_n(4)
@@ -169,6 +169,28 @@ class ParticlePairContainerTest(IMP.test.TestCase):
             mt = mt+ ms[-i-1]
         print mt
         self.assertInTolerance(mt, f, .1*f)
+    def test_max_score(self):
+        """Test the MaximumPairScore"""
+        m= IMP.Model()
+        s= IMP.PairScoresTemp()
+        for i in range(0,5):
+            s.append(IMP.test.ConstPairScore(i))
+        ps= IMP.core.MaximumPairScore(s, 2)
+        p= self.create_particle_pair(m)
+        ps.set_was_owned(True)
+        v= ps.evaluate(p, None)
+        self.assertEqual(v, 7)
+    def test_min_score(self):
+        """Test the MinimumPairScore"""
+        m= IMP.Model()
+        s= IMP.PairScoresTemp()
+        for i in range(0,5):
+            s.append(IMP.test.ConstPairScore(i))
+        ps= IMP.core.MinimumPairScore(s, 3)
+        p= self.create_particle_pair(m)
+        ps.set_was_owned(True)
+        v= ps.evaluate(p, None)
+        self.assertEqual(v, 3)
 
 
     def test_container(self):
