@@ -78,7 +78,8 @@ IMP_BEGIN_NAMESPACE
 namespace {
   IMP_CHECK_CODE(double initialized=11111111);
   std::ofstream fstream;
-  internal::LogStream stream(TextOutput(std::cout));
+  TextOutput tco(std::cout);
+  internal::LogStream stream(tco);
 }
 
 
