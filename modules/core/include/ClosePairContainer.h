@@ -36,6 +36,8 @@ IMPCORE_BEGIN_NAMESPACE
     internally of how far the particles have moved using a score
     state, and is also updated via a score state.
 
+    \usesconstraint
+
     Here is a simple example of using this for a nonbonded list
     \verbinclude nonbonded_interactions.py
 
