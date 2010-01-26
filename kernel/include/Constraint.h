@@ -37,6 +37,15 @@ IMP_BEGIN_NAMESPACE
     constraint can move them around to make sure the derivatives of
     the optimizer parameters are correct.
 
+    In general, constraints are associated with Decorators.
+
+    \note Constraint invariants will not necessarily hold if
+    involved particles have been called an Model::evaluate()
+    has not been called. For example, if you change a
+    particle's coordinates, a IMP::core::Centroid of a set
+    containing the particle will not be correct until the
+    Model is evaluated.
+
     Implementors should see IMP_CONSTRAINT().
  */
 class IMPEXPORT Constraint : public ScoreState
