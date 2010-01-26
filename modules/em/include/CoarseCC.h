@@ -13,7 +13,6 @@
 #include "exp.h"
 #include "DensityMap.h"
 #include "SampledDensityMap.h"
-#include "ParticlesAccessPoint.h"
 #include "def.h"
 #include <vector>
 
@@ -51,7 +50,6 @@ public:
       \return the value of the cross correlation term: scalefac*(1-ccc)
    */
   static float evaluate(DensityMap &data, SampledDensityMap &model_map,
-                        const ParticlesAccessPoint &access_p,
                         std::vector<float> &dvx, std::vector<float>&dvy,
                         std::vector<float>&dvz, float scalefac, bool lderiv,
                         bool divide_by_rms=true,bool resample=true);
@@ -81,7 +79,6 @@ we did not do that, yet.
 */
   static void calc_derivatives(const DensityMap &em_map,
                               SampledDensityMap &model_map,
-                              const ParticlesAccessPoint &access_p,
                               const float &scalefac,
                               std::vector<float> &dvx, std::vector<float>&dvy,
                               std::vector<float>&dvz);

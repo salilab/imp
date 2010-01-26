@@ -176,10 +176,9 @@ atom::Hierarchy create_simplified(atom::Hierarchy in,
 
   // rasterize protein to grid with size resolution/2.0
   IMP_NEW(em::SampledDensityMap, sdm,
-          (em::IMPParticlesAccessPoint(leaves,
-                          core::XYZR::get_default_radius_key(),
-                          atom::Mass::get_mass_key()),
-           resolution, resolution/3.0, 1));
+          (leaves,resolution, resolution/3.0,
+           core::XYZR::get_default_radius_key(),
+           atom::Mass::get_mass_key(),1));
   {
     em::MRCReaderWriter mrc; // for some reason it wants a non-const ref
     em::write_map(sdm, "map.mrc", mrc);

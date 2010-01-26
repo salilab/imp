@@ -13,10 +13,15 @@ class SampleParticlesTest(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         print 'start setup'
         """ create particles """
-        self.particles_p = IMP.em.ParticlesProvider()
-        self.particles_p.append(9.,5.,5.,1.,1.)
-        self.particles_p.append(12.,9.,4.,1.,1.)
-        self.particles_p.append(4.,5.,5.,1.,1.)
+        self.particles = IMP.Particles()
+        self.rad_key=IMP.core.XYZR.get_default_radius_key()
+        self.mass_key=IMP.atom.Mass.get_mass_key()
+        self.mdl=IMP.Model()
+        for val in [[9.,5.,5.,1.,1.],[12.,9.,4.,1.,1.],[4.,5.,5.,1.,1.]]:
+            p=IMP.Particle(self.mdl)
+            IMP.core.XYZR.setup_particle(p,IMP.algebra.Sphere3D(IMP.algebra.Vector3D(val[0],val[1],val[2]),val[3]))
+            p.add_attribute(self.mass_key,val[4])
+            self.particles.append(p)
         print 'after setup SampleParticlesTest'
 
     def test_sample(self):
@@ -25,8 +30,8 @@ class SampleParticlesTest(IMP.test.TestCase):
         voxel_size = 1.0
         out_filename = "aa.em"
 
-        scene = IMP.em.SampledDensityMap(self.particles_p,
-                                         resolution,voxel_size)
+        scene = IMP.em.SampledDensityMap(self.particles,
+                                         resolution,voxel_size,self.rad_key,self.mass_key)
 
         scene.std_normalize()
 

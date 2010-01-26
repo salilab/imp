@@ -14,7 +14,6 @@
 #include "SampledDensityMap.h"
 #include "DensityHeader.h"
 #include "def.h"
-#include "ParticlesAccessPoint.h"
 #include <vector>
 
 IMPEM_BEGIN_NAMESPACE
@@ -41,8 +40,7 @@ public:
   SurfaceShellDensityMap(const DensityHeader &header);
 
   //! Generatea a surface shell density map from the input particles.
-  /** /param[in] access_p     access point to the particles (locations,
-                              radius, weight)
+  /** /param[in] ps    particles with XYZ, radius and weight attributes
       /param[in] voxel_size   the voxel size.
       /note the voxel size and the number of shells determines
             the resolution/accuracy of the surface rasterization.
@@ -52,11 +50,12 @@ public:
                  (ii) to determine the voxels around the coords participating
                       in the sampling procedure.
    */
-  SurfaceShellDensityMap(const ParticlesAccessPoint &access_p,
+  SurfaceShellDensityMap(const Particles &ps,
                          float resolution,
                          float voxel_size,
-                         int num_shells=IMP_DEFAULT_NUM_SHELLS
-                         );
+     IMP::FloatKey radius_key = IMP::core::XYZR::get_default_radius_key(),
+     IMP::FloatKey mass_key = IMP::atom::Mass::get_mass_key(),
+     int num_shells=IMP_DEFAULT_NUM_SHELLS);
 
   //! Resample the grid to consist of density shells of a model
   /**
@@ -68,15 +67,14 @@ public:
   corresponding shell ( the value increases as the voxel is farthrer away
   from the surface).
   */
-void resample(const ParticlesAccessPoint &access_p);
+void resample();
 protected:
   //! Set the value of the map voxels as either scene or background
   /**
-    /param[in] access_p       the particles of the model (scene)
     /param[in] scene_val      all voxels corredponsing to particles will
                               be set to this value
    */
-  void binaries(const ParticlesAccessPoint &access_p,float scene_val);
+  void binaries(float scene_val);
 
   //! Checks if the one of the nieghbors of the voxel is a background voxel
   /**

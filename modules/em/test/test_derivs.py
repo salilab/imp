@@ -66,9 +66,7 @@ class DerivativesTest(IMP.test.TestCase):
 
         resolution=3.
         voxel_size=1.
-        access_p = IMP.em.IMPParticlesAccessPoint(self.particles,
-                           IMP.FloatKey("radius"), IMP.FloatKey("weight"))
-        model_map = IMP.em.SampledDensityMap(access_p, resolution, voxel_size)
+        model_map = IMP.em.SampledDensityMap(self.particles, resolution, voxel_size)
         erw = IMP.em.EMReaderWriter()
         xorigin = model_map.get_header().get_xorigin()
         yorigin = model_map.get_header().get_yorigin()

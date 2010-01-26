@@ -14,7 +14,6 @@ void DensityHeader::compute_xyz_top(bool force)
 {
   if (top_calculated_ && !force)
     return;
-
   xtop_ = xorigin_ + Objectpixelsize_*nx;
   ytop_ = yorigin_ + Objectpixelsize_*ny;
   ztop_ = zorigin_ + Objectpixelsize_*nz;

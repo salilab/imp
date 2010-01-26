@@ -20,13 +20,14 @@ SurfaceShellDensityMap::SurfaceShellDensityMap(const DensityHeader &header)
 }
 
 SurfaceShellDensityMap::SurfaceShellDensityMap(
-      const ParticlesAccessPoint &access_p,
-      float resolution, float voxel_size,int num_shells)
-  :SampledDensityMap(access_p,resolution,voxel_size,IMP_SIG_CUTOFF)
+       const Particles &ps,
+       float resolution, float voxel_size,
+       IMP::FloatKey radius_key, IMP::FloatKey mass_key,int num_shells)
+  :SampledDensityMap(ps,resolution,voxel_size,radius_key,mass_key)
 {
   num_shells_=num_shells;
   set_neighbor_mask();
-  resample(access_p);
+  resample();
 }
 
 
@@ -49,8 +50,7 @@ void SurfaceShellDensityMap::set_neighbor_mask() {
 //template or pass pointer to voxel update function
 // TODO: pass the background value as well to the general resample function
 //TODO: make this function faster
-void SurfaceShellDensityMap::binaries(const ParticlesAccessPoint &access_p,
-                                 float scene_val) {
+void SurfaceShellDensityMap::binaries(float scene_val) {
   reset_data(IMP_BACKGROUND_VAL);
   calc_all_voxel2loc();
   int  ivox, ivoxx, ivoxy, ivoxz, iminx, imaxx, iminy, imaxy, iminz, imaxz;
@@ -62,19 +62,19 @@ void SurfaceShellDensityMap::binaries(const ParticlesAccessPoint &access_p,
   float rsq,tmp;
 
   const  KernelParameters::Parameters *params;
-  for (int ii=0; ii<access_p.get_size(); ii++) {
+  for (unsigned int ii=0; ii<ps_.size(); ii++) {
     // compute kernel parameters if needed
     try {
-      params = kernel_params_.find_params(access_p.get_r(ii));
+      params = kernel_params_.find_params(xyzr_[ii].get_radius());
     }
     catch (UsageException &e){
-      kernel_params_.set_params(access_p.get_r(ii));
-      params = kernel_params_.find_params(access_p.get_r(ii));
+      kernel_params_.set_params(xyzr_[ii].get_radius());
+      params = kernel_params_.find_params(xyzr_[ii].get_radius());
     }
 
     // compute the box affected by each particle
-    calc_sampling_bounding_box(access_p.get_x(ii), access_p.get_y(ii),
-                               access_p.get_z(ii), params->get_kdist(),
+    calc_sampling_bounding_box(xyzr_[ii].get_x(),xyzr_[ii].get_y(),
+                               xyzr_[ii].get_z(),params->get_kdist(),
                                iminx, iminy, iminz, imaxx, imaxy, imaxz);
     for (ivoxz=iminz;ivoxz<=imaxz;ivoxz++) {
       znxny=ivoxz * nxny;
@@ -83,9 +83,9 @@ void SurfaceShellDensityMap::binaries(const ParticlesAccessPoint &access_p,
         // operations.
         ivox = znxny + ivoxy * header_.nx + iminx;
         for (ivoxx=iminx;ivoxx<=imaxx;ivoxx++) {
-          tmpx=x_loc_[ivox] - access_p.get_x(ii);
-          tmpy=y_loc_[ivox] - access_p.get_y(ii);
-          tmpz=z_loc_[ivox] - access_p.get_z(ii);
+          tmpx=x_loc_[ivox] - xyzr_[ii].get_x();
+          tmpy=y_loc_[ivox] - xyzr_[ii].get_y();
+          tmpz=z_loc_[ivox] - xyzr_[ii].get_z();
           rsq = tmpx*tmpx+tmpy*tmpy+tmpz*tmpz;
           tmp = EXP(-rsq * params->get_inv_sigsq());
           //tmp = exp(-rsq * params->get_inv_sigsq());
@@ -132,12 +132,12 @@ void SurfaceShellDensityMap::set_surface_shell(std::vector<long> *shell) {
 
 // Computes distance function for the molecule.
 // The voxels corresponding to surface points are given zero distance
-void SurfaceShellDensityMap::resample(const ParticlesAccessPoint &access_p) {
+void SurfaceShellDensityMap::resample() {
   //all scene voxels will be assigned the value -background_val_
   //(which is positive and larger than 0)
   //TODO - change here, the value of the inner voxels should note be
   //should not be ns*2 but the largest of the inner shell
-  binaries(access_p,num_shells_*2);
+  binaries(num_shells_*2);
 
   //find the voxeles that are part of the surface, so we'll have
   //background, surface and interior voxels

@@ -1,5 +1,4 @@
 import unittest
-from particles_provider import ParticlesProvider
 import IMP.test
 import IMP.em
 
@@ -8,12 +7,14 @@ class PadTests(IMP.test.TestCase):
     def setUp(self):
         # Initial values and names of files
         IMP.test.TestCase.setUp(self)
-        prot1_coords = self.get_input_file_name('1z5s_A_2_157.coord')
-        prot2_coords = self.get_input_file_name('1z5s_C_432_587.coord')
-        self.prot1_atoms = ParticlesProvider()
-        self.prot1_atoms.read(prot1_coords)
-        self.prot2_atoms = ParticlesProvider()
-        self.prot2_atoms.read(prot2_coords)
+        self.mdl=IMP.Model()
+        sel=IMP.atom.AllSelector()
+        mh1 = IMP.atom.read_pdb(self.get_input_file_name('1z5s_A.pdb'),self.mdl,sel)
+        IMP.atom.add_radii(mh1)
+        mh2 = IMP.atom.read_pdb(self.get_input_file_name('1tdx.pdb'),self.mdl,sel)
+        IMP.atom.add_radii(mh2)
+        self.prot1_atoms = IMP.core.get_leaves(mh1)
+        self.prot2_atoms = IMP.core.get_leaves(mh2)
         self.d1 = IMP.em.SampledDensityMap(self.prot1_atoms,3.0,1.0)
         self.d2 = IMP.em.SampledDensityMap(self.prot2_atoms,3.0,1.0)
     def test_map_padding(self):

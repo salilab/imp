@@ -22,15 +22,7 @@ class SampleTests(IMP.test.TestCase):
         """Check that reading a map back in preserves the stdevs"""
         resolution=1.
         voxel_size=1.
-        access_p = IMP.em.IMPParticlesAccessPoint(self.particles,
-                              IMP.core.XYZR.get_default_radius_key(),
-                              IMP.atom.Mass.get_mass_key())
-        print "access points:"
-        access_p.show()
-        print "=====particles"
-        for p in self.particles:
-            p.get_particle().show()
-        model_map = IMP.em.SurfaceShellDensityMap(access_p, resolution, voxel_size)
+        model_map = IMP.em.SurfaceShellDensityMap(self.particles, resolution, voxel_size)
         for p in self.particles:
             self.assert_(model_map.get_value(IMP.core.XYZ(p.get_particle()).get_coordinates())>3.,"map was not sampled correctly")
 

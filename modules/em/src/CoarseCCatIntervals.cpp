@@ -50,7 +50,6 @@ void CoarseCCatIntervals::allocate_derivatives_array(int ncd)
 
 float CoarseCCatIntervals::evaluate(DensityMap &em_map,
                                     SampledDensityMap &model_map,
-                                    const ParticlesAccessPoint &access_p,
                                     std::vector<float> &dvx,
                                     std::vector<float> &dvy,
                                     std::vector<float> &dvz,
@@ -58,19 +57,18 @@ float CoarseCCatIntervals::evaluate(DensityMap &em_map,
                                     unsigned long eval_interval) {
 // eval_interval is the interval size before recalculating the CC score
 
-
+  unsigned int number_of_particles=model_map.get_xyzr_particles().size();
   // If the function requires to be evaluated
   if  (calls_counter_ % eval_interval == 0) {
     // The base evaluate function calculates the derivates of the EM term.
-    stored_cc_ = CoarseCC::evaluate(em_map, model_map, access_p, dvx, dvy, dvz,
+    stored_cc_ = CoarseCC::evaluate(em_map, model_map, dvx, dvy, dvz,
                                     scalefac, lderiv);
 
     calls_counter_ = 1;
-
     if (lderiv) {
       // sync the derivatives.
-      allocate_derivatives_array(access_p.get_size());
-      for (int i=0;i<access_p.get_size();i++) {
+      allocate_derivatives_array(number_of_particles);
+      for (unsigned int i=0;number_of_particles;i++) {
         stored_dvx_[i] = dvx[i];
         stored_dvy_[i] = dvy[i];
         stored_dvz_[i] = dvz[i];
@@ -79,7 +77,7 @@ float CoarseCCatIntervals::evaluate(DensityMap &em_map,
   }
   // If the evaluation was not required, return the previously stored values
   else {
-    for (int i=0;i<access_p.get_size();i++) {
+    for (unsigned int i=0;i<number_of_particles;i++) {
       if (lderiv) {
         dvx[i] = stored_dvx_[i];
         dvy[i] = stored_dvy_[i];

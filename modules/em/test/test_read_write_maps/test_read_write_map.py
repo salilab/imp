@@ -10,15 +10,20 @@ class MRCWriteTest(IMP.test.TestCase):
     def setUp(self):
         """ create particles """
         IMP.test.TestCase.setUp(self)
-        self.particles = IMP.em.ParticlesProvider()
-        self.particles.append(9.,5.,5.,1.,1.)
-        self.particles.append(12.,9.,4.,1.,1.)
-        self.particles.append(4.,5.,5.,1.,1.)
-
+        self.particles = IMP.Particles()
+        mdl=IMP.Model()
+        self.radius_key=IMP.core.XYZR.get_default_radius_key()
+        self.weight_key=IMP.FloatKey("mass")
+        for val in [[9.,5.,5.,1.,1.],[12.,9.,4.,1.,1.],[4.,5.,5.,1.,1.]]:
+            p=IMP.Particle(mdl)
+            IMP.core.XYZR.setup_particle(p,IMP.algebra.Sphere3D(IMP.algebra.Vector3D(val[0],val[1],val[2]),val[3]))
+            p.add_attribute(self.weight_key,5.)
+            self.particles.append(p)
         resolution = 2.0
         voxel_size = 1.0
         em_map = IMP.em.SampledDensityMap(self.particles,
-                                          resolution,voxel_size)
+                                          resolution,voxel_size,
+                                          self.radius_key,self.weight_key)
         em_map.calcRMS()
         self.rms = em_map.get_header().rms
         print "RMSD of original map = " + str(self.rms)
@@ -76,9 +81,9 @@ class ReadWriteMapsTests(IMP.test.TestCase):
         mrc_rw = IMP.em.MRCReaderWriter()
         scene= IMP.em.read_map(in_filename,mrc_rw)
         # Check header size
-        self.assertEqual(74,scene.get_header().nx)
-        self.assertEqual(71,scene.get_header().ny)
-        self.assertEqual(65,scene.get_header().nz)
+        self.assertEqual(94,scene.get_header().nx)
+        self.assertEqual(98,scene.get_header().ny)
+        self.assertEqual(84,scene.get_header().nz)
         print "rms: " + str(scene.calcRMS())
         self.assertInTolerance(scene.calcRMS(), 0.00688, 1.0)
         IMP.em.write_map(scene, out_filename,mrc_rw)

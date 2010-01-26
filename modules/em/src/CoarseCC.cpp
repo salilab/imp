@@ -8,13 +8,13 @@
 
 #include <IMP/em/CoarseCC.h>
 #include <math.h>
+#include <IMP/core/utility.h>
 
 IMPEM_BEGIN_NAMESPACE
 
 /*Correlation function  */
 float CoarseCC::evaluate(DensityMap &em_map,
                          SampledDensityMap &model_map,
-                         const ParticlesAccessPoint &access_p,
                          std::vector<float> &dvx, std::vector<float>&dvy,
                          std::vector<float>&dvz, float scalefac, bool lderiv,
                          bool divide_by_rms,bool resample)
@@ -22,7 +22,7 @@ float CoarseCC::evaluate(DensityMap &em_map,
   //resample the map for the particle provided
   // TODO(frido): rename: resample -> sample
   if (resample) {
-     model_map.resample(access_p);
+     model_map.resample();
   }
 
   if (divide_by_rms) {
@@ -44,7 +44,7 @@ float CoarseCC::evaluate(DensityMap &em_map,
   if (lderiv) {
   IMP_LOG(VERBOSE, "CoarseCC::evaluate: before calc derivaties:"
                    << escore << std::endl);
-    CoarseCC::calc_derivatives(em_map, model_map, access_p, scalefac,
+    CoarseCC::calc_derivatives(em_map, model_map, scalefac,
                               dvx, dvy, dvz);
   IMP_LOG(VERBOSE, "CoarseCC::evaluate: after calc derivaties:"
                     << escore << std::endl);
@@ -157,7 +157,6 @@ float CoarseCC::cross_correlation_coefficient(const DensityMap &em_map,
 
 void CoarseCC::calc_derivatives(const DensityMap &em_map,
                                SampledDensityMap &model_map,
-                               const ParticlesAccessPoint &access_p,
                                const float &scalefac,
                                std::vector<float> &dvx, std::vector<float>&dvy,
                                std::vector<float>&dvz)
@@ -171,12 +170,13 @@ void CoarseCC::calc_derivatives(const DensityMap &em_map,
   const float *x_loc = model_map.get_x_loc();
   const float *y_loc = model_map.get_y_loc();
   const float *z_loc = model_map.get_z_loc();
-
+  core::XYZRs model_xyzr=model_map.get_xyzr_particles();
+  Particles ps=model_map.get_sampled_particles();
+  //this would go away once we have XYZRW decorator
+  FloatKey w_key=model_map.get_weight_key();
   const emreal *em_data = em_map.get_data();
-
   float lim = (model_map.get_kernel_params())->get_lim();
   //lim = 0.00000001;
-
   int nvox = em_header->nx * em_header->ny * em_header->nz;
   int ivox;
 
@@ -186,16 +186,16 @@ void CoarseCC::calc_derivatives(const DensityMap &em_map,
             InvalidStateException);
   IMP_USAGE_CHECK(model_header->rms >= EPS,
             "Model map is empty ! model_header->rms = " << model_header->rms
-            <<" the model centroid is : " << access_p.get_centroid() <<
+            <<" the model centroid is : " << core::centroid(model_xyzr)<<
             " the map centroid is " << em_map.get_centroid() <<std::endl,
             InvalidStateException);
   // Compute the derivatives
-  for (int ii=0; ii<access_p.get_size(); ii++) {
+  for (unsigned int ii=0; ii<model_xyzr.size(); ii++) {
     const KernelParameters::Parameters *params =
-        model_map.get_kernel_params()->find_params(access_p.get_r(ii));
-    model_map.calc_sampling_bounding_box(access_p.get_x(ii),
-                                         access_p.get_y(ii),
-                                         access_p.get_z(ii),
+        model_map.get_kernel_params()->find_params(model_xyzr[ii].get_radius());
+    model_map.calc_sampling_bounding_box(model_xyzr[ii].get_x(),
+                                         model_xyzr[ii].get_y(),
+                                         model_xyzr[ii].get_z(),
                                          params->get_kdist(),
                                          iminx, iminy, iminz,
                                          imaxx, imaxy, imaxz);
@@ -205,20 +205,21 @@ void CoarseCC::calc_derivatives(const DensityMap &em_map,
         ivox = ivoxz * em_header->nx * em_header->ny
                + ivoxy * em_header->nx + iminx;
         for (int ivoxx=iminx;ivoxx<=imaxx;ivoxx++) {
-          float dx = x_loc[ivox] - access_p.get_x(ii);
-          float dy = y_loc[ivox] - access_p.get_y(ii);
-          float dz = z_loc[ivox] - access_p.get_z(ii);
+          float dx = x_loc[ivox] - model_xyzr[ii].get_x();
+          float dy = y_loc[ivox] - model_xyzr[ii].get_y();
+          float dz = z_loc[ivox] - model_xyzr[ii].get_z();
           rsq = dx * dx + dy * dy + dz * dz;
           rsq = EXP(- rsq * params->get_inv_sigsq());
-          tmp = (access_p.get_x(ii)-x_loc[ivox]) * rsq;
+          tmp = (
+-x_loc[ivox]) * rsq;
           if (std::abs(tmp) > lim) {
             tdvx += tmp * em_data[ivox];
           }
-          tmp = (access_p.get_y(ii)-y_loc[ivox]) * rsq;
+          tmp = (model_xyzr[ii].get_y()-y_loc[ivox]) * rsq;
           if (std::abs(tmp) > lim) {
             tdvy += tmp * em_data[ivox];
           }
-          tmp = (access_p.get_z(ii)-z_loc[ivox]) * rsq;
+          tmp = (model_xyzr[ii].get_z()-z_loc[ivox]) * rsq;
           if (std::abs(tmp) > lim) {
             tdvz += tmp * em_data[ivox];
           }
@@ -226,7 +227,7 @@ void CoarseCC::calc_derivatives(const DensityMap &em_map,
         }
       }
     }
-    tmp = access_p.get_w(ii) * 2.*params->get_inv_sigsq() * scalefac
+    tmp =ps[ii]->get_value(w_key) * 2.*params->get_inv_sigsq() * scalefac
           * params->get_normfac() /
           (1.0*nvox * em_header->rms * model_header->rms);
     dvx[ii] =  tdvx * tmp;

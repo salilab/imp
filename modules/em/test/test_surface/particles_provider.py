@@ -1,1 +1,0 @@
-../atoms_provider/particles_provider.py

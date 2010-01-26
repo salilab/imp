@@ -13,7 +13,6 @@
 #include "DensityMap.h"
 #include "CoarseCC.h"
 #include "SampledDensityMap.h"
-#include "IMPParticlesAccessPoint.h"
 
 #include <IMP/atom/Hierarchy.h>
 #include <IMP/atom/Atom.h>
@@ -40,7 +39,7 @@ public:
     \param[in] weight_key the name of the weight attribute of the particles
     \param[in] scale
    */
-  FitRestraint(const Particles &ps,
+  FitRestraint(Particles ps,
                DensityMap *em_map,
                FloatKey radius_key= IMP::core::XYZR::get_default_radius_key(),
                FloatKey weight_key= IMP::atom::Mass::get_mass_key(),
@@ -60,10 +59,7 @@ private:
   algebra::BoundingBox3D target_bounding_box_;
   // reference to the IMP environment
   float scalefac_;
-  int num_particles_; // can it be removed ?
-  IMPParticlesAccessPoint access_p_;
   IMP::core::XYZs xyz_;
-
   // derivatives
   // This must be float rather than Float to preserve compatibility with EMBed
   std::vector<float> dx_, dy_ , dz_;
