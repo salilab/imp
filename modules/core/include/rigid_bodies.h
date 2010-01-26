@@ -26,7 +26,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 class RigidMember;
 
-typedef Decorators<RigidMember, XYZs> RigidMembers;
+IMP_DECORATORS(RigidMember, XYZs);
 
 //! A decorator for a rigid body
 /** A rigid body particle describes a set of particles, known
@@ -160,7 +160,9 @@ public:
 
 IMP_OUTPUT_OPERATOR(RigidBody);
 
-typedef Decorators<RigidBody, XYZs> RigidBodies;
+typedef IMP::Decorators<RigidBody, XYZs> RigidBodies;
+typedef IMP::Decorators<RigidBody, XYZsTemp> RigidBodiesTemp;
+
 
 //! A decorator for a particle that is part of a rigid body
 /**
@@ -269,6 +271,14 @@ namespace internal {
   IMPCOREEXPORT RigidMembersRefiner* get_rigid_members_refiner();
 }
 #endif
+
+//! Transform a rigid body
+/** \relatesalso RigidBody
+    \relatesalso algebra::Transformation3D
+*/
+inline void transform(RigidBody a, const algebra::Transformation3D &tr) {
+  a.set_transformation(algebra::compose(tr,a.get_transformation()));
+}
 
 IMPCORE_END_NAMESPACE
 
