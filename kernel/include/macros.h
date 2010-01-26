@@ -612,7 +612,9 @@ const TraitsType &get_##traits_name() const {                           \
     void set_coordinate() const {}                              \
     void set_radius()const{}                                    \
   };                                                            \
-                                                                \
+  IMP_DECORATORS(Name, Parent##s);                              \
+
+
   /** \advanced
 
       See IMP_SUMMARY_DECORATOR_DECL()
