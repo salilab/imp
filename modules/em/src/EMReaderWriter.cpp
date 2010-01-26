@@ -98,8 +98,8 @@ void EMReaderWriter::Read(const char *filename, float **data,
 
   if (eheader.Objectpixelsize < EPS) {
     eheader.Objectpixelsize = 1.;
-    std::cout << "Objectpixelsize == 0 " << std::endl;
-    std::cout << "  set Objectpixelsize = 1 to avoid trouble"<< std::endl;
+    IMP_WARN("Objectpixelsize == 0 " << std::endl
+             << "  set Objectpixelsize = 1 to avoid trouble"<< std::endl);
   }
   eheader.GenerateCommonHeader(header);
   ReadData(file, data, eheader);
