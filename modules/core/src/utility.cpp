@@ -18,17 +18,6 @@ algebra::Vector3D centroid(const XYZs &ps) {
  return cen/ps.size();
 }
 
-void transform(const XYZs &ps,
-               const algebra::Transformation3D &t) {
-  algebra::Vector3D xyz_new;
-  core::XYZ xyz_d;
-  for (XYZs::const_iterator it = ps.begin(); it != ps.end(); it++) {
-    xyz_d = *it;
-    xyz_new = t.transform(xyz_d.get_coordinates());
-    xyz_d.set_coordinates(xyz_new);
-  }
-}
-
 algebra::Segment3D diameter(const XYZs &ps) {
   IMP_USAGE_CHECK(!ps.empty(), "Can't compute the diameter if you don't give "
             "me any particles.", ValueException);
