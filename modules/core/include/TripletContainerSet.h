@@ -18,7 +18,10 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! Stores a set of TripletContainers
-/**
+/** The input sets must be disjoint. This can change if there is
+    demand for it.
+
+    \usesconstraint
  */
 class IMPCOREEXPORT TripletContainerSet
   : public TripletContainer

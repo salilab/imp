@@ -28,6 +28,8 @@ IMPCORE_BEGIN_NAMESPACE
     \note Sequential access is much more efficient than random access which is
     suicidally slow for now. Complain if you want fast(er) random access.
     We might listen.
+
+    \usesconstraint
  */
 class IMPCOREEXPORT AllPairContainer : public PairContainer
 {
