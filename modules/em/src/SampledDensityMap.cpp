@@ -87,6 +87,7 @@ SampledDensityMap::SampledDensityMap(const IMP::Particles &ps,
   }
   set_header(bb.get_corner(0),bb.get_corner(1), max_radius, resolution,
              voxel_size,sig_cutoff);
+
   data_ = new emreal[header_.nx*header_.ny*header_.nz];
 
   //set up the sampling parameters
@@ -108,9 +109,10 @@ void SampledDensityMap::resample()
         calculate_particles_bounding_box(ps_);
     IMP::algebra::BoundingBox3D density_bb =
        get_bounding_box(this);
-    IMP_INTERNAL_CHECK(density_bb.get_contains(particles_bb),
-     "The particles to sample are not contained within" <<
-     " the sampled density map"<<std::endl);
+    if (density_bb.get_contains(particles_bb)) {
+         IMP_WARN("The particles to sample are not contained within" <<
+                   " the sampled density map"<<std::endl);
+    }
   }
   reset_data();
   calc_all_voxel2loc();
