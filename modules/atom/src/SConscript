@@ -18,6 +18,7 @@ files = [
          'Fragment.cpp',
          'Hierarchy.cpp',
          'LennardJones.cpp',
+         'LennardJonesPairScore.cpp',
          'Mass.cpp',
          'MolecularDynamics.cpp',
          'Residue.cpp',

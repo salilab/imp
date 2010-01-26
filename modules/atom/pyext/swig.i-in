@@ -138,6 +138,7 @@ def __iter__(self):
 %include "IMP/atom/CoulombPairScore.h"
 %include "IMP/atom/Domain.h"
 %include "IMP/atom/LennardJones.h"
+%include "IMP/atom/LennardJonesPairScore.h"
 %include "IMP/atom/MolecularDynamics.h"
 %include "IMP/atom/VelocityScalingOptimizerState.h"
 %include "IMP/atom/selectors.h"
