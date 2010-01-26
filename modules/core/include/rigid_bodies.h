@@ -29,32 +29,35 @@ class RigidMember;
 typedef Decorators<RigidMember, XYZs> RigidMembers;
 
 //! A decorator for a rigid body
-/** A rigid body's orientation is stored using a transformation that
-    takes a set of internal coordinates for the member particles
-    to the current location of the member particles.
+/** A rigid body particle describes a set of particles, known
+    as the members, which move rigidly together. Since the
+    members are simply a set of particles which move together
+    they don't (necessarily) define a shape. For example,
+    the members could include representations of the geometry
+    at several different representations. As a result, methods
+    that use rigid bodies also take a Refiner. This refiner
+    is used to map from the rigid body to the set of particles
+    defining the geometry of interest.
 
-    The body is modeled as a collection of balls of radius and mass
-    given by the RigidBodyTraits. I, the inertial tensor, is
-    computed and diagonalized, but not stored. It can be stored if
-    someone wants it.
+    The initial orientation of the rigid body is computed from
+    the coordinates, masses and radii of the particles
+    passed to the constructor, based on diagonalizing the
+    inertial tensor (which is not stored, currently).
 
-    \note In \imp, a rigid body is associated with two, possibly
-    identical, sets of particles
-    - those particles which transform rigidly along with the rigid
-    body, namely the members. The members are accessed through
-    methods on the decorator.
-    - those particles who make up the detailed representation of
-    the rigid body, namely the representation. These are accessed
-    through an associated Refiner.
+    A rigid body stores the a set of local coordinates for each
+    member and an algebra::Transformation3D mapping between
+    the local coordinates and the actual location of the member.
 
     It is often desirable to randomize the orientation of a rigid
     body:
     \verbinclude randomize_rigid_body.py
 
+    \usesconstraint
+
     \see RigidMember
-    \see AccumulateRigidBodyDerivatives
-    \see UpdateRigidBodyMembers
-    \see UpdateRigidBodyOrientation
+    \see RigidBodyMover
+    \see RigidClosePairsFinder
+    \see RigidBodyDistancePairScore
  */
 class IMPCOREEXPORT RigidBody: public XYZ {
   //! Return the location of a member particle given the current position
@@ -117,12 +120,12 @@ public:
 
   //! Set the current orientation and translation
   /** All members of the rigid body will have their coordinates updated.
-      See lazy_set_transformation() if you can weight until evaluate for
+      See lazy_set_transformation() if you can wait until evaluate for
       that.
    */
   void set_transformation(const IMP::algebra::Transformation3D &tr);
 
-  //! Change the transformation, but let the score state update the members
+  //! Change the transformation, but let the constraint update the members
   /** See set_transformation()
    */
   void lazy_set_transformation(const IMP::algebra::Transformation3D &tr);

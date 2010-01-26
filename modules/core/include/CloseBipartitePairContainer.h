@@ -29,6 +29,8 @@ IMPCORE_BEGIN_NAMESPACE
     See ClosePairContainer for a more detailed description. This
     container lists all close pairs of particles where one particle is
     taken from each of the input sets.
+
+    \usesconstraint
  */
 class IMPCOREEXPORT CloseBipartitePairContainer:
 #if defined(IMP_DOXYGEN) || defined(SWIG)

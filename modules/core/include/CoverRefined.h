@@ -61,8 +61,11 @@ public:
   }
 };
 
-/** A decorator which sets up a particle to cover a
+//! A particle which covers a set of other particles.
+/** A decorator which sets up a particle to be the centroid of a
     set of other particles.
+
+    \usesconstraint
 */
 IMP_SUMMARY_DECORATOR_DECL(Cover, XYZR, XYZs);
 

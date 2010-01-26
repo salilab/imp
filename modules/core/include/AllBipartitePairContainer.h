@@ -22,6 +22,8 @@ IMPCORE_BEGIN_NAMESPACE
 
 //! Return all bipartite pairs between two containers
 /** \see AllPairContainer
+
+    \usesconstraint
  */
 class IMPCOREEXPORT AllBipartitePairContainer : public PairContainer
 {

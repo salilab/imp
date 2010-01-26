@@ -45,9 +45,11 @@ public:
                          get_module_version_info());
 };
 
-
+//! A particle that is the centroid of other particles.
 /** A decorator which sets up a particle to be the centroid of a
     set of other particles.
+
+    \usesconstraint
 */
 IMP_SUMMARY_DECORATOR_DECL(Centroid, XYZ, XYZs);
 
