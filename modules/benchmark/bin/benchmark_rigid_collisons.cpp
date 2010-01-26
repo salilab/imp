@@ -19,7 +19,7 @@ using namespace IMP::helper;
 
 void test_one(std::string name,
               Model *m,
-              std::vector<RigidBody> rbs,
+              RigidBodiesTemp rbs,
               float side) {
   Vector3D minc(0,0,0), maxc(side, side, side);
   m->evaluate(false);
@@ -71,10 +71,11 @@ Model * setup(bool rpcpf,RigidBodiesTemp &rbs) {
   for (unsigned int i=0; i< atoms.size(); ++i) {
     XYZR::setup_particle(atoms[i], 1);
   }
-  IMP_NEW(ListSingletonContainer, lsc, (atoms));
+  IMP_NEW(ListSingletonContainer, lsc, ());
 
-  if (rbcpf) {
-RigidBodiesTemp rbs;
+  PairContainer *cpc;
+  if (rpcpf) {
+    RigidBodiesTemp rbs;
     IMP::internal::OwnerPointer<Model> m
       = setup(new QuadraticClosePairsFinder(), rbs);
 
@@ -85,9 +86,10 @@ RigidBodiesTemp rbs;
     lsc->set_particles(rbsp);
     IMP_NEW(RigidClosePairsFinder, rcps,
             (new LeavesRefiner(atom::Hierarchy::get_traits())));
-    cpss->set_close_pairs_finder(rcps);
+    cpc= new ClosePairContainer(lsc, 0.0, rcps);
   } else {
-    IMP_NEW(ClosePairsContainer, cpc, (lsc, 0.0, cpf));
+    lsc->set_particles(atoms);
+    cpc = new ClosePairContainer(lsc, 0.0);
   }
   IMP_NEW(PairsRestraint, pr,
           (new DistancePairScore(new Linear(1,0)),
@@ -107,7 +109,9 @@ int main() {
 
   }
   {
-    HERE
+    RigidBodiesTemp rbs;
+    IMP::internal::OwnerPointer<Model> m
+      = setup(true, rbs);
     //std::cout << "Hierarchy:" << std::endl;
     test_one("hierarchy", m, rbs, 100);
     test_one("hierarchy", m, rbs, 1000);
