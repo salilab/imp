@@ -54,8 +54,6 @@ IMP_REFCOUNT_RETURN_SINGLE(IMP::core::Mover)
 %include "IMP/core/ChecksScoreState.h"
 %include "IMP/core/ChildrenRefiner.h"
 %include "IMP/core/ClosedCubicSpline.h"
-%include "IMP/core/ClosePairsScoreState.h"
-%include "IMP/core/CloseBipartitePairsScoreState.h"
 %include "IMP/core/ClosePairsPairScore.h"
 %include "IMP/core/ConjugateGradients.h"
 %include "IMP/core/ConnectivityRestraint.h"
