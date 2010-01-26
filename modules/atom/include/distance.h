@@ -78,7 +78,7 @@ IMPATOMEXPORT std::pair<double,double> component_placement_score(
       for the second component
 \note see Lasker et al JMB, 2009 for details
  */
-IMPATOMEXPORT Float pairwise_rmsd_score(
+IMPATOMEXPORT double pairwise_rmsd_score(
       const core::XYZs& ref1 ,const core::XYZs& ref2,
       const core::XYZs& mdl1 ,const core::XYZs& mdl2);
 

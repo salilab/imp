@@ -20,7 +20,7 @@ class DistanceTest(IMP.test.TestCase):
         #create a random transformation
         t=IMP.algebra.Transformation3D(IMP.algebra.random_rotation(),
                                        IMP.algebra.random_vector_in_unit_box())
-        IMP.core.transform(xyz1,t)
+        for d in xyz1: IMP.core.transform(d,t)
         da=IMP.atom.placement_score(xyz1,xyz)
         d=t.get_translation().get_magnitude()
         a=IMP.algebra.decompose_rotation_into_axis_angle(t.get_rotation()).second
@@ -48,10 +48,11 @@ class DistanceTest(IMP.test.TestCase):
         #create a random transformation
         t=IMP.algebra.Transformation3D(IMP.algebra.random_rotation(),
                                        IMP.algebra.random_vector_in_unit_box())
-        IMP.core.transform(xyz1_mdl,t)
+        for d in xyz1_mdl: IMP.core.transform(d,t)
         t=IMP.algebra.Transformation3D(IMP.algebra.random_rotation(),
                                        IMP.algebra.random_vector_in_unit_box())
-        IMP.core.transform(xyz2_mdl,t)
+        #IMP.core.transform(xyz2_mdl,t)
+        for d in xyz2_mdl: IMP.core.transform(d, t)
         da1=IMP.atom.component_placement_score(xyz1_ref,xyz2_ref,xyz1_mdl,xyz2_mdl)
         da2=IMP.atom.component_placement_score(xyz1_ref,xyz2_ref,xyz1_mdl,xyz2_mdl)
         self.assertAlmostEqual(da1[0],da2[0])
