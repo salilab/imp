@@ -13,7 +13,6 @@
 #include <IMP/core/utility.h>
 #include <IMP/core/Hierarchy.h>
 #include "bond_decorators.h"
-#include <IMP/core/rigid_bodies.h>
 #include "macros.h"
 #include <IMP/core/XYZR.h>
 #include <IMP/core/rigid_bodies.h>
