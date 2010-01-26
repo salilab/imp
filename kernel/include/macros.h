@@ -605,6 +605,12 @@ const TraitsType &get_##traits_name() const {                           \
     static bool particle_is_instance(Particle *p) {             \
       return p->has_attribute(get_constraint_key());            \
     }                                                           \
+  private:                                                      \
+    /* hide set methods*/                                       \
+    void set_coordinates() {};                                  \
+    void set_coordinates_are_optimized()const{}                 \
+    void set_coordinate() const {}                              \
+    void set_radius()const{}                                    \
   };                                                            \
                                                                 \
   /** \advanced
