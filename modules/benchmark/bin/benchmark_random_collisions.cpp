@@ -23,6 +23,9 @@ double ConstPairScore::evaluate(const ParticlePair &,
                                 DerivativeAccumulator *) const {
   return 1;
 }
+void ConstPairScore::show(std::ostream &out) const {
+  out << "Hi";
+}
 
 void test_one(std::string name,
               ClosePairsFinder *cpf, unsigned int n,
