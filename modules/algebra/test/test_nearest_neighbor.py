@@ -36,7 +36,7 @@ class ConeTests(IMP.test.TestCase):
             #print cnn
             #print rnn
             #print
-            self.assert_(rnn == cnn)
+            self.assertEqual(rnn, cnn)
 
 if __name__ == '__main__':
     unittest.main()
