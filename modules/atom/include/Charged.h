@@ -24,6 +24,7 @@ IMPATOM_BEGIN_NAMESPACE
 //! A decorator for a point particle that has an electrostatic charge.
 /** \ingroup helper
     \ingroup decorators
+    \see CoulombPairScore
  */
 class IMPATOMEXPORT Charged: public IMP::core::XYZ
 {

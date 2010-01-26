@@ -20,6 +20,7 @@ IMPATOM_BEGIN_NAMESPACE
     a radius) but need not be true atoms.
     \ingroup helper
     \ingroup decorators
+    \see LennardJonesPairScore
  */
 class IMPATOMEXPORT LennardJones: public IMP::core::XYZR
 {
