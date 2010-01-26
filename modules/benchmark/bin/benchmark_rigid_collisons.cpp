@@ -52,12 +52,12 @@ void test_one(std::string name,
   IMP::benchmark::report(oss.str(), runtime-inittime, value);
 }
 
-int main() {
+
+Model * setup(bool rpcpf,RigidBodiesTemp &rbs) {
   set_log_level(SILENT);
   set_check_level(IMP::NONE);
-  IMP::internal::OwnerPointer<Model> m(new Model());
+  Model *m=new Model();
   Particles atoms;
-  std::vector<RigidBody> rbs;
   for (int i=0; i< 5; ++i) {
     atom::Hierarchy mhd
       = read_pdb(IMP::benchmark::get_data_path("small_protein.pdb"), m);
@@ -72,22 +72,12 @@ int main() {
     XYZR::setup_particle(atoms[i], 1);
   }
   IMP_NEW(ListSingletonContainer, lsc, (atoms));
-  IMP_NEW(ClosePairsScoreState, cpss, (lsc));
-  m->add_score_state(cpss);
-  IMP_NEW(PairsRestraint, pr,
-          (new DistancePairScore(new Linear(1,0)),
-           cpss->get_close_pairs_container()));
-  m->add_restraint(pr);
-  {
-    IMP_NEW(QuadraticClosePairsFinder,qcpf, ());
-    //lsc->set_particles(atoms);
-    cpss->set_close_pairs_finder(qcpf);
-    //std::cout << "Quadratic:" << std::endl;
-    test_one("quadratic", m, rbs, 100);
-    test_one("quadratic", m, rbs, 1000);
 
-  }
-  {
+  if (rbcpf) {
+RigidBodiesTemp rbs;
+    IMP::internal::OwnerPointer<Model> m
+      = setup(new QuadraticClosePairsFinder(), rbs);
+
     Particles rbsp(rbs.size());
     for (unsigned int i=0; i< rbs.size(); ++i){
       rbsp.set(i, rbs[i].get_particle());
@@ -96,6 +86,28 @@ int main() {
     IMP_NEW(RigidClosePairsFinder, rcps,
             (new LeavesRefiner(atom::Hierarchy::get_traits())));
     cpss->set_close_pairs_finder(rcps);
+  } else {
+    IMP_NEW(ClosePairsContainer, cpc, (lsc, 0.0, cpf));
+  }
+  IMP_NEW(PairsRestraint, pr,
+          (new DistancePairScore(new Linear(1,0)),
+           cpc));
+  m->add_restraint(pr);
+  return m;
+}
+
+int main() {
+  {
+    RigidBodiesTemp rbs;
+    IMP::internal::OwnerPointer<Model> m
+      = setup(false, rbs);
+    //std::cout << "Quadratic:" << std::endl;
+    test_one("quadratic", m, rbs, 100);
+    test_one("quadratic", m, rbs, 1000);
+
+  }
+  {
+    HERE
     //std::cout << "Hierarchy:" << std::endl;
     test_one("hierarchy", m, rbs, 100);
     test_one("hierarchy", m, rbs, 1000);

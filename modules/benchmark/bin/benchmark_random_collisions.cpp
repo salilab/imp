@@ -14,6 +14,16 @@ using namespace IMP::core;
 using namespace IMP::algebra;
 using namespace IMP::benchmark;
 
+class ConstPairScore: public PairScore {
+public:
+  ConstPairScore(){}
+  IMP_SIMPLE_PAIR_SCORE(ConstPairScore, VersionInfo());
+};
+double ConstPairScore::evaluate(const ParticlePair &,
+                                DerivativeAccumulator *) const {
+  return 1;
+}
+
 void test_one(std::string name,
               ClosePairsFinder *cpf, unsigned int n,
               float rmin, float rmax) {
@@ -27,10 +37,8 @@ void test_one(std::string name,
     XYZR(ps[i]).set_radius(rand(random_number_generator));
   }
   ListSingletonContainer *lsc= new ListSingletonContainer(ps);
-  ClosePairsScoreState *cpss= new ClosePairsScoreState(lsc);
-  cpss->set_slack(0);
-  cpss->set_close_pairs_finder(cpf);
-
+  ClosePairContainer *cpc= new ClosePairContainer(lsc, 0.0, cpf, 1.0);
+  m->add_restraint(new PairsRestraint(new ConstPairScore(), cpc));
   double setuptime;
   IMP_TIME({
       for (unsigned int i=0; i< ps.size(); ++i) {
@@ -43,9 +51,7 @@ void test_one(std::string name,
       for (unsigned int i=0; i< ps.size(); ++i) {
         XYZ(ps[i]).set_coordinates(random_vector_in_box(minc, maxc));
       }
-      cpss->before_evaluate();
-      result+= cpss->get_close_pairs_container()
-        ->get_number_of_particle_pairs();
+      result+= m->evaluate(false);
     }, runtime);
   std::ostringstream oss;
   oss << name << " " << n << " " << rmax;
