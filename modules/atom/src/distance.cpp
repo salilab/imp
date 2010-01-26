@@ -11,16 +11,23 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-double rmsd(const core::XYZs& m1 ,const core::XYZs& m2) {
+
+double rmsd(const core::XYZs& m1 ,const core::XYZs& m2,
+            const algebra::Transformation3D &tr_for_second) {
   IMP_USAGE_CHECK(m1.size()==m2.size(),
             "The input sets of XYZ points "
             <<"should be of the same size", ValueException);
   float rmsd=0.0;
   for(unsigned int i=0;i<m1.size();i++) {
-    rmsd += algebra::squared_distance(m1[i].get_coordinates()
-                                     ,m2[i].get_coordinates());
+    algebra::Vector3D tred=tr_for_second.transform(m2[i].get_coordinates());
+    rmsd += algebra::squared_distance(m1[i].get_coordinates(),
+                                      tred);
   }
   return std::sqrt(rmsd / m1.size());
+}
+
+double rmsd(const core::XYZs& m1 ,const core::XYZs& m2) {
+  return rmsd(m1, m2, algebra::identity_transformation());
 }
 IMPATOMEXPORT std::pair<double,double> placement_score(
   const core::XYZs& from ,const core::XYZs& to) {
@@ -39,7 +46,7 @@ IMPATOMEXPORT std::pair<double,double> placement_score(
     algebra::decompose_rotation_into_axis_angle(t.get_rotation()).second);
 }
 
-Float pairwise_rmsd_score(
+double pairwise_rmsd_score(
       const core::XYZs& ref1 ,const core::XYZs& ref2,
       const core::XYZs& mdl1 ,const core::XYZs& mdl2) {
   //calculate the best fit bewteen the reference and model
@@ -53,9 +60,7 @@ Float pairwise_rmsd_score(
   }
   algebra::Transformation3D t =
     algebra::rigid_align_first_to_second(from_v1,to_v1);
-  core::transform(mdl2,t);
-  Float rmsd_score=rmsd(ref2,mdl2);
-  core::transform(mdl2,t.get_inverse());
+  Float rmsd_score=rmsd(ref2,mdl2, t);
   return rmsd_score;
 }
 
