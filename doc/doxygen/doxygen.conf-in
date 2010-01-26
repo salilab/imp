@@ -190,6 +190,7 @@ ALIASES                = "command{1}=\code \1 \endcode" \
                          "advanced=\ingroup implementation" \
                          "advancedmethods=\note Familiarity with these methods is not required to use %imp." \
                          "advanceddoc=\par Advanced:" \
+                         "usesconstraint=\note The maintenance of the invariant is done by an associated IMP::Constraint. As a result, the state is only guaranteed to be correct either during model evaluation, or immediately following model evaluation before any particles have been changed."\
                          "cpp=\par For C++ users:\n" \
                          "overview=\par Overview:\n" \
                          "license=\par License:\n" \
