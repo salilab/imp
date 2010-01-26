@@ -151,8 +151,8 @@ inline double distance(XYZ a, XYZ b) {
 }
 
 //! Apply a transformation to the particle
-/** \relatesalso RigidBody
-    \relatesalso Transformation3D
+/** \relatesalso XYZ
+    \relatesalso algebra::Transformation3D
 */
 inline void transform(XYZ a, const algebra::Transformation3D &tr) {
   a.set_coordinates(tr.transform(a.get_coordinates()));
