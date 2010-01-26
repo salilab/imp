@@ -8,7 +8,6 @@ files = [
          'DensityMap.cpp',
          'EMReaderWriter.cpp',
          'FitRestraint.cpp',
-         'IMPParticlesAccessPoint.cpp',
          'ImageHeader.cpp',
          'KernelParameters.cpp',
          'MRCReaderWriter.cpp',

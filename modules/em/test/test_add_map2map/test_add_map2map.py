@@ -12,10 +12,15 @@ class AddParticlesTest(IMP.test.TestCase):
     def setUp(self):
         """ create particles """
         IMP.test.TestCase.setUp(self)
-        self.particles_p = IMP.em.ParticlesProvider()
-        self.particles_p.append(9.,5.,5.,1.,1.)
-        self.particles_p.append(12.,9.,4.,1.,1.)
-        self.particles_p.append(4.,5.,5.,1.,1.)
+        self.mdl=IMP.Model()
+        self.particles_p = IMP.Particles()
+        self.rad_key=IMP.core.XYZR.get_default_radius_key()
+        self.mass_key=IMP.FloatKey("mass")
+        for val in [[9.,5.,5.,1.,1.],[12.,9.,4.,1.,1.],[4.,5.,5.,1.,1.]]:
+            p=IMP.Particle(self.mdl)
+            IMP.core.XYZR.setup_particle(p,IMP.algebra.Sphere3D(IMP.algebra.Vector3D(val[0],val[1],val[2]),val[3]))
+            p.add_attribute(self.mass_key,5.)
+            self.particles_p.append(p)
         resolution = 2.0
         voxel_size = 1.0
         self.scene1 = IMP.em.SampledDensityMap(self.particles_p,
@@ -26,7 +31,6 @@ class AddParticlesTest(IMP.test.TestCase):
 
         self.scene3 = IMP.em.SampledDensityMap(self.particles_p,
                                                resolution,voxel_size*2)
-
 
 
     def test_addition(self):

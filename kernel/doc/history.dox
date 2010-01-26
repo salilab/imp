@@ -9,6 +9,8 @@
 
 \par Week of January 1, 2010
 
+- IMP::em is now using Particles to resample density maps and for fitting restraints. The previous ParticleAccessPoint mechanism is removed.
+
 - IMP::UsageException and IMP::InternalException are now reserved for their respective
   checks (and cannot be thrown by IMP_THROW()). This makes the distinction between API
   exceptions (which are thrown in any build mode and should be documented and tested)

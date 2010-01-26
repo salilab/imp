@@ -121,7 +121,6 @@ void local_rigid_fitting_around_point(
    IMP_LOG(VERBOSE,"before optimizer"<<std::endl);
    optimize(number_of_optimization_runs, number_of_mc_steps,
             anchor_centroid, rb, opt, fr, model);
-   std::cout<<"after optimizer"<<std::endl;
    fr.sort();
     //remove restraints
     model->remove_restraint(rsrs);
@@ -180,12 +179,11 @@ void local_rigid_fitting_grid_search(
       << -max_t << " to " << max_t <<" with step : " << step_t
       << " number of rotations : " << number_of_rotations <<std::endl);
 
+   //init the sampled density map
    IMP::em::SampledDensityMap *model_dens_map =
        new IMP::em::SampledDensityMap(*dmap->get_header());
-
-   // init the access_p
-   IMP::em::IMPParticlesAccessPoint access_p(ps, rad_key,wei_key);
-   model_dens_map->resample(access_p);
+   model_dens_map->set_particles(ps,rad_key,wei_key);
+   model_dens_map->resample();
 
    std::vector<float> dx,dy,dz;
 
@@ -199,7 +197,7 @@ void local_rigid_fitting_grid_search(
      //transform all particles
      std::for_each(ps.begin(), ps.end(),
            SingletonFunctor(new core::Transform(t1)));
-     model_dens_map->resample(access_p);
+     model_dens_map->resample();
      IMP::algebra::Vector3D origin(model_dens_map->get_header()->get_xorigin(),
                  model_dens_map->get_header()->get_yorigin(),
                  model_dens_map->get_header()->get_zorigin());
@@ -211,7 +209,7 @@ void local_rigid_fitting_grid_search(
               algebra::Transformation3D(algebra::identity_rotation(),
                                         algebra::Vector3D(x,y,z));
            model_dens_map->set_origin(t.transform(origin));
-           score = IMP::em::CoarseCC::evaluate(*dmap,*model_dens_map,access_p,
+           score = IMP::em::CoarseCC::evaluate(*dmap,*model_dens_map,
                                                dx,dy,dz,1.0,false,true,false);
            fr.add_solution(IMP::algebra::compose(t,t1),score);
            model_dens_map->set_origin(origin);
@@ -225,7 +223,7 @@ void local_rigid_fitting_grid_search(
    fr.sort();
 }
 
-void compute_fitting_scores(const Particles &ps,
+void compute_fitting_scores(Particles &ps,
   DensityMap *em_map,
   const FloatKey &rad_key, const FloatKey &wei_key,
   const std::vector<IMP::algebra::Transformation3D>& transformations,
@@ -233,9 +231,9 @@ void compute_fitting_scores(const Particles &ps,
     std::vector<float> dvx;
     std::vector<float>dvy;
     std::vector<float>dvz;
-    IMP::em::IMPParticlesAccessPoint imp_ps(ps,rad_key,wei_key);
     IMP::em::SampledDensityMap *model_dens_map =
       new IMP::em::SampledDensityMap(*(em_map->get_header()));
+    model_dens_map->set_particles(ps,rad_key,wei_key);
     float score;
     for (std::vector<IMP::algebra::Transformation3D>::const_iterator it =
          transformations.begin(); it != transformations.end();it++) {
@@ -244,7 +242,7 @@ void compute_fitting_scores(const Particles &ps,
         core::XYZ d(*psi);
         d.set_coordinates(it->transform(d.get_coordinates()));
       }
-      score  = em::CoarseCC::evaluate(*em_map, *model_dens_map,imp_ps,
+      score  = em::CoarseCC::evaluate(*em_map, *model_dens_map,
                                       dvx,dvy,dvz,1.0,false,true,true);
       IMP_LOG(VERBOSE,"adding score:"<<score<<std::endl);
       fr.add_solution(*it,score);
@@ -255,16 +253,16 @@ void compute_fitting_scores(const Particles &ps,
     }
 }
 
-Float compute_fitting_score(const Particles &ps,
+Float compute_fitting_score(Particles &ps,
                             DensityMap *em_map,
                             FloatKey rad_key, FloatKey wei_key) {
     std::vector<float> dvx;
     std::vector<float>dvy;
     std::vector<float>dvz;
-    IMP::em::IMPParticlesAccessPoint imp_ps(ps,rad_key,wei_key);
     IMP::em::SampledDensityMap *model_dens_map =
       new IMP::em::SampledDensityMap(*(em_map->get_header()));
-   return em::CoarseCC::evaluate(*em_map, *model_dens_map,imp_ps,
+   model_dens_map->set_particles(ps,rad_key,wei_key);
+   return em::CoarseCC::evaluate(*em_map, *model_dens_map,
                                  dvx,dvy,dvz,1.0,false,true,true);
 }
 IMPEM_END_NAMESPACE

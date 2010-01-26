@@ -14,7 +14,6 @@
 #include <IMP/macros.h>
 #include "DensityMap.h"
 #include "SampledDensityMap.h"
-#include <IMP/em/IMPParticlesAccessPoint.h>
 #include <IMP/Particle.h>
 #include "IMP/core/XYZ.h"
 #include "IMP/algebra/Vector3D.h"
@@ -48,11 +47,11 @@ Each such particle should be have xyz radius and weight attributes
 inline SampledDensityMap * particles2density(
    Particles &ps,
    Float resolution, Float apix,
+   int sig_cuttoff=3,
    const FloatKey &rad_key=IMP::core::XYZR::get_default_radius_key(),
    const FloatKey &weight_key=IMP::atom::Mass::get_mass_key()) {
-  IMPParticlesAccessPoint access_p(ps,rad_key,weight_key);
-  SampledDensityMap *dmap = new SampledDensityMap(access_p, resolution,
-                                                  apix);
+  SampledDensityMap *dmap = new SampledDensityMap(ps, resolution,
+                              apix,rad_key,weight_key,sig_cuttoff);
   return dmap;
 }
 

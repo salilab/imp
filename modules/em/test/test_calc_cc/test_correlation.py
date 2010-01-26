@@ -1,5 +1,4 @@
 import unittest
-from particles_provider import ParticlesProvider
 import IMP
 import IMP.em
 import IMP.test
@@ -11,7 +10,7 @@ class CrossCorrelationTests(IMP.test.TestCase):
         # Initial values and names of files
         self.fn_in = self.get_input_file_name('1tdx_sampled.mrc')
         self.resolution=6.0
-        self.fn_coords = self.get_input_file_name('1tdx_atoms')
+        self.fn_coords = self.get_input_file_name('1tdx.pdb')
         self.pixel_size=1.0
 
 
@@ -20,8 +19,10 @@ class CrossCorrelationTests(IMP.test.TestCase):
         self.EM_map.std_normalize()
         self.EM_map.get_header_writable().compute_xyz_top()
 
-        self.atoms = ParticlesProvider()
-        self.atoms.read(self.fn_coords)
+        self.mdl=IMP.Model()
+        mh=IMP.atom.read_pdb(self.fn_coords,self.mdl,IMP.atom.NonWaterNonHydrogenSelector())
+        IMP.atom.add_radii(mh)
+        self.atoms=IMP.core.get_leaves(mh)
 
         self.model_map = IMP.em.SampledDensityMap(self.atoms, self.resolution,
                                                   self.pixel_size)
@@ -54,6 +55,8 @@ class CrossCorrelationTests(IMP.test.TestCase):
         # compute correlation translating the origin of the model map
 
         xm=3;ym=1;zm=-2
+        translation=IMP.algebra.Transformation3D(IMP.algebra.identity_rotation(),
+                                                 IMP.algebra.Vector3D(xm,ym,zm))
         self.model_map.set_origin(self.xo-xm,self.yo-ym,self.zo-zm)
 
         self.model_map.calcRMS();
@@ -65,10 +68,11 @@ class CrossCorrelationTests(IMP.test.TestCase):
 
         #compute correlation translating the particles
         self.model_map.set_origin(self.xo,self.yo,self.zo)
-        self.atoms.translate(xm,ym,zm)
+        for atom in self.atoms:
+            IMP.core.XYZ(atom.get_particle()).set_coordinates(translation.transform(IMP.core.XYZ(atom.get_particle()).get_coordinates()))
         interval=1
         dvx = IMP.em.floats(); dvy= IMP.em.floats(); dvz= IMP.em.floats()
-        score= self.ccc.evaluate(self.EM_map,self.model_map,self.atoms,dvx,dvy,dvz,1.0,False)
+        score= self.ccc.evaluate(self.EM_map,self.model_map,dvx,dvy,dvz,1.0,False)
         score2 = 1.-score
         self.assertAlmostEqual(score1,score2,2)
 
@@ -84,7 +88,7 @@ class CrossCorrelationTests(IMP.test.TestCase):
         self.model_map.set_origin(self.xo-xm,self.yo-ym,self.zo-zm)
         interval=1
         dvx = IMP.em.floats(); dvy= IMP.em.floats(); dvz= IMP.em.floats()
-        score= self.ccc.evaluate(self.EM_map,self.model_map,self.atoms,dvx,dvy,dvz,1.0,False)
+        score= self.ccc.evaluate(self.EM_map,self.model_map,dvx,dvy,dvz,1.0,False)
 
         score=1.-score
         self.assertAlmostEqual(simple_score,score,2)
@@ -96,13 +100,16 @@ class CrossCorrelationTests(IMP.test.TestCase):
         self.model_map.set_origin(self.xo,self.yo,self.zo)
         interval=5;         times=10;       scores_interval=[]
         dvx = IMP.em.floats(); dvy= IMP.em.floats(); dvz= IMP.em.floats()
+        translation=IMP.algebra.Transformation3D(IMP.algebra.identity_rotation(),
+                                                 IMP.algebra.Vector3D(0.1,0.1,0.1))
         for d in [dvx,dvy,dvz]:
-            for i in range(self.atoms.get_size()):
+            for i in range(len(self.atoms)):
                 d.push_back(0.0)
             for i in xrange(0,times):
-                score=self.ccc_intervals.evaluate(self.EM_map,self.model_map,self.atoms,dvx,dvy,dvz,1.0,False,interval)
+                score=self.ccc_intervals.evaluate(self.EM_map,self.model_map,dvx,dvy,dvz,1.0,False,interval)
                 scores_interval.append(score)
-                self.atoms.translate(0.1,0.1,0.1)
+                for atom in self.atoms:
+                    IMP.core.XYZ(atom.get_particle()).set_coordinates(translation.transform(IMP.core.XYZ(atom.get_particle()).get_coordinates()))
         # check that the scores are equal when they have to be due to the function skipping computations
         for i in xrange(0,times):
             if(i%interval==0):

@@ -13,7 +13,6 @@
 #include "exp.h"
 #include "DensityMap.h"
 #include "SampledDensityMap.h"
-#include "ParticlesAccessPoint.h"
 #include "def.h"
 #include <vector>
 
@@ -33,7 +32,7 @@ public:
       \param[in] f A densityMap. note:
              correct RMSD and mean MUST be in the header!
       \param[in] g a sampled density map of particles
-      \param[in] g_access_p particles data (location, radii, weight)
+      \param[in] g_ps particles data (location, radii, weight)
       \param[in] dvx vector to contain the xpartial derivatives for g_access_p
       \param[in] dvy vector to contain the y partial derivatives for g_access_p
       \param[in] dvz vector to contain the z partial derivatives for g_access_p
@@ -44,37 +43,14 @@ public:
    */
   /*
   static float evaluate(DensityMap &f, SampledDensityMap &g,
-                        const ParticlesAccessPoint &g_access_p,
+                        const Particles &g_ps,
                         std::vector<float> &dvx, std::vector<float>&dvy,
                         std::vector<float>&dvz, float scalefac, bool lderiv);
   */
-
-/*!
- Computes the derivatives of the convolution term scalefac*(1-ccc) at each
- voxel of the map.
- \param[in] em_map DensityMap class containing the EM map. note: correct RMS and
-            mean MUST be in the header!
- \param[in] model_map SampledDensityMap class prepared to contain the simulated
-            EM map for the model.
- \param[in] access_p ParticlesAccessPoint class with the particles data
-            (location, radii, weight)
- \param[in] scalefactor scale factor to apply to the value of the cross
-                        correlation term
- \param[out] dvx vector to contain the x partial derivatives
- \param[out] dvy vector to contain the y partial derivatives
- \param[out] dvz vector to contain the z partial derivatives
- \return the function stores the values of the partial derivatives in
-         the vectors
-*/
-/* comments: Javi to Frido:
-I am pretty sure what causes the subtle difference:
-the corr routine requires that the mean is subtracted from the em-density.
-we did not do that, yet.
-*/
-/*
+  /*
   static void calc_derivatives(const DensityMap &comp1,
                               SampledDensityMap &comp2,
-                              const ParticlesAccessPoint &access_p_comp2,
+                              const Particles &ps_comp2,
                               const float &scalefac,
                               std::vector<float> &dvx, std::vector<float>&dvy,
                               std::vector<float>&dvz);

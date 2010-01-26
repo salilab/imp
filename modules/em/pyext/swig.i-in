@@ -8,9 +8,6 @@ namespace IMP::em {
 
 
 /* Make selected classes extensible in Python */
-IMP_DIRECTOR_MODULE_CLASS(em, ParticlesAccessPoint);
-IMP_DIRECTOR_MODULE_CLASS(em, IMPParticlesAccessPoint);
-
 IMP_REFCOUNT_RETURN_SINGLE(IMP::em::DensityMap)
 
 
@@ -24,13 +21,11 @@ IMP_REFCOUNT_RETURN_SINGLE(IMP::em::DensityMap)
 %include "IMP/em/XplorReaderWriter.h"
 %include "IMP/em/MRCReaderWriter.h"
 %include "IMP/em/KernelParameters.h"
-%include "IMP/em/ParticlesAccessPoint.h"
 %include "IMP/em/SampledDensityMap.h"
 %include "IMP/em/CoarseCC.h"
 %include "IMP/em/CoarseConvolution.h"
 %include "IMP/em/CoarseCCatIntervals.h"
 %include "IMP/em/SurfaceShellDensityMap.h"
-%include "IMP/em/IMPParticlesAccessPoint.h"
 %include "IMP/em/FitRestraint.h"
 %include "IMP/em/converters.h"
 %include "IMP/em/project.h"

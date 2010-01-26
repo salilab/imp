@@ -12,7 +12,7 @@
 
 IMPEM_BEGIN_NAMESPACE
 
-FitRestraint::FitRestraint(const Particles &ps,
+FitRestraint::FitRestraint(Particles ps,
                            DensityMap *em_map,
                            FloatKey radius_key,
                            FloatKey weight_key,
@@ -39,13 +39,12 @@ FitRestraint::FitRestraint(const Particles &ps,
     scalefac_ = scale;
   }
   model_dens_map_ = new SampledDensityMap(*em_map->get_header());
+  model_dens_map_->set_particles(ps,radius_key,weight_key);
   add_particles(ps);
   //  IMP_LOG(VERBOSE, "RSR_EM_Fit::RSR_EM_Fit after setting up particles "
   //                   << endl );
 
 
-  // init the access_p
-  access_p_ = IMPParticlesAccessPoint(ps, radius_key,weight_key);
    // initialize the derivatives
 
   //  IMP_LOG(VERBOSE, "RSR_EM_Fit::RSR_EM_Fit before initializing derivatives "
@@ -64,7 +63,7 @@ FitRestraint::FitRestraint(const Particles &ps,
 
   IMP_LOG(VERBOSE, "RSR_EM_Fit::RSR_EM_Fit after std norm" << std::endl);
   //  have an initial sampling of the model grid
-  model_dens_map_->resample(access_p_);
+  model_dens_map_->resample();
   IMP_LOG(VERBOSE, "RSR_EM_Fit::RSR_EM_Fit after resample " << std::endl);
 }
 
@@ -89,19 +88,19 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   bool calc_deriv = accum? true: false;
   score = CoarseCC::evaluate(const_cast<DensityMap&>(*target_dens_map_),
                              const_cast<SampledDensityMap&>(*model_dens_map_),
-                             access_p_,
                              const_cast<FitRestraint*>(this)->dx_,
                              const_cast<FitRestraint*>(this)->dy_,
                              const_cast<FitRestraint*>(this)->dz_,
                              scalefac_, calc_deriv);
   // now update the derivatives
+  FloatKeys xyz_keys=IMP::core::XYZR::get_xyz_keys ();
   if (calc_deriv) {
-    for (int ii = 0; ii < access_p_.get_size(); ++ii) {
-      get_particle(ii)->add_to_derivative(access_p_.get_x_key(), dx_[ii],
+    for (unsigned int ii = 0; ii < dx_.size(); ++ii) {
+      get_particle(ii)->add_to_derivative(xyz_keys[0], dx_[ii],
                                           *accum);
-      get_particle(ii)->add_to_derivative(access_p_.get_y_key(), dy_[ii],
+      get_particle(ii)->add_to_derivative(xyz_keys[1], dy_[ii],
                                           *accum);
-      get_particle(ii)->add_to_derivative(access_p_.get_z_key(), dz_[ii],
+      get_particle(ii)->add_to_derivative(xyz_keys[2], dz_[ii],
                                           *accum);
     }
   }

@@ -14,10 +14,11 @@
 #include "DensityMap.h"
 #include "DensityHeader.h"
 #include "def.h"
-#include "ParticlesAccessPoint.h"
 #include "KernelParameters.h"
 #include <vector>
-
+#include "IMP/base_types.h"
+#include "IMP/core/XYZR.h"
+#include "IMP/atom/Mass.h"
 IMPEM_BEGIN_NAMESPACE
 
 // an advantage of using const double over define is that it limits the use
@@ -41,8 +42,7 @@ public:
   SampledDensityMap(const DensityHeader &header);
 
   //! Generatea a sampled density map from the particles.
-  /** /param[in] access_p     access point to the particles (locations,
-                              radius, weight)
+  /** /param[in] ps     particles with XYZ, radius and weight attributes
       /param[in] resolution   half width the Gaussian
       /param[in] voxel_size
       /param[in] sig_cutoff   Choose what should be the sigma cutoff for
@@ -51,16 +51,19 @@ public:
                  (ii) to determine the voxels around the coords participating
                       in the sampling procedure.
    */
-  SampledDensityMap(const ParticlesAccessPoint &access_p, emreal resolution,
-                    emreal voxel_size, int sig_cuttoff=3);
+  SampledDensityMap(const Particles &ps, emreal resolution,
+   emreal voxel_size,
+   IMP::FloatKey radius_key=IMP::core::XYZR::get_default_radius_key(),
+   IMP::FloatKey mass_key=IMP::atom::Mass::get_mass_key(),
+   int sig_cuttoff=3);
 
+  //! ReSampling beads on an EM grid
+  virtual void resample();
 
-  //! Sampling beads on an EM grid
-  /** /param[in] access_p   access point to the particles (locations,
-                            radius, weight)
-   */
-  virtual void resample(const ParticlesAccessPoint &access_p);
-
+  //!setting particles in case they were not set by the constructor
+  void set_particles(IMP::Particles &ps,
+     IMP::FloatKey radius_key = IMP::core::XYZR::get_default_radius_key(),
+     IMP::FloatKey mass_key = IMP::atom::Mass::get_mass_key());
   void calc_sampling_bounding_box(const emreal &x,const emreal &y,
                                   const emreal &z,
                                   const emreal &kdist,
@@ -69,26 +72,23 @@ public:
 
   KernelParameters *get_kernel_params()  { return &kernel_params_;}
 
+
+  inline const core::XYZRs & get_xyzr_particles() const {return xyzr_;}
+ // would go away on§ce we have a XYZRW decorator and the next function as well
+  inline const Particles & get_sampled_particles() const {return ps_;}
+  inline FloatKey  get_weight_key() const {return weight_key_;}
+
+
   IMP_REF_COUNTED_DESTRUCTOR(SampledDensityMap)
 protected:
   //! Calculate the parameters of the particles bounding box
-  /** \param[in]  access_p     access point to the particles (locations,
-                               radius, weight)
-      \param[out] lower_bound  the left-bottom point of the bounding box
-                               (lower_bound[0] - x coordinate
-                                lower_bound[1] - y coordinate
-                                lower_bound[2] - z coordinate)
-      \param[out] upper_bound  the right-upper point of the bounding box
-      \param[out] maxradius    the maximum radius of all the particles in
-                               the model.
+  /** \param[in]  ps     particles with XYZ, radius and weight attributes
+      \param[out] bb           the particles bounding box
    */
-  void calculate_particles_bounding_box(const ParticlesAccessPoint &access_p,
-                                        std::vector<emreal> &lower_bound,
-                                        std::vector<emreal> &upper_bound,
-                                        emreal &maxradius);
-
-  void set_header(const std::vector<emreal> &lower_bound,
-                  const std::vector<emreal> &upper_bound,
+  IMP::algebra::BoundingBox3D
+     calculate_particles_bounding_box(const Particles &ps);
+  void set_header(const algebra::Vector3D &lower_bound,
+                  const algebra::Vector3D &upper_bound,
                   emreal maxradius, emreal resolution, emreal voxel_size,
                   int sig_offset);
 
@@ -115,10 +115,13 @@ protected:
     if (imax > ndim-1) imax = ndim-1;
     return imax;
   }
-
 protected:
   //! kernel handling
   KernelParameters kernel_params_;
+  Particles ps_;
+  core::XYZRs xyzr_; //each voxel decorator would contain X,Y,Z,R
+  // std::vector<atom::Mass> weight_;
+  FloatKey weight_key_;
 };
 
 IMPEM_END_NAMESPACE

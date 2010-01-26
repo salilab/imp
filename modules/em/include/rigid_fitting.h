@@ -191,7 +191,7 @@ IMPEMEXPORT void local_rigid_fitting_grid_search(
 \param[in] fr   The solutions will be stored in a FittingSolutions data stucture
 \note the function assumes the density map holds its density
  */
-IMPEMEXPORT void compute_fitting_scores(const Particles &ps,
+IMPEMEXPORT void compute_fitting_scores(Particles &ps,
    DensityMap *em_map,
    const FloatKey &rad_key, const FloatKey &wei_key,
    const std::vector<IMP::algebra::Transformation3D>& transformations,
@@ -205,7 +205,7 @@ IMPEMEXPORT void compute_fitting_scores(const Particles &ps,
 \param[in] wei_key  The weight key of the particles in the rigid body
 \note the function assumes the density map holds its density
  */
-IMPEMEXPORT Float compute_fitting_score(const Particles &ps,
+IMPEMEXPORT Float compute_fitting_score(Particles &ps,
    DensityMap *em_map,
    FloatKey rad_key=core::XYZR::get_default_radius_key(),
    FloatKey wei_key=atom::Mass::get_mass_key());

@@ -84,8 +84,8 @@ class FittingTest(IMP.test.TestCase):
         """Make sure that we can cast Restraint* to FitRestraint*"""
         m = self.imp_model
         r1 = IMP.em.FitRestraint(self.particles,self.scene,
-                                 IMP.FloatKey("radius"),
-                                 IMP.FloatKey("weight"), 1.0)
+                                 self.radius_key,
+                                 self.weight_key, 1.0)
         sf = IMP.core.Harmonic(10.0, 0.1)
         r2 = IMP.core.DistanceRestraint(sf, self.particles[0],
                                         self.particles[1])
