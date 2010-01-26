@@ -22,15 +22,6 @@ IMPCORE_BEGIN_NAMESPACE
 //! Get the centroid
 IMPCOREEXPORT algebra::Vector3D centroid(const XYZs &ps);
 
-#ifndef IMP_NO_DEPRECATED
-//! Transform a molecule
-/**
-   \deprecated see SingletonFunctor for a replacement
- */
-IMPCOREEXPORT
-void transform(const XYZs &ps,
-               const algebra::Transformation3D &t);
-#endif // IMP_NO_DEPRECATED
 IMPCOREEXPORT
 algebra::Segment3D diameter(const XYZs &ps);
 
