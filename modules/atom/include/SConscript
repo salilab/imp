@@ -18,6 +18,7 @@ files = [
          'Fragment.h',
          'Hierarchy.h',
          'LennardJones.h',
+         'LennardJonesPairScore.h',
          'Mass.h',
          'MolecularDynamics.h',
          'Residue.h',
