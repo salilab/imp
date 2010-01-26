@@ -12,24 +12,6 @@ import unittest
 import os
 
 
-def init_particle(particles,p_ind_,x_,y_,z_,r_=0.0,w_=1.0,protein_=1):
-    """particles     IMP particles
-    p_ind         particle indices
-    x_            x coord
-    y_            y coord
-    z_            z coord
-    r_            radius
-    w_            weight
-    protein_      protein identifier (int)"""
-    p1 = particles[p_ind_]
-    p1.add_attribute(IMP.FloatKey("radius"), r_, False)
-    p1.add_attribute(IMP.FloatKey("weight"), w_)
-    p1.add_attribute(IMP.IntKey("id"), p_ind_)
-    p1.add_attribute(IMP.IntKey("protein"), protein_)
-    p1.set_value(IMP.FloatKey("x"), x_)
-    p1.set_value(IMP.FloatKey("y"), y_)
-    p1.set_value(IMP.FloatKey("z"), z_)
-
 class DerivativesTest(IMP.test.TestCase):
     """check the agreement of numerical and analytical
        derivatives"""
@@ -56,9 +38,18 @@ class DerivativesTest(IMP.test.TestCase):
         # - add the particles attributes ( other than X,Y,Z)
         rad = 1.0
         wei = 1.0
-        init_particle(self.particles,0,9.0,9.0,9.0,rad,wei,1)
-        init_particle(self.particles,1,12.0,3.0,3.0,rad,wei,1)
-        init_particle(self.particles,2,3.0,12.0,12.0,rad,wei,1)
+        rad_key=IMP.FloatKey("radius")
+        wei_key=IMP.FloatKey("weight")
+        prot_key=IMP.IntKey("protein")
+        for i,p_data in enumerate([[0,9.0,9.0,9.0,rad,wei,1],[12.0,3.0,3.0,rad,wei,1],[3.0,12.0,12.0,rad,wei,1]]):
+            p=IMP.Particle(mdl)
+            IMP.core.XYZR.setup_particle(p,
+                IMP.algebra.Sphere3D(IMP.algebra.Vector3D(p_data[0],p_data[1],p_data[2]),p_data[3]))
+            p.add_attribute(wei_key,p_data[4])
+            p.add_attribute(IMP.IntKey("id"), i)
+            p.add_attribute(prot_key, protein_)
+            self.particles.append(p)
+
         IMP.modeller.copy_imp_coords_to_modeller(self.particles,self.modeller_model.atoms)
         #modeller_model.write(file='xxx.pdb')
         self.atmsel = modeller.selection(self.modeller_model)
@@ -82,8 +73,7 @@ class DerivativesTest(IMP.test.TestCase):
         ind_emrsr = []
         ind_emrsr.append(IMP.em.FitRestraint(self.particles,
                                              em_map,
-                                             IMP.FloatKey("radius"),
-                                             IMP.FloatKey("weight"),
+                                             rad_key,wei_key,
                                              1.0))
         self.imp_model.add_restraint(ind_emrsr[0])
         print("EM-score score: "+str(self.atmsel.energy()) )
