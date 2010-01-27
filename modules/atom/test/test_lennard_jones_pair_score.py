@@ -83,8 +83,8 @@ class LennardJonesPairScoreTests(IMP.test.TestCase):
         d0.set_coordinates(IMP.algebra.Vector3D(0,0,0))
         d1.set_coordinates(IMP.algebra.random_vector_on_unit_sphere() \
                            * (random.random() * 5.0 + 1.0))
-        self.assertXYZDerivativesInTolerance(m, d0, 2.0)
-        self.assertXYZDerivativesInTolerance(m, d1, 2.0)
+        self.assertXYZDerivativesInTolerance(m, d0, 2.0, 3.0)
+        self.assertXYZDerivativesInTolerance(m, d1, 2.0, 3.0)
 
     def test_smoothing(self):
         """Check smoothing of LennardJonesPairScore"""
