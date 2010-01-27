@@ -39,16 +39,23 @@ class DerivativesTest(IMP.test.TestCase):
         rad = 1.0
         wei = 1.0
         rad_key=IMP.FloatKey("radius")
+        x_key=IMP.FloatKey("x")
+        y_key=IMP.FloatKey("y")
+        z_key=IMP.FloatKey("z")
         wei_key=IMP.FloatKey("weight")
         prot_key=IMP.IntKey("protein")
-        for i,p_data in enumerate([[0,9.0,9.0,9.0,rad,wei,1],[12.0,3.0,3.0,rad,wei,1],[3.0,12.0,12.0,rad,wei,1]]):
-            p=IMP.Particle(mdl)
-            IMP.core.XYZR.setup_particle(p,
-                IMP.algebra.Sphere3D(IMP.algebra.Vector3D(p_data[0],p_data[1],p_data[2]),p_data[3]))
+        id_key=IMP.IntKey("id")
+
+        for i,p_data in enumerate([[9.0,9.0,9.0,rad,wei,1],[12.0,3.0,3.0,rad,wei,1],[3.0,12.0,12.0,rad,wei,1]]):
+            p=self.particles[i]
+            p.set_value(x_key,p_data[0])
+            p.set_value(y_key,p_data[1])
+            p.set_value(z_key,p_data[2])
+            p.add_attribute(rad_key,p_data[3])
             p.add_attribute(wei_key,p_data[4])
-            p.add_attribute(IMP.IntKey("id"), i)
-            p.add_attribute(prot_key, protein_)
-            self.particles.append(p)
+            p.add_attribute(prot_key,p_data[5])
+            self.particles[i].add_attribute(id_key,i)
+
 
         IMP.modeller.copy_imp_coords_to_modeller(self.particles,self.modeller_model.atoms)
         #modeller_model.write(file='xxx.pdb')
@@ -57,7 +64,7 @@ class DerivativesTest(IMP.test.TestCase):
 
         resolution=3.
         voxel_size=1.
-        model_map = IMP.em.SampledDensityMap(self.particles, resolution, voxel_size)
+        model_map = IMP.em.SampledDensityMap(self.particles, resolution, voxel_size,rad_key,wei_key)
         erw = IMP.em.EMReaderWriter()
         xorigin = model_map.get_header().get_xorigin()
         yorigin = model_map.get_header().get_yorigin()
