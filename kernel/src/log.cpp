@@ -61,6 +61,10 @@ class LogStream:
     P::push(IndentFilter(this));
     P::push(LogSink(this));
   }
+  ~LogStream() {
+    // make sure nothing is written during destruction
+    set_log_level(SILENT);
+  }
   void set_stream(TextOutput out) {
     out_=out;
   }
@@ -78,8 +82,7 @@ IMP_BEGIN_NAMESPACE
 namespace {
   IMP_CHECK_CODE(double initialized=11111111);
   std::ofstream fstream;
-  TextOutput tco(std::cout);
-  internal::LogStream stream(tco);
+  internal::LogStream stream(TextOutput(std::cout));
 }
 
 
