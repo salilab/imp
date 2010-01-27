@@ -132,15 +132,21 @@ class TestCase(unittest.TestCase):
             msg = "%f != %f within %g" % (num1, num2, tolerance)
         self.assert_(diff < tolerance, msg)
 
-    def assertXYZDerivativesInTolerance(self, model, xyz, tolerance):
+    def assertXYZDerivativesInTolerance(self, model, xyz, tolerance,
+                                        percentage):
         """Assert that x,y,z analytical derivatives match numerical within
-           a tolerance."""
+           a tolerance, or a percentage (of the analytical value), whichever
+           is larger."""
         model.evaluate(True)
         derivs = xyz.get_derivatives()
         num_derivs = xyz_numerical_derivatives(model, xyz, 0.01)
-        self.assertInTolerance(derivs[0], num_derivs[0], tolerance)
-        self.assertInTolerance(derivs[1], num_derivs[1], tolerance)
-        self.assertInTolerance(derivs[2], num_derivs[2], tolerance)
+        pct = percentage / 100.0
+        self.assertInTolerance(derivs[0], num_derivs[0],
+                               max(tolerance, abs(derivs[0]) * pct))
+        self.assertInTolerance(derivs[1], num_derivs[1],
+                               max(tolerance, abs(derivs[1]) * pct))
+        self.assertInTolerance(derivs[2], num_derivs[2],
+                               max(tolerance, abs(derivs[2]) * pct))
 
     def create_point_particle(self, model, x, y, z):
         """Make a particle with optimizable x, y and z attributes, and
