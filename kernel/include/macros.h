@@ -2043,11 +2043,11 @@ typedef std::vector<Name*> Name##sTemp
     The macro defines the types Names and NamesTemp.
 */
 #define IMP_DECORATORS(Name, Parent)                    \
-  /** Store a collection. */                            \
+  /** Store a collection of decorators. */              \
   typedef IMP::Decorators<Name, Parent> Name##s;        \
   /** Use this type to return a collection or store
       a collection when you know they are ref-counted elsewhere. */     \
-typedef IMP::Decorators<Name, Parent##Temp> Name##sTemp\
+typedef IMP::Decorators<Name, Parent##Temp> Name##sTemp
 
 /** \advanced
 
