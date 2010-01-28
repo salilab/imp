@@ -1,6 +1,10 @@
 /** \page recent Change History
 \par Week of January 22, 2010
 
+- A generic geometry layer has been added (see \ref genericgeometry). Using it, IMP::atom::rmsd(),
+  IMP::algebra::alignment_taking_first_to_second() and the new IMP::atom::native_overlap() all
+  can work on either collections of either IMP::core::XYZ particles or IMP::algebra::Vector3Ds.
+
 - Deprecated functionality has been removed from IMP.core. For those still using it, IMP::core::ClosePairsScoreState was replaced by IMP::core::ClosePairContainer and IMP::core::CloseBipartitePairsScoreState was replaced by IMP::core::CloseBipartitePairContainer.
 
 - The macros for Scores changed slightly. Scores not in IMP svn which use the IMP_*_SCORE macros now have to implement the get_is_changed() function outside of the class declaration and scores which use the IMP_SIMPLE_*_SCORE now don't have to implement the functions to get interactions and used particles.

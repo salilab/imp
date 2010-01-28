@@ -41,7 +41,6 @@ namespace multi_array_types {
 %include "IMP_matrix2d.i"
 %include "IMP_matrix3d.i"
 %include "IMP_spherical_coords.i"
-%include "IMP/algebra/geometric_alignment.h"
 %include "IMP/algebra/eigen_analysis.h"
 %include "IMP/algebra/Segment3D.h"
 %include "IMP/algebra/LinearFit.h"
@@ -58,6 +57,7 @@ namespace multi_array_types {
 %include "IMP/algebra/Rotation2D.h"
 %include "IMP/algebra/shortest_segment.h"
 %include "IMP/algebra/vector_search.h"
+%include "IMP/algebra/geometric_alignment.h"
 
 namespace IMP {
  namespace algebra {
@@ -78,6 +78,7 @@ namespace IMP {
    %template(Sphere3DPairs) ::std::vector< SpherePair >;
 
    %template(AxisAnglePair) ::std::pair<IMP::algebra::Vector3D,double>;
+   %template(rigid_align_first_to_second) rigid_align_first_to_second<Vector3Ds, Vector3Ds>;
    // rotation operations
    %template(Rotation2Ds) ::std::vector<Rotation2D>;
    %template(Rotation3Ds) ::std::vector<Rotation3D>;

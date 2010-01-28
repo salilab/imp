@@ -153,6 +153,18 @@ IMPCOREEXPORT XYZRs create_xyzr_particles(Model *m,
                                           Float radius,
                                           Float box_side=10);
 
+/** \genericgeometry */
+inline const algebra::Sphere3D get_geometry(XYZR d) {return d.get_sphere();}
+/** \genericgeometry */
+inline const algebra::Sphere3D& get_geometry(const algebra::Sphere3D &v) {
+  return v;
+}
+/** \genericgeometry */
+inline void set_geometry(XYZR d, const algebra::Sphere3D &v) {d.set_sphere(v);}
+/** \genericgeometry */
+inline void set_geometry(algebra::Sphere3D &vbase,
+                         const algebra::Sphere3D &v) {vbase=v;}
+
 IMPCORE_END_NAMESPACE
 
 #endif  /* IMPCORE_XYZ_R_H */
