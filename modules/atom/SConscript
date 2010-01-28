@@ -1,5 +1,5 @@
 Import('env')
 
 env.IMPModuleBuild(version="SVN",
-                   required_modules=['core'],
+                   required_modules=['core', 'algebra'],
                    optional_dependencies=['CGAL'])
