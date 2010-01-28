@@ -207,4 +207,9 @@ namespace IMP {
     // swig screws up on scopes, I can't be bothered to fix it
     //%template(show_named_hierarchy) show<::IMP::core::Name>;
   }
+  namespace algebra {
+    %template(rigid_align_first_to_second) rigid_align_first_to_second<core::XYZsTemp, algebra::Vector3Ds>;
+    %template(rigid_align_first_to_second) rigid_align_first_to_second<core::XYZsTemp, core::XYZsTemp>;
+    %template(rigid_align_first_to_second) rigid_align_first_to_second<algebra::Vector3Ds, core::XYZsTemp>;
+  }
 }

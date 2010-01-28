@@ -158,6 +158,20 @@ inline void transform(XYZ a, const algebra::Transformation3D &tr) {
   a.set_coordinates(tr.transform(a.get_coordinates()));
 }
 
+/** \genericgeometry */
+inline const algebra::Vector3D get_geometry(XYZ d) {return d.get_coordinates();}
+/** \genericgeometry */
+inline const algebra::Vector3D& get_geometry(const algebra::Vector3D &v) {
+  return v;
+}
+/** \genericgeometry */
+inline void set_geometry(XYZ d, const algebra::Vector3D &v) {
+  d.set_coordinates(v);
+}
+/** \genericgeometry */
+inline void set_geometry(algebra::Vector3D &vbase,
+                         const algebra::Vector3D &v) {vbase=v;}
+
 IMP_DECORATORS(XYZ, Particles);
 
 IMPCORE_END_NAMESPACE

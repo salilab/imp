@@ -13,12 +13,32 @@
 #include "Hierarchy.h"
 
 IMPATOM_BEGIN_NAMESPACE
+
 //! Calculate the root mean square deviation between two sets of 3D points.
 /**
-\note the function assumes correspondence between two sets of points and does
-not perform rigid alignment.
+   \note the function assumes correspondence between the two sets of
+   points and does not perform rigid alignment.
+
+   \genericgeometry
  */
-IMPATOMEXPORT double rmsd(const core::XYZs& m1 ,const core::XYZs& m2);
+template <class Vecto3DsOrXYZs0, class Vecto3DsOrXYZs1>
+double rmsd(const Vecto3DsOrXYZs0& m1 ,const Vecto3DsOrXYZs1& m2,
+            const IMP::algebra::Transformation3D &tr_for_second
+            = IMP::algebra::identity_transformation()) {
+  IMP_USAGE_CHECK(std::distance(m1.begin(), m1.end())
+                  ==std::distance(m2.begin(), m2.end()),
+            "The input sets of XYZ points "
+            <<"should be of the same size", ValueException);
+  float rmsd=0.0;
+  typename Vecto3DsOrXYZs0::const_iterator it0= m1.begin();
+  typename Vecto3DsOrXYZs1::const_iterator it1= m2.begin();
+  for(; it0!= m1.end(); ++it0, ++it1) {
+    algebra::Vector3D tred=tr_for_second.transform(core::get_geometry(*it1));
+    rmsd += algebra::squared_distance(core::get_geometry(*it0),
+                                      tred);
+  }
+  return std::sqrt(rmsd / m1.size());
+}
 
 
 //! Computes the native overlap between two sets of 3D points
@@ -28,28 +48,41 @@ IMPATOMEXPORT double rmsd(const core::XYZs& m1 ,const core::XYZs& m2);
   \param[in] threshold threshold distance (amstrongs) for the calculation
   \note The result is returned as a percentage (from 0 to 100)
   \note the function assumes correspondence between two sets of points and does
-not perform rigid alignment.
+  not perform rigid alignment.
+  \genericgeometry
 **/
-IMPATOMEXPORT double native_overlap(const core::XYZs& m1,
-                      const core::XYZs& m2,double threshold);
+template <class Vecto3DsOrXYZs0, class Vecto3DsOrXYZs1>
+double native_overlap(const Vecto3DsOrXYZs0& m1,
+                      const Vecto3DsOrXYZs1& m2,double threshold) {
+  IMP_USAGE_CHECK(m1.size()==m2.size(),
+            "native_verlap: The input sets of XYZ points "
+            <<"should be of the same size", ValueException);
+  unsigned int distances=0;
+  for(unsigned int i=0;i<m1.size();i++) {
+    double d = algebra::distance(core::get_geometry(m1[i]),
+                                 core::get_geometry(m2[i]));
+    if(d<=threshold) distances++;
+  }
+  return 100.0*distances/m1.size();
+}
 
 
 //! Measure the difference between two placements of the same set of points
 /**
-\param[in] from The reference placement represented by XYZ coordinates
-\param[in] to The modeled placement represented by XYZ coordinates
-\note The measure quantifies the difference between placements
-      of the same structure. A rigid transformation that brings mdl1 to
-      ref1 is reported.
-\return (d,a), A transformation from mdl to ref represented by
-  a a distance (d) and an angle (a).
-  d is the distance bewteen the centroids of the two
-  placements and a is the axis angle of the rotation matrix between
-  the two placements
-\note see Lasker,Topf et al JMB, 2009 for details
+   \param[in] from The reference placement represented by XYZ coordinates
+   \param[in] to The modeled placement represented by XYZ coordinates
+   \note The measure quantifies the difference between placements
+   of the same structure. A rigid transformation that brings mdl1 to
+   ref1 is reported.
+   \return (d,a), A transformation from mdl to ref represented by
+   a a distance (d) and an angle (a).
+   d is the distance bewteen the centroids of the two
+   placements and a is the axis angle of the rotation matrix between
+   the two placements
+   \note see Lasker,Topf et al JMB, 2009 for details
  */
-IMPATOMEXPORT std::pair<double,double> placement_score(
-  const core::XYZs& from ,const core::XYZs& to);
+std::pair<double,double> placement_score(const core::XYZs& from,
+                                         const core::XYZs& to);
 
 //! Measure the difference between two placements of the same set of points
 /**

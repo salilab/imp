@@ -73,6 +73,11 @@ inline algebra::Vector3D centroid(const Vector3Ds &ps) {
 }
 
 /** @} */
+/** \genericgeometry */
+inline const Vector3D &get_geometry(const Vector3D &v) {
+  return v;
+}
+
 IMPALGEBRA_END_NAMESPACE
 
 #endif  /* IMPALGEBRA_VECTOR_3D_H */
