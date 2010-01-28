@@ -7,7 +7,7 @@
     <tab type="namespacemembers" visible="yes" title="Methods and Variables"/>
     <tab type="classindex" visible="yes" title="Class Index"/>
     <tab type="hierarchy" visible="yes" title=""/>
-    <tab type="namespaces" visible="yes" title="Namespaces"/>
+    <tab type="namespaces" visible="yes" title="Modules"/>
     <tab type="namespaces" visible="no" title="API">
     </tab>
     <tab type="classes" visible="no" title="">
