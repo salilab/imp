@@ -21,7 +21,6 @@ IMPATOM_BEGIN_NAMESPACE
     The form of the potential is \f[
        \epsilon \left[ w_{rep} \left(\frac{r_{min}}{r}\right)^{12}
                        - 2 w_{att} \left(\frac{r_{min}}{r}\right)^{6}\right]
-       \frac{1}{4\pi\epsilon_0\epsilon_r} \frac{q_i q_j}{|r_{ij}|}
     \f] where \f$\epsilon\f$ is the depth of the well between the
     two particles, \f$r_{min}\f$ the sum of the particles' radii, \f$r\f$
     the interparticle distance, and \f$w_{rep}\f$ and \f$w_{att}\f$ the
