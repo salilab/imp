@@ -20,6 +20,20 @@ not perform rigid alignment.
  */
 IMPATOMEXPORT double rmsd(const core::XYZs& m1 ,const core::XYZs& m2);
 
+
+//! Computes the native overlap between two sets of 3D points
+/**
+  \param[in] m1 first set
+  \param[in] m2 second set
+  \param[in] threshold threshold distance (amstrongs) for the calculation
+  \note The result is returned as a percentage (from 0 to 100)
+  \note the function assumes correspondence between two sets of points and does
+not perform rigid alignment.
+**/
+IMPATOMEXPORT double native_overlap(const core::XYZs& m1,
+                      const core::XYZs& m2,double threshold);
+
+
 //! Measure the difference between two placements of the same set of points
 /**
 \param[in] from The reference placement represented by XYZ coordinates
