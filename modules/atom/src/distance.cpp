@@ -29,6 +29,21 @@ double rmsd(const core::XYZs& m1 ,const core::XYZs& m2,
 double rmsd(const core::XYZs& m1 ,const core::XYZs& m2) {
   return rmsd(m1, m2, algebra::identity_transformation());
 }
+
+double native_overlap(const core::XYZs& m1,
+                      const core::XYZs& m2,double threshold) {
+  IMP_USAGE_CHECK(m1.size()==m2.size(),
+            "native_verlap: The input sets of XYZ points "
+            <<"should be of the same size", ValueException);
+  unsigned int distances=0;
+  for(unsigned int i=0;i<m1.size();i++) {
+    double d = algebra::distance(
+                m1[i].get_coordinates(),m2[i].get_coordinates());
+    if(d<=threshold) distances++;
+  }
+  return 100.0*distances/m1.size();
+}
+
 IMPATOMEXPORT std::pair<double,double> placement_score(
   const core::XYZs& from ,const core::XYZs& to) {
   //calculate the best fit bewteen the two placements
