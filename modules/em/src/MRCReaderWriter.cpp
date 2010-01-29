@@ -7,6 +7,7 @@
  */
 
 #include <IMP/em/MRCReaderWriter.h>
+#include <IMP/log.h>
 
 IMPEM_BEGIN_NAMESPACE
 
@@ -17,6 +18,7 @@ void MRCReaderWriter::Read(const char *fn_in, float **data, DensityHeader &head)
   read(data);
   // Translate header to DensityHeader
   header.ToDensityHeader(head);
+  head.Objectpixelsize_ = (float)head.xlen/head.nx;
 }
 
 void MRCReaderWriter::Write(const char *fn_out, const float *data,
@@ -200,8 +202,8 @@ void MRCReaderWriter::write_data(std::ofstream &s,const float *pt)
   IMP_USAGE_CHECK(!s.bad(),
             "MRCReaderWriter::write_data >> Error writing MRC data.",
             IOException);
-  std::cout << "MRC file written: grid " << header.nx << "x" << header.ny
-            << "x" << header.nz << std::endl;
+  IMP_LOG(IMP::TERSE,"MRC file written: grid " << header.nx << "x" << header.ny
+          << "x" << header.nz << std::endl);
 }
 
 
@@ -273,7 +275,6 @@ void MRCHeader::FromDensityHeader(const DensityHeader &h)
   dmean=h.dmean;
   ispg=h.ispg; // Sapce group number 0 or 1 (default 0)
   nsymbt=h.nsymbt; // Number of bytes used for symmetry data (0 or 80)
-
   // extra space used for anything - 0 by default
   for(int i=0;i<IMP_MRC_USER;i++)
     user[i]=h.user[i];
@@ -298,6 +299,7 @@ void MRCHeader::ToDensityHeader(DensityHeader &h)
 {
   std::string empty;
   h.nz=nz; h.ny=ny; h.nx=nx; // map size
+  h.update_cell_dimensions();
   // mode
   if(mode==0)
     h.data_type=1;

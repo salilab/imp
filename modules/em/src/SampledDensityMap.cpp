@@ -59,6 +59,7 @@ void SampledDensityMap::set_header(const algebra::Vector3D &lower_bound,
   // is correct.
   header_.mx = header_.nx; header_.my = header_.ny; header_.mz = header_.nz;
   header_.compute_xyz_top();
+  header_.update_cell_dimensions();
 }
 
 SampledDensityMap::SampledDensityMap(const IMP::Particles &ps,
