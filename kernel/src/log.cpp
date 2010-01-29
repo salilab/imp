@@ -57,7 +57,7 @@ class LogStream:
   friend class LogSink;
   friend class IndentFilter;
  public:
-  LogStream(TextOutput out): out_(out) {
+  LogStream(): out_(TextOutput(std::cout)) {
     P::push(IndentFilter(this));
     P::push(LogSink(this));
   }
@@ -82,7 +82,7 @@ IMP_BEGIN_NAMESPACE
 namespace {
   IMP_CHECK_CODE(double initialized=11111111);
   std::ofstream fstream;
-  internal::LogStream stream(TextOutput(std::cout));
+  internal::LogStream stream;
 }
 
 
