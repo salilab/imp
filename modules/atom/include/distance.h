@@ -81,8 +81,8 @@ double native_overlap(const Vecto3DsOrXYZs0& m1,
    the two placements
    \note see Lasker,Topf et al JMB, 2009 for details
  */
-std::pair<double,double> placement_score(const core::XYZs& from,
-                                         const core::XYZs& to);
+IMPATOMEXPORT std::pair<double,double> placement_score(const core::XYZs& from,
+                                                       const core::XYZs& to);
 
 //! Measure the difference between two placements of the same set of points
 /**
