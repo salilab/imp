@@ -66,7 +66,13 @@ class LogStream:
     set_log_level(SILENT);
   }
   void set_stream(TextOutput out) {
+    // temporarily disable writes, otherwise at log level MEMORY the log is
+    // displayed using the old out_ object, which is in the process of being
+    // freed (generally this leads to a segfault)
+    LogLevel old = get_log_level();
+    set_log_level(SILENT);
     out_=out;
+    set_log_level(old);
   }
   TextOutput get_stream() const {
     return out_;
