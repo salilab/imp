@@ -38,7 +38,7 @@ public:
 
 //! Embed a configuration using the XYZ coordinates of a set of particles
 /** The point for each configuration of the model is a concatenation of
-    the cartesian coordinates of the particles contained in the passed
+    the Cartesian coordinates of the particles contained in the passed
     SingletonContainer.
 
     See ConfigurationSet for more information about the input.
@@ -83,7 +83,7 @@ void VectorDEmbedding<D>::show(std::ostream &out) const {
 #endif
 
 /** Embed particles using the values of some of their attributes.
-    By default, the cartesian coordinates are used, but another
+    By default, the Cartesian coordinates are used, but another
     set of attributes can be chosen. When using attributes that
     are not equivalent (for example, angular degrees of freedom),
     it is probably useful to rescale the attributes according
