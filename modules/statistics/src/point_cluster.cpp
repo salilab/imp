@@ -84,7 +84,7 @@ void ParticleEmbedding::show(std::ostream &out) const {
 HighDensityEmbedding::HighDensityEmbedding(em::DensityMap *dm,
                                            double threshold):
   Embedding("HighDensityEmbedding of "+dm->get_name()) {
-  for (unsigned int i=0; i< dm->get_number_of_voxels(); ++i) {
+  for (int i=0; i< dm->get_number_of_voxels(); ++i) {
     if (dm->get_value(i) > threshold) {
       algebra::Vector3D v(dm->voxel2loc(i, 0),
                           dm->voxel2loc(i, 1),
