@@ -1,6 +1,6 @@
 /**
  *  \file  SphericalVector3D.h
- *  \brief stores and converts sperhical coordinates
+ *  \brief Stores and converts spherical coordinates
  *  \author Javier Velazquez-Muriel
  *  Copyright 2007-2010 Sali Lab. All rights reserved.
 */
@@ -18,14 +18,14 @@ IMPALGEBRA_BEGIN_NAMESPACE
 //! Class to represent a 3D point in spherical coordinates
 /**
   The order assumed for the representation is radial distance, zenith,
-  and azimuth (r, tetha, psi).
+  and azimuth (r, theta, psi).
   zenith - angle with axis z
   azimuth - angle with axis x
   \ingroup uninitialized_default
 */
 class IMPALGEBRAEXPORT SphericalVector3D
 {
-  bool check(double r, double tetha, double psi);
+  bool check(double r, double theta, double psi);
  public:
   SphericalVector3D() {};
 
@@ -40,16 +40,16 @@ class IMPALGEBRAEXPORT SphericalVector3D
   /**
     Set apply_check to false if you do not want the check
   **/
-  SphericalVector3D(double r, double tetha,
+  SphericalVector3D(double r, double theta,
                     double psi,bool apply_check=true) {
     if(apply_check) {
-      if(!check(r,tetha,psi)) {
+      if(!check(r,theta,psi)) {
         String msg = "SphericalCoords:: wrong SphericalCoords coordinates." ;
         throw ValueException(msg.c_str());
       }
     }
     v_[0] = r;
-    v_[1] = tetha;
+    v_[1] = theta;
     v_[2] = psi;
   }
 
