@@ -68,7 +68,7 @@ float CoarseCCatIntervals::evaluate(DensityMap &em_map,
     if (lderiv) {
       // sync the derivatives.
       allocate_derivatives_array(number_of_particles);
-      for (unsigned int i=0;number_of_particles;i++) {
+      for (unsigned int i=0;i < number_of_particles;i++) {
         stored_dvx_[i] = dvx[i];
         stored_dvy_[i] = dvy[i];
         stored_dvz_[i] = dvz[i];
