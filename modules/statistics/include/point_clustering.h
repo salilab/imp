@@ -1,6 +1,6 @@
 /**
  *  \file point_clustering.h
- *  \brief Compute a distance metric between two points
+ *  \brief Cluster sets of points.
  *
  *  Copyright 2007-2010 Sali Lab. All rights reserved.
  *
@@ -21,15 +21,14 @@
 
 IMPSTATISTICS_BEGIN_NAMESPACE
 
-//! Return an embedding of the ith object
+//! Map clustering data to spatial positions
 /** Point-based clustering needs a way of embedding the data being clustered
     in space. Classes which implement Embedding provide a
     mapping between each item being clustered (named by an integer index)
-    and a point in space, stored as a fixed-lenth array of floating point
-    numbers.
+    and a point in space, as a fixed-lenth array of floating point numbers.
  */
 class IMPSTATISTICSEXPORT Embedding: public Object {
- public:
+public:
   Embedding(std::string name): Object(name){}
   virtual Floats get_point(unsigned int i) const =0;
   virtual unsigned int get_number_of_points() const=0;
@@ -37,7 +36,7 @@ class IMPSTATISTICSEXPORT Embedding: public Object {
 };
 
 
-//! Embed a configuring using the XYZ coordinates of a set of particles
+//! Embed a configuration using the XYZ coordinates of a set of particles
 /** The point for each configuration of the model is a concatenation of
     the cartesian coordinates of the particles contained in the passed
     SingletonContainer.
@@ -47,7 +46,7 @@ class IMPSTATISTICSEXPORT Embedding: public Object {
 class IMPSTATISTICSEXPORT ConfigurationSetXYZEmbedding {
   mutable Pointer<ConfigurationSet> cs_;
   Pointer<SingletonContainer> sc_;
- public:
+public:
   ConfigurationSetXYZEmbedding(ConfigurationSet *cs,
                                SingletonContainer *sc);
   IMP_EMBEDDING(ConfigurationSetXYZEmbedding, get_module_version_info());
@@ -59,7 +58,7 @@ class IMPSTATISTICSEXPORT ConfigurationSetXYZEmbedding {
 template <unsigned int D>
 class VectorDEmbedding: public Embedding {
   std::vector<algebra::VectorD<D> > vectors_;
- public:
+public:
   VectorDEmbedding(const std::vector<algebra::VectorD<D> > &vs):
     Embedding("VectorDs"), vectors_(vs){}
   IMP_EMBEDDING(VectorDEmbedding, get_module_version_info());
@@ -96,7 +95,7 @@ class IMPSTATISTICSEXPORT ParticleEmbedding: public Embedding {
   FloatKeys ks_;
   bool rescale_;
   std::vector<FloatRange> ranges_;
- public:
+public:
   ParticleEmbedding(const ParticlesTemp &ps,
                     const FloatKeys& ks=core::XYZ::get_xyz_keys(),
                     bool rescale=false);
@@ -107,10 +106,10 @@ class IMPSTATISTICSEXPORT ParticleEmbedding: public Embedding {
 
 /** Generate a set of points from the voxels in a em::DensityMap
     which are above a certain threshold.
-*/
+ */
 class IMPSTATISTICSEXPORT HighDensityEmbedding: public Embedding {
   algebra::Vector3Ds points_;
- public:
+public:
   HighDensityEmbedding(em::DensityMap *dm,
                        double threshold);
   IMP_EMBEDDING(HighDensityEmbedding, get_module_version_info());
@@ -123,18 +122,17 @@ class IMPSTATISTICSEXPORT HighDensityEmbedding: public Embedding {
     The cluster center is a point in the space defined by the
     embedding.
 
-    The representative for each cluster is the members whose
+    The representative for each cluster is the member whose
     location in the embedding is closest to the cluster center.
 */
-class IMPSTATISTICSEXPORT KMeansClustering:
-  public PartitionalClustering {
+class IMPSTATISTICSEXPORT KMeansClustering: public PartitionalClustering {
   std::vector<Ints> clusters_;
   Ints reps_;
   std::vector<Floats> centers_;
 public:
   KMeansClustering(const std::vector<Ints> &clusters,
                    const std::vector<Floats> &centers,
-                   const Ints &reps): PartitionalClustering("K-means"),
+                   const Ints &reps): PartitionalClustering("k-means"),
                                       clusters_(clusters),
                                       reps_(reps),
                                       centers_(centers){}
@@ -145,7 +143,7 @@ public:
 };
 
 
-/** Return a kmeans clustering of all points contained in the
+/** Return a k-means clustering of all points contained in the
     embedding (ie [0... embedding->get_number_of_embeddings())).
     These points are then clustered into k clusters. More iterations
     takes longer but produces a better clustering.
@@ -155,4 +153,5 @@ get_lloyds_kmeans(Embedding *embedding,
                   unsigned int k, unsigned int iterations);
 
 IMPSTATISTICS_END_NAMESPACE
+
 #endif /* IMPSTATISTICS_POINT_CLUSTERING_H */
