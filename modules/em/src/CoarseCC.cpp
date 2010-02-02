@@ -210,8 +210,7 @@ void CoarseCC::calc_derivatives(const DensityMap &em_map,
           float dz = z_loc[ivox] - model_xyzr[ii].get_z();
           rsq = dx * dx + dy * dy + dz * dz;
           rsq = EXP(- rsq * params->get_inv_sigsq());
-          tmp = (
--x_loc[ivox]) * rsq;
+          tmp = (model_xyzr[ii].get_x()-x_loc[ivox]) * rsq;
           if (std::abs(tmp) > lim) {
             tdvx += tmp * em_data[ivox];
           }
