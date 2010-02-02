@@ -1,6 +1,6 @@
 /**
  *  \file point_clustering.cpp
- *  \brief Holds data points to cluster using k-means
+ *  \brief Cluster sets of points.
  *
  *  Copyright 2007-2010 Sali Lab. All rights reserved.
  *
@@ -12,6 +12,7 @@
 #include <IMP/statistics/KMLocalSearchLloyd.h>
 
 IMPSTATISTICS_BEGIN_NAMESPACE
+
 Embedding::~Embedding(){}
 
 ConfigurationSetXYZEmbedding

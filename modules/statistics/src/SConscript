@@ -13,7 +13,7 @@ files = [
          'KMLocalSearchLloyd.cpp',
          'KMRectangle.cpp',
          'PartitionalClustering.cpp',
-         'point_cluster.cpp',
+         'point_clustering.cpp',
         ]
 
 # Build and install the shared library:
