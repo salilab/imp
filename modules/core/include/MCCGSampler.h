@@ -24,7 +24,7 @@ class ListSingletonContainer;
 /** This sampler randomizes the conformation and then uses Monte Carlo
     and Conjugate Gradient steps to search for good solutions.
 
-    At the moment it only support optimization of cartesian coordinates,
+    At the moment it only support optimization of Cartesian coordinates,
     but this will be fixed.
 */
 class IMPCOREEXPORT MCCGSampler : public Sampler
@@ -49,7 +49,7 @@ class IMPCOREEXPORT MCCGSampler : public Sampler
 public:
   MCCGSampler(Model *m);
 
-  //! Set the bounding box for randomizing the cartesian coordinates
+  //! Set the bounding box for randomizing the Cartesian coordinates
   void set_bounding_box(const algebra::BoundingBox3D &bb);
 
   //! Set the maximum number of attempts

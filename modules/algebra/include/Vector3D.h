@@ -27,7 +27,7 @@ IMPALGEBRA_EXPORT_TEMPLATE(VectorD<3>);
 */
 
 //! A location in 3D space
-/** Stores a 3-vector using cartesian coordinates.
+/** Stores a 3-vector using Cartesian coordinates.
 */
 IMP_NO_SWIG(typedef VectorD<3> Vector3D;)
 
