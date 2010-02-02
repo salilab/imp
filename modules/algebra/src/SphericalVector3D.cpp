@@ -19,9 +19,9 @@ void SphericalVector3D::set_cartesian_coordinates(Vector3D& v) {
   v_[2] = atan2(v[1],v[0]);
 }
 
-bool SphericalVector3D::check(double r, double tetha, double psi) {
+bool SphericalVector3D::check(double r, double theta, double psi) {
   if(r<0) {return false;}
-  if(tetha< -PI || tetha>PI) {return false;}
+  if(theta< -PI || theta>PI) {return false;}
   if(psi< -2*PI || psi>2*PI) {return false;}
   return true;
 }
