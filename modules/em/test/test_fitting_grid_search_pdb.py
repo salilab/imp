@@ -49,7 +49,7 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
             IMP.Particles(self.particles.get_particles()),self.imp_model,
             self.radius_key, self.weight_key,
             self.scene,
-            fr,7,7,2)
+            fr,7,7,4)
 
         #test that if you apply the transformation on the original configuration you get the same result
         # (in rmsd and score)
