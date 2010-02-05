@@ -57,7 +57,8 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         #second, test that the optimization gets you close.
         score = self.imp_model.evaluate(False)
         print fr.get_number_of_solutions()
-        self.assert_(fr.get_number_of_solutions() >= 0, "not enough solutions returned")
+        self.assert_(fr.get_number_of_solutions() >= 2,
+                     "not enough solutions returned")
         self.assert_(fr.get_score(0) < fr.get_score(1), "solutions are not sorted")
         for i in xrange(fr.get_number_of_solutions()):
             self.assert_(fr.get_score(i) < 1.0, "wrong CC values")
