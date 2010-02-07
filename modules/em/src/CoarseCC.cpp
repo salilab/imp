@@ -191,6 +191,9 @@ void CoarseCC::calc_derivatives(const DensityMap &em_map,
             " the map centroid is " << em_map.get_centroid() <<std::endl,
             InvalidStateException);
   // Compute the derivatives
+  FloatKey x_key=IMP::core::XYZ::get_coordinate_key(0);
+  FloatKey y_key=IMP::core::XYZ::get_coordinate_key(1);
+  FloatKey z_key=IMP::core::XYZ::get_coordinate_key(2);
   for (unsigned int ii=0; ii<ps.size(); ii++) {
     const KernelParameters::Parameters *params =
       model_map.get_kernel_params()->find_params(
