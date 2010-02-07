@@ -170,10 +170,11 @@ void CoarseCC::calc_derivatives(const DensityMap &em_map,
   const float *x_loc = model_map.get_x_loc();
   const float *y_loc = model_map.get_y_loc();
   const float *z_loc = model_map.get_z_loc();
-  core::XYZRs model_xyzr=model_map.get_xyzr_particles();
   Particles ps=model_map.get_sampled_particles();
+  core::XYZRs model_xyzr = model_map.get_xyzr_particles();
   //this would go away once we have XYZRW decorator
   FloatKey w_key=model_map.get_weight_key();
+  FloatKey r_key=model_map.get_radius_key();
   const emreal *em_data = em_map.get_data();
   float lim = (model_map.get_kernel_params())->get_lim();
   //lim = 0.00000001;
@@ -186,16 +187,17 @@ void CoarseCC::calc_derivatives(const DensityMap &em_map,
             InvalidStateException);
   IMP_USAGE_CHECK(model_header->rms >= EPS,
             "Model map is empty ! model_header->rms = " << model_header->rms
-            <<" the model centroid is : " << core::centroid(model_xyzr)<<
+            <<" the model centroid is : " << core::centroid(core::XYZs(ps))<<
             " the map centroid is " << em_map.get_centroid() <<std::endl,
             InvalidStateException);
   // Compute the derivatives
-  for (unsigned int ii=0; ii<model_xyzr.size(); ii++) {
+  for (unsigned int ii=0; ii<ps.size(); ii++) {
     const KernelParameters::Parameters *params =
-        model_map.get_kernel_params()->find_params(model_xyzr[ii].get_radius());
-    model_map.calc_sampling_bounding_box(model_xyzr[ii].get_x(),
-                                         model_xyzr[ii].get_y(),
-                                         model_xyzr[ii].get_z(),
+      model_map.get_kernel_params()->find_params(
+          ps[ii]->get_value(model_map.get_radius_key()));
+    model_map.calc_sampling_bounding_box(ps[ii]->get_value(x_key),
+                                         ps[ii]->get_value(y_key),
+                                         ps[ii]->get_value(z_key),
                                          params->get_kdist(),
                                          iminx, iminy, iminz,
                                          imaxx, imaxy, imaxz);
@@ -205,20 +207,20 @@ void CoarseCC::calc_derivatives(const DensityMap &em_map,
         ivox = ivoxz * em_header->nx * em_header->ny
                + ivoxy * em_header->nx + iminx;
         for (int ivoxx=iminx;ivoxx<=imaxx;ivoxx++) {
-          float dx = x_loc[ivox] - model_xyzr[ii].get_x();
-          float dy = y_loc[ivox] - model_xyzr[ii].get_y();
-          float dz = z_loc[ivox] - model_xyzr[ii].get_z();
+          float dx = x_loc[ivox] - ps[ii]->get_value(x_key);
+          float dy = y_loc[ivox] - ps[ii]->get_value(y_key);
+          float dz = z_loc[ivox] - ps[ii]->get_value(z_key);
           rsq = dx * dx + dy * dy + dz * dz;
           rsq = EXP(- rsq * params->get_inv_sigsq());
-          tmp = (model_xyzr[ii].get_x()-x_loc[ivox]) * rsq;
+          tmp = (ps[ii]->get_value(x_key)-x_loc[ivox]) * rsq;
           if (std::abs(tmp) > lim) {
             tdvx += tmp * em_data[ivox];
           }
-          tmp = (model_xyzr[ii].get_y()-y_loc[ivox]) * rsq;
+          tmp = (ps[ii]->get_value(y_key)-y_loc[ivox]) * rsq;
           if (std::abs(tmp) > lim) {
             tdvy += tmp * em_data[ivox];
           }
-          tmp = (model_xyzr[ii].get_z()-z_loc[ivox]) * rsq;
+          tmp = (ps[ii]->get_value(z_key)-z_loc[ivox]) * rsq;
           if (std::abs(tmp) > lim) {
             tdvz += tmp * em_data[ivox];
           }
