@@ -19,7 +19,8 @@ FitRestraint::FitRestraint(Particles ps,
                            float scale)
 {
   target_dens_map_ = em_map;
-  for (unsigned int i=0; i< ps.size(); ++i) {
+  IMP_IF_CHECK(USAGE) {
+    for (unsigned int i=0; i< ps.size(); ++i) {
       IMP_USAGE_CHECK(ps[i]->has_attribute(radius_key),
                 "Particle " << ps[i]->get_name()
                 << " is missing the radius "<< radius_key
@@ -28,6 +29,7 @@ FitRestraint::FitRestraint(Particles ps,
                 "Particle " << ps[i]->get_name()
                 << " is missing the mass "<< weight_key
                 << std::endl, ValueException);
+    }
   }
   if (scale==-1) {
     double total_mass=0;
