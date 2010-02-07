@@ -12,6 +12,9 @@ IMPEM_BEGIN_NAMESPACE
 
 SampledDensityMap::SampledDensityMap(const DensityHeader &header)
 {
+  x_key_=IMP::core::XYZ::get_coordinate_key(0);
+  y_key_=IMP::core::XYZ::get_coordinate_key(1);
+  z_key_=IMP::core::XYZ::get_coordinate_key(2);
   header_ = header;
   header_.compute_xyz_top();
   kernel_params_ = KernelParameters(header_.get_resolution());
@@ -66,11 +69,15 @@ SampledDensityMap::SampledDensityMap(const IMP::Particles &ps,
                    emreal resolution, emreal voxel_size,
                    IMP::FloatKey radius_key,IMP::FloatKey mass_key,
                    int sig_cutoff) {
+  x_key_=IMP::core::XYZ::get_coordinate_key(0);
+  y_key_=IMP::core::XYZ::get_coordinate_key(1);
+  z_key_=IMP::core::XYZ::get_coordinate_key(2);
   ps_=ps;
   for(Particles::iterator it=ps_.begin();it != ps_.end();it++) {
     xyzr_.push_back(IMP::core::XYZR(*it,radius_key));
   }
   weight_key_=mass_key;
+  radius_key_=radius_key;
   IMP::algebra::Vector3Ds all_points;
   float max_radius = -1;
   for(core::XYZRs::const_iterator it = xyzr_.begin(); it != xyzr_.end(); it++ ){
@@ -129,18 +136,19 @@ void SampledDensityMap::resample()
   for (unsigned int ii=0; ii<ps_.size(); ii++) {
     // If the kernel parameters for the particles have not been
     // precomputed, do it
-    params = kernel_params_.find_params(xyzr_[ii].get_radius());
+    params = kernel_params_.find_params(ps_[ii]->get_value(radius_key_));
     if (!params) {
       IMP_LOG(TERSE, "EM map is using default params" << std::endl);
       kernel_params_.set_params(xyzr_[ii].get_radius());
-      params = kernel_params_.find_params(xyzr_[ii].get_radius());
+      params = kernel_params_.find_params(ps_[ii]->get_value(radius_key_));
     }
     IMP_USAGE_CHECK(params, "Parameters shouldn't be NULL",
               InvalidStateException);
     // compute the box affected by each particle
-    calc_sampling_bounding_box(xyzr_[ii].get_x(), xyzr_[ii].get_y(),
-                               xyzr_[ii].get_z(), params->get_kdist(),
-                               iminx, iminy, iminz, imaxx, imaxy, imaxz);
+    calc_sampling_bounding_box(
+         ps_[ii]->get_value(x_key_), ps_[ii]->get_value(y_key_),
+         ps_[ii]->get_value(z_key_), params->get_kdist(),
+         iminx, iminy, iminz, imaxx, imaxy, imaxz);
     for (ivoxz=iminz;ivoxz<=imaxz;ivoxz++) {
       znxny=ivoxz * nxny;
       for (ivoxy=iminy;ivoxy<=imaxy;ivoxy++)  {
@@ -148,9 +156,9 @@ void SampledDensityMap::resample()
         // operations.
         ivox = znxny + ivoxy * header_.nx + iminx;
         for (ivoxx=iminx;ivoxx<=imaxx;ivoxx++) {
-          tmpx=x_loc_[ivox] - xyzr_[ii].get_x();
-          tmpy=y_loc_[ivox] - xyzr_[ii].get_y();
-          tmpz=z_loc_[ivox] - xyzr_[ii].get_z();
+          tmpx=x_loc_[ivox] - ps_[ii]->get_value(x_key_);
+          tmpy=y_loc_[ivox] - ps_[ii]->get_value(y_key_);
+          tmpz=z_loc_[ivox] - ps_[ii]->get_value(z_key_);
           rsq = tmpx*tmpx+tmpy*tmpy+tmpz*tmpz;
           tmp = EXP(-rsq * params->get_inv_sigsq());
           //tmp = exp(-rsq * params->get_inv_sigsq());
