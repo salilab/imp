@@ -129,7 +129,6 @@ void SampledDensityMap::resample()
   emreal tmpx,tmpy,tmpz;
   // variables to avoid some multiplications
   int nxny=header_.nx*header_.ny; int znxny;
-
   emreal rsq,tmp;
   const  KernelParameters::Parameters *params;
   IMP_LOG(VERBOSE,"sampling "<<ps_.size()<<" particles "<< std::endl);
@@ -197,6 +196,7 @@ void SampledDensityMap::set_particles(IMP::Particles &ps,
   ps_=ps;
   xyzr_=IMP::core::XYZRs(ps_);
   weight_key_=mass_key;
+  radius_key_=radius_key;
 }
 
 IMPEM_END_NAMESPACE
