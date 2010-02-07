@@ -77,6 +77,7 @@ public:
  // would go away on§ce we have a XYZRW decorator and the next function as well
   inline const Particles & get_sampled_particles() const {return ps_;}
   inline FloatKey  get_weight_key() const {return weight_key_;}
+  inline FloatKey  get_radius_key() const {return radius_key_;}
 
 
   IMP_REF_COUNTED_DESTRUCTOR(SampledDensityMap)
@@ -122,6 +123,8 @@ protected:
   core::XYZRs xyzr_; //each voxel decorator would contain X,Y,Z,R
   // std::vector<atom::Mass> weight_;
   FloatKey weight_key_;
+  FloatKey radius_key_;
+  FloatKey x_key_,y_key_,z_key_;
 };
 
 IMPEM_END_NAMESPACE
