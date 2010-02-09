@@ -10,7 +10,6 @@ class VolumeTest(IMP.test.TestCase):
         return IMP.algebra.Vector3D(m.get_origin()[0]+ m.get_spacing()*i,
                                     m.get_origin()[1]+ m.get_spacing()*j,
                                     m.get_origin()[2]+ m.get_spacing()*k)
-
     def test_image(self):
         """Check get_density"""
         m= IMP.em.read_map(self.get_input_file_name('1z5s.mrc'))
@@ -20,10 +19,11 @@ class VolumeTest(IMP.test.TestCase):
             for j in random.sample(range(0, m.get_header().ny), 30):
                 for k in random.sample(range(0, m.get_header().nz), 30):
                     v= self.get_center(m, i,j,k)
-                    print i,j,k, v
                     #print v
                     val= IMP.em.get_density(m, v)
                     mval= m.get_value(m.xyz_ind2voxel(i,j,k))
+                    if i%4==0 and j%4==0 and k%4==0:
+                        print i,j,k, v, val, mval
                     self.assertInTolerance(val, mval, (val+mval)*.1+.1)
                     self.assertEqual(IMP.em.get_density(m, self.get_center(m, i,j,k) +IMP.algebra.Vector3D(wid[0],0,0)), 0)
                     self.assertEqual(IMP.em.get_density(m, self.get_center(m, i,j,k) +IMP.algebra.Vector3D(0,wid[1],0)), 0)

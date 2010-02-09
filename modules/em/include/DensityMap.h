@@ -381,6 +381,20 @@ IMP_OBJECTS(DensityMap);
 */
 IMPEMEXPORT double get_density(DensityMap *m, const algebra::Vector3D &v);
 
+/** Return a new density map containing a rotated version of the old
+    one. Only voxels whose value is above threshold are considered when
+    computing the bounding box of the new map (set IMP::em::get_bounding_box()).
+    \relatesalso DensityMap
+*/
+IMPEMEXPORT DensityMap* get_transformed(DensityMap *in,
+                                        const algebra::Transformation3D &tr,
+                                        double threshold);
+
+
+/** Get a resampled version of the map. The spacing is multiplied by scaling.
+    That means, scaling values greater than 1 increase the voxel size.*/
+IMPEMEXPORT DensityMap* get_resampled(DensityMap *in, double scaling);
+
 IMPEM_END_NAMESPACE
 
 #endif  /* IMPEM_DENSITY_MAP_H */
