@@ -97,7 +97,8 @@ protected:
   int lower_voxel_shift(const emreal &loc, const emreal &kdist,
                         const emreal &orig, int ndim) const {
     int imin;
-    imin = (int)floor(((loc-kdist-orig) / header_.get_spacing()));
+    imin = static_cast<int>(std::floor((loc-kdist-orig)
+                                        / header_.get_spacing()));
     //bookkeeping
     if (imin < 0)
       imin = 0;
@@ -110,7 +111,8 @@ protected:
   int upper_voxel_shift(const emreal &loc, const emreal &kdist,
                         const emreal &orig, int ndim) const {
     int imax;
-    imax = (int)floor(((loc+kdist-orig) / header_.get_spacing()));
+    imax = static_cast<int>(std::floor((loc+kdist-orig)
+                                        / header_.get_spacing()));
     //bookkeeping
     if (imax < 0) imax = 0;
     if (imax > ndim-1) imax = ndim-1;
