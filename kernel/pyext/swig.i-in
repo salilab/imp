@@ -42,7 +42,7 @@ namespace IMP {
 
 %extend IMP::KeyBase {
    bool __eq__(KeyBase<ID, LazyAdd> o) {
-      return self->get_index() == o.get_index();
+      return *self == o;
    }
    std::string __str__() const {
       return self->get_string();
