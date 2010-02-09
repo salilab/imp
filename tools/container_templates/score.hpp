@@ -86,7 +86,10 @@ public:
 };
 
 IMP_OBJECTS(GroupnameScore);
-
+/** \objects{GroupnameScore}
+*/
+/** \objectstemp{GroupnameScore}
+*/
 IMP_END_NAMESPACE
 
 #endif  /* IMP_GROUPNAME_SCORE_H */
