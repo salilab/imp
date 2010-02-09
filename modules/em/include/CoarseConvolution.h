@@ -25,7 +25,7 @@ class IMPEMEXPORT CoarseConvolution
 {
 
 public:
-
+#if 0
   //! Evaluates the convolution between two density grids
   /**
       f*g(n)=f(m)g(n-m); m runs between -inf to inf
@@ -55,7 +55,7 @@ public:
                               std::vector<float> &dvx, std::vector<float>&dvy,
                               std::vector<float>&dvz);
 */
-
+#endif
 
   /** Cross correlation coefficient between the em density and the density of a
       model. moddens threshold can be specified that is checked in moddens to
@@ -71,7 +71,7 @@ public:
                  faster, but potentially innacurate
       \return the convolution value between two density maps
    */
-  static float convolution(const DensityMap &f,DensityMap &g,
+  static float convolution(const DensityMap &em_map,DensityMap &model_map,
                            float voxel_data_threshold,
                            bool recalc_ccnormfac = true);
 };
