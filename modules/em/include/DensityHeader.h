@@ -190,6 +190,10 @@ public:
                        "The resolution was not set"<<std::endl);
    return resolution_;
   }
+  //! Return if the resolution has been set
+  inline bool get_has_resolution() const {
+    return is_resolution_set_;
+  }
   //! Sets the resolution of the map
   inline void set_resolution(float resolution) {
     is_resolution_set_=true;
