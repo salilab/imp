@@ -20,9 +20,6 @@ DensityMap::DensityMap()
   loc_calculated_ = false;
   normalized_ = false;
   rms_calculated_ = false;
-  x_loc_ = NULL;
-  y_loc_ = NULL;
-  z_loc_ = NULL;
   data_ = NULL;
 }
 
@@ -34,19 +31,19 @@ DensityMap::DensityMap(const DensityMap &other)
   header_ = other.header_;
   long size = get_number_of_voxels();
   data_ = new emreal[size];
-  x_loc_ = new float[size];
-  y_loc_ = new float[size];
-  z_loc_ = new float[size];
-  for (long i = 0; i < size; i++) {
-    data_[i] = other.data_[i];
-  }
+  std::copy(other.data_, other.data_+size, data_);
   loc_calculated_ = other.loc_calculated_;
   if (loc_calculated_) {
-    for (long i = 0; i < header_.nx * header_.ny * header_.nz; i++) {
-      x_loc_[i] = other.x_loc_[i];
-      y_loc_[i] = other.y_loc_[i];
-      z_loc_[i] = other.z_loc_[i];
-    }
+    x_loc_.reset(new float[size]);
+    y_loc_.reset(new float[size]);
+    z_loc_.reset(new float[size]);
+    std::copy(other.x_loc_.get(), other.x_loc_.get()+size, x_loc_.get());
+    std::copy(other.y_loc_.get(), other.y_loc_.get()+size, y_loc_.get());
+    std::copy(other.z_loc_.get(), other.z_loc_.get()+size, z_loc_.get());
+  } else {
+    x_loc_.reset();
+    y_loc_.reset();
+    z_loc_.reset();
   }
 
   data_allocated_ = other.data_allocated_;
@@ -68,9 +65,6 @@ DensityMap& DensityMap::operator=(const DensityMap& other)
 DensityMap::~DensityMap()
 {
   delete[] data_;
-  delete[] x_loc_;
-  delete[] y_loc_;
-  delete[] z_loc_;
 }
 
 void DensityMap::CreateVoidMap(const int &nx, const int &ny, const int &nz)
@@ -208,9 +202,12 @@ long DensityMap::loc2voxel(float x,float y,float z) const
 {
   IMP_USAGE_CHECK(is_part_of_volume(x,y,z),
             "The point is not part of the grid", IndexException);
-  int ivoxx=(int)floor((x-header_.get_xorigin())/header_.get_spacing());
-  int ivoxy=(int)floor((y-header_.get_yorigin())/header_.get_spacing());
-  int ivoxz=(int)floor((z-header_.get_zorigin())/header_.get_spacing());
+  int ivoxx=static_cast<int>(std::floor((x-header_.get_xorigin())
+                                        /header_.get_spacing()));
+  int ivoxy=static_cast<int>(std::floor((y-header_.get_yorigin())
+                                        /header_.get_spacing()));
+  int ivoxz=static_cast<int>(std::floor((z-header_.get_zorigin())
+                                        /header_.get_spacing()));
   return xyz_ind2voxel(ivoxx,ivoxy,ivoxz);
 }
 
@@ -267,10 +264,9 @@ void DensityMap::set_value(float x, float y, float z,emreal value) {
 
 void DensityMap::reset_voxel2loc() {
   loc_calculated_=false;
-  delete [] x_loc_;
-  delete [] y_loc_;
-  delete [] z_loc_;
-  x_loc_=NULL;y_loc_=NULL;z_loc_=NULL;
+  x_loc_.reset();
+  y_loc_.reset();
+  z_loc_.reset();
 }
 void DensityMap::calc_all_voxel2loc()
 {
@@ -278,15 +274,16 @@ void DensityMap::calc_all_voxel2loc()
     return;
 
   long nvox = get_number_of_voxels();
-  x_loc_ = new float[nvox];
-  y_loc_ = new float[nvox];
-  z_loc_ = new float[nvox];
+  x_loc_.reset(new float[nvox]);
+  y_loc_.reset(new float[nvox]);
+  z_loc_.reset(new float[nvox]);
 
   int ix=0,iy=0,iz=0;
+  float hspace= header_.get_spacing() /2.0;
   for (long ii=0;ii<nvox;ii++) {
-    x_loc_[ii] =  ix * header_.get_spacing() + header_.get_xorigin();
-    y_loc_[ii] =  iy * header_.get_spacing() + header_.get_yorigin();
-    z_loc_[ii] =  iz * header_.get_spacing() + header_.get_zorigin();
+    x_loc_[ii] =  ix * header_.get_spacing() + header_.get_xorigin()+hspace;
+    y_loc_[ii] =  iy * header_.get_spacing() + header_.get_yorigin()+hspace;
+    z_loc_[ii] =  iz * header_.get_spacing() + header_.get_zorigin()+hspace;
 
     // bookkeeping
     ix++;
@@ -584,5 +581,102 @@ DensityMap* rotate_grid(const DensityMap *orig_dens,
   // trans_grid->set_origin(trans.transform(orig_dens->get_origin()));
 }
 */
+
+/* Surround the density map with an extra set of samples assumed to
+   be 0.
+*/
+namespace {
+  inline double get_value(const DensityMap *m, int xi,
+                          int yi, int zi) {
+    //std::cout << "getting " << xi << ' ' << yi << ' ' << zi << std::endl;
+    if (xi < 0 || yi < 0 || zi < 0) return 0.0;
+    else if (xi >= m->get_header()->nx
+             || yi >= m->get_header()->ny
+             || zi >= m->get_header()->nz) return 0.0;
+    else {
+      unsigned int loc= m->xyz_ind2voxel(xi, yi, zi);
+      //std::cout << "got " << m->get_value(loc) << std::endl;
+      return m->get_value(loc);
+    }
+  }
+
+  inline void compute_voxel(const DensityMap *m, const algebra::Vector3D &v,
+                            unsigned int *ivox, algebra::Vector3D &remainder) {
+    const double iside= 1.0/m->get_spacing();
+    //std::cout << "getting " << v << std::endl;
+    for (unsigned int i=0; i< 3; ++i) {
+      double fvox= (v[i]- m->get_origin()[i])*iside;
+      ivox[i]= static_cast<int>(std::floor(fvox));
+    //std::cout << "setting ivox " << i << " to "
+      // << ivox[i] << " for " << fvox << std::endl;
+      remainder[i]= fvox-ivox[i];
+      IMP_INTERNAL_CHECK(remainder[i] < 1.01 && remainder[i] >= -.01,
+                         "Algebraic error");
+    }
+  }
+  inline unsigned int get_n(const DensityMap *m, unsigned int dim) {
+    switch (dim) {
+    case 0:
+      return m->get_header()->nx;
+    case 1:
+      return m->get_header()->ny;
+    default:
+      return m->get_header()->nz;
+    }
+  }
+}
+
+double get_density(DensityMap *m, const algebra::Vector3D &v) {
+  // trilirp in z, y, x
+  const double side= m->get_spacing();
+  const double halfside= side/2.0;
+  for (unsigned int i=0; i< 3; ++i){
+    if (v[i] < m->get_origin()[i]-halfside
+        || v[i] >= m->get_top()[i]+halfside) {
+      //std::cout << v << " was rejected." << std::endl;
+      return 0;
+    }
+  }
+
+  unsigned int ivox[3];
+  algebra::Vector3D r;
+  compute_voxel(m, v, ivox, r);
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    static unsigned int cv= 398034953;
+    algebra::Vector3D v;
+    unsigned int testvox[3];
+    for (unsigned int i=0; i< 3; ++i) {
+      testvox[i]=cv%(get_n(m, i));
+      v[i]= m->get_origin()[i]+ side*testvox[i];
+      //std::cout << cv << " " << testvox[i] << " " << v[i]<<  std::endl;
+     cv= cv+38947428573;
+    }
+    unsigned int ivox[3];
+    algebra::Vector3D r;
+    compute_voxel(m, v, ivox, r);
+    for (unsigned int i=0; i< 3; ++i) {
+      IMP_INTERNAL_CHECK(testvox[i]== ivox[i],
+                         "Test and computed voxels don't match"
+                         << " expected "<< testvox[i] << " got " << ivox[i]
+                         << " for " << i << std::endl);
+    }
+  }
+  double is[4];
+  for (unsigned int i=0; i< 4; ++i) {
+    // operator >> has high precidence compared. Go fig.
+    unsigned int bx= ((i&2) >> 1);
+    unsigned int by= (i&1);
+    assert((bx==0 || bx==1) && (by==0 || by==1));
+    is[i]= get_value(m, ivox[0]+bx, ivox[1]+by, ivox[2])*(1-r[2])
+      + get_value(m, ivox[0]+bx, ivox[1]+by, ivox[2]+1U)*(r[2]);
+  }
+
+  double js[2];
+  for (unsigned int i=0; i< 2; ++i) {
+    js[i]= is[i*2] * (1- r[1]) + is[i*2+1] * (r[1]);
+  }
+
+  return js[0]*(1-r[0]) + js[1]*(r[0]);
+}
 
 IMPEM_END_NAMESPACE
