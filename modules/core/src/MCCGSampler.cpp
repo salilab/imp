@@ -129,7 +129,7 @@ ConfigurationSet *MCCGSampler::sample() const {
   IMP_OBJECT_LOG;
   set_was_owned(true);
   get_model()->set_is_incremental(true);
-  ConfigurationSet *ret= new ConfigurationSet(get_model());
+  Pointer<ConfigurationSet> ret= new ConfigurationSet(get_model());
   Parameters pms= fill_in_parameters();
   IMP_NEW(MonteCarlo, mc, (get_model()));
   IMP_NEW(ConjugateGradients, cg, (get_model()));
@@ -191,7 +191,7 @@ ConfigurationSet *MCCGSampler::sample() const {
             << " times due to invalid attribute values or derivatives."
             << std::endl);
   }
-  return ret;
+  return ret.release();
 }
 
 void MCCGSampler::show(std::ostream &out) const {
