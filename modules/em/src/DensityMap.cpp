@@ -10,6 +10,7 @@
 #include <IMP/em/MRCReaderWriter.h>
 #include <IMP/em/XplorReaderWriter.h>
 #include <IMP/em/EMReaderWriter.h>
+#include <IMP/Pointer.h>
 #include <boost/algorithm/string/predicate.hpp>
 #include <climits>
 
@@ -121,11 +122,11 @@ DensityMap* read_map(const char *filename, MapReaderWriter &reader)
   // TODO: we need to decide who does the allocation ( mapreaderwriter or
   // density)? if we keep the current implementation ( mapreaderwriter )
   // we need to pass a pointer to data_
-  DensityMap *m= new DensityMap();
+  Pointer<DensityMap> m= new DensityMap();
   float *f_data;
   reader.Read(filename, &f_data, m->header_);
-  m->float2real(f_data, &m->data_);
-  delete[] f_data;
+  boost::scoped_array<float> f_datap(f_data);
+  m->float2real(f_datap.get(), &m->data_);
   m->normalized_ = false;
   m->calcRMS();
   m->calc_all_voxel2loc();
@@ -135,25 +136,29 @@ DensityMap* read_map(const char *filename, MapReaderWriter &reader)
               "Please make sure that this is indeed the pixel size of the map"
              << std::endl);
   }
-  return m;
+  m->set_name(filename);
+  IMP_LOG(TERSE, "Read range is "
+          << *std::max_element(m->data_,
+                               m->data_+m->get_number_of_voxels())
+          << "..." << *std::min_element(m->data_,
+                                        m->data_+m->get_number_of_voxels())
+          << std::endl);
+  return m.release();
 }
 
 void DensityMap::float2real(float *f_data, emreal **r_data)
 {
   long size = get_number_of_voxels();
   (*r_data)= new emreal[size];
-  for (long i=0;i<size;i++){
-    (*r_data)[i]=(emreal)(f_data)[i];
-  }
+  // let the compiler optimize it
+  std::copy(f_data, f_data+size, *r_data);
 }
 
 void DensityMap::real2float(emreal *r_data, float **f_data)
 {
   long size = get_number_of_voxels();
   (*f_data)= new float[size];
-  for (long i=0;i<size;i++){
-    (*f_data)[i]=(float)(r_data)[i];
-  }
+  std::copy(r_data, r_data+size, *f_data);
 }
 
 #ifndef IMP_DEPRECATED
@@ -538,28 +543,6 @@ void DensityMap::update_voxel_size(float new_apix) {
   calc_all_voxel2loc();
 }
 
-algebra::BoundingBox3D get_bounding_box(DensityMap* d,Float threshold) {
-  Float xmin,xmax,ymin,ymax,zmin,zmax;
-  xmin=INT_MAX;  ymin=INT_MAX;  zmin=INT_MAX;
-  xmax=-INT_MAX;  ymax=-INT_MAX;  zmax=-INT_MAX;
-  Float x,y,z;
-  for(long l=0;l<d->get_number_of_voxels();l++) {
-    if (d->get_value(l) > threshold) {
-      x=d->voxel2loc(l,0);
-      y=d->voxel2loc(l,1);
-      z=d->voxel2loc(l,2);
-      if(x<xmin) xmin=x;
-      if(y<ymin) ymin=y;
-      if(z<zmin) zmin=z;
-      if(x>xmax) xmax=x;
-      if(y>ymax) ymax=y;
-      if(z>zmax) zmax=z;
-     }
-  }
-  return algebra::BoundingBox3D(
-   algebra::Vector3D(xmin,ymin,zmin),
-   algebra::Vector3D(xmax,ymax,zmax));
-}
 
 Float approximate_molecular_mass(DensityMap* d, Float threshold) {
   long counter=0;//number of voxles above the threshold
@@ -571,21 +554,37 @@ Float approximate_molecular_mass(DensityMap* d, Float threshold) {
   return d->get_spacing()*counter/1.21;
  }
 
-/*
-DensityMap* rotate_grid(const DensityMap *orig_dens,
-                        const algebra::Transformation3D &trans) {
-  DensityMap *trans_grid = new DensityMap(*orig_dens);
-  //add the actual rotation
-  // trans_grid->reset_data();
-  // trans_grid->set_origin(trans.transform(orig_dens->get_origin()));
-  // trans_grid->set_origin(trans.transform(orig_dens->get_origin()));
-}
-*/
 
-/* Surround the density map with an extra set of samples assumed to
-   be 0.
-*/
+
+/* Daniel's helpers */
 namespace {
+  inline algebra::Vector3D get_voxel_center(const DensityMap *map,
+                                     unsigned int v) {
+    return algebra::Vector3D(map->voxel2loc(v,0),
+                             map->voxel2loc(v,1),
+                             map->voxel2loc(v,2));
+  }
+
+  DensityMap *create_density_map(const algebra::BoundingBox3D &bb,
+                                 double spacing) {
+    Pointer<DensityMap> ret(new DensityMap());
+    unsigned int n[3];
+    algebra::Vector3D wid= bb.get_corner(1)-bb.get_corner(0);
+    for (unsigned int i=0; i< 3; ++i) {
+      n[i]= static_cast<int>(std::ceil(wid[i]/spacing));
+    }
+    ret->CreateVoidMap(n[0], n[1], n[2]);
+    ret->set_origin(bb.get_corner(0));
+    ret->update_voxel_size(spacing);
+    IMP_LOG(TERSE, "Created map with dimensions " << n[0] << " " << n[1]
+            << " " << n[2] << " and spacing " << ret->get_spacing()
+            << std::endl);
+    return ret.release();
+  }
+
+  /* Surround the density map with an extra set of samples assumed to
+     be 0.
+  */
   inline double get_value(const DensityMap *m, int xi,
                           int yi, int zi) {
     //std::cout << "getting " << xi << ' ' << yi << ' ' << zi << std::endl;
@@ -596,12 +595,14 @@ namespace {
     else {
       unsigned int loc= m->xyz_ind2voxel(xi, yi, zi);
       //std::cout << "got " << m->get_value(loc) << std::endl;
-      return m->get_value(loc);
+      double v= m->get_value(loc);
+      //std::cout << v << " " << " for " << loc << std::endl;
+      return v;
     }
   }
 
   inline void compute_voxel(const DensityMap *m, const algebra::Vector3D &v,
-                            unsigned int *ivox, algebra::Vector3D &remainder) {
+                            int *ivox, algebra::Vector3D &remainder) {
     const double iside= 1.0/m->get_spacing();
     //std::cout << "getting " << v << std::endl;
     for (unsigned int i=0; i< 3; ++i) {
@@ -611,7 +612,11 @@ namespace {
       // << ivox[i] << " for " << fvox << std::endl;
       remainder[i]= fvox-ivox[i];
       IMP_INTERNAL_CHECK(remainder[i] < 1.01 && remainder[i] >= -.01,
-                         "Algebraic error");
+                         "Algebraic error " << remainder[i]
+                         << " " << i << v << get_bounding_box(m)
+                         << " " << m->get_spacing()
+                         << " " << m->get_origin()
+                         << " " << fvox);
     }
   }
   inline unsigned int get_n(const DensityMap *m, unsigned int dim) {
@@ -626,6 +631,20 @@ namespace {
   }
 }
 
+
+algebra::BoundingBox3D get_bounding_box(DensityMap* d,Float threshold) {
+  algebra::BoundingBox3D ret;
+  for(long l=0;l<d->get_number_of_voxels();l++) {
+    if (d->get_value(l) > threshold) {
+      algebra::Vector3D v(get_voxel_center(d, l));
+      ret+= v;
+     }
+  }
+  // make sure it includes the whole voxels
+  return ret+=d->get_spacing()/2.0;
+}
+
+
 double get_density(DensityMap *m, const algebra::Vector3D &v) {
   // trilirp in z, y, x
   const double side= m->get_spacing();
@@ -638,29 +657,9 @@ double get_density(DensityMap *m, const algebra::Vector3D &v) {
     }
   }
 
-  unsigned int ivox[3];
+  int ivox[3];
   algebra::Vector3D r;
   compute_voxel(m, v, ivox, r);
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-    static unsigned int cv= 398034953;
-    algebra::Vector3D v;
-    unsigned int testvox[3];
-    for (unsigned int i=0; i< 3; ++i) {
-      testvox[i]=cv%(get_n(m, i));
-      v[i]= m->get_origin()[i]+ side*testvox[i];
-      //std::cout << cv << " " << testvox[i] << " " << v[i]<<  std::endl;
-     cv= cv+38947428573;
-    }
-    unsigned int ivox[3];
-    algebra::Vector3D r;
-    compute_voxel(m, v, ivox, r);
-    for (unsigned int i=0; i< 3; ++i) {
-      IMP_INTERNAL_CHECK(testvox[i]== ivox[i],
-                         "Test and computed voxels don't match"
-                         << " expected "<< testvox[i] << " got " << ivox[i]
-                         << " for " << i << std::endl);
-    }
-  }
   double is[4];
   for (unsigned int i=0; i< 4; ++i) {
     // operator >> has high precidence compared. Go fig.
@@ -677,6 +676,76 @@ double get_density(DensityMap *m, const algebra::Vector3D &v) {
   }
 
   return js[0]*(1-r[0]) + js[1]*(r[0]);
+}
+
+DensityMap *get_transformed(DensityMap *in, const algebra::Transformation3D &tr,
+                            double threshold) {
+  algebra::BoundingBox3D obb= get_bounding_box(in, threshold);
+  algebra::BoundingBox3D nbb;
+  for (unsigned int i=0; i< 2; ++i) {
+    for (unsigned int j=0; j< 2; ++j) {
+      for (unsigned int k=0; k< 2; ++k) {
+        algebra::Vector3D v(obb.get_corner(i)[0],
+                            obb.get_corner(j)[1],
+                            obb.get_corner(k)[2]);
+        nbb+= tr.transform(v);
+      }
+    }
+  }
+  IMP::Pointer<DensityMap> ret(create_density_map(nbb,
+                                              in->get_header()->get_spacing()));
+  const algebra::Transformation3D &tri= tr.get_inverse();
+  unsigned int size=ret->get_number_of_voxels();
+  for (unsigned int i=0; i< size; ++i) {
+    algebra::Vector3D tpt=get_voxel_center(ret, i);
+    algebra::Vector3D pt= tri.transform(tpt);
+    double d = get_density(in, pt);
+    ret->set_value(i, d);
+  }
+  ret->set_name(std::string("transformed ")+ in->get_name());
+  if (in->get_header()->get_has_resolution()) {
+    ret->get_header_writable()
+      ->set_resolution(in->get_header()->get_resolution());
+  }
+  return ret.release();
+}
+
+DensityMap* get_resampled(DensityMap *in, double scaling) {
+  algebra::BoundingBox3D obb= get_bounding_box(in,
+                                         -std::numeric_limits<float>::max());
+  Pointer<DensityMap> ret=create_density_map(obb, in->get_spacing()*scaling);
+  for (unsigned int i=0; i< ret->get_number_of_voxels(); ++i) {
+    algebra::Vector3D v= get_voxel_center(ret, i);
+    double d= get_density(in, v);
+    ret->set_value(i, d);
+  }
+  IMP_LOG(TERSE, "Resample from " << in->get_name() << " with spacing "
+          << in->get_spacing() << " vs "
+          << ret->get_spacing()
+          << " and with top " << in->get_top() << " vs " << ret->get_top()
+          << " with min/max "
+          << *std::min_element(in->get_data(),
+                               in->get_data()+in->get_number_of_voxels())
+          << "..." << *std::max_element(in->get_data(),
+                                        in->get_data()
+                                        +in->get_number_of_voxels())
+          << " vs " << *std::min_element(ret->get_data(),
+                                         ret->get_data()
+                                         +ret->get_number_of_voxels())
+          << "..." << *std::max_element(ret->get_data(),
+                                        ret->get_data()
+                                        +ret->get_number_of_voxels())
+          << std::endl);
+  IMP_LOG(TERSE, "Old map was " << in->get_header()->nx << " "
+          << in->get_header()->ny << " " << in->get_header()->nz
+          << std::endl);
+  if (in->get_header()->get_has_resolution()) {
+    ret->get_header_writable()
+      ->set_resolution(std::max<double>(in->get_header()->get_resolution(),
+                                        ret->get_spacing()));
+  }
+  ret->set_name(in->get_name() +" resampled");
+  return ret.release();
 }
 
 IMPEM_END_NAMESPACE
