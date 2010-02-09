@@ -175,7 +175,11 @@ public:
 IMP_OUTPUT_OPERATOR(GroupnameContainer);
 
 //! A collection of containers
-typedef VectorOfRefCounted<GroupnameContainer*> GroupnameContainers;
+IMP_OBJECTS(GroupnameContainer);
+/** \objects{GroupnameContainer}
+*/
+/** \objectstemp{GroupnameContainer}
+*/
 
 IMP_END_NAMESPACE
 
