@@ -25,6 +25,8 @@ namespace IMP {
     void unref(R*);
     template <class R>
     void ref(R*);
+    template <class R>
+    void release(R*);
   }
 }
 //IMP_END_INTERNAL_NAMESPACE
@@ -80,6 +82,8 @@ class IMPEXPORT RefCounted
     friend void internal::unref(R*);
   template <class R>
     friend void internal::ref(R*);
+  template <class R>
+    friend void internal::release(R*);
 #else
  public:
 #endif // _MSC_VER
