@@ -43,7 +43,6 @@ public:
   \note correct RMSD and mean MUST be in the header!
   \param[in] model_map      an empty map that will contain the sampled
 particles in the access_p
-  \param[in] access_p       the particles data (location,radius, weight)
   \param[in] dvx            to contain the x partial derivatives
   \param[in] dvy            to contain the y partial derivatives
   \param[in] dvz            to contain the z partial derivatives
