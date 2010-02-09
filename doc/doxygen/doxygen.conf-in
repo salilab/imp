@@ -202,7 +202,11 @@ ALIASES                = "command{1}=\code \1 \endcode" \
                          "unstable{1}=\warning \1 has not been stabilized and is likely to change without notice\n See \ref unstable \"unstable functionality\" for more information." \
                          "untested{1}=\warning \1 has not been well tested yet\n  Use with caution and please report any bugs found. See \ref untested \"lightly tested functionality\" for more information." \
                          "unimplemented{1}=\warning \1 has not beeen implemented.\n If you want to use it, ask someone to implement it or do it yourself. See \ref unimplemented \"unimplemented functionality\" for more information."\
-                         "dotgraph{1}=\if graphs \n \1 \n \else \n \note Example graphs require \external{www.graphviz.org, GraphViz}\n\endif"
+                         "dotgraph{1}=\if graphs \n \1 \n \else \n \note Example graphs require \external{www.graphviz.org, GraphViz}\n\endif"\
+                         "decorators{1}=\class \1s \n \brief A type to store a collection of \1 decorators.\n\nIt looks like a \c std::vector<\1> in C++ and a \c list in Python. See \ref tempornot \"when to use Temp\" for details on using this type."\
+                         "decoratorstemp{1}=\class \1sTemp \n \brief A type to pass a collection of \1 decorators.\n\nIt looks like a \c std::vector<\1> in C++ and a \c list in Python. See \ref tempornot \"when to use Temp\" for details on using this type."\
+                         "objects{1}=\class \1s\n \brief A type to store a collection of \1 objects.\n\nIt looks like a \c std::vector<\1*> in C++ and a \c list in Python. See \ref tempornot \"when to use Temp\" for details on using this type."\
+                         "objectstemp{1}=\class \1sTemp\n\brief A type to pass a collection of \1 objects.\n\nIt looks like a \c std::vector<\1*> in C++ and a \c list in Python. See \ref tempornot \"when to use Temp\" for details on using this type."
 
 # Set the OPTIMIZE_OUTPUT_FOR_C tag to YES if your project consists of C
 # sources only. Doxygen will then generate output that is more tailored for C.
@@ -1303,6 +1307,9 @@ INCLUDE_FILE_PATTERNS  = *.h
 # instead of the = operator.
 
 PREDEFINED             = IMP_DOXYGEN
+
+# \
+#                         IMP_DECORATORS(Name,Parent)="/** Hi */class Names; /** THere */class NamesTemp;"
 
 # If the MACRO_EXPANSION and EXPAND_ONLY_PREDEF tags are set to YES then
 # this tag can be used to specify a list of macro names that should be expanded.
