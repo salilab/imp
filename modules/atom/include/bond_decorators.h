@@ -193,9 +193,17 @@ public:
 
 IMP_OUTPUT_OPERATOR(Bonded);
 
-//! A collection of Bonds
-typedef Decorators<Bond, Particles> Bonds;
-typedef Decorators<Bonded, Particles> Bondeds;
+IMP_DECORATORS(Bonded, Particles);
+IMP_DECORATORS(Bond, Particles);
+/** \decorators{Bond}
+*/
+/** \decoratorstemp{Bond}
+*/
+/** \decorators{Bonded}
+*/
+/** \decoratorstemp{Bonded}
+*/
+
 
 inline Bonded Bond::get_bonded(unsigned int i) const
 {

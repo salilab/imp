@@ -17,14 +17,11 @@
 /** \advanced
  */
 #define IMP_ONLY_DOXYGEN(x) x
-//! Show the first to DOXYGEN and the second to the world
-/** \advanced
- */
-#define IMP_SWITCH_DOXYGEN(doxygen, nodoxygen) doxygen
+#define IMP_SWITCH_DOXYGEN(x,y) x
 #else
 #define IMP_NO_DOXYGEN(x) x
 #define IMP_ONLY_DOXYGEN(x)
-#define IMP_SWITCH_DOXYGEN(doxygen, nodoxygen) nodoxygen
+#define IMP_SWITCH_DOXYGEN(x,y) y
 #endif
 
 #if defined(SWIG)
@@ -36,7 +33,7 @@
 #define IMP_NO_SWIG(x) x
 #endif
 
-#ifdef IMP_DOXYGEN
+#if defined(SWIG) || defined(IMP_DOXYGEN)
 //! Implement comparison in a class using a compare function
 /** The macro requires that This be defined as the type of the current class.
     The compare function should take a const This & and return -1, 0, 1 as
@@ -44,7 +41,27 @@
     \advanced
 */
 #define IMP_COMPARISONS
+
+//! Implement comparison in a class using field as the variable to compare
+/** The macro requires that This be defined as the type of the current class.
+    \advanced
+*/
+#define IMP_COMPARISONS_1(field)
+
+//! Implement comparison in a class using field as the variable to compare
+/** The macro requires that This be defined as the type of the current class.
+    \advanced
+*/
+#define IMP_COMPARISONS_2(f0, f1)
+
+//! Implement comparison in a class using field as the variable to compare
+/** The macro requires that This be defined as the type of the current class.
+    \advanced
+*/
+#define IMP_COMPARISONS_3(f0, f1, f2)
+
 #else
+
 #define IMP_COMPARISONS                                                 \
   bool operator==(const This &o) const {                                \
     return (compare(o) == 0);                                           \
@@ -65,15 +82,7 @@
     return !(compare(o) > 0);                                           \
   }                                                                     \
   IMP_NO_SWIG(template <class T> friend int compare(const T&a, const T&b));
-#endif
 
-#ifdef IMP_DOXYGEN                                                      \
-  //! Implement comparison in a class using field as the variable to compare
-/** The macro requires that This be defined as the type of the current class.
-    \advanced
-*/
-#define IMP_COMPARISONS_1(field)
-#else
 #define IMP_COMPARISONS_1(field)                \
   bool operator==(const This &o) const {        \
     return (field== o.field);                   \
@@ -99,15 +108,10 @@
     else return 0;                              \
   }
 
-#endif
-
-#ifdef IMP_DOXYGEN
 //! Implement comparison in a class using field as the variable to compare
 /** The macro requires that This be defined as the type of the current class.
     \advanced
 */
-#define IMP_COMPARISONS_2(f0, f1)
-#else
 #define IMP_COMPARISONS_2(f0, f1)               \
   bool operator==(const This &o) const {        \
     return (f0== o.f0 && f1==o.f1);             \
@@ -136,16 +140,7 @@
     else if (operator>(o)) return 1;            \
     else return 0;                              \
   }
-#endif
 
-
-#ifdef IMP_DOXYGEN
-//! Implement comparison in a class using field as the variable to compare
-/** The macro requires that This be defined as the type of the current class.
-    \advanced
-*/
-#define IMP_COMPARISONS_3(f0, f1, f2)
-#else
 #define IMP_COMPARISONS_3(f0, f1, f2)                   \
   bool operator==(const This &o) const {                \
     return (f0== o.f0 && f1==o.f1 && f2 == o.f2);       \
@@ -185,6 +180,24 @@
 /** \copydetails IMP_OUTPUT_OPERATOR
  */
 #define IMP_OUTPUT_OPERATOR_1(name)
+//! Implement operator<< on class name, assuming it has two template arguments
+/** \copydetails IMP_OUTPUT_OPERATOR
+ */
+#define IMP_OUTPUT_OPERATOR_2(name)
+//! Implement operator<< on class name
+/** The class named should define the method
+    \c void \c show(std::ostream&).
+    \advanced
+*/
+#define IMP_OUTPUT_OPERATOR(name)
+
+//! Implement operator<< on class name templated by the dimension
+/** The class named should define the method
+    \c void \c show(std::ostream&).
+    \advanced
+*/
+#define IMP_OUTPUT_OPERATOR_D(name)
+
 #else
 #define IMP_OUTPUT_OPERATOR_1(name)                                     \
   template <class L>                                                    \
@@ -197,14 +210,7 @@
   inline void show(std::ostream &out, const name<L, M> &i)              \
     i.show(out);                                                        \
   }
-#endif
 
-#if defined(IMP_DOXYGEN) || defined(SWIG)
-//! Implement operator<< on class name, assuming it has two template arguments
-/** \copydetails IMP_OUTPUT_OPERATOR
- */
-#define IMP_OUTPUT_OPERATOR_2(name)
-#else
 #define IMP_OUTPUT_OPERATOR_2(name)                                     \
   template <class L, class M>                                           \
   inline std::ostream& operator<<(std::ostream &out, const name<L, M> &i) \
@@ -216,16 +222,7 @@
   inline void show(std::ostream &out, const name<L, M> &i)              \
     i.show(out);                                                        \
   }
-#endif
 
-#if defined(IMP_DOXYGEN) || defined(SWIG)
-//! Implement operator<< on class name
-/** The class named should define the method
-    \c void \c show(std::ostream&).
-    \advanced
-*/
-#define IMP_OUTPUT_OPERATOR(name)
-#else
 #define IMP_OUTPUT_OPERATOR(name)                                       \
   inline std::ostream &operator<<(std::ostream &out, const name &i)     \
   {                                                                     \
@@ -235,17 +232,7 @@
   inline void show(std::ostream &out, const name &i) {                  \
     i.show(out);                                                        \
   }
-#endif
 
-
-#if defined(IMP_DOXYGEN) || defined(SWIG)
-//! Implement operator<< on class name templated by the dimension
-/** The class named should define the method
-    \c void \c show(std::ostream&).
-    \advanced
-*/
-#define IMP_OUTPUT_OPERATOR_D(name)
-#else
 #define IMP_OUTPUT_OPERATOR_D(name)                                     \
   template <unsigned int D>                                             \
   inline std::ostream &operator<<(std::ostream &out, const name<D> &i)  \
@@ -270,13 +257,6 @@
     \advanced
     @{
 */
-#ifdef IMP_DOXYGEN
-#define IMP_SWAP(Name)
-#define IMP_SWAP_1(Name)
-#define IMP_SWAP_2(Name)
-#define IMP_SWAP_3(Name)
-#define IMP_SWAP_4(Name)
-#else
 #define IMP_SWAP(Name)                                  \
   inline void swap(Name &a, Name &b) {a.swap_with(b);}
 
@@ -296,7 +276,6 @@
   inline void swap(Name<A,B,C> &a, Name<A,B,C> &b) {    \
     a.swap_with(b);                                     \
   }
-#endif
 /** @} */
 
 
@@ -327,24 +306,6 @@
 
 
 
-#ifdef IMP_DOXYGEN
-//! Ref counted objects should have private destructors
-/** \advanced
-
-    This macro defines a private destructor and adds the appropriate
-    friend methods so that the class can be used with ref counting.
-    By defining a private destructor, you make it so that the object
-    cannot be declared on the stack and so must be ref counted.
-
-    \see IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR
-    \see IMP::RefCounted
-*/
-#define IMP_REF_COUNTED_DESTRUCTOR(Name)
-/** Like IMP_REF_COUNTED_DESTRUCTOR, but the destructor is only
-    declared, not defined.
-*/
-#define IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Name)
-#else
 
 #ifdef _MSC_VER
 // VC doesn't understand friends properly
@@ -374,11 +335,25 @@
    dereference the ref counted pointer. Swig also gets confused
    on template friends.
 */
+//! Ref counted objects should have private destructors
+/** \advanced
+
+    This macro defines a private destructor and adds the appropriate
+    friend methods so that the class can be used with ref counting.
+    By defining a private destructor, you make it so that the object
+    cannot be declared on the stack and so must be ref counted.
+
+    \see IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR()
+    \see IMP::RefCounted
+*/
 #define IMP_REF_COUNTED_DESTRUCTOR(Name)                        \
   protected:                                                    \
   template <class T> friend void IMP::internal::unref(T*);      \
   virtual ~Name(){}
 
+/** Like IMP_REF_COUNTED_DESTRUCTOR(), but the destructor is only
+    declared, not defined.
+*/
 #define IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Name)             \
   protected:                                                    \
   template <class T> friend void IMP::internal::unref(T*);      \
@@ -386,7 +361,6 @@
 
 #endif // SWIG
 #endif // _MSC_VER
-#endif // doxygen
 
 
 /** \name Macros to aid with implementing decorators
@@ -430,25 +404,21 @@
 #define IMP_DECORATOR(Name, Parent)                                     \
   public:                                                               \
   /* Should be private but SWIG accesses it through the comparison
-     macros*/                                                            \
+     macros*/                                                           \
 IMP_NO_DOXYGEN(typedef Name This);                                      \
-/** \brief Create null decorator. Such a decorator is like a NULL
-    pointer in C++. */                                                  \
 Name(): Parent(){}                                                     \
-/** \brief Create a decorator wrapping a particle which already has
-    had setup_particle() called on it. */                               \
 explicit Name(::IMP::Particle *p): Parent(p) {                          \
   IMP_INTERNAL_CHECK(particle_is_instance(p),                           \
-                     "Particle missing required attributes for decorator "     \
-                     << #Name << *p << std::endl);                             \
-}                                                                      \
+                     "Particle missing required attributes for decorator " \
+                     << #Name << *p << std::endl);                      \
+}                                                                       \
 static Name decorate_particle(::IMP::Particle *p) {                     \
-  IMP_CHECK_OBJECT(p);                                                 \
-  if (!particle_is_instance(p)) {                                      \
-    return Name();                                                     \
-  }                                                                    \
-  return Name(p);                                                      \
-}                                                                      \
+  IMP_CHECK_OBJECT(p);                                                  \
+  if (!particle_is_instance(p)) {                                       \
+    return Name();                                                      \
+  }                                                                     \
+  return Name(p);                                                       \
+}                                                                       \
 IMP_SHOWABLE
 
 
@@ -472,30 +442,24 @@ IMP_SHOWABLE
   TraitsType traits_name##_;                                            \
 public:                                                                 \
  IMP_NO_DOXYGEN(typedef Name This;)                                     \
- /** \brief Create null decorator. Such a decorator is like a NULL
-     pointer in C++. */                                                 \
-Name(): Parent(){}                                                      \
-/** \brief Create a decorator wrapping a particle which already has
-    had setup_particle() called on it with the passed traits. */        \
-Name(::IMP::Particle *p,                                                \
-     const TraitsType &tr=default_traits): Parent(p),                   \
-                                           traits_name##_(tr) {         \
-  IMP_INTERNAL_CHECK(particle_is_instance(p, tr),                       \
-                     "Particle missing required attributes "            \
-                     << " for decorator "                               \
-                     << #Name << *p << std::endl);                      \
-}                                                                       \
-static Name decorate_particle(::IMP::Particle *p,                       \
-                              const TraitsType &tr=default_traits) {    \
-  if (!particle_is_instance(p, tr)) return Name();                      \
-  else return Name(p, tr);                                              \
-}                                                                       \
-IMP_SHOWABLE;                                                           \
-/** Get the traits object */                                            \
-const TraitsType &get_##traits_name() const {                           \
-  return traits_name##_;                                                \
-}                                                                       \
-
+ Name(): Parent(){}                                                     \
+ Name(::IMP::Particle *p,                                               \
+      const TraitsType &tr=default_traits): Parent(p),                  \
+                                            traits_name##_(tr) {        \
+   IMP_INTERNAL_CHECK(particle_is_instance(p, tr),                      \
+                      "Particle missing required attributes "           \
+                      << " for decorator "                              \
+                      << #Name << *p << std::endl);                     \
+ }                                                                      \
+ static Name decorate_particle(::IMP::Particle *p,                      \
+                               const TraitsType &tr=default_traits) {   \
+   if (!particle_is_instance(p, tr)) return Name();                     \
+   else return Name(p, tr);                                             \
+ }                                                                      \
+ IMP_SHOWABLE;                                                          \
+ const TraitsType &get_##traits_name() const {                          \
+   return traits_name##_;                                               \
+ }
 
 //! Perform actions dependent on whether a particle has an attribute.
 /** \advanced
@@ -583,7 +547,20 @@ const TraitsType &get_##traits_name() const {                           \
     IMP_DECORATOR_SET(AttributeKey, t);                         \
   }
 
+#ifdef IMP_DOXYGEN
+//! Define the types for storing sets of decorators
+/** \advanced
 
+    The macro defines the types Names and NamesTemp.
+*/
+#define IMP_DECORATORS(Name, Parent)                            \
+  class Name##s: public Parent {};                              \
+  class Name##sTemp: public Parent##Temp {}
+#else
+#define IMP_DECORATORS(Name, Parent)                            \
+  typedef IMP::Decorators<Name, Parent> Name##s;                \
+  typedef IMP::Decorators<Name, Parent##Temp> Name##sTemp
+#endif
 //! Create a decorator that computes some sort of summary info on a set
 /** \advanced
     Examples include a centroid or a cover for a set of particles.
@@ -596,9 +573,9 @@ const TraitsType &get_##traits_name() const {                           \
   class IMPCOREEXPORT Name: public Parent {                     \
     IMP_CONSTRAINT_DECORATOR_DECL(Name);                        \
   public:                                                       \
-    IMP_DECORATOR(Name, Parent)                                 \
-      static Name setup_particle(Particle *p,                   \
-                                 const Members &members);       \
+    IMP_DECORATOR(Name, Parent);                                \
+    static Name setup_particle(Particle *p,                     \
+                               const Members &members);         \
     static Name setup_particle(Particle *p,                     \
                                Refiner *ref);                   \
     ~Name();                                                    \
@@ -611,8 +588,7 @@ const TraitsType &get_##traits_name() const {                           \
     void set_coordinates_are_optimized()const{}                 \
     void set_coordinate() const {}                              \
     void set_radius()const{}                                    \
-  };                                                            \
-  IMP_DECORATORS(Name, Parent##s);                              \
+  };
 
 
   /** \advanced
@@ -764,6 +740,65 @@ protection:                                                             \
 
 //! @}
 
+#ifdef IMP_DOXYGEN
+//! Define the types for storing sets of objects
+/** \advanced
+    The macro defines the types Names and NamesTemp.
+*/
+#define IMP_OBJECTS(Name)                                       \
+  class Name##sTemp {};                                         \
+  class Name##s:public Name##sTemp{};
+#else
+#define IMP_OBJECTS(Name)                                       \
+  typedef IMP::VectorOfRefCounted<Name*> Name##s;               \
+  typedef std::vector<Name*> Name##sTemp
+#endif
+
+
+//! Declare the methods needed by an object than can be printed
+/** \advanced
+
+    This macro declares the method
+    - void show(std::ostream &out) const
+    It also makes it so that the object can be printed
+    in python.
+
+    The \c ostream and \c sstream headers must be included.
+
+    See also IMP_SHOWABLE_INLINE().
+
+    Do not use with IMP::Object objects as they have their
+    own show mechanism.
+*/
+#define IMP_SHOWABLE                            \
+  void show(std::ostream &out=std::cout) const; \
+  std::string __str__() const {                 \
+    std::ostringstream out;                     \
+    show(out);                                  \
+    return out.str();                           \
+  }
+
+//! Declare the methods needed by an object than can be printed
+/** \advanced
+
+    This macro declares the method
+    - \c void \c show(std::ostream &out) const
+    It also makes it so that the object can be printed
+    in python.
+
+    The \c ostream and \c sstream headers must be included.
+
+    See also IMP_SHOWABLE_INLINE()
+*/
+#define IMP_SHOWABLE_INLINE(how_to_show)        \
+  void show(std::ostream &out=std::cout) const{ \
+    how_to_show;                                \
+  }                                             \
+  std::string __str__() const {                 \
+    std::ostringstream out;                     \
+    show(out);                                  \
+    return out.str();                           \
+  }
 
 
 /** \defgroup object_helpers Macros to aid with implementation classes
@@ -1950,67 +1985,7 @@ public:
   void reset() {Reset;}                                 \
   ~Name () {reset();}
 
-
-//! Declare the methods needed by an object than can be printed
-/** \advanced
-
-    This macro declares the method
-    - void show(std::ostream &out) const
-    It also makes it so that the object can be printed
-    in python.
-
-    The \c ostream and \c sstream headers must be included.
-
-    See also IMP_SHOWABLE_INLINE().
-
-    Do not use with IMP::Object objects as they have their
-    own show mechanism.
-*/
-#ifndef IMP_DOXYGEN
-#define IMP_SHOWABLE                            \
-  void show(std::ostream &out=std::cout) const; \
-  std::string __str__() const {                 \
-    std::ostringstream out;                     \
-    show(out);                                  \
-    return out.str();                           \
-  }
-#else
-#define IMP_SHOWABLE                            \
-  void show(std::ostream &out=std::cout) const;
-#endif
-
-//! Declare the methods needed by an object than can be printed
-/** \advanced
-
-    This macro declares the method
-    - \c void \c show(std::ostream &out) const
-    It also makes it so that the object can be printed
-    in python.
-
-    The \c ostream and \c sstream headers must be included.
-
-    See also IMP_SHOWABLE_INLINE()
-*/
-#ifndef IMP_DOXYGEN
-#define IMP_SHOWABLE_INLINE(how_to_show)        \
-  void show(std::ostream &out=std::cout) const{ \
-    how_to_show;                                \
-  }                                             \
-  std::string __str__() const {                 \
-    std::ostringstream out;                     \
-    show(out);                                  \
-    return out.str();                           \
-  }
-#else
-#define IMP_SHOWABLE_INLINE(how_to_show)        \
-  void show(std::ostream &out=std::cout) const;
-#endif
-
-
-
 //! @}
-
-#ifndef IMP_DOXYGEN
 
 //! Declare a ref counted pointer to a new object
 /** \param[in] Typename The namespace qualified type being declared
@@ -2025,30 +2000,7 @@ public:
 #define IMP_NEW(Typename, varname, args)        \
   Pointer<Typename> varname(new Typename args)
 
-
-//! Define the types for storing sets of objects
-/** \advanced
-    The macro defines the types Names and NamesTemp.
-*/
-#define IMP_OBJECTS(Name)                               \
-  /** Store a collection. */                            \
-  typedef IMP::VectorOfRefCounted<Name*> Name##s;       \
-  /** Use this type to return a collection or store
-      a collection when you know they are ref-counted elsewhere. */     \
-typedef std::vector<Name*> Name##sTemp
-
-//! Define the types for storing sets of decorators
-/** \advanced
-
-    The macro defines the types Names and NamesTemp.
-*/
-#define IMP_DECORATORS(Name, Parent)                    \
-  /** Store a collection of decorators. */              \
-  typedef IMP::Decorators<Name, Parent> Name##s;        \
-  /** Use this type to return a collection or store
-      a collection when you know they are ref-counted elsewhere. */     \
-typedef IMP::Decorators<Name, Parent##Temp> Name##sTemp
-
+#ifdef IMP_DOXYGEN
 /** \advanced
 
     Define a new key type.
@@ -2066,7 +2018,14 @@ typedef IMP::Decorators<Name, Parent##Temp> Name##sTemp
     \note The name in the typedef would have to start with ::IMP so it
     could be used out of the IMP namespace.
 */
-#ifndef IMP_DOXYGEN
+#define IMP_DECLARE_KEY_TYPE(Name, Tag)                         \
+ class Name {                                                   \
+public:                                                         \
+ Name(std::string nm);                                          \
+ };                                                             \
+ typedef std::vector<Name> Name##s
+
+#else
 #define IMP_DECLARE_KEY_TYPE(Name, Tag)                         \
   struct Name: public ::IMP::KeyBase<Tag, true> {               \
     typedef ::IMP::KeyBase<Tag, true> P;                        \
@@ -2083,21 +2042,9 @@ typedef IMP::Decorators<Name, Parent##Temp> Name##sTemp
     std::string __str__() const {return get_string();}          \
   };                                                            \
   typedef std::vector<Name> Name##s
-#else
-#define IMP_DECLARE_KEY_TYPE(Name, Tag)                                 \
-  /** A string based identifier.*/                                      \
-  struct Name: public ::IMP::KeyBase<ID, true> {                        \
-    typedef ::IMP::KeyBase<ID, true> P;                                 \
-    typedef Name This;                                                  \
-    Name(){};                                                           \
-    Name(std::string nm): P(nm){}                                       \
-    /** Define the string new_name to refer to the same key as nm. */   \
-    static Name add_alias(Name nm, std::string new_name);               \
-  };                                                                    \
-  typedef std::vector<Name> Name##s
 #endif
 
-
+#ifdef IMP_DOXYGEN
 /** \advanced
 
     Define a new key non lazy type where new types have to be created
@@ -2105,7 +2052,14 @@ typedef IMP::Decorators<Name, Parent##Temp> Name##sTemp
 
     \see IMP_DECLARE_KEY_TYPE
 */
-#ifndef IMP_DOXYGEN
+#define IMP_DECLARE_CONTROLLED_KEY_TYPE(Name, Tag)              \
+  class Name {                                                  \
+  public:                                                       \
+  Name(std::string nm);                                         \
+  };                                                            \
+  typedef std::vector<Name> Name##s
+
+#else
 #define IMP_DECLARE_CONTROLLED_KEY_TYPE(Name, Tag)              \
   struct Name: public ::IMP::KeyBase<Tag, false> {              \
     typedef ::IMP::KeyBase<Tag, false> P;                       \
@@ -2121,23 +2075,9 @@ typedef IMP::Decorators<Name, Parent##Temp> Name##sTemp
     }                                                           \
   };                                                            \
   typedef std::vector<Name> Name##s
-#else
-#define IMP_DECLARE_CONTROLLED_KEY_TYPE(Name, Tag)                      \
-  /** A string based identifier.*/                                      \
-  struct Name: public ::IMP::KeyBase<ID, false> {                       \
-    typedef ::IMP::KeyBase<ID, false> P;                                \
-    typedef Name This;                                                  \
-    Name(){};                                                           \
-    Name(std::string nm): P(nm){}                                       \
-    IMP_NO_DOXYGEN(Name(unsigned int i): P(i){})                        \
-    /** Define the string new_name to refer to the same key as nm. */   \
-    static Name add_alias(Name nm, std::string new_name);               \
-  };                                                                    \
-  typedef std::vector<Name> Name##s
 #endif
 
-
-
+#ifndef IMP_DOXYGEN
 //! Use this to label a function with no side effects
 /** \advanced */
 #ifdef __GNU__

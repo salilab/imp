@@ -69,6 +69,10 @@ public:
 };
 
 IMP_DECORATORS(Domain, Hierarchies);
+/** \decorators{Domain}
+*/
+/** \decoratorstemp{Domain}
+*/
 
 IMP_OUTPUT_OPERATOR(Domain);
 

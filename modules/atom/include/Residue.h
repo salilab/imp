@@ -21,13 +21,14 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-IMP_DECLARE_KEY_TYPE(ResidueType, IMP_RESIDUE_TYPE_INDEX);
-
-
 /* each static must be on a separate line because of MSVC bug C2487:
    see http://support.microsoft.com/kb/127900/
 */
-/** @name Residue types
+
+IMP_DECLARE_KEY_TYPE(ResidueType, IMP_RESIDUE_TYPE_INDEX);
+/** \class ResidueType
+    \brief The type for a residue.
+
     A given residue is either a Residue::LIGAND, Residue::AMINOACID,
     or Residue::NUCLEICACID.
 
@@ -38,10 +39,11 @@ IMP_DECLARE_KEY_TYPE(ResidueType, IMP_RESIDUE_TYPE_INDEX);
 
     \see Residue
 */
-/*@{*/
+
 /** Unknown residue */
 IMPATOMEXPORT extern const ResidueType UNK;
-/** glycein G*/
+/** \relatesalso ResidueType
+    glycein G*/
 IMPATOMEXPORT extern const ResidueType GLY;
 #ifndef IMP_DOXYGEN
 /* Code currently assumes that all indices between GLY.get_index()
@@ -198,6 +200,10 @@ public:
 IMP_OUTPUT_OPERATOR(Residue);
 
 IMP_DECORATORS(Residue, Hierarchies);
+/** \decorators{Residue}
+*/
+/** \decoratorstemp{Residue}
+*/
 
 /** \relatesalso Residue */
 IMPATOMEXPORT Chain get_chain(Residue rd);

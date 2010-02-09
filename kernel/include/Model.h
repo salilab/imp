@@ -23,8 +23,16 @@ IMP_BEGIN_NAMESPACE
 class Particle;
 class Restraint;
 IMP_OBJECTS(Restraint);
+/** \objects{Restraint}
+*/
+/** \objectstemp{Restraint}
+*/
 class ScoreState;
 IMP_OBJECTS(ScoreState);
+/** \objects{ScoreState}
+*/
+/** \objectstemp{ScoreState}
+*/
 
 //! Class for storing model, its restraints, and particles.
 /** The Model maintains a standard IMP container for each of Particle,
@@ -249,7 +257,7 @@ public:
       The sum of the Restraint::evaluate() return values is returned.
 
       \throw ModelException if a Particle attribute value becomes
-      invalid (NaN, infinity etc.)
+      invalid (NaN, infinite etc.)
    */
  virtual Float evaluate(bool calc_derivs);
 
@@ -262,6 +270,9 @@ public:
      be updated for each restraint is currently recomputed when new
      score states are added, but not when the dependencies of
      Restraints or ScoreStates change. This can be fixed if requested.
+
+     \throw ModelException if a Particle attribute value becomes
+     invalid (NaN, infinite, etc.)
   */
  virtual Float evaluate(const RestraintsTemp &restraints, bool calc_derivs);
 

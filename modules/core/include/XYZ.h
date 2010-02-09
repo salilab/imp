@@ -9,6 +9,7 @@
 #define IMPCORE_XY_Z_H
 
 #include "config.h"
+#include "../macros.h"
 #include "internal/utility.h"
 
 #include <IMP/Decorator.h>
@@ -36,7 +37,7 @@ class IMPCOREEXPORT XYZ: public Decorator
     return IMP::internal::xyzr_keys[i];
   }
 
-  IMP_DECORATOR(XYZ, Decorator)
+  IMP_DECORATOR(XYZ, Decorator);
 
   /** Create a decorator with the passed coordinates. */
   static XYZ setup_particle(Particle *p,
@@ -159,7 +160,10 @@ inline void transform(XYZ a, const algebra::Transformation3D &tr) {
 }
 
 /** \genericgeometry */
-inline const algebra::Vector3D get_geometry(XYZ d) {return d.get_coordinates();}
+inline const algebra::Vector3D get_geometry(XYZ d) {
+  return d.get_coordinates();
+}
+
 /** \genericgeometry */
 inline const algebra::Vector3D& get_geometry(const algebra::Vector3D &v) {
   return v;
@@ -173,6 +177,11 @@ inline void set_geometry(algebra::Vector3D &vbase,
                          const algebra::Vector3D &v) {vbase=v;}
 
 IMP_DECORATORS(XYZ, Particles);
+
+/** \decorators{XYZ}
+*/
+/** \decoratorstemp{XYZ}
+*/
 
 IMPCORE_END_NAMESPACE
 

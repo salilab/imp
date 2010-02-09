@@ -86,7 +86,10 @@ public:
 };
 
 IMP_OBJECTS(QuadScore);
-
+/** \objects{QuadScore}
+*/
+/** \objectstemp{QuadScore}
+*/
 IMP_END_NAMESPACE
 
 #endif  /* IMP_QUAD_SCORE_H */

@@ -175,7 +175,11 @@ public:
 IMP_OUTPUT_OPERATOR(QuadContainer);
 
 //! A collection of containers
-typedef VectorOfRefCounted<QuadContainer*> QuadContainers;
+IMP_OBJECTS(QuadContainer);
+/** \objects{QuadContainer}
+*/
+/** \objectstemp{QuadContainer}
+*/
 
 IMP_END_NAMESPACE
 

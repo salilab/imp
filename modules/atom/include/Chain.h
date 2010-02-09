@@ -59,6 +59,10 @@ public:
 };
 
 IMP_DECORATORS(Chain, Hierarchies);
+/** \decorators{Chain}
+*/
+/** \decoratorstemp{Chain}
+*/
 
 IMP_OUTPUT_OPERATOR(Chain);
 

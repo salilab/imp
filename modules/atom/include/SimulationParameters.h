@@ -129,7 +129,6 @@ public:
 
 IMP_OUTPUT_OPERATOR(SimulationParameters);
 
-typedef Decorators<SimulationParameters, Decorator> SimulationParameterss;
 
 IMPATOM_END_NAMESPACE
 
