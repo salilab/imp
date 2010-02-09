@@ -117,9 +117,11 @@ void SampledDensityMap::resample()
         calculate_particles_bounding_box(ps_);
     IMP::algebra::BoundingBox3D density_bb =
        get_bounding_box(this);
-    if (density_bb.get_contains(particles_bb)) {
+    if (!density_bb.get_contains(particles_bb)) {
          IMP_WARN("The particles to sample are not contained within" <<
-                   " the sampled density map"<<std::endl);
+                   " the sampled density map"
+                  << density_bb << " does not contain " << particles_bb
+                  << std::endl);
     }
   }
   reset_data();
