@@ -1,3 +1,10 @@
 Import('env')
 
-env.IMPModuleInclude(env.IMPModuleGetHeaders())
+files = [
+         'hidden_keys.h',
+         'macros.h',
+         'utility.h',
+        ]
+
+# Install the include files:
+env.IMPModuleInclude(files)
