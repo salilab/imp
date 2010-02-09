@@ -1,4 +1,9 @@
 Import('env')
 
+files = [
+         'hidden_keys.cpp',
+         'utility.cpp',
+        ]
+
 # Build and install the shared library:
-env.IMPModuleLib(env.IMPModuleGetSources())
+env.IMPModuleLib(files)

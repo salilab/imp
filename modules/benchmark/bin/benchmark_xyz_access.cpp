@@ -8,11 +8,13 @@
 #include <boost/timer.hpp>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/macros.h>
+#include <IMP/benchmark/hidden_keys.h>
 
 using namespace IMP;
 using namespace IMP::core;
 using namespace IMP::algebra;
 using namespace IMP::atom;
+using namespace IMP::benchmark;
 
 #define N 1
 
@@ -21,6 +23,8 @@ using namespace IMP::atom;
 #else
 #define ATTRIBUTES
 #endif
+
+
 // TEST 1
 double compute_distances_decorator_access(
                      const IMP::Particles& particles) ATTRIBUTES;
@@ -29,11 +33,36 @@ double compute_distances_decorator_access(
    const IMP::Particles& particles) {
   double tdist=0;
   for (unsigned int i = 0; i < particles.size(); i++) {
-    IMP::algebra::Vector3D v1 =
-      IMP::core::XYZ(particles[i]).get_coordinates();
+    IMP::algebra::Vector3D v1
+      (IMP::core::XYZ(particles[i]).get_coordinates());
     for (unsigned int j = 0; j < particles.size(); j++) {
-      IMP::algebra::Vector3D v2 =
-        IMP::core::XYZ(particles[j]).get_coordinates();
+      IMP::algebra::Vector3D v2
+        (IMP::core::XYZ(particles[j]).get_coordinates());
+      tdist+= IMP::algebra::distance(v1, v2);
+    }
+  }
+  return tdist;
+}
+
+
+// TEST 1.5
+double compute_distances_particle_access(
+                     const IMP::Particles& particles) ATTRIBUTES;
+
+double compute_distances_particle_access(
+   const IMP::Particles& particles) {
+  FloatKey xk= hidden_keys[0];
+  FloatKey yk= hidden_keys[1];
+  FloatKey zk= hidden_keys[2];
+  double tdist=0;
+  for (unsigned int i = 0; i < particles.size(); i++) {
+    IMP::algebra::Vector3D v1(particles[i]->get_value(xk),
+                              particles[i]->get_value(yk),
+                              particles[i]->get_value(zk));
+    for (unsigned int j = 0; j < particles.size(); j++) {
+      IMP::algebra::Vector3D v2(particles[j]->get_value(xk),
+                                particles[j]->get_value(yk),
+                                particles[j]->get_value(zk));
       tdist+= IMP::algebra::distance(v1, v2);
     }
   }
@@ -202,6 +231,18 @@ void do_benchmark(std::string descr, std::string fname) {
     /*std::cout << "TEST1 (decorator_access)  took " << runtime
       << " (" << dist << ")"<< std::endl;*/
     IMP::benchmark::report("xyz decorator "+descr, runtime, dist);
+  }
+  // TEST 1.5
+  {
+    double runtime, dist;
+    // measure time
+    IMP_TIME_N(
+             {
+               dist=compute_distances_particle_access(particles);
+             }, runtime, N);
+    /*std::cout << "TEST1 (decorator_access)  took " << runtime
+      << " (" << dist << ")"<< std::endl;*/
+    IMP::benchmark::report("xyz particle "+descr, runtime, dist);
   }
   if (0) {
     // TEST 2
