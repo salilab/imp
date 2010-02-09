@@ -111,11 +111,28 @@ public:
 
 
 class Hierarchy;
+
+#ifdef IMP_DOXYGEN
+/**  A type to store a collection of Hierarchy decorators.
+
+     It looks like a \c std::vector<Hierarchy> in C++ and a \c list in Python.
+     See \ref tempornot "when to use Temp" for details on using this type.
+*/
+class GenericHierarchies: public GenericHierarchiesTemp {};
+
+/**  A type to store a collection of Hierarchy decorators.
+
+     It looks like a \c std::vector<Hierarchy> in C++ and a \c list in Python.
+     See \ref tempornot "when to use Temp" for details on using this type.
+*/
+class GenericHierarchiesTemp: public IMP::ParticlesTemp {};
+
+#else
 typedef DecoratorsWithTraits<Hierarchy, Particles,
                              HierarchyTraits> GenericHierarchies;
 typedef DecoratorsWithTraits<Hierarchy, ParticlesTemp, HierarchyTraits>
 GenericHierarchiesTemp;
-
+#endif
 
 //! A decorator for helping deal with a hierarchy.
 /**

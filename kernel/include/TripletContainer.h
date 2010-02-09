@@ -175,7 +175,11 @@ public:
 IMP_OUTPUT_OPERATOR(TripletContainer);
 
 //! A collection of containers
-typedef VectorOfRefCounted<TripletContainer*> TripletContainers;
+IMP_OBJECTS(TripletContainer);
+/** \objects{TripletContainer}
+*/
+/** \objectstemp{TripletContainer}
+*/
 
 IMP_END_NAMESPACE
 

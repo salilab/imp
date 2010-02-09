@@ -65,9 +65,12 @@ public:
 
 IMP_OUTPUT_OPERATOR(Mover);
 
-//! A collection of Mover objects
-typedef VectorOfRefCounted<Mover*> Movers;
 
+IMP_OBJECTS(Mover);
+/** \objects{Mover}
+*/
+/** \objectstemp{Mover}
+*/
 IMPCORE_END_NAMESPACE
 
 #endif  /* IMPCORE_MOVER_H */

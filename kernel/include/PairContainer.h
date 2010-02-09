@@ -175,7 +175,11 @@ public:
 IMP_OUTPUT_OPERATOR(PairContainer);
 
 //! A collection of containers
-typedef VectorOfRefCounted<PairContainer*> PairContainers;
+IMP_OBJECTS(PairContainer);
+/** \objects{PairContainer}
+*/
+/** \objectstemp{PairContainer}
+*/
 
 IMP_END_NAMESPACE
 

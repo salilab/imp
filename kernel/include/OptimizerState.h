@@ -56,7 +56,10 @@ protected:
 };
 
 IMP_OBJECTS(OptimizerState);
-
+/** \objects{OptimizerState}
+*/
+/** \objectstemp{OptimizerState}
+*/
 IMP_END_NAMESPACE
 
 #endif  /* IMP_OPTIMIZER_STATE_H */

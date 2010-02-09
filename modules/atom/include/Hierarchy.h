@@ -64,11 +64,28 @@ class Mass;
 class Hierarchy;
 
 #ifndef SWIG
-/** A collecton of Hierarchies. */
+#ifdef IMP_DOXYGEN
+/**  A type to store a collection of Hierarchy decorators.
+
+     It looks like a \c std::vector<Hierarchy> in C++ and a \c list in Python.
+     See \ref tempornot "when to use Temp" for details on using this type.
+*/
+class Hierarchies: public HierarchiesTemp {};
+
+/**  A type to store a collection of Hierarchy decorators.
+
+     It looks like a \c std::vector<Hierarchy> in C++ and a \c list in Python.
+     See \ref tempornot "when to use Temp" for details on using this type.
+*/
+class HierarchiesTemp: public IMP::core::GenericHierarchiesTemp {};
+
+#else
 typedef IMP::DecoratorsWithImplicitTraits< Hierarchy,
                               IMP::core::GenericHierarchies> Hierarchies;
 typedef IMP::DecoratorsWithImplicitTraits< Hierarchy,
                          IMP::core::GenericHierarchiesTemp> HierarchiesTemp;
+#endif
+
 #else
 class Hierarchies: public IMP::core::GenericHierarchies {
 public:

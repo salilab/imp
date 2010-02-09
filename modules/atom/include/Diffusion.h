@@ -119,6 +119,10 @@ IMP_OUTPUT_OPERATOR(Diffusion);
 
 
 IMP_DECORATORS(Diffusion, core::XYZs);
+/** \decorators{Diffusion}
+*/
+/** \decoratorstemp{Diffusion}
+*/
 
 IMPATOM_END_NAMESPACE
 

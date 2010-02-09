@@ -86,7 +86,10 @@ public:
 };
 
 IMP_OBJECTS(TripletScore);
-
+/** \objects{TripletScore}
+*/
+/** \objectstemp{TripletScore}
+*/
 IMP_END_NAMESPACE
 
 #endif  /* IMP_TRIPLET_SCORE_H */

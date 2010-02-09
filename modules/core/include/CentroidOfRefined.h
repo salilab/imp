@@ -53,7 +53,11 @@ public:
 */
 IMP_SUMMARY_DECORATOR_DECL(Centroid, XYZ, XYZs);
 
-
+IMP_DECORATORS(Centroid, XYZs);
+/** \decorators{Centroid}
+*/
+/** \decoratorstemp{Centroid}
+*/
 IMPCORE_END_NAMESPACE
 
 #endif  /* IMPCORE_CENTROID_OF_REFINED_H */

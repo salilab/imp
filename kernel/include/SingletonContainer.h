@@ -175,7 +175,11 @@ public:
 IMP_OUTPUT_OPERATOR(SingletonContainer);
 
 //! A collection of containers
-typedef VectorOfRefCounted<SingletonContainer*> SingletonContainers;
+IMP_OBJECTS(SingletonContainer);
+/** \objects{SingletonContainer}
+*/
+/** \objectstemp{SingletonContainer}
+*/
 
 IMP_END_NAMESPACE
 

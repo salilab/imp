@@ -156,7 +156,10 @@ public:
 };
 
 IMP_DECORATORS(Fragment, Hierarchies);
-
+/** \decorators{Fragment}
+*/
+/** \decoratorstemp{Fragment}
+*/
 
 IMP_OUTPUT_OPERATOR(Fragment);
 
