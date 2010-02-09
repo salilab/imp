@@ -32,8 +32,7 @@
  \section developers IMP developers
 
   In addition to the user documentation, developers should also be familiar
-  with the \ref coding_conventions "coding conventions" and
-  \ref devguide "developers guide" and monitor the \impdev email list.
+  with the \ref devguide "developers guide" and monitor the \impdev email list.
 
 
  \section key_pages Key pages
@@ -41,7 +40,7 @@
  - \salilab{imp/bugs,Bug Tracker}
  - \ref recent "Change history"
  - \ref conventions "Conventions"
- - \ref coding_conventions "Coding Conventions"
+ - \ref codingconventions "Coding Conventions"
  - \salilab{internal/imp/tests.html,Daily build status}
  - \ref devguide "Developer guide"
  - \ref differences "Differences using IMP between C++ and Python"
