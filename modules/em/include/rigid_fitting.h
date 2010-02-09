@@ -67,7 +67,7 @@ protected:
 \param[in] radius_key  The raidus key of the particles in the rigid body
 \param[in] weight_key  The weight key of the particles in the rigid body
 \param[in] dmap        The density map to fit to
-\param[in] centroid    The point to fit the particles around
+\param[in] anchor_centroid    The point to fit the particles around
 \param[in] fr          To contain the fitting solutions in the end of
                        the procedure
 \param[in] display_log If provided, then intermediate states
@@ -80,8 +80,8 @@ protected:
 \param[in] max_rotation maximum rotation step in a single MC optimization step
  */
 IMPEMEXPORT void  local_rigid_fitting_around_point(
-   core::RigidBody &rb, const FloatKey &rad_key,
-   const FloatKey &wei_key,
+   core::RigidBody &rb, const FloatKey &radius_key,
+   const FloatKey &weight_key,
    DensityMap *dmap, const algebra::Vector3D &anchor_centroid,
    FittingSolutions &fr,
    OptimizerState *display_log,
@@ -121,8 +121,8 @@ IMPEMEXPORT void  local_rigid_fitting_around_point(
  */
 
 inline void local_rigid_fitting(
-   core::RigidBody &rb, const FloatKey &rad_key,
-   const FloatKey &wei_key,
+   core::RigidBody &rb, const FloatKey &radius_key,
+   const FloatKey &weight_key,
    DensityMap *dmap,
    FittingSolutions &fr,
    OptimizerState *display_log,
@@ -132,7 +132,7 @@ inline void local_rigid_fitting(
    algebra::Vector3D rb_cen=
      IMP::core::centroid(core::XYZs(rb.get_members()));
    local_rigid_fitting_around_point(
-     rb, rad_key, wei_key,dmap, rb_cen,fr,display_log,
+     rb, radius_key, weight_key,dmap, rb_cen,fr,display_log,
      number_of_optimization_runs, number_of_mc_steps,
      number_of_cg_steps, max_translation, max_rotation);
 }
@@ -160,11 +160,7 @@ IMPEMEXPORT void local_rigid_fitting_around_points(
 \param[in] dmap        The density map to fit to
 \param[in] fr          To contain the fitting solutions in the end of
                        the procedure
-\param[in] number_of_optimization_runs  number of Monte Carlo optimizations
-\param[in] number_of_mc_steps  number of steps in a Monte Carlo optimization
-\param[in] number_of_cg_steps  number of Conjugate Gradients steps in
-                               a Monte Carlo step
-\param[in] max_voxel_translation Sample translations within
+\param[in] max_voxels_translation Sample translations within
                                  -max_voxel_translation to max_voxel_translation
 \param[in] translation_step      The translation sampling step
 \param[in] number_of_rotations   The number of rotations to sample
@@ -187,7 +183,7 @@ IMPEMEXPORT void local_rigid_fitting_grid_search(
 \param[in] em_map        The density map to fit to
 \param[in] rad_key  The raidus key of the particles in the rigid body
 \param[in] wei_key  The weight key of the particles in the rigid body
-\param[in] tranformations   A set of rigid transformations
+\param[in] transformations   A set of rigid transformations
 \param[in] fr   The solutions will be stored in a FittingSolutions data stucture
 \note the function assumes the density map holds its density
  */
