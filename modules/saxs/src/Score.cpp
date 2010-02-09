@@ -109,7 +109,6 @@ Float Score::compute_chi_square_score_internal(
 {
   Float offset = 0.0;
   if(use_offset) offset = compute_offset(model_profile);
-  std::cerr << "offset = " << offset << std::endl;
   Float c = compute_scale_factor(model_profile, offset);
   Float chi_square =
     compute_chi_square_score_internal(model_profile, c, offset);
