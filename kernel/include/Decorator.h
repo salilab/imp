@@ -26,7 +26,7 @@ IMP_BEGIN_NAMESPACE
     statements.
 
     \cpp Implementers of decorators should just inherit from this and
-    then use the IMP_DECORATOR macro to provide the key implementation
+    then use the IMP_DECORATOR() macro to provide the key implementation
     pieces.\n\n Remember that attribute keys should always be created
     lazily (at the time of the first use), and not be created as
     static variables.\n\n Implementors should consult
@@ -34,6 +34,13 @@ IMP_BEGIN_NAMESPACE
     IMP_DECORATOR_TRAITS(), IMP_DECORATOR_GET(),
     IMP_DECORATOR_ARRAY_DECL()
 
+    \advanceddoc Lists of decorators behave like lists of
+    \ref values "objects rather than values" even though decorators
+    themselves are values. This means that, eg, an IMP::core::XYZs
+    reference counts the particles, where as an IMP::core::XYZ
+    does not. For more efficiency you can use the non-reference
+    counted version, IMP::core::XYZsTemp instead. See
+    \ref tempornot "when to use Temp lists" for more information.
 
     A Decorator can be cast to a Particle*.
     \see Decorators
