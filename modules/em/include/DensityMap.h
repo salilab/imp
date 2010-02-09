@@ -17,6 +17,7 @@
 #include <IMP/algebra/BoundingBoxD.h>
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/VectorOfRefCounted.h>
+#include <boost/scoped_array.hpp>
 #include <iostream>
 #include <iomanip>
 
@@ -231,7 +232,7 @@ public:
     IMP_USAGE_CHECK(loc_calculated_,
               "x location requested before being calculated",
               InvalidStateException);
-    return x_loc_;
+    return x_loc_.get();
   }
   //! Returns the y-location of the map
   /**
@@ -241,7 +242,7 @@ public:
     IMP_USAGE_CHECK(loc_calculated_,
               "y location requested before being calculated",
               InvalidStateException);
-    return y_loc_;
+    return y_loc_.get();
   }
   //! Returns the z-location of the map
   /**
@@ -251,7 +252,7 @@ public:
     IMP_USAGE_CHECK(loc_calculated_,
               "z location requested before being calculated",
               InvalidStateException);
-    return z_loc_;
+    return z_loc_.get();
   }
 
   emreal* get_data() const {return data_;}
@@ -346,7 +347,7 @@ protected:
 
   //! Locations for each of the voxels of the map (they are precomputed and
   //! each one is of size nvox, being nvox the size of the map)
-  float *x_loc_, *y_loc_, *z_loc_;
+  boost::scoped_array<float> x_loc_, y_loc_, z_loc_;
   //! true if the locations have already been computed
   bool loc_calculated_;
 
@@ -367,7 +368,18 @@ inline algebra::BoundingBox3D get_bounding_box(const DensityMap *m) {
 IMPEMEXPORT DensityMap* rotate_grid(const DensityMap *orig_dens,
                         const algebra::Transformation3D &trans);
 */
-typedef VectorOfRefCounted<DensityMap*> DensityMaps;
+
+IMP_OBJECTS(DensityMap);
+/** \objects{DensityMap}
+*/
+/** \objectstemp{DensityMap}
+*/
+
+/** Return the value for the density map, m, at point v, interpolating linearly
+    from the sample values. The resulting function is C0 over R3.
+    \relatesalso DensityMap
+*/
+IMPEMEXPORT double get_density(DensityMap *m, const algebra::Vector3D &v);
 
 IMPEM_END_NAMESPACE
 
