@@ -34,12 +34,10 @@ public:
       The reason why is to use this term as part of an scoring function that
       is better the lower the term. If you want the cross correlation
       coefficient, use cross_correlation_coefficient() instead.
-      \param[in] em_map DensityMap class containing the EM map. note:
+      \param[in] data DensityMap class containing the EM map. note:
              correct RMSD and mean MUST be in the header!
       \param[in] model_map SampledDensityMap class prepared to contain the
              simulated EM map for the model.
-      \param[in] access_p ParticlesAccessPoint class with the particles data
-             (location, radii, weight)
       \param[in] dvx vector to contain the xpartial derivatives
       \param[in] dvy vector to contain the y partial derivatives
       \param[in] dvz vector to contain the z partial derivatives
@@ -51,7 +49,7 @@ public:
    */
   static float evaluate(DensityMap &data, SampledDensityMap &model_map,
                         std::vector<float> &dvx, std::vector<float>&dvy,
-                        std::vector<float>&dvz, float scalefac, bool lderiv,
+                        std::vector<float>&dvz, float scalefactor, bool lderiv,
                         bool divide_by_rms=true,bool resample=true);
 
 
@@ -62,9 +60,7 @@ public:
             mean MUST be in the header!
  \param[in] model_map SampledDensityMap class prepared to contain the simulated
             EM map for the model.
- \param[in] access_p ParticlesAccessPoint class with the particles data
-            (location, radii, weight)
- \param[in] scalefactor scale factor to apply to the value of the cross
+ \param[in] scalefac scale factor to apply to the value of the cross
                         correlation term
  \param[out] dvx vector to contain the x partial derivatives
  \param[out] dvy vector to contain the y partial derivatives
