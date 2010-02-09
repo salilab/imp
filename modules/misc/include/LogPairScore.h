@@ -44,6 +44,8 @@ class LogPairScore : public PairScore
   }
 };
 
+// doxygen spits out warnings
+#ifndef IMP_DOXYGEN
 inline void LogPairScore::show(std::ostream &out) const {
   out << "LogPairScore";
 }
@@ -56,7 +58,7 @@ inline Float LogPairScore::evaluate(const ParticlePair &pp,
   ++map_[pp];
   return 0.;
 }
-
+#endif
 
 
 IMPMISC_END_NAMESPACE
