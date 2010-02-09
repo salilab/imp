@@ -424,7 +424,7 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
 def IMPModuleGetExamples(env):
     vars= make_vars(env)
     files=module_glob(["*.py", "*/*.py","*.readme","*/*.readme",
-                       "*.pdb", "*.mrc"])
+                       "*.pdb", "*.mrc", "*.dat"])
     return files
 
 def IMPModuleGetHeaders(env):
