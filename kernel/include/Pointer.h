@@ -79,6 +79,18 @@ public:
     set_pointer(o);
     return *this;
   }
+  //! Relinquish control of the pointer
+  /** This must be the only pointer pointing to the object. Its
+      reference count will be 0 after the function is called, but
+      the object will not be destroyed. Use this to safetly return
+      objects allocated within functions.
+  */
+  O* release() {
+    internal::release(P::o_);
+    O* ret=P::o_;
+    P::o_= NULL;
+    return ret;
+  }
 };
 
 

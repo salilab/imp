@@ -33,6 +33,18 @@ void unref(O* o)
   }
 }
 
+template <class O>
+void release(O* o)
+{
+  if (!o) return;
+  // need to know about possible virtual destructors
+  // or the correct non-virtual one
+  const RefCounted *rc= o;
+  IMP_INTERNAL_CHECK(rc->count_ !=0, "Release called on unowned object");
+  --rc->count_;
+  IMP_INTERNAL_CHECK(rc->count_ == 0, "Release called on shared object.");
+}
+
 
 template <class O>
 void ref(O* o)
