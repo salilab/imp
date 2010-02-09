@@ -1,26 +1,27 @@
 /** 
-    \page coding_conventions Coding conventions
+\page codingconventions Coding conventions
 
-    Make sure you read the \ref conventions "API conventions" page first.
+Make sure you read the \ref conventions "API conventions" page
+first.
 
-    To ensure code consistency and readability, certain conventions should be
-    adhered to when writing code for \imp. Some of these conventions are
-    automatically checked for by source control before allowing a new commit, and
-    can also be checked yourself in new code by running
-    \command{scons standards}
+To ensure code consistency and readability, certain conventions
+must be adhered to when writing code for \imp. Some of these
+conventions are automatically checked for by source control before
+allowing a new commit, and can also be checked yourself in new
+code by running \command{scons standards}
 
-    \section indent Indentation
+\section indent Indentation
 
-    All C++ headers and code should
-    be indented in 'Linux' style, with 2-space indents. Do not use
-    tabs. This is roughly the output of Artistic Style run like
-    \command{astyle --convert-tabs --style=linux --indent=spaces=2 --unpad=paren --pad=oper}
-    Split lines if necessary to ensure that
-    no line is longer than 80 characters.
+All C++ headers and code should be indented in 'Linux' style, with
+2-space indents. Do not use tabs. This is roughly the output of
+Artistic Style run like \command{astyle --convert-tabs
+--style=linux --indent=spaces=2 --unpad=paren --pad=oper} Split
+lines if necessary to ensure that no line is longer than 80
+characters.
 
-    \b Rationale: Different users have different-sized windows or terminals,
-    and different tab settings, but everybody can read 80 column output without
-    tabs.
+    \b Rationale: Different users have different-sized windows or
+    terminals, and different tab settings, but everybody can read 80
+    column output without tabs.
 
     All Python code should conform to the
     \external{www.python.org/dev/peps/pep-0008/, Python style guide}.
@@ -59,20 +60,21 @@
 
 
     \section names Names
-    - Class names should be in \c CamelCase, for example 'class SpecialVector'
-    - method names and variables should be \c separated_by_underscores, for
-      example 'void SpecialVector::add_constant(int the_constant)'
-    - member variables should \c end_in_an_underscore_, for example 'int SpecialVector::int_member_'
-    - member methods that set a value should begin with \c set_
-    - member methods which return a value should begin with \c get_
+
+    See the names section of the \ref conventions "IMP conventions" page.
+    In addition, developers should be aware that
     - all preprocessor symbols (things created by \#define) must begin with \c IMP
     - names of files that implement a single class should be named for that
       class; for example the SpecialVector class could be implemented in
       \c SpecialVector.h and \c SpecialVector.cpp
     - files that provide free functions or macros should be given names
       \c separated_by_underscores, for example \c container_macros.h
-
-    Do not use abbreviations in names.
+    - Functions which take a parameter which has units should have the
+      unit as part of the function name, for example
+      IMP::atom::BrownianDynamics::set_time_step_in_femtoseconds().
+      Remember the Mars orbiter. The exception to this is distance
+      and force numbers which should always be in angstroms and
+      kcal/mol angstrom respectively unless otherwise stated.
 
     \b Rationale: This makes it easier to tell between class names and
     function names where this is ambiguous (particularly an issue with
@@ -82,133 +84,64 @@
     especially important with preprocessor symbols since these have
     file scope and so can change the meaning of other people's code.
 
-    \section errors Errors
-    Classes and methods should use IMP exceptions to report errors. See
-    IMP::Exception for a list of existing exceptions. See \ref assert for
-    a list of functions to aid in error reporting and detection.
-    \note Do not use exception specifications. Instead document the 
-    exceptions in Doxygen using the \c \\exception command. (Exception
-    specifications do not guarantee that only the listed exceptions will be
-    thrown, and actually hurt compiler optimizations in many cases. Many
-    libraries (such as Boost) advise against using them.)
+\section datastorage Passing and storing data
 
-    \section coding Good Coding Practices
+- When a class or function takes a set of particles which are expected to
+  be those of a particular type of decorator, it should take a list of
+  decorators instead. eg IMP::core::transform() takes a IMP::core::XYZ.
+  This makes it clearer what attributes the particle is required to have
+  as well as allows functions to be overloaded (so there can be an
+  IMP::core::transform() which takes IMP::core::RigidBody particles instead).
 
-    - IMP::Restraint and IMP::ScoreState classes should generally use a
+
+- IMP::Restraint and IMP::ScoreState classes should generally use a
       IMP::SingletonContainer (or other type of Container) to store the set of
       IMP::Particle objects that they act on.
 
-    - Never use '\c using \c namespace' outside of a function; instead 
-      explicitly provide the namespace. (This avoids namespace pollution, and
-      removes any ambiguity.)
-    
-	- Use the provided \c IMPMODULE_BEGIN_NAMESPACE,
+- Store collections of IMP::Object-derived or IMP::Decorator-derived
+  objects of type \c Name using a \c Names. Declare functions that
+  accept them to take a \c NamesTemp (\c Names is a \c NamesTemp). \c
+  Names are reference counted (see IMP::RefCounted for details), \c
+  NamesTemp are not.
+
+\section display Display
+
+All classes must have a \c show method which takes an optional 
+\c std::ostream and prints information about the object. The helper
+macros, such as IMP_RESTRAINT() define such a method.  In addition they
+must have \c operator<< defined. This can be easily done using the
+IMP_OUTPUT_OPERATOR() macro once the show method is defined. Note that
+\c operator<< writes human readable information. Add a \c write method
+if you want to provide output that can be read back in.
+
+
+\section errors Errors
+
+Classes and methods should use IMP exceptions to report errors. See
+IMP::Exception for a list of existing exceptions. See \ref assert for
+a list of functions to aid in error reporting and detection.
+
+
+\section internal_ns Namespaces
+
+Use the provided \c IMPMODULE_BEGIN_NAMESPACE,
 	  \c IMPMODULE_END_NAMESPACE, \c IMPMODULE_BEGIN_INTERNAL_NAMESPACE 
 	  and \c IMPMODULE_END_INTERNAL_NAMESPACE macros to put declarations 
 	  in a namespace appropriate for module \c MODULE.
 
-    - Never use the preprocessor to define constants. Use \c const
-      variables instead. Proprocessor symbols don't have scope or type
-      and so can have unexpected effects.
+Each module has an internal namespace, \c module_name::internal and an internal
+include directory \c modulename/internal. Any function which is
+ - not intended to be part of the API,
+ - not documented,
+ - liable to change without notice,
+ - or not tested
 
-    - Pass objects which inherit from IMP::Object or
-      IMP::RefCountedObject by pointer. Store pointers to such objects
-      using an IMP::Pointer to properly manage reference counting and
-      pointer initialization.
+should be declared in an internal header and placed in the internal namespace.
 
-    - Pass other objects by value or by \c const & (if the object is 
-      large) and store copies of them.
+The functionality in such internal headers is
+ - not exported to python
+ - and not part of of documented API
 
-    - Never expose member variables in an object which has methods.
-
-    - Don't derive a class from another class simply to reuse some code that
-      the base class provides - only do so if your derived class could make
-      sense when cast to the base class. As above, reuse existing code by
-      pulling it into a function.
-
-    - Clearly mark any file that is created by a script so that other
-      people know to edit the original file.
-
-    - Always return a \c const value or \c const ref if you are not
-      providing write access. Returning a \c const copy means the compiler
-      will report an error if the caller tries to modify the return value
-      without creating a copy of it.
-
-    - Include files from the local module first, then files from the other \imp
-    modules and kernel and finally outside includes. This makes any dependencies 
-    in your code obvious, and by including standard headers \e after IMP headers,
-    any missing includes in the headers themselves show up early (rather than
-    being masked by other headers you include).
-    \code
-    #include <IMP/mymodule/mymodule_exports.h>
-    #include <IMP/mymodlule/MyRestraint.h>
-    #include <IMP/Restraint.h>
-    #include <vector>
-    \endcode
-
-    - All classes must have a \c show method which takes an optional 
-      \c std::ostream and prints information about the object. In addition they
-      must have \c operator<< defined. This can be easily done using the
-      IMP_OUTPUT_OPERATOR() macro once the show method is defined. Note that
-      \c operator<< writes human readable information. Add a \c write method
-      if you want to provide output that can be read back in.
-
-    - Use \c double variables for all computational intermediates.
-
-    - Avoid using nested classes in the API as SWIG can't wrap them properly.
-      If you must use use nested classes, you will have to do more work to
-      provide a Python interface to your code.
-
-    - All access to particles should be through decorators. Use the provided
-      base class (IMP::Decorator) and associated macros to write the decorator.
-      See IMP::examples::ExampleDecorator.
-
-    - Delay initialization of keys until they are actually needed
-      (since all initialized keys take up memory within each particle,
-      more or less). The best way to do this is to have them be static
-      variables in a static function:
-      \code
-      FloatKey get_my_float_key() {
-               static FloatKey k("hello");
-               return k;
-      }
-      \endcode
-
-    - One is the almost always the right number:
-        - Information should be stored in exactly one
-          place. Duplicated information easily gets out of sync.
-        - A given piece of code should only appear once. Do not copy,
-          paste and modify to create new functionality.  Instead,
-          figure out a way to reuse the existing code by pulling it
-          into an internal function and adding extra parameters. If
-          you don't, when you find bugs, you won't remember to fix
-          them in all the copies of the code.
-        - There should be exactly one way to represent any particular
-          state. If there is more than one way, anyone who writes
-          library code which uses that type of state has to handle all
-          ways.  For example, there is only one scheme for
-          representing proteins, namely the
-          IMP::atom::MolecularHierarchyDecorator.       
-        - Each class/method should do exactly one thing. The presence
-          of arguments which dramatically change the behavior of the
-          class/method is a sign that it should be split. Splitting
-          it can make the code simpler, expose the common code for
-          others to use and make it harder to make mistakes by
-          getting the mode flag wrong.
-        - Methods should take at most one agument of each type (and
-          ideally only one argument). If there are several arguments
-          of the same types (eg two different \c double parameters) it is
-          easy for a user to mix up the order of arguments and the compiler will
-          not complain. \c int and \c double count as
-          equivalent types for this rule since the compiler will
-          transparent convert an \c int into a \c double.
-
-
-    - Functions which take a parameter which has units should have the
-      unit as part of the function name, for example
-      IMP::atom::BrownianDynamics::set_time_step_in_femtoseconds().
-      Remember the Mars orbiter. The exception to this is distance
-      and force numbers which should always be in angstroms and
-      kcal/mol angstrom respectively unless otherwise stated.
-
+As a result, such functions do not need to obey all the coding conventions
+(but we recommend that they do).
 */

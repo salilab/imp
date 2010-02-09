@@ -262,7 +262,7 @@ external code,
 \par Week of July 11
 
 - Per Javi's suggestion, the conventions have been split into \ref
-  coding_conventions "Coding conventions" and \ref conventions
+  codingconventions "Coding conventions" and \ref conventions
   "API conventions" and linked from the main page.
 
 - benchmarks got moved to their own module, IMP::benchmark and will

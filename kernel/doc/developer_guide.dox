@@ -1,219 +1,119 @@
 /**\page devguide  Developer Guide
 
-Developers must familiarize themselves with the guidelines presented in this page.
+This page presents instructions on how to develop code using
+\imp. Developers who wish to contribute code back to \imp or
+distribute their code should also read the \ref contributing
+"Contributing code to IMP" page.
 
 \section building Building IMP
 
-Developers should read \ref installation "the installation guide". We
-recommend doing an out of source build so you can easily
-build multiple build types (\c build='fast', \c build='debug', or \c
+Developers should first read \ref installation "the installation guide".
+
+We recommend doing an out of source build so you can easily build
+multiple build types (\c build='fast', \c build='debug', or \c
 build='release') from the same set of sources. To do this:
 
 - make a second directory (say \c debug) outside of the \imp source
-directory. Let the path from the build directory, \c debug, to the
-source directory, \c svn, be \c ../svn.
+  directory. Let the path from the build directory, \c debug, to the
+  source directory, \c source, be \c ../source.
 
 - make sure that the \imp source directory is clean. If you just checked
-  out form \c svn, then it is. Otherwise, do \command{scons -c all} in
+  out from \c svn, then it is. Otherwise, do \command{scons -c all} in
   the source directory.
 
 - In the build directory link to \c SConstruct and \c scons_tools in
-  \c svn. eg \command{ln -s ../svn/SConstruct; ln -s
-  ../svn/scons_tools}
+  \c source. eg \command{ln -s ../source/SConstruct; ln -s
+  ../source/scons_tools}
 
-- Put \c repository="../svn" in your \c config.py in the \c debug
+- Put \c repository="../source" in your \c config.py in the \c debug
   directory. Also put \c build='debug' to tell \c scons to do a debug
   build
 
 - Run \c scons to build things. All the build files will be put in
-subdirectories of \c debug (mostly in \c debug/build).
+  subdirectories of \c debug (mostly in \c debug/build).
 
 - You can then create a second build directory, say called \c fast, to
-hold on optimized build. Put \c build='fast' in the \c config.py for
-that build directory.
+  hold on optimized build. Put \c build='fast' in the \c config.py for
+  that build directory.
 
-\section usage Usage
+\section usage Writing new functions and classes
 
-Developers should use \imp by creating a new module (using the \ref make_module
-"make-module script") or by adding code to an existing module. If adding to an
-existing module, you need to consult with the person who people who control that
-module. You can then use the \c ./bin/imppy.sh to run Python or binaries without
-installint \imp. For example
-\command{./bin/imppy.sh python examples/chain.py}
-runs the example \c chain.py. The \c imppy.sh script is needed to make sure that
+The easiest way to start writing new functions and classes is to
+create a new module using the \ref make_module "make-module script".
+This creates a new module in the \c modules directory, complete with
+example code.
+
+We highly recommend using a revision control system such as
+\external{subversion.tigris.org/, SVN} or \external{git-scm.com/,
+GIT}.
+
+If, instead, you choose to add code to an existing module you need to
+consult with the person who people who control that module.
+
+\section inplace Using IMP in place
+
+When developing new \imp code, it is useful to be able to run and test
+it without installing \imp every time. To do so, use the
+\c tools/imppy.sh script. For example, to execute the \c chain.py
+example do \command{./tools/imppy.sh python kernel/examples/chain.py}
+or to run the xyz access benchmark do
+\command{./tools/imppy.sh modules/benchmark/bin/benchmark_xyz_access}
+
+The \c imppy.sh script is needed to make sure that
 all the \imp libraries can be found when needed.
 
-See comments scattered throughout the examples module for more explaination of
-the build system and python interactions.
-
-\section policies Policies
-
-Checkins  in the \imp repository must compile and tests must pass. Specifically,
-\command{scons test}
-should succeed without any errors. Non-functioning code and nonpassing tests can
-be commented out before committing. After submitting code, please monitor
-\salilab{internal/imp/tests.html,Daily build status} to make sure your change
-did not break anything. If your change breaks the nightly build, it is your
-responsibility to fix it as fast as possible.
-
-All code must follow the \ref coding_conventions "IMP coding conventions". Code that
-does not follow these conventions is liable to be changed by others without
-notice, possibly breaking external code which depends on it.
-
-The following sorts of changes must be announced on the <imp-dev@salilab.org>
-mailing list before being made
- - changes to existing kernel or core APIs
- - removal of test cases
- - creation of a new module in svn (you are encouraged to create local modules for use with non-public projects)
- - significant additions to kernel or core
-We recommend that changes be posted to the list a day or two before they are made
-so as to give everyone adequate time to comment.
-
-It is strongly suggested that the following sorts of changes be posted to the list
- - additions of new functionality to any part of IMP
-
-Such discussion is important so that
- - you do not duplicate work
- - others can ensure that the new interfaces are consistent with other IMP code
- - others can make suggestions or point out problems
- - others are made aware of your contribution.
-
-\section designing Designing the Interface
-
-When designing the interface for your new code, you should
-
-- search \imp for similar functionality and, if there is any, adapt
-  the existing interface for your purposes. For example, the existing
-  IMP::atom::read_pdb() and IMP::atom::write_pdb() functions provide
-  templates that should be used for the design of any functions that
-  create particles from a file or write particles to a file. Since
-  IMP::atom::BondDecorator, IMP::algebra::Segment3D and
-  IMP::display::Geometry all use methods like
-  IMP::algebra::Segment3D::get_point() to accesss the
-  endpoints of a segment, any new object which defines similar
-  point-based geometry should do likewise.
-
-- think about how other people are likely to use the code. For
-  example, not all molecular hierarchies have atoms as their leaves,
-  so make sure your code searches for arbitrary
-  IMP::core::XYZDecorator particles rather than atoms if you only care
-  about the geometry.
-
-- look for easy ways of splitting the functionality into pieces. It
-  generally makes sense, for example, to split selection of the
-  particles from the action taken on them, either by accepting a
-  IMP::ParticleRefiner, or a IMP::SingletonContainer or just an arbitrary
-  IMP::Particles object.
-
-You may want to read \ref design_example "the design example".
-
-\section testing Debugging and Testing
-
-Code, espectially code which is shared with other people, needs to be extensively
-tested. There are two sorts of tests that are used in \imp:
-- internal tests: these are checks contained in the code itself which verify that
-the code is (a) used correctly and (b) working correctly. Such checks are usually
-implemented using the IMP_USAGE_CHECK() and IMP_INTERNAL_CHECK() macros, respectively.
-See the \ref assert "Error reporting/checking" page for more details. One should aim
-for all impropper usage to produce at least a warning and that any value returned by
-a function has been check to be correct.
-- unit tests: these are external, python, code which calls the function to be tested
-and verifies the output. The code is located in the \c test directory for the module.
 
 
-\subsection unittest Unit Testing
-Each class and method should have one or more associated tests in the
-\c test directory of its module. These tests should try, as much as
-possible to provide independent verification of the correctness of the
-C++ code. In addition, classes and methods should use the IMP_USAGE_CHECK and
-IMP_INTERNAL_CHECK macros in their implementation to check the correctness of arguments
-and invariants and report errors when problems are detected.
+\section testing Debugging and testing your code
 
-When the tests for a module are run, the directory tree rooted at
-\c modules/modulename/test/ is scanned for files whose name matches
-\c test_*.py. Each method whose name starts with \c test_ of each class
-which inherits from \c IMP.test.TestCase is then run. We recommend you
-set up tests by copying an existing test case.
+Ensuring that your code is correct can be very difficult, so \imp provides a number of tools to help you out.
 
-Some tests will require input files or temporary files. Input files should be
-placed in a directory called \c input in the \c test directory. The test script
-should then call \command{self.get_input_file_name(file_name)} to get the true path
-to the file. Likewise, appropriate names for temporary files should be found by
-calling \command{self.get_tmp_file_name(file_name)}. Temporary files will be located in
-\c build/tmp. The test should remove temporary files after using them.
+The first set are assert-style macros:
 
-\section modules Choosing a module for your code
+- IMP_USAGE_CHECK() which should be used to check that arguments to functions and methods satisfy the preconditions.
 
-If you want to distribute your code to other, you need to choose which
-module it will go into. Code that will not be distrubuted should go
-into a local module (one not in the svn repository). You can create such
-a module using the \ref make_module "make-module script".
+- IMP_INTERNAL_CHECK() which should be used to verify internal state and return values to make sure they satisfy pre and post-conditions.
 
-Each module in \imp groups together code with related functionality. 
- For example, restraints and optimizers specific to
-ligands could go in a 'ligand' module. Please consult the list of existing
-modules which can be found in the \salilab{imp/doc/doxygen/namespaces.html, 
-Namespace List}. Please post to the <imp-dev@salilab.org> whether a particular
-piece of functionality should go in an existing module or be added to a new one.
+See \ref assert "Error reporting/checking" page for more details. As a general guideline,  any improper usage to produce at least a warning all return values should be checked by such code.
 
-The IMP::core module has functionality of general interest to many other modules.
-The IMP::misc module contains functionality for testing and development as well
-as functionality which is not of general interest.
+The second is logging macros such as:
 
-Each module has a responsible owner or owners, and it is up to them whether
-they want to allow others commit to change code in their module. Email them
-and ask for commit rights (a sysadmin can add these), or send them your patch
-for integration. If in doubt, post it on the <imp-dev@salilab.org> mailing list.
+- IMP_LOG() which allows controlled display of messages about what the code is doing. See \ref logging "IMP logging" for more information.
 
-\section internal_ns Internal Namespaces
-Each module has an internal namespace, \c module_name::internal and an internal
-include directory \c modulename/internal. Any function which is
- - not intended to be part of the API,
- - not documented,
- - liable to change without notice,
- - or not tested
+Finally, each module has a set of unit tests. These are python scripts
+which test the behavior of a particular piece of the modules API. The
+scripts are located in the \c modules/modulename/test directory.
+These tests should try, as much as possible to provide independent
+verification of the correctness of the C++ code. The command
+\command{scons test} or \command{scons modulename-test} run all modules unit
+tests or only those for the module \c modulename, respectively. Any
+file in that directory or a subdirectory whose name matches \c
+test_*.py is considered a test. The python files are scanned for
+classes which inherit from \c IMP.test.TestCase. For each such class
+found, any method whose name starts with \c test_ is run.
 
-should be declared in an internal header and placed in the internal namespace.
+Some tests will require input files or temporary files. Input files
+should be placed in a directory called \c input in the \c test
+directory. The test script should then call
+\command{self.get_input_file_name(file_name)} to get the true path to
+the file. Likewise, appropriate names for temporary files should be
+found by calling
+\command{self.get_tmp_file_name(file_name)}. Temporary files will be
+located in \c build/tmp. The test should remove temporary files after
+using them.
 
-The functionality in such internal headers is
- - not exported to python
- - and not part of of documented API
-
-As a result, such functions do not need to obey all the coding conventions
-(but we recommend that they do).
-
-\section submission Submission of changes to IMP kernel or IMP.core
-
-In order to submit changes to the kernel or IMP.core, you should prepare a patch against the current SVN version of IMP. To do that, make your changes to an up to date copy of the svn version of IMP and then do
-\command{svn diff paths/to/changed/files > patches/mypatch.patch}
-to generate a description of the patch in the file "mypatch.patch". You should then create a description of the patch in patches/mypatch.readme and commit the two files into the repository by doing
-\command{svn add patches/mypatch*}
-\command{svn commit patches/mypatch* -m "very brief description"}
-If the patch introduces API changes, please discuss them (preferably before
-writing the actual code) on the <imp-dev@salilab.org> mailing list.
-
-Patches should contain a related set of changes. For example, a patch which adds a new method foo, a new testcase for foo, and some documentation for the SpecialVector class, should be split into two patches: one for the foo method and test, and the other for the SpecialVector documentation.
-It is much easier for others to understand your patch's changes if it is small and contains only relevant changes. 
-
-Patches to modules for which you have write access can be submitted directly
-by doing:
-\command{svn commit -m "message describing the patch" files or directories to submit}
 
 \section fixbug Finding and fixing bugs in IMP
 
 If you find a bug in \imp, please report it on the
-\salilab{imp/bugs/,IMP bug tracker}. This will ensure it does not get lost.
-The best way to report a bug is to provide a short script file that
-demonstrates the problem.
+\salilab{imp/bugs/,IMP bug tracker}. This will ensure it does not get
+lost.  The best way to report a bug is to provide a short script file
+that demonstrates the problem.
 
 If you create a patch which fixes a bug, please cite the bug ID in the
-commit log for that patch. The patch should also include a testcase which
-triggers the bug, so that we can ensure your fix for the bug does not
-break in future. In many cases, the demonstration script in the bug report
-can be trivially adapted into a test case.
+commit log for that patch. The patch should also include a testcase
+which triggers the bug, so that we can ensure your fix for the bug
+does not break in future. In many cases, the demonstration script in
+the bug report can be trivially adapted into a test case.
 
-\section uptodate Keeping up-to-date
-In addition to monitoring the imp-dev list, developers who have a module or
-are committing patches to svn may want to subscribe to the \impcommits email
-list which receives notices of all changes made to the \imp SVN repository.
 */

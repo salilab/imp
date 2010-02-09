@@ -283,6 +283,6 @@ main \imp directory. This will create a new module in modules/my_module. See
 You should then read the
  - \ref api "API documentation"
  - \ref conventions "Conventions"
- - and \ref coding_conventions "Coding conventions"
+ - and \ref codingconventions "Coding conventions"
 
 */
