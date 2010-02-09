@@ -292,7 +292,7 @@ void project_given_direction1(IMP::algebra::Matrix3D<T>& m3,
  *        DensityMap
  *   v - shift vector applied to p in the coordinate system of the projection.
  *
- * \param[in] m3 A DensityMap of values to project.
+ * \param[in] map A DensityMap of values to project.
  * \param[out] m2  A Matrix2D of floats to store the projection.
  * \param[in] Ydim size in rows for the Matrix2D
  *            that is to contain the projection
@@ -337,7 +337,7 @@ void IMPEMEXPORT project_given_direction(DensityMap& map,
  *        DensityMap
  *   v - shift vector applied to p in the coordinate system of the projection.
  *
- * \param[in] m3 A DensityMap of values to project.
+ * \param[in] map A DensityMap of values to project.
  * \param[out] m2  A Matrix2D of floats to store the projection.
  * \param[in] Ydim size in rows for the Matrix2D
  *            that is to contain the projection
