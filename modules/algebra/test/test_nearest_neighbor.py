@@ -6,16 +6,24 @@ import math
 
 def get_nn(vs, i):
     bd= 1000000
-    bi=-1
+    bi=[]
     cv= vs[i]
     for ci in range(0, len(vs)):
         if ci == i:
             continue
-        cd= (vs[i]-vs[ci]).get_squared_magnitude()
-        if bd > cd:
+        cd= (vs[i]-vs[ci]).get_magnitude()
+        if cd < 1.1*bd:
             #print "best is " + str(ci)
             bd= cd
-            bi=ci
+            bi=[ci]
+    for ci in range(0, len(vs)):
+        if ci == i:
+            continue
+        cd= (vs[i]-vs[ci]).get_magnitude()
+        if cd < 1.1*bd:
+            #print "best is " + str(ci)
+            bd= cd
+            bi.append(ci)
     return bi
 
 class ConeTests(IMP.test.TestCase):
@@ -33,10 +41,15 @@ class ConeTests(IMP.test.TestCase):
             self.assert_(cnn!= i)
             rnn= get_nn(vs, i)
             #print i
-            #print cnn
-            #print rnn
+            print "start", i
+            print vs[i]
+            print cnn
+            print rnn
+            print vs[cnn], (vs[i]-vs[cnn]).get_magnitude()
+            for x in rnn:
+                print vs[x], (vs[x]-vs[i]).get_magnitude()
             #print
-            self.assertEqual(rnn, cnn)
+            self.assert_(rnn.index(cnn) != -1)
 
 if __name__ == '__main__':
     unittest.main()

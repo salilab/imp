@@ -61,14 +61,15 @@ class NearestNeighborD {
 #ifdef IMP_USE_CGAL
   struct VectorWithIndex: public VectorD<D> {
     int index;
-    VectorWithIndex(unsigned int i, VectorD<D> p): VectorD<D>(p), index(i){}
+    VectorWithIndex(unsigned int i, const VectorD<D>& p): VectorD<D>(p),
+                                                          index(i){}
     VectorWithIndex(): index(-1){}
   };
   struct Construct_coord_iterator {
     const double* operator()(const VectorD<D>& p) const
-    { return static_cast<const double*>(p.get_data()); }
+    { return p.get_data(); }
     const double* operator()(const VectorD<D>& p, int)  const
-    { return static_cast<const double*>(p.get_data()+D); }
+    { return p.get_data()+D; }
   };
   struct Distance {
     typedef VectorD<D> Query_item;
@@ -81,37 +82,28 @@ class NearestNeighborD {
     template <class TreeTraits>
     double min_distance_to_rectangle(const VectorD<D>& p,
                         const CGAL::Kd_tree_rectangle<TreeTraits>& b) const {
-      BOOST_STATIC_ASSERT(D==3);
-      double distance(0.0), h = p[0];
-      if (h < b.min_coord(0)) distance += (b.min_coord(0)-h)*(b.min_coord(0)-h);
-      if (h > b.max_coord(0)) distance += (h-b.max_coord(0))*(h-b.max_coord(0));
-      h=p[1];
-      if (h < b.min_coord(1)) distance += (b.min_coord(1)-h)*(b.min_coord(1)-h);
-      if (h > b.max_coord(1)) distance += (h-b.max_coord(1))*(h-b.min_coord(1));
-      h=p[2];
-      if (h < b.min_coord(2)) distance += (b.min_coord(2)-h)*(b.min_coord(2)-h);
-      if (h > b.max_coord(2)) distance += (h-b.max_coord(2))*(h-b.max_coord(2));
+      double distance(0.0);
+      for (unsigned int i=0; i< D; ++i) {
+        double h = p[i];
+        if (h < b.min_coord(i)) distance += square(b.min_coord(i)-h);
+        if (h > b.max_coord(i)) distance += square(h-b.max_coord(i));
+      }
       return distance;
     }
 
     template <class TreeTraits>
     double max_distance_to_rectangle(const VectorD<D>& p,
                          const CGAL::Kd_tree_rectangle<TreeTraits>& b) const {
-      double h = p[0];
-      double d0 = (h >= (b.min_coord(0)+b.max_coord(0))/2.0) ?
-        (h-b.min_coord(0))*(h-b.min_coord(0))
-        : (b.max_coord(0)-h)*(b.max_coord(0)-h);
-      h=p[1];
-      double d1 = (h >= (b.min_coord(1)+b.max_coord(1))/2.0) ?
-        (h-b.min_coord(1))*(h-b.min_coord(1))
-        : (b.max_coord(1)-h)*(b.max_coord(1)-h);
-      h=p[2];
-      double d2 = (h >= (b.min_coord(2)+b.max_coord(2))/2.0) ?
-        (h-b.min_coord(2))*(h-b.min_coord(2))
-        : (b.max_coord(2)-h)*(b.max_coord(2)-h);
-      return d0 + d1 + d2;
+      double d=0.0;
+      for (unsigned int i=0; i< D; ++i) {
+        double h = p[i];
+        double di = (h >= (b.min_coord(i)+b.max_coord(i))/2.0) ?
+          square(h-b.min_coord(i)) : square(b.max_coord(i)-h);
+        d+=di;
+      }
+      return d;
     }
-    double new_distance(double& dist, double old_off, double new_off,
+    double new_distance(double dist, double old_off, double new_off,
                         int /* cutting_dimension */)  const {
       return dist + new_off*new_off - old_off*old_off;
     }
@@ -161,7 +153,11 @@ public:
   unsigned int get_nearest_neighbor(unsigned int i) const {
 #ifdef IMP_USE_CGAL
     K_neighbor_search search(*tree_, data_[i], 2, eps_);
-    return (++search.begin())->first.index;
+    IMP_INTERNAL_CHECK(std::distance(search.begin(), search.end()) >=2,
+                       "Wrong number of points returned "
+                       << std::distance(search.begin(), search.end()));
+    if (search.begin()->first.index != i) return search.begin()->first.index;
+    else return (++search.begin())->first.index;
 #else
     return linear_nearest_neighbor<true>(data_[i], i, 1)[0];
 #endif
