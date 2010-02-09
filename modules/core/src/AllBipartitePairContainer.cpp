@@ -40,43 +40,45 @@ AllBipartitePairContainer
 AllBipartitePairContainer
 ::AllBipartitePairContainer( SingletonContainer *a,
                                   SingletonContainer *b): a_(a), b_(b) {
-  SingletonContainer *olda= new internal::DifferenceSingletonContainer(a_,
-                             a_->get_removed_singletons_container());
-  SingletonContainer *oldb= new internal::DifferenceSingletonContainer(b_,
-                                   b_->get_removed_singletons_container());
+  IMP_NEW(internal::DifferenceSingletonContainer, olda,
+          (a_,
+           a_->get_removed_singletons_container()));
+  IMP_NEW(internal::DifferenceSingletonContainer, oldb,
+          (b_,
+           b_->get_removed_singletons_container()));
 
-  PairContainerSet* removed
+  Pointer<PairContainerSet> removed
     = PairContainerSet::create_untracked_container();
   {
-    PairContainer *all
+    Pointer<PairContainer> all
       = AllBipartitePairContainer
       ::create_untracked_container(a_->get_removed_singletons_container(),
                                    b_->get_removed_singletons_container());
     removed->add_pair_container(all);
-    PairContainer *leftr
+    Pointer<PairContainer> leftr
       = AllBipartitePairContainer
       ::create_untracked_container(a_->get_removed_singletons_container(),
                                    oldb);
     removed->add_pair_container(leftr);
-    PairContainer *rightr
+    Pointer<PairContainer> rightr
       = AllBipartitePairContainer::create_untracked_container(olda,
                                    b_->get_removed_singletons_container());
     removed->add_pair_container(rightr);
   }
-  PairContainerSet* added
+  Pointer<PairContainerSet> added
     = PairContainerSet::create_untracked_container();
   {
-    PairContainer *all
+    Pointer<PairContainer> all
       =AllBipartitePairContainer
       ::create_untracked_container(a_->get_added_singletons_container(),
                                    b_->get_added_singletons_container());
     added->add_pair_container(all);
-    PairContainer *leftr
+    Pointer<PairContainer> leftr
       = AllBipartitePairContainer
       ::create_untracked_container(a_->get_added_singletons_container(),
                                    oldb);
     added->add_pair_container(leftr);
-    PairContainer *rightr
+    Pointer<PairContainer> rightr
       = AllBipartitePairContainer
       ::create_untracked_container(olda,
                                    b_->get_added_singletons_container());

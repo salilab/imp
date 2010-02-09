@@ -38,32 +38,33 @@ AllPairContainer::AllPairContainer(SingletonContainer *c): c_(c) {
   a_=1;
   b_=0;
   i_=0;
-  SingletonContainer *old= new internal::DifferenceSingletonContainer(c_,
-                                 c_->get_removed_singletons_container());
+  IMP_NEW(internal::DifferenceSingletonContainer, old,
+          (c_, c_->get_removed_singletons_container()));
 
-  PairContainerSet* removed
+  IMP::Pointer<PairContainerSet> removed
     = PairContainerSet::create_untracked_container();
   {
-    PairContainer *all
-      =new AllPairContainer(c_->get_removed_singletons_container(),
-                                 false);
+    IMP_NEW(AllPairContainer, all,
+            (c_->get_removed_singletons_container(),
+             false));
     removed->add_pair_container(all);
-    PairContainer *leftr
-      =new AllBipartitePairContainer(c_->get_removed_singletons_container(),
-                                          old,
-                                          false);
+    IMP_NEW(AllBipartitePairContainer, leftr,
+            (c_->get_removed_singletons_container(),
+             old,
+             false));
     removed->add_pair_container(leftr);
   }
-  PairContainerSet *added= PairContainerSet::create_untracked_container();
+  IMP::Pointer<PairContainerSet> added
+    = PairContainerSet::create_untracked_container();
   {
-    PairContainer *all
-      =new AllPairContainer(c_->get_added_singletons_container(),
-                                 false);
+    IMP_NEW(AllPairContainer,all,
+            (c_->get_added_singletons_container(),
+             false));
     added->add_pair_container(all);
-    PairContainer *leftr
-      =new AllBipartitePairContainer(c_->get_added_singletons_container(),
-                                          old,
-                                          false);
+    IMP_NEW(AllBipartitePairContainer,leftr,
+            (c_->get_added_singletons_container(),
+             old,
+             false));
     added->add_pair_container(leftr);
   }
   set_added_and_removed_containers(added, removed);

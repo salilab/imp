@@ -64,7 +64,7 @@ namespace {
   }
 
   HierarchyCache* rebuild_cache(Hierarchy h) {
-    HierarchyCache *c= new HierarchyCache();
+    Pointer<HierarchyCache> c= new HierarchyCache();
     h.get_particle()->add_cache_attribute(h.get_traits().get_data().cache_key_,
                                           c);
     c->leaves= get_leaves(h);

@@ -42,7 +42,7 @@ void DiameterRestraint::set_model(Model *m) {
     XYZR d= XYZR::setup_particle(p_, dr_);
     p_->set_name("DiameterRestraint center");
     d.set_coordinates_are_optimized(false);
-    core::CoverRefined *cr
+    Pointer<core::CoverRefined> cr
       = new core::CoverRefined(
             new FixedRefiner(Particles(sc_->particles_begin(),
                                        sc_->particles_end())),
