@@ -129,7 +129,7 @@ std::string get_data_path(std::string fname);
     preface.append("""
 %%pythoncode {
 if get_module_version_info().get_version() != "%(version)s":
-    sys.stderr.write("WARNING: expected version %(version)s, but got "+ get_module_version_info().get_version() +" when loading module %(module)s.")
+    sys.stderr.write("WARNING: expected version %(version)s, but got "+ get_module_version_info().get_version() +" when loading module %(module)s. Please make sure IMP is properly built and installed and that matching python and C++ libraries are used.")
 }"""%vars)
 
     open(target[0].abspath, "w").write("\n".join(preface))
