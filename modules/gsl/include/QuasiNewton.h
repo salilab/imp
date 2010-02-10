@@ -21,7 +21,7 @@ class IMPGSLEXPORT QuasiNewton: public GSLOptimizer
 {
   double initial_step_, line_step_, min_gradient_;
 public:
-  QuasiNewton();
+  QuasiNewton(Model *m=NULL);
 
   IMP_OPTIMIZER(QuasiNewton, get_module_version_info())
 };

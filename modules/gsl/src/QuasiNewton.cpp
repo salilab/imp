@@ -11,7 +11,7 @@
 
 IMPGSL_BEGIN_NAMESPACE
 
-QuasiNewton::QuasiNewton( ){
+QuasiNewton::QuasiNewton(Model *m): GSLOptimizer(m) {
   initial_step_=.01;
   line_step_=.01;
   min_gradient_=.001;
