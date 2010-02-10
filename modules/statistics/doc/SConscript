@@ -3,6 +3,6 @@ Import('env')
 env.IMPModuleDoc(env.IMPModuleGetDocs(),
                  authors=["Keren Lasker", "Daniel Russel"],
                  brief="MODULENAME provides methods for clustering.",
-                 overview="This module provides code to compute clusterings. Adaptors are provided that allow easy clustering of points, and configurations of models in IMP::ConfigurationSet objects among other things..",
+                 overview="This module provides code to compute clusterings. Adaptors are provided that allow easy clustering of points, and configurations of models in IMP::ConfigurationSet objects among other things.",
                  publications=env.StandardPublications(),
                  license=env.StandardLicense())
