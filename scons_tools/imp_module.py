@@ -421,10 +421,19 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     add_to_module_alias(env, 'install', 'install-python')
     module_deps_requires(env, install, 'install-python', [])
 
-def IMPModuleGetExamples(env):
+def IMPModuleGetExamples(env, priority_files=None):
     vars= make_vars(env)
-    files=module_glob(["*.py", "*/*.py","*.readme","*/*.readme",
-                       "*.pdb", "*.mrc", "*.dat"])
+    if not priority_files:
+        priority_files = list()
+    files = [Glob(f)[0] for f in priority_files]
+    file_set = set([f.abspath for f in files])
+    for file in module_glob(["*.py", "*/*.py","*.readme","*/*.readme",
+      "*.pdb", "*.mrc"]):
+        if not file.abspath in file_set:
+            files.append(file)
+            file_set.add(file.abspath)
+    print file_set
+    print [f.abspath for f in files]
     return files
 
 def IMPModuleGetHeaders(env):
