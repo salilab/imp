@@ -15,6 +15,7 @@
 #include "KMCentersTree.h"
 IMPSTATISTICS_BEGIN_NAMESPACE
 
+#ifndef IMP_DOXYGEN
 
 //! Provides efficient algorithm for computing distortions, by a
 //! filtering algorithm.
@@ -231,6 +232,8 @@ protected:
   double curr_dist_;// current total distortion
   std::vector<int> close_center_;
 };
+
+#endif
 
 IMPSTATISTICS_END_NAMESPACE
 #endif /* IMPSTATISTICS_KM_FILTER_CENTERS_H */

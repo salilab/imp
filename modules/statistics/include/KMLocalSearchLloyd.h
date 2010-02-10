@@ -13,6 +13,8 @@
 #include "IMP/base_types.h"
 
 IMPSTATISTICS_BEGIN_NAMESPACE
+#ifndef IMP_DOXYGEN
+
 //! KMLocalSearchLloyd
 /** Lloyd's algorithm with random restarts.
 Each run is broken into trails, we keep to prefrom trails as long as we improve
@@ -65,5 +67,8 @@ protected:
   double init_trail_dist_; // initial distortion for a trail
   bool is_new_trail_;
 };
+
+#endif
+
 IMPSTATISTICS_END_NAMESPACE
 #endif /* IMPSTATISTICS_KM_LOCAL_SEARCH_LLOYD_H */

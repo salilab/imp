@@ -15,6 +15,7 @@
 
 IMPSTATISTICS_BEGIN_NAMESPACE
 
+#ifndef IMP_DOXYGEN
 
 typedef enum { // distributions
   UNIFORM,            // uniform over cube [-1,1]^d.
@@ -137,6 +138,8 @@ void print_point(const KMPoint &p,std::ostream& out = std::cout);
 //! Print points
 void print_points(const std::string &title,const KMPointArray &pa,
 std::ostream& out = std::cout);
+
+#endif
 
 IMPSTATISTICS_END_NAMESPACE
 #endif /* IMPSTATISTICS_KM_DATA_H */

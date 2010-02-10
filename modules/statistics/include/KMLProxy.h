@@ -24,16 +24,14 @@
 
 IMPSTATISTICS_BEGIN_NAMESPACE
 
-/**
-   \unstable{KMTerminationCondition}
- */
+#ifndef IMP_DOXYGEN
 inline double elapsed_time(clock_t start) {
   return double(clock() - start)/double(CLOCKS_PER_SEC);
 }
+#endif
 
 //! Proxy to apply k-means clustering on a set of Particles
-/**
-   \unstable{KMTerminationCondition}
+/** \see ParticlesEmbedding
  */
 class IMPSTATISTICSEXPORT KMLProxy
 {
