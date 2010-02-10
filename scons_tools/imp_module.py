@@ -425,15 +425,16 @@ def IMPModuleGetExamples(env, priority_files=None):
     vars= make_vars(env)
     if not priority_files:
         priority_files = list()
-    files = [Glob(f)[0] for f in priority_files]
+    try:
+        files = [Glob(f)[0] for f in priority_files]
+    except:
+        raise Exception, "An exception has occured in IMPModuleGetExamples. Please do make sure that priority_files are present in their intended location."
     file_set = set([f.abspath for f in files])
     for file in module_glob(["*.py", "*/*.py","*.readme","*/*.readme",
       "*.pdb", "*.mrc"]):
         if not file.abspath in file_set:
             files.append(file)
             file_set.add(file.abspath)
-    print file_set
-    print [f.abspath for f in files]
     return files
 
 def IMPModuleGetHeaders(env):
