@@ -132,6 +132,8 @@ for h in rawheaders:
 
 sources = headers + Glob("#/kernel/doc/*.dox") + [example_index] \
           + Glob("#/modules/*/doc/*.dox") \
+          + Glob("#/modules/*/examples/*.xml") \
+          + Glob("#/modules/*/examples/*/*.xml") \
           + Glob("#/kernel/doc/.generated/*.dox") \
           + Glob("#/modules/*/doc/.generated/*.dox") + modexamples \
           + Glob("#/modules/*/doc/*.dot") + Glob("#/kernel/doc/*.dot")
