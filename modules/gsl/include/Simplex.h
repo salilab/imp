@@ -20,6 +20,9 @@ IMPGSL_BEGIN_NAMESPACE
     states, such as those involved in rigid bodies, which
     significantly change the values of the attributes. Then, again, it
     may work just fine. But be aware that it is not understood.
+
+    The main advantage of Simplex is that it is a local optimizer that
+    does not require derivatives.
  */
 class IMPGSLEXPORT Simplex: public GSLOptimizer
 {
