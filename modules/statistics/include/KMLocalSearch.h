@@ -18,6 +18,8 @@
 
 IMPSTATISTICS_BEGIN_NAMESPACE
 
+#ifndef IMP_DOXYGEN
+
 //! KMLocalSearch
 /** A generic algorithm for k-means clustering by local search.
 The generic algorithm begins by generating an initial solution "curr" and
@@ -89,6 +91,8 @@ protected:
   KMFilterCentersResults best_; //best solution so far
   KMTerminationCondition *term_;
 };
+
+#endif
 
 IMPSTATISTICS_END_NAMESPACE
 #endif  /* IMPSTATISTICS_KM_LOCAL_SEARCH_H */

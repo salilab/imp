@@ -20,6 +20,8 @@
 #include <IMP/base_types.h>
 IMPSTATISTICS_BEGIN_NAMESPACE
 
+#ifndef IMP_DOXYGEN
+
 //! Returns the squared distances betweentwo points
 /**
    \unstable{KMTerminationCondition}
@@ -106,6 +108,8 @@ protected:
   KMPoint lo_;
   KMPoint hi_;
 };
+
+#endif
 
 IMPSTATISTICS_END_NAMESPACE
 #endif /* IMPSTATISTICS_KM_RECTANGLE_H */

@@ -10,6 +10,9 @@
 
 #include "KMData.h"
 IMPSTATISTICS_BEGIN_NAMESPACE
+
+#ifndef IMP_DOXYGEN
+
 //! Manages the centers of the data points
 /**
    \unstable{KMCenters}
@@ -60,5 +63,8 @@ class IMPSTATISTICSEXPORT KMCenters {
   KMData* data_points_;
   KMPointArray* centers_;
 };
+
+#endif
+
 IMPSTATISTICS_END_NAMESPACE
 #endif  /* IMPSTATISTICS_KM_CENTERS_H */

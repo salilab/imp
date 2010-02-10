@@ -13,6 +13,9 @@
 #include "KMRectangle.h"
 #include "IMP/log.h"
 IMPSTATISTICS_BEGIN_NAMESPACE
+
+#ifndef IMP_DOXYGEN
+
 /** Leaf nodes of the kc-tree store the set of points associated with this
     bucket, stored as an array of point indices.  These are indices in the
     array points, which resides with the root of the kc-tree.
@@ -64,5 +67,8 @@ protected:
   std::vector<int> data_ps_; //the indexes of data points
                              //which are part of the leaf
 };
+
+#endif
+
 IMPSTATISTICS_END_NAMESPACE
 #endif  /* IMPSTATISTICS_KM_CENTERS_NODE_LEAF_H */

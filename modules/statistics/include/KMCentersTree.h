@@ -15,6 +15,9 @@
 #include "KMCentersNodeSplit.h"
 
 IMPSTATISTICS_BEGIN_NAMESPACE
+
+#ifndef IMP_DOXYGEN
+
 //! A data structure for efficeint assignment of points to clusters
 /**
    \unstable{KMCentersTree}
@@ -176,5 +179,8 @@ number of nodes.
   KMCentersNode *root_;
   KMRectangle *bnd_box_;
 };
+
+#endif
+
 IMPSTATISTICS_END_NAMESPACE
 #endif  /* IMPSTATISTICS_KM_CENTERS_TREE_H */

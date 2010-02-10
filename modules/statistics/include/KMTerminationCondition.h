@@ -11,6 +11,9 @@
 #include "config.h"
 
 IMPSTATISTICS_BEGIN_NAMESPACE
+
+#ifndef IMP_DOXYGEN
+
 //! Stores data controlling the termination and phase changes of
 //! the kmean clustering
 /**
@@ -51,5 +54,8 @@ protected:
   //min value for accumulated  relative distortion loss within a single run
   double min_accumulated_rdl_;
 };
+
+#endif
+
 IMPSTATISTICS_END_NAMESPACE
 #endif  /* IMPSTATISTICS_KM_TERMINATION_CONDITION_H */

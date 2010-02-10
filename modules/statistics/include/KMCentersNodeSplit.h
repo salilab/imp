@@ -14,6 +14,8 @@
 #include "KMRectangle.h"
 IMPSTATISTICS_BEGIN_NAMESPACE
 
+#ifndef IMP_DOXYGEN
+
 //!  kc-tree splitting node.
 /** Splitting nodes contain a cutting dimension and a cutting value. These
     indicate the axis-parellel plane which subdivide the box for this node.
@@ -82,5 +84,8 @@ protected:
                         // rectangle along cut_dim
     KMCentersNode *children_[2];  // left and right children
 };
+
+#endif
+
 IMPSTATISTICS_END_NAMESPACE
 #endif  /* IMPSTATISTICS_KM_CENTERS_NODE_SPLIT_H */
