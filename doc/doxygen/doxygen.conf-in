@@ -182,6 +182,7 @@ TAB_SIZE               = 2
 ALIASES                = "command{1}=\code \1 \endcode" \
                          "salilab{2}=<a href=\"https://salilab.org/\1\">\2</a>" \
                          "external{2}=<a href=\"http://\1\">\2</a>" \
+                         "internal{2}=<a href=\"\1\">\2</a>" \
                          "imp=\p %IMP" \
                          "wiki{2}=<a href=\"https://salilab.org/imp/wiki/\1/\">\2</a>" \
                          "string{1}=<tt>\1</tt>" \
