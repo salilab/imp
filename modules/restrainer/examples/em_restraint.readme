@@ -1,0 +1,4 @@
+This example shows how to use IMP::em::FitRestraint. 
+
+\include em_representation.xml
+\include em_restraint.xml

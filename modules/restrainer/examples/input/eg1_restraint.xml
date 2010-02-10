@@ -1,0 +1,10 @@
+<!-- File: eg1_restraint.xml -->
+
+<RestraintSet>
+    <Pulldown>
+        <Restraint>
+            <Particle id="Protein1"/>
+            <Particle id="Protein2"/>
+        </Restraint>
+    </Pulldown>
+</RestraintSet>
