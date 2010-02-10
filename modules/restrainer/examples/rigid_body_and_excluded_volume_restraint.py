@@ -28,7 +28,8 @@ restraint.add_to_representation(representation)
 protein1_hierarchy = representation.find_by_id('Protein1').model_decorator
 
 # Get the rigid body with the given id
-protein1_rbs = restraint.get_restraint_by_name ("Protein1_rigid")
+protein1_rb = restraint.get_rigid_body_by_id ("Protein1")
+protein1_rb.show()
 
 # Define transformation
 ub = IMP.algebra.Vector3D(-50.0,-50.0,-50.0)
@@ -39,5 +40,4 @@ rotation = IMP.algebra.random_rotation()
 transformation = IMP.algebra.Transformation3D(rotation, translation)
 
 # Perform geometric transformations on the Protein1 rigid body
-for rbd in protein1_rbs.rigid_bodies:
-    rbd.set_transformation(transformation)
+protein1_rb.set_transformation(transformation)
