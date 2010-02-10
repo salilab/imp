@@ -102,6 +102,38 @@ class _Restraint(object):
                 return r
         return None
 
+    def get_rigid_body_by_id(self, id):
+
+        def find_rec(node):
+            if node.id == id:
+                return node.rigid_body
+            for child in node.children:
+                r = find_rec(child)
+                if r:
+                    return r
+            return None
+
+        for child in self.children:
+            r = find_rec(child)
+            if r:
+                return r
+        return None
+
+
+    def get_all_rigid_bodies(self):
+
+        def find_rec(node):
+            if node.rigid_body:
+                all_bodies.append(node.rigid_body)
+            for child in node.children:
+                find_rec(child)
+
+        all_bodies = list()
+        for child in self.children:
+            find_rec(child)
+        return all_bodies
+
+
     def set_root(self):
 
         def set_root_rec(node):
@@ -118,6 +150,8 @@ class _RestraintNode(object):
 
     def __init__(self, attributes, restraint_type=None):
         self.imp_restraint = None
+        self.rigid_body = None
+        self.id = None
         name = attributes.get('name')
         self.weight = float(attributes.get('weight', 1))
         if name:
@@ -331,10 +365,13 @@ class _RestraintRestraint(_RestraintNode):
 
     def create_rigid_body_restraint(self, repr, restraint_sets):
         _RestraintNode.create_restraint(self, repr, restraint_sets)
-        self.mhs = IMP.atom.Hierarchies()
-        for child in self.child_restraints:
-            self.mhs.append(child)
-        self.rigid_bodies = IMP.helper.set_rigid_bodies(self.mhs)
+        self.rigid_bodies = list()
+        for child, child_r in zip(self.children, self.child_restraints):
+            mhs = IMP.atom.Hierarchies()
+            mhs.append(child_r)
+            rb = IMP.helper.set_rigid_bodies(mhs)
+            self.rigid_bodies.append(rb[0])
+            child.rigid_body = rb[0]
         return None
 
 
