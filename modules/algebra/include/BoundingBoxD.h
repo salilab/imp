@@ -22,16 +22,19 @@ IMPALGEBRA_BEGIN_NAMESPACE
 template <unsigned int D>
 class BoundingBoxD
 {
+  void make_empty() {
+    for (unsigned int i=0; i< D; ++i) {
+      lb_[i]= std::numeric_limits<double>::max();
+      ub_[i]=-std::numeric_limits<double>::max();
+    }
+  }
 public:
   // public for swig
   IMP_NO_DOXYGEN(typedef BoundingBoxD<D> This;)
 
   //! Create an empty bounding box
   BoundingBoxD() {
-    for (unsigned int i=0; i< D; ++i) {
-      lb_[i]= std::numeric_limits<double>::max();
-      ub_[i]=-std::numeric_limits<double>::max();
-    }
+    make_empty();
   }
   //! Make from the lower and upper corners
   BoundingBoxD(const VectorD<D> &lb,
@@ -42,15 +45,9 @@ public:
 
   //! Creating a bounding box from a set of points
   BoundingBoxD(const std::vector<VectorD<D> > &points) {
-    for (unsigned int i=0; i< D; ++i) {
-      lb_[i]= std::numeric_limits<double>::max();
-      ub_[i]=-std::numeric_limits<double>::max();
-    }
+    make_empty();
     for(unsigned int j=0;j<points.size();j++) {
-      for(unsigned int i=0;i<D;i++) {
-        lb_[i]= std::min(lb_[i], points[j][i]);
-        ub_[i]= std::max(ub_[i], points[j][i]);
-      }
+      operator+=(points[j]);
     }
   }
 
@@ -59,6 +56,15 @@ public:
     for (unsigned int i=0; i< D; ++i) {
       lb_[i]= std::min(o.get_corner(0)[i], get_corner(0)[i]);
       ub_[i]= std::max(o.get_corner(1)[i], get_corner(1)[i]);
+    }
+    return *this;
+  }
+
+  //! merge two bounding boxes
+  const BoundingBoxD<D>& operator+=(const VectorD<D> &o) {
+    for (unsigned int i=0; i< D; ++i) {
+      lb_[i]= std::min(o[i], get_corner(0)[i]);
+      ub_[i]= std::max(o[i], get_corner(1)[i]);
     }
     return *this;
   }
