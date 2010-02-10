@@ -1,10 +1,8 @@
 Import('env')
 file_list = ['basic_setup.py',
              'rigid_body_and_excluded_volume_restraint.py',
-             'simple_optimization.py',
              'em_restraint.py',
              'basic_setup.readme',
              'rigid_body_and_excluded_volume_restraint.readme',
-             'simple_optimization.readme',
              'em_restraint.readme']
 env.IMPModuleExamples(env.IMPModuleGetExamples(file_list))

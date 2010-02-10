@@ -1,0 +1,31 @@
+<!-- File: eg2_restraint.xml -->
+
+<RestraintSet>
+    <RigidBody>
+        <Restraint name="Protein1_rigid"><Particle id="Protein1"/></Restraint>
+        <Restraint name="Protein2_rigid"><Particle id="Protein2"/></Restraint>
+        <Restraint name="Protein3_rigid"><Particle id="Protein3"/></Restraint>
+        <Restraint name="Protein4_rigid"><Particle id="Protein4"/></Restraint>
+        <Restraint name="Protein5_rigid"><Particle id="Protein5"/></Restraint>
+    </RigidBody>
+    <ExcludedVolume>
+        <Restraint>
+            <Particle id="Protein1"/>
+            <Particle id="Protein2"/>
+            <Particle id="Protein3"/>
+            <Particle id="Protein4"/>
+            <Particle id="Protein5"/>
+        </Restraint>
+    </ExcludedVolume>
+    <Y2H>
+        <Restraint>
+            <Particle id="Protein1"/>
+            <Particle id="Protein2"/>
+            <Particle id="Protein3"/>
+        </Restraint>
+        <Restraint>
+            <Particle id="Protein4"/>
+            <Particle id="Protein5"/>
+        </Restraint>
+    </Y2H>
+</RestraintSet>

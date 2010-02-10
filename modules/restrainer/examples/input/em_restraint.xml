@@ -1,0 +1,11 @@
+<!-- File: em_restraint.xml -->
+
+<RestraintSet>
+    <EM>
+        <Restraint name="em_restraint" density_filename="data/in.em" spacing="1.0" resolution="3.0" xorigin="0.0" yorigin="0.0" zorigin="0.0">
+            <Particle id="frag1"/>
+            <Particle id="frag2"/>
+            <Particle id="frag3"/>
+        </Restraint>
+    </EM>
+</RestraintSet>
