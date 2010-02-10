@@ -11,7 +11,7 @@
 
 IMPGSL_BEGIN_NAMESPACE
 
-Simplex::Simplex( ){
+Simplex::Simplex(Model *m): GSLOptimizer(m) {
   min_length_=.1;
   max_length_=100;
 }

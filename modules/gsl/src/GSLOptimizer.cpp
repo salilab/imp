@@ -17,7 +17,8 @@ namespace {
 }
 
 
-GSLOptimizer::GSLOptimizer( ):
+GSLOptimizer::GSLOptimizer(Model *m):
+  Optimizer(m),
   stop_score_(-std::numeric_limits<double>::max()),
   best_score_(std::numeric_limits<double>::max()){
 }

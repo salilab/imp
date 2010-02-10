@@ -22,7 +22,7 @@ class IMPGSLEXPORT ConjugateGradients: public GSLOptimizer
   double initial_step_, line_step_, min_gradient_;
 public:
   //!
-  ConjugateGradients();
+  ConjugateGradients(Model *m=NULL);
 
   //! Set the gradient threshold
   void set_threshold(double mg) {

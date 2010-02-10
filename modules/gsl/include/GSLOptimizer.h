@@ -24,7 +24,7 @@ class IMPGSLEXPORT GSLOptimizer: public Optimizer
   double stop_score_;
   mutable double best_score_;
 public:
-  GSLOptimizer();
+  GSLOptimizer(Model *m);
 
   virtual ~GSLOptimizer();
 
