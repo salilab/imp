@@ -183,16 +183,17 @@ ALIASES                = "command{1}=\code \1 \endcode" \
                          "salilab{2}=<a href=\"https://salilab.org/\1\">\2</a>" \
                          "external{2}=<a href=\"http://\1\">\2</a>" \
                          "internal{2}=<a href=\"\1\">\2</a>" \
-                         "imp=\p %IMP" \
                          "wiki{2}=<a href=\"https://salilab.org/imp/wiki/\1/\">\2</a>" \
+                         "imp=\p %IMP" \
                          "string{1}=<tt>\1</tt>" \
                          "impdev=<a href=\"https://salilab.org/mailman/listinfo/imp-dev\">imp-dev</a>" \
                          "impcommits=<a href=\"https://salilab.org/mailman/listinfo/imp-commits\">imp-commits</a>" \
-                         "advanced=\ingroup implementation" \
-                         "advancedmethods=\note Familiarity with these methods is not required to use %imp." \
+                         "advancedmethod=\note Familiarity with these methods is not required to use %imp." \
                          "advanceddoc=\par Advanced:" \
                          "usesconstraint=\note The maintenance of the invariant is done by an associated IMP::Constraint. As a result, the state is only guaranteed to be correct either during model evaluation, or immediately following model evaluation before any particles have been changed."\
-                         "cpp=\par For C++ users:\n" \
+                         "implementation{3}=\par Implementors\nDevelopers who wish to implement a \1 should inherit from this class and use the \2() macro to help define the needed functions. \3 provides an example to start from." \
+                         "implementationwithoutexample{2}=\par Implementors\nDevelopers who wish to implement a \1 should inherit from this class and use the \2() macro to help define the needed functions. Lamentably, we do not provide an example." \
+                         "collections{1}=\see \1s\n\see\1sTemp"\
                          "overview=\par Overview:\n" \
                          "license=\par License:\n" \
                          "publications=\par Publications:" \
@@ -200,14 +201,17 @@ ALIASES                = "command{1}=\code \1 \endcode" \
                          "warning=\par Warning:" \
                          "genericgeometry=\ingroup genericgeometry"\
                          "cgalpredicate=\note This predicates will produce guaranteed correct results if the \ref CGAL \"CGAL\" library is available (the results will be unreliable if it is not). \ingroup CGAL" \
-                         "unstable{1}=\warning \1 has not been stabilized and is likely to change without notice\n See \ref unstable \"unstable functionality\" for more information." \
-                         "untested{1}=\warning \1 has not been well tested yet\n  Use with caution and please report any bugs found. See \ref untested \"lightly tested functionality\" for more information." \
-                         "unimplemented{1}=\warning \1 has not beeen implemented.\n If you want to use it, ask someone to implement it or do it yourself. See \ref unimplemented \"unimplemented functionality\" for more information."\
+                         "unstable{1}=\warning \1 has not been stabilized and is likely to change without notice." \
+                         "untested{1}=\warning \1 has not been well tested yet\n  Use with caution and please report any bugs found." \
+                         "unimplemented{1}=\warning \1 has not beeen implemented.\n If you want to use it, ask someone to implement it or do it yourself."\
                          "dotgraph{1}=\if graphs \n \1 \n \else \n \note Example graphs require \external{www.graphviz.org, GraphViz}\n\endif"\
                          "decorators{1}=\class \1s \n \brief A type to store a collection of \1 decorators.\n\nIt looks like a \c std::vector<\1> in C++ and a \c list in Python. See \ref tempornot \"when to use Temp\" for details on using this type."\
                          "decoratorstemp{1}=\class \1sTemp \n \brief A type to pass a collection of \1 decorators.\n\nIt looks like a \c std::vector<\1> in C++ and a \c list in Python. See \ref tempornot \"when to use Temp\" for details on using this type."\
                          "objects{1}=\class \1s\n \brief A type to store a collection of \1 objects.\n\nIt looks like a \c std::vector<\1*> in C++ and a \c list in Python. See \ref tempornot \"when to use Temp\" for details on using this type."\
-                         "objectstemp{1}=\class \1sTemp\n\brief A type to pass a collection of \1 objects.\n\nIt looks like a \c std::vector<\1*> in C++ and a \c list in Python. See \ref tempornot \"when to use Temp\" for details on using this type."
+                         "objectstemp{1}=\class \1sTemp\n\brief A type to pass a collection of \1 objects.\n\nIt looks like a \c std::vector<\1*> in C++ and a \c list in Python. See \ref tempornot \"when to use Temp\" for details on using this type."\
+                         "invaliddefault=\addtogroup invalid_default"\
+                         "noncomparable=\addtogroup noncomparable"\
+                         "geometry=\invaliddefault \noncomparable \addtogroup geometry"
 
 # Set the OPTIMIZE_OUTPUT_FOR_C tag to YES if your project consists of C
 # sources only. Doxygen will then generate output that is more tailored for C.
