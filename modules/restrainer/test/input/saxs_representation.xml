@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Representation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="IMP_Schema.xsd">
 	<Protein id="6lyz">
-		<Chain filename="input/data/6lyz.pdb" selector="NonWaterNonHydrogen"/>
+		<Chain filename="data/6lyz.pdb" selector="NonWaterNonHydrogen"/>
        	</Protein>
 </Representation>
