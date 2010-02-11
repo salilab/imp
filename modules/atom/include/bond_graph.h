@@ -54,7 +54,6 @@ boost::dijkstra_shortest_paths(a, Bonded(),
     \endcode
 
    \untested{BondGraph}
-   \ingroup null_default
  */
 class IMPATOMEXPORT BondGraph{
 

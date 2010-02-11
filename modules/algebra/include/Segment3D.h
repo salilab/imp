@@ -8,12 +8,15 @@
 #define IMPALGEBRA_SEGMENT_3D_H
 
 #include "Vector3D.h"
+#include "BoundingBoxD.h"
+#include "macros.h"
 #include <iostream>
 #include <IMP/constants.h>
 
 
 IMPALGEBRA_BEGIN_NAMESPACE
-/**    \ingroup uninitialized_default
+/** It does what is says.
+    \geometry
  */
 class IMPALGEBRAEXPORT Segment3D
 {
@@ -42,7 +45,10 @@ class IMPALGEBRAEXPORT Segment3D
   Vector3D p_[2];
 };
 
-IMP_OUTPUT_OPERATOR(Segment3D)
+IMP_LINEAR_GEOMETRY_METHODS(Segment3D,
+                            return BoundingBox3D(g.get_point(0))
+                            +BoundingBox3D(g.get_point(1)));
+
 
 
 //! Get the distance between a segment and a point
@@ -52,16 +58,6 @@ IMPALGEBRAEXPORT double distance(const Segment3D &s, const Vector3D &p);
 //! Get the distance between two segments
 /** \relatesalso Segment3D */
 IMPALGEBRAEXPORT double distance(const Segment3D &a, const Segment3D &b);
-
-//! Get the projected point on a segment
-/** It doesn't really make sense for a segment. I vote it goes away.
-    This produces the wrong answer for points that don't project between
-    the endpoints.
-    \relatesalso Segment3D
-    \unstable{projection}
- */
-IMPALGEBRAEXPORT Vector3D projection(const Segment3D &s, const Vector3D &p);
-
 
 
 IMPALGEBRA_END_NAMESPACE

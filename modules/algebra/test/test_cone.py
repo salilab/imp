@@ -17,19 +17,6 @@ class ConeTests(IMP.test.TestCase):
 
         self.assertEqual(cone.get_contains(IMP.algebra.Vector3D(1.0,1.0,-3.0)),False)
 
-    def test_sphere_patch(self):
-        """Check correct behavior of Cone3D bounding sphere and patches"""
-        s = IMP.algebra.Segment3D(IMP.algebra.Vector3D(0.0,0.0,0.0),
-                                  IMP.algebra.Vector3D(0.0,0.0,5.0))
-        cone = IMP.algebra.Cone3D(s,4.0)
-        cone_pln = cone.get_base_plane()
-        cone_sphere = cone.get_bounding_sphere()
-        sp = IMP.algebra.Sphere3DPatch(cone_sphere,cone_pln.get_opposite())
-        for v in IMP.algebra.uniform_cover(sp,3):
-            # Move each vector very slightly towards the origin, to allow for
-            # a small amount of floating point error
-            v *= 0.99999
-            self.assertEqual(cone.get_bounding_sphere().get_contains(v),True)
 
     def test_sphere_patch2(self):
         """Testing sampling a patch"""

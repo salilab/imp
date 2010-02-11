@@ -17,8 +17,6 @@ IMPATOM_BEGIN_NAMESPACE
 
 //! A decorator to associate a particle with a part of a protein/DNA/RNA
 /** The decorator stores an optional list of resdiue indexes.
-    \unstable{Fragment}
-    \untested{Fragment}
  */
 class IMPATOMEXPORT Fragment: public Hierarchy
 {

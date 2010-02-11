@@ -44,7 +44,7 @@ Rotation3D compose(const Rotation3D &a, const Rotation3D &b) ;
     - Quaternion
     - angle/axis representation
 
-    \ingroup uninitialized_default
+    \geometry
 */
 class IMPALGEBRAEXPORT Rotation3D {
   VectorD<4> v_;
@@ -367,7 +367,6 @@ IMPALGEBRAEXPORT Rotation3D random_rotation();
 
     \note The cost of this operation increases as distance goes to 0.
 
-    \untested{random_rotation}
     \relatesalso Rotation3D
 */
 IMPALGEBRAEXPORT Rotation3D random_rotation(const Rotation3D &center,

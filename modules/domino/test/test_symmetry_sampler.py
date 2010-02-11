@@ -31,6 +31,7 @@ class DOMINOTests(IMP.test.TestCase):
         self.prots[2].get_particle().add_attribute(IMP.domino.node_name_key(),str(2))
         self.ps.append(self.prots[2].get_particle())
 
+
     def __set_sampling_space__(self):
         #set 10 transformations on a patch of a sphere
         self.rt = IMP.domino.TransformationDiscreteSet()
@@ -42,7 +43,10 @@ class DOMINOTests(IMP.test.TestCase):
         cone = IMP.algebra.Cone3D(max_d,max_d.get_length())
         print ".cone " + str(max_d.get_point(1)[0]) + " " + str(max_d.get_point(1)[1]) + " " + str(max_d.get_point(1)[2]) +" " + str(max_d.get_point(0)[0]) + " " + str(max_d.get_point(0)[1]) + " " + str(max_d.get_point(0)[2]) + " " + str(max_d.get_length())
         pln = cone.get_base_plane()
-        patch = IMP.algebra.Sphere3DPatch(cone.get_bounding_sphere(),pln.get_opposite())
+        patch = IMP.algebra.Sphere3DPatch(IMP.algebra.Sphere3D(cone.get_tip(),
+                                                               (cone.get_radius()**2\
+                                                                    +cone.get_height()**2)**.5),
+                                          pln.get_opposite())
         print ".dot " +str(pln.get_point_on_plane()[0]) + " " + str(pln.get_point_on_plane()[1]) + " " + str(pln.get_point_on_plane()[2])
         sss = cone.get_bounding_sphere()
         print ".sphere " + str(sss.get_center()[0]) + " " + str(sss.get_center()[1]) + " "+ str(sss.get_center()[2]) + " " + str(sss.get_radius())

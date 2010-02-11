@@ -9,15 +9,15 @@
 #define IMPALGEBRA_BOUNDING_BOX_D_H
 
 #include "VectorD.h"
-
+#include "Transformation3D.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
 /** The BoundingBoxD class provides a unified representation for bounding
     boxes in \imp. Geometric objects should have an associated method like
     get_bounding_box() which creates the bounding boxes of objects.
-
-    \ingroup valid_default
+    \noncomparable
+    \addtogroup geometry
 */
 template <unsigned int D>
 class BoundingBoxD
@@ -78,6 +78,13 @@ public:
     return *this;
   }
 
+  template <class O>
+  const BoundingBoxD<D> operator+(const O &o) {
+    BoundingBoxD<D> ret(*this);
+    ret+= o;
+    return ret;
+  }
+
   //! For 0 return lower corner and 1 upper corner
   const VectorD<D>& get_corner(unsigned int i) const {
     IMP_USAGE_CHECK(i < 2, "Can only use 0 or 1", IndexException);
@@ -103,19 +110,29 @@ private:
   VectorD<D> lb_, ub_;
 };
 
-#ifndef IMP_DOXYGEN
-template <unsigned int D>
-inline std::ostream &operator<<(std::ostream &out,
-                                const BoundingBoxD<D> &s)
-{
-  s.show(out);
-  return out;
+IMP_VOLUME_GEOMETRY_METHODS_D(BoundingBox, IMP_NOT_IMPLEMENTED,
+                              return (g.get_point(1)[0]- g.get_point(0)[0])
+                              *(g.get_point(1)[1]- g.get_point(0)[1])
+                              *(g.get_point(1)[2]- g.get_point(0)[2]),
+                              return g);
+
+
+//! Return a bounding box containing the transformed box
+inline BoundingBox3D get_transformed(const BoundingBox3D &bb,
+                              const Transformation3D &tr) {
+  BoundingBox3D nbb;
+  for (unsigned int i=0; i< 2; ++i) {
+    for (unsigned int j=0; j< 2; ++j) {
+      for (unsigned int k=0; k< 2; ++k) {
+        algebra::Vector3D v(bb.get_corner(i)[0],
+                            bb.get_corner(j)[1],
+                            bb.get_corner(k)[2]);
+        nbb+= tr.transform(v);
+      }
+    }
+  }
+  return nbb;
 }
-#endif
-
-IMPALGEBRA_EXPORT_TEMPLATE(BoundingBoxD<3>);
-
-IMP_NO_SWIG(typedef BoundingBoxD<3> BoundingBox3D;)
 
 IMPALGEBRA_END_NAMESPACE
 

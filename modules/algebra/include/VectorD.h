@@ -10,6 +10,7 @@
 
 #include "config.h"
 #include "utility.h"
+#include "macros.h"
 #include <IMP/base_types.h>
 #include <IMP/macros.h>
 #include <IMP/exception.h>
@@ -28,7 +29,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
     \see Vector3D
     \see Vector2D
 
-    \addtogroup uninitialized_default
+    \geometry
  */
 template <unsigned int D>
 class VectorD

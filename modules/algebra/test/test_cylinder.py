@@ -18,9 +18,9 @@ class CylinderTests(IMP.test.TestCase):
         self.assertEqual(cyl.get_radius(),5.0)
         self.assertEqual(cyl.get_segment().get_length(),8.0)
 
-        self.assertAlmostEqual(cyl.get_surface_area(),2*math.pi*5.0*8.0+2*math.pi*25.0,
+        self.assertAlmostEqual(IMP.algebra.get_surface_area(cyl),2*math.pi*5.0*8.0+2*math.pi*25.0,
                                places=1)
-        self.assertAlmostEqual(cyl.get_volume(),math.pi*8.0*25.0,
+        self.assertAlmostEqual(IMP.algebra.get_volume(cyl),math.pi*8.0*25.0,
                                places=1)
 
     def test_grid_cover(self):

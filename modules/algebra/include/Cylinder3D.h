@@ -16,29 +16,15 @@
 
 
 IMPALGEBRA_BEGIN_NAMESPACE
-/** The cylinder is represented by two points that define
-    the cylinder direction and height. The radius of the cylinder
-    is set by a third parameter.
+/** It does what is says.
 
-    todo:
-    - document everything
-    - fix overview docs
-
-    \ingroup uninitialized_default
+    \geometry
 */
 class IMPALGEBRAEXPORT Cylinder3D {
  public:
   Cylinder3D(){}
   Cylinder3D(const Segment3D &s, double radius);
-  //! Get a transformation that places the cylinder direction on Z
-  /**
-  /note the function would work if the center of the reference frame is (0,0,0)
-  */
-  Transformation3D get_transformation_to_place_direction_on_Z() const;
   double get_radius() const {return radius_;}
-  //! Get surface area, including the caps
-  double get_surface_area() const;
-  double get_volume() const;
   const Segment3D& get_segment() const {
     return s_;
   }
@@ -49,9 +35,13 @@ class IMPALGEBRAEXPORT Cylinder3D {
   double radius_;
 };
 
-IMP_OUTPUT_OPERATOR(Cylinder3D)
-
-typedef std::vector<Cylinder3D> Cylinder3Ds;
+IMP_VOLUME_GEOMETRY_METHODS(Cylinder3D,
+                            return 2.0*PI*g.get_radius()
+                            * g.get_segment().get_length()
+                            + 2.0*PI *square(g.get_radius()),
+                            return PI *square(g.get_radius())
+                            * g.get_segment().get_length(),
+                            IMP_NOT_IMPLEMENTED);
 
 IMPALGEBRA_END_NAMESPACE
 

@@ -23,7 +23,7 @@ Transformation3D compose(const Transformation3D &a,
 
 //! Simple 3D transformation class
 /** \see IMP::core::Transform
-    \ingroup uninitialized_default
+    \geometry
 */
 class IMPALGEBRAEXPORT Transformation3D
 {

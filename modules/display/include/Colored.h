@@ -18,8 +18,6 @@ IMPDISPLAY_BEGIN_NAMESPACE
 //! A particle with a color.
 /** Many of the geometry objects will use this color
     if it is available.
-    \unstable{Colored}
-    \untested{Colored}
  */
 class IMPDISPLAYEXPORT Colored: public Decorator
 {

@@ -34,9 +34,7 @@ IMPATOM_BEGIN_NAMESPACE
    simulation in a form that can be accessed by other objects. Currently,
    it is used by IMP::atom::BrownianDynamics. It you want to access such
    parameters from IMP::atom::MolecularDynamics, give us a hollar.
-
-   \unstable{SimulationParameters}
- */
+*/
 class IMPATOMEXPORT SimulationParameters: public Decorator
 {
 public:

@@ -21,7 +21,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
   and azimuth (r, theta, psi).
   zenith - angle with axis z
   azimuth - angle with axis x
-  \ingroup uninitialized_default
+  \geometry
 */
 class IMPALGEBRAEXPORT SphericalVector3D
 {

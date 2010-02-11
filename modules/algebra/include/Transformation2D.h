@@ -26,7 +26,7 @@ Transformation2D compose(const Transformation2D &a,
 #endif
 
 //! Simple 2D transformation class
-/** \ingroup uninitialized_default
+/** \geometry
 */
 class IMPALGEBRAEXPORT Transformation2D
 {

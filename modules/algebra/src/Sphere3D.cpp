@@ -17,13 +17,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 Sphere3D::Sphere3D(const Vector3D& center,double radius):center_(center),
                                                  radius_(radius){
 }
-double Sphere3D::get_volume() const {
-  return PI * (4.0 / 3.0) * std::pow(radius_, 3.0);
-}
 
-double Sphere3D::get_surface_area() const {
-  return PI * 4.0 * square(radius_);
-}
 
 Sphere3D enclosing_sphere(const Sphere3Ds &ss) {
   IMP_USAGE_CHECK(!ss.empty(),

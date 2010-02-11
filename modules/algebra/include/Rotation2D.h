@@ -32,7 +32,7 @@ Rotation2D compose(const Rotation2D &a, const Rotation2D &b) ;
   convention used is that the rotations are performed rotating counterclockwise
   (right hand side convention).
 
-  \ingroup uninitialized_default
+  \geometry
 **/
 class Rotation2D
 {

@@ -11,6 +11,24 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
+namespace {
+Transformation3D
+get_transformation_to_place_direction_on_Z(const Cylinder3D &c){
+  Vector3D main_dir = c.get_segment().get_direction();
+  Vector3D vertical_dir = orthogonal_vector(main_dir);
+  Transformation3D move2zero= Transformation3D(
+                   identity_rotation(),-c.get_segment().get_middle_point());
+  //transformation_from_reference_frame(a,b,c) , sets the Z-axis to
+  //be prependicular to a and b. We want Z to be the main direction of
+  //the cylinder
+  Transformation3D rigid_trans=transformation_from_reference_frame(
+                                 vertical_dir,
+                                 vector_product(main_dir,vertical_dir),
+                                 Vector3D(0.0,0.0,0.0));
+  return rigid_trans.get_inverse();
+}
+}
+
 Vector3Ds uniform_cover(const Cylinder3D &cyl,
                         int number_of_points) {
   Vector3Ds points;
@@ -19,7 +37,7 @@ Vector3Ds uniform_cover(const Cylinder3D &cyl,
   // move the cylinder to the base reference frame (center at (0,0,0)
   // and its main direction to be on the Z axis)
   Transformation3D cyl_rf_to_base_rf =
-    cyl.get_transformation_to_place_direction_on_Z();
+    get_transformation_to_place_direction_on_Z(cyl);
   Transformation3D move2zero =
     Transformation3D(identity_rotation(),-cyl.get_segment().get_middle_point());
   for(int i=0;i<number_of_points;i++) {
@@ -51,7 +69,7 @@ Vector3Ds grid_cover(const Cylinder3D &cyl,
   // move the cylinder to the base reference frame (center at (0,0,0)
   // and its main direction to be on the Z axis)
   Transformation3D cyl_rf_to_base_rf =
-    cyl.get_transformation_to_place_direction_on_Z();
+    get_transformation_to_place_direction_on_Z(cyl);
   Vector3D z_direction(0.0,0.0,1.0);
   Float translation_step = cyl.get_segment().get_length()/number_of_cycles;
   Float rotation_step = 2*PI/number_of_points_on_cycle;
@@ -107,12 +125,12 @@ Vector3Ds uniform_cover(const Sphere3DPatch &sph,
   return points ;
 }
 
-
 IMPALGEBRAEXPORT Vector3Ds uniform_cover(const Cone3D &cone,
                                          unsigned int number_of_points) {
  Vector3Ds points;
  Vector3D sph_p;
- Sphere3D sph = cone.get_bounding_sphere();
+ Sphere3D sph(cone.get_tip(), std::sqrt(square(cone.get_radius())
+                                        +square(cone.get_height())));
  while (points.size() < number_of_points) {
    sph_p=random_vector_in_sphere(sph.get_center(),sph.get_radius());
    if (cone.get_contains(sph_p)) {
