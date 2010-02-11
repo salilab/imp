@@ -36,22 +36,6 @@ build='release') from the same set of sources. To do this:
   hold on optimized build. Put \c build='fast' in the \c config.py for
   that build directory.
 
-\section usage Writing new functions and classes
-
-The easiest way to start writing new functions and classes is to
-create a new module using the \ref make_module "make-module script".
-This creates a new module in the \c modules directory, complete with
-example code.
-
-We highly recommend using a revision control system such as
-\external{subversion.tigris.org/, SVN} or \external{git-scm.com/,
-GIT}.
-
-If, instead, you choose to add code to an existing module you need to
-consult with the person who people who control that module.
-
-\section inplace Using IMP in place
-
 When developing new \imp code, it is useful to be able to run and test
 it without installing \imp every time. To do so, use the
 \c tools/imppy.sh script. For example, to execute the \c chain.py
@@ -63,22 +47,73 @@ The \c imppy.sh script is needed to make sure that
 all the \imp libraries can be found when needed.
 
 
+\section usage Writing new functions and classes
+
+The easiest way to start writing new functions and classes is to
+create a new module using the \ref make_module "make-module script".
+This creates a new module in the \c modules directory, complete with
+example code.
+
+We highly recommend using a revision control system such as
+\external{subversion.tigris.org/, SVN} or \external{git-scm.com/,
+GIT} to keep track of changes to your module.
+
+If, instead, you choose to add code to an existing module you need to
+consult with the person who people who control that module. Their names
+can be found on the module main page.
+
+When designing the interface for your new code, you should
+
+- search \imp for similar functionality and, if there is any, adapt
+  the existing interface for your purposes. For example, the existing
+  IMP::atom::read_pdb() and IMP::atom::write_pdb() functions provide
+  templates that should be used for the design of any functions that
+  create particles from a file or write particles to a file. Since
+  IMP::atom::BondDecorator, IMP::algebra::Segment3D and
+  IMP::display::Geometry all use methods like
+  IMP::algebra::Segment3D::get_point() to accesss the
+  endpoints of a segment, any new object which defines similar
+  point-based geometry should do likewise.
+
+- think about how other people are likely to use the code. For
+  example, not all molecular hierarchies have atoms as their leaves,
+  so make sure your code searches for arbitrary
+  IMP::core::XYZDecorator particles rather than atoms if you only care
+  about the geometry.
+
+- look for easy ways of splitting the functionality into pieces. It
+  generally makes sense, for example, to split selection of the
+  particles from the action taken on them, either by accepting a
+  IMP::ParticleRefiner, or a IMP::SingletonContainer or just an arbitrary
+  IMP::Particles object.
+
+
+You may want to read \ref design_example "the design example" for
+some suggestions on how to go about implementing your functionality
+in \imp.
+
 
 \section testing Debugging and testing your code
 
-Ensuring that your code is correct can be very difficult, so \imp provides a number of tools to help you out.
+Ensuring that your code is correct can be very difficult, so \imp
+provides a number of tools to help you out.
 
 The first set are assert-style macros:
 
-- IMP_USAGE_CHECK() which should be used to check that arguments to functions and methods satisfy the preconditions.
+- IMP_USAGE_CHECK() which should be used to check that arguments to
+  functions and methods satisfy the preconditions.
 
-- IMP_INTERNAL_CHECK() which should be used to verify internal state and return values to make sure they satisfy pre and post-conditions.
+- IMP_INTERNAL_CHECK() which should be used to verify internal state
+  and return values to make sure they satisfy pre and post-conditions.
 
-See \ref assert "Error reporting/checking" page for more details. As a general guideline,  any improper usage to produce at least a warning all return values should be checked by such code.
+See \ref assert "Error reporting/checking" page for more details. As a
+general guideline, any improper usage to produce at least a warning
+all return values should be checked by such code.
 
 The second is logging macros such as:
 
-- IMP_LOG() which allows controlled display of messages about what the code is doing. See \ref logging "IMP logging" for more information.
+- IMP_LOG() which allows controlled display of messages about what the
+  code is doing. See \ref logging "IMP logging" for more information.
 
 Finally, each module has a set of unit tests. These are python scripts
 which test the behavior of a particular piece of the modules API. The
@@ -103,17 +138,477 @@ located in \c build/tmp. The test should remove temporary files after
 using them.
 
 
-\section fixbug Finding and fixing bugs in IMP
+\section codingconventions Coding conventions
 
-If you find a bug in \imp, please report it on the
-\salilab{imp/bugs/,IMP bug tracker}. This will ensure it does not get
-lost.  The best way to report a bug is to provide a short script file
-that demonstrates the problem.
+Make sure you read the \ref conventions "API conventions" page
+first.
 
-If you create a patch which fixes a bug, please cite the bug ID in the
-commit log for that patch. The patch should also include a testcase
-which triggers the bug, so that we can ensure your fix for the bug
-does not break in future. In many cases, the demonstration script in
-the bug report can be trivially adapted into a test case.
+To ensure code consistency and readability, certain conventions
+must be adhered to when writing code for \imp. Some of these
+conventions are automatically checked for by source control before
+allowing a new commit, and can also be checked yourself in new
+code by running \command{scons standards}
+
+\subsection indent Indentation
+
+All C++ headers and code should be indented in 'Linux' style, with
+2-space indents. Do not use tabs. This is roughly the output of
+Artistic Style run like \command{astyle --convert-tabs
+--style=linux --indent=spaces=2 --unpad=paren --pad=oper} Split
+lines if necessary to ensure that no line is longer than 80
+characters.
+
+    \b Rationale: Different users have different-sized windows or
+    terminals, and different tab settings, but everybody can read 80
+    column output without tabs.
+
+    All Python code should conform to the
+    \external{www.python.org/dev/peps/pep-0008/, Python style guide}.
+    In essence this
+    translates to 4-space indents, no tabs, and similar class, method
+    and variable naming to the C++ code. You can ensure that your
+    Python code is correctly indented by using the
+    \command{tools/reindent.py} script, available as part of the \imp
+    distribution.
+
+    \subsection names Names
+
+    See the names section of the \ref conventions "IMP conventions" page.
+    In addition, developers should be aware that
+    - all preprocessor symbols (things created by \#define) must begin with \c IMP
+    - names of files that implement a single class should be named for that
+      class; for example the SpecialVector class could be implemented in
+      \c SpecialVector.h and \c SpecialVector.cpp
+    - files that provide free functions or macros should be given names
+      \c separated_by_underscores, for example \c container_macros.h
+    - Functions which take a parameter which has units should have the
+      unit as part of the function name, for example
+      IMP::atom::BrownianDynamics::set_time_step_in_femtoseconds().
+      Remember the Mars orbiter. The exception to this is distance
+      and force numbers which should always be in angstroms and
+      kcal/mol angstrom respectively unless otherwise stated.
+
+    \b Rationale: This makes it easier to tell between class names and
+    function names where this is ambiguous (particularly an issue with
+    the Python interface). The Python guys also mandate CamelCase for
+    their class names, so this avoids any need to rename classes
+    between C++ and Python to ensure clean Python code. Good naming is
+    especially important with preprocessor symbols since these have
+    file scope and so can change the meaning of other people's code.
+
+\subsection datastorage Passing and storing data
+
+- When a class or function takes a set of particles which are expected to
+  be those of a particular type of decorator, it should take a list of
+  decorators instead. eg IMP::core::transform() takes a IMP::core::XYZ.
+  This makes it clearer what attributes the particle is required to have
+  as well as allows functions to be overloaded (so there can be an
+  IMP::core::transform() which takes IMP::core::RigidBody particles instead).
+
+
+- IMP::Restraint and IMP::ScoreState classes should generally use a
+      IMP::SingletonContainer (or other type of Container) to store the set of
+      IMP::Particle objects that they act on.
+
+- Store collections of IMP::Object-derived or IMP::Decorator-derived
+  objects of type \c Name using a \c Names. Declare functions that
+  accept them to take a \c NamesTemp (\c Names is a \c NamesTemp). \c
+  Names are reference counted (see IMP::RefCounted for details), \c
+  NamesTemp are not.
+
+\subsection display Display
+
+All classes must have a \c show method which takes an optional 
+\c std::ostream and prints information about the object. The helper
+macros, such as IMP_RESTRAINT() define such a method.  In addition they
+must have \c operator<< defined. This can be easily done using the
+IMP_OUTPUT_OPERATOR() macro once the show method is defined. Note that
+\c operator<< writes human readable information. Add a \c write method
+if you want to provide output that can be read back in.
+
+
+\subsection errors Errors
+
+Classes and methods should use IMP exceptions to report errors. See
+IMP::Exception for a list of existing exceptions. See \ref assert for
+a list of functions to aid in error reporting and detection.
+
+
+\subsection internal_ns Namespaces
+
+Use the provided \c IMPMODULE_BEGIN_NAMESPACE,
+	  \c IMPMODULE_END_NAMESPACE, \c IMPMODULE_BEGIN_INTERNAL_NAMESPACE 
+	  and \c IMPMODULE_END_INTERNAL_NAMESPACE macros to put declarations 
+	  in a namespace appropriate for module \c MODULE.
+
+Each module has an internal namespace, \c module_name::internal and an internal
+include directory \c modulename/internal. Any function which is
+ - not intended to be part of the API,
+ - not documented,
+ - liable to change without notice,
+ - or not tested
+
+should be declared in an internal header and placed in the internal namespace.
+
+The functionality in such internal headers is
+ - not exported to python
+ - and not part of of documented API
+
+As a result, such functions do not need to obey all the coding conventions
+(but we recommend that they do).
+
+
+
+\section docs Documenting your code
+
+    Format to allow Doxygen automated documentation creation. If
+    possible, and appropriate, specify both a 'brief' description and
+    a more detailed one (in which parameters, return values, and
+    exceptions are documented). Use \c //! for the one-line brief
+    description and \c /** ... * / for the multi-line detailed
+    description (put the closing * / on a new line, so that these
+    comments are always multi-line (Doxygen will not accept both a
+    'brief' comment and a one-line detailed comment). All header and
+    source files should have a starting comment header, using the
+    \b \\file command to document the purpose of the file.
+
+    For example:
+    \verbatim
+    //! Calculates the square root.
+    /** \param[in] the_value Calculate the square root of this value.
+        \exception ValueException if value is out of range (negative).
+        \return the square root of the given value.
+      */
+    \endverbatim
+
+    Python code should provide Python doc strings.
+
+    We provide a number of extra doxygen commands to aid in producing nice
+    \imp documentation. The commands are used by writing \c \\commandname{args}
+    or \c \\commandname if there are no arguments.
+    - When you want to specify some command-line command do
+    \verbatim
+    \command{the command text}
+    \endverbatim
+    which produces
+    \command{the command text}
+    
+    - To produce a link to a page on the Sali lab web site do
+    \verbatim
+    \salilab{imp, the IMP project}\endverbatim
+    which produces
+    \salilab{imp, the IMP project}
+
+    - To produce a link to the outside world do
+    \verbatim
+    \external{boost.org, Boost}\endverbatim
+    \external{boost.org, Boost}
+
+    - When writing the name \imp do
+    \verbatim
+    \imp\endverbatim
+    so that no link is produced.
+
+    - We provide a number of commands to mark paragraphs in special standard ways.
+    The commands are
+       - \c \\advanced to mark part of the documentation as being for advanced users
+            \verbatim
+            \advanced This bit is kind of complicated and you can use \imp fine
+            without it.\endverbatim
+             which produces
+            \par Advanced
+            This bit is kind of complicated and you can use \imp fine without it.
+       - \c \\cpp to mark documentation that only applies to C++ programmers
+       - \c \\warning to mark a usage warning eg
+            \verbatim
+            \warning Be afraid, be very afraid.\endverbatim
+             which produces
+            \warning Be afraid, be very afraid.
+    
+    - To mark that some part of the API has not yet been well planned at may change
+    using \c \\unstable{Classname}. The documentation will include a disclaimor
+    and the class or function will be added to a list of unstable classes.
+
+    - To mark a method as not having been well tested yet, use \c \\untested{Classname}.
+
+    - To mark a method as not having been implemented, use \c \\untested{Classname}.
+
+
+
+\section scripts Useful Scripts
+
+    \subsection make_scons Generate SConscripts
+    The \c SConscripts in a number of the modules list all of the
+    header and \c cpp files which are part of the module (those of other
+    modules automatically build this list at compile time). These lists can
+    be generated using the \c make-sconscripts script. To run it to rebuild
+    the SConscripts for the module modulename do
+    \command{./tools/make-sconscripts modulename}
+
+    \subsection make_module Making a module
+
+    This page describes how to create a new module in your local copy
+    of \imp. Creating such a module is the easiest way to get started
+    developing code for \imp.
+
+    To get started, first pick the name of your module. Here we will 
+    use \string{my_module}. The name should only contain letters, numbers and 
+    underscores.
+
+    Then do
+    \command{./tools/make-module my_module}
+    to create the module. If you run \c scons with \c localmodules=True, then
+    your locally created module will be included in the build.
+
+    You can use your new module in a variety of ways:
+    - add C++ code to your module by putting \string{.h} files
+      in \string{modules/my_module/include} and \string{.cpp} files in
+      \string{modules/my_module/src}. In order to use use your new functions and
+      classes in python, you must add a line 
+      \string{%include "IMP/my_module/myheader.h"} near the end of the file
+      \string{modules/my_module/pyext/my_module.i}.
+    - write C++ programs using \imp by creating \string{.cpp} files in
+      \string{modules/my_module/bin}. Each \string{.cpp} file placed there
+      is built into a separate executable.
+    - add python code to your library by putting a \string{.py} file in
+      \string{modules/my_module/pyext/my_module/}
+    - add python code to your library by by adding
+      \string{%pythoncode} blocks to \string{modules/my_module/pyext/my_module.i}.
+    - add test code to your library by putting \string{.py} files in
+      \string{modules/my_module/test} or a subdirectory.
+
+    If you feel your module is of interest to other \imp users and 
+    developers, post to the \impdev list to discuss adding
+    it to the repository.
+
+    If you document your code, running \command{scons doc} will build
+    documentation of all of the modules including yours. To access the
+    documentation, open \string{doc/html/index.html}.
+
+
+
+\section contributing Contributing code to IMP
+
+In order to be shared with others as part of the \imp distribution,
+code needs to be of higher quality and more thoroughly vetted than
+typical research code. As a result, it may make sense to keep the
+code as part of a private module until you better understand what
+capabilities can be cleanly offered to others.
+
+The first set of questions to answer are
+
+- What exactly is the functionality I would like to contribute? Is
+  it a single function, a single Restraint, a set of related classes
+  and functions?
+
+- Is there similar functionality already in \imp? If so, it might make
+  more sense to modify the existing code in cooperation with its
+  author. At the very least, the new code needs to respect the
+  conventions established by the prior code in order to maintain
+  consistency.
+
+- Where should the new functionality go? It can either be added to an
+  existing module or as part of a new module. If adding to an existing
+  module, you must communicate with the authors of that module to get
+  permission and coordinate changes.
+
+- Should the functionality be written in C++ or Python? In general, we
+  suggest C++ if you are comfortable programming in that language as
+  that makes the functionality available to more people. See \ref
+  cpppythondifferences "Python/C++ differences" for more considerations.
+
+You are encouraged to post to the
+\impdev to find help
+answering these questions as it can be hard to grasp all the various
+pieces of functionality already in the repository.
+
+All code contributed to \imp
+- must follow the  \ref codingconventions "IMP coding conventions"
+- should follow general good \ref cpp "C++ programming practices"
+- must have unit tests
+- must pass all unit tests
+- must have documentation
+- must build on all supported compilers (roughly, recent versions of gcc and Visual C++) without warnings
+- should have examples
+- must not have warnings when doxygen is run (\c scons \c doc)
+
+The next suggestions provide more details about the above choices and how to implement them.
+
+\subsection submitting Submitting to a module
+
+Small pieces of functionality or extensions to existing functionality
+probably should be submitted to an existing module. Please contact the
+authors of the appropriate module and discuss the submission and how
+the code will be maintained.
+
+A list of all current modules in SVN can be found in
+<a href="namespaces.html">the modules list</a> or from the modules tab
+above.
+
+As always, if in doubt, post to \impdev.
+
+
+\subsubsection kernelcore Submission of changes to IMP kernel or IMP.core
+
+In order to submit changes to the kernel or IMP.core, you should
+prepare a patch against the current SVN version of IMP. To do that,
+make your changes to an up to date copy of the svn version of IMP and
+then do \command{svn diff paths/to/changed/files >
+patches/mypatch.patch} to generate a description of the patch in the
+file "mypatch.patch". You should then create a description of the
+patch in patches/mypatch.readme and commit the two files into the
+repository by doing \command{svn add patches/mypatch*} \command{svn
+commit patches/mypatch* -m "very brief description"} If the patch
+introduces API changes, please discuss them (preferably before writing
+the actual code) on the \impdev mailing list.
+
+Patches should contain a related set of changes. For example, a patch which adds a new method foo, a new testcase for foo, and some documentation for the SpecialVector class, should be split into two patches: one for the foo method and test, and the other for the SpecialVector documentation.
+It is much easier for others to understand your patch's changes if it is small and contains only relevant changes. 
+
+Patches to modules for which you have write access can be submitted
+directly by doing: \command{svn commit -m "message describing the
+patch" files or directories to submit}
+
+
+
+
+\subsection submitting Submitting a module
+
+If you have a large group of related functionality to submit, it may make sense to create a new module in svn. Please post to \impdev to discuss your plans.
+
+
+\section submitted Once you have submitted code
+
+Once you have submitted code, you should monitor the
+\salilab{internal/imp/tests.html,Daily build status} to make sure that
+your code builds on all platforms and passes the unit tests. Please
+fix all build problems as fast as possible.
+
+The following sorts of changes must be announced on the \impdev
+mailing list before being made
+ - changes to existing kernel or core APIs
+ - significant additions to kernel or core
+
+We recommend that changes be posted to the list a day or two before
+they are made so as to give everyone adequate time to comment.
+
+In addition to monitoring the \impdev list, developers who have a module or
+are committing patches to svn may want to subscribe to the \impcommits email
+list which receives notices of all changes made to the \imp SVN repository.
+
+
+
+\section cpp Good programming practices
+
+The contents of this page are aimed at C++ programmers, but most apply
+also to python.
+
+\section coding General resources
+
+Two excellent sources for general C++ coding guidelines are
+
+    - \external{www.amazon.com/Coding-Standards-Rules-Guidelines-Practices/dp/0321113586, C++ Coding Standards} by Sutter and Alexandrescu
+
+    - \external{www.amazon.com/Effective-Specific-Addison-Wesley-Professional-Computing/dp/0201924889, Effective C++} by Meyers
+
+\imp endeavors to follow all the of the guidelines published in those
+books. The Sali lab owns copies of both of these books that you
+are free to borrow.
+
+
+
+\section impcoding IMP gotchas
+    
+Below are a suggestions prompted by bugs found in code submitted to \imp.
+
+- Never use '\c using \c namespace' outside of a function; instead 
+      explicitly provide the namespace. (This avoids namespace pollution, and
+      removes any ambiguity.)
+
+- Never use the preprocessor to define constants. Use \c const
+  variables instead. Proprocessor symbols don't have scope or type
+  and so can have unexpected effects.
+
+    - Pass other objects by value or by \c const & (if the object is
+      large) and store copies of them.
+
+    - Never expose member variables in an object which has
+      methods. All such member variables should be private.
+
+    - Don't derive a class from another class simply to reuse some
+      code that the base class provides - only do so if your derived
+      class could make sense when cast to the base class. As above,
+      reuse existing code by pulling it into a function.
+
+    - Clearly mark any file that is created by a script so that other
+      people know to edit the original file.
+
+    - Always return a \c const value or \c const ref if you are not
+      providing write access. Returning a \c const copy means the
+      compiler will report an error if the caller tries to modify the
+      return value without creating a copy of it.
+
+    - Include files from the local module first, then files from the
+    other \imp modules and kernel and finally outside includes. This
+    makes any dependencies in your code obvious, and by including
+    standard headers \e after IMP headers, any missing includes in the
+    headers themselves show up early (rather than being masked by
+    other headers you include).
+
+    \code
+    #include <IMP/mymodule/mymodule_exports.h>
+    #include <IMP/mymodlule/MyRestraint.h>
+    #include <IMP/Restraint.h>
+    #include <vector>
+    \endcode
+
+    - Use \c double variables for all computational intermediates.
+
+    - Avoid using nested classes in the API as SWIG can't wrap them
+      properly.  If you must use use nested classes, you will have to
+      do more work to provide a Python interface to your code.
+
+
+    - Delay initialization of keys until they are actually needed
+      (since all initialized keys take up memory within each particle,
+      more or less). The best way to do this is to have them be static
+      variables in a static function:
+      \code
+      FloatKey get_my_float_key() {
+               static FloatKey k("hello");
+               return k;
+      }
+      \endcode
+
+    - One is the almost always the right number:
+        - Information should be stored in exactly one
+          place. Duplicated information easily gets out of sync.
+        - A given piece of code should only appear once. Do not copy,
+          paste and modify to create new functionality.  Instead,
+          figure out a way to reuse the existing code by pulling it
+          into an internal function and adding extra parameters. If
+          you don't, when you find bugs, you won't remember to fix
+          them in all the copies of the code.
+        - There should be exactly one way to represent any particular
+          state. If there is more than one way, anyone who writes
+          library code which uses that type of state has to handle all
+          ways.  For example, there is only one scheme for
+          representing proteins, namely the
+          IMP::atom::MolecularHierarchyDecorator.       
+        - Each class/method should do exactly one thing. The presence
+          of arguments which dramatically change the behavior of the
+          class/method is a sign that it should be split. Splitting
+          it can make the code simpler, expose the common code for
+          others to use and make it harder to make mistakes by
+          getting the mode flag wrong.
+        - Methods should take at most one agument of each type (and
+          ideally only one argument). If there are several arguments
+          of the same types (eg two different \c double parameters) it is
+          easy for a user to mix up the order of arguments and the compiler will
+          not complain. \c int and \c double count as
+          equivalent types for this rule since the compiler will
+          transparent convert an \c int into a \c double.
+
+
 
 */

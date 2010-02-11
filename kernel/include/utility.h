@@ -70,54 +70,6 @@ void for_each(const Range &r, const Functor &f) {
   std::for_each(r.begin(), r.end(), f);
 }
 
-/** \defgroup valid_default Valid Default
-
-    Instances of a class in this group are put into
-    a well defined, valid state by the default constructor.
-    \see null_default
-    \see uninitialized_default
-    */
-
-/** \defgroup null_default Null Default
-
-    The default constructor of classes in this group put the class
-    into a well defined invalid value
-    which can be used for comparisons. Such a value should have the
-    same semantics as NULL for pointers or 0 for integers. Default
-    constructed instances can be compared against, but all other operations
-    on them should be assumed to be invalid unless documented otherwise.
-    \code
-    NullDefault() == NullDefault()
-    \endcode
-
-    \see uninitialized_default
-    \see valid_default
-*/
-
-/** \defgroup uninitialized_default Uninitialized Default
-
-    Classes in this group are put into an unknown state
-    by their default constructor. Such classes mimic
-    POD types (int, float etc) in C++ and are optimized for efficiency.
-    All operations on a default initialized instance other than assigning
-    to it from a non-default initialized instance should be assumed to be
-    invalid.
-    \code
-    UninitializeDefault() != UninitializedDefault()
-    \endcode
-    \see null_default
-    \see valid_default
-*/
-
-/** \defgroup comparable Comparable
-
-    Objects marked comparable can all be compared against other objects
-    of the same type. They support the operators
-    \c <, \c >, \c ==, \c !=, \c >=, \c <=. In addition they support a
-    namespace function \c compare(a,b) which
-    return -1,0,1 if \c a \c < \c b, \c a\c == \c b or \c a \c > \c b.
-*/
-
 
 template <class T>
 int compare(const T &a, const T &b) {

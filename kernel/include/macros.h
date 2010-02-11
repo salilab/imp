@@ -392,7 +392,7 @@
     file should declare the key itself as a \c static member variable to
     avoid initializing the key if the decorator is not used.
 
-    See \ref decorators "the decorators page" for a more detailed description
+    See IMP::Decorator for a more detailed description
     of decorators.
 
     \param[in] Name is the name of the decorator, such as XYZR

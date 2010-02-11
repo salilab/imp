@@ -1,52 +1,24 @@
 /**
   \mainpage IMP Documentation
 
- Welcome to the \imp documentation. There are two entry points
- - one for \imp users, people who will use existing \imp
-   classes to solve biological problems by using the Python interface.
- - and a second for \imp developers who will write
-   C++ code for \imp and, hopefully, contribute code back to \imp.
+ Welcome to the \imp library documentation. If you are new to \imp,
+ you should probably check out the \ref introduction "Introduction to
+ IMP". The documentation is aimed at two, probably overlapping groups:
 
- 
- \section users IMP users
-   Instructions on how to build and install \imp can be found in
-   the \ref installation "installation instructions". Once \imp
-   is built and installed, read the \ref introduction "Introduction to IMP"
-   to get an overview of how \imp works. Paying attention to the 
-   \ref conventions "conventions" used in %IMP will make your life easier.
-
-   Users should use the stable
-   branch of \imp (https://svn.salilab.org/imp/branches/stable/) or a
-   pre-built binary.
-
-   Non-programmers might want to read 
-   \external{docs.python.org/tutorial/introduction.html, the official introduction to Python}
-   and
-   \external{www.rexx.com/~dkuhlman/python_101/python_101.html, Python 101}
-   to acquaint themselves with the basics of python.
-
-   Users who have programmed but are not familiar with Python should take a look
-   at \external{diveintopython.org/toc/index.html, Dive into Python}, especially
-   chapters 1-6, and 15-18.
- 
- \section developers IMP developers
-
-  In addition to the user documentation, developers should also be familiar
-  with the \ref devguide "developers guide" and monitor the \impdev email list.
-
+ - Users: people who will write python scripts to use existing \imp
+   classes to solve biological problems.
+ - Developers who will develop new scoring and representation code in
+   C++ code and, hopefully, contribute code back to \imp. Developers
+   should read the \ref devguide "developers guide". 
 
  \section key_pages Key pages
- - \ref api "API Documentation"
  - \salilab{imp/bugs,Bug Tracker}
  - \ref recent "Change history"
- - \ref conventions "Conventions"
- - \ref codingconventions "Coding Conventions"
  - \salilab{internal/imp/tests.html,Daily build status}
- - \ref devguide "Developer guide"
- - \ref differences "Differences using IMP between C++ and Python"
  - \ref examples "Examples"
  - \wiki{FAQ, FAQ}
  - \salilab{imp/archives/imp-dev/,imp-dev list archive}
  - \ref installation "Installation Instructions"
  - \ref introduction "Introduction to IMP"
+ - \ref devguide "developers guide"
  */
