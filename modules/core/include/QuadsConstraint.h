@@ -25,9 +25,7 @@ IMP_END_NAMESPACE
 
 IMPCORE_BEGIN_NAMESPACE
 //! Apply a QuadFunction to a QuadContainer to maintain an invariant
-/** \advanced
-
-    The score state is passed up to two QuadModifiers, one to
+/** The score state is passed up to two QuadModifiers, one to
     apply before evaluation and the other after. The one after
     should take a DerivativeAccumulator as its last argument for
     QuadModifier::apply() and will only be called if

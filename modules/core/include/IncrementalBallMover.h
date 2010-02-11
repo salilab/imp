@@ -20,8 +20,6 @@ IMPCORE_BEGIN_NAMESPACE
 /** This modifier is designed to be used when doing incremental updates. See
     BallMover for a variant that moves all at the same time.
     \see MonteCarlo
-    \untested{IncrementalBallMover}
-    \unstable{IncrmenetalBallMover}
  */
 class IMPCOREEXPORT IncrementalBallMover :public Mover
 {

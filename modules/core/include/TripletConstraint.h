@@ -24,9 +24,7 @@ IMP_END_NAMESPACE
 
 IMPCORE_BEGIN_NAMESPACE
 //! Apply a TripletFunction to a Triplet
-/** \advanced
-
-    The score state is passed up to two TripletModifiers, one to
+/** The score state is passed up to two TripletModifiers, one to
     apply before evaluation and the other after. The one after
     should take a DerivativeAccumulator as its last argument for
     TripletModifier::apply() and will only be called if
