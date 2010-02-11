@@ -34,8 +34,6 @@ stages, but a few need extra note:
 
 - Knowledge can also be used to tune the sampling scheme by choosing
   starting configurations, the discrete sample etc.
-
-\section i0 Architecture
  
 \imp provides a large number of classes and functions from which to
 choose when solving a particular problem. Fortunately, these classes
@@ -107,7 +105,7 @@ provides tools to help monitor how things are performing.
 
 
 \section i6 Examples
-The following examples all are in Python and C++.
+The following examples give some idea of the basics of using \imp. They are all are in Python and C++.
 
 The following setup code is ommitted from the Python examples for clarity:
 \htmlinclude setup.py.html
@@ -128,14 +126,12 @@ for (int i=0; i< 100; ++i) {
     d.set_coordinates(IMP::random_vector_in_box());
     d.set_radius(1.0);
 }
-
 \endcode
 
-See the \ref examples "Examples Page" for a full list of examples.
+Each module has an examples page linked from its main page.
 
 
-
-\section i7 Restrain some distances
+\subsection i7 Restrain some distances
 
 Restrain the distance between the first two particles.
 
@@ -151,7 +147,7 @@ m->add_restraint(r);
 
 
 
-\section i8 Preventing collisions
+\subsection i8 Preventing collisions
 The IMP::core::ClosePairsContainer maintains a list of all pairs of particles which contains all pairs closer than min distance (between the spheres). The HarmonicLowerBound forces the spheres apart.
 \htmlinclude excluded_volume.py.html
 
@@ -169,7 +165,7 @@ m->add_restraint(nbr);
 
 
 
-\section i9 Restraining bonds
+\subsection i9 Restraining bonds
 
 Load a protein and restrain all the bonds to have the correct length. Bond angles is a bit trickier at the moment.
 
@@ -193,112 +189,40 @@ m->add_restraint(br);
 
 
 
-\section i10 Simple optimization setup
-A basic setup for optimizing a model.
+\subsection i10 Simple optimization setup
+A basic setup for sampling configurations of a model.
 \htmlinclude basic_optimization.py.html
 
 \code
 IMP::Pointer<IMP::Model> m= new IMP::Model();
 IMP::Particles particles = setup_model(m);
 
-std::string best;
-float best_score=std::numeric_limits<IMP::Float>::infinity();
+IMP::Pointer<IMP::core::MCCGSampler> sampler= new IMP::core::MCCGSampler(m);
 
-IMP::core::ConjugateGradients o;
-o.set_model(m)
-for (int i=0; i< 100; ++i) {
-    randomize(particles)
-    IMP::Float score=o.optimize(1000)
-    if (score < best_score) {
-       std::ostringstream oss;
-       IMP::core::write(m, oss);
-       best=oss.str();
-       best_score= score;
-    }
-}
-std::istringstream iss(best_score);
-IMP::core::read(iss, m);
+Pointer<ConfigurationSet> configs= sample->sample(10);
 \endcode
 
-\section i11 Writing a simple restraint
-This is actually an IMP::core::SingletonsRestraint. You really wouldn't want to write such a thing in Python, although you can.
-
-\code
-class IMPDLLEXPORT MyRestraint: public IMP::Restraint {
-      IMP::Pointer<IMP::SingletonScore> ss_;
-      IMP::Pointer<IMP::core::SingletonContainer> sc_;
-public:
-        MyRestraint(IMP::SingletonScore *ss,
-                    IMP::core::SingletonContainer *sc): ss_(ss),
-                                                        sc_(sc){}
-        IMP_RESTRAINT(my_version_info);
-};
-
-IMP::Float MyRestraint::evaluate(IMP::DerivativeAccumulator *da) {
-      IMP::Float accum=0;
-      for (IMP::core::SingletonContainer::ParticlesIterator it = sc_->particles_begin(); 
-           it != sc_->particles_end(); ++it) {
-          accum += ss_->evaluate(*it, da);
-       }
-       return accum;
-}
-IMP::Float MyRestraint::show(std::ostream &out) const {
-      out << "MyRestraint on " << sc_->get_number_of_particles() << " particles" << std::endl;
-}
-
-IMP::ParticlesList
-MyRestraint::get_interacting_particles() const
-{
-       return IMP::ParticlesList();
-}
-
-\endcode
-
-
-\section installation Installing IMP
-Instructions on how to build and install \imp can be found in
-the \ref installation "installation instructions".
-
-
-\section next Where to go next
-  
-There are a few areas of core functionality that have already been mentioned.
-- IMP::Decorator
-- \ref log "Logging Support"
-- \ref assert "Error Reporting Facilities"
-
-Then look through the examples which can be found at:
-- \ref examples "Examples"
-
-There are a variety of useful base classes which are used to provide
-most functionality. They are:
-    - IMP::Model
-    - IMP::Particle
-    - IMP::Decorator
-    - IMP::Restraint
-    - IMP::ScoreState
-    - IMP::Sampler
-    - IMP::Optimizer
-    - IMP::SingletonContainer, IMP::PairContainer
-    - IMP::SingletonScore, IMP::PairScore, IMP::TripletScore
-    - IMP::SingletonModifier, IMP::PairModifier
-
-There are a few blocks of functionality that cut across modules. They
-include
-- \ref hierarchy "Code to create and manipulate hierarchies"
-- \ref bond "Code to create and manipulate bonds"
-
-When programming with \imp, one of the more useful pages is the
-<a href="hierarchy.html">class hierarchy</a> as well as
-the \salilab{imp/doc/doxygen/namespaces.html, module pages}.
-
+\subsection i11 Writing a simple restraint
+See IMP::examples::ExampleRestraint.
 
 \section i125 Modules
 
 Functionality in \imp is grouped into modules, each with its own
-namespace. A module contain classes, methods and data which are
-related and owned by a certain set of people. See the "Namespaces"
-tab above for a complete list of modules in this version of \imp.
+namespace (in C++) or package (in Python). For example, the functionality
+for IMP::core can be found like
+\code
+IMP::core::XYZ(p)\endcode
+in C++ and
+\verbatim
+IMP.core.XYZ(p)\endverbatim
+in Python.
+
+A module contain classes,
+methods and data which are related and controlled by a set of authors. The names
+of the authors, the license for the module, its version and an overview of the
+module can be found on the module main page (eg IMP::examples).
+See the "Modules" tab above for a complete list of modules in this version of \imp.
+
 
 \section i13 C++ vs Python
 \anchor cpppythondifferences
@@ -375,7 +299,7 @@ how to do \imp reference counting in C++.
     clearly and accompanied by an explaination of why the normal units
     could not be used.
 
-    \section storage Passing and storing data
+    \subsection storage Passing and storing data
 
     - 3D points and vectors are stored and passed using
       IMP::algebra::Vector3D objects.
@@ -412,12 +336,13 @@ how to do \imp reference counting in C++.
     \subsection objects Values and Objects
     \anchor values
     As is conventional in C++, \imp classes are divided into two types
-    - value classes which are be passed, stored, and returned by value
+    - \e value \e classes which are be passed, stored, and returned by value
       (or, for speed, \c const&). Examples include IMP::algebra::Vector3D,
       collections such as IMP::Restraints or IMP::RestraintsTemp, or
-      decorators, such as IMP::core::XYZ.
+      decorators, such as IMP::core::XYZ. In fact, in \imp, anything
+      that does not inherit from IMP::RefCounted is a value class.
 
-    - object classes which are passed and returned via pointers and
+    - \e object \e classes which are passed and returned via pointers and
       stored using reference counted pointers (eg IMP::Pointer). In
       \imp, these classes all inherit from IMP::Object.
       \anchor tempornot Since reference counting can be expensive,
@@ -428,6 +353,22 @@ how to do \imp reference counting in C++.
       instead of a \c Names.  
 
     Python does not have this distinction.
+
+    A few classes in \imp are designed for fast, low level use. They are
+    marked as \ref uninitialized_default, meaning that their default
+    constructor leaves them in an unspecified state. This is similar to
+    the built in types in C++ (\c int, \c double). For example
+      \code
+      IMP::algebra::Vector3D v; // the vector has unknown coordinates
+      std::cout << v << std::endl; // illegal
+      v= IMP::algebra::Vector3D(0,1,2); // now we can use v
+      \endcode
+
+    Unless they are marked otherwise as \ref noncomparable, all \e value
+    \e class object in \imp can be compared with other equivalent objects
+    based on their contents. \e Object \e class objects allow checking of
+    equality to see if they are the same object (not whether two have the
+    same state). In C++, this is done by comparing the pointers.
 
 
     \section errors Errors
@@ -469,5 +410,36 @@ time. If you find a bug in \imp, please report it on the
 lost.  The best way to report a bug is to provide a short script file
 that demonstrates the problem.
 
+\section next Where to go next
+Instructions on how to build and install \imp can be found in
+the \ref installation "installation instructions".
+
+There are a few areas of core functionality that have already been mentioned.
+- IMP::Decorator
+- \ref log "Logging Support"
+- \ref assert "Error Reporting Facilities"
+
+Then look through the examples which can be found linked from the page of each module.
+ 
+There are a variety of useful base classes which are used to provide
+most functionality. They are:
+    - IMP::Model
+    - IMP::Particle
+    - IMP::Decorator
+    - IMP::Restraint
+    - IMP::Constraint
+    - IMP::Sampler
+    - IMP::Optimizer
+    - IMP::SingletonContainer, IMP::PairContainer
+    - IMP::SingletonScore, IMP::PairScore, IMP::TripletScore
+    - IMP::SingletonModifier, IMP::PairModifier
+
+There are a few blocks of functionality that cut across modules. They
+include
+- \ref hierarchy "Code to create and manipulate hierarchies"
+- \ref bond "Code to create and manipulate bonds"
+
+When programming with \imp, one of the more useful pages is the
+\internal{namespaces.html, modules list}.
 
 */

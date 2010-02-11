@@ -16,7 +16,8 @@
 IMP_BEGIN_NAMESPACE
 
 //! Version and authorship of IMP objects
-/** \ingroup null_default
+/** All IMP::Object-derived objects have such info, allowing one to dump
+    out the version of all the restraints used.
  */
 class IMPEXPORT VersionInfo
 {

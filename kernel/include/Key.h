@@ -40,10 +40,6 @@ IMP_BEGIN_NAMESPACE
 
     If LazyAdd is true, keys created with a new string will be added,
     otherwise this is an error.
-
-    \note Keys objects are ordered.
-    \ingroup comparable
-    \ingroup null_default
  */
 template <unsigned int ID, bool LazyAdd>
 class KeyBase

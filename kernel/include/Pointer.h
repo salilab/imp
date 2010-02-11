@@ -22,7 +22,19 @@
 IMP_BEGIN_NAMESPACE
 
 //! A reference counted pointer to an object.
-/** The object being pointed to must inherit from IMP::RefCountedObject.
+/** Any time you store an Object in a C++ program, you should use a
+    Pointer, rather than a raw C++ pointer. Using a pointer manages
+    the reference counting an makes sure that the object is not deleted
+    prematurely when, for example, all python references go away. Use
+    the IMP_NEW() macro to aid creation of pointer to new objects.
+
+    For example, when implementing a Restraint that uses a PairScore,
+    store the PairScore like follows
+    \code
+    Pointer<PairScore> ps_;
+    \endcode
+
+    The object being pointed to must inherit from IMP::RefCountedObject.
     Use an IMP::WeakPointer to break cycles or to point to
     non-ref-counted objects.
 

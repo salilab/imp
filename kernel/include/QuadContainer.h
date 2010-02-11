@@ -33,7 +33,7 @@ class QuadScore;
 /** Stores a searchable shared collection of particle_quads.
     \ingroup restraints
 
-    Implementors should see IMP_QUAD_CONTAINER().
+    \implementationwithoutexample{QuadContainer, IMP_QUAD_CONTAINER}
  */
 class IMPEXPORT QuadContainer : public Container
 {

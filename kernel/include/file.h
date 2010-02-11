@@ -38,8 +38,6 @@ struct TextProxy {
     IMP::atom::write_pdb(particles, "path/to/file.pdb");
     IMP::atom::write_pdb(particles, my_fstream);
     \endcode
-    \ingroup null_default
-    \ingroup comparable
 */
 class IMPEXPORT TextOutput
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
@@ -72,8 +70,6 @@ class IMPEXPORT TextOutput
     IMP::atom::read_pdb("path/to/file.pdb", m);
     IMP::atom::read_pdb(my_fstream, m);
     \endcode
-    \ingroup null_default
-    \ingroup comparable
 */
 class IMPEXPORT TextInput
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
