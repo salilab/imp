@@ -208,11 +208,13 @@ def IMPModuleLib(envi, files):
     module = env['IMP_MODULE']
     module_suffix = env['IMP_MODULE_SUFFIX']
     vars= make_vars(env)
-    link= env.IMPModuleLinkTest(target=['internal/link_0.cpp', 'internal/link_1.cpp'], source=[])
+    if env['build']=="debug":
+        link= env.IMPModuleLinkTest(target=['internal/link_0.cpp', 'internal/link_1.cpp'], source=[])
+        files= files+link
     config= env.IMPModuleConfigCPP(target=['config.cpp'],
                                    source=[env.Value(env['IMP_MODULE_VERSION'])])
     #env.AlwaysBuild(version)
-    files =files+link+ config
+    files =files+ config
     env.Prepend(LIBS=dependencies_to_libs(env, []))
     build=[]
     if env['static'] and env['CC'] == 'gcc':
@@ -361,7 +363,7 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
         module_deps_requires(env, swig, "swig", [])
         module_deps_requires(env, swig, "include", [])
         module_requires(env, swig, 'include')
-        penv._IMPPatchSWIG(target=['wrap.cpp'],
+        patched=penv._IMPPatchSWIG(target=['wrap.cpp'],
                            source=['wrap.cpp-in'])
         penv._IMPPatchSWIG(target=['wrap.h'],
                            source=['wrap.h-in'])
@@ -377,9 +379,10 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
             lpenv.Prepend(CPPFLAGS=['-include', 'pch.h'])
             lpenv.Prepend(CXXFLAGS=['-Winvalid-pch'])
         buildlib = lpenv.LoadableModule('#/build/lib/_IMP%s' % module_suffix,
-                                       "wrap.cpp")
+                                       patched)
         if env['use_pch']:
-            env.Depends(buildlib, env.Alias('pch'))
+            # a hack to get them close to right without making building the docs expensive
+            env.Depends(patched, env.Alias('pch'))
         # Place the generated Python wrapper in lib directory:
         buildinit = penv.LinkInstallAs('#/build/lib/%s/__init__.py'
                                        % vars['module_include_path'],

@@ -40,7 +40,7 @@ def _action_build_pch_h(target, source, env):
     env.Execute(_get_string(env,source, target))
 
 def _print_build_pch_h(target,source,env):
-    print _get_string(env, source, target)
+    print "Building pch "+ str(target)
 
 def _emitter_build_pch(target, source, env):
     SCons.Defaults.SharedObjectEmitter( target, source, env )
