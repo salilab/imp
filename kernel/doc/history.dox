@@ -149,8 +149,6 @@ external code,
       - replace IMP.CHEAP with IMP.USAGE
       - replace IMP_assert and IMP_check as above.
 
-- A \ref differences "page" has been added on the differences between the Python and C++ interfaces of \imp. Please add salient points as they come up.
-
 \par Week of October 1
 - IMP::ScoreState and IMP::Restraint now better track the set of particles that they use and the dependencies between the particles. To this end, a new base class IMP::Interaction has been added with methods to get the inter-particle interactions and the set of particles used.
 
@@ -494,8 +492,8 @@ like \code if (d) { blah } \endcode works.
 - IMP::RefCounted has had its name changed and no longer inherits from
   IMP::Object. This makes it easier to use independently.
 
-- the docs for reference counting (IMP::RefCounted) and \ref
-  decorators decorators (and IMP::Decorator) have been improved
+- the docs for reference counting (IMP::RefCounted) and and IMP::Decorator
+  have been improved
 
 - running doxygen produces no warnings. Let's try to keep it that
   way. Run \command{scons doc > /dev/null} before you check in large

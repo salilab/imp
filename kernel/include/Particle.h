@@ -167,7 +167,7 @@ class SaveOptimizeds;
 
    \note Direct manipuation of particles is considered advanced
    and Particles should only be manipulated through
-   \ref decorators "Decorators".
+   IMP::Decorator derived classes.
 
    A IMP::Particle is a mapping between keys and values.
 

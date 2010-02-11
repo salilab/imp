@@ -18,29 +18,84 @@
 
 IMP_BEGIN_NAMESPACE
 
-/** A base class for decorators. To read more about decorators go to the
-    \ref decorators "Decorator introduction".
+/**
+Representation of the structure in \imp is via a collection of
+Particle objects. These provide a very simple set of tools for
+managing the data. Decorators wrap (or Decorator) particles to provide
+a much richer interface to make management of representation
+easier. For example, most particles have Cartesian coordinates. The
+IMP::core::XYZ decorator provides functions to get and set the
+Cartesian coordinates as well as compute distances between particles.
 
-    \note Decorator objects are ordered based on the address of the wrapped
-    particle. Like pointers, they are logical values so can be in \c if
-    statements.
+    \code
+    d0= IMP.core.XYZ(p0)
+    d1= IMP.core.XYZ(p1)
+    print IMP.core.distance(d0,d1)
+    print d0.get_coordinates()
+    \endcode
 
-    \cpp Implementers of decorators should just inherit from this and
-    then use the IMP_DECORATOR() macro to provide the key implementation
-    pieces.\n\n Remember that attribute keys should always be created
-    lazily (at the time of the first use), and not be created as
-    static variables.\n\n Implementors should consult
-    IMP::examples::Example, IMP_DECORATOR(),
-    IMP_DECORATOR_TRAITS(), IMP_DECORATOR_GET(),
-    IMP_DECORATOR_ARRAY_DECL()
+\par Decorator basics
 
-    \advanceddoc Lists of decorators behave like lists of
-    \ref values "objects rather than values" even though decorators
-    themselves are values. This means that, eg, an IMP::core::XYZs
-    reference counts the particles, where as an IMP::core::XYZ
-    does not. For more efficiency you can use the non-reference
-    counted version, IMP::core::XYZsTemp instead. See
-    \ref tempornot "when to use Temp lists" for more information.
+If you want to use a particular particle, \c p, to represent a piece
+of the model with coordinates, you first have to add the
+coordinates. To do this, we setup the particle to have the coordinates
+0,2,3 by
+
+\code
+d0= IMP.core.XYZ.setup_particle(p, IMP.algebra.Vector3D(0,2,3))
+\endcode
+
+We can now say the particle is an XYZ particle. And that particle can
+now be decorated by doing
+
+\code
+d0= IMP.core.XYZ(p)
+\endcode
+If you do not know if \c p is an XYZ particle, you can ask by doing
+\code
+if IMP.core.XYZ.particle_is_instance(p):
+\endcode
+
+More abstractly, decorators can be used to
+
+- maintain invariants: e.g. each of the XYZ particles have all of
+  x,y,z coordinates
+
+- add functionality: e.g. you can get the coordinates as an IMP::Vector3D
+
+- provide uniform names for attributes: so you don't use "x" some places
+and "X" other places
+
+- cache keys since those can be expensive to create
+
+
+To see a list of all available decorators and to see what functions
+all decorators have, look the list of classes which inherit from
+IMP::Decorator, below.
+
+See the IMP::examples::ExampleDecorator example for how to implement a
+simple decorator.
+
+\note Decorator objects are ordered based on the address of the wrapped
+particle. Like pointers, they are logical values so can be in \c if
+statements.
+
+\cpp Implementers of decorators should just inherit from this and then
+use the IMP_DECORATOR() macro to provide the key implementation
+pieces.\n\n Remember that attribute keys should always be created
+lazily (at the time of the first use), and not be created as static
+variables.\n\n Implementors should consult IMP::examples::Example,
+IMP_DECORATOR(), IMP_DECORATOR_TRAITS(), IMP_DECORATOR_GET(),
+IMP_DECORATOR_ARRAY_DECL()
+
+\advanceddoc Lists of decorators behave like lists of \ref values
+"objects rather than values" even though decorators themselves are
+values. This means that, eg, an IMP::core::XYZs reference counts the
+particles, where as an IMP::core::XYZ does not. For more efficiency
+you can use the non-reference counted version, IMP::core::XYZsTemp
+instead. This should only
+be done when it is known to be safe. If you can't figure out
+that it is, don't do it.
 
     A Decorator can be cast to a Particle*.
     \see Decorators

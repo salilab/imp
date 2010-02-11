@@ -16,18 +16,30 @@ Structure and dynamics modeling in \imp proceeds in a five stage iterative proce
  -# Sampling of the possible models in the representation scheme to try to find good models
  -# Analysis of the found models to determine if more work is needed
 
-\imp provides tools to help address the last four of these stages. Unfortunately, it doesn't offer much help performing the experiments. We are working on that.
+\imp provides tools to help address the last four of these
+stages. Unfortunately, it doesn't offer much help performing the
+experiments. We are working on that.
 
-Knowledge about the system being modeled enters the process at all stages, but a few need extra note:
-- A certain amount of knowledge is encoded as "constraints". These are choices made in choosing the representation scheme that force relationships between parts to always hold. For example, representing part of the system as a rigid body, means that none of the distances or angles within the rigid body ever change.
+Knowledge about the system being modeled enters the process at all
+stages, but a few need extra note:
 
-- Other knowledge is encoded as restraints via scoring functions that penalize models which don't fit that bit of information.
+- A certain amount of knowledge is encoded as "constraints". These are
+  choices made in choosing the representation scheme that force
+  relationships between parts to always hold. For example,
+  representing part of the system as a rigid body, means that none of
+  the distances or angles within the rigid body ever change.
 
-- Knowledge can also be used to tune the sampling scheme by choosing starting configurations, the discrete sample etc.
+- Other knowledge is encoded as restraints via scoring functions that
+  penalize models which don't fit that bit of information.
+
+- Knowledge can also be used to tune the sampling scheme by choosing
+  starting configurations, the discrete sample etc.
 
 \section i0 Architecture
  
-\imp provides a large number of classes and functions from which to choose when solving a particular problem. Fortunately, these classes fall into a variety of categories.
+\imp provides a large number of classes and functions from which to
+choose when solving a particular problem. Fortunately, these classes
+fall into a variety of categories.
 
 - Representation: The model in \imp is represented as a collection
   of IMP::Particle objects, stored in the IMP::Model. The
@@ -41,7 +53,7 @@ Knowledge about the system being modeled enters the process at all stages, but a
   decorator with the associated IMP::atom::Atom, IMP::atom::Residue
   etc. decorators provide a standard representation of molecular
   structures; the IMP::core::RigidBodyDecorator represents part of the
-  model rigidly etc. See the \ref decorators "Decorators" page for
+  model rigidly etc. See the IMP::Decorator page for
   more information.
 
 - Scoring: Proposed models are scored based on how well they match the
@@ -243,16 +255,42 @@ MyRestraint::get_interacting_particles() const
 \endcode
 
 
-\section i12 Available functionality
+\section installation Installing IMP
+Instructions on how to build and install \imp can be found in
+the \ref installation "installation instructions".
 
-Look through the types inherited from these methods to get an idea of the functionality available.
 
+\section next Where to go next
+  
+There are a few areas of core functionality that have already been mentioned.
 - IMP::Decorator
-- IMP::Restraint
-- IMP::SingletonScore
-- IMP::PairScore
-- IMP::TripletScore
-- and check out the namespace list above for an orthogonal view
+- \ref log "Logging Support"
+- \ref assert "Error Reporting Facilities"
+
+Then look through the examples which can be found at:
+- \ref examples "Examples"
+
+There are a variety of useful base classes which are used to provide
+most functionality. They are:
+    - IMP::Model
+    - IMP::Particle
+    - IMP::Decorator
+    - IMP::Restraint
+    - IMP::ScoreState
+    - IMP::Sampler
+    - IMP::Optimizer
+    - IMP::SingletonContainer, IMP::PairContainer
+    - IMP::SingletonScore, IMP::PairScore, IMP::TripletScore
+    - IMP::SingletonModifier, IMP::PairModifier
+
+There are a few blocks of functionality that cut across modules. They
+include
+- \ref hierarchy "Code to create and manipulate hierarchies"
+- \ref bond "Code to create and manipulate bonds"
+
+When programming with \imp, one of the more useful pages is the
+<a href="hierarchy.html">class hierarchy</a> as well as
+the \salilab{imp/doc/doxygen/namespaces.html, module pages}.
 
 
 \section i125 Modules
@@ -263,26 +301,173 @@ related and owned by a certain set of people. See the "Namespaces"
 tab above for a complete list of modules in this version of \imp.
 
 \section i13 C++ vs Python
-
-Most code maps trivially from one to the other as you can see in the
-examples.  See \ref differences "Python/C++ differences" for a full
-description of the differences between the Python and C++ interfaces
-to \imp.
-
-Recommendations:
-- write new \imp classes in C++
+\anchor cpppythondifferences
+\imp can be used from both C++ and Python. We recommend that you:
 - use Python to put \imp classes together to handle your data and resulting structures
+- write new \imp classes in C++
 
-\section i15 Getting started
+People who are new to programming should check out a general python 
+introduction such as
+\external{docs.python.org/tutorial/introduction.html, the official introduction to Python} and
+\external{www.rexx.com/~dkuhlman/python_101/python_101.html, Python
+101}. Users who have
+programmed but are not familiar with Python should take a look at
+\external{diveintopython.org/toc/index.html, Dive into Python},
+especially chapters 1-6, and 15-18.
 
-The easiest way to get started developing with \imp is to use a local module.
-To do this run the \command{./tools/make-module my_module_name} in the
-main \imp directory. This will create a new module in modules/my_module. See
-\ref make_module "Making a module" for more information.
+While effort has been made to ensure that the interfaces are the same
+between the two languages, a number of differences remain due to
+differences in the languages and limitations of the program used to
+generate the connection between the two languages. Key differences are
 
-You should then read the
- - \ref api "API documentation"
- - \ref conventions "Conventions"
- - and \ref codingconventions "Coding conventions"
+- Python does not support templates and so template classes (eg
+  IMP::algebra::BoundingBoxD, IMP::VectorOfRefCounted) cannot be
+  directly exposed in python. Instead, specific versions of the
+  classes are exported (IMP::algebra::BoundingBox3D and
+  IMP::Particles, respectively). New versions can be easily added, so
+  feel free to request them when desired.
+
+- Iterators on C++ containers do not easily into Python. For
+  every iterator generating pair \c foos_begin(), \c foos_end(), we
+  provide a method \c get_foos() which can be used with python \c
+  foreach loops.
+
+- Macros such as IMP_RESTRAINT(), IMP_LOG(), IMP_USAGE_CHECK() are not
+  available in Python. While we could, conceivably, provide python
+  function equivalents, we do not.
+
+- Oddly, the Python side is much stricter about converting between
+  different types. In C++ you can call a function that takes a \c
+  Particle* with a \c Decorator and the decorator will automatically
+  be converted. It will not on the python side. Similarly for
+  converting between \c ParticlesTemp and \c Particles.
+
+- All \imp exceptions are exposed as identical Python exception
+classes. The class hierarchy is similar (e.g. all exceptions derive
+from IMP::Exception, so "except IMP.Exception" will catch all IMP
+exceptions), except for convenience some generic IMP exceptions also
+derive from their standard Python equivalents (e.g. IMP.IndexException
+derives from the standard Python IndexError as well as
+IMP::Exception). Thus, an IMP::IndexException could be caught in
+Python most specifically with "except IMP.IndexException" but also
+with "except IMP.Exception" or "except IndexError".
+
+- All objects in python are reference counted so that they are cleaned
+up when they are no longer in use. \imp also uses reference counting
+on the C++ side so that memory managment works naturally across the
+language barrier. See IMP::RefCounted for a detailed description of
+how to do \imp reference counting in C++.
+
+
+\section conventions IMP conventions
+
+    To ensure consistency and ease of use, certain conventions should be
+    adhered to when writing code using or in \imp.
+
+    \subsection physical Measurements
+    Unless these is a good reason, the following units are be used
+    - angstrom for all distances
+    - kcal/mol angstrom for forces/derivatives
+    - kcal/mol for energies
+    - radians for angles. All angles are counterclockwise.
+
+    Anything that breaks from these conventions must be labeled
+    clearly and accompanied by an explaination of why the normal units
+    could not be used.
+
+    \section storage Passing and storing data
+
+    - 3D points and vectors are stored and passed using
+      IMP::algebra::Vector3D objects.
+
+    - 3D rotations are stored and passed using
+      IMP::algebra::Rotation3D objects.
+
+    - Likewise for spheres (IMP::algebra::Sphere3D), segments
+      (IMP::algebra::Segment3D) etc.
+
+    - Collections of object \c Name are passed using the type \c Names. For
+    example, a bunch of IMP::algebra::Vector3D objects is passed using
+    a IMP::algebra::Vector3Ds type, and a bunch of IMP::Restraint
+    objects is passed using IMP::Restraints (or, equivalently
+    IMP::RestraintsTemp).
+
+    \subsection names Names in IMP
+    - Class names are be in \c CamelCase, for example \c class \c SpecialVector'
+    - For each type of object in \imp, \c Name, there is a type \c Names
+      which is used to pass a list of objects of type \c Name. \c Names
+      look like an \c std::vector in C++ or a \c list in Python. Sometimes,
+      for efficiency, a \c NamesTemp is passed instead
+      (see \ref tempornot "when to use Temp values" for the reason). \c Names
+      will be converted into \c NamesTemp without cost, so the distinction
+      should not matter for the caller.
+    - method names and variables should be \c separated_by_underscores, for
+      example \c void \c SpecialVector::add_constant(int the_constant)'
+    - member methods that change a value begin with \c set_
+    - member methods which return a value begin with \c get_
+    - all preprocessor symbols (things created by \c \#define) begin with \c %IMP_
+    - Abbreviations are not used in names except when the abbreviation is more
+    common than the unabreviated name.
+
+    \subsection objects Values and Objects
+    \anchor values
+    As is conventional in C++, \imp classes are divided into two types
+    - value classes which are be passed, stored, and returned by value
+      (or, for speed, \c const&). Examples include IMP::algebra::Vector3D,
+      collections such as IMP::Restraints or IMP::RestraintsTemp, or
+      decorators, such as IMP::core::XYZ.
+
+    - object classes which are passed and returned via pointers and
+      stored using reference counted pointers (eg IMP::Pointer). In
+      \imp, these classes all inherit from IMP::Object.
+      \anchor tempornot Since reference counting can be expensive,
+      it can be useful to pass, return or store a non-reference
+      counted list of objects (or IMP::Decorator). This should only
+      be done when it is known to be safe. If you can't figure out
+      that it is, don't do it. If it is safe, pass a \c NamesTemp
+      instead of a \c Names.  
+
+    Python does not have this distinction.
+
+
+    \section errors Errors
+    Classes and methods use IMP exceptions to report errors. See
+    IMP::Exception for a list of existing exceptions. These C++
+    exceptions are mapped onto the normal python exception types.
+
+\section incremental Incremental Scoring
+    Scoring in IMP can be performed in two different ways....
+
+    Incremental scoring  works as follows:
+
+    To set it up call IMP::Model::set_is_incremental() with the value \c true. This
+    -# calls regular evaluate on all incremental restraints
+    -# a shadow particle is added to each particle. The shadow particles have all the same attributes. It is accessed using IMP::Particle::get_prechange_particle()
+    -# saves copies of their derivatives to the shadow particles
+
+    When evaluate is called during optimization
+    -# the derivatives are cleared on all the particles (but not the shadow particles)
+    -# incremental restraints are evaluated. They need to make sure that the the change in the sum of the particle and shadow particle derivatives is equal to the change in derivatives and that the actual score is returned.
+    -# derivatives are added to the shadow derivatives and then cleared
+    -# the non-incremental restraints are then evaluated
+    -# the derivatives of the shadow particles are added to the particle derivatives
+    -# after scoring, all the particles are marked as clean and shadow particles are updated to reflect the current attributes of the particles
+
+    A IMP::Restraint is an incremental restraint if IMP::Restraint::get_is_incremental() returns true. For such restraints,
+    IMP::Restraint::incremental_evaluate() is called instead of IMP::Restraint::evaluate().
+
+    Whenever a particle is changed is marked as dirty, so that IMP::Particle::get_is_changed() returns true.
+
+    A (perhaps partial) list of classes which benefit from incremental evaluation is:
+    - IMP::core::IncrementalBallMover
+
+\section fixbug Reporting bugs in IMP
+
+While we strive for perfection, we, lamentably, slip up from time to
+time. If you find a bug in \imp, please report it on the
+\salilab{imp/bugs/,IMP bug tracker}. This will ensure it does not get
+lost.  The best way to report a bug is to provide a short script file
+that demonstrates the problem.
+
 
 */

@@ -1,0 +1,117 @@
+/** \defgroup python Python
+
+\imp relies on \external{www.python.org,Python} for its high-level interface,
+scripting, and integration with other packages such as Modeller. The test cases
+are also implemented as Python classes that derive from the standard Python
+\c unittest module.
+
+Some \imp modules, classes or methods are implemented purely in Python.
+*/
+
+/** \defgroup CGAL CGAL
+
+\external{www.cgal.org,CGAL} is a library of geometry-related
+algorithms and data structures written in C++. The relevant parts of
+CGAL are licensed under LGPL and QPL and commercial licenses are
+available if needed. More information can be found on the
+\external{www.cgal.org/license.html, CGAL license page}.
+
+Certain functionality provided in \imp requires or benefits from using CGAL.
+
+*/
+
+
+/** \defgroup valid_default Valid Default
+
+    Instances of a class in this group are put into
+    a well defined, valid state by the default constructor.
+    \see null_default
+    \see uninitialized_default
+    */
+
+/** \defgroup null_default Null Default
+
+    The default constructor of classes in this group put the class
+    into a well defined invalid value
+    which can be used for comparisons. Such a value should have the
+    same semantics as NULL for pointers or 0 for integers. Default
+    constructed instances can be compared against, but all other operations
+    on them should be assumed to be invalid unless documented otherwise.
+    \code
+    NullDefault() == NullDefault()
+    \endcode
+
+    \see uninitialized_default
+    \see valid_default
+*/
+
+/** \defgroup uninitialized_default Uninitialized Default
+
+    Classes in this group are put into an unknown state
+    by their default constructor. Such classes mimic
+    POD types (int, float etc) in C++ and are optimized for efficiency.
+    All operations on a default initialized instance other than assigning
+    to it from a non-default initialized instance should be assumed to be
+    invalid.
+    \code
+    UninitializeDefault() != UninitializedDefault()
+    \endcode
+    \see null_default
+    \see valid_default
+*/
+
+/** \defgroup comparable Comparable
+
+    Objects marked comparable can all be compared against other objects
+    of the same type. They support the operators
+    \c <, \c >, \c ==, \c !=, \c >=, \c <=. In addition they support a
+    namespace function \c compare(a,b) which
+    return -1,0,1 if \c a \c < \c b, \c a\c == \c b or \c a \c > \c b.
+*/
+
+/** \defgroup genericgeometry Generic Geometry
+    Geometry in IMP can be stored in a variety of ways. For example, a point
+    in 3D can be stored using an IMP::algebra::Vector3D or using an
+    IMP::core::XYZ particle. It is often useful to be able to write algorithms
+    that work on sets of points without worring how they are stored, the
+    Generic Geometry layer provides that. It works using a set of functions
+    IMP::core::get_geometry() and IMP::core::set_geometry() which manipulate
+    the IMP::algebra representation
+    of the geometry in question (so an IMP::algebra::Vector3D for both
+    IMP::algebra::Vector3D and IMP::core::XYZ storage). Algorithms take their
+    arguments as C++ templates and use the generic geometry methods to
+    manipulate the geometry. And versions of the function for both types
+    of storage are exported to python.
+
+    For example, IMP::atom::rmsd() takes any combination of IMP::algebra::Vector3Ds
+    or IMP::core::XYZs or IMP::core::XYZsTemp as arguments. Versions for all combinations
+    of those are exported to python.
+*/
+
+/** \defgroup implementation Advanced
+    Certainly classes and functionality is only needed by implementers of new
+    functionality in \imp. Such classes are marked below their name and listed below.
+*/
+
+/** \page unstuff Warnings about IMP classes and functions
+    Functionality can be tagged in a variety of ways to indicate potential
+    pitfalls. Some detailed below.
+
+    \section unstable Unstable API
+    The interface of classes and functions in this group are liable to
+    change.
+
+    \section untested Lightly Tested Functionality
+    The classes and functions in this group have not yet been thoroughly
+    tested and so may contain bugs (unlike the rest of \imp :-). Use with
+    caution and please contribute any test code that you write.
+
+    \section unimplemented Unimplemented Functionality
+    Sometimes it is useful to check in the API of a class or function before
+    there is time to implement it. This can be useful to make sure people
+    converge on one function or to spark discussion. If you want to use
+    such functionality, post to the email list to ask for help or volunteer
+    to implement it yourself.
+ */
+
+
