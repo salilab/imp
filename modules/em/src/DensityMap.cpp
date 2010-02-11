@@ -681,17 +681,7 @@ double get_density(DensityMap *m, const algebra::Vector3D &v) {
 DensityMap *get_transformed(DensityMap *in, const algebra::Transformation3D &tr,
                             double threshold) {
   algebra::BoundingBox3D obb= get_bounding_box(in, threshold);
-  algebra::BoundingBox3D nbb;
-  for (unsigned int i=0; i< 2; ++i) {
-    for (unsigned int j=0; j< 2; ++j) {
-      for (unsigned int k=0; k< 2; ++k) {
-        algebra::Vector3D v(obb.get_corner(i)[0],
-                            obb.get_corner(j)[1],
-                            obb.get_corner(k)[2]);
-        nbb+= tr.transform(v);
-      }
-    }
-  }
+  algebra::BoundingBox3D nbb= algebra::get_transformed(obb, tr);
   IMP::Pointer<DensityMap> ret(create_density_map(nbb,
                                               in->get_header()->get_spacing()));
   const algebra::Transformation3D &tri= tr.get_inverse();
