@@ -31,13 +31,13 @@ IMP_BEGIN_NAMESPACE
     stopping conditions as appropriate.
 
     A typical optimization loop proceeds by:
-    - the Optimizer calls Model::evaluate() to compute the score
+    - the optimizer calls Model::evaluate() to compute the score
     (and possibly the derivatives) of the
     current conformation of the Model.
-    - the Optimizer uses this information to update the optimizeable
+    - the optimizer uses this information to update the optimizeable
     parameters of the Particles contained in the Model.
 
-    Implementors should see IMP_OPTIMIZER().
+    \implementationwithoutexample{Optimizer, IMP_OPTIMIZER}
 */
 class IMPEXPORT Optimizer: public Object
 {

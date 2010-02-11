@@ -33,7 +33,7 @@ class TripletScore;
 /** Stores a searchable shared collection of particle_triplets.
     \ingroup restraints
 
-    Implementors should see IMP_TRIPLET_CONTAINER().
+    \implementationwithoutexample{TripletContainer, IMP_TRIPLET_CONTAINER}
  */
 class IMPEXPORT TripletContainer : public Container
 {

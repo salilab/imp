@@ -28,9 +28,6 @@ IMP_BEGIN_NAMESPACE
     IMP::Particle has a WeakPointer back to the Model.
 
     \param[in] O The type of IMP::Object-derived object to point to
-
-    \ingroup null_default
-    \ingroup comparable
  */
 template <class O>
 class WeakPointer

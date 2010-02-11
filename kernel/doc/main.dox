@@ -2,8 +2,8 @@
   \mainpage IMP Documentation
 
  Welcome to the \imp library documentation. If you are new to \imp,
- you should probably check out the \ref introduction "Introduction to
- IMP". The documentation is aimed at two, probably overlapping groups:
+ you should probably check out the \ref introduction "Introduction to IMP".
+ The documentation is aimed at two, probably overlapping groups:
 
  - Users: people who will write python scripts to use existing \imp
    classes to solve biological problems.

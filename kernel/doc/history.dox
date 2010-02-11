@@ -1,4 +1,18 @@
 /** \page recent Change History
+\par Week of February 3, 2010
+
+- The locations for pixels in IMP::em::DensityMap have been moved to the center of the corresponding voxel from the lower left corner.
+
+- IMP::em::get_transformed(), IMP::em::get_resampled() and IMP::em::get_density() have been added.
+
+- The documentation has been majorly cleaned up and simplified. Please look around and see if you like it. There are now two main pages, the introduction and the developers guide, rather than the previous plethora of pages.
+
+- IMP::algebra::Cone3D::get_bounding_sphere() has been removed since it was not of general use, not returning the bounding sphere you would expect and was trivial to implement.
+
+- IMP::algebra::projection() was removed since it didn't actually project onto the segment and the name didn't follow the normal conventions. And it wasn't used.
+
+- Most geometry now has namespace methods IMP::algebra::get_bounding_box(), IMP::algebra::get_surface_area(), IMP::algebra::get_volume().
+
 \par Week of January 22, 2010
 
 - A generic geometry layer has been added (see \ref genericgeometry). Using it, IMP::atom::rmsd(),

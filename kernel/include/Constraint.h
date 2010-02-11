@@ -13,9 +13,7 @@
 IMP_BEGIN_NAMESPACE
 
 //! Implement a constraint on the Model.
-/** \advanced
-
-    The solution model can be restricted two ways, either by
+/** The solution model can be restricted two ways, either by
     penalizing "bad" conformations (a restraint) or by forcing some
     set of attributes to a function of other attributes (a
     constraint). For example, rigid bodies consisting of a number of
@@ -37,7 +35,8 @@ IMP_BEGIN_NAMESPACE
     constraint can move them around to make sure the derivatives of
     the optimizer parameters are correct.
 
-    In general, constraints are associated with Decorators.
+    In general, constraints are associated with Decorator objects
+    and created invisibly when needed.
 
     \note Constraint invariants will not necessarily hold if
     involved particles have been called an Model::evaluate()
@@ -46,7 +45,7 @@ IMP_BEGIN_NAMESPACE
     containing the particle will not be correct until the
     Model is evaluated.
 
-    Implementors should see IMP_CONSTRAINT().
+    \implementationwithoutexample{Constraint, IMP_CONSTRAINT}
  */
 class IMPEXPORT Constraint : public ScoreState
 {

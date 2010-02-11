@@ -136,7 +136,7 @@ public:
 
       \note The order of addition of ScoreState objects does not matter.
 
-      \advancedmethods
+      \advancedmethod
   */
   /**@{*/
   IMP_LIST(public, ScoreState, score_state, ScoreState*, ScoreStates);

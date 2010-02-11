@@ -36,7 +36,7 @@ IMP_BEGIN_NAMESPACE
     Objects can be outputted to standard streams using operator<<()
     which will call the Object::show() method.
 
-    \cpp Types inheriting from Object should always be created using
+    \advanceddoc Types inheriting from Object should always be created using
     \c new in C++ and passed, passed using pointers and stored using
     IMP::Pointer objects. Note that you have to be careful of cycles
     and so must use IMP::WeakPointer objects to break cycles. See

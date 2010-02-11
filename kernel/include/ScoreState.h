@@ -24,9 +24,7 @@ IMP_BEGIN_NAMESPACE
 class Model;
 
 //! Shared score state.
-/** \advanced
-
-    ScoreStates allow code to be injected before and after the restraint
+/** ScoreStates allow code to be injected before and after the restraint
     evaluation process. Such code can be used to, for example:
     - log the optimization process
     - maintain constraints (see Constraint)
@@ -44,12 +42,7 @@ class Model;
     input and output sets for the before call and output particles chose
     from among the inputs of the before call.
 
-    \note When logging is VERBOSE, state should print enough information
-    in evaluate to reproduce the the entire flow of data in update. When
-    logging is TERSE the restraint should print out only a constant number
-    of lines per update call.
-
-    Implementors should see IMP_SCORE_STATE().
+    \implementationwithoutexample{ScoreState, IMP_SCORE_STATE}
  */
 class IMPEXPORT ScoreState : public Object
 {

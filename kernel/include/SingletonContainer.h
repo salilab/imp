@@ -33,7 +33,7 @@ class SingletonScore;
 /** Stores a searchable shared collection of particles.
     \ingroup restraints
 
-    Implementors should see IMP_SINGLETON_CONTAINER().
+    \implementationwithoutexample{SingletonContainer, IMP_SINGLETON_CONTAINER}
  */
 class IMPEXPORT SingletonContainer : public Container
 {

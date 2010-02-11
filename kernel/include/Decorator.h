@@ -20,13 +20,14 @@ IMP_BEGIN_NAMESPACE
 
 /**
 Representation of the structure in \imp is via a collection of
-Particle objects. These provide a very simple set of tools for
-managing the data. Decorators wrap (or Decorator) particles to provide
-a much richer interface to make management of representation
-easier. For example, most particles have Cartesian coordinates. The
-IMP::core::XYZ decorator provides functions to get and set the
-Cartesian coordinates as well as compute distances between particles.
-
+Particle objects. However, since particles are general purpose, they
+provide a basic set of tools for managing the data (eg
+Particle::add_attribute(), Particle::get_value() etc). Decorators wrap
+(or "decorator") particles to provide a much richer interface. For
+example, most particles have Cartesian coordinates. The class
+IMP::core::XYZ decorates such a particle to provide functions to get
+and set the Cartesian coordinates as well as compute distances between
+particles.
     \code
     d0= IMP.core.XYZ(p0)
     d1= IMP.core.XYZ(p1)
@@ -45,12 +46,17 @@ coordinates. To do this, we setup the particle to have the coordinates
 d0= IMP.core.XYZ.setup_particle(p, IMP.algebra.Vector3D(0,2,3))
 \endcode
 
-We can now say the particle is an XYZ particle. And that particle can
-now be decorated by doing
-
+Setup particle returns a decorator of the type being setup so we
+can now do
+\code
+print d0.get_coordinates()
+\endcode
+We now say the particle is an XYZ particle. If that particle is
+encountered later, we can decorate it simply by doing
 \code
 d0= IMP.core.XYZ(p)
 \endcode
+
 If you do not know if \c p is an XYZ particle, you can ask by doing
 \code
 if IMP.core.XYZ.particle_is_instance(p):
@@ -58,16 +64,13 @@ if IMP.core.XYZ.particle_is_instance(p):
 
 More abstractly, decorators can be used to
 
-- maintain invariants: e.g. each of the XYZ particles have all of
-  x,y,z coordinates
+- maintain invariants: e.g. an IMP::atom::Bond particle always connects
+  two other particles, both of which are IMP::atom::Bonded particles.
 
 - add functionality: e.g. you can get the coordinates as an IMP::Vector3D
 
 - provide uniform names for attributes: so you don't use "x" some places
 and "X" other places
-
-- cache keys since those can be expensive to create
-
 
 To see a list of all available decorators and to see what functions
 all decorators have, look the list of classes which inherit from
@@ -80,29 +83,21 @@ simple decorator.
 particle. Like pointers, they are logical values so can be in \c if
 statements.
 
-\cpp Implementers of decorators should just inherit from this and then
-use the IMP_DECORATOR() macro to provide the key implementation
-pieces.\n\n Remember that attribute keys should always be created
+\implementation{Decorator, IMP_DECORATOR, IMP::examples::ExampleDecorator}
+\n\n Remember that attribute keys should always be created
 lazily (at the time of the first use), and not be created as static
 variables.\n\n Implementors should consult IMP::examples::Example,
 IMP_DECORATOR(), IMP_DECORATOR_TRAITS(), IMP_DECORATOR_GET(),
 IMP_DECORATOR_ARRAY_DECL()
 
-\advanceddoc Lists of decorators behave like lists of \ref values
-"objects rather than values" even though decorators themselves are
-values. This means that, eg, an IMP::core::XYZs reference counts the
-particles, where as an IMP::core::XYZ does not. For more efficiency
+\advanceddoc Lists of decorators are reference counted even though the
+individual decorators are not. For more efficiency
 you can use the non-reference counted version, IMP::core::XYZsTemp
 instead. This should only
 be done when it is known to be safe. If you can't figure out
 that it is, don't do it.
 
-    A Decorator can be cast to a Particle*.
-    \see Decorators
-    \see DecoratorsWithTraits
-
-    \ingroup null_default
-    \ingroup comparable
+A Decorator can be cast to a Particle*.
 */
 class Decorator
 {
@@ -207,7 +202,6 @@ public:
   IMP_NO_DOXYGEN(bool is_null() const {return !particle_;});
   IMP_NO_DOXYGEN(typedef void (Decorator::*bool_type)() const;)
   IMP_NO_DOXYGEN(void safe_bool_function() const {})
-
 };
 
 
@@ -218,9 +212,9 @@ inline bool operator==(Decorator d, Particle *p) {
 inline bool operator==(Particle *p, Decorator d) {
   return d==p;
 }
-#endif
 
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+
+#if !defined(SWIG)
 #define IMP_DECORATORS_METHODS(test, on_add_decorator, on_add_particle, \
                                swap)                                    \
   struct Accessor {                                                     \
@@ -302,7 +296,7 @@ void swap_with(ThisDecorators &o) {                                     \
   ParentDecorators::swap_with(o);                                       \
 }                                                                       \
 
-#elif defined(SWIG)
+#else
 #define IMP_DECORATORS_METHODS(test, on_add_decorator, on_add_particle, \
                                swap)                                    \
   public:                                                               \
@@ -312,40 +306,9 @@ void swap_with(ThisDecorators &o) {                                     \
   WrappedDecorator back() const;                                        \
   WrappedDecorator front() const;
 
-#else
-// doxygen
-#define IMP_DECORATORS_METHODS(test, on_add_decorator, on_add_particle, \
-                               swap)                                    \
-  public:                                                               \
-  typedef const WrappedDecorator const_reference;                       \
-  typedef WrappedDecorator value_type;                                  \
-  typedef Proxy reference;                                              \
-  const ParticlesTemp &get_particles() const;                           \
-  void push_back(WrappedDecorator d);                                   \
-  void push_back(Particle *p);                                          \
-  WrappedDecorator &operator[](unsigned int i);                         \
-  WrappedDecorator operator[](unsigned int i) const;                    \
-  WrappedDecorator back() const;                                        \
-  WrappedDecorator front() const;                                       \
-  class const_iterator;                                                 \
-  iterator begin() const;                                               \
-  iterator end() const;                                                 \
-  void insert(iterator loc, It b, It e);
-
 #endif
-/** A collection of Decorator objects. It supports construction
-    from a collection of particles. The interface should be that of
-    a std::vector or python list, with the exception that changing
-    elements in the container must be done using Decorators::set().
-    Any other differences are due to laziness on our part and should
-    be reported.
 
-    In general, a Decorators is convertable to a Decorators of a
-    parent type of the Decorator or to a Particles.
 
-    \see Decorator
-    \see DecoratorsWithTraits
-*/
 template <class WrappedDecorator, class ParentDecorators>
 class Decorators: public ParentDecorators {
   typedef Decorators<WrappedDecorator, ParentDecorators> ThisDecorators;
@@ -390,14 +353,10 @@ class Decorators: public ParentDecorators {
                       WrappedDecorator d): ParentDecorators(n, d){}
   Decorators(){}
 #ifndef SWIG
-#ifndef IMP_DOXYGEN
   Proxy
   operator[](unsigned int i) {
     return get_proxy(i);
   }
-#else
-  WrappedDecorator& operator[](unsigned int i);
-#endif
 #endif
 
 #ifndef SWIG
@@ -407,16 +366,8 @@ class Decorators: public ParentDecorators {
 #endif
 };
 
-#ifndef IMP_DOXYGEN
 IMP_SWAP_2(Decorators);
-#endif
 
-/** A version for decorators which required traits. See Decorators
-    for more full docs.
-
-    A DecoratorsWithTraits can be cast to a Particles or its parent
-    type. All decorators in it must have the same traits.
-    \see Decorators*/
 template <class WrappedDecorator, class ParentDecorators, class Traits>
 class DecoratorsWithTraits: public ParentDecorators {
   typedef DecoratorsWithTraits<WrappedDecorator, ParentDecorators,
@@ -488,7 +439,7 @@ class DecoratorsWithTraits: public ParentDecorators {
                                    has_traits_(true){}
   DecoratorsWithTraits(): has_traits_(false){}
 
-#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+#ifndef SWIG
   Proxy
   operator[](unsigned int i) {
     IMP_USAGE_CHECK(has_traits_, "Can only use operator[] on a decorator "
@@ -497,27 +448,15 @@ class DecoratorsWithTraits: public ParentDecorators {
                     UsageException);
     return get_proxy(i, tr_);
   }
-#else
-  IMP_NO_SWIG(WrappedDecorator& operator[](unsigned int i));
-#endif
-
-#ifndef SWIG
   WrappedDecorator operator[](unsigned int i) const {
     return WrappedDecorator(ParentDecorators::operator[](i), tr_);
   }
 #endif
 };
 
-#ifndef IMP_DOXYGEN
+
 IMP_SWAP_3(DecoratorsWithTraits);
-#endif
 
-#ifndef IMP_DOXYGEN
-/** A version for decorators which provide traits for their parents.
-
-    A DecoratorsWithTraits can be cast to a Particles or its parent
-    type. All decorators in it must have the same traits.
-    \see Decorators*/
 template <class WrappedDecorator, class ParentDecorators>
 class DecoratorsWithImplicitTraits: public ParentDecorators {
   struct Proxy: public WrappedDecorator {
@@ -567,14 +506,10 @@ class DecoratorsWithImplicitTraits: public ParentDecorators {
     check(ds.begin(), ds.end());
   }
 #ifndef SWIG
-#ifndef IMP_DOXYGEN
   Proxy
   operator[](unsigned int i) {
     return get_proxy(i);
   }
-#else
-  WrappedDecorator& operator[](unsigned int i);
-#endif
 #endif
 
 #ifndef SWIG
@@ -606,10 +541,8 @@ public:
   }
 #endif
 };
-#endif
 
 
-#ifndef IMP_DOXYGEN
 #define IMP_CONSTRAINT_DECORATOR_DECL(Name)                             \
   private:                                                              \
   static ObjectKey get_constraint_key();                                \

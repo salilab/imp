@@ -33,7 +33,7 @@ class PairScore;
 /** Stores a searchable shared collection of particle_pairs.
     \ingroup restraints
 
-    Implementors should see IMP_PAIR_CONTAINER().
+    \implementationwithoutexample{PairContainer, IMP_PAIR_CONTAINER}
  */
 class IMPEXPORT PairContainer : public Container
 {

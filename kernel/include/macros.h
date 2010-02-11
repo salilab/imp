@@ -10,12 +10,10 @@
 
 #ifdef IMP_DOXYGEN
 //! Hide something from doxygen
-/** \advanced
- */
+/** */
 #define IMP_NO_DOXYGEN(x)
 //! Only show something to doxygen
-/** \advanced
- */
+/** */
 #define IMP_ONLY_DOXYGEN(x) x
 #define IMP_SWITCH_DOXYGEN(x,y) x
 #else
@@ -28,8 +26,7 @@
 #define IMP_NO_SWIG(x)
 #else
 //! Hide the line when SWIG is compiled or parses it
-/** \advanced
- */
+/** */
 #define IMP_NO_SWIG(x) x
 #endif
 
@@ -38,25 +35,21 @@
 /** The macro requires that This be defined as the type of the current class.
     The compare function should take a const This & and return -1, 0, 1 as
     appropriate.
-    \advanced
 */
 #define IMP_COMPARISONS
 
 //! Implement comparison in a class using field as the variable to compare
 /** The macro requires that This be defined as the type of the current class.
-    \advanced
 */
 #define IMP_COMPARISONS_1(field)
 
 //! Implement comparison in a class using field as the variable to compare
 /** The macro requires that This be defined as the type of the current class.
-    \advanced
 */
 #define IMP_COMPARISONS_2(f0, f1)
 
 //! Implement comparison in a class using field as the variable to compare
 /** The macro requires that This be defined as the type of the current class.
-    \advanced
 */
 #define IMP_COMPARISONS_3(f0, f1, f2)
 
@@ -110,7 +103,6 @@
 
 //! Implement comparison in a class using field as the variable to compare
 /** The macro requires that This be defined as the type of the current class.
-    \advanced
 */
 #define IMP_COMPARISONS_2(f0, f1)               \
   bool operator==(const This &o) const {        \
@@ -187,14 +179,12 @@
 //! Implement operator<< on class name
 /** The class named should define the method
     \c void \c show(std::ostream&).
-    \advanced
 */
 #define IMP_OUTPUT_OPERATOR(name)
 
 //! Implement operator<< on class name templated by the dimension
 /** The class named should define the method
     \c void \c show(std::ostream&).
-    \advanced
 */
 #define IMP_OUTPUT_OPERATOR_D(name)
 
@@ -254,7 +244,6 @@
     objects mustbe of the same type (Name) and define
     the method \c swap_with(). The number suffix is the number of template
     arguments, all of which must be of class type.
-    \advanced
     @{
 */
 #define IMP_SWAP(Name)                                  \
@@ -281,7 +270,6 @@
 
 //! swap two member variables assuming the other object is called o
 /** Swap the member \c var_name of the two objects (this and o).
-    \advanced
 */
 #define IMP_SWAP_MEMBER(var_name)               \
   std::swap(var_name, o.var_name);
@@ -298,8 +286,6 @@
     and you can easily wrap most resources with RIIA objects
     (\external{en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization,
     wikipedia entry}).
-
-    \advanced
 */
 #define IMP_COPY_CONSTRUCTOR(TC) TC(const TC &o){copy_from(o);} \
   TC& operator=(const TC &o) {copy_from(o); return *this;}
@@ -336,9 +322,7 @@
    on template friends.
 */
 //! Ref counted objects should have private destructors
-/** \advanced
-
-    This macro defines a private destructor and adds the appropriate
+/** This macro defines a private destructor and adds the appropriate
     friend methods so that the class can be used with ref counting.
     By defining a private destructor, you make it so that the object
     cannot be declared on the stack and so must be ref counted.
@@ -373,9 +357,7 @@
 */
 
 //! Define the basic things needed by a Decorator.
-/** \advanced
-
-    The macro defines the following methods
+/** The macro defines the following methods
     - a default constructor Decorator::Decorator()
 
     It also declares:
@@ -423,9 +405,7 @@ IMP_SHOWABLE
 
 
 //! Define the basic things needed by a Decorator which has a traits object.
-/** \advanced
-
-    This macro is the same as IMP_DECORATOR() except that an extra object
+/** This macro is the same as IMP_DECORATOR() except that an extra object
     of type TraitsType is passed after the particle to
     - IMP::Decorator::particle_is_instance()
     - IMP::Decorator::setup_particle()
@@ -462,9 +442,7 @@ public:                                                                 \
  }
 
 //! Perform actions dependent on whether a particle has an attribute.
-/** \advanced
-
-    A common pattern is to check if a particle has a particular attribute,
+/** A common pattern is to check if a particle has a particular attribute,
     do one thing if it does and another if it does not. This macro implements
     that pattern. It requires that the method get_particle() return the
     particle being used.
@@ -489,9 +467,7 @@ public:                                                                 \
 
 
 //! Set an attribute, creating it if it does not already exist.
-/** \advanced
-
-    Another common pattern is to have an assumed value if the attribute
+/** Another common pattern is to have an assumed value if the attribute
     is not there. Then, you sometimes need to set the value whether it
     is there or not.
     \see IMP_DECORATOR_GET()
@@ -505,9 +481,7 @@ public:                                                                 \
   }
 
 //! define methods for getting and setting a particular simple field
-/**\advanced
-
-   This macros defines methods to get an set a particular attribute.
+/**This macros defines methods to get an set a particular attribute.
 
    \param[in] name The lower case name of the attribute
    \param[in] AttributeKey The AttributeKey object controlling
@@ -526,8 +500,7 @@ public:                                                                 \
   }
 
 //! Define methods for getting and setting an optional simple field.
-/** \advanced
-    See IMP_DECORATOR_GET_SET(). The difference is that here you can provide
+/** See IMP_DECORATOR_GET_SET(). The difference is that here you can provide
     a default value to use if the decorator does not have the attribute.
 
     \param[in] name The lower case name of the attribute
@@ -549,9 +522,7 @@ public:                                                                 \
 
 #ifdef IMP_DOXYGEN
 //! Define the types for storing sets of decorators
-/** \advanced
-
-    The macro defines the types Names and NamesTemp.
+/** The macro defines the types Names and NamesTemp.
 */
 #define IMP_DECORATORS(Name, Parent)                            \
   class Name##s: public Parent {};                              \
@@ -562,8 +533,7 @@ public:                                                                 \
   typedef IMP::Decorators<Name, Parent##Temp> Name##sTemp
 #endif
 //! Create a decorator that computes some sort of summary info on a set
-/** \advanced
-    Examples include a centroid or a cover for a set of particles.
+/** Examples include a centroid or a cover for a set of particles.
 
     \param[in] Name The name for the decorator
     \param[in] Parent the parent decorator type
@@ -591,9 +561,7 @@ public:                                                                 \
   };
 
 
-  /** \advanced
-
-      See IMP_SUMMARY_DECORATOR_DECL()
+  /** See IMP_SUMMARY_DECORATOR_DECL()
       \param[in] Name The name for the decorator
       \param[in] Parent the parent decorator type
       \param[in] Members the way to pass a set of particles in
@@ -622,9 +590,7 @@ public:                                                                 \
 
 
 //! Define a set of attributes which form an array
-/** \advanced
-
-    The macro defines a set of functions for using the array:
+/** The macro defines a set of functions for using the array:
     - get_name(unsigned int)
 
     - get_number_of_name()
@@ -742,8 +708,7 @@ protection:                                                             \
 
 #ifdef IMP_DOXYGEN
 //! Define the types for storing sets of objects
-/** \advanced
-    The macro defines the types Names and NamesTemp.
+/** The macro defines the types Names and NamesTemp.
 */
 #define IMP_OBJECTS(Name)                                       \
   class Name##sTemp {};                                         \
@@ -756,9 +721,7 @@ protection:                                                             \
 
 
 //! Declare the methods needed by an object than can be printed
-/** \advanced
-
-    This macro declares the method
+/** This macro declares the method
     - void show(std::ostream &out) const
     It also makes it so that the object can be printed
     in python.
@@ -779,9 +742,7 @@ protection:                                                             \
   }
 
 //! Declare the methods needed by an object than can be printed
-/** \advanced
-
-    This macro declares the method
+/** This macro declares the method
     - \c void \c show(std::ostream &out) const
     It also makes it so that the object can be printed
     in python.
@@ -828,9 +789,7 @@ protection:                                                             \
 
 
 //! Define the basic things needed by any Object
-/** \advanced
-
-    This defines
+/** This defines
     - IMP::Object::get_version_info()
     - a private destructor
     and declares
@@ -844,9 +803,7 @@ protection:                                                             \
   public:
 
 //! Define the basic things needed by any internal Object
-/** \advanced
-
-    \see IMP_OBJECT
+/** \see IMP_OBJECT
     This version also defines IMP::Object::show()
 */
 #define IMP_INTERNAL_OBJECT(Name, version_info)                 \
@@ -862,9 +819,7 @@ public:
 
 
 //! Define the basic things you need for a Restraint.
-/** \advanced
-
-    In addition to the methods defined by IMP::Object
+/** In addition to the methods defined by IMP::Object
     it declares
     - IMP::Restraint::unprotected_evaluate()
     - IMP::Restraint::get_input_containers()
@@ -883,9 +838,7 @@ public:
   IMP_OBJECT(Name, version_info);
 
 //! Define the basic things you need for a Restraint.
-/** \advanced
-
-    In addition to the methods done by IMP_OBJECT, it declares
+/** In addition to the methods done by IMP_OBJECT, it declares
     - IMP::Restraint::unprotected_evaluate()
     - IMP::Restraint::unprotected_incremental_evaluate()
     - IMP::Restraint::get_input_containers()
@@ -906,9 +859,7 @@ public:
   IMP_OBJECT(Name, version_info);
 
 //! Define the basic things you need for an Optimizer.
-/** \advanced
-
-    In addition to the methods done by IMP_OBJECT, it declares
+/** In addition to the methods done by IMP_OBJECT, it declares
     - IMP::Optimizer::optimize()
 
     \relatesalso IMP::Optimizer
@@ -918,9 +869,7 @@ public:
   IMP_OBJECT(Name, version_info);
 
 //! Define the basic things you need for a Sampler.
-/** \advanced
-
-    In addition to the methods done by IMP_OBJECT, it declares
+/** In addition to the methods done by IMP_OBJECT, it declares
     - IMP::Sampler::sample()
 
     \relatesalso IMP::Sampler
@@ -932,9 +881,7 @@ public:
 
 
 //! Define the basics needed for an OptimizerState
-/** \advanced
-
-    In addition to the methods done IMP_OBJECT, it declares
+/** In addition to the methods done IMP_OBJECT, it declares
     - IMP::OptimizerState::update()
 */
 #define IMP_OPTIMIZER_STATE(Name, version_info) \
@@ -943,9 +890,7 @@ public:
 
 
 //! Define the basics needed for an OptimizerState which acts every n steps
-/** \advanced
-
-    In addition to the methods done by all the macros, it declares
+/** In addition to the methods done by all the macros, it declares
     - do_update(unsigned int call_number) where step number
     is the number of the optimization step, and call_number is the number
     of the call to do_update.
@@ -994,9 +939,7 @@ public:
 
 
 //! Define the basics needed for a ScoreState
-/** \advanced
-
-    In addition to the methods done by IMP_OBJECT, it declares
+/** In addition to the methods done by IMP_OBJECT, it declares
     - IMP::Constraint::do_update_attributes()
     - IMP::Constraint::do_update_derivatives()
 */
@@ -1016,9 +959,7 @@ public:
 
 
 //! Define the basics needed for a particle refiner
-/** \advanced
-
-    In addition to the methods done by all the macros, it declares
+/** In addition to the methods done by all the macros, it declares
     - IMP::Refiner::get_can_refine()
     - IMP::Refiner::get_number_of_refined()
     - IMP::Refiner::get_refined()
@@ -1036,9 +977,7 @@ public:
 
 
 //! Define the basics needed for a particle refiner
-/** \advanced
-
-    In contrast to IMP_REFINER, if this macro is used, the
+/** In contrast to IMP_REFINER, if this macro is used, the
     Refiner::get_refined(Particle*) method is implemented using the
     other Refiner::get_refined() method and so does not have to be
     provided.
@@ -1111,9 +1050,7 @@ public:
 
 
 //! Declare the functions needed for a SingletonScore
-/** \advanced
-
-    In addition to the methods done by IMP_INTERACTON, it declares
+/** In addition to the methods done by IMP_INTERACTON, it declares
     - IMP::SingletonScore::evaluate(IMP::Particle*,
     IMP::DerivativeAccumulator*)
     - IMP::SingletonScore::get_interacting_particles()
@@ -1137,8 +1074,7 @@ public:
   IMP_SINGLETON_SCORE_BASE(Name, version_info);
 
 //! Declare the functions needed for a SingletonScore
-/** \advanced
-    In addition to the methods declared and defined by IMP_SINGLETON_SCORE,
+/** In addition to the methods declared and defined by IMP_SINGLETON_SCORE,
     the macro provides an implementation of
     - IMP::SingletonScore::get_is_changed()
     - IMP::SingletonScore::get_interacting_particles()
@@ -1217,9 +1153,7 @@ public:
 #endif
 
 //! Declare the functions needed for a PairScore
-/** \advanced
-
-    In addition to the methods done by IMP_OBJECT(), it declares
+/** In addition to the methods done by IMP_OBJECT(), it declares
     - IMP::PairScore::evaluate()
     - IMP::PairScore::get_interacting_particles()
     - IMP::PairScore::get_input_particles()
@@ -1241,8 +1175,7 @@ public:
   IMP_PAIR_SCORE_BASE(Name, version_info)
 
 //! Declare the functions needed for a SingletonScore
-/** \advanced
-    In addition to the methods declared and defined by IMP_PAIR_SCORE,
+/** In addition to the methods declared and defined by IMP_PAIR_SCORE,
     the macro provides an implementation of
     - IMP::PairScore::get_is_changed()
     - IMP::PairScore::get_interacting_particles()
@@ -1322,9 +1255,7 @@ public:
 #endif
 
 //! Declare the functions needed for a TripletScore
-/** \advanced
-
-    In addition to the methods done by IMP_OBJECT(), it declares
+/** In addition to the methods done by IMP_OBJECT(), it declares
     - IMP::TripletScore::evaluate()
     - IMP::TripletScore::get_is_changed()
     - IMP::TripletScore::get_interacting_particles()
@@ -1347,8 +1278,7 @@ public:
 
 
 //! Declare the functions needed for a SingletonScore
-/** \advanced
-    In addition to the methods declared and defined by IMP_TRIPLET_SCORE,
+/** In addition to the methods declared and defined by IMP_TRIPLET_SCORE,
     the macro provides an implementation of
     - IMP::TripletScore::get_is_changed()
     - IMP::TripletScore::get_interacting_particles()
@@ -1377,9 +1307,7 @@ public:
 
 
 //! Declare the functions needed for a QuadScore
-/** \advanced
-
-    In addition to the methods done by IMP_OBJECT(), it declares
+/** In addition to the methods done by IMP_OBJECT(), it declares
     - IMP::QuadScore::evaluate()
     - IMP::QuadScore::get_interacting_particles()
     - IMP::QuadScore::get_input_particles()
@@ -1447,9 +1375,7 @@ public:
 
 
 //! Declare the functions needed for a SingletonModifier
-/** \advanced
-
-    In addition to the methods done by IMP_OBJECT, it declares
+/** In addition to the methods done by IMP_OBJECT, it declares
     - IMP::SingletonModifier::apply(IMP::Particle*)
     - IMP::SingletonModifier::get_interacting_particles()
     - IMP::SingletonModifier::get_input_particles()
@@ -1481,9 +1407,7 @@ public:
 
 
 //! Declare the functions needed for a PairModifier
-/** \advanced
-
-    In addition to the methods done by IMP_OBJECT, it declares
+/** In addition to the methods done by IMP_OBJECT, it declares
     - IMP::PairModifier::apply(IMP::Particle*,IMP::Particle*)
     - IMP::PairModifier::get_interacting_particles()
     - IMP::PairModifier::get_input_particles()
@@ -1515,9 +1439,7 @@ public:
 
 
 //! Declare the functions needed for a SingletonModifier
-/** \advanced
-
-    In addition to the methods done by IMP_OBJECT, it declares
+/** In addition to the methods done by IMP_OBJECT, it declares
     - IMP::SingletonModifier::apply(IMP::Particle*,
     IMP::DerivativeAccumulator&)
     - IMP::SingletonModifier::get_interacting_particles()
@@ -1551,9 +1473,7 @@ public:
 
 
 //! Add interaction methods to a SingletonModifer
-/** \advanced
-
-    This macro is designed to be used in conjunction with
+/** This macro is designed to be used in conjunction with
     IMP_SINGLETON_MODIFIER or IMP_SINGLETON_MODIFIER_DA. It adds
     definitions for the methods:
     - IMP::SingletonModifier::get_interacting_particles()
@@ -1589,9 +1509,7 @@ public:
                                                                         \
                                                                         \
   //! Add interaction methods to a SingletonModifer
-/** \advanced
-
-    This macro is designed to be used in conjunction with
+/** This macro is designed to be used in conjunction with
     IMP_SINGLETON_MODIFIER or IMP_SINGLETON_MODIFIER_DA. It adds
     definitions for the methods:
     - IMP::SingletonModifier::get_interacting_particles()
@@ -1631,9 +1549,7 @@ public:
                                                                         \
                                                                         \
   //! Declare the functions needed for a PairModifier
-/** \advanced
-
-    In addition to the methods done by IMP_OBJECT, it declares
+/** In addition to the methods done by IMP_OBJECT, it declares
     - IMP::PairModifier::apply(Particle*,Particle*,DerivativeAccumulator&)
     - IMP::PairModifier::get_interacting_particles()
     - IMP::PairModifier::get_input_particles()
@@ -1666,9 +1582,7 @@ public:
 
 
 //! Define a simple SingletonModifier
-/** \advanced
-
-    In addition to the methods done by IMP_OBJECT, it defines
+/** In addition to the methods done by IMP_OBJECT, it defines
     - IMP::SingletonModifier::apply(IMP::Particle*) to the provided value
     - IMP::SingletonModifier::get_interacting_particles() to return None
     - IMP::SingletonModifier::get_input_particles() to return the particle
@@ -1717,9 +1631,7 @@ public:
 
 
 //! Declare the needed functions for a SingletonContainer
-/** \advanced
-
-    In addition to the methods done by IMP_OBJECT, it declares
+/** In addition to the methods done by IMP_OBJECT, it declares
     - IMP::SingletonContainer::get_contains_particle()
     - IMP::SingletonContainer::get_number_of_particles()
     - IMP::SingletonContainer::get_particle()
@@ -1749,9 +1661,7 @@ public:
 
 
 //! Declare the needed functions for a PairContainer
-/** \advanced
-
-    In addition to the methods of IMP_OBJECT, it declares
+/** In addition to the methods of IMP_OBJECT, it declares
     - IMP::PairContainer::get_contains_particle_pair()
     - IMP::PairContainer::get_number_of_particle_pairs()
     - IMP::PairContainer::get_particle_pair()
@@ -1782,9 +1692,7 @@ public:
 
 
 //! Declare the needed functions for a TripletContainer
-/** \advanced
-
-    In addition to the methods of IMP_OBJECT, it declares
+/** In addition to the methods of IMP_OBJECT, it declares
     - IMP::TripletContainer::get_contains_particle_triplet()
     - IMP::TripletContainer::get_number_of_particle_triplets()
     - IMP::TripletContainer::get_particle_triplet()
@@ -1815,9 +1723,7 @@ public:
 
 
 //! Declare the needed functions for a QuadContainer
-/** \advanced
-
-    In addition to the methods of IMP_OBJECT, it declares
+/** In addition to the methods of IMP_OBJECT, it declares
     - IMP::QuadContainer::get_contains_particle_quad()
     - IMP::QuadContainer::get_number_of_particle_quads()
     - IMP::QuadContainer::get_particle_quad()
@@ -1849,9 +1755,7 @@ public:
 
 
 //! Declare the needed functions for a SingletonFilter
-/** \advanced
-
-    In addition to the methods done by all the macros, it declares
+/** In addition to the methods done by all the macros, it declares
     - IMP::SingletonFilter::get_contains_particle()
     - IMP::SingletonFilter::get_input_particles()
 */
@@ -1863,9 +1767,7 @@ public:
 
 
 //! Declare the needed functions for a PairFilter
-/** \advanced
-
-    In addition to the methods done by all the macros, it declares
+/** In addition to the methods done by all the macros, it declares
     - IMP::PairFilter::get_contains_particle_pair()
     - IMP::PairFilter::get_input_particles()
 */
@@ -1878,9 +1780,7 @@ public:
 
 
 //! Declare the needed functions for a TripletFilter
-/** \advanced
-
-    In addition to the methods done by all the macros, it declares
+/** In addition to the methods done by all the macros, it declares
     - IMP::TripletFilter::get_contains_particle_triplet()
     - IMP::TripletFilter::get_input_particles()
 */
@@ -1893,9 +1793,7 @@ public:
 
 
 //! Declare the needed functions for a QuadFilter
-/** \advanced
-
-    In addition to the methods done by all the macros, it declares
+/** In addition to the methods done by all the macros, it declares
     - IMP::QuadFilter::get_contains_particle_quad()
     - IMP::QuadFilter::get_input_particles()
 */
@@ -1908,9 +1806,7 @@ public:
 
 
 //! Declare the needed functions for a UnaryFunction
-/** \advanced
-
-    In addition to the methods done by all the macros, it declares
+/** In addition to the methods done by all the macros, it declares
     - IMP::UnaryFunction::evaluate()
     - IMP::UnaryFunction::evaluate_with_derivatives()
 
@@ -1924,9 +1820,7 @@ public:
 
 
 //! Declare the needed functions for a UnaryFunction which evaluates inline
-/** \advanced
-
-    This macro declares all the functions needed for an IMP::UnaryFunction
+/** This macro declares all the functions needed for an IMP::UnaryFunction
     inline in the class. There is no need for an associated \c .cpp file.
 
     The last three arguments are expressions that evaluate to the
@@ -1953,9 +1847,7 @@ public:
 
 
 //! Declare a IMP::FailureHandler
-/** \advanced
-
-    In addition to the standard methods it declares:
+/** In addition to the standard methods it declares:
     - IMP::FailureHandler::handle_failure()
 */
 #define IMP_FAILURE_HANDLER(Name, version_info) \
@@ -1965,9 +1857,7 @@ public:
 
 
 //! Declare an IMP RAII-style function
-/** \advanced
-
-    Since such classes are typically quite small and simple, all
+/** Since such classes are typically quite small and simple, all
     the implementation is inline. The macro declares
     - constructor
     - RAII::set()
@@ -2001,9 +1891,7 @@ public:
   Pointer<Typename> varname(new Typename args)
 
 #ifdef IMP_DOXYGEN
-/** \advanced
-
-    Define a new key type.
+/** Define a new key type.
 
     It defines two public types Name, which is an instantiation of KeyBase and
     Names which is a vector of Name.
@@ -2045,9 +1933,7 @@ public:                                                         \
 #endif
 
 #ifdef IMP_DOXYGEN
-/** \advanced
-
-    Define a new key non lazy type where new types have to be created
+/** Define a new key non lazy type where new types have to be created
     explicitly.
 
     \see IMP_DECLARE_KEY_TYPE

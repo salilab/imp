@@ -261,81 +261,79 @@ As a result, such functions do not need to obey all the coding conventions
 
 \section docs Documenting your code
 
-    Format to allow Doxygen automated documentation creation. If
-    possible, and appropriate, specify both a 'brief' description and
-    a more detailed one (in which parameters, return values, and
-    exceptions are documented). Use \c //! for the one-line brief
-    description and \c /** ... * / for the multi-line detailed
-    description (put the closing * / on a new line, so that these
-    comments are always multi-line (Doxygen will not accept both a
-    'brief' comment and a one-line detailed comment). All header and
-    source files should have a starting comment header, using the
-    \b \\file command to document the purpose of the file.
+\imp is documented using \external{www.stack.nl/~dimitri/doxygen/, Doxygen}. See
+\external{www.doxygen.nl/docblocks.html, documenting source code with doxygen}
+to get started. We use \c //! and \c /** ... * / blocks for documentation.
 
-    For example:
+Python code should provide Python doc strings.
+
+All headers not in internal directories are parsed through doxygen. Any function that
+you do not want documented (for example, because it is not well tested), hide by surrounding
+with
+\code
+#ifndef IMP_DOXYGEN
+void messy_poorly_thought_out_function();
+#endif
+\endcode
+
+We provide a number of extra doxygen commands to aid in producing nice
+\imp documentation. The commands are used by writing \c \\commandname{args}
+or \c \\commandname if there are no arguments.
+
+- When you want to specify some command-line command do
     \verbatim
-    //! Calculates the square root.
-    /** \param[in] the_value Calculate the square root of this value.
-        \exception ValueException if value is out of range (negative).
-        \return the square root of the given value.
-      */
-    \endverbatim
-
-    Python code should provide Python doc strings.
-
-    We provide a number of extra doxygen commands to aid in producing nice
-    \imp documentation. The commands are used by writing \c \\commandname{args}
-    or \c \\commandname if there are no arguments.
-    - When you want to specify some command-line command do
-    \verbatim
-    \command{the command text}
-    \endverbatim
+    \command{the command text}\endverbatim
     which produces
     \command{the command text}
     
-    - To produce a link to a page on the Sali lab web site do
+- To produce a link to a page on the Sali lab web site do
     \verbatim
     \salilab{imp, the IMP project}\endverbatim
     which produces
     \salilab{imp, the IMP project}
 
-    - To produce a link to the outside world do
+- To produce a link to the outside world do
     \verbatim
     \external{boost.org, Boost}\endverbatim
-    \external{boost.org, Boost}
+    produces \external{boost.org, Boost}
 
-    - When writing the name \imp do
+- When writing the name \imp do
     \verbatim
     \imp\endverbatim
-    so that no link is produced.
+    so that no link is produced (\imp as opposed to IMP).
 
-    - We provide a number of commands to mark paragraphs in special standard ways.
-    The commands are
-       - \c \\advanced to mark part of the documentation as being for advanced users
-            \verbatim
-            \advanced This bit is kind of complicated and you can use \imp fine
-            without it.\endverbatim
-             which produces
-            \par Advanced
-            This bit is kind of complicated and you can use \imp fine without it.
-       - \c \\cpp to mark documentation that only applies to C++ programmers
-       - \c \\warning to mark a usage warning eg
-            \verbatim
-            \warning Be afraid, be very afraid.\endverbatim
-             which produces
-            \warning Be afraid, be very afraid.
+- Sections of documentation that are only for people developing \imp code should
+  be marked with
+  \verbatim
+  \advanceddoc You can tweak this class in various ways in order to optimize its
+  performance. \endverbatim
+  Similarly advanced methods should be marked with
+  \verbatim
+  \advancedmethod\endverbatim
+  To produce \advancedmethod.
+
+- General warning messages can be produced using
+  \verbatim
+  \warning Be afraid, be very afraid.\endverbatim
+  which produces
+  \warning Be afraid, be very afraid.
     
-    - To mark that some part of the API has not yet been well planned at may change
+- To mark that some part of the API has not yet been well planned at may change
     using \c \\unstable{Classname}. The documentation will include a disclaimor
-    and the class or function will be added to a list of unstable classes.
+    and the class or function will be added to a list of unstable classes. It is
+    better to simply hide such things from doxygen.
 
-    - To mark a method as not having been well tested yet, use \c \\untested{Classname}.
+- To mark a method as not having been well tested yet, use \c \\untested{Classname}.
 
-    - To mark a method as not having been implemented, use \c \\untested{Classname}.
+- To mark a method as not having been implemented, use \c \\untested{Classname}.
 
-
+- To note that a class supports comparisons (eg <, >, ==, != etc) use \c \\comparable
+  and then hide the comparison functions from Doxygen (there are a lot of them and they
+  aren't very interesting).
 
 \section scripts Useful Scripts
+
+\imp provides a variety of scripts to aid the lives of developers.
 
     \subsection make_scons Generate SConscripts
     The \c SConscripts in a number of the modules list all of the
@@ -347,18 +345,16 @@ As a result, such functions do not need to obey all the coding conventions
 
     \subsection make_module Making a module
 
-    This page describes how to create a new module in your local copy
-    of \imp. Creating such a module is the easiest way to get started
-    developing code for \imp.
+    Creating such a module is the easiest way to get started
+    developing code for \imp. First, choose a name for the module.
+    The name should only contain letters, numbers and underscores as it
+    needs to be a valid file name as well as an identifier in Python and C++.
 
-    To get started, first pick the name of your module. Here we will 
-    use \string{my_module}. The name should only contain letters, numbers and 
-    underscores.
-
-    Then do
+    To create the module do
     \command{./tools/make-module my_module}
-    to create the module. If you run \c scons with \c localmodules=True, then
-    your locally created module will be included in the build.
+    Then, if you run \c scons with \c localmodules=True, your new module will be
+    built. The new module includes a number of examples and comments to help
+    you add code to the module.
 
     You can use your new module in a variety of ways:
     - add C++ code to your module by putting \string{.h} files
@@ -378,8 +374,7 @@ As a result, such functions do not need to obey all the coding conventions
       \string{modules/my_module/test} or a subdirectory.
 
     If you feel your module is of interest to other \imp users and 
-    developers, post to the \impdev list to discuss adding
-    it to the repository.
+    developers, see the \ref anchorcontribute "contributing code to IMP" section.
 
     If you document your code, running \command{scons doc} will build
     documentation of all of the modules including yours. To access the
@@ -388,6 +383,7 @@ As a result, such functions do not need to obey all the coding conventions
 
 
 \section contributing Contributing code to IMP
+\anchor anchorcontributing
 
 In order to be shared with others as part of the \imp distribution,
 code needs to be of higher quality and more thoroughly vetted than
