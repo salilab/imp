@@ -12,27 +12,25 @@ body {
 
 h1 {
    font-weight: bold;
-   font-size: 130%;
+   font-size: 180%;
    color:#FF7C02;
 }
 
 h2 {
-   font-weight: bold;
    font-weight: normal;
-   font-size: 120%;
+   font-size: 150%;
    color:#FF7C02;
 }
 
 h3 {
-   font-weight: bold;
    font-weight: normal;
-   font-size: 110%;
+   font-size: 105%;
    color: #FF7C02;
 }
 
 h4 {
-   font-weight: bold;
-   font-size: 105%;
+   font-weight: italic;
+   font-size: 100%;
    color: #FF7C02;
 }
 
@@ -362,7 +360,7 @@ dl.el {
 
 .fragment {
 	font-family: monospace, fixed;
-	font-size: 105%;
+	font-size: 95%;
 }
 
 pre.fragment {
