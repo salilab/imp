@@ -15,10 +15,8 @@
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
-//! Represent a color
+//! Represent an RGB color
 /**
-    \ingroup comparable
-    \ingroup null_default
  */
 class IMPDISPLAYEXPORT Color
 {

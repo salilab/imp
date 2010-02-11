@@ -15,6 +15,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 /**
 A patch of a sphere is defined as all points above the plane and on the sphere.
    \ingroup uninitialized_default
+   \ingroup noncomparable
  */
 class IMPALGEBRAEXPORT Sphere3DPatch {
 public:

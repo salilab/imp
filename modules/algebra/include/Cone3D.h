@@ -19,11 +19,11 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 /**
-In general, a cone is a pyramid with a circular cross section.
-A right cone is a cone with its vertex above the center of its base.
-However, when used without qualification, the term "cone" often means
-"right cone." We have implemented a "right cone".
-\ingroup uninitialized_default
+   In general, a cone is a pyramid with a circular cross section.
+   A right cone is a cone with its vertex above the center of its base.
+   However, when used without qualification, the term "cone" often means
+   "right cone." We have implemented a "right cone".
+   \geometry
  */
 class IMPALGEBRAEXPORT Cone3D
 {
@@ -32,7 +32,9 @@ class IMPALGEBRAEXPORT Cone3D
   Cone3D(const Segment3D &s,double radius);
   //!Get the vertex of the cone
   Vector3D get_tip() const {return seg_.get_point(0);}
-  //!Get the direction of the cone
+  //!Get the direction of the axis of the cone
+  /** This vector points from the tip into the occupied volume.
+   */
   Vector3D get_direction() const {return seg_.get_direction();}
   double get_height() const {return seg_.get_length();}
   /** The opening angle of a cone is the vertex angle made by a cross section
@@ -40,16 +42,24 @@ class IMPALGEBRAEXPORT Cone3D
   double get_angle() const {
     return  2.*std::atan(radius_ / get_height());
   }
+  //! get the radius of the base circle
+  double get_radius() const {return radius_;}
   bool get_contains(const Vector3D &v) const;
-  Sphere3D get_bounding_sphere() const;
   //! Get the plane supporting the base of the cone
   /** The cone is on the positive side of the plane.
    */
   Plane3D get_base_plane() const;
+  void show(std::ostream &out) const {
+    out << seg_ << ": " << radius_;
+  }
  private:
   Segment3D seg_;
   double radius_;
 };
+
+IMP_VOLUME_GEOMETRY_METHODS(Cone3D, IMP_NOT_IMPLEMENTED,
+                            IMP_NOT_IMPLEMENTED,
+                            IMP_NOT_IMPLEMENTED);
 IMPALGEBRA_END_NAMESPACE
 
 #endif  /* IMPALGEBRA_CONE_3D_H */

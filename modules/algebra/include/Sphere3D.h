@@ -7,16 +7,17 @@
 #ifndef IMPALGEBRA_SPHERE_3D_H
 #define IMPALGEBRA_SPHERE_3D_H
 
-#include "Cylinder3D.h"
 #include <cmath>
 #include <IMP/constants.h>
 #include "internal/cgal_predicates.h"
 #include "BoundingBoxD.h"
+#include "Vector3D.h"
+#include "macros.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
 /** Represent a sphere in 3D.
-    \ingroup uninitialized_default
+    \geometry
   */
 class IMPALGEBRAEXPORT Sphere3D {
 public:
@@ -26,8 +27,6 @@ public:
 #endif
   }
   Sphere3D(const Vector3D& center,double radius);
-  double get_volume() const;
-  double get_surface_area() const;
   double get_radius() const {
     IMP_USAGE_CHECK(!is_nan(radius_),
               "Attempt to use uninitialized sphere.",
@@ -60,9 +59,13 @@ private:
   double radius_;
 };
 
-IMP_OUTPUT_OPERATOR(Sphere3D);
 
-typedef std::vector<Sphere3D> Sphere3Ds;
+IMP_VOLUME_GEOMETRY_METHODS(Sphere3D,
+                            return PI * 4.0 * square(g.get_radius()),
+                            return PI * (4.0 / 3.0)
+                            * std::pow(g.get_radius(), 3.0),
+                            return BoundingBox3D(g.get_center())+g.get_radius();
+                            );
 
 //! Return the distance between the two spheres if they are disjoint
 /** If they intersect, the distances are not meaningful.
@@ -122,27 +125,6 @@ inline bool interiors_intersect(const Sphere3D &a, const Sphere3D &b) {
     < square(sr);
 }
 
-
-/** \relatesalso Sphere3D
-    \relatesalso BoundingBoxD
-*/
-inline BoundingBox3D get_bounding_box(const Sphere3D &s) {
-  BoundingBox3D b(s.get_center());
-  b+= s.get_radius();
-  return b;
-}
-
-/** \relatesalso Sphere3D
-    \unstable{bounding_cylinder}
- */
-inline Cylinder3D bounding_cylinder(const Sphere3D &s) {
-    return Cylinder3D(Segment3D(s.get_center()-Vector3D(0.0,0.0,
-                                                        s.get_radius()),
-                                s.get_center()+Vector3D(0.0,0.0,
-                                                        s.get_radius())),
-                      s.get_radius());
-  }
-
 #ifndef SWIG
 
 namespace internal {
@@ -171,6 +153,22 @@ inline internal::SphereSpacesIO spaces_io(const Sphere3D &v) {
 #ifndef IMP_DOXYGEN
 typedef std::pair<Sphere3D, Sphere3D> SpherePair;
 #endif
+
+#ifdef IMP_DOXYGEN
+//! Compute the bounding box of any geometric object
+template <class Geometry>
+BoundingBox3D get_bounding_box(const Geometry &);
+//! Compute the surface area of any volumetric object
+template <class Geometry>
+double get_surface_area(const Geometry &);
+//! Compute the volume of any volumetric object
+template <class Geometry>
+double get_volume(const Geometry &);
+//! Compute the area of any surface object
+template <class Geometry>
+double get_area(const Geometry &);
+#endif
+
 IMPALGEBRA_END_NAMESPACE
 
 #endif /* IMPALGEBRA_SPHERE_3D_H */

@@ -12,12 +12,12 @@
 #include <IMP/constants.h>
 #include "internal/cgal_predicates.h"
 #include "BoundingBoxD.h"
-#include "Rotation3D.h"
+#include "Transformation3D.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
 /** Represent an ellispoid in 3D.
-    \ingroup uninitialized_default
+    \geometry
   */
 class IMPALGEBRAEXPORT Ellipsoid3D {
 public:
@@ -39,6 +39,9 @@ public:
   const Rotation3D &get_rotation() const {
     return rot_;
   }
+  const Transformation3D get_transformation() const  {
+    return Transformation3D(rot_, center_);
+  }
   IMP_SHOWABLE_INLINE({
       out << "(" << spaces_io(center_) << ": " << get_radius(0)
           << ", " << get_radius(1) << ", " << get_radius(2)
@@ -50,9 +53,17 @@ private:
   Rotation3D rot_;
 };
 
-IMP_OUTPUT_OPERATOR(Ellipsoid3D);
-
-typedef std::vector<Ellipsoid3D> Ellipsoid3Ds;
+IMP_VOLUME_GEOMETRY_METHODS(Ellipsoid3D,
+                            IMP_NOT_IMPLEMENTED,
+                            return 4.0/3.0 * PI *g.get_radius(0)
+                            *g.get_radius(1)*g.get_radius(2),
+                            {
+                              Vector3D v(g.get_radius(0),
+                                         g.get_radius(1),
+                                         g.get_radius(2));
+                              BoundingBox3D b(-v, v);
+                              return get_transformed(b, g.get_transformation());
+                            });
 
 IMPALGEBRA_END_NAMESPACE
 

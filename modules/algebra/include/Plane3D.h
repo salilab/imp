@@ -8,11 +8,12 @@
 #define IMPALGEBRA_PLANE_3D_H
 
 #include "Vector3D.h"
+#include "BoundingBoxD.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
 /** Represent a plane in 3D.
-   \ingroup uninitialized_default
+   \geometry
 */
 class IMPALGEBRAEXPORT Plane3D {
 public:
@@ -52,9 +53,15 @@ inline double distance(const Plane3D& pln, const Vector3D &p) {
   return (pln.get_projection(p)-p).get_magnitude();
 }
 
-
-IMP_OUTPUT_OPERATOR(Plane3D);
-
+IMP_AREA_GEOMETRY_METHODS(Plane3D,
+                          return std::numeric_limits<double>::infinity(),
+                          {
+                            Vector3D ip(std::numeric_limits<double>::infinity(),
+                                        std::numeric_limits<double>::infinity(),
+                                        std::numeric_limits<double>::infinity()
+                                        );
+                            return BoundingBox3D(ip)+ BoundingBox3D(-ip);
+                          });
 IMPALGEBRA_END_NAMESPACE
 
 #endif /* IMPALGEBRA_PLANE_3D_H */

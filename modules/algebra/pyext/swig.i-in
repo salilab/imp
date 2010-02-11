@@ -1,3 +1,5 @@
+%include "IMP/algebra/macros.h"
+
 namespace IMP {
   namespace algebra {
     typedef BoundingBoxD<3> BoundingBox3D;
@@ -35,9 +37,9 @@ namespace multi_array_types {
 
 /* Wrap our own classes */
 %include "IMP_vector.i"
-%include "IMP_bounding_box.i"
 %include "IMP_transformation2d.i"
 %include "IMP_transformation3d.i"
+%include "IMP_bounding_box.i"
 %include "IMP_matrix2d.i"
 %include "IMP_matrix3d.i"
 %include "IMP_spherical_coords.i"

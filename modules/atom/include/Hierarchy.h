@@ -424,7 +424,6 @@ IMPATOMEXPORT IMP::core::RigidBody rigid_body_setup_hierarchy(Hierarchy h);
     Residue, and Domain data and the particle name to the
     new copies in addition to the Hierarchy relationships.
 
-    \untested{clone}
     \relatesalso Hierarchy
 */
 IMPATOMEXPORT
@@ -435,7 +434,6 @@ Hierarchy clone(Hierarchy d);
 /** All bonds connecting to these atoms are destroyed as are
     hierarchy links in the Hierarchy and the particles are
     removed from the Model.
-    \untested{erase}
     \relatesalso Hierarchy
 */
 IMPATOMEXPORT
