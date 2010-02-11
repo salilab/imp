@@ -33,7 +33,7 @@ class GroupnameScore;
 /** Stores a searchable shared collection of classnames.
     \ingroup restraints
 
-    Implementors should see IMP_GROUPNAME_CONTAINER().
+    \implementationwithoutexample{GroupnameContainer, IMP_GROUPNAME_CONTAINER}
  */
 class IMPEXPORT GroupnameContainer : public Container
 {
