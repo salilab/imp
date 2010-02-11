@@ -5,16 +5,8 @@ import IMP
 import IMP.test
 import IMP.restrainer
 
-def change_to_test_directory():
-    test_directory = os.environ.get('TEST_DIRECTORY')
-    if not test_directory:
-        test_directory = os.path.dirname(os.path.abspath(sys.argv[0]))
-    os.chdir(test_directory)
-
 class RepresentationTest(IMP.test.TestCase):
     def test_representation_parser(self):
-        change_to_test_directory()
-
         RepParser = IMP.restrainer.XMLRepresentation(self.get_input_file_name('pdb_representation.xml'))
         repr = RepParser.run()
 

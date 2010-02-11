@@ -1,3 +1,4 @@
+import os
 import xml.dom.minidom
 from representation import _Representation
 from representation import _RepUniverse
@@ -54,6 +55,7 @@ class XMLRepresentation(object):
             'Sphere':self.handle_sphere,
             'InitialPosition':self.handle_initial_position}
         self.filename = filename
+        self.base_dir = os.path.dirname(filename)
         document = open(filename).read()
         self.dom = xml.dom.minidom.parseString(document)
         self.depth = 0
@@ -87,7 +89,14 @@ class XMLRepresentation(object):
         if attr_map:
             for i in xrange(attr_map.length):
                 attr = attr_map.item(i)
-                attr_dict[str(attr.name)] = str(attr.value)
+                attr_name = str(attr.name)
+                # make sure filenames are relative to XML directory
+                if attr_name.endswith('filename'):
+                    attr_value = os.path.abspath(os.path.join(self.base_dir,
+                      str(attr.value)))
+                else:
+                    attr_value = str(attr.value)
+                attr_dict[attr_name] = attr_value
         return attr_dict
 
     def print_node_info(self, node):
@@ -458,6 +467,7 @@ class XMLRestraint(object):
             'Journal':self.handle_journal,
             'Title':self.handle_title,
             'Year':self.handle_year}
+        self.base_dir = os.path.dirname(filename)
         document = open(filename).read()
         self.dom = xml.dom.minidom.parseString(document)
         self.depth = 0
@@ -486,7 +496,14 @@ class XMLRestraint(object):
         if attr_map:
             for i in xrange(attr_map.length):
                 attr = attr_map.item(i)
-                attr_dict[str(attr.name)] = str(attr.value)
+                attr_name = str(attr.name)
+                # make sure filenames are relative to XML directory
+                if attr_name.endswith('filename'):
+                    attr_value = os.path.abspath(os.path.join(self.base_dir,
+                      str(attr.value)))
+                else:
+                    attr_value = str(attr.value)
+                attr_dict[attr_name] = attr_value
         return attr_dict
 
     def print_node_info(self, node):
