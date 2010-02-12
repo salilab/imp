@@ -28,7 +28,7 @@ The process of preparing the input data for %restrainer can be best shown using 
 can be found on the
 <a href="IMP_restrainer_examples.html">IMP.restrainer examples</a> page.
 
-Namespace reference can be seen at:
+\section i2 Namespace Reference
 - <a href="classIMP_1_1restrainer_1_1representation_1_1Representation.html">Representation Class</a>
 - <a href="classIMP_1_1restrainer_1_1restraint_1_1Restraint.html">Restraint Class</a>
 */
