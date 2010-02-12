@@ -303,7 +303,7 @@ class Doxypy(object):
                 self.comment.append('@internal SWIG internal function')
             # Also hide undocumented constructors
             elif self.defclass[0].startswith('    def __init__('):
-                self.defclass[0] = '    class UNDOC_swig_init'
+                self.defclass[0] = '    class UNDOC_swig_init:'
                 self.comment.append('@internal SWIG-generated constructor')
         self.__closeComment()
 
