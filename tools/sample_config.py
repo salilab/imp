@@ -29,7 +29,7 @@ build='debug'
 ## to do this, have your config.py and a link to the SConscruct files and scons_tools
 ## directories in the build directory and set 'repository' to a path to the source
 ## directory.
-repository="../svn/"
+repository="path_to_source"
 
 # Run all tests with valgrind
 #precommand="valgrind --gen-suppressions=yes --db-attach=yes --undef-value-errors=no --suppressions=../svn/tools/valgrind-python.supp"

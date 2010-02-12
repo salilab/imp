@@ -1,0 +1,26 @@
+#!/usr/bin/python
+
+import os
+import os.path
+import sys
+
+def main():
+    if len(sys.argv) != 2:
+        print("Usage: %s path_to_build" % sys.argv[0])
+        return
+    imppath= os.path.split(os.path.split(sys.argv[0])[0])[0]
+    imppath= os.path.relpath(imppath, sys.argv[1])
+    path_to_build= sys.argv[1]
+    print "IMP found in ", imppath
+    print path_to_build
+    if os.path.isfile("SConstruct"):
+        print "SConstruct file already exists in this directory."
+        return
+    os.symlink(os.path.join(imppath, "SConstruct"), os.path.join(path_to_build, "SConstruct"))
+    os.symlink(os.path.join(imppath, "scons_tools"), os.path.join(path_to_build,  "scons_tools"))
+    config= open(os.path.join(os.path.split(sys.argv[0])[0], "sample_config.py"), "r").read()
+    config=config.replace("path_to_source", imppath)
+    open(os.path.join(path_to_build,"config.py"), "w").write(config)
+
+if __name__ == '__main__':
+    main()
