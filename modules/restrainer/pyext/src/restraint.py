@@ -1,3 +1,5 @@
+"""Interface between XML Restraint and IMP Restraint."""
+
 import IMP.core
 import IMP.em
 import IMP.saxs
@@ -5,21 +7,21 @@ import IMP.helper
 
 class _RestraintSets(object):
     def __init__(self):
-        self.restraint_sets = dict()
+        self._restraint_sets = dict()
         self.set_by_restraint = dict()
     def add(self, restraint_type, restraint, model = None):
         if restraint_type is None:
             return
         try:
-            current_set = self.restraint_sets[restraint_type]
+            current_set = self._restraint_sets[restraint_type]
         except KeyError:
-            current_set = self.restraint_sets[restraint_type] = IMP.RestraintSet()
+            current_set = self._restraint_sets[restraint_type] = IMP.RestraintSet()
             if model:
                 model.add_restraint(current_set)
         current_set.add_restraint(restraint)
         self.set_by_restraint[restraint] = current_set
     def set_model(self, model):
-        for weight, rest_set in self.restraint_sets.iteritems():
+        for weight, rest_set in self._restraint_sets.iteritems():
             model.add_restraint(rest_set)
             rest_set.set_weight(float(weight))
     def remove_restraint(self, restraint):
@@ -30,7 +32,7 @@ class _RestraintSets(object):
         current_set.remove_restraint(restraint)
     def reset_weight(self, new_weight):
         try:
-            current_set = self.restraint_sets[str(new_weight)]
+            current_set = self._restraint_sets[str(new_weight)]
         except KeyError:
             return
         current_set.set_weight(float(new_weight))
@@ -41,79 +43,88 @@ class _RestraintSets(object):
             return 1.0
         return current_set.get_weight()
 
-class _Restraint(object):
+class Restraint(object):
+    """Store Restraint"""
     def __init__(self):
-        self.children = list()
-        self.restraint_sets = _RestraintSets()
+        """"""
+        self._children = list()
+        self._restraint_sets = _RestraintSets()
 
     def add_to_representation(self, repr):
-        if repr.model is None:
+        """ Place restraint into IMP Model."""
+
+        if repr._model is None:
             repr.to_model()
-        for child in self.children:
-            child.create_restraint(repr, self.restraint_sets)
-        self.restraint_sets.set_model(repr.model)
-        self.set_root()
-        self.model = repr.model
+        for child in self._children:
+            child.create_restraint(repr, self._restraint_sets)
+        self._restraint_sets.set_model(repr._model)
+        self._set_root()
+        self._model = repr._model
 
 
     def print_all_restraints(self):
+        """Print restraint name, initial weight, and score for the current state of the model"""
 
         def find_rec(node):
             if node.imp_restraint is not None:
-                print "Restraint name = ", node.name
-                print "Restraint weight = ", node.root.restraint_sets.get_weight(node.imp_restraint)
+                print "=== ", node.name, " ==="
+                print "Restraint initial weight = ", node.root._restraint_sets.get_weight(node.imp_restraint)
+                node.imp_restraint.evaluate(False)
                 found.append(node)
-            for child in node.children:
+            for child in node._children:
                 find_rec(child)
 
         found = list()
-        for child in self.children:
+        for child in self._children:
             find_rec(child)
         return found
 
 
-    def get_all_restraints_by_name(self, name): # assuming there are many obj with the same id
+    def get_all_restraints_by_name(self, name):
+        """Assuming there are many restraint objects with the same name."""
 
         def find_rec(node):
             if node.name == name:
                 found.append(node)
-            for child in node.children:
+            for child in node._children:
                 find_rec(child)
 
         found = list()
-        for child in self.children:
+        for child in self._children:
             find_rec(child)
         return found
 
-    def get_restraint_by_name(self, name): # assuming there is just one obj with the same id
+    def get_restraint_by_name(self, name):
+        """Assuming there is just one restraint object with the same name."""
 
         def find_rec(node):
             if node.name == name:
                 return node
-            for child in node.children:
+            for child in node._children:
                 r = find_rec(child)
                 if r:
                     return r
             return None
 
-        for child in self.children:
+        for child in self._children:
             r = find_rec(child)
             if r:
                 return r
         return None
 
     def get_rigid_body_by_id(self, id):
+        """Get rigid body by particle id."""
 
         def find_rec(node):
             if node.id == id:
                 return node.rigid_body
-            for child in node.children:
+            for child in node._children:
                 r = find_rec(child)
                 if r:
                     return r
             return None
 
-        for child in self.children:
+        for child in self._children:
             r = find_rec(child)
             if r:
                 return r
@@ -121,27 +132,28 @@ class _Restraint(object):
 
 
     def get_all_rigid_bodies(self):
+        """Get all rigid bodies."""
 
         def find_rec(node):
             if node.rigid_body:
                 all_bodies.append(node.rigid_body)
-            for child in node.children:
+            for child in node._children:
                 find_rec(child)
 
         all_bodies = list()
-        for child in self.children:
+        for child in self._children:
             find_rec(child)
         return all_bodies
 
 
-    def set_root(self):
+    def _set_root(self):
 
         def set_root_rec(node):
             node.root = self
-            for child in node.children:
+            for child in node._children:
                 set_root_rec(child)
 
-        for child in self.children:
+        for child in self._children:
             set_root_rec(child)
 
 
@@ -159,20 +171,20 @@ class _RestraintNode(object):
         else:
             self.name = 'object_%d' % _RestraintNode.counter
             _RestraintNode.counter += 1
-        self.children = list()
+        self._children = list()
         self.child_restraints = list()
         self.restraint_type = restraint_type
 
     def get_particle(self):
         particle_list = list()
-        for child in self.children:
+        for child in self._children:
             if isinstance(child, _RestraintParticle):
                 particle_list.append(child)
         return particle_list
 
     def get_source(self):
         source_list = list()
-        for child in self.children:
+        for child in self._children:
             counter = 0
             if isinstance(child, _RestraintSource):
                 source_list.append(child)
@@ -193,7 +205,7 @@ class _RestraintNode(object):
                 restraint_sets.add(str(weight), restraint)
 
     def create_restraint(self, repr, restraint_sets):
-        for child in self.children:
+        for child in self._children:
             restraint = child.create_restraint(repr, restraint_sets)
             if restraint:
                 self.child_restraints.append(restraint)
@@ -204,7 +216,7 @@ class _RigidBodyRestraintNode(_RestraintNode):
         _RestraintNode.__init__(self, attributes, 'RigidBody')
 
     def create_restraint(self, repr, restraint_sets):
-        for child in self.children:
+        for child in self._children:
             restraint = child.create_rigid_body_restraint(repr, restraint_sets)
 
 
@@ -213,7 +225,7 @@ class _ExcludedVolumeRestraintNode(_RestraintNode):
         _RestraintNode.__init__(self, attributes, restraint_type)
 
     def create_restraint(self, repr, restraint_sets):
-        for child in self.children:
+        for child in self._children:
             restraint = child.create_excluded_volume_restraint(repr, restraint_sets)
             self.append_restraint_with_weight(restraint, restraint_sets)
 
@@ -223,7 +235,7 @@ class _ConnectivityRestraintNode(_RestraintNode):
         _RestraintNode.__init__(self, attributes, restraint_type)
 
     def create_restraint(self, repr, restraint_sets):
-        for child in self.children:
+        for child in self._children:
             restraint = child.create_connectivity_restraint(repr, restraint_sets)
             self.append_restraint_with_weight(restraint, restraint_sets)
 
@@ -233,7 +245,7 @@ class _CrosslinkRestraintNode(_RestraintNode):
         _RestraintNode.__init__(self, attributes, restraint_type)
 
     def create_restraint(self, repr, restraint_sets):
-        for child in self.children:
+        for child in self._children:
             restraint = child.create_crosslink_restraint(repr, restraint_sets)
             self.append_restraint_with_weight(restraint, restraint_sets)
 
@@ -243,7 +255,7 @@ class _DistanceRestraintNode(_RestraintNode):
         _RestraintNode.__init__(self, attributes, restraint_type)
 
     def create_restraint(self, repr, restraint_sets):
-        for child in self.children:
+        for child in self._children:
             restraint = child.create_distance_restraint(repr, restraint_sets)
             self.append_restraint_with_weight(restraint, restraint_sets)
 
@@ -253,7 +265,7 @@ class _DiameterRestraintNode(_RestraintNode):
         _RestraintNode.__init__(self, attributes, restraint_type)
 
     def create_restraint(self, repr, restraint_sets):
-        for child in self.children:
+        for child in self._children:
             restraint = child.create_diameter_restraint(repr, restraint_sets)
             self.append_restraint_with_weight(restraint, restraint_sets)
 
@@ -263,7 +275,7 @@ class _SAXSRestraintNode(_RestraintNode):
         _RestraintNode.__init__(self, attributes, restraint_type)
 
     def create_restraint(self, repr, restraint_sets):
-        for child in self.children:
+        for child in self._children:
             restraint = child.create_saxs_restraint(repr, restraint_sets)
             self.append_restraint_with_weight(restraint, restraint_sets)
 
@@ -280,7 +292,7 @@ class _EMRestraintNode(_RestraintNode):
         _RestraintNode.__init__(self, attributes, restraint_type)
 
     def create_restraint(self, repr, restraint_sets):
-        for child in self.children:
+        for child in self._children:
             restraint = child.create_em_restraint(repr, restraint_sets)
             self.append_restraint_with_weight(restraint, restraint_sets)
 
@@ -355,18 +367,18 @@ class _RestraintRestraint(_RestraintNode):
 
     def set_weight(self, new_weight):
         if self.imp_restraint:
-            self.root.restraint_sets.remove_restraint(self.imp_restraint)
-            self.root.restraint_sets.add(str(new_weight), self.imp_restraint, self.root.model)
+            self.root._restraint_sets.remove_restraint(self.imp_restraint)
+            self.root._restraint_sets.add(str(new_weight), self.imp_restraint, self.root._model)
             self.weight = new_weight
-            self.root.restraint_sets.reset_weight(new_weight)
+            self.root._restraint_sets.reset_weight(new_weight)
 
     def get_weight(self):
-        return self.root.restraint_sets.get_weight(self.imp_restraint)
+        return self.root._restraint_sets.get_weight(self.imp_restraint)
 
     def create_rigid_body_restraint(self, repr, restraint_sets):
         _RestraintNode.create_restraint(self, repr, restraint_sets)
         self.rigid_bodies = list()
-        for child, child_r in zip(self.children, self.child_restraints):
+        for child, child_r in zip(self._children, self.child_restraints):
             mhs = IMP.atom.Hierarchies()
             mhs.append(child_r)
             rb = IMP.helper.set_rigid_bodies(mhs)
@@ -487,7 +499,7 @@ class _RestraintSource(_RestraintNode):
 
     def get_author(self):
         if not self.__author_list:
-            for child in self.children:
+            for child in self._children:
                 if isinstance(child, _RestraintAuthor):
                     self.__author_list.append(child)
                     break
@@ -495,7 +507,7 @@ class _RestraintSource(_RestraintNode):
 
     def get_journal(self):
         if self.__journal is None:
-            for child in self.children:
+            for child in self._children:
                 if isinstance(child, _RestraintJournal):
                     self.__journal = child.text
                     break
@@ -503,7 +515,7 @@ class _RestraintSource(_RestraintNode):
 
     def get_title(self):
         if self.__title is None:
-            for child in self.children:
+            for child in self._children:
                 if isinstance(child, _RestraintTitle):
                     self.__title = child.text
                     break
@@ -511,7 +523,7 @@ class _RestraintSource(_RestraintNode):
 
     def get_year(self):
         if self.__year is None:
-            for child in self.children:
+            for child in self._children:
                 if isinstance(child, _RestraintYear):
                     self.__year = child.text
                     break

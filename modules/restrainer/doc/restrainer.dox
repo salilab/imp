@@ -24,7 +24,11 @@ To check if the XML files are valid:
 xmllint --schema IMP_Schema.xsd --noout *.xml
 \endcode
 
-The process of preparing the input data for restrainer can be best shown using simple examples, which
-can be found
-<a href="IMP_restrainer_examples.html">here</a>.
+The process of preparing the input data for %restrainer can be best shown using simple %examples, which
+can be found on the
+<a href="IMP_restrainer_examples.html">IMP.restrainer examples</a> page.
+
+Namespace reference can be seen at:
+- <a href="classIMP_1_1restrainer_1_1representation_1_1Representation.html">Representation Class</a>
+- <a href="classIMP_1_1restrainer_1_1restraint_1_1Restraint.html">Restraint Class</a>
 */
