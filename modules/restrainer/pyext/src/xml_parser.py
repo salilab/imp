@@ -56,12 +56,15 @@ class XMLRepresentation(object):
             'InitialPosition':self._handle_initial_position}
         self.filename = filename
         self.base_dir = os.path.dirname(filename)
-        document = open(filename).read()
-        self.dom = xml.dom.minidom.parseString(document)
+        _document = open(filename).read()
+        self.dom = xml.dom.minidom.parseString(_document)
         self.depth = 0
 
     def run(self):
-        """Return representation object such that each node in the representation
+        """Return
+           <a href="classIMP_1_1restrainer_1_1representation_1_1Representation.html">
+           Representation</a>
+           object such that each node in the representation
            corresponds to the node in the XML nodes"""
         try:
             representation_dom = self.dom.getElementsByTagName('Representation')[0]
@@ -283,8 +286,8 @@ class XMLDisplay(object):
             'Fragment':self._handle_fragment,
             'Color':self._handle_color,
             'Residue':self._handle_residue}
-        document = open(filename).read()
-        self.dom = xml.dom.minidom.parseString(document)
+        _document = open(filename).read()
+        self.dom = xml.dom.minidom.parseString(_document)
         self.depth = 0
 
     def run(self):
@@ -468,12 +471,15 @@ class XMLRestraint(object):
             'Title':self._handle_title,
             'Year':self._handle_year}
         self.base_dir = os.path.dirname(filename)
-        document = open(filename).read()
-        self.dom = xml.dom.minidom.parseString(document)
+        _document = open(filename).read()
+        self.dom = xml.dom.minidom.parseString(_document)
         self.depth = 0
 
     def run(self):
-        """Return restraint object such that each node in the restraint
+        """Return
+           <a href="classIMP_1_1restrainer_1_1restraint_1_1Restraint.html">
+           Restraint</a>
+           object such that each node in the restraint
            corresponds to the node in the XML nodes"""
         restraint_dom = self.dom.getElementsByTagName('RestraintSet')[0]
         result = Restraint()
