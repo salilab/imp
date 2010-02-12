@@ -29,6 +29,8 @@ can be found on the
 <a href="IMP_restrainer_examples.html">IMP.restrainer examples</a> page.
 
 \section i2 Namespace Reference
+- <a href="classIMP_1_1restrainer_1_1xml__parser_1_1XMLRepresentation.html">XMLRepresentation Class</a>
+- <a href="classIMP_1_1restrainer_1_1xml__parser_1_1XMLRestraint.html">XMLRestraint Class</a>
 - <a href="classIMP_1_1restrainer_1_1representation_1_1Representation.html">Representation Class</a>
 - <a href="classIMP_1_1restrainer_1_1restraint_1_1Restraint.html">Restraint Class</a>
 */
