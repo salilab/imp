@@ -1,6 +1,3 @@
-"""Restrainer
-"""
-
 __all__ = ['representation', 'restraint','xml_parser', 'config']
 
 from representation import *

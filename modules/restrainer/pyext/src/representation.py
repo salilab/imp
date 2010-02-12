@@ -1,62 +1,77 @@
+"""Interface between XML Representation and IMP Model."""
+
 import IMP
 import IMP.atom
 import random
 import math
 
-class _Representation(object):
-    """Store Representation"""
+class Representation(object):
+    """Store Representation."""
+
     def __init__(self):
-        self.children = list()
-        self.model = None
+        """"""
+        self._children = list()
+        self._model = None
+
+    def get_imp_hierarchy_by_id(self, id):
+        """Return an \imp hierarchy by particle id.
+           @param id Particle id.
+           @return An \imp hierarchy."""
+        return self.find_by_id(id).model_decorator
+
+    def get_root_imp_hierarchy(self):
+        """Return the root of the \imp hierarchy"""
+        return self.model_decorator
 
     def find_all_by_id(self, id): # assuming there are many obj with the same id
         """Return a list of all nodes that have the id given by the parameter"""
 
-        def find_rec(node):
+        def _find_rec(node):
             if node.id == id:
                 found.append(node)
-            for child in node.children:
-                find_rec(child)
+            for child in node._children:
+                _find_rec(child)
 
         found = list()
-        for child in self.children:
-            find_rec(child)
+        for child in self._children:
+            _find_rec(child)
         return found
 
     def find_by_id(self, id): # assuming there is just one obj with the same id
         """Return a node that have the id given by the parameter"""
 
-        def find_rec(node):
+        def _find_rec(node):
             if node.id == id:
                 return node
-            for child in node.children:
-                r = find_rec(child)
+            for child in node._children:
+                r = _find_rec(child)
                 if r:
                     return r
             return None
 
-        for child in self.children:
-            r = find_rec(child)
+        for child in self._children:
+            r = _find_rec(child)
             if r:
                 return r
         return None
 
     def to_model(self, model=None):
-        """Return an IMP model that contains the representation"""
+        """Return an \imp model that contains the representation"""
         if model is None:
-            model = self.model
+            model = self._model
             if model is None:
-                self.model = model = IMP.Model()
+                self._model = model = IMP.Model()
         else:
-            self.model = model
+            self._model = model
         repr_particle = IMP.Particle(model)
         decorator = IMP.atom.Hierarchy.setup_particle(repr_particle)
         self.model_decorator = decorator
-        for child in self.children:
+        for child in self._children:
             child.set_parent(self)
-        for child in self.children:
+        for child in self._children:
             child.add_as_child(decorator, model)
         return model
+
 
 class _RepresentationNode(object):
     counter = 0
@@ -67,13 +82,13 @@ class _RepresentationNode(object):
         else:
             self.id = 'object_%d' % _RepresentationNode.counter
             _RepresentationNode.counter += 1
-        self.children = list()
+        self._children = list()
         self.model_decorator = None
         self.parent = None
 
     def set_parent(self, parent):
         self.parent = parent
-        for child in self.children:
+        for child in self._children:
             child.set_parent(self)
 
     def add_as_child(self, particle, model):
@@ -87,7 +102,7 @@ class _RepresentationNode(object):
             particle.add_child(decorator)
         else:
             decorator = particle
-        for child in self.children:
+        for child in self._children:
             child.add_as_child(decorator, model)
 
     def to_particle(self, model):
@@ -171,12 +186,12 @@ class _RepChain(_RepresentationNode):
             self.fragment_decorator = chains[0]
             parent = self.fragment_decorator.get_parent()
             parent.remove_child(self.fragment_decorator)
-        if self.children and not self.filename:
+        if self._children and not self.filename:
             particle = IMP.Particle(model)
             decorator = IMP.atom.Chain.setup_particle(particle,
                 self.chain_label)
         else:
-            if not self.filename and not self.children:
+            if not self.filename and not self._children:
                 raise Exception, "Filename must be present for childless Chain %s" % self.id
             decorator = self.fragment_decorator
         return decorator
@@ -186,10 +201,10 @@ class _RepFragment(_RepresentationNode):
         _RepresentationNode.__init__(self, attributes)
 
     def to_particle(self, model):
-        if len(self.children) != 1:
+        if len(self._children) != 1:
             raise Exception, "Fragment %s must have exactly one child" % self.id
         particle = IMP.Particle(model)
-        child = self.children[0]
+        child = self._children[0]
         child.add_attributes(particle)
         decorator = IMP.atom.Fragment.setup_particle(particle)
         if isinstance(child, _RepAtomicRep):
@@ -240,7 +255,7 @@ class _RepAtomicRep(_RepresentationNode):
     def add_attributes(self, parent):
         parent.add_attribute(IMP.IntKey("start_residue"), self.start_residue)
         parent.add_attribute(IMP.IntKey("end_residue"), self.end_residue)
-        for child in self.children:
+        for child in self._children:
             child.add_attributes(parent)
 
 class _RepGeometricShapeRep(_RepresentationNode):
@@ -274,7 +289,7 @@ class _RepGeometricShapeRep(_RepresentationNode):
             v = IMP.atom.volume_from_mass(m)
             r = (v/(4.0*math.pi)*3.0)**(1.0/3)
             parent.add_attribute(IMP.FloatKey('calc_radius'), r)
-        for child in self.children:
+        for child in self._children:
             child.add_attributes(parent)
 
 
@@ -287,7 +302,7 @@ class _RepSphere(_RepresentationNode):
 
     def initial_position(self):
         if self.__initial_position is None:
-            for child in self.children:
+            for child in self._children:
                 if isinstance(child, _RepInitialPosition):
                     self.__initial_position = child
                     break
@@ -300,7 +315,7 @@ class _RepSphere(_RepresentationNode):
         parent.add_attribute(IMP.FloatKey("radius"), self.radius)
         parent.add_attribute(IMP.FloatKey("weight"), self.weight)
         parent.add_attribute(IMP.FloatKey("mass"), self.weight)
-        for child in self.children:
+        for child in self._children:
             child.add_attributes(parent)
 
 class _RepInitialPosition(_RepresentationNode):
