@@ -22,7 +22,10 @@
 IMPATOM_BEGIN_NAMESPACE
 
 //! A decorator for a point particle that has an electrostatic charge.
-/** \ingroup helper
+/** The charge itself should be given in atomic units; i.e. the charge on
+    a proton is +1 and on an electron, -1.
+
+    \ingroup helper
     \ingroup decorators
     \see CoulombPairScore
  */
