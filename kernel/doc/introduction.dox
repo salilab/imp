@@ -39,20 +39,13 @@ stages, but a few need extra note:
 choose when solving a particular problem. Fortunately, these classes
 fall into a variety of categories.
 
-- Representation: The model in \imp is represented as a collection
-  of IMP::Particle objects, stored in the IMP::Model. The
-  IMP::Particle class provides storage for arbitrary data, and as such is
-  not that easy to use directly. To ease use, \imp provides a layer on
-  top of particles called decorators. A decorator wraps an existing
-  particle and provides a simplified interface to access and
-  manipulate a certain type of data. For example, the IMP::core::XYZ
-  decorator decorates a particle to provide easy access to and
-  manipulation of the cartesian coordinates; the IMP::atom::Hierarchy
-  decorator with the associated IMP::atom::Atom, IMP::atom::Residue
-  etc. decorators provide a standard representation of molecular
-  structures; the IMP::core::RigidBodyDecorator represents part of the
-  model rigidly etc. See the IMP::Decorator page for
-  more information.
+- Representation: representation in \imp is via a collection of particles (IMP::Particle objects). Each particle can contain one or more of the following sets of data
+   - Cartesian coordinates (IMP::core::XYZ)
+   - sphere (IMP::core::XYZR)
+   - atom information such as type, element, mass (IMP::atom::Atom)
+   - 
+   Residue, Hierarchy, Chain, Domain, Fragment, RigidBody, Mass, Charged, Centroid, Cover
+   The data stored in a particle can be easily extended by adding a new IMP::Decorator type. 
 
 - Scoring: Proposed models are scored based on how well they match the
   data. In \imp the scoring function is the sum of restraint
