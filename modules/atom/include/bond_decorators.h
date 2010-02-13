@@ -9,7 +9,6 @@
 #define IMPATOM_BOND_DECORATORS_H
 
 #include "config.h"
-#include <IMP/core/internal/utility.h>
 #include <IMP/core/internal/graph_base.h>
 #include "internal/bond_helpers.h"
 

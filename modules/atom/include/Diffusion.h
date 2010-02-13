@@ -10,7 +10,6 @@
 #define IMPATOM_DIFFUSION_H
 
 #include "config.h"
-#include <IMP/core/internal/utility.h>
 
 #include <IMP/core/XYZ.h>
 #include <IMP/algebra/Vector3D.h>
