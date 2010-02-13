@@ -7,12 +7,5 @@ IMP_REFCOUNT_RETURN_SINGLE(IMP::core::HarmonicUpperBound)
 IMP_REFCOUNT_RETURN_SINGLE(IMP::core::SphereDistancePairScore)
 
 /* Wrap our own classes */
-%include "IMP/helper/atom_hierarchy.h"
 %include "IMP/helper/simplify_atom_hierarchy.h"
 %include "IMP/helper/simplify_restraint.h"
-namespace IMP {
- namespace helper {
-   %template(ResidueIndexPair) ::std::pair<int,int>;
-   %template(ResidueIndexPairVec) ::std::vector<IMP::helper::ResidueIndexPair>;
- }
-}

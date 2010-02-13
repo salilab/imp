@@ -1,7 +1,6 @@
 Import('env')
 
 files = [
-         'atom_hierarchy.h',
          'simplify_atom_hierarchy.h',
          'simplify_restraint.h',
         ]

@@ -3,26 +3,8 @@ import IMP
 import IMP.test
 import IMP.core
 import IMP.atom
-import IMP.helper
 
 class SimplifyTests(IMP.test.TestCase):
-    def disabled_test_simplify_2(self):
-        """Test protein simplification 2"""
-        IMP.set_log_level(IMP.VERBOSE)
-        m= IMP.Model()
-        p= IMP.atom.read_pdb(self.get_input_file_name('single_protein.pdb'), m)
-        #IMP.atom.show_molecular_hierarchy(p)
-        IMP.atom.add_radii(p)
-        s= IMP.helper.create_simplified(p, 20)
-        ls= IMP.core.get_leaves(s)
-        for q in []:
-            d= IMP.core.XYZR(q.get_particle())
-            print ".sphere " +str(d.get_coordinates()[0]) + " "\
-                + str(d.get_coordinates()[1]) + " "\
-                + str(d.get_coordinates()[2]) + " "\
-                + str(d.get_radius())
-        print "level is " +str(IMP.get_log_level())
-
 
     def test_simplify_by_residue(self):
         """Test protein simplification by residues"""
@@ -33,11 +15,12 @@ class SimplifyTests(IMP.test.TestCase):
                 return 0
         IMP.set_log_level(IMP.SILENT)#VERBOSE)
         m= IMP.Model()
-        mh= IMP.atom.read_pdb(self.get_input_file_name('single_protein.pdb'), m)
+        mh= IMP.atom.read_pdb(self.get_input_file_name('input.pdb'), m)
+        chains= IMP.atom.get_by_type(mh, IMP.atom.CHAIN_TYPE)
         num_residues=len(IMP.atom.get_by_type(mh,IMP.atom.RESIDUE_TYPE))
         IMP.atom.add_radii(mh)
         for res_segment in [5,10,20,30,num_residues]:
-            mh_simp= IMP.helper.create_simplified_by_residue(mh, res_segment)
+            mh_simp= IMP.atom.create_simplified_along_backbone(IMP.atom.Chain(chains[0].get_particle()), res_segment)
             self.assertEqual(num_residues/res_segment+1*residual_cond(num_residues%res_segment), len(IMP.core.get_leaves(mh_simp)))
 
 
@@ -45,18 +28,19 @@ class SimplifyTests(IMP.test.TestCase):
         """Test protein simplification by segments"""
         IMP.set_log_level(IMP.SILENT)#VERBOSE)
         m= IMP.Model()
-        mh= IMP.atom.read_pdb(self.get_input_file_name('single_protein.pdb'), m)
+        mh= IMP.atom.read_pdb(self.get_input_file_name('input.pdb'), m)
+        chains= IMP.atom.get_by_type(mh, IMP.atom.CHAIN_TYPE)
         IMP.atom.add_radii(mh)
         #define the segments
-        segs = IMP.helper.ResidueIndexPairVec()
+        segs = IMP.IntRanges()
         num_res= len(IMP.atom.get_by_type(mh,IMP.atom.RESIDUE_TYPE))
         start=0
         step=30
         while start < num_res:
-            segs.append(IMP.helper.ResidueIndexPair(start,min(start+step,num_res-1)))
+            segs.append(IMP.IntRange(start,min(start+step,num_res-1)))
             start=start+step+1
             #print segs[-1]
-        mh_simp= IMP.helper.create_simplified_by_segments(mh,segs)
+        mh_simp= IMP.atom.create_simplified_along_backbone(IMP.atom.Chain(chains[0].get_particle()),segs)
         self.assertEqual(num_res/step,len(IMP.core.get_leaves(mh_simp)))
 
 
