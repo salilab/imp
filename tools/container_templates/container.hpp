@@ -7,8 +7,8 @@
  *  Copyright 2007-2010 Sali Lab. All rights reserved.
  */
 
-#ifndef IMPCORE_GROUPNAME_CONTAINER_H
-#define IMPCORE_GROUPNAME_CONTAINER_H
+#ifndef IMP_GROUPNAME_CONTAINER_H
+#define IMP_GROUPNAME_CONTAINER_H
 
 #include "config.h"
 #include "internal/IndexingIterator.h"
@@ -183,4 +183,4 @@ IMP_OBJECTS(GroupnameContainer);
 
 IMP_END_NAMESPACE
 
-#endif  /* IMPCORE_GROUPNAME_CONTAINER_H */
+#endif  /* IMP_GROUPNAME_CONTAINER_H */

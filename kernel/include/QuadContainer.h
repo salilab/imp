@@ -7,8 +7,8 @@
  *  Copyright 2007-2010 Sali Lab. All rights reserved.
  */
 
-#ifndef IMPCORE_QUAD_CONTAINER_H
-#define IMPCORE_QUAD_CONTAINER_H
+#ifndef IMP_QUAD_CONTAINER_H
+#define IMP_QUAD_CONTAINER_H
 
 #include "config.h"
 #include "internal/IndexingIterator.h"
@@ -183,4 +183,4 @@ IMP_OBJECTS(QuadContainer);
 
 IMP_END_NAMESPACE
 
-#endif  /* IMPCORE_QUAD_CONTAINER_H */
+#endif  /* IMP_QUAD_CONTAINER_H */

@@ -7,8 +7,8 @@
  *  Copyright 2007-2010 Sali Lab. All rights reserved.
  */
 
-#ifndef IMPCORE_PAIR_FILTER_H
-#define IMPCORE_PAIR_FILTER_H
+#ifndef IMP_PAIR_FILTER_H
+#define IMP_PAIR_FILTER_H
 
 #include "config.h"
 #include "Particle.h"
@@ -55,4 +55,4 @@ typedef VectorOfRefCounted<PairFilter*> PairFilters;
 
 IMP_END_NAMESPACE
 
-#endif  /* IMPCORE_PAIR_FILTER_H */
+#endif  /* IMP_PAIR_FILTER_H */
