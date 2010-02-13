@@ -48,8 +48,8 @@ class DOMINOTests(IMP.test.TestCase):
                                                                     +cone.get_height()**2)**.5),
                                           pln.get_opposite())
         print ".dot " +str(pln.get_point_on_plane()[0]) + " " + str(pln.get_point_on_plane()[1]) + " " + str(pln.get_point_on_plane()[2])
-        sss = cone.get_bounding_sphere()
-        print ".sphere " + str(sss.get_center()[0]) + " " + str(sss.get_center()[1]) + " "+ str(sss.get_center()[2]) + " " + str(sss.get_radius())
+        #sss = cone.get_bounding_sphere()
+        #print ".sphere " + str(sss.get_center()[0]) + " " + str(sss.get_center()[1]) + " "+ str(sss.get_center()[2]) + " " + str(sss.get_radius())
         #print ".sphere " + str(patch.get_sphere().get_center()[0]) + " " + str(patch.get_sphere().get_center()[1]) + " "+ str(patch.get_sphere().get_center()[2]) + " " + str(patch.get_sphere().get_radius())
         zero_vec = IMP.algebra.Vector3D(0.0,0.0,0.0)
         rots = IMP.algebra.uniform_cover(patch,10)
