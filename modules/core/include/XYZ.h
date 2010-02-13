@@ -10,7 +10,6 @@
 
 #include "config.h"
 #include "../macros.h"
-#include "internal/utility.h"
 
 #include <IMP/Decorator.h>
 #include <IMP/algebra/Vector3D.h>

@@ -10,7 +10,6 @@
 
 #include <IMP/exception.h>
 #include <IMP/log.h>
-#include <IMP/internal/utility.h>
 
 #include <cmath>
 
