@@ -7,8 +7,8 @@
  *  Copyright 2007-2010 Sali Lab. All rights reserved.
  */
 
-#ifndef IMPCORE_QUAD_FILTER_H
-#define IMPCORE_QUAD_FILTER_H
+#ifndef IMP_QUAD_FILTER_H
+#define IMP_QUAD_FILTER_H
 
 #include "config.h"
 #include "Particle.h"
@@ -55,4 +55,4 @@ typedef VectorOfRefCounted<QuadFilter*> QuadFilters;
 
 IMP_END_NAMESPACE
 
-#endif  /* IMPCORE_QUAD_FILTER_H */
+#endif  /* IMP_QUAD_FILTER_H */

@@ -7,8 +7,8 @@
  *  Copyright 2007-2010 Sali Lab. All rights reserved.
  */
 
-#ifndef IMPCORE_GROUPNAME_FILTER_H
-#define IMPCORE_GROUPNAME_FILTER_H
+#ifndef IMP_GROUPNAME_FILTER_H
+#define IMP_GROUPNAME_FILTER_H
 
 #include "config.h"
 #include "Particle.h"
@@ -55,4 +55,4 @@ typedef VectorOfRefCounted<GroupnameFilter*> GroupnameFilters;
 
 IMP_END_NAMESPACE
 
-#endif  /* IMPCORE_GROUPNAME_FILTER_H */
+#endif  /* IMP_GROUPNAME_FILTER_H */

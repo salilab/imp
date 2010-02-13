@@ -7,8 +7,8 @@
  *  Copyright 2007-2010 Sali Lab. All rights reserved.
  */
 
-#ifndef IMPCORE_SINGLETON_CONTAINER_H
-#define IMPCORE_SINGLETON_CONTAINER_H
+#ifndef IMP_SINGLETON_CONTAINER_H
+#define IMP_SINGLETON_CONTAINER_H
 
 #include "config.h"
 #include "internal/IndexingIterator.h"
@@ -183,4 +183,4 @@ IMP_OBJECTS(SingletonContainer);
 
 IMP_END_NAMESPACE
 
-#endif  /* IMPCORE_SINGLETON_CONTAINER_H */
+#endif  /* IMP_SINGLETON_CONTAINER_H */
