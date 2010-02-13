@@ -30,6 +30,7 @@ files = [
          'element.h',
          'estimates.h',
          'force_fields.h',
+         'hierarchy_tools.h',
          'macros.h',
          'pdb.h',
          'selectors.h',
