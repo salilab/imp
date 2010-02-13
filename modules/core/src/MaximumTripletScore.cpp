@@ -9,7 +9,6 @@
 
 #include <IMP/core/MaximumTripletScore.h>
 #include "IMP/core/internal/MinimalSet.h"
-#include "IMP/internal/utility.h"
 
 IMPCORE_BEGIN_NAMESPACE
 
