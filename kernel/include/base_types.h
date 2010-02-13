@@ -33,6 +33,9 @@ typedef std::pair<Float, Float> FloatRange;
 //! Basic integer value
 typedef int Int;
 
+typedef std::pair<Int, Int> IntRange;
+typedef std::vector<IntRange> IntRanges;
+
 //! Basic string value
 typedef std::string String;
 
