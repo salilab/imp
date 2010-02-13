@@ -19,7 +19,7 @@ def copy_dir(source, dest, modname):
         if x == ".svn": continue
         if x.endswith(".pyc"): continue
         if x.endswith(".old"): continue
-        fx= fix_string(x, modname);
+        fx= x
         xspath= os.path.join(source, x)
         xdpath= os.path.join(dest, fx)
         print "handling "+ xspath +"->"+xdpath
