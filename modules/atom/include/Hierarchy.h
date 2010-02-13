@@ -427,7 +427,16 @@ IMPATOMEXPORT IMP::core::RigidBody rigid_body_setup_hierarchy(Hierarchy h);
     \relatesalso Hierarchy
 */
 IMPATOMEXPORT
-Hierarchy clone(Hierarchy d);
+Hierarchy create_clone(Hierarchy d);
+
+//! Clone the node in the Hierarchy
+/** This method copies the  Atom,
+    Residue, Chain and Domain data and the particle name.
+
+    \relatesalso Hierarchy
+*/
+IMPATOMEXPORT
+Hierarchy create_clone_one(Hierarchy d);
 
 
 //! Delete the Hierarchy

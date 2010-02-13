@@ -290,8 +290,8 @@ core::RigidBody rigid_body_setup_hierarchy(Hierarchy h) {
 namespace {
 
   Hierarchy clone_internal(Hierarchy d,
-                                 std::map<Particle*,
-                                 Particle*> &map) {
+                           std::map<Particle*,
+                           Particle*> &map, bool recurse) {
     Particle *p= new Particle(d.get_model());
     map[d.get_particle()]=p;
     Hierarchy nd;
@@ -324,18 +324,20 @@ namespace {
                           XYZ(d.get_particle()).get_coordinates());
     }
     p->set_name(d.get_particle()->get_name());
-    for (unsigned int i=0 ;i< d.get_number_of_children(); ++i) {
-      Hierarchy nc= clone_internal(d.get_child(i), map);
-      nd.add_child(nc);
+    if (recurse) {
+      for (unsigned int i=0 ;i< d.get_number_of_children(); ++i) {
+        Hierarchy nc= clone_internal(d.get_child(i), map, true);
+        nd.add_child(nc);
+      }
     }
     return nd;
   }
 }
 
 
-Hierarchy clone(Hierarchy d) {
+Hierarchy create_clone(Hierarchy d) {
   std::map<Particle*,Particle*> map;
-  Hierarchy nh= clone_internal(d, map);
+  Hierarchy nh= clone_internal(d, map, true);
   Bonds bds= get_internal_bonds(d);
   for (unsigned int i=0; i< bds.size(); ++i) {
     Bonded e0= bds[i].get_bonded(0);
@@ -356,6 +358,11 @@ Hierarchy clone(Hierarchy d) {
     copy_bond(ne0, ne1, bds[i]);
   }
   return nh;
+}
+
+Hierarchy create_clone_one(Hierarchy d) {
+  std::map<Particle*,Particle*> map;
+  return clone_internal(d, map, false);
 }
 
 
