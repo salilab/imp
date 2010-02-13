@@ -10,6 +10,7 @@ files = [
          'evaluate_distance_pair_score.h',
          'graph_base.h',
          'hierarchy_helpers.h',
+         'io.h',
          'pair_helpers.h',
          'quad_helpers.h',
          'remove_pointers.h',
@@ -18,7 +19,6 @@ files = [
          'singleton_helpers.h',
          'triplet_helpers.h',
          'truncated_harmonic.h',
-         'utility.h',
         ]
 
 files = [File(x) for x in files]
