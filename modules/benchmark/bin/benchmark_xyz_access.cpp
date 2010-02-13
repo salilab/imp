@@ -33,11 +33,11 @@ double compute_distances_decorator_access(
    const IMP::Particles& particles) {
   double tdist=0;
   for (unsigned int i = 0; i < particles.size(); i++) {
-    IMP::algebra::Vector3D v1
-      (IMP::core::XYZ(particles[i]).get_coordinates());
+    IMP::core::XYZ d1(particles[i]);
+    IMP::algebra::Vector3D v1(d1.get_coordinates());
     for (unsigned int j = 0; j < particles.size(); j++) {
-      IMP::algebra::Vector3D v2
-        (IMP::core::XYZ(particles[j]).get_coordinates());
+      IMP::core::XYZ d2(particles[j]);
+      IMP::algebra::Vector3D v2(d2.get_coordinates());
       tdist+= IMP::algebra::distance(v1, v2);
     }
   }
