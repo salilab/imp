@@ -18,6 +18,7 @@ files = [
          'ClosePairsPairScore.cpp',
          'ClosedCubicSpline.cpp',
          'ConjugateGradients.cpp',
+         'ConnectingPairContainer.cpp',
          'ConnectivityRestraint.cpp',
          'ConstantRestraint.cpp',
          'Cosine.cpp',

@@ -6,7 +6,6 @@
  */
 
 #include <IMP/core/ChildrenRefiner.h>
-
 #include <IMP/core/Hierarchy.h>
 
 IMPCORE_BEGIN_NAMESPACE

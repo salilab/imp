@@ -57,6 +57,7 @@ IMP_REFCOUNT_RETURN_SINGLE(IMP::core::Mover)
 %include "IMP/core/ClosePairsPairScore.h"
 %include "IMP/core/ConjugateGradients.h"
 %include "IMP/core/ConnectivityRestraint.h"
+%include "IMP/core/ConnectingPairContainer.h"
 %include "IMP/core/ConstantRestraint.h"
 %include "IMP/core/Cosine.h"
 %include "IMP/core/CoverRefined.h"

@@ -18,6 +18,7 @@ files = [
          'ClosePairsPairScore.h',
          'ClosedCubicSpline.h',
          'ConjugateGradients.h',
+         'ConnectingPairContainer.h',
          'ConnectivityRestraint.h',
          'ConstantRestraint.h',
          'Cosine.h',

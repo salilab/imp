@@ -10,7 +10,6 @@
 #define IMPCORE_HIERARCHY_H
 
 #include "config.h"
-#include "utility.h"
 #include "internal/hierarchy_helpers.h"
 #include "internal/ArrayOnAttributesHelper.h"
 

@@ -9,7 +9,6 @@
 #include <IMP/base_types.h>
 #include "IMP/core/BoxSweepClosePairsFinder.h"
 #include "IMP/core/XYZR.h"
-#include "IMP/core/utility.h"
 
 #ifdef IMP_USE_CGAL
 
