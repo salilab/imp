@@ -12,7 +12,6 @@
 #include "IMP/core/MaximumSingletonRestraint.h"
 #include "IMP/core/internal/MinimalSet.h"
 #include <IMP/internal/container_helpers.h>
-#include <IMP/internal/utility.h>
 
 
 IMPCORE_BEGIN_NAMESPACE
