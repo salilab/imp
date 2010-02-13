@@ -14,7 +14,6 @@
 #include <IMP/Particle.h>
 #include <IMP/log.h>
 #include <IMP/PairScore.h>
-#include <IMP/internal/utility.h>
 #include <IMP/core/ListSingletonContainer.h>
 
 #include <climits>
@@ -77,19 +76,23 @@ namespace {
                    PairScore *ps,
                    Graph &g,
                    std::vector<Edge> &mst) {
-    for (unsigned int i=0; i< a->get_number_of_particles(); ++i) {
-      for (unsigned int j=0; j<i; ++j) {
-        double d= ps->evaluate(ParticlePair(a->get_particle(i),
-                                            a->get_particle(j)), NULL);
-        IMP_LOG(VERBOSE, "ConnectivityRestraint edge between "
-                << a->get_particle(i)->get_name() << " and "
-                << a->get_particle(j)->get_name() << " with weight "
-                << d << std::endl);
-        /*Edge e =*/ boost::add_edge(i, j, Weight(d), g);
-        //boost::put(boost::edge_weight_t(), g, e, d);
+    try {
+      for (unsigned int i=0; i< a->get_number_of_particles(); ++i) {
+        for (unsigned int j=0; j<i; ++j) {
+          double d= ps->evaluate(ParticlePair(a->get_particle(i),
+                                              a->get_particle(j)), NULL);
+          IMP_LOG(VERBOSE, "ConnectivityRestraint edge between "
+                  << a->get_particle(i)->get_name() << " and "
+                  << a->get_particle(j)->get_name() << " with weight "
+                  << d << std::endl);
+          /*Edge e =*/ boost::add_edge(i, j, Weight(d), g);
+          //boost::put(boost::edge_weight_t(), g, e, d);
+        }
       }
+      mst.resize(a->get_number_of_particles()-1);
+    } catch (std::bad_alloc&c) {
+      IMP_FAILURE("Out of memory in ConnectivityRestraint.");
     }
-    mst.resize(a->get_number_of_particles()-1);
     boost::kruskal_minimum_spanning_tree(g, mst.begin());
 
     /*
