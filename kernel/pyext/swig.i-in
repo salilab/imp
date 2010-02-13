@@ -184,6 +184,8 @@ namespace IMP {
   %template(Ints) ::std::vector<Int>;
   %template(float_pair) ::std::pair<float,float>;
   %template(double_pair) ::std::pair<double, double>;
+  %template(IntRange) ::std::pair<Int, Int>;
+  %template(IntRanges) ::std::vector< IntRange >;
 }
 
 
