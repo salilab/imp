@@ -10,7 +10,6 @@ files = [
          'evaluate_distance_pair_score.h',
          'graph_base.h',
          'hierarchy_helpers.h',
-         'io.h',
          'pair_helpers.h',
          'quad_helpers.h',
          'remove_pointers.h',
