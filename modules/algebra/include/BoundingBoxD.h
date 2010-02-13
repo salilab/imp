@@ -119,7 +119,7 @@ IMP_VOLUME_GEOMETRY_METHODS_D(BoundingBox, IMP_NOT_IMPLEMENTED,
 
 //! Return a bounding box containing the transformed box
 inline BoundingBox3D get_transformed(const BoundingBox3D &bb,
-                              const Transformation3D &tr) {
+                                     const Transformation3D &tr) {
   BoundingBox3D nbb;
   for (unsigned int i=0; i< 2; ++i) {
     for (unsigned int j=0; j< 2; ++j) {
