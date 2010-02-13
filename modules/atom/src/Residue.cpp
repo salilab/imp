@@ -99,11 +99,14 @@ Chain get_chain(Residue rd) {
   do {
     mhd= mhd.get_parent();
     if (mhd == Hierarchy()) {
-      throw UsageException("Residue is not the child of a chain");
+      IMP_THROW("Residue is not the child of a chain",
+                ValueException);
     }
-  } while (!mhd.get_as_chain());
-  Chain cd(mhd.get_particle());
-  return cd;
+    if (Chain::particle_is_instance(mhd)) {
+      return Chain(mhd);
+    }
+  } while (true);
+  return Chain();
 }
 
 Hierarchy get_next_residue(Residue rd) {
