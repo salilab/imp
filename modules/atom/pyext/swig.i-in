@@ -146,6 +146,7 @@ def __iter__(self):
 %include "IMP/atom/SimulationParameters.h"
 %include "IMP/atom/Mass.h"
 %include "IMP/atom/BondedPairFilter.h"
+%include "IMP/atom/hierarchy_tools.h"
 
 namespace IMP {
   namespace atom {

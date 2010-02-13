@@ -10,7 +10,6 @@
 #define IMPATOM_LENNARD_JONES_H
 
 #include "config.h"
-#include <IMP/core/internal/utility.h>
 #include <IMP/core/XYZR.h>
 
 IMPATOM_BEGIN_NAMESPACE
