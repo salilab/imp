@@ -12,7 +12,6 @@
 #include "macros.h"
 #include "Hierarchy.h"
 #include "Chain.h"
-#include <IMP/core/internal/utility.h>
 
 #include <IMP/base_types.h>
 #include <IMP/Particle.h>
