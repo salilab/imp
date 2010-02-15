@@ -1,0 +1,5 @@
+Import('env')
+
+# All python files starting with test_ are searched for test code
+# required modules are picked up automatically
+env.IMPModuleTest()
