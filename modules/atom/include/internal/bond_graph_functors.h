@@ -10,7 +10,7 @@
 #define IMPATOM_INTERNAL_BOND_GRAPH_FUNCTORS_H
 
 #include "../config.h"
-#include <IMP/core/ListSingletonContainer.h>
+#include <IMP/container/ListSingletonContainer.h>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/properties.hpp>
 
@@ -54,7 +54,7 @@ struct MakeInEdgeDescriptor {
 
 struct NestedTraits {
   typedef Bonded::BondIterator Inner;
-  typedef core::ListSingletonContainer::ParticleIterator Outer;
+  typedef container::ListSingletonContainer::ParticleIterator Outer;
   struct Get_inner {
     std::pair<Inner, Inner> operator()(Outer out) const {
       Bonded bd(*out);

@@ -22,7 +22,6 @@
 #include <IMP/core/DistancePairScore.h>
 #include <IMP/core/Harmonic.h>
 #include <IMP/core/IncrementalBallMover.h>
-#include <IMP/core/ListSingletonContainer.h>
 #include <IMP/core/MonteCarlo.h>
 #include <IMP/core/Mover.h>
 #include <IMP/core/internal/Grid3D.h>
@@ -165,7 +164,7 @@ IMPATOMEXPORT Hierarchy create_simplified_along_backbone(Chain in,
   int ie= Residue(in.get_child(in.get_number_of_children()-1)).get_index()+1;
   int i;
   for (i=ib; i< ie; i+= num_res) {
-    rs.push_back(IntRange(i, i+num_res));
+    rs.push_back(IntRange(i, std::min(i+num_res, ie)));
   }
   return create_simplified_along_backbone(in, rs);
 }

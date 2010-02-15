@@ -2,6 +2,7 @@ import unittest
 from IMP import *
 from IMP.algebra import *
 from IMP.core import *
+from IMP.container import *
 import IMP.test
 
 import math

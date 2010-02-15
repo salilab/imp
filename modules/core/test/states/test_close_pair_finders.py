@@ -3,6 +3,7 @@ import IMP
 import IMP.test
 import IMP.core
 import IMP.helper
+import IMP.container
 import sys
 import random
 
@@ -35,9 +36,9 @@ class TestCPFL(IMP.test.TestCase):
         ps= self.create_particles_in_box(m, 200)
         for i in range(0, len(ps)):
             ps[i].add_attribute(rk, random.uniform(0,1))
-        pc= IMP.core.ListSingletonContainer(ps)
+        pc= IMP.container.ListSingletonContainer(ps)
         pc.show()
-        out= IMP.core.ListPairContainer()
+        out= IMP.container.ListPairContainer()
         out.show()
         cps= cpf.get_close_pairs(pc)
         out.set_particle_pairs(IMP.ParticlePairs(cps))
@@ -48,8 +49,8 @@ class TestCPFL(IMP.test.TestCase):
         ps2= self.create_particles_in_box(m, 200)
         for i in range(0, len(ps2)):
             ps2[i].add_attribute(rk, random.uniform(0,2))
-        pc2= IMP.core.ListSingletonContainer(ps2)
-        out= IMP.core.ListPairContainer()
+        pc2= IMP.container.ListSingletonContainer(ps2)
+        out= IMP.container.ListPairContainer()
 
         cps=cpf.get_close_pairs(pc, pc2)
         out.set_particle_pairs(IMP.ParticlePairs(cps))
@@ -151,9 +152,9 @@ class TestCPFL(IMP.test.TestCase):
         rbb.get_particle().set_name("rbb")
         fps.append(rba.get_particle())
         fps.append(rbb.get_particle())
-        pc= IMP.core.ListSingletonContainer(fps)
+        pc= IMP.container.ListSingletonContainer(fps)
         pc.show()
-        out= IMP.core.ListPairContainer()
+        out= IMP.container.ListPairContainer()
         out.show()
         ref= IMP.core.TableRefiner()
         for p in [rba, rbb]:
@@ -191,8 +192,8 @@ class TestCPFL(IMP.test.TestCase):
         rba2.get_particle().set_name("rba2")
         rbb2.get_particle().set_name("rbb2")
 
-        pc2= IMP.core.ListSingletonContainer(ps2)
-        out= IMP.core.ListPairContainer()
+        pc2= IMP.container.ListSingletonContainer(ps2)
+        out= IMP.container.ListPairContainer()
 
         cps=cpf.get_close_pairs(pc, pc2)
         out.set_particle_pairs(IMP.ParticlePairs(cps))

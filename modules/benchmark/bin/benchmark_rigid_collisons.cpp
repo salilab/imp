@@ -10,12 +10,14 @@
 #include <boost/timer.hpp>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/macros.h>
+#include <IMP/container.h>
 
 using namespace IMP;
 using namespace IMP::core;
 using namespace IMP::algebra;
 using namespace IMP::atom;
 using namespace IMP::helper;
+using namespace IMP::container;
 
 void test_one(std::string name,
               Model *m,

@@ -14,9 +14,6 @@
 #include "../config.h"
 
 #include <IMP/SingletonContainer.h>
-#include <IMP/SingletonContainer.h>
-#include <IMP/core/ListSingletonContainer.h>
-#include <IMP/core/SingletonContainerSet.h>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 

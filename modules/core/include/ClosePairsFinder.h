@@ -10,7 +10,6 @@
 
 #include "config.h"
 #include "XYZR.h"
-#include "ListPairContainer.h"
 #include "internal/MovedSingletonContainer.h"
 
 #include <IMP/RefCounted.h>
@@ -18,8 +17,6 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-// to make SWIG happy
-class ListPairContainer;
 
 //! A base class for algorithms to find spatial proximities
 /** In general, the algorithm should make sure it returns all

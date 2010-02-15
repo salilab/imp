@@ -11,7 +11,7 @@
 #include <IMP/internal/utility.h>
 #include <IMP/SingletonModifier.h>
 #include <IMP/PairModifier.h>
-#include <IMP/core/ListSingletonContainer.h>
+#include <IMP/core/internal/CoreListSingletonContainer.h>
 #include <IMP/SingletonScore.h>
 #include <IMP/PairScore.h>
 #include <IMP/core/internal/singleton_helpers.h>
@@ -22,8 +22,8 @@
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 namespace {
-  ListSingletonContainer* get_list(SingletonContainer *g) {
-    return dynamic_cast<ListSingletonContainer*>(g);
+  internal::CoreListSingletonContainer* get_list(SingletonContainer *g) {
+    return dynamic_cast<internal::CoreListSingletonContainer*>(g);
   }
 }
 

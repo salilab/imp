@@ -7,8 +7,6 @@
  */
 
 #include "IMP/core/rigid_bodies.h"
-#include "IMP/core/ListSingletonContainer.h"
-#include "IMP/core/SingletonsConstraint.h"
 #include "IMP/core/SingletonConstraint.h"
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/internal/tnt_array2d.h>

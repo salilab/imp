@@ -11,7 +11,7 @@
 #include <IMP/core/MonteCarlo.h>
 #include <IMP/core/BallMover.h>
 #include <IMP/core/XYZ.h>
-#include <IMP/core/ListSingletonContainer.h>
+#include <IMP/core/internal/CoreListSingletonContainer.h>
 #include <IMP/core/IncrementalBallMover.h>
 #include <IMP/algebra/vector_generators.h>
 
@@ -61,8 +61,9 @@ void MCCGSampler::set_max_monte_carlo_step_size(FloatKey k, double d) {
   default_parameters_.ball_sizes_[k]=d;
 }
 
-ListSingletonContainer* MCCGSampler::set_up_movers(const Parameters &pms,
-                                                   MonteCarlo *mc) const {
+internal::CoreListSingletonContainer*
+MCCGSampler::set_up_movers(const Parameters &pms,
+                           MonteCarlo *mc) const {
   if (pms.opt_keys_[0] != XK
       && pms.opt_keys_[1] != YK && pms.opt_keys_[2] != ZK){
     IMP_THROW("Currently, the MCCGSampler can only handle "
@@ -77,15 +78,16 @@ ListSingletonContainer* MCCGSampler::set_up_movers(const Parameters &pms,
       ps.push_back(*pit);
     }
   }
-  IMP_NEW(ListSingletonContainer, sc, (ps));
+  IMP_NEW(internal::CoreListSingletonContainer, sc, ("mccg particles"));
+  sc->set_particles(ps);
   IMP_NEW(IncrementalBallMover, bm,
           (sc, 2, pms.ball_sizes_.find(XK)->second));
   mc->add_mover(bm);
-  return sc;
+  return sc.release();
 }
 
 void MCCGSampler::randomize(const Parameters &pms,
-                            ListSingletonContainer *sc) const {
+                            internal::CoreListSingletonContainer *sc) const {
   algebra::BoundingBox3D
     bb(algebra::Vector3D(pms.bounds_.find(XK)->second.first,
                          pms.bounds_.find(YK)->second.first,
@@ -137,7 +139,8 @@ ConfigurationSet *MCCGSampler::sample() const {
   mc->set_local_steps(pms.cg_steps_);
   mc->set_score_threshold(get_maximum_score()/2.0);
   mc->set_return_best(true);
-  ListSingletonContainer *sc=set_up_movers(pms, mc);
+  Pointer<internal::CoreListSingletonContainer> sc=set_up_movers(pms, mc);
+  IMP_CHECK_OBJECT(sc);
   int failures=0;
   for (unsigned int i=0; i< pms.attempts_; ++i) {
     ret->set_configuration(-1);
@@ -191,6 +194,9 @@ ConfigurationSet *MCCGSampler::sample() const {
             << " times due to invalid attribute values or derivatives."
             << std::endl);
   }
+  IMP_CHECK_OBJECT(mc);
+  IMP_CHECK_OBJECT(cg);
+  IMP_CHECK_OBJECT(sc);
   return ret.release();
 }
 

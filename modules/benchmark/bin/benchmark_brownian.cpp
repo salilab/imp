@@ -7,11 +7,13 @@
 #include <IMP/atom.h>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/macros.h>
+#include <IMP/container.h>
 
 using namespace IMP;
 using namespace IMP::core;
 using namespace IMP::algebra;
 using namespace IMP::atom;
+using namespace IMP::container;
 
 
 void test(int n) {
