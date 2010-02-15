@@ -49,7 +49,7 @@ class IMPSTATISTICSEXPORT ConfigurationSetXYZEmbedding {
 public:
   ConfigurationSetXYZEmbedding(ConfigurationSet *cs,
                                SingletonContainer *sc);
-  IMP_EMBEDDING(ConfigurationSetXYZEmbedding, get_module_version_info());
+  IMP_EMBEDDING(ConfigurationSetXYZEmbedding);
 };
 
 
@@ -61,7 +61,7 @@ class VectorDEmbedding: public Embedding {
 public:
   VectorDEmbedding(const std::vector<algebra::VectorD<D> > &vs):
     Embedding("VectorDs"), vectors_(vs){}
-  IMP_EMBEDDING(VectorDEmbedding, get_module_version_info());
+  IMP_EMBEDDING(VectorDEmbedding);
 };
 
 #ifndef SWIG
@@ -77,8 +77,7 @@ unsigned int VectorDEmbedding<D>::get_number_of_points() const {
 }
 
 template <unsigned int D>
-void VectorDEmbedding<D>::show(std::ostream &out) const {
-  out << "VectorDEmbedding" << std::endl;
+void VectorDEmbedding<D>::do_show(std::ostream &out) const {
 }
 #endif
 
@@ -99,7 +98,7 @@ public:
   ParticleEmbedding(const ParticlesTemp &ps,
                     const FloatKeys& ks=core::XYZ::get_xyz_keys(),
                     bool rescale=false);
-  IMP_EMBEDDING(ParticleEmbedding, get_module_version_info());
+  IMP_EMBEDDING(ParticleEmbedding);
 };
 
 
@@ -112,7 +111,7 @@ class IMPSTATISTICSEXPORT HighDensityEmbedding: public Embedding {
 public:
   HighDensityEmbedding(em::DensityMap *dm,
                        double threshold);
-  IMP_EMBEDDING(HighDensityEmbedding, get_module_version_info());
+  IMP_EMBEDDING(HighDensityEmbedding);
 };
 
 
@@ -139,7 +138,7 @@ public:
   const Floats& get_cluster_center(unsigned int i) const {
     return centers_[i];
   }
-  IMP_CLUSTERING(KMeansClustering, get_module_version_info());
+  IMP_CLUSTERING(KMeansClustering);
 };
 
 

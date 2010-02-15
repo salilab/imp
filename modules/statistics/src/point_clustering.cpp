@@ -35,8 +35,7 @@ unsigned int ConfigurationSetXYZEmbedding::get_number_of_points() const {
   return cs_->get_number_of_configurations();
 }
 
-void ConfigurationSetXYZEmbedding::show(std::ostream &out) const {
-  out << "ConfigurationSetXYZEmbedding with ";
+void ConfigurationSetXYZEmbedding::do_show(std::ostream &out) const {
   cs_->show(out);
   sc_->show(out);
 }
@@ -73,8 +72,7 @@ unsigned int ParticleEmbedding::get_number_of_points() const {
   return ps_.size();
 }
 
-void ParticleEmbedding::show(std::ostream &out) const {
-  out << "ParticleEmbedding with ";
+void ParticleEmbedding::do_show(std::ostream &out) const {
   for (unsigned int i=0; i< ks_.size(); ++i) {
     out << ks_[i] << " ";
   }
@@ -104,8 +102,8 @@ unsigned int HighDensityEmbedding::get_number_of_points() const {
   return points_.size();
 }
 
-void HighDensityEmbedding::show(std::ostream &out) const {
-  out << "HighDensityEmbedding with " << points_.size()
+void HighDensityEmbedding::do_show(std::ostream &out) const {
+  out << points_.size()
       << " points.";
   out << std::endl;
 }
@@ -122,8 +120,8 @@ const Ints&KMeansClustering::get_cluster(unsigned int i) const {
 int KMeansClustering::get_cluster_representative(unsigned int i) const {
   return reps_[i];
 }
-void KMeansClustering::show(std::ostream &out) const {
-  out << "Clustering with " << centers_.size() << " centers." << std::endl;
+void KMeansClustering::do_show(std::ostream &out) const {
+  out << centers_.size() << " centers." << std::endl;
 }
 
 
