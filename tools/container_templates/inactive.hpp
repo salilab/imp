@@ -9,14 +9,14 @@
  *  Copyright 2007-2010 Sali Lab. All rights reserved.
  */
 
-#ifndef IMPCORE_REMOVE_INACTIVE_GROUPNAMES_OPTIMIZER_STATE_H
-#define IMPCORE_REMOVE_INACTIVE_GROUPNAMES_OPTIMIZER_STATE_H
+#ifndef IMPCONTAINER_REMOVE_INACTIVE_GROUPNAMES_OPTIMIZER_STATE_H
+#define IMPCONTAINER_REMOVE_INACTIVE_GROUPNAMES_OPTIMIZER_STATE_H
 
 #include "config.h"
 #include <IMP/core/ListGroupnameContainer.h>
 #include <IMP/OptimizerState.h>
 
-IMPCORE_BEGIN_NAMESPACE
+IMPCONTAINER_BEGIN_NAMESPACE
 
 
 //! Remove inactive Groupnames from a list
@@ -26,7 +26,7 @@ IMPCORE_BEGIN_NAMESPACE
     \ingroup restraint
     \see GroupnameOptimizerState
  */
-class IMPCOREEXPORT RemoveInactiveGroupnamesOptimizerState :
+class IMPCONTAINEREXPORT RemoveInactiveGroupnamesOptimizerState :
   public OptimizerState
 {
   IMP::internal::OwnerPointer<ListGroupnameContainer> c_;
@@ -43,6 +43,6 @@ public:
 };
 
 
-IMPCORE_END_NAMESPACE
+IMPCONTAINER_END_NAMESPACE
 
-#endif  /* IMPCORE_REMOVE_INACTIVE_GROUPNAMES_OPTIMIZER_STATE_H */
+#endif  /* IMPCONTAINER_REMOVE_INACTIVE_GROUPNAMES_OPTIMIZER_STATE_H */

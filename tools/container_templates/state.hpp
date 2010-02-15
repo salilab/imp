@@ -9,8 +9,8 @@
  *  Copyright 2007-2010 Sali Lab. All rights reserved.
  */
 
-#ifndef IMPCORE_GROUPNAMES_CONSTRAINT_H
-#define IMPCORE_GROUPNAMES_CONSTRAINT_H
+#ifndef IMPCONTAINER_GROUPNAMES_CONSTRAINT_H
+#define IMPCONTAINER_GROUPNAMES_CONSTRAINT_H
 
 #include "config.h"
 #include <IMP/GroupnameContainer.h>
@@ -23,7 +23,7 @@ class GroupnameContainer;
 class GroupnameModifier;
 IMP_END_NAMESPACE
 
-IMPCORE_BEGIN_NAMESPACE
+IMPCONTAINER_BEGIN_NAMESPACE
 //! Apply a GroupnameFunction to a GroupnameContainer to maintain an invariant
 /** The score state is passed up to two GroupnameModifiers, one to
     apply before evaluation and the other after. The one after
@@ -37,7 +37,7 @@ IMPCORE_BEGIN_NAMESPACE
 
     \see GroupnameConstraint
  */
-class IMPCOREEXPORT GroupnamesConstraint : public Constraint
+class IMPCONTAINEREXPORT GroupnamesConstraint : public Constraint
 {
   IMP::internal::OwnerPointer<GroupnameModifier> f_;
   IMP::internal::OwnerPointer<GroupnameModifier> af_;
@@ -68,6 +68,6 @@ public:
 };
 
 
-IMPCORE_END_NAMESPACE
+IMPCONTAINER_END_NAMESPACE
 
-#endif  /* IMPCORE_GROUPNAMES_CONSTRAINT_H */
+#endif  /* IMPCONTAINER_GROUPNAMES_CONSTRAINT_H */

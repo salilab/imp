@@ -8,15 +8,15 @@
  *  Copyright 2007-2010 Sali Lab. All rights reserved.
  */
 
-#ifndef IMPCORE_MINMAX_GROUPNAME_RESTRAINT_H
-#define IMPCORE_MINMAX_GROUPNAME_RESTRAINT_H
+#ifndef IMPCONTAINER_MINMAX_GROUPNAME_RESTRAINT_H
+#define IMPCONTAINER_MINMAX_GROUPNAME_RESTRAINT_H
 
 #include "config.h"
 #include <IMP/Restraint.h>
 #include <IMP/GroupnameScore.h>
 #include <IMP/GroupnameContainer.h>
 
-IMPCORE_BEGIN_NAMESPACE
+IMPCONTAINER_BEGIN_NAMESPACE
 
 //! Score based on the minmax groupname over a set of Groupnames
 /** The score is evaluated for each of the Groupnames in the container
@@ -24,7 +24,7 @@ IMPCORE_BEGIN_NAMESPACE
     if n is 1, the value of the restraint is the value of the minmax
     score over the container.
  */
-class IMPCOREEXPORT MinMaxGroupnameRestraint
+class IMPCONTAINEREXPORT MinMaxGroupnameRestraint
 : public Restraint
 {
   IMP::internal::OwnerPointer<GroupnameScore> f_;
@@ -47,6 +47,6 @@ public:
 };
 
 
-IMPCORE_END_NAMESPACE
+IMPCONTAINER_END_NAMESPACE
 
-#endif  /* IMPCORE_MINMAX_GROUPNAME_RESTRAINT_H */
+#endif  /* IMPCONTAINER_MINMAX_GROUPNAME_RESTRAINT_H */

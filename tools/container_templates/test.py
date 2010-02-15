@@ -5,6 +5,7 @@ import unittest
 import IMP
 import IMP.test
 import IMP.core
+import IMP.container
 import math
 
 def compare(a,b):
@@ -50,13 +51,13 @@ class ClassnameContainerTest(IMP.test.TestCase):
         """Test the GroupnamesRestraint"""
         m= IMP.Model()
         gs=self.create_groupname_score()
-        c= IMP.core.ListGroupnameContainer()
+        c= IMP.container.ListGroupnameContainer()
         f=0
         for i in range(0,10):
             p=self.create_classname(m)
             f= f+ gs.evaluate(p, None)
             c.add_classname(p)
-            r= IMP.core.GroupnamesRestraint(gs, c)
+            r= IMP.container.GroupnamesRestraint(gs, c)
             r.set_was_owned(True)
         m.add_restraint(r)
         self.assertInTolerance(m.evaluate(False), f, .1*f)
@@ -71,7 +72,7 @@ class ClassnameContainerTest(IMP.test.TestCase):
         m= IMP.Model()
         m.set_log_level(IMP.TERSE)
         gs=self.create_groupname_score()
-        c= IMP.core.ListGroupnameContainer()
+        c= IMP.container.ListGroupnameContainer()
         ps=IMP.Classnames()
         ps2= IMP.Classnames()
         f=0
@@ -84,7 +85,7 @@ class ClassnameContainerTest(IMP.test.TestCase):
             ps2.append(p)
             #f=f+evaluate_groupname_score(gs, p)
         c.set_classnames(ps)
-        r= IMP.core.GroupnamesRestraint(gs, c)
+        r= IMP.container.GroupnamesRestraint(gs, c)
         m.add_restraint(r)
         m.set_is_incremental(True)
         self.assertInTolerance(m.evaluate(False), f, .1*f)
@@ -111,14 +112,14 @@ class ClassnameContainerTest(IMP.test.TestCase):
     def test_min_restraint(self):
         """Test the MinimumGroupnameRestraint"""
         m= IMP.Model()
-        c= IMP.core.ListGroupnameContainer()
+        c= IMP.container.ListGroupnameContainer()
         self.assertEqual(c.get_ref_count(), 1)
         for i in range(0,10):
             c.add_classname(self.create_classname(m))
         print c.get_number_of_classnames()
         d= self.create_groupname_score()
         self.assertEqual(d.get_ref_count(), 1)
-        r= IMP.core.MinimumGroupnameRestraint(d, c)
+        r= IMP.container.MinimumGroupnameRestraint(d, c)
         self.assertEqual(d.get_ref_count(), 2)
         self.assertEqual(c.get_ref_count(), 2)
         r.set_n(4)
@@ -142,14 +143,14 @@ class ClassnameContainerTest(IMP.test.TestCase):
     def test_max_restraint(self):
         """Test the MaximumGroupnameRestraint"""
         m= IMP.Model()
-        c= IMP.core.ListGroupnameContainer()
+        c= IMP.container.ListGroupnameContainer()
         self.assertEqual(c.get_ref_count(), 1)
         for i in range(0,10):
             c.add_classname(self.create_classname(m))
         print c.get_number_of_classnames()
         d= self.create_groupname_score()
         self.assertEqual(d.get_ref_count(), 1)
-        r= IMP.core.MaximumGroupnameRestraint(d, c)
+        r= IMP.container.MaximumGroupnameRestraint(d, c)
         self.assertEqual(c.get_ref_count(), 2)
         self.assertEqual(d.get_ref_count(), 2)
         r.set_n(4)
@@ -175,7 +176,7 @@ class ClassnameContainerTest(IMP.test.TestCase):
         s= IMP.GroupnameScoresTemp()
         for i in range(0,5):
             s.append(IMP.test.ConstGroupnameScore(i))
-        ps= IMP.core.MaximumGroupnameScore(s, 2)
+        ps= IMP.container.MaximumGroupnameScore(s, 2)
         p= self.create_classname(m)
         ps.set_was_owned(True)
         v= ps.evaluate(p, None)
@@ -186,41 +187,22 @@ class ClassnameContainerTest(IMP.test.TestCase):
         s= IMP.GroupnameScoresTemp()
         for i in range(0,5):
             s.append(IMP.test.ConstGroupnameScore(i))
-        ps= IMP.core.MinimumGroupnameScore(s, 3)
+        ps= IMP.container.MinimumGroupnameScore(s, 3)
         p= self.create_classname(m)
         ps.set_was_owned(True)
         v= ps.evaluate(p, None)
         self.assertEqual(v, 3)
-
-
-    def test_container(self):
-        """Test backwards compatibility on GroupnamesRestraint"""
-        m= IMP.Model()
-        gs=self.create_groupname_score()
-        r= IMP.core.GroupnamesRestraint(gs)
-        m.add_restraint(r)
-
-        f=0
-        for i in range(0,10):
-            p=self.create_classname(m)
-            r.add_classname(p)
-            f= f+gs.evaluate(p, None)
-        self.assertInTolerance(m.evaluate(False), f, .1*f)
-        p=self.create_classname(m)
-        f= f+ gs.evaluate(p, None)
-        r.add_classname(p)
-        self.assertInTolerance(m.evaluate(False), f, .1*f)
 
     def test_set(self):
         """Testing GroupnameContainerSet"""
         IMP.set_log_level(IMP.VERBOSE)
         m= IMP.Model()
         print "hi"
-        c= IMP.core.GroupnameContainerSet()
+        c= IMP.container.GroupnameContainerSet()
         ls=[]
         cs=[]
         for i in range(0,3):
-            l= IMP.core.ListGroupnameContainer()
+            l= IMP.container.ListGroupnameContainer()
             c.add_groupname_container(l)
             for j in range(0,3):
                 t=self.create_classname(m)

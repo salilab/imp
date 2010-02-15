@@ -7,19 +7,19 @@
  *  Copyright 2007-2010 Sali Lab. All rights reserved.
  */
 
-#ifndef IMPCORE_MINMAX_GROUPNAME_SCORE_H
-#define IMPCORE_MINMAX_GROUPNAME_SCORE_H
+#ifndef IMPCONTAINER_MINMAX_GROUPNAME_SCORE_H
+#define IMPCONTAINER_MINMAX_GROUPNAME_SCORE_H
 
 #include "config.h"
 #include <IMP/GroupnameScore.h>
 
-IMPCORE_BEGIN_NAMESPACE
+IMPCONTAINER_BEGIN_NAMESPACE
 
 //! Evaluate the minmax n groupname scores of the passed set of GroupnameScores
 /** Each of the set of GroupnameScores is evaluated and the sum of the
     minimum n is returned.
 */
-class IMPCOREEXPORT MinMaxGroupnameScore : public GroupnameScore
+class IMPCONTAINEREXPORT MinMaxGroupnameScore : public GroupnameScore
 {
   GroupnameScores scores_;
   unsigned int n_;
@@ -30,6 +30,6 @@ public:
   IMP_GROUPNAME_SCORE(MinMaxGroupnameScore, get_module_version_info());
 };
 
-IMPCORE_END_NAMESPACE
+IMPCONTAINER_END_NAMESPACE
 
-#endif  /* IMPCORE_MINMAX_GROUPNAME_SCORE_H */
+#endif  /* IMPCONTAINER_MINMAX_GROUPNAME_SCORE_H */

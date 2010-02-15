@@ -13,7 +13,6 @@
 
 #include "../config.h"
 #include <IMP/GroupnameContainer.h>
-#include <IMP/GroupnameContainer.h>
 #include <IMP/GroupnameModifier.h>
 #include <IMP/internal/container_helpers.h>
 #include <algorithm>
@@ -22,8 +21,6 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 class IMPCOREEXPORT ListLikeGroupnameContainer: public GroupnameContainer {
 private:
-  ListLikeGroupnameContainer():
-    GroupnameContainer("Added or removed container"){}
   void set_added_and_removed_containers(GroupnameContainer *,
                                         GroupnameContainer *){}
   ListLikeGroupnameContainer *get_added() const {
@@ -36,6 +33,8 @@ private:
   }
   Classnames data_;
 protected:
+  ListLikeGroupnameContainer():
+    GroupnameContainer("Added or removed container"){}
   const Classnames &access() const {return data_;}
   void update_list(ClassnamesTemp &cur) {
     IMP_IF_CHECK(USAGE) {

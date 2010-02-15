@@ -9,8 +9,8 @@
  *  Copyright 2007-2010 Sali Lab. All rights reserved.
  */
 
-#ifndef IMPCORE_GROUPNAMES_OPTIMIZER_STATE_H
-#define IMPCORE_GROUPNAMES_OPTIMIZER_STATE_H
+#ifndef IMPCONTAINER_GROUPNAMES_OPTIMIZER_STATE_H
+#define IMPCONTAINER_GROUPNAMES_OPTIMIZER_STATE_H
 
 #include "config.h"
 #include <IMP/GroupnameContainer.h>
@@ -23,12 +23,12 @@ class GroupnameContainer;
 class GroupnameModifier;
 IMP_END_NAMESPACE
 
-IMPCORE_BEGIN_NAMESPACE
+IMPCONTAINER_BEGIN_NAMESPACE
 //! Apply a GroupnameFunction to a GroupnameContainer to maintain an invariant
 /** \ingroup restraint
     \see GroupnameOptimizerState
  */
-class IMPCOREEXPORT GroupnamesOptimizerState : public OptimizerState
+class IMPCONTAINEREXPORT GroupnamesOptimizerState : public OptimizerState
 {
   IMP::internal::OwnerPointer<GroupnameModifier> f_;
   IMP::internal::OwnerPointer<GroupnameContainer> c_;
@@ -44,6 +44,6 @@ public:
 };
 
 
-IMPCORE_END_NAMESPACE
+IMPCONTAINER_END_NAMESPACE
 
-#endif  /* IMPCORE_GROUPNAMES_OPTIMIZER_STATE_H */
+#endif  /* IMPCONTAINER_GROUPNAMES_OPTIMIZER_STATE_H */

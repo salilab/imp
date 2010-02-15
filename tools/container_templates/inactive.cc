@@ -14,7 +14,7 @@
 #include "IMP/internal/container_helpers.h"
 #include <utility>
 
-IMPCORE_BEGIN_NAMESPACE
+IMPCONTAINER_BEGIN_NAMESPACE
 
 RemoveInactiveGroupnamesOptimizerState
 ::RemoveInactiveGroupnamesOptimizerState(ListGroupnameContainer *c,
@@ -49,4 +49,4 @@ void RemoveInactiveGroupnamesOptimizerState::show(std::ostream &out) const {
   out << "RemoveInactiveGroupnamesOptimizerState" << std::endl;
 }
 
-IMPCORE_END_NAMESPACE
+IMPCONTAINER_END_NAMESPACE

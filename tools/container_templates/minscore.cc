@@ -7,10 +7,10 @@
  *  Copyright 2007-2010 Sali Lab. All rights reserved.
  */
 
-#include <IMP/core/MinMaxGroupnameScore.h>
+#include <IMP/container/MinMaxGroupnameScore.h>
 #include "IMP/core/internal/MinimalSet.h"
 
-IMPCORE_BEGIN_NAMESPACE
+IMPCONTAINER_BEGIN_NAMESPACE
 
 namespace {
   unsigned int next_index=0;
@@ -27,7 +27,7 @@ MinMaxGroupnameScore::MinMaxGroupnameScore(const GroupnameScoresTemp &scores,
 
 
 namespace {
-  typedef internal::MinimalSet<double,
+  typedef core::internal::MinimalSet<double,
           GroupnameScore*, std::COMPARATOR<double> > MS;
   template <class It>
   MS find_minimal_set(It b, It e, PassValue v, unsigned int n) {
@@ -105,4 +105,4 @@ void MinMaxGroupnameScore::show(std::ostream &out) const
       << std::endl;
 }
 
-IMPCORE_END_NAMESPACE
+IMPCONTAINER_END_NAMESPACE
