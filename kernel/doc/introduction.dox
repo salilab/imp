@@ -229,6 +229,9 @@ of the authors, the license for the module, its version and an overview of the
 module can be found on the module main page (eg IMP::examples).
 See the "Modules" tab above for a complete list of modules in this version of \imp.
 
+Modules are either grouped based on types of experimental data (eg IMP::em) or based
+on shared functionality (IMP::core or IMP::container).
+
 
 \section i13 C++ vs Python
 \anchor cpppythondifferences
