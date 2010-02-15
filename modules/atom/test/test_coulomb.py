@@ -29,15 +29,6 @@ def place_xyzs(xyz0, xyz1, box, dist):
 class CoulombTests(IMP.test.TestCase):
     """Test the CoulombPairScore"""
 
-    def test_methods(self):
-        """Check CoulombPairScore methods"""
-        sm = IMP.atom.ForceSwitch(9.0, 10.0)
-        c = IMP.atom.CoulombPairScore(sm)
-        out = StringIO.StringIO()
-        c.show(out)
-        self.assert_('CoulombPairScore with relative dielectric' \
-                     in out.getvalue())
-
     def test_get_set(self):
         """Check CoulombPairScore get/set methods"""
         sm = IMP.atom.ForceSwitch(9.0, 10.0)

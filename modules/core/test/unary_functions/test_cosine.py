@@ -31,14 +31,5 @@ class CosineTests(IMP.test.TestCase):
                         self.assertInTolerance(score, scoreonly, 1e-4)
                         self.assertInTolerance(expscore, score, 0.1)
                         self.assertInTolerance(expderiv, deriv, 0.1)
-
-    def test_show(self):
-        """Check Cosine::show() method"""
-        func = IMP.core.Cosine(10.0, 1, 0.0)
-        func.set_was_owned(True)
-        s = StringIO.StringIO()
-        func.show(s)
-        self.assertEqual(s.getvalue()[:26], 'Cosine function with force')
-
 if __name__ == '__main__':
     unittest.main()

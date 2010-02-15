@@ -41,13 +41,5 @@ class TypedPairScoreTests(IMP.test.TestCase):
         self.assertEqual(ps1.evaluate(IMP.ParticlePair(pa, pb), da), 0.0)
         ps2 = IMP.core.TypedPairScore(typekey, False)
         self.assertRaises(ValueError, ps2.evaluate, IMP.ParticlePair(pa, pb), da)
-
-    def test_show(self):
-        """Check TypedPairScore::show() method"""
-        ps = IMP.core.TypedPairScore(typekey)
-        s = StringIO.StringIO()
-        ps.show(s)
-        self.assertEqual(s.getvalue(), 'TypedPairScore with type key "mytype"')
-
 if __name__ == '__main__':
     unittest.main()
