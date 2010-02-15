@@ -115,7 +115,7 @@ SimpleDiameter create_simple_diameter(Particles *ps, Float diameter)
   /****** Set the restraint ******/
 
   IMP_NEW(core::HarmonicUpperBound, h, (0, 1));
-  IMP_NEW(core::ListSingletonContainer, lsc, ());
+  IMP_NEW(container::ListSingletonContainer, lsc, ());
   lsc->add_particles(*ps);
   IMP_NEW(core::DiameterRestraint, dr, (h, lsc, diameter));
 
@@ -138,7 +138,7 @@ SimpleExcludedVolume create_simple_excluded_volume_on_rigid_bodies(
 
   /****** Set the restraint ******/
 
-  IMP_NEW(core::ListSingletonContainer, lsc, ());
+  IMP_NEW(container::ListSingletonContainer, lsc, ());
   lsc->add_particles(rbs);
 
   IMP_NEW(core::ExcludedVolumeRestraint, evr, (lsc, ref));
@@ -170,7 +170,7 @@ SimpleExcludedVolume create_simple_excluded_volume_on_molecules(
 
   /****** Set the restraint ******/
 
-  IMP_NEW(core::ListSingletonContainer, lsc, ());
+  IMP_NEW(container::ListSingletonContainer, lsc, ());
   lsc->add_particles(ps);
 
   IMP_NEW(core::LeavesRefiner, lr, (atom::Hierarchy::get_traits()));
