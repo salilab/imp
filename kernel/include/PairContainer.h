@@ -13,7 +13,7 @@
 #include "config.h"
 #include "internal/IndexingIterator.h"
 #include "Particle.h"
-#include "Container.h"
+#include "container_base.h"
 #include "utility.h"
 #include "VersionInfo.h"
 #include "base_types.h"

@@ -3,7 +3,6 @@ Import('env')
 files = [
          'ConfigurationSet.h',
          'Constraint.h',
-         'Container.h',
          'Decorator.h',
          'DerivativeAccumulator.h',
          'FailureHandler.h',
@@ -43,6 +42,7 @@ files = [
          'WeakPointer.h',
          'base_types.h',
          'constants.h',
+         'container_base.h',
          'container_macros.h',
          'deprecation.h',
          'exception.h',

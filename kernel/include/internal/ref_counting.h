@@ -42,7 +42,7 @@ void release(O* o)
   const RefCounted *rc= o;
   IMP_INTERNAL_CHECK(rc->count_ !=0, "Release called on unowned object");
   --rc->count_;
-  IMP_INTERNAL_CHECK(rc->count_ == 0, "Release called on shared object.");
+  //IMP_INTERNAL_CHECK(rc->count_ == 0, "Release called on shared object.");
 }
 
 

@@ -5,7 +5,7 @@
  *
  */
 
-#include "IMP/Container.h"
+#include "IMP/container_base.h"
 #include "IMP/internal/utility.h"
 
 IMP_BEGIN_NAMESPACE
