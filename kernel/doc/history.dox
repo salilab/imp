@@ -1,6 +1,16 @@
 /** \page recent Change History
 \par Week of February 3, 2010
 
+- The containers were moved to IMP.container. See that module page for a full list of what moved. In the process, the backwards compatability functions were removed from IMP::container::PairsRestraint and kin.
+
+- IMP.atom.create_protein() now returns the created protein
+
+- the simplify functions have been moved from IMP.helper. They are now IMP.atom.create_simplified_along_backbone().
+
+- IMP.helper.clone() has been renamed to IMP.atom.create_clone()
+
+- IMP.misc.ConnectingPairContainer has been moved to IMP.core.ConnectingPairContainer
+
 - The locations for pixels in IMP::em::DensityMap have been moved to the center of the corresponding voxel from the lower left corner.
 
 - IMP::em::get_transformed(), IMP::em::get_resampled() and IMP::em::get_density() have been added.

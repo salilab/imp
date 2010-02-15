@@ -11,30 +11,19 @@ Developers should first read \ref installation "the installation guide".
 
 We recommend doing an out of source build so you can easily build
 multiple build types (\c build='fast', \c build='debug', or \c
-build='release') from the same set of sources. To do this:
-
-- make a second directory (say \c debug) outside of the \imp source
-  directory. Let the path from the build directory, \c debug, to the
-  source directory, \c source, be \c ../source.
-
-- make sure that the \imp source directory is clean. If you just checked
-  out from \c svn, then it is. Otherwise, do \command{scons -c all} in
-  the source directory.
-
-- In the build directory link to \c SConstruct and \c scons_tools in
-  \c source. eg \command{ln -s ../source/SConstruct; ln -s
-  ../source/scons_tools}
-
-- Put \c repository="../source" in your \c config.py in the \c debug
-  directory. Also put \c build='debug' to tell \c scons to do a debug
-  build
-
-- Run \c scons to build things. All the build files will be put in
-  subdirectories of \c debug (mostly in \c debug/build).
-
-- You can then create a second build directory, say called \c fast, to
-  hold on optimized build. Put \c build='fast' in the \c config.py for
-  that build directory.
+build='release') from the same set of sources. To set this up
+  # make a clean checkout of the source code
+    \command{svn co https://svn.salilab.org/imp/trunk src}
+  # make a directory for your debug build
+    \command{mkdir imp-debug}
+  # setup the debug directory
+    \command{src/tools/setup-out-of-source-build imp-debug}
+  # edit \c imp-debug/config.py as desired
+  # change into \c imp-debug
+    \command{cd imp-debug}
+  # build
+    \command{scons -j 2}
+Note that this probably doesn't work on windows.
 
 When developing new \imp code, it is useful to be able to run and test
 it without installing \imp every time. To do so, use the
