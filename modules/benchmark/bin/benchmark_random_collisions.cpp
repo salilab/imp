@@ -16,19 +16,26 @@ using namespace IMP::algebra;
 using namespace IMP::benchmark;
 using namespace IMP::container;
 
+namespace {
+VersionInfo get_module_version_info() {
+  return IMP::benchmark::get_module_version_info();
+}
+  std::string get_module_name() {
+    return "benchmark";
+  }
+
 class ConstPairScore: public PairScore {
 public:
   ConstPairScore(){}
-  IMP_SIMPLE_PAIR_SCORE(ConstPairScore, VersionInfo());
+  IMP_SIMPLE_PAIR_SCORE(ConstPairScore);
 };
 double ConstPairScore::evaluate(const ParticlePair &,
                                 DerivativeAccumulator *) const {
   return 1;
 }
-void ConstPairScore::show(std::ostream &out) const {
-  out << "Hi";
+void ConstPairScore::do_show(std::ostream &out) const {
 }
-
+}
 void test_one(std::string name,
               ClosePairsFinder *cpf, unsigned int n,
               float rmin, float rmax) {

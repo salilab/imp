@@ -24,6 +24,29 @@ using namespace IMP::benchmark;
 #define ATTRIBUTES
 #endif
 
+namespace {
+VersionInfo get_module_version_info() {
+  return IMP::benchmark::get_module_version_info();
+}
+  std::string get_module_name() {
+    return "benchmark";
+  }
+
+class DistanceScore: public SingletonModifier {
+public:
+  algebra::Vector3D v_;
+  mutable double score_;
+  DistanceScore(): score_(0){}
+  IMP_SINGLETON_MODIFIER(DistanceScore);
+};
+
+void DistanceScore::do_show(std::ostream &out) const {}
+
+void DistanceScore::apply(Particle *p) const {
+  XYZ d(p);
+  score_+= IMP::algebra::distance(d.get_coordinates(), v_);
+}
+}
 
 // TEST 1
 double compute_distances_decorator_access(
@@ -70,21 +93,6 @@ double compute_distances_particle_access(
 }
 
 // TEST 5
-
-class DistanceScore: public SingletonModifier {
-public:
-  algebra::Vector3D v_;
-  mutable double score_;
-  DistanceScore(): score_(0){}
-  IMP_SINGLETON_MODIFIER(DistanceScore, VersionInfo());
-};
-
-void DistanceScore::show(std::ostream &out) const {}
-
-void DistanceScore::apply(Particle *p) const {
-  XYZ d(p);
-  score_+= IMP::algebra::distance(d.get_coordinates(), v_);
-}
 
 ParticlesList DistanceScore::get_interacting_particles(Particle *p) const {
   return ParticlesList();
