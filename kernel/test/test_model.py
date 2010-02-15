@@ -9,8 +9,10 @@ class DummyRestraint(IMP.Restraint):
         return 0.
     def do_show(self, fh):
         fh.write("DummyRestraint")
+    def get_type_name(self):
+        return "DummyRestraint"
     def get_version_info(self):
-        return IMP.VersionInfo("Me", "0.5")
+        return IMP.get_module_version_info()
     def get_input_particles(self):
         return IMP.ParticlesTemp()
     def get_input_containers(self):
@@ -26,8 +28,10 @@ class FailingRestraint(IMP.Restraint):
         raise CustomError("Custom error message")
     def do_show(self, fh):
         fh.write("FailingRestraint")
+    def get_type_name(self):
+        return "FailingRestraint"
     def get_version_info(self):
-        return IMP.VersionInfo("Me", "0.5")
+        return IMP.get_module_version_info()
     def get_input_particles(self):
         return IMP.ParticlesTemp()
     def get_input_containers(self):
@@ -41,8 +45,10 @@ class DummyScoreState(IMP.ScoreState):
         pass
     def do_show(self, fh):
         fh.write("DummyScoreState")
+    def get_type_name(self):
+        return "DummyScoreState"
     def get_version_info(self):
-        return IMP.VersionInfo("Me", "0.5")
+        return IMP.get_module_version_info()
     def get_input_particles(self):
         return IMP.ParticlesTemp()
     def get_output_particles(self):
@@ -60,8 +66,10 @@ class ClassScoreState(IMP.ScoreState):
     def do_show(self, fh):
         fh.write(str(fh.__class__))
         fh.write("; ")
+    def get_type_name(self):
+        return "ScoreStateTest"
     def get_version_info(self):
-        return IMP.VersionInfo("Me", "0.5")
+        return IMP.get_module_version_info()
     def get_input_particles(self):
         return IMP.ParticlesTemp()
     def get_output_particles(self):
@@ -86,8 +94,7 @@ class ModelTests(IMP.test.TestCase):
         # Output should work for a direct call (in which the filehandle is
         # just the Python file-like object) or via a C++ proxy (in which case
         # the filehandle is a std::ostream adapter)
-        self.assertEqual(sio.getvalue(),
-                         "StringIO.StringIO; <class 'IMP._ostream'>; ")
+        self.assert_(len(sio.getvalue())>0)
 
     def test_score_state(self):
         """Check score state methods"""

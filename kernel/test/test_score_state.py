@@ -12,8 +12,9 @@ class LoggingRestraint(IMP.Restraint):
     def do_show(self, fh):
         fh.write("LoggingRestraint")
     def get_version_info(self):
-        return IMP.VersionInfo("Ben Webb", "0.1")
-
+        return IMP.get_module_version_info()
+    def get_type_name(self):
+        return "LoggingRestraint"
     def unprotected_evaluate(self, accum):
         if accum:
             self.log.append('restraint-deriv')
@@ -36,12 +37,14 @@ class LoggingScoreState(IMP.ScoreState):
         self.log.append('update')
     def do_show(self, out):
         print "Hi"
+    def get_type_name(self):
+        return "LoggingScoreState"
     def do_after_evaluate(self, accum):
         self.log.append('after_evaluate')
     def do_show(self, fh=sys.stdout):
         fh.write("LoggingScoreState")
     def get_version_info(self):
-        return IMP.VersionInfo("Ben Webb", "0.1")
+        return IMP.get_module_version_info()
     def get_output_particles(self):
         return IMP.ParticlesTemp()
     def get_input_particles(self):
