@@ -20,7 +20,7 @@ SampledDensityMap::SampledDensityMap(const DensityHeader &header)
   kernel_params_ = KernelParameters(header_.get_resolution());
   //allocate the data
   long nvox = get_number_of_voxels();
-  data_ = new emreal[nvox];
+  data_.reset(new emreal[nvox]);
   calc_all_voxel2loc();
 }
 IMP::algebra::BoundingBox3D
@@ -96,7 +96,7 @@ SampledDensityMap::SampledDensityMap(const IMP::Particles &ps,
   set_header(bb.get_corner(0),bb.get_corner(1), max_radius, resolution,
              voxel_size,sig_cutoff);
 
-  data_ = new emreal[header_.nx*header_.ny*header_.nz];
+  data_.reset(new emreal[header_.nx*header_.ny*header_.nz]);
 
   //set up the sampling parameters
   kernel_params_ = KernelParameters(resolution);

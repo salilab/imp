@@ -21,7 +21,6 @@ DensityMap::DensityMap()
   loc_calculated_ = false;
   normalized_ = false;
   rms_calculated_ = false;
-  data_ = NULL;
 }
 
 
@@ -31,8 +30,8 @@ DensityMap::DensityMap(const DensityMap &other)
 {
   header_ = other.header_;
   long size = get_number_of_voxels();
-  data_ = new emreal[size];
-  std::copy(other.data_, other.data_+size, data_);
+  data_.reset(new emreal[size]);
+  std::copy(other.data_.get(), other.data_.get()+size, data_.get());
   loc_calculated_ = other.loc_calculated_;
   if (loc_calculated_) {
     x_loc_.reset(new float[size]);
@@ -63,15 +62,11 @@ DensityMap& DensityMap::operator=(const DensityMap& other)
 }
 
 
-DensityMap::~DensityMap()
-{
-  delete[] data_;
-}
 
 void DensityMap::CreateVoidMap(const int &nx, const int &ny, const int &nz)
 {
   long nvox = nx*ny*nz;
-  data_ = new emreal[nvox];
+  data_.reset(new emreal[nvox]);
   for (long i=0;i<nvox;i++) {
     data_[i]=0.0;
   }
@@ -87,8 +82,8 @@ void DensityMap::Read(const char *filename, MapReaderWriter &reader) {
   // we need to pass a pointer to data_
   float *f_data;
   reader.Read(filename, &f_data, header_);
-  float2real(f_data, &data_);
-  delete[] f_data;
+  boost::scoped_array<float> fp_data(f_data);
+  float2real(f_data, data_);
   normalized_ = false;
   calcRMS();
   calc_all_voxel2loc();
@@ -123,10 +118,10 @@ DensityMap* read_map(const char *filename, MapReaderWriter &reader)
   // density)? if we keep the current implementation ( mapreaderwriter )
   // we need to pass a pointer to data_
   Pointer<DensityMap> m= new DensityMap();
-  float *f_data;
+  float *f_data=NULL;
   reader.Read(filename, &f_data, m->header_);
   boost::scoped_array<float> f_datap(f_data);
-  m->float2real(f_datap.get(), &m->data_);
+  m->float2real(f_datap.get(), m->data_);
   m->normalized_ = false;
   m->calcRMS();
   m->calc_all_voxel2loc();
@@ -138,27 +133,30 @@ DensityMap* read_map(const char *filename, MapReaderWriter &reader)
   }
   m->set_name(filename);
   IMP_LOG(TERSE, "Read range is "
-          << *std::max_element(m->data_,
-                               m->data_+m->get_number_of_voxels())
-          << "..." << *std::min_element(m->data_,
-                                        m->data_+m->get_number_of_voxels())
+          << *std::max_element(m->data_.get(),
+                               m->data_.get()+m->get_number_of_voxels())
+          << "..." << *std::min_element(m->data_.get(),
+                                        m->data_.get()
+                                        +m->get_number_of_voxels())
           << std::endl);
   return m.release();
 }
 
-void DensityMap::float2real(float *f_data, emreal **r_data)
+void DensityMap::float2real(float *f_data,
+                            boost::scoped_array<emreal> &r_data)
 {
   long size = get_number_of_voxels();
-  (*r_data)= new emreal[size];
+  r_data.reset(new emreal[size]);
   // let the compiler optimize it
-  std::copy(f_data, f_data+size, *r_data);
+  std::copy(f_data, f_data+size, r_data.get());
 }
 
-void DensityMap::real2float(emreal *r_data, float **f_data)
+void DensityMap::real2float(emreal *r_data,
+                            boost::scoped_array<float> &f_data)
 {
   long size = get_number_of_voxels();
-  (*f_data)= new float[size];
-  std::copy(r_data, r_data+size, *f_data);
+  f_data.reset(new float[size]);
+  std::copy(r_data, r_data+size, f_data.get());
 }
 
 #ifndef IMP_DEPRECATED
@@ -170,10 +168,9 @@ void DensityMap::Write(const char *filename, MapReaderWriter &writer) {
 
 void write_map(DensityMap *d, const char *filename, MapReaderWriter &writer)
 {
-  float *f_data;
-  d->real2float(d->data_, &f_data);
-  writer.Write(filename, f_data, d->header_);
-  delete[] f_data;
+  boost::scoped_array<float> f_data;
+  d->real2float(d->data_.get(), f_data);
+  writer.Write(filename, f_data.get(), d->header_);
 }
 
 long DensityMap::get_number_of_voxels() const {
@@ -513,7 +510,7 @@ void DensityMap::pad(int nx, int ny, int nz,float val) {
   long cur_size = get_number_of_voxels();
   reset_voxel2loc();
   calc_all_voxel2loc();
-  emreal * new_data = new emreal[new_size];
+  boost::scoped_array<emreal> new_data(new emreal[new_size]);
   for (long i = 0; i < new_size; i++) {
     new_data[i] = val;
   }
@@ -530,8 +527,7 @@ void DensityMap::pad(int nx, int ny, int nz,float val) {
     new_data[new_vox] = data_[i];
   }
   header_.update_map_dimensions(nx,ny,nz);
-  delete [] data_;
-  data_ = new_data;
+  data_.swap(new_data);
   calc_all_voxel2loc();
 }
 
