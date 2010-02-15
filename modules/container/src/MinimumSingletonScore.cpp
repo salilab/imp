@@ -99,10 +99,9 @@ ContainersTemp MinimumSingletonScore
 }
 
 
-void MinimumSingletonScore::show(std::ostream &out) const
+void MinimumSingletonScore::do_show(std::ostream &out) const
 {
-  out << "MinimumSingletonScore with " << scores_.size() << " scores."
-      << std::endl;
+  out << "size scores " << scores_.size() << std::endl;
 }
 
 IMPCONTAINER_END_NAMESPACE

@@ -123,8 +123,10 @@ ParticlesTemp PairsConstraint::get_output_particles() const {
   return ret;
 }
 
-void PairsConstraint::show(std::ostream &out) const {
-  out << "PairsConstraint base" << std::endl;
+void PairsConstraint::do_show(std::ostream &out) const {
+  out << "on " << *c_ << std::endl;
+  if (f_) out << "before " << *f_ << std::endl;
+  if (af_) out << "after " << *af_ << std::endl;
 }
 
 IMPCONTAINER_END_NAMESPACE

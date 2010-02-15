@@ -80,9 +80,9 @@ bool TypedPairScore::get_is_changed(const ParticlePair&p) const {
 }
 
 
-void TypedPairScore::show(std::ostream &out) const
+void TypedPairScore::do_show(std::ostream &out) const
 {
-  out << "TypedPairScore with type key " << typekey_;
+  out << "key " << typekey_ << std::endl;
 }
 
 IMPCORE_END_NAMESPACE

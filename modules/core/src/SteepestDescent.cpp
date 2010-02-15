@@ -17,8 +17,7 @@ SteepestDescent::SteepestDescent(Model *m) : step_size_(0.01), threshold_(0.)
 {
   if (m) set_model(m);
 }
-void SteepestDescent::show(std::ostream &out) const {
-  out << "SteepestDescent optimizer" << std::endl;
+void SteepestDescent::do_show(std::ostream &out) const {
 }
 
 

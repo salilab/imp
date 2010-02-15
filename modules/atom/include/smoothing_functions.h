@@ -120,7 +120,7 @@ public:
                           score * deriv_factor + deriv * factor);
   }
 
-  IMP_OBJECT(ForceSwitch, get_module_version_info());
+  IMP_OBJECT(ForceSwitch);
 };
 
 

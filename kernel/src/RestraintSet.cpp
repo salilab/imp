@@ -79,9 +79,8 @@ ContainersTemp RestraintSet::get_input_containers() const {
   IMP_FAILURE("RestraintSets are special cased in the Model");
 }
 
-void RestraintSet::show(std::ostream& out) const
+void RestraintSet::do_show(std::ostream& out) const
 {
-  out << "restraint set " << get_name() << ":..." << std::endl;
   for (RestraintConstIterator it= restraints_begin();
        it != restraints_end(); ++it) {
     (*it)->show(out);

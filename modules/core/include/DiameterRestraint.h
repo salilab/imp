@@ -38,7 +38,7 @@ public:
   DiameterRestraint(UnaryFunction *f,
                     SingletonContainer *sc, Float diameter);
 
-  IMP_RESTRAINT(DiameterRestraint, get_module_version_info());
+  IMP_RESTRAINT(DiameterRestraint);
 
   void set_model(Model *m);
 };

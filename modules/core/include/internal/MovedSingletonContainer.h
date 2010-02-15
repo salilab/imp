@@ -48,7 +48,6 @@ namespace {
       i_=0;
     }
     IMP_INTERNAL_SINGLETON_MODIFIER(SaveXYZRRotValues,
-                                    get_module_version_info(),
                                     do_apply(p);)
   };
 
@@ -71,7 +70,6 @@ namespace {
       i_=0;
     }
     IMP_INTERNAL_SINGLETON_MODIFIER(SaveXYZRValues,
-                                    get_module_version_info(),
                                     {
                                       do_apply(p);
                                     })
@@ -95,7 +93,6 @@ namespace {
       moved_(moved){
     }
     IMP_INTERNAL_SINGLETON_MODIFIER(SaveMovedValues,
-                                    get_module_version_info(),
                                     do_apply(p);)
   };
 
@@ -165,7 +162,6 @@ namespace {
     }
 
     IMP_INTERNAL_SINGLETON_MODIFIER(ListXYZRRotMovedParticles,
-                                    get_module_version_info(),
                                     do_apply(p););
   };
 
@@ -195,7 +191,6 @@ namespace {
       i_(0), incremental_(incremental){
     }
     IMP_INTERNAL_SINGLETON_MODIFIER(ListXYZRMovedParticles,
-                                    get_module_version_info(),
                                     do_apply(p););
   };
 }
@@ -233,8 +228,7 @@ public:
   }
   void set_threshold(double d);
 
-  IMP_LISTLIKE_SINGLETON_CONTAINER(MovedSingletonContainer,
-                                   get_module_version_info());
+  IMP_LISTLIKE_SINGLETON_CONTAINER(MovedSingletonContainer);
 };
 
 

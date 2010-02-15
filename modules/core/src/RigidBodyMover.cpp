@@ -47,4 +47,7 @@ void RigidBodyMover::reject_move() {
   last_transformation_= algebra::Transformation3D();
 }
 
+
+void RigidBodyMover::do_show(std::ostream &out) const {
+}
 IMPCORE_END_NAMESPACE

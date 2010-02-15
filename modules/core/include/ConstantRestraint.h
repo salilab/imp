@@ -28,7 +28,7 @@ public:
   //! Add v to the total score.
   ConstantRestraint(Float v);
 
-  IMP_RESTRAINT(ConstantRestraint, get_module_version_info())
+  IMP_RESTRAINT(ConstantRestraint)
 };
 
 IMPCORE_END_NAMESPACE

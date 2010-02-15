@@ -59,7 +59,6 @@ public:
   }
 
   IMP_UNARY_FUNCTION_INLINE(TruncatedHarmonic,
-                            get_module_version_info(),
                             ((DIRECTION == LOWER && (feature > d_.c_))
                              || (DIRECTION == UPPER && (feature < d_.c_)))?
                             0: d_.evaluate(feature),

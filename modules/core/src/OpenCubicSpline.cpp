@@ -95,8 +95,8 @@ DerivativePair OpenCubicSpline::evaluate_with_derivative(double feature) const
   return std::make_pair(evaluate(feature), deriv);
 }
 
-void OpenCubicSpline::show(std::ostream &out) const {
-    out << "Open cubic spline of " << values_.size() << " values from "
+void OpenCubicSpline::do_show(std::ostream &out) const {
+    out << values_.size() << " values from "
         << minrange_ << " to " << maxrange_ << std::endl;
 }
 

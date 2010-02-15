@@ -123,8 +123,10 @@ ParticlesTemp TripletsConstraint::get_output_particles() const {
   return ret;
 }
 
-void TripletsConstraint::show(std::ostream &out) const {
-  out << "TripletsConstraint base" << std::endl;
+void TripletsConstraint::do_show(std::ostream &out) const {
+  out << "on " << *c_ << std::endl;
+  if (f_) out << "before " << *f_ << std::endl;
+  if (af_) out << "after " << *af_ << std::endl;
 }
 
 IMPCONTAINER_END_NAMESPACE

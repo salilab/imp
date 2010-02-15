@@ -105,8 +105,8 @@ ParticlePairsTemp BoxSweepClosePairsFinder
   return out;
 }
 
-void BoxSweepClosePairsFinder::show(std::ostream &out) const {
-  out << "BoxSweepClosePairsFinder" << std::endl;
+void BoxSweepClosePairsFinder::do_show(std::ostream &out) const {
+  out << "distance " << get_distance() << std::endl;
 }
 
 

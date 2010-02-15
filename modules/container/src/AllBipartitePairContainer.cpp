@@ -106,12 +106,9 @@ AllBipartitePairContainer
       && b_->get_contains_particle(p[1]);
 }
 
-void AllBipartitePairContainer::show(std::ostream &out) const {
+void AllBipartitePairContainer::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
-  out << "AllBipartitePairContainer on ";
-  a_->show(out);
-  out << " and ";
-  b_->show(out);
+  out << "container " << *a_ << " and " << *b_ << std::endl;
 }
 
 

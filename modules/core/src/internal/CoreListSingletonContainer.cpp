@@ -40,9 +40,9 @@ CoreListSingletonContainer
   internal::ListLikeSingletonContainer(name){}
 
 
-void CoreListSingletonContainer::show(std::ostream &out) const {
+void CoreListSingletonContainer::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
-  out << "CoreListSingletonContainer with " << get_number_of_particles()
+  out << get_number_of_particles()
       << " particles." << std::endl;
 }
 

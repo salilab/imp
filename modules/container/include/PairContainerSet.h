@@ -35,7 +35,7 @@ public:
   PairContainerSet(const PairContainers &in,
                         std::string name="PairContainerSet %1%");
 
-  IMP_PAIR_CONTAINER(PairContainerSet, get_module_version_info());
+  IMP_PAIR_CONTAINER(PairContainerSet);
  /** @name Methods to control the nested container
 
      This container merges a set of nested containers. To add

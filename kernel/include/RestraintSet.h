@@ -40,7 +40,7 @@ public:
   //! Create an empty set
   RestraintSet(const std::string& name="RestraintSet %1%");
 
-  IMP_RESTRAINT(RestraintSet, get_module_version_info())
+  IMP_RESTRAINT(RestraintSet)
  /** @name Methods to control the nested Restraint objects
 
      This container manages a set of Restraint objects. To

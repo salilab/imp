@@ -316,7 +316,7 @@ class ConstRestraint(IMP.Restraint):
         return self.v
     def get_version_info(self):
         return IMP.VersionInfo("Me", "0.5")
-    def show(self, fh):
+    def do_show(self, fh):
         print >> fh, "ConstRestraint "+str(self.v)
     def get_input_containers(self):
         return IMP.ContainersTemp()
@@ -332,7 +332,7 @@ class ConstSingletonScore(IMP.SingletonScore):
         return self.v
     def get_version_info(self):
         return IMP.VersionInfo("Me", "0.5")
-    def show(self, fh):
+    def do_show(self, fh):
         print >> fh, "ConstPairScore "+ str(self.v)
 
 class ConstPairScore(IMP.PairScore):
@@ -344,7 +344,7 @@ class ConstPairScore(IMP.PairScore):
         return self.v
     def get_version_info(self):
         return IMP.VersionInfo("Me", "0.5")
-    def show(self, fh):
+    def do_show(self, fh):
         print >> fh, "ConstPairScore "+ str(self.v)
 
 class ConstTripletScore(IMP.TripletScore):
@@ -356,7 +356,7 @@ class ConstTripletScore(IMP.TripletScore):
         return self.v
     def get_version_info(self):
         return IMP.VersionInfo("Me", "0.5")
-    def show(self, fh):
+    def do_show(self, fh):
         print >> fh, "ConstTripletScore "+ str(self.v)
 
 class ConstQuadScore(IMP.QuadScore):
@@ -368,7 +368,7 @@ class ConstQuadScore(IMP.QuadScore):
         return self.v
     def get_version_info(self):
         return IMP.VersionInfo("Me", "0.5")
-    def show(self, fh):
+    def do_show(self, fh):
         print >> fh, "ConstQuadScore "+ str(self.v)
 
 class LogPairScore(IMP.PairScore):
@@ -385,7 +385,7 @@ class LogPairScore(IMP.PairScore):
         self._log=[]
     def get_version_info(self):
         return IMP.VersionInfo("Me", "0.5")
-    def show(self, fh):
+    def do_show(self, fh):
         print >> fh, "LogPairScore "
 
 
@@ -398,7 +398,7 @@ class ConstUnaryFunction(IMP.UnaryFunction):
         return self.v
     def evaluate_with_derivative(self, feat):
         return self.v, 0.0
-    def show(self, fh):
+    def do_show(self, fh):
         print >> fh, "ConstUF with value "+str(self.v)
     def get_version_info(self):
         return IMP.VersionInfo("Me", "0.5")
@@ -412,7 +412,7 @@ class TestRefiner(IMP.Refiner):
         self.pr= pr
         self.dict={}
 
-    def show(self, fh):
+    def do_show(self, fh):
         print >> fh, "Testing particle refiner"
         self.pr.show()
 

@@ -44,4 +44,8 @@ void NormalMover::generate_move(Float probability)
   }
 }
 
+void NormalMover::do_show(std::ostream &out) const {
+  out << "sigma " << stddev_ << std::endl;
+}
+
 IMPCORE_END_NAMESPACE

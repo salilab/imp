@@ -40,7 +40,7 @@ public:
   PairsOptimizerState(PairContainer *c, PairModifier *gf,
                            std::string name="PairsOptimizerState %1%");
 
-  IMP_OPTIMIZER_STATE(PairsOptimizerState, get_module_version_info())
+  IMP_OPTIMIZER_STATE(PairsOptimizerState)
 };
 
 

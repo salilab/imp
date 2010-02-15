@@ -52,11 +52,10 @@ PairContainerSet
   return false;
 }
 
-void PairContainerSet::show(std::ostream &out) const {
+void PairContainerSet::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
-  out << "PairContainerSet with "
-      << get_number_of_particle_pairs()
-      << " particle_pairs." << std::endl;
+  out << get_number_of_particle_pairs()
+      << " containers" << std::endl;
 }
 
 unsigned int

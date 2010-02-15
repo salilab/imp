@@ -27,7 +27,7 @@ public:
   MinimumQuadScore(const QuadScoresTemp &scores,
                        unsigned int n=1,
                        std::string name="QuadScore %1%");
-  IMP_QUAD_SCORE(MinimumQuadScore, get_module_version_info());
+  IMP_QUAD_SCORE(MinimumQuadScore);
 };
 
 IMPCONTAINER_END_NAMESPACE

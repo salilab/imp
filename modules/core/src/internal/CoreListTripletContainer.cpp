@@ -40,9 +40,9 @@ CoreListTripletContainer
   internal::ListLikeTripletContainer(name){}
 
 
-void CoreListTripletContainer::show(std::ostream &out) const {
+void CoreListTripletContainer::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
-  out << "CoreListTripletContainer with " << get_number_of_particle_triplets()
+  out << get_number_of_particle_triplets()
       << " particle_triplets." << std::endl;
 }
 

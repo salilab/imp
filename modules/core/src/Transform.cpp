@@ -50,11 +50,9 @@ ContainersTemp Transform::get_output_containers(Particle *p) const {
   return ContainersTemp();
 }
 
-void Transform::show(std::ostream &out) const
+void Transform::do_show(std::ostream &out) const
 {
-  out<<"TransformParticle :";
-  t_.show(out);
-  out<<std::endl;
+  out<<"transformation "<< t_ << std::endl;
 }
 
 IMPCORE_END_NAMESPACE

@@ -98,11 +98,10 @@ RefinedPairsPairScore::get_input_containers(const ParticlePair &p) const {
 
 
 
-void RefinedPairsPairScore::show(std::ostream &out) const
+void RefinedPairsPairScore::do_show(std::ostream &out) const
 {
-  out << "RefinedPairsPairScore using ";
-  f_->show(out);
-  r_->show(out);
+  out << "function " << *f_ << std::endl;
+  out << "refiner " << *r_ << std::endl;
 }
 
 IMPCORE_END_NAMESPACE

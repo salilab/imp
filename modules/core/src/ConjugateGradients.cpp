@@ -44,8 +44,7 @@ void ConjugateGradients::failure() {
 }
 
 
-void ConjugateGradients::show(std::ostream &out) const {
-  out << "ConjugateGradients optimizer" << std::endl;
+void ConjugateGradients::do_show(std::ostream &out) const {
 }
 
 //! Get the score for a given model state.

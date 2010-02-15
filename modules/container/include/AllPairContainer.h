@@ -46,7 +46,7 @@ public:
     return lsc;
   }
 
-  IMP_PAIR_CONTAINER(AllPairContainer, get_module_version_info());
+  IMP_PAIR_CONTAINER(AllPairContainer);
 };
 
 

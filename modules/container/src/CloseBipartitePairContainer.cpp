@@ -164,9 +164,9 @@ void CloseBipartitePairContainer::do_after_evaluate() {
 }
 
 
-void CloseBipartitePairContainer::show(std::ostream &out) const {
+void CloseBipartitePairContainer::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
-  out << "CloseBipartitePairContainer on "
+  out << "container "
       << *a_ << " and " << *b_ << std::endl;
 }
 

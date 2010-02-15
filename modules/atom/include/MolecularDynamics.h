@@ -39,7 +39,7 @@ public:
    */
   Float get_kinetic_temperature(Float ekinetic) const;
 
-  IMP_OPTIMIZER(MolecularDynamics, get_module_version_info())
+  IMP_OPTIMIZER(MolecularDynamics)
 
   //! Set time step in fs
   void set_time_step(Float t) { time_step_ = t; }

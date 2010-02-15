@@ -32,7 +32,7 @@ public:
   //! Create a refiner for a particular type of hierarchy
   ChildrenRefiner(HierarchyTraits tr);
 
-  IMP_REFINER(ChildrenRefiner, get_module_version_info());
+  IMP_REFINER(ChildrenRefiner);
 };
 
 IMPCORE_END_NAMESPACE

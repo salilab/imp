@@ -51,10 +51,10 @@ ListPairContainer
   P(name){
 }
 
-void ListPairContainer::show(std::ostream &out) const {
+void ListPairContainer::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
-  out << "ListPairContainer with " << get_number_of_particle_pairs()
-      << " particle_pairs." << std::endl;
+  out <<  get_number_of_particle_pairs()
+      << " particle_pairs" << std::endl;
 }
 
 IMPCONTAINER_END_NAMESPACE

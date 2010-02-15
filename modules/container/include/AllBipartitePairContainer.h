@@ -43,7 +43,7 @@ public:
     return lsc;
   }
 
-  IMP_PAIR_CONTAINER(AllBipartitePairContainer, get_module_version_info());
+  IMP_PAIR_CONTAINER(AllBipartitePairContainer);
 };
 
 

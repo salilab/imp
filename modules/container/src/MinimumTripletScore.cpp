@@ -99,10 +99,9 @@ ContainersTemp MinimumTripletScore
 }
 
 
-void MinimumTripletScore::show(std::ostream &out) const
+void MinimumTripletScore::do_show(std::ostream &out) const
 {
-  out << "MinimumTripletScore with " << scores_.size() << " scores."
-      << std::endl;
+  out << "size scores " << scores_.size() << std::endl;
 }
 
 IMPCONTAINER_END_NAMESPACE

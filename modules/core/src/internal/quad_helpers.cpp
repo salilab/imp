@@ -67,13 +67,9 @@ ParticleQuad ListLikeQuadContainer
   return data_[i];
 }
 
-VersionInfo ListLikeQuadContainer
-::get_version_info() const {
-  return get_module_version_info();
-}
 void ListLikeQuadContainer
-::show(std::ostream &out) const {
-  out << "ListLikeContainer on " << data_.size() << std::endl;
+::do_show(std::ostream &out) const {
+  out << "contains " << data_.size() << std::endl;
 }
 
 

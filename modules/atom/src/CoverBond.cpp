@@ -50,8 +50,7 @@ ContainersTemp CoverBond::get_output_containers(Particle *p) const {
 
 
 
-void CoverBond::show(std::ostream &out) const {
-  out << "CoverBond" << std::endl;
+void CoverBond::do_show(std::ostream &out) const {
 }
 
 IMPATOM_END_NAMESPACE

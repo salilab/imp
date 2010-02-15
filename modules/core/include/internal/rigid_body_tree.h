@@ -47,7 +47,7 @@ class IMPCOREEXPORT RigidBodyHierarchy: public Object {
   std::vector<algebra::Sphere3D> get_all_spheres() const;
   RigidBodyHierarchy(RigidBody rb, Refiner *r);
   algebra::Sphere3Ds get_tree() const;
-  IMP_OBJECT(RigidBodyHierarchy, get_module_version_info());
+  IMP_OBJECT(RigidBodyHierarchy);
   // for testing
   ParticlesTemp get_particles(unsigned int i) const;
 };

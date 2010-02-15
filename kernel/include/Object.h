@@ -90,17 +90,21 @@ public:
   }
 #endif
 
-  //! Print out one or more lines of text describing the object
-  virtual void show(std::ostream &out=std::cout) const=0;
+  //! Return a string identifying the type of the object
+  virtual std::string get_type_name() const=0;
 
-#ifndef IMP_DOXYGEN
-  void pretty_print(std::ostream &out=std::cout) const {
-    out << get_name() << std::endl;
-    show(out);
+  //! Return a string for the name of the module
+  virtual std::string get_module() const=0;
+
+  //! Print out one or more lines of text describing the object
+  void show(std::ostream &out=std::cout) const {
+    out << get_name() << "(" << get_type_name()
+        << ", " << get_version_info() << ")";
+    do_show(out);
   }
 
+#ifndef IMP_DOXYGEN
   void debugger_show() const {
-    std::cout<<get_name() << std::endl;
     show(std::cout);
   }
 
@@ -145,10 +149,14 @@ public:
 #if IMP_BUILD < IMP_FAST
     was_owned_=true;
 #endif
-}
+  }
   /** @} */
 
-private:
+#ifndef IMP_DOXYGEN
+  // swig needs to know to wrap this function
+  virtual void do_show(std::ostream &out) const =0;
+#endif
+ private:
   Object(const Object &o) {}
   const Object& operator=(const Object &o) {return *this;}
 
@@ -162,7 +170,7 @@ private:
 
 #if !defined(IMP_DOXYGEN) && !defined(IMP_SWIG)
 inline std::ostream &operator<<(std::ostream &out, const Object& o) {
-  o.pretty_print();
+  o.show(out);
   return out;
 }
 #endif

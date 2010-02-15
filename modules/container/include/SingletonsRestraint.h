@@ -53,7 +53,7 @@ public:
                       std::string name="SingletonsRestraint %1%");
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
-  IMP_INCREMENTAL_RESTRAINT(SingletonsRestraint, get_module_version_info());
+  IMP_INCREMENTAL_RESTRAINT(SingletonsRestraint);
 
   //! Get the container used to store Particles
   SingletonContainer* get_singleton_container() {
@@ -64,7 +64,7 @@ public:
     return ss_;
   }
 #else
-  IMP_OBJECT(SingletonsRestraint, get_module_version_info());
+  IMP_OBJECT(SingletonsRestraint);
 #endif
 };
 

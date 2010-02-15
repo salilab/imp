@@ -77,8 +77,7 @@ namespace {
     public SingletonModifier {
   public:
     AccumulateRigidBodyDerivatives(){}
-    IMP_SINGLETON_MODIFIER_DA(AccumulateRigidBodyDerivatives,
-                              get_module_version_info());
+    IMP_SINGLETON_MODIFIER_DA(AccumulateRigidBodyDerivatives);
   };
 
 
@@ -96,8 +95,7 @@ namespace {
   class UpdateRigidBodyMembers: public SingletonModifier {
   public:
     UpdateRigidBodyMembers(){}
-    IMP_SINGLETON_MODIFIER(UpdateRigidBodyMembers,
-                           get_module_version_info());
+    IMP_SINGLETON_MODIFIER(UpdateRigidBodyMembers);
   };
 
 
@@ -519,8 +517,7 @@ ContainersTemp RigidMembersRefiner::get_input_containers(Particle *p) const {
   return ContainersTemp(1, p);
 }
 
-void RigidMembersRefiner::show(std::ostream &out) const {
-  out << "RigidMembersRefiner";
+void RigidMembersRefiner::do_show(std::ostream &out) const {
 }
 
 

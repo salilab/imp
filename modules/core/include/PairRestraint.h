@@ -40,7 +40,7 @@ public:
                      const ParticlePair& vt,
                      std::string name="PairRestraint %1%");
 
-  IMP_INCREMENTAL_RESTRAINT(PairRestraint, get_module_version_info());
+  IMP_INCREMENTAL_RESTRAINT(PairRestraint);
 };
 
 IMPCORE_END_NAMESPACE

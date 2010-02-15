@@ -46,13 +46,7 @@ public:
   Float get_radius() const {
     return radius_;
   }
- void show(std::ostream &out= std::cout) const {
-    out << "BallMover" << std::endl;
-  }
-  VersionInfo get_version_info() const {
-    return get_module_version_info();
-  }
-  IMP_REF_COUNTED_DESTRUCTOR(BallMover)
+  IMP_OBJECT(BallMover);
 protected:
   void generate_move(Float a);
 

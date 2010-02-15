@@ -60,16 +60,11 @@ ContainersTemp DistanceRestraint::get_input_containers() const {
 //! Show the current restraint.
 /** \param[in] out Stream to send restraint description to.
  */
-void DistanceRestraint::show(std::ostream& out) const
+void DistanceRestraint::do_show(std::ostream& out) const
 {
-  out << "distance restraint:" << std::endl;
-
-  get_version_info().show(out);
-  out << "  particles: " << p_[0].get_particle()->get_name();
-  out << " and " << p_[1].get_particle()->get_name();
-  out << "  ";
-  dp_->show(out);
-  out << std::endl;
+  out << "particles: " << p_[0]->get_name();
+  out << " and " << p_[1]->get_name();
+  out << "  " << *dp_ << std::endl;
 }
 
 IMPCORE_END_NAMESPACE

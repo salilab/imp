@@ -55,13 +55,13 @@ public:
     })
   void clear_particles();
   /**@}*/
-  IMP_SINGLETON_CONTAINER(ListSingletonContainer, get_module_version_info());
+  IMP_SINGLETON_CONTAINER(ListSingletonContainer);
 #else
   static ListSingletonContainer *create_untracked_container() {
     ListSingletonContainer *lsc = new ListSingletonContainer(false);
     return lsc;
   }
-  IMP_OBJECT(ListSingletonContainer, get_module_version_info());
+  IMP_OBJECT(ListSingletonContainer);
 #endif
 };
 

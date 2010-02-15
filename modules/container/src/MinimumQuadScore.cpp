@@ -99,10 +99,9 @@ ContainersTemp MinimumQuadScore
 }
 
 
-void MinimumQuadScore::show(std::ostream &out) const
+void MinimumQuadScore::do_show(std::ostream &out) const
 {
-  out << "MinimumQuadScore with " << scores_.size() << " scores."
-      << std::endl;
+  out << "size scores " << scores_.size() << std::endl;
 }
 
 IMPCONTAINER_END_NAMESPACE

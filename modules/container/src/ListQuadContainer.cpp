@@ -51,10 +51,10 @@ ListQuadContainer
   P(name){
 }
 
-void ListQuadContainer::show(std::ostream &out) const {
+void ListQuadContainer::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
-  out << "ListQuadContainer with " << get_number_of_particle_quads()
-      << " particle_quads." << std::endl;
+  out <<  get_number_of_particle_quads()
+      << " particle_quads" << std::endl;
 }
 
 IMPCONTAINER_END_NAMESPACE

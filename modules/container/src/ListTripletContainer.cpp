@@ -51,10 +51,10 @@ ListTripletContainer
   P(name){
 }
 
-void ListTripletContainer::show(std::ostream &out) const {
+void ListTripletContainer::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
-  out << "ListTripletContainer with " << get_number_of_particle_triplets()
-      << " particle_triplets." << std::endl;
+  out <<  get_number_of_particle_triplets()
+      << " particle_triplets" << std::endl;
 }
 
 IMPCONTAINER_END_NAMESPACE

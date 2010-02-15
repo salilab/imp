@@ -50,9 +50,9 @@ namespace {
   public:
     ParticlesTemp leaves;
     HierarchyCache(): Object("HierarchyCache"){}
-    IMP_OBJECT(HierarchyCache, get_module_version_info());
+    IMP_OBJECT(HierarchyCache);
   };
-  void HierarchyCache::show(std::ostream &out) const {
+  void HierarchyCache::do_show(std::ostream &out) const {
     out << "HierarchyCache";
   }
 

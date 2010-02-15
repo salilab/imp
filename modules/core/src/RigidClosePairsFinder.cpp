@@ -136,8 +136,8 @@ ParticlePairsTemp RigidClosePairsFinder::get_close_pairs(Particle *a,
   return out;
 }
 
-void RigidClosePairsFinder::show(std::ostream &out) const {
-  out << "RigidClosePairsFinder\n";
+void RigidClosePairsFinder::do_show(std::ostream &out) const {
+  out << "distance " << get_distance() << std::endl;
 }
 
 namespace {

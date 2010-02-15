@@ -185,8 +185,7 @@ void CharmmParameters::read_VdW_params(std::ifstream& input_file) {
 }
 
 
-void CharmmParameters::show(std::ostream &out) const {
-  out << "Charmm parameters\n";
+void CharmmParameters::do_show(std::ostream &out) const {
 }
 
 IMPATOM_END_NAMESPACE

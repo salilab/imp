@@ -78,8 +78,8 @@ DiameterRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
   return v;
 }
 
-void DiameterRestraint::show(std::ostream &out) const {
-  out << "DiameterRestraint" << std::endl;
+void DiameterRestraint::do_show(std::ostream &out) const {
+  out << "diameter " << diameter_ << std::endl;
 }
 
 ParticlesList DiameterRestraint::get_interacting_particles() const {

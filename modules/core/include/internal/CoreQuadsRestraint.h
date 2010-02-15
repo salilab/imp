@@ -49,7 +49,7 @@ public:
                       QuadContainer *pc,
                       std::string name="QuadsRestraint %1%");
 
-  IMP_INCREMENTAL_RESTRAINT(CoreQuadsRestraint, get_module_version_info());
+  IMP_INCREMENTAL_RESTRAINT(CoreQuadsRestraint);
 
   //! Get the container used to store Particles
   QuadContainer* get_quad_container() {

@@ -55,13 +55,13 @@ public:
     })
   void clear_particle_quads();
   /**@}*/
-  IMP_QUAD_CONTAINER(ListQuadContainer, get_module_version_info());
+  IMP_QUAD_CONTAINER(ListQuadContainer);
 #else
   static ListQuadContainer *create_untracked_container() {
     ListQuadContainer *lsc = new ListQuadContainer(false);
     return lsc;
   }
-  IMP_OBJECT(ListQuadContainer, get_module_version_info());
+  IMP_OBJECT(ListQuadContainer);
 #endif
 };
 

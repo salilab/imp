@@ -31,8 +31,7 @@ public:
   void add_particles(const ParticlesTemp &c);
   void set_particles(ParticlesTemp c);
   void clear_particles();
-  IMP_LISTLIKE_SINGLETON_CONTAINER(CoreListSingletonContainer,
-                                   get_module_version_info());
+  IMP_LISTLIKE_SINGLETON_CONTAINER(CoreListSingletonContainer);
 };
 
 

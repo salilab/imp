@@ -53,7 +53,7 @@ public:
                       std::string name="QuadsRestraint %1%");
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
-  IMP_INCREMENTAL_RESTRAINT(QuadsRestraint, get_module_version_info());
+  IMP_INCREMENTAL_RESTRAINT(QuadsRestraint);
 
   //! Get the container used to store Particles
   QuadContainer* get_quad_container() {
@@ -64,7 +64,7 @@ public:
     return ss_;
   }
 #else
-  IMP_OBJECT(QuadsRestraint, get_module_version_info());
+  IMP_OBJECT(QuadsRestraint);
 #endif
 };
 

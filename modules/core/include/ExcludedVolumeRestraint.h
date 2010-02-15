@@ -51,7 +51,7 @@ public:
   ExcludedVolumeRestraint(SingletonContainer *sc,
                           double k=1);
 
-  IMP_RESTRAINT(ExcludedVolumeRestraint, get_module_version_info());
+  IMP_RESTRAINT(ExcludedVolumeRestraint);
 
   void set_model(Model *m);
 };

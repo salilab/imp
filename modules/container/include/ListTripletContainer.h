@@ -55,13 +55,13 @@ public:
     })
   void clear_particle_triplets();
   /**@}*/
-  IMP_TRIPLET_CONTAINER(ListTripletContainer, get_module_version_info());
+  IMP_TRIPLET_CONTAINER(ListTripletContainer);
 #else
   static ListTripletContainer *create_untracked_container() {
     ListTripletContainer *lsc = new ListTripletContainer(false);
     return lsc;
   }
-  IMP_OBJECT(ListTripletContainer, get_module_version_info());
+  IMP_OBJECT(ListTripletContainer);
 #endif
 };
 

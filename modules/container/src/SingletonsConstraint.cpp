@@ -123,8 +123,10 @@ ParticlesTemp SingletonsConstraint::get_output_particles() const {
   return ret;
 }
 
-void SingletonsConstraint::show(std::ostream &out) const {
-  out << "SingletonsConstraint base" << std::endl;
+void SingletonsConstraint::do_show(std::ostream &out) const {
+  out << "on " << *c_ << std::endl;
+  if (f_) out << "before " << *f_ << std::endl;
+  if (af_) out << "after " << *af_ << std::endl;
 }
 
 IMPCONTAINER_END_NAMESPACE

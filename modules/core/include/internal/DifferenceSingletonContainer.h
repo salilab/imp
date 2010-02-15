@@ -31,8 +31,7 @@ class IMPCOREEXPORT DifferenceSingletonContainer : public SingletonContainer
  public:
   DifferenceSingletonContainer(SingletonContainer *a, SingletonContainer *b);
 
-  IMP_SINGLETON_CONTAINER(DifferenceSingletonContainer,
-                          get_module_version_info());
+  IMP_SINGLETON_CONTAINER(DifferenceSingletonContainer);
 };
 
 

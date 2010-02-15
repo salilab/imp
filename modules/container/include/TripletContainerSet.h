@@ -35,7 +35,7 @@ public:
   TripletContainerSet(const TripletContainers &in,
                         std::string name="TripletContainerSet %1%");
 
-  IMP_TRIPLET_CONTAINER(TripletContainerSet, get_module_version_info());
+  IMP_TRIPLET_CONTAINER(TripletContainerSet);
  /** @name Methods to control the nested container
 
      This container merges a set of nested containers. To add

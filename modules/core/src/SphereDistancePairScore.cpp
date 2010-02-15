@@ -48,10 +48,9 @@ Float SphereDistancePairScore::evaluate(const ParticlePair &p,
 
 
 
-void SphereDistancePairScore::show(std::ostream &out) const
+void SphereDistancePairScore::do_show(std::ostream &out) const
 {
-  out << "SphereDistancePairScore using ";
-  f_->show(out);
+  out << "function " << *f_ << std::endl;
 }
 
 
@@ -88,10 +87,9 @@ Float NormalizedSphereDistancePairScore::evaluate(const ParticlePair &p,
 }
 
 
-void NormalizedSphereDistancePairScore::show(std::ostream &out) const
+void NormalizedSphereDistancePairScore::do_show(std::ostream &out) const
 {
-  out << "NormalizedSphereDistancePairScore using ";
-  f_->show(out);
+  out << "function " << *f_ << std::endl;
 }
 
 WeightedSphereDistancePairScore::WeightedSphereDistancePairScore(
@@ -126,10 +124,9 @@ Float WeightedSphereDistancePairScore::evaluate(const ParticlePair &p,
                                     (boost::lambda::_1-(ra+rb))*(wa+wb));
 }
 
-void WeightedSphereDistancePairScore::show(std::ostream &out) const
+void WeightedSphereDistancePairScore::do_show(std::ostream &out) const
 {
-  out << "WeightedSphereDistancePairScore using ";
-  f_->show(out);
+  out << "function " << *f_ << std::endl;
 }
 
 

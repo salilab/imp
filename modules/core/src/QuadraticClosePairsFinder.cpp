@@ -73,8 +73,8 @@ bool QuadraticClosePairsFinder::get_are_close(Particle *a, Particle *b) const {
 }
 
 
-void QuadraticClosePairsFinder::show(std::ostream &out) const {
-  out << "Quadratic CPF\n";
+void QuadraticClosePairsFinder::do_show(std::ostream &out) const {
+  out << "distance " << get_distance() << std::endl;
 }
 
 

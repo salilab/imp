@@ -60,12 +60,9 @@ double MinimumSingletonRestraint
   return score;
 }
 
-void MinimumSingletonRestraint::show(std::ostream &out) const {
-  out << "MinimumSingletonScoreRestraint over ";
-  c_->show(out);
-  out << " using function ";
-  f_->show(out);
-  out << std::endl;
+void MinimumSingletonRestraint::do_show(std::ostream &out) const {
+  out << "container " << *c_ << std::endl;
+  out << "score " << *f_ << std::endl;
 }
 
 

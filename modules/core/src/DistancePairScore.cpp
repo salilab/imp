@@ -27,10 +27,9 @@ Float DistancePairScore::evaluate(const ParticlePair &p,
                                                 boost::lambda::_1);
 }
 
-void DistancePairScore::show(std::ostream &out) const
+void DistancePairScore::do_show(std::ostream &out) const
 {
-  out << "DistancePairScore using ";
-  f_->show(out);
+  out << "function " << f_;
 }
 
 IMPCORE_END_NAMESPACE

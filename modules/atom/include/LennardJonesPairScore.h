@@ -74,7 +74,7 @@ public:
 
   double get_attractive_weight() const { return attractive_weight_; }
 
-  IMP_SIMPLE_PAIR_SCORE(LennardJonesPairScore, get_module_version_info())
+  IMP_SIMPLE_PAIR_SCORE(LennardJonesPairScore)
 };
 
 IMPATOM_END_NAMESPACE

@@ -49,7 +49,7 @@ public:
                       PairContainer *pc,
                       std::string name="PairsRestraint %1%");
 
-  IMP_INCREMENTAL_RESTRAINT(CorePairsRestraint, get_module_version_info());
+  IMP_INCREMENTAL_RESTRAINT(CorePairsRestraint);
 
   //! Get the container used to store Particles
   PairContainer* get_pair_container() {

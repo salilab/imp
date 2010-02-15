@@ -59,8 +59,7 @@ public:
   BrownianDynamics(SimulationParameters si,
                    SingletonContainer *sc=NULL);
 
-  IMP_OPTIMIZER(BrownianDynamics,
-                get_module_version_info());
+  IMP_OPTIMIZER(BrownianDynamics);
 
   //! Simulate until the given time in fs
   double simulate(float time_in_fs);

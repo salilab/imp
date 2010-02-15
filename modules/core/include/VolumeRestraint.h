@@ -32,7 +32,7 @@ public:
                   SingletonContainer *sc,
                   double volume);
 
-  IMP_RESTRAINT(VolumeRestraint, get_module_version_info());
+  IMP_RESTRAINT(VolumeRestraint);
 };
 
 

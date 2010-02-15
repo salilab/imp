@@ -48,8 +48,7 @@ ObjectsTemp
 BondedPairFilter::get_input_objects(const ParticlePair& pt) const {
   return ObjectsTemp();
 }
-void BondedPairFilter::show(std::ostream &out) const {
-  out << "BondPairFilter" << std::endl;
+void BondedPairFilter::do_show(std::ostream &out) const {
 }
 
 IMPATOM_END_NAMESPACE

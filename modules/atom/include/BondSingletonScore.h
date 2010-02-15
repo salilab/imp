@@ -30,7 +30,7 @@ class IMPATOMEXPORT BondSingletonScore : public SingletonScore
 public:
   //! Use f to penalize deviations in length
   BondSingletonScore(UnaryFunction *f);
-  IMP_SINGLETON_SCORE(BondSingletonScore, get_module_version_info());
+  IMP_SINGLETON_SCORE(BondSingletonScore);
 };
 
 IMPATOM_END_NAMESPACE

@@ -1,6 +1,12 @@
 /** \page recent Change History
 \par Week of February 3, 2010
 
+- Remove the version_info argument from the implementation macros. Instead, just pick up the module version info automatically.
+
+- Add a function Object::get_type_name() and Object::get_module() to get the respective bits of information about each object.
+
+- Change Object::show() to be a non-virtual wrapper which prints the object name and other info before passing control off to Object::do_show().
+
 - The containers were moved to IMP.container. See that module page for a full list of what moved. In the process, the backwards compatability functions were removed from IMP::container::PairsRestraint and kin.
 
 - IMP.atom.create_protein() now returns the created protein

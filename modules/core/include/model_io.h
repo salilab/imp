@@ -98,7 +98,7 @@ class IMPCOREEXPORT DumpModelOnFailure: public FailureHandler {
   std::string file_name_;
  public:
   DumpModelOnFailure(Model *m, std::string file_name);
-  IMP_FAILURE_HANDLER(DumpModelOnFailure, get_module_version_info());
+  IMP_FAILURE_HANDLER(DumpModelOnFailure);
 };
 
 /** @} */

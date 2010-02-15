@@ -51,10 +51,10 @@ ListSingletonContainer
   P(name){
 }
 
-void ListSingletonContainer::show(std::ostream &out) const {
+void ListSingletonContainer::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
-  out << "ListSingletonContainer with " << get_number_of_particles()
-      << " particles." << std::endl;
+  out <<  get_number_of_particles()
+      << " particles" << std::endl;
 }
 
 IMPCONTAINER_END_NAMESPACE

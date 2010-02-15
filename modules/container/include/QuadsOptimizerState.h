@@ -40,7 +40,7 @@ public:
   QuadsOptimizerState(QuadContainer *c, QuadModifier *gf,
                            std::string name="QuadsOptimizerState %1%");
 
-  IMP_OPTIMIZER_STATE(QuadsOptimizerState, get_module_version_info())
+  IMP_OPTIMIZER_STATE(QuadsOptimizerState)
 };
 
 

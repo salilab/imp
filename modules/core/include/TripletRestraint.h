@@ -40,7 +40,7 @@ public:
                      const ParticleTriplet& vt,
                      std::string name="TripletRestraint %1%");
 
-  IMP_INCREMENTAL_RESTRAINT(TripletRestraint, get_module_version_info());
+  IMP_INCREMENTAL_RESTRAINT(TripletRestraint);
 };
 
 IMPCORE_END_NAMESPACE

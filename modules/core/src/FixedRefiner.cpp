@@ -20,8 +20,8 @@ IMP_LIST_IMPL(FixedRefiner, Particle, particle, Particle*,Particles,,,)
   set_particles(ps);
 }
 
-void FixedRefiner::show(std::ostream &out) const {
-  out << "FixedRefiner on " << get_number_of_particles() << " particles"
+void FixedRefiner::do_show(std::ostream &out) const {
+  out << "producing " << get_number_of_particles() << " particles"
       << std::endl;
 }
 

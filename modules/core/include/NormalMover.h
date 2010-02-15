@@ -35,14 +35,7 @@ public:
   Float get_sigma() const {
     return stddev_;
   }
-
-  void show(std::ostream &out= std::cout) const {
-    out << "NormalMover" << std::endl;
-  }
-  VersionInfo get_version_info() const {
-    return get_module_version_info();
-  }
-  IMP_REF_COUNTED_DESTRUCTOR(NormalMover)
+  IMP_OBJECT(NormalMover);
 protected:
   virtual void generate_move(Float f);
 private:

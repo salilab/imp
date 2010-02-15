@@ -184,7 +184,7 @@ inline std::string get_name(const ParticleTuple<D>& p) {
   public:                                                       \
   Ticker(Name *n): ScoreState(n->get_name()+" updater"),        \
                    back_(n){}                                   \
-  IMP_SCORE_STATE(Ticker, get_module_version_info());           \
+  IMP_SCORE_STATE(Ticker);                                      \
   };                                                            \
   friend class Ticker;                                          \
   ScoreStatePointer ticker_;                                    \
@@ -203,7 +203,7 @@ inline std::string get_name(const ParticleTuple<D>& p) {
     back_->do_after_evaluate();                                         \
   }                                                                     \
   ContainersTemp Name::Ticker::get_input_containers() const {           \
-    return back_->get_state_input_containers();                        \
+    return back_->get_state_input_containers();                         \
   }                                                                     \
   ContainersTemp Name::Ticker::get_output_containers() const {          \
     return ContainersTemp(1, back_);                                    \
@@ -217,8 +217,8 @@ inline std::string get_name(const ParticleTuple<D>& p) {
   ParticlesList Name::Ticker::get_interacting_particles() const {       \
     return ParticlesList();                                             \
   }                                                                     \
-  void Name::Ticker::show(std::ostream &out) const {                    \
-    out << "Ticker\n";                                                  \
+  void Name::Ticker::do_show(std::ostream &out) const {                 \
+    out << "back is " << *back_ << std::endl;                           \
   }                                                                     \
   void Name::set_model(Model *m) {                                      \
     IMP_INTERNAL_CHECK(!get_has_model(),                                \

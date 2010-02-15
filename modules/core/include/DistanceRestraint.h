@@ -41,7 +41,7 @@ public:
   DistanceRestraint(UnaryFunction *score_func,
                     XYZ a, XYZ b);
 
-  IMP_RESTRAINT(DistanceRestraint, get_module_version_info())
+  IMP_RESTRAINT(DistanceRestraint)
 
 private:
   IMP::internal::OwnerPointer<DistancePairScore> dp_;

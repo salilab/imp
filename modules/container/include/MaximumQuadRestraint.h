@@ -39,8 +39,7 @@ public:
                                  std::string name
                                  ="MaximumQuadRestraint %1%");
 
-  IMP_RESTRAINT(MaximumQuadRestraint,
-                get_module_version_info());
+  IMP_RESTRAINT(MaximumQuadRestraint);
 
   //! Set the number of lowest scores to use.
   void set_n(unsigned int n) { n_=n;}

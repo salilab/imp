@@ -36,14 +36,7 @@ public:
   void reject_move();
   void accept_move();
   void propose_move(Float f);
-  void show(std::ostream&out= std::cout) const {
-    out << "RigidTransformationMover " << std::endl;
-  }
-
-  VersionInfo get_version_info() const {
-    return get_module_version_info();
-  }
-  IMP_REF_COUNTED_DESTRUCTOR(RigidBodyMover)
+  IMP_OBJECT(RigidBodyMover);
 private:
   algebra::Transformation3D last_transformation_;
   Float max_translation_;

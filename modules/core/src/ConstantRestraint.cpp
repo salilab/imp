@@ -36,9 +36,9 @@ ContainersTemp ConstantRestraint::get_input_containers() const {
 }
 
 
-void ConstantRestraint::show(std::ostream& out) const
+void ConstantRestraint::do_show(std::ostream& out) const
 {
-  out << "Constant restraint :" << v_ << std::endl;
+  out << "value is " << v_ << std::endl;
 }
 
 IMPCORE_END_NAMESPACE

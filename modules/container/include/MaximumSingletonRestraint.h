@@ -39,8 +39,7 @@ public:
                                  std::string name
                                  ="MaximumSingletonRestraint %1%");
 
-  IMP_RESTRAINT(MaximumSingletonRestraint,
-                get_module_version_info());
+  IMP_RESTRAINT(MaximumSingletonRestraint);
 
   //! Set the number of lowest scores to use.
   void set_n(unsigned int n) { n_=n;}

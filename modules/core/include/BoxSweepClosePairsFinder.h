@@ -29,8 +29,7 @@ class IMPCOREEXPORT BoxSweepClosePairsFinder : public ClosePairsFinder
  public:
   BoxSweepClosePairsFinder();
 
-  IMP_CLOSE_PAIRS_FINDER(BoxSweepClosePairsFinder,
-                         get_module_version_info());
+  IMP_CLOSE_PAIRS_FINDER(BoxSweepClosePairsFinder);
 };
 
 IMPCORE_END_NAMESPACE

@@ -97,7 +97,7 @@ class RefCountTests(IMP.test.TestCase):
         d= IMP.core.XYZ.setup_particle(p)
         del d
 
-        mc= IMP.core.ListSingletonContainer()
+        mc= IMP.container.ListSingletonContainer()
         mc.add_particle(p)
         # also have the score state now
         refcnt.assert_number(3)

@@ -9,7 +9,7 @@ class LoggingRestraint(IMP.Restraint):
     def __init__(self, log):
         IMP.Restraint.__init__(self)
         self.log = log
-    def show(self, fh):
+    def do_show(self, fh):
         fh.write("LoggingRestraint")
     def get_version_info(self):
         return IMP.VersionInfo("Ben Webb", "0.1")
@@ -34,10 +34,11 @@ class LoggingScoreState(IMP.ScoreState):
 
     def do_before_evaluate(self):
         self.log.append('update')
-
+    def do_show(self, out):
+        print "Hi"
     def do_after_evaluate(self, accum):
         self.log.append('after_evaluate')
-    def show(self, fh=sys.stdout):
+    def do_show(self, fh=sys.stdout):
         fh.write("LoggingScoreState")
     def get_version_info(self):
         return IMP.VersionInfo("Ben Webb", "0.1")

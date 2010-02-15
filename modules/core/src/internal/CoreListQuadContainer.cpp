@@ -40,9 +40,9 @@ CoreListQuadContainer
   internal::ListLikeQuadContainer(name){}
 
 
-void CoreListQuadContainer::show(std::ostream &out) const {
+void CoreListQuadContainer::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
-  out << "CoreListQuadContainer with " << get_number_of_particle_quads()
+  out << get_number_of_particle_quads()
       << " particle_quads." << std::endl;
 }
 

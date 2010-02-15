@@ -31,11 +31,9 @@ Float AttributeSingletonScore::evaluate(Particle *b,
   }
 }
 
-void AttributeSingletonScore::show(std::ostream &out) const
+void AttributeSingletonScore::do_show(std::ostream &out) const
 {
-  out << "AttributeSingletonScore using ";
-  f_->show(out);
-  out << " on " << k_;
+  out << "function is " << *f_ << " on " << k_;
 }
 
 IMPCORE_END_NAMESPACE
