@@ -1,7 +1,6 @@
 Import('env')
 
 files = [
-         'simplify_atom_hierarchy.cpp',
          'simplify_restraint.cpp',
         ]
 
