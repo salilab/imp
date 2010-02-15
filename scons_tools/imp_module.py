@@ -89,21 +89,29 @@ def expand_dependencies(env, deps):
     In an effort to make static linking work, only the last copy in the list of dependencies is kept"""
     size=-1
     all=[]
-    for d in deps:
+    #print "expanding ", deps
+    to_expand=deps
+    expanded={}
+    for i in to_expand:
+        expanded[i]=True
+    while len(to_expand) != 0:
+        c= to_expand[-1]
         try:
-            ndeps=env[d+"_required_modules"]
-            all.append(d)
-            for nd in ndeps:
-                #print "trying " +str(nd)
-                nndeps= expand_dependencies(env, [nd])
-                all.append(nd)
-                app= all+nndeps
+            ndeps=env[c+"_required_modules"]
         except:
-            print >> sys.stderr, "Module binaries can only depend on modules which are configured before them."
-            print >> sys.stderr, "Specifically module "+str(env['IMP_MODULE']) + " cannot depenend on module " +d
+            print >> sys.stderr, "Modules can only depend on modules which are configured before them."
+            print >> sys.stderr, "Specifically, module "+str(env['IMP_MODULE']) + " cannot depenend on module " +d
             raise ValueError("Bad bin depedency")
+        ndeps.reverse()
+        to_expand=to_expand[:-1]
+        for i in ndeps:
+            if not expanded.has_key(i):
+                expanded[i]=True
+                to_expand.append(i)
+        #print c, to_expand, expanded
+        all.append(c)
     filtered=[]
-    #print "all is " + str(all)
+    #print "all is", all
     for i in range(0, len(all)):
         v= all[i]
         try:
@@ -114,6 +122,7 @@ def expand_dependencies(env, deps):
     if env['IMP_MODULE'] != 'kernel':
         filtered.append("kernel")
     #all.sort()
+    #print "got", filtered
     #print "expanded "+str(deps) + " to get "+str(filtered)
     return filtered
 
