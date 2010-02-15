@@ -8,9 +8,8 @@ import math
 
 class AngleRestraintTests(IMP.test.TestCase):
     """Tests for angle restraints"""
-    def test_ev(self):
-        """Testing excluded volume restraint"""
-        IMP.set_log_level(IMP.VERBOSE)
+    def _setup_ev_restraint(self):
+        #IMP.set_log_level(IMP.VERBOSE)
         m= IMP.Model()
         print "read"
         p0= IMP.atom.read_pdb(self.get_input_file_name("input.pdb"), m)
@@ -41,19 +40,22 @@ class AngleRestraintTests(IMP.test.TestCase):
         for p in sc.get_particles():
             d= IMP.core.XYZ(p)
             d.set_coordinates(IMP.algebra.random_vector_in_box(IMP.algebra.Vector3D(0,0,0),
-                                                               IMP.algebra.Vector3D(20,20,20)))
+                                                               IMP.algebra.Vector3D(5,5,5)))
         sc.add_particle(rb0.get_particle())
         sc.add_particle(rb1.get_particle())
         r= IMP.core.ExcludedVolumeRestraint(sc, IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits()))
         r.set_log_level(IMP.SILENT)
         m.add_restraint(r)
+        return (m, r)
+    def test_ev(self):
+        """Testing excluded volume restraint"""
+        (m,r)= self._setup_ev_restraint();
         print "mc"
         o= IMP.core.MonteCarlo()
         # very dumb op
         bm= IMP.core.BallMover(sc, IMP.core.XYZ.get_xyz_keys(), 100)
         o.add_mover(bm)
         o.set_model(m)
-        IMP.set_log_level(IMP.VERBOSE)
         print "opt"
         o.optimize(10)
         print "inspect"
@@ -65,6 +67,11 @@ class AngleRestraintTests(IMP.test.TestCase):
                     #print pb
                     d= IMP.core.distance(pa, pb)
                     self.assert_(d > -.1)
-
+    def test_ev(self):
+        """Testing isolated evaluation of ev restraint"""
+        (m,r)= self._setup_ev_restraint()
+        IMP.set_log_level(IMP.VERBOSE)
+        v= r.evaluate(False)
+        self.assert_(v != 0)
 if __name__ == '__main__':
     unittest.main()
