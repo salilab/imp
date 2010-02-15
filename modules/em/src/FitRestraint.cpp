@@ -125,7 +125,7 @@ ContainersTemp FitRestraint::get_input_containers() const {
   return ContainersTemp();
 }
 
-void FitRestraint::show(std::ostream& out) const
+void FitRestraint::do_show(std::ostream& out) const
 {
   out<<"FitRestraint"<<std::endl;
 }

@@ -50,7 +50,7 @@ public:
     return model_dens_map_;
   }
 
-  IMP_RESTRAINT(FitRestraint, get_module_version_info())
+  IMP_RESTRAINT(FitRestraint)
 
   IMP_LIST(private, Particle, particle, Particle*, Particles)
 private:

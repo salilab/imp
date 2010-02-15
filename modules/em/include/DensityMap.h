@@ -77,7 +77,6 @@ class IMPEMEXPORT DensityMap: public Object
 public:
   DensityMap();
   DensityMap(const DensityMap &other);
-  virtual ~DensityMap();
   DensityMap&  operator=(const DensityMap &other );
   //! Creates a new map with the given dimension
   /**
@@ -255,7 +254,7 @@ public:
     return z_loc_.get();
   }
 
-  emreal* get_data() const {return data_;}
+  emreal* get_data() const {return data_.get();}
 
   //! Checks if two maps have the same origin
   /** \param[in] other the map to compare with
@@ -326,23 +325,18 @@ public:
    */
   void calc_all_voxel2loc();
 
-  virtual void show(std::ostream &out=std::cout) const {
-    header_.show(out);
-  }
-  virtual VersionInfo get_version_info() const {
-    return get_module_version_info();
-  }
+  IMP_OBJECT_INLINE(DensityMap, header_.show(out),);
 
 protected:
 
   void reset_voxel2loc();
 
   void allocated_data();
-  void float2real(float *f_data, emreal **r_data);
-  void real2float(emreal *r_data, float **f_data);
+  void float2real(float *f_data, boost::scoped_array<emreal> &r_data);
+  void real2float(emreal *r_data, boost::scoped_array<float> &f_data);
 
   DensityHeader header_; // holds all the info about the map
-  emreal* data_; // the order is ZYX (Z-slowest)
+  boost::scoped_array<emreal> data_; // the order is ZYX (Z-slowest)
   bool data_allocated_;
 
   //! Locations for each of the voxels of the map (they are precomputed and
