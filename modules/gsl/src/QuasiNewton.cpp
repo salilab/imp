@@ -17,8 +17,7 @@ QuasiNewton::QuasiNewton(Model *m): GSLOptimizer(m) {
   min_gradient_=.001;
 }
 
-void QuasiNewton::show(std::ostream &out) const {
-  out << "QuasiNewton optimizer" << std::endl;
+void QuasiNewton::do_show(std::ostream &out) const {
 }
 
 Float QuasiNewton::optimize(unsigned int nsteps) {

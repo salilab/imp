@@ -11,10 +11,6 @@
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
-void ChimeraWriter::show(std::ostream &out) const {
-  out << "ChimeraWriter" << std::endl;
-}
-
 namespace {
   void write_marker(std::ostream &out,
                     const algebra::Vector3D &p,

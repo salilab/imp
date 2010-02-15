@@ -66,7 +66,7 @@ public:
   }
   /** @} */
 
-  IMP_OPTIMIZER(Simplex, get_module_version_info())
+  IMP_OPTIMIZER(Simplex)
 };
 
 

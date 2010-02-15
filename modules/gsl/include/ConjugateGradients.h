@@ -29,7 +29,7 @@ public:
     min_gradient_=mg;
   }
 
-  IMP_OPTIMIZER(ConjugateGradients, get_module_version_info())
+  IMP_OPTIMIZER(ConjugateGradients)
 };
 
 

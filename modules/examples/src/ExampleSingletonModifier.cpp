@@ -58,8 +58,8 @@ ExampleSingletonModifier::get_output_containers(Particle *p) const {
   return ContainersTemp();
 }
 
-void ExampleSingletonModifier::show(std::ostream &out) const {
-  out << "ExampleSingletonModifier" << std::endl;
+void ExampleSingletonModifier::do_show(std::ostream &out) const {
+  out << "bounding box " << bb_ << std::endl;
 }
 
 IMPEXAMPLES_END_NAMESPACE

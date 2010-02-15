@@ -36,7 +36,7 @@ public:
               ValueException);
   }
 
-  IMP_UNARY_FUNCTION(WormLikeChain, get_module_version_info());
+  IMP_UNARY_FUNCTION(WormLikeChain);
 
 private:
   unit::Piconewton cderiv(unit::Angstrom l) const {
@@ -99,8 +99,8 @@ inline DerivativePair WormLikeChain::evaluate_with_derivative(double v) const {
   return std::make_pair(value, deriv);
 }
 
-inline  void WormLikeChain::show(std::ostream &out) const {
-  out << "WormLikeChain " << lmax_ << " " << lp_ << std::endl;
+inline  void WormLikeChain::do_show(std::ostream &out) const {
+  out << "params " << lmax_ << " " << lp_ << std::endl;
 }
 
 IMPMISC_END_NAMESPACE

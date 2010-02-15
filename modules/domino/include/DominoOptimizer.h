@@ -37,7 +37,7 @@ public:
   DominoOptimizer(const JunctionTree &jt, Model *m,
                   RestraintEvaluatorI *r_eval);
 
-  IMP_OPTIMIZER(DominoOptimizer, get_module_version_info())
+  IMP_OPTIMIZER(DominoOptimizer)
 
   void set_sampling_space(DiscreteSampler *ds);
   //TODO : set a discrete sampling space for one node

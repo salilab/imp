@@ -45,7 +45,7 @@ public:
   ExampleComplexRestraint(UnaryFunction *f,
                     SingletonContainer *sc, Float diameter);
 
-  IMP_RESTRAINT(ExampleComplexRestraint, get_module_version_info());
+  IMP_RESTRAINT(ExampleComplexRestraint);
 
   void set_model(Model *m);
 };

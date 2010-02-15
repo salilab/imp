@@ -34,7 +34,7 @@ class IMPDISPLAYEXPORT CMMWriter: public Writer
                Color color, std::string name);
 public:
 
-  IMP_WRITER(CMMWriter, get_module_version_info())
+  IMP_WRITER(CMMWriter)
 };
 
 

@@ -17,9 +17,7 @@ Simplex::Simplex(Model *m): GSLOptimizer(m) {
 }
 
 
-void Simplex::show(std::ostream &out) const {
-  out << "Simplex optimizer" << std::endl;
-}
+void Simplex::do_show(std::ostream &out) const {}
 
 Float Simplex::optimize(unsigned int nsteps) {
   // we have an old version of GSL so can't use the 2 version

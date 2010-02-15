@@ -12,15 +12,11 @@
 /** This macro declares the methods on_open, on_close, add_geometry
     and show, and defines the destructor and get_version_info.
 */
-#define IMP_WRITER(Name, version)                                       \
+#define IMP_WRITER(Name)                                                \
   Name(TextOutput of): Writer(of, #Name)                                \
   {}                                                                    \
   Name(): Writer(#Name){}                                               \
-  ~Name(){                                                              \
-    close();                                                            \
-  }                                                                     \
-  void show(std::ostream &out=std::cout) const;                         \
-  VersionInfo get_version_info() const {return version;}                \
+  IMP_OBJECT_INLINE(Name,,close());                                     \
 protected:                                                              \
  using Writer::process;                                                 \
  virtual void on_open();                                                \
@@ -28,9 +24,9 @@ protected:                                                              \
 
 
 //! Define information for an Geometry object
-#define IMP_GEOMETRY(Name, version)                     \
+#define IMP_GEOMETRY(Name)                              \
   IMP::display::Geometries get_components() const;      \
-  IMP_OBJECT(Name, version)
+  IMP_OBJECT(Name)
 
 
 //! Define a geometric object using an IMP::algebra one
@@ -42,7 +38,7 @@ protected:                                                              \
     Name(const Type &v, const Color &c);                                \
     Name(const Type &v, const std::string n);                           \
     Name(const Type &v, const Color &c, std::string n);                 \
-    IMP_GEOMETRY(Name, get_module_version_info());                      \
+    IMP_GEOMETRY(Name);                      \
   };                                                                    \
 
 
@@ -57,7 +53,7 @@ protected:                                                              \
   Geometries Name::get_components() const {                             \
     return Geometries(const_cast<Name*>(this));                         \
   }                                                                     \
-  void Name::show(std::ostream &out) const {                            \
+  void Name::do_show(std::ostream &out) const {                         \
     out << #Name << "Geometry: " << static_cast<Type >(*this);          \
   }                                                                     \
 
@@ -70,7 +66,7 @@ protected:                                                              \
     Name(const Type &v, const Color &c);                        \
     Name(const Type &v, const std::string n);                   \
     Name(const Type &v, const Color &c, std::string n);         \
-    IMP_GEOMETRY(Name, get_module_version_info());              \
+    IMP_GEOMETRY(Name);                                         \
   };                                                            \
 
 
@@ -82,7 +78,7 @@ protected:                                                              \
     Type(v), Geometry(n) {}                                             \
   Name::Name(const Type &v, const Color &c, std::string n):             \
     Type(v), Geometry(c,n) {}                                           \
-  void Name::show(std::ostream &out) const {                            \
+  void Name::do_show(std::ostream &out) const {                         \
     out << #Name << "Geometry: "                                        \
         << static_cast<Type>(*this);                                    \
   }                                                                     \
@@ -102,12 +98,8 @@ protected:                                                              \
     action;                                                             \
     return ret;                                                         \
   }                                                                     \
-  void show(std::ostream &out=std::cout) const {                        \
-    out << #Name << " " << Decorator(get_particle())<< std::endl;       \
-  }                                                                     \
-  VersionInfo get_version_info() const {                                \
-    return get_module_version_info();                                   \
-  }                                                                     \
+  IMP_OBJECT_INLINE(Name##Geometry,                                     \
+                    out <<  Decorator(get_particle())<< std::endl;,)    \
   };                                                                    \
   class Name##sGeometry: public SingletonsGeometry {                    \
   public:                                                               \
@@ -122,13 +114,9 @@ protected:                                                              \
     }                                                                   \
     return ret;                                                         \
   }                                                                     \
-  void show(std::ostream &out=std::cout) const {                        \
-    out << #Name << "sGeometries" << std::endl;                         \
-  }                                                                     \
-  VersionInfo get_version_info() const {                                \
-    return get_module_version_info();                                   \
-  }                                                                     \
- };                                                                    \
+  IMP_OBJECT_INLINE(Name##sGeometry,                                    \
+                    out <<  get_container() << std::endl;,)             \
+  };                                                                    \
 
 
 #define IMP_PARTICLE_TRAITS_GEOMETRY(Name, Decorator, TraitsName,       \
@@ -144,18 +132,15 @@ protected:                                                              \
     action;                                                             \
     return ret;                                                         \
   }                                                                     \
-  void show(std::ostream &out=std::cout) const {                        \
-    out << #Name << " " << Decorator(get_particle())<< std::endl;       \
-  }                                                                     \
-  VersionInfo get_version_info() const {                                \
-    return get_module_version_info();                                   \
-  }                                                                     \
+  IMP_OBJECT_INLINE(Name##Geometry,                                     \
+                    out <<  Decorator(get_particle(), traits_)          \
+                    << std::endl;,)                                     \
   };                                                                    \
-  class Name##sGeometry: public SingletonsGeometry {                     \
+  class Name##sGeometry: public SingletonsGeometry {                    \
     TraitsName traits_;                                                 \
   public:                                                               \
   Name##sGeometry(SingletonContainer* sc, TraitsName tr):               \
-  SingletonsGeometry(sc), traits_(tr){}                                  \
+  SingletonsGeometry(sc), traits_(tr){}                                 \
   Geometries get_components() const {                                   \
     Geometries ret;                                                     \
     for (unsigned int i=0;                                              \
@@ -166,12 +151,8 @@ protected:                                                              \
     }                                                                   \
     return ret;                                                         \
   }                                                                     \
-  void show(std::ostream &out=std::cout) const {                        \
-    out << #Name << "sGeometries" << std::endl;                         \
-  }                                                                     \
-  VersionInfo get_version_info() const {                                \
-    return get_module_version_info();                                   \
-  }                                                                     \
+  IMP_OBJECT_INLINE(Name##sGeometry,                                    \
+                    out <<  get_container() << std::endl;,)             \
   };                                                                    \
 
 
@@ -187,13 +168,10 @@ protected:                                                              \
     action;                                                             \
     return ret;                                                         \
   }                                                                     \
-  void show(std::ostream &out=std::cout) const {                        \
-    out << #Name << " " << Decorator(get_particle_pair()[0])            \
-        << " " << Decorator(get_particle_pair()[1])<< std::endl;        \
-  }                                                                     \
-  VersionInfo get_version_info() const {                                \
-    return get_module_version_info();                                   \
-  }                                                                     \
+  IMP_OBJECT_INLINE(Name##Geometry,          \
+                    out <<  Decorator(get_particle_pair()[0])           \
+                    << " " << Decorator(get_particle_pair()[1])         \
+                    << std::endl;,);                                    \
   };                                                                    \
   class Name##sGeometry: public PairsGeometry {                         \
   public:                                                               \
@@ -209,12 +187,8 @@ protected:                                                              \
     }                                                                   \
     return ret;                                                         \
   }                                                                     \
-  void show(std::ostream &out=std::cout) const {                        \
-    out << #Name << "sGeometries" << std::endl;                         \
-  }                                                                     \
-  VersionInfo get_version_info() const {                                \
-    return get_module_version_info();                                   \
-  }                                                                     \
+  IMP_OBJECT_INLINE(Name##sGeometry,                                    \
+                    out <<  get_container() << std::endl;,)             \
   };
 
  #endif /* IMPDISPLAY_MACROS_H */

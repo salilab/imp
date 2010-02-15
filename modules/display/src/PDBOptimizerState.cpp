@@ -17,8 +17,8 @@ PDBOptimizerState::PDBOptimizerState(
   name_template_(name),  mh_(mh){
 }
 
-void PDBOptimizerState::show(std::ostream &out) const {
-  out << "PDBOptimizerState" << std::endl;
+void PDBOptimizerState::do_show(std::ostream &out) const {
+  out << "name " << name_template_ << std::endl;
 }
 
 void PDBOptimizerState::do_update(unsigned int n) {

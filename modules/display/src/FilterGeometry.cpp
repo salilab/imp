@@ -56,8 +56,8 @@ Geometries FilterGeometry::get_components() const {
 }
 
 
-void FilterGeometry::show(std::ostream &out) const {
-  out << "FilterGeometry " << p_ << std::endl;
+void FilterGeometry::do_show(std::ostream &out) const {
+  out << "plane " << p_ << std::endl;
 }
 
 IMPDISPLAY_END_NAMESPACE

@@ -36,7 +36,7 @@ public:
   PDBOptimizerState(const atom::Hierarchies &mh,
                     std::string name_template);
 
-  IMP_PERIODIC_OPTIMIZER_STATE(PDBOptimizerState, get_module_version_info())
+  IMP_PERIODIC_OPTIMIZER_STATE(PDBOptimizerState)
 };
 
 

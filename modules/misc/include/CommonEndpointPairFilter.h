@@ -22,7 +22,7 @@ class IMPMISCEXPORT CommonEndpointPairFilter: public PairFilter
 public:
   CommonEndpointPairFilter();
 
-  IMP_PAIR_FILTER(CommonEndpointPairFilter,get_module_version_info())
+  IMP_PAIR_FILTER(CommonEndpointPairFilter)
 };
 
 

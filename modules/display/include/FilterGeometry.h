@@ -46,7 +46,7 @@ public:
 
   void add_geometry(const Geometries& g);
 
-  IMP_GEOMETRY(FilterGeometry, get_module_version_info())
+  IMP_GEOMETRY(FilterGeometry)
 };
 
 

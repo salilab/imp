@@ -29,7 +29,7 @@ public:
    */
   SimpleDiscreteRestraint(Model& model_, std::string restraint_filename,
                           Particle *p1, Particle *p2);
-  IMP_RESTRAINT(SimpleDiscreteRestraint, get_module_version_info())
+  IMP_RESTRAINT(SimpleDiscreteRestraint)
 
   IMP_LIST(private, Particle, particle, Particle*, Particles)
 protected:
