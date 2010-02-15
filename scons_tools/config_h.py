@@ -154,6 +154,10 @@ IMP_END_INTERNAL_NAMESPACE
 %(PREPROC)s_BEGIN_NAMESPACE
 %(PREPROC)sEXPORT const VersionInfo& get_module_version_info();
 
+inline std::string get_module_name() {
+   return "%(namespace)s";
+}
+
 //! Return the path to installed data for this module
 /** Each module has its own data directory, so be sure to use
     the version of this function in the correct module.
