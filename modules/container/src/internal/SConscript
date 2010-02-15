@@ -1,0 +1,9 @@
+files = [
+         'pair_helpers.cpp',
+         'quad_helpers.cpp',
+         'singleton_helpers.cpp',
+         'triplet_helpers.cpp',
+        ]
+
+files = [File(x) for x in files]
+Return('files')
