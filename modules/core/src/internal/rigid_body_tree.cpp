@@ -233,7 +233,7 @@ ParticlesTemp RigidBodyHierarchy::get_particles(unsigned int i) const {
 
 
 
-void RigidBodyHierarchy::show(std::ostream &out) const {
+void RigidBodyHierarchy::do_show(std::ostream &out) const {
   for (unsigned int i=0; i< tree_.size(); ++i) {
     out << "Node " << i << ": ";
     if (get_is_leaf(i)) {

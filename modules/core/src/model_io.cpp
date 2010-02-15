@@ -373,7 +373,6 @@ void DumpModelOnFailure::handle_failure() {
 
 
 
-void DumpModelOnFailure::show(std::ostream &out) const {
-  out << "DumpModelOnFailure" << std::endl;
+void DumpModelOnFailure::do_show(std::ostream &out) const {
 }
 IMPCORE_END_NAMESPACE

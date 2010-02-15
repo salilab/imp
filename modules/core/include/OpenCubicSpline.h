@@ -32,7 +32,7 @@ public:
   OpenCubicSpline(const Floats &values, Float minrange,
                   Float spacing, bool extend=false);
 
-  IMP_UNARY_FUNCTION(OpenCubicSpline, get_module_version_info());
+  IMP_UNARY_FUNCTION(OpenCubicSpline);
 private:
   std::vector<Float> values_;
   std::vector<Float> second_derivs_;

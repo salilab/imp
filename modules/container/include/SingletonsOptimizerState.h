@@ -40,7 +40,7 @@ public:
   SingletonsOptimizerState(SingletonContainer *c, SingletonModifier *gf,
                            std::string name="SingletonsOptimizerState %1%");
 
-  IMP_OPTIMIZER_STATE(SingletonsOptimizerState, get_module_version_info())
+  IMP_OPTIMIZER_STATE(SingletonsOptimizerState)
 };
 
 

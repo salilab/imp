@@ -268,7 +268,7 @@ IMP_OUTPUT_OPERATOR(RigidMember);
 class IMPCOREEXPORT RigidMembersRefiner: public Refiner {
  public:
   RigidMembersRefiner():Refiner("RigidMembersRefiner%d"){}
-  IMP_SIMPLE_REFINER(RigidMembersRefiner, get_module_version_info());
+  IMP_SIMPLE_REFINER(RigidMembersRefiner);
 };
 
 namespace internal {

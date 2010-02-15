@@ -24,9 +24,9 @@ DerivativePair Cosine::evaluate_with_derivative(double feature) const
   return std::make_pair(evaluate(feature), deriv);
 }
 
- void Cosine::show(std::ostream &out) const {
-    out << "Cosine function with force " << force_constant_
-        << ", periodicity " << periodicity_ << ", and phase "
+ void Cosine::do_show(std::ostream &out) const {
+    out << "amplitude " << force_constant_
+        << "\nperiodicity " << periodicity_ << "\nphase "
         << phase_ << std::endl;
   }
 

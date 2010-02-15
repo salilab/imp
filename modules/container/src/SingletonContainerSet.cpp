@@ -52,11 +52,10 @@ SingletonContainerSet
   return false;
 }
 
-void SingletonContainerSet::show(std::ostream &out) const {
+void SingletonContainerSet::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
-  out << "SingletonContainerSet with "
-      << get_number_of_particles()
-      << " particles." << std::endl;
+  out << get_number_of_particles()
+      << " containers" << std::endl;
 }
 
 unsigned int

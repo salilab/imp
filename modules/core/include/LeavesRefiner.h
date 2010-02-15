@@ -29,7 +29,7 @@ public:
   //! Create a refiner for a particular type of hierarchy
   LeavesRefiner(HierarchyTraits tr);
 
-  IMP_REFINER(LeavesRefiner, get_module_version_info());
+  IMP_REFINER(LeavesRefiner);
 };
 
 IMPCORE_END_NAMESPACE

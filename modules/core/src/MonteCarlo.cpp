@@ -168,9 +168,9 @@ void MonteCarlo::set_local_optimizer(Optimizer* cg)
   cg_->set_model(get_model());
 }
 
-void MonteCarlo::show(std::ostream &out) const
+void MonteCarlo::do_show(std::ostream &out) const
 {
-  out << "MonteCarlo +" << stat_forward_steps_taken_
+  out << "forward steps " << stat_forward_steps_taken_
       << " -" << stat_num_failures_ << std::endl;
 }
 

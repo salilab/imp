@@ -99,10 +99,9 @@ ContainersTemp MaximumPairScore
 }
 
 
-void MaximumPairScore::show(std::ostream &out) const
+void MaximumPairScore::do_show(std::ostream &out) const
 {
-  out << "MaximumPairScore with " << scores_.size() << " scores."
-      << std::endl;
+  out << "size scores " << scores_.size() << std::endl;
 }
 
 IMPCONTAINER_END_NAMESPACE

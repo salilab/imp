@@ -75,10 +75,9 @@ Float AngleTripletScore::evaluate(const ParticleTriplet &p,
   return score;
 }
 
-void AngleTripletScore::show(std::ostream &out) const
+void AngleTripletScore::do_show(std::ostream &out) const
 {
-  out << "AngleTripletScore using ";
-  f_->show(out);
+  out << "function is " << *f_;
 }
 
 IMPCORE_END_NAMESPACE

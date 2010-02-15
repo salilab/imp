@@ -59,8 +59,8 @@ void IncrementalBallMover::reject_move() {
 }
 
 
-void IncrementalBallMover::show(std::ostream &out) const {
-  out << "IncrementalBallMover" << std::endl;
+void IncrementalBallMover::do_show(std::ostream &out) const {
+  out << "on " << *sc_ << std::endl;
 }
 
 IMPCORE_END_NAMESPACE

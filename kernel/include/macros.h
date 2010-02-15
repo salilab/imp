@@ -40,17 +40,17 @@
 
 //! Implement comparison in a class using field as the variable to compare
 /** The macro requires that This be defined as the type of the current class.
-*/
+ */
 #define IMP_COMPARISONS_1(field)
 
 //! Implement comparison in a class using field as the variable to compare
 /** The macro requires that This be defined as the type of the current class.
-*/
+ */
 #define IMP_COMPARISONS_2(f0, f1)
 
 //! Implement comparison in a class using field as the variable to compare
 /** The macro requires that This be defined as the type of the current class.
-*/
+ */
 #define IMP_COMPARISONS_3(f0, f1, f2)
 
 #else
@@ -103,7 +103,7 @@
 
 //! Implement comparison in a class using field as the variable to compare
 /** The macro requires that This be defined as the type of the current class.
-*/
+ */
 #define IMP_COMPARISONS_2(f0, f1)               \
   bool operator==(const This &o) const {        \
     return (f0== o.f0 && f1==o.f1);             \
@@ -270,7 +270,7 @@
 
 //! swap two member variables assuming the other object is called o
 /** Swap the member \c var_name of the two objects (this and o).
-*/
+ */
 #define IMP_SWAP_MEMBER(var_name)               \
   std::swap(var_name, o.var_name);
 
@@ -523,9 +523,9 @@ public:                                                                 \
 #ifdef IMP_DOXYGEN
 //! Define the types for storing sets of decorators
 /** The macro defines the types Names and NamesTemp.
-*/
-#define IMP_DECORATORS(Name, Parent)                            \
-  class Name##s: public Parent {};                              \
+ */
+#define IMP_DECORATORS(Name, Parent)            \
+  class Name##s: public Parent {};              \
   class Name##sTemp: public Parent##Temp {}
 #else
 #define IMP_DECORATORS(Name, Parent)                            \
@@ -561,13 +561,13 @@ public:                                                                 \
   };
 
 
-  /** See IMP_SUMMARY_DECORATOR_DECL()
-      \param[in] Name The name for the decorator
-      \param[in] Parent the parent decorator type
-      \param[in] Members the way to pass a set of particles in
-      \param[in] create_modifier the statements to create the modifier
-      which computes the summary info. It should be called mod.
-  */
+/** See IMP_SUMMARY_DECORATOR_DECL()
+    \param[in] Name The name for the decorator
+    \param[in] Parent the parent decorator type
+    \param[in] Members the way to pass a set of particles in
+    \param[in] create_modifier the statements to create the modifier
+    which computes the summary info. It should be called mod.
+*/
 #define IMP_SUMMARY_DECORATOR_DEF(Name, Parent, Members, create_modifier) \
   IMP_CONSTRAINT_DECORATOR_DEF(Name)                                    \
   Name Name::setup_particle(Particle *p, const Members &ps) {           \
@@ -709,13 +709,13 @@ protection:                                                             \
 #ifdef IMP_DOXYGEN
 //! Define the types for storing sets of objects
 /** The macro defines the types Names and NamesTemp.
-*/
-#define IMP_OBJECTS(Name)                                       \
-  class Name##sTemp {};                                         \
+ */
+#define IMP_OBJECTS(Name)                       \
+  class Name##sTemp {};                         \
   class Name##s:public Name##sTemp{};
 #else
-#define IMP_OBJECTS(Name)                                       \
-  typedef IMP::VectorOfRefCounted<Name*> Name##s;               \
+#define IMP_OBJECTS(Name)                               \
+  typedef IMP::VectorOfRefCounted<Name*> Name##s;       \
   typedef std::vector<Name*> Name##sTemp
 #endif
 
@@ -793,28 +793,63 @@ protection:                                                             \
     - IMP::Object::get_version_info()
     - a private destructor
     and declares
-    - IMP::Object::show()
+    - IMP::Object::do_show()
 */
-#define IMP_OBJECT(Name, version_info)                                  \
-  public:                                                               \
-  virtual void show(std::ostream &out=std::cout) const;                 \
-  virtual ::IMP::VersionInfo get_version_info() const { return version_info; } \
-  IMP_REF_COUNTED_DESTRUCTOR(Name)                                      \
-  public:
+#define IMP_OBJECT(Name)                                        \
+  public:                                                       \
+  virtual std::string get_type_name() const {return #Name;}     \
+  virtual ::IMP::VersionInfo get_version_info() const {         \
+    return get_module_version_info();                           \
+  }                                                             \
+  IMP_REF_COUNTED_DESTRUCTOR(Name)                              \
+  virtual void do_show(std::ostream &out) const;                \
+  virtual std::string get_module() const {                      \
+    return get_module_name();                                   \
+  }                                                             \
+public:
+
+
+//! Define the basic things needed by any Object
+/** This defines
+    - IMP::Object::get_version_info()
+    - a private destructor
+    and declares
+    - IMP::Object::do_show()
+*/
+#define IMP_OBJECT_INLINE(Name, show, destructor)               \
+  public:                                                       \
+  virtual std::string get_type_name() const {return #Name;}     \
+  virtual ::IMP::VersionInfo get_version_info() const {         \
+    return get_module_version_info();                           \
+  }                                                             \
+  virtual void do_show(std::ostream &out) const {               \
+    show;                                                       \
+  }                                                             \
+  virtual std::string get_module() const {                      \
+    return get_module_name();                                   \
+  }                                                             \
+  ~Name() {destructor;}                                         \
+public:
 
 //! Define the basic things needed by any internal Object
 /** \see IMP_OBJECT
-    This version also defines IMP::Object::show()
+    This version also defines IMP::Object::do_show()
 */
-#define IMP_INTERNAL_OBJECT(Name, version_info)                 \
+#define IMP_INTERNAL_OBJECT(Name)                               \
   public:                                                       \
-  virtual void show(std::ostream &out=std::cout) const {        \
-    out << #Name << std::endl;                                  \
-  }                                                             \
   virtual ::IMP::VersionInfo get_version_info() const {         \
-    return version_info;                                        \
+    return get_module_version_info();                           \
+  }                                                             \
+  virtual std::string get_type_name() const {                   \
+    return #Name;                                               \
+  }                                                             \
+  virtual std::string get_module() const {                      \
+    return get_module_name();                                   \
   }                                                             \
   IMP_REF_COUNTED_DESTRUCTOR(Name);                             \
+private:                                                        \
+ virtual void do_show(std::ostream &out=std::cout) const {      \
+ }                                                              \
 public:
 
 
@@ -830,12 +865,12 @@ public:
     - IMP::Restraint::get_is_incremental() to return 0
     - IMP::Restraint::incremental_evaluate() to throw an exception
 */
-#define IMP_RESTRAINT(Name, version_info)                               \
+#define IMP_RESTRAINT(Name)                                             \
   virtual double unprotected_evaluate(DerivativeAccumulator *accum) const; \
   ContainersTemp get_input_containers() const;                          \
   ParticlesList get_interacting_particles() const;                      \
   ParticlesTemp get_input_particles() const;                            \
-  IMP_OBJECT(Name, version_info);
+  IMP_OBJECT(Name);
 
 //! Define the basic things you need for a Restraint.
 /** In addition to the methods done by IMP_OBJECT, it declares
@@ -848,7 +883,7 @@ public:
     and it defines
     - IMP::Restraint::get_is_incremental() to return true
 */
-#define IMP_INCREMENTAL_RESTRAINT(Name, version_info)                   \
+#define IMP_INCREMENTAL_RESTRAINT(Name)                                 \
   virtual double unprotected_evaluate(DerivativeAccumulator *accum) const; \
   virtual bool get_is_incremental() const {return true;}                \
   virtual double                                                        \
@@ -856,7 +891,7 @@ public:
   ContainersTemp get_input_containers() const;                          \
   ParticlesList get_interacting_particles() const;                      \
   ParticlesTemp get_input_particles() const;                            \
-  IMP_OBJECT(Name, version_info);
+  IMP_OBJECT(Name);
 
 //! Define the basic things you need for an Optimizer.
 /** In addition to the methods done by IMP_OBJECT, it declares
@@ -864,9 +899,9 @@ public:
 
     \relatesalso IMP::Optimizer
 */
-#define IMP_OPTIMIZER(Name, version_info)               \
+#define IMP_OPTIMIZER(Name)                             \
   virtual Float optimize(unsigned int max_steps);       \
-  IMP_OBJECT(Name, version_info);
+  IMP_OBJECT(Name);
 
 //! Define the basic things you need for a Sampler.
 /** In addition to the methods done by IMP_OBJECT, it declares
@@ -874,9 +909,9 @@ public:
 
     \relatesalso IMP::Sampler
 */
-#define IMP_SAMPLER(Name, version_info)                \
-  virtual ConfigurationSet* sample() const;            \
-  IMP_OBJECT(Name, version_info);
+#define IMP_SAMPLER(Name)                       \
+  virtual ConfigurationSet* sample() const;     \
+  IMP_OBJECT(Name);
 
 
 
@@ -884,9 +919,9 @@ public:
 /** In addition to the methods done IMP_OBJECT, it declares
     - IMP::OptimizerState::update()
 */
-#define IMP_OPTIMIZER_STATE(Name, version_info) \
+#define IMP_OPTIMIZER_STATE(Name)               \
   virtual void update();                        \
-  IMP_OBJECT(Name, version_info);
+  IMP_OBJECT(Name);
 
 
 //! Define the basics needed for an OptimizerState which acts every n steps
@@ -899,7 +934,7 @@ public:
 
     If you use this macro, you should also include IMP/internal/utility.h.
 */
-#define IMP_PERIODIC_OPTIMIZER_STATE(Name, version_info)                \
+#define IMP_PERIODIC_OPTIMIZER_STATE(Name)                              \
   virtual void update() {                                               \
     if (call_number_%(skip_steps_+1) ==0) {                             \
       do_update(update_number_);                                        \
@@ -912,7 +947,7 @@ public:
     skip_steps_=k;                                                      \
     call_number_=0;                                                     \
   }                                                                     \
-  IMP_OBJECT(Name, version_info)                                        \
+  IMP_OBJECT(Name)                                                      \
   private:                                                              \
   ::IMP::internal::Counter skip_steps_, call_number_, update_number_;   \
                                                                         \
@@ -926,7 +961,7 @@ public:
     - IMP::ScoreState::get_input_particles()
     - IMP::ScoreState::get_output_particles()
 */
-#define IMP_SCORE_STATE(Name, version_info)                     \
+#define IMP_SCORE_STATE(Name)                                   \
   protected:                                                    \
   virtual void do_before_evaluate();                            \
   virtual void do_after_evaluate(DerivativeAccumulator *da);    \
@@ -935,7 +970,7 @@ public:
   virtual ParticlesTemp get_input_particles() const;            \
   virtual ParticlesTemp get_output_particles() const;           \
   virtual ParticlesList get_interacting_particles() const;      \
-  IMP_OBJECT(Name, version_info)
+  IMP_OBJECT(Name)
 
 
 //! Define the basics needed for a ScoreState
@@ -943,7 +978,7 @@ public:
     - IMP::Constraint::do_update_attributes()
     - IMP::Constraint::do_update_derivatives()
 */
-#define IMP_CONSTRAINT(Name, version_info)                              \
+#define IMP_CONSTRAINT(Name)                                            \
   protected:                                                            \
   void do_update_attributes();                                          \
   void do_update_derivatives(DerivativeAccumulator *da);                \
@@ -955,7 +990,7 @@ public:
   virtual ParticlesTemp get_input_particles() const;                    \
   virtual ParticlesTemp get_output_particles() const;                   \
   virtual ParticlesList get_interacting_particles() const;              \
-  IMP_OBJECT(Name, version_info)
+  IMP_OBJECT(Name)
 
 
 //! Define the basics needed for a particle refiner
@@ -966,14 +1001,14 @@ public:
     - IMP::Refiner::get_input_particles()
     \see IMP_SIMPLE_REFINER
 */
-#define IMP_REFINER(Name, version_info)                                 \
+#define IMP_REFINER(Name)                                               \
   virtual bool get_can_refine(Particle*) const;                         \
   virtual Particle* get_refined(Particle *, unsigned int) const;        \
   virtual const ParticlesTemp get_refined(Particle *) const;            \
   virtual unsigned int get_number_of_refined(Particle *) const;         \
   virtual ParticlesTemp get_input_particles(Particle *p) const;         \
   virtual ContainersTemp get_input_containers(Particle *p) const;       \
-  IMP_OBJECT(Name, version_info);
+  IMP_OBJECT(Name);
 
 
 //! Define the basics needed for a particle refiner
@@ -984,7 +1019,7 @@ public:
 
     \see IMP_REFINER
 */
-#define IMP_SIMPLE_REFINER(Name, version_info)                          \
+#define IMP_SIMPLE_REFINER(Name)                                        \
   virtual bool get_can_refine(Particle*) const;                         \
   virtual Particle* get_refined(Particle *, unsigned int) const;        \
   virtual const ParticlesTemp get_refined(Particle *a) const {          \
@@ -997,11 +1032,11 @@ public:
   virtual unsigned int get_number_of_refined(Particle *) const;         \
   virtual ParticlesTemp get_input_particles(Particle *p) const;         \
   virtual ContainersTemp get_input_containers(Particle *p) const;       \
-  IMP_OBJECT(Name, version_info);
+  IMP_OBJECT(Name);
 
 
 #ifndef IMP_DOXYGEN
-#define IMP_SINGLETON_SCORE_BASE(Name, version_info)                    \
+#define IMP_SINGLETON_SCORE_BASE(Name)                                  \
   double evaluate(Particle *a, DerivativeAccumulator *da) const;        \
   double evaluate(const ParticlesTemp &ps,                              \
                   DerivativeAccumulator *da) const {                    \
@@ -1045,7 +1080,7 @@ public:
     }                                                                   \
     return ret;                                                         \
   }                                                                     \
-  IMP_OBJECT(Name, version_info);
+  IMP_OBJECT(Name);
 #endif
 
 
@@ -1066,12 +1101,12 @@ public:
     See IMP_SIMPLE_SINGLETON_SCORE() for a way of providing an
     implementation of that method.
 */
-#define IMP_SINGLETON_SCORE(Name, version_info)                         \
-  bool get_is_changed(Particle *p) const;                               \
-  ParticlesList get_interacting_particles(Particle*) const;             \
-  ParticlesTemp get_input_particles(Particle*) const;                   \
-  ContainersTemp get_input_containers(Particle *) const;                \
-  IMP_SINGLETON_SCORE_BASE(Name, version_info);
+#define IMP_SINGLETON_SCORE(Name)                               \
+  bool get_is_changed(Particle *p) const;                       \
+  ParticlesList get_interacting_particles(Particle*) const;     \
+  ParticlesTemp get_input_particles(Particle*) const;           \
+  ContainersTemp get_input_containers(Particle *) const;        \
+  IMP_SINGLETON_SCORE_BASE(Name);
 
 //! Declare the functions needed for a SingletonScore
 /** In addition to the methods declared and defined by IMP_SINGLETON_SCORE,
@@ -1083,24 +1118,24 @@ public:
     which assume that only the passed particle serve as input to the
     score.
 */
-#define IMP_SIMPLE_SINGLETON_SCORE(Name, version_info)  \
-  bool get_is_changed(Particle *p) const {              \
-    return p->get_is_changed();                         \
-  }                                                     \
-  ParticlesList get_interacting_particles(Particle*) const {            \
-    return ParticlesList();                                             \
-  }                                                                     \
-  ParticlesTemp get_input_particles(Particle*p) const {                  \
-    return ParticlesTemp(1,p);                                          \
-  }                                                                     \
-  ContainersTemp get_input_containers(Particle *) const {               \
-    return ContainersTemp();                                            \
-  }                                                                     \
-  IMP_SINGLETON_SCORE_BASE(Name, version_info)
+#define IMP_SIMPLE_SINGLETON_SCORE(Name)                        \
+  bool get_is_changed(Particle *p) const {                      \
+    return p->get_is_changed();                                 \
+  }                                                             \
+  ParticlesList get_interacting_particles(Particle*) const {    \
+    return ParticlesList();                                     \
+  }                                                             \
+  ParticlesTemp get_input_particles(Particle*p) const {         \
+    return ParticlesTemp(1,p);                                  \
+  }                                                             \
+  ContainersTemp get_input_containers(Particle *) const {       \
+    return ContainersTemp();                                    \
+  }                                                             \
+  IMP_SINGLETON_SCORE_BASE(Name)
 
 
 #ifndef IMP_DOXYGEN
-#define IMP_PAIR_SCORE_BASE(Name, version_info) \
+#define IMP_PAIR_SCORE_BASE(Name)                                       \
   double evaluate(const ParticlePair &p,                                \
                   DerivativeAccumulator *da) const;                     \
   IMP_NO_DOXYGEN(double evaluate(Particle *a, Particle *b,              \
@@ -1149,7 +1184,7 @@ public:
     }                                                                   \
     return ret;                                                         \
   }                                                                     \
-  IMP_OBJECT(Name, version_info);
+  IMP_OBJECT(Name);
 #endif
 
 //! Declare the functions needed for a PairScore
@@ -1167,12 +1202,12 @@ public:
     See IMP_SIMPLE_PAIR_SCORE() for a way of providing an
     implementation of that method.
 */
-#define IMP_PAIR_SCORE(Name, version_info)              \
-  bool get_is_changed(const ParticlePair &pp) const;    \
+#define IMP_PAIR_SCORE(Name)                                            \
+  bool get_is_changed(const ParticlePair &pp) const;                    \
   ParticlesList get_interacting_particles(const ParticlePair &p) const; \
   ParticlesTemp get_input_particles(const ParticlePair &p) const;       \
   ContainersTemp get_input_containers(const ParticlePair &p) const;     \
-  IMP_PAIR_SCORE_BASE(Name, version_info)
+  IMP_PAIR_SCORE_BASE(Name)
 
 //! Declare the functions needed for a SingletonScore
 /** In addition to the methods declared and defined by IMP_PAIR_SCORE,
@@ -1184,13 +1219,13 @@ public:
     which assume that only the 2 passed particles serve as inputs to the
     score.
 */
-#define IMP_SIMPLE_PAIR_SCORE(Name, version_info)               \
+#define IMP_SIMPLE_PAIR_SCORE(Name)               \
   bool get_is_changed(const ParticlePair &p) const {            \
     return p[0]->get_is_changed() || p[1]->get_is_changed();    \
   }                                                             \
   ParticlesList get_interacting_particles(const ParticlePair &p) const { \
     ParticlesTemp r(2); r[0]=p[0]; r[1]=p[1];                           \
-  return ParticlesList(1, r);                                           \
+    return ParticlesList(1, r);                                           \
   }                                                                     \
   ParticlesTemp get_input_particles(const ParticlePair &p) const {      \
     ParticlesTemp r(2); r[0]=p[0]; r[1]=p[1];                           \
@@ -1199,10 +1234,10 @@ public:
   ContainersTemp get_input_containers(const ParticlePair &p) const {    \
     return ContainersTemp();                                            \
   }                                                                     \
-  IMP_PAIR_SCORE_BASE(Name, version_info);                      \
+  IMP_PAIR_SCORE_BASE(Name);                      \
 
 #ifndef IMP_DOXYGEN
-#define IMP_TRIPLET_SCORE_BASE(Name, version_info)                      \
+#define IMP_TRIPLET_SCORE_BASE(Name)                                    \
   double evaluate(const ParticleTriplet &p,                             \
                   DerivativeAccumulator *da) const;                     \
   double evaluate(const ParticleTripletsTemp &ps,                       \
@@ -1251,7 +1286,7 @@ public:
     }                                                                   \
     return ret;                                                         \
   }                                                                     \
-  IMP_OBJECT(Name, version_info)
+  IMP_OBJECT(Name)
 #endif
 
 //! Declare the functions needed for a TripletScore
@@ -1269,12 +1304,12 @@ public:
     See IMP_SIMPLE_TRIPLET_SCORE() for a way of providing an
     implementation of that method.
 */
-#define IMP_TRIPLET_SCORE(Name, version_info)                           \
+#define IMP_TRIPLET_SCORE(Name)                                         \
   bool get_is_changed(const ParticleTriplet &p) const;                  \
   ParticlesList get_interacting_particles(const ParticleTriplet &p) const; \
   ParticlesTemp get_input_particles(const ParticleTriplet &p) const;    \
   ContainersTemp get_input_containers(const ParticleTriplet &p) const;  \
-  IMP_TRIPLET_SCORE_BASE(Name, version_info)
+  IMP_TRIPLET_SCORE_BASE(Name)
 
 
 //! Declare the functions needed for a SingletonScore
@@ -1287,25 +1322,25 @@ public:
     which assume that only the 3 passed particles serve as inputs to the
     score.
 */
-#define IMP_SIMPLE_TRIPLET_SCORE(Name, version_info)               \
-  bool get_is_changed(const ParticleTriplet &p) const {            \
-    return p[0]->get_is_changed() || p[1]->get_is_changed()        \
-    || p[1]->get_is_changed();                                     \
-  }                                                                \
+#define IMP_SIMPLE_TRIPLET_SCORE(Name)                                  \
+  bool get_is_changed(const ParticleTriplet &p) const {                 \
+    return p[0]->get_is_changed() || p[1]->get_is_changed()             \
+      || p[1]->get_is_changed();                                        \
+  }                                                                     \
   ParticlesList get_interacting_particles(const ParticleTriplet &p) const { \
     ParticlesTemp r(3); r[0]=p[0]; r[1]=p[1]; r[2]=p[2];                \
     return ParticlesList(1,r);                                          \
   }                                                                     \
   ParticlesTemp get_input_particles(const ParticleTriplet &p) const {   \
-  ParticlesTemp r(3); r[0]=p[0]; r[1]=p[1]; r[2]=p[2];                  \
-  return r;                                                             \
+    ParticlesTemp r(3); r[0]=p[0]; r[1]=p[1]; r[2]=p[2];                \
+    return r;                                                           \
   }                                                                     \
   ContainersTemp get_input_containers(const ParticleTriplet &p) const { \
-  return ContainersTemp();                                              \
+    return ContainersTemp();                                            \
   }                                                                     \
-  IMP_TRIPLET_SCORE_BASE(Name, version_info);                           \
-
-
+  IMP_TRIPLET_SCORE_BASE(Name);                                         \
+                                                                        \
+                                                                        \
 //! Declare the functions needed for a QuadScore
 /** In addition to the methods done by IMP_OBJECT(), it declares
     - IMP::QuadScore::evaluate()
@@ -1317,10 +1352,10 @@ public:
     - bool get_is_changed(ParticleQuad) which returns true if the
     score needs to be recalculated.
 */
-#define IMP_QUAD_SCORE(Name, version_info)                              \
+#define IMP_QUAD_SCORE(Name)                                            \
   double evaluate(const ParticleQuad &p,                                \
                   DerivativeAccumulator *da) const;                     \
-  double evaluate(Particle *a, Particle *b, Particle *c, Particle *d,    \
+  double evaluate(Particle *a, Particle *b, Particle *c, Particle *d,   \
                   DerivativeAccumulator *da) const {                    \
     return evaluate(ParticleQuad(a,b,c,d), da);                         \
   }                                                                     \
@@ -1370,7 +1405,7 @@ public:
   ParticlesList get_interacting_particles(const ParticleQuad &p) const; \
   ParticlesTemp get_input_particles(const ParticleQuad &p) const;       \
   ContainersTemp get_input_containers(const ParticleQuad &p) const;     \
-  IMP_OBJECT(Name, version_info);
+  IMP_OBJECT(Name);
 
 
 
@@ -1382,7 +1417,7 @@ public:
     - IMP::SingletonModifier::get_output_particles()
     \see IMP_SINGLETON_MODIFIER_DA
 */
-#define IMP_SINGLETON_MODIFIER(Name, version_info)                      \
+#define IMP_SINGLETON_MODIFIER(Name)                                    \
   void apply(Particle *a) const;                                        \
   void apply(Particle *a, DerivativeAccumulator&) const{                \
     apply(a);                                                           \
@@ -1402,7 +1437,7 @@ public:
   ParticlesTemp get_output_particles(Particle*) const;                  \
   ContainersTemp get_input_containers(Particle*) const;                 \
   ContainersTemp get_output_containers(Particle*) const;                \
-  IMP_OBJECT(Name, version_info);
+  IMP_OBJECT(Name);
 
 
 
@@ -1414,7 +1449,7 @@ public:
     - IMP::PairModifier::get_output_particles()
     \see IMP_PAIR_MODIFIER_DA
 */
-#define IMP_PAIR_MODIFIER(Name,version_info)                            \
+#define IMP_PAIR_MODIFIER(Name)                                          \
   void apply(const ParticlePair &p) const;                              \
   void apply(const ParticlePair &p, DerivativeAccumulator&) const{      \
     apply(p);                                                           \
@@ -1435,7 +1470,7 @@ public:
   ParticlesTemp get_output_particles(const ParticlePair &p) const;      \
   ContainersTemp get_input_containers(const ParticlePair &p) const;     \
   ContainersTemp get_output_containers(const ParticlePair &p) const;    \
-  IMP_OBJECT(Name, version_info);
+  IMP_OBJECT(Name);
 
 
 //! Declare the functions needed for a SingletonModifier
@@ -1448,7 +1483,7 @@ public:
 
     \see IMP_SINGLETON_MODIFIER
 */
-#define IMP_SINGLETON_MODIFIER_DA(Name, version_info)                   \
+#define IMP_SINGLETON_MODIFIER_DA(Name)                                 \
   void apply(Particle *a, DerivativeAccumulator &da) const;             \
   void apply(Particle *) const{                                         \
     IMP_LOG(VERBOSE, "This modifier requires a derivative accumulator " \
@@ -1469,7 +1504,7 @@ public:
   ParticlesTemp get_output_particles(Particle*) const;                  \
   ContainersTemp get_input_containers(Particle*) const;                 \
   ContainersTemp get_output_containers(Particle*) const;                \
-  IMP_OBJECT(Name, version_info);
+  IMP_OBJECT(Name);
 
 
 //! Add interaction methods to a SingletonModifer
@@ -1503,8 +1538,8 @@ public:
   ContainersTemp Name::get_output_containers(Particle *p) const {       \
     return ContainersTemp();                                            \
   }                                                                     \
-  void Name::show(std::ostream &out) const {                            \
-    out << #Name << " with refiner " << *refiner << std::endl;          \
+  void Name::do_show(std::ostream &out) const {                         \
+    out <<"refiner " << *refiner << std::endl;                          \
   }                                                                     \
                                                                         \
                                                                         \
@@ -1515,7 +1550,7 @@ public:
     - IMP::SingletonModifier::get_interacting_particles()
     - IMP::SingletonModifier::get_input_particles()
     - IMP::SingletonModifier::get_output_particles()
-    - IMP::Object::show()
+    - IMP::Object::do_show()
     for a modifier which updates the refined particles based on the one
     they are refined from.
 
@@ -1543,8 +1578,8 @@ public:
   ContainersTemp Name::get_output_containers(Particle *p) const {       \
     return ContainersTemp();                                            \
   }                                                                     \
-  void Name::show(std::ostream &out) const {                            \
-    out << #Name << " with refiner " << *refiner << std::endl;          \
+  void Name::do_show(std::ostream &out) const {                         \
+    out << "refiner " << *refiner << std::endl;                         \
   }                                                                     \
                                                                         \
                                                                         \
@@ -1556,7 +1591,7 @@ public:
     - IMP::PairModifier::get_output_particles()
     \see IMP_PAIR_MODIFIER
 */
-#define IMP_PAIR_MODIFIER_DA(Name, version_info)                        \
+#define IMP_PAIR_MODIFIER_DA(Name)                                      \
   void apply(const ParticlePair &p, DerivativeAccumulator *da) const;   \
   void apply(const ParticlePair &p) const{                              \
     IMP_LOG(VERBOSE, "This modifier requires a derivative accumulator " \
@@ -1569,7 +1604,7 @@ public:
   void apply(const ParticlePairsTemp &ps,                               \
              DerivativeAccumulator &da) const {                         \
     for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      Name::apply(ps[i], da);                              \
+      Name::apply(ps[i], da);                                           \
     }                                                                   \
   }                                                                     \
   ParticlesList get_interacting_particles(const ParticlePair &p) const; \
@@ -1577,7 +1612,7 @@ public:
   ParticlesTemp get_output_particles(const ParticlePair &p) const;      \
   ContainersTemp get_input_containers(const ParticlePair &p) const;     \
   ContainersTemp get_output_containers(const ParticlePair &p) const;    \
-  IMP_OBJECT(Name, version_info)
+  IMP_OBJECT(Name)
 
 
 
@@ -1587,13 +1622,13 @@ public:
     - IMP::SingletonModifier::get_interacting_particles() to return None
     - IMP::SingletonModifier::get_input_particles() to return the particle
     - IMP::SingletonModifier::get_output_particles() to return the particle
-    - IMP::Object::show()
+    - IMP::Object::do_show()
     This macro should only be used to define types which are used
     internally in algorithms and data structures.
     \see IMP_SINGLETON_MODIFIER_DA
     \see IMP_SINGLETON_MODIFIER
 */
-#define IMP_INTERNAL_SINGLETON_MODIFIER(Name, version_info,             \
+#define IMP_INTERNAL_SINGLETON_MODIFIER(Name,                           \
                                         apply_expr)                     \
   void apply(Particle *p) const {                                       \
     apply_expr;                                                         \
@@ -1626,7 +1661,7 @@ public:
   ContainersTemp get_output_containers(Particle*p) const {              \
     return ContainersTemp();                                            \
   }                                                                     \
-  IMP_INTERNAL_OBJECT(Name, version_info);
+  IMP_INTERNAL_OBJECT(Name);
 
 
 
@@ -1640,7 +1675,7 @@ public:
     - IMP::SingletonContainer::get_particles()
     - IMP::Interaction::get_input_objects()
 */
-#define IMP_SINGLETON_CONTAINER(Name, version_info)             \
+#define IMP_SINGLETON_CONTAINER(Name)                           \
   bool get_contains_particle(Particle* p) const;                \
   unsigned int get_number_of_particles() const;                 \
   Particle* get_particle(unsigned int i) const;                 \
@@ -1657,7 +1692,7 @@ public:
   ParticlesTemp get_contained_particles() const;                \
   bool get_contained_particles_changed() const;                 \
   ContainersTemp get_input_containers() const;                  \
-  IMP_OBJECT(Name, version_info);
+  IMP_OBJECT(Name);
 
 
 //! Declare the needed functions for a PairContainer
@@ -1670,7 +1705,7 @@ public:
     - IMP::PairContainer::get_particle_pairs()
     - IMP::Interaction::get_input_objects()
 */
-#define IMP_PAIR_CONTAINER(Name, version_info)                  \
+#define IMP_PAIR_CONTAINER(Name)                                \
   bool get_contains_particle_pair(const ParticlePair &p) const; \
   unsigned int get_number_of_particle_pairs() const;            \
   ParticlePair get_particle_pair(unsigned int i) const;         \
@@ -1687,7 +1722,7 @@ public:
   ParticlesTemp get_contained_particles() const;                \
   bool get_contained_particles_changed() const;                 \
   ContainersTemp get_input_containers() const;                  \
-  IMP_OBJECT(Name, version_info)
+  IMP_OBJECT(Name)
 
 
 
@@ -1701,7 +1736,7 @@ public:
     - IMP::TripletContainer::get_particle_triplets()
     - IMP::Interaction::get_input_objects()
 */
-#define IMP_TRIPLET_CONTAINER(Name, version_info)                       \
+#define IMP_TRIPLET_CONTAINER(Name)                                     \
   bool get_contains_particle_triplet(const ParticleTriplet &p) const;   \
   unsigned int get_number_of_particle_triplets() const;                 \
   ParticleTriplet get_particle_triplet(unsigned int i) const;           \
@@ -1718,7 +1753,7 @@ public:
   ParticlesTemp get_contained_particles() const;                        \
   bool get_contained_particles_changed() const;                         \
   ContainersTemp get_input_containers() const;                          \
-  IMP_OBJECT(Name, version_info)
+  IMP_OBJECT(Name)
 
 
 
@@ -1732,7 +1767,7 @@ public:
     - IMP::QuadContainer::get_particle_quads()
     - IMP::Interaction::get_input_objects()
 */
-#define IMP_QUAD_CONTAINER(Name, version_info)                  \
+#define IMP_QUAD_CONTAINER(Name)                                \
   bool get_contains_particle_quad(const ParticleQuad &p) const; \
   unsigned int get_number_of_particle_quads() const;            \
   ParticleQuad get_particle_quad(unsigned int i) const;         \
@@ -1749,7 +1784,7 @@ public:
   ParticlesTemp get_contained_particles() const;                \
   bool get_contained_particles_changed() const;                 \
   ContainersTemp get_input_containers() const;                  \
-  IMP_OBJECT(Name, version_info)
+  IMP_OBJECT(Name)
 
 
 
@@ -1759,11 +1794,11 @@ public:
     - IMP::SingletonFilter::get_contains_particle()
     - IMP::SingletonFilter::get_input_particles()
 */
-#define IMP_SINGLETON_FILTER(Name, version_info)        \
+#define IMP_SINGLETON_FILTER(Name)                      \
   bool get_contains_particle(Particle* p) const;        \
   ParticlesTemp get_input_particles(Particle*t) const;  \
   ObjectsTemp get_input_objects(Particle*t) const;      \
-  IMP_OBJECT(Name, version_info)
+  IMP_OBJECT(Name)
 
 
 //! Declare the needed functions for a PairFilter
@@ -1771,11 +1806,11 @@ public:
     - IMP::PairFilter::get_contains_particle_pair()
     - IMP::PairFilter::get_input_particles()
 */
-#define IMP_PAIR_FILTER(Name, version_info)                             \
+#define IMP_PAIR_FILTER(Name)                                           \
   bool get_contains_particle_pair(const ParticlePair& p) const;         \
   ParticlesTemp get_input_particles(const ParticlePair& t) const;       \
   ObjectsTemp get_input_objects(const ParticlePair& t) const;           \
-  IMP_OBJECT(Name, version_info);
+  IMP_OBJECT(Name);
 
 
 
@@ -1784,11 +1819,11 @@ public:
     - IMP::TripletFilter::get_contains_particle_triplet()
     - IMP::TripletFilter::get_input_particles()
 */
-#define IMP_TRIPLET_FILTER(Name, version_info)                  \
+#define IMP_TRIPLET_FILTER(Name)                                \
   bool get_contains_particle_triplet(ParticleTriplet p) const;  \
   ParticlesTemp get_input_particles(ParticleTriplet t) const;   \
   ObjectsTemp get_input_objects(ParticleTriplet t) const;       \
-  IMP_OBJECT(Name, version_info);
+  IMP_OBJECT(Name);
 
 
 
@@ -1797,11 +1832,11 @@ public:
     - IMP::QuadFilter::get_contains_particle_quad()
     - IMP::QuadFilter::get_input_particles()
 */
-#define IMP_QUAD_FILTER(Name, version_info)                     \
+#define IMP_QUAD_FILTER(Name)                                   \
   bool get_contains_particle_quad(ParticleQuad p) const;        \
   ParticlesTemp get_input_particles(ParticleQuad t) const;      \
   ObjectsTemp get_input_objects(ParticleQuad t) const;          \
-  IMP_OBJECT(Name, version_info);
+  IMP_OBJECT(Name);
 
 
 
@@ -1812,10 +1847,10 @@ public:
 
     \see IMP_UNARY_FUNCTION_INLINE
 */
-#define IMP_UNARY_FUNCTION(Name, version_info)                          \
+#define IMP_UNARY_FUNCTION(Name)                                        \
   virtual DerivativePair evaluate_with_derivative(double feature) const; \
   virtual double evaluate(double feature) const;                        \
-  IMP_OBJECT(Name, version_info)
+  IMP_OBJECT(Name)
 
 
 
@@ -1830,7 +1865,7 @@ public:
 
     \see IMP_UNARY_FUNCTION
 */
-#define IMP_UNARY_FUNCTION_INLINE(Name, version_info, value_expression, \
+#define IMP_UNARY_FUNCTION_INLINE(Name, value_expression,               \
                                   derivative_expression, show_expression) \
   virtual DerivativePair evaluate_with_derivative(double feature) const { \
     return DerivativePair((value_expression), (derivative_expression)); \
@@ -1838,21 +1873,17 @@ public:
   virtual double evaluate(double feature) const {                       \
     return (value_expression);                                          \
   }                                                                     \
-  virtual void show(std::ostream &out=std::cout) const {                \
-    out << show_expression;                                             \
-  }                                                                     \
-  ::IMP::VersionInfo get_version_info() const { return version_info; }  \
-  IMP_REF_COUNTED_DESTRUCTOR(Name);                                     \
-public:
+  IMP_OBJECT_INLINE(Name, out << show_expression, )
+
 
 
 //! Declare a IMP::FailureHandler
 /** In addition to the standard methods it declares:
     - IMP::FailureHandler::handle_failure()
 */
-#define IMP_FAILURE_HANDLER(Name, version_info) \
+#define IMP_FAILURE_HANDLER(Name)               \
   void handle_failure();                        \
-  IMP_OBJECT(Name, version_info)
+  IMP_OBJECT(Name)
 
 
 
@@ -1906,12 +1937,12 @@ public:
     \note The name in the typedef would have to start with ::IMP so it
     could be used out of the IMP namespace.
 */
-#define IMP_DECLARE_KEY_TYPE(Name, Tag)                         \
- class Name {                                                   \
-public:                                                         \
- Name(std::string nm);                                          \
- };                                                             \
- typedef std::vector<Name> Name##s
+#define IMP_DECLARE_KEY_TYPE(Name, Tag)         \
+  class Name {                                  \
+  public:                                       \
+  Name(std::string nm);                         \
+  };                                            \
+  typedef std::vector<Name> Name##s
 
 #else
 #define IMP_DECLARE_KEY_TYPE(Name, Tag)                         \
@@ -1938,11 +1969,11 @@ public:                                                         \
 
     \see IMP_DECLARE_KEY_TYPE
 */
-#define IMP_DECLARE_CONTROLLED_KEY_TYPE(Name, Tag)              \
-  class Name {                                                  \
-  public:                                                       \
-  Name(std::string nm);                                         \
-  };                                                            \
+#define IMP_DECLARE_CONTROLLED_KEY_TYPE(Name, Tag)      \
+  class Name {                                          \
+  public:                                               \
+  Name(std::string nm);                                 \
+  };                                                    \
   typedef std::vector<Name> Name##s
 
 #else

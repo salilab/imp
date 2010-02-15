@@ -23,7 +23,7 @@ class IMPCOREEXPORT AngleTripletScore : public TripletScore
 public:
   //! Score the angle (in radians) using f
   AngleTripletScore(UnaryFunction *f);
-  IMP_SIMPLE_TRIPLET_SCORE(AngleTripletScore, get_module_version_info());
+  IMP_SIMPLE_TRIPLET_SCORE(AngleTripletScore);
 };
 
 IMPCORE_END_NAMESPACE

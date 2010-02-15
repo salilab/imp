@@ -60,12 +60,9 @@ double MaximumQuadRestraint
   return score;
 }
 
-void MaximumQuadRestraint::show(std::ostream &out) const {
-  out << "MaximumQuadScoreRestraint over ";
-  c_->show(out);
-  out << " using function ";
-  f_->show(out);
-  out << std::endl;
+void MaximumQuadRestraint::do_show(std::ostream &out) const {
+  out << "container " << *c_ << std::endl;
+  out << "score " << *f_ << std::endl;
 }
 
 

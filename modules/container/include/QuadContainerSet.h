@@ -35,7 +35,7 @@ public:
   QuadContainerSet(const QuadContainers &in,
                         std::string name="QuadContainerSet %1%");
 
-  IMP_QUAD_CONTAINER(QuadContainerSet, get_module_version_info());
+  IMP_QUAD_CONTAINER(QuadContainerSet);
  /** @name Methods to control the nested container
 
      This container merges a set of nested containers. To add

@@ -78,9 +78,9 @@ public:
   IMP_LIST(public, PairFilter, pair_filter,
            PairFilter*, PairFilters);
    /**@}*/
-  IMP_PAIR_CONTAINER(ClosePairContainer, get_module_version_info());
+  IMP_PAIR_CONTAINER(ClosePairContainer);
 #else
-  IMP_OBJECT(ClosePairContainer, get_module_version_info());
+  IMP_OBJECT(ClosePairContainer);
 #endif
 };
 

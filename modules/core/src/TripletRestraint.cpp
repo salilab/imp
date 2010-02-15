@@ -62,12 +62,10 @@ ContainersTemp TripletRestraint::get_input_containers() const
   return ss_->get_input_containers(v_);
 }
 
-void TripletRestraint::show(std::ostream& out) const
+void TripletRestraint::do_show(std::ostream& out) const
 {
-  out << "TripletRestraint with score function ";
-  ss_->show(out);
-  out << " and " << v_;
-  out << std::endl;
+  out << "score " << *ss_ << std::endl;
+  out << "data " << IMP::internal::streamable(v_).get_name() << std::endl;
 }
 
 IMPCORE_END_NAMESPACE

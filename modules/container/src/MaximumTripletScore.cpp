@@ -99,10 +99,9 @@ ContainersTemp MaximumTripletScore
 }
 
 
-void MaximumTripletScore::show(std::ostream &out) const
+void MaximumTripletScore::do_show(std::ostream &out) const
 {
-  out << "MaximumTripletScore with " << scores_.size() << " scores."
-      << std::endl;
+  out << "size scores " << scores_.size() << std::endl;
 }
 
 IMPCONTAINER_END_NAMESPACE

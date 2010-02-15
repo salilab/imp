@@ -19,7 +19,7 @@
     and it defines
     - IMP::Restraint::get_is_incremental() to return true
 */
-#define IMP_FORCE_FIELD_PARAMETERS(Name, version_info)  \
-  IMP_OBJECT(Name, version_info)
+#define IMP_FORCE_FIELD_PARAMETERS(Name)  \
+  IMP_OBJECT(Name)
 
 #endif  /* IMPATOM_MACROS_H */

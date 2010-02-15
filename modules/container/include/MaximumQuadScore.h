@@ -27,7 +27,7 @@ public:
   MaximumQuadScore(const QuadScoresTemp &scores,
                        unsigned int n=1,
                        std::string name="QuadScore %1%");
-  IMP_QUAD_SCORE(MaximumQuadScore, get_module_version_info());
+  IMP_QUAD_SCORE(MaximumQuadScore);
 };
 
 IMPCONTAINER_END_NAMESPACE

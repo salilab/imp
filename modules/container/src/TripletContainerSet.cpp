@@ -52,11 +52,10 @@ TripletContainerSet
   return false;
 }
 
-void TripletContainerSet::show(std::ostream &out) const {
+void TripletContainerSet::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
-  out << "TripletContainerSet with "
-      << get_number_of_particle_triplets()
-      << " particle_triplets." << std::endl;
+  out << get_number_of_particle_triplets()
+      << " containers" << std::endl;
 }
 
 unsigned int

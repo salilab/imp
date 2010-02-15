@@ -36,8 +36,7 @@ class IMPCOREEXPORT TransformedDistancePairScore : public PairScore
 
   /** Set the transformation object.*/
   void set_transformation(const algebra::Transformation3D &rot);
-  IMP_SIMPLE_PAIR_SCORE(TransformedDistancePairScore,
-                        get_module_version_info());
+  IMP_SIMPLE_PAIR_SCORE(TransformedDistancePairScore);
 };
 
 IMPCORE_END_NAMESPACE

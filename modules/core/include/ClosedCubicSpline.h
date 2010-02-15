@@ -28,7 +28,7 @@ public:
    */
   ClosedCubicSpline(const Floats &values, double minrange,
                     double spacing);
-  IMP_UNARY_FUNCTION(ClosedCubicSpline, get_module_version_info());
+  IMP_UNARY_FUNCTION(ClosedCubicSpline);
 private:
   std::vector<Float> values_;
   std::vector<Float> second_derivs_;

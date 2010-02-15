@@ -39,8 +39,7 @@ public:
                                  std::string name
                                  ="MaximumTripletRestraint %1%");
 
-  IMP_RESTRAINT(MaximumTripletRestraint,
-                get_module_version_info());
+  IMP_RESTRAINT(MaximumTripletRestraint);
 
   //! Set the number of lowest scores to use.
   void set_n(unsigned int n) { n_=n;}

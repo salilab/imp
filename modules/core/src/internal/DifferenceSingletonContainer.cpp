@@ -51,9 +51,9 @@ DifferenceSingletonContainer::get_contains_particle(Particle* vt) const {
       && !b_->get_contains_particle(vt);
 }
 
-void DifferenceSingletonContainer::show(std::ostream &out) const {
+void DifferenceSingletonContainer::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
-  out << "DifferenceSingletonContainer on " << a_ << " and " << *b_;
+  out << "containers " << a_ << " and " << *b_;
 }
 
 ContainersTemp DifferenceSingletonContainer::get_input_containers() const {

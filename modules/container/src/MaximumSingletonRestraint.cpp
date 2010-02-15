@@ -60,12 +60,9 @@ double MaximumSingletonRestraint
   return score;
 }
 
-void MaximumSingletonRestraint::show(std::ostream &out) const {
-  out << "MaximumSingletonScoreRestraint over ";
-  c_->show(out);
-  out << " using function ";
-  f_->show(out);
-  out << std::endl;
+void MaximumSingletonRestraint::do_show(std::ostream &out) const {
+  out << "container " << *c_ << std::endl;
+  out << "score " << *f_ << std::endl;
 }
 
 

@@ -193,8 +193,8 @@ ParticlePairsTemp GridClosePairsFinder
 }
 
 
-void GridClosePairsFinder::show(std::ostream &out) const {
-  out << "GridClosePairsFinder\n";
+void GridClosePairsFinder::do_show(std::ostream &out) const {
+  out << "distance " << get_distance() << std::endl;
 }
 
 

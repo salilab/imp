@@ -49,7 +49,7 @@ public:
                       TripletContainer *pc,
                       std::string name="TripletsRestraint %1%");
 
-  IMP_INCREMENTAL_RESTRAINT(CoreTripletsRestraint, get_module_version_info());
+  IMP_INCREMENTAL_RESTRAINT(CoreTripletsRestraint);
 
   //! Get the container used to store Particles
   TripletContainer* get_triplet_container() {

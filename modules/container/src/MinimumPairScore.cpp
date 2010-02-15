@@ -99,10 +99,9 @@ ContainersTemp MinimumPairScore
 }
 
 
-void MinimumPairScore::show(std::ostream &out) const
+void MinimumPairScore::do_show(std::ostream &out) const
 {
-  out << "MinimumPairScore with " << scores_.size() << " scores."
-      << std::endl;
+  out << "size scores " << scores_.size() << std::endl;
 }
 
 IMPCONTAINER_END_NAMESPACE

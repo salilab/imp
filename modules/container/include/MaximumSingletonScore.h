@@ -27,7 +27,7 @@ public:
   MaximumSingletonScore(const SingletonScoresTemp &scores,
                        unsigned int n=1,
                        std::string name="SingletonScore %1%");
-  IMP_SINGLETON_SCORE(MaximumSingletonScore, get_module_version_info());
+  IMP_SINGLETON_SCORE(MaximumSingletonScore);
 };
 
 IMPCONTAINER_END_NAMESPACE

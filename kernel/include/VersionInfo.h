@@ -34,13 +34,14 @@ public:
 
   //! Print version information to a stream.
   void show(std::ostream &out=std::cout) const {
-    out << "version: " << version_ << std::endl;
-    out << "author: " << author_ << std::endl;
+    out << version_ << " by " << author_;
   }
 
 private:
   std::string author_, version_;
 };
+
+IMP_OUTPUT_OPERATOR(VersionInfo);
 
 IMP_END_NAMESPACE
 

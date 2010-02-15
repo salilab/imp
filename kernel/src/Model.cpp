@@ -1213,13 +1213,8 @@ void Model::set_is_incremental(bool tf) {
   incremental_update_=tf;
 }
 
-void Model::show(std::ostream& out) const
+void Model::do_show(std::ostream& out) const
 {
-  out << std::endl << std::endl;
-  out << "Model:" << std::endl;
-
-  get_version_info().show(out);
-
   out << get_number_of_particles() << " particles" << std::endl;
   out << get_number_of_restraints() << " restraints" << std::endl;
   out << get_number_of_score_states() << " score states" << std::endl;

@@ -32,7 +32,7 @@ class IMPCOREEXPORT MonteCarlo: public Optimizer
 public:
   MonteCarlo(Model *m=NULL);
 
-  IMP_OPTIMIZER(MonteCarlo, get_module_version_info())
+  IMP_OPTIMIZER(MonteCarlo)
  public:
   /** \name Local optimization
 

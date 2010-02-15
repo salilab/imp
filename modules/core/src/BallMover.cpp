@@ -82,4 +82,8 @@ void BallMover::generate_move(Float scale)
   }
 }
 
+void BallMover::do_show(std::ostream &out) const {
+  out << "radius " << radius_ << std::endl;
+}
+
 IMPCORE_END_NAMESPACE

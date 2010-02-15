@@ -192,10 +192,9 @@ ContainersTemp ConnectivityRestraint::get_input_containers() const {
 }
 
 
-void ConnectivityRestraint::show(std::ostream& out) const
+void ConnectivityRestraint::do_show(std::ostream& out) const
 {
-  out << "connectivity restraint:" << std::endl;
-  get_version_info().show(out);
+  out << "container is " << *sc_ << std::endl;
 }
 
 IMPCORE_END_NAMESPACE

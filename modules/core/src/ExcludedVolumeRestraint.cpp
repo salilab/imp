@@ -82,8 +82,9 @@ ExcludedVolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
   return pr_->unprotected_evaluate(da);
 }
 
-void ExcludedVolumeRestraint::show(std::ostream &out) const {
-  out << "ExcludedVolumeRestraint" << std::endl;
+void ExcludedVolumeRestraint::do_show(std::ostream &out) const {
+  out << "on " << *ss_ << std::endl;
+  out << "using " << *pr_ << std::endl;
 }
 
 ParticlesList ExcludedVolumeRestraint::get_interacting_particles() const {

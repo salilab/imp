@@ -60,12 +60,9 @@ double MinimumPairRestraint
   return score;
 }
 
-void MinimumPairRestraint::show(std::ostream &out) const {
-  out << "MinimumPairScoreRestraint over ";
-  c_->show(out);
-  out << " using function ";
-  f_->show(out);
-  out << std::endl;
+void MinimumPairRestraint::do_show(std::ostream &out) const {
+  out << "container " << *c_ << std::endl;
+  out << "score " << *f_ << std::endl;
 }
 
 

@@ -56,8 +56,8 @@ ParticlePair BondPairContainer
 }
 
 
-void BondPairContainer::show(std::ostream &out) const {
-  out << "BondPairContainer" << std::endl;
+void BondPairContainer::do_show(std::ostream &out) const {
+  out << "container " << *sc_ << std::endl;
 }
 
 IMP_PAIR_CONTAINER_METHODS_FROM_FOREACH(BondPairContainer);

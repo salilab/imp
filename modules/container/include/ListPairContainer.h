@@ -55,13 +55,13 @@ public:
     })
   void clear_particle_pairs();
   /**@}*/
-  IMP_PAIR_CONTAINER(ListPairContainer, get_module_version_info());
+  IMP_PAIR_CONTAINER(ListPairContainer);
 #else
   static ListPairContainer *create_untracked_container() {
     ListPairContainer *lsc = new ListPairContainer(false);
     return lsc;
   }
-  IMP_OBJECT(ListPairContainer, get_module_version_info());
+  IMP_OBJECT(ListPairContainer);
 #endif
 };
 

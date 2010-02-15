@@ -41,8 +41,7 @@ void SingletonsOptimizerState::update()
 
 
 
-void SingletonsOptimizerState::show(std::ostream &out) const {
-  out << "SingletonsOptimizerState base" << std::endl;
+void SingletonsOptimizerState::do_show(std::ostream &out) const {
 }
 
 IMPCONTAINER_END_NAMESPACE

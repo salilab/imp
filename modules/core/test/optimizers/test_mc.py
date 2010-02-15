@@ -28,7 +28,7 @@ class WoodsFunc(IMP.Restraint):
         return e
     def get_version_info(self):
         return IMP.VersionInfo("Daniel Russel", "0.5")
-    def show(self, fh):
+    def do_show(self, fh):
         fh.write("WoodsFunc")
     def get_input_particles(self):
         return IMP.ParticlesTemp([x for x in self.get_model().get_particles()])

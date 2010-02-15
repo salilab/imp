@@ -117,15 +117,10 @@ ParticlesTemp QuadConstraint::get_output_particles() const {
   return ret;
 }
 
-void QuadConstraint::show(std::ostream &out) const {
-  out << "QuadConstraint with ";
-  if (f_) out << *f_;
-  else out << "NULL";
-  out << " and ";
-  if (af_) out << *af_;
-  else out << "NULL";
-  out << " on ";
-  out << IMP::internal::streamable(v_).get_name() << std::endl;
+void QuadConstraint::do_show(std::ostream &out) const {
+  out << "on " << IMP::internal::streamable(v_).get_name() << std::endl;
+  if (f_) out << "before " << *f_ << std::endl;
+  if (af_) out << "after " << *af_ << std::endl;
 }
 
 IMPCORE_END_NAMESPACE

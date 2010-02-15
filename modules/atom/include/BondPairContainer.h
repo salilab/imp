@@ -36,7 +36,7 @@ public:
     return lsc;
   }
 
-  IMP_PAIR_CONTAINER(BondPairContainer, get_module_version_info())
+  IMP_PAIR_CONTAINER(BondPairContainer)
 };
 
 

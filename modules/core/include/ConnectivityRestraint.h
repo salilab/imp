@@ -64,7 +64,7 @@ public:
   */
   ParticlePairs get_connected_pairs() const;
 
-  IMP_RESTRAINT(ConnectivityRestraint, get_module_version_info())
+  IMP_RESTRAINT(ConnectivityRestraint)
 
   //! Return the pair score used for scoring
   PairScore *get_pair_score() const {

@@ -188,10 +188,9 @@ void ConnectingPairContainer::do_after_evaluate() {
 }
 
 
-void ConnectingPairContainer::show(std::ostream &out) const {
+void ConnectingPairContainer::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
-  out << "ConnectingPairContainer on ";
-  sc_->show(out);
+  out << "container " << *sc_ << std::endl;
 }
 
 ContainersTemp ConnectingPairContainer::get_input_containers() const {

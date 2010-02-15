@@ -41,8 +41,7 @@ public:
                     FloatKeys ks
                     = XYZ::get_xyz_keys());
 
-  IMP_SINGLETON_MODIFIER(CentroidOfRefined,
-                         get_module_version_info());
+  IMP_SINGLETON_MODIFIER(CentroidOfRefined);
 };
 
 //! A particle that is the centroid of other particles.

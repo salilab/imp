@@ -23,7 +23,7 @@ class IMPCOREEXPORT GridClosePairsFinder : public ClosePairsFinder
  public:
   GridClosePairsFinder();
 
-  IMP_CLOSE_PAIRS_FINDER(GridClosePairsFinder, get_module_version_info());
+  IMP_CLOSE_PAIRS_FINDER(GridClosePairsFinder);
 };
 
 IMPCORE_END_NAMESPACE

@@ -31,7 +31,7 @@ public:
       force_constant_(force_constant), periodicity_(periodicity),
       phase_(phase) {}
 
-  IMP_UNARY_FUNCTION(Cosine, get_module_version_info());
+  IMP_UNARY_FUNCTION(Cosine);
 private:
   Float force_constant_;
   int periodicity_;

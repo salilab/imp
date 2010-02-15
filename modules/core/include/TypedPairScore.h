@@ -61,7 +61,7 @@ public:
         = IMP::internal::OwnerPointer<PairScore>(ps);
   }
 
-  IMP_PAIR_SCORE(TypedPairScore, get_module_version_info());
+  IMP_PAIR_SCORE(TypedPairScore);
 };
 
 IMPCORE_END_NAMESPACE

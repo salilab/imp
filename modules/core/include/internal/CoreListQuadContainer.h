@@ -31,8 +31,7 @@ public:
   void add_particle_quads(const ParticleQuadsTemp &c);
   void set_particle_quads(ParticleQuadsTemp c);
   void clear_particle_quads();
-  IMP_LISTLIKE_QUAD_CONTAINER(CoreListQuadContainer,
-                                   get_module_version_info());
+  IMP_LISTLIKE_QUAD_CONTAINER(CoreListQuadContainer);
 };
 
 

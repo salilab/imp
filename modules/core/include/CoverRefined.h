@@ -53,7 +53,7 @@ public:
                =XYZR::get_default_radius_key(),
                Float slack=0);
 
-  IMP_SINGLETON_MODIFIER(CoverRefined, get_module_version_info());
+  IMP_SINGLETON_MODIFIER(CoverRefined);
 
   //! Set how nmuch extra to add to the radius.
   void set_slack(Float slack) {

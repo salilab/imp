@@ -68,7 +68,7 @@ public:
   //! Set the number of CG steps to take after each MC step
   void set_number_of_conjugate_gradient_steps(unsigned int cg);
 
-  IMP_SAMPLER(MCCGSampler, get_module_version_info())
+  IMP_SAMPLER(MCCGSampler)
 };
 
 IMPCORE_END_NAMESPACE

@@ -27,7 +27,7 @@ public:
   MaximumPairScore(const PairScoresTemp &scores,
                        unsigned int n=1,
                        std::string name="PairScore %1%");
-  IMP_PAIR_SCORE(MaximumPairScore, get_module_version_info());
+  IMP_PAIR_SCORE(MaximumPairScore);
 };
 
 IMPCONTAINER_END_NAMESPACE

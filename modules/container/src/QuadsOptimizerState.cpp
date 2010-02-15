@@ -41,8 +41,7 @@ void QuadsOptimizerState::update()
 
 
 
-void QuadsOptimizerState::show(std::ostream &out) const {
-  out << "QuadsOptimizerState base" << std::endl;
+void QuadsOptimizerState::do_show(std::ostream &out) const {
 }
 
 IMPCONTAINER_END_NAMESPACE

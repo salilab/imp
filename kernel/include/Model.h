@@ -111,6 +111,7 @@ private:
 
   void reset_dependencies();
 
+  void do_show(std::ostream& out) const;
 
 #if defined(SWIG)
  public:
@@ -276,15 +277,17 @@ public:
   */
  virtual Float evaluate(const RestraintsTemp &restraints, bool calc_derivs);
 
-  //! Show the model contents.
-  /** \param[in] out Stream to write model description to.
-   */
-  void show (std::ostream& out = std::cout) const;
-
-  //! \return version and authorship information.
   VersionInfo get_version_info() const {
     IMP_CHECK_OBJECT(this);
     return IMP::get_module_version_info();
+  }
+
+  std::string get_module() const {
+    return "IMP";
+  }
+
+  std::string get_type_name() const {
+    return "Model";
   }
 
   /** \name Incremental Updates

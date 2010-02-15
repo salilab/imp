@@ -31,8 +31,7 @@ public:
   void add_particle_triplets(const ParticleTripletsTemp &c);
   void set_particle_triplets(ParticleTripletsTemp c);
   void clear_particle_triplets();
-  IMP_LISTLIKE_TRIPLET_CONTAINER(CoreListTripletContainer,
-                                   get_module_version_info());
+  IMP_LISTLIKE_TRIPLET_CONTAINER(CoreListTripletContainer);
 };
 
 

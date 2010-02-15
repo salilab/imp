@@ -52,9 +52,8 @@ ContainersTemp LeavesRefiner::get_input_containers(Particle *p) const {
 }
 
 
-void LeavesRefiner::show(std::ostream &out) const
+void LeavesRefiner::do_show(std::ostream &out) const
 {
-  out << "LeavesRefiner" << std::endl;
 }
 
 IMPCORE_END_NAMESPACE

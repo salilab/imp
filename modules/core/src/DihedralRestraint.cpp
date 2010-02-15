@@ -126,7 +126,7 @@ ContainersTemp DihedralRestraint::get_input_containers() const {
 //! Show the current restraint.
 /** \param[in] out Stream to send restraint description to.
  */
-void DihedralRestraint::show(std::ostream& out) const
+void DihedralRestraint::do_show(std::ostream& out) const
 {
   out << "dihedral restraint:" << std::endl;
 

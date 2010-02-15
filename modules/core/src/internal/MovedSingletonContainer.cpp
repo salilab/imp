@@ -42,9 +42,8 @@ MovedSingletonContainer::MovedSingletonContainer(Model *m,
 }
 
 
-void MovedSingletonContainer::show(std::ostream &out) const
+void MovedSingletonContainer::do_show(std::ostream &out) const
 {
-  out << "MaximumChangeXYScoreState" << std::endl;
 }
 
 

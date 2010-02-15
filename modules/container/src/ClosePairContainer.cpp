@@ -42,9 +42,7 @@ ClosePairContainer::ClosePairContainer(SingletonContainer *c,
   P(c, m, distance, cpf, slack) {
 }
 
-void ClosePairContainer::show(std::ostream &out) const {
-  IMP_CHECK_OBJECT(this);
-  out << "ClosePairContainer";
+void ClosePairContainer::do_show(std::ostream &out) const {
 }
 
 

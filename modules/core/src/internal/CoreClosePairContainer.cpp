@@ -126,10 +126,9 @@ void CoreClosePairContainer::do_after_evaluate() {
 }
 
 
-void CoreClosePairContainer::show(std::ostream &out) const {
+void CoreClosePairContainer::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
-  out << "ClosePairContainer on ";
-  c_->show(out);
+  out << "container " << *c_ << std::endl;
 }
 
 ContainersTemp CoreClosePairContainer::get_input_containers() const {

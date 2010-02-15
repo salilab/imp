@@ -292,7 +292,7 @@ class IMPEXPORT Particle : public Container
   std::auto_ptr<internal::ParticleStorage> ps_;
 #endif
 
-  IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Particle);
+  IMP_OBJECT(Particle);
  public:
 
   //! Construct a particle and add it to the Model
@@ -437,18 +437,6 @@ class IMPEXPORT Particle : public Container
     }
     return ps_->model_;
   }
-
-  VersionInfo get_version_info() const {
-    return IMP::get_module_version_info();
-  }
-
-  //! Show the particle
-  /** \param[in] out Stream to write particle description to.
-
-      All the attributes are shown. In addition, the deriviatives of the
-      optimized attributes are printed.
-  */
-  void show(std::ostream& out = std::cout) const;
 
    /** \name Incremental Updates
 

@@ -49,7 +49,7 @@ public:
                       SingletonContainer *pc,
                       std::string name="SingletonsRestraint %1%");
 
-  IMP_INCREMENTAL_RESTRAINT(CoreSingletonsRestraint, get_module_version_info());
+  IMP_INCREMENTAL_RESTRAINT(CoreSingletonsRestraint);
 
   //! Get the container used to store Particles
   SingletonContainer* get_singleton_container() {

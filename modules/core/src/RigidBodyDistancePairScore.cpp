@@ -27,8 +27,10 @@ RigidBodyDistancePairScore::RigidBodyDistancePairScore(PairScore *ps,
   k1_(internal::get_rigid_body_hierarchy_key(r1_)){
 }
 
-void RigidBodyDistancePairScore::show(std::ostream &out) const {
-  out << "RigidBodyDistancePairScore" << std::endl;
+void RigidBodyDistancePairScore::do_show(std::ostream &out) const {
+  out << "score " << *ps_ << std::endl;
+  out << "refiner0 " << *r0_ << std::endl;
+  out << "refiner1 " << *r1_ << std::endl;
 }
 
 namespace {

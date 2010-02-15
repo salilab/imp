@@ -40,7 +40,7 @@ public:
                      const ParticleQuad& vt,
                      std::string name="QuadRestraint %1%");
 
-  IMP_INCREMENTAL_RESTRAINT(QuadRestraint, get_module_version_info());
+  IMP_INCREMENTAL_RESTRAINT(QuadRestraint);
 };
 
 IMPCORE_END_NAMESPACE

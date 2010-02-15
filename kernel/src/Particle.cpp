@@ -42,16 +42,12 @@ Particle::Particle(Model *m, std::string name):
   m->add_particle_internal(this);
 }
 
-Particle::~Particle(){
-}
-
-
 void Particle::zero_derivatives()
 {
   ps_->derivatives_.fill(0);
 }
 
-void Particle::show(std::ostream& out) const
+void Particle::do_show(std::ostream& out) const
 {
   internal::PrefixStream preout(&out);
   preout << "Particle: " << get_name()

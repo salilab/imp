@@ -27,7 +27,7 @@ class IMPCOREEXPORT SphereDistancePairScore : public PairScore
 public:
   SphereDistancePairScore(UnaryFunction *f,
                           FloatKey radius=FloatKey("radius"));
-  IMP_SIMPLE_PAIR_SCORE(SphereDistancePairScore, get_module_version_info());
+  IMP_SIMPLE_PAIR_SCORE(SphereDistancePairScore);
 };
 
 
@@ -45,8 +45,7 @@ class IMPCOREEXPORT NormalizedSphereDistancePairScore : public PairScore
 public:
   NormalizedSphereDistancePairScore(UnaryFunction *f,
                                     FloatKey radius=FloatKey("radius"));
-  IMP_SIMPLE_PAIR_SCORE(NormalizedSphereDistancePairScore,
-                        get_module_version_info());
+  IMP_SIMPLE_PAIR_SCORE(NormalizedSphereDistancePairScore);
 };
 
 
@@ -66,8 +65,7 @@ public:
   WeightedSphereDistancePairScore(UnaryFunction *f,
                FloatKey weight,
                FloatKey radius=FloatKey("radius"));
-  IMP_SIMPLE_PAIR_SCORE(WeightedSphereDistancePairScore,
-                        get_module_version_info());
+  IMP_SIMPLE_PAIR_SCORE(WeightedSphereDistancePairScore);
 };
 
 

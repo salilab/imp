@@ -18,7 +18,7 @@ class SingletonTestModifier(IMP.SingletonModifier):
     def __init__(self, k):
         IMP.SingletonModifier.__init__(self)
         self.k=k
-    def show(self, fh):
+    def do_show(self, fh):
         fh.write("Test Particle")
     def apply(self, a0, a1=None):
         if str(type(a0)) == "<class 'IMP.Particle'>":
@@ -38,7 +38,7 @@ class PairTestModifier(IMP.PairModifier):
     def __init__(self, k):
         IMP.PairModifier.__init__(self)
         self.k=k
-    def show(self, fh):
+    def do_show(self, fh):
         fh.write("Test Particle")
     def apply(self, a0, a2=None):
         if type(a0) == type(IMP.ParticlePair()):

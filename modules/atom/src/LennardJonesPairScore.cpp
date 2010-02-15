@@ -43,12 +43,11 @@ Float LennardJonesPairScore::evaluate(const ParticlePair &p,
   }
 }
 
-void LennardJonesPairScore::show(std::ostream &out) const
+void LennardJonesPairScore::do_show(std::ostream &out) const
 {
-  out << "LennardJonesPairScore with attractive_weight "
+  out << " attractive_weight "
       << attractive_weight_ << ", repulsive weight " << repulsive_weight_
-      << " using ";
-  (*smoothing_function_).show(out);
+      << " using " << *smoothing_function_ << std::endl;
 }
 
 IMPATOM_END_NAMESPACE

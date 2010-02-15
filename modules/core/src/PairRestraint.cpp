@@ -62,12 +62,10 @@ ContainersTemp PairRestraint::get_input_containers() const
   return ss_->get_input_containers(v_);
 }
 
-void PairRestraint::show(std::ostream& out) const
+void PairRestraint::do_show(std::ostream& out) const
 {
-  out << "PairRestraint with score function ";
-  ss_->show(out);
-  out << " and " << v_;
-  out << std::endl;
+  out << "score " << *ss_ << std::endl;
+  out << "data " << IMP::internal::streamable(v_).get_name() << std::endl;
 }
 
 IMPCORE_END_NAMESPACE

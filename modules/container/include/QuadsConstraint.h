@@ -64,7 +64,7 @@ public:
     f_=f;
   }
 
-  IMP_CONSTRAINT(QuadsConstraint, get_module_version_info())
+  IMP_CONSTRAINT(QuadsConstraint)
 };
 
 

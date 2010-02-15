@@ -40,9 +40,9 @@ CoreListPairContainer
   internal::ListLikePairContainer(name){}
 
 
-void CoreListPairContainer::show(std::ostream &out) const {
+void CoreListPairContainer::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
-  out << "CoreListPairContainer with " << get_number_of_particle_pairs()
+  out << get_number_of_particle_pairs()
       << " particle_pairs." << std::endl;
 }
 

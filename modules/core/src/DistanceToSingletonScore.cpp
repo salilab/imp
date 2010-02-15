@@ -41,10 +41,9 @@ Float DistanceToSingletonScore::evaluate(Particle *b,
   return v;
 }
 
-void DistanceToSingletonScore::show(std::ostream &out) const
+void DistanceToSingletonScore::do_show(std::ostream &out) const
 {
-  out << "DistanceToSingletonScore using ";
-  f_->show(out);
+  out << "function " << *f_;
 }
 
 
@@ -65,10 +64,9 @@ Float SphereDistanceToSingletonScore::evaluate(Particle *b,
   return v;
 }
 
-void SphereDistanceToSingletonScore::show(std::ostream &out) const
+void SphereDistanceToSingletonScore::do_show(std::ostream &out) const
 {
-  out << "SphereDistanceToSingletonScore using ";
-  f_->show(out);
+  out << "function " << *f_ << std::endl;
 }
 
 IMPCORE_END_NAMESPACE

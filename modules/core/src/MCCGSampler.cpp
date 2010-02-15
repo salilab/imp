@@ -200,8 +200,8 @@ ConfigurationSet *MCCGSampler::sample() const {
   return ret.release();
 }
 
-void MCCGSampler::show(std::ostream &out) const {
-  out << "MCCGSampler with " << default_parameters_.attempts_ << std::endl;
+void MCCGSampler::do_show(std::ostream &out) const {
+  out << "attempts " << default_parameters_.attempts_ << std::endl;
 }
 
 IMPCORE_END_NAMESPACE

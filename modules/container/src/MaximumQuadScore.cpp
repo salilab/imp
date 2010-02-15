@@ -99,10 +99,9 @@ ContainersTemp MaximumQuadScore
 }
 
 
-void MaximumQuadScore::show(std::ostream &out) const
+void MaximumQuadScore::do_show(std::ostream &out) const
 {
-  out << "MaximumQuadScore with " << scores_.size() << " scores."
-      << std::endl;
+  out << "size scores " << scores_.size() << std::endl;
 }
 
 IMPCONTAINER_END_NAMESPACE

@@ -26,7 +26,7 @@ public:
   //! no arguments
   BondedPairFilter();
 
-  IMP_PAIR_FILTER(BondedPairFilter, get_module_version_info())
+  IMP_PAIR_FILTER(BondedPairFilter)
 };
 
 

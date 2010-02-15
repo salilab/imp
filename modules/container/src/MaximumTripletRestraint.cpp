@@ -60,12 +60,9 @@ double MaximumTripletRestraint
   return score;
 }
 
-void MaximumTripletRestraint::show(std::ostream &out) const {
-  out << "MaximumTripletScoreRestraint over ";
-  c_->show(out);
-  out << " using function ";
-  f_->show(out);
-  out << std::endl;
+void MaximumTripletRestraint::do_show(std::ostream &out) const {
+  out << "container " << *c_ << std::endl;
+  out << "score " << *f_ << std::endl;
 }
 
 

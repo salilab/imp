@@ -87,13 +87,10 @@ ContainersTemp CorePairsRestraint::get_input_containers() const
 }
 
 
-void CorePairsRestraint::show(std::ostream& out) const
+void CorePairsRestraint::do_show(std::ostream& out) const
 {
-  out << "PairRestraint with score function ";
-  ss_->show(out);
-  out << " and container ";
-  pc_->show(out);
-  out << std::endl;
+  out << "score " << *ss_ << std::endl;
+  out << "container " << *pc_ << std::endl;
 }
 
 IMPCORE_END_INTERNAL_NAMESPACE

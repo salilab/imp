@@ -26,7 +26,7 @@ class IMPCOREEXPORT ChecksScoreState : public ScoreState
     return count_;
   }
 
-  IMP_SCORE_STATE(ChecksScoreState, get_module_version_info())
+  IMP_SCORE_STATE(ChecksScoreState)
 };
 
 IMPCORE_END_NAMESPACE

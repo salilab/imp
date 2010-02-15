@@ -116,8 +116,8 @@ void ConfigurationSet::set_configuration(int i) {
 }
 
 
-void ConfigurationSet::show(std::ostream &out) const {
-  out << "ConfigurationSet with " << get_number_of_configurations()
+void ConfigurationSet::do_show(std::ostream &out) const {
+  out <<  get_number_of_configurations()
       << " configurations." << std::endl;
 }
 

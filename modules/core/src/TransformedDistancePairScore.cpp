@@ -69,11 +69,10 @@ void TransformedDistancePairScore::set_transformation(
 }
 
 
-void TransformedDistancePairScore::show(std::ostream &out) const
+void TransformedDistancePairScore::do_show(std::ostream &out) const
 {
-  out << "TransformedDistancePairScore using ";
-  f_->show(out);
-  out << " and \n" << t_ << std::endl;
+  out << "function " << *f_ << std::endl;
+  out << "transformation " << t_ <<std::endl;
 }
 
 IMPCORE_END_NAMESPACE

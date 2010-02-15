@@ -22,7 +22,7 @@ class IMPCOREEXPORT QuadraticClosePairsFinder : public ClosePairsFinder
  public:
   QuadraticClosePairsFinder();
   bool get_are_close(Particle *a, Particle *b) const;
-  IMP_CLOSE_PAIRS_FINDER(QuadraticClosePairsFinder, get_module_version_info());
+  IMP_CLOSE_PAIRS_FINDER(QuadraticClosePairsFinder);
 
 };
 

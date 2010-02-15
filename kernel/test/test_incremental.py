@@ -18,7 +18,7 @@ class DummyRestraint(IMP.Restraint):
         self.p=p
     def unprotected_evaluate(self, accum):
         return score(self.p, accum)
-    def show(self, fh):
+    def do_show(self, fh):
         fh.write("DummyRestraint")
     def get_version_info(self):
         return IMP.VersionInfo("Me", "0.5")
@@ -56,7 +56,7 @@ class DummyIncrementalRestraint(IMP.Restraint):
             return self.oldvalue-ov+v
         else:
             return self.oldvalue
-    def show(self, fh):
+    def do_show(self, fh):
         fh.write("DummyRestraint")
     def get_version_info(self):
         return IMP.VersionInfo("Me", "0.5")

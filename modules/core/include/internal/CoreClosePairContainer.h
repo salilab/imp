@@ -42,8 +42,7 @@ public:
   IMP_LIST(public, PairFilter, pair_filter,
            PairFilter*, PairFilters);
 
-  IMP_LISTLIKE_PAIR_CONTAINER(CoreClosePairContainer,
-                              get_module_version_info());
+  IMP_LISTLIKE_PAIR_CONTAINER(CoreClosePairContainer);
 };
 
 

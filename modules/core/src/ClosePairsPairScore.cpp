@@ -147,11 +147,10 @@ bool ClosePairsPairScore::get_is_changed(const ParticlePair &p) const {
   return true;
 }
 
-void ClosePairsPairScore::show(std::ostream &out) const
+void ClosePairsPairScore::do_show(std::ostream &out) const
 {
-  out << "ClosePairsPairScore using ";
-  f_->show(out);
-  r_->show(out);
+  out << "function " << *f_;
+  out << "\nrefiner " << *r_ << std::endl;
 }
 
 IMPCORE_END_NAMESPACE

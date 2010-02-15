@@ -31,7 +31,7 @@ public:
   Transform(const algebra::Transformation3D &t,
                     bool ignore_non_xyz=false);
 
-  IMP_SINGLETON_MODIFIER(Transform, get_module_version_info());
+  IMP_SINGLETON_MODIFIER(Transform);
 private:
   algebra::Transformation3D t_;
   bool ignore_non_xyz_;

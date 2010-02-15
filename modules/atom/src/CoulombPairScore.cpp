@@ -46,11 +46,10 @@ Float CoulombPairScore::evaluate(const ParticlePair &p,
   }
 }
 
-void CoulombPairScore::show(std::ostream &out) const
+void CoulombPairScore::do_show(std::ostream &out) const
 {
-  out << "CoulombPairScore with relative dielectric " << relative_dielectric_
-      << " using ";
-  (*smoothing_function_).show(out);
+  out << "relative dielectric " << relative_dielectric_
+      << " using " << *smoothing_function_ << std::endl;
 }
 
 IMPATOM_END_NAMESPACE

@@ -73,11 +73,9 @@ bool BondSingletonScore::get_is_changed(Particle *p) const {
     || b.get_bonded(1)->get_is_changed();
 }
 
-void BondSingletonScore::show(std::ostream &out) const
+void BondSingletonScore::do_show(std::ostream &out) const
 {
-  out << "BondSingletonScore using ";
-  f_->show(out);
-  out << std::endl;
+  out << "function " << *f_ << std::endl;
 }
 
 IMPATOM_END_NAMESPACE

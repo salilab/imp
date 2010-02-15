@@ -185,12 +185,13 @@ class PyOutFileAdapter : public IMP::Object
 public:
   PyOutFileAdapter():IMP::Object("PyOutFileAdapter") {
   }
-  IMP::VersionInfo get_version_info() const {
-    return IMP::get_module_version_info();
+  void do_show(std::ostream &out) const {
   }
-  void show(std::ostream &out= std::cout) const {
-    out << "PyOutFileAdapter" <<std::endl;
+  std::string get_module() const {
+  return "IMP";
   }
+  std::string get_type_name() const {return "Pyton output file";}
+  IMP::VersionInfo get_version_info() const {return IMP::get_module_version_info();}
   void pubsync() {
     stream_buf_->pubsync();
   }
@@ -221,9 +222,7 @@ public:
       // at this point we have no choice but to eat it
     }
   }
-};
-
-%}
+};%}
 
 %{
 // Base for input adapters
@@ -390,14 +389,13 @@ class PyInFileAdapter: public IMP::Object
   std::auto_ptr<std::istream> istr_;
 public:
   PyInFileAdapter(): IMP::Object("PyInFileAdapter") {}
-
-  IMP::VersionInfo get_version_info() const {
-    return IMP::get_module_version_info();
+  void do_show(std::ostream &out) const {
   }
-  void show(std::ostream &out= std::cout) const {
-    out << "PyInFileAdapter" <<std::endl;
+  std::string get_module() const {
+  return "IMP";
   }
-
+  std::string get_type_name() const {return "Pyton input file";}
+  IMP::VersionInfo get_version_info() const {return IMP::get_module_version_info();}
   // Given a Python file object, return an istream that will read from this
   // object, or NULL if the object is not suitable.
   std::istream* set_python_file(PyObject *p) {

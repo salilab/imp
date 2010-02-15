@@ -102,10 +102,9 @@ AllPairContainer::get_contains_particle_pair(const ParticlePair &p) const {
       && c_->get_contains_particle(p[1]);
 }
 
-void AllPairContainer::show(std::ostream &out) const {
+void AllPairContainer::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
-  out << "AllPairContainer on ";
-  c_->show(out);
+  out << "container " << *c_ << std::endl;
 }
 
 ContainersTemp AllPairContainer::get_input_containers() const {

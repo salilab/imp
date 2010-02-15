@@ -31,8 +31,7 @@ class IMPCOREEXPORT DistanceToSingletonScore : public SingletonScore
   algebra::Vector3D pt_;
 public:
   DistanceToSingletonScore(UnaryFunction *f, const algebra::Vector3D& pt);
-  IMP_SIMPLE_SINGLETON_SCORE(DistanceToSingletonScore,
-                             get_module_version_info());
+  IMP_SIMPLE_SINGLETON_SCORE(DistanceToSingletonScore);
 };
 
 
@@ -52,8 +51,7 @@ class IMPCOREEXPORT SphereDistanceToSingletonScore : public SingletonScore
   algebra::Vector3D pt_;
 public:
   SphereDistanceToSingletonScore(UnaryFunction *f, const algebra::Vector3D& pt);
-  IMP_SIMPLE_SINGLETON_SCORE(SphereDistanceToSingletonScore,
-                      get_module_version_info());
+  IMP_SIMPLE_SINGLETON_SCORE(SphereDistanceToSingletonScore);
 };
 
 IMPCORE_END_NAMESPACE

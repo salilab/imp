@@ -57,9 +57,8 @@ ContainersTemp ChildrenRefiner::get_input_containers(Particle *p) const {
   return ContainersTemp(1, p);
 }
 
-void ChildrenRefiner::show(std::ostream &out) const
+void ChildrenRefiner::do_show(std::ostream &out) const
 {
-  out << "ChildrenRefiner" << std::endl;
 }
 
 IMPCORE_END_NAMESPACE

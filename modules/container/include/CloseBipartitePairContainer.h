@@ -88,10 +88,9 @@ public:
    /**@}*/
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
-  IMP_PAIR_CONTAINER(CloseBipartitePairContainer, get_module_version_info());
+  IMP_PAIR_CONTAINER(CloseBipartitePairContainer);
 #else
-  IMP_LISTLIKE_PAIR_CONTAINER(CloseBipartitePairContainer,
-                              get_module_version_info());
+  IMP_LISTLIKE_PAIR_CONTAINER(CloseBipartitePairContainer);
 #endif
 };
 

@@ -59,10 +59,9 @@ public:
   ConnectingPairContainer(SingletonContainer *sc, double error, bool mst);
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
-  IMP_PAIR_CONTAINER(ConnectingPairContainer, get_module_version_info());
+  IMP_PAIR_CONTAINER(ConnectingPairContainer);
 #else
-  IMP_LISTLIKE_PAIR_CONTAINER(ConnectingPairContainer,
-                              get_module_version_info());
+  IMP_LISTLIKE_PAIR_CONTAINER(ConnectingPairContainer);
 #endif
 };
 

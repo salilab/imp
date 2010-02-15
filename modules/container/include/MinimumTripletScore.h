@@ -27,7 +27,7 @@ public:
   MinimumTripletScore(const TripletScoresTemp &scores,
                        unsigned int n=1,
                        std::string name="TripletScore %1%");
-  IMP_TRIPLET_SCORE(MinimumTripletScore, get_module_version_info());
+  IMP_TRIPLET_SCORE(MinimumTripletScore);
 };
 
 IMPCONTAINER_END_NAMESPACE

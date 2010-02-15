@@ -40,7 +40,7 @@ public:
                      Particle* vt,
                      std::string name="SingletonRestraint %1%");
 
-  IMP_INCREMENTAL_RESTRAINT(SingletonRestraint, get_module_version_info());
+  IMP_INCREMENTAL_RESTRAINT(SingletonRestraint);
 };
 
 IMPCORE_END_NAMESPACE

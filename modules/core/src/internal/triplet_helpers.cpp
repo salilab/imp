@@ -67,13 +67,9 @@ ParticleTriplet ListLikeTripletContainer
   return data_[i];
 }
 
-VersionInfo ListLikeTripletContainer
-::get_version_info() const {
-  return get_module_version_info();
-}
 void ListLikeTripletContainer
-::show(std::ostream &out) const {
-  out << "ListLikeContainer on " << data_.size() << std::endl;
+::do_show(std::ostream &out) const {
+  out << "contains " << data_.size() << std::endl;
 }
 
 

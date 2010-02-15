@@ -23,7 +23,7 @@ class IMPCOREEXPORT DistancePairScore : public PairScore
   IMP::internal::OwnerPointer<UnaryFunction> f_;
 public:
   DistancePairScore(UnaryFunction *f);
-  IMP_SIMPLE_PAIR_SCORE(DistancePairScore, get_module_version_info())
+  IMP_SIMPLE_PAIR_SCORE(DistancePairScore)
 };
 
 IMPCORE_END_NAMESPACE

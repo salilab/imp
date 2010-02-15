@@ -60,9 +60,9 @@ ParticlesTemp ChecksScoreState::get_output_particles() const {
 }
 
 
-void ChecksScoreState::show(std::ostream &out) const
+void ChecksScoreState::do_show(std::ostream &out) const
 {
-  out << "ChecksScoreState" << std::endl;
+  out << "probability " << probability_ << std::endl;
 }
 
 

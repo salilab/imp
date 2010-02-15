@@ -53,8 +53,8 @@ double BoundingBox3DSingletonScore::evaluate(Particle *p,
   }
 }
 
-void BoundingBox3DSingletonScore::show(std::ostream &out) const {
-  out << "BoundingBox3DSingletonScore" << std::endl;
+void BoundingBox3DSingletonScore::do_show(std::ostream &out) const {
+  out << "box is " << bb_ << std::endl;
 }
 
 IMPCORE_END_NAMESPACE

@@ -60,12 +60,9 @@ double MinimumQuadRestraint
   return score;
 }
 
-void MinimumQuadRestraint::show(std::ostream &out) const {
-  out << "MinimumQuadScoreRestraint over ";
-  c_->show(out);
-  out << " using function ";
-  f_->show(out);
-  out << std::endl;
+void MinimumQuadRestraint::do_show(std::ostream &out) const {
+  out << "container " << *c_ << std::endl;
+  out << "score " << *f_ << std::endl;
 }
 
 
