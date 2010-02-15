@@ -40,7 +40,7 @@ public:
   GroupnamesOptimizerState(GroupnameContainer *c, GroupnameModifier *gf,
                            std::string name="GroupnamesOptimizerState %1%");
 
-  IMP_OPTIMIZER_STATE(GroupnamesOptimizerState, get_module_version_info())
+  IMP_OPTIMIZER_STATE(GroupnamesOptimizerState)
 };
 
 

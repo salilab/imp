@@ -40,9 +40,9 @@ CoreListGroupnameContainer
   internal::ListLikeGroupnameContainer(name){}
 
 
-void CoreListGroupnameContainer::show(std::ostream &out) const {
+void CoreListGroupnameContainer::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
-  out << "CoreListGroupnameContainer with " << get_number_of_classnames()
+  out << get_number_of_classnames()
       << " classnames." << std::endl;
 }
 

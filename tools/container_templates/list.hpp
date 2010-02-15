@@ -55,13 +55,13 @@ public:
     })
   void clear_classnames();
   /**@}*/
-  IMP_GROUPNAME_CONTAINER(ListGroupnameContainer, get_module_version_info());
+  IMP_GROUPNAME_CONTAINER(ListGroupnameContainer);
 #else
   static ListGroupnameContainer *create_untracked_container() {
     ListGroupnameContainer *lsc = new ListGroupnameContainer(false);
     return lsc;
   }
-  IMP_OBJECT(ListGroupnameContainer, get_module_version_info());
+  IMP_OBJECT(ListGroupnameContainer);
 #endif
 };
 

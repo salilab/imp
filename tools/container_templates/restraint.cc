@@ -21,13 +21,10 @@ GroupnamesRestraint
 
 }
 
-void GroupnamesRestraint::show(std::ostream& out) const
+void GroupnamesRestraint::do_show(std::ostream& out) const
 {
-  out << "GroupnameRestraint with score function ";
-  ss_->show(out);
-  out << " and container ";
-  pc_->show(out);
-  out << std::endl;
+  out << "score " << *ss_ << std::endl;
+  out << "container " << *pc_ << std::endl;
 }
 
 IMPCONTAINER_END_NAMESPACE

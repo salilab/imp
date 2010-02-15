@@ -49,7 +49,7 @@ public:
                       GroupnameContainer *pc,
                       std::string name="GroupnamesRestraint %1%");
 
-  IMP_INCREMENTAL_RESTRAINT(CoreGroupnamesRestraint, get_module_version_info());
+  IMP_INCREMENTAL_RESTRAINT(CoreGroupnamesRestraint);
 
   //! Get the container used to store Particles
   GroupnameContainer* get_groupname_container() {

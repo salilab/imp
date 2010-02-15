@@ -53,7 +53,7 @@ public:
                       std::string name="GroupnamesRestraint %1%");
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
-  IMP_INCREMENTAL_RESTRAINT(GroupnamesRestraint, get_module_version_info());
+  IMP_INCREMENTAL_RESTRAINT(GroupnamesRestraint);
 
   //! Get the container used to store Particles
   GroupnameContainer* get_groupname_container() {
@@ -64,7 +64,7 @@ public:
     return ss_;
   }
 #else
-  IMP_OBJECT(GroupnamesRestraint, get_module_version_info());
+  IMP_OBJECT(GroupnamesRestraint);
 #endif
 };
 
