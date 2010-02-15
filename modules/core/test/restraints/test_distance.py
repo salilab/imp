@@ -81,16 +81,6 @@ class DistanceTests(IMP.test.TestCase):
             self.particles[0].get_model().add_restraint(r)
             self.rsrs.append(r)
 
-    def test_show(self):
-        """Test Restraint::show() method"""
-        r = IMP.core.DistanceRestraint(IMP.core.Harmonic(0.0, 0.1),
-                                       self.particles[1],
-                                       self.particles[0])
-        r.set_was_owned(True)
-        s = StringIO.StringIO()
-        r.show(s)
-        self.assertEqual(s.getvalue().split('\n')[0], "distance restraint:")
-
     def test_distance(self):
         """Test that distance restraints are reasonable"""
         self._make_restraints()

@@ -27,15 +27,6 @@ def make_test_pair_score(min_distance=9.0, max_distance=10.0):
 class LennardJonesPairScoreTests(IMP.test.TestCase):
     """Test the LennardJonesPairScore"""
 
-    def test_methods(self):
-        """Check LennardJonesPairScore methods"""
-        sm = IMP.atom.ForceSwitch(9.0, 10.0)
-        c = IMP.atom.LennardJonesPairScore(sm)
-        out = StringIO.StringIO()
-        c.show(out)
-        self.assert_('LennardJonesPairScore with attractive_weight' \
-                     in out.getvalue())
-
     def test_get_set(self):
         """Check LennardJonesPairScore get/set methods"""
         sm = IMP.atom.ForceSwitch(9.0, 10.0)

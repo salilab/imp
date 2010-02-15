@@ -54,13 +54,5 @@ class DihedralRestraintTests(IMP.test.TestCase):
             opt.optimize(50)
             self.assert_(opt.optimize(50) < 1e-6)
             self.assert_(model.evaluate(False) < 1e-6)
-
-    def test_show(self):
-        """Check DihedralRestraint::show() method"""
-        model, rsr = self._setup_particles(math.pi / 2.0, math.pi / 2.0)
-        s = StringIO.StringIO()
-        rsr.show(s)
-        self.assertEqual(s.getvalue().split('\n')[0], "dihedral restraint:")
-
 if __name__ == '__main__':
     unittest.main()
