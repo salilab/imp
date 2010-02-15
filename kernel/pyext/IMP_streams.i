@@ -187,9 +187,6 @@ public:
   }
   void do_show(std::ostream &out) const {
   }
-  std::string get_module() const {
-  return "IMP";
-  }
   std::string get_type_name() const {return "Pyton output file";}
   IMP::VersionInfo get_version_info() const {return IMP::get_module_version_info();}
   void pubsync() {
@@ -390,9 +387,6 @@ class PyInFileAdapter: public IMP::Object
 public:
   PyInFileAdapter(): IMP::Object("PyInFileAdapter") {}
   void do_show(std::ostream &out) const {
-  }
-  std::string get_module() const {
-  return "IMP";
   }
   std::string get_type_name() const {return "Pyton input file";}
   IMP::VersionInfo get_version_info() const {return IMP::get_module_version_info();}
