@@ -3,6 +3,7 @@ Import('env')
 # modules must be listed after modules that use them
 cppmodules=['algebra',
             'core',
+            'container',
             'atom',
             'display',
             'domino',

@@ -8,13 +8,13 @@
  */
 #include <IMP/multifit/weighted_excluded_volume.h>
 #include <IMP/em/SurfaceShellDensityMap.h>
-#include <IMP/core/ListSingletonContainer.h>
-#include <IMP/core/CloseBipartitePairContainer.h>
+#include <IMP/container/ListSingletonContainer.h>
+#include <IMP/container/CloseBipartitePairContainer.h>
 #include <IMP/core/RigidClosePairsFinder.h>
 #include <IMP/core/LeavesRefiner.h>
 #include <IMP/core/HarmonicLowerBound.h>
 #include <IMP/core/SphereDistancePairScore.h>
-#include <IMP/core/PairsRestraint.h>
+#include <IMP/container/PairsRestraint.h>
 #include <IMP/atom/Hierarchy.h>
 #include <IMP/em/SampledDensityMap.h>
 #include <IMP/em/MRCReaderWriter.h>
@@ -43,17 +43,17 @@ IMP::Restraint *create_weighted_excluded_volume_restraint(
   Particles ps1,ps2;
   ps1.push_back(rb1->get_particle());
   ps2.push_back(rb2->get_particle());
-  IMP_NEW(core::ListSingletonContainer,ls1,(ps1));
-  IMP_NEW(core::ListSingletonContainer,ls2,(ps2));
+  IMP_NEW(container::ListSingletonContainer,ls1,(ps1));
+  IMP_NEW(container::ListSingletonContainer,ls2,(ps2));
   //set up the nonbonded list
   IMP_NEW(core::LeavesRefiner,leaves_refiner,(atom::Hierarchy::get_traits()));
   IMP_NEW(core::RigidClosePairsFinder, close_pair_finder,(leaves_refiner));
-  IMP_NEW(core::CloseBipartitePairContainer,nbl,
+  IMP_NEW(container::CloseBipartitePairContainer,nbl,
           (ls1,ls2,2.,close_pair_finder));
   //Set up excluded volume
   IMP_NEW(core::HarmonicLowerBound,hlb,(0,1));
   IMP_NEW(core::SphereDistancePairScore,ps,(hlb));
-  IMP_NEW(core::PairsRestraint,evr,(ps, nbl));
+  IMP_NEW(container::PairsRestraint,evr,(ps, nbl));
   mdl->add_restraint(evr);
   return evr;
 }

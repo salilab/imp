@@ -34,7 +34,7 @@ class TestBL(IMP.test.TestCase):
         a= IMP.display.LogOptimizerState(writer, nm)
         g= IMP.display.XYZRGeometry(d0)
         #ge= IMP.display.XYZRGeometryExtractor(rk)
-        ps= IMP.core.ListSingletonContainer()
+        ps= IMP.container.ListSingletonContainer()
         ps.add_particle(p1)
         #a.add_geometry(ge, ps)
         a.add_geometry(g)

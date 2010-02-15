@@ -11,6 +11,7 @@
 #include <IMP/algebra/vector_generators.h>
 #include <IMP/atom.h>
 #include <IMP/core.h>
+#include <IMP/container.h>
 #include <IMP/display/geometry.h>
 #include <IMP/display/particle_geometry.h>
 #include <IMP/display/LogOptimizerState.h>
@@ -243,10 +244,10 @@ atom::Hierarchy create_simplified(atom::Hierarchy in,
 
 
 
-    IMP_NEW(core::ListSingletonContainer, lsc, (xyzrs));
+    IMP_NEW(container::ListSingletonContainer, lsc, (xyzrs));
     IMP_NEW(core::BoundingBox3DSingletonScore, bss,
             (new core::HarmonicUpperBound(0,1), bb));
-    IMP_NEW(core::SingletonsRestraint, sr, (bss, lsc));
+    IMP_NEW(container::SingletonsRestraint, sr, (bss, lsc));
     IMP_NEW(em::FitRestraint, ccr, (xyzrs, sdm,
                                     core::XYZR::get_default_radius_key(),
                                     atom::Mass::get_mass_key(),
@@ -255,10 +256,10 @@ atom::Hierarchy create_simplified(atom::Hierarchy in,
     m->add_restraint(ccr);
 
 
-    IMP_NEW(core::AllPairContainer, appc, (lsc));
+    IMP_NEW(container::AllPairContainer, appc, (lsc));
     IMP_NEW(core::NormalizedSphereDistancePairScore, nsdp,
             (new core::HarmonicLowerBound(-1,1)));
-    IMP_NEW(core::PairsRestraint, pr, (nsdp, appc));
+    IMP_NEW(container::PairsRestraint, pr, (nsdp, appc));
     m->add_restraint(pr);
     // create MC
     IMP_NEW(core::MonteCarlo, mc, ());
