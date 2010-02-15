@@ -1,12 +1,13 @@
 /**
- *  \file IMP/Container.h     \brief Abstract base class for all restraints.
+ *  \file IMP/container_base.h
+ *  \brief Abstract base class for all restraints.
  *
  *  Copyright 2007-2010 Sali Lab. All rights reserved.
  *
  */
 
-#ifndef IMP_CONTAINER_H
-#define IMP_CONTAINER_H
+#ifndef IMP_CONTAINER_BASE_H
+#define IMP_CONTAINER_BASE_H
 
 #include "config.h"
 #include "Object.h"
@@ -68,4 +69,4 @@ public:
 
 IMP_END_NAMESPACE
 
-#endif  /* IMP_CONTAINER_H */
+#endif  /* IMP_CONTAINER_BASE_H */
