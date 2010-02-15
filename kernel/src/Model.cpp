@@ -472,10 +472,12 @@ namespace {
     ObjectMap om= boost::get(boost::vertex_name, deps.graph);
     std::vector<DependencyVertex> front=starts;
     std::vector<char> visited(boost::num_vertices(deps.graph), false);
+
     while (!front.empty()) {
       DependencyVertex v= front.back();
       front.pop_back();
       Object *o= om[v];
+      std::cout << "Visiting " << o->get_name() << std::endl;
       Container *c= dynamic_cast<Container*>(o);
       if (c) {
         cout.push_back(c);
@@ -488,7 +490,7 @@ namespace {
       DependencyTraits::in_edge_iterator ic, ie;
       for (boost::tie(ic, ie) = boost::in_edges(v, deps.graph);
            ic != ie; ++ic) {
-        DependencyVertex tv= boost::target(*ic, deps.graph);
+        DependencyVertex tv= boost::source(*ic, deps.graph);
         if (!visited[tv]) {
           visited[tv]=true;
           front.push_back(tv);
@@ -551,9 +553,9 @@ namespace {
     }
     IMP_LOG(VERBOSE, "The graph has " << boost::num_vertices(deps.graph)
             << " vertices" << std::endl);
-    /*IMP_IF_LOG(VERBOSE) {
+    IMP_IF_LOG(VERBOSE) {
       write_graph(deps.graph, om, "dependency_graph.dot");
-      }*/
+    }
     return deps;
   }
 
@@ -570,6 +572,8 @@ namespace {
       for (unsigned int i=0; i< ss.size(); ++i) {
         if (sset.find(ss[i]) != sset.end()) {
           bs.set(i);
+          IMP_LOG(TERSE, it->first->get_name() << " depends on "
+                  << ss[i]->get_name() << std::endl);
         }
       }
       deps.depends[it->first]= bs;
@@ -1173,9 +1177,17 @@ Float Model::evaluate(bool calc_derivs) {
 
 Float Model::evaluate(const RestraintsTemp &restraints, bool calc_derivs)
 {
+  IMP_OBJECT_LOG;
   if (!score_states_ordered_) order_score_states();
   WeightedRestraints wr;
   gather_restraints(restraints.begin(), restraints.end(), 1.0, wr);
+  IMP_IF_LOG(TERSE) {
+    IMP_LOG(TERSE, "Evaluating restraints ");
+    for (unsigned int i=0; i< wr.size(); ++i) {
+      IMP_LOG(TERSE, wr[i].second->get_name() << "(" << wr[i].first << "), ");
+    }
+    IMP_LOG(TERSE, std::endl);
+  }
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i=0; i< wr.size(); ++i) {
       IMP_USAGE_CHECK(graphs_[this].depends.find(wr[i].second)
@@ -1189,6 +1201,17 @@ Float Model::evaluate(const RestraintsTemp &restraints, bool calc_derivs)
   boost::dynamic_bitset<> bs(get_number_of_score_states(), false);
   for (unsigned int i=0; i< wr.size(); ++i) {
     bs|= graphs_[this].depends[wr[i].second];
+    IMP_IF_LOG(TERSE) {
+      IMP_LOG(TERSE, "Restraint " << wr[i].second->get_name()
+              << " depends on ");
+      for (unsigned int i=0; i< graphs_[this].depends[wr[i].second].size();
+           ++i) {
+        if (graphs_[this].depends[wr[i].second][i]) {
+          IMP_LOG(TERSE, get_score_state(i)->get_name() << " ");
+        }
+      }
+      IMP_LOG(TERSE, std::endl);
+    }
   }
   ScoreStatesTemp ss;
   for (unsigned int i=0; i< get_number_of_score_states(); ++i) {
