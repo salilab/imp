@@ -101,10 +101,8 @@ unprotected_evaluate(DerivativeAccumulator *accum) const
     ->states2values[key][std::pair<int,int>(a1,a2)];
 }
 
-void SimpleDiscreteRestraint::show(std::ostream& out) const
+void SimpleDiscreteRestraint::do_show(std::ostream& out) const
 {
-  out << "simple discrete restraint:" << std::endl;
-  get_version_info().show(out);
   out << "  particles: " << get_particle(0)->get_value(node_name_key());
   out << " and " << get_particle(1)->get_value(node_name_key());
   out << std::endl;

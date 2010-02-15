@@ -11,11 +11,6 @@
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
-
-void PymolWriter::show(std::ostream &out) const {
-  out << "PymolWriter" << std::endl;
-}
-
 void PymolWriter::on_open() {
   get_stream() << "from pymol.cgo import *\nfrom pymol import cmd\n";
   get_stream() << "data= {}\n";

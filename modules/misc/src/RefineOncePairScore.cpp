@@ -96,9 +96,8 @@ ContainersTemp RefineOncePairScore
   return ret;
 }
 
-void RefineOncePairScore::show(std::ostream &out) const
+void RefineOncePairScore::do_show(std::ostream &out) const
 {
-  out << "RefineOncePairScore using ";
   f_->show(out);
   r_->show(out);
 }

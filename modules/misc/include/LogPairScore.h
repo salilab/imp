@@ -23,7 +23,7 @@ class LogPairScore : public PairScore
  public:
   //! create with an empty map
   LogPairScore(){}
-  IMP_SIMPLE_PAIR_SCORE(LogPairScore, get_module_version_info());
+  IMP_SIMPLE_PAIR_SCORE(LogPairScore);
 
   //! Get a list of all pairs (without multiplicity)
   ParticlePairs get_particle_pairs() const {
@@ -46,8 +46,7 @@ class LogPairScore : public PairScore
 
 // doxygen spits out warnings
 #ifndef IMP_DOXYGEN
-inline void LogPairScore::show(std::ostream &out) const {
-  out << "LogPairScore";
+inline void LogPairScore::do_show(std::ostream &out) const {
 }
 
 inline Float LogPairScore::evaluate(const ParticlePair &pp,

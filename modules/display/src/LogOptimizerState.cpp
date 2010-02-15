@@ -16,8 +16,8 @@ LogOptimizerState::LogOptimizerState(Writer *w, std::string name ):
   set_name(std::string("Log to ") + name);
 }
 
-void LogOptimizerState::show(std::ostream &out) const {
-  out << "LogOptimizerState" << std::endl;
+void LogOptimizerState::do_show(std::ostream &out) const {
+  out << "name" << name_template_ << std::endl;
 }
 
 
@@ -64,8 +64,7 @@ void DisplayModelOnFailure::handle_failure() {
   s_->write(file_name_);
 }
 
-void DisplayModelOnFailure::show(std::ostream &out) const {
-  out << "DisplayModelOnFailure" << std::endl;
+void DisplayModelOnFailure::do_show(std::ostream &out) const {
 }
 
 IMPDISPLAY_END_NAMESPACE

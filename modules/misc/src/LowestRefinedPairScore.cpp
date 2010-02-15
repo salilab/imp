@@ -109,9 +109,8 @@ ContainersTemp LowestRefinedPairScore
 }
 
 
-void LowestRefinedPairScore::show(std::ostream &out) const
+void LowestRefinedPairScore::do_show(std::ostream &out) const
 {
-  out << "LowestRefinedPairScore using ";
   f_->show(out);
   r_->show(out);
 }

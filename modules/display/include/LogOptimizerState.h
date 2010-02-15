@@ -44,8 +44,7 @@ public:
   //! Force writing the a file with the given name
   void write(TextOutput file_name) const;
 
-  IMP_PERIODIC_OPTIMIZER_STATE(LogOptimizerState,
-                               get_module_version_info())
+  IMP_PERIODIC_OPTIMIZER_STATE(LogOptimizerState)
 };
 
 
@@ -62,7 +61,7 @@ class IMPDISPLAYEXPORT DisplayModelOnFailure: public FailureHandler {
   std::string file_name_;
  public:
   DisplayModelOnFailure(LogOptimizerState *m, std::string file_name);
-  IMP_FAILURE_HANDLER(DisplayModelOnFailure, get_module_version_info());
+  IMP_FAILURE_HANDLER(DisplayModelOnFailure);
 };
 
 IMPDISPLAY_END_NAMESPACE

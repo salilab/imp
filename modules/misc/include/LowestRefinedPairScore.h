@@ -28,7 +28,7 @@ public:
       \param[in] f The pair score to apply to the generated pairs
    */
   LowestRefinedPairScore(Refiner *r, PairScore *f);
-  IMP_PAIR_SCORE(LowestRefinedPairScore, get_module_version_info());
+  IMP_PAIR_SCORE(LowestRefinedPairScore);
 };
 
 IMPMISC_END_NAMESPACE

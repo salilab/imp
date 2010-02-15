@@ -169,7 +169,7 @@ double Restraint::unprotected_evaluate(DerivativeAccumulator *acc) const
   return score;
 }
 
-void Restraint::show(std::ostream& out) const
+void Restraint::do_show(std::ostream& out) const
 {
 //   out << "SAXSRestraint: for " << particles_.size() << " particles "
 //       << rigid_bodies_.size() << " rigid_bodies" << std::endl;

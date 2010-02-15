@@ -77,8 +77,8 @@ ExampleComplexRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
   return v;
 }
 
-void ExampleComplexRestraint::show(std::ostream &out) const {
-  out << "ExampleComplexRestraint" << std::endl;
+void ExampleComplexRestraint::do_show(std::ostream &out) const {
+  out << "diameter " << diameter_ << std::endl;
 }
 
 ParticlesList ExampleComplexRestraint::get_interacting_particles() const {

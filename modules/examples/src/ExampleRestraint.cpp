@@ -68,13 +68,10 @@ ContainersTemp ExampleRestraint::get_input_containers() const
   return ContainersTemp(1, pc_);
 }
 
-void ExampleRestraint::show(std::ostream& out) const
+void ExampleRestraint::do_show(std::ostream& out) const
 {
-  out << "PairsRestraint with score function ";
-  f_->show(out);
-  out << " and container ";
-  pc_->show(out);
-  out << std::endl;
+  out << "function " << *f_ << std::endl;
+  out << "container " << *pc_ << std::endl;
 }
 
 IMPEXAMPLES_END_NAMESPACE

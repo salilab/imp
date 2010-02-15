@@ -49,7 +49,7 @@ class IMPSAXSEXPORT Restraint : public IMP::Restraint
   Restraint(const Particles& particles, const Profile& exp_profile,
             FormFactorTable* ff_table = default_form_factor_table());
 
-  IMP_RESTRAINT(Restraint, get_module_version_info())
+  IMP_RESTRAINT(Restraint)
 
  private:
   void compute_profile(Profile& model_profile);

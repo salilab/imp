@@ -35,8 +35,7 @@ class IMPEXAMPLESEXPORT ExampleSingletonModifier: public SingletonModifier
 public:
   ExampleSingletonModifier(const algebra::BoundingBox3D &bb);
 
-  IMP_SINGLETON_MODIFIER(ExampleSingletonModifier,
-                         get_module_version_info())
+  IMP_SINGLETON_MODIFIER(ExampleSingletonModifier)
 };
 
 

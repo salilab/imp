@@ -16,8 +16,7 @@ CommonEndpointPairFilter::CommonEndpointPairFilter( ){
 }
 
 
-void CommonEndpointPairFilter::show(std::ostream &out) const {
-  out << "CommonEndpointPairFilter" << std::endl;
+void CommonEndpointPairFilter::do_show(std::ostream &out) const {
 }
 
 bool CommonEndpointPairFilter

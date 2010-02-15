@@ -48,7 +48,7 @@ public:
 
   /** This macro declares the basic needed methods: evaluate and show
    */
-  IMP_RESTRAINT(ExampleRestraint, get_module_version_info());
+  IMP_RESTRAINT(ExampleRestraint);
 };
 
 IMPEXAMPLES_END_NAMESPACE
