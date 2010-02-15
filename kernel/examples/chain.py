@@ -11,11 +11,11 @@ import IMP.display
 IMP.set_log_level(IMP.TERSE)
 m= IMP.Model()
 # The particles in the chain
-chain= IMP.core.ListSingletonContainer(IMP.core.create_xyzr_particles(m, 2, 1.0))
+chain= IMP.container.ListSingletonContainer(IMP.core.create_xyzr_particles(m, 2, 1.0))
 
 # create a bond between successive particles
 IMP.atom.Bonded.setup_particle(chain.get_particle(0))
-bonds= IMP.core.ListSingletonContainer("particles")
+bonds= IMP.container.ListSingletonContainer("particles")
 for i in range(1, chain.get_number_of_particles()):
     bp= IMP.atom.Bonded(chain.get_particle(i-1))
     bpr= IMP.atom.Bonded.setup_particle(chain.get_particle(i))
@@ -28,22 +28,22 @@ for p in m.get_particles():
     p.show()
 
 # Prevent non-bonded particles from penetrating one another
-nbl= IMP.core.ClosePairContainer(chain, 0,2)
+nbl= IMP.container.ClosePairContainer(chain, 0,2)
 bpc=IMP.atom.BondedPairFilter() # exclude existing bonds
 nbl.add_pair_filter(bpc)
 ps= IMP.core.SphereDistancePairScore(IMP.core.HarmonicLowerBound(0,1))
-m.add_restraint(IMP.core.PairsRestraint(ps, nbl))
+m.add_restraint(IMP.container.PairsRestraint(ps, nbl))
 
 # penalize conformations where bond lengths aren't preserved
 bss= IMP.atom.BondSingletonScore(IMP.core.Harmonic(0,1))
-m.add_restraint(IMP.core.SingletonsRestraint(bss, bonds))
+m.add_restraint(IMP.container.SingletonsRestraint(bss, bonds))
 
 # Tie the ends of the chain
 p= IMP.ParticlePair(chain.get_particle(0),
                     chain.get_particle(chain.get_number_of_particles()-1))
-pps= IMP.core.ListPairContainer()
+pps= IMP.container.ListPairContainer()
 pps.add_particle_pair(p)
-m.add_restraint(IMP.core.PairsRestraint(
+m.add_restraint(IMP.container.PairsRestraint(
            IMP.core.SphereDistancePairScore(IMP.core.Harmonic(3,1)), pps))
 
 s= IMP.core.MCCGSampler(m) # sample using MC and CG
