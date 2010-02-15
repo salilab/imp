@@ -5,6 +5,7 @@
 #include <IMP/core.h>
 #include <IMP/algebra.h>
 #include <IMP/atom.h>
+#include <IMP/container.h>
 #include <boost/timer.hpp>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/macros.h>
@@ -13,6 +14,7 @@ using namespace IMP;
 using namespace IMP::core;
 using namespace IMP::algebra;
 using namespace IMP::atom;
+using namespace IMP::container;
 
 void time_both(PairContainer *pc, PairScore *ps, std::string name) {
   {

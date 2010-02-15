@@ -14,11 +14,11 @@
 #include <IMP/Sampler.h>
 #include <IMP/macros.h>
 #include <IMP/algebra/BoundingBoxD.h>
+#include "internal/CoreListSingletonContainer.h"
 
 IMPCORE_BEGIN_NAMESPACE
 
 class MonteCarlo;
-class ListSingletonContainer;
 
 //! A simple sampler.
 /** This sampler randomizes the conformation and then uses Monte Carlo
@@ -43,8 +43,9 @@ class IMPCOREEXPORT MCCGSampler : public Sampler
   Parameters default_parameters_;
 
   Parameters fill_in_parameters() const;
-  void randomize(const Parameters &pms, ListSingletonContainer *sc) const;
-  ListSingletonContainer* set_up_movers(const Parameters &pms,
+  void randomize(const Parameters &pms,
+                 internal::CoreListSingletonContainer *sc) const;
+  internal::CoreListSingletonContainer* set_up_movers(const Parameters &pms,
                                         MonteCarlo *mc) const;
 public:
   MCCGSampler(Model *m);

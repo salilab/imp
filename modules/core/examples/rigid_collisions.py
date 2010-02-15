@@ -2,6 +2,7 @@ import IMP
 import IMP.core
 import IMP.atom
 import IMP.helper
+import IMP.container
 
 # This example addes a restraint on nonbonded interactions
 # Since it is between two rigid bodies, internal interactions are ignored
@@ -18,7 +19,7 @@ rbss0 = IMP.core.RigidBody.setup_particle(rbp0, IMP.core.XYZs(rbps0))
 
 rbss1 = IMP.core.RigidBody.setup_particle(rbp1, IMP.core.XYZs(rbps1))
 
-lsc= IMP.core.ListSingletonContainer()
+lsc= IMP.container.ListSingletonContainer()
 lsc.add_particle(rbp0)
 lsc.add_particle(rbp1)
 
@@ -27,11 +28,11 @@ tr.add_particle(rbp0, rbps0)
 tr.add_particle(rbp1, rbps1)
 
 # Set up the nonbonded list
-nbl= IMP.core.ClosePairContainer(lsc, 0, IMP.core.RigidClosePairsFinder(tr), 2.0)
+nbl= IMP.container.ClosePairContainer(lsc, 0, IMP.core.RigidClosePairsFinder(tr), 2.0)
 
 # Set up excluded volume
 ps= IMP.core.SphereDistancePairScore(IMP.core.HarmonicLowerBound(0,1))
-evr= IMP.core.PairsRestraint(ps, nbl)
+evr= IMP.container.PairsRestraint(ps, nbl)
 evri= m.add_restraint(evr)
 
 # Set up optimizer

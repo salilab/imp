@@ -26,6 +26,9 @@ void IncrementalBallMover::propose_move(Float size) {
   // damnit, why didn't these functions make it into the standard
   /*std::random_sample(sc_->particles_begin(), sc_->particles_end(),
     moved_.begin(), moved_.end());*/
+  IMP_CHECK_OBJECT(sc_);
+  IMP_CHECK_OBJECT(this);
+  IMP_OBJECT_LOG;
   ParticlesTemp pts(sc_->get_particles());
   std::random_shuffle(pts.begin(), pts.end());
   for (unsigned int i=0; i< n_; ++i) {

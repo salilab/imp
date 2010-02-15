@@ -14,7 +14,7 @@
 #include <IMP/Particle.h>
 #include <IMP/log.h>
 #include <IMP/PairScore.h>
-#include <IMP/core/ListSingletonContainer.h>
+#include <IMP/core/internal/CoreListSingletonContainer.h>
 
 #include <climits>
 #include <boost/graph/kruskal_min_spanning_tree.hpp>
@@ -34,13 +34,14 @@ ConnectivityRestraint::ConnectivityRestraint(PairScore *ps,
   if (sc) {
     sc_= sc;
   } else {
-    sc_= new ListSingletonContainer();
+    sc_= new internal::CoreListSingletonContainer("connectivity list");
   }
 }
 
 namespace {
-  ListSingletonContainer* get_list(SingletonContainer *sc) {
-    ListSingletonContainer *ret= dynamic_cast<ListSingletonContainer*>(sc);
+  internal::CoreListSingletonContainer* get_list(SingletonContainer *sc) {
+    internal::CoreListSingletonContainer *ret
+      = dynamic_cast<internal::CoreListSingletonContainer*>(sc);
     if (!ret) {
       IMP_THROW("Can only use the set and add methods when no container"
                 << " was passed on construction of ConnectivityRestraint.",

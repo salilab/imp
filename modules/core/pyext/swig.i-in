@@ -13,10 +13,6 @@
 %enddef
 
 
-
-%include "IMP_singleton_containers.i"
-%include "IMP_pair_containers.i"
-
 namespace IMP {
   namespace core {
     IMPCORE_CONTAINER_SWIG(MonteCarlo, Mover, mover)
@@ -41,10 +37,6 @@ IMP_REFCOUNT_RETURN_SINGLE(IMP::core::Mover)
 
 
 /* Wrap the final classes */
-%include "IMP/core/AllBipartitePairContainer.h"
-%include "IMP/core/AllPairContainer.h"
-%include "IMP/core/CloseBipartitePairContainer.h"
-%include "IMP/core/ClosePairContainer.h"
 %include "IMP/core/AngleTripletScore.h"
 %include "IMP/core/AttributeSingletonScore.h"
 %include "IMP/core/BallMover.h"
@@ -57,7 +49,6 @@ IMP_REFCOUNT_RETURN_SINGLE(IMP::core::Mover)
 %include "IMP/core/ClosePairsPairScore.h"
 %include "IMP/core/ConjugateGradients.h"
 %include "IMP/core/ConnectivityRestraint.h"
-%include "IMP/core/ConnectingPairContainer.h"
 %include "IMP/core/ConstantRestraint.h"
 %include "IMP/core/Cosine.h"
 %include "IMP/core/CoverRefined.h"
@@ -134,51 +125,15 @@ void depth_first_traversal(Hierarchy d, HierarchyVisitor *f)
 %include "IMP/core/TruncatedHarmonic.h"
 %include "IMP/core/MCCGSampler.h"
 
-%include "IMP/core/ListPairContainer.h"
-%include "IMP/core/PairsRestraint.h"
 %include "IMP/core/PairRestraint.h"
-%include "IMP/core/PairsConstraint.h"
-%include "IMP/core/PairConstraint.h"
-%include "IMP/core/SingletonsRestraint.h"
 %include "IMP/core/SingletonRestraint.h"
-%include "IMP/core/ListSingletonContainer.h"
-%include "IMP/core/PairContainerSet.h"
-%include "IMP/core/PairsOptimizerState.h"
-%include "IMP/core/SingletonContainerSet.h"
-%include "IMP/core/SingletonsOptimizerState.h"
-%include "IMP/core/SingletonsConstraint.h"
-%include "IMP/core/SingletonConstraint.h"
-%include "IMP/core/ListQuadContainer.h"
-%include "IMP/core/QuadsRestraint.h"
-%include "IMP/core/QuadRestraint.h"
-%include "IMP/core/QuadsConstraint.h"
-%include "IMP/core/QuadConstraint.h"
-%include "IMP/core/TripletsRestraint.h"
 %include "IMP/core/TripletRestraint.h"
-%include "IMP/core/ListTripletContainer.h"
-%include "IMP/core/QuadContainerSet.h"
-%include "IMP/core/QuadsOptimizerState.h"
-%include "IMP/core/TripletContainerSet.h"
-%include "IMP/core/TripletsOptimizerState.h"
-%include "IMP/core/TripletsConstraint.h"
-%include "IMP/core/TripletConstraint.h"
-%include "IMP/core/MinimumSingletonRestraint.h"
-%include "IMP/core/MinimumPairRestraint.h"
-%include "IMP/core/MaximumSingletonRestraint.h"
-%include "IMP/core/MaximumPairRestraint.h"
-%include "IMP/core/MinimumTripletRestraint.h"
-%include "IMP/core/MinimumQuadRestraint.h"
-%include "IMP/core/MaximumTripletRestraint.h"
-%include "IMP/core/MaximumQuadRestraint.h"
+%include "IMP/core/QuadRestraint.h"
 
-%include "IMP/core/MinimumSingletonScore.h"
-%include "IMP/core/MinimumPairScore.h"
-%include "IMP/core/MaximumSingletonScore.h"
-%include "IMP/core/MaximumPairScore.h"
-%include "IMP/core/MinimumTripletScore.h"
-%include "IMP/core/MinimumQuadScore.h"
-%include "IMP/core/MaximumTripletScore.h"
-%include "IMP/core/MaximumQuadScore.h"
+%include "IMP/core/SingletonConstraint.h"
+%include "IMP/core/PairConstraint.h"
+%include "IMP/core/TripletConstraint.h"
+%include "IMP/core/QuadConstraint.h"
 
 %include "IMP/core/AngleRestraint.h"
 %include "IMP/core/RigidBodyMover.h"

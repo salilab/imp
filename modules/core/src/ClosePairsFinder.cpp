@@ -7,7 +7,6 @@
  */
 
 #include "IMP/core/ClosePairsFinder.h"
-#include "IMP/core/ListSingletonContainer.h"
 #include "IMP/core/internal/MovedSingletonContainer.h"
 #include <limits>
 

@@ -8,11 +8,13 @@
 #include <IMP/benchmark/utility.h>
 #include <boost/timer.hpp>
 #include <IMP/benchmark/macros.h>
+#include <IMP/container.h>
 
 using namespace IMP;
 using namespace IMP::core;
 using namespace IMP::algebra;
 using namespace IMP::benchmark;
+using namespace IMP::container;
 
 class ConstPairScore: public PairScore {
 public:

@@ -60,7 +60,7 @@ class RBDTests(IMP.test.TestCase):
         for i in range(0, count):
             m= IMP.Model()
             IMP.set_log_level(IMP.SILENT)
-            l= IMP.core.ListSingletonContainer()
+            l= IMP.container.ListSingletonContainer()
             for i in range(0,2):
                 p= self._create_hierarchy(m, htr)
                 l.add_particle(p)

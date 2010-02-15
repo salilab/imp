@@ -11,7 +11,7 @@
 #include "../config.h"
 #include "../BoxSweepClosePairsFinder.h"
 #include "../GridClosePairsFinder.h"
-#include "../ListPairContainer.h"
+#include "CoreListPairContainer.h"
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
@@ -28,8 +28,8 @@ struct IsInactive {
     return !p[0]->get_is_active() || !p[1]->get_is_active();
   }
 };
-inline ListPairContainer *get_list(PairContainer *pc) {
-  return dynamic_cast<ListPairContainer *>(pc);
+inline CoreListPairContainer *get_list(PairContainer *pc) {
+  return dynamic_cast<CoreListPairContainer *>(pc);
 }
 template <class C>
 class Found {

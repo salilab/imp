@@ -8,10 +8,12 @@
 #include <boost/timer.hpp>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/macros.h>
+#include <IMP/container.h>
 
 using namespace IMP;
 using namespace IMP::core;
 using namespace IMP::algebra;
+using namespace IMP::container;
 
 double update_coordinates(Model *m, const Particles &ps) {
   double t=0;

@@ -11,7 +11,7 @@
 #include "bond_decorators.h"
 #include "Hierarchy.h"
 #include "internal/bond_graph_functors.h"
-#include <IMP/core/ListSingletonContainer.h>
+#include <IMP/container/ListSingletonContainer.h>
 #include <IMP/internal/NestedIterator.h>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/properties.hpp>
@@ -60,7 +60,7 @@ class IMPATOMEXPORT BondGraph{
   mutable IntKey index_key_;
 
 public:
-  IMP_NO_DOXYGEN(Pointer<core::ListSingletonContainer> sc_;)
+  IMP_NO_DOXYGEN(Pointer<container::ListSingletonContainer> sc_;)
 
   //! The graph is on the leaves of the atom::Hierarchy
   /** All the leaves will be made Bonded particles if they are not already.
@@ -144,7 +144,7 @@ public:
     vertex_descriptor::BondIterator> out_edge_iterator;
   typedef vertex_descriptor::BondedIterator adjacency_iterator;
   typedef boost::transform_iterator<internal::MakeBonded,
-                   IMP::core::ListSingletonContainer::ParticleIterator>
+                   IMP::container::ListSingletonContainer::ParticleIterator>
   vertex_iterator;
   typedef boost::disallow_parallel_edge_tag edge_parallel_category;
   typedef boost::undirected_tag directed_category;

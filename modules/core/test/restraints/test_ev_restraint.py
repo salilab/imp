@@ -29,7 +29,7 @@ class AngleRestraintTests(IMP.test.TestCase):
         rb1= IMP.core.RigidBody(p1.get_particle())
         rb0.set_coordinates_are_optimized(True)
         rb1.set_coordinates_are_optimized(True)
-        sc= IMP.core.ListSingletonContainer()
+        sc= IMP.container.ListSingletonContainer()
         fps=IMP.core.XYZRs()
         for i in range(0,10):
             p= IMP.Particle(m)

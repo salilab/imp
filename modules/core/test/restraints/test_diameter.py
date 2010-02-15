@@ -9,7 +9,7 @@ class DistanceTests(IMP.test.TestCase):
     def _test_diameter(self):
         diameter=10
         m= IMP.Model()
-        lc= IMP.core.ListSingletonContainer(IMP.core.create_xyzr_particles(m, 50, 1.0))
+        lc= IMP.container.ListSingletonContainer(IMP.core.create_xyzr_particles(m, 50, 1.0))
         h=IMP.core.HarmonicUpperBound(0,1)
         r=IMP.core.DiameterRestraint(h, lc, diameter)
         m.add_restraint(r)
