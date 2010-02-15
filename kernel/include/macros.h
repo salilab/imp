@@ -803,9 +803,6 @@ protection:                                                             \
   }                                                             \
   IMP_REF_COUNTED_DESTRUCTOR(Name)                              \
   virtual void do_show(std::ostream &out) const;                \
-  virtual std::string get_module() const {                      \
-    return get_module_name();                                   \
-  }                                                             \
 public:
 
 
@@ -825,9 +822,6 @@ public:
   virtual void do_show(std::ostream &out) const {               \
     show;                                                       \
   }                                                             \
-  virtual std::string get_module() const {                      \
-    return get_module_name();                                   \
-  }                                                             \
   ~Name() {destructor;}                                         \
 public:
 
@@ -842,9 +836,6 @@ public:
   }                                                             \
   virtual std::string get_type_name() const {                   \
     return #Name;                                               \
-  }                                                             \
-  virtual std::string get_module() const {                      \
-    return get_module_name();                                   \
   }                                                             \
   IMP_REF_COUNTED_DESTRUCTOR(Name);                             \
 private:                                                        \

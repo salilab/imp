@@ -93,13 +93,11 @@ public:
   //! Return a string identifying the type of the object
   virtual std::string get_type_name() const=0;
 
-  //! Return a string for the name of the module
-  virtual std::string get_module() const=0;
-
   //! Print out one or more lines of text describing the object
   void show(std::ostream &out=std::cout) const {
-    out << get_name() << "(" << get_type_name()
-        << ", " << get_version_info() << ")";
+    out << get_name()
+        << "(" << get_type_name() << ", "
+        << get_version_info() << ")";
     do_show(out);
   }
 
@@ -116,7 +114,7 @@ public:
   }
 #endif
 
-  //! Get information about the author and version of the object
+  //! Get information about the module and version of the object
   virtual VersionInfo get_version_info() const=0;
 
  /** @name Names

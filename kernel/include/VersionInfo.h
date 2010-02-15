@@ -9,6 +9,7 @@
 #define IMP_VERSION_INFO_H
 
 #include "utility.h"
+#include "exception.h"
 
 #include <iostream>
 #include <string>
@@ -21,24 +22,28 @@ IMP_BEGIN_NAMESPACE
  */
 class IMPEXPORT VersionInfo
 {
+  typedef VersionInfo This;
 public:
   //! Create a VersionInfo object with the given author and version.
-  VersionInfo(std::string author, std::string version) : author_(author),
-                                                         version_(version) {}
+  VersionInfo(std::string module, std::string version) : module_(module),
+    version_(version) {}
 
-  VersionInfo() : author_("unknown"), version_("unknown") {}
+  VersionInfo() {}
 
-  std::string get_author() const { return author_; }
+  std::string get_module() const { return module_; }
 
   std::string get_version() const { return version_; }
 
   //! Print version information to a stream.
   void show(std::ostream &out=std::cout) const {
-    out << version_ << " by " << author_;
+    IMP_USAGE_CHECK(!module_.empty(),
+                    "Attempting to use uninitialized version info",
+                    ValueException);
+    out << module_ << " " << version_;
   }
-
+  IMP_COMPARISONS_2(module_, version_);
 private:
-  std::string author_, version_;
+  std::string module_, version_;
 };
 
 IMP_OUTPUT_OPERATOR(VersionInfo);

@@ -315,13 +315,16 @@ class ConstRestraint(IMP.Restraint):
     def unprotected_evaluate(self, da):
         return self.v
     def get_version_info(self):
-        return IMP.VersionInfo("Me", "0.5")
+        return IMP.get_module_version_info()
     def do_show(self, fh):
         print >> fh, "ConstRestraint "+str(self.v)
     def get_input_containers(self):
         return IMP.ContainersTemp()
     def get_input_particles(self):
         return IMP.ParticlesTemp()
+    def get_type_name(self):
+        return "ConstRestraint"
+
 
 class ConstSingletonScore(IMP.SingletonScore):
     """An IMP::SingletonScore which always returns a constant value."""
@@ -331,9 +334,12 @@ class ConstSingletonScore(IMP.SingletonScore):
     def evaluate(self, p, da):
         return self.v
     def get_version_info(self):
-        return IMP.VersionInfo("Me", "0.5")
+        return IMP.get_module_version_info()
     def do_show(self, fh):
         print >> fh, "ConstPairScore "+ str(self.v)
+    def get_type_name(self):
+        return "ConstSingletonScore"
+
 
 class ConstPairScore(IMP.PairScore):
     """An IMP::PairScore which always returns a constant value."""
@@ -343,9 +349,12 @@ class ConstPairScore(IMP.PairScore):
     def evaluate(self, p, da):
         return self.v
     def get_version_info(self):
-        return IMP.VersionInfo("Me", "0.5")
+        return IMP.get_module_version_info()
     def do_show(self, fh):
         print >> fh, "ConstPairScore "+ str(self.v)
+    def get_type_name(self):
+        return "ConstPairScore"
+
 
 class ConstTripletScore(IMP.TripletScore):
     """An IMP::TripletScore which always returns a constant value."""
@@ -355,9 +364,12 @@ class ConstTripletScore(IMP.TripletScore):
     def evaluate(self, p, da):
         return self.v
     def get_version_info(self):
-        return IMP.VersionInfo("Me", "0.5")
+        return IMP.get_module_version_info()
     def do_show(self, fh):
         print >> fh, "ConstTripletScore "+ str(self.v)
+    def get_type_name(self):
+        return "ConstTripletScore"
+
 
 class ConstQuadScore(IMP.QuadScore):
     """An IMP::PairScore which always returns a constant value."""
@@ -367,9 +379,12 @@ class ConstQuadScore(IMP.QuadScore):
     def evaluate(self, p, da):
         return self.v
     def get_version_info(self):
-        return IMP.VersionInfo("Me", "0.5")
+        return IMP.get_module_version_info()
     def do_show(self, fh):
         print >> fh, "ConstQuadScore "+ str(self.v)
+    def get_type_name(self):
+        return "ConstQuadScore"
+
 
 class LogPairScore(IMP.PairScore):
     """An IMP::PairScore which logs which Particles it is called with."""
@@ -384,9 +399,12 @@ class LogPairScore(IMP.PairScore):
     def clear_log(self):
         self._log=[]
     def get_version_info(self):
-        return IMP.VersionInfo("Me", "0.5")
+        return IMP.get_module_version_info()
     def do_show(self, fh):
         print >> fh, "LogPairScore "
+    def get_type_name(self):
+        return "LogPairScore"
+
 
 
 class ConstUnaryFunction(IMP.UnaryFunction):
@@ -401,7 +419,10 @@ class ConstUnaryFunction(IMP.UnaryFunction):
     def do_show(self, fh):
         print >> fh, "ConstUF with value "+str(self.v)
     def get_version_info(self):
-        return IMP.VersionInfo("Me", "0.5")
+        return IMP.get_module_version_info()
+    def get_type_name(self):
+        return "ConstUnaryFunction"
+
 
 
 class TestRefiner(IMP.Refiner):

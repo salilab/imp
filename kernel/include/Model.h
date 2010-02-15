@@ -282,10 +282,6 @@ public:
     return IMP::get_module_version_info();
   }
 
-  std::string get_module() const {
-    return "IMP";
-  }
-
   std::string get_type_name() const {
     return "Model";
   }
