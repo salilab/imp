@@ -10,10 +10,10 @@
  *
  */
 
-#include "IMP/core/GroupnamesOptimizerState.h"
+#include "IMP/container/GroupnamesOptimizerState.h"
 #include <utility>
 
-IMPCORE_BEGIN_NAMESPACE
+IMPCONTAINER_BEGIN_NAMESPACE
 
 GroupnamesOptimizerState
 ::GroupnamesOptimizerState(GroupnameContainer *c,
@@ -45,4 +45,4 @@ void GroupnamesOptimizerState::show(std::ostream &out) const {
   out << "GroupnamesOptimizerState base" << std::endl;
 }
 
-IMPCORE_END_NAMESPACE
+IMPCONTAINER_END_NAMESPACE

@@ -8,31 +8,23 @@
  *
  */
 
-#include "IMP/core/ListGroupnameContainer.h"
+#include "IMP/container/ListGroupnameContainer.h"
 #include "IMP/GroupnameModifier.h"
 #include "IMP/GroupnameScore.h"
 #include <IMP/core/internal/groupname_helpers.h>
 #include <algorithm>
 
 
-IMPCORE_BEGIN_NAMESPACE
-
-namespace {
-  ListGroupnameContainer* get_list(GroupnameContainer *g) {
-    return dynamic_cast<ListGroupnameContainer*>(g);
-  }
-}
-
-IMP_ACTIVE_CONTAINER_DEF(ListGroupnameContainer);
+IMPCONTAINER_BEGIN_NAMESPACE
 
 ListGroupnameContainer
 ::ListGroupnameContainer(bool):
-  internal::ListLikeGroupnameContainer("added or removed list"){}
+  P(true){}
 
 ListGroupnameContainer
 ::ListGroupnameContainer(const Classnames &ps,
                          std::string name):
-  internal::ListLikeGroupnameContainer(name)
+  P(name)
 {
   if (ps.empty()) return;
   for (unsigned int i=0; i< ps.size(); ++i) {
@@ -51,12 +43,12 @@ ListGroupnameContainer
 
 ListGroupnameContainer
 ::ListGroupnameContainer(std::string name):
-  internal::ListLikeGroupnameContainer(name){
+  P(name){
 }
 
 ListGroupnameContainer
 ::ListGroupnameContainer(const char *name):
-  internal::ListLikeGroupnameContainer(name){
+  P(name){
 }
 
 void ListGroupnameContainer::show(std::ostream &out) const {
@@ -65,82 +57,4 @@ void ListGroupnameContainer::show(std::ostream &out) const {
       << " classnames." << std::endl;
 }
 
-
-
-void ListGroupnameContainer::set_classnames(ClassnamesTemp sc) {
-  if (!get_has_model() && !get_is_added_or_removed_container()
-      && !sc.empty()) {
-    set_model(IMP::internal::get_model(sc[0]));
-  }
-  update_list(sc);
-}
-
-
-void ListGroupnameContainer::clear_classnames() {
-  ClassnamesTemp t;
-  update_list(t);
-}
-
-
-void ListGroupnameContainer::add_classname(PassValue vt) {
-  IMP_USAGE_CHECK(IMP::internal::is_valid(vt),
-                  "Passed Classname cannot be NULL (or None)",
-                  UsageException);
-
-  if (!get_has_model() && !get_is_added_or_removed_container()) {
-    set_model(IMP::internal::get_model(vt));
-  }
-  add_to_list(vt);
-  IMP_USAGE_CHECK(get_is_added_or_removed_container()
-                  || !get_removed_groupnames_container()
-                  ->get_contains(vt),
-                  "You cannot remove and add the same item in one time step.",
-                  ValueException);
-}
-
-void
-ListGroupnameContainer::add_classnames(const ClassnamesTemp &c) {
-  if (c.empty()) return;
-  if (!get_has_model() && !get_is_added_or_removed_container()) {
-    set_model(IMP::internal::get_model(c[0]));
-  }
-  ClassnamesTemp cp= c;
-  add_to_list(cp);
-  IMP_IF_CHECK(USAGE) {
-    for (unsigned int i=0; i< c.size(); ++i) {
-      IMP_USAGE_CHECK(IMP::internal::is_valid(c[i]),
-                    "Passed Classname cannot be NULL (or None)",
-                    UsageException);
-      IMP_USAGE_CHECK(get_is_added_or_removed_container()
-                      || !get_removed_groupnames_container()
-                      ->get_contains(c[i]),
-            "You cannot remove and add the same item in one time step.",
-                      ValueException);
-
-    }
-  }
-}
-
-
-ContainersTemp ListGroupnameContainer::get_input_containers() const {
-  return ContainersTemp();
-}
-
-
-void ListGroupnameContainer::do_before_evaluate() {
-  internal::ListLikeGroupnameContainer::do_before_evaluate();
-}
-
-void ListGroupnameContainer::do_after_evaluate() {
-  internal::ListLikeGroupnameContainer::do_after_evaluate();
-}
-
-ParticlesTemp ListGroupnameContainer::get_state_input_particles() const {
-  return ParticlesTemp();
-}
-
-ContainersTemp ListGroupnameContainer::get_state_input_containers() const {
-  return ContainersTemp();
-}
-
-IMPCORE_END_NAMESPACE
+IMPCONTAINER_END_NAMESPACE

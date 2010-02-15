@@ -9,11 +9,11 @@
  *
  */
 
-#include "IMP/core/GroupnameContainerSet.h"
+#include "IMP/container/GroupnameContainerSet.h"
 #include <algorithm>
 
 
-IMPCORE_BEGIN_NAMESPACE
+IMPCONTAINER_BEGIN_NAMESPACE
 
 namespace {
   GroupnameContainerSet* get_set(GroupnameContainer* c) {
@@ -181,4 +181,4 @@ bool GroupnameContainerSet::get_contained_particles_changed() const {
 }
 
 
-IMPCORE_END_NAMESPACE
+IMPCONTAINER_END_NAMESPACE

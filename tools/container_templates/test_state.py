@@ -6,6 +6,7 @@ import unittest
 import IMP
 import IMP.test
 import IMP.core
+import IMP.container
 import math
 
 
@@ -107,7 +108,7 @@ class ClassnameContainerTest(IMP.test.TestCase):
         print "start"
         m= IMP.Model()
         print "hi"
-        c= IMP.core.ListGroupnameContainer()
+        c= IMP.container.ListGroupnameContainer()
         cs=[]
         for i in range(0,30):
             t=self.create_classname(m)
@@ -117,7 +118,7 @@ class ClassnameContainerTest(IMP.test.TestCase):
         k= IMP.IntKey("thevalue")
         f= GroupnameTestModifier(k)
         print "apply"
-        s= IMP.core.GroupnamesConstraint(c, f, None)
+        s= IMP.container.GroupnamesConstraint(c, f, None)
         print "add"
         m.add_score_state(s)
         m.evaluate(False)

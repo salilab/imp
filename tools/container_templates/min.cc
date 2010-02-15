@@ -9,12 +9,12 @@
  *
  */
 
-#include "IMP/core/MinMaxGroupnameRestraint.h"
+#include "IMP/container/MinMaxGroupnameRestraint.h"
 #include "IMP/core/internal/MinimalSet.h"
 #include <IMP/internal/container_helpers.h>
 
 
-IMPCORE_BEGIN_NAMESPACE
+IMPCONTAINER_BEGIN_NAMESPACE
 
 MinMaxGroupnameRestraint
 ::MinMaxGroupnameRestraint(GroupnameScore *f,
@@ -26,7 +26,7 @@ MinMaxGroupnameRestraint
 }
 
 namespace {
-  typedef internal::MinimalSet<double,
+  typedef core::internal::MinimalSet<double,
           Value, std::COMPARATOR<double> > MS;
   template <class It, class F>
   MS find_minimal_set(It b, It e, F *f, unsigned int n) {
@@ -96,4 +96,4 @@ ContainersTemp MinMaxGroupnameRestraint::get_input_containers() const
 }
 
 
-IMPCORE_END_NAMESPACE
+IMPCONTAINER_END_NAMESPACE

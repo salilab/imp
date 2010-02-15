@@ -8,14 +8,14 @@
  *  Copyright 2007-2010 Sali Lab. All rights reserved.
  */
 
-#ifndef IMPCORE_GROUPNAME_CONTAINER_SET_H
-#define IMPCORE_GROUPNAME_CONTAINER_SET_H
+#ifndef IMPCONTAINER_GROUPNAME_CONTAINER_SET_H
+#define IMPCONTAINER_GROUPNAME_CONTAINER_SET_H
 
 #include "config.h"
 #include <IMP/GroupnameContainer.h>
 #include <IMP/container_macros.h>
 
-IMPCORE_BEGIN_NAMESPACE
+IMPCONTAINER_BEGIN_NAMESPACE
 
 //! Stores a set of GroupnameContainers
 /** The input sets must be disjoint. This can change if there is
@@ -23,7 +23,7 @@ IMPCORE_BEGIN_NAMESPACE
 
     \usesconstraint
  */
-class IMPCOREEXPORT GroupnameContainerSet
+class IMPCONTAINEREXPORT GroupnameContainerSet
   : public GroupnameContainer
 {
  // to not have added and removed
@@ -53,6 +53,6 @@ public:
 };
 
 
-IMPCORE_END_NAMESPACE
+IMPCONTAINER_END_NAMESPACE
 
-#endif  /* IMPCORE_GROUPNAME_CONTAINER_SET_H */
+#endif  /* IMPCONTAINER_GROUPNAME_CONTAINER_SET_H */

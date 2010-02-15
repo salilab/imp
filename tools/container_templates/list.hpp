@@ -7,29 +7,26 @@
  *  Copyright 2007-2010 Sali Lab. All rights reserved.
  */
 
-#ifndef IMPCORE_LIST_GROUPNAME_CONTAINER_H
-#define IMPCORE_LIST_GROUPNAME_CONTAINER_H
+#ifndef IMPCONTAINER_LIST_GROUPNAME_CONTAINER_H
+#define IMPCONTAINER_LIST_GROUPNAME_CONTAINER_H
 
 #include "config.h"
-#include <IMP/GroupnameContainer.h>
-#include <IMP/internal/container_helpers.h>
-#include <IMP/core/internal/groupname_helpers.h>
-#include <IMP/ScoreState.h>
+#include <IMP/core/internal/CoreListGroupnameContainer.h>
 
-IMPCORE_BEGIN_NAMESPACE
+IMPCONTAINER_BEGIN_NAMESPACE
 
 //! Store a list of Classnames
 /** \note The indexes can change when particles are inserted
     as the list is maintained in sorted order.
  */
-class IMPCOREEXPORT ListGroupnameContainer:
+class IMPCONTAINEREXPORT ListGroupnameContainer:
 #if defined(IMP_DOXYGEN) || defined(SWIG)
 public GroupnameContainer
 #else
-public internal::ListLikeGroupnameContainer
+public core::internal::CoreListGroupnameContainer
 #endif
 {
-  IMP_ACTIVE_CONTAINER_DECL(ListGroupnameContainer);
+  typedef core::internal::CoreListGroupnameContainer P;
   // for the change versions
   ListGroupnameContainer(bool);
 public:
@@ -40,6 +37,7 @@ public:
   ListGroupnameContainer(std::string name= "ListGroupnameContainer %1%");
   ListGroupnameContainer(const char *name);
 
+#if defined(IMP_DOXYGEN) || defined(SWIG)
  /** @name Methods to control the contained objects
 
      This container stores a list of Classname objects. To manipulate
@@ -57,20 +55,17 @@ public:
     })
   void clear_classnames();
   /**@}*/
-
+  IMP_GROUPNAME_CONTAINER(ListGroupnameContainer, get_module_version_info());
+#else
   static ListGroupnameContainer *create_untracked_container() {
     ListGroupnameContainer *lsc = new ListGroupnameContainer(false);
     return lsc;
   }
-#if defined(IMP_DOXYGEN) || defined(SWIG)
-  IMP_GROUPNAME_CONTAINER(ListGroupnameContainer, get_module_version_info());
-#else
-  IMP_LISTLIKE_GROUPNAME_CONTAINER(ListGroupnameContainer,
-                                   get_module_version_info());
+  IMP_OBJECT(ListGroupnameContainer, get_module_version_info());
 #endif
 };
 
 
-IMPCORE_END_NAMESPACE
+IMPCONTAINER_END_NAMESPACE
 
-#endif  /* IMPCORE_LIST_GROUPNAME_CONTAINER_H */
+#endif  /* IMPCONTAINER_LIST_GROUPNAME_CONTAINER_H */

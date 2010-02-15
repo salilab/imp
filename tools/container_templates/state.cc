@@ -10,11 +10,11 @@
  *
  */
 
-#include "IMP/core/GroupnamesConstraint.h"
+#include "IMP/container/GroupnamesConstraint.h"
 #include "IMP/internal/container_helpers.h"
 #include <utility>
 
-IMPCORE_BEGIN_NAMESPACE
+IMPCONTAINER_BEGIN_NAMESPACE
 
 GroupnamesConstraint::GroupnamesConstraint(GroupnameContainer *c,
                                            GroupnameModifier *before,
@@ -127,4 +127,4 @@ void GroupnamesConstraint::show(std::ostream &out) const {
   out << "GroupnamesConstraint base" << std::endl;
 }
 
-IMPCORE_END_NAMESPACE
+IMPCONTAINER_END_NAMESPACE
