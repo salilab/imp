@@ -27,7 +27,7 @@ public:
   MinMaxGroupnameScore(const GroupnameScoresTemp &scores,
                        unsigned int n=1,
                        std::string name="GroupnameScore %1%");
-  IMP_GROUPNAME_SCORE(MinMaxGroupnameScore, get_module_version_info());
+  IMP_GROUPNAME_SCORE(MinMaxGroupnameScore);
 };
 
 IMPCONTAINER_END_NAMESPACE

@@ -41,8 +41,7 @@ void GroupnamesOptimizerState::update()
 
 
 
-void GroupnamesOptimizerState::show(std::ostream &out) const {
-  out << "GroupnamesOptimizerState base" << std::endl;
+void GroupnamesOptimizerState::do_show(std::ostream &out) const {
 }
 
 IMPCONTAINER_END_NAMESPACE

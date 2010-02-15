@@ -52,11 +52,10 @@ GroupnameContainerSet
   return false;
 }
 
-void GroupnameContainerSet::show(std::ostream &out) const {
+void GroupnameContainerSet::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
-  out << "GroupnameContainerSet with "
-      << get_number_of_classnames()
-      << " classnames." << std::endl;
+  out << get_number_of_classnames()
+      << " containers" << std::endl;
 }
 
 unsigned int

@@ -60,12 +60,9 @@ double MinMaxGroupnameRestraint
   return score;
 }
 
-void MinMaxGroupnameRestraint::show(std::ostream &out) const {
-  out << "MinMaxGroupnameScoreRestraint over ";
-  c_->show(out);
-  out << " using function ";
-  f_->show(out);
-  out << std::endl;
+void MinMaxGroupnameRestraint::do_show(std::ostream &out) const {
+  out << "container " << *c_ << std::endl;
+  out << "score " << *f_ << std::endl;
 }
 
 

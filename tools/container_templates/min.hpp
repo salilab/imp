@@ -39,8 +39,7 @@ public:
                                  std::string name
                                  ="MinMaxGroupnameRestraint %1%");
 
-  IMP_RESTRAINT(MinMaxGroupnameRestraint,
-                get_module_version_info());
+  IMP_RESTRAINT(MinMaxGroupnameRestraint);
 
   //! Set the number of lowest scores to use.
   void set_n(unsigned int n) { n_=n;}

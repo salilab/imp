@@ -116,8 +116,7 @@ public:
     std::remove_if(data_.begin(), data_.end(),
          IMP::internal::IsInactive());
   }
-  VersionInfo get_version_info() const;
-  void show(std::ostream &out=std::cout) const;
+  IMP_OBJECT(ListLikeGroupnameContainer);
   bool get_contained_particles_changed() const;
   ParticlesTemp get_contained_particles() const;
   ContainersTemp get_input_containers() const {
@@ -129,9 +128,9 @@ public:
 IMPCORE_END_INTERNAL_NAMESPACE
 
 
-#define IMP_LISTLIKE_GROUPNAME_CONTAINER(Name, version_info) \
+#define IMP_LISTLIKE_GROUPNAME_CONTAINER(Name)               \
   ContainersTemp get_input_containers() const;               \
-  IMP_OBJECT(Name, version_info);
+  IMP_OBJECT(Name);
 
 
 #endif  /* IMPCORE_INTERNAL_GROUPNAME_HELPERS_H */

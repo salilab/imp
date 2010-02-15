@@ -31,8 +31,7 @@ public:
   void add_classnames(const ClassnamesTemp &c);
   void set_classnames(ClassnamesTemp c);
   void clear_classnames();
-  IMP_LISTLIKE_GROUPNAME_CONTAINER(CoreListGroupnameContainer,
-                                   get_module_version_info());
+  IMP_LISTLIKE_GROUPNAME_CONTAINER(CoreListGroupnameContainer);
 };
 
 

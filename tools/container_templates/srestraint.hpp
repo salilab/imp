@@ -40,7 +40,7 @@ public:
                      PassValue vt,
                      std::string name="GroupnameRestraint %1%");
 
-  IMP_INCREMENTAL_RESTRAINT(GroupnameRestraint, get_module_version_info());
+  IMP_INCREMENTAL_RESTRAINT(GroupnameRestraint);
 };
 
 IMPCORE_END_NAMESPACE
