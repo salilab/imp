@@ -113,7 +113,7 @@ namespace IMP {
 %include "IMP_object.i"
 %include "IMP/FailureHandler.h"
 %include "IMP/DerivativeAccumulator.h"
-%include "IMP/Container.h"
+%include "IMP/container_base.h"
 %include "IMP_particle.i"
 %include "IMP/Decorator.h"
 
