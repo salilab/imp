@@ -1910,7 +1910,7 @@ public:
     \endcode
 */
 #define IMP_NEW(Typename, varname, args)        \
-  Pointer<Typename> varname(new Typename args)
+  IMP::Pointer<Typename> varname(new Typename args)
 
 #ifdef IMP_DOXYGEN
 /** Define a new key type.
