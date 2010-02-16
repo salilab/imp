@@ -7,9 +7,9 @@
 
 #include <IMP/core/ConjugateGradients.h>
 #include <IMP/core/utility.h>
-#include <IMP/core/model_io.h>
 #include <IMP/log.h>
 #include <IMP/Model.h>
+#include <IMP/io.h>
 
 #include <limits>
 #include <cmath>
@@ -39,7 +39,7 @@ bool is_good_value(const NT &f) {
 
 void ConjugateGradients::failure() {
   IMP_LOG(TERSE, "Failure in ConjugateGradients. The Model is:\n");
-  IMP_LOG_WRITE(TERSE, write(get_model(), IMP_STREAM));
+  IMP_LOG_WRITE(TERSE, write_model(get_model(), IMP_STREAM));
   throw ValueException("Failure in ConjugateGradients");
 }
 

@@ -58,7 +58,6 @@ files = [
          'VolumeRestraint.cpp',
          'XYZ.cpp',
          'XYZR.cpp',
-         'model_io.cpp',
          'rigid_bodies.cpp',
          'utility.cpp',
         ] \
