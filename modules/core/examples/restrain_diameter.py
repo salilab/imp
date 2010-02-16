@@ -1,5 +1,6 @@
 import IMP
 import IMP.core
+import IMP.container
 
 # This example restraints the diameter of a set of particles to be smaller than 10
 
