@@ -1,0 +1,6 @@
+/* Include top-level Python interface */
+%include "IMP_modeller_init.i"
+
+/* Wrap our classes */
+%include "IMP/modeller/MultipleBinormalRestraint.h"
+
