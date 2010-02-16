@@ -15,7 +15,6 @@
 #include "config.h"
 #include "FormFactorTable.h"
 #include "Profile.h"
-#include "Score.h"
 #include <IMP/algebra/utility.h>
 #include <IMP/Particle.h>
 
@@ -23,6 +22,8 @@
 #include <vector>
 
 IMPSAXS_BEGIN_NAMESPACE
+
+class Score;
 
 namespace { // anonymous
   static const Float pr_resolution = 0.5;

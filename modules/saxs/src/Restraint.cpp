@@ -18,7 +18,7 @@ Restraint::Restraint(const Particles& particles, const Profile& exp_profile,
                      FormFactorTable* ff_table) :
   IMP::Restraint("SAXS restraint"),
   ff_table_(ff_table), rigid_bodies_profile_(ff_table) {
-  saxs_score_ = new Score( (Profile*)&exp_profile, ff_table_);
+  saxs_score_ = new Score( exp_profile, ff_table_);
 
   // for now just use a LeavesRefiner. It should, eventually, be a parameter
   // or a (not yet existing) AtomsRefiner.
