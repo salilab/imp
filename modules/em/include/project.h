@@ -145,7 +145,7 @@ void project_given_rotation1(IMP::algebra::Matrix3D<T>& m3,
         }
 
         // Express p in the universal coordinate system
-        if (!shift.is_zero(equality_tolerance)) {
+        if (get_linf_norm(shift) > equality_tolerance) {
           p -= shift;
         }
         // Get point r in the universal system corresponding to p

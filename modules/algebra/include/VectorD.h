@@ -153,19 +153,6 @@ public:
     return operator/(mag);
   }
 
-
-  //! \return true if all the values in the vector are zero (an epsilon value
-  //! to determine the tolerance can be specified (default is 0).
-  bool is_zero(double epsilon=0.0) const {
-    check_vector();
-    for (unsigned int i=0; i< D; ++i) {
-      if(!algebra::almost_equal(vec_[i],0.0,epsilon)) {
-        return false;
-      }
-    }
-    return true;
-  }
-
   double operator*(const VectorD<D> &o) const {
     return scalar_product(o);
   }
@@ -410,6 +397,38 @@ inline std::ostream &operator<<(std::ostream &out, const CommasIO<D> &s)
   return out;
 }
 #endif
+/** \name Norms
+    We define a number of standard, \f$L^p\f$, norms on VectorD.
+    - \f$L^1\f$ is the Manhattan distance, the sum of the components
+    - \f$L^2\f$ is the standard Euclidean length
+    - \f$L^\inf\f$ is the maximum of the components
+    @{
+*/
+
+template <unsigned int D>
+double get_l2_norm(const VectorD<D> &v) {
+  return v.get_magnitude();
+}
+
+template <unsigned int D>
+double get_l1_norm(const VectorD<D> &v) {
+  double n=std::abs(v[0]);
+  for (unsigned int i=1; i< D; ++i) {
+    n+= std::abs(v[i]);
+  }
+  return n;
+}
+
+template <unsigned int D>
+double get_linf_norm(const VectorD<D> &v) {
+  double n=std::abs(v[0]);
+  for (unsigned int i=1; i< D; ++i) {
+    n= std::max(n, std::abs(v[i]));
+  }
+  return n;
+}
+
+/** @} */
 
 //! Use this before outputing to delimited vector entries with a space
 /** std::cout << spaces_io(v);
