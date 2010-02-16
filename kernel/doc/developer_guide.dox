@@ -363,7 +363,7 @@ or \c \\commandname if there are no arguments.
       \string{modules/my_module/test} or a subdirectory.
 
     If you feel your module is of interest to other \imp users and 
-    developers, see the \ref anchorcontribute "contributing code to IMP" section.
+    developers, see the \ref anchorcontributing "contributing code to IMP" section.
 
     If you document your code, running \command{scons doc} will build
     documentation of all of the modules including yours. To access the
