@@ -200,7 +200,7 @@ ALIASES                = "command{1}=\code \1 \endcode" \
                          "version=\par Version:" \
                          "warning=\par Warning:" \
                          "genericgeometry=\ingroup genericgeometry"\
-                         "cgalpredicate=\note This predicates will produce guaranteed correct results if the \ref CGAL \"CGAL\" library is available (the results will be unreliable if it is not). \ingroup CGAL" \
+                         "cgalpredicate=\note This predicates will produce guaranteed correct results if the \ref cgal \"CGAL\" library is available (the results will be unreliable if it is not)." \
                          "unstable{1}=\warning \1 has not been stabilized and is likely to change without notice." \
                          "untested{1}=\warning \1 has not been well tested yet\n  Use with caution and please report any bugs found." \
                          "unimplemented{1}=\warning \1 has not beeen implemented.\n If you want to use it, ask someone to implement it or do it yourself."\
@@ -209,9 +209,7 @@ ALIASES                = "command{1}=\code \1 \endcode" \
                          "decoratorstemp{1}=\class \1sTemp \n \brief A type to pass a collection of \1 decorators.\n\nIt looks like a \c std::vector<\1> in C++ and a \c list in Python. See \ref tempornot \"when to use Temp\" for details on using this type."\
                          "objects{1}=\class \1s\n \brief A type to store a collection of \1 objects.\n\nIt looks like a \c std::vector<\1*> in C++ and a \c list in Python. See \ref tempornot \"when to use Temp\" for details on using this type."\
                          "objectstemp{1}=\class \1sTemp\n\brief A type to pass a collection of \1 objects.\n\nIt looks like a \c std::vector<\1*> in C++ and a \c list in Python. See \ref tempornot \"when to use Temp\" for details on using this type."\
-                         "invaliddefault=\addtogroup invalid_default"\
-                         "noncomparable=\addtogroup noncomparable"\
-                         "geometry=\invaliddefault \noncomparable \addtogroup geometry"
+                         "geometry=\note This class is a \ref geometricprimitives \"geometric primitive\". Also, this class is not \ref uninitialized \"not initialized by its default constructor\"."
 
 # Set the OPTIMIZE_OUTPUT_FOR_C tag to YES if your project consists of C
 # sources only. Doxygen will then generate output that is more tailored for C.

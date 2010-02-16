@@ -51,7 +51,7 @@ later and use the following argument to scons
 \command{modeller=path/to/modeller}
 
 Certain geometric computations will be faster, better or more reliable
-if \ref CGAL "CGAL" is installed.
+if \ref cgal "CGAL" is installed.
 
 \section userbuild Getting and building IMP: Users
 

@@ -1,5 +1,5 @@
 /**
- *  \file BoundingBoxD.h   \brief Simple D vector class.
+ *  \file BoundingBoxD.h   \brief A bounding box in D dimensions.
  *
  *  Copyright 2007-2010 Sali Lab. All rights reserved.
  *
@@ -13,24 +13,26 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
+
+//! An axis-aligned bounding box.
 /** The BoundingBoxD class provides a unified representation for bounding
-    boxes in \imp. Geometric objects should have an associated method like
-    get_bounding_box() which creates the bounding boxes of objects.
-    \noncomparable
-    \addtogroup geometry
+    boxes in \imp. Geometric objects should have an associated namespace
+    method like get_bounding_box() which returns the bounding boxes of objects.
+
+    \note This class is a \ref geometricprimitives "geometric primitive".
 */
 template <unsigned int D>
 class BoundingBoxD
 {
   void make_empty() {
     for (unsigned int i=0; i< D; ++i) {
-      lb_[i]= std::numeric_limits<double>::max();
-      ub_[i]=-std::numeric_limits<double>::max();
+      b_[0][i]= std::numeric_limits<double>::max();
+      b_[1][i]=-std::numeric_limits<double>::max();
     }
   }
 public:
   // public for swig
-  IMP_NO_DOXYGEN(typedef BoundingBoxD<D> This;)
+  IMP_NO_DOXYGEN(typedef BoundingBoxD<D> This);
 
   //! Create an empty bounding box
   BoundingBoxD() {
@@ -38,10 +40,14 @@ public:
   }
   //! Make from the lower and upper corners
   BoundingBoxD(const VectorD<D> &lb,
-               const VectorD<D> &ub): lb_(lb), ub_(ub) {
+               const VectorD<D> &ub){
+    b_[0]=lb;
+    b_[1]=ub;
   }
   //! Creating a bounding box containing one point
-  BoundingBoxD(const VectorD<D> &v): lb_(v), ub_(v){}
+  BoundingBoxD(const VectorD<D> &v) {
+    b_[0]=v; b_[1]=v;
+  }
 
   //! Creating a bounding box from a set of points
   BoundingBoxD(const std::vector<VectorD<D> > &points) {
@@ -54,8 +60,8 @@ public:
   //! merge two bounding boxes
   const BoundingBoxD<D>& operator+=(const BoundingBoxD<D> &o) {
     for (unsigned int i=0; i< D; ++i) {
-      lb_[i]= std::min(o.get_corner(0)[i], get_corner(0)[i]);
-      ub_[i]= std::max(o.get_corner(1)[i], get_corner(1)[i]);
+      b_[0][i]= std::min(o.get_corner(0)[i], get_corner(0)[i]);
+      b_[1][i]= std::max(o.get_corner(1)[i], get_corner(1)[i]);
     }
     return *this;
   }
@@ -63,8 +69,8 @@ public:
   //! merge two bounding boxes
   const BoundingBoxD<D>& operator+=(const VectorD<D> &o) {
     for (unsigned int i=0; i< D; ++i) {
-      lb_[i]= std::min(o[i], get_corner(0)[i]);
-      ub_[i]= std::max(o[i], get_corner(1)[i]);
+      b_[0][i]= std::min(o[i], get_corner(0)[i]);
+      b_[1][i]= std::max(o[i], get_corner(1)[i]);
     }
     return *this;
   }
@@ -72,8 +78,8 @@ public:
   /** Grow the bounding box by o on all sizes. */
   const BoundingBoxD<D>& operator+=(double o) {
     for (unsigned int i=0; i< D; ++i) {
-      lb_[i]= lb_[i]-o;
-      ub_[i]= ub_[i]+o;
+      b_[0][i]= b_[0][i]-o;
+      b_[1][i]= b_[1][i]+o;
     }
     return *this;
   }
@@ -88,8 +94,7 @@ public:
   //! For 0 return lower corner and 1 upper corner
   const VectorD<D>& get_corner(unsigned int i) const {
     IMP_USAGE_CHECK(i < 2, "Can only use 0 or 1", IndexException);
-    if (i==0) return lb_;
-    else return ub_;
+    return b_[i];
   }
 
   bool get_contains(const VectorD<D> &o) const {
@@ -104,10 +109,10 @@ public:
     return get_contains(bb.get_corner(0)) && get_contains(bb.get_corner(1));
   }
 
-  IMP_SHOWABLE_INLINE(out << lb_ << ": " << ub_);
+  IMP_SHOWABLE_INLINE(out << b_[0] << ": " << b_[1]);
 
 private:
-  VectorD<D> lb_, ub_;
+  VectorD<D> b_[2];
 };
 
 IMP_VOLUME_GEOMETRY_METHODS_D(BoundingBox, IMP_NOT_IMPLEMENTED,
@@ -116,6 +121,10 @@ IMP_VOLUME_GEOMETRY_METHODS_D(BoundingBox, IMP_NOT_IMPLEMENTED,
                               *(g.get_point(1)[2]- g.get_point(0)[2]),
                               return g);
 
+#ifdef IMP_DOXYGEN
+/** See BoundingBoxD. */
+typedef BoundingBoxD<3> BoundingBox3D;
+#endif
 
 //! Return a bounding box containing the transformed box
 inline BoundingBox3D get_transformed(const BoundingBox3D &bb,

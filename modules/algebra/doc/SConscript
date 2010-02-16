@@ -4,6 +4,57 @@ env.IMPModuleDoc(env.IMPModuleGetDocs(),
                  authors= ['Daniel Russel', 'Keren Lasker', 'Ben Webb',
                            'Javier Angel', 'Velazquez-Muriel'],
                  brief='MODULENAME contains general purpose algebraic and geometric methods.',
-                 overview="""MODULENAME contains general purpose algebraic and geometric methods that are expected to be used by a wide variety of \\imp users.""",
+                 overview="""MODULENAME contains general purpose algebraic and geometric methods that are expected to be used by a wide variety of \\imp modules.
+
+\\par Geometric primitives\\anchor geometricprimitives
+\\imp has a number of geometry primitives. They support the following namespace
+functions as appropriate
+  - IMP::algebra::get_bounding_box()
+  - IMP::algebra::get_surface_area()
+  - IMP::algebra::get_volume()\\n\\n
+In addition, they cannot be compared against one another.
+
+\\par Generic geometry\\anchor genericgeometry
+ Geometry in IMP can be stored in a variety of ways. For example, a
+ point in 3D can be stored using an IMP::algebra::Vector3D or using an
+ IMP::core::XYZ particle. It is often useful to be able to write
+ algorithms that work on sets of points without worring how they are
+ stored, the Generic Geometry layer provides that. It works using a
+ set of functions IMP::core::get_geometry() and
+ IMP::core::set_geometry() which manipulate the IMP::algebra
+ representation of the geometry in question (so an
+ IMP::algebra::Vector3D for both IMP::algebra::Vector3D and
+ IMP::core::XYZ storage). Algorithms take their arguments as C++
+ templates and use the generic geometry methods to manipulate the
+ geometry. And versions of the function for both types of storage are
+ exported to python.\\n\\n
+ For example, IMP::atom::rmsd() takes any combination of IMP::algebra::Vector3Ds
+ or IMP::core::XYZs or IMP::core::XYZsTemp as arguments. Versions for all combinations
+ of those are exported to python.
+
+\\par Uninitialized default values\\anchor uninitialized
+Some geometric primitives are not put into a defined state by their
+constructor. Such classes mimic POD types (int, float etc) in C++ and
+are optimized for efficiency.  All operations on a default initialized
+instance other than assigning to it from a non-default initialized
+instance should be assumed to be invalid.
+\\code
+UninitializeDefault() != UninitializedDefault()
+\\endcode
+
+
+\\par CGAL\\anchor cgal
+\\external{www.cgal.org,CGAL} is a library of geometry-related
+algorithms and data structures written in C++. The relevant parts of
+CGAL are licensed under LGPL and QPL and commercial licenses are
+available if needed. More information can be found on the
+\\external{www.cgal.org/license.html, CGAL license page}.\\n\\n
+Certain functionality provided in \\imp requires or benefits from using CGAL.
+
+
+*/
+
+
+""",
                  publications=env.StandardPublications(),
                  license=env.StandardLicense())

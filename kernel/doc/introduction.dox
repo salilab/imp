@@ -331,8 +331,7 @@ how to do \imp reference counting in C++.
     exceptions are mapped onto the normal python exception types.
 
 
-    \subsection objects Values and Objects
-    \anchor values
+    \subsection objects Values and Objects \anchor values
     As is conventional in C++, \imp classes are divided into two types
     - \e value \e classes which are be passed, stored, and returned by value
       (or, for speed, \c const&). Examples include IMP::algebra::Vector3D,
@@ -352,8 +351,7 @@ how to do \imp reference counting in C++.
 
     Python does not have this distinction.
 
-    A few classes in \imp are designed for fast, low level use. They are
-    marked as \ref uninitialized_default, meaning that their default
+    A few classes in \imp are designed for fast, low level use. Their default
     constructor leaves them in an unspecified state. This is similar to
     the built in types in C++ (\c int, \c double). For example
       \code
@@ -362,7 +360,7 @@ how to do \imp reference counting in C++.
       v= IMP::algebra::Vector3D(0,1,2); // now we can use v
       \endcode
 
-    Unless they are marked otherwise as \ref noncomparable, all \e value
+    Unless the documentation says otherwise, all \e value
     \e class object in \imp can be compared with other equivalent objects
     based on their contents. \e Object \e class objects allow checking of
     equality to see if they are the same object (not whether two have the
