@@ -1,6 +1,5 @@
 %include "IMP_config.i"
 
-%include "std_map.i"
 
 %pythoncode %{
 class DecoratorIterator:
@@ -189,9 +188,6 @@ namespace IMP {
   %template(double_pair) ::std::pair<double, double>;
   %template(IntRange) ::std::pair<Int, Int>;
   %template(IntRanges) ::std::vector< IntRange >;
-
-  %template(ToParticles) ::std::map<unsigned int, Particle*>;
-  %template(FromParticles) ::std::map<Particle*, unsigned int>;
 }
 
 

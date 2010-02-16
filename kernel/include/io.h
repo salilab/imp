@@ -23,18 +23,23 @@ IMP_BEGIN_NAMESPACE
     runtime, set IMP::ConfigurationSet instead. It should be
     substantially faster.
 
-    The functions take std::maps to go between unique integers identifying
-    each particle and the actual particles.
+    The functions take a list of the particles to write. The particles
+    need to be provided in the same order for reading and writing.
+    This is not checked.
+
+    If an passed particle has a particle attribute which is not
+    in the list, an IOException is thrown. This can change to
+    silently ignoring such attributes if desired.
 
     \note The versions taking std::map arguments are not exported
     to python.
     @{
 */
 IMPEXPORT void write_model(Model *m,
-                           const std::map<Particle*, unsigned int> &to,
+                           const ParticlesTemp &particles,
                            TextOutput out);
 IMPEXPORT void read_model(TextInput in,
-                          const std::map<unsigned int, Particle *> &from,
+                          const ParticlesTemp &particles,
                           Model *m);
 #ifndef IMP_DOXYGEN
 IMPEXPORT void write_model(Model *m,
