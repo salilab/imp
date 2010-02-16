@@ -1,5 +1,6 @@
 files = [
          'cgal_predicates.h',
+         'grid_3d.h',
          'jama_cholesky.h',
          'jama_eig.h',
          'jama_lu.h',
