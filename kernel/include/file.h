@@ -34,17 +34,17 @@ struct TextProxy {
     python file or a path to a file. As a result, those can be
     passed directly to functions which take a TextOutput as an
     argument.
+
+    Files are created lazily, so TextOutput can be passed as
+    arguments to functions that might not produce output.
     \code
     IMP::atom::write_pdb(particles, "path/to/file.pdb");
     IMP::atom::write_pdb(particles, my_fstream);
     \endcode
 */
 class IMPEXPORT TextOutput
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  : public internal::TextIO<std::ostream, std::ofstream, 0>
-#endif
 {
-  typedef internal::TextIO<std::ostream, std::ofstream, 0> P;
+  Pointer<internal::IOStorage<std::ostream> > out_;
  public:
 #ifndef IMP_DOXYGEN
   // swig needs there here for some bizaare reason
@@ -57,7 +57,22 @@ class IMPEXPORT TextOutput
   TextOutput(std::string file_name);
 #ifndef SWIG
   TextOutput(std::ostream &out);
-  TextOutput(const TextOutput &o): P(static_cast<const P&>(o)) {}
+#endif
+
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+  operator std::ostream &() {
+    return get_stream();
+  }
+  operator bool () {
+    return out_ && out_->get_stream();
+  }
+  std::ostream &get_stream() {
+    if (!out_) {
+      IMP_THROW("Attempting to write to uninitialized text input",
+                IOException);
+    }
+    return out_->get_stream();
+  }
 #endif
 };
 
@@ -72,11 +87,8 @@ class IMPEXPORT TextOutput
     \endcode
 */
 class IMPEXPORT TextInput
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  : public internal::TextIO<std::istream, std::ifstream, 1>
-#endif
 {
-  typedef internal::TextIO<std::istream, std::ifstream, 1> P;
+  Pointer<internal::IOStorage<std::istream> > in_;
  public:
 #ifndef IMP_DOXYGEN
   // swig needs there here for some bizaare reason
@@ -89,7 +101,22 @@ class IMPEXPORT TextInput
   TextInput(std::string file_name);
 #ifndef SWIG
   TextInput(std::istream &out);
-  TextInput(const TextInput &o): P(static_cast<const P&>(o)) {}
+#endif
+
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+  operator std::istream &() {
+    return get_stream();
+  }
+  operator bool () {
+    return in_ && in_->get_stream();
+  }
+  std::istream &get_stream() {
+    if (!in_) {
+      IMP_THROW("Attempting to read from uninitialized text input",
+                IOException);
+    }
+    return in_->get_stream();
+  }
 #endif
 };
 
