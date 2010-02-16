@@ -14,8 +14,12 @@ IMP_BEGIN_NAMESPACE
 
 
 IMPEXPORT void write_model(Model *m,
-                           const std::map<Particle*, unsigned int> &to,
+                           const ParticlesTemp &particles,
                            TextOutput out) {
+  std::map<Particle*, unsigned int> to;
+  for (unsigned int i=0; i< particles.size(); ++i) {
+    to[particles[i]]=i;
+  }
   std::map<unsigned int, internal::ParticleData> data;
   for (std::map<Particle*, unsigned int>::const_iterator it= to.begin();
        it != to.end(); ++it) {
@@ -30,18 +34,17 @@ IMPEXPORT void write_model(Model *m,
 }
 IMPEXPORT void write_model(Model *m,
                            TextOutput out) {
-  std::map<Particle*, unsigned int> to;
-  for (Model::ParticleIterator pit= m->particles_begin();
-       pit != m->particles_end(); ++pit) {
-    unsigned int i= to.size();
-    to[*pit]= i;
-  }
-  write_model(m, to, out);
+  ParticlesTemp ps(m->particles_begin(), m->particles_end());
+  write_model(m, ps, out);
 }
 IMPEXPORT void read_model(TextInput in,
-                          const std::map<unsigned int, Particle *> &from,
+                          const ParticlesTemp &particles,
                           Model *m) {
   internal::LineStream ls(in);
+  std::map<unsigned int, Particle *> from;
+  for (unsigned int i=0; i< particles.size(); ++i) {
+    from[i]= particles[i];
+  }
   std::map<Particle*, internal::ParticleData> data;
   do {
     internal::LineStream::LinePair lp= ls.get_line();
@@ -82,13 +85,8 @@ IMPEXPORT void read_model(TextInput in,
   }
 }
 IMPEXPORT void read_model(TextInput in, Model *m) {
-  std::map<unsigned int, Particle*> from;
-  for (Model::ParticleIterator pit= m->particles_begin();
-       pit != m->particles_end(); ++pit) {
-    unsigned int i= from.size();
-    from[i]= *pit;
-  }
-  read_model(in, from, m);
+  ParticlesTemp ps(m->particles_begin(), m->particles_end());
+  read_model(in, ps, m);
 }
 
 
