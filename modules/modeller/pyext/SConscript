@@ -1,4 +1,4 @@
 Import('env')
 
-# Install the Python files:
+# Build the Python extension from SWIG interface file:
 env.IMPModulePython(swigfiles=env.IMPModuleGetSwigFiles(), pythonfiles=env.IMPModuleGetPython())

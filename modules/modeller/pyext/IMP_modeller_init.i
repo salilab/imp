@@ -1,4 +1,4 @@
-"""Interface between IMP and MODELLER."""
+%pythoncode %{
 
 import math
 import imp
@@ -6,8 +6,6 @@ import os
 import sys
 import tempfile
 import shutil
-import IMP
-import IMP.core
 import IMP.atom
 
 def _import_modeller_scripts_optimizers():
@@ -552,3 +550,5 @@ def read_pdb(name, model, special_patches=None):
     hpp = loader.load_atoms(model)
     hpp.get_particle().set_name(name)
     return hpp
+
+%}

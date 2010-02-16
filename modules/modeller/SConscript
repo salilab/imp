@@ -1,4 +1,4 @@
 Import('env')
 
-env.IMPModuleBuild(version='SVN', required_modules=[], cpp=False,
+env.IMPModuleBuild(version='SVN', required_modules=['core'],
                    required_dependencies=['modeller'])
