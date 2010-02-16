@@ -9,22 +9,16 @@
 #define IMPALGEBRA_VECTOR_D_H
 
 #include "config.h"
-#include "utility.h"
-#include "macros.h"
-#include <IMP/base_types.h>
 #include <IMP/macros.h>
 #include <IMP/exception.h>
-#include <IMP/random.h>
 #include <IMP/utility.h>
-
-#include <boost/random/uniform_real.hpp>
 #include <boost/static_assert.hpp>
 
 #include <limits>
 #include <cmath>
 
 IMPALGEBRA_BEGIN_NAMESPACE
-
+//! A Cartesian vector in D-dimensions.
 /** Store a vector of Cartesian coordinates.
     \see Vector3D
     \see Vector2D
@@ -43,8 +37,9 @@ class VectorD
   }
 public:
   // public for swig
-  IMP_NO_DOXYGEN(typedef VectorD<D> This;)
-
+#ifndef IMP_DOXYGEN
+  typedef VectorD<D> This;
+#endif
   /** The distance between b and e must be equal to D.
    */
   template <class It>
