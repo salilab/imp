@@ -12,6 +12,7 @@
 #include <IMP/saxs/Profile.h>
 #include <IMP/saxs/Score.h>
 #include <IMP/saxs/FormFactorTable.h>
+#include <IMP/Pointer.h>
 
 #include <fstream>
 #include <vector>
@@ -91,11 +92,11 @@ int main(int argc, char **argv)
   // fit profiles
   for(unsigned int i=0; i<dat_files.size(); i++) {
     IMP::saxs::Profile exp_saxs_profile(dat_files[i]);
-    IMP::saxs::Score saxs_score(&exp_saxs_profile);
+    IMP_NEW(IMP::saxs::Score,  saxs_score, (exp_saxs_profile));
     std::string fit_file_name = trim_extension(pdb) + "_" +
       trim_extension(basename(const_cast<char *>(dat_files[i].c_str())))
       + ".dat";
-    float chi = saxs_score.compute_chi_score(*computational_profile,
+    float chi = saxs_score->compute_chi_score(*computational_profile,
                                              use_offset, fit_file_name);
     std::cout << "Chi  = " << chi << std::endl;
 
