@@ -6,7 +6,6 @@
  */
 
 #include <IMP/core/MonteCarlo.h>
-#include <IMP/core/model_io.h>
 
 #include <IMP/random.h>
 #include <IMP/Model.h>

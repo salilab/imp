@@ -17,15 +17,9 @@
 #include <IMP/atom/Residue.h>
 #include <IMP/atom/bond_decorators.h>
 #include <IMP/atom/estimates.h>
-#include <IMP/core/ConjugateGradients.h>
 #include <IMP/core/ConnectivityRestraint.h>
 #include <IMP/core/DistancePairScore.h>
 #include <IMP/core/Harmonic.h>
-#include <IMP/core/IncrementalBallMover.h>
-#include <IMP/core/MonteCarlo.h>
-#include <IMP/core/Mover.h>
-#include <IMP/core/internal/Grid3D.h>
-#include <IMP/core/model_io.h>
 #include <algorithm>
 
 IMPATOM_BEGIN_NAMESPACE
