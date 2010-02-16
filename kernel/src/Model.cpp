@@ -214,14 +214,14 @@ namespace {
                               boost::vertex_name_t>::type ObjectMap;
   typedef boost::property_map<DependencyGraph,
                               boost::edge_name_t>::type EdgeMap;
-
+  typedef boost::dynamic_bitset<>  BitSet;
   struct Dependencies {
     DependencyGraph graph;
     std::map<Restraint*, DependencyVertex> restraints;
     std::map<ScoreState*, DependencyVertex> score_states;
     std::map<Container*, DependencyVertex> containers;
     std::map<Particle*, DependencyVertex> particles;
-    std::map<Restraint*, boost::dynamic_bitset<> > depends;
+    std::map<Restraint*, BitSet> depends;
     std::vector<std::pair<double, Restraint*> > weighted;
   };
 
@@ -516,6 +516,7 @@ namespace {
       } else {
         IMP_LOG(TERSE, "Restraint " << (*c)->get_name()
                 << " has weight " << weight << std::endl);
+        IMP_INTERNAL_CHECK(*c, "Null restraint found");
         out.push_back(WeightedRestraint(weight, *c));
       }
     }
@@ -576,6 +577,7 @@ namespace {
                   << ss[i]->get_name() << std::endl);
         }
       }
+      IMP_INTERNAL_CHECK(it->first, "Null restraint?");
       deps.depends[it->first]= bs;
     }
   }
@@ -1169,7 +1171,8 @@ double Model::do_evaluate(const WeightedRestraints &restraints,
 
 Float Model::evaluate(bool calc_derivs) {
   if (!score_states_ordered_) order_score_states();
-
+  IMP_INTERNAL_CHECK(graphs_.find(this) != graphs_.end(),
+                     "Dependency graph missing");
   return do_evaluate(graphs_[this].weighted, access_score_states(),
                      calc_derivs);
 }
@@ -1200,13 +1203,19 @@ Float Model::evaluate(const RestraintsTemp &restraints, bool calc_derivs)
   }
   boost::dynamic_bitset<> bs(get_number_of_score_states(), false);
   for (unsigned int i=0; i< wr.size(); ++i) {
-    bs|= graphs_[this].depends[wr[i].second];
+    IMP_USAGE_CHECK(graphs_[this].depends.find(wr[i].second)
+                    != graphs_[this].depends.end(),
+                    "Unable to find restraint "
+                    << (wr[i].second
+                        ? wr[i].second->get_name(): std::string("NULL")),
+                    ValueException);
+    bs|= graphs_[this].depends.find(wr[i].second)->second;
     IMP_IF_LOG(TERSE) {
       IMP_LOG(TERSE, "Restraint " << wr[i].second->get_name()
               << " depends on ");
-      for (unsigned int i=0; i< graphs_[this].depends[wr[i].second].size();
-           ++i) {
-        if (graphs_[this].depends[wr[i].second][i]) {
+      BitSet bs=graphs_[this].depends.find(wr[i].second)->second;
+      for (unsigned int i=0; i< bs.size(); ++i) {
+        if (bs[i]) {
           IMP_LOG(TERSE, get_score_state(i)->get_name() << " ");
         }
       }
