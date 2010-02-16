@@ -258,22 +258,32 @@ public:
     return ExtendedIndex(v[0]+xi, v[1]+yi, v[2]+zi);
   }
 
+  //! Return true if the ExtendedIndex is also a normal index value
+  bool get_is_index(ExtendedIndex v) const {
+    for (unsigned int i=0; i< 3; ++i) {
+      if (v[i] < 0 || v[i] >= d_[i]) return false;
+    }
+    return true;
+  }
+
   //! Convert a ExtendedIndex into a real Index if possible
-  /** \return Index() if not possible
+  /** The passed index must be part of the grid
    */
   Index get_index(ExtendedIndex v) const {
-    for (unsigned int i=0; i< 3; ++i) {
-      if (v[i] <0 || v[i] >= d_[i]) return Index();
-    }
+    IMP_USAGE_CHECK(get_is_index(v), "Passed index not in grid "
+                    << v, ValueException);
     return Index(v[0], v[1], v[2]);
   }
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
   //! Get the data in a particular cell
-  ValueType& operator[](Index gi);
+  VoxelData& operator[](Index gi);
 
   //! Get the data in a particular cell
-  const ValueType operator[](Index gi) const;
+  const VoxelData operator[](Index gi) const;
+  const VoxelData& get_voxel(Index gi) const {
+    return operator[](gi);
+  }
 #else
   typename std::vector<VT>::reference operator[](Index gi) {
     return data_[index(gi)];
@@ -281,10 +291,11 @@ public:
   typename std::vector<VT>::const_reference operator[](Index gi) const  {
     return data_[index(gi)];
   }
-  void memset_all_voxels(VT v) {
-    std::fill(data_.begin(), data_.end(), v);
+  typename std::vector<VT>::const_reference get_voxel(Index gi) const {
+    return operator[](gi);
   }
 #endif
+
   //! Return the coordinates of the center of the voxel
   Vector3D get_center(ExtendedIndex gi) const {
     return Vector3D(edge_size_[0]*(.5+ gi[0]) + bbox_.get_corner(0)[0],
