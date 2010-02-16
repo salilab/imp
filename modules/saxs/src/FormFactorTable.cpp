@@ -628,8 +628,8 @@ const Floats& FormFactorTable::get_form_factors(Particle *p,
 }
 
 FormFactorTable* default_form_factor_table() {
-  static FormFactorTable ff;
-  return &ff;
+  static Pointer<FormFactorTable> ff(new FormFactorTable());
+  return ff;
 }
 
 IMPSAXS_END_NAMESPACE

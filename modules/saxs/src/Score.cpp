@@ -14,7 +14,7 @@
 
 IMPSAXS_BEGIN_NAMESPACE
 
-Score::Score(Profile* exp_profile, FormFactorTable* ff_table) :
+Score::Score(const Profile& exp_profile, FormFactorTable* ff_table) :
 ff_table_(ff_table), exp_profile_(exp_profile)
 {}
 
@@ -27,8 +27,8 @@ void Score::resample(const Profile& model_profile,
     q_mapping[model_profile.get_q(k)] = k;
   }
 
-  for (unsigned int k=0; k<exp_profile_->size(); k++) {
-    Float q = exp_profile_->get_q(k);
+  for (unsigned int k=0; k<exp_profile_.size(); k++) {
+    Float q = exp_profile_.get_q(k);
     std::map<float, unsigned int>::iterator it = q_mapping.lower_bound(q);
     if(it == q_mapping.end()) break;
     unsigned int i = it->second;
@@ -55,13 +55,13 @@ Float Score::compute_scale_factor(const Profile& model_profile,
 {
   Float sum1=0.0, sum2=0.0;
   unsigned int profile_size = std::min(model_profile.size(),
-                                       exp_profile_->size());
+                                       exp_profile_.size());
   for (unsigned int k=0; k<profile_size; k++) {
-    Float square_error = square(exp_profile_->get_error(k));
+    Float square_error = square(exp_profile_.get_error(k));
     Float weight_tilda = model_profile.get_weight(k) / square_error;
 
     sum1 += weight_tilda * model_profile.get_intensity(k)
-                         * (exp_profile_->get_intensity(k) + offset);
+                         * (exp_profile_.get_intensity(k) + offset);
     sum2 += weight_tilda * square(model_profile.get_intensity(k));
   }
   // std::cerr << "c = " << sum1 / sum2 << std::endl;
@@ -72,15 +72,15 @@ Float Score::compute_offset(const Profile& model_profile) const {
   Float sum_iexp_imod=0.0, sum_imod=0.0, sum_iexp=0.0, sum_imod2=0.0;
   Float sum_weight=0.0;
   unsigned int profile_size = std::min(model_profile.size(),
-                                       exp_profile_->size());
+                                       exp_profile_.size());
   for (unsigned int k=0; k<profile_size; k++) {
-    Float square_error = square(exp_profile_->get_error(k));
+    Float square_error = square(exp_profile_.get_error(k));
     Float weight_tilda = model_profile.get_weight(k) / square_error;
 
     sum_iexp_imod += weight_tilda * model_profile.get_intensity(k)
-                                  * exp_profile_->get_intensity(k);
+                                  * exp_profile_.get_intensity(k);
     sum_imod += weight_tilda * model_profile.get_intensity(k);
-    sum_iexp += weight_tilda * exp_profile_->get_intensity(k);
+    sum_iexp += weight_tilda * exp_profile_.get_intensity(k);
     sum_imod2 += weight_tilda * square(model_profile.get_intensity(k));
     sum_weight += weight_tilda;
   }
@@ -94,9 +94,9 @@ Float Score::compute_chi_square_score(const Profile& model_profile,
                                       const std::string fit_file_name) const
 {
   Profile resampled_profile(ff_table_,
-                            exp_profile_->get_min_q(),
-                            exp_profile_->get_max_q(),
-                            exp_profile_->get_delta_q());
+                            exp_profile_.get_min_q(),
+                            exp_profile_.get_max_q(),
+                            exp_profile_.get_delta_q());
   resample(model_profile, resampled_profile);
   return compute_chi_square_score_internal(
                             resampled_profile, fit_file_name, use_offset);
@@ -131,17 +131,17 @@ Float Score::compute_chi_square_score_internal(
 {
   Float chi_square = 0.0;
   unsigned int profile_size = std::min(model_profile.size(),
-                                       exp_profile_->size());
+                                       exp_profile_.size());
   // compute chi square
   for (unsigned int k=0; k<profile_size; k++) {
     // in the theoretical profile the error equals to 1
-    Float square_error = square(exp_profile_->get_error(k));
+    Float square_error = square(exp_profile_.get_error(k));
     Float weight_tilda = model_profile.get_weight(k) / square_error;
-    Float delta = exp_profile_->get_intensity(k) + offset
+    Float delta = exp_profile_.get_intensity(k) + offset
                     - c * model_profile.get_intensity(k);
 
     // Exclude the uncertainty originated from limitation of floating number
-    if (fabs(delta/exp_profile_->get_intensity(k)) >= IMP_SAXS_DELTA_LIMIT)
+    if (fabs(delta/exp_profile_.get_intensity(k)) >= IMP_SAXS_DELTA_LIMIT)
       chi_square += weight_tilda * square(delta);
   }
   chi_square /= profile_size;
@@ -155,7 +155,7 @@ void Score::compute_sinc_cos(Float pr_resolution, Float max_distance,
   unsigned int nr=algebra::round(max_distance/pr_resolution) + 1; //can be input
   output_values.clear();
   unsigned int profile_size = std::min(model_profile.size(),
-                                       exp_profile_->size());
+                                       exp_profile_.size());
   Floats r_size(nr, 0.0);
   output_values.insert(output_values.begin(),
                        profile_size, r_size);
@@ -181,21 +181,21 @@ void Score::compute_profile_difference(const Profile& model_profile,
   // profile_diff[q] = e_q * weight_tilda * (I_exp[q] - c*I_mod[q] + offset)
   // e_q = exp( -0.23 * q*q )
   unsigned int profile_size = std::min(model_profile.size(),
-                                       exp_profile_->size());
+                                       exp_profile_.size());
   profile_diff.clear();
   profile_diff.resize(profile_size, 0.0);
 
   for (unsigned int iq=0; iq<profile_size; iq++) {
-    Float delta = exp_profile_->get_intensity(iq)
+    Float delta = exp_profile_.get_intensity(iq)
                   - c * model_profile.get_intensity(iq) + offset;
-    Float square_error = square(exp_profile_->get_error(iq));
+    Float square_error = square(exp_profile_.get_error(iq));
     Float weight_tilda = model_profile.get_weight(iq) / square_error;
 
     // Exclude the uncertainty originated from limitation of floating number
-    if (fabs(delta/exp_profile_->get_intensity(iq)) < IMP_SAXS_DELTA_LIMIT)
+    if (fabs(delta/exp_profile_.get_intensity(iq)) < IMP_SAXS_DELTA_LIMIT)
       delta = 0.0;
-    Float E_q = std::exp( - exp_profile_-> modulation_function_parameter_
-                       * square( exp_profile_->get_q(iq)));
+    Float E_q = std::exp( - exp_profile_. modulation_function_parameter_
+                       * square( exp_profile_.get_q(iq)));
     profile_diff[iq] = E_q * weight_tilda * delta;
   }
 }
@@ -207,9 +207,9 @@ void Score::compute_chi_derivative(const Profile& model_profile,
                                    bool use_offset) const {
 
   Profile resampled_profile(ff_table_,
-                            exp_profile_->get_min_q(),
-                            exp_profile_->get_max_q(),
-                            exp_profile_->get_delta_q());
+                            exp_profile_.get_min_q(),
+                            exp_profile_.get_max_q(),
+                            exp_profile_.get_delta_q());
   resample(model_profile, resampled_profile);
   compute_chi_real_derivative(resampled_profile, particles1, particles2,
                               derivatives, use_offset);
@@ -245,7 +245,7 @@ void Score::compute_chi_real_derivative(const Profile& model_profile,
   compute_sinc_cos(delta_dist.get_bin_size(), max_distance,
                    model_profile, sinc_cos_values);
   unsigned int profile_size = std::min(model_profile.size(),
-                                       exp_profile_->size());
+                                       exp_profile_.size());
   derivatives.clear();
   derivatives.resize(particles1.size());
   for (unsigned int iatom=0; iatom<particles1.size(); iatom++) {
@@ -280,13 +280,13 @@ void Score::write_SAXS_fit_file(const std::string& file_name,
   }
 
   unsigned int profile_size = std::min(model_profile.size(),
-                                       exp_profile_->size());
+                                       exp_profile_.size());
   // header line
   out_file.precision(15);
   out_file << "# SAXS profile: number of points = " << profile_size
-           << ", q_min = " << exp_profile_->get_min_q()
-           << ", q_max = " << exp_profile_->get_max_q();
-  out_file << ", delta_q = " << exp_profile_->get_delta_q() << std::endl;
+           << ", q_min = " << exp_profile_.get_min_q()
+           << ", q_max = " << exp_profile_.get_max_q();
+  out_file << ", delta_q = " << exp_profile_.get_delta_q() << std::endl;
 
   out_file.setf(std::ios::showpoint);
   out_file << "# offset = " << offset << ", scaling c = " << c
@@ -299,12 +299,12 @@ void Score::write_SAXS_fit_file(const std::string& file_name,
     out_file.setf(std::ios::left);
     out_file.width(20);
     out_file.fill('0');
-    out_file << exp_profile_->get_q(i) << " ";
+    out_file << exp_profile_.get_q(i) << " ";
 
     out_file.setf(std::ios::left);
     out_file.width(16);
     out_file.fill('0');
-    out_file << exp_profile_->get_intensity(i)  << " ";
+    out_file << exp_profile_.get_intensity(i)  << " ";
 
     out_file.setf(std::ios::left);
     out_file.width(16);

@@ -153,7 +153,7 @@ public:
   std::vector<IntensityEntry> profile_; // the profile
   Float min_q_, max_q_; // minimal and maximal s values  in the profile
   Float delta_q_; // profile sampling resolution
-  FormFactorTable* ff_table_; // pointer to form factors table
+  Pointer<FormFactorTable> ff_table_; // pointer to form factors table
 };
 
 IMPSAXS_END_NAMESPACE

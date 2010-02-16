@@ -25,7 +25,7 @@ IMPSAXS_BEGIN_NAMESPACE
 /**
 class that deals with form factor computation
 */
-class IMPSAXSEXPORT FormFactorTable {
+class IMPSAXSEXPORT FormFactorTable: public RefCounted {
 public:
   //! default constructor
   FormFactorTable();
@@ -49,7 +49,7 @@ public:
 
   // electron density of solvent - default=0.334 e/A^3 (H2O)
   static Float rho_;
-
+  IMP_REF_COUNTED_DESTRUCTOR(FormFactorTable);
 private:
   // atom types for heavy atoms according to the number of hydrogens
   // connected to them

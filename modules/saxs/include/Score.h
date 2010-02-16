@@ -27,14 +27,14 @@ class Profile;
   experimental and computational profile. In addition, derivatives with respect
   to the experimental profile can be computed and further used for optimization.
 */
-class IMPSAXSEXPORT Score {
+class IMPSAXSEXPORT Score: public RefCounted {
 public:
   //! Constructor
   /**
      \param[in] exp_profile Experimental profile we want to fit
      \param[in] ff_table Form Factors Table
   */
-  Score(Profile* exp_profile,
+  Score(const Profile& exp_profile,
         FormFactorTable* ff_table = default_form_factor_table());
 
   //! compute chi value
@@ -125,10 +125,10 @@ public:
   void compute_sinc_cos(Float pr_resolution, Float max_distance,
                         const Profile& model_profile,
                         std::vector<Floats>& output_values) const;
-
+  IMP_REF_COUNTED_DESTRUCTOR(Score);
  protected:
-  FormFactorTable* ff_table_;       // pointer to form factors table
-  Profile* exp_profile_;   // pointer to experimental saxs profile
+  Pointer<FormFactorTable> ff_table_;       // pointer to form factors table
+  Profile exp_profile_;   // pointer to experimental saxs profile
 };
 
 IMPSAXS_END_NAMESPACE
