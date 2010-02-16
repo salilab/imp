@@ -210,10 +210,8 @@ def _action_config_cpp(target, source, env):
 
 
     print >> cpp, """
-/** Return the version info for the module. Classes in the module
-    can return this as their version info. */
 const VersionInfo& get_module_version_info() {
-    static VersionInfo vi("%(author)s", "%(version)s");
+    static VersionInfo vi("%(module)s", "%(version)s");
     return vi;
 }
 """ \
