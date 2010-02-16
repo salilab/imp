@@ -1,6 +1,8 @@
 /** \page recent Change History
 \par Week of February 3, 2010
 
+- The model io code as moved into the kernel so it is now IMP::write_model() and IMP::read_model()
+
 - Remove the version_info argument from the implementation macros. Instead, just pick up the module version info automatically.
 
 - Add a function Object::get_type_name() and Object::get_module() to get the respective bits of information about each object.
