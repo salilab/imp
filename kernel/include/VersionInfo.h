@@ -25,8 +25,7 @@ class IMPEXPORT VersionInfo
   typedef VersionInfo This;
 public:
   //! Create a VersionInfo object with the given author and version.
-  VersionInfo(std::string module, std::string version) : module_(module),
-    version_(version) {}
+  VersionInfo(std::string module, std::string version);
 
   VersionInfo() {}
 

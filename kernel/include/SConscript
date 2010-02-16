@@ -47,6 +47,7 @@ files = [
          'deprecation.h',
          'exception.h',
          'file.h',
+         'io.h',
          'log.h',
          'macros.h',
          'random.h',

@@ -16,18 +16,18 @@ class DirectoriesTests(IMP.test.TestCase):
         self.assertRaises(TypeError, IMP.test_ifile, "notafile" )
         s=StringIO("hi there")
         v= IMP.test_ifile(s)
-        self.assertEqual(v, "hi")
+        self.assertEqual(v, "hithere")
 
     def test_odata_directory(self):
         """Test that conversions to output files work properly"""
         IMP.set_log_level(IMP.MEMORY)
         IMP.test_ofile("ofile_test")
-        self.assertRaises(TypeError, IMP.test_ofile, "nodir/hi" )
+        self.assertRaises(IOError, IMP.test_ofile, "nodir/hi" )
         f= open("hi", "w")
         IMP.test_ofile(f)
         s = StringIO()
         IMP.test_ofile(s)
-        self.assert_(s.getvalue()== "hi\n")
+        self.assert_(s.getvalue().startswith("hi\n"))
         self.assertRaises(TypeError, IMP.test_ofile, 1)
         class NoMethods(object):
             pass

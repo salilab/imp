@@ -75,6 +75,87 @@ namespace {
           << std::endl;
     }
   }
+
+  struct DefaultWrite {
+    template <class T>
+    T operator()(const T t) const {
+      return t;
+    }
+  };
+  struct ParticleWrite {
+    std::map<Particle*, unsigned int> mapping_;
+    ParticleWrite(const std::map<Particle*, unsigned int> &mapping):
+      mapping_(mapping) {}
+    unsigned int operator()(Particle *p) const {
+      if (mapping_.find(p) == mapping_.end()) {
+        IMP_THROW("Can't find particle " << p->get_name()
+                  << " in particle mapping.",
+                  IOException);
+      }
+      return mapping_.find(p)->second;
+    }
+  };
+
+  template <class Key, class Table, class Write>
+  void write_attributes(std::string indent,
+                        const Table &p,Write w,
+                        std::ostream &out, Key) {
+    for (unsigned int i=0; i< p.get_length(); ++i) {
+      if (contains(p, i)) {
+        /** \todo should escape things properly */
+        out << indent << Key(i).get_string() << ": "
+            << w(p.get(i)) << "\n";
+      }
+    }
+  }
+
+  template <class V>
+  struct DefaultRead {
+    V operator()(std::string value) const {
+      std::istringstream iss(value.c_str());
+      V v;
+      iss >> v;
+      return v;
+    }
+  };
+
+
+
+  struct ParticleRead {
+    const std::map<unsigned int, Particle *>& mapping_;
+    ParticleRead(const std::map<unsigned int, Particle *> &map):
+      mapping_(map){}
+    Particle* operator()(std::string value) {
+      std::istringstream iss(value);
+      int i=-1;
+      iss >> i;
+      if (i ==-1) {
+        IMP_THROW("Error resolving particle from value " << value,
+                  IOException);
+      }
+      if (mapping_.find(i) == mapping_.end()) {
+        IMP_THROW("Particle mapping does not contain " << i,
+                  IOException);
+      }
+      Particle *op= mapping_.find(i)->second;
+      return op;
+    }
+  };
+
+  template <class Table, class Read, class Key>
+  void read_attributes(Table &p, LineStream &in,
+                       Read read, Key) {
+    in.push_indent();
+    do {
+      LineStream::LinePair lp = in.get_line();
+      if (lp.first.empty()) break;
+      Key k(lp.first);
+      IMP_LOG(TERSE, "Found key " << k << std::endl);
+      p.add(k.get_index(), read(lp.second));
+    } while (true);
+    IMP_LOG(VERBOSE, "Done reading attributes" << std::endl);
+    in.pop_indent();
+  }
 }
 
 
@@ -134,6 +215,75 @@ void ParticleData::show(std::ostream &out) const {
   show_table(out,objects_, ObjectKey());
 }
 
+void ParticleData::write_yaml(std::ostream &out,
+                              const std::map<Particle*,
+                              unsigned int> &particles) const {
+  std::ostringstream oss;
+  std::string indent("  ");
+  out << indent << "name: " << name_ << "\n";
+  out << indent << "float-attributes:\n";
+  write_attributes(indent+indent,
+                   floats_,
+                   DefaultWrite(),
+                   out, FloatKey());
+  out << indent << "optimized-attributes:\n";
+  write_attributes(indent+indent,
+                   optimizeds_,
+                   DefaultWrite(),
+                   out, FloatKey());
+  out << indent << "int-attributes:\n";
+  write_attributes(indent+indent,
+                   ints_,
+                   DefaultWrite(),
+                   out, IntKey());
+  out << indent << "string-attributes:\n";
+  write_attributes(indent+indent,
+                   strings_,
+                   DefaultWrite(),
+                   out, StringKey());
+  out << indent << "particle-attributes:\n";
+  write_attributes(indent+indent,
+                   particles_,
+                   ParticleWrite(particles),
+                   out, ParticleKey());
+  // better not be any objects
+}
+
+// assume particle already read
+void ParticleData::read_yaml(LineStream &in,
+                             const std::map<unsigned int,
+                             Particle*> &particles) {
+  // should clear everything
+  name_= std::string();
+  floats_= FloatTable();
+  optimizeds_= OptimizedTable();
+  ints_= IntTable();
+  strings_= StringTable();
+  particles_= ParticleTable();
+  objects_= ObjectTable();
+  do {
+    LineStream::LinePair lp=in.get_line();
+    if (lp.first.empty()) break;
+    IMP_LOG(VERBOSE, "Brancing on value " << lp.first << ": "
+            << lp.second << std::endl);
+    if (lp.first== "name") {
+      name_=lp.second;
+    } else if (lp.first.compare("float-attributes")==0) {
+      read_attributes(floats_, in, DefaultRead<Float>(), FloatKey());
+    } else if (lp.first.compare("optimized-attributes")==0) {
+      read_attributes(optimizeds_, in, DefaultRead<bool>(), FloatKey());
+    } else if (lp.first.compare("int-attributes")==0) {
+      read_attributes(ints_, in, DefaultRead<Int>(), IntKey());
+      } else if (lp.first.compare("string-attributes")==0) {
+      read_attributes(strings_, in, DefaultRead<String>(), StringKey());
+    } else if (lp.first.compare("particle-attributes")==0) {
+      read_attributes(particles_, in, ParticleRead(particles),
+                      ParticleKey());
+    } else {
+      IMP_FAILURE("Unknown line " << lp.first << ": " << lp.second);
+    }
+  } while(true);
+}
 
 namespace {
   template <class Key, class T, class It, class A, class R>

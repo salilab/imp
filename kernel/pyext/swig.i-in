@@ -1,5 +1,7 @@
 %include "IMP_config.i"
 
+%include "std_map.i"
+
 %pythoncode %{
 class DecoratorIterator:
     def __init__(self, ht):
@@ -145,6 +147,7 @@ namespace IMP {
 %include "IMP/QuadContainer.h"
 %include "IMP/TripletFilter.h"
 %include "IMP/QuadFilter.h"
+%include "IMP/io.h"
 
 
 namespace IMP {
@@ -186,18 +189,28 @@ namespace IMP {
   %template(double_pair) ::std::pair<double, double>;
   %template(IntRange) ::std::pair<Int, Int>;
   %template(IntRanges) ::std::vector< IntRange >;
+
+  %template(ToParticles) ::std::map<unsigned int, Particle*>;
+  %template(FromParticles) ::std::map<Particle*, unsigned int>;
 }
 
 
 %inline %{
 namespace IMP {
 inline std::string test_ifile(TextInput a) {
-  std::string str;
-  static_cast<std::istream&>(a) >> str;
-  return str;
+  std::string read;
+  while (true) {
+    std::string cur;
+    a.get_stream() >> cur;
+    if (!a) break;
+    read= read+cur;
+  }
+  std::cout << read;
+  return read;
 }
 inline std::string test_ofile(TextOutput a) {
-  static_cast<std::ostream &>(a) << "hi" << std::endl;
+  static_cast<std::ostream &>(a) << "hi\n" 
+  << " there, how are things"<< std::endl;
   return "hi\n";
 }
 }
