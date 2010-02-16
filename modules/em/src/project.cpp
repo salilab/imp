@@ -128,7 +128,7 @@ void project_given_rotation(DensityMap& map,
 
         // Get the coordinates r in the universal system corresponding to
         // the point p
-        if (!shift.is_zero(equality_tolerance)) {
+        if (get_linf_norm(shift) >equality_tolerance) {
           p -= shift;
         }
 
