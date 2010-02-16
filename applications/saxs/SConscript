@@ -7,12 +7,12 @@ penv.Prepend(CPPPATH=['#/build/include'])
 penv.Prepend(LIBPATH=['#/build/lib'])
 if env.get('static', False):
     # For static linking must link dependent libraries first
-    penv.Prepend(LIBS=['imp_saxs', 'imp_atom', 'imp_core', 'imp_algebra',
+    penv.Prepend(LIBS=['imp_saxs', 'imp_atom', 'imp_container', 'imp_core', 'imp_algebra',
                        'imp'])
 else:
     # Some platforms are sensitive to the order in which dynamic libraries
     # are loaded - imp must come before imp_saxs
-    penv.Prepend(LIBS=['imp', 'imp_atom', 'imp_core', 'imp_algebra',
+    penv.Prepend(LIBS=['imp', 'imp_atom', 'imp_container', 'imp_core', 'imp_algebra',
                        'imp_saxs'])
 if env['build']=='profile' and env['CC'] == 'gcc':
     penv.Prepend(LINKFLAGS=['-static'])
