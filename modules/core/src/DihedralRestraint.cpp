@@ -91,17 +91,15 @@ DihedralRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
     Float fact2 = skj > 1e-8 ? rkjkl / (skj * skj) : 0.0;
     Float fact3 = skjkl2 > 1e-8 ? -skj / skjkl2 : 0.0;
 
-    for (int i = 0; i < 3; ++i) {
-      Float derv0 = deriv * fact0 * vijkj[i];
-      Float derv3 = deriv * fact3 * vkjkl[i];
-      Float derv1 = (fact1 - 1.0) * derv0 - fact2 * derv3;
-      Float derv2 = (fact2 - 1.0) * derv3 - fact1 * derv0;
+    algebra::Vector3D derv0 = deriv * fact0 * vijkj;
+    algebra::Vector3D derv3 = deriv * fact3 * vkjkl;
+    algebra::Vector3D derv1 = (fact1 - 1.0) * derv0 - fact2 * derv3;
+    algebra::Vector3D derv2 = (fact2 - 1.0) * derv3 - fact1 * derv0;
 
-      d0.add_to_derivative(i, derv0, *accum);
-      d1.add_to_derivative(i, derv1, *accum);
-      d2.add_to_derivative(i, derv2, *accum);
-      d3.add_to_derivative(i, derv3, *accum);
-    }
+    d0.add_to_derivatives(derv0, *accum);
+    d1.add_to_derivatives(derv1, *accum);
+    d2.add_to_derivatives(derv2, *accum);
+    d3.add_to_derivatives(derv3, *accum);
   } else {
     score = score_func_->evaluate(angle);
   }
