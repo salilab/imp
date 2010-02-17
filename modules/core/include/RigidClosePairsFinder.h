@@ -49,7 +49,7 @@ IMPCORE_BEGIN_NAMESPACE
     \htmlinclude rigid_collisions.py.html
 
     \note This class uses the IMP::core::BoxSweepClosePairsFinder by
-    default if \ref CGAL "CGAL" is available.
+    default if \ref cgal "CGAL" is available.
 
     \ingroup CGAL
     \see ClosePairsScoreState
