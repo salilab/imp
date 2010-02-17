@@ -85,7 +85,7 @@ Element ElementTable::get_element(const std::string& s) const {
     std::string ts=s;
     boost::trim(ts);
     IMP_USAGE_CHECK(ts == s, "The string passed to get_element"
-                  << " should not contain spaces.", UsageException);
+                  << " should not contain spaces.");
   }
   std::string copy_s = s;
   boost::to_upper(copy_s);

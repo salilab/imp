@@ -176,7 +176,7 @@ create_simplified_along_backbone(Chain in,
   }
   for (unsigned int i=0; i< residue_segments.size(); ++i) {
     IMP_USAGE_CHECK(residue_segments[i].first < residue_segments[i].second,
-                    "Residue intervals must be non-empty", ValueException);
+                    "Residue intervals must be non-empty");
   }
   unsigned int cur_segment=0;
   HierarchiesTemp cur;

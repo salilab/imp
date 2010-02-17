@@ -127,8 +127,7 @@ public:
   GroupnameContainer* get_removed_groupnames_container() const {
     IMP_USAGE_CHECK(added_, "The containers returned by "
                     << " get_added_groupnames_container() do not "
-                    << " track their own added and removed contents.",
-                    ValueException);
+                    << " track their own added and removed contents.");
     GroupnameContainer *ret= dynamic_cast<GroupnameContainer*>(removed_.get());
     IMP_INTERNAL_CHECK(ret, "Cannot cast object " << removed_->get_name()
                        << " to a GroupnameContainer.");
@@ -137,8 +136,7 @@ public:
   GroupnameContainer* get_added_groupnames_container() const {
     IMP_USAGE_CHECK(added_, "The containers returned by "
                     << " get_added_groupnames_container() do not "
-                    << " track their own added and removed contents.",
-                    ValueException);
+                    << " track their own added and removed contents.");
     GroupnameContainer *ret= dynamic_cast<GroupnameContainer*>(added_.get());
     IMP_INTERNAL_CHECK(ret, "Cannot cast object " << added_->get_name()
                        << " to a GroupnameContainer.");

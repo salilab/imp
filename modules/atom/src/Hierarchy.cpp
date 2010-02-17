@@ -227,15 +227,13 @@ bool Hierarchy::get_is_valid(bool print_info) const {
 Hierarchy
 create_fragment(const HierarchiesTemp &ps)
 {
-  IMP_USAGE_CHECK(!ps.empty(), "Need some particles",
-            ValueException);
+  IMP_USAGE_CHECK(!ps.empty(), "Need some particles");
   Hierarchy parent= ps[0].get_parent();
   unsigned int index= ps[0].get_parent_index();
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i=0; i< ps.size(); ++i) {
       IMP_USAGE_CHECK(ps[i].get_parent() == parent,
-                "Parents don't match",
-                ValueException);
+                "Parents don't match");
     }
   }
 

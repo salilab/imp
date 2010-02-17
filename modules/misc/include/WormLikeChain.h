@@ -32,8 +32,7 @@ public:
    */
   WormLikeChain(Float l_max, Float lp) : lmax_(l_max), lp_(lp) {
     IMP_USAGE_CHECK(l_max > lp, "The persistence length should be less "
-              << "than the total length for this model",
-              ValueException);
+              << "than the total length for this model");
   }
 
   IMP_UNARY_FUNCTION(WormLikeChain);

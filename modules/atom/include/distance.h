@@ -28,7 +28,7 @@ double rmsd(const Vecto3DsOrXYZs0& m1 ,const Vecto3DsOrXYZs1& m2,
   IMP_USAGE_CHECK(std::distance(m1.begin(), m1.end())
                   ==std::distance(m2.begin(), m2.end()),
             "The input sets of XYZ points "
-            <<"should be of the same size", ValueException);
+            <<"should be of the same size");
   float rmsd=0.0;
   typename Vecto3DsOrXYZs0::const_iterator it0= m1.begin();
   typename Vecto3DsOrXYZs1::const_iterator it1= m2.begin();
@@ -56,7 +56,7 @@ double native_overlap(const Vecto3DsOrXYZs0& m1,
                       const Vecto3DsOrXYZs1& m2,double threshold) {
   IMP_USAGE_CHECK(m1.size()==m2.size(),
             "native_verlap: The input sets of XYZ points "
-            <<"should be of the same size", ValueException);
+            <<"should be of the same size");
   unsigned int distances=0;
   for(unsigned int i=0;i<m1.size();i++) {
     double d = algebra::distance(core::get_geometry(m1[i]),

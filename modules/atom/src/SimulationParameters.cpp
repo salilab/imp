@@ -25,8 +25,8 @@ SimulationParameters SimulationParameters::setup_particle(Particle *p,
   p->add_attribute(get_last_time_step_key(), 0, false);
   p->add_attribute(get_temperature_key(), T, false);
   p->add_attribute(get_maximum_time_step_key(), dt, false);
-  IMP_USAGE_CHECK(dt > 0, "Time step must be positive", ValueException);
-  IMP_USAGE_CHECK(T > 0, "Temperature mustbe positive", ValueException);
+  IMP_USAGE_CHECK(dt > 0, "Time step must be positive");
+  IMP_USAGE_CHECK(T > 0, "Temperature mustbe positive");
   return SimulationParameters(p);
 }
 

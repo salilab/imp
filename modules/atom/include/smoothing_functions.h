@@ -101,8 +101,7 @@ public:
   ForceSwitch(double min_distance, double max_distance)
              : min_distance_(min_distance), max_distance_(max_distance) {
     IMP_USAGE_CHECK(max_distance > min_distance,
-                    "max_distance should be greater than min_distance",
-                    ValueException);
+                    "max_distance should be greater than min_distance");
     double dist_dif = max_distance - min_distance;
     value_prefactor_ = 1.0 / (dist_dif * dist_dif * dist_dif);
     deriv_prefactor_ = 6.0 * value_prefactor_;

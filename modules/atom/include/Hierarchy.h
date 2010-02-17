@@ -220,8 +220,7 @@ public:
   Hierarchy(IMP::core::Hierarchy h): P(h) {
     IMP_USAGE_CHECK(h.get_traits() == get_traits(),
               "Cannot construct a IMP.atom.Hierarchy from a general "
-              " IMP.core.Hierarchy",
-              ValueException);
+              " IMP.core.Hierarchy");
   }
 
   explicit Hierarchy(Particle *p):
@@ -271,8 +270,7 @@ public:
   unsigned int add_child(Hierarchy o) {
     IMP_USAGE_CHECK(o.get_particle()->get_model()
                     == get_particle()->get_model(),
-                    "All particles in hierarchy must have same Model",
-                    ValueException);
+                    "All particles in hierarchy must have same Model");
     unsigned int ret= P::add_child(o);
     return ret;
   }
@@ -284,8 +282,7 @@ public:
   void add_child_at(Hierarchy o, unsigned int i) {
     IMP_USAGE_CHECK(o.get_particle()->get_model()
                     == get_particle()->get_model(),
-                    "All particles in hierarchy must have same Model",
-                    ValueException);
+                    "All particles in hierarchy must have same Model");
     P::add_child_at(o, i);
   }
 

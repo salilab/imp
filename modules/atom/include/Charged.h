@@ -47,8 +47,7 @@ public:
    */
   static Charged setup_particle(Particle *p, Float charge=0) {
     IMP_USAGE_CHECK(XYZ::particle_is_instance(p),
-                    "Particle must already be an XYZ particle",
-                    ValueException);
+                    "Particle must already be an XYZ particle");
     p->add_attribute(get_charge_key(), charge);
     return Charged(p);
   }
