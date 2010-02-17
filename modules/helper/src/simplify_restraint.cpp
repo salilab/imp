@@ -16,8 +16,7 @@ SimpleConnectivity create_simple_connectivity_on_rigid_bodies(
                                        const core::RigidBodies &rbs,
                                        Refiner *ref)
 {
-  IMP_USAGE_CHECK(rbs.size() > 0, "At least one particle should be given",
-     ValueException);
+  IMP_USAGE_CHECK(rbs.size() > 0, "At least one particle should be given");
 
   /****** Define PairScore ******/
   // Use RigidBodyDistancePairScore to accelerate computation of the distance
@@ -50,8 +49,7 @@ SimpleConnectivity create_simple_connectivity_on_molecules(
 {
   size_t mhs_size = mhs.size();
 
-  IMP_USAGE_CHECK(mhs_size > 0, "At least one hierarchy should be given",
-     ValueException);
+  IMP_USAGE_CHECK(mhs_size > 0, "At least one hierarchy should be given");
 
   Particles ps;
 
@@ -89,8 +87,7 @@ SimpleConnectivity create_simple_connectivity_on_molecules(
 
 SimpleDistance create_simple_distance(Particles *ps)
 {
-  IMP_USAGE_CHECK(ps->size() == 2, "Two particles should be given",
-     ValueException);
+  IMP_USAGE_CHECK(ps->size() == 2, "Two particles should be given");
 
   /****** Set the restraint ******/
 
@@ -109,8 +106,7 @@ SimpleDistance create_simple_distance(Particles *ps)
 
 SimpleDiameter create_simple_diameter(Particles *ps, Float diameter)
 {
-  IMP_USAGE_CHECK(ps->size() >= 2, "At least two particles should be given",
-     ValueException);
+  IMP_USAGE_CHECK(ps->size() >= 2, "At least two particles should be given");
 
   /****** Set the restraint ******/
 
@@ -133,8 +129,7 @@ SimpleExcludedVolume create_simple_excluded_volume_on_rigid_bodies(
                                          const core::RigidBodies &rbs,
                                          Refiner *ref)
 {
-  IMP_USAGE_CHECK(rbs.size() > 0, "At least one particle should be given",
-     ValueException);
+  IMP_USAGE_CHECK(rbs.size() > 0, "At least one particle should be given");
 
   /****** Set the restraint ******/
 
@@ -158,8 +153,7 @@ SimpleExcludedVolume create_simple_excluded_volume_on_molecules(
 {
   size_t mhs_size = mhs.size();
 
-  IMP_USAGE_CHECK(mhs_size > 0, "At least one hierarchy should be given",
-     ValueException);
+  IMP_USAGE_CHECK(mhs_size > 0, "At least one hierarchy should be given");
 
   Particles ps;
 
@@ -190,8 +184,7 @@ core::RigidBodies set_rigid_bodies(atom::Hierarchies const &mhs)
 {
   size_t mhs_size = mhs.size();
 
-  IMP_USAGE_CHECK(mhs_size > 0, "At least one hierarchy should be given",
-     ValueException);
+  IMP_USAGE_CHECK(mhs_size > 0, "At least one hierarchy should be given");
 
   Particles rbps;
 
@@ -219,8 +212,7 @@ SimpleEMFit create_simple_em_fit(atom::Hierarchies const &mhs,
 {
   size_t mhs_size = mhs.size();
 
-  IMP_USAGE_CHECK(mhs_size > 0, "At least one hierarchy should be given",
-     ValueException);
+  IMP_USAGE_CHECK(mhs_size > 0, "At least one hierarchy should be given");
 
   Particles ps;
   for ( size_t i=0; i<mhs_size; ++i )

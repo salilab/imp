@@ -27,7 +27,7 @@ namespace {
   Element element_from_name(const AtomType& at) {
     std::string atom_name = at.get_string();
     IMP_USAGE_CHECK(atom_name.length() > 0,
-                    "Invalid atom name.", ValueException);
+                    "Invalid atom name.");
     if (added_atom_names.size() > at.get_index()
         && added_atom_names[at.get_index()] != UNKNOWN_ELEMENT) {
       return added_atom_names[at.get_index()];
@@ -40,7 +40,7 @@ namespace {
       char c0=atom_name[0];
       if (isdigit(c0)) {
         IMP_USAGE_CHECK(atom_name.size() >1 && !isdigit(atom_name[1]),
-                  "Invalid atom name " << at, ValueException);
+                  "Invalid atom name " << at);
         c0= atom_name[1];
       }
       switch (c0) {
@@ -334,9 +334,9 @@ Atom get_atom(Residue rd, AtomType at) {
 AtomType add_atom_type(std::string name, Element e) {
   IMP_USAGE_CHECK(!AtomType::get_key_exists(name),
             "An AtomType with that name already exists: "
-            << name, ValueException);
-  IMP_USAGE_CHECK(e != UNKNOWN_ELEMENT, "Atom type must have element: " << name,
-            ValueException);
+            << name);
+  IMP_USAGE_CHECK(e != UNKNOWN_ELEMENT, "Atom type must have element: "
+                  << name);
   AtomType ret= AtomType::add_key(name.c_str());
   added_atom_names.resize(std::max(added_atom_names.size(),
                                    static_cast<std::size_t>(ret.get_index()+1)),

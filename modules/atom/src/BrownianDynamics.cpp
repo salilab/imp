@@ -60,8 +60,7 @@ SingletonContainer *BrownianDynamics::setup_particles()
       IMP_USAGE_CHECK(Diffusion::particle_is_instance(*it),
                 "Particles must be Diffusion particles to be used in "
                 << "Brownian dynamics. Particle "<< (*it)->get_name()
-                << " is not.",
-                InvalidStateException);
+                << " is not.");
     }
     return sc_;
   } else {
@@ -116,8 +115,7 @@ void BrownianDynamics::revert_coordinates(SingletonContainer *sc,
  */
 Float BrownianDynamics::optimize(unsigned int max_steps)
 {
- IMP_USAGE_CHECK(get_model() != NULL, "Must set model before calling optimize",
-           ValueException);
+ IMP_USAGE_CHECK(get_model() != NULL, "Must set model before calling optimize");
  return simulate(si_.get_current_time().get_value()
                  +max_steps*si_.get_maximum_time_step().get_value());
 }
@@ -174,8 +172,7 @@ void BrownianDynamics::take_step(SingletonContainer *sc,
     IMP_USAGE_CHECK(unit::strip_units(d.get_D()) > 0
               && unit::strip_units(d.get_D())
               < std::numeric_limits<Float>::max(),
-              "Bad diffusion coefficient on particle " << p->get_name(),
-              ValueException);
+              "Bad diffusion coefficient on particle " << p->get_name());
     unit::Angstrom sigma= d.get_sigma(dt);
 
     IMP_LOG(VERBOSE, p->get_name() << ": sigma is "
@@ -229,8 +226,8 @@ double BrownianDynamics::simulate(float max_time_nu)
 {
   unit::Femtosecond max_time(max_time_nu);
   IMP_OBJECT_LOG;
-  IMP_USAGE_CHECK(get_model() != NULL, "Must set model before calling simulate",
-            ValueException);
+  IMP_USAGE_CHECK(get_model() != NULL,
+                  "Must set model before calling simulate");
   IMP::internal::OwnerPointer<SingletonContainer> sc
     = IMP::internal::OwnerPointer<SingletonContainer>(setup_particles());
   IMP_LOG(TERSE, "Running brownian dynamics on "

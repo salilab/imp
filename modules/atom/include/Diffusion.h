@@ -50,8 +50,7 @@ class IMPATOMEXPORT Diffusion:
   static Diffusion setup_particle(Particle *p,
                           Float D=0) {
     IMP_USAGE_CHECK(XYZ::particle_is_instance(p),
-              "Particle must already be an XYZ particle",
-              ValueException);
+              "Particle must already be an XYZ particle");
     p->add_attribute(get_D_key(), D);
     return Diffusion(p);
   }

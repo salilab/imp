@@ -31,8 +31,7 @@ public:
    */
   static LennardJones setup_particle(Particle *p, Float well_depth=0) {
     IMP_USAGE_CHECK(XYZR::particle_is_instance(p),
-                    "Particle must already be an XYZR particle",
-                    ValueException);
+                    "Particle must already be an XYZR particle");
     p->add_attribute(get_well_depth_key(), well_depth);
     return LennardJones(p);
   }
