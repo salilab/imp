@@ -42,18 +42,20 @@ def _make_nodes(files):
 def _install_hierarchy_internal(env, dir, sources, can_link):
     insttargets = []
     sources = _make_nodes(sources)
+    #print [x.path for x in sources]
     for f in sources:
         full = f.path
         if full.find("include") != -1:
             src = full[full.find("include")+8:]
         elif full.find("src") != -1:
-            src= full[full.find("src")+4]
+            src= full[full.find("src")+4:]
         elif full.find("data") != -1:
-            src= full[full.find("data")+5]
+            src= full[full.find("data")+5:]
         elif full.find("examples") != -1:
-            src= full[full.find("examples")+9]
+            src= full[full.find("examples")+9:]
         else:
             raise ValueError(full)
+        #print src
         dest = os.path.join(dir, os.path.dirname(src))
         if can_link:
             insttargets.append(env.LinkInstall(dest, f))
