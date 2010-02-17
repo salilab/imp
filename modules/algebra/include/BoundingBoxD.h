@@ -47,7 +47,7 @@ public:
     IMP_IF_CHECK(USAGE) {
       for (unsigned int i=0; i< D; ++i) {
         IMP_USAGE_CHECK(lb[i] <= ub[i],
-                        "Invalid bounding box", ValueException);
+                        "Invalid bounding box");
       }
     }
   }
@@ -100,7 +100,7 @@ public:
 
   //! For 0 return lower corner and 1 upper corner
   const VectorD<D>& get_corner(unsigned int i) const {
-    IMP_USAGE_CHECK(i < 2, "Can only use 0 or 1", IndexException);
+    IMP_USAGE_CHECK(i < 2, "Can only use 0 or 1");
     return b_[i];
   }
 

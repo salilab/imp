@@ -202,8 +202,7 @@ class IMPCOREEXPORT RigidMember: public XYZ {
     IMP_USAGE_CHECK(
  get_particle()->has_attribute(internal::rigid_body_data().lquaternion_[0]),
          "Can only set the internal transformation if member is"
-         << " a rigid body itself.",
-         UsageException);
+         << " a rigid body itself.");
     get_particle()->set_value(internal::rigid_body_data().child_keys_[0],
                               v.get_translation()[0]);
     get_particle()->set_value(internal::rigid_body_data().child_keys_[1],
@@ -225,8 +224,7 @@ class IMPCOREEXPORT RigidMember: public XYZ {
     IMP_USAGE_CHECK(
      get_particle()->has_attribute(internal::rigid_body_data().lquaternion_[0]),
      "Can only set the internal transformation if member is a "
-     << "rigid body itself.",
-     UsageException);
+     << "rigid body itself.");
     algebra::Vector3D
       tr(get_particle()->get_value(internal::rigid_body_data().child_keys_[0]),
          get_particle()->get_value(internal::rigid_body_data().child_keys_[1]),

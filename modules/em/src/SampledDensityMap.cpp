@@ -143,8 +143,7 @@ void SampledDensityMap::resample()
       kernel_params_.set_params(xyzr_[ii].get_radius());
       params = kernel_params_.find_params(ps_[ii]->get_value(radius_key_));
     }
-    IMP_USAGE_CHECK(params, "Parameters shouldn't be NULL",
-              InvalidStateException);
+    IMP_USAGE_CHECK(params, "Parameters shouldn't be NULL");
     // compute the box affected by each particle
     calc_sampling_bounding_box(
          ps_[ii]->get_value(x_key_), ps_[ii]->get_value(y_key_),

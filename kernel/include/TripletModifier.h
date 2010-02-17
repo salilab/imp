@@ -116,8 +116,7 @@ public:
   TripletFunctor(const TripletModifier *f,
                    DerivativeAccumulator *da): f_(f), da_(da){
     IMP_USAGE_CHECK(da_,
-                    "The passed derivative accumulator should not be null.",
-                    InvalidStateException);
+                    "The passed derivative accumulator should not be null.");
   }
   void operator()( ParticleTriplet p) const {
     if (da_) {

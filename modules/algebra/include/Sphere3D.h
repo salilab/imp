@@ -29,8 +29,7 @@ public:
   Sphere3D(const Vector3D& center,double radius);
   double get_radius() const {
     IMP_USAGE_CHECK(!is_nan(radius_),
-              "Attempt to use uninitialized sphere.",
-              InvalidStateException);
+              "Attempt to use uninitialized sphere.");
     return radius_;
   }
   const Vector3D &get_center() const {return center_;}

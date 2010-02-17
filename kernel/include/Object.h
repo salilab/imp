@@ -74,7 +74,7 @@ public:
    */
   void set_log_level(LogLevel l) {
     IMP_USAGE_CHECK(l <= MEMORY && l >= DEFAULT, "Setting to invalid log level "
-              << l, ValueException);
+              << l);
 #if IMP_BUILD < IMP_FAST
     log_level_=l;
 #endif
@@ -197,8 +197,7 @@ template <class O, class I>
 O* object_cast(I *o) {
   O *ret= dynamic_cast<O*>(o);
   IMP_USAGE_CHECK(ret, "Object " << o->get_name() << " cannot be cast to "
-            << "desired type.",
-            ValueException);
+            << "desired type.");
   return ret;
 }
 
@@ -209,7 +208,7 @@ const std::vector<O*>& objects_cast(const std::vector<I*>& o) {
     for (unsigned int i=0; i< o.size(); ++i) {
       IMP_USAGE_CHECK(dynamic_cast<O*>(o[i]),
                       "Object " << o[i]->get_name()
-                      << " cannot be cast.", ValueException);
+                      << " cannot be cast.");
     }
   }
   BOOST_STATIC_ASSERT(sizeof(std::vector<O*>) == sizeof(std::vector<I*>));
@@ -225,7 +224,7 @@ const VectorOfRefCounted<O*>& objects_cast(const VectorOfRefCounted<I*>& o) {
     for (unsigned int i=0; i< o.size(); ++i) {
       IMP_USAGE_CHECK(dynamic_cast<O*>(o[i]),
                       "Object " << o[i]->get_name()
-                      << " cannot be cast.", ValueException);
+                      << " cannot be cast.");
     }
   }
   BOOST_STATIC_ASSERT(sizeof(VectorOfRefCounted<O*>)
@@ -241,7 +240,7 @@ std::vector<O*>& objects_cast( std::vector<I*>& o) {
     for (unsigned int i=0; i< o.size(); ++i) {
       IMP_USAGE_CHECK(dynamic_cast<O*>(o[i]),
                       "Object " << o[i]->get_name()
-                      << " cannot be cast.", ValueException);
+                      << " cannot be cast.");
     }
   }
   BOOST_STATIC_ASSERT(sizeof(std::vector<O*>) == sizeof(std::vector<I*>));
@@ -257,7 +256,7 @@ VectorOfRefCounted<O*>& objects_cast(VectorOfRefCounted<I*>& o) {
     for (unsigned int i=0; i< o.size(); ++i) {
       IMP_USAGE_CHECK(dynamic_cast<O*>(o[i]),
                       "Object " << o[i]->get_name()
-                      << " cannot be cast.", ValueException);
+                      << " cannot be cast.");
     }
   }
   BOOST_STATIC_ASSERT(sizeof(VectorOfRefCounted<O*>)

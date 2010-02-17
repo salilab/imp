@@ -127,8 +127,7 @@ public:
   QuadContainer* get_removed_quads_container() const {
     IMP_USAGE_CHECK(added_, "The containers returned by "
                     << " get_added_quads_container() do not "
-                    << " track their own added and removed contents.",
-                    ParticleQuadException);
+                    << " track their own added and removed contents.");
     QuadContainer *ret= dynamic_cast<QuadContainer*>(removed_.get());
     IMP_INTERNAL_CHECK(ret, "Cannot cast object " << removed_->get_name()
                        << " to a QuadContainer.");
@@ -137,8 +136,7 @@ public:
   QuadContainer* get_added_quads_container() const {
     IMP_USAGE_CHECK(added_, "The containers returned by "
                     << " get_added_quads_container() do not "
-                    << " track their own added and removed contents.",
-                    ParticleQuadException);
+                    << " track their own added and removed contents.");
     QuadContainer *ret= dynamic_cast<QuadContainer*>(added_.get());
     IMP_INTERNAL_CHECK(ret, "Cannot cast object " << added_->get_name()
                        << " to a QuadContainer.");

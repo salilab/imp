@@ -84,8 +84,7 @@ ParticlesTemp TripletsConstraint::get_input_particles() const {
                         << " the after modifier in " << get_name()
                         << " must be a subset of those read by the before "
                         << "modifier. Before: " << Particles(ret)
-                        << " and after " << Particles(oret),
-                        UsageException);
+                        << " and after " << Particles(oret));
       }
     }
   } else {
@@ -113,8 +112,7 @@ ParticlesTemp TripletsConstraint::get_output_particles() const {
         IMP_USAGE_CHECK(t.size() == iret.size(), "The particles read by "
                       << " the after modifier in " << get_name() << " must "
                         << "be a subset of those written by the before "
-                        << "modifier.",
-                        UsageException);
+                        << "modifier.");
       }
     }
   } else {

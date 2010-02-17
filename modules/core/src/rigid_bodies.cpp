@@ -189,21 +189,18 @@ IMP_CONSTRAINT_DECORATOR_DEF(RigidBody);
 RigidBody RigidBody::internal_setup_particle(Particle *p,
                                              const XYZs &members) {
   IMP_USAGE_CHECK(!internal::get_has_required_attributes_for_body(p),
-                  "The RigidBody is already set up.",
-                  InvalidStateException);
+                  "The RigidBody is already set up.");
 
   XYZs ds;
   IMP_USAGE_CHECK(!members.empty(),
-                  "There must be particles to make a rigid body",
-                  InvalidStateException);
+                  "There must be particles to make a rigid body");
   for (unsigned int i=0; i< members.size(); ++i) {
     Particle *mp= members[i];
     IMP_USAGE_CHECK(mp != p, "A rigid body cannot have itself as a member "
-                    << p->get_name(), ValueException);
+                    << p->get_name());
     IMP_USAGE_CHECK(!internal::get_has_required_attributes_for_member(p),
                     "Particle " << p->get_name() << " is already part of "
-                    << "a conflicting rigid body",
-                    InvalidStateException);
+                    << "a conflicting rigid body");
     ds.push_back(XYZ(mp));
   }
 

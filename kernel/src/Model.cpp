@@ -769,7 +769,7 @@ IMP_LIST_IMPL(Model, ScoreState, score_state, ScoreState*,
                                            score_states_end());
                   IMP_USAGE_CHECK(in.size() == get_number_of_score_states(),
                                   "Score state already in model "
-                                  << obj->get_name(), UsageException);
+                                  << obj->get_name());
                 }
               },,
               {obj->set_model(NULL);});
@@ -850,8 +850,7 @@ FloatRange Model::get_range(FloatKey k) const {
 
 void Model::before_evaluate(const ScoreStatesTemp &states) const {
   IMP_USAGE_CHECK(cur_stage_== NOT_EVALUATING,
-                  "Can only call Model::before_evaluate() when not evaluating",
-                  UsageException);
+                  "Can only call Model::before_evaluate() when not evaluating");
   IMP_LOG(TERSE,
           "Begin update ScoreStates " << std::endl);
   {
@@ -1197,8 +1196,7 @@ Float Model::evaluate(const RestraintsTemp &restraints, bool calc_derivs)
                       != graphs_[this].depends.end(),
                       "Restraint " << wr[i].second->get_name()
                       << " has not been added to the model "
-                      << " and so cannot be evaluated.",
-                      UsageException);
+                      << " and so cannot be evaluated.");
     }
   }
   boost::dynamic_bitset<> bs(get_number_of_score_states(), false);
@@ -1207,8 +1205,7 @@ Float Model::evaluate(const RestraintsTemp &restraints, bool calc_derivs)
                     != graphs_[this].depends.end(),
                     "Unable to find restraint "
                     << (wr[i].second
-                        ? wr[i].second->get_name(): std::string("NULL")),
-                    ValueException);
+                        ? wr[i].second->get_name(): std::string("NULL")));
     bs|= graphs_[this].depends.find(wr[i].second)->second;
     IMP_IF_LOG(TERSE) {
       IMP_LOG(TERSE, "Restraint " << wr[i].second->get_name()

@@ -25,8 +25,7 @@ void XplorReaderWriter::Read(const char *filename, float **data,
   *data =  new float[size];
   IMP_USAGE_CHECK(*data,
             "XplorReader::Read can not allocated space for data - the "
-            << "requested size: " << size * sizeof(float),
-            IOException);
+                  << "requested size: " << size * sizeof(float));
   ReadMap(XPLORstream, *data, xheader);
   XPLORstream.close();
 }

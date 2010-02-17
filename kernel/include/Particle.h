@@ -38,8 +38,7 @@
 
 #if IMP_BUILD < IMP_FAST
 #define IMP_CHECK_ACTIVE                                                \
-  IMP_USAGE_CHECK(get_is_active(), "Particle " << get_name() << " is inactive" \
-            , InternalException);
+  IMP_USAGE_CHECK(get_is_active(), "Particle " << get_name() << " is inactive");
 #else
 #define IMP_CHECK_ACTIVE
 #endif
@@ -57,15 +56,13 @@
     IMP_CHECK_MUTABLE;                                                  \
     IMP_USAGE_CHECK(name != UCName##Key(),                              \
                     "Cannot use attributes without "                    \
-              << "naming them.", ValueException);                       \
+                    << "naming them.");                                 \
     IMP_USAGE_CHECK(!has_attribute(name),                               \
               "Cannot add attribute " << name << " to particle "        \
-                    << get_name() << " twice.",                         \
-              InvalidStateException);                                   \
+                    << get_name() << " twice.");                        \
     IMP_USAGE_CHECK(UCName##Table::Traits::get_is_valid(initial_value), \
                     "Initial value is not valid when adding attribute"  \
-                               << name << " to particle " << get_name(),\
-              ValueException);                                          \
+                    << name << " to particle " << get_name());          \
     on_changed();                                                       \
     add_action;                                                         \
     if (cond) table0.add(name.get_index(), initial_value);              \
@@ -75,20 +72,19 @@
     IMP_CHECK_ACTIVE;                                                   \
     IMP_USAGE_CHECK(name != UCName##Key(),                              \
                     "Cannot use attributes without "                    \
-              << "naming them.", ValueException);                       \
+                    << "naming them.");                                 \
     on_changed();                                                       \
     remove_action;                                                      \
     IMP_USAGE_CHECK(has_attribute(name),                                \
               "Cannot remove attribute " << name << " from particle "   \
-              << get_name() << " as it is not there.",                  \
-              InvalidStateException);                                   \
+                    << get_name() << " as it is not there.");           \
     if (cond) table0.remove(name.get_index());                          \
     else table1.remove(name.get_index());                               \
   }                                                                     \
   bool has_attribute(UCName##Key name) const{                           \
     IMP_USAGE_CHECK(name != UCName##Key(),                              \
                     "Cannot use attributes without "                    \
-              << "naming them.", ValueException);                       \
+                    << "naming them.");                                 \
     IMP_CHECK_ACTIVE;                                                   \
     if (cond) {                                                         \
       if (!table0.fits(name.get_index())) return false;                 \
@@ -109,18 +105,17 @@
     IMP_CHECK_READABLE;                                                 \
     IMP_USAGE_CHECK(name != UCName##Key(),                              \
                     "Cannot use attributes without "                    \
-              << "naming them.", ValueException);                       \
+                    << "naming them.");                                 \
     IMP_USAGE_CHECK(has_attribute(name),                                \
               "Cannot get value " << name << " from particle "          \
-              << get_name() << " as it is not there.",                  \
-              InvalidStateException);                                   \
+                    << get_name() << " as it is not there.");           \
     if (cond) return table0.get(name.get_index());                      \
     else return table1.get(name.get_index());                           \
   }                                                                     \
   void set_value(UCName##Key name, Value value) {                       \
     IMP_USAGE_CHECK(name != UCName##Key(),                              \
                     "Cannot use attributes without "                    \
-              << "naming them.", ValueException);                       \
+                    << "naming them.");                                 \
     IMP_IF_CHECK(USAGE) {                                               \
       if (!UCName##Table::Traits::get_is_valid(value)) {                \
         IMP_THROW("Cannot set value of " << name                        \
@@ -132,8 +127,7 @@
     IMP_CHECK_MUTABLE;                                                  \
     IMP_USAGE_CHECK(has_attribute(name),                                \
               "Cannot set value " << name << " from particle "          \
-              << get_name() << " as it is not there.",                  \
-              InvalidStateException);                                   \
+                    << get_name() << " as it is not there.");           \
     on_changed();                                                       \
     if (cond) table0.set(name.get_index(), value);                      \
     else table1.set(name.get_index(), value);                           \
@@ -370,29 +364,25 @@ class IMPEXPORT Particle : public Container
   void add_cache_attribute(IntKey name, unsigned int value) {
     IMP_USAGE_CHECK(name != IntKey(),
                     "Cannot use attributes without "
-              << "naming them.", ValueException);
+                    << "naming them.");
     IMP_USAGE_CHECK(!has_attribute(name),
               "Cannot add attribute " << name << " to particle "
-                    << get_name() << " twice.",
-              InvalidStateException);
+                    << get_name() << " twice.");
     IMP_USAGE_CHECK(IntTable::Traits::get_is_valid(value),
                     "Initial value is not valid when adding attribute"
-                               << name << " to particle " << get_name(),
-              ValueException);
+                    << name << " to particle " << get_name());
     ps_->ints_.add(name.get_index(), value);
   }
   void add_cache_attribute(ObjectKey name, Object *value) {
     IMP_CHECK_ACTIVE;
     IMP_USAGE_CHECK(name != ObjectKey(), "Cannot use attributes without "
-                    << "naming them.", ValueException);
+                    << "naming them.");
     IMP_USAGE_CHECK(!has_attribute(name),
                     "Cannot add attribute " << name << " to particle "
-                    << get_name() << " twice.",
-                    InvalidStateException);
+                    << get_name() << " twice.");
     IMP_USAGE_CHECK(ObjectTable::Traits::get_is_valid(value),
                     "Initial value is not valid when adding attribute"
-                    << name << " to particle " << get_name(),
-                    ValueException);
+                    << name << " to particle " << get_name());
     ps_->objects_.add(name.get_index(), value);
     ps_->cache_objects_.push_back(name);
   }
@@ -486,9 +476,6 @@ inline Float Particle::get_derivative(FloatKey name) const
 inline bool Particle::get_is_optimized(FloatKey name) const
 {
   IMP_CHECK_ACTIVE;
-  /*IMP_USAGE_CHECK(floats_.contains(name), "get_is_optimized called "
-            << "with invalid attribute " << name,
-            IndexException);*/
   if (!ps_->optimizeds_.fits(name.get_index())) return false;
   else return ps_->optimizeds_.get(name.get_index());
 }
@@ -497,8 +484,7 @@ inline void Particle::set_is_optimized(FloatKey name, bool tf)
 {
   IMP_CHECK_ACTIVE;
   IMP_USAGE_CHECK(has_attribute(name), "set_is_optimized called "
-            << "with invalid attribute" << name,
-            IndexException);
+            << "with invalid attribute" << name);
   IMP_IF_CHECK(USAGE) {assert_can_change_optimization();}
 
   if (tf) {
@@ -559,20 +545,20 @@ public:
   }
   ParticleTuple(Particle* x, Particle* y) {
     IMP_USAGE_CHECK(D==2, "Need " << D << " to construct a "
-              << D << "-tuple.", ValueException);
+              << D << "-tuple.");
     d_[0] = x;
     d_[1] = y;
   }
   ParticleTuple(Particle* x, Particle* y, Particle* z) {
     IMP_USAGE_CHECK(D==3, "Need " << D << " to construct a "
-              << D << "-tuple.", ValueException);
+              << D << "-tuple.");
     d_[0] = x;
     d_[1] = y;
     d_[2] = z;
   }
   ParticleTuple(Particle* x0, Particle* x1, Particle* x2, Particle* x3) {
     IMP_USAGE_CHECK(D==4, "Need " << D << " to construct a "
-              << D << "-tuple.", ValueException);
+              << D << "-tuple.");
     d_[0] = x0;
     d_[1] = x1;
     d_[2] = x2;
@@ -583,11 +569,11 @@ public:
   }
   IMP_COMPARISONS;
   Particle * operator[](unsigned int i) const {
-    IMP_USAGE_CHECK(i <D, "Out of range member", IndexException);
+    IMP_USAGE_CHECK(i <D, "Out of range member");
     return d_[i];
   }
   Particle *& operator[](unsigned int i) {
-    IMP_USAGE_CHECK(i <D, "Out of range member", IndexException);
+    IMP_USAGE_CHECK(i <D, "Out of range member");
     return d_[i];
   }
 

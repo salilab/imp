@@ -20,7 +20,7 @@ algebra::Vector3D centroid(const XYZs &ps) {
 
 algebra::Segment3D diameter(const XYZs &ps) {
   IMP_USAGE_CHECK(!ps.empty(), "Can't compute the diameter if you don't give "
-            "me any particles.", ValueException);
+            "me any particles.");
   XYZ p1,p2;
   double max_squared_dist=0.0;
 

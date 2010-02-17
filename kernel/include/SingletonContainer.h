@@ -127,8 +127,7 @@ public:
   SingletonContainer* get_removed_singletons_container() const {
     IMP_USAGE_CHECK(added_, "The containers returned by "
                     << " get_added_singletons_container() do not "
-                    << " track their own added and removed contents.",
-                    Particle*Exception);
+                    << " track their own added and removed contents.");
     SingletonContainer *ret= dynamic_cast<SingletonContainer*>(removed_.get());
     IMP_INTERNAL_CHECK(ret, "Cannot cast object " << removed_->get_name()
                        << " to a SingletonContainer.");
@@ -137,8 +136,7 @@ public:
   SingletonContainer* get_added_singletons_container() const {
     IMP_USAGE_CHECK(added_, "The containers returned by "
                     << " get_added_singletons_container() do not "
-                    << " track their own added and removed contents.",
-                    Particle*Exception);
+                    << " track their own added and removed contents.");
     SingletonContainer *ret= dynamic_cast<SingletonContainer*>(added_.get());
     IMP_INTERNAL_CHECK(ret, "Cannot cast object " << added_->get_name()
                        << " to a SingletonContainer.");

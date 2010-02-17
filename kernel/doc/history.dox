@@ -1,4 +1,8 @@
 /** \page recent Change History
+\par Week of Feb 14, 2010
+
+- The IMP_USAGE_CHECK() macro lost the (unused) third argument.
+
 \par Week of February 3, 2010
 
 - The model io code as moved into the kernel so it is now IMP::write_model() and IMP::read_model()

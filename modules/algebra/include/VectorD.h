@@ -31,8 +31,7 @@ class VectorD
   void check_vector() const {
     for (unsigned int i=0; i< D; ++i) {
       IMP_USAGE_CHECK(!is_nan(vec_[i]),
-                "Attempt to use uninitialized vector.",
-                InvalidStateException);
+                "Attempt to use uninitialized vector.");
     }
   }
 public:
@@ -56,7 +55,7 @@ public:
      subclasses, so replace with runtime checks. */
 #if defined(IMP_SWIG_WRAPPER) || defined(_MSC_VER)
     IMP_USAGE_CHECK(D==1, "Need " << D << " to construct a "
-              << D << "-vector.", ValueException);
+              << D << "-vector.");
 #else
     BOOST_STATIC_ASSERT(D==1);
 #endif
@@ -67,7 +66,7 @@ public:
   VectorD(double x, double y) {
 #if defined(IMP_SWIG_WRAPPER) || defined(_MSC_VER)
     IMP_USAGE_CHECK(D==2, "Need " << D << " to construct a "
-              << D << "-vector.", ValueException);
+              << D << "-vector.");
 #else
     BOOST_STATIC_ASSERT(D==2);
 #endif
@@ -79,7 +78,7 @@ public:
   VectorD(double x, double y, double z) {
 #ifdef IMP_SWIG_WRAPPER
     IMP_USAGE_CHECK(D==3, "Need " << D << " to construct a "
-              << D << "-vector.", ValueException);
+              << D << "-vector.");
 #else
     BOOST_STATIC_ASSERT(D==3);
 #endif
@@ -92,7 +91,7 @@ public:
   VectorD(double x0, double x1, double x2, double x3) {
 #if defined(IMP_SWIG_WRAPPER) || defined(_MSC_VER)
     IMP_USAGE_CHECK(D==4, "Need " << D << " to construct a "
-              << D << "-vector.", ValueException);
+              << D << "-vector.");
 #else
     BOOST_STATIC_ASSERT(D==4);
 #endif
@@ -339,8 +338,7 @@ double distance(const VectorD<D> &v1, const VectorD<D> &v2) {
  */
 template <unsigned int D>
 VectorD<D> basis_vector(unsigned int coordinate) {
-  IMP_USAGE_CHECK(coordinate<D, "There are only " << D << " basis vectors",
-            IndexException);
+  IMP_USAGE_CHECK(coordinate<D, "There are only " << D << " basis vectors");
   double vs[D];
   for (unsigned int i=0; i< D; ++i) {
     if (i==coordinate) vs[i]=1;

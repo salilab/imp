@@ -15,7 +15,7 @@ LinearFit::LinearFit(const algebra::Vector2Ds& data) :
   // check that there are at least 3 points
   IMP_USAGE_CHECK(data_.size() > 1,
                   "At least 2 points are required for LinearFit "
-                  << data_.size() << " given", IndexException);
+                  << data_.size() << " given");
   find_regression();
   evaluate_error();
 }

@@ -127,8 +127,7 @@ public:
   PairContainer* get_removed_pairs_container() const {
     IMP_USAGE_CHECK(added_, "The containers returned by "
                     << " get_added_pairs_container() do not "
-                    << " track their own added and removed contents.",
-                    ParticlePairException);
+                    << " track their own added and removed contents.");
     PairContainer *ret= dynamic_cast<PairContainer*>(removed_.get());
     IMP_INTERNAL_CHECK(ret, "Cannot cast object " << removed_->get_name()
                        << " to a PairContainer.");
@@ -137,8 +136,7 @@ public:
   PairContainer* get_added_pairs_container() const {
     IMP_USAGE_CHECK(added_, "The containers returned by "
                     << " get_added_pairs_container() do not "
-                    << " track their own added and removed contents.",
-                    ParticlePairException);
+                    << " track their own added and removed contents.");
     PairContainer *ret= dynamic_cast<PairContainer*>(added_.get());
     IMP_INTERNAL_CHECK(ret, "Cannot cast object " << added_->get_name()
                        << " to a PairContainer.");

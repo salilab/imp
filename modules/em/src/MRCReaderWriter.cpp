@@ -33,8 +33,7 @@ void MRCReaderWriter::Write(const char *fn_out, const float *data,
 void MRCReaderWriter::read(float **pt)
 {
   fs.open(filename.c_str(), std::fstream::in | std::fstream::binary);
-  IMP_USAGE_CHECK(fs.good(), "The file " << filename << " was not found.",
-            IOException);
+  IMP_USAGE_CHECK(fs.good(), "The file " << filename << " was not found.");
   // Read header
   read_header();
   // Allocate memory
@@ -107,7 +106,7 @@ void MRCReaderWriter::read_grid(void *pt,size_t size,size_t n)
   if (0) std::cout << val;
   IMP_USAGE_CHECK(val == size*n,
             "MRCReaderWriter::read_grid >> The values read "
-            "are not the amount requested", IOException);
+            "are not the amount requested");
 }
 
 void MRCReaderWriter::seek_to_data()
@@ -115,7 +114,7 @@ void MRCReaderWriter::seek_to_data()
   fs.seekg(sizeof(MRCHeader)+header.nsymbt, std::ios::beg);
   IMP_USAGE_CHECK(!fs.fail(),
             "MRCReaderWriter::seek_to_data. Cannot find MRC data in file "
-            << filename, IOException);
+            << filename);
 }
 
 void  MRCReaderWriter::read_header()
@@ -124,7 +123,7 @@ void  MRCReaderWriter::read_header()
   fs.read((char *) &header,sizeof(MRCHeader));
   IMP_USAGE_CHECK(fs.gcount() == sizeof(MRCHeader),
             "MRCReaderWriter::read_header >> Error reading MRC header of file: "
-            << filename, IOException);
+            << filename);
 
   // Check for endian
   unsigned char *ch = (unsigned char *) &header;
@@ -138,8 +137,7 @@ void  MRCReaderWriter::read_header()
             << filename <<  "; Non-standard MRC file: column, row, section "
             << "indices are not (1,2,3) but (" << header.mapc << ","
             << header.mapr << "," << header.maps << ")."
-            << " Resulting density data may be incorrectly oriented.",
-            IOException);
+            << " Resulting density data may be incorrectly oriented.");
 }
 
 void MRCReaderWriter::write(const char *fn,const float *pt)
@@ -190,8 +188,7 @@ void MRCReaderWriter::write_header(std::ofstream &s)
   s.write((char *) &header.labels,
           sizeof(char)*IMP_MRC_NUM_LABELS*IMP_MRC_LABEL_SIZE);
   IMP_USAGE_CHECK(!s.bad(),
-            "MRCReaderWriter::write_header >> Error writing MRC header",
-            IOException);
+            "MRCReaderWriter::write_header >> Error writing MRC header");
 }
 
 /* Writes the grid of values of an EM map to a MRC file */
@@ -200,8 +197,7 @@ void MRCReaderWriter::write_data(std::ofstream &s,const float *pt)
 
   s.write((char *)pt,sizeof(float)*header.nx * header.ny * header.nz);
   IMP_USAGE_CHECK(!s.bad(),
-            "MRCReaderWriter::write_data >> Error writing MRC data.",
-            IOException);
+            "MRCReaderWriter::write_data >> Error writing MRC data.");
   IMP_LOG(IMP::TERSE,"MRC file written: grid " << header.nx << "x" << header.ny
           << "x" << header.nz << std::endl);
 }

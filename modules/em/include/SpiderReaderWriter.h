@@ -106,8 +106,7 @@ public:
     in.open(filename.c_str(), std::ios::in | std::ios::binary);
     IMP_USAGE_CHECK(!in.fail(),
         "SpiderReaderWriter::read_from_floats: The file "+
-                                        filename+" could be found.",
-        IOException());
+                                        filename+" could be found.");
     //! The header format is already in Spider format, just read it
     header.read(in,skip_type_check_,force_reversed_,skip_extra_checkings_);
 #ifdef DEBUG

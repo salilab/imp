@@ -229,8 +229,7 @@ public:
   */
   float* get_x_loc() const {
     IMP_USAGE_CHECK(loc_calculated_,
-              "x location requested before being calculated",
-              InvalidStateException);
+              "x location requested before being calculated");
     return x_loc_.get();
   }
   //! Returns the y-location of the map
@@ -239,8 +238,7 @@ public:
   */
   float* get_y_loc() const {
     IMP_USAGE_CHECK(loc_calculated_,
-              "y location requested before being calculated",
-              InvalidStateException);
+              "y location requested before being calculated");
     return y_loc_.get();
   }
   //! Returns the z-location of the map
@@ -249,8 +247,7 @@ public:
   */
   float* get_z_loc() const {
     IMP_USAGE_CHECK(loc_calculated_,
-              "z location requested before being calculated",
-              InvalidStateException);
+              "z location requested before being calculated");
     return z_loc_.get();
   }
 

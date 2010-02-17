@@ -49,8 +49,7 @@ public:
   }
   //! Get one of the endpoints
   const IMP::algebra::VectorD<D>& get_point(unsigned int i) const {
-    IMP_USAGE_CHECK(i < 2, "The endpoint index can only be 0 or 1",
-                    IndexException);
+    IMP_USAGE_CHECK(i < 2, "The endpoint index can only be 0 or 1");
     return eps_[i];
   }
 };

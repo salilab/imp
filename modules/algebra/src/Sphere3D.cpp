@@ -21,8 +21,7 @@ Sphere3D::Sphere3D(const Vector3D& center,double radius):center_(center),
 
 Sphere3D enclosing_sphere(const Sphere3Ds &ss) {
   IMP_USAGE_CHECK(!ss.empty(),
-                  "Must pass some spheres to have a bounding sphere",
-            ValueException);
+                  "Must pass some spheres to have a bounding sphere");
 #ifdef IMP_USE_CGAL
   typedef CGAL::Exact_predicates_inexact_constructions_kernel             K;
   typedef CGAL::Min_sphere_of_spheres_d_traits_3<K, K::FT> Traits;

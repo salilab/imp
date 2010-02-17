@@ -14,7 +14,7 @@ ParabolicFit::ParabolicFit(const algebra::Vector2Ds& data) :
   // check that there are at least 3 points
   IMP_USAGE_CHECK(data_.size() > 2,
                   "At least 3 points are required for ParabolicFit "
-                  << data_.size() << " given", IndexException);
+                  << data_.size() << " given");
   find_regression();
   evaluate_error();
 }

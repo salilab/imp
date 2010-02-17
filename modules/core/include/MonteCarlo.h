@@ -104,8 +104,7 @@ public:
       with probability p.
    */
   void set_move_probability(Float p) {
-    IMP_USAGE_CHECK(p > 0 && p <= 1, "Not a valid probability",
-              ValueException);
+    IMP_USAGE_CHECK(p > 0 && p <= 1, "Not a valid probability");
     probability_=p;
   }
   /** \name Statistics

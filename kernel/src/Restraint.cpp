@@ -30,8 +30,7 @@ void Restraint::set_model(Model* model)
   IMP_USAGE_CHECK(model==NULL || model_==NULL
             || (model_ && model_ == model),
             "Model* different from already stored model "
-            << model << " " << model_,
-            ValueException);
+            << model << " " << model_);
   model_=model;
   if (model) set_was_owned(true);
 }
@@ -39,10 +38,9 @@ void Restraint::set_model(Model* model)
 double Restraint::evaluate(bool calc_derivs) const {
   IMP_USAGE_CHECK(model_,
                   "The restraint must be added to the model before being "
-                  << "evaluated.", UsageException);
+                  << "evaluated.");
   IMP_USAGE_CHECK(get_model()->get_stage()==Model::NOT_EVALUATING,
-            "Restraint::evaluate() cannot be called during model evaluation",
-            InvalidStateException);
+            "Restraint::evaluate() cannot be called during model evaluation");
   RestraintsTemp rr(1, const_cast<Restraint*>(this));
   return get_model()->evaluate(rr, calc_derivs);
 }

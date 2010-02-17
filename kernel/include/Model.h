@@ -74,7 +74,7 @@ private:
     particles_.push_back(p);
     p->ps_->iterator_= --particles_.end();
     IMP_USAGE_CHECK(!p->ps_->model_, "Particle " << p->get_name()
-                    << " is already in model.", UsageException);
+                    << " is already in model.");
     p->ps_->model_= this;
     internal::ref(p);
     // particles will not be backed up properly, so don't do incremental
@@ -171,8 +171,7 @@ public:
     IMP_CHECK_OBJECT(this);
     IMP_CHECK_OBJECT(p);
     IMP_USAGE_CHECK(p->get_model() == this,
-              "The particle does not belong to this model",
-              ValueException);
+              "The particle does not belong to this model");
     IMP_LOG(VERBOSE, "Removing particle " << p->get_name()
             << std::endl);
     IMP_INTERNAL_CHECK(get_stage() == Model::NOT_EVALUATING,

@@ -47,8 +47,7 @@ Float MonteCarlo::optimize(unsigned int max_steps)
     IMP_CHECK_OBJECT(cg_.get());
     IMP_USAGE_CHECK(cg_->get_model() == get_model(),
                "The model used by the local optimizer does not match "\
-              " that used by the montecarlo optimizer",
-              InvalidStateException);
+              " that used by the montecarlo optimizer");
   }
   update_states();
   prior_energy =get_model()->evaluate(0);

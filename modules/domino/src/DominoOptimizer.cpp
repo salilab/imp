@@ -224,7 +224,7 @@ void DominoOptimizer::add_restraint_recursive(Restraint *rs, Float weight)
                "DominoOptimizer::add_restraint_recursive dose not support"
                <<" lists with more than one set of particles for a single "
                <<"restraint: "
-               << rs->get_interacting_particles().size(),ErrorException);
+               << rs->get_interacting_particles().size());
      rs_.push_back(OptTuple(rs,rs->get_interacting_particles()[0],weight));
    }
 }

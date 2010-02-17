@@ -20,8 +20,7 @@ ChecksScoreState::ChecksScoreState(double prob):
   probability_(prob), count_(0)
 {
   IMP_USAGE_CHECK(prob >=0 && prob <=1,
-                  "The probability must be a probability.",
-                  UsageException);
+                  "The probability must be a probability.");
 }
 
 

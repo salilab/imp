@@ -116,8 +116,7 @@ public:
   PairFunctor(const PairModifier *f,
                    DerivativeAccumulator *da): f_(f), da_(da){
     IMP_USAGE_CHECK(da_,
-                    "The passed derivative accumulator should not be null.",
-                    InvalidStateException);
+                    "The passed derivative accumulator should not be null.");
   }
   void operator()( ParticlePair p) const {
     if (da_) {

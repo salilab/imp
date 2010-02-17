@@ -30,7 +30,7 @@ public:
 
   double get_data(unsigned int i) const {
     IMP_USAGE_CHECK(i < data_.size(), "Index " << i
-              << " out of range.", IndexException);
+              << " out of range.");
     return data_[i];
   }
 

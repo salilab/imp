@@ -125,7 +125,7 @@ class VectorOfRefCounted {
   // swig will use __set__ so we don't have to worry about it
   Proxy<RC> operator[](unsigned int i) {
     IMP_USAGE_CHECK(i < size(), "Index out of range in []: "
-                    << i << ">=" << size(), IndexException);
+                    << i << ">=" << size());
     return Proxy<RC>(data_[i]);
   }
 #else
@@ -138,7 +138,7 @@ class VectorOfRefCounted {
 #endif
   RC operator[](unsigned int i) const {
     IMP_USAGE_CHECK(i < size(), "Index out of range in []: "
-              << i << ">=" << size(), IndexException);
+              << i << ">=" << size());
     return data_[i];
   }
   RC get(unsigned int i) const {
@@ -146,20 +146,18 @@ class VectorOfRefCounted {
   }
   void set(unsigned int i, RC p) {
     IMP_USAGE_CHECK(i < size(), "Index out of range in set "
-              << i << ">=" << size(), IndexException);
+              << i << ">=" << size());
     using std::swap;
     swap(data_[i], p);
     ref(data_[i]);
     unref(p);
   }
   RC back() const {
-    IMP_USAGE_CHECK(!empty(), "Can't call back on empty container",
-              InvalidStateException);
+    IMP_USAGE_CHECK(!empty(), "Can't call back on empty container");
     return data_.back();
   }
   RC front() const {
-    IMP_USAGE_CHECK(!empty(), "Can't call front on empty container",
-              InvalidStateException);
+    IMP_USAGE_CHECK(!empty(), "Can't call front on empty container");
     return data_.front();
   }
   void reserve(unsigned int i){ data_.reserve(i);}

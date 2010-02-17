@@ -60,7 +60,7 @@ void read_junction_tree(const std::string &filename, JunctionTree *jt) {
       }
     }
   }
-  IMP_USAGE_CHECK(status==2,"wrong junction tree format",ValueException);
+  IMP_USAGE_CHECK(status==2,"wrong junction tree format");
   jt_f.close();
   IMP_LOG(VERBOSE,"finish parsing graph" << std::endl);
 
@@ -76,18 +76,18 @@ void JunctionTree::set_nodes(int number_of_nodes) {
 void JunctionTree::set_component_name(int vi,int ci,const std::string &name) {
     IMP_USAGE_CHECK(static_cast<unsigned int>(vi) < boost::num_vertices(g_),
               "input node index (" << vi << ") is out of range ("
-              << boost::num_vertices(g_) <<")" <<std::endl,ValueException);
+              << boost::num_vertices(g_) <<")" <<std::endl);
     IMP_USAGE_CHECK(ci < get_number_of_components(vi),
-              "input component index is out of range",ValueException);
+              "input component index is out of range");
     data_[vi][ci]=name;
   }
 
 const std::string JunctionTree::get_component_name(int vi,int ci) const {
   IMP_USAGE_CHECK(static_cast<unsigned int>(vi) < boost::num_vertices(g_),
            "input node index (" << vi << ") is out of range ("
-           << boost::num_vertices(g_) <<")" <<std::endl,ValueException);
+           << boost::num_vertices(g_) <<")" <<std::endl);
   IMP_USAGE_CHECK(ci < get_number_of_components(vi),
-           "input component index is out of range",ValueException);
+           "input component index is out of range");
   return data_[vi][ci];
 }
 

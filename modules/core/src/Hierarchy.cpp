@@ -119,8 +119,7 @@ int Hierarchy::get_child_index(Hierarchy c) const
 {
   IMP_USAGE_CHECK(traits_.get_name() == c.traits_.get_name(),
             "Attemping to mix hierarchy of type " << traits_.get_name()
-            << " with one of type " << c.traits_.get_name(),
-            InvalidStateException);
+            << " with one of type " << c.traits_.get_name());
   for (unsigned int i=0; i< get_number_of_children(); ++i ) {
     if (get_child(i) == c) return i;
   }

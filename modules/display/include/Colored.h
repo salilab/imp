@@ -48,8 +48,7 @@ public:
               || (p->has_attribute(get_color_keys()[0])
                   && p->has_attribute(get_color_keys()[1])
                   && p->has_attribute(get_color_keys()[2])),
-              "Only partially colored " << p->get_name(),
-              InvalidStateException);
+              "Only partially colored " << p->get_name());
     return p->has_attribute(get_color_keys()[2]);
   }
 

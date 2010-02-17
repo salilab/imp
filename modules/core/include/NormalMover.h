@@ -28,8 +28,7 @@ public:
               const FloatKeys &vars,
               Float sigma);
   void set_sigma(Float sigma) {
-    IMP_USAGE_CHECK(sigma > 0, "Sigma must be positive",
-              ValueException);
+    IMP_USAGE_CHECK(sigma > 0, "Sigma must be positive");
     stddev_=sigma;
   }
   Float get_sigma() const {

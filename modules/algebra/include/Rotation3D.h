@@ -85,8 +85,7 @@ public:
                     << " non-quaternion value. The coefficient vector"
                     << " must have a length of 1. Got: "
                     << a << " " << b << " " << c << " " << d
-                    << " gives " << v_.get_squared_magnitude(),
-              ValueException);
+                    << " gives " << v_.get_squared_magnitude());
     if (a<0) {
       // make them canonical
       v_=-v_;
@@ -136,8 +135,7 @@ public:
   //! Rotate a vector around the origin
   Vector3D rotate(const Vector3D &o) const {
     IMP_USAGE_CHECK(v_.get_squared_magnitude() >0,
-              "Attempting to apply uninitialized rotation",
-              InvalidStateException);
+              "Attempting to apply uninitialized rotation");
 #ifdef IMP_ROTATION_CACHE
     fill_cache();
     return Vector3D(o*matrix_[0],
@@ -151,8 +149,7 @@ public:
   //! Gets only the requested rotation coordinate of the vector
   double rotate_one_coordinate(const Vector3D &o,unsigned int coord) const {
     IMP_USAGE_CHECK(v_.get_squared_magnitude() >0,
-              "Attempting to apply uninitialized rotation",
-              InvalidStateException);
+              "Attempting to apply uninitialized rotation");
 #ifdef IMP_ROTATION_CACHE
     fill_cache();
     return o*matrix_[coord];

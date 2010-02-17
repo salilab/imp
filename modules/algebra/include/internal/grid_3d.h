@@ -131,8 +131,7 @@ public:
   template <class G>
   friend class GridIndexIterator;
   GridIndex(int x, int y, int z): VirtualGridIndex(x,y,z) {
-    IMP_USAGE_CHECK(x>=0 && y>=0 && z>=0, "Bad indexes in grid index",
-              IndexException);
+    IMP_USAGE_CHECK(x>=0 && y>=0 && z>=0, "Bad indexes in grid index");
   }
 };
 

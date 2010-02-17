@@ -19,8 +19,7 @@ BoundingBox3DSingletonScore
                             const algebra::BoundingBox3D &bb ): f_(f), bb_(bb){
   IMP_USAGE_CHECK(std::abs(f_->evaluate(0)) <.1,
                   "The unary function should return "
-            " 0 when passed a value of 0. Not " << f_->evaluate(0),
-            InvalidStateException);
+            " 0 when passed a value of 0. Not " << f_->evaluate(0));
 }
 
 double BoundingBox3DSingletonScore::evaluate(Particle *p,

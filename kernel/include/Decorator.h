@@ -128,8 +128,7 @@ public:
   /** \return the particle wrapped by this decorator*/
   Particle *get_particle() const {
     IMP_USAGE_CHECK(particle_,
-                    "You must give the decorator a particle to decorate.",
-                    InvalidStateException);
+                    "You must give the decorator a particle to decorate.");
     IMP_CHECK_OBJECT(particle_);
     return particle_;
   }
@@ -235,8 +234,7 @@ ThisDecorators* o_;                                                     \
 void check(Particle *p) {                                               \
   IMP_USAGE_CHECK(test,                                                 \
                   "Particle \"" << (p)->get_name()                      \
-                    << "\" missing required attributes",                \
-                  ValueException);                                      \
+                  << "\" missing required attributes");                 \
 }                                                                       \
 template <class It>                                                     \
 void check(It b, It e) {                                                \
@@ -263,14 +261,12 @@ void set(unsigned int i, WrappedDecorator d) {                          \
 }                                                                       \
 WrappedDecorator back() const {                                         \
   IMP_USAGE_CHECK(!ParentDecorators::empty(),                           \
-                  "Can't call back on empty Decorators",                \
-                  InvalidStateException);                               \
+                  "Can't call back on empty Decorators");               \
   return WrappedDecorator(ParentDecorators::back());                    \
 }                                                                       \
 WrappedDecorator front() const {                                        \
   IMP_USAGE_CHECK(!ParentDecorators::empty(),                           \
-                  "Can't call front on empty Decorators",               \
-                  InvalidStateException);                               \
+                  "Can't call front on empty Decorators");              \
   return WrappedDecorator(ParentDecorators::front());                   \
 }                                                                       \
 typedef internal::IndexingIterator<Accessor> iterator;                  \
@@ -408,12 +404,11 @@ class DecoratorsWithTraits: public ParentDecorators {
         has_traits_=true;
       } else {
         IMP_USAGE_CHECK(tr_ == d.get_traits(),
-                        "Traits don't match",
-                        ValueException);
+                        "Traits don't match");
       }
     },{
       IMP_USAGE_CHECK(has_traits_, "Need to add a decorator first to get "
-                      << "traits class.", UsageException);
+                      << "traits class.");
     }, {
       std::swap(tr_, o.tr_);
       std::swap(has_traits_, o.has_traits_);
@@ -444,8 +439,7 @@ class DecoratorsWithTraits: public ParentDecorators {
   operator[](unsigned int i) {
     IMP_USAGE_CHECK(has_traits_, "Can only use operator[] on a decorator "
                     << "container "
-                    << "which is non-empty. This is a bug, but hard to fix.",
-                    UsageException);
+                    << "which is non-empty. This is a bug, but hard to fix.");
     return get_proxy(i, tr_);
   }
   WrappedDecorator operator[](unsigned int i) const {
