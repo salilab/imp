@@ -2,22 +2,22 @@ Import('env')
 
 # modules must be listed after modules that use them
 modules=['algebra',
-            'core',
-            'container',
-            'atom',
-            'display',
-            'domino',
-            'em',
-            'examples',
-            'multifit',
-            'misc',
-            'saxs',
-            'helper',
-            'statistics',
-            'gsl',
-            'benchmark',
-            'modeller',
-            'restrainer']
+         'core',
+         'container',
+         'atom',
+         'display',
+         'domino',
+         'em',
+         'examples',
+         'multifit',
+         'misc',
+         'saxs',
+         'helper',
+         'statistics',
+         'gsl',
+         'benchmark',
+         'modeller',
+         'restrainer']
 
 for p in modules:
     SConscript(p+"/SConscript")
