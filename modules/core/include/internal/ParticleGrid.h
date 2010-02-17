@@ -9,7 +9,7 @@
 #define IMPCORE_PARTICLE_GRID_H
 
 #include "../config.h"
-#include "Grid3D.h"
+#include <IMP/algebra/Grid3D.h>
 
 #include <IMP/base_types.h>
 #include <IMP/Pointer.h>
@@ -28,7 +28,7 @@ public:
   typedef std::vector<Particle*> Storage;
 private:
   // don't need ref counting since mc_ has the same set of points
-  typedef internal::Grid3D<Storage > Grid;
+  typedef algebra::Grid3D<Storage > Grid;
   Grid grid_;
   Float target_voxel_side_;
 
@@ -44,10 +44,10 @@ public:
 
   void show(std::ostream &out) const;
 
-  typedef Grid::VirtualIndex VirtualIndex;
+  typedef Grid::ExtendedIndex ExtendedIndex;
   typedef Grid::Index Index;
-  Grid::VirtualIndex get_virtual_index(algebra::Vector3D pt) const {
-    return grid_.get_virtual_index(pt);
+  Grid::ExtendedIndex get_extended_index(algebra::Vector3D pt) const {
+    return grid_.get_extended_index(pt);
   }
 
   //! Apply the function F to all particles near to the center
@@ -61,15 +61,15 @@ public:
 
    */
   template <class F>
-  void apply_to_nearby(F f, const Grid::VirtualIndex &center,
+  void apply_to_nearby(F f, const Grid::ExtendedIndex &center,
                        float cut,
                        bool skip_lower) const {
-    Grid::VirtualIndex lc, uc;
+    Grid::ExtendedIndex lc, uc;
 
     if ( cut > target_voxel_side_*1000 ) {
       // This is needed to handle overflow
-      lc=Grid::VirtualIndex(0,0,0);
-      uc=Grid::VirtualIndex(grid_.get_number_of_voxels(0),
+      lc=Grid::ExtendedIndex(0,0,0);
+      uc=Grid::ExtendedIndex(grid_.get_number_of_voxels(0),
                             grid_.get_number_of_voxels(1),
                             grid_.get_number_of_voxels(2));
     } else {
@@ -77,10 +77,10 @@ public:
       int ncells= static_cast<int>(std::ceil(cut/target_voxel_side_));
       // to allow laziness in rebuilding
       ++ncells;
-      lc=Grid::VirtualIndex(center[0]-ncells,
+      lc=Grid::ExtendedIndex(center[0]-ncells,
                             center[1]-ncells,
                             center[2]-ncells);
-      uc=Grid::VirtualIndex(center[0]+ncells,
+      uc=Grid::ExtendedIndex(center[0]+ncells,
                             center[1]+ncells,
                             center[2]+ncells);
     }
@@ -90,12 +90,12 @@ public:
          cur != grid_.indexes_end(lc, uc);
          ++cur){
       if ( skip_lower && center >= *cur) continue;
-      if (grid_.get_voxel(*cur).empty()) continue;
+      if (grid_[*cur].empty()) continue;
       //IMP_LOG(VERBOSE, "Paired with " << cur << std::endl);
 
       for (unsigned int pi= 0;
-           pi< grid_.get_voxel(*cur).size(); ++pi) {
-        Particle *op = grid_.get_voxel(*cur)[pi];
+           pi< grid_[*cur].size(); ++pi) {
+        Particle *op = grid_[*cur][pi];
         f(op);
       }
     }

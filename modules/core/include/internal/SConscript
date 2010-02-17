@@ -10,7 +10,6 @@ files = [
          'CoreSingletonsRestraint.h',
          'CoreTripletsRestraint.h',
          'DifferenceSingletonContainer.h',
-         'Grid3D.h',
          'MinimalSet.h',
          'MovedSingletonContainer.h',
          'ParticleGrid.h',

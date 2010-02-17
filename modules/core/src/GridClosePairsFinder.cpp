@@ -130,8 +130,8 @@ void grid_generate_nbl(const internal::ParticleGrid *particle_bin,
     Particle *p= it->first;
     AddToList f(out, p, distance);
     XYZ d(p);
-    internal::ParticleGrid::VirtualIndex index
-      = grid_bin->get_virtual_index(d.get_coordinates());
+    internal::ParticleGrid::ExtendedIndex index
+      = grid_bin->get_extended_index(d.get_coordinates());
     IMP_LOG(VERBOSE, "Searching for " << p->get_name()
             << " from " << index << std::endl);
     grid_bin->apply_to_nearby(f, index,
