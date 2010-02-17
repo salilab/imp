@@ -310,7 +310,28 @@ def _AngleRestraintGenerator(form, modalities, atoms, parameters):
     return IMP.core.AngleRestraint(unary_func_gen(parameters, modalities),
                                    atoms[0], atoms[1], atoms[2])
 
+def _MultiBinormalGenerator(form, modalities, atoms, parameters):
+    nterms = modalities[0]
+    if len(parameters) != nterms * 6:
+        raise ValueError("Incorrect number of parameters (%d) for multiple "
+                         "binormal restraint - expecting %d (%d terms * 6)" \
+                         % (len(parameters), nterms * 6, nterms))
+    r = IMP.modeller.MultipleBinormalRestraint(IMP.ParticleQuad(*atoms[:4]),
+                                               IMP.ParticleQuad(*atoms[4:8]))
+    for i in range(nterms):
+        t = IMP.modeller.BinormalTerm()
+        t.set_weight(parameters[i])
+        t.set_means((parameters[nterms + i * 2],
+                     parameters[nterms + i * 2 + 1]))
+        t.set_standard_deviations((parameters[nterms * 3 + i * 2],
+                                   parameters[nterms * 3 + i * 2 + 1]))
+        t.set_correlation(parameters[nterms * 5 + i])
+        r.add_term(t)
+    return r
+
 def _DihedralRestraintGenerator(form, modalities, atoms, parameters):
+    if form == 9:
+        return _MultiBinormalGenerator(form, modalities, atoms, parameters)
     unary_func_gen = _unary_func_generators[form]
     return IMP.core.DihedralRestraint(unary_func_gen(parameters, modalities),
                                       atoms[0], atoms[1], atoms[2], atoms[3])
