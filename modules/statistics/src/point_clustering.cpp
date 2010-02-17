@@ -143,8 +143,7 @@ KMeansClustering* get_lloyds_kmeans(const Ints &names, Embedding *metric,
   metric->set_was_owned(true);
   IMP_USAGE_CHECK(k < iterations,
                   "You probably switched the k and iterations parameters."
-                  << " The former should be (much) smaller than the latter.",
-                  ValueException);
+                  << " The former should be (much) smaller than the latter.");
   IMP_LOG(VERBOSE,"KMLProxy::run start \n");
   //use the initial centers if provided
   std::auto_ptr<KMPointArray> kmc;
