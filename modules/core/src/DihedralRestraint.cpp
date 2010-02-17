@@ -8,6 +8,7 @@
 
 #include <IMP/core/DihedralRestraint.h>
 #include <IMP/core/XYZ.h>
+#include <IMP/core/internal/dihedral_helpers.h>
 #include <IMP/algebra/Vector3D.h>
 
 #include <IMP/Particle.h>
@@ -15,7 +16,6 @@
 #include <IMP/log.h>
 
 #include <boost/tuple/tuple.hpp>
-#include <cmath>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -45,67 +45,26 @@ DihedralRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   XYZ d2 = XYZ::decorate_particle(p_[2]);
   XYZ d3 = XYZ::decorate_particle(p_[3]);
 
-  algebra::Vector3D rij = d1.get_vector_to(d0);
-  algebra::Vector3D rkj = d1.get_vector_to(d2);
-  algebra::Vector3D rkl = d3.get_vector_to(d2);
-
-  algebra::Vector3D v1 = vector_product(rij, rkj);
-  algebra::Vector3D v2 = vector_product(rkj, rkl);
-  Float scalar_product = v1.scalar_product(v2);
-  Float mag_product = v1.get_magnitude() * v2.get_magnitude();
-
-  // avoid division by zero
-  Float cosangle = std::abs(mag_product) > 1e-12
-                   ? scalar_product / std::sqrt(mag_product) : 0.0;
-
-  // avoid range error for acos
-  cosangle = std::max(std::min(cosangle, static_cast<Float>(1.0)),
-                      static_cast<Float>(-1.0));
-
-  Float angle = std::acos(cosangle);
-  // get sign
-  algebra::Vector3D v0 = vector_product(v1, v2);
-  Float sign = rkj.scalar_product(v0);
-  if (sign < 0.0) {
-    angle = -angle;
-  }
-
   Float score;
 
   if (accum) {
+    algebra::Vector3D derv0, derv1, derv2, derv3;
+    double angle = internal::dihedral(d0, d1, d2, d3, &derv0, &derv1,
+                                      &derv2, &derv3);
+
     Float deriv;
     boost::tie(score, deriv) = score_func_->evaluate_with_derivative(angle);
 
-    // method for derivative calculation from van Schaik et al.
-    // J. Mol. Biol. 234, 751-762 (1993)
-    algebra::Vector3D vijkj = vector_product(rij, rkj);
-    algebra::Vector3D vkjkl = vector_product(rkj, rkl);
-    Float sijkj2 = vijkj.get_squared_magnitude();
-    Float skjkl2 = vkjkl.get_squared_magnitude();
-    Float skj = rkj.get_magnitude();
-    Float rijkj = rij.scalar_product(rkj);
-    Float rkjkl = rkj.scalar_product(rkl);
-
-    Float fact0 = sijkj2 > 1e-8 ? skj / sijkj2 : 0.0;
-    Float fact1 = skj > 1e-8 ? rijkj / (skj * skj) : 0.0;
-    Float fact2 = skj > 1e-8 ? rkjkl / (skj * skj) : 0.0;
-    Float fact3 = skjkl2 > 1e-8 ? -skj / skjkl2 : 0.0;
-
-    algebra::Vector3D derv0 = deriv * fact0 * vijkj;
-    algebra::Vector3D derv3 = deriv * fact3 * vkjkl;
-    algebra::Vector3D derv1 = (fact1 - 1.0) * derv0 - fact2 * derv3;
-    algebra::Vector3D derv2 = (fact2 - 1.0) * derv3 - fact1 * derv0;
-
-    d0.add_to_derivatives(derv0, *accum);
-    d1.add_to_derivatives(derv1, *accum);
-    d2.add_to_derivatives(derv2, *accum);
-    d3.add_to_derivatives(derv3, *accum);
+    d0.add_to_derivatives(derv0 * deriv, *accum);
+    d1.add_to_derivatives(derv1 * deriv, *accum);
+    d2.add_to_derivatives(derv2 * deriv, *accum);
+    d3.add_to_derivatives(derv3 * deriv, *accum);
   } else {
+    double angle = internal::dihedral(d0, d1, d2, d3, NULL, NULL, NULL, NULL);
     score = score_func_->evaluate(angle);
   }
   return score;
 }
-
 
 ParticlesList DihedralRestraint::get_interacting_particles() const {
   return ParticlesList(1, get_input_particles());
