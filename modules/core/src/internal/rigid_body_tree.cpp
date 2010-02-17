@@ -7,7 +7,7 @@
 
 #include <IMP/core/internal/rigid_body_tree.h>
 #include <IMP/algebra/eigen_analysis.h>
-#include <IMP/core/internal/Grid3D.h>
+#include <IMP/algebra/Grid3D.h>
 #include <typeinfo>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
@@ -53,11 +53,11 @@ RigidBodyHierarchy::divide_spheres(const algebra::Sphere3Ds &ss,
   for (unsigned int j=0; j< 3; ++j) {
     side= std::max(side, (maxc[j]-minc[j])/2.0);
   }
-  typedef Grid3D<SphereIndexes > Grid;
-  Grid grid(side, minc, maxc, SphereIndexes());
+  typedef algebra::Grid3D<SphereIndexes > Grid;
+  Grid grid(side, algebra::BoundingBox3D(minc, maxc), SphereIndexes());
   for (unsigned int i=0; i< s.size(); ++i) {
     Grid::Index ix= grid.get_index(pts[i]);
-    grid.get_voxel(ix).push_back(s[i]);
+    grid[ix].push_back(s[i]);
   }
 
   SpheresSplit ret;

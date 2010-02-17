@@ -10,7 +10,7 @@
 
 #include "config.h"
 
-#include <IMP/core/internal/Grid3D.h>
+#include <IMP/algebra/Grid3D.h>
 
 #include <IMP/SingletonContainer.h>
 #include <IMP/Restraint.h>
@@ -25,7 +25,7 @@ class IMPCOREEXPORT VolumeRestraint: public Restraint
   IMP::internal::OwnerPointer<SingletonContainer> sc_;
   IMP::internal::OwnerPointer<UnaryFunction> f_;
   double volume_;
-  typedef internal::Grid3D<int> Grid;
+  typedef algebra::Grid3D<int> Grid;
   mutable Grid grid_;
 public:
   VolumeRestraint(UnaryFunction *f,

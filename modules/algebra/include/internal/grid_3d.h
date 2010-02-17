@@ -10,10 +10,6 @@
 #include "../config.h"
 #include "../Vector3D.h"
 
-IMPALGEBRA_BEGIN_NAMESPACE
-template <class V>
-class Grid3D;
-IMPALGEBRA_END_NAMESPACE
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 
@@ -55,8 +51,7 @@ IMP_OUTPUT_OPERATOR(VirtualGridIndex);
 template <class GI>
 class GridIndexIterator
 {
-  template <class V>
-  friend class Grid3D;
+public:
   VirtualGridIndex lb_;
   VirtualGridIndex ub_;
   GI cur_;
@@ -67,7 +62,6 @@ class GridIndexIterator
     IMP_INTERNAL_CHECK(ub_.strictly_larger_than(lb_),
                "Invalid range in GridIndexIterator");
   }
-public:
   typedef const GI& reference_type;
   typedef const GI* pointer_type;
   typedef GI value_type;
@@ -132,7 +126,6 @@ class GridIndex: public VirtualGridIndex
 public:
   GridIndex(): VirtualGridIndex() {
   }
-private:
   template <class V>
   friend class Grid3D;
   template <class G>

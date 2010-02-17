@@ -157,7 +157,7 @@ public:
       double side= bbox_.get_corner(1)[i]- bbox_.get_corner(0)[i];
       IMP_USAGE_CHECK(side>0, "Can't have flat grid",
                           ValueException);
-      edge_size_[i]= side/d_[i];
+      edge_size_[i]= 1.01*side/d_[i];
     }
   }
 
@@ -173,15 +173,20 @@ public:
          VoxelData def=VoxelData()) {
     IMP_USAGE_CHECK(side>0, "Side cannot be 0", ValueException);
     for (unsigned int i=0; i< 3; ++i ) {
-      double bside= bbox_.get_corner(1)[i]- bbox_.get_corner(0)[i];
-      d_[i]= std::max(static_cast<int>(std::ceil(bside / side)),
-                      1);
+      double bside= bb.get_corner(1)[i]- bb.get_corner(0)[i];
+      d_[i]= static_cast<int>(std::ceil(bside / side))+1;
       edge_size_[i]= side;
     }
     bbox_=BoundingBox3D(bb.get_corner(0), bb.get_corner(0)
                         +Vector3D(d_[0]*edge_size_[0],
                                   d_[1]*edge_size_[1],
                                   d_[2]*edge_size_[2]));
+    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+      for (unsigned int i=0; i< 3; ++i) {
+        IMP_INTERNAL_CHECK(bbox_.get_corner(1)[i] >= bb.get_corner(1)[i],
+                           "Old bounding box not subsumed in new.");
+      }
+    }
     data_.resize(d_[0]*d_[1]*d_[2], def);
   }
 

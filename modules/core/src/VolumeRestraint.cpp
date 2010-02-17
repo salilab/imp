@@ -16,8 +16,8 @@ VolumeRestraint::VolumeRestraint(UnaryFunction *f,
                                  double volume):
   sc_(sc), f_(f), volume_(volume),
   grid_(100,100,100,
-        algebra::Vector3D(0,0,0),
-        algebra::Vector3D(0,0,0),
+        algebra::BoundingBox3D(algebra::Vector3D(0,0,0),
+                               algebra::Vector3D(1,1,1)),
         -1)
 {
 }
@@ -44,20 +44,20 @@ VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
                                 bb3.get_corner(0)+1.2*vms);
     IMP_LOG(VERBOSE, "Bounding box is " << bb3 << std::endl);
     grid_.set_bounding_box(bb3);
-    grid_.memset_all_voxels(-1);
+    std::fill(grid_.voxels_begin(), grid_.voxels_end(), -1);
     for (unsigned int i=0; i< sc_->get_number_of_particles(); ++i) {
       XYZR d(sc_->get_particle(i));
       algebra::Sphere3D s= d.get_sphere();
       algebra::BoundingBox3D bb= algebra::get_bounding_box(d.get_sphere());
-      Grid::VirtualIndex vl= grid_.get_virtual_index(bb.get_corner(0));
-      Grid::VirtualIndex vu= grid_.get_virtual_index(bb.get_corner(1));
+      Grid::ExtendedIndex vl= grid_.get_extended_index(bb.get_corner(0));
+      Grid::ExtendedIndex vu= grid_.get_extended_index(bb.get_corner(1));
       for (Grid::IndexIterator it= grid_.indexes_begin(vl, vu);
            it != grid_.indexes_end(vl, vu); ++it) {
         algebra::Vector3D c= grid_.get_center(*it);
         if (s.get_contains(c)) {
-          grid_.get_voxel(*it)= i;
+          grid_[*it]= i;
           ++volumes[i];
-          Grid::VirtualIndex vs[]={grid_.get_offset(*it, 1,0,0),
+          Grid::ExtendedIndex vs[]={grid_.get_offset(*it, 1,0,0),
                                    grid_.get_offset(*it, -1,0,0),
                                    grid_.get_offset(*it, 0,1,0),
                                    grid_.get_offset(*it, 0,-1,0),
@@ -76,7 +76,7 @@ VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
   } else {
     is_zero=true;
   }
-  algebra::Vector3D v= grid_.get_edges();
+  algebra::Vector3D v= grid_.get_unit_cell();
   double vc=v[0]*v[1]*v[2];
   unsigned int filled=0;
   if (!da) {
@@ -109,7 +109,7 @@ VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
            it != grid_.all_indexes_end(); ++it) {
         if (grid_.get_voxel(*it) != -1) {
           ++filled;
-          Grid::VirtualIndex vs[]={grid_.get_offset(*it, 1,0,0),
+          Grid::ExtendedIndex vs[]={grid_.get_offset(*it, 1,0,0),
                                    grid_.get_offset(*it, -1,0,0),
                                    grid_.get_offset(*it, 0,1,0),
                                    grid_.get_offset(*it, 0,-1,0),
