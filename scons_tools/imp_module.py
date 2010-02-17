@@ -85,8 +85,7 @@ def module_deps_depends(env, target, source, dependencies):
 
 
 def expand_dependencies(env, deps):
-    """Recursively expand the list of dependencies and make sure each dependency is only in the list once.
-    In an effort to make static linking work, only the last copy in the list of dependencies is kept"""
+    """Recursively expand the list of dependencies. The dependencies are returned in order of the all_modules environment variable."""
     size=-1
     all=[]
     #print "expanding ", deps
@@ -111,14 +110,15 @@ def expand_dependencies(env, deps):
         #print c, to_expand, expanded
         all.append(c)
     filtered=[]
-    #print "all is", all
-    for i in range(0, len(all)):
-        v= all[i]
+    for i in env['all_modules']:
         try:
-            all[i+1:].index(v)
+            all.index(i)
         except:
-            filtered.append(v)
+            pass
+        else:
+            filtered.append(i)
     # always depend on kernel
+    filtered.reverse()
     if env['IMP_MODULE'] != 'kernel':
         filtered.append("kernel")
     #all.sort()
@@ -673,7 +673,7 @@ def IMPModuleBuild(env, version, required_modules=[],
 
 
     env.Prepend(SCANNERS = [swig.scanner, swig.inscanner])
-
+    env['all_modules'].append(module)
     env = env.Clone()
     env['IMP_REQUIRED_MODULES']= required_modules
 
