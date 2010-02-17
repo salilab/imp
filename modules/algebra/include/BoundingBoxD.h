@@ -10,6 +10,7 @@
 
 #include "VectorD.h"
 #include "Transformation3D.h"
+#include "macros.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -43,6 +44,12 @@ public:
                const VectorD<D> &ub){
     b_[0]=lb;
     b_[1]=ub;
+    IMP_IF_CHECK(USAGE) {
+      for (unsigned int i=0; i< D; ++i) {
+        IMP_USAGE_CHECK(lb[i] <= ub[i],
+                        "Invalid bounding box", ValueException);
+      }
+    }
   }
   //! Creating a bounding box containing one point
   BoundingBoxD(const VectorD<D> &v) {
@@ -69,8 +76,8 @@ public:
   //! merge two bounding boxes
   const BoundingBoxD<D>& operator+=(const VectorD<D> &o) {
     for (unsigned int i=0; i< D; ++i) {
-      b_[0][i]= std::min(o[i], get_corner(0)[i]);
-      b_[1][i]= std::max(o[i], get_corner(1)[i]);
+      b_[0][i]= std::min(o[i], b_[0][i]);
+      b_[1][i]= std::max(o[i], b_[1][i]);
     }
     return *this;
   }
