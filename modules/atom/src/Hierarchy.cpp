@@ -21,7 +21,6 @@
 #include <IMP/core/ConnectivityRestraint.h>
 #include <IMP/core/DistancePairScore.h>
 #include <IMP/algebra/Sphere3D.h>
-#include <IMP/core/internal/Grid3D.h>
 
 #include <boost/random/uniform_int.hpp>
 
