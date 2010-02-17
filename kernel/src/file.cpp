@@ -35,7 +35,7 @@ struct FileStorage: public internal::IOStorage<BaseStream> {
   FileStream stream_;
   FileStorage(std::string name): stream_(name.c_str()){
     if (!stream_) {
-      IMP_THROW("Unabe to open file " << name,
+      IMP_THROW("Unable to open file " << name,
                 IOException);
     }
   }
