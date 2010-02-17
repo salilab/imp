@@ -32,7 +32,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
     \usesconstraint
  */
-class IMPCOREEXPORT CloseBipartitePairContainer:
+class IMPCONTAINEREXPORT CloseBipartitePairContainer:
 #if defined(IMP_DOXYGEN) || defined(SWIG)
 public PairContainer
 #else

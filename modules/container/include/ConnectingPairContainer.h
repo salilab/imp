@@ -37,7 +37,7 @@ IMPCORE_BEGIN_NAMESPACE
     but less flexible.
     \see {ConnectivityRestraint}
  */
-class IMPCOREEXPORT ConnectingPairContainer:
+class IMPCONTAINEREXPORT ConnectingPairContainer:
 #if defined(IMP_DOXYGEN) || defined(SWIG)
 public PairContainer
 #else

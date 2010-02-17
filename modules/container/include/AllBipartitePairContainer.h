@@ -25,7 +25,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
     \usesconstraint
  */
-class IMPCOREEXPORT AllBipartitePairContainer : public PairContainer
+class IMPCONTAINEREXPORT AllBipartitePairContainer : public PairContainer
 {
   IMP::internal::OwnerPointer<SingletonContainer> a_, b_;
   friend class AllPairContainer;
