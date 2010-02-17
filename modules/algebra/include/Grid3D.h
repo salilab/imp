@@ -173,8 +173,8 @@ public:
          VoxelData def=VoxelData()) {
     IMP_USAGE_CHECK(side>0, "Side cannot be 0", ValueException);
     for (unsigned int i=0; i< 3; ++i ) {
-      double side= bbox_.get_corner(1)[i]- bbox_.get_corner(0)[i];
-      d_[i]= std::max(static_cast<int>(std::ceil(side / side)),
+      double bside= bbox_.get_corner(1)[i]- bbox_.get_corner(0)[i];
+      d_[i]= std::max(static_cast<int>(std::ceil(bside / side)),
                       1);
       edge_size_[i]= side;
     }
@@ -218,7 +218,9 @@ public:
 
   //! Return the index of the voxel containing the point.
   Index get_index(Vector3D pt) const {
-    if (!bbox_.get_contains(pt)) return Index();
+    IMP_USAGE_CHECK(bbox_.get_contains(pt),
+                    "Point " << pt << " is not part of grid "
+                    << bbox_, ValueException);
     int index[3];
     for (unsigned int i=0; i< 3; ++i ) {
       IMP_INTERNAL_CHECK(d_[i] != 0, "Invalid grid in Index");
@@ -358,13 +360,13 @@ public:
       @{
   */
 #ifndef IMP_DOXYGEN
-  typedef typename std::vector<VT>::iterator DataIterator;
-  typedef typename std::vector<VT>::iterator DataConstIterator;
+  typedef typename std::vector<VT>::iterator VoxelIterator;
+  typedef typename std::vector<VT>::iterator VoxelConstIterator;
 #endif
-  DataIterator data_begin() { return data_.begin();}
-  DataIterator data_end() { return data_.end();}
-  DataConstIterator data_begin() const { return data_.begin();}
-  DataConstIterator data_end() const { return data_.end();}
+  VoxelIterator voxels_begin() { return data_.begin();}
+  VoxelIterator voxels_end() { return data_.end();}
+  VoxelConstIterator voxels_begin() const { return data_.begin();}
+  VoxelConstIterator voxels_end() const { return data_.end();}
   /** @} */
 };
 
