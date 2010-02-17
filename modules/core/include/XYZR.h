@@ -121,7 +121,7 @@ inline double distance(XYZR a, XYZR b) {
     Any particle which does not have the attribute b.get_radius()
     is assumed to have a radius of 0.
 
-    \note This function produces tighter bounds if the \ref CGAL "CGAL"
+    \note This function produces tighter bounds if the \ref cgal "CGAL"
     library is available.
     \ingroup CGAL
     \relatesalso XYZR
