@@ -1,2 +1,3 @@
 Import('env')
-env.IMPModuleExamples(env.IMPModuleGetExamples())
+env.IMPModuleExamples(example_files=env.IMPModuleGetExamples(),
+                      data_files=env.IMPModuleGetExampleData())

@@ -1,4 +1,4 @@
 Import('env')
-env.IMPModuleExamples(files=[File('fit_input.mrc'),
-                             File('fit_restraint.py'),
-                             File('fit_restraint.readme')])
+env.IMPModuleExamples(example_files=['fit_restraint.py',
+                                'fit_restraint.readme'],
+                      data_files=['fit_input.mrc'])

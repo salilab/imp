@@ -5,4 +5,5 @@ file_list = ['basic_setup.py',
              'basic_setup.readme',
              'rigid_body_and_excluded_volume_restraint.readme',
              'em_restraint.readme']
-env.IMPModuleExamples(env.IMPModuleGetExamples(file_list))
+env.IMPModuleExamples(example_files=file_list,
+                      data_files=env.IMPModuleGetExampleData())

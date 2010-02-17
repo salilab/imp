@@ -217,7 +217,7 @@ def IMPModuleLib(envi, files):
     module = env['IMP_MODULE']
     module_suffix = env['IMP_MODULE_SUFFIX']
     vars= make_vars(env)
-    if env['build']=="debug":
+    if env['build']=="debug" and env['linktest']:
         link= env.IMPModuleLinkTest(target=['internal/link_0.cpp', 'internal/link_1.cpp'], source=[])
         files= files+link
     config= env.IMPModuleConfigCPP(target=['config.cpp'],
@@ -284,7 +284,7 @@ def IMPModuleData(env, files):
     add_to_module_alias(env, 'install', 'install-data')
 
 
-def IMPModuleExamples(env, files):
+def IMPModuleExamples(env, example_files, data_files):
     vars=make_vars(env)
     #for f in files:
     #    print f.abspath
@@ -292,7 +292,7 @@ def IMPModuleExamples(env, files):
         path=""
     else:
         path=vars['module']
-    (dox, build, install, test)= examples.handle_example_dir(env, Dir("."), vars['module'], path, files)
+    (dox, build, install, test)= examples.handle_example_dir(env, Dir("."), vars['module'], path, example_files,data_files)
     module_alias(env, 'examples', build)
     add_to_global_alias(env, 'all', 'examples')
     module_alias(env, 'install-examples', install)
@@ -345,77 +345,76 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     vars=make_vars(env)
     pybuild=[]
     install=[]
-    if env['IMP_MODULE_CPP']:
-        penv = get_pyext_environment(env, module.upper(), cplusplus=True)
-        if penv['CC'] != 'w32cc':
-            penv['LIBS']=[]
-        else:
-            # windows needs all of the IMP modules linked in explicitly
-            penv.Prepend(LIBS=dependencies_to_libs(env, []))
-        penv.Prepend(LIBS=['imp%s' % module_suffix])
-        #penv.Append(CPPPATH=[Dir('#').abspath])
-        #penv.Append(SWIGFLAGS='-python -c++ -naturalvar')
-        swigfile= penv._IMPSWIGPreface(target=[File("#/build/swig/IMP_%(module)s.i"%vars)],
-                                      source=[File("swig.i-in"),
-                                              env.Value(env['IMP_REQUIRED_MODULES']),
-                                              env.Value(env['IMP_MODULE_VERSION'])])
-        swiglink=[]
-        #print [str(x) for x in interfaces]
-        for i in swigfiles:
-            swiglink.append( env.LinkInstallAs("#/build/swig/"+str(i), i) )
-        gen_pymod = File('IMP%s.py' % module_suffix.replace("_","."))
-        swig=penv._IMPSWIG(target=[gen_pymod, 'wrap.cpp-in',
-                              'wrap.h-in'],
-                           source=swigfile)
-        # this appears to be needed for some reason
-        env.Requires(swig, swiglink)
-        module_deps_requires(env, swig, "swig", [])
-        module_deps_requires(env, swig, "include", [])
-        module_requires(env, swig, 'include')
-        patched=penv._IMPPatchSWIG(target=['wrap.cpp'],
-                           source=['wrap.cpp-in'])
-        penv._IMPPatchSWIG(target=['wrap.h'],
-                           source=['wrap.h-in'])
-        lpenv= penv.Clone()
-        if env['use_pch']:
-            if module=='kernel':
-                pchh= penv.IMPGeneratePCH(target="#/build/swig/pch.h", source=[])
-                bpch= penv.IMPBuildPCH(source=pchh, target="#/build/swig/pch.h.gch")
-                env.Alias('pch', [bpch])
-                env.Requires(pchh, env.Alias('kernel-include'))
-            #lpenv.Prepend(CPPFLAGS=['-include '+env['pch']])
-            lpenv.Prepend(CPPPATH=['#/build/swig'])
-            lpenv.Prepend(CPPFLAGS=['-include', 'pch.h'])
-            lpenv.Prepend(CXXFLAGS=['-Winvalid-pch'])
-        buildlib = lpenv.LoadableModule('#/build/lib/_IMP%s' % module_suffix,
-                                       patched)
-        if env['use_pch']:
-            # a hack to get them close to right without making building the docs expensive
-            env.Depends(patched, env.Alias('pch'))
-        # Place the generated Python wrapper in lib directory:
-        buildinit = penv.LinkInstallAs('#/build/lib/%s/__init__.py'
-                                       % vars['module_include_path'],
-                                       gen_pymod)
-        # Make sure we have example/data files installed, in case someone says
-        # import IMP.foo; IMP.foo.get_example_file('foo'); IMP.get_data_path('')
-        if module != 'kernel':
-            penv.Requires(buildinit, '#/build/doc/examples/%s' \
+    penv = get_pyext_environment(env, module.upper(), cplusplus=True)
+    if penv['CC'] != 'w32cc':
+        penv['LIBS']=[]
+    else:
+        # windows needs all of the IMP modules linked in explicitly
+        penv.Prepend(LIBS=dependencies_to_libs(env, []))
+    penv.Prepend(LIBS=['imp%s' % module_suffix])
+    #penv.Append(CPPPATH=[Dir('#').abspath])
+    #penv.Append(SWIGFLAGS='-python -c++ -naturalvar')
+    swigfile= penv._IMPSWIGPreface(target=[File("#/build/swig/IMP_%(module)s.i"%vars)],
+                                   source=[File("swig.i-in"),
+                                           env.Value(env['IMP_REQUIRED_MODULES']),
+                                           env.Value(env['IMP_MODULE_VERSION'])])
+    swiglink=[]
+    #print [str(x) for x in interfaces]
+    for i in swigfiles:
+        swiglink.append( env.LinkInstallAs("#/build/swig/"+str(i), i) )
+    gen_pymod = File('IMP%s.py' % module_suffix.replace("_","."))
+    swig=penv._IMPSWIG(target=[gen_pymod, 'wrap.cpp-in',
+                               'wrap.h-in'],
+                       source=swigfile)
+    # this appears to be needed for some reason
+    env.Requires(swig, swiglink)
+    module_deps_requires(env, swig, "swig", [])
+    module_deps_requires(env, swig, "include", [])
+    module_requires(env, swig, 'include')
+    patched=penv._IMPPatchSWIG(target=['wrap.cpp'],
+                               source=['wrap.cpp-in'])
+    penv._IMPPatchSWIG(target=['wrap.h'],
+                       source=['wrap.h-in'])
+    lpenv= penv.Clone()
+    if env['use_pch']:
+        if module=='kernel':
+            pchh= penv.IMPGeneratePCH(target="#/build/swig/pch.h", source=[])
+            bpch= penv.IMPBuildPCH(source=pchh, target="#/build/swig/pch.h.gch")
+            env.Alias('pch', [bpch])
+            env.Requires(pchh, env.Alias('kernel-include'))
+        #lpenv.Prepend(CPPFLAGS=['-include '+env['pch']])
+        lpenv.Prepend(CPPPATH=['#/build/swig'])
+        lpenv.Prepend(CPPFLAGS=['-include', 'pch.h'])
+        lpenv.Prepend(CXXFLAGS=['-Winvalid-pch'])
+    buildlib = lpenv.LoadableModule('#/build/lib/_IMP%s' % module_suffix,
+                                    patched)
+    if env['use_pch']:
+        # a hack to get them close to right without making building the docs expensive
+        env.Depends(patched, env.Alias('pch'))
+    # Place the generated Python wrapper in lib directory:
+    buildinit = penv.LinkInstallAs('#/build/lib/%s/__init__.py'
+                                   % vars['module_include_path'],
+                                   gen_pymod)
+    # Make sure we have example/data files installed, in case someone says
+    # import IMP.foo; IMP.foo.get_example_file('foo'); IMP.get_data_path('')
+    if module != 'kernel':
+        penv.Requires(buildinit, '#/build/doc/examples/%s' \
                           % module)
-            penv.Requires(buildinit, '#/build/data/%s' % module)
-        else:
-            penv.Requires(buildinit, '#/build/data')
-        installinit = penv.InstallAs(penv.GetInstallDirectory('pythondir',
-                                                            vars['module_include_path'],
-                                                            '__init__.py'),
-                                    gen_pymod)
-        installlib = penv.Install(penv.GetInstallDirectory('pyextdir'), buildlib)
-        postprocess_lib(penv, buildlib)
-        #build.append(buildlib)
-        pybuild.append(buildinit)
-        pybuild.append(buildlib)
-        install.append(installinit)
-        install.append(installlib)
-        module_alias(env, 'swig', [swigfile]+swiglink)
+        penv.Requires(buildinit, '#/build/data/%s' % module)
+    else:
+        penv.Requires(buildinit, '#/build/data')
+    installinit = penv.InstallAs(penv.GetInstallDirectory('pythondir',
+                                                          vars['module_include_path'],
+                                                          '__init__.py'),
+                                 gen_pymod)
+    installlib = penv.Install(penv.GetInstallDirectory('pyextdir'), buildlib)
+    postprocess_lib(penv, buildlib)
+    #build.append(buildlib)
+    pybuild.append(buildinit)
+    pybuild.append(buildlib)
+    install.append(installinit)
+    install.append(installlib)
+    module_alias(env, 'swig', [swigfile]+swiglink)
     for f in pythonfiles:
         #print f
         nm= os.path.split(f.path)[1]
@@ -433,21 +432,12 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     add_to_module_alias(env, 'install', 'install-python')
     module_deps_requires(env, install, 'install-python', [])
 
-def IMPModuleGetExamples(env, priority_files=None):
-    vars= make_vars(env)
-    if not priority_files:
-        priority_files = list()
-    try:
-        files = [Glob(f)[0] for f in priority_files]
-    except:
-        raise Exception, "An exception has occured in IMPModuleGetExamples. Please do make sure that priority_files are present in their intended location."
-    file_set = set([f.abspath for f in files])
-    for file in module_glob(["*.py", "*/*.py","*.readme","*/*.readme",
-                             "*.pdb", "*.mrc", "*.dat"]):
-        if not file.abspath in file_set:
-            files.append(file)
-            file_set.add(file.abspath)
-    return files
+def IMPModuleGetExamples(env):
+    return module_glob(["*.py", "*/*.py","*.readme","*/*.readme"])
+
+def IMPModuleGetExampleData(env):
+    return  module_glob(["*.pdb", "*.mrc", "*.dat", "*.xml",
+                         "*/*.pdb", "*/*.mrc", "*/*.dat", "*/*.xml"])
 
 def IMPModuleGetHeaders(env):
     vars = make_vars(env)
@@ -626,7 +616,7 @@ def validate(env):
 
 def IMPModuleBuild(env, version, required_modules=[],
                    optional_dependencies=[], config_macros=[],
-                   module=None, cpp=True, module_suffix=None,
+                   module=None, module_suffix=None,
                    module_include_path=None, module_src_path=None, module_preproc=None,
                    module_namespace=None, module_nicename=None,
                    required_dependencies=[],
@@ -699,22 +689,21 @@ def IMPModuleBuild(env, version, required_modules=[],
     env['IMP_MODULE_NICENAME'] = module_nicename
     #env['IMP_MODULE_VERSION'] = "SVN"
     env['IMP_MODULE_AUTHOR'] = "A. Biologist"
-    env['IMP_MODULE_CPP']= cpp
     env.Prepend(CPPPATH=['#/build/include'])
     env.Prepend(LIBPATH=['#/build/lib'])
 
-    if cpp:
-        build_config=[]
-        # Generate version information
-        env.AddMethod(IMPModuleLib)
-        env.AddMethod(IMPModuleInclude)
-        module_alias(env, 'config', build_config)
+    build_config=[]
+    # Generate version information
+    env.AddMethod(IMPModuleLib)
+    env.AddMethod(IMPModuleInclude)
+    module_alias(env, 'config', build_config)
     env.AddMethod(IMPModuleData)
     env.AddMethod(IMPModulePython)
     env.AddMethod(IMPModuleTest)
     env.AddMethod(IMPModuleBuild)
     env.AddMethod(IMPModuleGetHeaders)
     env.AddMethod(IMPModuleGetExamples)
+    env.AddMethod(IMPModuleGetExampleData)
     env.AddMethod(IMPModuleGetData)
     env.AddMethod(IMPModuleGetSources)
     env.AddMethod(IMPModuleGetPython)
@@ -774,8 +763,6 @@ def IMPModuleBuild(env, version, required_modules=[],
         Return()
     else:
         print "Configuring module IMP." + env['IMP_MODULE']+" version "+env['IMP_MODULE_VERSION'],
-    if not env['IMP_MODULE_CPP']:
-        print " (python only)",
     print
 
 
@@ -795,10 +782,9 @@ def IMPModuleBuild(env, version, required_modules=[],
     env.SConscript('examples/SConscript', exports='env')
     env.SConscript('data/SConscript', exports='env')
 
-    if env['IMP_MODULE_CPP']:
-        env.SConscript('include/SConscript', exports='env')
-        env.SConscript('src/SConscript', exports='env')
-        env.SConscript('bin/SConscript', exports='env')
+    env.SConscript('include/SConscript', exports='env')
+    env.SConscript('src/SConscript', exports='env')
+    env.SConscript('bin/SConscript', exports='env')
     if env['python']:
         env.SConscript('pyext/SConscript', exports='env')
         env.SConscript('test/SConscript', exports='env')

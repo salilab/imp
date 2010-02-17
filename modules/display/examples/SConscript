@@ -10,6 +10,7 @@ def cleanup(target, source, env):
         except OSError:
             pass
 
-ex = env.IMPModuleExamples(env.IMPModuleGetExamples())
+ex = env.IMPModuleExamples(example_files=env.IMPModuleGetExamples(),
+                           data_files=env.IMPModuleGetExampleData())
 
 env.AddPostAction(ex, cleanup)
