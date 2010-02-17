@@ -436,8 +436,10 @@ def IMPModuleGetExamples(env):
     return module_glob(["*.py", "*/*.py","*.readme","*/*.readme"])
 
 def IMPModuleGetExampleData(env):
-    return  module_glob(["*.pdb", "*.mrc", "*.dat", "*.xml",
-                         "*/*.pdb", "*/*.mrc", "*/*.dat", "*/*.xml"])
+    ret=  module_glob(["*.pdb", "*.mrc", "*.dat", "*.xml", "*.em",
+                         "*/*.pdb", "*/*.mrc", "*/*.dat", "*/*.xml", "*/*.em",
+                       "*/*/*.pdb", "*/*/*.mrc", "*/*/*.dat", "*/*/*.xml", "*/*/*.em"])
+    return ret
 
 def IMPModuleGetHeaders(env):
     vars = make_vars(env)
