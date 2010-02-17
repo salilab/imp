@@ -430,6 +430,7 @@ def add_common_variables(vars, package):
                           True))
     vars.Add(BoolVariable('python', 'Whether to build the python libraries ', True))
     vars.Add(BoolVariable('localmodules', 'Whether to build local modules that are not part of the IMP distribution', False))
+    vars.Add(BoolVariable('linktest', 'Test for header defined functions which are not inline', True))
     vars.Add(PathVariable('repository', 'Where to find the source code to build. This is only needed if building in a different directory than the source.', None, PathVariable.PathIsDir))
     vars.Add(BoolVariable('static', 'Whether to only build static libraries. This implies python=False ', False))
     vars.Add(BoolVariable('precompiledheader', 'Whether to use a precompiled header for swig libraries ', False))
