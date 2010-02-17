@@ -50,8 +50,8 @@ class SConscriptGenerator:
     
         subdirs = [x for x in subdirs if self.scandir(os.path.join(dir, x),
                                                       top=False)]
-        if len(subdirs) + len(srcs) > 0:
-            self.write_output(dir, subdirs, srcs, top)
+        #if len(subdirs) + len(srcs):
+        self.write_output(dir, subdirs, srcs, top)
         return len(srcs) > 0
 
     def write_output(self, dir, subdirs, srcs, top):
