@@ -158,6 +158,7 @@ def MyEnvironment(variables=None, *args, **kw):
     #col = colorizer.colorizer()
     #col.colorize(env)
     env['PYTHONPATH'] = '#/build/lib'
+    env['all_modules']=[]
     if env['rpath']:
         if env['PLATFORM']!= 'posix' and env['PLATFORM'] != 'darwin':
             env['rpath']=False
