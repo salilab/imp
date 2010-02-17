@@ -15,7 +15,6 @@
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/algebra/eigen_analysis.h>
-#include <IMP/core/internal/Grid3D.h>
 #include <cmath>
 
 IMPCORE_BEGIN_NAMESPACE
