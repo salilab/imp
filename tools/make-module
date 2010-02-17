@@ -11,8 +11,8 @@ import re
 
 
 def fix_string(input, modname):
-    return input.replace("examples", modname)\
-        .replace("EXAMPLES", modname.upper())
+    return input.replace("example", modname)\
+        .replace("EXAMPLE", modname.upper())
 
 def copy_dir(source, dest, modname):
     for x in os.listdir(source):
@@ -28,7 +28,11 @@ def copy_dir(source, dest, modname):
             copy_dir(xspath, xdpath, modname)
         else:
             input= file(xspath, 'r').read()
-            output= fix_string(input, modname)
+            if xspath.endswith(".cpp") or xspath.endswith(".h") \
+                    or xspath.endswith(".i-in") or xspath.endswith(".py"):
+                output= fix_string(input, modname)
+            else:
+                output=input
             file(xdpath, 'w').write(output)
 def main():
     if len(sys.argv) != 2:
@@ -41,7 +45,7 @@ def main():
         return
     print "Creating a new module " + modname
     os.mkdir(modpath)
-    copy_dir("modules/examples", modpath, modname)
+    copy_dir("modules/example", modpath, modname)
 
 
 if __name__ == '__main__':
