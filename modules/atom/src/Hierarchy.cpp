@@ -30,7 +30,6 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-
 const IMP::core::HierarchyTraits&
 Hierarchy::get_traits() {
   static IMP::core::HierarchyTraits ret("molecular_hierarchy");
@@ -43,19 +42,35 @@ void Hierarchy::show(std::ostream &out) const
     out << "NULL Molecular Hierarchy node";
     return;
   }
+  bool found=false;
   if (get_as_atom()) {
+    found=true;
     out << get_as_atom();
-  } else if (get_as_residue()){
+  }
+  if (get_as_residue()){
+    found=true;
     out << get_as_residue();
-  } else if (get_as_chain()) {
+  }
+  if (get_as_chain()) {
+    found=true;
     out << get_as_chain();
-  } else if (get_as_domain()) {
+  }
+  if (get_as_fragment()) {
+    found=true;
+    out << get_as_fragment();
+  }
+  if (get_as_domain()) {
+    found=true;
     out << get_as_domain();
-  } else if (get_as_xyzr()) {
-    out << get_as_xyzr();
+  }
+  if (get_as_xyzr()) {
+    found=true;
+    out << " sphere: " << get_as_xyzr().get_sphere();
   } else if (get_as_xyz()) {
-    out << get_as_xyz();
-  } else {
+    found=true;
+    out << " coordinates: " << get_as_xyz().get_coordinates();
+  }
+  if (!found) {
     out << "Hierarchy \"" <<  get_particle()->get_name()
         << "\"" << std::endl;
   }
@@ -179,12 +194,19 @@ namespace {
                               || h.get_as_domain()
                               || h.get_as_chain()
                                || h.get_as_fragment()))
-          || (h.get_as_fragment() && (h.get_as_domain()
+          || (h.get_as_residue() && (h.get_as_domain()
                                      || h.get_as_chain()
-                                      || h.get_as_fragment()))
-          || (h.get_as_domain() && ( h.get_as_chain()
-                                     || h.get_as_fragment()))) {
-        TEST_FAIL("Node cannot have more than onetype at once");
+                                     || h.get_as_fragment()))
+          || (h.get_as_fragment() && (h.get_as_domain()
+                                     || h.get_as_chain()))
+          || (h.get_as_domain() && h.get_as_chain())) {
+        TEST_FAIL("Node cannot have more than onetype at once "
+                  << h << " "
+                  << static_cast<bool>(h.get_as_atom())
+                  << static_cast<bool>(h.get_as_residue())
+                  << static_cast<bool>(h.get_as_domain())
+                  << static_cast<bool>(h.get_as_chain())
+                  << static_cast<bool>(h.get_as_fragment()));
       }
       return true;
     }

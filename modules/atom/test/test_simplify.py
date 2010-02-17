@@ -23,11 +23,12 @@ class SimplifyTests(IMP.test.TestCase):
         for res_segment in [5,10,20,30,num_residues]:
             mh_simp= IMP.atom.create_simplified_along_backbone(IMP.atom.Chain(chains[0].get_particle()), res_segment)
             w= IMP.display.PymolWriter(self.get_tmp_file_name("simplified1."+str(res_segment)+".pym"))
+            #IMP.atom.show_hierarchy(mh_simp)
             for p in IMP.atom.get_leaves(mh_simp):
                 d= IMP.core.XYZR(p.get_particle())
                 w.add_geometry(IMP.display.SphereGeometry(d.get_sphere()))
-            #sloppy
-            self.assertEqual(num_residues/res_segment, len(IMP.core.get_leaves(mh_simp)))
+            o=residual_cond(num_residues%res_segment)
+            self.assertEqual(num_residues/res_segment+o, len(IMP.core.get_leaves(mh_simp)))
 
 
     def test_simplify_by_segments(self):
