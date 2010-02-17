@@ -31,8 +31,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 
    The grid can be conceptually extended to cover all of space, even
    that not stored in the Grid3D. Indexes into this extended grid are
-   called an ExtendedIndex. These can be constructed from any
-   arbitrary integers. The Grid3D::get_index() function can be used to
+   called an ExtendedIndex. The Grid3D::get_index() function can be used to
    attempt to convert an ExtendedIndex to an index into the space
    covered by the actual grid.
 
@@ -81,9 +80,6 @@ public:
       one into an Index.
    */
   struct ExtendedIndex {
-    ExtendedIndex(int a, int b, int c);
-    //! Return the dth index value
-    int operator[](unsigned int d) const;
   };
   //! The index of an actual grid cell
   struct Index: public ExtendedIndex {
@@ -257,6 +253,10 @@ public:
                  << " " << edge_size_[i]);
     }
     return ExtendedIndex(index[0], index[1], index[2]);
+  }
+
+  ExtendedIndex get_extended_index(int a, int b, int c) const {
+    return ExtendedIndex(a,b,c);
   }
 
   //! increment the index in one coordinate
