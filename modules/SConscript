@@ -1,7 +1,7 @@
 Import('env')
 
 # modules must be listed after modules that use them
-cppmodules=['algebra',
+modules=['algebra',
             'core',
             'container',
             'atom',
@@ -15,14 +15,11 @@ cppmodules=['algebra',
             'helper',
             'statistics',
             'gsl',
+            'benchmark',
             'modeller',
-            'benchmark']
-pymodules=['restrainer']
+            'restrainer']
 
-for p in cppmodules:
-    SConscript(p+"/SConscript")
-
-for p in pymodules:
+for p in modules:
     SConscript(p+"/SConscript")
 
 if env.get('localmodules', False):
@@ -31,5 +28,5 @@ if env.get('localmodules', False):
     dirs= Glob("*/SConscript")
 
     for m in [os.path.split(str(d))[0] for d in dirs]:
-        if m not in cppmodules and m not in pymodules:
+        if m not in modules:
             SConscript(m+"/SConscript")
