@@ -17,7 +17,7 @@ void SpiderMapReaderWriter::Read(const char *filename,
   std::ifstream in;
   in.open(filename, std::ios::in | std::ios::binary);
   IMP_USAGE_CHECK(!in.fail(),"SpiderMapReaderWriter::Read: File "+
-                  std::string(filename)+" not found.", UsageException);
+                  std::string(filename)+" not found.");
   ImageHeader h;
   // Read header in Spider format (ImageHeader is in Spider format)
   h.read(in,skip_type_check_,force_reversed_,skip_extra_checkings_);

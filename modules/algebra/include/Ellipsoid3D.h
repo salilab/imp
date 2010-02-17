@@ -31,8 +31,7 @@ public:
               const Rotation3D &rot);
   double get_radius(unsigned int i) const {
     IMP_USAGE_CHECK(!is_nan(radii_[0]),
-              "Attempt to use uninitialized ellipsoid.",
-              InvalidStateException);
+              "Attempt to use uninitialized ellipsoid.");
     return radii_[i];
   }
   const Vector3D &get_center() const {return center_;}

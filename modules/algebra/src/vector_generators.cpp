@@ -146,8 +146,7 @@ IMPALGEBRAEXPORT Vector3Ds random_chain(unsigned int n, double r,
                                         const Vector3D &start,
                                         const Sphere3Ds &obstacles) {
   IMP_USAGE_CHECK(r>.00001,
-            "If r is too small, it won't succeed in placing the spheres",
-            ValueException);
+            "If r is too small, it won't succeed in placing the spheres");
   unsigned int max_failures=30;
   Vector3Ds ret;
   std::vector<unsigned int> failures;

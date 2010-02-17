@@ -24,11 +24,11 @@ FitRestraint::FitRestraint(Particles ps,
       IMP_USAGE_CHECK(ps[i]->has_attribute(radius_key),
                 "Particle " << ps[i]->get_name()
                 << " is missing the radius "<< radius_key
-                << std::endl, ValueException);
+                << std::endl);
       IMP_USAGE_CHECK(ps[i]->has_attribute(radius_key),
                 "Particle " << ps[i]->get_name()
                 << " is missing the mass "<< weight_key
-                << std::endl, ValueException);
+                << std::endl);
     }
   }
   if (scale==-1) {

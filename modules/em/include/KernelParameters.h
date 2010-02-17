@@ -88,8 +88,7 @@ public:
     \exception if the parameters of the radius have not been set
   */
   const KernelParameters::Parameters* find_params(float radius) {
-    IMP_USAGE_CHECK(initialized, "The Kernel Parameters are not initialized",
-              InvalidStateException);
+    IMP_USAGE_CHECK(initialized, "The Kernel Parameters are not initialized");
     std::map<float, const KernelParameters::Parameters *>::iterator iter
         = radii2params.find(radius);
     if (iter == radii2params.end()) return NULL;

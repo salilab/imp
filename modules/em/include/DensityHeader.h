@@ -61,7 +61,7 @@ public:
   {
     IMP_USAGE_CHECK(top_calculated_,
                " DensityHeader::get_top  the top coordinates of the map "
-               << "have not been setup yet " << std::endl,ValueException);
+               << "have not been setup yet " << std::endl);
     if (ind==0) return xtop_;
     if (ind==1) return ytop_;
     return ztop_;
@@ -214,8 +214,7 @@ public:
   */
   inline float get_origin(int i) const {
     IMP_USAGE_CHECK(i >= 0 && i <= 2,
-              "The origin coordinate should be between 0 and 2",
-              ValueException);
+              "The origin coordinate should be between 0 and 2");
     switch (i) {
       case 0: return get_xorigin();
       case 1: return get_yorigin();

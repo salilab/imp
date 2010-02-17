@@ -40,7 +40,7 @@ public:
   Geometry(Color c, std::string name);
   //Geometry(Color c);
   virtual Color get_color() const {
-    IMP_USAGE_CHECK(has_color_, "Color not set", UsageException);
+    IMP_USAGE_CHECK(has_color_, "Color not set");
     return color_;
   }
 

@@ -99,7 +99,7 @@ ConjugateGradients::get_score(std::vector<FloatIndex> float_indices,
     dscore[i] = get_derivative(float_indices[i]); //scaled
 #endif
     IMP_USAGE_CHECK(is_good_value(dscore[i]),
-              "Bad input to CG", ValueException);
+              "Bad input to CG");
   }
   return score;
 }
@@ -271,8 +271,7 @@ Float ConjugateGradients::optimize(unsigned int max_steps)
 {
   IMP_OBJECT_LOG;
   IMP_USAGE_CHECK(get_model(),
-            "Must set the model on the optimizer before optimizing",
-            ValueException);
+            "Must set the model on the optimizer before optimizing");
   clear_range_cache();
   std::vector<NT> x, dx;
   int i;
@@ -297,7 +296,7 @@ Float ConjugateGradients::optimize(unsigned int max_steps)
 #endif
     IMP_USAGE_CHECK(x[i] == x[i] && x[i] != std::numeric_limits<NT>::infinity()
               && x[i] != - std::numeric_limits<NT>::infinity(),
-              "Bad input to CG", ValueException);
+              "Bad input to CG");
   }
 
   // Initialize optimization variables

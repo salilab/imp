@@ -40,8 +40,7 @@ void ScoreState::set_model(Model* model)
   IMP_USAGE_CHECK(model==NULL || model_==NULL
             || (model_ && model_ == model),
             "Model* different from already stored model "
-            << model << " " << model_,
-            ValueException);
+            << model << " " << model_);
   model_ = model;
   set_was_owned(true);
 }

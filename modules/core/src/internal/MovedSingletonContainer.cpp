@@ -36,7 +36,7 @@ MovedSingletonContainer::MovedSingletonContainer(Model *m,
 {
   IMP_USAGE_CHECK(pc->get_number_of_particles() != 0,
                   "Cannot initialize from empty"
-                  << " container.", ValueException);
+                  << " container.");
   set_model(pc->get_particle(0)->get_model());
   first_call_=true;
 }

@@ -271,8 +271,7 @@ void Particle::operator delete(void *p) {
 
 namespace internal {
   Particle* create_particles(Model *m, unsigned int n) {
-    IMP_USAGE_CHECK(n>0, "Can't create 0 particles",
-              ValueException);
+    IMP_USAGE_CHECK(n>0, "Can't create 0 particles");
     unsigned int i=0;
     for (; i< chunks.size(); ++i) {
       if (chunks[i]->next_to_allocate + n > num_blocks) {

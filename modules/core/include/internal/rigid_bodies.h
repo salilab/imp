@@ -63,8 +63,7 @@ inline bool get_has_required_attributes_for_body(Particle *p) {
                 && !p->has_attribute(rigid_body_data().quaternion_[1])
                 && !p->has_attribute(rigid_body_data().quaternion_[2])
                 && !p->has_attribute(rigid_body_data().quaternion_[3])),
-            "Particle should have all of quaterion attributes or none",
-            InvalidStateException);
+            "Particle should have all of quaterion attributes or none");
   return p->has_attribute(rigid_body_data().quaternion_[0]);
 }
 

@@ -90,7 +90,7 @@ void ConfigurationSet::set_configuration(int i) {
   IMP_OBJECT_LOG;
   IMP_USAGE_CHECK(i < static_cast<int>(get_number_of_configurations())
                   && i >= -1,
-                  "Invalid configuration requested.", IndexException);
+                  "Invalid configuration requested.");
   set_base();
   if (i == -1) return;
   const Diff &d= configurations_[i];

@@ -33,8 +33,7 @@ public:
       is generally bad form to have two Float arguments, it is
       hard to avoid here, and there is a bit of a sanity check.*/
   ExampleUnaryFunction(Float center, Float k) : center_(center), k_(k) {
-    IMP_USAGE_CHECK(k > 0, "The spring constant must be positive.",
-              ValueException);
+    IMP_USAGE_CHECK(k > 0, "The spring constant must be positive.");
   }
 
   IMP_UNARY_FUNCTION_INLINE(ExampleUnaryFunction,

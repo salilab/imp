@@ -17,8 +17,7 @@ Plane3D::Plane3D(double distance,
   distance_(distance),
   normal_(normal){
   IMP_USAGE_CHECK(std::abs(normal.get_squared_magnitude()-1) < .05,
-            "The normal vector must be normalized",
-            ValueException);
+            "The normal vector must be normalized");
   }
 
 Vector3D Plane3D::get_projection(const Vector3D &p) const {

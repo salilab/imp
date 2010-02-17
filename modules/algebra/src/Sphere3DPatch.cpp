@@ -30,7 +30,7 @@ Vector3D Sphere3DPatch::get_boundary_point() const {
   double a = v*v;
   double f = (-b+std::sqrt(b*b-4*a*c))/(2*a);
   IMP_USAGE_CHECK(!is_nan(f), "problem calculating a point on a sphere a : "
-        << a << " b : "<< b << " c : " << c << " f : " << f,ErrorException);
+        << a << " b : "<< b << " c : " << c << " f : " << f);
   return p+f*v;
 }
 IMPALGEBRA_END_NAMESPACE

@@ -198,17 +198,14 @@ IMPEXPORT void assert_fail(const char *msg);
 //! A runtime test for incorrect usage of a class or method.
 /** \param[in] expr The assertion expression.
     \param[in] message Write this message if the assertion fails.
-    \param[in] ExceptionType this is now ignored and will go away.
 
     \note if the build is 'fast', or the check level
     is less than IMP::USAGE, the check is not performed. Do not use these
     checks as a shorthand to throw necessary exceptions (throw the
     exception yourself); use them only to check for errors, such as
     inappropriate input.
-
-    \note The ExceptionType is ignored.
  */
-#define IMP_USAGE_CHECK(expr, message, ExceptionType)           \
+#define IMP_USAGE_CHECK(expr, message)           \
   do {                                                          \
     if (IMP::get_check_level() >= IMP::USAGE && !(expr)) {      \
       std::ostringstream oss;                                   \
@@ -218,7 +215,7 @@ IMPEXPORT void assert_fail(const char *msg);
     }                                                           \
   } while (false)
 #else
-#define IMP_USAGE_CHECK(e,m,E)
+#define IMP_USAGE_CHECK(e,m)
 #endif
 
 //! Throw an exception with a message

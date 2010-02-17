@@ -127,8 +127,7 @@ public:
   TripletContainer* get_removed_triplets_container() const {
     IMP_USAGE_CHECK(added_, "The containers returned by "
                     << " get_added_triplets_container() do not "
-                    << " track their own added and removed contents.",
-                    ParticleTripletException);
+                    << " track their own added and removed contents.");
     TripletContainer *ret= dynamic_cast<TripletContainer*>(removed_.get());
     IMP_INTERNAL_CHECK(ret, "Cannot cast object " << removed_->get_name()
                        << " to a TripletContainer.");
@@ -137,8 +136,7 @@ public:
   TripletContainer* get_added_triplets_container() const {
     IMP_USAGE_CHECK(added_, "The containers returned by "
                     << " get_added_triplets_container() do not "
-                    << " track their own added and removed contents.",
-                    ParticleTripletException);
+                    << " track their own added and removed contents.");
     TripletContainer *ret= dynamic_cast<TripletContainer*>(added_.get());
     IMP_INTERNAL_CHECK(ret, "Cannot cast object " << added_->get_name()
                        << " to a TripletContainer.");

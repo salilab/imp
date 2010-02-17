@@ -61,8 +61,7 @@ public:
   }
 
   const MP &operator[](unsigned int i) const {
-    IMP_USAGE_CHECK(i < data_.size(), "Index out of range in MinimalSet",
-              IndexException);
+    IMP_USAGE_CHECK(i < data_.size(), "Index out of range in MinimalSet");
     return data_[i];
   }
 

@@ -51,8 +51,7 @@ public:
   void set_initial_length(double length) {
     IMP_USAGE_CHECK(length >0 && length <= 4,
                     "The initial length is relative to the rescaled attributes"
-                    << " and so should not be much larger than 1.",
-                    ValueException);
+                    << " and so should not be much larger than 1.");
     max_length_=length;
   }
 
@@ -60,8 +59,7 @@ public:
     IMP_USAGE_CHECK(d >0 && d <= 4,
                     "The minimum size is relative to the rescaled attributes"
                     << " and so should not be much larger than 1 "
-                    << "(and must be non-zero).",
-                    ValueException);
+                    << "(and must be non-zero).");
     min_length_=d;
   }
   /** @} */

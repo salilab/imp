@@ -69,7 +69,7 @@ void JNode::populate_states_of_particles(Particles *particles,
 {
   ds_->populate_states_of_particles(particles, states);
   IMP_USAGE_CHECK(comb_states_.size()>0,"no state added to node: "
-            << node_ind_ << std::endl,ValueException);
+            << node_ind_ << std::endl);
 }
 void JNode::show_sampling_space(std::ostream& out) const
 {
@@ -307,8 +307,7 @@ Float JNode::get_score(const CombState &comb) {
 
   std::string key = comb.partial_key(&particles_);
   IMP_USAGE_CHECK(comb_states_.find(key) != comb_states_.end(),
-       "The combination was not realized by the node"<<std::endl,
-        ValueException);
+       "The combination was not realized by the node"<<std::endl);
   IMP_LOG(VERBOSE,"JNode::get_score partial key: " <<
           key << " score: " <<
           comb_states_.find(key)->second->get_total_score() <<std::endl);

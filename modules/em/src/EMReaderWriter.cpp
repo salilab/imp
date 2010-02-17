@@ -90,7 +90,7 @@ void EMReaderWriter::Read(const char *filename, float **data,
   file.open(filename, std::ifstream::in | std::ifstream::binary);
   IMP_USAGE_CHECK(file.good(),
             "EMReaderWriter::Read >> The file " << filename
-            << " was not found.", IOException);
+            << " was not found.");
   file.exceptions(std::ifstream::eofbit | std::ifstream::failbit
                   | std::ifstream::badbit);
   EMHeader eheader;
@@ -179,8 +179,7 @@ void EMReaderWriter::WriteHeader(std::ostream& s, const EMHeader &header)
 
   s.write((char *) &ehp,sizeof(EMHeader::EMHeaderParse));
   IMP_USAGE_CHECK(!s.bad(),
-            "EMReaderWriter::WriteHeader >> Error writing header to file.",
-            IOException);
+            "EMReaderWriter::WriteHeader >> Error writing header to file.");
 }
 
 
@@ -217,7 +216,7 @@ void EMReaderWriter::ReadData(std::ifstream &file, float **data,
     *data = new float[nvox];
     IMP_USAGE_CHECK(*data,
               "EMReaderWriter::ReadData >> can not allocated space for data. "
-              "Requested size: " << nvox*sizeof(float), IOException);
+              "Requested size: " << nvox*sizeof(float));
 
     // a density of a single voxel can be reprented in 1 to 4 bytes.
     // header.type provides this information.

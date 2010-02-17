@@ -88,8 +88,7 @@ class IMPCOREEXPORT HierarchyTraits
   void audit_value(T t) const {
     IMP_USAGE_CHECK(t.get_traits().get_name() == get_name(),
               "Mixing hierarchies of type " << get_name()
-              << " and type " << t.get_traits().get_name(),
-              ValueException);
+              << " and type " << t.get_traits().get_name());
   }
 
   const Hierarchy wrap(Particle* p) const;

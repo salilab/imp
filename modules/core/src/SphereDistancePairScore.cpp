@@ -33,11 +33,9 @@ Float SphereDistancePairScore::evaluate(const ParticlePair &p,
                                         DerivativeAccumulator *da) const
 {
   IMP_USAGE_CHECK(p[0]->has_attribute(radius_), "Particle " << p[0]->get_name()
-            << "missing radius in SphereDistancePairScore",
-            ValueException);
+            << "missing radius in SphereDistancePairScore");
   IMP_USAGE_CHECK(p[1]->has_attribute(radius_), "Particle " << p[1]->get_name()
-            << "missing radius in SphereDistancePairScore",
-            ValueException);
+            << "missing radius in SphereDistancePairScore");
   Float ra = p[0]->get_value(radius_);
   Float rb = p[1]->get_value(radius_);
   return internal::evaluate_distance_pair_score(XYZ(p[0]),
@@ -71,11 +69,9 @@ Float NormalizedSphereDistancePairScore::evaluate(const ParticlePair &p,
                                         DerivativeAccumulator *da) const
 {
   IMP_USAGE_CHECK(p[0]->has_attribute(radius_), "Particle " << p[0]->get_name()
-            << "missing radius in NormalizedSphereDistancePairScore",
-            ValueException);
+            << "missing radius in NormalizedSphereDistancePairScore");
   IMP_USAGE_CHECK(p[1]->has_attribute(radius_), "Particle " << p[1]->get_name()
-            << "missing radius in NormalizedSphereDistancePairScore",
-            ValueException);
+            << "missing radius in NormalizedSphereDistancePairScore");
   Float ra = p[0]->get_value(radius_);
   Float rb = p[1]->get_value(radius_);
   Float mr= std::min(ra, rb);
@@ -101,17 +97,13 @@ Float WeightedSphereDistancePairScore::evaluate(const ParticlePair &p,
                                        DerivativeAccumulator *da) const
 {
   IMP_USAGE_CHECK(p[0]->has_attribute(radius_), "Particle " << p[0]->get_name()
-            << "missing radius in WeightedSphereDistancePairScore",
-            ValueException);
+            << "missing radius in WeightedSphereDistancePairScore");
   IMP_USAGE_CHECK(p[1]->has_attribute(radius_), "Particle " << p[1]->get_name()
-            << "missing radius in WeightedSphereDistancePairScore",
-            ValueException);
+            << "missing radius in WeightedSphereDistancePairScore");
   IMP_USAGE_CHECK(p[0]->has_attribute(weight_), "Particle " << p[0]->get_name()
-            << "missing weight in WeightedSphereDistancePairScore",
-            ValueException);
+            << "missing weight in WeightedSphereDistancePairScore");
   IMP_USAGE_CHECK(p[1]->has_attribute(weight_), "Particle " << p[1]->get_name()
-            << "missing weight in WeightedSphereDistancePairScore",
-            ValueException);
+            << "missing weight in WeightedSphereDistancePairScore");
   Float ra = p[0]->get_value(radius_);
   Float rb = p[1]->get_value(radius_);
   Float wa = p[0]->get_value(weight_);

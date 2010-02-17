@@ -53,7 +53,7 @@ public:
   void set_node_name(int vi, const std::string &name) {
     IMP_USAGE_CHECK(static_cast<unsigned int>(vi) < boost::num_vertices(g_),
               "input node index (" << vi << ") is out of range ("
-              << boost::num_vertices(g_) << ")"<<std::endl,ValueException);
+              << boost::num_vertices(g_) << ")"<<std::endl);
     data_[vi].push_back(name);
   }
   const Graph *get_graph() const {return &g_;}

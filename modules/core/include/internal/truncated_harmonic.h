@@ -20,12 +20,9 @@ struct TruncatedHarmonicData {
                         double threshold, double limit): c_(center),
   l_(limit), k_(k), t_(threshold) {
     IMP_USAGE_CHECK(.5*k*square(threshold) < limit,
-              "The limit must be larger than the harmonic at the threshold",
-              ValueException);
-    IMP_USAGE_CHECK(k > 0, "The spring constant must be positive",
-              ValueException);
-    IMP_USAGE_CHECK(threshold >= 0, "The threshold must be non-negative.",
-              ValueException);
+              "The limit must be larger than the harmonic at the threshold");
+    IMP_USAGE_CHECK(k > 0, "The spring constant must be positive");
+    IMP_USAGE_CHECK(threshold >= 0, "The threshold must be non-negative.");
     b_= .5*(-k_*k_*k_*square(t_*t_*t_)+6*square(k_)*square(t_*t_)*l_
         -12*k_*square(t_*l_)+8*l_*l_*l_)/square(k_*t_);
     o_= 2*(k_*square(t_) -l_)/(k_*t_);

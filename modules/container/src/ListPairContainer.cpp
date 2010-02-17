@@ -29,14 +29,12 @@ ListPairContainer
   if (ps.empty()) return;
   for (unsigned int i=0; i< ps.size(); ++i) {
     IMP_USAGE_CHECK(IMP::internal::is_valid(ps[i]),
-                    "Passed ParticlePair cannot be NULL (or None)",
-                    UsageException);
+                    "Passed ParticlePair cannot be NULL (or None)");
     IMP_USAGE_CHECK(IMP::internal::get_model(ps[i])
                     == IMP::internal::get_model(ps[0]),
                     "All particles in container must have the same model. "
                     << "Particle " << IMP::internal::get_name(ps[i])
-                    << " does not.",
-                    ParticlePairException);
+                    << " does not.");
   }
   set_particle_pairs(ps);
 }

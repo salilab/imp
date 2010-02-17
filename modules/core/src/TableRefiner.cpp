@@ -21,22 +21,19 @@ void TableRefiner::do_show(std::ostream &out) const {
 void TableRefiner::add_particle(Particle *p,
                                         const Particles &ps) {
   IMP_USAGE_CHECK(map_.find(p) == map_.end(),
-            "Particle " << p->get_name() << " already in map.",
-            ValueException);
+            "Particle " << p->get_name() << " already in map.");
   map_[p]=ps;
 }
 
 void TableRefiner::remove_particle(Particle *p) {
   IMP_USAGE_CHECK(map_.find(p) != map_.end(),
-            "Particle " << p->get_name() << " not found in map.",
-            ValueException);
+            "Particle " << p->get_name() << " not found in map.");
   map_.erase(p);
 }
 
 void TableRefiner::set_particle(Particle *p, const Particles &ps) {
   IMP_USAGE_CHECK(map_.find(p) != map_.end(),
-            "Particle " << p->get_name() << " not found in map.",
-            ValueException);
+            "Particle " << p->get_name() << " not found in map.");
   map_[p]=ps;
 }
 

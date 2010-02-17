@@ -25,14 +25,12 @@ class IMPDOMINOEXPORT Transformation: public Decorator
  public:
 
   static FloatKey get_translation_key(unsigned int i) {
-    IMP_USAGE_CHECK(i <3, "Out of range coordinate",
-              IndexException);
+    IMP_USAGE_CHECK(i <3, "Out of range coordinate");
     return IMP::internal::xyzr_keys[i];
   }
 
   static FloatKey get_rotation_key(unsigned int i) {
-    IMP_USAGE_CHECK(i <4, "Out of range coordinate",
-              IndexException);
+    IMP_USAGE_CHECK(i <4, "Out of range coordinate");
     return get_rotation_keys()[i];
   }
 
@@ -77,8 +75,7 @@ class IMPDOMINOEXPORT Transformation: public Decorator
                && p->has_attribute(get_rotation_key(2))
                && p->has_attribute(get_rotation_key(3))
                && p->has_attribute(get_transformation_index_key()),
-              "Particle expected to either have x,y,z,a,b,c,d attributes.",
-               InvalidStateException);
+              "Particle expected to either have x,y,z,a,b,c,d attributes.");
     return true;
   }
   //! get a Transformation3D object from the decorator

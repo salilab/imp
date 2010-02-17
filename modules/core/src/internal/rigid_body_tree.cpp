@@ -58,13 +58,15 @@ RigidBodyHierarchy::divide_spheres(const algebra::Sphere3Ds &ss,
   for (unsigned int i=0; i< s.size(); ++i) {
     Grid::Index ix= grid.get_index(pts[i]);
     grid[ix].push_back(s[i]);
+    IMP_INTERNAL_CHECK(grid[ix].back() == s[i], "Failed to push");
   }
 
   SpheresSplit ret;
   for (Grid::IndexIterator it= grid.all_indexes_begin();
        it != grid.all_indexes_end(); ++it) {
-    if (!grid.get_voxel(*it).empty()) {
-      ret.push_back(grid.get_voxel(*it));
+    std::cout << "Gathering from " << *it << std::endl;
+    if (!grid[*it].empty()) {
+      ret.push_back(grid[*it]);
     }
   }
   return ret;
@@ -91,8 +93,7 @@ RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
                        + d.get_particle()->get_name()));
   // build spheres on internal coordinates
   IMP_USAGE_CHECK(r->get_number_of_refined(d) > 0,
-                  "Refiner cannot produce any particles for rigid body.",
-                  UsageException);
+                  "Refiner cannot produce any particles for rigid body.");
   algebra::Sphere3Ds spheres(r->get_number_of_refined(d));
   for (unsigned int i=0; i< spheres.size(); ++i) {
     Particle *rp= r->get_refined(d, i);

@@ -41,8 +41,7 @@ protected:
       for (unsigned int i=0; i< cur.size(); ++i) {
         IMP_USAGE_CHECK(
          IMP::internal::is_valid(cur[i]),
-         "Passed ParticleTriplet cannot be NULL (or None)",
-         UsageException);
+         "Passed ParticleTriplet cannot be NULL (or None)");
       }
     }
     std::sort(cur.begin(), cur.end());

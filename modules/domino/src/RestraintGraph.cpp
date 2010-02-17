@@ -156,8 +156,7 @@ void RestraintGraph::set_sampling_space(DiscreteSampler &ds_)
     IMP_LOG(VERBOSE,"Initializing node number " << vi <<std::endl);
     JNode *j = node_data_[vi];
     IMP_USAGE_CHECK(j != NULL,
-             "the nodes of the restraint graph have not been initialized",
-             ErrorException);
+             "the nodes of the restraint graph have not been initialized");
     j->init_sampling(ds_);
   }
   for (std::map<Pair, JEdge *>::iterator it = edge_data_.begin();

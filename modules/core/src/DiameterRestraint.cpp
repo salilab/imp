@@ -26,10 +26,8 @@ DiameterRestraint::DiameterRestraint(UnaryFunction *f,
                                                      sc_(sc), f_(f),
                                                      dr_("diameter_radius"){
   IMP_USAGE_CHECK(sc->get_number_of_particles()>=2,
-            "Need at least two particles to restrain diameter",
-            ValueException);
-  IMP_USAGE_CHECK(diameter>0, "The diameter must be positive",
-            ValueException);
+            "Need at least two particles to restrain diameter");
+  IMP_USAGE_CHECK(diameter>0, "The diameter must be positive");
 }
 
 void DiameterRestraint::set_model(Model *m) {

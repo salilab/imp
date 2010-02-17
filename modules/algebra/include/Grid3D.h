@@ -149,14 +149,13 @@ public:
          VoxelData def=VoxelData()): data_(xd*yd*zd, def),
                                      bbox_(bb) {
     IMP_USAGE_CHECK(xd > 0 && yd>0 && zd>0,
-                    "Can't have empty grid", ValueException);
+                    "Can't have empty grid");
     d_[0]=xd;
     d_[1]=yd;
     d_[2]=zd;
     for (unsigned int i=0; i< 3; ++i) {
       double side= bbox_.get_corner(1)[i]- bbox_.get_corner(0)[i];
-      IMP_USAGE_CHECK(side>0, "Can't have flat grid",
-                          ValueException);
+      IMP_USAGE_CHECK(side>0, "Can't have flat grid");
       edge_size_[i]= 1.01*side/d_[i];
     }
   }
@@ -171,7 +170,7 @@ public:
   Grid3D(float side,
          const BoundingBox3D &bb,
          VoxelData def=VoxelData()) {
-    IMP_USAGE_CHECK(side>0, "Side cannot be 0", ValueException);
+    IMP_USAGE_CHECK(side>0, "Side cannot be 0");
     for (unsigned int i=0; i< 3; ++i ) {
       double bside= bb.get_corner(1)[i]- bb.get_corner(0)[i];
       d_[i]= static_cast<int>(std::ceil(bside / side))+1;
@@ -225,13 +224,13 @@ public:
   Index get_index(Vector3D pt) const {
     IMP_USAGE_CHECK(bbox_.get_contains(pt),
                     "Point " << pt << " is not part of grid "
-                    << bbox_, ValueException);
+                    << bbox_);
     int index[3];
     for (unsigned int i=0; i< 3; ++i ) {
       IMP_INTERNAL_CHECK(d_[i] != 0, "Invalid grid in Index");
       double d = pt[i] - bbox_.get_corner(0)[i];
       double fi= d/edge_size_[i];
-      index[i]= std::max(static_cast<int>(std::floor(fi)),
+      index[i]= std::min(static_cast<int>(std::floor(fi)),
                          d_[i]-1);
     }
     return Index(index[0], index[1], index[2]);
@@ -278,7 +277,7 @@ public:
    */
   Index get_index(ExtendedIndex v) const {
     IMP_USAGE_CHECK(get_is_index(v), "Passed index not in grid "
-                    << v, ValueException);
+                    << v);
     return Index(v[0], v[1], v[2]);
   }
 

@@ -36,8 +36,7 @@ public:
   //! Print version information to a stream.
   void show(std::ostream &out=std::cout) const {
     IMP_USAGE_CHECK(!module_.empty(),
-                    "Attempting to use uninitialized version info",
-                    ValueException);
+                    "Attempting to use uninitialized version info");
     out << module_ << " " << version_;
   }
   IMP_COMPARISONS_2(module_, version_);

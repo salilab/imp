@@ -86,8 +86,7 @@ struct ArrayOnAttributesHelper {
   Value get_value(const Particle *p, unsigned int i) const {
     IMP_INTERNAL_CHECK(data_, "Cannot used uninitialized ArryHelper traits");
     IMP_USAGE_CHECK(static_cast<unsigned int>(p->get_value(data_->num_key)) > i,
-              "Out of range attribute in array",
-              IndexException);
+              "Out of range attribute in array");
     return p->get_value(get_key(i));
   }
 
@@ -99,11 +98,9 @@ struct ArrayOnAttributesHelper {
                  unsigned int i,
                  Value v) const {
     IMP_INTERNAL_CHECK(data_, "Cannot used uninitialized ArrayHelper traits");
-    IMP_USAGE_CHECK(data_->keys.size() > i, "Out of range attribute in array",
-              IndexException);
+    IMP_USAGE_CHECK(data_->keys.size() > i, "Out of range attribute in array");
     IMP_USAGE_CHECK(p->get_value(data_->num_key) > i,
-              "Out of range attribute in array",
-              IndexException);
+              "Out of range attribute in array");
     p->set_value(data_->keys[i], v);
   }
 
@@ -122,8 +119,7 @@ struct ArrayOnAttributesHelper {
               Value v) {
     IMP_INTERNAL_CHECK(data_, "Cannot used uninitialized HierarchyTraits");
     unsigned int osz= p->get_value(data_->num_key);
-    IMP_USAGE_CHECK(loc <= osz, "Attribute array must be contiguous",
-              IndexException);
+    IMP_USAGE_CHECK(loc <= osz, "Attribute array must be contiguous");
     for (unsigned int i=loc; i < osz; ++i) {
       Key k= get_key(i);
       Value t= p->get_value(k);
@@ -140,8 +136,7 @@ struct ArrayOnAttributesHelper {
              unsigned int loc) const {
     IMP_INTERNAL_CHECK(data_, "Cannot used uninitialized HierarchyTraits");
     unsigned int osz= p->get_value(data_->num_key);
-    IMP_USAGE_CHECK(loc <= osz, "Can only erase values in array",
-              IndexException);
+    IMP_USAGE_CHECK(loc <= osz, "Can only erase values in array");
     for (unsigned int i=loc+1; i < osz; ++i) {
       Key k= data_->keys[i];
       Key kl= data_->keys[i-1];

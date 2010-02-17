@@ -94,8 +94,7 @@ namespace {
 
 void set_log_level(LogLevel l) {
   IMP_USAGE_CHECK(l >= SILENT && l < ALL_LOG,
-            "Setting log to invalid level: " << l,
-            ValueException);
+            "Setting log to invalid level: " << l);
   internal::log_level=l;
 }
 

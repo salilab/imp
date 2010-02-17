@@ -31,8 +31,7 @@ class IMPCOREEXPORT XYZ: public Decorator
  public:
 
   static FloatKey get_coordinate_key(unsigned int i) {
-    IMP_USAGE_CHECK(i <3, "Out of range coordinate",
-              IndexException);
+    IMP_USAGE_CHECK(i <3, "Out of range coordinate");
     return IMP::internal::xyzr_keys[i];
   }
 
@@ -129,8 +128,7 @@ class IMPCOREEXPORT XYZ: public Decorator
               || (!p->has_attribute(get_coordinate_key(2))
                   && !p->has_attribute(get_coordinate_key(0))
                   && !p->has_attribute(get_coordinate_key(1))),
-              "Particle expected to either have all of x,y,z or none.",
-              InvalidStateException);
+              "Particle expected to either have all of x,y,z or none.");
     return p->has_attribute(get_coordinate_key(2));
   }
 
