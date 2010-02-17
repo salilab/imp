@@ -1,20 +1,20 @@
 /**
- *  \file examples/ExampleTemplateClass.h
+ *  \file example/ExampleTemplateClass.h
  *  \brief Show how to manage a template class with python.
  *
  *  Copyright 2007-2010 Sali Lab. All rights reserved.
  *
  */
 
-#ifndef IMPEXAMPLES_EXAMPLE_TEMPLATE_CLASS_H
-#define IMPEXAMPLES_EXAMPLE_TEMPLATE_CLASS_H
+#ifndef IMPEXAMPLE_EXAMPLE_TEMPLATE_CLASS_H
+#define IMPEXAMPLE_EXAMPLE_TEMPLATE_CLASS_H
 
 #include "config.h"
 
 #include <IMP/utility.h>
 #include <IMP/algebra/VectorD.h>
 
-IMPEXAMPLES_BEGIN_NAMESPACE
+IMPEXAMPLE_BEGIN_NAMESPACE
 
 //! A line segment templated on the dimension.
 /** It inherits from IMP::InvalidDefault since it, like the underlying
@@ -58,6 +58,6 @@ public:
 // is templated on the dimension. See the docs for other, related macros.
 IMP_OUTPUT_OPERATOR_D(ExampleTemplateClass);
 
-IMPEXAMPLES_END_NAMESPACE
+IMPEXAMPLE_END_NAMESPACE
 
-#endif  /* IMPEXAMPLES_EXAMPLE_TEMPLATE_CLASS_H */
+#endif  /* IMPEXAMPLE_EXAMPLE_TEMPLATE_CLASS_H */

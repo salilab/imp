@@ -6,11 +6,11 @@
  *
  */
 
-#include "IMP/examples/ExampleRefCounted.h"
+#include "IMP/example/ExampleRefCounted.h"
 #include "IMP/Pointer.h"
 
 
-IMPEXAMPLES_BEGIN_NAMESPACE
+IMPEXAMPLE_BEGIN_NAMESPACE
 
 ExampleRefCounted::ExampleRefCounted(const std::vector<double> &data ):
   data_(data){
@@ -42,4 +42,4 @@ void usage_example() {
 }
 
 
-IMPEXAMPLES_END_NAMESPACE
+IMPEXAMPLE_END_NAMESPACE

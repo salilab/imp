@@ -1,5 +1,5 @@
 /**
- *  \file examples/ExampleUnaryFunction.h
+ *  \file example/ExampleUnaryFunction.h
  *  \brief A simple unary function.
  *
  *  Copyright 2007-2010 Sali Lab. All rights reserved.
@@ -7,14 +7,14 @@
  */
 
 
-#ifndef IMPEXAMPLES_EXAMPLE_UNARY_FUNCTION_H
-#define IMPEXAMPLES_EXAMPLE_UNARY_FUNCTION_H
+#ifndef IMPEXAMPLE_EXAMPLE_UNARY_FUNCTION_H
+#define IMPEXAMPLE_EXAMPLE_UNARY_FUNCTION_H
 
 #include "config.h"
 #include <IMP/UnaryFunction.h>
 #include <IMP/utility.h>
 
-IMPEXAMPLES_BEGIN_NAMESPACE
+IMPEXAMPLE_BEGIN_NAMESPACE
 
 //! A simple unary function
 /** This one happens to be a harmonic.
@@ -43,6 +43,6 @@ public:
                             << std::endl);
 };
 
-IMPEXAMPLES_END_NAMESPACE
+IMPEXAMPLE_END_NAMESPACE
 
-#endif  /* IMPEXAMPLES_EXAMPLE_UNARY_FUNCTION_H */
+#endif  /* IMPEXAMPLE_EXAMPLE_UNARY_FUNCTION_H */

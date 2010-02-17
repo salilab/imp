@@ -1,12 +1,12 @@
 /**
- *  \file examples/ExampleComplexRestraint.cpp
+ *  \file example/ExampleComplexRestraint.cpp
  *  \brief Restrain the diameter of a set of points.
  *
  *  Copyright 2007-2010 Sali Lab. All rights reserved.
  *
  */
 
-#include "IMP/examples/ExampleComplexRestraint.h"
+#include "IMP/example/ExampleComplexRestraint.h"
 #include <IMP/PairContainer.h>
 #include <IMP/core/XYZR.h>
 #include <IMP/core/FixedRefiner.h>
@@ -16,7 +16,7 @@
 #include <IMP/core/internal/evaluate_distance_pair_score.h>
 #include <boost/lambda/lambda.hpp>
 
-IMPEXAMPLES_BEGIN_NAMESPACE
+IMPEXAMPLE_BEGIN_NAMESPACE
 
 ExampleComplexRestraint::ExampleComplexRestraint(UnaryFunction *f,
                                      SingletonContainer *sc,
@@ -95,4 +95,4 @@ ContainersTemp ExampleComplexRestraint::get_input_containers() const {
   return ContainersTemp(1, sc_);
 }
 
-IMPEXAMPLES_END_NAMESPACE
+IMPEXAMPLE_END_NAMESPACE

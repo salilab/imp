@@ -236,7 +236,7 @@ public:
 
       The ranges are not enforced, they are just guidelines. In order to
       enforce ranges, see, for example,
-      IMP::examples::ExampleSingletonModifier.
+      IMP::example::ExampleSingletonModifier.
       @{
   */
   FloatRange get_range(FloatKey k) const;

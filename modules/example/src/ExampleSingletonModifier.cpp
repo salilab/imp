@@ -1,5 +1,5 @@
 /**
- *  \file examples/ExampleSingletonModifier.cpp
+ *  \file example/ExampleSingletonModifier.cpp
  *  \brief A singleton modifier which wraps an attribute into a
  *  given range.
  *
@@ -7,11 +7,11 @@
  *
  */
 
-#include "IMP/examples/ExampleSingletonModifier.h"
+#include "IMP/example/ExampleSingletonModifier.h"
 #include "IMP/core/XYZ.h"
 
 
-IMPEXAMPLES_BEGIN_NAMESPACE
+IMPEXAMPLE_BEGIN_NAMESPACE
 ExampleSingletonModifier
 ::ExampleSingletonModifier(const algebra::BoundingBox3D &bb ): bb_(bb){
 }
@@ -62,4 +62,4 @@ void ExampleSingletonModifier::do_show(std::ostream &out) const {
   out << "bounding box " << bb_ << std::endl;
 }
 
-IMPEXAMPLES_END_NAMESPACE
+IMPEXAMPLE_END_NAMESPACE
