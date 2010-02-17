@@ -6,15 +6,15 @@ def say_hello():
 %}
 
 /* Wrap our own classes */
-%include "IMP/examples/ExampleRestraint.h"
-%include "IMP/examples/ExampleDecorator.h"
-%include "IMP/examples/ExampleUnaryFunction.h"
-%include "IMP/examples/ExampleRefCounted.h"
-%include "IMP/examples/ExampleSingletonModifier.h"
-%include "IMP/examples/ExampleTemplateClass.h"
+%include "IMP/example/ExampleRestraint.h"
+%include "IMP/example/ExampleDecorator.h"
+%include "IMP/example/ExampleUnaryFunction.h"
+%include "IMP/example/ExampleRefCounted.h"
+%include "IMP/example/ExampleSingletonModifier.h"
+%include "IMP/example/ExampleTemplateClass.h"
 
 namespace IMP {
-  namespace examples {
+  namespace example {
    // Tell swig to create a copy of the class with dimension 3
    %template(ExampleTemplateClass3D) ExampleTemplateClass<3>;
    // This macro defines the ExampleDecorators and ExampleDecoratorsTemp types for python

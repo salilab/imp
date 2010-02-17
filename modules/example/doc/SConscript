@@ -5,7 +5,7 @@ env.IMPModuleDoc(env.IMPModuleGetDocs(),
                  # A python list of the author names
                  authors=["Daniel Russel"],
                  # Provide a brief description of what the module does
-                 brief="MODULENAME provides %examples showing how to implement various types of objects and functionality in \\imp.",
+                 brief="MODULENAME provides %example showing how to implement various types of objects and functionality in \\imp.",
                  # Provide a longer description of what the module does
                  # This description can have multiple paragraphs and all sorts of markup
                  overview="""The overview section of the module page can contain any doxygen markup as well as references to \\imp classes such as IMP::Model. See \external{http://www.doxygen.org, the doxygen web site} for a full description of what can be done in doxygen.

@@ -1,13 +1,13 @@
 /**
- *  \file examples/ExampleRestraint.h
+ *  \file example/ExampleRestraint.h
  *  \brief A restraint on a list of particle pairs.
  *
  *  Copyright 2007-2010 Sali Lab. All rights reserved.
  *
  */
 
-#ifndef IMPEXAMPLES_EXAMPLE_RESTRAINT_H
-#define IMPEXAMPLES_EXAMPLE_RESTRAINT_H
+#ifndef IMPEXAMPLE_EXAMPLE_RESTRAINT_H
+#define IMPEXAMPLE_EXAMPLE_RESTRAINT_H
 
 #include "config.h"
 #include <IMP/SingletonScore.h>
@@ -15,7 +15,7 @@
 #include <IMP/PairContainer.h>
 #include <IMP/PairScore.h>
 
-IMPEXAMPLES_BEGIN_NAMESPACE
+IMPEXAMPLE_BEGIN_NAMESPACE
 
 //! Apply a PairScore to a list of particle pairs
 /** This restraint could be used, in conjunction with a
@@ -29,7 +29,7 @@ IMPEXAMPLES_BEGIN_NAMESPACE
     \include ExampleRestraint.h
     \include ExampleRestraint.cpp
 */
-class IMPEXAMPLESEXPORT ExampleRestraint : public Restraint
+class IMPEXAMPLEEXPORT ExampleRestraint : public Restraint
 {
   /** IMP::Objects should be stored using Pointer objects
       to make sure that they are reference counted properly.
@@ -51,6 +51,6 @@ public:
   IMP_RESTRAINT(ExampleRestraint);
 };
 
-IMPEXAMPLES_END_NAMESPACE
+IMPEXAMPLE_END_NAMESPACE
 
-#endif  /* IMPEXAMPLES_EXAMPLE_RESTRAINT_H */
+#endif  /* IMPEXAMPLE_EXAMPLE_RESTRAINT_H */

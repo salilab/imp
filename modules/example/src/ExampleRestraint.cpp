@@ -1,16 +1,16 @@
 /**
- *  \file examples/ExampleRestraint.cpp
+ *  \file example/ExampleRestraint.cpp
  *  \brief Restrain a list of particle pairs.
  *
  *  Copyright 2007-2010 Sali Lab. All rights reserved.
  *
  */
 
-#include <IMP/examples/ExampleRestraint.h>
+#include <IMP/example/ExampleRestraint.h>
 #include <IMP/PairScore.h>
 #include <IMP/log.h>
 
-IMPEXAMPLES_BEGIN_NAMESPACE
+IMPEXAMPLE_BEGIN_NAMESPACE
 
 ExampleRestraint::ExampleRestraint(PairScore* score_func,
                                    PairContainer *pc) : pc_(pc),
@@ -74,4 +74,4 @@ void ExampleRestraint::do_show(std::ostream& out) const
   out << "container " << *pc_ << std::endl;
 }
 
-IMPEXAMPLES_END_NAMESPACE
+IMPEXAMPLE_END_NAMESPACE

@@ -45,14 +45,15 @@ def _install_hierarchy_internal(env, dir, sources, can_link):
     #print [x.path for x in sources]
     for f in sources:
         full = f.path
-        if full.find("include") != -1:
-            src = full[full.find("include")+8:]
-        elif full.find("src") != -1:
-            src= full[full.find("src")+4:]
+        if full.rfind("include") != -1:
+            src = full[full.rfind("include")+8:]
+        elif full.rfind("src") != -1:
+            src= full[full.rfind("src")+4:]
+        # restrainer needs this before data
         elif full.find("examples") != -1:
-            src= full[full.find("examples")+9:]
-        elif full.find("data") != -1:
-            src= full[full.find("data")+5:]
+            src= full[full.rfind("examples")+9:]
+        elif full.rfind("data") != -1:
+            src= full[full.rfind("data")+5:]
         else:
             raise ValueError(full)
         #print src

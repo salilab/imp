@@ -1,12 +1,12 @@
 /**
- *  \file examples/ExampleComplexRestraint.h
+ *  \file example/ExampleComplexRestraint.h
  *  \brief A restraint to maintain the diameter of a set of points
  *
  *  Copyright 2007-2010 Sali Lab. All rights reserved.
  */
 
-#ifndef IMPEXAMPLES_EXAMPLE_COMPLEX_RESTRAINT_H
-#define IMPEXAMPLES_EXAMPLE_COMPLEX_RESTRAINT_H
+#ifndef IMPEXAMPLE_EXAMPLE_COMPLEX_RESTRAINT_H
+#define IMPEXAMPLE_EXAMPLE_COMPLEX_RESTRAINT_H
 
 #include "config.h"
 
@@ -16,7 +16,7 @@
 #include <IMP/ScoreState.h>
 #include <IMP/UnaryFunction.h>
 
-IMPEXAMPLES_BEGIN_NAMESPACE
+IMPEXAMPLE_BEGIN_NAMESPACE
 
 //! Restrain the diameter of a set of points
 /** This restraint shows how to write a restraint that includes
@@ -30,7 +30,7 @@ IMPEXAMPLES_BEGIN_NAMESPACE
     \include ExampleComplexRestraint.cpp
 
 */
-class IMPEXAMPLESEXPORT ExampleComplexRestraint: public Restraint
+class IMPEXAMPLEEXPORT ExampleComplexRestraint: public Restraint
 {
   Pointer<ScoreState> ss_;
   Pointer<Particle> p_;
@@ -51,6 +51,6 @@ public:
 };
 
 
-IMPEXAMPLES_END_NAMESPACE
+IMPEXAMPLE_END_NAMESPACE
 
-#endif  /* IMPEXAMPLES_EXAMPLE_COMPLEX_RESTRAINT_H */
+#endif  /* IMPEXAMPLE_EXAMPLE_COMPLEX_RESTRAINT_H */

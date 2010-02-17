@@ -1,6 +1,8 @@
 /** \page recent Change History
 \par Week of Feb 14, 2010
 
+- IMP::example renamed (from examples)
+
 - The IMP_USAGE_CHECK() macro lost the (unused) third argument.
 
 \par Week of February 3, 2010

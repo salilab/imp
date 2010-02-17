@@ -209,7 +209,7 @@ Pointer<ConfigurationSet> configs= sample->sample(10);
 \endcode
 
 \subsection i11 Writing a simple restraint
-See IMP::examples::ExampleRestraint.
+See IMP::example::ExampleRestraint.
 
 \section i125 Modules
 
@@ -226,7 +226,7 @@ in Python.
 A module contain classes,
 methods and data which are related and controlled by a set of authors. The names
 of the authors, the license for the module, its version and an overview of the
-module can be found on the module main page (eg IMP::examples).
+module can be found on the module main page (eg IMP::example).
 See the "Modules" tab above for a complete list of modules in this version of \imp.
 
 Modules are either grouped based on types of experimental data (eg IMP::em) or based

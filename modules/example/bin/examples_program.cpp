@@ -4,7 +4,7 @@
 
 #include <IMP.h>
 #include <IMP/core.h>
-#include <IMP/examples/ExampleRestraint.h>
+#include <IMP/example/ExampleRestraint.h>
 #include <IMP/container/ListPairContainer.h>
 
 using namespace IMP;
@@ -19,7 +19,7 @@ int main(){
     = new core::DistancePairScore(new core::Linear(0,1));
   container::ListPairContainer *pc= new container::ListPairContainer();
   pc->add_particle_pair(ParticlePair(p0, p1));
-  examples::ExampleRestraint *r= new examples::ExampleRestraint(dps, pc);
+  example::ExampleRestraint *r= new example::ExampleRestraint(dps, pc);
   d0.set_coordinates(algebra::Vector3D(0,0,0));
   d1.set_coordinates(algebra::Vector3D(0,0,1));
 

@@ -76,17 +76,17 @@ To see a list of all available decorators and to see what functions
 all decorators have, look the list of classes which inherit from
 IMP::Decorator, below.
 
-See the IMP::examples::ExampleDecorator example for how to implement a
+See the IMP::example::ExampleDecorator example for how to implement a
 simple decorator.
 
 \note Decorator objects are ordered based on the address of the wrapped
 particle. Like pointers, they are logical values so can be in \c if
 statements.
 
-\implementation{Decorator, IMP_DECORATOR, IMP::examples::ExampleDecorator}
+\implementation{Decorator, IMP_DECORATOR, IMP::example::ExampleDecorator}
 \n\n Remember that attribute keys should always be created
 lazily (at the time of the first use), and not be created as static
-variables.\n\n Implementors should consult IMP::examples::Example,
+variables.\n\n Implementors should consult IMP::example::Example,
 IMP_DECORATOR(), IMP_DECORATOR_TRAITS(), IMP_DECORATOR_GET(),
 IMP_DECORATOR_ARRAY_DECL()
 

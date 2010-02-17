@@ -1,12 +1,12 @@
 /**
- *  \file examples/ExampleDecorator.h     \brief Add a name to a particle.
+ *  \file example/ExampleDecorator.h     \brief Add a name to a particle.
  *
  *  Copyright 2007-2010 Sali Lab. All rights reserved.
  *
  */
 
-#ifndef IMPEXAMPLES_EXAMPLE_DECORATOR_H
-#define IMPEXAMPLES_EXAMPLE_DECORATOR_H
+#ifndef IMPEXAMPLE_EXAMPLE_DECORATOR_H
+#define IMPEXAMPLE_EXAMPLE_DECORATOR_H
 
 #include "config.h"
 
@@ -16,7 +16,7 @@
 #include <IMP/Decorator.h>
 #include <IMP/exception.h>
 
-IMPEXAMPLES_BEGIN_NAMESPACE
+IMPEXAMPLE_BEGIN_NAMESPACE
 
 //! A simple decorator which adds a name to a particle.
 /** A decorator adds functionality to a particle and ensures that invariants
@@ -28,7 +28,7 @@ IMPEXAMPLES_BEGIN_NAMESPACE
     \include ExampleDecorator.h
     \include ExampleDecorator.cpp
 */
-class IMPEXAMPLESEXPORT ExampleDecorator: public Decorator
+class IMPEXAMPLEEXPORT ExampleDecorator: public Decorator
 {
   /* Use a static variable in a static method to create the key
      so that it is only done once and is only done when it is first
@@ -76,6 +76,6 @@ IMP_OUTPUT_OPERATOR(ExampleDecorator);
 /** Define a collection of them. Also look at example.i*/
 typedef Decorators<ExampleDecorator, Particles> ExampleDecorators;
 
-IMPEXAMPLES_END_NAMESPACE
+IMPEXAMPLE_END_NAMESPACE
 
-#endif  /* IMPEXAMPLES_EXAMPLE_DECORATOR_H */
+#endif  /* IMPEXAMPLE_EXAMPLE_DECORATOR_H */

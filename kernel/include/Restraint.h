@@ -52,7 +52,7 @@ class Model;
     to make. To disable this warning for a particular restraint, call
     set_was_owned(true).
 
-    \implementation{Restraint, IMP_RESTRAINT, IMP::examples::ExampleRestraint}
+    \implementation{Restraint, IMP_RESTRAINT, IMP::example::ExampleRestraint}
  */
 class IMPEXPORT Restraint : public Object
 {

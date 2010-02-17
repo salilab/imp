@@ -1,18 +1,18 @@
 /**
- *  \file examples/ExampleRefCounted.h
+ *  \file example/ExampleRefCounted.h
  *  \brief An example showing how to make a simple ref counted object
  *
  *  Copyright 2007-2010 Sali Lab. All rights reserved.
  */
 
-#ifndef IMPEXAMPLES_EXAMPLE_REF_COUNTED_H
-#define IMPEXAMPLES_EXAMPLE_REF_COUNTED_H
+#ifndef IMPEXAMPLE_EXAMPLE_REF_COUNTED_H
+#define IMPEXAMPLE_EXAMPLE_REF_COUNTED_H
 
 #include "config.h"
 
 #include <IMP/RefCounted.h>
 
-IMPEXAMPLES_BEGIN_NAMESPACE
+IMPEXAMPLE_BEGIN_NAMESPACE
 
 //! An example simple object which is reference counted.
 /** Only IMP::Pointer objects should be used to store pointers to
@@ -22,7 +22,7 @@ IMPEXAMPLES_BEGIN_NAMESPACE
     \include ExampleRefCounted.h
     \include ExampleRefCounted.cpp
  */
-class IMPEXAMPLESEXPORT ExampleRefCounted: public RefCounted
+class IMPEXAMPLEEXPORT ExampleRefCounted: public RefCounted
 {
   std::vector<double> data_;
 public:
@@ -43,6 +43,6 @@ public:
 };
 
 
-IMPEXAMPLES_END_NAMESPACE
+IMPEXAMPLE_END_NAMESPACE
 
-#endif  /* IMPEXAMPLES_EXAMPLE_REF_COUNTED_H */
+#endif  /* IMPEXAMPLE_EXAMPLE_REF_COUNTED_H */
