@@ -31,7 +31,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
     \usesconstraint
  */
-class IMPCOREEXPORT AllPairContainer : public PairContainer
+class IMPCONTAINEREXPORT AllPairContainer : public PairContainer
 {
   IMP::internal::OwnerPointer<SingletonContainer> c_;
   mutable int a_, b_, i_;

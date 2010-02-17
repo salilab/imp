@@ -42,7 +42,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
     \see ClosePairsFinder
 
  */
-class IMPCOREEXPORT ClosePairContainer :
+class IMPCONTAINEREXPORT ClosePairContainer :
 #if defined(IMP_DOXYGEN) || defined(SWIG)
 public PairContainer
 #else
