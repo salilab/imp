@@ -19,11 +19,11 @@ IMPMODELLER_BEGIN_NAMESPACE
 //! A single binormal term in a MultipleBinormalRestraint.
 class BinormalTerm
 {
-  double correlation_;
-  std::pair<double, double> weights_, means_, stdevs_;
+  double correlation_, weight_;
+  std::pair<double, double> means_, stdevs_;
 public:
   void set_correlation(double correlation) { correlation_ = correlation; }
-  void set_weights(std::pair<double, double> weights) { weights_ = weights; }
+  void set_weight(double weight) { weight_ = weight; }
   void set_means(std::pair<double, double> means) { means_ = means; }
   void set_standard_deviations(std::pair<double, double> stdevs) {
     stdevs_ = stdevs;
@@ -42,6 +42,7 @@ public:
    */
   MultipleBinormalRestraint(const ParticleQuad &q1, const ParticleQuad &q2);
 
+  //! Add a single BinormalTerm to the restraint.
   void add_term(const BinormalTerm &term) {
     terms_.push_back(term);
   }
