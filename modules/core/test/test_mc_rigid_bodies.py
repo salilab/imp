@@ -12,9 +12,9 @@ class MCOptimizerTest(IMP.test.TestCase):
         self.m = IMP.Model()
         #read molecules
         self.m1 = IMP.atom.read_pdb(self.get_input_file_name("1z5s_A.pdb"),
-                                    self.m,IMP.atom.NonWaterSelector())
+                                    self.m,IMP.atom.NonWaterPDBSelector())
         self.m2 = IMP.atom.read_pdb(self.get_input_file_name("1z5s_C.pdb"),
-                                    self.m,IMP.atom.NonWaterSelector())
+                                    self.m,IMP.atom.NonWaterPDBSelector())
         #create rigid bodies
         IMP.core.RigidBody.setup_particle(self.m1.get_particle(),
                                                      IMP.core.XYZs(IMP.core.get_leaves(self.m1)))

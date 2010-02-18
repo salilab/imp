@@ -13,7 +13,7 @@ class SimpleConnectivityTest(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
 
         self.m = IMP.Model()
-        sel = IMP.atom.CAlphaSelector()
+        sel = IMP.atom.CAlphaPDBSelector()
 
         mhs = IMP.atom.Hierarchies()
         mh1 = IMP.atom.read_pdb(self.get_input_file_name("input.pdb"),

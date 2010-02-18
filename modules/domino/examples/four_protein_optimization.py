@@ -24,7 +24,7 @@ def create_random_transformation(angle_step=30.,translation_step=4.):
 def run():
     IMP.set_log_level(IMP.TERSE)
     mdl=IMP.Model()
-    sel=IMP.atom.CAlphaSelector()
+    sel=IMP.atom.CAlphaPDBSelector()
     ####set up the particles
     ps=IMP.Particles()
     mhs=IMP.atom.Hierarchies()

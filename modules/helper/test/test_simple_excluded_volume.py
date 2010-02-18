@@ -12,7 +12,7 @@ class SimpleExclusionVolumeTests(IMP.test.TestCase):
         """Testing excluded volume restraint"""
         m= IMP.Model()
         print "read"
-        sel = IMP.atom.CAlphaSelector()
+        sel = IMP.atom.CAlphaPDBSelector()
         p0= IMP.atom.read_pdb(self.get_input_file_name("input.pdb"), m, sel)
         p1= IMP.atom.read_pdb(self.get_input_file_name("input.pdb"), m, sel)
         print 'create'
