@@ -30,7 +30,21 @@ class AngleRestraintTests(IMP.test.TestCase):
         rsr = IMP.core.AngleRestraint(IMP.core.Harmonic(scored_angle, k),
                                       particles[0], particles[1], particles[2])
         model.add_restraint(rsr)
-        return model, rsr
+        return model, rsr, particles
+
+    def test_deriv(self):
+        """Check derivatives of angle restraints"""
+        angles = [0.25 * math.pi, 0.3 * math.pi, 0.6 * math.pi, 0.75 * math.pi]
+        for system_angle in angles:
+            for score_angle in angles:
+                model, rsr, ps = self._setup_particles(system_angle,
+                                                       score_angle)
+                self.assertXYZDerivativesInTolerance(model, IMP.core.XYZ(ps[0]),
+                                                     0.3, 5.0)
+                self.assertXYZDerivativesInTolerance(model, IMP.core.XYZ(ps[1]),
+                                                     0.3, 5.0)
+                self.assertXYZDerivativesInTolerance(model, IMP.core.XYZ(ps[2]),
+                                                     0.3, 5.0)
 
     def test_score(self):
         """Check score of angle restraints"""
@@ -38,10 +52,10 @@ class AngleRestraintTests(IMP.test.TestCase):
         for i in range(len(angles)):
             # Score of model with the same angle as the scoring function's mean
             # should be zero:
-            model, rsr = self._setup_particles(angles[i], angles[i])
+            model, rsr, ps = self._setup_particles(angles[i], angles[i])
             self.assert_(model.evaluate(False) < 1e-6)
             # When the angle is different, score should be far from zero:
-            model, rsr = self._setup_particles(angles[i], angles[-i-1])
+            model, rsr, ps = self._setup_particles(angles[i], angles[-i-1])
             self.assert_(model.evaluate(False) > 10.0)
             # Optimizing should reduce the score to zero:
             opt = IMP.core.ConjugateGradients()
@@ -51,7 +65,7 @@ class AngleRestraintTests(IMP.test.TestCase):
 
     def test_show(self):
         """Check AngleRestraint::show() method"""
-        model, rsr = self._setup_particles(math.pi / 2.0, math.pi / 2.0)
+        model, rsr, ps = self._setup_particles(math.pi / 2.0, math.pi / 2.0)
         s = StringIO.StringIO()
         rsr.show(s)
         # no reason to check the show value
@@ -59,7 +73,7 @@ class AngleRestraintTests(IMP.test.TestCase):
 
     def test_interacting_particles(self):
         """Check Restraint::get_interacting_particles() method"""
-        model, rsr = self._setup_particles(math.pi / 2.0, math.pi / 2.0)
+        model, rsr, ps = self._setup_particles(math.pi / 2.0, math.pi / 2.0)
         # Default should yield 1 set of 3 particles:
         ipar = rsr.get_interacting_particles()
         self.assertEqual(len(ipar), 1)
