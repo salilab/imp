@@ -250,9 +250,6 @@ Atom Atom::setup_particle(Particle *p, AtomType t) {
 
 Atom Atom::setup_particle(Particle *p, Atom o) {
   Atom ret=setup_particle(p, o.get_atom_type());
-  if (o.get_charge() != 0) {
-    ret.set_charge(o.get_charge());
-  }
   return ret;
 }
 
@@ -295,11 +292,6 @@ IntKey Atom::get_atom_type_key() {
 
 IntKey Atom::get_element_key() {
   static IntKey k("element");
-  return k;
-}
-
-FloatKey Atom::get_charge_key() {
-  static FloatKey k("atom_charge");
   return k;
 }
 
