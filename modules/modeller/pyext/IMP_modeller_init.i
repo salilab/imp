@@ -431,7 +431,7 @@ def _copy_atom(a, model):
     #ap.set_atom_type(IMP.atom.AtomType(a.name))
     #IMP.core.Name.setup_particle(p).set_name(str("atom "+a._atom__get_num()));
     if (a.charge != 0):
-        ap.set_charge(a.charge)
+        IMP.atom.Charged.setup_particle(p, a.charge)
     ap.set_input_index(a.index)
     return p
 
