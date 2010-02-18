@@ -21,14 +21,14 @@
 IMPATOM_BEGIN_NAMESPACE
 
 
-Selector::~Selector(){}
+PDBSelector::~PDBSelector(){}
 
 namespace {
 
-Particle* atom_particle(Model *m, const String& pdb_line)
+Particle* atom_particle(Model *m, const std::string& pdb_line)
 {
   AtomType atom_name;
-  String string_name = internal::atom_type(pdb_line);
+  std::string string_name = internal::atom_type(pdb_line);
   boost::trim(string_name);
   if (pdb_line[0]!='A'){
     string_name= "HET_"+string_name;
@@ -80,13 +80,13 @@ Particle* atom_particle(Model *m, const String& pdb_line)
   return p;
 }
 
-Particle* residue_particle(Model *m, const String& pdb_line)
+Particle* residue_particle(Model *m, const std::string& pdb_line)
 {
   Particle* p = new Particle(m);
 
   int residue_index = internal::atom_residue_number(pdb_line);
   char residue_icode = internal::atom_residue_icode(pdb_line);
-  String rn = internal::atom_residue_name(pdb_line);
+  std::string rn = internal::atom_residue_name(pdb_line);
   boost::trim(rn);
   ResidueType residue_name = ResidueType(rn);
 
@@ -116,10 +116,9 @@ void set_chain_name(const Hierarchy& hrd, Hierarchy& hcd)
 namespace {
 
 Hierarchies read_pdb(std::istream &in, Model *model,
-                   const Selector& selector,
+                   const PDBSelector& selector,
                    bool select_first_model,
-                   bool split_models,
-                   bool ignore_alternatives)
+                   bool split_models)
 {
   // hierarchy decorator
   Hierarchies ret;
@@ -134,7 +133,7 @@ Hierarchies read_pdb(std::istream &in, Model *model,
   bool first_model_read = false;
   bool has_atom=false;
 
-  String line;
+  std::string line;
   while (!in.eof()) {
     if (!getline(in, line)) break;
 
@@ -199,10 +198,6 @@ Hierarchies read_pdb(std::istream &in, Model *model,
           chain_name_set = true;
         }
 
-        // check if alternatives should be skipped
-        IgnoreAlternativesSelector sel;
-        if(ignore_alternatives && !sel(line)) continue;
-
         Residue(rp).add_child(Atom(ap));
         has_atom=true;
       }
@@ -228,27 +223,24 @@ Hierarchies read_pdb(std::istream &in, Model *model,
 }
 
 Hierarchy read_pdb(TextInput in, Model *model) {
-  return read_pdb(in, model, Selector(), true, true);
+  return read_pdb(in, model, NonAlternativePDBSelector(), true, false)[0];
 }
 
 
 
 Hierarchy read_pdb(TextInput in, Model *model,
-                   const Selector& selector,
-                   bool select_first_model,
-                   bool ignore_alternatives)
+                   const PDBSelector& selector,
+                   bool select_first_model)
 {
-  return read_pdb(in, model, selector, select_first_model, false,
-                  ignore_alternatives)[0];
+  return read_pdb(in, model, selector, select_first_model, false)[0];
 }
 
 
 
 Hierarchies read_multimodel_pdb(TextInput in, Model *model,
-                   const Selector& selector,
-                   bool ignore_alternatives)
+                   const PDBSelector& selector)
 {
-  return read_pdb(in, model, selector, false, true, ignore_alternatives);
+  return read_pdb(in, model, selector, false, true);
 }
 
 
