@@ -25,6 +25,18 @@ PDBSelector::~PDBSelector(){}
 
 namespace {
 
+  // try putting the numbers after
+  std::string try_rename(std::string str) {
+    std::string out;
+    for (unsigned int i=0; i< str.size(); ++i) {
+      if (std::isalpha(str[i])) out.push_back(str[i]);
+    }
+    for (unsigned int i=0; i< str.size(); ++i) {
+      if (!std::isalpha(str[i])) out.push_back(str[i]);
+    }
+    return out;
+  }
+
 Particle* atom_particle(Model *m, const std::string& pdb_line)
 {
   AtomType atom_name;
@@ -47,9 +59,12 @@ Particle* atom_particle(Model *m, const std::string& pdb_line)
     }
   } else {
     if (!AtomType::get_key_exists(string_name)) {
-      IMP_LOG(VERBOSE, "ATOM record type not found: \"" << string_name
-              << "\" from " << pdb_line);
-      return NULL;
+      string_name= try_rename(string_name);
+      if (!AtomType::get_key_exists(string_name)) {
+        IMP_LOG(VERBOSE, "ATOM record type not found: \"" << string_name
+                << "\" from " << pdb_line << std::endl);
+        return NULL;
+      }
     }
     atom_name = AtomType(string_name);
   }
@@ -151,9 +166,11 @@ Hierarchies read_pdb(std::istream &in, Model *model,
     // check that line is an HETATM or ATOM rec and that selector accepts line.
     // if this is the case construct a new Particle using line and add the
     // Particle to the Model
-    if ((internal::is_ATOM_rec(line) || internal::is_HETATM_rec(line))
-        && selector(line)) {
-
+    if (internal::is_ATOM_rec(line) || internal::is_HETATM_rec(line)) {
+      if (!selector(line)) {
+        IMP_LOG(VERBOSE, "Selector rejected line " << line << std::endl);
+        continue;
+      }
       int residue_index = internal::atom_residue_number(line);
       char residue_icode = internal::atom_residue_icode(line);
       char chain = internal::atom_chain_id(line);
@@ -223,7 +240,7 @@ Hierarchies read_pdb(std::istream &in, Model *model,
 }
 
 Hierarchy read_pdb(TextInput in, Model *model) {
-  return read_pdb(in, model, NonAlternativePDBSelector(), true, false)[0];
+  return read_pdb(in, model, NonWaterPDBSelector(), true, false)[0];
 }
 
 
@@ -243,6 +260,8 @@ Hierarchies read_multimodel_pdb(TextInput in, Model *model,
   return read_pdb(in, model, selector, false, true);
 }
 
+// mol2.cpp
+bool check_arbond(Particle* atom_p);
 
 void write_pdb(const Particles& ps, TextOutput out)
 {
@@ -260,14 +279,53 @@ void write_pdb(const Particles& ps, TextOutput out)
     if (Atom::particle_is_instance(ps[i])) {
       Atom ad(ps[i]);
       Residue rd= get_residue(ad);
+      // really dumb and slow, fix later
+      char chain;
+      try {
+        Chain c=get_chain(rd);
+        chain= c.get_id();
+      } catch (const ValueException &) {
+        /*std::string atom_type = get_atom_type().get_string();
+        if (atom_type[0] == 'O' || atom_type[0] == 'S') {
+          if (check_arbond(p)) {
+            String stratype (1, atom_type[0]);
+            atom_type = stratype + ".ar";
+          }
+        }
+        if (atom_type.find('.') != String::npos) {
+          atom_type.erase(atom_type.find('.'), 1);
+        }
+        out.get_stream() << pdb_string(core::XYZ(ps[i]).get_coordinates(),
+                                       use_input_index? ad.get_input_index(): i,
+                                       atom_type,
+                                       rd.get_residue_type(),
+                                       c.get_id(),
+                                       rd.get_index(),
+                                       rd.get_insertion_code(),
+                                       ad.get_element());*/
+        chain=' ';
+        /*
+        pdb_file << std::setw(7) << atomid << " ";
+        pdb_file.setf(std::ios::left,std::ios::adjustfield);
+        pdb_file << std::setw(4) << atom_type << " ";
+        pdb_file << "HET     1" << "    ";
+        pdb_file.setf(std::ios::right,std::ios::adjustfield);
+        pdb_file.setf(std::ios::fixed,std::ios::floatfield);
+        core::XYZ xyz= core::XYZ::cast(p);
+        pdb_file << std::setw(8) << std::setprecision(3) << xyz.get_x();
+        pdb_file << std::setw(8) << std::setprecision(3) << xyz.get_y();
+        pdb_file << std::setw(8) << std::setprecision(3) << xyz.get_z()
+        << std::endl;*/
+      }
       out.get_stream() << pdb_string(core::XYZ(ps[i]).get_coordinates(),
                                      use_input_index? ad.get_input_index(): i,
-                                     ad.get_atom_type(),
+                                     ad.get_atom_type().get_string(),
                                      rd.get_residue_type(),
-                                     get_chain(rd).get_id(),
+                                     chain,
                                      rd.get_index(),
                                      rd.get_insertion_code(),
                                      ad.get_element());
+
       if (!out) {
         IMP_THROW("Error writing to file in write_pdb",
                   IOException);
@@ -305,18 +363,16 @@ void write_multimodel_pdb(const Hierarchies& mhd, TextOutput oout)
 
 
 
-
+// change atom type to string for Hao's hetatom code
 std::string pdb_string(const algebra::Vector3D& v, int index,
-                       const AtomType& at, const ResidueType& rt,
+                       AtomType at, ResidueType rt,
                        char chain, int res_index,
                        char res_icode, Element e) {
   std::stringstream out;
-  out.setf(std::ios::left, std::ios::adjustfield);
-  out.width(6);
-  if (rt == UNK) {
+  if (rt > DTHY) {
     out << "HETATM";
   } else {
-    out << "ATOM";
+    out << "ATOM  ";
   }
   //7-11 : atom id
   out.setf(std::ios::right, std::ios::adjustfield);
@@ -329,10 +385,12 @@ std::string pdb_string(const algebra::Vector3D& v, int index,
   out.setf(std::ios::left, std::ios::adjustfield);
   out.width(1);
   std::string atom_name = at.get_string();
+  out.setf(std::ios::right, std::ios::adjustfield);
+  out.width(4);
   if (atom_name.size()<4) {
-    out << " ";
-    out.width(3);
     out << atom_name;
+  } else if (atom_name.find("HET_")==0){
+    out << std::string(atom_name,4);
   } else {
     out << atom_name;
   }

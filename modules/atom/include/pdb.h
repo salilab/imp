@@ -192,6 +192,8 @@ public:
 
     When reading PDBs, PDBSelector objects can be used to choose to only process
     certain record types. See the class documentation for more information.
+    When no PDB selector is supplied for reading, the
+    NonWaterPDBSelector is used.
 
     Set the IMP::LogLevel to IMP::VERBOSE to see details of parse errors.
 */
@@ -227,15 +229,15 @@ IMPATOMEXPORT Hierarchies read_multimodel_pdb(TextInput in,
     The methods to write a PDBs expects a Hierarchy that looks as follows:
     - all leaves are Atom particles
     - all Atom particles have Residue particles as parents
-    - all Residue particles have Chain particles as an ancestor.
+
+    All Residue particles that have a Chain particle as an ancestor
+    are considered part of a protein, DNA or RNA, ones without are
+    considered heterogens.
 
     The functions produce files that are not valid PDB files,
     eg only ATOM/HETATM lines are printed for all Atom particles
     in the hierarchy. Complain if your favorite program can't read them and
     we might fix it.
-
-    When no PDB selector is supplied for reading, the
-    NonAlternativesPDBSelector is used.
 */
 //!@{
 
@@ -263,8 +265,8 @@ IMPATOMEXPORT void write_multimodel_pdb(
 */
 IMPATOMEXPORT std::string pdb_string(const algebra::Vector3D& v,
                                      int index = -1,
-                                     const AtomType& at = AT_C,
-                                     const ResidueType& rt = atom::ALA,
+                                     AtomType at = AT_C,
+                                     ResidueType rt = atom::ALA,
                                      char chain = ' ',
                                      int res_index = 1,
                                      char res_icode = ' ',
