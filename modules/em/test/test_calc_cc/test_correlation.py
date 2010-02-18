@@ -20,7 +20,7 @@ class CrossCorrelationTests(IMP.test.TestCase):
         self.EM_map.get_header_writable().compute_xyz_top()
 
         self.mdl=IMP.Model()
-        mh=IMP.atom.read_pdb(self.fn_coords,self.mdl,IMP.atom.NonWaterNonHydrogenSelector())
+        mh=IMP.atom.read_pdb(self.fn_coords,self.mdl,IMP.atom.NonWaterNonHydrogenPDBSelector())
         IMP.atom.add_radii(mh)
         self.atoms=IMP.core.get_leaves(mh)
 
