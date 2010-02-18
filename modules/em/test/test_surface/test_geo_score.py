@@ -8,7 +8,7 @@ class SurfaceTests(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         # Initial values and names of files
         self.mdl=IMP.Model()
-        sel=IMP.atom.AllSelector()
+        sel=IMP.atom.NonAlternativePDBSelector()
         mh1_fn = self.get_input_file_name('1z5s_A.pdb')
         self.mh1=IMP.atom.read_pdb(mh1_fn,self.mdl,sel)
         IMP.atom.add_radii(self.mh1)
