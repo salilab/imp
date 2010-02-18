@@ -1,5 +1,12 @@
 /** \page recent Change History
 \par Week of Feb 14, 2010
+- IMP::atom::Atom no longer has charge since we have IMP::atom::Charged.
+
+- IMP::atom::read_mol2() and IMP::atom::write_mol2() were added
+
+- IMP::atom::Selector and descendents renamed to IMP::atom::PDBSelector since we will soon have Mol2Selectors. In addition, the IMP::atom::IgnoreAlteriativesSelector is now IMP::atom::NonAlternativeSelector to keep the name positive, like the others. In the \imp body, all instances of the string Selector were for PDBSelectors and so sed was safe to use.
+
+- IMP::atom::read_pdb() lost the "ignore_alternatives" argument. Instead, all of the provided selectors, other than IMP::atom::AllSelector ignore alternatives internally. Code that uses the IMP::atom::AllSelector should probably change to the IMP::atom::NonAlternativeSelector.
 
 - IMP::example renamed (from examples)
 
