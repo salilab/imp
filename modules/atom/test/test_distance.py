@@ -12,9 +12,9 @@ class DistanceTest(IMP.test.TestCase):
         m = IMP.Model()
         # read PDB
         mp= IMP.atom.read_pdb(self.open_input_file("input.pdb"),
-                              m, IMP.atom.NonWaterSelector())
+                              m, IMP.atom.NonWaterPDBSelector())
         mp1= IMP.atom.read_pdb(self.open_input_file("input.pdb"),
-                              m, IMP.atom.NonWaterSelector())
+                              m, IMP.atom.NonWaterPDBSelector())
         xyz=IMP.core.XYZs(IMP.atom.get_leaves(mp))
         xyz1=IMP.core.XYZs(IMP.atom.get_leaves(mp1))
         #create a random transformation
@@ -33,13 +33,13 @@ class DistanceTest(IMP.test.TestCase):
         m = IMP.Model()
         # read PDB
         mp1_ref= IMP.atom.read_pdb(self.open_input_file("1z5s_A.pdb"),
-                              m, IMP.atom.NonWaterSelector())
+                              m, IMP.atom.NonWaterPDBSelector())
         mp1_mdl= IMP.atom.read_pdb(self.open_input_file("1z5s_A.pdb"),
-                              m, IMP.atom.NonWaterSelector())
+                              m, IMP.atom.NonWaterPDBSelector())
         mp2_ref= IMP.atom.read_pdb(self.open_input_file("1z5s_C.pdb"),
-                              m, IMP.atom.NonWaterSelector())
+                              m, IMP.atom.NonWaterPDBSelector())
         mp2_mdl= IMP.atom.read_pdb(self.open_input_file("1z5s_C.pdb"),
-                              m, IMP.atom.NonWaterSelector())
+                              m, IMP.atom.NonWaterPDBSelector())
         xyz1_ref=IMP.core.XYZs(IMP.atom.get_leaves(mp1_ref))
         xyz1_mdl=IMP.core.XYZs(IMP.atom.get_leaves(mp1_mdl))
         xyz2_ref=IMP.core.XYZs(IMP.atom.get_leaves(mp2_ref))

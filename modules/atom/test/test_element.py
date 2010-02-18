@@ -13,7 +13,7 @@ class ElementTableTest(IMP.test.TestCase):
         m = IMP.Model()
         # read PDB, assign elements and masses
         mp= IMP.atom.read_pdb(self.open_input_file("input.pdb"),
-                              m, IMP.atom.NonWaterSelector())
+                              m, IMP.atom.NonWaterPDBSelector())
         atoms = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
         # compute mass
         # mass is assigned using elements, so we are testing both here

@@ -155,31 +155,31 @@ class _RepChain(_RepresentationNode):
     def to_particle(self, model):
         if self.filename:
             if self.selector == 'CAlpha':
-                selector = IMP.atom.CAlphaSelector()
+                selector = IMP.atom.CAlphaPDBSelector()
             elif self.selector == 'CBeta':
-                selector = IMP.atom.CBetaSelector()
+                selector = IMP.atom.CBetaPDBSelector()
             elif self.selector == 'C':
-                selector = IMP.atom.CSelector()
+                selector = IMP.atom.CPDBSelector()
             elif self.selector == 'N':
-                selector = IMP.atom.NSelector()
+                selector = IMP.atom.NPDBSelector()
             elif self.selector == 'All':
-                selector = IMP.atom.AllSelector()
+                selector = IMP.atom.NonAlternativePDBSelector()
             elif self.selector == 'Chain':
-                selector = IMP.atom.ChainSelector(self.chain_label)
+                selector = IMP.atom.ChainPDBSelector(self.chain_label)
             elif self.selector == 'Water':
-                selector = IMP.atom.WaterSelector()
+                selector = IMP.atom.WaterPDBSelector()
             elif self.selector == 'Hydrogen':
-                selector = IMP.atom.HydrogenSelector()
+                selector = IMP.atom.HydrogenPDBSelector()
             elif self.selector == 'NonWater':
-                selector = IMP.atom.NonWaterSelector()
+                selector = IMP.atom.NonWaterPDBSelector()
             elif self.selector == 'P':
-                selector = IMP.atom.PSelector()
+                selector = IMP.atom.PPDBSelector()
             elif self.selector == 'IgnoreAlternatives':
-                selector = IMP.atom.IgnoreAlternativesSelector()
+                selector = IMP.atom.IgnoreAlternativesPDBSelector()
             elif self.selector == 'NonWaterNonHydrogen':
-                selector = IMP.atom.NonWaterSelector()
+                selector = IMP.atom.NonWaterPDBSelector()
             else:
-                selector = IMP.atom.NonWaterNonHydrogenSelector()
+                selector = IMP.atom.NonWaterNonHydrogenPDBSelector()
             decorator = IMP.atom.read_pdb(self.filename, model, selector)
             IMP.atom.add_radii(decorator)
             chains = IMP.atom.get_by_type(decorator, IMP.atom.CHAIN_TYPE)

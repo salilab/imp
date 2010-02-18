@@ -15,7 +15,7 @@ class SAXSProfileTest(IMP.test.TestCase):
 
         #! read PDB
         mp= IMP.atom.read_pdb(self.get_input_file_name('6lyz.pdb'), m,
-                              IMP.atom.NonWaterNonHydrogenSelector())
+                              IMP.atom.NonWaterNonHydrogenPDBSelector())
         #IMP.core.show_molecular_hierarchy(mp)
 
         #! read experimental profile
@@ -64,7 +64,7 @@ class SAXSProfileTest(IMP.test.TestCase):
 
         #! read PDB
         mp= IMP.atom.read_pdb(self.get_input_file_name('6lyz.pdb'), m,
-                              IMP.atom.NonWaterNonHydrogenSelector())
+                              IMP.atom.NonWaterNonHydrogenPDBSelector())
 
         #! read experimental profile
         exp_profile = IMP.saxs.Profile(self.get_input_file_name('lyzexp.dat'))
