@@ -246,8 +246,6 @@ public:
   //! Set the name and corresponding element and mass
   void set_atom_type(AtomType t);
 
-  IMP_DECORATOR_GET_SET_OPT(charge, get_charge_key(),
-                            Float, Float, 0);
   Element get_element() const {
     return Element(get_particle()->get_value(get_element_key()));
   }
@@ -271,8 +269,6 @@ public:
   static IntKey get_atom_type_key();
 
   static IntKey get_element_key();
-
-  static FloatKey get_charge_key();
 
   static IntKey get_input_index_key();
   //! @}
