@@ -40,7 +40,7 @@ class IMPATOMEXPORT PDBSelector {
   virtual ~PDBSelector();
 };
 
-//! A PDB PDBSelector that ignores all alternative location atoms.
+//! A PDBSelector that ignores all alternative location atoms.
 class NonAlternativePDBSelector : public PDBSelector {
  public:
   bool operator()(const std::string& pdb_line) const {
@@ -235,7 +235,7 @@ IMPATOMEXPORT Hierarchies read_multimodel_pdb(TextInput in,
     we might fix it.
 
     When no PDB selector is supplied for reading, the
-    IgnoreAlternativesPDBSelector is used.
+    NonAlternativesPDBSelector is used.
 */
 //!@{
 

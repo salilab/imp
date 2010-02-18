@@ -174,8 +174,8 @@ class _RepChain(_RepresentationNode):
                 selector = IMP.atom.NonWaterPDBSelector()
             elif self.selector == 'P':
                 selector = IMP.atom.PPDBSelector()
-            elif self.selector == 'IgnoreAlternatives':
-                selector = IMP.atom.IgnoreAlternativesPDBSelector()
+            elif self.selector == 'NonAlternatives':
+                selector = IMP.atom.NonAlternativesPDBSelector()
             elif self.selector == 'NonWaterNonHydrogen':
                 selector = IMP.atom.NonWaterPDBSelector()
             else:
