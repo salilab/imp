@@ -13,7 +13,7 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
 
     def load_protein(self,pdb_filename):
         self.mp= IMP.atom.read_pdb(self.open_input_file(pdb_filename),
-                              self.imp_model, IMP.atom.CAlphaSelector())#IMP.atom.NonWaterSelector())
+                              self.imp_model, IMP.atom.CAlphaPDBSelector())#IMP.atom.NonWaterSelector())
         IMP.atom.add_radii(self.mp)
         self.radius_key = IMP.core.XYZR.get_default_radius_key()
         self.weight_key = IMP.atom.Mass.get_mass_key()

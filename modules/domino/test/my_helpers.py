@@ -5,7 +5,7 @@ import random,math
 
 def read_components(fns,mdl):
     mhs = IMP.atom.Hierarchies()
-    sel = IMP.atom.CAlphaSelector()
+    sel = IMP.atom.CAlphaPDBSelector()
     for fn in fns:
         mhs.append(IMP.atom.read_pdb(fn,mdl,sel))
         IMP.atom.add_radii(mhs[-1])

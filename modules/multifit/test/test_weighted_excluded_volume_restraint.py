@@ -16,7 +16,7 @@ class SampleTests(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         #init IMP model ( the environment)
         self.mdl = IMP.Model()
-        self.sel=IMP.atom.CAlphaSelector()
+        self.sel=IMP.atom.CAlphaPDBSelector()
         self.mhs=IMP.atom.Hierarchies()
         self.mhs.append(IMP.atom.read_pdb(self.get_input_file_name("1z5s_A.pdb"),
                              self.mdl,self.sel))
