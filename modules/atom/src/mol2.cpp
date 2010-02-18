@@ -22,29 +22,30 @@ IMPATOM_BEGIN_NAMESPACE
 
 Mol2Selector::~Mol2Selector(){}
 
-namespace {
 
-  bool check_arbond(Particle* atom_p) {
-    Int bond_number, type, i;
-    Int count_ar=0;
-    Bond bond_d;
+IMPATOMEXPORT bool check_arbond(Particle* atom_p) {
+  Int bond_number, type, i;
+  Int count_ar=0;
+  Bond bond_d;
 
-    Bonded bonded_d = Bonded(atom_p);
-    bond_number = bonded_d.get_number_of_bonds();
-    for(i=0; i<bond_number; i++) {
-      bond_d = bonded_d.get_bond(i);
-      type = bond_d.get_type();
-      if(type == Bond::AROMATIC) {
-        count_ar++;
-      }
-    }
-    if (count_ar > 1) {
-      return true;
-    }
-    else {
-      return false;
+  Bonded bonded_d = Bonded(atom_p);
+  bond_number = bonded_d.get_number_of_bonds();
+  for(i=0; i<bond_number; i++) {
+    bond_d = bonded_d.get_bond(i);
+    type = bond_d.get_type();
+    if(type == Bond::AROMATIC) {
+      count_ar++;
     }
   }
+  if (count_ar > 1) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+namespace {
 
   std::string mol2_string(Atom a) {
     std::ostringstream mol2_file;
@@ -150,8 +151,16 @@ namespace {
 
     std::string temp_name(type);
     boost::trim(temp_name);
-
-    AtomType atom_type = AtomType(temp_name.c_str());
+    // guess element
+    if (!atom_type_exists(temp_name)) {
+      if (temp_name.find('.') == std::string::npos) {
+        add_atom_type(temp_name, get_element_table().get_element(temp_name));
+      } else {
+        std::string element(temp_name, 0, temp_name.find('.'));
+        add_atom_type(temp_name, get_element_table().get_element(element));
+      }
+    }
+    AtomType atom_type = AtomType(temp_name);
     // atom decorator
     Atom d = Atom::setup_particle(p, atom_type);
     core::XYZ::setup_particle(p, v);
@@ -395,18 +404,20 @@ Hierarchy read_mol2(TextInput mol2_file,
 
   // create root particle
   Hierarchy root_d = root_particle(model, mol2_file.get_name());
-
   std::string line;
   Hierarchy molecule_d;
-
   while (std::getline(mol2_file.get_stream(), line)) {
     // check the line is the title line @<TRIPOS>MOLECULE
     if (internal::is_MOLECULE_rec(line)) {
       molecule_atoms.clear();
-      Hierarchy molecule_d = read_molecule_mol2(model, mol2_file, root_d);
+      molecule_d = read_molecule_mol2(model, mol2_file, root_d);
     }
     // check the starting line of atom block @<TRIPOS>ATOM
     else if (internal::is_MOL2ATOM_rec(line)) {
+      if (!molecule_d) {
+        IMP_THROW("Atom seen before molecule on line " << line,
+                  IOException);
+      }
       read_atom_mol2(model, mol2_file, molecule_d, molecule_atoms, mol2sel);
     }
     // check the starting line of bond block @<TRIPOS>BOND
@@ -414,6 +425,7 @@ Hierarchy read_mol2(TextInput mol2_file,
       read_bond_mol2(model, mol2_file, molecule_d, molecule_atoms);
     }
     else {
+      IMP_LOG(TERSE, "Couldn't parse line " << line << std::endl);
     }
   }
   //Hierarchies mps = get_by_type(root_d, RESIDUE_TYPE);
@@ -424,9 +436,9 @@ Hierarchy read_mol2(TextInput mol2_file,
 
 // argv[1] file_name_type should contain file type e.g. ".mol2"
 void write_mol2(Hierarchy rhd, TextOutput file) {
-  unsigned int childrennum = rhd.get_number_of_children();
-  for(unsigned int i=0; i<childrennum; ++i) {
-    write_molecule_mol2(rhd.get_child(i), file);
+  HierarchiesTemp hs= get_by_type(rhd, RESIDUE_TYPE);
+  for(unsigned int i=0; i<hs.size(); ++i) {
+    write_molecule_mol2(hs[i], file);
   }
 }
 

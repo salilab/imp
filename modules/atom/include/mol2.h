@@ -47,6 +47,9 @@ class NonhydrogenMol2Selector : public Mol2Selector {
 
     \imp can also read and write Mol2 files. As with read_pdb(), selector
     objects are used to determine which atoms are read.
+
+    The read function produces a hierarchy containing the molecule. The write
+    hierarchy writes all the Residue types in the hierarchy to the file.
     @{
 */
 IMPATOMEXPORT Hierarchy read_mol2(TextInput mol2_file,
