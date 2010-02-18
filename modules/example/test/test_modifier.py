@@ -3,7 +3,7 @@ import IMP
 import IMP.test
 import IMP.algebra
 import IMP.core
-import IMP.examples
+import IMP.example
 
 class DistanceTests(IMP.test.TestCase):
     """Test the symmetry restraint"""
@@ -21,7 +21,7 @@ class DistanceTests(IMP.test.TestCase):
         print "setting up"
         d= IMP.core.XYZ.setup_particle(p, IMP.algebra.random_vector_in_box(bbb))
         print "creating m"
-        mod= IMP.examples.ExampleSingletonModifier(sbb)
+        mod= IMP.example.ExampleSingletonModifier(sbb)
         print "applying"
         mod.apply(d.get_particle())
         for i in range(0,3):
