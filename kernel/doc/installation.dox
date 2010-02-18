@@ -20,7 +20,7 @@ Notes on how to work around various platform issues can be found at \wiki{build,
 
 \subsection mac Mac
 Mac users should use one of the available collections of Unix tools, either \external{www.macports.org/, MacPorts} or \external{www.finkproject.org/, Fink}. If you use MacPorts, you must add \c /opt/local/bin to your path (either by modifying your shell's config file or by making an \c environment.plist file-see the \salilab{imp/wiki/FAQ, FAQ}) and then do
-\command{sudo port install boost subversion scons swig}
+\command{sudo port install boost scons swig-python}
 to install the needed libraries and tools. Alternatively, you can build the
 packages yourself from source code.
 
