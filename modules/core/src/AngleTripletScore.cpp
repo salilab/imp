@@ -62,13 +62,13 @@ Float AngleTripletScore::evaluate(const ParticleTriplet &p,
     fact_ij = std::max(static_cast<Float>(1e-12), fact_ij);
     fact_kj = std::max(static_cast<Float>(1e-12), fact_kj);
 
-    for (int i = 0; i < 3; ++i) {
-      Float derv0 = deriv * (unit_rij[i] * cosangle - unit_rkj[i]) / fact_ij;
-      Float derv2 = deriv * (unit_rkj[i] * cosangle - unit_rij[i]) / fact_kj;
-      d0.add_to_derivative(i, derv0, *da);
-      d1.add_to_derivative(i, -derv0 - derv2, *da);
-      d2.add_to_derivative(i, derv2, *da);
-    }
+    algebra::Vector3D derv0 = deriv * (unit_rij * cosangle
+                                       - unit_rkj) / fact_ij;
+    algebra::Vector3D derv2 = deriv * (unit_rkj * cosangle
+                                       - unit_rij) / fact_kj;
+    d0.add_to_derivatives(derv0, *da);
+    d1.add_to_derivatives(-derv0 - derv2, *da);
+    d2.add_to_derivatives(derv2, *da);
   } else {
     score = f_->evaluate(angle);
   }
