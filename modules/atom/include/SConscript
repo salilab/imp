@@ -32,8 +32,8 @@ files = [
          'force_fields.h',
          'hierarchy_tools.h',
          'macros.h',
+         'mol2.h',
          'pdb.h',
-         'selectors.h',
          'smoothing_functions.h',
         ] \
         + SConscript('internal/SConscript')

@@ -2,6 +2,7 @@ files = [
          'bond_graph_boost_functions.h',
          'bond_graph_functors.h',
          'bond_helpers.h',
+         'mol2.h',
          'pdb.h',
         ]
 

@@ -1,4 +1,5 @@
 files = [
+         'mol2.cpp',
          'pdb.cpp',
         ]
 
