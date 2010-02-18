@@ -141,12 +141,12 @@ def __iter__(self):
 %include "IMP/atom/LennardJonesPairScore.h"
 %include "IMP/atom/MolecularDynamics.h"
 %include "IMP/atom/VelocityScalingOptimizerState.h"
-%include "IMP/atom/selectors.h"
 %include "IMP/atom/Fragment.h"
 %include "IMP/atom/SimulationParameters.h"
 %include "IMP/atom/Mass.h"
 %include "IMP/atom/BondedPairFilter.h"
 %include "IMP/atom/hierarchy_tools.h"
+%include "IMP/atom/mol2.h"
 
 namespace IMP {
   namespace atom {

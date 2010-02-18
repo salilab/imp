@@ -31,6 +31,7 @@ files = [
          'estimates.cpp',
          'force_fields.cpp',
          'hierarchy_tools.cpp',
+         'mol2.cpp',
          'pdb.cpp',
          'smoothing_functions.cpp',
         ] \
