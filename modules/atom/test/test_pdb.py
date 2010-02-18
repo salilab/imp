@@ -19,7 +19,7 @@ class PDBReadWriteTest(IMP.test.TestCase):
 
         #! read PDB
         mp= IMP.atom.read_pdb(self.open_input_file("input.pdb"),
-                              m, IMP.atom.NonWaterSelector())
+                              m, IMP.atom.NonWaterPDBSelector())
         self.assertEqual(m.get_number_of_particles(), 1132)
         #IMP.atom.show_molecular_hierarchy(mp)
         IMP.atom.show(mp)
@@ -31,7 +31,7 @@ class PDBReadWriteTest(IMP.test.TestCase):
 
         m2 = IMP.Model()
         mp= IMP.atom.read_pdb(self.open_input_file("input.pdb"),
-                              m2, IMP.atom.CAlphaSelector())
+                              m2, IMP.atom.CAlphaPDBSelector())
         self.assertEqual(m2.get_number_of_particles(), 260)
         IMP.atom.add_bonds(mp)
         bds = IMP.atom.get_internal_bonds(mp)
@@ -43,7 +43,7 @@ class PDBReadWriteTest(IMP.test.TestCase):
 
         #! read PDB
         mp= IMP.atom.read_pdb(self.open_input_file("1DQK.pdb"),
-                              m, IMP.atom.NonWaterSelector())
+                              m, IMP.atom.NonWaterPDBSelector())
         print m.get_number_of_particles()
         #self.assertEqual(m.get_number_of_particles(), 1132)
         #IMP.atom.show_molecular_hierarchy(mp)
@@ -59,7 +59,7 @@ class PDBReadWriteTest(IMP.test.TestCase):
         """Simple test of writing a PDB"""
         m = IMP.Model()
         mp = IMP.atom.read_pdb(self.open_input_file("input.pdb"),
-                               m, IMP.atom.CAlphaSelector())
+                               m, IMP.atom.CAlphaPDBSelector())
         s = StringIO()
         IMP.atom.write_pdb(mp, s)
         self.assertEqual(s.getvalue().count('\n'), 129)

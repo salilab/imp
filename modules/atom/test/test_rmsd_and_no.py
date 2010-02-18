@@ -12,9 +12,9 @@ class MeasuresTest(IMP.test.TestCase):
         m = IMP.Model()
         # read PDB
         mp= IMP.atom.read_pdb(self.open_input_file("input.pdb"),
-                              m, IMP.atom.NonWaterSelector())
+                              m, IMP.atom.NonWaterPDBSelector())
         mp1= IMP.atom.read_pdb(self.open_input_file("input.pdb"),
-                              m, IMP.atom.NonWaterSelector())
+                              m, IMP.atom.NonWaterPDBSelector())
         xyz=IMP.core.XYZs(IMP.atom.get_leaves(mp))
         xyz1=IMP.core.XYZs(IMP.atom.get_leaves(mp1))
         #create a random transformation
@@ -38,9 +38,9 @@ class MeasuresTest(IMP.test.TestCase):
         m = IMP.Model()
         # read PDB
         mp= IMP.atom.read_pdb(self.open_input_file("input.pdb"),
-                              m, IMP.atom.NonWaterSelector())
+                              m, IMP.atom.NonWaterPDBSelector())
         mp1= IMP.atom.read_pdb(self.open_input_file("input.pdb"),
-                              m, IMP.atom.NonWaterSelector())
+                              m, IMP.atom.NonWaterPDBSelector())
         xyz=IMP.core.XYZs(IMP.atom.get_leaves(mp))
         xyz1=IMP.core.XYZs(IMP.atom.get_leaves(mp1))
         #create a random transformation
