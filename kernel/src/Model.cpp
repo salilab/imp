@@ -441,11 +441,11 @@ namespace {
       boost::topological_sort(deps.graph, out.begin());
     } catch (...) {
       write_graph(deps.graph, om, "model_dependency_graph.dot");
-      IMP_THROW("Topoligical sort failed, probably due to loops in "
+      IMP_THROW("Topological sort failed, probably due to loops in "
                 << " dependency graph. "
                 << " The graph was written to a file "
                 << "\"model_dependency_graph.dot\" in "
-                << "your current directory. Do somethign like "
+                << "your current directory. Do something like "
                 << "\"dot -Tps -o graph.ps model_dependency_graph.dot\" "
                 << "to view it.",
                 ValueException);
