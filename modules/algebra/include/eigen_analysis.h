@@ -48,6 +48,9 @@ protected:
   Vector3D eigen_values_;
 };
 
+
+IMP_OUTPUT_OPERATOR(algebra::PrincipalComponentAnalysis);
+
 //! Perform principle components analysis on a set of vectors
 /** \relatesalso PrincipalComponentAnalysis
  */
