@@ -8,7 +8,7 @@ class PadTests(IMP.test.TestCase):
         # Initial values and names of files
         IMP.test.TestCase.setUp(self)
         self.mdl=IMP.Model()
-        sel=IMP.atom.AllSelector()
+        sel=IMP.atom.NonAlternativePDBSelector()
         mh1 = IMP.atom.read_pdb(self.get_input_file_name('1z5s_A.pdb'),self.mdl,sel)
         IMP.atom.add_radii(mh1)
         mh2 = IMP.atom.read_pdb(self.get_input_file_name('1tdx.pdb'),self.mdl,sel)
