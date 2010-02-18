@@ -49,7 +49,9 @@ public:
 
   //! The types a bond can have right now
   enum Type {UNKNOWN=-1,
+             // note that the mol2 code must be changed if the order changes
              COVALENT, HYDROGEN, DISULPHIDE, SALT, PEPTIDE,
+             AMIDE, AROMATIC, DUMMY,
              CUSTOM
             };
 
