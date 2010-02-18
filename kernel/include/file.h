@@ -56,7 +56,7 @@ class IMPEXPORT TextOutput
   TextOutput(){}
   TextOutput(std::string file_name);
 #ifndef SWIG
-  TextOutput(std::ostream &out);
+  TextOutput(std::ostream &out, std::string name="C++ stream");
 #endif
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
@@ -74,6 +74,9 @@ class IMPEXPORT TextOutput
     return out_->get_stream();
   }
 #endif
+  std::string get_name() const {
+    return out_->get_name();
+  }
 };
 
 
@@ -100,7 +103,7 @@ class IMPEXPORT TextInput
   TextInput(){}
   TextInput(std::string file_name);
 #ifndef SWIG
-  TextInput(std::istream &out);
+  TextInput(std::istream &out, std::string name="C++ stream");
 #endif
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
@@ -118,6 +121,9 @@ class IMPEXPORT TextInput
     return in_->get_stream();
   }
 #endif
+  std::string get_name() const {
+    return in_->get_name();
+  }
 };
 
 
