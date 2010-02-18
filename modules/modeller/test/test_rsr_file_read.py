@@ -8,11 +8,29 @@ import IMP.modeller
 
 class ModellerRestraintsTests(IMP.test.TestCase):
 
-    def assertSimilarModellerIMPScores(self, modeller_model, imp_model):
-        """Assert that Modeller and IMP give the same score"""
+    def assertSimilarModellerIMPScores(self, modeller_model, imp_atoms):
+        """Assert that Modeller and IMP give the same score and derivatives"""
         modeller_energy = selection(modeller_model).energy()[0]
-        imp_score = imp_model.evaluate(True)
+        imp_score = imp_atoms.get_model().evaluate(True)
         self.assertInTolerance(modeller_energy, imp_score, 0.1)
+        for imp_atom, modeller_atom in zip(imp_atoms.get_leaves(),
+                                           modeller_model.atoms):
+            imp_deriv = IMP.core.XYZ(imp_atom).get_derivatives()
+            self.assertInTolerance(imp_deriv[0], modeller_atom.dvx, 1e-4,
+                                   "x derivative for atom %s differs between "
+                                   "Modeller (%f) and IMP (%f)" \
+                                   % (str(modeller_atom), modeller_atom.dvx,
+                                      imp_deriv[0]))
+            self.assertInTolerance(imp_deriv[1], modeller_atom.dvy, 1e-4,
+                                   "y derivative for atom %s differs between "
+                                   "Modeller (%f) and IMP (%f)" \
+                                   % (str(modeller_atom), modeller_atom.dvy,
+                                      imp_deriv[1]))
+            self.assertInTolerance(imp_deriv[2], modeller_atom.dvz, 1e-4,
+                                   "z derivative for atom %s differs between "
+                                   "Modeller (%f) and IMP (%f)" \
+                                   % (str(modeller_atom), modeller_atom.dvz,
+                                      imp_deriv[2]))
 
     def test_read_static_restraints(self):
         """Check loading of Modeller static restraints"""
@@ -87,7 +105,7 @@ class ModellerRestraintsTests(IMP.test.TestCase):
             m.add_restraint(rset)
             for rsr in loader.load_static_restraints():
                 rset.add_restraint(rsr)
-            self.assertSimilarModellerIMPScores(modmodel, m)
+            self.assertSimilarModellerIMPScores(modmodel, protein)
             rset.set_weight(0)
 
     def test_rsr_file_read(self):
@@ -110,7 +128,7 @@ class ModellerRestraintsTests(IMP.test.TestCase):
         self.assert_(isinstance(r, list))
         for rsr in r:
             m.add_restraint(rsr)
-        self.assertSimilarModellerIMPScores(modmodel, m)
+        self.assertSimilarModellerIMPScores(modmodel, protein)
 
         # Need atoms before loading restraints
         m = IMP.Model()
@@ -121,7 +139,7 @@ class ModellerRestraintsTests(IMP.test.TestCase):
         protein = loader.load_atoms(m)
         for rsr in loader.load_static_restraints_file('test.rsr'):
             m.add_restraint(rsr)
-        self.assertSimilarModellerIMPScores(modmodel, m)
+        self.assertSimilarModellerIMPScores(modmodel, protein)
         os.unlink('test.rsr')
 
 
