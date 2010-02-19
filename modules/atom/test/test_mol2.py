@@ -18,7 +18,7 @@ class Mol2ReadTest(IMP.test.TestCase):
         print "number of particles"
         print m.get_number_of_particles()
         print len(IMP.atom.get_by_type(root_d, IMP.atom.ATOM_TYPE))
-        self.assertEqual(7373, len(IMP.atom.get_by_type(root_d, IMP.atom.ATOM_TYPE)))
+        self.assertEqual(94, len(IMP.atom.get_by_type(root_d, IMP.atom.ATOM_TYPE)))
         m2= StringIO.StringIO()
         IMP.atom.write_mol2(root_d,m2)
 
@@ -38,7 +38,7 @@ class Mol2ReadTest(IMP.test.TestCase):
         print "number of particles"
         print m.get_number_of_particles()
         print len(IMP.atom.get_by_type(root_d, IMP.atom.ATOM_TYPE))
-        self.assertEqual(7373, len(IMP.atom.get_by_type(root_d, IMP.atom.ATOM_TYPE)))
+        self.assertEqual(94, len(IMP.atom.get_by_type(root_d, IMP.atom.ATOM_TYPE)))
 
         pdb= StringIO.StringIO()
         IMP.atom.write_pdb(root_d,pdb)
