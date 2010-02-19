@@ -49,10 +49,9 @@ public:
 
   //! The types a bond can have right now
   enum Type {UNKNOWN=-1,
-             // note that the mol2 code must be changed if the order changes
-             COVALENT, HYDROGEN, DISULPHIDE, SALT, PEPTIDE,
-             AMIDE, AROMATIC, DUMMY,
-             CUSTOM
+             NONBIOLOGICAL, SINGLE=1, DOUBLE=2, TRIPLE=3, HYDROGEN,
+             SALT, PEPTIDE,
+             AMIDE, AROMATIC,
             };
 
   //! Get the atom i of the bond
@@ -254,7 +253,7 @@ IMPATOMEXPORT
 inline Bond custom_bond(Bonded a, Bonded b,
                           Float length, Float stiffness=-1) {
   IMP_INTERNAL_CHECK(length>=0, "Length must be positive");
-  Bond bd=bond(a,b, Bond::CUSTOM);
+  Bond bd=bond(a,b, Bond::NONBIOLOGICAL);
   bd.set_length(length);
   bd.get_particle()->set_name(std::string("bond ")+
                               a.get_particle()->get_name()
