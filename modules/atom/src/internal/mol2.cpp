@@ -7,6 +7,7 @@
  */
 
 #include <IMP/atom/internal/mol2.h>
+#include <IMP/atom/bond_decorators.h>
 
 IMPATOM_BEGIN_INTERNAL_NAMESPACE
 
@@ -63,5 +64,29 @@ bool is_ATOM_del(const String& bond_line,
   else
     return false;
 }
+
+
+bool check_arbond(Particle* atom_p) {
+  Int bond_number, type, i;
+  Int count_ar=0;
+  Bond bond_d;
+
+  Bonded bonded_d = Bonded(atom_p);
+  bond_number = bonded_d.get_number_of_bonds();
+  for(i=0; i<bond_number; i++) {
+    bond_d = bonded_d.get_bond(i);
+    type = bond_d.get_type();
+    if(type == Bond::AROMATIC) {
+      count_ar++;
+    }
+  }
+  if (count_ar > 1) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
 
 IMPATOM_END_INTERNAL_NAMESPACE

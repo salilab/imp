@@ -43,6 +43,9 @@ IMPATOMEXPORT bool is_ATOM_del(const String& bond_line,
 //! in the mol2 file the atom type string starts at atom_type_field_
 static const unsigned mol2_type_field_ = 47;
 
+
+IMPATOMEXPORT bool check_arbond(Particle* atom_p);
+
 IMPATOM_END_INTERNAL_NAMESPACE
 
 #endif /* IMPATOM_INTERNAL_MOL_2_H */
