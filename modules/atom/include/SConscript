@@ -34,6 +34,7 @@ files = [
          'macros.h',
          'mol2.h',
          'pdb.h',
+         'protein_ligand_score.h',
          'smoothing_functions.h',
         ] \
         + SConscript('internal/SConscript')

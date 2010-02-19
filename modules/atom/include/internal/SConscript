@@ -4,6 +4,7 @@ files = [
          'bond_helpers.h',
          'mol2.h',
          'pdb.h',
+         'protein_ligand_internal_score.h',
         ]
 
 files = [File(x) for x in files]

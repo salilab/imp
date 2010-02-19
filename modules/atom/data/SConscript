@@ -3,6 +3,7 @@ Import('env')
 files = [
          'top.lib',
          'par.lib',
+         'protein_ligand_score.lib'
         ]
 
 # Install the data files:
