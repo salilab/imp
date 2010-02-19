@@ -10,15 +10,25 @@ understand the overall structure of \imp.
 \section im1 Theory
 
 Structure and dynamics modeling in \imp proceeds in a five stage iterative process
- -# Gathering of experimental data
- -# Choice of the representation scheme for the model
- -# Encoding of the data as a scoring function on the representation scheme
- -# Sampling of the possible models in the representation scheme to try to find good models
- -# Analysis of the found models to determine if more work is needed
+\dotgraph{ \dot
+ digraph example {
+    node [shape=record\, fontname= Helvetica\, fontsize=10]
+      a [label="1. Gathering of experimental data"\, URL="\ref dataacq"];
+      b [label="2. Choice of the representation\nscheme for the model"\, URL="\ref dataacq"];
+      c [label="3. Encoding of the data as a\nscoring function on the\nrepresentation scheme"\, URL="\ref dataenc"];
+      d [label="4. Sampling of the possible models\nin the representation scheme\nto try to find good models"\, URL="\ref sampling"];
+      e [label="5. Analysis of the found models\nto determine if more work\nis needed"\, URL="\ref analysis"];
+      a -> b [arrowhead="open"];
+      b -> c [arrowhead="open"]
+      c -> d [arrowhead="open"];
+      d -> e [arrowhead="open"];
+      e -> a [arrowhead="open"];
+    }
+\enddot
+}
 
 \imp provides tools to help address the last four of these
-stages. Unfortunately, it doesn't offer much help performing the
-experiments. We are working on that.
+stages.
 
 Knowledge about the system being modeled enters the process at all
 stages, but a few need extra note:
@@ -38,8 +48,9 @@ stages, but a few need extra note:
 \imp provides a large number of classes and functions from which to
 choose when solving a particular problem. Fortunately, these classes
 fall into a variety of categories.
-
-- Representation: representation in \imp is via a collection of
+-# \anchor dataacq Data acquisition:
+   we can't be much help here as we don't know what to do with test tubes.
+-# \anchor repsel Representation selection: representation in \imp is via a collection of
   particles (IMP::Particle objects). Each particle can contain one or
   more of the following sets of data
    - Cartesian coordinates (IMP::core::XYZ)
@@ -49,7 +60,7 @@ fall into a variety of categories.
    - chain IDs (IMP::atom::Chain)
    - domain extents (IMP::atom::Domain)
    - mass, in daltons (IMP::atom::Mass)
-   - charge in XXXX (IMP::atom::Charged)
+   - charge (IMP::atom::Charged)
    - relationships between parts of molecules (IMP::atom::Hierarchy)
    - bonds (IMP::atom::Bond and IMP::atom::Bonded)
    - rigid body coordinate frames (IMP::core::RigidBody)
@@ -58,29 +69,49 @@ fall into a variety of categories.
    - all of the members of a rigid body move along with the rigid body (IMP::core::RigidBody, IMP::core::RigidMember)
    - a centroid particle has Cartesian coordinates computed from the centroid of another set (IMP::core::Centroid)
    - a cover particle has a sphere containing another set of particles (IMP::core::Cover)
-  The data stored in a particle can be easily extended by adding a new IMP::Decorator type. 
-
-- Scoring: Proposed models are scored based on how well they match the
-  data. In \imp the scoring function is the sum of restraint
-  terms. Each restraint term has a corresponding IMP::Restraint object
-  which computes a score and derivatives based on a set of particles
-  in the IMP::Model. Restraints can be such things as how well a set of
-  particles fits an EM density map (IMP::em::FitRestraint), how close
-  the volume of a molecule is to a known value (IMP::core::VolumeRestraint),
-  penalize a set of spheres if they become disconnected
-  (IMP::core::ConnectivityRestraint) etc.
-
-- Sampling: It is then necessary to search for conformations of the model that
+  The data stored in a particle can be easily extended by adding a new IMP::Decorator type.\n\n
+  Representations can loaded from a number of standard file types, for example see
+  IMP::atom::read_pdb() and IMP::atom::read_mol2().
+-# \anchor dataenc Encoding the data as a scoring function:
+  Proposed models are scored based on how well they match the
+  data, with a low score meaning a closer fit than a high score. In
+  \imp the scoring function is the sum terms, each of which is
+  computed by an IMP::Restraint object. The scoring function terms can
+  based on things like
+    - how close a distance is to the measured value: IMP::core::DistanceRestraint
+    - how well the model fits a density map: IMP::em::FitRestraint
+    - how close the volume of a molecule is to the expected value: IMP::core::VolumeRestraint
+    - excluded volume: IMP::core::ExcludedVolumeRestraint
+    - connectivity of a subcomplex: IMP::core::ConnectivityRestraint
+    - the fit of the SAXS cure of a complex to a measured one: IMP::saxs::Restraint
+    - statistical potentials: IMP::atom::ProteinLigandRestraint
+    - torsion angles or bond angles: IMP::core::TorsionAngleRestraint, IMP::core::AngleRestraint
+    - etc.
+  Other terms can be formed by using IMP::SingletonScore, IMP::PairScore, IMP::TripletScore, IMP::QuadScore objects in conjuction with general purpose restraint creators. These allow large number of parts to be scored in similar ways more efficiently than creating many restraints. Examples using this include
+    - symmetry by using IMP::core::TransformedDistancePairScore coupled with IMP::container::PairsRestraint
+    - bond lengths using an IMP::atom::BondSingletonScore coupled with a IMP::container::SingletonsRestraint
+    - etc.
+-# \anchor sampling Sampling good conformations: It is then necessary to search for conformations of the model that
   have low scores (and therefore fit the data well). Sampling produces a set of
   conformations of the model, organized into an IMP::ConformationSet. Currently
   \imp provides two sampling protocols, IMP::core::MCCGSampler which uses a
-  combination of Monto Carlo and Conjugate Gradients with randomized starting
-  conformations and IMP::domino::DominoOptimizer which uses a graph based
-  inference algorithm.
-
-- Analysis: Finally, one needs to analyze the set of conformations produced by
+  combination of IMP::core::MonteCarlo and IMP::core::ConjugateGradients with
+  randomized starting conformations and IMP::domino::DominoOptimizer which uses
+  a graph based inference algorithm.
+-# \anchor analysis Analysis of good conformations:
+  Finally, one needs to analyze the set of conformations produced by
   sampling. \imp provides a variety of tools to help display the conformations,
-  in IMP::display, and to cluster them, in IMP::statistics. 
+  in IMP::display, and to cluster them, in IMP::statistics. Display capabilities
+  include
+  - export to Chimera via the IMP::display::ChimeraWriter
+  - export to Pymol via the IMP::display::PymolWriter
+  Clustering methods are currently based around k-means clustering
+  (IMP::statistics::get_lloyds_kmeans()) and supports
+  clustering of
+  - configurations of the model using IMP::statistics::ConfigurationSetXYZEmbedding
+  - arbitrary points using IMP::statistics::VectorDEmbedding
+  - density maps using IMP::statistics::HighDensityEmbedding
+  
 
 Coming up with the right choices for representation, scoring and sampling for
 a given system typically takes a few iterations and trial and error. \imp
@@ -104,10 +135,9 @@ provides tools to help monitor how things are performing.
   \imp is malfunctioning.
 
 - IO: \imp supports I/O to and from a variety of formats. To preserve the maximum amount
-  of information, one can used the IMP::core::read() and IMP::core::write() methods to
-  save and load a whole model to a human (and machine) readable file. IMP::display supports
-  export to a wide variety of graphical display formats and IMP::atom::read_pdb() and
-  IMP::atom::write_pdb() provide PDB-centric I/O.
+  of information, one can used the IMP::read_model() and IMP::write_model() methods to
+  save and load a whole model to a human (and machine) readable file. See also the
+  IMP::display module for geometry output and IMP::atom for biological formats.
 
 
 \section i6 Examples
@@ -122,10 +152,10 @@ The following setup code is ommitted from the C++ examples for clarity:
 #include <IMP/core.h>
 
 IMP::Pointer<IMP::Model> m= new IMP::Model();
-IMP::core::SingletonContainer ps;
+IMP::Pointer<IMP::container::SingletonContainer> sc= new IMP::container::SingletonContainer();
 for (int i=0; i< 100; ++i) {
     IMP::Particle* p=new IMP::Particle();
-    ps->add_particle(p);
+    sc->add_particle(p);
     m->add_particles(p);
     IMP::core::XYZRDecorator d= IMP::core::XYZRDecorator::setup_particle(p);
     d.set_coordinates_are_optimized(true);
@@ -145,25 +175,27 @@ Restrain the distance between the first two particles.
 
 
 \code
-IMP::core::Harmonic *uf= new IMP::core::Harmonic(0,1);
-IMP::core::SphereDistancePairScore *df= new IMP::core::SphereDistancePairScore(uf);
-IMP::core::PairRestraint* r= new IMP::core::PairRestraint(df, ps->get_particle(0), ps->get_particle(1));
+IMP::Pointer<IMP::core::Harmonic> uf= new IMP::core::Harmonic(0,1);
+IMP::Pointer<IMP::core::SphereDistancePairScore> df= new IMP::core::SphereDistancePairScore(uf);
+IMP::Pointer<IMP::core::PairRestraint> r= new IMP::core::PairRestraint(df, sc->get_particle(0), sc->get_particle(1));
 m->add_restraint(r);
 \endcode
 
 
 
 \subsection i8 Preventing collisions
-The IMP::core::ClosePairsContainer maintains a list of all pairs of particles which contains all pairs closer than min distance (between the spheres). The HarmonicLowerBound forces the spheres apart.
+The IMP::container::ClosePairsContainer maintains a list of all pairs of particles which contains all pairs closer than min distance (between the spheres). The IMP::core::HarmonicLowerBound forces the spheres apart.
 \htmlinclude excluded_volume.py.html
 
 \code
-IMP::core::ClosePairsContainer *nbl= new IMP::core::ClosePairsScoreState(ps, min_distance);
-IMP::core::HarmonicLowerBound* h= new IMP::core::HarmonicLowerBound(0,1);
-IMP::core::SphereDistancePairScore *sd= new IMP::core::SphereDistancePairScore(h);
-IMP::core::SingletonsRestraint* nbr= new IMP::core::SingletonsRestraint(sd, nbl);
+IMP::Pointer<IMP::container::ClosePairsContainer> nbl= new IMP::container::ClosePairsContainer(sc, 0,3);
+IMP::Pointer<IMP::core::HarmonicLowerBound> h= new IMP::core::HarmonicLowerBound(0,1);
+IMP::Pointer<IMP::core::SphereDistancePairScore> sd= new IMP::core::SphereDistancePairScore(h);
+IMP::Pointer<IMP::container::PairsRestraint> nbr= new IMP::container::PairsRestraint(sd, nbl);
 m->add_restraint(nbr);
 \endcode
+
+One can, instead, use the IMP::core::ExcludedVolumeRestraint which as the same effect.
 
 
 
@@ -178,14 +210,12 @@ Load a protein and restrain all the bonds to have the correct length. Bond angle
 \htmlinclude load_protein_restrain_bonds.py.html
 
 \code
-IMP::core::MolecularHierarchyDecorator prot=IMP::atom::read_pdb("my.pdb", m);
-IMP::core::BondDecorators bds= IMP::core::get_internal_bonds(prot);
-IMP::Particles ps(bds.size());
-for (unsigned int i=0; i< bds.size(); ++i) ps[i]= bds[i].get_particle();
-IMP::core::ListSingletonContainer *bl= new IMP::core::ListSingletonContainer(ps);
-IMP::core::Harmonic *h= new IMP::core::Harmonic(0,1);
-IMP::core::BondDecoratorSingletonScore* bs= new IMP::core::BondDecoratorSingletonScore(h);
-IMP::core::SingletonsRestraint *br= new IMP::core::SingletonsRestraint(bs, bl);
+IMP::atom::Hierarchy prot=IMP::atom::read_pdb("my.pdb", m);
+IMP::atom::Bonds bds= IMP::atom::get_internal_bonds(prot);
+IMP::Pointer<IMP::container::ListSingletonContainer> bl= new IMP::container::ListSingletonContainer(bds);
+IMP::Pointer<IMP::core::Harmonic> h= new IMP::core::Harmonic(0,1);
+IMP::Pointer<IMP::atom::BondSingletonScore> bs= new IMP::atom::BondSingletonScore(h);
+IMP::Pointer<IMP::container::SingletonsRestraint> br= new IMP::container::SingletonsRestraint(bs, bl);
 m->add_restraint(br);
 \endcode
 
@@ -200,12 +230,9 @@ A basic setup for sampling configurations of a model.
 \htmlinclude basic_optimization.py.html
 
 \code
-IMP::Pointer<IMP::Model> m= new IMP::Model();
-IMP::Particles particles = setup_model(m);
-
 IMP::Pointer<IMP::core::MCCGSampler> sampler= new IMP::core::MCCGSampler(m);
 
-Pointer<ConfigurationSet> configs= sample->sample(10);
+IMP::Pointer<IMP::ConfigurationSet> configs= sample->sample(10);
 \endcode
 
 \subsection i11 Writing a simple restraint
@@ -259,37 +286,32 @@ generate the connection between the two languages. Key differences are
   classes are exported (IMP::algebra::BoundingBox3D and
   IMP::Particles, respectively). New versions can be easily added, so
   feel free to request them when desired.
-
-- Iterators on C++ containers do not easily into Python. For
-  every iterator generating pair \c foos_begin(), \c foos_end(), we
-  provide a method \c get_foos() which can be used with python \c
-  foreach loops.
-
+- Iterators on C++ containers do not translate easily into Python. As a
+  result, for every iterator generating pair \c foos_begin(),
+  \c foos_end(), we provide a method \c get_foos() which can be used
+  with python \c foreach loops.
 - Macros such as IMP_RESTRAINT(), IMP_LOG(), IMP_USAGE_CHECK() are not
   available in Python. While we could, conceivably, provide python
   function equivalents, we do not.
-
 - Oddly, the Python side is much stricter about converting between
   different types. In C++ you can call a function that takes a \c
   Particle* with a \c Decorator and the decorator will automatically
   be converted. It will not on the python side. Similarly for
   converting between \c ParticlesTemp and \c Particles.
-
 - All \imp exceptions are exposed as identical Python exception
-classes. The class hierarchy is similar (e.g. all exceptions derive
-from IMP::Exception, so "except IMP.Exception" will catch all IMP
-exceptions), except for convenience some generic IMP exceptions also
-derive from their standard Python equivalents (e.g. IMP.IndexException
-derives from the standard Python IndexError as well as
-IMP::Exception). Thus, an IMP::IndexException could be caught in
-Python most specifically with "except IMP.IndexException" but also
-with "except IMP.Exception" or "except IndexError".
-
+  classes. The class hierarchy is similar (e.g. all exceptions derive
+  from IMP::Exception, so "except IMP.Exception" will catch all IMP
+  exceptions), except for convenience some generic IMP exceptions also
+  derive from their standard Python equivalents
+  (e.g. IMP.IndexException derives from the standard Python IndexError
+  as well as IMP::Exception). Thus, an IMP::IndexException could be
+  caught in Python most specifically with "except IMP.IndexException"
+  but also with "except IMP.Exception" or "except IndexError".
 - All objects in python are reference counted so that they are cleaned
-up when they are no longer in use. \imp also uses reference counting
-on the C++ side so that memory managment works naturally across the
-language barrier. See IMP::RefCounted for a detailed description of
-how to do \imp reference counting in C++.
+  up when they are no longer in use. \imp also uses reference counting
+  on the C++ side so that memory managment works naturally across the
+  language barrier. See IMP::RefCounted for a detailed description of
+  how to do \imp reference counting in C++.
 
 
 \section conventions IMP conventions
@@ -330,8 +352,8 @@ how to do \imp reference counting in C++.
     IMP::Exception for a list of existing exceptions. These C++
     exceptions are mapped onto the normal python exception types.
 
-
-    \subsection objects Values and Objects \anchor values
+    \anchor values
+    \subsection objects Values and Objects
     As is conventional in C++, \imp classes are divided into two types
     - \e value \e classes which are be passed, stored, and returned by value
       (or, for speed, \c const&). Examples include IMP::algebra::Vector3D,
@@ -341,7 +363,12 @@ how to do \imp reference counting in C++.
 
     - \e object \e classes which are passed and returned via pointers and
       stored using reference counted pointers (eg IMP::Pointer). In
-      \imp, these classes all inherit from IMP::Object.
+      \imp, these classes all inherit from IMP::Object. For example always
+      do things like this in C++:
+      \code
+      IMP::Pointer<IMP::Model> m= new IMP::Model();
+      IMP_NEW(Model, m, ()); // a macro which expands to the above
+      \endcode
       \anchor tempornot Since reference counting can be expensive,
       it can be useful to pass, return or store a non-reference
       counted list of objects (or IMP::Decorator). This should only
