@@ -222,7 +222,7 @@ void do_benchmark(std::string descr, std::string fname) {
   // read pdb, prepare particles
   Model *model = new IMP::Model();
   atom::Hierarchy mhd
-    = read_pdb(fname, model, NonWaterNonHydrogenSelector());
+    = read_pdb(fname, model, NonWaterNonHydrogenPDBSelector());
   IMP::Particles particles =
     get_by_type(mhd, atom::ATOM_TYPE);
   //std::cout << "Number of particles " << particles.size() << std::endl;
