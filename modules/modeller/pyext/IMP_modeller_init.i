@@ -458,7 +458,7 @@ def _copy_bonds(pdb, atoms, model):
             bb= IMP.atom.Bonded.decorate_particle(pb)
         else:
             bb= IMP.atom.Bonded.setup_particle(pb)
-        bp= IMP.atom.bond(ba, bb, IMP.atom.Bond.COVALENT)
+        bp= IMP.atom.bond(ba, bb, IMP.atom.Bond.SINGLE)
 
 
 class ModelLoader(object):
