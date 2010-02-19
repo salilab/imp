@@ -1,5 +1,7 @@
 /** \page recent Change History
 \par Week of Feb 14, 2010
+- The IMP::atom::Bond types were rearranged to reconcile the protein-centric classification with ligand support.
+
 - IMP::atom::Atom no longer has charge since we have IMP::atom::Charged.
 
 - IMP::atom::read_mol2() and IMP::atom::write_mol2() were added
