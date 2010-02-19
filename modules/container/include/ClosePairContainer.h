@@ -35,7 +35,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
     \verbinclude nonbonded_interactions.py
 
     \note This class uses the IMP::core::BoxSweepClosePairsFinder by
-    default if \ref CGAL "CGAL" is available.
+    default if \ref cgal "CGAL" is available.
 
     \ingroup CGAL
     \see CloseBipartitePairContainer
