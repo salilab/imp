@@ -16,7 +16,9 @@
 IMPATOM_BEGIN_NAMESPACE
 
 /**
-   Add bonds using definitions from given force field parameters.
+   Add bonds using definitions from given force field parameters. Note
+   that, at the moment, all added bonds are reported as
+   IMP::Bond::SINGLE, whether or not they actually are.
 
    \relatesalso Hierarchy
    \relatesalso ForceFieldParameters
