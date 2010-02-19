@@ -9,18 +9,18 @@ class Representation(object):
     """Store Representation."""
 
     def __init__(self):
-        """"""
+        """ """
         self._children = list()
         self._model = None
 
     def get_imp_hierarchy_by_id(self, id):
-        """Return an \imp hierarchy by particle id.
+        """Return an IMP::atom::Hierarchy by particle id.
            @param id Particle id.
-           @return An \imp hierarchy."""
+           @return An IMP::atom::Hierarchy hierarchy."""
         return self.find_by_id(id).model_decorator
 
     def get_root_imp_hierarchy(self):
-        """Return the root of the \imp hierarchy"""
+        """Return the root of the IMP::atom::Hierarchy"""
         return self.model_decorator
 
     def find_all_by_id(self, id): # assuming there are many obj with the same id
@@ -56,7 +56,7 @@ class Representation(object):
         return None
 
     def to_model(self, model=None):
-        """Return an \imp model that contains the representation"""
+        """Return an IMP::Model that contains the representation"""
         if model is None:
             model = self._model
             if model is None:
