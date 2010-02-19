@@ -23,27 +23,7 @@ IMPATOM_BEGIN_NAMESPACE
 Mol2Selector::~Mol2Selector(){}
 
 
-IMPATOMEXPORT bool check_arbond(Particle* atom_p) {
-  Int bond_number, type, i;
-  Int count_ar=0;
-  Bond bond_d;
 
-  Bonded bonded_d = Bonded(atom_p);
-  bond_number = bonded_d.get_number_of_bonds();
-  for(i=0; i<bond_number; i++) {
-    bond_d = bonded_d.get_bond(i);
-    type = bond_d.get_type();
-    if(type == Bond::AROMATIC) {
-      count_ar++;
-    }
-  }
-  if (count_ar > 1) {
-    return true;
-  }
-  else {
-    return false;
-  }
-}
 
 namespace {
 
@@ -64,7 +44,7 @@ namespace {
     mol2_file << std::setw(10) << std::setprecision(4) << xyz.get_z() << " ";
     mol2_file.setf(std::ios::left,std::ios::adjustfield);
     if(atom_type[0] == 'O' || atom_type[0] == 'S') {
-      if(check_arbond(a)) {
+      if(internal::check_arbond(a)) {
         atom_type = atom_type[0] + ".ar";
       }
     }
@@ -94,9 +74,9 @@ namespace {
         oss << std::setw(5) << atom_bid << std::setw(5) << atom_aid;
       }
       switch (b.get_type()) {
-      case Bond::HYDROGEN:
-      case Bond::DISULPHIDE:
-      case Bond::SALT:
+      case Bond::SINGLE:
+      case Bond::DOUBLE:
+      case Bond::TRIPLE:
         oss << " " << std::setw(1) << b.get_type() << std::endl;
         break;
       case Bond::AMIDE :
@@ -105,7 +85,7 @@ namespace {
       case Bond::AROMATIC :
         oss << " " << std::setw(2) << "ar" << std::endl;
         break;
-      case Bond::DUMMY :
+      case Bond::NONBIOLOGICAL :
         oss << " " << std::setw(2) << "du" << std::endl;
         break;
       case Bond::UNKNOWN :
@@ -182,13 +162,13 @@ namespace {
 
     Bond::Type type;
     if (bond_type.compare("1") == 0) {
-      type = Bond::HYDROGEN;
+      type = Bond::SINGLE;
     }
     else if (bond_type.compare("2") == 0) {
-      type = Bond::DISULPHIDE;
+      type = Bond::DOUBLE;
     }
     else if (bond_type.compare("3") == 0) {
-      type = Bond::SALT;
+      type = Bond::TRIPLE;
     }
     else if (bond_type.compare("am") == 0) {
       type = Bond::AMIDE;
@@ -197,7 +177,7 @@ namespace {
       type = Bond::AROMATIC;
     }
     else if (bond_type.compare("du") == 0) {
-      type = Bond::DUMMY;
+      type = Bond::NONBIOLOGICAL;
     }
     else if (bond_type.compare("un") == 0) {
       type = Bond::UNKNOWN;
