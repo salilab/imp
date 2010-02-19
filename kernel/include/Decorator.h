@@ -533,6 +533,12 @@ public:
       internal::ref(D::get_particle());
     }
   }
+  const D&get_decorator() const {
+    return static_cast<const D&>(*this);
+  }
+  D&get_decorator() {
+    return static_cast<D&>(*this);
+  }
 #endif
 };
 
