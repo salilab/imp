@@ -152,7 +152,7 @@ get_residue(Hierarchy mhd,
   if (hd== IMP::core::Hierarchy()) {
     return Hierarchy();
   } else {
-    return hd;
+    return Hierarchy(hd);
   }
 }
 
@@ -178,6 +178,16 @@ namespace {
       }
       if (h.get_as_atom() && h.get_number_of_children() != 0) {
         TEST_FAIL("Atoms cannot have children");
+      }
+      if (h.get_as_atom()) {
+        Atom a= h.get_as_atom();
+        if (a.get_atom_type().get_string().find("HET_") == std::string::npos) {
+          try {
+            get_residue(a);
+          } catch (...) {
+            TEST_FAIL("Atom " << a << " is not part of residue");
+          }
+        }
       }
       if (h.get_parent() != Hierarchy()) {
         Hierarchy p = h.get_parent();
@@ -410,6 +420,22 @@ void destroy(Hierarchy d) {
 }
 
 
+bool get_is_heterogen(Hierarchy h) {
+  if (Atom::particle_is_instance(h)) {
+    Atom a(h);
+    bool ret= (a.get_atom_type() >= AT_UNKNOWN);
+    IMP_INTERNAL_CHECK((ret && a.get_atom_type().get_string().find("HET_")==0)
+                       || (!ret && a.get_atom_type().get_string().find("HET_")
+                           == std::string::npos),
+                       "Unexpected atom type found " << a.get_atom_type()
+                       << (ret?" is ": " is not ") << "a heterogen.");
+    return ret;
+  } else {
+    Residue r(h);
+    return (r.get_residue_type()>= DTHY);
+  }
+}
+
 
 
 algebra::BoundingBox3D get_bounding_box(const Hierarchy &h) {
@@ -426,6 +452,7 @@ algebra::BoundingBox3D get_bounding_box(const Hierarchy &h) {
   IMP_LOG(VERBOSE, "Bounding box is " << bb << std::endl);
   return bb;
 }
+
 
 algebra::Sphere3D get_bounding_sphere(const Hierarchy &h) {
   Particles rep= get_leaves(h);

@@ -191,8 +191,9 @@ public:
     cannot be the parent of a Chain.
     - the leaves always have coordinates and mass
     - all particles in hierarchy are from the same model
-    - any Atom that is part of a protein, DNA or RNA has a Residue
-    for as parent
+    - all Atoms has a Residue for as parent
+    - any Atom with a non-heterogen atom type is part of a protein,
+    DNA or RNA molecule.
 
     The get_is_valid() method checks some of these.
 
@@ -414,7 +415,15 @@ inline void show(Hierarchy h, std::ostream &out=std::cout) {
 */
 IMPATOMEXPORT IMP::core::RigidBody rigid_body_setup_hierarchy(Hierarchy h);
 
-
+//! Return true if the piece of hierarchy should be classified as a heterogen
+/** For the purposes of classification, a heterogen is anything that
+    - is a heterogen atom (one whose name starts with HET_)
+    - is or is part of a Residue that is not a normal protein, rna or
+      dna residue
+    - or is not part of a Chain
+    For the moment, this can only be called on residues or atoms.
+*/
+IMPATOMEXPORT bool get_is_heterogen(Hierarchy h);
 
 //! Clone the Hierarchy
 /** This method copies the Bond, Bonded, Atom,
