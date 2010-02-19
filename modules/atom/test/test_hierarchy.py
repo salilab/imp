@@ -56,13 +56,13 @@ class HierarchyTests(IMP.test.TestCase):
         m = IMP.Model()
         # Bonds external to the hierarchy should not be counted
         r1, r2, bonded1, bonded2 = _make_bonded_atoms(m)
-        IMP.atom.bond(bonded1[0], bonded2[0], IMP.atom.Bond.COVALENT)
+        IMP.atom.bond(bonded1[0], bonded2[0], IMP.atom.Bond.SINGLE)
         self.assertEqual(len(IMP.atom.get_internal_bonds(r1)), 0)
         self.assertEqual(len(IMP.atom.get_internal_bonds(r2)), 0)
 
         # Each bond should only be counted once
         r1, r2, bonded1, bonded2 = _make_bonded_atoms(m)
-        IMP.atom.bond(bonded1[0], bonded1[3], IMP.atom.Bond.COVALENT)
+        IMP.atom.bond(bonded1[0], bonded1[3], IMP.atom.Bond.SINGLE)
         bonds = IMP.atom.get_internal_bonds(r1)
         self.assertEqual(len(bonds), 1)
         self.assertEqual(len(IMP.atom.get_internal_bonds(r2)), 0)
@@ -73,7 +73,7 @@ class HierarchyTests(IMP.test.TestCase):
         r1, r2, bonded1, bonded2 = _make_bonded_atoms(m)
         for end in (1, 2, 3):
             IMP.atom.bond(bonded1[0], bonded1[end],
-                          IMP.atom.Bond.COVALENT)
+                          IMP.atom.Bond.SINGLE)
         self.assertEqual(len(IMP.atom.get_internal_bonds(r1)), 3)
 
     def test_equality(self):
