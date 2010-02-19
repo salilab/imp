@@ -16,19 +16,7 @@
 
 IMPMODELLER_BEGIN_NAMESPACE
 
-//! A single binormal term in a MultipleBinormalRestraint.
-class BinormalTerm
-{
-  double correlation_, weight_;
-  std::pair<double, double> means_, stdevs_;
-public:
-  void set_correlation(double correlation) { correlation_ = correlation; }
-  void set_weight(double weight) { weight_ = weight; }
-  void set_means(std::pair<double, double> means) { means_ = means; }
-  void set_standard_deviations(std::pair<double, double> stdevs) {
-    stdevs_ = stdevs;
-  }
-};
+class BinormalTerm;
 
 //! Modeller-style multiple binormal (phi/psi) restraint.
 class IMPMODELLEREXPORT MultipleBinormalRestraint : public Restraint
@@ -48,6 +36,25 @@ public:
   }
 
   IMP_RESTRAINT(MultipleBinormalRestraint)
+};
+
+//! A single binormal term in a MultipleBinormalRestraint.
+class BinormalTerm
+{
+  double correlation_, weight_;
+  std::pair<double, double> means_, stdevs_;
+
+  double evaluate(const double dihedral[2], double &sin1, double &sin2,
+                  double &cos1, double &cos2, double &rho) const;
+public:
+  friend class MultipleBinormalRestraint;
+
+  void set_correlation(double correlation) { correlation_ = correlation; }
+  void set_weight(double weight) { weight_ = weight; }
+  void set_means(std::pair<double, double> means) { means_ = means; }
+  void set_standard_deviations(std::pair<double, double> stdevs) {
+    stdevs_ = stdevs;
+  }
 };
 
 IMPMODELLER_END_NAMESPACE
