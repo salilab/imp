@@ -452,13 +452,13 @@ namespace {
     }
     for (int i=out.size()-1; i > -1; --i) {
       Object *o= om[out[i]];
-      IMP_LOG(VERBOSE, "Trying object: " << o->get_name());
+      //IMP_LOG(VERBOSE, "Trying object: " << o->get_name());
       ScoreState *ss= dynamic_cast<ScoreState*>(o);
       if (ss) {
-        IMP_LOG(VERBOSE, " yup." << std::endl);
+        //IMP_LOG(VERBOSE, " yup." << std::endl);
         ret.push_back(ss);
       } else {
-        IMP_LOG(VERBOSE, " nope." << std::endl);
+        //IMP_LOG(VERBOSE, " nope." << std::endl);
       }
     }
     return ret;
@@ -477,7 +477,7 @@ namespace {
       DependencyVertex v= front.back();
       front.pop_back();
       Object *o= om[v];
-      std::cout << "Visiting " << o->get_name() << std::endl;
+      //std::cout << "Visiting " << o->get_name() << std::endl;
       Container *c= dynamic_cast<Container*>(o);
       if (c) {
         cout.push_back(c);
