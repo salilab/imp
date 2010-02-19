@@ -25,5 +25,5 @@ for f in fs:
     all.append(prog)
 
 SConscript('test/SConscript', exports=['all', 'penv'])
-
+env.Alias("all", all)
 Return('all')
