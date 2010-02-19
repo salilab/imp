@@ -266,8 +266,7 @@ bool check_arbond(Particle* atom_p);
 void write_pdb(const Particles& ps, TextOutput out)
 {
   int last_index=0;
-  bool use_input_index=true;
-  for (unsigned int i=0; i< ps.size(); ++i) {
+  bool use_input_index=true;  for (unsigned int i=0; i< ps.size(); ++i) {
     if (Atom(ps[i]).get_input_index() != last_index+1) {
       use_input_index=false;
       break;
@@ -281,28 +280,10 @@ void write_pdb(const Particles& ps, TextOutput out)
       Residue rd= get_residue(ad);
       // really dumb and slow, fix later
       char chain;
-      try {
-        Chain c=get_chain(rd);
+      Chain c=get_chain(rd, true);
+      if (c) {
         chain= c.get_id();
-      } catch (const ValueException &) {
-        /*std::string atom_type = get_atom_type().get_string();
-        if (atom_type[0] == 'O' || atom_type[0] == 'S') {
-          if (check_arbond(p)) {
-            String stratype (1, atom_type[0]);
-            atom_type = stratype + ".ar";
-          }
-        }
-        if (atom_type.find('.') != String::npos) {
-          atom_type.erase(atom_type.find('.'), 1);
-        }
-        out.get_stream() << pdb_string(core::XYZ(ps[i]).get_coordinates(),
-                                       use_input_index? ad.get_input_index(): i,
-                                       atom_type,
-                                       rd.get_residue_type(),
-                                       c.get_id(),
-                                       rd.get_index(),
-                                       rd.get_insertion_code(),
-                                       ad.get_element());*/
+      } else {
         chain=' ';
         /*
         pdb_file << std::setw(7) << atomid << " ";
