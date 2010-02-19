@@ -18,6 +18,7 @@ Embedding::~Embedding(){}
 ConfigurationSetXYZEmbedding
 ::ConfigurationSetXYZEmbedding(ConfigurationSet *cs,
                                SingletonContainer *sc):
+  Embedding("ConfiguringEmbedding"),
   cs_(cs), sc_(sc){}
 
 Floats ConfigurationSetXYZEmbedding::get_point(unsigned int a) const {
