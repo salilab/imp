@@ -6,14 +6,14 @@ import IMP.atom
 import IMP.display
 
 class SimplifyTests(IMP.test.TestCase):
+    def _residual_cond(self,x):
+        if x != 0:
+            return 1
+        else:
+            return 0
 
     def test_simplify_by_residue(self):
         """Test protein simplification by residues"""
-        def residual_cond(x):
-            if x != 0:
-                return 1
-            else:
-                return 0
         IMP.set_log_level(IMP.SILENT)#VERBOSE)
         m= IMP.Model()
         mh= IMP.atom.read_pdb(self.get_input_file_name('input.pdb'), m)
@@ -27,7 +27,7 @@ class SimplifyTests(IMP.test.TestCase):
             for p in IMP.atom.get_leaves(mh_simp):
                 d= IMP.core.XYZR(p.get_particle())
                 w.add_geometry(IMP.display.SphereGeometry(d.get_sphere()))
-            o=residual_cond(num_residues%res_segment)
+            o=self._residual_cond(num_residues%res_segment)
             self.assertEqual(num_residues/res_segment+o, len(IMP.core.get_leaves(mh_simp)))
 
 
@@ -48,8 +48,8 @@ class SimplifyTests(IMP.test.TestCase):
             start=start+step
             #print segs[-1]
         mh_simp= IMP.atom.create_simplified_along_backbone(IMP.atom.Chain(chains[0].get_particle()),segs)
-        # sloppy
-        self.assertEqual(num_res/step+1,len(IMP.core.get_leaves(mh_simp)))
+        self.assertEqual(len(segs),
+                         len(IMP.core.get_leaves(mh_simp)))
 
 
 if __name__ == '__main__':
