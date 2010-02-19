@@ -43,7 +43,7 @@ public:
 
     See ConfigurationSet for more information about the input.
 */
-class IMPSTATISTICSEXPORT ConfigurationSetXYZEmbedding {
+class IMPSTATISTICSEXPORT ConfigurationSetXYZEmbedding: public Embedding {
   mutable Pointer<ConfigurationSet> cs_;
   Pointer<SingletonContainer> sc_;
 public:
