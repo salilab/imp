@@ -33,6 +33,7 @@ files = [
          'hierarchy_tools.cpp',
          'mol2.cpp',
          'pdb.cpp',
+         'protein_ligand_score.cpp',
          'smoothing_functions.cpp',
         ] \
         + SConscript('internal/SConscript')

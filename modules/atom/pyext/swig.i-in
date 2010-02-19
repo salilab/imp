@@ -147,6 +147,7 @@ def __iter__(self):
 %include "IMP/atom/BondedPairFilter.h"
 %include "IMP/atom/hierarchy_tools.h"
 %include "IMP/atom/mol2.h"
+%include "IMP/atom/protein_ligand_score.h"
 
 namespace IMP {
   namespace atom {
