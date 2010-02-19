@@ -68,7 +68,8 @@ int main(int argc, char **argv)
   // read pdb, prepare particles
   IMP::Pointer<IMP::Model> model(new IMP::Model());
   IMP::atom::Hierarchy mhd =
-    IMP::atom::read_pdb(pdb, model, IMP::atom::NonWaterNonHydrogenSelector());
+    IMP::atom::read_pdb(pdb, model,
+                        IMP::atom::NonWaterNonHydrogenPDBSelector());
   IMP::Particles particles = get_by_type(mhd, IMP::atom::ATOM_TYPE);
 
   // either computed or read from dat file
