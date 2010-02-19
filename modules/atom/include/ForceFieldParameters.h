@@ -37,7 +37,7 @@ protected:
   class Bond {
   public:
     Bond(AtomType type1, AtomType type2,
-         IMP::atom::Bond::Type bond_type = IMP::atom::Bond::COVALENT) :
+         IMP::atom::Bond::Type bond_type = IMP::atom::Bond::SINGLE) :
       type1_(type1), type2_(type2), bond_type_(bond_type) {}
     AtomType type1_,type2_;
     IMP::atom::Bond::Type bond_type_;

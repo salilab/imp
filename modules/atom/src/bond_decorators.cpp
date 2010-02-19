@@ -34,7 +34,7 @@ void Bond::show(std::ostream &out) const
   out << "Bond between "
       << get_bonded(0).get_particle()->get_name() << " and "
       << get_bonded(1).get_particle()->get_name();
-  if (get_type() != CUSTOM) {
+  if (get_type() != NONBIOLOGICAL) {
     out << " of type " << get_type();
   }
   if (get_order() != 1) out << " and order " << get_order();
