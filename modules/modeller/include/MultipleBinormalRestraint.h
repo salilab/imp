@@ -19,13 +19,21 @@ IMPMODELLER_BEGIN_NAMESPACE
 class BinormalTerm;
 
 //! Modeller-style multiple binormal (phi/psi) restraint.
+/** This implements a multiple binormal restraint on the two dihedral angles
+    between the two quads of Particles passed to the restraint, by implementing
+    equation A.76 in the
+    \external{salilab.org/modeller/9v7/manual/node441.html, Modeller manual}.
+    The two angles are typically the phi and psi dihedrals of a residue.
+ */
 class IMPMODELLEREXPORT MultipleBinormalRestraint : public Restraint
 {
   std::vector<BinormalTerm> terms_;
   ParticleQuad q1_, q2_;
 public:
   //! Create the multiple binormal restraint.
-  /** \param[in] q1 First quad of particles.
+  /** After creating the restraint, call add_term one or more times to add
+      BinormalTerms to the restraint.
+      \param[in] q1 First quad of particles.
       \param[in] q2 Second quad of particles.
    */
   MultipleBinormalRestraint(const ParticleQuad &q1, const ParticleQuad &q2);
