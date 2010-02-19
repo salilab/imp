@@ -143,7 +143,7 @@ sources = headers + Glob("#/kernel/doc/*.dox") + [example_index] \
 if env['python']:
     sources += Glob("#/build/lib/IMP/*.py", ondisk=False) \
                + Glob("#/build/lib/IMP/*/*.py", ondisk=False)
-examples= Glob("#/modules/examples/src/*.cpp") + Glob("#/build/include/IMP/examples/*.h")\
+examples= Glob("#/modules/example/src/*.cpp") + Glob("#/build/include/IMP/example/*.h")\
     + Glob("#/modules/*/examples/*.py") + Glob("#/modules/*/examples/*/*.py")\
     + Glob("#/modules/*/examples/*.cpp") + Glob("#/modules/*/examples/*/*.cpp")\
     + Glob("#/modules/*/examples/.generated/*.html") \
