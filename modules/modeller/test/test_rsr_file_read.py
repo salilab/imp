@@ -97,6 +97,16 @@ class ModellerRestraintsTests(IMP.test.TestCase):
                          values=[100.0, 200.0, 300.0, 400.0, 300.0])
         restraints.append(r)
 
+        # Test multiple binormal restraint
+        r = forms.multi_binormal(features=(features.dihedral(*at[0:4]),
+                                           features.dihedral(*at[4:8])),
+                                 group=physical.xy_distance,
+                                 weights=[0.2,0.8,0.3],
+                                 means=[[0.1,0.2],[0.3,0.4],[0.5,0.6]],
+                                 stdevs=[[0.1,0.2],[0.3,0.4],[0.1,0.3]],
+                                 correls=[0.3,0.6,0.9])
+        restraints.append(r)
+
         for r in restraints:
             modmodel.restraints.clear()
             modmodel.restraints.add(r)
