@@ -289,11 +289,15 @@ class Residue;
 
 //! Return the Residue containing this atom
 /** The atom must be part of a molecular hierarchy.
+
+    \throw ValueException if no residue is found, unless
+    nothrow is true.
+
     \relatesalso Atom
     \relatesalso Residue
     \relatesalso Hierarchy
  */
-IMPATOMEXPORT Residue get_residue(Atom d);
+IMPATOMEXPORT Residue get_residue(Atom d, bool nothrow=false);
 
 //! Return a particle atom from the residue
 /** The residue must be part of a molecular hierarchy.

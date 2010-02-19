@@ -66,7 +66,6 @@ NAME_ALIAS(GUA, ADE_G, "GUA");
 NAME_ALIAS(THY, ADE_T, "THY");
 
 
-
 void Residue::show(std::ostream &out) const
 {
   out << "residue #" << get_index() << " of name "
@@ -94,13 +93,16 @@ IntKey Residue::get_insertion_code_key() {
   return k;
 }
 
-Chain get_chain(Residue rd) {
+Chain get_chain(Residue rd, bool nothrow) {
   Hierarchy mhd(rd.get_particle());
   do {
     mhd= mhd.get_parent();
     if (mhd == Hierarchy()) {
-      IMP_THROW("Residue is not the child of a chain",
-                ValueException);
+      if (nothrow) return Chain();
+      else {
+        IMP_THROW("Residue is not the child of a chain",
+                  ValueException);
+      }
     }
     if (Chain::particle_is_instance(mhd)) {
       return Chain(mhd);
