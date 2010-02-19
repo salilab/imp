@@ -204,8 +204,11 @@ IMP_DECORATORS(Residue, Hierarchies);
 /** \decoratorstemp{Residue}
 */
 
-/** \relatesalso Residue */
-IMPATOMEXPORT Chain get_chain(Residue rd);
+/** Return the chain containing the residue.
+    \throw ValueException if no residue is found, unless
+    nothrow is true.
+    \relatesalso Residue */
+IMPATOMEXPORT Chain get_chain(Residue rd, bool nothrow=false);
 
 /** \relatesalso Residue
 

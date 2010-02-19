@@ -300,12 +300,16 @@ IntKey Atom::get_input_index_key() {
   return k;
 }
 
-Residue get_residue(Atom d) {
+Residue get_residue(Atom d, bool nothrow) {
   Hierarchy mhd(d.get_particle());
   do {
     mhd= mhd.get_parent();
     if (mhd== Hierarchy()) {
-      throw UsageException("Atom is not the child of a residue");
+      if (nothrow) return Residue();
+      else {
+        IMP_THROW("Atom is not the child of a residue "  << d,
+                  ValueException);
+      }
     }
   } while (!Residue::particle_is_instance(mhd.get_particle()));
   Residue rd(mhd.get_particle());
