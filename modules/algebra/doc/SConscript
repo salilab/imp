@@ -51,10 +51,6 @@ available if needed. More information can be found on the
 \\external{www.cgal.org/license.html, CGAL license page}.\\n\\n
 Certain functionality provided in \\imp requires or benefits from using CGAL.
 
-
-*/
-
-
 """,
                  publications=env.StandardPublications(),
                  license=env.StandardLicense())
