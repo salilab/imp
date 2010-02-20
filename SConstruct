@@ -90,4 +90,6 @@ Clean('all', ['build/tmp/',
 Clean('all', Glob('scons_tools/*.pyc')\
           + Glob('tools/*.pyc'))
 
-env.Default('tools')
+env.Alias(env.Alias('all'), 'tools')
+env.Alias(env.Alias('test'), env.Alias('all'))
+env.Default(env.Alias('all'))
