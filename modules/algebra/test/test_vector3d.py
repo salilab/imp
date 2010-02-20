@@ -51,6 +51,19 @@ class Vector3DTests(IMP.test.TestCase):
         self.assertInTolerance(v1.scalar_product(v2), v2 * v1, .1)
         self.assertInTolerance(v1.scalar_product(v2), 18.0, .1)
 
+    def test_product_scalar(self):
+        """Check that multiplying vectors by scalars works"""
+        v= IMP.algebra.Vector3D(1.0,2.0, 3.0)
+        av= 3.0*v
+        va= 3.0*v
+        for i in range(0,3):
+            self.assertEqual(av[0], 3.0)
+            self.assertEqual(va[0], 3.0)
+            self.assertEqual(av[1], 6.0)
+            self.assertEqual(va[1], 6.0)
+            self.assertEqual(av[2], 9.0)
+            self.assertEqual(va[2], 9.0)
+
     def test_vector_product(self):
         """Check Vector3D vector product"""
         v1 = IMP.algebra.Vector3D(1.0, 2.0, 3.0)
