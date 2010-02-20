@@ -18,7 +18,7 @@ ColorizePython = Builder(action=Action(_action_colorize_python,
 
 
 def nice_name(string):
-    return string.title().replace("_", " ").replace("Cxx", "C++")
+    return string[string.rfind("examples/")+9:]
 
 def write_doxygen(env, name, files, outputname):
     #print "writing "+outputname
@@ -29,7 +29,7 @@ def write_doxygen(env, name, files, outputname):
         if str(f).endswith(".py") or str(f).endswith(".cpp"):
             rm= open(os.path.splitext(f.abspath)[0]+".readme", "r").read()
             nm= os.path.splitext(os.path.split(str(f))[1])[0]
-            outfile.write("\section " +nm + " " + nice_name(nm)+"\n\n")
+            outfile.write("\section " +nm + " " + nice_name(f.abspath)+"\n\n")
             outfile.write(rm+"\n\n")
         if str(f).endswith(".py"):
             outfile.write("\htmlinclude "+ nm+".py.html\n\n")
