@@ -1,3 +1,4 @@
 Import('env')
 
-env.IMPModuleTest()
+env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
+                  cpp_tests= env.IMPModuleGetCPPTests())

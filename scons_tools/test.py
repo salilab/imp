@@ -1,5 +1,7 @@
 from SCons.Script import Glob, Dir, File, Builder, Action
 import pyscanner
+import os
+import os.path
 
 
 
@@ -26,3 +28,36 @@ def _print_unit_test(target, source, env):
 UnitTest = Builder(action=Action(_action_unit_test,
                                 _print_unit_test),
                    source_scanner=pyscanner.PythonScanner)
+
+
+
+def _action_cpp_test(target, source, env):
+    #app = "cd %s; %s %s %s -v > /dev/null"
+    out= open(target[0].abspath, "w")
+    print >> out, """
+import unittest
+import IMP
+import IMP.test
+import os
+import os.path
+
+class DirectoriesTests(IMP.test.TestCase):
+"""
+    for t in source:
+        nm= os.path.split(str(t))[1].replace(".", "_")
+        print >> out, """
+    def test_%(name)s(self):
+       \"\"\"Running C++ test %(name)s\"\"\"
+       self.assert_(os.system("%(path)s")==0)
+""" %{'name':nm, 'path':t.abspath}
+    print >> out, """
+if __name__ == '__main__':
+    unittest.main()
+"""
+
+
+def _print_cpp_test(target, source, env):
+    print "Generating cpp testing harness"
+
+CPPTestHarness = Builder(action=Action(_action_cpp_test,
+                                       _print_cpp_test))

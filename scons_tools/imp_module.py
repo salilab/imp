@@ -304,7 +304,7 @@ def IMPModuleExamples(env, example_files, data_files):
     add_to_global_alias(env, 'doc', 'dox-examples')
     return test
 
-def IMPModuleBin(envi, files, required_modules=[], extra_libs=[], install=True):
+def _make_programs(envi, required_modules, extra_libs, install, files):
     from scons_tools import get_bin_environment
     env= get_bin_environment(envi)
     vars=make_vars(env)
@@ -323,7 +323,11 @@ def IMPModuleBin(envi, files, required_modules=[], extra_libs=[], install=True):
             ci= env.Install(bindir, prog)
             install_list.append(ci)
         build.append(prog)
-    envi['IMP_MODULE_BINS']= allprogs
+    return (build, install_list)
+
+def IMPModuleBin(env, files, required_modules=[], extra_libs=[], install=True):
+    (build, install_list)= _make_programs(env, required_modules, extra_libs, install, files)
+    #envi['IMP_MODULE_BINS']= allprogs
     module_alias(env, 'bin', build, True)
     add_to_global_alias(env, 'all', 'bin')
     if install:
@@ -441,6 +445,12 @@ def IMPModuleGetExampleData(env):
                        "*/*/*.pdb", "*/*/*.mrc", "*/*/*.dat", "*/*/*.xml", "*/*/*.em"])
     return ret
 
+def IMPModuleGetPythonTests(env):
+    return module_glob(["test_*.py", "*/test_*.py"])
+def IMPModuleGetCPPTests(env):
+    return module_glob(["test_*.cpp", "*/test_*.cpp"])
+
+
 def IMPModuleGetHeaders(env):
     vars = make_vars(env)
     raw_files=module_glob(["*.h", "*/*.h"])
@@ -543,7 +553,8 @@ def IMPModuleDoc(env, files, authors,
 #   files= ["#/bin/imppy.sh", "#/tools/run_all_tests.py"]+\
 #        [x.abspath for x in Glob("test_*.py")+ Glob("*/test_*.py")]
 
-def IMPModuleTest(env):
+def IMPModuleTest(env, python_tests, cpp_tests, cpp_required_modules=[],
+                  cpp_extra_libs=[]):
     """Pseudo-builder to run tests for an IMP module. The single target is
        generally a simple output file, e.g. 'test.passed', while the single
        source is a Python script to run (usually run-all-tests.py).
@@ -553,9 +564,14 @@ def IMPModuleTest(env):
        script to run to set up the environment to run the test script.
        A convenience alias for the tests is added, and they are always run."""
     files= ["#/tools/imppy.sh", "#/scons_tools/run-all-tests.py"]+\
-        [x.abspath for x in module_glob(["test_*.py", "*/test_*.py"])]
+        [x.abspath for x in python_tests]
     files.append(env.Alias(env['IMP_MODULE']+"-python"))
     #print files
+    if len(cpp_tests)>0:
+        (build, install_list)= _make_programs(env, cpp_required_modules, cpp_extra_libs, False, cpp_tests)
+        cpptest= env._IMPModuleCPPTest(target="test_cpp_programs.py",
+                                       source= build)
+        files.append(cpptest)
     test = env._IMPModuleTest(target="test.passed", source=files)
     env.AlwaysBuild("test.passed")
     module_alias(env, 'test', test)
@@ -706,6 +722,8 @@ def IMPModuleBuild(env, version, required_modules=[],
     env.AddMethod(IMPModuleGetHeaders)
     env.AddMethod(IMPModuleGetExamples)
     env.AddMethod(IMPModuleGetExampleData)
+    env.AddMethod(IMPModuleGetPythonTests)
+    env.AddMethod(IMPModuleGetCPPTests)
     env.AddMethod(IMPModuleGetData)
     env.AddMethod(IMPModuleGetSources)
     env.AddMethod(IMPModuleGetPython)
@@ -720,6 +738,7 @@ def IMPModuleBuild(env, version, required_modules=[],
     env.AddMethod(modpage.StandardPublications)
     env.AddMethod(modpage.StandardLicense)
     env.Append(BUILDERS={'_IMPModuleTest': test.UnitTest})
+    env.Append(BUILDERS={'_IMPModuleCPPTest': test.CPPTestHarness})
     env.Append(BUILDERS={'_IMPColorizePython': examples.ColorizePython})
     env.Append(BUILDERS={'_IMPExamplesDox': examples.MakeDox})
     env.Append(BUILDERS={'_IMPSWIG': swig.SwigIt})
