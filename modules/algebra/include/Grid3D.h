@@ -63,6 +63,8 @@ IMPALGEBRA_BEGIN_NAMESPACE
         grid[*it].push_back(1);
    }
    \endcode
+
+   \note This class is not available in python.
  */
 template <class VT>
 class Grid3D
@@ -120,7 +122,7 @@ private:
   }
 
   std::pair<Index, ExtendedIndex> intersect(ExtendedIndex l,
-                                           ExtendedIndex u) const {
+                                            ExtendedIndex u) const {
     Index rlb;
     ExtendedIndex rub;
     for (unsigned int i=0; i< 3; ++i) {
@@ -129,7 +131,6 @@ private:
     }
     return std::make_pair(snap(l), snap(u));
   }
-
 
 public:
 
@@ -314,12 +315,18 @@ public:
       Iterate through a range of actual indexes. The value
       type for the iterator is an Index.
 
-      The function taking a pair of indexes iterates through
-      all indexes in the volume defined by having the first
-      as the lower bound and the second as the upper bound.
+      The range is defined by a pair of indexes. It includes
+      all indexes in the axis aligned box defined by lb
+      as the lower corner and the second as the ub. That is, if
+      lb is \f$(l_x, l_y, l_z)\f$ and ub is \f$(u_x, u_y, u_z)\f$,
+      then the range includes all
+      indexes \f$(i_x, i_y, i_z)\f$ such that \f$l_x \leq i_x \leq u_x\f$,
+      \f$l_y \leq i_y \leq u_y\f$
+      and \f$l_z \leq i_z \leq u_z\f$.
+
       Note that these
       iterate through indexes, not extended indexes, so the
-      volume is truncated to that of the grid. We can
+      traversed volume is truncated to that of the grid. We can
       add extended index iterators if requested.
 
       @{
@@ -330,7 +337,8 @@ public:
 #endif
   IndexIterator indexes_begin(ExtendedIndex lb,
                               ExtendedIndex ub) const {
-    std::pair<Index, ExtendedIndex> bp= intersect(lb,ub);
+    ExtendedIndex eub=get_offset(ub, 1,1,1);
+    std::pair<Index, ExtendedIndex> bp= intersect(lb,eub);
     if (bp.first== bp.second) {
       return IndexIterator();
     } else {
