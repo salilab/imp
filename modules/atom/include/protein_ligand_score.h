@@ -44,7 +44,9 @@ class IMPATOMEXPORT ProteinLigandAtomPairScore: public PairScore {
   inline double evaluate(const algebra::Vector3D &protein_v,
                          int ptype,
                          const algebra::Vector3D &ligand_v,
-                         int ltype) const;
+                         int ltype,
+                         core::XYZ pxyz, core::XYZ lxyz,
+                         DerivativeAccumulator *da) const;
  public:
   ProteinLigandAtomPairScore(double threshold
                              = std::numeric_limits<double>::max());
