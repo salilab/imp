@@ -27,7 +27,6 @@ class ScoreTest(IMP.test.TestCase):
                                         IMP.algebra.Vector3D(0,0,0))
         rbp.set_transformation(it)
         rbl.set_transformation(it)
-        m.evaluate(False)
         IMP.atom.write_mol2(l, self.get_tmp_file_name("transformed_ligand.mol2"))
         IMP.atom.write_pdb(p, self.get_tmp_file_name("transformed_protein.pdb"))
 
@@ -35,6 +34,10 @@ class ScoreTest(IMP.test.TestCase):
         #IMP.set_log_level(IMP.VERBOSE)
         r= IMP.atom.ProteinLigandRestraint(p,l, 15.0)
         m.add_restraint(r)
+        raw=m.evaluate(False)
+        deriv= m.evaluate(True)
+        self.assertInTolerance(raw, deriv, .1*(raw+deriv))
+        self.assertInTolerance(raw, 2200, 100)
         print r.evaluate(False)
 
 

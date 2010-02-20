@@ -9,6 +9,7 @@
 #define IMPATOM_INTERNAL_PROTEIN_LIGAND_INTERNAL_SCORE_H
 
 #include "../config.h"
+#include <IMP/core/internal/evaluate_distance_pair_score.h>
 #include <IMP/exception.h>
 #include <IMP/file.h>
 #include <cmath>
@@ -17,15 +18,25 @@
 IMPATOM_BEGIN_INTERNAL_NAMESPACE
 struct PMFTable {
   double inverse_bin_width_;
-  std::vector<std::vector<std::vector<float> > > data_;
+  double bin_width_;
+  double max_;
+  std::vector<std::vector< IMP::core::internal::RawOpenCubicSpline > > data_;
   PMFTable(TextInput in);
-  float get_score(unsigned int i, unsigned int j, double dist) const {
+  double get_score(unsigned int i, unsigned int j, double dist) const {
     IMP_USAGE_CHECK(i < data_.size(), "Out of range protein index " << i);
     IMP_USAGE_CHECK(j < data_[i].size(),
                     "Out of range ligand index " << i << " " << j);
-    unsigned int index= static_cast<int>(std::floor(dist * inverse_bin_width_));
-    if (index >= data_[i][j].size()) return 0;
-    return -data_[i][j][index];
+    if (dist >= max_) return 0;
+    return data_[i][j].get_bin(dist, bin_width_, inverse_bin_width_);
+  }
+  DerivativePair get_score_with_derivative(unsigned int i,
+                                           unsigned int j, double dist) const {
+    IMP_USAGE_CHECK(i < data_.size(), "Out of range protein index " << i);
+    IMP_USAGE_CHECK(j < data_[i].size(),
+                    "Out of range ligand index " << i << " " << j);
+    if (dist >= max_) return DerivativePair(0,0);
+    return data_[i][j].evaluate_with_derivative(dist, bin_width_,
+                                                inverse_bin_width_);
   }
 };
 

@@ -10,7 +10,7 @@
 #include <IMP/atom/mol2.h>
 #include <IMP/Model.h>
 
-int main(unsigned int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
   std::string mol2name, pdbname;
   for (unsigned int i=1; i < argc; ++i) {
     std::string nm(argv[i]);

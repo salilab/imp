@@ -355,30 +355,41 @@ ProteinLigandAtomPairScore::ProteinLigandAtomPairScore(double threshold):
 double ProteinLigandAtomPairScore::evaluate(const algebra::Vector3D &protein_v,
                                             int ptype,
                                             const algebra::Vector3D &ligand_v,
-                                            int ltype) const {
+                                            int ltype,
+                                            core::XYZ pxyz, core::XYZ lxyz,
+                                            DerivativeAccumulator *da) const {
    if (ptype== PROTEIN_INVALID || ltype == LIGAND_INVALID) return 0;
-  double distance = algebra::distance(protein_v, ligand_v);
-  if (distance <= threshold_){
-    /*std::cout << "Evaluating pair " << ptype << " " << ltype << std::endl;
-    std::cout << "distance is " << distance << " score is "
-              <<  table_.get_score(ptype, ltype, distance)
-              << std::endl;*/
-    return table_.get_score(ptype, ltype, distance);
-  } else {
-    return 0;
-  }
+   double distance = algebra::distance(protein_v, ligand_v);
+   if (distance >= threshold_ || distance < 0.001) {
+     return 0;
+   }
+   if (!da) {
+       /*std::cout << "Evaluating pair " << ptype << " " << ltype << std::endl;
+         std::cout << "distance is " << distance << " score is "
+         <<  table_.get_score(ptype, ltype, distance)
+         << std::endl;*/
+     return table_.get_score(ptype, ltype, distance);
+   } else {
+     DerivativePair dp= table_.get_score_with_derivative(ptype,
+                                                         ltype, distance);
+     algebra::Vector3D diff= protein_v-ligand_v;
+     algebra::Vector3D norm= diff.get_unit_vector();
+     pxyz.add_to_derivatives(dp.second*norm, *da);
+     lxyz.add_to_derivatives(-dp.second*norm, *da);
+     return dp.first;
+   }
 }
 
 
 double ProteinLigandAtomPairScore::evaluate(const ParticlePair &pp,
                                             DerivativeAccumulator *da) const {
-  IMP_USAGE_CHECK(!da, "The ProteinLigandAtomScore does not support "
-                  << "derivatives");
   ProteinType pt= ProteinType(pp[0]->get_value(get_protein_ligand_type_key()));
   LigandType lt= LigandType(pp[1]->get_value(get_protein_ligand_type_key()));
-  algebra::Vector3D pv(core::XYZ(pp[0]).get_coordinates()),
-    lv(core::XYZ(pp[1]).get_coordinates());
-  return evaluate(pv, pt, lv,lt);
+  core::XYZ pxyz(pp[0]);
+  core::XYZ lxyz(pp[1]);
+  algebra::Vector3D pv(pxyz.get_coordinates()),
+    lv(lxyz.get_coordinates());
+  return evaluate(pv, pt, lv,lt, pxyz, lxyz, da);
 }
 
 void ProteinLigandAtomPairScore::do_show(std::ostream &out) const {
@@ -414,8 +425,6 @@ ProteinLigandRestraint::ProteinLigandRestraint(Hierarchy protein,
 
 double ProteinLigandRestraint
 ::unprotected_evaluate(DerivativeAccumulator *accum) const {
-  IMP_USAGE_CHECK(!accum,
-                  "ProteinLigandRestraint does not support derivatives");
   IntKey k= get_protein_ligand_type_key();
   algebra::Vector3Ds pvs, lvs;
   std::vector<ProteinType> pts;
@@ -437,7 +446,9 @@ double ProteinLigandRestraint
   double score=0;
   for (unsigned int i=0; i< las.size(); ++i) {
     for (unsigned int j=0; j< pas.size(); ++j) {
-      score+= score_->evaluate(pvs[j], pts[j], lvs[i], lts[i]);
+      score+= score_->evaluate(pvs[j], pts[j], lvs[i], lts[i],
+                               core::XYZ(pas[j]), core::XYZ(las[i]),
+                               accum);
     }
   }
   return score;
@@ -533,6 +544,7 @@ PMFTable::PMFTable(TextInput tin) {
                 IOException);
     }
   }
+  bin_width_=bin;
   inverse_bin_width_=1.0/bin;
 
   data_.resize(PROTEIN_LAST);
@@ -550,16 +562,19 @@ PMFTable::PMFTable(TextInput tin) {
       //      std::cout << line << std::endl;
       //      if(j>1) exit(EXIT_FAILURE);
       int cur_bins_read=0;
+      Floats data;
       while(true) {
         double potentialvalue;
         ins >> potentialvalue;
         if (ins) {
-          data_[i][j].push_back(potentialvalue);
+          data.push_back(potentialvalue);
           ++cur_bins_read;
         } else {
           break;
         }
       }
+      data_[i][j]= core::internal::RawOpenCubicSpline(data, bin_width_,
+                                                      inverse_bin_width_);
       if (bins_read != -1 && cur_bins_read != bins_read) {
         IMP_THROW("Read wrong number of bins from line: "
                   << line << "\nExpected " << bins_read
@@ -570,7 +585,8 @@ PMFTable::PMFTable(TextInput tin) {
       ins.clear();
     }
   }
+  max_= bin_width_*bins_read;
   IMP_LOG(TERSE, "PMF table entries have "
-          << bins_read << " bins" << std::endl);
+          << bins_read << " bins with width " << bin_width_ << std::endl);
 }
 IMPATOM_END_INTERNAL_NAMESPACE
