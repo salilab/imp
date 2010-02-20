@@ -1,5 +1,6 @@
 Import('env')
 
-# All python files starting with test_ are searched for test code
-# required modules are picked up automatically
-env.IMPModuleTest()
+# This finds all python files matching test_*.py and all cpp files
+# matching test_*.cpp
+env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
+                  cpp_tests= env.IMPModuleGetCPPTests())
