@@ -12,6 +12,7 @@ files = [
          'DifferenceSingletonContainer.cpp',
          'MovedSingletonContainer.cpp',
          'ParticleGrid.cpp',
+         'evaluate_distance_pair_score.cpp',
          'graph_base.cpp',
          'pair_helpers.cpp',
          'quad_helpers.cpp',

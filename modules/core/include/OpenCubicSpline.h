@@ -9,6 +9,7 @@
 
 #include "config.h"
 #include <IMP/UnaryFunction.h>
+#include "internal/evaluate_distance_pair_score.h"
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -34,13 +35,11 @@ public:
 
   IMP_UNARY_FUNCTION(OpenCubicSpline);
 private:
-  std::vector<Float> values_;
-  std::vector<Float> second_derivs_;
-  Float minrange_;
-  Float maxrange_;
-  Float spacing_;
-  Float minderiv_;
-  Float maxderiv_;
+  double spacing_;
+  double inverse_spacing_;
+  internal::RawOpenCubicSpline spline_;
+  double minrange_;
+  double maxrange_;
   bool extend_;
 };
 
