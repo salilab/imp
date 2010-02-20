@@ -62,8 +62,8 @@ public:
     IMP_INTERNAL_CHECK(ub_.strictly_larger_than(lb_),
                "Invalid range in GridIndexIterator");
   }
-  typedef const GI& reference_type;
-  typedef const GI* pointer_type;
+  typedef const GI& reference;
+  typedef const GI* pointer;
   typedef GI value_type;
   typedef std::forward_iterator_tag iterator_category;
   typedef unsigned int difference_type;
@@ -105,12 +105,12 @@ public:
     operator++;
     return o;
   }
-  reference_type operator*() const {
+  reference operator*() const {
     IMP_INTERNAL_CHECK(*this != GridIndexIterator(),
                        "Dereferencing invalid iterator");
     return cur_;
   }
-  pointer_type operator->() const {
+  pointer operator->() const {
     IMP_INTERNAL_CHECK(*this != GridIndexIterator(),
                        "Dereferencing invalid iterator");
     return &cur_;
