@@ -9,16 +9,21 @@ class FittingTest(IMP.test.TestCase):
     """Class to test EM correlation restraint"""
 
     def load_density_map(self):
-        erw = IMP.em.EMReaderWriter()
-        self.scene = IMP.em.read_map(self.get_input_file_name("in.em"), erw)
+        ### Note: This test used to work with in.em, we moved to mrc
+        ### as it was not clear how to save origin in em format.
+        ### Resolve with Frido.
+        self.mrw = IMP.em.MRCReaderWriter()
+        self.scene = IMP.em.read_map(self.get_input_file_name("in.mrc"), self.mrw)
         self.scene.get_header_writable().set_resolution(3.)
         header = self.scene.get_header()
-        self.assertEqual(header.nx, 27)
-        self.assertEqual(header.ny, 27)
-        self.assertEqual(header.nz, 27)
+        self.assertEqual(header.nx, 33)
+        self.assertEqual(header.ny, 33)
+        self.assertEqual(header.nz, 33)
+
     def load_particles(self):
-        self.radius_key = IMP.FloatKey("radius")
-        self.weight_key = IMP.FloatKey("weight")
+        self.radius_key = IMP.core.XYZR.get_default_radius_key()
+        self.weight_key = IMP.atom.Mass.get_mass_key()
+
         protein_key = IMP.FloatKey("protein")
         id_key = IMP.FloatKey("id")
 
@@ -51,6 +56,7 @@ class FittingTest(IMP.test.TestCase):
         p1.add_attribute(self.weight_key, 1.0)
         p1.add_attribute(protein_key, 1)
         p1.add_attribute(id_key, 3)
+
     def setUp(self):
         """Build test model and optimizer"""
         IMP.test.TestCase.setUp(self)
