@@ -21,7 +21,8 @@ class CHARMMTopologyTests(IMP.test.TestCase):
 
     def test_add_get_atom(self):
         """Check add/get atom from CHARMM residues"""
-        res = IMP.atom.CHARMMIdealResidueTopology()
+        res = IMP.atom.CHARMMIdealResidueTopology('ALA')
+        self.assertEqual(res.get_name(), 'ALA')
         self.assertRaises(IMP.ValueException, res.get_atom, 'CA')
         at = _make_test_atom()
         res.add_atom(at)
@@ -36,7 +37,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
 
     def test_delete_atom(self):
         """Check delete atom from CHARMM residues"""
-        res = IMP.atom.CHARMMIdealResidueTopology()
+        res = IMP.atom.CHARMMIdealResidueTopology('ALA')
         at = _make_test_atom()
         res.add_atom(at)
         self.assertRaises(IMP.ValueException, res.delete_atom, 'CB')
@@ -45,7 +46,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
 
     def test_default_patches(self):
         """Check default patches of CHARMM residues"""
-        res = IMP.atom.CHARMMIdealResidueTopology()
+        res = IMP.atom.CHARMMIdealResidueTopology('ALA')
         self.assertEqual(res.get_default_first_patch(), '')
         self.assertEqual(res.get_default_last_patch(), '')
         res.set_default_first_patch('NTER')
@@ -60,7 +61,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
 
     def test_add_bond(self):
         """Check addition of bonds/angles/dihedrals/impropers"""
-        res = IMP.atom.CHARMMIdealResidueTopology()
+        res = IMP.atom.CHARMMIdealResidueTopology('ALA')
         atoms = IMP.Strings(['CA', 'CB'])
         res.add_bond(atoms)
         atoms = IMP.Strings(['CA', 'CB', 'N'])
@@ -71,7 +72,8 @@ class CHARMMTopologyTests(IMP.test.TestCase):
 
     def test_patch(self):
         """Check the CHARMM patch class"""
-        patch = IMP.atom.CHARMMPatch()
+        patch = IMP.atom.CHARMMPatch('NTER')
+        self.assertEqual(patch.get_name(), 'NTER')
         patch.add_deleted_atom('CA')
 
 if __name__ == '__main__':
