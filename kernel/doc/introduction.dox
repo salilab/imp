@@ -48,9 +48,9 @@ stages, but a few need extra note:
 \imp provides a large number of classes and functions from which to
 choose when solving a particular problem. Fortunately, these classes
 fall into a variety of categories.
--#\anchor dataacq Data acquisition:
+-# \anchor dataacq Data acquisition:
    we can't be much help here as we don't know what to do with test tubes.
--#\anchor repsel Representation selection: representation in \imp is via a collection of
+-# \anchor repsel Representation selection: representation in \imp is via a collection of
   particles (IMP::Particle objects). Each particle can contain one or
   more of the following sets of data
    -Cartesian coordinates (IMP::core::XYZ)
@@ -72,7 +72,7 @@ fall into a variety of categories.
   The data stored in a particle can be easily extended by adding a new IMP::Decorator type.\n\n
   Representations can loaded from a number of standard file types, for example see
   IMP::atom::read_pdb() and IMP::atom::read_mol2().
--#\anchor dataenc Encoding the data as a scoring function:
+-# \anchor dataenc Encoding the data as a scoring function:
   Proposed models are scored based on how well they match the
   data, with a low score meaning a closer fit than a high score. In
   \imp the scoring function is the sum terms, each of which is
@@ -91,14 +91,14 @@ fall into a variety of categories.
     -symmetry by using IMP::core::TransformedDistancePairScore coupled with IMP::container::PairsRestraint
     -bond lengths using an IMP::atom::BondSingletonScore coupled with a IMP::container::SingletonsRestraint
     -etc.
--#\anchor sampling Sampling good conformations: It is then necessary to search for conformations of the model that
+-# \anchor sampling Sampling good conformations: It is then necessary to search for conformations of the model that
   have low scores (and therefore fit the data well). Sampling produces a set of
   conformations of the model, organized into an IMP::ConformationSet. Currently
   \imp provides two sampling protocols, IMP::core::MCCGSampler which uses a
   combination of IMP::core::MonteCarlo and IMP::core::ConjugateGradients with
   randomized starting conformations and IMP::domino::DominoOptimizer which uses
   a graph based inference algorithm.
--#\anchor analysis Analysis of good conformations:
+-# \anchor analysis Analysis of good conformations:
   Finally, one needs to analyze the set of conformations produced by
   sampling. \imp provides a variety of tools to help display the conformations,
   in IMP::display, and to cluster them, in IMP::statistics. Display capabilities
@@ -407,9 +407,14 @@ generate the connection between the two languages. Key differences are
       example \c void \c SpecialVector::add_constant(int the_constant)'
     -member methods that change a value begin with \c set_
     -member methods or function which create or return a \c value object or which
-      return an existing \c object \c class object begin with \c get_
-    -methods or functions which create a new \c object \c class object start
-      with \c create_
+      return an existing \c object \c class object begin with \c get_. No arguments
+      of such functions are modified.
+    -methods or functions which create a new IMP::Object \c class object start
+      with \c create_.
+    -functions with names starting with other verbs have more complicated effects. For
+     example IMP::core::transform() changes the first argument based on the second.
+     IMP::Restraint::evaluate() computes a score as well as (optionally) adding to
+     Particle derivatives.
     -all preprocessor symbols (things created by \c \#define) begin with \c %IMP_
     -Abbreviations are not used in names except when the abbreviation is more
     common than the unabreviated name.
@@ -420,17 +425,17 @@ generate the connection between the two languages. Key differences are
     Incremental scoring  works as follows:
 
     To set it up call IMP::Model::set_is_incremental() with the value \c true. This
-    -#calls regular evaluate on all incremental restraints
-    -#a shadow particle is added to each particle. The shadow particles have all the same attributes. It is accessed using IMP::Particle::get_prechange_particle()
-    -#saves copies of their derivatives to the shadow particles
+    -# calls regular evaluate on all incremental restraints
+    -# a shadow particle is added to each particle. The shadow particles have all the same attributes. It is accessed using IMP::Particle::get_prechange_particle()
+    -# saves copies of their derivatives to the shadow particles
 
     When evaluate is called during optimization
-    -#the derivatives are cleared on all the particles (but not the shadow particles)
-    -#incremental restraints are evaluated. They need to make sure that the the change in the sum of the particle and shadow particle derivatives is equal to the change in derivatives and that the actual score is returned.
-    -#derivatives are added to the shadow derivatives and then cleared
-    -#the non-incremental restraints are then evaluated
-    -#the derivatives of the shadow particles are added to the particle derivatives
-    -#after scoring, all the particles are marked as clean and shadow particles are updated to reflect the current attributes of the particles
+    -# the derivatives are cleared on all the particles (but not the shadow particles)
+    -# incremental restraints are evaluated. They need to make sure that the the change in the sum of the particle and shadow particle derivatives is equal to the change in derivatives and that the actual score is returned.
+    -# derivatives are added to the shadow derivatives and then cleared
+    -# the non-incremental restraints are then evaluated
+    -# the derivatives of the shadow particles are added to the particle derivatives
+    -# after scoring, all the particles are marked as clean and shadow particles are updated to reflect the current attributes of the particles
 
     A IMP::Restraint is an incremental restraint if IMP::Restraint::get_is_incremental() returns true. For such restraints,
     IMP::Restraint::incremental_evaluate() is called instead of IMP::Restraint::evaluate().
