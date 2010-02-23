@@ -31,7 +31,7 @@ class IMPALGEBRAEXPORT SphericalVector3D
 
   //! Constructor that directly converts to spherical coordinates from a vector
   //! v in Cartesian coordinates
-  SphericalVector3D(Vector3D &v) {
+  SphericalVector3D(VectorD<3> &v) {
     set_cartesian_coordinates(v);
   }
 
@@ -66,10 +66,10 @@ class IMPALGEBRAEXPORT SphericalVector3D
   }
 
   //! Returns a vector with the Cartesian coordinates
-  Vector3D get_cartesian_coordinates();
+  VectorD<3> get_cartesian_coordinates();
 
  private:
-  void set_cartesian_coordinates(Vector3D& v);
+  void set_cartesian_coordinates(VectorD<3>& v);
   double v_[3];
 };
 
@@ -81,26 +81,6 @@ inline std::ostream &operator<<(std::ostream &out, const SphericalVector3D &v) {
 
 
 typedef std::vector<SphericalVector3D> SphericalVector3Ds;
-
-//! quasi-evenly distributes N points into a sphere. Saff, math. intel. (1997)
-/**
-  \param[in] N number of points
-  \param[out] vs A vector of SphericalVector3D classes
-  \param[in] r radius of the sphere
-**/
-IMPALGEBRAEXPORT void quasi_evenly_spherical_distribution(
-                              unsigned long N,
-                              SphericalVector3Ds &vs,double r=1.0);
-
-//! quasi-evenly distributes N points into a semi sphere.
-/**
-   \param[in] N number of points
-   \param[out] vs A vector of SphericalVector3D classes
-   \param[in] r radius of the sphere
-**/
-IMPALGEBRAEXPORT void quasi_evenly_semi_spherical_distribution(
-                              unsigned long N,
-                              SphericalVector3Ds &vs,double r=1.0);
 
 IMPALGEBRA_END_NAMESPACE
 
