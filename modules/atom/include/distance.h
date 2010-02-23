@@ -22,9 +22,9 @@ IMPATOM_BEGIN_NAMESPACE
    \genericgeometry
  */
 template <class Vecto3DsOrXYZs0, class Vecto3DsOrXYZs1>
-double rmsd(const Vecto3DsOrXYZs0& m1 ,const Vecto3DsOrXYZs1& m2,
-            const IMP::algebra::Transformation3D &tr_for_second
-            = IMP::algebra::identity_transformation()) {
+double get_rmsd(const Vecto3DsOrXYZs0& m1 ,const Vecto3DsOrXYZs1& m2,
+                const IMP::algebra::Transformation3D &tr_for_second
+                = IMP::algebra::get_identity_transformation_3d()) {
   IMP_USAGE_CHECK(std::distance(m1.begin(), m1.end())
                   ==std::distance(m2.begin(), m2.end()),
             "The input sets of XYZ points "
@@ -33,8 +33,9 @@ double rmsd(const Vecto3DsOrXYZs0& m1 ,const Vecto3DsOrXYZs1& m2,
   typename Vecto3DsOrXYZs0::const_iterator it0= m1.begin();
   typename Vecto3DsOrXYZs1::const_iterator it1= m2.begin();
   for(; it0!= m1.end(); ++it0, ++it1) {
-    algebra::Vector3D tred=tr_for_second.transform(core::get_geometry(*it1));
-    rmsd += algebra::squared_distance(core::get_geometry(*it0),
+    algebra::VectorD<3> tred
+      =tr_for_second.get_transformed(core::get_geometry(*it1));
+    rmsd += algebra::get_squared_distance(core::get_geometry(*it0),
                                       tred);
   }
   return std::sqrt(rmsd / m1.size());
@@ -52,14 +53,14 @@ double rmsd(const Vecto3DsOrXYZs0& m1 ,const Vecto3DsOrXYZs1& m2,
   \genericgeometry
 **/
 template <class Vecto3DsOrXYZs0, class Vecto3DsOrXYZs1>
-double native_overlap(const Vecto3DsOrXYZs0& m1,
+double get_native_overlap(const Vecto3DsOrXYZs0& m1,
                       const Vecto3DsOrXYZs1& m2,double threshold) {
   IMP_USAGE_CHECK(m1.size()==m2.size(),
             "native_verlap: The input sets of XYZ points "
             <<"should be of the same size");
   unsigned int distances=0;
   for(unsigned int i=0;i<m1.size();i++) {
-    double d = algebra::distance(core::get_geometry(m1[i]),
+    double d = algebra::get_distance(core::get_geometry(m1[i]),
                                  core::get_geometry(m2[i]));
     if(d<=threshold) distances++;
   }
@@ -81,8 +82,9 @@ double native_overlap(const Vecto3DsOrXYZs0& m1,
    the two placements
    \note see Lasker,Topf et al JMB, 2009 for details
  */
-IMPATOMEXPORT std::pair<double,double> placement_score(const core::XYZs& from,
-                                                       const core::XYZs& to);
+IMPATOMEXPORT std::pair<double,double>
+get_placement_score(const core::XYZs& from,
+                    const core::XYZs& to);
 
 //! Measure the difference between two placements of the same set of points
 /**
@@ -103,7 +105,7 @@ IMPATOMEXPORT std::pair<double,double> placement_score(const core::XYZs& from,
       scores are calculated for the second component using placement_score.
 \note see Topf, Lasker et al Structure, 2008 for details
  */
-IMPATOMEXPORT std::pair<double,double> component_placement_score(
+IMPATOMEXPORT std::pair<double,double> get_component_placement_score(
       const core::XYZs& ref1 ,const core::XYZs& ref2,
       const core::XYZs& mdl1 ,const core::XYZs& mdl2);
 
@@ -125,7 +127,7 @@ IMPATOMEXPORT std::pair<double,double> component_placement_score(
       for the second component
 \note see Lasker et al JMB, 2009 for details
  */
-IMPATOMEXPORT double pairwise_rmsd_score(
+IMPATOMEXPORT double get_pairwise_rmsd_score(
       const core::XYZs& ref1 ,const core::XYZs& ref2,
       const core::XYZs& mdl1 ,const core::XYZs& mdl2);
 

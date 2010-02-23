@@ -14,14 +14,15 @@
 #include <IMP/utility.h>
 #include <boost/static_assert.hpp>
 
+#include <vector>
 #include <limits>
 #include <cmath>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 //! A Cartesian vector in D-dimensions.
 /** Store a vector of Cartesian coordinates.
-    \see Vector3D
-    \see Vector2D
+    \see VectorD<3>
+    \see VectorD<2>
 
     \geometry
  */
@@ -311,7 +312,7 @@ inline VectorD<D> operator*(double s, const VectorD<D> &o) {
 /** \relatesalso VectorD
  */
 template <unsigned int D>
-double squared_distance(const VectorD<D> &v1, const VectorD<D> &v2) {
+double get_squared_distance(const VectorD<D> &v1, const VectorD<D> &v2) {
   double d, s = 0;
   for (unsigned int i=0; i< D; ++i) {
     d = v1[i] - v2[i];
@@ -324,20 +325,20 @@ double squared_distance(const VectorD<D> &v1, const VectorD<D> &v2) {
 /** \relatesalso VectorD
  */
 template <unsigned int D>
-double distance(const VectorD<D> &v1, const VectorD<D> &v2) {
-  return std::sqrt(squared_distance(v1, v2));
+double get_distance(const VectorD<D> &v1, const VectorD<D> &v2) {
+  return std::sqrt(get_squared_distance(v1, v2));
 }
 
 //! Return the basis vector for the given coordinate
 /** Return the unit vector pointing in the direction of the requested
     coordinate. That is
     \code
-    basis_vector<3>(2)== VectorD<3>(0,0,1);
+    get_basis_vector_d<3>(2)== VectorD<3>(0,0,1);
     \endcode
     \relatesalso VectorD
  */
 template <unsigned int D>
-VectorD<D> basis_vector(unsigned int coordinate) {
+VectorD<D> get_basis_vector_d(unsigned int coordinate) {
   IMP_USAGE_CHECK(coordinate<D, "There are only " << D << " basis vectors");
   double vs[D];
   for (unsigned int i=0; i< D; ++i) {
@@ -349,7 +350,7 @@ VectorD<D> basis_vector(unsigned int coordinate) {
 
 //! Return a vector of zeros
 template <unsigned int D>
-VectorD<D> zeros() {
+VectorD<D> get_zero_vector_d() {
   double vs[D]={0};
   return VectorD<D>(vs, vs+D);
 }
@@ -357,7 +358,7 @@ VectorD<D> zeros() {
 
 //! Return a vector of ones (or another constant)
 template <unsigned int D>
-VectorD<D> ones(double v=1) {
+VectorD<D> get_ones_vector_d(double v=1) {
   VectorD<D> vv;
   for (unsigned int i=0; i< D; ++i) {
     vv[i]=v;
@@ -450,6 +451,15 @@ template <unsigned int D>
 CommasIO<D> commas_io(const VectorD<D> &v) {
   return CommasIO<D>(v);
 }
+#endif
+
+#ifndef SWIG
+typedef VectorD<2> Vector2D;
+typedef std::vector<VectorD<2> > Vector2Ds;
+typedef VectorD<3> Vector3D;
+typedef std::vector<VectorD<3> > Vector3Ds;
+typedef VectorD<4> Vector4D;
+typedef std::vector<VectorD<4> > Vector4Ds;
 #endif
 
 IMPALGEBRA_END_NAMESPACE
