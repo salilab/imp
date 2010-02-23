@@ -85,13 +85,18 @@ public:
 
 //! Base class for all CHARMM residue-based topology
 class IMPATOMEXPORT CHARMMResidueTopologyBase {
+  std::string name_;
 protected:
   std::vector<CHARMMAtom> atoms_;
   std::vector<CHARMMBond<2> > bonds_;
   std::vector<CHARMMBond<3> > angles_;
   std::vector<CHARMMBond<4> > dihedrals_;
   std::vector<CHARMMBond<4> > impropers_;
+
+  CHARMMResidueTopologyBase(std::string name) : name_(name) {}
 public:
+  std::string get_name() const { return name_; }
+
   void add_atom(const CHARMMAtom &atom);
   CHARMMAtom &get_atom(std::string name);
 
@@ -114,6 +119,9 @@ class IMPATOMEXPORT CHARMMIdealResidueTopology
     : public CHARMMResidueTopologyBase {
   std::string default_first_patch_, default_last_patch_;
 public:
+  CHARMMIdealResidueTopology(std::string name)
+      : CHARMMResidueTopologyBase(name) {}
+
   //! Delete the named atom
   /** Any bonds/angles that involve this atom are also deleted.
    */
@@ -140,6 +148,8 @@ public:
 class CHARMMPatch : public CHARMMResidueTopologyBase {
   std::vector<std::string> deleted_atoms_;
 public:
+  CHARMMPatch(std::string name) : CHARMMResidueTopologyBase(name) {}
+
   void add_deleted_atom(std::string name) { deleted_atoms_.push_back(name); }
 };
 
