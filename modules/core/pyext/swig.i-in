@@ -163,8 +163,8 @@ namespace IMP {
     //%template(show_named_hierarchy) show<::IMP::core::Name>;
   }
   namespace algebra {
-    %template(rigid_align_first_to_second) rigid_align_first_to_second<core::XYZsTemp, algebra::Vector3Ds>;
-    %template(rigid_align_first_to_second) rigid_align_first_to_second<core::XYZsTemp, core::XYZsTemp>;
-    %template(rigid_align_first_to_second) rigid_align_first_to_second<algebra::Vector3Ds, core::XYZsTemp>;
+    %template(get_transformation_aligning_first_to_second) get_transformation_aligning_first_to_second<core::XYZsTemp, std::vector<algebra::VectorD<3> > >;
+    %template(get_transformation_aligning_first_to_second) get_transformation_aligning_first_to_second<core::XYZsTemp, core::XYZsTemp>;
+    %template(get_transformation_aligning_first_to_second) get_transformation_aligning_first_to_second< std::vector<algebra::VectorD<3> >, core::XYZsTemp>;
   }
 }
