@@ -20,6 +20,16 @@ namespace {
       return (at.get_name() == name_);
     }
   };
+
+  template<unsigned int D>
+  class bond_has_atom {
+    std::string name_;
+  public:
+    bond_has_atom(std::string name) : name_(name) {}
+    bool operator()(const CHARMMBond<D> &bond) {
+      return bond.contains_atom(name_);
+    }
+  };
 }
 
 void CHARMMResidueTopologyBase::add_atom(const CHARMMAtom &atom)
@@ -51,6 +61,16 @@ void CHARMMIdealResidueTopology::delete_atom(std::string name)
     IMP_THROW("atom " << name << " not found in residue topology",
               ValueException);
   }
+
+  // Remove any bonds that refer to this atom
+  bonds_.erase(std::remove_if(bonds_.begin(), bonds_.end(),
+                              bond_has_atom<2>(name)), bonds_.end());
+  angles_.erase(std::remove_if(angles_.begin(), angles_.end(),
+                               bond_has_atom<3>(name)), angles_.end());
+  dihedrals_.erase(std::remove_if(dihedrals_.begin(), dihedrals_.end(),
+                                  bond_has_atom<4>(name)), dihedrals_.end());
+  impropers_.erase(std::remove_if(impropers_.begin(), impropers_.end(),
+                                  bond_has_atom<4>(name)), impropers_.end());
 }
 
 IMPATOM_END_NAMESPACE
