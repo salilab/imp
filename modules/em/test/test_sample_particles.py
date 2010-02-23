@@ -35,16 +35,18 @@ class SampleTests(IMP.test.TestCase):
         print "initialization done ..."
 
     def test_sample_map(self):
-        """Check that reading a map back in preserves the stdevs"""
+        """Check that sampling particles works"""
+        erw=IMP.em.EMReaderWriter()
         resolution=1.
         voxel_size=1.
         model_map = IMP.em.SampledDensityMap(self.particles, resolution, voxel_size,self.rad_key,self.weight_key)
+        IMP.em.write_map(model_map,"a.em",erw)
         for p in self.particles:
             v=IMP.core.XYZ(p).get_coordinates()
-            self.assert_(model_map.get_value(v)>1.,
+            print model_map.get_value(v)
+            self.assert_(model_map.get_value(v)>0.6,
                          "map was not sampled correctly")
         model_map.calcRMS()
-        erw=IMP.em.EMReaderWriter()
         IMP.em.write_map(model_map, "xxx.em",erw)
         em_map = IMP.em.DensityMap()
         em_map= IMP.em.read_map("xxx.em",erw)
