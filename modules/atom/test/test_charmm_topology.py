@@ -76,5 +76,17 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         self.assertEqual(patch.get_name(), 'NTER')
         patch.add_deleted_atom('CA')
 
+    def test_forcefield_add_get(self):
+        """Test adding/getting patches and residues to/from forcefields"""
+        ff = IMP.atom.CharmmParameters(IMP.atom.get_data_path("top.lib"))
+        self.assertRaises(IMP.ValueException, ff.get_residue_topology, 'ALA')
+        self.assertRaises(IMP.ValueException, ff.get_patch, 'NTER')
+        patch = IMP.atom.CHARMMPatch('NTER')
+        res = IMP.atom.CHARMMIdealResidueTopology('ALA')
+        ff.add_patch(patch)
+        ff.add_residue_topology(res)
+        ff.get_residue_topology('ALA')
+        ff.get_patch('NTER')
+
 if __name__ == '__main__':
     unittest.main()
