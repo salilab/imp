@@ -12,9 +12,8 @@
 #include <IMP/core/Hierarchy.h>
 #include <IMP/atom/Chain.h>
 #include <IMP/atom/element.h>
-
 #include <boost/algorithm/string.hpp>
-
+#include <locale>
 #include <fstream>
 #include <iomanip>
 
@@ -29,10 +28,10 @@ namespace {
   std::string try_rename(std::string str) {
     std::string out;
     for (unsigned int i=0; i< str.size(); ++i) {
-      if (std::isalpha(str[i])) out.push_back(str[i]);
+      if (std::isalpha(str[i], std::locale())) out.push_back(str[i]);
     }
     for (unsigned int i=0; i< str.size(); ++i) {
-      if (!std::isalpha(str[i])) out.push_back(str[i]);
+      if (!std::isalpha(str[i], std::locale())) out.push_back(str[i]);
     }
     return out;
   }
