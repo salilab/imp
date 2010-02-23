@@ -99,6 +99,8 @@ namespace IMP {
    // rotation operations
    %template(Rotation2Ds) ::std::vector<Rotation2D>;
    %template(Rotation3Ds) ::std::vector<Rotation3D>;
+   %template(Transformation2Ds) ::std::vector<Transformation2D>;
+   %template(Transformation3Ds) ::std::vector<Transformation3D>;
  }
 }
 %inline %{
