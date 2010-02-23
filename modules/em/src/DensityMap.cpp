@@ -528,6 +528,7 @@ void DensityMap::pad(int nx, int ny, int nz,float val) {
 
 void DensityMap::update_voxel_size(float new_apix) {
   header_.Objectpixelsize_=new_apix;
+  header_.update_cell_dimensions();
   header_.compute_xyz_top(true);
   reset_voxel2loc();
   calc_all_voxel2loc();
