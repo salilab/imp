@@ -12,7 +12,7 @@
 
 int main(int argc, char *argv[]) {
   std::string mol2name, pdbname;
-  for (unsigned int i=1; i < argc; ++i) {
+  for (int i=1; i < argc; ++i) {
     std::string nm(argv[i]);
     if (nm.rfind(".mol2") == nm.size()-5) {
       mol2name= nm;
