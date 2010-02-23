@@ -54,8 +54,9 @@ class CHARMMBondEndpoint {
   std::string atom_name_;
 //CHARMMResidueTopology *residue_;
 public:
+  CHARMMBondEndpoint(std::string atom_name) : atom_name_(atom_name) {}
+
   std::string get_atom_name() const { return atom_name_; }
-  void set_atom_name(std::string atom_name) { atom_name_ = atom_name; }
 };
 
 //! A bond, angle, dihedral or improper between some number of endpoints.
@@ -63,6 +64,23 @@ template <unsigned int D>
 class CHARMMBond
 {
   std::vector<CHARMMBondEndpoint> endpoints_;
+public:
+  CHARMMBond(std::vector<std::string> atoms) {
+    IMP_INTERNAL_CHECK(atoms.size() == D, "wrong number of bond endpoints");
+    for (std::vector<std::string>::const_iterator it = atoms.begin();
+         it != atoms.end(); ++it) {
+      endpoints_.push_back(CHARMMBondEndpoint(*it));
+    }
+  }
+  bool contains_atom(std::string name) const {
+    for (std::vector<CHARMMBondEndpoint>::const_iterator
+         it = endpoints_.begin(); it != endpoints_.end(); ++it) {
+      if (it->get_atom_name() == name) {
+        return true;
+      }
+    }
+    return false;
+  }
 };
 
 //! Base class for all CHARMM residue-based topology
@@ -76,6 +94,19 @@ protected:
 public:
   void add_atom(const CHARMMAtom &atom);
   CHARMMAtom &get_atom(std::string name);
+
+  void add_bond(std::vector<std::string> atoms) {
+    bonds_.push_back(CHARMMBond<2>(atoms));
+  }
+  void add_angle(std::vector<std::string> atoms) {
+    angles_.push_back(CHARMMBond<3>(atoms));
+  }
+  void add_dihedral(std::vector<std::string> atoms) {
+    dihedrals_.push_back(CHARMMBond<4>(atoms));
+  }
+  void add_improper(std::vector<std::string> atoms) {
+    impropers_.push_back(CHARMMBond<4>(atoms));
+  }
 };
 
 //! The ideal topology of a single residue as read from a CHARMM topology file
@@ -84,7 +115,7 @@ class IMPATOMEXPORT CHARMMIdealResidueTopology
   std::string default_first_patch_, default_last_patch_;
 public:
   //! Delete the named atom
-  /** \todo also remove any bonds/angles referencing this atom
+  /** Any bonds/angles that involve this atom are also deleted.
    */
   void delete_atom(std::string name);
 

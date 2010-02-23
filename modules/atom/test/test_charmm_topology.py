@@ -53,5 +53,21 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         self.assertEqual(res.get_default_first_patch(), 'NTER')
         self.assertEqual(res.get_default_last_patch(), 'CTER')
 
+    def test_bond_endpoint(self):
+        """Check CHARMM bond endpoint class"""
+        e = IMP.atom.CHARMMBondEndpoint('CA')
+        self.assertEqual(e.get_atom_name(), 'CA')
+
+    def test_add_bond(self):
+        """Check addition of bonds/angles/dihedrals/impropers"""
+        res = IMP.atom.CHARMMIdealResidueTopology()
+        atoms = IMP.Strings(['CA', 'CB'])
+        res.add_bond(atoms)
+        atoms = IMP.Strings(['CA', 'CB', 'N'])
+        res.add_angle(atoms)
+        atoms = IMP.Strings(['CA', 'CB', 'N', 'O'])
+        res.add_dihedral(atoms)
+        res.add_improper(atoms)
+
 if __name__ == '__main__':
     unittest.main()
