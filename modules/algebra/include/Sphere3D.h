@@ -7,166 +7,38 @@
 #ifndef IMPALGEBRA_SPHERE_3D_H
 #define IMPALGEBRA_SPHERE_3D_H
 
-#include <cmath>
-#include <IMP/constants.h>
-#include "internal/cgal_predicates.h"
-#include "BoundingBoxD.h"
-#include "Vector3D.h"
-#include "macros.h"
+#include "SphereD.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-/** Represent a sphere in 3D.
-    \geometry
-  */
-class IMPALGEBRAEXPORT Sphere3D {
-public:
-  Sphere3D(){
-#if IMP_BUILD < IMP_FAST
-    radius_= std::numeric_limits<double>::quiet_NaN();
-#endif
-  }
-  Sphere3D(const Vector3D& center,double radius);
-  double get_radius() const {
-    IMP_USAGE_CHECK(!is_nan(radius_),
-              "Attempt to use uninitialized sphere.");
-    return radius_;
-  }
-  const Vector3D &get_center() const {return center_;}
-  //! Return true if this sphere contains the other one
-  bool get_contains(const Sphere3D &o) const {
-    double d= (get_center()-o.get_center()).get_magnitude();
-    return (d+ o.get_radius() < get_radius());
-  }
-
-  //! Return true if the point is in or on the surface of the sphere
-  /** \cgalpredicate
-   */
-  bool get_contains(const Vector3D &p) const {
-#ifdef IMP_CGAL
-    return internal::cgal_sphere_compare_inside(*this, p);
-#else
-    return ((p-center_).get_squared_magnitude() <= square(radius_));
-#endif
-  }
-  IMP_SHOWABLE_INLINE({
-      out << "(" << spaces_io(center_) << ": " << get_radius()
-          << ")";
-    })
-private:
-  Vector3D center_;
-  double radius_;
-};
-
-
-IMP_VOLUME_GEOMETRY_METHODS(Sphere3D,
-                            return PI * 4.0 * square(g.get_radius()),
-                            return PI * (4.0 / 3.0)
-                            * std::pow(g.get_radius(), 3.0),
-                            return BoundingBox3D(g.get_center())+g.get_radius();
-                            );
-
-//! Return the distance between the two spheres if they are disjoint
-/** If they intersect, the distances are not meaningful.
-    \relatesalso Sphere3D
-*/
-inline double distance(const Sphere3D& a, const Sphere3D &b) {
-  double d= (a.get_center()-b.get_center()).get_magnitude();
-  return d - a.get_radius() - b.get_radius();
-}
-
-//! Return the power distance between the two spheres
-/** The power distance is the square of the distance between the centers
-    minus the sum of the square of the radii.
-    \relatesalso Sphere3D
-*/
-inline double power_distance(const Sphere3D& a, const Sphere3D &b) {
-  double d= (a.get_center()-b.get_center()).get_squared_magnitude();
-  return d - square(a.get_radius()) - square(b.get_radius());
-}
 
 
 //! Return a sphere containing the listed spheres
-/** \relatesalso Sphere3D
+/** \relatesalso SphereD<3>
     \note This method produces tighter bounding spheres if CGAL
     is used.
     \ingroup CGAL
  */
-IMPALGEBRAEXPORT Sphere3D enclosing_sphere(const Sphere3Ds &ss);
+IMPALGEBRAEXPORT SphereD<3>
+get_enclosing_sphere(const std::vector<SphereD<3> > &ss);
 
 //! Return a sphere containing the listed spheres
-/** \relatesalso Sphere3D
-    \relatesalso Vector3D
+/** \relatesalso SphereD<3>
+    \relatesalso VectorD<3>
     \note This method produces tighter bounding spheres if CGAL
     is used.
     \ingroup CGAL
  */
-IMPALGEBRAEXPORT Sphere3D enclosing_sphere(const Vector3Ds &ss);
+IMPALGEBRAEXPORT SphereD<3>
+get_enclosing_sphere(const std::vector<VectorD<3> > &ss);
 
 
 //! Return the radius of a sphere with a given volume
-/** \relatesalso Sphere3D
+/** \relatesalso SphereD<3>
  */
-inline double ball_radius_from_volume(double volume) {
+inline double get_ball_radius_from_volume_3d(double volume) {
   return std::pow((.75/PI)*volume, .3333);
 }
-
-//! Return true if the two balls bounded by the two spheres interesect
-/** \relatesalso Sphere3D
- */
-inline bool interiors_intersect(const Sphere3D &a, const Sphere3D &b) {
-  double sr= a.get_radius() + b.get_radius();
-  for (unsigned int i=0; i< 3; ++i) {
-    double delta=std::abs(a.get_center()[i]- b.get_center()[i]);
-    if (delta >= sr) return false;
-  }
-  return squared_distance(a.get_center(), b.get_center())
-    < square(sr);
-}
-
-#ifndef SWIG
-
-namespace internal {
-  struct SphereSpacesIO
-  {
-    const Sphere3D &v_;
-    SphereSpacesIO(const Sphere3D &v): v_(v){}
-  };
-  inline std::ostream &operator<<(std::ostream &out, const Sphere3D &s)
-  {
-    out << spaces_io(s.get_center()) << " " << s.get_radius();
-    return out;
-  }
-}
-
-//! Use this before outputing to a stream with spaces delimiting
-/** std::cout << spaces_io(s);
-    produces "1.0 2.0 3.0 4.0" where the radius is 4.0
-    \relatesalso Sphere3D
- */
-inline internal::SphereSpacesIO spaces_io(const Sphere3D &v) {
-  return internal::SphereSpacesIO(v);
-}
-#endif
-
-#ifndef IMP_DOXYGEN
-typedef std::pair<Sphere3D, Sphere3D> SpherePair;
-#endif
-
-#ifdef IMP_DOXYGEN
-//! Compute the bounding box of any geometric object
-template <class Geometry>
-BoundingBox3D get_bounding_box(const Geometry &);
-//! Compute the surface area of any volumetric object
-template <class Geometry>
-double get_surface_area(const Geometry &);
-//! Compute the volume of any volumetric object
-template <class Geometry>
-double get_volume(const Geometry &);
-//! Compute the area of any surface object
-template <class Geometry>
-double get_area(const Geometry &);
-#endif
 
 IMPALGEBRA_END_NAMESPACE
 
