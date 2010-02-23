@@ -34,19 +34,19 @@ public:
   Transformation3D(){}
   /** basic constructor*/
   Transformation3D(const Rotation3D& r,
-                   const Vector3D& t=Vector3D(0,0,0)):
+                   const VectorD<3>& t=VectorD<3>(0,0,0)):
     trans_(t), rot_(r){}
   /** Construct a transformation with an identity rotation.*/
-  Transformation3D(const Vector3D& t):
-    trans_(t), rot_(identity_rotation()){}
+  Transformation3D(const VectorD<3>& t):
+    trans_(t), rot_(get_identity_rotation_3d()){}
   ~Transformation3D();
   //! transform
-  Vector3D transform(const Vector3D &o) const {
-    return rot_.rotate(o) + trans_;
+  VectorD<3> get_transformed(const VectorD<3> &o) const {
+    return rot_.get_rotated(o) + trans_;
   }
   //! apply transformation (rotate and then translate)
-  Vector3D operator*(const Vector3D &v) const {
-    return transform(v);
+  VectorD<3> operator*(const VectorD<3> &v) const {
+    return get_transformed(v);
   }
   /** compose two rigid transformation such that for any vector v
       (rt1*rt2)*v = rt1*(rt2*v) */
@@ -74,7 +74,7 @@ public:
   const Rotation3D& get_rotation() const {
     return rot_;
   }
-  const Vector3D& get_translation()const{return trans_;}
+  const VectorD<3>& get_translation()const{return trans_;}
 
   IMP_SHOWABLE_INLINE({
       rot_.show(out);
@@ -83,7 +83,7 @@ public:
     )
   Transformation3D get_inverse() const;
 private:
-  Vector3D trans_; //tranlation
+  VectorD<3> trans_; //tranlation
   Rotation3D rot_;  //rotation
 };
 
@@ -92,8 +92,8 @@ IMP_OUTPUT_OPERATOR(Transformation3D)
 
 //! Return a transformation that does not do anything
 /** \relatesalso Transformation3D */
-inline Transformation3D identity_transformation() {
-  return Transformation3D(identity_rotation(),Vector3D(0.0,0.0,0.0));
+inline Transformation3D get_identity_transformation_3d() {
+  return Transformation3D(get_identity_rotation_3d(),VectorD<3>(0.0,0.0,0.0));
 }
 
 //! Generate a transformation from the natural reference-frame to
@@ -114,18 +114,19 @@ inline Transformation3D identity_transformation() {
 
    \relatesalso Transformation3D
  */
-inline Transformation3D transformation_from_reference_frame(const Vector3D &u,
-                                                const Vector3D &w,
-                                                const Vector3D &base) {
-  Vector3D x = (u-base);
-  Vector3D z = vector_product(x,w-base);
-  Vector3D y = vector_product(z,x);
-  Vector3D xu = x.get_unit_vector();
-  Vector3D zu = z.get_unit_vector();
-  Vector3D yu = y.get_unit_vector();
-  Rotation3D rot = rotation_from_matrix(xu[0],xu[1],xu[2],
-                                        yu[0],yu[1],yu[2],
-                                        zu[0],zu[1],zu[2]).get_inverse();
+inline Transformation3D
+get_transformation_from_reference_frame(const VectorD<3> &u,
+                                        const VectorD<3> &w,
+                                        const VectorD<3> &base) {
+  VectorD<3> x = (u-base);
+  VectorD<3> z = vector_product(x,w-base);
+  VectorD<3> y = vector_product(z,x);
+  VectorD<3> xu = x.get_unit_vector();
+  VectorD<3> zu = z.get_unit_vector();
+  VectorD<3> yu = y.get_unit_vector();
+  Rotation3D rot = get_rotation_from_matrix(xu[0],xu[1],xu[2],
+                                            yu[0],yu[1],yu[2],
+                                            zu[0],zu[1],zu[2]).get_inverse();
   return Transformation3D(rot,base);
 }
 
@@ -137,7 +138,7 @@ inline Transformation3D transformation_from_reference_frame(const Vector3D &u,
   \relatesalso Transformation3D
 */
 inline Transformation3D
-rotation_about_point(const Vector3D &point,
+get_rotation_about_point(const VectorD<3> &point,
                      const Rotation3D &rotation) {
   return Transformation3D(rotation, (rotation*(-point)+point));
 }
@@ -149,7 +150,7 @@ rotation_about_point(const Vector3D &point,
 inline Transformation3D compose(const Transformation3D &a,
                                 const Transformation3D &b){
   return Transformation3D(compose(a.get_rotation(), b.get_rotation()),
-                          a.transform(b.get_translation()));
+                          a.get_transformed(b.get_translation()));
 }
 
 
