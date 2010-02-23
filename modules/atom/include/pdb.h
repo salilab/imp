@@ -144,18 +144,20 @@ class NonWaterNonHydrogenPDBSelector : public NonAlternativePDBSelector {
 };
 
 //! PDBSelector that picks non water atoms
-class NonWaterPDBSelector : public PDBSelector {
+class NonWaterPDBSelector : public NonAlternativePDBSelector {
  public:
   bool operator()(const std::string& pdb_line) const {
+    if (!NonAlternativePDBSelector::operator()(pdb_line)) return false;
     WaterPDBSelector w;
     return( ! w(pdb_line));
   }
 };
 
 //! A PDB PDBSelector that picks only Phosphate atoms.
-class PPDBSelector : public PDBSelector {
+class PPDBSelector : public NonAlternativePDBSelector {
  public:
   bool operator()(const std::string& pdb_line) const {
+    if (!NonAlternativePDBSelector::operator()(pdb_line)) return false;
     const std::string type = internal::atom_type(pdb_line);
     return (type[1] == 'P' && type[2] == ' ');
   }
@@ -165,7 +167,7 @@ class PPDBSelector : public PDBSelector {
 
 //! Only select lines liked by both selectors
 /** The two passed selectors are not deleted by this selector. */
-class AndPDBSelector: public PDBSelector {
+class AndPDBSelector: public NonAlternativePDBSelector {
   const PDBSelector &a, &b;
 public:
   AndPDBSelector(const PDBSelector &a,
