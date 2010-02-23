@@ -26,6 +26,7 @@ files = [
          'VelocityScalingOptimizerState.cpp',
          'bond_decorators.cpp',
          'bond_graph.cpp',
+         'charmm_topology.cpp',
          'distance.cpp',
          'element.cpp',
          'estimates.cpp',
