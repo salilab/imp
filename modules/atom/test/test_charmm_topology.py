@@ -43,5 +43,15 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         res.delete_atom('CA')
         self.assertRaises(IMP.ValueException, res.get_atom, 'CA')
 
+    def test_default_patches(self):
+        """Check default patches of CHARMM residues"""
+        res = IMP.atom.CHARMMIdealResidueTopology()
+        self.assertEqual(res.get_default_first_patch(), '')
+        self.assertEqual(res.get_default_last_patch(), '')
+        res.set_default_first_patch('NTER')
+        res.set_default_last_patch('CTER')
+        self.assertEqual(res.get_default_first_patch(), 'NTER')
+        self.assertEqual(res.get_default_last_patch(), 'CTER')
+
 if __name__ == '__main__':
     unittest.main()
