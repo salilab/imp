@@ -39,8 +39,8 @@ class IMPCOREEXPORT XYZ: public Decorator
 
   /** Create a decorator with the passed coordinates. */
   static XYZ setup_particle(Particle *p,
-                    const algebra::Vector3D &v=
-                    algebra::Vector3D(0,0,0)) {
+                    const algebra::VectorD<3> &v=
+                    algebra::VectorD<3>(0,0,0)) {
     p->add_attribute(get_coordinate_key(0),v[0]);
     p->add_attribute(get_coordinate_key(1),v[1]);
     p->add_attribute(get_coordinate_key(2),v[2]);
@@ -55,7 +55,7 @@ class IMPCOREEXPORT XYZ: public Decorator
     get_particle()->set_value(get_coordinate_key(i), v);
   }
   //! set all coordinates from a vector
-  void set_coordinates(const algebra::Vector3D &v) {
+  void set_coordinates(const algebra::VectorD<3> &v) {
     set_x(v[0]);
     set_y(v[1]);
     set_z(v[2]);
@@ -75,7 +75,7 @@ class IMPCOREEXPORT XYZ: public Decorator
     get_particle()->add_to_derivative(get_coordinate_key(i), v, d);
   }
   //! Add something to the derivative of the coordinates
-  void add_to_derivatives(const algebra::Vector3D& v,
+  void add_to_derivatives(const algebra::VectorD<3>& v,
                           DerivativeAccumulator &d) {
     add_to_derivative(0, v[0], d);
     add_to_derivative(1, v[1], d);
@@ -97,8 +97,8 @@ class IMPCOREEXPORT XYZ: public Decorator
   }
 
   //! Get the vector from this particle to another
-  algebra::Vector3D get_vector_to(const XYZ &b) const {
-    return algebra::Vector3D(b.get_coordinate(0) - get_coordinate(0),
+  algebra::VectorD<3> get_vector_to(const XYZ &b) const {
+    return algebra::VectorD<3>(b.get_coordinate(0) - get_coordinate(0),
                     b.get_coordinate(1) - get_coordinate(1),
                     b.get_coordinate(2) - get_coordinate(2));
   }
@@ -106,8 +106,8 @@ class IMPCOREEXPORT XYZ: public Decorator
   //! Convert it to a vector.
   /** Somewhat suspect based on wanting a Point/Vector differentiation
       but we don't have points */
-  algebra::Vector3D get_coordinates() const {
-    return algebra::Vector3D(get_coordinate(0),
+  algebra::VectorD<3> get_coordinates() const {
+    return algebra::VectorD<3>(get_coordinate(0),
                              get_coordinate(1),
                              get_coordinate(2));
   }
@@ -115,8 +115,8 @@ class IMPCOREEXPORT XYZ: public Decorator
   //! Get the vector of derivatives.
   /** Somewhat suspect based on wanting a Point/Vector differentiation
       but we don't have points */
-  algebra::Vector3D get_derivatives() const {
-    return algebra::Vector3D(get_derivative(0),
+  algebra::VectorD<3> get_derivatives() const {
+    return algebra::VectorD<3>(get_derivative(0),
                              get_derivative(1),
                              get_derivative(2));
   }
@@ -144,8 +144,8 @@ IMP_OUTPUT_OPERATOR(XYZ);
 /** \ingroup helper
     \relatesalso XYZ
  */
-inline double distance(XYZ a, XYZ b) {
-  return algebra::distance(a.get_coordinates(),b.get_coordinates());
+inline double get_distance(XYZ a, XYZ b) {
+  return algebra::get_distance(a.get_coordinates(),b.get_coordinates());
 }
 
 //! Apply a transformation to the particle
@@ -153,25 +153,25 @@ inline double distance(XYZ a, XYZ b) {
     \relatesalso algebra::Transformation3D
 */
 inline void transform(XYZ a, const algebra::Transformation3D &tr) {
-  a.set_coordinates(tr.transform(a.get_coordinates()));
+  a.set_coordinates(tr.get_transformed(a.get_coordinates()));
 }
 
 /** \genericgeometry */
-inline const algebra::Vector3D get_geometry(XYZ d) {
+inline const algebra::VectorD<3> get_geometry(XYZ d) {
   return d.get_coordinates();
 }
 
 /** \genericgeometry */
-inline const algebra::Vector3D& get_geometry(const algebra::Vector3D &v) {
+inline const algebra::VectorD<3>& get_geometry(const algebra::VectorD<3> &v) {
   return v;
 }
 /** \genericgeometry */
-inline void set_geometry(XYZ d, const algebra::Vector3D &v) {
+inline void set_geometry(XYZ d, const algebra::VectorD<3> &v) {
   d.set_coordinates(v);
 }
 /** \genericgeometry */
-inline void set_geometry(algebra::Vector3D &vbase,
-                         const algebra::Vector3D &v) {vbase=v;}
+inline void set_geometry(algebra::VectorD<3> &vbase,
+                         const algebra::VectorD<3> &v) {vbase=v;}
 
 IMP_DECORATORS(XYZ, Particles);
 

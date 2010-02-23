@@ -64,7 +64,7 @@ public:
      The default is "radius".
    */
   static XYZR setup_particle(Particle *p,
-                     const algebra::Sphere3D &s,
+                     const algebra::SphereD<3> &s,
                      FloatKey radius_key= get_default_radius_key()) {
     XYZ::setup_particle(p, s.get_center());
     p->add_attribute(radius_key, s.get_radius(), false);
@@ -80,12 +80,12 @@ public:
 
 
   //! Return a sphere object
-  algebra::Sphere3D get_sphere() const {
-    return algebra::Sphere3D(get_coordinates(), get_radius());
+  algebra::SphereD<3> get_sphere() const {
+    return algebra::SphereD<3>(get_coordinates(), get_radius());
   }
 
   //! Set the attributes from a sphere
-  void set_sphere(const algebra::Sphere3D &s) {
+  void set_sphere(const algebra::SphereD<3> &s) {
     set_coordinates(s.get_center());
     set_radius(s.get_radius());
   }
@@ -110,8 +110,8 @@ IMP_DECORATORS(XYZR, XYZs);
 //! Compute the distance between a pair of particles
 /** \relatesalso XYZR
  */
-inline double distance(XYZR a, XYZR b) {
-  return distance(a.get_sphere(), b.get_sphere());
+inline double get_distance(XYZR a, XYZR b) {
+  return IMP::algebra::get_distance(a.get_sphere(), b.get_sphere());
 }
 
 //! Set the coordinates and radius of the first to enclose the list
@@ -158,16 +158,18 @@ IMPCOREEXPORT XYZRs create_xyzr_particles(Model *m,
                                           Float box_side=10);
 
 /** \genericgeometry */
-inline const algebra::Sphere3D get_geometry(XYZR d) {return d.get_sphere();}
+inline const algebra::SphereD<3> get_geometry(XYZR d) {return d.get_sphere();}
 /** \genericgeometry */
-inline const algebra::Sphere3D& get_geometry(const algebra::Sphere3D &v) {
+inline const algebra::SphereD<3>& get_geometry(const algebra::SphereD<3> &v) {
   return v;
 }
 /** \genericgeometry */
-inline void set_geometry(XYZR d, const algebra::Sphere3D &v) {d.set_sphere(v);}
+inline void set_geometry(XYZR d, const algebra::SphereD<3> &v) {
+  d.set_sphere(v);
+}
 /** \genericgeometry */
-inline void set_geometry(algebra::Sphere3D &vbase,
-                         const algebra::Sphere3D &v) {vbase=v;}
+inline void set_geometry(algebra::SphereD<3> &vbase,
+                         const algebra::SphereD<3> &v) {vbase=v;}
 
 IMPCORE_END_NAMESPACE
 
