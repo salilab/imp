@@ -10,6 +10,7 @@
 
 #include "config.h"
 #include "Vector3D.h"
+#include "utility.h"
 
 #include <IMP/log.h>
 
@@ -291,6 +292,16 @@ typedef std::vector<Rotation3D> Rotation3Ds;
 /** \relatesalso Rotation3D */
 inline Rotation3D get_identity_rotation_3d() {
   return Rotation3D(1,0,0,0);
+}
+
+inline bool almost_equal_rotations(const Rotation3D &r1, const Rotation3D &r2) {
+  Rotation3D composed = compose(r1,r2.get_inverse());
+  VectorD<4> composed_q =  composed.get_quaternion();
+  double tol=0.0001;
+  return almost_equal(composed_q[0],1.,tol) &&
+    almost_equal(composed_q[1],0.,tol) &&
+    almost_equal(composed_q[2],0.,tol) &&
+    almost_equal(composed_q[3],0.,tol);
 }
 
 //! Generate a Rotation3D object from a rotation around an axis

@@ -109,6 +109,12 @@ class RotationTests(IMP.test.TestCase):
         r1 = IMP.algebra.get_rotation_in_radians_about_axis(axis,angle)
         self.assertInTolerance((r0.get_quaternion()-r1.get_quaternion()).get_squared_magnitude(), 0, .1)
 
+    def test_is_equal_between_rotations(self):
+        """Check that two rotations are equal"""
+        t1 = IMP.algebra.random_rotation()
+        t2 = t1
+        self.assert_(IMP.algebra.almost_equal_rotations(t1,t2),True)
+
     def test_interpolate(self):
         """Check that rotations can be interpolated"""
         r0= IMP.algebra.get_random_rotation_3d()
