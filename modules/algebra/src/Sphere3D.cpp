@@ -1,5 +1,5 @@
 /**
- *  \file  Sphere3D.cpp
+ *  \file  SphereD<3>.cpp
  *  \brief simple implementation of spheres in 3D
  *
  *  Copyright 2007-2010 Sali Lab. All rights reserved.
@@ -14,12 +14,8 @@
 #endif
 
 IMPALGEBRA_BEGIN_NAMESPACE
-Sphere3D::Sphere3D(const Vector3D& center,double radius):center_(center),
-                                                 radius_(radius){
-}
 
-
-Sphere3D enclosing_sphere(const Sphere3Ds &ss) {
+SphereD<3> get_enclosing_sphere(const std::vector<SphereD<3> > &ss) {
   IMP_USAGE_CHECK(!ss.empty(),
                   "Must pass some spheres to have a bounding sphere");
 #ifdef IMP_USE_CGAL
@@ -38,7 +34,7 @@ Sphere3D enclosing_sphere(const Sphere3Ds &ss) {
                              ss[i].get_radius()));
   }
   Min_sphere ms(spheres.begin(), spheres.end());
-  Sphere3D s(Vector3D(*ms.center_cartesian_begin(),
+  SphereD<3> s(VectorD<3>(*ms.center_cartesian_begin(),
                       *(ms.center_cartesian_begin()+1),
                       *(ms.center_cartesian_begin()+2)),
               ms.radius());
@@ -55,23 +51,23 @@ Sphere3D enclosing_sphere(const Sphere3Ds &ss) {
    for (unsigned int i=1; i< ss.size(); ++i) {
      bb+= get_bounding_box(ss[i]);
    }
-   Vector3D c= .5*(bb.get_corner(0)+ bb.get_corner(1));
+   VectorD<3> c= .5*(bb.get_corner(0)+ bb.get_corner(1));
    double r=0;
    for (unsigned int i=0; i< ss.size(); ++i) {
      double d= (c- ss[i].get_center()).get_magnitude();
      d+= ss[i].get_radius();
      r= std::max(r, d);
    }
-   return Sphere3D(c, r);
+   return SphereD<3>(c, r);
 #endif
 }
 
-Sphere3D enclosing_sphere(const Vector3Ds &vs) {
-  Sphere3Ds ss(vs.size());
+SphereD<3> get_enclosing_sphere(const std::vector<VectorD<3> > &vs) {
+  std::vector<SphereD<3> > ss(vs.size());
   for (unsigned int i=0; i< vs.size(); ++i) {
-    ss[i]= Sphere3D(vs[i], 0);
+    ss[i]= SphereD<3>(vs[i], 0);
   }
-  return enclosing_sphere(ss);
+  return get_enclosing_sphere(ss);
 }
 
 IMPALGEBRA_END_NAMESPACE
