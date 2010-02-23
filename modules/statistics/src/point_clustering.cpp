@@ -86,7 +86,7 @@ HighDensityEmbedding::HighDensityEmbedding(em::DensityMap *dm,
   Embedding("HighDensityEmbedding of "+dm->get_name()) {
   for (int i=0; i< dm->get_number_of_voxels(); ++i) {
     if (dm->get_value(i) > threshold) {
-      algebra::Vector3D v(dm->voxel2loc(i, 0),
+      algebra::VectorD<3> v(dm->voxel2loc(i, 0),
                           dm->voxel2loc(i, 1),
                           dm->voxel2loc(i, 2));
       points_.push_back(v);

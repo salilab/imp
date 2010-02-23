@@ -89,15 +89,15 @@ MCCGSampler::set_up_movers(const Parameters &pms,
 void MCCGSampler::randomize(const Parameters &pms,
                             internal::CoreListSingletonContainer *sc) const {
   algebra::BoundingBox3D
-    bb(algebra::Vector3D(pms.bounds_.find(XK)->second.first,
+    bb(algebra::VectorD<3>(pms.bounds_.find(XK)->second.first,
                          pms.bounds_.find(YK)->second.first,
                          pms.bounds_.find(ZK)->second.first),
-       algebra::Vector3D(pms.bounds_.find(XK)->second.second,
+       algebra::VectorD<3>(pms.bounds_.find(XK)->second.second,
                          pms.bounds_.find(YK)->second.second,
                          pms.bounds_.find(ZK)->second.second));
   for (unsigned int i=0; i< sc->get_number_of_particles(); ++i) {
     XYZ d(sc->get_particle(i));
-    d.set_coordinates(algebra::random_vector_in_box(bb));
+    d.set_coordinates(algebra::get_random_vector_in(bb));
   }
 }
 

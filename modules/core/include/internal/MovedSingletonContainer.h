@@ -26,7 +26,7 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 namespace {
   class SaveXYZRRotValues:public SingletonModifier {
   protected:
-    std::vector<std::pair<algebra::Sphere3D,
+    std::vector<std::pair<algebra::SphereD<3>,
                           algebra::Rotation3D> > &values_;
     mutable int i_;
     void do_apply(Particle *p) const {
@@ -42,7 +42,7 @@ namespace {
       ++i_;
     }
   public:
-    typedef std::pair<algebra::Sphere3D, algebra::Rotation3D> Value;
+    typedef std::pair<algebra::SphereD<3>, algebra::Rotation3D> Value;
     SaveXYZRRotValues(std::vector<Value> &values):
       SingletonModifier("SaveXYZRRotValues"), values_(values) {
       i_=0;
@@ -53,7 +53,7 @@ namespace {
 
   class SaveXYZRValues:public SingletonModifier {
   protected:
-    std::vector<algebra::Sphere3D> &values_;
+    std::vector<algebra::SphereD<3> > &values_;
     mutable int i_;
     void do_apply(Particle* p) const {
       XYZR d(p);
@@ -63,8 +63,8 @@ namespace {
       ++i_;
     }
   public:
-    typedef algebra::Sphere3D Value;
-    SaveXYZRValues(std::vector<algebra::Sphere3D> &values):
+    typedef algebra::SphereD<3> Value;
+    SaveXYZRValues(std::vector<algebra::SphereD<3> > &values):
       SingletonModifier("SaveXYZRValues"),
       values_(values) {
       i_=0;
@@ -96,7 +96,7 @@ namespace {
                                     do_apply(p);)
   };
 
-  inline bool moved_threshold(Particle *p, const algebra::Sphere3D &old,
+  inline bool moved_threshold(Particle *p, const algebra::SphereD<3> &old,
                               bool incremental,
                               double threshold, double &dist2, double &dr,
                               double &dist, bool has_dist) {
@@ -118,7 +118,7 @@ namespace {
   }
 
   class ListXYZRRotMovedParticles:public SingletonModifier {
-    std::vector<std::pair<algebra::Sphere3D,
+    std::vector<std::pair<algebra::SphereD<3>,
                           algebra::Rotation3D> > &values_;
     mutable ParticlesTemp &pt_;
     double threshold_;
@@ -140,8 +140,8 @@ namespace {
           RigidBody rb(p);
           algebra::Rotation3D rd
             = values_[i_].second/rb.get_transformation().get_rotation();
-          algebra::Vector3D rv(0,0,XYZR(p).get_radius());
-          algebra::Vector3D rvr= rd.rotate(rv);
+          algebra::VectorD<3> rv(0,0,XYZR(p).get_radius());
+          algebra::VectorD<3> rvr= rd.get_rotated(rv);
           if (dist + (rv-rvr).get_magnitude() > threshold_) {
             pt_.push_back(p);
           }
@@ -150,7 +150,7 @@ namespace {
       ++i_;
     }
   public:
-    ListXYZRRotMovedParticles(std::vector<std::pair<algebra::Sphere3D,
+    ListXYZRRotMovedParticles(std::vector<std::pair<algebra::SphereD<3>,
                               algebra::Rotation3D> > &values,
                 ParticlesTemp &pt,
                 double threshold,
@@ -166,7 +166,7 @@ namespace {
   };
 
   class ListXYZRMovedParticles:public SingletonModifier {
-    std::vector<algebra::Sphere3D> &values_;
+    std::vector<algebra::SphereD<3> > &values_;
     mutable ParticlesTemp &pt_;
     double threshold_;
     mutable unsigned int i_;
@@ -181,7 +181,7 @@ namespace {
       ++i_;
     }
   public:
-    ListXYZRMovedParticles(std::vector<algebra::Sphere3D> &values,
+    ListXYZRMovedParticles(std::vector<algebra::SphereD<3> > &values,
                 ParticlesTemp &pt,
                 double threshold,
                            bool incremental):

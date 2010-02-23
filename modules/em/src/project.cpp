@@ -12,13 +12,13 @@ IMPEM_BEGIN_NAMESPACE
 void project_given_direction(DensityMap& map,
              IMP::algebra::Matrix2D<double>& m2,
              const int Ydim,const int Xdim,
-             IMP::algebra::Vector3D& direction,
-             const IMP::algebra::Vector3D& shift,
+             IMP::algebra::VectorD<3>& direction,
+             const IMP::algebra::VectorD<3>& shift,
              const double equality_tolerance) {
 
   IMP::algebra::SphericalVector3D sph(direction);
   algebra::Rotation3D angles
-    = algebra::rotation_from_fixed_zyz(sph[2],sph[1],0.0);
+    = algebra::get_rotation_from_fixed_zyz(sph[2],sph[1],0.0);
   project_given_rotation(map,m2,Ydim,Xdim,angles,shift,equality_tolerance);
 };
 
@@ -27,7 +27,7 @@ void project_given_rotation(DensityMap& map,
              IMP::algebra::Matrix2D<double>& m2,
              const int Ydim,const int Xdim,
              const IMP::algebra::Rotation3D& Rot,
-             const IMP::algebra::Vector3D& shift,
+             const IMP::algebra::VectorD<3>& shift,
              const double equality_tolerance) {
 
 // #define DEBUG
@@ -51,10 +51,10 @@ void project_given_rotation(DensityMap& map,
 
   // Get the rotation and the direction from the Euler angles
   IMP::algebra::Rotation3D InvRot = Rot.get_inverse();
-  IMP::algebra::Vector3D direction;// = RotMat.direction();
+  IMP::algebra::VectorD<3> direction;// = RotMat.direction();
   for (unsigned int i=0; i< 3; ++i) {
-    IMP::algebra::Vector3D v=algebra::basis_vector<3>(i);
-    algebra::Vector3D r= Rot.rotate(v);
+    IMP::algebra::VectorD<3> v=algebra::get_basis_vector_d<3>(i);
+    algebra::VectorD<3> r= Rot.get_rotated(v);
     direction[i]=r[2];
   }
 
@@ -75,7 +75,7 @@ void project_given_rotation(DensityMap& map,
  #endif
 
   // Logical ints for the beginning of the map
-  IMP::algebra::Vector3D init0, end0, signs, half_signs;
+  IMP::algebra::VectorD<3> init0, end0, signs, half_signs;
   init0[0] = map.get_header()->get_xorigin();
   init0[1] = map.get_header()->get_yorigin();
   init0[2] = map.get_header()->get_zorigin();
@@ -89,8 +89,8 @@ void project_given_rotation(DensityMap& map,
     half_signs[i] = 0.5 * signs[i];
   }
 
-  IMP::algebra::Vector3D r; // A point in the coordinate system for the map
-  IMP::algebra::Vector3D p; // A point in the coord. system of the projection
+  IMP::algebra::VectorD<3> r; // A point in the coordinate system for the map
+  IMP::algebra::VectorD<3> p; // A point in the coord. system of the projection
 
 #ifdef DEBUG
   std::string fn_p = "plane_p.txt";
@@ -113,16 +113,16 @@ void project_given_rotation(DensityMap& map,
         // point in projection coordinate system
         switch (rays_per_pixel) {
         case 0:
-          p = IMP::algebra::Vector3D(j - step, i - step, 0);
+          p = IMP::algebra::VectorD<3>(j - step, i - step, 0);
           break;
         case 1:
-          p = IMP::algebra::Vector3D(j - step, i + step, 0);
+          p = IMP::algebra::VectorD<3>(j - step, i + step, 0);
           break;
         case 2:
-          p = IMP::algebra::Vector3D(j + step, i - step, 0);
+          p = IMP::algebra::VectorD<3>(j + step, i - step, 0);
           break;
         case 3:
-          p = IMP::algebra::Vector3D(j + step, i + step, 0);
+          p = IMP::algebra::VectorD<3>(j + step, i + step, 0);
           break;
         }
 
@@ -132,7 +132,7 @@ void project_given_rotation(DensityMap& map,
           p -= shift;
         }
 
-        r = InvRot.rotate(p);
+        r = InvRot.get_rotated(p);
 
 #ifdef DEBUG
        std::cout << "p: " << p << std::endl;
@@ -144,7 +144,7 @@ void project_given_rotation(DensityMap& map,
 #endif
         // Compute the minimum and maximum alpha for the line of the ray
         // intersecting the given volume. line = r + alpha * direction
-        IMP::algebra::Vector3D v_alpha_min, v_alpha_max, v_alpha, v_diff;
+        IMP::algebra::VectorD<3> v_alpha_min, v_alpha_max, v_alpha, v_diff;
         double alpha_min=-1/equality_tolerance;
         double alpha_max=1/equality_tolerance;
         for (int ii = 0;ii < 3;ii++) {
@@ -173,7 +173,7 @@ void project_given_rotation(DensityMap& map,
           continue;
         }
         // v is going to be the first voxel in the volume intersecting the ray
-        IMP::algebra::Vector3D v;
+        IMP::algebra::VectorD<3> v;
         // idx is a vector of logical ints indicating a voxel of the map
         std::vector<int> idx(3);
         v = r + alpha_min * direction; // vector operation

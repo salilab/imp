@@ -27,7 +27,7 @@ void Transform::apply(Particle *p) const
     return;
   }
   XYZ xyz = XYZ(p);
-  xyz.set_coordinates(t_.transform(xyz.get_coordinates()));
+  xyz.set_coordinates(t_.get_transformed(xyz.get_coordinates()));
 }
 
 ParticlesList Transform::get_interacting_particles(Particle *) const {

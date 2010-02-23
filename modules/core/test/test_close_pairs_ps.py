@@ -13,7 +13,7 @@ class Test(IMP.test.TestCase):
         p= IMP.Particle(m)
         h = IMP.core.Hierarchy.setup_particle(p)
         if depth== 0:
-            d = IMP.core.XYZR.setup_particle(p, IMP.algebra.Sphere3D(IMP.algebra.random_vector_in_unit_box(),
+            d = IMP.core.XYZR.setup_particle(p, IMP.algebra.Sphere3D(IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d()),
                                               .1))
         else:
             children= IMP.core.GenericHierarchies()
@@ -48,7 +48,7 @@ class Test(IMP.test.TestCase):
             for l1 in ls1:
                 d0= IMP.core.XYZR.decorate_particle(l0.get_particle())
                 d1= IMP.core.XYZR.decorate_particle(l1.get_particle())
-                if (IMP.core.distance(d0, d1) < threshold):
+                if (IMP.core.get_distance(d0, d1) < threshold):
                     print l0.get_particle().get_name() + " " \
                         + l1.get_particle().get_name()
                     self.assert_(lps.get_contains(IMP.ParticlePair(l0.get_particle(),

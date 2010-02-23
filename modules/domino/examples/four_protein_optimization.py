@@ -17,7 +17,7 @@ def create_random_transformation(angle_step=30.,translation_step=4.):
         IMP.algebra.rotation_in_radians_about_axis(
         z_vec,
         random.uniform(-math.radians(angle_step),math.radians(angle_step))),
-        IMP.algebra.random_vector_in_sphere(zero_vec,translation_step))
+        IMP.algebra.get_random_vector_in(zero_vec,translation_step))
     return rand_t
 
 

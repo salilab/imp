@@ -127,7 +127,7 @@ namespace {
     ins >> atom_number >> atom_name >> x_coord >> y_coord >> z_coord
         >> type >> molecule_number >> molecule_name >> atom_charge;
 
-    algebra::Vector3D v(x_coord, y_coord, z_coord);
+    algebra::VectorD<3> v(x_coord, y_coord, z_coord);
 
     std::string temp_name(type);
     boost::trim(temp_name);

@@ -103,7 +103,7 @@ bool PymolWriter::process(PolygonGeometry *g,
                             Color color, std::string name) {
   setup(name);
   get_stream() << "BEGIN, TRIANGLE_FAN, ";
-  algebra::Vector3D n=
+  algebra::VectorD<3> n=
     vector_product(g->at(1)-g->at(0),
                    g->at(2)-g->at(0)).get_unit_vector();
   write_color(get_stream(), color);
@@ -121,7 +121,7 @@ bool PymolWriter::process(TriangleGeometry *g,
                             Color color, std::string name) {
   setup(name);
   get_stream() << "BEGIN, TRIANGLE_FAN, ";
-  algebra::Vector3D n=
+  algebra::VectorD<3> n=
     vector_product(g->at(1)-g->at(0),
                    g->at(2)-g->at(0)).get_unit_vector();
   write_color(get_stream(), color);

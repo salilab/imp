@@ -8,7 +8,7 @@ centers=(IMP.algebra.Vector3D(0,0,0),
          IMP.algebra.Vector3D(60,30,12))
 for i in range(0,3):
     for j in range(0,100):
-        vs.push_back(IMP.algebra.random_vector_in_sphere(centers[i], 10))
+        vs.push_back(IMP.algebra.get_random_vector_in(IMP.algebra.Sphere3D(centers[i], 10)))
 
 # cluster them into 3 clusters
 e= IMP.statistics.Vector3DEmbedding(vs)

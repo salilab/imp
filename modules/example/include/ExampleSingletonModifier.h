@@ -31,9 +31,9 @@ IMPEXAMPLE_BEGIN_NAMESPACE
  */
 class IMPEXAMPLEEXPORT ExampleSingletonModifier: public SingletonModifier
 {
-  algebra::BoundingBox3D bb_;
+  algebra::BoundingBoxD<3> bb_;
 public:
-  ExampleSingletonModifier(const algebra::BoundingBox3D &bb);
+  ExampleSingletonModifier(const algebra::BoundingBoxD<3> &bb);
 
   IMP_SINGLETON_MODIFIER(ExampleSingletonModifier)
 };

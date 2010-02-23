@@ -14,7 +14,21 @@ functions as appropriate
   - IMP::algebra::get_volume()\\n\\n
 In addition, they cannot be compared against one another.
 
-\\par Generic geometry\\anchor genericgeometry
+\\par Geometry and dimensions
+Many of the geometric primitives in \imp are written to work in any dimension.
+In C++, this is implemented via templates (such as IMP::algebra::VectorD).
+In the python side, the different dimensions are named explicitly instead. That
+means, in C++ a 2-D point is IMP::algebra::VectorD<2>, where as in Python
+it is IMP::algbra::Vector2D. Likewise, a collection of such points is
+std::vector<IMP::algebra::VectorD<2> > in C++ and IMP.algebra.Vector2Ds in python.
+For convenience, we provide typedefs in C++ to the IMP::algbra::Vector2D and
+IMP::algebra::Vector2Ds style names.
+
+Similarly, methods that end in \c _d in C++ become \c _3d, \c _2d etc. For example
+IMP::algebra::get_basis_vector_d<3>() becomes \c IMP.algebra.get_basis_vector_3d().
+
+\\anchor genericgeometry
+\\par Generic geometry
  Geometry in IMP can be stored in a variety of ways. For example, a
  point in 3D can be stored using an IMP::algebra::Vector3D or using an
  IMP::core::XYZ particle. It is often useful to be able to write

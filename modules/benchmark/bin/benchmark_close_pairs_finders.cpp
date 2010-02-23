@@ -20,12 +20,12 @@ void test_one(std::string name,
               float rmin, float rmax) {
   set_log_level(SILENT);
   set_check_level(IMP::NONE);
-  Vector3D minc(0,0,0), maxc(10,10,10);
+  VectorD<3> minc(0,0,0), maxc(10,10,10);
   IMP_NEW(Model, m, ());
   Particles ps = create_xyzr_particles(m, n, rmin);
   ::boost::uniform_real<> rand(rmin, rmax);
   for (unsigned int i=0; i< ps.size(); ++i) {
-    XYZ(ps[i]).set_coordinates(random_vector_in_box(minc, maxc));
+    XYZ(ps[i]).set_coordinates(get_random_vector_in(BoundingBox3D(minc, maxc)));
     XYZR(ps[i]).set_radius(rand(random_number_generator));
   }
   IMP_NEW(ListSingletonContainer, lsc, (ps));

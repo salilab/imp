@@ -352,14 +352,15 @@ ProteinLigandAtomPairScore::ProteinLigandAtomPairScore(double threshold):
   table_(get_data_path("protein_ligand_score.lib")),
   threshold_(threshold){
   }
-double ProteinLigandAtomPairScore::evaluate(const algebra::Vector3D &protein_v,
-                                            int ptype,
-                                            const algebra::Vector3D &ligand_v,
-                                            int ltype,
-                                            core::XYZ pxyz, core::XYZ lxyz,
-                                            DerivativeAccumulator *da) const {
+double ProteinLigandAtomPairScore
+::evaluate(const algebra::VectorD<3> &protein_v,
+           int ptype,
+           const algebra::VectorD<3> &ligand_v,
+           int ltype,
+           core::XYZ pxyz, core::XYZ lxyz,
+           DerivativeAccumulator *da) const {
    if (ptype== PROTEIN_INVALID || ltype == LIGAND_INVALID) return 0;
-   double distance = algebra::distance(protein_v, ligand_v);
+   double distance = algebra::get_distance(protein_v, ligand_v);
    if (distance >= threshold_ || distance < 0.001) {
      return 0;
    }
@@ -372,8 +373,8 @@ double ProteinLigandAtomPairScore::evaluate(const algebra::Vector3D &protein_v,
    } else {
      DerivativePair dp= table_.get_score_with_derivative(ptype,
                                                          ltype, distance);
-     algebra::Vector3D diff= protein_v-ligand_v;
-     algebra::Vector3D norm= diff.get_unit_vector();
+     algebra::VectorD<3> diff= protein_v-ligand_v;
+     algebra::VectorD<3> norm= diff.get_unit_vector();
      pxyz.add_to_derivatives(dp.second*norm, *da);
      lxyz.add_to_derivatives(-dp.second*norm, *da);
      return dp.first;
@@ -387,7 +388,7 @@ double ProteinLigandAtomPairScore::evaluate(const ParticlePair &pp,
   LigandType lt= LigandType(pp[1]->get_value(get_protein_ligand_type_key()));
   core::XYZ pxyz(pp[0]);
   core::XYZ lxyz(pp[1]);
-  algebra::Vector3D pv(pxyz.get_coordinates()),
+  algebra::VectorD<3> pv(pxyz.get_coordinates()),
     lv(lxyz.get_coordinates());
   return evaluate(pv, pt, lv,lt, pxyz, lxyz, da);
 }
@@ -426,7 +427,7 @@ ProteinLigandRestraint::ProteinLigandRestraint(Hierarchy protein,
 double ProteinLigandRestraint
 ::unprotected_evaluate(DerivativeAccumulator *accum) const {
   IntKey k= get_protein_ligand_type_key();
-  algebra::Vector3Ds pvs, lvs;
+  std::vector<algebra::VectorD<3> > pvs, lvs;
   std::vector<ProteinType> pts;
   std::vector<LigandType> lts;
   HierarchiesTemp pas(get_by_type(protein_.get_decorator(), ATOM_TYPE));

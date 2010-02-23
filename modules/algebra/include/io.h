@@ -25,22 +25,24 @@ IMPALGEBRA_BEGIN_NAMESPACE
 //! Write a set of vector3Ds to a file
 /** \see read_pts
 */
-IMPALGEBRAEXPORT void write_pts(const Vector3Ds &vs, TextOutput out);
+IMPALGEBRAEXPORT void write_pts(const std::vector<VectorD<3> > &vs,
+                                TextOutput out);
 
 //! Read a set of vector3Ds from a file
 /** \see write_pts
 */
-IMPALGEBRAEXPORT Vector3Ds read_pts(TextInput in);
+IMPALGEBRAEXPORT std::vector<VectorD<3> > read_pts(TextInput in);
 
-//! Write a set of Sphere3Ds to a file
+//! Write a set of std::vector<SphereD<3> > to a file
 /** \see read_pts
 */
-IMPALGEBRAEXPORT void write_spheres(const Vector3Ds &vs, TextOutput out);
+IMPALGEBRAEXPORT void write_spheres(const std::vector<VectorD<3> > &vs,
+                                    TextOutput out);
 
-//! Read a set of Sphere3Ds from a file
+//! Read a set of std::vector<SphereD<3> > from a file
 /** \see write_pts
 */
-IMPALGEBRAEXPORT Sphere3Ds read_spheres(TextInput in);
+IMPALGEBRAEXPORT std::vector<SphereD<3> > read_spheres(TextInput in);
 
 /** @} */
 

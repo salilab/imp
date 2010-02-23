@@ -63,7 +63,7 @@ protected:
 
 #ifdef SWIG
 %template(FloatDistribution) Distribution<Float>;
-%template(VectorDistribution) Distribution<algebra::Vector3D>;
+%template(VectorDistribution) Distribution<algebra::VectorD<3> >;
 #endif
 
 /**
@@ -149,7 +149,7 @@ sum_i [f_p(0) * f_i(0) * (y_p - y_i)]
 sum_i [f_p(0) * f_i(0) * (z_p - z_i)]
 */
 class IMPSAXSEXPORT
-DeltaDistributionFunction : public Distribution<algebra::Vector3D> {
+DeltaDistributionFunction : public Distribution<algebra::VectorD<3> > {
 public:
   //! Constructor
   DeltaDistributionFunction(FormFactorTable* ff_table,
@@ -166,12 +166,12 @@ public:
   void show(std::ostream &out=std::cout, std::string prefix="") const;
 
  private:
-  void add_to_distribution(Float dist, const algebra::Vector3D& value) {
+  void add_to_distribution(Float dist, const algebra::VectorD<3>& value) {
     unsigned int index = dist2index(dist);
     if(index >= size()) {
       if(capacity() <= index)
         reserve(2 * index);   // to avoid many re-allocations
-      resize(index + 1, algebra::Vector3D(0.0, 0.0, 0.0));
+      resize(index + 1, algebra::VectorD<3>(0.0, 0.0, 0.0));
       max_distance_ = index2dist(index + 1);
     }
     (*this)[index] += value;
@@ -180,12 +180,12 @@ public:
   void init() {
     clear();
     insert(begin(), dist2index(max_distance_) + 1,
-           algebra::Vector3D(0.0, 0.0, 0.0));
+           algebra::VectorD<3>(0.0, 0.0, 0.0));
   }
 
  protected:
   FormFactorTable* ff_table_; // pointer to form factors table
-  std::vector<algebra::Vector3D> coordinates_;
+  std::vector<algebra::VectorD<3> > coordinates_;
   Floats form_factors_;
 };
 

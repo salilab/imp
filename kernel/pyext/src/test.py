@@ -237,7 +237,7 @@ class TestCase(unittest.TestCase):
         ubv=IMP.algebra.Vector3D(ub[0],ub[1],ub[2])
         ps= IMP.Particles()
         for i in range(0,num):
-            v = IMP.algebra.random_vector_in_box(lbv, ubv)
+            v = IMP.algebra.get_random_vector_in(IMP.algebra.BoundingBox3D(lbv, ubv))
             p = self.create_point_particle(model, v[0], v[1], v[2])
             ps.append(p)
         return ps

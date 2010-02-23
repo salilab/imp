@@ -406,7 +406,7 @@ bool DensityMap::same_voxel_size(const DensityMap &other) const
   return false;
 }
 
-algebra::Vector3D DensityMap::get_centroid(emreal threshold)  const{
+algebra::VectorD<3> DensityMap::get_centroid(emreal threshold)  const{
   IMP_CHECK_CODE(emreal max_val = get_max_value());
   IMP_USAGE_CHECK(threshold < max_val,
             "The input threshold with value " << threshold
@@ -430,7 +430,7 @@ algebra::Vector3D DensityMap::get_centroid(emreal threshold)  const{
   x_centroid /= counter;
   y_centroid /= counter;
   z_centroid /= counter;
-  return algebra::Vector3D(x_centroid,y_centroid,z_centroid);
+  return algebra::VectorD<3>(x_centroid,y_centroid,z_centroid);
 }
 emreal DensityMap::get_max_value() const{
   emreal max_val = -1.0 * INT_MAX;
@@ -549,9 +549,9 @@ Float approximate_molecular_mass(DensityMap* d, Float threshold) {
 
 /* Daniel's helpers */
 namespace {
-  inline algebra::Vector3D get_voxel_center(const DensityMap *map,
+  inline algebra::VectorD<3> get_voxel_center(const DensityMap *map,
                                      unsigned int v) {
-    return algebra::Vector3D(map->voxel2loc(v,0),
+    return algebra::VectorD<3>(map->voxel2loc(v,0),
                              map->voxel2loc(v,1),
                              map->voxel2loc(v,2));
   }
@@ -560,7 +560,7 @@ namespace {
                                  double spacing) {
     Pointer<DensityMap> ret(new DensityMap());
     unsigned int n[3];
-    algebra::Vector3D wid= bb.get_corner(1)-bb.get_corner(0);
+    algebra::VectorD<3> wid= bb.get_corner(1)-bb.get_corner(0);
     for (unsigned int i=0; i< 3; ++i) {
       n[i]= static_cast<int>(std::ceil(wid[i]/spacing));
     }
@@ -592,8 +592,8 @@ namespace {
     }
   }
 
-  inline void compute_voxel(const DensityMap *m, const algebra::Vector3D &v,
-                            int *ivox, algebra::Vector3D &remainder) {
+  inline void compute_voxel(const DensityMap *m, const algebra::VectorD<3> &v,
+                            int *ivox, algebra::VectorD<3> &remainder) {
     const double iside= 1.0/m->get_spacing();
     //std::cout << "getting " << v << std::endl;
     for (unsigned int i=0; i< 3; ++i) {
@@ -627,7 +627,7 @@ algebra::BoundingBox3D get_bounding_box(DensityMap* d,Float threshold) {
   algebra::BoundingBox3D ret;
   for(long l=0;l<d->get_number_of_voxels();l++) {
     if (d->get_value(l) > threshold) {
-      algebra::Vector3D v(get_voxel_center(d, l));
+      algebra::VectorD<3> v(get_voxel_center(d, l));
       ret+= v;
      }
   }
@@ -636,7 +636,7 @@ algebra::BoundingBox3D get_bounding_box(DensityMap* d,Float threshold) {
 }
 
 
-double get_density(DensityMap *m, const algebra::Vector3D &v) {
+double get_density(DensityMap *m, const algebra::VectorD<3> &v) {
   // trilirp in z, y, x
   const double side= m->get_spacing();
   const double halfside= side/2.0;
@@ -649,7 +649,7 @@ double get_density(DensityMap *m, const algebra::Vector3D &v) {
   }
 
   int ivox[3];
-  algebra::Vector3D r;
+  algebra::VectorD<3> r;
   compute_voxel(m, v, ivox, r);
   double is[4];
   for (unsigned int i=0; i< 4; ++i) {
@@ -678,8 +678,8 @@ DensityMap *get_transformed(DensityMap *in, const algebra::Transformation3D &tr,
   const algebra::Transformation3D &tri= tr.get_inverse();
   unsigned int size=ret->get_number_of_voxels();
   for (unsigned int i=0; i< size; ++i) {
-    algebra::Vector3D tpt=get_voxel_center(ret, i);
-    algebra::Vector3D pt= tri.transform(tpt);
+    algebra::VectorD<3> tpt=get_voxel_center(ret, i);
+    algebra::VectorD<3> pt= tri.get_transformed(tpt);
     double d = get_density(in, pt);
     ret->set_value(i, d);
   }
@@ -696,7 +696,7 @@ DensityMap* get_resampled(DensityMap *in, double scaling) {
                                          -std::numeric_limits<float>::max());
   Pointer<DensityMap> ret=create_density_map(obb, in->get_spacing()*scaling);
   for (unsigned int i=0; i< ret->get_number_of_voxels(); ++i) {
-    algebra::Vector3D v= get_voxel_center(ret, i);
+    algebra::VectorD<3> v= get_voxel_center(ret, i);
     double d= get_density(in, v);
     ret->set_value(i, d);
   }

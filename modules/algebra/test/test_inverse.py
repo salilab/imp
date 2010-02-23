@@ -15,13 +15,13 @@ class InverseTests(IMP.test.TestCase):
 
     def test_inverse(self):
         """Check that the the inverse of a transformation works"""
-        rt = IMP.algebra.rotation_from_fixed_xyz(0.2,0.8,-0.4)
+        rt = IMP.algebra.get_rotation_from_fixed_xyz(0.2,0.8,-0.4)
         t=IMP.algebra.Transformation3D(rt,IMP.algebra.Vector3D(20.0,-12.4,18.6))
-        v1_t = t.transform(self.v1)
-        v2_t = t.transform(self.v2)
+        v1_t = t.get_transformed(self.v1)
+        v2_t = t.get_transformed(self.v2)
         t_inv=t.get_inverse()
-        v1_t_inv = t_inv.transform(v1_t)
-        v2_t_inv = t_inv.transform(v2_t)
+        v1_t_inv = t_inv.get_transformed(v1_t)
+        v2_t_inv = t_inv.get_transformed(v2_t)
         self.assertEqual((v1_t_inv- self.v1).get_magnitude() < 0.01,True)
         self.assertEqual((v2_t_inv- self.v2).get_magnitude() < 0.01,True)
 

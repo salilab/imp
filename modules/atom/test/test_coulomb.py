@@ -20,8 +20,8 @@ def make_test_pair_score(min_distance=9.0, max_distance=10.0):
 
 def place_xyzs(xyz0, xyz1, box, dist):
     """Place two XYZ particles randomly a given distance apart"""
-    v = IMP.algebra.random_vector_in_box(-box, box)
-    delta = IMP.algebra.random_vector_on_unit_sphere() * dist
+    v = IMP.algebra.get_random_vector_in(IMP.algebra.BoundingBox3D(-box, box))
+    delta = IMP.algebra.get_random_vector_on(IMP.algebra.get_unit_sphere_3d()) * dist
     xyz0.set_coordinates(v)
     xyz1.set_coordinates(v + delta)
 
@@ -64,7 +64,7 @@ class CoulombTests(IMP.test.TestCase):
         # between 1 and 6 angstroms away (not too close since the derivatives
         # are too large there)
         d0.set_coordinates(IMP.algebra.Vector3D(0,0,0))
-        d1.set_coordinates(IMP.algebra.random_vector_on_unit_sphere() \
+        d1.set_coordinates(IMP.algebra.get_random_vector_on(IMP.algebra.get_unit_sphere_3d()) \
                            * (random.random() * 5.0 + 1.0))
         self.assertXYZDerivativesInTolerance(m, d0, 2.0, 3.0)
         self.assertXYZDerivativesInTolerance(m, d1, 2.0, 3.0)

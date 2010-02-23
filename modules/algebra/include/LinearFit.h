@@ -19,10 +19,10 @@ class IMPALGEBRAEXPORT LinearFit {
 public:
   //! Constructor
   /**
-     \param[in] data vector of pairs (Vector2D) with x and their
+     \param[in] data vector of pairs (VectorD<2>) with x and their
      corresponding y values
    */
-  LinearFit(const algebra::Vector2Ds& data);
+  LinearFit(const std::vector<algebra::VectorD<2> >& data);
 
   //! fit error
   double get_fit_error(double x) const { return error_; }

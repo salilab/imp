@@ -36,7 +36,7 @@ class IMPATOMEXPORT Diffusion:
       D is assumed to be in cm2/sec.
   */
   static Diffusion setup_particle(Particle *p,
-                          const algebra::Vector3D &v,
+                          const algebra::VectorD<3> &v,
                           Float D) {
     XYZ::setup_particle(p, v);
     p->add_attribute(get_D_key(), D);

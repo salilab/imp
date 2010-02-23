@@ -31,13 +31,13 @@ Float CoulombPairScore::evaluate(const ParticlePair &p,
 {
   Charged c0(p[0]);
   Charged c1(p[1]);
-  algebra::Vector3D delta = c0.get_coordinates() - c1.get_coordinates();
+  algebra::VectorD<3> delta = c0.get_coordinates() - c1.get_coordinates();
   double dist = delta.get_magnitude();
   double score = multiplication_factor_ * c0.get_charge() * c1.get_charge()
                  / dist;
   if (da) {
     DerivativePair d = (*smoothing_function_)(score, -score/dist, dist);
-    algebra::Vector3D deriv = d.second * delta / dist;
+    algebra::VectorD<3> deriv = d.second * delta / dist;
     c0.add_to_derivatives(deriv, *da);
     c1.add_to_derivatives(-deriv, *da);
     return d.first;

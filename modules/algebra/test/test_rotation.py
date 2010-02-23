@@ -19,7 +19,7 @@ class TransformFunct:
         self.q[self.qi]= v
         uv= self.q.get_unit_vector()
         r= IMP.algebra.Rotation3D(uv[0], uv[1], uv[2], uv[3])
-        rx= r.rotate(self.x)
+        rx= r.get_rotated(self.x)
         return rx[self.xi]
     def get_analytic_deriv(self):
         uv= self.q.get_unit_vector()
@@ -32,18 +32,18 @@ class RotationTests(IMP.test.TestCase):
     def test_axis_rotation(self):
         """Check rotation about axis """
         for ii in xrange(1,10):
-            axis= IMP.algebra.random_vector_on_unit_sphere()
+            axis= IMP.algebra.get_random_vector_on(IMP.algebra.get_unit_sphere_3d())
             angle= math.pi/ii#random.uniform(-math.pi,math.pi)
 
-            r= IMP.algebra.rotation_in_radians_about_axis(axis,angle)
+            r= IMP.algebra.get_rotation_in_radians_about_axis(axis,angle)
             ri= r.get_inverse()
-            v_start = IMP.algebra.random_vector_in_unit_box()
+            v_start = IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d())
             vt = v_start
             for i in xrange(2*ii):
-                vt= r.rotate(vt)
+                vt= r.get_rotated(vt)
                 if i==0:
-                    vti= ri.rotate(vt)
-            self.assertInTolerance(IMP.algebra.distance(v_start,vt),0., .1)
+                    vti= ri.get_rotated(vt)
+            self.assertInTolerance(IMP.algebra.get_distance(v_start,vt),0., .1)
             self.assertInTolerance(vti[0], v_start[0], .1)
             self.assertInTolerance(vti[1], v_start[1], .1)
             self.assertInTolerance(vti[2], v_start[2], .1)
@@ -53,7 +53,7 @@ class RotationTests(IMP.test.TestCase):
 
     def test_rotation(self):
         """Check that the rotation inverse is an inverse"""
-        axis= IMP.algebra.random_vector_on_unit_sphere()
+        axis= IMP.algebra.get_random_vector_on(IMP.algebra.get_unit_sphere_3d())
         m= random.uniform(-1,1)
         mag= m*m+ axis*axis
         mag = mag**(.5)
@@ -61,9 +61,9 @@ class RotationTests(IMP.test.TestCase):
         m/=mag
         r= IMP.algebra.Rotation3D(m, axis[0], axis[1], axis[2])
         ri= r.get_inverse()
-        v= IMP.algebra.random_vector_in_unit_box()
-        vt= r.rotate(v)
-        vti= ri.rotate(vt)
+        v= IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d())
+        vt= r.get_rotated(v)
+        vti= ri.get_rotated(vt)
         v.show()
         vti.show()
         vt.show()
@@ -74,8 +74,8 @@ class RotationTests(IMP.test.TestCase):
     def test_deriv(self):
         """Check the quaternion derivatives"""
         #r= IMP.algebra.Rotation3D(1,0,0,0)
-        r=IMP.algebra.random_rotation()
-        x= IMP.algebra.random_vector_in_unit_box()
+        r=IMP.algebra.get_random_rotation_3d()
+        x= IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d())
         #x=IMP.algebra.Vector3D(1,0,0)
         for qi in range(0,4):
             for xi in range(0,3):
@@ -95,24 +95,24 @@ class RotationTests(IMP.test.TestCase):
         axis.append(IMP.algebra.Vector3D(0.0,1.0,0.0)) #to check the parallel case
         axis.append(IMP.algebra.Vector3D(0.0,0.0,1.0))
         axis.append(IMP.algebra.Vector3D(0.0,0.0,-1.0))#to check the antiparallel case
-        axis.append(IMP.algebra.random_vector_on_unit_sphere())
-        axis.append(IMP.algebra.random_vector_on_unit_sphere())
+        axis.append(IMP.algebra.get_random_vector_on(IMP.algebra.get_unit_sphere_3d()))
+        axis.append(IMP.algebra.get_random_vector_on(IMP.algebra.get_unit_sphere_3d()))
         for i in range(len(axis)-1):
-            rot = IMP.algebra.rotation_taking_first_to_second(axis[i],axis[i+1])
-            self.assertAlmostEqual(IMP.algebra.distance(rot*axis[i],axis[i+1]),0.0)
+            rot = IMP.algebra.get_rotation_taking_first_to_second(axis[i],axis[i+1])
+            self.assertAlmostEqual(IMP.algebra.get_distance(rot*axis[i],axis[i+1]),0.0)
 
     def test_decompose_rotation_into_axis_angle(self):
         """Check that the function decompose_rotation_into_axis_angle is correct"""
-        r0= IMP.algebra.random_rotation()
+        r0= IMP.algebra.get_random_rotation_3d()
         aa = IMP.algebra.decompose_rotation_into_axis_angle(r0)
         axis=aa[0];angle=aa[1]
-        r1 = IMP.algebra.rotation_in_radians_about_axis(axis,angle)
+        r1 = IMP.algebra.get_rotation_in_radians_about_axis(axis,angle)
         self.assertInTolerance((r0.get_quaternion()-r1.get_quaternion()).get_squared_magnitude(), 0, .1)
 
     def test_interpolate(self):
         """Check that rotations can be interpolated"""
-        r0= IMP.algebra.random_rotation()
-        r1= IMP.algebra.random_rotation()
+        r0= IMP.algebra.get_random_rotation_3d()
+        r1= IMP.algebra.get_random_rotation_3d()
         print "Inputs"
         r0.show()
         r1.show()

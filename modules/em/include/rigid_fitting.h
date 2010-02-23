@@ -82,7 +82,7 @@ protected:
 IMPEMEXPORT void  local_rigid_fitting_around_point(
    core::RigidBody &rb, const FloatKey &radius_key,
    const FloatKey &weight_key,
-   DensityMap *dmap, const algebra::Vector3D &anchor_centroid,
+   DensityMap *dmap, const algebra::VectorD<3> &anchor_centroid,
    FittingSolutions &fr,
    OptimizerState *display_log,
    Int number_of_optimization_runs = 5, Int number_of_mc_steps = 10,
@@ -129,7 +129,7 @@ inline void local_rigid_fitting(
    Int number_of_optimization_runs = 5, Int number_of_mc_steps = 10,
    Int number_of_cg_steps=100,
    Float max_translation=2., Float max_rotation=5.) {
-   algebra::Vector3D rb_cen=
+   algebra::VectorD<3> rb_cen=
      IMP::core::centroid(core::XYZs(rb.get_members()));
    local_rigid_fitting_around_point(
      rb, radius_key, weight_key,dmap, rb_cen,fr,display_log,
@@ -140,7 +140,7 @@ inline void local_rigid_fitting(
 IMPEMEXPORT void local_rigid_fitting_around_points(
    core::RigidBody &rb,
    const FloatKey &rad_key, const FloatKey &wei_key,
-   DensityMap *dmap, const algebra::Vector3Ds &anchor_centroid,
+   DensityMap *dmap, const std::vector<algebra::VectorD<3> > &anchor_centroid,
    FittingSolutions &fr, OptimizerState *display_log,
    Int number_of_optimization_runs = 5, Int number_of_mc_steps = 10,
    Int number_of_cg_steps=100,

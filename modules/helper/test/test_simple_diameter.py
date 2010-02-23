@@ -37,7 +37,7 @@ class SimpleDiameterTest(IMP.test.TestCase):
 
         for p0 in self.ps:
             for p1 in self.ps:
-                d=IMP.core.distance(IMP.core.XYZ(p0.get_particle()),
+                d=IMP.core.get_distance(IMP.core.XYZ(p0.get_particle()),
                                     IMP.core.XYZ(p1.get_particle()))
                 self.assert_(d < 1.1*self.diameter)
 

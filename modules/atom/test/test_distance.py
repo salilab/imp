@@ -18,10 +18,10 @@ class DistanceTest(IMP.test.TestCase):
         xyz=IMP.core.XYZs(IMP.atom.get_leaves(mp))
         xyz1=IMP.core.XYZs(IMP.atom.get_leaves(mp1))
         #create a random transformation
-        t=IMP.algebra.Transformation3D(IMP.algebra.random_rotation(),
-                                       IMP.algebra.random_vector_in_unit_box())
+        t=IMP.algebra.Transformation3D(IMP.algebra.get_random_rotation_3d(),
+                                       IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d()))
         for d in xyz1: IMP.core.transform(d,t)
-        da=IMP.atom.placement_score(xyz1,xyz)
+        da=IMP.atom.get_placement_score(xyz1,xyz)
         d=t.get_translation().get_magnitude()
         a=IMP.algebra.decompose_rotation_into_axis_angle(t.get_rotation()).second
         self.assertAlmostEqual(da[0],d, 2)
@@ -46,15 +46,15 @@ class DistanceTest(IMP.test.TestCase):
         xyz2_mdl=IMP.core.XYZs(IMP.atom.get_leaves(mp2_mdl))
 
         #create a random transformation
-        t=IMP.algebra.Transformation3D(IMP.algebra.random_rotation(),
-                                       IMP.algebra.random_vector_in_unit_box())
+        t=IMP.algebra.Transformation3D(IMP.algebra.get_random_rotation_3d(),
+                                       IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d()))
         for d in xyz1_mdl: IMP.core.transform(d,t)
-        t=IMP.algebra.Transformation3D(IMP.algebra.random_rotation(),
-                                       IMP.algebra.random_vector_in_unit_box())
-        #IMP.core.transform(xyz2_mdl,t)
+        t=IMP.algebra.Transformation3D(IMP.algebra.get_random_rotation_3d(),
+                                       IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d()))
+        #IMP.core.get_transformed(xyz2_mdl,t)
         for d in xyz2_mdl: IMP.core.transform(d, t)
-        da1=IMP.atom.component_placement_score(xyz1_ref,xyz2_ref,xyz1_mdl,xyz2_mdl)
-        da2=IMP.atom.component_placement_score(xyz1_ref,xyz2_ref,xyz1_mdl,xyz2_mdl)
+        da1=IMP.atom.get_component_placement_score(xyz1_ref,xyz2_ref,xyz1_mdl,xyz2_mdl)
+        da2=IMP.atom.get_component_placement_score(xyz1_ref,xyz2_ref,xyz1_mdl,xyz2_mdl)
         self.assertAlmostEqual(da1[0],da2[0])
         self.assertAlmostEqual(da1[1],da2[1])
 

@@ -26,7 +26,7 @@ class Vector3DTests(IMP.test.TestCase):
         olb= lb-delta
         oub= ub+delta
         for i in range(0, 100):
-            rv= IMP.algebra.random_vector_on_box(lb, ub)
+            rv= IMP.algebra.get_random_vector_on(IMP.algebra.BoundingBox3D(lb, ub))
             print ".dotat "+str(rv[0])+" "+str(rv[1])+" "+str(rv[2])
             for i in range(0, 3):
                 self.assert_(in_box(olb, oub, rv))

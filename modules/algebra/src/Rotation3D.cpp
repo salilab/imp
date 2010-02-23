@@ -23,13 +23,13 @@ Rotation3D Rotation3D::get_inverse() const {
 
 
 
-Rotation3D rotation_from_matrix(double m11,double m12,double m13,
+Rotation3D get_rotation_from_matrix(double m11,double m12,double m13,
                                 double m21,double m22,double m23,
                                 double m31,double m32,double m33) {
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-    Vector3D v0(m11, m12, m13);
-    Vector3D v1(m21, m22, m23);
-    Vector3D v2(m31, m32, m33);
+    VectorD<3> v0(m11, m12, m13);
+    VectorD<3> v1(m21, m22, m23);
+    VectorD<3> v2(m31, m32, m33);
     IMP_USAGE_CHECK(std::abs(v0.get_squared_magnitude()-1) < .1,
               "The passed matrix is not a rotation matrix (row 0).");
     IMP_USAGE_CHECK(std::abs(v1.get_squared_magnitude()-1) < .1,
@@ -42,9 +42,9 @@ Rotation3D rotation_from_matrix(double m11,double m12,double m13,
               "The passed matrix is not a rotation matrix (row 0, row 2).");
     IMP_USAGE_CHECK(std::abs(v1 *v2) < .1,
               "The passed matrix is not a rotation matrix (row 1, row 2).");
-    Vector3D c0(m11, m21, m31);
-    Vector3D c1(m12, m22, m32);
-    Vector3D c2(m13, m23, m33);
+    VectorD<3> c0(m11, m21, m31);
+    VectorD<3> c1(m12, m22, m32);
+    VectorD<3> c2(m13, m23, m33);
     IMP_USAGE_CHECK(std::abs(c0.get_squared_magnitude()-1) < .1,
               "The passed matrix is not a rotation matrix (col 0).");
     IMP_USAGE_CHECK(std::abs(c1.get_squared_magnitude()-1) < .1,
@@ -77,19 +77,19 @@ Rotation3D rotation_from_matrix(double m11,double m12,double m13,
   return Rotation3D(a,b,c,d);
 }
 
-Rotation3D random_rotation() {
-  VectorD<4> r= random_vector_on_unit_sphere<4>();
+Rotation3D get_random_rotation_3d() {
+  VectorD<4> r= get_random_vector_on<4>(get_unit_sphere_d<4>());
   return Rotation3D(r[0], r[1], r[2], r[3]);
 }
 
 
-Rotation3Ds uniform_cover_rotations(unsigned int n) {
+Rotation3Ds get_uniform_cover_rotations_3d(unsigned int n) {
   // "surface area" is 2 pi^2 r^3= 2pi^2.
   // each rotation has an area of approximately 4/3 pi distance^3
   std::vector<VectorD<4> > vs
-    = internal::uniform_cover_sphere<4, true>(n*2,
-                                              zeros<4>(),
-                                              1);
+    = internal::uniform_cover_sphere<4>(n,
+                                        get_zero_vector_d<4>(),
+                                        1, false);
   Rotation3Ds ret;
   for (unsigned int i=0; i< vs.size(); ++i) {
     if (vs[i][0] >=0) {
@@ -103,12 +103,12 @@ Rotation3Ds uniform_cover_rotations(unsigned int n) {
 }
 
 
-Rotation3D random_rotation(const Rotation3D &center,
-                           double distance) {
+Rotation3D get_random_rotation_3d(const Rotation3D &center,
+                                  double distance) {
   unsigned int count=0;
   double d2= square(distance);
   while (count < 10000) {
-    Rotation3D rr= random_rotation();
+    Rotation3D rr= get_random_rotation_3d();
     if ((rr.get_quaternion()
          - center.get_quaternion()).get_squared_magnitude() < d2) {
       return rr;
@@ -118,7 +118,7 @@ Rotation3D random_rotation(const Rotation3D &center,
   IMP_FAILURE("Unable to find a suitably close rotation");
 }
 
-Rotation3D rotation_from_fixed_xyz(double xr,double yr, double zr)
+Rotation3D get_rotation_from_fixed_xyz(double xr,double yr, double zr)
 {
   double a,b,c,d;
   double cx = cos(xr);  double cy = cos(yr);  double cz = cos(zr);
@@ -137,7 +137,7 @@ Rotation3D rotation_from_fixed_xyz(double xr,double yr, double zr)
   return Rotation3D(a,b,c,d);
 }
 
-Rotation3D rotation_from_fixed_zxz(double phi, double theta, double psi)
+Rotation3D get_rotation_from_fixed_zxz(double phi, double theta, double psi)
 {
   double a,b,c,d;
   double c1,c2,c3,s1,s2,s3;
@@ -151,7 +151,7 @@ Rotation3D rotation_from_fixed_zxz(double phi, double theta, double psi)
 }
 
 
-Rotation3D rotation_from_fixed_zyz(double Rot, double Tilt, double Psi) {
+Rotation3D get_rotation_from_fixed_zyz(double Rot, double Tilt, double Psi) {
   double c1 = std::cos(Rot);
   double c2 = std::cos(Tilt);
   double c3 = std::cos(Psi);
@@ -171,25 +171,25 @@ Rotation3D rotation_from_fixed_zyz(double Rot, double Tilt, double Psi) {
   double d20 = (-1.0) * c1 * s2;
   double d21 = s1 * s2;
   double d22 = c2;
-  Rotation3D rot= rotation_from_matrix(d00, d01, d02,
-                                       d10, d11, d12,
-                                       d20, d21, d22);
+  Rotation3D rot= get_rotation_from_matrix(d00, d01, d02,
+                                           d10, d11, d12,
+                                           d20, d21, d22);
   return rot;
 }
 
 
 
-FixedZYZ fixed_zyz_from_rotation(const Rotation3D &r) {
+FixedZYZ get_fixed_zyz_from_rotation(const Rotation3D &r) {
   // double d22 = c2
-  double cos_tilt= r.rotate(Vector3D(0,0,1))[2];
+  double cos_tilt= r.get_rotated(VectorD<3>(0,0,1))[2];
   // double d12 = s2 * s3;
-  double sin_tilt_sin_psi= r.rotate(Vector3D(0,0,1))[1];
+  double sin_tilt_sin_psi= r.get_rotated(VectorD<3>(0,0,1))[1];
   // double d21 = s1 * s2;
-  double sin_rot_sin_tilt= r.rotate(Vector3D(0,1,0))[2];
+  double sin_rot_sin_tilt= r.get_rotated(VectorD<3>(0,1,0))[2];
   // double d02 = c3 * s2;
-  double cos_psi_sin_tilt = r.rotate(Vector3D(0,0,1))[0];
+  double cos_psi_sin_tilt = r.get_rotated(VectorD<3>(0,0,1))[0];
   //double d20 = (-1.0) * c1 * s2;
-  double cos_rot_sin_tilt = -r.rotate(Vector3D(1,0,0))[2];
+  double cos_rot_sin_tilt = -r.get_rotated(VectorD<3>(1,0,0))[2];
   double psi= std::atan2(sin_tilt_sin_psi, cos_psi_sin_tilt);
   double sin_tilt= sin_tilt_sin_psi/std::sin(psi);
   double tilt= std::atan2(sin_tilt, cos_tilt);
@@ -202,7 +202,7 @@ FixedZYZ fixed_zyz_from_rotation(const Rotation3D &r) {
           << sin_rot << " " << sin_tilt << " "
           << sin_tilt_sin_psi/sin_tilt << std::endl);*/
   IMP_IF_CHECK(USAGE) {
-    Rotation3D rrot= rotation_from_fixed_zyz(rot, tilt, psi);
+    Rotation3D rrot= get_rotation_from_fixed_zyz(rot, tilt, psi);
     IMP_LOG(VERBOSE,
             "Input is " << r << " output results in " << rrot << std::endl);
     IMP_INTERNAL_CHECK((rrot.get_quaternion()
@@ -215,7 +215,7 @@ FixedZYZ fixed_zyz_from_rotation(const Rotation3D &r) {
   return FixedZYZ(rot, tilt, psi);
 }
 
-FixedXYZ fixed_xyz_from_rotation(const Rotation3D &r) {
+FixedXYZ get_fixed_xyz_from_rotation(const Rotation3D &r) {
   VectorD<4> quat = r.get_quaternion();
   double q00 = square(quat[0]);
   double q11 = square(quat[1]);

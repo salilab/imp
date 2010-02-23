@@ -105,15 +105,15 @@ namespace {
     RigidBody rb(p);
     algebra::Rotation3D rot= rb.get_transformation().get_rotation();
     IMP_LOG(TERSE, "Accumulating rigid body derivatives" << std::endl);
-    algebra::Vector3D v(0,0,0);
+    algebra::VectorD<3> v(0,0,0);
     algebra::VectorD<4> q(0,0,0,0);
     for (unsigned int i=0; i< rb.get_number_of_members(); ++i) {
       RigidMember d= rb.get_member(i);
-      algebra::Vector3D dv= d.get_derivatives();
+      algebra::VectorD<3> dv= d.get_derivatives();
       v+=dv;
       IMP_LOG(TERSE, "Adding " << dv << " to derivative" << std::endl);
       for (unsigned int j=0; j< 4; ++j) {
-        algebra::Vector3D v= rot.get_derivative(d.get_internal_coordinates(),
+        algebra::VectorD<3> v= rot.get_derivative(d.get_internal_coordinates(),
                                                 j);
         IMP_LOG(VERBOSE, "Adding " << dv*v << " to quaternion deriv " << j
                 << std::endl);
@@ -159,14 +159,14 @@ namespace {
 typedef IMP::algebra::internal::TNT::Array2D<double> Matrix;
 
 Matrix compute_I(const XYZs &ds,
-                 const algebra::Vector3D &center,
+                 const algebra::VectorD<3> &center,
                  const IMP::algebra::Rotation3D &rot) {
   Matrix I(3,3, 0.0);
   for (unsigned int i=0; i< ds.size(); ++i) {
     XYZ cm= ds[i];
     double m=1;
     double r=0;
-    algebra::Vector3D cv=rot.rotate(cm.get_coordinates()-center);
+    algebra::VectorD<3> cv=rot.get_rotated(cm.get_coordinates()-center);
 
     Matrix Is(3,3, 0.0);
     for (unsigned int i=0; i<3; ++i) {
@@ -205,7 +205,7 @@ RigidBody RigidBody::internal_setup_particle(Particle *p,
   }
 
   // compute center of mass
-  algebra::Vector3D v(0,0,0);
+  algebra::VectorD<3> v(0,0,0);
   Float mass=0;
   for (unsigned int i=0; i< ds.size(); ++i) {
     XYZ cm= ds[i];
@@ -219,7 +219,7 @@ RigidBody RigidBody::internal_setup_particle(Particle *p,
   // parallel axis theorem
   // I'ij= Iij+M(v^2delta_ij-vi*vj)
   // compute I
-  Matrix I = compute_I(ds, v, IMP::algebra::identity_rotation());
+  Matrix I = compute_I(ds, v, IMP::algebra::get_identity_rotation_3d());
   IMP_LOG(VERBOSE, "Initial I is " << I << std::endl);
   // diagonalize it
   IMP::algebra::internal::JAMA::Eigenvalue<double> eig(I);
@@ -227,7 +227,7 @@ RigidBody RigidBody::internal_setup_particle(Particle *p,
   eig.getV(rm);
   // use the R as the initial orientation
   IMP::algebra::Rotation3D rot
-    = IMP::algebra::rotation_from_matrix(rm[0][0], rm[0][1], rm[0][2],
+    = IMP::algebra::get_rotation_from_matrix(rm[0][0], rm[0][1], rm[0][2],
                                          rm[1][0], rm[1][1], rm[1][2],
                                          rm[2][0], rm[2][1], rm[2][2]);
   IMP_LOG(VERBOSE, "Initial rotation is " << rot << std::endl);
@@ -258,7 +258,7 @@ RigidBody RigidBody::setup_particle(Particle *p,
                                     const XYZs &members){
   RigidBody d=internal_setup_particle(p, members);
   algebra::Rotation3D roti= d.get_transformation().get_rotation().get_inverse();
-  algebra::Vector3D transi= -d.get_transformation().get_translation();
+  algebra::VectorD<3> transi= -d.get_transformation().get_translation();
   for (unsigned int i=0; i< members.size(); ++i) {
     d.add_member_internal(members[i], roti, transi, false);
     //IMP_LOG(VERBOSE, " " << cm << " | " << std::endl);
@@ -268,8 +268,8 @@ RigidBody RigidBody::setup_particle(Particle *p,
     RigidMembers ds(members);
     for (unsigned int i=0; i< ds.size(); ++i) {
       RigidMember cm= RigidMember(ds[i]);
-      algebra::Vector3D v= cm.get_coordinates();
-      algebra::Vector3D nv= d.get_coordinates(cm);
+      algebra::VectorD<3> v= cm.get_coordinates();
+      algebra::VectorD<3> nv= d.get_coordinates(cm);
       IMP_INTERNAL_CHECK((v-nv).get_squared_magnitude() < .1,
                          "Bad initial orientation "
                          << d.get_transformation() << std::endl
@@ -309,7 +309,7 @@ void RigidBody::update_members() {
   Hierarchy hd(get_particle(), internal::rigid_body_data().htraits_);
   for (unsigned int i=0; i< hd.get_number_of_children(); ++i) {
     RigidMember rm(hd.get_child(i));
-    rm.set_coordinates(tr.transform(rm.get_internal_coordinates()));
+    rm.set_coordinates(tr.get_transformed(rm.get_internal_coordinates()));
   }
   Hierarchy hdb(get_particle(), internal::rigid_body_data().hbtraits_);
   for (unsigned int i=0; i< hdb.get_number_of_children(); ++i) {
@@ -364,15 +364,15 @@ void RigidBody::add_member(XYZ d) {
 }
 
 void RigidBody::add_member_internal(XYZ d, const algebra::Rotation3D &roti,
-                                    const algebra::Vector3D &transi,
+                                    const algebra::VectorD<3> &transi,
                                     bool cover) {
   internal::add_required_attributes_for_member(d);
   RigidMember cm(d);
   Hierarchy hc(d, internal::rigid_body_data().htraits_);
   Hierarchy hd(*this, internal::rigid_body_data().htraits_);
   hd.add_child(hc);
-  algebra::Vector3D cv=cm.get_coordinates()+transi;
-  algebra::Vector3D lc= roti.rotate(cv);
+  algebra::VectorD<3> cv=cm.get_coordinates()+transi;
+  algebra::VectorD<3> lc= roti.get_rotated(cv);
   cm.set_internal_coordinates(lc);
   if (cover) cover_rigid_body(*this, get_members());
 }
@@ -425,11 +425,11 @@ void RigidBody::set_coordinates_are_optimized(bool tf) {
   }
 }
 
-algebra::Vector3D RigidBody::get_coordinates(RigidMember p)
+algebra::VectorD<3> RigidBody::get_coordinates(RigidMember p)
   const {
-  algebra::Vector3D lp= p.get_internal_coordinates();
+  algebra::VectorD<3> lp= p.get_internal_coordinates();
   IMP::algebra::Transformation3D tr= get_transformation();
-  return tr.transform(lp);
+  return tr.get_transformed(lp);
 }
 
 void RigidBody
@@ -447,7 +447,8 @@ void RigidBody
   lazy_set_transformation(tr);
   for (unsigned int i=0; i< get_number_of_members(); ++i) {
     get_member(i)
-      .set_coordinates(tr.transform(get_member(i).get_internal_coordinates()));
+      .set_coordinates(tr.get_transformed(get_member(i)
+                                          .get_internal_coordinates()));
   }
 }
 

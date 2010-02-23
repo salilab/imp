@@ -44,7 +44,7 @@ namespace {
   typedef Index Parent;
   typedef boost::disjoint_sets<Index,Parent> UF;
   void build_graph(SingletonContainer *sc, ParticlePairsTemp &out, UF &uf) {
-    algebra::Vector3Ds vs(sc->get_number_of_particles());
+    std::vector<algebra::VectorD<3> > vs(sc->get_number_of_particles());
     for (unsigned int i=0; i< vs.size(); ++i) {
       vs[i]= core::XYZ(sc->get_particle(i)).get_coordinates();
     }
@@ -92,7 +92,7 @@ namespace {
                    ParticlePairsTemp &out) {
     static unsigned int nnn=10;
 
-    algebra::Vector3Ds vs(sc->get_number_of_particles());
+    std::vector<algebra::VectorD<3> > vs(sc->get_number_of_particles());
     for (unsigned int i=0; i< vs.size(); ++i) {
       vs[i]= core::XYZ(sc->get_particle(i)).get_coordinates();
     }
@@ -104,7 +104,7 @@ namespace {
       Ints ni=nn.get_nearest_neighbors(i, nnn);
       for (unsigned int j=0; j< ni.size(); ++j) {
         core::XYZR dj(sc->get_particle(ni[j]));
-        double d= algebra::power_distance(di.get_sphere(), dj.get_sphere());
+        double d= algebra::get_power_distance(di.get_sphere(), dj.get_sphere());
         boost::add_edge(i, ni[j], Weight(d), g);
       }
     }
@@ -136,7 +136,7 @@ void ConnectingPairContainer::initialize(SingletonContainer *sc) {
   sc_=sc;
   fill_list(true);
   Model *m=sc->get_particle(0)->get_model();
-  mv_= new core::internal::MovedSingletonContainerImpl<algebra::Sphere3D,
+  mv_= new core::internal::MovedSingletonContainerImpl<algebra::SphereD<3>,
     core::internal::SaveXYZRValues,
     core::internal::SaveMovedValues<core::internal::SaveXYZRValues>,
     core::internal::ListXYZRMovedParticles>(m, sc, error_);

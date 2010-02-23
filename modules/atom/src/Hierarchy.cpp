@@ -344,7 +344,7 @@ namespace {
     using core::XYZR;
     if (XYZR::particle_is_instance(d.get_particle())){
       XYZR::setup_particle(p,
-                           algebra::Sphere3D(XYZ(d.get_particle())
+                           algebra::SphereD<3>(XYZ(d.get_particle())
                                              .get_coordinates(),
                                              XYZR(d.get_particle())
                                              .get_radius()));
@@ -454,19 +454,19 @@ algebra::BoundingBox3D get_bounding_box(const Hierarchy &h) {
 }
 
 
-algebra::Sphere3D get_bounding_sphere(const Hierarchy &h) {
+algebra::SphereD<3> get_bounding_sphere(const Hierarchy &h) {
   Particles rep= get_leaves(h);
-  algebra::Sphere3Ds ss;
+  std::vector<algebra::SphereD<3> > ss;
   for (unsigned int i=0; i< rep.size(); ++i) {
     core::XYZR xyzr= core::XYZR::decorate_particle(rep[i]);
     if (xyzr) {
       ss.push_back(xyzr.get_sphere());
     } else if (core::XYZ::particle_is_instance(rep[i])) {
-      ss.push_back(algebra::Sphere3D(core::XYZ(rep[i]).get_coordinates(),
+      ss.push_back(algebra::SphereD<3>(core::XYZ(rep[i]).get_coordinates(),
                                      0));
     }
   }
-  return algebra::enclosing_sphere(ss);
+  return algebra::get_enclosing_sphere(ss);
 }
 
 

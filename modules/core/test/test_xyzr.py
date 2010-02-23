@@ -16,7 +16,7 @@ class DecoratorTests(IMP.test.TestCase):
         db.set_radius(1.5)
         da.set_coordinates(IMP.algebra.Vector3D(0,0,0))
         db.set_coordinates(IMP.algebra.Vector3D(6,6,6))
-        d= IMP.core.distance(da, db)
+        d= IMP.core.get_distance(da, db)
         self.assertInTolerance(d, 10.3-2.5, .5)
 
 

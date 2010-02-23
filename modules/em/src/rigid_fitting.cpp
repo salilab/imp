@@ -54,7 +54,7 @@ core::MonteCarlo* set_optimizer(Model *model, OptimizerState *display_log,
 }
 
 void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
-              const algebra::Vector3D &anchor_centroid,
+              const algebra::VectorD<3> &anchor_centroid,
               core::RigidBody &rb, core::MonteCarlo *opt,
               FittingSolutions &fr, Model *mdl) {
 
@@ -64,11 +64,11 @@ void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
     //set the centroid of the rigid body to be on the anchor centroid
     //make sure that all of the members are in the correct transformation
     rb.set_transformation(rb.get_transformation());
-    algebra::Vector3D ps_centroid =
+    algebra::VectorD<3> ps_centroid =
       IMP::core::centroid(core::XYZs(rb.get_members()));
 
-    algebra::Transformation3D move2centroid(algebra::identity_rotation(),
-                                          anchor_centroid-ps_centroid);
+    algebra::Transformation3D move2centroid(algebra::get_identity_rotation_3d(),
+                                            anchor_centroid-ps_centroid);
     core::transform(rb,move2centroid);
     rb.set_transformation(rb.get_transformation());
     ps_centroid =
@@ -97,7 +97,7 @@ void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
 void local_rigid_fitting_around_point(
    core::RigidBody &rb,
    const FloatKey &rad_key, const FloatKey &wei_key,
-   DensityMap *dmap, const algebra::Vector3D &anchor_centroid,
+   DensityMap *dmap, const algebra::VectorD<3> &anchor_centroid,
    FittingSolutions &fr, OptimizerState *display_log,
    Int number_of_optimization_runs, Int number_of_mc_steps,
    Int number_of_cg_steps, Float max_translation, Float max_rotation) {
@@ -130,7 +130,7 @@ void local_rigid_fitting_around_point(
 void local_rigid_fitting_around_points(
    core::RigidBody &rb,
    const FloatKey &rad_key, const FloatKey &wei_key,
-   DensityMap *dmap, const algebra::Vector3Ds &anchor_centroids,
+   DensityMap *dmap, const std::vector<algebra::VectorD<3> > &anchor_centroids,
    FittingSolutions &fr, OptimizerState *display_log,
    Int number_of_optimization_runs, Int number_of_mc_steps,
    Int number_of_cg_steps, Float max_translation, Float max_rotation) {
@@ -147,8 +147,9 @@ void local_rigid_fitting_around_points(
    core::MonteCarlo *opt = set_optimizer(model, display_log, rb,
                            number_of_cg_steps,max_translation, max_rotation);
 
-   for(algebra::Vector3Ds::const_iterator it = anchor_centroids.begin();
-                                          it != anchor_centroids.end(); it++) {
+   for(std::vector<algebra::VectorD<3> >::const_iterator it
+         = anchor_centroids.begin();
+       it != anchor_centroids.end(); it++) {
      IMP_INTERNAL_CHECK(dmap->is_part_of_volume(*it),
                 "The centroid is not part of the map");
      IMP_LOG(VERBOSE, "optimizing around anchor point " << *it << std::endl);
@@ -188,27 +189,28 @@ void local_rigid_fitting_grid_search(
    std::vector<float> dx,dy,dz;
 
    algebra::Rotation3Ds rots=
-             algebra::uniform_cover_rotations(number_of_rotations);
+             algebra::get_uniform_cover_rotations_3d(number_of_rotations);
    for(algebra::Rotation3Ds::iterator it = rots.begin();
                                       it != rots.end();it++) {
-        algebra::Transformation3D t1 =algebra::rotation_about_point(
+        algebra::Transformation3D t1 =algebra::get_rotation_about_point(
                                  core::centroid(core::XYZs(ps)),*it);
 
      //transform all particles
      std::for_each(ps.begin(), ps.end(),
            SingletonFunctor(new core::Transform(t1)));
      model_dens_map->resample();
-     IMP::algebra::Vector3D origin(model_dens_map->get_header()->get_xorigin(),
-                 model_dens_map->get_header()->get_yorigin(),
-                 model_dens_map->get_header()->get_zorigin());
+     algebra::VectorD<3>
+       origin(model_dens_map->get_header()->get_xorigin(),
+              model_dens_map->get_header()->get_yorigin(),
+              model_dens_map->get_header()->get_zorigin());
     Float score;
     for(Float x=-max_t; x<=max_t;x += step_t){
        for(Float y=-max_t; y<=max_t;y += step_t){
          for(Float z=-max_t; z<=max_t;z += step_t){
              algebra::Transformation3D t =
-              algebra::Transformation3D(algebra::identity_rotation(),
-                                        algebra::Vector3D(x,y,z));
-           model_dens_map->set_origin(t.transform(origin));
+              algebra::Transformation3D(algebra::get_identity_rotation_3d(),
+                                        algebra::VectorD<3>(x,y,z));
+           model_dens_map->set_origin(t.get_transformed(origin));
            score = IMP::em::CoarseCC::evaluate(*dmap,*model_dens_map,
                                                dx,dy,dz,1.0,false,true,false);
            fr.add_solution(IMP::algebra::compose(t,t1),score);
@@ -240,7 +242,7 @@ void compute_fitting_scores(Particles &ps,
       IMP::algebra::Transformation3D t_inv = it->get_inverse();
       for(Particles::const_iterator psi = ps.begin(); psi != ps.end(); psi++) {
         core::XYZ d(*psi);
-        d.set_coordinates(it->transform(d.get_coordinates()));
+        d.set_coordinates(it->get_transformed(d.get_coordinates()));
       }
       score  = em::CoarseCC::evaluate(*em_map, *model_dens_map,
                                       dvx,dvy,dvz,1.0,false,true,true);
@@ -248,7 +250,7 @@ void compute_fitting_scores(Particles &ps,
       fr.add_solution(*it,score);
       for(Particles::const_iterator psi = ps.begin(); psi != ps.end(); psi++) {
         core::XYZ d(*psi);
-        d.set_coordinates(t_inv.transform(d.get_coordinates()));
+        d.set_coordinates(t_inv.get_transformed(d.get_coordinates()));
       }
     }
 }

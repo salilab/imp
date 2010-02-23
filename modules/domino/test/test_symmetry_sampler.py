@@ -43,7 +43,7 @@ class DOMINOTests(IMP.test.TestCase):
         cone = IMP.algebra.Cone3D(max_d,max_d.get_length())
         print ".cone " + str(max_d.get_point(1)[0]) + " " + str(max_d.get_point(1)[1]) + " " + str(max_d.get_point(1)[2]) +" " + str(max_d.get_point(0)[0]) + " " + str(max_d.get_point(0)[1]) + " " + str(max_d.get_point(0)[2]) + " " + str(max_d.get_length())
         pln = cone.get_base_plane()
-        patch = IMP.algebra.Sphere3DPatch(IMP.algebra.Sphere3D(cone.get_tip(),
+        patch = IMP.algebra.SpherePatch3D(IMP.algebra.Sphere3D(cone.get_tip(),
                                                                (cone.get_radius()**2\
                                                                     +cone.get_height()**2)**.5),
                                           pln.get_opposite())
@@ -52,10 +52,10 @@ class DOMINOTests(IMP.test.TestCase):
         #print ".sphere " + str(sss.get_center()[0]) + " " + str(sss.get_center()[1]) + " "+ str(sss.get_center()[2]) + " " + str(sss.get_radius())
         #print ".sphere " + str(patch.get_sphere().get_center()[0]) + " " + str(patch.get_sphere().get_center()[1]) + " "+ str(patch.get_sphere().get_center()[2]) + " " + str(patch.get_sphere().get_radius())
         zero_vec = IMP.algebra.Vector3D(0.0,0.0,0.0)
-        rots = IMP.algebra.uniform_cover(patch,10)
+        rots = IMP.algebra.get_uniform_surface_cover(patch,10)
         for rot in rots:
             print ".dot " + str(rot[0]) + " " + str(rot[1]) + " " + str(rot[2])
-            r = IMP.algebra.rotation_taking_first_to_second(max_d.get_point(1),rot)
+            r = IMP.algebra.get_rotation_taking_first_to_second(max_d.get_point(1),rot)
             t = IMP.algebra.Transformation3D(r,zero_vec)
             self.rt.add_transformation(t)
         #write a function to find a bounding cylinder
@@ -97,9 +97,9 @@ class DOMINOTests(IMP.test.TestCase):
                 cendtroids[j] = cendtroids[j]+IMP.core.centroid(IMP.core.XYZs(IMP.core.get_leaves(self.prots[j])))
 
         rot120 = IMP.algebra.Transformation3D(
-            IMP.algebra.rotation_in_radians_about_axis(self.cyl.get_segment().get_direction(),
+            IMP.algebra.get_rotation_in_radians_about_axis(self.cyl.get_segment().get_direction(),
                                                         2.*math.pi/3))
         for j in range(2):
-            self.assertAlmostEqual(IMP.algebra.distance(rot120.transform(cendtroids[j]),cendtroids[j+1]),0.0,2)
+            self.assertAlmostEqual(IMP.algebra.get_distance(rot120.get_transformed(cendtroids[j]),cendtroids[j+1]),0.0,2)
 if __name__ == '__main__':
     unittest.main()

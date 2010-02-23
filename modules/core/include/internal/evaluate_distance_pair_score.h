@@ -83,9 +83,9 @@ public:
 };
 
 template <class SD>
-double compute_distance_pair_score(const algebra::Vector3D &delta,
+double compute_distance_pair_score(const algebra::VectorD<3> &delta,
                                    const UnaryFunction *f,
-                                   algebra::Vector3D *d,
+                                   algebra::VectorD<3> *d,
                                    SD sd) {
   static const Float MIN_DISTANCE = .00001;
   double distance= delta.get_magnitude();
@@ -101,7 +101,7 @@ double compute_distance_pair_score(const algebra::Vector3D &delta,
   } else {
     // calculate the score based on the distance feature
     dp.first = f->evaluate(shifted_distance);
-    if (d) *d= algebra::Vector3D(0,0,0);
+    if (d) *d= algebra::VectorD<3>(0,0,0);
   }
   return dp.first;
 }
@@ -114,13 +114,13 @@ double evaluate_distance_pair_score(W0 d0, W1 d1,
 {
   IMP_CHECK_OBJECT(f);
 
-  algebra::Vector3D delta;
+  algebra::VectorD<3> delta;
 
   for (int i = 0; i < 3; ++i) {
     delta[i] = d0.get_coordinate(i) - d1.get_coordinate(i);
   }
 
-  algebra::Vector3D d;
+  algebra::VectorD<3> d;
   double score= compute_distance_pair_score(delta, f, (da? &d : NULL), sd);
 
   if (da) {

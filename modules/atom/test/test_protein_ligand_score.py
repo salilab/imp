@@ -23,7 +23,7 @@ class ScoreTest(IMP.test.TestCase):
         print "rigid bodies"
         rbp= IMP.atom.rigid_body_setup_hierarchy(p)
         rbl= IMP.atom.rigid_body_setup_hierarchy(l)
-        it=IMP.algebra.Transformation3D(IMP.algebra.identity_rotation(),
+        it=IMP.algebra.Transformation3D(IMP.algebra.get_identity_rotation_3d(),
                                         IMP.algebra.Vector3D(0,0,0))
         rbp.set_transformation(it)
         rbl.set_transformation(it)

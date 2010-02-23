@@ -62,7 +62,7 @@ double MultipleBinormalRestraint::unprotected_evaluate(
 
   if (accum) {
     Float dihedral[2];
-    algebra::Vector3D derv0[4], derv1[4];
+    algebra::VectorD<3> derv0[4], derv1[4];
     dihedral[0] = core::internal::dihedral(d0[0], d0[1], d0[2], d0[3],
                                            &derv0[0], &derv0[1],
                                            &derv0[2], &derv0[3]);

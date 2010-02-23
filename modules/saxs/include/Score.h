@@ -60,7 +60,7 @@ public:
   */
   void compute_chi_derivative(const Profile& model_profile,
                               const Particles& particles,
-                              std::vector<algebra::Vector3D>& derivatives,
+                              std::vector<algebra::VectorD<3> >& derivatives,
                               bool use_offset = false) const {
     return compute_chi_derivative(model_profile, particles, particles,
                                   derivatives, use_offset);
@@ -81,7 +81,7 @@ public:
   void compute_chi_derivative(const Profile& model_profile,
                               const Particles& particles1,
                               const Particles& particles2,
-                              std::vector<algebra::Vector3D>& derivatives,
+                              std::vector<algebra::VectorD<3> >& derivatives,
                               bool use_offset = false) const;
 
   //! computes scale factor given offset value
@@ -113,7 +113,7 @@ public:
   void compute_chi_real_derivative(const Profile& model_profile,
                                    const Particles& particles1,
                                    const Particles& particles2,
-                                   std::vector<algebra::Vector3D>& derivatives,
+                              std::vector<algebra::VectorD<3> >& derivatives,
                                    bool use_offset) const;
 
   // helper function for derivatives

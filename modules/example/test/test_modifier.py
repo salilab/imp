@@ -19,7 +19,7 @@ class DistanceTests(IMP.test.TestCase):
         sbb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(20,30,40),
                                        IMP.algebra.Vector3D(30,39,48))
         print "setting up"
-        d= IMP.core.XYZ.setup_particle(p, IMP.algebra.random_vector_in_box(bbb))
+        d= IMP.core.XYZ.setup_particle(p, IMP.algebra.get_random_vector_in(bbb))
         print "creating m"
         mod= IMP.example.ExampleSingletonModifier(sbb)
         print "applying"

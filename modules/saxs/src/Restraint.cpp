@@ -115,7 +115,7 @@ double Restraint::unprotected_evaluate(DerivativeAccumulator *acc) const
 
   IMP_LOG(TERSE, "SAXS Restraint::compute derivatives\n");
 
-  std::vector<IMP::algebra::Vector3D> derivatives;
+  std::vector<IMP::algebra::VectorD<3> > derivatives;
   const FloatKeys keys = IMP::core::XYZ::get_xyz_keys();
 
   // 1. compute derivatives for each rigid body

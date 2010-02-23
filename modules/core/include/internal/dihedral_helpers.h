@@ -16,20 +16,20 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 //! Calculate the dihedral angle between the given four XYZ particles.
 /** \return the dihedral angle.
-    If derv0 is non-NULL, all four algebra::Vector3D parameters are filled
+    If derv0 is non-NULL, all four algebra::VectorD<3> parameters are filled
     in on return with the derivatives with respect to the XYZ particles.
  */
 inline double dihedral(const XYZ &d0, const XYZ &d1,
                        const XYZ &d2, const XYZ &d3,
-                       algebra::Vector3D *derv0, algebra::Vector3D *derv1,
-                       algebra::Vector3D *derv2, algebra::Vector3D *derv3)
+                       algebra::VectorD<3> *derv0, algebra::VectorD<3> *derv1,
+                       algebra::VectorD<3> *derv2, algebra::VectorD<3> *derv3)
 {
-  algebra::Vector3D rij = d1.get_vector_to(d0);
-  algebra::Vector3D rkj = d1.get_vector_to(d2);
-  algebra::Vector3D rkl = d3.get_vector_to(d2);
+  algebra::VectorD<3> rij = d1.get_vector_to(d0);
+  algebra::VectorD<3> rkj = d1.get_vector_to(d2);
+  algebra::VectorD<3> rkl = d3.get_vector_to(d2);
 
-  algebra::Vector3D v1 = vector_product(rij, rkj);
-  algebra::Vector3D v2 = vector_product(rkj, rkl);
+  algebra::VectorD<3> v1 = vector_product(rij, rkj);
+  algebra::VectorD<3> v2 = vector_product(rkj, rkl);
   Float scalar_product = v1.scalar_product(v2);
   Float mag_product = v1.get_magnitude() * v2.get_magnitude();
 
@@ -43,7 +43,7 @@ inline double dihedral(const XYZ &d0, const XYZ &d1,
 
   Float angle = std::acos(cosangle);
   // get sign
-  algebra::Vector3D v0 = vector_product(v1, v2);
+  algebra::VectorD<3> v0 = vector_product(v1, v2);
   Float sign = rkj.scalar_product(v0);
   if (sign < 0.0) {
     angle = -angle;
@@ -52,8 +52,8 @@ inline double dihedral(const XYZ &d0, const XYZ &d1,
   if (derv0) {
     // method for derivative calculation from van Schaik et al.
     // J. Mol. Biol. 234, 751-762 (1993)
-    algebra::Vector3D vijkj = vector_product(rij, rkj);
-    algebra::Vector3D vkjkl = vector_product(rkj, rkl);
+    algebra::VectorD<3> vijkj = vector_product(rij, rkj);
+    algebra::VectorD<3> vkjkl = vector_product(rkj, rkl);
     Float sijkj2 = vijkj.get_squared_magnitude();
     Float skjkl2 = vkjkl.get_squared_magnitude();
     Float skj = rkj.get_magnitude();

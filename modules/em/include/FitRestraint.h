@@ -56,7 +56,7 @@ public:
 private:
   IMP::internal::OwnerPointer<DensityMap> target_dens_map_;
   IMP::internal::OwnerPointer<SampledDensityMap> model_dens_map_;
-  algebra::BoundingBox3D target_bounding_box_;
+  algebra::BoundingBoxD<3> target_bounding_box_;
   // reference to the IMP environment
   float scalefac_;
   IMP::core::XYZs xyz_;

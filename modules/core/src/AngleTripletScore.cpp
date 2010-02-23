@@ -28,8 +28,8 @@ Float AngleTripletScore::evaluate(const ParticleTriplet &p,
   XYZ d1 = XYZ::decorate_particle(p[1]);
   XYZ d2 = XYZ::decorate_particle(p[2]);
 
-  algebra::Vector3D rij = d1.get_vector_to(d0);
-  algebra::Vector3D rkj = d1.get_vector_to(d2);
+  algebra::VectorD<3> rij = d1.get_vector_to(d0);
+  algebra::VectorD<3> rkj = d1.get_vector_to(d2);
 
   Float scalar_product = rij.scalar_product(rkj);
   Float mag_rij = rij.get_magnitude();
@@ -51,8 +51,8 @@ Float AngleTripletScore::evaluate(const ParticleTriplet &p,
     Float deriv;
     boost::tie(score, deriv) = f_->evaluate_with_derivative(angle);
 
-    algebra::Vector3D unit_rij = rij.get_unit_vector();
-    algebra::Vector3D unit_rkj = rkj.get_unit_vector();
+    algebra::VectorD<3> unit_rij = rij.get_unit_vector();
+    algebra::VectorD<3> unit_rkj = rkj.get_unit_vector();
 
     Float sinangle = std::abs(std::sin(angle));
 
@@ -62,9 +62,9 @@ Float AngleTripletScore::evaluate(const ParticleTriplet &p,
     fact_ij = std::max(static_cast<Float>(1e-12), fact_ij);
     fact_kj = std::max(static_cast<Float>(1e-12), fact_kj);
 
-    algebra::Vector3D derv0 = deriv * (unit_rij * cosangle
+    algebra::VectorD<3> derv0 = deriv * (unit_rij * cosangle
                                        - unit_rkj) / fact_ij;
-    algebra::Vector3D derv2 = deriv * (unit_rkj * cosangle
+    algebra::VectorD<3> derv2 = deriv * (unit_rkj * cosangle
                                        - unit_rij) / fact_kj;
     d0.add_to_derivatives(derv0, *da);
     d1.add_to_derivatives(-derv0 - derv2, *da);

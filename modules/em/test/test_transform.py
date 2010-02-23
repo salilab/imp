@@ -9,8 +9,8 @@ class VolumeTest(IMP.test.TestCase):
     def test_image(self):
         """Check transforming a density map"""
         m= IMP.em.read_map(self.get_input_file_name('1z5s.mrc'))
-        tr= Transformation3D(random_rotation(), Vector3D(0,0,0))
-        #                             IMP.algebra.random_vector_in_box(Vector3D(-100,-100,-100),
+        tr= Transformation3D(get_random_rotation_3d(), Vector3D(0,0,0))
+        #                             IMP.algebra.get_random_vector_in(Vector3D(-100,-100,-100),
         #                                                             Vector3D(100,100,100)))
         print "going to"
         mt= IMP.em.get_transformed(m, tr, .01)

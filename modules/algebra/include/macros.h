@@ -65,32 +65,35 @@
   inline double get_volume(const Name &g) {                            \
     volume;                                                            \
   }                                                                    \
-  inline BoundingBox3D get_bounding_box(const Name &g) {               \
+  inline BoundingBoxD<3> get_bounding_box(const Name &g) {             \
     bounding_box;                                                      \
   }                                                                    \
   IMP_OUTPUT_OPERATOR(Name)                                            \
   typedef std::vector<Name> Name##s
 
 #define IMP_VOLUME_GEOMETRY_METHODS_D(Name, area, volume, bounding_box) \
-  template <unsigned int D>                                             \
-  double get_surface_area(const Name##D<D> &g) {                        \
+  inline double get_surface_area(const Name##D<3> &g) {                 \
     area;                                                               \
   }                                                                     \
-  template <unsigned int D>                                             \
-  double get_volume(const Name##D<D> &g) {                              \
+  inline double get_volume(const Name##D<3> &g) {                       \
     volume;                                                             \
   }                                                                     \
   template <unsigned int D>                                             \
-  BoundingBoxD<D> get_bounding_box(const Name##D<D> &g) {               \
+  inline BoundingBoxD<D> get_bounding_box(const Name##D<D> &g) {        \
     bounding_box;                                                       \
   }                                                                     \
   IMP_OUTPUT_OPERATOR_D(Name##D)                                        \
   IMPALGEBRA_EXPORT_TEMPLATE(Name##D<3>);                               \
-  IMP_NO_SWIG(typedef Name##D<3> Name##3D;)                             \
-  typedef std::vector<Name##3D> Name##3Ds
+  IMP_NO_SWIG(typedef Name##D<2> Name##2D);                             \
+  IMP_NO_SWIG(typedef std::vector<Name##2D> Name##2Ds);                 \
+  IMP_NO_SWIG(typedef Name##D<3> Name##3D);                             \
+  IMP_NO_SWIG(typedef std::vector<Name##3D> Name##3Ds);                 \
+  IMP_NO_SWIG(typedef Name##D<4> Name##4D);                             \
+  IMP_NO_SWIG(typedef std::vector<Name##4D> Name##4Ds)
+
 
 #define IMP_LINEAR_GEOMETRY_METHODS(Name, bounding_box)                \
-  inline BoundingBox3D get_bounding_box(const Name &g) {               \
+  inline BoundingBoxD<3> get_bounding_box(const Name &g) {             \
     bounding_box;                                                      \
   }                                                                    \
   IMP_OUTPUT_OPERATOR(Name)                                            \
@@ -100,7 +103,7 @@
   inline double get_area(const Name &g) {                              \
     area;                                                              \
   }                                                                    \
-  inline BoundingBox3D get_bounding_box(const Name &g) {               \
+  inline BoundingBoxD<3> get_bounding_box(const Name &g) {             \
     bounding_box;                                                      \
   }                                                                    \
   IMP_OUTPUT_OPERATOR(Name)                                            \

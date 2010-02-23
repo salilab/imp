@@ -19,8 +19,8 @@ IMPALGEBRA_BEGIN_NAMESPACE
 class IMPALGEBRAEXPORT PrincipalComponentAnalysis {
 public:
   PrincipalComponentAnalysis(){}
-  PrincipalComponentAnalysis(const Vector3D &pc1,const Vector3D &pc2,
-       const Vector3D &pc3,Vector3D values) : eigen_values_(values){
+  PrincipalComponentAnalysis(const VectorD<3> &pc1,const VectorD<3> &pc2,
+       const VectorD<3> &pc3,VectorD<3> values) : eigen_values_(values){
     eigen_vecs_.push_back(pc1);
     eigen_vecs_.push_back(pc2);
     eigen_vecs_.push_back(pc3);
@@ -35,7 +35,7 @@ public:
     out<<std::endl<<"Third eigen vector : ";
     eigen_vecs_[2].show();
   }
-  Vector3D get_principal_component(unsigned int i) const {
+  VectorD<3> get_principal_component(unsigned int i) const {
     IMP_INTERNAL_CHECK(i>=0 && i<3, "index is not between 0, 1 or 2");
     return eigen_vecs_[i];
   }
@@ -44,8 +44,8 @@ public:
     return eigen_values_[i];
   }
 protected:
-  std::vector<Vector3D> eigen_vecs_;
-  Vector3D eigen_values_;
+  std::vector<VectorD<3> > eigen_vecs_;
+  VectorD<3> eigen_values_;
 };
 
 
@@ -55,13 +55,15 @@ IMP_OUTPUT_OPERATOR(algebra::PrincipalComponentAnalysis);
 /** \relatesalso PrincipalComponentAnalysis
  */
 IMPALGEBRAEXPORT PrincipalComponentAnalysis principal_components(
-                              const std::vector<Vector3D> &ps);
+                              const std::vector<VectorD<3> > &ps);
 
 IMP_NO_SWIG
-  (IMPALGEBRAEXPORT Vector3D compute_mean(const std::vector<Vector3D> &vs));
+  (IMPALGEBRAEXPORT VectorD<3>
+   compute_mean(const std::vector<VectorD<3> > &vs));
 IMP_NO_SWIG
-  (IMPALGEBRAEXPORT internal::TNT::Array2D<double> compute_covariance_matrix(
-   const std::vector<Vector3D> &vs,Vector3D mean));
+  (IMPALGEBRAEXPORT internal::TNT::Array2D<double>
+   compute_covariance_matrix(
+   const std::vector<VectorD<3> > &vs,VectorD<3> mean));
 
 
 IMPALGEBRA_END_NAMESPACE

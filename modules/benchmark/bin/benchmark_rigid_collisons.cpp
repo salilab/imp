@@ -23,14 +23,14 @@ void test_one(std::string name,
               Model *m,
               RigidBodiesTemp rbs,
               float side) {
-  Vector3D minc(0,0,0), maxc(side, side, side);
+  VectorD<3> minc(0,0,0), maxc(side, side, side);
   m->evaluate(false);
   double runtime, inittime;
   IMP_TIME(
            {
              for (unsigned int i=0; i< rbs.size(); ++i) {
-               Vector3D t= random_vector_in_box(minc, maxc);
-               Rotation3D r= random_rotation();
+               VectorD<3> t= get_random_vector_in(BoundingBox3D(minc, maxc));
+               Rotation3D r= get_random_rotation_3d();
                Transformation3D tr(r, t);
                rbs[i].set_transformation(tr);
              }
@@ -39,8 +39,8 @@ void test_one(std::string name,
   IMP_TIME(
            {
              for (unsigned int i=0; i< rbs.size(); ++i) {
-               Vector3D t= random_vector_in_box(minc, maxc);
-               Rotation3D r= random_rotation();
+               VectorD<3> t= get_random_vector_in(BoundingBox3D(minc, maxc));
+               Rotation3D r= get_random_rotation_3d();
                Transformation3D tr(r, t);
                rbs[i].set_transformation(tr);
              }

@@ -63,7 +63,7 @@ void project_given_rotation1(IMP::algebra::Matrix3D<T>& m3,
              IMP::algebra::Matrix2D<double>& m2,
              const int Ydim,const int Xdim,
              const IMP::algebra::Rotation3D& Rot,
-             const IMP::algebra::Vector3D& shift,
+             const IMP::algebra::VectorD<3>& shift,
              const double equality_tolerance) {
 
 // #define DEBUG
@@ -79,11 +79,11 @@ void project_given_rotation1(IMP::algebra::Matrix3D<T>& m3,
   // We are interested in the inverse rotation (that one that allows to pass
   // form the projection coordinate system to the universal coordinate system)
   IMP::algebra::Rotation3D InvRot = Rot.get_inverse();
-  IMP::algebra::Vector3D direction;// = RotMat.direction();
+  IMP::algebra::VectorD<3> direction;// = RotMat.direction();
   for (unsigned int i=0; i< 3; ++i) {
-    IMP::algebra::Vector3D v(0,0,0);
+    IMP::algebra::VectorD<3> v(0,0,0);
     v[i]=1;
-    algebra::Vector3D r= Rot.rotate(v);
+    algebra::VectorD<3> r= Rot.get_rotated(v);
     direction[i]=r[2];
   }
 
@@ -102,7 +102,7 @@ void project_given_rotation1(IMP::algebra::Matrix3D<T>& m3,
   }
 
   // Precalculated variables
-  IMP::algebra::Vector3D init0, end0, signs, half_signs;
+  IMP::algebra::VectorD<3> init0, end0, signs, half_signs;
   for (int i = 0;i < 3;i++) {
     init0[i] = m3.get_start(2-i); // (2-i) because we are going to work
                         // with x,y,z convention for vectors and calculations,
@@ -111,9 +111,10 @@ void project_given_rotation1(IMP::algebra::Matrix3D<T>& m3,
     signs[i] = IMP::algebra::sign(direction[i]);
     half_signs[i] = 0.5 * signs[i];
   }
-
-  IMP::algebra::Vector3D r; // A point in the coordinate system for Matrix3D m3
-  IMP::algebra::Vector3D p; // A point in the coord. system of the projection
+  // A point in the coordinate system for Matrix3D m3
+  IMP::algebra::VectorD<3> r;
+  // A point in the coord. system of the projection
+  IMP::algebra::VectorD<3> p;
 
   // For each pixel, 4 rays of projection are computed on each direction. The
   // step is going to be 1/3 from the center of the pixel in 4 directions
@@ -131,16 +132,16 @@ void project_given_rotation1(IMP::algebra::Matrix3D<T>& m3,
         // point in projection coordinate system
         switch (rays_per_pixel) {
         case 0:
-          p = IMP::algebra::Vector3D(j - step, i - step, 0);
+          p = IMP::algebra::VectorD<3>(j - step, i - step, 0);
           break;
         case 1:
-          p = IMP::algebra::Vector3D(j - step, i + step, 0);
+          p = IMP::algebra::VectorD<3>(j - step, i + step, 0);
           break;
         case 2:
-          p = IMP::algebra::Vector3D(j + step, i - step, 0);
+          p = IMP::algebra::VectorD<3>(j + step, i - step, 0);
           break;
         case 3:
-          p = IMP::algebra::Vector3D(j + step, i + step, 0);
+          p = IMP::algebra::VectorD<3>(j + step, i + step, 0);
           break;
         }
 
@@ -149,14 +150,14 @@ void project_given_rotation1(IMP::algebra::Matrix3D<T>& m3,
           p -= shift;
         }
         // Get point r in the universal system corresponding to p
-        r = InvRot.rotate(p);
+        r = InvRot.get_rotated(p);
 #ifdef DEBUG
         std::cout << "p: " << p << std::endl;
         std::cout << "r: " << r << std::endl;
 #endif
         // Compute the minimum and maximum alpha for the line of the ray
         // intersecting the given volume. line = r + alpha * direction
-        IMP::algebra::Vector3D v_alpha_min, v_alpha_max, v_alpha, v_diff;
+        IMP::algebra::VectorD<3> v_alpha_min, v_alpha_max, v_alpha, v_diff;
         double alpha_min=-1/equality_tolerance;
         double alpha_max=1/equality_tolerance;
         for (int ii = 0;ii < 3;ii++) {
@@ -181,7 +182,7 @@ void project_given_rotation1(IMP::algebra::Matrix3D<T>& m3,
           continue;
         }
         // v is the first voxel in the volume intersecting the ray
-        IMP::algebra::Vector3D v,idx;
+        IMP::algebra::VectorD<3> v,idx;
 //        std::vector<int> idx(3);
         v = r + alpha_min * direction; // vector operation
         for (int ii=0;ii < 3;ii++) {
@@ -261,12 +262,12 @@ template<typename T>
 void project_given_direction1(IMP::algebra::Matrix3D<T>& m3,
              IMP::algebra::Matrix2D<T>& m2,
              const int Ydim,const int Xdim,
-             IMP::algebra::Vector3D& direction,
-             const IMP::algebra::Vector3D& shift,
+             IMP::algebra::VectorD<3>& direction,
+             const IMP::algebra::VectorD<3>& shift,
              const double equality_tolerance) {
   IMP::algebra::SphericalVector3D sph(direction);
   algebra::Rotation3D angles
-    = algebra::rotation_from_fixed_zyz(sph[2],sph[1],0.0);
+    = algebra::get_rotation_from_fixed_zyz(sph[2],sph[1],0.0);
   project_given_rotation1(m3,m2,Ydim,Xdim,angles,shift,equality_tolerance);
 };
 
@@ -312,8 +313,8 @@ void project_given_direction1(IMP::algebra::Matrix3D<T>& m3,
 void IMPEMEXPORT project_given_direction(DensityMap& map,
              IMP::algebra::Matrix2D<double>& m2,
              const int Ydim,const int Xdim,
-             IMP::algebra::Vector3D& direction,
-             const IMP::algebra::Vector3D& shift,
+             IMP::algebra::VectorD<3>& direction,
+             const IMP::algebra::VectorD<3>& shift,
              const double equality_tolerance);
 
 
@@ -358,7 +359,7 @@ void IMPEMEXPORT project_given_rotation(DensityMap& map,
              IMP::algebra::Matrix2D<double>& m2,
              const int Ydim,const int Xdim,
              const IMP::algebra::Rotation3D& Rot,
-             const IMP::algebra::Vector3D& shift,
+             const IMP::algebra::VectorD<3>& shift,
              const double equality_tolerance);
 
 

@@ -4,7 +4,7 @@ import IMP.test
 import IMP.algebra
 import math
 
-class Sphere3DPatchTests(IMP.test.TestCase):
+class SpherePatch3DTests(IMP.test.TestCase):
 
     def test_sphere_patch_construction(self):
         """Check that a patch of a sphere is constructed correctly"""
@@ -12,21 +12,21 @@ class Sphere3DPatchTests(IMP.test.TestCase):
         radius=5.0
         sph = IMP.algebra.Sphere3D(center,radius)
         xy_plane = IMP.algebra.Plane3D(IMP.algebra.Vector3D(0.,0.,0.),IMP.algebra.Vector3D(0.,0.,1.))
-        patch = IMP.algebra.Sphere3DPatch(sph,xy_plane)
+        patch = IMP.algebra.SpherePatch3D(sph,xy_plane)
         self.assertEqual(patch.get_plane().get_is_above(IMP.algebra.Vector3D(1.,0.,1.)),True)
         self.assertEqual(patch.get_contains(IMP.algebra.Vector3D(0.0,1.0,0.4)),True)
         #self.assertEqual(patch.get_contains(IMP.algebra.Vector3D(3.0,3.0,8.0)),False)
         self.assertEqual(patch.get_contains(IMP.algebra.Vector3D(0.0,1.0,-0.4)),False)
 
-    def test_uniform_cover(self):
+    def test_get_uniform_surface_cover(self):
         """Check uniform cover on a patch of a sphere"""
         center = IMP.algebra.Vector3D(0.0,0.0,0.0)
         radius=5.0
         sph = IMP.algebra.Sphere3D(center,radius)
         xz_plane = IMP.algebra.Plane3D(IMP.algebra.Vector3D(0.,0.,0.),IMP.algebra.Vector3D(0.,1.,0.))
-        patch = IMP.algebra.Sphere3DPatch(sph,xz_plane)
+        patch = IMP.algebra.SpherePatch3D(sph,xz_plane)
         numpts=600
-        points=IMP.algebra.uniform_cover(patch,numpts)
+        points=IMP.algebra.get_uniform_surface_cover(patch,numpts)
         #check that the centroid of the sampled points make sense
         sampled_centroid = IMP.algebra.Vector3D(0.0,radius/2,0.0)
         expected_sampled_centroid = IMP.algebra.Vector3D(0.0,radius/2,0.0)

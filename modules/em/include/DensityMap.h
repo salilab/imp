@@ -49,7 +49,7 @@ IMPEMEXPORT void write_map(DensityMap* m, const char *filename,
 \param[in] threshold find the boudning box for voxels
            with value above the threshold
  */
-IMPEMEXPORT algebra::BoundingBox3D
+IMPEMEXPORT algebra::BoundingBoxD<3>
    get_bounding_box(DensityMap* m, Float threshold);
 //!
 /**
@@ -140,7 +140,7 @@ public:
               the boundaries of the map, the function returns -1.
    */
   long loc2voxel(float x, float y, float z) const;
-  long loc2voxel(const algebra::Vector3D &v) const {
+  long loc2voxel(const algebra::VectorD<3> &v) const {
     return loc2voxel(v[0],v[1],v[2]);
   }
 
@@ -157,7 +157,7 @@ public:
   /** \param[in] v The position ( in angstroms)
       \return true if the point is part of the grid, false otherwise.
    */
-  bool is_part_of_volume(const algebra::Vector3D &v) const {
+  bool is_part_of_volume(const algebra::VectorD<3> &v) const {
     return is_part_of_volume(v[0],v[1],v[2]);
   }
 
@@ -169,7 +169,7 @@ public:
       \exception IndexException The point is not covered by the grid.
    */
   emreal get_value(float x,float y,float z) const;
-  emreal get_value(const algebra::Vector3D &point) const {
+  emreal get_value(const algebra::VectorD<3> &point) const {
     return get_value(point[0],point[1],point[2]);
   }
 
@@ -202,17 +202,17 @@ public:
     \param z the new z (angstroms)
   */
   void set_origin(float x,float y,float z);
-  void set_origin(const IMP::algebra::Vector3D &v) {
+  void set_origin(const IMP::algebra::VectorD<3> &v) {
     set_origin(v[0],v[1],v[2]);
   }
 
-  algebra::Vector3D get_origin() const{
+  algebra::VectorD<3> get_origin() const{
     return algebra::Vector3D(header_.get_origin(0),
                              header_.get_origin(1),
                              header_.get_origin(2));
   }
 
-  algebra::Vector3D get_top() const {
+  algebra::VectorD<3> get_top() const {
     return algebra::Vector3D(header_.get_top(0),
                              header_.get_top(1),
                              header_.get_top(2));
@@ -274,7 +274,7 @@ public:
   //! density above a given threshold
   /** \param[in] threshold the input threshold
   */
-  algebra::Vector3D get_centroid(emreal threshold=0.0) const;
+  algebra::VectorD<3> get_centroid(emreal threshold=0.0) const;
   //! Returns the the value of the voxel with the highest density.
   emreal get_max_value() const;
   emreal get_min_value() const;
@@ -347,8 +347,8 @@ protected:
 
 };
 
-inline algebra::BoundingBox3D get_bounding_box(const DensityMap *m) {
-  return algebra::BoundingBox3D(m->get_origin(),
+inline algebra::BoundingBoxD<3> get_bounding_box(const DensityMap *m) {
+  return algebra::BoundingBoxD<3>(m->get_origin(),
                        m->get_top());
 }
 //! rotate a grid
@@ -370,7 +370,7 @@ IMP_OBJECTS(DensityMap);
     from the sample values. The resulting function is C0 over R3.
     \relatesalso DensityMap
 */
-IMPEMEXPORT double get_density(DensityMap *m, const algebra::Vector3D &v);
+IMPEMEXPORT double get_density(DensityMap *m, const algebra::VectorD<3> &v);
 
 /** Return a new density map containing a rotated version of the old
     one. Only voxels whose value is above threshold are considered when

@@ -11,11 +11,11 @@ d1= IMP.core.XYZR.setup_particle(p1)
 d1.set_coordinates(IMP.algebra.Vector3D(3,4,5))
 d1.set_radius(2.0)
 
-print IMP.core.distance(d0, d1)
+print IMP.core.get_distance(d0, d1)
 
 # use them as XYZ particles
 xd0= IMP.core.XYZ.decorate_particle(p0)
 xd1= IMP.core.XYZ.decorate_particle(p1)
 
 # distance without radii
-print IMP.core.distance(xd0, xd1)
+print IMP.core.get_distance(xd0, xd1)

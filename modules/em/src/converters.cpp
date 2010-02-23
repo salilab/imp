@@ -23,7 +23,7 @@ void density2particles(DensityMap &dmap, Float threshold,
       x = dmap.voxel2loc(i,0);
       y = dmap.voxel2loc(i,1);
       z = dmap.voxel2loc(i,2);
-      Voxel::setup_particle(p,IMP::algebra::Vector3D(x,y,z),r,val);
+      Voxel::setup_particle(p,IMP::algebra::VectorD<3>(x,y,z),r,val);
       ps.push_back(p);
     }
   }

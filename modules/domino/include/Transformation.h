@@ -42,9 +42,9 @@ class IMPDOMINOEXPORT Transformation: public Decorator
   /** Create a decorator with the passed coordinates. */
   static Transformation setup_particle(Particle *p,
                     const algebra::Transformation3D &t=
-                    algebra::identity_transformation(),
+                    algebra::get_identity_transformation_3d(),
                     Int index=0){
-    algebra::Vector3D trans=t.get_translation();
+    algebra::VectorD<3> trans=t.get_translation();
     algebra::VectorD<4> rot = t.get_rotation().get_quaternion();
     p->add_attribute(get_translation_key(0),trans[0]);
     p->add_attribute(get_translation_key(1),trans[1]);

@@ -19,7 +19,7 @@ inline Float sinc(Float value) {
 }
 
 inline void copy_coordinates(const Particles& particles,
-                             std::vector<algebra::Vector3D>& coordinates) {
+                             std::vector<algebra::VectorD<3> >& coordinates) {
   // copy everything in advance for fast access
   coordinates.resize(particles.size());
   for (unsigned int i=0; i<particles.size(); i++) {
@@ -29,7 +29,7 @@ inline void copy_coordinates(const Particles& particles,
 
 inline void copy_data(const Particles& particles,
                       FormFactorTable* ff_table,
-                      std::vector<algebra::Vector3D>& coordinates,
+                      std::vector<algebra::VectorD<3> >& coordinates,
                       Floats& form_factors) {
   // copy everything in advance for fast access
   coordinates.resize(particles.size());
@@ -43,11 +43,11 @@ inline void copy_data(const Particles& particles,
 //! compute max distance
 inline Float compute_max_distance(const Particles& particles) {
   Float max_dist2 = 0;
-  std::vector<algebra::Vector3D> coordinates(particles.size());
+  std::vector<algebra::VectorD<3> > coordinates(particles.size());
   copy_coordinates(particles, coordinates);
   for (unsigned int i = 0; i < coordinates.size(); i++) {
     for (unsigned int j = i + 1; j < coordinates.size(); j++) {
-      Float dist2 = squared_distance(coordinates[i], coordinates[j]);
+      Float dist2 = get_squared_distance(coordinates[i], coordinates[j]);
       if(dist2 > max_dist2)
         max_dist2 = dist2;
     }
@@ -60,8 +60,8 @@ inline Float compute_max_distance(const Particles& particles) {
 inline Float compute_max_distance(const Particles& particles1,
                                   const Particles& particles2) {
   Float max_dist2 = 0;
-  std::vector<algebra::Vector3D> coordinates1(particles1.size());
-  std::vector<algebra::Vector3D> coordinates2(particles2.size());
+  std::vector<algebra::VectorD<3> > coordinates1(particles1.size());
+  std::vector<algebra::VectorD<3> > coordinates2(particles2.size());
   for (unsigned int i = 0; i < particles1.size(); i++) {
     coordinates1[i]
       = core::XYZ::decorate_particle(particles1[i]).get_coordinates();
@@ -72,7 +72,7 @@ inline Float compute_max_distance(const Particles& particles1,
   }
   for (unsigned int i = 0; i < coordinates1.size(); i++) {
     for (unsigned int j = i + 1; j < coordinates2.size(); j++) {
-      Float dist2 = squared_distance(coordinates1[i], coordinates2[j]);
+      Float dist2 = get_squared_distance(coordinates1[i], coordinates2[j]);
       if(dist2 > max_dist2)
         max_dist2 = dist2;
     }
@@ -82,8 +82,8 @@ inline Float compute_max_distance(const Particles& particles1,
 
 //! compute radius_of_gyration
 inline Float radius_of_gyration(const Particles& particles) {
-  algebra::Vector3D centroid(0.0, 0.0, 0.0);
-  std::vector<algebra::Vector3D> coordinates(particles.size());
+  algebra::VectorD<3> centroid(0.0, 0.0, 0.0);
+  std::vector<algebra::VectorD<3> > coordinates(particles.size());
   for (unsigned int i = 0; i < particles.size(); i++) {
     coordinates[i]
       = core::XYZ::decorate_particle(particles[i]).get_coordinates();
@@ -92,7 +92,7 @@ inline Float radius_of_gyration(const Particles& particles) {
   centroid /= particles.size();
   Float rg = 0;
   for (unsigned int i = 0; i < particles.size(); i++) {
-    rg += squared_distance(coordinates[i], centroid);
+    rg += get_squared_distance(coordinates[i], centroid);
   }
   rg /= particles.size();
   return sqrt(rg);

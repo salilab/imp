@@ -7,30 +7,30 @@
 #include <IMP/algebra/internal/cgal_predicates.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
-Plane3D::Plane3D(const Vector3D& point_on_plane,
-                 const Vector3D &normal_to_plane) {
+Plane3D::Plane3D(const VectorD<3>& point_on_plane,
+                 const VectorD<3> &normal_to_plane) {
   normal_ = normal_to_plane.get_unit_vector();
   distance_= normal_*point_on_plane;
 }
 Plane3D::Plane3D(double distance,
-                 const Vector3D &normal):
+                 const VectorD<3> &normal):
   distance_(distance),
   normal_(normal){
   IMP_USAGE_CHECK(std::abs(normal.get_squared_magnitude()-1) < .05,
             "The normal vector must be normalized");
   }
 
-Vector3D Plane3D::get_projection(const Vector3D &p) const {
+VectorD<3> Plane3D::get_projection(const VectorD<3> &p) const {
   return p-normal_*(normal_*p-distance_);
 }
-bool Plane3D::get_is_above(const Vector3D &p) const {
+bool Plane3D::get_is_above(const VectorD<3> &p) const {
 #ifdef IMP_USE_CGAL
   return internal::cgal_plane_compare_above(*this, p) > 0;
 #else
   return normal_*p > distance_;
 #endif
 }
-bool Plane3D::get_is_below(const Vector3D &p) const {
+bool Plane3D::get_is_below(const VectorD<3> &p) const {
 #ifdef IMP_USE_CGAL
   return internal::cgal_plane_compare_above(*this, p) < 0;
 #else

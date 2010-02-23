@@ -63,11 +63,11 @@ class DOMINOTests(IMP.test.TestCase):
                 new_p=IMP.Particle(self.imp_model)
                 if (i==j):
                     IMP.domino.Transformation.setup_particle(new_p,
-                      IMP.algebra.identity_transformation())
+                      IMP.algebra.get_identity_transformation_3d())
                 else:
                     IMP.domino.Transformation.setup_particle(new_p,
                         IMP.algebra.Transformation3D(
-                        IMP.algebra.rotation_from_fixed_xyz( 0.3*i+0.5*j,i+j*j,i*i+1.2*j),
+                        IMP.algebra.get_rotation_from_fixed_xyz( 0.3*i+0.5*j,i+j*j,i*i+1.2*j),
                         IMP.algebra.Vector3D(30*i+5*j,
                                              8*i*i+12*j,
                                              12*i+j*j)))

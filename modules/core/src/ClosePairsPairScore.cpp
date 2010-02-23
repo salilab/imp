@@ -35,7 +35,7 @@ namespace {
       ParticlePair pp= queue.back();
       queue.pop_back();
       XYZR d0(pp[0]), d1(pp[1]);
-      if (distance(d0, d1) > threshold) {
+      if (get_distance(d0, d1) > threshold) {
         IMP_LOG(VERBOSE, "Particles "
                 << d0 << " and " << d1
                 << " are too far apart to refine "

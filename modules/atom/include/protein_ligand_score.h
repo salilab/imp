@@ -41,9 +41,9 @@ class IMPATOMEXPORT ProteinLigandAtomPairScore: public PairScore {
   friend class ProteinLigandRestraint;
   internal::PMFTable table_;
   double threshold_;
-  inline double evaluate(const algebra::Vector3D &protein_v,
+  inline double evaluate(const algebra::VectorD<3> &protein_v,
                          int ptype,
-                         const algebra::Vector3D &ligand_v,
+                         const algebra::VectorD<3> &ligand_v,
                          int ltype,
                          core::XYZ pxyz, core::XYZ lxyz,
                          DerivativeAccumulator *da) const;

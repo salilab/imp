@@ -35,7 +35,7 @@ public:
 
   /** Create a decorator with the passed coordinates and charge.
    */
-  static Charged setup_particle(Particle *p, const algebra::Vector3D &v,
+  static Charged setup_particle(Particle *p, const algebra::VectorD<3> &v,
                                 Float charge) {
     XYZ::setup_particle(p, v);
     p->add_attribute(get_charge_key(), charge);

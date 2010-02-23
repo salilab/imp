@@ -25,8 +25,8 @@ SymmetrySampler::SymmetrySampler(Particles *ps,
     symm_deg_[(*ps_)[i]]=i;
   }
   //superpose the particles on the first one and use that as reference
-  ref_[(*ps_)[0]]=algebra::identity_transformation();
-  algebra::Vector3Ds ref_positions;
+  ref_[(*ps_)[0]]=algebra::get_identity_transformation_3d();
+  std::vector<algebra::VectorD<3> > ref_positions;
   Particles ps1 =
     atom::get_by_type(atom::Hierarchy((*ps_)[0]), atom::ATOM_TYPE);
 
@@ -35,7 +35,7 @@ SymmetrySampler::SymmetrySampler(Particles *ps,
   }
 
   for(unsigned int i=1;i<ps_->size();i++) {
-    algebra::Vector3Ds other_positions;
+    std::vector<algebra::VectorD<3> > other_positions;
     Particles ps2 =
       atom::get_by_type(atom::Hierarchy((*ps_)[i]), atom::ATOM_TYPE);
     for(Particles::iterator it=ps2.begin();it!=ps2.end();it++) {
@@ -43,7 +43,8 @@ SymmetrySampler::SymmetrySampler(Particles *ps,
          core::XYZ::decorate_particle(*it).get_coordinates());
     }
     ref_[(*ps_)[i]]=
-      algebra::rigid_align_first_to_second(other_positions,ref_positions);
+      algebra::get_transformation_aligning_first_to_second(other_positions,
+                                                           ref_positions);
   }
 }
 
@@ -95,14 +96,14 @@ void SymmetrySampler::move2state(const CombState *cs) {
     p = it->first;
     t = ts_->get_transformation(it->second);
     double angle = 2.*PI/ps_->size()*symm_deg_[p];
-    // was algebra::rotate(cyl_,angle).compose(t)
+    // was algebra:.get_rotated(cyl_,angle).compose(t)
     algebra::Transformation3D tr
-      =compose(algebra::rotation_in_radians_about_axis(
+      =compose(algebra::get_rotation_in_radians_about_axis(
                                      cyl_.get_segment().get_direction(),
                                                        angle),t);
     for_each(core::get_leaves(atom::Hierarchy::decorate_particle(p)),
              SingletonFunctor(new core::Transform(tr)));
-    ref_[p]= compose(algebra::rotation_in_radians_about_axis(
+    ref_[p]= compose(algebra::get_rotation_in_radians_about_axis(
                       cyl_.get_segment().get_direction(),
                       angle),t).get_inverse();
  //    std::stringstream name;

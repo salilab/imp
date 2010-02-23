@@ -79,7 +79,7 @@ SingletonContainer *BrownianDynamics::setup_particles()
 }
 
 void BrownianDynamics::copy_coordinates(SingletonContainer *sc,
-                                        algebra::Vector3Ds &v) const {
+                                 std::vector<algebra::VectorD<3> > &v) const {
   v.resize(sc->get_number_of_particles());
   for (unsigned int i=0; i< sc->get_number_of_particles(); ++i) {
     core::XYZ d(sc->get_particle(i));
@@ -88,7 +88,7 @@ void BrownianDynamics::copy_coordinates(SingletonContainer *sc,
 }
 
 void BrownianDynamics::revert_coordinates(SingletonContainer *sc,
-                                          algebra::Vector3Ds &v) {
+                                      std::vector<algebra::VectorD<3> > &v) {
   for (unsigned int i=0; i< sc->get_number_of_particles(); ++i) {
     core::XYZ d(sc->get_particle(i));
     d.set_coordinates(v[i]);
@@ -234,7 +234,7 @@ double BrownianDynamics::simulate(float max_time_nu)
           << sc->get_number_of_particles()
           << " particles with a step of " << si_.get_maximum_time_step()
           << " until time " << max_time << std::endl);
-  algebra::Vector3Ds old_forces, old_coordinates;
+  std::vector<algebra::VectorD<3> > old_forces, old_coordinates;
   unit::Femtosecond dt=si_.get_maximum_time_step();
   get_model()->evaluate(true);
   update_states();

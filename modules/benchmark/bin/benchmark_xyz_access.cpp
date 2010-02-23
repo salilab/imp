@@ -34,7 +34,7 @@ VersionInfo get_module_version_info() {
 
 class DistanceScore: public SingletonModifier {
 public:
-  algebra::Vector3D v_;
+  algebra::VectorD<3> v_;
   mutable double score_;
   DistanceScore(): score_(0){}
   IMP_SINGLETON_MODIFIER(DistanceScore);
@@ -44,7 +44,7 @@ void DistanceScore::do_show(std::ostream &out) const {}
 
 void DistanceScore::apply(Particle *p) const {
   XYZ d(p);
-  score_+= IMP::algebra::distance(d.get_coordinates(), v_);
+  score_+= IMP::algebra::get_distance(d.get_coordinates(), v_);
 }
 }
 
@@ -57,11 +57,11 @@ double compute_distances_decorator_access(
   double tdist=0;
   for (unsigned int i = 0; i < particles.size(); i++) {
     IMP::core::XYZ d1(particles[i]);
-    IMP::algebra::Vector3D v1(d1.get_coordinates());
+    IMP::algebra::VectorD<3> v1(d1.get_coordinates());
     for (unsigned int j = 0; j < particles.size(); j++) {
       IMP::core::XYZ d2(particles[j]);
-      IMP::algebra::Vector3D v2(d2.get_coordinates());
-      tdist+= IMP::algebra::distance(v1, v2);
+      IMP::algebra::VectorD<3> v2(d2.get_coordinates());
+      tdist+= IMP::algebra::get_distance(v1, v2);
     }
   }
   return tdist;
@@ -79,14 +79,14 @@ double compute_distances_particle_access(
   FloatKey zk= hidden_keys[2];
   double tdist=0;
   for (unsigned int i = 0; i < particles.size(); i++) {
-    IMP::algebra::Vector3D v1(particles[i]->get_value(xk),
+    IMP::algebra::VectorD<3> v1(particles[i]->get_value(xk),
                               particles[i]->get_value(yk),
                               particles[i]->get_value(zk));
     for (unsigned int j = 0; j < particles.size(); j++) {
-      IMP::algebra::Vector3D v2(particles[j]->get_value(xk),
+      IMP::algebra::VectorD<3> v2(particles[j]->get_value(xk),
                                 particles[j]->get_value(yk),
                                 particles[j]->get_value(zk));
-      tdist+= IMP::algebra::distance(v1, v2);
+      tdist+= IMP::algebra::get_distance(v1, v2);
     }
   }
   return tdist;
@@ -136,7 +136,7 @@ double compute_distances_decorator_access(
 class MyParticle : public IMP::Particle {
 public:
   MyParticle(IMP::Model *m) : IMP::Particle(m) {}
-  IMP::algebra::Vector3D v_;
+  IMP::algebra::VectorD<3> v_;
 };
 
 
@@ -148,7 +148,7 @@ double compute_distances_class_access(
   double tdist=0;
   for (unsigned int i = 0; i < particles.size(); i++) {
     for (unsigned int j = 0; j < particles.size(); j++) {
-      tdist += IMP::algebra::distance(particles[i]->v_, particles[j]->v_);
+      tdist += IMP::algebra::get_distance(particles[i]->v_, particles[j]->v_);
     }
   }
   return tdist;
@@ -158,9 +158,9 @@ double compute_distances_class_access(
 class MyParticle2 : public IMP::Particle {
 public:
   MyParticle2(IMP::Model *m) : IMP::Particle(m) {
-    v_= new IMP::algebra::Vector3D();
+    v_= new IMP::algebra::VectorD<3>();
   }
-  IMP::algebra::Vector3D *v_;
+  IMP::algebra::VectorD<3> *v_;
 };
 
 
@@ -172,7 +172,7 @@ double compute_distances_class_access(
   double tdist=0;
   for (unsigned int i = 0; i < particles.size(); i++) {
     for (unsigned int j = 0; j < particles.size(); j++) {
-      tdist+= IMP::algebra::distance(*particles[i]->v_, *particles[j]->v_);
+      tdist+= IMP::algebra::get_distance(*particles[i]->v_, *particles[j]->v_);
     }
   }
   return tdist;
@@ -180,14 +180,14 @@ double compute_distances_class_access(
 
 // TEST 3
 double compute_distances_direct_access(
-                   const std::vector<Vector3D>& coordinates) ATTRIBUTES;
+                   const std::vector<VectorD<3> >& coordinates) ATTRIBUTES;
 
 double compute_distances_direct_access(
-   const std::vector<Vector3D>& coordinates){
+   const std::vector<VectorD<3> >& coordinates){
   double tdist=0;
   for (unsigned int i = 0; i < coordinates.size(); i++) {
     for (unsigned int j = 0; j < coordinates.size(); j++) {
-      tdist+= IMP::algebra::distance(coordinates[i], coordinates[j]);
+      tdist+= IMP::algebra::get_distance(coordinates[i], coordinates[j]);
     }
   }
   return tdist;
@@ -197,7 +197,7 @@ double compute_distances_direct_access(
 
 // TEST 4
 struct VectorHolder {
-  Vector3D c;
+  VectorD<3> c;
   int a_,b_, c_;
   void *v_;
 };
@@ -211,7 +211,7 @@ double compute_distances_direct_access_space(
   double tdist=0;
   for (unsigned int i = 0; i < coordinates.size(); i++) {
     for (unsigned int j = 0; j < coordinates.size(); j++) {
-      tdist+= IMP::algebra::distance(coordinates[i].c, coordinates[j].c);
+      tdist+= IMP::algebra::get_distance(coordinates[i].c, coordinates[j].c);
     }
   }
   return tdist;
@@ -298,7 +298,7 @@ void do_benchmark(std::string descr, std::string fname) {
   }
   // TEST 3
   {
-    std::vector<IMP::algebra::Vector3D> coordinates;
+    std::vector<IMP::algebra::VectorD<3> > coordinates;
     for (unsigned int i = 0; i < particles.size(); i++) {
       coordinates.push_back(IMP::core::XYZ::decorate_particle(particles[i]).
                             get_coordinates());

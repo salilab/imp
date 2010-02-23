@@ -12,7 +12,7 @@ class TestBL(IMP.test.TestCase):
         r=0
         if rk != IMP.FloatKey():
             r= a.get_value(rk)+ b.get_value(rk)
-        cd= IMP.core.distance(da, db)
+        cd= IMP.core.get_distance(da, db)
         return (cd - r <= d)
 
     def _compare_lists(self, m, pc0, pc1, out, d):
@@ -49,12 +49,12 @@ class TestBL(IMP.test.TestCase):
 
         for p in ps0:
             d= IMP.core.XYZR.decorate_particle(p)
-            d.set_coordinates(IMP.algebra.random_vector_in_unit_box())
+            d.set_coordinates(IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d()))
         self._compare_lists(m, ps0, ps1, cpss, threshold)
 
         for p in ps1:
             d= IMP.core.XYZR.decorate_particle(p)
-            d.set_coordinates(IMP.algebra.random_vector_in_unit_box())
+            d.set_coordinates(IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d()))
         self._compare_lists(m, ps0, ps1, cpss, threshold)
 
 

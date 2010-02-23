@@ -5,4 +5,4 @@ import IMP.core
 
 def randomize_particle(p):
     d= IMP.core.XYZ.decorate_particle(p)
-    d.set_coordinates(IMP.algebra.random_vector_in_unit_box())
+    d.set_coordinates(IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d()))

@@ -13,7 +13,7 @@ class KMeansTests(IMP.test.TestCase):
                  IMP.algebra.Vector3D(60,30,12))
         for i in range(0,3):
             for j in range(0,100):
-                vs.push_back(IMP.algebra.random_vector_in_sphere(centers[i], 10))
+                vs.push_back(IMP.algebra.get_random_vector_in(IMP.algebra.Sphere3D(centers[i], 10)))
         e= IMP.statistics.Vector3DEmbedding(vs)
         c= IMP.statistics.get_lloyds_kmeans(e,
                                             3, 1000)
@@ -24,7 +24,7 @@ class KMeansTests(IMP.test.TestCase):
         for i in range(0,3):
             found=False
             for j in range(0,3):
-                d=IMP.algebra.distance(centers[i],
+                d=IMP.algebra.get_distance(centers[i],
                                         IMP.algebra.Vector3D(c.get_cluster_center(j)[0],
                                                              c.get_cluster_center(j)[1],
                                                              c.get_cluster_center(j)[2]))

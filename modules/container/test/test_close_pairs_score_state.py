@@ -10,7 +10,7 @@ class TestBL(IMP.test.TestCase):
     def _are_close(self, a, b, d):
         da= IMP.core.XYZR(a)
         db= IMP.core.XYZR(b)
-        cd= IMP.core.distance(da, db)
+        cd= IMP.core.get_distance(da, db)
         return (cd <= d)
 
     def _compare_lists(self, m, pc, d, out):
@@ -29,7 +29,7 @@ class TestBL(IMP.test.TestCase):
                     print "expecting "+str(pp)
                     print IMP.core.XYZR(a)
                     print IMP.core.XYZR(b)
-                    print IMP.core.distance(IMP.core.XYZR(a), IMP.core.XYZR(b))
+                    print IMP.core.get_distance(IMP.core.XYZR(a), IMP.core.XYZR(b))
                     self.assert_(out.get_contains_particle_pair(IMP.ParticlePair(a,b))
                                  or out.get_contains_particle_pair(IMP.ParticlePair(b,a)))
     def test_it(self):
@@ -56,7 +56,7 @@ class TestBL(IMP.test.TestCase):
         for p in ps:
             d= IMP.core.XYZ(p)
             d.set_coordinates(d.get_coordinates()
-                              + IMP.algebra.random_vector_in_sphere(IMP.algebra.Vector3D(0,0,0), .55))
+                              + IMP.algebra.get_random_vector_in(IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0,0,0), .55)))
         print "first time"
         self._compare_lists(m, pc, threshold, cpss)
         # move things a lot
@@ -65,7 +65,7 @@ class TestBL(IMP.test.TestCase):
             for p in ps:
                 d= IMP.core.XYZ(p)
                 d.set_coordinates(d.get_coordinates()
-                                  + IMP.algebra.random_vector_in_sphere(IMP.algebra.Vector3D(0,0,0), .7*(i+1)))
+                                  + IMP.algebra.get_random_vector_in(IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0,0,0), .7*(i+1))))
             self._compare_lists(m, pc, threshold, cpss)
 
 
@@ -95,7 +95,7 @@ class TestBL(IMP.test.TestCase):
         for p in ps:
             d= IMP.core.XYZ(p)
             d.set_coordinates(d.get_coordinates()
-                              + IMP.algebra.random_vector_in_sphere(IMP.algebra.Vector3D(0,0,0), .55))
+                              + IMP.algebra.get_random_vector_in(IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0,0,0), .55)))
         print "first time"
         self._compare_lists(m, pc, threshold, cpss)
         # move things a lot
@@ -108,7 +108,7 @@ class TestBL(IMP.test.TestCase):
                     print "Moving particle " +str(p.get_name())
                     d= IMP.core.XYZ(p)
                     d.set_coordinates(d.get_coordinates()
-                                      + IMP.algebra.random_vector_in_sphere(IMP.algebra.Vector3D(0,0,0), .7*(i+1)))
+                                      + IMP.algebra.get_random_vector_in(IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0,0,0), .7*(i+1))))
             self._compare_lists(m, pc, threshold, cpss)
 
 if __name__ == '__main__':

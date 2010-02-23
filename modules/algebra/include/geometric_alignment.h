@@ -13,6 +13,7 @@
 #include "Vector3D.h"
 #include "Rotation3D.h"
 #include "Transformation3D.h"
+#include "Transformation2D.h"
 #include "internal/tnt_array2d.h"
 #include "internal/jama_svd.h"
 #include <IMP/log.h>
@@ -36,18 +37,18 @@ IMPALGEBRA_BEGIN_NAMESPACE
     \genericgeometry
 
     \relatesalso Transformation3D
-    \see Vector3D
+    \see VectorD<3>
  */
 template <class Vector3DsOrXYZs0,
           class Vector3DsOrXYZs1>
 IMP::algebra::Transformation3D
-rigid_align_first_to_second(const Vector3DsOrXYZs0 &from,
-                            const Vector3DsOrXYZs1 &to) {
+get_transformation_aligning_first_to_second(const Vector3DsOrXYZs0 &from,
+                                         const Vector3DsOrXYZs1 &to) {
   IMP_INTERNAL_CHECK(from.size() == to.size(), "sizes don't match");
   // compute the centroid of the points and transform
   // pointsets so that their centroids coinside
 
-  Vector3D center_from(0,0,0), center_to(0,0,0);
+  VectorD<3> center_from(0,0,0), center_to(0,0,0);
   for (unsigned int i=0; i< from.size(); ++i) {
     //double x= p_it->x();
     center_from+= get_geometry(from[i]);
@@ -60,7 +61,7 @@ rigid_align_first_to_second(const Vector3DsOrXYZs0 &from,
 
   IMP_LOG(VERBOSE, "Centers are (" << center_from << ") (" << center_to
           << ")\n");
-  std::vector<Vector3D> shifted_from(from.size()), shifted_to(to.size());
+  std::vector<VectorD<3> > shifted_from(from.size()), shifted_to(to.size());
   for (unsigned int i=0; i< from.size(); ++i) {
     shifted_from[i]=get_geometry(from[i])-center_from;
     shifted_to[i]= get_geometry(to[i])-center_to;
@@ -141,11 +142,11 @@ rigid_align_first_to_second(const Vector3DsOrXYZs0 &from,
   IMP_LOG(VERBOSE, "Rotation matrix is " << rot << std::endl);
 
   Rotation3D rotation
-    = rotation_from_matrix(rot[0][0], rot[0][1], rot[0][2],
-                           rot[1][0], rot[1][1], rot[1][2],
-                           rot[2][0], rot[2][1], rot[2][2]);
+    = get_rotation_from_matrix(rot[0][0], rot[0][1], rot[0][2],
+                               rot[1][0], rot[1][1], rot[1][2],
+                               rot[2][0], rot[2][1], rot[2][2]);
   IMP_LOG(VERBOSE, "Rotation is " << rotation << std::endl);
-  Vector3D translation=center_to - rotation.rotate(center_from);
+  VectorD<3> translation=center_to - rotation.get_rotated(center_from);
 
   Transformation3D ret(rotation, translation);
   return ret;
@@ -153,6 +154,17 @@ rigid_align_first_to_second(const Vector3DsOrXYZs0 &from,
 
 
 
+//! Builds the transformation required to obtain a set of points from
+//! the first one
+/**
+  \note The function assumes that the relative distances between points
+  are conserved.
+**/
+IMPALGEBRAEXPORT Transformation2D get_transformation_aligning_pair(
+                       const std::vector<VectorD<2> >& set_from,
+                       const std::vector<VectorD<2> >& set_to);
+
+// implemented in Transformation2D
 
 IMPALGEBRA_END_NAMESPACE
 

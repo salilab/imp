@@ -80,8 +80,10 @@ public:
 #endif
 
 private:
-  void copy_coordinates(SingletonContainer *sc, algebra::Vector3Ds &v) const;
-  void revert_coordinates(SingletonContainer *sc, algebra::Vector3Ds &v);
+  void copy_coordinates(SingletonContainer *sc,
+                        std::vector<algebra::VectorD<3> > &v) const;
+  void revert_coordinates(SingletonContainer *sc,
+                          std::vector<algebra::VectorD<3> > &v);
 
   void take_step(SingletonContainer *sc, unit::Femtosecond dt);
 

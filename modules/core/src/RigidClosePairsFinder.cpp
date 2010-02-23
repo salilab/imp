@@ -192,7 +192,8 @@ internal::MovedSingletonContainer*
 RigidClosePairsFinder::get_moved_singleton_container(SingletonContainer *in,
                                                  Model *m,
                                                  double threshold) const {
-  return new internal::MovedSingletonContainerImpl<std::pair<algebra::Sphere3D,
+  return
+    new internal::MovedSingletonContainerImpl<std::pair<algebra::SphereD<3>,
     algebra::Rotation3D>,
     internal::SaveXYZRRotValues,
     internal::SaveMovedValues<internal::SaveXYZRRotValues>,

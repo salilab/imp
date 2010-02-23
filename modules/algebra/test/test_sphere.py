@@ -24,14 +24,14 @@ class SphereTests(IMP.test.TestCase):
         bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
                                       IMP.algebra.Vector3D(10,10,10))
         for i in range(0,20):
-            v= IMP.algebra.random_vector_in_box(bb)
+            v= IMP.algebra.get_random_vector_in(bb)
             r= i
             s= IMP.algebra.Sphere3D(v,r)
             ss.append(s)
         for i in range(1,20):
             css=ss[0:i]
             print len(css)
-            es= IMP.algebra.enclosing_sphere(css)
+            es= IMP.algebra.get_enclosing_sphere(css)
             es.show(); print
             for cs in css:
                 d= (cs.get_center()-es.get_center()).get_magnitude()

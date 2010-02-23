@@ -23,7 +23,7 @@ class CylinderTests(IMP.test.TestCase):
         self.assertAlmostEqual(IMP.algebra.get_volume(cyl),math.pi*8.0*25.0,
                                places=1)
 
-    def test_grid_cover(self):
+    def test_get_grid_surface_cover(self):
         """Check grid cover when the direction of the
            cylinder is on Z and the center is at (0,0,0)"""
         center = IMP.algebra.Vector3D(0.0,0.0,0.0)
@@ -31,7 +31,7 @@ class CylinderTests(IMP.test.TestCase):
         cyl = IMP.algebra.Cylinder3D(IMP.algebra.Segment3D(IMP.algebra.Vector3D(0.0,0.0,-4.0),
                                                            IMP.algebra.Vector3D(0.0,0.0,4.0)),
                                    5.0);
-        points = IMP.algebra.grid_cover(cyl,8,8)
+        points = IMP.algebra.get_grid_surface_cover(cyl,8,8)
         #check that the centroid is still the center
         sampled_centroid = IMP.algebra.Vector3D(0.0,0.0,0.0)
         self.assertEqual(len(points),8*8)
@@ -40,7 +40,7 @@ class CylinderTests(IMP.test.TestCase):
         sampled_centroid = sampled_centroid * (1.0/len(points))
         self.assertEqual((sampled_centroid-center).get_magnitude() < 1.0,True)
 
-    def test_grid_cover_center_not_at_000(self):
+    def test_get_grid_surface_cover_center_not_at_000(self):
         """Check grid cover when the center of cylinder
            is not at (0,0,0)"""
         center = IMP.algebra.Vector3D(5.0,4.0,2.0)
@@ -48,7 +48,7 @@ class CylinderTests(IMP.test.TestCase):
         cyl = IMP.algebra.Cylinder3D(IMP.algebra.Segment3D(IMP.algebra.Vector3D(5.0,4.0,-2.0),
                                                            IMP.algebra.Vector3D(5.0,4.0,8.0)),
                                    5.0);
-        points = IMP.algebra.grid_cover(cyl,8,8)
+        points = IMP.algebra.get_grid_surface_cover(cyl,8,8)
         #check that the centroid is still the center
         sampled_centroid = IMP.algebra.Vector3D(0.0,0.0,0.0)
         self.assertEqual(len(points),8*8)
@@ -57,7 +57,7 @@ class CylinderTests(IMP.test.TestCase):
         sampled_centroid = sampled_centroid * (1.0/len(points))
         self.assertEqual((sampled_centroid-center).get_magnitude() < 1.0,True)
 
-    def test_grid_cover_with_direction_not_on_Z(self):
+    def test_get_grid_surface_cover_with_direction_not_on_Z(self):
         """Check grid cover when the direction of the
            cylinde is not the Z axis"""
         center = IMP.algebra.Vector3D(9.0,5.5,3.5)
@@ -66,7 +66,7 @@ class CylinderTests(IMP.test.TestCase):
                                                            IMP.algebra.Vector3D(15.0,7.0,10.0)),
                                    5.0);
 
-        points=IMP.algebra.grid_cover(cyl,12,12)
+        points=IMP.algebra.get_grid_surface_cover(cyl,12,12)
         #check that the centroid is still the center
         sampled_centroid = IMP.algebra.Vector3D(0.0,0.0,0.0)
         self.assertEqual(len(points),12*12)
@@ -76,14 +76,14 @@ class CylinderTests(IMP.test.TestCase):
         self.assertEqual((sampled_centroid-center).get_magnitude() < 1.0,True)
 
 
-    def test_uniform_cover_with_direction_not_on_Z(self):
+    def test_get_uniform_surface_cover_with_direction_not_on_Z(self):
         """Check uniform cover with cylinder not on the Z axis"""
         center = IMP.algebra.Vector3D(9.0,5.5,3.5)
         direction = IMP.algebra.Vector3D(12.0,3.0,13.0).get_unit_vector()
         cyl = IMP.algebra.Cylinder3D(IMP.algebra.Segment3D(IMP.algebra.Vector3D(3.0,4.0,-3.0),
                                                            IMP.algebra.Vector3D(15.0,7.0,10.0)),
                                    5.0);
-        points=IMP.algebra.uniform_cover(cyl,1000)
+        points=IMP.algebra.get_uniform_surface_cover(cyl,1000)
         #check that the centroid is still the center
         sampled_centroid = IMP.algebra.Vector3D(0.0,0.0,0.0)
         self.assertEqual(len(points),1000)

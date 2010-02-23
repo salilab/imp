@@ -11,25 +11,25 @@ class RBDTests(IMP.test.TestCase):
     """Tests for RigidBody function"""
     def _add_rb_restraints(self, rbd):
         #intentionally kept trivial to ensure convergence
-        r= IMP.algebra.identity_rotation()
-        t= IMP.algebra.random_vector_in_unit_sphere()
+        r= IMP.algebra.get_identity_rotation_3d()
+        t= IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_sphere_3d())
         tr= IMP.algebra.Transformation3D(r,t)
         mbs= rbd.get_members()
         m= rbd.get_particle().get_model()
         for b in mbs:
             mb= IMP.core.RigidMember(b.get_particle())
             lc= mb.get_internal_coordinates()
-            lct= tr.transform(lc)
+            lct= tr.get_transformed(lc)
             dt= IMP.core.DistanceToSingletonScore(IMP.core.Harmonic(0,1), lct)
             r= IMP.core.SingletonRestraint(dt, mb.get_particle())
             m.add_restraint(r)
     def _create_hierarchy(self, m, htr, n=10):
         rd= IMP.core.XYZ.setup_particle(IMP.Particle(m),
-                                         IMP.algebra.random_vector_in_unit_box())
+                                         IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d()))
         hd= IMP.core.Hierarchy.setup_particle(rd.get_particle(), htr)
         for i in range(0,n):
             crd= IMP.core.XYZ.setup_particle(IMP.Particle(m),
-                                              IMP.algebra.random_vector_in_unit_box())
+                                              IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d()))
             chd= IMP.core.Hierarchy.setup_particle(crd.get_particle(), htr)
             hd.add_child(chd)
         return rd.get_particle()
@@ -97,11 +97,11 @@ class RBDTests(IMP.test.TestCase):
         ls= IMP.core.get_leaves(h)
         keypts= [ls[0], ls[-1], ls[len(ls)/3], ls[len(ls)/3*2]]
         tr= IMP.algebra.Transformation3D(IMP.algebra.random_rotation(),
-                                         IMP.algebra.random_vector_in_box(IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0), IMP.algebra.Vector3D(500, 500, 500))))
+                                         IMP.algebra.get_random_vector_in(IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0), IMP.algebra.Vector3D(500, 500, 500))))
         for p in keypts:
             mp= IMP.core.RigidMember(p.get_particle())
             ic= mp.get_internal_coordinates()
-            nic= tr.transform(ic)
+            nic= tr.get_transformed(ic)
             dt= IMP.core.DistanceToSingletonScore(IMP.core.Harmonic(0,1), nic)
             r= IMP.core.SingletonRestraint(dt, p.get_particle())
             m.add_restraint(r)

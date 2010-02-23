@@ -48,7 +48,7 @@ algebra::Transformation3D Transformation::get_transformation() {
                            p->get_value(get_rotation_key(1)),
                            p->get_value(get_rotation_key(2)),
                            p->get_value(get_rotation_key(3))),
-       algebra::Vector3D(p->get_value(get_translation_key(0)),
+       algebra::VectorD<3>(p->get_value(get_translation_key(0)),
                          p->get_value(get_translation_key(1)),
                          p->get_value(get_translation_key(2))));
 }

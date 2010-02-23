@@ -128,7 +128,7 @@ namespace {
     }
     double m=0, v=0;
     Ints inds;
-    algebra::Vector3D vv(0,0,0);
+    algebra::VectorD<3> vv(0,0,0);
     unsigned int n=0;
     for (unsigned int i=0; i< t.size(); ++i) {
       m+= get_mass(t[i]);
@@ -146,8 +146,8 @@ namespace {
     f.set_residue_indexes(inds);
     Mass::setup_particle(p, m);
     core::XYZR::setup_particle(p,
-                         algebra::Sphere3D(vv/n,
-                         algebra::ball_radius_from_volume(v)));
+                         algebra::SphereD<3>(vv/n,
+                         algebra::get_ball_radius_from_volume_3d(v)));
     return f;
   }
 }

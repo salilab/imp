@@ -60,12 +60,12 @@ void ParticleGrid::build_grid(const Storage &ps)
     target_voxel_side_= std::max(vx, target_voxel_side_);
   }
   grid_= Grid(target_voxel_side_,
-              algebra::BoundingBox3D(algebra::Vector3D(mn[0], mn[1], mn[2]),
-                                     algebra::Vector3D(mx[0], mx[1], mx[2])),
+              algebra::BoundingBox3D(algebra::VectorD<3>(mn[0], mn[1], mn[2]),
+                                     algebra::VectorD<3>(mx[0], mx[1], mx[2])),
               Storage());
   for (unsigned int i = 0; i < ps.size(); ++i) {
     XYZ d(ps[i]);
-    algebra::Vector3D v(d.get_x(), d.get_y(), d.get_z());
+    algebra::VectorD<3> v(d.get_x(), d.get_y(), d.get_z());
     grid_[grid_.get_index(v)].push_back(ps[i]);
   }
   IMP_LOG(TERSE, "done." << std::endl);

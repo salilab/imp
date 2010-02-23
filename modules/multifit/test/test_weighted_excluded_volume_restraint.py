@@ -69,7 +69,7 @@ class SampleTests(IMP.test.TestCase):
                 IMP.algebra.Rotation3D(rotations[i][0],rotations[i][1],rotations[i][2],rotations[i][3]),
                 translations[i])
             xyz=IMP.core.XYZ(self.rbs[0].get_particle())
-            xyz.set_coordinates(t.transform(xyz.get_coordinates()))
+            xyz.set_coordinates(t.get_transformed(xyz.get_coordinates()))
             #check that when the proteins are not connected (self.c_r>0) the excluded volume
             #restraint is bigger than 0
             start = time.clock()
@@ -81,6 +81,6 @@ class SampleTests(IMP.test.TestCase):
             self.assert_(((conn_r==0.)and(w_exc_vol_r>0.))or((conn_r>0.)and(w_exc_vol_r==0.)),
                          "inconsistency between connectivity and excluded volume restraint")
             #print "connectivity "+str(conn_r) + " | excluded-volume " + str(w_exc_vol_r)
-            xyz.set_coordinates(t.get_inverse().transform(xyz.get_coordinates()))
+            xyz.set_coordinates(t.get_inverse().get_transformed(xyz.get_coordinates()))
 if __name__ == '__main__':
     unittest.main()

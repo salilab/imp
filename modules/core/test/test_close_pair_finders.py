@@ -19,7 +19,7 @@ class TestCPFL(IMP.test.TestCase):
         if p1.has_attribute(rk): r1= p1.get_value(rk)
         d0=IMP.core.XYZ(p0)
         d1=IMP.core.XYZ(p1)
-        d= IMP.core.distance(d0, d1)
+        d= IMP.core.get_distance(d0, d1)
         #print str(d0.get_x()) + " " + str(d0.get_y()) + " " + str(d0.get_z()) + " " + str(r0)
         #print str(d1.get_x()) + " " + str(d1.get_y()) + " " + str(d1.get_z()) + " " + str(r1)
         return d-r0-r1

@@ -11,7 +11,7 @@
 IMPALGEBRA_BEGIN_NAMESPACE
 
 double interpolate(Matrix2D<double>&m,
-                   Vector2D&idx,
+                   VectorD<2>&idx,
                    bool wrap,
                    double outside,
                    int interp) {
@@ -29,7 +29,7 @@ double interpolate(Matrix2D<double>&m,
 
 
 double bilinear_interpolation(Matrix2D<double>& m,
-                  Vector2D& idx,
+                  VectorD<2>& idx,
                   bool wrap,
                   double outside) {
   // lower limits (xlow,ylow) are stored in v1, upper limits (xup,yup) in v2
@@ -87,7 +87,7 @@ double bilinear_interpolation(Matrix2D<double>& m,
 }
 
 double Bspline_interpolation(Matrix2D<double>& m,
-                  Vector2D& idx,
+                  VectorD<2>& idx,
                   bool wrap,
                   double outside) {
   // TODO: Implement B-spline interpolation

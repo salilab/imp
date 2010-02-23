@@ -20,8 +20,8 @@ int main(){
   container::ListPairContainer *pc= new container::ListPairContainer();
   pc->add_particle_pair(ParticlePair(p0, p1));
   example::ExampleRestraint *r= new example::ExampleRestraint(dps, pc);
-  d0.set_coordinates(algebra::Vector3D(0,0,0));
-  d1.set_coordinates(algebra::Vector3D(0,0,1));
+  d0.set_coordinates(algebra::VectorD<3>(0,0,0));
+  d1.set_coordinates(algebra::VectorD<3>(0,0,1));
 
   m->add_restraint(r);
   IMP_INTERNAL_CHECK(std::abs(m->evaluate(false) -1) < .01, "Out of range");

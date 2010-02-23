@@ -16,10 +16,10 @@ class BoundingBoxTests(IMP.test.TestCase):
         small_box= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(1,1,1),
                                             IMP.algebra.Vector3D(9,9,9))
         for i in range(0,20):
-            v= IMP.algebra.random_vector_in_box(small_box)
+            v= IMP.algebra.get_random_vector_in(small_box)
             points.append(v)
         bb=IMP.algebra.BoundingBox3D(points)
-        self.assertAlmostEqual(IMP.algebra.distance(bb.get_corner(0),IMP.algebra.Vector3D(0,0,0)),0.001,places=1)
-        self.assertAlmostEqual(IMP.algebra.distance(bb.get_corner(1),IMP.algebra.Vector3D(10,10,10)),0.001,places=1)
+        self.assertAlmostEqual(IMP.algebra.get_distance(bb.get_corner(0),IMP.algebra.Vector3D(0,0,0)),0.001,places=1)
+        self.assertAlmostEqual(IMP.algebra.get_distance(bb.get_corner(1),IMP.algebra.Vector3D(10,10,10)),0.001,places=1)
 if __name__ == '__main__':
     unittest.main()

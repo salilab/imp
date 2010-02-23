@@ -18,7 +18,7 @@ class CGOptimizerTests(IMP.test.TestCase):
                 if p0 != p1:
                     d0= IMP.core.XYZR(p0)
                     d1= IMP.core.XYZR(p1)
-                    d= IMP.core.distance(d0,d1)
+                    d= IMP.core.get_distance(d0,d1)
                     if lpc.get_contains_particle_pair(IMP.ParticlePair(p0,p1)) \
                             or lpc.get_contains_particle_pair(IMP.ParticlePair(p1,p0)) :
                         self.assertInTolerance(d, 0, .2)
