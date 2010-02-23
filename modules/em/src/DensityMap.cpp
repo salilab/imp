@@ -677,7 +677,7 @@ DensityMap *get_transformed_internal(DensityMap *in,
   unsigned int size=ret->get_number_of_voxels();
   for (unsigned int i=0; i< size; ++i) {
     algebra::VectorD<3> tpt=get_voxel_center(ret, i);
-    algebra::VectorD<3> pt= tri.transform(tpt);
+    algebra::VectorD<3> pt= tri.get_transformed(tpt);
     double d = get_density(in, pt);
     ret->set_value(i, d);
   }
