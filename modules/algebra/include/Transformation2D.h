@@ -39,12 +39,12 @@ public:
 
   //! basic constructor from a Rotation2D and translation vector
   Transformation2D(const Rotation2D& r,
-                   const Vector2D& t=Vector2D(0.0,0.0)):
+                   const VectorD<2>& t=VectorD<2>(0.0,0.0)):
     trans_(t), rot_(r){}
 
   //! Constructor for a transformation with an identity rotation.
-  Transformation2D(const Vector2D& t):
-    trans_(t), rot_(identity_rotation2D()){}
+  Transformation2D(const VectorD<2>& t):
+    trans_(t), rot_(get_identity_rotation_2d()){}
 
   ~Transformation2D();
 
@@ -54,8 +54,8 @@ public:
     \note: The transformation is done firstly applying the rotation and then
     the translation
   **/
-  Vector2D transform(const Vector2D &o) const {
-    return rot_.rotate(o) + trans_;
+  VectorD<2> get_transformed(const VectorD<2> &o) const {
+    return rot_.get_rotated(o) + trans_;
   }
 
   //! Perform the transformation on an 2D vector
@@ -63,8 +63,8 @@ public:
     \note: The transformation is done firstly applying the rotation and then
     the translation
   **/
-  Vector2D operator*(const Vector2D &v) const {
-    return transform(v);
+  VectorD<2> operator*(const VectorD<2> &v) const {
+    return get_transformed(v);
   }
 
   //! compose two transformations
@@ -103,7 +103,7 @@ public:
   }
 
   //! Returns the translation
-  const Vector2D get_translation()const{return trans_;}
+  const VectorD<2> get_translation()const{return trans_;}
 
   //! Sets the translation
   template<typename T1>
@@ -122,7 +122,7 @@ public:
   Transformation2D get_inverse() const;
 
 private:
-  Vector2D trans_; //tranlation
+  VectorD<2> trans_; //tranlation
   Rotation2D rot_;  //rotation
 };
 
@@ -133,8 +133,8 @@ IMP_OUTPUT_OPERATOR(Transformation2D)
 /**
   \relatesalso Transformation2D
 **/
-inline Transformation2D identity_transformation2D() {
-  return Transformation2D(identity_rotation2D(),Vector2D(0.0,0.0));
+inline Transformation2D get_identity_transformation_2d() {
+  return Transformation2D(get_identity_rotation_2d(),VectorD<2>(0.0,0.0));
 };
 
 //! Generates a Transformation2D object from a rotation around a point
@@ -145,9 +145,9 @@ inline Transformation2D identity_transformation2D() {
   reference, not the new point).
   \relatesalso Transformation2D
 */
-inline Transformation2D rotation_about_point(const Vector2D &point,
+inline Transformation2D get_rotation_about_point(const VectorD<2> &point,
                      const Rotation2D &rotation) {
-  return Transformation2D(rotation, (rotation.rotate(-point)+point));
+  return Transformation2D(rotation, (rotation.get_rotated(-point)+point));
 };
 
 //! compose two transformations
@@ -157,18 +157,9 @@ inline Transformation2D rotation_about_point(const Vector2D &point,
 inline Transformation2D compose(const Transformation2D &a,
                                 const Transformation2D &b){
   Rotation2D R= compose(a.get_rotation(),b.get_rotation());
-  return Transformation2D(R,a.transform(b.get_translation()));
+  return Transformation2D(R,a.get_transformed(b.get_translation()));
 };
 
-
-//! Builds the transformation required to obtain a set of points from
-//! the first one
-/**
-  \note The function assumes that the relative distances between points
-  are conserved
-**/
-IMPALGEBRAEXPORT Transformation2D build_Transformation2D_from_point_sets(
-      const Vector2Ds set_from,const Vector2Ds set_to);
 
 
 IMPALGEBRA_END_NAMESPACE

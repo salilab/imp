@@ -48,17 +48,17 @@ public:
   /**
   * \param[in] o a 2D vector to be rotated
   */
-   Vector2D rotate(const  Vector2D &o) const {
+   VectorD<2> get_rotated(const  VectorD<2> &o) const {
     IMP_INTERNAL_CHECK(!is_nan(angle_),
                "Attempting to use uninitialized rotation");
-    return rotate(o[0],o[1]);
+    return get_rotated(o[0],o[1]);
   }
 
   //! rotates a 2D point
-   Vector2D rotate(const double x,const double y) const {
+   VectorD<2> get_rotated(const double x,const double y) const {
     IMP_INTERNAL_CHECK(!is_nan(angle_),
                "Attempting to use uninitialized rotation");
-    return  Vector2D(c_*x-s_*y , s_*x+c_*y);
+    return  VectorD<2>(c_*x-s_*y , s_*x+c_*y);
   }
 
   //! Returns the matrix for the inverse rotation
@@ -96,19 +96,19 @@ private:
 
 
 //! Builds an identity rotation in 2D
-inline Rotation2D identity_rotation2D() {
+inline Rotation2D get_identity_rotation_2d() {
   return Rotation2D(0.0);
 };
 
 //! Builds an identity rotation in 2D
-inline Rotation2D random_rotation2D() {
+inline Rotation2D get_random_rotation_2d() {
   return Rotation2D(2*PI*((double)rand() /((double)RAND_MAX+1)));
 };
 
 
 //! Builds the rotation that transforms the vector X of the origin
 //! of coordinates into the given vector
-inline Rotation2D build_Rotation2D_from_Vector2D(const Vector2D &v) {
+inline Rotation2D get_rotation_to_x_axis(const VectorD<2> &v) {
   return Rotation2D(atan2(v[1],v[0]));
 };
 
