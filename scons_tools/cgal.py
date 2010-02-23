@@ -8,9 +8,9 @@ def _check(context):
         context.Result("disabled")
         return False
 
-    ret= checks.check_lib(context, lib='CGAL', header='CGAL/Gmpq.h',
-                          body='CGAL_assertion(1); CGAL::Gmpq q;',
-                          extra_libs=['gmp', 'm'])
+    ret= checks.check_lib(context, lib='CGAL', header=['CGAL/Gmpq.h', 'CGAL/Lazy_exact_nt.h'],
+                          body='CGAL_assertion(1); CGAL::Lazy_exact_nt<CGAL::Gmpq> q;',
+                          extra_libs=['gmp', 'mpfr', 'm','boost_thread-mt', 'boost_thread', 'pthread'])
     context.Message('Checking for CGAL ...')
     context.Result(ret[0])
     if ret[0]:
