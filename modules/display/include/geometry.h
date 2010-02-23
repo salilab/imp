@@ -59,16 +59,16 @@ public:
   IMP_REF_COUNTED_DESTRUCTOR(Geometry);
 };
 
-IMP_DISPLAY_GEOMETRY_DECL(SphereGeometry, algebra::Sphere3D);
+IMP_DISPLAY_GEOMETRY_DECL(SphereGeometry, algebra::SphereD<3>);
 IMP_DISPLAY_GEOMETRY_DECL(CylinderGeometry, algebra::Cylinder3D);
 IMP_DISPLAY_GEOMETRY_DECL(EllipsoidGeometry, algebra::Ellipsoid3D);
 
-IMP_DISPLAY_GEOMETRY_DECL(PointGeometry, algebra::Vector3D);
+IMP_DISPLAY_GEOMETRY_DECL(PointGeometry, algebra::VectorD<3>);
 IMP_DISPLAY_GEOMETRY_DECL(SegmentGeometry, algebra::Segment3D);
 IMP_DISPLAY_GEOMETRY_DECL(PolygonGeometry,
-                          std::vector<algebra::Vector3D>);
+                          std::vector<algebra::VectorD<3> >);
 IMP_DISPLAY_GEOMETRY_DECL(TriangleGeometry,
-                          std::vector<algebra::Vector3D>);
+                          std::vector<algebra::VectorD<3> >);
 
 IMP_DISPLAY_GEOMETRY_DECOMPOSABLE_DECL(BoundingBoxGeometry,
                                        algebra::BoundingBoxD<3>);

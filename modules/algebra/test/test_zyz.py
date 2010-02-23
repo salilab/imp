@@ -16,8 +16,8 @@ class CylinderTests(IMP.test.TestCase):
         print tilt
         print psi
         IMP.set_log_level(IMP.VERBOSE)
-        r= IMP.algebra.rotation_from_fixed_zyz(rot, tilt, psi)
-        e= IMP.algebra.fixed_zyz_from_rotation(r)
+        r= IMP.algebra.get_rotation_from_fixed_zyz(rot, tilt, psi)
+        e= IMP.algebra.get_fixed_zyz_from_rotation(r)
         print "Out"
         print e.get_rot()
         print e.get_tilt()

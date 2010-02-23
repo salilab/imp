@@ -16,7 +16,7 @@ class DistanceTests(IMP.test.TestCase):
         p1= IMP.Particle(m)
         d1= IMP.core.XYZ.setup_particle(p1)
         t=IMP.algebra.Vector3D(0,1,0)
-        tr= IMP.algebra.Transformation3D(IMP.algebra.identity_rotation(), t)
+        tr= IMP.algebra.Transformation3D(IMP.algebra.get_identity_rotation_3d(), t)
         tps= IMP.core.TransformedDistancePairScore(IMP.core.Harmonic(0,1), tr)
         tps.set_was_owned(True)
         d0.set_coordinates(IMP.algebra.Vector3D(2,3,4))
@@ -25,7 +25,7 @@ class DistanceTests(IMP.test.TestCase):
         self.assert_(tps.evaluate(IMP.ParticlePair(p1, p0), None) != 0)
 
         print "test rotation"
-        rot= IMP.algebra.rotation_from_matrix(0, 0,-1,
+        rot= IMP.algebra.get_rotation_from_matrix(0, 0,-1,
                                               0, 1, 0,
                                               1, 0, 0)
         tr= IMP.algebra.Transformation3D(rot, t)
@@ -34,9 +34,9 @@ class DistanceTests(IMP.test.TestCase):
         self.assertInTolerance(tps.evaluate(IMP.ParticlePair(p0, p1), None), 0, .01)
         self.assert_(tps.evaluate(IMP.ParticlePair(p1, p0), None) != 0)
         t=IMP.algebra.Vector3D(0,0,0)
-        rot= IMP.algebra.rotation_from_matrix(0,-1, 0,
-                                              1, 0, 0,
-                                              0, 0, 1)
+        rot= IMP.algebra.get_rotation_from_matrix(0,-1, 0,
+                                                  1, 0, 0,
+                                                  0, 0, 1)
         tps.set_transformation(IMP.algebra.Transformation3D(rot, t))
         d0.set_coordinates(IMP.algebra.Vector3D(0,1,0))
         d1.set_coordinates(IMP.algebra.Vector3D(1,1,0))
@@ -68,9 +68,9 @@ class DistanceTests(IMP.test.TestCase):
         d1.set_coordinates(IMP.algebra.Vector3D(20,20,40))
         d0.set_coordinates_are_optimized(True)
         d1.set_coordinates_are_optimized(True)
-        r= IMP.algebra.rotation_from_matrix(1, 0, 0,
-                                            0, 0,-1,
-                                            0, 1, 0)
+        r= IMP.algebra.get_rotation_from_matrix(1, 0, 0,
+                                                0, 0,-1,
+                                                0, 1, 0)
         t= IMP.algebra.Vector3D(0,1,0)
         tps= IMP.core.TransformedDistancePairScore(IMP.core.Harmonic(0,1),
                                            IMP.algebra.Transformation3D(r,t))

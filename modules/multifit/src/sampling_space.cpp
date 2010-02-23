@@ -26,9 +26,9 @@ domino::TransformationMappedDiscreteSet*
   for(unsigned int i=0;i<components.size();i++) {
     IMP_LOG(VERBOSE,"working on component:" <<i<< std::endl);
     Particle *comp=components[i];
-    algebra::Vector3D comp_cent=
+    algebra::VectorD<3> comp_cent=
       core::centroid(core::XYZs(core::get_leaves(atom::Hierarchy(comp))));
-    algebra::Vector3D mapped_ap=
+    algebra::VectorD<3> mapped_ap=
       core::XYZ(asmb_ap[mapping[i]]).get_coordinates();
     IMP_IF_LOG(VERBOSE) {
       IMP_LOG(VERBOSE,"component center:" <<std::endl);
@@ -40,7 +40,7 @@ domino::TransformationMappedDiscreteSet*
       Particle *state_p=full_smpl_space->get_mapped_state(comp,j);
       algebra::Transformation3D t =
          domino::Transformation(state_p).get_transformation();
-      dist=algebra::distance(t.transform(comp_cent),mapped_ap);
+      dist=algebra::get_distance(t.get_transformed(comp_cent),mapped_ap);
       IMP_LOG(VERBOSE,"for component:" <<i <<" trans: " << j<<
               " the distance is : " <<dist<<std::endl);
       if (dist<dist_t){

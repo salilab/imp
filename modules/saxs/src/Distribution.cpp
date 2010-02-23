@@ -33,14 +33,14 @@ void RadialDistributionFunction::
 calculate_distribution(const Particles& particles, bool autocorrelation)
 {
   // copy coordinates and form factors in advance, to avoid n^2 copy operations
-  std::vector < algebra::Vector3D > coordinates;
+  std::vector < algebra::VectorD<3> > coordinates;
   Floats form_factors;
   copy_data(particles, ff_table_, coordinates, form_factors);
 
   // iterate over pairs of atoms
   for (unsigned int i = 0; i < coordinates.size(); i++) {
     for (unsigned int j = i + 1; j < coordinates.size(); j++) {
-      Float dist = distance(coordinates[i], coordinates[j]);
+      Float dist = get_distance(coordinates[i], coordinates[j]);
       add_to_distribution(dist, 2.0 * form_factors[i] * form_factors[j]);
     }
     // add autocorrelation part
@@ -53,14 +53,14 @@ void RadialDistributionFunction::
 calculate_squared_distribution(const Particles& particles, bool autocorrelation)
 {
   // copy coordinates and form factors in advance, to avoid n^2 copy operations
-  std::vector < algebra::Vector3D > coordinates;
+  std::vector < algebra::VectorD<3> > coordinates;
   Floats form_factors;
   copy_data(particles, ff_table_, coordinates, form_factors);
 
   // iterate over pairs of atoms
   for (unsigned int i = 0; i < coordinates.size(); i++) {
     for (unsigned int j = i + 1; j < coordinates.size(); j++) {
-      Float dist = squared_distance(coordinates[i], coordinates[j]);
+      Float dist = get_squared_distance(coordinates[i], coordinates[j]);
       add_to_distribution(dist, 2.0 * form_factors[i] * form_factors[j]);
     }
     // add autocorrelation part
@@ -72,7 +72,7 @@ void RadialDistributionFunction::
 calculate_distribution(const Particles& particles1, const Particles& particles2)
 {
   // copy coordinates and form factors in advance, to avoid n^2 copy operations
-  std::vector < algebra::Vector3D > coordinates1, coordinates2;
+  std::vector < algebra::VectorD<3> > coordinates1, coordinates2;
   Floats form_factors1, form_factors2;
   copy_data(particles1, ff_table_, coordinates1, form_factors1);
   copy_data(particles2, ff_table_, coordinates2, form_factors2);
@@ -80,7 +80,7 @@ calculate_distribution(const Particles& particles1, const Particles& particles2)
   // iterate over pairs of atoms
   for (unsigned int i = 0; i < coordinates1.size(); i++) {
     for (unsigned int j = 0; j < coordinates2.size(); j++) {
-      Float dist = distance(coordinates1[i], coordinates2[j]);
+      Float dist = get_distance(coordinates1[i], coordinates2[j]);
       add_to_distribution(dist, 2 * form_factors1[i] * form_factors2[j]);
     }
   }
@@ -91,7 +91,7 @@ calculate_squared_distribution(const Particles& particles1,
                                const Particles& particles2)
 {
   // copy coordinates and form factors in advance, to avoid n^2 copy operations
-  std::vector < algebra::Vector3D > coordinates1, coordinates2;
+  std::vector < algebra::VectorD<3> > coordinates1, coordinates2;
   Floats form_factors1, form_factors2;
   copy_data(particles1, ff_table_, coordinates1, form_factors1);
   copy_data(particles2, ff_table_, coordinates2, form_factors2);
@@ -99,7 +99,7 @@ calculate_squared_distribution(const Particles& particles1,
   // iterate over pairs of atoms
   for (unsigned int i = 0; i < coordinates1.size(); i++) {
     for (unsigned int j = 0; j < coordinates2.size(); j++) {
-      Float dist = squared_distance(coordinates1[i], coordinates2[j]);
+      Float dist = get_squared_distance(coordinates1[i], coordinates2[j]);
       add_to_distribution(dist, 2 * form_factors1[i] * form_factors2[j]);
     }
   }
@@ -229,7 +229,7 @@ DeltaDistributionFunction::
 DeltaDistributionFunction(FormFactorTable* ff_table,
                           const Particles& particles,
                           Float max_distance, Float bin_size)
-  : Distribution<algebra::Vector3D>(bin_size), ff_table_(ff_table)
+  : Distribution<algebra::VectorD<3> >(bin_size), ff_table_(ff_table)
 {
   // copy coordinates and form factors in advance, to avoid n^2 copy operations
   copy_data(particles, ff_table_, coordinates_, form_factors_);
@@ -243,12 +243,12 @@ calculate_derivative_distribution(Particle* particle)
 {
   init();
 
-  algebra::Vector3D particle_coordinate =
+  algebra::VectorD<3> particle_coordinate =
     core::XYZ::decorate_particle(particle).get_coordinates();
   Float particle_form_factor = ff_table_->get_form_factor(particle);
   for (unsigned int i=0; i<coordinates_.size(); i++) {
-    Float dist = distance(coordinates_[i], particle_coordinate);
-    algebra::Vector3D diff_vector = particle_coordinate - coordinates_[i];
+    Float dist = get_distance(coordinates_[i], particle_coordinate);
+    algebra::VectorD<3> diff_vector = particle_coordinate - coordinates_[i];
     diff_vector *= particle_form_factor * form_factors_[i];
     add_to_distribution(dist, diff_vector);
   }

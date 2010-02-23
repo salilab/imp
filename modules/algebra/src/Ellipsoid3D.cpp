@@ -10,7 +10,7 @@
 
 
 IMPALGEBRA_BEGIN_NAMESPACE
-Ellipsoid3D::Ellipsoid3D(const Vector3D& center,double r0,
+Ellipsoid3D::Ellipsoid3D(const VectorD<3>& center,double r0,
                          double r1, double r2,
                          const Rotation3D &rot):center_(center),
                                                rot_(rot){

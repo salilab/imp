@@ -37,8 +37,8 @@ protein1_rb.show()
 ub = IMP.algebra.Vector3D(-50.0,-50.0,-50.0)
 lb = IMP.algebra.Vector3D( 50.0, 50.0, 50.0)
 bb = IMP.algebra.BoundingBox3D(ub, lb)
-translation = IMP.algebra.random_vector_in_box(bb)
-rotation = IMP.algebra.random_rotation()
+translation = IMP.algebra.get_random_vector_in(bb)
+rotation = IMP.algebra.get_random_rotation_3d()
 transformation = IMP.algebra.Transformation3D(rotation, translation)
 
 # Perform geometric transformations on the Protein1 rigid body

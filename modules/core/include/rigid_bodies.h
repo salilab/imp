@@ -68,11 +68,11 @@ class IMPCOREEXPORT RigidBody: public XYZ {
   /** This method computes the coordinates of p given its internal coordinates
       and the current position and orientation of the rigid body.
    */
-  algebra::Vector3D get_coordinates(RigidMember p) const;
+  algebra::VectorD<3> get_coordinates(RigidMember p) const;
 
   void add_member_internal(XYZ d,
                            const algebra::Rotation3D& roti,
-                           const algebra::Vector3D& transi, bool cover);
+                           const algebra::VectorD<3>& transi, bool cover);
   static RigidBody internal_setup_particle(Particle *p,
                                            const XYZs &members);
   IMP_CONSTRAINT_DECORATOR_DECL(RigidBody);
@@ -115,7 +115,7 @@ public:
 
   // swig doesn't support using, so the method is wrapped
   //! Get the coordinates of the particle
-  algebra::Vector3D get_coordinates() const {
+  algebra::VectorD<3> get_coordinates() const {
     return XYZ::get_coordinates();
   }
 
@@ -179,8 +179,8 @@ class IMPCOREEXPORT RigidMember: public XYZ {
   RigidBody get_rigid_body() const;
 
   //! Return the current orientation of the body
-  algebra::Vector3D get_internal_coordinates() const {
-    return algebra::Vector3D(get_particle()
+  algebra::VectorD<3> get_internal_coordinates() const {
+    return algebra::VectorD<3>(get_particle()
                     ->get_value(internal::rigid_body_data().child_keys_[0]),
                     get_particle()
                     ->get_value(internal::rigid_body_data().child_keys_[1]),
@@ -189,7 +189,7 @@ class IMPCOREEXPORT RigidMember: public XYZ {
   }
 
   //! set the internal coordinates for this member
-  void set_internal_coordinates(const algebra::Vector3D &v) const {
+  void set_internal_coordinates(const algebra::VectorD<3> &v) const {
     get_particle()->set_value(internal::rigid_body_data().child_keys_[0],
                               v[0]);
     get_particle()->set_value(internal::rigid_body_data().child_keys_[1],
@@ -225,7 +225,7 @@ class IMPCOREEXPORT RigidMember: public XYZ {
      get_particle()->has_attribute(internal::rigid_body_data().lquaternion_[0]),
      "Can only set the internal transformation if member is a "
      << "rigid body itself.");
-    algebra::Vector3D
+    algebra::VectorD<3>
       tr(get_particle()->get_value(internal::rigid_body_data().child_keys_[0]),
          get_particle()->get_value(internal::rigid_body_data().child_keys_[1]),
          get_particle()->get_value(internal::rigid_body_data().child_keys_[2]));
@@ -243,13 +243,13 @@ class IMPCOREEXPORT RigidMember: public XYZ {
 
   //! set the coordinates of the body
   // this is here since swig does like using statements
-  void set_coordinates(const algebra::Vector3D &center) {
+  void set_coordinates(const algebra::VectorD<3> &center) {
     XYZ::set_coordinates(center);
   }
 
   //! Set the coordinates from the internal coordinates
   void set_coordinates(const algebra::Transformation3D &tr) {
-    set_coordinates(tr.transform(get_internal_coordinates()));
+    set_coordinates(tr.get_transformed(get_internal_coordinates()));
   }
   ~RigidMember();
 

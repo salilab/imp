@@ -1,4 +1,44 @@
 /** \page recent Change History
+
+\par Week of Feb 21, 2010
+
+- the random vector generators have been cleaned up to remove redundant ones and make the names more consistent. They now have the form of either
+  - IMP::algebra::get_random_vector_in() or IMP::algebra::get_random_vector_on() where there is one argument describing the volume or shape (such as an IMP::algebra::Sphere4D).
+  - or IMP::algebra::get_uniform_surface_cover() where the first argument is the primitive whose surface we are covering and the second is the number of points.
+ Some good sed strings are
+  - "s#random_vector_in_unit_sphere()#get_random_vector_in(IMP.algebra.get_unit_sphere_3d())#g"
+  - "s#random_vector_in_unit_box()#get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d())#g"
+  - "s#random_vector_on_unit_sphere()#get_random_vector_on(IMP.algebra.get_unit_sphere_3d())#g"
+  - "s#random_vector_on_unit_box()#get_random_vector_on(IMP.algebra.get_unit_bounding_box_3d())#g"
+  - "s#random_vector_in_box(#get_random_vector_in(#g"
+  - "s#random_vector_on_box(#get_random_vector_on(#g"
+  - "s#random_vector_in_sphere(#get_random_vector_in(#g"
+  - "s#random_vector_on_sphere(#get_random_vector_on(#g"
+  - "s#grid_cover#get_grid_surface_cover#g"
+  - "s#uniform_coverr#get_uniform_surface_cover#g"
+
+- Spheres in IMP::algebra are now supported in general dimensions. See IMP::algebra::SphereD.
+
+- Many methods in IMP::algebra were renamed to be more consistent with other methods or general conventions. Most of these simply involved adding \c get_ as a prefix and/or add a \_3d suffix when they did not take any arguments.
+   - build_Rotation2D_from_Vector2D became IMP::algebra::get_rotation_to_x_axis()
+   - most of the Rotation3D and Transformation3D functions (in addition, IMP::algebra::get_identity_rotation_3d() and IMP::algebra::get_identity_transformation_3d() added the \c _3d so we can add 2D versions at some point)
+   - IMP::algebra::Transformation3D::get_transformed() and IMP::algebra::Rotation3D::get_rotated(). Running \c ".transform(" worked in the IMP code base.
+   - IMP::algebra::get_distance(), this also carries over to the IMP::core::get_distance()
+  The following global replacements are probably safe (in sed expressions)
+   - "s#core.distance(#core.get_distance#g"
+   - "s#algebra.distance(#algebra.get_distance#g"
+   - "s#\.transform(#.get_transformed(#g" Only in C++
+   - "s#\.rotate(#.get_rotated(#g" Only in C++
+   - "s#rotation_from#get_rotation_from#g"
+   - "s#rotation_in#get_rotation_in#g"
+   - "s#identity_rotation(#get_indentity_rotation_3d("
+   - "s#::distance(#::get_distance(#g"
+- IMP::algebra::Vector3D and IMP::algebra::Vector3Ds were replaced by the expanded (non-typedef) version in functions parsed by SWIG as the current situation was extremely brittle. For the moment, you should not use the typedefs in definitions that swig sees. Sorry.
+
+- IMP::algebra::Sphere3DPatch was renamed to IMP::algebra::SpherePatch3D to be consistent with the other geometry and allow us to support higher dimensions in the future.
+
+- rigid_align_first_to_second was renamed to IMP::algebra::get_transformation_aligning_first_to_second() and build_Transformation2D_from_point_sets was renamed to IMP::algebra::get_transformation_aligning_pair()
+
 \par Week of Feb 14, 2010
 - The IMP::atom::Bond types were rearranged to reconcile the protein-centric classification with ligand support.
 

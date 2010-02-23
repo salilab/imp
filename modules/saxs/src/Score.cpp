@@ -203,7 +203,7 @@ void Score::compute_profile_difference(const Profile& model_profile,
 void Score::compute_chi_derivative(const Profile& model_profile,
                                    const Particles& particles1,
                                    const Particles& particles2,
-                                   std::vector<algebra::Vector3D>& derivatives,
+                         std::vector<algebra::VectorD<3> >& derivatives,
                                    bool use_offset) const {
 
   Profile resampled_profile(ff_table_,
@@ -225,10 +225,10 @@ Delta(r) = f_iatom * sum_i f_i delta(r-r_{i,iatom}) (x_iatom-x_i)
 void Score::compute_chi_real_derivative(const Profile& model_profile,
                                  const Particles& particles1,
                                  const Particles& particles2,
-                                 std::vector<algebra::Vector3D>& derivatives,
+                                 std::vector<algebra::VectorD<3> >& derivatives,
                                  bool use_offset) const
 {
-  algebra::Vector3D delta_q, chi_derivative;
+  algebra::VectorD<3> delta_q, chi_derivative;
 
   // Pre-compute common parameters for faster calculation
   Floats profile_diff;
@@ -251,10 +251,10 @@ void Score::compute_chi_real_derivative(const Profile& model_profile,
   for (unsigned int iatom=0; iatom<particles1.size(); iatom++) {
     // Compute a delta distribution per an atom
     delta_dist.calculate_derivative_distribution(particles1[iatom]);
-    chi_derivative = algebra::Vector3D(0.0, 0.0, 0.0);
+    chi_derivative = algebra::VectorD<3>(0.0, 0.0, 0.0);
 
     for (unsigned int iq=0; iq<profile_size; iq++) {
-      delta_q = algebra::Vector3D(0.0, 0.0, 0.0);
+      delta_q = algebra::VectorD<3>(0.0, 0.0, 0.0);
 
       for (unsigned int ir=0; ir<delta_dist.size(); ir++) {
         // delta_dist.distribution = sum_i [f_k(0) * f_i(0) * (x_k - x_i)]

@@ -123,27 +123,32 @@ private:
 };
 
 IMP_VOLUME_GEOMETRY_METHODS_D(BoundingBox, IMP_NOT_IMPLEMENTED,
-                              return (g.get_point(1)[0]- g.get_point(0)[0])
-                              *(g.get_point(1)[1]- g.get_point(0)[1])
-                              *(g.get_point(1)[2]- g.get_point(0)[2]),
+                              return (g.get_corner(1)[0]- g.get_corner(0)[0])
+                              *(g.get_corner(1)[1]- g.get_corner(0)[1])
+                              *(g.get_corner(1)[2]- g.get_corner(0)[2]),
                               return g);
 
 #ifdef IMP_DOXYGEN
 /** See BoundingBoxD. */
-typedef BoundingBoxD<3> BoundingBox3D;
+typedef BoundingBoxD<3> BoundingBoxD<3>;
 #endif
 
+template <unsigned int D>
+BoundingBoxD<D> get_unit_bounding_box_d() {
+  return BoundingBoxD<D>(get_zero_vector_d<D>(), get_ones_vector_d<D>());
+}
+
 //! Return a bounding box containing the transformed box
-inline BoundingBox3D get_transformed(const BoundingBox3D &bb,
-                                     const Transformation3D &tr) {
-  BoundingBox3D nbb;
+inline BoundingBoxD<3> get_transformed(const BoundingBoxD<3> &bb,
+                                       const Transformation3D &tr) {
+  BoundingBoxD<3> nbb;
   for (unsigned int i=0; i< 2; ++i) {
     for (unsigned int j=0; j< 2; ++j) {
       for (unsigned int k=0; k< 2; ++k) {
-        algebra::Vector3D v(bb.get_corner(i)[0],
+        algebra::VectorD<3> v(bb.get_corner(i)[0],
                             bb.get_corner(j)[1],
                             bb.get_corner(k)[2]);
-        nbb+= tr.transform(v);
+        nbb+= tr.get_transformed(v);
       }
     }
   }

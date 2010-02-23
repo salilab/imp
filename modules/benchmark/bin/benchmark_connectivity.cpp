@@ -25,8 +25,8 @@ void benchmark_it(std::string name, ListSingletonContainer *lsc, Model *m) {
       unsigned int np= lsc->get_number_of_particles();
       for (unsigned int i=0; i< np; ++i) {
         XYZ(lsc->get_particle(i))
-          .set_coordinates(random_vector_in_box(BoundingBox3D(Vector3D(0,0,0),
-                                                        Vector3D(10,10,10))));
+          .set_coordinates(get_random_vector_in(BoundingBox3D(VectorD<3>(0,0,0),
+                                                        VectorD<3>(10,10,10))));
       }
       value+= m->evaluate(false);
     }, runtime);

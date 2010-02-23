@@ -20,7 +20,7 @@
 
 IMPCORE_BEGIN_NAMESPACE
 //! Get the centroid
-IMPCOREEXPORT algebra::Vector3D centroid(const XYZs &ps);
+IMPCOREEXPORT algebra::VectorD<3> centroid(const XYZs &ps);
 
 IMPCOREEXPORT
 algebra::Segment3D diameter(const XYZs &ps);

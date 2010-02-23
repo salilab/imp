@@ -51,7 +51,7 @@ public:
   MCCGSampler(Model *m);
 
   //! Set the bounding box for randomizing the Cartesian coordinates
-  void set_bounding_box(const algebra::BoundingBox3D &bb);
+  void set_bounding_box(const algebra::BoundingBoxD<3> &bb);
 
   //! Set the maximum number of attempts
   void set_number_of_attempts(unsigned int att);

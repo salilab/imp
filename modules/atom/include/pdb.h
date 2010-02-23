@@ -263,7 +263,7 @@ IMPATOMEXPORT void write_multimodel_pdb(
 /**
    This function returns a string in PDB ATOM format
 */
-IMPATOMEXPORT std::string pdb_string(const algebra::Vector3D& v,
+IMPATOMEXPORT std::string pdb_string(const algebra::VectorD<3>& v,
                                      int index = -1,
                                      AtomType at = AT_C,
                                      ResidueType rt = atom::ALA,

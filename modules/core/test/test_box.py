@@ -16,7 +16,7 @@ class DistanceTests(IMP.test.TestCase):
         bbo= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
                                        IMP.algebra.Vector3D(30,30,30))
 
-        d.set_coordinates(IMP.algebra.random_vector_in_box(bbo))
+        d.set_coordinates(IMP.algebra.get_random_vector_in(bbo))
         d.get_coordinates().show()
         d.set_coordinates_are_optimized(True)
         s= IMP.core.BoundingBox3DSingletonScore(IMP.core.Harmonic(0,1), bbi)

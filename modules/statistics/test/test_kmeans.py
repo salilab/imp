@@ -23,7 +23,7 @@ class KMeansTests(IMP.test.TestCase):
             for j in xrange(50):
                 p1 = IMP.Particle(self.m)
                 self.cluster_points[-1].append(p1)
-                d2= IMP.core.XYZ.setup_particle(p1,IMP.algebra.random_vector_in_sphere(v,3.))
+                d2= IMP.core.XYZ.setup_particle(p1,IMP.algebra.get_random_vector_in(IMP.algebra.Sphere3D(v,3.)))
                 self.ps.append(p1)
 
     def setUp(self):

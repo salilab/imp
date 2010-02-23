@@ -1,6 +1,6 @@
 # Assume p is a RigidBody Particle
 rbd= IMP.core.RigidBody(p)
-translation=IMP.algebra.random_vector_in_sphere(IMP.algebra.Vector3D(0,0,0),
+translation=IMP.algebra.get_random_vector_in(IMP.algebra.Vector3D(0,0,0),
                                                  10.0)
 # we don't yet have python code to generate a nearby rotation
 rotation= IMP.algebra.random_rotation()

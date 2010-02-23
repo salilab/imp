@@ -54,7 +54,7 @@ class TransformationUtilsTests(IMP.test.TestCase):
                 #transform the copy molecule
                 xyz_copy=IMP.core.XYZs(IMP.core.get_leaves(self.mhs_copy[i]))
                 for xyz in xyz_copy:
-                    xyz.set_coordinates(trans.transform(xyz.get_coordinates()))
+                    xyz.set_coordinates(trans.get_transformed(xyz.get_coordinates()))
 
 
                 #transform the rigid body
@@ -62,11 +62,11 @@ class TransformationUtilsTests(IMP.test.TestCase):
                 self.tu.move2state(self.rbs[i].get_particle(),state_p)
             self.mdl.evaluate(False) #to make sure that the rigid bodies score states are updated
             #check that the rmsd is 0
-            self.assert_(IMP.atom.rmsd(xyz_copy,xyz_orig) < 0.001,
+            self.assert_(IMP.atom.get_rmsd(xyz_copy,xyz_orig) < 0.001,
                          "the molecules are expected to have the same placement")
             #return the copy to ref for the next round
             for xyz in xyz_copy:
-                xyz.set_coordinates(trans.get_inverse().transform(xyz.get_coordinates()))
+                xyz.set_coordinates(trans.get_inverse().get_transformed(xyz.get_coordinates()))
 
 
 

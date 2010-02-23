@@ -467,14 +467,14 @@ void destroy(Hierarchy d);
     \relatesalso IMP::algebra::BoundingBoxD
  */
 IMPATOMEXPORT
-algebra::BoundingBox3D get_bounding_box(const Hierarchy &h);
+algebra::BoundingBoxD<3> get_bounding_box(const Hierarchy &h);
 
 
 /** See get_bounding_box() for more details.
     \relatesalso Hierarchy
  */
 IMPATOMEXPORT
-algebra::Sphere3D get_bounding_sphere(const Hierarchy &h);
+algebra::SphereD<3> get_bounding_sphere(const Hierarchy &h);
 
 
 IMPATOM_END_NAMESPACE

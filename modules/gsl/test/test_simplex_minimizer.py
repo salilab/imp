@@ -40,7 +40,7 @@ class CGOptimizerTests(IMP.test.TestCase):
         for i in range(0,2):
             p = IMP.Particle(model)
             particles.append(p)
-            IMP.core.XYZ.setup_particle(p, IMP.algebra.random_vector_in_unit_box()).set_coordinates_are_optimized(True)
+            IMP.core.XYZ.setup_particle(p, IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d())).set_coordinates_are_optimized(True)
         rsr = EasyCubeFunc(model, particles)
         model.add_restraint(rsr)
         print "creating"

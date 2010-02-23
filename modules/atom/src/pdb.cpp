@@ -70,7 +70,7 @@ Particle* atom_particle(Model *m, const std::string& pdb_line)
   }
   Particle* p = new Particle(m);
 
-  algebra::Vector3D v(internal::atom_xcoord(pdb_line),
+  algebra::VectorD<3> v(internal::atom_xcoord(pdb_line),
                       internal::atom_ycoord(pdb_line),
                       internal::atom_zcoord(pdb_line));
   // atom decorator
@@ -345,7 +345,7 @@ void write_multimodel_pdb(const Hierarchies& mhd, TextOutput oout)
 
 
 // change atom type to string for Hao's hetatom code
-std::string pdb_string(const algebra::Vector3D& v, int index,
+std::string pdb_string(const algebra::VectorD<3>& v, int index,
                        AtomType at, ResidueType rt,
                        char chain, int res_index,
                        char res_icode, Element e) {

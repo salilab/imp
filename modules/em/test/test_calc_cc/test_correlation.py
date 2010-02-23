@@ -55,7 +55,7 @@ class CrossCorrelationTests(IMP.test.TestCase):
         # compute correlation translating the origin of the model map
 
         xm=3;ym=1;zm=-2
-        translation=IMP.algebra.Transformation3D(IMP.algebra.identity_rotation(),
+        translation=IMP.algebra.Transformation3D(IMP.algebra.get_identity_rotation_3d(),
                                                  IMP.algebra.Vector3D(xm,ym,zm))
         self.model_map.set_origin(self.xo-xm,self.yo-ym,self.zo-zm)
 
@@ -69,7 +69,7 @@ class CrossCorrelationTests(IMP.test.TestCase):
         #compute correlation translating the particles
         self.model_map.set_origin(self.xo,self.yo,self.zo)
         for atom in self.atoms:
-            IMP.core.XYZ(atom.get_particle()).set_coordinates(translation.transform(IMP.core.XYZ(atom.get_particle()).get_coordinates()))
+            IMP.core.XYZ(atom.get_particle()).set_coordinates(translation.get_transformed(IMP.core.XYZ(atom.get_particle()).get_coordinates()))
         interval=1
         dvx = IMP.em.floats(); dvy= IMP.em.floats(); dvz= IMP.em.floats()
         score= self.ccc.evaluate(self.EM_map,self.model_map,dvx,dvy,dvz,1.0,False)
@@ -100,7 +100,7 @@ class CrossCorrelationTests(IMP.test.TestCase):
         self.model_map.set_origin(self.xo,self.yo,self.zo)
         interval=5;         times=10;       scores_interval=[]
         dvx = IMP.em.floats(); dvy= IMP.em.floats(); dvz= IMP.em.floats()
-        translation=IMP.algebra.Transformation3D(IMP.algebra.identity_rotation(),
+        translation=IMP.algebra.Transformation3D(IMP.algebra.get_identity_rotation_3d(),
                                                  IMP.algebra.Vector3D(0.1,0.1,0.1))
         for d in [dvx,dvy,dvz]:
             for i in range(len(self.atoms)):
@@ -109,7 +109,7 @@ class CrossCorrelationTests(IMP.test.TestCase):
                 score=self.ccc_intervals.evaluate(self.EM_map,self.model_map,dvx,dvy,dvz,1.0,False,interval)
                 scores_interval.append(score)
                 for atom in self.atoms:
-                    IMP.core.XYZ(atom.get_particle()).set_coordinates(translation.transform(IMP.core.XYZ(atom.get_particle()).get_coordinates()))
+                    IMP.core.XYZ(atom.get_particle()).set_coordinates(translation.get_transformed(IMP.core.XYZ(atom.get_particle()).get_coordinates()))
         # check that the scores are equal when they have to be due to the function skipping computations
         for i in xrange(0,times):
             if(i%interval==0):

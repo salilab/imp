@@ -44,7 +44,7 @@ def setup_discrete_sampling_space(ps,bb):
         for i in range(NUM_STATES):
             #create a new state
             new_p=IMP.Particle(mdl)
-            IMP.core.XYZ.setup_particle(new_p,IMP.algebra.random_vector_in_box(bb))
+            IMP.core.XYZ.setup_particle(new_p,IMP.algebra.get_random_vector_in(bb))
             print "adding state i:" + str(i)
             discrete_set.add_state(new_p)
             discrete_set.add_mapped_state(p,new_p)

@@ -48,7 +48,7 @@ DihedralRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   Float score;
 
   if (accum) {
-    algebra::Vector3D derv0, derv1, derv2, derv3;
+    algebra::VectorD<3> derv0, derv1, derv2, derv3;
     double angle = internal::dihedral(d0, d1, d2, d3, &derv0, &derv1,
                                       &derv2, &derv3);
 

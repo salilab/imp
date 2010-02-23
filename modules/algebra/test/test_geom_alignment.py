@@ -10,17 +10,17 @@ class RigidTransformationTests(IMP.test.TestCase):
         vs= IMP.algebra.Vector3Ds()
         vsr= IMP.algebra.Vector3Ds()
         for i in range(0, 20):
-            vs.append(IMP.algebra.random_vector_in_unit_box())
-            vsr.append(tr.transform(vs.back()))
+            vs.append(IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d()))
+            vsr.append(tr.get_transformed(vs.back()))
         return (vs, vsr)
 
     def test_align(self):
         """Testing rigid alignment of point sets, no translation"""
-        r= IMP.algebra.random_rotation()
-        t= IMP.algebra.Vector3D(0,0,0) #IMP.random_vector_in_unit_box()
+        r= IMP.algebra.get_random_rotation_3d()
+        t= IMP.algebra.Vector3D(0,0,0) #IMP.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d())
         tr= IMP.algebra.Transformation3D(r, t)
         (vs, vsr)= self._produce_point_sets(tr)
-        tr= IMP.algebra.rigid_align_first_to_second(vs, vsr)
+        tr= IMP.algebra.get_transformation_taking_first_to_second(vs, vsr)
         print "tr"
         tr.show()
         print "tr.r"
@@ -34,7 +34,7 @@ class RigidTransformationTests(IMP.test.TestCase):
         for i in range(0, len(vs)):
             vsr[i].show()
             print
-            tr.transform(vs[i]).show()
+            tr.get_transformed(vs[i]).show()
             print
             print
         q0=tr.get_rotation().get_quaternion()
@@ -47,11 +47,11 @@ class RigidTransformationTests(IMP.test.TestCase):
 
     def test_full_align(self):
         """Testing rigid alignment of point sets"""
-        r= IMP.algebra.random_rotation()
-        t= IMP.algebra.random_vector_in_unit_box()
+        r= IMP.algebra.get_random_rotation_3d()
+        t= IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d())
         tr= IMP.algebra.Transformation3D(r, t)
         (vs, vsr)= self._produce_point_sets(tr)
-        tr= IMP.algebra.rigid_align_first_to_second(vs, vsr)
+        tr= IMP.algebra.get_transformation_taking_first_to_second(vs, vsr)
         print "tr"
         tr.show()
         print "tr.r"
@@ -65,7 +65,7 @@ class RigidTransformationTests(IMP.test.TestCase):
         #for i in range(0, len(vs)):
         #    vsr[i].show()
         #    print
-        #    tr.transform(vs[i]).show()
+        #    tr.get_transformed(vs[i]).show()
         #    print
         #    print
         self.assertInTolerance((tr.get_rotation().get_quaternion()

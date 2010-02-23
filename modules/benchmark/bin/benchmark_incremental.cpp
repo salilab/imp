@@ -19,8 +19,8 @@ double update_coordinates(Model *m, const Particles &ps) {
   double t=0;
   for (unsigned int i=0; i< ps.size(); ++i) {
     XYZ xyz(ps[i]);
-    xyz.set_coordinates(random_vector_in_box(Vector3D(0,0,0),
-                                             Vector3D(10,10,10)));
+    xyz.set_coordinates(get_random_vector_in(BoundingBox3D(VectorD<3>(0,0,0),
+                                                     VectorD<3>(10,10,10))));
     t+= xyz.get_coordinate(0)+xyz.get_coordinate(1)+xyz.get_coordinate(2);
   }
   t+=m->evaluate(false);
@@ -34,7 +34,7 @@ void benchmark_baseline() {
   for (unsigned int i=0; i< nump; ++i) {
     IMP_NEW(Particle, p, (m));
     ps[i]=p;
-    XYZ::setup_particle(p, Vector3D(i,2*i, 3*i));
+    XYZ::setup_particle(p, VectorD<3>(i,2*i, 3*i));
     IMP_INTERNAL_CHECK(ps[i]==p, "not set");
   }
   {

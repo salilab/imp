@@ -139,14 +139,14 @@ class Vector3DTests(IMP.test.TestCase):
         """Check distance between two vectors"""
         v1 = IMP.algebra.Vector3D(3.0, 6.0, 9.0)
         v2 = IMP.algebra.Vector3D(1.0, 2.0, 3.0)
-        self.assertEqual(IMP.algebra.squared_distance(v1, v2), 56)
-        self.assertInTolerance(IMP.algebra.distance(v1, v2), 7.4833, 0.01)
+        self.assertEqual(IMP.algebra.get_squared_distance(v1, v2), 56)
+        self.assertInTolerance(IMP.algebra.get_distance(v1, v2), 7.4833, 0.01)
 
     def test_generators(self):
         """Check the Vector3D generators"""
         # test calling since it is a bit non-trivial in SWIG
-        v= IMP.algebra.random_vector_in_unit_sphere()
-        v= IMP.algebra.random_vector_in_sphere(IMP.algebra.Vector3D(0,0,0), 1)
+        v= IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_sphere_3d())
+        v= IMP.algebra.get_random_vector_in(IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0,0,0), 1))
 
 if __name__ == '__main__':
     unittest.main()

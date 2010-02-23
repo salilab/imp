@@ -24,23 +24,23 @@ TransformedDistancePairScore
 
 struct TransformParticle
 {
-  algebra::Vector3D tv_;
+  algebra::VectorD<3> tv_;
   const algebra::Rotation3D &ri_;
   XYZ d_;
   TransformParticle(const algebra::Transformation3D &t,
                     const algebra::Rotation3D &r,
                     Particle *p): ri_(r), d_(p){
-    tv_= t.transform(d_.get_coordinates());
+    tv_= t.get_transformed(d_.get_coordinates());
   }
 
   Float get_coordinate(unsigned int i) const {
     return tv_[i];
   }
 
-  void add_to_derivatives(const algebra::Vector3D& f,
+  void add_to_derivatives(const algebra::VectorD<3>& f,
                                      DerivativeAccumulator &da) {
     IMP_LOG(VERBOSE, "Incoming deriv is " << f << std::endl);
-    algebra::Vector3D r= ri_.rotate(f);
+    algebra::VectorD<3> r= ri_.get_rotated(f);
     IMP_LOG(VERBOSE, "Transformed deriv is " << r << std::endl);
     d_.add_to_derivatives(r, da);
   }

@@ -42,7 +42,7 @@ T simple_interpolate(double diff,T lower,T upper) {
 **/
 template<typename T>
 T trilinear_interpolation(Matrix3D<T> &m,
-                  Vector3D &idx,
+                  VectorD<3> &idx,
                    bool wrap,
                    T outside) {
   // lower limits (xlow,ylow,zlow) are stored in lower,
@@ -118,7 +118,7 @@ T trilinear_interpolation(Matrix3D<T> &m,
              bilinear interpolation
 **/
 double interpolate(algebra::Matrix2D<double> &m,
-                    Vector2D& idx,
+                    VectorD<2>& idx,
                     bool wrap = false,
                     double outside = 0.0,
                     int interp=0);
@@ -139,7 +139,7 @@ double interpolate(algebra::Matrix2D<double> &m,
 **/
 template<typename T>
 T interpolate(algebra::Matrix3D<T> &m,
-                    Vector3D &idx,
+                    VectorD<3> &idx,
                     bool wrap = false,
                     T outside = 0.0,
                     int interp=0) {
@@ -172,12 +172,12 @@ T interpolate(algebra::Matrix3D<T> &m,
               limits of the matrix. (It is never used if wrap is requested)
 **/
 IMPALGEBRAEXPORT double bilinear_interpolation(Matrix2D<double>& m,
-                  Vector2D& idx,
+                  VectorD<2>& idx,
                   bool wrap = false,
                   double outside = 0.0);
 
 IMPALGEBRAEXPORT double Bspline_interpolation(Matrix2D<double>& m,
-                  Vector2D& idx,
+                  VectorD<2>& idx,
                   bool wrap = false,
                   double outside = 0.0);
 

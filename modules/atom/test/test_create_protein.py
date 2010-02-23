@@ -24,7 +24,7 @@ class MolecularDynamicsTests(IMP.test.TestCase):
         print p.get_children().size()
         for c in p.get_children():
             d= IMP.core.XYZ(c.get_particle())
-            d.set_coordinates(random_vector_in_box(Vector3D(0,0,0),
+            d.set_coordinates(get_random_vector_in(Vector3D(0,0,0),
                                                    Vector3D(300, 300, 300)))
         o= IMP.core.SteepestDescent()
         o.set_model(m)

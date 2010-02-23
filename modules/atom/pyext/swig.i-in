@@ -171,20 +171,20 @@ namespace IMP {
    %template(show_molecular_hierarchy) IMP::core::show<IMP::atom::Hierarchy>;
    // must go after the above headers
    %template(HierarchyVector) ::std::vector<IMP::atom::Hierarchy>;
-   %template(rmsd) rmsd<algebra::Vector3Ds, algebra::Vector3Ds>;
-   %template(rmsd) rmsd<core::XYZs, algebra::Vector3Ds>;
-   %template(rmsd) rmsd<core::XYZs, core::XYZs>;
-   %template(rmsd) rmsd<algebra::Vector3Ds, core::XYZs>;
-   %template(native_overlap) native_overlap<algebra::Vector3Ds, algebra::Vector3Ds>;
-   %template(native_overlap) native_overlap<core::XYZs, algebra::Vector3Ds>;
-   %template(native_overlap) native_overlap<core::XYZs, core::XYZs>;
-   %template(native_overlap) native_overlap<algebra::Vector3Ds, core::XYZs>;
-   %template(rmsd) rmsd<core::XYZsTemp, algebra::Vector3Ds>;
-   %template(rmsd) rmsd<core::XYZsTemp, core::XYZsTemp>;
-   %template(rmsd) rmsd<algebra::Vector3Ds, core::XYZsTemp>;
-   %template(native_overlap) native_overlap<core::XYZsTemp, algebra::Vector3Ds>;
-   %template(native_overlap) native_overlap<core::XYZsTemp, core::XYZsTemp>;
-   %template(native_overlap) native_overlap<algebra::Vector3Ds, core::XYZsTemp>;
+   %template(get_rmsd) get_rmsd<std::vector<algebra::VectorD<3> >, std::vector<algebra::VectorD<3> > >;
+   %template(get_rmsd) get_rmsd<core::XYZs, std::vector<algebra::VectorD<3> > >;
+   %template(get_rmsd) get_rmsd<core::XYZs, core::XYZs>;
+   %template(get_rmsd) get_rmsd<std::vector<algebra::VectorD<3> >, core::XYZs>;
+   %template(get_native_overlap) get_native_overlap<std::vector<algebra::VectorD<3> >, std::vector<algebra::VectorD<3> > >;
+   %template(get_native_overlap) get_native_overlap<core::XYZs, std::vector<algebra::VectorD<3> > >;
+   %template(get_native_overlap) get_native_overlap<core::XYZs, core::XYZs>;
+   %template(get_native_overlap) get_native_overlap<std::vector<algebra::VectorD<3> >, core::XYZs>;
+   %template(get_rmsd) get_rmsd<core::XYZsTemp, std::vector<algebra::VectorD<3> > >;
+   %template(get_rmsd) get_rmsd<core::XYZsTemp, core::XYZsTemp>;
+   %template(get_rmsd) get_rmsd<std::vector<algebra::VectorD<3> >, core::XYZsTemp>;
+   %template(get_native_overlap) get_native_overlap<core::XYZsTemp, std::vector<algebra::VectorD<3> > >;
+   %template(get_native_overlap) get_native_overlap<core::XYZsTemp, core::XYZsTemp>;
+   %template(get_native_overlap) get_native_overlap<std::vector<algebra::VectorD<3> >, core::XYZsTemp>;
 
    //%implicitconv(Hierarchies)
    IMP_SWIG_DECORATORS(Atom, Atoms, Hierarchies)

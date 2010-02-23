@@ -321,7 +321,7 @@ void Profile::calculate_profile_reciprocal(const Particles& particles,
   IMP_LOG(TERSE, "start reciprocal profile calculation for "
           << particles.size() << " particles" << std::endl);
   init();
-  std::vector<algebra::Vector3D> coordinates;
+  std::vector<algebra::VectorD<3> > coordinates;
   copy_coordinates(particles, coordinates);
 
   // iterate over pairs of atoms
@@ -331,7 +331,7 @@ void Profile::calculate_profile_reciprocal(const Particles& particles,
     // loop2
     for(unsigned int j = i+1; j < coordinates.size(); j++) {
       const Floats& factors2 = ff_table_->get_form_factors(particles[j]);
-      Float dist = distance(coordinates[i], coordinates[j]);
+      Float dist =get_distance(coordinates[i], coordinates[j]);
       // loop 3
       // iterate over intensity profile
       for(unsigned int k = 0; k < profile_.size(); k++) {

@@ -33,10 +33,10 @@ class IMPEMEXPORT Voxel: public Decorator
 
   /** Create a decorator with the passed coordinates. */
   static Voxel setup_particle(Particle *p,
-                  const algebra::Vector3D &position,
+                  const algebra::VectorD<3> &position,
                   Float radius,
                   Float density) {
-    core::XYZR::setup_particle(p,algebra::Sphere3D(position,radius));
+    core::XYZR::setup_particle(p,algebra::SphereD<3>(position,radius));
     p->add_attribute(get_density_key(),density,false);
     return Voxel(p);
   }

@@ -18,16 +18,16 @@ IMPCORE_BEGIN_NAMESPACE
 
 struct StaticD
 {
-  algebra::Vector3D v_;
-  StaticD(algebra::Vector3D v): v_(v){}
+  algebra::VectorD<3> v_;
+  StaticD(algebra::VectorD<3> v): v_(v){}
   Float get_coordinate(unsigned int i) {return v_[i];}
-  void add_to_derivatives(algebra::Vector3D v, DerivativeAccumulator){
+  void add_to_derivatives(algebra::VectorD<3> v, DerivativeAccumulator){
     IMP_LOG(VERBOSE, "DistanceTo dropped deriv of " <<  v << std::endl);
   }
 };
 
 DistanceToSingletonScore::DistanceToSingletonScore(UnaryFunction *f,
-                                                   const algebra::Vector3D &v)
+                                                   const algebra::VectorD<3> &v)
     : f_(f), pt_(v){}
 
 Float DistanceToSingletonScore::evaluate(Particle *b,
@@ -48,7 +48,7 @@ void DistanceToSingletonScore::do_show(std::ostream &out) const
 
 
 SphereDistanceToSingletonScore::SphereDistanceToSingletonScore(UnaryFunction *f,
-                                                   const algebra::Vector3D &v)
+                                                   const algebra::VectorD<3> &v)
     : f_(f), pt_(v){}
 
 Float SphereDistanceToSingletonScore::evaluate(Particle *b,

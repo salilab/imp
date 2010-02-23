@@ -19,10 +19,10 @@ class IMPALGEBRAEXPORT ParabolicFit {
 public:
   //! Constructor
   /**
-     \param[in] data vector of pairs (Vector2D) with x and their
+     \param[in] data vector of pairs (VectorD<2>) with x and their
      corresponding y values
    */
-  ParabolicFit(const algebra::Vector2Ds& data);
+  ParabolicFit(const std::vector<VectorD<2> >& data);
 
   //! fit error
   double get_fit_error(double x) const { return error_; }

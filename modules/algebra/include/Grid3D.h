@@ -27,14 +27,14 @@ IMPALGEBRA_BEGIN_NAMESPACE
    Creating a grid with a given cell size and upper and lower
    bounds
    \code
-   BoundinBox3D bb(Vector3D(10,10,10), Vector3D(100,100,100));
+   BoundinBox3D bb(VectorD<3>(10,10,10), VectorD<3>(100,100,100));
    typdef Grid3D<Ints> Grid;
    Grid grid(5, bb, 0.0);
    \endcode
 
    Iterate over the set of voxels in incident on a bounding box:
    \code
-   BoundingBox3D bb(Vector3D(20.2,20.3,20.5), Vector3D(31.3,32.5,38.9));
+   BoundingBoxD<3> bb(VectorD<3>(20.2,20.3,20.5), VectorD<3>(31.3,32.5,38.9));
    for (Grid::IndexIterator it= grid.voxels_begin(bb);
         it != grid.voxels_end(bb); ++it) {
         it->push_back(1);
@@ -60,7 +60,7 @@ public:
 private:
   std::vector<VT> data_;
   int d_[3];
-  BoundingBox3D bbox_;
+  BoundingBoxD<3> bbox_;
   double edge_size_[3];
 
   struct GetVoxel {
@@ -128,7 +128,7 @@ public:
       \param[in] def The default value for the voxels
    */
   Grid3D(int xd, int yd, int zd,
-         const BoundingBox3D &bb,
+         const BoundingBoxD<3> &bb,
          Voxel def=Voxel()): data_(xd*yd*zd, def),
                                      bbox_(bb) {
     IMP_USAGE_CHECK(xd > 0 && yd>0 && zd>0,
@@ -151,7 +151,7 @@ public:
       \param[in] def The default value for the voxels
    */
   Grid3D(float side,
-         const BoundingBox3D &bb,
+         const BoundingBoxD<3> &bb,
          Voxel def=Voxel()) {
     IMP_USAGE_CHECK(side>0, "Side cannot be 0");
     for (unsigned int i=0; i< 3; ++i ) {
@@ -159,8 +159,8 @@ public:
       d_[i]= static_cast<int>(std::ceil(bside / side))+1;
       edge_size_[i]= side;
     }
-    bbox_=BoundingBox3D(bb.get_corner(0), bb.get_corner(0)
-                        +Vector3D(d_[0]*edge_size_[0],
+    bbox_=BoundingBoxD<3>(bb.get_corner(0), bb.get_corner(0)
+                        +VectorD<3>(d_[0]*edge_size_[0],
                                   d_[1]*edge_size_[1],
                                   d_[2]*edge_size_[2]));
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {
@@ -179,12 +179,12 @@ public:
     d_[2]=0;
   }
 
-  BoundingBox3D get_bounding_box() const {
+  BoundingBoxD<3> get_bounding_box() const {
     return bbox_;
   }
 
   //! Change the bounding box but not the grid or contents
-  void set_bounding_box(const BoundingBox3D &bb3) {
+  void set_bounding_box(const BoundingBoxD<3> &bb3) {
     bbox_ =bb3;
     for (unsigned int i=0; i< 3; ++i) {
       double el= (bb3.get_corner(1)[i]- bb3.get_corner(0)[i])/d_[i];
@@ -193,8 +193,8 @@ public:
   }
 
   //! Return the unit cell
-  Vector3D get_unit_cell() const {
-    return Vector3D(edge_size_[0], edge_size_[1], edge_size_[2]);
+  VectorD<3> get_unit_cell() const {
+    return VectorD<3>(edge_size_[0], edge_size_[1], edge_size_[2]);
   }
 
   //! Return the number of voxels in a certain direction
@@ -206,19 +206,19 @@ public:
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
   //! Get the data in a particular cell
-  Voxel& operator[](const Vector3D &v);
+  Voxel& operator[](const VectorD<3> &v);
 
   //! Get the data in a particular cell
-  const Voxel operator[](const Vector3D &v) const;
-  const Voxel& get_voxel(const Vector3D &v) const;
+  const Voxel operator[](const VectorD<3> &v) const;
+  const Voxel& get_voxel(const VectorD<3> &v) const;
 #else
-  reference operator[](const Vector3D &v) {
+  reference operator[](const VectorD<3> &v) {
     return data_[get_index(index(v))];
   }
-  const_reference operator[](const Vector3D &v) const  {
+  const_reference operator[](const VectorD<3> &v) const  {
     return data_[get_index(index(v))];
   }
-  const_reference get_voxel(const Vector3D &v) const {
+  const_reference get_voxel(const VectorD<3> &v) const {
     return operator[](v);
   }
 #endif
@@ -227,7 +227,7 @@ public:
 
 #ifndef IMP_DOXYGEN
   //! Return the index of the voxel containing the point.
-  Index get_index(Vector3D pt) const {
+  Index get_index(VectorD<3> pt) const {
     IMP_USAGE_CHECK(bbox_.get_contains(pt),
                     "Point " << pt << " is not part of grid "
                     << bbox_);
@@ -246,7 +246,7 @@ public:
   /** For example vectors below the "lower left" corner of the grid have
       indexes with all negative components.
   */
-  ExtendedIndex get_extended_index(Vector3D pt) const {
+  ExtendedIndex get_extended_index(VectorD<3> pt) const {
     // make sure they are consistent
     if (bbox_.get_contains(pt)) return get_index(pt);
     int index[3];
@@ -291,14 +291,14 @@ public:
     return Index(v[0], v[1], v[2]);
   }
 
-  BoundingBox3D get_bounding_box(ExtendedIndex v) const {
-    Vector3D l=bbox_.get_corner(0)+ Vector3D(get_unit_cell()[0]*v[0],
+  BoundingBoxD<3> get_bounding_box(ExtendedIndex v) const {
+    VectorD<3> l=bbox_.get_corner(0)+ VectorD<3>(get_unit_cell()[0]*v[0],
                                              get_unit_cell()[1]*v[1],
                                              get_unit_cell()[2]*v[2]);
-    Vector3D u=bbox_.get_corner(0)+ Vector3D(get_unit_cell()[0]*(v[0]+1),
+    VectorD<3> u=bbox_.get_corner(0)+ VectorD<3>(get_unit_cell()[0]*(v[0]+1),
                                              get_unit_cell()[1]*(v[1]+1),
                                              get_unit_cell()[2]*(v[2]+1));
-    return BoundingBox3D(l,u);
+    return BoundingBoxD<3>(l,u);
   }
 
   reference operator[](Index gi) {
@@ -312,8 +312,8 @@ public:
   }
 
   //! Return the coordinates of the center of the voxel
-  Vector3D get_center(ExtendedIndex gi) const {
-    return Vector3D(edge_size_[0]*(.5+ gi[0]) + bbox_.get_corner(0)[0],
+  VectorD<3> get_center(ExtendedIndex gi) const {
+    return VectorD<3>(edge_size_[0]*(.5+ gi[0]) + bbox_.get_corner(0)[0],
                     edge_size_[1]*(.5+ gi[1]) + bbox_.get_corner(0)[1],
                     edge_size_[2]*(.5+ gi[2]) + bbox_.get_corner(0)[2]);
   }
@@ -395,24 +395,24 @@ public:
   typedef typename std::vector<VT>::iterator AllVoxelIterator;
   typedef typename std::vector<VT>::iterator AllVoxelConstIterator;
 #endif
-  VoxelIterator voxels_begin(const BoundingBox3D &bb) {
+  VoxelIterator voxels_begin(const BoundingBoxD<3> &bb) {
     ExtendedIndex lb= get_extended_index(bb.get_corner(0));
     ExtendedIndex ub= get_extended_index(bb.get_corner(1));
     return VoxelIterator(indexes_begin(lb, ub), GetVoxel(this));
   }
-  VoxelIterator voxels_end(const BoundingBox3D &bb) {
+  VoxelIterator voxels_end(const BoundingBoxD<3> &bb) {
     //ExtendedIndex lb= get_extended_index(bb.get_corner(0));
     //ExtendedIndex ub= get_extended_index(bb.get_corner(1));
     return VoxelIterator(indexes_end(ExtendedIndex(),
                                      ExtendedIndex()), GetVoxel(this));
   }
 
-  VoxelConstIterator voxels_begin(const BoundingBox3D &bb) const {
+  VoxelConstIterator voxels_begin(const BoundingBoxD<3> &bb) const {
     ExtendedIndex lb= get_extended_index(bb.get_corner(0));
     ExtendedIndex ub= get_extended_index(bb.get_corner(1));
     return VoxelConstIterator(indexes_begin(lb, ub), ConstGetVoxel(this));
   }
-  VoxelConstIterator voxels_end(const BoundingBox3D &bb) const {
+  VoxelConstIterator voxels_end(const BoundingBoxD<3> &bb) const {
     ExtendedIndex lb= get_extended_index(bb.get_corner(0));
     ExtendedIndex ub= get_extended_index(bb.get_corner(1));
     return VoxelConstIterator(indexes_end(ExtendedIndex(),

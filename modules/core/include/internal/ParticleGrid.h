@@ -46,7 +46,7 @@ public:
 
   typedef Grid::ExtendedIndex ExtendedIndex;
   typedef Grid::Index Index;
-  Grid::ExtendedIndex get_extended_index(algebra::Vector3D pt) const {
+  Grid::ExtendedIndex get_extended_index(algebra::VectorD<3> pt) const {
     return grid_.get_extended_index(pt);
   }
 

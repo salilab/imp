@@ -21,22 +21,22 @@ class IMPCOREEXPORT RigidBodyHierarchy: public Object {
   IMP::internal::OwnerPointer<Refiner> r_;
   struct Data {
     std::vector<int> children_;
-    algebra::Sphere3D s_;
+    algebra::SphereD<3> s_;
   };
   std::vector<Data> tree_;
 
   typedef std::vector<unsigned int> SphereIndexes;
   typedef std::vector<SphereIndexes> SpheresSplit;
-  SpheresSplit divide_spheres(const algebra::Sphere3Ds &ss,
+  SpheresSplit divide_spheres(const std::vector< algebra::SphereD<3> > &ss,
                               const SphereIndexes &s);
-  void set_sphere(unsigned int ni, const algebra::Sphere3D &s);
+  void set_sphere(unsigned int ni, const algebra::SphereD<3> &s);
   void set_leaf(unsigned int ni, const std::vector<unsigned int> &ids);
   unsigned int add_children(unsigned int ni, unsigned int num_children);
  public:
-  algebra::Sphere3D get_sphere(unsigned int i) const {
+  algebra::SphereD<3> get_sphere(unsigned int i) const {
     IMP_INTERNAL_CHECK(i < tree_.size(), "Out of spheres vector");
-    return algebra::Sphere3D(rb_.get_transformation()
-                             .transform(tree_[i].s_.get_center()),
+    return algebra::SphereD<3>(rb_.get_transformation()
+                             .get_transformed(tree_[i].s_.get_center()),
                              tree_[i].s_.get_radius());
   }
   bool get_is_leaf(unsigned int ni) const;
@@ -44,9 +44,9 @@ class IMPCOREEXPORT RigidBodyHierarchy: public Object {
   unsigned int get_number_of_children(unsigned int ni) const;
   unsigned int get_child(unsigned int ni, unsigned int i) const;
   Particle* get_particle(unsigned int ni, unsigned int i) const;
-  std::vector<algebra::Sphere3D> get_all_spheres() const;
+  std::vector<algebra::SphereD<3> > get_all_spheres() const;
   RigidBodyHierarchy(RigidBody rb, Refiner *r);
-  algebra::Sphere3Ds get_tree() const;
+  std::vector<algebra::SphereD<3> > get_tree() const;
   IMP_OBJECT(RigidBodyHierarchy);
   // for testing
   ParticlesTemp get_particles(unsigned int i) const;
@@ -65,15 +65,15 @@ namespace {
     if (da->get_is_leaf(ci) && db->get_is_leaf(cj)) {
       for (unsigned int k=0; k< da->get_number_of_particles(ci); ++k) {
         Particle *pk=da->get_particle(ci, k);
-        algebra::Sphere3D sk(XYZ(pk).get_coordinates(),
+        algebra::SphereD<3> sk(XYZ(pk).get_coordinates(),
                              XYZR(pk).get_radius()+distance*.5);
         for (unsigned int l=0; l< db->get_number_of_particles(cj); ++l) {
           Particle *pl=db->get_particle(cj, l);
-          algebra::Sphere3D sl(XYZ(pl).get_coordinates(),
+          algebra::SphereD<3> sl(XYZ(pl).get_coordinates(),
                                XYZR(pl).get_radius()+distance*.5);
           /*IMP_LOG(VERBOSE, "Trying member particles " << pk->get_name()
             << " and " << pl->get_name() << std::endl);*/
-          if (interiors_intersect(sk, sl)) {
+          if (get_interiors_intersect(sk, sl)) {
             f(pk, pl);
           } else {
             /*IMP_LOG(VERBOSE, "Spheres do not interesct " << sk << " | " << sl
@@ -99,13 +99,13 @@ namespace {
     if (da->get_is_leaf(ci)) {
       for (unsigned int k=0; k< da->get_number_of_particles(ci); ++k) {
         Particle *pk=da->get_particle(ci, k);
-        algebra::Sphere3D sk(XYZ(pk).get_coordinates(),
+        algebra::SphereD<3> sk(XYZ(pk).get_coordinates(),
                              XYZR(pk).get_radius()+distance*.5);
-        algebra::Sphere3D sl(db.get_coordinates(),
+        algebra::SphereD<3> sl(db.get_coordinates(),
                              db.get_radius()+distance*.5);
         /*IMP_LOG(VERBOSE, "Trying member particles " << pk->get_name()
           << " and " << pl->get_name() << std::endl);*/
-        if (interiors_intersect(sk, sl)) {
+        if (get_interiors_intersect(sk, sl)) {
           if (SWAP) {
             f(db, pk);
           } else {
@@ -137,13 +137,13 @@ void apply_to_nearby(const RigidBodyHierarchy *da,
     for (unsigned int i=0; i< da->get_number_of_children(cur.first);
          ++i) {
       int ci=da->get_child(cur.first, i);
-      algebra::Sphere3D si(da->get_sphere(ci).get_center(),
+      algebra::SphereD<3> si(da->get_sphere(ci).get_center(),
                            da->get_sphere(ci).get_radius()+distance);
       for (unsigned int j=0;
            j< db->get_number_of_children(cur.second); ++j) {
         int cj=db->get_child(cur.second, j);
-        algebra::Sphere3D sj = db->get_sphere(cj);
-        if (interiors_intersect(si, sj)) {
+        algebra::SphereD<3> sj = db->get_sphere(cj);
+        if (get_interiors_intersect(si, sj)) {
           process_one(da, db, f, ci, cj, stack, distance);
         } else {
           /*IMP_LOG(VERBOSE, "Rejected " << ci << " " << cj << ": "
@@ -169,11 +169,11 @@ void apply_to_nearby(const RigidBodyHierarchy *da,
     for (unsigned int i=0; i< da->get_number_of_children(cur);
          ++i) {
       int ci=da->get_child(cur, i);
-      algebra::Sphere3D si(da->get_sphere(ci).get_center(),
+      algebra::SphereD<3> si(da->get_sphere(ci).get_center(),
                            da->get_sphere(ci).get_radius()
                            + distance); // check which tree
-      algebra::Sphere3D sj = db.get_sphere();
-      if (interiors_intersect(si, sj)) {
+      algebra::SphereD<3> sj = db.get_sphere();
+      if (get_interiors_intersect(si, sj)) {
         process_one<F, SWAP>(da, db, f, ci, stack, distance);
       } else {
         /*IMP_LOG(VERBOSE, "Rejected " << ci << " " << cj << ": "

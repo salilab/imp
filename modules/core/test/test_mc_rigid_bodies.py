@@ -23,7 +23,7 @@ class MCOptimizerTest(IMP.test.TestCase):
         #add restraints
         self.rsrs=IMP.RestraintSet()
         self.rsrs.set_model(self.m)
-        self.h = IMP.core.HarmonicUpperBound(IMP.algebra.distance(
+        self.h = IMP.core.HarmonicUpperBound(IMP.algebra.get_distance(
             IMP.core.XYZ.decorate_particle(self.m1.get_particle()).get_coordinates(),
             IMP.core.XYZ.decorate_particle(self.m2.get_particle()).get_coordinates()),
             3.)
@@ -38,15 +38,15 @@ class MCOptimizerTest(IMP.test.TestCase):
         mhs = IMP.atom.Hierarchies()
         mhs.append(self.m1)
         mhs.append(self.m2)
-        rot1 = IMP.algebra.random_vector_on_sphere(IMP.algebra.Vector3D(0.,0.,0.),1.)
-        point1 = IMP.algebra.random_vector_in_box(IMP.algebra.Vector3D(0.,0.,0.),
-                                                  IMP.algebra.Vector3D(5.,5.,5.))
+        rot1 = IMP.algebra.get_random_vector_on(IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0.,0.,0.),1.))
+        point1 = IMP.algebra.get_random_vector_in(IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0.,0.,0.),
+                                                  IMP.algebra.Vector3D(5.,5.,5.)))
         trans1 = IMP.algebra.Transformation3D(
           IMP.algebra.Rotation3D(rot1[0],rot1[1],rot1[2],0.),
           point1)
-        rot2 = IMP.algebra.random_vector_on_sphere(IMP.algebra.Vector3D(0.,0.,0.),1.)
-        point2 = IMP.algebra.random_vector_in_box(IMP.algebra.Vector3D(0.,0.,0.),
-                                                  IMP.algebra.Vector3D(5.,5.,5.))
+        rot2 = IMP.algebra.get_random_vector_on(IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0.,0.,0.),1.))
+        point2 = IMP.algebra.get_random_vector_in(IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0.,0.,0.),
+                                                  IMP.algebra.Vector3D(5.,5.,5.)))
         trans2 = IMP.algebra.Transformation3D(
           IMP.algebra.Rotation3D(rot2[0],rot2[1],rot2[2],0.),
           point2)

@@ -72,7 +72,7 @@ class LennardJonesPairScoreTests(IMP.test.TestCase):
         # between 1 and 6 angstroms away (not too close since the derivatives
         # are too large there)
         d0.set_coordinates(IMP.algebra.Vector3D(0,0,0))
-        d1.set_coordinates(IMP.algebra.random_vector_on_unit_sphere() \
+        d1.set_coordinates(IMP.algebra.get_random_vector_on(IMP.algebra.get_unit_sphere_3d()) \
                            * (random.random() * 5.0 + 1.0))
         self.assertXYZDerivativesInTolerance(m, d0, 2.0, 5.0)
         self.assertXYZDerivativesInTolerance(m, d1, 2.0, 5.0)

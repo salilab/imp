@@ -39,8 +39,8 @@ class AngleRestraintTests(IMP.test.TestCase):
             d.set_coordinates_are_optimized(True)
         for p in sc.get_particles():
             d= IMP.core.XYZ(p)
-            d.set_coordinates(IMP.algebra.random_vector_in_box(IMP.algebra.Vector3D(0,0,0),
-                                                               IMP.algebra.Vector3D(5,5,5)))
+            d.set_coordinates(IMP.algebra.get_random_vector_in(IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
+                                                               IMP.algebra.Vector3D(5,5,5))))
         sc.add_particle(rb0.get_particle())
         sc.add_particle(rb1.get_particle())
         r= IMP.core.ExcludedVolumeRestraint(sc, IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits()))
@@ -65,7 +65,7 @@ class AngleRestraintTests(IMP.test.TestCase):
                 else:
                     #print pa
                     #print pb
-                    d= IMP.core.distance(pa, pb)
+                    d= IMP.core.get_distance(pa, pb)
                     self.assert_(d > -.1)
     def test_ev(self):
         """Testing isolated evaluation of ev restraint"""

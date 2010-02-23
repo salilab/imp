@@ -29,8 +29,8 @@ namespace {
               Particle *p, double d): out_(o), p_(p),
                                       d_(d){}
     void operator()(Particle *p) {
-      if (distance(XYZR(p_),
-                   XYZR(p)) < d_) {
+      if (get_distance(XYZR(p_),
+                       XYZR(p)) < d_) {
         out_.push_back(ParticlePair(p_, p));
       }
     }
@@ -42,7 +42,7 @@ namespace {
     AddToList2(ParticlePairsTemp &o,
                double d): out_(o),d_(d){}
     void operator()(Particle *a, Particle *b) {
-      if (distance(XYZR(a),
+      if (get_distance(XYZR(a),
                    XYZR(b)) < d_) {
         out_.push_back(ParticlePair(a, b));
       }

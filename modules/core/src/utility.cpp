@@ -10,8 +10,8 @@
 #include <IMP/core/XYZ.h>
 IMPCORE_BEGIN_NAMESPACE
 
-algebra::Vector3D centroid(const XYZs &ps) {
- algebra::Vector3D cen(0.0,0.0,0.0);
+algebra::VectorD<3> centroid(const XYZs &ps) {
+ algebra::VectorD<3> cen(0.0,0.0,0.0);
  for (XYZs::const_iterator it = ps.begin(); it != ps.end();it++) {
    cen = cen + it->get_coordinates();
  }
@@ -25,10 +25,10 @@ algebra::Segment3D diameter(const XYZs &ps) {
   double max_squared_dist=0.0;
 
   for (XYZs::const_iterator it = ps.begin();it != ps.end();it++){
-    algebra::Vector3D xyz1 = it->get_coordinates();
+    algebra::VectorD<3> xyz1 = it->get_coordinates();
     for (XYZs::const_iterator it1 = it+1;it1 != ps.end();it1++){
-      algebra::Vector3D xyz2 = it1->get_coordinates();
-      double curr_squared_dist = algebra::squared_distance(xyz1,xyz2);
+      algebra::VectorD<3> xyz2 = it1->get_coordinates();
+      double curr_squared_dist = algebra::get_squared_distance(xyz1,xyz2);
       if (curr_squared_dist > max_squared_dist) {
         p1 = *it;
         p2 = *it1;

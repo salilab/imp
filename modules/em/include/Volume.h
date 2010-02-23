@@ -131,7 +131,7 @@ public:
     for (int k = 0;k <= nz;k++) {
       for (int j = 0;j <= ny;j++) {
         for (int i = 0;i <= nx;i++) {
-          IMP::algebra::Vector3D p;
+          IMP::algebra::VectorD<3> p;
           p[2] = i * pixel_size + header_.get_xorigin();
           p[1] = j * pixel_size + header_.get_yorigin();
           p[0] = k * pixel_size + header_.get_zorigin();
@@ -170,13 +170,13 @@ public:
    */
   bool is_part_of_volume(T x,T y,T z) const {
     float pixel_size = header_.get_object_pixel_size();
-    IMP::algebra::Vector3D origin(header_.get_xorigin(),
+    IMP::algebra::VectorD<3> origin(header_.get_xorigin(),
                                   header_.get_yorigin(),
                                   header_.get_zorigin());
-    IMP::algebra::Vector3D v((T)data_.get_number_of_columns(),
+    IMP::algebra::VectorD<3> v((T)data_.get_number_of_columns(),
                              (T)data_.get_number_of_rows(),
                              (T)data_.get_number_of_slices());
-    IMP::algebra::Vector3D end= origin + pixel_size * v;
+    IMP::algebra::VectorD<3> end= origin + pixel_size * v;
     for (int i = 0;i<3;i++) {
       if(v[i]<origin[i] || end[i]<v[i]) {
         return false;
@@ -195,7 +195,7 @@ protected:
   //! Header for the volume with all the pertinent information
   ImageHeader header_;
   //! Matrix with the locations (z,y,x) of the volume voxels
-  IMP::algebra::Matrix3D<IMP::algebra::Vector3D> locations_;
+  IMP::algebra::Matrix3D<IMP::algebra::VectorD<3> > locations_;
   //! True if the locations have being calculated
   bool locations_calculated_;
   //! True if the volume values have been normalized

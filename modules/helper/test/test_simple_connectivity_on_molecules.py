@@ -46,12 +46,12 @@ class SimpleConnectivityTests(IMP.test.TestCase):
 
         self.o.optimize(1000)
 
-        d01= IMP.core.distance(self.ds[0], self.ds[1])
-        d02= IMP.core.distance(self.ds[0], self.ds[2])
-        d03= IMP.core.distance(self.ds[0], self.ds[3])
-        d12= IMP.core.distance(self.ds[1], self.ds[2])
-        d13= IMP.core.distance(self.ds[1], self.ds[3])
-        d23= IMP.core.distance(self.ds[2], self.ds[3])
+        d01= IMP.core.get_distance(self.ds[0], self.ds[1])
+        d02= IMP.core.get_distance(self.ds[0], self.ds[2])
+        d03= IMP.core.get_distance(self.ds[0], self.ds[3])
+        d12= IMP.core.get_distance(self.ds[1], self.ds[2])
+        d13= IMP.core.get_distance(self.ds[1], self.ds[3])
+        d23= IMP.core.get_distance(self.ds[2], self.ds[3])
 
         ok01= (d01 < 1.2)
         ok02= (d02 < 1.2)

@@ -22,7 +22,7 @@ class TestREFCover(IMP.test.TestCase):
             d=IMP.core.XYZR.setup_particle(p)
             ps.append(p)
             ds.append(d)
-            d.set_coordinates(IMP.algebra.random_vector_in_unit_box())
+            d.set_coordinates(IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d()))
             d.set_radius(random.uniform(0,1))
             hd.add_child(IMP.core.Hierarchy.setup_particle(p))
         r= IMP.core.ChildrenRefiner(IMP.core.Hierarchy.get_default_traits())

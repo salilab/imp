@@ -13,7 +13,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
 
 namespace {
   void write_marker(std::ostream &out,
-                    const algebra::Vector3D &p,
+                    const algebra::VectorD<3> &p,
                     Color c,
                     double r) {
     out << "mark=s.place_marker(("

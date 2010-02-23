@@ -21,7 +21,7 @@ internal::MovedSingletonContainer*
 ClosePairsFinder::get_moved_singleton_container(SingletonContainer *in,
                                                  Model *m,
                                                  double threshold) const {
-  return new internal::MovedSingletonContainerImpl<algebra::Sphere3D,
+  return new internal::MovedSingletonContainerImpl<algebra::SphereD<3>,
     internal::SaveXYZRValues,
     internal::SaveMovedValues<internal::SaveXYZRValues>,
     internal::ListXYZRMovedParticles>(m, in, threshold);

@@ -16,10 +16,10 @@ class RigidTransformationTests(IMP.test.TestCase):
 
     def test_transformation(self):
         """Check that the rotation function is ok"""
-        rt = IMP.algebra.rotation_from_fixed_xyz(0.2,0.8,-0.4)
+        rt = IMP.algebra.get_rotation_from_fixed_xyz(0.2,0.8,-0.4)
         t=IMP.algebra.Transformation3D(rt,IMP.algebra.Vector3D(20.0,-12.4,18.6))
-        v1_t = t.transform(self.v1)
-        v2_t = t.transform(self.v2)
+        v1_t = t.get_transformed(self.v1)
+        v2_t = t.get_transformed(self.v2)
         v1_t_res=IMP.algebra.Vector3D(-62.517,86.209, 41.139)
         v2_t_res=IMP.algebra.Vector3D( 41.767, 1.621,-53.381)
         self.assertEqual((v1_t- v1_t_res).get_magnitude() < 0.01,True)
@@ -27,12 +27,12 @@ class RigidTransformationTests(IMP.test.TestCase):
 
     def test_delta(self):
         """Check that the delta transformation between two transformations is correct"""
-        rot1=IMP.algebra.random_rotation()
-        trans1 = IMP.algebra.random_vector_in_box(IMP.algebra.Vector3D(-10.,-10.,-10),
-                                                  IMP.algebra.Vector3D(10.,10.,10))
-        rot2=IMP.algebra.random_rotation()
-        trans2 = IMP.algebra.random_vector_in_box(IMP.algebra.Vector3D(-10.,-10.,-10),
-                                                  IMP.algebra.Vector3D(10.,10.,10))
+        rot1=IMP.algebra.get_random_rotation_3d()
+        trans1 = IMP.algebra.get_random_vector_in(IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(-10.,-10.,-10),
+                                                  IMP.algebra.Vector3D(10.,10.,10)))
+        rot2=IMP.algebra.get_random_rotation_3d()
+        trans2 = IMP.algebra.get_random_vector_in(IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(-10.,-10.,-10),
+                                                  IMP.algebra.Vector3D(10.,10.,10)))
         t1 = IMP.algebra.Transformation3D(rot1,trans1)
         t2 = IMP.algebra.Transformation3D(rot2,trans2)
         #a transformation to apply on rot1 to get to rot2

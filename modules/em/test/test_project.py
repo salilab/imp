@@ -67,7 +67,7 @@ class EMprojectTests(IMP.test.TestCase):
         shift = IMP.algebra.Vector3D(0,0,0)
         tolerance = 1e-6
         result = IMP.algebra.Matrix2D()
-        angles = IMP.algebra.rotation_from_fixed_zyz(0,0,0) # Z
+        angles = IMP.algebra.get_rotation_from_fixed_zyz(0,0,0) # Z
         IMP.em.project_given_rotation1(m1,result,dy,dx,
                                           angles,shift,tolerance)
 #        print_matrix2D(result,"test_project_Z")
@@ -83,7 +83,7 @@ class EMprojectTests(IMP.test.TestCase):
         shift = IMP.algebra.Vector3D(0,0,0)
         tolerance = 1e-6
         result = IMP.algebra.Matrix2D()
-        angles = IMP.algebra.rotation_from_fixed_zyz(0,math.pi,0) # -z
+        angles = IMP.algebra.get_rotation_from_fixed_zyz(0,math.pi,0) # -z
         IMP.em.project_given_rotation1(m1,
                           result,dy,dx,angles,shift ,tolerance)
 #        print_matrix2D(result,"test_project_-Z")
@@ -100,7 +100,7 @@ class EMprojectTests(IMP.test.TestCase):
         shift = IMP.algebra.Vector3D(0,0,0)
         tolerance = 1e-6
         result = IMP.algebra.Matrix2D()
-        angles = IMP.algebra.rotation_from_fixed_zyz(0,-math.pi/2,0) # x
+        angles = IMP.algebra.get_rotation_from_fixed_zyz(0,-math.pi/2,0) # x
         IMP.em.project_given_rotation1(m1,result,dy,dz,
                                           angles,shift ,tolerance)
 #        print_matrix2D(result,"test_project_X")
@@ -117,7 +117,7 @@ class EMprojectTests(IMP.test.TestCase):
         shift = IMP.algebra.Vector3D(0,0,0)
         tolerance = 1e-6
         result = IMP.algebra.Matrix2D()
-        angles = IMP.algebra.rotation_from_fixed_zyz(0,math.pi/2,0) # -x
+        angles = IMP.algebra.get_rotation_from_fixed_zyz(0,math.pi/2,0) # -x
         IMP.em.project_given_rotation1(m1,result,dy,dz,
                                           angles,shift ,tolerance)
 #        print_matrix2D(result,"test_project_-X")
@@ -134,7 +134,7 @@ class EMprojectTests(IMP.test.TestCase):
         shift = IMP.algebra.Vector3D(0,0,0)
         tolerance = 1e-6
         result = IMP.algebra.Matrix2D()
-        angles = IMP.algebra.rotation_from_fixed_zyz(math.pi/2,math.pi/2,0) # y
+        angles = IMP.algebra.get_rotation_from_fixed_zyz(math.pi/2,math.pi/2,0) # y
         IMP.em.project_given_rotation1(m1,result,dx,dz,
                                           angles,shift ,tolerance)
 #        print_matrix2D(result,"test_project_Y")
@@ -151,7 +151,7 @@ class EMprojectTests(IMP.test.TestCase):
         shift = IMP.algebra.Vector3D(0,0,0)
         tolerance = 1e-6
         result = IMP.algebra.Matrix2D()
-        angles = IMP.algebra.rotation_from_fixed_zyz(math.pi/2,-math.pi/2,0) # -y
+        angles = IMP.algebra.get_rotation_from_fixed_zyz(math.pi/2,-math.pi/2,0) # -y
         IMP.em.project_given_rotation1(m1,result,dx,dz,
                                           angles,shift ,tolerance)
 #        print_matrix2D(result,"test_project_-Y")

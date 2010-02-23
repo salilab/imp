@@ -26,7 +26,7 @@ class TunnelTest(IMP.test.TestCase):
             #         if p0 != p1:
             #             d0= IMP.core.XYZR(p0)
             #             d1= IMP.core.XYZR(p1)
-            #             if IMP.core.distance(d0, d1) < 0:
+            #             if IMP.core.get_distance(d0, d1) < 0:
             #                 print str(p0)+" " +str(p1)
             #                 self.assert_(cpc.get_contains_particle_pair(ParticlePair(p0, p1))
             #                 or cpc.get_contains_particle_pair(ParticlePair(p1, p0)))
@@ -50,7 +50,7 @@ class TunnelTest(IMP.test.TestCase):
                     print d0
                     print d1
                     print IMP.ParticlePair(p0.get_particle(), p1.get_particle())
-                    self.assert_(IMP.core.distance(d0, d1) <= 0.1)
+                    self.assert_(IMP.core.get_distance(d0, d1) <= 0.1)
                     #self.assert_(cpc.get_contains_particle_pair(IMP.ParticlePair(p0.get_particle(), p1.get_particle()))
                                  #or cpc.get_contains_particle_pair(IMP.ParticlePair(p1.get_particle(), p0.get_particle())))
 

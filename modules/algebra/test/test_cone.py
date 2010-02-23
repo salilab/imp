@@ -20,15 +20,15 @@ class ConeTests(IMP.test.TestCase):
 
     def test_sphere_patch2(self):
         """Testing sampling a patch"""
-        sphere= IMP.algebra.Sphere3D(IMP.algebra.random_vector_in_unit_box(), 10)
-        n= IMP.algebra.random_vector_on_unit_sphere()
-        p= IMP.algebra.random_vector_in_sphere(sphere.get_center(), sphere.get_radius())
+        sphere= IMP.algebra.Sphere3D(IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d()), 10)
+        n= IMP.algebra.get_random_vector_on(IMP.algebra.get_unit_sphere_3d())
+        p= IMP.algebra.get_random_vector_in(sphere)
         plane= IMP.algebra.Plane3D(p, n)
-        sp = IMP.algebra.Sphere3DPatch(sphere,plane)
+        sp = IMP.algebra.SpherePatch3D(sphere,plane)
         bs=IMP.algebra.Sphere3D(sphere.get_center(),
                                 sphere.get_radius()*1.1)
         bs.show(); print
-        for v in IMP.algebra.uniform_cover(sp,3):
+        for v in IMP.algebra.get_uniform_surface_cover(sp,3):
             v.show(); print
             self.assertEqual(bs.get_contains(v),True)
 

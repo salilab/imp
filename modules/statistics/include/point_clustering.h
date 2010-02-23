@@ -17,6 +17,7 @@
 #include <IMP/SingletonContainer.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/em/DensityMap.h>
+#include <IMP/algebra/VectorD.h>
 #include <IMP/core/XYZ.h>
 
 IMPSTATISTICS_BEGIN_NAMESPACE
@@ -107,7 +108,7 @@ public:
     which are above a certain threshold.
  */
 class IMPSTATISTICSEXPORT HighDensityEmbedding: public Embedding {
-  algebra::Vector3Ds points_;
+  std::vector<algebra::VectorD<3> > points_;
 public:
   HighDensityEmbedding(em::DensityMap *dm,
                        double threshold);

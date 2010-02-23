@@ -16,7 +16,7 @@ class Volume(IMP.test.TestCase):
         IMP.set_log_level(IMP.VERBOSE)
         for i in range(0,3):
             p= Particle(m)
-            v= random_vector_in_box(Vector3D(0,0,0),
+            v= get_random_vector_in(Vector3D(0,0,0),
                                     Vector3D(5,5,5))
             d=XYZR.setup_particle(p, Sphere3D(v, 4))
             ps.append(p)
@@ -34,7 +34,7 @@ class Volume(IMP.test.TestCase):
         IMP.set_log_level(IMP.VERBOSE)
         ps= IMP.Particles()
         p= Particle(m)
-        inits=Sphere3D(random_vector_in_box(BoundingBox3D(Vector3D(0,0,0),
+        inits=Sphere3D(get_random_vector_in(BoundingBox3D(Vector3D(0,0,0),
                                                           Vector3D(5,5,5))),
                        4)
         print inits

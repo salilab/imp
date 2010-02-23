@@ -17,33 +17,33 @@ static const unsigned int MAX_LEAF_SIZE=10;
 
 
 RigidBodyHierarchy::SpheresSplit
-RigidBodyHierarchy::divide_spheres(const algebra::Sphere3Ds &ss,
+RigidBodyHierarchy::divide_spheres(const std::vector<algebra::SphereD<3> > &ss,
                                    const SphereIndexes &s) {
-  algebra::Vector3D centroid(0,0,0);
+  algebra::VectorD<3> centroid(0,0,0);
   for (unsigned int i=0; i< s.size(); ++i) {
     centroid += ss[s[i]].get_center();
   }
   centroid/= s.size();
-  algebra::Vector3Ds pts(s.size());
+  std::vector<algebra::VectorD<3> > pts(s.size());
   for (unsigned int i=0; i< s.size(); ++i) {
     pts[i]= ss[s[i]].get_center()-centroid;
   }
   algebra::PrincipalComponentAnalysis pca= algebra::principal_components(pts);
-  const algebra::Vector3D &v0=pca.get_principal_component(0),
+  const algebra::VectorD<3> &v0=pca.get_principal_component(0),
     &v1= pca.get_principal_component(1),
     &v2= pca.get_principal_component(2);
-  algebra::Rotation3D r= algebra::rotation_from_matrix(v0[0], v0[1], v0[2],
+  algebra::Rotation3D r= algebra::get_rotation_from_matrix(v0[0], v0[1], v0[2],
                                                        v1[0], v1[1], v1[2],
                                                        v2[0], v2[1], v2[2])
     .get_inverse();
-  algebra::Vector3D minc(std::numeric_limits<double>::max(),
+  algebra::VectorD<3> minc(std::numeric_limits<double>::max(),
                          std::numeric_limits<double>::max(),
                          std::numeric_limits<double>::max()),
     maxc(-std::numeric_limits<double>::max(),
          -std::numeric_limits<double>::max(),
          -std::numeric_limits<double>::max());
   for (unsigned int i=0; i< s.size(); ++i) {
-    pts[i]= r.rotate(pts[i]);
+    pts[i]= r.get_rotated(pts[i]);
     for (unsigned int j=0; j< 3; ++j) {
       minc[j]= std::min(minc[j], pts[i][j]);
       maxc[j]= std::max(maxc[j], pts[i][j]);
@@ -94,19 +94,19 @@ RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
   // build spheres on internal coordinates
   IMP_USAGE_CHECK(r->get_number_of_refined(d) > 0,
                   "Refiner cannot produce any particles for rigid body.");
-  algebra::Sphere3Ds spheres(r->get_number_of_refined(d));
+  std::vector<algebra::SphereD<3> > spheres(r->get_number_of_refined(d));
   for (unsigned int i=0; i< spheres.size(); ++i) {
     Particle *rp= r->get_refined(d, i);
     double r =XYZR(rp).get_radius();
-    algebra::Vector3D v= RigidMember(rp).get_internal_coordinates();
+    algebra::VectorD<3> v= RigidMember(rp).get_internal_coordinates();
     // make sure they are relative to this rigid body
     // I should check that they are connected, too lazy
     if (RigidMember(rp).get_rigid_body()== d) {
     } else {
       v= RigidMember(d).get_internal_transformation()
-        .get_inverse().transform(v);
+        .get_inverse().get_transformed(v);
     }
-    spheres[i]= algebra::Sphere3D(v, r);
+    spheres[i]= algebra::SphereD<3>(v, r);
   }
   // call internal setup on spheres, 0, all indexes
   SphereIndexes leaves(spheres.size());
@@ -123,12 +123,12 @@ RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
     std::swap(cur,stack.back());
     stack.pop_back();
     IMP_INTERNAL_CHECK(!cur.second.empty(), "Don't call me with no spheres");
-    algebra::Sphere3Ds ss(cur.second.size());
+    std::vector<algebra::SphereD<3> > ss(cur.second.size());
     for (unsigned int i=0; i< cur.second.size(); ++i) {
       ss[i]= spheres[cur.second[i]];
     }
-    algebra::Sphere3D ec= algebra::enclosing_sphere(ss);
-    set_sphere(cur.first, algebra::Sphere3D(ec.get_center(),
+    algebra::SphereD<3> ec= algebra::get_enclosing_sphere(ss);
+    set_sphere(cur.first, algebra::SphereD<3>(ec.get_center(),
                                             ec.get_radius()*EXPANSION));
     if (cur.second.size() <MAX_LEAF_SIZE) {
       set_leaf(cur.first, cur.second);
@@ -144,7 +144,7 @@ RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
 
 
 void RigidBodyHierarchy::set_sphere(unsigned int ni,
-                                    const algebra::Sphere3D &s) {
+                                    const algebra::SphereD<3> &s) {
   IMP_INTERNAL_CHECK(ni < tree_.size(), "Out of range");
   tree_[ni].s_=s;
 }
@@ -250,9 +250,9 @@ void RigidBodyHierarchy::do_show(std::ostream &out) const {
   }
 }
 
-std::vector<algebra::Sphere3D>
+std::vector<algebra::SphereD<3> >
 RigidBodyHierarchy::get_tree() const {
-  std::vector<algebra::Sphere3D> ret;
+  std::vector<algebra::SphereD<3> > ret;
   for (unsigned int i=0; i< tree_.size(); ++i) {
     ret.push_back(get_sphere(i));
   }
@@ -277,14 +277,14 @@ ObjectKey get_rigid_body_hierarchy_key(Refiner *r) {
 namespace {
 inline double
 distance_bound(XYZR a, XYZR b) {
-  return distance(a,b);
+  return get_distance(a,b);
 }
 
 inline double
 distance_bound(const RigidBodyHierarchy *da, unsigned int i,
                XYZR b) {
-  algebra::Sphere3D s= da->get_sphere(i);
-  double rd= algebra::distance(s, b.get_sphere());
+  algebra::SphereD<3> s= da->get_sphere(i);
+  double rd= algebra::get_distance(s, b.get_sphere());
 #if 0
   ParticlesTemp ta= da->get_particles(i);
 
@@ -299,9 +299,9 @@ distance_bound(const RigidBodyHierarchy *da, unsigned int i,
 inline double
 distance_bound(const RigidBodyHierarchy *da, unsigned int i,
                const RigidBodyHierarchy *db, unsigned int j) {
-  algebra::Sphere3D sa= da->get_sphere(i);
-  algebra::Sphere3D sb= db->get_sphere(j);
-  double rd= algebra::distance(sa, sb);
+  algebra::SphereD<3> sa= da->get_sphere(i);
+  algebra::SphereD<3> sb= db->get_sphere(j);
+  double rd= algebra::get_distance(sa, sb);
 #if 0
   ParticlesTemp ta= da->get_particles(i);
   ParticlesTemp tb= db->get_particles(j);
@@ -384,7 +384,7 @@ ParticlePair closest_pair(const RigidBodyHierarchy *da,
              j< db->get_number_of_particles(v.second.second); ++j) {
           XYZR deca(da->get_particle(v.second.first, i));
           XYZR decb(db->get_particle(v.second.second, j));
-          double d= distance(deca, decb);
+          double d= get_distance(deca, decb);
           if (d < best_d) {
             bp= ParticlePair(deca, decb);
             /*IMP_LOG(VERBOSE, "Updating threshold to " << best_d

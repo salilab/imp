@@ -86,10 +86,10 @@ protected:
   /** \param[in]  ps     particles with XYZ, radius and weight attributes
       \param[out] bb           the particles bounding box
    */
-  IMP::algebra::BoundingBox3D
+  IMP::algebra::BoundingBoxD<3>
      calculate_particles_bounding_box(const Particles &ps);
-  void set_header(const algebra::Vector3D &lower_bound,
-                  const algebra::Vector3D &upper_bound,
+  void set_header(const algebra::VectorD<3> &lower_bound,
+                  const algebra::VectorD<3> &upper_bound,
                   emreal maxradius, emreal resolution, emreal voxel_size,
                   int sig_offset);
 

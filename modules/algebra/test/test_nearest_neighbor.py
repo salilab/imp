@@ -33,7 +33,7 @@ class ConeTests(IMP.test.TestCase):
         nump=60
         vs= IMP.algebra.Vector3Ds()
         for i in range(0, nump):
-            v= IMP.algebra.random_vector_in_unit_box()
+            v= IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d())
             vs.append(v)
         nn= IMP.algebra.NearestNeighbor3D(vs)
         for i in range(0, nump):
