@@ -50,11 +50,23 @@ namespace multi_array_types {
 %include "IMP/algebra/Plane3D.h"
 %include "IMP/algebra/Cylinder3D.h"
 %include "IMP/algebra/Ellipsoid3D.h"
+%include "IMP/algebra/SphereD.h"
 %include "IMP/algebra/Sphere3D.h"
-%include "IMP/algebra/Sphere3DPatch.h"
+namespace IMP {
+ namespace algebra {
+   %template(Sphere2D) SphereD<2>;
+   %template(Sphere3D) SphereD<3>;
+   %template(Sphere4D) SphereD<4>;
+   %template(Sphere4Ds) ::std::vector< IMP::algebra::SphereD<4> >;
+   %template(Sphere3Ds) ::std::vector< IMP::algebra::SphereD<3> >;
+   %template(Sphere2Ds) ::std::vector< IMP::algebra::SphereD<2> >;
+}
+}
+
+%include "IMP/algebra/SpherePatch3D.h"
 %include "IMP/algebra/Cone3D.h"
-%include "IMP/algebra/vector_generators.h"
 %include "IMP/algebra/io.h"
+%include "IMP/algebra/vector_generators.h"
 %include "IMP/algebra/endian.h"
 %include "IMP/algebra/Rotation2D.h"
 %include "IMP/algebra/shortest_segment.h"
@@ -63,26 +75,115 @@ namespace multi_array_types {
 
 namespace IMP {
  namespace algebra {
-   %template(random_vector_on_sphere) random_vector_on_sphere<3>;
-   %template(random_vector_in_sphere) random_vector_in_sphere<3>;
-   %template(random_vector_in_box) random_vector_in_box<3>;
-   %template(random_vector_on_unit_sphere) random_vector_on_unit_sphere<3>;
-   %template(random_vector_in_unit_sphere) random_vector_in_unit_sphere<3>;
-   %template(random_vector_in_unit_box) random_vector_in_unit_box<3>;
-   %template(random_vector_on_box) random_vector_on_box<3>;
-   %template(uniform_cover_sphere) uniform_cover_sphere<3>;
+   %template(NearestNeighbor2D) NearestNeighborD<2>;
    %template(NearestNeighbor3D) NearestNeighborD<3>;
-   %template(basis_vector) basis_vector<3>;
-   %template(zeros) zeros<3>;
+   %template(NearestNeighbor4D) NearestNeighborD<4>;
+   %template(get_basis_vector_2d) get_basis_vector_d<2>;
+   %template(get_basis_vector_3d) get_basis_vector_d<3>;
+   %template(get_basis_vector_4d) get_basis_vector_d<4>;
+   %template(get_zero_vector_2d) get_zero_vector_d<2>;
+   %template(get_zero_vector_3d) get_zero_vector_d<3>;
+   %template(get_zero_vector_4d) get_zero_vector_d<4>;
+   %template(get_ones_vector_2d) get_ones_vector_d<2>;
+   %template(get_ones_vector_3d) get_ones_vector_d<3>;
+   %template(get_ones_vector_4d) get_ones_vector_d<4>;
+   %template(get_unit_bounding_box_2d) get_unit_bounding_box_d<2>;
+   %template(get_unit_bounding_box_3d) get_unit_bounding_box_d<3>;
+   %template(get_unit_bounding_box_4d) get_unit_bounding_box_d<4>;
    // for debugging
-   %template(Sphere3Ds) ::std::vector<IMP::algebra::Sphere3D>;
-   %template(SpherePair) ::std::pair<IMP::algebra::Sphere3D,IMP::algebra::Sphere3D>;
-   %template(Sphere3DPairs) ::std::vector< SpherePair >;
+   //%template(SpherePair3D) ::std::pair<IMP::algebra::SphereD<3>,IMP::algebra::SphereD<3> >;
+   //%template(SpherePair3Ds) ::std::vector< ::std::pair<IMP::algebra::SphereD<3>,IMP::algebra::SphereD<3> > >;
 
-   %template(AxisAnglePair) ::std::pair<IMP::algebra::Vector3D,double>;
-   %template(rigid_align_first_to_second) rigid_align_first_to_second<Vector3Ds, Vector3Ds>;
+   %template(AxisAnglePair) ::std::pair<IMP::algebra::VectorD<3>,double>;
+   %template(get_transformation_taking_first_to_second) get_transformation_aligning_first_to_second<std::vector<IMP::algebra::VectorD<3> >, std::vector<IMP::algebra::VectorD<3> > >;
    // rotation operations
    %template(Rotation2Ds) ::std::vector<Rotation2D>;
    %template(Rotation3Ds) ::std::vector<Rotation3D>;
  }
 }
+%inline %{
+namespace IMP {
+namespace algebra {
+SphereD<2> get_unit_sphere_2d() { return SphereD<2>(get_zero_vector_d<2>(), 1);}
+SphereD<3> get_unit_sphere_3d() { return SphereD<3>(get_zero_vector_d<3>(), 1);}
+SphereD<4> get_unit_sphere_4d() { return SphereD<4>(get_zero_vector_d<4>(), 1);}
+// swig doesn't instantiate them properly
+bool get_interiors_intersect(const SphereD<2>&a, const SphereD<2> &b) {
+   return get_interiors_intersect<2>(a,b);
+}
+bool get_interiors_intersect(const SphereD<3>&a, const SphereD<3> &b) {
+   return get_interiors_intersect<3>(a,b);
+}
+bool get_interiors_intersect(const SphereD<4>&a, const SphereD<4> &b) {
+   return get_interiors_intersect<4>(a,b);
+}
+double get_distance(const SphereD<2>&a, const SphereD<2> &b) {
+   return get_distance<2>(a,b);
+}
+double get_distance(const SphereD<3>&a, const SphereD<3> &b) {
+   return get_distance<3>(a,b);
+}
+double get_distance(const SphereD<4>&a, const SphereD<4> &b) {
+   return get_distance<4>(a,b);
+}
+
+VectorD<2> get_random_vector_on(const SphereD<2> &s) {
+ return get_random_vector_on<2>(s);
+}
+VectorD<2> get_random_vector_on(const BoundingBoxD<2> &s) {
+  return get_random_vector_on<2>(s);
+}
+VectorD<3> get_random_vector_on(const SphereD<3> &s) {
+  return get_random_vector_on<3>(s);
+}
+VectorD<3> get_random_vector_on(const BoundingBoxD<3> &s) {
+  return get_random_vector_on<3>(s);
+}
+VectorD<4> get_random_vector_on(const SphereD<4> &s) {
+  return get_random_vector_on<4>(s);
+}
+VectorD<4> get_random_vector_on(const BoundingBoxD<4> &s) {
+  return get_random_vector_on<4>(s);
+}
+
+VectorD<2> get_random_vector_in(const SphereD<2> &s) {
+  return get_random_vector_in<2>(s);
+}
+VectorD<2> get_random_vector_in(const BoundingBoxD<2> &s) {
+  return get_random_vector_in<2>(s);
+}
+VectorD<3> get_random_vector_in(const SphereD<3> &s) {
+  return get_random_vector_in<3>(s);
+}
+VectorD<3> get_random_vector_in(const BoundingBoxD<3> &s) {
+  return get_random_vector_in<3>(s);
+}
+VectorD<4> get_random_vector_in(const SphereD<4> &s) {
+  return get_random_vector_in<4>(s);
+}
+VectorD<4> get_random_vector_in(const BoundingBoxD<4> &s) {
+  return get_random_vector_in<4>(s);
+}
+
+std::vector<VectorD<2> > get_uniform_surface_cover(const SphereD<2> &s, unsigned int n) {
+  return get_uniform_surface_cover<2>(s,n);
+}
+std::vector<VectorD<3> > get_uniform_surface_cover(const SphereD<3> &s, unsigned int n) {
+  return get_uniform_surface_cover<3>(s,n);
+}
+std::vector<VectorD<4> > get_uniform_surface_cover(const SphereD<4> &s, unsigned int n) {
+  return get_uniform_surface_cover<4>(s,n);
+}
+
+BoundingBoxD<2> get_bounding_box(const SphereD<2> &s) {
+  return get_bounding_box<2>(s);
+}
+BoundingBoxD<3> get_bounding_box(const SphereD<3> &s) {
+  return get_bounding_box<3>(s);
+}
+BoundingBoxD<4> get_bounding_box(const SphereD<4> &s) {
+  return get_bounding_box<4>(s);
+}
+}
+}
+%}

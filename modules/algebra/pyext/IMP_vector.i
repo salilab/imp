@@ -10,7 +10,7 @@
    operators (not a new Python proxy around the same C++ object) */
 namespace IMP {
  namespace algebra {
-  %feature("shadow") VectorD::__iadd__(const VectorD &) %{
+  %feature("shadow") VectorD::__iadd__(const IMP::algebra::VectorD<D> &) %{
     def __iadd__(self, *args):
         $action(self, *args)
         return self
@@ -25,7 +25,7 @@ namespace IMP {
         $action(self, *args)
         return self
   %}
-  %feature("shadow") VectorD::__isub__(const VectorD &) %{
+  %feature("shadow") VectorD::__isub__(const IMP::algebra::VectorD<D> &) %{
     def __isub__(self, *args):
         $action(self, *args)
         return self
@@ -43,12 +43,12 @@ namespace IMP {
   }
   /* Ignore C++ return value from inplace operators, so that SWIG does not
      generate a new SWIG wrapper for the return value (see above). */
-  void __iadd__(const VectorD &o) { self->operator+=(o); }
+  void __iadd__(const IMP::algebra::VectorD<D> &o) { self->operator+=(o); }
   void __imul__(double f) { self->operator*=(f); }
   void __idiv__(double f) { self->operator/=(f); }
-  void __isub__(const VectorD &o) { self->operator-=(o); }
+  void __isub__(const IMP::algebra::VectorD<D> &o) { self->operator-=(o); }
   unsigned int __len__() {return D;}
-  const VectorD __rmul__(double f) const {return self->operator*(f);}
+  const IMP::algebra::VectorD<D> __rmul__(double f) const {return self->operator*(f);}
 };
 
 %include "IMP/algebra/VectorD.h"
@@ -60,8 +60,13 @@ namespace IMP {
    %template(Vector2D) VectorD<2>;
    %template(Vector3D) VectorD<3>;
    %template(Vector4D) VectorD<4>;
-   %template(distance) distance<3>;
-   %template(squared_distance) squared_distance<3>;
+   %template(get_distance) get_distance<3>;
+   %template(get_squared_distance) get_squared_distance<3>;
+   %template(get_distance) get_distance<4>;
+   %template(get_squared_distance) get_squared_distance<4>;
+   %template(get_distance) get_distance<2>;
+   %template(get_squared_distance) get_squared_distance<2>;
+   %template(Vector4Ds) ::std::vector<VectorD<4> >;
    %template(Vector3Ds) ::std::vector<VectorD<3> >;
    %template(Vector2Ds) ::std::vector<VectorD<2> >;
  }
