@@ -381,6 +381,13 @@ IMPEMEXPORT DensityMap* get_transformed(DensityMap *in,
                                         const algebra::Transformation3D &tr,
                                         double threshold);
 
+/** Return a new density map containing a rotated version of the old
+    one. The dimension of the new map is the same as the old one.
+    \relatesalso DensityMap
+*/
+IMPEMEXPORT DensityMap* get_transformed(DensityMap *in,
+                                        const algebra::Transformation3D &tr);
+
 
 /** Get a resampled version of the map. The spacing is multiplied by scaling.
     That means, scaling values greater than 1 increase the voxel size.*/
