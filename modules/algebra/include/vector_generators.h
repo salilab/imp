@@ -12,10 +12,10 @@
 #include "Cylinder3D.h"
 #include "Cone3D.h"
 #include "Sphere3D.h"
-#include "Sphere3DPatch.h"
+#include "SpherePatch3D.h"
 #include "BoundingBoxD.h"
 
-#include "internal/vector_generators.h"
+#include "internal/internal_vector_generators.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -25,23 +25,9 @@ IMPALGEBRA_BEGIN_NAMESPACE
     of the methods, those with random in their name, generate
     a single vector chosen uniformly from the specified domain.
     Others, the cover methods, generate a set of points distributed
-    over the domain.
+    (somewhat) evenly over the domain.
     @{
  */
-
-//! create a constant vector
-/** This is not the right name.
-    \relatesalso VectorD
- */
-template <unsigned int D>
-VectorD<D> constant_vector(double s) {
-  VectorD<D> ret;
-  for (unsigned int i= 0; i < D; ++i) {
-    ret[i]=s;
-  }
-  return ret;
-}
-
 
 //! Generate a random vector in a box with uniform density
 /** \relatesalso BoundingBoxD
@@ -49,7 +35,7 @@ VectorD<D> constant_vector(double s) {
  */
 template <unsigned int D>
 VectorD<D>
-random_vector_in_box(const BoundingBoxD<D> &bb) {
+get_random_vector_in(const BoundingBoxD<D> &bb) {
   VectorD<D> ret;
   for (unsigned int i=0; i< D; ++i) {
     ::boost::uniform_real<> rand(bb.get_corner(0)[i],
@@ -65,7 +51,7 @@ random_vector_in_box(const BoundingBoxD<D> &bb) {
  */
 template <unsigned int D>
 VectorD<D>
-random_vector_on_box(const BoundingBoxD<D> &bb) {
+get_random_vector_on(const BoundingBoxD<D> &bb) {
   double areas[D*2];
   VectorD<D> lb= bb.get_corner(0);
   VectorD<D> ub= bb.get_corner(1);
@@ -97,7 +83,7 @@ random_vector_on_box(const BoundingBoxD<D> &bb) {
     fmin[i-1]= 0;
     fmax[i-1]= ub[(coord+i)%D]- lb[(coord+i)%D];
   }
-  sv= random_vector_in_box(BoundingBoxD<D-1>(fmin, fmax));
+  sv= get_random_vector_in(BoundingBoxD<D-1>(fmin, fmax));
 
   VectorD<D> ret;
   //std::cout << "Side is " << side << std::endl;
@@ -117,88 +103,35 @@ random_vector_on_box(const BoundingBoxD<D> &bb) {
 }
 
 
-/** Generate a random vector in a box with uniform density.
-
-    The box defined by the corners min, max must be properly
-    oriented and non-empty.
-    \relatesalso VectorD
- */
-template <unsigned int D>
-VectorD<D>
-random_vector_in_box(const VectorD<D>&min,
-                     const VectorD<D>&max) {
-  return random_vector_in_box(BoundingBoxD<D>(min,max));
-}
-
-/** Generate a random vector in a box with uniform density.
-
-    The box defined by the corners min, max must be properly
-    oriented and non-empty.
-    \relatesalso VectorD
- */
-template <unsigned int D>
-VectorD<D>
-random_vector_on_box(const VectorD<D>&min,
-                     const VectorD<D>&max) {
-  return random_vector_on_box(BoundingBoxD<D>(min,max));
-}
-
-
-//! Generate a random vector in a box with uniform density
-/** \relatesalso VectorD
- */
-template <unsigned int D>
-VectorD<D>
-random_vector_in_unit_box() {
-  return random_vector_in_box(BoundingBoxD<D>(VectorD<D>(0,0,0),
-                                              VectorD<D>(1,1,1)));
-}
-
 //! Generate a random vector in a sphere with uniform density
 /** \relatesalso VectorD
-    \relatesalso Sphere3D
+    \relatesalso SphereD
  */
 template <unsigned int D>
 VectorD<D>
-random_vector_in_sphere(const VectorD<D> &center,
-                        double radius){
-  IMP_USAGE_CHECK(radius > 0, "Radius in randomize must be postive");
-  VectorD<D> rad= constant_vector<D>(radius);
-  VectorD<D> min= center - rad;
-  VectorD<D> max= center + rad;
+get_random_vector_in(const SphereD<D> &s){
+  BoundingBoxD<D> bb= get_bounding_box(s);
   double norm;
   VectorD<D> ret;
-  double r2= square(radius);
+  double r2= square(s.get_radius());
   // \todo This algorithm could be more efficient.
   do {
-    ret=random_vector_in_box(BoundingBoxD<D>(min, max));
-    norm= (center- ret).get_squared_magnitude();
+    ret=get_random_vector_in(bb);
+    norm= (s.get_center()- ret).get_squared_magnitude();
   } while (norm > r2);
   return ret;
 }
 
-//! Generate a random vector in a unit sphere with uniform density
-/** \relatesalso VectorD
-    \relatesalso Sphere3D
- */
-template <unsigned int D>
-VectorD<D>
-random_vector_in_unit_sphere(){
-  return random_vector_in_sphere(zeros<D>(), 1);
-}
-
 //! Generate a random vector on a sphere with uniform density
 /** \relatesalso VectorD
-    \relatesalso Sphere3D
+    \relatesalso SphereD
  */
 template <unsigned int D>
 VectorD<D>
-random_vector_on_sphere(const VectorD<D> &center,
-                        double radius) {
+get_random_vector_on(const SphereD<D> &s) {
   // could be made general
   BOOST_STATIC_ASSERT(D>0);
-  IMP_USAGE_CHECK(radius > 0, "Radius in randomize must be postive");
-  double cur_radius2=square(radius);
+  double cur_radius2=square(s.get_radius());
   VectorD<D> up;
   for (unsigned int i=D-1; i>0; --i) {
     double r= std::sqrt(cur_radius2);
@@ -214,24 +147,12 @@ random_vector_on_sphere(const VectorD<D> &center,
   }
   up[0]=x;
 
-  IMP_INTERNAL_CHECK(std::abs(up.get_magnitude() -radius) < .1,
-             "Error generating vector on sphere: "
-             << up << " for " << radius);
+  IMP_INTERNAL_CHECK(std::abs(up.get_magnitude() -s.get_radius()) < .1,
+                     "Error generating vector on sphere: "
+                     << up << " for " << s.get_radius());
   //IMP_LOG(VERBOSE, "Random vector on sphere is " << up << std::endl);
 
-  return center+ up;
-}
-
-
-
-//! Generate a random vector on a sphere with uniform density
-/** \relatesalso VectorD
-    \relatesalso Sphere3D
- */
-template <unsigned int D>
-VectorD<D>
-random_vector_on_unit_sphere() {
-  return random_vector_on_sphere(zeros<D>(), 1);
+  return s.get_center()+ up;
 }
 
 
@@ -244,53 +165,62 @@ random_vector_on_unit_sphere() {
     \cgalpredicate
 
     \relatesalso VectorD
-    \relatesalso Sphere3D
+    \relatesalso SphereD
     */
 template <unsigned int D>
 std::vector<VectorD<D> >
-uniform_cover_sphere(unsigned int n,
-                     const VectorD<D> &center,
-                     double radius) {
-  return internal::uniform_cover_sphere<D, false>(n, center, radius);
+get_uniform_surface_cover(const SphereD<D> &s, unsigned int n) {
+  return internal::uniform_cover_sphere(n, s.get_center(),
+                                        s.get_radius(), true);
 }
 
 
 //! Generate a set of 3d points that uniformly cover a cylinder
-/** \relatesalso Vector3D
+/** \relatesalso VectorD
     \relatesalso Cylinder3D
 */
-IMPALGEBRAEXPORT Vector3Ds uniform_cover(const Cylinder3D &cyl,
-                        int number_of_points);
+IMPALGEBRAEXPORT std::vector<VectorD<3> >
+get_uniform_surface_cover(const Cylinder3D &cyl,
+                          int number_of_points);
+
+//! Generate a set of 3D points that uniformly cover a hemisphere
+/** The points all lie on the upper hemisphere, eg, all their
+    z coordinates are greater than those of the center of the sphere.
+ */
+template <unsigned int D>
+std::vector<VectorD<D> >
+get_uniform_upper_hemisphere_cover(const SphereD<D> &s, unsigned int n) {
+  return internal::uniform_cover_sphere(n, s.get_center(),
+                                        s.get_radius(), false);
+}
 
 //! Generate a grid of 3d points on a cylinder surface
 /** \relatesalso Vector3D
     \relatesalso Cylinder3D
 */
-IMPALGEBRAEXPORT Vector3Ds grid_cover(const Cylinder3D &cyl,
-                                      int number_of_cycles,
-                                      int number_of_points_on_cycle);
+IMPALGEBRAEXPORT  std::vector<VectorD<3> >
+get_grid_surface_cover(const Cylinder3D &cyl,
+                       int number_of_cycles,
+                       int number_of_points_on_cycle);
 
-//! Generate a set of 3d points that uniformly cover a sphere
-/** Creates at least number_of_points points. */
-/** \relatesalso Vector3D
-    \relatesalso Sphere3D
-*/
-IMPALGEBRAEXPORT Vector3Ds uniform_cover(const Sphere3D &sph,
-                                         int number_of_points) ;
+
+
 //! Generate a set of 3d points that uniformly cover a patch of a sphere
 /**
    \note the implementation can be improved
-   \relatesalso Sphere3DPatch
-   \relatesalso Vector3Ds
+   \relatesalso SpherePatch3D
+   \relatesalso VectorD
  */
-IMPALGEBRAEXPORT Vector3Ds uniform_cover(const Sphere3DPatch &sph,
-                                         unsigned int number_of_points);
+IMPALGEBRAEXPORT  std::vector<VectorD<3> >
+get_uniform_surface_cover(const SpherePatch3D &sph,
+                          unsigned int number_of_points);
 
-/** \relatesalso Vector3D
+/** \relatesalso VectorD
     \relatesalso Cone3D
 */
-IMPALGEBRAEXPORT Vector3Ds uniform_cover(const Cone3D &cone,
-                                         unsigned int number_of_points);
+IMPALGEBRAEXPORT  std::vector<VectorD<3> >
+get_uniform_surface_cover(const Cone3D &cone,
+                          unsigned int number_of_points);
 
 
 //! Generate a random chain with no collisions
@@ -305,11 +235,12 @@ IMPALGEBRAEXPORT Vector3Ds uniform_cover(const Cone3D &cone,
     \note The current implementation is not very clever and can be made
     more clever if needed.
  */
-IMPALGEBRAEXPORT Vector3Ds random_chain(unsigned int n, double r,
-                                        const Vector3D &start
-                                        = Vector3D(0,0,0),
-                                        const Sphere3Ds &obstacles
-                                        =Sphere3Ds());
+IMPALGEBRAEXPORT  std::vector<VectorD<3> >
+get_random_chain(unsigned int n, double r,
+                 const VectorD<3> &start
+                 = Vector3D(0,0,0),
+                 const std::vector<SphereD<3> > &obstacles
+                 =Sphere3Ds());
 
 /** @} */
 
