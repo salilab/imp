@@ -26,6 +26,7 @@ files = [
          'VelocityScalingOptimizerState.h',
          'bond_decorators.h',
          'bond_graph.h',
+         'charmm_topology.h',
          'distance.h',
          'element.h',
          'estimates.h',
