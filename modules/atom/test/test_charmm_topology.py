@@ -69,5 +69,10 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         res.add_dihedral(atoms)
         res.add_improper(atoms)
 
+    def test_patch(self):
+        """Check the CHARMM patch class"""
+        patch = IMP.atom.CHARMMPatch()
+        patch.add_deleted_atom('CA')
+
 if __name__ == '__main__':
     unittest.main()
