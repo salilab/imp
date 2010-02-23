@@ -92,12 +92,13 @@ Rotation3Ds get_uniform_cover_rotations_3d(unsigned int n) {
                                         1, false);
   Rotation3Ds ret;
   for (unsigned int i=0; i< vs.size(); ++i) {
-    if (vs[i][0] >=0) {
-      ret.push_back(Rotation3D(vs[i][0],
-                               vs[i][1],
-                               vs[i][2],
-                               vs[i][3]));
+    if (vs[i][0] <=0) {
+      vs[i]= -vs[i];
     }
+    ret.push_back(Rotation3D(vs[i][0],
+                             vs[i][1],
+                             vs[i][2],
+                             vs[i][3]));
   }
   return ret;
 }
