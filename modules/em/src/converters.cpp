@@ -29,4 +29,18 @@ void density2particles(DensityMap &dmap, Float threshold,
   }
 }
 
+
+IMPEMEXPORT SampledDensityMap * particles2density(
+   Particles &ps,
+   Float resolution, Float apix,
+   int sig_cuttoff,
+   const FloatKey &rad_key,
+   const FloatKey &weight_key)
+ {
+  IMP_NEW(SampledDensityMap,dmap,(ps, resolution,
+        apix,rad_key,weight_key,sig_cuttoff));
+  return dmap;
+}
+
+
 IMPEM_END_NAMESPACE
