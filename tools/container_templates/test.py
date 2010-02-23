@@ -19,7 +19,7 @@ class ClassnameContainerTest(IMP.test.TestCase):
     def create_particle(self,m):
         p= IMP.Particle(m)
         d=IMP.core.XYZ.setup_particle(p)
-        d.set_coordinates(IMP.algebra.random_vector_in_unit_box())
+        d.set_coordinates(IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d()))
         p.add_attribute(IMP.FloatKey("thekey"), d.get_x())
         return p
 
@@ -28,8 +28,8 @@ class ClassnameContainerTest(IMP.test.TestCase):
         p1= IMP.Particle(m)
         d0= IMP.core.XYZ.setup_particle(p0)
         d1= IMP.core.XYZ.setup_particle(p1)
-        d0.set_coordinates(IMP.algebra.random_vector_in_unit_box())
-        d1.set_coordinates(IMP.algebra.random_vector_in_unit_box())
+        d0.set_coordinates(IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d()))
+        d1.set_coordinates(IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d()))
         return IMP.ParticlePair(p0,p1)
 
     def create_singleton_score(self):
