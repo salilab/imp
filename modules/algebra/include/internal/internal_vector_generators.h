@@ -40,6 +40,25 @@ IMPALGEBRA_END_NAMESPACE
 
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
+/*template <unsigned int D>
+inline double simplex_volume(std::vector<VectorD<D> > pts) {
+  for (unsigned int i=0; i< pts.size()-1; ++i) {
+    pts[i]=pts[i]-pts.back();
+  }
+  pts.pop_back();
+  std::vector<VectorD<D> > uvs;
+  for (unsigned int i=0; i< pts.size(); ++i) {
+    for (unsigned int j=0; j < i; ++j) {
+      pts[i]= pts[i]-(pts[i]*uvs[j])*uvs[j];
+    }
+    uvs.push_back(pts[i].get_unit_vector());
+  }
+  double ret=1;
+  for (unsigned int i=0; i< pts.size(); ++i) {
+    ret*= pts[i].get_magnitude();
+  }
+  return ret;
+  }*/
 
 /*If all is true, cover the whole sphere.
 */
@@ -74,7 +93,7 @@ uniform_cover_sphere(unsigned int n,
   typedef ::CGAL::Optimisation_d_traits_d<K>       Traits;
   typedef ::CGAL::Min_sphere_d<Traits>             Min_sphere;
   std::map<typename CH::Vertex_handle, int> indexes;
-  for (unsigned int rep=0; rep< 5*D; ++rep) {
+  for (unsigned int rep=0; rep< 10*D; ++rep) {
     CH ch(D);
     for (unsigned int i=0; i< ret.size(); ++i) {
       P p(D, ret[i].coordinates_begin(),
@@ -90,7 +109,7 @@ uniform_cover_sphere(unsigned int n,
       }
     }
     std::vector<VectorD<D> > sums(n, get_zero_vector_d<D>());
-    std::vector<int> counts(n, 0);
+    std::vector<double> counts(n, 0);
     for (CH::Facet_iterator it= ch.facets_begin();
          it != ch.facets_end(); ++it) {
       for (unsigned int i=0; i< D; ++i ) {
@@ -99,9 +118,10 @@ uniform_cover_sphere(unsigned int n,
         if (vi > 0) {
           pi= ret[vi-1];
         } else {
-          pi= ret[-vi+1];
+          continue;
         }
-        for (unsigned int j=i; i< D; ++i ) {
+        /*std::vector<VectorD<D> > simplex;
+        for (unsigned int j=0; i< D; ++i ) {
           int vj=indexes[ch.vertex_of_facet(it, j)];
           VectorD<D> pj;
           if (vj > 0) {
@@ -109,13 +129,22 @@ uniform_cover_sphere(unsigned int n,
           } else {
             pj= ret[-vj+1];
           }
-          if (vi > 0) {
-            sums[vi-1]+=pj;
-            ++counts[vi-1];
-          }
+          simplex.push_back((pj-pi).get_unit_vector());
+        }
+        double w= simplex_volume(simplex);*/
+        for (unsigned int j=0; i< D; ++i ) {
+          if (i==j) continue;
+          int vj=indexes[ch.vertex_of_facet(it, j)];
+          VectorD<D> pj;
           if (vj > 0) {
-            sums[vj-1]+=pi;
-            ++counts[vj-1];
+            pj= ret[vj-1];
+          } else {
+            pj= ret[-vj+1];
+          }
+          double d=(pj-pi).get_magnitude();
+          if (counts[vi-1] < d) {
+            counts[vi-1]=d;
+            sums[vi-1]=pj;
           }
         }
       }
@@ -125,8 +154,8 @@ uniform_cover_sphere(unsigned int n,
     }
     for (unsigned int i=(ALL?2*D:D); i<ret.size(); ++i) {
       if (counts[i] != 0) {
-        sums[i]/=counts[i];
-        sums[i]= sums[i].get_unit_vector();\
+        sums[i]= (.1*sums[i]+.9*ret[i]);
+        sums[i]= sums[i].get_unit_vector();
       } else {
         // coincident points
         /*IMP_WARN("Coincident points at " << ret[i] << " in iteration " << rep
