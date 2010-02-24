@@ -31,8 +31,7 @@ public:
   Profile(const String& file_name);
 
   //! init for theoretical profile
-  Profile(Float qmin = 0.0, Float qmax = 0.5, Float delta = 0.005,
-          FormFactorTable* ff_table = default_form_factor_table());
+  Profile(Float qmin = 0.0, Float qmax = 0.5, Float delta = 0.005);
 
 private:
   class IntensityEntry {
