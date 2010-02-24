@@ -12,6 +12,7 @@
 #include <IMP/macros.h>
 #include <IMP/exception.h>
 
+#include <numeric>
 #include <cmath>
 
 #include "VectorD.h"
@@ -29,7 +30,8 @@ IMPALGEBRA_EXPORT_TEMPLATE(VectorD<3>);
 //! Returns the vector product (cross product) of two vectors.
 /** \relatesalso VectorD<3>
  */
-inline VectorD<3> vector_product(const VectorD<3>& p1, const VectorD<3>& p2) {
+inline VectorD<3> get_vector_product(const VectorD<3>& p1,
+                                     const VectorD<3>& p2) {
   return VectorD<3>(p1[1]*p2[2]-p1[2]*p2[1],
                   p1[2]*p2[0]-p1[0]*p2[2],
                   p1[0]*p2[1]-p1[1]*p2[0]);
@@ -38,7 +40,7 @@ inline VectorD<3> vector_product(const VectorD<3>& p1, const VectorD<3>& p2) {
 /** Or, if you are Israeli, it is a vertical vector.
     \relatesalso VectorD<3>
 */
-inline VectorD<3> orthogonal_vector(const VectorD<3> &v) {
+inline VectorD<3> get_orthogonal_vector(const VectorD<3> &v) {
   if (v[0] != 0) {
     return VectorD<3>((-v[1]-v[2])/v[0],1,1);
   } else if (v[1] != 0.0) {
@@ -53,12 +55,9 @@ inline VectorD<3> orthogonal_vector(const VectorD<3> &v) {
 //! Returns the centroid of a set of vectors
 /** \relatesalso VectorD<3>
  */
-inline VectorD<3> centroid(const std::vector<VectorD<3> > &ps) {
- VectorD<3> cen(0.0,0.0,0.0);
- for (unsigned long i=0;i<ps.size();++i) {
-   cen = cen + ps[i];
- }
- return cen/ps.size();
+inline VectorD<3> get_centroid(const std::vector<VectorD<3> > &ps) {
+  return std::accumulate(ps.begin(), ps.end(),
+                         get_zero_vector_d<3>())/ps.size();
 }
 
 /** @} */

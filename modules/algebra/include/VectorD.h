@@ -129,7 +129,7 @@ public:
     return vec_[i];
   }
 
-  double scalar_product(const VectorD<D> &o) const {
+  double get_scalar_product(const VectorD<D> &o) const {
     check_vector();
     double ret=0;
     for (unsigned int i=0; i< D; ++i) {
@@ -139,7 +139,7 @@ public:
   }
 
   double get_squared_magnitude() const {
-    return scalar_product(*this);
+    return get_scalar_product(*this);
   }
 
   double get_magnitude() const {
@@ -154,7 +154,7 @@ public:
   }
 
   double operator*(const VectorD<D> &o) const {
-    return scalar_product(o);
+    return get_scalar_product(o);
   }
 
   VectorD operator*(double s) const {
