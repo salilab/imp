@@ -75,7 +75,6 @@ template <class T>
 int compare(const T &a, const T &b) {
   return a.compare(b);
 }
-
 #endif
 
 /** \brief RAII-style objects
