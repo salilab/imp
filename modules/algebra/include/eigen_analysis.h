@@ -10,7 +10,6 @@
 #define IMPALGEBRA_EIGEN_ANALYSIS_H
 
 #include "IMP/algebra/Vector3D.h"
-#include <IMP/algebra/internal/jama_svd.h>
 #include <IMP/log.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
@@ -54,17 +53,8 @@ IMP_OUTPUT_OPERATOR(algebra::PrincipalComponentAnalysis);
 //! Perform principle components analysis on a set of vectors
 /** \relatesalso PrincipalComponentAnalysis
  */
-IMPALGEBRAEXPORT PrincipalComponentAnalysis principal_components(
+IMPALGEBRAEXPORT PrincipalComponentAnalysis get_principal_components(
                               const std::vector<VectorD<3> > &ps);
-
-IMP_NO_SWIG
-  (IMPALGEBRAEXPORT VectorD<3>
-   compute_mean(const std::vector<VectorD<3> > &vs));
-IMP_NO_SWIG
-  (IMPALGEBRAEXPORT internal::TNT::Array2D<double>
-   compute_covariance_matrix(
-   const std::vector<VectorD<3> > &vs,VectorD<3> mean));
-
 
 IMPALGEBRA_END_NAMESPACE
 #endif  /* IMPALGEBRA_EIGEN_ANALYSIS_H */
