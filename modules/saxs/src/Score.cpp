@@ -150,7 +150,8 @@ void Score::compute_sinc_cos(Float pr_resolution, Float max_distance,
                              const Profile& model_profile,
                              std::vector<Floats>& output_values) const
 {
-  unsigned int nr=algebra::round(max_distance/pr_resolution) + 1; //can be input
+  //can be input
+  unsigned int nr=algebra::get_rounded(max_distance/pr_resolution) + 1;
   output_values.clear();
   unsigned int profile_size = std::min(model_profile.size(),
                                        exp_profile_.size());

@@ -47,6 +47,11 @@ public:
   typedef boost::multi_array<T, D> BMA;
   typedef MultiArray<T, D> This;
 
+  inline bool almost_equal(const double a, const double b,
+                           const double epsilon)
+  {
+    return (std::abs(a-b) < epsilon);
+  }
 public:
   //! Empty constructor
   MultiArray() : BMA() {}

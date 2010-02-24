@@ -562,9 +562,9 @@ public:
   }
 
   bool is_normalized() const {
-    if(algebra::almost_equal((double)this->get_fAv(),0.0,1e-6) &&
-                 algebra::almost_equal((double)this->get_fSig(),1.0,1e-6)) {
-       return true;
+    if(std::abs(this->get_fAv()) <1e-6 &&
+       std::abs(this->get_fSig()-1.0) < 1e-6) {
+      return true;
     }
     return false;
   }

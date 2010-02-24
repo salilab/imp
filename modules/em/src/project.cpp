@@ -85,7 +85,7 @@ void project_given_rotation(DensityMap& map,
   end0[1] = init0[1]-1+map.get_header()->ny;
   end0[2] = init0[2]-1+map.get_header()->nz;
   for (int i = 0;i < 3;i++) {
-    signs[i] = IMP::algebra::sign(direction[i]);
+    signs[i] = IMP::algebra::get_sign(direction[i]);
     half_signs[i] = 0.5 * signs[i];
   }
 
@@ -164,8 +164,7 @@ void project_given_rotation(DensityMap& map,
         std::cout << "v_alpha_min " << v_alpha_min;
         std::cout << " v_alpha_max " << v_alpha_max << std::endl;
 #endif
-        if (IMP::algebra::almost_equal(
-           alpha_max, alpha_min, equality_tolerance)) {
+        if (std::abs(alpha_max-alpha_min) <equality_tolerance) {
 #ifdef DEBUG
          std::cout << " ray skipped (" << j << "," << i << ") init ray " <<
                       rays_per_pixel << std::endl;
@@ -200,10 +199,12 @@ void project_given_rotation(DensityMap& map,
         // Index of the first voxel
         for (int ii=0;ii < 3;ii++) {
           if (v[ii] >= 0.) {
-            idx[ii] = IMP::algebra::constrain((double)((int)(v[ii] + 0.5)),
+            idx[ii]
+              = IMP::algebra::get_constrained((double)((int)(v[ii] + 0.5)),
                                               init0[ii], end0[ii]);
           } else {
-            idx[ii] = IMP::algebra::constrain((double)((int)(v[ii] - 0.5)),
+            idx[ii]
+              = IMP::algebra::get_constrained((double)((int)(v[ii] - 0.5)),
                                               init0[ii], end0[ii]);
           }
 #ifdef DEBUG
@@ -244,8 +245,7 @@ void project_given_rotation(DensityMap& map,
                      map.get_value(map.loc2voxel(idx[0],idx[1],idx[2]));
           // update the indexes in the required dimensions
           for (int ii=0;ii < 3;ii++) {
-            if (IMP::algebra::almost_equal(diff_alpha, v_diff[ii],
-                equality_tolerance)) {
+            if (std::abs(diff_alpha-v_diff[ii]) < equality_tolerance) {
               alpha = v_alpha[ii];
               idx[ii] += signs[ii];
             }
