@@ -37,8 +37,8 @@ IMPEMEXPORT SampledDensityMap * particles2density(
    const FloatKey &rad_key,
    const FloatKey &weight_key)
  {
-  IMP_NEW(SampledDensityMap,dmap,(ps, resolution,
-        apix,rad_key,weight_key,sig_cuttoff));
+  SampledDensityMap * dmap = new SampledDensityMap(ps, resolution,
+         apix,rad_key,weight_key,sig_cuttoff);
   return dmap;
 }
 
