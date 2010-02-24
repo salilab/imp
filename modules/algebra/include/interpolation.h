@@ -30,6 +30,24 @@ T simple_interpolate(double diff,T lower,T upper) {
   return lower+diff*(upper-lower);
 }
 
+
+//! Linear interpolation for a point in a vector
+/**
+  \param[in] v any class similar to a vector accessed by []
+  \param[in] size number of elements in v
+  \param[in] idx index which value to interpolate
+**/
+template<typename T,typename H>
+T linear_interpolation(H &v,int size,double idx) {
+  int i = (int)floor(idx);
+
+  IMP_INTERNAL_CHECK(i>=0 && i<size,"linear_interpolation: Index out of range");
+  if(i=0 || i==(size-1)) return v[i]; // no interpolation is possible
+  return simple_interpolate(idx-i,v[i],v[i+1]);
+}
+
+
+
 //! Trilinear interpolation for a point using the 8 closest values in the matrix
 /**
   \param[in] m the 3D Matrix
