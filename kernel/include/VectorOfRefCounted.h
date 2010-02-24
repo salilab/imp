@@ -238,6 +238,11 @@ class VectorOfRefCounted {
       unref(bye.begin(), bye.end());
     }
   }
+  //! f should take two Particle*
+  template <class Less>
+  void sort(const Less &f) {
+    std::sort(data_.begin(), data_.end(), f);
+  }
   void remove(RC r) {
     for (unsigned int i=0; i< data_.size(); ++i) {
       if (data_[i]==r) {
