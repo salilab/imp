@@ -26,7 +26,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
   \return The returned value is lower+diff*(upper-lower).  (0 < diff < 1)
 **/
 template<typename T>
-T simple_interpolate(double diff,T lower,T upper) {
+T get_linearly_interpolated(double diff,T lower,T upper) {
   return lower+diff*(upper-lower);
 }
 
@@ -57,6 +57,7 @@ T linear_interpolation(H &v,int size,double idx) {
               is done in other dimensions.
   \param[in] outside Value to apply if the requested idx falls outside the
               limits of the matrix. (It is never used if wrap is requested)
+  \relates Matrix3D
 **/
 template<typename T>
 T trilinear_interpolation(Matrix3D<T> &m,
@@ -134,6 +135,7 @@ T trilinear_interpolation(Matrix3D<T> &m,
               limits of the matrix. (Never used if wrap is requested)
   \param[in] interp type of interpolation desired. Right now it is only
              bilinear interpolation
+  \relates Matrix2D
 **/
 double interpolate(algebra::Matrix2D<double> &m,
                     VectorD<2>& idx,
@@ -154,6 +156,7 @@ double interpolate(algebra::Matrix2D<double> &m,
               limits of the matrix. (Never used if wrap is requested)
   \param[in] interp Interpolation method desired. Right now it is only
              trilinear interpolation
+  \relates Matrix3D
 **/
 template<typename T>
 T interpolate(algebra::Matrix3D<T> &m,
@@ -188,12 +191,13 @@ T interpolate(algebra::Matrix3D<T> &m,
               is done between top and bottom.
   \param[in] outside Value to apply if the requested idx falls outside the
               limits of the matrix. (It is never used if wrap is requested)
+  \relates Matrix2D
 **/
 IMPALGEBRAEXPORT double bilinear_interpolation(Matrix2D<double>& m,
                   VectorD<2>& idx,
                   bool wrap = false,
                   double outside = 0.0);
-
+/**   \relates Matrix2D */
 IMPALGEBRAEXPORT double Bspline_interpolation(Matrix2D<double>& m,
                   VectorD<2>& idx,
                   bool wrap = false,
