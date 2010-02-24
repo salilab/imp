@@ -197,12 +197,16 @@ public:
 
 IMP_OBJECTS(CHARMMResidueTopology);
 
+class CharmmParameters;
+
 //! The topology of a single CHARMM segment (chain) in a model
 class IMPATOMEXPORT CHARMMSegmentTopology : public Object {
   IMP_LIST(public, CHARMMResidueTopology, residue, CHARMMResidueTopology*,
            CHARMMResidueTopologys);
 
   IMP_OBJECT(CHARMMSegmentTopology);
+public:
+  void apply_default_patches(CharmmParameters *ff);
 };
 
 IMP_OBJECTS(CHARMMSegmentTopology);
@@ -213,6 +217,12 @@ class IMPATOMEXPORT CHARMMTopology : public Object {
            CHARMMSegmentTopologys);
 
   IMP_OBJECT(CHARMMTopology);
+public:
+  void apply_default_patches(CharmmParameters *ff) {
+    for (unsigned int i = 0; i < get_number_of_segments(); ++i) {
+      get_segment(i)->apply_default_patches(ff);
+    }
+  }
 };
 
 IMPATOM_END_NAMESPACE
