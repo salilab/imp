@@ -29,10 +29,10 @@ std::ostream & operator<<(std::ostream & s, const Profile::IntensityEntry & e)
   return s << e.q_ << " " << e.intensity_ << " " << e.error_ << std::endl;
 }
 
-Profile::Profile(Float qmin, Float qmax, Float delta,FormFactorTable *ff_table):
-  min_q_(qmin), max_q_(qmax), delta_q_(delta), ff_table_(ff_table),
-  experimental_(false)
+Profile::Profile(Float qmin, Float qmax, Float delta):
+  min_q_(qmin), max_q_(qmax), delta_q_(delta), experimental_(false)
 {
+  ff_table_ = default_form_factor_table();
 }
 
 Profile::Profile(const String& file_name) : experimental_(true)
@@ -272,7 +272,7 @@ void Profile::calculate_profile_partial(const Particles& particles,
 
   // convert to reciprocal space
   partial_profiles_.insert(partial_profiles_.begin(), r_size,
-                           Profile(min_q_, max_q_, delta_q_, ff_table_));
+                           Profile(min_q_, max_q_, delta_q_));
   squared_distributions_2_partial_profiles(r_dist);
   //std::cerr << "Conversion to reciprocal time " << my_timer.elapsed()
   //<< std::endl;
@@ -321,7 +321,7 @@ void Profile::calculate_profile_partial(const Particles& particles1,
 
   // convert to reciprocal space
   partial_profiles_.insert(partial_profiles_.begin(), r_size,
-                           Profile(min_q_, max_q_, delta_q_, ff_table_));
+                           Profile(min_q_, max_q_, delta_q_));
   for(int i=0; i<r_size; i++) {
     partial_profiles_[i].squared_distribution_2_profile(r_dist[i]);
   }
@@ -578,7 +578,7 @@ void Profile::profile_2_distribution(RadialDistributionFunction& rd,
     if(profile_[k].intensity_ < min_value)
       min_value = profile_[k].intensity_;
   }
-  Profile p(min_q_, max_q_, delta_q_, ff_table_);
+  Profile p(min_q_, max_q_, delta_q_);
   p.init();
   for(unsigned int k = 0; k < profile_.size(); k++) {
     p.profile_[k].intensity_  = profile_[k].intensity_ - min_value;
