@@ -111,6 +111,16 @@ class CHARMMTopologyTests(IMP.test.TestCase):
             self.assertEqual(at.get_charmm_type(), typ)
             self.assertInTolerance(at.get_charge(), charge, 1e-3)
 
+        for (name, first, last) in [('ALA', 'NTER', 'CTER'),
+                                    ('GLY', 'GLYP', 'CTER'),
+                                    ('UNK', 'GLYP', 'CTER'),
+                                    ('PRO', 'PROP', 'CTER'),
+                                    ('TIP3', '', ''),
+                                    ('SOD', '', '')]:
+            res = ff.get_residue_topology(name)
+            self.assertEqual(res.get_default_first_patch(), first)
+            self.assertEqual(res.get_default_last_patch(), last)
+
     def test_residue_topology(self):
         """Test CHARMM residue topology objects"""
         ideal = IMP.atom.CHARMMIdealResidueTopology('ALA')

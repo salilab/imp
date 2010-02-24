@@ -71,6 +71,26 @@ namespace {
       residue.add_improper(atoms);
     }
   }
+
+  void parse_patch_line(std::string line, std::string &first,
+                        std::string &last) {
+    const std::string FIRST = "FIRS";
+    const std::string LAST = "LAST";
+
+    std::vector<std::string> split_results;
+    boost::split(split_results, line, boost::is_any_of(" "),
+                 boost::token_compress_on);
+    for (unsigned int i = 1; i < split_results.size(); i += 2) {
+      if (split_results[i][0] == '!') return;  // comments start
+      if (split_results[i].substr(0, FIRST.length()) == FIRST) {
+        first = split_results[i + 1];
+        if (first == "NONE") first = "";
+      } else if (split_results[i].substr(0, LAST.length()) == LAST) {
+        last = split_results[i + 1];
+        if (last == "NONE") last = "";
+      }
+    }
+  }
 }
 
 CharmmParameters::CharmmParameters(const String& top_file_name,
@@ -96,6 +116,8 @@ CharmmParameters::CharmmParameters(const String& top_file_name,
 }
 
 void CharmmParameters::read_topology_file(std::ifstream& input_file) {
+  const String DEFA_LINE = "DEFA";
+  const String PATC_LINE = "PATC";
   const String RESI_LINE = "RESI";
   const String PRES_LINE = "PRES";
   const String ATOM_LINE = "ATOM";
@@ -105,6 +127,7 @@ void CharmmParameters::read_topology_file(std::ifstream& input_file) {
   const String ANGLE_LINE = "ANGL";
   const String DIHEDRAL_LINE = "DIHE";
   const String IMPROPER_LINE = "IMPR";
+  std::string first_patch = "", last_patch = "";
   std::auto_ptr<CHARMMIdealResidueTopology> residue;
   std::auto_ptr<CHARMMPatch> patch;
 
@@ -125,6 +148,8 @@ void CharmmParameters::read_topology_file(std::ifstream& input_file) {
       }
       curr_res_type = parse_residue_line(line);
       residue.reset(new CHARMMIdealResidueTopology(curr_res_type.get_string()));
+      residue->set_default_first_patch(first_patch);
+      residue->set_default_last_patch(last_patch);
 
     // handle patch residues
     } else if (line.substr(0, PRES_LINE.length()) == PRES_LINE) {
@@ -140,6 +165,19 @@ void CharmmParameters::read_topology_file(std::ifstream& input_file) {
         IMP_THROW("Invalid PRES line: " << line, ValueException);
       }
       patch.reset(new CHARMMPatch(split_results[1]));
+
+    // handle DEFA line
+    } else if (line.substr(0, DEFA_LINE.length()) == DEFA_LINE) {
+      parse_patch_line(line, first_patch, last_patch);
+
+    // handle PATC line
+    } else if (line.substr(0, PATC_LINE.length()) == PATC_LINE
+               && residue.get()) {
+      std::string first = residue->get_default_first_patch();
+      std::string last = residue->get_default_last_patch();
+      parse_patch_line(line, first, last);
+      residue->set_default_first_patch(first);
+      residue->set_default_last_patch(last);
 
     // read DELE line
     } else if (line.substr(0, DELE_LINE.length()) == DELE_LINE
