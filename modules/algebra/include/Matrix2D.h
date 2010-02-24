@@ -395,6 +395,7 @@ protected:
 };
 
 
+typedef Matrix2D<int> Matrix2D_i;
 typedef Matrix2D<double> Matrix2D_d;
 typedef Matrix2D< std::complex<double> > Matrix2D_c;
 
