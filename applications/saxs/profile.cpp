@@ -11,7 +11,6 @@
 
 #include <IMP/saxs/Profile.h>
 #include <IMP/saxs/Score.h>
-#include <IMP/saxs/FormFactorTable.h>
 #include <IMP/Pointer.h>
 
 #include <fstream>
@@ -63,7 +62,6 @@ int main(int argc, char **argv)
   }
 
   float delta_q = max_q / profile_size;
-  IMP::saxs::FormFactorTable* f_table = IMP::saxs::default_form_factor_table();
 
   // read pdb, prepare particles
   IMP::Pointer<IMP::Model> model(new IMP::Model());
@@ -76,7 +74,7 @@ int main(int argc, char **argv)
   IMP::saxs::Profile *computational_profile = NULL;
 
   if(particles.size() > 0) { // compute profile
-    computational_profile = new IMP::saxs::Profile(f_table, 0.0, max_q,delta_q);
+    computational_profile = new IMP::saxs::Profile(0.0, max_q,delta_q);
     std::cerr << "Computing profile for " << pdb << " min = 0.0 max = " << max_q
               << " delta=" << delta_q << std::endl;
     computational_profile->calculate_profile(particles);

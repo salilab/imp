@@ -95,6 +95,9 @@ public:
   //! add partial profiles
   void add_partial_profiles(const Profile& other_profile);
 
+  //! background adjustment option
+  void background_adjust(double start_q);
+
   //! scale
   void scale(Float c);
 
