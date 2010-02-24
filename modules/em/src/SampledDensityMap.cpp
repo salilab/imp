@@ -69,6 +69,8 @@ SampledDensityMap::SampledDensityMap(const IMP::Particles &ps,
                    emreal resolution, emreal voxel_size,
                    IMP::FloatKey radius_key,IMP::FloatKey mass_key,
                    int sig_cutoff) {
+  IMP_LOG(VERBOSE, "start SampledDensityMap with resolution: "<<resolution<<
+          "and voxel size: "<<voxel_size<<std::endl);
   x_key_=IMP::core::XYZ::get_coordinate_key(0);
   y_key_=IMP::core::XYZ::get_coordinate_key(1);
   z_key_=IMP::core::XYZ::get_coordinate_key(2);
@@ -175,6 +177,7 @@ void SampledDensityMap::resample()
   // The values of dmean, dmin,dmax, and rms have changed
   rms_calculated_ = false;
   normalized_ = false;
+  IMP_LOG(VERBOSE,"finish resampling  particles " <<std::endl);
 }
 
 
