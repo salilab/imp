@@ -11,9 +11,10 @@
 #include "config.h"
 #include "Vector3D.h"
 #include "utility.h"
+#include <IMP/constants.h>
 
 #include <IMP/log.h>
-
+#include <cmath>
 #include <iostream>
 #include <algorithm>
 
@@ -294,14 +295,18 @@ inline Rotation3D get_identity_rotation_3d() {
   return Rotation3D(1,0,0,0);
 }
 
-inline bool almost_equal_rotations(const Rotation3D &r1, const Rotation3D &r2) {
-  Rotation3D composed = compose(r1,r2.get_inverse());
-  VectorD<4> composed_q =  composed.get_quaternion();
-  double tol=0.0001;
-  return almost_equal(composed_q[0],1.,tol) &&
-    almost_equal(composed_q[1],0.,tol) &&
-    almost_equal(composed_q[2],0.,tol) &&
-    almost_equal(composed_q[3],0.,tol);
+//! Return a distance between the two rotations
+/** The distance runs between 0 and 1. More precisely,
+    the distance returned is the angle from the origin
+    of the two quaternion vectors (with signs chosen
+    appropriately), divided by pi/2.
+    \relatesalso Rotation3D
+ */
+inline double get_distance(const Rotation3D &r0,
+                           const Rotation3D &r1) {
+  double dot= std::abs(r0.get_quaternion()*r1.get_quaternion());
+  double theta= std::acos(dot);
+  return 2.0*theta/PI;
 }
 
 //! Generate a Rotation3D object from a rotation around an axis
@@ -369,10 +374,9 @@ IMPALGEBRAEXPORT Rotation3D get_random_rotation_3d();
 /** This method generates a rotation that is within the provided
     distance of center.
     \param[in] center The center of the rotational volume
-    \param[in] distance A distance of 0 means only center can be
-    returned, and a distance of 1 means all rotations can be returned.
-    The exact metric used is the distance between the
-    quaternions divided by two.
+    \param[in] distance See
+    get_distance(const Rotation3D&,const Rotation3D&)
+    for a full definition.
 
     \note The cost of this operation increases as distance goes to 0.
 

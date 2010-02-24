@@ -24,8 +24,8 @@ Rotation3D Rotation3D::get_inverse() const {
 
 
 Rotation3D get_rotation_from_matrix(double m11,double m12,double m13,
-                                double m21,double m22,double m23,
-                                double m31,double m32,double m33) {
+                                    double m21,double m22,double m23,
+                                    double m31,double m32,double m33) {
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     VectorD<3> v0(m11, m12, m13);
     VectorD<3> v1(m21, m22, m23);
@@ -110,8 +110,7 @@ Rotation3D get_random_rotation_3d(const Rotation3D &center,
   double d2= square(distance);
   while (count < 10000) {
     Rotation3D rr= get_random_rotation_3d();
-    if ((rr.get_quaternion()
-         - center.get_quaternion()).get_squared_magnitude() < d2) {
+    if (get_distance(center, rr) < d2) {
       return rr;
     }
     ++count;
