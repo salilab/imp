@@ -109,7 +109,7 @@ TextOutput get_log_target()
 }
 
 
-void log_write(std::string str) {
+void add_to_log(std::string str) {
   IMP_INTERNAL_CHECK(initialized=11111111,
              "You connot use the log before main is called.");
   stream.write(str.c_str(), str.size());
