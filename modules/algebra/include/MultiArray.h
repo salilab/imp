@@ -556,7 +556,7 @@ public:
 
     IMP_USAGE_CHECK(this->same_size(v),
       "MultiArray:: cross correlation coefficient not supported with "
-      "arrays of different size.",IMP::ValueException);
+      "arrays of different size.");
 
     double t_avg,t_stddev,v_avg,v_stddev;
     T t_max,t_min,v_max,v_min;
