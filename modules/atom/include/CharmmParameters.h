@@ -36,11 +36,11 @@ public:
                    const String& par_file_name = std::string());
 
   void add_patch(CHARMMPatch &patch) {
-    patches_.insert(std::make_pair(patch.get_name(), patch));
+    patches_.insert(std::make_pair(patch.get_type(), patch));
   }
 
   void add_residue_topology(CHARMMIdealResidueTopology &res) {
-    residue_topologies_.insert(std::make_pair(res.get_name(), res));
+    residue_topologies_.insert(std::make_pair(res.get_type(), res));
   }
 
   CHARMMPatch &get_patch(std::string name) {

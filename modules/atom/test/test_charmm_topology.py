@@ -22,7 +22,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
     def test_add_get_atom(self):
         """Check add/get atom from CHARMM residues"""
         res = IMP.atom.CHARMMIdealResidueTopology('FOO')
-        self.assertEqual(res.get_name(), 'FOO')
+        self.assertEqual(res.get_type(), 'FOO')
         self.assertRaises(IMP.ValueException, res.get_atom, 'CA')
         at = _make_test_atom()
         res.add_atom(at)
@@ -89,7 +89,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
     def test_patch(self):
         """Check the CHARMM patch class"""
         patch = IMP.atom.CHARMMPatch('PFOO')
-        self.assertEqual(patch.get_name(), 'PFOO')
+        self.assertEqual(patch.get_type(), 'PFOO')
         patch.add_deleted_atom('CA')
 
     def test_forcefield_add_get(self):
@@ -178,6 +178,22 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         self.assertEqual(res.get_atom('CB').get_charmm_type(), 'CT2')
         patch.apply(res)
         self.assertRaises(IMP.ValueException, res.get_atom, 'CB')
+
+    def test_manual_make_topology(self):
+        """Test manual construction of topology"""
+        model = IMP.atom.CHARMMTopology()
+        self.assertEqual(model.get_number_of_segments(), 0)
+        segment = IMP.atom.CHARMMSegmentTopology()
+        model.add_segment(segment)
+
+        ideal = IMP.atom.CHARMMIdealResidueTopology('ALA')
+        at = _make_test_atom()
+        ideal.add_atom(at)
+        res = IMP.atom.CHARMMResidueTopology(ideal)
+        segment.add_residue(res)
+
+        self.assertEqual(model.get_number_of_segments(), 1)
+        self.assertEqual(segment.get_number_of_residues(), 1)
 
 if __name__ == '__main__':
     unittest.main()
