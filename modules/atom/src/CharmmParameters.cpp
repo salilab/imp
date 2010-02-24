@@ -22,6 +22,18 @@ namespace {
     }
   }
 
+  void parse_dele_line(std::string line, CHARMMPatch &patch) {
+    std::vector<std::string> split_results;
+    boost::split(split_results, line, boost::is_any_of(" "),
+                 boost::token_compress_on);
+    if (split_results.size() < 3) return;
+
+    // Only DELE ATOM supported for now
+    if (split_results[1] == "ATOM") {
+      patch.add_deleted_atom(split_results[2]);
+    }
+  }
+
   void parse_angle_line(std::string line, CHARMMResidueTopologyBase &residue) {
     std::vector<std::string> split_results;
     boost::split(split_results, line, boost::is_any_of(" "),
@@ -87,6 +99,7 @@ void CharmmParameters::read_topology_file(std::ifstream& input_file) {
   const String RESI_LINE = "RESI";
   const String PRES_LINE = "PRES";
   const String ATOM_LINE = "ATOM";
+  const String DELE_LINE = "DELE";
   const String BOND_LINE = "BOND";
   const String BOND_LINE2 = "DOUBLE";
   const String ANGLE_LINE = "ANGL";
@@ -127,6 +140,11 @@ void CharmmParameters::read_topology_file(std::ifstream& input_file) {
         IMP_THROW("Invalid PRES line: " << line, ValueException);
       }
       patch.reset(new CHARMMPatch(split_results[1]));
+
+    // read DELE line
+    } else if (line.substr(0, DELE_LINE.length()) == DELE_LINE
+               && patch.get()) {
+      parse_dele_line(line, *patch);
 
     // read atom line
     } else if (line.substr(0, ATOM_LINE.length()) == ATOM_LINE
