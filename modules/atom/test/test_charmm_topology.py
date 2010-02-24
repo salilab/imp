@@ -59,16 +59,32 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         e = IMP.atom.CHARMMBondEndpoint('CA')
         self.assertEqual(e.get_atom_name(), 'CA')
 
+    def test_bond(self):
+        """Check CHARMM bond class"""
+        bond = IMP.atom.CHARMMBond2(IMP.Strings(['CA', 'CB']))
+        self.assertEqual(bond.contains_atom('CA'), True)
+        self.assertEqual(bond.contains_atom('N'), False)
+
     def test_add_bond(self):
         """Check addition of bonds/angles/dihedrals/impropers"""
         res = IMP.atom.CHARMMIdealResidueTopology('FOO')
         atoms = IMP.Strings(['CA', 'CB'])
+        # Test construction from strings or from CHARMMBond object
         res.add_bond(atoms)
+        res.add_bond(IMP.atom.CHARMMBond2(atoms))
+        self.assertEqual(res.get_number_of_bonds(), 2)
         atoms = IMP.Strings(['CA', 'CB', 'N'])
-        res.add_angle(atoms)
+        res.add_angle(IMP.atom.CHARMMBond3(atoms))
+        self.assertEqual(res.get_number_of_angles(), 1)
         atoms = IMP.Strings(['CA', 'CB', 'N', 'O'])
-        res.add_dihedral(atoms)
+        res.add_dihedral(IMP.atom.CHARMMBond4(atoms))
+        self.assertEqual(res.get_number_of_dihedrals(), 1)
         res.add_improper(atoms)
+        self.assertEqual(res.get_number_of_impropers(), 1)
+        self.assertEqual(res.get_bond(0).contains_atom('CA'), True)
+        self.assertEqual(res.get_angle(0).contains_atom('N'), True)
+        self.assertEqual(res.get_dihedral(0).contains_atom('O'), True)
+        self.assertEqual(res.get_improper(0).contains_atom('O'), True)
 
     def test_patch(self):
         """Check the CHARMM patch class"""
@@ -93,6 +109,10 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         ff = IMP.atom.CharmmParameters(IMP.atom.get_data_path("top.lib"))
         self.assertRaises(ValueError, ff.get_residue_topology, 'CTER')
         res = ff.get_residue_topology('CYS')
+        self.assertEqual(res.get_number_of_bonds(), 11)
+        self.assertEqual(res.get_number_of_angles(), 0)
+        self.assertEqual(res.get_number_of_dihedrals(), 0)
+        self.assertEqual(res.get_number_of_impropers(), 3)
         for (name, typ, charge) in [('N', 'NH1', -0.47), ('H', 'H', 0.31),
                                     ('CA', 'CT1', 0.07), ('HA', 'HB', 0.09),
                                     ('CB', 'CT2', -0.11), ('HB3', 'HA', 0.09),

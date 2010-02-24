@@ -100,17 +100,36 @@ public:
   void add_atom(const CHARMMAtom &atom);
   CHARMMAtom &get_atom(std::string name);
 
-  void add_bond(std::vector<std::string> atoms) {
-    bonds_.push_back(CHARMMBond<2>(atoms));
+  unsigned int get_number_of_bonds() { return bonds_.size(); }
+  void add_bond(const CHARMMBond<2> &bond) {
+    bonds_.push_back(bond);
   }
-  void add_angle(std::vector<std::string> atoms) {
-    angles_.push_back(CHARMMBond<3>(atoms));
+  CHARMMBond<2> &get_bond(unsigned int index) {
+    return bonds_[index];
   }
-  void add_dihedral(std::vector<std::string> atoms) {
-    dihedrals_.push_back(CHARMMBond<4>(atoms));
+
+  unsigned int get_number_of_angles() { return angles_.size(); }
+  void add_angle(const CHARMMBond<3> &bond) {
+    angles_.push_back(bond);
   }
-  void add_improper(std::vector<std::string> atoms) {
-    impropers_.push_back(CHARMMBond<4>(atoms));
+  CHARMMBond<3> &get_angle(unsigned int index) {
+    return angles_[index];
+  }
+
+  unsigned int get_number_of_dihedrals() { return dihedrals_.size(); }
+  void add_dihedral(const CHARMMBond<4> &bond) {
+    dihedrals_.push_back(bond);
+  }
+  CHARMMBond<4> &get_dihedral(unsigned int index) {
+    return dihedrals_[index];
+  }
+
+  unsigned int get_number_of_impropers() { return impropers_.size(); }
+  void add_improper(const CHARMMBond<4> &bond) {
+    impropers_.push_back(bond);
+  }
+  CHARMMBond<4> &get_improper(unsigned int index) {
+    return impropers_[index];
   }
 };
 
