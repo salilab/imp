@@ -73,4 +73,34 @@ void CHARMMIdealResidueTopology::delete_atom(std::string name)
                                   bond_has_atom<4>(name)), impropers_.end());
 }
 
+void CHARMMPatch::apply(CHARMMResidueTopology &res)
+{
+  if (res.get_patched()) {
+    IMP_THROW("Cannot patch an already-patched residue", ValueException);
+  }
+
+  // Copy or update atoms
+  for (std::vector<CHARMMAtom>::const_iterator it = atoms_.begin();
+       it != atoms_.end(); ++it) {
+    try {
+      res.get_atom(it->get_name()) = *it;
+    } catch (ValueException &e) {
+      res.add_atom(*it);
+    }
+  }
+
+  // Delete atoms
+  for (std::vector<std::string>::const_iterator it = deleted_atoms_.begin();
+       it != deleted_atoms_.end(); ++it) {
+    try {
+      res.delete_atom(*it);
+    } catch (ValueException &e) {
+      // ignore atoms that don't exist to start with
+    }
+  }
+
+  // Todo: add bonds/angles/dihedrals; handle two-residue patches (DISU, LINK)
+  res.set_patched(true);
+}
+
 IMPATOM_END_NAMESPACE

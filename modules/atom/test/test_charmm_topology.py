@@ -111,5 +111,38 @@ class CHARMMTopologyTests(IMP.test.TestCase):
             self.assertEqual(at.get_charmm_type(), typ)
             self.assertInTolerance(at.get_charge(), charge, 1e-3)
 
+    def test_residue_topology(self):
+        """Test CHARMM residue topology objects"""
+        ideal = IMP.atom.CHARMMIdealResidueTopology('ALA')
+        at = _make_test_atom()
+        ideal.add_atom(at)
+        res = IMP.atom.CHARMMResidueTopology(ideal)
+        self.assertEqual(res.get_atom('CA').get_charmm_type(), 'CT1')
+        self.assertEqual(res.get_patched(), False)
+        res.set_patched(True)
+        self.assertEqual(res.get_patched(), True)
+
+    def test_patching(self):
+        """Test application of patches"""
+        ff = IMP.atom.CharmmParameters(IMP.atom.get_data_path("top.lib"))
+        patch = ff.get_patch('CTER')
+        res = IMP.atom.CHARMMResidueTopology(ff.get_residue_topology('ALA'))
+        self.assertEqual(res.get_atom('C').get_charmm_type(), 'C')
+        patch.apply(res)
+        # Patch should change atom type of existing atoms
+        self.assertEqual(res.get_atom('C').get_charmm_type(), 'CC')
+        # Should also add new atoms
+        self.assertEqual(res.get_atom('OXT').get_charmm_type(), 'OC')
+        self.assertEqual(res.get_patched(), True)
+        # Repeated patching should not be possible
+        self.assertRaises(IMP.ValueException, patch.apply, res)
+
+        # Patches should delete atoms
+        patch = ff.get_patch('TP1A')
+        res = IMP.atom.CHARMMResidueTopology(ff.get_residue_topology('TYR'))
+        self.assertEqual(res.get_atom('CB').get_charmm_type(), 'CT2')
+        patch.apply(res)
+        self.assertRaises(IMP.ValueException, res.get_atom, 'CB')
+
 if __name__ == '__main__':
     unittest.main()

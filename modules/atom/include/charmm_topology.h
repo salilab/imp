@@ -137,6 +137,8 @@ public:
   std::string get_default_last_patch() const { return default_last_patch_; }
 };
 
+class CHARMMResidueTopology;
+
 //! A CHARMM patch residue
 /** Patch residues are similar to regular residues, except that they are
     used to modify an existing residue. Any atoms they contain replace or
@@ -145,12 +147,26 @@ public:
     two residues (e.g. DISU, LINK) in which each atom contains a 1: or 2:
     prefix to identify the residue which will be patched.
  */
-class CHARMMPatch : public CHARMMResidueTopologyBase {
+class IMPATOMEXPORT CHARMMPatch : public CHARMMResidueTopologyBase {
   std::vector<std::string> deleted_atoms_;
 public:
   CHARMMPatch(std::string name) : CHARMMResidueTopologyBase(name) {}
 
   void add_deleted_atom(std::string name) { deleted_atoms_.push_back(name); }
+
+  void apply(CHARMMResidueTopology &res);
+};
+
+//! The topology of a single residue in a model
+class CHARMMResidueTopology : public CHARMMIdealResidueTopology {
+  bool patched_;
+public:
+
+  CHARMMResidueTopology(CHARMMIdealResidueTopology &ideal)
+    : CHARMMIdealResidueTopology(ideal), patched_(false) {}
+
+  bool get_patched() const { return patched_; }
+  void set_patched(bool patched) { patched_ = patched; }
 };
 
 IMPATOM_END_NAMESPACE
