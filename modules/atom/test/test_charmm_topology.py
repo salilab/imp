@@ -201,9 +201,11 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         pdb = IMP.atom.read_pdb(self.get_input_file_name('1z5s_C.pdb'), m)
         ff = IMP.atom.CharmmParameters(IMP.atom.get_data_path("top.lib"))
         topology = ff.make_topology(pdb)
+        topology.apply_default_patches(ff)
         self.assertEqual(topology.get_number_of_segments(), 1)
         segment = topology.get_segment(0)
         self.assertEqual(segment.get_number_of_residues(), 156)
+        self.assertRaises(IMP.ValueException, segment.apply_default_patches, ff)
 
 if __name__ == '__main__':
     unittest.main()

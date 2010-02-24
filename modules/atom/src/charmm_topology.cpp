@@ -6,6 +6,7 @@
 
 #include <IMP/exception.h>
 #include <IMP/atom/charmm_topology.h>
+#include <IMP/atom/CharmmParameters.h>
 
 #include <algorithm>
 
@@ -122,6 +123,29 @@ void CHARMMResidueTopology::do_show(std::ostream &out) const
 
 void CHARMMSegmentTopology::do_show(std::ostream &out) const
 {
+}
+
+void CHARMMSegmentTopology::apply_default_patches(CharmmParameters *ff)
+{
+  if (get_number_of_residues() == 0) return;
+
+  CHARMMResidueTopology *first = get_residue(0);
+  CHARMMResidueTopology *last = get_residue(get_number_of_residues() - 1);
+
+  if (first->get_default_first_patch() != "") {
+    ff->get_patch(first->get_default_first_patch()).apply(*first);
+  }
+
+  if (last->get_default_first_patch() != "") {
+    // If chain contains only a single residue, allow both the first and last
+    // patch to be applied to it
+    if (get_number_of_residues() == 1
+        && first->get_default_first_patch() != "") {
+      first->set_patched(false);
+    }
+
+    ff->get_patch(last->get_default_last_patch()).apply(*last);
+  }
 }
 
 void CHARMMTopology::do_show(std::ostream &out) const
