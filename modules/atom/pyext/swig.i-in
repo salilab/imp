@@ -169,6 +169,9 @@ namespace IMP {
 
 namespace IMP {
   namespace atom {
+   %template(CHARMMBond2) CHARMMBond<2>;
+   %template(CHARMMBond3) CHARMMBond<3>;
+   %template(CHARMMBond4) CHARMMBond<4>;
    %template(show_molecular_hierarchy) IMP::core::show<IMP::atom::Hierarchy>;
    // must go after the above headers
    %template(HierarchyVector) ::std::vector<IMP::atom::Hierarchy>;
