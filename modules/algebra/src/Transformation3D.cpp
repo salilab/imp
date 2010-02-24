@@ -14,8 +14,7 @@ Transformation3D Transformation3D::get_inverse() const{
   return Transformation3D(inv_rot,-(inv_rot.get_rotated(trans_)));
 }
 
-Transformation3D build_Transformation3D_from_Transformation2D(
-                                  const Transformation2D &t2d) {
+Transformation3D get_transformation_3d(const Transformation2D &t2d) {
   Rotation3D R = get_rotation_from_fixed_zyz(
                           t2d.get_rotation().get_angle(),0.0,0.0);
   VectorD<3> t(t2d.get_translation()[0],t2d.get_translation()[1],0);

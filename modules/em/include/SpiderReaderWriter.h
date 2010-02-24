@@ -96,7 +96,7 @@ public:
     // Adjust size of the matrix according to the header
     data.resize((int)header.get_number_of_rows(),
                 (int)header.get_number_of_columns());
-    data.read_binary(in,force_reversed_ ^ algebra::is_big_endian());
+    data.read_binary(in,force_reversed_ ^ algebra::get_is_big_endian());
     in.close();
   }
 
@@ -118,7 +118,7 @@ public:
     // Read with casting
     float aux;
     for (unsigned long i=0;i<data.num_elements();i++) {
-      if (!(force_reversed_ ^ algebra::is_big_endian())) {
+      if (!(force_reversed_ ^ algebra::get_is_big_endian())) {
         in.read(reinterpret_cast< char* >(&aux), sizeof(float));
       } else {
         algebra::reversed_read(reinterpret_cast< char* >(&aux),
@@ -140,8 +140,8 @@ public:
     std::ofstream out;
     out.open(filename.c_str(), std::ios::out | std::ios::binary);
     //! The image header is already in Spider format, just write it
-    header.write(out, force_reversed_ ^ algebra::is_big_endian());
-    data.write_binary(out,force_reversed_ ^ algebra::is_big_endian());
+    header.write(out, force_reversed_ ^ algebra::get_is_big_endian());
+    data.write_binary(out,force_reversed_ ^ algebra::get_is_big_endian());
     out.close();
   }
 
@@ -151,12 +151,12 @@ public:
     std::ofstream out;
     out.open(filename.c_str(), std::ios::out | std::ios::binary);
     //! The image header is already in Spider format, just write it
-    header.write(out, force_reversed_ ^ algebra::is_big_endian());
+    header.write(out, force_reversed_ ^ algebra::get_is_big_endian());
 
     float aux;
     for (unsigned long i=0;i<data.num_elements();i++) {
       aux = (float)data.data()[i];
-      if (!(force_reversed_ ^ algebra::is_big_endian())) {
+      if (!(force_reversed_ ^ algebra::get_is_big_endian())) {
         out.write(reinterpret_cast< char* >(&aux), sizeof(float));
       } else {
         algebra::reversed_write(reinterpret_cast< char* >(&aux),

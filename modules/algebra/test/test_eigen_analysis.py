@@ -24,7 +24,7 @@ class EigenAnalysisTests(IMP.test.TestCase):
     def test_pca(self):
         """Testing eigen analysis """
         vs = self._produce_point_set()
-        ed = IMP.algebra.principal_components(vs)
+        ed = IMP.algebra.get_principal_components(vs)
         self.assertInTolerance(ed.get_principal_value(0),1.28,.1)
         self.assertInTolerance(ed.get_principal_value(1),0.049,.1)
         ed.show()

@@ -159,7 +159,7 @@ inline Transformation3D compose(const Transformation3D &a,
   \note The 3D transformation is built with the 2D rotation becoming a rotation
   around the z axis.
   **/
-IMPALGEBRAEXPORT Transformation3D get_transformation_3d_from_transformation_2d(
+IMPALGEBRAEXPORT Transformation3D get_transformation_3d(
                                   const Transformation2D &t2d);
 
 

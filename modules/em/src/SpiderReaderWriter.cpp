@@ -28,7 +28,7 @@ void SpiderMapReaderWriter::Read(const char *filename,
     h.get_number_of_slices()*h.get_number_of_columns()*h.get_number_of_rows();
   (*data)= new float[n];
   IMP::algebra::reversed_read((*data), sizeof(float), n, in,
-                              force_reversed_ ^ algebra::is_big_endian());
+                              force_reversed_ ^ algebra::get_is_big_endian());
   in.close();
 }
 
@@ -40,11 +40,11 @@ void SpiderMapReaderWriter::Write(const char *filename,
   ImageHeader h;
   DensityHeader_to_ImageHeader(header,h);
   // Write in Spider format (ImageHeader is in Spider format)
-  h.write(out, force_reversed_ ^ algebra::is_big_endian());
+  h.write(out, force_reversed_ ^ algebra::get_is_big_endian());
   size_t n =
    h.get_number_of_slices()*h.get_number_of_columns()*h.get_number_of_rows();
   IMP::algebra::reversed_write(data, sizeof(float), n, out,
-                               force_reversed_ ^ algebra::is_big_endian());
+                               force_reversed_ ^ algebra::get_is_big_endian());
   out.close();
 }
 

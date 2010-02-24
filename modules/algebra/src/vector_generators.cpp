@@ -15,7 +15,7 @@ namespace {
 Transformation3D
 get_transformation_to_place_direction_on_Z(const Cylinder3D &c){
   Vector3D main_dir = c.get_segment().get_direction();
-  Vector3D vertical_dir = orthogonal_vector(main_dir);
+  Vector3D vertical_dir = get_orthogonal_vector(main_dir);
   Transformation3D move2zero= Transformation3D(
                    get_identity_rotation_3d(),
                    -c.get_segment().get_middle_point());
@@ -24,7 +24,7 @@ get_transformation_to_place_direction_on_Z(const Cylinder3D &c){
   //the cylinder
   Transformation3D rigid_trans=get_transformation_from_reference_frame(
                                  vertical_dir,
-                                 vector_product(main_dir,vertical_dir),
+                                 get_vector_product(main_dir,vertical_dir),
                                  Vector3D(0.0,0.0,0.0));
   return rigid_trans.get_inverse();
 }
