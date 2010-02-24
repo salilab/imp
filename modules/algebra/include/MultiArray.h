@@ -148,6 +148,14 @@ public:
     }
   }
 
+  //! Copy with casting. Use with care!
+  template<typename U>
+  void copy_with_casting(MultiArray<U, D> &v) {
+    for (unsigned long i=0;i<this->num_elements() ;i++) {
+      this->data()[i] = (T)v.data()[i];
+    }
+  }
+
   //! Returns true if the LOGICAL index belongs to those of the matrix
   /**
    * \param[in] v Any class able to be accessed with []
@@ -545,10 +553,10 @@ public:
                                       double stddev=0.0,
                                       double avg_v=0.0,
                                       double stddev_v=0.0) {
-    if(this->same_size(v)==false) {
-      IMP_FAILURE("cross_correlation_coefficient:: operation "
-                   "not supported with arrays of different size. ");
-    }
+
+    IMP_USAGE_CHECK(this->same_size(v),
+      "MultiArray:: cross correlation coefficient not supported with "
+      "arrays of different size.",IMP::ValueException);
 
     double t_avg,t_stddev,v_avg,v_stddev;
     T t_max,t_min,v_max,v_min;
@@ -563,27 +571,21 @@ public:
       v_stddev=stddev_v;
     }
 
-    // Get number of elements
-    double n_elems = 1.0;
-    for (unsigned int i = 0;i < D;i++) {
-      n_elems *= static_cast<double>(this->get_size(i));
-    }
-
+    double n_elems = (double)this->num_elements();
     double epsilon = 1e-6;
     // Check for stddevs near zero using the default tolerance
     if (divide_by_stddev && ( almost_equal(t_stddev,0.0,epsilon) ||
                               almost_equal(v_stddev,0.0,epsilon))) {
       return 0.0;
     }
-
     double ccc = 0.0;
     std::vector<index> idx(D);
 
     // Fast version
     if(this->same_start(v)) {
-      while (internal::roll_inds(idx, this->shape(), this->index_bases())) {
-        if(!apply_threshold || (apply_threshold && v(idx) > threshold)) {
-          ccc += (*this)(idx)*v(idx);
+      for (unsigned long i=0;i<n_elems;++i) {
+        if(!apply_threshold || (apply_threshold && v.data()[i] > threshold)) {
+          ccc += this->data()[i]*v.data()[i];
         }
       }
     } else { // Different origins
@@ -602,50 +604,6 @@ public:
     }
     return ccc;
   }
-
-  // note removal of doxygen docs
-  // Pad the MultiArray. Padding is defined as doubling the size
-  // in each dimension and fill the new values with the previous average value.
-  //  /*
-  // \param[in] padded the MultiArray padded
-  //*/
-//  void pad(This& padded) {
-//    double avg = this->compute_avg();
-//    this->pad(padded,avg);
-//  }
-
-//  // Pad with a given value (only works for boost 1.37 and higher)
-//  /*
-//    \param[out] padded the output MultiArray
-//    \param[in] val the value to pad with
-//  */
-//  void pad(This& padded,T val) {
-//    std::vector<int> extents(D);
-//    for(int i=0;i<D;i++) {
-//      extents[i]=2*this->get_size(i);
-//    }
-//    padded.resize(extents);
-//    // Copy values
-//    padded.fill_with_value(val);
-//    std::vector<index> idx(D),idx_for_padded(D);
-//    while (internal::roll_inds(idx, this->shape(),this->index_bases())) {
-//      for(int i=0;i<D;i++) {
-//        idx_for_padded[i]=idx[i]+(int)this->get_size(i)/2;
-//      }
-//      padded(idx_for_padded)=(*this)(idx);
-//    }
-//  }
-
-//  //! Cast values (only works for boost 1.37 and higher)
-//  template<typename T1>
-//  void cast_values(MultiArray<T1, D> &out) {
-//    boost::array<int, D> shape;
-//    std::copy(this->shape(), this->shape() + D, shape.begin());
-//    out.resize(shape);
-//    for(unsigned int i=0; i<this->num_elements(); i++) {
-//      out.data()[i] = this->data()[i];
-//    }
-//  }
 
   //! Read from an ASCII file.
   /**
@@ -823,6 +781,10 @@ template <class T, int D>
     internal::operate_scalar_and_array(X,a1,result,"/");
     return result;
   }
+
+
+
+
 #endif
 
 IMPALGEBRA_END_NAMESPACE
