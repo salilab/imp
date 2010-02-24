@@ -114,8 +114,11 @@ class RotationTests(IMP.test.TestCase):
         t1 = IMP.algebra.get_random_rotation_3d()
         t2 = t1
         t3 = t1.get_inverse()
-        self.assert_(IMP.algebra.almost_equal_rotations(t1,t2)==True)
-        self.assert_(IMP.algebra.almost_equal_rotations(t1,t3)==False)
+        self.assertInTolerance(IMP.algebra.get_distance(t1,t2), 0, .05)
+        # hard to say anything about a rotation and its inverse
+        # self.assert_(IMP.algebra.get_distance(t1,t3), .5, .05)
+        self.assertInTolerance(IMP.algebra.get_distance(IMP.algebra.Rotation3D(1,0,0,0),
+                                                        IMP.algebra.Rotation3D(0,0,0,1)), 1, .05)
 
     def test_interpolate(self):
         """Check that rotations can be interpolated"""
