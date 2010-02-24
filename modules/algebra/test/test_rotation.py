@@ -111,9 +111,11 @@ class RotationTests(IMP.test.TestCase):
 
     def test_is_equal_between_rotations(self):
         """Check that two rotations are equal"""
-        t1 = IMP.algebra.random_rotation()
+        t1 = IMP.algebra.get_random_rotation_3d()
         t2 = t1
-        self.assert_(IMP.algebra.almost_equal_rotations(t1,t2),True)
+        t3 = t1.get_inverse()
+        self.assert_(IMP.algebra.almost_equal_rotations(t1,t2)==True)
+        self.assert_(IMP.algebra.almost_equal_rotations(t1,t3)==False)
 
     def test_interpolate(self):
         """Check that rotations can be interpolated"""
