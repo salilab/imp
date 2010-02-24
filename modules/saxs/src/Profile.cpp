@@ -10,6 +10,7 @@
 #include <IMP/core/XYZ.h>
 #include <IMP/algebra/utility.h>
 #include <IMP/algebra/Vector3D.h>
+#include <IMP/algebra/ParabolicFit.h>
 #include <IMP/constants.h>
 
 #include <boost/algorithm/string.hpp>
@@ -516,6 +517,41 @@ void Profile::add_partial_profiles(const Profile& other_profile) {
   }
   for(unsigned int i=0; i<partial_profiles_.size(); i++) {
     partial_profiles_[i].add(other_profile.partial_profiles_[i]);
+  }
+}
+
+void Profile::background_adjust(double start_q) {
+  std::vector<algebra::Vector2D> data; // x=q^2, y=sum(q^2xI(q))
+  double sum = 0.0;
+  for(unsigned int i=0; i<profile_.size(); i++) {
+    double q = profile_[i].q_;
+    double Iq = profile_[i].intensity_;
+    double q2xIq = q*q*Iq;
+    sum+= q2xIq;
+    //std::cout << q << " " << q2xIq << " " << sum << std::endl;
+    if(q >= start_q) {
+      algebra::Vector2D v(q*q, sum);
+      data.push_back(v);
+    }
+  }
+
+  algebra::ParabolicFit p(data);
+  double P3 = p.get_a();
+  double P2 = p.get_b();
+  double P1 = p.get_c();
+  double G1 = P2/P1;
+  double G2 = 12.0*(P3/P1 - G1*G1/4.0);
+  //std::cerr << "G1 = " << G1 << " G2 = " << G2 << std::endl;
+
+  for(unsigned int i=0; i<profile_.size(); i++) {
+    double q = profile_[i].q_;
+    double q2 = q*q;
+    double q4 = q2*q2;
+    double Iq = profile_[i].intensity_;
+    double Iq_new = Iq / (1.0 + q2*G1 + q4*(G1*G1/4.0 + G2/12.0));
+    profile_[i].intensity_ = Iq_new;
+    //profile.set_intensity(i, Iq_new);
+    //std::cout << q << " " << Iq_new << " " << get_error(i)<< std::endl;
   }
 }
 
