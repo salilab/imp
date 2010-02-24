@@ -342,4 +342,26 @@ void CharmmParameters::read_VdW_params(std::ifstream& input_file) {
 void CharmmParameters::do_show(std::ostream &out) const {
 }
 
+CHARMMTopology *CharmmParameters::make_topology(Hierarchy hierarchy)
+{
+  IMP_NEW(CHARMMTopology, topology, ());
+
+  HierarchiesTemp chains = get_by_type(hierarchy, CHAIN_TYPE);
+
+  for (HierarchiesTemp::iterator chainit = chains.begin();
+       chainit != chains.end(); ++chainit) {
+    IMP_NEW(CHARMMSegmentTopology, segment, ());
+    HierarchiesTemp residues = get_by_type(*chainit, RESIDUE_TYPE);
+    for (HierarchiesTemp::iterator resit = residues.begin();
+         resit != residues.end(); ++resit) {
+      std::string restyp = Residue(*resit).get_residue_type().get_string();
+      IMP_NEW(CHARMMResidueTopology, residue, (get_residue_topology(restyp)));
+      segment->add_residue(residue);
+    }
+    topology->add_segment(segment);
+  }
+
+  return topology.release();
+}
+
 IMPATOM_END_NAMESPACE

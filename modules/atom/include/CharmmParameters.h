@@ -62,6 +62,8 @@ public:
     }
   }
 
+  CHARMMTopology *make_topology(Hierarchy hierarchy);
+
   IMP_FORCE_FIELD_PARAMETERS(CharmmParameters);
 private:
 
