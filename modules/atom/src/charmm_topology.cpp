@@ -99,7 +99,20 @@ void CHARMMPatch::apply(CHARMMResidueTopology &res)
     }
   }
 
-  // Todo: add bonds/angles/dihedrals; handle two-residue patches (DISU, LINK)
+  // Add angles/bonds/dihedrals/impropers
+  for (unsigned int i = 0; i < get_number_of_bonds(); ++i) {
+    res.add_bond(get_bond(i));
+  }
+  for (unsigned int i = 0; i < get_number_of_angles(); ++i) {
+    res.add_angle(get_angle(i));
+  }
+  for (unsigned int i = 0; i < get_number_of_dihedrals(); ++i) {
+    res.add_dihedral(get_dihedral(i));
+  }
+  for (unsigned int i = 0; i < get_number_of_impropers(); ++i) {
+    res.add_improper(get_improper(i));
+  }
+
   res.set_patched(true);
 }
 

@@ -174,6 +174,8 @@ public:
   void add_deleted_atom(std::string name) { deleted_atoms_.push_back(name); }
 
   void apply(CHARMMResidueTopology &res);
+  // Todo: handle two-residue patches (DISU, LINK)
+  // void apply(CHARMMResidueTopology &res1, CHARMMResidueTopology &res2);
 };
 
 //! The topology of a single residue in a model

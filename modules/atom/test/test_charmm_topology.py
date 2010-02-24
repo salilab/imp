@@ -158,12 +158,17 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         patch = ff.get_patch('CTER')
         res = IMP.atom.CHARMMResidueTopology(ff.get_residue_topology('ALA'))
         self.assertEqual(res.get_atom('C').get_charmm_type(), 'C')
+        self.assertEqual(res.get_number_of_bonds(), 10)
+        self.assertEqual(res.get_number_of_impropers(), 3)
         patch.apply(res)
         # Patch should change atom type of existing atoms
         self.assertEqual(res.get_atom('C').get_charmm_type(), 'CC')
         # Should also add new atoms
         self.assertEqual(res.get_atom('OXT').get_charmm_type(), 'OC')
         self.assertEqual(res.get_patched(), True)
+        # Should add bonds/angles/dihedrals/impropers
+        self.assertEqual(res.get_number_of_bonds(), 11)
+        self.assertEqual(res.get_number_of_impropers(), 4)
         # Repeated patching should not be possible
         self.assertRaises(IMP.ValueException, patch.apply, res)
 
