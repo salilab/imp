@@ -8,6 +8,8 @@
 #ifndef IMPATOM_CHARMM_TOPOLOGY_H
 #define IMPATOM_CHARMM_TOPOLOGY_H
 
+#include "IMP/Object.h"
+#include "IMP/container_macros.h"
 #include "config.h"
 
 #include <string>
@@ -85,7 +87,7 @@ public:
 
 //! Base class for all CHARMM residue-based topology
 class IMPATOMEXPORT CHARMMResidueTopologyBase {
-  std::string name_;
+  std::string type_;
 protected:
   std::vector<CHARMMAtom> atoms_;
   std::vector<CHARMMBond<2> > bonds_;
@@ -93,9 +95,9 @@ protected:
   std::vector<CHARMMBond<4> > dihedrals_;
   std::vector<CHARMMBond<4> > impropers_;
 
-  CHARMMResidueTopologyBase(std::string name) : name_(name) {}
+  CHARMMResidueTopologyBase(std::string type) : type_(type) {}
 public:
-  std::string get_name() const { return name_; }
+  std::string get_type() const { return type_; }
 
   void add_atom(const CHARMMAtom &atom);
   CHARMMAtom &get_atom(std::string name);
@@ -138,8 +140,8 @@ class IMPATOMEXPORT CHARMMIdealResidueTopology
     : public CHARMMResidueTopologyBase {
   std::string default_first_patch_, default_last_patch_;
 public:
-  CHARMMIdealResidueTopology(std::string name)
-      : CHARMMResidueTopologyBase(name) {}
+  CHARMMIdealResidueTopology(std::string type)
+      : CHARMMResidueTopologyBase(type) {}
 
   //! Delete the named atom
   /** Any bonds/angles that involve this atom are also deleted.
@@ -169,7 +171,7 @@ class CHARMMResidueTopology;
 class IMPATOMEXPORT CHARMMPatch : public CHARMMResidueTopologyBase {
   std::vector<std::string> deleted_atoms_;
 public:
-  CHARMMPatch(std::string name) : CHARMMResidueTopologyBase(name) {}
+  CHARMMPatch(std::string type) : CHARMMResidueTopologyBase(type) {}
 
   void add_deleted_atom(std::string name) { deleted_atoms_.push_back(name); }
 
@@ -179,7 +181,8 @@ public:
 };
 
 //! The topology of a single residue in a model
-class CHARMMResidueTopology : public CHARMMIdealResidueTopology {
+class IMPATOMEXPORT CHARMMResidueTopology
+     : public CHARMMIdealResidueTopology, public Object {
   bool patched_;
 public:
 
@@ -188,6 +191,28 @@ public:
 
   bool get_patched() const { return patched_; }
   void set_patched(bool patched) { patched_ = patched; }
+
+  IMP_OBJECT(CHARMMResidueTopology);
+};
+
+IMP_OBJECTS(CHARMMResidueTopology);
+
+//! The topology of a single CHARMM segment (chain) in a model
+class IMPATOMEXPORT CHARMMSegmentTopology : public Object {
+  IMP_LIST(public, CHARMMResidueTopology, residue, CHARMMResidueTopology*,
+           CHARMMResidueTopologys);
+
+  IMP_OBJECT(CHARMMSegmentTopology);
+};
+
+IMP_OBJECTS(CHARMMSegmentTopology);
+
+//! The topology of a complete CHARMM model
+class IMPATOMEXPORT CHARMMTopology : public Object {
+  IMP_LIST(public, CHARMMSegmentTopology, segment, CHARMMSegmentTopology*,
+           CHARMMSegmentTopologys);
+
+  IMP_OBJECT(CHARMMTopology);
 };
 
 IMPATOM_END_NAMESPACE

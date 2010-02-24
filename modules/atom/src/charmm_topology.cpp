@@ -116,4 +116,22 @@ void CHARMMPatch::apply(CHARMMResidueTopology &res)
   res.set_patched(true);
 }
 
+void CHARMMResidueTopology::do_show(std::ostream &out) const
+{
+}
+
+void CHARMMSegmentTopology::do_show(std::ostream &out) const
+{
+}
+
+void CHARMMTopology::do_show(std::ostream &out) const
+{
+}
+
+IMP_LIST_IMPL(CHARMMSegmentTopology, CHARMMResidueTopology, residue,
+              CHARMMResidueTopology *, CHARMMResidueTopologys, {}, {}, {});
+
+IMP_LIST_IMPL(CHARMMTopology, CHARMMSegmentTopology, segment,
+              CHARMMSegmentTopology *, CHARMMSegmentTopologys, {}, {}, {});
+
 IMPATOM_END_NAMESPACE
