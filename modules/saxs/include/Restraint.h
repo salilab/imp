@@ -44,17 +44,14 @@ class IMPSAXSEXPORT Restraint : public IMP::Restraint
   /**
      \param[in] particles The particles participating in the fitting score
      \param[in] exp_profile  The experimental profile used in the fitting score
-     \param[in] ff_table Form Factor Table
   */
-  Restraint(const Particles& particles, const Profile& exp_profile,
-            FormFactorTable* ff_table = default_form_factor_table());
+  Restraint(const Particles& particles, const Profile& exp_profile);
 
   IMP_RESTRAINT(Restraint)
 
  private:
   void compute_profile(Profile& model_profile);
  private:
-  Pointer<FormFactorTable> ff_table_; // pointer to form factors table
   Particles particles_; // non-rigid bodies particles
   std::vector<core::RigidBody> rigid_bodies_decorators_; //rigid bodies
   std::vector<Particles> rigid_bodies_; // rigid bodies particles

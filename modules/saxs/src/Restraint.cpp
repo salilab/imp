@@ -14,11 +14,10 @@
 
 IMPSAXS_BEGIN_NAMESPACE
 
-Restraint::Restraint(const Particles& particles, const Profile& exp_profile,
-                     FormFactorTable* ff_table) :
-  IMP::Restraint("SAXS restraint"),
-  ff_table_(ff_table), rigid_bodies_profile_(ff_table) {
-  saxs_score_ = new Score( exp_profile, ff_table_);
+Restraint::Restraint(const Particles& particles, const Profile& exp_profile) :
+  IMP::Restraint("SAXS restraint") {
+
+  saxs_score_ = new Score(exp_profile);
 
   // for now just use a LeavesRefiner. It should, eventually, be a parameter
   // or a (not yet existing) AtomsRefiner.
@@ -30,7 +29,7 @@ Restraint::Restraint(const Particles& particles, const Profile& exp_profile,
                               core::RigidBody::decorate_particle(particles[i]));
      rigid_bodies_.push_back(ref->get_refined(rigid_bodies_decorators_.back()));
       // compute non-changing profile
-      Profile rigid_part_profile(ff_table_);
+      Profile rigid_part_profile;
       rigid_part_profile.calculate_profile(rigid_bodies_.back());
       rigid_bodies_profile_.add(rigid_part_profile);
     } else {
@@ -76,8 +75,9 @@ ContainersTemp Restraint::get_input_containers() const
 void Restraint::compute_profile(Profile& model_profile) {
   // add non-changing profile
   model_profile.add(rigid_bodies_profile_);
-  Profile profile(ff_table_, model_profile.get_min_q(),
-                  model_profile.get_max_q(), model_profile.get_delta_q());
+  Profile profile(model_profile.get_min_q(),
+                  model_profile.get_max_q(),
+                  model_profile.get_delta_q());
   // compute inter-rigid bodies contribution
   for(unsigned int i=0; i<rigid_bodies_.size(); i++) {
     for(unsigned int j=i+1; j<rigid_bodies_.size(); j++) {
@@ -107,7 +107,7 @@ double Restraint::unprotected_evaluate(DerivativeAccumulator *acc) const
 {
   IMP_LOG(TERSE, "SAXS Restraint::evaluate score\n");
 
-  Profile model_profile(ff_table_);
+  Profile model_profile;
   const_cast<Restraint*>(this)->compute_profile(model_profile);
   Float score = saxs_score_->compute_chi_square_score(model_profile, true);
   bool calc_deriv = acc? true: false;

@@ -9,7 +9,6 @@
 #define IMPSAXS_SCORE_H
 
 #include "config.h"
-#include "FormFactorTable.h"
 #include "Distribution.h"
 #include "Profile.h"
 
@@ -32,10 +31,8 @@ public:
   //! Constructor
   /**
      \param[in] exp_profile Experimental profile we want to fit
-     \param[in] ff_table Form Factors Table
   */
-  Score(const Profile& exp_profile,
-        FormFactorTable* ff_table = default_form_factor_table());
+  Score(const Profile& exp_profile);
 
   //! compute chi value
   Float compute_chi_score(const Profile& model_profile,
@@ -127,8 +124,7 @@ public:
                         std::vector<Floats>& output_values) const;
   IMP_REF_COUNTED_DESTRUCTOR(Score);
  protected:
-  Pointer<FormFactorTable> ff_table_;       // pointer to form factors table
-  Profile exp_profile_;   // pointer to experimental saxs profile
+  const Profile& exp_profile_;   //  experimental saxs profile
 };
 
 IMPSAXS_END_NAMESPACE
