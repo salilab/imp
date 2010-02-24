@@ -58,15 +58,14 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         #                               IMP.algebra.random_vector_in_unit_box())
 
         #set a small random transformation
-        translation = IMP.algebra.random_vector_in_unit_box()
-        axis = IMP.algebra.random_vector_on_sphere(
-            IMP.algebra.Vector3D(0.0,0.0,0.0),1.);
+        translation = IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d())
+        axis = IMP.algebra.get_random_vector_on(IMP.algebra.get_unit_sphere_3d())
         rand_angle = random.uniform(-15./180*math.pi,15./180*math.pi)
-        r= IMP.algebra.rotation_in_radians_about_axis(axis, rand_angle);
+        r= IMP.algebra.get_rotation_in_radians_about_axis(axis, rand_angle);
         t=IMP.algebra.Transformation3D(r,translation)
 
         for p in self.particles:
-            IMP.core.XYZ(p).set_coordinates(t.transform(IMP.core.XYZ(p).get_coordinates()))
+            IMP.core.XYZ(p).set_coordinates(t.get_transformed(IMP.core.XYZ(p).get_coordinates()))
         transformed_density = IMP.em.get_transformed(self.scene,
                                                      t,threshold)
         sampled_density_map1 = IMP.em.SampledDensityMap(transformed_density.get_header())
@@ -84,7 +83,7 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         #move the particles back for the next test
         t_inv = t.get_inverse()
         for p in self.particles:
-            IMP.core.XYZ(p).set_coordinates(t_inv.transform(IMP.core.XYZ(p).get_coordinates()))
+            IMP.core.XYZ(p).set_coordinates(t_inv.get_transformed(IMP.core.XYZ(p).get_coordinates()))
         self.assertInTolerance(score1,score2,0.05) #because rotation the grid changes the density a bit
 
     def test_cc_with_sampled_grid_rotation(self):
@@ -92,11 +91,10 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         check = IMP.get_check_level()
 
         #set a small random transformation
-        translation = IMP.algebra.random_vector_in_unit_box()
-        axis = IMP.algebra.random_vector_on_sphere(
-            IMP.algebra.Vector3D(0.0,0.0,0.0),1.);
+        translation = IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d())
+        axis = IMP.algebra.get_random_vector_on(IMP.algebra.get_unit_sphere_3d())
         rand_angle = random.uniform(-15./180*math.pi,15./180*math.pi)
-        r= IMP.algebra.rotation_in_radians_about_axis(axis, rand_angle);
+        r= IMP.algebra.get_rotation_in_radians_about_axis(axis, rand_angle);
         t=IMP.algebra.Transformation3D(r,translation)
 
 
@@ -112,7 +110,7 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
 
         # transform the particles and resample the original map
         for p in self.particles:
-            IMP.core.XYZ(p).set_coordinates(t.transform(IMP.core.XYZ(p).get_coordinates()))
+            IMP.core.XYZ(p).set_coordinates(t.get_transformed(IMP.core.XYZ(p).get_coordinates()))
         sampled_density_map.resample()
         sampled_density_map.calcRMS()
         #calculate CC after rotating the particles
@@ -134,7 +132,7 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         #move the particles back for the next test
         t_inv = t.get_inverse()
         for p in self.particles:
-            IMP.core.XYZ(p).set_coordinates(t_inv.transform(IMP.core.XYZ(p).get_coordinates()))
+            IMP.core.XYZ(p).set_coordinates(t_inv.get_transformed(IMP.core.XYZ(p).get_coordinates()))
         print "scores:",score1,":",score2
         self.assertInTolerance(score1,score2,0.05)
 if __name__ == '__main__':
