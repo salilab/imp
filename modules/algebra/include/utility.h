@@ -24,7 +24,7 @@ inline bool xorT(bool x, bool y)
 
 //! Sign of a number. 1 if the number is higher or equal to 0 and -1 otherwise
 template<typename T>
-int sign(const T& x)
+int get_sign(const T& x)
 {
   if (x >= 0) return 1;
   return -1;
@@ -43,7 +43,7 @@ int sign(const T& x)
  * \endcode
  */
 template<typename T>
-int round(const T& x)
+int get_rounded(const T& x)
 {
   if (x > 0) {
     return (int)((x) + 0.5);
@@ -68,7 +68,7 @@ int round(const T& x)
  * \endcode
  */
 template<typename T>
-T constrain(const T x, const T x0, const T xF)
+T get_constrained(const T x, const T x0, const T xF)
 {
   if (x < x0) return x0;
   if (x > xF) return xF;
@@ -76,34 +76,15 @@ T constrain(const T x, const T x0, const T xF)
 }
 
 
-//! Compares two values (intended for doubles)
-/**
- * epsilon is the tolerance allowed to consider the values as equal
- */
-inline bool almost_equal(const double a, const double b, const double epsilon)
-{
-  return (std::abs(a-b) < epsilon);
-}
-
-//! Compares two values (intended for floats)
-/**
- * epsilon is the tolerance allowed to consider the values as equal
- */
-inline bool almost_equal(const float a, const float b, const float epsilon)
-{
-  return (std::abs(a-b) < epsilon);
-}
-
-
 //! Closest power of 2 that can contain a number x
-inline float closest_pow2(float x) {
+inline float get_next_larger_power_of_2(float x) {
   float p=1;
   while(p<x) {p*=2;}
   return p;
 }
 
 //! Closest power of 2 that can contain a number x
-inline double closest_pow2(double x) {
+inline double get_next_larger_power_of_2(double x) {
   double p=1;
   while(p<x) {p*=2;}
   return p;

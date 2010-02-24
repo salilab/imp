@@ -34,7 +34,9 @@ class ProteinFittingTest(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         self.mrw=IMP.em.MRCReaderWriter()
         self.imp_model = IMP.Model()
-        self.mh = IMP.atom.read_pdb(self.get_input_file_name("1z5s.pdb"),
+        name=self.get_input_file_name("1z5s.pdb")
+        print name
+        self.mh = IMP.atom.read_pdb(name,
                                     self.imp_model,IMP.atom.NonWaterPDBSelector())
         IMP.atom.add_radii(self.mh)
         self.particles = IMP.Particles(IMP.core.get_leaves(self.mh))

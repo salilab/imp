@@ -108,7 +108,7 @@ void project_given_rotation1(IMP::algebra::Matrix3D<T>& m3,
                         // with x,y,z convention for vectors and calculations,
                         // but matrices are stored as (z,y,x)
     end0[i] = m3.get_finish(2-i); // Same convention
-    signs[i] = IMP::algebra::sign(direction[i]);
+    signs[i] = IMP::algebra::get_sign(direction[i]);
     half_signs[i] = 0.5 * signs[i];
   }
   // A point in the coordinate system for Matrix3D m3
@@ -177,8 +177,7 @@ void project_given_rotation1(IMP::algebra::Matrix3D<T>& m3,
         std::cout << "v_alpha_min " << v_alpha_min;
         std::cout << " v_alpha_max " << v_alpha_max << std::endl;
 #endif
-        if (IMP::algebra::almost_equal(
-           alpha_max, alpha_min, equality_tolerance)) {
+        if (std::abs(alpha_max- alpha_min) < equality_tolerance) {
           continue;
         }
         // v is the first voxel in the volume intersecting the ray
@@ -187,10 +186,12 @@ void project_given_rotation1(IMP::algebra::Matrix3D<T>& m3,
         v = r + alpha_min * direction; // vector operation
         for (int ii=0;ii < 3;ii++) {
           if (v[ii] >= 0.) {
-            idx[ii] = IMP::algebra::constrain((double)((int)(v[ii] + 0.5)),
+            idx[ii]
+              = IMP::algebra::get_constrained((double)((int)(v[ii] + 0.5)),
                                               init0[ii], end0[ii]);
           } else {
-            idx[ii] = IMP::algebra::constrain((double)((int)(v[ii] - 0.5)),
+            idx[ii]
+              = IMP::algebra::get_constrained((double)((int)(v[ii] - 0.5)),
                                               init0[ii], end0[ii]);
           }
         }
@@ -229,8 +230,8 @@ void project_given_rotation1(IMP::algebra::Matrix3D<T>& m3,
           ray_sum += diff_alpha * m3((int)idx[2],(int)idx[1],(int)idx[0]);
           // update the indexes in the required dimensions
           for (int ii=0;ii < 3;ii++) {
-            if (IMP::algebra::almost_equal(diff_alpha, v_diff[ii],
-                equality_tolerance)) {
+            if (std::abs(diff_alpha-v_diff[ii]) <
+                equality_tolerance) {
               alpha = v_alpha[ii];
               idx[ii] += signs[ii];
             }

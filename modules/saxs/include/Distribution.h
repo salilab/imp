@@ -49,7 +49,7 @@ protected:
     reserve(dist2index(max_distance_) + 1);
   }
   unsigned int dist2index(Float dist) const {
-    return algebra::round( dist * one_over_bin_size_ );
+    return algebra::get_rounded( dist * one_over_bin_size_ );
   }
   Float index2dist(unsigned int index) const { return index * bin_size_; }
 protected:
