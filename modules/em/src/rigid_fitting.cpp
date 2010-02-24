@@ -230,28 +230,22 @@ void compute_fitting_scores(Particles &ps,
   const FloatKey &rad_key, const FloatKey &wei_key,
   const std::vector<IMP::algebra::Transformation3D>& transformations,
   FittingSolutions &fr) {
-    std::vector<float> dvx;
-    std::vector<float>dvy;
-    std::vector<float>dvz;
     IMP::em::SampledDensityMap *model_dens_map =
       new IMP::em::SampledDensityMap(*(em_map->get_header()));
     model_dens_map->set_particles(ps,rad_key,wei_key);
+    model_dens_map->resample();
     float score;
+    CoarseCC ccc;
     for (std::vector<IMP::algebra::Transformation3D>::const_iterator it =
          transformations.begin(); it != transformations.end();it++) {
-      IMP::algebra::Transformation3D t_inv = it->get_inverse();
-      for(Particles::const_iterator psi = ps.begin(); psi != ps.end(); psi++) {
-        core::XYZ d(*psi);
-        d.set_coordinates(it->get_transformed(d.get_coordinates()));
-      }
-      score  = em::CoarseCC::evaluate(*em_map, *model_dens_map,
-                                      dvx,dvy,dvz,1.0,false,true,true);
+      DensityMap *transformed_sampled_map = get_transformed(model_dens_map,*it);
+      transformed_sampled_map->calcRMS();
+      float threshold = transformed_sampled_map->get_header()->dmin;
+      score  =
+        CoarseCC::cross_correlation_coefficient(*em_map,
+             *transformed_sampled_map,threshold,true);
       IMP_LOG(VERBOSE,"adding score:"<<score<<std::endl);
       fr.add_solution(*it,score);
-      for(Particles::const_iterator psi = ps.begin(); psi != ps.end(); psi++) {
-        core::XYZ d(*psi);
-        d.set_coordinates(t_inv.get_transformed(d.get_coordinates()));
-      }
     }
 }
 
