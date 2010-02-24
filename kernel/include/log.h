@@ -74,7 +74,7 @@ namespace internal {
 #endif
 
 //! Write a string to the log
-IMPEXPORT void log_write(std::string to_write);
+IMPEXPORT void add_to_log(std::string to_write);
 
 //! Set the current log level for IMP
 IMPEXPORT void set_log_level(LogLevel l);
@@ -112,7 +112,7 @@ inline bool is_log_output(LogLevel l)
 #define IMP_LOG(level, expr) if (IMP::is_log_output(level)) \
     { std::ostringstream oss;                               \
       oss<< expr << std::flush;                             \
-      IMP::log_write(oss.str());                            \
+      IMP::add_to_log(oss.str());                           \
     };
 
 //! Write an entry to a log. This is to be used for objects with no operator<<.
@@ -122,7 +122,7 @@ inline bool is_log_output(LogLevel l)
 #define IMP_LOG_WRITE(level, expr) if (IMP::is_log_output(level)) \
     {std::ostringstream IMP_STREAM;                               \
       expr;                                                       \
-      IMP::log_write(IMP_STREAM.str());                           \
+      IMP::add_to_log(IMP_STREAM.str());                          \
     }
 
 #else
@@ -140,7 +140,7 @@ inline bool is_log_output(LogLevel l)
 #define IMP_WARN(expr) if (IMP::is_log_output(IMP::WARNING)) \
     { std::ostringstream oss;                                \
       oss << "WARNING  " << expr << std::flush;              \
-      IMP::log_write(oss.str());                             \
+      IMP::add_to_log(oss.str());                            \
     };
 
 
@@ -187,7 +187,7 @@ public:
 #define IMP_WARN_WRITE(expr) if (IMP::is_log_output(IMP::WARNING)) \
     {std::ostringstream IMP_STREAM;                                \
       expr;                                                        \
-      IMP::log_write(IMP_STREAM.str());                            \
+      IMP::add_to_log(IMP_STREAM.str());                            \
     }
 
 
