@@ -119,8 +119,8 @@ get_transformation_from_reference_frame(const VectorD<3> &u,
                                         const VectorD<3> &w,
                                         const VectorD<3> &base) {
   VectorD<3> x = (u-base);
-  VectorD<3> z = vector_product(x,w-base);
-  VectorD<3> y = vector_product(z,x);
+  VectorD<3> z = get_vector_product(x,w-base);
+  VectorD<3> y = get_vector_product(z,x);
   VectorD<3> xu = x.get_unit_vector();
   VectorD<3> zu = z.get_unit_vector();
   VectorD<3> yu = y.get_unit_vector();
@@ -156,10 +156,10 @@ inline Transformation3D compose(const Transformation3D &a,
 
 //! Builds a 3D transformation from a 2D one.
 /**
-  \note The 3D transformation is built with the angle from the 2D transformation
-  as first Euler angle (ZYZ). The other angles are set to 0.
+  \note The 3D transformation is built with the 2D rotation becoming a rotation
+  around the z axis.
   **/
-IMPALGEBRAEXPORT Transformation3D build_Transformation3D_from_Transformation2D(
+IMPALGEBRAEXPORT Transformation3D get_transformation_3d_from_transformation_2d(
                                   const Transformation2D &t2d);
 
 
