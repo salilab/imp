@@ -59,6 +59,11 @@ float CoarseCC::cross_correlation_coefficient(const DensityMap &em_map,
                                               bool recalc_ccnormfac,
                                               bool divide_by_rms)
 {
+  IMP_INTERNAL_CHECK(model_map.get_header()->dmax>voxel_data_threshold,
+                     "voxel_data_threshold: " << voxel_data_threshold <<
+                     " is not within the map range: " <<
+                     model_map.get_header()->dmin<<"-"<<
+                     model_map.get_header()->dmax<<std::endl);
   const DensityHeader *model_header = model_map.get_header();
   const DensityHeader *em_header = em_map.get_header();
 
@@ -82,14 +87,18 @@ float CoarseCC::cross_correlation_coefficient(const DensityMap &em_map,
             << "Second map pixelsize: " << model_header->get_spacing());
 
   // Take into account the possibility of a model map with zero rms
-  if ((fabs(model_map.get_header()->rms-0.0)<EPS) && divide_by_rms)
+  if ((fabs(model_map.get_header()->rms-0.0)<EPS) && divide_by_rms) {
+    IMP_WARN("The model map rms is sero, and the user ask to divide"<<
+             " by rms. returning 0!"<<std::endl);
     return 0.0;
+  }
 
   bool same_origin = em_map.same_origin(model_map);
   int  nvox = em_header->nx*em_header->ny*em_header->nz;
   emreal ccc = 0.0;
 
   if(same_origin){ // Fastest version
+    IMP_LOG(IMP::VERBOSE,"calc CC with the same origin"<<std::endl);
     for (int i=0;i<nvox;i++) {
       if (model_data[i] > voxel_data_threshold) {
         ccc += em_data[i]*model_data[i];
@@ -103,7 +112,7 @@ float CoarseCC::cross_correlation_coefficient(const DensityMap &em_map,
   }
 
   else  { // Compute the CCC taking into account the different origins
-
+    IMP_LOG(IMP::VERBOSE,"calc CC with different origins"<<std::endl);
     model_map.get_header_writable()->compute_xyz_top();
 
     // Given the same size of the maps and the dimension order, the difference
@@ -131,9 +140,11 @@ float CoarseCC::cross_correlation_coefficient(const DensityMap &em_map,
     // ( j can be negative)
     j = ivoxz_shift * em_header->nx * em_header->ny + ivoxy_shift
         * em_header->nx + ivoxx_shift;
+    int num_elements=0;//needed for checks
     for (i=0;i<nvox;i++) {
       // if the voxel of the model is above the threshold
       if (model_data[i] > voxel_data_threshold) {
+        ++num_elements;
         // Check if the voxel belongs to the em map volume, and only then
         // compute the correlation
         if (j + i >= 0 && j + i < nvox)  {
@@ -141,6 +152,10 @@ float CoarseCC::cross_correlation_coefficient(const DensityMap &em_map,
         }
       }
     }
+    IMP_INTERNAL_CHECK(num_elements>0,
+                       "No voxels participated in the calculation"<<
+                       " may be that the voxel_data_threshold:" <<
+                       voxel_data_threshold <<" is off"<<std::endl);
     if (divide_by_rms) {
       ccc = (ccc-nvox*em_header->dmean*model_header->dmean)
             /(nvox*em_header->rms * model_header->rms);
