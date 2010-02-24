@@ -3,7 +3,7 @@
  *  \brief Management of arrays of multiple dimensions
  *  \author Javier Velazquez-Muriel
  *  Copyright 2007-2010 Sali Lab. All rights reserved.
-*/
+ */
 
 #ifndef IMPALGEBRA_MULTI_ARRAY_H
 #define IMPALGEBRA_MULTI_ARRAY_H
@@ -26,12 +26,12 @@ IMPALGEBRA_BEGIN_NAMESPACE
 //! Template class for managing multidimensional arrays. This class is based on
 //! boost multi_array.
 /**
-  The class adds new functionality to the boost class:
-    1) Operators + - * and / to deal with other multiarrays and scalars
-    2) Computation of maximum, minimum, and statistical properties of the
-       array.
-    3) Read/Write both in text and binary modes (taking into account the
-       endianess).
+   The class adds new functionality to the boost class:
+   1) Operators + - * and / to deal with other multiarrays and scalars
+   2) Computation of maximum, minimum, and statistical properties of the
+   array.
+   3) Read/Write both in text and binary modes (taking into account the
+   endianess).
 **/
 template<typename T, int D>
 class MultiArray
@@ -42,8 +42,8 @@ class MultiArray
 public:
   typedef boost::multi_array_types::index index;
   typedef boost::multi_array_types::size_type size_type;
-//  typedef boost::multi_array_types::iterator iterator;
-//  typedef boost::multi_array_types::extent_gen extent_gen;
+  //  typedef boost::multi_array_types::iterator iterator;
+  //  typedef boost::multi_array_types::extent_gen extent_gen;
   typedef boost::multi_array<T, D> BMA;
   typedef MultiArray<T, D> This;
 
@@ -305,7 +305,7 @@ public:
     out << "Size and range of each of the dimensions: " << std::endl;
     for (index i = 0;i < D;i++) {
       out << "Size: " << get_size(i) << " range: "
-      << get_start(i) << " .. " << get_finish(i) << std::endl;
+          << get_start(i) << " .. " << get_finish(i) << std::endl;
     }
   }
 
@@ -361,7 +361,7 @@ public:
 
   //! Maximum of the values in the array
   /**
-    \param[out] max_idx index containing the maximum value
+     \param[out] max_idx index containing the maximum value
   **/
   template<typename T1>
   T compute_max(T1& max_idx) const {
@@ -389,7 +389,7 @@ public:
 
   //! Minimum of the values in the array
   /**
-    \param[out] min_idx index containing the minimum value
+     \param[out] min_idx index containing the minimum value
   **/
   template<typename T1>
   T compute_min(T1& min_idx) const {
@@ -505,12 +505,13 @@ public:
   //! Computes the sum of the squared elements of the difference MultiArray
   //! obtained from substracting v.
   /**
-    \note Both MultiArrays are required to have the same shape (size and origin)
+     \note Both MultiArrays are required to have the same shape
+     (size and origin)
   */
   T squared_difference(const This& v) const {
     if(!this->same_shape(v)) {
       IMP_FAILURE("squared_difference:: operation not supported with arrays "
-                   "of different shape (size and origin).");
+                  "of different shape (size and origin).");
     } else {
       T sum = 0,aux;
       for (unsigned long i=0;i<this->num_elements();i++) {
@@ -523,36 +524,36 @@ public:
 
   //! Computes the cross correlation coeffcient between two MultiArrays
   /**
-    \note Both MultiArrays are required to have the same size, but not the
-    same origin
-    \param[in] v array to compute the cross_correlation with.
-    \param[in] apply_threshold true if a threshold is applied to the elements
-               of v .
-    \param[in] threshold minimum value for an element v to consider it in the
-               computation .
-    \param[in] divide_by_stddev true if the cross correlation term is divided
-               by the standard deviation to get the cross correlation
-               coefficient (0 <= ccc <= 1).
-    \param[in] force_recalc_stats true if the statistics (mean, stddev) for the
-               Multiarrays must be recalculated (default).
-               If the statistics are known from previous computations,
-               you can speed up the next computations setting this variable
-               to false and directly providing the parameters.
-    \param[in] avg average of this Multiarray.
-    \param[in] stddev standard deviation of this Multiarray.
-    \param[in] avg_v average of Multiarray v.
-    \param[in] stddev_v standard deviation of Multiarray v.
+     \note Both MultiArrays are required to have the same size, but not the
+     same origin
+     \param[in] v array to compute the cross_correlation with.
+     \param[in] apply_threshold true if a threshold is applied to the elements
+     of v .
+     \param[in] threshold minimum value for an element v to consider it in the
+     computation .
+     \param[in] divide_by_stddev true if the cross correlation term is divided
+     by the standard deviation to get the cross correlation
+     coefficient (0 <= ccc <= 1).
+     \param[in] force_recalc_stats true if the statistics (mean, stddev) for the
+     Multiarrays must be recalculated (default).
+     If the statistics are known from previous computations,
+     you can speed up the next computations setting this variable
+     to false and directly providing the parameters.
+     \param[in] avg average of this Multiarray.
+     \param[in] stddev standard deviation of this Multiarray.
+     \param[in] avg_v average of Multiarray v.
+     \param[in] stddev_v standard deviation of Multiarray v.
 
   */
   double cross_correlation_coefficient(const This& v,
-                                      bool apply_threshold=false,
-                                      double threshold=0.0,
-                                      bool divide_by_stddev=true,
-                                      bool force_recalc_stats=true,
-                                      double avg=0.0,
-                                      double stddev=0.0,
-                                      double avg_v=0.0,
-                                      double stddev_v=0.0) {
+                                       bool apply_threshold=false,
+                                       double threshold=0.0,
+                                       bool divide_by_stddev=true,
+                                       bool force_recalc_stats=true,
+                                       double avg=0.0,
+                                       double stddev=0.0,
+                                       double avg_v=0.0,
+                                       double stddev_v=0.0) {
 
     IMP_USAGE_CHECK(this->same_size(v),
       "MultiArray:: cross correlation coefficient not supported with "
@@ -643,7 +644,7 @@ public:
         in.read(reinterpret_cast< char* >(&(this->data()[i])), sizeof(T));
       } else {
         reversed_read(reinterpret_cast< char* >(&(this->data()[i])),
-                       sizeof(T),1,in,true);
+                      sizeof(T),1,in,true);
       }
     }
   }
@@ -694,7 +695,9 @@ public:
 protected:
 }; // MultiArray
 
+#ifndef IMP_DOXYGEN
 //! write to an output stream for 3 dimensions
+/** \relates MultiArray */
 template<typename T, int D>
 std::ostream& operator<<(std::ostream& ostrm,
                          const MultiArray<T, D>& v)
@@ -745,42 +748,47 @@ std::ostream& operator<<(std::ostream& ostrm,
   }
   return ostrm;
 }
+#endif
 
 #ifndef SWIG
-  //! Sum operator for a scalar and an array
+//! Sum operator for a scalar and an array
+/** \relates MultiArray */
 template <class T, int D>
-  MultiArray<T, D> operator+(const T& X,
-                             const MultiArray<T, D>& a1) {
-    MultiArray<T, D> result(a1->shape());
-    internal::operate_scalar_and_array(X,a1,result,"+");
-    return result;
-  }
+MultiArray<T, D> operator+(const T& X,
+                           const MultiArray<T, D>& a1) {
+  MultiArray<T, D> result(a1->shape());
+  internal::operate_scalar_and_array(X,a1,result,"+");
+  return result;
+}
 
-  //! Minus operator for a scalar and an array
+//! Minus operator for a scalar and an array
+/** \relates MultiArray */
 template <class T, int D>
-  MultiArray<T, D> operator-(const T& X,
-                             const MultiArray<T, D>& a1) {
-    MultiArray<T, D> result(a1->shape());
-    internal::operate_scalar_and_array(X,a1,result,"-");
-  }
+MultiArray<T, D> operator-(const T& X,
+                           const MultiArray<T, D>& a1) {
+  MultiArray<T, D> result(a1->shape());
+  internal::operate_scalar_and_array(X,a1,result,"-");
+}
 
-  //! Multiplication operator for a scalar and an array
+//! Multiplication operator for a scalar and an array
+/** \relates MultiArray */
 template <class T, int D>
-  MultiArray<T, D> operator*(const T& X,
-                             const MultiArray<T, D>& a1) {
-    MultiArray<T, D> result(a1->shape());
-    internal::operate_scalar_and_array(X,a1,result,"*");
-    return result;
-  }
+MultiArray<T, D> operator*(const T& X,
+                           const MultiArray<T, D>& a1) {
+  MultiArray<T, D> result(a1->shape());
+  internal::operate_scalar_and_array(X,a1,result,"*");
+  return result;
+}
 
-  //! Division operator for a scalar and an array
+//! Division operator for a scalar and an array
+/** \relates MultiArray */
 template <class T, int D>
-  MultiArray<T, D> operator/(const T& X,
-                             const MultiArray<T, D>& a1) {
-    MultiArray<T, D> result(a1->shape());
-    internal::operate_scalar_and_array(X,a1,result,"/");
-    return result;
-  }
+MultiArray<T, D> operator/(const T& X,
+                           const MultiArray<T, D>& a1) {
+  MultiArray<T, D> result(a1->shape());
+  internal::operate_scalar_and_array(X,a1,result,"/");
+  return result;
+}
 
 
 
