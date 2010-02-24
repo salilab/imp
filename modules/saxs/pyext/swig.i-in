@@ -13,4 +13,4 @@
 %include "IMP/saxs/Score.h"
 %include "IMP/saxs/Restraint.h"
 %include "IMP/saxs/Distribution.h"
-%include "IMP/saxs/utility.h"
+
