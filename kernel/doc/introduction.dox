@@ -53,22 +53,24 @@ fall into a variety of categories.
 -# \anchor repsel Representation selection: representation in \imp is via a collection of
   particles (IMP::Particle objects). Each particle can contain one or
   more of the following sets of data
-   -Cartesian coordinates (IMP::core::XYZ)
-   -sphere (IMP::core::XYZR)
-   -atom information such as type, element, mass (IMP::atom::Atom)
-   -residue type information (IMP::atom::Residue)
-   -chain IDs (IMP::atom::Chain)
-   -domain extents (IMP::atom::Domain)
-   -mass, in daltons (IMP::atom::Mass)
-   -charge (IMP::atom::Charged)
-   -relationships between parts of molecules (IMP::atom::Hierarchy)
-   -bonds (IMP::atom::Bond and IMP::atom::Bonded)
-   -rigid body coordinate frames (IMP::core::RigidBody)
-   -etc.
+   - Cartesian coordinates (IMP::core::XYZ)
+   - sphere (IMP::core::XYZR)
+   - atom information such as type, element, mass (IMP::atom::Atom)
+   - residue type information (IMP::atom::Residue)
+   - chain IDs (IMP::atom::Chain)
+   - domain extents (IMP::atom::Domain)
+   - mass, in daltons (IMP::atom::Mass)
+   - charge (IMP::atom::Charged)
+   - relationships between parts of molecules (IMP::atom::Hierarchy)
+   - bonds (IMP::atom::Bond and IMP::atom::Bonded)
+   - rigid body coordinate frames (IMP::core::RigidBody)
+   - etc.
+   .
   In addition, particles can be made to have enforced relationships between one another,
-   -all of the members of a rigid body move along with the rigid body (IMP::core::RigidBody, IMP::core::RigidMember)
-   -a centroid particle has Cartesian coordinates computed from the centroid of another set (IMP::core::Centroid)
-   -a cover particle has a sphere containing another set of particles (IMP::core::Cover)
+   - all of the members of a rigid body move along with the rigid body (IMP::core::RigidBody, IMP::core::RigidMember)
+   - a centroid particle has Cartesian coordinates computed from the centroid of another set (IMP::core::Centroid)
+   - a cover particle has a sphere containing another set of particles (IMP::core::Cover)
+   .
   The data stored in a particle can be easily extended by adding a new IMP::Decorator type.\n\n
   Representations can loaded from a number of standard file types, for example see
   IMP::atom::read_pdb() and IMP::atom::read_mol2().
@@ -78,19 +80,21 @@ fall into a variety of categories.
   \imp the scoring function is the sum terms, each of which is
   computed by an IMP::Restraint object. The scoring function terms can
   based on things like
-    -how close a distance is to the measured value: IMP::core::DistanceRestraint
-    -how well the model fits a density map: IMP::em::FitRestraint
-    -how close the volume of a molecule is to the expected value: IMP::core::VolumeRestraint
-    -excluded volume: IMP::core::ExcludedVolumeRestraint
-    -connectivity of a subcomplex: IMP::core::ConnectivityRestraint
-    -the fit of the SAXS cure of a complex to a measured one: IMP::saxs::Restraint
-    -statistical potentials: IMP::atom::ProteinLigandRestraint
-    -torsion angles or bond angles: IMP::core::TorsionAngleRestraint, IMP::core::AngleRestraint
-    -etc.
+    - how close a distance is to the measured value: IMP::core::DistanceRestraint
+    - how well the model fits a density map: IMP::em::FitRestraint
+    - how close the volume of a molecule is to the expected value: IMP::core::VolumeRestraint
+    - excluded volume: IMP::core::ExcludedVolumeRestraint
+    - connectivity of a subcomplex: IMP::core::ConnectivityRestraint
+    - the fit of the SAXS cure of a complex to a measured one: IMP::saxs::Restraint
+    - statistical potentials: IMP::atom::ProteinLigandRestraint
+    - torsion angles or bond angles: IMP::core::TorsionAngleRestraint, IMP::core::AngleRestraint
+    - etc.
+    .
   Other terms can be formed by using IMP::SingletonScore, IMP::PairScore, IMP::TripletScore, IMP::QuadScore objects in conjuction with general purpose restraint creators. These allow large number of parts to be scored in similar ways more efficiently than creating many restraints. Examples using this include
-    -symmetry by using IMP::core::TransformedDistancePairScore coupled with IMP::container::PairsRestraint
-    -bond lengths using an IMP::atom::BondSingletonScore coupled with a IMP::container::SingletonsRestraint
-    -etc.
+    - symmetry by using IMP::core::TransformedDistancePairScore coupled with IMP::container::PairsRestraint
+    - bond lengths using an IMP::atom::BondSingletonScore coupled with a IMP::container::SingletonsRestraint
+    - etc.
+    .
 -# \anchor sampling Sampling good conformations: It is then necessary to search for conformations of the model that
   have low scores (and therefore fit the data well). Sampling produces a set of
   conformations of the model, organized into an IMP::ConformationSet. Currently
@@ -103,14 +107,14 @@ fall into a variety of categories.
   sampling. \imp provides a variety of tools to help display the conformations,
   in IMP::display, and to cluster them, in IMP::statistics. Display capabilities
   include
-  -export to Chimera via the IMP::display::ChimeraWriter
-  -export to Pymol via the IMP::display::PymolWriter
+  - export to Chimera via the IMP::display::ChimeraWriter
+  - export to Pymol via the IMP::display::PymolWriter
   Clustering methods are currently based around k-means clustering
   (IMP::statistics::get_lloyds_kmeans()) and supports
   clustering of
-  -configurations of the model using IMP::statistics::ConfigurationSetXYZEmbedding
-  -arbitrary points using IMP::statistics::VectorDEmbedding
-  -density maps using IMP::statistics::HighDensityEmbedding
+  - configurations of the model using IMP::statistics::ConfigurationSetXYZEmbedding
+  - arbitrary points using IMP::statistics::VectorDEmbedding
+  - density maps using IMP::statistics::HighDensityEmbedding
   
 
 Coming up with the right choices for representation, scoring and sampling for
@@ -321,11 +325,11 @@ generate the connection between the two languages. Key differences are
 
     \subsection physical Measurements
     Unless these is a good reason, the following units are be used
-    -angstrom for all distances
-    -kcal/mol angstrom for forces/derivatives
-    -kcal/mol for energies
-    -radians for angles. All angles are counterclockwise.
-    -all charges are in units of the elementary charge
+    - angstrom for all distances
+    - kcal/mol angstrom for forces/derivatives
+    - kcal/mol for energies
+    - radians for angles. All angles are counterclockwise.
+    - all charges are in units of the elementary charge
 
     Anything that breaks from these conventions must be labeled
     clearly and accompanied by an explaination of why the normal units
@@ -333,35 +337,35 @@ generate the connection between the two languages. Key differences are
 
     \subsection storage Passing and storing data
 
-    -3D points and vectors are stored and passed using
+    - 3D points and vectors are stored and passed using
       IMP::algebra::Vector3D objects.
 
-    -3D rotations are stored and passed using
+    - 3D rotations are stored and passed using
       IMP::algebra::Rotation3D objects.
 
-    -Likewise for spheres (IMP::algebra::Sphere3D), segments
+    - Likewise for spheres (IMP::algebra::SphereD), segments
       (IMP::algebra::Segment3D) etc.
 
-    -Collections of object \c Name are passed using the type \c Names. For
-    example, a bunch of IMP::algebra::Vector3D objects is passed using
+    - Collections of object \c Name are passed using the type \c Names. For
+    example, a bunch of IMP::algebra::Vector3D objects are passed using
     a IMP::algebra::Vector3Ds type, and a bunch of IMP::Restraint
     objects is passed using IMP::Restraints (or, equivalently
     IMP::RestraintsTemp).
 
-    -Classes and methods use IMP exceptions to report errors. See
+    - Classes and methods use IMP exceptions to report errors. See
     IMP::Exception for a list of existing exceptions. These C++
     exceptions are mapped onto the normal python exception types.
 
     \anchor values
     \subsection objects Values and Objects
     As is conventional in C++, \imp classes are divided into two types
-    -\e value \e classes which are be passed, stored, and returned by value
+    - \e value \e classes which are be passed, stored, and returned by value
       (or, for speed, \c const&). Examples include IMP::algebra::Vector3D,
       collections such as IMP::Restraints or IMP::RestraintsTemp, or
       decorators, such as IMP::core::XYZ. In fact, in \imp, anything
       that does not inherit from IMP::RefCounted is a value class.
 
-    -\e object \e classes which are passed and returned via pointers and
+    - \e object \e classes which are passed and returned via pointers and
       stored using reference counted pointers (eg IMP::Pointer). In
       \imp, these classes all inherit from IMP::Object. For example always
       do things like this in C++:
@@ -395,29 +399,29 @@ generate the connection between the two languages. Key differences are
 
 
    \subsection names Names in IMP
-    -Class names are in \c CamelCase, for example \c class \c SpecialVector'
-    -For each type of object in \imp, \c Name, there is a type \c Names
+    - Class names are in \c CamelCase, for example \c class \c SpecialVector'
+    - For each type of object in \imp, \c Name, there is a type \c Names
       which is used to pass a list of objects of type \c Name. \c Names
       look like an \c std::vector in C++ or a \c list in Python. Sometimes,
       for efficiency, a \c NamesTemp is passed instead
       (see \ref tempornot "when to use Temp values" for the reason). \c Names
       will be converted into \c NamesTemp without cost, so the distinction
       should not matter for the caller.
-    -method names and variables are \c separated_by_underscores, for
+    - method names and variables are \c separated_by_underscores, for
       example \c void \c SpecialVector::add_constant(int the_constant)'
-    -member methods that change a value begin with \c set_
-    -member methods or function which create or return a \c value object or which
+    - member methods that change a value begin with \c set_
+    - member methods or function which create or return a \c value object or which
       return an existing \c object \c class object begin with \c get_. No arguments
       of such functions are modified.
-    -methods or functions which create a new IMP::Object \c class object start
+    - methods or functions which create a new IMP::Object \c class object start
       with \c create_.
-    -functions with names starting with other verbs have more complicated effects. For
-     example IMP::core::transform() changes the first argument based on the second.
-     IMP::Restraint::evaluate() computes a score as well as (optionally) adding to
-     Particle derivatives.
-    -all preprocessor symbols (things created by \c \#define) begin with \c %IMP_
-    -Abbreviations are not used in names except when the abbreviation is more
-    common than the unabreviated name.
+    - functions with names starting with other verbs have more complicated effects. For
+      example IMP::core::transform() changes the first argument based on the second.
+      IMP::Restraint::evaluate() computes a score as well as (optionally) adding to
+      Particle derivatives.
+    - all preprocessor symbols (things created by \c \#define) begin with \c %IMP_
+    - Abbreviations are not used in names except when the abbreviation is more
+      common than the unabreviated name.
 
 \section incremental Incremental Scoring
     Scoring in IMP can be performed in two different ways....
@@ -458,24 +462,24 @@ Instructions on how to build and install \imp can be found in
 the \ref installation "installation instructions".
 
 There are a few areas of core functionality that have already been mentioned.
--IMP::Decorator
--\ref log "Logging Support"
--\ref assert "Error Reporting Facilities"
+- IMP::Decorator
+- \ref log "Logging Support"
+- \ref assert "Error Reporting Facilities"
 
 Then look through the examples which can be found linked from the page of each module.
  
 There are a variety of useful base classes which are used to provide
 most functionality. They are:
-    -IMP::Model
-    -IMP::Particle
-    -IMP::Decorator
-    -IMP::Restraint
-    -IMP::Constraint
-    -IMP::Sampler
-    -IMP::Optimizer
-    -IMP::SingletonContainer, IMP::PairContainer
-    -IMP::SingletonScore, IMP::PairScore, IMP::TripletScore
-    -IMP::SingletonModifier, IMP::PairModifier
+    - IMP::Model
+    - IMP::Particle
+    - IMP::Decorator
+    - IMP::Restraint
+    - IMP::Constraint
+    - IMP::Sampler
+    - IMP::Optimizer
+    - IMP::SingletonContainer, IMP::PairContainer
+    - IMP::SingletonScore, IMP::PairScore, IMP::TripletScore
+    - IMP::SingletonModifier, IMP::PairModifier
 
 There are a few blocks of functionality that cut across modules. They
 include
