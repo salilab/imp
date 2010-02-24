@@ -11,6 +11,56 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
+namespace {
+  CHARMMResidueTopologyBase &get_residue(
+              std::auto_ptr<CHARMMIdealResidueTopology> &residue,
+              std::auto_ptr<CHARMMPatch> &patch) {
+    if (residue.get()) {
+      return *residue;
+    } else {
+      return *patch;
+    }
+  }
+
+  void parse_angle_line(std::string line, CHARMMResidueTopologyBase &residue) {
+    std::vector<std::string> split_results;
+    boost::split(split_results, line, boost::is_any_of(" "),
+                 boost::token_compress_on);
+
+    for (unsigned int i = 1; i < split_results.size(); i += 3) {
+      if (split_results[i][0] == '!') return;  // comments start
+      std::vector<std::string> atoms(&split_results[i], &split_results[i+3]);
+      residue.add_angle(atoms);
+    }
+  }
+
+  void parse_dihedral_line(std::string line,
+                           CHARMMResidueTopologyBase &residue) {
+    std::vector<std::string> split_results;
+    boost::split(split_results, line, boost::is_any_of(" "),
+                 boost::token_compress_on);
+
+    for (unsigned int i = 1; i < split_results.size(); i += 4) {
+      if (split_results[i][0] == '!') return;  // comments start
+      std::vector<std::string> atoms(&split_results[i], &split_results[i+4]);
+      residue.add_dihedral(atoms);
+    }
+  }
+
+  void parse_improper_line(std::string line,
+                           CHARMMResidueTopologyBase &residue) {
+    std::vector<std::string> split_results;
+    boost::split(split_results, line, boost::is_any_of(" "),
+                 boost::token_compress_on);
+
+    for (unsigned int i = 1; i < split_results.size(); i += 4) {
+      if (split_results[i][0] == '!') return;  // comments start
+      std::vector<std::string> atoms(&split_results[i], &split_results[i+4]);
+      residue.add_improper(atoms);
+    }
+  }
+}
+
 CharmmParameters::CharmmParameters(const String& top_file_name,
                                    const String& par_file_name)
 {
@@ -35,12 +85,16 @@ CharmmParameters::CharmmParameters(const String& top_file_name,
 
 void CharmmParameters::read_topology_file(std::ifstream& input_file) {
   const String RESI_LINE = "RESI";
-  const String PRES_LINE = "PRES"; //protonated
+  const String PRES_LINE = "PRES";
   const String ATOM_LINE = "ATOM";
   const String BOND_LINE = "BOND";
   const String BOND_LINE2 = "DOUBLE";
+  const String ANGLE_LINE = "ANGL";
+  const String DIHEDRAL_LINE = "DIHE";
+  const String IMPROPER_LINE = "IMPR";
+  std::auto_ptr<CHARMMIdealResidueTopology> residue;
+  std::auto_ptr<CHARMMPatch> patch;
 
-  bool in_residue = false;
   ResidueType curr_res_type;
   while (!input_file.eof()) {
     String line;
@@ -50,25 +104,59 @@ void CharmmParameters::read_topology_file(std::ifstream& input_file) {
     if (line[0] == '!' || line[0] == '*' || line.length() == 0) continue;
 
     // read residue line
-    if(line.substr(0, RESI_LINE.length()) == RESI_LINE ||
-       line.substr(0, PRES_LINE.length()) == PRES_LINE) {
-      in_residue = true;
+    if(line.substr(0, RESI_LINE.length()) == RESI_LINE) {
+      if (residue.get()) {
+        add_residue_topology(*residue.release());
+      } else if (patch.get()) {
+        add_patch(*patch.release());
+      }
       curr_res_type = parse_residue_line(line);
-      continue;
-    }
+      residue.reset(new CHARMMIdealResidueTopology(curr_res_type.get_string()));
+
+    // handle patch residues
+    } else if (line.substr(0, PRES_LINE.length()) == PRES_LINE) {
+      if (residue.get()) {
+        add_residue_topology(*residue.release());
+      } else if (patch.get()) {
+        add_patch(*patch.release());
+      }
+      std::vector<String> split_results;
+      boost::split(split_results, line, boost::is_any_of(" "),
+                   boost::token_compress_on);
+      if (split_results.size() < 3) {
+        IMP_THROW("Invalid PRES line: " << line, ValueException);
+      }
+      patch.reset(new CHARMMPatch(split_results[1]));
 
     // read atom line
-    if(line.substr(0, ATOM_LINE.length()) == ATOM_LINE && in_residue) {
-      parse_atom_line(line, curr_res_type);
-      continue;
-    }
+    } else if (line.substr(0, ATOM_LINE.length()) == ATOM_LINE
+               && (residue.get() || patch.get())) {
+      parse_atom_line(line, curr_res_type, get_residue(residue, patch));
 
     // read bond line
-    if((line.substr(0, BOND_LINE.length()) == BOND_LINE ||
-        line.substr(0, BOND_LINE2.length()) == BOND_LINE2)
-       && in_residue) {
-      parse_bond_line(line, curr_res_type);
+    } else if ((line.substr(0, BOND_LINE.length()) == BOND_LINE ||
+               line.substr(0, BOND_LINE2.length()) == BOND_LINE2)
+               && (residue.get() || patch.get())) {
+      parse_bond_line(line, curr_res_type, get_residue(residue, patch));
+
+    // read angle line
+    } else if (line.substr(0, ANGLE_LINE.length()) == ANGLE_LINE
+               && (residue.get() || patch.get())) {
+      parse_angle_line(line, get_residue(residue, patch));
+    // read dihedral line
+    } else if (line.substr(0, DIHEDRAL_LINE.length()) == DIHEDRAL_LINE
+               && (residue.get() || patch.get())) {
+      parse_dihedral_line(line, get_residue(residue, patch));
+    // read improper line
+    } else if (line.substr(0, IMPROPER_LINE.length()) == IMPROPER_LINE
+               && (residue.get() || patch.get())) {
+      parse_improper_line(line, get_residue(residue, patch));
     }
+  }
+  if (residue.get()) {
+    add_residue_topology(*residue);
+  } else if (patch.get()) {
+    add_patch(*patch);
   }
 }
 
@@ -76,7 +164,9 @@ ResidueType CharmmParameters::parse_residue_line(const String& line) {
   std::vector<String> split_results;
   boost::split(split_results, line, boost::is_any_of(" "),
                boost::token_compress_on);
-  if(split_results.size() < 3) return UNK; // RESI line has at least 3 fields
+  if(split_results.size() < 3) {
+    IMP_THROW("Invalid RESI line: " << line, ValueException);
+  }
   String curr_residue = split_results[1];
   if (ResidueType::get_key_exists(curr_residue)) {
        return ResidueType(curr_residue);
@@ -87,22 +177,26 @@ ResidueType CharmmParameters::parse_residue_line(const String& line) {
 }
 
 void CharmmParameters::parse_atom_line(const String& line,
-                                       ResidueType curr_res_type)
+                                       ResidueType curr_res_type,
+                                       CHARMMResidueTopologyBase &residue)
 {
   std::vector<String> split_results;
   boost::split(split_results, line, boost::is_any_of(" "),
                boost::token_compress_on);
   if(split_results.size() < 4) return; // ATOM line has at least 4 fields
-  String atom_name = split_results[1];
-  String charmm_atom_type = split_results[2];
-  float charge = atof(split_results[3].c_str());
+
+  CHARMMAtom atom(split_results[1]);
+  atom.set_charmm_type(split_results[2]);
+  atom.set_charge(atof(split_results[3].c_str()));
+  residue.add_atom(atom);
+
   AtomType imp_atom_type;
-  if (AtomType::get_key_exists(atom_name)) {
-     imp_atom_type = AtomType(atom_name);
+  if (AtomType::get_key_exists(atom.get_name())) {
+     imp_atom_type = AtomType(atom.get_name());
   } else {
      // assume charm is correct and this is a ATOM record
      // and it will be parsed right for elements
-     imp_atom_type= AtomType(AtomType::add_key(atom_name));
+     imp_atom_type= AtomType(AtomType::add_key(atom.get_name()));
   }
   // save in map
   if(atom_res_type_2_force_field_atom_type_.find(curr_res_type) ==
@@ -111,11 +205,13 @@ void CharmmParameters::parse_atom_line(const String& line,
   }
   atom_res_type_2_force_field_atom_type_[curr_res_type].insert(
            std::make_pair(imp_atom_type,
-                          std::make_pair(charmm_atom_type, charge)));
+                          std::make_pair(atom.get_charmm_type(),
+                                         atom.get_charge())));
 }
 
 void CharmmParameters::parse_bond_line(const String& line,
-                                       ResidueType curr_res_type)
+                                       ResidueType curr_res_type,
+                                       CHARMMResidueTopologyBase &residue)
 {
   std::vector<String> split_results;
   boost::split(split_results, line, boost::is_any_of(" "),
@@ -125,6 +221,8 @@ void CharmmParameters::parse_bond_line(const String& line,
   std::vector<Bond> bonds;
   for(unsigned int i=1; i<split_results.size(); i+=2) {
     if(split_results[i][0] == '!') return;  // comments start
+    std::vector<std::string> atoms(&split_results[i], &split_results[i+2]);
+    residue.add_bond(atoms);
     // + connects to the next residue
     if(split_results[i][0] == '+' || split_results[i+1][0] == '+') continue;
     // skip funny added modeller records
