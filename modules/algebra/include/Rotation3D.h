@@ -340,7 +340,7 @@ inline Rotation3D get_rotation_taking_first_to_second(const VectorD<3> &v1,
     VectorD<3> v1_norm = v1.get_unit_vector();
     VectorD<3> v2_norm = v2.get_unit_vector();
     //get a vector that is perpendicular to the plane containing v1 and v2
-    VectorD<3> vv = vector_product(v1_norm,v2_norm);
+    VectorD<3> vv = get_vector_product(v1_norm,v2_norm);
     //get the angle between v1 and v2
     double dot = v1_norm*v2_norm;
     dot = ( dot < -1.0 ? -1.0 : ( dot > 1.0 ? 1.0 : dot ) );
@@ -348,7 +348,8 @@ inline Rotation3D get_rotation_taking_first_to_second(const VectorD<3> &v1,
     //check a special case: the input vectors are parallel / antiparallel
     if (std::abs(dot) == 1.0) {
       IMP_LOG(VERBOSE," the input vectors are (anti)parallel "<<std::endl);
-      return get_rotation_in_radians_about_axis(orthogonal_vector(v1),angle);
+      return get_rotation_in_radians_about_axis(get_orthogonal_vector(v1),
+                                                angle);
     }
     return get_rotation_in_radians_about_axis(vv,angle);
 }

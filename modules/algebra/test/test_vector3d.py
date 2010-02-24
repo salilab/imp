@@ -44,12 +44,12 @@ class Vector3DTests(IMP.test.TestCase):
         """Check Vector3D scalar product"""
         v1 = IMP.algebra.Vector3D(1.0, 2.0, 3.0)
         v2 = IMP.algebra.Vector3D(10.0, 1.0, 2.0)
-        self.assertInTolerance(v1.scalar_product(v2), v2.scalar_product(v1),
+        self.assertInTolerance(v1.get_scalar_product(v2), v2 * v1,
                                .1)
-        self.assertInTolerance(v1.scalar_product(v2), v1 * v2,
+        self.assertInTolerance(v1.get_scalar_product(v2), v1 * v2,
                                .1)
-        self.assertInTolerance(v1.scalar_product(v2), v2 * v1, .1)
-        self.assertInTolerance(v1.scalar_product(v2), 18.0, .1)
+        self.assertInTolerance(v1.get_scalar_product(v2), v2 * v1, .1)
+        self.assertInTolerance(v1.get_scalar_product(v2), 18.0, .1)
 
     def test_product_scalar(self):
         """Check that multiplying vectors by scalars works"""
@@ -68,8 +68,8 @@ class Vector3DTests(IMP.test.TestCase):
         """Check Vector3D vector product"""
         v1 = IMP.algebra.Vector3D(1.0, 2.0, 3.0)
         v2 = IMP.algebra.Vector3D(10.0, 1.0, 2.0)
-        v12 = IMP.algebra.vector_product(v1, v2)
-        v21 = IMP.algebra.vector_product(v2, v1)
+        v12 = IMP.algebra.get_vector_product(v1, v2)
+        v21 = IMP.algebra.get_vector_product(v2, v1)
         expected_v12 = (1.0, 28.0, -19.0)
         for i in range(3):
             self.assertInTolerance(v12[i], -v21[i], .1)

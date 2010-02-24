@@ -28,23 +28,23 @@ inline double dihedral(const XYZ &d0, const XYZ &d1,
   algebra::VectorD<3> rkj = d1.get_vector_to(d2);
   algebra::VectorD<3> rkl = d3.get_vector_to(d2);
 
-  algebra::VectorD<3> v1 = vector_product(rij, rkj);
-  algebra::VectorD<3> v2 = vector_product(rkj, rkl);
-  Float scalar_product = v1.scalar_product(v2);
-  Float mag_product = v1.get_magnitude() * v2.get_magnitude();
+  algebra::VectorD<3> v1 = get_vector_product(rij, rkj);
+  algebra::VectorD<3> v2 = get_vector_product(rkj, rkl);
+  double scalar_product = v1.get_scalar_product(v2);
+  double mag_product = v1.get_magnitude() * v2.get_magnitude();
 
   // avoid division by zero
-  Float cosangle = std::abs(mag_product) > 1e-12
+  double cosangle = std::abs(mag_product) > 1e-12
                    ? scalar_product / std::sqrt(mag_product) : 0.0;
 
   // avoid range error for acos
   cosangle = std::max(std::min(cosangle, static_cast<Float>(1.0)),
                       static_cast<Float>(-1.0));
 
-  Float angle = std::acos(cosangle);
+  double angle = std::acos(cosangle);
   // get sign
-  algebra::VectorD<3> v0 = vector_product(v1, v2);
-  Float sign = rkj.scalar_product(v0);
+  algebra::VectorD<3> v0 = get_vector_product(v1, v2);
+  double sign = rkj*v0;
   if (sign < 0.0) {
     angle = -angle;
   }
@@ -52,18 +52,18 @@ inline double dihedral(const XYZ &d0, const XYZ &d1,
   if (derv0) {
     // method for derivative calculation from van Schaik et al.
     // J. Mol. Biol. 234, 751-762 (1993)
-    algebra::VectorD<3> vijkj = vector_product(rij, rkj);
-    algebra::VectorD<3> vkjkl = vector_product(rkj, rkl);
-    Float sijkj2 = vijkj.get_squared_magnitude();
-    Float skjkl2 = vkjkl.get_squared_magnitude();
-    Float skj = rkj.get_magnitude();
-    Float rijkj = rij.scalar_product(rkj);
-    Float rkjkl = rkj.scalar_product(rkl);
+    algebra::VectorD<3> vijkj = get_vector_product(rij, rkj);
+    algebra::VectorD<3> vkjkl = get_vector_product(rkj, rkl);
+    double sijkj2 = vijkj.get_squared_magnitude();
+    double skjkl2 = vkjkl.get_squared_magnitude();
+    double skj = rkj.get_magnitude();
+    double rijkj = rij*rkj;
+    double rkjkl = rkj*rkl;
 
-    Float fact0 = sijkj2 > 1e-8 ? skj / sijkj2 : 0.0;
-    Float fact1 = skj > 1e-8 ? rijkj / (skj * skj) : 0.0;
-    Float fact2 = skj > 1e-8 ? rkjkl / (skj * skj) : 0.0;
-    Float fact3 = skjkl2 > 1e-8 ? -skj / skjkl2 : 0.0;
+    double fact0 = sijkj2 > 1e-8 ? skj / sijkj2 : 0.0;
+    double fact1 = skj > 1e-8 ? rijkj / (skj * skj) : 0.0;
+    double fact2 = skj > 1e-8 ? rkjkl / (skj * skj) : 0.0;
+    double fact3 = skjkl2 > 1e-8 ? -skj / skjkl2 : 0.0;
 
     *derv0 = fact0 * vijkj;
     *derv3 = fact3 * vkjkl;

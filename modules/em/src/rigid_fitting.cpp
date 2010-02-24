@@ -235,7 +235,7 @@ void compute_fitting_scores(Particles &ps,
     model_dens_map->set_particles(ps,rad_key,wei_key);
     model_dens_map->resample();
     float score;
-    CoarseCC ccc;
+    //CoarseCC ccc;
     for (std::vector<IMP::algebra::Transformation3D>::const_iterator it =
          transformations.begin(); it != transformations.end();it++) {
       DensityMap *transformed_sampled_map = get_transformed(model_dens_map,*it);

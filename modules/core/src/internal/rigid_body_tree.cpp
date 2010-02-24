@@ -28,7 +28,8 @@ RigidBodyHierarchy::divide_spheres(const std::vector<algebra::SphereD<3> > &ss,
   for (unsigned int i=0; i< s.size(); ++i) {
     pts[i]= ss[s[i]].get_center()-centroid;
   }
-  algebra::PrincipalComponentAnalysis pca= algebra::principal_components(pts);
+  algebra::PrincipalComponentAnalysis pca
+    = algebra::get_principal_components(pts);
   const algebra::VectorD<3> &v0=pca.get_principal_component(0),
     &v1= pca.get_principal_component(1),
     &v2= pca.get_principal_component(2);

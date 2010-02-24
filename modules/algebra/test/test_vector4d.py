@@ -24,12 +24,12 @@ class Vector4DTests(IMP.test.TestCase):
         """Check Vector4D scalar product"""
         v1 = IMP.algebra.Vector4D(1.0, 2.0, 3.0, 4.0)
         v2 = IMP.algebra.Vector4D(10.0, 1.0, 2.0, 3.0)
-        self.assertInTolerance(v1.scalar_product(v2), v2.scalar_product(v1),
+        self.assertInTolerance(v1*v2, v2.get_scalar_product(v1),
                                .1)
-        self.assertInTolerance(v1.scalar_product(v2), v1 * v2,
+        self.assertInTolerance(v1*v2, v1 * v2,
                                .1)
-        self.assertInTolerance(v1.scalar_product(v2), v2 * v1, .1)
-        self.assertInTolerance(v1.scalar_product(v2), 30.0, .1)
+        self.assertInTolerance(v1.get_scalar_product(v2), v2 * v1, .1)
+        self.assertInTolerance(v1.get_scalar_product(v2), 30.0, .1)
 
     def test_difference(self):
         """Check Vector4D difference"""

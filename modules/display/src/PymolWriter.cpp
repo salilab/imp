@@ -104,7 +104,7 @@ bool PymolWriter::process(PolygonGeometry *g,
   setup(name);
   get_stream() << "BEGIN, TRIANGLE_FAN, ";
   algebra::VectorD<3> n=
-    vector_product(g->at(1)-g->at(0),
+    get_vector_product(g->at(1)-g->at(0),
                    g->at(2)-g->at(0)).get_unit_vector();
   write_color(get_stream(), color);
   get_stream() << "NORMAL, " << algebra::commas_io(n)
@@ -122,7 +122,7 @@ bool PymolWriter::process(TriangleGeometry *g,
   setup(name);
   get_stream() << "BEGIN, TRIANGLE_FAN, ";
   algebra::VectorD<3> n=
-    vector_product(g->at(1)-g->at(0),
+    get_vector_product(g->at(1)-g->at(0),
                    g->at(2)-g->at(0)).get_unit_vector();
   write_color(get_stream(), color);
   get_stream() << "NORMAL, " << algebra::commas_io(n)

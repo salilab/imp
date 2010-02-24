@@ -27,6 +27,19 @@ Mol2Selector::~Mol2Selector(){}
 
 namespace {
 
+  struct Less {
+    bool operator()(Particle* pa, Particle* pb) const {
+      Bond a(pa), b(pb);
+      int a0= Atom(a.get_bonded(0)).get_input_index();
+      int a1= Atom(a.get_bonded(1)).get_input_index();
+      int b0= Atom(b.get_bonded(0)).get_input_index();
+      int b1= Atom(b.get_bonded(1)).get_input_index();
+      if (a0 < b0) return true;
+      else if (b0 < a0) return false;
+      else return a1 < b1;
+    }
+  };
+
   std::string mol2_string(Atom a) {
     std::ostringstream mol2_file;
     mol2_file.setf(std::ios::right,std::ios::adjustfield);
@@ -106,7 +119,7 @@ namespace {
     oss << r->get_name() << std::endl;
     oss << get_by_type(r, ATOM_TYPE).size() << " "
         << get_internal_bonds(r).size() << std::endl;
-    oss << r.get_residue_type() << std::endl;
+    oss << r.get_residue_type().get_string() << std::endl;
     oss << "USER_CHARGES" << std::endl;
     oss << std::endl;
     return oss.str();
@@ -334,8 +347,6 @@ namespace {
 
   // input molecule decorator, output compound informations to mol2 file
   void write_molecule_mol2(Hierarchy chd, std::ostream& mol2_file) {
-    unsigned int i;
-
     // check if current mhd is molecule
     if (!Residue::particle_is_instance(chd)) {
       IMP_THROW("not a residue" << chd,
@@ -357,7 +368,7 @@ namespace {
     // get_mol2atom_line should be in AtomDecorator.h, .cpp - to be improved
     Particles atoms = get_leaves(chd);
     mol2_file << "@<TRIPOS>ATOM" << std::endl;
-    for (i=0; i< atoms.size(); i++) {
+    for (unsigned int i=0; i< atoms.size(); i++) {
       if (Atom::particle_is_instance(atoms[i])) {
         Atom atom_d(atoms[i]);
         mol2_file << mol2_string(atom_d);
@@ -366,9 +377,10 @@ namespace {
 
     // get BondDecorator of the bond particles, output bond section
     // get_mol2bond_line should be in bond_decorators.h, .cpp - to be improved
-    Bonds bonds = get_internal_bonds(chd);
+    Bonds bonds(get_internal_bonds(chd));
+    bonds.sort(Less());
     mol2_file << "@<TRIPOS>BOND" << std::endl;
-    for (i=0; i< bonds.size(); i++) {
+    for (unsigned int i=0; i< bonds.size(); i++) {
       mol2_file << mol2_string(bonds[i], i);
     }
   }

@@ -74,7 +74,7 @@ void  ImageHeader_to_DensityHeader(const ImageHeader &h,DensityHeader &dh) {
     0x44440000 for little endian */
   unsigned char *ch;
   ch = (unsigned char *)&dh.machinestamp;
-  if(algebra::is_big_endian()) {
+  if(algebra::get_is_big_endian()) {
     ch[0] = ch[1] = 0x11; ch[2] = ch[3] = 0;
   } else {
     ch[0] = ch[1] = 0x44; ch[2] = ch[3] = 0;
@@ -83,13 +83,13 @@ void  ImageHeader_to_DensityHeader(const ImageHeader &h,DensityHeader &dh) {
   dh.nlabl=0;
   // Reversed image or not
   if(h.get_reversed()==true) {
-    if(algebra::is_big_endian()) {
+    if(algebra::get_is_big_endian()) {
       dh.lswap=0;
     } else {
       dh.lswap=1;
     }
   } else {
-    if(algebra::is_big_endian()) {
+    if(algebra::get_is_big_endian()) {
       dh.lswap=1;
     } else {
       dh.lswap=0;
@@ -115,7 +115,7 @@ void  DensityHeader_to_ImageHeader(const DensityHeader& dh,ImageHeader& h) {
     break;
   }
   // Reversed image?
-  if(algebra::is_big_endian()) {
+  if(algebra::get_is_big_endian()) {
     h.set_reversed(dh.lswap!=1);
   } else {
     h.set_reversed(dh.lswap==1);

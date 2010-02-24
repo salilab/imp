@@ -21,6 +21,7 @@ files = [
          'tnt_stopwatch.h',
          'tnt_subscript.h',
          'tnt_version.h',
+         'utility.h',
         ]
 
 files = [File(x) for x in files]

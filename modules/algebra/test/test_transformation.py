@@ -57,7 +57,7 @@ class Transformation2DTests(IMP.test.TestCase):
                                              random.uniform(-10,10))
         R = IMP.algebra.Rotation2D(angle_applied);
         t2d = IMP.algebra.Transformation2D(R,shift_applied);
-        t3d=IMP.algebra.build_Transformation3D_from_Transformation2D(t2d)
+        t3d=IMP.algebra.get_transformation_3d(t2d)
         v1 = t3d.get_transformed(v)
         print "V1: " + str(v1)
         self.assertInTolerance(v1[2],0.0,.01)
@@ -71,7 +71,7 @@ class Transformation3DTests(IMP.test.TestCase):
         shift_applied = IMP.algebra.Vector2D(-2,4);
         r2d = IMP.algebra.Rotation2D(angle_applied);
         t2d = IMP.algebra.Transformation2D(r2d,shift_applied);
-        t3d = IMP.algebra.build_Transformation3D_from_Transformation2D(t2d)
+        t3d = IMP.algebra.get_transformation_3d(t2d)
         r3d = t3d.get_rotation()
         p2d = IMP.algebra.Vector2D(9,10.5)
         p3d = IMP.algebra.Vector3D(9,10.5,0.0)

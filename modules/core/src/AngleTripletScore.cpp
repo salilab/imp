@@ -31,7 +31,7 @@ Float AngleTripletScore::evaluate(const ParticleTriplet &p,
   algebra::VectorD<3> rij = d1.get_vector_to(d0);
   algebra::VectorD<3> rkj = d1.get_vector_to(d2);
 
-  Float scalar_product = rij.scalar_product(rkj);
+  Float scalar_product = rij*rkj;
   Float mag_rij = rij.get_magnitude();
   Float mag_rkj = rkj.get_magnitude();
   Float mag_product = mag_rij * mag_rkj;

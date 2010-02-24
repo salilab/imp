@@ -21,7 +21,7 @@ bool SpherePatch3D::get_contains(const VectorD<3> &p) const {
 VectorD<3> SpherePatch3D::get_boundary_point() const {
   //v - a vector on the plane
   VectorD<3>
-    v = orthogonal_vector(crossing_plane_.get_normal()).get_unit_vector();
+    v = get_orthogonal_vector(crossing_plane_.get_normal()).get_unit_vector();
   VectorD<3> p = crossing_plane_.get_point_on_plane(); // a point on the plane
   VectorD<3> cen = sph_.get_center();
   //a point q is both on the plane and on the sphere if (q-center)*(q-center)=R
