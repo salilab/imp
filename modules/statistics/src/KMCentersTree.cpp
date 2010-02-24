@@ -185,7 +185,7 @@ void KMCentersTree::split_by_mid_point(
   double max_length = bnd_box_->max_length();
   double max_spread = -1;
   for (int d = 0; d < data_points_->get_dim(); d++) {
-    if (IMP::algebra::almost_equal((*hi)[d] - (*lo)[d],max_length,1E-6)){
+    if (std::abs((*hi)[d] - (*lo)[d]-max_length) <1E-6){
       double spr = spread(start_ind,end_ind,d);
       if (spr > max_spread) {
         max_spread = spr;
