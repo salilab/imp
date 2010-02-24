@@ -26,6 +26,9 @@
 
 IMP_BEGIN_NAMESPACE
 
+
+#ifndef IMP_DOXYGEN
+
 //! Compute the square of a number
 template <class T>
 T square(T t)
@@ -59,8 +62,6 @@ inline bool is_nan(const T& a) {
 #endif // BOOST_VERSION
 }
 
-
-
 //! A version of std::for_each which works with ranges
 /** This is needed to apply the functor to a range which is a temporary
     object, since you can't call both begin and end on it.
@@ -70,12 +71,12 @@ void for_each(const Range &r, const Functor &f) {
   std::for_each(r.begin(), r.end(), f);
 }
 
-
 template <class T>
 int compare(const T &a, const T &b) {
   return a.compare(b);
 }
 
+#endif
 
 /** \brief RAII-style objects
 
