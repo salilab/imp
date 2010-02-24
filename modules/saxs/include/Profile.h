@@ -31,8 +31,8 @@ public:
   Profile(const String& file_name);
 
   //! init for theoretical profile
-  Profile(FormFactorTable* ff_table = default_form_factor_table(),
-          Float qmin = 0.0, Float qmax = 0.5, Float delta = 0.005);
+  Profile(Float qmin = 0.0, Float qmax = 0.5, Float delta = 0.005,
+          FormFactorTable* ff_table = default_form_factor_table());
 
 private:
   class IntensityEntry {
@@ -67,6 +67,14 @@ public:
     calculate_profile_real(particles, n);
   }
 
+  //! compute profile for fitting with hydration layer and excluded volume
+  void calculate_profile_partial(const Particles& particles,
+                                 const Floats& surface = Floats(),
+                                 bool autocorrelation = true);
+
+  void calculate_profile_partial(const Particles& particles1,
+                                 const Particles& particles2);
+
   //! computes theoretical profile contribution from iter-molecular
   //! interactions between the particles
   void calculate_profile(const Particles& particles1,
@@ -83,6 +91,9 @@ public:
 
   //! add another profile - useful for rigid bodies
   void add(const Profile& other_profile);
+
+  //! add partial profiles
+  void add_partial_profiles(const Profile& other_profile);
 
   //! scale
   void scale(Float c);
@@ -113,6 +124,8 @@ public:
   Float get_error(unsigned int i) const { return profile_[i].error_; }
   Float get_weight(unsigned int i) const { return profile_[i].weight_; }
 
+  void set_intensity(unsigned int i, Float iq) { profile_[i].intensity_ = iq; }
+
   //! add intensity entry to profile
   void add_entry(Float q, Float intensity, Float error=1.0) {
     profile_.push_back(IntensityEntry(q, intensity, error));
@@ -123,6 +136,9 @@ public:
 
   //! add simulated error
   void add_errors();
+
+  //! computes full profile for given fitting parameters
+  void sum_partial_profiles(Float c1, Float c2, Profile& out_profile);
 
   // parameter for E^2(q), used in faster calculation
   static const Float modulation_function_parameter_;
@@ -148,12 +164,16 @@ public:
 
 
   void squared_distribution_2_profile(const RadialDistributionFunction& r_dist);
+  void squared_distributions_2_partial_profiles(
+                         const std::vector<RadialDistributionFunction>& r_dist);
 
  protected:
   std::vector<IntensityEntry> profile_; // the profile
   Float min_q_, max_q_; // minimal and maximal s values  in the profile
   Float delta_q_; // profile sampling resolution
-  Pointer<FormFactorTable> ff_table_; // pointer to form factors table
+  FormFactorTable* ff_table_; // pointer to form factors table
+  std::vector<Profile> partial_profiles_;
+  bool experimental_; // experimental profile read from file
 };
 
 IMPSAXS_END_NAMESPACE

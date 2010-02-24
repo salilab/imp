@@ -25,7 +25,7 @@ IMPSAXS_BEGIN_NAMESPACE
 /**
 class that deals with form factor computation
 */
-class IMPSAXSEXPORT FormFactorTable: public RefCounted {
+class IMPSAXSEXPORT FormFactorTable {
 public:
   //! default constructor
   FormFactorTable();
@@ -40,6 +40,20 @@ public:
   //! get f(0), ie q=0 for real space profile calculation
   Float get_form_factor(Particle* p, FormFactorType ff_type=HEAVY_ATOMS) const;
 
+  Float get_vacuum_form_factor(Particle* p,
+                               FormFactorType ff_type=HEAVY_ATOMS) const;
+  Float get_dummy_form_factor(Particle* p,
+                              FormFactorType ff_type=HEAVY_ATOMS) const;
+  Float get_radius(Particle* p, FormFactorType ff_type=HEAVY_ATOMS) const;
+
+  Float get_water_form_factor() const { return zero_form_factors_[OH2]; }
+  Float get_vacuum_water_form_factor() const {
+    return vacuum_zero_form_factors_[OH2];
+  }
+  Float get_dummy_water_form_factor() const {
+    return dummy_zero_form_factors_[OH2];
+  }
+
   //! for reciprocal space profile calculation
   const Floats& get_form_factors(Particle* p,
                                  FormFactorType ff_type = HEAVY_ATOMS) const;
@@ -49,7 +63,7 @@ public:
 
   // electron density of solvent - default=0.334 e/A^3 (H2O)
   static Float rho_;
-  IMP_REF_COUNTED_DESTRUCTOR(FormFactorTable);
+
 private:
   // atom types for heavy atoms according to the number of hydrogens
   // connected to them
@@ -57,8 +71,8 @@ private:
   // this indexing is used in form_factors arrays
   enum FormFactorAtomType {
     H, C, N, O, S, P, He, Ne, Na, Mg, Ca, Fe, Zn, Se, Au, ALL_ATOM_SIZE = 15,
-    CH=15, CH2=16, CH3=17, NH=18, NH2=19, NH3=20, OH=21, SH=22,
-    HEAVY_ATOM_SIZE=23, UNK=24};
+    CH=15, CH2=16, CH3=17, NH=18, NH2=19, NH3=20, OH=21, OH2=22, SH=23,
+    HEAVY_ATOM_SIZE=24, UNK=25};
 
   // map between atom element and FormFactorAtomType
   static std::map<atom::Element, FormFactorAtomType> element_ff_type_map_;
@@ -66,8 +80,12 @@ private:
   // form factors for q=0, the order as in the FormFactorAtomType enum
   static Float zero_form_factors_[];
 
+  static Float vacuum_zero_form_factors_[];
+  // those represent excluded volume
+  static Float dummy_zero_form_factors_[];
+
   // a key for storing zero form factor in Particle as attribute
-  static IntKey form_factor_key_;
+  static IntKey form_factor_type_key_;
 
   // class for storing form factors solvation table
   class AtomFactorCoefficients {
@@ -122,6 +140,8 @@ private:
 
   // min/max q and sampling resolution for form factor computation
   Float min_q_, max_q_, delta_q_;
+
+  WarningContext warn_context_;
 };
 
 IMPSAXSEXPORT FormFactorTable* default_form_factor_table();

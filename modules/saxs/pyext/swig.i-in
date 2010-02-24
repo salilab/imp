@@ -9,7 +9,6 @@
 
 
 /* Wrap our own classes */
-%include "IMP/saxs/FormFactorTable.h"
 %include "IMP/saxs/Profile.h"
 %include "IMP/saxs/Score.h"
 %include "IMP/saxs/Restraint.h"

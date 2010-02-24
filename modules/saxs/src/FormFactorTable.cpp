@@ -17,7 +17,7 @@
 
 IMPSAXS_BEGIN_NAMESPACE
 
-IntKey FormFactorTable::form_factor_key_ = IntKey("form factor key");
+IntKey FormFactorTable::form_factor_type_key_ = IntKey("form factor key");
 
 std::map<atom::Element, FormFactorTable::FormFactorAtomType>
 FormFactorTable::element_ff_type_map_;
@@ -27,8 +27,26 @@ Float FormFactorTable::zero_form_factors_[] = {
   //   H        C        N        O        S         P
   -0.720228, 6.993, 7.9864, 8.9805, 14.9965, 20.9946, 24.9936, 30.9825, 72.324,
   //   He      Ne     Na      Mg       Ca      Fe       Zn       Se      Au
-  -0.211907, -0.932054, -1.6522, 5.44279, 4.72265, 4.0025, 4.22983, 8.64641
-  //  CH        CH2        CH3     NH       NH2       NH3     OH      SH
+  -0.211907, -0.932054, -1.6522, 5.44279, 4.72265,4.0025,4.22983,3.50968,8.64641
+  //  CH        CH2        CH3     NH       NH2       NH3     OH       OH2   SH
+};
+
+Float FormFactorTable::vacuum_zero_form_factors_[] = {
+  0.999953, 5.9992, 6.9946, 7.9994, 15.9998, 14.9993,
+  //   H        C      N        O       S        P
+  0.999872, 9.999, 10.9924, 11.9865, 18.0025, 24.0006, 27.9996, 33.9885,78.9572,
+  //   He      Ne      Na      Mg       Ca      Fe       Zn       Se      Au
+  6.99915, 7.99911, 8.99906, 7.99455, 8.99451, 9.99446, 8.99935, 9.9993, 16.9998
+  //  CH      CH2     CH3     NH       NH2       NH3     OH      OH2      SH
+};
+
+Float FormFactorTable::dummy_zero_form_factors_[] = {
+  1.7201, 5.49096, 0.83166, 3.04942, 6.63324, 1.91382,
+  //   H       C        N        O        S         P
+  1.7201, 3.006, 3.006, 3.006, 3.006, 3.006, 3.006, 3.006, 6.63324,
+  //  He     Ne    Na     Mg      Ca     Fe     Zn     Se      Au
+  7.21106, 8.93116, 10.6513, 2.55176, 4.27186, 5.99196, 4.76952, 6.48962,8.35334
+  //  CH       CH2      CH3     NH       NH2       NH3     OH       OH2   SH
 };
 
 // electron density of solvent - default=0.334 e/A^3 (H2O)
@@ -83,8 +101,11 @@ FormFactorTable::FormFactorTable(const String& table_name, Float min_q,
 
   if(ffnum > 0) { // form factors found in form factor file
     // init zero_form_factors so that they are computed from  the file
-    for(int i=0; i<HEAVY_ATOM_SIZE; i++) zero_form_factors_[i] = 0.0;
-
+    for(int i=0; i<HEAVY_ATOM_SIZE; i++) {
+      zero_form_factors_[i] = 0.0;
+      vacuum_zero_form_factors_[i] = 0.0;
+      dummy_zero_form_factors_[i] = 0.0;
+    }
     // init all the tables
     unsigned int number_of_q_entries =
       algebra::round((max_q_ - min_q_) / delta_q_ ) + 1;
@@ -163,12 +184,12 @@ int FormFactorTable::read_form_factor_table(const String & table_name)
   return counter;
 }
 
-
 void FormFactorTable::show(std::ostream & out, std::string prefix) const
 {
   for (unsigned int i = 0; i < HEAVY_ATOM_SIZE; i++) {
-    out << prefix << " FFATOMTYPE " << i << " " << zero_form_factors_[i]
-        << std::endl;
+    out << prefix << " FFATOMTYPE " << i << " zero_ff " << zero_form_factors_[i]
+        << " vacuum_ff "  << vacuum_zero_form_factors_[i]
+        << " dummy_ff " << dummy_zero_form_factors_[i] << std::endl;
   }
 }
 
@@ -223,11 +244,12 @@ void FormFactorTable::compute_form_factors_all_atoms()
     for (unsigned int j = 0; j < 5; j++) {
       zero_form_factors_[i] += form_factors_coefficients_[i].a_[j];
     }
+    vacuum_zero_form_factors_[i] = zero_form_factors_[i];
+    dummy_zero_form_factors_[i] = rho_* form_factors_coefficients_[i].excl_vol_;
     // subtract solvation
     zero_form_factors_[i] -= rho_ * form_factors_coefficients_[i].excl_vol_;
   }
 }
-
 
 void FormFactorTable::compute_form_factors_heavy_atoms()
 {
@@ -277,15 +299,19 @@ void FormFactorTable::compute_form_factors_heavy_atoms()
     for (unsigned int iq = 0; iq < number_of_q_entries; iq++) {
       // ff(i) = ff(element) + h_num*ff(hydrogen)
       form_factors_[i][iq] =
-          form_factors_[element_type][iq] + h_num * form_factors_[H][iq];
+        form_factors_[element_type][iq] + h_num * form_factors_[H][iq];
     }
 
     // zero form factors
     zero_form_factors_[i] =
-        zero_form_factors_[element_type] + h_num * zero_form_factors_[H];
+      zero_form_factors_[element_type] + h_num * zero_form_factors_[H];
+
+    vacuum_zero_form_factors_[i] = vacuum_zero_form_factors_[element_type] +
+      h_num * vacuum_zero_form_factors_[H];
+    dummy_zero_form_factors_[i] = dummy_zero_form_factors_[element_type] +
+      h_num * dummy_zero_form_factors_[H];
   }
 }
-
 
 FormFactorTable::FormFactorAtomType FormFactorTable::get_carbon_atom_type(
                        const atom::AtomType& atom_type,
@@ -404,11 +430,10 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_carbon_atom_type(
   // C8
   if (atom_type == atom::AT_C8) return CH;
 
-  IMP_WARN("Warning carbon atom not found, using default C form factor "
-           << atom_type << " " << residue_type << std::endl);
+  IMP_WARN_ONCE("Carbon atom not found, using default C form factor for "
+                << atom_type << " " << residue_type, warn_context_);
   return C;
 }
-
 
 FormFactorTable::FormFactorAtomType FormFactorTable::get_nitrogen_atom_type(
                      const atom::AtomType& atom_type,
@@ -474,8 +499,8 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_nitrogen_atom_type(
   // N7, N9
   if (atom_type == atom::AT_N7 || atom_type == atom::AT_N9) return N;
 
-  IMP_WARN("Nitrogen atom not found, using default N form factor "
-           << atom_type << " " << residue_type);
+  IMP_WARN_ONCE("Nitrogen atom not found, using default N form factor for "
+                << atom_type << " " << residue_type, warn_context_);
   return N;
 }
 
@@ -522,9 +547,8 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_oxygen_atom_type(
     if(residue_type == atom::DADE || residue_type == atom::ADE) return OH;
     return O;
   }
-
-  IMP_WARN("Oxygen atom not found, using default O form factor "
-           << atom_type << " " << residue_type << std::endl)
+  IMP_WARN_ONCE("Oxygen atom not found, using default O form factor for "
+                << atom_type << " " << residue_type, warn_context_);
   return O;
 }
 
@@ -539,8 +563,8 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_sulfur_atom_type(
     if (residue_type == atom::CYS) return SH;
     return S;
   }
-  IMP_WARN("Warning sulfur atom not found, using default S form factor "
-           << atom_type << " " << residue_type);
+  IMP_WARN_ONCE("Sulfur atom not found, using default S form factor for "
+                << atom_type << " " << residue_type, warn_context_);
   return S;
 }
 
@@ -572,8 +596,6 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_form_factor_atom_type(
       break;
     }
   }
-//   std::cerr << "FormFactorAtomType = " << ret_type << " "
-//             << atom_type << " " << residue_type << std::endl;
   return ret_type;
 }
 
@@ -591,8 +613,8 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_form_factor_atom_type(
 Float FormFactorTable::get_form_factor(Particle *p,
                                        FormFactorType ff_type) const {
   // initialization by request
-  if (p->has_attribute(form_factor_key_)) {
-    return p->get_value(form_factor_key_);
+  if (p->has_attribute(form_factor_type_key_)) {
+    return zero_form_factors_[p->get_value(form_factor_type_key_)];
   }
 
   FormFactorAtomType ff_atom_type = get_form_factor_atom_type(p, ff_type);
@@ -602,34 +624,79 @@ Float FormFactorTable::get_form_factor(Particle *p,
               << " using default " << std::endl;
     ff_atom_type = N;
   }
-  Float form_factor = zero_form_factors_[(int)ff_atom_type];
-  //std::cerr << "form_factor " << form_factor << std::endl;
-  p->add_cache_attribute(form_factor_key_, form_factor);
+  Float form_factor = zero_form_factors_[ff_atom_type];
+  p->add_attribute(form_factor_type_key_, ff_atom_type);
   return form_factor;
 }
 
+Float FormFactorTable::get_vacuum_form_factor(Particle *p,
+                                              FormFactorType ff_type) const {
+
+  if (p->has_attribute(form_factor_type_key_)) {
+    return vacuum_zero_form_factors_[p->get_value(form_factor_type_key_)];
+  }
+
+  FormFactorAtomType ff_atom_type = get_form_factor_atom_type(p, ff_type);
+  if(ff_atom_type >= HEAVY_ATOM_SIZE) {
+    std::cerr << "Can't find form factor for particle "
+              << atom::Atom(p).get_atom_type().get_string()
+              << " using default value of nitrogen" << std::endl;
+    ff_atom_type = N;
+  }
+  Float form_factor = vacuum_zero_form_factors_[ff_atom_type];
+  p->add_attribute(form_factor_type_key_, ff_atom_type);
+  return form_factor;
+}
+
+Float FormFactorTable::get_dummy_form_factor(Particle *p,
+                                             FormFactorType ff_type) const {
+  if (p->has_attribute(form_factor_type_key_)) {
+    return dummy_zero_form_factors_[p->get_value(form_factor_type_key_)];
+  }
+
+  FormFactorAtomType ff_atom_type = get_form_factor_atom_type(p, ff_type);
+  if(ff_atom_type >= HEAVY_ATOM_SIZE) {
+    std::cerr << "Can't find form factor for particle "
+              << atom::Atom(p).get_atom_type().get_string()
+              << " using default value of nitrogen" << std::endl;
+    ff_atom_type = N;
+  }
+  Float form_factor = dummy_zero_form_factors_[ff_atom_type];
+  p->add_attribute(form_factor_type_key_, ff_atom_type);
+  return form_factor;
+}
+
+Float FormFactorTable::get_radius(Particle* p, FormFactorType ff_type) const {
+  // dummy_zero_form_factor = volume * rho
+  // volume = 4/3 * pi * r^3
+  // r^3 = 3*dummy_zero_form_factor / 4*pi*rho
+  static Float one_third = 1.0/3;
+  static Float c = 3.0/(4*PI*rho_);
+  Float form_factor = get_dummy_form_factor(p, ff_type);
+  return std::pow(c*form_factor, one_third);
+}
 
 const Floats& FormFactorTable::get_form_factors(Particle *p,
                                                 FormFactorType ff_type) const {
   // initialization by request
   // store the index of the form factors in the particle
-  if (p->has_attribute(form_factor_key_))
-    return form_factors_[(int)(p->get_value(form_factor_key_))];
+  if (p->has_attribute(form_factor_type_key_))
+    return form_factors_[p->get_value(form_factor_type_key_)];
 
   FormFactorAtomType ff_atom_type = get_form_factor_atom_type(p, ff_type);
   if(ff_atom_type >= HEAVY_ATOM_SIZE) {
     std::cerr << "Can't find form factor for particle "
               << atom::Atom(p).get_atom_type().get_string()
-              << " using default " << std::endl;
+              << " using default value of nitrogen" << std::endl;
     ff_atom_type = N;
   }
-  p->add_cache_attribute(form_factor_key_, ff_atom_type);
-  return form_factors_[(int)ff_atom_type];
+  p->add_attribute(form_factor_type_key_, ff_atom_type);
+  return form_factors_[ff_atom_type];
 }
 
 FormFactorTable* default_form_factor_table() {
-  static Pointer<FormFactorTable> ff(new FormFactorTable());
-  return ff;
+  static FormFactorTable ff;
+  return &ff;
 }
 
 IMPSAXS_END_NAMESPACE

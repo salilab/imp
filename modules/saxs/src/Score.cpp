@@ -14,8 +14,7 @@
 
 IMPSAXS_BEGIN_NAMESPACE
 
-Score::Score(const Profile& exp_profile, FormFactorTable* ff_table) :
-ff_table_(ff_table), exp_profile_(exp_profile)
+Score::Score(const Profile& exp_profile) : exp_profile_(exp_profile)
 {}
 
 void Score::resample(const Profile& model_profile,
@@ -93,8 +92,7 @@ Float Score::compute_chi_square_score(const Profile& model_profile,
                                       bool use_offset,
                                       const std::string fit_file_name) const
 {
-  Profile resampled_profile(ff_table_,
-                            exp_profile_.get_min_q(),
+  Profile resampled_profile(exp_profile_.get_min_q(),
                             exp_profile_.get_max_q(),
                             exp_profile_.get_delta_q());
   resample(model_profile, resampled_profile);
@@ -206,8 +204,7 @@ void Score::compute_chi_derivative(const Profile& model_profile,
                          std::vector<algebra::VectorD<3> >& derivatives,
                                    bool use_offset) const {
 
-  Profile resampled_profile(ff_table_,
-                            exp_profile_.get_min_q(),
+  Profile resampled_profile(exp_profile_.get_min_q(),
                             exp_profile_.get_max_q(),
                             exp_profile_.get_delta_q());
   resample(model_profile, resampled_profile);
@@ -240,7 +237,7 @@ void Score::compute_chi_real_derivative(const Profile& model_profile,
 
   // estimate upper limit on max_distance
   Float max_distance = compute_max_distance(particles1, particles2);
-  DeltaDistributionFunction delta_dist(ff_table_, particles2, max_distance);
+  DeltaDistributionFunction delta_dist(particles2, max_distance);
   std::vector<Floats> sinc_cos_values; // (sinc(qr) - cos(qr)) / (r*r)
   compute_sinc_cos(delta_dist.get_bin_size(), max_distance,
                    model_profile, sinc_cos_values);
@@ -291,24 +288,25 @@ void Score::write_SAXS_fit_file(const std::string& file_name,
   out_file.setf(std::ios::showpoint);
   out_file << "# offset = " << offset << ", scaling c = " << c
            << ", Chi = " << sqrt(chi_square) << std::endl;
-  out_file << "#       q             exp_intensity    model_intensity"
+  out_file << "#  q       exp_intensity   model_intensity"
            << std::endl;
 
+  out_file.setf(std::ios::fixed, std::ios::floatfield);
   // Main data
   for (unsigned int i = 0; i < profile_size; i++) {
     out_file.setf(std::ios::left);
-    out_file.width(20);
-    out_file.fill('0');
+    out_file.width(10);
+    out_file.precision(5);
     out_file << exp_profile_.get_q(i) << " ";
 
     out_file.setf(std::ios::left);
-    out_file.width(16);
-    out_file.fill('0');
+    out_file.width(15);
+    out_file.precision(8);
     out_file << exp_profile_.get_intensity(i)  << " ";
 
     out_file.setf(std::ios::left);
-    out_file.width(16);
-    out_file.fill('0');
+    out_file.width(15);
+    out_file.precision(8);
     out_file << model_profile.get_intensity(i)*c - offset << std::endl;
   }
   out_file.close();

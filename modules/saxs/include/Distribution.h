@@ -13,17 +13,13 @@
 #define IMPSAXS_DISTRIBUTION_H
 
 #include "config.h"
-#include "FormFactorTable.h"
 #include "Profile.h"
-#include <IMP/algebra/utility.h>
 #include <IMP/Particle.h>
 
 #include <iostream>
 #include <vector>
 
 IMPSAXS_BEGIN_NAMESPACE
-
-class Score;
 
 namespace { // anonymous
   static const Float pr_resolution = 0.5;
@@ -63,7 +59,7 @@ protected:
 
 #ifdef SWIG
 %template(FloatDistribution) Distribution<Float>;
-%template(VectorDistribution) Distribution<algebra::VectorD<3> >;
+%template(VectorDistribution) Distribution<algebra::Vector3D>;
 #endif
 
 /**
@@ -74,31 +70,12 @@ class IMPSAXSEXPORT RadialDistributionFunction : public Distribution<Float> {
 
 public:
   //! Constructor (default)
-  RadialDistributionFunction(FormFactorTable* ff_table =
-                             default_form_factor_table(),
-                             Float bin_size = pr_resolution);
+  RadialDistributionFunction(Float bin_size = pr_resolution);
 
-  //! Constructor from gnom file \untested{read_pr_file}
+  //! Constructor from gnom file
   RadialDistributionFunction(const std::string& file_name);
 
   friend class Profile;
-
-  //! computes radial distribution function for a set of particles
-  void calculate_distribution(const Particles& particles,
-                              bool autocorrelation = true);
-
-  //! computes distribution contribution from inter-molecular
-  //! interactions between the particles
-  void calculate_distribution(const Particles& particles1,
-                              const Particles& particles2);
-
-  //! the distribution is a function of squared distance
-  void calculate_squared_distribution(const Particles& particles,
-                                      bool autocorrelation = true);
-
-  //! the distribution is a function of squared distance
-  void calculate_squared_distribution(const Particles& particles1,
-                                      const Particles& particles2);
 
   //! scale distribution by a constant
   void scale(Float c);
@@ -109,20 +86,22 @@ public:
   //! print tables
   void show(std::ostream &out=std::cout, std::string prefix="") const;
 
-  //! analogy crystallographic R-factor score \untested{R_factor}
-  Float R_factor_score(const RadialDistributionFunction& model_pr);
+  //! analogy crystallographic R-factor score
+  Float R_factor_score(const RadialDistributionFunction& model_pr,
+                       const std::string& file_name = "") const;
 
-  //! analogy to chi score \untested{chi_score}
-  Float chi_score(const RadialDistributionFunction& model_pr);
+  // //! analogy to chi score \untested{chi_score}
+  // Float chi_score(const RadialDistributionFunction& model_pr) const;
 
-  //! write fit file for the two distributions
-  void write_fit_file(const std::string& file_name,
-                      const RadialDistributionFunction& model_pr);
+  //! fit the distributions by scaling according to maximum
+  Float fit(const RadialDistributionFunction& model_pr,
+            const std::string& file_name = "") const;
 
   //! normalize to area = 1.0
   void normalize();
 
  private:
+
   void add_to_distribution(Float dist, Float value) {
     unsigned int index = dist2index(dist);
     if(index >= size()) {
@@ -134,10 +113,13 @@ public:
     (*this)[index] += value;
   }
 
+  //! read gnom file
   void read_pr_file(const std::string& file_name);
 
- protected:
-  FormFactorTable* ff_table_; // pointer to form factors table
+  //! write fit file for the two distributions
+  void write_fit_file(const RadialDistributionFunction& model_pr,
+                      Float c = 1.0, const std::string& file_name = "") const;
+
 };
 
 
@@ -149,11 +131,10 @@ sum_i [f_p(0) * f_i(0) * (y_p - y_i)]
 sum_i [f_p(0) * f_i(0) * (z_p - z_i)]
 */
 class IMPSAXSEXPORT
-DeltaDistributionFunction : public Distribution<algebra::VectorD<3> > {
+DeltaDistributionFunction : public Distribution<algebra::Vector3D> {
 public:
   //! Constructor
-  DeltaDistributionFunction(FormFactorTable* ff_table,
-                            const Particles& particles,
+  DeltaDistributionFunction(const Particles& particles,
                             Float max_distance = 0.0,
                             Float bin_size = pr_resolution);
 
@@ -166,12 +147,12 @@ public:
   void show(std::ostream &out=std::cout, std::string prefix="") const;
 
  private:
-  void add_to_distribution(Float dist, const algebra::VectorD<3>& value) {
+  void add_to_distribution(Float dist, const algebra::Vector3D& value) {
     unsigned int index = dist2index(dist);
     if(index >= size()) {
       if(capacity() <= index)
         reserve(2 * index);   // to avoid many re-allocations
-      resize(index + 1, algebra::VectorD<3>(0.0, 0.0, 0.0));
+      resize(index + 1, algebra::Vector3D(0.0, 0.0, 0.0));
       max_distance_ = index2dist(index + 1);
     }
     (*this)[index] += value;
@@ -180,12 +161,11 @@ public:
   void init() {
     clear();
     insert(begin(), dist2index(max_distance_) + 1,
-           algebra::VectorD<3>(0.0, 0.0, 0.0));
+           algebra::Vector3D(0.0, 0.0, 0.0));
   }
 
  protected:
-  FormFactorTable* ff_table_; // pointer to form factors table
-  std::vector<algebra::VectorD<3> > coordinates_;
+  std::vector<algebra::Vector3D> coordinates_;
   Floats form_factors_;
 };
 
