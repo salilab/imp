@@ -71,9 +71,10 @@ private:
   void read_topology_file(std::ifstream& input_file);
 
   ResidueType parse_residue_line(const String& line);
-  void parse_atom_line(const String& line, ResidueType curr_res_type);
-  void parse_bond_line(const String& line, ResidueType curr_res_type);
-
+  void parse_atom_line(const String& line, ResidueType curr_res_type,
+                       CHARMMResidueTopologyBase &residue);
+  void parse_bond_line(const String& line, ResidueType curr_res_type,
+                       CHARMMResidueTopologyBase &residue);
 };
 
 IMPATOM_END_NAMESPACE
