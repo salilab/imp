@@ -181,7 +181,7 @@ namespace {
       }
       if (h.get_as_atom()) {
         Atom a= h.get_as_atom();
-        if (a.get_atom_type().get_string().find("HET_") == std::string::npos) {
+        if (a.get_atom_type().get_string().find("HET:") == std::string::npos) {
           try {
             get_residue(a);
           } catch (...) {
@@ -424,8 +424,8 @@ bool get_is_heterogen(Hierarchy h) {
   if (Atom::particle_is_instance(h)) {
     Atom a(h);
     bool ret= (a.get_atom_type() >= AT_UNKNOWN);
-    IMP_INTERNAL_CHECK((ret && a.get_atom_type().get_string().find("HET_")==0)
-                       || (!ret && a.get_atom_type().get_string().find("HET_")
+    IMP_INTERNAL_CHECK((ret && a.get_atom_type().get_string().find("HET:")==0)
+                       || (!ret && a.get_atom_type().get_string().find("HET:")
                            == std::string::npos),
                        "Unexpected atom type found " << a.get_atom_type()
                        << (ret?" is ": " is not ") << "a heterogen.");

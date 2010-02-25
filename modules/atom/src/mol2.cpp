@@ -56,7 +56,8 @@ namespace {
     mol2_file << std::setw(10) << std::setprecision(4) << xyz.get_y();
     mol2_file << std::setw(10) << std::setprecision(4) << xyz.get_z() << " ";
     mol2_file.setf(std::ios::left,std::ios::adjustfield);
-    if(atom_type[0] == 'O' || atom_type[0] == 'S') {
+    if(atom_type[0] == 'O' || atom_type[0] == 'S'
+       || atom_type[0] == 'C') {
       if(internal::check_arbond(a)) {
         atom_type = atom_type[0] + ".ar";
       }
@@ -129,7 +130,7 @@ namespace {
   Particle* atom_particle(Model *m, const std::string& mol2_atomline)
   {
     Int atom_number, molecule_number;
-    char atom_name[10], type[10], molecule_name[10];
+    std::string atom_name_field, type_field, molecule_name_field;
     Float x_coord, y_coord, z_coord, atom_charge;
 
     Particle* p = new Particle(m);
@@ -137,23 +138,37 @@ namespace {
     std::istringstream ins;
     ins.str(mol2_atomline);
 
-    ins >> atom_number >> atom_name >> x_coord >> y_coord >> z_coord
-        >> type >> molecule_number >> molecule_name >> atom_charge;
+    ins >> atom_number >> atom_name_field >> x_coord >> y_coord >> z_coord
+        >> type_field >> molecule_number >> molecule_name_field >> atom_charge;
 
     algebra::VectorD<3> v(x_coord, y_coord, z_coord);
 
-    std::string temp_name(type);
+    std::string temp_name(type_field);
     boost::trim(temp_name);
-    // guess element
-    if (!atom_type_exists(temp_name)) {
-      if (temp_name.find('.') == std::string::npos) {
-        add_atom_type(temp_name, get_element_table().get_element(temp_name));
-      } else {
-        std::string element(temp_name, 0, temp_name.find('.'));
-        add_atom_type(temp_name, get_element_table().get_element(element));
-      }
+    if (temp_name.find('.') != std::string::npos) {
+      temp_name= std::string(temp_name, 0, temp_name.find('.'));
     }
-    AtomType atom_type = AtomType(temp_name);
+    std::string atom_name;
+    if (temp_name.size() ==1) {
+      atom_name= std::string("HET: ") + temp_name + "  ";
+    } else if (temp_name.size() ==2) {
+      atom_name=std::string("HET:") + temp_name +"  ";
+    } else {
+      IMP_THROW("Can't deal with atom name " << temp_name,
+                IOException);
+    }
+    // guess element
+    if (!get_atom_type_exists(atom_name)) {
+      std::string element_name=temp_name;
+      boost::trim(element_name);
+      Element element=get_element_table().get_element(element_name);
+      if (element== UNKNOWN_ELEMENT) {
+        IMP_THROW("Unable to find element for " << element_name,
+                  IOException);
+      }
+      add_atom_type(atom_name, element);
+    }
+    AtomType atom_type = AtomType(atom_name);
     // atom decorator
     Atom d = Atom::setup_particle(p, atom_type);
     core::XYZ::setup_particle(p, v);

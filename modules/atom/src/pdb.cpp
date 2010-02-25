@@ -40,10 +40,9 @@ Particle* atom_particle(Model *m, const std::string& pdb_line)
 {
   AtomType atom_name;
   std::string string_name = internal::atom_type(pdb_line);
-  boost::trim(string_name);
   if (pdb_line[0]!='A'){
-    string_name= "HET_"+string_name;
-    if (!atom_type_exists(string_name)) {
+    string_name= "HET:"+string_name;
+    if (!get_atom_type_exists(string_name)) {
       std::string elem= internal::atom_element(pdb_line);
       boost::trim(elem);
       Element e= get_element_table().get_element(elem);
@@ -57,6 +56,7 @@ Particle* atom_particle(Model *m, const std::string& pdb_line)
       atom_name=AtomType(string_name);
     }
   } else {
+    boost::trim(string_name);
     if (!AtomType::get_key_exists(string_name)) {
       string_name= try_rename(string_name);
       if (!AtomType::get_key_exists(string_name)) {
@@ -349,7 +349,8 @@ std::string pdb_string(const algebra::VectorD<3>& v, int index,
                        char chain, int res_index,
                        char res_icode, Element e) {
   std::stringstream out;
-  if (rt > DTHY) {
+  std::string atom_name = at.get_string();
+  if (atom_name.find("HET:")==0) {
     out << "HETATM";
   } else {
     out << "ATOM  ";
@@ -362,17 +363,18 @@ std::string pdb_string(const algebra::VectorD<3>& v, int index,
   out.width(1);
   out << " ";
   // 13-16: atom name
-  out.setf(std::ios::left, std::ios::adjustfield);
-  out.width(1);
-  std::string atom_name = at.get_string();
-  out.setf(std::ios::right, std::ios::adjustfield);
-  out.width(4);
-  if (atom_name.size()<4) {
-    out << atom_name;
-  } else if (atom_name.find("HET_")==0){
-    out << std::string(atom_name,4);
+  if (atom_name.find("HET:")==0){
+    out << std::string(atom_name, 4);
   } else {
-    out << atom_name;
+    if (atom_name.size() == 4) {
+      out << atom_name;
+    } else if (atom_name.size() ==3) {
+      out << " " << atom_name;
+    } else if (atom_name.size() ==2) {
+      out << " " << atom_name << " ";
+    } else {
+      out << " " << atom_name << "  ";
+    }
   }
   // 17: skip the alternate indication position
   out.width(1);

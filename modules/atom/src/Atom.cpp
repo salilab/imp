@@ -32,7 +32,7 @@ namespace {
         && added_atom_names[at.get_index()] != UNKNOWN_ELEMENT) {
       return added_atom_names[at.get_index()];
     }
-    if (atom_name.find("HET_") != std::string::npos) {
+    if (atom_name.find("HET:") != std::string::npos) {
       IMP_THROW("You must call add_atom_name() to create a new atom name: "
                 << at,
                 ValueException);
@@ -139,8 +139,10 @@ NAME_DEF(HE3);
 //NAME(HE1",Atom::AT_HE1},
 //NAME(HE2",Atom::AT_HE2},
 //NAME(HE3",Atom::AT_HE3},
-NAME_DEF(1HE2);
-NAME_DEF(2HE2);
+NAME_DEF(HE21);
+NAME_DEF(HE22);
+NAME_ALIAS(HE21, 1HE2);
+NAME_ALIAS(HE22, 2HE2);
 NAME_DEF(OE1);
 NAME_DEF(OE2);
 NAME_DEF(NE);
@@ -333,6 +335,36 @@ AtomType add_atom_type(std::string name, Element e) {
             << name);
   IMP_USAGE_CHECK(e != UNKNOWN_ELEMENT, "Atom type must have element: "
                   << name);
+  if (name.find("HET:") == 0) {
+    if (name.size() != 8) {
+      IMP_THROW("Heterogen names must have 4 "
+                << "characters after the colon: \"" << name
+                << "\" does not.", ValueException);
+    }
+    for (unsigned int i=4; i< 8; ++i) {
+      if (!std::isalpha(name[i], std::locale())
+          && !std::isspace(name[i], std::locale())
+          && !std::isdigit(name[i], std::locale())) {
+        IMP_THROW("Illegal character in atom name, only A-Z, 0-9, \" \""
+                  << "allowed. Got \"" << name << "\"",
+                  ValueException);
+      }
+    }
+  } else {
+      if (name.size() >4) {
+        IMP_THROW("Atom names must have at most 4 "
+                << "characters: \"" << name
+                << "\" does not.", ValueException);
+      }
+      for (unsigned int i=0; i< name.size(); ++i) {
+      if (!std::isalpha(name[i], std::locale())
+          && !std::isdigit(name[i], std::locale())) {
+        IMP_THROW("Illegal character in atom name, only A-Z, 0-9"
+                  << "allowed. Got \"" << name << "\"",
+                  ValueException);
+      }
+    }
+  }
   AtomType ret= AtomType::add_key(name.c_str());
   added_atom_names.resize(std::max(added_atom_names.size(),
                                    static_cast<std::size_t>(ret.get_index()+1)),
@@ -342,7 +374,7 @@ AtomType add_atom_type(std::string name, Element e) {
 }
 
 
-bool atom_type_exists(std::string name) {
+bool get_atom_type_exists(std::string name) {
   return AtomType::get_key_exists(name);
 }
 

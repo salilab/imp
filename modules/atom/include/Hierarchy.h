@@ -417,7 +417,7 @@ IMPATOMEXPORT IMP::core::RigidBody rigid_body_setup_hierarchy(Hierarchy h);
 
 //! Return true if the piece of hierarchy should be classified as a heterogen
 /** For the purposes of classification, a heterogen is anything that
-    - is a heterogen atom (one whose name starts with HET_)
+    - is a heterogen atom (one whose name starts with HET:)
     - is or is part of a Residue that is not a normal protein, rna or
       dna residue
     - or is not part of a Chain
