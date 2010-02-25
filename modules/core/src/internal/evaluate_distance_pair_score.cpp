@@ -42,8 +42,8 @@ RawOpenCubicSpline::RawOpenCubicSpline(const std::vector<Float> &values,
   for (int i = npoints - 2; i >= 0; --i) {
     second_derivs_[i] = second_derivs_[i] * second_derivs_[i + 1] + tmp[i];
   }
-  IMP_LOG(TERSE, "Initialized spline with " << values.size() << " values "
-          << "with spacing " << spacing << std::endl);
+  /*IMP_LOG(TERSE, "Initialized spline with " << values.size() << " values "
+    << "with spacing " << spacing << std::endl);*/
 }
 
 IMPCORE_END_INTERNAL_NAMESPACE
