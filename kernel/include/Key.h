@@ -166,7 +166,7 @@ public:
      keys created.
    */
   static unsigned int get_number_unique() {
-    return get_map().size();
+    return get_rmap().size();
   }
 
 #ifndef SWIG
