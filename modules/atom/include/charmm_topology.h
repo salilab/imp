@@ -233,7 +233,7 @@ private:
   WarningContext warn_context_;
 
   void map_residue_topology_to_hierarchy(Hierarchy hierarchy,
-            std::map<CHARMMResidueTopology *, Hierarchy> &resmap);
+            std::map<CHARMMResidueTopology *, Hierarchy> &resmap) const;
 public:
   void apply_default_patches(const CharmmParameters *ff) {
     for (unsigned int i = 0; i < get_number_of_segments(); ++i) {
@@ -241,9 +241,9 @@ public:
     }
   }
 
-  void add_atom_types(Hierarchy hierarchy);
+  void add_atom_types(Hierarchy hierarchy) const;
 
-  void add_charges(Hierarchy hierarchy);
+  void add_charges(Hierarchy hierarchy) const;
 };
 
 IMPATOM_END_NAMESPACE
