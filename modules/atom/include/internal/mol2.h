@@ -9,8 +9,8 @@
 #define IMPATOM_INTERNAL_MOL_2_H
 
 #include "../config.h"
+#include "../Atom.h"
 #include "IMP/Particle.h"
-#include "IMP/Atom.h"
 #include <IMP/base_types.h>
 #include <map>
 
