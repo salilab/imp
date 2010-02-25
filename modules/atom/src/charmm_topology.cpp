@@ -33,6 +33,31 @@ namespace {
       return bond.contains_atom(name_);
     }
   };
+
+  void add_residue_bonds(const CHARMMResidueTopology *current_residue,
+                         const CHARMMResidueTopology *previous_residue,
+                         const CHARMMResidueTopology *next_residue,
+                         const std::map<const CHARMMResidueTopology *,
+                                        Hierarchy> &resmap)
+  {
+    for (unsigned int nbond = 0; nbond < current_residue->get_number_of_bonds();
+         ++nbond) {
+      Atoms as = current_residue->get_bond(nbond).get_atoms(
+                                   current_residue, previous_residue,
+                                   next_residue, resmap);
+      if (as.size() > 0) {
+        Bonded b[2];
+        for (unsigned int i = 0; i < 2; ++i) {
+          if (Bonded::particle_is_instance(as[i])) {
+            b[i] = Bonded::decorate_particle(as[i]);
+          } else {
+            b[i] = Bonded::setup_particle(as[i]);
+          }
+        }
+        IMP::atom::Bond bd = bond(b[0], b[1], IMP::atom::Bond::SINGLE);
+      }
+    }
+  }
 }
 
 void CHARMMResidueTopologyBase::add_atom(const CHARMMAtomTopology &atom)
@@ -45,6 +70,19 @@ CHARMMAtomTopology & CHARMMResidueTopologyBase::get_atom(std::string name)
   // A map would be more elegant here (avoid linear lookup time) but
   // a) atoms need to be ordered and b) residues rarely have more than ~30 atoms
   std::vector<CHARMMAtomTopology>::iterator it
+         = std::find_if(atoms_.begin(), atoms_.end(), atom_has_name(name));
+  if (it != atoms_.end()) {
+    return *it;
+  } else {
+    IMP_THROW("atom " << name << " not found in residue topology",
+              ValueException);
+  }
+}
+
+const CHARMMAtomTopology & CHARMMResidueTopologyBase::get_atom(
+                                                      std::string name) const
+{
+  std::vector<CHARMMAtomTopology>::const_iterator it
          = std::find_if(atoms_.begin(), atoms_.end(), atom_has_name(name));
   if (it != atoms_.end()) {
     return *it;
@@ -155,7 +193,7 @@ void CHARMMTopology::do_show(std::ostream &out) const
 }
 
 void CHARMMTopology::map_residue_topology_to_hierarchy(Hierarchy hierarchy,
-            std::map<CHARMMResidueTopology *, Hierarchy> &resmap) const
+                                                       ResMap &resmap) const
 {
   HierarchiesTemp chains = get_by_type(hierarchy, CHAIN_TYPE);
   IMP_USAGE_CHECK(chains.size() == get_number_of_segments(),
@@ -178,7 +216,6 @@ void CHARMMTopology::map_residue_topology_to_hierarchy(Hierarchy hierarchy,
 
 void CHARMMTopology::add_atom_types(Hierarchy hierarchy) const
 {
-  typedef std::map<CHARMMResidueTopology *, Hierarchy> ResMap;
   ResMap resmap;
   map_residue_topology_to_hierarchy(hierarchy, resmap);
 
@@ -202,7 +239,6 @@ void CHARMMTopology::add_atom_types(Hierarchy hierarchy) const
 
 void CHARMMTopology::add_charges(Hierarchy hierarchy) const
 {
-  typedef std::map<CHARMMResidueTopology *, Hierarchy> ResMap;
   ResMap resmap;
   map_residue_topology_to_hierarchy(hierarchy, resmap);
 
@@ -222,6 +258,27 @@ void CHARMMTopology::add_charges(Hierarchy hierarchy) const
     }
   }
   warn_context_.dump_warnings();
+}
+
+void CHARMMTopology::add_bonds(Hierarchy hierarchy) const
+{
+  ResMap resmap;
+  map_residue_topology_to_hierarchy(hierarchy, resmap);
+
+  for (CHARMMSegmentTopologyConstIterator segit = segments_begin();
+       segit != segments_end(); ++segit) {
+    const CHARMMSegmentTopology *seg = *segit;
+    const CHARMMResidueTopology *prev = NULL;
+    for (unsigned int nres = 0; nres < seg->get_number_of_residues();
+         ++nres) {
+      const CHARMMResidueTopology *cur = seg->get_residue(nres);
+      const CHARMMResidueTopology *next =
+               nres < seg->get_number_of_residues() - 1 ?
+               seg->get_residue(nres + 1) : NULL;
+      add_residue_bonds(cur, prev, next, resmap);
+      prev = cur;
+    }
+  }
 }
 
 IMP_LIST_IMPL(CHARMMSegmentTopology, CHARMMResidueTopology, residue,
