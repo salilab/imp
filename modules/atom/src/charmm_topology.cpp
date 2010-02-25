@@ -155,7 +155,7 @@ void CHARMMTopology::do_show(std::ostream &out) const
 }
 
 void CHARMMTopology::map_residue_topology_to_hierarchy(Hierarchy hierarchy,
-            std::map<CHARMMResidueTopology *, Hierarchy> &resmap)
+            std::map<CHARMMResidueTopology *, Hierarchy> &resmap) const
 {
   HierarchiesTemp chains = get_by_type(hierarchy, CHAIN_TYPE);
   IMP_USAGE_CHECK(chains.size() == get_number_of_segments(),
@@ -176,7 +176,7 @@ void CHARMMTopology::map_residue_topology_to_hierarchy(Hierarchy hierarchy,
   }
 }
 
-void CHARMMTopology::add_atom_types(Hierarchy hierarchy)
+void CHARMMTopology::add_atom_types(Hierarchy hierarchy) const
 {
   typedef std::map<CHARMMResidueTopology *, Hierarchy> ResMap;
   ResMap resmap;
@@ -200,7 +200,7 @@ void CHARMMTopology::add_atom_types(Hierarchy hierarchy)
   warn_context_.dump_warnings();
 }
 
-void CHARMMTopology::add_charges(Hierarchy hierarchy)
+void CHARMMTopology::add_charges(Hierarchy hierarchy) const
 {
   typedef std::map<CHARMMResidueTopology *, Hierarchy> ResMap;
   ResMap resmap;
