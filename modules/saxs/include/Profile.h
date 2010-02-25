@@ -160,9 +160,9 @@ public:
   void calculate_profile_real(const Particles& particles1,
                               const Particles& particles2);
 
-  // for symmetry
-  void calculate_profile_real(const Particles& particles,
-                              unsigned int n);
+  // // for symmetry
+  // void calculate_profile_real(const Particles& particles,
+  //                             unsigned int n);
 
 
   void squared_distribution_2_profile(const RadialDistributionFunction& r_dist);

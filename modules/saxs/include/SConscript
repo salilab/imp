@@ -1,11 +1,12 @@
 Import('env')
 
 files = [
-         'FormFactorTable.h',
          'Distribution.h',
+         'FormFactorTable.h',
          'Profile.h',
-         'Score.h',
          'Restraint.h',
+         'Score.h',
+         'SolventAccessibleSurface.h',
          'utility.h']
 
 # Install the include files:
