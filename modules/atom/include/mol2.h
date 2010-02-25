@@ -9,7 +9,6 @@
 #define IMPATOM_MOL_2_H
 
 #include "config.h"
-#include "internal/mol2.h"
 #include "Hierarchy.h"
 
 #include <IMP/Model.h>

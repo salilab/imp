@@ -11,6 +11,7 @@
 #include "../config.h"
 #include "../Atom.h"
 #include "IMP/Particle.h"
+#include "IMP/atom/Atom.h"
 #include <IMP/base_types.h>
 #include <map>
 

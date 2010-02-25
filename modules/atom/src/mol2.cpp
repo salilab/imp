@@ -5,7 +5,7 @@
  *
  */
 #include <IMP/atom/mol2.h>
-
+#include <IMP/atom/internal/mol2.h>
 #include <IMP/atom/Atom.h>
 #include <IMP/atom/Residue.h>
 #include <IMP/atom/Hierarchy.h>
