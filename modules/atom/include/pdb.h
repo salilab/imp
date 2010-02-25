@@ -127,8 +127,15 @@ class HydrogenPDBSelector : public NonAlternativePDBSelector {
  public:
   bool operator()(const std::string& pdb_line) const {
     if (!NonAlternativePDBSelector::operator()(pdb_line)) return false;
-    return (pdb_line[internal::atom_type_field_+1] == 'H' ||
-            pdb_line[internal::atom_type_field_+1] == 'D');
+    return ((pdb_line[internal::atom_element_field_]=='H'
+             && pdb_line[internal::atom_element_field_+1]==' ')
+            || (pdb_line[internal::atom_element_field_]==' '
+             && pdb_line[internal::atom_element_field_+1]=='H')
+            || (pdb_line[internal::atom_element_field_]==' '
+                && pdb_line[internal::atom_element_field_+1]==' '
+                && pdb_line[0]== 'A'
+                && (pdb_line[internal::atom_type_field_] =='H'
+                    || pdb_line[internal::atom_type_field_+1] == 'H')));
   }
 };
 
