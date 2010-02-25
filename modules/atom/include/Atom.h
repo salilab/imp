@@ -35,8 +35,8 @@ IMP_DECLARE_CONTROLLED_KEY_TYPE(AtomType, IMP_ATOM_TYPE_INDEX);
     created from the PDB atom name string with spaces removed. For
     example, a protein C-alpha has the name AtomType("CA").
     - the AtomType for a heterogen atom is the AtomType created by
-    prefixing "HET_" to the PBD atom name string (again, with spaced
-    removed). For example, a calcium atom is AtomType("HET_CA").
+    prefixing "HET:" to the PBD atom name string (this time without
+    spaces removed). For example, a calcium atom is AtomType("HET:CA  ").
 
     We provide an AtomType instance for each of the standard PDB %atom types.
     These have names such as IMP::atom::AT_N. The full list is elided for
@@ -132,8 +132,8 @@ IMPATOMEXPORT extern const AtomType AT_HB1;
 /** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HE1;
 /** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HE2;
 /** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HE3;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_1HE2;
-/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_2HE2;
+/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HE21;
+/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HE22;
 /** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_OE1;
 /** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_OE2;
 /** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_NE;
@@ -319,7 +319,7 @@ IMPATOMEXPORT Atom get_atom(Residue rd, AtomType at);
 IMPATOMEXPORT AtomType add_atom_type(std::string name, Element e);
 
 //! Return true if that atom type already exists.
-IMPATOMEXPORT bool atom_type_exists(std::string name);
+IMPATOMEXPORT bool get_atom_type_exists(std::string name);
 
 IMPATOM_END_NAMESPACE
 

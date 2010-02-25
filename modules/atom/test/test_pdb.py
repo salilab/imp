@@ -1,10 +1,22 @@
 import unittest
-from StringIO import StringIO
+import StringIO
 import IMP
 import IMP.test
 import IMP.atom
 
 class PDBReadWriteTest(IMP.test.TestCase):
+    def _test_round_trip(self, name, selector):
+        m= IMP.Model()
+        p= IMP.atom.read_pdb(self.get_input_file_name(name),
+                             m, selector)
+        n1= len(IMP.atom.get_by_type(p, IMP.atom.ATOM_TYPE))
+        sout= StringIO.StringIO()
+        IMP.atom.write_pdb(p, sout)
+        sin= StringIO.StringIO(sout.getvalue())
+        p2= IMP.atom.read_pdb(sin, m, selector)
+        n2= len(IMP.atom.get_by_type(p2, IMP.atom.ATOM_TYPE))
+        self.assertEqual(n1, n2)
+        self.assert_(n1 > 0)
     def test_bad_read(self):
         """Check that read_pdb behaves OK on invalid files"""
         m= IMP.Model()
@@ -12,7 +24,17 @@ class PDBReadWriteTest(IMP.test.TestCase):
                           IMP.atom.read_pdb,
                           self.open_input_file("notapdb.pdb"),
                           m)
-
+    def test_round_trips(self):
+        """Testing that we can read and write various pdbs"""
+        self._test_round_trip("1d3d-protein.pdb", IMP.atom.NonWaterPDBSelector())
+        self._test_round_trip("1d3d-protein.pdb", IMP.atom.NonAlternativePDBSelector())
+        self._test_round_trip("1DQK.pdb", IMP.atom.NonWaterPDBSelector())
+        self._test_round_trip("1z5s_A.pdb", IMP.atom.NonWaterPDBSelector())
+        self._test_round_trip("input.pdb", IMP.atom.NonWaterPDBSelector())
+        self._test_round_trip("protein_water.pdb", IMP.atom.NonWaterPDBSelector())
+        self._test_round_trip("protein_water.pdb", IMP.atom.NonAlternativePDBSelector())
+        self._test_round_trip("regression_0.pdb", IMP.atom.NonAlternativePDBSelector())
+        self._test_round_trip("single_dna.pdb", IMP.atom.NonAlternativePDBSelector())
     def test_read(self):
         """Check reading a pdb with one protein"""
         m = IMP.Model()
@@ -61,20 +83,6 @@ class PDBReadWriteTest(IMP.test.TestCase):
         a= IMP.atom.get_leaves(mp)
         IMP.atom.write_pdb(mp, self.get_tmp_file_name("water_write.pdb"))
         self.assertEqual(len(a), 13328)
-    def test_write(self):
-        """Simple test of writing a PDB"""
-        m = IMP.Model()
-        mp = IMP.atom.read_pdb(self.open_input_file("input.pdb"),
-                               m, IMP.atom.CAlphaPDBSelector())
-        s = StringIO()
-        IMP.atom.write_pdb(mp, s)
-        self.assertEqual(s.getvalue().count('\n'), 129)
-
-    def test_regression(self):
-        """Test reading previously problematic pdbs"""
-        m= IMP.Model()
-        mp = IMP.atom.read_pdb(self.open_input_file("regression_0.pdb"),
-                               m)
 
 if __name__ == '__main__':
     unittest.main()
