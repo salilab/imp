@@ -12,6 +12,15 @@ def _make_test_atom():
 class CHARMMTopologyTests(IMP.test.TestCase):
     """Test CHARMM topology classes"""
 
+    def assertAtomsBonded(self, a1, a2):
+        bonded1 = IMP.atom.Bonded(a1.get_particle())
+        bonded2 = IMP.atom.Bonded(a2.get_particle())
+        for i in range(bonded1.get_number_of_bonds()):
+            other = bonded1.get_bonded(i)
+            if other == bonded2:
+                return
+        self.fail("No bond defined between %s and %s" % (a1, a2))
+
     def test_atom(self):
         """Check creation and methods of CHARMMAtomTopology"""
         at = _make_test_atom()
@@ -208,6 +217,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         self.assertEqual(segment.get_number_of_residues(), 156)
         self.assertRaises(IMP.ValueException, segment.apply_default_patches, ff)
         atoms = IMP.atom.get_by_type(pdb, IMP.atom.ATOM_TYPE)
+        residues = IMP.atom.get_by_type(pdb, IMP.atom.RESIDUE_TYPE)
         last_atom = atoms[-1].get_particle()
         for typ in (IMP.atom.CHARMMAtom, IMP.core.XYZR, IMP.atom.Charged,
                     IMP.atom.LennardJones):
@@ -217,6 +227,20 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         topology.add_charges(pdb)
         self.assertInTolerance(IMP.atom.Charged(last_atom).get_charge(),
                                -0.67, 1e-3)
+        topology.add_bonds(pdb)
+        for (bondr1, bondr2, bonda1, bonda2) in [
+           # intraresidue bond
+           (residues[0], residues[0], IMP.atom.AT_CA, IMP.atom.AT_CB),
+           # backbone bond
+           (residues[0], residues[1], IMP.atom.AT_C, IMP.atom.AT_N),
+           # CTER bond
+           (residues[-1], residues[-1], IMP.atom.AT_OXT, IMP.atom.AT_C)]:
+            r1 = bondr1.get_as_residue()
+            r2 = bondr2.get_as_residue()
+            a1 = IMP.atom.get_atom(r1, bonda1)
+            a2 = IMP.atom.get_atom(r2, bonda2)
+            self.assertAtomsBonded(a1, a2)
+
         ff.add_radii(pdb)
         ff.add_well_depths(pdb)
         self.assertInTolerance(IMP.core.XYZR(last_atom).get_radius(),
