@@ -52,6 +52,17 @@ public:
     }
   }
 
+#ifndef SWIG
+  const CHARMMPatch &get_patch(std::string name) const {
+    std::map<std::string, CHARMMPatch>::const_iterator it = patches_.find(name);
+    if (it != patches_.end()) {
+      return it->second;
+    } else {
+      IMP_THROW("Patch " << name << " does not exist", ValueException);
+    }
+  }
+#endif
+
   CHARMMIdealResidueTopology &get_residue_topology(std::string name) {
     std::map<std::string, CHARMMIdealResidueTopology>::iterator it
               = residue_topologies_.find(name);
@@ -62,7 +73,20 @@ public:
     }
   }
 
-  CHARMMTopology *make_topology(Hierarchy hierarchy);
+#ifndef SWIG
+  const CHARMMIdealResidueTopology &get_residue_topology(std::string name) const
+  {
+    std::map<std::string, CHARMMIdealResidueTopology>::const_iterator it
+              = residue_topologies_.find(name);
+    if (it != residue_topologies_.end()) {
+      return it->second;
+    } else {
+      IMP_THROW("Residue " << name << " does not exist", ValueException);
+    }
+  }
+#endif
+
+  CHARMMTopology *make_topology(Hierarchy hierarchy) const;
 
   IMP_FORCE_FIELD_PARAMETERS(CharmmParameters);
 private:

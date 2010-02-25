@@ -349,7 +349,7 @@ String CharmmParameters::get_force_field_atom_type(Atom atom) const
   return CHARMMAtom(atom).get_charmm_type();
 }
 
-CHARMMTopology *CharmmParameters::make_topology(Hierarchy hierarchy)
+CHARMMTopology *CharmmParameters::make_topology(Hierarchy hierarchy) const
 {
   IMP_NEW(CHARMMTopology, topology, ());
 
