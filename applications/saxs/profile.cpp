@@ -20,22 +20,6 @@
 #include <boost/program_options.hpp>
 namespace po = boost::program_options;
 
-#if defined(_WIN32) || defined(_WIN64)
-// Simple basename implementation on platforms that don't have libgen.h
-const char *basename(const char *path)
-{
-  int i;
-  for (i = path ? strlen(path) : 0; i > 0; --i) {
-    if (path[i] == '/' || path[i] == '\\') {
-      return &path[i + 1];
-    }
-  }
-  return path;
-}
-#else
-#include <libgen.h>
-#endif
-
 int main(int argc, char **argv)
 {
   // output arguments
@@ -49,9 +33,11 @@ int main(int argc, char **argv)
   bool fit = true;
   bool hydration_layer = true;
   bool autocorrelation = true;
-  po::options_description desc("Allowed options");
+  po::options_description desc("Usage: <pdb_file1> <pdb_file2> \
+... <profile_file1> <profile_file2> ...");
   desc.add_options()
-    ("help", "produce help message")
+    ("help", "Any number of input PDBs and profiles is supported. \
+Each PDB will be fitted against each profile.")
     ("input-files", po::value< std::vector<std::string> >(),
      "input PDB and profile files")
     ("max_q,q", po::value<float>(&max_q)->default_value(0.5),
@@ -60,12 +46,12 @@ int main(int argc, char **argv)
      "number of points in the profile (default = 500)")
     ("parameter_fit,p",
      "fit by adjusting excluded volume and hydration layer density parameters \
- (default = true)")
+(default = true)")
     ("hydration_layer,h", "compute hydration layer (default = true)")
     ("background_q,b",
      po::value<float>(&background_adjustment_q)->default_value(0.0),
      "background adjustment, not used by default. if enabled, \
- recommended q value is 0.2")
+recommended q value is 0.2")
     ("offset,o", "use offset in fitting (default = false)")
     ;
   po::positional_options_description p;
@@ -75,15 +61,13 @@ int main(int argc, char **argv)
       po::command_line_parser(argc,argv).options(desc).positional(p).run(), vm);
   po::notify(vm);
 
-  if (vm.count("help")) {
-    std::cout << desc << "\n";
-    return 0;
-  }
   std::vector<std::string> files, pdb_files, dat_files;
   if (vm.count("input-files"))   {
     files = vm["input-files"].as< std::vector<std::string> >();
-    // std::cout << "Input files are: ";
-    // for(unsigned int i=0; i<files.size(); i++) std::cout << files[i]<<  "\n";
+  }
+  if(vm.count("help") || files.size() == 0) {
+    std::cout << desc << "\n";
+    return 0;
   }
   if (vm.count("parameter_fit")) fit=false;
   if (vm.count("hydration_layer")) hydration_layer=false;
