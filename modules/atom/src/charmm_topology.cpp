@@ -76,7 +76,7 @@ void CHARMMIdealResidueTopology::delete_atom(std::string name)
                                   bond_has_atom<4>(name)), impropers_.end());
 }
 
-void CHARMMPatch::apply(CHARMMResidueTopology &res)
+void CHARMMPatch::apply(CHARMMResidueTopology &res) const
 {
   if (res.get_patched()) {
     IMP_THROW("Cannot patch an already-patched residue", ValueException);
@@ -127,7 +127,7 @@ void CHARMMSegmentTopology::do_show(std::ostream &out) const
 {
 }
 
-void CHARMMSegmentTopology::apply_default_patches(CharmmParameters *ff)
+void CHARMMSegmentTopology::apply_default_patches(const CharmmParameters *ff)
 {
   if (get_number_of_residues() == 0) return;
 

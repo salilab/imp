@@ -107,37 +107,44 @@ public:
     return get_atom(type.get_string());
   }
 
-  unsigned int get_number_of_bonds() { return bonds_.size(); }
+  unsigned int get_number_of_bonds() const { return bonds_.size(); }
   void add_bond(const CHARMMBond<2> &bond) {
     bonds_.push_back(bond);
   }
-  CHARMMBond<2> &get_bond(unsigned int index) {
-    return bonds_[index];
-  }
+  CHARMMBond<2> &get_bond(unsigned int index) { return bonds_[index]; }
 
-  unsigned int get_number_of_angles() { return angles_.size(); }
+  unsigned int get_number_of_angles() const { return angles_.size(); }
   void add_angle(const CHARMMBond<3> &bond) {
     angles_.push_back(bond);
   }
-  CHARMMBond<3> &get_angle(unsigned int index) {
-    return angles_[index];
-  }
+  CHARMMBond<3> &get_angle(unsigned int index) { return angles_[index]; }
 
-  unsigned int get_number_of_dihedrals() { return dihedrals_.size(); }
+  unsigned int get_number_of_dihedrals() const { return dihedrals_.size(); }
   void add_dihedral(const CHARMMBond<4> &bond) {
     dihedrals_.push_back(bond);
   }
-  CHARMMBond<4> &get_dihedral(unsigned int index) {
-    return dihedrals_[index];
-  }
+  CHARMMBond<4> &get_dihedral(unsigned int index) { return dihedrals_[index]; }
 
-  unsigned int get_number_of_impropers() { return impropers_.size(); }
+  unsigned int get_number_of_impropers() const { return impropers_.size(); }
   void add_improper(const CHARMMBond<4> &bond) {
     impropers_.push_back(bond);
   }
-  CHARMMBond<4> &get_improper(unsigned int index) {
+  CHARMMBond<4> &get_improper(unsigned int index) { return impropers_[index]; }
+
+#ifndef SWIG
+  const CHARMMBond<2> &get_bond(unsigned int index) const {
+    return bonds_[index];
+  }
+  const CHARMMBond<3> &get_angle(unsigned int index) const {
+    return angles_[index];
+  }
+  const CHARMMBond<4> &get_dihedral(unsigned int index) const {
+    return dihedrals_[index];
+  }
+  const CHARMMBond<4> &get_improper(unsigned int index) const {
     return impropers_[index];
   }
+#endif
 };
 
 //! The ideal topology of a single residue as read from a CHARMM topology file
@@ -180,7 +187,7 @@ public:
 
   void add_deleted_atom(std::string name) { deleted_atoms_.push_back(name); }
 
-  void apply(CHARMMResidueTopology &res);
+  void apply(CHARMMResidueTopology &res) const;
   // Todo: handle two-residue patches (DISU, LINK)
   // void apply(CHARMMResidueTopology &res1, CHARMMResidueTopology &res2);
 };
@@ -191,7 +198,7 @@ class IMPATOMEXPORT CHARMMResidueTopology
   bool patched_;
 public:
 
-  CHARMMResidueTopology(CHARMMIdealResidueTopology &ideal)
+  CHARMMResidueTopology(const CHARMMIdealResidueTopology &ideal)
     : CHARMMIdealResidueTopology(ideal), patched_(false) {}
 
   bool get_patched() const { return patched_; }
@@ -211,7 +218,7 @@ class IMPATOMEXPORT CHARMMSegmentTopology : public Object {
 
   IMP_OBJECT(CHARMMSegmentTopology);
 public:
-  void apply_default_patches(CharmmParameters *ff);
+  void apply_default_patches(const CharmmParameters *ff);
 };
 
 IMP_OBJECTS(CHARMMSegmentTopology);
@@ -228,7 +235,7 @@ private:
   void map_residue_topology_to_hierarchy(Hierarchy hierarchy,
             std::map<CHARMMResidueTopology *, Hierarchy> &resmap);
 public:
-  void apply_default_patches(CharmmParameters *ff) {
+  void apply_default_patches(const CharmmParameters *ff) {
     for (unsigned int i = 0; i < get_number_of_segments(); ++i) {
       get_segment(i)->apply_default_patches(ff);
     }
