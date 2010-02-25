@@ -13,74 +13,16 @@
 IMPATOM_BEGIN_NAMESPACE
 
 namespace {
+  IMP_DECLARE_CONTROLLED_KEY_TYPE(ProteinType, 783462);
+  IMP_DECLARE_CONTROLLED_KEY_TYPE(LigandType, 783463);
 
-  enum ProteinType { PROTEIN_INVALID=-1,
-                     ALA_N=0, ALA_CA, ALA_C, ALA_O, ALA_CB,
+  namespace data {
 
-                     ARG_N, ARG_CA, ARG_C, ARG_O, ARG_CB, ARG_CG, ARG_CD,
-                     ARG_NE, ARG_CZ, ARG_NH,
+#define PROTEIN_TYPE(NameKey) const ProteinType \
+    NameKey(ProteinType::add_key(#NameKey));
+#define PROTEIN_TYPE_ALIAS(Name, Key) const ProteinType Name\
+  (ProteinType::add_alias(ProteinType(#Key), #Name));
 
-                     ASN_N, ASN_CA, ASN_C, ASN_O, ASN_CB, ASN_CG, ASN_OD1,
-                     ASN_ND2,
-
-                     ASP_N, ASP_CA, ASP_C, ASP_O, ASP_CB, ASP_CG, ASP_OD,
-
-                     CYS_N, CYS_CA, CYS_C, CYS_O, CYS_CB, CYS_SG,
-
-                     GLN_N, GLN_CA, GLN_C, GLN_O, GLN_CB, GLN_CG, GLN_CD,
-                     GLN_OE1, GLN_NE2,
-
-                     GLU_N, GLU_CA, GLU_C, GLU_O, GLU_CB, GLU_CG, GLU_CD,
-                     GLU_OE,
-
-                     GLY_N, GLY_CA, GLY_C, GLY_O,
-
-                     HIS_N, HIS_CA, HIS_C, HIS_O, HIS_CB, HIS_CG, HIS_ND1,
-                     HIS_CD2, HIS_CE1, HIS_NE2,
-
-                     ILE_N, ILE_CA, ILE_C, ILE_O, ILE_CB, ILE_CG1, ILE_CG2,
-                     ILE_CD1,
-
-                     LEU_N, LEU_CA, LEU_C, LEU_O, LEU_CB, LEU_CG, LEU_CD,
-
-                     LYS_N, LYS_CA, LYS_C, LYS_O, LYS_CB, LYS_CG, LYS_CD,
-                     LYS_CE, LYS_NZ,
-
-                     MET_N, MET_CA, MET_C, MET_O, MET_CB, MET_CG, MET_SD,
-                     MET_CE,
-
-                     PHE_N, PHE_CA, PHE_C, PHE_O, PHE_CB, PHE_CG, PHE_CD,
-                     PHE_CE,  PHE_CZ,
-
-                     PRO_N, PRO_CA, PRO_C, PRO_O, PRO_CB, PRO_CG, PRO_CD,
-
-                     SER_N, SER_CA, SER_C, SER_O, SER_CB, SER_OG,
-
-                     THR_N, THR_CA, THR_C, THR_O, THR_CB, THR_OG1, THR_CG2,
-
-                     TRP_N, TRP_CA, TRP_C, TRP_O, TRP_CB, TRP_CG, TRP_CD1,
-                     TRP_CD2, TRP_NE1, TRP_CE2, TRP_CE3, TRP_CZ2, TRP_CZ3,
-                     TRP_CH2,
-
-                     TYR_N, TYR_CA, TYR_C, TYR_O, TYR_CB, TYR_CG, TYR_CD,
-                     TYR_CE,  TYR_CZ,  TYR_OH,
-
-                     VAL_N, VAL_CA, VAL_C, VAL_O, VAL_CB, VAL_CG,
-
-                     PROTEIN_LAST};
-
-  enum LigandType{LIGAND_INVALID=-1,
-                  C1=0, C2, C3, Car, Ccat, N1, N2, N3, N4, Nar, Nam, Npl3,
-                  O2, O3, Oco2, Oar, S2, S3, So, So2, Sar, P3, F, Cl, Br, I,
-                  LIGAND_LAST};
-
-  struct ProteinTypeData {
-    std::string name;
-    ProteinType type;
-  };
-#define PROTEIN_TYPE(NameKey) {#NameKey, NameKey},
-#define PROTEIN_TYPE_ALIAS(Name, Key) {#Name, Key},
-  ProteinTypeData pat_data[]= {
     PROTEIN_TYPE(ALA_N)
     PROTEIN_TYPE(ALA_CA)
     PROTEIN_TYPE(ALA_C)
@@ -95,6 +37,7 @@ namespace {
     PROTEIN_TYPE(ARG_CD)
     PROTEIN_TYPE(ARG_NE)
     PROTEIN_TYPE(ARG_CZ)
+    PROTEIN_TYPE(ARG_NH)
     PROTEIN_TYPE_ALIAS(ARG_NH1, ARG_NH)
     PROTEIN_TYPE_ALIAS(ARG_NH2, ARG_NH)
     PROTEIN_TYPE(ASN_N)
@@ -111,6 +54,7 @@ namespace {
     PROTEIN_TYPE(ASP_O)
     PROTEIN_TYPE(ASP_CB)
     PROTEIN_TYPE(ASP_CG)
+    PROTEIN_TYPE(ASP_OD)
     PROTEIN_TYPE_ALIAS(ASP_OD1, ASP_OD)
     PROTEIN_TYPE_ALIAS(ASP_OD2, ASP_OD)
     PROTEIN_TYPE(CYS_N)
@@ -135,6 +79,7 @@ namespace {
     PROTEIN_TYPE(GLU_CB)
     PROTEIN_TYPE(GLU_CG)
     PROTEIN_TYPE(GLU_CD)
+    PROTEIN_TYPE(GLU_OE)
     PROTEIN_TYPE_ALIAS(GLU_OE1, GLU_OE)
     PROTEIN_TYPE_ALIAS(GLU_OE2, GLU_OE)
     PROTEIN_TYPE(GLY_N)
@@ -156,6 +101,7 @@ namespace {
     PROTEIN_TYPE(ILE_C)
     PROTEIN_TYPE(ILE_O)
     PROTEIN_TYPE(ILE_CB)
+    PROTEIN_TYPE(ILE_CG)
     PROTEIN_TYPE(ILE_CG1)
     PROTEIN_TYPE(ILE_CG2)
     PROTEIN_TYPE(ILE_CD1)
@@ -165,6 +111,7 @@ namespace {
     PROTEIN_TYPE(LEU_O)
     PROTEIN_TYPE(LEU_CB)
     PROTEIN_TYPE(LEU_CG)
+    PROTEIN_TYPE(LEU_CD)
     PROTEIN_TYPE_ALIAS(LEU_CD1, LEU_CD)
     PROTEIN_TYPE_ALIAS(LEU_CD2, LEU_CD)
     PROTEIN_TYPE(LYS_N)
@@ -190,8 +137,10 @@ namespace {
     PROTEIN_TYPE(PHE_O)
     PROTEIN_TYPE(PHE_CB)
     PROTEIN_TYPE(PHE_CG)
+    PROTEIN_TYPE(PHE_CD)
     PROTEIN_TYPE_ALIAS(PHE_CD1, PHE_CD)
     PROTEIN_TYPE_ALIAS(PHE_CD2, PHE_CD)
+    PROTEIN_TYPE(PHE_CE)
     PROTEIN_TYPE_ALIAS(PHE_CE1, PHE_CE)
     PROTEIN_TYPE_ALIAS(PHE_CE2, PHE_CE)
     PROTEIN_TYPE(PHE_CZ)
@@ -213,30 +162,33 @@ namespace {
     PROTEIN_TYPE(THR_C)
     PROTEIN_TYPE(THR_O)
     PROTEIN_TYPE(THR_CB)
-    PROTEIN_TYPE_ALIAS(THR_OG1, THR_OG1)
-    PROTEIN_TYPE_ALIAS(THR_CG2, THR_CG2)
+    PROTEIN_TYPE(THR_OG)
+    PROTEIN_TYPE_ALIAS(THR_OG1,THR_OG)
+    PROTEIN_TYPE_ALIAS(THR_CG2,THR_OG)
     PROTEIN_TYPE(TRP_N)
     PROTEIN_TYPE(TRP_CA)
     PROTEIN_TYPE(TRP_C)
     PROTEIN_TYPE(TRP_O)
     PROTEIN_TYPE(TRP_CB)
     PROTEIN_TYPE(TRP_CG)
-    PROTEIN_TYPE_ALIAS(TRP_CD1, TRP_CD1)
-    PROTEIN_TYPE_ALIAS(TRP_CD2, TRP_CD2)
-    PROTEIN_TYPE_ALIAS(TRP_NE1, TRP_NE1)
-    PROTEIN_TYPE_ALIAS(TRP_CE2, TRP_CE2)
-    PROTEIN_TYPE_ALIAS(TRP_CE3, TRP_CE3)
-    PROTEIN_TYPE_ALIAS(TRP_CZ2, TRP_CZ2)
-    PROTEIN_TYPE_ALIAS(TRP_CZ3, TRP_CZ3)
-    PROTEIN_TYPE_ALIAS(TRP_CH2, TRP_CH2)
+    PROTEIN_TYPE(TRP_CD1)
+    PROTEIN_TYPE(TRP_CD2)
+    PROTEIN_TYPE(TRP_NE1)
+    PROTEIN_TYPE(TRP_CE2)
+    PROTEIN_TYPE(TRP_CE3)
+    PROTEIN_TYPE(TRP_CZ2)
+    PROTEIN_TYPE(TRP_CZ3)
+    PROTEIN_TYPE(TRP_CH2)
     PROTEIN_TYPE(TYR_N)
     PROTEIN_TYPE(TYR_CA)
     PROTEIN_TYPE(TYR_C)
     PROTEIN_TYPE(TYR_O)
     PROTEIN_TYPE(TYR_CB)
     PROTEIN_TYPE(TYR_CG)
+    PROTEIN_TYPE(TYR_CD)
     PROTEIN_TYPE_ALIAS(TYR_CD1, TYR_CD)
     PROTEIN_TYPE_ALIAS(TYR_CD2, TYR_CD)
+    PROTEIN_TYPE(TYR_CE)
     PROTEIN_TYPE_ALIAS(TYR_CE1, TYR_CE)
     PROTEIN_TYPE_ALIAS(TYR_CE2, TYR_CE)
     PROTEIN_TYPE(TYR_CZ)
@@ -246,20 +198,13 @@ namespace {
     PROTEIN_TYPE(VAL_C)
     PROTEIN_TYPE(VAL_O)
     PROTEIN_TYPE(VAL_CB)
+    PROTEIN_TYPE(VAL_CG)
     PROTEIN_TYPE_ALIAS(VAL_CG1, VAL_CG)
-    PROTEIN_TYPE_ALIAS(VAL_CG2, VAL_CG)};
+    PROTEIN_TYPE_ALIAS(VAL_CG2, VAL_CG)
 
-  static const unsigned int number_of_protein_mappings
-  =sizeof(pat_data)/sizeof(ProteinTypeData);
-  BOOST_STATIC_ASSERT(number_of_protein_mappings >= PROTEIN_LAST);
+#define LIGAND_TYPE(NameKey) \
+    const LigandType NameKey(LigandType::add_key(#NameKey));
 
-  struct LigandTypeData {
-    std::string name;
-    LigandType type;
-  };
-#define LIGAND_TYPE(NameKey) {#NameKey, NameKey},
-
-  LigandTypeData lat_data[]= {
     LIGAND_TYPE(C1)
     LIGAND_TYPE(C2)
     LIGAND_TYPE(C3)
@@ -285,61 +230,8 @@ namespace {
     LIGAND_TYPE(F)
     LIGAND_TYPE(Cl)
     LIGAND_TYPE(Br)
-    LIGAND_TYPE(I)};
-  static const unsigned int number_of_ligand_mappings
-  =sizeof(lat_data)/sizeof(LigandTypeData);
-  BOOST_STATIC_ASSERT(number_of_ligand_mappings >= LIGAND_LAST);
-
-
-  struct TypeMap {
-    std::map<std::string, ProteinType> pmap;
-    std::map<std::string, LigandType> lmap;
-    TypeMap() {
-      for (unsigned int i=0; i<number_of_protein_mappings; i++) {
-        pmap[pat_data[i].name]= pat_data[i].type;
-      }
-      for (unsigned int j=0; j<number_of_ligand_mappings; j++) {
-        lmap[lat_data[j].name]= lat_data[j].type;
-      }
-    }
-    bool get_phas_element(String at) const {
-      return pmap.find(at) != pmap.end();
-    }
-    bool get_lhas_element(String at) const {
-      return lmap.find(at) != lmap.end();
-    }
-    ProteinType get_pmap_element(String at) const {
-      //      std::cout << at << std::endl;
-      /*      IMP_check(Pmap.find(at) != Pmap.end(),
-              "Unknown AtomType in get_protein_element.",
-              ValueException);
-      */
-      if(pmap.find(at) != pmap.end()){
-        return pmap.find(at)->second;
-      }
-      else{
-        return PROTEIN_INVALID;
-      }
-    }
-    LigandType get_lmap_element(String at) const {
-      //      std::cout << at << std::endl;
-      /*      IMP_check(Lmap.find(at) != Lmap.end(),
-              "Unknown AtomType in get_ligand_element.",
-              ValueException);
-      */
-      if(lmap.find(at) != lmap.end()){
-        return lmap.find(at)->second;
-      }
-      else{
-        return LIGAND_INVALID;
-      }
-    }
-  };
-
-  const TypeMap &get_type_map() {
-    static TypeMap t;
-    return t;
-  }
+    LIGAND_TYPE(I)
+}
 
   IntKey get_protein_ligand_type_key() {
     static const IntKey ik("protein-ligand atom type");
@@ -356,28 +248,34 @@ ProteinLigandAtomPairScore::ProteinLigandAtomPairScore(double threshold):
   }
 double ProteinLigandAtomPairScore
 ::evaluate(const algebra::VectorD<3> &protein_v,
-           int ptype,
+           int iptype,
            const algebra::VectorD<3> &ligand_v,
-           int ltype,
+           int iltype,
            core::XYZ pxyz, core::XYZ lxyz,
            DerivativeAccumulator *da) const {
-   if (ptype== PROTEIN_INVALID || ltype == LIGAND_INVALID) return 0;
-   double distance = algebra::get_distance(protein_v, ligand_v);
-   if (distance >= threshold_ || distance < 0.001) {
-     return 0;
-   }
-   if (!da) {
-       /*std::cout << "Evaluating pair " << ptype << " " << ltype << std::endl;
-         std::cout << "distance is " << distance << " score is "
-         <<  table_.get_score(ptype, ltype, distance)
-         << std::endl;*/
-     double v= table_.get_score(ptype, ltype, distance);
-     std::cout << "Score " << ptype << " " << ltype << " " << distance
-               << " " << v << std::endl;
-     return v;
-   } else {
-     DerivativePair dp= table_.get_score_with_derivative(ptype,
-                                                         ltype, distance);
+  ProteinType ptype(iptype);
+  LigandType ltype(iltype);
+  double distance = algebra::get_distance(protein_v, ligand_v);
+  if (distance >= threshold_ || distance < 0.001) {
+    return 0;
+  }
+  if (!da) {
+    /*std::cout << "Evaluating pair " << ptype << " " << ltype << std::endl;
+      std::cout << "distance is " << distance << " score is "
+      <<  table_.get_score(ptype, ltype, distance)
+      << std::endl;*/
+    double v= table_.get_score(iptype, iltype, distance);
+    /*std::cout << "Score " << ptype.get_string() << " "
+              << ltype.get_string() << " " << distance
+              << " " << v << " ("
+              << table_.get_score(iptype, iltype, distance+.1)
+              << "..."
+              << table_.get_score(iptype, iltype, distance-.1)
+              << ")" << std::endl;*/
+    return v;
+  } else {
+     DerivativePair dp= table_.get_score_with_derivative(iptype,
+                                                         iltype, distance);
      algebra::VectorD<3> diff= protein_v-ligand_v;
      algebra::VectorD<3> norm= diff.get_unit_vector();
      pxyz.add_to_derivatives(dp.second*norm, *da);
@@ -389,12 +287,13 @@ double ProteinLigandAtomPairScore
 
 double ProteinLigandAtomPairScore::evaluate(const ParticlePair &pp,
                                             DerivativeAccumulator *da) const {
-  ProteinType pt= ProteinType(pp[0]->get_value(get_protein_ligand_type_key()));
-  LigandType lt= LigandType(pp[1]->get_value(get_protein_ligand_type_key()));
+  int pt= pp[0]->get_value(get_protein_ligand_type_key());
+  int lt= pp[1]->get_value(get_protein_ligand_type_key());
   core::XYZ pxyz(pp[0]);
   core::XYZ lxyz(pp[1]);
   algebra::VectorD<3> pv(pxyz.get_coordinates()),
     lv(lxyz.get_coordinates());
+  if (pt==-1 || lt==-1) return 0;
   return evaluate(pv, pt, lv,lt, pxyz, lxyz, da);
 }
 
@@ -433,25 +332,36 @@ double ProteinLigandRestraint
 ::unprotected_evaluate(DerivativeAccumulator *accum) const {
   IntKey k= get_protein_ligand_type_key();
   std::vector<algebra::VectorD<3> > pvs, lvs;
-  std::vector<ProteinType> pts;
-  std::vector<LigandType> lts;
+  std::vector<int> pts;
+  std::vector<int> lts;
   HierarchiesTemp pas(get_by_type(protein_.get_decorator(), ATOM_TYPE));
   HierarchiesTemp las(get_by_type(ligand_.get_decorator(), ATOM_TYPE));
   pvs.resize(pas.size());
   pts.resize(pas.size());
   for (unsigned int i=0; i< pas.size(); ++i) {
     pvs[i]= core::XYZ(pas[i]).get_coordinates();
-    pts[i]= ProteinType(pas[i]->get_value(k));
+    pts[i]= pas[i]->get_value(k);
   }
   lvs.resize(las.size());
   lts.resize(las.size());
   for (unsigned int i=0; i< las.size(); ++i) {
     lvs[i]= core::XYZ(las[i]).get_coordinates();
-    lts[i]= LigandType(las[i]->get_value(k));
+    lts[i]= las[i]->get_value(k);
   }
   double score=0;
   for (unsigned int i=0; i< las.size(); ++i) {
+    if (lts[i] ==-1) {
+      //std::cout << "Skipping atom " << las[i] << std::endl;
+      continue;
+    }
     for (unsigned int j=0; j< pas.size(); ++j) {
+      if (pts[j] ==-1) {
+        /*std::cout << "Skipping atom " << j << " "
+                  << " with " << pas[j]->get_value(k)<< " for "
+                  << pas[j] << " in "
+                  << get_residue(Atom(pas[j])) << std::endl;*/
+        continue;
+      }
       score+= score_->evaluate(pvs[j], pts[j], lvs[i], lts[i],
                                core::XYZ(pas[j]), core::XYZ(las[i]),
                                accum);
@@ -490,16 +400,28 @@ void add_protein_ligand_score_data(Atom atom) {
   std::string residue_string= rd.get_residue_type().get_string();
   if (!get_is_heterogen(rd)) {
     std::string score_type = residue_string + '_' + atom_string;
-    type= get_type_map().get_pmap_element(score_type);
+    if (!ProteinType::get_key_exists(score_type)) {
+      type=-1;
+    } else {
+      /*std::cout << "Type for " << atom << " is "
+        << ProteinType(score_type) << std::endl;*/
+      type= ProteinType(score_type).get_index();
+    }
   } else {
     std::string nm= internal::get_mol2_name(atom);
-    if(atom_string.find('.') != String::npos) {
-      atom_string.erase(atom_string.find('.'), 1);
+    if(nm.find('.') != String::npos) {
+      nm.erase(nm.find('.'), 1);
     }
-    type= get_type_map().get_lmap_element(atom_string);
+    if (!LigandType::get_key_exists(nm)) {
+      type=-1;
+    } else {
+      //std::cout << "Type for " << atom << " is "
+      //<< LigandType(nm) << std::endl;
+      type= LigandType(nm).get_index();
+    }
   }
   if (type==-1 && atom.get_element() != H) {
-    IMP_LOG(VERBOSE, "Failed to find type for "
+    IMP_LOG(TERSE, "Failed to find type for "
             << atom << " " << rd << std::endl);
   }
   if (atom->has_attribute(get_protein_ligand_type_key())) {
@@ -532,11 +454,11 @@ PMFTable::PMFTable(TextInput tin) {
   iss >> bin;
   unsigned int np, nl;
   iss >> np >> nl;
-  if (np != PROTEIN_LAST
-      || nl != LIGAND_LAST) {
+  if (np != ProteinType::get_number_unique()
+      || nl != LigandType::get_number_unique()) {
     IMP_THROW("Expected number of protein and ligand types not found. "
-              << "Expected " << PROTEIN_LAST
-              << " " << LIGAND_LAST
+              << "Expected " << ProteinType::get_number_unique()
+              << " " << LigandType::get_number_unique()
               << " but got " << np << " " << nl,
               IOException);
   }
@@ -556,10 +478,10 @@ PMFTable::PMFTable(TextInput tin) {
   bin_width_=bin;
   inverse_bin_width_=1.0/bin;
 
-  data_.resize(PROTEIN_LAST);
+  data_.resize(ProteinType::get_number_unique());
   int bins_read=-1;
   for(unsigned int i=0;i<data_.size();i++){
-    data_[i].resize(LIGAND_LAST);
+    data_[i].resize(LigandType::get_number_unique());
     for(unsigned int j=0;j<data_[i].size();j++){
       std::string line;
       std::getline(in, line);
