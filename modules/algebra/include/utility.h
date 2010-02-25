@@ -90,6 +90,15 @@ inline double get_next_larger_power_of_2(double x) {
   return p;
 }
 
+//! Compares two values (intended for doubles)
+/**
+ * epsilon is the tolerance allowed to consider the values as equal
+ */
+inline bool almost_equal(const double a, const double b, const double epsilon)
+{
+  return (std::abs(a-b) < epsilon);
+}
+
 IMPALGEBRA_END_NAMESPACE
 
 #endif  /* IMPALGEBRA_UTILITY_H */
