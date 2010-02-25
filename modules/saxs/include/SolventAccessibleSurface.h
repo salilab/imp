@@ -1,5 +1,5 @@
 /**
- * \file SolventAccessibleSurface \brief
+ * \file SolventAccessibleSurface.h \brief
  *
  * Copyright 2007-2010 Sali Lab. All rights reserved.
  *
@@ -26,7 +26,7 @@ public:
      computed. Each point should have an XYZ coordinate and  a radius.
      \param[in] probe_radius Radius of the probe to roll over points.
      \param[in] density Sampling density per A^2 for area estimation
-     \param[out] returns a value between 0 to 1, for surface accessability,
+     \return a value between 0 to 1, for surface accessability,
      where 0 means buried and 1 means fully accessible to the water
   */
   IMP::Floats get_solvent_accessibility(const core::XYZRs& points,
