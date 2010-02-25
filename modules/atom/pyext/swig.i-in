@@ -161,6 +161,7 @@ namespace IMP {
 %include "IMP/atom/Residue.h"
 %include "IMP/atom/ForceFieldParameters.h"
 %include "IMP/atom/charmm_topology.h"
+%include "IMP/atom/CHARMMAtom.h"
 %include "IMP/atom/CharmmParameters.h"
 %include "IMP/atom/force_fields.h"
 %include "IMP/atom/pdb.h"

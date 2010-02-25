@@ -9,6 +9,7 @@ files = [
          'BrownianDynamics.cpp',
          'Chain.cpp',
          'Charged.cpp',
+         'CHARMMAtom.cpp',
          'CharmmParameters.cpp',
          'CoulombPairScore.cpp',
          'CoverBond.cpp',

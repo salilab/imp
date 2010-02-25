@@ -10,6 +10,8 @@
 
 #include "IMP/Object.h"
 #include "IMP/container_macros.h"
+#include "Hierarchy.h"
+#include "Atom.h"
 #include "config.h"
 
 #include <string>
@@ -22,12 +24,12 @@ IMPATOM_BEGIN_NAMESPACE
     look up parameters such as radii and bond lengths in the parameter file)
     and an electrostatic charge.
  */
-class CHARMMAtom {
+class CHARMMAtomTopology {
   std::string name_;
   std::string charmm_type_;
   double charge_;
 public:
-  CHARMMAtom(std::string name) : name_(name) {};
+  CHARMMAtomTopology(std::string name) : name_(name) {};
 
   std::string get_name() const { return name_; }
   std::string get_charmm_type() const { return charmm_type_; }
@@ -89,7 +91,7 @@ public:
 class IMPATOMEXPORT CHARMMResidueTopologyBase {
   std::string type_;
 protected:
-  std::vector<CHARMMAtom> atoms_;
+  std::vector<CHARMMAtomTopology> atoms_;
   std::vector<CHARMMBond<2> > bonds_;
   std::vector<CHARMMBond<3> > angles_;
   std::vector<CHARMMBond<4> > dihedrals_;
@@ -99,8 +101,11 @@ protected:
 public:
   std::string get_type() const { return type_; }
 
-  void add_atom(const CHARMMAtom &atom);
-  CHARMMAtom &get_atom(std::string name);
+  void add_atom(const CHARMMAtomTopology &atom);
+  CHARMMAtomTopology &get_atom(std::string name);
+  CHARMMAtomTopology &get_atom(AtomType type) {
+    return get_atom(type.get_string());
+  }
 
   unsigned int get_number_of_bonds() { return bonds_.size(); }
   void add_bond(const CHARMMBond<2> &bond) {
@@ -217,12 +222,21 @@ class IMPATOMEXPORT CHARMMTopology : public Object {
            CHARMMSegmentTopologys);
 
   IMP_OBJECT(CHARMMTopology);
+private:
+  WarningContext warn_context_;
+
+  void map_residue_topology_to_hierarchy(Hierarchy hierarchy,
+            std::map<CHARMMResidueTopology *, Hierarchy> &resmap);
 public:
   void apply_default_patches(CharmmParameters *ff) {
     for (unsigned int i = 0; i < get_number_of_segments(); ++i) {
       get_segment(i)->apply_default_patches(ff);
     }
   }
+
+  void add_atom_types(Hierarchy hierarchy);
+
+  void add_charges(Hierarchy hierarchy);
 };
 
 IMPATOM_END_NAMESPACE

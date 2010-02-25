@@ -4,7 +4,7 @@ import IMP.test
 import IMP.atom
 
 def _make_test_atom():
-    at = IMP.atom.CHARMMAtom('CA')
+    at = IMP.atom.CHARMMAtomTopology('CA')
     at.set_charmm_type('CT1')
     at.set_charge(0.8)
     return at
@@ -13,7 +13,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
     """Test CHARMM topology classes"""
 
     def test_atom(self):
-        """Check creation and methods of CHARMMAtom"""
+        """Check creation and methods of CHARMMAtomTopology"""
         at = _make_test_atom()
         self.assertEqual(at.get_name(), 'CA')
         self.assertEqual(at.get_charmm_type(), 'CT1')
@@ -206,6 +206,17 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         segment = topology.get_segment(0)
         self.assertEqual(segment.get_number_of_residues(), 156)
         self.assertRaises(IMP.ValueException, segment.apply_default_patches, ff)
+        atoms = IMP.atom.get_by_type(pdb, IMP.atom.ATOM_TYPE)
+        last_atom = atoms[-1].get_particle()
+        self.assertEqual(IMP.atom.CHARMMAtom.particle_is_instance(last_atom),
+                         False)
+        self.assertEqual(IMP.atom.Charged.particle_is_instance(last_atom),
+                         False)
+        topology.add_atom_types(pdb)
+        self.assertEqual(IMP.atom.CHARMMAtom(last_atom).get_charmm_type(), 'OC')
+        topology.add_charges(pdb)
+        self.assertInTolerance(IMP.atom.Charged(last_atom).get_charge(),
+                               -0.67, 1e-3)
 
 if __name__ == '__main__':
     unittest.main()

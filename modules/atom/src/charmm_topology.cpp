@@ -7,6 +7,8 @@
 #include <IMP/exception.h>
 #include <IMP/atom/charmm_topology.h>
 #include <IMP/atom/CharmmParameters.h>
+#include <IMP/atom/CHARMMAtom.h>
+#include <IMP/atom/Charged.h>
 
 #include <algorithm>
 
@@ -17,7 +19,7 @@ namespace {
     std::string name_;
   public:
     atom_has_name(std::string name) : name_(name) {}
-    bool operator()(const CHARMMAtom &at) {
+    bool operator()(const CHARMMAtomTopology &at) {
       return (at.get_name() == name_);
     }
   };
@@ -33,16 +35,16 @@ namespace {
   };
 }
 
-void CHARMMResidueTopologyBase::add_atom(const CHARMMAtom &atom)
+void CHARMMResidueTopologyBase::add_atom(const CHARMMAtomTopology &atom)
 {
   atoms_.push_back(atom);
 }
 
-CHARMMAtom & CHARMMResidueTopologyBase::get_atom(std::string name)
+CHARMMAtomTopology & CHARMMResidueTopologyBase::get_atom(std::string name)
 {
   // A map would be more elegant here (avoid linear lookup time) but
   // a) atoms need to be ordered and b) residues rarely have more than ~30 atoms
-  std::vector<CHARMMAtom>::iterator it
+  std::vector<CHARMMAtomTopology>::iterator it
          = std::find_if(atoms_.begin(), atoms_.end(), atom_has_name(name));
   if (it != atoms_.end()) {
     return *it;
@@ -54,7 +56,7 @@ CHARMMAtom & CHARMMResidueTopologyBase::get_atom(std::string name)
 
 void CHARMMIdealResidueTopology::delete_atom(std::string name)
 {
-  std::vector<CHARMMAtom>::iterator it
+  std::vector<CHARMMAtomTopology>::iterator it
          = std::find_if(atoms_.begin(), atoms_.end(), atom_has_name(name));
   if (it != atoms_.end()) {
     atoms_.erase(it);
@@ -81,7 +83,7 @@ void CHARMMPatch::apply(CHARMMResidueTopology &res)
   }
 
   // Copy or update atoms
-  for (std::vector<CHARMMAtom>::const_iterator it = atoms_.begin();
+  for (std::vector<CHARMMAtomTopology>::const_iterator it = atoms_.begin();
        it != atoms_.end(); ++it) {
     try {
       res.get_atom(it->get_name()) = *it;
@@ -150,6 +152,76 @@ void CHARMMSegmentTopology::apply_default_patches(CharmmParameters *ff)
 
 void CHARMMTopology::do_show(std::ostream &out) const
 {
+}
+
+void CHARMMTopology::map_residue_topology_to_hierarchy(Hierarchy hierarchy,
+            std::map<CHARMMResidueTopology *, Hierarchy> &resmap)
+{
+  HierarchiesTemp chains = get_by_type(hierarchy, CHAIN_TYPE);
+  IMP_USAGE_CHECK(chains.size() == get_number_of_segments(),
+                  "Hierarchy does not match topology");
+
+  unsigned int nseg = 0;
+  for (HierarchiesTemp::iterator chainit = chains.begin();
+       chainit != chains.end(); ++chainit, ++nseg) {
+    CHARMMSegmentTopology *topseg = get_segment(nseg);
+    HierarchiesTemp residues = get_by_type(*chainit, RESIDUE_TYPE);
+    IMP_USAGE_CHECK(residues.size() == topseg->get_number_of_residues(),
+                    "Hierarchy does not match topology");
+    unsigned int nres = 0;
+    for (HierarchiesTemp::iterator resit = residues.begin();
+         resit != residues.end(); ++resit, ++nres) {
+      resmap[topseg->get_residue(nres)] = *resit;
+    }
+  }
+}
+
+void CHARMMTopology::add_atom_types(Hierarchy hierarchy)
+{
+  typedef std::map<CHARMMResidueTopology *, Hierarchy> ResMap;
+  ResMap resmap;
+  map_residue_topology_to_hierarchy(hierarchy, resmap);
+
+  for (ResMap::iterator it = resmap.begin(); it != resmap.end(); ++it) {
+    HierarchiesTemp atoms = get_by_type(it->second, ATOM_TYPE);
+    for (HierarchiesTemp::iterator atit = atoms.begin(); atit != atoms.end();
+         ++atit) {
+      AtomType typ = Atom(*atit).get_atom_type();
+      try {
+        CHARMMAtom::setup_particle(*atit,
+                                   it->first->get_atom(typ).get_charmm_type());
+      } catch (ValueException &e) {
+        IMP_WARN_ONCE("Could not determine CHARMM atom type for atom "
+                      << typ << " in residue " << Residue(it->second),
+                      warn_context_);
+      }
+    }
+  }
+  warn_context_.dump_warnings();
+}
+
+void CHARMMTopology::add_charges(Hierarchy hierarchy)
+{
+  typedef std::map<CHARMMResidueTopology *, Hierarchy> ResMap;
+  ResMap resmap;
+  map_residue_topology_to_hierarchy(hierarchy, resmap);
+
+  for (ResMap::iterator it = resmap.begin(); it != resmap.end(); ++it) {
+    HierarchiesTemp atoms = get_by_type(it->second, ATOM_TYPE);
+    for (HierarchiesTemp::iterator atit = atoms.begin(); atit != atoms.end();
+         ++atit) {
+      AtomType typ = Atom(*atit).get_atom_type();
+      try {
+        Charged::setup_particle(*atit,
+                                it->first->get_atom(typ).get_charge());
+      } catch (ValueException &e) {
+        IMP_WARN_ONCE("Could not determine charge for atom "
+                      << typ << " in residue " << Residue(it->second),
+                      warn_context_);
+      }
+    }
+  }
+  warn_context_.dump_warnings();
 }
 
 IMP_LIST_IMPL(CHARMMSegmentTopology, CHARMMResidueTopology, residue,
