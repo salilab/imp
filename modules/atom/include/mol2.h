@@ -35,12 +35,9 @@ class AllMol2Selector: public Mol2Selector {
 
 
 //! Defines a selector that will pick only non-hydrogen atoms
-class NonhydrogenMol2Selector : public Mol2Selector {
+class IMPATOMEXPORT NonhydrogenMol2Selector : public Mol2Selector {
  public:
-  bool operator() (const std::string& atom_line) const {
-    String atom_type = internal::pick_mol2atom_type(atom_line);
-    return (atom_type[0] != 'H');
-  }
+  bool operator() (const std::string& atom_line) const;
 };
 
 /** @name Mol2 IO

@@ -23,6 +23,10 @@ IMPATOM_BEGIN_NAMESPACE
 Mol2Selector::~Mol2Selector(){}
 
 
+bool NonhydrogenMol2Selector::operator() (const std::string& atom_line) const {
+  String atom_type = internal::pick_mol2atom_type(atom_line);
+  return (atom_type[0] != 'H');
+}
 
 
 namespace {
@@ -46,8 +50,8 @@ namespace {
     Int atomid = a.get_input_index();
     mol2_file << std::setw(7) << atomid << "  ";
     mol2_file.setf(std::ios::left,std::ios::adjustfield);
-    std::string atom_type = a.get_atom_type().get_string();
-    mol2_file << std::setw(1) << atom_type[0];
+    mol2_file << std::setw(1)
+              << get_element_table().get_name(a.get_element())[0];
     mol2_file << std::setw(6) << atomid;
     mol2_file.setf(std::ios::right,std::ios::adjustfield);
     mol2_file.setf(std::ios::fixed,std::ios::floatfield);
@@ -56,13 +60,7 @@ namespace {
     mol2_file << std::setw(10) << std::setprecision(4) << xyz.get_y();
     mol2_file << std::setw(10) << std::setprecision(4) << xyz.get_z() << " ";
     mol2_file.setf(std::ios::left,std::ios::adjustfield);
-    if(atom_type[0] == 'O' || atom_type[0] == 'S'
-       || atom_type[0] == 'C') {
-      if(internal::check_arbond(a)) {
-        atom_type = atom_type[0] + ".ar";
-      }
-    }
-    mol2_file << std::setw(10) << atom_type << "1 MOLE";
+    mol2_file << std::setw(10) << internal::get_mol2_name(a) << "1 MOLE";
     mol2_file.setf(std::ios::right,std::ios::adjustfield);
     mol2_file << std::setw(14) << std::setprecision(4)
               << Charged(a).get_charge() << std::endl;
@@ -110,7 +108,8 @@ namespace {
       }
     }
     else {
-      IMP_THROW("bonded particle(s) is not atom", IOException);
+      IMP_THROW("bonded particle(s) is not atom "
+                << *pa << " " << *pb, IOException);
     }
     return oss.str();
   }
@@ -139,38 +138,14 @@ namespace {
     ins.str(mol2_atomline);
 
     ins >> atom_number >> atom_name_field >> x_coord >> y_coord >> z_coord
-        >> type_field >> molecule_number >> molecule_name_field >> atom_charge;
-
+        >> type_field >> molecule_number >> molecule_name_field
+        >> atom_charge;
     algebra::VectorD<3> v(x_coord, y_coord, z_coord);
 
-    std::string temp_name(type_field);
-    boost::trim(temp_name);
-    if (temp_name.find('.') != std::string::npos) {
-      temp_name= std::string(temp_name, 0, temp_name.find('.'));
-    }
-    std::string atom_name;
-    if (temp_name.size() ==1) {
-      atom_name= std::string("HET: ") + temp_name + "  ";
-    } else if (temp_name.size() ==2) {
-      atom_name=std::string("HET:") + temp_name +"  ";
-    } else {
-      IMP_THROW("Can't deal with atom name " << temp_name,
-                IOException);
-    }
-    // guess element
-    if (!get_atom_type_exists(atom_name)) {
-      std::string element_name=temp_name;
-      boost::trim(element_name);
-      Element element=get_element_table().get_element(element_name);
-      if (element== UNKNOWN_ELEMENT) {
-        IMP_THROW("Unable to find element for " << element_name,
-                  IOException);
-      }
-      add_atom_type(atom_name, element);
-    }
-    AtomType atom_type = AtomType(atom_name);
+    AtomType atom_type = internal::get_atom_type_from_mol2(type_field);
     // atom decorator
     Atom d = Atom::setup_particle(p, atom_type);
+    d->set_name(atom_name_field);
     core::XYZ::setup_particle(p, v);
     d.set_input_index(atom_number);
     Charged::setup_particle(d, atom_charge);

@@ -64,27 +64,27 @@ class Mol2ReadTest(IMP.test.TestCase):
         out= StringIO.StringIO()
         IMP.atom.write_mol2(root_d, out)
         testout= open(self.get_input_file_name("1d3d-ligands.out1.mol2"), "r").read()
-        print out.getvalue()
-        print " vs "
-        print testout
+        #print out.getvalue()
+        #print " vs "
+        #print testout
         open(self.get_tmp_file_name("out1.mol2"), "w").write(out.getvalue())
-        self.assertEqual(out, testout)
+        self.assertEqual(out.getvalue(), testout)
 
         m = IMP.Model()
         root_d = IMP.atom.read_mol2(self.get_input_file_name("1d3d-ligands.mol2"),
                                        m, IMP.atom.NonhydrogenMol2Selector())
         print "test 2"
         print "number of particles"
-        print m2.get_number_of_particles()
+        print m.get_number_of_particles()
 
         out= StringIO.StringIO()
         IMP.atom.write_mol2(root_d, out)
         testout= open(self.get_input_file_name("1d3d-ligands.out2.mol2"), "r").read()
         open(self.get_tmp_file_name("out2.mol2"), "w").write(out.getvalue())
-        print out.getvalue()
-        print " vs "
-        print testout
-        self.assertEqual(out, testout)
+        #print out.getvalue()
+        #print " vs "
+        #print testout
+        self.assertEqual(out.getvalue(), testout)
 
 if __name__ == '__main__':
     unittest.main()
