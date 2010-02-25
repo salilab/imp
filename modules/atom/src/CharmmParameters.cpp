@@ -6,6 +6,7 @@
  *
  */
 #include <IMP/atom/CharmmParameters.h>
+#include <IMP/atom/CHARMMAtom.h>
 
 #include <boost/algorithm/string.hpp>
 
@@ -340,6 +341,12 @@ void CharmmParameters::read_VdW_params(std::ifstream& input_file) {
 
 
 void CharmmParameters::do_show(std::ostream &out) const {
+}
+
+String CharmmParameters::get_force_field_atom_type(Atom atom) const
+{
+  // Override base class to use CHARMMAtom decorator
+  return CHARMMAtom(atom).get_charmm_type();
 }
 
 CHARMMTopology *CharmmParameters::make_topology(Hierarchy hierarchy)

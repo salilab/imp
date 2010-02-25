@@ -199,7 +199,8 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         """Test construction of topology"""
         m = IMP.Model()
         pdb = IMP.atom.read_pdb(self.get_input_file_name('1z5s_C.pdb'), m)
-        ff = IMP.atom.CharmmParameters(IMP.atom.get_data_path("top.lib"))
+        ff = IMP.atom.CharmmParameters(IMP.atom.get_data_path("top.lib"),
+                                       IMP.atom.get_data_path("par.lib"))
         topology = ff.make_topology(pdb)
         topology.apply_default_patches(ff)
         self.assertEqual(topology.get_number_of_segments(), 1)
@@ -210,6 +211,8 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         last_atom = atoms[-1].get_particle()
         self.assertEqual(IMP.atom.CHARMMAtom.particle_is_instance(last_atom),
                          False)
+        self.assertEqual(IMP.core.XYZR.particle_is_instance(last_atom),
+                         False)
         self.assertEqual(IMP.atom.Charged.particle_is_instance(last_atom),
                          False)
         topology.add_atom_types(pdb)
@@ -217,6 +220,12 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         topology.add_charges(pdb)
         self.assertInTolerance(IMP.atom.Charged(last_atom).get_charge(),
                                -0.67, 1e-3)
+        ff.add_radii(pdb)
+        self.assertInTolerance(IMP.core.XYZR(last_atom).get_radius(),
+                               1.70, 1e-3)
+        last_cg1 = atoms[-3].get_particle()
+        self.assertInTolerance(IMP.core.XYZR(last_cg1).get_radius(),
+                               2.06, 1e-3)
 
 if __name__ == '__main__':
     unittest.main()

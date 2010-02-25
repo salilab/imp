@@ -67,6 +67,8 @@ public:
   IMP_FORCE_FIELD_PARAMETERS(CharmmParameters);
 private:
 
+  virtual String get_force_field_atom_type(Atom atom) const;
+
   // read non-bonded parameters for VdW computation
   void read_VdW_params(std::ifstream& input_file);
   // read topology file
