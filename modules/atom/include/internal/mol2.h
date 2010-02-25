@@ -10,6 +10,7 @@
 
 #include "../config.h"
 #include "IMP/Particle.h"
+#include "IMP/Atom.h"
 #include <IMP/base_types.h>
 #include <map>
 
@@ -45,6 +46,10 @@ static const unsigned mol2_type_field_ = 47;
 
 
 IMPATOMEXPORT bool check_arbond(Particle* atom_p);
+
+IMPATOMEXPORT std::string get_mol2_name(Atom at);
+
+IMPATOMEXPORT AtomType get_atom_type_from_mol2(std::string name);
 
 IMPATOM_END_INTERNAL_NAMESPACE
 

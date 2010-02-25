@@ -70,7 +70,7 @@ bool check_arbond(Particle* atom_p) {
   Int bond_number, type, i;
   Int count_ar=0;
   Bond bond_d;
-
+  if (!Bonded::particle_is_instance(atom_p)) return false;
   Bonded bonded_d = Bonded(atom_p);
   bond_number = bonded_d.get_number_of_bonds();
   for(i=0; i<bond_number; i++) {
@@ -86,6 +86,59 @@ bool check_arbond(Particle* atom_p) {
   else {
     return false;
   }
+}
+
+IMPATOMEXPORT std::string get_mol2_name(Atom at) {
+  bool isar= check_arbond(at);
+  std::string atom_type = at.get_atom_type().get_string();
+  if (atom_type.find("HET:") == 0) {
+    atom_type= std::string(atom_type, 4);
+  }
+  boost::trim(atom_type);
+  if (isar) {
+    atom_type += ".ar";
+  }
+  for (unsigned int i=0; i< atom_type.size(); ++i) {
+    if (std::isdigit(atom_type[i], std::locale())) {
+      atom_type.insert(i, ".");
+      break;
+    }
+  }
+  //std::cout << "Returning " << atom_type << " for " << at << std::endl;
+  return atom_type;
+}
+
+IMPATOMEXPORT AtomType get_atom_type_from_mol2(std::string name) {
+  boost::trim(name);
+  std::string element(name, 0, name.find('.'));
+  Element e= get_element_table().get_element(element);
+  if (e== UNKNOWN_ELEMENT) {
+    IMP_THROW("Can't deal with element " << name,
+              IOException);
+  }
+  if (name.find(".ar") != std::string::npos) {
+    name= std::string(name, 0, name.find('.'));
+  }
+  if (name.find('.') != std::string::npos) {
+    name.erase(name.find('.'), 1);
+  }
+  std::string atom_name;
+  if (name.size() ==1) {
+    atom_name= std::string("HET: ") + name + "  ";
+  } else if (name.size() ==2) {
+    if (std::isdigit(name[1], std::locale())) {
+      atom_name=std::string("HET: ") + name +" ";
+    } else {
+      atom_name=std::string("HET:") + name +"  ";
+    }
+  } else {
+    IMP_THROW("Can't deal with atom name " << name,
+              IOException);
+  }
+  if (!get_atom_type_exists(atom_name)) {
+    add_atom_type(atom_name, e);
+  }
+  return AtomType(atom_name);
 }
 
 

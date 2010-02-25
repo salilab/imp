@@ -371,7 +371,10 @@ double ProteinLigandAtomPairScore
          std::cout << "distance is " << distance << " score is "
          <<  table_.get_score(ptype, ltype, distance)
          << std::endl;*/
-     return table_.get_score(ptype, ltype, distance);
+     double v= table_.get_score(ptype, ltype, distance);
+     std::cout << "Score " << ptype << " " << ltype << " " << distance
+               << " " << v << std::endl;
+     return v;
    } else {
      DerivativePair dp= table_.get_score_with_derivative(ptype,
                                                          ltype, distance);
@@ -489,12 +492,7 @@ void add_protein_ligand_score_data(Atom atom) {
     std::string score_type = residue_string + '_' + atom_string;
     type= get_type_map().get_pmap_element(score_type);
   } else {
-    if(atom_string[0] == 'O' || atom_string[0] == 'S') {
-      if(internal::check_arbond(atom)) {
-        std::string stratype (1, atom_string[0]);
-        atom_string = stratype + ".ar";
-      }
-    }
+    std::string nm= internal::get_mol2_name(atom);
     if(atom_string.find('.') != String::npos) {
       atom_string.erase(atom_string.find('.'), 1);
     }
