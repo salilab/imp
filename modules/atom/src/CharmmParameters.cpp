@@ -241,7 +241,7 @@ void CharmmParameters::parse_atom_line(const String& line,
                boost::token_compress_on);
   if(split_results.size() < 4) return; // ATOM line has at least 4 fields
 
-  CHARMMAtom atom(split_results[1]);
+  CHARMMAtomTopology atom(split_results[1]);
   atom.set_charmm_type(split_results[2]);
   atom.set_charge(atof(split_results[3].c_str()));
   residue.add_atom(atom);
