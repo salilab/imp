@@ -12,19 +12,15 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-Float ForceFieldParameters::get_radius(AtomType atom_type,
-                                       ResidueType residue_type) const
+Float ForceFieldParameters::get_radius(Atom atom) const
 {
-  String force_field_atom_type =
-    get_force_field_atom_type(atom_type, residue_type);
+  String force_field_atom_type = get_force_field_atom_type(atom);
   return get_radius(force_field_atom_type);
 }
 
-Float ForceFieldParameters::get_epsilon(AtomType atom_type,
-                                        ResidueType residue_type) const
+Float ForceFieldParameters::get_epsilon(Atom atom) const
 {
-  String force_field_atom_type =
-    get_force_field_atom_type(atom_type, residue_type);
+  String force_field_atom_type = get_force_field_atom_type(atom);
   return get_epsilon(force_field_atom_type);
 }
 
@@ -32,8 +28,7 @@ void ForceFieldParameters::add_radii(Hierarchy mhd, FloatKey radius_key) const
 {
   Particles ps = get_by_type(mhd, ATOM_TYPE);
   for(unsigned int i=0; i<ps.size(); i++) {
-    Float radius = get_radius(Atom(ps[i]).get_atom_type(),
-                              get_residue(Atom(ps[i])).get_residue_type());
+    Float radius = get_radius(Atom(ps[i]));
     core::XYZR::setup_particle(ps[i], radius, radius_key);
   }
   // TODO: handle N-term and C-term
@@ -144,9 +139,10 @@ void ForceFieldParameters::add_bonds(Residue rd) const {
   }
 }
 
-String ForceFieldParameters::get_force_field_atom_type(
-                                      AtomType atom_type,
-                                      ResidueType residue_type) const {
+String ForceFieldParameters::get_force_field_atom_type(Atom atom) const
+{
+  AtomType atom_type = atom.get_atom_type();
+  ResidueType residue_type = get_residue(atom).get_residue_type();
   static String empty_atom_type;
   if(atom_res_type_2_force_field_atom_type_.find(residue_type) ==
      atom_res_type_2_force_field_atom_type_.end()) {
