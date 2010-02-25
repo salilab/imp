@@ -209,20 +209,20 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         self.assertRaises(IMP.ValueException, segment.apply_default_patches, ff)
         atoms = IMP.atom.get_by_type(pdb, IMP.atom.ATOM_TYPE)
         last_atom = atoms[-1].get_particle()
-        self.assertEqual(IMP.atom.CHARMMAtom.particle_is_instance(last_atom),
-                         False)
-        self.assertEqual(IMP.core.XYZR.particle_is_instance(last_atom),
-                         False)
-        self.assertEqual(IMP.atom.Charged.particle_is_instance(last_atom),
-                         False)
+        for typ in (IMP.atom.CHARMMAtom, IMP.core.XYZR, IMP.atom.Charged,
+                    IMP.atom.LennardJones):
+            self.assertEqual(typ.particle_is_instance(last_atom), False)
         topology.add_atom_types(pdb)
         self.assertEqual(IMP.atom.CHARMMAtom(last_atom).get_charmm_type(), 'OC')
         topology.add_charges(pdb)
         self.assertInTolerance(IMP.atom.Charged(last_atom).get_charge(),
                                -0.67, 1e-3)
         ff.add_radii(pdb)
+        ff.add_well_depths(pdb)
         self.assertInTolerance(IMP.core.XYZR(last_atom).get_radius(),
                                1.70, 1e-3)
+        self.assertInTolerance(
+              IMP.atom.LennardJones(last_atom).get_well_depth(), 0.12, 1e-3)
         last_cg1 = atoms[-3].get_particle()
         self.assertInTolerance(IMP.core.XYZR(last_cg1).get_radius(),
                                2.06, 1e-3)
