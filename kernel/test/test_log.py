@@ -14,17 +14,17 @@ class LogTests(IMP.test.TestCase):
         IMP.set_log_level(IMP.VERBOSE)
         s= StringIO()
         t=IMP.SetLogTarget(s)
-        IMP.log_write("Hey there\n")
-        IMP.log_write("Big guy")
+        IMP.add_to_log("Hey there\n")
+        IMP.add_to_log("Big guy")
         del t
         self.assertEqual(s.getvalue(), "Hey there\nBig guy")
         del s
-        IMP.log_write("what's up")
+        IMP.add_to_log("what's up")
         s= StringIO()
         t= IMP.SetLogTarget(s)
-        IMP.log_write("Hey there\n")
+        IMP.add_to_log("Hey there\n")
         del s
-        IMP.log_write("Big guy")
+        IMP.add_to_log("Big guy")
         IMP.set_log_level(log_level)
 
     def test_log_targets_memory(self):
