@@ -74,7 +74,7 @@ class CrossCorrelationTests(IMP.test.TestCase):
         dvx = IMP.em.floats(); dvy= IMP.em.floats(); dvz= IMP.em.floats()
         score= self.ccc.evaluate(self.EM_map,self.model_map,dvx,dvy,dvz,1.0,False)
         score2 = 1.-score
-        self.assertAlmostEqual(score1,score2,2)
+        self.assertAlmostEqual(score1,score2,1)
 
     # Here we change the origin of the model map ( but not the particles position). We then resample the particles,
     # we made sure that all information is inside the translated map. Here we test that the correlation value does not change.
