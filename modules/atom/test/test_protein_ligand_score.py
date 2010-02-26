@@ -58,12 +58,12 @@ class ScoreTest(IMP.test.TestCase):
         IMP.set_log_level(IMP.VERBOSE)
         r0= IMP.atom.ProteinLigandRestraint(p,ls[0], 6.0)
         m.add_restraint(r0)
-        #r1= IMP.atom.ProteinLigandRestraint(p,ls[1], 6.0)
-        #m.add_restraint(r1)
+        r1= IMP.atom.ProteinLigandRestraint(p,ls[1], 6.0)
+        m.add_restraint(r1)
         print r0.evaluate(False)
-        #print r1.evaluate(False)
-        #self.assertInTolerance(r0.evaluate(False), 99, 1)
-        #self.assertInTolerance(r1.evaluate(False), 88, 1)
+        print r1.evaluate(False)
+        self.assertInTolerance(r0.evaluate(False), 99, 1)
+        self.assertInTolerance(r1.evaluate(False), 88, 1)
 
 
 if __name__ == '__main__':
