@@ -13,6 +13,7 @@
 #include "config.h"
 #include "Key.h"
 
+#include <boost/version.hpp>
 #include <string>
 #include <vector>
 
@@ -96,6 +97,13 @@ template <class T>
 inline void show(std::ostream &out, T*i) {
   out << i->get_name();
 }
+#endif
+
+#ifndef SWIG
+#if IMP_BOOST_VERSION != BOOST_VERSION
+BOOST_STATIC_ASSERT(0
+&& "The boost version IMP is built with must match the current one.");
+#endif
 #endif
 
 IMP_END_NAMESPACE
