@@ -57,7 +57,18 @@ public:
    IMP::FloatKey mass_key=IMP::atom::Mass::get_mass_key(),
    int sig_cuttoff=3);
 
-  //! ReSampling beads on an EM grid
+  //! Resampling beads on an EM grid
+  /**
+  \note The density of a particle p centered at pl at position gl is:
+
+            Z * exp((-0.5(pl-gl))/sigma)
+         ---------------------------------
+                  sqrt(2*pi*sigma)
+
+    , such that Z is the weight of the particle and sigma is defined to be
+      0.425 the resolution, to follow the 'full width at half maxima'
+      criterion. For more details please refer to Topf et al, Structure, 2008.
+   */
   virtual void resample();
 
   //!setting particles in case they were not set by the constructor
