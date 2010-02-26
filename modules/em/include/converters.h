@@ -24,10 +24,10 @@ IMPEM_BEGIN_NAMESPACE
 /**
 Each such particle will be have xyz attributes and a density_val attribute of
 type Float.
-/param[in] dmap the density map
-/param[in] threshold only voxels with density above the given threshold will
+\param[in] dmap the density map
+\param[in] threshold only voxels with density above the given threshold will
            be converted to particles
-/param[in] the new density based particles will be converted to particles.
+\param[in] the new density based particles will be converted to particles.
  */
 IMPEMEXPORT void density2particles(DensityMap &dmap, Float threshold,
                                    Particles &ps, Model *m);
@@ -36,13 +36,14 @@ IMPEMEXPORT void density2particles(DensityMap &dmap, Float threshold,
 //! Resample a set of particles into a density grid
 /**
 Each such particle should be have xyz radius and weight attributes
-/param[in] ps         the particles to sample
-/param[in] rad_key    the radius attribute key of the particles
-/param[in] weight_key the weight attribute key of the particles
-/param[in] ps  the particles to sample
-/param[in] resolution the resolution of the new sampled map
-/param[in] apix the voxel size of the sampled map
-/return the sampled density grid
+\param[in] ps         the particles to sample
+\param[in] rad_key    the radius attribute key of the particles
+\param[in] weight_key the weight attribute key of the particles
+\param[in] ps  the particles to sample
+\param[in] resolution the resolution of the new sampled map
+\param[in] apix the voxel size of the sampled map
+\return the sampled density grid
+\relatesalso SampledDensityMap
  */
 IMPEMEXPORT SampledDensityMap * particles2density(
    Particles &ps,
