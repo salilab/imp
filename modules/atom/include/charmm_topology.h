@@ -154,6 +154,9 @@ protected:
 public:
   std::string get_type() const { return type_; }
 
+  unsigned int get_number_of_atoms() const { return atoms_.size(); }
+  const CHARMMAtomTopology &get_atom(unsigned int i) const { return atoms_[i]; }
+
   void add_atom(const CHARMMAtomTopology &atom);
   CHARMMAtomTopology &get_atom(std::string name);
   const CHARMMAtomTopology &get_atom(AtomType type) const {
@@ -298,6 +301,8 @@ public:
       get_segment(i)->apply_default_patches(ff);
     }
   }
+
+  Hierarchy make_hierarchy(Model *model) const;
 
   void add_atom_types(Hierarchy hierarchy) const;
 

@@ -261,5 +261,25 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         self.assertInTolerance(IMP.core.XYZR(last_cg1).get_radius(),
                                2.06, 1e-3)
 
+    def test_make_hierarchy(self):
+        """Test construction of hierarchy from topology"""
+        ff = IMP.atom.CharmmParameters(IMP.atom.get_data_path("top.lib"),
+                                       IMP.atom.get_data_path("par.lib"))
+        topology = IMP.atom.CHARMMTopology()
+        segment = IMP.atom.CHARMMSegmentTopology()
+        topology.add_segment(segment)
+        for res in ('ALA', 'CYS', 'TYR'):
+            restop = IMP.atom.CHARMMResidueTopology(
+                                     ff.get_residue_topology(res))
+            segment.add_residue(restop)
+        m = IMP.Model()
+        hierarchy = topology.make_hierarchy(m)
+        chains = IMP.atom.get_by_type(hierarchy, IMP.atom.CHAIN_TYPE)
+        residues = IMP.atom.get_by_type(hierarchy, IMP.atom.RESIDUE_TYPE)
+        atoms = IMP.atom.get_by_type(hierarchy, IMP.atom.ATOM_TYPE)
+        self.assertEqual(len(chains), 1)
+        self.assertEqual(len(residues), 3)
+        self.assertEqual(len(atoms), 42)
+
 if __name__ == '__main__':
     unittest.main()
