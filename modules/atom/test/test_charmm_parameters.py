@@ -18,5 +18,12 @@ class CHARMMParametersTests(IMP.test.TestCase):
             self.assertInTolerance(bond.force_constant, 222.500, 1e-4)
             self.assertInTolerance(bond.mean, 1.5380, 1e-5)
 
+        self.assertEqual(p.get_angle_parameters('garbage', 'CT2', 'CT3'), None)
+        for types in [('OM', 'CM', 'FE'), ('FE', 'CM', 'OM')]:
+            bond = p.get_angle_parameters(*types)
+            self.assertInTolerance(bond.force_constant, 35.000, 1e-4)
+            self.assertInTolerance(bond.mean, 180.0000, 1e-5)
+        self.assertEqual(p.get_angle_parameters('OM', 'FE', 'CM'), None)
+
 if __name__ == '__main__':
     unittest.main()

@@ -33,6 +33,25 @@ public:
   }
 };
 
+class CHARMMAngleNames
+{
+  std::string a_, b_, c_;
+public:
+  CHARMMAngleNames(std::string a, std::string b, std::string c)
+           : a_(a), b_(b), c_(c) {
+    // store atom type names sorted so ABC == CBA (but not other permutations)
+    if (a_ > c_) {
+      std::swap(a_, c_);
+    }
+  }
+  inline bool operator==(const CHARMMAngleNames &other) const {
+    return a_ == other.a_ && b_ == other.b_ && c_ == other.c_;
+  }
+  inline bool operator<(const CHARMMAngleNames &other) const {
+    return a_ + b_ + c_ < other.a_ + other.b_ + other.c_;
+  }
+};
+
 IMPATOM_END_INTERNAL_NAMESPACE
 
 #endif  /* IMPATOM_INTERNAL_CHARMM_HELPERS_H */
