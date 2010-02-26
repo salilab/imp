@@ -33,7 +33,6 @@ def IMPCPPApplication(envi, target, source, required_modules=[],
 def IMPApplicationTest(env, python_tests=[]):
     files= ["#/tools/imppy.sh", "#/scons_tools/run-all-tests.py"]+\
         [File(x).abspath for x in python_tests]
-    print [str(x) for x in files]
     test = env.IMPApplicationRunTest(target="test.passed", source=files)
     env.AlwaysBuild("test.passed")
     env.Alias(env['application_name']+'-test', test)
