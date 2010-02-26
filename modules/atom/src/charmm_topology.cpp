@@ -39,7 +39,8 @@ namespace {
                          const CHARMMResidueTopology *next_residue,
                          const std::map<const CHARMMResidueTopology *,
                                         Hierarchy> &resmap,
-                         const CharmmParameters *ff)
+                         const CharmmParameters *ff,
+                         Particles &ps)
   {
     for (unsigned int nbond = 0; nbond < current_residue->get_number_of_bonds();
          ++nbond) {
@@ -47,22 +48,22 @@ namespace {
                                    current_residue, previous_residue,
                                    next_residue, resmap);
       if (as.size() > 0) {
-        Bonded b[2];
-        for (unsigned int i = 0; i < 2; ++i) {
-          if (Bonded::particle_is_instance(as[i])) {
-            b[i] = Bonded::decorate_particle(as[i]);
-          } else {
-            b[i] = Bonded::setup_particle(as[i]);
-          }
-        }
-        IMP::atom::Bond bd = bond(b[0], b[1], IMP::atom::Bond::SINGLE);
-
         const CHARMMBondParameters *p =
               ff->get_bond_parameters(CHARMMAtom(as[0]).get_charmm_type(),
                                       CHARMMAtom(as[1]).get_charmm_type());
         if (p) {
+          Bonded b[2];
+          for (unsigned int i = 0; i < 2; ++i) {
+            if (Bonded::particle_is_instance(as[i])) {
+              b[i] = Bonded::decorate_particle(as[i]);
+            } else {
+              b[i] = Bonded::setup_particle(as[i]);
+            }
+          }
+          IMP::atom::Bond bd = bond(b[0], b[1], IMP::atom::Bond::SINGLE);
           bd.set_length(p->mean);
           bd.set_stiffness(p->force_constant);
+          ps.push_back(bd);
         }
       }
     }
@@ -269,11 +270,12 @@ void CHARMMTopology::add_charges(Hierarchy hierarchy) const
   warn_context_.dump_warnings();
 }
 
-void CHARMMTopology::add_bonds(Hierarchy hierarchy,
-                               const CharmmParameters *ff) const
+Particles CHARMMTopology::add_bonds(Hierarchy hierarchy,
+                                    const CharmmParameters *ff) const
 {
   ResMap resmap;
   map_residue_topology_to_hierarchy(hierarchy, resmap);
+  Particles ps;
 
   for (CHARMMSegmentTopologyConstIterator segit = segments_begin();
        segit != segments_end(); ++segit) {
@@ -285,10 +287,11 @@ void CHARMMTopology::add_bonds(Hierarchy hierarchy,
       const CHARMMResidueTopology *next =
                nres < seg->get_number_of_residues() - 1 ?
                seg->get_residue(nres + 1) : NULL;
-      add_residue_bonds(cur, prev, next, resmap, ff);
+      add_residue_bonds(cur, prev, next, resmap, ff, ps);
       prev = cur;
     }
   }
+  return ps;
 }
 
 Hierarchy CHARMMTopology::make_hierarchy(Model *model) const

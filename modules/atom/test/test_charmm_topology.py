@@ -234,7 +234,8 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         topology.add_charges(pdb)
         self.assertInTolerance(IMP.atom.Charged(last_atom).get_charge(),
                                -0.67, 1e-3)
-        topology.add_bonds(pdb, ff)
+        bonds = topology.add_bonds(pdb, ff)
+        self.assertEqual(len(bonds), 1215)
         for (bondr1, bondr2, bonda1, bonda2, atyp1, atyp2, bondlen, fcon) in [
            # intraresidue bond
            (residues[0], residues[0], IMP.atom.AT_CA, IMP.atom.AT_CB,
