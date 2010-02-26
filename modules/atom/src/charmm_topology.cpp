@@ -62,7 +62,7 @@ namespace {
           }
           IMP::atom::Bond bd = bond(b[0], b[1], IMP::atom::Bond::SINGLE);
           bd.set_length(p->mean);
-          bd.set_stiffness(p->force_constant);
+          bd.set_stiffness(std::sqrt(p->force_constant));
           ps.push_back(bd);
         }
       }
