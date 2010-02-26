@@ -28,7 +28,23 @@ def _check(context):
         """, '.cpp')[0]
             if ret34:
                 context.env.Append(CCFLAGS=['-frounding-math'])
-        context.Result(ret34)
+            context.Result(ret34)
+            context.Message('Checking if we need to disable Boost tr1 ...')
+            rett = context.TryCompile("""#include <CGAL/tuple.h>
+#if BOOST_VERSION > 103700
+  #include "boost/math/distributions/students_t.hpp"
+#endif
+
+
+        int main()
+        {
+            return 0;
+        }
+        """, '.cpp')
+            if rett:
+                context.env.Append(CPPDEFINES=['BOOST_HAS_GCC_TR1'])
+            context.Result(ret34)
+
     return ret[0]
 
 def configure_check(env):
