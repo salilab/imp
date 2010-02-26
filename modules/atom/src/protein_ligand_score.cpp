@@ -101,7 +101,6 @@ namespace {
     PROTEIN_TYPE(ILE_C)
     PROTEIN_TYPE(ILE_O)
     PROTEIN_TYPE(ILE_CB)
-    PROTEIN_TYPE(ILE_CG)
     PROTEIN_TYPE(ILE_CG1)
     PROTEIN_TYPE(ILE_CG2)
     PROTEIN_TYPE(ILE_CD1)
@@ -162,9 +161,8 @@ namespace {
     PROTEIN_TYPE(THR_C)
     PROTEIN_TYPE(THR_O)
     PROTEIN_TYPE(THR_CB)
-    PROTEIN_TYPE(THR_OG)
-    PROTEIN_TYPE_ALIAS(THR_OG1,THR_OG)
-    PROTEIN_TYPE_ALIAS(THR_CG2,THR_OG)
+    PROTEIN_TYPE(THR_OG1)
+    PROTEIN_TYPE(THR_CG2)
     PROTEIN_TYPE(TRP_N)
     PROTEIN_TYPE(TRP_CA)
     PROTEIN_TYPE(TRP_C)
@@ -265,13 +263,17 @@ double ProteinLigandAtomPairScore
       <<  table_.get_score(ptype, ltype, distance)
       << std::endl;*/
     double v= table_.get_score(iptype, iltype, distance);
-    /*std::cout << "Score " << ptype.get_string() << " "
+    std::cout << "Score " << ptype.get_string() << " "
               << ltype.get_string() << " " << distance
               << " " << v << " ("
-              << table_.get_score(iptype, iltype, distance+.1)
+              << table_.get_score(iptype, iltype, distance-.2)
               << "..."
               << table_.get_score(iptype, iltype, distance-.1)
-              << ")" << std::endl;*/
+              << "..."
+              << table_.get_score(iptype, iltype, distance+.1)
+              << "..."
+              << table_.get_score(iptype, iltype, distance+.2)
+              << ")" << std::endl;
     return v;
   } else {
      DerivativePair dp= table_.get_score_with_derivative(iptype,
@@ -490,6 +492,16 @@ PMFTable::PMFTable(TextInput tin) {
                   IOException);
       }
       std::istringstream ins(line);
+      std::string pname, lname;
+      ins >> pname >> lname;
+      IMP_INTERNAL_CHECK(pname == ProteinType(i).get_string(),
+                         "Expected and found protein types don't match: "
+                         << "expected \"" <<  ProteinType(i).get_string()
+                         << " got " << pname << " at " << i << " " << j);
+      IMP_INTERNAL_CHECK(lname == LigandType(j).get_string(),
+                         "Expected and found ligand types don't match: "
+                         << "expected \"" <<  LigandType(j).get_string()
+                         << " got " << pname << " at " << i << " " << j);
       //      std::cout << line << std::endl;
       //      if(j>1) exit(EXIT_FAILURE);
       int cur_bins_read=0;
