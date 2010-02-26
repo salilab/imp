@@ -625,7 +625,7 @@ Float FormFactorTable::get_form_factor(Particle *p,
     ff_atom_type = N;
   }
   Float form_factor = zero_form_factors_[ff_atom_type];
-  p->add_attribute(form_factor_type_key_, ff_atom_type);
+  p->add_cache_attribute(form_factor_type_key_, ff_atom_type);
   return form_factor;
 }
 
