@@ -328,6 +328,22 @@ void CharmmParameters::parse_bonds_parameters_line(String line)
                                              split_results[1])] = p;
 }
 
+void CharmmParameters::parse_angles_parameters_line(String line)
+{
+  std::vector<String> split_results;
+  boost::split(split_results, line, boost::is_any_of(" "),
+               boost::token_compress_on);
+  if (split_results.size() < 5)
+    return; // angles line has at least 5 fields
+
+  CHARMMBondParameters p;
+  p.force_constant = atof(split_results[3].c_str());
+  p.mean = atof(split_results[4].c_str());
+  angle_parameters_[internal::CHARMMAngleNames(split_results[0],
+                                               split_results[1],
+                                               split_results[2])] = p;
+}
+
 void CharmmParameters::read_parameter_file(std::ifstream& input_file) {
   const String BONDS_LINE = "BONDS";
   const String ANGLES_LINE = "ANGLES";
@@ -363,6 +379,9 @@ void CharmmParameters::read_parameter_file(std::ifstream& input_file) {
       switch(section) {
       case BONDS:
         parse_bonds_parameters_line(line);
+        break;
+      case ANGLES:
+        parse_angles_parameters_line(line);
         break;
       case NONBONDED:
         parse_nonbonded_parameters_line(line);

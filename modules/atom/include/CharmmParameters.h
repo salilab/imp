@@ -32,6 +32,7 @@ class IMPATOMEXPORT CharmmParameters : public ForceFieldParameters {
   std::map<std::string, CHARMMIdealResidueTopology> residue_topologies_;
   std::map<std::string, CHARMMPatch> patches_;
   std::map<internal::CHARMMBondNames, CHARMMBondParameters> bond_parameters_;
+  std::map<internal::CHARMMAngleNames, CHARMMBondParameters> angle_parameters_;
 
 public:
 
@@ -105,6 +106,18 @@ public:
     }
   }
 
+  const CHARMMBondParameters *get_angle_parameters(std::string type1,
+                                                   std::string type2,
+                                                   std::string type3) const {
+    internal::CHARMMAngleNames types = internal::CHARMMAngleNames(type1, type2,
+                                                                  type3);
+    if (angle_parameters_.find(types) != angle_parameters_.end()) {
+      return &angle_parameters_.find(types)->second;
+    } else {
+      return NULL;
+    }
+  }
+
   IMP_FORCE_FIELD_PARAMETERS(CharmmParameters);
 private:
 
@@ -122,6 +135,7 @@ private:
 
   void parse_nonbonded_parameters_line(String line);
   void parse_bonds_parameters_line(String line);
+  void parse_angles_parameters_line(String line);
 };
 
 IMPATOM_END_NAMESPACE
