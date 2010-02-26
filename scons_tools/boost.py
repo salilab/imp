@@ -21,10 +21,12 @@ def _check(context, version):
         int main()
         {
             std::cout << BOOST_LIB_VERSION <<std::endl;
+            std::cout << BOOST_VERSION << std::endl;
             return BOOST_VERSION >= %d ? 0 : 1;
         }
         """ % version_n, '.cpp')
     context.Result(ret[1].replace("_", ".").split('\n')[0])
+    context.env['BOOST_VERSION']= ret[1].split('\n')[1]
     if ret[0]:
         check_libs=[('BOOST_FILESYSTEM_LIBS', ('libboost_filesystem',
                                                'boost/filesystem/path.hpp',
