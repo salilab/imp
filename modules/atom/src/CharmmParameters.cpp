@@ -324,7 +324,8 @@ void CharmmParameters::parse_bonds_parameters_line(String line)
   CHARMMBondParameters p;
   p.force_constant = atof(split_results[2].c_str());
   p.mean = atof(split_results[3].c_str());
-  bond_parameters_[std::make_pair(split_results[0], split_results[1])] = p;
+  bond_parameters_[internal::CHARMMBondNames(split_results[0],
+                                             split_results[1])] = p;
 }
 
 void CharmmParameters::read_parameter_file(std::ifstream& input_file) {
