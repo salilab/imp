@@ -38,7 +38,8 @@ namespace {
                          const CHARMMResidueTopology *previous_residue,
                          const CHARMMResidueTopology *next_residue,
                          const std::map<const CHARMMResidueTopology *,
-                                        Hierarchy> &resmap)
+                                        Hierarchy> &resmap,
+                         const CharmmParameters *ff)
   {
     for (unsigned int nbond = 0; nbond < current_residue->get_number_of_bonds();
          ++nbond) {
@@ -55,6 +56,14 @@ namespace {
           }
         }
         IMP::atom::Bond bd = bond(b[0], b[1], IMP::atom::Bond::SINGLE);
+
+        const CHARMMBondParameters *p =
+              ff->get_bond_parameters(CHARMMAtom(as[0]).get_charmm_type(),
+                                      CHARMMAtom(as[1]).get_charmm_type());
+        if (p) {
+          bd.set_length(p->mean);
+          bd.set_stiffness(p->force_constant);
+        }
       }
     }
   }
@@ -260,7 +269,8 @@ void CHARMMTopology::add_charges(Hierarchy hierarchy) const
   warn_context_.dump_warnings();
 }
 
-void CHARMMTopology::add_bonds(Hierarchy hierarchy) const
+void CHARMMTopology::add_bonds(Hierarchy hierarchy,
+                               const CharmmParameters *ff) const
 {
   ResMap resmap;
   map_residue_topology_to_hierarchy(hierarchy, resmap);
@@ -275,7 +285,7 @@ void CHARMMTopology::add_bonds(Hierarchy hierarchy) const
       const CHARMMResidueTopology *next =
                nres < seg->get_number_of_residues() - 1 ?
                seg->get_residue(nres + 1) : NULL;
-      add_residue_bonds(cur, prev, next, resmap);
+      add_residue_bonds(cur, prev, next, resmap, ff);
       prev = cur;
     }
   }
