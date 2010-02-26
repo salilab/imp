@@ -1,31 +1,4 @@
-import os
-import os.path
-
 Import('env')
-penv = env.Clone()
-penv.Prepend(CPPPATH=['#/build/include'])
-penv.Prepend(LIBPATH=['#/build/lib'])
-if env.get('static', False):
-    # For static linking must link dependent libraries first
-    penv.Prepend(LIBS=['imp_saxs', 'imp_atom', 'imp_container', 'imp_core', 'imp_algebra',
-                       'imp', 'boost_program_options'])
-else:
-    # Some platforms are sensitive to the order in which dynamic libraries
-    # are loaded - imp must come before imp_saxs
-    penv.Prepend(LIBS=['imp', 'imp_atom', 'imp_container', 'imp_core', 'imp_algebra',
-                       'imp_saxs', 'boost_program_options'])
-if env['build']=='foxs' and env['CC'] == 'gcc':
-    penv.Prepend(LINKFLAGS=['-static'])
-
-fs = Glob("*.cpp")
-prog= penv.Program(target='foxs', source=fs)
-
-all=[]
-#for f in fs:
-#    prog= penv.Program(f.rstr())
-#    all.append(prog)
-all.append(prog)
-
-SConscript('test/SConscript', exports=['all', 'penv'])
-env.Alias("all", all)
-Return('all')
+env.IMPCPPApplication(target="foxs", source=["profile.cpp", "Gnuplot.cpp"],
+                      required_modules=['saxs'],
+                      required_dependencies=['boost_program_options'])

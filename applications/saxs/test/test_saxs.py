@@ -7,6 +7,8 @@ import re
 class SAXSProfileApplicationTest(IMP.test.ApplicationTestCase):
     def test_simple(self):
         """Simple test of SAXS profile application"""
+        print self.get_input_file_name('6lyz.pdb')
+        print self.get_input_file_name('lyzexp.dat')
         p = self.run_application('foxs',
                                  [self.get_input_file_name('6lyz.pdb'),
                                   self.get_input_file_name('lyzexp.dat')])
