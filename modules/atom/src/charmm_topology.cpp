@@ -291,6 +291,31 @@ void CHARMMTopology::add_bonds(Hierarchy hierarchy,
   }
 }
 
+Hierarchy CHARMMTopology::make_hierarchy(Model *model) const
+{
+  char chain_id = 'A';
+  Hierarchy root = Hierarchy::setup_particle(new Particle(model));
+  for (CHARMMSegmentTopologyConstIterator segit = segments_begin();
+       segit != segments_end(); ++segit) {
+    const CHARMMSegmentTopology *seg = *segit;
+    Chain chain = Chain::setup_particle(new Particle(model), chain_id++);
+    root.add_child(chain);
+    for (unsigned int nres = 0; nres < seg->get_number_of_residues(); ++nres) {
+      const CHARMMResidueTopology *res = seg->get_residue(nres);
+      ResidueType restyp = ResidueType(res->get_type());
+      Residue residue = Residue::setup_particle(new Particle(model), restyp);
+      chain.add_child(residue);
+      for (unsigned int natm = 0; natm < res->get_number_of_atoms(); ++natm) {
+        const CHARMMAtomTopology *atom = &res->get_atom(natm);
+        AtomType atmtyp = AtomType(atom->get_name());
+        Atom atm = Atom::setup_particle(new Particle(model), atmtyp);
+        residue.add_child(atm);
+      }
+    }
+  }
+  return root;
+}
+
 IMP_LIST_IMPL(CHARMMSegmentTopology, CHARMMResidueTopology, residue,
               CHARMMResidueTopology *, CHARMMResidueTopologys, {}, {}, {});
 
