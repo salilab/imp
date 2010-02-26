@@ -52,6 +52,40 @@ public:
   }
 };
 
+class CHARMMDihedralNames
+{
+  std::string a_, b_, c_, d_;
+
+  static inline int match(std::string ref, std::string cmp,
+                          bool allow_wildcards) {
+    if (ref == cmp) {
+      return 0;
+    } else if (ref == "X" && allow_wildcards) {
+      return 1;
+    } else {
+      return MISMATCH;
+    }
+  }
+
+public:
+  const static int MISMATCH = 100;
+  CHARMMDihedralNames(std::string a, std::string b, std::string c,
+                      std::string d) : a_(a), b_(b), c_(c), d_(d) {}
+
+  inline int match(const CHARMMDihedralNames &other,
+                   bool allow_wildcards) const {
+    int n_match = match(a_, other.a_, allow_wildcards)
+                  + match(b_, other.b_, allow_wildcards)
+                  + match(c_, other.c_, allow_wildcards)
+                  + match(d_, other.d_, allow_wildcards);
+    int n_match_rev = match(a_, other.d_, allow_wildcards)
+                      + match(b_, other.c_, allow_wildcards)
+                      + match(c_, other.b_, allow_wildcards)
+                      + match(d_, other.a_, allow_wildcards);
+    return std::min(n_match, n_match_rev);
+  }
+};
+
 IMPATOM_END_INTERNAL_NAMESPACE
 
 #endif  /* IMPATOM_INTERNAL_CHARMM_HELPERS_H */

@@ -27,12 +27,29 @@ struct CHARMMBondParameters {
   double mean;
 };
 
+struct CHARMMDihedralParameters {
+  double force_constant;
+  int multiplicity;
+  double mean;
+};
+
 //! Charmm force field
 class IMPATOMEXPORT CharmmParameters : public ForceFieldParameters {
   std::map<std::string, CHARMMIdealResidueTopology> residue_topologies_;
   std::map<std::string, CHARMMPatch> patches_;
   std::map<internal::CHARMMBondNames, CHARMMBondParameters> bond_parameters_;
   std::map<internal::CHARMMAngleNames, CHARMMBondParameters> angle_parameters_;
+
+  typedef std::vector<std::pair<internal::CHARMMDihedralNames,
+                                CHARMMDihedralParameters> > DihedralParameters;
+  DihedralParameters dihedral_parameters_;
+  DihedralParameters improper_parameters_;
+
+  DihedralParameters::const_iterator
+        find_dihedral(DihedralParameters::const_iterator begin,
+                      DihedralParameters::const_iterator end,
+                      const internal::CHARMMDihedralNames &dihedral,
+                      bool allow_wildcards) const;
 
 public:
 
@@ -118,6 +135,45 @@ public:
     }
   }
 
+  std::vector<CHARMMDihedralParameters> get_dihedral_parameters(
+             std::string type1, std::string type2, std::string type3,
+             std::string type4) const {
+    std::vector<CHARMMDihedralParameters> param;
+    internal::CHARMMDihedralNames types = internal::CHARMMDihedralNames(
+                    type1, type2, type3, type4);
+    // Get the first match, using wildcards
+    DihedralParameters::const_iterator match =
+        find_dihedral(dihedral_parameters_.begin(),
+                      dihedral_parameters_.end(), types, true);
+    if (match != dihedral_parameters_.end()) {
+      // If it matched, look for duplicate dihedral terms (this time the
+      // match must be exactly the same as the first match)
+      param.push_back(match->second);
+      while ((match = find_dihedral(match + 1, dihedral_parameters_.end(),
+                                    match->first, false))
+             != dihedral_parameters_.end()) {
+        param.push_back(match->second);
+      }
+    }
+    return param;
+  }
+
+  const CHARMMDihedralParameters *get_improper_parameters(
+             std::string type1, std::string type2, std::string type3,
+             std::string type4) const {
+    internal::CHARMMDihedralNames types = internal::CHARMMDihedralNames(
+                    type1, type2, type3, type4);
+    // Return just the first match; wildcards are OK
+    DihedralParameters::const_iterator it =
+        find_dihedral(improper_parameters_.begin(),
+                      improper_parameters_.end(), types, true);
+    if (it != improper_parameters_.end()) {
+      return &it->second;
+    } else {
+      return NULL;
+    }
+  }
+
   IMP_FORCE_FIELD_PARAMETERS(CharmmParameters);
 private:
 
@@ -136,6 +192,8 @@ private:
   void parse_nonbonded_parameters_line(String line);
   void parse_bonds_parameters_line(String line);
   void parse_angles_parameters_line(String line);
+  void parse_dihedrals_parameters_line(String line,
+                                       DihedralParameters &param);
 };
 
 IMPATOM_END_NAMESPACE

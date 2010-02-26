@@ -344,6 +344,26 @@ void CharmmParameters::parse_angles_parameters_line(String line)
                                                split_results[2])] = p;
 }
 
+void CharmmParameters::parse_dihedrals_parameters_line(String line,
+                                       DihedralParameters &param)
+{
+  std::vector<String> split_results;
+  boost::split(split_results, line, boost::is_any_of(" "),
+               boost::token_compress_on);
+  if (split_results.size() < 7)
+    return; // dihedrals line has at least 7 fields
+
+  CHARMMDihedralParameters p;
+  p.force_constant = atof(split_results[4].c_str());
+  p.multiplicity = atoi(split_results[5].c_str());
+  p.mean = atof(split_results[6].c_str());
+  param.push_back(std::make_pair(
+                    internal::CHARMMDihedralNames(split_results[0],
+                                                  split_results[1],
+                                                  split_results[2],
+                                                  split_results[3]), p));
+}
+
 void CharmmParameters::read_parameter_file(std::ifstream& input_file) {
   const String BONDS_LINE = "BONDS";
   const String ANGLES_LINE = "ANGLES";
@@ -382,6 +402,12 @@ void CharmmParameters::read_parameter_file(std::ifstream& input_file) {
         break;
       case ANGLES:
         parse_angles_parameters_line(line);
+        break;
+      case DIHEDRALS:
+        parse_dihedrals_parameters_line(line, dihedral_parameters_);
+        break;
+      case IMPROPERS:
+        parse_dihedrals_parameters_line(line, improper_parameters_);
         break;
       case NONBONDED:
         parse_nonbonded_parameters_line(line);
@@ -426,6 +452,26 @@ CHARMMTopology *CharmmParameters::make_topology(Hierarchy hierarchy) const
   }
 
   return topology.release();
+}
+
+std::vector<std::pair<internal::CHARMMDihedralNames,
+                      CHARMMDihedralParameters> >::const_iterator
+CharmmParameters::find_dihedral(DihedralParameters::const_iterator begin,
+                                DihedralParameters::const_iterator end,
+                                const internal::CHARMMDihedralNames &dihedral,
+                                bool allow_wildcards) const
+{
+  DihedralParameters::const_iterator best = end;
+  int best_match = internal::CHARMMDihedralNames::MISMATCH;
+  for (DihedralParameters::const_iterator it = begin; it != end; ++it) {
+    int match = it->first.match(dihedral, allow_wildcards);
+    if (match < best_match) {
+      best_match = match;
+      best = it;
+      if (match == 0) break;
+    }
+  }
+  return best;
 }
 
 IMPATOM_END_NAMESPACE
