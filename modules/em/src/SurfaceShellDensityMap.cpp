@@ -61,17 +61,14 @@ void SurfaceShellDensityMap::binaries(float scene_val) {
   int znxny;
   float rsq,tmp;
 
-  const  KernelParameters::Parameters *params;
+  const RadiusDependentKernelParameters *params;
   for (unsigned int ii=0; ii<ps_.size(); ii++) {
     // compute kernel parameters if needed
-    try {
-      params = kernel_params_.find_params(xyzr_[ii].get_radius());
-    }
-    catch (UsageException &e){
+    params = kernel_params_.get_params(xyzr_[ii].get_radius());
+    if (params == NULL) {
       kernel_params_.set_params(xyzr_[ii].get_radius());
-      params = kernel_params_.find_params(xyzr_[ii].get_radius());
+      params = kernel_params_.get_params(xyzr_[ii].get_radius());
     }
-
     // compute the box affected by each particle
     calc_sampling_bounding_box(xyzr_[ii].get_x(),xyzr_[ii].get_y(),
                                xyzr_[ii].get_z(),params->get_kdist(),
