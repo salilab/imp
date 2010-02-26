@@ -84,7 +84,7 @@ def module_deps_depends(env, target, source, dependencies):
         env.Depends(target, env.Alias(d+'-'+source))
 
 
-def expand_dependencies(env, deps):
+def expand_dependencies(env, deps, is_kernel=False):
     """Recursively expand the list of dependencies. The dependencies are returned in order of the all_modules environment variable."""
     size=-1
     all=[]
@@ -119,7 +119,7 @@ def expand_dependencies(env, deps):
             filtered.append(i)
     # always depend on kernel
     filtered.reverse()
-    if env['IMP_MODULE'] != 'kernel':
+    if not is_kernel:
         filtered.append("kernel")
     #all.sort()
     #print "got", filtered
@@ -127,10 +127,10 @@ def expand_dependencies(env, deps):
     return filtered
 
 
-def dependencies_to_libs(env, deps):
+def dependencies_to_libs(env, deps, is_kernel=False):
     libs=[]
-    deps = env[env['IMP_MODULE']+"_required_modules"] + deps
-    ed=expand_dependencies(env,deps)
+    deps = deps
+    ed=expand_dependencies(env,deps, is_kernel)
     for d in ed:
         if d== 'kernel':
             libs.append("imp")
@@ -139,7 +139,7 @@ def dependencies_to_libs(env, deps):
     for d in ed:
         #print "libs for " + d + " are " + str(env[d+"_libs"])
         libs= libs+env[d+"_libs"]
-    return libs+env[env['IMP_MODULE']+"_libs"]
+    return libs
 
 
 
@@ -224,7 +224,9 @@ def IMPModuleLib(envi, files):
                                    source=[env.Value(env['IMP_MODULE_VERSION'])])
     #env.AlwaysBuild(version)
     files =files+ config
-    env.Prepend(LIBS=dependencies_to_libs(env, []))
+    env.Prepend(LIBS=dependencies_to_libs(env, env[env['IMP_MODULE']+"_required_modules"],
+                                          env['IMP_MODULE'] == 'kernel')\
+                    +env[env['IMP_MODULE']+"_libs"])
     build=[]
     if env['static'] and env['CC'] == 'gcc':
         build.append( env.StaticLibrary('#/build/lib/imp%s' % module_suffix,
@@ -308,7 +310,11 @@ def _make_programs(envi, required_modules, extra_libs, install, files):
     from scons_tools import get_bin_environment
     env= get_bin_environment(envi)
     vars=make_vars(env)
-    env.Prepend(LIBS=(['imp%(module_suffix)s' % vars]+dependencies_to_libs(env, required_modules)))
+    env.Prepend(LIBS=(['imp%(module_suffix)s' % vars]\
+                          +dependencies_to_libs(env, env[env['IMP_MODULE']+"_required_modules"]\
+                                                    +required_modules,
+                                                env['IMP_MODULE'] == 'kernel')\
+                          +env[env['IMP_MODULE']+"_libs"]))
     env.Append(LIBS=extra_libs);
     build=[]
     install_list=[]
@@ -354,7 +360,9 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
         penv['LIBS']=[]
     else:
         # windows needs all of the IMP modules linked in explicitly
-        penv.Prepend(LIBS=dependencies_to_libs(env, []))
+        penv.Prepend(LIBS=dependencies_to_libs(env, env[env['IMP_MODULE']+"_required_modules"],
+                                               env['IMP_MODULE'] == 'kernel')\
+                         +env[env['IMP_MODULE']+"_libs"])
     penv.Prepend(LIBS=['imp%s' % module_suffix])
     #penv.Append(CPPPATH=[Dir('#').abspath])
     #penv.Append(SWIGFLAGS='-python -c++ -naturalvar')
@@ -632,6 +640,29 @@ def validate(env):
     module = env['IMP_MODULE']
     env['VALIDATED'] = True
 
+def process_dependencies(env, dependencies):
+    m_libs=[]
+    found=True
+    for d in dependencies:
+        if d== "CGAL":
+            if env['CGAL_LIBS']:
+                m_libs=m_libs+env['CGAL_LIBS']
+            else:
+                found=False
+        elif d== "boost_file_system":
+            if env['BOOST_LIBS']:
+                m_libs=m_libs+env['BOOST_FILESYSTEM_LIBS']
+            else:
+                found=False
+        elif d== "boost_program_options":
+            if env['BOOST_LIBS']:
+                m_libs=m_libs+env['BOOST_PROGRAM_OPTIONS_LIBS']
+            else:
+                found=False
+        else:
+            raise ValueError("Do not understand optional dependency: " +d)
+    return (found,m_libs)
+
 def IMPModuleBuild(env, version, required_modules=[],
                    optional_dependencies=[], config_macros=[],
                    module=None, module_suffix=None,
@@ -672,16 +703,7 @@ def IMPModuleBuild(env, version, required_modules=[],
     #print module_include_path
     #print module_preproc
     #print module_namespace
-    m_libs=[]
-    for d in optional_dependencies:
-        if d== "CGAL":
-            if env['CGAL_LIBS']:
-                m_libs=m_libs+env['CGAL_LIBS']
-        elif d== "BOOST_FILESYSTEM":
-            if env['BOOST_LIBS']:
-                m_libs=m_libs+env['BOOST_FILESYSTEM_LIBS']
-        else:
-            raise ValueError("Do not understand optional dependency: " +d)
+    m_libs=process_dependencies(env, optional_dependencies)[1]
     env[module+"_libs"]=m_libs
     env[module+"_required_modules"]=required_modules
     env[module+"_optional_dependencies"]= optional_dependencies
@@ -788,7 +810,7 @@ def IMPModuleBuild(env, version, required_modules=[],
 
 
 
-    nice_deps = expand_dependencies(env,required_modules)
+    nice_deps = expand_dependencies(env,required_modules, env['IMP_MODULE'] == 'kernel')
     #print "nice is "+str(nice_deps)
     all_deps=["IMP."+x for x in nice_deps if x is not "kernel"]+required_libraries
     if len(all_deps) > 0:

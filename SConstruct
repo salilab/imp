@@ -7,6 +7,8 @@ import scons_tools.standards
 import scons_tools.endian
 import scons_tools.modeller_test
 import scons_tools.doxygen
+import scons_tools.application
+import scons_tools.test
 
 # We need scons 0.98 or later
 EnsureSConsVersion(0, 98)
@@ -28,6 +30,9 @@ if env.get('repository', None) is not None:
     Repository(env['repository'])
 
 env.AddMethod(scons_tools.imp_module.IMPModuleBuild)
+env.AddMethod(scons_tools.application.IMPCPPApplication)
+env.AddMethod(scons_tools.application.IMPApplicationTest)
+env.Append(BUILDERS={'IMPApplicationRunTest': scons_tools.test.UnitTest})
 env['IMP_MODULES_ALL']=[]
 scons_tools.boost.configure_check(env, '1.33')
 scons_tools.cgal.configure_check(env)

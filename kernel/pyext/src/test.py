@@ -285,19 +285,12 @@ class ApplicationTestCase(TestCase):
     def _get_application_file_name(self, filename):
         # If we ran from run-all-tests.py, it set an env variable for us with
         # the top-level test directory
-        if 'TEST_DIRECTORY' in os.environ:
-            testdir = os.environ['TEST_DIRECTORY']
-        else:
-            testdir = os.path.dirname(os.path.abspath(sys.argv[0]))
         if sys.platform == 'win32':
             filename += '.exe'
-        testdir = os.path.normpath(testdir)
-        dirs = testdir.split(os.path.sep)
-        for i in range(len(dirs), 0, -1):
-            trydir = os.path.sep.join(dirs[:i])
-            if os.path.isdir(os.path.join(trydir, 'test')):
-                return os.path.join(trydir, filename)
-        raise OSError("Cannot find IMP application directory")
+        if 'IMP_BUILD_ROOT' in os.environ:
+            testdir = os.environ['IMP_BUILD_ROOT']
+            return os.path.join(testdir, "build", "bin", filename)
+        return filename
 
     def run_application(self, app, args):
         """Run an application with the given list of arguments.
@@ -305,6 +298,7 @@ class ApplicationTestCase(TestCase):
                    stdout and stderr.
         """
         filename = self._get_application_file_name(app)
+        print "running ", filename
         return _SubprocessWrapper(filename, args)
 
 

@@ -40,4 +40,4 @@ env.IMPModuleBuild(version='SVN', required_modules=None, config_macros=config,
                    module='kernel', module_suffix="", module_include_path="IMP",
                    module_src_path="kernel", module_preproc="IMP",
                    module_namespace="IMP",
-                   optional_dependencies=['BOOST_FILESYSTEM'])
+                   optional_dependencies=['boost_file_system'])

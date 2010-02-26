@@ -50,12 +50,13 @@ namespace {
 #endif
     }
   }
-  std::string get_path(std::string envvar, std::string def,
+  std::string get_path(std::string envvar, std::string buildpath,
+                       std::string def,
                        std::string module, std::string file_name) {
     char *env = getenv(envvar.c_str());
     std::string base;
     if (env) {
-      base=env;
+      base=std::string(env)+"/"+buildpath;
     } else {
       // Default to compiled-in value
       base=def;
@@ -66,7 +67,9 @@ namespace {
 
 std::string get_data_path(std::string module, std::string file_name)
 {
-  std::string path= get_path("IMP_DATA_DIRECTORY", IMP_DATA_DIRECTORY,
+  std::string path= get_path("IMP_BUILD_ROOT",
+                             "build/data",
+                             IMP_DATA_DIRECTORY,
                              module, file_name);
   std::ifstream in(path.c_str());
   if (!in) {
@@ -77,7 +80,8 @@ std::string get_data_path(std::string module, std::string file_name)
 }
 std::string get_example_path(std::string module, std::string file_name)
 {
-  std::string path= get_path("IMP_EXAMPLE_DIRECTORY", IMP_EXAMPLE_DIRECTORY,
+  std::string path= get_path("IMP_BUILD_ROOT", "build/doc/examples",
+                             IMP_EXAMPLE_DIRECTORY,
                              module, file_name);
   std::ifstream in(path.c_str());
   if (!in) {
