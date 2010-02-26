@@ -21,14 +21,15 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 class IMPCOREEXPORT RawOpenCubicSpline {
   Floats values_, second_derivs_;
-  unsigned int low_bin(double v, double spacing, double inverse_spacing) const {
-    return  std::min(static_cast<size_t>(std::floor(v *inverse_spacing)),
-                     values_.size()-2);
+  size_t get_start_bin(double v, double spacing, double inverse_spacing) const {
+    return  static_cast<size_t>(v *inverse_spacing);
   }
   template <bool derivative>
     double compute_it(double feature, double spacing,
                       double inverse_spacing) const {
-    unsigned int lowbin= low_bin(feature, spacing, inverse_spacing);
+    unsigned int lowbin= std::min(get_start_bin(feature, spacing,
+                                                inverse_spacing),
+                                  values_.size()-2);
     size_t highbin = lowbin + 1;
     const double lowfeature = lowbin * spacing;
 
@@ -72,7 +73,8 @@ public:
   }
   double get_bin(double feature,
                  double spacing, double inverse_spacing) const {
-    return values_[low_bin(feature, spacing, inverse_spacing)];
+    return values_[std::min(get_start_bin(feature, spacing, inverse_spacing),
+                            values_.size()-1)];
   }
   double get_last() const {
     return values_.back();
