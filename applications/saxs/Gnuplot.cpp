@@ -7,7 +7,6 @@
  */
 #include "Gnuplot.h"
 
-#include <libgen.h>
 #include <fstream>
 
 void Gnuplot::print_profile_script(const std::string pdb, bool interactive) {
