@@ -40,26 +40,6 @@ IMPALGEBRA_END_NAMESPACE
 
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
-/*template <unsigned int D>
-inline double simplex_volume(std::vector<VectorD<D> > pts) {
-  for (unsigned int i=0; i< pts.size()-1; ++i) {
-    pts[i]=pts[i]-pts.back();
-  }
-  pts.pop_back();
-  std::vector<VectorD<D> > uvs;
-  for (unsigned int i=0; i< pts.size(); ++i) {
-    for (unsigned int j=0; j < i; ++j) {
-      pts[i]= pts[i]-(pts[i]*uvs[j])*uvs[j];
-    }
-    uvs.push_back(pts[i].get_unit_vector());
-  }
-  double ret=1;
-  for (unsigned int i=0; i< pts.size(); ++i) {
-    ret*= pts[i].get_magnitude();
-  }
-  return ret;
-  }*/
-
 /*If all is true, cover the whole sphere.
 */
 template <unsigned int D>
