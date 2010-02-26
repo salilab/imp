@@ -206,8 +206,8 @@ void CoarseCC::calc_derivatives(const DensityMap &em_map,
   FloatKey y_key=IMP::core::XYZ::get_coordinate_key(1);
   FloatKey z_key=IMP::core::XYZ::get_coordinate_key(2);
   for (unsigned int ii=0; ii<ps.size(); ii++) {
-    const KernelParameters::Parameters *params =
-      model_map.get_kernel_params()->find_params(
+    const RadiusDependentKernelParameters *params =
+      model_map.get_kernel_params()->get_params(
           ps[ii]->get_value(model_map.get_radius_key()));
     model_map.calc_sampling_bounding_box(ps[ii]->get_value(x_key),
                                          ps[ii]->get_value(y_key),

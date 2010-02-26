@@ -106,10 +106,6 @@ SampledDensityMap::SampledDensityMap(const IMP::Particles &ps,
 }
 
 
-// !Resamples a set of particles into this SampledDensityMap object
-/**
- */
-
 void SampledDensityMap::resample()
 {
   IMP_LOG(VERBOSE,"going to resample  particles " <<std::endl);
@@ -134,16 +130,16 @@ void SampledDensityMap::resample()
   // variables to avoid some multiplications
   int nxny=header_.nx*header_.ny; int znxny;
   emreal rsq,tmp;
-  const  KernelParameters::Parameters *params;
+  const RadiusDependentKernelParameters* params;
   IMP_LOG(VERBOSE,"sampling "<<ps_.size()<<" particles "<< std::endl);
   for (unsigned int ii=0; ii<ps_.size(); ii++) {
     // If the kernel parameters for the particles have not been
     // precomputed, do it
-    params = kernel_params_.find_params(ps_[ii]->get_value(radius_key_));
+    params = kernel_params_.get_params(ps_[ii]->get_value(radius_key_));
     if (!params) {
       IMP_LOG(TERSE, "EM map is using default params" << std::endl);
       kernel_params_.set_params(xyzr_[ii].get_radius());
-      params = kernel_params_.find_params(ps_[ii]->get_value(radius_key_));
+      params = kernel_params_.get_params(ps_[ii]->get_value(radius_key_));
     }
     IMP_USAGE_CHECK(params, "Parameters shouldn't be NULL");
     // compute the box affected by each particle

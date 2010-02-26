@@ -11,68 +11,66 @@
 
 #include "def.h"
 #include <IMP/exception.h>
+#include <IMP/log.h>
 #include <map>
 #include <cmath>
+#include <algorithm>
 #include <iostream>
 #include <iomanip>
 
 IMPEM_BEGIN_NAMESPACE
 
-//! calculates and stores gaussian kernel parameters.
-//! as a function of a specufuc radius
+//! Calculates kernel parameters as a function of a specific radius.
+class IMPEMEXPORT RadiusDependentKernelParameters {
+  public:
+    RadiusDependentKernelParameters(
+       float radii,float rsigsq,float timessig,
+       float sq2pi3,float inv_rsigsq, float rnormfac, float rkdist);
+  void show(std::ostream& s=std::cout) {
+      s << "vsig : " << vsig_ << " vsigsq: " << vsigsq_
+        << " inv_sigsq: " << inv_sigsq_ << " sig: " << sig_
+        << " kdist: " << kdist_ << " normfac: " << normfac_
+        << std::endl;
+    }
+    //! Gets the value of vsig parameter
+    inline float get_vsig() const { return vsig_;}
+    //! Gets the value of vsig square parameter
+    inline float get_vsigsq() const { return vsigsq_;}
+    //! Gets the value of the inverse of the sigma square
+    inline float get_inv_sigsq() const { return inv_sigsq_;}
+    //! Gets the value of sig parameter
+    inline float get_sig() const { return sig_;}
+    //! Gets the value of kdist parameter
+    inline float get_kdist() const { return kdist_;}
+    //! Gets the value of normfac parameter
+    inline float get_normfac() const { return normfac_;}
+  protected:
+    //! vsig
+    float vsig_;
+    //! square of vsig
+    float vsigsq_;
+    //! the inverse of sigma square
+    float inv_sigsq_;
+    //! the sigma
+    float sig_;
+    //! the kernel distance (= elements for summation)
+    float kdist_;
+    //! normalization factor
+    float normfac_;
+};
+
+//! Calculates and stores Gaussian kernel parameters as a function
+//! of a specufuc radius.
 class IMPEMEXPORT KernelParameters
 {
 public:
-  // swig doesn't support nested classes
-#ifndef SWIG
-  //! Calculates kernel parameters as a function of a specific radius.
-  class Parameters
-  {
-  public:
-    Parameters(float radii_,float rsigsq_,float timessig_,
-               float sq2pi3_,float inv_rsigsq_, float rnormfac_, float rkdist_);
-    friend std::ostream & operator<<(std::ostream& s, const Parameters &other) {
-      s << "vsig : " << other.vsig << " vsigsq: " << other.vsigsq
-        << " inv_sigsq: " << other.inv_sigsq << " sig: " << other.sig
-        << " kdist: " << other.kdist << " normfac: " << other.normfac
-        << std::endl;
-      return s;
-    }
-    //! Gets the value of vsig parameter
-    inline float get_vsig() const { return vsig;}
-    //! Gets the value of vsig square parameter
-    inline float get_vsigsq() const { return vsigsq;}
-    //! Gets the value of the inverse of the sigma square
-    inline float get_inv_sigsq() const { return inv_sigsq;}
-    //! Gets the value of sig parameter
-    inline float get_sig() const { return sig;}
-    //! Gets the value of kdist parameter
-    inline float get_kdist() const { return kdist;}
-    //! Gets the value of normfac parameter
-    inline float get_normfac() const { return normfac;}
-  protected:
-    //! vsig
-    float vsig;
-    //! square of vsig
-    float vsigsq;
-    //! the inverse of sigma square
-    float inv_sigsq;
-    //! the sigma
-    float sig;
-    //! the kernel distance (= elements for summation)
-    float kdist;
-    //! normalization factor
-    float normfac;
-  };
-#endif
-
   KernelParameters() {
-    initialized=false;
+    initialized_ = false;
   }
 
-  KernelParameters(float resolution_) {
-    init(resolution_);
-    initialized=true;
+  KernelParameters(float resolution) {
+    init(resolution);
+    initialized_ = true;
   }
 
   //! Sets the parameters that depend on the radius of a given particle.
@@ -84,40 +82,41 @@ public:
 
   //! Finds the precomputed parameters given a particle radius.
   /**
-    \param[in] radius the radius
-    \exception if the parameters of the radius have not been set
+    \param[in] radius searching for parameters of this radius
+    \param[in] eps used for numerical stability
+    \note The parameters are indexes by the radius. To maintain
+    numeratical stability, look for a radius within +-eps from the
+    queried radius.
+   \note the function return NULL and writes a warning if parameters
+   for this radius were not found.
   */
-  const KernelParameters::Parameters* find_params(float radius) {
-    IMP_USAGE_CHECK(initialized, "The Kernel Parameters are not initialized");
-    std::map<float, const KernelParameters::Parameters *>::iterator iter
-        = radii2params.find(radius);
-    if (iter == radii2params.end()) return NULL;
-    else return iter->second;
+  const RadiusDependentKernelParameters* get_params(
+        float radius,float eps=0.001);
+  bool are_params_set(float radius,float eps=0.001) {
+    return get_params(radius, eps) != NULL;
   }
 
   //! Gets the value of rsig parameter
-  inline  float get_rsig() const  {return rsig;}
+  inline  float get_rsig() const  {return rsig_;}
   //! Gets the value of rsig square parameter
-  inline float get_rsigsq() const {return rsigsq;}
+  inline float get_rsigsq() const {return rsigsq_;}
   //! Gets the value of timessig parameter
-  inline float get_timessig() const {return timessig;}
+  inline float get_timessig() const {return timessig_;}
   //! Gets the value of sq2pi3 parameter
-  inline float get_sq2pi3() const {return sq2pi3;}
+  inline float get_sq2pi3() const {return sq2pi3_;}
   //! Gets the value of inv_rsigsq parameter
-  inline float get_inv_rsigsq() const {return inv_rsigsq;}
+  inline float get_inv_rsigsq() const {return inv_rsigsq_;}
   //! Gets the value of rnormfac parameter
-  inline float get_rnormfac() const {return rnormfac;}
+  inline float get_rnormfac() const {return rnormfac_;}
   //! Gets the value of rkdist parameter
-  inline float get_rkdist() const {return rkdist;}
+  inline float get_rkdist() const {return rkdist_;}
   //! Gets the value of lim parameter
-  inline float get_lim() const {return lim;}
+  inline float get_lim() const {return lim_;}
 protected:
-  float rsig,rsigsq,timessig,sq2pi3,inv_rsigsq,rnormfac,rkdist,lim;
-  bool initialized;
-  std::map <float,const KernelParameters::Parameters *> radii2params;
-
-
-  void init(float resolution_);
+  float rsig_,rsigsq_,timessig_,sq2pi3_,inv_rsigsq_,rnormfac_,rkdist_,lim_;
+  bool initialized_;
+  std::map <float,const RadiusDependentKernelParameters *> radii2params_;
+  void init(float resolution);
 };
 
 IMPEM_END_NAMESPACE
