@@ -400,7 +400,7 @@ inline std::ostream &operator<<(std::ostream &out, const CommasIO<D> &s)
     We define a number of standard, \f$L^p\f$, norms on VectorD.
     - \f$L^1\f$ is the Manhattan distance, the sum of the components
     - \f$L^2\f$ is the standard Euclidean length
-    - \f$L^\inf\f$ is the maximum of the components
+    - \f$L^{\inf}\f$ is the maximum of the components
     @{
 */
 
