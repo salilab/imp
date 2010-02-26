@@ -7,6 +7,7 @@
 #ifndef IMPATOM_CHARMM_PARAMETERS_H
 #define IMPATOM_CHARMM_PARAMETERS_H
 
+#include "internal/charmm_helpers.h"
 #include "ForceFieldParameters.h"
 #include "charmm_topology.h"
 #include "macros.h"
@@ -30,8 +31,7 @@ struct CHARMMBondParameters {
 class IMPATOMEXPORT CharmmParameters : public ForceFieldParameters {
   std::map<std::string, CHARMMIdealResidueTopology> residue_topologies_;
   std::map<std::string, CHARMMPatch> patches_;
-  std::map<std::pair<std::string, std::string>,
-           CHARMMBondParameters> bond_parameters_;
+  std::map<internal::CHARMMBondNames, CHARMMBondParameters> bond_parameters_;
 
 public:
 
@@ -97,12 +97,9 @@ public:
 
   const CHARMMBondParameters *get_bond_parameters(std::string type1,
                                                   std::string type2) const {
-    std::pair<std::string, std::string> types = std::make_pair(type1, type2);
-    std::pair<std::string, std::string> rtypes = std::make_pair(type2, type1);
+    internal::CHARMMBondNames types = internal::CHARMMBondNames(type1, type2);
     if (bond_parameters_.find(types) != bond_parameters_.end()) {
       return &bond_parameters_.find(types)->second;
-    } else if (bond_parameters_.find(rtypes) != bond_parameters_.end()) {
-      return &bond_parameters_.find(rtypes)->second;
     } else {
       return NULL;
     }
