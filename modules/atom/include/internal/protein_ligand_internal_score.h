@@ -34,8 +34,10 @@ struct PMFTable {
     IMP_USAGE_CHECK(i < data_.size(), "Out of range protein index " << i);
     IMP_USAGE_CHECK(j < data_[i].size(),
                     "Out of range ligand index " << i << " " << j);
-    if (dist >= max_) return DerivativePair(0,0);
-    return data_[i][j].evaluate_with_derivative(dist, bin_width_,
+    if (dist >= max_-.5*bin_width_) return DerivativePair(0,0);
+    if (dist <= .5*bin_width_) return DerivativePair(get_score(i,j,dist), 0);
+    // shift by .5 for the splines so as to be between the centers of the cells
+    return data_[i][j].evaluate_with_derivative(dist-.5*bin_width_, bin_width_,
                                                 inverse_bin_width_);
   }
 };
