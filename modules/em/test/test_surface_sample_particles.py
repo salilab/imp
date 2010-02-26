@@ -27,7 +27,7 @@ class SampleTests(IMP.test.TestCase):
                                      (12.0, 6.0, 3.0),
                                      (3.0, 12.0, 12.0))):
             p = self.create_point_particle(self.imp_model, x,y,z)
-            p.add_attribute( self.radius_key, 1.0, False)
+            p.add_attribute( self.radius_key, 5.0, False)
             p.add_attribute(self.weight_key, 10.0)
             p.add_attribute(IMP.IntKey("id"), i)
             p.add_attribute(IMP.IntKey("protein"), 1)
@@ -39,12 +39,14 @@ class SampleTests(IMP.test.TestCase):
         print "initialization done ..."
 
     def test_sample_map(self):
-        """Check that reading a map back in preserves the stdevs"""
+        """Check that surface sampling works"""
         resolution=1.
         voxel_size=1.
         model_map = IMP.em.SurfaceShellDensityMap(self.particles, resolution, voxel_size,self.radius_key,self.weight_key)
         for p in self.particles:
-            self.assert_(model_map.get_value(IMP.core.XYZ(p).get_coordinates())>2.,"map was not sampled correctly")
+            val=model_map.get_value(IMP.core.XYZ(p).get_coordinates())
+            print val
+            self.assertEqual(val>9.1 and val<10.1,True)
 
 if __name__ == '__main__':
     unittest.main()
