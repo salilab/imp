@@ -111,7 +111,7 @@ CharmmParameters::CharmmParameters(const String& top_file_name,
       IMP_THROW("Can't open charmm file " << par_file_name,
                   IOException);
     }
-    read_VdW_params(par_file);
+    read_parameter_file(par_file);
     par_file.close();
   }
 }
@@ -299,10 +299,42 @@ void CharmmParameters::parse_bond_line(const String& line,
   }
 }
 
-void CharmmParameters::read_VdW_params(std::ifstream& input_file) {
-  const String NONBONDED_LINE = "NONBONDED";
+void CharmmParameters::parse_nonbonded_parameters_line(String line)
+{
+  std::vector<String> split_results;
+  boost::split(split_results, line, boost::is_any_of(" "),
+               boost::token_compress_on);
+  if (split_results.size() < 4)
+    return; // non-bonded line has at least 4 fields
 
-  bool in_nonbonded = false;
+  String charmm_atom_type = split_results[0];
+  float epsilon = atof(split_results[2].c_str());
+  float radius = atof(split_results[3].c_str());
+  force_field_2_vdW_[charmm_atom_type] = std::make_pair(epsilon, radius);
+}
+
+void CharmmParameters::parse_bonds_parameters_line(String line)
+{
+  std::vector<String> split_results;
+  boost::split(split_results, line, boost::is_any_of(" "),
+               boost::token_compress_on);
+  if (split_results.size() < 4)
+    return; // bonds line has at least 4 fields
+
+  CHARMMBondParameters p;
+  p.force_constant = atof(split_results[2].c_str());
+  p.mean = atof(split_results[3].c_str());
+  bond_parameters_[std::make_pair(split_results[0], split_results[1])] = p;
+}
+
+void CharmmParameters::read_parameter_file(std::ifstream& input_file) {
+  const String BONDS_LINE = "BONDS";
+  const String ANGLES_LINE = "ANGLES";
+  const String DIHEDRALS_LINE = "DIHEDRALS";
+  const String IMPROPER_LINE = "IMPROPER";
+  const String NONBONDED_LINE = "NONBONDED";
+  enum { NONE, BONDS, ANGLES, DIHEDRALS, IMPROPERS, NONBONDED } section = NONE;
+
   while (!input_file.eof()) {
     String line;
     getline(input_file, line);
@@ -311,29 +343,34 @@ void CharmmParameters::read_VdW_params(std::ifstream& input_file) {
     // skip comments or empty lines
     if (line[0] == '!' || line[0] == '*' || line.length() == 0) continue;
 
-    if(line.substr(0, NONBONDED_LINE.length()) == NONBONDED_LINE) {
-      in_nonbonded=true;
+    if (line.substr(0, NONBONDED_LINE.length()) == NONBONDED_LINE) {
+      section = NONBONDED;
       getline(input_file, line); //remove second line of NONBONDED
-      continue;
-    }
-
-    if(line.substr(0, 5) == "HBOND" || line.substr(0, 3) == "END" ||
-       line.substr(0, 5) == "NBFIX") break; // eof NONBONDED
-
-    if(in_nonbonded) {
-      std::vector<String> split_results;
-      boost::split(split_results, line, boost::is_any_of(" "),
-                   boost::token_compress_on);
-      if(split_results.size() < 4)
-        continue; // non-bonded line has at least 4 fields
-
-      String charmm_atom_type = split_results[0];
-      float epsilon = atof(split_results[2].c_str());
-      float radius = atof(split_results[3].c_str());
-      force_field_2_vdW_[charmm_atom_type] = std::make_pair(epsilon, radius);
+    } else if (line.substr(0, BONDS_LINE.length()) == BONDS_LINE) {
+      section = BONDS;
+    } else if (line.substr(0, ANGLES_LINE.length()) == ANGLES_LINE) {
+      section = ANGLES;
+    } else if (line.substr(0, DIHEDRALS_LINE.length()) == DIHEDRALS_LINE) {
+      section = DIHEDRALS;
+    } else if (line.substr(0, IMPROPER_LINE.length()) == IMPROPER_LINE) {
+      section = IMPROPERS;
+    } else if (line.substr(0, 5) == "HBOND" || line.substr(0, 5) == "NBFIX") {
+      section = NONE;
+    } else if (line.substr(0, 3) == "END") {
+      break;
+    } else {
+      switch(section) {
+      case BONDS:
+        parse_bonds_parameters_line(line);
+        break;
+      case NONBONDED:
+        parse_nonbonded_parameters_line(line);
+        break;
+      default:
+        break;
+      }
     }
   }
-
   if(force_field_2_vdW_.size() == 0) {
     IMP_FAILURE("NONBONDED params not found in Charmm parameter file");
   }

@@ -12,12 +12,19 @@ def _make_test_atom():
 class CHARMMTopologyTests(IMP.test.TestCase):
     """Test CHARMM topology classes"""
 
-    def assertAtomsBonded(self, a1, a2):
+    def assertAtomsBonded(self, a1, a2, typ1, typ2, bondlen, forcecon):
         bonded1 = IMP.atom.Bonded(a1.get_particle())
         bonded2 = IMP.atom.Bonded(a2.get_particle())
+        exp_typ1 = IMP.atom.CHARMMAtom(a1.get_particle()).get_charmm_type()
+        exp_typ2 = IMP.atom.CHARMMAtom(a2.get_particle()).get_charmm_type()
+        self.assertEqual(typ1, exp_typ1)
+        self.assertEqual(typ2, exp_typ2)
         for i in range(bonded1.get_number_of_bonds()):
             other = bonded1.get_bonded(i)
             if other == bonded2:
+                bond = bonded1.get_bond(i)
+                self.assertInTolerance(bond.get_length(), bondlen, 1e-4)
+                self.assertInTolerance(bond.get_stiffness(), forcecon, 1e-4)
                 return
         self.fail("No bond defined between %s and %s" % (a1, a2))
 
@@ -227,19 +234,22 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         topology.add_charges(pdb)
         self.assertInTolerance(IMP.atom.Charged(last_atom).get_charge(),
                                -0.67, 1e-3)
-        topology.add_bonds(pdb)
-        for (bondr1, bondr2, bonda1, bonda2) in [
+        topology.add_bonds(pdb, ff)
+        for (bondr1, bondr2, bonda1, bonda2, atyp1, atyp2, bondlen, fcon) in [
            # intraresidue bond
-           (residues[0], residues[0], IMP.atom.AT_CA, IMP.atom.AT_CB),
+           (residues[0], residues[0], IMP.atom.AT_CA, IMP.atom.AT_CB,
+            'CT1', 'CT3', 1.5380, 222.500),
            # backbone bond
-           (residues[0], residues[1], IMP.atom.AT_C, IMP.atom.AT_N),
+           (residues[0], residues[1], IMP.atom.AT_C, IMP.atom.AT_N,
+            'C', 'NH1', 1.3450, 370.000),
            # CTER bond
-           (residues[-1], residues[-1], IMP.atom.AT_OXT, IMP.atom.AT_C)]:
+           (residues[-1], residues[-1], IMP.atom.AT_OXT, IMP.atom.AT_C,
+            'OC', 'CC', 1.2600, 525.000)]:
             r1 = bondr1.get_as_residue()
             r2 = bondr2.get_as_residue()
             a1 = IMP.atom.get_atom(r1, bonda1)
             a2 = IMP.atom.get_atom(r2, bonda2)
-            self.assertAtomsBonded(a1, a2)
+            self.assertAtomsBonded(a1, a2, atyp1, atyp2, bondlen, fcon)
 
         ff.add_radii(pdb)
         ff.add_well_depths(pdb)

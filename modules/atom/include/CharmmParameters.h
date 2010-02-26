@@ -21,10 +21,17 @@ IMP_END_NAMESPACE
 
 IMPATOM_BEGIN_NAMESPACE
 
+struct CHARMMBondParameters {
+  double force_constant;
+  double mean;
+};
+
 //! Charmm force field
 class IMPATOMEXPORT CharmmParameters : public ForceFieldParameters {
   std::map<std::string, CHARMMIdealResidueTopology> residue_topologies_;
   std::map<std::string, CHARMMPatch> patches_;
+  std::map<std::pair<std::string, std::string>,
+           CHARMMBondParameters> bond_parameters_;
 
 public:
 
@@ -88,13 +95,25 @@ public:
 
   CHARMMTopology *make_topology(Hierarchy hierarchy) const;
 
+  const CHARMMBondParameters *get_bond_parameters(std::string type1,
+                                                  std::string type2) const {
+    std::pair<std::string, std::string> types = std::make_pair(type1, type2);
+    std::pair<std::string, std::string> rtypes = std::make_pair(type2, type1);
+    if (bond_parameters_.find(types) != bond_parameters_.end()) {
+      return &bond_parameters_.find(types)->second;
+    } else if (bond_parameters_.find(rtypes) != bond_parameters_.end()) {
+      return &bond_parameters_.find(rtypes)->second;
+    } else {
+      return NULL;
+    }
+  }
+
   IMP_FORCE_FIELD_PARAMETERS(CharmmParameters);
 private:
 
   virtual String get_force_field_atom_type(Atom atom) const;
 
-  // read non-bonded parameters for VdW computation
-  void read_VdW_params(std::ifstream& input_file);
+  void read_parameter_file(std::ifstream& input_file);
   // read topology file
   void read_topology_file(std::ifstream& input_file);
 
@@ -103,6 +122,9 @@ private:
                        CHARMMResidueTopologyBase &residue);
   void parse_bond_line(const String& line, ResidueType curr_res_type,
                        CHARMMResidueTopologyBase &residue);
+
+  void parse_nonbonded_parameters_line(String line);
+  void parse_bonds_parameters_line(String line);
 };
 
 IMPATOM_END_NAMESPACE
