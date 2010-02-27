@@ -26,12 +26,6 @@ Rotation3D compose(const Rotation3D &a, const Rotation3D &b) ;
 #endif
 
 
-#ifndef IMP_DOXYGEN
-/* According to benchmarks/rotate having the cache is 20% faster. Since space
-   is unlikely to be an issue for rotations, we can keep the cache. */
-#define IMP_ROTATION_CACHE
-#endif
-
 //! 3D rotation class.
 /** Rotations are currently represented using quaternions and a cached
     copy of the rotation matrix. The quaternion allows for fast and
@@ -50,14 +44,11 @@ Rotation3D compose(const Rotation3D &a, const Rotation3D &b) ;
 */
 class IMPALGEBRAEXPORT Rotation3D {
   VectorD<4> v_;
-#ifdef IMP_ROTATION_CACHE
   mutable bool has_cache_;
   mutable VectorD<3> matrix_[3];
-#endif
   IMP_NO_SWIG(friend Rotation3D compose(const Rotation3D &a,
                                         const Rotation3D &b));
   void fill_cache() const {
-#ifdef IMP_ROTATION_CACHE
     if (has_cache_) return;
     has_cache_=true;
     matrix_[0]= VectorD<3>(v_[0]*v_[0]+v_[1]*v_[1]-v_[2]*v_[2]-v_[3]*v_[3],
@@ -69,7 +60,6 @@ class IMPALGEBRAEXPORT Rotation3D {
     matrix_[2]= VectorD<3>(2*(v_[1]*v_[3]-v_[0]*v_[2]),
                          2*(v_[2]*v_[3]+v_[0]*v_[1]),
                          v_[0]*v_[0]-v_[1]*v_[1]-v_[2]*v_[2]+v_[3]*v_[3]);
-#endif
   }
 public:
   //! Create a rotation from an unnormalized vector 4
@@ -130,22 +120,20 @@ public:
                     + 2*(v_[2]*v_[3]+v_[0]*v_[1])*o[1]
                     + (v_[0]*v_[0]-v_[1]*v_[1]-v_[2]*v_[2]+v_[3]*v_[3])*o[2];
         break;
+    default:
+      IMP_THROW("Out of range coordinate " << coord,
+                IndexException);
     }
   }
 #endif
-
   //! Rotate a vector around the origin
   VectorD<3> get_rotated(const VectorD<3> &o) const {
     IMP_USAGE_CHECK(v_.get_squared_magnitude() >0,
               "Attempting to apply uninitialized rotation");
-#ifdef IMP_ROTATION_CACHE
     fill_cache();
     return VectorD<3>(o*matrix_[0],
-                    o*matrix_[1],
-                    o*matrix_[2]);
-#else
-    return rotate_no_cache(o);
-#endif
+                      o*matrix_[1],
+                      o*matrix_[2]);
   }
 
   //! Gets only the requested rotation coordinate of the vector
@@ -153,12 +141,8 @@ public:
                                     unsigned int coord) const {
     IMP_USAGE_CHECK(v_.get_squared_magnitude() >0,
               "Attempting to apply uninitialized rotation");
-#ifdef IMP_ROTATION_CACHE
     fill_cache();
     return o*matrix_[coord];
-#else
-    return rotate_one_coordinate_no_cache(o,coord);
-#endif
   }
 
   //! Rotate a vector around the origin
