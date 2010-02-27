@@ -82,14 +82,14 @@ const RadiusDependentKernelParameters* KernelParameters::get_params(
   kernel_map::iterator lower_closest = radii2params_.lower_bound(radius);
   kernel_map::iterator upper_closest = radii2params_.upper_bound(radius);
    const RadiusDependentKernelParameters *closest = NULL;
-   if (algebra::almost_equal(radius,upper_closest->first,eps)) {
+   if (algebra::get_are_almost_equal(radius,upper_closest->first,eps)) {
      closest = upper_closest->second;
      IMP_LOG(IMP::VERBOSE,"for radius:"<<radius<<
              " the closest is:"<< upper_closest->first<<std::endl);
    }
    else {
      if (lower_closest != radii2params_.end()) {
-       if (algebra::almost_equal(radius,lower_closest->first,eps)) {
+       if (algebra::get_are_almost_equal(radius,lower_closest->first,eps)) {
          closest = lower_closest->second;
        }
      }
