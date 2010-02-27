@@ -14,9 +14,9 @@ IMPEM_BEGIN_NAMESPACE
 void  ImageHeader_to_DensityHeader(const ImageHeader &h,DensityHeader &dh) {
   std::string empty;
   // map size and voxel size
-  dh.nz=h.get_number_of_slices();
-  dh.ny=h.get_number_of_rows();
-  dh.nx=h.get_number_of_columns();
+  dh.nz=static_cast<int>(h.get_number_of_slices());
+  dh.ny=static_cast<int>(h.get_number_of_rows());
+  dh.nx=static_cast<int>(h.get_number_of_columns());
   dh.Objectpixelsize_=h.get_object_pixel_size();
   // mode
   switch ((int) h.get_fIform()) {
@@ -63,7 +63,7 @@ void  ImageHeader_to_DensityHeader(const ImageHeader &h,DensityHeader &dh) {
     dh.dmean=0;
     dh.rms=0;
   }
-  dh.ispg=0.; // Sapce group number 0 or 1 (default 0)
+  dh.ispg=0; // Sapce group number 0 or 1 (default 0)
   dh.nsymbt=0; // Number of bytes used for symmetry data (0 or 80, default 0)
   std::strcpy(dh.map,"MAP \0"); // string 'MAP ' to identify file type
   // Origin used for transforms
