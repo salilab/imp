@@ -564,8 +564,7 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_sulfur_atom_type(
     return S;
   }
   IMP_WARN_ONCE("Sulfur atom not found, using default S form factor for "
-                << atom_type << " " << residue_type, warn_context_
-                << std::endl);
+                << atom_type << " " << residue_type, warn_context_);
   return S;
 }
 
