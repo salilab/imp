@@ -113,12 +113,11 @@ T trilinear_interpolation(Matrix3D<T> &m,
  T c0  = simple_interpolate(diff[1],c00,c10);
  T c1  = simple_interpolate(diff[1],c01,c11);
  result= simple_interpolate(diff[2],c0,c1);
-
-#ifdef DEBUG
-    std::cout << " lower " << lower[0] << " " << lower[1] << " " << lower[2]
-              << " upper " << upper[0] << " " << upper[1] << " " << upper[2]
-              << " diff "  << diff[0]  << " " << diff[1]  << " " << diff[2]
-              << std::endl;
+#ifdef IMP_DEBUG_INTERPOLATION
+ IMP_LOG(VERBOSE," lower " << lower[0] << " " << lower[1] << " " << lower[2]
+         << " upper " << upper[0] << " " << upper[1] << " " << upper[2]
+         << " diff "  << diff[0]  << " " << diff[1]  << " " << diff[2]
+         << std::endl);
 #endif
   return result;
 }

@@ -86,9 +86,7 @@ typedef Image<T> This;
 
   //! Reads the image from the file
   void read(String filename,ImageReaderWriter<T>& reader) {
-#ifdef DEBUG
-    std::cout << "reading EM image " << std::endl;
-#endif
+    IMP_LOG(VERBOSE, "reading EM image " << std::endl);
     reader.read(filename,header_,data_);
   }
 

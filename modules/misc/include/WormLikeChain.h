@@ -85,8 +85,6 @@ inline DerivativePair WormLikeChain::evaluate_with_derivative(double v) const {
             << " " << l << " " << lmax_ << " " << cutoff()
             << std::endl);
   }
-  std::cout << "Return is " << ret <<" " << l << " " << lp_ << " "
-            << lmax_ << std::endl;
   unit::YoctoKilocalorie zc= convert_J_to_Cal(ret);
   double value=(zc*unit::ATOMS_PER_MOL).get_value();
   //std::cout << "Force is " << doubled << " for length " << l << std::endl;
