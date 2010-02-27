@@ -186,7 +186,8 @@ namespace {
       type = Bond::UNKNOWN;
     }
     else {
-      std::cout << "error in bond types" << std::endl;
+      IMP_THROW("Error in bond types on " << mol2_bondline,
+                IOException);
     }
 
     // get atom particles back

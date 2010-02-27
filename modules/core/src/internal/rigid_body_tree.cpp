@@ -65,7 +65,7 @@ RigidBodyHierarchy::divide_spheres(const std::vector<algebra::SphereD<3> > &ss,
   SpheresSplit ret;
   for (Grid::IndexIterator it= grid.all_indexes_begin();
        it != grid.all_indexes_end(); ++it) {
-    std::cout << "Gathering from " << *it << std::endl;
+    //std::cout << "Gathering from " << *it << std::endl;
     if (!grid[*it].empty()) {
       ret.push_back(grid[*it]);
     }

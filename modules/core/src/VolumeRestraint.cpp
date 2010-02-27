@@ -51,10 +51,10 @@ VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
       algebra::BoundingBox3D bb= algebra::get_bounding_box(d.get_sphere());
       Grid::ExtendedIndex vl= grid_.get_extended_index(bb.get_corner(0));
       Grid::ExtendedIndex vu= grid_.get_extended_index(bb.get_corner(1));
-      std::cout << vl << " " << vu << std::endl;
+      //std::cout << vl << " " << vu << std::endl;
       for (Grid::IndexIterator it= grid_.indexes_begin(vl, vu);
            it != grid_.indexes_end(vl, vu); ++it) {
-        std::cout << "Inspecting " << *it << std::endl;
+        //std::cout << "Inspecting " << *it << std::endl;
         algebra::VectorD<3> c= grid_.get_center(*it);
         if (s.get_contains(c)) {
           grid_[*it]= i;

@@ -52,7 +52,8 @@ void SymmetrySampler::populate_states_of_particles(Particles *particles,
                                                    Combinations *states) const {
   IMP_INTERNAL_CHECK(states != NULL,"the states should be initialized");
   IMP_LOG(VERBOSE,"SymmetrySampler:: start populaing states of particles");
-  std::cout<<"SymmetrySampler:: start populaing states of particles"<<std::endl;
+  //std::cout<<"SymmetrySampler:: start populaing states of particles"
+  // <<std::endl;
   //CombState *calc_state;
   int comb_size = particles->size();
   std::vector<int> v_int(ts_->get_number_of_states());

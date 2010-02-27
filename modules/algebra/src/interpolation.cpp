@@ -75,14 +75,12 @@ double bilinear_interpolation(Matrix2D<double>& m,
           m(v1[0],v2[1])*(1-diff[0])*(diff[1])   +
           m(v2[0],v2[1])*(  diff[0])*(diff[1]);
 
-#ifdef DEBUG
   if(result>3) {
-    std::cout << " v1 " << v1[0] << " " << v1[1]
-              << " v2 " << v2[0] << " " << v2[1]
-              << " diff " << diff[0] << " " << diff[1]
-              << " dix " << idx[0] << " " << idx[1] << std::endl;
+    IMP_LOG(VERBOSE, " v1 " << v1[0] << " " << v1[1]
+            << " v2 " << v2[0] << " " << v2[1]
+            << " diff " << diff[0] << " " << diff[1]
+            << " dix " << idx[0] << " " << idx[1] << std::endl);
   }
-#endif
   return result;
 }
 

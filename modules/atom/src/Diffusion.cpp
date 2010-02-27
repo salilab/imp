@@ -75,14 +75,7 @@ void Diffusion::set_D_from_radius_in_angstroms(Float ir) {
 unit::SquareCentimeterPerSecond Diffusion::D_from_r(unit::Angstrom radius,
                                                     unit::Kelvin t) {
   MillipascalSecond e=eta(t);
-  //unit::MKSUnit<-13, 0, 1, 0, -1> etar( e*r);
-  /*std::cout << e << " " << etar << " " << kt << std::endl;
-  std::cout << "scalar etar " << (unit::Scalar(6*unit::PI)*etar)
-            << std::endl;
-  std::cout << "ret pre conv " << (kt/(unit::Scalar(6* unit::PI)*etar))
-  << std::endl;*/
   unit::SquareCentimeterPerSecond ret(kt(t)/(6.0* PI*e*radius));
-  //std::cout << "ret " << ret << std::endl;
   return ret;
 }
 
