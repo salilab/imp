@@ -1,7 +1,8 @@
 %pythoncode %{
-__all__ = ['representation', 'restraint','xml_parser', 'config']
+__all__ = ['representation', 'restraint','xml_parser', 'display', 'config']
 
 from representation import *
 from restraint import *
 from xml_parser import *
+from display import *
 %}

@@ -35,6 +35,19 @@ from restraint import _RestraintJournal
 from restraint import _RestraintTitle
 from restraint import _RestraintYear
 from restraint import _RigidBodyRestraintNode
+from display import Display
+from display import _DisplayNode
+from display import _DisplayColor
+from display import _DisplayResidue
+from display import _DisplayUniverse
+from display import _DisplayCollection
+from display import _DisplayAssembly
+from display import _DisplaySegment
+from display import _DisplayMolecule
+from display import _DisplayProtein
+from display import _DisplayNucleicAcid
+from display import _DisplayChain
+from display import _DisplayFragment
 
 class XMLRepresentation(object):
     """Construct Representation from XML file"""
@@ -326,7 +339,7 @@ class XMLDisplay(object):
     def _handle_universe(self, node):
         self.depth += 1
         attrs = self._get_attributes(node)
-        result = DisplayUniverse(attrs)
+        result = _DisplayUniverse(attrs)
         for child in node.childNodes:
             r = self._handle_node(child)
             if r:
@@ -337,7 +350,7 @@ class XMLDisplay(object):
     def _handle_collection(self, node):
         self.depth += 1
         attrs = self._get_attributes(node)
-        result = DisplayCollection(attrs)
+        result = _DisplayCollection(attrs)
         for child in node.childNodes:
             r = self._handle_node(child)
             if r:
@@ -348,7 +361,7 @@ class XMLDisplay(object):
     def _handle_assembly(self, node):
         self.depth += 1
         attrs = self._get_attributes(node)
-        result = DisplayAssembly(attrs)
+        result = _DisplayAssembly(attrs)
         for child in node.childNodes:
             r = self._handle_node(child)
             if r:
@@ -359,7 +372,7 @@ class XMLDisplay(object):
     def _handle_segment(self, node):
         self.depth += 1
         attrs = self._get_attributes(node)
-        result = DisplaySegment(attrs)
+        result = _DisplaySegment(attrs)
         for child in node.childNodes:
             r = self._handle_node(child)
             if r:
@@ -370,7 +383,7 @@ class XMLDisplay(object):
     def _handle_molecule(self, node):
         self.depth += 1
         attrs = self._get_attributes(node)
-        result = DisplayMolecule(attrs)
+        result = _DisplayMolecule(attrs)
         for child in node.childNodes:
             r = self._handle_node(child)
             if r:
@@ -381,7 +394,7 @@ class XMLDisplay(object):
     def _handle_protein(self, node):
         self.depth += 1
         attrs = self._get_attributes(node)
-        result = DisplayProtein(attrs)
+        result = _DisplayProtein(attrs)
         for child in node.childNodes:
             r = self._handle_node(child)
             if r:
@@ -392,7 +405,7 @@ class XMLDisplay(object):
     def _handle_nucleic_acid(self, node):
         self.depth += 1
         attrs = self._get_attributes(node)
-        result = DisplayNucleicAcid(attrs)
+        result = _DisplayNucleicAcid(attrs)
         for child in node.childNodes:
             r = self._handle_node(child)
             if r:
@@ -403,7 +416,7 @@ class XMLDisplay(object):
     def _handle_chain(self, node):
         self.depth += 1
         attrs = self._get_attributes(node)
-        result = DisplayChain(attrs)
+        result = _DisplayChain(attrs)
         for child in node.childNodes:
             r = self._handle_node(child)
             if r:
@@ -414,7 +427,7 @@ class XMLDisplay(object):
     def _handle_fragment(self, node):
         self.depth += 1
         attrs = self._get_attributes(node)
-        result = DisplayFragment(attrs)
+        result = _DisplayFragment(attrs)
         for child in node.childNodes:
             r = self._handle_node(child)
             if r:
@@ -425,7 +438,7 @@ class XMLDisplay(object):
     def _handle_residue(self, node):
         self.depth += 1
         attrs = self._get_attributes(node)
-        result = DisplayResidue(attrs)
+        result = _DisplayResidue(attrs)
         for child in node.childNodes:
             r = self._handle_node(child)
             if r:
@@ -436,7 +449,7 @@ class XMLDisplay(object):
     def _handle_color(self, node):
         self.depth += 1
         attrs = self._get_attributes(node)
-        result = DisplayColor(attrs)
+        result = _DisplayColor(attrs)
         for child in node.childNodes:
             r = self._handle_node(child)
             if r:
