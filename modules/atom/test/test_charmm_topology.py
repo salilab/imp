@@ -24,7 +24,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
             if other == bonded2:
                 bond = bonded1.get_bond(i)
                 self.assertInTolerance(bond.get_length(), bondlen, 1e-4)
-                self.assertInTolerance(bond.get_stiffness(), forcecon, 1e-4)
+                self.assertInTolerance(bond.get_stiffness(), forcecon, 1e-3)
                 return
         self.fail("No bond defined between %s and %s" % (a1, a2))
 
@@ -239,13 +239,13 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         for (bondr1, bondr2, bonda1, bonda2, atyp1, atyp2, bondlen, fcon) in [
            # intraresidue bond
            (residues[0], residues[0], IMP.atom.AT_CA, IMP.atom.AT_CB,
-            'CT1', 'CT3', 1.5380, 222.500),
+            'CT1', 'CT3', 1.5380, 21.095),
            # backbone bond
            (residues[0], residues[1], IMP.atom.AT_C, IMP.atom.AT_N,
-            'C', 'NH1', 1.3450, 370.000),
+            'C', 'NH1', 1.3450, 27.203),
            # CTER bond
            (residues[-1], residues[-1], IMP.atom.AT_OXT, IMP.atom.AT_C,
-            'OC', 'CC', 1.2600, 525.000)]:
+            'OC', 'CC', 1.2600, 32.404)]:
             r1 = bondr1.get_as_residue()
             r2 = bondr2.get_as_residue()
             a1 = IMP.atom.get_atom(r1, bonda1)

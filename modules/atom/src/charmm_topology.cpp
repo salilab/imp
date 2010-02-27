@@ -62,7 +62,10 @@ namespace {
           }
           IMP::atom::Bond bd = bond(b[0], b[1], IMP::atom::Bond::SINGLE);
           bd.set_length(p->mean);
-          bd.set_stiffness(std::sqrt(p->force_constant));
+          // Note that CHARMM uses kx^2 rather than (1/2)kx^2 for harmonic
+          // restraints, so we need to add a factor of two; stiffness is also
+          // incorporated into x, so is the sqrt of the force constant
+          bd.set_stiffness(std::sqrt(p->force_constant * 2.0));
           ps.push_back(bd);
         }
       }
