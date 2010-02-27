@@ -16,7 +16,6 @@
 #include <IMP/SingletonContainer.h>
 #include <IMP/SingletonModifier.h>
 #include <IMP/Refiner.h>
-#include <IMP/ScoreState.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/Rotation3D.h>
 #include <IMP/algebra/Transformation3D.h>
@@ -83,7 +82,7 @@ public:
 
   IMP_DECORATOR(RigidBody, XYZ);
 
-  //! Create a new rigid body, but do not add score states
+  //! Create a new rigid body from a set of particles.
   /** \param[in] p The particle to make into a rigid body
       \param[in] members The particles to use as members of the rigid body
 
