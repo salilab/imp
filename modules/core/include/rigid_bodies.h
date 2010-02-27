@@ -37,10 +37,11 @@ IMP_DECORATORS(RigidMember, XYZs);
     as the members, which move rigidly together. Since the
     members are simply a set of particles which move together
     they don't (necessarily) define a shape. For example,
-    the members could include representations of the geometry
-    at several different representations. As a result, methods
-    that use rigid bodies also take a Refiner. This refiner
-    is used to map from the rigid body to the set of particles
+    the members of the rigid body made from a molecular hierarchy
+    would include particles corresponding to intermediate levels
+    of the hierarchy. As a result, methods
+    that use rigid bodies also take a Refiner
+    to map from the rigid body to the set of particles
     defining the geometry of interest.
 
     The initial orientation of the rigid body is computed from
@@ -80,7 +81,7 @@ public:
 
   RigidMembers get_members() const;
 
-  IMP_DECORATOR(RigidBody, XYZ)
+  IMP_DECORATOR(RigidBody, XYZ);
 
   //! Create a new rigid body, but do not add score states
   /** \param[in] p The particle to make into a rigid body
@@ -90,18 +91,20 @@ public:
       relative positions of the member particles. The member particles
       do not already need to be RigidMember particles, only
       XYZ particles.
-
-      Use the function IMP::core::create_rigid_body() to create the needed
-      score states in order to keep the rigid body rigid.
    */
   static RigidBody setup_particle(Particle *p,
                           const XYZs &members);
 
   //! Create a rigid body based on members of another one
-  /** The passed RigidMembers must already be members of
-      one rigid body and are used to define the orientation of
-      the created RigidBody. It is internally added as a member
-      of that RigidBody.
+  /** This function creates a rigid body that is part of another
+      one. The member particles passed must be part of the
+      same rigid body and the created rigid body is added
+      to that one as a member. The purpose of this method
+      is to, for example, define a rigid body for part of
+      a large molecule that is also rigid.
+
+      The passed members do not become members of this rigid
+      body, as there would be no point.
   */
   static RigidBody setup_particle(Particle *p,
                                 const RigidMembers &members);
@@ -123,13 +126,14 @@ public:
   IMP::algebra::Transformation3D get_transformation() const;
 
   //! Set the current orientation and translation
-  /** All members of the rigid body will have their coordinates updated.
-      See lazy_set_transformation() if you can wait until evaluate for
-      that.
+  /** All members of the rigid body will have their coordinates updated
+      immediately.
+      \see IMP::core::transform(RigidBody,const algebra::Transformation3D&)
+      \see lazy_set_transformation()
    */
   void set_transformation(const IMP::algebra::Transformation3D &tr);
 
-  //! Change the transformation, but let the constraint update the members
+  //! Change the transformation, delay updating the members until evaluate
   /** See set_transformation()
    */
   void lazy_set_transformation(const IMP::algebra::Transformation3D &tr);
@@ -275,10 +279,14 @@ namespace internal {
 #endif
 
 //! Transform a rigid body
-/** \relatesalso RigidBody
-    \relatesalso algebra::Transformation3D
+/** The transformation is applied current conformation of the rigid
+    body, as opposed to replacing the current conformation, as in
+    RigidBody::set_transformation().
+
+    \relatesalso RigidBody
+     algebra::Transformation3D
 */
-inline void transform(RigidBody a, const algebra::Transformation3D &tr) {
+inline void transform(RigidBody a, const algebra::Transformation3D&tr) {
   a.set_transformation(algebra::compose(tr,a.get_transformation()));
 }
 
