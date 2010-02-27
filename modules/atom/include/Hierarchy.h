@@ -403,7 +403,7 @@ inline void show(Hierarchy h, std::ostream &out=std::cout) {
    IMP::core::show<Hierarchy>(h, out);
 }
 
-//! make the given hierarchy move rigidly
+//! Rigidify a molecule or collection of molecules.
 /** The rigid body created has all the leaves as members and a
     member rigid body for each internal node in the tree.
 
