@@ -25,9 +25,9 @@ def _check(context, version):
             return BOOST_VERSION >= %d ? 0 : 1;
         }
         """ % version_n, '.cpp')
-    context.Result(ret[1].replace("_", ".").split('\n')[0])
-    context.env['BOOST_VERSION']= ret[1].split('\n')[1]
     if ret[0]:
+        context.Result(ret[1].replace("_", ".").split('\n')[0])
+        context.env['BOOST_VERSION']= ret[1].split('\n')[1]
         check_libs=[('BOOST_FILESYSTEM_LIBS', ('libboost_filesystem',
                                                'boost/filesystem/path.hpp',
                                                ['libboost_system'])),
@@ -46,6 +46,9 @@ def _check(context, version):
                     context.env[l[0]]=ret2[1]
                 else:
                     context.env['BOOST_LIBS']=False
+    else:
+        context.Result("No")
+        context.env['BOOST_LIBS']=False
     if not context.env['BOOST_LIBS']:
         print "WARNING, boost libraries not found, some functionality may be missing."
     return ret[0]
@@ -53,24 +56,6 @@ def _check(context, version):
 def configure_check(env, version):
     custom_tests = {'CheckBoost':_check}
     conf = env.Configure(custom_tests=custom_tests)
-    if env.GetOption('clean') or env.GetOption('help'):
-        env['BOOST_LIBS']=False
-    else:
-        env["BOOST_LIBS"]=True
-        if conf.CheckBoost(version) is 0:
-            Exit("""
-Boost version >= %s is required to build IMP, but it could not be
-found on your system.
-
-In particular, if you have Boost installed in a non-standard location,
-please use the 'includepath' option to add this location to the search
-path.  For example, a Mac using Boost installed with MacPorts will
-have the Boost headers in /opt/local/include, so edit (or create)
-config.py and add the line
-
-includepath='/opt/local/include'
-
-You can see the produced config.log for more information as to why
-boost failed to be found.
-""" % version)
+    env["BOOST_LIBS"]=True
+    conf.CheckBoost(version)
     conf.Finish()

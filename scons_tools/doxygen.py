@@ -24,10 +24,10 @@ def _check_dot(context):
 def configure_check_dot(env):
     custom_tests = {'CheckDot':_check_dot}
     conf = env.Configure(custom_tests=custom_tests)
-    if not env.GetOption('clean') and not env.GetOption('help'):
-        conf.CheckDot()
-    else:
-        env['dot']=False
+    #if not env.GetOption('clean') and not env.GetOption('help'):
+    conf.CheckDot()
+    #else:
+    #    env['dot']=False
     conf.Finish()
 
 
@@ -54,8 +54,8 @@ def _check_doxygen(context):
 def configure_check_doxygen(env):
     custom_tests = {'CheckDoxygen':_check_doxygen}
     conf = env.Configure(custom_tests=custom_tests)
-    if not env.GetOption('clean') and not env.GetOption('help'):
-        conf.CheckDoxygen()
-    else:
-        env['doxygen']=False
+    #if not env.GetOption('clean') and not env.GetOption('help'):
+    conf.CheckDoxygen()
+    #else:
+    #    env['doxygen']=False
     conf.Finish()

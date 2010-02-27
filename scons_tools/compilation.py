@@ -18,11 +18,6 @@ def _check(context):
 def configure_check(env):
     custom_tests = {'CheckCompiler':_check}
     conf = env.Configure(custom_tests=custom_tests)
-    if not env.GetOption('clean') and not env.GetOption('help') \
-       and not conf.CheckCompiler():
-        Exit("""
-No working compiler found. Please make sure that g++ or another
-compiler recognized by scons can be found in your path and that all
-the passed compiler options (cxxflags, linkflags) are correct.
-""")
+    if conf.CheckCompiler():
+        env["COMPILER_OK"]=True
     conf.Finish()

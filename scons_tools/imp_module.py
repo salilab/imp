@@ -790,7 +790,8 @@ def IMPModuleBuild(env, version, required_modules=[],
             print "Could not run svnversion: %s" % str(detail)
     env['IMP_MODULE_VERSION'] = version
 
-    if not env.GetOption('clean') and not env.GetOption('help'):
+    #if not env.GetOption('clean') and not env.GetOption('help'):
+    if True:
         if len(required_libraries)+len(required_headers) > 0:
             check_libraries_and_headers(env, required_libraries, required_headers)
         for x in required_dependencies:

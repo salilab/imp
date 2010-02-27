@@ -24,7 +24,8 @@ if env['IMP_ENDIAN']=='little':
 else:
     config.append('IMP_BIG_ENDIAN')
 
-config.append(["IMP_BOOST_VERSION", env["BOOST_VERSION"]])
+if env.get("BOOST_VERSION", None):
+    config.append(["IMP_BOOST_VERSION", env["BOOST_VERSION"]])
 config.append(["IMP_DEBUG", "0"])
 config.append(["IMP_RELEASE", "1"])
 config.append(["IMP_FAST", "2"])

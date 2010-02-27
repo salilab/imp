@@ -234,8 +234,9 @@ Since SWIG could not be found, proceeding to build IMP without Python support.
 def configure_check(env):
     custom_tests = {'CheckSWIG':_check}
     conf = env.Configure(custom_tests=custom_tests)
-    if not env.GetOption('clean') and not env.GetOption('help') \
-       and conf.CheckSWIG() is False:
+    #if not env.GetOption('clean') and not env.GetOption('help') \
+    #   and conf.CheckSWIG() is False:
+    if not conf.CheckSWIG():
         env['python']=False
     conf.Finish()
 
