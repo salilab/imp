@@ -258,6 +258,10 @@ class IMPATOMEXPORT CHARMMResidueTopology
   bool patched_;
 public:
 
+  //! Create an empty topology, containing no atoms or bonds
+  CHARMMResidueTopology(std::string type)
+    : CHARMMIdealResidueTopology(type), patched_(false) {}
+
   CHARMMResidueTopology(const CHARMMIdealResidueTopology &ideal)
     : CHARMMIdealResidueTopology(ideal), patched_(false) {}
 
