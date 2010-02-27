@@ -82,7 +82,7 @@ public:
   **/
   void read(String filename, ImageHeader& header,
             algebra::Matrix2D<T>& data) {
-#ifdef DEBUG
+#ifdef IMP_DEBUG_SPIDER
     std::cout << "reading with SpiderImageReaderWriter" << std::endl;
 #endif
     std::ifstream in;
@@ -90,7 +90,7 @@ public:
     //! Take advantage that the header format is already in Spider format and
     //! just read it
     header.read(in,skip_type_check_,force_reversed_,skip_extra_checkings_);
-#ifdef DEBUG
+#ifdef IMP_DEBUG_SPIDER
     std::cout << header << std::endl;
 #endif
     // Adjust size of the matrix according to the header
@@ -109,7 +109,7 @@ public:
                                         filename+" could be found.");
     //! The header format is already in Spider format, just read it
     header.read(in,skip_type_check_,force_reversed_,skip_extra_checkings_);
-#ifdef DEBUG
+#ifdef IMP_DEBUG_SPIDER
     std::cout << header << std::endl;
 #endif
     // Adjust size of the matrix according to the header
