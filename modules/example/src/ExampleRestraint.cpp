@@ -15,8 +15,8 @@ IMPEXAMPLE_BEGIN_NAMESPACE
 ExampleRestraint::ExampleRestraint(PairScore* score_func,
                                    PairContainer *pc) : pc_(pc),
                                           f_(score_func) {
-  pc_->set_was_owned(true);
-  f_->set_was_owned(true);
+  pc_->set_was_used(true);
+  f_->set_was_used(true);
 }
 
 double

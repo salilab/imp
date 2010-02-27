@@ -65,7 +65,7 @@ public:
   IMP_EMBEDDING(VectorDEmbedding);
 };
 
-#ifndef SWIG
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
 template <unsigned int D>
 Floats VectorDEmbedding<D>::get_point(unsigned int i) const {
   return Floats(vectors_[i].coordinates_begin(),

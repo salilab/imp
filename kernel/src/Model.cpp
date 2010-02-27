@@ -722,7 +722,7 @@ Model::Model()
   first_incremental_=true;
   gather_statistics_=false;
   score_states_ordered_=false;
-  set_was_owned(true);
+  set_was_used(true);
 }
 
 
@@ -746,7 +746,7 @@ IMP_LIST_IMPL(Model, Restraint, restraint, Restraint*,
               {IMP_INTERNAL_CHECK(cur_stage_== NOT_EVALUATING,
     "The set of restraints cannot be changed during evaluation.");
                 obj->set_model(this);
-                obj->set_was_owned(true);
+                obj->set_was_used(true);
                 first_incremental_=true;
                 reset_dependencies();},,
               {
@@ -761,7 +761,7 @@ IMP_LIST_IMPL(Model, ScoreState, score_state, ScoreState*,
                                   << "evaluation.");
                 obj->set_model(this);
                 reset_dependencies();
-                obj->set_was_owned(true);
+                obj->set_was_used(true);
                 IMP_LOG(VERBOSE, "Added score state " << obj->get_name()
                         << std::endl);
                 IMP_IF_CHECK(USAGE) {

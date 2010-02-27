@@ -46,7 +46,7 @@ class TestBL(IMP.test.TestCase):
         cpss= IMP.container.ClosePairContainer(pc, threshold,
                                           IMP.core.QuadraticClosePairsFinder(),
                                           1)
-        cpss.set_was_owned(True)
+        cpss.set_was_used(True)
         for p in ps:
             d= IMP.core.XYZR.setup_particle(p)
             d.set_radius(random.uniform(0,2))

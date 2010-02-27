@@ -25,14 +25,30 @@ IMP_BEGIN_NAMESPACE
 /** Any time you store an Object in a C++ program, you should use a
     Pointer, rather than a raw C++ pointer. Using a pointer manages
     the reference counting an makes sure that the object is not deleted
-    prematurely when, for example, all python references go away. Use
-    the IMP_NEW() macro to aid creation of pointer to new objects.
+    prematurely when, for example, all python references go away and that
+    it is deleted properly if an exception is thrown during the function.
+    Use the IMP_NEW() macro to aid creation of pointer to new objects.
 
     For example, when implementing a Restraint that uses a PairScore,
     store the PairScore like follows
     \code
     Pointer<PairScore> ps_;
     \endcode
+    When setting up restraints you should write code like this:
+    \code
+    IMP_NEW(IMP::core::Harmonic, h, (0,1));
+    IMP::Pointer<IMP::em::DensityMap> map= IMP::em::read_map("file_name.mrc");
+    IMP_NEW(IMP::core::DistancePairScore, dps, (h));
+    \endcode
+    which is equivalent to
+    \code
+    IMP::Pointer<IMP::core::Harmonic> h= new IMP::core::Harmonic(0,1);
+    IMP::Pointer<IMP::em::DensityMap> map= IMP::em::read_map("file_name.mrc");
+    IMP::Pointer<IMP::core::DistancePairScore> dps
+            = new IMP::core::DistancePairScore(h);
+    \endcode
+    If IMP::em::read_map() fails because the file is not found (and throws an
+    exception), \c h is deleted.
 
     The object being pointed to must inherit from IMP::RefCountedObject.
     Use an IMP::WeakPointer to break cycles or to point to

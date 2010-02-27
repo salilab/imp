@@ -19,7 +19,7 @@ class HarmonicTests(IMP.test.TestCase):
         force_constant = 100.0
         mean = 10.0
         func = IMP.core.Harmonic(mean, force_constant)
-        func.set_was_owned(True)
+        func.set_was_used(True)
         for i in range(15):
             val = 5.0 + i
             expscore, expderiv = _harmonicfunc(val, mean, force_constant)
@@ -32,7 +32,7 @@ class HarmonicTests(IMP.test.TestCase):
     def test_accessors(self):
         """Test Harmonic accessors"""
         func = IMP.core.Harmonic(10.0, 1.0)
-        func.set_was_owned(True)
+        func.set_was_used(True)
         self.assertEqual(func.get_mean(), 10.0)
         self.assertEqual(func.get_k(), 1.0)
         func.set_mean(5.0)
@@ -45,7 +45,7 @@ class HarmonicTests(IMP.test.TestCase):
         for func in (IMP.core.Harmonic(10.0, 1.0),
                      IMP.core.HarmonicLowerBound(10.0, 1.0),
                      IMP.core.HarmonicUpperBound(10.0, 1.0)):
-            func.set_was_owned(True)
+            func.set_was_used(True)
             func.show()
 
 if __name__ == '__main__':

@@ -92,14 +92,21 @@ inline bool is_log_output(LogLevel l)
 }
 #endif
 
-
-#if IMP_BUILD < IMP_FAST
-
-
+#ifdef IMP_DOXYGEN
 //! Execute the code block if a certain level logging is on
 /**
    The next code block (delimited by { }) is executed if
-   get_check_level() <= level.
+   get_log_level() >= level.
+
+   \code
+   IMP_IF_LOG(VERBOSE) {
+     std::vector<double> testp(input.begin(), input.end());
+     std::sort(testp.begin(), testp.end());
+     IMP_LOG(VERBOSE, "Sorted order is ");
+     IMP_LOG_WRITE(VERBOSE, std::copy(testp.begin(), testp.end(),
+                   std::ostream_iterator<double>(IMP_STREAM, " ")));
+   }
+   \endcode
  */
 #define IMP_IF_LOG(level)\
   if (level <= ::IMP::get_log_level())
@@ -108,6 +115,12 @@ inline bool is_log_output(LogLevel l)
 //! Write an entry to a log.
 /** \param[in] level The IMP::Log_Level for the message
     \param[in] expr A stream expression to be sent to the output stream
+
+    Usage:
+    \code
+    IMP_LOG(VERBOSE, "Hi there, I'm very talkative. My favorite numbers are "
+                     << 1 << " " << 2 << " " << 3);
+    \endcode
  */
 #define IMP_LOG(level, expr) if (IMP::is_log_output(level)) \
     { std::ostringstream oss;                               \
@@ -118,7 +131,29 @@ inline bool is_log_output(LogLevel l)
 //! Write an entry to a log. This is to be used for objects with no operator<<.
 /** \param[in] level The IMP::Log_Level for the message
     \param[in] expr An expression which writes something to IMP_STREAM
+
+    \code
+    IMP_LOG_WRITE(VERBOSE, IMP::atom::write_pdb(h, IMP_STREAM));
+    \endcode
  */
+#define IMP_LOG_WRITE(level, expr) if (IMP::is_log_output(level)) \
+    {std::ostringstream IMP_STREAM;                               \
+      expr;                                                       \
+      IMP::add_to_log(IMP_STREAM.str());                          \
+    }
+#endif
+
+#if IMP_BUILD < IMP_FAST
+
+#define IMP_IF_LOG(level)\
+  if (level <= ::IMP::get_log_level())
+
+#define IMP_LOG(level, expr) if (IMP::is_log_output(level)) \
+    { std::ostringstream oss;                               \
+      oss<< expr << std::flush;                             \
+      IMP::add_to_log(oss.str());                           \
+    };
+
 #define IMP_LOG_WRITE(level, expr) if (IMP::is_log_output(level)) \
     {std::ostringstream IMP_STREAM;                               \
       expr;                                                       \
@@ -132,11 +167,41 @@ inline bool is_log_output(LogLevel l)
 #endif
 
 
-
+#ifdef IMP_DOXYGEN
 //! Write a warning to a log.
 /** \param[in] expr An expression to be output to the log. It is prefixed
                     by "WARNING"
  */
+#define IMP_WARN(expr)
+
+
+//! Write a warning once per context object
+/** Use this macro to, for example, warn on unprocessable fields in a PDB,
+    since they tend to come together.
+
+    Warnings are only output when the context object is destroyed.
+ */
+#define IMP_WARN_ONCE(expr, context)
+
+//! Write an entry to a log. This is to be used for objects with no operator<<.
+/** \param[in] expr An expression which writes something to IMP_STREAM.
+                    It is prefixed by "WARNING"
+ */
+#define IMP_WARN_WRITE(expr)
+
+//! Write a warning to standard error.
+/** \param[in] expr An expression to be output to std::cerr. It is prefixed
+                    by "ERROR"
+ */
+#define IMP_ERROR(expr)
+
+//! Write an entry to standard error; for objects with no operator<<.
+/** \param[in] expr An expression which writes something to IMP_STREAM.
+                    It is prefixed by "ERROR"
+ */
+#define IMP_ERROR_WRITE(expr)
+
+#else
 #define IMP_WARN(expr) if (IMP::is_log_output(IMP::WARNING)) \
     { std::ostringstream oss;                                \
       oss << "WARNING  " << expr << std::flush;              \
@@ -167,12 +232,6 @@ public:
 };
 
 
-//! Write a warning once per context object
-/** Use this macro to, for example, warn on unprocessable fields in a PDB,
-    since they tend to come together.
-
-    Warnings are only output when the context object is destroyed.
- */
 #define IMP_WARN_ONCE(expr, context) {                       \
     std::ostringstream oss;                                  \
     oss << expr << std::flush;                               \
@@ -180,44 +239,49 @@ public:
   }
 
 
-//! Write an entry to a log. This is to be used for objects with no operator<<.
-/** \param[in] expr An expression which writes something to IMP_STREAM.
-                    It is prefixed by "WARNING"
- */
 #define IMP_WARN_WRITE(expr) if (IMP::is_log_output(IMP::WARNING)) \
     {std::ostringstream IMP_STREAM;                                \
       expr;                                                        \
       IMP::add_to_log(IMP_STREAM.str());                            \
     }
 
-
-
-//! Write a warning to standard error.
-/** \param[in] expr An expression to be output to std::cerr. It is prefixed
-                    by "ERROR"
- */
 #define IMP_ERROR(expr) std::cerr << "ERROR: " << expr << std::endl;
 
-//! Write an entry to standard error; for objects with no operator<<.
-/** \param[in] expr An expression which writes something to IMP_STREAM.
-                    It is prefixed by "ERROR"
- */
 #define IMP_ERROR_WRITE(expr) {         \
   std::ostream &IMP_STREAM = std::cerr; \
   std::cerr<< "ERROR ";                 \
   expr;                                 \
   std::cerr << std::endl;               \
 }
-
-
-//! Set the log level
-/**
- */
-#define IMP_SET_LOG_LEVEL(level) IMP::Log::get()::set_level(level);
-
+#endif
 
 
 //! Increase the current indent in the log by one level
+/** The following produces
+
+    \verbatim
+    The function is starting:
+       1
+       2
+       3
+    Now it is ending.
+    \endverbatim
+
+    \code
+    IMP_LOG(VERBOSE, "The function is starting:\n");
+    {
+        IncreaseIndent ii();
+        IMP_LOG(VERBOSE, 1);
+        IMP_LOG(VERBOSE, 2);
+        IMP_LOG(VERBOSE, 3);
+    }
+    IMP_LOG(VERBOSE, "Now it is ending." << std::endl);
+    \endcode
+
+    The more interesting use is that you can use it before
+    calling a function to ensure that all the output of that
+    function is nicely offset.
+*/
 struct IncreaseIndent: public RAII {
   IncreaseIndent(){
     internal::log_indent+=2;

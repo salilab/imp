@@ -137,39 +137,49 @@ inline CheckLevel get_check_level() {
 */
 IMPEXPORT void set_print_exceptions(bool tf);
 
-#if IMP_BUILD < IMP_FAST
+#ifdef IMP_DOXYGEN
 //! Execute the code block if a certain level checks are on
 /**
    The next code block (delimited by { }) is executed if
    get_check_level() <= level.
+
+   For example:
+    \code
+    IMP_CHECK_CODE(CHECK_USAGE) {
+        std::vector<Particle*> testp(input.begin(), input.end());
+        std::sort(testp.begin(), testp.end());
+        IMP_USAGE_CHECK(std::unique(testp.begin(), testp.end()) == testp.end(),
+                        "Duplicate particles found in the input list.");
+    }
+    \endcode
 */
-#define IMP_IF_CHECK(level)                     \
-  if (level <= ::IMP::get_check_level())
-#else
-#define IMP_IF_CHECK(level) if (0)
-#endif
+#define IMP_IF_CHECK(level)
 
-#if IMP_BUILD < IMP_FAST
-//! Only compile the code if checks are built
-#define IMP_CHECK_CODE(expr) expr
-#else
+//! Only compile the code if checks are enabled
+/** For example
+    \code
+    IMP_CHECK_CODE({
+        std::vector<Particle*> testp(input.begin(), input.end());
+        std::sort(testp.begin(), testp.end());
+        IMP_USAGE_CHECK(std::unique(testp.begin(), testp.end()) == testp.end(),
+                        "Duplicate particles found in the input list.");
+    });
+    \endcode
+**/
 #define IMP_CHECK_CODE(expr)
-#endif
 
-#if !defined(SWIG) && !defined(IMP_DOXYGEN)
-namespace internal {
-IMPEXPORT void assert_fail(const char *msg);
-}
-#endif
-
-
-#if IMP_BUILD < IMP_FAST
 
 /** \brief An assertion to check for internal errors in \imp. An
     IMP::ErrorException will be thrown.
 
     Since it is a debug-only check and no attempt should be made to
     recover from it, the exception type cannot be specified.
+
+    For example:
+    \code
+    IMP_INTERNAL_CHECK((3.14-PI) < .01,
+                       "PI is not close to 3.14. It is instead " << PI);
+    \endcode
 
     \note if the code is compiled with 'fast', or the check level is
     less than IMP::USAGE_AND_INTERNAL, the check is not performed.  Do
@@ -179,25 +189,19 @@ IMPEXPORT void assert_fail(const char *msg);
     \param[in] expr The assertion expression.
     \param[in] message Write this message if the assertion fails.
 */
-#define IMP_INTERNAL_CHECK(expr, message)                       \
-  do {                                                          \
-    if (IMP::get_check_level() >= IMP::USAGE_AND_INTERNAL && !(expr)) { \
-      std::ostringstream oss;                                   \
-      oss << message << std::endl                               \
-          << "  File \"" << __FILE__ << "\", line " << __LINE__ \
-          << std::endl;                                         \
-      IMP::internal::assert_fail(oss.str().c_str());            \
-      throw IMP::InternalException(oss.str().c_str());          \
-    }                                                           \
-  } while(false)
-#else
 #define IMP_INTERNAL_CHECK(expr, message)
-#endif
 
-#if IMP_BUILD < IMP_FAST
+
 //! A runtime test for incorrect usage of a class or method.
 /** \param[in] expr The assertion expression.
     \param[in] message Write this message if the assertion fails.
+
+    It should be used to check arguments to function. For example
+    \code
+    IMP_USAGE_CHECK(positive_argument >0,
+                    "Argument positive_argument to function my_function "
+                    << " must be positive. Instead got " << positive_argument);
+    \endcode
 
     \note if the build is 'fast', or the check level
     is less than IMP::USAGE, the check is not performed. Do not use these
@@ -205,25 +209,35 @@ IMPEXPORT void assert_fail(const char *msg);
     exception yourself); use them only to check for errors, such as
     inappropriate input.
  */
-#define IMP_USAGE_CHECK(expr, message)           \
-  do {                                                          \
-    if (IMP::get_check_level() >= IMP::USAGE && !(expr)) {      \
-      std::ostringstream oss;                                   \
-      oss << message << std::endl;                              \
-      IMP::internal::assert_fail(oss.str().c_str());            \
-      throw IMP::UsageException(oss.str().c_str());             \
-    }                                                           \
-  } while (false)
-#else
-#define IMP_USAGE_CHECK(e,m)
-#endif
-
+#define IMP_USAGE_CHECK(expr, message)
 //! Throw an exception with a message
 /** The exception thrown must inherit from Exception and not be
     UsageException or InternalException as those are reserved for
     disableable checks (the IMP_INTERNAL_CHECK() and IMP_USAGE_CHECK()
     macros).
+    \code
+    IMP_THROW("Could not open file " << file_name,
+              IOException);
+    \endcode
  */
+#define IMP_THROW(message, exception_name)
+
+
+//! A runtime failure for IMP.
+/** \param[in] message Failure message to write.
+    This macro is used to provide nice error messages when there is
+    an internal error in \imp. It causes an IMP::InternalException to be
+    thrown.
+*/
+#define IMP_FAILURE(message)
+
+//! Use this to make that the method is not implemented yet
+/**
+ */
+#define IMP_NOT_IMPLEMENTED
+
+#else // IMP_DOXYGEN
+
 #define IMP_THROW(message, exception_name)do {                          \
   std::ostringstream oss;                                               \
   oss << message << std::endl;                                          \
@@ -235,27 +249,63 @@ IMPEXPORT void assert_fail(const char *msg);
                             exception_name>::value)));                  \
   throw exception_name(oss.str().c_str());                              \
   } while (true)
-
-//! A runtime failure for IMP.
-/** \param[in] message Failure message to write.
-    This macro is used to provide nice error messages when there is
-    an internal error in \imp. It causes an IMP::InternalException to be
-    thrown.
-*/
 #define IMP_FAILURE(message) do {                                       \
   std::ostringstream oss;                                               \
   oss << message << std::endl;                                          \
   IMP::internal::assert_fail(oss.str().c_str());                        \
   throw InternalException(oss.str().c_str());                           \
   } while (true)
-
-//! Use this to make that the method is not implemented yet
-/**
- */
 #define IMP_NOT_IMPLEMENTED do {                                        \
     IMP::internal::assert_fail("This method is not implemented.");      \
     throw InternalException("Not implemented");                         \
   } while(true)
+
+#if IMP_BUILD < IMP_FAST
+#define IMP_IF_CHECK(level)                     \
+  if (level <= ::IMP::get_check_level())
+#define IMP_CHECK_CODE(expr) expr
+
+#define IMP_INTERNAL_CHECK(expr, message)                       \
+  do {                                                          \
+    if (IMP::get_check_level() >= IMP::USAGE_AND_INTERNAL && !(expr)) { \
+      std::ostringstream oss;                                   \
+      oss << message << std::endl                               \
+          << "  File \"" << __FILE__ << "\", line " << __LINE__ \
+          << std::endl;                                         \
+      IMP::internal::assert_fail(oss.str().c_str());            \
+      throw IMP::InternalException(oss.str().c_str());          \
+    }                                                           \
+  } while(false)
+#define IMP_USAGE_CHECK(expr, message)           \
+  do {                                                          \
+    if (IMP::get_check_level() >= IMP::USAGE && !(expr)) {      \
+      std::ostringstream oss;                                   \
+      oss << message << std::endl;                              \
+      IMP::internal::assert_fail(oss.str().c_str());            \
+      throw IMP::UsageException(oss.str().c_str());             \
+    }                                                           \
+  } while (false)
+#else // IMP_BUILD < IMP_FAST
+#define IMP_IF_CHECK(level) if (0)
+#define IMP_CHECK_CODE(expr)
+#define IMP_INTERNAL_CHECK(expr, message)
+#define IMP_USAGE_CHECK(expr, message)
+#endif // IMP_BUILD < IMP_FAST
+
+
+
+#endif // IMP_DOXYGEN
+
+
+
+
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+namespace internal {
+IMPEXPORT void assert_fail(const char *msg);
+}
+#endif
+
+
 
 
 /** @} */
@@ -333,7 +383,8 @@ class IMPEXPORT IOException: public Exception
 
     It may be OK to catch a in \imp ModelException, when, for example,
     the catcher can simply re-randomize the optimized coordinates and
-    restart the optimization.  */
+    restart the optimization. Sampling protocols, such as
+    IMP::core::MCCGSampler tend to do this.*/
 class IMPEXPORT ModelException: public Exception
 {
  public:

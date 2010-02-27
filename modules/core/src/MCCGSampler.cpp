@@ -129,7 +129,7 @@ MCCGSampler::Parameters MCCGSampler::fill_in_parameters() const {
 
 ConfigurationSet *MCCGSampler::sample() const {
   IMP_OBJECT_LOG;
-  set_was_owned(true);
+  set_was_used(true);
   get_model()->set_is_incremental(true);
   Pointer<ConfigurationSet> ret= new ConfigurationSet(get_model());
   Parameters pms= fill_in_parameters();

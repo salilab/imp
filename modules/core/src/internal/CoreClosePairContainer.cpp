@@ -25,7 +25,7 @@ IMP_LIST_IMPL(CoreClosePairContainer,
              PairFilter,
              pair_filter,
              PairFilter*,
-             PairFilters, obj->set_was_owned(true);,,)
+             PairFilters, obj->set_was_used(true);,,)
 
 
 CoreClosePairContainer::CoreClosePairContainer(SingletonContainer *c,

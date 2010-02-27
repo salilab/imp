@@ -65,7 +65,7 @@ class IMPDISPLAYEXPORT Writer: public GeometryProcessor, public Object
     if (get_stream_is_open()) on_close();
     out_= f;
     if (get_stream_is_open()) {
-      set_was_owned(true);
+      set_was_used(true);
       on_open();
     }
   }

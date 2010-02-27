@@ -31,7 +31,7 @@ class RefCountTests(IMP.test.TestCase):
         c.set_particles(ps1)
         self.assertEqual(c.get_added_singletons_container().get_number_of_particles(), 0)
         self.assertEqual(c.get_removed_singletons_container().get_number_of_particles(), len(ps0))
-        c.set_was_owned(True)
+        c.set_was_used(True)
 
 
 if __name__ == '__main__':

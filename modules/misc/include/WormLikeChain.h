@@ -98,9 +98,11 @@ inline DerivativePair WormLikeChain::evaluate_with_derivative(double v) const {
   return std::make_pair(value, deriv);
 }
 
+#ifndef IMP_DOXYGEN
 inline  void WormLikeChain::do_show(std::ostream &out) const {
   out << "params " << lmax_ << " " << lp_ << std::endl;
 }
+#endif
 
 IMPMISC_END_NAMESPACE
 

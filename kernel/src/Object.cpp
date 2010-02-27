@@ -34,11 +34,14 @@ Object::Object(std::string name): name_(name)
 Object::~Object()
 {
   IMP_OBJECT_LOG;
-  IMP_INTERNAL_CHECK(get_is_valid(), "Object " << this << " previously freed.");
+  IMP_INTERNAL_CHECK(get_is_valid(), "Object " << this << " previously freed "
+                     << "but something is trying to delete it again. Make sure "
+                     << "that all C++ code uses IMP::Pointer objects to"
+                     << " store it.");
 #if IMP_BUILD < IMP_FAST
   check_value_=666666666;
   if (!was_owned_) {
-    IMP_WARN("Object \"" << get_name() << "\" was never owned."
+    IMP_WARN("Object \"" << get_name() << "\" was never used."
              << " See the IMP::Object documentation for an explanation."
              << std::endl);
   }

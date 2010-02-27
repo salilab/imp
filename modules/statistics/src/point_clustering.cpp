@@ -141,7 +141,7 @@ namespace {
 
 KMeansClustering* get_lloyds_kmeans(const Ints &names, Embedding *metric,
                                     unsigned int k, unsigned int iterations) {
-  metric->set_was_owned(true);
+  metric->set_was_used(true);
   IMP_USAGE_CHECK(k < iterations,
                   "You probably switched the k and iterations parameters."
                   << " The former should be (much) smaller than the latter.");

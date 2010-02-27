@@ -20,7 +20,7 @@ Optimizer::Optimizer(Model *m, std::string name)
 {
   if (m) set_model(m);
   set_name(internal::make_object_name(name, optimizer_index++));
-  set_was_owned(true);
+  set_was_used(true);
 }
 
 void Optimizer::update_states() const
@@ -39,7 +39,7 @@ void Optimizer::update_states() const
 IMP_LIST_IMPL(Optimizer, OptimizerState, optimizer_state,
               OptimizerState*, OptimizerStates, {
                 obj->set_optimizer(this);
-                obj->set_was_owned(true);
+                obj->set_was_used(true);
               },,
               obj->set_optimizer(NULL));
 

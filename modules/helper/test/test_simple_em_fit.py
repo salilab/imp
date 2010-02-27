@@ -95,7 +95,7 @@ class SimpleEMFitTest(IMP.test.TestCase):
         r1 = se.get_restraint()
         self.imp_model.add_restraint(r1)
 
-        r1.set_was_owned(True)
+        r1.set_was_used(True)
         self.assert_(isinstance(r1.get_model_dens_map(),
                                 IMP.em.SampledDensityMap))
 
@@ -105,7 +105,7 @@ class SimpleEMFitTest(IMP.test.TestCase):
         se2 = IMP.helper.create_simple_em_fit(self.mhs, test_mrc)
         r2 = se.get_restraint()
         self.imp_model.add_restraint(r2)
-        r2.set_was_owned(True)
+        r2.set_was_used(True)
         self.assert_(isinstance(r2.get_model_dens_map(),
                                 IMP.em.SampledDensityMap))
 

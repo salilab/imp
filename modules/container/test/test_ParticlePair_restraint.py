@@ -58,7 +58,7 @@ class ParticlePairContainerTest(IMP.test.TestCase):
             f= f+ gs.evaluate(p, None)
             c.add_particle_pair(p)
             r= IMP.container.PairsRestraint(gs, c)
-            r.set_was_owned(True)
+            r.set_was_used(True)
         m.add_restraint(r)
         self.assertInTolerance(m.evaluate(False), f, .1*f)
         p=self.create_particle_pair(m)
@@ -105,7 +105,7 @@ class ParticlePairContainerTest(IMP.test.TestCase):
         p=self.create_particle_pair(m)
         f= gs.evaluate(p, None)
         r= self.create_pair_restraint(gs, p)
-        r.set_was_owned(True)
+        r.set_was_used(True)
         m.add_restraint(r)
         self.assertInTolerance(m.evaluate(False), f, .1*f)
 
@@ -178,7 +178,7 @@ class ParticlePairContainerTest(IMP.test.TestCase):
             s.append(IMP.test.ConstPairScore(i))
         ps= IMP.container.MaximumPairScore(s, 2)
         p= self.create_particle_pair(m)
-        ps.set_was_owned(True)
+        ps.set_was_used(True)
         v= ps.evaluate(p, None)
         self.assertEqual(v, 7)
     def test_min_score(self):
@@ -189,7 +189,7 @@ class ParticlePairContainerTest(IMP.test.TestCase):
             s.append(IMP.test.ConstPairScore(i))
         ps= IMP.container.MinimumPairScore(s, 3)
         p= self.create_particle_pair(m)
-        ps.set_was_owned(True)
+        ps.set_was_used(True)
         v= ps.evaluate(p, None)
         self.assertEqual(v, 3)
 

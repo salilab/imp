@@ -50,7 +50,7 @@ class Model;
     \note Restraints will print a warning message if they are destroyed
     without ever having been added to a model as this is an easy mistake
     to make. To disable this warning for a particular restraint, call
-    set_was_owned(true).
+    set_was_used(true).
 
     \implementation{Restraint, IMP_RESTRAINT, IMP::example::ExampleRestraint}
  */

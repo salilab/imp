@@ -43,7 +43,7 @@ void LogOptimizerState::do_update(unsigned int n) {
 
 void LogOptimizerState::add_geometry(Geometry* g) {
   gdata_.push_back(g);
-  g->set_was_owned(true);
+  g->set_was_used(true);
 }
 
 void LogOptimizerState::add_geometry(const Geometries& g) {

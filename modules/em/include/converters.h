@@ -27,7 +27,7 @@ type Float.
 \param[in] dmap the density map
 \param[in] threshold only voxels with density above the given threshold will
            be converted to particles
-\param[in] the new density based particles will be converted to particles.
+\param[in] ps the new density based particles will be converted to particles.
  */
 IMPEMEXPORT void density2particles(DensityMap &dmap, Float threshold,
                                    Particles &ps, Model *m);

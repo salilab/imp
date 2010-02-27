@@ -21,7 +21,7 @@ Mover::Mover(std::string name):Object(name) {}
 
 IMP_LIST_IMPL(MonteCarlo, Mover, mover, Mover*, Movers,
               {obj->set_optimizer(this);
-                obj->set_was_owned(true);
+                obj->set_was_used(true);
               },,);
 
 MonteCarlo::MonteCarlo(Model *m): Optimizer(m, "MonteCarlo"),
@@ -124,7 +124,7 @@ Float MonteCarlo::optimize(unsigned int max_steps)
       if (return_best_ && next_energy < best_energy) {
         best_energy= next_energy;
         best_state= new ConfigurationSet(get_model());
-        best_state->set_was_owned(true);
+        best_state->set_was_used(true);
       }
     } else {
       IMP_LOG(TERSE,  " reject" << std::endl);

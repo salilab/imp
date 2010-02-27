@@ -42,7 +42,7 @@ void ScoreState::set_model(Model* model)
             "Model* different from already stored model "
             << model << " " << model_);
   model_ = model;
-  set_was_owned(true);
+  set_was_used(true);
 }
 
 IMP_END_NAMESPACE

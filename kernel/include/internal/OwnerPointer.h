@@ -37,7 +37,7 @@ class OwnerPointer: public WeakPointer<O>
     if (P::o_) internal::unref(P::o_);
     if (p) internal::ref(p);
     P::o_=p;
-    if (P::o_) P::o_->set_was_owned(true);
+    if (P::o_) P::o_->set_was_used(true);
   }
   // issue with commas
   /*struct RefCheck {
