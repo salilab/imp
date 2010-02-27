@@ -44,7 +44,7 @@ double BondSingletonScore::evaluate(Particle *b,
                                  IMP::core::XYZ(pb),
                                  da,
                                  f_.get(),
-                                 s*(boost::lambda::_1-l));
+                                 s*(boost::lambda::_1-l), s);
 }
 
 ParticlesList BondSingletonScore::get_interacting_particles(Particle *p) const {

@@ -88,7 +88,8 @@ template <class SD>
 double compute_distance_pair_score(const algebra::VectorD<3> &delta,
                                    const UnaryFunction *f,
                                    algebra::VectorD<3> *d,
-                                   SD sd) {
+                                   SD sd,
+                                   double deriv_multiplier = 1.0) {
   static const Float MIN_DISTANCE = .00001;
   double distance= delta.get_magnitude();
   double shifted_distance = sd(distance);
@@ -99,7 +100,7 @@ double compute_distance_pair_score(const algebra::VectorD<3> &delta,
   DerivativePair dp;
   if (d && distance >= MIN_DISTANCE) {
     dp = f->evaluate_with_derivative(shifted_distance);
-    *d= (delta/distance) *dp.second;
+    *d= (delta/distance) * deriv_multiplier * dp.second;
   } else {
     // calculate the score based on the distance feature
     dp.first = f->evaluate(shifted_distance);
@@ -112,7 +113,8 @@ double compute_distance_pair_score(const algebra::VectorD<3> &delta,
 template <class W0, class W1, class SD>
 double evaluate_distance_pair_score(W0 d0, W1 d1,
                                     DerivativeAccumulator *da,
-                                    const UnaryFunction *f, SD sd)
+                                    const UnaryFunction *f, SD sd,
+                                    double deriv_multiplier = 1.0)
 {
   IMP_CHECK_OBJECT(f);
 
@@ -123,7 +125,8 @@ double evaluate_distance_pair_score(W0 d0, W1 d1,
   }
 
   algebra::VectorD<3> d;
-  double score= compute_distance_pair_score(delta, f, (da? &d : NULL), sd);
+  double score= compute_distance_pair_score(delta, f, (da? &d : NULL), sd,
+                                            deriv_multiplier);
 
   if (da) {
     d0.add_to_derivatives(d, *da);
