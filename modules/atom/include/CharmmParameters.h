@@ -194,6 +194,7 @@ private:
   void parse_angles_parameters_line(String line);
   void parse_dihedrals_parameters_line(String line,
                                        DihedralParameters &param);
+  WarningContext warn_context_;
 };
 
 IMPATOM_END_NAMESPACE
