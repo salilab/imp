@@ -85,7 +85,7 @@ void JEdge::min_marginalize(JNode *from_node, JNode *to_node)
   for (std::map<std::string, CombState *>::iterator e = separators_.begin();
        e != separators_.end(); e++) {
 
-    std::cout<<e->first<<std::endl;
+    IMP_LOG(VERBOSE, e->first<<std::endl);
     e->second->show();
 
     std::vector<CombState *> min_p_all;

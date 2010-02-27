@@ -263,7 +263,7 @@ double ProteinLigandAtomPairScore
       <<  table_.get_score(ptype, ltype, distance)
       << std::endl;*/
     double v= table_.get_score(iptype, iltype, distance);
-    std::cout << "Score " << ptype.get_string() << " "
+    /*std::cout << "Score " << ptype.get_string() << " "
               << ltype.get_string() << " " << distance
               << " " << v << " ("
               << table_.get_score(iptype, iltype, distance-.2)
@@ -273,7 +273,7 @@ double ProteinLigandAtomPairScore
               << table_.get_score(iptype, iltype, distance+.1)
               << "..."
               << table_.get_score(iptype, iltype, distance+.2)
-              << ")" << std::endl;
+              << ")" << std::endl;*/
     return v;
   } else {
      DerivativePair dp= table_.get_score_with_derivative(iptype,

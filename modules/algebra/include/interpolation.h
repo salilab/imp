@@ -197,11 +197,14 @@ IMPALGEBRAEXPORT double bilinear_interpolation(Matrix2D<double>& m,
                   VectorD<2>& idx,
                   bool wrap = false,
                   double outside = 0.0);
-/**   \relates Matrix2D */
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+/**   \relates Matrix2D
+*/
 IMPALGEBRAEXPORT double Bspline_interpolation(Matrix2D<double>& m,
                   VectorD<2>& idx,
                   bool wrap = false,
                   double outside = 0.0);
+#endif
 
 // #undef DEBUG
 

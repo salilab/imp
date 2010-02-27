@@ -56,12 +56,6 @@ namespace {
     for (unsigned int i=0; i< 12; ++i) {
       int v0=edges[i][0];
       int v1=edges[i][1];
-      /*std::cout << v0 << " " << v1 << std::endl;
-    std::cout << vertices[v0][0] << " " << vertices[v0][1]
-    << " " << vertices[v0][2] << std::endl;
-
-    std::cout << vertices[v1][0] << " " << vertices[v1][1]
-    << " " << vertices[v1][2] << std::endl;*/
       algebra::VectorD<3> omin(PICK(v0, 0),
                              PICK(v0, 1),
                              PICK(v0, 2));
