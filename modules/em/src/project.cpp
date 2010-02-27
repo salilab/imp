@@ -30,15 +30,15 @@ void project_given_rotation(DensityMap& map,
              const IMP::algebra::VectorD<3>& shift,
              const double equality_tolerance) {
 
-// #define DEBUG
+  // #define IMP_PROJECT_DEBUG
   m2.resize(Ydim, Xdim);
   // Save the origin of the matrices
   std::vector<int> orig2D(2), orig3D(3);
   orig2D[0]=m2.get_start(0); // X
   orig2D[1]=m2.get_start(1); // Y
-  orig3D[0]=map.get_header()->get_xorigin();
-  orig3D[1]=map.get_header()->get_yorigin();
-  orig3D[2]=map.get_header()->get_zorigin();
+  orig3D[0]=static_cast<int>(map.get_header()->get_xorigin());
+  orig3D[1]=static_cast<int>(map.get_header()->get_yorigin());
+  orig3D[2]=static_cast<int>(map.get_header()->get_zorigin());
   float voxelsize=map.get_header()->get_spacing();
   // Center the 2D matrix (necessary for the projection algorithm)
   m2.centered_start();
@@ -69,7 +69,7 @@ void project_given_rotation(DensityMap& map,
     }
   }
 
-#ifdef DEBUG
+#ifdef IMP_PROJECT_DEBUG
   std::cout << " direction " << direction << std::endl;
   std::cout << "Rotation: " << Rot << std::endl;
  #endif
@@ -92,7 +92,7 @@ void project_given_rotation(DensityMap& map,
   IMP::algebra::VectorD<3> r; // A point in the coordinate system for the map
   IMP::algebra::VectorD<3> p; // A point in the coord. system of the projection
 
-#ifdef DEBUG
+#ifdef IMP_PROJECT_DEBUG
   std::string fn_p = "plane_p.txt";
   std::string fn_r = "plane_r.txt";
   std::ofstream f_p,f_r;
@@ -106,7 +106,7 @@ void project_given_rotation(DensityMap& map,
 
       double ray_sum = 0.0;  // Line integral value
       for (int rays_per_pixel = 0; rays_per_pixel < 4; rays_per_pixel++) {
-#ifdef DEBUG
+#ifdef IMP_PROJECT_DEBUG
          std::cout << "(" << j << "," << i << ") init ray " <<
                       rays_per_pixel << std::endl;
 #endif
@@ -134,7 +134,7 @@ void project_given_rotation(DensityMap& map,
 
         r = InvRot.get_rotated(p);
 
-#ifdef DEBUG
+#ifdef IMP_PROJECT_DEBUG
        std::cout << "p: " << p << std::endl;
        std::cout << "r: " << r << std::endl;
         if(rays_per_pixel==0) {
@@ -160,12 +160,12 @@ void project_given_rotation(DensityMap& map,
           }
         }
 
-#ifdef DEBUG
+#ifdef IMP_PROJECT_DEBUG
         std::cout << "v_alpha_min " << v_alpha_min;
         std::cout << " v_alpha_max " << v_alpha_max << std::endl;
 #endif
         if (std::abs(alpha_max-alpha_min) <equality_tolerance) {
-#ifdef DEBUG
+#ifdef IMP_PROJECT_DEBUG
          std::cout << " ray skipped (" << j << "," << i << ") init ray " <<
                       rays_per_pixel << std::endl;
 #endif
@@ -177,7 +177,7 @@ void project_given_rotation(DensityMap& map,
         std::vector<int> idx(3);
         v = r + alpha_min * direction; // vector operation
 
-#ifdef DEBUG
+#ifdef IMP_PROJECT_DEBUG
         std::cout << " v " << v << std::endl;
 
         std::ofstream f_txt;
@@ -200,23 +200,25 @@ void project_given_rotation(DensityMap& map,
         for (int ii=0;ii < 3;ii++) {
           if (v[ii] >= 0.) {
             idx[ii]
-              = IMP::algebra::get_constrained((double)((int)(v[ii] + 0.5)),
-                                              init0[ii], end0[ii]);
+              = static_cast<int>(
+                  IMP::algebra::get_constrained((double)((int)(v[ii] + 0.5)),
+                                                init0[ii], end0[ii]));
           } else {
             idx[ii]
-              = IMP::algebra::get_constrained((double)((int)(v[ii] - 0.5)),
-                                              init0[ii], end0[ii]);
+              = static_cast<int>(
+                  IMP::algebra::get_constrained((double)((int)(v[ii] - 0.5)),
+                                                init0[ii], end0[ii]));
           }
-#ifdef DEBUG
+#ifdef IMP_PROJECT_DEBUG
           std::cout << " idx[" << ii << "]= " << idx[ii];
 #endif
         }
-#ifdef DEBUG
+#ifdef IMP_PROJECT_DEBUG
         std::cout << std::endl;
 #endif
         // Follow the ray
         double alpha = alpha_min;
-#ifdef DEBUG
+#ifdef IMP_PROJECT_DEBUG
         std::cout << " alpha_min " << alpha_min;
         std::cout << " alpha_max " << alpha_max;
         std::cout << " initial alpha " << alpha << std::endl;
@@ -228,13 +230,13 @@ void project_given_rotation(DensityMap& map,
           }
           // Determine the dimension the ray will move in the next step.
           // (Is the mininum value in v_diff)
-#ifdef DEBUG
+#ifdef IMP_PROJECT_DEBUG
           std::cout << " v_alpha " << v_alpha << std::endl;
           std::cout << " v_diff " << v_diff << std::endl;
 #endif
           double diff_alpha=std::min(std::min(v_diff[0],v_diff[1]),v_diff[2]);
 
-#ifdef DEBUG
+#ifdef IMP_PROJECT_DEBUG
           std::cout << " diff_alpha " << diff_alpha << std::endl;
           std::cout << "voxel indexes " <<
               idx[0] << " " << idx[1] << " " << idx[2] << " | ";
@@ -247,10 +249,10 @@ void project_given_rotation(DensityMap& map,
           for (int ii=0;ii < 3;ii++) {
             if (std::abs(diff_alpha-v_diff[ii]) < equality_tolerance) {
               alpha = v_alpha[ii];
-              idx[ii] += signs[ii];
+              idx[ii] += static_cast<int>(signs[ii]);
             }
           }
-#ifdef DEBUG
+#ifdef IMP_PROJECT_DEBUG
           std::cout << " alpha =" << alpha << std::endl;
           if(rays_per_pixel==0) {
             v = r + alpha * direction; // vector operation
@@ -260,7 +262,7 @@ void project_given_rotation(DensityMap& map,
         } while ((alpha_max - alpha) > equality_tolerance); // end of the ray
 
 
-#ifdef DEBUG
+#ifdef IMP_PROJECT_DEBUG
         std::cout << " final alpha =" << alpha << std::endl;
         std::cout << " ray_sum =" << ray_sum << std::endl;
         if(rays_per_pixel==0) {
@@ -270,13 +272,13 @@ void project_given_rotation(DensityMap& map,
       } // for involving the 4 rays
       // Average the value of the 4 rays
       m2(i,j) = ray_sum * 0.25;
-#ifdef DEBUG
+#ifdef IMP_PROJECT_DEBUG
        std::cout << "m2(" << i << "," << j << ")=  " << m2(i,j) << std::endl;
 #endif
     } // i for
   } // j for
 
-#ifdef DEBUG
+#ifdef IMP_PROJECT_DEBUG
   f_p.close();
   f_r.close();
 #endif
