@@ -201,14 +201,13 @@ void RestraintGraph::initialize_potentials(Restraint *r, Particles *ps,
   JNode *jn = NULL;
   jn = get_node(*ps);
   if (jn == NULL) { // TODO - should use IMP_INTERNAL_CHECK
-    std::cerr << "WARNING - no node - the restraint : ";
-    r->show(std::cerr);
-    std::cerr << " between particles: ";
+    IMP_WARN(" no node - the restraint : " << *r
+             << " between particles: ");
     for (Particles::const_iterator ii = ps->begin();ii < ps->end();ii++) {
-      std::cerr << (*ii)->get_value(node_name_key()) << " ("
-                <<(*ii)->get_value(node_name_key()) <<"):: ";
+      IMP_WARN( (*ii)->get_value(node_name_key()) << " ("
+                <<(*ii)->get_value(node_name_key()) <<"):: ");
     }
-    std::cerr << " has not been realized." << std::endl;
+    IMP_WARN( " has not been realized." << std::endl);
   }
   else {
     IMP_IF_LOG(TERSE) {

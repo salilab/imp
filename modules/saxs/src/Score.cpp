@@ -273,8 +273,8 @@ void Score::write_SAXS_fit_file(const std::string& file_name,
                                 const Float c, const Float offset) const {
   std::ofstream out_file(file_name.c_str());
   if (!out_file) {
-    std::cerr << "Can't open file " << file_name << std::endl;
-    exit(1);
+    IMP_THROW("Can't open file " << file_name,
+              IOException);
   }
 
   unsigned int profile_size = std::min(model_profile.size(),

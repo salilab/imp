@@ -55,8 +55,8 @@ void Profile::read_SAXS_file(const String& file_name)
 {
   std::ifstream in_file(file_name.c_str());
   if (!in_file) {
-    std::cerr << "Can't open file " << file_name << std::endl;
-    exit(1);
+    IMP_THROW("Can't open file " << file_name,
+              IOException);
   }
 
   bool with_error = false;
@@ -149,8 +149,7 @@ void Profile::write_SAXS_file(const String& file_name)
   std::ofstream out_file(file_name.c_str());
 
   if (!out_file) {
-    std::cerr << "Can't open file " << file_name << std::endl;
-    exit(1);
+    IMP_THROW("Can't open file " << file_name, IOException);
   }
 
   // header line
@@ -510,9 +509,9 @@ void Profile::add(const Profile& other_profile) {
 
 void Profile::add_partial_profiles(const Profile& other_profile) {
   if(partial_profiles_.size() != other_profile.partial_profiles_.size()) {
-    std::cerr << "Can't add different partial profile sizes "
-              << partial_profiles_.size() << "-"
-              << other_profile.partial_profiles_.size() << std::endl;
+    IMP_WARN("Can't add different partial profile sizes "
+             << partial_profiles_.size() << "-"
+             << other_profile.partial_profiles_.size() << std::endl);
     return;
   }
   for(unsigned int i=0; i<partial_profiles_.size(); i++) {

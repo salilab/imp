@@ -103,8 +103,7 @@ void RadialDistributionFunction::write_fit_file(
 {
   std::ofstream out_file(file_name.c_str());
   if(!out_file) {
-    std::cerr << "Can't open file " << file_name << std::endl;
-    exit(1);
+    IMP_THROW( "Can't open file " << file_name, IOException);
   }
 
   unsigned int distribution_size = std::min(size(), model_pr.size());
@@ -141,8 +140,7 @@ void RadialDistributionFunction::read_pr_file(const std::string& file_name)
   //std::cerr << "start reading pr file " << file_name << std::endl;
   std::ifstream in_file(file_name.c_str());
   if (!in_file) {
-    std::cerr << "Can't open file " << file_name << std::endl;
-    exit(1);
+    IMP_THROW("Can't open file " << file_name, IOException);
   }
 
   double count = 0.0;

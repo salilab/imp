@@ -140,8 +140,8 @@ int FormFactorTable::read_form_factor_table(const String & table_name)
 {
   std::ifstream s(table_name.c_str());
   if (!s) {
-    std::cerr << "Can't find form factor table file " << table_name <<std::endl;
-    exit(1);
+    IMP_THROW("Can't find form factor table file " << table_name,
+              IOException);
   }
 
   atom::ElementTable e_table = atom::get_element_table();
@@ -564,7 +564,8 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_sulfur_atom_type(
     return S;
   }
   IMP_WARN_ONCE("Sulfur atom not found, using default S form factor for "
-                << atom_type << " " << residue_type, warn_context_);
+                << atom_type << " " << residue_type, warn_context_
+                << std::endl);
   return S;
 }
 
@@ -619,9 +620,9 @@ Float FormFactorTable::get_form_factor(Particle *p,
 
   FormFactorAtomType ff_atom_type = get_form_factor_atom_type(p, ff_type);
   if(ff_atom_type >= HEAVY_ATOM_SIZE) {
-    std::cerr << "Can't find form factor for particle "
+    IMP_WARN( "Can't find form factor for particle "
               << atom::Atom(p).get_atom_type().get_string()
-              << " using default " << std::endl;
+              << " using default" << std::endl);
     ff_atom_type = N;
   }
   Float form_factor = zero_form_factors_[ff_atom_type];
@@ -638,9 +639,9 @@ Float FormFactorTable::get_vacuum_form_factor(Particle *p,
 
   FormFactorAtomType ff_atom_type = get_form_factor_atom_type(p, ff_type);
   if(ff_atom_type >= HEAVY_ATOM_SIZE) {
-    std::cerr << "Can't find form factor for particle "
+    IMP_WARN( "Can't find form factor for particle "
               << atom::Atom(p).get_atom_type().get_string()
-              << " using default value of nitrogen" << std::endl;
+              << " using default value of nitrogen" << std::endl);
     ff_atom_type = N;
   }
   Float form_factor = vacuum_zero_form_factors_[ff_atom_type];
@@ -656,9 +657,9 @@ Float FormFactorTable::get_dummy_form_factor(Particle *p,
 
   FormFactorAtomType ff_atom_type = get_form_factor_atom_type(p, ff_type);
   if(ff_atom_type >= HEAVY_ATOM_SIZE) {
-    std::cerr << "Can't find form factor for particle "
+    IMP_WARN( "Can't find form factor for particle "
               << atom::Atom(p).get_atom_type().get_string()
-              << " using default value of nitrogen" << std::endl;
+              << " using default value of nitrogen" << std::endl);
     ff_atom_type = N;
   }
   Float form_factor = dummy_zero_form_factors_[ff_atom_type];
@@ -685,9 +686,9 @@ const Floats& FormFactorTable::get_form_factors(Particle *p,
 
   FormFactorAtomType ff_atom_type = get_form_factor_atom_type(p, ff_type);
   if(ff_atom_type >= HEAVY_ATOM_SIZE) {
-    std::cerr << "Can't find form factor for particle "
+    IMP_WARN( "Can't find form factor for particle "
               << atom::Atom(p).get_atom_type().get_string()
-              << " using default value of nitrogen" << std::endl;
+              << " using default value of nitrogen" << std::endl);
     ff_atom_type = N;
   }
   p->add_attribute(form_factor_type_key_, ff_atom_type);
