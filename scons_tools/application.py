@@ -17,6 +17,7 @@ def IMPCPPApplication(envi, target, source, required_modules=[],
     op= process_dependencies(env, optional_dependencies)
     if not rp[0]:
         print "Application ", str(target), "cannot be built due to missing dependencies."
+        return
     env.Append(LIBS=rp[1]+op[1])
     if len(required_libraries)+len(required_headers) > 0:
         check_libraries_and_headers(env, required_libraries, required_headers)

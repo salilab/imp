@@ -204,7 +204,8 @@ def MyEnvironment(variables=None, *args, **kw):
     env['SVNVERSION'] = env.WhereIs('svnversion')
     if env['svn'] and not env['SVNVERSION']:
         print "Warning: Could not find 'svnversion' binary in path"
-    if not env.GetOption('clean') and not env.GetOption('help'):
+    #if not env.GetOption('clean') and not env.GetOption('help'):
+    if True:
         compilation.configure_check(env)
         custom_tests = {'CheckGNUHash': CheckGNUHash,
                         'CheckGCCVisibility': CheckGCCVisibility}

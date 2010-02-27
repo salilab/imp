@@ -99,10 +99,10 @@ def _check(context):
 def configure_check(env):
     custom_tests = {'CheckModeller':_check}
     conf = env.Configure(custom_tests=custom_tests)
-    if not env.GetOption('clean') and not env.GetOption('help'):
-        env['HAS_MODELLER'] = conf.CheckModeller()
-    else:
-        env['HAS_MODELLER']=False
+    #if not env.GetOption('clean') and not env.GetOption('help'):
+    env['HAS_MODELLER'] = conf.CheckModeller()
+    #else:
+    #    env['HAS_MODELLER']=False
     conf.Finish()
 
 def fail(env, target, source):
