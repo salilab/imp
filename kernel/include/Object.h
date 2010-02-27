@@ -22,16 +22,18 @@
 IMP_BEGIN_NAMESPACE
 
 //! Common base class for heavy weight IMP objects.
-/** All the heavy-weight IMP objects have IMP::Object as a base class.
+/** The base class for non value-type objects in \imp.
     Anything inheriting from IMP::Object has the following
     properties:
     - have a method Object::show() which writes one or more lines of text
-    to a stream
-    - have embedded information about the author and version which can be
-    accessed using Object::get_version_info()
-    - be initialized to a known good state with the default constructor
+      to a stream
+    - have embedded information about the module and version which can be
+      accessed using Object::get_version_info(). This information can be
+      used to log what version of software is used to compute a result.
     - it has a local logging level which can override the global one
-    allowing fine grained logging control.
+      allowing fine grained logging control.
+    - the object keeps track of whether it has been been used. See the
+      IMP::Object::set_was_used() method for an explaination.
 
     Objects can be outputted to standard streams using operator<<()
     which will call the Object::show() method.
@@ -41,7 +43,8 @@ IMP_BEGIN_NAMESPACE
     IMP::Pointer objects. Note that you have to be careful of cycles
     and so must use IMP::WeakPointer objects to break cycles. See
     IMP::RefCounted for more information on reference counting. IMP_NEW()
-    can help shorten creating a ref counted pointer.
+    can help shorten creating a ref counted pointer. See IMP::Pointer for
+    more information.
  */
 class IMPEXPORT Object: public RefCounted
 {
@@ -70,7 +73,8 @@ public:
       IMP::get_log_level() is used, otherwise
       the local one is used. Methods in classes inheriting from
       Object should start with IMP_OBJECT_LOG to change the log
-      level to the local one for this object.
+      level to the local one for this object and increase
+      the current indent.
    */
   void set_log_level(LogLevel l) {
     IMP_USAGE_CHECK(l <= MEMORY && l >= DEFAULT, "Setting to invalid log level "
@@ -88,7 +92,7 @@ public:
       return log_level_;
 #endif
   }
-#endif
+#endif // IMP_DOXYGEN
 
   //! Return a string identifying the type of the object
   virtual std::string get_type_name() const=0;
@@ -112,7 +116,7 @@ public:
     show(oss);
     return oss.str();
   }
-#endif
+#endif // IMP_DOXYGEN
 
   //! Get information about the module and version of the object
   virtual VersionInfo get_version_info() const=0;
@@ -133,22 +137,16 @@ public:
   /* @} */
 
 
-  /** @name Ownership
-
-      Most objects (other than Optimizers and Models) are designed to
-      be owned by other objects. For example, you need to add a Restraint
-      to a Model in order to use it. Since it is a common error to
-      neglect to pass ownership, we print a warning if this is never
-      done before the object is destroyed. To disable this warning
-      for a particular object, call set_was_owned(true).
-      @{
+  /** \imp provides warnings when objects are never used before they are
+      destroyed. Examples of use include, adding an IMP::Restraint to an
+      IMP::Model. If an object is not properly marked as used, or your
+      code is the one using it, call set_was_used(true) on the object.
   */
-  void set_was_owned(bool tf) const {
+  void set_was_used(bool tf) const {
 #if IMP_BUILD < IMP_FAST
     was_owned_=true;
 #endif
   }
-  /** @} */
 
 #ifndef IMP_DOXYGEN
   // swig needs to know to wrap this function

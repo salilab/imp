@@ -70,7 +70,7 @@ private:
   void add_particle_internal(Particle *p) {
     IMP_CHECK_OBJECT(this);
     IMP_CHECK_OBJECT(p);
-    p->set_was_owned(true);
+    p->set_was_used(true);
     particles_.push_back(p);
     p->ps_->iterator_= --particles_.end();
     IMP_USAGE_CHECK(!p->ps_->model_, "Particle " << p->get_name()

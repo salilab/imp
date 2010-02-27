@@ -41,6 +41,7 @@ struct TextProxy {
     IMP::atom::write_pdb(particles, "path/to/file.pdb");
     IMP::atom::write_pdb(particles, my_fstream);
     \endcode
+    \see TextInput
 */
 class IMPEXPORT TextOutput
 {
@@ -88,6 +89,7 @@ class IMPEXPORT TextOutput
     IMP::atom::read_pdb("path/to/file.pdb", m);
     IMP::atom::read_pdb(my_fstream, m);
     \endcode
+    \see TextOutput
 */
 class IMPEXPORT TextInput
 {

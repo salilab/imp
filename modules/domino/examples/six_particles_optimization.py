@@ -58,7 +58,7 @@ def setup_restraints(ps):
     sf = IMP.core.Harmonic(1.0, 0.5)
     for pair in pairs:
         r=IMP.core.DistanceRestraint(sf, ps[pair[0]], ps[pair[1]])
-        r.set_was_owned(True)
+        r.set_was_used(True)
         rsrs.append(r)
         mdl.add_restraint(r)#different than doing mdl.add_restraint(rsrs) - Daniel ?
     return rsrs

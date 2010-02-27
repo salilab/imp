@@ -42,7 +42,7 @@ void do_benchmark(std::string name, Model *m,
 int main(int argc, char **argv) {
   IMP_NEW(Model, m, ());
   IMP_NEW(LeavesRefiner, lr, (atom::Hierarchy::get_traits()));
-  lr->set_was_owned(true);
+  lr->set_was_used(true);
   atom::HierarchiesTemp hs;
   for (unsigned int i=0; i< 10; ++i) {
     hs.push_back(
@@ -62,7 +62,7 @@ int main(int argc, char **argv) {
       }
     }
     IMP_NEW(ChildrenRefiner, cr, (tr));
-    cr->set_was_owned(true);
+    cr->set_was_used(true);
     do_benchmark("children", m, ps, cr);
   }
   {

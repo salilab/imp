@@ -47,7 +47,7 @@ class SimpleConnectivityTest(IMP.test.TestCase):
         sc.set_k(0.1)
         self.assertInTolerance (h.get_k(), 0.1, 1e-4)
 
-        r.set_was_owned(True)
+        r.set_was_used(True)
         r.show()
 
         self.m.evaluate(False)

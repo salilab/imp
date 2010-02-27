@@ -11,7 +11,7 @@ understand the overall structure of \imp.
 
 Structure and dynamics modeling in \imp proceeds in a five stage iterative process
 \dotgraph{ \dot
- digraph example {
+ digraph intergrative_modeling {
     node [shape=record\, fontname= Helvetica\, fontsize=10]
       a [label="1. Gathering of experimental data"\, URL="\ref dataacq"];
       b [label="2. Choice of the representation\nscheme for the model"\, URL="\ref dataacq"];
@@ -101,7 +101,24 @@ fall into a variety of categories.
   \imp provides two sampling protocols, IMP::core::MCCGSampler which uses a
   combination of IMP::core::MonteCarlo and IMP::core::ConjugateGradients with
   randomized starting conformations and IMP::domino::DominoOptimizer which uses
-  a graph based inference algorithm.
+  a graph based inference algorithm. Sampling is an iterative process that tends to
+  be structured as follows:
+\dotgraph{ \dot
+ digraph sampling {
+    node [shape=record\, fontname= Helvetica\, fontsize=10]
+      a [label="Sampler sets model to\ninitial\, random\nconfiguration"];
+      b [label="Model gives constraints\nchance to update\nconfiguration"];
+      c [label="Model asks restraints\nto compute score\n(and derivatives\, if desired)"];
+      d [label="Model gives constraints\nchance to update derivatives\n(if desired)"];
+      e [label="Sampler uses score\nand derivatives to\nmodify the configuration"];
+      a -> b [arrowhead="open"];
+      b -> c [arrowhead="open"]
+      c -> d [arrowhead="open"];
+      d -> e [arrowhead="open"];
+      e -> b [arrowhead="open"];
+    }
+\enddot
+}
 -# \anchor analysis Analysis of good conformations:
   Finally, one needs to analyze the set of conformations produced by
   sampling. \imp provides a variety of tools to help display the conformations,
@@ -396,7 +413,12 @@ generate the connection between the two languages. Key differences are
     based on their contents. \e Object \e class objects allow checking of
     equality to see if they are the same object (not whether two have the
     same state). In C++, this is done by comparing the pointers.
-
+   \subsection standardmethods Standard Methods
+    All objects should have a \c const method \c show(std::ostream&), which
+    writes some basic information about the object to the supplied stream.
+    In addition, on the C++ side, all objects support standard output
+    to stream via \c <<. In addition, all objects support \c __str__ in
+    python so that they can be printed and displayed.
 
    \subsection names Names in IMP
     - Class names are in \c CamelCase, for example \c class \c SpecialVector'

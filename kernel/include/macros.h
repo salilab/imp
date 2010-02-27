@@ -584,9 +584,9 @@ public:                                                                 \
     return Name(p);                                                     \
   }                                                                     \
   Name::~Name(){}                                                       \
-  void Name::show(std::ostream &out) const {                            \
-    out << #Name << " at " << static_cast<Parent>(*this);               \
-  }
+  IMP_NO_DOXYGEN(void Name::show(std::ostream &out) const {             \
+      out << #Name << " at " << static_cast<Parent>(*this);             \
+    })
 
 
 //! Define a set of attributes which form an array
@@ -719,7 +719,7 @@ protection:                                                             \
   typedef std::vector<Name*> Name##sTemp
 #endif
 
-
+#ifdef IMP_DOXYGEN
 //! Declare the methods needed by an object than can be printed
 /** This macro declares the method
     - void show(std::ostream &out) const
@@ -733,6 +733,8 @@ protection:                                                             \
     Do not use with IMP::Object objects as they have their
     own show mechanism.
 */
+#define IMP_SHOWABLE
+#else
 #define IMP_SHOWABLE                            \
   void show(std::ostream &out=std::cout) const; \
   std::string __str__() const {                 \
@@ -740,7 +742,9 @@ protection:                                                             \
     show(out);                                  \
     return out.str();                           \
   }
+#endif
 
+#ifdef IMP_DOXYGEN
 //! Declare the methods needed by an object than can be printed
 /** This macro declares the method
     - \c void \c show(std::ostream &out) const
@@ -751,6 +755,8 @@ protection:                                                             \
 
     See also IMP_SHOWABLE_INLINE()
 */
+#define IMP_SHOWABLE_INLINE(how_to_show)
+#else
 #define IMP_SHOWABLE_INLINE(how_to_show)        \
   void show(std::ostream &out=std::cout) const{ \
     how_to_show;                                \
@@ -760,6 +766,7 @@ protection:                                                             \
     show(out);                                  \
     return out.str();                           \
   }
+#endif
 
 
 /** \defgroup object_helpers Macros to aid with implementation classes
@@ -778,7 +785,7 @@ protection:                                                             \
     - an empty virtual destructor
 
     In addition, they all declare:
-    - IMP::Object::show()
+    - IMP::Object::do_show()
 
     For all macros, the Name paramete is the name of the class being
     implemented and the version_info parameter is the IMP::VersionInfo
@@ -802,7 +809,7 @@ protection:                                                             \
     return get_module_version_info();                           \
   }                                                             \
   IMP_REF_COUNTED_DESTRUCTOR(Name)                              \
-  virtual void do_show(std::ostream &out) const;                \
+  IMP_NO_DOXYGEN(virtual void do_show(std::ostream &out) const);        \
 public:
 
 
@@ -819,9 +826,9 @@ public:
   virtual ::IMP::VersionInfo get_version_info() const {         \
     return get_module_version_info();                           \
   }                                                             \
-  virtual void do_show(std::ostream &out) const {               \
+  IMP_NO_DOXYGEN (virtual void do_show(std::ostream &out) const {       \
     show;                                                       \
-  }                                                             \
+    });                                                         \
   ~Name() {destructor;}                                         \
 public:
 
@@ -1529,9 +1536,9 @@ public:
   ContainersTemp Name::get_output_containers(Particle *p) const {       \
     return ContainersTemp();                                            \
   }                                                                     \
-  void Name::do_show(std::ostream &out) const {                         \
+  IMP_NO_DOXYGEN(void Name::do_show(std::ostream &out) const {          \
     out <<"refiner " << *refiner << std::endl;                          \
-  }                                                                     \
+    })                                                                  \
                                                                         \
                                                                         \
   //! Add interaction methods to a SingletonModifer
@@ -1569,9 +1576,9 @@ public:
   ContainersTemp Name::get_output_containers(Particle *p) const {       \
     return ContainersTemp();                                            \
   }                                                                     \
-  void Name::do_show(std::ostream &out) const {                         \
+  IMP_NO_DOXYGEN(void Name::do_show(std::ostream &out) const {          \
     out << "refiner " << *refiner << std::endl;                         \
-  }                                                                     \
+    })                                                                  \
                                                                         \
                                                                         \
   //! Declare the functions needed for a PairModifier

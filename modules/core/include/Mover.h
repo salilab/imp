@@ -29,7 +29,7 @@ class IMPCOREEXPORT Mover: public Object
 {
   friend class MonteCarlo;
   void set_optimizer(Optimizer *c) {
-    if (c) set_was_owned(true);
+    if (c) set_was_used(true);
     opt_=c;
   }
 

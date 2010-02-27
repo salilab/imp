@@ -21,7 +21,7 @@ class CosineTests(IMP.test.TestCase):
             for periodicity in (1, 2, 3, 4):
                 for phase in (0.0, math.pi / 2.0, math.pi):
                     func = IMP.core.Cosine(force_constant, periodicity, phase)
-                    func.set_was_owned(True)
+                    func.set_was_used(True)
                     for i in range(15):
                         val = -math.pi + math.pi * 15.0 / (i + 1.0)
                         expscore, expderiv = _cosfunc(val, force_constant,

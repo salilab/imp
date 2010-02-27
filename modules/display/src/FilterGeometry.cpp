@@ -18,7 +18,7 @@ FilterGeometry::FilterGeometry(const algebra::Plane3D &p):
 
 void FilterGeometry::add_geometry(Geometry* g) {
   gdata_.push_back(g);
-  g->set_was_owned(true);
+  g->set_was_used(true);
 }
 
 

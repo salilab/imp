@@ -242,13 +242,13 @@ class MovedSingletonContainerImpl:
     backup_.resize(MovedSingletonContainer
                    ::pc_->get_number_of_particles());
     IMP_NEW(Save, rv, (backup_));
-    rv->set_was_owned(true);
+    rv->set_was_used(true);
     MovedSingletonContainer::pc_->apply(rv);
   }
   virtual void save_moved() {
     if (MovedSingletonContainer::pc_->get_number_of_particles() != 0) {
       IMP_NEW(SaveMoved,  cv, (backup_, access()));
-      cv->set_was_owned(true);
+      cv->set_was_used(true);
       MovedSingletonContainer::pc_->apply(cv);
     }
   }
@@ -259,7 +259,7 @@ class MovedSingletonContainerImpl:
       ParticlesTemp ret;
       IMP_NEW(ListMoved,  cv, (backup_, ret,
                                MovedSingletonContainer::threshold_, incr));
-      cv->set_was_owned(true);
+      cv->set_was_used(true);
       MovedSingletonContainer::pc_->apply(cv);
       add_to_list(ret);
     }

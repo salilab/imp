@@ -63,7 +63,7 @@ class SimpleDiameterTest(IMP.test.TestCase):
         sd.set_k(0.1)
         self.assertInTolerance (h.get_k(), 0.1, 1e-4)
 
-        r.set_was_owned(True)
+        r.set_was_used(True)
         r.show()
 
         self.imp_model.evaluate(False)

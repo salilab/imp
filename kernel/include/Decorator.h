@@ -22,18 +22,17 @@ IMP_BEGIN_NAMESPACE
 Representation of the structure in \imp is via a collection of
 Particle objects. However, since particles are general purpose, they
 provide a basic set of tools for managing the data (eg
-Particle::add_attribute(), Particle::get_value() etc). Decorators wrap
-(or "decorator") particles to provide a much richer interface. For
-example, most particles have Cartesian coordinates. The class
-IMP::core::XYZ decorates such a particle to provide functions to get
-and set the Cartesian coordinates as well as compute distances between
-particles.
-    \code
-    d0= IMP.core.XYZ(p0)
-    d1= IMP.core.XYZ(p1)
-    print IMP.core.distance(d0,d1)
-    print d0.get_coordinates()
-    \endcode
+IMP::Particle::add_attribute(), IMP::Particle::get_value()
+etc). Decorators wrap (or "decorator") particles to provide a much
+richer interface. For example, most particles have Cartesian
+coordinates. The class IMP::core::XYZ decorates such a particle to
+provide functions to get and set the Cartesian coordinates as well as
+compute distances between particles.
+\code
+d0= IMP.core.XYZ(p0) d1=
+IMP.core.XYZ(p1) print IMP.core.distance(d0,d1) print
+d0.get_coordinates()
+\endcode
 
 \par Decorator basics
 
@@ -63,12 +62,9 @@ if IMP.core.XYZ.particle_is_instance(p):
 \endcode
 
 More abstractly, decorators can be used to
-
 - maintain invariants: e.g. an IMP::atom::Bond particle always connects
   two other particles, both of which are IMP::atom::Bonded particles.
-
-- add functionality: e.g. you can get the coordinates as an IMP::Vector3D
-
+- add functionality: e.g. you can get the coordinates as an IMP::VectorD<3>
 - provide uniform names for attributes: so you don't use "x" some places
 and "X" other places
 
@@ -84,11 +80,13 @@ particle. Like pointers, they are logical values so can be in \c if
 statements.
 
 \implementation{Decorator, IMP_DECORATOR, IMP::example::ExampleDecorator}
-\n\n Remember that attribute keys should always be created
+\n\n For efficiency reasons attribute keys should always be created
 lazily (at the time of the first use), and not be created as static
-variables.\n\n Implementors should consult IMP::example::Example,
+variables. The reason for this is that initialized attribute keys result
+in space being allocated in decorators, even before they are used.\n\n
+Implementors should consult IMP::example::ExampleDecorator,
 IMP_DECORATOR(), IMP_DECORATOR_TRAITS(), IMP_DECORATOR_GET(),
-IMP_DECORATOR_ARRAY_DECL()
+IMP_DECORATOR_ARRAY_DECL().
 
 \advanceddoc Lists of decorators are reference counted even though the
 individual decorators are not. For more efficiency
@@ -97,13 +95,14 @@ instead. This should only
 be done when it is known to be safe. If you can't figure out
 that it is, don't do it.
 
-A Decorator can be cast to a Particle*.
+A Decorator can be cast to a IMP::Particle* (in C++, you have to
+use the Decorator::get_particle() function in Python).
 */
 class Decorator
 {
 private:
   Particle *particle_;
-#ifndef SWIG
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
   friend bool operator==(Decorator, Particle*);
 #endif
 protected:
@@ -125,7 +124,7 @@ public:
       @{
   */
 
-  /** \return the particle wrapped by this decorator*/
+  /** Returns the particle decorated by this decorator.*/
   Particle *get_particle() const {
     IMP_USAGE_CHECK(particle_,
                     "You must give the decorator a particle to decorate.");
@@ -142,7 +141,7 @@ public:
   }
 #endif
 
-  /** \return the Model containing the particle */
+  /** \brief Returns the Model containing the particle. */
   Model *get_model() const {
     IMP_CHECK_OBJECT(particle_->get_model());
     return particle_->get_model();
@@ -158,8 +157,8 @@ public:
       All decorators must have the following methods. Decorators
       which are parameterized (for example IMP::core::XYZR)
       take an (optional) extra parameter after the Particle in
-      setup_particle(), cast() and particle_is_instance().
-      Note that these are
+      setup_particle(), and particle_is_instance().
+      \note these are
       not actually methods of the Decorator class itself.
       @{
   */
@@ -171,25 +170,31 @@ public:
   */
   static Decorator setup_particle(Particle *p, extra_arguments);
 
-  /** Create a decorator from a particle which has already had
-      Decorator::setup_particle() called on it.
+  /** \brief Return true if the particle can be cast to the decorator.
 
-      \return The Decorator(p) if p has been set up or Decorator() if not.
+  That is, if particle_is_instance() returns \c true, then it is
+  legal to construct and instance of the decorator with that particle.
+  If not, setup_particle() must be called first.
+  \code
+  IMP::Particle *p = new IMP::Particle(m);
+  // it is false
+  std::cout << IMP::core::XYZ::particle_is_instance(p) << std::endl;
+  // As a result this is an error
+  IMP::core::XYZ d(p);
+  // now set it up
+  IMP::core::XYZ(p);
+  // now it is true
+  std::cout << IMP::core::XYZ::particle_is_instance(p) << std::endl;
+  // and now this code is OK
+  IMP::core::XYZ d(p);
+  \endcode
   */
-  static Decorator decorate_particle(Particle *p);
-
-  /** Return true if the particle can be cast to the decorator. */
   static bool particle_is_instance(Particle *p);
 
-  /** Write a description of the wrapped Particle as seen by
-      the decorator to a stream.
-  */
-  void show(std::ostream &out) const;
-
   /** Create an instance of the Decorator from the particle has
-      already been setup.  The key difference between this constructor
-      and decorate_particle() is that there is not necessarily any
-      error checking performed.
+      already been setup. The particle must have been set up already
+      (eg particle_is_instance(p) must be true), but this is not
+      necessarily checked.
   */
   Decorator(Particle *p);
   /** The default constructor must be defined and create a NULL decorator,

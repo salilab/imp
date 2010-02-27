@@ -32,7 +32,7 @@ void Restraint::set_model(Model* model)
             "Model* different from already stored model "
             << model << " " << model_);
   model_=model;
-  if (model) set_was_owned(true);
+  if (model) set_was_used(true);
 }
 
 double Restraint::evaluate(bool calc_derivs) const {

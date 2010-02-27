@@ -155,7 +155,7 @@ Particle::Particle():
 void Particle::setup_incremental() {
   if (!ps_->shadow_) {
     ps_->shadow_ = new Particle();
-    ps_->shadow_->set_was_owned(true);
+    ps_->shadow_->set_was_used(true);
     internal::ref(ps_->shadow_);
     ps_->shadow_->set_name(get_name()+" history");
     ps_->shadow_->ps_->model_= ps_->model_;

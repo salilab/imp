@@ -26,8 +26,8 @@ ExampleComplexRestraint::ExampleComplexRestraint(UnaryFunction *f,
   IMP_USAGE_CHECK(sc->get_number_of_particles()>2,
             "Need at least two particles to restrain diameter");
   IMP_USAGE_CHECK(diameter>0, "The diameter must be positive");
-  f_->set_was_owned(true);
-  sc_->set_was_owned(true);
+  f_->set_was_used(true);
+  sc_->set_was_used(true);
 }
 
 void ExampleComplexRestraint::set_model(Model *m) {

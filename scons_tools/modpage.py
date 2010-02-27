@@ -9,7 +9,7 @@ import SCons
 # license
 
 def filter(env, line):
-    return line.replace("MODULENAME", env["IMP_MODULE_NICENAME"])
+    return line.replace("MODULENAME", "This module")
 
 def unmangle(value):
     return eval(value.get_contents())
