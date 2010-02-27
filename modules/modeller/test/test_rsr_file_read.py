@@ -163,7 +163,6 @@ class ModellerRestraintsTests(IMP.test.TestCase):
         modmodel.restraints.make(selection(modmodel), restraint_type='BOND',
                                  spline_on_site=False,
                                  residue_span_range=(0, 99999))
-        modmodel.restraints.write(file='test.rsr')
 
         m = IMP.Model()
         loader = IMP.modeller.ModelLoader(modmodel)
