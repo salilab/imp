@@ -153,8 +153,6 @@ typename Exchange<Unit<internal::MKSTag, EXP, Units>,
 convert_J_to_Cal(Unit<internal::MKSTag, EXP, Units> i) {
   typedef typename Exchange<Unit<internal::MKSTag, EXP, Units>,
     Joule, Kilocalorie, -3>::type Return;
-  std::cout << i.get_exponential_value()
-    / JOULES_PER_KILOCALORIE << std::endl;
   return Return(i.get_exponential_value()
                 / JOULES_PER_KILOCALORIE);
 }
