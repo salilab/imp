@@ -66,7 +66,7 @@ void project_given_rotation1(IMP::algebra::Matrix3D<T>& m3,
              const IMP::algebra::VectorD<3>& shift,
              const double equality_tolerance) {
 
-// #define DEBUG
+// #define IMP_DEBUG_PROJECT
   m2.resize(Ydim, Xdim);
   // Save the origin of the matrices
   std::vector<int> orig2D(2), orig3D(3);
@@ -87,7 +87,7 @@ void project_given_rotation1(IMP::algebra::Matrix3D<T>& m3,
     direction[i]=r[2];
   }
 
-#ifdef DEBUG
+#ifdef IMP_DEBUG_PROJECT
   std::cout << " direction " << direction << std::endl;
   std::cout << "Rotation: " << Rot << std::endl;
   std::cout << "Inverse rotation: " << InvRot << std::endl;
@@ -125,7 +125,7 @@ void project_given_rotation1(IMP::algebra::Matrix3D<T>& m3,
       // 4 different rays per pixel.
       double ray_sum = 0.0;  // Line integral value
       for (int rays_per_pixel = 0; rays_per_pixel < 4; rays_per_pixel++) {
-#ifdef DEBUG
+#ifdef IMP_DEBUG_PROJECT
          std::cout << "(" << j << "," << i << ") init ray " <<
                       rays_per_pixel << std::endl;
 #endif
@@ -151,7 +151,7 @@ void project_given_rotation1(IMP::algebra::Matrix3D<T>& m3,
         }
         // Get point r in the universal system corresponding to p
         r = InvRot.get_rotated(p);
-#ifdef DEBUG
+#ifdef IMP_DEBUG_PROJECT
         std::cout << "p: " << p << std::endl;
         std::cout << "r: " << r << std::endl;
 #endif
@@ -173,7 +173,7 @@ void project_given_rotation1(IMP::algebra::Matrix3D<T>& m3,
           }
         }
 
-#ifdef DEBUG
+#ifdef IMP_DEBUG_PROJECT
         std::cout << "v_alpha_min " << v_alpha_min;
         std::cout << " v_alpha_max " << v_alpha_max << std::endl;
 #endif
@@ -195,13 +195,13 @@ void project_given_rotation1(IMP::algebra::Matrix3D<T>& m3,
                                               init0[ii], end0[ii]);
           }
         }
-#ifdef DEBUG
+#ifdef IMP_DEBUG_PROJECT
         std::cout << " v " << v << std::endl;
         std::cout << std::endl;
 #endif
         // Follow the ray
         double alpha = alpha_min;
-#ifdef DEBUG
+#ifdef IMP_DEBUG_PROJECT
         std::cout << " alpha_min " << alpha_min;
         std::cout << " alpha_max " << alpha_max;
         std::cout << " initial alpha " << alpha << std::endl;
@@ -213,7 +213,7 @@ void project_given_rotation1(IMP::algebra::Matrix3D<T>& m3,
           }
           // Determine the dimension the ray will move in the next step.
           // (Is the mininum value in v_diff)
-#ifdef DEBUG
+#ifdef IMP_DEBUG_PROJECT
           std::cout << " v_alpha " << v_alpha << std::endl;
           std::cout << " v_diff " << v_diff << std::endl;
 #endif
@@ -221,7 +221,7 @@ void project_given_rotation1(IMP::algebra::Matrix3D<T>& m3,
 
           // It is supposed that the first index of the Matrix3D is for Z,
           // that's why the indices are inverted
-#ifdef DEBUG
+#ifdef IMP_DEBUG_PROJECT
           std::cout << "inverted idx " <<
               idx[2] << " " << idx[1] << " " << idx[0] << " | ";
           std::cout << "m3(inverted idx) = " <<
@@ -236,18 +236,18 @@ void project_given_rotation1(IMP::algebra::Matrix3D<T>& m3,
               idx[ii] += signs[ii];
             }
           }
-#ifdef DEBUG
+#ifdef IMP_DEBUG_PROJECT
           std::cout << " alpha =" << alpha << std::endl;
 #endif
         } while ((alpha_max - alpha) > equality_tolerance); // end of the ray
-#ifdef DEBUG
+#ifdef IMP_DEBUG_PROJECT
         std::cout << " final alpha =" << alpha << std::endl;
         std::cout << " ray_sum =" << ray_sum << std::endl;
 #endif
       } // for involving the 4 rays
       // Average the value of the 4 rays
       m2(i,j) = ray_sum * 0.25;
-#ifdef DEBUG
+#ifdef IMP_DEBUG_PROJECT
        std::cout << "m2(" << i << "," << j << ")=  " << m2(i,j) << std::endl;
 #endif
     } // i for
