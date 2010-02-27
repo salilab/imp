@@ -94,7 +94,8 @@ inline double get_next_larger_power_of_2(double x) {
 /**
  * epsilon is the tolerance allowed to consider the values as equal
  */
-inline bool almost_equal(const double a, const double b, const double epsilon)
+inline bool get_are_almost_equal(const double a, const double b,
+                                 const double epsilon)
 {
   return (std::abs(a-b) < epsilon);
 }
