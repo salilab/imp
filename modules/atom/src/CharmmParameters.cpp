@@ -429,7 +429,14 @@ void CharmmParameters::do_show(std::ostream &out) const {
 String CharmmParameters::get_force_field_atom_type(Atom atom) const
 {
   // Override base class to use CHARMMAtom decorator
-  return CHARMMAtom(atom).get_charmm_type();
+  static String empty_atom_type;
+  if (CHARMMAtom::particle_is_instance(atom)) {
+    return CHARMMAtom(atom).get_charmm_type();
+  } else {
+    IMP_WARN_ONCE("Atom " << atom << " does not have a known CHARMM type",
+                  warn_context_);
+    return empty_atom_type;
+  }
 }
 
 CHARMMTopology *CharmmParameters::make_topology(Hierarchy hierarchy) const
