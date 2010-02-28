@@ -27,9 +27,9 @@ class PadTests(IMP.test.TestCase):
         max2=self.d2.get_max_value()
         #fix map dimensions
 
-        nx=max(h1.nx,h2.nx)
-        ny=max(h1.ny,h2.ny)
-        nz=max(h1.nz,h2.nz)
+        nx=max(h1.get_nx(),h2.get_nx())
+        ny=max(h1.get_ny(),h2.get_ny())
+        nz=max(h1.get_nz(),h2.get_nz())
 
         self.d1.pad(nx,ny,nz)
         self.d2.pad(nx,ny,nz)

@@ -24,15 +24,18 @@ class SurfaceTests(IMP.test.TestCase):
                                                              2.0, 8)
         self.bad_mh2_shell_map = IMP.em.SurfaceShellDensityMap(IMP.core.get_leaves(self.bad_mh2),
                                                              2.0, 8)
+        self.mh1_shell_map.calcRMS()
+        self.good_mh2_shell_map.calcRMS()
+        self.bad_mh2_shell_map.calcRMS()
     def test_good_geo_comp(self):
         """Check good geometric complementarity score"""
         erw = IMP.em.EMReaderWriter()
          #fix map dimensions
         h1=self.mh1_shell_map.get_header()
         h2=self.good_mh2_shell_map.get_header()
-        nx=max(h1.nx,h2.nx)
-        ny=max(h1.ny,h2.ny)
-        nz=max(h1.nz,h2.nz)
+        nx=max(h1.get_nx(),h2.get_nx())
+        ny=max(h1.get_ny(),h2.get_ny())
+        nz=max(h1.get_nz(),h2.get_nz())
 
         self.mh1_shell_map.pad(nx,ny,nz)
         self.good_mh2_shell_map.pad(nx,ny,nz)
@@ -50,9 +53,9 @@ class SurfaceTests(IMP.test.TestCase):
         #fix map dimensions
         h1=self.mh1_shell_map.get_header()
         h2=self.bad_mh2_shell_map.get_header()
-        nx=max(h1.nx,h2.nx)
-        ny=max(h1.ny,h2.ny)
-        nz=max(h1.nz,h2.nz)
+        nx=max(h1.get_nx(),h2.get_nx())
+        ny=max(h1.get_ny(),h2.get_ny())
+        nz=max(h1.get_nz(),h2.get_nz())
 
         self.mh1_shell_map.pad(nx,ny,nz)
         self.bad_mh2_shell_map.pad(nx,ny,nz)
