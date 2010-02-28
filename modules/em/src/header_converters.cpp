@@ -14,36 +14,37 @@ IMPEM_BEGIN_NAMESPACE
 void  ImageHeader_to_DensityHeader(const ImageHeader &h,DensityHeader &dh) {
   std::string empty;
   // map size and voxel size
-  dh.nz=static_cast<int>(h.get_number_of_slices());
-  dh.ny=static_cast<int>(h.get_number_of_rows());
-  dh.nx=static_cast<int>(h.get_number_of_columns());
+  dh.set_number_of_voxels(
+     static_cast<int>(h.get_number_of_columns()),
+     static_cast<int>(h.get_number_of_rows()),
+     static_cast<int>(h.get_number_of_slices()));
   dh.Objectpixelsize_=h.get_object_pixel_size();
   // mode
   switch ((int) h.get_fIform()) {
   case ImageHeader::IMG_BYTE:
-    dh.data_type=1;
+    dh.set_data_type(1);
     break;
   case ImageHeader::IMG_IMPEM:
-    dh.data_type=5;
+    dh.set_data_type(5);
     break;
   case ImageHeader::IMG_INT:
-    dh.data_type=2;
+    dh.set_data_type(2);
     break;
   case ImageHeader::VOL_BYTE:
-    dh.data_type=1;
+    dh.set_data_type(1);
     break;
   case ImageHeader::VOL_IMPEM:
-    dh.data_type=5;
+    dh.set_data_type(5);
     break;
   case ImageHeader::VOL_INT:
-    dh.data_type=2;
+    dh.set_data_type(2);
     break;
   }
   // number of first columns in map (default = 0)
   dh.nxstart=0 ; dh.nystart=0 ; dh.nzstart=0;
   // Number of intervals along each dimension. In DensityHeader it is assumed
   // to be equal to the size of the map
-  dh.mx=dh.nx;  dh.my=dh.ny;  dh.mz=dh.nz;
+  dh.mx=dh.get_nx();  dh.my=dh.get_ny();  dh.mz=dh.get_nz();
   // Cell angles (degrees)
   // Spider format does not have these fields. Filed with default (90 deg)
   dh.alpha=90. ; dh.beta=90. ; dh.gamma=90.;
@@ -101,9 +102,9 @@ void  ImageHeader_to_DensityHeader(const ImageHeader &h,DensityHeader &dh) {
 //! to ImageHeader
 void  DensityHeader_to_ImageHeader(const DensityHeader& dh,ImageHeader& h) {
   // map size
-  h.set_dimensions((float)dh.nz,(float)dh.ny, (float)dh.nx);
+  h.set_dimensions((float)dh.get_nz(),(float)dh.get_ny(), (float)dh.get_nx());
   // mode
-  switch (dh.data_type) {
+  switch (dh.get_data_type()) {
   case 1:
     h.set_image_type(ImageHeader::VOL_BYTE);
     break;

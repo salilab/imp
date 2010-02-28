@@ -23,7 +23,8 @@ RestraintSet * add_restraints(Model *model, DensityMap *dmap,
    model->add_restraint(rsrs);
    //add fitting restraint
    FitRestraint *fit_rs =
-     new FitRestraint(rb.get_members(),dmap,rad_key,wei_key,1.0);
+     new FitRestraint(IMP::core::get_leaves(
+         IMP::atom::Hierarchy(rb)),dmap,rad_key,wei_key,1.0);
    rsrs->add_restraint(fit_rs);
    return rsrs;
 }
@@ -57,22 +58,23 @@ void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
               const algebra::VectorD<3> &anchor_centroid,
               core::RigidBody &rb, core::MonteCarlo *opt,
               FittingSolutions &fr, Model *mdl) {
-
   Float e;
+  core::XYZsTemp xyz_t=
+    core::XYZsTemp(IMP::core::get_leaves(IMP::atom::Hierarchy(rb)));
   for(int i=0;i<number_of_optimization_runs;i++) {
     IMP_LOG(VERBOSE, "number of optimization run is : "<< i << std::endl);
     //set the centroid of the rigid body to be on the anchor centroid
     //make sure that all of the members are in the correct transformation
     rb.set_transformation(rb.get_transformation());
     algebra::VectorD<3> ps_centroid =
-      IMP::core::centroid(core::XYZs(rb.get_members()));
+      IMP::core::centroid(xyz_t);
 
     algebra::Transformation3D move2centroid(algebra::get_identity_rotation_3d(),
                                             anchor_centroid-ps_centroid);
     core::transform(rb,move2centroid);
     rb.set_transformation(rb.get_transformation());
     ps_centroid =
-      IMP::core::centroid(core::XYZs(rb.get_members()));
+      IMP::core::centroid(core::XYZsTemp(rb.get_members()));
     IMP_LOG(VERBOSE, "rigid body centroid before optimization : "
                       << ps_centroid << std::endl);
     //optimize
@@ -80,7 +82,7 @@ void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
       e = opt->optimize(number_of_mc_steps);
       rb.set_transformation(rb.get_transformation());
       ps_centroid =
-        IMP::core::centroid(core::XYZs(rb.get_members()));
+        IMP::core::centroid(xyz_t);
       IMP_LOG(VERBOSE, "rigid body centroid after optimization : "
                         << ps_centroid << std::endl);
       fr.add_solution(rb.get_transformation(),e);
@@ -101,7 +103,7 @@ void local_rigid_fitting_around_point(
    FittingSolutions &fr, OptimizerState *display_log,
    Int number_of_optimization_runs, Int number_of_mc_steps,
    Int number_of_cg_steps, Float max_translation, Float max_rotation) {
-   IMP_LOG(VERBOSE,
+   IMP_LOG(TERSE,
           "rigid fitting with " << number_of_optimization_runs <<
           " MC optimization runs, each with " << number_of_mc_steps <<
           " Monte Carlo steps , each with " << number_of_cg_steps <<
@@ -164,16 +166,22 @@ void local_rigid_fitting_around_points(
 
 
 void local_rigid_fitting_grid_search(
-   Particles &ps, Model *model, const FloatKey &rad_key,
+   Particles &ps, const FloatKey &rad_key,
    const FloatKey &wei_key,
    DensityMap *dmap,
    FittingSolutions &fr,
    Int max_voxels_translation,
-   Int translation_step, Int number_of_rotations) {
+   Int translation_step,
+   Float max_angle_in_radians,
+   Int number_of_rotations) {
+
+   IMP_USAGE_CHECK(ps.size()>0,
+      "no particles given as input for local_rigid_fitting_grid_search"
+       <<std::endl);
    Float max_t = dmap->get_spacing()*max_voxels_translation;
    Float step_t = dmap->get_spacing()*translation_step;
 
-   IMP_LOG(VERBOSE,
+   IMP_LOG(TERSE,
       "going to preform local rigid fitting using a grid search method"
       << " on " << ps.size() << " particles. "<<std::endl
       <<"The grid search parameters are: " <<" translation between "
@@ -186,41 +194,48 @@ void local_rigid_fitting_grid_search(
    model_dens_map->set_particles(ps,rad_key,wei_key);
    model_dens_map->resample();
 
-   std::vector<float> dx,dy,dz;
-
-   algebra::Rotation3Ds rots=
-             algebra::get_uniform_cover_rotations_3d(number_of_rotations);
+   algebra::Rotation3Ds rots;
+   //algebra::get_uniform_cover_rotations_3d(number_of_rotations);
+   for(int i=0;i<number_of_rotations;i++) {
+     algebra::VectorD<3> axis =
+       algebra::get_random_vector_on(
+          algebra::Sphere3D(algebra::VectorD<3>(0.0,0.0,0.0),1.));
+     ::boost::uniform_real<> rand(-max_angle_in_radians,max_angle_in_radians);
+     Float angle =rand(random_number_generator);
+     algebra::Rotation3D r =
+       algebra::get_rotation_in_radians_about_axis(axis, angle);
+     rots.push_back(r);
+   }
+   unsigned int rot_ind=-1;
    for(algebra::Rotation3Ds::iterator it = rots.begin();
                                       it != rots.end();it++) {
-        algebra::Transformation3D t1 =algebra::get_rotation_about_point(
-                                 core::centroid(core::XYZs(ps)),*it);
-
-     //transform all particles
-     std::for_each(ps.begin(), ps.end(),
-           SingletonFunctor(new core::Transform(t1)));
-     model_dens_map->resample();
+     ++rot_ind;
+     IMP_LOG(IMP::TERSE,"working on rotation "<<
+         rot_ind<<" out of "<< rots.size()<<std::endl);
+     algebra::Transformation3D t1 =algebra::get_rotation_about_point(
+                                 core::centroid(core::XYZsTemp(ps)),*it);
+     DensityMap *rotated_sampled_map = get_transformed(model_dens_map,t1);
+     rotated_sampled_map->calcRMS();
      algebra::VectorD<3>
-       origin(model_dens_map->get_header()->get_xorigin(),
-              model_dens_map->get_header()->get_yorigin(),
-              model_dens_map->get_header()->get_zorigin());
-    Float score;
-    for(Float x=-max_t; x<=max_t;x += step_t){
+          origin(model_dens_map->get_header()->get_xorigin(),
+                 model_dens_map->get_header()->get_yorigin(),
+                 model_dens_map->get_header()->get_zorigin());
+     Float score;
+     for(Float x=-max_t; x<=max_t;x += step_t){
        for(Float y=-max_t; y<=max_t;y += step_t){
          for(Float z=-max_t; z<=max_t;z += step_t){
-             algebra::Transformation3D t =
+           algebra::Transformation3D t =
               algebra::Transformation3D(algebra::get_identity_rotation_3d(),
                                         algebra::VectorD<3>(x,y,z));
-           model_dens_map->set_origin(t.get_transformed(origin));
-           score = IMP::em::CoarseCC::evaluate(*dmap,*model_dens_map,
-                                               dx,dy,dz,1.0,false,true,false);
+              rotated_sampled_map->set_origin(t.get_transformed(origin));
+              float threshold = rotated_sampled_map->get_header()->dmin;
+              score = IMP::em::CoarseCC::cross_correlation_coefficient(
+                       *dmap,*rotated_sampled_map,threshold,true);
            fr.add_solution(IMP::algebra::compose(t,t1),score);
            model_dens_map->set_origin(origin);
          }//z
        }//y
      }//x
-     //back transform all particles
-     std::for_each(ps.begin(), ps.end(),
-          SingletonFunctor(new IMP::core::Transform(t1.get_inverse())));
    }//end rotations
    fr.sort();
 }
@@ -241,11 +256,12 @@ void compute_fitting_scores(Particles &ps,
       DensityMap *transformed_sampled_map = get_transformed(model_dens_map,*it);
       transformed_sampled_map->calcRMS();
       float threshold = transformed_sampled_map->get_header()->dmin;
-      score  =
+      score  = 1.-
         CoarseCC::cross_correlation_coefficient(*em_map,
              *transformed_sampled_map,threshold,true);
       IMP_LOG(VERBOSE,"adding score:"<<score<<std::endl);
       fr.add_solution(*it,score);
+      delete transformed_sampled_map;
     }
 }
 

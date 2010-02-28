@@ -45,12 +45,13 @@ void SampledDensityMap::set_header(const algebra::VectorD<3> &lower_bound,
   header_ = DensityHeader();
   header_.set_resolution(resolution);
   header_.Objectpixelsize_=voxel_size;
-  header_.nx = int(ceil((1.0*(upper_bound[0]-lower_bound[0]) +
-                         2.*sig_cutoff*(resolution+maxradius))/voxel_size));
-  header_.ny = int(ceil((1.0*(upper_bound[1]-lower_bound[1]) +
-                         2.*sig_cutoff*(resolution+maxradius))/voxel_size));
-  header_.nz = int(ceil((1.0*(upper_bound[2]-lower_bound[2]) +
-                         2.*sig_cutoff*(resolution+maxradius))/voxel_size));
+  header_.set_number_of_voxels(
+    int(ceil((1.0*(upper_bound[0]-lower_bound[0]) +
+      2.*sig_cutoff*(resolution+maxradius))/voxel_size)),
+    int(ceil((1.0*(upper_bound[1]-lower_bound[1]) +
+      2.*sig_cutoff*(resolution+maxradius))/voxel_size)),
+    int(ceil((1.0*(upper_bound[2]-lower_bound[2]) +
+      2.*sig_cutoff*(resolution+maxradius))/voxel_size)));
   header_.set_xorigin(lower_bound[0]-sig_cutoff*(resolution + maxradius));
   header_.set_yorigin(lower_bound[1]-sig_cutoff*(resolution + maxradius));
   header_.set_zorigin(lower_bound[2]-sig_cutoff*(resolution + maxradius));
@@ -60,7 +61,8 @@ void SampledDensityMap::set_header(const algebra::VectorD<3> &lower_bound,
   // We assueme that grid size means number of voxels ( which is the meaning
   // of nx). It might be worth asking MRC people whether this assumption
   // is correct.
-  header_.mx = header_.nx; header_.my = header_.ny; header_.mz = header_.nz;
+  header_.mx = header_.get_nx(); header_.my = header_.get_ny();
+  header_.mz = header_.get_nz();
   header_.compute_xyz_top();
   header_.update_cell_dimensions();
 }
@@ -97,8 +99,7 @@ SampledDensityMap::SampledDensityMap(const IMP::Particles &ps,
   }
   set_header(bb.get_corner(0),bb.get_corner(1), max_radius, resolution,
              voxel_size,sig_cutoff);
-
-  data_.reset(new emreal[header_.nx*header_.ny*header_.nz]);
+  data_.reset(new emreal[header_.get_number_of_voxels()]);
 
   //set up the sampling parameters
   kernel_params_ = KernelParameters(resolution);
@@ -128,7 +129,7 @@ void SampledDensityMap::resample()
   // actual sampling
   emreal tmpx,tmpy,tmpz;
   // variables to avoid some multiplications
-  int nxny=header_.nx*header_.ny; int znxny;
+  int nxny=header_.get_nx()*header_.get_ny(); int znxny;
   emreal rsq,tmp;
   const RadiusDependentKernelParameters* params;
   IMP_LOG(VERBOSE,"sampling "<<ps_.size()<<" particles "<< std::endl);
@@ -152,7 +153,7 @@ void SampledDensityMap::resample()
       for (ivoxy=iminy;ivoxy<=imaxy;ivoxy++)  {
         // we increment ivox this way to avoid unneceessary multiplication
         // operations.
-        ivox = znxny + ivoxy * header_.nx + iminx;
+        ivox = znxny + ivoxy * header_.get_nx() + iminx;
         for (ivoxx=iminx;ivoxx<=imaxx;ivoxx++) {
           tmpx=x_loc_[ivox] - ps_[ii]->get_value(x_key_);
           tmpy=y_loc_[ivox] - ps_[ii]->get_value(y_key_);
@@ -182,12 +183,12 @@ void SampledDensityMap::calc_sampling_bounding_box(
     int &iminx, int &iminy, int &iminz, int &imaxx,
     int &imaxy, int &imaxz) const
 {
-  iminx = lower_voxel_shift(x, kdist, header_.get_xorigin(), header_.nx);
-  iminy = lower_voxel_shift(y, kdist, header_.get_yorigin(), header_.ny);
-  iminz = lower_voxel_shift(z, kdist, header_.get_zorigin(), header_.nz);
-  imaxx = upper_voxel_shift(x, kdist, header_.get_xorigin(), header_.nx);
-  imaxy = upper_voxel_shift(y, kdist, header_.get_yorigin(), header_.ny);
-  imaxz = upper_voxel_shift(z, kdist, header_.get_zorigin(), header_.nz);
+  iminx = lower_voxel_shift(x, kdist, header_.get_xorigin(), header_.get_nx());
+  iminy = lower_voxel_shift(y, kdist, header_.get_yorigin(), header_.get_ny());
+  iminz = lower_voxel_shift(z, kdist, header_.get_zorigin(), header_.get_nz());
+  imaxx = upper_voxel_shift(x, kdist, header_.get_xorigin(), header_.get_nx());
+  imaxy = upper_voxel_shift(y, kdist, header_.get_yorigin(), header_.get_ny());
+  imaxz = upper_voxel_shift(z, kdist, header_.get_zorigin(), header_.get_nz());
 }
 void SampledDensityMap::set_particles(IMP::Particles &ps,
                      IMP::FloatKey radius_key,IMP::FloatKey mass_key) {

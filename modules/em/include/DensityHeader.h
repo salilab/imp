@@ -15,6 +15,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstring>
+#include <limits>
 
 IMPEM_BEGIN_NAMESPACE
 
@@ -24,7 +25,8 @@ class IMPEMEXPORT DensityHeader
 {
 
 public:
-  DensityHeader() {
+  DensityHeader();
+    /*
     is_resolution_set_= false;
     top_calculated_ = false;
     // Initialize some of the parameters of the header
@@ -44,7 +46,7 @@ public:
     strcpy(map,"MAP \0");
     magic=6;
   }
-
+    */
   // If a copy constructor is not defined in a class, the compiler itself
   // defines one. This will ensure a shallow copy.
   // If the class does not have pointer variables with dynamically allocated
@@ -89,8 +91,8 @@ public:
   void update_cell_dimensions();
 
   void show(std::ostream& out=std::cout) const {
-    out<< "nx: " << nx << " ny: " << ny << " nz: " << nz << std::endl;
-    out<<"data_type: " << data_type << std::endl;
+    out<< "nx: " << nx_ << " ny: " << ny_ << " nz: " << nz_ << std::endl;
+    out<<"data_type: " << data_type_ << std::endl;
     out<<"nxstart: " << nxstart << " nystart: " << nystart <<" nzstart: "
       << nzstart << std::endl;
     out<<"mx: "<< mx <<" my:" << my << " mz: " << mz << std::endl;
@@ -126,15 +128,8 @@ public:
   static const unsigned short USER_FIELD_SIZE     =  25;
   static const unsigned short COMMENT_FIELD_NUM_OF     =  10;
   static const unsigned short COMMENT_FIELD_SINGLE_SIZE    =  80;
-  //! map size (voxels) x-dimension
-  int nx;
-  //! map size (voxels) y-dimension
-  int ny;
-  //! map size (voxels) z-dimension
-  int nz;
-  //! How many bits are used to store the density of a single voxel
-  //! (used in MRC format)
-  int data_type;
+
+
   //! number of first columns in map (x-dimension)
   int nxstart;
   //! number of first columns in map (y-dimension)
@@ -239,12 +234,36 @@ public:
   //! True if the top coodinates (bounding-box) are calculated
   inline bool is_top_calculated() const { return top_calculated_;}
   float Objectpixelsize_; //this is the actual pixelsize
+
+  // get/set functions
+  //! Get the number of voxels in the x dimension
+  inline int get_nx() const {return nx_;}
+  //! Get the number of voxels in the y dimension
+  inline int get_ny() const {return ny_;}
+  //! Get the number of voxels in the z dimension
+  inline int get_nz() const {return nz_;}
+  inline int get_number_of_voxels() const {return nx_*ny_*nz_;}
+  // Set the number of voxels in all dimensions
+  /**
+  \todo The function is problematic as changing this values effects others.
+   */
+  inline void set_number_of_voxels(int nx,int ny, int nz) {
+    nx_=nx;ny_=ny;nz_=nz;
+  }
+  //! Get the number of bits that used to store the density of a single voxel
+  inline int get_data_type() const {return data_type_;}
+  inline void set_data_type(int data_type) {data_type_=data_type;}
+
 protected:
   float xtop_, ytop_, ztop_; // The upper bound for the x,y and z grid.
   float xorigin_, yorigin_, zorigin_; //Origin used for transforms
   bool top_calculated_;
   float resolution_;
   bool is_resolution_set_;
+  int nx_,ny_,nz_; //map size (voxels) in x,y,z dimensions
+  //! How many bits are used to store the density of a single voxel
+  //! (used in MRC format)
+  int data_type_;
 };
 
 IMPEM_END_NAMESPACE

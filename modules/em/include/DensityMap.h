@@ -277,6 +277,7 @@ public:
   algebra::VectorD<3> get_centroid(emreal threshold=0.0) const;
   //! Returns the the value of the voxel with the highest density.
   emreal get_max_value() const;
+  //! Returns the the value of the voxel with the lowest density.
   emreal get_min_value() const;
   //! Sums two grids.
   //! The result is kept in the map.
@@ -325,7 +326,8 @@ public:
   IMP_OBJECT_INLINE(DensityMap, header_.show(out),);
 
 protected:
-
+  //!update the header values  -- still in work
+  void update_header();
   void reset_voxel2loc();
 
   void allocated_data();

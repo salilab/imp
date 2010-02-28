@@ -19,7 +19,7 @@ class SampleTests(IMP.test.TestCase):
         self.particles = IMP.core.get_leaves(self.mh)
 
     def test_sample_map(self):
-        """Check that reading a map back in preserves the stdevs"""
+        """Check that protein surface sampling works"""
         resolution=1.
         voxel_size=1.
         model_map = IMP.em.SurfaceShellDensityMap(self.particles, resolution, voxel_size)

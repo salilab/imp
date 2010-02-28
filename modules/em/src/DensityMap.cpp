@@ -15,6 +15,22 @@
 #include <climits>
 
 IMPEM_BEGIN_NAMESPACE
+namespace {
+  template <class T>
+   bool is_initialize(const T &t) {
+     if (std::numeric_limits<T>::has_signaling_NaN) {
+       return (t == std::numeric_limits<T>::signaling_NaN());
+     } else if (std::numeric_limits<T>::has_quiet_NaN) {
+       return (t == std::numeric_limits<T>::quiet_NaN());
+     } else if (std::numeric_limits<T>::has_infinity) {
+       return (t== std::numeric_limits<T>::infinity());
+     } else {
+       // numerical limits for int and double have completely
+       // different meanings of max/min
+       return (t == -std::numeric_limits<T>::max());
+     }
+  }
+}
 
 DensityMap::DensityMap()
 {
@@ -70,9 +86,7 @@ void DensityMap::CreateVoidMap(const int &nx, const int &ny, const int &nz)
   for (long i=0;i<nvox;i++) {
     data_[i]=0.0;
   }
-  header_.nx = nx;
-  header_.ny = ny;
-  header_.nz = nz;
+  header_.set_number_of_voxels(nx,ny,nz);
 }
 
 #ifndef IMP_NO_DEPRECATED
@@ -110,6 +124,97 @@ DensityMap* read_map(const char *filename) {
     IMP_THROW("Unable to determine type for file "<< filename,
               IOException);
   }
+}
+
+void DensityMap::update_header() {
+  if (not is_initialize(header_.get_nx())) {
+  }
+  if (not is_initialize(header_.get_ny())) {
+  }
+  if (not is_initialize(header_.get_nz())) {
+  }
+  IMP_INTERNAL_CHECK(is_initialize(header_.get_data_type()),
+      "The data_type of the map header is not initialized");
+  if (not is_initialize(header_.nxstart)){
+  }
+  if (not is_initialize(header_.nystart)){
+  }
+  if (not is_initialize(header_.nzstart)){
+  }
+  if (not is_initialize(header_.mx)){
+  }
+  if (not is_initialize(header_.my)){
+  }
+  if (not is_initialize(header_.mz)){
+  }
+  if (not is_initialize(header_.xlen)){
+  }
+  if (not is_initialize(header_.ylen)){
+  }
+  if (not is_initialize(header_.zlen)){
+  }
+  if (not is_initialize(header_.alpha)){
+  }
+  if (not is_initialize(header_.beta)){
+  }
+  if (not is_initialize(header_.gamma)){
+  }
+  if (not is_initialize(header_.mapc)){
+  }
+  if (not is_initialize(header_.mapr)){
+  }
+  if (not is_initialize(header_.maps)){
+  }
+  if (not is_initialize(header_.dmin)){
+    header_.dmin = get_min_value();
+  }
+  if (not is_initialize(header_.dmax)){
+    header_.dmax = get_max_value();
+  }
+  /*initialize(dmean);
+   initialize(ispg);
+   initialize(nsymbt);
+   initialize(machinestamp);
+   initialize(rms);
+   initialize(nlabl);
+   initialize(magic);
+   initialize(voltage);
+   initialize(Cs);  //Cs of microscope
+   initialize(Aperture);  //Aperture used
+   initialize(Magnification);  //Magnification
+   initialize(Postmagnification); //Postmagnification (of energy filter)
+   initialize(Exposuretime); //Exposuretime
+   initialize(Microscope);  //Microscope
+   initialize(Pixelsize); //Pixelsize - used for the microscope CCD camera
+   initialize(CCDArea);  //CCDArea
+   initialize(Defocus);  //Defocus
+   initialize(Astigmatism);//Astigmatism
+   initialize(AstigmatismAngle); //Astigmatism Angle
+   initialize(FocusIncrement);//Focus-Increment
+   initialize(CountsPerElectron);//Counts/Electron
+   initialize(Intensity);//Intensity
+   initialize(EnergySlitwidth);//Energy slitwidth of energy filter
+   initialize(EnergyOffset); //Energy offset of Energy filter
+   initialize(Tiltangle);//Tiltangle of stage
+   initialize(Tiltaxis);//Tiltaxis
+   initialize(MarkerX);//Marker_X coordinate
+   initialize(MarkerY);//Marker_Y coordinate
+   initialize(lswap);
+  */
+  IMP_INTERNAL_CHECK(is_initialize(header_.Objectpixelsize_),
+                     "The map voxel size is not initialized"<<std::endl);
+  IMP_INTERNAL_CHECK(is_initialize(header_.get_top(0)) &&
+                     is_initialize(header_.get_top(1)) &&
+                     is_initialize(header_.get_top(2)),
+                     "The top value of the header is not initalized"
+                     <<std::endl);
+  IMP_INTERNAL_CHECK(is_initialize(header_.get_xorigin()) &&
+                     is_initialize(header_.get_xorigin()) &&
+                     is_initialize(header_.get_xorigin()),
+                     "The origin value of the header is not initalized"
+                     <<std::endl);
+  IMP_INTERNAL_CHECK(is_initialize(header_.get_resolution()),
+                           "The resolution was not initialized"<<std::endl);
 }
 
 DensityMap* read_map(const char *filename, MapReaderWriter &reader)
@@ -174,7 +279,7 @@ void write_map(DensityMap *d, const char *filename, MapReaderWriter &writer)
 }
 
 long DensityMap::get_number_of_voxels() const {
-  return header_.nx * header_.ny * header_.nz;
+  return header_.get_number_of_voxels();
 }
 
 float DensityMap::voxel2loc(const int &index, int dim) const
@@ -195,7 +300,8 @@ float DensityMap::voxel2loc(const int &index, int dim) const
 }
 
 long DensityMap::xyz_ind2voxel(int voxx,int voxy,int voxz) const{
-  return voxz * header_.nx * header_.ny + voxy * header_.nx + voxx;
+  return voxz * header_.get_nx() * header_.get_ny() +
+         voxy * header_.get_nx() + voxx;
 }
 
 long DensityMap::loc2voxel(float x,float y,float z) const
@@ -213,9 +319,9 @@ long DensityMap::loc2voxel(float x,float y,float z) const
 
 bool DensityMap::is_xyz_ind_part_of_volume(int ix,int iy,int iz) const
 {
-  if( ix>=0 && ix<header_.nx &&
-      iy>=0 && iy<header_.ny &&
-      iz>=0 && iz<header_.nz )
+  if( ix>=0 && ix<header_.get_nx() &&
+      iy>=0 && iy<header_.get_ny() &&
+      iz>=0 && iz<header_.get_nz() )
     return true;
   return false;
 }
@@ -285,10 +391,10 @@ void DensityMap::calc_all_voxel2loc()
 
     // bookkeeping
     ix++;
-    if (ix == header_.nx) {
+    if (ix == header_.get_nx()) {
       ix = 0;
       ++iy;
-      if (iy == header_.ny) {
+      if (iy == header_.get_ny()) {
         iy = 0;
         ++iz;
       }
@@ -391,9 +497,9 @@ bool DensityMap::same_origin(const DensityMap &other) const
 
 bool DensityMap::same_dimensions(const DensityMap &other) const
 {
-  if (get_header()->nx==other.get_header()->nx &&
-      get_header()->ny==other.get_header()->ny &&
-      get_header()->nz==other.get_header()->nz)
+  if (get_header()->get_nx()==other.get_header()->get_nx() &&
+      get_header()->get_ny()==other.get_header()->get_ny() &&
+      get_header()->get_nz()==other.get_header()->get_nz())
     return true;
   return false;
 }
@@ -470,7 +576,7 @@ std::string DensityMap::get_locations_string(float t)  {
 }
 
 void DensityMap::multiply(float factor) {
-  long size = header_.nx * header_.ny * header_.nz;
+  long size = header_.get_number_of_voxels();
   for (long i=0;i<size;i++){
     data_[i]= factor*data_[i];
   }
@@ -479,16 +585,16 @@ void DensityMap::multiply(float factor) {
 void DensityMap::add(const DensityMap &other) {
   //check that the two maps have the same dimensions
   IMP_USAGE_CHECK(same_dimensions(other),
-            "The dimensions of the two maps differ ( " << header_.nx
-            << "," << header_.ny << "," << header_.nz << ") != ("
-            << other.header_.nx << "," << other.header_.ny << ","
-            << other.header_.nz << " ) ");
+    "The dimensions of the two maps differ ( " << header_.get_nx()
+     << "," << header_.get_ny() << "," << header_.get_nz() << ") != ("
+     << other.header_.get_nx() << "," << other.header_.get_ny() << ","
+     << other.header_.get_nz() << " ) ");
   // check that the two maps have the same voxel size
   IMP_USAGE_CHECK(same_voxel_size(other),
             "The voxel sizes of the two maps differ ( "
             << header_.get_spacing() << " != "
             << other.header_.get_spacing());
-  long size = header_.nx * header_.ny * header_.nz;
+  long size = header_.get_number_of_voxels();
   for (long i=0;i<size;i++){
     data_[i]= data_[i] + other.data_[i];
   }
@@ -497,7 +603,9 @@ void DensityMap::add(const DensityMap &other) {
 
 void DensityMap::pad(int nx, int ny, int nz,float val) {
 
-  IMP_USAGE_CHECK(nx >= header_.nx && ny >= header_.ny && nz >= header_.nz,
+  IMP_USAGE_CHECK(nx >= header_.get_nx() &&
+                  ny >= header_.get_ny() &&
+                  nz >= header_.get_nz(),
             "The requested volume is smaller than the existing one");
 
   long new_size = nx*ny*nz;
@@ -580,9 +688,9 @@ namespace {
                           int yi, int zi) {
     //std::cout << "getting " << xi << ' ' << yi << ' ' << zi << std::endl;
     if (xi < 0 || yi < 0 || zi < 0) return 0.0;
-    else if (xi >= m->get_header()->nx
-             || yi >= m->get_header()->ny
-             || zi >= m->get_header()->nz) return 0.0;
+    else if (xi >= m->get_header()->get_nx()
+             || yi >= m->get_header()->get_ny()
+             || zi >= m->get_header()->get_nz()) return 0.0;
     else {
       unsigned int loc= m->xyz_ind2voxel(xi, yi, zi);
       //std::cout << "got " << m->get_value(loc) << std::endl;
@@ -613,11 +721,11 @@ namespace {
   inline unsigned int get_n(const DensityMap *m, unsigned int dim) {
     switch (dim) {
     case 0:
-      return m->get_header()->nx;
+      return m->get_header()->get_nx();
     case 1:
-      return m->get_header()->ny;
+      return m->get_header()->get_ny();
     default:
-      return m->get_header()->nz;
+      return m->get_header()->get_nz();
     }
   }
 }
@@ -728,8 +836,8 @@ DensityMap* get_resampled(DensityMap *in, double scaling) {
                                         ret->get_data()
                                         +ret->get_number_of_voxels())
           << std::endl);
-  IMP_LOG(TERSE, "Old map was " << in->get_header()->nx << " "
-          << in->get_header()->ny << " " << in->get_header()->nz
+  IMP_LOG(TERSE, "Old map was " << in->get_header()->get_nx() << " "
+          << in->get_header()->get_ny() << " " << in->get_header()->get_nz()
           << std::endl);
   if (in->get_header()->get_has_resolution()) {
     ret->get_header_writable()
