@@ -5,10 +5,12 @@
  */
 
 #include <IMP/exception.h>
+#include <IMP/constants.h>
 #include <IMP/atom/charmm_topology.h>
 #include <IMP/atom/CharmmParameters.h>
 #include <IMP/atom/CHARMMAtom.h>
 #include <IMP/atom/Charged.h>
+#include <IMP/atom/angle_decorators.h>
 
 #include <algorithm>
 
@@ -61,12 +63,43 @@ namespace {
             }
           }
           IMP::atom::Bond bd = bond(b[0], b[1], IMP::atom::Bond::SINGLE);
-          bd.set_length(p->mean);
+          bd.set_length(p->ideal);
           // Note that CHARMM uses kx^2 rather than (1/2)kx^2 for harmonic
           // restraints, so we need to add a factor of two; stiffness is also
           // incorporated into x, so is the sqrt of the force constant
           bd.set_stiffness(std::sqrt(p->force_constant * 2.0));
           ps.push_back(bd);
+        }
+      }
+    }
+  }
+
+  void add_residue_impropers(const CHARMMResidueTopology *current_residue,
+                             const CHARMMResidueTopology *previous_residue,
+                             const CHARMMResidueTopology *next_residue,
+                             const std::map<const CHARMMResidueTopology *,
+                                            Hierarchy> &resmap,
+                             const CharmmParameters *ff,
+                             Particles &ps)
+  {
+    for (unsigned int nimpr = 0;
+         nimpr < current_residue->get_number_of_impropers(); ++nimpr) {
+      Atoms as = current_residue->get_improper(nimpr).get_atoms(
+                                   current_residue, previous_residue,
+                                   next_residue, resmap);
+      if (as.size() > 0) {
+        const CHARMMDihedralParameters *p =
+              ff->get_improper_parameters(CHARMMAtom(as[0]).get_charmm_type(),
+                                          CHARMMAtom(as[1]).get_charmm_type(),
+                                          CHARMMAtom(as[2]).get_charmm_type(),
+                                          CHARMMAtom(as[3]).get_charmm_type());
+        if (p) {
+          Dihedral id = dihedral(as[0], as[1], as[2], as[3]);
+          // CHARMM ideal value is in angles; convert to radians
+          id.set_ideal(p->ideal / 180.0 * PI);
+          id.set_multiplicity(p->multiplicity);
+          id.set_stiffness(std::sqrt(p->force_constant * 2.0));
+          ps.push_back(id);
         }
       }
     }
@@ -291,6 +324,30 @@ Particles CHARMMTopology::add_bonds(Hierarchy hierarchy,
                nres < seg->get_number_of_residues() - 1 ?
                seg->get_residue(nres + 1) : NULL;
       add_residue_bonds(cur, prev, next, resmap, ff, ps);
+      prev = cur;
+    }
+  }
+  return ps;
+}
+
+Particles CHARMMTopology::add_impropers(Hierarchy hierarchy,
+                                        const CharmmParameters *ff) const
+{
+  ResMap resmap;
+  map_residue_topology_to_hierarchy(hierarchy, resmap);
+  Particles ps;
+
+  for (CHARMMSegmentTopologyConstIterator segit = segments_begin();
+       segit != segments_end(); ++segit) {
+    const CHARMMSegmentTopology *seg = *segit;
+    const CHARMMResidueTopology *prev = NULL;
+    for (unsigned int nres = 0; nres < seg->get_number_of_residues();
+         ++nres) {
+      const CHARMMResidueTopology *cur = seg->get_residue(nres);
+      const CHARMMResidueTopology *next =
+               nres < seg->get_number_of_residues() - 1 ?
+               seg->get_residue(nres + 1) : NULL;
+      add_residue_impropers(cur, prev, next, resmap, ff, ps);
       prev = cur;
     }
   }

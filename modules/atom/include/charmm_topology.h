@@ -313,6 +313,9 @@ public:
   void add_charges(Hierarchy hierarchy) const;
 
   Particles add_bonds(Hierarchy hierarchy, const CharmmParameters *ff) const;
+
+  Particles add_impropers(Hierarchy hierarchy,
+                          const CharmmParameters *ff) const;
 };
 
 IMPATOM_END_NAMESPACE

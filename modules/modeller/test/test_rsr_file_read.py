@@ -179,5 +179,32 @@ class ModellerRestraintsTests(IMP.test.TestCase):
         m.add_restraint(IMP.container.SingletonsRestraint(bss, cont))
         self.assertSimilarModellerIMPScores(modmodel, protein)
 
+    def test_improper_restraints(self):
+        """Check improper restraints against Modeller"""
+        e = environ()
+        e.edat.dynamic_sphere = False
+        e.libs.topology.read('${LIB}/top_heav.lib')
+        e.libs.parameters.read('${LIB}/par.lib')
+        modmodel = model(e)
+        modmodel.build_sequence('A')
+        modmodel.restraints.make(selection(modmodel), restraint_type='IMPROPER',
+                                 spline_on_site=False,
+                                 residue_span_range=(0, 99999))
+
+        m = IMP.Model()
+        loader = IMP.modeller.ModelLoader(modmodel)
+        protein = loader.load_atoms(m)
+        ff = IMP.atom.CharmmParameters(IMP.atom.get_data_path('top.lib'),
+                                       IMP.atom.get_data_path('par.lib'))
+        topology = ff.make_topology(protein)
+        topology.apply_default_patches(ff)
+        topology.add_atom_types(protein)
+        bonds = topology.add_impropers(protein, ff)
+        cont = IMP.container.ListSingletonContainer("bonds")
+        cont.add_particles(bonds)
+        bss = IMP.atom.ImproperSingletonScore(IMP.core.Harmonic(0,1))
+        m.add_restraint(IMP.container.SingletonsRestraint(bss, cont))
+        self.assertSimilarModellerIMPScores(modmodel, protein)
+
 if __name__ == '__main__':
     unittest.main()

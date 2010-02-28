@@ -24,13 +24,13 @@ IMPATOM_BEGIN_NAMESPACE
 
 struct CHARMMBondParameters {
   double force_constant;
-  double mean;
+  double ideal;
 };
 
 struct CHARMMDihedralParameters {
   double force_constant;
   int multiplicity;
-  double mean;
+  double ideal;
 };
 
 //! Charmm force field

@@ -251,6 +251,8 @@ class CHARMMTopologyTests(IMP.test.TestCase):
             a1 = IMP.atom.get_atom(r1, bonda1)
             a2 = IMP.atom.get_atom(r2, bonda2)
             self.assertAtomsBonded(a1, a2, atyp1, atyp2, bondlen, fcon)
+        impropers = topology.add_impropers(pdb, ff)
+        self.assertEqual(len(impropers), 509)
 
         ff.add_radii(pdb)
         ff.add_well_depths(pdb)
