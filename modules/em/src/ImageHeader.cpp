@@ -11,7 +11,7 @@
 IMPEM_BEGIN_NAMESPACE
 
 
-     void ImageHeader::print_hard(std::ostream &out) const
+void ImageHeader::print_hard(std::ostream &out) const
 {
   out << "fNslice=" << header_.fNslice << std::endl;
   out << "fNrow=" <<   header_.fNrow << std::endl;
@@ -238,7 +238,7 @@ bool ImageHeader::read(std::ifstream& f, bool skip_type_check,
   }
   return true;
 }
-#undef DEBUG
+//#undef DEBUG
 
 int ImageHeader::read(const String filename, bool skip_type_check,
                       bool force_reversed, bool skip_extra_checkings)

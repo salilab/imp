@@ -10,23 +10,23 @@
 #include <IMP/core/XYZ.h>
 IMPCORE_BEGIN_NAMESPACE
 
-algebra::VectorD<3> centroid(const XYZs &ps) {
+algebra::VectorD<3> centroid(const XYZsTemp &ps) {
  algebra::VectorD<3> cen(0.0,0.0,0.0);
- for (XYZs::const_iterator it = ps.begin(); it != ps.end();it++) {
+ for (XYZsTemp::const_iterator it = ps.begin(); it != ps.end();it++) {
    cen = cen + it->get_coordinates();
  }
  return cen/ps.size();
 }
 
-algebra::Segment3D diameter(const XYZs &ps) {
+algebra::Segment3D diameter(const XYZsTemp &ps) {
   IMP_USAGE_CHECK(!ps.empty(), "Can't compute the diameter if you don't give "
             "me any particles.");
   XYZ p1,p2;
   double max_squared_dist=0.0;
 
-  for (XYZs::const_iterator it = ps.begin();it != ps.end();it++){
+  for (XYZsTemp::const_iterator it = ps.begin();it != ps.end();it++){
     algebra::VectorD<3> xyz1 = it->get_coordinates();
-    for (XYZs::const_iterator it1 = it+1;it1 != ps.end();it1++){
+    for (XYZsTemp::const_iterator it1 = it+1;it1 != ps.end();it1++){
       algebra::VectorD<3> xyz2 = it1->get_coordinates();
       double curr_squared_dist = algebra::get_squared_distance(xyz1,xyz2);
       if (curr_squared_dist > max_squared_dist) {
