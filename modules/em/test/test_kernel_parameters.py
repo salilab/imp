@@ -13,12 +13,13 @@ class KernelParametersTest(IMP.test.TestCase):
         self.assertInTolerance(self.kp.get_rsig()*self.kp.get_rsig(),
                                self.kp.get_rsigsq(),0.001)
         self.assertInTolerance(self.kp.get_timessig(),3,0.001)
-        self.assertInTolerance(1./self.kp.get_rsigsq(),
+        self.assertInTolerance(1./(2.*self.kp.get_rsigsq()),
                                self.kp.get_inv_rsigsq(),0.001)
-        self.assertInTolerance(self.kp.get_sq2pi3(),1./math.sqrt(8.*math.pi*math.pi*math.pi))
+        self.assertInTolerance(self.kp.get_sq2pi3(),1./math.sqrt(8.*math.pi*math.pi*math.pi),0.001)
         self.assertInTolerance(self.kp.get_rnormfac(),self.kp.get_sq2pi3()/76.549,0.001)
-        self.assertInTolerance(self.kp.get_rkdist(),12.738,0.001)
+        self.assertInTolerance(self.kp.get_rkdist(),12.739,0.001)
         self.assertInTolerance(self.kp.get_lim(),0.011108,0.001)
+
     def test_for_resolution_of_10_and_radius_of_1(self):
         rad=1.
         self.kp.set_params(rad)
@@ -30,7 +31,7 @@ class KernelParametersTest(IMP.test.TestCase):
                              kp.get_vsigsq(),0.001)
         self.assertInTolerance(0.5/(kp.get_vsigsq()+self.kp.get_rsigsq()),
                                kp.get_inv_sigsq(),0.001)
-        self.assertInTolerance(kp.get_kdist(),12.738,0.001)
+        self.assertInTolerance(kp.get_kdist(),12.9152,0.001)
     def test_get_parameters_by_radius(self):
         rad=[1.2,1.5,2.,2.2]
         for r in rad:
