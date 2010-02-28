@@ -49,7 +49,7 @@ public:
 
   static ParticleKey get_particle_key(unsigned int i);
   static FloatKey get_ideal_key();
-  static FloatKey get_multiplicity_key();
+  static IntKey get_multiplicity_key();
   static FloatKey get_stiffness_key();
 };
 

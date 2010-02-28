@@ -29,9 +29,9 @@ FloatKey Dihedral::get_stiffness_key()
   return k;
 }
 
-FloatKey Dihedral::get_multiplicity_key()
+IntKey Dihedral::get_multiplicity_key()
 {
-  static FloatKey k("multiplicity");
+  static IntKey k("multiplicity");
   return k;
 }
 
