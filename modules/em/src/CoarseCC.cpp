@@ -88,7 +88,7 @@ float CoarseCC::cross_correlation_coefficient(const DensityMap &em_map,
 
   // Take into account the possibility of a model map with zero rms
   if ((fabs(model_map.get_header()->rms-0.0)<EPS) && divide_by_rms) {
-    IMP_WARN("The model map rms is sero, and the user ask to divide"<<
+    IMP_WARN("The model map rms is zero, and the user ask to divide"<<
              " by rms. returning 0!"<<std::endl);
     return 0.0;
   }
