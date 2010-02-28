@@ -12,7 +12,7 @@ class ModellerRestraintsTests(IMP.test.TestCase):
         """Assert that Modeller and IMP give the same score and derivatives"""
         modeller_energy = selection(modeller_model).energy()[0]
         imp_score = imp_atoms.get_model().evaluate(True)
-        self.assertInTolerance(modeller_energy, imp_score, 0.1)
+        self.assertInTolerance(modeller_energy, imp_score, 0.001)
         for imp_atom, modeller_atom in zip(imp_atoms.get_leaves(),
                                            modeller_model.atoms):
             imp_deriv = IMP.core.XYZ(imp_atom).get_derivatives()
