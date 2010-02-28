@@ -39,7 +39,8 @@ class SurfaceTests(IMP.test.TestCase):
 
         self.mh1_shell_map.pad(nx,ny,nz)
         self.good_mh2_shell_map.pad(nx,ny,nz)
-
+        self.mh1_shell_map.calcRMS()
+        self.good_mh2_shell_map.calcRMS()
         conv = IMP.em.CoarseCC()
         score = conv.cross_correlation_coefficient(self.mh1_shell_map,
                                                    self.good_mh2_shell_map,
@@ -59,7 +60,8 @@ class SurfaceTests(IMP.test.TestCase):
 
         self.mh1_shell_map.pad(nx,ny,nz)
         self.bad_mh2_shell_map.pad(nx,ny,nz)
-
+        self.mh1_shell_map.calcRMS()
+        self.bad_mh2_shell_map.calcRMS()
         conv = IMP.em.CoarseCC()
         score = conv.cross_correlation_coefficient(self.mh1_shell_map,
                                                    self.bad_mh2_shell_map,
