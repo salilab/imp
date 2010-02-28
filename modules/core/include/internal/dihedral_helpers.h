@@ -9,6 +9,7 @@
 #define IMPCORE_DIHEDRAL_HELPERS_H
 
 #include "../config.h"
+#include "../XYZ.h"
 #include <IMP/algebra/Vector3D.h>
 #include <cmath>
 
@@ -35,7 +36,7 @@ inline double dihedral(const XYZ &d0, const XYZ &d1,
 
   // avoid division by zero
   double cosangle = std::abs(mag_product) > 1e-12
-                   ? scalar_product / std::sqrt(mag_product) : 0.0;
+                    ? scalar_product / mag_product : 0.0;
 
   // avoid range error for acos
   cosangle = std::max(std::min(cosangle, static_cast<Float>(1.0)),
