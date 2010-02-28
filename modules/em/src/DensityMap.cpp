@@ -408,15 +408,16 @@ void DensityMap::std_normalize()
   if (normalized_)
     return;
 
-  float max_value=-1e40, min_value=1e40;
+  emreal max_value=- std::numeric_limits<emreal>::max();
+  emreal min_value=-max_value;
   float inv_std = 1.0/calcRMS();
   float mean = header_.dmean;
   long nvox = get_number_of_voxels();
 
   for (long ii=0;ii<nvox;ii++) {
     data_[ii] = (data_[ii] - mean) * inv_std;
-    if(data_[ii] > max_value) max_value = data_[ii];
-    if(data_[ii] < min_value) min_value = data_[ii];
+    max_value=std::max(max_value, data_[ii]);
+    min_value=std::min(min_value, data_[ii]);
   }
   normalized_ = true;
   rms_calculated_ = true;
@@ -435,7 +436,8 @@ emreal DensityMap::calcRMS()
     return header_.rms;
   }
 
-  emreal max_value=-1e40, min_value=1e40;
+  emreal max_value=- std::numeric_limits<emreal>::max();
+  emreal min_value=-max_value;
   long  nvox = get_number_of_voxels();
   emreal meanval = .0;
   emreal stdval = .0;
@@ -443,9 +445,8 @@ emreal DensityMap::calcRMS()
   for (long ii=0;ii<nvox;ii++) {
     meanval += data_[ii];
     stdval += data_[ii] * data_[ii];
-    if(data_[ii] > max_value) max_value = data_[ii];
-    if(data_[ii] < min_value) min_value = data_[ii];
-
+    max_value=std::max(max_value, data_[ii]);
+    min_value=std::min(min_value, data_[ii]);
   }
 
   header_.dmin=min_value;
