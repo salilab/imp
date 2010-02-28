@@ -323,7 +323,7 @@ void CharmmParameters::parse_bonds_parameters_line(String line)
 
   CHARMMBondParameters p;
   p.force_constant = atof(split_results[2].c_str());
-  p.mean = atof(split_results[3].c_str());
+  p.ideal = atof(split_results[3].c_str());
   bond_parameters_[internal::CHARMMBondNames(split_results[0],
                                              split_results[1])] = p;
 }
@@ -338,7 +338,7 @@ void CharmmParameters::parse_angles_parameters_line(String line)
 
   CHARMMBondParameters p;
   p.force_constant = atof(split_results[3].c_str());
-  p.mean = atof(split_results[4].c_str());
+  p.ideal = atof(split_results[4].c_str());
   angle_parameters_[internal::CHARMMAngleNames(split_results[0],
                                                split_results[1],
                                                split_results[2])] = p;
@@ -356,7 +356,7 @@ void CharmmParameters::parse_dihedrals_parameters_line(String line,
   CHARMMDihedralParameters p;
   p.force_constant = atof(split_results[4].c_str());
   p.multiplicity = atoi(split_results[5].c_str());
-  p.mean = atof(split_results[6].c_str());
+  p.ideal = atof(split_results[6].c_str());
   param.push_back(std::make_pair(
                     internal::CHARMMDihedralNames(split_results[0],
                                                   split_results[1],
