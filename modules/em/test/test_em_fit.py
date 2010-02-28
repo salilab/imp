@@ -107,7 +107,6 @@ class FittingTest(IMP.test.TestCase):
         r1 = IMP.em.FitRestraint(self.particles,self.scene,
                                  self.radius_key,
                                  self.weight_key, 1.0)
-        r1.set_was_used(True)
         self.assert_(isinstance(r1.get_model_dens_map(),
                                 IMP.em.SampledDensityMap))
 
