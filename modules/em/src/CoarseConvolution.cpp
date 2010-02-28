@@ -23,16 +23,16 @@ float CoarseConvolution::convolution(const DensityMap &f, DensityMap &g,
   //validity checks
   IMP_USAGE_CHECK(f.same_dimensions(g),
             "This function cannot handle density maps of different size. "
-            << "First map dimensions : " << f_header->nx << " x "
-            << f_header->ny << " x " << f_header->nz
-            << "; Second map dimensions: " << g_header->nx << " x "
-            << g_header->ny << " x " << g_header->nz);
+            << "First map dimensions : " << f_header->get_nx() << " x "
+            << f_header->get_ny() << " x " << f_header->get_nz()
+            << "; Second map dimensions: " << g_header->get_nx() << " x "
+            << g_header->get_ny() << " x " << g_header->get_nz());
   IMP_USAGE_CHECK(f.same_voxel_size(g),
             "This function cannot handle density maps of different pixelsize. "
             << "First map pixelsize : " << f_header->get_spacing()
             << "; Second map pixelsize: " << g_header->get_spacing());
   bool same_origin = f.same_origin(g);
-  int  nvox = f_header->nx*f_header->ny*f_header->nz;
+  int  nvox = f_header->get_number_of_voxels();
   emreal conv = 0.0;
 
   if(same_origin){ // Fastest version
@@ -65,8 +65,8 @@ float CoarseConvolution::convolution(const DensityMap &f, DensityMap &g,
     int i; // Index for model data
     // calculate the shift in index of the origin of model_map in em_map
     // ( j can be negative)
-    j = ivoxz_shift * f_header->nx * f_header->ny + ivoxy_shift
-        * f_header->nx + ivoxx_shift;
+    j = ivoxz_shift * f_header->get_nx() * f_header->get_ny() + ivoxy_shift
+      * f_header->get_nx() + ivoxx_shift;
     for (i=0;i<nvox;i++) {
       // if the voxel of the model is above the threshold
       if (g_data[i] > voxel_data_threshold) {

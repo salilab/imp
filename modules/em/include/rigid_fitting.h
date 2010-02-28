@@ -48,7 +48,7 @@ protected:
   std::vector<FittingSolution> fs;
 };
 
-//! Local rigid fitting of a rigid body
+//! Local rigid fitting of a rigid body around a center point
 /**
 \brief Fit a set of particles to a density map around an anchor point.
        The fitting is assessed using the cross-correaltion score.
@@ -63,6 +63,7 @@ protected:
 \note The returned cross-correlation score is 1-cc, as we usually want to
       minimize a scroing function. Thus a score of 1 means no-correlation
       and a score of 0. is perfect correlation.
+\note The input rigid body should be also IMP::atom::Hierarchy
 \param[in] rb          The rigid body to fit
 \param[in] radius_key  The raidus key of the particles in the rigid body
 \param[in] weight_key  The weight key of the particles in the rigid body
@@ -104,6 +105,7 @@ IMPEMEXPORT void  local_rigid_fitting_around_point(
 \note The returned cross-correlation score is 1-cc, as we usually want to
       minimize a scroing function. Thus a score of 1 means no-correlation
       and a score of 0. is perfect correlation.
+\note The input rigid body should be also IMP::atom::Hierarchy
 \param[in] rb          The rigid body to fit
 \param[in] radius_key  The raidus key of the particles in the rigid body
 \param[in] weight_key  The weight key of the particles in the rigid body
@@ -125,7 +127,7 @@ inline void local_rigid_fitting(
    const FloatKey &weight_key,
    DensityMap *dmap,
    FittingSolutions &fr,
-   OptimizerState *display_log,
+   OptimizerState *display_log=NULL,
    Int number_of_optimization_runs = 5, Int number_of_mc_steps = 10,
    Int number_of_cg_steps=100,
    Float max_translation=2., Float max_rotation=5.) {
@@ -137,10 +139,32 @@ inline void local_rigid_fitting(
      number_of_cg_steps, max_translation, max_rotation);
 }
 
+
+//! Local rigid fitting of a rigid body around a set of center points
+/**
+\brief Fit a set of particles to a density map around each of the input points.
+       The function apply local_rigid_fitting_around_point around each center.
+\note The input rigid body should be also IMP::atom::Hierarchy
+\param[in] rb          The rigid body to fit
+\param[in] rad_key  The raidus key of the particles in the rigid body
+\param[in] wei_key  The weight key of the particles in the rigid body
+\param[in] dmap        The density map to fit to
+\param[in] anchor_centroids    The points to fit the particles around
+\param[in] fr          To contain the fitting solutions in the end of
+                       the procedure
+\param[in] display_log If provided, then intermediate states
+                       in during the optimization procedure are printed
+\param[in] number_of_optimization_runs  number of Monte Carlo optimizations
+\param[in] number_of_mc_steps  number of steps in a Monte Carlo optimization
+\param[in] number_of_cg_steps  number of Conjugate Gradients steps in
+                               a Monte Carlo step
+\param[in] max_translation maximum translation step in a MC optimization step
+\param[in] max_rotation maximum rotation step in a single MC optimization step
+ */
 IMPEMEXPORT void local_rigid_fitting_around_points(
    core::RigidBody &rb,
    const FloatKey &rad_key, const FloatKey &wei_key,
-   DensityMap *dmap, const std::vector<algebra::VectorD<3> > &anchor_centroid,
+   DensityMap *dmap, const std::vector<algebra::VectorD<3> > &anchor_centroids,
    FittingSolutions &fr, OptimizerState *display_log,
    Int number_of_optimization_runs = 5, Int number_of_mc_steps = 10,
    Int number_of_cg_steps=100,
@@ -153,6 +177,9 @@ IMPEMEXPORT void local_rigid_fitting_around_points(
        The fitting is assessed using the cross-correaltion score.
        The optimization is a grid search
 \note The transformations are not clustered.
+\note The returned cross-correlation score is 1-cc, as we usually want to
+      minimize a scroing function. Thus a score of 1 means no-correlation
+      and a score of 0. is perfect correlation.
 \param[in] ps       The particles to be fitted (treated rigid)
 \param[in] model    The model
 \param[in] rad_key  The raidus key of the particles in the rigid body
@@ -163,16 +190,20 @@ IMPEMEXPORT void local_rigid_fitting_around_points(
 \param[in] max_voxels_translation Sample translations within
                                  -max_voxel_translation to max_voxel_translation
 \param[in] translation_step      The translation sampling step
+\param[in] max_angle_in_radians Sample rotations with +- max_angle_in_radians
+                                around the current rotation
 \param[in] number_of_rotations   The number of rotations to sample
  */
 
 IMPEMEXPORT void local_rigid_fitting_grid_search(
-   Particles &ps, Model *model, const FloatKey &rad_key,
+   Particles &ps, const FloatKey &rad_key,
    const FloatKey &wei_key,
    DensityMap *dmap,
    FittingSolutions &fr,
    Int max_voxels_translation=2,
-   Int translation_step=1, Int number_of_rotations = 200);
+   Int translation_step=1,
+   Float max_angle_in_radians = 0.174,
+   Int number_of_rotations = 100);
 
 
 //! Compute fitting scores for a given set of rigid transformations

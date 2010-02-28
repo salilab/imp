@@ -14,10 +14,10 @@ class VolumeTest(IMP.test.TestCase):
         """Check get_density"""
         m= IMP.em.read_map(self.get_input_file_name('1z5s.mrc'))
         wid=m.get_top()-m.get_origin()
-        for i in random.sample(range(0, m.get_header().nx), 30):
+        for i in random.sample(range(0, m.get_header().get_nx()), 30):
             #print i
-            for j in random.sample(range(0, m.get_header().ny), 30):
-                for k in random.sample(range(0, m.get_header().nz), 30):
+            for j in random.sample(range(0, m.get_header().get_ny()), 30):
+                for k in random.sample(range(0, m.get_header().get_nz()), 30):
                     v= self.get_center(m, i,j,k)
                     #print v
                     val= IMP.em.get_density(m, v)
@@ -33,9 +33,9 @@ class VolumeTest(IMP.test.TestCase):
                     self.assertEqual(IMP.em.get_density(m, self.get_center(m, i,j,k) +IMP.algebra.Vector3D(0,0,-wid[2])), 0)
 
 
-        indexes=[random.randint(0,m.get_header().nx),
-                 random.randint(0,m.get_header().ny),
-                 random.randint(0,m.get_header().nz)]
+        indexes=[random.randint(0,m.get_header().get_nx()),
+                 random.randint(0,m.get_header().get_ny()),
+                 random.randint(0,m.get_header().get_nz())]
         fs=IMP.algebra.Vector3D(random.uniform(0,1),
                                 random.uniform(0,1),
                                 random.uniform(0,1))

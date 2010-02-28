@@ -39,7 +39,7 @@ void SurfaceShellDensityMap::set_neighbor_mask() {
         if (x == 0 && y == 0 && z == 0)
           continue;
         neighbor_shift_.push_back(
-              z * header_.nx * header_.ny + y * header_.nx + x);
+          z * header_.get_nx() * header_.get_ny() + y * header_.get_nx() + x);
         neighbor_dist_.push_back(
             header_.get_spacing() * sqrt((1.0*x*x + y*y + z*z)));
       }
@@ -57,7 +57,7 @@ void SurfaceShellDensityMap::binaries(float scene_val) {
 
   // actual sampling
   float tmpx,tmpy,tmpz;
-  int nxny=header_.nx*header_.ny;
+  int nxny=header_.get_nx()*header_.get_ny();
   int znxny;
   float rsq,tmp;
 
@@ -78,7 +78,7 @@ void SurfaceShellDensityMap::binaries(float scene_val) {
       for (ivoxy=iminy;ivoxy<=imaxy;ivoxy++)  {
         // we increment ivox this way to avoid unneceessary multiplication
         // operations.
-        ivox = znxny + ivoxy * header_.nx + iminx;
+        ivox = znxny + ivoxy * header_.get_nx() + iminx;
         for (ivoxx=iminx;ivoxx<=imaxx;ivoxx++) {
           tmpx=x_loc_[ivox] - xyzr_[ii].get_x();
           tmpy=y_loc_[ivox] - xyzr_[ii].get_y();
@@ -103,7 +103,7 @@ void SurfaceShellDensityMap::binaries(float scene_val) {
 
 bool SurfaceShellDensityMap::has_background_neighbor(long voxel_ind) {
   long n_voxel_ind;
-  long num_voxels = header_.nx * header_.ny * header_.nz;
+  long num_voxels = header_.get_number_of_voxels();
   for (unsigned int j = 0; j < neighbor_shift_.size(); j++) {
     n_voxel_ind = voxel_ind + neighbor_shift_[j];
     if ((n_voxel_ind>-1) && (n_voxel_ind<num_voxels)) {

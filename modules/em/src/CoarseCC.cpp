@@ -77,10 +77,10 @@ float CoarseCC::cross_correlation_coefficient(const DensityMap &em_map,
   //validity checks
   IMP_USAGE_CHECK(em_map.same_dimensions(model_map),
             "This function cannot handle density maps of different size. "
-            << "First map dimensions : " << em_header->nx << " x "
-            << em_header->ny << " x " << em_header->nz << "; "
-            << "Second map dimensions: " << model_header->nx << " x "
-            << model_header->ny << " x " << model_header->nz);
+      << "First map dimensions : " << em_header->get_nx() << " x "
+      << em_header->get_ny() << " x " << em_header->get_nz() << "; "
+      << "Second map dimensions: " << model_header->get_nx() << " x "
+      << model_header->get_ny() << " x " << model_header->get_nz());
   IMP_USAGE_CHECK(em_map.same_voxel_size(model_map),
             "This function cannot handle density maps of different pixelsize. "
             << "First map pixelsize : " << em_header->get_spacing() << "; "
@@ -94,7 +94,7 @@ float CoarseCC::cross_correlation_coefficient(const DensityMap &em_map,
   }
 
   bool same_origin = em_map.same_origin(model_map);
-  int  nvox = em_header->nx*em_header->ny*em_header->nz;
+  int  nvox = em_header->get_number_of_voxels();
   emreal ccc = 0.0;
 
   if(same_origin){ // Fastest version
@@ -138,8 +138,8 @@ float CoarseCC::cross_correlation_coefficient(const DensityMap &em_map,
     int i; // Index for model data
     // calculate the shift in index of the origin of model_map in em_map
     // ( j can be negative)
-    j = ivoxz_shift * em_header->nx * em_header->ny + ivoxy_shift
-        * em_header->nx + ivoxx_shift;
+    j = ivoxz_shift * em_header->get_nx() * em_header->get_ny() + ivoxy_shift
+      * em_header->get_nx() + ivoxx_shift;
     int num_elements=0;//needed for checks
     for (i=0;i<nvox;i++) {
       // if the voxel of the model is above the threshold
@@ -191,7 +191,7 @@ void CoarseCC::calc_derivatives(const DensityMap &em_map,
   const emreal *em_data = em_map.get_data();
   float lim = (model_map.get_kernel_params())->get_lim();
   //lim = 0.00000001;
-  int nvox = em_header->nx * em_header->ny * em_header->nz;
+  int nvox = em_header->get_number_of_voxels();
   int ivox;
 
   // validate that the model and em maps are not empty
@@ -199,7 +199,8 @@ void CoarseCC::calc_derivatives(const DensityMap &em_map,
             "EM map is empty ! em_header->rms = " << em_header->rms);
   IMP_USAGE_CHECK(model_header->rms >= EPS,
             "Model map is empty ! model_header->rms = " << model_header->rms
-            <<" the model centroid is : " << core::centroid(core::XYZs(ps))<<
+            <<" the model centroid is : " <<
+            core::centroid(core::XYZsTemp(ps))<<
             " the map centroid is " << em_map.get_centroid() <<std::endl);
   // Compute the derivatives
   FloatKey x_key=IMP::core::XYZ::get_coordinate_key(0);
@@ -218,8 +219,8 @@ void CoarseCC::calc_derivatives(const DensityMap &em_map,
     tdvx = .0;tdvy=.0; tdvz=.0;
     for (int ivoxz=iminz;ivoxz<=imaxz;ivoxz++) {
       for (int ivoxy=iminy;ivoxy<=imaxy;ivoxy++) {
-        ivox = ivoxz * em_header->nx * em_header->ny
-               + ivoxy * em_header->nx + iminx;
+        ivox = ivoxz * em_header->get_nx() * em_header->get_ny()
+               + ivoxy * em_header->get_nx() + iminx;
         for (int ivoxx=iminx;ivoxx<=imaxx;ivoxx++) {
           float dx = x_loc[ivox] - ps[ii]->get_value(x_key);
           float dy = y_loc[ivox] - ps[ii]->get_value(y_key);

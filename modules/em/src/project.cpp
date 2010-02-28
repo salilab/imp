@@ -45,9 +45,9 @@ void project_given_rotation(DensityMap& map,
   // Set the pixel size of the map to 1 (necessary for the projection algorithm)
   map.update_voxel_size(1.0);
   // Center the map (necessary for the projection algorithm)
-  map.set_origin((-1)*(int)(map.get_header()->nx/2.),
-                 (-1)*(int)(map.get_header()->ny/2.),
-                 (-1)*(int)(map.get_header()->nz/2.));
+  map.set_origin((-1)*(int)(map.get_header()->get_nx()/2.),
+                 (-1)*(int)(map.get_header()->get_ny()/2.),
+                 (-1)*(int)(map.get_header()->get_nz()/2.));
 
   // Get the rotation and the direction from the Euler angles
   IMP::algebra::Rotation3D InvRot = Rot.get_inverse();
@@ -81,9 +81,9 @@ void project_given_rotation(DensityMap& map,
   init0[2] = map.get_header()->get_zorigin();
   // Logical ints for the end of the map. The next 3 lines make sense
   // because the voxel size is set to 1.0
-  end0[0] = init0[0]-1+map.get_header()->nx;
-  end0[1] = init0[1]-1+map.get_header()->ny;
-  end0[2] = init0[2]-1+map.get_header()->nz;
+  end0[0] = init0[0]-1+map.get_header()->get_nx();
+  end0[1] = init0[1]-1+map.get_header()->get_ny();
+  end0[2] = init0[2]-1+map.get_header()->get_nz();
   for (int i = 0;i < 3;i++) {
     signs[i] = IMP::algebra::get_sign(direction[i]);
     half_signs[i] = 0.5 * signs[i];

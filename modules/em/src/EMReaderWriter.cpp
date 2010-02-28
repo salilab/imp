@@ -13,11 +13,11 @@
 IMPEM_BEGIN_NAMESPACE
 
 EMHeader::EMHeader(const DensityHeader &header) {
-  nx=header.nx;
-  ny=header.ny;
-  nz=header.nz;
+  nx=header.get_nx();
+  ny=header.get_ny();
+  nz=header.get_nz();
   magic=header.magic;
-  type=header.data_type;
+  type=header.get_data_type();
   for (short i=0;i < DensityHeader::COMMENT_FIELD_SINGLE_SIZE; i++) {
     comment[i]=header.comments[0][i];
   }
@@ -47,11 +47,9 @@ EMHeader::EMHeader(const DensityHeader &header) {
 }
 
 void EMHeader::GenerateCommonHeader(DensityHeader &header) {
-  header.nx=nx;
-  header.ny=ny;
-  header.nz=nz;
+  header.set_number_of_voxels(nx,ny,nz);
   header.magic=magic;
-  header.data_type=type;
+  header.set_data_type(type);
   header.Objectpixelsize_=Objectpixelsize;
 
   for (short i=0;i < DensityHeader::COMMENT_FIELD_SINGLE_SIZE; i++) {

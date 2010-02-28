@@ -34,7 +34,7 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
     def setUp(self):
         """Build test model and optimizer"""
         IMP.test.TestCase.setUp(self)
-        IMP.set_log_level(IMP.SILENT)
+        IMP.set_log_level(IMP.VERBOSE)
         self.imp_model = IMP.Model()
         self.load_density_map()
         self.load_protein("1z5s_A.pdb")
@@ -46,10 +46,10 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         print "start : "
         print fr.get_number_of_solutions()
         IMP.em.local_rigid_fitting_grid_search(
-            IMP.Particles(self.particles.get_particles()),self.imp_model,
+            IMP.Particles(self.particles.get_particles()),
             self.radius_key, self.weight_key,
             self.scene,
-            fr,7,7,4)
+            fr,2,1,0.174,10)
 
         #test that if you apply the transformation on the original configuration you get the same result
         # (in rmsd and score)

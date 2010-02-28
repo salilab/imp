@@ -18,7 +18,7 @@ void MRCReaderWriter::Read(const char *fn_in, float **data, DensityHeader &head)
   read(data);
   // Translate header to DensityHeader
   header.ToDensityHeader(head);
-  head.Objectpixelsize_ = (float)head.xlen/head.nx;
+  head.Objectpixelsize_ = (float)head.xlen/head.get_nx();
 }
 
 void MRCReaderWriter::Write(const char *fn_out, const float *data,
@@ -243,15 +243,15 @@ void MRCHeader::FromDensityHeader(const DensityHeader &h)
 {
   std::string empty;
 
-  nz=h.nz;   ny=h.ny;  nx=h.nx; // map size
+  nz=h.get_nz();   ny=h.get_ny();  nx=h.get_nx(); // map size
   // mode
-  if(h.data_type==0) // data type not initialized
+  if(h.get_data_type()==0) // data type not initialized
     mode = 2;
-  if(h.data_type==1)
+     if(h.get_data_type()==1)
     mode=0; // 8-bits
-  else if(h.data_type==2)
+     else if(h.get_data_type()==2)
     mode=1;// 16-bits
-  else if(h.data_type==5)
+     else if(h.get_data_type()==5)
     mode=2;// 32-bits
 
   // number of first columns in map (default = 0)
@@ -294,15 +294,15 @@ void MRCHeader::FromDensityHeader(const DensityHeader &h)
 void MRCHeader::ToDensityHeader(DensityHeader &h)
 {
   std::string empty;
-  h.nz=nz; h.ny=ny; h.nx=nx; // map size
+  h.set_number_of_voxels(nx,ny,nz);
   h.update_cell_dimensions();
   // mode
   if(mode==0)
-    h.data_type=1;
+    h.set_data_type(1);
   else if(mode==1)
-    h.data_type=2;
+    h.set_data_type(2);
   else if(mode==2)
-    h.data_type=5;
+    h.set_data_type(5);
   // number of first columns in map (default = 0)
   h.nxstart=nxstart ; h.nystart=nystart ; h.nzstart=nzstart;
   h.mx=mx ; h.my=my ; h.mz=mz; // Number of intervals along each dimension

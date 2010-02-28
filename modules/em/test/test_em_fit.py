@@ -16,9 +16,9 @@ class FittingTest(IMP.test.TestCase):
         self.scene = IMP.em.read_map(self.get_input_file_name("in.mrc"), self.mrw)
         self.scene.get_header_writable().set_resolution(3.)
         header = self.scene.get_header()
-        self.assertEqual(header.nx, 33)
-        self.assertEqual(header.ny, 33)
-        self.assertEqual(header.nz, 33)
+        self.assertEqual(header.get_nx(), 33)
+        self.assertEqual(header.get_ny(), 33)
+        self.assertEqual(header.get_nz(), 33)
 
     def load_particles(self):
         self.radius_key = IMP.core.XYZR.get_default_radius_key()

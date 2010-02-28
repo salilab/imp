@@ -60,9 +60,9 @@ class RigidBodyCorrelationByGridRotation(IMP.test.TestCase):
             rmsd=IMP.atom.get_rmsd(mp_xyz,mp_ref_xyz,ts[i])
             score = fr.get_score(i)
             #print "rmsd:",rmsd," score:",score
-            if score>best_score[1]:
+            if score<best_score[1]:
                 best_score=[i,score,rmsd]
-        print best_score
+        print "best score:",best_score
         self.assert_(best_score[2]<5)
 
 if __name__ == '__main__':
