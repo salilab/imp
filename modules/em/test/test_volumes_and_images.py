@@ -40,9 +40,9 @@ class VolumeTest(IMP.test.TestCase):
         IMP.em.write_map(m, "test.xmp",rw1)
         m2= IMP.em.read_map("test.xmp",rw1)
         # Check that the two maps have the same values
-        for k in xrange(0,m.get_header().nz):
-            for j in xrange(0,m.get_header().ny):
-                for i in xrange(0,m.get_header().nx):
+        for k in xrange(0,m.get_header().get_nz()):
+            for j in xrange(0,m.get_header().get_ny()):
+                for i in xrange(0,m.get_header().get_nx()):
                     self.assertEqual(m.get_value(m.xyz_ind2voxel(i,j,k)),
                                     m2.get_value(m.xyz_ind2voxel(i,j,k)))
         # Cleanup
