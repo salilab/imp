@@ -1,0 +1,10 @@
+/** \namespace IMP::em
+
+\section i1 Introduction
+
+EM is an IMP module that provides basic utilities for handling 2D and 3D density data \imp. 
+Main functionalities are:
+ -# Reading and writing various density map formats such as XPLOR, MRC, EM, SPIDIER.
+ -# Simulating density maps of particles, support particles of all radii and mass
+ -# Calculating cross-correlation scores between a density map and a set of particles.
+*/
