@@ -217,7 +217,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         pdb = IMP.atom.read_pdb(self.get_input_file_name('1z5s_C.pdb'), m)
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
                                        IMP.atom.get_data_path("par.lib"))
-        topology = ff.make_topology(pdb)
+        topology = ff.create_topology(pdb)
         topology.apply_default_patches(ff)
         self.assertEqual(topology.get_number_of_segments(), 1)
         segment = topology.get_segment(0)
@@ -276,7 +276,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
                                      ff.get_residue_topology(res))
             segment.add_residue(restop)
         m = IMP.Model()
-        hierarchy = topology.make_hierarchy(m)
+        hierarchy = topology.create_hierarchy(m)
         chains = IMP.atom.get_by_type(hierarchy, IMP.atom.CHAIN_TYPE)
         residues = IMP.atom.get_by_type(hierarchy, IMP.atom.RESIDUE_TYPE)
         atoms = IMP.atom.get_by_type(hierarchy, IMP.atom.ATOM_TYPE)
