@@ -32,7 +32,7 @@ GeneratePCH = Builder(action=Action(_action_generate_pch_h,
 def _get_string(env, source, target):
     ret=" ".join([env['CXX'], "-o "+target[0].abspath, "-x c++-header",
                   source[0].abspath]+ env.get('CPPFLAGS', [])
-                 + ["-I"+Dir(x).path for x in env['CPPPATH']] + env['CCFLAGS']
+                 + ["-I"+Dir(x).path for x in env['CPPPATH']] + env['CXXFLAGS']
                  + ["-D"+x for x in env['CPPDEFINES']])
     return ret
 

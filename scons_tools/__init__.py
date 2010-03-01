@@ -56,7 +56,7 @@ class WineEnvironment(Environment):
         # Make sure we get the same Windows C/C++ library as Modeller, and
         # enable C++ exception handling
         self.Append(CFLAGS="/MD")
-        self.Append(CCFLAGS="/MD /GR /GX")
+        self.Append(CXXFLAGS="/MD /GR /GX")
 
 def _get_python_include(env):
     """Get the directory containing Python.h"""
@@ -72,27 +72,27 @@ def _add_build_flags(env):
     """Add compiler flags for release builds, if requested"""
     #make sure they are all there
     env.Append(CPPPATH=[])
-    env.Append(CCFLAGS=[])
+    env.Append(CXXFLAGS=[])
     env.Append(LINKFLAGS=[])
     env.Append(LIBPATH=[])
     if env['CC'] == 'gcc':
-        env.Append(CCFLAGS=["-Wall"])
+        env.Append(CXXFLAGS=["-Wall"])
     if env['CXX'] == 'g++':
-        env.Append(CCFLAGS=["-Woverloaded-virtual"])
+        env.Append(CXXFLAGS=["-Woverloaded-virtual"])
         env['use_pch']=env['precompiledheader']
     else:
         env['use_pch']=False
     if env['build'] == 'fast':
         if env['CC'] == 'gcc':
-            env.Append(CCFLAGS=["-O3", "-fexpensive-optimizations",
+            env.Append(CXXFLAGS=["-O3", "-fexpensive-optimizations",
                                 "-ffast-math"])
             env.Append(CPPDEFINES=["NDEBUG"])
     elif env['build'] == 'release':
         if env['CC'] == 'gcc':
-            env.Append(CCFLAGS=["-O2"])
+            env.Append(CXXFLAGS=["-O2"])
     elif env['build'] == 'debug':
         if env['CC'] == 'gcc':
-            env.Append(CCFLAGS=["-g"])
+            env.Append(CXXFLAGS=["-g"])
 
 
 def CheckGNUHash(context):
@@ -115,20 +115,20 @@ int main(void)
 def CheckGCCVisibility(context):
     """Check if the compiler supports setting visibility of symbols"""
     context.Message('Checking whether compiler supports -fvisibility...')
-    lastCCFLAGS = context.env['CCFLAGS']
-    context.env.Append(CCFLAGS="-fvisibility=hidden")
+    lastCXXFLAGS = context.env['CXXFLAGS']
+    context.env.Append(CXXFLAGS="-fvisibility=hidden")
     text = """
 __attribute__ ((visibility("default")))
 int main(void)
 { return 0; }
 """
     res = context.TryLink(text, '.c')
-    context.env.Replace(CCFLAGS=lastCCFLAGS)
+    context.env.Replace(CXXFLAGS=lastCXXFLAGS)
     if not res:
         context.Result("no")
     else:
         context.env.Append(VIS_CPPDEFINES=['GCC_VISIBILITY'],
-                           VIS_CCFLAGS="-fvisibility=hidden")
+                           VIS_CXXFLAGS="-fvisibility=hidden")
         context.Result("yes")
     return res
 
@@ -205,9 +205,9 @@ def MyEnvironment(variables=None, *args, **kw):
             except:
                 #print "appending", v
                 total.append(v)
-        env.Append(CCFLAGS=total)
+        env.Append(CXXFLAGS=total)
     if env.get('cxxflags'):
-        env.Append(CCFLAGS = env['cxxflags'].split(" "))
+        env.Append(CXXFLAGS = env['cxxflags'].split(" "))
     if env.get('linkflags'):
         env.Append(LINKFLAGS=[env['linkflags'].split(" ")])
 
@@ -258,7 +258,7 @@ def MyEnvironment(variables=None, *args, **kw):
         # building AIX extension modules can find them:
         e['ENV']['PATH'] += ':/usr/vac/bin'
     _add_rpath(env)
-    #print "cxx", env['CCFLAGS']
+    #print "cxx", env['CXXFLAGS']
     return env
 
 def _fix_aix_cpp_link(env, cplusplus, linkflags):
@@ -281,7 +281,7 @@ def get_sharedlib_environment(env, cppdefine, cplusplus=False):
        shared library is done."""
     e = env.Clone()
     e.Append(CPPDEFINES=[cppdefine, '${VIS_CPPDEFINES}'],
-             CCFLAGS='${VIS_CCFLAGS}')
+             CXXFLAGS='${VIS_CXXFLAGS}')
     if env['PLATFORM'] == 'darwin':
         env.Append(SHLINKFLAGS=['-headerpad_max_install_names'])
     _fix_aix_cpp_link(e, cplusplus, 'SHLINKFLAGS')
@@ -339,13 +339,13 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
     except:
         pass
     e.Replace(CPPDEFINES=cpps)
-    cxxs=e['CCFLAGS']
+    cxxs=e['CXXFLAGS']
     for x in cxxs:
         if x== "-DNDEBUG":
             cxxs.remove(x)
         elif x.startswith("-W"):
             cxxs.remove(x)
-    e.Replace(CCFLAGS=cxxs)
+    e.Replace(CXXFLAGS=cxxs)
     e.Append(CPPDEFINES=['IMP_SWIG_WRAPPER'])
     e.Append(CPPPATH=[_get_python_include(e)])
     _fix_aix_cpp_link(e, cplusplus, 'SHLINKFLAGS')
