@@ -14,6 +14,47 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
+class IMPATOMEXPORT Angle : public Decorator
+{
+public:
+  IMP_DECORATOR(Angle, Decorator);
+
+  //! Create an angle with the given particles.
+  static Angle setup_particle(Particle *p, core::XYZ a, core::XYZ b,
+                                 core::XYZ c) {
+    p->add_attribute(get_particle_key(0), a);
+    p->add_attribute(get_particle_key(1), b);
+    p->add_attribute(get_particle_key(2), c);
+    return Angle(p);
+  }
+
+  //! Return true if the particle is an angle.
+  static bool particle_is_instance(Particle *p) {
+    for (unsigned int i = 0; i < 3; ++i) {
+      if (!p->has_attribute(get_particle_key(i))) return false;
+    }
+    return true;
+  }
+
+  Particle* get_particle() const {
+    return Decorator::get_particle();
+  }
+
+  //! Get the ith particle in the angle.
+  Particle* get_particle(unsigned int i) const {
+    return get_particle()->get_value(get_particle_key(i));
+  }
+
+  IMP_DECORATOR_GET_SET_OPT(ideal, get_ideal_key(), Float, Float, -1);
+  IMP_DECORATOR_GET_SET_OPT(stiffness, get_stiffness_key(), Float, Float, -1);
+
+  static ParticleKey get_particle_key(unsigned int i);
+  static FloatKey get_ideal_key();
+  static FloatKey get_stiffness_key();
+};
+
+IMP_OUTPUT_OPERATOR(Angle);
+
 class IMPATOMEXPORT Dihedral : public Decorator
 {
 public:
