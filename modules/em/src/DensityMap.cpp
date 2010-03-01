@@ -127,48 +127,48 @@ DensityMap* read_map(const char *filename) {
 }
 
 void DensityMap::update_header() {
-  if (not is_initialize(header_.get_nx())) {
+  if (! is_initialize(header_.get_nx())) {
   }
-  if (not is_initialize(header_.get_ny())) {
+  if (! is_initialize(header_.get_ny())) {
   }
-  if (not is_initialize(header_.get_nz())) {
+  if (! is_initialize(header_.get_nz())) {
   }
   IMP_INTERNAL_CHECK(is_initialize(header_.get_data_type()),
       "The data_type of the map header is not initialized");
-  if (not is_initialize(header_.nxstart)){
+  if (! is_initialize(header_.nxstart)){
   }
-  if (not is_initialize(header_.nystart)){
+  if (! is_initialize(header_.nystart)){
   }
-  if (not is_initialize(header_.nzstart)){
+  if (! is_initialize(header_.nzstart)){
   }
-  if (not is_initialize(header_.mx)){
+  if (! is_initialize(header_.mx)){
   }
-  if (not is_initialize(header_.my)){
+  if (! is_initialize(header_.my)){
   }
-  if (not is_initialize(header_.mz)){
+  if (! is_initialize(header_.mz)){
   }
-  if (not is_initialize(header_.xlen)){
+  if (! is_initialize(header_.xlen)){
   }
-  if (not is_initialize(header_.ylen)){
+  if (! is_initialize(header_.ylen)){
   }
-  if (not is_initialize(header_.zlen)){
+  if (! is_initialize(header_.zlen)){
   }
-  if (not is_initialize(header_.alpha)){
+  if (! is_initialize(header_.alpha)){
   }
-  if (not is_initialize(header_.beta)){
+  if (! is_initialize(header_.beta)){
   }
-  if (not is_initialize(header_.gamma)){
+  if (! is_initialize(header_.gamma)){
   }
-  if (not is_initialize(header_.mapc)){
+  if (! is_initialize(header_.mapc)){
   }
-  if (not is_initialize(header_.mapr)){
+  if (! is_initialize(header_.mapr)){
   }
-  if (not is_initialize(header_.maps)){
+  if (! is_initialize(header_.maps)){
   }
-  if (not is_initialize(header_.dmin)){
+  if (! is_initialize(header_.dmin)){
     header_.dmin = get_min_value();
   }
-  if (not is_initialize(header_.dmax)){
+  if (! is_initialize(header_.dmax)){
     header_.dmax = get_max_value();
   }
   /*initialize(dmean);
