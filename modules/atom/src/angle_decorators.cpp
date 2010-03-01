@@ -35,8 +35,10 @@ IntKey Dihedral::get_multiplicity_key()
   return k;
 }
 
-Dihedral dihedral(Particle *a, Particle *b, Particle *c, Particle *d) {
-  return Dihedral::setup_particle(new Particle(a->get_model()), a, b, c, d);
+void Dihedral::show(std::ostream &out) const {
+  out << "Dihedral on " << get_particle(0)->get_name()
+      << " " << get_particle(1)->get_name() << " "
+      << get_particle(2)->get_name() << " " << get_particle(3)->get_name();
 }
 
 IMPATOM_END_NAMESPACE

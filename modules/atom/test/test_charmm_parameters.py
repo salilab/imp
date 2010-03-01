@@ -6,11 +6,11 @@ import IMP.atom
 import IMP.algebra
 
 class CHARMMParametersTests(IMP.test.TestCase):
-    """Test the CharmmParameters class"""
+    """Test the CHARMMParameters class"""
 
     def test_bond_parameters(self):
         """Check extraction of bond parameters"""
-        p = IMP.atom.CharmmParameters(IMP.atom.get_data_path('top.lib'),
+        p = IMP.atom.CHARMMParameters(IMP.atom.get_data_path('top.lib'),
                                       IMP.atom.get_data_path('par.lib'))
         self.assertEqual(p.get_bond_parameters('garbage', 'CT2'), None)
         for types in [('CT1', 'CT2'), ('CT2', 'CT1')]:

@@ -20,7 +20,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         self.assertEqual(typ1, exp_typ1)
         self.assertEqual(typ2, exp_typ2)
         for i in range(bonded1.get_number_of_bonds()):
-            other = bonded1.get_bonded(i)
+            other = bonded1.get_particle(i)
             if other == bonded2:
                 bond = bonded1.get_bond(i)
                 self.assertInTolerance(bond.get_length(), bondlen, 1e-4)
@@ -110,7 +110,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
 
     def test_forcefield_add_get(self):
         """Test adding/getting patches and residues to/from forcefields"""
-        ff = IMP.atom.CharmmParameters(IMP.atom.get_data_path("top.lib"))
+        ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"))
         self.assertRaises(IMP.ValueException, ff.get_residue_topology, 'FOO')
         self.assertRaises(IMP.ValueException, ff.get_patch, 'PFOO')
         patch = IMP.atom.CHARMMPatch('PFOO')
@@ -122,7 +122,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
 
     def test_forcefield_read(self):
         """Test read of topology from files"""
-        ff = IMP.atom.CharmmParameters(IMP.atom.get_data_path("top.lib"))
+        ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"))
         self.assertRaises(ValueError, ff.get_residue_topology, 'CTER')
         res = ff.get_residue_topology('CYS')
         self.assertEqual(res.get_number_of_bonds(), 11)
@@ -170,7 +170,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
 
     def test_patching(self):
         """Test application of patches"""
-        ff = IMP.atom.CharmmParameters(IMP.atom.get_data_path("top.lib"))
+        ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"))
         patch = ff.get_patch('CTER')
         res = IMP.atom.CHARMMResidueTopology(ff.get_residue_topology('ALA'))
         self.assertEqual(res.get_atom('C').get_charmm_type(), 'C')
@@ -215,7 +215,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         """Test construction of topology"""
         m = IMP.Model()
         pdb = IMP.atom.read_pdb(self.get_input_file_name('1z5s_C.pdb'), m)
-        ff = IMP.atom.CharmmParameters(IMP.atom.get_data_path("top.lib"),
+        ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
                                        IMP.atom.get_data_path("par.lib"))
         topology = ff.make_topology(pdb)
         topology.apply_default_patches(ff)
@@ -266,7 +266,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
 
     def test_make_hierarchy(self):
         """Test construction of hierarchy from topology"""
-        ff = IMP.atom.CharmmParameters(IMP.atom.get_data_path("top.lib"),
+        ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
                                        IMP.atom.get_data_path("par.lib"))
         topology = IMP.atom.CHARMMTopology()
         segment = IMP.atom.CHARMMSegmentTopology()

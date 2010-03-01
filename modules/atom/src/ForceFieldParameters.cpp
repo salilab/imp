@@ -8,7 +8,7 @@
 #include <IMP/atom/ForceFieldParameters.h>
 #include <IMP/core/XYZR.h>
 #include <IMP/Particle.h>
-#include <IMP/atom/CharmmParameters.h>
+#include <IMP/atom/CHARMMParameters.h>
 #include <IMP/atom/LennardJones.h>
 
 IMPATOM_BEGIN_NAMESPACE
@@ -175,8 +175,8 @@ String ForceFieldParameters::get_force_field_atom_type(Atom atom) const
 
 
 ForceFieldParameters *default_force_field_parameters() {
-  static IMP::internal::OwnerPointer<CharmmParameters> cfp
-    (new CharmmParameters(get_data_path("top.lib"),
+  static IMP::internal::OwnerPointer<CHARMMParameters> cfp
+    (new CHARMMParameters(get_data_path("top.lib"),
                           get_data_path("par.lib")));
   return cfp;
 }

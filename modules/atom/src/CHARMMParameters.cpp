@@ -1,11 +1,11 @@
 /**
- * \file CharmmParameters \brief access to CharmmParameters
+ * \file CHARMMParameters \brief access to CHARMMParameters
  *  force field parameters
  *
  * Copyright 2007-2010 Sali Lab. All rights reserved.
  *
  */
-#include <IMP/atom/CharmmParameters.h>
+#include <IMP/atom/CHARMMParameters.h>
 #include <IMP/atom/CHARMMAtom.h>
 
 #include <boost/algorithm/string.hpp>
@@ -94,7 +94,7 @@ namespace {
   }
 }
 
-CharmmParameters::CharmmParameters(const String& top_file_name,
+CHARMMParameters::CHARMMParameters(const String& top_file_name,
                                    const String& par_file_name)
 {
   std::ifstream top_file(top_file_name.c_str());
@@ -116,7 +116,7 @@ CharmmParameters::CharmmParameters(const String& top_file_name,
   }
 }
 
-void CharmmParameters::read_topology_file(std::ifstream& input_file) {
+void CHARMMParameters::read_topology_file(std::ifstream& input_file) {
   const String DEFA_LINE = "DEFA";
   const String PATC_LINE = "PATC";
   const String RESI_LINE = "RESI";
@@ -217,7 +217,7 @@ void CharmmParameters::read_topology_file(std::ifstream& input_file) {
   }
 }
 
-ResidueType CharmmParameters::parse_residue_line(const String& line) {
+ResidueType CHARMMParameters::parse_residue_line(const String& line) {
   std::vector<String> split_results;
   boost::split(split_results, line, boost::is_any_of(" "),
                boost::token_compress_on);
@@ -233,7 +233,7 @@ ResidueType CharmmParameters::parse_residue_line(const String& line) {
    }
 }
 
-void CharmmParameters::parse_atom_line(const String& line,
+void CHARMMParameters::parse_atom_line(const String& line,
                                        ResidueType curr_res_type,
                                        CHARMMResidueTopologyBase &residue)
 {
@@ -266,7 +266,7 @@ void CharmmParameters::parse_atom_line(const String& line,
                                          atom.get_charge())));
 }
 
-void CharmmParameters::parse_bond_line(const String& line,
+void CHARMMParameters::parse_bond_line(const String& line,
                                        ResidueType curr_res_type,
                                        CHARMMResidueTopologyBase &residue)
 {
@@ -299,7 +299,7 @@ void CharmmParameters::parse_bond_line(const String& line,
   }
 }
 
-void CharmmParameters::parse_nonbonded_parameters_line(String line)
+void CHARMMParameters::parse_nonbonded_parameters_line(String line)
 {
   std::vector<String> split_results;
   boost::split(split_results, line, boost::is_any_of(" "),
@@ -313,7 +313,7 @@ void CharmmParameters::parse_nonbonded_parameters_line(String line)
   force_field_2_vdW_[charmm_atom_type] = std::make_pair(epsilon, radius);
 }
 
-void CharmmParameters::parse_bonds_parameters_line(String line)
+void CHARMMParameters::parse_bonds_parameters_line(String line)
 {
   std::vector<String> split_results;
   boost::split(split_results, line, boost::is_any_of(" "),
@@ -328,7 +328,7 @@ void CharmmParameters::parse_bonds_parameters_line(String line)
                                              split_results[1])] = p;
 }
 
-void CharmmParameters::parse_angles_parameters_line(String line)
+void CHARMMParameters::parse_angles_parameters_line(String line)
 {
   std::vector<String> split_results;
   boost::split(split_results, line, boost::is_any_of(" "),
@@ -344,7 +344,7 @@ void CharmmParameters::parse_angles_parameters_line(String line)
                                                split_results[2])] = p;
 }
 
-void CharmmParameters::parse_dihedrals_parameters_line(String line,
+void CHARMMParameters::parse_dihedrals_parameters_line(String line,
                                        DihedralParameters &param)
 {
   std::vector<String> split_results;
@@ -364,7 +364,7 @@ void CharmmParameters::parse_dihedrals_parameters_line(String line,
                                                   split_results[3]), p));
 }
 
-void CharmmParameters::read_parameter_file(std::ifstream& input_file) {
+void CHARMMParameters::read_parameter_file(std::ifstream& input_file) {
   const String BONDS_LINE = "BONDS";
   const String ANGLES_LINE = "ANGLES";
   const String DIHEDRALS_LINE = "DIHEDRALS";
@@ -423,10 +423,10 @@ void CharmmParameters::read_parameter_file(std::ifstream& input_file) {
 }
 
 
-void CharmmParameters::do_show(std::ostream &out) const {
+void CHARMMParameters::do_show(std::ostream &out) const {
 }
 
-String CharmmParameters::get_force_field_atom_type(Atom atom) const
+String CHARMMParameters::get_force_field_atom_type(Atom atom) const
 {
   // Override base class to use CHARMMAtom decorator
   static String empty_atom_type;
@@ -439,7 +439,7 @@ String CharmmParameters::get_force_field_atom_type(Atom atom) const
   }
 }
 
-CHARMMTopology *CharmmParameters::make_topology(Hierarchy hierarchy) const
+CHARMMTopology *CHARMMParameters::create_topology(Hierarchy hierarchy) const
 {
   IMP_NEW(CHARMMTopology, topology, ());
 
@@ -473,7 +473,7 @@ CHARMMTopology *CharmmParameters::make_topology(Hierarchy hierarchy) const
 
 std::vector<std::pair<internal::CHARMMDihedralNames,
                       CHARMMDihedralParameters> >::const_iterator
-CharmmParameters::find_dihedral(DihedralParameters::const_iterator begin,
+CHARMMParameters::find_dihedral(DihedralParameters::const_iterator begin,
                                 DihedralParameters::const_iterator end,
                                 const internal::CHARMMDihedralNames &dihedral,
                                 bool allow_wildcards) const
