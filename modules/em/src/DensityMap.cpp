@@ -815,7 +815,7 @@ DensityMap* get_resampled(DensityMap *in, double scaling) {
   algebra::BoundingBox3D obb= get_bounding_box(in,
                                          -std::numeric_limits<float>::max());
   Pointer<DensityMap> ret=create_density_map(obb, in->get_spacing()*scaling);
-  for (unsigned int i=0; i< ret->get_number_of_voxels(); ++i) {
+  for (int i=0; i< ret->get_number_of_voxels(); ++i) {
     algebra::VectorD<3> v= get_voxel_center(ret, i);
     double d= get_density(in, v);
     ret->set_value(i, d);
