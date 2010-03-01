@@ -237,7 +237,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         bonds = topology.add_bonds(pdb, ff)
         self.assertEqual(len(bonds), 1215)
         angles = ff.generate_angles(bonds)
-        self.assertEqual(len(angles), 1429)
+        self.assertEqual(len(angles), 1651)
         for (bondr1, bondr2, bonda1, bonda2, atyp1, atyp2, bondlen, fcon) in [
            # intraresidue bond
            (residues[0], residues[0], IMP.atom.AT_CA, IMP.atom.AT_CB,

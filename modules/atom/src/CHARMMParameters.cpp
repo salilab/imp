@@ -534,7 +534,7 @@ Particles CHARMMParameters::generate_angles(Particles bonds) const
     for (std::vector<IMP::atom::Bond>::const_iterator bit2
          = particle_bonds[p2].begin();
          bit2 != particle_bonds[p2].end(); ++bit2) {
-        Particle *p1 = get_other_end_of_bond(p2, *bit2);
+      Particle *p1 = get_other_end_of_bond(p2, *bit2);
       // Avoid making angles where p1 == p3, and avoid double-counting
       if (p3 > p1) {
         add_angle(p1, p2, p3, ps);
@@ -544,8 +544,8 @@ Particles CHARMMParameters::generate_angles(Particles bonds) const
     for (std::vector<IMP::atom::Bond>::const_iterator bit2
          = particle_bonds[p3].begin();
          bit2 != particle_bonds[p3].end(); ++bit2) {
-        Particle *p4 = get_other_end_of_bond(p3, *bit2);
-      if (p4 > p2) {
+      Particle *p4 = get_other_end_of_bond(p3, *bit2);
+      if (p4 < p2) {
         add_angle(p2, p3, p4, ps);
       }
     }
