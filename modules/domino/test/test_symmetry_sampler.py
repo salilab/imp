@@ -36,7 +36,7 @@ class DOMINOTests(IMP.test.TestCase):
         #set 10 transformations on a patch of a sphere
         self.rt = IMP.domino.TransformationDiscreteSet()
         self.rt.set_model(self.m)
-        max_d1 = IMP.core.diameter(IMP.core.XYZsTemp(IMP.core.get_leaves(self.ref)))
+        max_d1 = IMP.core.get_diameter(IMP.core.XYZsTemp(IMP.core.get_leaves(self.ref)))
         max_d=IMP.algebra.Segment3D(max_d1.get_point(1),max_d1.get_point(0))
         #print ".dot " + str(max_d.get_point(0)[0]) + " " + str(max_d.get_point(0)[1]) + " " + str(max_d.get_point(0)[2])
         #print ".dot " +str(max_d.get_point(1)[0]) + " " + str(max_d.get_point(1)[1]) + " " + str(max_d.get_point(1)[2])
@@ -94,7 +94,7 @@ class DOMINOTests(IMP.test.TestCase):
             state = n.get_state(i)
             self.sampler.move2state(state)
             for j,p in enumerate(self.ps):
-                cendtroids[j] = cendtroids[j]+IMP.core.centroid(IMP.core.XYZsTemp(IMP.core.get_leaves(self.prots[j])))
+                cendtroids[j] = cendtroids[j]+IMP.core.get_centroid(IMP.core.XYZsTemp(IMP.core.get_leaves(self.prots[j])))
 
         rot120 = IMP.algebra.Transformation3D(
             IMP.algebra.get_rotation_in_radians_about_axis(self.cyl.get_segment().get_direction(),
