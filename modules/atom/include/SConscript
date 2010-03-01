@@ -15,6 +15,7 @@ files = [
          'CoulombPairScore.h',
          'CoverBond.h',
          'Diffusion.h',
+         'DihedralSingletonScore.h',
          'Domain.h',
          'ForceFieldParameters.h',
          'Fragment.h',

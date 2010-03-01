@@ -131,6 +131,7 @@ def __iter__(self):
 %include "IMP/atom/BondEndpointsRefiner.h"
 %include "IMP/atom/BondPairContainer.h"
 %include "IMP/atom/BondSingletonScore.h"
+%include "IMP/atom/DihedralSingletonScore.h"
 %include "IMP/atom/ImproperSingletonScore.h"
 %include "IMP/atom/CoverBond.h"
 %include "IMP/atom/BrownianDynamics.h"
