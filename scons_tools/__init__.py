@@ -343,7 +343,7 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
     for x in cxxs:
         if x== "-DNDEBUG":
             cxxs.remove(x)
-        elif x.startswith("-W"):
+        elif x=='-Wall':
             cxxs.remove(x)
     e.Replace(CXXFLAGS=cxxs)
     e.Append(CPPDEFINES=['IMP_SWIG_WRAPPER'])
