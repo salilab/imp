@@ -94,7 +94,7 @@ class DOMINOTests(IMP.test.TestCase):
             state = n.get_state(i)
             self.sampler.move2state(state)
             for j,p in enumerate(self.ps):
-                cendtroids[j] = cendtroids[j]+IMP.core.centroid(IMP.core.XYZs(IMP.core.get_leaves(self.prots[j])))
+                cendtroids[j] = cendtroids[j]+IMP.core.centroid(IMP.core.XYZsTemp(IMP.core.get_leaves(self.prots[j])))
 
         rot120 = IMP.algebra.Transformation3D(
             IMP.algebra.get_rotation_in_radians_about_axis(self.cyl.get_segment().get_direction(),
