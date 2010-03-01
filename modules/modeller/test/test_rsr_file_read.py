@@ -169,7 +169,7 @@ class ModellerRestraintsTests(IMP.test.TestCase):
         protein = loader.load_atoms(m)
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path('top.lib'),
                                        IMP.atom.get_data_path('par.lib'))
-        topology = ff.make_topology(protein)
+        topology = ff.create_topology(protein)
         topology.apply_default_patches(ff)
         topology.add_atom_types(protein)
         bonds = topology.add_bonds(protein, ff)
@@ -196,7 +196,7 @@ class ModellerRestraintsTests(IMP.test.TestCase):
         protein = loader.load_atoms(m)
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path('top.lib'),
                                        IMP.atom.get_data_path('par.lib'))
-        topology = ff.make_topology(protein)
+        topology = ff.create_topology(protein)
         topology.apply_default_patches(ff)
         topology.add_atom_types(protein)
         bonds = topology.add_impropers(protein, ff)
