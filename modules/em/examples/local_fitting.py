@@ -9,8 +9,8 @@ m= IMP.Model()
 ##1.1 select a selector.
 sel=IMP.atom.NonWaterPDBSelector()
 ##1.2 read the protein
-mh=IMP.atom.read_pdb("input.pdb",m,sel)
-mh_ref=IMP.atom.read_pdb("input.pdb",m,sel)
+mh=IMP.atom.read_pdb(IMP.em.get_example_path("input.pdb"),m,sel)
+mh_ref=IMP.atom.read_pdb(IMP.em.get_example_path("input.pdb"),m,sel)
 ##1.3 add radius info to each atom, otherwise the resampling would fail.
 IMP.atom.add_radii(mh)
 IMP.atom.add_radii(mh_ref)
@@ -19,7 +19,7 @@ ps_ref= IMP.Particles(IMP.core.get_leaves(mh_ref))
 #2. read the density map of the protein
 resolution=8.
 voxel_size=1.5
-dmap=IMP.em.read_map("input.mrc",IMP.em.MRCReaderWriter())
+dmap=IMP.em.read_map(IMP.em.get_example_path("input.mrc"),IMP.em.MRCReaderWriter())
 dmap.get_header_writable().set_resolution(resolution)
 #3. The protein is now fitted correctly in the density. We can validate
 #that by making sure that the cross-correlation score is close to 1.
