@@ -11,7 +11,7 @@ rbs=IMP.container.ListSingletonContainer(residues)
 for r in residues:
     IMP.core.RigidBody.setup_particle(r.get_particle(), IMP.core.XYZs(IMP.atom.get_leaves(r)))
 
-mp1= IMP.atom.read_pdb(IMP.atom.get_example_path('example_protein.pdb'), m)
+mp1= IMP.atom.read_pdb(IMP.core.get_example_path('example_protein.pdb'), m)
 chains= IMP.atom.get_by_type(mp1, IMP.atom.CHAIN_TYPE)
 rd= IMP.atom.Hierarchy(chains[0])
 rbs=IMP.atom.rigid_body_setup_hierarchy(chains[0])
