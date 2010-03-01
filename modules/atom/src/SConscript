@@ -27,6 +27,7 @@ files = [
          'MolecularDynamics.cpp',
          'Residue.cpp',
          'SimulationParameters.cpp',
+         'StereochemistryPairFilter.cpp',
          'VelocityScalingOptimizerState.cpp',
          'angle_decorators.cpp',
          'bond_decorators.cpp',

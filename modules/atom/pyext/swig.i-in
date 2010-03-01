@@ -124,6 +124,7 @@ def __iter__(self):
 
 
 /* Wrap our own classes */
+%include "IMP/atom/angle_decorators.h"
 %include "IMP/atom/estimates.h"
 %include "IMP/atom/distance.h"
 %include "IMP/atom/smoothing_functions.h"
@@ -146,6 +147,7 @@ def __iter__(self):
 %include "IMP/atom/VelocityScalingOptimizerState.h"
 %include "IMP/atom/Fragment.h"
 %include "IMP/atom/SimulationParameters.h"
+%include "IMP/atom/StereochemistryPairFilter.h"
 %include "IMP/atom/Mass.h"
 %include "IMP/atom/BondedPairFilter.h"
 %include "IMP/atom/hierarchy_tools.h"

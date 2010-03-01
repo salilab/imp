@@ -1,4 +1,5 @@
 files = [
+         'ExcludedPair.h',
          'bond_graph_boost_functions.h',
          'bond_graph_functors.h',
          'bond_helpers.h',

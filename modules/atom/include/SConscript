@@ -27,6 +27,7 @@ files = [
          'MolecularDynamics.h',
          'Residue.h',
          'SimulationParameters.h',
+         'StereochemistryPairFilter.h',
          'VelocityScalingOptimizerState.h',
          'angle_decorators.h',
          'bond_decorators.h',
