@@ -102,6 +102,8 @@ void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
     } catch (ModelException err) {
       IMP_WARN("Optimization run " << i << " failed to converge."
                << std::endl);
+    } catch (UsageException err) {
+      IMP_WARN("Data walked out of bounding box"<< std::endl);
     }
   }
 }
