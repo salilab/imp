@@ -69,7 +69,7 @@ inline double angle(const XYZ &d0, const XYZ &d1, const XYZ &d2,
     The difference is the shortest distance from angle1 to angle2, and is
     thus in the range -PI to PI.
  */
-double get_angle_difference(double angle1, double angle2)
+inline double get_angle_difference(double angle1, double angle2)
 {
   angle1 = std::fmod(angle1, 2.0 * PI);
   angle2 = std::fmod(angle2, 2.0 * PI);
