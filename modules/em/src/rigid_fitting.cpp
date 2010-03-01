@@ -99,10 +99,8 @@ void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
       //vecs_ref,vecs_current),e);
       fr.add_solution(rb.get_transformation(),e);
       IMP::atom::write_pdb(IMP::atom::Hierarchy(rb),"aa.pdb");
-    }
-    catch (UsageException err) {
-      IMP_WARN("rigid fitting around anchor point " << anchor_centroid <<
-               " was not possible as the structure was outside of the map"
+    } catch (ModelException err) {
+      IMP_WARN("Optimization run " << i << " failed to converge."
                << std::endl);
     }
   }
