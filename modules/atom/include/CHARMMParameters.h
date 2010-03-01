@@ -176,6 +176,8 @@ public:
 
   Particles generate_angles(Particles bonds) const;
 
+  Particles generate_dihedrals(Particles bonds) const;
+
   IMP_FORCE_FIELD_PARAMETERS(CHARMMParameters);
 private:
 
@@ -186,6 +188,8 @@ private:
   void read_topology_file(std::ifstream& input_file);
 
   void add_angle(Particle *p1, Particle *p2, Particle *p3, Particles &ps) const;
+  void add_dihedral(Particle *p1, Particle *p2, Particle *p3, Particle *p4,
+                    Particles &ps) const;
 
   ResidueType parse_residue_line(const String& line);
   void parse_atom_line(const String& line, ResidueType curr_res_type,

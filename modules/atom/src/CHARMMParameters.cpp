@@ -570,4 +570,61 @@ void CHARMMParameters::add_angle(Particle *p1, Particle *p2, Particle *p3,
   }
 }
 
+Particles CHARMMParameters::generate_dihedrals(Particles bonds) const
+{
+  Particles ps;
+  BondMap particle_bonds;
+  make_bond_map(bonds, particle_bonds);
+
+  // Iterate over all bonds
+  for (Particles::const_iterator bit1 = bonds.begin();
+       bit1 != bonds.end(); ++bit1) {
+    IMP::atom::Bond bd = IMP::atom::Bond(*bit1);
+    Particle *p2 = bd.get_bonded(0).get_particle();
+    Particle *p3 = bd.get_bonded(1).get_particle();
+
+    // Extend along each bond from p2 and p3 to get candidate
+    // p1-p2-p3-p4 dihedrals
+    for (std::vector<IMP::atom::Bond>::const_iterator bit2
+         = particle_bonds[p2].begin();
+         bit2 != particle_bonds[p2].end(); ++bit2) {
+      Particle *p1 = get_other_end_of_bond(p2, *bit2);
+
+      if (p1 != p3) {
+        for (std::vector<IMP::atom::Bond>::const_iterator bit3
+             = particle_bonds[p3].begin();
+             bit3 != particle_bonds[p3].end(); ++bit3) {
+          Particle *p4 = get_other_end_of_bond(p3, *bit3);
+
+          // Avoid generating dihedrals for three-membered rings
+          if (p1 != p4 && p2 != p4) {
+            add_dihedral(p1, p2, p3, p4, ps);
+          }
+        }
+      }
+    }
+  }
+  return ps;
+}
+
+void CHARMMParameters::add_dihedral(Particle *p1, Particle *p2, Particle *p3,
+                                    Particle *p4, Particles &ps) const
+{
+  std::vector<CHARMMDihedralParameters> p
+        = get_dihedral_parameters(CHARMMAtom(p1).get_charmm_type(),
+                                  CHARMMAtom(p2).get_charmm_type(),
+                                  CHARMMAtom(p3).get_charmm_type(),
+                                  CHARMMAtom(p4).get_charmm_type());
+  for (std::vector<CHARMMDihedralParameters>::const_iterator it = p.begin();
+       it != p.end(); ++it) {
+    Dihedral dd = Dihedral::setup_particle(new Particle(p1->get_model()),
+                                           core::XYZ(p1), core::XYZ(p2),
+                                           core::XYZ(p3), core::XYZ(p4));
+    dd.set_ideal(it->ideal / 180.0 * PI);
+    dd.set_multiplicity(it->multiplicity);
+    dd.set_stiffness(std::sqrt(it->force_constant * 2.0));
+    ps.push_back(dd);
+  }
+}
+
 IMPATOM_END_NAMESPACE
