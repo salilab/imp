@@ -27,7 +27,7 @@ double ImproperSingletonScore::evaluate(Particle *b,
   Float s = id.get_stiffness();
   core::XYZ d[4];
   for (unsigned int i = 0; i < 4; ++i) {
-    d[i] = core::XYZ(id.get_bonded(i));
+    d[i] = core::XYZ(id.get_particle(i));
   }
   if (da) {
     algebra::Vector3D derv[4];
@@ -51,10 +51,10 @@ ParticlesList
 ImproperSingletonScore::get_interacting_particles(Particle *p) const {
   ParticlesList ret(1,ParticlesTemp(4));
   Dihedral bd(p);
-  ret[0][0]= bd.get_bonded(0);
-  ret[0][1]= bd.get_bonded(1);
-  ret[0][2]= bd.get_bonded(2);
-  ret[0][3]= bd.get_bonded(3);
+  ret[0][0]= bd.get_particle(0);
+  ret[0][1]= bd.get_particle(1);
+  ret[0][2]= bd.get_particle(2);
+  ret[0][3]= bd.get_particle(3);
   return ret;
 }
 
@@ -65,19 +65,19 @@ ContainersTemp ImproperSingletonScore::get_input_containers(Particle *p) const {
 ParticlesTemp ImproperSingletonScore::get_input_particles(Particle *p) const {
   ParticlesTemp ret(4);
   Dihedral bd(p);
-  ret[0]= bd.get_bonded(0);
-  ret[1]= bd.get_bonded(1);
-  ret[2]= bd.get_bonded(2);
-  ret[3]= bd.get_bonded(3);
+  ret[0]= bd.get_particle(0);
+  ret[1]= bd.get_particle(1);
+  ret[2]= bd.get_particle(2);
+  ret[3]= bd.get_particle(3);
   return ret;
 }
 
 bool ImproperSingletonScore::get_is_changed(Particle *p) const {
   Dihedral b(p);
-  return b.get_bonded(0)->get_is_changed()
-    || b.get_bonded(1)->get_is_changed()
-    || b.get_bonded(2)->get_is_changed()
-    || b.get_bonded(3)->get_is_changed();
+  return b.get_particle(0)->get_is_changed()
+    || b.get_particle(1)->get_is_changed()
+    || b.get_particle(2)->get_is_changed()
+    || b.get_particle(3)->get_is_changed();
 }
 
 void ImproperSingletonScore::do_show(std::ostream &out) const

@@ -9,7 +9,7 @@
 #define IMPATOM_ANGLE_DECORATORS_H
 
 #include "config.h"
-
+#include <IMP/core/XYZ.h>
 #include <IMP/Decorator.h>
 
 IMPATOM_BEGIN_NAMESPACE
@@ -17,11 +17,11 @@ IMPATOM_BEGIN_NAMESPACE
 class IMPATOMEXPORT Dihedral : public Decorator
 {
 public:
-  IMP_DECORATOR(Dihedral, Decorator)
+  IMP_DECORATOR(Dihedral, Decorator);
 
   //! Create a dihedral with the given particles.
-  static Dihedral setup_particle(Particle *p, Particle *a, Particle *b,
-                                 Particle *c, Particle *d) {
+  static Dihedral setup_particle(Particle *p, core::XYZ a, core::XYZ b,
+                                 core::XYZ c, core::XYZ d) {
     p->add_attribute(get_particle_key(0), a);
     p->add_attribute(get_particle_key(1), b);
     p->add_attribute(get_particle_key(2), c);
@@ -37,8 +37,12 @@ public:
     return true;
   }
 
+  Particle* get_particle() const {
+    return Decorator::get_particle();
+  }
+
   //! Get the ith particle in the dihedral.
-  Particle *get_bonded(unsigned int i) const {
+  Particle* get_particle(unsigned int i) const {
     return get_particle()->get_value(get_particle_key(i));
   }
 
@@ -54,10 +58,6 @@ public:
 };
 
 IMP_OUTPUT_OPERATOR(Dihedral);
-
-//! Create a dihedral that spans the given four particles.
-Dihedral IMPATOMEXPORT dihedral(Particle *a, Particle *b, Particle *c,
-                                Particle *d);
 
 IMPATOM_END_NAMESPACE
 

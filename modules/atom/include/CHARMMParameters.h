@@ -1,5 +1,5 @@
 /**
- * \file atom/CharmmParameters.h \brief access to Charmm force field parameters
+ * \file atom/CHARMMParameters.h \brief access to Charmm force field parameters
  *
  * Copyright 2007-2010 Sali Lab. All rights reserved.
  *
@@ -34,7 +34,7 @@ struct CHARMMDihedralParameters {
 };
 
 //! Charmm force field
-class IMPATOMEXPORT CharmmParameters : public ForceFieldParameters {
+class IMPATOMEXPORT CHARMMParameters : public ForceFieldParameters {
   std::map<std::string, CHARMMIdealResidueTopology> residue_topologies_;
   std::map<std::string, CHARMMPatch> patches_;
   std::map<internal::CHARMMBondNames, CHARMMBondParameters> bond_parameters_;
@@ -57,7 +57,7 @@ public:
       for addition of bonds topology file is enough,
       for the rest both files are needed
    */
-  CharmmParameters(const String& topology_file_name,
+  CHARMMParameters(const String& topology_file_name,
                    const String& par_file_name = std::string());
 
   void add_patch(CHARMMPatch &patch) {
@@ -111,7 +111,7 @@ public:
   }
 #endif
 
-  CHARMMTopology *make_topology(Hierarchy hierarchy) const;
+  CHARMMTopology *create_topology(Hierarchy hierarchy) const;
 
   const CHARMMBondParameters *get_bond_parameters(std::string type1,
                                                   std::string type2) const {
@@ -174,7 +174,7 @@ public:
     }
   }
 
-  IMP_FORCE_FIELD_PARAMETERS(CharmmParameters);
+  IMP_FORCE_FIELD_PARAMETERS(CHARMMParameters);
 private:
 
   virtual String get_force_field_atom_type(Atom atom) const;

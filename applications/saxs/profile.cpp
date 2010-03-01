@@ -5,7 +5,7 @@
 #include <IMP/Model.h>
 #include <IMP/atom/pdb.h>
 #include <IMP/atom/force_fields.h>
-#include <IMP/atom/CharmmParameters.h>
+#include <IMP/atom/CHARMMParameters.h>
 
 #include <IMP/saxs/Profile.h>
 #include <IMP/saxs/Score.h>

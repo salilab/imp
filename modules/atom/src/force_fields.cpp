@@ -6,7 +6,7 @@
  */
 
 #include <IMP/atom/force_fields.h>
-#include <IMP/atom/CharmmParameters.h>
+#include <IMP/atom/CHARMMParameters.h>
 #include <IMP/atom/charmm_topology.h>
 
 IMPATOM_BEGIN_NAMESPACE
@@ -23,9 +23,9 @@ void add_radii(Hierarchy d, const ForceFieldParameters* ffp,
                 FloatKey radius_key)
 {
   // Temporary hack to maintain old interface for SAXS
-  const CharmmParameters *cp = dynamic_cast<const CharmmParameters *>(ffp);
+  const CHARMMParameters *cp = dynamic_cast<const CHARMMParameters *>(ffp);
   if (cp) {
-    IMP::Pointer<CHARMMTopology> top = cp->make_topology(d);
+    IMP::Pointer<CHARMMTopology> top = cp->create_topology(d);
     top->apply_default_patches(cp);
     top->add_atom_types(d);
   }

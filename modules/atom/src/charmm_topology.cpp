@@ -7,7 +7,7 @@
 #include <IMP/exception.h>
 #include <IMP/constants.h>
 #include <IMP/atom/charmm_topology.h>
-#include <IMP/atom/CharmmParameters.h>
+#include <IMP/atom/CHARMMParameters.h>
 #include <IMP/atom/CHARMMAtom.h>
 #include <IMP/atom/Charged.h>
 #include <IMP/atom/angle_decorators.h>
@@ -41,7 +41,7 @@ namespace {
                          const CHARMMResidueTopology *next_residue,
                          const std::map<const CHARMMResidueTopology *,
                                         Hierarchy> &resmap,
-                         const CharmmParameters *ff,
+                         const CHARMMParameters *ff,
                          Particles &ps)
   {
     for (unsigned int nbond = 0; nbond < current_residue->get_number_of_bonds();
@@ -79,7 +79,7 @@ namespace {
                              const CHARMMResidueTopology *next_residue,
                              const std::map<const CHARMMResidueTopology *,
                                             Hierarchy> &resmap,
-                             const CharmmParameters *ff,
+                             const CHARMMParameters *ff,
                              Particles &ps)
   {
     for (unsigned int nimpr = 0;
@@ -94,7 +94,10 @@ namespace {
                                           CHARMMAtom(as[2]).get_charmm_type(),
                                           CHARMMAtom(as[3]).get_charmm_type());
         if (p) {
-          Dihedral id = dihedral(as[0], as[1], as[2], as[3]);
+          Dihedral id
+            = Dihedral::setup_particle(new Particle(as[0]->get_model()),
+                                       core::XYZ(as[0]), core::XYZ(as[1]),
+                                       core::XYZ(as[2]), core::XYZ(as[3]));
           // CHARMM ideal value is in angles; convert to radians
           id.set_ideal(p->ideal / 180.0 * PI);
           id.set_multiplicity(p->multiplicity);
@@ -211,7 +214,7 @@ void CHARMMSegmentTopology::do_show(std::ostream &out) const
 {
 }
 
-void CHARMMSegmentTopology::apply_default_patches(const CharmmParameters *ff)
+void CHARMMSegmentTopology::apply_default_patches(const CHARMMParameters *ff)
 {
   if (get_number_of_residues() == 0) return;
 
@@ -307,7 +310,7 @@ void CHARMMTopology::add_charges(Hierarchy hierarchy) const
 }
 
 Particles CHARMMTopology::add_bonds(Hierarchy hierarchy,
-                                    const CharmmParameters *ff) const
+                                    const CHARMMParameters *ff) const
 {
   ResMap resmap;
   map_residue_topology_to_hierarchy(hierarchy, resmap);
@@ -331,7 +334,7 @@ Particles CHARMMTopology::add_bonds(Hierarchy hierarchy,
 }
 
 Particles CHARMMTopology::add_impropers(Hierarchy hierarchy,
-                                        const CharmmParameters *ff) const
+                                        const CHARMMParameters *ff) const
 {
   ResMap resmap;
   map_residue_topology_to_hierarchy(hierarchy, resmap);
@@ -354,7 +357,7 @@ Particles CHARMMTopology::add_impropers(Hierarchy hierarchy,
   return ps;
 }
 
-Hierarchy CHARMMTopology::make_hierarchy(Model *model) const
+Hierarchy CHARMMTopology::create_hierarchy(Model *model) const
 {
   char chain_id = 'A';
   Hierarchy root = Hierarchy::setup_particle(new Particle(model));

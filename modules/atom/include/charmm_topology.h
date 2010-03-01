@@ -273,7 +273,7 @@ public:
 
 IMP_OBJECTS(CHARMMResidueTopology);
 
-class CharmmParameters;
+class CHARMMParameters;
 
 //! The topology of a single CHARMM segment (chain) in a model
 class IMPATOMEXPORT CHARMMSegmentTopology : public Object {
@@ -282,7 +282,7 @@ class IMPATOMEXPORT CHARMMSegmentTopology : public Object {
 
   IMP_OBJECT(CHARMMSegmentTopology);
 public:
-  void apply_default_patches(const CharmmParameters *ff);
+  void apply_default_patches(const CHARMMParameters *ff);
 };
 
 IMP_OBJECTS(CHARMMSegmentTopology);
@@ -300,22 +300,22 @@ private:
   void map_residue_topology_to_hierarchy(Hierarchy hierarchy,
                                          ResMap &resmap) const;
 public:
-  void apply_default_patches(const CharmmParameters *ff) {
+  void apply_default_patches(const CHARMMParameters *ff) {
     for (unsigned int i = 0; i < get_number_of_segments(); ++i) {
       get_segment(i)->apply_default_patches(ff);
     }
   }
 
-  Hierarchy make_hierarchy(Model *model) const;
+  Hierarchy create_hierarchy(Model *model) const;
 
   void add_atom_types(Hierarchy hierarchy) const;
 
   void add_charges(Hierarchy hierarchy) const;
 
-  Particles add_bonds(Hierarchy hierarchy, const CharmmParameters *ff) const;
+  Particles add_bonds(Hierarchy hierarchy, const CHARMMParameters *ff) const;
 
   Particles add_impropers(Hierarchy hierarchy,
-                          const CharmmParameters *ff) const;
+                          const CHARMMParameters *ff) const;
 };
 
 IMPATOM_END_NAMESPACE
