@@ -25,6 +25,9 @@ double DihedralSingletonScore::evaluate(Particle *b,
   Dihedral ad(b);
   Float ideal = ad.get_ideal();
   Float s = ad.get_stiffness();
+  if (s == 0.) {
+    return 0.;
+  }
   Int m = ad.get_multiplicity();
   core::XYZ d[4];
   for (unsigned int i = 0; i < 4; ++i) {
