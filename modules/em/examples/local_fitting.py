@@ -68,7 +68,7 @@ print "The start score is:",score1, "with rmsd of:",rmsd
 print "preforming local refinement, may run for 3-4 minutes"
 fitting_sols = IMP.em.FittingSolutions() #fitting solutions will go here.
 ## translate the molecule to the center of the density
-IMP.core.transform(prot_rb,IMP.algebra.Transformation3D(IMP.algebra.get_identity_rotation_3d(),dmap.get_centroid()-IMP.core.centroid(IMP.core.XYZs(ps))))
+IMP.core.transform(prot_rb,IMP.algebra.Transformation3D(IMP.algebra.get_identity_rotation_3d(),dmap.get_centroid()-IMP.core.centroid(IMP.core.XYZsTemp(ps))))
 m.evaluate(None)#to make sure the transformation was applied
 sampled_input_density.resample()
 sampled_input_density.calcRMS()
