@@ -46,7 +46,7 @@ public:
   }
 
   IMP_DECORATOR_GET_SET_OPT(ideal, get_ideal_key(), Float, Float, -1);
-  IMP_DECORATOR_GET_SET_OPT(stiffness, get_stiffness_key(), Float, Float, -1);
+  IMP_DECORATOR_GET_SET_OPT(stiffness, get_stiffness_key(), Float, Float, 0.);
 
   static ParticleKey get_particle_key(unsigned int i);
   static FloatKey get_ideal_key();
@@ -90,7 +90,7 @@ public:
   IMP_DECORATOR_GET_SET_OPT(ideal, get_ideal_key(), Float, Float, -1);
   IMP_DECORATOR_GET_SET_OPT(multiplicity, get_multiplicity_key(),
                             Int, Int, 0);
-  IMP_DECORATOR_GET_SET_OPT(stiffness, get_stiffness_key(), Float, Float, -1);
+  IMP_DECORATOR_GET_SET_OPT(stiffness, get_stiffness_key(), Float, Float, 0.);
 
   static ParticleKey get_particle_key(unsigned int i);
   static FloatKey get_ideal_key();
