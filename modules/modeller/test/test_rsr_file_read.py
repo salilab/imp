@@ -206,5 +206,33 @@ class ModellerRestraintsTests(IMP.test.TestCase):
         m.add_restraint(IMP.container.SingletonsRestraint(bss, cont))
         self.assertSimilarModellerIMPScores(modmodel, protein)
 
+    def test_angle_restraints(self):
+        """Check angle restraints against Modeller"""
+        e = environ()
+        e.edat.dynamic_sphere = False
+        e.libs.topology.read('${LIB}/top_heav.lib')
+        e.libs.parameters.read('${LIB}/par.lib')
+        modmodel = model(e)
+        modmodel.build_sequence('A')
+        modmodel.restraints.make(selection(modmodel), restraint_type='ANGLE',
+                                 spline_on_site=False,
+                                 residue_span_range=(0, 99999))
+
+        m = IMP.Model()
+        loader = IMP.modeller.ModelLoader(modmodel)
+        protein = loader.load_atoms(m)
+        ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path('top.lib'),
+                                       IMP.atom.get_data_path('par.lib'))
+        topology = ff.create_topology(protein)
+        topology.apply_default_patches(ff)
+        topology.add_atom_types(protein)
+        bonds = topology.add_bonds(protein, ff)
+        angles = ff.generate_angles(bonds)
+        cont = IMP.container.ListSingletonContainer("bonds")
+        cont.add_particles(angles)
+        bss = IMP.atom.AngleSingletonScore(IMP.core.Harmonic(0,1))
+        m.add_restraint(IMP.container.SingletonsRestraint(bss, cont))
+        self.assertSimilarModellerIMPScores(modmodel, protein)
+
 if __name__ == '__main__':
     unittest.main()

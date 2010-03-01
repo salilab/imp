@@ -1,6 +1,7 @@
 Import('env')
 
 files = [
+         'AngleSingletonScore.cpp',
          'Atom.cpp',
          'BondEndpointsRefiner.cpp',
          'BondPairContainer.cpp',

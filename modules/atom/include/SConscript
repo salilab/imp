@@ -1,6 +1,7 @@
 Import('env')
 
 files = [
+         'AngleSingletonScore.h',
          'Atom.h',
          'BondEndpointsRefiner.h',
          'BondPairContainer.h',
