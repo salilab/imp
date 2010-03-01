@@ -556,18 +556,21 @@ Particles CHARMMParameters::generate_angles(Particles bonds) const
 void CHARMMParameters::add_angle(Particle *p1, Particle *p2, Particle *p3,
                                  Particles &ps) const
 {
+  Angle ad = Angle::setup_particle(new Particle(p1->get_model()),
+                                   core::XYZ(p1), core::XYZ(p2),
+                                   core::XYZ(p3));
   const CHARMMBondParameters *p
         = get_angle_parameters(CHARMMAtom(p1).get_charmm_type(),
                                CHARMMAtom(p2).get_charmm_type(),
                                CHARMMAtom(p3).get_charmm_type());
   if (p) {
-    Angle ad = Angle::setup_particle(new Particle(p1->get_model()),
-                                     core::XYZ(p1), core::XYZ(p2),
-                                     core::XYZ(p3));
     ad.set_ideal(p->ideal / 180.0 * PI);
     ad.set_stiffness(std::sqrt(p->force_constant * 2.0));
-    ps.push_back(ad);
+  } else {
+    IMP_WARN("No parameters found for angle between " << p1 << " "
+             << p2 << " " << p3);
   }
+  ps.push_back(ad);
 }
 
 Particles CHARMMParameters::generate_dihedrals(Particles bonds) const
@@ -623,6 +626,15 @@ void CHARMMParameters::add_dihedral(Particle *p1, Particle *p2, Particle *p3,
     dd.set_ideal(it->ideal / 180.0 * PI);
     dd.set_multiplicity(it->multiplicity);
     dd.set_stiffness(std::sqrt(it->force_constant * 2.0));
+    ps.push_back(dd);
+  }
+
+  if (p.size() == 0) {
+    IMP_WARN("No parameters found for dihedral between " << p1 << " "
+             << p2 << " " << p3 << " " << p4);
+    Dihedral dd = Dihedral::setup_particle(new Particle(p1->get_model()),
+                                           core::XYZ(p1), core::XYZ(p2),
+                                           core::XYZ(p3), core::XYZ(p4));
     ps.push_back(dd);
   }
 }

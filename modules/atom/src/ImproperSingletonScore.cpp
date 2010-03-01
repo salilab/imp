@@ -25,6 +25,9 @@ double ImproperSingletonScore::evaluate(Particle *b,
   Dihedral id(b);
   Float ideal = id.get_ideal();
   Float s = id.get_stiffness();
+  if (s == 0.) {
+    return 0.;
+  }
   core::XYZ d[4];
   for (unsigned int i = 0; i < 4; ++i) {
     d[i] = core::XYZ(id.get_particle(i));

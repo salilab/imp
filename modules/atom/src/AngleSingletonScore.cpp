@@ -24,6 +24,9 @@ double AngleSingletonScore::evaluate(Particle *b,
   Angle ad(b);
   Float ideal = ad.get_ideal();
   Float s = ad.get_stiffness();
+  if (s == 0) {
+    return 0.;
+  }
   core::XYZ d[3];
   for (unsigned int i = 0; i < 3; ++i) {
     d[i] = core::XYZ(ad.get_particle(i));
