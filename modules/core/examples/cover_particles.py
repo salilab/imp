@@ -5,7 +5,7 @@ import IMP.atom
 import IMP.helper
 
 m= IMP.Model()
-prot= IMP.atom.read_pdb(IMP.atom.get_example_path('example_protein.pdb'), m)
+prot= IMP.atom.read_pdb(IMP.core.get_example_path('example_protein.pdb'), m)
 res= IMP.atom.get_by_type(prot, IMP.atom.RESIDUE_TYPE)
 for p in res:
     IMP.core.XYZR.setup_particle(p.get_particle())
