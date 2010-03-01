@@ -132,6 +132,20 @@ int main(void)
         context.Result("yes")
     return res
 
+def _add_rpath(env):
+    # when supported, change the rpath so that libraries can be found at runtime
+    # also, add to the rpath used when linking so the linux linker can resolve
+    # inter-library dependencies
+    if env['PLATFORM'] == 'posix':
+        dylinkflags=[]
+        for p in env['LIBPATH']:
+            if p[0] is not '#':
+                # append/prepend must match other uses
+                if  env['rpath']:
+                    env.Prepend(LINKFLAGS=['-Wl,-rpath,'+p])
+                env.Prepend(LINKFLAGS=['-Wl,-rpath-link,'+p])
+        env.Prepend(LINKFLAGS=['-Wl,-rpath-link,'+Dir("#/build/lib").abspath])
+
 
 def MyEnvironment(variables=None, *args, **kw):
     """Create an environment suitable for building IMP modules"""
@@ -168,6 +182,27 @@ def MyEnvironment(variables=None, *args, **kw):
     env.AddMethod(symlinks.LinkInstallAs)
     env.AddMethod(hierarchy.InstallHierarchy)
     env.AddMethod(GetInstallDirectory)
+    if not env['wine']:
+        from distutils.sysconfig import get_config_vars
+        # The compile and link programs used by python must both produce outputs
+        # that are compatible with the compiler we are already using as well
+        # as much take all command line options we are already using. As a
+        # result, we might as well used the same compiler as before. It would
+        # be great to check if they match, but that is kind of hard.
+        (opt, cflags, so)\
+            = get_config_vars('OPT', 'BASECFLAGS', 'SO')
+        env['IMP_PYTHON_SO']=so
+        sopt= opt.split()
+        scflags= cflags.split()
+        total=[]
+        for v in sopt+scflags:
+            # OK, this is silly....
+            try:
+                ['-Werror', '-Wall','-O2', '-O3',
+                 '-fstack-protector', '-Wstrict-prototypes'].index(v)
+            except:
+                total.append(v)
+        env.Append(CXXFLAGS=total)
     if env.get('cxxflags'):
         env.Append(CXXFLAGS = env['cxxflags'].split(" "))
     if env.get('linkflags'):
@@ -204,19 +239,22 @@ def MyEnvironment(variables=None, *args, **kw):
     env['SVNVERSION'] = env.WhereIs('svnversion')
     if env['svn'] and not env['SVNVERSION']:
         print "Warning: Could not find 'svnversion' binary in path"
-    #if not env.GetOption('clean') and not env.GetOption('help'):
-    if True:
-        compilation.configure_check(env)
-        custom_tests = {'CheckGNUHash': CheckGNUHash,
-                        'CheckGCCVisibility': CheckGCCVisibility}
-        conf = env.Configure(custom_tests = custom_tests)
-        if sys == 'Linux' and env['linksysv']:
-            conf.CheckGNUHash()
-        if sys != 'win32' and not env['wine']:
-            conf.CheckGCCVisibility()
+    compilation.configure_check(env)
+    custom_tests = {'CheckGNUHash': CheckGNUHash,
+                    'CheckGCCVisibility': CheckGCCVisibility}
+    conf = env.Configure(custom_tests = custom_tests)
+    if sys == 'Linux' and env['linksysv']:
+        conf.CheckGNUHash()
+    if sys != 'win32' and not env['wine']:
+        conf.CheckGCCVisibility()
         # Check explicitly for False, since all checks will return Null if
         # configure has been disabled
-        conf.Finish()
+    conf.Finish()
+    if platform == 'aix':
+        # Make sure compilers are in the PATH, so that Python's script for
+        # building AIX extension modules can find them:
+        e['ENV']['PATH'] += ':/usr/vac/bin'
+    _add_rpath(env)
     return env
 
 def _fix_aix_cpp_link(env, cplusplus, linkflags):
@@ -228,19 +266,6 @@ def _fix_aix_cpp_link(env, cplusplus, linkflags):
         env[linkflags] = slflags.replace('-qmkshrobj -qsuppress=1501-218',
                                          '-shared')
 
-def _add_rpath(env):
-    # when supported, change the rpath so that libraries can be found at runtime
-    # also, add to the rpath used when linking so the linux linker can resolve
-    # inter-library dependencies
-    if env['PLATFORM'] == 'posix':
-        dylinkflags=[]
-        for p in env['LIBPATH']:
-            if p[0] is not '#':
-                # append/prepend must match other uses
-                if  env['rpath']:
-                    env.Prepend(LINKFLAGS=['-Wl,-rpath,'+p])
-                env.Prepend(LINKFLAGS=['-Wl,-rpath-link,'+p])
-        env.Prepend(LINKFLAGS=['-Wl,-rpath-link,'+Dir("#/build/lib").abspath])
 
 def get_sharedlib_environment(env, cppdefine, cplusplus=False):
     """Get a modified environment suitable for building shared libraries
@@ -255,7 +280,6 @@ def get_sharedlib_environment(env, cppdefine, cplusplus=False):
              CCFLAGS='${VIS_CCFLAGS}')
     if env['PLATFORM'] == 'darwin':
         env.Append(SHLINKFLAGS=['-headerpad_max_install_names'])
-    _add_rpath(env)
     _fix_aix_cpp_link(e, cplusplus, 'SHLINKFLAGS')
     return e
 
@@ -268,7 +292,6 @@ def get_bin_environment(envi):
             return env
         else:
             print "Static builds only supported with GCC, ignored."
-    _add_rpath(env)
     return env
 
 
@@ -293,50 +316,12 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
         # Directory containing python26.lib:
         e.Append(LIBPATH=['/usr/lib/w32comp/w32python/2.6/lib/'])
     else:
-        if platform == 'aix':
-            # Make sure compilers are in the PATH, so that Python's script for
-            # building AIX extension modules can find them:
-            e['ENV']['PATH'] += ':/usr/vac/bin'
-        from distutils.sysconfig import get_config_vars
-        # The compile and link programs used by python must both produce outputs
-        # that are compatible with the compiler we are already using as well
-        # as much take all command line options we are already using. As a
-        # result, we might as well used the same compiler as before. It would
-        # be great to check if they match, but that is kind of hard.
-        (opt, basecflags, so)\
-            = get_config_vars('OPT', 'BASECFLAGS', 'SO')
         # distutils on AIX can get confused if AIX C but GNU C++ is installed:
         #if platform == 'aix' and cxx == '':
         #    cxx = 'g++'
         #    ldshared = ldshared.replace(' cc_r', ' g++')
-        e.Replace(LDMODULESUFFIX=so,CPPFLAGS=basecflags.split() + opt.split())
+        e.Replace(LDMODULESUFFIX=e['IMP_PYTHON_SO'])
         #e.Replace(CXX=cxx, LDMODULE=ldshared, SHLINK=ldshared)
-        if e['PLATFORM'] is 'posix' and e['rpath']:
-            for p in e['LIBPATH']:
-                if p[0] is not '#':
-                    # append/prepend must match other uses
-                    e.Prepend(LINKFLAGS=['-Wl,-rpath,'+p])
-        for f in ['NDEBUG']:
-            try:
-                e['CPPDEFINES'].remove(f)
-            except ValueError:
-                pass
-            except KeyError:
-                pass
-        # Don't require stack protector stuff on Linux, as this adds a
-        # requirement for glibc-2.4:
-        # remove the warnings flags because swig produces code which triggers
-        # tons of them.
-        for v in ['CCFLAGS', 'CPPFLAGS', 'CXXFLAGS']:
-            ov= [x for x in e[v]]
-            for f in ['-Werror', '-Wall','-O2', '-O3',
-                      '-fstack-protector', '-Wstrict-prototypes',
-                      '-DNDEBUG']:
-                try:
-                    ov.remove(f)
-                except ValueError:
-                    pass
-            e[v]=ov
         if platform == 'darwin':
             e.Replace(LDMODULEFLAGS= \
                       '$LINKFLAGS -bundle -flat_namespace -undefined suppress')
@@ -344,6 +329,23 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
         elif system() != "Linux":
             e['LDMODULEFLAGS'] = []
             #e['SHLINK'] = e['LDMODULE'] = ldshared
+    cpps=e['CPPDEFINES']
+    try:
+        cpps.remove("NDEBUG")
+    except:
+        pass
+    e.Replace(CPPDEFINES=cpps)
+    cxxs=e['CXXFLAGS']
+    try:
+        cxxs.remove("-DNDEBUG")
+    except:
+        pass
+    try:
+        cxxs.remove("-Wall")
+    except:
+        pass
+    e.Replace(CXXFLAGS=cxxs)
+
     e.Append(CPPDEFINES=['IMP_SWIG_WRAPPER'])
     e.Append(CPPPATH=[_get_python_include(e)])
     _fix_aix_cpp_link(e, cplusplus, 'SHLINKFLAGS')
