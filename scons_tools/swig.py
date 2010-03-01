@@ -222,7 +222,7 @@ Since SWIG could not be found, proceeding to build IMP without Python support.
                          "it could not be found on your system")
         return False
     if v >= needversion:
-        context.Result('ok, %s found' % version)
+        context.Result('%s' % version)
         return True
     else:
         context.Result('no, %s found' % version)
