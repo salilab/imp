@@ -13,6 +13,8 @@
 #include <IMP/algebra/vector_generators.h>
 #include <IMP/SingletonModifier.h>
 #include <IMP/core/Transform.h>
+#include <IMP/atom/pdb.h>
+#include <IMP/algebra/geometric_alignment.h>
 IMPEM_BEGIN_NAMESPACE
 
 
@@ -61,20 +63,23 @@ void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
   Float e;
   core::XYZsTemp xyz_t=
     core::XYZsTemp(IMP::core::get_leaves(IMP::atom::Hierarchy(rb)));
+  //save starting configuration
+  algebra::Vector3Ds vecs_ref;
+  for (core::XYZsTemp::iterator it = xyz_t.begin(); it != xyz_t.end(); it++) {
+    vecs_ref.push_back(it->get_coordinates());
+  }
+  algebra::Transformation3D starting_trans = rb.get_transformation();
   for(int i=0;i<number_of_optimization_runs;i++) {
     IMP_LOG(VERBOSE, "number of optimization run is : "<< i << std::endl);
     //set the centroid of the rigid body to be on the anchor centroid
     //make sure that all of the members are in the correct transformation
-    rb.set_transformation(rb.get_transformation());
-    algebra::VectorD<3> ps_centroid =
-      IMP::core::centroid(xyz_t);
-
+    rb.set_transformation(starting_trans);
+    algebra::VectorD<3> ps_centroid = IMP::core::centroid(xyz_t);
     algebra::Transformation3D move2centroid(algebra::get_identity_rotation_3d(),
                                             anchor_centroid-ps_centroid);
     core::transform(rb,move2centroid);
-    rb.set_transformation(rb.get_transformation());
-    ps_centroid =
-      IMP::core::centroid(core::XYZsTemp(rb.get_members()));
+    //rb.set_transformation(rb.get_transformation());
+    ps_centroid = IMP::core::centroid(xyz_t);
     IMP_LOG(VERBOSE, "rigid body centroid before optimization : "
                       << ps_centroid << std::endl);
     //optimize
@@ -85,7 +90,15 @@ void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
         IMP::core::centroid(xyz_t);
       IMP_LOG(VERBOSE, "rigid body centroid after optimization : "
                         << ps_centroid << std::endl);
+      algebra::Vector3Ds vecs_current;
+      for (core::XYZsTemp::iterator it = xyz_t.begin(); it != xyz_t.end(); it++)
+      {
+        vecs_current.push_back(it->get_coordinates());
+      }
+      //fr.add_solution(algebra::get_transformation_aligning_first_to_second(
+      //vecs_ref,vecs_current),e);
       fr.add_solution(rb.get_transformation(),e);
+      IMP::atom::write_pdb(IMP::atom::Hierarchy(rb),"aa.pdb");
     }
     catch (UsageException err) {
       IMP_WARN("rigid fitting around anchor point " << anchor_centroid <<
