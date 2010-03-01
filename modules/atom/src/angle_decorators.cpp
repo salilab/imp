@@ -9,6 +9,32 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
+ParticleKey Angle::get_particle_key(unsigned int pi)
+{
+  static ParticleKey k[3] = {
+      ParticleKey("angle particle 1"), ParticleKey("angle particle 2"),
+      ParticleKey("angle particle 3") };
+  return k[pi];
+}
+
+FloatKey Angle::get_ideal_key()
+{
+  static FloatKey k("ideal");
+  return k;
+}
+
+FloatKey Angle::get_stiffness_key()
+{
+  static FloatKey k("stiffness");
+  return k;
+}
+
+void Angle::show(std::ostream &out) const {
+  out << "Angle on " << get_particle(0)->get_name()
+      << " " << get_particle(1)->get_name() << " "
+      << get_particle(2)->get_name();
+}
+
 ParticleKey Dihedral::get_particle_key(unsigned int pi)
 {
   static ParticleKey k[4] = {

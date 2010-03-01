@@ -7,6 +7,7 @@
  */
 #include <IMP/atom/CHARMMParameters.h>
 #include <IMP/atom/CHARMMAtom.h>
+#include <IMP/atom/angle_decorators.h>
 
 #include <boost/algorithm/string.hpp>
 
@@ -92,6 +93,31 @@ namespace {
       }
     }
   }
+
+  typedef std::map<Particle *, std::vector<IMP::atom::Bond> > BondMap;
+
+  // Build a simple mapping from Particles to bonds that connect them. Note
+  // that we cannot use the existing such mapping (the bond graph) in the
+  // Bonded particles, since bonds may be a subset of all bonds.
+  void make_bond_map(const Particles &bonds, BondMap &particle_bonds)
+  {
+    for (Particles::const_iterator it = bonds.begin(); it != bonds.end();
+         ++it) {
+      IMP::atom::Bond bd = IMP::atom::Bond(*it);
+      Particle *p1 = bd.get_bonded(0).get_particle();
+      Particle *p2 = bd.get_bonded(1).get_particle();
+      particle_bonds[p1].push_back(bd);
+      particle_bonds[p2].push_back(bd);
+    }
+  }
+
+  Particle *get_other_end_of_bond(Particle *p, Bond bd)
+  {
+    Particle *p1 = bd.get_bonded(0).get_particle();
+    Particle *p2 = bd.get_bonded(1).get_particle();
+    return p1 == p ? p2 : p1;
+  }
+
 }
 
 CHARMMParameters::CHARMMParameters(const String& top_file_name,
@@ -489,6 +515,59 @@ CHARMMParameters::find_dihedral(DihedralParameters::const_iterator begin,
     }
   }
   return best;
+}
+
+Particles CHARMMParameters::generate_angles(Particles bonds) const
+{
+  Particles ps;
+  BondMap particle_bonds;
+  make_bond_map(bonds, particle_bonds);
+
+  // Iterate over all bonds
+  for (Particles::const_iterator bit1 = bonds.begin();
+       bit1 != bonds.end(); ++bit1) {
+    IMP::atom::Bond bd = IMP::atom::Bond(*bit1);
+    Particle *p2 = bd.get_bonded(0).get_particle();
+    Particle *p3 = bd.get_bonded(1).get_particle();
+
+    // Extend along each adjoining p2 bond to get candidate p1-p2-p3 angles
+    for (std::vector<IMP::atom::Bond>::const_iterator bit2
+         = particle_bonds[p2].begin();
+         bit2 != particle_bonds[p2].end(); ++bit2) {
+        Particle *p1 = get_other_end_of_bond(p2, *bit2);
+      // Avoid making angles where p1 == p3, and avoid double-counting
+      if (p3 > p1) {
+        add_angle(p1, p2, p3, ps);
+      }
+    }
+    // Do the same for p2-p3-p4 angles
+    for (std::vector<IMP::atom::Bond>::const_iterator bit2
+         = particle_bonds[p3].begin();
+         bit2 != particle_bonds[p3].end(); ++bit2) {
+        Particle *p4 = get_other_end_of_bond(p3, *bit2);
+      if (p4 > p2) {
+        add_angle(p2, p3, p4, ps);
+      }
+    }
+  }
+  return ps;
+}
+
+void CHARMMParameters::add_angle(Particle *p1, Particle *p2, Particle *p3,
+                                 Particles &ps) const
+{
+  const CHARMMBondParameters *p
+        = get_angle_parameters(CHARMMAtom(p1).get_charmm_type(),
+                               CHARMMAtom(p2).get_charmm_type(),
+                               CHARMMAtom(p3).get_charmm_type());
+  if (p) {
+    Angle ad = Angle::setup_particle(new Particle(p1->get_model()),
+                                     core::XYZ(p1), core::XYZ(p2),
+                                     core::XYZ(p3));
+    ad.set_ideal(p->ideal / 180.0 * PI);
+    ad.set_stiffness(std::sqrt(p->force_constant * 2.0));
+    ps.push_back(ad);
+  }
 }
 
 IMPATOM_END_NAMESPACE
