@@ -5,7 +5,7 @@ import IMP.helper
 
 m= IMP.Model()
 
-mp0= IMP.atom.read_pdb(IMP.atom.get_example_path('example_protein.pdb'), m)
+mp0= IMP.atom.read_pdb(IMP.core.get_example_path('example_protein.pdb'), m)
 residues= IMP.atom.get_by_type(mp0, IMP.atom.RESIDUE_TYPE)
 rbs=IMP.container.ListSingletonContainer(residues)
 for r in residues:
