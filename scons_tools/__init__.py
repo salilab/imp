@@ -95,42 +95,6 @@ def _add_build_flags(env):
             env.Append(CXXFLAGS=["-g"])
 
 
-def CheckGNUHash(context):
-    """Disable GNU_HASH-style linking (if found) for backwards compatibility"""
-    context.Message('Checking whether GNU_HASH linking should be disabled...')
-    lastLINKFLAGS = context.env['LINKFLAGS']
-    context.env.Append(LINKFLAGS="-Wl,--hash-style=sysv")
-    text = """
-int main(void)
-{ return 0; }
-"""
-    res = context.TryLink(text, '.c')
-    if not res:
-        context.Result("no")
-        context.env.Replace(LINKFLAGS=lastLINKFLAGS)
-    else:
-        context.Result("yes")
-    return res
-
-def CheckGCCVisibility(context):
-    """Check if the compiler supports setting visibility of symbols"""
-    context.Message('Checking whether compiler supports -fvisibility...')
-    lastCXXFLAGS = context.env['CXXFLAGS']
-    context.env.Append(CXXFLAGS="-fvisibility=hidden")
-    text = """
-__attribute__ ((visibility("default")))
-int main(void)
-{ return 0; }
-"""
-    res = context.TryLink(text, '.c')
-    context.env.Replace(CXXFLAGS=lastCXXFLAGS)
-    if not res:
-        context.Result("no")
-    else:
-        context.env.Append(VIS_CPPDEFINES=['GCC_VISIBILITY'],
-                           VIS_CXXFLAGS="-fvisibility=hidden")
-        context.Result("yes")
-    return res
 
 def _add_rpath(env):
     # when supported, change the rpath so that libraries can be found at runtime
@@ -228,7 +192,6 @@ def MyEnvironment(variables=None, *args, **kw):
         env.Append(LIBS=libs);
     _add_build_flags(env)
 
-    sys = platform.system()
     if env.get('ldlibpath') is not None:
         env['ENV']['LD_LIBRARY_PATH'] = env['ldlibpath']
     # Make Modeller exetype variable available:
@@ -243,16 +206,6 @@ def MyEnvironment(variables=None, *args, **kw):
     if env['svn'] and not env['SVNVERSION']:
         print "Warning: Could not find 'svnversion' binary in path"
     compilation.configure_check(env)
-    custom_tests = {'CheckGNUHash': CheckGNUHash,
-                    'CheckGCCVisibility': CheckGCCVisibility}
-    conf = env.Configure(custom_tests = custom_tests)
-    if sys == 'Linux' and env['linksysv']:
-        conf.CheckGNUHash()
-    if sys != 'win32' and not env['wine']:
-        conf.CheckGCCVisibility()
-        # Check explicitly for False, since all checks will return Null if
-        # configure has been disabled
-    conf.Finish()
     if platform == 'aix':
         # Make sure compilers are in the PATH, so that Python's script for
         # building AIX extension modules can find them:
