@@ -74,12 +74,12 @@ void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
     //set the centroid of the rigid body to be on the anchor centroid
     //make sure that all of the members are in the correct transformation
     rb.set_transformation(starting_trans);
-    algebra::VectorD<3> ps_centroid = IMP::core::centroid(xyz_t);
+    algebra::VectorD<3> ps_centroid = IMP::core::get_centroid(xyz_t);
     algebra::Transformation3D move2centroid(algebra::get_identity_rotation_3d(),
                                             anchor_centroid-ps_centroid);
     core::transform(rb,move2centroid);
     //rb.set_transformation(rb.get_transformation());
-    ps_centroid = IMP::core::centroid(xyz_t);
+    ps_centroid = IMP::core::get_centroid(xyz_t);
     IMP_LOG(VERBOSE, "rigid body centroid before optimization : "
                       << ps_centroid << std::endl);
     //optimize
@@ -87,7 +87,7 @@ void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
       e = opt->optimize(number_of_mc_steps);
       rb.set_transformation(rb.get_transformation());
       ps_centroid =
-        IMP::core::centroid(xyz_t);
+        IMP::core::get_centroid(xyz_t);
       IMP_LOG(VERBOSE, "rigid body centroid after optimization : "
                         << ps_centroid << std::endl);
       algebra::Vector3Ds vecs_current;
@@ -226,7 +226,7 @@ void local_rigid_fitting_grid_search(
      IMP_LOG(IMP::TERSE,"working on rotation "<<
          rot_ind<<" out of "<< rots.size()<<std::endl);
      algebra::Transformation3D t1 =algebra::get_rotation_about_point(
-                                 core::centroid(core::XYZsTemp(ps)),*it);
+                                 core::get_centroid(core::XYZsTemp(ps)),*it);
      DensityMap *rotated_sampled_map = get_transformed(model_dens_map,t1);
      rotated_sampled_map->calcRMS();
      algebra::VectorD<3>

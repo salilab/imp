@@ -200,7 +200,7 @@ void CoarseCC::calc_derivatives(const DensityMap &em_map,
   IMP_USAGE_CHECK(model_header->rms >= EPS,
             "Model map is empty ! model_header->rms = " << model_header->rms
             <<" the model centroid is : " <<
-            core::centroid(core::XYZsTemp(ps))<<
+            core::get_centroid(core::XYZsTemp(ps))<<
             " the map centroid is " << em_map.get_centroid() <<std::endl);
   // Compute the derivatives
   FloatKey x_key=IMP::core::XYZ::get_coordinate_key(0);
