@@ -20,10 +20,10 @@
 
 IMPCORE_BEGIN_NAMESPACE
 //! Get the centroid
-IMPCOREEXPORT algebra::VectorD<3> centroid(const XYZsTemp &ps);
+IMPCOREEXPORT algebra::VectorD<3> get_centroid(const XYZsTemp &ps);
 
 IMPCOREEXPORT
-algebra::Segment3D diameter(const XYZsTemp &ps);
+algebra::Segment3D get_diameter(const XYZsTemp &ps);
 
 //! RAII class for objects with batch editing modes
 /** This object sets the editing mode to true if the object is not

@@ -10,7 +10,7 @@
 #include <IMP/core/XYZ.h>
 IMPCORE_BEGIN_NAMESPACE
 
-algebra::VectorD<3> centroid(const XYZsTemp &ps) {
+algebra::VectorD<3> get_centroid(const XYZsTemp &ps) {
  algebra::VectorD<3> cen(0.0,0.0,0.0);
  for (XYZsTemp::const_iterator it = ps.begin(); it != ps.end();it++) {
    cen = cen + it->get_coordinates();
@@ -18,7 +18,7 @@ algebra::VectorD<3> centroid(const XYZsTemp &ps) {
  return cen/ps.size();
 }
 
-algebra::Segment3D diameter(const XYZsTemp &ps) {
+algebra::Segment3D get_diameter(const XYZsTemp &ps) {
   IMP_USAGE_CHECK(!ps.empty(), "Can't compute the diameter if you don't give "
             "me any particles.");
   XYZ p1,p2;
