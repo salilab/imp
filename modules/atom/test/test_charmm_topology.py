@@ -238,6 +238,8 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         self.assertEqual(len(bonds), 1215)
         angles = ff.generate_angles(bonds)
         self.assertEqual(len(angles), 1651)
+        dihedrals = ff.generate_dihedrals(bonds)
+        self.assertEqual(len(dihedrals), 2161)
         for (bondr1, bondr2, bonda1, bonda2, atyp1, atyp2, bondlen, fcon) in [
            # intraresidue bond
            (residues[0], residues[0], IMP.atom.AT_CA, IMP.atom.AT_CB,
