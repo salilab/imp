@@ -5,6 +5,7 @@ import scons_tools.cgal
 import scons_tools.swig
 import scons_tools.standards
 import scons_tools.endian
+import scons_tools.gcc
 import scons_tools.modeller_test
 import scons_tools.doxygen
 import scons_tools.application
@@ -41,6 +42,8 @@ scons_tools.modeller_test.configure_check(env)
 scons_tools.endian.configure_check(env)
 scons_tools.doxygen.configure_check_doxygen(env)
 scons_tools.doxygen.configure_check_dot(env)
+scons_tools.gcc.configure_check_visibility(env)
+scons_tools.gcc.configure_check_hash(env)
 
 Help("""
 Available command-line options:
@@ -83,7 +86,8 @@ SConscript('build/SConscript')
 SConscript('modules/SConscript')
 SConscript('applications/SConscript')
 # This must be after the other SConscipt calls so that it knows about all the generated files
-SConscript('doc/SConscript')
+if env['doxygen']:
+    SConscript('doc/SConscript')
 SConscript('tools/SConscript')
 
 env.Alias(env.Alias('test'), [env.Alias('examples-test')])
