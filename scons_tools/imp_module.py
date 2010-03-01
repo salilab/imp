@@ -397,9 +397,10 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
         #lpenv.Prepend(CPPFLAGS=['-include '+env['pch']])
         lpenv.Prepend(CPPPATH=['#/build/swig'])
         lpenv.Prepend(CPPFLAGS=['-include', 'pch.h'])
-        lpenv.Prepend(CXXFLAGS=['-Winvalid-pch'])
+        lpenv.Prepend(CCFLAGS=['-Winvalid-pch'])
     buildlib = lpenv.LoadableModule('#/build/lib/_IMP%s' % module_suffix,
                                     patched)
+    #print "Environment", env['CCFLAGS']
     if env['use_pch']:
         # a hack to get them close to right without making building the docs expensive
         env.Depends(patched, env.Alias('pch'))
