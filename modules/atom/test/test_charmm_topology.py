@@ -20,7 +20,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         self.assertEqual(typ1, exp_typ1)
         self.assertEqual(typ2, exp_typ2)
         for i in range(bonded1.get_number_of_bonds()):
-            other = bonded1.get_particle(i)
+            other = bonded1.get_bonded(i)
             if other == bonded2:
                 bond = bonded1.get_bond(i)
                 self.assertInTolerance(bond.get_length(), bondlen, 1e-4)
