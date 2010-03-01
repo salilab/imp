@@ -15,6 +15,7 @@ files = [
          'CoulombPairScore.cpp',
          'CoverBond.cpp',
          'Diffusion.cpp',
+         'DihedralSingletonScore.cpp',
          'Domain.cpp',
          'ForceFieldParameters.cpp',
          'Fragment.cpp',
