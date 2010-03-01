@@ -21,7 +21,7 @@ public:
 
   //! Create an angle with the given particles.
   static Angle setup_particle(Particle *p, core::XYZ a, core::XYZ b,
-                                 core::XYZ c) {
+                              core::XYZ c) {
     p->add_attribute(get_particle_key(0), a);
     p->add_attribute(get_particle_key(1), b);
     p->add_attribute(get_particle_key(2), c);
