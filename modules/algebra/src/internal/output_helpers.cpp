@@ -22,7 +22,7 @@ int best_precision(double F, Int width)
     return 1;
   }
   // Otherwise
-  Int exp = static_cast<Int>(std::floorlog10(std::abs(F)));
+  Int exp = static_cast<Int>(std::floor(log10(std::abs(F))));
   Int advised_prec;
 
   if (exp >= 0)
