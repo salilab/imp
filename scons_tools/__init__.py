@@ -56,7 +56,7 @@ class WineEnvironment(Environment):
         # Make sure we get the same Windows C/C++ library as Modeller, and
         # enable C++ exception handling
         self.Append(CFLAGS="/MD")
-        self.Append(CXXFLAGS="/MD /GR /GX")
+        self.Append(CCFLAGS="/MD /GR /GX")
 
 def _get_python_include(env):
     """Get the directory containing Python.h"""
@@ -78,7 +78,7 @@ def _add_build_flags(env):
     if env['CC'] == 'gcc':
         env.Append(CCFLAGS=["-Wall"])
     if env['CXX'] == 'g++':
-        env.Append(CXXFLAGS=["-Woverloaded-virtual"])
+        env.Append(CCFLAGS=["-Woverloaded-virtual"])
         env['use_pch']=env['precompiledheader']
     else:
         env['use_pch']=False
@@ -197,14 +197,17 @@ def MyEnvironment(variables=None, *args, **kw):
         total=[]
         for v in sopt+scflags:
             # OK, this is silly....
+            #print "trying", v
             try:
                 ['-Werror', '-Wall','-O2', '-O3',
-                 '-fstack-protector', '-Wstrict-prototypes'].index(v)
+                 '-fstack-protector', '-Wstrict-prototypes',
+                 '-DNDEBUG', '-g'].index(v)
             except:
+                #print "appending", v
                 total.append(v)
-        env.Append(CXXFLAGS=total)
+        env.Append(CCFLAGS=total)
     if env.get('cxxflags'):
-        env.Append(CXXFLAGS = env['cxxflags'].split(" "))
+        env.Append(CCFLAGS = env['cxxflags'].split(" "))
     if env.get('linkflags'):
         env.Append(LINKFLAGS=[env['linkflags'].split(" ")])
 
@@ -255,6 +258,7 @@ def MyEnvironment(variables=None, *args, **kw):
         # building AIX extension modules can find them:
         e['ENV']['PATH'] += ':/usr/vac/bin'
     _add_rpath(env)
+    #print "cxx", env['CCFLAGS']
     return env
 
 def _fix_aix_cpp_link(env, cplusplus, linkflags):
@@ -335,17 +339,13 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
     except:
         pass
     e.Replace(CPPDEFINES=cpps)
-    cxxs=e['CXXFLAGS']
-    try:
-        cxxs.remove("-DNDEBUG")
-    except:
-        pass
-    try:
-        cxxs.remove("-Wall")
-    except:
-        pass
-    e.Replace(CXXFLAGS=cxxs)
-
+    cxxs=e['CCFLAGS']
+    for x in cxxs:
+        if x== "-DNDEBUG":
+            cxxs.remove(x)
+        elif x.startswith("-W"):
+            cxxs.remove(x)
+    e.Replace(CCFLAGS=cxxs)
     e.Append(CPPDEFINES=['IMP_SWIG_WRAPPER'])
     e.Append(CPPPATH=[_get_python_include(e)])
     _fix_aix_cpp_link(e, cplusplus, 'SHLINKFLAGS')
