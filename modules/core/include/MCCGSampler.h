@@ -22,10 +22,16 @@ class MonteCarlo;
 
 //! A simple sampler.
 /** This sampler randomizes the conformation and then uses Monte Carlo
-    and Conjugate Gradient steps to search for good solutions.
+    and conjugate gradient steps to search for good solutions. Each
+    Monte Carlo move is followed by the specified number of
+    conjugate gradient steps before it is decided whether to accept
+    or reject the move.
 
     At the moment it only support optimization of Cartesian coordinates,
-    but this will be fixed.
+    but this will be fixed when people ask for it
+    (and they already have :-). We are also open to supporting a wider
+    variety of optimization protocols (eg only do conjugate gradient
+    steps occasionally).
 */
 class IMPCOREEXPORT MCCGSampler : public Sampler
 {
@@ -53,16 +59,19 @@ public:
   //! Set the bounding box for randomizing the Cartesian coordinates
   void set_bounding_box(const algebra::BoundingBoxD<3> &bb);
 
-  //! Set the maximum number of attempts
+  //! Set the maximum number of attempts to find a solution
   void set_number_of_attempts(unsigned int att);
 
-  //! Set the number of MC steps to take
+  //! Set the number of MC steps to take in each optimization run
   void set_number_of_monte_carlo_steps(unsigned int cg);
 
-  //! Set the maximum size of the MC step
+  //! Set the maximum size of the MC step for all attributes
   void set_max_monte_carlo_step_size(double d);
 
   //! Set the maximum size of the MC step for an attribute
+  /** As was mentioned, at the moment k can be one of
+      x,y or z.
+  */
   void set_max_monte_carlo_step_size(FloatKey k, double d);
 
   //! Set the number of CG steps to take after each MC step
