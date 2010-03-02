@@ -35,7 +35,7 @@ stages, but a few need extra note:
 
 - A certain amount of knowledge is encoded as "constraints". These are
   choices made in choosing the representation scheme that force
-  relationships between parts to always hold. For example,
+  relationships between parts to always hold. For %example,
   representing part of the system as a rigid body, means that none of
   the distances or angles within the rigid body ever change.
 
@@ -72,7 +72,7 @@ fall into a variety of categories.
    - \inlineimage{spherecover.png, 30} a cover particle has a sphere containing another set of particles (IMP::core::Cover)
    .
   The data stored in a particle can be easily extended by adding a new IMP::Decorator type.\n\n
-  Representations can loaded from a number of standard file types, for example see
+  Representations can loaded from a number of standard file types, for %example see
   IMP::atom::read_pdb() and IMP::atom::read_mol2().
 -# \anchor dataenc Encoding the data as a scoring function:
   Proposed models are scored based on how well they match the
@@ -262,7 +262,7 @@ See IMP::example::ExampleRestraint.
 \section i125 Modules
 
 Functionality in \imp is grouped into modules, each with its own
-namespace (in C++) or package (in Python). For example, the functionality
+namespace (in C++) or package (in Python). For %example, the functionality
 for IMP::core can be found like
 \code
 IMP::core::XYZ(p)\endcode
@@ -364,7 +364,7 @@ generate the connection between the two languages. Key differences are
       (IMP::algebra::Segment3D) etc.
 
     - Collections of object \c Name are passed using the type \c Names. For
-    example, a bunch of IMP::algebra::Vector3D objects are passed using
+    %example, a bunch of IMP::algebra::Vector3D objects are passed using
     a IMP::algebra::Vector3Ds type, and a bunch of IMP::Restraint
     objects is passed using IMP::Restraints (or, equivalently
     IMP::RestraintsTemp).
@@ -384,7 +384,7 @@ generate the connection between the two languages. Key differences are
 
     - \e object \e classes which are passed and returned via pointers and
       stored using reference counted pointers (eg IMP::Pointer). In
-      \imp, these classes all inherit from IMP::Object. For example always
+      \imp, these classes all inherit from IMP::Object. For %example always
       do things like this in C++:
       \code
       IMP::Pointer<IMP::Model> m= new IMP::Model();
@@ -401,7 +401,7 @@ generate the connection between the two languages. Key differences are
 
     A few classes in \imp are designed for fast, low level use. Their default
     constructor leaves them in an unspecified state. This is similar to
-    the built in types in C++ (\c int, \c double). For example
+    the built in types in C++ (\c int, \c double). For %example
       \code
       IMP::algebra::Vector3D v; // the vector has unknown coordinates
       std::cout << v << std::endl; // illegal
@@ -421,7 +421,7 @@ generate the connection between the two languages. Key differences are
     python so that they can be printed and displayed.
 
    \subsection names Names in IMP
-    - Class names are in \c CamelCase, for example \c class \c SpecialVector'
+    - Class names are in \c CamelCase, for %example \c class \c SpecialVector'
     - For each type of object in \imp, \c Name, there is a type \c Names
       which is used to pass a list of objects of type \c Name. \c Names
       look like an \c std::vector in C++ or a \c list in Python. Sometimes,
@@ -430,7 +430,7 @@ generate the connection between the two languages. Key differences are
       will be converted into \c NamesTemp without cost, so the distinction
       should not matter for the caller.
     - method names and variables are \c separated_by_underscores, for
-      example \c void \c SpecialVector::add_constant(int the_constant)'
+      %example \c void \c SpecialVector::add_constant(int the_constant)'
     - member methods that change a value begin with \c set_
     - member methods or function which create or return a \c value object or which
       return an existing \c object \c class object begin with \c get_. No arguments
@@ -438,7 +438,7 @@ generate the connection between the two languages. Key differences are
     - methods or functions which create a new IMP::Object \c class object start
       with \c create_.
     - functions with names starting with other verbs have more complicated effects. For
-      example IMP::core::transform() changes the first argument based on the second.
+      %example IMP::core::transform() changes the first argument based on the second.
       IMP::Restraint::evaluate() computes a score as well as (optionally) adding to
       Particle derivatives.
     - all preprocessor symbols (things created by \c \#define) begin with \c %IMP_

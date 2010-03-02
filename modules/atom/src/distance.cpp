@@ -25,7 +25,7 @@ IMPATOMEXPORT std::pair<double,double> get_placement_score(
     algebra::get_transformation_aligning_first_to_second(from_v,to_v);
   return std::pair<double,double>(
     t.get_translation().get_magnitude(),
-    algebra::decompose_rotation_into_axis_angle(t.get_rotation()).second);
+    algebra::get_angle_and_axis(t.get_rotation()).second);
 }
 
 double get_pairwise_rmsd_score(
@@ -78,7 +78,7 @@ std::pair<double,double> get_component_placement_score(
   //return the best fit bewteen
   return std::pair<double,double>(
    t.get_translation().get_magnitude(),
-   algebra::decompose_rotation_into_axis_angle(t.get_rotation()).second);
+   algebra::get_angle_and_axis(t.get_rotation()).second);
 }
 
 

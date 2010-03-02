@@ -12,7 +12,7 @@ If you wish to build the Python interfaces, you will also need:
  - Python (2.3 or later)
  - SWIG (1.3.40 or later)
 
-If you install headers, libraries or tools anywhere other than the standard locations (i.e. \c /usr/lib and friends) then you need to tell \c SCons where to find them. This is done using the `includepath`, `libpath`, and `path` options (paths are colon-separated). For example:
+If you install headers, libraries or tools anywhere other than the standard locations (i.e. \c /usr/lib and friends) then you need to tell \c SCons where to find them. This is done using the `includepath`, `libpath`, and `path` options (paths are colon-separated). For %example:
 
 \command{scons includepath=/usr/local/include:/opt/local/include libpath=/usr/local/lib path=/usr/local/bin}
 
@@ -77,11 +77,11 @@ You can then build \imp by doing
 
 \command{scons}
 
-Since you will be recompiling \imp relatively frequently, you can use \imp without installing it by using the \c tools/imppy.sh script. For example, to run Python such that it can use \imp do
+Since you will be recompiling \imp relatively frequently, you can use \imp without installing it by using the \c tools/imppy.sh script. For %example, to run Python such that it can use \imp do
 
 \command{./tools/imppy.sh python}
 
-Since you will likely be compiled \imp repeatedly, it may be useful to make a config file for the build. To do this, create a file called `config.py` and put the command line arguments you wish to use into the file, one per line. For example one of ours looks like
+Since you will likely be compiled \imp repeatedly, it may be useful to make a config file for the build. To do this, create a file called `config.py` and put the command line arguments you wish to use into the file, one per line. For %example one of ours looks like
 \command{
 >>> cat config.py
 import os

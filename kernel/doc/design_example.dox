@@ -2,7 +2,7 @@
    \page design_example Example design discussion
 
    This page walks through an iterative design process to give an
-   example of what sort of issues are important and what to think about
+   %example of what sort of issues are important and what to think about
    when choosing how to implement some functionality.
 
    \section orig_discr Original Description
