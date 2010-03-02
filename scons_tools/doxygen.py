@@ -4,6 +4,7 @@ import os
 import sys
 
 def _check_dot(context):
+    #context.env.Execute("notthere")
     has_dot = context.env['dot']
     context.Message('Checking for graphviz ...')
     if has_dot is False:
@@ -12,14 +13,16 @@ def _check_dot(context):
         return False
     os.environ['PATH']=context.env['ENV']['PATH']
     try:
-        os.system("dot -V >&/dev/null")
+        if os.system("dot -V >&/dev/null") != 0:
+            raise ValueError()
     except:
         context.Result("not found")
         context.env['dot']=False
         return False
-    context.Result("found")
-    context.env['dot']=True
-    return True
+    else:
+        context.Result("found")
+        context.env['dot']=True
+        return True
 
 def configure_check_dot(env):
     custom_tests = {'CheckDot':_check_dot}
