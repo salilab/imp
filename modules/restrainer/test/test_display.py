@@ -11,16 +11,13 @@ class RestraintTest(IMP.test.TestCase):
     def setUp(self):
         IMP.test.TestCase.setUp(self)
 
-        RepParser = IMP.restrainer.XMLRepresentation(self.get_input_file_name('pdb_representation.xml'))
-        RestraintParser = IMP.restrainer.XMLRestraint(self.get_input_file_name('pdb_connectivity_restraint.xml'))
+        RepParser = IMP.restrainer.XMLRepresentation(self.get_input_file_name('display_representation.xml'))
         DisplayParser = IMP.restrainer.XMLDisplay(self.get_input_file_name('pdb_display.xml'))
 
         self.representation = RepParser.run()
-        self.restraint = RestraintParser.run()
         self.display = DisplayParser.run()
 
         self.Model = self.representation.to_model()
-        self.restraint.add_to_representation(self.representation)
 
         self.log = self.display.create_log(self.representation, 'pdb_log_%03d.py')
         self.log.write('initial_display_in_chimera.py')
