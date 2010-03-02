@@ -1,6 +1,6 @@
 Import('env')
 
-env.IMPModuleDoc(Glob("*.dox"),
+env.IMPModuleDoc(files=env.IMPModuleGetDocs(),
                  authors=["Daniel Russel", "Ben Webb"],
                  brief='The \imp kernel provides base classes and key shared functionality.',
                  overview="""All kernel and module classes and functions should be in this namespace or

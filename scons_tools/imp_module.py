@@ -526,7 +526,7 @@ def IMPModuleGetBins(env):
     return raw_files
 
 def IMPModuleGetDocs(env):
-    files=module_glob(["*.dox", "*.pdf", "*.dot"])
+    files=module_glob(["*.dox", "*.pdf", "*.dot", "*.png"])
     return files
 
 
@@ -536,7 +536,7 @@ def IMPModuleDoc(env, files, authors,
                  license="standard"):
     vars= make_vars(env)
     build=[]
-    #install=[]
+    install=[]
     docdir=env['docdir']+"/"+vars['module_include_path']
     build.append(env._IMPMakeModPage(source=[env.Value(authors),
                                              env.Value(brief),
@@ -545,15 +545,17 @@ def IMPModuleDoc(env, files, authors,
                                              env.Value(license)],
                                      target='.generated/overview.dox'))
     for f in files:
-        if f== "overview.dox.in":
-            raise ValueError("overview.dox-in is added automatically to files list")
+        #print "file", str(f)
         if str(f).endswith(".dox") or str(f).endswith(".dot"):
             pass
         else:
-            build.append(env.Install(f, "#/doc/html/"+vars['module']))
+            b=env.InstallAs("#/doc/html/"+str(f), f)
+            #print str(b)
+            build.append(b)
             #install.append(env.Install(f, docdir))
     module_alias(env, 'doc', build)
-    add_to_global_alias(env, 'all', 'doc')
+    env.Alias('doc-files', build)
+    #add_to_global_alias(env, 'doc', 'doc')
     #module_alias(env, 'install-doc', install)
     #add_to_module_alias(env, 'install', 'install-doc')
 
