@@ -53,23 +53,23 @@ fall into a variety of categories.
 -# \anchor repsel Representation selection: representation in \imp is via a collection of
   particles (IMP::Particle objects). Each particle can contain one or
   more of the following sets of data
-   - Cartesian coordinates (IMP::core::XYZ)
-   - sphere (IMP::core::XYZR)
-   - atom information such as type, element, mass (IMP::atom::Atom)
-   - residue type information (IMP::atom::Residue)
-   - chain IDs (IMP::atom::Chain)
-   - domain extents (IMP::atom::Domain)
-   - mass, in daltons (IMP::atom::Mass)
-   - charge (IMP::atom::Charged)
-   - relationships between parts of molecules (IMP::atom::Hierarchy)
-   - bonds (IMP::atom::Bond and IMP::atom::Bonded)
-   - rigid body coordinate frames (IMP::core::RigidBody)
+   - \inlineimage{xyz.png, 30} Cartesian coordinates (IMP::core::XYZ)
+   - \inlineimage{sphere.png, 30} sphere (IMP::core::XYZR)
+   - \inlineimage{atom.png, 30} atom information such as type, element, mass (IMP::atom::Atom)
+   - \inlineimage{residue.png, 30} residue type information (IMP::atom::Residue)
+   - \inlineimage{chain.png, 30} chain IDs (IMP::atom::Chain)
+   - \inlineimage{domain.png, 30} domain extents (IMP::atom::Domain)
+   - \inlineimage{mass.png, 30} mass, in daltons (IMP::atom::Mass)
+   - \inlineimage{charged.png, 30} charge (IMP::atom::Charged)
+   - \inlineimage{hierarchy.png, 30} relationships between parts of molecules (IMP::atom::Hierarchy)
+   - \inlineimage{bond.png, 30} bonds (IMP::atom::Bond and IMP::atom::Bonded)
+   - \inlineimage{rigid.png, 30} rigid body coordinate frames (IMP::core::RigidBody)
    - etc.
    .
   In addition, particles can be made to have enforced relationships between one another,
    - all of the members of a rigid body move along with the rigid body (IMP::core::RigidBody, IMP::core::RigidMember)
    - a centroid particle has Cartesian coordinates computed from the centroid of another set (IMP::core::Centroid)
-   - a cover particle has a sphere containing another set of particles (IMP::core::Cover)
+   - \inlineimage{spherecover.png, 30} a cover particle has a sphere containing another set of particles (IMP::core::Cover)
    .
   The data stored in a particle can be easily extended by adding a new IMP::Decorator type.\n\n
   Representations can loaded from a number of standard file types, for example see

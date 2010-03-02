@@ -167,6 +167,7 @@ env.Depends(doxconf, ['#/build/include'])
 
 dox = env.RunDoxygen("#/doc/html/index.html", ["doxygen.conf"]+sources)
 env.Depends(dox, '#/scons_tools/doxypy.py')
+env.Requires(dox, env.Alias("doc-files"))
 
 install=env.Command(Dir(env.subst(docdir)), dox,
                     "install -d $TARGET && cp -r ${SOURCE.dir}/* $TARGET")

@@ -199,6 +199,7 @@ ALIASES                = "command{1}=\code \1 \endcode" \
                          "publications=\par Publications:" \
                          "version=\par Version:" \
                          "warning=\par Warning:" \
+                         "inlineimage{2}=\htmlonly <IMG SRC=\"\1\" HEIGHT=\"\2\"> \endhtmlonly"\
                          "genericgeometry=\ingroup genericgeometry"\
                          "cgalpredicate=\note This predicates will produce guaranteed correct results if the \ref cgal \"CGAL\" library is available (the results will be unreliable if it is not)." \
                          "unstable{1}=\warning \1 has not been stabilized and is likely to change without notice." \
