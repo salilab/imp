@@ -1,40 +1,13 @@
 import IMP
 
 class Display(object):
+    """Store Display"""
     def __init__(self):
         self._children = list()
 
-    def find_all_by_id(self, id): # assuming there are many obj with the same id
-
-        def find_rec(node):
-            if node.id == id:
-                found.append(node)
-            for child in node._children:
-                find_rec(child)
-
-        found = list()
-        for child in self._children:
-            find_rec(child)
-        return found
-
-    def find_by_id(self, id): # assuming there is just one obj with the same id
-
-        def find_rec(node):
-            if node.id == id:
-                return node
-            for child in node._children:
-                r = find_rec(child)
-                if r:
-                    return r
-            return None
-
-        for child in self._children:
-            r = find_rec(child)
-            if r:
-                return r
-        return None
-
     def create_log(self, repr, log_name):
+        """Create Chimera log."""
+
         # Try to create Chimera log (like in display_log.py example)
         log = IMP.display.LogOptimizerState(IMP.display.ChimeraWriter(), log_name)
         # Find IMP particle that corresponds to a representation id
