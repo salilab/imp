@@ -46,12 +46,11 @@ EMHeader::EMHeader(const DensityHeader &header) {
   lswap=header.lswap;
 }
 
-void EMHeader::GenerateCommonHeader(DensityHeader &header) {
-  header.set_number_of_voxels(nx,ny,nz);
+void EMHeader::generate_common_header(DensityHeader &header) {
+  header.Objectpixelsize_=Objectpixelsize;
+  header.update_map_dimensions(nx,ny,ny);
   header.magic=magic;
   header.set_data_type(type);
-  header.Objectpixelsize_=Objectpixelsize;
-
   for (short i=0;i < DensityHeader::COMMENT_FIELD_SINGLE_SIZE; i++) {
     header.comments[0][i]=comment[i];
   }
@@ -100,7 +99,7 @@ void EMReaderWriter::Read(const char *filename, float **data,
     //    IMP_WARN("Objectpixelsize == 0 " << std::endl
    //<< "  set Objectpixelsize = 1 to avoid trouble"<< std::endl);
   }
-  eheader.GenerateCommonHeader(header);
+  eheader.generate_common_header(header);
   ReadData(file, data, eheader);
   file.close();
 }
