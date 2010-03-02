@@ -21,6 +21,8 @@
 IMP_BEGIN_INTERNAL_NAMESPACE
 
 namespace {
+  std::string backup_search_path;
+
 #ifdef IMP_USE_BOOST_LIBS
   std::string to_string(boost::filesystem::path path) {
 #if BOOST_VERSION >= 103400
@@ -65,20 +67,35 @@ namespace {
   }
 }
 
+void set_backup_data_path(std::string path) {
+  // should check that it is a valid path
+  backup_search_path=path;
+}
+
 std::string get_data_path(std::string module, std::string file_name)
 {
   std::string path= get_path("IMP_BUILD_ROOT",
                              "build/data",
                              IMP_DATA_DIRECTORY,
                              module, file_name);
-  std::ifstream in(path.c_str());
-  if (!in) {
-    IMP_THROW("Unable to find data file "
-              << file_name << " at " << path
-              << ". IMP is not installed or set up correctly.",
-              IOException);
+  {
+    std::ifstream in(path.c_str());
+    if (in) {
+      return path;
+    }
   }
-  return path;
+#ifdef IMP_USE_BOOST_LIBS
+  if (!backup_search_path.empty()) {
+    boost::filesystem::path path
+      = boost::filesystem::path(backup_search_path)/file_name;
+    std::ifstream in(path.native_file_string().c_str());
+    if (in) return path.native_file_string();
+  }
+#endif
+  IMP_THROW("Unable to find data file "
+            << file_name << " at " << path
+            << ". IMP is not installed or set up correctly.",
+            IOException);
 }
 std::string get_example_path(std::string module, std::string file_name)
 {
