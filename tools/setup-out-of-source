@@ -9,7 +9,10 @@ def main():
         print("Usage: %s path_to_build" % sys.argv[0])
         return
     imppath= os.path.split(os.path.split(sys.argv[0])[0])[0]
-    imppath= os.path.relpath(imppath, sys.argv[1])
+    try:
+        imppath= os.path.relpath(imppath, sys.argv[1])
+    except:
+        print "Platform does not support os.path.relpath, links will be made using absolute paths. Sorry. You can replace the SConstruct and scons_tools links and the repository line in the config.py with relative paths by hand."
     path_to_build= sys.argv[1]
     print "IMP found in ", imppath
     print path_to_build
