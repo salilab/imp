@@ -26,7 +26,7 @@
 - Many methods in IMP::algebra were renamed to be more consistent with other methods or general conventions. Most of these simply involved adding \c get_ as a prefix and/or add a \c _3d suffix when they did not take any arguments.
    - build_Rotation2D_from_Vector2D became IMP::algebra::get_rotation_to_x_axis()
    - most of the Rotation3D and Transformation3D functions (in addition, IMP::algebra::get_identity_rotation_3d() and IMP::algebra::get_identity_transformation_3d() added the \c _3d so we can add 2D versions at some point)
-   - IMP::algebra::Transformation3D::get_transformed() and IMP::algebra::Rotation3D::get_rotated(). Running \c ".transform(" worked in the IMP code base.
+   - IMP::algebra::Transformation3D::get_transformed() and IMP::algebra::Rotation3D::get_rotated(). Replacing \c ".transform(" worked in the IMP code base.
    - IMP::algebra::get_distance(), this also carries over to the IMP::core::get_distance()
   The following global replacements are probably safe (in sed expressions)
    - "s#core.distance(#core.get_distance#g"
