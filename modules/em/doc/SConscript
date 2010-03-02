@@ -3,6 +3,6 @@ Import('env')
 env.IMPModuleDoc(env.IMPModuleGetDocs(),
                  authors=["Keren Lasker", "Javier Velazquez-Muriel", "Friedrich Foerster"],
                  brief="MODULENAME allows density maps to be used to generate restraints.",
-                 overview="MODULENAME provides methods to manipulate EM density maps, and allows these maps to be used as restraints.",
-                 publications=env.StandardPublications(),
+                 overview="MODULENAME provides basic utilities for handling 2D and 3D density maps. The main functionalities are: (1) Reading and writing various density map formts such as XPLOR, MRC, EM and SPIDER.\n(2) Simulating density maps of particles, supports particles of any radiuii and mass.\n(3) Calculating cross-correlation scores bewteen a density map and a set of particles.",
+                 publications=[env.StandardPublications()],
                  license=env.StandardLicense())
