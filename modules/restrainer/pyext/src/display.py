@@ -6,7 +6,11 @@ class Display(object):
         self._children = list()
 
     def create_log(self, repr, log_name):
-        """Create Chimera log."""
+        """Create Chimera log.
+           @param repr <a href="classIMP_1_1restrainer_1_1representation_1_1Representation.html">
+            Representation</a> object.
+           @param log_name Log name
+           @return IMP::Dispay::LogOptimizerState"""
 
         # Try to create Chimera log (like in display_log.py example)
         log = IMP.display.LogOptimizerState(IMP.display.ChimeraWriter(), log_name)

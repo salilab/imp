@@ -31,7 +31,9 @@ The process of preparing the input data for %restrainer can be best shown on the
 \section i2 Namespace Reference
 - <a href="classIMP_1_1restrainer_1_1xml__parser_1_1XMLRepresentation.html">XMLRepresentation Class</a>
 - <a href="classIMP_1_1restrainer_1_1xml__parser_1_1XMLRestraint.html">XMLRestraint Class</a>
+- <a href="classIMP_1_1restrainer_1_1xml__parser_1_1XMLDisplay.html">XMLDisplay Class</a>
 - <a href="classIMP_1_1restrainer_1_1representation_1_1Representation.html">Representation Class</a>
-- <a href="classIMP_1_1restrainer_1_1restraint_1_1Restraint.html">Restraint Class</a>""",
+- <a href="classIMP_1_1restrainer_1_1restraint_1_1Restraint.html">Restraint Class</a>
+- <a href="classIMP_1_1restrainer_1_1display_1_1Display.html">Display Class</a>""",
                  license=None,
                  publications=env.StandardPublications())

@@ -1,0 +1,6 @@
+This example shows how to color the representation components and output display file in chimera format.
+
+\include display_representation.xml
+
+\include pdb_display.xml
+
