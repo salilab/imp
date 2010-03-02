@@ -444,23 +444,6 @@ def _copy_chain(c, model):
     return p
 
 
-def _copy_bonds(pdb, atoms, model):
-    for b in pdb.bonds:
-        maa= b[0]
-        mab= b[1]
-        pa=atoms[maa.index]
-        pb=atoms[mab.index]
-        if IMP.atom.Bonded.particle_is_instance(pa):
-            ba= IMP.atom.Bonded.decorate_particle(pa)
-        else:
-            ba= IMP.atom.Bonded.setup_particle(pa)
-        if IMP.atom.Bonded.particle_is_instance(pb):
-            bb= IMP.atom.Bonded.decorate_particle(pb)
-        else:
-            bb= IMP.atom.Bonded.setup_particle(pb)
-        bp= IMP.atom.bond(ba, bb, IMP.atom.Bond.SINGLE)
-
-
 class ModelLoader(object):
     """Read a Modeller model into IMP. After creating this object, the atoms
        in the Modeller model can be loaded into IMP using the load_atoms()
@@ -481,7 +464,7 @@ class ModelLoader(object):
         """
         pp = IMP.Particle(model)
         hpp = IMP.atom.Hierarchy.setup_particle(pp)
-        atoms = {}
+        self._atoms = {}
         for chain in self._modeller_model.chains:
             cp = IMP.Particle(model)
             hcp = IMP.atom.Chain.setup_particle(cp, chain.name)
@@ -495,11 +478,75 @@ class ModelLoader(object):
                     ap = _copy_atom(atom, model)
                     hap = IMP.atom.Hierarchy.decorate_particle(ap)
                     hrp.add_child(hap)
-                    atoms[atom.index] = ap
+                    self._atoms[atom.index] = ap
                 lastres = hrp
-        _copy_bonds(self._modeller_model, atoms, model)
         self._modeller_hierarchy = hpp
         return hpp
+
+    def load_bonds(self):
+        """Load the Modeller bond topology into the IMP model. Each bond is
+           represented in IMP as an IMP::atom::Bond, with no defined length
+           or stiffness. These bonds are primarily useful as input to
+           IMP::atom::StereochemistryPairFilter, to exclude bond interactions
+           from the nonbonded list. Typically the contribution to the scoring
+           function from the bonds is included in the Modeller static restraints
+           (use load_static_restraints() or load_static_restraints_file() to
+           load these). If you want to regenerate the stereochemistry in IMP,
+           do not use these functions (as then stereochemistry scoring terms
+           and exclusions would be double-counted) and instead use the
+           IMP::atom::CHARMMTopology class.
+
+           You must call load_atoms() prior to using this function.
+           @seealso load_angles(), load_dihedrals(), load_impropers()
+           @return An IMP::Particles object containing all of the bonds.
+        """
+        if not hasattr(self, '_modeller_hierarchy'):
+            raise ValueError("Call load_atoms() first.")
+        ps = IMP.Particles()
+        for (maa, mab) in self._modeller_model.bonds:
+            pa = self._atoms[maa.index]
+            pb = self._atoms[mab.index]
+            if IMP.atom.Bonded.particle_is_instance(pa):
+                ba= IMP.atom.Bonded(pa)
+            else:
+                ba= IMP.atom.Bonded.setup_particle(pa)
+            if IMP.atom.Bonded.particle_is_instance(pb):
+                bb= IMP.atom.Bonded(pb)
+            else:
+                bb= IMP.atom.Bonded.setup_particle(pb)
+            ps.append(IMP.atom.bond(ba, bb,
+                                    IMP.atom.Bond.SINGLE).get_particle())
+        return ps
+
+    def load_angles(self):
+        """Load the Modeller angle topology into the IMP model.
+           See load_bonds() for more details."""
+        return self._internal_load_angles(self._modeller_model.angles,
+                                          IMP.atom.Angle)
+
+    def load_dihedrals(self):
+        """Load the Modeller dihedral topology into the IMP model.
+           See load_bonds() for more details."""
+        return self._internal_load_angles(self._modeller_model.dihedrals,
+                                          IMP.atom.Dihedral)
+
+    def load_impropers(self):
+        """Load the Modeller improper topology into the IMP model.
+           See load_bonds() for more details."""
+        return self._internal_load_angles(self._modeller_model.impropers,
+                                          IMP.atom.Dihedral)
+
+    def _internal_load_angles(self, angles, angle_class):
+        if not hasattr(self, '_modeller_hierarchy'):
+            raise ValueError("Call load_atoms() first.")
+        ps = IMP.Particles()
+        for modeller_atoms in angles:
+            imp_particles = [self._atoms[x.index] for x in modeller_atoms]
+            p = IMP.Particle(imp_particles[0].get_model())
+            a = angle_class.setup_particle(p,
+                                 *[IMP.core.XYZ(x) for x in imp_particles])
+            ps.append(a.get_particle())
+        return ps
 
     def load_static_restraints_file(self, filename):
         """Convert a Modeller static restraints file into equivalent
