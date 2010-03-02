@@ -16,17 +16,17 @@ class ModellerRestraintsTests(IMP.test.TestCase):
         for imp_atom, modeller_atom in zip(imp_atoms.get_leaves(),
                                            modeller_model.atoms):
             imp_deriv = IMP.core.XYZ(imp_atom).get_derivatives()
-            self.assertInTolerance(imp_deriv[0], modeller_atom.dvx, 1e-4,
+            self.assertInTolerance(imp_deriv[0], modeller_atom.dvx, 1e-2,
                                    "x derivative for atom %s differs between "
                                    "Modeller (%f) and IMP (%f)" \
                                    % (str(modeller_atom), modeller_atom.dvx,
                                       imp_deriv[0]))
-            self.assertInTolerance(imp_deriv[1], modeller_atom.dvy, 1e-4,
+            self.assertInTolerance(imp_deriv[1], modeller_atom.dvy, 1e-2,
                                    "y derivative for atom %s differs between "
                                    "Modeller (%f) and IMP (%f)" \
                                    % (str(modeller_atom), modeller_atom.dvy,
                                       imp_deriv[1]))
-            self.assertInTolerance(imp_deriv[2], modeller_atom.dvz, 1e-4,
+            self.assertInTolerance(imp_deriv[2], modeller_atom.dvz, 1e-2,
                                    "z derivative for atom %s differs between "
                                    "Modeller (%f) and IMP (%f)" \
                                    % (str(modeller_atom), modeller_atom.dvz,
