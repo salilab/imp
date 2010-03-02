@@ -29,7 +29,7 @@ IMPATOMEXPORT void add_bonds(Hierarchy d,
 
 
 /**
-   Add vdW radius from from given force field.
+   Add vdW radius from given force field.
 
    \relatesalso Hierarchy
    \relatesalso ForceFieldParameters
