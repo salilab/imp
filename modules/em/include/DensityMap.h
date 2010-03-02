@@ -61,10 +61,8 @@ IMPEMEXPORT Float approximate_molecular_mass(DensityMap* m, Float threshold);
 
 
 //! Class for handling density maps.
-/** CONVENTIONS
-    1) IT IS ASSUMED THAT THE LOCATION OF A VOXEL IS AT THE LOWER XYZ
-       VALUES THAT IT DEFINES AS A BOX.
-       This is important for function calc_all_voxel2loc()
+/** /note The location of a voxel is its center. That is important
+     for sampling function as well as for functions like voxel2loc.
  */
 class IMPEMEXPORT DensityMap: public Object
 {
