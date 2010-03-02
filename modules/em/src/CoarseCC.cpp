@@ -40,6 +40,7 @@ float CoarseCC::evaluate(DensityMap &em_map,
           << std::endl);
   IMP_LOG(VERBOSE, "CoarseCC::evaluate: the score is:" << escore << std::endl);
   escore = scalefac * (1. - escore);
+
   //compute the derivatives if required
   if (lderiv) {
   IMP_LOG(VERBOSE, "CoarseCC::evaluate: before calc derivaties:"
@@ -49,6 +50,7 @@ float CoarseCC::evaluate(DensityMap &em_map,
   IMP_LOG(VERBOSE, "CoarseCC::evaluate: after calc derivaties:"
                     << escore << std::endl);
   }
+
   return escore;
 }
 
@@ -86,7 +88,7 @@ float CoarseCC::cross_correlation_coefficient(const DensityMap &em_map,
             << "First map pixelsize : " << em_header->get_spacing() << "; "
             << "Second map pixelsize: " << model_header->get_spacing());
 
-  // Take into account the possibility of a model map with zero rms
+  // Check if the model map has zero RMS
   if ((fabs(model_map.get_header()->rms-0.0)<EPS) && divide_by_rms) {
     IMP_WARN("The model map rms is zero, and the user ask to divide"<<
              " by rms. returning 0!"<<std::endl);

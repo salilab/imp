@@ -28,7 +28,8 @@ files = [
          'noise.h',
          'filters.h',
          'project.h',
-         'rigid_fitting.h'
+         'rigid_fitting.h',
+         'envelope_penetration.h'
         ]
 
 # Install the include files:

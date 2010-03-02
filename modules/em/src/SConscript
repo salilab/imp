@@ -21,6 +21,7 @@ files = [
          'filters.cpp',
          'project.cpp',
          'rigid_fitting.cpp',
+         'envelope_penetration.cpp',
         ]
 # Build and install the shared library:
 env.IMPModuleLib(files)
