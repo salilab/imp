@@ -41,7 +41,7 @@ def _action_make_module_page(target, source, env):
     print >> fh, "\n\\brief "+filter(env, source[1].get_contents())
     if source[2].get_contents() != "None":
         print >> fh, "\n\\overview "+filter(env, source[2].get_contents())
-    print >> fh, '\nExamples can be found on the \\ref IMP_'+env['IMP_MODULE']+'_examples "IMP.'+env['IMP_MODULE']+' examples" page.\n'
+    print >> fh, '\n\par Examples\nExamples can be found on the \\ref IMP_'+env['IMP_MODULE']+'_examples "IMP.'+env['IMP_MODULE']+' examples" page.\n'
     if source[4].get_contents() != "None":
         print >> fh, "\n\\license "+source[4].get_contents()
     pubs= unmangle(source[3])
