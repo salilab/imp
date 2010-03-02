@@ -23,7 +23,7 @@ class DistanceTest(IMP.test.TestCase):
         for d in xyz1: IMP.core.transform(d,t)
         da=IMP.atom.get_placement_score(xyz1,xyz)
         d=t.get_translation().get_magnitude()
-        a=IMP.algebra.decompose_rotation_into_axis_angle(t.get_rotation()).second
+        a=IMP.algebra.get_angle_and_axis(t.get_rotation()).second
         self.assertAlmostEqual(da[0],d, 2)
         self.assertAlmostEqual(da[1],a, 2)
 

@@ -1,4 +1,7 @@
 /** \page recent Change History
+\par Week of Feb 27, 2010
+- IMP::algebra::decompose_rotation_into_axis_angle() was renamed to IMP::algebra::get_angle_and_axis().
+
 
 \par Week of Feb 21, 2010
 
@@ -411,7 +414,7 @@ external code,
 
 - The containers for multiple decorators have been revised to make them
   more useful. See IMP::Decorators. You can now implicitly convert,
-  for example, a IMP::core::XYZs to an IMP::Particles (as well as use
+  for %example, a IMP::core::XYZs to an IMP::Particles (as well as use
   IMP::Decorators::get_particles()). All methods that take a
   collection of particles with a certain type now instead take a
   IMP::Decorators.
@@ -543,7 +546,7 @@ like \code if (d) { blah } \endcode works.
 
 - The SWIG interface now ties in to the reference counting mechanism
   used in the C++ code, for all classes derived from
-  IMP::RefCounted. So, for example, deleting a Python object should
+  IMP::RefCounted. So, for %example, deleting a Python object should
   not free the underlying C++ object if another C++ object holds a
   reference to it, and unrefing a C++ object should not delete it if a
   Python object still holds a reference to it. There should be no

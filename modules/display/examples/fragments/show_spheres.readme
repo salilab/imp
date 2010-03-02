@@ -1,0 +1,1 @@
+Write a bunch of IMP::core::XYZR particles to a Chimera input file. One could write to a pymol file simply by replacing the IMP::display::Writer.

@@ -4,6 +4,12 @@ env.IMPModuleDoc(env.IMPModuleGetDocs(),
                  authors=["Daniel Russel"],
                  brief="MODULENAME provides support for displaying and exporting \\imp data in various ways.",
                  overview="""MODULENAME provides code to write various file formats for displaying data
-from \\imp optimizations. The display::Writer classes provides the base class for objects which write to specific file formats and the display::Geometry provide means of describing geometry.""",
+from \\imp optimizations. The display::Writer classes provides the base class for objects which write to specific file formats and the display::Geometry provide means of describing geometry. Currently it supports output to
+ - Chimera via the IMP::display::ChimeraWriter
+ - Pymol via the IMP::display::PymolWriter
+ - VRML via the IMP::display::VRMLWriter
+ .
+And display of boxes, points, spheres, segments, ellipsoids are supported.
+""",
                  publications=env.StandardPublications(),
                  license=env.StandardLicense())

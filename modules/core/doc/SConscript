@@ -3,6 +3,8 @@ Import('env')
 env.IMPModuleDoc(env.IMPModuleGetDocs(),
                  authors=["Daniel Russel", "Ben Webb"],
                  brief= "MODULENAME contains basic functionality that is expected to be used by a wide variety of \\imp users.",
-                 overview="""MODULENAME contains basic functionality that is expected to be used by a wide variety of \\imp users. The classes in it should not directly incorporate experimental data and instead should provide basic building blocks for making restraints and manipulating Particle objects. See the IMP::helper module for a higher level layer built on top of MODULENAME (and other modules).""",
+                 overview="""MODULENAME contains basic functionality that is expected to be used by a wide variety of \\imp users. The classes in it should not directly incorporate experimental data and instead should provide basic building blocks for making restraints and manipulating Particle objects. Typical classes are IMP::core::Harmonic, IMP::DistancePairScore, IMP::VolumeRestraint etc.
+
+ See the IMP::helper module for a higher level layer built on top of this module (and other modules).""",
                  publications=env.StandardPublications(),
                  license=env.StandardLicense())

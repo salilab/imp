@@ -550,7 +550,7 @@ inline Rotation3D interpolate(const Rotation3D &a,
   angleToQuaternion/index.htm
   \relatesalso Rotation3D
 */
-inline std::pair<VectorD<3>,double> decompose_rotation_into_axis_angle(
+inline std::pair<VectorD<3>,double> get_angle_and_axis(
   const Rotation3D &rot) {
   VectorD<4> q = rot.get_quaternion();
   double a,b,c,d;

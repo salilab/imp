@@ -25,8 +25,8 @@ def StandardLicense(env):
 
 def StandardPublications(env):
     return [env.Publication(authors=["Daniel Russel", "Keren Lasker", "Ben Webb", "Dina Schneidman", "Javier Valesquez-Muriel", "Andrej Sali"],
-                            title="Something",
-                            journal="Cell",
+                            title="Integrative assembly modeling using IMP",
+                            journal="submitted",
                             year=2010)]
 
 
