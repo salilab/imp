@@ -47,7 +47,7 @@ class SimpleEMFitTest(IMP.test.TestCase):
                            (3.+origin, 12.+origin, 12.+origin)])
 
         self.dmap = IMP.helper.load_em_density_map (
-                        self.get_input_file_name("in.em"), 1.0, 3.0)
+                        self.get_input_file_name("in.mrc"), 1.0, 3.0)
 
 
     def test_em_fit(self):
