@@ -1,5 +1,5 @@
 /**
-\page introduction An Introduction to IMP
+\page introduction Introduction to IMP
 
 \imp is a library for solving a a wide variety of molecular structures and
 dynamics using many different data sources. As a result, it is provides a
