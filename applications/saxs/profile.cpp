@@ -3,6 +3,7 @@
    see FOXS for webserver (salilab.org/foxs)
  */
 #include <IMP/Model.h>
+#include <IMP/internal/directories.h>
 #include <IMP/atom/pdb.h>
 #include <IMP/atom/force_fields.h>
 #include <IMP/atom/CHARMMParameters.h>
@@ -72,6 +73,10 @@ recommended q value is 0.2")
   if (vm.count("parameter_fit")) fit=false;
   if (vm.count("hydration_layer")) hydration_layer=false;
   if (vm.count("offset")) use_offset=true;
+
+  // not so good, just for a test
+  IMP::internal::set_backup_data_path(std::string(argv[0], 0,
+                                  std::string(argv[0]).rfind('/')));
 
   float delta_q = max_q / profile_size;
   bool interactive_gnuplot = false; // for server
