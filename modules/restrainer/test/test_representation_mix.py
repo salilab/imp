@@ -7,6 +7,8 @@ import IMP.restrainer
 
 class RepresentationTest(IMP.test.TestCase):
     def test_representation_parser(self):
+        """Check pdb and sphere representations"""
+
         RepParser = IMP.restrainer.XMLRepresentation(self.get_input_file_name('mix_representation.xml'))
         repr = RepParser.run()
 

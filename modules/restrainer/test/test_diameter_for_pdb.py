@@ -20,6 +20,8 @@ class RestraintTest(IMP.test.TestCase):
 
 
     def test_show(self):
+        """Check diameter restraint for pdb"""
+
         restraint_name = 'diameter_restraint'
         r = self.restraint.get_restraint_by_name(restraint_name)
 

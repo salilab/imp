@@ -20,9 +20,12 @@ class RestraintTest(IMP.test.TestCase):
 
 
     def test_show(self):
+        """Check distance restraint for pdb"""
+
         restraint_name = 'distance_restraint'
         r = self.restraint.get_restraint_by_name(restraint_name)
 
+        r.imp_restraint.evaluate(False)
         self.Model.show()
         self.Model.evaluate(False)
 
