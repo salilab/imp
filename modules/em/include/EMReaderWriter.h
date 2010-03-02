@@ -139,7 +139,7 @@ public:
 
   EMHeader(){}
   EMHeader(const DensityHeader &header);
-  void GenerateCommonHeader(DensityHeader &header);
+  void generate_common_header(DensityHeader &header);
 
 
   //// Outputs coordinates delimited by single space.
