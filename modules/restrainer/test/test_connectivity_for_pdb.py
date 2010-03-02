@@ -20,6 +20,8 @@ class RestraintTest(IMP.test.TestCase):
 
 
     def test_show(self):
+        """Check get_restraint_by_name, get_weight, and set_weight for connectivity restraint for pdb"""
+
         restraint_name = 'connectivity_restraint_1'
         connectivity_restraint = self.restraint.get_restraint_by_name(restraint_name).imp_restraint
         connectivity_restraint.show()

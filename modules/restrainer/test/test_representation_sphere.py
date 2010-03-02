@@ -7,6 +7,8 @@ import IMP.restrainer
 
 class RepresentationTest(IMP.test.TestCase):
     def test_representation_parser(self):
+        """Check sphere representation"""
+
         RepParser = IMP.restrainer.XMLRepresentation(self.get_input_file_name('sphere_representation.xml'))
         repr = RepParser.run()
 

@@ -21,6 +21,8 @@ class RestraintTest(IMP.test.TestCase):
 
 
     def test_show(self):
+        """Check EM restraint"""
+
         r = self.restraint.get_restraint_by_name('em_restraint')
         dmap_header = r.dmap_header
 

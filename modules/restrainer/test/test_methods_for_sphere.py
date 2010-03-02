@@ -20,6 +20,8 @@ class RestraintTest(IMP.test.TestCase):
 
 
     def test_show(self):
+        """Check multiple input restraints for sphere"""
+
         self.Model.show()
         self.Model.evaluate(False)
 

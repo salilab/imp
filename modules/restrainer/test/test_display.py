@@ -23,9 +23,11 @@ class RestraintTest(IMP.test.TestCase):
         self.restraint.add_to_representation(self.representation)
 
         self.log = self.display.create_log(self.representation, 'pdb_log_%03d.py')
-        self.log.write('initial.py')
+        self.log.write('initial_display_in_chimera.py')
 
     def test_show(self):
+        """Check display"""
+
         self.Model.show()
         self.Model.evaluate(False)
 
