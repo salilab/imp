@@ -98,6 +98,7 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
                              const_cast<FitRestraint*>(this)->dy_,
                              const_cast<FitRestraint*>(this)->dz_,
                              scalefac_, calc_deriv);
+
   //In many optimization senarios particles are can be found outside of
   //the density. When all particles are outside of the density the
   //cross-correlation score is zero and the derivatives are meaningless.
@@ -128,19 +129,19 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
         centroid_delta,
         &hup,&dist_deriv,
         boost::lambda::_1);
-    score=percentage_outside_of_density*escore+
-           (1.-percentage_outside_of_density)*dist_score;
+    score=(1.-percentage_outside_of_density)*escore+
+           percentage_outside_of_density*dist_score;
     //fix derivatives
     for(unsigned int i=0;i<dx_.size();i++) {
       (const_cast<FitRestraint*>(this)->dx_)[i]=
-        dx_[i]*percentage_outside_of_density+
-        dist_deriv[0]*(1.-percentage_outside_of_density);
+       dx_[i]*(1.-percentage_outside_of_density)+
+        dist_deriv[0]*(percentage_outside_of_density);
       (const_cast<FitRestraint*>(this)->dy_)[i]=
-         dy_[i]*percentage_outside_of_density+
-         dist_deriv[1]*(1.-percentage_outside_of_density);
+       dy_[i]*(1.-percentage_outside_of_density)+
+         dist_deriv[1]*(percentage_outside_of_density);
       (const_cast<FitRestraint*>(this)->dz_)[i]=
-         dz_[i]*percentage_outside_of_density+
-         dist_deriv[2]*(1.-percentage_outside_of_density);
+       dz_[i]*(1.-percentage_outside_of_density)+
+         dist_deriv[2]*(percentage_outside_of_density);
     }
   }
 
@@ -157,8 +158,8 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
     }
   }
 
-  //  IMP_LOG(VERBOSE, "after emscore: " << score << " calc_deriv"
-  //                   << calc_deriv);
+  IMP_LOG(VERBOSE, "Finish calculating fit restraint with emscore of : "
+         << score << std::endl);
   return score;
 }
 

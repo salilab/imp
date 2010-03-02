@@ -61,7 +61,6 @@ private:
   float scalefac_;
   IMP::core::XYZs xyz_;
   // derivatives
-  // This must be float rather than Float to preserve compatibility with EMBed
   std::vector<float> dx_, dy_ , dz_;
 };
 
