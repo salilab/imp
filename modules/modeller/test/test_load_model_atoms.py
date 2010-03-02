@@ -55,15 +55,23 @@ class ModelLoaderTests(IMP.test.TestCase):
             self.assertEqual(rd.get_index(), 29)
 
     def test_bonds(self):
-        """Check that the file loader produces bonds"""
+        """Check that Modeller bonds and angles are loaded"""
         modmodel = modeller.scripts.complete_pdb(self.get_environ(),
                              self.get_input_file_name('single_protein.pdb'))
         m = IMP.Model()
-        mp = IMP.modeller.ModelLoader(modmodel).load_atoms(m)
-        all_atoms= IMP.atom.get_by_type(mp,
-                             IMP.atom.ATOM_TYPE)
+        loader = IMP.modeller.ModelLoader(modmodel)
+        mp = loader.load_atoms(m)
+        all_atoms= IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
         self.assertEqual(1221, len(all_atoms),
                          "Wrong number of atoms found in protein")
+        bonds = loader.load_bonds()
+        self.assertEqual(len(bonds), 1248)
+        angles = loader.load_angles()
+        self.assertEqual(len(angles), 1677)
+        dihedrals = loader.load_dihedrals()
+        self.assertEqual(len(dihedrals), 1973)
+        impropers = loader.load_impropers()
+        self.assertEqual(len(impropers), 520)
 
     def test_dna(self):
         """Check reading a dna with one chain"""
