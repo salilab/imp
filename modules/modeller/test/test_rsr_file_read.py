@@ -8,6 +8,13 @@ import IMP.modeller
 
 class ModellerRestraintsTests(IMP.test.TestCase):
 
+    def remove_atom_types(self, hierarchy):
+        """Remove atom types as assigned by Modeller so we can set our own"""
+        atoms = IMP.atom.get_by_type(hierarchy, IMP.atom.ATOM_TYPE)
+        k = IMP.atom.CHARMMAtom.get_charmm_type_key()
+        for a in atoms:
+            a.get_particle().remove_attribute(k)
+
     def assertSimilarModellerIMPScores(self, modeller_model, imp_atoms):
         """Assert that Modeller and IMP give the same score and derivatives"""
         modeller_energy = selection(modeller_model).energy()[0]
@@ -171,6 +178,7 @@ class ModellerRestraintsTests(IMP.test.TestCase):
                                        IMP.atom.get_data_path('par.lib'))
         topology = ff.create_topology(protein)
         topology.apply_default_patches(ff)
+        self.remove_atom_types(protein)
         topology.add_atom_types(protein)
         bonds = topology.add_bonds(protein, ff)
         cont = IMP.container.ListSingletonContainer("bonds")
@@ -198,6 +206,7 @@ class ModellerRestraintsTests(IMP.test.TestCase):
                                        IMP.atom.get_data_path('par.lib'))
         topology = ff.create_topology(protein)
         topology.apply_default_patches(ff)
+        self.remove_atom_types(protein)
         topology.add_atom_types(protein)
         bonds = topology.add_impropers(protein, ff)
         cont = IMP.container.ListSingletonContainer("bonds")
@@ -225,6 +234,7 @@ class ModellerRestraintsTests(IMP.test.TestCase):
                                        IMP.atom.get_data_path('par.lib'))
         topology = ff.create_topology(protein)
         topology.apply_default_patches(ff)
+        self.remove_atom_types(protein)
         topology.add_atom_types(protein)
         bonds = topology.add_bonds(protein, ff)
         angles = ff.generate_angles(bonds)
@@ -253,6 +263,7 @@ class ModellerRestraintsTests(IMP.test.TestCase):
                                        IMP.atom.get_data_path('par.lib'))
         topology = ff.create_topology(protein)
         topology.apply_default_patches(ff)
+        self.remove_atom_types(protein)
         topology.add_atom_types(protein)
         bonds = topology.add_bonds(protein, ff)
         dihedrals = ff.generate_dihedrals(bonds)

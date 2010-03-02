@@ -7,6 +7,7 @@ import sys
 import tempfile
 import shutil
 import IMP.atom
+import IMP.container
 
 def _import_modeller_scripts_optimizers():
     """Do the equivalent of "import modeller.scripts, modeller.optimizers".
@@ -428,10 +429,8 @@ def _copy_atom(a, model):
     p=IMP.Particle(model)
     ap= IMP.atom.Atom.setup_particle(p,IMP.atom.AtomType(a.name))
     xyzd= IMP.core.XYZ.setup_particle(p, IMP.algebra.Vector3D(a.x, a.y, a.z))
-    #ap.set_atom_type(IMP.atom.AtomType(a.name))
-    #IMP.core.Name.setup_particle(p).set_name(str("atom "+a._atom__get_num()));
-    if (a.charge != 0):
-        IMP.atom.Charged.setup_particle(p, a.charge)
+    IMP.atom.Charged.setup_particle(p, a.charge)
+    IMP.atom.CHARMMAtom.setup_particle(p, a.type.name)
     ap.set_input_index(a.index)
     return p
 
@@ -594,6 +593,66 @@ class ModelLoader(object):
         # Ensure that tmpdir remains until we're done with the generator
         wrap._tempdir = t
         return wrap
+
+    def load_dynamic_restraints(self, pair_filter=None):
+        """Convert the current set of Modeller dynamic restraints
+           (e.g. soft-sphere, electrostatics) into equivalent IMP::Restraints.
+           load_atoms() must have been called first to read
+           in the atoms that the restraints will act upon.
+
+           If pair_filter is given, it is an IMP::PairFilter object to exclude
+           pairs from the nonbonded lists used by the dynamic restraints.
+           Otherwise, an IMP::atom::StereochemistryPairFilter object is created
+           to exclude Modeller bonds, angles and dihedrals, as specified by
+           edat.excl_local. (Note that this calls load_bonds(), load_angles()
+           and load_dihedrals(), so will create duplicate lists of bonds if
+           those methods are called manually as well.)
+
+           @note Currently only soft-sphere restraints are loaded.
+           @return A Python list of the newly-created IMP::Restraint
+                   objects.
+        """
+        if not hasattr(self, '_modeller_hierarchy'):
+            raise ValueError("Call load_atoms() first.")
+        restraints = []
+        edat = self._modeller_model.env.edat
+        libs = self._modeller_model.env.libs
+        atoms = IMP.container.ListSingletonContainer(
+                                  self._modeller_hierarchy.get_leaves())
+        # Note: cannot use Modeller's cutoff distance, as that is
+        # center-to-center; IMP's is sphere surface-surface
+        nbl = IMP.container.ClosePairContainer(atoms,
+                                      0., edat.update_dynamic)
+
+        # Exclude the same sets of atoms as Modeller
+        if pair_filter is None:
+            pair_filter = IMP.atom.StereochemistryPairFilter()
+            if edat.excl_local[0]:
+                pair_filter.set_bonds(self.load_bonds())
+            if edat.excl_local[1]:
+                pair_filter.set_angles(self.load_angles())
+            if edat.excl_local[2]:
+                pair_filter.set_dihedrals(self.load_dihedrals())
+        nbl.add_pair_filter(pair_filter)
+
+        if edat.dynamic_sphere:
+            if libs.topology.submodel == 3:
+                ff = IMP.atom.CHARMMParameters(
+                         IMP.atom.get_data_path('top_heav.lib'),
+                         IMP.atom.get_data_path('par_heav.lib'))
+            else:
+                ff = IMP.atom.CHARMMParameters(
+                         IMP.atom.get_data_path('top.lib'),
+                         IMP.atom.get_data_path('par.lib'))
+            # No way to get Modeller radii, so we have to reassign them
+            # Note that soft-sphere radii are 82% of the Lennard-Jones values
+            # in Modeller
+            ff.add_radii(self._modeller_hierarchy, 0.82)
+            k = IMP.core.Harmonic.k_from_standard_deviation(edat.sphere_stdv)
+            ps = IMP.core.SphereDistancePairScore(
+                              IMP.core.HarmonicLowerBound(0, k))
+            restraints.append(IMP.container.PairsRestraint(ps, nbl))
+        return restraints
 
 
 def read_pdb(name, model, special_patches=None):
