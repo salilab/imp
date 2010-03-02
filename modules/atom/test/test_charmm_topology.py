@@ -258,15 +258,15 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         impropers = topology.add_impropers(pdb, ff)
         self.assertEqual(len(impropers), 509)
 
-        ff.add_radii(pdb)
+        ff.add_radii(pdb, 1.2)
         ff.add_well_depths(pdb)
         self.assertInTolerance(IMP.core.XYZR(last_atom).get_radius(),
-                               1.70, 1e-3)
+                               2.04, 1e-3)
         self.assertInTolerance(
               IMP.atom.LennardJones(last_atom).get_well_depth(), 0.12, 1e-3)
         last_cg1 = atoms[-3].get_particle()
         self.assertInTolerance(IMP.core.XYZR(last_cg1).get_radius(),
-                               2.06, 1e-3)
+                               2.472, 1e-3)
 
     def test_make_hierarchy(self):
         """Test construction of hierarchy from topology"""

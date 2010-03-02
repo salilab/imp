@@ -25,11 +25,12 @@ Float ForceFieldParameters::get_epsilon(Atom atom) const
   return get_epsilon(force_field_atom_type);
 }
 
-void ForceFieldParameters::add_radii(Hierarchy mhd, FloatKey radius_key) const
+void ForceFieldParameters::add_radii(Hierarchy mhd, double scale,
+                                     FloatKey radius_key) const
 {
   Particles ps = get_by_type(mhd, ATOM_TYPE);
   for(unsigned int i=0; i<ps.size(); i++) {
-    Float radius = get_radius(Atom(ps[i]));
+    Float radius = get_radius(Atom(ps[i])) * scale;
     core::XYZR::setup_particle(ps[i], radius, radius_key);
   }
   // TODO: handle N-term and C-term

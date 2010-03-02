@@ -25,7 +25,8 @@ public:
   Float get_epsilon(Atom atom) const;
 
   //! add radii to the structure defined in the hierarchy
-  void add_radii(Hierarchy mhd, FloatKey radius_key= FloatKey("radius")) const;
+  void add_radii(Hierarchy mhd, double scale,
+                 FloatKey radius_key= FloatKey("radius")) const;
 
   //! Add LennardJones well depths to the structure
   void add_well_depths(Hierarchy mhd) const;
