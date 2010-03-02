@@ -29,7 +29,7 @@ void add_radii(Hierarchy d, const ForceFieldParameters* ffp,
     top->apply_default_patches(cp);
     top->add_atom_types(d);
   }
-  ffp->add_radii(d, radius_key);
+  ffp->add_radii(d, 1.0, radius_key);
 }
 
 IMPATOM_END_NAMESPACE
