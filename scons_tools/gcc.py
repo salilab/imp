@@ -12,7 +12,7 @@ __attribute__ ((visibility("default")))
 int main(void)
 { return 0; }
 """
-    res = context.TryLink(text, '.c')
+    res = context.TryLink(text, '.cpp')
     context.env.Replace(CXXFLAGS=lastCXXFLAGS)
     if not res:
         context.Result("no")
