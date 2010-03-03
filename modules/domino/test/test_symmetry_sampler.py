@@ -8,6 +8,20 @@ import IMP.atom
 import IMP.algebra
 import math
 
+def get_diameter(xyzs):
+    max_squared_dist=0.0;
+    for i in range(0, len(xyzs)):
+        xyzi= xyzs[i].get_coorinates()
+        for j in range(0,i):
+            xyzj= xyzs[j].get_coorinates()
+            curr_squared_dist =IMP.algebra.get_squared_distance(xyz1,xyz2);
+            if curr_squared_dist > max_squared_dist:
+                p1 = xyzs[i]
+                p2 = xyzs[j]
+                max_squared_dist = curr_squared_dist
+    return IMP.algebra.Segment3D(p1.get_coordinates(),
+                                 p2.get_coordinates())
+
 class DOMINOTests(IMP.test.TestCase):
     def __set_particles(self):
         #after the sampler you need to check that the centroids are rotated the same
@@ -36,7 +50,7 @@ class DOMINOTests(IMP.test.TestCase):
         #set 10 transformations on a patch of a sphere
         self.rt = IMP.domino.TransformationDiscreteSet()
         self.rt.set_model(self.m)
-        max_d1 = IMP.core.get_diameter(IMP.core.XYZsTemp(IMP.core.get_leaves(self.ref)))
+        max_d1 = get_diameter(IMP.core.XYZsTemp(IMP.core.get_leaves(self.ref)))
         max_d=IMP.algebra.Segment3D(max_d1.get_point(1),max_d1.get_point(0))
         #print ".dot " + str(max_d.get_point(0)[0]) + " " + str(max_d.get_point(0)[1]) + " " + str(max_d.get_point(0)[2])
         #print ".dot " +str(max_d.get_point(1)[0]) + " " + str(max_d.get_point(1)[1]) + " " + str(max_d.get_point(1)[2])
