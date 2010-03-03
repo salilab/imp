@@ -43,7 +43,7 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
             # This test is super-slow, so disable checks to speed it up a little
             #IMP.set_check_level(IMP.NONE)
             #create a rigid body
-            rb_d = IMP.atom.rigid_body_setup_hierarchy(self.mp)
+            rb_d = IMP.atom.setup_as_rigid_body(self.mp)
             ref_trans = rb_d.get_transformation()
             fr = IMP.em.FittingSolutions()
             IMP.em.local_rigid_fitting(

@@ -48,7 +48,7 @@ local_trans=IMP.algebra.Transformation3D(r,translation)
 # for xyz in prot_xyz:
 #     xyz.set_coordinates(local_trans.get_transformed(xyz.get_coordinates()))
 ##4.2 set the protein as a rigid body
-prot_rb = IMP.atom.rigid_body_setup_hierarchy(mh)
+prot_rb = IMP.atom.setup_as_rigid_body(mh)
 ##4.3 apply the trasnformation to the protein
 IMP.core.transform(prot_rb,local_trans)
 m.evaluate(None)#to make sure the transformation was applied
