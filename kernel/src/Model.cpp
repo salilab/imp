@@ -842,8 +842,6 @@ FloatRange Model::get_range(FloatKey k) const {
         r.second= std::max(r.second, v);
       }
     }
-    IMP_LOG(TERSE, "Range for attribute " << k << " is " << r.first
-            << " to " << r.second << std::endl);
     return r;
   }
 }
