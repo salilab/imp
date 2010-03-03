@@ -34,7 +34,7 @@ class IMPEXPORT Sampler: public Object
  public:
   Sampler(Model *m, std::string name="Sampler %1%");
 
-  virtual ConfigurationSet *sample() const =0;
+  ConfigurationSet *get_sample() const;
 
   /** \name Filtering
      The set of returned configurations can be filtered on a variety
@@ -55,6 +55,8 @@ class IMPEXPORT Sampler: public Object
   // for the vtable
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Sampler);
  protected:
+  //! Subclasses should override this method
+  virtual ConfigurationSet* do_sample() const=0;
   /** The Sampler can contain a number of filters which limit
       the set of configurations which are saved. The sampler
       should check that a state passes the filters before adding
