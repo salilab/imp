@@ -36,33 +36,12 @@ Structure and dynamics modeling in \imp proceeds in a five stage iterative proce
     }
 \enddot
 }
-
-\imp provides tools to help address the last four of these
-stages.
-
-Knowledge about the system being modeled enters the process at all
-stages, but a few need extra note:
-
-- A certain amount of knowledge is encoded as "constraints". These are
-  choices made in choosing the representation scheme that force
-  relationships between parts to always hold. For %example,
-  representing part of the system as a rigid body, means that none of
-  the distances or angles within the rigid body ever change.
-
-- Other knowledge is encoded as restraints via scoring functions that
-  penalize models which don't fit that bit of information.
-
-- Knowledge can also be used to tune the sampling scheme by choosing
-  starting configurations, the discrete sample etc.
  
-\imp provides a large number of classes and functions from which to
-choose when solving a particular problem. Fortunately, these classes
-fall into a variety of categories. Links to representative classes
-are given for future reference.
+\imp provides a large number of functionality to facilitate this process. Links to representative classes are given for future reference.
 -# \anchor dataacq Data acquisition:
-   we can't be much help here as we don't know what to do with test tubes.
+   we can't be much help here as we are computer people and don't know what to do with test tubes.
 -# \anchor repsel Representation selection: representation in \imp is via a collection of
-  particles (IMP::Particle objects). Each particle can contain one or
+  entities called particles (IMP::Particle objects). Each particle can contain one or
   more of the following sets of data
    - \inlineimage{xyz.png, 30} Cartesian coordinates (IMP::core::XYZ)
    - \inlineimage{sphere.png, 30} sphere (IMP::core::XYZR)
@@ -77,12 +56,13 @@ are given for future reference.
    - \inlineimage{rigid.png, 30} rigid body coordinate frames (IMP::core::RigidBody)
    - etc.
    .
-  In addition, particles can be made to have enforced relationships between one another,
+  In addition, \imp can enforce relationships between particles:
    - all of the members of a rigid body move along with the rigid body (IMP::core::RigidBody, IMP::core::RigidMember)
    - a centroid particle has Cartesian coordinates computed from the centroid of another set (IMP::core::Centroid)
    - \inlineimage{spherecover.png, 30} a cover particle has a sphere containing another set of particles (IMP::core::Cover)
    .
-  The data stored in a particle can be easily extended by adding a new IMP::Decorator type.\n\n
+  New types of representation can be easily added via a decorator mechanism, which is explained
+  more below and on the IMP::Decorator page.\n\n
   Representations can loaded from a number of standard file types, for %example see
   IMP::atom::read_pdb() and IMP::atom::read_mol2().
 -# \anchor dataenc Encoding the data as a scoring function:
@@ -145,13 +125,31 @@ are given for future reference.
   - density maps using IMP::statistics::HighDensityEmbedding
   
 
+Knowledge about the system being modeled enters the process at all
+stages, but a few need extra note:
+
+- The choice of representation must allow the final structure to be represented to
+  the desired accuracy.
+
+- A certain amount of knowledge is encoded as "constraints". These are
+  choices made in choosing the representation scheme that force
+  relationships between parts to always hold. For %example,
+  representing part of the system as a rigid body, means that none of
+  the distances or angles within the rigid body ever change.
+
+- Other knowledge is encoded as restraints via scoring functions that
+  penalize conformations which don't fit that bit of information.
+
+- Knowledge can also be used to tune the sampling scheme by choosing
+  starting configurations, how to perform the sampline etc.
+
 Coming up with the right choices for representation, scoring and sampling for
 a given system typically takes a few iterations and trial and error. \imp
 provides tools to help monitor how things are performing.
 
 - Logging: most actions in \imp can produce logged information to help understand
   what is going on. The amount of logging information produced can be controlled
-  globally using the IMP.set_log_level() function, passing it one of the IMP::LogLevel
+  globally using the IMP.set_log_level() function and passing it one of the IMP::LogLevel
   values. In addition, restraints, samplers, constraints (and all objects which inherit
   from IMP::Object) have an internal log level that overrides the global one. To set
   that call the IMP::Object::set_log_level() function on that object. Setting the log
@@ -175,10 +173,13 @@ provides tools to help monitor how things are performing.
 As has already been hinted at, \imp is organized around a number of core concepts.
 Representation is handled via a collection of IMP::Particle objects. Each has a
 set of arbitrary attributes (such as an x coordinate or a mass). In order to make
-particles more friendly, we provide decorators which provide a higher level interface
-to manipulate the attributes of a particle. See the IMP::Decorator page for more details.
+particles more friendly, we provide decorators which, guess what, decorate, an existing
+particle to provide a higher level interface to manipulate the attributes of a particle.
+See the IMP::Decorator page for more details.
 
-In order to aid managing sets of particles, we provide IMP::Container. A container could
+\imp provides containers in order to aid managing sets of particles. These inherit from
+IMP::Container (notice that IMP::Particle objects are containers and can contain lists
+of particles). A container could
 be as simple as an IMP::container::ListSingletonContainer which simply stores a list
 of particles. However, it could also be more involved, such as the IMP::container::ClosePairContainer which keeps track of all pairs of particles which close to one another in space. It can
 be used to implemented non-bonded operations for example.
@@ -188,10 +189,11 @@ of particles and scores those particles based on how well they fit some sort of 
 
 The IMP::Model manages the set of all particles in the representation along with
 the set of all restraints scoring them and constraints acting on them. It provides
-one central function, IMP::Model::evaluate() which computes the score of the current conformation.
+one central function, IMP::Model::evaluate() which computes the score of the current
+conformation.
 
-One final representation concept that it is imporant to be familiar with is that of
-a constraint. These, which are implemented in terms of IMP::Constraint, maintain
+One final representation concept is that of
+a constraint. These are implemented as IMP::Constraint objects. They maintain
 some hard invariant of the representation. Examples include, keeping a rigid body
 rigid, or ensuring that the IMP::container::ClosePairContainer really contains all
 close pairs. Constraints are updated as part of the IMP::Model::evaluate().
@@ -209,7 +211,7 @@ IMP::ConfigurationSet.
 
 \section i6 3. Examples
 The following examples give some idea of the basics of using \imp. They are all are in Python,
-but the C++ code would be nearly the same.
+but the C++ code is nearly the same.
 
 Each module has an examples page linked from its main page.
 
@@ -266,7 +268,7 @@ in C++ and
 IMP.core.XYZ(p)\endverbatim
 in Python.
 
-A module contain classes,
+A module contains classes,
 methods and data which are related and controlled by a set of authors. The names
 of the authors, the license for the module, its version and an overview of the
 module can be found on the module main page (eg IMP::example).
