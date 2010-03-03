@@ -1,13 +1,23 @@
 /**
-\page introduction Introduction to IMP
+\page introduction Introduction
 
 \imp is a library for solving a a wide variety of molecular structures and
-dynamics using many different data sources. As a result, it is provides a
+dynamics using many different data sources. As a result, it provides a
 great deal of flexibility. In order to best make the required decisions
 about how to use \imp to solve a particular problem, it is useful to
 understand the overall structure of \imp.
 
-\section im1 Theory
+ -# \ref im1 "Theory"
+ -# \ref i55 "Concepts"
+ -# \ref i6 "Examples"
+ -# \ref i125 "Modules"
+ -# \ref i13 "C++ and Python"
+ -# \ref conventions "Conventions"
+ -# \ref incremental "Incremental scoring"
+ -# \ref fixbug "Reporting bugs"
+ -# \ref next "Where to go next"
+
+\section im1 1. Theory
 
 Structure and dynamics modeling in \imp proceeds in a five stage iterative process
 \dotgraph{ \dot
@@ -47,7 +57,8 @@ stages, but a few need extra note:
  
 \imp provides a large number of classes and functions from which to
 choose when solving a particular problem. Fortunately, these classes
-fall into a variety of categories.
+fall into a variety of categories. Links to representative classes
+are given for future reference.
 -# \anchor dataacq Data acquisition:
    we can't be much help here as we don't know what to do with test tubes.
 -# \anchor repsel Representation selection: representation in \imp is via a collection of
@@ -160,8 +171,11 @@ provides tools to help monitor how things are performing.
   save and load a whole model to a human (and machine) readable file. See also the
   IMP::display module for geometry output and IMP::atom for biological formats.
 
+\section i55 2. Concepts
 
-\section i6 Examples
+
+
+\section i6 3. Examples
 The following examples give some idea of the basics of using \imp. They are all are in Python and C++.
 
 The following setup code is ommitted from the Python examples for clarity:
@@ -259,7 +273,7 @@ IMP::Pointer<IMP::ConfigurationSet> configs= sample->sample(10);
 \subsection i11 Writing a simple restraint
 See IMP::example::ExampleRestraint.
 
-\section i125 Modules
+\section i125 4. Modules
 
 Functionality in \imp is grouped into modules, each with its own
 namespace (in C++) or package (in Python). For %example, the functionality
@@ -281,13 +295,13 @@ Modules are either grouped based on types of experimental data (eg IMP::em) or b
 on shared functionality (IMP::core or IMP::container).
 
 
-\section i13 C++ vs Python
+\section i13 5. C++ vs Python
 \anchor cpppythondifferences
 \imp can be used from both C++ and Python. We recommend that you:
 - use Python to put \imp classes together to handle your data and resulting structures
 - write new \imp classes in C++
 
-People who are new to programming should check out a general python 
+If you are new to programming you should check out a general python 
 introduction such as
 \external{docs.python.org/tutorial/introduction.html, the official introduction to Python} and
 \external{www.rexx.com/~dkuhlman/python_101/python_101.html, Python
@@ -335,7 +349,7 @@ generate the connection between the two languages. Key differences are
   how to do \imp reference counting in C++.
 
 
-\section conventions IMP conventions
+\section conventions 6. Conventions
 
     To ensure consistency and ease of use, certain conventions should be
     adhered to when writing code using or in \imp.
@@ -445,7 +459,7 @@ generate the connection between the two languages. Key differences are
     - Abbreviations are not used in names except when the abbreviation is more
       common than the unabreviated name.
 
-\section incremental Incremental Scoring
+\section incremental 7. Incremental Scoring
     Scoring in IMP can be performed in two different ways....
 
     Incremental scoring  works as follows:
@@ -469,9 +483,10 @@ generate the connection between the two languages. Key differences are
     Whenever a particle is changed is marked as dirty, so that IMP::Particle::get_is_changed() returns true.
 
     A (perhaps partial) list of classes which benefit from incremental evaluation is:
-    -IMP::core::IncrementalBallMover
+    - IMP::core::IncrementalBallMover
+    - all the optimizers/samplers
 
-\section fixbug Reporting bugs in IMP
+\section fixbug 8. Reporting bugs
 
 While we strive for perfection, we, lamentably, slip up from time to
 time. If you find a bug in \imp, please report it on the
@@ -479,7 +494,7 @@ time. If you find a bug in \imp, please report it on the
 lost.  The best way to report a bug is to provide a short script file
 that demonstrates the problem.
 
-\section next Where to go next
+\section next 9. Where to go next
 Instructions on how to build and install \imp can be found in
 the \ref installation "installation instructions".
 
