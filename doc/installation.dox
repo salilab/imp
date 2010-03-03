@@ -61,10 +61,11 @@ deprecated=False
 \section devbuild 2. Building and installing for developers
 
 We provide two other branches of \imp for developers.
--# The stable branch https://svn.salilab.org/imp/branches/stable This is updated whenever
-   all the nightly tests pass.
 -# The current svn version at https://svn.salilab.org/imp/trunk/imp. If you are using that
    please consult the nightly build logs before updating to make sure things are working.
+   We recommend you use use this branch.
+-# The stable branch https://svn.salilab.org/imp/branches/stable This is updated whenever
+   all the nightly tests pass.
 
 When developing code for \imp, it is useful to be able to run it without installing
 everything. To aid this, we provide a script located at \c tools/imppy.sh which
