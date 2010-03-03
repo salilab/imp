@@ -227,9 +227,11 @@ public:
     data_[i]=v;
   }
   void add(unsigned int i, typename Traits::PassValue v) {
+    IMP_INTERNAL_CHECK(fits(i), "Out of range attribuite: " << i);
     set(i, v);
   }
   void remove(unsigned int i) {
+    IMP_INTERNAL_CHECK(fits(i), "Out of range attribuite: " << i);
     set(i, Traits::get_invalid());
   }
   bool fits(unsigned int i) const {
