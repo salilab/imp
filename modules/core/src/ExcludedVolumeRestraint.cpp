@@ -27,7 +27,7 @@ ExcludedVolumeRestraint::ExcludedVolumeRestraint(SingletonContainer *sc,
                                                  Refiner *r,
                                                  double k):
   Restraint("ExcludedVolumeRestraint %d"),
-  sc_(sc), r_(r), k_(k){
+  sc_(sc),r_(r), k_(k){
 }
 
 ExcludedVolumeRestraint::ExcludedVolumeRestraint(SingletonContainer *sc,
@@ -56,6 +56,8 @@ void ExcludedVolumeRestraint::set_model(Model *m) {
     for (SingletonContainer::ParticleIterator it= sc_->particles_begin();
          it != sc_->particles_end(); ++it) {
       if (RigidBody::particle_is_instance(*it)) {
+        IMP_USAGE_CHECK(r_, "Rigid body found in excluded volume but "
+                        << "the refiner was not set.");
         RigidBody rb(*it);
         if (!XYZR::particle_is_instance(*it)) {
           XYZR d= XYZR::setup_particle(*it);
