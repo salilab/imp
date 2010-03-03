@@ -1,3 +1,15 @@
 Import('env')
+file_list = ['simple_connectivity_on_molecules.py',
+             'simple_connectivity_on_rigid_bodies.py',
+             'simple_diameter.py',
+             'simple_distance.py',
+             'simple_em_fit.py',
+             'simple_excluded_volume.py',
+             'simple_connectivity_on_molecules.readme',
+             'simple_connectivity_on_rigid_bodies.readme',
+             'simple_diameter.readme',
+             'simple_distance.readme',
+             'simple_em_fit.readme',
+             'simple_excluded_volume.readme']
 env.IMPModuleExamples(example_files=env.IMPModuleGetExamples(),
                       data_files=env.IMPModuleGetExampleData())
