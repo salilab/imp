@@ -20,27 +20,32 @@ void XYZR::show(std::ostream &out) const
 }
 
 
-void set_enclosing_sphere(XYZR out,
-                          const XYZs &v,
-                          double slack)
-{
+algebra::SphereD<3> get_enclosing_sphere(const XYZsTemp &v, FloatKey rk) {
   std::vector<algebra::SphereD<3> > ss(v.size());
   for (unsigned int i=0; i< v.size(); ++i) {
     XYZ d(v[i]);
     Float r=0;
-    if (v[i].get_particle()->has_attribute(out.get_radius_key())) {
-      r= v[i].get_particle()->get_value(out.get_radius_key());
+    if (v[i].get_particle()->has_attribute(rk)) {
+      r= v[i].get_particle()->get_value(rk);
     }
     ss[i]= algebra::SphereD<3>(d.get_coordinates(), r);
   }
   algebra::SphereD<3> s= algebra::get_enclosing_sphere(ss);
+  return s;
+}x
+
+void set_enclosing_sphere(XYZR out,
+                          const XYZsTemp &v,
+                          double slack)
+{
+  algebra::SphereD<3> s= get_enclosing_sphere(v, out.get_radius_key());
   algebra::SphereD<3> s2(s.get_center(), s.get_radius()+slack);
   out.set_sphere(s2);
 }
 
 
 void set_enclosing_radius(XYZR out,
-                          const XYZs &v)
+                          const XYZsTemp &v)
 {
   double r=0;
   for (unsigned int i=0; i< v.size(); ++i) {
