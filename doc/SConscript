@@ -1,1 +1,9 @@
+Import('env')
+
 SConscript('doxygen/SConscript')
+files= Glob("*.png")
+build=[]
+for f in files:
+    b=env.InstallAs("#/build/doc/html/"+str(f), f)
+    build.append(b)
+env.Alias('doc-files', build)

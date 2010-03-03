@@ -5,35 +5,41 @@ This page presents instructions on how to develop code using
 distribute their code should also read the \ref contributing
 "Contributing code to IMP" page.
 
-\section building Building IMP
+-# \ref gettingaround "Getting around"
+-# \ref usage "Writing new functions and classes"
+-# \ref testing "Debugging and testing your code"
+-# \ref codingconventions "Coding convetions"
+-# \ref docs "Documenting your code"
+-# \ref scripts "Useful scripts"
+-# \ref contributing "Contributing code back to the repository"
+-# \ref cpp "Good programming practices"
+-# \ref next "Where to go next"
 
-Developers should first read \ref installation "the installation guide".
+\section gettingaround 1. Getting around
 
-We recommend doing an out of source build so you can easily build
-multiple build types (\c build='fast', \c build='debug', or \c
-build='release') from the same set of sources. To set this up
-  -# make a clean checkout of the source code
-    \command{svn co https://svn.salilab.org/imp/trunk src}
-  -# make a directory for your debug build
-    \command{mkdir imp-debug}
-  -# setup the debug directory
-    \command{src/tools/setup-out-of-source-build imp-debug}
-  -# edit \c imp-debug/config.py as desired
-  -# change into \c imp-debug
-    \command{cd imp-debug}
-  -# build
-    \command{scons -j 2}
-Note that this probably doesn't work on windows.
+The input files in the \imp directory are structured as follows:
+- \c tools contains various command line utilities for use by developers. They are documented
+  in \ref scripts "Scripts".
+- \c doc contains inputs for general \imp documentation
+- \c applications contains various applications implementing using a variety of \imp modules
+- each of \c kernel and \c module/* defines a module. A module has a standard layout consisting of
+   - \c include contains the C++ header files for the module
+   - \c src contains the C++ source files for the module
+   - \c bin contains the C++ files defining programs associated with the module
+   - \c pyext contains files defining the python interface to the module as well as python source files for the module
+   - \c test contains test scripts that are run when \c scons \c test is run
+   - \c doc contains the overview documentation for the file as well as any other documentation that is provided
+   - \c examples contains examples, in python
+   - \c data contains any data files needed by the module
 
-When developing new \imp code, it is useful to be able to run and test
-it without installing \imp every time. To do so, use the
-\c tools/imppy.sh script. For %example, to execute the \c chain.py
-%example do \command{./tools/imppy.sh python kernel/examples/chain.py}
-or to run the xyz access benchmark do
-\command{./tools/imppy.sh modules/benchmark/bin/benchmark_xyz_access}
+When \imp is built, the \c build directory is created and filled with the results of the build. \c build contains a number of subdirectories, each of which has a subdirectory for each module. They are 
+ - \c include and \c lib which have the C++ header files as well as the C++ and python libraries
+ - \c doc which include the html documentation and examples
+ - \c data which has links to all of the module data
 
-The \c imppy.sh script is needed to make sure that
-all the \imp libraries can be found when needed.
+Unfortunately, various intermediate files in the build are scattered throughout the \c module
+and \c kernel hierarchies, which is part of the reason we strongly recommend doing an
+\ref devbuild "out of source build".
 
 
 \section usage Writing new functions and classes
@@ -373,7 +379,7 @@ or \c \\commandname if there are no arguments.
 
 
 
-\section contributing Contributing code to IMP
+\section contributing Contributing code back to the repository
 \anchor anchorcontributing
 
 In order to be shared with others as part of the \imp distribution,
@@ -464,7 +470,7 @@ patch" files or directories to submit}
 If you have a large group of related functionality to submit, it may make sense to create a new module in svn. Please post to \impdev to discuss your plans.
 
 
-\section submitted Once you have submitted code
+\subsection submitted Once you have submitted code
 
 Once you have submitted code, you should monitor the
 \salilab{internal/imp/tests.html,Daily build status} to make sure that
@@ -490,7 +496,7 @@ list which receives notices of all changes made to the \imp SVN repository.
 The contents of this page are aimed at C++ programmers, but most apply
 also to python.
 
-\section coding General resources
+\subsection coding General resources
 
 Two excellent sources for general C++ coding guidelines are
 
@@ -504,7 +510,7 @@ are free to borrow.
 
 
 
-\section impcoding IMP gotchas
+\subsection impcoding IMP gotchas
     
 Below are a suggestions prompted by bugs found in code submitted to \imp.
 
@@ -597,5 +603,5 @@ Below are a suggestions prompted by bugs found in code submitted to \imp.
           transparent convert an \c int into a \c double.
 
 
-
+\section next Where to go next
 */
