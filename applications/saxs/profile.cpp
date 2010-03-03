@@ -3,14 +3,12 @@
    see FOXS for webserver (salilab.org/foxs)
  */
 #include <IMP/Model.h>
-#include <IMP/internal/directories.h>
 #include <IMP/atom/pdb.h>
-#include <IMP/atom/force_fields.h>
-#include <IMP/atom/CHARMMParameters.h>
 
 #include <IMP/saxs/Profile.h>
 #include <IMP/saxs/Score.h>
 #include <IMP/saxs/SolventAccessibleSurface.h>
+#include <IMP/saxs/FormFactorTable.h>
 
 #include "Gnuplot.h"
 
@@ -30,6 +28,7 @@ int main(int argc, char **argv)
   int profile_size = 500;
   float max_q = 0.5;
   float background_adjustment_q = 0.0;
+  float excluded_volume_c1 = 0.0;
   bool use_offset = false;
   bool fit = true;
   bool hydration_layer = true;
@@ -49,6 +48,10 @@ Each PDB will be fitted against each profile.")
      "fit by adjusting excluded volume and hydration layer density parameters \
 (default = true)")
     ("hydration_layer,h", "compute hydration layer (default = true)")
+    ("excluded_volume,e",
+     po::value<float>(&excluded_volume_c1)->default_value(0.0),
+     "excluded volume parameter, enumerated by default. \
+Valid range: 0.8 < c1 < 1.2")
     ("background_q,b",
      po::value<float>(&background_adjustment_q)->default_value(0.0),
      "background adjustment, not used by default. if enabled, \
@@ -74,10 +77,6 @@ recommended q value is 0.2")
   if (vm.count("hydration_layer")) hydration_layer=false;
   if (vm.count("offset")) use_offset=true;
 
-  // not so good, just for a test
-  IMP::internal::set_backup_data_path(std::string(argv[0], 0,
-                                  std::string(argv[0]).rfind('/')));
-
   float delta_q = max_q / profile_size;
   bool interactive_gnuplot = false; // for server
 
@@ -97,13 +96,19 @@ recommended q value is 0.2")
       IMP::atom::Hierarchy mhd =
         IMP::atom::read_pdb(files[i], model,
                             IMP::atom::NonWaterNonHydrogenPDBSelector());
-      IMP::atom::add_radii(mhd); //, cp);
       IMP::Particles particles = get_by_type(mhd, IMP::atom::ATOM_TYPE);
       if(particles.size() > 0) { // pdb file
         pdb_files.push_back(files[i]);
         particles_vec.push_back(particles);
         std::cout << particles.size() << " atoms were read from PDB file "
                   << files[i] << std::endl;
+      }
+      if(hydration_layer) { // add radius
+        IMP::saxs::FormFactorTable* ft = IMP::saxs::default_form_factor_table();
+        for(unsigned int p_index=0; p_index<particles.size(); p_index++) {
+          float radius = ft->get_radius(particles[p_index]);
+          IMP::core::XYZR::setup_particle(particles[p_index], radius);
+        }
       }
     } catch(IMP::IOException e) { // not a pdb file
       // B. try as dat file
@@ -135,8 +140,7 @@ recommended q value is 0.2")
 
     // compute profile
     IMP::saxs::Profile *partial_profile = NULL;
-    std::cerr << "Computing profile for " << pdb_files[i] << " min = 0.0 max = "
-              << max_q << " delta=" << delta_q << std::endl;
+    std::cerr << "Computing profile for " << pdb_files[i] << std::endl;
     partial_profile = new IMP::saxs::Profile(0.0, max_q, delta_q);
     if(dat_files.size() > 0) {
       partial_profile->calculate_profile_partial(particles_vec[i],
@@ -159,14 +163,19 @@ recommended q value is 0.2")
         new IMP::saxs::Score(*exp_saxs_profile);
       partial_profile->sum_partial_profiles(1.0, 0.0, *partial_profile);
       float chi = saxs_score->compute_chi_score(*partial_profile, use_offset);
-      std::cout << "Chi  = " << chi << std::endl;
+      //std::cout << "Chi  = " << chi << std::endl;
 
       // try to fit exp data with two parameters
       if(fit) {
         float best_c1 = 1.0, best_c2 = 0.0;
         float best_chi = chi;
-        for(float c1 = 0.8; c1<=1.2; c1+= 0.005) {
-          for(float c2 = 0.0; c2<=4.0; c2+= 0.1) {
+        float min_c1 = 0.8, max_c1 = 1.2, delta_c2 = 0.1;
+        if(excluded_volume_c1 > 0.0) {
+          min_c1 = max_c1 = excluded_volume_c1;
+          delta_c2 = 0.01; // finer enumeration
+        }
+        for(float c1 = min_c1; c1<=max_c1; c1+= 0.005) {
+          for(float c2 = 0.0; c2<=4.0; c2+= delta_c2) {
             IMP::saxs::Profile p(0.0, max_q, delta_q);
             partial_profile->sum_partial_profiles(c1, c2, p);
             float curr_chi = saxs_score->compute_chi_score(p, use_offset);
@@ -183,8 +192,9 @@ recommended q value is 0.2")
         }
 
         // store best fit into partial_profile and print
-        std::cout << pdb_files[i] << " Chi = " << best_chi << " c1 = "
-                  << best_c1 << " c2 = " << best_c2 << std::endl;
+        std::cout << pdb_files[i] << " " << dat_files[j] << " Chi = "
+                  << best_chi << " c1 = " << best_c1 << " c2 = " << best_c2
+                  << " default chi = " << chi << std::endl;
         partial_profile->sum_partial_profiles(best_c1, best_c2,
                                               *partial_profile);
       }
