@@ -31,7 +31,8 @@ void IncrementalBallMover::propose_move(Float size) {
   IMP_OBJECT_LOG;
   ParticlesTemp pts(sc_->get_particles());
   std::random_shuffle(pts.begin(), pts.end());
-  for (unsigned int i=0; i< n_; ++i) {
+  for (unsigned int i=0;
+       i< std::min(n_, static_cast<unsigned int>(pts.size())); ++i) {
     moved_[i]= pts[i];
     XYZ d(moved_[i]);
     IMP_USAGE_CHECK(d.get_coordinates_are_optimized(),
