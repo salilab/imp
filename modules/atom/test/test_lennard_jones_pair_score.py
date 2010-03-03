@@ -60,8 +60,8 @@ class LennardJonesPairScoreTests(IMP.test.TestCase):
                                 for r in (3.0, 4.0, 5.0):
                                     place_xyzs(d0, d1, box, r)
                                     score = m.evaluate(False)
-                                    expected = wd * (rep * (rmin/r)**12
-                                                     - 2.0 * att * (rmin/r)**6)
+                                    expected = -wd * (rep * (rmin/r)**12
+                                                      - 2.0 * att * (rmin/r)**6)
                                     self.assertInTolerance(score, expected,
                                                            1e-2)
 

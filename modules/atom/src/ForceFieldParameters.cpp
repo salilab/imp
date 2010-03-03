@@ -41,8 +41,8 @@ void ForceFieldParameters::add_well_depths(Hierarchy mhd) const
 {
   Particles ps = get_by_type(mhd, ATOM_TYPE);
   for (unsigned int i=0; i<ps.size(); i++) {
-    Float well_depth = get_epsilon(Atom(ps[i]));
-    LennardJones::setup_particle(ps[i], -well_depth);
+    Float epsilon = get_epsilon(Atom(ps[i]));
+    LennardJones::setup_particle(ps[i], -epsilon);
   }
   warn_context_.dump_warnings();
 }
