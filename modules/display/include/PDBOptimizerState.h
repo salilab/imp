@@ -23,7 +23,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
 //! Write molecules in pdb format periodically
 /** The State writes a series of files generated from a
     printf-style format string.
-    \verbinclude log.py
+    \verbinclude display_log.py
     \ingroup logging
  */
 class IMPDISPLAYEXPORT PDBOptimizerState: public OptimizerState
