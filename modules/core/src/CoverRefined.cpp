@@ -29,7 +29,7 @@ IMP_SINGLETON_MODIFIER_FROM_REFINED(CoverRefined, refiner_)
 void CoverRefined::apply(Particle *p) const
 {
   XYZR dp(p, rk_);
-  XYZs ps(refiner_->get_refined(p));
+  XYZsTemp ps(refiner_->get_refined(p));
   set_enclosing_sphere(dp, ps, slack_);
 }
 

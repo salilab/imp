@@ -61,7 +61,7 @@ void ExcludedVolumeRestraint::set_model(Model *m) {
         RigidBody rb(*it);
         if (!XYZR::particle_is_instance(*it)) {
           XYZR d= XYZR::setup_particle(*it);
-          set_enclosing_radius(d, core::XYZs(rb.get_members()));
+          set_enclosing_radius(d, core::XYZsTemp(rb.get_members()));
         }
       }
     }
