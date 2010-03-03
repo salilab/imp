@@ -289,6 +289,8 @@ inline Rotation3D get_identity_rotation_3d() {
 inline double get_distance(const Rotation3D &r0,
                            const Rotation3D &r1) {
   double dot= std::abs(r0.get_quaternion()*r1.get_quaternion());
+  if (dot >1) dot=1;
+  if (dot < -1) dot=-1;
   double theta= std::acos(dot);
   return 2.0*theta/PI;
 }
