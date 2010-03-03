@@ -23,8 +23,8 @@
 
 IMP_BEGIN_NAMESPACE
 
-/** \defgroup logging Logging
-
+/** \name Logging
+    \anchor log
     IMP provides tools for controlling the amount of log output produced
     and directing it to the terminal or a file. Only log messages tagged
     with a lower level than the current LogLevel are emitted. In addition

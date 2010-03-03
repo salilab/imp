@@ -94,7 +94,7 @@ IMP_LIST_IMPL(GroupnameContainerSet,
                     ->add_groupname_container(obj
                            ->get_added_groupnames_container());
                 }
-                obj->set_was_owned(true);
+                obj->set_was_used(true);
               },,
               if (!get_is_added_or_removed_container()) {
                 get_set(get_removed_groupnames_container())

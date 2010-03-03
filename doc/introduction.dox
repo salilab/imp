@@ -172,70 +172,64 @@ provides tools to help monitor how things are performing.
   IMP::display module for geometry output and IMP::atom for biological formats.
 
 \section i55 2. Concepts
+As has already been hinted at, \imp is organized around a number of core concepts.
+Representation is handled via a collection of IMP::Particle objects. Each has a
+set of arbitrary attributes (such as an x coordinate or a mass). In order to make
+particles more friendly, we provide decorators which provide a higher level interface
+to manipulate the attributes of a particle. See the IMP::Decorator page for more details.
 
+In order to aid managing sets of particles, we provide IMP::Container. A container could
+be as simple as an IMP::container::ListSingletonContainer which simply stores a list
+of particles. However, it could also be more involved, such as the IMP::container::ClosePairContainer which keeps track of all pairs of particles which close to one another in space. It can
+be used to implemented non-bonded operations for example.
+
+Scoring is handled by a collection of IMP::Restraint objects. Each of these keeps a list
+of particles and scores those particles based on how well they fit some sort of data.
+
+The IMP::Model manages the set of all particles in the representation along with
+the set of all restraints scoring them and constraints acting on them. It provides
+one central function, IMP::Model::evaluate() which computes the score of the current conformation.
+
+One final representation concept that it is imporant to be familiar with is that of
+a constraint. These, which are implemented in terms of IMP::Constraint, maintain
+some hard invariant of the representation. Examples include, keeping a rigid body
+rigid, or ensuring that the IMP::container::ClosePairContainer really contains all
+close pairs. Constraints are updated as part of the IMP::Model::evaluate().
+<em> This means that the constraint does not necessarily hold except during
+score evaluation.</em> In order to ensure that all constraints hold, call
+IMP::Model::evaluate() before inspecting the particles.
+
+On the sampling side, there are two main concepts, that of an optimizer and that of
+a sampler. An optimizer (IMP::Optimizer), takes the current conformation of the
+IMP::Model and modifies it (typically in an attempt to make it score better). A
+sampler uses variety of optimizers and other methods to perform a non-local
+search for good scoring conformations, which are then stored as part of an
+IMP::ConfigurationSet.
 
 
 \section i6 3. Examples
-The following examples give some idea of the basics of using \imp. They are all are in Python and C++.
-
-The following setup code is ommitted from the Python examples for clarity:
-\htmlinclude setup.py.html
-
-The following setup code is ommitted from the C++ examples for clarity:
-\code
-#include <IMP.h>
-#include <IMP/core.h>
-
-IMP::Pointer<IMP::Model> m= new IMP::Model();
-IMP::Pointer<IMP::container::SingletonContainer> sc= new IMP::container::SingletonContainer();
-for (int i=0; i< 100; ++i) {
-    IMP::Particle* p=new IMP::Particle();
-    sc->add_particle(p);
-    m->add_particles(p);
-    IMP::core::XYZRDecorator d= IMP::core::XYZRDecorator::setup_particle(p);
-    d.set_coordinates_are_optimized(true);
-    d.set_coordinates(IMP::random_vector_in_box());
-    d.set_radius(1.0);
-}
-\endcode
+The following examples give some idea of the basics of using \imp. They are all are in Python,
+but the C++ code would be nearly the same.
 
 Each module has an examples page linked from its main page.
 
+\subsection i7 Creating some particles
+The function creates a bunch of particles and uses the IMP::core::XYZR decorator to
+given them random coordinates and a radius of 1.
+\htmlinclude setup.py.html
 
 \subsection i7 Restrain some distances
 
-Restrain the distance between the first two particles.
+Once the particles are created, we have to add some restraints. To do this, you must choose
+which particles to restraint and then how to restrain them. Given that you create a restraint,
+initializing it with the chosen particles and then add it to the model.
 
 \htmlinclude pair_restraint.py.html
 
 
-\code
-IMP::Pointer<IMP::core::Harmonic> uf= new IMP::core::Harmonic(0,1);
-IMP::Pointer<IMP::core::SphereDistancePairScore> df= new IMP::core::SphereDistancePairScore(uf);
-IMP::Pointer<IMP::core::PairRestraint> r= new IMP::core::PairRestraint(df, sc->get_particle(0), sc->get_particle(1));
-m->add_restraint(r);
-\endcode
-
-
-
 \subsection i8 Preventing collisions
-The IMP::container::ClosePairsContainer maintains a list of all pairs of particles which contains all pairs closer than min distance (between the spheres). The IMP::core::HarmonicLowerBound forces the spheres apart.
+The IMP::container::ClosePairsContainer maintains a list of all pairs of particles that are closer than a certain distance. The IMP::core::HarmonicLowerBound forces the spheres apart.
 \htmlinclude excluded_volume.py.html
-
-\code
-IMP::Pointer<IMP::container::ClosePairsContainer> nbl= new IMP::container::ClosePairsContainer(sc, 0,3);
-IMP::Pointer<IMP::core::HarmonicLowerBound> h= new IMP::core::HarmonicLowerBound(0,1);
-IMP::Pointer<IMP::core::SphereDistancePairScore> sd= new IMP::core::SphereDistancePairScore(h);
-IMP::Pointer<IMP::container::PairsRestraint> nbr= new IMP::container::PairsRestraint(sd, nbl);
-m->add_restraint(nbr);
-\endcode
-
-One can, instead, use the IMP::core::ExcludedVolumeRestraint which as the same effect.
-
-
-
-
-
 
 
 \subsection i9 Restraining bonds
@@ -244,31 +238,18 @@ Load a protein and restrain all the bonds to have the correct length. Bond angle
 
 \htmlinclude load_protein_restrain_bonds.py.html
 
-\code
-IMP::atom::Hierarchy prot=IMP::atom::read_pdb("my.pdb", m);
-IMP::atom::Bonds bds= IMP::atom::get_internal_bonds(prot);
-IMP::Pointer<IMP::container::ListSingletonContainer> bl= new IMP::container::ListSingletonContainer(bds);
-IMP::Pointer<IMP::core::Harmonic> h= new IMP::core::Harmonic(0,1);
-IMP::Pointer<IMP::atom::BondSingletonScore> bs= new IMP::atom::BondSingletonScore(h);
-IMP::Pointer<IMP::container::SingletonsRestraint> br= new IMP::container::SingletonsRestraint(bs, bl);
-m->add_restraint(br);
-\endcode
 
 
 
 
 
-
-
-\subsection i10 Simple optimization setup
-A basic setup for sampling configurations of a model.
-\htmlinclude basic_optimization.py.html
-
-\code
-IMP::Pointer<IMP::core::MCCGSampler> sampler= new IMP::core::MCCGSampler(m);
-
-IMP::Pointer<IMP::ConfigurationSet> configs= sample->sample(10);
-\endcode
+\subsection i10 Sampling and analysis
+Once we have set up our restraints, we can run a sampler to compute some good
+conformations. Our basic sampler is the IMP::core::MCCGSampler which uses
+a combination of Monte Carlo and conjugate gradients to find conformations.
+It then returns an object which allows one to load the saved conformations
+for analysis.
+\htmlinclude basic_optimization.py
 
 \subsection i11 Writing a simple restraint
 See IMP::example::ExampleRestraint.
@@ -318,7 +299,7 @@ generate the connection between the two languages. Key differences are
 - Python does not support templates and so template classes (eg
   IMP::algebra::BoundingBoxD, IMP::VectorOfRefCounted) cannot be
   directly exposed in python. Instead, specific versions of the
-  classes are exported (IMP::algebra::BoundingBox3D and
+  classes are exported (IMP::algebra::BoundingBoxD<3> and
   IMP::Particles, respectively). New versions can be easily added, so
   feel free to request them when desired.
 - Iterators on C++ containers do not translate easily into Python. As a
@@ -369,7 +350,7 @@ generate the connection between the two languages. Key differences are
     \subsection storage Passing and storing data
 
     - 3D points and vectors are stored and passed using
-      IMP::algebra::Vector3D objects.
+      IMP::algebra::VectorD objects.
 
     - 3D rotations are stored and passed using
       IMP::algebra::Rotation3D objects.
@@ -391,7 +372,7 @@ generate the connection between the two languages. Key differences are
     \subsection objects Values and Objects
     As is conventional in C++, \imp classes are divided into two types
     - \e value \e classes which are be passed, stored, and returned by value
-      (or, for speed, \c const&). Examples include IMP::algebra::Vector3D,
+      (or, for speed, \c const&). Examples include IMP::algebra::VectorD,
       collections such as IMP::Restraints or IMP::RestraintsTemp, or
       decorators, such as IMP::core::XYZ. In fact, in \imp, anything
       that does not inherit from IMP::RefCounted is a value class.
@@ -417,9 +398,9 @@ generate the connection between the two languages. Key differences are
     constructor leaves them in an unspecified state. This is similar to
     the built in types in C++ (\c int, \c double). For %example
       \code
-      IMP::algebra::Vector3D v; // the vector has unknown coordinates
+      IMP::algebra::VectorD<3> v; // the vector has unknown coordinates
       std::cout << v << std::endl; // illegal
-      v= IMP::algebra::Vector3D(0,1,2); // now we can use v
+      v= IMP::algebra::VectorD<3>(0,1,2); // now we can use v
       \endcode
 
     Unless the documentation says otherwise, all \e value
@@ -493,6 +474,8 @@ time. If you find a bug in \imp, please report it on the
 \salilab{imp/bugs/,IMP bug tracker}. This will ensure it does not get
 lost.  The best way to report a bug is to provide a short script file
 that demonstrates the problem.
+
+
 
 \section next 9. Where to go next
 Instructions on how to build and install \imp can be found in

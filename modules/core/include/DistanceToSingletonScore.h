@@ -23,7 +23,7 @@ IMPCORE_BEGIN_NAMESPACE
 
     To restrain a set of particles store in SingletonContainer pc in a sphere
     do the following:
-    \verbinclude fragments/restrain_in_sphere.py
+    \htmlinclude restrain_in_sphere.py
  */
 class IMPCOREEXPORT DistanceToSingletonScore : public SingletonScore
 {
@@ -43,7 +43,7 @@ public:
 
     To restrain a set of particles store in SingletonContainer pc in a sphere
     do the following:
-    \verbinclude fragments/restrain_in_sphere.py
+    \htmlinclude restrain_in_sphere.py
  */
 class IMPCOREEXPORT SphereDistanceToSingletonScore : public SingletonScore
 {

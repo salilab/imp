@@ -25,7 +25,11 @@ IMPCONTAINER_BEGIN_NAMESPACE
     The container used can be set so that the list can be shared
     with other containers (or a nonbonded list can be used). By default
     a ListGroupnameContainer is used and the
-    {add_, set_, clear_}classname{s} methods can be used.
+    {add_, set_, clear_}classname{s} methodas can be used.
+
+    Examples using various multiplicity containers:
+    \htmlinclude restrain_in_sphere.py.html
+    \htmlinclude nonbonded_interactions.py.html
 
     \see GroupnameRestraint
  */
