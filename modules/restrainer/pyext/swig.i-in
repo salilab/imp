@@ -1,8 +1,114 @@
 %pythoncode %{
-__all__ = ['representation', 'restraint','xml_parser', 'display', 'config']
+#__all__ = ['representation', 'restraint','xml_parser', 'display', 'config']
 
-from representation import *
-from restraint import *
-from xml_parser import *
-from display import *
+import representation
+import restraint
+import xml_parser
+import display
+
+class Representation(representation.Representation):
+    """Store Representation."""
+    def __init__(self):
+        representation.Representation.__init__(self)
+    def get_imp_hierarchy_by_id(self, id):
+        """Return an IMP::atom::Hierarchy by particle id.
+           @param id Particle id.
+           @return An IMP::atom::Hierarchy hierarchy."""
+        return representation.Representation.get_imp_hierarchy_by_id(self,id)
+
+    def get_root_imp_hierarchy(self):
+        """Return the root of the IMP::atom::Hierarchy"""
+        return representation.Representation.get_root_imp_hierarchy(self)
+
+    def find_all_by_id(self, id): # assuming there are many obj with the same id
+        """Return a list of all nodes that have the id given by the parameter"""
+        return representation.Representation.gind_all_by_id(self, id)
+
+    def find_by_id(self, id): # assuming there is just one obj with the same id
+        """Return a node that have the id given by the parameter"""
+        return representation.Representation.find_by_id(self,id)
+
+    def to_model(self, model=None):
+        """Return an IMP::Model that contains the representation"""
+        return representation.Representation.to_model(self, model)
+
+class Restraint(restraint.Restraint):
+    """Store Restraint"""
+    def __init__(self):
+        """"""
+        restraint.Restraint.__init__(self)
+
+    def add_to_representation(self, repr):
+        """ Place restraint into IMP Model."""
+        return restraint.Restraint.add_to_representation(self, repr)
+
+    def print_all_restraints(self):
+        """Print restraint name, initial weight, and score for the current state of the model"""
+        return restraint.Restraint.print_all_restraints(self)
+
+
+    def get_all_restraints_by_name(self, name):
+        """Assuming there are many restraint objects with the same name.
+           @param[in] name The name to search for"""
+        return restraint.Restraint.get_all_restraints_by_name(self,name)
+
+    def get_restraint_by_name(self, name):
+        """Assuming there is just one restraint object with the same name."""
+        return restraint.Restraint.get_restraint_by_name(self,name)
+
+    def get_rigid_body_by_id(self, id):
+        """Get rigid body by particle id."""
+        return restraint.Restraint.get_rigid_body_by_id(self,id)
+
+
+    def get_all_rigid_bodies(self):
+        """Get all rigid bodies."""
+        return restraint.Restraint.get_all_rigid_bodies(self)
+
+class XMLRepresentation(xml_parser.XMLRepresentation):
+    """Construct Representation from XML file"""
+    def __init__(self, filename):
+        xml_parser.XMLRepresentation.__init__(self, filename)
+    def run(self):
+        """Return IMP.restrainer.Representation
+           object such that each node in the representation
+           corresponds to the node in the XML nodes"""
+        return xml_parser.XMLRepresentation.run(self)
+
+class XMLDisplay(xml_parser.XMLDisplay):
+    """Construct Display from XML file"""
+    def __init__(self, filename):
+       xml_parser.XMLDisplay.__init__(self, filename)
+
+    def run(self):
+        """Return display object such that each node in the display
+           corresponds to the node in the XML nodes"""
+        return xml_parser.XMLDisplay.run(self)
+
+class XMLRestraint(xml_parser.XMLRestraint):
+    """Construct Restraint from XML file"""
+    def __init__(self, filename):
+        """ @param[in] filename the name of the file to read """
+        xml_parser.XMLRestraint.__init__(self, filename)
+    def run(self):
+        """Return
+           <a href="classIMP_1_1restrainer_1_1restraint_1_1Restraint.html">
+           Restraint</a>
+           object such that each node in the restraint
+           corresponds to the node in the XML nodes"""
+        return xml_parser.XMLRestraint.run(self)
+
+class Display(display.Display):
+    """A class to display the configuration"""
+    def __init__(self):
+       display.Display.__init__(self)
+
+    def create_log(self, repr, log_name):
+       """Create Chimera log.
+           @param repr <a href="classIMP_1_1restrainer_1_1representation_1_1Representation.html">
+            Representation</a> object.
+           @param log_name Log name
+           @return IMP::dispay::LogOptimizerState"""
+       return display.Display.create_log(self, repr, log_name)
+
 %}
