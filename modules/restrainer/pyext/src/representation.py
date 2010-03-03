@@ -285,8 +285,8 @@ class _RepGeometricShapeRep(_RepresentationNode):
         else:
             total_residue = self.end_residue-self.start_residue+1
         if total_residue >= 0:
-            m = IMP.atom.mass_from_number_of_residues(total_residue)
-            v = IMP.atom.volume_from_mass(m)
+            m = IMP.atom.get_mass_from_number_of_residues(total_residue)
+            v = IMP.atom.get_volume_from_mass(m)
             r = (v/(4.0*math.pi)*3.0)**(1.0/3)
             parent.add_attribute(IMP.FloatKey('calc_radius'), r)
         for child in self._children:
