@@ -23,6 +23,7 @@ IMPATOM_BEGIN_NAMESPACE
 /** Each atom has a name (unique to the residue), a CHARMM type (used to
     look up parameters such as radii and bond lengths in the parameter file)
     and an electrostatic charge.
+    \seealso CHARMMAtom
  */
 class CHARMMAtomTopology {
   std::string name_;
@@ -70,6 +71,7 @@ public:
 
   std::string get_atom_name() const { return atom_name_; }
 
+  //! Map the endpoint to an Atom particle.
   Atom get_atom(const CHARMMResidueTopology *current_residue,
                 const CHARMMResidueTopology *previous_residue,
                 const CHARMMResidueTopology *next_residue,
@@ -125,6 +127,7 @@ public:
     return endpoints_[i];
   }
 
+  //! \return true if the bond contains the named atom.
   bool contains_atom(std::string name) const {
     for (std::vector<CHARMMBondEndpoint>::const_iterator
          it = endpoints_.begin(); it != endpoints_.end(); ++it) {
@@ -135,6 +138,7 @@ public:
     return false;
   }
 
+  //! Map the bond to a list of Atom particles.
   Atoms get_atoms(const CHARMMResidueTopology *current_residue,
                   const CHARMMResidueTopology *previous_residue,
                   const CHARMMResidueTopology *next_residue,
@@ -247,7 +251,7 @@ public:
 
 class CHARMMResidueTopology;
 
-//! A CHARMM patch residue
+//! A CHARMM patch residue.
 /** Patch residues are similar to regular residues, except that they are
     used to modify an existing residue. Any atoms they contain replace or
     add to those in the residue; they can also remove atoms.
@@ -262,21 +266,36 @@ public:
 
   void add_deleted_atom(std::string name) { deleted_atoms_.push_back(name); }
 
+  //! Apply the patch to the residue, modifying its topology accordingly.
+  /** \note Most CHARMM patches are designed to be applied in isolation;
+            it is usually an error to try to apply two different patches
+            to the same residue. Thus, by default IMP prohibits this.
+            To allow an already-patched residue to be re-patched, first
+            call CHARMMResidueTopology::set_patched(false).
+   */
   void apply(CHARMMResidueTopology &res) const;
 
+  //! Apply the patch to the given pair of residues.
+  /** This can only be used for special two-residue patches, such as
+      DISU or LINK. In a two-residue patch, each atom has a 1: or 2: prefix
+      to identify the residue it refers to.
+
+      \throws ValueException if the patch is not a two-residue patch.
+   */
   void apply(CHARMMResidueTopology &res1, CHARMMResidueTopology &res2) const;
 };
 
-//! The topology of a single residue in a model
+//! The topology of a single residue in a model.
 class IMPATOMEXPORT CHARMMResidueTopology
      : public CHARMMIdealResidueTopology, public Object {
   bool patched_;
 public:
 
-  //! Create an empty topology, containing no atoms or bonds
+  //! Create an empty topology, containing no atoms or bonds.
   CHARMMResidueTopology(ResidueType type)
     : CHARMMIdealResidueTopology(type), patched_(false) {}
 
+  //! Construct residue topology from the ideal (libary) topology.
   CHARMMResidueTopology(const CHARMMIdealResidueTopology &ideal)
     : CHARMMIdealResidueTopology(ideal), patched_(false) {}
 
@@ -290,19 +309,49 @@ IMP_OBJECTS(CHARMMResidueTopology);
 
 class CHARMMParameters;
 
-//! The topology of a single CHARMM segment (chain) in a model
+//! The topology of a single CHARMM segment in a model.
+/** CHARMM segments typically correspond to IMP Chain particles.
+ */
 class IMPATOMEXPORT CHARMMSegmentTopology : public Object {
   IMP_LIST(public, CHARMMResidueTopology, residue, CHARMMResidueTopology*,
            CHARMMResidueTopologys);
 
   IMP_OBJECT(CHARMMSegmentTopology);
 public:
+  //! Apply patches to the first and last residue in the segment.
+  /** Default patches are defined for each residue type in the topology
+      file. For example, segments containing amino acids will by default
+      apply the CTER and NTER patches to the C and N termini, respectively.
+   */
   void apply_default_patches(const CHARMMParameters *ff);
 };
 
 IMP_OBJECTS(CHARMMSegmentTopology);
 
-//! The topology of a complete CHARMM model
+//! The topology of a complete CHARMM model.
+/** This defines all of the segments (chains) in the model as
+    CHARMMSegmentTopology objects, which in turn define the list of residues,
+    the atoms in each residue, and their types and the connectivity
+    between them.
+
+    A CHARMMTopology object can be created manually, in which case add_segment()
+    can be called to add individual CHARMMSegmentTopology objects. In this way
+    a new topology can be created, e.g. from protein primary sequence.
+
+    Alternatively, given an existing Hierarchy, e.g. as returned from
+    read_pdb(), CHARMMParameters::create_topology() can be called to generate
+    a new topology that corresponds to the primary sequence of the Hierarchy.
+
+    A new topology can be patched (apply_default_patches() or
+    CHARMMPatch::apply()) to modify the simple chain of residues to
+    account for modified residues, C- or N-termini special cases, disulfide
+    bridges, etc.
+
+    Once a topology is created, it can be used to generate new particles
+    which conform to that topology (create_hierarchy()), or to add
+    topology information to an existing Hierarchy (e.g. add_atom_types(),
+    add_bonds(), add_charges()).
+ */
 class IMPATOMEXPORT CHARMMTopology : public Object {
   IMP_LIST(public, CHARMMSegmentTopology, segment, CHARMMSegmentTopology*,
            CHARMMSegmentTopologys);
@@ -315,20 +364,56 @@ private:
   void map_residue_topology_to_hierarchy(Hierarchy hierarchy,
                                          ResMap &resmap) const;
 public:
+  //! Call CHARMMSegmentTopology::apply_default_patches() for all segments.
   void apply_default_patches(const CHARMMParameters *ff) {
     for (unsigned int i = 0; i < get_number_of_segments(); ++i) {
       get_segment(i)->apply_default_patches(ff);
     }
   }
 
+  //! Create a new Hierarchy in the given model using this topology.
+  /** The hierarchy contains chains, residues and atoms as defined in the
+      topology. Note, however, that none of the generated atoms is given
+      coordinates.
+   */
   Hierarchy create_hierarchy(Model *model) const;
 
+  //! Add CHARMM atom types to the given Hierarchy using this topology.
+  /** The primary sequence of the Hierarchy must match that of the topology.
+      \seealso CHARMMAtom.
+   */
   void add_atom_types(Hierarchy hierarchy) const;
 
+  //! Add CHARMM charges to the given Hierarchy using this topology.
+  /** The primary sequence of the Hierarchy must match that of the topology.
+      \seealso Charged.
+   */
   void add_charges(Hierarchy hierarchy) const;
 
+  //! Add bonds to the given Hierarchy using this topology, and return them.
+  /** The primary sequence of the Hierarchy must match that of the topology.
+      Parameters for the bonds (ideal bond length, force constant) are
+      extracted from the CHARMM parameter file, using the types of each atom
+      (add_atom_types() must be called first, or the particles otherwise
+      manually typed using CHARMMAtom::set_charmm_type()).
+
+      If no parameters are defined for a given bond, the bond is created
+      with zero stiffness, such that the bond can still be excluded from
+      nonbonded interactions but BondSingletonScore will not score it.
+
+      Note that typically CHARMM defines bonds and impropers
+      (see add_impropers()) but angles and dihedrals are auto-generated from
+      the existing bond graph (see CHARMMParameters::generate_angles() and
+      CHARMMParameters::generate_dihedrals()).
+
+      \return a list of the generated Bond decorators.
+   */
   Particles add_bonds(Hierarchy hierarchy, const CHARMMParameters *ff) const;
 
+  //! Add impropers to the given Hierarchy using this topology, and return them.
+  /** The primary sequence of the Hierarchy must match that of the topology.
+      \see add_bonds().
+   */
   Particles add_impropers(Hierarchy hierarchy,
                           const CHARMMParameters *ff) const;
 };
