@@ -172,6 +172,9 @@ ConfigurationSet *MCCGSampler::do_sample() const {
                            << "Expected " << oe << " got " << ne
                            << std::endl);
       }
+    } else {
+      IMP_LOG(TERSE, "Rejected configuration with score "
+              << get_model()->evaluate(false) << std::endl);
     }
   }
   if (failures != 0) {
