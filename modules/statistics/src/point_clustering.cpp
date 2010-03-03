@@ -113,12 +113,21 @@ void HighDensityEmbedding::do_show(std::ostream &out) const {
 
 
 unsigned int KMeansClustering::get_number_of_clusters() const {
+  IMP_CHECK_OBJECT(this);
   return clusters_.size();
 }
 const Ints&KMeansClustering::get_cluster(unsigned int i) const {
+  IMP_CHECK_OBJECT(this);
+  IMP_USAGE_CHECK(i < get_number_of_clusters(),
+                      "There are only " << get_number_of_clusters()
+                      << " clusters. Not " << i);
   return clusters_[i];
 }
 int KMeansClustering::get_cluster_representative(unsigned int i) const {
+  IMP_CHECK_OBJECT(this);
+  IMP_USAGE_CHECK(i < get_number_of_clusters(),
+                      "There are only " << get_number_of_clusters()
+                      << " clusters. Not " << i);
   return reps_[i];
 }
 void KMeansClustering::do_show(std::ostream &out) const {
@@ -199,6 +208,7 @@ KMeansClustering* get_lloyds_kmeans(const Ints &names, Embedding *metric,
   }
 
   KMeansClustering *cl= new KMeansClustering(clusters, centers, reps);
+  cl->set_was_used(true);
   return cl;
 }
 
