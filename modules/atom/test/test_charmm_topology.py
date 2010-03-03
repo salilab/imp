@@ -80,6 +80,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         bond = IMP.atom.CHARMMBond2(IMP.Strings(['CA', 'CB']))
         self.assertEqual(bond.contains_atom('CA'), True)
         self.assertEqual(bond.contains_atom('N'), False)
+        self.assertEqual(bond.get_endpoint(0).get_atom_name(), 'CA')
 
     def test_add_bond(self):
         """Check addition of bonds/angles/dihedrals/impropers"""
@@ -168,8 +169,8 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         res.set_patched(True)
         self.assertEqual(res.get_patched(), True)
 
-    def test_patching(self):
-        """Test application of patches"""
+    def test_single_patching(self):
+        """Test application of single-residue patches"""
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"))
         patch = ff.get_patch('CTER')
         res = IMP.atom.CHARMMResidueTopology(ff.get_residue_topology('ALA'))
@@ -195,6 +196,40 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         patch.apply(res)
         self.assertRaises(IMP.ValueException, res.get_atom, 'CB')
 
+    def test_double_patching(self):
+        """Test application of two-residue patches"""
+        ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"))
+        patch = ff.get_patch('DISU')
+        res1 = IMP.atom.CHARMMResidueTopology(ff.get_residue_topology('CYS'))
+        res2 = IMP.atom.CHARMMResidueTopology(ff.get_residue_topology('CYS'))
+        self.assertEqual(res1.get_atom('HG').get_charmm_type(), 'HS')
+        self.assertEqual(res1.get_number_of_bonds(), 11)
+        self.assertEqual(res1.get_number_of_impropers(), 3)
+        self.assertEqual(res2.get_number_of_bonds(), 11)
+        self.assertEqual(res2.get_number_of_impropers(), 3)
+        # Single-residue patches cannot be applied to two residues
+        badpatch = ff.get_patch('CTER')
+        self.assertRaises(IMP.ValueException, badpatch.apply, res1, res2)
+        patch.apply(res1, res2)
+        # Patch should change atom type of existing atoms
+        self.assertEqual(res1.get_atom('SG').get_charmm_type(), 'SM')
+        self.assertEqual(res2.get_atom('SG').get_charmm_type(), 'SM')
+        # Should prevent further patching
+        self.assertEqual(res1.get_patched(), True)
+        self.assertEqual(res2.get_patched(), True)
+        # Patches should delete atoms
+        self.assertRaises(IMP.ValueException, res1.get_atom, 'HG')
+        self.assertRaises(IMP.ValueException, res2.get_atom, 'HG')
+        # Should add/delete bonds/dihedrals
+        self.assertEqual(res1.get_number_of_bonds(), 11)
+        self.assertEqual(res1.get_number_of_impropers(), 3)
+        self.assertEqual(res2.get_number_of_bonds(), 10)
+        self.assertEqual(res2.get_number_of_impropers(), 3)
+        # Should have added an SG-SG bond
+        bond = res1.get_bond(10)
+        self.assertEqual(bond.get_endpoint(0).get_atom_name(), 'SG')
+        self.assertEqual(bond.get_endpoint(1).get_atom_name(), 'SG')
+
     def test_manual_make_topology(self):
         """Test manual construction of topology"""
         model = IMP.atom.CHARMMTopology()
@@ -210,6 +245,28 @@ class CHARMMTopologyTests(IMP.test.TestCase):
 
         self.assertEqual(model.get_number_of_segments(), 1)
         self.assertEqual(segment.get_number_of_residues(), 1)
+
+    def test_make_patched_topology(self):
+        """Test construction of topology with manual patching"""
+        m = IMP.Model()
+        pdb = IMP.atom.read_pdb(self.get_input_file_name('mini.pdb'), m)
+        ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
+                                       IMP.atom.get_data_path("par.lib"))
+        topology = ff.create_topology(pdb)
+        segment = topology.get_segment(0)
+        patch = ff.get_patch('LINK')
+        patch.apply(segment.get_residue(segment.get_number_of_residues() - 1),
+                    segment.get_residue(0))
+        topology.add_atom_types(pdb)
+        bonds = topology.add_bonds(pdb, ff)
+        residues = IMP.atom.get_by_type(pdb, IMP.atom.RESIDUE_TYPE)
+        # LINK residue should have constructed a backbone bond between the
+        # first and last residues
+        r1 = residues[-1].get_as_residue()
+        r2 = residues[0].get_as_residue()
+        a1 = IMP.atom.get_atom(r1, IMP.atom.AT_C)
+        a2 = IMP.atom.get_atom(r2, IMP.atom.AT_N)
+        self.assertAtomsBonded(a1, a2, 'C', 'NH1', 1.3450, 27.203)
 
     def test_make_topology(self):
         """Test construction of topology"""
