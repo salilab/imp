@@ -25,15 +25,6 @@ ConfigurationSet::ConfigurationSet(Model *m,
     PP pp(*it);
     base_[pp]= internal::ParticleData(*it);
   }
-  IMP_IF_LOG(TERSE) {
-    IMP_LOG(TERSE, "Base configuration is:\n");
-    for (Model::ParticleIterator it= model_->particles_begin();
-       it != model_->particles_end(); ++it) {
-      IMP_LOG(TERSE, (*it)->get_name() << ":\n");
-      PP pp(*it);
-      IMP_LOG_WRITE(TERSE, base_[pp].show(IMP_STREAM));
-    }
-  }
 }
 
 
