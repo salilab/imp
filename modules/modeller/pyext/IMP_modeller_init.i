@@ -655,8 +655,8 @@ class ModelLoader(object):
            and load_dihedrals(), so will create duplicate lists of bonds if
            those methods are called manually as well.)
 
-           @note Currently only soft-sphere and Lennard-Jones restraints
-                 are loaded.
+           @note Currently only soft-sphere, electrostatic and Lennard-Jones
+                 restraints are loaded.
            @return A Python list of the newly-created IMP::Restraint
                    objects.
         """
@@ -679,17 +679,27 @@ class ModelLoader(object):
             ps = IMP.core.SphereDistancePairScore(
                               IMP.core.HarmonicLowerBound(0, k))
             restraints.append(IMP.container.PairsRestraint(ps, nbl))
-        elif edat.dynamic_lennard:
+
+        if edat.dynamic_lennard or edat.dynamic_coulomb:
             # 3.0 is roughly the max. atom diameter
             d = max(edat.contact_shell - 3.0, 0.0)
             nbl = self._get_nonbonded_list(atoms, pair_filter, edat, d)
             ff = _get_forcefield(libs.topology.submodel)
             ff.add_radii(self._modeller_hierarchy)
-            ff.add_well_depths(self._modeller_hierarchy)
-            sf = IMP.atom.ForceSwitch(edat.lennard_jones_switch[0],
-                                      edat.lennard_jones_switch[1])
-            ps = IMP.atom.LennardJonesPairScore(sf)
-            restraints.append(IMP.container.PairsRestraint(ps, nbl))
+
+            if edat.dynamic_lennard:
+                ff.add_well_depths(self._modeller_hierarchy)
+                sf = IMP.atom.ForceSwitch(edat.lennard_jones_switch[0],
+                                          edat.lennard_jones_switch[1])
+                ps = IMP.atom.LennardJonesPairScore(sf)
+                restraints.append(IMP.container.PairsRestraint(ps, nbl))
+
+            if edat.dynamic_coulomb:
+                sf = IMP.atom.ForceSwitch(edat.coulomb_switch[0],
+                                          edat.coulomb_switch[1])
+                ps = IMP.atom.CoulombPairScore(sf)
+                ps.set_relative_dielectric(edat.relative_dielectric)
+                restraints.append(IMP.container.PairsRestraint(ps, nbl))
 
         return restraints
 
