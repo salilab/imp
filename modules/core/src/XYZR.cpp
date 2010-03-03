@@ -32,7 +32,7 @@ algebra::SphereD<3> get_enclosing_sphere(const XYZsTemp &v, FloatKey rk) {
   }
   algebra::SphereD<3> s= algebra::get_enclosing_sphere(ss);
   return s;
-}x
+}
 
 void set_enclosing_sphere(XYZR out,
                           const XYZsTemp &v,
