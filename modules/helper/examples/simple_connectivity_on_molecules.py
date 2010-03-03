@@ -24,6 +24,7 @@ sc.set_mean(10.0)
 sc.set_stddev(3.5)
 sc.set_k(0.1)
 
+m.add_restraint(r)
 r.show()
 
 m.evaluate(False)
