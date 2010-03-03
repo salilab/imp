@@ -54,8 +54,8 @@ class IMPATOMEXPORT LennardJonesPairScore : public PairScore
     double rmin6 = rmin * rmin * rmin * rmin * rmin * rmin;
     double rmin12 = rmin6 * rmin6;
 
-    A = -well_depth * rmin12 * repulsive_weight_;
-    B = -2.0 * well_depth * rmin6 * attractive_weight_;
+    A = well_depth * rmin12 * repulsive_weight_;
+    B = 2.0 * well_depth * rmin6 * attractive_weight_;
   }
 
 public:
