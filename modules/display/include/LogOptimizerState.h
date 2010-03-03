@@ -24,7 +24,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
 /** The State writes a series of files generated from a
     printf-style format string. The added geometry objects
     are stored by reference internally.
-    \verbinclude log.py
+    \verbinclude display_log.py
     \ingroup logging
  */
 class IMPDISPLAYEXPORT LogOptimizerState: public OptimizerState
