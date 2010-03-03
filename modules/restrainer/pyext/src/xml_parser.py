@@ -304,7 +304,9 @@ class XMLDisplay(object):
         self.depth = 0
 
     def run(self):
-        """Return display object such that each node in the display
+        """Return
+           <a href="classIMP_1_1restrainer_1_1display_1_1Display.html">
+           Display</a> object such that each node in the display
            corresponds to the node in the XML nodes"""
         display_dom = self.dom.getElementsByTagName('Display')[0]
         result = Display()
