@@ -35,7 +35,7 @@ class TestREFCover(IMP.test.TestCase):
             d.set_coordinates(IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d()))
             d.set_radius(0)
         #c= IMP.core.CentroidOfRefined(r)
-        b= IMP.atom.custom_bond(IMP.atom.Bonded.setup_particle(ps[0]),
+        b= IMP.atom.create_custom_bond(IMP.atom.Bonded.setup_particle(ps[0]),
                                 IMP.atom.Bonded.setup_particle(ps[1]),
                                 5, 1)
         IMP.core.XYZR.setup_particle(b.get_particle())

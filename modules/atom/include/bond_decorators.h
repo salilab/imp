@@ -235,7 +235,7 @@ inline Bonded Bonded::GetBonded::operator()(unsigned int i)
     \relatesalso Bonded
  */
 IMPATOMEXPORT
-Bond bond(Bonded a, Bonded b, Int t);
+Bond create_bond(Bonded a, Bonded b, Int t);
 
 
 //! Connect the two wrapped particles by a custom bond.
@@ -250,10 +250,10 @@ Bond bond(Bonded a, Bonded b, Int t);
     \relatesalso Bonded
  */
 IMPATOMEXPORT
-inline Bond custom_bond(Bonded a, Bonded b,
+inline Bond create_custom_bond(Bonded a, Bonded b,
                           Float length, Float stiffness=-1) {
   IMP_INTERNAL_CHECK(length>=0, "Length must be positive");
-  Bond bd=bond(a,b, Bond::NONBIOLOGICAL);
+  Bond bd=create_bond(a,b, Bond::NONBIOLOGICAL);
   bd.set_length(length);
   bd.get_particle()->set_name(std::string("bond ")+
                               a.get_particle()->get_name()
@@ -273,7 +273,7 @@ inline Bond custom_bond(Bonded a, Bonded b,
 IMPATOMEXPORT
 inline Bond copy_bond(Bonded a, Bonded b,
                                  Bond o) {
-  Bond bd=bond(a,b, o.get_type());
+  Bond bd=create_bond(a,b, o.get_type());
   if (o.get_length() > 0) bd.set_length(o.get_length());
   bd.get_particle()->set_name(std::string("bond ")+
                               a.get_particle()->get_name()
@@ -289,7 +289,7 @@ inline Bond copy_bond(Bonded a, Bonded b,
     \relatesalso Bonded
  */
 IMPATOMEXPORT
-void unbond(Bond b);
+void destroy_bond(Bond b);
 
 //! Get the bond between two particles.
 /** Bond() is returned if the particles are not bonded.

@@ -14,10 +14,10 @@
 #include <string>
 
 IMPBENCHMARK_BEGIN_NAMESPACE
-
+#ifndef IMP_DOXYGEN
 //! Cartesian coordinate keys which shouldn't be inlined.
 IMPBENCHMARKEXPORT extern FloatKey hidden_keys[];
-
+#endif
 IMPBENCHMARK_END_NAMESPACE
 
 #endif  /* IMPBENCHMARK_HIDDEN_KEYS_H */

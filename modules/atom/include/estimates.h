@@ -22,7 +22,7 @@ IMPATOM_BEGIN_NAMESPACE
 //! Estimate the volume of a protein from its mass
 /** We use the estimate published in Alber et. al, Structure 2005.
 */
-IMPATOMEXPORT double volume_from_mass(double v);
+IMPATOMEXPORT double get_volume_from_mass(double v);
 
 
 //! Estimate the mass of a protein from the number of amino acids
@@ -30,7 +30,7 @@ IMPATOMEXPORT double volume_from_mass(double v);
 
     The mass is in Daltons.
  */
-IMPATOMEXPORT double mass_from_number_of_residues(unsigned int num_aa);
+IMPATOMEXPORT double get_mass_from_number_of_residues(unsigned int num_aa);
 
 //!@}
 

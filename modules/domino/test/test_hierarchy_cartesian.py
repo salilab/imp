@@ -21,7 +21,7 @@ class DOMINOTests(IMP.test.TestCase):
                 self.get_input_file_name('prot'+s+'.pdb'), self.imp_model)
             self.h_particles.append(mp)
             rb_p = IMP.Particle(self.imp_model)
-            IMP.atom.rigid_body_setup_hierarchy(mp)
+            IMP.atom.setup_as_rigid_body(mp)
             mp.get_particle().add_attribute(IMP.domino.node_name_key(),"prot"+s)
             self.particles.append(mp.get_particle())
 

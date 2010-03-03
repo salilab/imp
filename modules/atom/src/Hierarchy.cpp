@@ -296,7 +296,7 @@ Bonds get_internal_bonds(Hierarchy mhd)
 
 
 
-core::RigidBody rigid_body_setup_hierarchy(Hierarchy h) {
+core::RigidBody setup_as_rigid_body(Hierarchy h) {
   core::XYZs leaves(get_leaves(h));
   core::RigidBody rbd
     = core::RigidBody::setup_particle(h, leaves);
@@ -407,7 +407,7 @@ void destroy(Hierarchy d) {
     if (Bonded::particle_is_instance(all[i])) {
      Bonded b(all[i]);
       while (b.get_number_of_bonds() > 0) {
-        unbond(b.get_bond(b.get_number_of_bonds()-1));
+        destroy_bond(b.get_bond(b.get_number_of_bonds()-1));
       }
     }
     while (all[i].get_number_of_children() > 0) {

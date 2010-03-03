@@ -413,7 +413,7 @@ inline void show(Hierarchy h, std::ostream &out=std::cout) {
     \relatesalso Hierarchy
     \relatesalso IMP::core::RigidBody
 */
-IMPATOMEXPORT IMP::core::RigidBody rigid_body_setup_hierarchy(Hierarchy h);
+IMPATOMEXPORT IMP::core::RigidBody setup_as_rigid_body(Hierarchy h);
 
 //! Return true if the piece of hierarchy should be classified as a heterogen
 /** For the purposes of classification, a heterogen is anything that

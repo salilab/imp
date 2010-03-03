@@ -17,7 +17,7 @@ class DistanceTests(IMP.test.TestCase):
         d1= IMP.core.XYZ.setup_particle(p1)
         b0= IMP.atom.Bonded.setup_particle(p0)
         b1= IMP.atom.Bonded.setup_particle(p1)
-        b= IMP.atom.custom_bond(b0, b1, 3,2)
+        b= IMP.atom.create_custom_bond(b0, b1, 3,2)
         ss= IMP.atom.BondSingletonScore(IMP.core.Linear(0,1))
 
         d0.set_coordinates(IMP.algebra.Vector3D(0,0,0))
@@ -41,7 +41,7 @@ class DistanceTests(IMP.test.TestCase):
         d1= IMP.core.XYZ.setup_particle(p1)
         b0= IMP.atom.Bonded.setup_particle(p0)
         b1= IMP.atom.Bonded.setup_particle(p1)
-        b= IMP.atom.custom_bond(b0, b1, 1.0, 20.0)
+        b= IMP.atom.create_custom_bond(b0, b1, 1.0, 20.0)
         ss= IMP.atom.BondSingletonScore(IMP.core.Harmonic(0,1))
         r = IMP.core.SingletonRestraint(ss, b.get_particle())
         m.add_restraint(r)

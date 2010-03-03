@@ -18,7 +18,7 @@ class TunnelTest(IMP.test.TestCase):
             p= IMP.Particle(m)
             bp= IMP.atom.Bonded.setup_particle(p)
             if lbp is not None:
-                bonds.append(IMP.atom.custom_bond(lbp, bp, 1,1))
+                bonds.append(IMP.atom.create_custom_bond(lbp, bp, 1,1))
             lbp= bp
             ps.append(p)
         cepc= IMP.misc.CommonEndpointPairFilter()

@@ -191,7 +191,7 @@ core::RigidBodies set_rigid_bodies(atom::Hierarchies const &mhs)
   for ( size_t i=0; i<mhs_size; ++i )
   {
     // The rigid body is set to be optimized
-    IMP::atom::rigid_body_setup_hierarchy(mhs[i]);
+    IMP::atom::setup_as_rigid_body(mhs[i]);
     rbps.push_back(mhs[i].get_particle());
   }
   return (core::RigidBodies(rbps));
