@@ -513,8 +513,8 @@ class ModelLoader(object):
                 bb= IMP.atom.Bonded(pb)
             else:
                 bb= IMP.atom.Bonded.setup_particle(pb)
-            ps.append(IMP.atom.bond(ba, bb,
-                                    IMP.atom.Bond.SINGLE).get_particle())
+            ps.append(IMP.atom.create_bond(ba, bb,
+                                           IMP.atom.Bond.SINGLE).get_particle())
         return ps
 
     def load_angles(self):
