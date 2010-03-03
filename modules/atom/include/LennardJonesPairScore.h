@@ -19,7 +19,7 @@ IMPATOM_BEGIN_NAMESPACE
 //! Lennard-Jones score between a pair of particles.
 /** The two particles in the pair must be LennardJones particles.
     The form of the potential is \f[
-       \epsilon \left[ w_{rep} \left(\frac{r_{min}}{r}\right)^{12}
+       -\epsilon \left[ w_{rep} \left(\frac{r_{min}}{r}\right)^{12}
                        - 2 w_{att} \left(\frac{r_{min}}{r}\right)^{6}\right]
     \f] where \f$\epsilon\f$ is the depth of the well between the
     two particles, \f$r_{min}\f$ the sum of the particles' radii, \f$r\f$
@@ -54,8 +54,8 @@ class IMPATOMEXPORT LennardJonesPairScore : public PairScore
     double rmin6 = rmin * rmin * rmin * rmin * rmin * rmin;
     double rmin12 = rmin6 * rmin6;
 
-    A = well_depth * rmin12 * repulsive_weight_;
-    B = 2.0 * well_depth * rmin6 * attractive_weight_;
+    A = -well_depth * rmin12 * repulsive_weight_;
+    B = -2.0 * well_depth * rmin6 * attractive_weight_;
   }
 
 public:

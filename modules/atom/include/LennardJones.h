@@ -17,6 +17,8 @@ IMPATOM_BEGIN_NAMESPACE
 //! A decorator for a particle that has a Lennard-Jones potential well.
 /** Such particles must be XYZR particles (they must have a position and
     a radius) but need not be true atoms.
+
+    The well depth should be a non-negative value.
     \ingroup helper
     \ingroup decorators
     \see LennardJonesPairScore
@@ -36,7 +38,14 @@ public:
     return LennardJones(p);
   }
 
-  IMP_DECORATOR_GET_SET(well_depth, get_well_depth_key(), Float, Float);
+  Float get_well_depth() const {
+    return static_cast<Float>(get_particle()->get_value(get_well_depth_key()));
+  }
+
+  void set_well_depth(Float well_depth) {
+    IMP_USAGE_CHECK(well_depth >= 0, "well depth cannot be negative");
+    get_particle()->set_value(get_well_depth_key(), well_depth);
+  }
 
   //! Return true if the particle is an instance of a LennardJones
   static bool particle_is_instance(Particle *p) {
