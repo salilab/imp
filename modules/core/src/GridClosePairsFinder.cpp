@@ -149,6 +149,7 @@ ParticlePairsTemp GridClosePairsFinder
                   SingletonContainer *cb) const {
   IMP_NEW(QuadraticClosePairsFinder, qp, ());
   qp->set_distance(get_distance());
+  qp->set_was_used(true);
   return qp->get_close_pairs(ca, cb);
 }
 
