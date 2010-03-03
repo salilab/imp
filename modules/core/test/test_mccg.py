@@ -57,7 +57,7 @@ class CGOptimizerTests(IMP.test.TestCase):
         IMP.set_log_level(IMP.TERSE)
         s.set_number_of_attempts(2)
         print "sampling"
-        cs=s.sample()
+        cs=s.get_sample()
         print "found ", cs.get_number_of_configurations(), cs.get_name()
         for i in range(0, cs.get_number_of_configurations()):
             cs.set_configuration(i)

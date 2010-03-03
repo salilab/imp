@@ -43,6 +43,8 @@ public:
     SingletonContainer.
 
     See ConfigurationSet for more information about the input.
+
+    \htmlinclude basic_optimization.py.html
 */
 class IMPSTATISTICSEXPORT ConfigurationSetXYZEmbedding: public Embedding {
   mutable Pointer<ConfigurationSet> cs_;

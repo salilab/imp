@@ -6,7 +6,7 @@ env.IMPModuleDoc(files=env.IMPModuleGetDocs(),
                  overview="""All kernel and module classes and functions should be in this namespace or
 a sub-namespace.
 
-The kernel also provides \\ref logging "Logging" and \\ref assert "Error Reporting"
+The kernel also provides \\ref log "logging" and \\ref assert "Error Reporting"
 support as well as \\ref object_helpers "macros to help implement objects".""",
                  publications=env.StandardPublications(),
                  license=env.StandardLicense(),

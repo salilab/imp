@@ -47,7 +47,7 @@ d0= IMP.core.XYZ.setup_particle(p, IMP.algebra.Vector3D(0,2,3))
 \endcode
 The method calls also decorates the particle and returns the decorator
 which can now be used to manipulate the particle. For example we can
-access the coordinates \c(0,2,3) by doing
+access the coordinates \c (0,2,3) by doing
 \code
 print d0.get_coordinates()
 \endcode

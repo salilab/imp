@@ -1,5 +1,0 @@
-nbl= IMP.core.ClosePairsContainer(ps, min_distance,2)
-h= IMP.core.HarmonicLowerBound(0,min_distance)
-sd= IMP.core.SphereDistancePairScore(h)
-nbr= IMP.core.PairsRestraint(sd, nbl)
-m.add_restraint(nbr)

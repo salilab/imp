@@ -108,7 +108,7 @@ all return values should be checked by such code.
 The second is logging macros such as:
 
 - IMP_LOG() which allows controlled display of messages about what the
-  code is doing. See \ref logging "IMP logging" for more information.
+  code is doing. See \ref log "logging" for more information.
 
 Finally, each module has a set of unit tests. These are python scripts
 which test the behavior of a particular piece of the modules API. The
