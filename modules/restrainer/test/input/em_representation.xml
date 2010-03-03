@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Representation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="IMP_Schema.xsd">
+<Representation>
     <Protein id="Protein1">
         <Chain>
         <Fragment id="frag1">

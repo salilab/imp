@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Display xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="IMP_Schema.xsd">
+<Display>
     <Protein id="Protein1">
         <Chain id="Chain1"><Color r="1" g="1" b="1"/>
             <Fragment id="Frag1"><Color r="0" g="1" b="1"/></Fragment>

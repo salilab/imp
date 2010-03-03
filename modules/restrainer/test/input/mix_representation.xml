@@ -1,4 +1,4 @@
-<Representation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="IMP_Schema.xsd">
+<Representation>
     <Protein id="Protein1">
         <Chain id="Chain1a" filename="data/simple_input.pdb" selector="CAlpha"/>
         <Chain id="Chain1b">
