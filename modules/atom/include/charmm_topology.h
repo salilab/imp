@@ -31,6 +31,10 @@ class CHARMMAtomTopology {
 public:
   CHARMMAtomTopology(std::string name) : name_(name) {};
 
+  CHARMMAtomTopology(std::string name, const CHARMMAtomTopology &other)
+                   : name_(name), charmm_type_(other.charmm_type_),
+                     charge_(other.charge_) {};
+
   std::string get_name() const { return name_; }
   std::string get_charmm_type() const { return charmm_type_; }
   double get_charge() const { return charge_; }
@@ -60,8 +64,9 @@ class CHARMMBondEndpoint {
   std::string atom_name_;
   CHARMMResidueTopology *residue_;
 public:
-  CHARMMBondEndpoint(std::string atom_name) : atom_name_(atom_name),
-                                              residue_(NULL) {}
+  CHARMMBondEndpoint(std::string atom_name,
+                     CHARMMResidueTopology *residue=NULL)
+                    : atom_name_(atom_name), residue_(residue) {}
 
   std::string get_atom_name() const { return atom_name_; }
 
@@ -110,6 +115,16 @@ public:
       endpoints_.push_back(CHARMMBondEndpoint(*it));
     }
   }
+
+  CHARMMBond(std::vector<CHARMMBondEndpoint> endpoints)
+     : endpoints_(endpoints) {
+    IMP_INTERNAL_CHECK(endpoints.size() == D, "wrong number of bond endpoints");
+  }
+
+  const CHARMMBondEndpoint & get_endpoint(unsigned int i) const {
+    return endpoints_[i];
+  }
+
   bool contains_atom(std::string name) const {
     for (std::vector<CHARMMBondEndpoint>::const_iterator
          it = endpoints_.begin(); it != endpoints_.end(); ++it) {
@@ -248,8 +263,8 @@ public:
   void add_deleted_atom(std::string name) { deleted_atoms_.push_back(name); }
 
   void apply(CHARMMResidueTopology &res) const;
-  // Todo: handle two-residue patches (DISU, LINK)
-  // void apply(CHARMMResidueTopology &res1, CHARMMResidueTopology &res2);
+
+  void apply(CHARMMResidueTopology &res1, CHARMMResidueTopology &res2) const;
 };
 
 //! The topology of a single residue in a model
