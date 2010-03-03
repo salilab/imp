@@ -4,7 +4,7 @@ files = [
          'top.lib',
          'top_heav.lib',
          'par.lib',
-         'par_heav.lib',
+         'radii.lib',
          'protein_ligand_score.lib'
         ]
 

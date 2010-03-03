@@ -442,6 +442,37 @@ def _copy_chain(c, model):
     cp = IMP.atom.Chain.setup_particle(p,c.name)
     return p
 
+def _get_forcefield(submodel):
+    if submodel == 3:
+        ff = IMP.atom.CHARMMParameters(
+                 IMP.atom.get_data_path('top_heav.lib'),
+                 IMP.atom.get_data_path('par.lib'))
+    else:
+        ff = IMP.atom.CHARMMParameters(
+                 IMP.atom.get_data_path('top.lib'),
+                 IMP.atom.get_data_path('par.lib'))
+    return ff
+
+def add_soft_sphere_radii(hierarchy, submodel, scale=1.0, filename=None):
+    """Add radii to the hierarchy using the Modeller radius library, radii.lib.
+       Each radius is scaled by the given scale (Modeller usually scales radii
+       by a factor of 0.82). submodel specifies the topology submodel, which is
+       the column in radii.lib to use."""
+    if filename is None:
+        filename = IMP.atom.get_data_path('radii.lib')
+    radii = {}
+    for line in open(filename):
+        if line.startswith('#'): continue
+        spl = line.split()
+        if len(spl) > 11:
+            radii[spl[0]] = float(spl[submodel])
+    atoms = IMP.atom.get_by_type(hierarchy, IMP.atom.ATOM_TYPE)
+    for a in atoms:
+        p = a.get_particle()
+        ct = IMP.atom.CHARMMAtom(p).get_charmm_type()
+        if ct in radii:
+            IMP.core.XYZR.setup_particle(p, radii[ct] * scale)
+
 
 class ModelLoader(object):
     """Read a Modeller model into IMP. After creating this object, the atoms
@@ -453,6 +484,22 @@ class ModelLoader(object):
 
     def __init__(self, modeller_model):
         self._modeller_model = modeller_model
+
+    def _get_nonbonded_list(self, atoms, pair_filter, edat, distance):
+        nbl = IMP.container.ClosePairContainer(atoms, distance,
+                                               edat.update_dynamic)
+    
+        # Exclude the same sets of atoms as Modeller
+        if pair_filter is None:
+            pair_filter = IMP.atom.StereochemistryPairFilter()
+            if edat.excl_local[0]:
+                pair_filter.set_bonds(self.load_bonds())
+            if edat.excl_local[1]:
+                pair_filter.set_angles(self.load_angles())
+            if edat.excl_local[2]:
+                pair_filter.set_dihedrals(self.load_dihedrals())
+        nbl.add_pair_filter(pair_filter)
+        return nbl
 
     def load_atoms(self, model):
         """Construct an IMP::atom::Hierarchy that contains the same atoms as
@@ -608,7 +655,8 @@ class ModelLoader(object):
            and load_dihedrals(), so will create duplicate lists of bonds if
            those methods are called manually as well.)
 
-           @note Currently only soft-sphere restraints are loaded.
+           @note Currently only soft-sphere and Lennard-Jones restraints
+                 are loaded.
            @return A Python list of the newly-created IMP::Restraint
                    objects.
         """
@@ -619,39 +667,32 @@ class ModelLoader(object):
         libs = self._modeller_model.env.libs
         atoms = IMP.container.ListSingletonContainer(
                                   self._modeller_hierarchy.get_leaves())
-        # Note: cannot use Modeller's cutoff distance, as that is
-        # center-to-center; IMP's is sphere surface-surface
-        nbl = IMP.container.ClosePairContainer(atoms,
-                                      0., edat.update_dynamic)
-
-        # Exclude the same sets of atoms as Modeller
-        if pair_filter is None:
-            pair_filter = IMP.atom.StereochemistryPairFilter()
-            if edat.excl_local[0]:
-                pair_filter.set_bonds(self.load_bonds())
-            if edat.excl_local[1]:
-                pair_filter.set_angles(self.load_angles())
-            if edat.excl_local[2]:
-                pair_filter.set_dihedrals(self.load_dihedrals())
-        nbl.add_pair_filter(pair_filter)
-
+        
         if edat.dynamic_sphere:
-            if libs.topology.submodel == 3:
-                ff = IMP.atom.CHARMMParameters(
-                         IMP.atom.get_data_path('top_heav.lib'),
-                         IMP.atom.get_data_path('par_heav.lib'))
-            else:
-                ff = IMP.atom.CHARMMParameters(
-                         IMP.atom.get_data_path('top.lib'),
-                         IMP.atom.get_data_path('par.lib'))
+            # Note: cannot use Modeller's cutoff distance, as that is
+            # center-to-center; IMP's is sphere surface-surface
+            nbl = self._get_nonbonded_list(atoms, pair_filter, edat, 0.)
             # No way to get Modeller radii, so we have to reassign them
             # Note that soft-sphere radii are 82% of the Lennard-Jones values
             # in Modeller
-            ff.add_radii(self._modeller_hierarchy, 0.82)
+            add_soft_sphere_radii(self._modeller_hierarchy,
+                                  libs.topology.submodel, 0.82)
             k = IMP.core.Harmonic.k_from_standard_deviation(edat.sphere_stdv)
             ps = IMP.core.SphereDistancePairScore(
                               IMP.core.HarmonicLowerBound(0, k))
             restraints.append(IMP.container.PairsRestraint(ps, nbl))
+        elif edat.dynamic_lennard:
+            # 3.0 is roughly the max. atom diameter
+            d = max(edat.contact_shell - 3.0, 0.0)
+            nbl = self._get_nonbonded_list(atoms, pair_filter, edat, d)
+            ff = _get_forcefield(libs.topology.submodel)
+            ff.add_radii(self._modeller_hierarchy)
+            ff.add_well_depths(self._modeller_hierarchy)
+            sf = IMP.atom.ForceSwitch(edat.lennard_jones_switch[0],
+                                      edat.lennard_jones_switch[1])
+            ps = IMP.atom.LennardJonesPairScore(sf)
+            restraints.append(IMP.container.PairsRestraint(ps, nbl))
+
         return restraints
 
 
