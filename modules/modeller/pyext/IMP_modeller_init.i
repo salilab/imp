@@ -673,10 +673,8 @@ class ModelLoader(object):
             # center-to-center; IMP's is sphere surface-surface
             nbl = self._get_nonbonded_list(atoms, pair_filter, edat, 0.)
             # No way to get Modeller radii, so we have to reassign them
-            # Note that soft-sphere radii are 82% of the Lennard-Jones values
-            # in Modeller
             add_soft_sphere_radii(self._modeller_hierarchy,
-                                  libs.topology.submodel, 0.82)
+                                  libs.topology.submodel, edat.radii_factor)
             k = IMP.core.Harmonic.k_from_standard_deviation(edat.sphere_stdv)
             ps = IMP.core.SphereDistancePairScore(
                               IMP.core.HarmonicLowerBound(0, k))
