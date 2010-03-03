@@ -11,24 +11,28 @@ body {
 }
 
 h1 {
+   margin-top:100px;
    font-weight: bold;
    font-size: 180%;
    color:#FF7C02;
 }
 
 h2 {
+   margin-top:50px;
    font-weight: normal;
    font-size: 150%;
    color:#FF7C02;
 }
 
 h3 {
+   margin-top:30px;
    font-weight: normal;
    font-size: 105%;
    color: #FF7C02;
 }
 
 h4 {
+   margin-top:20px;
    font-weight: italic;
    font-size: 100%;
    color: #FF7C02;
