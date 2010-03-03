@@ -29,34 +29,37 @@ coordinates. The class IMP::core::XYZ decorates such a particle to
 provide functions to get and set the Cartesian coordinates as well as
 compute distances between particles.
 \code
-d0= IMP.core.XYZ(p0) d1=
-IMP.core.XYZ(p1) print IMP.core.distance(d0,d1) print
-d0.get_coordinates()
+d0= IMP.core.XYZ(p0)
+d1= IMP.core.XYZ(p1)
+print IMP.core.distance(d0,d1)
+print d0.get_coordinates()
 \endcode
 
 \par Decorator basics
 
-If you want to use a particular particle, \c p, to represent a piece
-of the model with coordinates, you first have to add the
-coordinates. To do this, we setup the particle to have the coordinates
-0,2,3 by
+Dealing with decorators and particles has two main parts
+-# setting up the particle to be used with that decorator
+-# decoratoring the particle.
 
+To set up a particle to be used with the IMP::core::XYZ decorator we do
 \code
 d0= IMP.core.XYZ.setup_particle(p, IMP.algebra.Vector3D(0,2,3))
 \endcode
-
-Setup particle returns a decorator of the type being setup so we
-can now do
+The method calls also decorates the particle and returns the decorator
+which can now be used to manipulate the particle. For example we can
+access the coordinates \c(0,2,3) by doing
 \code
 print d0.get_coordinates()
 \endcode
 We now say the particle is an XYZ particle. If that particle is
-encountered later, we can decorate it simply by doing
+encountered later when we do not have the existing decorator available,
+we can decorate it again (since it is already set up) by doing
 \code
-d0= IMP.core.XYZ(p)
+d1= IMP.core.XYZ(p)
 \endcode
 
-If you do not know if \c p is an XYZ particle, you can ask by doing
+If you do not know if \c p has been set up for the XYZ decorator, you can
+ask with
 \code
 if IMP.core.XYZ.particle_is_instance(p):
 \endcode
@@ -64,7 +67,8 @@ if IMP.core.XYZ.particle_is_instance(p):
 More abstractly, decorators can be used to
 - maintain invariants: e.g. an IMP::atom::Bond particle always connects
   two other particles, both of which are IMP::atom::Bonded particles.
-- add functionality: e.g. you can get the coordinates as an IMP::VectorD<3>
+- add functionality: e.g. you can get the coordinates as an
+  IMP::algebra::VectorD<3>
 - provide uniform names for attributes: so you don't use "x" some places
 and "X" other places
 
