@@ -82,7 +82,7 @@ env.Alias('standards', standards)
 env.AlwaysBuild(standards)
 
 SConscript('kernel/SConscript')
-SConscript('build/SConscript')
+
 SConscript('modules/SConscript')
 SConscript('applications/SConscript')
 # This must be after the other SConscipt calls so that it knows about all the generated files
@@ -92,10 +92,7 @@ SConscript('tools/SConscript')
 
 env.Alias(env.Alias('test'), [env.Alias('examples-test')])
 
-Clean('all', ['build/tmp/',
-                'build/include',
-                'build/lib',
-                'build/data'])
+Clean('all', ['build'])
 Clean('all', Glob('scons_tools/*.pyc')\
           + Glob('tools/*.pyc'))
 
