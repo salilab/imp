@@ -22,18 +22,20 @@ IMP_END_NAMESPACE
 
 IMPATOM_BEGIN_NAMESPACE
 
+//! The parameters for a CHARMM bond or angle.
 struct CHARMMBondParameters {
   double force_constant;
   double ideal;
 };
 
+//! The parameters for a CHARMM dihedral or improper.
 struct CHARMMDihedralParameters {
   double force_constant;
   int multiplicity;
   double ideal;
 };
 
-//! Charmm force field
+//! CHARMM force field
 class IMPATOMEXPORT CHARMMParameters : public ForceFieldParameters {
   std::map<std::string, CHARMMIdealResidueTopology> residue_topologies_;
   std::map<std::string, CHARMMPatch> patches_;
@@ -53,9 +55,9 @@ class IMPATOMEXPORT CHARMMParameters : public ForceFieldParameters {
 
 public:
 
-  /** construction with Charmm parameters file
-      for addition of bonds topology file is enough,
-      for the rest both files are needed
+  /** Construction with CHARMM topology (and optionally parameters) file.
+      For addition of atom types, the topology file alone is enough;
+      for adding bonds and radii, both files are needed.
    */
   CHARMMParameters(const String& topology_file_name,
                    const String& par_file_name = std::string());
