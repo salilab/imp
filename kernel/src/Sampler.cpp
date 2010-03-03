@@ -19,6 +19,22 @@ Sampler::Sampler(Model *m,
   max_score_= std::numeric_limits<double>::max();
 }
 
+ConfigurationSet *Sampler::get_sample() const {
+  unsigned int num_opt=0;
+  for (Model::ParticleConstIterator pit= model_->particles_begin();
+       pit != model_->particles_end(); ++pit) {
+    unsigned int d=std::distance((*pit)->optimized_keys_begin(),
+                  (*pit)->optimized_keys_end());
+    if (d > 0) ++num_opt;
+  }
+  IMP_LOG(TERSE, "Sampling " << num_opt << " particles."<<std::endl);
+  if (num_opt == 0) {
+    IMP_WARN("There are no particles to optimize."<<std::endl);
+    return NULL;
+  }
+  return do_sample();
+}
+
 bool Sampler::get_is_good_configuration() const {
   bool ret=true;
   if (max_score_ != std::numeric_limits<double>::max()) {

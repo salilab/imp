@@ -48,7 +48,7 @@ m.add_restraint(IMP.container.PairsRestraint(
 
 s= IMP.core.MCCGSampler(m) # sample using MC and CG
 s.set_number_of_attempts(10)
-confs= s.sample()
+confs= s.get_sample()
 for i in range(0, confs.get_number_of_configurations()):
     confs.set_configuration(i)
     d=IMP.display.ChimeraWriter("solution"+str(i)+".py")

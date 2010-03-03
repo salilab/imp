@@ -903,13 +903,14 @@ public:
 
 //! Define the basic things you need for a Sampler.
 /** In addition to the methods done by IMP_OBJECT, it declares
-    - IMP::Sampler::sample()
+    - IMP::Sampler::do_sample()
 
     \relatesalso IMP::Sampler
 */
 #define IMP_SAMPLER(Name)                       \
-  virtual ConfigurationSet* sample() const;     \
-  IMP_OBJECT(Name);
+  IMP_OBJECT(Name);                             \
+protected:                                      \
+ ConfigurationSet* do_sample() const;
 
 
 

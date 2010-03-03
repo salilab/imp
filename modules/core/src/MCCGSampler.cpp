@@ -127,7 +127,7 @@ MCCGSampler::Parameters MCCGSampler::fill_in_parameters() const {
   return pms;
 }
 
-ConfigurationSet *MCCGSampler::sample() const {
+ConfigurationSet *MCCGSampler::do_sample() const {
   IMP_OBJECT_LOG;
   set_was_used(true);
   get_model()->set_is_incremental(true);
@@ -140,25 +140,17 @@ ConfigurationSet *MCCGSampler::sample() const {
   mc->set_score_threshold(get_maximum_score()/2.0);
   mc->set_return_best(true);
   Pointer<internal::CoreListSingletonContainer> sc=set_up_movers(pms, mc);
+  if (sc->get_number_of_particles()==0) {
+    IMP_WARN("There are no particles with optimized cartesian coordinates."
+             << std::endl);
+    return NULL;
+  }
   IMP_CHECK_OBJECT(sc);
   int failures=0;
   for (unsigned int i=0; i< pms.attempts_; ++i) {
     ret->set_configuration(-1);
-    IMP_IF_LOG(TERSE) {
-      IMP_LOG(TERSE, "Restored configuration to:\n");
-      for (Model::ParticleIterator it= get_model()->particles_begin();
-           it != get_model()->particles_end(); ++it) {
-        IMP_LOG_WRITE(TERSE, (*it)->show(IMP_STREAM));
-      }
-    }
     randomize(pms,sc);
-    IMP_IF_LOG(TERSE) {
-      IMP_LOG(TERSE, "Randomized configuration to:\n");
-      for (Model::ParticleIterator it= get_model()->particles_begin();
-           it != get_model()->particles_end(); ++it) {
-        IMP_LOG_WRITE(TERSE, (*it)->show(IMP_STREAM));
-      }
-    }
+    IMP_LOG(TERSE, "Randomized configuration" << std::endl);
     try {
       mc->optimize(pms.mc_steps_);
     } catch (ModelException) {
@@ -167,15 +159,8 @@ ConfigurationSet *MCCGSampler::sample() const {
       continue;
     }
     if (get_is_good_configuration()) {
-      IMP_IF_LOG(TERSE) {
-        IMP_LOG(TERSE, "Found configuration:\n");
-        for (Model::ParticleIterator it= get_model()->particles_begin();
-             it != get_model()->particles_end(); ++it) {
-          IMP_LOG_WRITE(TERSE, (*it)->show(IMP_STREAM));
-        }
-        IMP_LOG(TERSE, "Energy is " << get_model()->evaluate(false)
-                << std::endl);
-      }
+      IMP_LOG(TERSE, "Found configuration with score "
+              << get_model()->evaluate(false) << std::endl);
       ret->save_configuration();
       IMP_IF_CHECK(USAGE_AND_INTERNAL) {
         double oe= get_model()->evaluate(false);
