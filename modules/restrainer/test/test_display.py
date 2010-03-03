@@ -1,10 +1,7 @@
-import sys
-import os
 import unittest
 import IMP
 import IMP.test
 import IMP.restrainer
-import IMP.atom
 import IMP.display
 
 class RestraintTest(IMP.test.TestCase):
