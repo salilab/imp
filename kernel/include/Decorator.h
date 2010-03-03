@@ -76,7 +76,7 @@ To see a list of all available decorators and to see what functions
 all decorators have, look the list of classes which inherit from
 IMP::Decorator, below.
 
-See the IMP::example::ExampleDecorator example for how to implement a
+See the IMP::example::ExampleDecorator %example for how to implement a
 simple decorator.
 
 \note Decorator objects are ordered based on the address of the wrapped
@@ -99,8 +99,8 @@ instead. This should only
 be done when it is known to be safe. If you can't figure out
 that it is, don't do it.
 
-A Decorator can be cast to a IMP::Particle* (in C++, you have to
-use the Decorator::get_particle() function in Python).
+A Decorator can be cast to a IMP::Particle* in C++. You have to
+use the Decorator::get_particle() function in Python.
 */
 class Decorator
 {
