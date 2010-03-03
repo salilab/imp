@@ -251,7 +251,7 @@ conformations. Our basic sampler is the IMP::core::MCCGSampler which uses
 a combination of Monte Carlo and conjugate gradients to find conformations.
 It then returns an object which allows one to load the saved conformations
 for analysis.
-\htmlinclude basic_optimization.py
+\htmlinclude basic_optimization.py.html
 
 \subsection i11 Writing a simple restraint
 See IMP::example::ExampleRestraint.
@@ -340,8 +340,8 @@ generate the connection between the two languages. Key differences are
     \subsection physical Measurements
     Unless these is a good reason, the following units are be used
     - angstrom for all distances
-    - kcal/mol angstrom for forces/derivatives
-    - kcal/mol for energies
+    - \f$ \frac{\operatorname{kcal}}{\operatorname{mol} \AA}\f$ for forces/derivatives
+    - \f$\frac{\operatorname{kcal}}{\operatorname{mol}}\f$ for energies
     - radians for angles. All angles are counterclockwise.
     - all charges are in units of the elementary charge
 

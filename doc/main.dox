@@ -1,9 +1,9 @@
 /**
   \mainpage IMP Documentation
 
- -# \ref installation "Getting started"
- -# \ref introduction "Introduction"
- -# \ref devguide "Developers' guide"
+ - \ref installation "Getting started"
+ - \ref introduction "Introduction"
+ - \ref devguide "Developers' guide"
  - \salilab{imp/bugs,Bug Tracker}
  - \ref recent "Change history"
  - \salilab{internal/imp/tests.html,Daily build status}
