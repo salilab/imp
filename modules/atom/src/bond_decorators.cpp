@@ -64,7 +64,7 @@ void Bonded::show(std::ostream &out) const
   }
 }
 
-Bond bond(Bonded a, Bonded b, Int t)
+Bond create_bond(Bonded a, Bonded b, Int t)
 {
   IMP_USAGE_CHECK(a.get_particle() != b.get_particle(),
             "The endpoints of a bond must be disjoint");
@@ -77,7 +77,7 @@ Bond bond(Bonded a, Bonded b, Int t)
   return bd;
 }
 
-void unbond(Bond b) {
+void destroy_bond(Bond b) {
   graph_disconnect(b.get_particle(), internal::get_bond_data().graph_);
 }
 

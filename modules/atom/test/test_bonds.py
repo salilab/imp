@@ -14,7 +14,7 @@ class DecoratorTests(IMP.test.TestCase):
         db= IMP.atom.Bonded.setup_particle(pb)
         self.assertEqual(da.get_number_of_bonds(), 0,
                          "Wrong number of bonds on initialization")
-        IMP.atom.bond(da, db, IMP.atom.Bond.SINGLE)
+        IMP.atom.create_bond(da, db, IMP.atom.Bond.SINGLE)
         self.assertEqual(da.get_number_of_bonds(), 1,
                          "Expected to find a bond")
         self.assertEqual(da.get_number_of_bonds(), 1,
@@ -23,7 +23,7 @@ class DecoratorTests(IMP.test.TestCase):
         self.assertEqual(b, db.get_bond(0), "Not same bond object")
         self.assertEqual(b.get_type(), IMP.atom.Bond.SINGLE,
                          "Wrong bond type")
-        IMP.atom.unbond(b)
+        IMP.atom.destroy_bond(b)
         self.assertEqual(da.get_number_of_bonds(), 0,
                          "Expected not to find a bond")
         self.assertEqual(da.get_number_of_bonds(), 0,

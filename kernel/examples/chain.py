@@ -19,7 +19,7 @@ bonds= IMP.container.ListSingletonContainer("particles")
 for i in range(1, chain.get_number_of_particles()):
     bp= IMP.atom.Bonded(chain.get_particle(i-1))
     bpr= IMP.atom.Bonded.setup_particle(chain.get_particle(i))
-    b= IMP.atom.custom_bond(bp, bpr, 1.5, 10)
+    b= IMP.atom.create_custom_bond(bp, bpr, 1.5, 10)
     bonds.add_particle(b.get_particle())
 
 # If you want to inspect the particles

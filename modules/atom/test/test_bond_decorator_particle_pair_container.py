@@ -15,7 +15,7 @@ class TestBL(IMP.test.TestCase):
         b0= IMP.atom.Bonded.setup_particle(p0)
         b1= IMP.atom.Bonded.setup_particle(p1)
         b3= IMP.atom.Bonded.setup_particle(p3)
-        b= IMP.atom.custom_bond(b0, b1, 1,1)
+        b= IMP.atom.create_custom_bond(b0, b1, 1,1)
 
         pc= IMP.atom.BondedPairFilter()
         print pc.get_contains_particle_pair(IMP.ParticlePair(p0,p0))

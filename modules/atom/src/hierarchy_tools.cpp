@@ -41,9 +41,9 @@ Hierarchy create_protein(Model *m,
                          int first_residue_index,
                          double volume,
                          double spring_strength) {
-  double mass= atom::mass_from_number_of_residues(number_of_residues)/1000;
+  double mass= atom::get_mass_from_number_of_residues(number_of_residues)/1000;
   if (volume < 0) {
-    volume= atom::volume_from_mass(mass*1000);
+    volume= atom::get_volume_from_mass(mass*1000);
   }
   // assume a 20% overlap in the beads to make the protein not too bumpy
   double overlap_frac=.2;

@@ -13,7 +13,7 @@ ps = IMP.container.ListSingletonContainer(IMP.core.create_xyzr_particles(m, 20, 
 # create a bond between two particles
 bd0= IMP.atom.Bonded.setup_particle(ps.get_particle(0))
 bd1= IMP.atom.Bonded.setup_particle(ps.get_particle(1))
-IMP.atom.custom_bond(bd0, bd1, 2.0)
+IMP.atom.create_custom_bond(bd0, bd1, 2.0)
 
 # Set up the nonbonded list for all pairs at are touching
 # and let things move 3 before updating the list

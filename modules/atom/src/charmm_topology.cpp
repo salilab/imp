@@ -58,7 +58,7 @@ namespace {
             b[i] = Bonded::setup_particle(as[i]);
           }
         }
-        IMP::atom::Bond bd = bond(b[0], b[1], IMP::atom::Bond::SINGLE);
+        IMP::atom::Bond bd = create_bond(b[0], b[1], IMP::atom::Bond::SINGLE);
 
         const CHARMMBondParameters *p =
               ff->get_bond_parameters(CHARMMAtom(as[0]).get_charmm_type(),

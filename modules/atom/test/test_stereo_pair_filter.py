@@ -14,7 +14,7 @@ def setup_filter():
     bd1 = IMP.atom.Bonded.setup_particle(ps[0])
     bd2 = IMP.atom.Bonded.setup_particle(ps[1])
     bonds = IMP.Particles()
-    bonds.append(IMP.atom.bond(bd1, bd2,
+    bonds.append(IMP.atom.create_bond(bd1, bd2,
                                IMP.atom.Bond.SINGLE).get_particle())
     angles = IMP.Particles()
     angles.append(IMP.atom.Angle.setup_particle(IMP.Particle(m),

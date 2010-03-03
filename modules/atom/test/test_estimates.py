@@ -9,9 +9,9 @@ import IMP.atom
 class MCOptimizerTest(IMP.test.TestCase):
     def test_massvol(self):
         """Testing the mass and volume estimates"""
-        m= IMP.atom.mass_from_number_of_residues(250)
+        m= IMP.atom.get_mass_from_number_of_residues(250)
         print m
-        v= IMP.atom.volume_from_mass(m)
+        v= IMP.atom.get_volume_from_mass(m)
         print v
         r= (v/(4.0*3.1415)*3.0)**.333
         rc= 0.726*m**.333 # from Frank's paper

@@ -118,7 +118,7 @@ void ForceFieldParameters::add_bonds(Residue rd1, Residue rd2) const {
   if(Bonded::particle_is_instance(p2)) b2 = Bonded::decorate_particle(p2);
   else b2 = Bonded::setup_particle(p2);
 
-  IMP::atom::Bond bd = bond(b1, b2, IMP::atom::Bond::SINGLE);
+  IMP::atom::Bond bd = create_bond(b1, b2, IMP::atom::Bond::SINGLE);
 }
 
 void ForceFieldParameters::add_bonds(Residue rd) const {
@@ -147,7 +147,7 @@ void ForceFieldParameters::add_bonds(Residue rd) const {
     if(Bonded::particle_is_instance(p2)) b2 = Bonded::decorate_particle(p2);
     else b2 = Bonded::setup_particle(p2);
 
-    IMP::atom::Bond bd = bond(b1, b2, bonds[i].bond_type_);
+    IMP::atom::Bond bd = create_bond(b1, b2, bonds[i].bond_type_);
   }
 }
 
