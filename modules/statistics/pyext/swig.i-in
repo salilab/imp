@@ -1,4 +1,7 @@
 /* Wrap our own classes */
+
+IMP_REFCOUNT_RETURN_SINGLE(IMP::statistics::PartitionalClustering)
+IMP_REFCOUNT_RETURN_SINGLE(IMP::statistics::KMeansClustering)
 %include "IMP/statistics/macros.h"
 %include "IMP/statistics/KMLProxy.h"
 
