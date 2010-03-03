@@ -27,11 +27,16 @@ restraint.add_to_representation(representation)
 
 
 # Find the IMP data structure with the given id
-protein1_hierarchy = representation.find_by_id('Protein1').model_decorator
+protein1_hierarchy = representation.get_imp_hierarchy_by_id('Protein1')
+
+# Get root hierarchy
+root_hierarchy = representation.get_root_imp_hierarchy()
 
 # Get the rigid body with the given id
 protein1_rb = restraint.get_rigid_body_by_id ("Protein1")
-protein1_rb.show()
+
+# Get all rigid bodies
+rbs = restraint.get_all_rigid_bodies()
 
 # Define transformation
 ub = IMP.algebra.Vector3D(-50.0,-50.0,-50.0)
@@ -43,3 +48,4 @@ transformation = IMP.algebra.Transformation3D(rotation, translation)
 
 # Perform geometric transformations on the Protein1 rigid body
 protein1_rb.set_transformation(transformation)
+protein1_rb.show()
