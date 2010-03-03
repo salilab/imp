@@ -88,13 +88,13 @@ public:
   }
 #endif
 
-  CHARMMIdealResidueTopology &get_residue_topology(std::string name) {
+  CHARMMIdealResidueTopology &get_residue_topology(ResidueType type) {
     std::map<std::string, CHARMMIdealResidueTopology>::iterator it
-              = residue_topologies_.find(name);
+              = residue_topologies_.find(type.get_string());
     if (it != residue_topologies_.end()) {
       return it->second;
     } else {
-      IMP_THROW("Residue " << name << " does not exist", ValueException);
+      IMP_THROW("Residue " << type << " does not exist", ValueException);
     }
   }
 

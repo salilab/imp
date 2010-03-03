@@ -125,7 +125,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         """Test read of topology from files"""
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"))
         self.assertRaises(ValueError, ff.get_residue_topology, 'CTER')
-        res = ff.get_residue_topology('CYS')
+        res = ff.get_residue_topology(IMP.atom.CYS)
         self.assertEqual(res.get_number_of_bonds(), 11)
         self.assertEqual(res.get_number_of_angles(), 0)
         self.assertEqual(res.get_number_of_dihedrals(), 0)
@@ -173,7 +173,8 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         """Test application of single-residue patches"""
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"))
         patch = ff.get_patch('CTER')
-        res = IMP.atom.CHARMMResidueTopology(ff.get_residue_topology('ALA'))
+        res = IMP.atom.CHARMMResidueTopology(
+                               ff.get_residue_topology(IMP.atom.ALA))
         self.assertEqual(res.get_atom('C').get_charmm_type(), 'C')
         self.assertEqual(res.get_number_of_bonds(), 10)
         self.assertEqual(res.get_number_of_impropers(), 3)
@@ -191,7 +192,8 @@ class CHARMMTopologyTests(IMP.test.TestCase):
 
         # Patches should delete atoms
         patch = ff.get_patch('TP1A')
-        res = IMP.atom.CHARMMResidueTopology(ff.get_residue_topology('TYR'))
+        res = IMP.atom.CHARMMResidueTopology(
+                            ff.get_residue_topology(IMP.atom.TYR))
         self.assertEqual(res.get_atom('CB').get_charmm_type(), 'CT2')
         patch.apply(res)
         self.assertRaises(IMP.ValueException, res.get_atom, 'CB')

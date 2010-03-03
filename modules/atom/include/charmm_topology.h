@@ -227,8 +227,8 @@ class IMPATOMEXPORT CHARMMIdealResidueTopology
     : public CHARMMResidueTopologyBase {
   std::string default_first_patch_, default_last_patch_;
 public:
-  CHARMMIdealResidueTopology(std::string type)
-      : CHARMMResidueTopologyBase(type) {}
+  CHARMMIdealResidueTopology(ResidueType type)
+      : CHARMMResidueTopologyBase(type.get_string()) {}
 
   //! Delete the named atom
   /** Any bonds/angles that involve this atom are also deleted.
@@ -274,7 +274,7 @@ class IMPATOMEXPORT CHARMMResidueTopology
 public:
 
   //! Create an empty topology, containing no atoms or bonds
-  CHARMMResidueTopology(std::string type)
+  CHARMMResidueTopology(ResidueType type)
     : CHARMMIdealResidueTopology(type), patched_(false) {}
 
   CHARMMResidueTopology(const CHARMMIdealResidueTopology &ideal)
