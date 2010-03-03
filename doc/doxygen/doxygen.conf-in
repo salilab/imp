@@ -189,7 +189,7 @@ ALIASES                = "command{1}=\code \1 \endcode" \
                          "impdev=<a href=\"https://salilab.org/mailman/listinfo/imp-dev\">imp-dev</a>" \
                          "impcommits=<a href=\"https://salilab.org/mailman/listinfo/imp-commits\">imp-commits</a>" \
                          "advancedmethod=\note Familiarity with these methods is not required to use %imp." \
-                         "advanceddoc=\par Advanced:" \
+                         "advanceddoc=\par Advanced:\n" \
                          "usesconstraint=\note The maintenance of the invariant is done by an associated IMP::Constraint. As a result, the state is only guaranteed to be correct either during model evaluation, or immediately following model evaluation before any particles have been changed."\
                          "implementation{3}=\par Implementors\nDevelopers who wish to implement a \1 should inherit from this class and use the \2() macro to help define the needed functions. \3 provides an example to start from." \
                          "implementationwithoutexample{2}=\par Implementors\nDevelopers who wish to implement a \1 should inherit from this class and use the \2() macro to help define the needed functions. Lamentably, we do not provide an example." \
@@ -817,7 +817,7 @@ GENERATE_HTML          = YES
 # put in front of it. If left blank `html' will be used as the default path.
 
 HTML_OUTPUT            = \
-                       @IMP_TARGET_PATH@/doc/html
+                       @IMP_TARGET_PATH@/build/doc/html
 
 # The HTML_FILE_EXTENSION tag can be used to specify the file extension for
 # each generated HTML page (for example: .htm,.php,.asp). If it is left blank

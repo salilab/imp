@@ -133,6 +133,7 @@ for h in rawheaders:
         headers.append(h)
 
 sources = headers + Glob("#/kernel/doc/*.dox") + [example_index] \
+          + Glob("#/doc/*.dox") \
           + Glob("#/modules/*/doc/*.dox") \
           + Glob("#/modules/*/examples/*.xml") \
           + Glob("#/modules/*/examples/*/*.xml") \
@@ -165,7 +166,7 @@ examples.sort()
 doxconf=env.GenerateDoxygen("doxygen.conf", ["doxygen.conf-in", env.Value(env['dot'])] +sources+examples)
 env.Depends(doxconf, ['#/build/include'])
 
-dox = env.RunDoxygen("#/doc/html/index.html", ["doxygen.conf"]+sources)
+dox = env.RunDoxygen("#/build/doc/html/index.html", ["doxygen.conf"]+sources)
 env.Depends(dox, '#/scons_tools/doxypy.py')
 env.Requires(dox, env.Alias("doc-files"))
 
@@ -175,4 +176,4 @@ env.Alias('doc-install', install)
 env.Alias('doc', dox)
 env.Requires(install, env.Alias('doc'))
 env.Depends(env.Alias('all'), [env.Alias('doc')])
-Clean(dox, Glob("#/doc/html/*"))
+Clean(dox, Glob("#/build/doc/html/*"))
