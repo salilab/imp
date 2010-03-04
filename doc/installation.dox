@@ -24,7 +24,7 @@ to the last one.
 
 
 
-\section userbuild 1. Building and installing
+\section userbuild 1. Building and installing basics
 
 Building \imp from source is straight forward if the \ref prereq "prerequisites"
 are already installed. To do it do
@@ -38,7 +38,7 @@ are already installed. To do it do
 
 If there are build errors
 -# make sure all prerequisites are installed
--# read the scons help (scons -h) to figure out any more arguments you need to pass to scons in order to make sure it finds needed external libraries.
+-# read the scons help (\c scons \c -h) to figure out any more arguments you need to pass to scons in order to make sure it finds needed external libraries.
 .
 If you cannot figure things out, feel free to post on the \impdev list.
 
@@ -61,9 +61,8 @@ deprecated=False
 \section devbuild 2. Building and installing for developers
 
 We provide two other branches of \imp for developers.
--# The current svn version at https://svn.salilab.org/imp/trunk/imp. If you are using that
-   please consult the nightly build logs before updating to make sure things are working.
-   We recommend you use use this branch.
+-# The current svn version at https://svn.salilab.org/imp/trunk/imp. We recommend you use use this branch. Since this is the active branch that people commit changes too, one should consult the nightly build logs before updating to make sure things are working. In addition, consult the \c ChangeLog file to see what has changed since your last update.
+   
 -# The stable branch https://svn.salilab.org/imp/branches/stable This is updated whenever
    all the nightly tests pass.
 
