@@ -84,6 +84,10 @@ public:
    */
   virtual unsigned int get_number_of_particle_pairs() const =0;
 
+  ParticlePairsTemp get_particle_pairs() const {
+    return ParticlePairsTemp(particle_pairs_begin(),
+                          particle_pairs_end());
+  }
   virtual ParticlePair get_particle_pair(unsigned int i) const=0;
 
 #ifdef IMP_DOXYGEN
@@ -155,9 +159,6 @@ public:
   virtual double evaluate_prechange(const PairScore *o,
                                     DerivativeAccumulator *da) const = 0;
   /** @} */
-
-  //! Get all the ParticlePairs from the container
-  virtual ParticlePairsTemp get_particle_pairs() const=0;
 
 #ifndef IMP_DOXYGEN
   ParticlePair get(unsigned int i) const {return get_particle_pair(i);}

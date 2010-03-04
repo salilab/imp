@@ -55,11 +55,6 @@ bool ListLikeTripletContainer
   IMP_CHECK_OBJECT(this);
   return std::binary_search(data_.begin(), data_.end(), vt);
 }
-ParticleTripletsTemp ListLikeTripletContainer
-::get_particle_triplets() const {
-  IMP_CHECK_OBJECT(this);
-  return data_;
-}
 
 ParticleTriplet ListLikeTripletContainer
 ::get_particle_triplet(unsigned int i) const {

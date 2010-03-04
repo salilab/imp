@@ -55,11 +55,6 @@ bool ListLikeGroupnameContainer
   IMP_CHECK_OBJECT(this);
   return std::binary_search(data_.begin(), data_.end(), vt);
 }
-ClassnamesTemp ListLikeGroupnameContainer
-::get_classnames() const {
-  IMP_CHECK_OBJECT(this);
-  return data_;
-}
 
 Value ListLikeGroupnameContainer
 ::get_classname(unsigned int i) const {

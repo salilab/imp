@@ -84,6 +84,10 @@ public:
    */
   virtual unsigned int get_number_of_particle_quads() const =0;
 
+  ParticleQuadsTemp get_particle_quads() const {
+    return ParticleQuadsTemp(particle_quads_begin(),
+                          particle_quads_end());
+  }
   virtual ParticleQuad get_particle_quad(unsigned int i) const=0;
 
 #ifdef IMP_DOXYGEN
@@ -155,9 +159,6 @@ public:
   virtual double evaluate_prechange(const QuadScore *o,
                                     DerivativeAccumulator *da) const = 0;
   /** @} */
-
-  //! Get all the ParticleQuads from the container
-  virtual ParticleQuadsTemp get_particle_quads() const=0;
 
 #ifndef IMP_DOXYGEN
   ParticleQuad get(unsigned int i) const {return get_particle_quad(i);}

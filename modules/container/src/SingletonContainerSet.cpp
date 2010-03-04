@@ -145,17 +145,6 @@ double SingletonContainerSet::evaluate_prechange(const SingletonScore *s,
 }
 
 
-
-ParticlesTemp SingletonContainerSet::get_particles() const {
-  ParticlesTemp ret;
-  for (unsigned int i=0; i< get_number_of_singleton_containers(); ++i) {
-    ParticlesTemp c= get_singleton_container(i)->get_particles();
-    ret.insert(ret.end(), c.begin(), c.end());
-  }
-  return ret;
-}
-
-
 ContainersTemp SingletonContainerSet::get_input_containers() const {
   return ContainersTemp(singleton_containers_begin(),
                         singleton_containers_end());

@@ -1671,7 +1671,6 @@ protected:                                      \
     - IMP::SingletonContainer::get_particle()
     - IMP::SingletonContainer::apply()
     - IMP::SingletonContainer::evaluate()
-    - IMP::SingletonContainer::get_particles()
     - IMP::Interaction::get_input_objects()
 */
 #define IMP_SINGLETON_CONTAINER(Name)                           \
@@ -1687,7 +1686,6 @@ protected:                                      \
                          DerivativeAccumulator *da) const;      \
   double evaluate_prechange(const SingletonScore *s,            \
                             DerivativeAccumulator *da) const;   \
-  ParticlesTemp get_particles() const;                          \
   ParticlesTemp get_contained_particles() const;                \
   bool get_contained_particles_changed() const;                 \
   ContainersTemp get_input_containers() const;                  \
@@ -1701,7 +1699,6 @@ protected:                                      \
     - IMP::PairContainer::get_particle_pair()
     - IMP::PairContainer::apply()
     - IMP::PairContainer::evaluate()
-    - IMP::PairContainer::get_particle_pairs()
     - IMP::Interaction::get_input_objects()
 */
 #define IMP_PAIR_CONTAINER(Name)                                \
@@ -1717,7 +1714,6 @@ protected:                                      \
                          DerivativeAccumulator *da) const;      \
   double evaluate_prechange(const PairScore *s,                 \
                             DerivativeAccumulator *da) const;   \
-  ParticlePairsTemp get_particle_pairs() const;                 \
   ParticlesTemp get_contained_particles() const;                \
   bool get_contained_particles_changed() const;                 \
   ContainersTemp get_input_containers() const;                  \
@@ -1732,7 +1728,6 @@ protected:                                      \
     - IMP::TripletContainer::get_particle_triplet()
     - IMP::TripletContainer::apply()
     - IMP::TripletContainer::evaluate()
-    - IMP::TripletContainer::get_particle_triplets()
     - IMP::Interaction::get_input_objects()
 */
 #define IMP_TRIPLET_CONTAINER(Name)                                     \
@@ -1748,7 +1743,6 @@ protected:                                      \
                          DerivativeAccumulator *da) const;              \
   double evaluate_prechange(const TripletScore *s,                      \
                             DerivativeAccumulator *da) const;           \
-  ParticleTripletsTemp get_particle_triplets() const;                   \
   ParticlesTemp get_contained_particles() const;                        \
   bool get_contained_particles_changed() const;                         \
   ContainersTemp get_input_containers() const;                          \
@@ -1763,7 +1757,6 @@ protected:                                      \
     - IMP::QuadContainer::get_particle_quad()
     - IMP::QuadContainer::apply()
     - IMP::QuadContainer::evaluate()
-    - IMP::QuadContainer::get_particle_quads()
     - IMP::Interaction::get_input_objects()
 */
 #define IMP_QUAD_CONTAINER(Name)                                \
@@ -1779,7 +1772,6 @@ protected:                                      \
                          DerivativeAccumulator *da) const;      \
   double evaluate_prechange(const QuadScore *s,                 \
                             DerivativeAccumulator *da) const;   \
-  ParticleQuadsTemp get_particle_quads() const;                 \
   ParticlesTemp get_contained_particles() const;                \
   bool get_contained_particles_changed() const;                 \
   ContainersTemp get_input_containers() const;                  \

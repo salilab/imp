@@ -84,6 +84,10 @@ public:
    */
   virtual unsigned int get_number_of_particle_triplets() const =0;
 
+  ParticleTripletsTemp get_particle_triplets() const {
+    return ParticleTripletsTemp(particle_triplets_begin(),
+                          particle_triplets_end());
+  }
   virtual ParticleTriplet get_particle_triplet(unsigned int i) const=0;
 
 #ifdef IMP_DOXYGEN
@@ -155,9 +159,6 @@ public:
   virtual double evaluate_prechange(const TripletScore *o,
                                     DerivativeAccumulator *da) const = 0;
   /** @} */
-
-  //! Get all the ParticleTriplets from the container
-  virtual ParticleTripletsTemp get_particle_triplets() const=0;
 
 #ifndef IMP_DOXYGEN
   ParticleTriplet get(unsigned int i) const {return get_particle_triplet(i);}

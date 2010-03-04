@@ -86,7 +86,6 @@ protected:
                                         new ListLikeGroupnameContainer());
   }
 public:
-  ClassnamesTemp get_classnames() const;
   Value get_classname(unsigned int i) const;
   void apply(const GroupnameModifier *sm);
   void apply(const GroupnameModifier *sm,

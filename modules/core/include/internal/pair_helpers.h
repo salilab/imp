@@ -86,7 +86,6 @@ protected:
                                         new ListLikePairContainer());
   }
 public:
-  ParticlePairsTemp get_particle_pairs() const;
   ParticlePair get_particle_pair(unsigned int i) const;
   void apply(const PairModifier *sm);
   void apply(const PairModifier *sm,

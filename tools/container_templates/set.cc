@@ -145,17 +145,6 @@ double GroupnameContainerSet::evaluate_prechange(const GroupnameScore *s,
 }
 
 
-
-ClassnamesTemp GroupnameContainerSet::get_classnames() const {
-  ClassnamesTemp ret;
-  for (unsigned int i=0; i< get_number_of_groupname_containers(); ++i) {
-    ClassnamesTemp c= get_groupname_container(i)->get_classnames();
-    ret.insert(ret.end(), c.begin(), c.end());
-  }
-  return ret;
-}
-
-
 ContainersTemp GroupnameContainerSet::get_input_containers() const {
   return ContainersTemp(groupname_containers_begin(),
                         groupname_containers_end());
