@@ -84,13 +84,25 @@ class IMPRestraints(modeller.terms.energy_term):
 
 
 class ModellerRestraints(IMP.Restraint):
-    """An IMP restraint using all defined Modeller restraints. Useful if
-       you want to use Modeller restraints with an IMP optimizer."""
+    """An IMP restraint using all defined Modeller restraints.
+       This is useful if you want to use Modeller restraints with an IMP
+       optimizer, or in combination with IMP restraints.
 
-    def __init__(self, imp_model, modeller_model, particles):
+       @ param modeller_model The Modeller model object.
+       @param particles A Particles object containing IMP atoms, in the
+                        same order as the Modeller atoms.
+       @note since Modeller, unlike IMP, is sensitive to the ordering
+             of atoms, it usually makes sense to create the model in
+             Modeller and then use ModelLoader to load it into IMP,
+             since that will preserve the Modeller atom ordering in IMP.
+       @note Currently only the coordinates of the atoms are translated
+             between Modeller and IMP; thus, a Modeller restraint which
+             uses any other attribute (e.g. charge) will not react if
+             this attribute is changed by IMP.
+    """
+    def __init__(self, modeller_model, particles):
         IMP.Restraint.__init__(self)
         self._modeller_model = modeller_model
-        self._imp_model = imp_model
         self._particles = particles
 
     def unprotected_evaluate(self, accum):
