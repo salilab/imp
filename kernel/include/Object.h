@@ -191,7 +191,7 @@ template <class O, class I>
 O* object_cast(I *o) {
   O *ret= dynamic_cast<O*>(o);
   if (!ret) {
-    IMP_THROW(ret, "Object " << o->get_name() << " cannot be cast to "
+    IMP_THROW("Object " << o->get_name() << " cannot be cast to "
               << "desired type.", ValueException);
   }
   return ret;
