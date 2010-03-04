@@ -110,7 +110,7 @@ inline bool get_interiors_intersect(const SphereD<D> &a, const SphereD<D> &b) {
     < square(sr);
 }
 
-#ifndef SWIG
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
 
 namespace internal {
   template <unsigned int D>
