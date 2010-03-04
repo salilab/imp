@@ -18,28 +18,34 @@ distribute their code should also read the \ref contributing
 \section gettingaround 1. Getting around
 
 The input files in the \imp directory are structured as follows:
-- \c tools contains various command line utilities for use by developers. They are documented
-  in \ref scripts "Scripts".
-- \c doc contains inputs for general \imp documentation
-- \c applications contains various applications implementing using a variety of \imp modules
-- each of \c kernel and \c module/* defines a module. A module has a standard layout consisting of
-   - \c include contains the C++ header files for the module
-   - \c src contains the C++ source files for the module
-   - \c bin contains the C++ files defining programs associated with the module
-   - \c pyext contains files defining the python interface to the module as well as python source files for the module
-   - \c test contains test scripts that are run when \c scons \c test is run
-   - \c doc contains the overview documentation for the file as well as any other documentation that is provided
-   - \c examples contains examples, in python
+- \c tools contains various command line utilities for use by developers. They are \ref scripts "documented below".
+- \c doc contains inputs for general \imp overview documentation (such as this page), as well as configuration scripts for \c doxygen.
+- \c applications contains various applications implementing using a variety of \imp modules.
+- \c kernel and the subdirectories of \c module/ each defines a module and have the same structure. The directory for module \c name has
+   the following structure
+   - \c include contains the C++ header files
+   - \c src contains the C++ source files
+   - \c bin contains C++ source files each of which is built into an executable
+   - \c pyext contains files defining the python interface to the module as well as python source files (in \c pyext/src)
+   - \c test contains test files. When \c scons \c test or \c scons \c name-test is run each file in this directory named \c test_ is executed (after being built if it is a .cpp file) 
+   - \c doc contains the overview documentation for the file (in the \c SConscript file) as well as any other documentation that is provided via \c .dox files
+   - \c examples contains examples, in python as well as any data needed for examples
    - \c data contains any data files needed by the module
 
-When \imp is built, the \c build directory is created and filled with the results of the build. \c build contains a number of subdirectories, each of which has a subdirectory for each module. They are 
- - \c include and \c lib which have the C++ header files as well as the C++ and python libraries
- - \c doc which include the html documentation and examples
- - \c data which has links to all of the module data
+When \imp is built, the \c build directory is created and filled with
+the results of the build. \c build contains a number of
+subdirectories. They are
+ - \c include which includes all the headers. The headers for the \c kernel are placed in \c include/IMP and those for module \c name are placed in \c include/IMP/name
+ - \c lib where the C++ and python libraries are placed. Module \c name is built into a C++ library \c lib/libimp_name.so (or \c .dylib on a mac) and a python library
+   with python files located in \c lib/IMP/name and the binary part in \c lib/_IMP_name.so.
+ - \c doc where the html documentation is placed in \c doc/html and the examples in \c doc/examples with a subdirectory for each module
+ - \c data where each module gets a subdirectory for its data.
 
-Unfortunately, various intermediate files in the build are scattered throughout the \c module
-and \c kernel hierarchies, which is part of the reason we strongly recommend doing an
+Unfortunately, various intermediate files from the build are scattered throughout the \c module
+and \c kernel hierarchies. This messiness is part of the reason we strongly recommend doing an
 \ref devbuild "out of source build".
+
+When \imp is installed, the structure from the \c build directory is moved over more or less intact except that the C++ and python libraries are put in the (different) appropriate locations.
 
 
 \section usage Writing new functions and classes

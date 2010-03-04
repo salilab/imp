@@ -5,22 +5,19 @@
  - \ref introduction "Introduction"
  - \ref devguide "Developers' guide"
  .
+ - \ref examples "Examples"
+ - \wiki{FAQ, FAQ}
  - \salilab{imp/bugs,Bug Tracker}
  - \ref recent "Change history"
  - \salilab{internal/imp/tests.html,Daily build status}
- - \ref examples "Examples"
- - \wiki{FAQ, FAQ}
  - \salilab{imp/archives/imp-dev/,imp-dev list archive}
 
 
- Welcome to the \imp library documentation. If you are new to \imp,
- you should probably check out the \ref introduction "Introduction to IMP".
+ Welcome to the \imp library documentation.
  Throughout the documentation we refer to two, overlapping sets of people.
- If you
- - will write python scripts to use existing \imp functionality then
-   you are a <em>user</em>
- - will develop new methods for scoring, sampling or representation,
-   you are a <em>developer</em>
+ - <em>users</em> write python scripts to use existing \imp functionality 
+ - <em>developers</em> develop new methods for scoring, sampling or representation,
+   and hopefully contribute them back to \imp central
  Various pieces of documentation are marked as being intended for developers.
 
  */

@@ -3,11 +3,10 @@ Import('env')
 env.IMPModuleDoc(files=env.IMPModuleGetDocs(),
                  authors=["Daniel Russel", "Ben Webb"],
                  brief='The \imp kernel provides base classes and key shared functionality.',
-                 overview="""All kernel and module classes and functions should be in this namespace or
-a sub-namespace.
-
-The kernel also provides \\ref log "logging" and \\ref assert "Error Reporting"
-support as well as \\ref object_helpers "macros to help implement objects".""",
+                 overview="""The \imp kernel provides the base functionality and abstract
+base classes for representation, scoring and sampling. In addition it provides basic functionality
+such as I/O, \\ref log "logging" and \\ref assert "Error Reporting"
+support as well as tools to help implement functionality.""",
                  publications=env.StandardPublications(),
                  license=env.StandardLicense(),
                  )
