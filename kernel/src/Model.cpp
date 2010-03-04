@@ -1167,6 +1167,7 @@ double Model::do_evaluate(const WeightedRestraints &restraints,
 
 
 Float Model::evaluate(bool calc_derivs) {
+  IMP_CHECK_OBJECT(this);
   if (!score_states_ordered_) order_score_states();
   IMP_INTERNAL_CHECK(graphs_.find(this) != graphs_.end(),
                      "Dependency graph missing");
@@ -1177,6 +1178,7 @@ Float Model::evaluate(bool calc_derivs) {
 
 Float Model::evaluate(const RestraintsTemp &restraints, bool calc_derivs)
 {
+  IMP_CHECK_OBJECT(this);
   IMP_OBJECT_LOG;
   if (!score_states_ordered_) order_score_states();
   WeightedRestraints wr;
