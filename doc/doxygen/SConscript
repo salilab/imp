@@ -39,7 +39,8 @@ def generate_doxygen(target, source, env):
             if str(s).find('example') !=-1 and not str(s).endswith(".dox"):
                 examples.append(s)
                 put=True
-            if str(s).endswith(".dox") or str(s).endswith(".py") or str(s).endswith(".h"):
+            if str(s).endswith(".dox") or (str(s).endswith(".py") and not str(s).find("/_"))\
+                    or str(s).endswith(".h"):
                 inputs.append(s)
                 put=True
             if str(s).endswith(".dot"):
