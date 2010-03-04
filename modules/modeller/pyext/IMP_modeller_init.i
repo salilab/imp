@@ -53,24 +53,21 @@ class IMPRestraints(modeller.terms.energy_term):
 
     _physical_type = modeller.physical.absposition
 
-    # There is a sight asymmetry (with respect to the ModellerRestraints
-    # class) here because the Modeller model is not available
-    # when this init is called, but it is passed through
-    # the eval interface anyway.
-    def __init__(self, imp_model, particles):
+    def __init__(self, particles):
         modeller.terms.energy_term.__init__(self)
-        self._imp_model = imp_model
         self._particles = particles
 
     def eval(self, mdl, deriv, indats):
         atoms = self.indices_to_atoms(mdl, indats)
         copy_modeller_coords_to_imp(atoms, self._particles)
-        dvx = [0.] * len(indats)
-        dvy = [0.] * len(indats)
-        dvz = [0.] * len(indats)
-
-        score = self._imp_model.evaluate(deriv)
+        if len(self._particles) == 0:
+            score = 0.
+        else:
+            score = self._particles[0].get_model().evaluate(deriv)
         if deriv:
+            dvx = [0.] * len(indats)
+            dvy = [0.] * len(indats)
+            dvz = [0.] * len(indats)
             get_imp_derivs(self._particles, dvx, dvy, dvz)
             return (score, dvx, dvy, dvz)
         else:

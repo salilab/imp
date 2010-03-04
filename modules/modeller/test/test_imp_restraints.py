@@ -27,7 +27,7 @@ class IMPRestraintsTests(IMP.test.TestCase):
         m.add_restraint(r)
 
         t = modmodel.env.edat.energy_terms
-        t.append(IMP.modeller.IMPRestraints(m, atoms.get_particles()))
+        t.append(IMP.modeller.IMPRestraints(atoms.get_particles()))
         assertSimilarModellerIMPScores(self, modmodel, protein)
         self.assertInTolerance(m.evaluate(False), 9.80, 1e-2)
 
