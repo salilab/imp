@@ -40,7 +40,7 @@ class IMPATOMEXPORT PDBSelector {
   virtual ~PDBSelector();
 };
 
-//! A PDBSelector that ignores all alternative location atoms.
+//! Select all ATOM and HETATM records which are not alternatives
 class NonAlternativePDBSelector : public PDBSelector {
  public:
   bool operator()(const std::string& pdb_line) const {
@@ -49,7 +49,7 @@ class NonAlternativePDBSelector : public PDBSelector {
   }
 };
 
-//! Defines a selector that will pick only C-alpha atoms.
+//! Select all CA ATOM records
 class CAlphaPDBSelector : public NonAlternativePDBSelector {
  public:
   bool operator() (const std::string& pdb_line) const {
@@ -59,7 +59,7 @@ class CAlphaPDBSelector : public NonAlternativePDBSelector {
   }
 };
 
-//! Defines a selector that will pick only C-beta atoms.
+//! Select all CB ATOM records
 class CBetaPDBSelector: public NonAlternativePDBSelector {
  public:
   bool operator() (const std::string& pdb_line) const {
@@ -69,7 +69,7 @@ class CBetaPDBSelector: public NonAlternativePDBSelector {
   }
 };
 
-//! Defines a selector that will pick only C atoms. (not Ca or Cb)
+//! Select all C (not CA or CB) ATOM records
 class CPDBSelector: public NonAlternativePDBSelector {
  public:
   bool operator()(const std::string& pdb_line) const {
@@ -79,7 +79,7 @@ class CPDBSelector: public NonAlternativePDBSelector {
   }
 };
 
-//! Defines a selector that will pick only N atoms.
+//! Select all N ATOM records
 class NPDBSelector: public NonAlternativePDBSelector {
  public:
   bool operator()(const std::string& pdb_line) const {
@@ -89,15 +89,16 @@ class NPDBSelector: public NonAlternativePDBSelector {
   }
 };
 
-//! Defines a selector that will pick every atom.
+//! Defines a selector that will pick every ATOM and HETATM record
 class AllPDBSelector : public PDBSelector {
  public:
   bool operator()(const std::string& pdb_line) const { return true; }
 };
 
-//! PDBSelector that picks atoms of given chains.
+//! Select all ATOM and HETATMrecords with the given chain ids
 class ChainPDBSelector : public NonAlternativePDBSelector {
  public:
+  //! The chain id can be any character in chains
   ChainPDBSelector(const std::string &chains): chains_(chains) {}
   bool operator()(const std::string& pdb_line) const {
     if (!NonAlternativePDBSelector::operator()(pdb_line)) return false;
@@ -111,7 +112,7 @@ class ChainPDBSelector : public NonAlternativePDBSelector {
   std::string chains_;
 };
 
-//! PDBSelector that check if the line is water record
+//! Select all non-water ATOM and HETATMrecords
 class WaterPDBSelector : public NonAlternativePDBSelector {
  public:
   bool operator()(const std::string& pdb_line) const {
@@ -122,7 +123,7 @@ class WaterPDBSelector : public NonAlternativePDBSelector {
   }
 };
 
-//! PDBSelector that check if the line is hydrogen record
+//! Select all hydrogen ATOM and HETATM records
 class HydrogenPDBSelector : public NonAlternativePDBSelector {
  public:
   bool operator()(const std::string& pdb_line) const {
@@ -139,7 +140,7 @@ class HydrogenPDBSelector : public NonAlternativePDBSelector {
   }
 };
 
-//! PDBSelector that picks non water and non hydrogen atoms
+//! Select non water and non hydrogen atoms
 class NonWaterNonHydrogenPDBSelector : public NonAlternativePDBSelector {
  public:
   bool operator()(const std::string& pdb_line) const {
@@ -150,7 +151,7 @@ class NonWaterNonHydrogenPDBSelector : public NonAlternativePDBSelector {
   }
 };
 
-//! PDBSelector that picks non water atoms
+//! Select all non-water non-alternative ATOM and HETATM records
 class NonWaterPDBSelector : public NonAlternativePDBSelector {
  public:
   bool operator()(const std::string& pdb_line) const {
@@ -160,7 +161,7 @@ class NonWaterPDBSelector : public NonAlternativePDBSelector {
   }
 };
 
-//! A PDB PDBSelector that picks only Phosphate atoms.
+//! Select all P ATOM records
 class PPDBSelector : public NonAlternativePDBSelector {
  public:
   bool operator()(const std::string& pdb_line) const {

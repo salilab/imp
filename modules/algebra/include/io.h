@@ -16,9 +16,11 @@ IMPALGEBRA_BEGIN_NAMESPACE
 
 
 /** @name Simple geometric IO
-    These functions write geometry to text files as one line per
-    object where the line is "x y z [r]" (r is there for spheres).
-    Lines beginning with "#" are comments.
+    These functions write geometry to text files, one line per
+    geometric primitive. Each line has the form "x y z" for points or
+    "x y z r" for spheres. We can easily add general dimension support
+    if requested..
+    Lines beginning with "#" are treated as comments.
 
     @{
  */

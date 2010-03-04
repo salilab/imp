@@ -38,9 +38,9 @@ Structure and dynamics modeling in \imp proceeds in a five stage iterative proce
 }
  
 \imp provides a large number of functionality to facilitate this process. Links to representative classes are given for future reference.
--# \anchor dataacq Data acquisition:
+-# \anchor dataacq <em> Data acquisition: </em> 
    we can't be much help here as we are computer people and don't know what to do with test tubes.
--# \anchor repsel Representation selection: representation in \imp is via a collection of
+-# \anchor repsel <em> Representation selection: </em> representation in \imp is via a collection of
   entities called particles (IMP::Particle objects). Each particle can contain one or
   more of the following sets of data
    - \inlineimage{xyz.png, 30} Cartesian coordinates (IMP::core::XYZ)
@@ -65,11 +65,11 @@ Structure and dynamics modeling in \imp proceeds in a five stage iterative proce
   more below and on the IMP::Decorator page.\n\n
   Representations can loaded from a number of standard file types, for %example see
   IMP::atom::read_pdb() and IMP::atom::read_mol2().
--# \anchor dataenc Encoding the data as a scoring function:
+-# \anchor dataenc <em>Encoding the data as a scoring function: </em>
   Proposed models are scored based on how well they match the
   data, with a low score meaning a closer fit than a high score. In
   \imp the scoring function is the sum terms, each of which is
-  computed by an IMP::Restraint object. The scoring function terms can
+  computed by an IMP::Restraint object. The scoring function terms can be
   based on things like
     - how close a distance is to the measured value: IMP::core::DistanceRestraint
     - how well the model fits a density map: IMP::em::FitRestraint
@@ -86,7 +86,7 @@ Structure and dynamics modeling in \imp proceeds in a five stage iterative proce
     - bond lengths using an IMP::atom::BondSingletonScore coupled with a IMP::container::SingletonsRestraint
     - etc.
     .
--# \anchor sampling Sampling good conformations: It is then necessary to search for conformations of the model that
+-# \anchor sampling <em> Sampling good conformations: </em> Once the scoring function has been designed you need to search for conformations of the model that
   have low scores (and therefore fit the data well). Sampling produces a set of
   conformations of the model, organized into an IMP::ConformationSet. Currently
   \imp provides two sampling protocols, IMP::core::MCCGSampler which uses a
@@ -110,7 +110,7 @@ Structure and dynamics modeling in \imp proceeds in a five stage iterative proce
     }
 \enddot
 }
--# \anchor analysis Analysis of good conformations:
+-# \anchor analysis <em> Analysis of good conformations: </em> 
   Finally, one needs to analyze the set of conformations produced by
   sampling. \imp provides a variety of tools to help display the conformations,
   in IMP::display, and to cluster them, in IMP::statistics. Display capabilities
@@ -147,7 +147,7 @@ Coming up with the right choices for representation, scoring and sampling for
 a given system typically takes a few iterations and trial and error. \imp
 provides tools to help monitor how things are performing.
 
-- Logging: most actions in \imp can produce logged information to help understand
+- <em> Logging: </em> most actions in \imp can produce logged information to help understand
   what is going on. The amount of logging information produced can be controlled
   globally using the IMP.set_log_level() function and passing it one of the IMP::LogLevel
   values. In addition, restraints, samplers, constraints (and all objects which inherit
@@ -157,15 +157,15 @@ provides tools to help monitor how things are performing.
   sampling run. IMP::TERSE is generally better. Make sure to set it to at least
   IMP::WARNING to make sure that you don't miss any important warnings.
 
-- Usage checking: \imp can perform a lot of checks that it is being used correctly
+- <em> Usage checking: </em> \imp can perform a lot of checks that it is being used correctly
   as well as that it is behaving correctly. The checks being performed are controlled
   by the IMP::set_check_level() function call. Set the check level to IMP::USAGE to
   make sure that all parameters passed are correct. Set it to IMP::USAGE_AND_INTERNAL
   if you are developing new restraints or sampling protocols or are worried that
   \imp is malfunctioning.
 
-- IO: \imp supports I/O to and from a variety of formats. To preserve the maximum amount
-  of information, one can used the IMP::read_model() and IMP::write_model() methods to
+- <em> IO: </em> \imp supports I/O to and from a variety of formats. To preserve the maximum amount
+  of information, one can use the IMP::read_model() and IMP::write_model() methods to
   save and load a whole model to a human (and machine) readable file. See also the
   IMP::display module for geometry output and IMP::atom for biological formats.
 
@@ -338,7 +338,7 @@ generate the connection between the two languages. Key differences are
     adhered to when writing code using or in \imp.
 
     \subsection physical Measurements
-    Unless these is a good reason, the following units are be used
+    Unless there is a good reason, the following units are to be used
     - angstrom for all distances
     - \f$ \frac{\operatorname{kcal}}{\operatorname{mol} \AA}\f$ for forces/derivatives
     - \f$\frac{\operatorname{kcal}}{\operatorname{mol}}\f$ for energies
