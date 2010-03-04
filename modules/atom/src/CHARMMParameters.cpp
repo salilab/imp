@@ -123,6 +123,9 @@ namespace {
 CHARMMParameters::CHARMMParameters(const String& top_file_name,
                                    const String& par_file_name)
 {
+  // Parameter objects are not designed to be added into other containers
+  set_was_used(true);
+
   std::ifstream top_file(top_file_name.c_str());
   if(!top_file) {
     IMP_THROW("Can't open topology file " << top_file_name,
@@ -494,6 +497,8 @@ CHARMMTopology *CHARMMParameters::create_topology(Hierarchy hierarchy) const
   }
 
   warn_context_.dump_warnings();
+  // Topology objects are not designed to be added into other containers
+  topology->set_was_used(true);
   return topology.release();
 }
 
