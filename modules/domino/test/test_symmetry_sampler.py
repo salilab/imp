@@ -13,7 +13,7 @@ def get_diameter(xyzs):
     for i in range(0, len(xyzs)):
         xyzi= xyzs[i].get_coordinates()
         for j in range(0,i):
-            xyzj= xyzs[j].get_coorinates()
+            xyzj= xyzs[j].get_coordinates()
             curr_squared_dist =IMP.algebra.get_squared_distance(xyz1,xyz2);
             if curr_squared_dist > max_squared_dist:
                 p1 = xyzs[i]
