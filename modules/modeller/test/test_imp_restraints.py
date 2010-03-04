@@ -10,7 +10,7 @@ class IMPRestraintsTests(IMP.test.TestCase):
     """Check using IMP restraints in Modeller"""
 
     def test_imp_restraints(self):
-        """Check loading of Modeller static restraints"""
+        """Check using IMP restraints in Modeller"""
         e = modeller.environ()
         e.edat.dynamic_sphere = False
         e.libs.topology.read('${LIB}/top_heav.lib')
