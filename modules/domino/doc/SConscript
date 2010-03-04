@@ -1,8 +1,15 @@
 Import('env')
 
+d = env.Publication(authors=["Keren Lasker", "Maya Topf",
+                             "Andrej Sali", "Haim Wolfson"],
+                    title="Inferential optimization for simultaneous fitting "
+                          "of multiple components into a cryoEM map of "
+                          "their assembly",
+                    journal="Journal of Molecular Biology", year="2009")
+
 env.IMPModuleDoc(env.IMPModuleGetDocs(),
                  authors=["Keren Lasker"],
-                 brief="MODULENAME provides a cool optimizer.",
+                 brief="MODULENAME provides a divide-and-conquer optimizer.",
                  overview=None,
-                 publications=env.StandardPublications(),
+                 publications=env.StandardPublications() + [d],
                  license=env.StandardLicense())
