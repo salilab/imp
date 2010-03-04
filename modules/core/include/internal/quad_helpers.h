@@ -86,7 +86,6 @@ protected:
                                         new ListLikeQuadContainer());
   }
 public:
-  ParticleQuadsTemp get_particle_quads() const;
   ParticleQuad get_particle_quad(unsigned int i) const;
   void apply(const QuadModifier *sm);
   void apply(const QuadModifier *sm,

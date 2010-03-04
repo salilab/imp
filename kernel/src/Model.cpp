@@ -717,6 +717,7 @@ namespace {
 //! Constructor
 Model::Model()
 {
+  set_name("Model");
   cur_stage_=NOT_EVALUATING;
   incremental_update_=false;
   first_incremental_=true;

@@ -55,11 +55,6 @@ bool ListLikePairContainer
   IMP_CHECK_OBJECT(this);
   return std::binary_search(data_.begin(), data_.end(), vt);
 }
-ParticlePairsTemp ListLikePairContainer
-::get_particle_pairs() const {
-  IMP_CHECK_OBJECT(this);
-  return data_;
-}
 
 ParticlePair ListLikePairContainer
 ::get_particle_pair(unsigned int i) const {

@@ -145,17 +145,6 @@ double QuadContainerSet::evaluate_prechange(const QuadScore *s,
 }
 
 
-
-ParticleQuadsTemp QuadContainerSet::get_particle_quads() const {
-  ParticleQuadsTemp ret;
-  for (unsigned int i=0; i< get_number_of_quad_containers(); ++i) {
-    ParticleQuadsTemp c= get_quad_container(i)->get_particle_quads();
-    ret.insert(ret.end(), c.begin(), c.end());
-  }
-  return ret;
-}
-
-
 ContainersTemp QuadContainerSet::get_input_containers() const {
   return ContainersTemp(quad_containers_begin(),
                         quad_containers_end());

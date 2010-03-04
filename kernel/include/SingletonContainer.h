@@ -84,6 +84,10 @@ public:
    */
   virtual unsigned int get_number_of_particles() const =0;
 
+  ParticlesTemp get_particles() const {
+    return ParticlesTemp(particles_begin(),
+                          particles_end());
+  }
   virtual Particle* get_particle(unsigned int i) const=0;
 
 #ifdef IMP_DOXYGEN
@@ -155,9 +159,6 @@ public:
   virtual double evaluate_prechange(const SingletonScore *o,
                                     DerivativeAccumulator *da) const = 0;
   /** @} */
-
-  //! Get all the Particles from the container
-  virtual ParticlesTemp get_particles() const=0;
 
 #ifndef IMP_DOXYGEN
   Particle* get(unsigned int i) const {return get_particle(i);}

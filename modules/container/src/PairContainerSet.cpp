@@ -145,17 +145,6 @@ double PairContainerSet::evaluate_prechange(const PairScore *s,
 }
 
 
-
-ParticlePairsTemp PairContainerSet::get_particle_pairs() const {
-  ParticlePairsTemp ret;
-  for (unsigned int i=0; i< get_number_of_pair_containers(); ++i) {
-    ParticlePairsTemp c= get_pair_container(i)->get_particle_pairs();
-    ret.insert(ret.end(), c.begin(), c.end());
-  }
-  return ret;
-}
-
-
 ContainersTemp PairContainerSet::get_input_containers() const {
   return ContainersTemp(pair_containers_begin(),
                         pair_containers_end());

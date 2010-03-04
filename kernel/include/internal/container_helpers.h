@@ -263,12 +263,6 @@ inline std::string get_name(const ParticleTuple<D>& p) {
     FOREACH(score+=s->evaluate_prechange(p, da));                       \
     return score;                                                       \
   }                                                                     \
-  ParticlePairsTemp Name::get_particle_pairs() const {                  \
-    ParticlePairsTemp ret;                                              \
-    ret.reserve(Name::get_number_of_particle_pairs());                  \
-    FOREACH(ret.push_back(p));                                          \
-    return ret;                                                         \
-  }                                                                     \
 
 
 #define IMP_SINGLETON_CONTAINER_METHODS_FROM_FOREACH(Name)              \
@@ -296,12 +290,6 @@ inline std::string get_name(const ParticleTuple<D>& p) {
     double score=0;                                                     \
     FOREACH(score+=s->evaluate_prechange(a, da));                       \
     return score;                                                       \
-  }                                                                     \
-  ParticlesTemp Name::get_particles() const {                           \
-    ParticlesTemp ret;                                                  \
-    ret.reserve(Name::get_number_of_particles());                       \
-    FOREACH(ret.push_back(a));                                          \
-    return ret;                                                         \
   }                                                                     \
 
 

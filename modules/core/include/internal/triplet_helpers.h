@@ -86,7 +86,6 @@ protected:
                                         new ListLikeTripletContainer());
   }
 public:
-  ParticleTripletsTemp get_particle_triplets() const;
   ParticleTriplet get_particle_triplet(unsigned int i) const;
   void apply(const TripletModifier *sm);
   void apply(const TripletModifier *sm,

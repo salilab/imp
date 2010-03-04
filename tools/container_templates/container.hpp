@@ -84,6 +84,10 @@ public:
    */
   virtual unsigned int get_number_of_classnames() const =0;
 
+  ClassnamesTemp get_classnames() const {
+    return ClassnamesTemp(classnames_begin(),
+                          classnames_end());
+  }
   virtual Value get_classname(unsigned int i) const=0;
 
 #ifdef IMP_DOXYGEN
@@ -155,9 +159,6 @@ public:
   virtual double evaluate_prechange(const GroupnameScore *o,
                                     DerivativeAccumulator *da) const = 0;
   /** @} */
-
-  //! Get all the Classnames from the container
-  virtual ClassnamesTemp get_classnames() const=0;
 
 #ifndef IMP_DOXYGEN
   Value get(unsigned int i) const {return get_classname(i);}

@@ -145,17 +145,6 @@ double TripletContainerSet::evaluate_prechange(const TripletScore *s,
 }
 
 
-
-ParticleTripletsTemp TripletContainerSet::get_particle_triplets() const {
-  ParticleTripletsTemp ret;
-  for (unsigned int i=0; i< get_number_of_triplet_containers(); ++i) {
-    ParticleTripletsTemp c= get_triplet_container(i)->get_particle_triplets();
-    ret.insert(ret.end(), c.begin(), c.end());
-  }
-  return ret;
-}
-
-
 ContainersTemp TripletContainerSet::get_input_containers() const {
   return ContainersTemp(triplet_containers_begin(),
                         triplet_containers_end());

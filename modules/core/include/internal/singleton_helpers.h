@@ -86,7 +86,6 @@ protected:
                                         new ListLikeSingletonContainer());
   }
 public:
-  ParticlesTemp get_particles() const;
   Particle* get_particle(unsigned int i) const;
   void apply(const SingletonModifier *sm);
   void apply(const SingletonModifier *sm,
