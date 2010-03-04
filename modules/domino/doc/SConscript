@@ -9,7 +9,11 @@ d = env.Publication(authors=["Keren Lasker", "Maya Topf",
 
 env.IMPModuleDoc(env.IMPModuleGetDocs(),
                  authors=["Keren Lasker"],
-                 brief="MODULENAME provides a divide-and-conquer optimizer.",
-                 overview=None,
-                 publications=env.StandardPublications() + [d],
+                 brief="MODULENAME provides a framework for applying a divide-and-conquer sampling.",
+                 overview="DOMINO applies a divide-and-conquer approach to efficiently find solutions with the globally optimal score within a discrete sampling space. The idea is to decompose the set of variables into relatively uncoupled but potentially overlapping subsets that can be sampled independently of each other, and then to efficiently gather the subset solutions into the global minimum. The strength of this approach derives from the decomposition procedure that helps reduce the size of the search space from exponential in the number of components in the whole system to exponential in the number of components in the largest subset.",
+                 publications=env.StandardPublications()+
+        [env.Publication(
+ authors=["Keren Lasker","Maya Topf","Andrej Sali","Haim J. Wolfson"],
+ title="Inferential optimization for simultaneous fitting of multiple components into a cryoEM map of their assembly.",
+ journal="Journal of Molecular Biology",year="2009")],
                  license=env.StandardLicense())
