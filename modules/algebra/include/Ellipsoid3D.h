@@ -45,7 +45,7 @@ public:
       out << "(" << spaces_io(center_) << ": " << get_radius(0)
           << ", " << get_radius(1) << ", " << get_radius(2)
           << ")";
-    })
+    });
 private:
   VectorD<3> center_;
   double radii_[3];

@@ -63,6 +63,7 @@ private:
   unit::Angstrom lmax_, lp_;
 };
 
+#ifndef IMP_DOXYGEN
 inline double WormLikeChain::evaluate(double v) const {
   return evaluate_with_derivative(v).first;
 }
@@ -96,7 +97,6 @@ inline DerivativePair WormLikeChain::evaluate_with_derivative(double v) const {
   return std::make_pair(value, deriv);
 }
 
-#ifndef IMP_DOXYGEN
 inline  void WormLikeChain::do_show(std::ostream &out) const {
   out << "params " << lmax_ << " " << lp_ << std::endl;
 }

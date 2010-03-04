@@ -40,7 +40,7 @@ class IMPALGEBRAEXPORT Segment3D
   */
   VectorD<3> get_direction() const {return (p_[1]-p_[0]).get_unit_vector();}
   double get_length() const;
-  IMP_SHOWABLE_INLINE({out << spaces_io(p_[0]) << ": " << spaces_io(p_[1]);})
+  IMP_SHOWABLE_INLINE({out << spaces_io(p_[0]) << ": " << spaces_io(p_[1]);});
  private:
   VectorD<3> p_[2];
 };

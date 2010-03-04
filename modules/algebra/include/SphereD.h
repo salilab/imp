@@ -50,7 +50,7 @@ public:
   IMP_SHOWABLE_INLINE({
       out << "(" << spaces_io(center_) << ": " << get_radius()
           << ")";
-    })
+    });
 private:
   VectorD<D> center_;
   double radius_;

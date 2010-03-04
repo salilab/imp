@@ -268,7 +268,7 @@ public:
 };
 
 
-IMP_OUTPUT_OPERATOR(Rotation3D)
+IMP_OUTPUT_OPERATOR(Rotation3D);
 
 typedef std::vector<Rotation3D> Rotation3Ds;
 
