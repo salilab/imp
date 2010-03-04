@@ -34,5 +34,5 @@ clustering = IMP.statistics.get_lloyds_kmeans(e, 3, 1000)
 for i in range(0,clustering.get_number_of_clusters()):
     # load the configuration for a central point
     configs.set_configuration(clustering.get_cluster_representative(i))
-    seg= IMP.core.get_diameter(IMP.core.XYZsTemp(c.get_particles()))
-    print (seg.get_point(0)-seg.get_point(1)).get_magnitude()
+    sphere= IMP.core.get_enclosing_sphere(xyzrs)
+    print sphere
