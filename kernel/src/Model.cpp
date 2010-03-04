@@ -53,7 +53,7 @@
           if (exchange) {                                               \
             wpl.push_back(dynamic_cast<Particle*>(cpl[i]));             \
           } else {                                                      \
-            rpl.push_back(dynamic_cast<Particle*>(cpl[i]));              \
+            rpl.push_back(dynamic_cast<Particle*>(cpl[i]));             \
           }                                                             \
         }                                                               \
       }                                                                 \
