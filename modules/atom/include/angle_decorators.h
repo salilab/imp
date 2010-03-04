@@ -14,6 +14,12 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
+//! A particle that describes an angle between three particles.
+/** An Angle decorator is a simple container of three particles, together
+    with an ideal value (in radians) for the angle and a stiffness.
+
+    \see CHARMMParameters::generate_angles(), AngleSingletonScore.
+ */
 class IMPATOMEXPORT Angle : public Decorator
 {
 public:
@@ -55,6 +61,19 @@ public:
 
 IMP_OUTPUT_OPERATOR(Angle);
 
+//! A particle that describes a dihedral angle between four particles.
+/** An Angle decorator is a simple container of four particles, together
+    with an ideal value (in radians) for the angle, a multiplicity
+    and a stiffness.
+
+    Note that multiple Dihedral particles can exist for the same set of
+    four particles. (For example, the CHARMM forcefield allows for multiple
+    dihedrals to exist with different multiplicities.)
+
+    \see CHARMMParameters::generate_dihedrals(),
+         CHARMMTopology::add_impropers(), DihedralSingletonScore,
+         ImproperSingletonScore.
+ */
 class IMPATOMEXPORT Dihedral : public Decorator
 {
 public:

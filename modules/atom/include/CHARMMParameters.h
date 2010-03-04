@@ -235,7 +235,14 @@ public:
   /** The angles consist of all unique pairs of bonds which share an
       endpoint. If no parameters are found for an angle, it is simply
       created without those parameters.
+
+      The list of newly-created Angle particles can be passed to a
+      StereochemistryPairFilter to exclude 1-3 interactions from the
+      nonbonded list, or to an AngleSingletonScore to score each angle.
+
       \return a list of the newly-created Angle particles.
+
+      \see CHARMMTopology::add_bonds().
    */
   Particles generate_angles(Particles bonds) const;
 
@@ -245,7 +252,14 @@ public:
       created without those parameters; if multiple sets of parameters are
       found, multiple copies of the dihedral are created, each with one set
       of parameters.
+
+      The list of newly-created Dihedral particles can be passed to a
+      StereochemistryPairFilter to exclude 1-4 interactions from the
+      nonbonded list, or to a DihedralSingletonScore to score each dihedral.
+
       \return a list of the newly-created Dihedral particles.
+
+      \see CHARMMTopology::add_bonds().
    */
   Particles generate_dihedrals(Particles bonds) const;
 

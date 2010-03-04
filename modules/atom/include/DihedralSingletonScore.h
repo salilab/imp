@@ -14,6 +14,8 @@
 IMPATOM_BEGIN_NAMESPACE
 
 //! Score the dihedral angle.
+/** \see CHARMMParameters::generate_dihedrals().
+ */
 class IMPATOMEXPORT DihedralSingletonScore : public SingletonScore
 {
 public:
