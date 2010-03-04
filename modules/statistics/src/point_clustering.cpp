@@ -163,7 +163,7 @@ KMeansClustering* get_lloyds_kmeans(const Ints &names, Embedding *metric,
   std::auto_ptr<KMPointArray> kmc;
   IMP_LOG(VERBOSE,"KMLProxy::run load initial guess \n");
   //load the initail guess
-  KMData data(k, names.size());
+  KMData data(metric->get_point(names[0]).size(), names.size());
   for (unsigned int i=0; i< names.size(); ++i) {
     *(data[i])= metric->get_point(names[i]);
   }
