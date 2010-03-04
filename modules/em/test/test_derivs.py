@@ -30,7 +30,7 @@ class DerivativesTest(IMP.test.TestCase):
         self.particles = IMP.Particles()
         #add IMP Restraints into the modeller scoring function
         t = self.env.edat.energy_terms
-        t.append(IMP.modeller.IMPRestraints(self.imp_model, self.particles))
+        t.append(IMP.modeller.IMPRestraints(self.particles))
         ## -  create a set of three particles in imp
         npart = 3
         self.modeller_model = IMP.modeller.create_particles(npart,
