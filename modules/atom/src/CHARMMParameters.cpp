@@ -625,7 +625,11 @@ void CHARMMParameters::add_dihedral(Particle *p1, Particle *p2, Particle *p3,
                                            core::XYZ(p3), core::XYZ(p4));
     dd.set_ideal(it->ideal / 180.0 * PI);
     dd.set_multiplicity(it->multiplicity);
-    dd.set_stiffness(std::sqrt(it->force_constant * 2.0));
+    if (it->force_constant < 0.0) {
+      dd.set_stiffness(-std::sqrt(-it->force_constant * 2.0));
+    } else {
+      dd.set_stiffness(std::sqrt(it->force_constant * 2.0));
+    }
     ps.push_back(dd);
   }
 
