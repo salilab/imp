@@ -160,7 +160,14 @@ inline std::string get_module_name() {
 
 //! Return the path to installed data for this module
 /** Each module has its own data directory, so be sure to use
-    the version of this function in the correct module.
+    the version of this function in the correct module. To read
+    the data file "data_library" that was placed in the \c data
+    directory of module "mymodule", do something like
+    \code
+    std::ifstream in(IMP::mymodule::get_data_path("data_library"));
+    \endcode
+    This will ensure that the code works when \imp is installed or
+    used via the \c tools/imppy.sh script.
 */
 inline std::string get_data_path(std::string file_name) {
   return IMP::internal::get_data_path("%(module)s", file_name);
@@ -168,7 +175,14 @@ inline std::string get_data_path(std::string file_name) {
 
 //! Return the path to installed example data for this module
 /** Each module has its own example directory, so be sure to use
-    the version of this function in the correct module.
+    the version of this function in the correct module.  For example
+    to read the file \c example_protein.pdb located in the
+    \c examples directory of the IMP::atom module, do
+    \code
+    IMP::atom::read_pdb(IMP::atom::get_example_path("example_protein.pdb", model));
+    \endcode
+    This will ensure that the code works when \imp is installed or
+    used via the \c tools/imppy.sh script.
 */
 inline std::string get_example_path(std::string file_name)  {
   return IMP::internal::get_example_path("%(module)s", file_name);
