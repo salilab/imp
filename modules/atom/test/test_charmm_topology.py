@@ -270,6 +270,37 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         a2 = IMP.atom.get_atom(r2, IMP.atom.AT_N)
         self.assertAtomsBonded(a1, a2, 'C', 'NH1', 1.3450, 27.203)
 
+    def test_dihedral_stiffness(self):
+        """Make sure dihedrals can have negative stiffness"""
+        m = IMP.Model()
+        ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
+                                       IMP.atom.get_data_path("par.lib"))
+        topology = IMP.atom.CHARMMTopology()
+        seg = IMP.atom.CHARMMSegmentTopology()
+        topology.add_segment(seg)
+        r1 = IMP.atom.CHARMMResidueTopology(ff.get_residue_topology('PRO'))
+        r2 = IMP.atom.CHARMMResidueTopology(ff.get_residue_topology('ALA'))
+        seg.add_residue(r1)
+        seg.add_residue(r2)
+        h = topology.create_hierarchy(m)
+        for a in IMP.atom.get_by_type(h, IMP.atom.ATOM_TYPE):
+            IMP.core.XYZ.setup_particle(a.get_particle(),
+                                        IMP.algebra.Vector3D(0,0,0))
+        topology.add_atom_types(h)
+        bonds = topology.add_bonds(h, ff)
+        dihedrals = ff.generate_dihedrals(bonds)
+        self.assertEqual(len(dihedrals), 67)
+        d = IMP.atom.Dihedral(dihedrals[5])
+        self.assertEqual([IMP.atom.CHARMMAtom(d.get_particle(x)).
+                                  get_charmm_type() for x in range(4)],
+                         ['NH1', 'C', 'CP1', 'N'])
+        self.assertInTolerance(d.get_stiffness(), 0.7746, 1e-4)
+        d = IMP.atom.Dihedral(dihedrals[6])
+        self.assertEqual([IMP.atom.CHARMMAtom(d.get_particle(x)).
+                                  get_charmm_type() for x in range(4)],
+                         ['NH1', 'C', 'CP1', 'N'])
+        self.assertInTolerance(d.get_stiffness(), -0.7746, 1e-4)
+
     def test_make_topology(self):
         """Test construction of topology"""
         m = IMP.Model()

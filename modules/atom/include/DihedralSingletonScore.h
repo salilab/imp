@@ -16,12 +16,13 @@ IMPATOM_BEGIN_NAMESPACE
 //! Score the dihedral angle.
 /** This scores the dihedral using information stored in its Dihedral
     decorator. The form of the score is \f[
-        \frac{1}{2} s^2 (1.0 + \cos(\chi * m - \chi_i))
+        \frac{1}{2} s\abs{s} (1.0 + \cos(\chi * m - \chi_i))
     \f] where \f$s\f$ is the stiffness, \f$m\f$ the multiplicity, \f$\chi_i\f$
     the ideal value of the dihedral, and \f$\chi\f$ the actual value.
 
     \note This score matches the CHARMM definition, but may not match
-          other forcefields.
+          other forcefields. The stiffness can be negative, which corresponds
+          to CHARMM forcefield entries with negative force constants.
 
     \see CHARMMParameters::generate_dihedrals(), Dihedral.
  */

@@ -39,7 +39,7 @@ double DihedralSingletonScore::evaluate(Particle *b,
     algebra::Vector3D derv[4];
     dih = core::internal::dihedral(d[0], d[1], d[2], d[3], &derv[0],
                                    &derv[1], &derv[2], &derv[3]);
-    double deriv = - 0.5 * s * s * std::sin(dih * m - ideal) * m;
+    double deriv = - 0.5 * std::abs(s) * s * std::sin(dih * m - ideal) * m;
     for (unsigned int i = 0; i < 4; ++i) {
       d[i].add_to_derivatives(deriv * derv[i], *da);
     }
@@ -47,7 +47,7 @@ double DihedralSingletonScore::evaluate(Particle *b,
     dih = core::internal::dihedral(d[0], d[1], d[2], d[3], NULL, NULL,
                                    NULL, NULL);
   }
-  return 0.5 * s * s * (1.0 + std::cos(dih * m - ideal));
+  return 0.5 * std::abs(s) * s * (1.0 + std::cos(dih * m - ideal));
 }
 
 ParticlesList
