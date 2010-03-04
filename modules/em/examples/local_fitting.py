@@ -88,12 +88,12 @@ IMP.em.local_rigid_fitting(
    dmap,fitting_sols,None,num_sol,1,1)
 
 print "returned are"
-for fs in range(0, fr.get_number_of_solutions()):
-    print fr.get_score(fs), fs.get_transformation(fs), " -- ",
+for fs in range(0, fitting_sols.get_number_of_solutions()):
+    print fitting_sols.get_score(fs), fitting_sols.get_transformation(fs), " -- ",
 print "done"
 ## 5.2 report best result
 ### 5.2.1 transform the protein to the preferred transformation
-for i in range(fr.get_number_of_solutions()):
+for i in range(fitting_sols.get_number_of_solutions()):
     #IMP.core.transform(prot_rb,fitting_sols.get_transformation(i))
     prot_rb.set_transformation(fitting_sols.get_transformation(i))
     m.evaluate(None)#to make sure the transformation was applied
