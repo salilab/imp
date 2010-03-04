@@ -3,7 +3,6 @@ Import('env')
 files = [
          'CommonEndpointPairFilter.cpp',
          'LowestRefinedPairScore.cpp',
-         'RefineOncePairScore.cpp',
          'StateAdaptor.cpp',
          'attribute_statistics.cpp',
          'interaction_graph.cpp',
