@@ -975,15 +975,15 @@ void Model::validate_attribute_values() const {
          kit != p->float_keys_end(); ++kit) {
       double d= p->get_value(*kit);
       if (is_nan(d) || std::abs(d) > std::numeric_limits<double>::max()) {
-        IMP_IF_CHECK(USAGE) {
-          std::ostringstream oss;
-          oss << message << "Particle " << p->get_name()
-              << " attribute " << *kit << " has derivative of "
-              << d << std::endl;
-          message= oss.str();
-        }
         IMP_IF_CHECK(NONE) {
           message= "Bad particle value";
+        }
+        IMP_IF_CHECK(USAGE) {
+          std::ostringstream oss;
+          oss << message << "; Particle " << p->get_name()
+              << " attribute " << *kit << " has value of "
+              << d << std::endl;
+          message= oss.str();
         }
       }
     }
