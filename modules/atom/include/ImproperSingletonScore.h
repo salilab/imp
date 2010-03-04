@@ -16,12 +16,15 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-//! Score the improper based on a UnaryFunction,
-/** The score is based on the difference between the stored ideal improper
-    angle and the actual angle and scaled by the stiffness. That is
-    stiffness * (improper_angle-ideal_value). The difference is in radians
-    between -pi and +pi; it is the shortest distance from one angle to the
-    other.
+//! Score the improper dihedral based on a UnaryFunction,
+/** This scores the improper dihedral using information stored in its
+    Dihedral decorator. The score is based on the difference between the
+    stored ideal improper angle and the actual angle and scaled by the
+    stiffness. That is stiffness * (improper_angle-ideal_value). The
+    difference is in radians between -pi and +pi; it is the shortest
+    distance from one angle to the other.
+
+    \note The multiplicity of the the Dihedral is not used.
 
     \see CHARMMTopology::add_impropers(), Dihedral.
  */
