@@ -319,7 +319,7 @@ generate the connection between the two languages. Key differences are
 - All \imp exceptions are exposed as identical Python exception
   classes. The class hierarchy is similar (e.g. all exceptions derive
   from IMP::Exception, so "except IMP.Exception" will catch all IMP
-  exceptions), except for convenience some generic IMP exceptions also
+  exceptions), except for convenience some generic \imp exceptions also
   derive from their standard Python equivalents
   (e.g. IMP.IndexException derives from the standard Python IndexError
   as well as IMP::Exception). Thus, an IMP::IndexException could be
@@ -366,7 +366,7 @@ generate the connection between the two languages. Key differences are
     objects is passed using IMP::Restraints (or, equivalently
     IMP::RestraintsTemp).
 
-    - Classes and methods use IMP exceptions to report errors. See
+    - Classes and methods use \imp exceptions to report errors. See
     IMP::Exception for a list of existing exceptions. These C++
     exceptions are mapped onto the normal python exception types.
 
@@ -443,7 +443,7 @@ generate the connection between the two languages. Key differences are
       common than the unabreviated name.
 
 \section incremental 7. Incremental Scoring
-    Scoring in IMP can be performed in two different ways....
+    Scoring in \imp can be performed in two different ways....
 
     Incremental scoring  works as follows:
 

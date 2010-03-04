@@ -24,7 +24,7 @@ IMP_BEGIN_NAMESPACE
 
 
 /**
-    \defgroup assert Error checking and reporting
+    \name assert Error checking and reporting
 
     By default \imp performs a variety of runtime error checks. These
     can be controlled using the IMP::set_check_level function. Call
@@ -36,14 +36,13 @@ IMP_BEGIN_NAMESPACE
 
     Error handling is provided by IMP/exception.h,
 
-    Use the \c gdbinit file provided in tools to automatically have \c gdb
-    break when errors are detected.
+    Use the \c gdbinit file provided in \c tools to automatically have \c gdb
+    break when \imp errors are detected.
     @{
  */
 
-//! The general base class for IMP exceptions
-/** This way we can catch IMP exceptions without getting memory allocation
-    errors and everything. And it enforces having a description.
+//! The general base class for \imp exceptions
+/** Exceptions should be used to report all errors that occur within \imp.
 */
 class IMPEXPORT Exception
 {
@@ -64,12 +63,9 @@ class IMPEXPORT Exception
       str_->message_[4095]='\0';
     }
   }
-  /** \note By making the destructor virtual and providing an implementation in
+  /* \note By making the destructor virtual and providing an implementation in
       each derived class, we force a strong definition of the exception object
       in the kernel DSO. This allows exceptions to be passed between DSOs.
-
-      \todo Should probably have a macro for exception classes to make sure this
-      is always done correctly.
   */
   virtual ~Exception() throw();
 
@@ -132,7 +128,7 @@ inline CheckLevel get_check_level() {
 
 //! Set whether exception messages are printed or not
 /** By default the error message associated with thrown exceptions are printed
-    when using IMP from C++, but not from Python (since the error messages of
+    when using from C++, but not from Python (since the error messages of
     unhandled exception are printed by the python runtime).
 */
 IMPEXPORT void set_print_exceptions(bool tf);

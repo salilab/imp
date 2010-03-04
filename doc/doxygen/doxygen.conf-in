@@ -210,7 +210,10 @@ ALIASES                = "command{1}=\code \1 \endcode" \
                          "decoratorstemp{1}=\class \1sTemp \n \brief A type to pass a collection of \1 decorators.\n\nIt looks like a \c std::vector<\1> in C++ and a \c list in Python. See \ref tempornot \"when to use Temp\" for details on using this type." \
                          "objects{1}=\class \1s\n \brief A type to store a collection of \1 objects.\n\nIt looks like a \c std::vector<\1*> in C++ and a \c list in Python. See \ref tempornot \"when to use Temp\" for details on using this type." \
                          "objectstemp{1}=\class \1sTemp\n\brief A type to pass a collection of \1 objects.\n\nIt looks like a \c std::vector<\1*> in C++ and a \c list in Python. See \ref tempornot \"when to use Temp\" for details on using this type." \
-                         "geometry=\note This class is a \ref geometricprimitives \"geometric primitive\". Also, this class is not \ref uninitialized \"not initialized by its default constructor\"."
+                         "geometry=\note This class is a \ref geometricprimitives \"geometric primitive\". Also, this class is not \ref uninitialized \"not initialized by its default constructor\"."\
+                         "impsvn=\salilab{svn.salilab.org/imp/, IMP repository}"\
+                         "svn=\external{svnbook.red-bean.com/, Subversion}"\
+                         "doxygen=\external{www.stack.nl/~dimitri/doxygen/manual.html, Doxygen}"
 
 # Set the OPTIMIZE_OUTPUT_FOR_C tag to YES if your project consists of C
 # sources only. Doxygen will then generate output that is more tailored for C.

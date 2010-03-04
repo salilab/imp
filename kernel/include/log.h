@@ -25,7 +25,7 @@ IMP_BEGIN_NAMESPACE
 
 /** \name Logging
     \anchor log
-    IMP provides tools for controlling the amount of log output produced
+    \imp provides tools for controlling the amount of log output produced
     and directing it to the terminal or a file. Only log messages tagged
     with a lower level than the current LogLevel are emitted. In addition
     to a global local level (get_log_level(), set_log_level()), each
@@ -42,7 +42,7 @@ IMP_BEGIN_NAMESPACE
     @{
  */
 
-//! The log levels supported by IMP
+//! The log levels supported by \imp
 /**
     DEFAULT is only local logging (like in IMP::Object), it means use
     the global log level
@@ -76,10 +76,18 @@ namespace internal {
 //! Write a string to the log
 IMPEXPORT void add_to_log(std::string to_write);
 
-//! Set the current log level for IMP
+
+//! Set the current global log level
+/** Note that this should not, currently, be used directly
+    during Model::evaluate() calls. */
 IMPEXPORT void set_log_level(LogLevel l);
 
-//! Get the current log level for IMP
+
+//! Get the currently active log level
+/** This may not always match the value passed to set_log_level()
+    as objects can temporarily override the global level
+    while they are evaluating.
+ */
 inline LogLevel get_log_level()
 {
   return internal::log_level;

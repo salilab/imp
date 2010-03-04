@@ -56,7 +56,7 @@ This creates a new module in the \c modules directory, complete with
 %example code.
 
 We highly recommend using a revision control system such as
-\external{subversion.tigris.org/, SVN} or \external{git-scm.com/,
+\svn or \external{git-scm.com/,
 GIT} to keep track of changes to your module.
 
 If, instead, you choose to add code to an existing module you need to
@@ -232,7 +232,7 @@ if you want to provide output that can be read back in.
 
 \subsection errors Errors
 
-Classes and methods should use IMP exceptions to report errors. See
+Classes and methods should use \imp exceptions to report errors. See
 IMP::Exception for a list of existing exceptions. See \ref assert for
 a list of functions to aid in error reporting and detection.
 
@@ -264,13 +264,13 @@ As a result, such functions do not need to obey all the coding conventions
 
 \section docs Documenting your code
 
-\imp is documented using \external{www.stack.nl/~dimitri/doxygen/, Doxygen}. See
+\imp is documented using \doxygen. See
 \external{www.doxygen.nl/docblocks.html, documenting source code with doxygen}
 to get started. We use \c //! and \c /** ... * / blocks for documentation.
 
 Python code should provide Python doc strings.
 
-All headers not in internal directories are parsed through doxygen. Any function that
+All headers not in internal directories are parsed through \doxygen. Any function that
 you do not want documented (for %example, because it is not well tested), hide by surrounding
 with
 \code
@@ -279,7 +279,7 @@ void messy_poorly_thought_out_function();
 #endif
 \endcode
 
-We provide a number of extra doxygen commands to aid in producing nice
+We provide a number of extra Doxygen commands to aid in producing nice
 \imp documentation. The commands are used by writing \c \\commandname{args}
 or \c \\commandname if there are no arguments.
 
@@ -324,14 +324,14 @@ or \c \\commandname if there are no arguments.
 - To mark that some part of the API has not yet been well planned at may change
     using \c \\unstable{Classname}. The documentation will include a disclaimor
     and the class or function will be added to a list of unstable classes. It is
-    better to simply hide such things from doxygen.
+    better to simply hide such things from \doxygen.
 
 - To mark a method as not having been well tested yet, use \c \\untested{Classname}.
 
 - To mark a method as not having been implemented, use \c \\untested{Classname}.
 
 - To note that a class supports comparisons (eg <, >, ==, != etc) use \c \\comparable
-  and then hide the comparison functions from Doxygen (there are a lot of them and they
+  and then hide the comparison functions from \doxygen (there are a lot of them and they
   aren't very interesting).
 
 \section scripts Useful Scripts
@@ -429,7 +429,7 @@ All code contributed to \imp
 - must have documentation
 - must build on all supported compilers (roughly, recent versions of gcc and Visual C++) without warnings
 - should have examples
-- must not have warnings when doxygen is run (\c scons \c doc)
+- must not have warnings when \doxygen is run (\c scons \c doc)
 
 The next suggestions provide more details about the above choices and how to implement them.
 
@@ -440,33 +440,15 @@ probably should be submitted to an existing module. Please contact the
 authors of the appropriate module and discuss the submission and how
 the code will be maintained.
 
-A list of all current modules in SVN can be found in
+A list of all current modules in the \impsvn can be found in
 <a href="namespaces.html">the modules list</a> or from the modules tab
-above.
+at the top of this page.
 
 As always, if in doubt, post to \impdev.
 
-
-\subsubsection kernelcore Submission of changes to IMP kernel or IMP.core
-
-In order to submit changes to the kernel or IMP.core, you should
-prepare a patch against the current SVN version of IMP. To do that,
-make your changes to an up to date copy of the svn version of IMP and
-then do \command{svn diff paths/to/changed/files >
-patches/mypatch.patch} to generate a description of the patch in the
-file "mypatch.patch". You should then create a description of the
-patch in patches/mypatch.readme and commit the two files into the
-repository by doing \command{svn add patches/mypatch*} \command{svn
-commit patches/mypatch* -m "very brief description"} If the patch
-introduces API changes, please discuss them (preferably before writing
-the actual code) on the \impdev mailing list.
-
-Patches should contain a related set of changes. For %example, a patch which adds a new method foo, a new testcase for foo, and some documentation for the SpecialVector class, should be split into two patches: one for the foo method and test, and the other for the SpecialVector documentation.
-It is much easier for others to understand your patch's changes if it is small and contains only relevant changes. 
-
 Patches to modules for which you have write access can be submitted
-directly by doing: \command{svn commit -m "message describing the
-patch" files or directories to submit}
+directly by doing:
+\command{svn commit -m "message describing the patch" files or directories to submit}
 
 
 
@@ -550,7 +532,7 @@ Below are a suggestions prompted by bugs found in code submitted to \imp.
     - Include files from the local module first, then files from the
     other \imp modules and kernel and finally outside includes. This
     makes any dependencies in your code obvious, and by including
-    standard headers \e after IMP headers, any missing includes in the
+    standard headers \e after \imp headers, any missing includes in the
     headers themselves show up early (rather than being masked by
     other headers you include).
 

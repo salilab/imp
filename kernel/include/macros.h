@@ -1878,10 +1878,10 @@ protected:                                      \
 
 
 
-//! Declare an IMP RAII-style function
+//! Declare a RAII-style class
 /** Since such classes are typically quite small and simple, all
     the implementation is inline. The macro declares
-    - constructor
+    - default constructor
     - RAII::set()
     - RAII::reset()
     - destructor

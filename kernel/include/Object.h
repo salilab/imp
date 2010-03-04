@@ -21,7 +21,7 @@
 
 IMP_BEGIN_NAMESPACE
 
-//! Common base class for heavy weight IMP objects.
+//! Common base class for heavy weight \imp objects.
 /** The base class for non value-type objects in \imp.
     Anything inheriting from IMP::Object has the following
     properties:
