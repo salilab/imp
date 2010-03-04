@@ -32,22 +32,27 @@ def generate_doxygen(target, source, env):
     dots=[]
     has_dot=str(source[1].get_contents())
     for s in source[2:]:
-        if str(s).endswith(".png"):
+        ss= str(s)
+        if ss.endswith(".png"):
             images.append(s)
         else:
             put=False
-            if str(s).find('example') !=-1 and not str(s).endswith(".dox"):
+            if ss.find('example') !=-1 and not ss.endswith(".dox"):
                 examples.append(s)
                 put=True
-            if str(s).endswith(".dox") or (str(s).endswith(".py") and not str(s).find("/_"))\
-                    or str(s).endswith(".h"):
+            if ss.endswith(".dox") \
+                    or ss.endswith(".h"):
                 inputs.append(s)
                 put=True
-            if str(s).endswith(".dot"):
+            elif ss.endswith(".py"):
+                put=True
+                if ss.find("/_") ==-1 or ss.endswith("__init__.py"):
+                    dots.append(s)
+            elif ss.endswith(".dot"):
                 dots.append(s)
                 put=True
             if not put:
-                print >> sys.stderr, "Warning, do not know what to do with the file "+ str(s)
+                print >> sys.stderr, "Warning, do not know what to do with the file "+ ss
     for line in infile:
         if '@IMP_IMAGES@' in line:
             outfile.write(make_output(images))
@@ -125,14 +130,14 @@ for h in Glob("#/build/include/*.h", ondisk=False) \
     if h.path.find("internal")==-1:
         rawheaders.append(h)
 headers=[]
+first=[]
 # leftover from attempt to get things to work with 1.6.1.
 for h in rawheaders:
-    if h.path.find('macros') != -1:
+    if h.path.find('macros') == -1 and h.path.find('config.h') == -1:
         headers.append(h)
-for h in rawheaders:
-    if h.path.find('macros') == -1:
-        headers.append(h)
-
+    else:
+        first.append(h)
+headers= first+headers
 sources = headers + Glob("#/kernel/doc/*.dox") + [example_index] \
           + Glob("#/doc/*.dox") \
           + Glob("#/modules/*/doc/*.dox") \
