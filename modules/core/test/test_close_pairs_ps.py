@@ -22,7 +22,7 @@ class Test(IMP.test.TestCase):
             #cps= [x.get_particle() for x in children]
             d= IMP.core.XYZR.setup_particle(p)
             print children
-            IMP.core.set_enclosing_sphere(d, IMP.core.XYZs(children))
+            IMP.core.set_enclosing_sphere(d, IMP.core.XYZsTemp(children))
             for c in children:
                 h.add_child(c)
         return h
