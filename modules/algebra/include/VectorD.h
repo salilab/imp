@@ -369,33 +369,6 @@ VectorD<D> get_ones_vector_d(double v=1) {
 
 #ifndef SWIG
 
-#ifndef IMP_DOXYGEN
-template <unsigned int D>
-struct SpacesIO
-{
-  const VectorD<D> &v_;
-  SpacesIO(const VectorD<D> &v): v_(v){}
-};
-
-template <unsigned int D>
-struct CommasIO
-{
-  const VectorD<D> &v_;
-  CommasIO(const VectorD<D> &v): v_(v){}
-};
-template <unsigned int D>
-inline std::ostream &operator<<(std::ostream &out, const SpacesIO<D> &s)
-{
-  s.v_.show(out, " ", false);
-  return out;
-}
-template <unsigned int D>
-inline std::ostream &operator<<(std::ostream &out, const CommasIO<D> &s)
-{
-  s.v_.show(out, ", ", false);
-  return out;
-}
-#endif
 /** \name Norms
     We define a number of standard, \f$L^p\f$, norms on VectorD.
     - \f$L^1\f$ is the Manhattan distance, the sum of the components
@@ -429,6 +402,34 @@ double get_linf_norm(const VectorD<D> &v) {
 
 /** @} */
 
+#ifndef IMP_DOXYGEN
+
+template <unsigned int D>
+struct SpacesIO
+{
+  const VectorD<D> &v_;
+  SpacesIO(const VectorD<D> &v): v_(v){}
+};
+
+template <unsigned int D>
+struct CommasIO
+{
+  const VectorD<D> &v_;
+  CommasIO(const VectorD<D> &v): v_(v){}
+};
+template <unsigned int D>
+inline std::ostream &operator<<(std::ostream &out, const SpacesIO<D> &s)
+{
+  s.v_.show(out, " ", false);
+  return out;
+}
+template <unsigned int D>
+inline std::ostream &operator<<(std::ostream &out, const CommasIO<D> &s)
+{
+  s.v_.show(out, ", ", false);
+  return out;
+}
+
 //! Use this before outputing to delimited vector entries with a space
 /** std::cout << spaces_io(v);
     produces "1.0 2.0 3.0"
@@ -451,9 +452,8 @@ template <unsigned int D>
 CommasIO<D> commas_io(const VectorD<D> &v) {
   return CommasIO<D>(v);
 }
-#endif
+#endif // doxygen
 
-#ifndef SWIG
 typedef VectorD<2> Vector2D;
 typedef std::vector<VectorD<2> > Vector2Ds;
 typedef VectorD<3> Vector3D;
