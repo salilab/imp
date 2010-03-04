@@ -24,7 +24,8 @@ IMP_BEGIN_NAMESPACE
 
 
 /**
-    \name assert Error checking and reporting
+    \name Error checking and reporting
+    \anchor assert
 
     By default \imp performs a variety of runtime error checks. These
     can be controlled using the IMP::set_check_level function. Call
