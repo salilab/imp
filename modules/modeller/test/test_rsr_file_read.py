@@ -6,6 +6,31 @@ import IMP.test
 import IMP.core
 import IMP.modeller
 
+def assertSimilarModellerIMPScores(tst, modeller_model, imp_atoms):
+    """Assert that Modeller and IMP give the same score and derivatives"""
+    modeller_energy = selection(modeller_model).energy()[0]
+    imp_score = imp_atoms.get_model().evaluate(True)
+    tst.assertInTolerance(modeller_energy, imp_score, 0.001)
+    for imp_atom, modeller_atom in zip(imp_atoms.get_leaves(),
+                                       modeller_model.atoms):
+        imp_deriv = IMP.core.XYZ(imp_atom).get_derivatives()
+        tst.assertInTolerance(imp_deriv[0], modeller_atom.dvx, 1e-2,
+                              "x derivative for atom %s differs between "
+                              "Modeller (%f) and IMP (%f)" \
+                              % (str(modeller_atom), modeller_atom.dvx,
+                                 imp_deriv[0]))
+        tst.assertInTolerance(imp_deriv[1], modeller_atom.dvy, 1e-2,
+                              "y derivative for atom %s differs between "
+                              "Modeller (%f) and IMP (%f)" \
+                              % (str(modeller_atom), modeller_atom.dvy,
+                                 imp_deriv[1]))
+        tst.assertInTolerance(imp_deriv[2], modeller_atom.dvz, 1e-2,
+                              "z derivative for atom %s differs between "
+                              "Modeller (%f) and IMP (%f)" \
+                              % (str(modeller_atom), modeller_atom.dvz,
+                                 imp_deriv[2]))
+
+
 class ModellerRestraintsTests(IMP.test.TestCase):
 
     def remove_atom_types(self, hierarchy):
@@ -14,30 +39,6 @@ class ModellerRestraintsTests(IMP.test.TestCase):
         k = IMP.atom.CHARMMAtom.get_charmm_type_key()
         for a in atoms:
             a.get_particle().remove_attribute(k)
-
-    def assertSimilarModellerIMPScores(self, modeller_model, imp_atoms):
-        """Assert that Modeller and IMP give the same score and derivatives"""
-        modeller_energy = selection(modeller_model).energy()[0]
-        imp_score = imp_atoms.get_model().evaluate(True)
-        self.assertInTolerance(modeller_energy, imp_score, 0.001)
-        for imp_atom, modeller_atom in zip(imp_atoms.get_leaves(),
-                                           modeller_model.atoms):
-            imp_deriv = IMP.core.XYZ(imp_atom).get_derivatives()
-            self.assertInTolerance(imp_deriv[0], modeller_atom.dvx, 1e-2,
-                                   "x derivative for atom %s differs between "
-                                   "Modeller (%f) and IMP (%f)" \
-                                   % (str(modeller_atom), modeller_atom.dvx,
-                                      imp_deriv[0]))
-            self.assertInTolerance(imp_deriv[1], modeller_atom.dvy, 1e-2,
-                                   "y derivative for atom %s differs between "
-                                   "Modeller (%f) and IMP (%f)" \
-                                   % (str(modeller_atom), modeller_atom.dvy,
-                                      imp_deriv[1]))
-            self.assertInTolerance(imp_deriv[2], modeller_atom.dvz, 1e-2,
-                                   "z derivative for atom %s differs between "
-                                   "Modeller (%f) and IMP (%f)" \
-                                   % (str(modeller_atom), modeller_atom.dvz,
-                                      imp_deriv[2]))
 
     def test_read_static_restraints(self):
         """Check loading of Modeller static restraints"""
@@ -122,7 +123,7 @@ class ModellerRestraintsTests(IMP.test.TestCase):
             m.add_restraint(rset)
             for rsr in loader.load_static_restraints():
                 rset.add_restraint(rsr)
-            self.assertSimilarModellerIMPScores(modmodel, protein)
+            assertSimilarModellerIMPScores(self, modmodel, protein)
             rset.set_weight(0)
 
     def test_rsr_file_read(self):
@@ -145,7 +146,7 @@ class ModellerRestraintsTests(IMP.test.TestCase):
         self.assert_(isinstance(r, list))
         for rsr in r:
             m.add_restraint(rsr)
-        self.assertSimilarModellerIMPScores(modmodel, protein)
+        assertSimilarModellerIMPScores(self, modmodel, protein)
 
         # Need atoms before loading restraints
         m = IMP.Model()
@@ -156,7 +157,7 @@ class ModellerRestraintsTests(IMP.test.TestCase):
         protein = loader.load_atoms(m)
         for rsr in loader.load_static_restraints_file('test.rsr'):
             m.add_restraint(rsr)
-        self.assertSimilarModellerIMPScores(modmodel, protein)
+        assertSimilarModellerIMPScores(self, modmodel, protein)
         os.unlink('test.rsr')
 
     def test_bond_restraints(self):
@@ -185,7 +186,7 @@ class ModellerRestraintsTests(IMP.test.TestCase):
         cont.add_particles(bonds)
         bss = IMP.atom.BondSingletonScore(IMP.core.Harmonic(0,1))
         m.add_restraint(IMP.container.SingletonsRestraint(bss, cont))
-        self.assertSimilarModellerIMPScores(modmodel, protein)
+        assertSimilarModellerIMPScores(self, modmodel, protein)
 
     def test_improper_restraints(self):
         """Check improper restraints against Modeller"""
@@ -213,7 +214,7 @@ class ModellerRestraintsTests(IMP.test.TestCase):
         cont.add_particles(bonds)
         bss = IMP.atom.ImproperSingletonScore(IMP.core.Harmonic(0,1))
         m.add_restraint(IMP.container.SingletonsRestraint(bss, cont))
-        self.assertSimilarModellerIMPScores(modmodel, protein)
+        assertSimilarModellerIMPScores(self, modmodel, protein)
 
     def test_angle_restraints(self):
         """Check angle restraints against Modeller"""
@@ -242,7 +243,7 @@ class ModellerRestraintsTests(IMP.test.TestCase):
         cont.add_particles(angles)
         bss = IMP.atom.AngleSingletonScore(IMP.core.Harmonic(0,1))
         m.add_restraint(IMP.container.SingletonsRestraint(bss, cont))
-        self.assertSimilarModellerIMPScores(modmodel, protein)
+        assertSimilarModellerIMPScores(self, modmodel, protein)
 
     def test_dihedral_restraints(self):
         """Check dihedral restraints against Modeller"""
@@ -271,7 +272,7 @@ class ModellerRestraintsTests(IMP.test.TestCase):
         cont.add_particles(dihedrals)
         bss = IMP.atom.DihedralSingletonScore()
         m.add_restraint(IMP.container.SingletonsRestraint(bss, cont))
-        self.assertSimilarModellerIMPScores(modmodel, protein)
+        assertSimilarModellerIMPScores(self, modmodel, protein)
 
 if __name__ == '__main__':
     unittest.main()
