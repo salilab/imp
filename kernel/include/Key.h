@@ -185,6 +185,7 @@ public:
 #endif
 };
 
+#ifndef IMP_DOXYGEN
 
 template <unsigned int ID, bool LA>
 std::ostream &operator<<(std::ostream &out, KeyBase<ID, LA> k) {
@@ -215,6 +216,7 @@ std::vector<std::string> KeyBase<ID, LA>::get_all_strings()
   }
   return str;
 }
+#endif
 
 IMP_END_NAMESPACE
 
