@@ -84,11 +84,13 @@ public:
    */
   void CreateVoidMap(const int &nx,const int &ny,const int &nz);
 
+#ifndef IMP_DOXYGEN
 #ifndef IMP_DEPRECATED
   /** \deprecated Use read() instead.*/
   void Read(const char *filename, MapReaderWriter &reader);
   /** \deprecated Use write() instead.*/
   void Write(const char *filename,MapReaderWriter &writer);
+#endif
 #endif
 
 
