@@ -21,7 +21,7 @@ def Website(env, url, name):
     return "\\external{"+url +", " + name+"}"
 
 def StandardLicense(env):
-    return "None yet"
+    return "LGPL"
 
 def StandardPublications(env):
     return [env.Publication(authors=["Daniel Russel", "Keren Lasker", "Ben Webb", "Dina Schneidman", "Javier Valesquez-Muriel", "Andrej Sali"],
