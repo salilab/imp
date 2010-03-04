@@ -23,7 +23,7 @@ IMPATOM_BEGIN_NAMESPACE
 /** Each atom has a name (unique to the residue), a CHARMM type (used to
     look up parameters such as radii and bond lengths in the parameter file)
     and an electrostatic charge.
-    \seealso CHARMMAtom
+    \see CHARMMAtom
  */
 class CHARMMAtomTopology {
   std::string name_;
@@ -380,13 +380,13 @@ public:
 
   //! Add CHARMM atom types to the given Hierarchy using this topology.
   /** The primary sequence of the Hierarchy must match that of the topology.
-      \seealso CHARMMAtom.
+      \see CHARMMAtom.
    */
   void add_atom_types(Hierarchy hierarchy) const;
 
   //! Add CHARMM charges to the given Hierarchy using this topology.
   /** The primary sequence of the Hierarchy must match that of the topology.
-      \seealso Charged.
+      \see Charged.
    */
   void add_charges(Hierarchy hierarchy) const;
 
