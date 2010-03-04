@@ -45,7 +45,7 @@ public:
   virtual DerivativePair operator()(double score, double deriv,
                                     double distance) const = 0;
 
-  IMP_REF_COUNTED_DESTRUCTOR(SmoothingFunction)
+  IMP_REF_COUNTED_DESTRUCTOR(SmoothingFunction);
 };
 
 

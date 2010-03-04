@@ -45,7 +45,7 @@ public:
   virtual ObjectsTemp get_input_objects(const ParticlePair& p) const=0;
   /** @} */
 
-  IMP_REF_COUNTED_DESTRUCTOR(PairFilter)
+  IMP_REF_COUNTED_DESTRUCTOR(PairFilter);
 };
 
 IMP_OUTPUT_OPERATOR(PairFilter);

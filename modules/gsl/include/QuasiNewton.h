@@ -23,7 +23,7 @@ class IMPGSLEXPORT QuasiNewton: public GSLOptimizer
 public:
   QuasiNewton(Model *m=NULL);
 
-  IMP_OPTIMIZER(QuasiNewton)
+  IMP_OPTIMIZER(QuasiNewton);
 };
 
 

@@ -62,7 +62,7 @@ public:
     out << "Mover doesn't implement show " << std::endl;
   }
 
-  IMP_REF_COUNTED_DESTRUCTOR(Mover)
+  IMP_REF_COUNTED_DESTRUCTOR(Mover);
 };
 
 IMP_OUTPUT_OPERATOR(Mover);

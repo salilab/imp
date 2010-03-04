@@ -85,12 +85,15 @@ num_sol=3
 IMP.em.local_rigid_fitting(
    prot_rb,IMP.core.XYZR.get_default_radius_key(),
    IMP.atom.Mass.get_mass_key(),
-   dmap,fitting_sols,None,num_sol,10,20)
+   dmap,fitting_sols,None,num_sol,1,1)
 
-
+print "returned are"
+for fs in range(0, fr.get_number_of_solutions()):
+    print fr.get_score(fs), fs.get_transformation(fs), " -- ",
+print "done"
 ## 5.2 report best result
 ### 5.2.1 transform the protein to the preferred transformation
-for i in range(num_sol):
+for i in range(fr.get_number_of_solutions()):
     #IMP.core.transform(prot_rb,fitting_sols.get_transformation(i))
     prot_rb.set_transformation(fitting_sols.get_transformation(i))
     m.evaluate(None)#to make sure the transformation was applied

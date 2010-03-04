@@ -4840,3 +4840,48 @@ xyz decorator huge,1344.710000,3.126383e+11
 xyz particle huge,1193.230000,3.126383e+11
 xyz vector huge,218.650000,3.126383e+11
 xyz vector space huge,219.290000,3.126383e+11
+date,  03/04/10
+mode,fast
+bd 100,0.000032,0.000000e+00
+bd 1000,0.000406,0.000000e+00
+cpf quadratic 1000 0.1,0.005495,9.100000e+02
+cpf quadratic 1000 0.5,0.006631,1.327040e+05
+cpf quadratic 10000 0.1,0.552000,1.545000e+03
+cpf quadratic 10000 0.5,0.670000,1.428560e+05
+cpf box 1000 0.1,0.000608,8.218000e+03
+cpf box 1000 0.5,0.001608,6.095600e+05
+cpf box 10000 0.1,0.020833,3.684000e+04
+cpf box 100000 0.01,0.239091,3.630000e+02
+cpf grid 1000 0.1,0.007205,6.940000e+02
+cpf grid 1000 0.5,0.006868,1.470560e+05
+cpf grid 10000 0.1,0.102400,7.775000e+03
+cpf grid 100000 0.01,1.760000,7.200000e+01
+connectivity slow,0.770000,2.202241e-02
+connectivity fast,0.045818,9.831280e+04
+connectivity fast mst,0.025510,8.342914e-01
+container list in 4950,0.000141,0.000000e+00
+container list out 4950,0.000185,0.000000e+00
+container list in 499500,0.014368,0.000000e+00
+container list out 499500,0.018731,0.000000e+00
+container set in 2450,0.000071,0.000000e+00
+container set out 2450,0.000145,0.000000e+00
+container set in 249500,0.007184,0.000000e+00
+container set out 249500,0.014706,0.000000e+00
+changing nonincremental,0.000006,6.552593e+08
+changing incremental,0.000010,6.552593e+08
+changing nonincremental score,0.000009,1.074911e+09
+changing incremental score,0.000018,5.502353e+08
+col quadratic 10000 0.1,1.644844,3.025686e+06
+col quadratic 10000 0.5,2.149844,4.962146e+06
+col box 10000 0.1,0.849844,4.536323e+06
+rotation (cache),0.000083,-1.861328e+05
+rotation (nocache),0.000150,-6.420066e+05
+xyz decorator small,0.040000,3.001647e+07
+xyz particle small,0.040000,3.001647e+07
+xyz vector small,0.030000,3.001647e+07
+xyz vector space small,0.040000,3.001647e+07
+xyz decorator large,1.140000,1.693901e+09
+xyz particle large,1.150000,1.693901e+09
+xyz vector large,1.140000,1.693901e+09
+xyz vector space large,1.150000,1.693901e+09
+mode,release

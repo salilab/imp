@@ -84,7 +84,7 @@ public:
     get_output_containers(Particle* vt) const =0;
 };
 
-IMP_OUTPUT_OPERATOR(SingletonModifier)
+IMP_OUTPUT_OPERATOR(SingletonModifier);
 
 
 //! A collection

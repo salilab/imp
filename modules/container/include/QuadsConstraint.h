@@ -64,7 +64,7 @@ public:
     f_=f;
   }
 
-  IMP_CONSTRAINT(QuadsConstraint)
+  IMP_CONSTRAINT(QuadsConstraint);
 };
 
 

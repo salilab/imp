@@ -150,7 +150,7 @@ public:
   }
 #endif
 
-  IMP_DECORATOR(Fragment, Hierarchy)
+  IMP_DECORATOR(Fragment, Hierarchy);
 };
 
 IMP_DECORATORS(Fragment, Hierarchies);

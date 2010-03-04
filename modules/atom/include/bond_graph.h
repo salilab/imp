@@ -60,7 +60,7 @@ class IMPATOMEXPORT BondGraph{
   mutable IntKey index_key_;
 
 public:
-  IMP_NO_DOXYGEN(Pointer<container::ListSingletonContainer> sc_;)
+  IMP_NO_DOXYGEN(Pointer<container::ListSingletonContainer> sc_);
 
   //! The graph is on the leaves of the atom::Hierarchy
   /** All the leaves will be made Bonded particles if they are not already.

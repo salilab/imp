@@ -107,8 +107,6 @@ class IMPDISPLAYEXPORT Writer: public GeometryProcessor, public Object
   virtual void on_open()=0;
 };
 
-IMP_OUTPUT_OPERATOR(Writer)
-
 /** Create an appropriate writer based on the file suffix. */
 IMPDISPLAYEXPORT Writer *create_writer(std::string filename);
 

@@ -45,7 +45,7 @@ public:
   virtual ObjectsTemp get_input_objects(const ParticleTriplet& p) const=0;
   /** @} */
 
-  IMP_REF_COUNTED_DESTRUCTOR(TripletFilter)
+  IMP_REF_COUNTED_DESTRUCTOR(TripletFilter);
 };
 
 IMP_OUTPUT_OPERATOR(TripletFilter);

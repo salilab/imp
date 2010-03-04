@@ -55,7 +55,7 @@ public:
     f_=f;
   }
 
-  IMP_CONSTRAINT(GroupnameConstraint)
+  IMP_CONSTRAINT(GroupnameConstraint);
 };
 
 

@@ -82,7 +82,7 @@ public:
   virtual ContainersTemp
     get_input_containers(const ParticleQuad& vt) const =0;
 
-  IMP_REF_COUNTED_DESTRUCTOR(QuadScore)
+  IMP_REF_COUNTED_DESTRUCTOR(QuadScore);
 };
 
 IMP_OBJECTS(QuadScore);

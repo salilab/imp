@@ -82,7 +82,7 @@ public:
   virtual ContainersTemp
     get_input_containers(Particle* vt) const =0;
 
-  IMP_REF_COUNTED_DESTRUCTOR(SingletonScore)
+  IMP_REF_COUNTED_DESTRUCTOR(SingletonScore);
 };
 
 IMP_OBJECTS(SingletonScore);

@@ -221,7 +221,7 @@ class IMPATOMEXPORT Atom:
 {
 public:
 
-  IMP_DECORATOR(Atom, Hierarchy)
+  IMP_DECORATOR(Atom, Hierarchy);
 
   Particle* get_particle() const {
     return Hierarchy::get_particle();

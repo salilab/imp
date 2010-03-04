@@ -215,7 +215,7 @@ class IMPATOMEXPORT Hierarchy: public ::IMP::core::Hierarchy
 public:
 
   // swig gets unhappy if it is private
-  IMP_NO_DOXYGEN(typedef Hierarchy This;)
+  IMP_NO_DOXYGEN(typedef Hierarchy This);
 
   //! The traits must match
   Hierarchy(IMP::core::Hierarchy h): P(h) {

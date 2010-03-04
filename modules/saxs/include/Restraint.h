@@ -47,7 +47,7 @@ class IMPSAXSEXPORT Restraint : public IMP::Restraint
   */
   Restraint(const Particles& particles, const Profile& exp_profile);
 
-  IMP_RESTRAINT(Restraint)
+  IMP_RESTRAINT(Restraint);
 
  private:
   void compute_profile(Profile& model_profile);

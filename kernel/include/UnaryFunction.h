@@ -39,7 +39,7 @@ public:
    */
   virtual DerivativePair evaluate_with_derivative(double feature) const = 0;
 
-  IMP_REF_COUNTED_DESTRUCTOR(UnaryFunction)
+  IMP_REF_COUNTED_DESTRUCTOR(UnaryFunction);
 };
 
 IMP_END_NAMESPACE

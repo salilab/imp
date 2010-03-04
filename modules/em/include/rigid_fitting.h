@@ -39,7 +39,12 @@ public:
     return fs[i].first;}
   Float get_score(int i) const {return fs[i].second;}
   void add_solution(const algebra::Transformation3D &t,Float score) {
-    fs.push_back(FittingSolution(t,score));}
+    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+      algebra::Vector3D v(1,2,3);
+      t.get_transformed(v);
+    }
+    fs.push_back(FittingSolution(t,score));
+  }
   //sort by scores
   void sort() {
     std::sort(fs.begin(),fs.end(),sort_by_cc());

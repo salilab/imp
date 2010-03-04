@@ -53,7 +53,7 @@ public:
   IMP_COMPARISONS_3(c_[0],c_[1], c_[2]);
 };
 
-IMP_OUTPUT_OPERATOR(Color)
+IMP_OUTPUT_OPERATOR(Color);
 
 
 #ifndef SWIG
@@ -79,7 +79,6 @@ inline std::ostream &operator<<(std::ostream &out, const CommasIO &s)
   s.v_.show(out, ", ");
   return out;
 }
-#endif
 
 //! Use this before outputing to delimited vector entries with a space
 /** std::cout << spaces_io(v);
@@ -102,7 +101,6 @@ inline CommasIO commas_io(const Color &v) {
   return CommasIO(v);
 }
 
-#if !defined(IMP_DOXYGEN)
 //! Multiply a color by a value less than 1
 /** \unstable{Color multiplication}
  */

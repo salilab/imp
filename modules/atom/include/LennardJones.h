@@ -26,7 +26,7 @@ IMPATOM_BEGIN_NAMESPACE
 class IMPATOMEXPORT LennardJones: public IMP::core::XYZR
 {
 public:
-  IMP_DECORATOR(LennardJones, IMP::core::XYZR)
+  IMP_DECORATOR(LennardJones, IMP::core::XYZR);
 
   /** Create a decorator with the passed well depth.
       The particle is assumed to already have x,y,z,r attributes.

@@ -45,7 +45,7 @@ public:
   virtual ObjectsTemp get_input_objects(Particle* p) const=0;
   /** @} */
 
-  IMP_REF_COUNTED_DESTRUCTOR(SingletonFilter)
+  IMP_REF_COUNTED_DESTRUCTOR(SingletonFilter);
 };
 
 IMP_OUTPUT_OPERATOR(SingletonFilter);

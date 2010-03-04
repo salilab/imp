@@ -66,7 +66,7 @@ public:
     return get_particle()->get_value(get_name_key());
   }
   /* Declare the basic constructors and the cast function.*/
-  IMP_DECORATOR(ExampleDecorator, Decorator)
+  IMP_DECORATOR(ExampleDecorator, Decorator);
 };
 
 // Make it so the C++ operator<< can be used.

@@ -47,7 +47,7 @@ class WeakPointer
     //IMP_CHECK_OBJECT(o_);
   }
 protected:
-  IMP_NO_DOXYGEN(O* o_;)
+  IMP_NO_DOXYGEN(O* o_);
 public:
   //! initialize to NULL
   WeakPointer(): o_(NULL) {}

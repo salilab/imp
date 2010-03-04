@@ -84,7 +84,7 @@ public:
     get_output_containers(const ParticleQuad& vt) const =0;
 };
 
-IMP_OUTPUT_OPERATOR(QuadModifier)
+IMP_OUTPUT_OPERATOR(QuadModifier);
 
 
 //! A collection

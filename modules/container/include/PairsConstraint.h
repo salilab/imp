@@ -64,7 +64,7 @@ public:
     f_=f;
   }
 
-  IMP_CONSTRAINT(PairsConstraint)
+  IMP_CONSTRAINT(PairsConstraint);
 };
 
 

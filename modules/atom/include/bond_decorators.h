@@ -39,7 +39,7 @@ class IMPATOMEXPORT Bond: public Decorator
 {
   friend class Bonded;
 public:
-  IMP_DECORATOR(Bond, Decorator)
+  IMP_DECORATOR(Bond, Decorator);
 
   //! Return true if the particle is a bond.
   static bool particle_is_instance(Particle *p) {
@@ -112,7 +112,7 @@ class IMPATOMEXPORT Bonded: public Decorator
     }
   };
 public:
-  IMP_DECORATOR(Bonded, Decorator)
+  IMP_DECORATOR(Bonded, Decorator);
   //! return true if it is a bonded particle
   static bool particle_is_instance(Particle *p) {
     return IMP::core::internal::graph_is_node(p,

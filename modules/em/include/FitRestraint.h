@@ -50,9 +50,9 @@ public:
     return model_dens_map_;
   }
 
-  IMP_RESTRAINT(FitRestraint)
+  IMP_RESTRAINT(FitRestraint);
 
-  IMP_LIST(private, Particle, particle, Particle*, Particles)
+  IMP_LIST(private, Particle, particle, Particle*, Particles);
 private:
   IMP::internal::OwnerPointer<DensityMap> target_dens_map_;
   IMP::internal::OwnerPointer<SampledDensityMap> model_dens_map_;

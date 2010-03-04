@@ -84,7 +84,7 @@ public:
     get_output_containers(const ParticlePair& vt) const =0;
 };
 
-IMP_OUTPUT_OPERATOR(PairModifier)
+IMP_OUTPUT_OPERATOR(PairModifier);
 
 
 //! A collection

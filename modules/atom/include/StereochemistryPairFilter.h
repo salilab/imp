@@ -39,7 +39,7 @@ public:
     dihedrals_ = dihedrals; rebuild_map();
   }
 
-  IMP_PAIR_FILTER(StereochemistryPairFilter)
+  IMP_PAIR_FILTER(StereochemistryPairFilter);
 };
 
 

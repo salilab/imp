@@ -35,7 +35,8 @@ class IMPEXAMPLEEXPORT ExampleSingletonModifier: public SingletonModifier
 public:
   ExampleSingletonModifier(const algebra::BoundingBoxD<3> &bb);
 
-  IMP_SINGLETON_MODIFIER(ExampleSingletonModifier)
+  // note, Doxygen wants a semicolon at the end of macro lines
+  IMP_SINGLETON_MODIFIER(ExampleSingletonModifier);
 };
 
 

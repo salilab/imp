@@ -91,7 +91,7 @@ public:
   inline FloatKey  get_radius_key() const {return radius_key_;}
 
 
-  IMP_REF_COUNTED_DESTRUCTOR(SampledDensityMap)
+  IMP_REF_COUNTED_DESTRUCTOR(SampledDensityMap);
 protected:
   //! Calculate the parameters of the particles bounding box
   /** \param[in]  ps     particles with XYZ, radius and weight attributes

@@ -32,7 +32,7 @@ class IMPALGEBRAEXPORT Transformation2D
 {
 public:
   //! public for swig
-  IMP_NO_DOXYGEN(typedef Transformation2D This;)
+  IMP_NO_DOXYGEN(typedef Transformation2D This);
 
   //! constructor. An invalid transformation is built
   Transformation2D(){}
@@ -127,7 +127,7 @@ private:
 };
 
 
-IMP_OUTPUT_OPERATOR(Transformation2D)
+IMP_OUTPUT_OPERATOR(Transformation2D);
 
 //! Returns a transformation that does not do anything
 /**
