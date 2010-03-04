@@ -23,7 +23,7 @@ Representation of the structure in \imp is via a collection of
 Particle objects. However, since particles are general purpose, they
 provide a basic set of tools for managing the data (eg
 IMP::Particle::add_attribute(), IMP::Particle::get_value()
-etc). Decorators wrap (or "decorator") particles to provide a much
+etc). Decorators wrap (or \quote(decorate)) particles to provide a much
 richer interface. For example, most particles have Cartesian
 coordinates. The class IMP::core::XYZ decorates such a particle to
 provide functions to get and set the Cartesian coordinates as well as
