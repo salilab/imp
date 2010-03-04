@@ -2,7 +2,7 @@ Import('env')
 
 env.IMPModuleDoc(env.IMPModuleGetDocs(),
                  authors= ['Daniel Russel', 'Keren Lasker', 'Ben Webb',
-                           'Javier Angel', 'Velazquez-Muriel'],
+                           'Javier Angel Velazquez-Muriel'],
                  brief='MODULENAME contains general purpose algebraic and geometric methods.',
                  overview="""MODULENAME contains general purpose algebraic and geometric methods that are expected to be used by a wide variety of \\imp modules.
 
