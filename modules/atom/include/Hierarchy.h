@@ -315,7 +315,7 @@ public:
       Residue(get_particle()), if not it returns Residue().
       @{
    */
-  IMP_FOREACH_HIERARCHY_TYPE(IMP_GET_AS_DECL)
+  IMP_FOREACH_HIERARCHY_TYPE(IMP_GET_AS_DECL);
   /** @} */
 
   //! Get the molecular hierarchy HierararchyTraits.
