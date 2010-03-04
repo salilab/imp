@@ -18,7 +18,7 @@ IMP_BEGIN_NAMESPACE
 /** \name Model IO
 
     Models can be written to files in an easy-to-read
-    file format based on "name: value" pairs on separate lines with
+    file format based on &#8220;name: value&#8221; pairs on separate lines with
     indentation used to indicated nesting (as in python). The functions
     take a list of the particles to write/read. The particles
     need to be provided in the same order for reading and writing.
@@ -29,7 +29,7 @@ IMP_BEGIN_NAMESPACE
     silently ignoring such attributes if desired.
 
     \note If you are just interested in saving the state of a model during
-    runtime, set IMP::ConfigurationSet instead. It should be
+    runtime, use an IMP::ConfigurationSet instead. It should be
     substantially faster.
     @{
 */

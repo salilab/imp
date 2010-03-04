@@ -413,8 +413,8 @@ The first set of questions to answer are
 
 - Should the functionality be written in C++ or Python? In general, we
   suggest C++ if you are comfortable programming in that language as
-  that makes the functionality available to more people. See \ref
-  cpppythondifferences "Python/C++ differences" for more considerations.
+  that makes the functionality available to more people. See
+  \ref cpppythondifferences "Python/C++ differences" for more considerations.
 
 You are encouraged to post to the
 \impdev to find help
