@@ -43,7 +43,7 @@ public:
     terms_.push_back(term);
   }
 
-  IMP_RESTRAINT(MultipleBinormalRestraint)
+  IMP_RESTRAINT(MultipleBinormalRestraint);
 };
 
 //! A single binormal term in a MultipleBinormalRestraint.

@@ -39,7 +39,7 @@ public:
     get_particle()->set_value(get_mass_key(), d);
   }
 
-  IMP_DECORATOR(Mass, Decorator)
+  IMP_DECORATOR(Mass, Decorator);
 
   static FloatKey get_mass_key();
 };

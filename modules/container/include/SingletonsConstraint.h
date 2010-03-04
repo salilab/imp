@@ -64,7 +64,7 @@ public:
     f_=f;
   }
 
-  IMP_CONSTRAINT(SingletonsConstraint)
+  IMP_CONSTRAINT(SingletonsConstraint);
 };
 
 

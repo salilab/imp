@@ -44,7 +44,7 @@ public:
   //! Force writing the a file with the given name
   void write(TextOutput file_name) const;
 
-  IMP_PERIODIC_OPTIMIZER_STATE(LogOptimizerState)
+  IMP_PERIODIC_OPTIMIZER_STATE(LogOptimizerState);
 };
 
 

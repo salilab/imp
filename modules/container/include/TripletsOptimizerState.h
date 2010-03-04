@@ -40,7 +40,7 @@ public:
   TripletsOptimizerState(TripletContainer *c, TripletModifier *gf,
                            std::string name="TripletsOptimizerState %1%");
 
-  IMP_OPTIMIZER_STATE(TripletsOptimizerState)
+  IMP_OPTIMIZER_STATE(TripletsOptimizerState);
 };
 
 

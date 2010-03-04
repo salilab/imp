@@ -64,7 +64,7 @@ public:
     f_=f;
   }
 
-  IMP_CONSTRAINT(TripletsConstraint)
+  IMP_CONSTRAINT(TripletsConstraint);
 };
 
 

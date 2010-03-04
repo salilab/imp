@@ -30,7 +30,7 @@ class IMPATOMEXPORT Diffusion:
   public IMP::core::XYZ
 {
  public:
-  IMP_DECORATOR(Diffusion, IMP::core::XYZ)
+  IMP_DECORATOR(Diffusion, IMP::core::XYZ);
 
   /** Create a decorator with the passed coordinates and D.
       D is assumed to be in cm2/sec.

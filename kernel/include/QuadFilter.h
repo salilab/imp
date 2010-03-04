@@ -45,7 +45,7 @@ public:
   virtual ObjectsTemp get_input_objects(const ParticleQuad& p) const=0;
   /** @} */
 
-  IMP_REF_COUNTED_DESTRUCTOR(QuadFilter)
+  IMP_REF_COUNTED_DESTRUCTOR(QuadFilter);
 };
 
 IMP_OUTPUT_OPERATOR(QuadFilter);

@@ -55,7 +55,7 @@ public:
     f_=f;
   }
 
-  IMP_CONSTRAINT(TripletConstraint)
+  IMP_CONSTRAINT(TripletConstraint);
 };
 
 

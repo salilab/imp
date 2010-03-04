@@ -36,7 +36,7 @@ public:
     return lsc;
   }
 
-  IMP_PAIR_CONTAINER(BondPairContainer)
+  IMP_PAIR_CONTAINER(BondPairContainer);
 };
 
 

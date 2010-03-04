@@ -26,7 +26,7 @@ public:
   //! no arguments
   BondedPairFilter();
 
-  IMP_PAIR_FILTER(BondedPairFilter)
+  IMP_PAIR_FILTER(BondedPairFilter);
 };
 
 

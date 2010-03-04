@@ -22,7 +22,7 @@ IMPATOM_BEGIN_NAMESPACE
 class IMPATOMEXPORT CHARMMAtom : public Atom
 {
 public:
-  IMP_DECORATOR(CHARMMAtom, Atom)
+  IMP_DECORATOR(CHARMMAtom, Atom);
 
   /** Create a decorator with the passed CHARMM type.
       The particle is assumed to already have all atom attributes.

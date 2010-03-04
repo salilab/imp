@@ -82,7 +82,7 @@ public:
   virtual ContainersTemp
     get_input_containers(const ParticleTriplet& vt) const =0;
 
-  IMP_REF_COUNTED_DESTRUCTOR(TripletScore)
+  IMP_REF_COUNTED_DESTRUCTOR(TripletScore);
 };
 
 IMP_OBJECTS(TripletScore);

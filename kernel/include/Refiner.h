@@ -74,7 +74,7 @@ public:
   //! Return the set of containers used when refining
   virtual ContainersTemp get_input_containers(Particle *) const=0;
 
-  IMP_REF_COUNTED_DESTRUCTOR(Refiner)
+  IMP_REF_COUNTED_DESTRUCTOR(Refiner);
 };
 //! a collection of Refiner objects
 typedef VectorOfRefCounted<Refiner*> Refiners;

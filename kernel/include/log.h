@@ -149,7 +149,7 @@ inline bool is_log_output(LogLevel l)
       expr;                                                       \
       IMP::add_to_log(IMP_STREAM.str());                          \
     }
-#endif
+#else // IMP_DOXYGEN
 
 #if IMP_BUILD < IMP_FAST
 
@@ -173,6 +173,7 @@ inline bool is_log_output(LogLevel l)
 #define IMP_LOG_WRITE(l,e)
 #define IMP_IF_LOG(l) if (false)
 #endif
+#endif // else on IMP_DXOYGEN
 
 
 #ifdef IMP_DOXYGEN

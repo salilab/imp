@@ -49,7 +49,7 @@ class IMPDISPLAYEXPORT PymolWriter: public Writer
 
 public:
 
-  IMP_WRITER(PymolWriter)
+  IMP_WRITER(PymolWriter);
 };
 
 

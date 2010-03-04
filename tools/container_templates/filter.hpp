@@ -45,7 +45,7 @@ public:
   virtual ObjectsTemp get_input_objects(PassValue p) const=0;
   /** @} */
 
-  IMP_REF_COUNTED_DESTRUCTOR(GroupnameFilter)
+  IMP_REF_COUNTED_DESTRUCTOR(GroupnameFilter);
 };
 
 IMP_OUTPUT_OPERATOR(GroupnameFilter);

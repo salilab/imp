@@ -29,7 +29,7 @@ public:
   DihedralRestraint(UnaryFunction* score_func,
                     Particle* p1, Particle* p2, Particle* p3, Particle *p4);
 
-  IMP_RESTRAINT(DihedralRestraint)
+  IMP_RESTRAINT(DihedralRestraint);
 
 private:
   IMP::internal::OwnerPointer<UnaryFunction> score_func_;

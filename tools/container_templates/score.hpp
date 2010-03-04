@@ -82,7 +82,7 @@ public:
   virtual ContainersTemp
     get_input_containers(PassValue vt) const =0;
 
-  IMP_REF_COUNTED_DESTRUCTOR(GroupnameScore)
+  IMP_REF_COUNTED_DESTRUCTOR(GroupnameScore);
 };
 
 IMP_OBJECTS(GroupnameScore);

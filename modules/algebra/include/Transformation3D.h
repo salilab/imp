@@ -29,7 +29,7 @@ class IMPALGEBRAEXPORT Transformation3D
 {
 public:
   // public for swig
-  IMP_NO_DOXYGEN(typedef Transformation3D This;)
+  IMP_NO_DOXYGEN(typedef Transformation3D This);
   //! construct an invalid transformation
   Transformation3D(){}
   /** basic constructor*/
@@ -87,7 +87,7 @@ private:
   Rotation3D rot_;  //rotation
 };
 
-IMP_OUTPUT_OPERATOR(Transformation3D)
+IMP_OUTPUT_OPERATOR(Transformation3D);
 
 
 //! Return a transformation that does not do anything

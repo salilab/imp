@@ -65,7 +65,7 @@ public:
     return get_particle()->get_value(get_data().end);
   }
 
-  IMP_DECORATOR(Domain, Hierarchy)
+  IMP_DECORATOR(Domain, Hierarchy);
 };
 
 IMP_DECORATORS(Domain, Hierarchies);

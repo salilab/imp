@@ -29,7 +29,7 @@ public:
   BoundingBox3DSingletonScore(UnaryFunction *f,
                             const algebra::BoundingBoxD<3> &bb);
 
-  IMP_SIMPLE_SINGLETON_SCORE(BoundingBox3DSingletonScore)
+  IMP_SIMPLE_SINGLETON_SCORE(BoundingBox3DSingletonScore);
 };
 
 

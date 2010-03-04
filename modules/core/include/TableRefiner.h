@@ -35,7 +35,7 @@ public:
   //! Set the mapping for a particular particle
   void set_particle(Particle *p, const Particles &ps);
 
-  IMP_REFINER(TableRefiner)
+  IMP_REFINER(TableRefiner);
 };
 
 

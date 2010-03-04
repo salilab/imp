@@ -64,7 +64,7 @@ public:
   }
   /** @} */
 
-  IMP_OPTIMIZER(Simplex)
+  IMP_OPTIMIZER(Simplex);
 };
 
 

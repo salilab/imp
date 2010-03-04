@@ -36,7 +36,7 @@ public:
   /** Use r0 for the first passed particle and r1 for the second. */
   RigidBodyDistancePairScore(PairScore *ps, Refiner *r0, Refiner *r1);
 
-  IMP_PAIR_SCORE(RigidBodyDistancePairScore)
+  IMP_PAIR_SCORE(RigidBodyDistancePairScore);
 };
 
 

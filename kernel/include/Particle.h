@@ -461,7 +461,7 @@ class IMPEXPORT Particle : public Container
 };
 
 
-IMP_OUTPUT_OPERATOR(Particle)
+IMP_OUTPUT_OPERATOR(Particle);
 
 inline Float Particle::get_derivative(FloatKey name) const
 {
@@ -598,7 +598,7 @@ public:
     });
 };
 
-IMP_OUTPUT_OPERATOR_D(ParticleTuple)
+IMP_OUTPUT_OPERATOR_D(ParticleTuple);
 
 #if !defined(IMP_DOXYGEN)
 

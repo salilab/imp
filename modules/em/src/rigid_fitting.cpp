@@ -137,6 +137,14 @@ void local_rigid_fitting_around_point(
    optimize(number_of_optimization_runs, number_of_mc_steps,
             anchor_centroid, rb, opt, fr, model);
    fr.sort();
+   IMP_IF_LOG(TERSE) {
+     IMP_LOG(TERSE, "Solutions are: ");
+     for (unsigned int i=0; i < fr.get_number_of_solutions(); ++i) {
+       IMP_LOG(TERSE, fr.get_score(i) << " " << fr.get_transformation(i)
+               << " -- ");
+     }
+     IMP_LOG(TERSE, std::endl);
+   }
     //remove restraints
     model->remove_restraint(rsrs);
     IMP_LOG(TERSE,"end rigid fitting " <<std::endl);

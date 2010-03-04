@@ -84,7 +84,7 @@ public:
     get_output_containers(PassValue vt) const =0;
 };
 
-IMP_OUTPUT_OPERATOR(GroupnameModifier)
+IMP_OUTPUT_OPERATOR(GroupnameModifier);
 
 
 //! A collection

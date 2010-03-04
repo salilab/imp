@@ -29,9 +29,9 @@ public:
    */
   SimpleDiscreteRestraint(Model& model_, std::string restraint_filename,
                           Particle *p1, Particle *p2);
-  IMP_RESTRAINT(SimpleDiscreteRestraint)
+  IMP_RESTRAINT(SimpleDiscreteRestraint);
 
-  IMP_LIST(private, Particle, particle, Particle*, Particles)
+  IMP_LIST(private, Particle, particle, Particle*, Particles);
 protected:
   void load_restraints(std::string restraint_filename);
   Model *model;

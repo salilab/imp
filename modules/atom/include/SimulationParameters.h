@@ -38,7 +38,7 @@ IMPATOM_BEGIN_NAMESPACE
 class IMPATOMEXPORT SimulationParameters: public Decorator
 {
 public:
-  IMP_DECORATOR(SimulationParameters, Decorator)
+  IMP_DECORATOR(SimulationParameters, Decorator);
 
   /** Create a decorator. Bad constructor, be careful not to switch
       values.*/

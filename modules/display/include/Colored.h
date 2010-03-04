@@ -54,7 +54,7 @@ public:
 
   static FloatKeys get_color_keys();
 
-  IMP_DECORATOR(Colored, Decorator)
+  IMP_DECORATOR(Colored, Decorator);
 };
 
 

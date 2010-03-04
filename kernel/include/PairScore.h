@@ -82,7 +82,7 @@ public:
   virtual ContainersTemp
     get_input_containers(const ParticlePair& vt) const =0;
 
-  IMP_REF_COUNTED_DESTRUCTOR(PairScore)
+  IMP_REF_COUNTED_DESTRUCTOR(PairScore);
 };
 
 IMP_OBJECTS(PairScore);

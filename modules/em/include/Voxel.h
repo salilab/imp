@@ -29,7 +29,7 @@ class IMPEMEXPORT Voxel: public Decorator
   static const FloatKey get_density_key();
   static const FloatKeys get_keys();
 
-  IMP_DECORATOR(Voxel, Decorator)
+  IMP_DECORATOR(Voxel, Decorator);
 
   /** Create a decorator with the passed coordinates. */
   static Voxel setup_particle(Particle *p,

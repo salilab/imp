@@ -82,7 +82,7 @@ class IMPDISPLAYEXPORT BildWriter: public Writer
   }
 public:
 
-  IMP_WRITER(BildWriter)
+  IMP_WRITER(BildWriter);
 };
 
 

@@ -84,7 +84,7 @@ public:
     get_output_containers(const ParticleTriplet& vt) const =0;
 };
 
-IMP_OUTPUT_OPERATOR(TripletModifier)
+IMP_OUTPUT_OPERATOR(TripletModifier);
 
 
 //! A collection

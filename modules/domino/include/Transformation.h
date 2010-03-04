@@ -37,7 +37,7 @@ class IMPDOMINOEXPORT Transformation: public Decorator
   static const FloatKeys &get_rotation_keys();
   static const FloatKeys &get_translation_keys();
   static const IntKey &get_transformation_index_key();
-  IMP_DECORATOR(Transformation, Decorator)
+  IMP_DECORATOR(Transformation, Decorator);
 
   /** Create a decorator with the passed coordinates. */
   static Transformation setup_particle(Particle *p,

@@ -119,7 +119,7 @@ public:
   typedef Particle* ParticleP;
 #endif
 
-  IMP_NO_DOXYGEN(typedef Decorator This;)
+  IMP_NO_DOXYGEN(typedef Decorator This);
 
   IMP_COMPARISONS_1(particle_);
 
@@ -208,8 +208,8 @@ public:
   //! @}
 #endif
   IMP_NO_DOXYGEN(bool is_null() const {return !particle_;});
-  IMP_NO_DOXYGEN(typedef void (Decorator::*bool_type)() const;)
-  IMP_NO_DOXYGEN(void safe_bool_function() const {})
+  IMP_NO_DOXYGEN(typedef void (Decorator::*bool_type)() const);
+  IMP_NO_DOXYGEN(void safe_bool_function() const {});
 };
 
 
@@ -344,7 +344,7 @@ class Decorators: public ParentDecorators {
     }
   }
 
-  IMP_DECORATORS_METHODS(WrappedDecorator::particle_is_instance(p),,,)
+  IMP_DECORATORS_METHODS(WrappedDecorator::particle_is_instance(p),,,);
   public:
   explicit Decorators(const Particles &ps): ParentDecorators(ps) {
     check(ps.begin(), ps.end());
@@ -421,7 +421,7 @@ class DecoratorsWithTraits: public ParentDecorators {
     }, {
       std::swap(tr_, o.tr_);
       std::swap(has_traits_, o.has_traits_);
-    })
+    });
   public:
   explicit DecoratorsWithTraits(Traits tr): tr_(tr), has_traits_(true){}
   explicit DecoratorsWithTraits(WrappedDecorator d): ParentDecorators(1,d),

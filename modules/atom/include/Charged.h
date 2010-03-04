@@ -31,7 +31,7 @@ IMPATOM_BEGIN_NAMESPACE
 class IMPATOMEXPORT Charged: public IMP::core::XYZ
 {
 public:
-  IMP_DECORATOR(Charged, IMP::core::XYZ)
+  IMP_DECORATOR(Charged, IMP::core::XYZ);
 
   /** Create a decorator with the passed coordinates and charge.
    */

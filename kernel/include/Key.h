@@ -120,7 +120,7 @@ public:
     //return str_;
   }
 
-  IMP_COMPARISONS_1(str_)
+  IMP_COMPARISONS_1(str_);
 
   void show(std::ostream &out = std::cout) const {
     out << "\"" << get_string() << "\"";

@@ -126,7 +126,7 @@ IMPATOMEXPORT extern const ResidueType DTHY;
 class IMPATOMEXPORT Residue: public Hierarchy
 {
 public:
-  IMP_DECORATOR(Residue, Hierarchy)
+  IMP_DECORATOR(Residue, Hierarchy);
   //! Add the required attributes to the particle and create a Residue
   static Residue setup_particle(Particle *p, ResidueType t= UNK,
                                  int index=-1, int insertion_code = 32) {

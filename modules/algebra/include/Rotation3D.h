@@ -483,7 +483,7 @@ public:
     return v_[2];
   }
   IMP_SHOWABLE_INLINE({out << v_[0] << " " << v_[1]
-                           << " " << v_[2];})
+                           << " " << v_[2];});
 };
 
 
@@ -509,7 +509,7 @@ public:
   }
   IMP_SHOWABLE_INLINE({
       out << v_[0] << " " << v_[1] << " " << v_[2];
-    })
+    });
 };
 
 
