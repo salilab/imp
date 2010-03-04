@@ -93,15 +93,24 @@ class ModellerRestraints(IMP.Restraint):
         self._imp_model = imp_model
         self._particles = particles
 
-    def evaluate(self, calc_deriv):
+    def unprotected_evaluate(self, accum):
         atoms = self._modeller_model.atoms
         sel = modeller.selection(self._modeller_model)
         copy_imp_coords_to_modeller(self._particles, atoms)
         energies = sel.energy()
-        if calc_deriv:
-            add_modeller_derivs_to_imp(atoms, self._particles)
+        if accum:
+            add_modeller_derivs_to_imp(atoms, self._particles, accum)
 
         return energies[0]
+
+    def get_version_info(self):
+        return IMP.VersionInfo("IMP developers", "0.1")
+    def do_show(self, fh):
+        fh.write("ModellerRestraints")
+    def get_input_particles(self):
+        return IMP.ParticlesTemp([x for x in self._particles])
+    def get_input_containers(self):
+        return IMP.ContainersTemp()
 
 
 # ============== Creating particles ==============
@@ -233,12 +242,13 @@ def copy_modeller_coords_to_imp(atoms, particles):
         particles[num].set_value(zkey, at.z)
 
 
-def add_modeller_derivs_to_imp(atoms, particles):
+def add_modeller_derivs_to_imp(atoms, particles, accum):
     """@deprecated Add atom derivatives from Modeller to IMP"""
     for (num, at) in enumerate(atoms):
-        particles[num].add_to_dx(at.dvx)
-        particles[num].add_to_dy(at.dvy)
-        particles[num].add_to_dz(at.dvz)
+        xyz = IMP.core.XYZ(particles[num])
+        xyz.add_to_derivative(0, at.dvx, accum)
+        xyz.add_to_derivative(1, at.dvy, accum)
+        xyz.add_to_derivative(2, at.dvz, accum)
 
 
 def get_imp_derivs(particles, dvx, dvy, dvz):
