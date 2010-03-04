@@ -11,5 +11,8 @@ IMP_BEGIN_NAMESPACE
 
 VersionInfo::VersionInfo(std::string module,
                          std::string version) : module_(module),
-                                                version_(version) {}
+                                                version_(version) {
+  IMP_USAGE_CHECK(!module.empty() && !version.empty(),
+                  "The module and version must not be empty.");
+}
 IMP_END_NAMESPACE

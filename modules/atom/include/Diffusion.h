@@ -20,7 +20,7 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-//! A a decorator for a diffusing particle.
+//! A decorator for a diffusing particle.
 /** \ingroup helper
     \ingroup decorators
     \see BrownianDynamics
