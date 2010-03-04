@@ -48,8 +48,17 @@ class _TempDir(object):
 
 
 class IMPRestraints(modeller.terms.energy_term):
-    """A Modeller restraint using all defined IMP restraints. Useful if you want
-       to use IMP restraints with a Modeller optimizer."""
+    """A Modeller restraint which evaluates all defined IMP restraints.
+       This can be used to incorporate IMP Restraints into an existing
+       comparative modeling pipeline, or to use Modeller optimizers or
+       protocols.
+       @param particles A Particles object containing IMP atoms, in the
+                        same order as the Modeller atoms.
+       @note since Modeller, unlike IMP, is sensitive to the ordering
+             of atoms, it usually makes sense to create the model in
+             Modeller and then use ModelLoader to load it into IMP,
+             since that will preserve the Modeller atom ordering in IMP.
+    """
 
     _physical_type = modeller.physical.absposition
 
