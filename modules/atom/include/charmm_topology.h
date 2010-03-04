@@ -269,7 +269,7 @@ public:
   //! Apply the patch to the residue, modifying its topology accordingly.
   /** \note Most CHARMM patches are designed to be applied in isolation;
             it is usually an error to try to apply two different patches
-            to the same residue. Thus, by default IMP prohibits this.
+            to the same residue. Thus, by default \imp prohibits this.
             To allow an already-patched residue to be re-patched, first
             call CHARMMResidueTopology::set_patched(false).
    */
@@ -310,7 +310,7 @@ IMP_OBJECTS(CHARMMResidueTopology);
 class CHARMMParameters;
 
 //! The topology of a single CHARMM segment in a model.
-/** CHARMM segments typically correspond to IMP Chain particles.
+/** CHARMM segments typically correspond to IMP::atom::Chain particles.
  */
 class IMPATOMEXPORT CHARMMSegmentTopology : public Object {
   IMP_LIST(public, CHARMMResidueTopology, residue, CHARMMResidueTopology*,

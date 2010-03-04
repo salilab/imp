@@ -33,7 +33,7 @@
 - Many methods in IMP::algebra were renamed to be more consistent with other methods or general conventions. Most of these simply involved adding \c get_ as a prefix and/or add a \c _3d suffix when they did not take any arguments.
    - build_Rotation2D_from_Vector2D became IMP::algebra::get_rotation_to_x_axis()
    - most of the Rotation3D and Transformation3D functions (in addition, IMP::algebra::get_identity_rotation_3d() and IMP::algebra::get_identity_transformation_3d() added the \c _3d so we can add 2D versions at some point)
-   - IMP::algebra::Transformation3D::get_transformed() and IMP::algebra::Rotation3D::get_rotated(). Replacing \c ".transform(" worked in the IMP code base.
+   - IMP::algebra::Transformation3D::get_transformed() and IMP::algebra::Rotation3D::get_rotated(). Replacing \c ".transform(" worked in the \imp code base.
    - IMP::algebra::get_distance(), this also carries over to the IMP::core::get_distance()
   The following global replacements are probably safe (in sed expressions)
    - "s#core.distance(#core.get_distance#g"
@@ -105,7 +105,7 @@
 
 - Deprecated functionality has been removed from IMP.core. For those still using it, IMP::core::ClosePairsScoreState was replaced by IMP::core::ClosePairContainer and IMP::core::CloseBipartitePairsScoreState was replaced by IMP::core::CloseBipartitePairContainer.
 
-- The macros for Scores changed slightly. Scores not in IMP svn which use the IMP_*_SCORE macros now have to implement the get_is_changed() function outside of the class declaration and scores which use the IMP_SIMPLE_*_SCORE now don't have to implement the functions to get interactions and used particles.
+- The macros for Scores changed slightly. Scores not in \imp svn which use the IMP_*_SCORE macros now have to implement the get_is_changed() function outside of the class declaration and scores which use the IMP_SIMPLE_*_SCORE now don't have to implement the functions to get interactions and used particles.
 
 - Rename IMP::core::MinimumPairScoreRestraint (and kin, Maximum, Singleton, Triplet and Quad) to IMP::core::MinimumPairRestraint.
 
@@ -189,7 +189,7 @@ other classes have been renamed to be consistent.
 
 - All exception types are now mapped to equivalent classes in Python. The
 class hierarchy is similar (e.g. IMP::ModelException derives from IMP::Exception
-in both C++ and Python) so all IMP exceptions can be caught in Python using
+in both C++ and Python) so all \imp exceptions can be caught in Python using
 "except IMP.Exception". For convenience, the IMP::IOException,
 IMP::ValueException and IMP::IndexException classes in Python also derive from
 the similarly-named standard Python classes (IOError, ValueError and IndexError
@@ -287,7 +287,7 @@ external code,
 - str should now work better in Python when applied to IMP::Object objects and a few others. Objects
   should use the new IMP_SHOWABLE and IMP_SHOWABLE_INLINE macros instead of declaring show
   functions directory to make it so that they work in Python. It is now a bug to \c print or \c str
-  to not return something useful in Python for any %IMP object.
+  to not return something useful in Python for any \imp object.
 
 \par Week of August 23
 
@@ -299,7 +299,7 @@ external code,
 
 \par Week of August 15
 
-- The Object::get_version_info() result now includes the SVN revision info when building from SVN. This means you can use it to more easily tell exactly what a built version of IMP was built from.
+- The Object::get_version_info() result now includes the SVN revision info when building from SVN. This means you can use it to more easily tell exactly what a built version of \imp was built from.
 
 \par Week of August 8
 
@@ -639,7 +639,7 @@ like \code if (d) { blah } \endcode works.
   compose(rotation, vector) will work via promotions.
 
  - the geometry classes have been cleaned up and are now more
-   consistent with IMP standards (and more likely to do what their
+   consistent with \imp standards (and more likely to do what their
    names/comments suggest). See IMP::algebra::Sphere3D,
    IMP::algebra::Cylinder3D, IMP::algebra::Segment3D,
    IMP::algebra::Plane3D etc.

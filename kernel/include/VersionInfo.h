@@ -16,15 +16,17 @@
 
 IMP_BEGIN_NAMESPACE
 
-//! Version and authorship of IMP objects
-/** All IMP::Object-derived objects have such info, allowing one to dump
-    out the version of all the restraints used.
+//! Version and module information for Objects
+/** All IMP::Object -derived objects have a method
+    IMP::Object::get_version_info() returning such an object. The
+    version info allows one to determine the module and version of
+    all restraints used to help creating reproducable results.
  */
 class IMPEXPORT VersionInfo
 {
   typedef VersionInfo This;
 public:
-  //! Create a VersionInfo object with the given author and version.
+  //! Create a VersionInfo object with the given module and version.
   VersionInfo(std::string module, std::string version);
 
   VersionInfo() {}

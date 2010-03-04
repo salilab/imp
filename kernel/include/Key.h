@@ -27,8 +27,8 @@ IMP_BEGIN_NAMESPACE
     attribute_table_index. Yes, this is an evil hack, but I couldn't
     get linking to work with static members of the template class.
 
-    The keys in IMP maintain a cached mapping between strings and indexes.
-    This mapping is global--that is all IMP Models and Particles in the
+    The keys in \imp maintain a cached mapping between strings and indexes.
+    This mapping is global--that is all \imp Models and Particles in the
     same program use the same mapping for each type of key. The type of
     the key is determined by an integer which should be unique for
     each type. If the integer is not unique, everything works, just

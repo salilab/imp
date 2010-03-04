@@ -7,7 +7,7 @@
 
    \section orig_discr Original Description
 
-   Hao wants to implement ligand/protein scoringto IMP so that he can
+   Hao wants to implement ligand/protein scoringto \imp so that he can
    take advantage of the existing infrastructure. The details of the scoring
    function are currently experimental. The code does the following:
 
@@ -62,7 +62,7 @@
 
    First, this functionality should probably go in a new module since it
    is experimental. One can use the \c tools/make_module hao to add a
-   module to a checked out copy of IMP and then place all code in that module.
+   module to a checked out copy of \imp and then place all code in that module.
    Make sure to set \c local_modules=True in the \c config.py.
 
    One could then have a \c PMFRestraint which loads a PMF file from the
@@ -87,7 +87,7 @@
    As with the restraint solution, the IMP::PairScore would use the
    IMP::atom::Atom::get_type() value to look up the correct function to use.
 
-   If you look around in IMP for similar pair scores (see IMP::PairScore and the
+   If you look around in \imp for similar pair scores (see IMP::PairScore and the
    inheritance diagram) you see there is a IMP::core::TypedPairScore which
    already does what you need. That is, it takes a pair of particles, looks up
    their types, and then applies a particular IMP::PairScore based on their types.

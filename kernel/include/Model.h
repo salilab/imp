@@ -35,7 +35,7 @@ IMP_OBJECTS(ScoreState);
 */
 
 //! Class for storing model, its restraints, and particles.
-/** The Model maintains a standard IMP container for each of Particle,
+/** The Model maintains a standard \imp container for each of Particle,
     ScoreState and Restraint object types.
 
     \note Think carefully about using the iterators over the entire set

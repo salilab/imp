@@ -27,7 +27,8 @@ to the last one.
 \section userbuild 1. Building and installing basics
 
 Building \imp from source is straight forward if the \ref prereq "prerequisites"
-are already installed. To do it do
+are already installed. We use \svn for managing the \impsvn. To access the
+code there
 -# check out \imp from svn
    \command{svn co https://svn.salilab.org/imp/branches/release imp}
    This will create a directory called \c imp containing all the source.
