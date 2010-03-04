@@ -406,12 +406,22 @@ public:
       the existing bond graph (see CHARMMParameters::generate_angles() and
       CHARMMParameters::generate_dihedrals()).
 
+      The list of newly-created Bond particles can be passed to a
+      StereochemistryPairFilter to exclude bonded particles from nonbonded
+      interactions, or to a BondSingletonScore to score each bond.
+
       \return a list of the generated Bond decorators.
    */
   Particles add_bonds(Hierarchy hierarchy, const CHARMMParameters *ff) const;
 
   //! Add impropers to the given Hierarchy using this topology, and return them.
   /** The primary sequence of the Hierarchy must match that of the topology.
+
+      The list of newly-created Dihedral particles can be passed to a
+      ImproperSingletonScore to score each improper dihedral.
+
+      \return a list of the generated Dihedral decorators.
+
       \see add_bonds().
    */
   Particles add_impropers(Hierarchy hierarchy,

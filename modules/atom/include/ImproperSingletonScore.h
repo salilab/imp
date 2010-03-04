@@ -22,6 +22,8 @@ IMPATOM_BEGIN_NAMESPACE
     stiffness * (improper_angle-ideal_value). The difference is in radians
     between -pi and +pi; it is the shortest distance from one angle to the
     other.
+
+    \see CHARMMTopology::add_impropers(), Dihedral.
  */
 class IMPATOMEXPORT ImproperSingletonScore : public SingletonScore
 {
