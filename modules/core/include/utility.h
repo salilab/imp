@@ -20,6 +20,8 @@
 
 IMPCORE_BEGIN_NAMESPACE
 //! Get the centroid
+/** Compute the centroid (mean) of a set of particles.
+ */
 IMPCOREEXPORT algebra::VectorD<3> get_centroid(const XYZsTemp &ps);
 
 //! RAII class for objects with batch editing modes
