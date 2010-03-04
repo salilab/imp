@@ -16,7 +16,7 @@
 #include <IMP/Model.h>
 #include "DensityMap.h"
 #include "FitRestraint.h"
-#include "config.h"
+#include "em_config.h"
 #include <IMP/OptimizerState.h>
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/ScoreState.h>

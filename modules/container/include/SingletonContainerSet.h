@@ -11,7 +11,7 @@
 #ifndef IMPCONTAINER_SINGLETON_CONTAINER_SET_H
 #define IMPCONTAINER_SINGLETON_CONTAINER_SET_H
 
-#include "config.h"
+#include "container_config.h"
 #include <IMP/SingletonContainer.h>
 #include <IMP/container_macros.h>
 

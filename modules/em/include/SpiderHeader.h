@@ -8,7 +8,7 @@
 #ifndef IMPEM_SPIDER_HEADER_H
 #define IMPEM_SPIDER_HEADER_H
 
-#include "config.h"
+#include "em_config.h"
 
 IMPEM_BEGIN_NAMESPACE
 

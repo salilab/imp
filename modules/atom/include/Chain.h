@@ -8,7 +8,7 @@
 #ifndef IMPATOM_CHAIN_H
 #define IMPATOM_CHAIN_H
 
-#include "config.h"
+#include "atom_config.h"
 #include "Hierarchy.h"
 #include <IMP/macros.h>
 #include <IMP/Decorator.h>

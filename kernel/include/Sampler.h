@@ -8,7 +8,7 @@
 #ifndef IMP_SAMPLER_H
 #define IMP_SAMPLER_H
 
-#include "config.h"
+#include "kernel_config.h"
 #include "Model.h"
 #include "macros.h"
 #include "Pointer.h"

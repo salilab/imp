@@ -6,7 +6,7 @@
  */
 #ifndef IMPCORE_TRANSFORM_H
 #define IMPCORE_TRANSFORM_H
-#include "config.h"
+#include "core_config.h"
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/SingletonModifier.h>
 

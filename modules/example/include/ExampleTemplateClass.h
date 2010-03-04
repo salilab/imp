@@ -9,7 +9,7 @@
 #ifndef IMPEXAMPLE_EXAMPLE_TEMPLATE_CLASS_H
 #define IMPEXAMPLE_EXAMPLE_TEMPLATE_CLASS_H
 
-#include "config.h"
+#include "example_config.h"
 
 #include <IMP/utility.h>
 #include <IMP/algebra/VectorD.h>

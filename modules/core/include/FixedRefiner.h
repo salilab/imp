@@ -8,7 +8,7 @@
 #ifndef IMPCORE_FIXED_REFINER_H
 #define IMPCORE_FIXED_REFINER_H
 
-#include "config.h"
+#include "core_config.h"
 
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>

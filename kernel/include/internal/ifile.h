@@ -9,7 +9,7 @@
 #ifndef IMP_INTERNAL_IFILE_H
 #define IMP_INTERNAL_IFILE_H
 
-#include "../config.h"
+#include "../kernel_config.h"
 #include "../RefCounted.h"
 #include "OwnerPointer.h"
 #include <memory>

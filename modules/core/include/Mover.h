@@ -8,7 +8,7 @@
 #ifndef IMPCORE_MOVER_H
 #define IMPCORE_MOVER_H
 
-#include "config.h"
+#include "core_config.h"
 
 #include <IMP/base_types.h>
 #include <IMP/RefCounted.h>

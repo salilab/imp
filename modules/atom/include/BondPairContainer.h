@@ -8,7 +8,7 @@
 #ifndef IMPATOM_BOND_PAIR_CONTAINER_H
 #define IMPATOM_BOND_PAIR_CONTAINER_H
 
-#include "config.h"
+#include "atom_config.h"
 #include "bond_decorators.h"
 
 #include <IMP/PairContainer.h>

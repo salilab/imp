@@ -8,7 +8,7 @@
 #ifndef IMPDOMINO_RESTRAINT_EVALUATOR_FROM_FILE_H
 #define IMPDOMINO_RESTRAINT_EVALUATOR_FROM_FILE_H
 
-#include "config.h"
+#include "domino_config.h"
 #include "DiscreteSampler.h"
 #include <IMP/domino/RestraintEvaluatorI.h>
 #include <IMP/base_types.h>

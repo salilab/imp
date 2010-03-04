@@ -7,7 +7,7 @@
 #ifndef IMPALGEBRA_INTERNAL_UTILITY_H
 #define IMPALGEBRA_INTERNAL_UTILITY_H
 
-#include "../config.h"
+#include "../algebra_config.h"
 #include "tnt_array2d.h"
 #include "../VectorD.h"
 #include <vector>

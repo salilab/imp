@@ -8,7 +8,7 @@
 #ifndef IMPDOMINO_TRANSFORMATION_H
 #define IMPDOMINO_TRANSFORMATION_H
 
-#include "config.h"
+#include "domino_config.h"
 #include <IMP/Decorator.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/Transformation3D.h>

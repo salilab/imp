@@ -10,7 +10,7 @@
 
 #include "VectorD.h"
 #include "Transformation3D.h"
-#include "macros.h"
+#include "algebra_macros.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
 

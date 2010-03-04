@@ -22,7 +22,7 @@
 #ifndef IMPALGEBRA_TNT_ARRAY_1D_H
 #define IMPALGEBRA_TNT_ARRAY_1D_H
 
-//#include "../config.h"
+//#include "../algebra_config.h"
 #include <cstdlib>
 #include <iostream>
 

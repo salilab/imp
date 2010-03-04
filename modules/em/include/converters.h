@@ -9,7 +9,7 @@
 #ifndef IMPEM_CONVERTERS_H
 #define IMPEM_CONVERTERS_H
 
-#include "config.h"
+#include "em_config.h"
 #include <IMP/base_types.h>
 #include <IMP/macros.h>
 #include "DensityMap.h"

@@ -8,7 +8,7 @@
 #ifndef IMPALGEBRA_VECTOR_D_H
 #define IMPALGEBRA_VECTOR_D_H
 
-#include "config.h"
+#include "algebra_config.h"
 #include <IMP/macros.h>
 #include <IMP/exception.h>
 #include <IMP/utility.h>
@@ -20,7 +20,8 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 //! A Cartesian vector in D-dimensions.
-/** Store a vector of Cartesian coordinates.
+/** Store a vector of Cartesian coordinates. It supports all expected
+    mathematical operators, including using * for the dot product.
     \see VectorD<3>
     \see VectorD<2>
 
@@ -152,7 +153,7 @@ public:
     mag = std::max(mag, static_cast<double>(1e-12));
     return operator/(mag);
   }
-
+#ifndef IMP_DOXYGEN
   double operator*(const VectorD<D> &o) const {
     return get_scalar_product(o);
   }
@@ -247,7 +248,6 @@ public:
     if (parens) out << ")";
   }
 
-#ifndef IMP_DOXYGEN
   std::string __str__() const {
     std::ostringstream oss;
     show(oss);
@@ -460,7 +460,7 @@ typedef VectorD<3> Vector3D;
 typedef std::vector<VectorD<3> > Vector3Ds;
 typedef VectorD<4> Vector4D;
 typedef std::vector<VectorD<4> > Vector4Ds;
-#endif
+#endif  //swig
 
 IMPALGEBRA_END_NAMESPACE
 

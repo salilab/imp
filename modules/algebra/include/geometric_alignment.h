@@ -8,7 +8,7 @@
 #ifndef IMPALGEBRA_GEOMETRIC_ALIGNMENT_H
 #define IMPALGEBRA_GEOMETRIC_ALIGNMENT_H
 
-#include "config.h"
+#include "algebra_config.h"
 
 #include "Vector3D.h"
 #include "Rotation3D.h"

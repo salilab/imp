@@ -9,7 +9,7 @@
 #define IMPDOMINO_RESTRAINT_EVALUATOR_I_H
 
 
-#include "config.h"
+#include "domino_config.h"
 #include "DiscreteSampler.h"
 #include "CombState.h"
 #include <IMP/base_types.h>

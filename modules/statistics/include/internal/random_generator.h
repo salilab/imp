@@ -9,7 +9,7 @@
 #define IMPSTATISTICS_RANDOM_GENERATOR_H
 
 #include "IMP/random.h"
-#include "../config.h"
+#include "../statistics_config.h"
 #include "IMP/macros.h"
 #include  <boost/random/normal_distribution.hpp>
 #include  <boost/random.hpp>

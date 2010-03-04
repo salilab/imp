@@ -12,8 +12,8 @@ files = [
          'PDBOptimizerState.h',
          'PymolWriter.h',
          'Writer.h',
+         'display_macros.h',
          'geometry.h',
-         'macros.h',
          'particle_geometry.h',
         ] \
         + SConscript('internal/SConscript')

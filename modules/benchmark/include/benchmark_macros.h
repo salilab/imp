@@ -1,5 +1,5 @@
 /**
- *  \file IMP/benchmark/macros.h
+ *  \file benchmark_macros.h
  *  \brief Various general useful macros for IMP.
  *
  *  Copyright 2007-2010 Sali Lab. All rights reserved.

@@ -8,7 +8,7 @@
 #ifndef IMPDISPLAY_INTERNAL_WRITERS_H
 #define IMPDISPLAY_INTERNAL_WRITERS_H
 
-#include "../config.h"
+#include "../display_config.h"
 #include <IMP/file.h>
 IMPDISPLAY_BEGIN_NAMESPACE
 class Writer;

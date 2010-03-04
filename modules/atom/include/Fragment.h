@@ -8,7 +8,7 @@
 #ifndef IMPATOM_FRAGMENT_H
 #define IMPATOM_FRAGMENT_H
 
-#include "config.h"
+#include "atom_config.h"
 #include "Hierarchy.h"
 #include <IMP/Decorator.h>
 #include <IMP/core/internal/ArrayOnAttributesHelper.h>

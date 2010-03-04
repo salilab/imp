@@ -10,7 +10,7 @@
 #ifndef IMPCORE_INTERNAL_REMOVE_POINTERS_H
 #define IMPCORE_INTERNAL_REMOVE_POINTERS_H
 
-#include "../macros.h"
+#include "../core_macros.h"
 #include <IMP/Model.h>
 #include <IMP/Restraint.h>
 #include <IMP/ScoreState.h>

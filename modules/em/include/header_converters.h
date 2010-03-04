@@ -8,7 +8,7 @@
 #ifndef IMPEM_HEADER_CONVERTERS_H
 #define IMPEM_HEADER_CONVERTERS_H
 
-#include "config.h"
+#include "em_config.h"
 #include "ImageHeader.h"
 #include "DensityHeader.h"
 #include <string.h>

@@ -8,7 +8,7 @@
 #ifndef IMPCORE_INTERNAL_RIGID_BODIES_H
 #define IMPCORE_INTERNAL_RIGID_BODIES_H
 
-#include "../config.h"
+#include "../core_config.h"
 #include "../XYZ.h"
 #include "../Hierarchy.h"
 #include <IMP/algebra/Sphere3D.h>

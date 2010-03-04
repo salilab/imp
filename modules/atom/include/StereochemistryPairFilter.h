@@ -8,7 +8,7 @@
 #ifndef IMPATOM_STEREOCHEMISTRY_PAIR_FILTER_H
 #define IMPATOM_STEREOCHEMISTRY_PAIR_FILTER_H
 
-#include "config.h"
+#include "atom_config.h"
 #include <IMP/PairFilter.h>
 #include <IMP/atom/internal/ExcludedPair.h>
 

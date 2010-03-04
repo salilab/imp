@@ -8,7 +8,7 @@
 #ifndef IMPATOM_DIHEDRAL_SINGLETON_SCORE_H
 #define IMPATOM_DIHEDRAL_SINGLETON_SCORE_H
 
-#include "config.h"
+#include "atom_config.h"
 #include <IMP/SingletonScore.h>
 
 IMPATOM_BEGIN_NAMESPACE

@@ -9,7 +9,7 @@
 #ifndef IMPCORE_HIERARCHY_H
 #define IMPCORE_HIERARCHY_H
 
-#include "config.h"
+#include "core_config.h"
 #include "internal/hierarchy_helpers.h"
 #include "internal/ArrayOnAttributesHelper.h"
 
@@ -144,7 +144,7 @@ class IMPCOREEXPORT Hierarchy: public Decorator
   typedef Decorator P;
 
   IMP_DECORATOR_ARRAY_DECL(public, Hierarchy, Child, child, children,
-                           traits_, Hierarchy, GenericHierarchies)
+                           traits_, Hierarchy, GenericHierarchies);
 public:
   IMP_DECORATOR_TRAITS(Hierarchy, Decorator,
                        HierarchyTraits, traits,

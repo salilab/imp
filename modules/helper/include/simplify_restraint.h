@@ -8,7 +8,7 @@
 #ifndef IMPHELPER_SIMPLIFY_RESTRAINT_H
 #define IMPHELPER_SIMPLIFY_RESTRAINT_H
 
-#include "config.h"
+#include "helper_config.h"
 #include <IMP/SingletonContainer.h>
 #include <IMP/atom.h>
 #include <IMP/core.h>
@@ -361,11 +361,11 @@ class IMPHELPEREXPORT SimpleExcludedVolume
   IMP_NO_SWIG(friend IMPHELPEREXPORT SimpleExcludedVolume
               create_simple_excluded_volume_on_rigid_bodies(
                     const core::RigidBodies &rbs, Refiner*ref);
-              )
+              );
   IMP_NO_SWIG(friend IMPHELPEREXPORT SimpleExcludedVolume
               create_simple_excluded_volume_on_molecules(
               atom::Hierarchies const &mhs);
-              )
+              );
  public:
 
   core::ExcludedVolumeRestraint *get_restraint()

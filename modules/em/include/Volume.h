@@ -9,7 +9,7 @@
 #ifndef IMPEM_VOLUME_H
 #define IMPEM_VOLUME_H
 
-#include "config.h"
+#include "em_config.h"
 #include "ImageHeader.h"
 // #include "EMresample.h"
 #include "IMP/algebra/Matrix3D.h"

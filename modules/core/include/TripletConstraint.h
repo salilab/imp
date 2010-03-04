@@ -12,7 +12,7 @@
 #ifndef IMPCORE_TRIPLET_CONSTRAINT_H
 #define IMPCORE_TRIPLET_CONSTRAINT_H
 
-#include "config.h"
+#include "core_config.h"
 #include <IMP/TripletModifier.h>
 #include <IMP/Constraint.h>
 #include <IMP/Particle.h>

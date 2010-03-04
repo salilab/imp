@@ -8,7 +8,7 @@
 #ifndef IMPALGEBRA_ROTATION_3D_H
 #define IMPALGEBRA_ROTATION_3D_H
 
-#include "config.h"
+#include "algebra_config.h"
 #include "Vector3D.h"
 #include "utility.h"
 #include <IMP/constants.h>

@@ -7,7 +7,7 @@
 #ifndef IMPCORE_COSINE_H
 #define IMPCORE_COSINE_H
 
-#include "config.h"
+#include "core_config.h"
 #include <IMP/UnaryFunction.h>
 
 IMPCORE_BEGIN_NAMESPACE

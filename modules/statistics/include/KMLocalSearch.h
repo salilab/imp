@@ -9,7 +9,7 @@
 #ifndef IMPSTATISTICS_KM_LOCAL_SEARCH_H
 #define IMPSTATISTICS_KM_LOCAL_SEARCH_H
 
-#include "config.h"
+#include "statistics_config.h"
 #include "KMFilterCenters.h"
 #include "KMCenters.h"
 #include "KMTerminationCondition.h"

@@ -8,7 +8,7 @@
 #ifndef IMPSTATISTICS_KML_PROXY_H
 #define IMPSTATISTICS_KML_PROXY_H
 
-#include "config.h"
+#include "statistics_config.h"
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
 #include <vector>

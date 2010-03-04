@@ -10,7 +10,7 @@
 #ifndef IMPCORE_CONSTANT_RESTRAINT_H
 #define IMPCORE_CONSTANT_RESTRAINT_H
 
-#include "config.h"
+#include "core_config.h"
 
 #include <IMP/Restraint.h>
 #include <IMP/PairScore.h>

@@ -10,7 +10,7 @@
 #ifndef IMPCONTAINER_MAXIMUM_SINGLETON_SCORE_H
 #define IMPCONTAINER_MAXIMUM_SINGLETON_SCORE_H
 
-#include "config.h"
+#include "container_config.h"
 #include <IMP/SingletonScore.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE

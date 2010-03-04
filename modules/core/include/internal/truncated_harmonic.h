@@ -9,7 +9,7 @@
 #ifndef IMPCORE_INTERNAL_TRUNCATED_HARMONIC_H
 #define IMPCORE_INTERNAL_TRUNCATED_HARMONIC_H
 
-#include "../config.h"
+#include "../core_config.h"
 
 #include <IMP/base_types.h>
 

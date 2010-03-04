@@ -9,10 +9,10 @@
 #ifndef IMPCORE_INCREMENTAL_BALL_MOVER_H
 #define IMPCORE_INCREMENTAL_BALL_MOVER_H
 
-#include "config.h"
+#include "core_config.h"
 #include "MonteCarlo.h"
 #include "MoverBase.h"
-#include "macros.h"
+#include "core_macros.h"
 
 IMPCORE_BEGIN_NAMESPACE
 

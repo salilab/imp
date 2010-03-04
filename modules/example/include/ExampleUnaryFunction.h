@@ -10,7 +10,7 @@
 #ifndef IMPEXAMPLE_EXAMPLE_UNARY_FUNCTION_H
 #define IMPEXAMPLE_EXAMPLE_UNARY_FUNCTION_H
 
-#include "config.h"
+#include "example_config.h"
 #include <IMP/UnaryFunction.h>
 #include <IMP/utility.h>
 

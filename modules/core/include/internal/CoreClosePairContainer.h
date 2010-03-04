@@ -11,7 +11,7 @@
 #ifndef IMPCORE_INTERNAL_CORE_CLOSE_PAIR_CONTAINER_H
 #define IMPCORE_INTERNAL_CORE_CLOSE_PAIR_CONTAINER_H
 
-#include "../config.h"
+#include "../core_config.h"
 #include "../ClosePairsFinder.h"
 #include "MovedSingletonContainer.h"
 #include <IMP/PairContainer.h>

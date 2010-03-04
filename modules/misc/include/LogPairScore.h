@@ -8,7 +8,7 @@
 #ifndef IMPMISC_LOG_PAIR_SCORE_H
 #define IMPMISC_LOG_PAIR_SCORE_H
 
-#include "config.h"
+#include "misc_config.h"
 #include <IMP/PairScore.h>
 #include <map>
 

@@ -8,7 +8,7 @@
 #ifndef IMPEM_PROJECT_H
 #define IMPEM_PROJECT_H
 
-#include "config.h"
+#include "em_config.h"
 #include "DensityMap.h"
 #include <IMP/algebra/utility.h>
 #include <IMP/algebra/Matrix3D.h>

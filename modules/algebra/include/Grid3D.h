@@ -8,7 +8,7 @@
 #ifndef IMPALGEBRA_GRID_3D_H
 #define IMPALGEBRA_GRID_3D_H
 
-#include "config.h"
+#include "algebra_config.h"
 
 #include <IMP/base_types.h>
 #include "Vector3D.h"

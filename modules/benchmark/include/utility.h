@@ -9,7 +9,7 @@
 #ifndef IMPBENCHMARK_UTILITY_H
 #define IMPBENCHMARK_UTILITY_H
 
-#include "config.h"
+#include "benchmark_config.h"
 #include <string>
 
 IMPBENCHMARK_BEGIN_NAMESPACE

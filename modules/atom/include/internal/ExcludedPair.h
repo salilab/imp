@@ -8,7 +8,7 @@
 #ifndef IMPATOM_INTERNAL_EXCLUDED_PAIR_H
 #define IMPATOM_INTERNAL_EXCLUDED_PAIR_H
 
-#include "../config.h"
+#include "../atom_config.h"
 #include <IMP/Particle.h>
 
 IMPATOM_BEGIN_INTERNAL_NAMESPACE

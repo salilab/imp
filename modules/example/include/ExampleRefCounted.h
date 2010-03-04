@@ -8,7 +8,7 @@
 #ifndef IMPEXAMPLE_EXAMPLE_REF_COUNTED_H
 #define IMPEXAMPLE_EXAMPLE_REF_COUNTED_H
 
-#include "config.h"
+#include "example_config.h"
 
 #include <IMP/RefCounted.h>
 

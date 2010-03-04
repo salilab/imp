@@ -8,7 +8,7 @@
 #ifndef IMP_INTERNAL_PARTICLE_H
 #define IMP_INTERNAL_PARTICLE_H
 
-#include "../config.h"
+#include "../kernel_config.h"
 #include "AttributeTable.h"
 #include <boost/iterator/filter_iterator.hpp>
 #include <boost/iterator/counting_iterator.hpp>

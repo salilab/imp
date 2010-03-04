@@ -8,7 +8,7 @@
 #ifndef IMPSAXS_SCORE_H
 #define IMPSAXS_SCORE_H
 
-#include "config.h"
+#include "saxs_config.h"
 #include "Distribution.h"
 #include "Profile.h"
 

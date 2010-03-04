@@ -220,7 +220,7 @@ def IMPModuleLib(envi, files):
     if env['build']=="debug" and env['linktest']:
         link= env.IMPModuleLinkTest(target=['internal/link_0.cpp', 'internal/link_1.cpp'], source=[])
         files= files+link
-    config= env.IMPModuleConfigCPP(target=['config.cpp'],
+    config= env.IMPModuleConfigCPP(target=['%(module)s_config.cpp'%vars],
                                    source=[env.Value(env['IMP_MODULE_VERSION'])])
     #env.AlwaysBuild(version)
     files =files+ config
@@ -257,7 +257,7 @@ def IMPModuleInclude(env, files):
     includedir = env.GetInstallDirectory('includedir')
 
     # Generate config header and SWIG equivalent
-    config=env.IMPModuleConfigH(target=['config.h'],
+    config=env.IMPModuleConfigH(target=['%(module)s_config.h'%vars],
     source=[env.Value(env['IMP_MODULE_CONFIG'])])
     files=files+config
     install = hierarchy.InstallHierarchy(env, includedir+"/"+vars['module_include_path'],
@@ -470,7 +470,7 @@ def IMPModuleGetHeaders(env):
         fname= os.path.split(s)[1]
         if fname.startswith("."):
             continue
-        if s=="config.h":
+        if s=="%(module)s_config.h"%vars:
             continue
         files.append(f)
     return files
@@ -499,7 +499,7 @@ def IMPModuleGetSources(env):
             continue
         if s== "internal/link_1.cpp":
             continue
-        if s=="config.cpp":
+        if s=="%(module)s_config.cpp"%vars:
             continue
         files.append(f)
     return files

@@ -9,8 +9,8 @@
 #ifndef IMPCORE_INTERNAL_HIERARCHY_HELPERS_H
 #define IMPCORE_INTERNAL_HIERARCHY_HELPERS_H
 
-#include "../config.h"
-#include "../macros.h"
+#include "../core_config.h"
+#include "../core_macros.h"
 
 #include <IMP/base_types.h>
 #include <IMP/Particle.h>

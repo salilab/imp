@@ -8,7 +8,7 @@
 #ifndef IMPCORE_ANGLE_RESTRAINT_H
 #define IMPCORE_ANGLE_RESTRAINT_H
 
-#include "config.h"
+#include "core_config.h"
 #include "AngleTripletScore.h"
 #include "XYZ.h"
 

@@ -1,8 +1,8 @@
 Import('env')
 
 files = [
+         'benchmark_macros.h',
          'hidden_keys.h',
-         'macros.h',
          'utility.h',
         ]
 

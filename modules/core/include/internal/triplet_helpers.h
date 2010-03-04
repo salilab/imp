@@ -11,7 +11,7 @@
 #ifndef IMPCORE_INTERNAL_TRIPLET_HELPERS_H
 #define IMPCORE_INTERNAL_TRIPLET_HELPERS_H
 
-#include "../config.h"
+#include "../core_config.h"
 #include <IMP/TripletContainer.h>
 #include <IMP/TripletModifier.h>
 #include <IMP/internal/container_helpers.h>

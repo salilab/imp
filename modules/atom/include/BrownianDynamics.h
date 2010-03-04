@@ -9,7 +9,7 @@
 #ifndef IMPATOM_BROWNIAN_DYNAMICS_H
 #define IMPATOM_BROWNIAN_DYNAMICS_H
 
-#include "config.h"
+#include "atom_config.h"
 #include "Diffusion.h"
 #include "SimulationParameters.h"
 

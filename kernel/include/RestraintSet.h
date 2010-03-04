@@ -8,7 +8,7 @@
 #ifndef IMP_RESTRAINT_SET_H
 #define IMP_RESTRAINT_SET_H
 
-#include "config.h"
+#include "kernel_config.h"
 
 #include "Restraint.h"
 #include "Model.h"

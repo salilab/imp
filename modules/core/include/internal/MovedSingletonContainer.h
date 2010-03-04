@@ -8,7 +8,7 @@
 #ifndef IMPCORE_INTERNAL_MOVED_SINGLETON_CONTAINER_H
 #define IMPCORE_INTERNAL_MOVED_SINGLETON_CONTAINER_H
 
-#include "../config.h"
+#include "../core_config.h"
 
 #include <IMP/ScoreState.h>
 #include <IMP/Particle.h>

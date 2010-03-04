@@ -9,7 +9,7 @@
 #ifndef IMPDOMINO_JUNCTION_TREE_H
 #define IMPDOMINO_JUNCTION_TREE_H
 
-#include "config.h"
+#include "domino_config.h"
 #include "IMP/base_types.h"
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/adjacency_list.hpp>

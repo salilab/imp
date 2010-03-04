@@ -8,7 +8,7 @@
 #ifndef IMPATOM_MASS_H
 #define IMPATOM_MASS_H
 
-#include "config.h"
+#include "atom_config.h"
 
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>

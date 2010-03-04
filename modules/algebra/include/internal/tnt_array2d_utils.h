@@ -21,7 +21,7 @@
 #ifndef IMPALGEBRA_TNT_ARRAY_2D_UTILS_H
 #define IMPALGEBRA_TNT_ARRAY_2D_UTILS_H
 
-#include "../config.h"
+#include "../algebra_config.h"
 #include <cstdlib>
 #include <cassert>
 #include <IMP/utility.h>

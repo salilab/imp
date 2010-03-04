@@ -8,7 +8,7 @@
 #ifndef IMPCORE_DISTANCE_RESTRAINT_H
 #define IMPCORE_DISTANCE_RESTRAINT_H
 
-#include "config.h"
+#include "core_config.h"
 #include "DistancePairScore.h"
 #include "XYZ.h"
 

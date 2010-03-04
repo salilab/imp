@@ -8,7 +8,7 @@
 #ifndef IMPGSL_QUASI_NEWTON_H
 #define IMPGSL_QUASI_NEWTON_H
 
-#include "config.h"
+#include "gsl_config.h"
 
 #include "GSLOptimizer.h"
 

@@ -8,7 +8,7 @@
 #ifndef IMPDISPLAY_GEOMETRY_PROCESSOR_H
 #define IMPDISPLAY_GEOMETRY_PROCESSOR_H
 
-#include "config.h"
+#include "display_config.h"
 #include "geometry.h"
 
 IMPDISPLAY_BEGIN_NAMESPACE

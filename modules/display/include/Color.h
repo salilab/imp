@@ -8,7 +8,7 @@
 #ifndef IMPDISPLAY_COLOR_H
 #define IMPDISPLAY_COLOR_H
 
-#include "config.h"
+#include "display_config.h"
 
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>

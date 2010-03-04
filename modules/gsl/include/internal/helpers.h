@@ -9,7 +9,7 @@
 #ifndef IMPGSL_INTERNAL_HELPERS_H
 #define IMPGSL_INTERNAL_HELPERS_H
 
-#include "../config.h"
+#include "../gsl_config.h"
 #include "../GSLOptimizer.h"
 #include <gsl/gsl_multimin.h>
 

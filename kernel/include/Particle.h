@@ -8,7 +8,7 @@
 #ifndef IMP_PARTICLE_H
 #define IMP_PARTICLE_H
 
-#include "config.h"
+#include "kernel_config.h"
 #include "base_types.h"
 #include "Object.h"
 #include "internal/particle.h"

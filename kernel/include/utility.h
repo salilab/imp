@@ -9,7 +9,7 @@
 #define IMP_UTILITY_H
 
 #include "macros.h"
-#include "config.h"
+#include "kernel_config.h"
 #include <boost/version.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits.hpp>

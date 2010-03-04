@@ -12,7 +12,7 @@
 #ifndef IMPCONTAINER_SINGLETONS_CONSTRAINT_H
 #define IMPCONTAINER_SINGLETONS_CONSTRAINT_H
 
-#include "config.h"
+#include "container_config.h"
 #include <IMP/SingletonContainer.h>
 #include <IMP/SingletonModifier.h>
 #include <IMP/Constraint.h>

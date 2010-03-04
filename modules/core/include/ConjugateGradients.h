@@ -9,7 +9,7 @@
 #ifndef IMPCORE_CONJUGATE_GRADIENTS_H
 #define IMPCORE_CONJUGATE_GRADIENTS_H
 
-#include "config.h"
+#include "core_config.h"
 
 #include <IMP/Optimizer.h>
 

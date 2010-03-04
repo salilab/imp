@@ -8,7 +8,7 @@
 #ifndef IMPATOM_PROTEIN_LIGAND_SCORE_H
 #define IMPATOM_PROTEIN_LIGAND_SCORE_H
 
-#include "config.h"
+#include "atom_config.h"
 #include "internal/protein_ligand_internal_score.h"
 #include "Hierarchy.h"
 #include <IMP/Model.h>

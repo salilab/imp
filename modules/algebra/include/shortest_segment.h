@@ -7,7 +7,7 @@
 #ifndef IMPALGEBRA_SHORTEST_SEGMENT_H
 #define IMPALGEBRA_SHORTEST_SEGMENT_H
 
-#include "../config.h"
+#include "algebra_config.h"
 #include "Segment3D.h"
 #include <IMP/base_types.h>
 

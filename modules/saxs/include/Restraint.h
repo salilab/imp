@@ -9,7 +9,7 @@
 #ifndef IMPSAXS_RESTRAINT_H
 #define IMPSAXS_RESTRAINT_H
 
-#include "config.h"
+#include "saxs_config.h"
 
 #include <IMP/saxs/Score.h>
 #include <IMP/saxs/Profile.h>

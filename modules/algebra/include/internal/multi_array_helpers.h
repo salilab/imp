@@ -8,7 +8,7 @@
 #ifndef IMPALGEBRA_INTERNAL_MULTI_ARRAY_HELPERS_H
 #define IMPALGEBRA_INTERNAL_MULTI_ARRAY_HELPERS_H
 
-#include "../config.h"
+#include "../algebra_config.h"
 #include "boost/array.hpp"
 #include "boost/multi_array.hpp"
 

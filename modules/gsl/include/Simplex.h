@@ -8,7 +8,7 @@
 #ifndef IMPGSL_SIMPLEX_H
 #define IMPGSL_SIMPLEX_H
 
-#include "config.h"
+#include "gsl_config.h"
 
 #include "GSLOptimizer.h"
 

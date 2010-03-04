@@ -7,7 +7,7 @@
 #include <IMP/algebra.h>
 #include <IMP/benchmark/utility.h>
 #include <boost/timer.hpp>
-#include <IMP/benchmark/macros.h>
+#include <IMP/benchmark/benchmark_macros.h>
 #include <IMP/container.h>
 
 using namespace IMP;

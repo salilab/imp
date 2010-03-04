@@ -8,7 +8,7 @@
 #ifndef IMPATOM_DISTANCE_H
 #define IMPATOM_DISTANCE_H
 
-#include "config.h"
+#include "atom_config.h"
 #include <IMP/core/XYZ.h>
 #include "Hierarchy.h"
 

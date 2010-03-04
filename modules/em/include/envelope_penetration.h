@@ -8,7 +8,7 @@
 
 #ifndef IMPEM_ENVELOPE_PENETRATION_H
 #define IMPEM_ENVELOPE_PENETRATION_H
-#include "config.h"
+#include "em_config.h"
 #include "DensityMap.h"
 #include <IMP/Particle.h>
 IMPEM_BEGIN_NAMESPACE

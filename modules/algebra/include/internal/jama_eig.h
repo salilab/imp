@@ -7,7 +7,7 @@
 #define IMPALGEBRA_JAMA_EIG_H
 
 
-#include "../config.h"
+#include "../algebra_config.h"
 #include "tnt_array1d.h"
 #include "tnt_array2d.h"
 #include "tnt_math_utils.h"

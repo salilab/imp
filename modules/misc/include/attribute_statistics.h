@@ -8,7 +8,7 @@
 #ifndef IMPMISC_ATTRIBUTE_STATISTICS_H
 #define IMPMISC_ATTRIBUTE_STATISTICS_H
 
-#include "config.h"
+#include "misc_config.h"
 
 #include <IMP/Model.h>
 

@@ -11,7 +11,7 @@
 #ifndef IMPCORE_INTERNAL_QUAD_HELPERS_H
 #define IMPCORE_INTERNAL_QUAD_HELPERS_H
 
-#include "../config.h"
+#include "../core_config.h"
 #include <IMP/QuadContainer.h>
 #include <IMP/QuadModifier.h>
 #include <IMP/internal/container_helpers.h>

@@ -11,7 +11,7 @@
 #ifndef IMPCONTAINER_MAXIMUM_TRIPLET_RESTRAINT_H
 #define IMPCONTAINER_MAXIMUM_TRIPLET_RESTRAINT_H
 
-#include "config.h"
+#include "container_config.h"
 #include <IMP/Restraint.h>
 #include <IMP/TripletScore.h>
 #include <IMP/TripletContainer.h>

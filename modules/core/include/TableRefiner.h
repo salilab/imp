@@ -8,7 +8,7 @@
 #ifndef IMPCORE_TABLE_REFINER_H
 #define IMPCORE_TABLE_REFINER_H
 
-#include "config.h"
+#include "core_config.h"
 
 #include <IMP/Refiner.h>
 #include <map>

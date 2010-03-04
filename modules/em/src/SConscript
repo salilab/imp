@@ -14,14 +14,15 @@ files = [
          'SampledDensityMap.cpp',
          'SpiderReaderWriter.cpp',
          'SurfaceShellDensityMap.cpp',
-         'XplorReaderWriter.cpp',
          'Voxel.cpp',
+         'XplorReaderWriter.cpp',
          'converters.cpp',
-         'header_converters.cpp',
+         'envelope_penetration.cpp',
          'filters.cpp',
+         'header_converters.cpp',
          'project.cpp',
          'rigid_fitting.cpp',
-         'envelope_penetration.cpp',
         ]
+
 # Build and install the shared library:
 env.IMPModuleLib(files)

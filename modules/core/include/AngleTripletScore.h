@@ -8,7 +8,7 @@
 #ifndef IMPCORE_ANGLE_TRIPLET_SCORE_H
 #define IMPCORE_ANGLE_TRIPLET_SCORE_H
 
-#include "config.h"
+#include "core_config.h"
 #include <IMP/TripletScore.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/Pointer.h>

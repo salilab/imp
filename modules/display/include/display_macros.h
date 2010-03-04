@@ -1,5 +1,5 @@
 /**
- *  \file display/macros.h
+ *  \file display_macros.h
  *  \brief macros for display classes
  *
  *  Copyright 2007-2010 Sali Lab. All rights reserved.

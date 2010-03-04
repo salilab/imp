@@ -9,7 +9,7 @@
 #ifndef IMP_FILE_H
 #define IMP_FILE_H
 
-#include "config.h"
+#include "kernel_config.h"
 #include "Pointer.h"
 #include "macros.h"
 #include "internal/ifile.h"

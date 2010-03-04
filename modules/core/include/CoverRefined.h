@@ -8,7 +8,7 @@
 #ifndef IMPCORE_COVER_REFINED_H
 #define IMPCORE_COVER_REFINED_H
 
-#include "config.h"
+#include "core_config.h"
 
 #include "XYZR.h"
 #include <IMP/Refiner.h>

@@ -19,17 +19,18 @@ files = [
          'SpiderReaderWriter.h',
          'SurfaceShellDensityMap.h',
          'Volume.h',
-         'XplorReaderWriter.h',
          'Voxel.h',
+         'XplorReaderWriter.h',
+         'align.h',
          'converters.h',
          'def.h',
+         'envelope_penetration.h',
          'exp.h',
+         'filters.h',
          'header_converters.h',
          'noise.h',
-         'filters.h',
          'project.h',
          'rigid_fitting.h',
-         'envelope_penetration.h'
         ]
 
 # Install the include files:

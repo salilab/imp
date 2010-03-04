@@ -11,7 +11,7 @@
 #include <iomanip>
 #include <iostream>
 #include <string>
-#include "config.h"
+#include "statistics_config.h"
 
 IMPSTATISTICS_BEGIN_NAMESPACE
 

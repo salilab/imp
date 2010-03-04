@@ -12,7 +12,7 @@
 #include <map>
 #include  <sstream>
 #include "IMP/base_types.h"
-#include "config.h"
+#include "domino_config.h"
 #include "DiscreteSet.h"
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/domino/Transformation.h>

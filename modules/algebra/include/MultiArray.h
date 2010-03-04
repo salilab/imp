@@ -8,7 +8,7 @@
 #ifndef IMPALGEBRA_MULTI_ARRAY_H
 #define IMPALGEBRA_MULTI_ARRAY_H
 
-#include "config.h"
+#include "algebra_config.h"
 #include "endian.h"
 #include "IMP/base_types.h"
 #include "IMP/exception.h"

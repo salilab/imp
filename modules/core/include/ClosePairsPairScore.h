@@ -8,7 +8,7 @@
 #ifndef IMPCORE_CLOSE_PAIRS_PAIR_SCORE_H
 #define IMPCORE_CLOSE_PAIRS_PAIR_SCORE_H
 
-#include "config.h"
+#include "core_config.h"
 #include "XYZR.h"
 
 #include <IMP/PairScore.h>

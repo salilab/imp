@@ -8,7 +8,7 @@
 #ifndef IMPCORE_RIGID_BODY_DISTANCE_PAIR_SCORE_H
 #define IMPCORE_RIGID_BODY_DISTANCE_PAIR_SCORE_H
 
-#include "config.h"
+#include "core_config.h"
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/PairScore.h>

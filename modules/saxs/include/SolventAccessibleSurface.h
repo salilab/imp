@@ -7,7 +7,7 @@
 #ifndef IMPSAXS_SOLVENT_ACCESSIBLE_SURFACE_H
 #define IMPSAXS_SOLVENT_ACCESSIBLE_SURFACE_H
 
-#include "config.h"
+#include "saxs_config.h"
 #include <IMP/core/XYZR.h>
 
 IMPSAXS_BEGIN_NAMESPACE

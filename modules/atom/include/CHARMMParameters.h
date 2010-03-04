@@ -10,7 +10,7 @@
 #include "internal/charmm_helpers.h"
 #include "ForceFieldParameters.h"
 #include "charmm_topology.h"
-#include "macros.h"
+#include "atom_macros.h"
 
 #include <string>
 #include <fstream>

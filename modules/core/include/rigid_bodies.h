@@ -8,7 +8,7 @@
 #ifndef IMPCORE_RIGID_BODIES_H
 #define IMPCORE_RIGID_BODIES_H
 
-#include "config.h"
+#include "core_config.h"
 #include "internal/rigid_bodies.h"
 
 #include "XYZ.h"

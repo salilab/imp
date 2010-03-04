@@ -9,7 +9,7 @@
 #ifndef IMPEM_SAMPLED_DENSITY_MAP_H
 #define IMPEM_SAMPLED_DENSITY_MAP_H
 
-#include "config.h"
+#include "em_config.h"
 #include "exp.h"
 #include "DensityMap.h"
 #include "DensityHeader.h"
