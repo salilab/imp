@@ -276,6 +276,7 @@ public:
   */
  virtual Float evaluate(const RestraintsTemp &restraints, bool calc_derivs);
 
+#ifndef IMP_DOXYGEN
   VersionInfo get_version_info() const {
     IMP_CHECK_OBJECT(this);
     return IMP::get_module_version_info();
@@ -284,6 +285,7 @@ public:
   std::string get_type_name() const {
     return "Model";
   }
+#endif
 
   /** \name Incremental Updates
 
