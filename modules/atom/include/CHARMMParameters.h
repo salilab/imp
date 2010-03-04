@@ -35,7 +35,21 @@ struct CHARMMDihedralParameters {
   double ideal;
 };
 
-//! CHARMM force field
+//! CHARMM force field parameters.
+/** This class reads in topology and parameter files in CHARMM format and
+    stores the information.
+
+    It does not actually evaluate the force field itself - there are other
+    classes that use the parameters provided by this class to do that. For
+    example, the LennardJonesPairScore or CoulombPairScore evaluate the
+    nonbond terms of the CHARMM force field, while BondSingletonScore,
+    AngleSingletonScore, DihedralSingletonScore and ImproperSingletonScore
+    cover the bond terms.
+
+    Typically, the create_topology() method is used to create a new
+    CHARMMTopology object for a given Hierarchy; that object can then be
+    used to assign atomic radii, bonds, etc.
+ */
 class IMPATOMEXPORT CHARMMParameters : public ForceFieldParameters {
   std::map<std::string, CHARMMIdealResidueTopology> residue_topologies_;
   std::map<std::string, CHARMMPatch> patches_;
@@ -55,40 +69,22 @@ class IMPATOMEXPORT CHARMMParameters : public ForceFieldParameters {
 
 public:
 
-  /** Construction with CHARMM topology (and optionally parameters) file.
-      For addition of atom types, the topology file alone is enough;
+  //! Construction with CHARMM topology (and optionally parameters) file.
+  /** For addition of atom types, the topology file alone is enough;
       for adding bonds and radii, both files are needed.
    */
   CHARMMParameters(const String& topology_file_name,
                    const String& par_file_name = std::string());
 
-  void add_patch(CHARMMPatch &patch) {
-    patches_.insert(std::make_pair(patch.get_type(), patch));
-  }
+  /** \name Residue topology
 
+      The class stores the topology of each residue type as defined in the
+      topology file, as a set of CHARMMIdealResidueTopology objects.
+   */
+  /**@{*/
   void add_residue_topology(CHARMMIdealResidueTopology &res) {
     residue_topologies_.insert(std::make_pair(res.get_type(), res));
   }
-
-  CHARMMPatch &get_patch(std::string name) {
-    std::map<std::string, CHARMMPatch>::iterator it = patches_.find(name);
-    if (it != patches_.end()) {
-      return it->second;
-    } else {
-      IMP_THROW("Patch " << name << " does not exist", ValueException);
-    }
-  }
-
-#ifndef SWIG
-  const CHARMMPatch &get_patch(std::string name) const {
-    std::map<std::string, CHARMMPatch>::const_iterator it = patches_.find(name);
-    if (it != patches_.end()) {
-      return it->second;
-    } else {
-      IMP_THROW("Patch " << name << " does not exist", ValueException);
-    }
-  }
-#endif
 
   CHARMMIdealResidueTopology &get_residue_topology(ResidueType type) {
     std::map<std::string, CHARMMIdealResidueTopology>::iterator it
@@ -113,8 +109,44 @@ public:
   }
 #endif
 
+  /** \name Patches
+
+      The class stores patches as defined in the topology file, as a set of
+      CHARMMPatch objects.
+   */
+  /**@{*/
+  void add_patch(CHARMMPatch &patch) {
+    patches_.insert(std::make_pair(patch.get_type(), patch));
+  }
+
+  CHARMMPatch &get_patch(std::string name) {
+    std::map<std::string, CHARMMPatch>::iterator it = patches_.find(name);
+    if (it != patches_.end()) {
+      return it->second;
+    } else {
+      IMP_THROW("Patch " << name << " does not exist", ValueException);
+    }
+  }
+
+#ifndef SWIG
+  const CHARMMPatch &get_patch(std::string name) const {
+    std::map<std::string, CHARMMPatch>::const_iterator it = patches_.find(name);
+    if (it != patches_.end()) {
+      return it->second;
+    } else {
+      IMP_THROW("Patch " << name << " does not exist", ValueException);
+    }
+  }
+#endif
+  /**@}*/
+
+  //! Create topology that corresponds to the primary sequence of the Hierarchy.
   CHARMMTopology *create_topology(Hierarchy hierarchy) const;
 
+  //! Get bond parameters for the bond between the two given CHARMM atom types.
+  /** The atom types may match in any order. If no parameters are present,
+       NULL is returned.
+   */
   const CHARMMBondParameters *get_bond_parameters(std::string type1,
                                                   std::string type2) const {
     internal::CHARMMBondNames types = internal::CHARMMBondNames(type1, type2);
@@ -125,6 +157,10 @@ public:
     }
   }
 
+  //! Get parameters for the angle between the three given CHARMM atom types.
+  /** The atom types may match in either forward or reverse order.
+      If no parameters are present, NULL is returned.
+   */
   const CHARMMBondParameters *get_angle_parameters(std::string type1,
                                                    std::string type2,
                                                    std::string type3) const {
@@ -137,6 +173,17 @@ public:
     }
   }
 
+  //! Get parameters for the dihedral between the four given CHARMM atom types.
+  /** The atom types may match in either forward or reverse order. When
+      looking for a match in the library, wildcards are considered; an atom
+      type of X in the library will match any atom type. The most specific
+      match from the library is returned.
+
+      Multiple sets of parameters can be specified for the same combination
+      of atom types in the library, in which case all of them are returned.
+
+      If no parameters are present, an empty vector is returned.
+   */
   std::vector<CHARMMDihedralParameters> get_dihedral_parameters(
              std::string type1, std::string type2, std::string type3,
              std::string type4) const {
@@ -160,6 +207,14 @@ public:
     return param;
   }
 
+  //! Get parameters for the improper between the four given CHARMM atom types.
+  /** The atom types may match in either forward or reverse order. When
+      looking for a match in the library, wildcards are considered; an atom
+      type of X in the library will match any atom type. The most specific
+      match from the library is returned.
+
+      If no parameters are present, NULL is returned.
+   */
   const CHARMMDihedralParameters *get_improper_parameters(
              std::string type1, std::string type2, std::string type3,
              std::string type4) const {
@@ -176,8 +231,22 @@ public:
     }
   }
 
+  //! Auto-generate Angle particles from the passed list of Bond particles.
+  /** The angles consist of all unique pairs of bonds which share an
+      endpoint. If no parameters are found for an angle, it is simply
+      created without those parameters.
+      \return a list of the newly-created Angle particles.
+   */
   Particles generate_angles(Particles bonds) const;
 
+  //! Auto-generate Dihedral particles from the passed list of Bond particles.
+  /** The dihedrals consist of all unique triples of bonds which form
+      dihedrals. If no parameters are found for a dihedral, it is simply
+      created without those parameters; if multiple sets of parameters are
+      found, multiple copies of the dihedral are created, each with one set
+      of parameters.
+      \return a list of the newly-created Dihedral particles.
+   */
   Particles generate_dihedrals(Particles bonds) const;
 
   IMP_FORCE_FIELD_PARAMETERS(CHARMMParameters);
