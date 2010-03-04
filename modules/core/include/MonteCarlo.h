@@ -8,7 +8,7 @@
 #ifndef IMPCORE_MONTE_CARLO_H
 #define IMPCORE_MONTE_CARLO_H
 
-#include "config.h"
+#include "core_config.h"
 #include "Mover.h"
 
 #include <IMP/Optimizer.h>

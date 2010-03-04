@@ -8,7 +8,7 @@
 #ifndef IMP_LOG_H
 #define IMP_LOG_H
 
-#include "config.h"
+#include "kernel_config.h"
 #include "internal/log_internal.h"
 #include "utility.h"
 #include "macros.h"

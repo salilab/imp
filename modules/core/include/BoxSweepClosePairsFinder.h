@@ -9,8 +9,8 @@
 #define IMPCORE_BOX_SWEEP_CLOSE_PAIRS_FINDER_H
 
 #include "ClosePairsFinder.h"
-#include "macros.h"
-#include "config.h"
+#include "core_macros.h"
+#include "core_config.h"
 
 
 #ifdef IMP_USE_CGAL

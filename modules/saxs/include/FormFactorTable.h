@@ -8,7 +8,7 @@
 #ifndef IMPSAXS_FORM_FACTOR_TABLE_H
 #define IMPSAXS_FORM_FACTOR_TABLE_H
 
-#include "config.h"
+#include "saxs_config.h"
 
 #include <IMP/Particle.h>
 #include <IMP/base_types.h>

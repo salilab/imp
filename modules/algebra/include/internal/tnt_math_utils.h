@@ -7,7 +7,7 @@
 #define IMPALGEBRA_TNT_MATH_UTILS_H
 
 /* needed for fabs, sqrt() below */
-#include "../config.h"
+#include "../algebra_config.h"
 #include <cmath>
 
 

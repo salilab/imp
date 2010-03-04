@@ -9,7 +9,7 @@
 #ifndef IMPATOM_VELOCITY_SCALING_OPTIMIZER_STATE_H
 #define IMPATOM_VELOCITY_SCALING_OPTIMIZER_STATE_H
 
-#include "config.h"
+#include "atom_config.h"
 #include <IMP/Particle.h>
 #include <IMP/base_types.h>
 #include <IMP/OptimizerState.h>

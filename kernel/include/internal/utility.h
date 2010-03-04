@@ -8,7 +8,7 @@
 #ifndef IMP_INTERNAL_UTILITY_H
 #define IMP_INTERNAL_UTILITY_H
 
-#include "../config.h"
+#include "../kernel_config.h"
 #include "../Particle.h"
 #include <boost/format.hpp>
 #include <algorithm>

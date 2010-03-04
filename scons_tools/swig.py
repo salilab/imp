@@ -102,7 +102,7 @@ def _action_swig_file(target, source, env):
     preface.append(warning)
 
     preface.append("""
-%%include "%(module_include_path)s/config.h"
+%%include "%(module_include_path)s/%(module)s_config.h"
 """%vars)
     preface.append(warning)
     preface.append(open(source[0].abspath, "r").read())

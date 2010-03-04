@@ -8,7 +8,7 @@
 #ifndef IMPATOM_INTERNAL_PDB_H
 #define IMPATOM_INTERNAL_PDB_H
 
-#include "../config.h"
+#include "../atom_config.h"
 
 #include <IMP/base_types.h>
 

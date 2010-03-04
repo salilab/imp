@@ -8,7 +8,7 @@
 #ifndef IMP_SCORE_STATE_H
 #define IMP_SCORE_STATE_H
 
-#include "config.h"
+#include "kernel_config.h"
 #include "RefCounted.h"
 #include "Pointer.h"
 #include "Model.h"

@@ -12,7 +12,7 @@
 #include "internal/cgal_predicates.h"
 #include "BoundingBoxD.h"
 #include "Vector3D.h"
-#include "macros.h"
+#include "algebra_macros.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
 

@@ -9,7 +9,7 @@
 #ifndef IMP_OBJECT_H
 #define IMP_OBJECT_H
 
-#include "config.h"
+#include "kernel_config.h"
 #include "RefCounted.h"
 #include "exception.h"
 #include "VersionInfo.h"

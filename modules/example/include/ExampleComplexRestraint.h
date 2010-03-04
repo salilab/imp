@@ -8,7 +8,7 @@
 #ifndef IMPEXAMPLE_EXAMPLE_COMPLEX_RESTRAINT_H
 #define IMPEXAMPLE_EXAMPLE_COMPLEX_RESTRAINT_H
 
-#include "config.h"
+#include "example_config.h"
 
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>

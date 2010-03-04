@@ -7,7 +7,7 @@
 #ifndef IMPDOMINO_DISCRETE_SAMPLER_H
 #define IMPDOMINO_DISCRETE_SAMPLER_H
 
-#include "config.h"
+#include "domino_config.h"
 
 #include <IMP/Particle.h>
 #include "CombState.h"

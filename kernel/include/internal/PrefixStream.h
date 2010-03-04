@@ -9,7 +9,7 @@
 #ifndef IMP_INTERNAL_PREFIX_STREAM_H
 #define IMP_INTERNAL_PREFIX_STREAM_H
 
-#include "../config.h"
+#include "../kernel_config.h"
 
 #include <boost/iostreams/categories.hpp>
 #include <boost/iostreams/operations.hpp>

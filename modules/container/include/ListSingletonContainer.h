@@ -10,7 +10,7 @@
 #ifndef IMPCONTAINER_LIST_SINGLETON_CONTAINER_H
 #define IMPCONTAINER_LIST_SINGLETON_CONTAINER_H
 
-#include "config.h"
+#include "container_config.h"
 #include <IMP/core/internal/CoreListSingletonContainer.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE

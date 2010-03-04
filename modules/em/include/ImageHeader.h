@@ -8,7 +8,7 @@
 #ifndef IMPEM_IMAGE_HEADER_H
 #define IMPEM_IMAGE_HEADER_H
 
-#include "config.h"
+#include "em_config.h"
 #include "SpiderHeader.h"
 #include <IMP/algebra/Matrix2D.h>
 #include <IMP/algebra/utility.h>

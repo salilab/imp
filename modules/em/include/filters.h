@@ -8,7 +8,7 @@
 #ifndef IMPEM_FILTERS_H
 #define IMPEM_FILTERS_H
 
-#include "config.h"
+#include "em_config.h"
 #include "DensityMap.h"
 #include "IMP/algebra/MultiArray.h"
 

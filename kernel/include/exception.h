@@ -8,7 +8,7 @@
 #ifndef IMP_EXCEPTION_H
 #define IMP_EXCEPTION_H
 
-#include "config.h"
+#include "kernel_config.h"
 
 #include <boost/static_assert.hpp>
 #include <boost/type_traits.hpp>

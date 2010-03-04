@@ -8,7 +8,7 @@
 #ifndef IMPCORE_EVALUATE_DISTANCE_PAIR_SCORE_H
 #define IMPCORE_EVALUATE_DISTANCE_PAIR_SCORE_H
 
-#include "../config.h"
+#include "../core_config.h"
 #include <IMP/DerivativeAccumulator.h>
 #include <IMP/base_types.h>
 #include <IMP/UnaryFunction.h>

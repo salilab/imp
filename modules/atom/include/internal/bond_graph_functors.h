@@ -9,7 +9,7 @@
 #ifndef IMPATOM_INTERNAL_BOND_GRAPH_FUNCTORS_H
 #define IMPATOM_INTERNAL_BOND_GRAPH_FUNCTORS_H
 
-#include "../config.h"
+#include "../atom_config.h"
 #include <IMP/container/ListSingletonContainer.h>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/properties.hpp>

@@ -8,7 +8,7 @@
 #ifndef IMPDOMINO_JNODE_H
 #define IMPDOMINO_JNODE_H
 
-#include "config.h"
+#include "domino_config.h"
 #include "DiscreteSampler.h"
 #include "CombState.h"
 #include <IMP/base_types.h>

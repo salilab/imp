@@ -7,7 +7,7 @@
 #ifndef IMPCORE_HARMONIC_UPPER_BOUND_H
 #define IMPCORE_HARMONIC_UPPER_BOUND_H
 
-#include "config.h"
+#include "core_config.h"
 #include "Harmonic.h"
 
 IMPCORE_BEGIN_NAMESPACE

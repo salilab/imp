@@ -8,9 +8,9 @@
 #ifndef IMPDISPLAY_GEOMETRY_H
 #define IMPDISPLAY_GEOMETRY_H
 
-#include "config.h"
+#include "display_config.h"
 #include "Color.h"
-#include "macros.h"
+#include "display_macros.h"
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/RefCounted.h>

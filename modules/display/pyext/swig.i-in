@@ -10,7 +10,7 @@ IMP_DIRECTOR_MODULE_CLASS(display, CompoundGeometry);
 %warnfilter(403) PairsGeometry;
 
 /* Wrap our own classes */
-%include "IMP/display/macros.h"
+%include "IMP/display/display_macros.h"
 %include "IMP/display/Color.h"
 %include "IMP/display/geometry.h"
 %include "IMP/display/GeometryProcessor.h"

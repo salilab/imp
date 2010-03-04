@@ -8,7 +8,7 @@
 #ifndef IMPDOMINO_SIMPLE_DISCRETE_RESTRAINT_H
 #define IMPDOMINO_SIMPLE_DISCRETE_RESTRAINT_H
 
-#include "config.h"
+#include "domino_config.h"
 
 #include <IMP/Model.h>
 #include <IMP/Restraint.h>

@@ -9,7 +9,7 @@
 #ifndef IMP_IO_H
 #define IMP_IO_H
 
-#include "config.h"
+#include "kernel_config.h"
 #include "Model.h"
 #include "file.h"
 #include "FailureHandler.h"
@@ -18,7 +18,7 @@ IMP_BEGIN_NAMESPACE
 /** \name Model IO
 
     Models can be written to files in an easy-to-read
-    file format based on \quoted{name: value} pairs on separate lines with
+    file format based on \quote{name: value} pairs on separate lines with
     indentation used to indicated nesting (as in python). The functions
     take a list of the particles to write/read. The particles
     need to be provided in the same order for reading and writing.

@@ -64,7 +64,7 @@ files = [
          'VolumeRestraint.h',
          'XYZ.h',
          'XYZR.h',
-         'macros.h',
+         'core_macros.h',
          'rigid_bodies.h',
          'utility.h',
         ] \

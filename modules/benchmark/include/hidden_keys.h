@@ -9,7 +9,7 @@
 #ifndef IMPBENCHMARK_HIDDEN_KEYS_H
 #define IMPBENCHMARK_HIDDEN_KEYS_H
 
-#include "config.h"
+#include "benchmark_config.h"
 #include <IMP/base_types.h>
 #include <string>
 

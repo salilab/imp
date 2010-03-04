@@ -8,8 +8,8 @@
 #ifndef IMPDISPLAY_PARTICLE_GEOMETRY_H
 #define IMPDISPLAY_PARTICLE_GEOMETRY_H
 
-#include "config.h"
-#include "macros.h"
+#include "display_config.h"
+#include "display_macros.h"
 #include "Colored.h"
 #include <IMP/SingletonContainer.h>
 #include <IMP/PairContainer.h>

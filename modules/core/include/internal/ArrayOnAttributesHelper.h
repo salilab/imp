@@ -9,8 +9,8 @@
 #ifndef IMPCORE_ARRAY_ON_ATTRIBUTES_HELPER_H
 #define IMPCORE_ARRAY_ON_ATTRIBUTES_HELPER_H
 
-#include "../config.h"
-#include "../macros.h"
+#include "../core_config.h"
+#include "../core_macros.h"
 #include "IMP/internal/IndexingIterator.h"
 
 #include <IMP/base_types.h>

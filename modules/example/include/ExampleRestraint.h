@@ -9,7 +9,7 @@
 #ifndef IMPEXAMPLE_EXAMPLE_RESTRAINT_H
 #define IMPEXAMPLE_EXAMPLE_RESTRAINT_H
 
-#include "config.h"
+#include "example_config.h"
 #include <IMP/SingletonScore.h>
 #include <IMP/Restraint.h>
 #include <IMP/PairContainer.h>

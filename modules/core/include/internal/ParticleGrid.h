@@ -8,7 +8,7 @@
 #ifndef IMPCORE_PARTICLE_GRID_H
 #define IMPCORE_PARTICLE_GRID_H
 
-#include "../config.h"
+#include "../core_config.h"
 #include <IMP/algebra/Grid3D.h>
 
 #include <IMP/base_types.h>

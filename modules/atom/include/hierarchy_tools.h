@@ -8,7 +8,7 @@
 #ifndef IMPATOM_HIERARCHY_TOOLS_H
 #define IMPATOM_HIERARCHY_TOOLS_H
 
-#include "config.h"
+#include "atom_config.h"
 #include <IMP/core/XYZR.h>
 #include <IMP/atom/Hierarchy.h>
 

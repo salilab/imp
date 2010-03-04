@@ -8,7 +8,7 @@
 #ifndef IMP_INTERNAL_ATTRIBUTE_STORAGE_H
 #define IMP_INTERNAL_ATTRIBUTE_STORAGE_H
 
-#include "../config.h"
+#include "../kernel_config.h"
 #include "../base_types.h"
 
 #include <boost/scoped_array.hpp>

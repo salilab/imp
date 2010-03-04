@@ -8,7 +8,7 @@
 #ifndef IMPCORE_TYPED_PAIR_SCORE_H
 #define IMPCORE_TYPED_PAIR_SCORE_H
 
-#include "config.h"
+#include "core_config.h"
 #include <IMP/PairScore.h>
 
 IMPCORE_BEGIN_NAMESPACE

@@ -1,28 +1,29 @@
 Import('env')
 
 files = [
-         'Transformation.cpp',
-         'JunctionTree.cpp',
          'CartesianProductSampler.cpp',
          'CombState.cpp',
          'DiscreteSet.cpp',
          'DominoOptimizer.cpp',
          'JEdge.cpp',
          'JNode.cpp',
+         'JunctionTree.cpp',
          'MappedDiscreteSet.cpp',
          'PermutationSampler.cpp',
+         'RestraintEvaluator.cpp',
+         'RestraintEvaluatorFromFile.cpp',
          'RestraintGraph.cpp',
          'SimpleDiscreteRestraint.cpp',
          'SimpleDiscreteSampler.cpp',
          'SimpleDiscreteSpace.cpp',
          'SymmetrySampler.cpp',
+         'Transformation.cpp',
          'TransformationCartesianProductSampler.cpp',
          'TransformationDiscreteSet.cpp',
          'TransformationMappedDiscreteSet.cpp',
          'TransformationPermutationSampler.cpp',
          'TransformationUtils.cpp',
-         'RestraintEvaluator.cpp',
-         'RestraintEvaluatorFromFile.cpp'
         ]
+
 # Build and install the shared library:
 env.IMPModuleLib(files)

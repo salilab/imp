@@ -1,4 +1,4 @@
-%include "IMP/core/macros.h"
+%include "IMP/core/core_macros.h"
 
 
 /* Add additional IMPCORE_CONTAINER methods for scripting languages

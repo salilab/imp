@@ -9,7 +9,7 @@
 #define IMPSTATISTICS_KM_LOCAL_SEARCH_LLOYD_H
 
 #include "KMLocalSearch.h"
-#include "config.h"
+#include "statistics_config.h"
 #include "IMP/base_types.h"
 
 IMPSTATISTICS_BEGIN_NAMESPACE

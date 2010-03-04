@@ -9,7 +9,7 @@
 #ifndef IMPATOM_DIFFUSION_H
 #define IMPATOM_DIFFUSION_H
 
-#include "config.h"
+#include "atom_config.h"
 
 #include <IMP/core/XYZ.h>
 #include <IMP/algebra/Vector3D.h>

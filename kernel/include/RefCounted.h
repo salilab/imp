@@ -9,7 +9,7 @@
 #ifndef IMP_REF_COUNTED_H
 #define IMP_REF_COUNTED_H
 
-#include "config.h"
+#include "kernel_config.h"
 #include "exception.h"
 #include <boost/static_assert.hpp>
 #include <boost/type_traits.hpp>

@@ -9,8 +9,8 @@
 #ifndef IMPCORE_UTILITY_H
 #define IMPCORE_UTILITY_H
 
-#include "macros.h"
-#include "config.h"
+#include "core_macros.h"
+#include "core_config.h"
 #include "XYZR.h"
 #include <IMP/base_types.h>
 #include <IMP/algebra/Segment3D.h>

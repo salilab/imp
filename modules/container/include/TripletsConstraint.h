@@ -12,7 +12,7 @@
 #ifndef IMPCONTAINER_TRIPLETS_CONSTRAINT_H
 #define IMPCONTAINER_TRIPLETS_CONSTRAINT_H
 
-#include "config.h"
+#include "container_config.h"
 #include <IMP/TripletContainer.h>
 #include <IMP/TripletModifier.h>
 #include <IMP/Constraint.h>

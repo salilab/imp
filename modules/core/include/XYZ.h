@@ -8,7 +8,7 @@
 #ifndef IMPCORE_XY_Z_H
 #define IMPCORE_XY_Z_H
 
-#include "config.h"
+#include "core_config.h"
 #include "../macros.h"
 
 #include <IMP/Decorator.h>

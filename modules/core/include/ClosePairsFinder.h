@@ -8,7 +8,7 @@
 #ifndef IMPCORE_CLOSE_PAIRS_FINDER_H
 #define IMPCORE_CLOSE_PAIRS_FINDER_H
 
-#include "config.h"
+#include "core_config.h"
 #include "XYZR.h"
 #include "internal/MovedSingletonContainer.h"
 

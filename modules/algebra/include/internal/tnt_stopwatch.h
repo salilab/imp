@@ -21,7 +21,7 @@
 #define IMPALGEBRA_TNT_STOPWATCH_H
 
 // for clock() and CLOCKS_PER_SEC
-#include "../config.h"
+#include "../algebra_config.h"
 #include <time.h>
 
 

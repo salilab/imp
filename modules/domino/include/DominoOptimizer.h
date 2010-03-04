@@ -7,7 +7,7 @@
 #ifndef IMPDOMINO_DOMINO_OPTIMIZER_H
 #define IMPDOMINO_DOMINO_OPTIMIZER_H
 
-#include "config.h"
+#include "domino_config.h"
 #include "RestraintGraph.h"
 #include "JunctionTree.h"
 #include "RestraintEvaluatorI.h"

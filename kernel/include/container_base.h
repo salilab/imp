@@ -9,7 +9,7 @@
 #ifndef IMP_CONTAINER_BASE_H
 #define IMP_CONTAINER_BASE_H
 
-#include "config.h"
+#include "kernel_config.h"
 #include "Object.h"
 #include "macros.h"
 

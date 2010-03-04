@@ -10,7 +10,7 @@
 
 // #define DEBUG
 
-#include "config.h"
+#include "em_config.h"
 #include "ImageHeader.h"
 #include "ImageReaderWriter.h"
 #include "IMP/algebra/Matrix2D.h"

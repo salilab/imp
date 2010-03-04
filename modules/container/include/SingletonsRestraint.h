@@ -12,7 +12,7 @@
 #ifndef IMPCONTAINER_SINGLETONS_RESTRAINT_H
 #define IMPCONTAINER_SINGLETONS_RESTRAINT_H
 
-#include "config.h"
+#include "container_config.h"
 
 #include <IMP/core/internal/CoreSingletonsRestraint.h>
 

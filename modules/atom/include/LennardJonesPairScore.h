@@ -8,7 +8,7 @@
 #ifndef IMPATOM_LENNARD_JONES_PAIR_SCORE_H
 #define IMPATOM_LENNARD_JONES_PAIR_SCORE_H
 
-#include "config.h"
+#include "atom_config.h"
 #include <IMP/PairScore.h>
 #include <IMP/Pointer.h>
 #include <IMP/atom/LennardJones.h>

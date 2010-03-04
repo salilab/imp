@@ -8,7 +8,7 @@
 #ifndef IMPATOM_DOMAIN_H
 #define IMPATOM_DOMAIN_H
 
-#include "config.h"
+#include "atom_config.h"
 #include "Hierarchy.h"
 #include <IMP/Decorator.h>
 

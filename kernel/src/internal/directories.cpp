@@ -8,7 +8,6 @@
  */
 
 #include <IMP/internal/directories.h>
-#include <IMP/config.h>
 #include <IMP/exception.h>
 #include <fstream>
 

@@ -4,7 +4,7 @@ namespace atom {
 }
 }
 
-%include "IMP/atom/macros.h"
+%include "IMP/atom/atom_macros.h"
 
 // must be before hierarchy
 %include "IMP/atom/bond_decorators.h"

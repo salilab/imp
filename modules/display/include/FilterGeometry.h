@@ -8,7 +8,7 @@
 #ifndef IMPDISPLAY_FILTER_GEOMETRY_H
 #define IMPDISPLAY_FILTER_GEOMETRY_H
 
-#include "config.h"
+#include "display_config.h"
 #include "geometry.h"
 #include "GeometryProcessor.h"
 

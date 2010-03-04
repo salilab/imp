@@ -8,7 +8,7 @@
 #ifndef IMPCORE_INTERNAL_RIGID_BODY_TREE_H
 #define IMPCORE_INTERNAL_RIGID_BODY_TREE_H
 
-#include "../config.h"
+#include "../core_config.h"
 #include "../XYZ.h"
 #include "../Hierarchy.h"
 #include "../rigid_bodies.h"

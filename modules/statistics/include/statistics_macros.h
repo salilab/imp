@@ -1,5 +1,5 @@
 /**
- *  \file statistics/macros.h    \brief Various important macros
+ *  \file statistics_macros.h    \brief Various important macros
  *                           for implementing decorators.
  *
  *  Copyright 2007-2010 Sali Lab. All rights reserved.

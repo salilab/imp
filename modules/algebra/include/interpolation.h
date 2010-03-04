@@ -11,7 +11,7 @@
 
 // #define DEBUG
 
-#include "IMP/algebra/config.h"
+#include "IMP/algebra/algebra_config.h"
 #include "IMP/algebra/utility.h"
 #include "IMP/algebra/Matrix2D.h"
 #include "IMP/algebra/Matrix3D.h"

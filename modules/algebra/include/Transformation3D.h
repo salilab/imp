@@ -8,7 +8,7 @@
 #ifndef IMPALGEBRA_TRANSFORMATION_3D_H
 #define IMPALGEBRA_TRANSFORMATION_3D_H
 
-#include "config.h"
+#include "algebra_config.h"
 #include "Vector3D.h"
 #include "Rotation3D.h"
 #include "Transformation2D.h"

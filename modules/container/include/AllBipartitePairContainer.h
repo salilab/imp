@@ -11,7 +11,7 @@
 #ifndef IMPCONTAINER_ALL_BIPARTITE_PAIR_CONTAINER_H
 #define IMPCONTAINER_ALL_BIPARTITE_PAIR_CONTAINER_H
 
-#include "config.h"
+#include "container_config.h"
 
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>

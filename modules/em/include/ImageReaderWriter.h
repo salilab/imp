@@ -7,7 +7,7 @@
 #ifndef IMPEM_IMAGE_READER_WRITER_H
 #define IMPEM_IMAGE_READER_WRITER_H
 
-#include "config.h"
+#include "em_config.h"
 #include "ImageHeader.h"
 #include <IMP/algebra/Matrix2D.h>
 

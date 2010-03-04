@@ -9,7 +9,7 @@
 #ifndef IMP_MODEL_H
 #define IMP_MODEL_H
 
-#include "config.h"
+#include "kernel_config.h"
 #include "Object.h"
 #include "Particle.h"
 #include "container_macros.h"

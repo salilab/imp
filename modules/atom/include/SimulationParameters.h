@@ -8,13 +8,13 @@
 #ifndef IMPATOM_SIMULATION_PARAMETERS_H
 #define IMPATOM_SIMULATION_PARAMETERS_H
 
-#include "config.h"
-#include "macros.h"
+#include "atom_config.h"
+#include "atom_macros.h"
 #include "Residue.h"
 #include "Hierarchy.h"
 #include <IMP/core/utility.h>
 #include <IMP/core/XYZ.h>
-#include <IMP/core/macros.h>
+#include <IMP/core/core_macros.h>
 
 #include <IMP/base_types.h>
 #include <IMP/Particle.h>

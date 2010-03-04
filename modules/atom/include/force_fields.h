@@ -7,7 +7,7 @@
 #ifndef IMPATOM_FORCE_FIELDS_H
 #define IMPATOM_FORCE_FIELDS_H
 
-#include "config.h"
+#include "atom_config.h"
 #include "Hierarchy.h"
 #include "ForceFieldParameters.h"
 

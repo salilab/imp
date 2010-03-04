@@ -9,7 +9,7 @@
 
 #include "Vector3D.h"
 #include "BoundingBoxD.h"
-#include "macros.h"
+#include "algebra_macros.h"
 #include <iostream>
 #include <IMP/constants.h>
 

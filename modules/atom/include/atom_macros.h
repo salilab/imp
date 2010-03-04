@@ -1,5 +1,5 @@
 /**
- *  \file atom/macros.h    \brief Various important macros
+ *  \file atom_macros.h    \brief Various important macros
  *                           for implementing decorators.
  *
  *  Copyright 2007-2010 Sali Lab. All rights reserved.

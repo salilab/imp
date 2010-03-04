@@ -10,7 +10,7 @@
 #ifndef IMPCONTAINER_MINIMUM_PAIR_SCORE_H
 #define IMPCONTAINER_MINIMUM_PAIR_SCORE_H
 
-#include "config.h"
+#include "container_config.h"
 #include <IMP/PairScore.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE

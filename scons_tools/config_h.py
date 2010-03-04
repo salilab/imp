@@ -17,7 +17,7 @@ def _action_config_h(target, source, env):
     h = file(target[0].abspath, 'w')
     #print "Generating "+str(h)
     print >> h, """/*
- * \\file %(module_include_path)s/config.h
+ * \\file %(module_include_path)s/%(module)s_config.h
  * \\brief Provide macros to mark functions and classes as exported
  *        from a DLL/.so, and to set up namespaces
  *
@@ -140,7 +140,7 @@ namespace IMP {
 }
 
 #include <IMP/internal/directories.h>
-#include <IMP/config.h>
+#include <IMP/kernel_config.h>
 #include <string>
 
 IMP_BEGIN_INTERNAL_NAMESPACE
@@ -196,7 +196,8 @@ inline std::string get_example_path(std::string file_name)  {
 #endif  /* %(PREPROC)s_CONFIG_H */""" % vars
 
 def _print_config_h(target, source, env):
-    print "Generating config.h"
+    vars= imp_module.make_vars(env)
+    print "Generating %(module)s_config.h"%vars
 
 ConfigH = Builder(action=Action(_action_config_h,
                                 _print_config_h))
@@ -215,7 +216,7 @@ def _action_config_cpp(target, source, env):
  */
 """ % vars
 
-    print >> cpp, """#include <%(module_include_path)s/config.h>
+    print >> cpp, """#include <%(module_include_path)s/%(module)s_config.h>
 #include <IMP/VersionInfo.h>
 """  % vars
 
@@ -236,7 +237,8 @@ const VersionInfo& get_module_version_info() {
 
 
 def _print_config_cpp(target, source, env):
-    print "Generating config.cpp"
+    vars= imp_module.make_vars(env)
+    print "Generating  %(module)s_config.cpp"%vars
 
 
 ConfigCPP = Builder(action=Action(_action_config_cpp,

@@ -7,7 +7,7 @@
 #ifndef IMPALGEBRA_INTERNAL_CGAL_PREDICATES_H
 #define IMPALGEBRA_INTERNAL_CGAL_PREDICATES_H
 
-#include "../config.h"
+#include "../algebra_config.h"
 #include <IMP/base_types.h>
 #ifdef IMP_USE_CGAL
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>

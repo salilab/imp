@@ -8,7 +8,7 @@
 #ifndef IMPEM_VOXEL_H
 #define IMPEM_VOXEL_H
 
-#include "config.h"
+#include "em_config.h"
 #include <IMP/Decorator.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/core/XYZR.h>

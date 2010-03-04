@@ -12,7 +12,7 @@
 #include "IMP/container_macros.h"
 #include "Hierarchy.h"
 #include "Atom.h"
-#include "config.h"
+#include "atom_config.h"
 
 #include <string>
 #include <vector>

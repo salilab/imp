@@ -8,7 +8,7 @@
 #ifndef IMPATOM_INTERNAL_PROTEIN_LIGAND_INTERNAL_SCORE_H
 #define IMPATOM_INTERNAL_PROTEIN_LIGAND_INTERNAL_SCORE_H
 
-#include "../config.h"
+#include "../atom_config.h"
 #include <IMP/core/internal/evaluate_distance_pair_score.h>
 #include <IMP/exception.h>
 #include <IMP/file.h>

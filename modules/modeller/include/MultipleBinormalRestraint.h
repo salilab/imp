@@ -9,7 +9,7 @@
 #ifndef IMPMODELLER_MULTIPLE_BINORMAL_RESTRAINT_H
 #define IMPMODELLER_MULTIPLE_BINORMAL_RESTRAINT_H
 
-#include "config.h"
+#include "modeller_config.h"
 
 #include <IMP/Restraint.h>
 #include <IMP/Particle.h>

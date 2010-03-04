@@ -10,7 +10,7 @@
 #ifndef IMPALGEBRA_TRANSFORMATION_2D_H
 #define IMPALGEBRA_TRANSFORMATION_2D_H
 
-#include "config.h"
+#include "algebra_config.h"
 
 #include "Vector2D.h"
 #include "Matrix2D.h"

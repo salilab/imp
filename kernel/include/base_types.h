@@ -10,7 +10,7 @@
 
 #define IMP_NUM_INLINE 5
 
-#include "config.h"
+#include "kernel_config.h"
 #include "Key.h"
 
 #include <boost/version.hpp>

@@ -8,7 +8,7 @@
 #ifndef IMPATOM_ESTIMATES_H
 #define IMPATOM_ESTIMATES_H
 
-#include "config.h"
+#include "atom_config.h"
 #include <IMP/base_types.h>
 
 IMPATOM_BEGIN_NAMESPACE

@@ -8,7 +8,7 @@
 #ifndef IMP_INTERNAL_LOG_INTERNAL_H
 #define IMP_INTERNAL_LOG_INTERNAL_H
 
-#include "../config.h"
+#include "../kernel_config.h"
 
 #include <boost/noncopyable.hpp>
 

@@ -9,7 +9,7 @@
 #ifndef IMPEM_COARSE_CC_H
 #define IMPEM_COARSE_CC_H
 
-#include "config.h"
+#include "em_config.h"
 #include "exp.h"
 #include "DensityMap.h"
 #include "SampledDensityMap.h"

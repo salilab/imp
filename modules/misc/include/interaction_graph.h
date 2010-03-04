@@ -8,8 +8,7 @@
 #ifndef IMPMISC_INTERACTION_GRAPH_H
 #define IMPMISC_INTERACTION_GRAPH_H
 
-#include "config.h"
-#include <IMP/config.h>
+#include "misc_config.h"
 
 #include <boost/graph/kruskal_min_spanning_tree.hpp>
 #include <boost/graph/prim_minimum_spanning_tree.hpp>

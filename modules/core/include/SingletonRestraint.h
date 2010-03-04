@@ -12,7 +12,7 @@
 #ifndef IMPCORE_SINGLETON_RESTRAINT_H
 #define IMPCORE_SINGLETON_RESTRAINT_H
 
-#include "config.h"
+#include "core_config.h"
 
 #include <IMP/Restraint.h>
 #include <IMP/Pointer.h>

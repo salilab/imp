@@ -9,7 +9,7 @@
 #ifndef IMPCORE_BALL_MOVER_H
 #define IMPCORE_BALL_MOVER_H
 
-#include "config.h"
+#include "core_config.h"
 #include "MonteCarlo.h"
 #include "MoverBase.h"
 

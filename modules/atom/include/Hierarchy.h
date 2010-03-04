@@ -9,11 +9,11 @@
 #ifndef IMPATOM_HIERARCHY_H
 #define IMPATOM_HIERARCHY_H
 
-#include "config.h"
+#include "atom_config.h"
 #include <IMP/core/utility.h>
 #include <IMP/core/Hierarchy.h>
 #include "bond_decorators.h"
-#include "macros.h"
+#include "atom_macros.h"
 #include <IMP/core/XYZR.h>
 #include <IMP/core/rigid_bodies.h>
 
@@ -39,6 +39,7 @@
 
 
 // DOMAIN is defined to be 1 by a fedora math header
+//! Do an operation for each of the hierarchy types
 #define IMP_FOREACH_HIERARCHY_TYPE(macro)      \
   macro(Atom, atom, ATOM_TYPE)                 \
   macro(Residue, residue, RESIDUE_TYPE)        \
@@ -208,6 +209,12 @@ public:
 
     \ingroup hierarchy
     \ingroup decorators
+    \see Atom
+    \see Residue
+    \see Chain
+    \see Domain
+    \see Fragment
+    \see Mass
  */
 class IMPATOMEXPORT Hierarchy: public ::IMP::core::Hierarchy
 {

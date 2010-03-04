@@ -7,7 +7,7 @@
 #ifndef IMPSAXS_UTILITY_H
 #define IMPSAXS_UTILITY_H
 
-#include "config.h"
+#include "saxs_config.h"
 #include "FormFactorTable.h"
 #include <IMP/exception.h>
 #include <IMP/core/XYZ.h>

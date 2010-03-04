@@ -8,7 +8,7 @@
 #ifndef IMPATOM_MOL_2_H
 #define IMPATOM_MOL_2_H
 
-#include "config.h"
+#include "atom_config.h"
 #include "Hierarchy.h"
 
 #include <IMP/Model.h>

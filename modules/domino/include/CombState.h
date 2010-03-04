@@ -7,7 +7,7 @@
 #ifndef IMPDOMINO_COMB_STATE_H
 #define IMPDOMINO_COMB_STATE_H
 
-#include "config.h"
+#include "domino_config.h"
 #include <IMP/Particle.h>
 #include <IMP/Restraint.h>
 #include <vector>

@@ -8,7 +8,7 @@
 #ifndef IMPATOM_BOND_ENDPOINTS_REFINER_H
 #define IMPATOM_BOND_ENDPOINTS_REFINER_H
 
-#include "config.h"
+#include "atom_config.h"
 
 #include <IMP/Refiner.h>
 

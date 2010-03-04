@@ -10,7 +10,7 @@
 #ifndef IMP_PAIR_MODIFIER_H
 #define IMP_PAIR_MODIFIER_H
 
-#include "config.h"
+#include "kernel_config.h"
 #include "internal/container_helpers.h"
 #include "DerivativeAccumulator.h"
 #include "base_types.h"

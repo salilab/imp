@@ -10,7 +10,7 @@
 #ifndef IMP_SINGLETON_FILTER_H
 #define IMP_SINGLETON_FILTER_H
 
-#include "config.h"
+#include "kernel_config.h"
 #include "Particle.h"
 #include "utility.h"
 #include "VersionInfo.h"

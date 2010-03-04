@@ -7,8 +7,6 @@
  */
 
 #include <IMP/em/EMReaderWriter.h>
-// for endian
-#include <IMP/config.h>
 
 IMPEM_BEGIN_NAMESPACE
 

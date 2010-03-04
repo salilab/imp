@@ -14,8 +14,8 @@ files = [
          'KMRectangle.h',
          'KMTerminationCondition.h',
          'PartitionalClustering.h',
-         'macros.h',
          'point_clustering.h',
+         'statistics_macros.h',
         ] \
         + SConscript('internal/SConscript')
 

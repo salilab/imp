@@ -8,7 +8,7 @@
 #ifndef IMPEM_NOISE_H
 #define IMPEM_NOISE_H
 
-#include "config.h"
+#include "em_config.h"
 #include "ImageHeader.h"
 #include "IMP/algebra/MultiArray.h"
 #include "IMP/algebra/Matrix2D.h"

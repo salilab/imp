@@ -15,7 +15,7 @@
 #include <ctime>
 #include <string>
 #include <vector>
-#include "config.h"
+#include "statistics_config.h"
 #include "KMData.h"
 #include <IMP/base_types.h>
 IMPSTATISTICS_BEGIN_NAMESPACE

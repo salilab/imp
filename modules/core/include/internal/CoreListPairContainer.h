@@ -10,7 +10,7 @@
 #ifndef IMPCORE_INTERNAL_CORE_LIST_PAIR_CONTAINER_H
 #define IMPCORE_INTERNAL_CORE_LIST_PAIR_CONTAINER_H
 
-#include "../config.h"
+#include "../core_config.h"
 #include <IMP/PairContainer.h>
 #include <IMP/internal/container_helpers.h>
 #include "pair_helpers.h"

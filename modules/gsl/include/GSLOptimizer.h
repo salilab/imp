@@ -8,7 +8,7 @@
 #ifndef IMPGSL_GSL_OPTIMIZER_H
 #define IMPGSL_GSL_OPTIMIZER_H
 
-#include "config.h"
+#include "gsl_config.h"
 
 #include <IMP/Optimizer.h>
 #include <gsl/gsl_multimin.h>

@@ -1,5 +1,5 @@
 /**
- *  \file algebra/macros.h    \brief Various important macros
+ *  \file algebra_macros.h    \brief Various important macros
  *                           for implementing geometry.
  *
  *  Copyright 2007-2010 Sali Lab. All rights reserved.

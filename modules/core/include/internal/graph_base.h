@@ -8,7 +8,7 @@
 #ifndef IMPCORE_GRAPH_BASE_H
 #define IMPCORE_GRAPH_BASE_H
 
-#include "../config.h"
+#include "../core_config.h"
 #include "ArrayOnAttributesHelper.h"
 
 #include <IMP/Particle.h>

@@ -7,7 +7,7 @@
 #ifndef IMPCORE_OPEN_CUBIC_SPLINE_H
 #define IMPCORE_OPEN_CUBIC_SPLINE_H
 
-#include "config.h"
+#include "core_config.h"
 #include <IMP/UnaryFunction.h>
 #include "internal/evaluate_distance_pair_score.h"
 

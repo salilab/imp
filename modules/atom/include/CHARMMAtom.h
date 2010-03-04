@@ -9,7 +9,7 @@
 #ifndef IMPATOM_CHARMM_ATOM_H
 #define IMPATOM_CHARMM_ATOM_H
 
-#include "config.h"
+#include "atom_config.h"
 
 #include "Atom.h"
 

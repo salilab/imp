@@ -8,7 +8,7 @@
 #ifndef IMPCORE_DERIVATIVES_FROM_REFINED_H
 #define IMPCORE_DERIVATIVES_FROM_REFINED_H
 
-#include "config.h"
+#include "core_config.h"
 
 #include "XYZ.h"
 #include <IMP/Refiner.h>

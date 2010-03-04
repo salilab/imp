@@ -8,8 +8,8 @@
 #ifndef IMPATOM_RESIDUE_H
 #define IMPATOM_RESIDUE_H
 
-#include "config.h"
-#include "macros.h"
+#include "atom_config.h"
+#include "atom_macros.h"
 #include "Hierarchy.h"
 #include "Chain.h"
 

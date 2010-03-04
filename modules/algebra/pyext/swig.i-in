@@ -1,4 +1,4 @@
-%include "IMP/algebra/macros.h"
+%include "IMP/algebra/algebra_macros.h"
 
 namespace IMP {
   namespace algebra {

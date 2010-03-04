@@ -9,7 +9,7 @@
 #ifndef IMPEM_MRC_READER_WRITER_H
 #define IMPEM_MRC_READER_WRITER_H
 
-#include "config.h"
+#include "em_config.h"
 #include "MapReaderWriter.h"
 #include <string>
 

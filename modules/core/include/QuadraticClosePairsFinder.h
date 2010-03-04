@@ -9,8 +9,8 @@
 #define IMPCORE_QUADRATIC_CLOSE_PAIRS_FINDER_H
 
 #include "ClosePairsFinder.h"
-#include "macros.h"
-#include "config.h"
+#include "core_macros.h"
+#include "core_config.h"
 
 IMPCORE_BEGIN_NAMESPACE
 

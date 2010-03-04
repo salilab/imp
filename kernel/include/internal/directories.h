@@ -9,7 +9,7 @@
 #ifndef IMP_INTERNAL_DIRECTORIES_H
 #define IMP_INTERNAL_DIRECTORIES_H
 
-#include "../config.h"
+#include "../kernel_config.h"
 #include <string>
 
 IMP_BEGIN_INTERNAL_NAMESPACE

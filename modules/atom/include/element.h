@@ -7,7 +7,7 @@
 #ifndef IMPATOM_ELEMENT_H
 #define IMPATOM_ELEMENT_H
 
-#include "config.h"
+#include "atom_config.h"
 #include <IMP/base_types.h>
 
 #include <IMP/log.h>

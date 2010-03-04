@@ -8,8 +8,8 @@
 #ifndef IMPCORE_INTERNAL_MINIMAL_SET_H
 #define IMPCORE_INTERNAL_MINIMAL_SET_H
 
-#include "../config.h"
-#include "../macros.h"
+#include "../core_config.h"
+#include "../core_macros.h"
 
 #include <utility>
 #include <algorithm>

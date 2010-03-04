@@ -11,7 +11,7 @@
 #ifndef IMPCONTAINER_CLOSE_BIPARTITE_PAIR_CONTAINER_H
 #define IMPCONTAINER_CLOSE_BIPARTITE_PAIR_CONTAINER_H
 
-#include "config.h"
+#include "container_config.h"
 #include <IMP/core/ClosePairsFinder.h>
 #include <IMP/core/internal/MovedSingletonContainer.h>
 #include <IMP/PairContainer.h>

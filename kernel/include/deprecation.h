@@ -9,7 +9,7 @@
 #ifndef IMP_DEPRECATION_H
 #define IMP_DEPRECATION_H
 
-#include "config.h"
+#include "kernel_config.h"
 #include "internal/deprecation.h"
 
 IMP_BEGIN_NAMESPACE

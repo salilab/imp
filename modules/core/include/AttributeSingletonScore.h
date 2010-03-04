@@ -8,7 +8,7 @@
 #ifndef IMPCORE_ATTRIBUTE_SINGLETON_SCORE_H
 #define IMPCORE_ATTRIBUTE_SINGLETON_SCORE_H
 
-#include "config.h"
+#include "core_config.h"
 #include <IMP/SingletonScore.h>
 #include <IMP/Pointer.h>
 #include <IMP/UnaryFunction.h>
