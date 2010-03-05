@@ -4,17 +4,17 @@ import IMP
 import IMP.restrainer
 
 # Load molecular hierarchy definition
-RepParser = IMP.restrainer.XMLRepresentation(
+rep_parser = IMP.restrainer.XMLRepresentation(
                 IMP.restrainer.get_example_path('input/eg2_representation.xml'))
-representation = RepParser.run()
+representation = rep_parser.run()
 
 # Load the restraint set
-RestraintParser = IMP.restrainer.XMLRestraint(
+restraint_parser = IMP.restrainer.XMLRestraint(
                       IMP.restrainer.get_example_path('input/eg2_restraint.xml'))
-restraint = RestraintParser.run()
+restraint = restraint_parser.run()
 
 # Place representation into IMP model
-Model = representation.to_model()
+model = representation.to_model()
 
 # Place restraint into IMP model
 restraint.add_to_representation(representation)
