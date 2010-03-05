@@ -41,7 +41,7 @@ If there are build errors
 -# make sure all prerequisites are installed
 -# read the scons help (\c scons \c -h) to figure out any more arguments you need to pass to scons in order to make sure it finds needed external libraries.
 .
-If you cannot figure things out, feel free to post on the \impdev list.
+If you cannot figure things out, feel free to post on the \impusers list.
 
 If you are likely to be building \imp repeatedly, it can be useful to
 put the arguments to \c scons into a config file. This is a file called \c config.py

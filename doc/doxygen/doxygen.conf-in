@@ -188,6 +188,7 @@ ALIASES                = "command{1}=\code \1 \endcode" \
                          "imp=\p %IMP" \
                          "string{1}=<tt>\1</tt>" \
                          "impdev=<a href=\"http://salilab.org/mailman/listinfo/imp-dev\">imp-dev</a>" \
+                         "impusers=<a href=\"http://salilab.org/mailman/listinfo/imp-users\">imp-users</a>" \
                          "impcommits=<a href=\"http://salilab.org/mailman/listinfo/imp-commits\">imp-commits</a>" \
                          "advancedmethod=\note Familiarity with these methods is not required to use %imp." \
                          "advanceddoc=\par Advanced:\n" \
