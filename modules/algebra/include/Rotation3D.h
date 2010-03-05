@@ -552,7 +552,7 @@ inline Rotation3D interpolate(const Rotation3D &a,
   angleToQuaternion/index.htm
   \relatesalso Rotation3D
 */
-inline std::pair<VectorD<3>,double> get_angle_and_axis(
+inline std::pair<VectorD<3>,double> get_axis_and_angle(
   const Rotation3D &rot) {
   VectorD<4> q = rot.get_quaternion();
   double a,b,c,d;
@@ -564,7 +564,10 @@ inline std::pair<VectorD<3>,double> get_angle_and_axis(
   return std::pair<VectorD<3>,double>(axis.get_unit_vector(),angle);
 }
 
-
+typedef std::pair<VectorD<3>,double> AxisAnglePair;
+#ifndef IMP_DOXYGEN
+typedef std::vector<AxisAnglePair> AxisAnglePairs;
+#endif
 
 IMPALGEBRA_END_NAMESPACE
 #endif  /* IMPALGEBRA_ROTATION_3D_H */

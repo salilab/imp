@@ -44,6 +44,13 @@ protected:
   Plane3D crossing_plane_;
 };
 
+IMP_AREA_GEOMETRY_METHODS(SpherePatch3D,
+                          IMP_NOT_IMPLEMENTED;,
+                          {
+                            return get_bounding_box(g.get_sphere());
+                          });
+
+
 IMPALGEBRA_END_NAMESPACE
 
 #endif  /* IMPALGEBRA_SPHERE_PATCH_3D_H */

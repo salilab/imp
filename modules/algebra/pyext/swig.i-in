@@ -97,10 +97,19 @@ namespace IMP {
    %template(AxisAnglePair) ::std::pair<IMP::algebra::VectorD<3>,double>;
    %template(get_transformation_taking_first_to_second) get_transformation_aligning_first_to_second<std::vector<IMP::algebra::VectorD<3> >, std::vector<IMP::algebra::VectorD<3> > >;
    // rotation operations
-   %template(Rotation2Ds) ::std::vector<Rotation2D>;
-   %template(Rotation3Ds) ::std::vector<Rotation3D>;
-   %template(Transformation2Ds) ::std::vector<Transformation2D>;
-   %template(Transformation3Ds) ::std::vector<Transformation3D>;
+   IMP_SWIG_VALUES(Rotation2D, Rotation2Ds);
+   IMP_SWIG_VALUES(Rotation3D, Rotation3Ds);
+   IMP_SWIG_VALUES(Transformation2D, Transformation2Ds);
+   IMP_SWIG_VALUES(Transformation3D, Transformation3Ds);
+   IMP_SWIG_VALUES(SphericalVector3D, SphericalVector3Ds);
+
+   IMP_SWIG_VALUES(AxisAnglePair, AxisAnglePairs);
+   IMP_SWIG_VALUES(Cone3D, Cone3Ds);
+   IMP_SWIG_VALUES(Cylinder3D, Cylinder3Ds);
+   IMP_SWIG_VALUES(Ellipsoid3D, Ellipsoid3Ds);
+   IMP_SWIG_VALUES(Plane3D, Plane3Ds);
+   IMP_SWIG_VALUES(Segment3D, Segment3Ds);
+   IMP_SWIG_VALUES(SpherePatch3D, SpherePatch3Ds);
  }
 }
 %inline %{

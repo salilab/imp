@@ -68,19 +68,17 @@ class IMPALGEBRAEXPORT SphericalVector3D
   //! Returns a vector with the Cartesian coordinates
   VectorD<3> get_cartesian_coordinates();
 
+  IMP_SHOWABLE_INLINE(out << v_[0] << " , " << v_[1] << " , "
+                      << v_[2]);
+
  private:
   void set_cartesian_coordinates(VectorD<3>& v);
   double v_[3];
 };
 
+IMP_OUTPUT_OPERATOR(SphericalVector3D);
 
-inline std::ostream &operator<<(std::ostream &out, const SphericalVector3D &v) {
-  out << "( " << v[0] << " , " << v[1] << " , " << v[2] << " )";
-  return out;
-}
-
-
-typedef std::vector<SphericalVector3D> SphericalVector3Ds;
+IMP_VALUES(SphericalVector3D);
 
 IMPALGEBRA_END_NAMESPACE
 
