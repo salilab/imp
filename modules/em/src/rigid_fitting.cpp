@@ -18,6 +18,14 @@
 IMPEM_BEGIN_NAMESPACE
 
 
+void FittingSolutions::add_solution(
+  const algebra::Transformation3D &t,Float score) {
+    fs_.push_back(FittingSolution(t,score));
+}
+void FittingSolutions::sort() {
+  std::sort(fs_.begin(),fs_.end(),sort_by_cc());
+}
+
 RestraintSet * add_restraints(Model *model, DensityMap *dmap,
                     core::RigidBody &rb,
                     const FloatKey &rad_key, const FloatKey &wei_key) {
@@ -98,7 +106,6 @@ void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
       //fr.add_solution(algebra::get_transformation_aligning_first_to_second(
       //vecs_ref,vecs_current),e);
       fr.add_solution(rb.get_transformation(),e);
-      IMP::atom::write_pdb(IMP::atom::Hierarchy(rb),"aa.pdb");
     } catch (ModelException err) {
       IMP_WARN("Optimization run " << i << " failed to converge."
                << std::endl);
@@ -109,21 +116,25 @@ void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
 }
 
 
-void local_rigid_fitting_around_point(
+FittingSolutions local_rigid_fitting_around_point(
    core::RigidBody &rb,
    const FloatKey &rad_key, const FloatKey &wei_key,
    DensityMap *dmap, const algebra::VectorD<3> &anchor_centroid,
-   FittingSolutions &fr, OptimizerState *display_log,
+   OptimizerState *display_log,
    Int number_of_optimization_runs, Int number_of_mc_steps,
    Int number_of_cg_steps, Float max_translation, Float max_rotation) {
+  FittingSolutions fr;
    IMP_LOG(TERSE,
           "rigid fitting with " << number_of_optimization_runs <<
           " MC optimization runs, each with " << number_of_mc_steps <<
           " Monte Carlo steps , each with " << number_of_cg_steps <<
           " Conjugate Gradients rounds. " << std::endl
-           <<" The anchor point is : " << anchor_centroid << std::endl);
-   IMP_INTERNAL_CHECK(dmap->is_part_of_volume(anchor_centroid),
-              "The centroid is not part of the map");
+           <<" The anchor point is : " << anchor_centroid << std::endl
+           <<" The map center is : " << dmap->get_centroid() << std::endl);
+   if(!dmap->is_part_of_volume(anchor_centroid)) {
+     IMP_WARN("starting local refinement with a protein mostly outside "
+              <<"of the density"<<std::endl);
+   }
    //add restraints
    Model *model = rb.get_members()[0].get_particle()->get_model();
    RestraintSet *rsrs = add_restraints(model, dmap, rb,
@@ -148,15 +159,17 @@ void local_rigid_fitting_around_point(
     //remove restraints
     model->remove_restraint(rsrs);
     IMP_LOG(TERSE,"end rigid fitting " <<std::endl);
+    return fr;
 }
 
-void local_rigid_fitting_around_points(
+FittingSolutions local_rigid_fitting_around_points(
    core::RigidBody &rb,
    const FloatKey &rad_key, const FloatKey &wei_key,
    DensityMap *dmap, const std::vector<algebra::VectorD<3> > &anchor_centroids,
-   FittingSolutions &fr, OptimizerState *display_log,
+   OptimizerState *display_log,
    Int number_of_optimization_runs, Int number_of_mc_steps,
    Int number_of_cg_steps, Float max_translation, Float max_rotation) {
+  FittingSolutions fr;
    IMP_LOG(VERBOSE,
            "rigid fitting around " << anchor_centroids.size() <<" with "
            << number_of_optimization_runs <<
@@ -180,22 +193,20 @@ void local_rigid_fitting_around_points(
               number_of_mc_steps,*it,rb, opt,fr,model);
    }
    fr.sort();
-
    model->remove_restraint(rsrs);
    IMP_LOG(TERSE,"end rigid fitting " <<std::endl);
+   return fr;
 }
 
-
-void local_rigid_fitting_grid_search(
+FittingSolutions local_rigid_fitting_grid_search(
    Particles &ps, const FloatKey &rad_key,
    const FloatKey &wei_key,
    DensityMap *dmap,
-   FittingSolutions &fr,
    Int max_voxels_translation,
    Int translation_step,
    Float max_angle_in_radians,
    Int number_of_rotations) {
-
+  FittingSolutions fr;
    IMP_USAGE_CHECK(ps.size()>0,
       "no particles given as input for local_rigid_fitting_grid_search"
        <<std::endl);
@@ -259,31 +270,68 @@ void local_rigid_fitting_grid_search(
      }//x
    }//end rotations
    fr.sort();
+   return fr;
 }
 
-void compute_fitting_scores(Particles &ps,
+FittingSolutions compute_fitting_scores(Particles &ps,
   DensityMap *em_map,
   const FloatKey &rad_key, const FloatKey &wei_key,
   const std::vector<IMP::algebra::Transformation3D>& transformations,
-  FittingSolutions &fr) {
+  bool fast_version) {
+  FittingSolutions fr;
     IMP::em::SampledDensityMap *model_dens_map =
       new IMP::em::SampledDensityMap(*(em_map->get_header()));
     model_dens_map->set_particles(ps,rad_key,wei_key);
     model_dens_map->resample();
     float score;
     //CoarseCC ccc;
-    for (std::vector<IMP::algebra::Transformation3D>::const_iterator it =
+
+    if (!fast_version) {
+      IMP::em::SampledDensityMap *model_dens_map =
+         new IMP::em::SampledDensityMap(*(em_map->get_header()));
+      model_dens_map->set_particles(ps,rad_key,wei_key);
+      core::XYZsTemp ps_xyz=core::XYZsTemp(ps);
+      algebra::Vector3Ds original_cooridnates;
+      for(core::XYZsTemp::const_iterator it = ps_xyz.begin();
+          it != ps_xyz.end(); it++) {
+        original_cooridnates.push_back(it->get_coordinates());
+      }
+      for (std::vector<IMP::algebra::Transformation3D>::const_iterator it =
          transformations.begin(); it != transformations.end();it++) {
-      DensityMap *transformed_sampled_map = get_transformed(model_dens_map,*it);
-      transformed_sampled_map->calcRMS();
-      float threshold = transformed_sampled_map->get_header()->dmin;
-      score  = 1.-
-        CoarseCC::cross_correlation_coefficient(*em_map,
-             *transformed_sampled_map,threshold,true);
-      IMP_LOG(VERBOSE,"adding score:"<<score<<std::endl);
-      fr.add_solution(*it,score);
-      delete transformed_sampled_map;
+        //transform the particles
+        for(unsigned int i=0;i<ps_xyz.size();i++){
+          ps_xyz[i].set_coordinates(
+             it->get_transformed(original_cooridnates[i]));
+        }
+        model_dens_map->resample();
+        float threshold = model_dens_map->get_header()->dmin;
+        score  = 1.-
+          CoarseCC::cross_correlation_coefficient(*em_map,
+             *model_dens_map,threshold,true);
+        IMP_LOG(VERBOSE,"adding score:"<<score<<std::endl);
+        fr.add_solution(*it,score);
+      }
+      //move back to original coordinates
+      for(unsigned int i=0;i<ps_xyz.size();i++){
+        ps_xyz[i].set_coordinates(original_cooridnates[i]);
+      }
     }
+    else {
+      for (std::vector<IMP::algebra::Transformation3D>::const_iterator it =
+         transformations.begin(); it != transformations.end();it++) {
+        DensityMap *transformed_sampled_map =
+          get_transformed(model_dens_map,*it);
+        transformed_sampled_map->calcRMS();
+        float threshold = transformed_sampled_map->get_header()->dmin;
+        score  = 1.-
+          CoarseCC::cross_correlation_coefficient(*em_map,
+             *transformed_sampled_map,threshold,true);
+        IMP_LOG(VERBOSE,"adding score:"<<score<<std::endl);
+        fr.add_solution(*it,score);
+        delete transformed_sampled_map;
+      }
+    }
+    return fr;
 }
 
 Float compute_fitting_score(Particles &ps,

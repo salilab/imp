@@ -90,14 +90,27 @@ IMP_LIST_IMPL(FitRestraint, Particle, particle,Particle*, Particles,
  */
 double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
+  Float percentage_outside_of_density =
+    (1.*
+    get_number_of_particles_outside_of_the_density(
+      target_dens_map_,
+      model_dens_map_->get_sampled_particles()))/
+    model_dens_map_->get_sampled_particles().size();
+
+
   Float escore;
   bool calc_deriv = accum? true: false;
+  if (algebra::get_are_almost_equal(percentage_outside_of_density,1.,0.001)) {
+    escore=1.;
+  }
+  else{
   escore = CoarseCC::evaluate(const_cast<DensityMap&>(*target_dens_map_),
                              const_cast<SampledDensityMap&>(*model_dens_map_),
                              const_cast<FitRestraint*>(this)->dx_,
                              const_cast<FitRestraint*>(this)->dy_,
                              const_cast<FitRestraint*>(this)->dz_,
                              scalefac_, calc_deriv);
+  }
 
   //In many optimization senarios particles are can be found outside of
   //the density. When all particles are outside of the density the
@@ -108,20 +121,16 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   //the density, the CC score is back on. To smooth the score,
   //we start considering centroids distance once 80% of the particles
   //are outside of the density.
-  Float percentage_outside_of_density =
-    (1.*
-    get_number_of_particles_outside_of_the_density(
-      target_dens_map_,
-      model_dens_map_->get_sampled_particles()))/
-    model_dens_map_->get_sampled_particles().size();
   Float score=escore;
   if (percentage_outside_of_density>0.8) {
     IMP_LOG(IMP::TERSE,"More than 80% of the particles are outside "<<
        "of the density. Pulling the particles back "<<
        "to the density using a upper bound harmonic between the centroids "<<
        " of the density and the map"<<std::endl);
-    algebra::Vector3D map_centroid=core::get_centroid(core::XYZsTemp());
-    algebra::Vector3D ps_centroid=target_dens_map_->get_centroid();
+    algebra::Vector3D ps_centroid=
+      core::get_centroid(
+        core::XYZsTemp(model_dens_map_->get_sampled_particles()));
+    algebra::Vector3D map_centroid=target_dens_map_->get_centroid();
     algebra::Vector3D dist_deriv;
     algebra::Vector3D centroid_delta=map_centroid-ps_centroid;
     core::HarmonicUpperBound hup(0,1.);
@@ -143,6 +152,7 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
        dz_[i]*(1.-percentage_outside_of_density)+
          dist_deriv[2]*(percentage_outside_of_density);
     }
+    IMP_LOG(IMP::TERSE,"Finish score and derivatives adjustments"<<std::endl);
   }
 
   // now update the derivatives

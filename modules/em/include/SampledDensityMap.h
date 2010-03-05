@@ -26,6 +26,8 @@ IMPEM_BEGIN_NAMESPACE
 //#define PI 3.141592653589793238462643383
 //define could be manipulated with a const *int ptr declaration.
 
+
+//! Class for sampling a density map from particles
 class IMPEMEXPORT SampledDensityMap: public DensityMap
 {
 
@@ -60,13 +62,15 @@ public:
   //! Resampling beads on an EM grid
   /**
   \note The density of a particle p centered at pl at position gl is:
+  \f$\frac{{Z}e^{\frac{{-0.5}({p_l}-{g_l})}{\sigma}}}{\sqrt{{2}{\pi}\sigma}}\f$
 
             Z * exp((-0.5(pl-gl))/sigma)
          ---------------------------------
                   sqrt(2*pi*sigma)
 
-    , such that Z is the weight of the particle and sigma is defined to be
-      0.425 the resolution, to follow the 'full width at half maxima'
+    , such that \f${Z}\f$ is the weight of the particle and \f${\sigma}\f$
+      is defined to be \f${0.425}\f$ times the resolution,
+      to follow the 'full width at half maxima'
       criterion. For more details please refer to Topf et al, Structure, 2008.
    */
   virtual void resample();
@@ -94,8 +98,8 @@ public:
   IMP_REF_COUNTED_DESTRUCTOR(SampledDensityMap);
 protected:
   //! Calculate the parameters of the particles bounding box
-  /** \param[in]  ps     particles with XYZ, radius and weight attributes
-      \param[out] bb           the particles bounding box
+  /** \param[in] ps particles with XYZ, radius and weight attributes
+      \return the particles bounding box
    */
   IMP::algebra::BoundingBoxD<3>
      calculate_particles_bounding_box(const Particles &ps);
@@ -104,7 +108,7 @@ protected:
                   emreal maxradius, emreal resolution, emreal voxel_size,
                   int sig_offset);
 
-  // bookkeeping functions
+  //bookkeeping functions
   int lower_voxel_shift(const emreal &loc, const emreal &kdist,
                         const emreal &orig, int ndim) const {
     int imin;
