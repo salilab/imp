@@ -49,6 +49,16 @@ class NonAlternativePDBSelector : public PDBSelector {
   }
 };
 
+//! Select all non-alternative ATOM records
+class ATOMPDBSelector: public NonAlternativePDBSelector {
+public:
+  bool operator()(const std::string& pdb_line) const {
+    return NonAlternativePDBSelector::operator()(pdb_line)
+      && internal::is_ATOM_rec(pdb_line);
+  }
+};
+
+
 //! Select all CA ATOM records
 class CAlphaPDBSelector : public NonAlternativePDBSelector {
  public:
