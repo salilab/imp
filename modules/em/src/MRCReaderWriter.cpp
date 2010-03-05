@@ -85,8 +85,8 @@ void MRCReaderWriter::read_32_data(float *pt)
   // Check for the necessity of changing the endian
   needswap = 0;
   for(size_t i=0;i<n;i++)
-    if (pt[i] > 1e10) {
-      // Really big values usually result if the endian is not correct
+    if (pt[i] > 1e10 || pt[i] < -1e10) {
+      // Really large values usually result if the endian is not correct
       needswap = 1;
       break;
     }
