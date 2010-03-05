@@ -2,4 +2,8 @@ This example shows how to use IMP::core::RigidBody and IMP::core::ExcludedVolume
 On the following figure, we see an XML representation of the molecular hierarchy.
 
 \include eg2_representation.xml
+
+From restrainer's point of view, a Rigid Body is a special form of restraint. Therefore, to make some parts of the hierarchy rigid, suitable rigid body declarations should be placed in the restraint XML file.
+
 \include eg2_restraint.xml
+
