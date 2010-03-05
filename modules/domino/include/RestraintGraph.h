@@ -73,11 +73,14 @@ public:
   /** \param[in] jt Holds the junction tree that represent the
                     system dependencies
       \param[in] mdl The IMP model
+      \param[in] r_eval evaluator used to evaluate the restraints
    */
   RestraintGraph(const JunctionTree &jt,Model *mdl,
                  RestraintEvaluatorI *r_eval);
-  //    void clear_states();
-  //void set_model(IMP::Model *m_);
+  //! Initialize the graph
+  /**
+    \param[in] number_of_nodes the number of nodes
+   */
   void initialize_graph(int number_of_nodes);
   //! Move particles to the the global minimum combination
   void move_to_global_minimum_configuration() const;
@@ -87,6 +90,7 @@ public:
   //! Creates a new node and add it to the graph
   /** \param[in] node_index the index of the node
       \param[in] particles  the particles that are part of the node
+      \param[in] rstr_eval  evaluator used to evaluate the restraints
    */
   void add_node(unsigned int node_index, Particles &particles,
                 RestraintEvaluatorI *rstr_eval);
@@ -166,7 +170,8 @@ protected:
   //! Load junction tree and set the restraint graph
   /**
   \param[in] jt contains the junction tree data
-  \param[in] mdl
+  \param[in] mdl The model that contains the particles
+  \param[in] r_eval Evaluator to be used to evaluate the restraints
   \note The function uses the particle name attribute as identifier
    */
   void load_data(const JunctionTree &jt,Model *mdl,
