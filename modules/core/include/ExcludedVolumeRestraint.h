@@ -24,7 +24,8 @@ IMPCORE_BEGIN_NAMESPACE
 
 //! Prevent a set of particles and rigid bodies from inter-penetrating
 /** Given an arbitrary collection of particles and rigid bodies, this
-    restraint prevents the particles from interpenetrating.
+    restraint prevents the particles from interpenetrating. Such restraints
+    are also known as steric clash restraints.
 
     If any of the rigid bodies don't have radii, an appropriate radius
     will be added. Note, to take advantage of this, the RigidBody
