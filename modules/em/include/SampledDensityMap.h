@@ -63,11 +63,6 @@ public:
   /**
   \note The density of a particle p centered at pl at position gl is:
   \f$\frac{{Z}e^{\frac{{-0.5}({p_l}-{g_l})}{\sigma}}}{\sqrt{{2}{\pi}\sigma}}\f$
-
-            Z * exp((-0.5(pl-gl))/sigma)
-         ---------------------------------
-                  sqrt(2*pi*sigma)
-
     , such that \f${Z}\f$ is the weight of the particle and \f${\sigma}\f$
       is defined to be \f${0.425}\f$ times the resolution,
       to follow the 'full width at half maxima'
