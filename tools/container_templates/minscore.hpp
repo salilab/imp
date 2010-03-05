@@ -10,7 +10,7 @@
 #ifndef IMPCONTAINER_MINMAX_GROUPNAME_SCORE_H
 #define IMPCONTAINER_MINMAX_GROUPNAME_SCORE_H
 
-#include "config.h"
+#include "container_config.h"
 #include <IMP/GroupnameScore.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE

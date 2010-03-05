@@ -12,7 +12,7 @@
 #ifndef IMPCORE_GROUPNAME_CONSTRAINT_H
 #define IMPCORE_GROUPNAME_CONSTRAINT_H
 
-#include "config.h"
+#include "core_config.h"
 #include <IMP/GroupnameModifier.h>
 #include <IMP/Constraint.h>
 #include <IMP/Particle.h>

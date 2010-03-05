@@ -21,7 +21,10 @@
 IMPATOM_BEGIN_NAMESPACE
 
 //! The various elements currently supported/known?
-enum Element {UNKNOWN_ELEMENT=0, OH=-1, H2O=-2,
+enum Element {UNKNOWN_ELEMENT=0,
+#ifndef IMP_DOXYGEN
+              OH=-1, H2O=-2,
+#endif
               H= 1, He= 2, Li= 3, Be= 4, B= 5, C= 6, N= 7,
               O= 8, F= 9, Ne= 10, Na= 11, Mg= 12, Al= 13, Si= 14,
               P= 15, S= 16, Cl= 17, Ar= 18, K= 19, Ca= 20, Sc= 21,
@@ -37,7 +40,10 @@ enum Element {UNKNOWN_ELEMENT=0, OH=-1, H2O=-2,
               At= 85, Rn= 86, Fr= 87, Ra= 88, Ac= 89, Th= 90, Pa= 91,
               U= 92, Np= 93, Pu= 94, Am= 95, Cm= 96, Bk= 97, Cf= 98,
               Es= 99, Fm= 100, Md= 101, No= 102, Lr= 103, Db= 104, Jl= 105,
-              Rf= 106, NUMBER_OF_ELEMENTS = 107
+              Rf= 106
+#ifndef IMP_DOXYGEN
+              , NUMBER_OF_ELEMENTS = 107
+#endif
 };
 
 

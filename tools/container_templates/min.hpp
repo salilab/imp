@@ -11,7 +11,7 @@
 #ifndef IMPCONTAINER_MINMAX_GROUPNAME_RESTRAINT_H
 #define IMPCONTAINER_MINMAX_GROUPNAME_RESTRAINT_H
 
-#include "config.h"
+#include "container_config.h"
 #include <IMP/Restraint.h>
 #include <IMP/GroupnameScore.h>
 #include <IMP/GroupnameContainer.h>

@@ -11,7 +11,7 @@
 #ifndef IMPCORE_INTERNAL_GROUPNAME_HELPERS_H
 #define IMPCORE_INTERNAL_GROUPNAME_HELPERS_H
 
-#include "../config.h"
+#include "../core_config.h"
 #include <IMP/GroupnameContainer.h>
 #include <IMP/GroupnameModifier.h>
 #include <IMP/internal/container_helpers.h>

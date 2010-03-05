@@ -10,7 +10,7 @@
 #ifndef IMP_GROUPNAME_MODIFIER_H
 #define IMP_GROUPNAME_MODIFIER_H
 
-#include "config.h"
+#include "kernel_config.h"
 #include "internal/container_helpers.h"
 #include "DerivativeAccumulator.h"
 #include "base_types.h"
@@ -87,8 +87,7 @@ public:
 IMP_OUTPUT_OPERATOR(GroupnameModifier);
 
 
-//! A collection
-typedef VectorOfRefCounted<GroupnameModifier*> GroupnameModifiers;
+IMP_OBJECTS(GroupnameModifier);
 
 //! Create a functor which can be used with build in C++ and python commands
 /** For example, you can do
@@ -126,6 +125,7 @@ public:
     }
   }
 };
+
 
 
 IMP_END_NAMESPACE
