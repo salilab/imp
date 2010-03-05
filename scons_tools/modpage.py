@@ -22,7 +22,7 @@ def Website(env, url, name):
 
 def StandardLicense(env):
     return """
-LGPL.
+\\external{http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html,LGPL}.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
