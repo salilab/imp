@@ -26,14 +26,11 @@ class IMPEMEXPORT CoarseCC
 
 public:
 
-
-  //! Evaluates the value of the cross correlation term.
-  /** This function has a special behavior, as it does not return the true
-      cross correlation coefficient ccc, but the value:
-      scalefac*(1-ccc)
-      The reason why is to use this term as part of an scoring function that
-      is better the lower the term. If you want the cross correlation
-      coefficient, use cross_correlation_coefficient() instead.
+  //! Evaluates the value of the EM fitting term.
+  /** \note The function returns scalefac*(1-ccc)
+            to support minimization optimization. The ccc value (cross
+            correlation coefficient) is calculate by the
+            cross_correlation_coefficient function.
       \param[in] data DensityMap class containing the EM map. note:
              correct RMSD and mean MUST be in the header!
       \param[in] model_map SampledDensityMap class prepared to contain the
@@ -44,8 +41,12 @@ public:
       \param[in] scalefactor scale factor to apply to the value of the cross
              correlation term
       \param[in] lderiv if true, the derivatives of the term are computed
+      \param[in] divide_by_rms determines wheather the model_map should be
+                 normalized prior to the correlation calculation. false is
+                 faster, but potentially innacurate
       \param[in] resample if true, the model density map is resampled
       \return the value of the cross correlation term: scalefac*(1-ccc)
+      \relatesalso cross_correlation_coefficient
    */
   static float evaluate(DensityMap &data, SampledDensityMap &model_map,
                         std::vector<float> &dvx, std::vector<float>&dvy,
@@ -56,22 +57,14 @@ public:
 /*!
  Computes the derivatives of the cross correlation term scalefac*(1-ccc) at each
  voxel of the map.
- \param[in] em_map DensityMap class containing the EM map. note: correct RMS and
-            mean MUST be in the header!
- \param[in] model_map SampledDensityMap class prepared to contain the simulated
-            EM map for the model.
+ \param[in] em_map the target density map.
+ \param[in] model_map the sampled density map of the model
  \param[in] scalefac scale factor to apply to the value of the cross
                         correlation term
  \param[out] dvx vector to contain the x partial derivatives
  \param[out] dvy vector to contain the y partial derivatives
  \param[out] dvz vector to contain the z partial derivatives
- \return the function stores the values of the partial derivatives in
-         the vectors
-*/
-/* comments: Javi to Frido:
-I am pretty sure what causes the subtle difference:
-the corr routine requires that the mean is subtracted from the em-density.
-we did not do that, yet.
+ \note: The function assumes that correct RMS are calculated for the densities
 */
   static void calc_derivatives(const DensityMap &em_map,
                               SampledDensityMap &model_map,
@@ -80,11 +73,12 @@ we did not do that, yet.
                               std::vector<float>&dvz);
 
 
-
+  //!Calculates the cross correlation coefficient between two maps
   /** Cross correlation coefficient between the em density and the density of a
-      model. moddens threshold can be specified that is checked in moddens to
-      reduce elements of summation
-      \note This is not the local CC function
+      model. The function applied is:
+      \f$\frac{\sum_{i=1}^{N}{td_i}{md_i}-{N}{{mean}_td}{{mean}_md}}
+      {{N}\sigma_{td}{\sigma_{md}}}\f$, such that \f$N}\f$ is the number of
+      voxels, \f$td\f$ is the target density, \f$tm\f$ is the model density,
       \param[in] em_map               the target map (experimentally determined)
       \param[in] model_map            the sampled density map of the model
       \param[in] voxel_data_threshold voxels with value lower than threshold
@@ -93,12 +87,15 @@ we did not do that, yet.
       \param[in] recalc_ccnormfac determines wheather the model_map should be
                  normalized prior to the correlation calculation. false is
                  faster, but potentially innacurate
+      \param[in] divide_by_rms determines wheather the model_map should be
+                 normalized prior to the correlation calculation. false is
+                 faster, but potentially innacurate
       \return the cross correlation coefficient value between two density maps
-      comments:
-      Frido:
-      I am pretty sure what causes the subtle difference:
-      the corr routine requires that the mean is subtracted from the
-      em-density. we did not do that, yet.
+      \note This is not the local CC function
+      \todo check that the mean is always substracted from the em-density.
+        The problem is that we divide by nvox*d1_mean*d2_mean, but if we
+         use voxel_data_threshold that does not consist of the entire map
+         this would be wrong. Fix it.
    */
   static float cross_correlation_coefficient(const DensityMap &em_map,
                                              DensityMap &model_map,

@@ -10,6 +10,37 @@
 
 IMPEM_BEGIN_NAMESPACE
 
+DensityMapDimensionsHeader::DensityMapDimensionsHeader(
+   const algebra::Vector3D &origin,
+   Float voxel_size,
+   Int nx, Int ny, Int nz) {
+  origin_=origin;
+  voxel_size_=voxel_size;
+  n_.push_back(nx);
+  n_.push_back(ny);
+  n_.push_back(nz);
+}
+void DensityMapDimensionsHeader::calculate_top() {
+  for(int i=0;i<3;i++) {
+    top_[i] = origin_[i] + voxel_size_*n_[i];
+  }
+}
+void DensityMapDimensionsHeader::set_voxel_size(Float new_voxel_size) {
+  voxel_size_=new_voxel_size;
+  calculate_top();
+}
+void DensityMapDimensionsHeader::set_origin(
+   const algebra::Vector3D &new_origin) {
+  origin_=new_origin;
+  calculate_top();
+}
+void DensityMapDimensionsHeader::set_map_size(Int new_nx,Int new_ny,
+                                                 Int new_nz){
+  n_[0]=new_nx;
+  n_[1]=new_ny;
+  n_[2]=new_nz;
+  calculate_top();
+}
 
 namespace {
   template <class T>

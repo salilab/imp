@@ -26,17 +26,15 @@ class ToParticlesTest(IMP.test.TestCase):
     def _test_density2particles_map1(self):
         # Disabled
         m = IMP.Model()
-        ps = IMP.Particles()
-        IMP.em.density2particles(self.scene1,self.scene1.get_min_value()+0.1,ps,m)
+        ps = IMP.em.density2particles(self.scene1,self.scene1.get_min_value()+0.1,m)
         self.assert_(ps.size() > 0)
 
     def test_density2particles_map2(self):
         """Test conversion of a density map into a set of particles
            This is done after updating the voxel size of the map"""
         m = IMP.Model()
-        ps = IMP.Particles()
         self.scene1.get_header().show()
-        IMP.em.density2particles(self.scene2,9.0,ps,m)
+        ps=IMP.em.density2particles(self.scene2,9.0,m)
         self.assert_(ps.size() > 0)
 
 if __name__ == '__main__':

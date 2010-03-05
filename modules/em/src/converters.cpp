@@ -10,8 +10,9 @@
 IMPEM_BEGIN_NAMESPACE
 
 
-void density2particles(DensityMap &dmap, Float threshold,
-                              Particles &ps, Model *m) {
+Particles density2particles(DensityMap &dmap, Float threshold,
+                              Model *m) {
+  Particles ps;
   Float x,y,z,val;
   Float voxel_size=dmap.get_header()->get_spacing();
   Float r=sqrt(3.*voxel_size*voxel_size);
@@ -27,6 +28,7 @@ void density2particles(DensityMap &dmap, Float threshold,
       ps.push_back(p);
     }
   }
+  return ps;
 }
 
 

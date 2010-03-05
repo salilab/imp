@@ -42,14 +42,12 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
     def test_local_fitting(self):
         """Check that the local rigid fitting grid search works"""
         #create a rigid body
-        fr = IMP.em.FittingSolutions()
         print "start : "
-        print fr.get_number_of_solutions()
-        IMP.em.local_rigid_fitting_grid_search(
+        fr=IMP.em.local_rigid_fitting_grid_search(
             IMP.Particles(self.particles.get_particles()),
             self.radius_key, self.weight_key,
             self.scene,
-            fr,2,1,0.174,10)
+            2,1,0.174,10)
 
         #test that if you apply the transformation on the original configuration you get the same result
         # (in rmsd and score)

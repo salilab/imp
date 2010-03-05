@@ -436,8 +436,6 @@ emreal DensityMap::calcRMS()
     return header_.rms;
   }
 
-  emreal max_value=- std::numeric_limits<emreal>::max();
-  emreal min_value=-max_value;
   long  nvox = get_number_of_voxels();
   emreal meanval = .0;
   emreal stdval = .0;
@@ -445,12 +443,10 @@ emreal DensityMap::calcRMS()
   for (long ii=0;ii<nvox;ii++) {
     meanval += data_[ii];
     stdval += data_[ii] * data_[ii];
-    max_value=std::max(max_value, data_[ii]);
-    min_value=std::min(min_value, data_[ii]);
   }
 
-  header_.dmin=min_value;
-  header_.dmax=max_value;
+  header_.dmin=get_min_value();
+  header_.dmax=get_max_value();
 
 
   meanval /=  nvox;

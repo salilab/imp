@@ -66,7 +66,6 @@ print "The start score is:",score1, "with rmsd of:",rmsd
 ##5. apply local fitting
 ## 5.1 run local fitting
 print "preforming local refinement, may run for 3-4 minutes"
-fitting_sols = IMP.em.FittingSolutions() #fitting solutions will go here.
 ## translate the molecule to the center of the density
 IMP.core.transform(prot_rb,IMP.algebra.Transformation3D(IMP.algebra.get_identity_rotation_3d(),dmap.get_centroid()-IMP.core.get_centroid(IMP.core.XYZsTemp(ps))))
 m.evaluate(None)#to make sure the transformation was applied
@@ -82,15 +81,11 @@ print "The score after centering is:",score2, "with rmsd of:",rmsd
 #    dmap,fitting_sols)
 
 num_sol=3
-IMP.em.local_rigid_fitting(
+fitting_sols=IMP.em.local_rigid_fitting(
    prot_rb,IMP.core.XYZR.get_default_radius_key(),
    IMP.atom.Mass.get_mass_key(),
-   dmap,fitting_sols,None,num_sol,1,1)
+   dmap,None,num_sol,num_sol,10,50)
 
-print "returned are"
-for fs in range(0, fitting_sols.get_number_of_solutions()):
-    print fitting_sols.get_score(fs), fitting_sols.get_transformation(fs), " -- ",
-print "done"
 ## 5.2 report best result
 ### 5.2.1 transform the protein to the preferred transformation
 for i in range(fitting_sols.get_number_of_solutions()):
@@ -102,3 +97,4 @@ for i in range(fitting_sols.get_number_of_solutions()):
     print "Fit with index:",i," with cc: ",1.-fitting_sols.get_score(i), " and rmsd to native of:",rmsd
     IMP.atom.write_pdb(mh,"sol_"+str(i)+".pdb")
     IMP.core.transform(prot_rb,fitting_sols.get_transformation(i).get_inverse())
+print "done"
