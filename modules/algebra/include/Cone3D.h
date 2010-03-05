@@ -28,6 +28,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 class IMPALGEBRAEXPORT Cone3D
 {
  public:
+  Cone3D(){}
   // A cone with a top at s.get_point(0) and the given base radius
   Cone3D(const Segment3D &s,double radius);
   //!Get the vertex of the cone
