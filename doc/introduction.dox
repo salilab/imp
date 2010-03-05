@@ -74,7 +74,7 @@ Structure and dynamics modeling in \imp proceeds in a five stage iterative proce
     - how close a distance is to the measured value: IMP::core::DistanceRestraint
     - how well the model fits a density map: IMP::em::FitRestraint
     - how close the volume of a molecule is to the expected value: IMP::core::VolumeRestraint
-    - excluded volume: IMP::core::ExcludedVolumeRestraint
+    - excluded volume (steric clash): IMP::core::ExcludedVolumeRestraint
     - connectivity of a subcomplex: IMP::core::ConnectivityRestraint
     - the fit of the SAXS cure of a complex to a measured one: IMP::saxs::Restraint
     - statistical potentials: IMP::atom::ProteinLigandRestraint
