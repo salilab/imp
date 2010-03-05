@@ -118,14 +118,19 @@ class DerivativesTest(IMP.test.TestCase):
         #init IMP model ( the environment)
         self.imp_model = IMP.Model()
         self.particles = IMP.Particles()
+
+        ## -  create a set of three particles in imp
+        for i in range(3):
+            self.particles.append(IMP.Particle(self.imp_model))
+
         #add IMP Restraints into the modeller scoring function
         t = self.env.edat.energy_terms
         t.append(IMP.modeller.IMPRestraints(self.particles))
-        ## -  create a set of three particles in imp
-        npart = 3
-        self.modeller_model = IMP.modeller.create_particles(npart,
-                                  self.env, self.imp_model, self.particles)
-        # - add the particles attributes ( other than X,Y,Z)
+
+        # Load the same model into Modeller
+        self.modeller_model = copy_to_modeller(self.env, self.particles)
+
+        # - add the particles attributes
         rad = 1.0
         wei = 1.0
         rad_key=IMP.FloatKey("radius")
@@ -138,17 +143,15 @@ class DerivativesTest(IMP.test.TestCase):
 
         for i,p_data in enumerate([[9.0,9.0,9.0,rad,wei,1],[12.0,3.0,3.0,rad,wei,1],[3.0,12.0,12.0,rad,wei,1]]):
             p=self.particles[i]
-            p.set_value(x_key,p_data[0])
-            p.set_value(y_key,p_data[1])
-            p.set_value(z_key,p_data[2])
+            p.add_attribute(x_key,p_data[0])
+            p.add_attribute(y_key,p_data[1])
+            p.add_attribute(z_key,p_data[2])
             p.add_attribute(rad_key,p_data[3])
             p.add_attribute(wei_key,p_data[4])
             p.add_attribute(prot_key,p_data[5])
             self.particles[i].add_attribute(id_key,i)
 
 
-        IMP.modeller.copy_imp_coords_to_modeller(self.particles,self.modeller_model.atoms)
-        #modeller_model.write(file='xxx.pdb')
         self.atmsel = modeller.selection(self.modeller_model)
         print "initialization done ..."
 
