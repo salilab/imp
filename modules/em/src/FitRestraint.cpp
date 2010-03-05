@@ -16,12 +16,16 @@
 
 IMPEM_BEGIN_NAMESPACE
 
-FitRestraint::FitRestraint(Particles ps,
-                           DensityMap *em_map,
-                           FloatKey radius_key,
-                           FloatKey weight_key,
-                           float scale)
+FitRestraint::FitRestraint(
+   Particles ps,
+   DensityMap *em_map,
+   FloatKey radius_key,
+   FloatKey weight_key,
+   float scale,
+   bool special_treatment_of_particles_outside_of_density)
 {
+  special_treatment_of_particles_outside_of_density_=
+    special_treatment_of_particles_outside_of_density;
   target_dens_map_ = em_map;
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i=0; i< ps.size(); ++i) {
@@ -99,7 +103,8 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   //we start considering centroids distance once 80% of the particles
   //are outside of the density.
   Float score=escore;
-  if (percentage_outside_of_density>0.8) {
+  if (percentage_outside_of_density>0.8 &&
+      special_treatment_of_particles_outside_of_density_) {
     IMP_LOG(IMP::TERSE,"More than 80% of the particles are outside "<<
        "of the density. Pulling the particles back "<<
        "to the density using a upper bound harmonic between the centroids "<<
