@@ -47,7 +47,7 @@ def generate_doxygen(target, source, env):
             elif ss.endswith(".py"):
                 put=True
                 if ss.find("/_") ==-1 or ss.endswith("__init__.py"):
-                    dots.append(s)
+                    inputs.append(s)
             elif ss.endswith(".dot"):
                 dots.append(s)
                 put=True
