@@ -12,7 +12,7 @@ rawheader="""/**
  *  \\file ClassName.h
  *  \\brief XXXXXXXXXXXXXX
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPMODULENAME_CLASS_NAME_H
@@ -47,7 +47,7 @@ rawcpp="""/**
  *  \\file ClassName.cpp
  *  \\brief XXXX.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  *
  */
 
