@@ -3,11 +3,13 @@ import IMP.core
 import IMP.atom
 import random,math
 
-IMP.set_log_level(IMP.TERSE)#SILENT)
+IMP.set_log_level(IMP.SILENT)
 m= IMP.Model()
 #1. setup the input protein
 ##1.1 select a selector.
-sel=IMP.atom.NonWaterPDBSelector()
+#using NonWater selector is more accurate but slower
+#sel=IMP.atom.NonWaterPDBSelector()
+sel=IMP.atom.CAlphaPDBSelector()
 ##1.2 read the protein
 mh=IMP.atom.read_pdb(IMP.em.get_example_path("input.pdb"),m,sel)
 mh_ref=IMP.atom.read_pdb(IMP.em.get_example_path("input.pdb"),m,sel)
@@ -40,7 +42,7 @@ print "The CC score of the native transformation is:",best_score
 ##4.1 define a local transformatione
 translation = IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d())
 axis = IMP.algebra.get_random_vector_on(IMP.algebra.get_unit_sphere_3d())
-rand_angle = random.uniform(-30./180*math.pi,30./180*math.pi)
+rand_angle = random.uniform(-50./180*math.pi,50./180*math.pi)
 r= IMP.algebra.get_rotation_in_radians_about_axis(axis, rand_angle);
 local_trans=IMP.algebra.Transformation3D(r,translation)
 ##4.2 rotate the protein
@@ -80,11 +82,11 @@ print "The score after centering is:",score2, "with rmsd of:",rmsd
 #    IMP.atom.Mass.get_mass_key(),
 #    dmap,fitting_sols)
 
-num_sol=3
+num_sol=5
 fitting_sols=IMP.em.local_rigid_fitting(
    prot_rb,IMP.core.XYZR.get_default_radius_key(),
    IMP.atom.Mass.get_mass_key(),
-   dmap,None,num_sol,num_sol,10,50)
+   dmap,None,num_sol,10,50)
 
 ## 5.2 report best result
 ### 5.2.1 transform the protein to the preferred transformation
@@ -94,7 +96,8 @@ for i in range(fitting_sols.get_number_of_solutions()):
     m.evaluate(None)#to make sure the transformation was applied
 ## 5.2.2 calc rmsd to native configuration
     rmsd=IMP.atom.get_rmsd(IMP.core.XYZs(ps),IMP.core.XYZs(IMP.core.get_leaves(mh_ref)))
+    IMP.atom.write_pdb(mh,"temp_"+str(i)+".pdb")
     print "Fit with index:",i," with cc: ",1.-fitting_sols.get_score(i), " and rmsd to native of:",rmsd
     IMP.atom.write_pdb(mh,"sol_"+str(i)+".pdb")
-    IMP.core.transform(prot_rb,fitting_sols.get_transformation(i).get_inverse())
+    #IMP.core.transform(prot_rb,fitting_sols.get_transformation(i).get_inverse())
 print "done"
