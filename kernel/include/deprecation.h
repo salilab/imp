@@ -34,13 +34,13 @@ IMP_END_NAMESPACE
   Deprecated classes are marked in a variety of ways:
   - They are listed in the "Deprecated List" in the "Related Pages" tab.
   - They are noted as deprecated in their documentation.
-  - They print an warning when an instance is constructed or the function
+  - They print a warning when an instance is constructed or the function
     is called.
 
   The warnings can be turned off using the
   IMP::core::set_print_deprecation_messages function.
   \param[in] old_classname The class which is deprecated.
-  \param[in] replacement_classname The class which replaces is.
+  \param[in] replacement_classname The class which replaces it.
 
   Further, \imp can be built without deprecated code by defining
   \c IMP_NO_DEPRECATED or the \c deprecated=False \c scons argument.

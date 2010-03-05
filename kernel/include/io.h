@@ -1,6 +1,6 @@
 /**
  *  \file IMP/io.h
- *  \brief Control display of deprecation information.
+ *  \brief Handle read/write of Model data from/to files.
  *
  *  Copyright 2007-2010 Sali Lab. All rights reserved.
  *
@@ -19,7 +19,7 @@ IMP_BEGIN_NAMESPACE
 
     Models can be written to files in an easy-to-read
     file format based on \quote{name: value} pairs on separate lines with
-    indentation used to indicated nesting (as in python). The functions
+    indentation used to indicated nesting (as in Python). The functions
     take a list of the particles to write/read. The particles
     need to be provided in the same order for reading and writing.
     This is not checked.

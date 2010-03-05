@@ -18,9 +18,9 @@
 
 IMP_BEGIN_NAMESPACE
 
-//! A base class for  Keys
+//! A base class for Keys
 /** This class does internal caching of the strings to accelerate the
-    name lookup. It is better to create an Key and reuse it
+    name lookup. It is better to create a Key and reuse it
     rather than recreate it many times from strings.
 
     If you use this with a new type, you must add a new definition of
@@ -32,7 +32,7 @@ IMP_BEGIN_NAMESPACE
     same program use the same mapping for each type of key. The type of
     the key is determined by an integer which should be unique for
     each type. If the integer is not unique, everything works, just
-    more memory is wasted and types are interconvertible
+    more memory is wasted and types are interconvertible.
 
     Keys used for storing attributes in particles should never be statically
     initialized. While this is annoying, statically initializing them is bad,
@@ -159,7 +159,7 @@ public:
 
   //! Get the total number of keys of this type
   /**
-     This is mostly for debugging to makes sure that there are no extra
+     This is mostly for debugging to make sure that there are no extra
      keys created.
    */
   static unsigned int get_number_unique() {

@@ -1,5 +1,5 @@
 /**
- *  \file FailureHandler.h     \brief Exception definitions and assertions.
+ *  \file FailureHandler.h     \brief Handle actions on check failures.
  *
  *  Copyright 2007-2010 Sali Lab. All rights reserved.
  *
@@ -28,7 +28,7 @@ class IMPEXPORT FailureHandler: public Object {
 };
 
 
-//! A base class to setting up failure handler
+//! A base class for setting up failure handlers
 /** The only function you have to implement is handle_failure.
     \untested{FailureHandlerBase}
     \unstable{FailureHandlerBase}
