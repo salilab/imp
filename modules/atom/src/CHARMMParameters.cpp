@@ -462,8 +462,8 @@ String CHARMMParameters::get_force_field_atom_type(Atom atom) const
   if (CHARMMAtom::particle_is_instance(atom)) {
     return CHARMMAtom(atom).get_charmm_type();
   } else {
-    IMP_WARN_ONCE("Atom " << atom << " does not have a known CHARMM type",
-                  warn_context_);
+    IMP_WARN_ONCE("Atom " << atom << " does not have a known CHARMM type"
+                  << std::endl, warn_context_);
     return empty_atom_type;
   }
 }
@@ -487,8 +487,8 @@ CHARMMTopology *CHARMMParameters::create_topology(Hierarchy hierarchy) const
       } catch (ValueException) {
         // If residue type is unknown, add empty topology for this residue
         IMP_WARN_ONCE("Residue type " << restyp << " was not found in "
-                      "topology library; using empty topology for this residue",
-                      warn_context_);
+                      "topology library; using empty topology for this residue"
+                      << std::endl, warn_context_);
         IMP_NEW(CHARMMResidueTopology, residue, (restyp));
         segment->add_residue(residue);
       }
@@ -573,7 +573,7 @@ void CHARMMParameters::add_angle(Particle *p1, Particle *p2, Particle *p3,
     ad.set_stiffness(std::sqrt(p->force_constant * 2.0));
   } else {
     IMP_WARN("No parameters found for angle between " << p1 << " "
-             << p2 << " " << p3);
+             << p2 << " " << p3 << std::endl);
   }
   ps.push_back(ad);
 }
@@ -640,7 +640,7 @@ void CHARMMParameters::add_dihedral(Particle *p1, Particle *p2, Particle *p3,
 
   if (p.size() == 0) {
     IMP_WARN("No parameters found for dihedral between " << p1 << " "
-             << p2 << " " << p3 << " " << p4);
+             << p2 << " " << p3 << " " << p4 << std::endl);
     Dihedral dd = Dihedral::setup_particle(new Particle(p1->get_model()),
                                            core::XYZ(p1), core::XYZ(p2),
                                            core::XYZ(p3), core::XYZ(p4));

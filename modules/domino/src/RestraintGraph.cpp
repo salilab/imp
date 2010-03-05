@@ -317,7 +317,7 @@ void RestraintGraph::distribute_minimum(unsigned int father_ind,
         min_comb->combine(*it);
         passed = true;
       } catch (IMP::InternalException e) {
-         IMP_WARN("problem distributing minimum");
+         IMP_WARN("problem distributing minimum" << std::endl);
         }
       it++;
     }

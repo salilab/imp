@@ -64,7 +64,7 @@ protected:
   //new kernel functionalities.
   void update_score_states(const IMP::Particles &ps) {
     if (ps.size() == 0) {
-      IMP_WARN("calling update score states with no particles");
+      IMP_WARN("calling update score states with no particles" << std::endl);
       return;
     }
     Model *m = ps[0]->get_model();

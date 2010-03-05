@@ -276,7 +276,7 @@ public:
     Py_DECREF(read_method_);
     if (peeked_ != -1) {
       IMP_WARN("One excess character read from Python stream - "
-               "cannot be put back.")
+               "cannot be put back." << std::endl)
     }
   }
 protected:

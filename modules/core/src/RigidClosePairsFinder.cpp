@@ -49,7 +49,8 @@ namespace {
             && !(*it)->has_attribute(XYZR::get_default_radius_key())) {
           IMP_WARN("Particle " << (*it)->get_name() << " is a rigid body "
                    << "but does not have a radius. "
-                   << "Collision detection is unlikely to work.");
+                   << "Collision detection is unlikely to work."
+                   << std::endl);
         }
       }
     }
