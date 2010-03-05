@@ -65,7 +65,7 @@ class IMPEXPORT Sampler: public Object
   bool get_is_good_configuration() const;
 };
 
-
+IMP_OBJECTS(Sampler);
 
 IMP_END_NAMESPACE
 

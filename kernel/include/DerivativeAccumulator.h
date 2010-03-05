@@ -12,7 +12,8 @@
 #include "kernel_config.h"
 #include "base_types.h"
 #include "utility.h"
-#include <cmath>
+#include "macros.h"
+#include <vector>
 
 IMP_BEGIN_NAMESPACE
 
@@ -41,6 +42,8 @@ public:
 private:
   Float weight_;
 };
+
+IMP_VALUES(DerivativeAccumulator);
 
 IMP_END_NAMESPACE
 

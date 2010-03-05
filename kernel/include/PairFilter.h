@@ -50,8 +50,7 @@ public:
 
 IMP_OUTPUT_OPERATOR(PairFilter);
 
-//! A collection of filters
-typedef VectorOfRefCounted<PairFilter*> PairFilters;
+IMP_OBJECTS(PairFilter);
 
 IMP_END_NAMESPACE
 

@@ -78,6 +78,8 @@ public:
            )
 };
 
+IMP_OBJECTS(FailureHandler);
+
 IMP_END_NAMESPACE
 
 #endif  /* IMP_FAILURE_HANDLER_H */

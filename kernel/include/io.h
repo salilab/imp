@@ -63,6 +63,8 @@ class IMPEXPORT DumpModelOnFailure: public FailureHandler {
   IMP_FAILURE_HANDLER(DumpModelOnFailure);
 };
 
+IMP_OBJECTS(DumpModelOnFailure);
+
 IMP_END_NAMESPACE
 
 #endif /* IMP_IO_H */

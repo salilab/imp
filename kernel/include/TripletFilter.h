@@ -50,8 +50,7 @@ public:
 
 IMP_OUTPUT_OPERATOR(TripletFilter);
 
-//! A collection of filters
-typedef VectorOfRefCounted<TripletFilter*> TripletFilters;
+IMP_OBJECTS(TripletFilter);
 
 IMP_END_NAMESPACE
 

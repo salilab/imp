@@ -160,6 +160,11 @@ public:
            set_log_target(to);,
            set_log_target(old_););
 };
+
+
+IMP_VALUES(TextInput);
+IMP_VALUES(TextOutput);
+
 IMP_END_NAMESPACE
 
 #endif /* IMP_FILE_H */

@@ -51,6 +51,18 @@ namespace IMP {
    }
 }
 
+
+%define IMP_SWIG_OBJECTS(Name, PluralName)
+%template(PluralName) ::IMP::VectorOfRefCounted< IMP::Name*, IMP::RefCounted::Policy >;
+%template(PluralName##Temp) ::std::vector< IMP::Name* >;
+%implicitconv Name ;
+%enddef
+
+%define IMP_SWIG_VALUES(Name, PluralName)
+%template(PluralName) ::std::vector< Name >;
+%enddef
+
+
 namespace IMP {
   // special case since particles are ref counted
   %extend Model {
@@ -154,22 +166,44 @@ namespace IMP {
   %template(ParticlePair) ::IMP::ParticleTuple<2>;
   %template(ParticleTriplet) ::IMP::ParticleTuple<3>;
   %template(ParticleQuad) ::IMP::ParticleTuple<4>;
-  IMP_SWIG_OBJECTS(Particle, Particles)
-  IMP_SWIG_OBJECTS(Object, Objects)
-  IMP_SWIG_OBJECTS(Restraint, Restraints)
-  IMP_SWIG_OBJECTS(RestraintSet, RestraintSets)
-  IMP_SWIG_OBJECTS(ScoreState, ScoreStates)
-  IMP_SWIG_OBJECTS(OptimizerState, OptimizerStates)
-  IMP_SWIG_OBJECTS(Refiner, Refiners)
-  IMP_SWIG_OBJECTS(SingletonContainer, SingletonContainers)
-  IMP_SWIG_OBJECTS(PairContainer, PairContainers)
-  IMP_SWIG_OBJECTS(TripletContainer, TripletContainers)
-  IMP_SWIG_OBJECTS(QuadContainer, QuadContainers)
-  IMP_SWIG_OBJECTS(Container, Containers)
-  IMP_SWIG_OBJECTS(SingletonScore, SingletonScores)
-  IMP_SWIG_OBJECTS(PairScore, PairScores)
-  IMP_SWIG_OBJECTS(TripletScore, TripletScores)
-  IMP_SWIG_OBJECTS(QuadScore, QuadScores)
+  IMP_SWIG_OBJECTS(Particle, Particles);
+  IMP_SWIG_OBJECTS(Object, Objects);
+  IMP_SWIG_OBJECTS(Restraint, Restraints);
+  IMP_SWIG_OBJECTS(RestraintSet, RestraintSets);
+  IMP_SWIG_OBJECTS(ScoreState, ScoreStates);
+  IMP_SWIG_OBJECTS(OptimizerState, OptimizerStates);
+  IMP_SWIG_OBJECTS(Refiner, Refiners);
+  IMP_SWIG_OBJECTS(SingletonContainer, SingletonContainers);
+  IMP_SWIG_OBJECTS(PairContainer, PairContainers);
+  IMP_SWIG_OBJECTS(TripletContainer, TripletContainers);
+  IMP_SWIG_OBJECTS(QuadContainer, QuadContainers);
+  IMP_SWIG_OBJECTS(Container, Containers);
+  IMP_SWIG_OBJECTS(SingletonScore, SingletonScores);
+  IMP_SWIG_OBJECTS(PairScore, PairScores);
+  IMP_SWIG_OBJECTS(TripletScore, TripletScores);
+  IMP_SWIG_OBJECTS(QuadScore, QuadScores);
+  IMP_SWIG_OBJECTS(ConfigurationSet, ConfigurationSets);
+
+  IMP_SWIG_OBJECTS(UnaryFunction, UnaryFunctions);
+  IMP_SWIG_VALUES(VersionInfo, VersionInfos);
+  IMP_SWIG_OBJECTS(SingletonModifier, SingletonModifiers);
+  IMP_SWIG_OBJECTS(SingletonFilter, SingletonFilters);
+  IMP_SWIG_OBJECTS(PairModifier, PairModifiers);
+  IMP_SWIG_OBJECTS(PairFilter, PairFilters);
+  IMP_SWIG_OBJECTS(TripletModifier, TripletModifiers);
+  IMP_SWIG_OBJECTS(TripletFilter, TripletFilters);
+  IMP_SWIG_OBJECTS(QuadModifier, QuadModifiers);
+  IMP_SWIG_OBJECTS(QuadFilter, QuadFilters);
+  IMP_SWIG_VALUES(TextOutput, TextOutputs);
+  IMP_SWIG_VALUES(TextInput, TextInputs);
+  IMP_SWIG_OBJECTS(Sampler, Samplers);
+  IMP_SWIG_OBJECTS(Model, Models);
+  IMP_SWIG_OBJECTS(FailureHandler, FailureHandlers);
+  IMP_SWIG_OBJECTS(DumpModelOnFailure, DumpModelOnFailures);
+  IMP_SWIG_VALUES(DerivativeAccumulator, DerivativeAccumulators);
+  IMP_SWIG_OBJECTS(Constraint, Constraints);
+  IMP_SWIG_OBJECTS(Optimizer, Optimizers);
+
   %template(ParticlePairs) ::IMP::VectorOfRefCounted< ParticlePair, IMP::RefCountParticleTuple<2> >;
   %template(ParticlePairsTemp) ::std::vector<ParticlePair >;
   %template(ParticleTriplets) ::IMP::VectorOfRefCounted< ParticleTriplet, IMP::RefCountParticleTuple<3> >;
@@ -177,14 +211,14 @@ namespace IMP {
   %template(ParticleQuads) ::IMP::VectorOfRefCounted< ParticleQuad, IMP::RefCountParticleTuple<4> >;
   %template(ParticleQuadsTemp) ::std::vector<ParticleQuad >;
   %template(ParticlesList) ::std::vector< ParticlesTemp >;
-  %template(FloatKeys) ::std::vector<FloatKey>;
-  %template(StringKeys) ::std::vector<StringKey>;
-  %template(IntKeys) ::std::vector<IntKey>;
-  %template(ParticleKeys) ::std::vector<ParticleKey>;
-  %template(ObjectKeys) ::std::vector<ObjectKey>;
-  %template(Floats) ::std::vector<Float>;
-  %template(Strings) ::std::vector<String>;
-  %template(Ints) ::std::vector<Int>;
+  IMP_SWIG_VALUES(FloatKey, FloatKeys);
+  IMP_SWIG_VALUES(IntKey, IntKeys);
+  IMP_SWIG_VALUES(StringKey, StringKeys);
+  IMP_SWIG_VALUES(ParticleKey, ParticleKeys);
+  IMP_SWIG_VALUES(ObjectKey, ObjectKeys);
+  IMP_SWIG_VALUES(Float, Floats);
+  IMP_SWIG_VALUES(Int, Ints);
+  IMP_SWIG_VALUES(String, Strings);
   %template(float_pair) ::std::pair<float,float>;
   %template(double_pair) ::std::pair<double, double>;
   %template(IntRange) ::std::pair<Int, Int>;

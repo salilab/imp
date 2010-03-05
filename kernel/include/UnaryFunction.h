@@ -42,6 +42,8 @@ public:
   IMP_REF_COUNTED_DESTRUCTOR(UnaryFunction);
 };
 
+IMP_OBJECTS(UnaryFunction);
+
 IMP_END_NAMESPACE
 
 #endif  /* IMP_UNARY_FUNCTION_H */
