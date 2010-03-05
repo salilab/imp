@@ -461,7 +461,7 @@ If you have a large group of related functionality to submit, it may make sense 
 \subsection submitted Once you have submitted code
 
 Once you have submitted code, you should monitor the
-\salilab{internal/imp/tests.html,Daily build status} to make sure that
+\salilab{imp/nightly/tests.html,Nightly build status} to make sure that
 your code builds on all platforms and passes the unit tests. Please
 fix all build problems as fast as possible.
 
