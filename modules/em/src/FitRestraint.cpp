@@ -35,38 +35,16 @@ FitRestraint::FitRestraint(Particles ps,
                 << std::endl);
     }
   }
-  if (scale==-1) {
-    double total_mass=0;
-    for (unsigned int i=0; i< ps.size(); ++i) {
-      total_mass+= ps[i]->get_value(weight_key);
-    }
-    scalefac_= total_mass/20;
-  } else {
-    scalefac_ = scale;
-  }
+  scalefac_ = scale;
   model_dens_map_ = new SampledDensityMap(*em_map->get_header());
   model_dens_map_->set_particles(ps,radius_key,weight_key);
   add_particles(ps);
-  //  IMP_LOG(VERBOSE, "RSR_EM_Fit::RSR_EM_Fit after setting up particles "
-  //                   << endl );
-
-
    // initialize the derivatives
-
-  //  IMP_LOG(VERBOSE, "RSR_EM_Fit::RSR_EM_Fit before initializing derivatives "
-  //                   << endl);
   dx_.resize(get_number_of_particles(), 0.0);
   dy_.resize(get_number_of_particles(), 0.0);
   dz_.resize(get_number_of_particles(), 0.0);
-
-  //  IMP_LOG(VERBOSE, "RSR_EM_Fit::RSR_EM_Fit after initializing derivatives "
-  //                   << endl);
-
-
   // normalize the target density data
   //target_dens_map->std_normalize();
-
-
   IMP_LOG(VERBOSE, "RSR_EM_Fit::RSR_EM_Fit after std norm" << std::endl);
   //  have an initial sampling of the model grid
   model_dens_map_->resample();
@@ -96,7 +74,6 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
       target_dens_map_,
       model_dens_map_->get_sampled_particles()))/
     model_dens_map_->get_sampled_particles().size();
-
 
   Float escore;
   bool calc_deriv = accum? true: false;
