@@ -10,7 +10,7 @@
 #ifndef IMP_GROUPNAME_CONTAINER_H
 #define IMP_GROUPNAME_CONTAINER_H
 
-#include "config.h"
+#include "kernel_config.h"
 #include "internal/IndexingIterator.h"
 #include "Particle.h"
 #include "container_base.h"

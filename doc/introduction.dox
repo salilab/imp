@@ -389,10 +389,10 @@ generate the connection between the two languages. Key differences are
       \endcode
       \anchor tempornot Since reference counting can be expensive,
       it can be useful to pass, return or store a non-reference
-      counted list of objects (or IMP::Decorator). This should only
+      counted list of objects (or decorators). This should only
       be done when it is known to be safe. If you can't figure out
       that it is, don't do it. If it is safe, pass a \c NamesTemp
-      instead of a \c Names.  
+      instead of a \c Names.
 
     Python does not have this distinction.
 

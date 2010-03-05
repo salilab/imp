@@ -11,7 +11,7 @@
 #ifndef IMPCONTAINER_GROUPNAME_CONTAINER_SET_H
 #define IMPCONTAINER_GROUPNAME_CONTAINER_SET_H
 
-#include "config.h"
+#include "container_config.h"
 #include <IMP/GroupnameContainer.h>
 #include <IMP/container_macros.h>
 

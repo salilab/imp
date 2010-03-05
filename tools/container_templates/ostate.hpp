@@ -12,7 +12,7 @@
 #ifndef IMPCONTAINER_GROUPNAMES_OPTIMIZER_STATE_H
 #define IMPCONTAINER_GROUPNAMES_OPTIMIZER_STATE_H
 
-#include "config.h"
+#include "container_config.h"
 #include <IMP/GroupnameContainer.h>
 #include <IMP/GroupnameModifier.h>
 #include <IMP/OptimizerState.h>

@@ -10,7 +10,7 @@
 #ifndef IMP_GROUPNAME_FILTER_H
 #define IMP_GROUPNAME_FILTER_H
 
-#include "config.h"
+#include "kernel_config.h"
 #include "Particle.h"
 #include "utility.h"
 #include "VersionInfo.h"
@@ -50,8 +50,7 @@ public:
 
 IMP_OUTPUT_OPERATOR(GroupnameFilter);
 
-//! A collection of filters
-typedef VectorOfRefCounted<GroupnameFilter*> GroupnameFilters;
+IMP_OBJECTS(GroupnameFilter);
 
 IMP_END_NAMESPACE
 

@@ -10,7 +10,7 @@
 #ifndef IMP_GROUPNAME_SCORE_H
 #define IMP_GROUPNAME_SCORE_H
 
-#include "config.h"
+#include "kernel_config.h"
 #include "base_types.h"
 #include "Particle.h"
 #include "DerivativeAccumulator.h"

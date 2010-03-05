@@ -12,7 +12,7 @@
 #ifndef IMPCONTAINER_GROUPNAMES_CONSTRAINT_H
 #define IMPCONTAINER_GROUPNAMES_CONSTRAINT_H
 
-#include "config.h"
+#include "container_config.h"
 #include <IMP/GroupnameContainer.h>
 #include <IMP/GroupnameModifier.h>
 #include <IMP/Constraint.h>
