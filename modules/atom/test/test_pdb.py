@@ -83,6 +83,13 @@ class PDBReadWriteTest(IMP.test.TestCase):
         a= IMP.atom.get_leaves(mp)
         IMP.atom.write_pdb(mp, self.get_tmp_file_name("water_write.pdb"))
         self.assertEqual(len(a), 13328)
-
+    def test_read_non_hydrogen(self):
+        """Check that the Hydrogen selector can identify all hydrogens"""
+        IMP.set_log_level(IMP.VERBOSE)
+        m= IMP.Model()
+        mp= IMP.atom.read_pdb(self.open_input_file("hydrogen.pdb"),
+                              m, IMP.atom.HydrogenPDBSelector())
+        a= IMP.atom.get_leaves(mp)
+        self.assertEqual(len(a), 19)
 if __name__ == '__main__':
     unittest.main()

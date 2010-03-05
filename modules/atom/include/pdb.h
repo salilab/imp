@@ -128,15 +128,17 @@ class HydrogenPDBSelector : public NonAlternativePDBSelector {
  public:
   bool operator()(const std::string& pdb_line) const {
     if (!NonAlternativePDBSelector::operator()(pdb_line)) return false;
-    return ((pdb_line[internal::atom_element_field_]=='H'
-             && pdb_line[internal::atom_element_field_+1]==' ')
-            || (pdb_line[internal::atom_element_field_]==' '
-             && pdb_line[internal::atom_element_field_+1]=='H')
-            || (pdb_line[internal::atom_element_field_]==' '
-                && pdb_line[internal::atom_element_field_+1]==' '
-                && pdb_line[0]== 'A'
-                && (pdb_line[internal::atom_type_field_] =='H'
-                    || pdb_line[internal::atom_type_field_+1] == 'H')));
+    std::string elem = internal::atom_element(pdb_line);
+    boost::trim(elem);
+    // determine if the line is hydrogen atom as follows:
+    // 1. if the record has element field (columns 76-77),
+    // check that it is indeed H. Note that it may be missing in some files.
+    // some programms do not output element, so the ATOM line can be shorter.
+    // 2. if no hydrogen is found in the element record, try atom type field.
+    // some NMR structures have 'D' for labeled hydrogens
+    return ((elem.length() == 1 && elem[0]=='H') ||
+            pdb_line[internal::atom_type_field_+1] == 'H' ||
+            pdb_line[internal::atom_type_field_+1] == 'D');
   }
 };
 
