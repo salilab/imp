@@ -39,12 +39,25 @@ public:
     \param[in] weight_key the name of the weight attribute of the particles
     \param[in] scale multiply the fitting restraint score and derivatives
                      by this value
+    \param[in] special_treatment_of_particles_outside_of_density
+       If more than 80% of the particles are outside of the density
+       push it back using upper-bound harmonic
+    \note In many optimization senarios particles are can be found outside of
+  the density. When all particles are outside of the density the
+  cross-correlation score is zero and the derivatives are meaningless.
+  To handle these cases we guide the particles back into the density by
+  using a simple distance restraint between the centroids of the density
+  and the particles. Once the particles are back (at least partly) in
+  the density, the CC score is back on. To smooth the score,
+  we start considering centroids distance once 80% of the particles. This
+  option is still experimental and should be used in caution.
    */
   FitRestraint(Particles ps,
                DensityMap *em_map,
                FloatKey radius_key= IMP::core::XYZR::get_default_radius_key(),
                FloatKey weight_key= IMP::atom::Mass::get_mass_key(),
-               float scale=1);
+               float scale=1,
+               bool special_treatment_of_particles_outside_of_density=true);
 
   //! \return the predicted density map of the model
   SampledDensityMap *get_model_dens_map() {
@@ -63,6 +76,7 @@ private:
   IMP::core::XYZs xyz_;
   // derivatives
   std::vector<float> dx_, dy_ , dz_;
+  bool special_treatment_of_particles_outside_of_density_;
 };
 
 IMPEM_END_NAMESPACE
