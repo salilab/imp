@@ -2,7 +2,7 @@
  *  \file RigidBodyDistancePairScore.h
  *  \brief Act on the distance between two rigid bodies
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-8 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_RIGID_BODY_DISTANCE_PAIR_SCORE_H

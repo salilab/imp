@@ -1,7 +1,7 @@
 /**
  *  \file Linear.h    \brief A linear function.
  *
- *  Copyright 2007-2010 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_LINEAR_H

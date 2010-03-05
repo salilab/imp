@@ -2,7 +2,7 @@
  *  \file CoulombPairScore.cpp
  *  \brief Coulomb (electrostatic) score between a pair of particles.
  *
- *  Copyright 2007-2010 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/atom/CoulombPairScore.h>

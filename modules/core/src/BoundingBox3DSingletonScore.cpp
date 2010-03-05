@@ -2,7 +2,7 @@
  *  \file BoundingBox3DSingletonScore.cpp
  *  \brief XXXX.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-8 IMP Inventors. All rights reserved.
  *
  */
 

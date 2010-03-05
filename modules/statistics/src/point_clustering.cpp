@@ -2,7 +2,7 @@
  *  \file point_clustering.cpp
  *  \brief Cluster sets of points.
  *
- *  Copyright 2007-2010 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/statistics/point_clustering.h>

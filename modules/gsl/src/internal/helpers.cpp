@@ -2,7 +2,7 @@
  *  \file gsl/internal/helpers.cpp
  *  \brief Helpers for using IMP with GSL
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-8 IMP Inventors. All rights reserved.
  *
  */
 

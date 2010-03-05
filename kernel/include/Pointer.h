@@ -2,7 +2,7 @@
  *  \file Pointer.h
  *  \brief A NULL-initialized pointer to an \imp Object.
  *
- *  Copyright 2007-2010 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  *
  */
 

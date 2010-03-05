@@ -2,7 +2,7 @@
  *  \file GeometryProcessor.h
  *  \brief Implement GeometryProcessor
  *
- *  Copyright 2007-2010 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPDISPLAY_GEOMETRY_PROCESSOR_H

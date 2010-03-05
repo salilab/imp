@@ -2,7 +2,7 @@
  *  \file LogOptimizerState.h
  *  \brief Write geometry to a file during optimization
  *
- *  Copyright 2007-2010 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPDISPLAY_LOG_OPTIMIZER_STATE_H

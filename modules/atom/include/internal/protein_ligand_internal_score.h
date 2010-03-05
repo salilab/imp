@@ -2,7 +2,7 @@
  *  \file protein_ligand_internal_score.h
  *  \brief Functions to read mol2s
  *
- *  Copyright 2007-9 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 IMP Inventors. All rights reserved.
  *
  */
 #ifndef IMPATOM_INTERNAL_PROTEIN_LIGAND_INTERNAL_SCORE_H

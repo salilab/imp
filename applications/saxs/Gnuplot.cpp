@@ -2,7 +2,7 @@
  *  \file Gnuplot.h   \brief A class for printing gnuplot scripts
  *   for profile viewing
  *
- *  Copyright 2007-2010 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  *
  */
 #include "Gnuplot.h"

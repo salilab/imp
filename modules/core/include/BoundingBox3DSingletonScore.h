@@ -2,7 +2,7 @@
  *  \file BoundingBox3DSingletonScore.h
  *  \brief Score particles based on a bounding box
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-8 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_BOUNDING_BOX_3DSINGLETON_SCORE_H

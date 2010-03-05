@@ -1,7 +1,7 @@
 /**
  *  \file SphereD.h   \brief Simple 3D sphere class.
  *
- *  Copyright 2007-2010 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  *
  */
 #ifndef IMPALGEBRA_SPHERE_D_H

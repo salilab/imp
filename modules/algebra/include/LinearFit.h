@@ -2,7 +2,7 @@
  * \file LinearFit.h
  * \brief Linear fit of data points
  *
- * Copyright 2007-8 Sali Lab. All rights reserved.
+ * Copyright 2007-8 IMP Inventors. All rights reserved.
  *
  */
 #ifndef IMPALGEBRA_LINEAR_FIT_H

@@ -2,7 +2,7 @@
  *  \file atom/StereochemistryPairFilter.h
  *  \brief A filter that excludes bonds, angles and dihedrals.
  *
- *  Copyright 2007-2010 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_STEREOCHEMISTRY_PAIR_FILTER_H

@@ -2,7 +2,7 @@
  *  \file atom/internal/bond_graph_boost_functions.h
  *  \brief Contains decorators for a bond
  *
- *  Copyright 2007-2010 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  *
  */
 

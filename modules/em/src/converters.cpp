@@ -1,7 +1,7 @@
 /**
  *  \file converters.cpp
  *  \brief impl
- *  Copyright 2007-2010 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 IMP Inventors. All rights reserved.
 */
 
 #include <IMP/em/converters.h>
