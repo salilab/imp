@@ -2,7 +2,7 @@
  *  \file algebra_macros.h    \brief Various important macros
  *                           for implementing geometry.
  *
- *  Copyright 2007-2010 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  *
  */
 

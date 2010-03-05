@@ -2,7 +2,7 @@
  *  \file PDBOptimizerState.cpp
  *  \brief Write a set of molecules as a pdb file.
  *
- *  Copyright 2007-2010 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  *
  */
 

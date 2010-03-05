@@ -1,7 +1,7 @@
 /**
  *  \file output_helpers.h
  *  \brief manipulation of text, and Interconversion between text and numbers
- *  Copyright 2007-2010 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPALGEBRA_INTERNAL_GRID_3D_H

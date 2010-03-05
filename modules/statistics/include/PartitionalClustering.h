@@ -2,7 +2,7 @@
  *  \file PartitionalClustering.h
  *  \brief Compute a distance metric between two points
  *
- *  Copyright 2007-2010 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  *
  */
 #ifndef IMPSTATISTICS_PARTITIONAL_CLUSTERING_H

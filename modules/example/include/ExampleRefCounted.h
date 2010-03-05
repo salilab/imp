@@ -2,7 +2,7 @@
  *  \file example/ExampleRefCounted.h
  *  \brief An example showing how to make a simple ref counted object
  *
- *  Copyright 2007-2010 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPEXAMPLE_EXAMPLE_REF_COUNTED_H

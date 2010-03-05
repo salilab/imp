@@ -1,7 +1,7 @@
 /**
  *  \file test_grid.cpp   \brief A class to represent a voxel grid.
  *
- *  Copyright 2007-2010 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/algebra/Grid3D.h>

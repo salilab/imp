@@ -2,7 +2,7 @@
  *  \file BondSingletonScore.cpp
  *  \brief A score based a bond decorator.
  *
- *  Copyright 2007-2010 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  */
 
 #include "IMP/atom/BondSingletonScore.h"

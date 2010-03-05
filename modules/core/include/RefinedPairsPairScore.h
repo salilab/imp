@@ -2,7 +2,7 @@
  *  \file RefinedPairsPairScore.h
  *  \brief Generate pairs by applying a Refiner to the paricles.
  *
- *  Copyright 2007-2010 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_REFINED_PAIRS_PAIR_SCORE_H

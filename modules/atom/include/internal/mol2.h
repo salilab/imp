@@ -2,7 +2,7 @@
  * \file internal/mol2.h
  * \brief a class with static functions for parsing mol2 files
  *
- * Copyright 2007-9 Sali Lab. All rights reserved.
+ * Copyright 2007-9 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_INTERNAL_MOL_2_H

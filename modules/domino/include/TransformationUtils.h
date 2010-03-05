@@ -1,7 +1,7 @@
 /**
  *  \file TransformationUtils.h
  *  \brief Handeling tranformation of rigid bodies
- *  Copyright 2007-2010 Sali Lab. All rights reserved.
+ *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPDOMINO_TRANSFORMATION_UTILS_H
