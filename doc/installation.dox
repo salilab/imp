@@ -26,11 +26,11 @@ to the last one.
 
 \section userbuild 1. Building and installing basics
 
-Building \imp from source is straight forward if the \ref prereq "prerequisites"
+Building \imp from source is straightforward if the \ref prereq "prerequisites"
 are already installed. We use \svn for managing the \impsvn. To access the
 code there
 -# check out \imp from svn
-   \command{svn co https://svn.salilab.org/imp/branches/release imp}
+   \command{svn co https://svn.salilab.org/imp/tags/release-1.0 imp}
    This will create a directory called \c imp containing all the source.
 -# change into that directory and build by doing
    \command{scons prefix=place_to_install_imp all}
@@ -62,7 +62,7 @@ deprecated=False
 \section devbuild 2. Building and installing for developers
 
 We provide two other branches of \imp for developers.
--# The current svn version at https://svn.salilab.org/imp/trunk/imp. We recommend you use use this branch. Since this is the active branch that people commit changes too, one should consult the nightly build logs before updating to make sure things are working. In addition, consult the \c ChangeLog file to see what has changed since your last update.
+-# The current SVN trunk at https://svn.salilab.org/imp/trunk/ . We recommend you use use this. Since this is the place that people commit changes too, one should consult the nightly build logs before updating to make sure things are working. In addition, consult the \c ChangeLog file to see what has changed since your last update.
    
 -# The stable branch https://svn.salilab.org/imp/branches/stable This is updated whenever
    all the nightly tests pass.
@@ -90,7 +90,7 @@ To set this up
     \command{cd imp-debug}
   -# build
     \command{scons -j 2}
-Note that this probably doesn't work on windows.
+Note that this probably doesn't work on Windows.
 
 You can update your copy of \imp, by typing
 \command{svn update}
@@ -151,7 +151,7 @@ environment. (In the Sali lab, you can build a Windows version on
 command line option.)
 
 \subsection linux Getting prerequisites on Linux
-All of the prerequisites should be available as packages pre-built for you Linux platform of choice.
+All of the prerequisites should be available as packages pre-built for your Linux platform of choice.
 
 \subsection optional Optional dependencies
 
