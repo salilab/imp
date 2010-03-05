@@ -68,7 +68,7 @@ class IMPRestraints(modeller.terms.energy_term):
 
     def eval(self, mdl, deriv, indats):
         atoms = self.indices_to_atoms(mdl, indats)
-        copy_modeller_coords_to_imp(atoms, self._particles)
+        _copy_modeller_coords_to_imp(atoms, self._particles)
         if len(self._particles) == 0:
             score = 0.
         else:
@@ -77,7 +77,7 @@ class IMPRestraints(modeller.terms.energy_term):
             dvx = [0.] * len(indats)
             dvy = [0.] * len(indats)
             dvz = [0.] * len(indats)
-            get_imp_derivs(self._particles, dvx, dvy, dvz)
+            _get_imp_derivs(self._particles, dvx, dvy, dvz)
             return (score, dvx, dvy, dvz)
         else:
             return score
@@ -108,10 +108,10 @@ class ModellerRestraints(IMP.Restraint):
     def unprotected_evaluate(self, accum):
         atoms = self._modeller_model.atoms
         sel = modeller.selection(self._modeller_model)
-        copy_imp_coords_to_modeller(self._particles, atoms)
+        _copy_imp_coords_to_modeller(self._particles, atoms)
         energies = sel.energy()
         if accum:
-            add_modeller_derivs_to_imp(atoms, self._particles, accum)
+            _add_modeller_derivs_to_imp(atoms, self._particles, accum)
 
         return energies[0]
 
@@ -125,115 +125,8 @@ class ModellerRestraints(IMP.Restraint):
         return IMP.ContainersTemp()
 
 
-# ============== Creating particles ==============
-
-def create_particles(num_particles, env, model, particles):
-    """@deprecated Create Modeller atoms by building a PDB file, and loading
-       them from the file into Modeller. Additionally, copy them to the
-       IMP model.
-       @return the Modeller model.
-    """
-    fp = open ("./temp_particles.pdb", "w")
-    for i in range(0, num_particles):
-        fp.write("ATOM  %5d  N   ALA     0       0.000   0.000   0.000  1.00  0.00           C  \n" % (i))
-    fp.close()
-    mdl = modeller.model(env, file='./temp_particles.pdb')
-    os.unlink('temp_particles.pdb')
-    init_imp_from_modeller(model, particles, mdl.atoms)
-    return mdl
-
-
-def create_particles_from_imp(env, model):
-    """@deprecated Create Modeller atoms from the current IMP particles.
-       (This builds a PDB file, loads the atoms from the file into Modeller,
-       and returns the Modeller model."""
-    num_particles = len(model.particles)
-    fp = open ("./temp_particles.pdb", "w")
-    for i in range(0, num_particles):
-        fp.write("ATOM  %5d  N   ALA     0       0.000   0.000   0.000  1.00  0.00           C  \n" % (i))
-    fp.close()
-    mdl = modeller.model(env, file='./temp_particles.pdb')
-    copy_imp_coords_to_modeller(model.particles, mdl.atoms)
-    return mdl
-
-
-# ============== Rigid bodies ==============
-
-def add_rigid_body(model, name, value, mdl):
-    """@deprecated Add rigid body to Modeller model based on given int value"""
-    atoms = mdl.atoms
-    atom_idx = 0
-    rb_sel = modeller.selection()
-    for p in model.particles:
-        if p.get_int(name) == value:
-            rb_sel.add(atoms[atom_idx])
-
-        atom_idx = atom_idx + 1
-
-    rb = modeller.rigid_body(rb_sel)
-    mdl.restraints.rigid_bodies.append(rb)
-
-
-def add_rigid_body_expr(model, expr, mdl):
-    """@deprecated Add rigid body to Modeller model based on given expression
-       (e.g. p.get_float('radius') < 2.0)"""
-    atoms = mdl.atoms
-    atom_idx = 0
-    rb_sel = modeller.selection()
-    for p in model.particles:
-        if eval(expr):
-            rb_sel.add(atoms[atom_idx])
-
-        atom_idx = atom_idx + 1
-
-    rb = modeller.rigid_body(rb_sel)
-    mdl.restraints.rigid_bodies.append(rb)
-
-
-def move_rigid_body(model, name, value, dx, dy, dz, mdl):
-    """@deprecated Move all particles in the rigid body by the given amount"""
-    atom_idx = 0
-    for p in model.particles:
-        if p.get_int(name) == value:
-            p.set_x(p.x() + dx)
-            p.set_y(p.y() + dy)
-            p.set_z(p.z() + dz)
-
-        atom_idx = atom_idx + 1
-
-    copy_imp_coords_to_modeller(model.particles, mdl.atoms)
-
-
-
-def move_rigid_body_expr(model, expr, dx, dy, dz, mdl):
-    """@deprecated Move all particles in the rigid body by the given amount"""
-    atom_idx = 0
-    for p in model.particles:
-        if eval(expr):
-            p.set_x(p.x() + dx)
-            p.set_y(p.y() + dy)
-            p.set_z(p.z() + dz)
-
-        atom_idx = atom_idx + 1
-
-    copy_imp_coords_to_modeller(model.particles, mdl.atoms)
-
-
-def init_imp_from_modeller(model, particles, atoms):
-    """@deprecated Init IMP particles from Modeller atoms"""
-    xk= IMP.FloatKey("x")
-    yk= IMP.FloatKey("y")
-    zk= IMP.FloatKey("z")
-    for (num, at) in enumerate(atoms):
-        p = IMP.Particle(model)
-        p.add_attribute(xk, at.x, True)
-        p.add_attribute(yk, at.y, True)
-        p.add_attribute(zk, at.z, True)
-        particles.append(p)
-
-
-def copy_imp_coords_to_modeller(particles, atoms):
-    """@deprecated Copy atom coordinates from IMP to Modeller"""
+def _copy_imp_coords_to_modeller(particles, atoms):
+    """Copy atom coordinates from IMP to Modeller"""
     xkey = IMP.FloatKey("x")
     ykey = IMP.FloatKey("y")
     zkey = IMP.FloatKey("z")
@@ -243,8 +136,8 @@ def copy_imp_coords_to_modeller(particles, atoms):
         at.z = particles[num].get_value(zkey)
 
 
-def copy_modeller_coords_to_imp(atoms, particles):
-    """@deprecated Copy atom coordinates from Modeller to IMP"""
+def _copy_modeller_coords_to_imp(atoms, particles):
+    """Copy atom coordinates from Modeller to IMP"""
     xkey = IMP.FloatKey("x")
     ykey = IMP.FloatKey("y")
     zkey = IMP.FloatKey("z")
@@ -254,8 +147,8 @@ def copy_modeller_coords_to_imp(atoms, particles):
         particles[num].set_value(zkey, at.z)
 
 
-def add_modeller_derivs_to_imp(atoms, particles, accum):
-    """@deprecated Add atom derivatives from Modeller to IMP"""
+def _add_modeller_derivs_to_imp(atoms, particles, accum):
+    """Add atom derivatives from Modeller to IMP"""
     for (num, at) in enumerate(atoms):
         xyz = IMP.core.XYZ(particles[num])
         xyz.add_to_derivative(0, at.dvx, accum)
@@ -263,8 +156,8 @@ def add_modeller_derivs_to_imp(atoms, particles, accum):
         xyz.add_to_derivative(2, at.dvz, accum)
 
 
-def get_imp_derivs(particles, dvx, dvy, dvz):
-    """@deprecated Move atom derivatives from IMP to Modeller"""
+def _get_imp_derivs(particles, dvx, dvy, dvz):
+    """Move atom derivatives from IMP to Modeller"""
     xkey = IMP.FloatKey("x")
     ykey = IMP.FloatKey("y")
     zkey = IMP.FloatKey("z")
@@ -273,15 +166,6 @@ def get_imp_derivs(particles, dvx, dvy, dvz):
         dvy[idx] = particles[idx].get_derivative(ykey)
         dvz[idx] = particles[idx].get_derivative(zkey)
 
-
-def show_modeller_and_imp(atoms, particles):
-    """@deprecated Show Modeller and IMP atoms and their partial derivatives"""
-    print "Modeller:"
-    for (num, at) in enumerate(atoms):
-        print "(", at.x, ", ", at.y, ", ", at.z, ") (", at.dvx, ", ", at.dvy, ", ", at.dvz, ")"
-    print "IMP:"
-    for (num, at) in enumerate(atoms):
-        print "(", particles[num].x(), ", ", particles[num].y(), ", ", particles[num].z(), ") (", particles[num].dx(), ", ", particles[num].dy(), ", ", particles[num].dz(), ")"
 
 # Generators to create IMP UnaryFunction objects from Modeller parameters:
 def _HarmonicLowerBoundGenerator(parameters, modalities):
