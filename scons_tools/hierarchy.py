@@ -16,7 +16,7 @@ def _build_header(target, source, env):
     fh = file(target[0].abspath, 'w')
     print >> fh, "/**\n *  \\file %(module_include_path)s.h   \\brief Include all the headers\n *" \
              % vars
-    print >> fh, " *  Copyright 2007-9 Sali Lab. All rights reserved."
+    print >> fh, " *  Copyright 2007-2010 IMP Inventors. All rights reserved."
     print >> fh, " *\n */\n"
     print >> fh, "#ifndef %(PREPROC)s_H\n#define %(PREPROC)s_H\n" % vars
     # prefix does not work when there are a mix of generated and source files
