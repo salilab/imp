@@ -62,7 +62,7 @@ deprecated=False
 \section devbuild 2. Building and installing for developers
 
 We provide two other branches of \imp for developers.
--# The current SVN trunk at https://svn.salilab.org/imp/trunk/ . We recommend you use use this. Since this is the place that people commit changes too, one should consult the nightly build logs before updating to make sure things are working. In addition, consult the \c ChangeLog file to see what has changed since your last update.
+-# The current SVN trunk at https://svn.salilab.org/imp/trunk/ . We recommend you use use this. Since this is the place that people commit changes to, one should consult the nightly build logs before updating to make sure things are working. In addition, consult the \c ChangeLog file to see what has changed since your last update.
    
 -# The stable branch https://svn.salilab.org/imp/branches/stable This is updated whenever
    all the nightly tests pass.
