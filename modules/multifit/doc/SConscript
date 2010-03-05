@@ -10,14 +10,14 @@ d = env.Publication(authors=["Keren Lasker", "Maya Topf",
 env.IMPModuleDoc(env.IMPModuleGetDocs(),
                  authors=["Keren Lasker"],
                  brief="MODULENAME contains a protocol for fitting proteins to EM maps. For more information please see http://salilab.org/MultiFit",
-                 overview="MultiFit is a computational method for
+                 overview="""MultiFit is a computational method for
 simultaneously fitting atomic structures of components into their
-assembly density map at resolutions as low as 25 Å. The
+assembly density map at resolutions as low as 25A. The
 component positions and orientations are optimized with respect to
 a scoring function that includes the quality-of-fit of components in the map,
 the protrusion of components from the map envelope, as well as the
 shape complementarity between pairs of components. The scoring function
 is optimized by an exact inference optimizer DOMINO that efficiently
-finds the global minimum in a discrete sampling space",
+finds the global minimum in a discrete sampling space""",
                  publications=env.StandardPublications()+[d],
                  license=env.StandardLicense())
