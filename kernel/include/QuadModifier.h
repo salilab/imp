@@ -87,8 +87,7 @@ public:
 IMP_OUTPUT_OPERATOR(QuadModifier);
 
 
-//! A collection
-typedef VectorOfRefCounted<QuadModifier*> QuadModifiers;
+IMP_OBJECTS(QuadModifier);
 
 //! Create a functor which can be used with build in C++ and python commands
 /** For example, you can do
@@ -126,6 +125,7 @@ public:
     }
   }
 };
+
 
 
 IMP_END_NAMESPACE

@@ -56,6 +56,8 @@ public:
 };
 
 
+IMP_OBJECTS(Constraint);
+
 IMP_END_NAMESPACE
 
 #endif  /* IMP_CONSTRAINT_H */

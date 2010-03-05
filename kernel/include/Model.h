@@ -367,6 +367,8 @@ inline void Particle::assert_valid_derivatives() const {
 }
 #endif
 
+IMP_OBJECTS(Model);
+
 IMP_END_NAMESPACE
 
 #endif  /* IMP_MODEL_H */

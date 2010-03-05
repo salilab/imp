@@ -51,7 +51,7 @@ class IMPEXPORT ConfigurationSet: public Object
   IMP_OBJECT(ConfigurationSet);
 };
 
-
+IMP_OBJECTS(ConfigurationSet);
 
 IMP_END_NAMESPACE
 

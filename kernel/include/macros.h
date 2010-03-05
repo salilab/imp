@@ -720,6 +720,17 @@ protection:                                                             \
 #endif
 
 #ifdef IMP_DOXYGEN
+//! Define the type for storing sets of values
+/** The macro defines the type Names.
+ */
+#define IMP_VALUES(Name)                       \
+  class Name##s;
+#else
+#define IMP_VALUES(Name)                        \
+  typedef std::vector<Name> Name##s;
+#endif
+
+#ifdef IMP_DOXYGEN
 //! Declare the methods needed by an object than can be printed
 /** This macro declares the method
     - void show(std::ostream &out) const

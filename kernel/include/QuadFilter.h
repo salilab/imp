@@ -50,8 +50,7 @@ public:
 
 IMP_OUTPUT_OPERATOR(QuadFilter);
 
-//! A collection of filters
-typedef VectorOfRefCounted<QuadFilter*> QuadFilters;
+IMP_OBJECTS(QuadFilter);
 
 IMP_END_NAMESPACE
 

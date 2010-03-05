@@ -306,6 +306,7 @@ public:
            });
 };
 
+IMP_OBJECTS(Optimizer);
 
 IMP_END_NAMESPACE
 

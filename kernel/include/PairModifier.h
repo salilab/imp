@@ -87,8 +87,7 @@ public:
 IMP_OUTPUT_OPERATOR(PairModifier);
 
 
-//! A collection
-typedef VectorOfRefCounted<PairModifier*> PairModifiers;
+IMP_OBJECTS(PairModifier);
 
 //! Create a functor which can be used with build in C++ and python commands
 /** For example, you can do
@@ -126,6 +125,7 @@ public:
     }
   }
 };
+
 
 
 IMP_END_NAMESPACE

@@ -50,8 +50,7 @@ public:
 
 IMP_OUTPUT_OPERATOR(SingletonFilter);
 
-//! A collection of filters
-typedef VectorOfRefCounted<SingletonFilter*> SingletonFilters;
+IMP_OBJECTS(SingletonFilter);
 
 IMP_END_NAMESPACE
 

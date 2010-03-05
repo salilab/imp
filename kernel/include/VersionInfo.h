@@ -10,9 +10,10 @@
 
 #include "utility.h"
 #include "exception.h"
+#include "macros.h"
 
 #include <iostream>
-#include <string>
+#include <vector>
 
 IMP_BEGIN_NAMESPACE
 
@@ -47,6 +48,8 @@ private:
 };
 
 IMP_OUTPUT_OPERATOR(VersionInfo);
+
+IMP_VALUES(VersionInfo);
 
 IMP_END_NAMESPACE
 

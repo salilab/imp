@@ -112,10 +112,3 @@ extern "C" {
   }
 }
 
-
-%define IMP_SWIG_OBJECTS(Name, PluralName)
-%template(PluralName) ::IMP::VectorOfRefCounted< IMP::Name*, IMP::RefCounted::Policy >;
-%template(PluralName##Temp) ::std::vector< IMP::Name* >;
-%implicitconv Name ;
-%enddef
-
