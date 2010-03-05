@@ -473,7 +473,7 @@ generate the connection between the two languages. Key differences are
 
 While we strive for perfection, we, lamentably, slip up from time to
 time. If you find a bug in \imp, please report it on the
-\salilab{imp/bugs/,IMP bug tracker}. This will ensure it does not get
+\salilabssl{imp/bugs/,IMP bug tracker}. This will ensure it does not get
 lost.  The best way to report a bug is to provide a short script file
 that demonstrates the problem.
 
