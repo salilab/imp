@@ -1,15 +1,23 @@
 import IMP.em
 import IMP.core
 import IMP.atom
+IMP.set_log_level(IMP.SILENT)
 m= IMP.Model()
-378
-ps= IMP.Particles()
-for i in range(0,15):
-    ps.append(IMP.Particle(m))
-    d= IMP.core.XYZR.setup_particle(ps[-1],
-                                    IMP.algebra.Sphere3D(IMP.algebra.Vector3D(3*i,0,0), 2))
-    md= IMP.atom.Mass.setup_particle(ps[-1], 100)
-map= IMP.em.read_map(IMP.em.get_example_path("fit_input.mrc"))
-map.get_header().set_resolution(3)
-r= IMP.em.FitRestraint(ps, map)
+#1. setup the input protein
+##1.1 select a selector.
+sel=IMP.atom.NonWaterPDBSelector()
+##1.2 read the protein
+mh=IMP.atom.read_pdb(IMP.em.get_example_path("input.pdb"),m,sel)
+ps=IMP.Particles(IMP.core.get_leaves(mh))
+IMP.atom.add_radii(mh)
+#2. read the density map
+resolution=8.
+voxel_size=1.5
+dmap=IMP.em.read_map(IMP.em.get_example_path("input.mrc"),IMP.em.MRCReaderWriter())
+dmap.get_header_writable().set_resolution(resolution)
+#3. calculate the cross correlation between the density and the map
+print "The cross-correlation score is:",1.-IMP.em.compute_fitting_score(ps,dmap)
+#4. add a fitting restraint
+r= IMP.em.FitRestraint(ps, dmap)
 m.add_restraint(r)
+print "The fit of the particles in the density is:",r.evaluate(False)
