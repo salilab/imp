@@ -268,7 +268,7 @@
 /** @} */
 
 
-//! swap two member variables assuming the other object is called o
+//! Swap two member variables assuming the other object is called o
 /** Swap the member \c var_name of the two objects (this and o).
  */
 #define IMP_SWAP_MEMBER(var_name)               \
@@ -276,14 +276,14 @@
 
 
 
-//! use a copy_from method to create a copy constructor and operator=
+//! Use a copy_from method to create a copy constructor and operator=
 /** This macro is there to aid with classes which require a custom
     copy constructor. It simply forwards \c operator= and the copy
     constructor to a method \c copy_from() which should do the copying.
 
     You should think very hard before implementing a class which
     requires a custom copy custructor as it is easy to get wrong
-    and you can easily wrap most resources with RIIA objects
+    and you can easily wrap most resources with RAII objects
     (\external{en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization,
     wikipedia entry}).
 */
@@ -317,8 +317,8 @@
 
 #else
 /* The destructor is unprotected for SWIG since if it is protected
-   SWIG does not wrap the python proxy distruction and so does not
-   dereference the ref counted pointer. Swig also gets confused
+   SWIG does not wrap the Python proxy distruction and so does not
+   dereference the ref counted pointer. SWIG also gets confused
    on template friends.
 */
 //! Ref counted objects should have private destructors
@@ -371,7 +371,7 @@
 
     You also implement static methods \c get_x_key() to return each of the
     keys used. These static methods, which must be defined in the \c .cpp
-    file should declare the key itself as a \c static member variable to
+    file, should declare the key itself as a \c static member variable to
     avoid initializing the key if the decorator is not used.
 
     See IMP::Decorator for a more detailed description
@@ -480,8 +480,8 @@ public:                                                                 \
     get_particle()->add_attribute(AttributeKey, value); \
   }
 
-//! define methods for getting and setting a particular simple field
-/**This macros defines methods to get an set a particular attribute.
+//! Define methods for getting and setting a particular simple field
+/** This macro defines methods to get and set a particular attribute.
 
    \param[in] name The lower case name of the attribute
    \param[in] AttributeKey The AttributeKey object controlling
@@ -731,11 +731,11 @@ protection:                                                             \
 #endif
 
 #ifdef IMP_DOXYGEN
-//! Declare the methods needed by an object than can be printed
+//! Declare the methods needed by an object that can be printed
 /** This macro declares the method
     - void show(std::ostream &out) const
     It also makes it so that the object can be printed
-    in python.
+    in Python.
 
     The \c ostream and \c sstream headers must be included.
 
@@ -756,11 +756,11 @@ protection:                                                             \
 #endif
 
 #ifdef IMP_DOXYGEN
-//! Declare the methods needed by an object than can be printed
+//! Declare the methods needed by an object that can be printed
 /** This macro declares the method
     - \c void \c show(std::ostream &out) const
     It also makes it so that the object can be printed
-    in python.
+    in Python.
 
     The \c ostream and \c sstream headers must be included.
 
@@ -798,7 +798,7 @@ protection:                                                             \
     In addition, they all declare:
     - IMP::Object::do_show()
 
-    For all macros, the Name paramete is the name of the class being
+    For all macros, the Name parameter is the name of the class being
     implemented and the version_info parameter is the IMP::VersionInfo
     to use (probably get_version_info()).
 
@@ -926,7 +926,7 @@ protected:                                      \
 
 
 //! Define the basics needed for an OptimizerState
-/** In addition to the methods done IMP_OBJECT, it declares
+/** In addition to the methods done by IMP_OBJECT, it declares
     - IMP::OptimizerState::update()
 */
 #define IMP_OPTIMIZER_STATE(Name)               \
@@ -962,7 +962,7 @@ protected:                                      \
   ::IMP::internal::Counter skip_steps_, call_number_, update_number_;   \
                                                                         \
                                                                         \
-  //! Define the basics needed for a ScoreState
+//! Define the basics needed for a ScoreState
 /** In addition to the methods done by IMP_OBJECT, it declares
     - IMP::ScoreState::do_before_evaluate()
     - IMP::ScoreState::do_after_evaluate()
@@ -1104,7 +1104,7 @@ protected:                                      \
     - IMP::SingletonScore::get_is_changed()
     - IMP::SingletonScore::get_output_particles()
 
-    The macro expects that a class method
+    The macro expects a class method
     - bool get_is_changed(Particle*) which returns true if the score
     needs to be recalculated.
 
@@ -1125,7 +1125,7 @@ protected:                                      \
     - IMP::SingletonScore::get_interacting_particles()
     - IMP::SingletonScore::get_input_particles()
     - IMP::SingletonScore::get_input_containers()
-    which assume that only the passed particle serve as input to the
+    which assume that only the passed particle serves as input to the
     score.
 */
 #define IMP_SIMPLE_SINGLETON_SCORE(Name)                        \
@@ -1205,7 +1205,7 @@ protected:                                      \
     - IMP::PairScore::get_output_particles()
     - IMP::PairScore::get_is_changed()
 
-    The macro expects that a class method
+    The macro expects a class method
     - bool get_is_changed(const ParticlePair&) which returns true if the
     score needs to be recalculated.
 
@@ -1307,7 +1307,7 @@ protected:                                      \
     - IMP::TripletScore::get_input_particles()
     - IMP::TripletScore::get_output_particles()
 
-    The macro expects that a class method
+    The macro expects a class method
     - bool get_is_changed(ParticleTriplet) which returns true if the
     score needs to be recalculated.
 
@@ -1322,7 +1322,7 @@ protected:                                      \
   IMP_TRIPLET_SCORE_BASE(Name)
 
 
-//! Declare the functions needed for a SingletonScore
+//! Declare the functions needed for a TripletScore
 /** In addition to the methods declared and defined by IMP_TRIPLET_SCORE,
     the macro provides an implementation of
     - IMP::TripletScore::get_is_changed()
@@ -1358,7 +1358,7 @@ protected:                                      \
     - IMP::QuadScore::get_input_particles()
     - IMP::QuadScore::get_output_particles()
 
-    The macro expects that a class method
+    The macro expects a class method
     - bool get_is_changed(ParticleQuad) which returns true if the
     score needs to be recalculated.
 */
@@ -1553,7 +1553,7 @@ protected:                                      \
     })                                                                  \
                                                                         \
                                                                         \
-  //! Add interaction methods to a SingletonModifer
+//! Add interaction methods to a SingletonModifer
 /** This macro is designed to be used in conjunction with
     IMP_SINGLETON_MODIFIER or IMP_SINGLETON_MODIFIER_DA. It adds
     definitions for the methods:
@@ -1564,7 +1564,7 @@ protected:                                      \
     for a modifier which updates the refined particles based on the one
     they are refined from.
 
-    This macro should appear a .cpp file.
+    This macro should appear in a .cpp file.
 */
 #define IMP_SINGLETON_MODIFIER_TO_REFINED(Name, refiner)                \
   ParticlesList Name::get_interacting_particles(Particle *p) const {    \
@@ -1593,7 +1593,7 @@ protected:                                      \
     })                                                                  \
                                                                         \
                                                                         \
-  //! Declare the functions needed for a PairModifier
+//! Declare the functions needed for a PairModifier
 /** In addition to the methods done by IMP_OBJECT, it declares
     - IMP::PairModifier::apply(Particle*,Particle*,DerivativeAccumulator&)
     - IMP::PairModifier::get_interacting_particles()
@@ -1913,7 +1913,7 @@ protected:                                      \
 //! Declare a ref counted pointer to a new object
 /** \param[in] Typename The namespace qualified type being declared
     \param[in] varname The name for the ref counted pointer
-    \param[in] args The paretesized arguments to the constructor, or ()
+    \param[in] args The arguments to the constructor, or ()
     if there are none.
     \see IMP::Pointer
     \code
@@ -1926,7 +1926,7 @@ protected:                                      \
 #ifdef IMP_DOXYGEN
 /** Define a new key type.
 
-    It defines two public types Name, which is an instantiation of KeyBase and
+    It defines two public types: Name, which is an instantiation of KeyBase, and
     Names which is a vector of Name.
 
     \param[in] Name The name for the new type.
@@ -1934,7 +1934,7 @@ protected:                                      \
 
     \note We define a new class rather than use a typedef since SWIG has a
     bug dealing with names that start with ::. A fix has been commited to SVN
-    for swig.
+    for SWIG.
 
     \note The name in the typedef would have to start with ::IMP so it
     could be used out of the IMP namespace.

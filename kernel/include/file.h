@@ -1,6 +1,6 @@
 /**
  *  \file IMP/file.h
- *  \brief Control display of deprecation information.
+ *  \brief Handling of file input/output
  *
  *  Copyright 2007-2010 Sali Lab. All rights reserved.
  *
@@ -31,7 +31,7 @@ struct TextProxy {
 
 
 /** A TextOutput can be implicitly constructed from a C++ stream, a
-    python file or a path to a file. As a result, those can be
+    Python filelike object or a path to a file. As a result, those can be
     passed directly to functions which take a TextOutput as an
     argument.
 
@@ -48,7 +48,7 @@ class IMPEXPORT TextOutput
   Pointer<internal::IOStorage<std::ostream> > out_;
  public:
 #ifndef IMP_DOXYGEN
-  // swig needs there here for some bizaare reason
+  // SWIG needs these here for some bizarre reason
   TextOutput(int);
   TextOutput(double);
   TextOutput(const char *c);
@@ -82,7 +82,7 @@ class IMPEXPORT TextOutput
 
 
 /** A TextInput can be implicitly constructed from a C++ stream, a
-    python file or a path to a file. As a result, those can be
+    Python filelike object or a path to a file. As a result, those can be
     passed directly to functions which take a TextInput as an
     argument.
     \code
@@ -96,7 +96,7 @@ class IMPEXPORT TextInput
   Pointer<internal::IOStorage<std::istream> > in_;
  public:
 #ifndef IMP_DOXYGEN
-  // swig needs there here for some bizaare reason
+  // SWIG needs these here for some bizarre reason
   TextInput(int);
   TextInput(double);
   TextInput(const char *c);
@@ -142,16 +142,16 @@ IMPEXPORT TextOutput get_log_target();
 #endif
 
 /** Set the log target to a given value and reset it
-    when the object is destroyed. Use this in python
+    when the object is destroyed. Use this in Python
     to set the target of logs.
     \ingroup logging
 */
 class SetLogTarget: public RAII {
-  /* Python deletes all python objects before static
+  /* Python deletes all Python objects before static
      destructors are called. As a result, having static
-     C++ objects point to python objects is problematic.
+     C++ objects point to Python objects is problematic.
      This class makes sure that the pointer to the
-     python class gets cleaned up when python exits.
+     Python class gets cleaned up when Python exits.
   */
   TextOutput old_;
 public:

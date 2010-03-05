@@ -32,7 +32,7 @@ IMP_BEGIN_NAMESPACE
     IMP::set_check_level with IMP::NONE to disable all checks when you
     are performing your optimization as opposed to testing your
     code. Make sure you run your code with the level set to at least
-    CHEAP before running your final optimization to make sure that
+    USAGE before running your final optimization to make sure that
     \imp is used correctly.
 
     Error handling is provided by IMP/exception.h,
@@ -100,7 +100,7 @@ class IMPEXPORT Exception
 enum CheckLevel {NONE=0, USAGE=1, USAGE_AND_INTERNAL=2};
 
 //! Determine the maximum check level that can be used for this build
-/** For example, 'fast' builds can't used any checks.
+/** For example, 'fast' builds can't use any checks.
  */
 IMPEXPORT CheckLevel get_maximum_check_level();
 
@@ -130,7 +130,7 @@ inline CheckLevel get_check_level() {
 //! Set whether exception messages are printed or not
 /** By default the error message associated with thrown exceptions are printed
     when using from C++, but not from Python (since the error messages of
-    unhandled exception are printed by the python runtime).
+    an unhandled exception are printed by the Python runtime).
 */
 IMPEXPORT void set_print_exceptions(bool tf);
 
@@ -325,7 +325,7 @@ struct IMPEXPORT InternalException: public Exception
     it being thrown.
 
     \advanceddoc
-    As the usage checks are disable in fast mode,
+    As the usage checks are disabled in fast mode,
     UsageExceptions are not considered part of the API and hence
     should not be documented or checked in test cases.
  */
@@ -378,10 +378,11 @@ class IMPEXPORT IOException: public Exception
 /** \brief An exception which is thrown when the Model has
     attributes with invalid values.
 
-    It may be OK to catch a in \imp ModelException, when, for example,
+    It may be OK to catch an \imp ModelException, when, for example,
     the catcher can simply re-randomize the optimized coordinates and
     restart the optimization. Sampling protocols, such as
-    IMP::core::MCCGSampler tend to do this.*/
+    IMP::core::MCCGSampler, tend to do this.
+ */
 class IMPEXPORT ModelException: public Exception
 {
  public:

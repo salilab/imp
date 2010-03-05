@@ -24,8 +24,8 @@ IMP_BEGIN_NAMESPACE
       for how far each particle diverges from its rigid position.
 
     - As a constraint: the optimizer only changes the position of the
-      rigid body itself and the position of the particles in are are
-      computed from the position of the rigid body.
+      rigid body itself and the position of the particles in the body
+      are computed from the position of the rigid body.
 
     In IMP, constraints are implemented as a type of
     ScoreState. Before evaluation, the constraint updates the
@@ -39,7 +39,7 @@ IMP_BEGIN_NAMESPACE
     and created invisibly when needed.
 
     \note Constraint invariants will not necessarily hold if
-    involved particles have been called an Model::evaluate()
+    involved particles have been called and Model::evaluate()
     has not been called. For example, if you change a
     particle's coordinates, a IMP::core::Centroid of a set
     containing the particle will not be correct until the

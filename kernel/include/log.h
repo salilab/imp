@@ -28,7 +28,7 @@ IMP_BEGIN_NAMESPACE
     \imp provides tools for controlling the amount of log output produced
     and directing it to the terminal or a file. Only log messages tagged
     with a lower level than the current LogLevel are emitted. In addition
-    to a global local level (get_log_level(), set_log_level()), each
+    to a global log level (get_log_level(), set_log_level()), each
     IMP::Object has an internal log level (IMP::Object::get_log_level(),
     IMP::Object::set_log_level()) which is used when executing code on
     that object.
@@ -38,14 +38,14 @@ IMP_BEGIN_NAMESPACE
     People implementing IMP::Object classes should also see IMP_OBJECT_LOG()
     and IMP::SetLogState.
 
-    All logging is disabled when \imp is build using \c build='fast'.
+    All logging is disabled when \imp is built using \c build='fast'.
     @{
  */
 
 //! The log levels supported by \imp
 /**
-    DEFAULT is only local logging (like in IMP::Object), it means use
-    the global log level
+    DEFAULT is only local logging (like in IMP::Object); it means to use
+    the global log level.
 
     VERBOSE prints very large amounts of information. It should be enough
     to allow the computational flow to be understood.
@@ -55,8 +55,8 @@ IMP_BEGIN_NAMESPACE
 
     WARNING prints only warnings.
 
-    MEMORY print information about allocations and deallocations to debug
-    memory issues
+    MEMORY prints information about allocations and deallocations to debug
+    memory issues.
  */
 enum LogLevel {DEFAULT=-1, SILENT=0, WARNING=1, TERSE=2, VERBOSE=3,
                MEMORY=4
@@ -101,7 +101,7 @@ inline bool is_log_output(LogLevel l)
 #endif
 
 #ifdef IMP_DOXYGEN
-//! Execute the code block if a certain level logging is on
+//! Execute the code block if a certain level of logging is on
 /**
    The next code block (delimited by { }) is executed if
    get_log_level() >= level.

@@ -147,7 +147,7 @@ IMP_PROTECTION(protection)                                              \
  \param[in] PluralData The plural of the data name. This should be a
  container type.
  \param[in] OnAdd Code to modify the passed in object. The object is obj
- its index index.
+ and its index index.
  \param[in] OnChanged Code to get executed when the container changes.
  \param[in] OnRemoved Code to get executed when the an object is removed.
 

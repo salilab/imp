@@ -21,7 +21,7 @@ IMP_BEGIN_NAMESPACE
 /**
 Representation of the structure in \imp is via a collection of
 Particle objects. However, since particles are general purpose, they
-provide a basic set of tools for managing the data (eg
+provide a basic set of tools for managing the data (e.g.
 IMP::Particle::add_attribute(), IMP::Particle::get_value()
 etc). Decorators wrap (or \quote{decorate}) particles to provide a much
 richer interface. For example, most particles have Cartesian
@@ -39,7 +39,7 @@ print d0.get_coordinates()
 
 Dealing with decorators and particles has two main parts
 -# setting up the particle to be used with that decorator
--# decoratoring the particle.
+-# decorating the particle.
 
 To set up a particle to be used with the IMP::core::XYZ decorator we do
 \code
@@ -73,7 +73,7 @@ More abstractly, decorators can be used to
 and "X" other places
 
 To see a list of all available decorators and to see what functions
-all decorators have, look the list of classes which inherit from
+all decorators have, look at the list of classes which inherit from
 IMP::Decorator, below.
 
 See the IMP::example::ExampleDecorator %example for how to implement a
@@ -177,7 +177,7 @@ public:
   /** \brief Return true if the particle can be cast to the decorator.
 
   That is, if particle_is_instance() returns \c true, then it is
-  legal to construct and instance of the decorator with that particle.
+  legal to construct an instance of the decorator with that particle.
   If not, setup_particle() must be called first.
   \code
   IMP::Particle *p = new IMP::Particle(m);
@@ -195,8 +195,8 @@ public:
   */
   static bool particle_is_instance(Particle *p);
 
-  /** Create an instance of the Decorator from the particle has
-      already been setup. The particle must have been set up already
+  /** Create an instance of the Decorator from the particle that has
+      already been set up. The particle must have been set up already
       (eg particle_is_instance(p) must be true), but this is not
       necessarily checked.
   */

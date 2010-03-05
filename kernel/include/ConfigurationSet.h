@@ -1,6 +1,6 @@
 /**
  *  \file ConfigurationSet.h
- *  \brief Store a set of configuration of the model.
+ *  \brief Store a set of configurations of the model.
  *
  *  Copyright 2007-2010 Sali Lab. All rights reserved.
  *
