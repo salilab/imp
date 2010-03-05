@@ -88,7 +88,7 @@ class ModellerRestraints(IMP.Restraint):
        This is useful if you want to use Modeller restraints with an IMP
        optimizer, or in combination with IMP restraints.
 
-       @ param modeller_model The Modeller model object.
+       @param modeller_model The Modeller model object.
        @param particles A Particles object containing IMP atoms, in the
                         same order as the Modeller atoms.
        @note since Modeller, unlike IMP, is sensitive to the ordering
