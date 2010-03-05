@@ -43,23 +43,25 @@ Structure and dynamics modeling in \imp proceeds in a five stage iterative proce
 -# \anchor repsel <em> Representation selection: </em> representation in \imp is via a collection of
   entities called particles (IMP::Particle objects). Each particle can contain one or
   more of the following sets of data
-   - \inlineimage{xyz.png, 30} Cartesian coordinates (IMP::core::XYZ)
-   - \inlineimage{sphere.png, 30} sphere (IMP::core::XYZR)
-   - \inlineimage{atom.png, 30} atom information such as type, element, mass (IMP::atom::Atom)
-   - \inlineimage{residue.png, 30} residue type information (IMP::atom::Residue)
-   - \inlineimage{chain.png, 30} chain IDs (IMP::atom::Chain)
-   - \inlineimage{domain.png, 30} domain extents (IMP::atom::Domain)
-   - \inlineimage{mass.png, 30} mass, in daltons (IMP::atom::Mass)
-   - \inlineimage{charged.png, 30} charge (IMP::atom::Charged)
-   - \inlineimage{hierarchy.png, 30} relationships between parts of molecules (IMP::atom::Hierarchy)
-   - \inlineimage{bond.png, 30} bonds (IMP::atom::Bond and IMP::atom::Bonded)
-   - \inlineimage{rigid.png, 30} rigid body coordinate frames (IMP::core::RigidBody)
+   - \inlineimage{xyz.png, 50} Cartesian coordinates (IMP::core::XYZ)
+   - \inlineimage{sphere.png, 50} sphere (IMP::core::XYZR)
+   - \inlineimage{atom.png, 50} atom information such as type, element, mass (IMP::atom::Atom)
+   - \inlineimage{residue.png, 50} residue type information (IMP::atom::Residue)
+   - \inlineimage{chain.png, 50} chain IDs (IMP::atom::Chain)
+   - \inlineimage{domain.png, 50} domain extents (IMP::atom::Domain)
+   - \inlineimage{mass.png, 50} mass, in daltons (IMP::atom::Mass)
+   - \inlineimage{charged.png, 50} charge (IMP::atom::Charged)
+   - \inlineimage{hierarchy.png, 50} relationships between parts of molecules (IMP::atom::Hierarchy)
+   - \inlineimage{bond.png, 50} bonds (IMP::atom::Bond and IMP::atom::Bonded)
+   - \inlineimage{rigid.png, 50} rigid body coordinate frames (IMP::core::RigidBody)
+   - \inlineimage{angle.png, 50} bond angle (IMP::atom::Angle)
+   - \inlineimage{torsion.png, 50} bond angle (IMP::atom::TorsionAngle)
    - etc.
    .
   In addition, \imp can enforce relationships between particles:
-   - all of the members of a rigid body move along with the rigid body (IMP::core::RigidBody, IMP::core::RigidMember)
-   - a centroid particle has Cartesian coordinates computed from the centroid of another set (IMP::core::Centroid)
-   - \inlineimage{spherecover.png, 30} a cover particle has a sphere containing another set of particles (IMP::core::Cover)
+   - \inlineimage{rigid.png, 50} all of the members of a rigid body move along with the rigid body (IMP::core::RigidBody, IMP::core::RigidMember)
+   - \inlineimage{centroid.png, 50} a centroid particle has Cartesian coordinates computed from the centroid of another set (IMP::core::Centroid)
+   - \inlineimage{spherecover.png, 50} a cover particle has a sphere containing another set of particles (IMP::core::Cover)
    .
   New types of representation can be easily added via a decorator mechanism, which is explained
   more below and on the IMP::Decorator page.\n\n
@@ -71,14 +73,15 @@ Structure and dynamics modeling in \imp proceeds in a five stage iterative proce
   \imp the scoring function is the sum terms, each of which is
   computed by an IMP::Restraint object. The scoring function terms can be
   based on things like
-    - how close a distance is to the measured value: IMP::core::DistanceRestraint
-    - how well the model fits a density map: IMP::em::FitRestraint
-    - how close the volume of a molecule is to the expected value: IMP::core::VolumeRestraint
-    - excluded volume (steric clash): IMP::core::ExcludedVolumeRestraint
-    - connectivity of a subcomplex: IMP::core::ConnectivityRestraint
-    - the fit of the SAXS cure of a complex to a measured one: IMP::saxs::Restraint
-    - statistical potentials: IMP::atom::ProteinLigandRestraint
-    - torsion angles or bond angles: IMP::core::TorsionAngleRestraint, IMP::core::AngleRestraint
+    - \inlineimage{distance.png, 50} how close a distance is to the measured value (IMP::core::DistanceRestraint, IMP::core::DistancePairScore, IMP::core::RigidBodyDistancePairScore, IMP::core::SphereDistancePairScore)
+    - \inlineimage{em.png, 50} how well the model fits a density map (IMP::em::FitRestraint)
+    - \inlineimage{volume.png, 50} how close the volume of a molecule is to the expected value (IMP::core::VolumeRestraint)
+    - \inlineimage{ev.png, 50}  excluded volume (steric clash) (IMP::core::ExcludedVolumeRestraint)
+    - \inlineimage{connectivity.png, 50} connectivity of a subcomplex (IMP::core::ConnectivityRestraint)
+    - \inlineimage{saxs.png, 50} the fit of the SAXS cure of a complex to a measured one (IMP::saxs::Restraint)
+    - \inlineimage{protlig.png, 50} statistical potentials (IMP::atom::ProteinLigandRestraint)
+    - \inlineimage{angle.png, 50} torsion angles or bond angles (IMP::core::TorsionAngleRestraint, IMP::core::AngleRestraint)
+    - \inlineimage{symmetry.png, 50} symmetry: (IMP::core::TransformedDistancePairScore)
     - etc.
     .
   Other terms can be formed by using IMP::SingletonScore, IMP::PairScore, IMP::TripletScore, IMP::QuadScore objects in conjuction with general purpose restraint creators. These allow large number of parts to be scored in similar ways more efficiently than creating many restraints. Examples using this include
@@ -141,7 +144,7 @@ stages, but a few need extra note:
   penalize conformations which don't fit that bit of information.
 
 - Knowledge can also be used to tune the sampling scheme by choosing
-  starting configurations, how to perform the sampline etc.
+  starting configurations, how to perform the sampling etc.
 
 Coming up with the right choices for representation, scoring and sampling for
 a given system typically takes a few iterations and trial and error. \imp
