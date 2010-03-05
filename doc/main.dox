@@ -9,7 +9,7 @@
  - \wiki{FAQ, FAQ}
  - \salilabssl{imp/bugs/,Bug Tracker}
  - \ref recent "Change history"
- - \salilab{internal/imp/tests.html,Daily build status}
+ - \salilab{imp/nightly/tests.html,Nightly build status}
  - \salilab{imp/archives/imp-dev/,imp-dev list archive}
 
 
