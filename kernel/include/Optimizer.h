@@ -67,7 +67,7 @@ class IMPEXPORT Optimizer: public Object
   /**
      \note The model is not owned by the optimizer and so is not
      deleted when the optimizer is deleted. Further, the Optimizer
-     does not prevent the model from being deleted when all python
+     does not prevent the model from being deleted when all Python
      references go away.
   */
   void set_model(Model *m) {model_=m;}
@@ -189,7 +189,7 @@ class IMPEXPORT Optimizer: public Object
       looking for values to optimize unless they care about special
       properties of the optimized values. Instead they can iterate
       through the list of optimized attributes, each of which is
-      identified by a FloatIndex. With they FloatIndex objects
+      identified by a FloatIndex. With these FloatIndex objects
       they can get and set the values and derivatives as needed.
   */
   //!@{

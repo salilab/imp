@@ -24,7 +24,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 /** @name Vector Search
 
     These functions classes create various search structures
-    over sets of vectors. Most of them benifit a great deal
+    over sets of vectors. Most of them benefit a great deal
     from having CGAL available.
     @{
  */

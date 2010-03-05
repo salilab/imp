@@ -79,11 +79,12 @@ int compare(const T &a, const T &b) {
 
 /** \brief RAII-style objects
 
-    RAII-style are a convenient way of controlling a resource. They assume
-    "ownership" of the resource on creation and then "free" it on destruction.
-    Examples include, setting the log level to a particular value and restoring
-    the old value when the object goes out of scope (SetLogState) or
-    incrementing and decrementing a ref-counted pointer (Pointer).
+    RAII-style objects are a convenient way of controlling a resource. They
+    assume "ownership" of the resource on creation and then "free" it on
+    destruction. Examples include, setting the log level to a particular
+    value and restoring the old value when the object goes out of scope
+    (SetLogState) or incrementing and decrementing a ref-counted
+    pointer (Pointer).
 
     RAII objects should either take no arguments and just have a constructor and
     destructor or should have a constructor, destructor and set and reset

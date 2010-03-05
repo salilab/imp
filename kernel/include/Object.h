@@ -25,21 +25,21 @@ IMP_BEGIN_NAMESPACE
 /** The base class for non value-type objects in \imp.
     Anything inheriting from IMP::Object has the following
     properties:
-    - have a method Object::show() which writes one or more lines of text
+    - has a method Object::show() which writes one or more lines of text
       to a stream
-    - have embedded information about the module and version which can be
+    - has embedded information about the module and version which can be
       accessed using Object::get_version_info(). This information can be
       used to log what version of software is used to compute a result.
     - it has a local logging level which can override the global one
       allowing fine grained logging control.
     - the object keeps track of whether it has been been used. See the
-      IMP::Object::set_was_used() method for an explaination.
+      IMP::Object::set_was_used() method for an explanation.
 
     Objects can be outputted to standard streams using operator<<()
     which will call the Object::show() method.
 
     \advanceddoc Types inheriting from Object should always be created using
-    \c new in C++ and passed, passed using pointers and stored using
+    \c new in C++ and passed using pointers and stored using
     IMP::Pointer objects. Note that you have to be careful of cycles
     and so must use IMP::WeakPointer objects to break cycles. See
     IMP::RefCounted for more information on reference counting. IMP_NEW()
@@ -69,7 +69,7 @@ public:
   //! Set the logging level used in this object
   /** Each object can be assigned a different log level in order to,
       for example, suppress messages for verbose and uninteresting
-      object. If set to DEFAULT, the global level as returned by
+      objects. If set to DEFAULT, the global level as returned by
       IMP::get_log_level() is used, otherwise
       the local one is used. Methods in classes inheriting from
       Object should start with IMP_OBJECT_LOG to change the log
@@ -138,7 +138,7 @@ public:
 
 
   /** \imp provides warnings when objects are never used before they are
-      destroyed. Examples of use include, adding an IMP::Restraint to an
+      destroyed. Examples of use include adding an IMP::Restraint to an
       IMP::Model. If an object is not properly marked as used, or your
       code is the one using it, call set_was_used(true) on the object.
   */
@@ -215,7 +215,7 @@ IMP_END_NAMESPACE
 #include "SetLogState.h"
 
 #if IMP_BUILD < IMP_FAST
-//! Set the log level to the objects log level.
+//! Set the log level to the object's log level.
 /** All non-trivial Object methods should start with this. It creates a
     RAII-style object which sets the log level to the local one,
     if appropriate, until it goes out of scope.
