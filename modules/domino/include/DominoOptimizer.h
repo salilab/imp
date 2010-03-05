@@ -31,7 +31,8 @@ public:
   /**
   \param[in] jt A special type of tree decomposition that holds the
                 graph on which inference will be run
-  \param[in] m  The model
+  \param[in] m  The model to be optimized
+  \param[in] r_eval evaluator used to evaluate the restraints
    */
   //TODO - add here much more!
   DominoOptimizer(const JunctionTree &jt, Model *m,
