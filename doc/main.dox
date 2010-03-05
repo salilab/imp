@@ -7,7 +7,7 @@
  .
  - \ref examples "Examples"
  - \wiki{FAQ, FAQ}
- - \salilab{imp/bugs,Bug Tracker}
+ - \salilabssl{imp/bugs/,Bug Tracker}
  - \ref recent "Change history"
  - \salilab{internal/imp/tests.html,Daily build status}
  - \salilab{imp/archives/imp-dev/,imp-dev list archive}
