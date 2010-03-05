@@ -34,7 +34,7 @@ IMP_OBJECTS(ScoreState);
 /** \objectstemp{ScoreState}
 */
 
-//! Class for storing model, its restraints, and particles.
+//! Class for storing model, its restraints, constraints, and particles.
 /** The Model maintains a standard \imp container for each of Particle,
     ScoreState and Restraint object types.
 
@@ -145,7 +145,7 @@ public:
 
   /** @name Restraints
 
-      The Model scores the current configuration use the stored Restraint
+      The Model scores the current configuration using the stored Restraint
       objects. Use the methods below to manipulate the list.
 
       The value type for the iterators is a Restraint*.
@@ -157,7 +157,7 @@ public:
 
   //! Remove the particle from this model
   /** Since particles are ref counted the object will still be valid
-      objects until all references are removed, however attributes of
+      until all references are removed, however attributes of
       removed particles cannot be changed or inspected.
 
       \note It is an error to remove particles from the model during
@@ -226,15 +226,15 @@ public:
   /** @} */
 
   /** @name Float Attribute Ranges
-      Each Float attribute has an associated range which reflect the
+      Each Float attribute has an associated range which reflects the
       range of values that it is expected to take on during optimization.
       The optimizer can use these ranges to make the optimization process
       more efficient. By default, the range estimates are simply the
       range of values for that attribute in the various particles, but
       it can be set to another value. For example, an attribute storing
-      an angle should have the range set to eg (0,PI).
+      an angle could have the range set to (0,PI).
 
-      The ranges are not enforced, they are just guidelines. In order to
+      The ranges are not enforced; they are just guidelines. In order to
       enforce ranges, see, for example,
       IMP::example::ExampleSingletonModifier.
       @{

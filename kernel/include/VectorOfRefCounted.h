@@ -20,7 +20,7 @@ class Object;
 //! A vector-like container for reference counted objects
 /** The interface of this class is like that of std::vector.
 
-    Documentation for std::vector can be found at as part of the SGI
+    Documentation for std::vector can be found as part of the SGI
     stl documentation, among other places
     (http://www.sgi.com/tech/stl/Vector.html).
 

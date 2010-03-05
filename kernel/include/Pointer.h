@@ -24,13 +24,13 @@ IMP_BEGIN_NAMESPACE
 //! A reference counted pointer to an object.
 /** Any time you store an Object in a C++ program, you should use a
     Pointer, rather than a raw C++ pointer. Using a pointer manages
-    the reference counting an makes sure that the object is not deleted
-    prematurely when, for example, all python references go away and that
+    the reference counting and makes sure that the object is not deleted
+    prematurely when, for example, all Python references go away and that
     it is deleted properly if an exception is thrown during the function.
-    Use the IMP_NEW() macro to aid creation of pointer to new objects.
+    Use the IMP_NEW() macro to aid creation of pointers to new objects.
 
     For example, when implementing a Restraint that uses a PairScore,
-    store the PairScore like follows
+    store the PairScore like this:
     \code
     Pointer<PairScore> ps_;
     \endcode
@@ -110,7 +110,7 @@ public:
   //! Relinquish control of the pointer
   /** This must be the only pointer pointing to the object. Its
       reference count will be 0 after the function is called, but
-      the object will not be destroyed. Use this to safetly return
+      the object will not be destroyed. Use this to safely return
       objects allocated within functions.
   */
   O* release() {

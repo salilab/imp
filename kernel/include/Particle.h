@@ -177,7 +177,7 @@ class SaveOptimizeds;
    \endverbatim
    Creating a key is expensive and should not be done often.
 
-   Then use it to maniputate the attribute.
+   Then use it to manipulate the attribute.
    \verbatim
    p.add_attribute(f, initial_value, whether_attribute_is_optimized)
    p.set_attribute(f, new_value)
@@ -195,7 +195,7 @@ class SaveOptimizeds;
    A particle may only belong to one model.
 
    Any attempt to access or change an attribute which the particle does not
-   have results is undefined. It will throw an exception if checks are
+   have results is undefined. It will throw an exception if checks are on
    or possibly just crash if they are not. Likewise an attempt to touch
    an inactive particle is also undefined (and will throw an exception if
    checks are enabled).
@@ -352,7 +352,7 @@ class IMPEXPORT Particle : public Container
 
   /** \name  Add cached data to a particle
       Restraints and Constraints can cache data in a particle in order
-      to accelerate computations. This data must obey a the following rules:
+      to accelerate computations. This data must obey the following rules:
       - it must be optional
       - if multiple restraints add the same attribute, it must all be equivalent
 

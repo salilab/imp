@@ -16,7 +16,7 @@ IMP_BEGIN_NAMESPACE
 
 //! A class to change and restore log state
 /**
-   To use, create an instance of this class which the log level you
+   To use, create an instance of this class with the log level you
    want. When it goes out of scope, it will restore the old level.
    \ingroup logging
  */

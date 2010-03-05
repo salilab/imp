@@ -99,8 +99,8 @@ public:
   /** \brief The restraint can override this in order to take action
       when added to a Model
 
-      Users should generally not call this method directly, instead
-      they should just used Model::add_restraint() to add the
+      Users should generally not call this method directly; instead
+      they should just use Model::add_restraint() to add the
       restraint to the Model.
 
       Restraints
@@ -143,7 +143,7 @@ public:
 
   /** \name Interactions
       Certain sorts of operations, such as evaluation of restraints in
-      isolation, benifit from being able to determine which containers
+      isolation, benefit from being able to determine which containers
       and particles are needed by which restraints.
       @{
   */

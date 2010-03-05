@@ -39,7 +39,7 @@ class Model;
     Interaction::get_output_particles() should return the input and
     output respectively for the before_evaluate() call. The after_evaluate()
     call must have input particles chosen from among the union of the
-    input and output sets for the before call and output particles chose
+    input and output sets for the before call and output particles chosen
     from among the inputs of the before call.
 
     \implementationwithoutexample{ScoreState, IMP_SCORE_STATE}
@@ -61,7 +61,7 @@ public:
   // Do post evaluation work if needed
   void after_evaluate(DerivativeAccumulator *accpt);
 
-  //! return the stored model data
+  //! \return the stored model data
   Model *get_model() const {
     IMP_INTERNAL_CHECK(model_,
                "Must call set_model before get_model on state");
@@ -70,7 +70,7 @@ public:
 
   /** \name Interactions
       Certain sorts of operations, such as evaluation of restraints in
-      isolation, benifit from being able to determine which containers
+      isolation, benefit from being able to determine which containers
       and particles are needed by which restraints.
 
       Input and output particles are ones whose attributes are read.
@@ -111,7 +111,7 @@ protected:
 };
 
 
-//! Removes the ScoreState when the RIAA object is destroyed
+//! Removes the ScoreState when the RAII object is destroyed
 class ScoreStatePointer: public RAII {
   Pointer<ScoreState> ss_;
   /* keep the model alive so unregister doesn't crash */

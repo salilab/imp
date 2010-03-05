@@ -50,11 +50,11 @@ IMP_BEGIN_NAMESPACE
     is no longer needed. In reference counting, each object has a reference
     count, which tracks how many different places are using the
     object. When this count goes to 0, the object is freed.\n\n
-    Python internally refence counts everything. C++, on the other hand, on the
+    Python internally refence counts everything. C++, on the other hand,
     requires extra steps be taken to ensure that objects
     are reference counted properly.\n\n
     In \imp, reference counting is done through the IMP::Pointer
-    and IMP::RefCounted. The former should be used instead of
+    and IMP::RefCounted classes. The former should be used instead of
     a raw C++ pointer when storing a pointer to any object
     inheriting from IMP::RefCounted.\n\n
     Any time one is using reference counting, one needs to be aware
