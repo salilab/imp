@@ -37,13 +37,14 @@ public:
     \param[in] em_map  The density map used in the fitting score
     \param[in] radius_key the name of the radius attribute of the particles
     \param[in] weight_key the name of the weight attribute of the particles
-    \param[in] scale
+    \param[in] scale multiply the fitting restraint score and derivatives
+                     by this value
    */
   FitRestraint(Particles ps,
                DensityMap *em_map,
                FloatKey radius_key= IMP::core::XYZR::get_default_radius_key(),
                FloatKey weight_key= IMP::atom::Mass::get_mass_key(),
-               float scale=-1);
+               float scale=1);
 
   //! \return the predicted density map of the model
   SampledDensityMap *get_model_dens_map() {
