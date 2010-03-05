@@ -3,11 +3,10 @@
 
 \imp is available in a variety of different ways. If you are just planning on using
 existing \imp code and run on a standard platform, you may be able to install
-a pre-built binary. See the \ref make_warning "download page".
+a pre-built binary. See the \salilab{imp/download.html,download page}.
 
 If you are planning on contributing to \imp, you should download and build the source.
-The best way to do this is by checking it out from subversion. This way you can easily get
-updates to the source, simply by doing. See the next section for more information.
+See the next section for more information.
 
 If you are building \imp from source, read the following sections, otherwise skip
 to the last one.
@@ -27,15 +26,20 @@ to the last one.
 \section userbuild 1. Building and installing basics
 
 Building \imp from source is straightforward if the \ref prereq "prerequisites"
-are already installed. We use \svn for managing the \impsvn. To access the
+are already installed. First, obtain the source code tarball from the
+\salilab{imp/download.html,download page}.
 code there
--# check out \imp from svn
-   \command{svn co https://svn.salilab.org/imp/tags/release-1.0 imp}
-   This will create a directory called \c imp containing all the source.
+-# Extract the tarball
+   \command{tar -xvzf imp-1.0.tar.gz}
+   This will create a directory called \c imp-1.0 containing all the source.
 -# change into that directory and build by doing
    \command{scons prefix=place_to_install_imp all}
 -# install \imp by doing
    \command{scons prefix=place_to_install_imp install}
+
+(If you are familiar with \svn, you can also use an SVN client to check out
+the same code from our Subversion repository at
+https://svn.salilab.org/imp/tags/release-1.0/)
 
 If there are build errors
 -# make sure all prerequisites are installed
@@ -61,12 +65,15 @@ deprecated=False
 
 \section devbuild 2. Building and installing for developers
 
-We provide two other branches of \imp for developers.
--# The current SVN trunk at https://svn.salilab.org/imp/trunk/ . We recommend you use use this. Since this is the place that people commit changes to, one should consult the nightly build logs before updating to make sure things are working. In addition, consult the \c ChangeLog file to see what has changed since your last update.
+To get the latest development version of \imp, it is necessary to check it out
+from our \impsvn using an \svn client:
+   \command{svn co https://svn.salilab.org/imp/trunk imp}
+This will create a directory called \c imp containing all the source at the SVN
+trunk. We recommend you use use this. Since this is the place that people
+commit changes to, one should consult the nightly build logs before updating
+to make sure things are working. In addition, consult the \c ChangeLog file
+to see what has changed since your last update.
    
--# The stable branch https://svn.salilab.org/imp/branches/stable This is updated whenever
-   all the nightly tests pass.
-
 When developing code for \imp, it is useful to be able to run it without installing
 everything. To aid this, we provide a script located at \c tools/imppy.sh which
 runs a command after setting up the environment so that dynamically linked libraries
@@ -101,7 +108,7 @@ In order to obtain and compile \imp, you will need:
 
  - scons (0.98 or later)
  - Boost (1.33 or later)
- - A Subversion (svn) client to access the repository
+ - Developers will also need a Subversion (svn) client to access the repository
 
 If you wish to build the Python interfaces, you will also need:
 
@@ -159,9 +166,11 @@ Locally built documentation will look prettier if you have
 \external{www.graphviz.org/,graphviz} installed. It is available as
 part of most unix tool sets (MacPorts, all linux distributions etc.).
 
-If you want to use \imp with MODELLER, you should use version 9v5 or
+If you want to use \imp with MODELLER, you should use version 9v7 or
 later and use the following argument to scons
 \command{scons modeller=path/to/modeller}
+(The Linux Modeller RPM installs in /usr/lib/modeller9v7/, while the Mac
+installer installs in /Library/modeller9v7/.)
 
 Certain geometric computations will be faster, better or more reliable
 if \ref cgal "CGAL" is installed.
