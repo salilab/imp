@@ -105,7 +105,8 @@ get_transformation_aligning_first_to_second(const Vector3DsOrXYZs0 &from,
         IMP_LOG(TERSE, to[i] << std::endl);
       }
       IMP_LOG(TERSE, H);
-      IMP_WARN("Degenerate point set. I may not be able to align them.");
+      IMP_WARN("Degenerate point set. I may not be able to align them."
+               << std::endl);
     }
   }
 

@@ -11,7 +11,7 @@ IMPBENCHMARK_BEGIN_NAMESPACE
 
 void report(std::string name, double value, double check) {
   if (value < 0) {
-    IMP_WARN("Negative value passed: " << value);
+    IMP_WARN("Negative value passed: " << value << std::endl);
     value=0;
   }
   std::cout << boost::format("%s,%f,%e\n")%name % value % check;

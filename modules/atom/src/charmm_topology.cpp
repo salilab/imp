@@ -71,7 +71,7 @@ namespace {
           bd.set_stiffness(std::sqrt(p->force_constant * 2.0));
         } else {
           IMP_WARN("No parameters found for bond between " << as[0]
-                   << " " << as[1]);
+                   << " " << as[1] << std::endl);
         }
         ps.push_back(bd);
       }
@@ -414,8 +414,8 @@ void CHARMMTopology::add_atom_types(Hierarchy hierarchy) const
                                    it->first->get_atom(typ).get_charmm_type());
       } catch (ValueException &e) {
         IMP_WARN_ONCE("Could not determine CHARMM atom type for atom "
-                      << typ << " in residue " << Residue(it->second),
-                      warn_context_);
+                      << typ << " in residue " << Residue(it->second)
+                      << std::endl, warn_context_);
       }
     }
   }
@@ -437,8 +437,8 @@ void CHARMMTopology::add_charges(Hierarchy hierarchy) const
                                 it->first->get_atom(typ).get_charge());
       } catch (ValueException &e) {
         IMP_WARN_ONCE("Could not determine charge for atom "
-                      << typ << " in residue " << Residue(it->second),
-                      warn_context_);
+                      << typ << " in residue " << Residue(it->second)
+                      << std::endl, warn_context_);
       }
     }
   }

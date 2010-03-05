@@ -81,7 +81,8 @@ void ParticleGrid::audit_particles(const Storage &ps) const
     } catch (...) {
       IMP_WARN("Particle " << ps[i]->get_name()
                << " does not have x,y,z coordinates "
-               << " but was passed to the NonbondedListScoreState.\n");
+               << " but was passed to the NonbondedListScoreState."
+               << std::endl);
     }
   }
 }
