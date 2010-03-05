@@ -21,7 +21,14 @@ def Website(env, url, name):
     return "\\external{"+url +", " + name+"}"
 
 def StandardLicense(env):
-    return "LGPL"
+    return """
+LGPL.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2 of the License, or (at your option) any later version.
+"""
 
 def StandardPublications(env):
     return [env.Publication(authors=["Daniel Russel", "Keren Lasker", "Ben Webb", "Dina Schneidman", "Javier Valesquez-Muriel", "Andrej Sali"],
