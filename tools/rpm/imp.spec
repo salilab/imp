@@ -1,7 +1,7 @@
 Name:          imp
 Version:       SVN
 Release:       1
-License:       LGPLv2+ and GPLv2+
+License:       LGPLv2+ and GPLv3
 Summary:       The Integrative Modeling Platform
 Group:         Applications/Engineering
 Packager:      Ben Webb <ben@salilab.org>
