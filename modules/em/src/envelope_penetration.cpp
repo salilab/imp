@@ -15,7 +15,7 @@ long get_number_of_particles_outside_of_the_density(DensityMap *dmap,
          <<ps.size()<<" in density"<< std::endl);
   long out_of_dens=0;
   core::XYZsTemp xyz = core::XYZsTemp(ps);
-  for(int i=0;i<ps.size();i++) {
+  for (unsigned int i = 0; i < ps.size(); ++i) {
     if (!dmap->is_part_of_volume(xyz[i].get_coordinates())) {
       out_of_dens++;
     }
