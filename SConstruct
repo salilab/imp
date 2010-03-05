@@ -97,7 +97,6 @@ Clean('all', Glob('scons_tools/*.pyc')\
           + Glob('tools/*.pyc'))
 
 env.Alias(env.Alias('all'), 'tools')
-env.Alias(env.Alias('test'), env.Alias('all'))
 env.Default(env.Alias('all'))
 
 
