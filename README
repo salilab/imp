@@ -2,7 +2,17 @@ To build and install IMP do:
 scons prefix=path_to_install install
 
 Further documentation and an installation guide can be found at
-https://salilab.org/imp/doc/
+http://salilab.org/imp/doc.html
+
+IMP is Copyright 2007-2010 IMP Inventors. The IMP Inventors are
+Andrej Sali, Ben Webb, Daniel Russel, Keren Lasker, Dina Schneidman,
+Javier Velazquez-Muriel, Friedrich Foerster, Elina Tjioe, Hao Fan,
+Seung Joong Kim.
+
+IMP is largely available under the GNU Lesser GPL; see the file COPYING.LGPL
+for the full text of this license. Some IMP modules are available under the
+GNU GPL (see the file COPYING.GPL). Please refer to the documentation at
+http://salilab.org/imp/doc.html for more detail.
 
 Files under the build directory (even pure Python modules) are built from sources
 elsewhere within IMP. Do not edit them there - any changes you make will be
