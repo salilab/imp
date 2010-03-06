@@ -14,9 +14,6 @@
 #include "IMP/algebra/Matrix2D.h"
 #include "boost/random.hpp"
 #include "boost/version.hpp"
-#if BOOST_VERSION > 103700
-  #include "boost/math/distributions/students_t.hpp"
-#endif
 
 IMPEM_BEGIN_NAMESPACE
 
