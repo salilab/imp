@@ -14,8 +14,8 @@ def main():
     except:
         print "Platform does not support os.path.relpath, links will be made using absolute paths. Sorry. You can replace the SConstruct and scons_tools links and the repository line in the config.py with relative paths by hand."
     path_to_build= sys.argv[1]
-    print "IMP found in ", imppath
-    print path_to_build
+    print "IMP source found at ", imppath
+    print "Setting up IMP build directory at ", path_to_build
     if os.path.isfile("SConstruct"):
         print "SConstruct file already exists in this directory."
         return
