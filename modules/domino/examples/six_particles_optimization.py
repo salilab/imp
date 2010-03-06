@@ -4,37 +4,6 @@ import IMP.core
 NUM_PARTICLES=6
 NUM_STATES=40
 
-
-#In this example we are looking for the positions of 6 particles that
-#optimize a scoring function.
-
-def run():
-    mdl=IMP.Model()
-
-    ####set up the particles
-    ps=IMP.Particles()
-    for i in range(NUM_PARTICLES):
-        p=IMP.Particle(mdl)
-        IMP.core.XYZR.setup_particle(p,IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0.,0.,0.),1.))
-        ps.append(p)
-        p.add_attribute(IMP.domino.node_name_key(),str(i))
-
-    ####set up the discrete set of states
-    ub=IMP.algebra.Vector3D(-10.,-10.,-10.)
-    lb=IMP.algebra.Vector3D(10.,10.,10.)
-    bb=IMP.algebra.BoundingBox3D(ub,lb)
-    discrete_set=setup_discrete_sampling_space(ps,bb)
-
-    ####add restraints (defining the scoring function)
-    restraints=setup_restraints(ps)
-
-    ####set the sampler
-    sampler = IMP.domino.CartesianProductSampler(discrete_set,ps)
-    #here alternative samplers can be PermutationSampler.
-
-    ####optimize
-    fast_enumerate(sampler,restraints,mdl)
-
 #randomly sample NUM_STATES states for each particle
 def setup_discrete_sampling_space(ps,bb):
     mdl=ps[0].get_model()
@@ -62,7 +31,7 @@ def setup_restraints(ps):
         rsrs.append(r)
         mdl.add_restraint(r)#different than doing mdl.add_restraint(rsrs) - Daniel ?
     return rsrs
-def fast_enumerate(sampler,rsrs,mdl):
+def fast_enumerate(sampler,rsrs,mdl,num_sols):
     """
     Enumerate the discrete sampling space to find the best combination
     """
@@ -76,17 +45,44 @@ def fast_enumerate(sampler,rsrs,mdl):
         d_opt.add_restraint(r)
     #set the sampling space
     d_opt.set_sampling_space(sampler)
-    d_opt.show_restraint_graph()
-    print "here"
-    d_opt.set_number_of_solutions(1)
-    print "here1"
-    d_opt.optimize(1)
-    print "here2"
+    #if you wish to see how the graph looks like remove this
+    #line from comment
+    #d_opt.show_restraint_graph()
+    d_opt.set_number_of_solutions(num_sols)
+    d_opt.optimize(num_sols)
+    return d_opt
 
-        # rg = d_opt = d_opt.get_graph()
-        # scores=[6.5,7.05,7.63,7.85,8.04]
-        # for i in range(num_sol):
-        #     score_inf = rg.get_opt_combination(i).get_total_score()
-        #     self.assertAlmostEqual(score_inf,scores[i],places=1)
-if __name__=="__main__":
-    run()
+#### Example main code ####
+IMP.set_log_level(IMP.SILENT)
+mdl=IMP.Model()
+
+#1. set up the particles
+ps=IMP.Particles()
+for i in range(NUM_PARTICLES):
+    p=IMP.Particle(mdl)
+    IMP.core.XYZR.setup_particle(p,IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0.,0.,0.),1.))
+    ps.append(p)
+    p.add_attribute(IMP.domino.node_name_key(),str(i))
+
+#2. set up the discrete set of states
+ub=IMP.algebra.Vector3D(-10.,-10.,-10.)
+lb=IMP.algebra.Vector3D(10.,10.,10.)
+bb=IMP.algebra.BoundingBox3D(ub,lb)
+discrete_set=setup_discrete_sampling_space(ps,bb)
+
+#3. add restraints (defining the scoring function)
+restraints=setup_restraints(ps)
+
+#4. set the sampler
+sampler = IMP.domino.CartesianProductSampler(discrete_set,ps)
+#alternative samplers can be PermutationSampler.
+
+#5. optimize
+num_sols=5
+d_opt=fast_enumerate(sampler,restraints,mdl,num_sols)
+
+#6. print results
+rg = d_opt.get_graph()
+for i in range(num_sols):
+    sol = rg.get_opt_combination(i)
+    print "solution number:",i," is: ", sol.key() ," with score:", sol.get_total_score()
