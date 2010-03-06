@@ -5,7 +5,7 @@ import os.path
 home=os.environ['HOME']
 
 ## Where to install IMP
-prefix=+"/fs"
+prefix=home+"/fs"
 
 ## Add include paths as CXXFLAGS so scons doesn't treat such headers
 ## as dependencies.
