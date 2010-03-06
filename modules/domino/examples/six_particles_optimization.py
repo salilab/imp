@@ -14,7 +14,6 @@ def setup_discrete_sampling_space(ps,bb):
             #create a new state
             new_p=IMP.Particle(mdl)
             IMP.core.XYZ.setup_particle(new_p,IMP.algebra.get_random_vector_in(bb))
-            print "adding state i:" + str(i)
             discrete_set.add_state(new_p)
             discrete_set.add_mapped_state(p,new_p)
     return discrete_set
@@ -57,6 +56,7 @@ IMP.set_log_level(IMP.SILENT)
 mdl=IMP.Model()
 
 #1. set up the particles
+print "setting up particles"
 ps=IMP.Particles()
 for i in range(NUM_PARTICLES):
     p=IMP.Particle(mdl)
@@ -65,19 +65,23 @@ for i in range(NUM_PARTICLES):
     p.add_attribute(IMP.domino.node_name_key(),str(i))
 
 #2. set up the discrete set of states
+print "setting up a discrete set of states"
 ub=IMP.algebra.Vector3D(-10.,-10.,-10.)
 lb=IMP.algebra.Vector3D(10.,10.,10.)
 bb=IMP.algebra.BoundingBox3D(ub,lb)
 discrete_set=setup_discrete_sampling_space(ps,bb)
 
 #3. add restraints (defining the scoring function)
+print "setting up restraints"
 restraints=setup_restraints(ps)
 
 #4. set the sampler
+print "setting up sampling"
 sampler = IMP.domino.CartesianProductSampler(discrete_set,ps)
 #alternative samplers can be PermutationSampler.
 
 #5. optimize
+print "optimizing"
 num_sols=5
 d_opt=fast_enumerate(sampler,restraints,mdl,num_sols)
 
