@@ -242,6 +242,38 @@ class TestCase(unittest.TestCase):
             ps.append(p)
         return ps
 
+    def assertPlural(self, modulename, exceptions):
+        """Check that all the classes in modulename have associated types to hold many of them."""
+        all= dir(modulename)
+        not_found=[]
+        for f in dir(modulename):
+            if f[0].upper()== f[0] and len(f) > 1 and f[1].upper() != f[1]\
+                    and  "_" not in f and not f.endswith("_swigregister")\
+                    and f not in exceptions and not f.endswith("s")\
+                    and not f.endswith("Temp") and not f.endswith("Iterator")\
+                    and not f.endswith("Exception"):
+                if f+"s" not in dir(modulename):
+                    not_found.append(f)
+        print "plural not found:"
+        print not_found
+        self.assert_(len(not_found) == 0)
+
+    def assertShow(self, modulename, exceptions):
+        """Check that all the classes in modulename have a show method"""
+        all= dir(modulename)
+        not_found=[]
+        for f in dir(modulename):
+            if f[0].upper()== f[0] and len(f)>1 and f[1].upper() != f[1]\
+                    and  "_" not in f and not f.endswith("_swigregister")\
+                    and f not in exceptions and not f.endswith("s")\
+                    and not f.endswith("Temp") and not f.endswith("Iterator")\
+                    and not f.endswith("Exception"):
+                if "show" not in eval("dir("+modulename.__name__+"."+f+")"):
+                    print "bad"
+                    not_found.append(f)
+        print "show not found:"
+        print not_found
+        self.assert_(len(not_found) == 0)
 
 try:
     import subprocess
