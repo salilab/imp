@@ -58,11 +58,10 @@ be used from Python.
 %setup
 
 %build
-scons && scons doc
 
 %install
 scons destdir=${RPM_BUILD_ROOT} docdir=/usr/share/doc/%{name}-%{version} \
-      install docinstall
+      install doc-install
 
 %clean
 [ "$RPM_BUILD_ROOT" != "/" ] && rm -rf ${RPM_BUILD_ROOT}
@@ -70,6 +69,8 @@ scons destdir=${RPM_BUILD_ROOT} docdir=/usr/share/doc/%{name}-%{version} \
 %files
 %defattr(-,root,root)
 %doc /usr/share/doc/%{name}-%{version}
+/usr/share/imp
+/usr/bin/*
 %{_libdir}/libimp*.so
 
 %files devel
