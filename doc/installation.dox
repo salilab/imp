@@ -169,7 +169,7 @@ part of most unix tool sets (MacPorts, all linux distributions etc.).
 If you want to use \imp with MODELLER, you should use version 9v7 or
 later and use the following argument to scons
 \command{scons modeller=path/to/modeller}
-(The Linux Modeller RPM installs in /usr/lib/modeller9v7/, while the Mac
+(The Linux Modeller RPM installs in /usr/, while the Mac
 installer installs in /Library/modeller9v7/.)
 
 Certain geometric computations will be faster, better or more reliable
