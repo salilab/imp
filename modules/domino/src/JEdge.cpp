@@ -86,7 +86,6 @@ void JEdge::min_marginalize(JNode *from_node, JNode *to_node)
        e != separators_.end(); e++) {
 
     IMP_LOG(VERBOSE, e->first<<std::endl);
-    e->second->show();
 
     std::vector<CombState *> min_p_all;
     //marginalize over all particles except for those that are part
