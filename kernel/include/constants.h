@@ -13,10 +13,6 @@
 
 IMP_BEGIN_NAMESPACE
 
-//! Avagadro's number
-static const double NA=6.02214179e-23;
-
-
 #if defined(_GLIBCXX_USE_C99_MATH) && defined(__GNUC__)
 //! the constant pi
 static const double PI= M_PI;
