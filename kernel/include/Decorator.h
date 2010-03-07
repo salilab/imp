@@ -69,8 +69,8 @@ More abstractly, decorators can be used to
   two other particles, both of which are IMP::atom::Bonded particles.
 - add functionality: e.g. you can get the coordinates as an
   IMP::algebra::VectorD<3>
-- provide uniform names for attributes: so you don't use "x" some places
-and "X" other places
+- provide uniform names for attributes: so you do not use \quote{x} some places
+and \quote{X} other places
 
 To see a list of all available decorators and to see what functions
 all decorators have, look at the list of classes which inherit from
@@ -99,7 +99,7 @@ instead. This should only
 be done when it is known to be safe. If you can't figure out
 that it is, don't do it.
 
-A Decorator can be cast to a IMP::Particle* in C++. You have to
+A decorator can be cast to a IMP::Particle* in C++. You have to
 use the Decorator::get_particle() function in Python.
 */
 class Decorator
