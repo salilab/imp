@@ -4885,3 +4885,138 @@ xyz particle large,1.150000,1.693901e+09
 xyz vector large,1.140000,1.693901e+09
 xyz vector space large,1.150000,1.693901e+09
 mode,release
+date,  03/05/10
+mode,fast
+bd 100,0.000033,0.000000e+00
+bd 1000,0.000403,0.000000e+00
+cpf quadratic 1000 0.1,0.005543,1.353000e+03
+cpf quadratic 1000 0.5,0.006684,1.391280e+05
+cpf quadratic 10000 0.1,0.556000,1.435000e+03
+cpf quadratic 10000 0.5,0.667500,1.442000e+05
+cpf box 1000 0.1,0.000596,1.258800e+04
+cpf box 1000 0.5,0.001573,5.259590e+05
+cpf box 10000 0.1,0.020833,4.128000e+04
+cpf box 100000 0.01,0.239091,4.510000e+02
+cpf grid 1000 0.1,0.006614,1.890000e+03
+cpf grid 1000 0.5,0.007788,1.062510e+05
+cpf grid 10000 0.1,0.094074,7.938000e+03
+cpf grid 100000 0.01,1.780000,8.600000e+01
+connectivity slow,0.777500,4.229841e-02
+connectivity fast,0.045455,1.027702e+05
+connectivity fast mst,0.025714,7.772065e-01
+container list in 4950,0.000149,0.000000e+00
+container list out 4950,0.000204,0.000000e+00
+container list in 499500,0.015152,0.000000e+00
+container list out 499500,0.020492,0.000000e+00
+container set in 2450,0.000074,0.000000e+00
+container set out 2450,0.000150,0.000000e+00
+container set in 249500,0.007463,0.000000e+00
+container set out 249500,0.015244,0.000000e+00
+changing nonincremental,0.000006,6.608070e+08
+changing incremental,0.000010,6.608070e+08
+changing nonincremental score,0.000009,1.059400e+09
+changing incremental score,0.000018,5.463310e+08
+col quadratic 10000 0.1,1.649843,3.044785e+06
+col quadratic 10000 0.5,2.124844,4.927224e+06
+col box 10000 0.1,0.843177,4.528759e+06
+rotation (cache),0.000083,-6.532695e+05
+rotation (nocache),0.000149,-4.827745e+05
+xyz decorator small,0.040000,3.001647e+07
+xyz particle small,0.030000,3.001647e+07
+xyz vector small,0.040000,3.001647e+07
+xyz vector space small,0.040000,3.001647e+07
+xyz decorator large,1.140000,1.693901e+09
+xyz particle large,1.150000,1.693901e+09
+xyz vector large,1.140000,1.693901e+09
+xyz vector space large,1.150000,1.693901e+09
+mode,release
+date,  03/06/10
+mode,fast
+bd 100,0.000032,0.000000e+00
+bd 1000,0.000401,0.000000e+00
+cpf quadratic 1000 0.1,0.005519,2.265000e+03
+cpf quadratic 1000 0.5,0.006596,1.216590e+05
+cpf quadratic 10000 0.1,0.560000,1.490000e+03
+cpf quadratic 10000 0.5,0.675000,1.456600e+05
+cpf box 1000 0.1,0.000601,8.318000e+03
+cpf box 1000 0.5,0.001586,6.698000e+05
+cpf box 10000 0.1,0.020833,3.624000e+04
+cpf box 100000 0.01,0.238182,2.970000e+02
+cpf grid 1000 0.1,0.007289,1.372000e+03
+cpf grid 1000 0.5,0.007042,1.278000e+05
+cpf grid 10000 0.1,0.109565,7.015000e+03
+cpf grid 100000 0.01,1.570000,6.800000e+01
+connectivity slow,0.770000,3.986545e-02
+connectivity fast,0.045818,9.613544e+04
+connectivity fast mst,0.025612,7.507102e-01
+container list in 4950,0.000147,0.000000e+00
+container list out 4950,0.000203,0.000000e+00
+container list in 499500,0.015152,0.000000e+00
+container list out 499500,0.020492,0.000000e+00
+container set in 2450,0.000076,0.000000e+00
+container set out 2450,0.000150,0.000000e+00
+container set in 249500,0.007485,0.000000e+00
+container set out 249500,0.015244,0.000000e+00
+changing nonincremental,0.000006,6.606555e+08
+changing incremental,0.000010,6.606555e+08
+changing nonincremental score,0.000009,1.060307e+09
+changing incremental score,0.000018,5.431076e+08
+col quadratic 10000 0.1,1.659844,3.035480e+06
+col quadratic 10000 0.5,2.129845,4.942237e+06
+col box 10000 0.1,0.843178,4.547254e+06
+rotation (cache),0.000083,-5.870564e+05
+rotation (nocache),0.000149,-1.858632e+05
+xyz decorator small,0.040000,3.001647e+07
+xyz particle small,0.030000,3.001647e+07
+xyz vector small,0.040000,3.001647e+07
+xyz vector space small,0.040000,3.001647e+07
+xyz decorator large,1.150000,1.693901e+09
+xyz particle large,1.140000,1.693901e+09
+xyz vector large,1.150000,1.693901e+09
+xyz vector space large,1.140000,1.693901e+09
+mode,release
+date,  03/07/10
+mode,fast
+bd 100,0.000033,0.000000e+00
+bd 1000,0.000402,0.000000e+00
+cpf quadratic 1000 0.1,0.005531,1.356000e+03
+cpf quadratic 1000 0.5,0.006667,1.267500e+05
+cpf quadratic 10000 0.1,0.556000,1.435000e+03
+cpf quadratic 10000 0.5,0.685000,1.446560e+05
+cpf box 1000 0.1,0.000587,8.520000e+03
+cpf box 1000 0.5,0.001555,5.692320e+05
+cpf box 10000 0.1,0.020744,3.775200e+04
+cpf box 100000 0.01,0.238182,3.410000e+02
+cpf grid 1000 0.1,0.007463,1.340000e+03
+cpf grid 1000 0.5,0.006477,1.374160e+05
+cpf grid 10000 0.1,0.131000,6.200000e+03
+cpf grid 100000 0.01,1.425000,4.600000e+01
+connectivity slow,0.767500,5.089496e-02
+connectivity fast,0.045357,1.029970e+05
+connectivity fast mst,0.025510,7.475710e-01
+container list in 4950,0.000148,0.000000e+00
+container list out 4950,0.000202,0.000000e+00
+container list in 499500,0.015120,0.000000e+00
+container list out 499500,0.020492,0.000000e+00
+container set in 2450,0.000073,0.000000e+00
+container set out 2450,0.000178,0.000000e+00
+container set in 249500,0.007463,0.000000e+00
+container set out 249500,0.016090,0.000000e+00
+changing nonincremental,0.000006,6.598639e+08
+changing incremental,0.000010,6.598639e+08
+changing nonincremental score,0.000009,1.055493e+09
+changing incremental score,0.000018,5.434484e+08
+col quadratic 10000 0.1,1.639845,3.012865e+06
+col quadratic 10000 0.5,2.109845,4.872812e+06
+col box 10000 0.1,0.843178,4.507192e+06
+rotation (cache),0.000083,-1.996421e+06
+rotation (nocache),0.000149,2.566960e+05
+xyz decorator small,0.040000,3.001647e+07
+xyz particle small,0.040000,3.001647e+07
+xyz vector small,0.030000,3.001647e+07
+xyz vector space small,0.040000,3.001647e+07
+xyz decorator large,1.140000,1.693901e+09
+xyz particle large,1.140000,1.693901e+09
+xyz vector large,1.150000,1.693901e+09
+xyz vector space large,1.140000,1.693901e+09
+mode,release
