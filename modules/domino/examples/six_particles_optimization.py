@@ -34,7 +34,7 @@ def fast_enumerate(sampler,rsrs,mdl,num_sols):
     """
     Enumerate the discrete sampling space to find the best combination
     """
-    jt_filename = "six_particles.jt"
+    jt_filename = IMP.domino.get_example_path("six_particles.jt")
     jt = IMP.domino.JunctionTree()
     IMP.domino.read_junction_tree(jt_filename,jt)
     re = IMP.domino.RestraintEvaluator(sampler)
