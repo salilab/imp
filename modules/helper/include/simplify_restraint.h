@@ -110,7 +110,16 @@ IMPHELPEREXPORT SimpleExcludedVolume
 */
 IMPHELPEREXPORT SimpleEMFit create_simple_em_fit(
                 atom::Hierarchies const &mhs, em::DensityMap *dmap);
-
+//! Creates EM FitRestraint.
+/**
+   \param[in] mh a molecule to fit in the density
+   \param[in] dmap the density map
+    \see FitRestraint
+    \see DensityMap
+    \relates SimpleEMFit
+*/
+IMPHELPEREXPORT SimpleEMFit create_simple_em_fit(
+    atom::Hierarchy const &mh, em::DensityMap *dmap);
 
 /** Load EM density file (.mrc or .em file). */
 IMPHELPEREXPORT em::DensityMap *load_em_density_map(
