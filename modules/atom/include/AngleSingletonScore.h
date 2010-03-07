@@ -35,6 +35,8 @@ public:
   IMP_SINGLETON_SCORE(AngleSingletonScore);
 };
 
+IMP_OBJECTS(AngleSingletonScore);
+
 IMPATOM_END_NAMESPACE
 
 #endif  /* IMPATOM_ANGLE_SINGLETON_SCORE_H */

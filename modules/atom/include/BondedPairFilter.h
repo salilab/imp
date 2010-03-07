@@ -29,6 +29,7 @@ public:
   IMP_PAIR_FILTER(BondedPairFilter);
 };
 
+IMP_OBJECTS(BondedPairFilter);
 
 IMPATOM_END_NAMESPACE
 
