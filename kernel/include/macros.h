@@ -1944,7 +1944,7 @@ protected:                                      \
   public:                                       \
   Name(std::string nm);                         \
   };                                            \
-  typedef std::vector<Name> Name##s
+  IMP_VALUES(Name)
 
 #else
 #define IMP_DECLARE_KEY_TYPE(Name, Tag)                         \
@@ -1962,7 +1962,7 @@ protected:                                      \
     }                                                           \
     std::string __str__() const {return get_string();}          \
   };                                                            \
-  typedef std::vector<Name> Name##s
+  IMP_VALUES(Name)
 #endif
 
 #ifdef IMP_DOXYGEN
@@ -1976,7 +1976,7 @@ protected:                                      \
   public:                                               \
   Name(std::string nm);                                 \
   };                                                    \
-  typedef std::vector<Name> Name##s
+  IMP_VALUES(Name)
 
 #else
 #define IMP_DECLARE_CONTROLLED_KEY_TYPE(Name, Tag)              \
@@ -1993,7 +1993,7 @@ protected:                                      \
       return Name(nm.get_index());                              \
     }                                                           \
   };                                                            \
-  typedef std::vector<Name> Name##s
+  IMP_VALUES(Name)
 #endif
 
 #ifndef IMP_DOXYGEN
