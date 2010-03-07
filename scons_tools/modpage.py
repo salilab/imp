@@ -21,9 +21,7 @@ def Website(env, url, name):
     return "\\external{"+url +", " + name+"}"
 
 def StandardLicense(env):
-    return """
-\\external{http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html,LGPL}.
-
+    return """\\external{www.gnu.org/licenses/old-licenses/lgpl-2.1.html,LGPL}.
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either
