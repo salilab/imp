@@ -53,8 +53,8 @@ namespace IMP {
 
 
 %define IMP_SWIG_OBJECTS(Name, PluralName)
-%template(PluralName) ::IMP::VectorOfRefCounted< IMP::Name*, IMP::RefCounted::Policy >;
-%template(PluralName##Temp) ::std::vector< IMP::Name* >;
+%template(PluralName) ::IMP::VectorOfRefCounted< Name*, IMP::RefCounted::Policy >;
+%template(PluralName##Temp) ::std::vector< Name* >;
 %implicitconv Name ;
 %enddef
 
