@@ -31,8 +31,8 @@ class RotationTests(IMP.test.TestCase):
         c0/= len(rots)
         c1/= len(rots)
         for i in range(0,3):
-            self.assertInTolerance(c0[i], 0, .1)
-            self.assertInTolerance(c1[i], 0, .1)
+            self.assertInTolerance(c0[i], 0, .15)
+            self.assertInTolerance(c1[i], 0, .15)
 
 
 if __name__ == '__main__':
