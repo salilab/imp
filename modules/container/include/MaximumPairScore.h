@@ -30,6 +30,8 @@ public:
   IMP_PAIR_SCORE(MaximumPairScore);
 };
 
+IMP_OBJECTS(MaximumPairScore);
+
 IMPCONTAINER_END_NAMESPACE
 
 #endif  /* IMPCONTAINER_MAXIMUM_PAIR_SCORE_H */

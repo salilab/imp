@@ -30,6 +30,8 @@ public:
   IMP_GROUPNAME_SCORE(MinMaxGroupnameScore);
 };
 
+IMP_OBJECTS(MinMaxGroupnameScore);
+
 IMPCONTAINER_END_NAMESPACE
 
 #endif  /* IMPCONTAINER_MINMAX_GROUPNAME_SCORE_H */

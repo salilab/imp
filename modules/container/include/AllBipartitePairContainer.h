@@ -46,6 +46,8 @@ public:
   IMP_PAIR_CONTAINER(AllBipartitePairContainer);
 };
 
+IMP_OBJECTS(AllBipartitePairContainer);
+
 
 IMPCONTAINER_END_NAMESPACE
 

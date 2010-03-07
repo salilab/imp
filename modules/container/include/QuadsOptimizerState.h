@@ -43,6 +43,8 @@ public:
   IMP_OPTIMIZER_STATE(QuadsOptimizerState);
 };
 
+IMP_OBJECTS(QuadsOptimizerState);
+
 
 IMPCONTAINER_END_NAMESPACE
 

@@ -72,6 +72,8 @@ public:
 #endif
 };
 
+IMP_OBJECTS(TripletsRestraint);
+
 IMPCONTAINER_END_NAMESPACE
 
 #endif  /* IMPCONTAINER_TRIPLETS_RESTRAINT_H */

@@ -30,6 +30,8 @@ public:
   IMP_SINGLETON_SCORE(MaximumSingletonScore);
 };
 
+IMP_OBJECTS(MaximumSingletonScore);
+
 IMPCONTAINER_END_NAMESPACE
 
 #endif  /* IMPCONTAINER_MAXIMUM_SINGLETON_SCORE_H */

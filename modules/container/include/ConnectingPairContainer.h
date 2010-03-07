@@ -65,6 +65,7 @@ public:
 #endif
 };
 
+IMP_OBJECTS(ConnectingPairContainer);
 
 IMPCORE_END_NAMESPACE
 

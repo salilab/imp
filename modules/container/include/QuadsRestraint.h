@@ -72,6 +72,8 @@ public:
 #endif
 };
 
+IMP_OBJECTS(QuadsRestraint);
+
 IMPCONTAINER_END_NAMESPACE
 
 #endif  /* IMPCONTAINER_QUADS_RESTRAINT_H */
