@@ -127,6 +127,8 @@ public:
 
 IMP_OUTPUT_OPERATOR(SimulationParameters);
 
+IMP_OBJECTS(SimulationParameters);
+
 
 IMPATOM_END_NAMESPACE
 

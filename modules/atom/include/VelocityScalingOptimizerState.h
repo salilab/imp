@@ -58,6 +58,8 @@ private:
   FloatKey vs_[3];
 };
 
+IMP_OBJECTS(VelocityScalingOptimizerState);
+
 IMPATOM_END_NAMESPACE
 
 #endif  /* IMPATOM_VELOCITY_SCALING_OPTIMIZER_STATE_H */

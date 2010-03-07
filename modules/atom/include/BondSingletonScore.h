@@ -33,6 +33,8 @@ public:
   IMP_SINGLETON_SCORE(BondSingletonScore);
 };
 
+IMP_OBJECTS(BondSingletonScore);
+
 IMPATOM_END_NAMESPACE
 
 #endif  /* IMPATOM_BOND_SINGLETON_SCORE_H */

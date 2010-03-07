@@ -172,7 +172,6 @@ namespace IMP {
 %include "IMP/atom/pdb.h"
 
 
-
 namespace IMP {
   namespace atom {
    %template(CHARMMBond2) CHARMMBond<2>;
@@ -207,5 +206,23 @@ namespace IMP {
    IMP_SWIG_DECORATORS(Bonded, Bondeds, Particles)
    IMP_SWIG_DECORATORS(Diffusion, Diffusions, core::XYZs)
    IMP_SWIG_DECORATORS(SimulationParameters, SimulationParameterss, Particles)
+
+   IMP_SWIG_OBJECTS( IMP::atom::VelocityScalingOptimizerState, VelocityScalingOptimizerStates);
+   IMP_SWIG_VALUES(AtomType, AtomTypes);
+   IMP_SWIG_OBJECTS( BondEndpointsRefiner, BondEndpointsRefiners);
+   IMP_SWIG_OBJECTS( AngleSingletonScore, AngleSingletonScores);
+   IMP_SWIG_OBJECTS( BondPairContainer, BondPairContainers);
+   IMP_SWIG_OBJECTS( BondSingletonScore, BondSingletonScores);
+   IMP_SWIG_OBJECTS( IMP::atom::BondedPairFilter, BondedPairFilters);
+   IMP_SWIG_DECORATORS(Charged, Chargeds, core::XYZs);
+   IMP_SWIG_OBJECTS( IMP::atom::CoulombPairScore, CoulombPairScores);
+   IMP_SWIG_OBJECTS( IMP::atom::CoverBond, CoverBonds);
+   IMP_SWIG_DECORATORS(Dihedral, Dihedrals, Particles);
+   IMP_SWIG_DECORATORS(Angle, Angles, Particles);
+   IMP_SWIG_OBJECTS( IMP::atom::DihedralSingletonScore, DihedralSingletonScores);
+   IMP_SWIG_OBJECTS( IMP::atom::ImproperSingletonScore, ImproperSingletonScores);
+   IMP_SWIG_OBJECTS( IMP::atom::LennardJonesPairScore, LennardJonesPairScores);
+   IMP_SWIG_OBJECTS( IMP::atom::ProteinLigandAtomPairScore, ProteinLigandAtomPairScores);
+   IMP_SWIG_OBJECTS( IMP::atom::ProteinLigandRestraint, ProteinLigandRestraints);
   }
 }

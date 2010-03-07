@@ -65,6 +65,8 @@ public:
 
 IMP_OUTPUT_OPERATOR(Charged);
 
+IMP_DECORATORS(Charged, core::XYZs);
+
 IMPATOM_END_NAMESPACE
 
 #endif  /* IMPATOM_CHARGED_H */
