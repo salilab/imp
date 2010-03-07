@@ -216,7 +216,7 @@ ALIASES                = "command{1}=\code \1 \endcode" \
                          "impsvn=\external{svn.salilab.org/imp/, IMP repository}"\
                          "svn=\external{svnbook.red-bean.com/, Subversion}"\
                          "doxygen=\external{www.stack.nl/~dimitri/doxygen/manual.html, Doxygen}"\
-                         "quote{1}=&#8220;\1 &#8221;"
+                         "quote{1}=&ldquo;\1 &rdquo;"
 
 # Set the OPTIMIZE_OUTPUT_FOR_C tag to YES if your project consists of C
 # sources only. Doxygen will then generate output that is more tailored for C.
