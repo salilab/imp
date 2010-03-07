@@ -72,6 +72,8 @@ public:
 #endif
 };
 
+IMP_OBJECTS(SingletonsRestraint);
+
 IMPCONTAINER_END_NAMESPACE
 
 #endif  /* IMPCONTAINER_SINGLETONS_RESTRAINT_H */

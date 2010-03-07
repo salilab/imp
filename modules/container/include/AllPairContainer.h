@@ -49,6 +49,7 @@ public:
   IMP_PAIR_CONTAINER(AllPairContainer);
 };
 
+IMP_OBJECTS(AllPairContainer);
 
 IMPCONTAINER_END_NAMESPACE
 

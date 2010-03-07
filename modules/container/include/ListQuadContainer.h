@@ -65,6 +65,7 @@ public:
 #endif
 };
 
+IMP_OBJECTS(ListQuadContainer);
 
 IMPCONTAINER_END_NAMESPACE
 

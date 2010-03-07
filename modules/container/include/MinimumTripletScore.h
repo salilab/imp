@@ -30,6 +30,8 @@ public:
   IMP_TRIPLET_SCORE(MinimumTripletScore);
 };
 
+IMP_OBJECTS(MinimumTripletScore);
+
 IMPCONTAINER_END_NAMESPACE
 
 #endif  /* IMPCONTAINER_MINIMUM_TRIPLET_SCORE_H */

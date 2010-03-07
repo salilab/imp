@@ -67,6 +67,8 @@ public:
   IMP_CONSTRAINT(GroupnamesConstraint);
 };
 
+IMP_OBJECTS(GroupnamesConstraint);
+
 
 IMPCONTAINER_END_NAMESPACE
 

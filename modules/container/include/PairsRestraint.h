@@ -72,6 +72,8 @@ public:
 #endif
 };
 
+IMP_OBJECTS(PairsRestraint);
+
 IMPCONTAINER_END_NAMESPACE
 
 #endif  /* IMPCONTAINER_PAIRS_RESTRAINT_H */

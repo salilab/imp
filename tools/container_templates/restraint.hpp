@@ -72,6 +72,8 @@ public:
 #endif
 };
 
+IMP_OBJECTS(GroupnamesRestraint);
+
 IMPCONTAINER_END_NAMESPACE
 
 #endif  /* IMPCONTAINER_GROUPNAMES_RESTRAINT_H */

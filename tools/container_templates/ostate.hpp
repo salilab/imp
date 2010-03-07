@@ -43,6 +43,8 @@ public:
   IMP_OPTIMIZER_STATE(GroupnamesOptimizerState);
 };
 
+IMP_OBJECTS(GroupnamesOptimizerState);
+
 
 IMPCONTAINER_END_NAMESPACE
 

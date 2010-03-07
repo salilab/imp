@@ -65,6 +65,7 @@ public:
 #endif
 };
 
+IMP_OBJECTS(ListPairContainer);
 
 IMPCONTAINER_END_NAMESPACE
 

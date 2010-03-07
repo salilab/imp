@@ -43,6 +43,8 @@ public:
   IMP_OPTIMIZER_STATE(SingletonsOptimizerState);
 };
 
+IMP_OBJECTS(SingletonsOptimizerState);
+
 
 IMPCONTAINER_END_NAMESPACE
 
