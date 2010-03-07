@@ -84,10 +84,10 @@ public:
   }
 };
 
-template <class SD>
-double compute_distance_pair_score(const algebra::VectorD<3> &delta,
+template <class SD, unsigned int D>
+double compute_distance_pair_score(const algebra::VectorD<D> &delta,
                                    const UnaryFunction *f,
-                                   algebra::VectorD<3> *d,
+                                   algebra::VectorD<D> *d,
                                    SD sd,
                                    double deriv_multiplier = 1.0) {
   static const Float MIN_DISTANCE = .00001;
@@ -104,7 +104,7 @@ double compute_distance_pair_score(const algebra::VectorD<3> &delta,
   } else {
     // calculate the score based on the distance feature
     dp.first = f->evaluate(shifted_distance);
-    if (d) *d= algebra::VectorD<3>(0,0,0);
+    if (d) *d= algebra::get_zero_vector_d<D>();
   }
   return dp.first;
 }
