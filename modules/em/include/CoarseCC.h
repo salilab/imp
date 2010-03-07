@@ -76,9 +76,12 @@ public:
   //!Calculates the cross correlation coefficient between two maps
   /** Cross correlation coefficient between the em density and the density of a
       model. The function applied is:
-      \f$\frac{\sum_{i=1}^{N}{td_i}{md_i}-{N}{{mean}_td}{{mean}_md}}
-      {{N}\sigma_{td}{\sigma_{md}}}\f$, such that \f$N}\f$ is the number of
-      voxels, \f$td\f$ is the target density, \f$tm\f$ is the model density,
+      \f$\frac{\sum_{i=1}^{N}{{td}_i}{{md}_i}-{N}
+      {{mean}_{td}}
+      {{mean}_{md}}}
+      {N\sigma_{{td}}\sigma_{{md}}}\f$, such that \f$N\f$ is the number of
+      voxels, \f${td}\f$ is the target density,
+      \f${tm}\f$ is the model density,
       \param[in] em_map               the target map (experimentally determined)
       \param[in] model_map            the sampled density map of the model
       \param[in] voxel_data_threshold voxels with value lower than threshold
