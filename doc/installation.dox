@@ -158,7 +158,7 @@ environment. (In the Sali lab, you can build a Windows version on
 command line option.)
 
 \subsection linux Getting prerequisites on Linux
-All of the prerequisites should be available as packages pre-built for your Linux platform of choice.
+All of the prerequisites should be available as pre-built packages for your Linux distribution of choice.
 
 \subsection optional Optional dependencies
 
