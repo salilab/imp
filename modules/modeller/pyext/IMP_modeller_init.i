@@ -397,22 +397,6 @@ class ModelLoader(object):
     def __init__(self, modeller_model):
         self._modeller_model = modeller_model
 
-    def _get_nonbonded_list(self, atoms, pair_filter, edat, distance):
-        nbl = IMP.container.ClosePairContainer(atoms, distance,
-                                               edat.update_dynamic)
-    
-        # Exclude the same sets of atoms as Modeller
-        if pair_filter is None:
-            pair_filter = IMP.atom.StereochemistryPairFilter()
-            if edat.excl_local[0]:
-                pair_filter.set_bonds(self.load_bonds())
-            if edat.excl_local[1]:
-                pair_filter.set_angles(self.load_angles())
-            if edat.excl_local[2]:
-                pair_filter.set_dihedrals(self.load_dihedrals())
-        nbl.add_pair_filter(pair_filter)
-        return nbl
-
     def load_atoms(self, model):
         """Construct an IMP::atom::Hierarchy that contains the same atoms as
            the Modeller model.
@@ -440,6 +424,22 @@ class ModelLoader(object):
                 lastres = hrp
         self._modeller_hierarchy = hpp
         return hpp
+
+    def _get_nonbonded_list(self, atoms, pair_filter, edat, distance):
+        nbl = IMP.container.ClosePairContainer(atoms, distance,
+                                               edat.update_dynamic)
+    
+        # Exclude the same sets of atoms as Modeller
+        if pair_filter is None:
+            pair_filter = IMP.atom.StereochemistryPairFilter()
+            if edat.excl_local[0]:
+                pair_filter.set_bonds(self.load_bonds())
+            if edat.excl_local[1]:
+                pair_filter.set_angles(self.load_angles())
+            if edat.excl_local[2]:
+                pair_filter.set_dihedrals(self.load_dihedrals())
+        nbl.add_pair_filter(pair_filter)
+        return nbl
 
     def load_bonds(self):
         """Load the Modeller bond topology into the IMP model. Each bond is
