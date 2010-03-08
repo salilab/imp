@@ -10,3 +10,5 @@ We formulate the hybrid approach to structure determination as an optimization p
 <p>The ensemble of solutions to the optimization problem embodies the most accurate structural characterization given the available information.</p>
 
 <p>We created IMP, the Integrative Modeling Platform, to make it easier to implement such an integrative approach to structural and dynamics problems. IMP is designed to allow mixing and matching of existing modeling components as well as easy addition of new functionality. We encourage and support contributions from other laboratories through the IMP Community.</p>
+
+<p>In order to cite IMP, please see the lists of publications provided in the main page of each IMP module.</p>
