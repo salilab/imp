@@ -1,4 +1,8 @@
 /** \page recent Change History
+\par Week of March 6, 2010
+- Publications now have a description field to give browsers an indication of what is in the publication to aid selection of what to read/cite.
+
+
 \par Week of Feb 27, 2010
 - IMP::algebra::decompose_rotation_into_axis_angle() was renamed to IMP::algebra::get_angle_and_axis().
 
