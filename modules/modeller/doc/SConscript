@@ -9,4 +9,4 @@ env.IMPModuleDoc(env.IMPModuleGetDocs(),
                                                title="Comparative protein modelling by satisfaction of spatial restraints",
                                                journal="Journal of Molecular Biology",
                                                year="1993")],
-                 license="Modeller itself is free for academic users. See \external{salilab.org/modeller/, the Modeller page} for more information about licensing Modeller.")
+                 license=env.StandardLicense() + " Modeller itself is free for academic users. See \external{salilab.org/modeller/, the Modeller page} for more information about licensing Modeller.")

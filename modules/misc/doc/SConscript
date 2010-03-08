@@ -7,4 +7,4 @@ env.IMPModuleDoc(env.IMPModuleGetDocs(),
 <br><br>
 In particular, other modules should <b>not</b> depend on %IMP.%misc (e.g. don't create a class in another module that derives from one in %IMP.%misc). If you find yourself relying on such functionality, discuss moving it to a specialized module or something like IMP.core or IMP.atom.""",
                  publications="None",
-                 license="None")
+                 license=env.StandardLicense())

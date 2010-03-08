@@ -28,5 +28,5 @@ xmllint --schema schema.xsd --noout *.xml
 
 The process of preparing the input data for %restrainer can be best shown using simple examples.
 """,
-                 license=None,
+                 license=env.StandardLicense(),
                  publications=env.StandardPublications())
