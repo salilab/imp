@@ -2,6 +2,8 @@ Import('env')
 files = [
          'weighted_excluded_volume.h',
          'sampling_space.h',
+         'SingleDominoRun.h',
+         'fitting_solutions_reader_writer.h'
         ]
 # Install the include files:
 env.IMPModuleInclude(env.IMPModuleGetHeaders())

@@ -35,14 +35,14 @@ void add_surface_index(core::Hierarchy mh, Float resolution, Float apix,
 }
 
 IMP::Restraint *create_weighted_excluded_volume_restraint(
-   core::RigidBody *rb1,
-   core::RigidBody *rb2,
+   core::RigidBody rb1,
+   core::RigidBody rb2,
    FloatKey shell_key) {
-  IMP::Model* mdl=rb1->get_particle()->get_model();
+  IMP::Model* mdl=rb1.get_particle()->get_model();
   //generate the list singleton contrainers
   Particles ps1,ps2;
-  ps1.push_back(rb1->get_particle());
-  ps2.push_back(rb2->get_particle());
+  ps1.push_back(rb1.get_particle());
+  ps2.push_back(rb2.get_particle());
   IMP_NEW(container::ListSingletonContainer,ls1,(ps1));
   IMP_NEW(container::ListSingletonContainer,ls2,(ps2));
   //set up the nonbonded list

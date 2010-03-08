@@ -1,0 +1,86 @@
+ATOM      0  CA  ALA     1      60.089  94.646 -43.495                       C  
+ATOM      1  CA  ALA     1      89.790  39.947 -66.845                       C  
+ATOM      2  CA  ALA     1      91.470  72.934 -50.129                       C  
+ATOM      3  CA  ALA     1     112.838  56.547 -52.395                       C  
+ATOM      4  CA  ALA     1      73.768  92.426 -52.482                       C  
+ATOM      5  CA  ALA     1      88.625  41.726 -52.821                       C  
+ATOM      6  CA  ALA     1     102.269  61.948 -39.293                       C  
+ATOM      7  CA  ALA     1      97.304  57.094 -60.745                       C  
+ATOM      8  CA  ALA     1      88.300  59.513 -49.078                       C  
+ATOM      9  CA  ALA     1      89.485  71.381 -67.918                       C  
+ATOM     10  CA  ALA     1      62.802  77.810 -41.857                       C  
+ATOM     11  CA  ALA     1      78.470  73.108 -60.046                       C  
+ATOM     12  CA  ALA     1     110.070  71.854 -47.426                       C  
+ATOM     13  CA  ALA     1     101.582  75.209 -58.495                       C  
+ATOM     14  CA  ALA     1      99.774  37.612 -59.464                       C  
+ATOM     15  CA  ALA     1      75.396  96.185 -40.258                       C  
+ATOM     16  CA  ALA     1      65.387  93.575 -30.973                       C  
+ATOM     17  CA  ALA     1      74.274  77.285 -44.695                       C  
+ATOM     18  CA  ALA     1      63.800  81.175 -54.912                       C  
+ATOM     19  CA  ALA     1     103.300  48.637 -46.766                       C  
+CONECT    0    4
+CONECT    0   10
+CONECT    0   15
+CONECT    0   16
+CONECT    0   17
+CONECT    0   18
+CONECT    1    5
+CONECT    1    7
+CONECT    1   14
+CONECT    2    3
+CONECT    2    4
+CONECT    2    6
+CONECT    2    7
+CONECT    2    8
+CONECT    2    9
+CONECT    2   11
+CONECT    2   12
+CONECT    2   13
+CONECT    2   15
+CONECT    2   17
+CONECT    2   18
+CONECT    2   19
+CONECT    3    6
+CONECT    3    7
+CONECT    3   12
+CONECT    3   13
+CONECT    3   14
+CONECT    3   19
+CONECT    4   11
+CONECT    4   15
+CONECT    4   17
+CONECT    4   18
+CONECT    5    6
+CONECT    5    7
+CONECT    5    8
+CONECT    5   14
+CONECT    5   19
+CONECT    6    8
+CONECT    6   12
+CONECT    6   17
+CONECT    6   19
+CONECT    7    8
+CONECT    7    9
+CONECT    7   11
+CONECT    7   12
+CONECT    7   13
+CONECT    7   14
+CONECT    7   19
+CONECT    8   11
+CONECT    8   17
+CONECT    8   19
+CONECT    9   11
+CONECT    9   13
+CONECT    9   18
+CONECT   10   16
+CONECT   10   17
+CONECT   10   18
+CONECT   11   13
+CONECT   11   17
+CONECT   11   18
+CONECT   12   13
+CONECT   14   19
+CONECT   15   16
+CONECT   15   17
+CONECT   16   17
+CONECT   17   18

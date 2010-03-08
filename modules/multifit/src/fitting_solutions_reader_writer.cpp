@@ -1,0 +1,163 @@
+/**
+ *  \file fitting_solutions_reader_writer.cpp
+ *  \brief handles reading and writing of fitting solutions
+ *           volume calculation.
+ *
+ *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *
+ */
+
+#include <IMP/multifit/fitting_solutions_reader_writer.h>
+#include <boost/algorithm/string.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/format.hpp>
+
+namespace {
+  template <class T>
+   void initialize(T &t) {
+     if (std::numeric_limits<T>::has_signaling_NaN) {
+       t= std::numeric_limits<T>::signaling_NaN();
+     } else if (std::numeric_limits<T>::has_quiet_NaN) {
+       t= std::numeric_limits<T>::quiet_NaN();
+     } else if (std::numeric_limits<T>::has_infinity) {
+       t= std::numeric_limits<T>::infinity();
+     } else {
+       // numerical limits for int and double have completely
+       // different meanings of max/min
+       t= std::numeric_limits<T>::max();
+     }
+  }
+  template <class T>
+  bool is_initialized(T &t) {
+     if (std::numeric_limits<T>::has_signaling_NaN) {
+       return !(t == std::numeric_limits<T>::signaling_NaN());
+     } else if (std::numeric_limits<T>::has_quiet_NaN) {
+       return !(t == std::numeric_limits<T>::quiet_NaN());
+     } else if (std::numeric_limits<T>::has_infinity) {
+       return !(t == std::numeric_limits<T>::infinity());
+     } else {
+       // numerical limits for int and double have completely
+       // different meanings of max/min
+       return !(t == (std::numeric_limits<T>::max()));
+     }
+   }
+}
+
+IMPMULTIFIT_BEGIN_NAMESPACE
+FittingSolutionRecord parse_fitting_line(const std::string &line) {
+  FittingSolutionRecord fit_sol;
+  typedef boost::split_iterator<std::string::iterator> string_split_iterator;
+  IMP_USAGE_CHECK(line.size() > 0,"no data to parse"<<std::endl);
+  IMP_LOG(VERBOSE,"going to parse:"<<line);
+  std::vector<std::string> line_split,rotation_split,translation_split;
+  boost::split(line_split, line, boost::is_any_of("|"));
+  IMP_USAGE_CHECK(line_split.size() == 8,
+           "Wrong format of input line : not enough fields"<<std::endl);
+  boost::split(rotation_split, line_split[2], boost::is_any_of(" "));
+  IMP_USAGE_CHECK(rotation_split.size() == 4,
+     "Wrong format of input line: wrong rotation format "<<
+     "(expected 4 blocks and got "<< rotation_split.size()<<")"<<std::endl);
+  IMP_LOG(VERBOSE,"going to parse translation:"<<line_split[3]<<std::endl);
+  boost::split(translation_split, line_split[3], boost::is_any_of(" "));
+  IMP_USAGE_CHECK(translation_split.size() == 3,
+           "Wrong format of input line: wrong translation format"<<std::endl);
+  fit_sol.set_index(boost::lexical_cast<int>(line_split[0]));
+  fit_sol.set_solution_filename(
+    boost::lexical_cast<std::string>(line_split[1]));
+  fit_sol.set_transformation(
+     algebra::Transformation3D(
+       algebra::Rotation3D(
+         boost::lexical_cast<float>(rotation_split[0]),
+         boost::lexical_cast<float>(rotation_split[1]),
+         boost::lexical_cast<float>(rotation_split[2]),
+         boost::lexical_cast<float>(rotation_split[3])),
+       algebra::Vector3D(
+         boost::lexical_cast<float>(translation_split[0]),
+         boost::lexical_cast<float>(translation_split[1]),
+         boost::lexical_cast<float>(translation_split[2]))));
+  IMP_LOG(VERBOSE,"tranformation is set:"
+     <<fit_sol.get_transformation()<<std::endl);
+  fit_sol.set_match_size(boost::lexical_cast<int>(line_split[4]));
+  fit_sol.set_match_average_distance(
+     boost::lexical_cast<float>(line_split[5]));
+  fit_sol.set_fitting_score(boost::lexical_cast<float>(line_split[6]));
+  fit_sol.set_rmsd_to_reference(boost::lexical_cast<float>(line_split[7]));
+  IMP_LOG(VERBOSE,"finish parsing line"<<std::endl);
+  return fit_sol;
+}
+
+FittingSolutionRecord::FittingSolutionRecord() {
+  // initialize(index_);
+  // initialize(sol_fn_);
+  // initialize(match_size_);
+  // initialize(match_avg_dist_);
+  // initialize(fitting_score_);
+  // initialize(rmsd_to_ref_);
+  index_=0;
+  sol_fn_="";
+  match_size_=0;
+  match_avg_dist_=-1;
+  fitting_score_=-1;
+  rmsd_to_ref_=-1;
+}
+
+void FittingSolutionRecord::show(std::ostream& out) const {
+  //if (is_initialized(index_)) out<<index_;
+  if (true) out<<index_;
+  out<<"|";
+  //if (is_initialized(sol_fn_)) out<<sol_fn_;
+  if (true) out<<sol_fn_;
+  out<<"|";
+  transformation_.get_rotation().show(out);
+  out<<"|";
+  transformation_.get_translation().show(out," ",false);
+  out<<"|";
+  //if (is_initialized(match_size_)) out<<match_size_;
+  if (true) out<<match_size_;
+  out<<"|";
+  //if (is_initialized(match_avg_dist_)) out<<match_avg_dist_;
+  if (true) out<<match_avg_dist_;
+  out<<"|";
+  //if (is_initialized(fitting_score_)) out<<fitting_score_;
+  if (true) out<<fitting_score_;
+  out<<"|";
+  //if (is_initialized(rmsd_to_ref_)) out<<rmsd_to_ref_;
+  if (true) out<<rmsd_to_ref_;
+}
+
+FittingSolutionRecords read_fitting_solutions(const char *fitting_fn) {
+  std::fstream in;
+  in.open(fitting_fn, std::fstream::in);
+  IMP_USAGE_CHECK(in.good(), "Problem openning file " << fitting_fn <<
+                  " for reading " << std::endl);
+  std::string line;
+  FittingSolutionRecords sols;
+  getline(in, line); //skip header line
+  while (!in.eof()) {
+    if (!getline(in, line)) break;
+    sols.push_back(parse_fitting_line(line));
+  }
+  in.close();
+  return sols;
+}
+
+void write_fitting_solutions(const char *fitting_fn,
+                       const FittingSolutionRecords &fit_sols) {
+  std::fstream out;
+  out.open(fitting_fn, std::fstream::out);
+  IMP_USAGE_CHECK(out.good(), "Problem openning file " <<
+                  fitting_fn << " for writing"<<std::endl);
+  //write header
+  out<<"solution index | solution filename | rotation | translation  |"
+     <<" match size | match average distance | cluster size |"
+     <<" fitting score | RMSD to reference"<<std::endl;
+  std::string line;
+  for(FittingSolutionRecords::const_iterator it = fit_sols.begin();
+      it != fit_sols.end();it++) {
+    it->show(out);
+    out<<std::endl;
+  }
+  out.close();
+}
+
+IMPMULTIFIT_END_NAMESPACE
