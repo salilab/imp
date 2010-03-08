@@ -32,7 +32,9 @@ def StandardPublications(env):
     return [env.Publication(authors=["Daniel Russel", "Keren Lasker", "Ben Webb", "Dina Schneidman", "Javier Valesquez-Muriel", "Andrej Sali"],
                             title="Integrative assembly modeling using IMP",
                             journal="submitted",
-                            year=2010)]
+                            year=2010),
+            env.Publication(authors=["Frank Alber", "Friedrich Foerster", "Dmitry Korkin",  "Maya Topf", "Andrej Sali"], year=2008,
+                                     title="Integrating diverse data for structure determination of macromolecular assemblies", journal="Annual Review of Biochemistry")]
 
 
 def _action_make_module_page(target, source, env):
