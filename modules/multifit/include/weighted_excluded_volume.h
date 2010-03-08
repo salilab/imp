@@ -38,8 +38,8 @@ IMPMULTIFITEXPORT void add_surface_index(core::Hierarchy mhd,
                      surface level with respect to its molecule
  */
 IMPMULTIFITEXPORT IMP::Restraint* create_weighted_excluded_volume_restraint(
-                core::RigidBody *rb1,
-                core::RigidBody *rb2,
+                core::RigidBody rb1,
+                core::RigidBody rb2,
                 FloatKey shell_key= FloatKey("surf_ind")) ;
 
 IMPMULTIFIT_END_NAMESPACE

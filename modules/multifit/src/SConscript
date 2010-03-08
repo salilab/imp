@@ -2,6 +2,8 @@ Import('env')
 files = [
          'weighted_excluded_volume.cpp',
          'sampling_space.cpp',
+         'SingleDominoRun.cpp',
+         'fitting_solutions_reader_writer.cpp'
         ]
 # Build and install the shared library:
 env.IMPModuleLib(env.IMPModuleGetSources())
