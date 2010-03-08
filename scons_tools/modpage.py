@@ -14,8 +14,11 @@ def filter(env, line):
 def unmangle(value):
     return eval(value.get_contents())
 
-def Publication(env, authors, title, journal, year):
-    return ", ".join(authors)+", \""+title+"\", <em>"+journal+"</em>, "+str(year)
+def Publication(env, authors, title, journal, year, description=""):
+    ret= ", ".join(authors)+", \\quote{"+title+"}, <em>"+journal+"</em>, "+str(year)+"."
+    if len(description) >0:
+        ret=ret+"\n  <SMALL>"+description+"</SMALL>"
+    return ret
 
 def Website(env, url, name):
     return "\\external{"+url +", " + name+"}"
@@ -32,9 +35,11 @@ def StandardPublications(env):
     return [env.Publication(authors=["Daniel Russel", "Keren Lasker", "Ben Webb", "Dina Schneidman", "Javier Valesquez-Muriel", "Andrej Sali"],
                             title="Integrative assembly modeling using IMP",
                             journal="submitted",
-                            year=2010),
+                            year=2010,
+                            description="This paper provides an overview of the key concepts in \\imp and how to apply them to biological problems."),
             env.Publication(authors=["Frank Alber", "Friedrich Foerster", "Dmitry Korkin",  "Maya Topf", "Andrej Sali"], year=2008,
-                                     title="Integrating diverse data for structure determination of macromolecular assemblies", journal="Annual Review of Biochemistry")]
+                            title="Integrating diverse data for structure determination of macromolecular assemblies", journal="Annual Review of Biochemistry",
+                            description="This paper provides a review of the integrative structure determination methodology and various data sources that can be used.")]
 
 
 def _action_make_module_page(target, source, env):
