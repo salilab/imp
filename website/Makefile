@@ -2,7 +2,7 @@ WEB=~www/html/imp/
 
 .PHONY: all
 
-all: ${WEB}/groups.html ${WEB}/index.html ${WEB}/pubs.html ${WEB}/imp.css \
+all: ${WEB}/groups.html ${WEB}/index.html ${WEB}/imp.css \
      ${WEB}/images ${WEB}/doc.html
 
 ${WEB}/groups.html::
