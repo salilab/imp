@@ -11,7 +11,6 @@
    if ($page == "home") {
    } elseif ($page == "imp") {
    } elseif ($page == "groups") {
-   } elseif ($page == "pubs") {
    } elseif ($page == "doc") {
    } else {
      #ini_set('display_errors',1);
@@ -104,7 +103,7 @@ window.onload = linkEmail;
          <td class="twel" colspan="3">
             <?PHP
                if ($page == "home") {
-                  echo "<h2>Welcome</h2>
+                  echo "<h1>Welcome</h1>
                         <div id=\"goal\">";
                   PrintFile("pages/goal.txt");              
                   echo "</div>";
@@ -114,17 +113,12 @@ window.onload = linkEmail;
                   PrintFile("pages/imp.txt");              
                   echo "</div>"; 
                } elseif ($page == "groups") {
-                  echo "<h2>IMP Community groups</h2>
+                  echo "<h1>IMP Community groups</h1>
                         <div id=\"groups\">";
                   PrintFile("pages/groups.txt");              
                   echo "</div>"; 
-               } elseif ($page == "pubs") {
-                  echo "<h2>IMP Publications</h2>
-                        <div id=\"pubs\">";
-                  GetPublications();              
-                  echo "</div>"; 
                } elseif ($page == "doc") {
-                  echo "<h2>IMP Documentation</h2>
+                  echo "<h1>IMP Documentation</h1>
                         <div id=\"docs\">";
                   GetDocumentation();              
                   echo "</div>"; 
