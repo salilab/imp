@@ -12,38 +12,8 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/format.hpp>
 
-namespace {
-  template <class T>
-   void initialize(T &t) {
-     if (std::numeric_limits<T>::has_signaling_NaN) {
-       t= std::numeric_limits<T>::signaling_NaN();
-     } else if (std::numeric_limits<T>::has_quiet_NaN) {
-       t= std::numeric_limits<T>::quiet_NaN();
-     } else if (std::numeric_limits<T>::has_infinity) {
-       t= std::numeric_limits<T>::infinity();
-     } else {
-       // numerical limits for int and double have completely
-       // different meanings of max/min
-       t= std::numeric_limits<T>::max();
-     }
-  }
-  template <class T>
-  bool is_initialized(T &t) {
-     if (std::numeric_limits<T>::has_signaling_NaN) {
-       return !(t == std::numeric_limits<T>::signaling_NaN());
-     } else if (std::numeric_limits<T>::has_quiet_NaN) {
-       return !(t == std::numeric_limits<T>::quiet_NaN());
-     } else if (std::numeric_limits<T>::has_infinity) {
-       return !(t == std::numeric_limits<T>::infinity());
-     } else {
-       // numerical limits for int and double have completely
-       // different meanings of max/min
-       return !(t == (std::numeric_limits<T>::max()));
-     }
-   }
-}
-
 IMPMULTIFIT_BEGIN_NAMESPACE
+
 FittingSolutionRecord parse_fitting_line(const std::string &line) {
   FittingSolutionRecord fit_sol;
   typedef boost::split_iterator<std::string::iterator> string_split_iterator;
@@ -86,44 +56,6 @@ FittingSolutionRecord parse_fitting_line(const std::string &line) {
   return fit_sol;
 }
 
-FittingSolutionRecord::FittingSolutionRecord() {
-  // initialize(index_);
-  // initialize(sol_fn_);
-  // initialize(match_size_);
-  // initialize(match_avg_dist_);
-  // initialize(fitting_score_);
-  // initialize(rmsd_to_ref_);
-  index_=0;
-  sol_fn_="";
-  match_size_=0;
-  match_avg_dist_=-1;
-  fitting_score_=-1;
-  rmsd_to_ref_=-1;
-}
-
-void FittingSolutionRecord::show(std::ostream& out) const {
-  //if (is_initialized(index_)) out<<index_;
-  if (true) out<<index_;
-  out<<"|";
-  //if (is_initialized(sol_fn_)) out<<sol_fn_;
-  if (true) out<<sol_fn_;
-  out<<"|";
-  transformation_.get_rotation().show(out);
-  out<<"|";
-  transformation_.get_translation().show(out," ",false);
-  out<<"|";
-  //if (is_initialized(match_size_)) out<<match_size_;
-  if (true) out<<match_size_;
-  out<<"|";
-  //if (is_initialized(match_avg_dist_)) out<<match_avg_dist_;
-  if (true) out<<match_avg_dist_;
-  out<<"|";
-  //if (is_initialized(fitting_score_)) out<<fitting_score_;
-  if (true) out<<fitting_score_;
-  out<<"|";
-  //if (is_initialized(rmsd_to_ref_)) out<<rmsd_to_ref_;
-  if (true) out<<rmsd_to_ref_;
-}
 
 FittingSolutionRecords read_fitting_solutions(const char *fitting_fn) {
   std::fstream in;

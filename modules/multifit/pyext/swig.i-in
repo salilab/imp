@@ -6,11 +6,12 @@ namespace IMP::multifit {
 /* Wrap our own classes */
 %include "IMP/multifit/weighted_excluded_volume.h"
 %include "IMP/multifit/sampling_space.h"
-%include "IMP/multifit/SingleDominoRun.h"
-%include "IMP/multifit/fitting_solutions_reader_writer.h"
-
+%include "IMP/multifit/FittingSolutionRecord.h"
 namespace IMP {
  namespace multifit {
    %template(FittingSolutionRecords) ::std::vector< IMP::multifit::FittingSolutionRecord >;
   }
 }
+%include "IMP/multifit/SingleDominoRun.h"
+%include "IMP/multifit/fitting_solutions_reader_writer.h"
+

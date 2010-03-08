@@ -37,7 +37,7 @@ class ReadFittingSolutionsTests(IMP.test.TestCase):
     def test_reading_fitting_solutions(self):
         """Check correct parsing of fitting solutions file"""
         sols = IMP.multifit.read_fitting_solutions(self.fitting_solutions_fns[0]);
-        self.assertEqual(sols.size(),3)
+        self.assertEqual(len(sols),3)
         self.assertEqual(sols[0].get_match_size(),9)
         self.assertAlmostEqual(sols[1].get_match_average_distance(),5.407,0.01)
         self.assertAlmostEqual(sols[2].get_rmsd_to_reference(),19.05,0.01)
@@ -46,7 +46,7 @@ class ReadFittingSolutionsTests(IMP.test.TestCase):
         sols = IMP.multifit.read_fitting_solutions(self.fitting_solutions_fns[0]);
         IMP.multifit.write_fitting_solutions("temp.txt",sols)
         sols = IMP.multifit.read_fitting_solutions("temp.txt");
-        self.assertEqual(sols.size(),3)
+        self.assertEqual(len(sols),3)
         self.assertEqual(sols[0].get_match_size(),9)
         self.assertAlmostEqual(sols[1].get_match_average_distance(),5.407,0.01)
         self.assertAlmostEqual(sols[2].get_rmsd_to_reference(),19.05,0.01)
