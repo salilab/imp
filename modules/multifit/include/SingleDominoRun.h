@@ -23,6 +23,7 @@
 #include <IMP/ConfigurationSet.h>
 #include <map>
 #include "multifit_config.h"
+#include "FittingSolutionRecord.h"
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 
@@ -32,6 +33,35 @@ typedef std::pair<Particle *,
    CompTransformationsPair;
 typedef std::vector<CompTransformationsPair> CompTransformationsPairs;
 typedef std::map<std::string,Particle *> NameToAnchorPointMapping;
+
+
+//! Contains fitting solutions of all of the components of the system
+class IMPMULTIFITEXPORT ComponentsFittingSolutionsContainer {
+ public:
+  ComponentsFittingSolutionsContainer(){}
+  void add_solutions(atom::Hierarchy &comp,FittingSolutionRecords &comp_sols) {
+    CompSolsMap::iterator finder_it = comp_sols_map_.find(comp.get_particle());
+    if (finder_it ==comp_sols_map_.end()) {
+       comp_sols_map_[comp.get_particle()]=comp_sols;
+       mhs_.push_back(comp);
+    }
+    else {
+      finder_it->second.insert(finder_it->second.end(),
+                               comp_sols.begin(),
+                               comp_sols.end());
+    }
+  }
+  FittingSolutionRecords get_solutions(atom::Hierarchy &comp) const {
+    IMP_INTERNAL_CHECK(
+     comp_sols_map_.find(comp.get_particle()) != comp_sols_map_.end(),
+     " no solutions found"<<std::endl);
+    return comp_sols_map_.find(comp.get_particle())->second;
+  }
+protected:
+  typedef std::map<IMP::Particle *,FittingSolutionRecords> CompSolsMap;
+  atom::Hierarchies mhs_;
+  CompSolsMap comp_sols_map_;
+};
 
 //! running domino optimization for a single mapping
 class IMPMULTIFITEXPORT SingleDominoRun {
