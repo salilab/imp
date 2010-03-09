@@ -7,7 +7,6 @@ env.IMPModuleDoc(env.IMPModuleGetDocs(),
 from \\imp optimizations. The display::Writer classes provides the base class for objects which write to specific file formats and the display::Geometry provide means of describing geometry. Currently it supports output to
  - Chimera via the IMP::display::ChimeraWriter
  - Pymol via the IMP::display::PymolWriter
- - VRML via the IMP::display::VRMLWriter
  .
 And display of boxes, points, spheres, segments, ellipsoids are supported.
 """,
