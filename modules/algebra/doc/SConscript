@@ -11,7 +11,8 @@ env.IMPModuleDoc(env.IMPModuleGetDocs(),
 functions as appropriate
   - IMP::algebra::get_bounding_box()
   - IMP::algebra::get_surface_area()
-  - IMP::algebra::get_volume()\\n\\n
+  - IMP::algebra::get_volume()
+  .
 In addition, they cannot be compared against one another.
 
 \\par Geometry and dimensions
