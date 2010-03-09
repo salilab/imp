@@ -1,6 +1,6 @@
 Name:          imp
-Version:       SVN
-Release:       1
+Version:       1.0
+Release:       1%{?dist}
 License:       LGPLv2+ and GPLv3
 Summary:       The Integrative Modeling Platform
 Group:         Applications/Engineering
@@ -8,7 +8,24 @@ Packager:      Ben Webb <ben@salilab.org>
 URL:           http://www.integrativemodeling.org/
 Source0:       %{name}-%{version}.tar.gz
 BuildRoot:     %{_tmppath}/%{name}-%{version}-root
-BuildRequires: scons >= 0.98, boost-devel, swig, python-devel, /usr/bin/dot
+BuildRequires: scons >= 0.98, boost-devel, swig, python-devel
+BuildRequires: modeller
+
+# RHEL doesn't have a CGAL package, so build without CGAL on RHEL; on Fedora,
+# add it in as a dependency
+%if 0%{?fedora}
+BuildRequires: CGAL-devel
+%define cgal_opts cgal=yes
+%else
+%define cgal_opts cgal=no
+%endif
+
+%define scons_opts %{cgal_opts} modeller=/usr/
+
+# RHEL5 on IA64 doesn't like building the debug package
+%ifnarch ia64
+%define debug_package %{nil}
+%endif
 
 %description
 IMP's broad goal is to contribute to a comprehensive structural
@@ -60,8 +77,17 @@ be used from Python.
 %build
 
 %install
-scons destdir=${RPM_BUILD_ROOT} docdir=/usr/share/doc/%{name}-%{version} \
-      install doc-install
+scons destdir=${RPM_BUILD_ROOT} docdir=/usr/share/doc/%{name}-%{version} %{scons_opts} install ${RPM_BUILD_ROOT}/usr/share/doc/%{name}-%{version}/examples
+# Note that we currently don't include the documentation in the RPM, since
+#      a) it takes a long time to run doxygen
+#      b) doxygen isn't installed on all of our build systems
+#      c) it is really big
+#  and d) only certain versions of doxygen work correctly
+# You can build the documentation by running, in the IMP source tree:
+# scons dot=True destdir=/tmp docdir=/usr/share/doc/imp-1.0 doc-install
+README=${RPM_BUILD_ROOT}/usr/share/doc/%{name}-%{version}/README
+echo "For full IMP documentation, please go to" > ${README}
+echo "http://salilab.org/imp/%{version}/doc/html/" >> ${README}
 
 %clean
 [ "$RPM_BUILD_ROOT" != "/" ] && rm -rf ${RPM_BUILD_ROOT}
@@ -84,5 +110,8 @@ scons destdir=${RPM_BUILD_ROOT} docdir=/usr/share/doc/%{name}-%{version} \
 %{_libdir}/python*/site-packages/_IMP*so
 
 %changelog
+* Mon Mar 08 2010 Ben Webb <ben@salilab.org>   1.0-1
+- 1.0 release.
+
 * Thu May 07 2009 Ben Webb <ben@salilab.org>
 - Initial build.
