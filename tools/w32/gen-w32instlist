@@ -1,0 +1,39 @@
+#!/usr/bin/perl -w
+use strict;
+
+if ($#ARGV != 0) {
+  die "Usage: $0 w32-installdir";
+}
+
+print "SetOutPath \"\$INSTDIR\"\n";
+do_dir($ARGV[0], "");
+
+sub do_dir {
+  my ($prefix, $dir) = @_;
+
+  my $fulldir = "$prefix$dir";
+  my $dirhnd;
+  opendir(DIR, $fulldir) || die "Cannot open $fulldir: $!";
+  my @files = grep { ! /^\.|\.\./ } readdir(DIR);
+  closedir DIR;
+
+  for my $file (@files) {
+    if (! -d "$fulldir/$file") {
+      (my $fnam = "$fulldir/$file") =~ s#^/##;
+      $fnam =~ s#/#\\#g;
+      if ($fnam !~ /\.pyc$/) {
+        print "File \"$fnam\"\n";
+      }
+      if ($fnam =~ /\.py$/) {
+        print "File \"${fnam}c\"\n";
+      }
+    }
+  }
+  for my $file (@files) {
+    if (-d "$fulldir/$file") {
+      (my $fnam = "$dir/$file") =~ s#/#\\#g;
+      print "SetOutPath \"\$INSTDIR$fnam\"\n";
+      do_dir($prefix, "$dir/$file");
+    }
+  }
+}
