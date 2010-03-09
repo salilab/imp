@@ -4,28 +4,33 @@
 <li><a href="http://salilab.org/imp/1.0/download/IMP-1.0.exe">Windows installer</a></li>
 <li><a href="http://salilab.org/imp/1.0/download/IMP-1.0-10v4.dmg">Intel Mac, OS X 10v4 installer (32-bit, Python 2.3)</a></li>
 <li><a href="http://salilab.org/imp/1.0/download/IMP-1.0-10v6.dmg">Intel Mac, OS X 10v6 installer (64-bit, Python 2.6)</a></li>
-<li>RedHat Enterprise Linux 5 RPMs (Python 2.4)
-  <ul>Base IMP package (needed for all users):
+<li>RedHat Enterprise Linux 5 RPMs (Python 2.4)<ul>
+  <li>Base IMP package (needed for all users):
 <a href="http://salilab.org/imp/1.0/download/imp-1.0-1.i386.rpm">32-bit</a>;
 <a href="http://salilab.org/imp/1.0/download/imp-1.0-1.x86_64.rpm">x86_64</a>;
 <a href="http://salilab.org/imp/1.0/download/imp-1.0-1.ia64.rpm">Itanium</a>
-  </ul>
-  <ul>IMP-python package (needed to use IMP Python scripts):
+  </li>
+  <li>IMP-python package (needed to use IMP Python scripts):
 <a href="http://salilab.org/imp/1.0/download/imp-python-1.0-1.i386.rpm">32-bit</a>;
 <a href="http://salilab.org/imp/1.0/download/imp-python-1.0-1.x86_64.rpm">x86_64</a>;
 <a href="http://salilab.org/imp/1.0/download/imp-python-1.0-1.ia64.rpm">Itanium</a>
-  </ul>
-  <ul>IMP-devel package (needed to compile C++ code using the IMP libraries):
+  </li>
+  <li>IMP-devel package (needed to compile C++ code using the IMP libraries):
 <a href="http://salilab.org/imp/1.0/download/imp-devel-1.0-1.i386.rpm">32-bit</a>;
 <a href="http://salilab.org/imp/1.0/download/imp-devel-1.0-1.x86_64.rpm">x86_64</a>;
 <a href="http://salilab.org/imp/1.0/download/imp-devel-1.0-1.ia64.rpm">Itanium</a>
-  </ul>
+  </li>
+</ul>
 </li>
 
-<li>Fedora 12 Linux x86_64 RPMs (Python 2.6, with CGAL):
-<a href="http://salilab.org/imp/1.0/download/imp-1.0-1.fc12.x86_64.rpm">Base package</a>;
-<a href="http://salilab.org/imp/1.0/download/imp-python-1.0-1.fc12.x86_64.rpm">IMP-python</a>;
-<a href="http://salilab.org/imp/1.0/download/imp-devel-1.0-1.fc12.x86_64.rpm">IMP-devel</a>
+<li>Fedora 12 Linux RPMs (Python 2.6, with CGAL):<ul>
+  <li>Base IMP package (needed for all users):
+<a href="http://salilab.org/imp/1.0/download/imp-1.0-1.fc12.x86_64.rpm">x86_64</a></li>
+  <li>IMP-python package (needed to use IMP Python scripts):
+<a href="http://salilab.org/imp/1.0/download/imp-python-1.0-1.fc12.x86_64.rpm">x86_64</a></li>
+  <li>IMP-devel package (needed to compile C++ code using the IMP libraries):
+<a href="http://salilab.org/imp/1.0/download/imp-devel-1.0-1.fc12.x86_64.rpm">x86_64</a></li>
+</ul>
 </li>
 
 </ul>
