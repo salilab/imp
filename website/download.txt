@@ -1,3 +1,59 @@
-<p>The first public release of IMP will be made within the next week.
-Watch this space.
+<h2>IMP 1.0 binary installers</h2>
+
+<ul>
+<li><a href="http://salilab.org/imp/1.0/download/IMP-1.0.exe">Windows installer</a></li>
+<li><a href="http://salilab.org/imp/1.0/download/IMP-1.0-10v4.dmg">Intel Mac, OS X 10v4 installer (32-bit, Python 2.3)</a></li>
+<li><a href="http://salilab.org/imp/1.0/download/IMP-1.0-10v6.dmg">Intel Mac, OS X 10v6 installer (64-bit, Python 2.6)</a></li>
+<li>RedHat Enterprise Linux 5 RPMs (Python 2.4)
+  <ul>Base IMP package (needed for all users):
+<a href="http://salilab.org/imp/1.0/download/imp-1.0-1.i386.rpm">32-bit</a>;
+<a href="http://salilab.org/imp/1.0/download/imp-1.0-1.x86_64.rpm">x86_64</a>;
+<a href="http://salilab.org/imp/1.0/download/imp-1.0-1.ia64.rpm">Itanium</a>
+  </ul>
+  <ul>IMP-python package (needed to use IMP Python scripts):
+<a href="http://salilab.org/imp/1.0/download/imp-python-1.0-1.i386.rpm">32-bit</a>;
+<a href="http://salilab.org/imp/1.0/download/imp-python-1.0-1.x86_64.rpm">x86_64</a>;
+<a href="http://salilab.org/imp/1.0/download/imp-python-1.0-1.ia64.rpm">Itanium</a>
+  </ul>
+  <ul>IMP-devel package (needed to compile C++ code using the IMP libraries):
+<a href="http://salilab.org/imp/1.0/download/imp-devel-1.0-1.i386.rpm">32-bit</a>;
+<a href="http://salilab.org/imp/1.0/download/imp-devel-1.0-1.x86_64.rpm">x86_64</a>;
+<a href="http://salilab.org/imp/1.0/download/imp-devel-1.0-1.ia64.rpm">Itanium</a>
+  </ul>
+</li>
+
+<li>Fedora 12 Linux x86_64 RPMs (Python 2.6, with CGAL):
+<a href="http://salilab.org/imp/1.0/download/imp-1.0-1.fc12.x86_64.rpm">Base package</a>;
+<a href="http://salilab.org/imp/1.0/download/imp-python-1.0-1.fc12.x86_64.rpm">IMP-python</a>;
+<a href="http://salilab.org/imp/1.0/download/imp-devel-1.0-1.fc12.x86_64.rpm">IMP-devel</a>
+</li>
+
+</ul>
+
+<h2>IMP 1.0 documentation</h2>
+
+<p>Please refer to the
+<a href="http://salilab.org/imp/1.0/doc/html/">online documentation</a>.
+You can also <a href="http://salilab.org/imp/1.0/download/imp-doc-1.0.tar.gz">download the documentation</a>.
+<ul>
+</ul>
+
+<h2>IMP 1.0 source code</h2>
+
+<ul>
+<li><a href="http://salilab.org/imp/1.0/download/imp-1.0.tar.gz">Source code tarball</a></li>
+<li><a href="http://salilab.org/imp/1.0/download/imp-1.0-1.src.rpm">Linux SRPM</a></li>
+</ul>
+
+<p>To build IMP from source code, please refer to the
+<a href="http://salilab.org/imp/1.0/doc/html/installation.html#userbuild">Getting started guide</a>.
+</p>
+
+<h2>Signatures</h2>
+
+<p>All of the RPMs are signed with
+<a href="http://salilab.org/~ben/pubkey.asc">this GPG key</a>.
+For all other packages, please check the
+<a href="http://salilab.org/imp/1.0/download/md5sum">MD5SUM</a> and
+<a href="http://salilab.org/imp/1.0/download/md5sum.asc">its signature</a>.
 </p>
