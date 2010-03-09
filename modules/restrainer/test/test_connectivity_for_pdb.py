@@ -53,7 +53,7 @@ class RestraintTest(IMP.test.TestCase):
         #evr.set_weight(0.8)
         #self.assertInTolerance (evr.get_weight(), 0.8, 1e-4)
 
-        restraint_set = self.restraint.get_restraint_set_by_name("pulldown_restraint")
+        restraint_set = self.restraint.get_restraint_set_by_name("pulldown_restraint_set")
         self.assertInTolerance(restraint_set.get_weight(), 100.0, 1e-4)
 
         self.restraint.print_all_restraints()
