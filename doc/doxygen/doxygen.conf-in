@@ -849,7 +849,7 @@ HTML_FOOTER            = \
 # stylesheet in the HTML output directory as well, or it will be erased!
 
 HTML_STYLESHEET        = \
-                         @IMP_SOURCE_PATH@/website/html/imp.css
+                         @IMP_SOURCE_PATH@/website/imp.css
 
 # If the HTML_TIMESTAMP tag is set to YES then the footer of each generated HTML
 # page will contain the date and time when the page was generated. Setting
