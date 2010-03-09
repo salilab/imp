@@ -455,7 +455,7 @@ class ModelLoader(object):
            IMP::atom::CHARMMTopology class.
 
            You must call load_atoms() prior to using this function.
-           @seealso load_angles(), load_dihedrals(), load_impropers()
+           @see load_angles(), load_dihedrals(), load_impropers()
            @return An IMP::Particles object containing all of the bonds.
         """
         if not hasattr(self, '_modeller_hierarchy'):
