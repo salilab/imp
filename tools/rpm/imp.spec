@@ -22,11 +22,6 @@ BuildRequires: CGAL-devel
 
 %define scons_opts %{cgal_opts} modeller=/usr/
 
-# RHEL5 on IA64 doesn't like building the debug package
-%ifnarch ia64
-%define debug_package %{nil}
-%endif
-
 %description
 IMP's broad goal is to contribute to a comprehensive structural
 characterization of biomolecules ranging in size and complexity from small
