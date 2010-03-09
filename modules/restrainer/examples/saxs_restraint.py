@@ -29,6 +29,9 @@ restraint.add_to_representation(representation)
 # Get restraint by name
 r = restraint.get_restraint_by_name('saxs_restraint')
 
+# Get IMP::RestraintSet by name
+rs = restraint.get_restraint_set_by_name('saxs_restraint_set')
+
 # Get IMP::saxs::Restraint
 saxs_restraint = r.imp_restraint
 saxs_restraint.evaluate(False)
