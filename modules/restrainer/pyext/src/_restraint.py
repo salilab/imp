@@ -9,12 +9,12 @@ class _RestraintSets(object):
     def __init__(self):
         self._restraint_sets = dict()
         self.set_by_restraint = dict()
-    def add(self, restraint_type_weight, restraint, model = None):
-        if restraint_type_weight is None:
+        self.set_by_name = dict()
+    def add(self, restraint_type, weight, name, restraint, model = None):
+        if restraint_type is None:
             return
-        restraint_type, weight = restraint_type_weight
         weight = str(weight)
-        restraint_type = str(restraint_type)
+        restraint_type = '%s|%s' % (restraint_type, name)
         try:
             set_by_weight = self._restraint_sets[weight]
         except KeyError:
@@ -27,6 +27,7 @@ class _RestraintSets(object):
                 model.add_restraint(current_set)
         current_set.add_restraint(restraint)
         self.set_by_restraint[restraint] = current_set
+        self.set_by_name[name] = current_set
     def set_model(self, model):
         for weight, set_by_weight in self._restraint_sets.iteritems():
             for rest_set in set_by_weight.itervalues():
@@ -121,6 +122,9 @@ class Restraint(object):
                 return r
         return None
 
+    def get_restraint_set_by_name(self, name):
+        return self._restraint_sets.set_by_name.get(name)
+
     def get_rigid_body_by_id(self, id):
         """Get rigid body by particle id."""
 
@@ -203,14 +207,11 @@ class _RestraintNode(object):
             counter += 1
         return source_list
 
-    def append_restraint_with_weight(self, restraint_weight, restraint_sets):
-        if restraint_weight:
-            restraint, weight = restraint_weight
-            if weight is None:
-                weight = self.weight
+    def append_restraint_with_weight(self, restraint, restraint_sets):
+        if restraint:
             self.child_restraints.append(restraint)
             if self.restraint_type:
-                restraint_sets.add((self.restraint_type, weight), restraint)
+                restraint_sets.add(self.restraint_type, self.weight, self.name, restraint)
 
     def create_restraint(self, repr, restraint_sets):
         for child in self._children:
@@ -241,7 +242,7 @@ class _ExcludedVolumeRestraintNode(_RestraintNodeWithWeight):
     def create_restraint(self, repr, restraint_sets):
         for child in self._children:
             restraint = child.create_excluded_volume_restraint(repr, restraint_sets)
-            self.append_restraint_with_weight((restraint, None), restraint_sets)
+            self.append_restraint_with_weight(restraint, restraint_sets)
 
 
 class _ConnectivityRestraintNode(_RestraintNodeWithWeight):
@@ -251,7 +252,7 @@ class _ConnectivityRestraintNode(_RestraintNodeWithWeight):
     def create_restraint(self, repr, restraint_sets):
         for child in self._children:
             restraint = child.create_connectivity_restraint(repr, restraint_sets)
-            self.append_restraint_with_weight((restraint, None), restraint_sets)
+            self.append_restraint_with_weight(restraint, restraint_sets)
 
 
 class _CrosslinkRestraintNode(_RestraintNodeWithWeight):
@@ -261,7 +262,7 @@ class _CrosslinkRestraintNode(_RestraintNodeWithWeight):
     def create_restraint(self, repr, restraint_sets):
         for child in self._children:
             restraint = child.create_crosslink_restraint(repr, restraint_sets)
-            self.append_restraint_with_weight((restraint, None), restraint_sets)
+            self.append_restraint_with_weight(restraint, restraint_sets)
 
 
 class _DistanceRestraintNode(_RestraintNodeWithWeight):
@@ -271,7 +272,7 @@ class _DistanceRestraintNode(_RestraintNodeWithWeight):
     def create_restraint(self, repr, restraint_sets):
         for child in self._children:
             restraint = child.create_distance_restraint(repr, restraint_sets)
-            self.append_restraint_with_weight((restraint, None), restraint_sets)
+            self.append_restraint_with_weight(restraint, restraint_sets)
 
 
 class _DiameterRestraintNode(_RestraintNodeWithWeight):
@@ -281,7 +282,7 @@ class _DiameterRestraintNode(_RestraintNodeWithWeight):
     def create_restraint(self, repr, restraint_sets):
         for child in self._children:
             restraint = child.create_diameter_restraint(repr, restraint_sets)
-            self.append_restraint_with_weight((restraint, None), restraint_sets)
+            self.append_restraint_with_weight(restraint, restraint_sets)
 
 
 class _SAXSRestraintNode(_RestraintNodeWithWeight):
@@ -291,7 +292,7 @@ class _SAXSRestraintNode(_RestraintNodeWithWeight):
     def create_restraint(self, repr, restraint_sets):
         for child in self._children:
             restraint = child.create_saxs_restraint(repr, restraint_sets)
-            self.append_restraint_with_weight((restraint, None), restraint_sets)
+            self.append_restraint_with_weight(restraint, restraint_sets)
 
 
 class _SANSRestraintNode(_RestraintNodeWithWeight):
@@ -308,7 +309,7 @@ class _EMRestraintNode(_RestraintNodeWithWeight):
     def create_restraint(self, repr, restraint_sets):
         for child in self._children:
             restraint = child.create_em_restraint(repr, restraint_sets)
-            self.append_restraint_with_weight((restraint, None), restraint_sets)
+            self.append_restraint_with_weight(restraint, restraint_sets)
 
 
 class _RestraintY2H(_ConnectivityRestraintNode):
