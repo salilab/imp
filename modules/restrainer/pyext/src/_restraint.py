@@ -123,6 +123,7 @@ class Restraint(object):
         return None
 
     def get_restraint_set_by_name(self, name):
+        """Get an IMP::RestraintSet by name specified in restraint XML file."""
         return self._restraint_sets.set_by_name.get(name)
 
     def get_rigid_body_by_id(self, id):
