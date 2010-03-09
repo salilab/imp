@@ -1,0 +1,3 @@
+<p>The first public release of IMP will be made within the next week.
+Watch this space.
+</p>

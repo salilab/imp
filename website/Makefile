@@ -1,5 +1,4 @@
-# DO NOT COMMIT
-WEB=/tmp/web
+WEB=~www/html/imp/
 
 .PHONY: all
 
