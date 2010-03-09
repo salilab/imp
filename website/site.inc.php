@@ -14,7 +14,7 @@
    function GetDocumentation() {
 print <<< END
 <ul>
-<li><a href="http://salilab.org/imp/stable/doc/html/">Stable branch</a></li>
+<li><a href="http://salilab.org/imp/1.0/doc/html/">1.0 release</a></li>
 <li><a href="http://salilab.org/imp/nightly/doc/html/">Latest nightly
 build</a></li>
 </ul>
