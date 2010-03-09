@@ -12,7 +12,7 @@
        error_log("Bad file path "+f);
        return;
       }
-      $co = GetContentsFile('../' . $f);
+      $co = GetContentsFile('./' . $f);
       $lines = preg_split("/\n/",$co);
       foreach ($lines as $ln_num => $line) {
          echo "$line\n";

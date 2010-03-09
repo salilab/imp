@@ -1,7 +1,7 @@
 <?PHP
-   include("../inc/conf.inc.php");
-   include("../inc/site.inc.php");
-   include("../inc/misc.inc.php");
+   include("conf.inc.php");
+   include("site.inc.php");
+   include("misc.inc.php");
    $page = $_GET['page'];
    if (!$page) { $page = "home"; }
 ?>
@@ -12,6 +12,7 @@
    } elseif ($page == "imp") {
    } elseif ($page == "groups") {
    } elseif ($page == "doc") {
+   } elseif ($page == "download") {
    } else {
      #ini_set('display_errors',1);
      #error_reporting(E_ALL|E_STRICT);
@@ -77,50 +78,36 @@ window.onload = linkEmail;
 <body>
 
 
-<center>
-
-<div id="impnav">
-   <table class="imptnav">
-      <tr>
-         <td><a href="<? echo $GLOBALS["home"]; ?>">
-             <img src="images/imp_logo.png" alt="IMP logo"></a></td>
-         <td>
-            <div id="implinks">
-               <?PHP GetLinks(); ?>
-            </div>
-         </td>
-      </tr>
-   </table>
-</div>
-
-
-<div id="impheaderline">
-</div>
-
-<div id="container">
-  <table class="tcon">
-      <tr>
+<?PHP PrintFile("header.txt"); ?>
+  <div id="container">
+   <table class="tcon">
+  <tr>
          <td class="twel" colspan="3">
             <?PHP
                if ($page == "home") {
                   echo "<h1>Welcome</h1>
                         <div id=\"goal\">";
-                  PrintFile("pages/goal.txt");              
+                  PrintFile("goal.txt");    
                   echo "</div>";
                } elseif ($page == "imp") {
                   #echo "<h2>Integrative Modeling Platform</h2>
                   echo "<div id=\"imp\">";
-                  PrintFile("pages/imp.txt");              
+                  PrintFile("imp.txt");              
                   echo "</div>"; 
                } elseif ($page == "groups") {
-                  echo "<h1>IMP Community groups</h1>
+                  echo "<h1>Participating groups</h1>
                         <div id=\"groups\">";
-                  PrintFile("pages/groups.txt");              
+                  PrintFile("groups.txt");              
                   echo "</div>"; 
                } elseif ($page == "doc") {
-                  echo "<h1>IMP Documentation</h1>
+                  echo "<h1>Documentation</h1>
                         <div id=\"docs\">";
                   GetDocumentation();              
+                  echo "</div>"; 
+               } elseif ($page == "download") {
+                  echo "<h1>Download</h1>
+                        <div id=\"download\">";
+                  PrintFile("download.txt");              
                   echo "</div>"; 
                } else {
                   error_log("Invalid page snuck through"+$page);
@@ -134,31 +121,30 @@ window.onload = linkEmail;
                <td class=\"tnews\">
                   <h3>News</h3>
                   <div class=\"high\">";
-                     PrintFile("pages/news.txt");
+                     PrintFile("news.txt");
       echo "      </div>
                </td>
                <td class=\"thres\">
                   <h3>Highlighted research</h3>
                   <div class=\"high\">";
-                     PrintFile("pages/hresearch.txt");
+                     PrintFile("hresearch.txt");
       echo "      </div>
                </td>
                <td class=\"thdev\">
                   <h3>Highlighted development</h3>
                   <div class=\"high\">";
-                     PrintFile("pages/hdevelopment.txt");
+                     PrintFile("hdevelopment.txt");
       echo "      </div>
                </td>
             </tr>";
       }
    ?>
    </table>
-</div>
+     </div>
 
 <div id="footer">
-   <?PHP PrintFile("pages/footer.txt"); ?>
+   <?PHP PrintFile("footer.txt"); ?>
 </div>
 
-</center>
 </body>
 </html>

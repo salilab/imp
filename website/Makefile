@@ -1,33 +1,40 @@
-WEB=~www/html/imp/
+# DO NOT COMMIT
+WEB=/tmp/web
 
 .PHONY: all
 
 all: ${WEB}/groups.html ${WEB}/index.html ${WEB}/imp.css \
-     ${WEB}/images ${WEB}/doc.html
+     ${WEB}/images ${WEB}/doc.html  ${WEB}/download.html 
 
 ${WEB}/groups.html::
 	@if [ ! -d ${WEB} ]; then mkdir -p ${WEB}; fi
-	(cd html && cat ../inc/make-get.php index.php | php -- page=groups) > phpout
+	(cat make-get.php index.php | php -- page=groups) > phpout
 	@grep -q "</html>" phpout && cp phpout $@ && rm phpout || (echo "Error occurred during production of $@: check phpout for errors"; exit 1)
 
 ${WEB}/index.html::
 	@if [ ! -d ${WEB} ]; then mkdir -p ${WEB}; fi
-	(cd html && cat ../inc/make-get.php index.php | php -- page=home) > phpout
+	(cat make-get.php index.php | php -- page=home) > phpout
 	@grep -q "</html>" phpout && cp phpout $@ && rm phpout || (echo "Error occurred during production of $@: check phpout for errors"; exit 1)
 
 ${WEB}/pubs.html::
 	@if [ ! -d ${WEB} ]; then mkdir -p ${WEB}; fi
-	(cd html && cat ../inc/make-get.php index.php | php -- page=pubs) > phpout
+	(cat make-get.php index.php | php -- page=pubs) > phpout
 	@grep -q "</html>" phpout && cp phpout $@ && rm phpout || (echo "Error occurred during production of $@: check phpout for errors"; exit 1)
 
 ${WEB}/doc.html::
 	@if [ ! -d ${WEB} ]; then mkdir -p ${WEB}; fi
-	(cd html && cat ../inc/make-get.php index.php | php -- page=doc) > phpout
+	(cat make-get.php index.php | php -- page=doc) > phpout
 	@grep -q "</html>" phpout && cp phpout $@ && rm phpout || (echo "Error occurred during production of $@: check phpout for errors"; exit 1)
 
-${WEB}/imp.css: html/imp.css
+
+${WEB}/download.html::
+	@if [ ! -d ${WEB} ]; then mkdir -p ${WEB}; fi
+	(cat make-get.php index.php | php -- page=download) > phpout
+	@grep -q "</html>" phpout && cp phpout $@ && rm phpout || (echo "Error occurred during production of $@: check phpout for errors"; exit 1)
+
+${WEB}/imp.css: imp.css
 	cp $< $@
 
-${WEB}/images: html/images/*
+${WEB}/images: images/*
 	@if [ ! -d ${WEB}/images ]; then mkdir -p ${WEB}/images; fi
-	cp html/images/* ${WEB}/images
+	cp images/* ${WEB}/images
