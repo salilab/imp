@@ -334,10 +334,14 @@ IMP_OUTPUT_OPERATOR(Hierarchy);
 
 
 
-
+#ifdef IMP_DOXYGEN
+enum GetByType {ATOM_TYPE, RESIDUE_TYPE, CHAIN_TYPE, DOMAIN_TYPE, FRAGMENT_TYPE,
+                XYZ_TYPE,XYZR_TYPE,MASS_TYPE};
+#else
 enum GetByType {
   IMP_FOREACH_HIERARCHY_TYPE(IMP_CAPS_NAME)
 };
+#endif
 
 /**
    Gather all the molecular particles of a certain level
