@@ -1,2 +1,0 @@
-New optimizer DOMINO in r605.
-<a href="http://salilab.org/imp/nightly/doc/html/namespaceIMP_1_1domino.html">more...</a>
