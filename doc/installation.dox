@@ -39,7 +39,7 @@ code there
 
 (If you are familiar with \svn, you can also use an SVN client to check out
 the same code from our Subversion repository at
-https://svn.salilab.org/imp/tags/release-1.0/)
+http://svn.salilab.org/imp/tags/release-1.0/)
 
 If there are build errors
 -# make sure all prerequisites are installed
@@ -67,7 +67,7 @@ deprecated=False
 
 To get the latest development version of \imp, it is necessary to check it out
 from our \impsvn using an \svn client:
-   \command{svn co https://svn.salilab.org/imp/trunk imp}
+   \command{svn co http://svn.salilab.org/imp/trunk imp}
 This will create a directory called \c imp containing all the source at the SVN
 trunk. We recommend you use use this. Since this is the place that people
 commit changes to, one should consult the nightly build logs before updating
@@ -87,7 +87,7 @@ one (using \c build='fast') and a debug one (\c build='debug').
 
 To set this up
   -# make a clean checkout of the source code
-    \command{svn co https://svn.salilab.org/imp/trunk src}
+    \command{svn co http://svn.salilab.org/imp/trunk src}
   -# make a directory for your debug build
     \command{mkdir imp-debug}
   -# setup the debug directory
