@@ -208,10 +208,6 @@ ALIASES                = "command{1}=\code \1 \endcode" \
                          "untested{1}=\warning \1 has not been well tested yet\n  Use with caution and please report any bugs found." \
                          "unimplemented{1}=\warning \1 has not beeen implemented.\n If you want to use it, ask someone to implement it or do it yourself." \
                          "dotgraph{1}=\if graphs \n \1 \else \n \note Example graphs require \external{www.graphviz.org, GraphViz}\n\endif" \
-                         "decorators{1}=\class \1s \n \brief A type to store a collection of \1 decorators.\n\nIt looks like a \c std::vector<\1> in C++ and a \c list in Python. See \ref tempornot \"when to use Temp\" for details on using this type." \
-                         "decoratorstemp{1}=\class \1sTemp \n \brief A type to pass a collection of \1 decorators.\n\nIt looks like a \c std::vector<\1> in C++ and a \c list in Python. See \ref tempornot \"when to use Temp\" for details on using this type." \
-                         "objects{1}=\class \1s\n \brief A type to store a collection of \1 objects.\n\nIt looks like a \c std::vector<\1*> in C++ and a \c list in Python. See \ref tempornot \"when to use Temp\" for details on using this type." \
-                         "objectstemp{1}=\class \1sTemp\n\brief A type to pass a collection of \1 objects.\n\nIt looks like a \c std::vector<\1*> in C++ and a \c list in Python. See \ref tempornot \"when to use Temp\" for details on using this type." \
                          "geometry=\note This class is a \ref geometricprimitives \"geometric primitive\". Also, this class is not \ref uninitialized \"not initialized by its default constructor\"."\
                          "impsvn=\external{svn.salilab.org/imp/, IMP repository}"\
                          "svn=\external{svnbook.red-bean.com/, Subversion}"\
@@ -836,7 +832,7 @@ HTML_FILE_EXTENSION    = .html
 # standard header.
 
 HTML_HEADER            = \
-                         @IMP_SOURCE_PATH@/doc/doxygen/header.html
+                         @IMP_SOURCE_PATH@/website/header.txt
 
 # The HTML_FOOTER tag can be used to specify a personal HTML footer for
 # each generated HTML page. If it is left blank doxygen will generate a
