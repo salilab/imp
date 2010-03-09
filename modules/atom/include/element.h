@@ -20,7 +20,7 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-//! The various elements currently supported/known?
+//! The various elements currently supported/known.
 enum Element {UNKNOWN_ELEMENT=0,
 #ifndef IMP_DOXYGEN
               OH=-1, H2O=-2,
@@ -46,7 +46,7 @@ enum Element {UNKNOWN_ELEMENT=0,
 #endif
 };
 
-
+/** Class to translate between element symbols, names and masses.*/
 class IMPATOMEXPORT ElementTable {
 public:
   ElementTable();
