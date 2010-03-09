@@ -195,14 +195,6 @@ IMP_OUTPUT_OPERATOR(Bonded);
 
 IMP_DECORATORS(Bonded, Particles);
 IMP_DECORATORS(Bond, Particles);
-/** \decorators{Bond}
-*/
-/** \decoratorstemp{Bond}
-*/
-/** \decorators{Bonded}
-*/
-/** \decoratorstemp{Bonded}
-*/
 
 
 inline Bonded Bond::get_bonded(unsigned int i) const

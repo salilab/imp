@@ -199,10 +199,6 @@ public:
 IMP_OUTPUT_OPERATOR(Residue);
 
 IMP_DECORATORS(Residue, Hierarchies);
-/** \decorators{Residue}
-*/
-/** \decoratorstemp{Residue}
-*/
 
 /** Return the chain containing the residue.
     \throw ValueException if no residue is found, unless

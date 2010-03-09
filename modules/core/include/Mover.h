@@ -65,14 +65,8 @@ public:
   IMP_REF_COUNTED_DESTRUCTOR(Mover);
 };
 
-IMP_OUTPUT_OPERATOR(Mover);
-
-
 IMP_OBJECTS(Mover);
-/** \objects{Mover}
-*/
-/** \objectstemp{Mover}
-*/
+
 IMPCORE_END_NAMESPACE
 
 #endif  /* IMPCORE_MOVER_H */

@@ -23,16 +23,8 @@ IMP_BEGIN_NAMESPACE
 class Particle;
 class Restraint;
 IMP_OBJECTS(Restraint);
-/** \objects{Restraint}
-*/
-/** \objectstemp{Restraint}
-*/
 class ScoreState;
 IMP_OBJECTS(ScoreState);
-/** \objects{ScoreState}
-*/
-/** \objectstemp{ScoreState}
-*/
 
 //! Class for storing model, its restraints, constraints, and particles.
 /** The Model maintains a standard \imp container for each of Particle,

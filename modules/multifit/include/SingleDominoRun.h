@@ -1,5 +1,5 @@
 /**
- *  \file SingleMultiFitRun.h
+ *  \file SingleDominoRun.h
  *  \brief finding global minimum of a single mapping
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.

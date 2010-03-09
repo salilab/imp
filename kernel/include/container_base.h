@@ -17,17 +17,9 @@ IMP_BEGIN_NAMESPACE
 
 class Particle;
 IMP_OBJECTS(Particle);
-/** \objects{Particle}
-*/
-/** \objectstemp{Particle}
-*/
 
 class Container;
 IMP_OBJECTS(Container);
-/** \objects{Container}
-*/
-/** \objectstemp{Container}
-*/
 
 //! Abstract class for containers of particles
 /** Containers store sets of tuples of particles. The degree of the tuple

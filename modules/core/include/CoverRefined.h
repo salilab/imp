@@ -70,10 +70,6 @@ public:
 IMP_SUMMARY_DECORATOR_DECL(Cover, XYZR, XYZs);
 
 IMP_DECORATORS(Cover, XYZRs);
-/** \decorators{Cover}
-*/
-/** \decoratorstemp{Cover}
-*/
 
 IMPCORE_END_NAMESPACE
 

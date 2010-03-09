@@ -86,10 +86,7 @@ public:
 };
 
 IMP_OBJECTS(PairScore);
-/** \objects{PairScore}
-*/
-/** \objectstemp{PairScore}
-*/
+
 IMP_END_NAMESPACE
 
 #endif  /* IMP_PAIR_SCORE_H */
