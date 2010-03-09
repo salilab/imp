@@ -32,7 +32,7 @@ version 2 of the License, or (at your option) any later version.
 """
 
 def StandardPublications(env):
-    return [env.Publication(authors=["Daniel Russel", "Keren Lasker", "Ben Webb", "Dina Schneidman", "Javier Velazquez-Muriel", "Andrej Sali"],
+    return [env.Publication(authors=["Daniel Russel", "Keren Lasker", "Ben Webb", "Dina Schneidman", "Javier Vel&aacute;zquez-Muriel", "Andrej Sali"],
                             title="Integrative assembly modeling using IMP",
                             journal="submitted",
                             year=2010,
