@@ -13,8 +13,8 @@
             <Particle id="Protein4"></Particle>
         </Restraint>
     </ExcludedVolume>
-    <Y2H>
-        <Restraint name="connectivity_restraint" weight="1.0">
+    <Y2H weight="1.0">
+        <Restraint name="connectivity_restraint">
             <Particle id="Protein1"></Particle>
             <Particle id="Protein2"></Particle>
             <Particle id="Protein3"></Particle>

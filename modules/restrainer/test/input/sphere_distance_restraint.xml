@@ -13,12 +13,12 @@
             <Particle id="Protein4"></Particle>
         </Restraint>
     </ExcludedVolume>
-    <Distance>
-        <Restraint name="distance_restraint" weight="1.0" distance="5.0" std_dev="0.1">
+    <Distance weight="1.0">
+        <Restraint name="distance_restraint" distance="5.0" std_dev="0.1">
             <Particle id="Protein1"></Particle>
             <Particle id="Protein2"></Particle>
         </Restraint>
-        <Restraint name="distance_restraint" weight="1.0" distance="5.0" std_dev="0.1">
+        <Restraint name="distance_restraint" distance="5.0" std_dev="0.1">
             <Particle id="Protein3"></Particle>
             <Particle id="Protein4"></Particle>
             <Source>

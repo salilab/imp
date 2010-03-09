@@ -13,8 +13,8 @@
             <Particle id="Protein4"></Particle>
         </Restraint>
     </ExcludedVolume>
-    <Diameter>
-        <Restraint name="diameter_restraint" weight="1.0" max_diameter="50.0" std_dev="0.1">
+    <Diameter weight="1.0">
+        <Restraint name="diameter_restraint" max_diameter="50.0" std_dev="0.1">
             <Particle id="Protein1"></Particle>
             <Particle id="Protein2"></Particle>
             <Particle id="Protein3"></Particle>
