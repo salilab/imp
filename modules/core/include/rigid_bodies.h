@@ -26,10 +26,6 @@ IMPCORE_BEGIN_NAMESPACE
 class RigidMember;
 
 IMP_DECORATORS(RigidMember, XYZs);
-/** \decorators{RigidMember}
-*/
-/** \decoratorstemp{RigidMember}
-*/
 
 //! A decorator for a rigid body
 /** A rigid body particle describes a set of particles, known
@@ -167,9 +163,7 @@ public:
 
 IMP_OUTPUT_OPERATOR(RigidBody);
 
-typedef IMP::Decorators<RigidBody, XYZs> RigidBodies;
-typedef IMP::Decorators<RigidBody, XYZsTemp> RigidBodiesTemp;
-
+IMP_DECORATORS(RigidBody, XYZs);
 
 //! A decorator for a particle that is part of a rigid body
 /**

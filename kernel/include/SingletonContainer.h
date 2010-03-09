@@ -173,12 +173,7 @@ public:
 
 IMP_OUTPUT_OPERATOR(SingletonContainer);
 
-//! A collection of containers
 IMP_OBJECTS(SingletonContainer);
-/** \objects{SingletonContainer}
-*/
-/** \objectstemp{SingletonContainer}
-*/
 
 IMP_END_NAMESPACE
 

@@ -86,10 +86,7 @@ public:
 };
 
 IMP_OBJECTS(SingletonScore);
-/** \objects{SingletonScore}
-*/
-/** \objectstemp{SingletonScore}
-*/
+
 IMP_END_NAMESPACE
 
 #endif  /* IMP_SINGLETON_SCORE_H */

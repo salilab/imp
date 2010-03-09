@@ -173,12 +173,7 @@ public:
 
 IMP_OUTPUT_OPERATOR(GroupnameContainer);
 
-//! A collection of containers
 IMP_OBJECTS(GroupnameContainer);
-/** \objects{GroupnameContainer}
-*/
-/** \objectstemp{GroupnameContainer}
-*/
 
 IMP_END_NAMESPACE
 

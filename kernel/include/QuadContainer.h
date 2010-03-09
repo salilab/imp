@@ -173,12 +173,7 @@ public:
 
 IMP_OUTPUT_OPERATOR(QuadContainer);
 
-//! A collection of containers
 IMP_OBJECTS(QuadContainer);
-/** \objects{QuadContainer}
-*/
-/** \objectstemp{QuadContainer}
-*/
 
 IMP_END_NAMESPACE
 

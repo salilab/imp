@@ -277,10 +277,6 @@ public:
 IMP_OUTPUT_OPERATOR(Atom);
 
 IMP_DECORATORS(Atom, Hierarchies);
-/** \decorators{Atom}
-*/
-/** \decoratorstemp{Atom}
-*/
 
 
 #ifdef SWIG

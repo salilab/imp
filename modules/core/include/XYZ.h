@@ -21,7 +21,10 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! A a decorator for a particle with x,y,z coordinates.
-/** \ingroup helper
+/** \inlineimage{xyz.png, 50} Using the decorator one can
+    get and set coordinates and modify derivatives.
+
+    \ingroup helper
     \ingroup decorators
     \htmlinclude XYZ_Decorator.py.html
     \see XYZR
@@ -175,10 +178,6 @@ inline void set_geometry(algebra::VectorD<3> &vbase,
 
 IMP_DECORATORS(XYZ, Particles);
 
-/** \decorators{XYZ}
-*/
-/** \decoratorstemp{XYZ}
-*/
 
 IMPCORE_END_NAMESPACE
 

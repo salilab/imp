@@ -363,10 +363,6 @@ IMPEMEXPORT DensityMap* rotate_grid(const DensityMap *orig_dens,
 */
 
 IMP_OBJECTS(DensityMap);
-/** \objects{DensityMap}
-*/
-/** \objectstemp{DensityMap}
-*/
 
 /** Return the value for the density map, m, at point v, interpolating linearly
     from the sample values. The resulting function is C0 over R3.
