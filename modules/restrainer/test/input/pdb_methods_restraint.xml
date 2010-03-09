@@ -17,21 +17,21 @@
             <Particle id="Protein6"></Particle>
         </Restraint>
     </ExcludedVolume>
-    <Y2H>
-        <Restraint name="connectivity_restraint" weight="300.0">
+    <Y2H weight="300.0">
+        <Restraint name="connectivity_restraint">
             <Particle id="Protein4"></Particle>
             <Particle id="Protein5"></Particle>
             <Particle id="Protein6"></Particle>
         </Restraint>
     </Y2H>
-    <Distance>
-        <Restraint name="distance_restraint" weight="300.0" distance="5.0" std_dev="0.1">
+    <Distance weight="300.0">
+        <Restraint name="distance_restraint" distance="5.0" std_dev="0.1">
             <Particle id="Protein3"></Particle>
             <Particle id="Protein4"></Particle>
         </Restraint>
     </Distance>
-    <Diameter>
-        <Restraint name="diameter_restraint" weight="300.0" max_diameter="100">
+    <Diameter weight="300.0">
+        <Restraint name="diameter_restraint" max_diameter="100">
             <Particle id="Protein1"></Particle>
             <Particle id="Protein2"></Particle>
             <Particle id="Protein3"></Particle>
