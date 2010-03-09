@@ -254,9 +254,9 @@ class TestCase(unittest.TestCase):
                     and not f.endswith("Exception"):
                 if f+"s" not in dir(modulename):
                     not_found.append(f)
-        print "plural not found:"
-        print not_found
-        self.assert_(len(not_found) == 0)
+        self.assertEquals(len(not_found), 0,
+                          "Classes %s do not have plural versions" \
+                          % str(not_found))
 
     def assertShow(self, modulename, exceptions):
         """Check that all the classes in modulename have a show method"""
@@ -268,12 +268,11 @@ class TestCase(unittest.TestCase):
                     and f not in exceptions and not f.endswith("s")\
                     and not f.endswith("Temp") and not f.endswith("Iterator")\
                     and not f.endswith("Exception"):
-                if "show" not in eval("dir("+modulename.__name__+"."+f+")"):
-                    print "bad"
+                if not hasattr(getattr(modulename, f), 'show'):
                     not_found.append(f)
-        print "show not found:"
-        print not_found
-        self.assert_(len(not_found) == 0)
+        self.assertEquals(len(not_found), 0,
+                          "Classes %s do not have show methods" \
+                          % str(not_found))
 
 try:
     import subprocess
