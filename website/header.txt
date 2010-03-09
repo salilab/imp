@@ -43,7 +43,7 @@ function linkEmail() {
    <table class="imptnav">
       <tr>
          <td><a href="http://www.integrativemodeling.org/">
-             <img src="http://www.integrativemodeling.org/images/the_imp.png" height=30 alt="IMP logo" border="0"/></a></td>
+             <img src="http://www.integrativemodeling.org/images/the_imp.png" height=60 alt="IMP logo" border="0"/></a></td>
          <td>
             <div id="implinks">
              <ul>
