@@ -37,7 +37,7 @@ public:
   IMP_SINGLETON_SCORE(ImproperSingletonScore);
 };
 
-IMP_OBJECTS(ImproperSingletonScore);
+IMP_OBJECTS(ImproperSingletonScore,ImproperSingletonScores);
 
 IMPATOM_END_NAMESPACE
 

@@ -276,7 +276,7 @@ public:
 
 IMP_OUTPUT_OPERATOR(Atom);
 
-IMP_DECORATORS(Atom, Hierarchies);
+IMP_DECORATORS(Atom,Atoms, Hierarchies);
 
 
 #ifdef SWIG

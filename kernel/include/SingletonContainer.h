@@ -173,7 +173,7 @@ public:
 
 IMP_OUTPUT_OPERATOR(SingletonContainer);
 
-IMP_OBJECTS(SingletonContainer);
+IMP_OBJECTS(SingletonContainer,SingletonContainers);
 
 IMP_END_NAMESPACE
 

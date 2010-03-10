@@ -55,7 +55,7 @@ protected:
   WeakPointer<Optimizer> optimizer_;
 };
 
-IMP_OBJECTS(OptimizerState);
+IMP_OBJECTS(OptimizerState,OptimizerStates);
 IMP_END_NAMESPACE
 
 #endif  /* IMP_OPTIMIZER_STATE_H */

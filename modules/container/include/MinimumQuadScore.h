@@ -30,7 +30,7 @@ public:
   IMP_QUAD_SCORE(MinimumQuadScore);
 };
 
-IMP_OBJECTS(MinimumQuadScore);
+IMP_OBJECTS(MinimumQuadScore,MinimumQuadScores);
 
 IMPCONTAINER_END_NAMESPACE
 

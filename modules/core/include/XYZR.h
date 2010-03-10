@@ -101,7 +101,7 @@ public:
 
 IMP_OUTPUT_OPERATOR(XYZR);
 
-IMP_DECORATORS(XYZR, XYZs);
+IMP_DECORATORS(XYZR,XYZRs, XYZs);
 
 //! Compute the distance between a pair of particles
 /** \relatesalso XYZR

@@ -72,7 +72,7 @@ public:
 #endif
 };
 
-IMP_OBJECTS(TripletsRestraint);
+IMP_OBJECTS(TripletsRestraint,TripletsRestraints);
 
 IMPCONTAINER_END_NAMESPACE
 

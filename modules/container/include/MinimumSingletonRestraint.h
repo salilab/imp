@@ -45,7 +45,7 @@ public:
   void set_n(unsigned int n) { n_=n;}
 };
 
-IMP_OBJECTS(MinimumSingletonRestraint);
+IMP_OBJECTS(MinimumSingletonRestraint,MinimumSingletonRestraints);
 
 
 IMPCONTAINER_END_NAMESPACE

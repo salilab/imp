@@ -45,7 +45,7 @@ public:
   void set_n(unsigned int n) { n_=n;}
 };
 
-IMP_OBJECTS(MinimumQuadRestraint);
+IMP_OBJECTS(MinimumQuadRestraint,MinimumQuadRestraints);
 
 
 IMPCONTAINER_END_NAMESPACE

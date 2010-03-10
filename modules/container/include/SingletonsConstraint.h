@@ -67,7 +67,7 @@ public:
   IMP_CONSTRAINT(SingletonsConstraint);
 };
 
-IMP_OBJECTS(SingletonsConstraint);
+IMP_OBJECTS(SingletonsConstraint,SingletonsConstraints);
 
 
 IMPCONTAINER_END_NAMESPACE

@@ -401,7 +401,7 @@ static Name decorate_particle(::IMP::Particle *p) {                     \
   }                                                                     \
   return Name(p);                                                       \
 }                                                                       \
-IMP_SHOWABLE
+IMP_SHOWABLE;
 
 
 //! Define the basic things needed by a Decorator which has a traits object.
@@ -522,16 +522,15 @@ public:                                                                 \
 
 #ifdef IMP_DOXYGEN
 //! Define the types for storing sets of decorators
-/** The macro defines the types Names and NamesTemp.
+/** The macro defines the types PluralName and PluralNameTemp.
  */
-#define IMP_DECORATORS(Name, Parent)            \
-  class Name##s: public Parent {};              \
-  class Name##sTemp: public Parent##Temp {}
+#define IMP_DECORATORS(Name, PluralName, Parent)
 #else
-#define IMP_DECORATORS(Name, Parent)                            \
-  typedef IMP::Decorators<Name, Parent> Name##s;                \
-  typedef IMP::Decorators<Name, Parent##Temp> Name##sTemp
+#define IMP_DECORATORS(Name, PluralName, Parent)                \
+  typedef IMP::Decorators<Name, Parent> PluralName;             \
+  typedef IMP::Decorators<Name, Parent##Temp> PluralName##Temp
 #endif
+
 //! Create a decorator that computes some sort of summary info on a set
 /** Examples include a centroid or a cover for a set of particles.
 
@@ -558,7 +557,8 @@ public:                                                                 \
     void set_coordinates_are_optimized()const{}                 \
     void set_coordinate() const {}                              \
     void set_radius()const{}                                    \
-  };
+  };                                                            \
+  IMP_DECORATORS(Name, Name##s, Parent##s)
 
 
 /** See IMP_SUMMARY_DECORATOR_DECL()
@@ -708,26 +708,27 @@ protection:                                                             \
 
 #ifdef IMP_DOXYGEN
 //! Define the types for storing sets of objects
-/** The macro defines the types Names and NamesTemp.
+/** The macro defines the types PluralName and PluralNameTemp.
+    PluralName should be Names unless the English spelling is
+    different.
  */
-#define IMP_OBJECTS(Name)                       \
-  class Name##sTemp {};                         \
-  class Name##s:public Name##sTemp{};
+#define IMP_OBJECTS(Name, PluralName)
 #else
-#define IMP_OBJECTS(Name)                               \
-  typedef IMP::VectorOfRefCounted<Name*> Name##s;       \
-  typedef std::vector<Name*> Name##sTemp
+#define IMP_OBJECTS(Name, PluralName)                   \
+  typedef IMP::VectorOfRefCounted<Name*> PluralName;       \
+  typedef std::vector<Name*> PluralName##Temp
 #endif
 
 #ifdef IMP_DOXYGEN
 //! Define the type for storing sets of values
-/** The macro defines the type Names.
+/** The macro defines the type Names. PluralName should be
+    Names unless the English spelling is
+    different.
  */
-#define IMP_VALUES(Name)                       \
-  class Name##s;
+#define IMP_VALUES(Name, PluralName)
 #else
-#define IMP_VALUES(Name)                        \
-  typedef std::vector<Name> Name##s;
+#define IMP_VALUES(Name, PluralName)            \
+  typedef std::vector<Name> PluralName;
 #endif
 
 #ifdef IMP_DOXYGEN
@@ -1944,7 +1945,7 @@ protected:                                      \
   public:                                       \
   Name(std::string nm);                         \
   };                                            \
-  IMP_VALUES(Name)
+  IMP_VALUES(Name, Name##s)
 
 #else
 #define IMP_DECLARE_KEY_TYPE(Name, Tag)                         \
@@ -1962,7 +1963,7 @@ protected:                                      \
     }                                                           \
     std::string __str__() const {return get_string();}          \
   };                                                            \
-  IMP_VALUES(Name)
+  IMP_VALUES(Name, Name##s)
 #endif
 
 #ifdef IMP_DOXYGEN
@@ -1976,7 +1977,7 @@ protected:                                      \
   public:                                               \
   Name(std::string nm);                                 \
   };                                                    \
-  IMP_VALUES(Name)
+  IMP_VALUES(Name, Name##s)
 
 #else
 #define IMP_DECLARE_CONTROLLED_KEY_TYPE(Name, Tag)              \
@@ -1993,7 +1994,7 @@ protected:                                      \
       return Name(nm.get_index());                              \
     }                                                           \
   };                                                            \
-  IMP_VALUES(Name)
+  IMP_VALUES(Name, Name##s)
 #endif
 
 #ifndef IMP_DOXYGEN

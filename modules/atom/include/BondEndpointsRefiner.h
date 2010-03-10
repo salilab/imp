@@ -28,7 +28,7 @@ public:
   IMP_REFINER(BondEndpointsRefiner);
 };
 
-IMP_OBJECTS(BondEndpointsRefiner);
+IMP_OBJECTS(BondEndpointsRefiner,BondEndpointsRefiners);
 
 IMPATOM_END_NAMESPACE
 

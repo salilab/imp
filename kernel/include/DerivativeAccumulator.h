@@ -43,7 +43,7 @@ private:
   Float weight_;
 };
 
-IMP_VALUES(DerivativeAccumulator);
+IMP_VALUES(DerivativeAccumulator, DerivativeAccumulators);
 
 IMP_END_NAMESPACE
 

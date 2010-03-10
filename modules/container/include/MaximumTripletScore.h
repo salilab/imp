@@ -30,7 +30,7 @@ public:
   IMP_TRIPLET_SCORE(MaximumTripletScore);
 };
 
-IMP_OBJECTS(MaximumTripletScore);
+IMP_OBJECTS(MaximumTripletScore,MaximumTripletScores);
 
 IMPCONTAINER_END_NAMESPACE
 

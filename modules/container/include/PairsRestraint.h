@@ -72,7 +72,7 @@ public:
 #endif
 };
 
-IMP_OBJECTS(PairsRestraint);
+IMP_OBJECTS(PairsRestraint,PairsRestraints);
 
 IMPCONTAINER_END_NAMESPACE
 

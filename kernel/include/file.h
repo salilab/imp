@@ -162,8 +162,8 @@ public:
 };
 
 
-IMP_VALUES(TextInput);
-IMP_VALUES(TextOutput);
+IMP_VALUES(TextInput,TextInputs);
+IMP_VALUES(TextOutput,TextOutputs);
 
 IMP_END_NAMESPACE
 

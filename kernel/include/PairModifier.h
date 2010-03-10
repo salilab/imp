@@ -87,7 +87,7 @@ public:
 IMP_OUTPUT_OPERATOR(PairModifier);
 
 
-IMP_OBJECTS(PairModifier);
+IMP_OBJECTS(PairModifier,PairModifiers);
 
 //! Create a functor which can be used with build in C++ and python commands
 /** For example, you can do

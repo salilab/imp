@@ -72,7 +72,7 @@ public:
 #endif
 };
 
-IMP_OBJECTS(SingletonsRestraint);
+IMP_OBJECTS(SingletonsRestraint,SingletonsRestraints);
 
 IMPCONTAINER_END_NAMESPACE
 

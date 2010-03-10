@@ -77,7 +77,7 @@ public:
   IMP_SIMPLE_PAIR_SCORE(LennardJonesPairScore);
 };
 
-IMP_OBJECTS(LennardJonesPairScore);
+IMP_OBJECTS(LennardJonesPairScore,LennardJonesPairScores);
 
 IMPATOM_END_NAMESPACE
 

@@ -67,7 +67,7 @@ public:
   IMP_CONSTRAINT(QuadsConstraint);
 };
 
-IMP_OBJECTS(QuadsConstraint);
+IMP_OBJECTS(QuadsConstraint,QuadsConstraints);
 
 
 IMPCONTAINER_END_NAMESPACE

@@ -72,7 +72,7 @@ public:
 #endif
 };
 
-IMP_OBJECTS(QuadsRestraint);
+IMP_OBJECTS(QuadsRestraint,QuadsRestraints);
 
 IMPCONTAINER_END_NAMESPACE
 

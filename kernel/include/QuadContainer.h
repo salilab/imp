@@ -173,7 +173,7 @@ public:
 
 IMP_OUTPUT_OPERATOR(QuadContainer);
 
-IMP_OBJECTS(QuadContainer);
+IMP_OBJECTS(QuadContainer,QuadContainers);
 
 IMP_END_NAMESPACE
 

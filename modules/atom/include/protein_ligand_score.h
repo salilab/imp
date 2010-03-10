@@ -53,7 +53,7 @@ class IMPATOMEXPORT ProteinLigandAtomPairScore: public PairScore {
   IMP_SIMPLE_PAIR_SCORE(ProteinLigandAtomPairScore);
 };
 
-IMP_OBJECTS(ProteinLigandAtomPairScore);
+IMP_OBJECTS(ProteinLigandAtomPairScore,ProteinLigandAtomPairScores);
 
 /** Score a pair of molecules. See ProteinLigandAtomPairScore for
     simply scoring the atom pairs.
@@ -67,7 +67,7 @@ class IMPATOMEXPORT ProteinLigandRestraint: public Restraint {
   IMP_RESTRAINT(ProteinLigandRestraint);
 };
 
-IMP_OBJECTS(ProteinLigandRestraint);
+IMP_OBJECTS(ProteinLigandRestraint,ProteinLigandRestraints);
 
 
 IMPATOMEXPORT void add_protein_ligand_score_data(Hierarchy h);

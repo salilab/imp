@@ -94,7 +94,7 @@ public:
 #endif
 };
 
-IMP_OBJECTS(CloseBipartitePairContainer);
+IMP_OBJECTS(CloseBipartitePairContainer,CloseBipartitePairContainers);
 
 IMPCONTAINER_END_NAMESPACE
 

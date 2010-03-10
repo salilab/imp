@@ -35,21 +35,20 @@ public:
   std::string get_module() const { return module_; }
 
   std::string get_version() const { return version_; }
-
-  //! Print version information to a stream.
-  void show(std::ostream &out=std::cout) const {
-    IMP_USAGE_CHECK(!module_.empty(),
-                    "Attempting to use uninitialized version info");
-    out << module_ << " " << version_;
-  }
-  IMP_COMPARISONS_2(module_, version_);
+  IMP_SHOWABLE_INLINE({
+      IMP_USAGE_CHECK(!module_.empty(),
+                      "Attempting to use uninitialized version info");
+      out << module_ << " " << version_;
+    }
+    );
+    IMP_COMPARISONS_2(module_, version_);
 private:
   std::string module_, version_;
 };
 
 IMP_OUTPUT_OPERATOR(VersionInfo);
 
-IMP_VALUES(VersionInfo);
+IMP_VALUES(VersionInfo, VersionInfos);
 
 IMP_END_NAMESPACE
 

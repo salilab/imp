@@ -84,7 +84,7 @@ public:
 #endif
 };
 
-IMP_OBJECTS(ClosePairContainer);
+IMP_OBJECTS(ClosePairContainer,ClosePairContainers);
 
 IMPCONTAINER_END_NAMESPACE
 

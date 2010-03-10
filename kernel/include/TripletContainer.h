@@ -173,7 +173,7 @@ public:
 
 IMP_OUTPUT_OPERATOR(TripletContainer);
 
-IMP_OBJECTS(TripletContainer);
+IMP_OBJECTS(TripletContainer,TripletContainers);
 
 IMP_END_NAMESPACE
 

@@ -50,7 +50,7 @@ public:
 
 IMP_OUTPUT_OPERATOR(PairFilter);
 
-IMP_OBJECTS(PairFilter);
+IMP_OBJECTS(PairFilter,PairFilters);
 
 IMP_END_NAMESPACE
 

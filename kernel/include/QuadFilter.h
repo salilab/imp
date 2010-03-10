@@ -50,7 +50,7 @@ public:
 
 IMP_OUTPUT_OPERATOR(QuadFilter);
 
-IMP_OBJECTS(QuadFilter);
+IMP_OBJECTS(QuadFilter,QuadFilters);
 
 IMP_END_NAMESPACE
 

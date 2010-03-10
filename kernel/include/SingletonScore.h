@@ -85,7 +85,7 @@ public:
   IMP_REF_COUNTED_DESTRUCTOR(SingletonScore);
 };
 
-IMP_OBJECTS(SingletonScore);
+IMP_OBJECTS(SingletonScore,SingletonScores);
 
 IMP_END_NAMESPACE
 

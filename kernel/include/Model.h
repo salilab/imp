@@ -22,9 +22,9 @@ IMP_BEGIN_NAMESPACE
 
 class Particle;
 class Restraint;
-IMP_OBJECTS(Restraint);
+IMP_OBJECTS(Restraint,Restraints);
 class ScoreState;
-IMP_OBJECTS(ScoreState);
+IMP_OBJECTS(ScoreState,ScoreStates);
 
 //! Class for storing model, its restraints, constraints, and particles.
 /** The Model maintains a standard \imp container for each of Particle,
@@ -359,7 +359,7 @@ inline void Particle::assert_valid_derivatives() const {
 }
 #endif
 
-IMP_OBJECTS(Model);
+IMP_OBJECTS(Model,Models);
 
 IMP_END_NAMESPACE
 

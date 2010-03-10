@@ -85,7 +85,7 @@ public:
   IMP_REF_COUNTED_DESTRUCTOR(TripletScore);
 };
 
-IMP_OBJECTS(TripletScore);
+IMP_OBJECTS(TripletScore,TripletScores);
 
 IMP_END_NAMESPACE
 

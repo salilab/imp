@@ -50,7 +50,7 @@ public:
 
 IMP_OUTPUT_OPERATOR(TripletFilter);
 
-IMP_OBJECTS(TripletFilter);
+IMP_OBJECTS(TripletFilter,TripletFilters);
 
 IMP_END_NAMESPACE
 

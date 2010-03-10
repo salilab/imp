@@ -30,7 +30,7 @@ public:
   IMP_PAIR_SCORE(MinimumPairScore);
 };
 
-IMP_OBJECTS(MinimumPairScore);
+IMP_OBJECTS(MinimumPairScore,MinimumPairScores);
 
 IMPCONTAINER_END_NAMESPACE
 
