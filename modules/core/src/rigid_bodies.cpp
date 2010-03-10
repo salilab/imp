@@ -525,6 +525,11 @@ namespace internal {
       = new RigidMembersRefiner();
     return pt;
   }
+
+  void test() {
+    RigidBodies rbs;
+    RigidBodiesTemp rbst;
+  }
 }
 
 

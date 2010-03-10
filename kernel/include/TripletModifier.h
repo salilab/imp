@@ -87,7 +87,7 @@ public:
 IMP_OUTPUT_OPERATOR(TripletModifier);
 
 
-IMP_OBJECTS(TripletModifier);
+IMP_OBJECTS(TripletModifier,TripletModifiers);
 
 //! Create a functor which can be used with build in C++ and python commands
 /** For example, you can do

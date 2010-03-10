@@ -173,7 +173,7 @@ public:
 
 IMP_OUTPUT_OPERATOR(PairContainer);
 
-IMP_OBJECTS(PairContainer);
+IMP_OBJECTS(PairContainer,PairContainers);
 
 IMP_END_NAMESPACE
 

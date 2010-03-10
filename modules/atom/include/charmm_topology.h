@@ -305,7 +305,7 @@ public:
   IMP_OBJECT(CHARMMResidueTopology);
 };
 
-IMP_OBJECTS(CHARMMResidueTopology);
+IMP_OBJECTS(CHARMMResidueTopology,CHARMMResidueTopologys);
 
 class CHARMMParameters;
 
@@ -326,7 +326,7 @@ public:
   void apply_default_patches(const CHARMMParameters *ff);
 };
 
-IMP_OBJECTS(CHARMMSegmentTopology);
+IMP_OBJECTS(CHARMMSegmentTopology,CHARMMSegmentTopologys);
 
 //! The topology of a complete CHARMM model.
 /** This defines all of the segments (chains) in the model as

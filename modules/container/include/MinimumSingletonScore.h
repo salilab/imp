@@ -30,7 +30,7 @@ public:
   IMP_SINGLETON_SCORE(MinimumSingletonScore);
 };
 
-IMP_OBJECTS(MinimumSingletonScore);
+IMP_OBJECTS(MinimumSingletonScore,MinimumSingletonScores);
 
 IMPCONTAINER_END_NAMESPACE
 

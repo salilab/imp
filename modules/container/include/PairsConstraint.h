@@ -67,7 +67,7 @@ public:
   IMP_CONSTRAINT(PairsConstraint);
 };
 
-IMP_OBJECTS(PairsConstraint);
+IMP_OBJECTS(PairsConstraint,PairsConstraints);
 
 
 IMPCONTAINER_END_NAMESPACE

@@ -65,7 +65,7 @@ public:
 #endif
 };
 
-IMP_OBJECTS(ListSingletonContainer);
+IMP_OBJECTS(ListSingletonContainer,ListSingletonContainers);
 
 IMPCONTAINER_END_NAMESPACE
 

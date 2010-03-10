@@ -33,7 +33,7 @@ public:
   IMP_SINGLETON_SCORE(DihedralSingletonScore);
 };
 
-IMP_OBJECTS(DihedralSingletonScore);
+IMP_OBJECTS(DihedralSingletonScore,DihedralSingletonScores);
 
 IMPATOM_END_NAMESPACE
 

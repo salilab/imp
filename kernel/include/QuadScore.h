@@ -85,7 +85,7 @@ public:
   IMP_REF_COUNTED_DESTRUCTOR(QuadScore);
 };
 
-IMP_OBJECTS(QuadScore);
+IMP_OBJECTS(QuadScore,QuadScores);
 
 IMP_END_NAMESPACE
 

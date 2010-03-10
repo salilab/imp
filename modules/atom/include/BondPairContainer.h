@@ -39,7 +39,7 @@ public:
   IMP_PAIR_CONTAINER(BondPairContainer);
 };
 
-IMP_OBJECTS(BondPairContainer);
+IMP_OBJECTS(BondPairContainer,BondPairContainers);
 
 IMPATOM_END_NAMESPACE
 

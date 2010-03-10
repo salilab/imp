@@ -50,7 +50,7 @@ public:
 
 IMP_OUTPUT_OPERATOR(SingletonFilter);
 
-IMP_OBJECTS(SingletonFilter);
+IMP_OBJECTS(SingletonFilter,SingletonFilters);
 
 IMP_END_NAMESPACE
 

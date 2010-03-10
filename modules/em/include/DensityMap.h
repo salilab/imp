@@ -362,7 +362,7 @@ IMPEMEXPORT DensityMap* rotate_grid(const DensityMap *orig_dens,
                         const algebra::Transformation3D &trans);
 */
 
-IMP_OBJECTS(DensityMap);
+IMP_OBJECTS(DensityMap,DensityMaps);
 
 /** Return the value for the density map, m, at point v, interpolating linearly
     from the sample values. The resulting function is C0 over R3.

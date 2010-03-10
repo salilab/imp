@@ -45,7 +45,7 @@ public:
   void set_n(unsigned int n) { n_=n;}
 };
 
-IMP_OBJECTS(MaximumPairRestraint);
+IMP_OBJECTS(MaximumPairRestraint,MaximumPairRestraints);
 
 
 IMPCONTAINER_END_NAMESPACE

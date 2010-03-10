@@ -176,7 +176,7 @@ inline void set_geometry(XYZ d, const algebra::VectorD<3> &v) {
 inline void set_geometry(algebra::VectorD<3> &vbase,
                          const algebra::VectorD<3> &v) {vbase=v;}
 
-IMP_DECORATORS(XYZ, Particles);
+IMP_DECORATORS(XYZ,XYZs, Particles);
 
 
 IMPCORE_END_NAMESPACE

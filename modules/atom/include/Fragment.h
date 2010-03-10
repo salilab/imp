@@ -153,7 +153,7 @@ public:
   IMP_DECORATOR(Fragment, Hierarchy);
 };
 
-IMP_DECORATORS(Fragment, Hierarchies);
+IMP_DECORATORS(Fragment,Fragments, Hierarchies);
 
 IMP_OUTPUT_OPERATOR(Fragment);
 

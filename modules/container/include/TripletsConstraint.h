@@ -67,7 +67,7 @@ public:
   IMP_CONSTRAINT(TripletsConstraint);
 };
 
-IMP_OBJECTS(TripletsConstraint);
+IMP_OBJECTS(TripletsConstraint,TripletsConstraints);
 
 
 IMPCONTAINER_END_NAMESPACE

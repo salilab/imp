@@ -65,7 +65,7 @@ public:
   IMP_REF_COUNTED_DESTRUCTOR(Mover);
 };
 
-IMP_OBJECTS(Mover);
+IMP_OBJECTS(Mover,Movers);
 
 IMPCORE_END_NAMESPACE
 

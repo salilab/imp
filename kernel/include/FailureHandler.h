@@ -78,7 +78,7 @@ public:
            )
 };
 
-IMP_OBJECTS(FailureHandler);
+IMP_OBJECTS(FailureHandler,FailureHandlers);
 
 IMP_END_NAMESPACE
 

@@ -58,7 +58,7 @@ public:
   static IntKey get_id_key();
 };
 
-IMP_DECORATORS(Chain, Hierarchies);
+IMP_DECORATORS(Chain,Chains, Hierarchies);
 
 IMP_OUTPUT_OPERATOR(Chain);
 

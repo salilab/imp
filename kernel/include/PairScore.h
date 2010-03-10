@@ -85,7 +85,7 @@ public:
   IMP_REF_COUNTED_DESTRUCTOR(PairScore);
 };
 
-IMP_OBJECTS(PairScore);
+IMP_OBJECTS(PairScore,PairScores);
 
 IMP_END_NAMESPACE
 

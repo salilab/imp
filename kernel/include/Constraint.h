@@ -56,7 +56,7 @@ public:
 };
 
 
-IMP_OBJECTS(Constraint);
+IMP_OBJECTS(Constraint,Constraints);
 
 IMP_END_NAMESPACE
 

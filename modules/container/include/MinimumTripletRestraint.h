@@ -45,7 +45,7 @@ public:
   void set_n(unsigned int n) { n_=n;}
 };
 
-IMP_OBJECTS(MinimumTripletRestraint);
+IMP_OBJECTS(MinimumTripletRestraint,MinimumTripletRestraints);
 
 
 IMPCONTAINER_END_NAMESPACE

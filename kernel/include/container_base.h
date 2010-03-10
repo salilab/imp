@@ -16,10 +16,10 @@
 IMP_BEGIN_NAMESPACE
 
 class Particle;
-IMP_OBJECTS(Particle);
+IMP_OBJECTS(Particle,Particles);
 
 class Container;
-IMP_OBJECTS(Container);
+IMP_OBJECTS(Container,Containers);
 
 //! Abstract class for containers of particles
 /** Containers store sets of tuples of particles. The degree of the tuple

@@ -28,7 +28,7 @@ public:
   IMP_SINGLETON_MODIFIER(CoverBond);
 };
 
-IMP_OBJECTS(CoverBond);
+IMP_OBJECTS(CoverBond,CoverBonds);
 
 IMPATOM_END_NAMESPACE
 

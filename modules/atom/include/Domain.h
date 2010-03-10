@@ -68,7 +68,7 @@ public:
   IMP_DECORATOR(Domain, Hierarchy);
 };
 
-IMP_DECORATORS(Domain, Hierarchies);
+IMP_DECORATORS(Domain,Domains, Hierarchies);
 
 IMP_OUTPUT_OPERATOR(Domain);
 

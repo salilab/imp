@@ -65,7 +65,7 @@ public:
 #endif
 };
 
-IMP_OBJECTS(ListTripletContainer);
+IMP_OBJECTS(ListTripletContainer,ListTripletContainers);
 
 IMPCONTAINER_END_NAMESPACE
 

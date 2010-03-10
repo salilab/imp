@@ -47,7 +47,7 @@ public:
   IMP_SIMPLE_PAIR_SCORE(CoulombPairScore);
 };
 
-IMP_OBJECTS(CoulombPairScore);
+IMP_OBJECTS(CoulombPairScore,CoulombPairScores);
 
 IMPATOM_END_NAMESPACE
 
