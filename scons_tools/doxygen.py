@@ -51,6 +51,14 @@ def _check_doxygen(context):
         context.env['doxygen']=False
         return False
     context.Result(ret)
+    context.Message('Checking for cpp (needed for docs)...')
+    try:
+        os.system("cpp --version >/dev/null")
+    except:
+        context.Result("not found")
+        context.env['doxygen']=False
+        return False
+    context.Result("found")
     context.env['doxygen']=True
     return True
 
