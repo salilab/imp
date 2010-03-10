@@ -49,6 +49,8 @@ def _action_config_h(target, source, env):
 
 #include <boost/static_assert.hpp>
 
+#ifndef IMP_DOXYGEN
+
 #ifdef _MSC_VER
 #ifdef %(PREPROC)s_EXPORTS
 #define %(PREPROC)sEXPORT __declspec(dllexport)
@@ -117,11 +119,11 @@ namespace internal {
         if nd != name:
             print >> h, "#ifdef "+nd
             print >> h, "/* Do not define IMP config macros directly */"
-            print >> h, "BOOST_STATIC_ASSERT(false)"
+            print >> h, "BOOST_STATIC_ASSERT(false);"
             print >> h, "#endif"
         print >> h, "#ifdef "+name
         print >> h, "/* Do not define IMP config macros directly */"
-        print >> h, "BOOST_STATIC_ASSERT(false)"
+        print >> h, "BOOST_STATIC_ASSERT(false);"
         print >> h, "#endif"
         if value is not None:
             print >> h, "#define "+name+" "+value
@@ -133,12 +135,8 @@ namespace internal {
     # This needs to be called get_module_version_info() to make it easy
     # to call from Objects (which have their own get_version_info() method
     print >> h, """
-//  functions are defined explicitly for swig
-#ifndef SWIG
-namespace IMP {
-  class VersionInfo;
-}
 
+#ifndef SWIG
 #include <IMP/internal/directories.h>
 #include <IMP/kernel_config.h>
 #include <string>
@@ -150,6 +148,16 @@ IMPEXPORT std::string get_example_path(std::string module_name,
                                        std::string file_name);
 
 IMP_END_INTERNAL_NAMESPACE
+#endif // swig
+#endif // doxygen
+
+#include <string>
+
+//  functions are defined explicitly for swig
+#ifndef SWIG
+namespace IMP {
+  class VersionInfo;
+}
 
 %(PREPROC)s_BEGIN_NAMESPACE
 %(PREPROC)sEXPORT const VersionInfo& get_module_version_info();
