@@ -59,7 +59,6 @@ def _action_swig_file(target, source, env):
     preface=[warning,"""
 
 %%module(directors="1") "%s"
-
 %%{
 #include "IMP.h"
 """%vars['module_include_path'].replace("/", ".")]
@@ -156,7 +155,8 @@ def _action_simple_swig(target, source, env):
     command = [env['SWIG'], "-castmode -interface", "_IMP%(module_suffix)s",
                "-DPySwigIterator=%(PREPROC)s_PySwigIterator",
                "-DSwigPyIterator=%(PREPROC)s_SwigPyIterator",
-               "-python", "-c++", "-naturalvar"]+warnings
+               "-python", "-c++", "-naturalvar",
+               "-fvirtual"]+warnings
     # Signal whether we are building the kernel
     if env['IMP_MODULE'] == 'kernel':
         command.append('-DIMP_SWIG_KERNEL')
