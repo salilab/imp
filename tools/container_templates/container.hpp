@@ -173,7 +173,7 @@ public:
 
 IMP_OUTPUT_OPERATOR(GroupnameContainer);
 
-IMP_OBJECTS(GroupnameContainer);
+IMP_OBJECTS(GroupnameContainer,GroupnameContainers);
 
 IMP_END_NAMESPACE
 

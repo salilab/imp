@@ -85,7 +85,7 @@ public:
   IMP_REF_COUNTED_DESTRUCTOR(GroupnameScore);
 };
 
-IMP_OBJECTS(GroupnameScore);
+IMP_OBJECTS(GroupnameScore,GroupnameScores);
 
 IMP_END_NAMESPACE
 
