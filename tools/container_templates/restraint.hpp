@@ -72,7 +72,7 @@ public:
 #endif
 };
 
-IMP_OBJECTS(GroupnamesRestraint);
+IMP_OBJECTS(GroupnamesRestraint,GroupnamesRestraints);
 
 IMPCONTAINER_END_NAMESPACE
 

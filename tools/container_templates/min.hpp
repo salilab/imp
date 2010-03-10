@@ -45,7 +45,7 @@ public:
   void set_n(unsigned int n) { n_=n;}
 };
 
-IMP_OBJECTS(MinMaxGroupnameRestraint);
+IMP_OBJECTS(MinMaxGroupnameRestraint,MinMaxGroupnameRestraints);
 
 
 IMPCONTAINER_END_NAMESPACE

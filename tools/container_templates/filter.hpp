@@ -50,7 +50,7 @@ public:
 
 IMP_OUTPUT_OPERATOR(GroupnameFilter);
 
-IMP_OBJECTS(GroupnameFilter);
+IMP_OBJECTS(GroupnameFilter,GroupnameFilters);
 
 IMP_END_NAMESPACE
 
