@@ -13,6 +13,12 @@ def print_doxygen(target, source, env):
 def print_generate_doxygen(target, source, env):
     print "generating doxygen configuration"
 
+def make_defs(target, source, env):
+    os.environ['PATH']=env['ENV']['PATH']
+    env.Execute("grep -v \"#include\" "+source[0].abspath+"| cpp -C -DIMP_DOXYGEN -dM - | grep -v \"define __\" > "+target[0].abspath)
+def print_make_defs(target, source, env):
+    print "running cpp ", str(target), str(source)
+
 
 def make_output(nodes):
     return "     "+"\\\n     ".join(['"'+x.abspath+'"' for x in nodes])
@@ -51,6 +57,8 @@ def generate_doxygen(target, source, env):
             elif ss.endswith(".dot"):
                 dots.append(s)
                 put=True
+            elif ss.endswith(".def"):
+                put = True
             if not put:
                 print >> sys.stderr, "Warning, do not know what to do with the file "+ ss
     for line in infile:
@@ -101,6 +109,8 @@ if not env['doxygen']:
 
 env.Append(BUILDERS = {'RunDoxygen': Builder(action=env.Action(run_doxygen,
                                                                print_doxygen))})
+env.Append(BUILDERS = {'MakeDefs': Builder(action=env.Action(make_defs,
+                                                               make_defs))})
 
 docdir = env.GetInstallDirectory('docdir', 'html')
 
@@ -130,15 +140,24 @@ for h in Glob("#/build/include/*.h", ondisk=False) \
     if h.path.find("internal")==-1:
         rawheaders.append(h)
 headers=[]
-first=[]
+config=[]
 # leftover from attempt to get things to work with 1.6.1.
+macros=[]
 for h in rawheaders:
-    if h.path.find('macros') == -1 and h.path.find('config.h') == -1:
-        headers.append(h)
+    if h.path.endswith('macros.h'):
+        macros.append(h)
+    elif h.path.endswith('config.h'):
+        config.append(h)
     else:
-        first.append(h)
-headers= first+headers
-sources = headers + Glob("#/kernel/doc/*.dox") + [example_index] \
+        headers.append(h)
+
+headers= config+macros+headers
+macrodef=[]
+for m in macros:
+    nm=m.abspath[m.abspath.rfind("/")+1:]+".def"
+    #print nm
+    macrodef.append(env.MakeDefs(source=m, target=nm))
+sources = headers + macrodef+ Glob("#/kernel/doc/*.dox") + [example_index] \
           + Glob("#/doc/*.dox") \
           + Glob("#/modules/*/doc/*.dox") \
           + Glob("#/modules/*/examples/*.xml") \
@@ -173,7 +192,7 @@ doxconf=env.GenerateDoxygen("doxygen.conf", ["doxygen.conf-in", env.Value(env['d
 env.Depends(doxconf, ['#/build/include'])
 
 dox = env.RunDoxygen("#/build/doc/html/index.html", ["doxygen.conf"]+sources)
-env.Depends(dox, '#/scons_tools/doxypy.py')
+env.Depends(dox, '#/doc/doxygen/doxypy.py')
 env.Requires(dox, env.Alias("doc-files"))
 
 install=env.Command(Dir(env.subst(docdir)), dox,
