@@ -6,6 +6,7 @@ import sys
 from SCons.Script import *
 import hierarchy
 import symlinks
+import bug_fixes
 import standards
 import compilation
 import swig
@@ -232,7 +233,7 @@ def get_sharedlib_environment(env, cppdefine, cplusplus=False):
        library (by convention something of the form FOO_EXPORTS).
        If `cplusplus` is True, additional configuration suitable for a C++
        shared library is done."""
-    e = env.Clone()
+    e = bug_fixes.clone_env(env)
     e.Append(CPPDEFINES=[cppdefine, '${VIS_CPPDEFINES}'],
              CXXFLAGS='${VIS_CXXFLAGS}')
     if env['PLATFORM'] == 'darwin':
@@ -242,7 +243,7 @@ def get_sharedlib_environment(env, cppdefine, cplusplus=False):
 
 
 def get_bin_environment(envi):
-    env= envi.Clone()
+    env= bug_fixes.clone_env(envi)
     if env['static']:
         if env['CC'] == 'gcc':
             env.Append(LINKFLAGS=['-static'])
@@ -258,7 +259,8 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
        If `cplusplus` is True, additional configuration suitable for a C++
        extension is done."""
     from platform import system
-    e = env.Clone()
+    import copy
+    e = bug_fixes.clone_env(env)
 
     e['LDMODULEPREFIX'] = ''
     # We're not going to link against the extension, so don't need a Windows
@@ -298,7 +300,10 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
             cxxs.remove(x)
         elif x=='-Wall':
             cxxs.remove(x)
+        elif x=='-O3' or  x=='-O2':
+            cxxs.remove(x)
     e.Replace(CXXFLAGS=cxxs)
+    #e['CXXFLAGS']=cxxs
     e.Append(CPPDEFINES=['IMP_SWIG_WRAPPER'])
     e.Append(CPPPATH=[_get_python_include(e)])
     _fix_aix_cpp_link(e, cplusplus, 'SHLINKFLAGS')
