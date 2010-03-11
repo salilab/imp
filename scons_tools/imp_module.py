@@ -10,6 +10,7 @@ import hierarchy
 import version_info
 import config_h
 import link_test
+import bug_fixes
 import modeller_test
 import run
 import checks
@@ -387,7 +388,7 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
                                source=['wrap.cpp-in'])
     penv._IMPPatchSWIG(target=['wrap.h'],
                        source=['wrap.h-in'])
-    lpenv= penv.Clone()
+    lpenv= bug_fixes.clone_env(penv)
     if env['use_pch']:
         if module=='kernel':
             pchh= penv.IMPGeneratePCH(target="#/build/swig/pch.h", source=[])
@@ -715,7 +716,7 @@ def IMPModuleBuild(env, version, required_modules=[],
 
     env.Prepend(SCANNERS = [swig.scanner, swig.inscanner])
     env['all_modules'].append(module)
-    env = env.Clone()
+    env = bug_fixes.clone_env(env)
     env['IMP_REQUIRED_MODULES']= required_modules
 
     env.Append(BUILDERS = {'IMPModuleConfigH': config_h.ConfigH,
