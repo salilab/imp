@@ -6,7 +6,6 @@
  */
 
 #include "IMP/log.h"
-#include "IMP/internal/log_internal.h"
 #include "IMP/exception.h"
 #include "IMP/file.h"
 
