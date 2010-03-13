@@ -16,12 +16,12 @@ ParticlePairs SingleDominoRun::get_pairs_of_interacting_components() const
 {
   ParticlePairs pairs;
   for(int comp_ind=0;comp_ind<jt_.get_number_of_nodes();comp_ind++) {
-    for(unsigned int j1=0;
+    for( int j1=0;
           j1<jt_.get_number_of_components(comp_ind);j1++) {
       std::string name1=jt_.get_component_name(comp_ind,j1);
       Particle *comp1 =
         anchor_comp_map_.find(name_anchor_map_.find(name1)->second)->second;
-      for(unsigned int j2=j1+1;
+      for( int j2=j1+1;
             j2<jt_.get_number_of_components(comp_ind);j2++) {
         std::string name2=jt_.get_component_name(comp_ind,j2);
         Particle *comp2 =
