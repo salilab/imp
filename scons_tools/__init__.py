@@ -160,16 +160,11 @@ def MyEnvironment(variables=None, *args, **kw):
         sopt= opt.split()
         scflags= cflags.split()
         total=[]
-        for v in sopt+scflags:
-            # OK, this is silly....
-            #print "trying", v
-            try:
-                ['-Werror', '-Wall','-O2', '-O3',
+        total=[x for x in sopt+scflags if x not in ['-Werror', '-Wall','-O2', '-O3',
                  '-fstack-protector', '-Wstrict-prototypes',
-                 '-DNDEBUG', '-g'].index(v)
-            except:
-                #print "appending", v
-                total.append(v)
+                 '-DNDEBUG', '-g',
+                 "-fwrapv", "-fno-strict-aliasing"]]
+        #total.append(v)
         env.Append(CXXFLAGS=total)
     if env.get('cxxflags'):
         env.Append(CXXFLAGS = env['cxxflags'].split(" "))
@@ -237,7 +232,7 @@ def get_sharedlib_environment(env, cppdefine, cplusplus=False):
     e.Append(CPPDEFINES=[cppdefine, '${VIS_CPPDEFINES}'],
              CXXFLAGS='${VIS_CXXFLAGS}')
     if env['PLATFORM'] == 'darwin':
-        env.Append(SHLINKFLAGS=['-headerpad_max_install_names'])
+        env.Append(LINKFLAGS=['-headerpad_max_install_names'])
     _fix_aix_cpp_link(e, cplusplus, 'SHLINKFLAGS')
     return e
 
