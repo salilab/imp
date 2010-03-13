@@ -14,7 +14,6 @@ files = [
          'directories.h',
          'ifile.h',
          'key_helpers.h',
-         'log_internal.h',
          'particle.h',
          'particle_save.h',
          'ref_counting.h',
