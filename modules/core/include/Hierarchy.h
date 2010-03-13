@@ -49,7 +49,7 @@ class IMPCOREEXPORT HierarchyTraits
 #endif
 {
   template <class HD>
-    void clear_caches(HD d) {
+    void clear_caches(HD d) const {
     d.get_particle()->clear_caches();
     if (d.get_parent()) clear_caches(d.get_parent());
   }
@@ -58,17 +58,17 @@ class IMPCOREEXPORT HierarchyTraits
     internal::HierarchyData> P;
 
   template <class HD>
-  void on_add(Particle * p, HD d, unsigned int i) {
+  void on_add(Particle * p, HD d, unsigned int i) const {
     d.get_particle()->add_attribute(P::get_data().parent_key_, p);
     d.get_particle()->add_attribute(P::get_data().parent_index_key_, i);
     clear_caches(d);
   }
   void on_change(Particle *, Particle* p, unsigned int oi,
-                        unsigned int ni) {
+                        unsigned int ni) const {
     p->set_value(P::get_data().parent_index_key_, ni);
   }
   template <class HD>
-  void on_remove(Particle *, HD d) {
+  void on_remove(Particle *, HD d) const {
     clear_caches(d);
     d.get_particle()->remove_attribute(P::get_data().parent_index_key_);
     d.get_particle()->remove_attribute(P::get_data().parent_key_);
@@ -78,7 +78,7 @@ class IMPCOREEXPORT HierarchyTraits
     return d.get_particle();
   }
   template <class HD>
-  unsigned int get_index(Particle *, HD d) {
+  unsigned int get_index(Particle *, HD d) const {
     return d.get_parent_index();
   }
   // otherwise it is masked
@@ -139,12 +139,16 @@ GenericHierarchiesTemp;
     \ingroup hierarchy
     \see HierarchyTraits
  */
-class IMPCOREEXPORT Hierarchy: public Decorator
+class IMPCOREEXPORT Hierarchy:
+  public DecoratorWithTraits<Decorator,
+                             HierarchyTraits>
 {
-  typedef Decorator P;
+  typedef DecoratorWithTraits<Decorator,
+    HierarchyTraits> P;
 
   IMP_DECORATOR_ARRAY_DECL(public, Hierarchy, Child, child, children,
-                           traits_, Hierarchy, GenericHierarchies);
+                           get_decorator_traits(),
+                           Hierarchy, GenericHierarchies);
 public:
   IMP_DECORATOR_TRAITS(Hierarchy, Decorator,
                        HierarchyTraits, traits,
@@ -202,8 +206,8 @@ public:
       if it has no parent.
    */
   Hierarchy get_parent() const {
-    IMP_DECORATOR_GET(traits_.get_data().parent_key_, Particle*,
-                      return This(VALUE, traits_),
+    IMP_DECORATOR_GET(get_decorator_traits().get_data().parent_key_, Particle*,
+                      return This(VALUE, get_decorator_traits()),
                       return This());
   }
 
@@ -212,13 +216,14 @@ public:
       it does not have a parent.
    */
   int get_parent_index() const {
-    IMP_DECORATOR_GET(traits_.get_data().parent_index_key_,
+    IMP_DECORATOR_GET(get_decorator_traits().get_data().parent_index_key_,
                       Int, return VALUE, return -1);
   }
 
   /** Return true if the parent is not empty */
-  bool has_parent() const {
-    return get_particle()->has_attribute(traits_.get_data().parent_key_);
+  bool get_has_parent() const {
+    return get_particle()
+      ->has_attribute(get_decorator_traits().get_data().parent_key_);
   }
 
   //! Get the index of a specific child in this particle.
@@ -563,7 +568,7 @@ Out gather_by_attribute(Hierarchy h, K k, V v, Out out)
  */
 template <class Out, class K0, class V0, class K1, class V1>
 Out gather_by_attributes(Hierarchy h, K0 k0,
-                                   V0 v0, K1 k1, V1 v1, Out out)
+                         V0 v0, K1 k1, V1 v1, Out out)
 {
   internal::Gather<internal::MatchAttributes<K0, V0, K1, V1>,Out>
     gather(internal::MatchAttributes<K0,V0, K1, V1>(k0,v0, k1, v1),
@@ -623,7 +628,7 @@ get_all_descendants(Hierarchy mhd);
 //! Return the root of the hierarchy
 /** \relatesalso Hierarchy */
 inline Hierarchy get_root(Hierarchy h) {
-  while (h.has_parent()) {
+  while (h.get_has_parent()) {
     h= h.get_parent();
   }
   return h;

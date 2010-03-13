@@ -22,7 +22,7 @@ IMPCORE_BEGIN_NAMESPACE
     A simple example illustrating some of the functionality.
     \htmlinclude XYZR_Decorator.py.html
  */
-class IMPCOREEXPORT XYZR: public XYZ
+class IMPCOREEXPORT XYZR: public DecoratorWithTraits<XYZ, FloatKey>
 {
 public:
   IMP_DECORATOR_TRAITS(XYZR, XYZ, FloatKey,

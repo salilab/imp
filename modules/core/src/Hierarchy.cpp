@@ -28,7 +28,7 @@ HierarchyTraits::HierarchyTraits(std::string name): P(name)
 void Hierarchy::validate_node() const
 {
   //get_particle()->get_model()->show(std::cerr);
-  if (has_parent()) {
+  if (get_has_parent()) {
     IMP_INTERNAL_CHECK(get_parent_index() >= 0,
                "The parent index must be positive if it is there");
     This p= get_parent();
@@ -117,9 +117,11 @@ void Hierarchy::validate() const
 
 int Hierarchy::get_child_index(Hierarchy c) const
 {
-  IMP_USAGE_CHECK(traits_.get_name() == c.traits_.get_name(),
-            "Attemping to mix hierarchy of type " << traits_.get_name()
-            << " with one of type " << c.traits_.get_name());
+  IMP_USAGE_CHECK(get_decorator_traits().get_name()
+                  == c.get_decorator_traits().get_name(),
+            "Attemping to mix hierarchy of type "
+                  << get_decorator_traits().get_name()
+            << " with one of type " << c.get_decorator_traits().get_name());
   for (unsigned int i=0; i< get_number_of_children(); ++i ) {
     if (get_child(i) == c) return i;
   }

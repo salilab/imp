@@ -15,7 +15,6 @@
 #include <IMP/atom/Mass.h>
 #include <IMP/core/LeavesRefiner.h>
 #include <IMP/core/XYZR.h>
-#include <IMP/core/Hierarchy.h>
 #include <IMP/atom/estimates.h>
 #include <IMP/core/Harmonic.h>
 #include <IMP/core/ConnectivityRestraint.h>
@@ -148,11 +147,11 @@ get_residue(Hierarchy mhd,
             unsigned int index)
 {
   MatchResidueIndex mi(index);
-  IMP::core::Hierarchy hd= breadth_first_find(mhd, mi);
+  Hierarchy hd= core::breadth_first_find(mhd, mi);
   if (hd== IMP::core::Hierarchy()) {
     return Hierarchy();
   } else {
-    return Hierarchy(hd);
+    return hd;
   }
 }
 
@@ -261,7 +260,7 @@ create_fragment(const HierarchiesTemp &ps)
 
 Bonds get_internal_bonds(Hierarchy mhd)
 {
-  Particles ps= get_all_descendants(mhd);
+  Particles ps= core::get_all_descendants(mhd);
   std::set<Particle*> sps(ps.begin(), ps.end());
   Bonds ret;
   for (Particles::iterator pit = ps.begin(); pit != ps.end(); ++pit) {
@@ -402,6 +401,8 @@ struct True {
 
 void destroy(Hierarchy d) {
   Hierarchies all;
+  core::Hierarchy h=d;
+
   core::gather(d, True(), std::back_inserter(all));
   for (unsigned int i=0; i< all.size(); ++i) {
     if (Bonded::particle_is_instance(all[i])) {

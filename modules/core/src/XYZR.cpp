@@ -8,7 +8,6 @@
 #include "IMP/core/XYZR.h"
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/vector_generators.h>
-#include "IMP/core/Hierarchy.h"
 
 IMPCORE_BEGIN_NAMESPACE
 

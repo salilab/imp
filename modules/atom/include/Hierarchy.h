@@ -68,14 +68,15 @@ class Hierarchy;
 #ifdef IMP_DOXYGEN
 
 #else
-typedef IMP::DecoratorsWithImplicitTraits< Hierarchy,
-                              IMP::core::GenericHierarchies> Hierarchies;
-typedef IMP::DecoratorsWithImplicitTraits< Hierarchy,
+typedef IMP::Decorators< Hierarchy,
+                         IMP::core::GenericHierarchies> Hierarchies;
+typedef IMP::Decorators< Hierarchy,
                          IMP::core::GenericHierarchiesTemp> HierarchiesTemp;
 #endif
 
 #else
-class Hierarchies: public IMP::core::GenericHierarchies {
+class Hierarchies: public core::GenericHierarchies
+{
 public:
   Hierarchies(Hierarchy h);
   Hierarchies();
@@ -86,7 +87,7 @@ public:
   Hierarchy back() const;
   Hierarchy front() const;
 };
-class HierarchiesTemp: public IMP::core::GenericHierarchiesTemp {
+class HierarchiesTemp: public core::GenericHierarchiesTemp {
 public:
   HierarchiesTemp(Hierarchy h);
   HierarchiesTemp(Hierarchies h);
@@ -203,23 +204,13 @@ public:
     \see Fragment
     \see Mass
  */
-class IMPATOMEXPORT Hierarchy: public ::IMP::core::Hierarchy
+class IMPATOMEXPORT Hierarchy: public core::Hierarchy
 {
-  typedef ::IMP::core::Hierarchy P;
+  typedef core::Hierarchy H;
 public:
 
-  // swig gets unhappy if it is private
-  IMP_NO_DOXYGEN(typedef Hierarchy This);
-
-  //! The traits must match
-  Hierarchy(IMP::core::Hierarchy h): P(h) {
-    IMP_USAGE_CHECK(h.get_traits() == get_traits(),
-              "Cannot construct a IMP.atom.Hierarchy from a general "
-              " IMP.core.Hierarchy");
-  }
-
   explicit Hierarchy(Particle *p):
-    P(p,get_traits()){
+    H(p,get_traits()){
     IMP_INTERNAL_CHECK(particle_is_instance(p),
                        "Missing required attributes for "
                << "Hierarchy" << *p);
@@ -230,26 +221,29 @@ public:
 
   //! cast a particle which has the needed attributes
   static Hierarchy decorate_particle(Particle *p) {
-    IMP::core::Hierarchy::decorate_particle(p, get_traits());
+    core::Hierarchy::decorate_particle(p, get_traits());
     return Hierarchy(p);
+  }
+
+  //! The traits must match
+  Hierarchy(IMP::core::Hierarchy h): H(h) {
+    IMP_USAGE_CHECK(h.get_traits() == get_traits(),
+              "Cannot construct a IMP.atom.Hierarchy from a general "
+              " IMP.core.Hierarchy");
   }
 
   /** Create a Hierarchy of level t by adding the needed
       attributes. */
   static Hierarchy setup_particle(Particle *p) {
-    IMP::core::Hierarchy::setup_particle(p, get_traits());
+    H::setup_particle(p, get_traits());
     return Hierarchy(p);
   }
 
   /** Check if the particle has the needed attributes for a
    cast to succeed */
   static bool particle_is_instance(Particle *p){
-    return P::particle_is_instance(p, get_traits());
+    return H::particle_is_instance(p, get_traits());
   }
-
-
-  /** Write information about this decorator to out.*/
-  void show(std::ostream &out=std::cout) const;
 
   //! Return true if the hierarchy is valid.
   /** Print information about the hierarchy if print_info is
@@ -266,7 +260,7 @@ public:
     IMP_USAGE_CHECK(o.get_particle()->get_model()
                     == get_particle()->get_model(),
                     "All particles in hierarchy must have same Model");
-    unsigned int ret= P::add_child(o);
+    unsigned int ret= H::add_child(o);
     return ret;
   }
 
@@ -278,27 +272,44 @@ public:
     IMP_USAGE_CHECK(o.get_particle()->get_model()
                     == get_particle()->get_model(),
                     "All particles in hierarchy must have same Model");
-    P::add_child_at(o, i);
+    H::add_child_at(o, i);
   }
 
   /** Get the ith child */
   Hierarchy get_child(unsigned int i) const {
-    IMP::core::Hierarchy hd= P::get_child(i);
+    H hd= H::get_child(i);
     return decorate_particle(hd.get_particle());
   }
   HierarchiesTemp get_children() const {
-    return HierarchiesTemp(IMP::core::Hierarchy::get_children());
+    return HierarchiesTemp(H::get_children());
+  }
+  unsigned int get_number_of_children() const {
+    return H::get_number_of_children();
   }
 
   /** Get the parent particle. */
   Hierarchy get_parent() const {
-    IMP::core::Hierarchy hd= P::get_parent();
+    H hd= H::get_parent();
     if (hd == Hierarchy()) {
       return Hierarchy();
     } else {
       return decorate_particle(hd.get_particle());
     }
   }
+
+  unsigned int get_parent_index() const {
+    return H::get_parent_index();
+  }
+
+  bool get_has_parent() const {
+    return H::get_has_parent();
+  }
+
+  void remove_child(Hierarchy h) {
+    H::remove_child(h);
+  }
+
+  void show(std::ostream &out=std::cout) const;
 
   /** \name Methods to get associated decorators
 
@@ -314,7 +325,6 @@ public:
 
   //! Get the molecular hierarchy HierararchyTraits.
   static const IMP::core::HierarchyTraits& get_traits();
-
 };
 
 IMP_OUTPUT_OPERATOR(Hierarchy);
@@ -383,7 +393,7 @@ get_internal_bonds(Hierarchy mhd);
 //! Return the root of the hierarchy
 /** \relatesalso Hierarchy */
 inline Hierarchy get_root(Hierarchy h) {
-  while (h.has_parent()) {
+  while (h.get_has_parent()) {
     h= h.get_parent();
   }
   return h;

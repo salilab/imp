@@ -33,6 +33,7 @@ IMP_REFCOUNT_RETURN_SINGLE(IMP::core::Mover)
 %include "IMP/core/MoverBase.h"
 
 %include "IMP/core/XYZ.h"
+%template(XYZRBase) ::IMP::DecoratorWithTraits< IMP::core::XYZ, IMP::FloatKey>;
 %include "IMP/core/XYZR.h"
 
 
@@ -67,6 +68,14 @@ IMP_REFCOUNT_RETURN_SINGLE(IMP::core::Mover)
 %include "IMP/core/Harmonic.h"
 %include "IMP/core/HarmonicLowerBound.h"
 %include "IMP/core/HarmonicUpperBound.h"
+%inline %{
+namespace IMP {
+namespace core {
+class HierarchyTraits;
+}
+}
+%}
+%template(HierarchyBase) ::IMP::DecoratorWithTraits< IMP::Decorator, IMP::core::HierarchyTraits>;
 %include "IMP/core/Hierarchy.h"
 %inline %{
 namespace IMP {
