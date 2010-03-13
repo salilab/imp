@@ -10,7 +10,6 @@
 
 #include "../core_config.h"
 #include "../XYZ.h"
-#include "../Hierarchy.h"
 #include "../rigid_bodies.h"
 #include <IMP/algebra/Sphere3D.h>
 
