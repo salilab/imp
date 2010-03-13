@@ -13,12 +13,13 @@
 #include <IMP/exception.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
-
+#ifndef IMP_DOXYGEN
 //! xor operation between two values
 inline bool xorT(bool x, bool y)
 {
   return (((x) && !(y)) || (!(x) && (y)));
 }
+#endif
 
 
 
