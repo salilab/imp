@@ -34,10 +34,16 @@ IMP_REFCOUNT_RETURN_SINGLE(IMP::ConfigurationSet)
 
 
 namespace IMP {
-  %typemap(out) std::pair<Float,Float> {
+  %typemap(out) std::pair<double,double> {
      PyObject *tup= PyTuple_New(2);
      PyTuple_SetItem(tup, 0, PyFloat_FromDouble($1.first));
      PyTuple_SetItem(tup, 1, PyFloat_FromDouble($1.second));
+     $result= tup;
+  }
+  %typemap(out) std::pair<float,float> {
+     PyObject *tup= PyTuple_New(2);
+     PyTuple_SetItem(tup, 0, PyFloat_FromFloat($1.first));
+     PyTuple_SetItem(tup, 1, PyFloat_FromFloat($1.second));
      $result= tup;
   }
 }
