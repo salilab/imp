@@ -150,7 +150,7 @@ FittingSolutions local_rigid_fitting_around_point(
    fr.sort();
    IMP_IF_LOG(TERSE) {
      IMP_LOG(TERSE, "Solutions are: ");
-     for (unsigned int i=0; i < fr.get_number_of_solutions(); ++i) {
+     for (int i=0; i < fr.get_number_of_solutions(); ++i) {
        IMP_LOG(TERSE, fr.get_score(i) << " " << fr.get_transformation(i)
                << " -- ");
      }
