@@ -58,6 +58,8 @@ struct ArrayOnAttributesHelper {
   typedef KeyT Key;
   typedef ValueT Value;
   typedef ArrayData<Key, Value, DataT> Data;
+  typedef ArrayOnAttributesHelper<KeyT, ValueT, DataT> This;
+  IMP_COMPARISONS_1(data_);
 
   DataT& get_data() {return static_cast<DataT&>(*data_);}
   const DataT& get_data() const {return static_cast<DataT&>(*data_);}
