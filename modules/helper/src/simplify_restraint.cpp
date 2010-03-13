@@ -200,7 +200,7 @@ SimpleEMFit
   create_simple_em_fit(atom::Hierarchy const &mh, em::DensityMap *dmap) {
   atom::Hierarchies mhs;
   mhs.push_back(mh);
-  create_simple_em_fit(mhs,dmap);
+  return create_simple_em_fit(mhs,dmap);
 }
 
 em::DensityMap *load_em_density_map(char const *map_fn, float spacing,
