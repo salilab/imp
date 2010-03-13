@@ -97,3 +97,4 @@ namespace IMP {
 %ignore IMP::ParticleTuple::operator[];
 
 %include "IMP/Particle.h"
+%include "IMP/ParticleTuple.h"

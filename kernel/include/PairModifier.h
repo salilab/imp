@@ -15,6 +15,7 @@
 #include "DerivativeAccumulator.h"
 #include "base_types.h"
 #include "VectorOfRefCounted.h"
+#include "ParticleTuple.h"
 
 IMP_BEGIN_NAMESPACE
 // to keep swig happy
