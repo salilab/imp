@@ -418,14 +418,12 @@ IMP_SHOWABLE;
 */
 #define IMP_DECORATOR_TRAITS(Name, Parent, TraitsType, traits_name,     \
                              default_traits)                            \
-  private:                                                              \
-  TraitsType traits_name##_;                                            \
 public:                                                                 \
  IMP_NO_DOXYGEN(typedef Name This;)                                     \
- Name(): Parent(){}                                                     \
+ Name(): DecoratorWithTraits<Parent, TraitsType>(){}                    \
  Name(::IMP::Particle *p,                                               \
-      const TraitsType &tr=default_traits): Parent(p),                  \
-                                            traits_name##_(tr) {        \
+      const TraitsType &tr=default_traits):                             \
+   DecoratorWithTraits<Parent, TraitsType>(p, tr) {                     \
    IMP_INTERNAL_CHECK(particle_is_instance(p, tr),                      \
                       "Particle missing required attributes "           \
                       << " for decorator "                              \
@@ -438,7 +436,7 @@ public:                                                                 \
  }                                                                      \
  IMP_SHOWABLE;                                                          \
  const TraitsType &get_##traits_name() const {                          \
-   return traits_name##_;                                               \
+   return get_decorator_traits();                                       \
  }
 
 //! Perform actions dependent on whether a particle has an attribute.
@@ -616,7 +614,8 @@ public:                                                                 \
 */
 #define IMP_DECORATOR_ARRAY_DECL(protection, Class,                     \
                                  Name, name, plural,                    \
-                                 traits, ExternalType, ExternalTypes)   \
+                                 instance_traits,                       \
+                                 ExternalType, ExternalTypes)           \
   private:                                                              \
   template <class T>                                                    \
   static bool has_required_attributes_for_##name(Particle *p,           \
@@ -652,27 +651,27 @@ protection:                                                             \
                            get_number_of_##plural());                   \
    })                                                                   \
  ExternalType get_##name(unsigned int i) const {                        \
-   return traits.wrap(traits.get_value(get_particle(), i));             \
+   return instance_traits.wrap(instance_traits.get_value(get_particle(), i)); \
  }                                                                      \
  unsigned int get_number_of_##plural() const {                          \
-   return traits.get_size(get_particle());                              \
+   return instance_traits.get_size(get_particle());                     \
  }                                                                      \
  unsigned int add_##name(ExternalType t) {                              \
-   traits.audit_value(t);                                               \
-   unsigned int i= traits.push_back(get_particle(),                     \
-                                    traits.get_value(t));               \
-   traits.on_add(get_particle(), t, i);                                 \
+   instance_traits.audit_value(t);                                      \
+   unsigned int i= instance_traits.push_back(get_particle(),            \
+                                             instance_traits.get_value(t)); \
+   instance_traits.on_add(get_particle(), t, i);                        \
    return i;                                                            \
  }                                                                      \
  void add_##name##_at(ExternalType t, unsigned int idx) {               \
-   traits.audit_value(t);                                               \
-   traits.insert(get_particle(),                                        \
-                 idx,                                                   \
-                 traits.get_value(t));                                  \
-   traits.on_add(get_particle(), t, idx);                               \
+   instance_traits.audit_value(t);                                      \
+   instance_traits.insert(get_particle(),                               \
+                          idx,                                          \
+                          instance_traits.get_value(t));                \
+   instance_traits.on_add(get_particle(), t, idx);                      \
    for (unsigned int i= idx+1; i < get_number_of_##plural(); ++i) {     \
-     traits.on_change(get_particle(),                                   \
-                      traits.get_value( get_particle(), i),             \
+     instance_traits.on_change(get_particle(),                          \
+                               instance_traits.get_value( get_particle(), i), \
                       i-1, i);                                          \
    }                                                                    \
  }                                                                      \
@@ -689,19 +688,19 @@ protection:                                                             \
    }                                                                    \
  }                                                                      \
  void remove_##name(ExternalType t) {                                   \
-   traits.audit_value(t);                                               \
-   unsigned int idx= traits.get_index(get_particle(), t);               \
-   traits.on_remove(get_particle(), t);                                 \
-   traits.erase(get_particle(),                                         \
+   instance_traits.audit_value(t);                                      \
+   unsigned int idx= instance_traits.get_index(get_particle(), t);      \
+   instance_traits.on_remove(get_particle(), t);                        \
+   instance_traits.erase(get_particle(),                                \
                 idx);                                                   \
    for (unsigned int i= idx; i < get_number_of_##plural(); ++i) {       \
-     traits.on_change(get_particle(),                                   \
-                      traits.get_value(get_particle(), i),              \
-                      i+1, i);                                          \
+     instance_traits.on_change(get_particle(),                          \
+                               instance_traits.get_value(get_particle(), i), \
+                               i+1, i);                                 \
    }                                                                    \
  }                                                                      \
  void clear_##plural() {                                                \
-   traits.clear(get_particle());                                        \
+   instance_traits.clear(get_particle());                               \
  }
 
 //! @}

@@ -101,6 +101,8 @@ that it is, don't do it.
 
 A decorator can be cast to a IMP::Particle* in C++. You have to
 use the Decorator::get_particle() function in Python.
+
+\see DecoratorWithTraits
 */
 class Decorator
 {
@@ -213,6 +215,36 @@ public:
 };
 
 
+/** Certain decorators require \quote{traits} to customize their behavior.
+These traits typically are used to allow one decorator class to provide
+functionality that can be applied in a variety of contexts. Examples
+include IMP::core::Hierarchy and IMP::core::XYZR.
+
+Two DecoratorsWithTraits are equal only if the particle and the traits
+are equal.
+*/
+template <class Base, class Traits>
+class DecoratorWithTraits: public Base {
+  typedef DecoratorWithTraits<Base,Traits> This;
+  Traits traits_;
+  int compare(const DecoratorWithTraits<Base, Traits> &o) const {
+    if (traits_== o.traits_) {
+      return Base::compare(o);
+    } else {
+      if (traits_ < o.traits_) return -1;
+      else return 1;
+    }
+  }
+protected:
+  DecoratorWithTraits(){}
+  DecoratorWithTraits(Particle *p, Traits tr): Base(p), traits_(tr){}
+public:
+  typedef Traits DecoratorTraits;
+  const Traits& get_decorator_traits() const {return traits_;}
+  IMP_COMPARISONS;
+};
+
+
 #ifndef IMP_DOXYGEN
 inline bool operator==(Decorator d, Particle *p) {
   return d.particle_==p;
@@ -258,15 +290,18 @@ typedef Proxy reference;                                                \
 const ParticlesTemp &get_particles() const {return *this;}              \
 void push_back(WrappedDecorator d) {                                    \
   on_add_decorator;                                                     \
-  ParentDecorators::push_back(d);                                       \
+  typename ParentDecorators::value_type pd=d;                           \
+  ParentDecorators::push_back(pd);                                      \
 }                                                                       \
 void push_back(Particle *p) {                                           \
   check(p);                                                             \
   on_add_particle;                                                      \
-  ParentDecorators::push_back(p);                                       \
+  typename ParentDecorators::value_type pd=WrappedDecorator(p);         \
+  ParentDecorators::push_back(pd);                                      \
 }                                                                       \
 void set(unsigned int i, WrappedDecorator d) {                          \
-  ParentDecorators::operator[](i)= d;                                   \
+  typename ParentDecorators::value_type pd=d;                           \
+  ParentDecorators::operator[](i)= pd;                                  \
 }                                                                       \
 WrappedDecorator back() const {                                         \
   IMP_USAGE_CHECK(!ParentDecorators::empty(),                           \
@@ -346,13 +381,21 @@ class Decorators: public ParentDecorators {
 
   IMP_DECORATORS_METHODS(WrappedDecorator::particle_is_instance(p),,,);
   public:
-  explicit Decorators(const Particles &ps): ParentDecorators(ps) {
+  explicit Decorators(const Particles &ps) {
     check(ps.begin(), ps.end());
+    ParentDecorators::reserve(ps.size());
+    for (unsigned int i=0; i< ps.size(); ++i) {
+      push_back(ps[i]);
+    }
   }
-  explicit Decorators(const ParticlesTemp &ds): ParentDecorators(ds){
+  explicit Decorators(const ParticlesTemp &ds) {
     check(ds.begin(), ds.end());
+    ParentDecorators::reserve(ds.size());
+    for (unsigned int i=0; i< ds.size(); ++i) {
+      push_back(ds[i]);
+    }
   }
-  explicit Decorators(unsigned int i): ParentDecorators(i){}
+  explicit Decorators(unsigned int i): ParentDecorators(i, WrappedDecorator()){}
   explicit Decorators(WrappedDecorator d): ParentDecorators(1, d){}
   explicit Decorators(unsigned int n,
                       WrappedDecorator d): ParentDecorators(n, d){}
@@ -459,70 +502,6 @@ class DecoratorsWithTraits: public ParentDecorators {
 
 
 IMP_SWAP_3(DecoratorsWithTraits);
-
-template <class WrappedDecorator, class ParentDecorators>
-class DecoratorsWithImplicitTraits: public ParentDecorators {
-  struct Proxy: public WrappedDecorator {
-    typedef typename ParentDecorators::reference Ref;
-    Ref d_;
-    Proxy(Ref t):
-      WrappedDecorator(t), d_(t){
-    }
-    Proxy(Ref p, bool): WrappedDecorator(), d_(p){}
-    void operator=(WrappedDecorator v) {
-      // traits should match, but not checked
-      WrappedDecorator::operator=(v);
-      d_=v;
-    }
-#ifdef _MSC_VER
-    // for VC, it can't otherwise figure out the conversion chain
-    operator Particle*() {
-      if (WrappedDecorator()==*this) return NULL;
-      else return WrappedDecorator::get_particle();
-    }
-#endif
-  };
-  Proxy get_proxy(unsigned int i) {
-    if (ParentDecorators::operator[](i)) {
-      return Proxy(ParentDecorators::operator[](i));
-    } else {
-      return Proxy(ParentDecorators::operator[](i), false);
-    }
-  }
-  typedef DecoratorsWithImplicitTraits<WrappedDecorator, ParentDecorators>
-  ThisDecorators;
-  IMP_DECORATORS_METHODS(WrappedDecorator::particle_is_instance(p),,,)
-  public:
-  explicit DecoratorsWithImplicitTraits():
-  ParentDecorators(WrappedDecorator::get_traits()) {}
-  explicit DecoratorsWithImplicitTraits(const Particles &ps):
-    ParentDecorators(ps, WrappedDecorator::get_traits()){
-  }
-  explicit DecoratorsWithImplicitTraits(unsigned int i):
-    ParentDecorators(i, WrappedDecorator::get_traits()){}
-  explicit DecoratorsWithImplicitTraits(WrappedDecorator d):
-    ParentDecorators(1,d){}
-  explicit DecoratorsWithImplicitTraits(unsigned int n,WrappedDecorator d):
-    ParentDecorators(n, d){}
-  explicit DecoratorsWithImplicitTraits(const ParticlesTemp &ds):
-    ParentDecorators(ds, WrappedDecorator::get_traits()){
-    check(ds.begin(), ds.end());
-  }
-#ifndef SWIG
-  Proxy
-  operator[](unsigned int i) {
-    return get_proxy(i);
-  }
-#endif
-
-#ifndef SWIG
-  WrappedDecorator operator[](unsigned int i) const {
-    return WrappedDecorator(ParentDecorators::operator[](i));
-  }
-#endif
-};
-
-IMP_SWAP_2(DecoratorsWithImplicitTraits);
 
 
 /** A class to add ref counting to a decorator */
