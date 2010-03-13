@@ -16,6 +16,7 @@ files = [
          'PairModifier.h',
          'PairScore.h',
          'Particle.h',
+         'ParticleTuple.h',
          'Pointer.h',
          'QuadContainer.h',
          'QuadFilter.h',

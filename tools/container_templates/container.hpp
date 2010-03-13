@@ -22,6 +22,7 @@
 #include "VersionInfo.h"
 #include "DerivativeAccumulator.h"
 #include "internal/OwnerPointer.h"
+#include "ParticleTuple.h"
 #include "macros.h"
 
 IMP_BEGIN_NAMESPACE
