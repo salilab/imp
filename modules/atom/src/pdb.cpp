@@ -9,7 +9,6 @@
 
 #include <IMP/atom/Atom.h>
 #include <IMP/atom/Residue.h>
-#include <IMP/core/Hierarchy.h>
 #include <IMP/atom/Chain.h>
 #include <IMP/atom/element.h>
 #include <boost/algorithm/string.hpp>
