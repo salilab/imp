@@ -31,6 +31,7 @@ struct Empty{};
 
 template <class Key, class Value, class Data>
 struct ArrayData: public ArrayDataBase, public Data {
+  typedef ArrayData This;
   ArrayData(std::string p):
     num_key((p+"_number").c_str()),
     prefix(p) {
@@ -39,6 +40,7 @@ struct ArrayData: public ArrayDataBase, public Data {
   std::vector<Key> keys;
   const IntKey num_key;
   const std::string prefix;
+  IMP_COMPARISONS_1(prefix);
 };
 
 template <class K, class V, class D>
@@ -78,7 +80,7 @@ struct ArrayOnAttributesHelper {
     return p->get_value(data_->num_key);
   }
 
-  void initialize_particle(Particle *p) {
+  void initialize_particle(Particle *p) const {
     IMP_INTERNAL_CHECK(data_, "Cannot used uninitialized HierarchyTraits");
     p->add_attribute(data_->num_key, 0);
   }
@@ -105,7 +107,7 @@ struct ArrayOnAttributesHelper {
   }
 
   unsigned int push_back(Particle *p,
-                         Value v) {
+                         Value v) const {
     IMP_INTERNAL_CHECK(data_, "Cannot used uninitialized ArrayHelper traits");
     unsigned int osz= p->get_value(data_->num_key);
     Key k= get_key(osz);
@@ -116,7 +118,7 @@ struct ArrayOnAttributesHelper {
 
   void insert(Particle *p,
               unsigned int loc,
-              Value v) {
+              Value v) const {
     IMP_INTERNAL_CHECK(data_, "Cannot used uninitialized HierarchyTraits");
     unsigned int osz= p->get_value(data_->num_key);
     IMP_USAGE_CHECK(loc <= osz, "Attribute array must be contiguous");
