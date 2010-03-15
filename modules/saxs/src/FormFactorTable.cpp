@@ -23,28 +23,42 @@ std::map<atom::Element, FormFactorTable::FormFactorAtomType>
 FormFactorTable::element_ff_type_map_;
 
 Float FormFactorTable::zero_form_factors_[] = {
-  -0.720147, 0.50824, 6.16294, 4.94998, 9.36656, 13.0855,
-  //   H        C        N        O        S         P
-  -0.720228, 6.993, 7.9864, 8.9805, 14.9965, 20.9946, 24.9936, 30.9825, 72.324,
-  //   He      Ne     Na      Mg       Ca      Fe       Zn       Se      Au
+  -0.720147, -0.720228,
+   //   H       He
+  1.591, 2.591, 3.591, 0.50824, 6.16294, 4.94998, 7.591, 6.993,
+  // Li     Be      B     C       N        O       F      Ne
+  7.9864, 8.9805, 9.984, 10.984, 13.0855, 9.36656, 13.984, 16.591,
+  //  Na      Mg     Al     Si      P        S       Cl     Ar
+  15.984, 14.9965, 20.984, 21.984, 20.9946, 23.984,
+  // K     Ca2+     Cr      Mn      Fe2+      Co
+  24.984, 25.984, 24.9936, 30.9825, 31.984, 49.16, 72.324,
+  // Ni   Cu      Zn2+       Se      Br      I       Au
   -0.211907, -0.932054, -1.6522, 5.44279, 4.72265,4.0025,4.22983,3.50968,8.64641
   //  CH        CH2        CH3     NH       NH2       NH3     OH       OH2   SH
 };
 
 Float FormFactorTable::vacuum_zero_form_factors_[] = {
-  0.999953, 5.9992, 6.9946, 7.9994, 15.9998, 14.9993,
-  //   H        C      N        O       S        P
-  0.999872, 9.999, 10.9924, 11.9865, 18.0025, 24.0006, 27.9996, 33.9885,78.9572,
-  //   He      Ne      Na      Mg       Ca      Fe       Zn       Se      Au
+  0.999953, 0.999872, 2.99, 3.99, 4.99, 5.9992, 6.9946, 7.9994, 8.99, 9.999,
+  //   H       He      Li     Be     B    C       N       O      F     Ne
+  10.9924, 11.9865, 12.99, 13.99, 14.9993, 15.9998, 16.99, 17.99,
+  //  Na      Mg     Al     Si      P        S       Cl     Ar
+  18.99, 18.0025,  23.99, 24.99,  24.0006, 26.99,
+  // K     Ca2+     Cr     Mn      Fe2+      Co
+  27.99, 28.99, 27.9996, 33.99, 34.99, 52.99, 78.9572,
+  // Ni   Cu      Zn2+    Se     Br     I        Au
   6.99915, 7.99911, 8.99906, 7.99455, 8.99451, 9.99446, 8.99935, 9.9993, 16.9998
   //  CH      CH2     CH3     NH       NH2       NH3     OH      OH2      SH
 };
 
 Float FormFactorTable::dummy_zero_form_factors_[] = {
-  1.7201, 5.49096, 0.83166, 3.04942, 6.63324, 1.91382,
-  //   H       C        N        O        S         P
-  1.7201, 3.006, 3.006, 3.006, 3.006, 3.006, 3.006, 3.006, 6.63324,
-  //  He     Ne    Na     Mg      Ca     Fe     Zn     Se      Au
+  1.7201, 1.7201, 1.399, 1.399, 1.399 , 5.49096, 0.83166, 3.04942, 1.399, 3.006,
+  //  H     He     Li?    Be?    B?       C        N        O      F?     Ne
+  3.006, 3.006, 3.006, 3.006, 1.91382, 6.63324, 3.006, 1.399,
+  // Na     Mg    Al?    Si?      P        S      Cl?    Ar?
+  3.006, 3.006, 3.006, 3.006, 3.006, 3.006,
+  // K?   Ca2+    Cr?    Mn?   Fe2+   Co?
+  3.006, 3.006, 3.006, 3.006, 3.006, 3.83, 6.63324,
+  // Ni?   Cu?   Zn2+    Se     Br?     I?    Au
   7.21106, 8.93116, 10.6513, 2.55176, 4.27186, 5.99196, 4.76952, 6.48962,8.35334
   //  CH       CH2      CH3     NH       NH2       NH3     OH       OH2   SH
 };
@@ -121,18 +135,34 @@ FormFactorTable::FormFactorTable(const String& table_name, Float min_q,
 void FormFactorTable::init_element_form_factor_map() {
   element_ff_type_map_[atom::H] = H;
   element_ff_type_map_[atom::He] = He;
+  element_ff_type_map_[atom::Li] = Li;
+  element_ff_type_map_[atom::Be] = Be;
+  element_ff_type_map_[atom::B] = B;
   element_ff_type_map_[atom::C] = C;
   element_ff_type_map_[atom::N] = N;
   element_ff_type_map_[atom::O] = O;
+  element_ff_type_map_[atom::F] = F;
   element_ff_type_map_[atom::Ne] = Ne;
   element_ff_type_map_[atom::Na] = Na;
   element_ff_type_map_[atom::Mg] = Mg;
+  element_ff_type_map_[atom::Al] = Al;
+  element_ff_type_map_[atom::Si] = Si;
   element_ff_type_map_[atom::P] = P;
   element_ff_type_map_[atom::S] = S;
+  element_ff_type_map_[atom::Cl] = Cl;
+  element_ff_type_map_[atom::Ar] = Ar;
+  element_ff_type_map_[atom::K] = K;
   element_ff_type_map_[atom::Ca] = Ca;
+  element_ff_type_map_[atom::Cr] = Cr;
+  element_ff_type_map_[atom::Mn] = Mn;
   element_ff_type_map_[atom::Fe] = Fe;
+  element_ff_type_map_[atom::Co] = Co;
+  element_ff_type_map_[atom::Ni] = Ni;
+  element_ff_type_map_[atom::Cu] = Cu;
   element_ff_type_map_[atom::Zn] = Zn;
   element_ff_type_map_[atom::Se] = Se;
+  element_ff_type_map_[atom::Br] = Br;
+  element_ff_type_map_[atom::I] = I;
   element_ff_type_map_[atom::Au] = Au;
 }
 

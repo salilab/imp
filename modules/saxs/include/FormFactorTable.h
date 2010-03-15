@@ -70,9 +70,12 @@ private:
   // ALL_ATOM_SIZE is number of types needed for all atom representation
   // this indexing is used in form_factors arrays
   enum FormFactorAtomType {
-    H, C, N, O, S, P, He, Ne, Na, Mg, Ca, Fe, Zn, Se, Au, ALL_ATOM_SIZE = 15,
-    CH=15, CH2=16, CH3=17, NH=18, NH2=19, NH3=20, OH=21, OH2=22, SH=23,
-    HEAVY_ATOM_SIZE=24, UNK=25};
+    H, He, Li, Be, B, C, N, O, F, Ne, // periodic table, lines 1-2 (10)
+    Na, Mg, Al, Si, P, S, Cl, Ar, // line 3 (8)
+    K, Ca, Cr, Mn, Fe, Co, Ni, Cu, Zn, Se, Br, // line 4 (11)
+    I, Au, ALL_ATOM_SIZE = 31,
+    CH=31, CH2=32, CH3=33, NH=34, NH2=35, NH3=36, OH=37, OH2=38, SH=39,
+    HEAVY_ATOM_SIZE=40, UNK=41};
 
   // map between atom element and FormFactorAtomType
   static std::map<atom::Element, FormFactorAtomType> element_ff_type_map_;
