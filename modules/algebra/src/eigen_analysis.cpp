@@ -31,7 +31,7 @@ const std::vector<VectorD<3> > &ps){
   PrincipalComponentAnalysis ed(VectorD<3>(V[0][0],V[1][0],V[2][0]),
                                 VectorD<3>(V[0][1],V[1][1],V[2][1]),
                                 VectorD<3>(V[0][2],V[1][2],V[2][2]),
-                                VectorD<3>(SV[0],SV[1],SV[2]));
+                                VectorD<3>(SV[0],SV[1],SV[2]),m);
   return ed;
 }
 IMPALGEBRA_END_NAMESPACE
