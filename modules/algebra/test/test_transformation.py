@@ -62,6 +62,25 @@ class Transformation2DTests(IMP.test.TestCase):
         print "V1: " + str(v1)
         self.assertInTolerance(v1[2],0.0,.01)
 
+    def test_transformation_between_two_reference_frames(self):
+        u1 = IMP.algebra.Vector3D(random.uniform(-100.,100.),
+                                 random.uniform(-200.,200.),
+                                 0.)
+        w1 = IMP.algebra.Vector3D(random.uniform(-50.,50.),
+                                 random.uniform(-50.,50.),
+                                 0.)
+        base1 = IMP.algebra.Vector3D(random.uniform(-50.,50.),
+                                 random.uniform(-50.,50.),
+                                 0.)
+        u2 = IMP.algebra.Vector3D(1.,0.,0.)
+        w2 = IMP.algebra.Vector3D(0.,1.,0.)
+        base2 = IMP.algebra.Vector3D(0.,0.,0.)
+        t1=IMP.algebra.get_transformation_from_first_to_second_reference_frame(
+            u2,w2,base2,u1,w1,base1)
+        t2=IMP.algebra.get_transformation_from_reference_frame(
+            u1,w1,base1)
+        dist=IMP.algebra.get_distance(t1.get_rotation(),t2.get_rotation())
+        self.assertInTolerance(dist,0.0,0.001)
 
 class Transformation3DTests(IMP.test.TestCase):
 

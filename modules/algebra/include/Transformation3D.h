@@ -130,6 +130,29 @@ get_transformation_from_reference_frame(const VectorD<3> &u,
   return Transformation3D(rot,base);
 }
 
+
+//! Generate a transformation from first to second reference frame
+/**
+  \brief the function maps a reference frame defined
+         by (u1,w1,base1) onto a second
+         reference frame defined by (u2,w2,base2).
+         A reference frame is defined by two perpendicular vectors (u and w)
+         and the reference frame center (base)
+   \todo we should define a ReferenceFrame class
+         with basic functions like get_transformed
+   \relatesalso Transformation3D
+*/
+inline Transformation3D
+get_transformation_from_first_to_second_reference_frame(
+    const VectorD<3> &u1,const VectorD<3> &w1,const VectorD<3> &base1,
+    const VectorD<3> &u2,const VectorD<3> &w2,const VectorD<3> &base2) {
+  algebra::Transformation3D one2ref=
+    algebra::get_transformation_from_reference_frame(u1,w1,base1).get_inverse();
+  algebra::Transformation3D ref2two=
+    algebra::get_transformation_from_reference_frame(u2,w2,base2);
+  return ref2two*one2ref;
+}
+
 //! Generate a Transformation3D object from a rotation around a point
 /** Rotate about a point rather than the origin.
   \param[in] point Center to rotate about
