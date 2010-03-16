@@ -2,7 +2,7 @@
 \par Week of March 13, 2010
 - function get_rotation_in_radians_about_axis() was renamed to get_rotation_about_axis() as it didn't parse and we don't have the "in radians" elsewhere.
 
-- Added IMP::algebra::ReferenceFrame3D. As part of the cleanup, IMP::core::RigidBody::set_reference_frame() replaces set_transformation(). And the reference-frame related transformation construction functions were replaced. IMP::algebra::get_rotation_from_x_y_axes() was added to aid in the construction of reference frames.
+- Added IMP::algebra::ReferenceFrame3D. As part of the cleanup, IMP::core::RigidBody::set_reference_frame() replaces set_transformation(). And the reference-frame related transformation construction functions were replaced. IMP::algebra::get_rotation_from_x_y_axes() was added to aid in the construction of reference frames (and replaces the algebra function taking three vectors).
 
 \par Week of March 6, 2010
 - Publications now have a description field to give browsers an indication of what is in the publication to aid selection of what to read/cite.
