@@ -55,9 +55,9 @@ CommonEndpointPairFilter::get_input_particles(const ParticlePair& pt)
   return ret;
 }
 
-ObjectsTemp
-CommonEndpointPairFilter::get_input_objects(const ParticlePair& pt) const {
-  return ObjectsTemp();
+ContainersTemp
+CommonEndpointPairFilter::get_input_containers(const ParticlePair& pt) const {
+  return ContainersTemp();
 }
 
 IMPMISC_END_NAMESPACE
