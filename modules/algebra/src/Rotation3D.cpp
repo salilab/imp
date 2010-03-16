@@ -350,7 +350,7 @@ Rotation3D get_rotation_from_x_y_axes(const VectorD<3> &x,
   VectorD<3> z = get_vector_product(x,y);
   Rotation3D rot = get_rotation_from_matrix(x[0],y[0], z[0],
                                             x[1], y[1], z[1],
-                                            x[0],y[1],z[2]);
+                                            x[2],y[2],z[2]);
   return rot;
 }
 

@@ -127,7 +127,7 @@ class RotationTests(IMP.test.TestCase):
         print "Inputs"
         r0.show()
         r1.show()
-        r5= IMP.algebra.interpolate(r0, r1, .5)
+        r5= IMP.algebra.get_interpolated(r0, r1, .5)
         d= r5/r0
         r1p= d*d*r0
         print "final"
