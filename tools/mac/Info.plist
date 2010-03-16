@@ -5,7 +5,7 @@
 	<key>CFBundleGetInfoString</key>
 	<string>1.0, Sali Lab</string>
 	<key>CFBundleIdentifier</key>
-	<string>org.salilab</string>
+	<string>org.salilab.imp</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
 	<key>IFPkgFlagAllowBackRev</key>
