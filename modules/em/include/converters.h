@@ -28,11 +28,25 @@ type Float.
 \param[in] threshold only voxels with density above the given threshold will
            be converted to particles
 \param[in] m model to store the new particles
+\param[in] step sample every X steps in each direction
 \return particles corresponding to all voxels above the threshold
  */
 IMPEMEXPORT Particles density2particles(DensityMap &dmap, Float threshold,
-                                        Model *m);
+                                        Model *m,int step=1);
 
+
+//! Converts a density grid to a set of paritlces
+/**
+Each such particle will be have xyz attributes and a density_val attribute of
+type Float.
+\param[in] dmap the density map
+\param[in] threshold only voxels with density above the given threshold will
+           be converted to particles
+\return a set of vector3Ds corresponding to the positions of all voxels
+        above the threshold
+ */
+IMPEMEXPORT std::vector<algebra::VectorD<3> >
+    density2vectors(DensityMap &dmap, Float threshold);
 
 //! Resample a set of particles into a density grid
 /**
