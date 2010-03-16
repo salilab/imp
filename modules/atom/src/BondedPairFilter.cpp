@@ -44,9 +44,9 @@ ParticlesTemp BondedPairFilter
 }
 
 
-ObjectsTemp
-BondedPairFilter::get_input_objects(const ParticlePair& pt) const {
-  return ObjectsTemp();
+ContainersTemp
+BondedPairFilter::get_input_containers(const ParticlePair& pt) const {
+  return ContainersTemp();
 }
 void BondedPairFilter::do_show(std::ostream &out) const {
 }

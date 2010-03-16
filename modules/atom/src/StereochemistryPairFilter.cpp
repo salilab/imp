@@ -59,9 +59,9 @@ void StereochemistryPairFilter::rebuild_map() {
   }
 }
 
-ObjectsTemp
-StereochemistryPairFilter::get_input_objects(const ParticlePair& pt) const {
-  return ObjectsTemp();
+ContainersTemp
+StereochemistryPairFilter::get_input_containers(const ParticlePair& pt) const {
+  return ContainersTemp();
 }
 
 void StereochemistryPairFilter::do_show(std::ostream &out) const {
