@@ -28,5 +28,24 @@ class EigenAnalysisTests(IMP.test.TestCase):
         self.assertInTolerance(ed.get_principal_value(0),1.28,.1)
         self.assertInTolerance(ed.get_principal_value(1),0.049,.1)
         ed.show()
+
+    def test_pca_from_random_points(self):
+        """Testing eigen analysis """
+        vs = []
+        bb= IMP.algebra.BoundingBox3D(
+              IMP.algebra.Vector3D(-100.,-100.,-100.),
+              IMP.algebra.Vector3D(100.,100.,100.))
+        for i in range(50):
+            vs.append(IMP.algebra.get_random_vector_in(bb))
+        vs_mean=IMP.algebra.Vector3D(0.,0.,0.)
+        for i in range(50):
+            vs_mean = vs_mean+vs[i]
+        vs_mean = vs_mean/50
+
+        ed = IMP.algebra.get_principal_components(vs)
+        self.assert_(ed.get_principal_value(0)>ed.get_principal_value(1))
+        self.assert_(ed.get_principal_value(1)>ed.get_principal_value(2))
+        self.assertInTolerance(IMP.algebra.get_distance(vs_mean,ed.get_centroid()),0.,.1)
+
 if __name__ == '__main__':
     unittest.main()
