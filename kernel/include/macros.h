@@ -421,6 +421,8 @@ IMP_SHOWABLE;
 public:                                                                 \
  IMP_NO_DOXYGEN(typedef Name This;)                                     \
  Name(): DecoratorWithTraits<Parent, TraitsType>(){}                    \
+ Name(const TraitsType &tr):                                            \
+   DecoratorWithTraits<Parent, TraitsType>(tr) {}                       \
  Name(::IMP::Particle *p,                                               \
       const TraitsType &tr=default_traits):                             \
    DecoratorWithTraits<Parent, TraitsType>(p, tr) {                     \
