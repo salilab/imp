@@ -12,6 +12,7 @@ files = [
          'MultiArray.h',
          'ParabolicFit.h',
          'Plane3D.h',
+         'ReferenceFrame3D.h',
          'Rotation2D.h',
          'Rotation3D.h',
          'Segment3D.h',
