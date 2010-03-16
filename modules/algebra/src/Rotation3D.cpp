@@ -14,14 +14,6 @@ IMPALGEBRA_BEGIN_NAMESPACE
 Rotation3D::~Rotation3D() {
 }
 
-Rotation3D Rotation3D::get_inverse() const {
-  IMP_USAGE_CHECK(v_.get_squared_magnitude() != 0,
-            "Attempting to invert uninitialized rotation");
-  Rotation3D ret(v_[0], -v_[1], -v_[2], -v_[3]);
-  return ret;
-}
-
-
 
 Rotation3D get_rotation_from_matrix(double m11,double m12,double m13,
                                     double m21,double m22,double m23,
@@ -76,6 +68,87 @@ Rotation3D get_rotation_from_matrix(double m11,double m12,double m13,
   if (m21-m12 < 0.0) d=-d;
   return Rotation3D(a,b,c,d);
 }
+
+
+const VectorD<3> Rotation3D::get_derivative(const VectorD<3> &o,
+                                            unsigned int i) const {
+    /* The computation was derived in maple. Source code is probably in
+       modules/algebra/tools
+    */
+    double t4 = v_[0]*o[0] - v_[3]*o[1] + v_[2]*o[2];
+    double t5 = square(v_[0]);
+    double t6 = square(v_[1]);
+    double t7 = square(v_[2]);
+    double t8 = square(v_[3]);
+    double t9 = t5 + t6 + t7 + t8;
+    double t10 = 1.0/t9;
+    double t11 = 2*t4*t10;
+    double t14 = v_[1]*v_[2];
+    double t15 = v_[0]*v_[3];
+
+    double t19 = v_[1]*v_[3];
+    double t20 = v_[0]*v_[2];
+    double t25 = square(t9);
+    double t26 = 1.0/t25;
+
+    double t27 = ((t5 + t6 - t7 - t8)*o[0] + 2*(t14 - t15)*o[1]
+                  + 2*(t19 + t20)*o[2])*t26;
+
+    double t34 = v_[3]*o[0] + v_[0]*o[1] - v_[1]*o[2];
+    double t35 = 2*t34*t10;
+    double t41 = v_[2]*v_[3];
+    double t42 = v_[0]*v_[1];
+
+    double t47 = (2*(t14 + t15)*o[0] + (t5 - t6 + t7 - t8)*o[1]
+                  + 2*(t41 - t42)*o[2])*t26;
+
+    double t54 = -v_[2]*o[0] + v_[1]*o[1] + v_[0]*o[2];
+    double t55 = 2*t54*t10;
+
+    double t65 = (2*(t19 - t20)*o[0] + 2*(t41 + t42)*o[1]
+                  + (t5 - t6 - t7 + t8)*o[2])*t26;
+
+    double t73 = 2*(v_[1]*o[0] + v_[2]*o[1] + v_[3]*o[2])*t10;
+
+    /*all[1, 1] = t11 - 2*t27*v_[0];
+      all[1, 2] = t35 - 2*t47*v_[0];
+      all[1, 3] = t55 - 2*t65*v_[0];
+
+      all[2, 1] = t73 - 2*t27*v_[1];
+      all[2, 2] = -2*t54 t10 - 2*t47*v_[1];
+      all[2, 3] = t35 - 2*t65*v_[1];
+
+      all[3, 1] = t55 - 2*t27*v_[2];
+      all[3, 2] = t73 - 2*t47*v_[2];
+      all[3, 3] = -2*t4 t10 - 2*t65*v_[2];
+
+      all[4, 1] = -2*t34 t10 - 2*t27*v_[3];
+      all[4, 2] = t11 - 2*t47*v_[3];
+      all[4, 3] = t73 - 2*t65*v_[3];
+    */
+
+    switch (i) {
+    case 0:
+      return VectorD<3>(t11 - 2*t27*v_[0],
+                        t35 - 2*t47*v_[0],
+                        t55 - 2*t65*v_[0]);
+    case 1:
+      return VectorD<3>(t73 - 2*t27*v_[1],
+                        -2*t54*t10 - 2*t47*v_[1],
+                        t35 - 2*t65*v_[1]);
+    case 2:
+      return VectorD<3>(t55 - 2*t27*v_[2],
+                        t73 - 2*t47*v_[2],
+                        -2*t4*t10 - 2*t65*v_[2]);
+    case 3:
+      return VectorD<3>(-2*t34*t10 - 2*t27*v_[3],
+                        t11 - 2*t47*v_[3],
+                        t73 - 2*t65*v_[3]);
+    default:
+      throw IndexException("Invalid derivative component");
+    };
+    return VectorD<3>(0,0,0);
+  }
 
 Rotation3D get_random_rotation_3d() {
   VectorD<4> r= get_random_vector_on<4>(get_unit_sphere_d<4>());
@@ -231,4 +304,66 @@ FixedXYZ get_fixed_xyz_from_rotation(const Rotation3D &r) {
      std::atan2(mat31, std::sqrt(std::pow(mat21,2)+ std::pow(mat11,2))),
      std::atan2(mat21, mat11));
 }
+
+Rotation3D get_rotation_in_radians_about_axis(const VectorD<3>& axis,
+                                                     double angle)
+{
+  //normalize the vector
+  VectorD<3> axis_norm = axis.get_unit_vector();
+  double s = std::sin(angle/2);
+  double a,b,c,d;
+  a = std::cos(angle/2);
+  b = axis_norm[0]*s;
+  c = axis_norm[1]*s;
+  d = axis_norm[2]*s;
+  return Rotation3D(a,b,c,d);
+}
+
+Rotation3D get_rotation_taking_first_to_second(const VectorD<3> &v1,
+                                               const VectorD<3> &v2) {
+  VectorD<3> v1_norm = v1.get_unit_vector();
+  VectorD<3> v2_norm = v2.get_unit_vector();
+  //get a vector that is perpendicular to the plane containing v1 and v2
+  VectorD<3> vv = get_vector_product(v1_norm,v2_norm);
+  //get the angle between v1 and v2
+  double dot = v1_norm*v2_norm;
+  dot = ( dot < -1.0 ? -1.0 : ( dot > 1.0 ? 1.0 : dot ) );
+  double angle = std::acos(dot);
+  //check a special case: the input vectors are parallel / antiparallel
+  if (std::abs(dot) == 1.0) {
+    IMP_LOG(VERBOSE," the input vectors are (anti)parallel "<<std::endl);
+    return get_rotation_in_radians_about_axis(get_orthogonal_vector(v1),
+                                              angle);
+  }
+  return get_rotation_in_radians_about_axis(vv,angle);
+}
+
+
+Rotation3D get_rotation_from_x_y_axes(const VectorD<3> &x,
+                                             const VectorD<3> &y) {
+  IMP_USAGE_CHECK(std::abs(x.get_squared_magnitude()-1.0) < .1,
+                  "The x vector is not a unit vector.");
+  IMP_USAGE_CHECK(std::abs(y.get_squared_magnitude()-1.0) < .1,
+                  "The y vector is not a unit vector.");
+  IMP_USAGE_CHECK(std::abs(x*y) < .1,
+                  "The x and y vectors are not perpendicular.");
+  VectorD<3> z = get_vector_product(x,y);
+  Rotation3D rot = get_rotation_from_matrix(x[0],y[0], z[0],
+                                            x[1], y[1], z[1],
+                                            x[0],y[1],z[2]);
+  return rot;
+}
+
+std::pair<VectorD<3>,double> get_axis_and_angle(
+                                      const Rotation3D &rot) {
+  VectorD<4> q = rot.get_quaternion();
+  double a,b,c,d;
+  a=q[0];b=q[1];c=q[2];d=q[3];
+
+  double angle = std::acos(a)*2;
+  double s = std::sin(angle/2);
+  VectorD<3> axis(b/s,c/s,d/s);
+  return std::pair<VectorD<3>,double>(axis.get_unit_vector(),angle);
+}
+
 IMPALGEBRA_END_NAMESPACE
