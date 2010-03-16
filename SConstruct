@@ -164,4 +164,3 @@ except:
     print "Unable to add summary target."
     pass
 env.AlwaysBuild("build/tmp/build_summary.passed")
-print BUILD_TARGETS
