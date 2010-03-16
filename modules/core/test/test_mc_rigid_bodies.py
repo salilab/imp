@@ -64,9 +64,11 @@ class MCOptimizerTest(IMP.test.TestCase):
         lopt.set_model(self.m)
         opt.set_local_optimizer(lopt)
         for i in range(0,5):
+            print "run", i
             opt.optimize(20)
             e = self.m.evaluate(False)
         self.assertAlmostEqual(e, 0.0, places=2)
+        print "all done"
 
 if __name__ == '__main__':
     unittest.main()

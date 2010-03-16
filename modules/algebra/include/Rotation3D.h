@@ -227,18 +227,21 @@ inline double get_distance(const Rotation3D &r0,
 //! Generate a Rotation3D object from a rotation around an axis
 /**
    \param[in] axis the rotation axis passes through (0,0,0)
-   \param[in] angle the rotation angle in radians
+   \param[in] angle the rotation angle in radians in the
+   clockwise direction
    \note http://en.wikipedia.org/wiki/Rotation_matrix
    \note www.euclideanspace.com/maths/geometry/rotations/conversions/
    angleToQuaternion/index.htm
    \relatesalso Rotation3D
 */
-Rotation3D get_rotation_in_radians_about_axis(const VectorD<3>& axis,
-                                              double angle);
+IMPALGEBRAEXPORT
+Rotation3D get_rotation_about_axis(const VectorD<3>& axis,
+                                   double angle);
 
 //! Create a rotation from the first vector to the second one.
 /** \relatesalso Rotation3D
  */
+IMPALGEBRAEXPORT
 Rotation3D get_rotation_taking_first_to_second(const VectorD<3> &v1,
                                                const VectorD<3> &v2);
 
@@ -449,6 +452,7 @@ inline Rotation3D get_interpolated(const Rotation3D &a,
 /** Return the rotation which takes the x and y axes to the given x and y axes.
     The two axis must be perpendicular unit vectors.
 */
+IMPALGEBRAEXPORT
 Rotation3D get_rotation_from_x_y_axes(const VectorD<3> &x,
                                       const VectorD<3> &y);
 
@@ -459,8 +463,8 @@ Rotation3D get_rotation_from_x_y_axes(const VectorD<3> &x,
    angleToQuaternion/index.htm
    \relatesalso Rotation3D
 */
-std::pair<VectorD<3>,double> get_axis_and_angle(
-                                        const Rotation3D &rot);
+IMPALGEBRAEXPORT
+std::pair<VectorD<3>,double> get_axis_and_angle(const Rotation3D &rot);
 
 typedef std::pair<VectorD<3>,double> AxisAnglePair;
 #ifndef IMP_DOXYGEN

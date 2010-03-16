@@ -96,63 +96,6 @@ inline Transformation3D get_identity_transformation_3d() {
   return Transformation3D(get_identity_rotation_3d(),VectorD<3>(0.0,0.0,0.0));
 }
 
-//! Generate a transformation from the natural reference-frame to
-//!  a different one
-/**
-  \param[in] u     vector used to define the new reference frame
-  \param[in] w     vector used to define the new reference frame
-  \param[in] base  the center of the new reference frame
-  \brief A rotation from the natural reference frame to one defined by u,w
-         and base.
-         The x-axis lies on u-base.
-         The y-axis is perpendicular to both x and z.
-         The z-axis is perpendicular to the u-base , w-base plane
-
-   \note This function is poorly designed and liable the change. The
-   main problem comes from having the three arguments of the same type
-   with no natural order amongst them.
-
-   \relatesalso Transformation3D
- */
-inline Transformation3D
-get_transformation_from_reference_frame(const VectorD<3> &u,
-                                        const VectorD<3> &w,
-                                        const VectorD<3> &base) {
-  VectorD<3> x = (u-base);
-  VectorD<3> z = get_vector_product(x,w-base);
-  VectorD<3> y = get_vector_product(z,x);
-  VectorD<3> xu = x.get_unit_vector();
-  VectorD<3> zu = z.get_unit_vector();
-  VectorD<3> yu = y.get_unit_vector();
-  Rotation3D rot = get_rotation_from_matrix(xu[0],xu[1],xu[2],
-                                            yu[0],yu[1],yu[2],
-                                            zu[0],zu[1],zu[2]).get_inverse();
-  return Transformation3D(rot,base);
-}
-
-
-//! Generate a transformation from first to second reference frame
-/**
-  \brief the function maps a reference frame defined
-         by (u1,w1,base1) onto a second
-         reference frame defined by (u2,w2,base2).
-         A reference frame is defined by two perpendicular vectors (u and w)
-         and the reference frame center (base)
-   \todo we should define a ReferenceFrame class
-         with basic functions like get_transformed
-   \relatesalso Transformation3D
-*/
-inline Transformation3D
-get_transformation_from_first_to_second_reference_frame(
-    const VectorD<3> &u1,const VectorD<3> &w1,const VectorD<3> &base1,
-    const VectorD<3> &u2,const VectorD<3> &w2,const VectorD<3> &base2) {
-  algebra::Transformation3D one2ref=
-    algebra::get_transformation_from_reference_frame(u1,w1,base1).get_inverse();
-  algebra::Transformation3D ref2two=
-    algebra::get_transformation_from_reference_frame(u2,w2,base2);
-  return ref2two*one2ref;
-}
-
 //! Generate a Transformation3D object from a rotation around a point
 /** Rotate about a point rather than the origin.
   \param[in] point Center to rotate about

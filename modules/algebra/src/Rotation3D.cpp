@@ -305,8 +305,8 @@ FixedXYZ get_fixed_xyz_from_rotation(const Rotation3D &r) {
      std::atan2(mat21, mat11));
 }
 
-Rotation3D get_rotation_in_radians_about_axis(const VectorD<3>& axis,
-                                                     double angle)
+Rotation3D get_rotation_about_axis(const VectorD<3>& axis,
+                                   double angle)
 {
   //normalize the vector
   VectorD<3> axis_norm = axis.get_unit_vector();
@@ -332,10 +332,10 @@ Rotation3D get_rotation_taking_first_to_second(const VectorD<3> &v1,
   //check a special case: the input vectors are parallel / antiparallel
   if (std::abs(dot) == 1.0) {
     IMP_LOG(VERBOSE," the input vectors are (anti)parallel "<<std::endl);
-    return get_rotation_in_radians_about_axis(get_orthogonal_vector(v1),
+    return get_rotation_about_axis(get_orthogonal_vector(v1),
                                               angle);
   }
-  return get_rotation_in_radians_about_axis(vv,angle);
+  return get_rotation_about_axis(vv,angle);
 }
 
 

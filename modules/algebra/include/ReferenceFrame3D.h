@@ -31,8 +31,14 @@ public:
   ReferenceFrame3D(const Transformation3D &tr): tr_(tr),
     tri_(tr.get_inverse()){}
   ~ReferenceFrame3D();
-  //! Get the transformation taking the default reference frame to this one.
-  const Transformation3D &get_transformation() const {return tr_;}
+  //! Get the transformation taking the global reference frame to this one.
+  const Transformation3D &get_transformation_to() const {
+    return tr_;
+  }
+  //! Get the transformation from this one to the global reference.
+  const Transformation3D &get_transformation_from() const {
+    return tri_;
+  }
   //! Assume the input vector is in local coordinates and transform
   //! it to global ones.
   Vector3D get_global_coordinates(const Vector3D &v) const {
@@ -53,13 +59,13 @@ IMP_VALUES(ReferenceFrame3D, ReferenceFrame3Ds);
 
 inline ReferenceFrame3D
 get_transformed(const ReferenceFrame3D &rf, const Transformation3D &tr) {
-  return ReferenceFrame3D(tr*rf.get_transformation());
+  return ReferenceFrame3D(tr*rf.get_transformation_to());
 }
 
 inline Transformation3D
 get_transformation_from_first_to_second(const ReferenceFrame3D &a,
                                         const ReferenceFrame3D &b) {
-  return b.get_transformation()/a.get_transformation();
+  return b.get_transformation_to()*a.get_transformation_from();
 }
 
 IMPALGEBRA_END_NAMESPACE

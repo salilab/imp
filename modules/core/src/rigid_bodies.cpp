@@ -103,7 +103,8 @@ namespace {
   void AccumulateRigidBodyDerivatives::apply(Particle *p,
                                              DerivativeAccumulator &da) const {
     RigidBody rb(p);
-    algebra::Rotation3D rot= rb.get_transformation().get_rotation();
+    algebra::Rotation3D rot= rb.get_reference_frame()
+      .get_transformation_to().get_rotation();
     IMP_LOG(TERSE, "Accumulating rigid body derivatives" << std::endl);
     algebra::VectorD<3> v(0,0,0);
     algebra::VectorD<4> q(0,0,0,0);
@@ -238,7 +239,8 @@ RigidBody RigidBody::internal_setup_particle(Particle *p,
   IMP_LOG(VERBOSE, I2 << std::endl);
   internal::add_required_attributes_for_body(p);
   RigidBody d(p);
-  d.set_transformation(algebra::Transformation3D(rot, v));
+  d.set_reference_frame(algebra::ReferenceFrame3D(
+                                algebra::Transformation3D(rot, v)));
   IMP_LOG(VERBOSE, "Particle is " << d << std::endl);
   cover_rigid_body(d, members);
   return d;
@@ -257,8 +259,10 @@ RigidBody RigidBody::setup_particle(Particle *p,
 RigidBody RigidBody::setup_particle(Particle *p,
                                     const XYZs &members){
   RigidBody d=internal_setup_particle(p, members);
-  algebra::Rotation3D roti= d.get_transformation().get_rotation().get_inverse();
-  algebra::VectorD<3> transi= -d.get_transformation().get_translation();
+  algebra::Rotation3D roti= d.get_reference_frame()
+    .get_transformation_from().get_rotation();
+  algebra::VectorD<3> transi= d.get_reference_frame()
+    .get_transformation_from().get_translation();
   for (unsigned int i=0; i< members.size(); ++i) {
     d.add_member_internal(members[i], roti, transi, false);
     //IMP_LOG(VERBOSE, " " << cm << " | " << std::endl);
@@ -272,7 +276,7 @@ RigidBody RigidBody::setup_particle(Particle *p,
       algebra::VectorD<3> nv= d.get_coordinates(cm);
       IMP_INTERNAL_CHECK((v-nv).get_squared_magnitude() < .1,
                          "Bad initial orientation "
-                         << d.get_transformation() << std::endl
+                         << d.get_reference_frame() << std::endl
                          << v << std::endl
                          << nv);
     }
@@ -305,7 +309,7 @@ RigidBody::normalize_rotation() {
 
 void RigidBody::update_members() {
   normalize_rotation();
-  algebra::Transformation3D tr= get_transformation();
+  algebra::Transformation3D tr= get_reference_frame().get_transformation_to();
   Hierarchy hd(get_particle(), internal::rigid_body_data().htraits_);
   for (unsigned int i=0; i< hd.get_number_of_children(); ++i) {
     RigidMember rm(hd.get_child(i));
@@ -315,19 +319,21 @@ void RigidBody::update_members() {
   for (unsigned int i=0; i< hdb.get_number_of_children(); ++i) {
     RigidMember rm(hdb.get_child(i));
     RigidBody rb(rm);
-    rb.set_transformation(tr*rm.get_internal_transformation());
+    rb.set_reference_frame(algebra::ReferenceFrame3D(tr
+                                     *rm.get_internal_transformation()));
   }
 }
 
 
-IMP::algebra::Transformation3D
-RigidBody::get_transformation() const {
+IMP::algebra::ReferenceFrame3D
+RigidBody::get_reference_frame() const {
   IMP::algebra::Rotation3D
     rot(get_particle()->get_value(internal::rigid_body_data().quaternion_[0]),
         get_particle()->get_value(internal::rigid_body_data().quaternion_[1]),
         get_particle()->get_value(internal::rigid_body_data().quaternion_[2]),
         get_particle()->get_value(internal::rigid_body_data().quaternion_[3]));
-  return IMP::algebra::Transformation3D(rot, get_coordinates());
+  return algebra::ReferenceFrame3D(algebra::Transformation3D(rot,
+                                                           get_coordinates()));
 }
 
 RigidMembers
@@ -358,9 +364,8 @@ RigidMember RigidBody::get_member(unsigned int i) const {
 }
 
 void RigidBody::add_member(XYZ d) {
-  algebra::Transformation3D tr= get_transformation();
-  algebra::Rotation3D roti= tr.get_rotation().get_inverse();
-  add_member_internal(d, roti, -tr.get_translation(), true);
+  algebra::Transformation3D tr= get_reference_frame().get_transformation_from();
+  add_member_internal(d, tr.get_rotation(), tr.get_translation(), true);
 }
 
 void RigidBody::add_member_internal(XYZ d, const algebra::Rotation3D &roti,
@@ -378,15 +383,17 @@ void RigidBody::add_member_internal(XYZ d, const algebra::Rotation3D &roti,
 }
 
 void RigidBody::add_member(RigidBody d) {
-  algebra::Transformation3D tri= get_transformation().get_inverse();
+  algebra::ReferenceFrame3D r= get_reference_frame();
   internal::add_required_attributes_for_body_member(d);
   RigidMember cm(d);
   Hierarchy hc(d, internal::rigid_body_data().hbtraits_);
   Hierarchy hd(*this, internal::rigid_body_data().hbtraits_);
   hd.add_child(hc);
-  algebra::Transformation3D btr=d.get_transformation();
   // want tr*ltr= btr, so ltr= tr-1*btr
-  cm.set_internal_transformation(tri*btr);
+  algebra::Transformation3D tr
+    =algebra::get_transformation_from_first_to_second(r,
+                                                      d.get_reference_frame());
+  cm.set_internal_transformation(tr);
   cover_rigid_body(*this, get_members());
 }
 
@@ -428,27 +435,27 @@ void RigidBody::set_coordinates_are_optimized(bool tf) {
 algebra::VectorD<3> RigidBody::get_coordinates(RigidMember p)
   const {
   algebra::VectorD<3> lp= p.get_internal_coordinates();
-  IMP::algebra::Transformation3D tr= get_transformation();
-  return tr.get_transformed(lp);
+  return get_reference_frame().get_global_coordinates(lp);
 }
 
 void RigidBody
-::lazy_set_transformation(const IMP::algebra::Transformation3D &tr) {
-  algebra::VectorD<4> v= tr.get_rotation().get_quaternion();
+::lazy_set_reference_frame(const IMP::algebra::ReferenceFrame3D &tr) {
+  algebra::VectorD<4> v
+    = tr.get_transformation_to().get_rotation().get_quaternion();
   get_particle()->set_value(internal::rigid_body_data().quaternion_[0], v[0]);
   get_particle()->set_value(internal::rigid_body_data().quaternion_[1], v[1]);
   get_particle()->set_value(internal::rigid_body_data().quaternion_[2], v[2]);
   get_particle()->set_value(internal::rigid_body_data().quaternion_[3], v[3]);
-  set_coordinates(tr.get_translation());
+  set_coordinates(tr.get_transformation_to().get_translation());
 }
 
 void RigidBody
-::set_transformation(const IMP::algebra::Transformation3D &tr) {
-  lazy_set_transformation(tr);
+  ::set_reference_frame(const IMP::algebra::ReferenceFrame3D &tr) {
+  lazy_set_reference_frame(tr);
   for (unsigned int i=0; i< get_number_of_members(); ++i) {
     get_member(i)
-      .set_coordinates(tr.get_transformed(get_member(i)
-                                          .get_internal_coordinates()));
+      .set_coordinates(tr.get_global_coordinates(get_member(i)
+                                                 .get_internal_coordinates()));
   }
 }
 
@@ -462,7 +469,7 @@ RigidMember::~RigidMember(){}
 
 
 void RigidBody::show(std::ostream &out) const {
-  out << "Rigid body " << get_transformation()
+  out << "Rigid body " << get_reference_frame()
       << "("
       << get_particle()->get_derivative(internal::rigid_body_data()
                                         .quaternion_[0])

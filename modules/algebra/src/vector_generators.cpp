@@ -22,10 +22,11 @@ get_transformation_to_place_direction_on_Z(const Cylinder3D &c){
   //transformation_from_reference_frame(a,b,c) , sets the Z-axis to
   //be prependicular to a and b. We want Z to be the main direction of
   //the cylinder
-  Transformation3D rigid_trans=get_transformation_from_reference_frame(
-                                 vertical_dir,
-                                 get_vector_product(main_dir,vertical_dir),
-                                 Vector3D(0.0,0.0,0.0));
+  Transformation3D
+    rigid_trans(get_rotation_from_x_y_axes(vertical_dir.get_unit_vector(),
+                    get_vector_product(main_dir,vertical_dir)
+                                           .get_unit_vector()),
+                               get_zero_vector_d<3>());
   return rigid_trans.get_inverse();
 }
 }
@@ -54,7 +55,7 @@ Vector3Ds get_uniform_surface_cover(const Cylinder3D &cyl,
   for(int i=0;i<number_of_points;i++) {
     ::boost::uniform_real<> rand(0,2*PI);
     //generate a random rotation around the cycle
-    Rotation3D rot = get_rotation_in_radians_about_axis(z_direction,
+    Rotation3D rot = get_rotation_about_axis(z_direction,
                                 rand(random_number_generator));
     rotated_point =  rot.get_rotated(points[i]);
     //back transformation of the rotated point back to the original cylinder
@@ -80,7 +81,7 @@ Vector3Ds get_grid_surface_cover(const Cylinder3D &cyl,
   std::vector<Rotation3D> rotations;
   for(int angle_ind = 0; angle_ind<number_of_points_on_cycle;angle_ind++) {
     rotations.push_back(
-         get_rotation_in_radians_about_axis(z_direction,
+         get_rotation_about_axis(z_direction,
                                             angle_ind*rotation_step));
   }
   Vector3D starting_point,rotated_point;

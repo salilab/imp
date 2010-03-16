@@ -37,7 +37,7 @@ namespace {
       if (RigidBody::particle_is_instance(p)) {
         RigidBody rb(p);
         values_[i_].second
-          = rb.get_transformation().get_rotation();
+          = rb.get_reference_frame().get_transformation_to().get_rotation();
       }
       ++i_;
     }
@@ -139,7 +139,8 @@ namespace {
         if (RigidBody::particle_is_instance(p)) {
           RigidBody rb(p);
           algebra::Rotation3D rd
-            = values_[i_].second/rb.get_transformation().get_rotation();
+            = values_[i_].second
+            *rb.get_reference_frame().get_transformation_from().get_rotation();
           algebra::VectorD<3> rv(0,0,XYZR(p).get_radius());
           algebra::VectorD<3> rvr= rd.get_rotated(rv);
           if (dist + (rv-rvr).get_magnitude() > threshold_) {

@@ -31,8 +31,8 @@ void test_one(std::string name,
              for (unsigned int i=0; i< rbs.size(); ++i) {
                VectorD<3> t= get_random_vector_in(BoundingBox3D(minc, maxc));
                Rotation3D r= get_random_rotation_3d();
-               Transformation3D tr(r, t);
-               rbs[i].set_transformation(tr);
+               ReferenceFrame3D tr(Transformation3D(r, t));
+               rbs[i].set_reference_frame(tr);
              }
            }, inittime);
   double value=0;
@@ -42,7 +42,7 @@ void test_one(std::string name,
                VectorD<3> t= get_random_vector_in(BoundingBox3D(minc, maxc));
                Rotation3D r= get_random_rotation_3d();
                Transformation3D tr(r, t);
-               rbs[i].set_transformation(tr);
+               rbs[i].set_reference_frame(ReferenceFrame3D(tr));
              }
              value+=m->evaluate(false);
            }, runtime);
