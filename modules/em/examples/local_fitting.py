@@ -43,7 +43,7 @@ print "The CC score of the native transformation is:",best_score
 translation = IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d())
 axis = IMP.algebra.get_random_vector_on(IMP.algebra.get_unit_sphere_3d())
 rand_angle = random.uniform(-50./180*math.pi,50./180*math.pi)
-r= IMP.algebra.get_rotation_in_radians_about_axis(axis, rand_angle);
+r= IMP.algebra.get_rotation_about_axis(axis, rand_angle);
 local_trans=IMP.algebra.Transformation3D(r,translation)
 ##4.2 rotate the protein
 # prot_xyz=IMP.core.XYZs(IMP.core.get_leaves(mh))

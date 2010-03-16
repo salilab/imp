@@ -16,7 +16,8 @@ TransformationUtils::TransformationUtils(const Particles &ps,
 {
   if (go_back_) { //save all initial transformations
     for (Particles::const_iterator it = ps.begin(); it != ps.end(); it++) {
-      starting_transform_[*it]=core::RigidBody(*it).get_transformation();
+      starting_transform_[*it]
+        =core::RigidBody(*it).get_reference_frame().get_transformation_to();
     }
   }
 }
@@ -46,7 +47,7 @@ void TransformationUtils::apply(core::RigidBody *rb,
     IMP_LOG_WRITE(VERBOSE,t.show());
     IMP_LOG(VERBOSE,std::endl);
   }
-  rb->set_transformation(t);
+  rb->set_reference_frame(algebra::ReferenceFrame3D(t));
   IMP_IF_LOG(VERBOSE) {
     IMP_LOG(VERBOSE,"TransformationUtils::after move2state t1:");
     IMP_LOG_WRITE(

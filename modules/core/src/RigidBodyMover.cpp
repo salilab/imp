@@ -21,7 +21,7 @@ RigidBodyMover::RigidBodyMover(RigidBody d,
 
 void RigidBodyMover::propose_move(Float f) {
   IMP_LOG(VERBOSE,"RigidBodyMover:: propose move f is  : " << f <<std::endl);
-  last_transformation_= d_.get_transformation();
+  last_transformation_= d_.get_reference_frame().get_transformation_to();
   algebra::VectorD<3> translation
     = algebra::get_random_vector_in(algebra::Sphere3D(d_.get_coordinates(),
                                                       max_translation_));
@@ -33,12 +33,12 @@ void RigidBodyMover::propose_move(Float f) {
   ::boost::uniform_real<> rand(-max_angle_,max_angle_);
   Float angle =rand(random_number_generator);
   algebra::Rotation3D r
-    = algebra::get_rotation_in_radians_about_axis(axis, angle);
+    = algebra::get_rotation_about_axis(axis, angle);
   algebra::Rotation3D rc
-    = compose(r, d_.get_transformation().get_rotation());
+    = r*d_.get_reference_frame().get_transformation_to().get_rotation();
   algebra::Transformation3D t(rc, translation);
   IMP_LOG(VERBOSE,"RigidBodyMover:: propose move : " << t << std::endl);
-  d_.set_transformation(t);
+  d_.set_reference_frame(algebra::ReferenceFrame3D(t));
 }
 
 
@@ -46,13 +46,14 @@ void RigidBodyMover::accept_move()
 {
 }
 
-//! Roll back any changes made to the Particles
 void RigidBodyMover::reject_move() {
-  d_.set_transformation(last_transformation_);
+  d_.set_reference_frame(algebra::ReferenceFrame3D(last_transformation_));
   last_transformation_= algebra::Transformation3D();
 }
 
 
 void RigidBodyMover::do_show(std::ostream &out) const {
+  out << "max translation: " << max_translation_ << "\n";
+  out << "max angle: " << max_angle_ << "\n";
 }
 IMPCORE_END_NAMESPACE

@@ -228,7 +228,7 @@ class DecoratorWithTraits: public Base {
   typedef DecoratorWithTraits<Base,Traits> This;
   Traits traits_;
   int compare(const DecoratorWithTraits<Base, Traits> &o) const {
-    if (!*this && !o) return true;
+    if (Base::is_null() || o.is_null()) return Base::is_null() && o.is_null();
     if (traits_== o.traits_) {
       return Base::compare(o);
     } else {

@@ -45,7 +45,7 @@ class RigidBodyCorrelationByGridRotation(IMP.test.TestCase):
                 translation = IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d())
                 axis = IMP.algebra.get_random_vector_on(IMP.algebra.get_unit_sphere_3d())
                 rand_angle = random.uniform(-15./180*math.pi,15./180*math.pi)
-                r= IMP.algebra.get_rotation_in_radians_about_axis(axis, rand_angle);
+                r= IMP.algebra.get_rotation_about_axis(axis, rand_angle);
                 t=IMP.algebra.Transformation3D(r,translation)
                 ts.append(t)
             fr=IMP.em.compute_fitting_scores(self.particles,

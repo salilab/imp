@@ -18,7 +18,7 @@
 #include <IMP/Refiner.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/Rotation3D.h>
-#include <IMP/algebra/Transformation3D.h>
+#include <IMP/algebra/ReferenceFrame3D.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -45,8 +45,8 @@ IMP_DECORATORS(RigidMember,RigidMembers, XYZs);
     inertial tensor (which is not stored, currently).
 
     A rigid body stores the a set of local coordinates for each
-    member and an algebra::Transformation3D mapping between
-    the local coordinates and the actual location of the member.
+    member and a algebra::ReferenceFrame3D in which those local
+    coordinates are expressed.
 
     It is often desirable to randomize the orientation of a rigid
     body:
@@ -117,21 +117,33 @@ public:
     return XYZ::get_coordinates();
   }
 
-  //! Get the transformation implied by the rigid body
-  IMP::algebra::Transformation3D get_transformation() const;
+  //! Get the reference frame for the local coordinates
+  IMP::algebra::ReferenceFrame3D get_reference_frame() const;
 
-  //! Set the current orientation and translation
+  //! Set the current reference frame
   /** All members of the rigid body will have their coordinates updated
       immediately.
       \see IMP::core::transform(RigidBody,const algebra::Transformation3D&)
-      \see lazy_set_transformation()
+      \see lazy_set_reference_frame()
    */
-  void set_transformation(const IMP::algebra::Transformation3D &tr);
+  void set_reference_frame(const IMP::algebra::ReferenceFrame3D &tr);
 
-  //! Change the transformation, delay updating the members until evaluate
+  //! Change the reference, delay updating the members until evaluate
   /** See set_transformation()
    */
-  void lazy_set_transformation(const IMP::algebra::Transformation3D &tr);
+  void lazy_set_reference_frame(const IMP::algebra::ReferenceFrame3D &tr);
+
+#ifndef IMP_DOXYGEN
+  void set_transformation(const algebra::Transformation3D &tr) {
+    set_reference_frame(algebra::ReferenceFrame3D(tr));
+  }
+  void lazy_set_transformation(const algebra::Transformation3D &tr) {
+    lazy_set_reference_frame(algebra::ReferenceFrame3D(tr));
+  }
+  algebra::Transformation3D get_transformation() {
+    return get_reference_frame().get_transformation_to();
+  }
+#endif
 
   bool get_coordinates_are_optimized() const;
 
@@ -280,7 +292,8 @@ namespace internal {
      algebra::Transformation3D
 */
 inline void transform(RigidBody a, const algebra::Transformation3D&tr) {
-  a.set_transformation(algebra::compose(tr,a.get_transformation()));
+  a.set_reference_frame(get_transformed(a.get_reference_frame()
+                                        .get_transformation_to(), tr));
 }
 
 IMPCORE_END_NAMESPACE

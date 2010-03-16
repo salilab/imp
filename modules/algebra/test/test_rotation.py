@@ -35,7 +35,7 @@ class RotationTests(IMP.test.TestCase):
             axis= IMP.algebra.get_random_vector_on(IMP.algebra.get_unit_sphere_3d())
             angle= math.pi/ii#random.uniform(-math.pi,math.pi)
 
-            r= IMP.algebra.get_rotation_in_radians_about_axis(axis,angle)
+            r= IMP.algebra.get_rotation_about_axis(axis,angle)
             ri= r.get_inverse()
             v_start = IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d())
             vt = v_start
@@ -106,7 +106,7 @@ class RotationTests(IMP.test.TestCase):
         r0= IMP.algebra.get_random_rotation_3d()
         aa = IMP.algebra.get_axis_and_angle(r0)
         axis=aa[0];angle=aa[1]
-        r1 = IMP.algebra.get_rotation_in_radians_about_axis(axis,angle)
+        r1 = IMP.algebra.get_rotation_about_axis(axis,angle)
         self.assertInTolerance((r0.get_quaternion()-r1.get_quaternion()).get_squared_magnitude(), 0, .1)
 
     def test_is_equal_between_rotations(self):

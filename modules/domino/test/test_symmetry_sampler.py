@@ -111,7 +111,7 @@ class DOMINOTests(IMP.test.TestCase):
                 cendtroids[j] = cendtroids[j]+IMP.core.get_centroid(IMP.core.XYZsTemp(IMP.core.get_leaves(self.prots[j])))
 
         rot120 = IMP.algebra.Transformation3D(
-            IMP.algebra.get_rotation_in_radians_about_axis(self.cyl.get_segment().get_direction(),
+            IMP.algebra.get_rotation_about_axis(self.cyl.get_segment().get_direction(),
                                                         2.*math.pi/3))
         for j in range(2):
             self.assertAlmostEqual(IMP.algebra.get_distance(rot120.get_transformed(cendtroids[j]),cendtroids[j+1]),0.0,2)

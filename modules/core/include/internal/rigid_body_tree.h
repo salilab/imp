@@ -34,8 +34,9 @@ class IMPCOREEXPORT RigidBodyHierarchy: public Object {
  public:
   algebra::SphereD<3> get_sphere(unsigned int i) const {
     IMP_INTERNAL_CHECK(i < tree_.size(), "Out of spheres vector");
-    return algebra::SphereD<3>(rb_.get_transformation()
-                             .get_transformed(tree_[i].s_.get_center()),
+    return algebra::SphereD<3>(rb_.get_reference_frame()
+                               .get_global_coordinates(tree_[i]
+                                                       .s_.get_center()),
                              tree_[i].s_.get_radius());
   }
   bool get_is_leaf(unsigned int ni) const;

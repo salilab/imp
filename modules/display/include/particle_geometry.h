@@ -136,7 +136,8 @@ IMP_PARTICLE_GEOMETRY(XYZDerivative, core::XYZ, {
 
 IMP_PARTICLE_GEOMETRY(RigidBodyDerivative, core::RigidBody, {
     Particles ms=d.get_members();
-    algebra::Transformation3D otr= d.get_transformation();
+    algebra::Transformation3D otr
+      = d.get_reference_frame().get_transformation_to();
     algebra::VectorD<4> rderiv= d.get_rotational_derivatives();
     algebra::VectorD<3> tderiv= d.get_derivatives();
     algebra::VectorD<4> rot = otr.get_rotation().get_quaternion();

@@ -65,21 +65,20 @@ class Transformation2DTests(IMP.test.TestCase):
     def test_transformation_between_two_reference_frames(self):
         u1 = IMP.algebra.Vector3D(random.uniform(-100.,100.),
                                  random.uniform(-200.,200.),
-                                 0.)
+                                 0.).get_unit_vector()
         w1 = IMP.algebra.Vector3D(random.uniform(-50.,50.),
                                  random.uniform(-50.,50.),
-                                 0.)
+                                 0.).get_unit_vector()
         base1 = IMP.algebra.Vector3D(random.uniform(-50.,50.),
                                  random.uniform(-50.,50.),
                                  0.)
         u2 = IMP.algebra.Vector3D(1.,0.,0.)
         w2 = IMP.algebra.Vector3D(0.,1.,0.)
         base2 = IMP.algebra.Vector3D(0.,0.,0.)
-        t1=IMP.algebra.get_transformation_from_first_to_second_reference_frame(
-            u2,w2,base2,u1,w1,base1)
-        t2=IMP.algebra.get_transformation_from_reference_frame(
-            u1,w1,base1)
-        dist=IMP.algebra.get_distance(t1.get_rotation(),t2.get_rotation())
+        r1= IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.get_rotation_from_x_y_axes(u1, w1), base1))
+        r2= IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.get_rotation_from_x_y_axes(u2, w2), base2))
+        t1=IMP.algebra.get_transformation_from_first_to_second(r2, r1)
+        dist=IMP.algebra.get_distance(t1.get_rotation(),r2.get_transformation().get_rotation())
         self.assertInTolerance(dist,0.0,0.001)
 
 class Transformation3DTests(IMP.test.TestCase):

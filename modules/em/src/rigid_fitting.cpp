@@ -76,12 +76,13 @@ void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
   for (core::XYZsTemp::iterator it = xyz_t.begin(); it != xyz_t.end(); it++) {
     vecs_ref.push_back(it->get_coordinates());
   }
-  algebra::Transformation3D starting_trans = rb.get_transformation();
+  algebra::Transformation3D starting_trans
+    = rb.get_reference_frame().get_transformation_to();
   for(int i=0;i<number_of_optimization_runs;i++) {
     IMP_LOG(VERBOSE, "number of optimization run is : "<< i << std::endl);
     //set the centroid of the rigid body to be on the anchor centroid
     //make sure that all of the members are in the correct transformation
-    rb.set_transformation(starting_trans);
+    rb.set_reference_frame(algebra::ReferenceFrame3D(starting_trans));
     algebra::VectorD<3> ps_centroid = IMP::core::get_centroid(xyz_t);
     algebra::Transformation3D move2centroid(algebra::get_identity_rotation_3d(),
                                             anchor_centroid-ps_centroid);
@@ -93,7 +94,7 @@ void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
     //optimize
     try {
       e = opt->optimize(number_of_mc_steps);
-      rb.set_transformation(rb.get_transformation());
+      rb.set_reference_frame(rb.get_reference_frame());
       ps_centroid =
         IMP::core::get_centroid(xyz_t);
       IMP_LOG(VERBOSE, "rigid body centroid after optimization : "
@@ -105,7 +106,7 @@ void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
       }
       //fr.add_solution(algebra::get_transformation_aligning_first_to_second(
       //vecs_ref,vecs_current),e);
-      fr.add_solution(rb.get_transformation(),e);
+      fr.add_solution(rb.get_reference_frame().get_transformation_to(),e);
     } catch (ModelException err) {
       IMP_WARN("Optimization run " << i << " failed to converge."
                << std::endl);
@@ -235,7 +236,7 @@ FittingSolutions local_rigid_fitting_grid_search(
      ::boost::uniform_real<> rand(-max_angle_in_radians,max_angle_in_radians);
      Float angle =rand(random_number_generator);
      algebra::Rotation3D r =
-       algebra::get_rotation_in_radians_about_axis(axis, angle);
+       algebra::get_rotation_about_axis(axis, angle);
      rots.push_back(r);
    }
    unsigned int rot_ind=-1;
