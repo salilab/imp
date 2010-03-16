@@ -66,7 +66,7 @@ class Transformation2DTests(IMP.test.TestCase):
         u1 = IMP.algebra.Vector3D(random.uniform(-100.,100.),
                                  random.uniform(-200.,200.),
                                  0.).get_unit_vector()
-        w1= IMP.algebra.get_vector_product(u1, IMP.algebra.get_unit_vector_3d(2))
+        w1= IMP.algebra.get_vector_product(u1, IMP.algebra.get_basis_vector_3d(2))
         base1 = IMP.algebra.Vector3D(random.uniform(-50.,50.),
                                  random.uniform(-50.,50.),
                                  0.)
