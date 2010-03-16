@@ -111,6 +111,7 @@ namespace IMP {
    IMP_SWIG_VALUES(Plane3D, Plane3Ds);
    IMP_SWIG_VALUES(Segment3D, Segment3Ds);
    IMP_SWIG_VALUES(SpherePatch3D, SpherePatch3Ds);
+   IMP_SWIG_VALUES(ReferenceFrame3D, ReferenceFrame3Ds);
  }
 }
 %inline %{
