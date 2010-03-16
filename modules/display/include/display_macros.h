@@ -191,4 +191,4 @@ protected:                                                              \
                     out <<  get_container() << std::endl;,)             \
   };
 
- #endif /* IMPDISPLAY_MACROS_H */
+#endif /* IMPDISPLAY_MACROS_H */
