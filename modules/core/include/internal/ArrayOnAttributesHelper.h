@@ -59,12 +59,21 @@ struct ArrayOnAttributesHelper {
   typedef ValueT Value;
   typedef ArrayData<Key, Value, DataT> Data;
   typedef ArrayOnAttributesHelper<KeyT, ValueT, DataT> This;
-  IMP_COMPARISONS_1(data_);
+  int compare(const This &o) const {
+    if (!data_) {
+      return !o.data_;
+    } else if (!o.data_) {
+      return false;
+    } else {
+      return data_->compare(*o.data_);
+    }
+  }
+  IMP_COMPARISONS;
 
   DataT& get_data() {return static_cast<DataT&>(*data_);}
   const DataT& get_data() const {return static_cast<DataT&>(*data_);}
 
-  ArrayOnAttributesHelper(){}
+  ArrayOnAttributesHelper(): data_(NULL){}
   ArrayOnAttributesHelper(std::string p): data_(new Data(p)){
     array_datas.push_back(data_);
   }

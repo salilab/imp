@@ -228,6 +228,7 @@ class DecoratorWithTraits: public Base {
   typedef DecoratorWithTraits<Base,Traits> This;
   Traits traits_;
   int compare(const DecoratorWithTraits<Base, Traits> &o) const {
+    if (!*this && !o) return true;
     if (traits_== o.traits_) {
       return Base::compare(o);
     } else {
@@ -237,6 +238,7 @@ class DecoratorWithTraits: public Base {
   }
 protected:
   DecoratorWithTraits(){}
+  DecoratorWithTraits(Traits tr): traits_(tr){}
   DecoratorWithTraits(Particle *p, Traits tr): Base(p), traits_(tr){}
 public:
   typedef Traits DecoratorTraits;

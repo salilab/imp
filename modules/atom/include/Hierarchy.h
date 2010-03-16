@@ -217,7 +217,7 @@ public:
   }
 
   //! null constructor
-  Hierarchy() {}
+  Hierarchy() :H(get_traits()) {}
 
   //! cast a particle which has the needed attributes
   static Hierarchy decorate_particle(Particle *p) {
