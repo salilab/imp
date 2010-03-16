@@ -35,6 +35,11 @@ public:
   GroupnameContainerSet(const GroupnameContainers &in,
                         std::string name="GroupnameContainerSet %1%");
 
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+  // otherwise the bool overload catches it
+  GroupnameContainerSet(const char *name);
+#endif
+
   IMP_GROUPNAME_CONTAINER(GroupnameContainerSet);
  /** @name Methods to control the nested container
 

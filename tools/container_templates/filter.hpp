@@ -43,7 +43,7 @@ public:
       @{
   */
   virtual ParticlesTemp get_input_particles(PassValue p) const=0;
-  virtual ObjectsTemp get_input_objects(PassValue p) const=0;
+  virtual ContainersTemp get_input_containers(PassValue p) const=0;
   /** @} */
 
   IMP_REF_COUNTED_DESTRUCTOR(GroupnameFilter);

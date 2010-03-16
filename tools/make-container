@@ -70,6 +70,12 @@ def make_one(name, value, passvalue, storevalue, multi, args, fromargs, asargs, 
               ("modules/core/src/"+multi + "Restraint.cpp",
                path+"/tools/container_templates/srestraint.cc"),
 
+              ("modules/container/include/InContainer"+multi + "Filter.h",
+               path+"/tools/container_templates/in_container.hpp"),
+              ("modules/container/src/InContainer"+multi + "Filter.cpp",
+               path+"/tools/container_templates/in_container.cc"),
+
+
               ("modules/container/include/"+multi + "ContainerSet.h",
                path+"/tools/container_templates/set.hpp"),
               ("modules/container/src/"+multi + "ContainerSet.cpp",

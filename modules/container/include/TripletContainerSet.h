@@ -35,6 +35,11 @@ public:
   TripletContainerSet(const TripletContainers &in,
                         std::string name="TripletContainerSet %1%");
 
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+  // otherwise the bool overload catches it
+  TripletContainerSet(const char *name);
+#endif
+
   IMP_TRIPLET_CONTAINER(TripletContainerSet);
  /** @name Methods to control the nested container
 

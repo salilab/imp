@@ -33,6 +33,13 @@ QuadContainerSet
 }
 
 QuadContainerSet
+::QuadContainerSet(const char *name):
+  QuadContainer(name) {
+  set_added_and_removed_containers( create_untracked_container(),
+                                    create_untracked_container());
+}
+
+QuadContainerSet
 ::QuadContainerSet(const QuadContainers& in,
                         std::string name):
   QuadContainer(name) {
