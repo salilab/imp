@@ -2,6 +2,7 @@ import unittest
 import IMP
 import IMP.test
 import IMP.core
+import IMP.container
 
 class WoodsFunc(IMP.Restraint):
     """Woods function for four input values, defined as an IMP restraint"""
@@ -63,6 +64,7 @@ class MCOptimizerTest(IMP.test.TestCase):
     def _setup_opt(self):
         model = IMP.Model()
         opt = IMP.core.MonteCarlo()
+        opt.set_score_threshold(.01)
         opt.set_model(model)
         for value in (-3.0, -1.0, -3.0, -1.0):
             p = IMP.Particle(model)
