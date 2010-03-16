@@ -37,7 +37,7 @@ namespace boost {
 #include <boost/graph/adjacency_matrix.hpp>
 
 
-IMPCORE_BEGIN_NAMESPACE
+IMPCONTAINER_BEGIN_NAMESPACE
 
 namespace {
   typedef std::vector<unsigned int> Index;
@@ -197,4 +197,4 @@ ContainersTemp ConnectingPairContainer::get_input_containers() const {
   return ContainersTemp(1, sc_);
 }
 
-IMPCORE_END_NAMESPACE
+IMPCONTAINER_END_NAMESPACE

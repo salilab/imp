@@ -17,7 +17,7 @@
 #include <IMP/OptimizerState.h>
 #include <IMP/ScoreState.h>
 
-IMPCORE_BEGIN_NAMESPACE
+IMPCONTAINER_BEGIN_NAMESPACE
 
 //! A container which keeps a set of pairs that connect a set of spheres.
 /** This container is for implementing connectivity when
@@ -35,7 +35,7 @@ IMPCORE_BEGIN_NAMESPACE
 
     It is significantly more efficient than the ConnectivityRestraint
     but less flexible.
-    \see {ConnectivityRestraint}
+    \see {core::ConnectivityRestraint}
  */
 class IMPCONTAINEREXPORT ConnectingPairContainer:
 #if defined(IMP_DOXYGEN) || defined(SWIG)
@@ -67,6 +67,6 @@ public:
 
 IMP_OBJECTS(ConnectingPairContainer,ConnectingPairContainers);
 
-IMPCORE_END_NAMESPACE
+IMPCONTAINER_END_NAMESPACE
 
 #endif  /* IMPCONTAINER_CONNECTING_PAIR_CONTAINER_H */
