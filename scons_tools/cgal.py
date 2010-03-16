@@ -52,5 +52,8 @@ def configure_check(env):
     custom_tests = {'CheckCGAL':_check}
     conf = env.Configure(custom_tests=custom_tests)
     #if not env.GetOption('clean') and not env.GetOption('help'):
-    conf.CheckCGAL()
+    if conf.CheckCGAL():
+        env.Append(IMP_BUILD_SUMMARY=["CGAL support enabled."])
+    else:
+        env.Append(IMP_BUILD_SUMMARY=["CGAL support disabled."])
     conf.Finish()
