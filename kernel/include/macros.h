@@ -1799,7 +1799,7 @@ protected:                                      \
 #define IMP_SINGLETON_FILTER(Name)                      \
   bool get_contains_particle(Particle* p) const;        \
   ParticlesTemp get_input_particles(Particle*t) const;  \
-  ObjectsTemp get_input_objects(Particle*t) const;      \
+  ContainersTemp get_input_containers(Particle*t) const;        \
   IMP_OBJECT(Name)
 
 
@@ -1811,7 +1811,7 @@ protected:                                      \
 #define IMP_PAIR_FILTER(Name)                                           \
   bool get_contains_particle_pair(const ParticlePair& p) const;         \
   ParticlesTemp get_input_particles(const ParticlePair& t) const;       \
-  ObjectsTemp get_input_objects(const ParticlePair& t) const;           \
+  ContainersTemp get_input_containers(const ParticlePair& t) const;     \
   IMP_OBJECT(Name);
 
 
@@ -1821,10 +1821,10 @@ protected:                                      \
     - IMP::TripletFilter::get_contains_particle_triplet()
     - IMP::TripletFilter::get_input_particles()
 */
-#define IMP_TRIPLET_FILTER(Name)                                \
-  bool get_contains_particle_triplet(ParticleTriplet p) const;  \
-  ParticlesTemp get_input_particles(ParticleTriplet t) const;   \
-  ObjectsTemp get_input_objects(ParticleTriplet t) const;       \
+#define IMP_TRIPLET_FILTER(Name)                                       \
+  bool get_contains_particle_triplet(const ParticleTriplet& p) const;  \
+  ParticlesTemp get_input_particles(const ParticleTriplet& t) const;   \
+  ContainersTemp get_input_containers(const ParticleTriplet& t) const; \
   IMP_OBJECT(Name);
 
 
@@ -1834,10 +1834,10 @@ protected:                                      \
     - IMP::QuadFilter::get_contains_particle_quad()
     - IMP::QuadFilter::get_input_particles()
 */
-#define IMP_QUAD_FILTER(Name)                                   \
-  bool get_contains_particle_quad(ParticleQuad p) const;        \
-  ParticlesTemp get_input_particles(ParticleQuad t) const;      \
-  ObjectsTemp get_input_objects(ParticleQuad t) const;          \
+#define IMP_QUAD_FILTER(Name)                                          \
+  bool get_contains_particle_quad(const ParticleQuad& p) const;        \
+  ParticlesTemp get_input_particles(const ParticleQuad& t) const;      \
+  ContainersTemp get_input_containers(const ParticleQuad& t) const;    \
   IMP_OBJECT(Name);
 
 

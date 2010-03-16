@@ -33,6 +33,13 @@ TripletContainerSet
 }
 
 TripletContainerSet
+::TripletContainerSet(const char *name):
+  TripletContainer(name) {
+  set_added_and_removed_containers( create_untracked_container(),
+                                    create_untracked_container());
+}
+
+TripletContainerSet
 ::TripletContainerSet(const TripletContainers& in,
                         std::string name):
   TripletContainer(name) {

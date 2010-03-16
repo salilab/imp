@@ -35,6 +35,11 @@ public:
   QuadContainerSet(const QuadContainers &in,
                         std::string name="QuadContainerSet %1%");
 
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+  // otherwise the bool overload catches it
+  QuadContainerSet(const char *name);
+#endif
+
   IMP_QUAD_CONTAINER(QuadContainerSet);
  /** @name Methods to control the nested container
 

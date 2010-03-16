@@ -35,6 +35,11 @@ public:
   SingletonContainerSet(const SingletonContainers &in,
                         std::string name="SingletonContainerSet %1%");
 
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+  // otherwise the bool overload catches it
+  SingletonContainerSet(const char *name);
+#endif
+
   IMP_SINGLETON_CONTAINER(SingletonContainerSet);
  /** @name Methods to control the nested container
 

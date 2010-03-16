@@ -33,6 +33,13 @@ SingletonContainerSet
 }
 
 SingletonContainerSet
+::SingletonContainerSet(const char *name):
+  SingletonContainer(name) {
+  set_added_and_removed_containers( create_untracked_container(),
+                                    create_untracked_container());
+}
+
+SingletonContainerSet
 ::SingletonContainerSet(const SingletonContainers& in,
                         std::string name):
   SingletonContainer(name) {

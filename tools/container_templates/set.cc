@@ -33,6 +33,13 @@ GroupnameContainerSet
 }
 
 GroupnameContainerSet
+::GroupnameContainerSet(const char *name):
+  GroupnameContainer(name) {
+  set_added_and_removed_containers( create_untracked_container(),
+                                    create_untracked_container());
+}
+
+GroupnameContainerSet
 ::GroupnameContainerSet(const GroupnameContainers& in,
                         std::string name):
   GroupnameContainer(name) {

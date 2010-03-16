@@ -43,7 +43,7 @@ public:
       @{
   */
   virtual ParticlesTemp get_input_particles(Particle* p) const=0;
-  virtual ObjectsTemp get_input_objects(Particle* p) const=0;
+  virtual ContainersTemp get_input_containers(Particle* p) const=0;
   /** @} */
 
   IMP_REF_COUNTED_DESTRUCTOR(SingletonFilter);

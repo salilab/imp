@@ -35,6 +35,11 @@ public:
   PairContainerSet(const PairContainers &in,
                         std::string name="PairContainerSet %1%");
 
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+  // otherwise the bool overload catches it
+  PairContainerSet(const char *name);
+#endif
+
   IMP_PAIR_CONTAINER(PairContainerSet);
  /** @name Methods to control the nested container
 

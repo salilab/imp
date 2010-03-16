@@ -33,6 +33,13 @@ PairContainerSet
 }
 
 PairContainerSet
+::PairContainerSet(const char *name):
+  PairContainer(name) {
+  set_added_and_removed_containers( create_untracked_container(),
+                                    create_untracked_container());
+}
+
+PairContainerSet
 ::PairContainerSet(const PairContainers& in,
                         std::string name):
   PairContainer(name) {
