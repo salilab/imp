@@ -67,8 +67,7 @@ class IMPCOREEXPORT RigidBody: public XYZ {
   algebra::VectorD<3> get_coordinates(RigidMember p) const;
 
   void add_member_internal(XYZ d,
-                           const algebra::Rotation3D& roti,
-                           const algebra::VectorD<3>& transi, bool cover);
+                           const algebra::ReferenceFrame3D &rf, bool cover);
   static RigidBody internal_setup_particle(Particle *p,
                                            const XYZs &members);
   IMP_CONSTRAINT_DECORATOR_DECL(RigidBody);
