@@ -259,12 +259,8 @@ RigidBody RigidBody::setup_particle(Particle *p,
 RigidBody RigidBody::setup_particle(Particle *p,
                                     const XYZs &members){
   RigidBody d=internal_setup_particle(p, members);
-  algebra::Rotation3D roti= d.get_reference_frame()
-    .get_transformation_from().get_rotation();
-  algebra::VectorD<3> transi= d.get_reference_frame()
-    .get_transformation_from().get_translation();
   for (unsigned int i=0; i< members.size(); ++i) {
-    d.add_member_internal(members[i], roti, transi, false);
+    d.add_member_internal(members[i], d.get_reference_frame(), false);
     //IMP_LOG(VERBOSE, " " << cm << " | " << std::endl);
   }
 
@@ -364,20 +360,17 @@ RigidMember RigidBody::get_member(unsigned int i) const {
 }
 
 void RigidBody::add_member(XYZ d) {
-  algebra::Transformation3D tr= get_reference_frame().get_transformation_from();
-  add_member_internal(d, tr.get_rotation(), tr.get_translation(), true);
+  add_member_internal(d, get_reference_frame(), true);
 }
 
-void RigidBody::add_member_internal(XYZ d, const algebra::Rotation3D &roti,
-                                    const algebra::VectorD<3> &transi,
+void RigidBody::add_member_internal(XYZ d, const algebra::ReferenceFrame3D &ref,
                                     bool cover) {
   internal::add_required_attributes_for_member(d);
   RigidMember cm(d);
   Hierarchy hc(d, internal::rigid_body_data().htraits_);
   Hierarchy hd(*this, internal::rigid_body_data().htraits_);
   hd.add_child(hc);
-  algebra::VectorD<3> cv=cm.get_coordinates()+transi;
-  algebra::VectorD<3> lc= roti.get_rotated(cv);
+  algebra::VectorD<3> lc=ref.get_local_coordinates(d.get_coordinates());
   cm.set_internal_coordinates(lc);
   if (cover) cover_rigid_body(*this, get_members());
 }
