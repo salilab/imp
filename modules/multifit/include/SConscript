@@ -4,7 +4,9 @@ files = [
          'sampling_space.h',
          'FittingSolutionRecord.h'
          'SingleDominoRun.h',
+         'm_rigid_fitting.h',
          'fitting_solutions_reader_writer.h',
+         'fitting_tools.h',
         ]
 # Install the include files:
 env.IMPModuleInclude(env.IMPModuleGetHeaders())

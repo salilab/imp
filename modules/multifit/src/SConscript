@@ -4,7 +4,9 @@ files = [
          'sampling_space.cpp',
          'FittingSolutionRecord.cpp',
          'SingleDominoRun.cpp',
+         'm_rigid_fitting.cpp',
          'fitting_solutions_reader_writer.cpp',
+         'fitting_tools.cpp',
         ]
 # Build and install the shared library:
 env.IMPModuleLib(env.IMPModuleGetSources())
