@@ -54,7 +54,7 @@ public:
   */
   inline Float get_score(unsigned int i) const {
     IMP_USAGE_CHECK(i<fs_.size(),"The index requested ("<<
-       i<<") in get_transformation is our of range ("<<
+       i<<") in get_transformation is out of range ("<<
        fs_.size()<<")"<<std::endl);
     return fs_[i].second;
   }
@@ -104,7 +104,7 @@ IMPEMEXPORT FittingSolutions local_rigid_fitting_around_point(
    OptimizerState *display_log,
    Int number_of_optimization_runs = 5, Int number_of_mc_steps = 10,
    Int number_of_cg_steps=100,
-   Float max_translation=2., Float max_rotation=5.);
+   Float max_translation=2., Float max_rotation=.3);
 
 //! Local rigid fitting of a rigid body
 /**
@@ -144,7 +144,7 @@ inline FittingSolutions local_rigid_fitting(
    OptimizerState *display_log=NULL,
    Int number_of_optimization_runs = 5, Int number_of_mc_steps = 10,
    Int number_of_cg_steps=100,
-   Float max_translation=2., Float max_rotation=5.) {
+   Float max_translation=2., Float max_rotation=.3) {
    algebra::Vector3D rb_cen=
  IMP::core::get_centroid(core::XYZsTemp(core::get_leaves(atom::Hierarchy(rb))));
    return local_rigid_fitting_around_point(
@@ -181,7 +181,7 @@ IMPEMEXPORT FittingSolutions local_rigid_fitting_around_points(
    OptimizerState *display_log,
    Int number_of_optimization_runs = 5, Int number_of_mc_steps = 10,
    Int number_of_cg_steps=100,
-   Float max_translation=2., Float max_rotation=5.);
+   Float max_translation=2., Float max_rotation=.3);
 
 
 //! Local grid search rigid fitting
@@ -250,5 +250,6 @@ IMPEMEXPORT Float compute_fitting_score(Particles &ps,
    DensityMap *em_map,
    FloatKey rad_key=core::XYZR::get_default_radius_key(),
    FloatKey wei_key=atom::Mass::get_mass_key());
+
 IMPEM_END_NAMESPACE
 #endif  /* IMPEM_RIGID_FITTING_H */
