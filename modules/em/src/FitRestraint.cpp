@@ -22,10 +22,12 @@ FitRestraint::FitRestraint(
    FloatKey radius_key,
    FloatKey weight_key,
    float scale,
-   bool special_treatment_of_particles_outside_of_density)
+   bool special_treatment_of_particles_outside_of_density,
+   bool use_fast_version)
 {
   special_treatment_of_particles_outside_of_density_=
     special_treatment_of_particles_outside_of_density;
+  use_fast_version_=use_fast_version;
   target_dens_map_ = em_map;
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i=0; i< ps.size(); ++i) {
@@ -40,9 +42,12 @@ FitRestraint::FitRestraint(
     }
   }
   scalefac_ = scale;
-  model_dens_map_ = new SampledDensityMap(*em_map->get_header());
-  model_dens_map_->set_particles(ps,radius_key,weight_key);
+  IMP_LOG(VERBOSE,"going to initialize_model_density_map"<<std::endl);
   add_particles(ps);
+  initialize_model_density_map(radius_key,weight_key);
+  IMP_LOG(VERBOSE,"after initialize_model_density_map"<<std::endl);
+  model_dens_map_ = new SampledDensityMap(*em_map->get_header());
+  model_dens_map_->set_particles(ps);
    // initialize the derivatives
   dx_.resize(get_number_of_particles(), 0.0);
   dy_.resize(get_number_of_particles(), 0.0);
@@ -50,10 +55,61 @@ FitRestraint::FitRestraint(
   // normalize the target density data
   //target_dens_map->std_normalize();
   IMP_LOG(VERBOSE, "RSR_EM_Fit::RSR_EM_Fit after std norm" << std::endl);
-  //  have an initial sampling of the model grid
-  model_dens_map_->resample();
+  resample();
   IMP_LOG(VERBOSE, "RSR_EM_Fit::RSR_EM_Fit after resample " << std::endl);
 }
+void FitRestraint::initialize_model_density_map(
+  FloatKey radius_key,FloatKey weight_key) {
+  none_rb_model_dens_map_ =
+    new SampledDensityMap(*(target_dens_map_->get_header()));
+  for(ParticleIterator it = particles_begin(); it != particles_end();it++) {
+    if (core::RigidBody::particle_is_instance(*it)) {
+      rbs_.push_back(core::RigidBody(*it));
+      rbs_orig_trans_.push_back(
+        core::RigidBody(*it).get_transformation().get_inverse());
+      rb_model_dens_map_.push_back(
+        new SampledDensityMap(*(target_dens_map_->get_header())));
+      Particles rb_ps=Particles(core::get_leaves(atom::Hierarchy(*it)));
+      rb_model_dens_map_[rb_model_dens_map_.size()-1]->set_particles(rb_ps);
+    }
+    else {
+      not_rb_.push_back(*it);
+    }
+  }
+  IMP_LOG(IMP::VERBOSE,"in initialize_model_density_map the number of"
+          <<" particles that are not rigid bodies is:"
+          <<not_rb_.size()<<std::endl);
+  none_rb_model_dens_map_->set_particles(not_rb_);
+}
+void FitRestraint::resample() const {
+  //resample the map containing all non rigid body particles
+  if (not_rb_.size()>0) {
+    SampledDensityMap *
+      writable_none_rb_model_dens_map =
+        const_cast <SampledDensityMap *>(none_rb_model_dens_map_);
+    IMP_LOG(VERBOSE,"in resample going to resample: "<<
+       "writable_none_rb_model_dens_map"<<std::endl);
+     writable_none_rb_model_dens_map->resample();
+  }
+  SampledDensityMap* writable_model_dens_map =
+    const_cast <SampledDensityMap* > (model_dens_map_);
+  IMP_LOG(VERBOSE,"in resample going to copy "<<
+          "writable_model_dens_map"<<std::endl);
+  writable_model_dens_map->copy_map(*none_rb_model_dens_map_);
+  for(unsigned int rb_i=0;rb_i<rbs_.size();rb_i++) {
+    if (use_fast_version_) {
+      DensityMap *transformed = get_transformed(
+         rb_model_dens_map_[rb_i],
+         rbs_[rb_i].get_transformation()*rbs_orig_trans_[rb_i]);
+      writable_model_dens_map->add(*transformed);
+    }
+    else {
+      rb_model_dens_map_[rb_i]->resample();
+      writable_model_dens_map->add(*(rb_model_dens_map_[rb_i]));
+    }
+  }
+}
+
 
 IMP_LIST_IMPL(FitRestraint, Particle, particle,Particle*, Particles,
               {
@@ -85,12 +141,13 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
     escore=1.;
   }
   else{
-  escore = CoarseCC::evaluate(const_cast<DensityMap&>(*target_dens_map_),
+    resample();
+    escore = CoarseCC::evaluate(const_cast<DensityMap&>(*target_dens_map_),
                              const_cast<SampledDensityMap&>(*model_dens_map_),
                              const_cast<FitRestraint*>(this)->dx_,
                              const_cast<FitRestraint*>(this)->dy_,
                              const_cast<FitRestraint*>(this)->dz_,
-                             scalefac_, calc_deriv);
+                             scalefac_, calc_deriv,true,false);
   }
 
   //In many optimization senarios particles are can be found outside of
