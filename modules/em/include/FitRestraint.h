@@ -42,6 +42,8 @@ public:
     \param[in] special_treatment_of_particles_outside_of_density
        If more than 80% of the particles are outside of the density
        push it back using upper-bound harmonic
+    \param[in] use_fast_version if true densities of rigid-bodies are
+               interpolated and not resampled.
     \note In many optimization senarios particles are can be found outside of
   the density. When all particles are outside of the density the
   cross-correlation score is zero and the derivatives are meaningless.
@@ -51,13 +53,15 @@ public:
   the density, the CC score is back on. To smooth the score,
   we start considering centroids distance once 80% of the particles. This
   option is still experimental and should be used in caution.
+    \todo we currently assume rigid bodies are also molecular hierarchies.
    */
   FitRestraint(Particles ps,
                DensityMap *em_map,
                FloatKey radius_key= IMP::core::XYZR::get_default_radius_key(),
                FloatKey weight_key= IMP::atom::Mass::get_mass_key(),
                float scale=1,
-               bool special_treatment_of_particles_outside_of_density=true);
+               bool special_treatment_of_particles_outside_of_density=true,
+               bool use_fast_version=true);
 
   //! \return the predicted density map of the model
   SampledDensityMap *get_model_dens_map() {
@@ -68,8 +72,20 @@ public:
 
   IMP_LIST(private, Particle, particle, Particle*, Particles);
 private:
+  //! Resample the model density map
+  void resample() const;
+  //! Create density maps: one for each rigid body and one for the rest.
+  /**
+  \todo the user should pass a refiner for each rigid body. For now we
+        assume that each rigid body is a molecular hierarchy
+   */
+  void initialize_model_density_map(FloatKey radius_key,
+                                    FloatKey weight_key);
+
   IMP::internal::OwnerPointer<DensityMap> target_dens_map_;
-  IMP::internal::OwnerPointer<SampledDensityMap> model_dens_map_;
+  SampledDensityMap *model_dens_map_;
+  std::vector<SampledDensityMap *> rb_model_dens_map_;
+  SampledDensityMap * none_rb_model_dens_map_;
   algebra::BoundingBoxD<3> target_bounding_box_;
   // reference to the IMP environment
   float scalefac_;
@@ -77,6 +93,11 @@ private:
   // derivatives
   std::vector<float> dx_, dy_ , dz_;
   bool special_treatment_of_particles_outside_of_density_;
+  bool use_fast_version_;
+  //rigid bodies handling
+  IMP::Particles not_rb_; //all particles that are not part of a rigid body
+  IMP::core::RigidBodies rbs_;
+  std::vector<IMP::algebra::Transformation3D> rbs_orig_trans_;
 };
 
 IMPEM_END_NAMESPACE
