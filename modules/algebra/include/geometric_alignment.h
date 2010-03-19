@@ -45,6 +45,7 @@ IMP::algebra::Transformation3D
 get_transformation_aligning_first_to_second(const Vector3DsOrXYZs0 &from,
                                          const Vector3DsOrXYZs1 &to) {
   IMP_INTERNAL_CHECK(from.size() == to.size(), "sizes don't match");
+  IMP_INTERNAL_CHECK(from.size() >0, "Points are needed");
   // compute the centroid of the points and transform
   // pointsets so that their centroids coinside
 
