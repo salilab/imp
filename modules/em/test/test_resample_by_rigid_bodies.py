@@ -63,11 +63,11 @@ class ResamplingTest(IMP.test.TestCase):
         print "evaluate rb_all before transform fast: ",score2
         print "evaluate rb_all before transform slow: ",score3
         self.assertInTolerance(score1,score2,
-                               0.01)
+                               0.05)
         self.assertInTolerance(score1,score3,
-                               0.01)
+                               0.05)
         self.assertInTolerance(score2,score3,
-                               0.01)
+                               0.05)
         #randomize protein placement
         for j in range(5):
             rand_t=[]
@@ -91,7 +91,7 @@ class ResamplingTest(IMP.test.TestCase):
             self.assertInTolerance(score1,score2,
                                    0.1)
             self.assertInTolerance(score1,score3,
-                                   0.01)
+                                   0.05)
             self.assertInTolerance(score2,score3,
                                    0.1)
             for i in range(3):
@@ -120,11 +120,11 @@ class ResamplingTest(IMP.test.TestCase):
         score2=self.restr_rb_all_fast.evaluate(True)
         score3=self.restr_rb_all_slow.evaluate(True)
         self.assertInTolerance(score1,score2,
-                               0.01)
+                               0.05)
         self.assertInTolerance(score1,score3,
-                               0.01)
+                               0.05)
         self.assertInTolerance(score2,score3,
-                               0.01)
+                               0.05)
         self.imp_model.remove_restraint(self.restr_ps_all)
         self.imp_model.remove_restraint(self.restr_rb_all_fast)
         self.imp_model.remove_restraint(self.restr_rb_all_slow)
@@ -159,7 +159,7 @@ class ResamplingTest(IMP.test.TestCase):
                                       None,3,5,20,2,3,True)
         score_after=IMP.em.compute_fitting_score(ps,d_map)
         print "score_after:",score_after," score_before:",score_before
-        self.assertInTolerance(score_after,score_before,0.01)
+        self.assertInTolerance(score_after,score_before,0.05)
         self.assert_(fs.get_number_of_solutions()>0)
         print fs.get_score(0)
 if __name__ == '__main__':
