@@ -50,7 +50,7 @@ IMPEMEXPORT void write_map(DensityMap* m, const char *filename,
            with value above the threshold
  */
 IMPEMEXPORT algebra::BoundingBoxD<3>
-   get_bounding_box(DensityMap* m, Float threshold);
+   get_bounding_box(const DensityMap* m, Float threshold);
 //!
 /**
 \param[in] m a density map
@@ -369,14 +369,15 @@ IMP_OBJECTS(DensityMap,DensityMaps);
     from the sample values. The resulting function is C0 over R3.
     \relatesalso DensityMap
 */
-IMPEMEXPORT double get_density(DensityMap *m, const algebra::VectorD<3> &v);
+IMPEMEXPORT double get_density(const DensityMap *m,
+                               const algebra::VectorD<3> &v);
 
 /** Return a new density map containing a rotated version of the old
     one. Only voxels whose value is above threshold are considered when
     computing the bounding box of the new map (set IMP::em::get_bounding_box()).
     \relatesalso DensityMap
 */
-IMPEMEXPORT DensityMap* get_transformed(DensityMap *in,
+IMPEMEXPORT DensityMap* get_transformed(const DensityMap *in,
                                         const algebra::Transformation3D &tr,
                                         double threshold);
 
@@ -391,6 +392,20 @@ IMPEMEXPORT DensityMap* get_transformed(DensityMap *in,
 /** Get a resampled version of the map. The spacing is multiplied by scaling.
     That means, scaling values greater than 1 increase the voxel size.*/
 IMPEMEXPORT DensityMap* get_resampled(DensityMap *in, double scaling);
+
+
+//! Rotate a density map into another maps
+/**
+\param[in] from the map to transform
+\param[in] tr transform the from density map by this transformation
+\param[out] the map to tranform into
+\param[in] calc_rms if true RMS is calculated on the transformed map
+ \relatesalso DensityMap
+*/
+IMPEMEXPORT void get_transformed_into(const DensityMap *from,
+                                      const algebra::Transformation3D &tr,
+                                      DensityMap *into,
+                                       bool calc_rms=true);
 
 IMPEM_END_NAMESPACE
 

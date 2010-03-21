@@ -729,7 +729,7 @@ namespace {
 }
 
 
-algebra::BoundingBox3D get_bounding_box(DensityMap* d,Float threshold) {
+algebra::BoundingBox3D get_bounding_box(const DensityMap* d,Float threshold) {
   algebra::BoundingBox3D ret;
   for(long l=0;l<d->get_number_of_voxels();l++) {
     if (d->get_value(l) > threshold) {
@@ -742,7 +742,7 @@ algebra::BoundingBox3D get_bounding_box(DensityMap* d,Float threshold) {
 }
 
 
-double get_density(DensityMap *m, const algebra::VectorD<3> &v) {
+double get_density(const DensityMap *m, const algebra::VectorD<3> &v) {
   // trilirp in z, y, x
   const double side= m->get_spacing();
   const double halfside= side/2.0;
@@ -774,7 +774,7 @@ double get_density(DensityMap *m, const algebra::VectorD<3> &v) {
   return js[0]*(1-r[0]) + js[1]*(r[0]);
 }
 
-DensityMap *get_transformed_internal(DensityMap *in,
+DensityMap *get_transformed_internal(const DensityMap *in,
           const algebra::Transformation3D &tr,
           const algebra::BoundingBox3D &nbb){
   IMP::Pointer<DensityMap> ret(create_density_map(nbb,
@@ -794,7 +794,8 @@ DensityMap *get_transformed_internal(DensityMap *in,
   }
   return ret.release();
 }
-DensityMap *get_transformed(DensityMap *in, const algebra::Transformation3D &tr,
+DensityMap *get_transformed(const DensityMap *in,
+                            const algebra::Transformation3D &tr,
                             double threshold) {
   algebra::BoundingBox3D obb= get_bounding_box(in, threshold);
   return get_transformed_internal(in,tr,obb);
@@ -869,5 +870,14 @@ void DensityMap::copy_map(const DensityMap &other) {
   rms_calculated_ = other.rms_calculated_;
 
 }
-
+void get_transformed_into(const DensityMap *from,
+   const algebra::Transformation3D &tr,
+   DensityMap *into,
+   bool calc_rms) {
+  algebra::BoundingBox3D obb(into->get_origin(),into->get_top());
+  into = get_transformed_internal(from,tr,obb);
+  if (calc_rms) {
+    into->calcRMS();
+  }
+}
 IMPEM_END_NAMESPACE
