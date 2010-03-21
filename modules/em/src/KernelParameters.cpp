@@ -11,7 +11,12 @@
 #include <IMP/constants.h>
 
 IMPEM_BEGIN_NAMESPACE
-
+void RadiusDependentKernelParameters::show(std::ostream& s) const {
+   s << "vsig : " << vsig_ << " vsigsq: " << vsigsq_
+     << " inv_sigsq: " << inv_sigsq_ << " sig: " << sig_
+     << " kdist: " << kdist_ << " normfac: " << normfac_
+     << std::endl;
+}
 RadiusDependentKernelParameters::RadiusDependentKernelParameters(
    float radii, float rsigsq,
    float timessig, float sq2pi3,
@@ -52,7 +57,8 @@ void KernelParameters::init(float resolution)
   lim_ = exp(-0.5 * (timessig_ - EPS) * (timessig_ - EPS));
 }
 
-void KernelParameters::set_params(float radius) {
+const RadiusDependentKernelParameters*
+  KernelParameters::set_params(float radius) {
   IMP_USAGE_CHECK(initialized_,
             "The Kernel Parameters are not initialized");
   std::map<float ,const RadiusDependentKernelParameters *>::iterator iter =
@@ -63,6 +69,7 @@ void KernelParameters::set_params(float radius) {
   radii2params_[radius]=new RadiusDependentKernelParameters(
      radius,rsigsq_,timessig_,sq2pi3_,
      inv_rsigsq_,rnormfac_,rkdist_);
+  return radii2params_[radius];
 }
 
 const RadiusDependentKernelParameters* KernelParameters::get_params(
@@ -96,6 +103,8 @@ const RadiusDependentKernelParameters* KernelParameters::get_params(
    }
    if (closest == NULL) {
      IMP_WARN("could not find parameters for radius:"<<radius<<std::endl);
+     IMP_WARN("Setting params for radius :"<<radius<<std::endl);
+     closest = set_params(radius);
    }
    return closest;
 }

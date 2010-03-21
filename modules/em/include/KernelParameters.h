@@ -26,12 +26,8 @@ class IMPEMEXPORT RadiusDependentKernelParameters {
     RadiusDependentKernelParameters(
        float radii,float rsigsq,float timessig,
        float sq2pi3,float inv_rsigsq, float rnormfac, float rkdist);
-  void show(std::ostream& s=std::cout) {
-      s << "vsig : " << vsig_ << " vsigsq: " << vsigsq_
-        << " inv_sigsq: " << inv_sigsq_ << " sig: " << sig_
-        << " kdist: " << kdist_ << " normfac: " << normfac_
-        << std::endl;
-    }
+    //! Show
+    void show(std::ostream& s=std::cout) const;
     //! Gets the value of vsig parameter
     inline float get_vsig() const { return vsig_;}
     //! Gets the value of vsig square parameter
@@ -77,8 +73,9 @@ public:
   /** The other variables of the parameters
     (rsigsq,timessig,sq2pi3,inv_rsigsq,rnormfac,rkdist) must have been set.
     \param[in] radius the radius
+    \param[out] the radius based parameters
   */
-  void set_params(float radius);
+  const RadiusDependentKernelParameters* set_params(float radius);
 
   //! Finds the precomputed parameters given a particle radius.
   /**
