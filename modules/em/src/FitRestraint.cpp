@@ -62,6 +62,7 @@ void FitRestraint::initialize_model_density_map(
   FloatKey radius_key,FloatKey weight_key) {
   none_rb_model_dens_map_ =
     new SampledDensityMap(*(target_dens_map_->get_header()));
+  none_rb_model_dens_map_->reset_data(0.0);
   for(ParticleIterator it = particles_begin(); it != particles_end();it++) {
     if (core::RigidBody::particle_is_instance(*it)) {
       rbs_.push_back(core::RigidBody(*it));
@@ -71,6 +72,7 @@ void FitRestraint::initialize_model_density_map(
         new SampledDensityMap(*(target_dens_map_->get_header())));
       Particles rb_ps=Particles(core::get_leaves(atom::Hierarchy(*it)));
       rb_model_dens_map_[rb_model_dens_map_.size()-1]->set_particles(rb_ps);
+      rb_model_dens_map_[rb_model_dens_map_.size()-1]->resample();
     }
     else {
       not_rb_.push_back(*it);
@@ -109,7 +111,6 @@ void FitRestraint::resample() const {
     }
   }
 }
-
 
 IMP_LIST_IMPL(FitRestraint, Particle, particle,Particle*, Particles,
               {

@@ -95,6 +95,8 @@ protected:
                                a Monte Carlo step
 \param[in] max_translation maximum translation step in a MC optimization step
 \param[in] max_rotation maximum rotation step in a single MC optimization step
+\param[in] fast if true the density map of the rigid body is not resampled
+                but transformed at each iteration of the optimization
 \return the refined fitting solutions
 */
 IMPEMEXPORT FittingSolutions local_rigid_fitting_around_point(
@@ -104,7 +106,7 @@ IMPEMEXPORT FittingSolutions local_rigid_fitting_around_point(
    OptimizerState *display_log,
    Int number_of_optimization_runs = 5, Int number_of_mc_steps = 10,
    Int number_of_cg_steps=100,
-   Float max_translation=2., Float max_rotation=.3);
+   Float max_translation=2., Float max_rotation=.3,bool fast=false);
 
 //! Local rigid fitting of a rigid body
 /**
@@ -134,6 +136,8 @@ IMPEMEXPORT FittingSolutions local_rigid_fitting_around_point(
                                a Monte Carlo step
 \param[in] max_translation maximum translation step in a MC optimization step
 \param[in] max_rotation maximum rotation step in a single MC optimization step
+\param[in] fast if true the density map of the rigid body is not resampled
+                but transformed at each iteration of the optimization
 \return the refined fitting solutions
 */
 
@@ -144,7 +148,8 @@ inline FittingSolutions local_rigid_fitting(
    OptimizerState *display_log=NULL,
    Int number_of_optimization_runs = 5, Int number_of_mc_steps = 10,
    Int number_of_cg_steps=100,
-   Float max_translation=2., Float max_rotation=.3) {
+   Float max_translation=2., Float max_rotation=.3,
+   bool fast=false) {
    algebra::Vector3D rb_cen=
  IMP::core::get_centroid(core::XYZsTemp(core::get_leaves(atom::Hierarchy(rb))));
    return local_rigid_fitting_around_point(
@@ -203,7 +208,7 @@ IMPEMEXPORT FittingSolutions local_rigid_fitting_around_points(
 \param[in] max_angle_in_radians Sample rotations with +- max_angle_in_radians
                                 around the current rotation
 \param[in] number_of_rotations   The number of rotations to sample
-\return the refiend fitting solutions
+\return the refined fitting solutions
 */
 IMPEMEXPORT FittingSolutions local_rigid_fitting_grid_search(
    Particles &ps, const FloatKey &rad_key,
@@ -239,9 +244,9 @@ IMPEMEXPORT FittingSolutions compute_fitting_scores(Particles &ps,
    bool fast_version=false);
 //! Compute fitting scores for a given set of rigid transformations
 /**
-\brief Score how well a set of particles fit a map
+\brief Scores how well a set of particles fit a map
 \param[in] ps       The particles to be fitted
-\param[in] em_map        The density map to fit to
+\param[in] em_map   The density map to fit to
 \param[in] rad_key  The raidus key of the particles in the rigid body
 \param[in] wei_key  The weight key of the particles in the rigid body
 \note the function assumes the density map holds its density
