@@ -237,7 +237,7 @@ FittingSolutions local_rigid_fitting_grid_search(
    IMP::em::SampledDensityMap *model_dens_map =
        new IMP::em::SampledDensityMap(*dmap->get_header());
    IMP_INTERNAL_CHECK(
-      model_dens_map->same_dimensions(*dmap)
+      model_dens_map->same_dimensions(*dmap),
       "sampled density map is of wrong dimensions"<<std::endl);
    model_dens_map->set_particles(ps,rad_key,wei_key);
    model_dens_map->resample();
