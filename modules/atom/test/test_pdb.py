@@ -58,15 +58,21 @@ class PDBReadWriteTest(IMP.test.TestCase):
         IMP.atom.add_bonds(mp)
         bds = IMP.atom.get_internal_bonds(mp)
         self.assertEqual(bds.size(), 0)
+        # one more test for DNA
+        mp = IMP.atom.read_pdb(self.open_input_file("single_dna.pdb"),
+                               m, IMP.atom.NonWaterPDBSelector())
+        ps = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE);
+        self.assertEqual(ps.size(), 3011)
+
     def test_read_het(self):
         """Check reading a pdb with one protein and a hetatm"""
         m = IMP.Model()
 
         #! read PDB
-        mp= IMP.atom.read_pdb(self.open_input_file("1DQK.pdb"),
-                              m, IMP.atom.NonWaterPDBSelector())
-        print m.get_number_of_particles()
-        #self.assertEqual(m.get_number_of_particles(), 1132)
+        mp = IMP.atom.read_pdb(self.open_input_file("1DQK.pdb"),
+                               m, IMP.atom.NonWaterPDBSelector())
+        ps = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE);
+        self.assertEqual(ps.size(), 4060)
         #IMP.atom.show_molecular_hierarchy(mp)
         IMP.atom.show(mp)
         IMP.atom.add_bonds(mp)
@@ -74,6 +80,12 @@ class PDBReadWriteTest(IMP.test.TestCase):
         #self.assertEqual(bds.size(), 1020)
         IMP.atom.add_radii(mp)
         IMP.atom.show_molecular_hierarchy(mp)
+        # read another PDB
+        mp = IMP.atom.read_pdb(self.open_input_file("1aon.pdb"),
+                              m, IMP.atom.NonWaterPDBSelector())
+        ps = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE);
+        self.assertEqual(ps.size(), 58870)
+
     def test_read_non_water(self):
         """Check that the default pdb reader skips waters"""
         IMP.set_log_level(IMP.VERBOSE)

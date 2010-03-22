@@ -34,7 +34,7 @@ IMP_DECLARE_CONTROLLED_KEY_TYPE(AtomType, IMP_ATOM_TYPE_INDEX);
     - the AtomType of a protein, DNA or RNA atom is the AtomType
     created from the PDB atom name string with spaces removed. For
     example, a protein C-alpha has the name AtomType("CA").
-    - the AtomType for a heterogen atom is the AtomType created by
+    - the AtomType for a hetero (HETATM) atom is the AtomType created by
     prefixing "HET:" to the PBD atom name string (this time without
     spaces removed). For example, a calcium atom is AtomType("HET:CA  ").
 
@@ -44,7 +44,7 @@ IMP_DECLARE_CONTROLLED_KEY_TYPE(AtomType, IMP_ATOM_TYPE_INDEX);
 
     An AtomType implies an element (and hence a mass). While we have the
     associations set up for protein, DNA and RNA atoms, it may be necessary
-    to add them for heterogen atoms. You can use the add_atom_type() function
+    to add them for hetero atoms. You can use the add_atom_type() function
     to do this.
 
     All atoms have the mass stored internally using a Mass decorator.
