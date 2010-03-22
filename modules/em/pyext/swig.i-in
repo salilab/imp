@@ -38,7 +38,7 @@ IMP_REFCOUNT_RETURN_SINGLE(IMP::em::DensityMap)
 %include "IMP/em/noise.h"
 %include "IMP/em/filters.h"
 %include "IMP/em/rigid_fitting.h"
-
+%include "IMP/em/envelope_penetration.h"
 /* Allow runtime casting of Restraint* objects to FitRestraint* */
 namespace IMP {
   namespace em {
