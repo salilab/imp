@@ -337,33 +337,34 @@ AtomType add_atom_type(std::string name, Element e) {
                   << name);
   if (name.find("HET:") == 0) {
     if (name.size() != 8) {
-      IMP_THROW("Heterogen names must have 4 "
+      IMP_THROW("Hetero atom names must have 4 "
                 << "characters after the colon: \"" << name
                 << "\" does not.", ValueException);
     }
-    for (unsigned int i=4; i< 8; ++i) {
-      if (!std::isalpha(name[i], std::locale())
-          && !std::isspace(name[i], std::locale())
-          && !std::isdigit(name[i], std::locale())) {
-        IMP_THROW("Illegal character in atom name, only A-Z, 0-9, \" \""
-                  << "allowed. Got \"" << name << "\"",
-                  ValueException);
-      }
-    }
+    // nucleic acids can have other characters in their names, such as O5'
+    // for (unsigned int i=4; i< 8; ++i) {
+    //   if (!std::isalpha(name[i], std::locale())
+    //       && !std::isspace(name[i], std::locale())
+    //       && !std::isdigit(name[i], std::locale())) {
+    //     IMP_THROW("Illegal character in atom name, only A-Z, 0-9, \" \""
+    //               << "allowed. Got \"" << name << "\"",
+    //               ValueException);
+    //   }
+    // }
   } else {
       if (name.size() >4) {
         IMP_THROW("Atom names must have at most 4 "
                 << "characters: \"" << name
                 << "\" does not.", ValueException);
       }
-      for (unsigned int i=0; i< name.size(); ++i) {
-      if (!std::isalpha(name[i], std::locale())
-          && !std::isdigit(name[i], std::locale())) {
-        IMP_THROW("Illegal character in atom name, only A-Z, 0-9"
-                  << "allowed. Got \"" << name << "\"",
-                  ValueException);
-      }
-    }
+    //   for (unsigned int i=0; i< name.size(); ++i) {
+    //   if (!std::isalpha(name[i], std::locale())
+    //       && !std::isdigit(name[i], std::locale())) {
+    //     IMP_THROW("Illegal character in atom name, only A-Z, 0-9"
+    //               << "allowed. Got \"" << name << "\"",
+    //               ValueException);
+    //   }
+    // }
   }
   AtomType ret= AtomType::add_key(name.c_str());
   added_atom_names.resize(std::max(added_atom_names.size(),

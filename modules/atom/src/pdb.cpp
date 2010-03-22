@@ -39,7 +39,7 @@ Particle* atom_particle(Model *m, const std::string& pdb_line)
 {
   AtomType atom_name;
   std::string string_name = internal::atom_type(pdb_line);
-  if (pdb_line[0]!='A'){
+  if (internal::is_HETATM_rec(pdb_line)){
     string_name= "HET:"+string_name;
     if (!get_atom_type_exists(string_name)) {
       std::string elem= internal::atom_element(pdb_line);
