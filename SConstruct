@@ -152,7 +152,10 @@ buildsummary= env._BuildSummary(target="build/tmp/build_summary.passed", source=
 env.Alias("summary", [buildsummary])
 for p in BUILD_TARGETS:
     if p != "summary":
-        env.Depends(buildsummary, env.Alias(p))
+        if len(Glob(p)) >0:
+            env.Depends(buildsummary, p)
+        else:
+            env.Depends(buildsummary, env.Alias(p))
 if len(BUILD_TARGETS) ==0:
     env.Depends(buildsummary, "all")
     BUILD_TARGETS.append("all")
