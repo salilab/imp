@@ -152,6 +152,8 @@ buildsummary= env._BuildSummary(target="build/tmp/build_summary.passed", source=
 env.Alias("summary", [buildsummary])
 for p in BUILD_TARGETS:
     if p != "summary":
+        if p[-1]=='/':
+            p= p[:-1]
         if len(Glob(p)) >0:
             env.Depends(buildsummary, p)
         else:
