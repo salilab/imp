@@ -63,10 +63,7 @@ public:
     P::operator[](0) = x0;
     P::operator[](1) = x1;
     P::operator[](2) = x2;
-    if (D==4) {
-      // suppress warning.
-      P::operator[](2) = x3;
-    }
+    P::operator[](3) = x3;
   }
   Particle *get(unsigned int i) const {
     return P::operator[](i);
