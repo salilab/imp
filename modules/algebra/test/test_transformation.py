@@ -63,6 +63,8 @@ class Transformation2DTests(IMP.test.TestCase):
         self.assertInTolerance(v1[2],0.0,.01)
 
     def test_transformation_between_two_reference_frames(self):
+        """Check calculating a transformation between two reference frames"""
+        #define a first reference frame
         u1 = IMP.algebra.Vector3D(random.uniform(-100.,100.),
                                  random.uniform(-200.,200.),
                                  0.).get_unit_vector()
@@ -70,13 +72,21 @@ class Transformation2DTests(IMP.test.TestCase):
         base1 = IMP.algebra.Vector3D(random.uniform(-50.,50.),
                                  random.uniform(-50.,50.),
                                  0.)
+        #define a second reference frame
         u2 = IMP.algebra.Vector3D(1.,0.,0.)
         w2 = IMP.algebra.Vector3D(0.,1.,0.)
         base2 = IMP.algebra.Vector3D(0.,0.,0.)
+        #define the first reference frame
         r1= IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.get_rotation_from_x_y_axes(u1, w1), base1))
+        #define the second reference frame
         r2= IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.get_rotation_from_x_y_axes(u2, w2), base2))
-        t1=IMP.algebra.get_transformation_from_first_to_second(r2, r1)
-        dist=IMP.algebra.get_distance(t1.get_rotation(),r2.get_transformation().get_rotation())
+        #calculate the transformation from the first to the second reference frame
+        first_to_second=IMP.algebra.get_transformation_from_first_to_second(r2, r1)
+        second_to_first=IMP.algebra.get_transformation_from_first_to_second(r1, r2)
+        #preform test
+        dist=IMP.algebra.get_distance(first_to_second.get_rotation(),second_to_first.get_inverse().get_rotation())
+        self.assertInTolerance(dist,0.0,0.001)
+        dist=IMP.algebra.get_distance(first_to_second.get_translation(),second_to_first.get_inverse().get_translation())
         self.assertInTolerance(dist,0.0,0.001)
 
 class Transformation3DTests(IMP.test.TestCase):
