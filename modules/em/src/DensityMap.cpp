@@ -46,6 +46,7 @@ DensityMap::DensityMap(const DensityHeader &header){
   //allocate the data
   long nvox = get_number_of_voxels();
   data_.reset(new emreal[nvox]);
+  loc_calculated_=false;
   calc_all_voxel2loc();
 }
 //TODO - update the copy cons
@@ -800,6 +801,7 @@ DensityMap *get_transformed_internal(const DensityMap *in,
     ret->get_header_writable()
       ->set_resolution(in->get_header()->get_resolution());
   }
+  ret->calcRMS();
   return ret.release();
 }
 DensityMap *get_transformed(const DensityMap *in,
