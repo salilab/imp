@@ -40,7 +40,14 @@ DensityMap::DensityMap()
 }
 
 
-
+DensityMap::DensityMap(const DensityHeader &header){
+  header_ = header;
+  header_.compute_xyz_top();
+  //allocate the data
+  long nvox = get_number_of_voxels();
+  data_.reset(new emreal[nvox]);
+  calc_all_voxel2loc();
+}
 //TODO - update the copy cons
 DensityMap::DensityMap(const DensityMap &other)
 {
@@ -673,6 +680,7 @@ namespace {
     ret->CreateVoidMap(n[0], n[1], n[2]);
     ret->set_origin(bb.get_corner(0));
     ret->update_voxel_size(spacing);
+    ret->get_header_writable()->compute_xyz_top();
     IMP_LOG(TERSE, "Created map with dimensions " << n[0] << " " << n[1]
             << " " << n[2] << " and spacing " << ret->get_spacing()
             << std::endl);
@@ -874,8 +882,9 @@ void get_transformed_into(const DensityMap *from,
    const algebra::Transformation3D &tr,
    DensityMap *into,
    bool calc_rms) {
-  algebra::BoundingBox3D obb(into->get_origin(),into->get_top());
-  into = get_transformed_internal(from,tr,obb);
+  algebra::BoundingBox3D obb(from->get_origin(),from->get_top());
+  *into = *(get_transformed_internal(from,tr,obb));
+  into->get_header_writable()->compute_xyz_top();
   if (calc_rms) {
     into->calcRMS();
   }

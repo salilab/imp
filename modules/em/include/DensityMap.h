@@ -75,6 +75,8 @@ class IMPEMEXPORT DensityMap: public Object
 public:
   DensityMap();
   DensityMap(const DensityMap &other);
+  //! Construct a density map as intructed in the input header
+  DensityMap(const DensityHeader &header);
   DensityMap&  operator=(const DensityMap &other );
   //! Creates a new map with the given dimension
   /**
