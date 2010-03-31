@@ -7,6 +7,7 @@
 #include <IMP/atom/mol2.h>
 #include <IMP/atom/internal/mol2.h>
 #include <IMP/atom/Atom.h>
+#include <IMP/atom/Mass.h>
 #include <IMP/atom/Residue.h>
 #include <IMP/atom/Hierarchy.h>
 #include <IMP/atom/Charged.h>
@@ -149,7 +150,13 @@ namespace {
     core::XYZ::setup_particle(p, v);
     d.set_input_index(atom_number);
     Charged::setup_particle(d, atom_charge);
-
+    // get the element from the Sybyl atom type field
+    // split on '.' to get the element
+    std::vector<std::string> split_results;
+    boost::split(split_results, type_field, boost::is_any_of("."));
+    Element e= get_element_table().get_element(split_results[0]);
+    d.set_element(e);
+    Mass(p).set_mass(get_element_table().get_mass(e));
     return p;
   }
 

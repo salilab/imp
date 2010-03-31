@@ -23,39 +23,6 @@ IMPATOM_BEGIN_NAMESPACE
 
 namespace {
   std::vector<Element> added_atom_names;
-
-  Element element_from_name(const AtomType& at) {
-    std::string atom_name = at.get_string();
-    IMP_USAGE_CHECK(atom_name.length() > 0,
-                    "Invalid atom name.");
-    if (added_atom_names.size() > at.get_index()
-        && added_atom_names[at.get_index()] != UNKNOWN_ELEMENT) {
-      return added_atom_names[at.get_index()];
-    }
-    if (atom_name.find("HET:") != std::string::npos) {
-      IMP_THROW("You must call add_atom_name() to create a new atom name: "
-                << at,
-                ValueException);
-    } else {
-      char c0=atom_name[0];
-      if (isdigit(c0)) {
-        IMP_USAGE_CHECK(atom_name.size() >1 && !isdigit(atom_name[1]),
-                  "Invalid atom name " << at);
-        c0= atom_name[1];
-      }
-      switch (c0) {
-      case 'H': return H;
-      case 'C': return C;
-      case 'N': return N;
-      case 'O': return O;
-      case 'S': return S;
-      case 'P': return P;
-      default: break;
-      }
-      IMP_THROW("Could not figure out element for " << at,
-                ValueException);
-    }
-  }
 }
 
 #define NAME_DEF(NAME) const AtomType AT_##NAME(AtomType::add_key(#NAME))
@@ -271,20 +238,6 @@ void Atom::show(std::ostream &out) const
 void Atom::set_atom_type(AtomType t)
 {
   get_particle()->set_value(get_atom_type_key(), t.get_index());
-  Element e;
-  if (t.get_index() < added_atom_names.size()
-      && added_atom_names[t.get_index()] != UNKNOWN_ELEMENT) {
-    e= added_atom_names[t.get_index()];
-  } else {
-    e=element_from_name(t);
-  }
-  IMP_INTERNAL_CHECK(e != UNKNOWN_ELEMENT,
-             "Internal error setting element name from " << t);
-  get_particle()->set_value(get_element_key(), e);
-  Mass(get_particle()).set_mass(get_element_table().get_mass(e));
-  IMP_INTERNAL_CHECK(Mass(get_particle()).get_mass() != 0,
-             "Error setting mass on atom "
-             << *this);
 }
 
 IntKey Atom::get_atom_type_key() {
