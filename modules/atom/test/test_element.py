@@ -33,5 +33,28 @@ class ElementTableTest(IMP.test.TestCase):
         chain.add_child(residue)
         residue.add_child(atom)
 
+    def test_element_assignment(self):
+        """Check element assignment based on atom name"""
+        m = IMP.Model()
+
+        #! read PDB
+        mp = IMP.atom.read_pdb(self.open_input_file("elements.pdb"),
+                               m, IMP.atom.NonWaterPDBSelector())
+        ps = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE);
+        self.assertEqual(ps.size(), 13)
+        self.assertEqual(IMP.atom.Atom(ps[0].get_particle()).get_element(), IMP.atom.P)
+        self.assertEqual(IMP.atom.Atom(ps[1].get_particle()).get_element(), IMP.atom.O)
+        self.assertEqual(IMP.atom.Atom(ps[2].get_particle()).get_element(), IMP.atom.O)
+        self.assertEqual(IMP.atom.Atom(ps[3].get_particle()).get_element(), IMP.atom.Ca)
+        self.assertEqual(IMP.atom.Atom(ps[4].get_particle()).get_element(), IMP.atom.Mg)
+        self.assertEqual(IMP.atom.Atom(ps[5].get_particle()).get_element(), IMP.atom.N)
+        self.assertEqual(IMP.atom.Atom(ps[6].get_particle()).get_element(), IMP.atom.C)
+        self.assertEqual(IMP.atom.Atom(ps[7].get_particle()).get_element(), IMP.atom.Cl)
+        self.assertEqual(IMP.atom.Atom(ps[8].get_particle()).get_element(), IMP.atom.N)
+        self.assertEqual(IMP.atom.Atom(ps[9].get_particle()).get_element(), IMP.atom.C)
+        self.assertEqual(IMP.atom.Atom(ps[10].get_particle()).get_element(), IMP.atom.Ir)
+        self.assertEqual(IMP.atom.Atom(ps[11].get_particle()).get_element(), IMP.atom.Pt)
+        self.assertEqual(IMP.atom.Atom(ps[12].get_particle()).get_element(), IMP.atom.Na)
+
 if __name__ == '__main__':
     unittest.main()

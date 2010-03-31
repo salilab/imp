@@ -246,8 +246,14 @@ public:
   //! Set the name and corresponding element and mass
   void set_atom_type(AtomType t);
 
+  //! get element
   Element get_element() const {
     return Element(get_particle()->get_value(get_element_key()));
+  }
+
+  //! set element value
+  void set_element(Element e) {
+   get_particle()->set_value(get_element_key(), e);
   }
 
   /** @name The atom index in the input file
