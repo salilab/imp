@@ -25,185 +25,173 @@ namespace {
   std::vector<Element> added_atom_names;
 }
 
-#define NAME_DEF(NAME) const AtomType AT_##NAME(AtomType::add_key(#NAME))
-#define NAME_DEF2(NAME, STR) const AtomType AT_##NAME(AtomType::add_key(STR))
+#define NAME_DEF(NAME, ELEMENT) const AtomType AT_##NAME\
+  = add_atom_type(#NAME, ELEMENT)
+#define NAME_DEF2(NAME, STR, ELEMENT) const AtomType AT_##NAME\
+  = add_atom_type(STR, ELEMENT)
 #define NAME_ALIAS(OLD_NAME, NAME) const AtomType AT_##NAME\
   (AtomType::add_alias(AT_##OLD_NAME, #NAME))
 
-NAME_DEF(N);
-NAME_DEF(H);
-NAME_DEF(1H);
-NAME_DEF(H1);
-NAME_DEF(2H);
-NAME_DEF(H2);
-NAME_DEF(3H);
-NAME_DEF(H3);
-NAME_DEF(C);
-NAME_DEF(O);
-NAME_DEF(OXT);
+NAME_DEF(N, N);
+NAME_DEF(H, H);
+NAME_DEF(1H, H);
+NAME_DEF(H1, H);
+NAME_DEF(2H, H);
+NAME_DEF(H2, H);
+NAME_DEF(3H, H);
+NAME_DEF(H3, H);
+NAME_DEF(C, C);
+NAME_DEF(O, O);
+NAME_DEF(OXT, O);
 NAME_ALIAS(OXT, OT1);
 NAME_ALIAS(OXT, OT2);
-NAME_DEF(CH3);
+NAME_DEF(CH3, C);
 
-NAME_DEF(CA);
-NAME_DEF(HA);
-NAME_DEF(HA1);
-NAME_DEF(HA2);
+NAME_DEF(CA, C);
+NAME_DEF(HA, H);
+NAME_DEF(HA1, H);
+NAME_DEF(HA2, H);
 
-NAME_DEF(CB);
-NAME_DEF(HB);
-NAME_DEF(HB1);
-NAME_DEF(HB2);
-NAME_DEF(HB3);
+NAME_DEF(CB, C);
+NAME_DEF(HB, H);
+NAME_DEF(HB1, H);
+NAME_DEF(HB2, H);
+NAME_DEF(HB3, H);
 
-NAME_DEF(CG);
-NAME_DEF(CG1);
-NAME_DEF(CG2);
-NAME_DEF(HG);
-NAME_DEF(HG1);
-NAME_DEF(HG2);
-NAME_DEF(HG3);
-//NAME(HG1",Atom::AT_HG1},
-NAME_DEF(HG11);
-NAME_DEF(HG21);
-NAME_DEF(HG31);
-NAME_DEF(HG12);
-NAME_DEF(HG22);
-NAME_DEF(HG32);
-NAME_DEF(OG);
-NAME_DEF(OG1);
-NAME_DEF(SG);
+NAME_DEF(CG, C);
+NAME_DEF(CG1, C);
+NAME_DEF(CG2, C);
+NAME_DEF(HG, H);
+NAME_DEF(HG1, H);
+NAME_DEF(HG2, H);
+NAME_DEF(HG3, H);
+NAME_DEF(HG11, H);
+NAME_DEF(HG21, H);
+NAME_DEF(HG31, H);
+NAME_DEF(HG12, H);
+NAME_DEF(HG22, H);
+NAME_DEF(HG32, H);
+NAME_DEF(OG, O);
+NAME_DEF(OG1, O);
+NAME_DEF(SG, S);
 
-NAME_DEF(CD);
-NAME_DEF(CD1);
-NAME_DEF(CD2);
-//NAME(HD1",Atom::AT_HD1},
-//NAME(HD2",Atom::AT_HD2},
-NAME_DEF(HD);
-NAME_DEF(HD1);
-NAME_DEF(HD2);
-NAME_DEF(HD3);
-NAME_DEF(HD11);
-NAME_DEF(HD21);
-NAME_DEF(HD31);
-NAME_DEF(HD12);
-NAME_DEF(HD22);
-NAME_DEF(HD32);
-NAME_DEF(SD);
-NAME_DEF(OD1);
-NAME_DEF(OD2);
-NAME_DEF(ND1);
-NAME_DEF(ND2);
+NAME_DEF(CD, C);
+NAME_DEF(CD1, C);
+NAME_DEF(CD2, C);
+NAME_DEF(HD, H);
+NAME_DEF(HD1, H);
+NAME_DEF(HD2, H);
+NAME_DEF(HD3, H);
+NAME_DEF(HD11, H);
+NAME_DEF(HD21, H);
+NAME_DEF(HD31, H);
+NAME_DEF(HD12, H);
+NAME_DEF(HD22, H);
+NAME_DEF(HD32, H);
+NAME_DEF(SD, S);
+NAME_DEF(OD1, O);
+NAME_DEF(OD2, O);
+NAME_DEF(ND1, N);
+NAME_DEF(ND2, N);
 
-NAME_DEF(CE);
-NAME_DEF(CE1);
-NAME_DEF(CE2);
-NAME_DEF(CE3);
-NAME_DEF(HE);
-NAME_DEF(HE1);
-NAME_DEF(HE2);
-NAME_DEF(HE3);
-//NAME(HE1",Atom::AT_HE1},
-//NAME(HE2",Atom::AT_HE2},
-//NAME(HE3",Atom::AT_HE3},
-NAME_DEF(HE21);
-NAME_DEF(HE22);
+NAME_DEF(CE, C);
+NAME_DEF(CE1, C);
+NAME_DEF(CE2, C);
+NAME_DEF(CE3, C);
+NAME_DEF(HE, H);
+NAME_DEF(HE1, H);
+NAME_DEF(HE2, H);
+NAME_DEF(HE3, H);
+NAME_DEF(HE21, H);
+NAME_DEF(HE22, H);
 NAME_ALIAS(HE21, 1HE2);
 NAME_ALIAS(HE22, 2HE2);
-NAME_DEF(OE1);
-NAME_DEF(OE2);
-NAME_DEF(NE);
-NAME_DEF(NE1);
-NAME_DEF(NE2);
+NAME_DEF(OE1, O);
+NAME_DEF(OE2, O);
+NAME_DEF(NE, N);
+NAME_DEF(NE1, N);
+NAME_DEF(NE2, N);
 
-NAME_DEF(CZ);
-NAME_DEF(CZ2);
-NAME_DEF(CZ3);
-NAME_DEF(NZ);
-NAME_DEF(HZ);
-NAME_DEF(HZ1);
-NAME_DEF(HZ2);
-NAME_DEF(HZ3);
-//NAME(HZ1",Atom::AT_HZ2},
-//NAME(HZ2",Atom::AT_HZ2},
-//NAME(HZ3",Atom::AT_HZ3},
+NAME_DEF(CZ, C);
+NAME_DEF(CZ2, C);
+NAME_DEF(CZ3, C);
+NAME_DEF(NZ, N);
+NAME_DEF(HZ, H);
+NAME_DEF(HZ1, H);
+NAME_DEF(HZ2, H);
+NAME_DEF(HZ3, H);
 
-NAME_DEF(CH2);
-NAME_DEF(NH1);
-NAME_DEF(NH2);
-NAME_DEF(OH);
-NAME_DEF(HH);
+NAME_DEF(CH2, C);
+NAME_DEF(NH1, N);
+NAME_DEF(NH2, N);
+NAME_DEF(OH, O);
+NAME_DEF(HH, H);
 
-NAME_DEF(HH11);
-NAME_DEF(HH21);
-NAME_DEF(HH2);
-NAME_DEF(HH12);
-NAME_DEF(HH22);
-NAME_DEF(HH23);
-NAME_DEF(HH33);
-NAME_DEF(HH13);
+NAME_DEF(HH11, H);
+NAME_DEF(HH21, H);
+NAME_DEF(HH2, H);
+NAME_DEF(HH12, H);
+NAME_DEF(HH22, H);
+NAME_DEF(HH23, H);
+NAME_DEF(HH33, H);
+NAME_DEF(HH13, H);
 //NAME_ALIAS(1HH3, HH31);
+NAME_DEF(P, P);
+NAME_DEF(OP1, O);
+NAME_DEF(OP2, O);
+NAME_DEF2(O5p, "O5'", O);
+NAME_DEF2(C5p,"C5'", C);
+NAME_DEF2(H5pp, "H5''", H);
+NAME_DEF2(C4p, "C4'", C);
+NAME_DEF2(H4p, "H4'", H);
+NAME_DEF2(H5p, "H5'", H);
+NAME_DEF2(O4p, "O4'", O);
+NAME_DEF2(C1p, "C1'", C);
+NAME_DEF2(H1p, "H1'", H);
+NAME_DEF2(C3p, "C3'", C);
+NAME_DEF2(H3p, "H3'", H);
+NAME_DEF2(O3p, "O3'", O);
+NAME_DEF2(C2p, "C2'", C);
+NAME_DEF2(H2p, "H2'", H);
+NAME_DEF2(H2pp, "H2''", H);
+NAME_DEF2(O2p, "O2'", O);
+NAME_DEF2(HO2p, "HO2'", H);
+NAME_DEF(N9, N);
+NAME_DEF(C8, C);
+NAME_DEF(H8, H);
+NAME_DEF(N7, N);
+NAME_DEF(C5, C);
+NAME_DEF(C4, C);
+NAME_DEF(N3, N);
+NAME_DEF(C2, C);
+NAME_DEF(N1, N);
+NAME_DEF(C6, C);
+NAME_DEF(N6, N);
+NAME_DEF(H61, H);
+NAME_DEF(H62, H);
+NAME_DEF(O6, O);
 
-//NAME(HH31);
-//NAME(HH32);
-//NAME(HH33);
+NAME_DEF(N2, N);
+NAME_DEF(H21, H);
+NAME_DEF(H22, H);
 
-NAME_DEF(P);
-NAME_DEF(OP1);
-NAME_DEF(OP2);
-NAME_DEF2(O5p, "O5'");
-NAME_DEF2(C5p,"C5'");
-NAME_DEF2(H5pp, "H5''");
-NAME_DEF2(C4p, "C4'");
-NAME_DEF2(H4p, "H4'");
-NAME_DEF2(H5p, "H5'");
-NAME_DEF2(O4p, "O4'");
-NAME_DEF2(C1p, "C1'");
-NAME_DEF2(H1p, "H1'");
-NAME_DEF2(C3p, "C3'");
-NAME_DEF2(H3p, "H3'");
-NAME_DEF2(O3p, "O3'");
-NAME_DEF2(C2p, "C2'");
-NAME_DEF2(H2p, "H2'");
-NAME_DEF2(H2pp, "H2''");
-NAME_DEF2(O2p, "O2'");
-NAME_DEF2(HO2p, "HO2'");
-NAME_DEF(N9);
-NAME_DEF(C8);
-NAME_DEF(H8);
-NAME_DEF(N7);
-NAME_DEF(C5);
-NAME_DEF(C4);
-NAME_DEF(N3);
-NAME_DEF(C2);
-NAME_DEF(N1);
-NAME_DEF(C6);
-NAME_DEF(N6);
-NAME_DEF(H61);
-NAME_DEF(H62);
-NAME_DEF(O6);
+NAME_DEF(H6, H);
+NAME_DEF(H5, H);
+NAME_DEF(O2, O);
+NAME_DEF(N4, N);
+NAME_DEF(H41, H);
+NAME_DEF(H42, H);
 
-NAME_DEF(N2);
-NAME_DEF(H21);
-NAME_DEF(H22);
-
-NAME_DEF(H6);
-NAME_DEF(H5);
-NAME_DEF(O2);
-NAME_DEF(N4);
-NAME_DEF(H41);
-NAME_DEF(H42);
-
-NAME_DEF(O4);
-NAME_DEF(C7);
-NAME_DEF(H71);
-NAME_DEF(H72);
-NAME_DEF(H73);
+NAME_DEF(O4, O);
+NAME_DEF(C7, C);
+NAME_DEF(H71, H);
+NAME_DEF(H72, H);
+NAME_DEF(H73, H);
 
 // new
-NAME_DEF(NO2);
+NAME_DEF(NO2, N);
 
-NAME_DEF(UNKNOWN);
+NAME_DEF(UNKNOWN, UNKNOWN_ELEMENT);
 
 Atom Atom::setup_particle(Particle *p, AtomType t) {
   p->add_attribute(get_atom_type_key(), t.get_index());
@@ -288,37 +276,6 @@ AtomType add_atom_type(std::string name, Element e) {
             << name);
   IMP_USAGE_CHECK(e != UNKNOWN_ELEMENT, "Atom type must have element: "
                   << name);
-  if (name.find("HET:") == 0) {
-    if (name.size() != 8) {
-      IMP_THROW("Hetero atom names must have 4 "
-                << "characters after the colon: \"" << name
-                << "\" does not.", ValueException);
-    }
-    // nucleic acids can have other characters in their names, such as O5'
-    // for (unsigned int i=4; i< 8; ++i) {
-    //   if (!std::isalpha(name[i], std::locale())
-    //       && !std::isspace(name[i], std::locale())
-    //       && !std::isdigit(name[i], std::locale())) {
-    //     IMP_THROW("Illegal character in atom name, only A-Z, 0-9, \" \""
-    //               << "allowed. Got \"" << name << "\"",
-    //               ValueException);
-    //   }
-    // }
-  } else {
-      if (name.size() >4) {
-        IMP_THROW("Atom names must have at most 4 "
-                << "characters: \"" << name
-                << "\" does not.", ValueException);
-      }
-    //   for (unsigned int i=0; i< name.size(); ++i) {
-    //   if (!std::isalpha(name[i], std::locale())
-    //       && !std::isdigit(name[i], std::locale())) {
-    //     IMP_THROW("Illegal character in atom name, only A-Z, 0-9"
-    //               << "allowed. Got \"" << name << "\"",
-    //               ValueException);
-    //   }
-    // }
-  }
   AtomType ret= AtomType::add_key(name.c_str());
   added_atom_names.resize(std::max(added_atom_names.size(),
                                    static_cast<std::size_t>(ret.get_index()+1)),
@@ -327,6 +284,11 @@ AtomType add_atom_type(std::string name, Element e) {
   return ret;
 }
 
+Element get_element_for_atom_type(AtomType at) {
+  IMP_USAGE_CHECK(at.get_index() < added_atom_names.size(),
+                  "Invalid AtomType index");
+  return added_atom_names[at.get_index()];
+}
 
 bool get_atom_type_exists(std::string name) {
   return AtomType::get_key_exists(name);
