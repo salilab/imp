@@ -250,11 +250,11 @@ public:
   Element get_element() const {
     return Element(get_particle()->get_value(get_element_key()));
   }
-
-  //! set element value
+#ifndef IMP_DOXYGEN
   void set_element(Element e) {
    get_particle()->set_value(get_element_key(), e);
   }
+#endif
 
   /** @name The atom index in the input file
       This index is not necessarily unique over any particular
@@ -319,6 +319,8 @@ IMPATOMEXPORT Atom get_atom(Residue rd, AtomType at);
     \see atom_type_exists()
 */
 IMPATOMEXPORT AtomType add_atom_type(std::string name, Element e);
+
+IMPATOMEXPORT Element get_element_for_atom_type(AtomType at);
 
 //! Return true if that atom type already exists.
 IMPATOMEXPORT bool get_atom_type_exists(std::string name);

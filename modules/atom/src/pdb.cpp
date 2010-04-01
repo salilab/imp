@@ -88,7 +88,6 @@ Particle* atom_particle(Model *m, const std::string& pdb_line)
   std::string string_name = internal::atom_type(pdb_line);
   // determine element
   Element e = get_element_from_pdb_line(pdb_line);
-
   // determine AtomType
   if (internal::is_HETATM_rec(pdb_line)){
     string_name= "HET:"+string_name;
@@ -126,19 +125,12 @@ Particle* atom_particle(Model *m, const std::string& pdb_line)
   d.set_element(e);
   Mass(p).set_mass(get_element_table().get_mass(e));
 
-  IMP_IF_CHECK(USAGE) {
-    std::string name= internal::atom_element(pdb_line);
-    boost::trim(name);
-    if (!name.empty()) {
-      Element e= get_element_table().get_element(name);
-      if (e != UNKNOWN_ELEMENT) {
-        if (e != d.get_element()) {
-          IMP_WARN("Read and computed elements don't match. Read " << e
-                   << " Computed " << d.get_element()
-                   << " from line " << pdb_line << std::endl);
-        }
-      }
-    }
+  // check if the element matches
+  Element e2 = get_element_for_atom_type(atom_name);
+  if (e != e2) {
+    IMP_WARN("AtomType element and PDB line elements don't match. AtomType "
+             << e2 << "determined from PDB line " << e
+             << " line " << pdb_line << std::endl);
   }
   return p;
 }
