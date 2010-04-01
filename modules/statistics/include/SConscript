@@ -16,6 +16,7 @@ files = [
          'PartitionalClustering.h',
          'point_clustering.h',
          'statistics_macros.h',
+         'Histogram.h',
         ] \
         + SConscript('internal/SConscript')
 
