@@ -1,0 +1,44 @@
+/**
+ * \file Histogram.h \brief Holds a histogram
+ *
+ *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *
+ */
+
+#ifndef IMPSTATISTICS_HISTOGRAM_H
+#define IMPSTATISTICS_HISTOGRAM_H
+#include "statistics_config.h"
+#include <IMP/base_types.h>
+#include <vector>
+IMPSTATISTICS_BEGIN_NAMESPACE
+//! Histogram
+/** Keeps a set of values within a range
+    the range is arranged into some number of bins
+    specified during construction. */
+class IMPSTATISTICSEXPORT Histogram {
+  public:
+  //! Constructor
+  /**
+  \param[in] start the start value of the range
+  \param[in] end the end value of the range
+  \param[in] num_bins the number of bins [start,end] is divided to
+   */
+  Histogram(double start, double end,
+            unsigned int num_bins);
+   //! Increase the count for the bin that holds a
+   // value that is in range for this histogram.
+  void add(double x);
+  //! Get the sum of all counts in the histogram.
+  unsigned int get_total_count() const;
+  void show(std::ostream& out = std::cout) const;
+  //! Get the lowest value for which X% of the histogram data is lower from
+  /**
+\param percentage the percenrage (between 0 to 1)
+   */
+  double get_top(double percentage)const;
+  private:
+  double start_,end_,interval_size_;
+  std::vector<int> freq_;
+};
+IMPSTATISTICS_END_NAMESPACE
+#endif  /* IMPSTATISTICS_HISTOGRAM_H */
