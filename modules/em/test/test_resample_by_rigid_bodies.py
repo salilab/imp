@@ -102,8 +102,8 @@ class ResamplingTest(IMP.test.TestCase):
         self.imp_model.remove_restraint(self.restr_rb_all_fast)
         self.imp_model.remove_restraint(self.restr_rb_all_slow)
 
-    def test_resampling_derivaties(self):
-        """test derivaties with and without rigid bodies"""
+    def test_resampling_derivatives(self):
+        """Test derivatives with and without rigid bodies"""
         #load as lots of particles, generate EM map, use it to define restraint
         self.ps_all=IMP.Particles() #all the molecules together as one particle
         for n in xrange(3):
