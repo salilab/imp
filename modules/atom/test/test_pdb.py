@@ -63,11 +63,6 @@ class PDBReadWriteTest(IMP.test.TestCase):
                                m, IMP.atom.NonWaterPDBSelector())
         ps = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE);
         self.assertEqual(ps.size(), 3011)
-        # another nucleic acid
-        mp = IMP.atom.read_pdb(self.open_input_file("hairpin.pdb"),
-                               m, IMP.atom.NonWaterPDBSelector())
-        ps = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE);
-        self.assertEqual(ps.size(), 1952)
 
     def test_read_het(self):
         """Check reading a pdb with one protein and a hetatm"""
