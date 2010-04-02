@@ -11,10 +11,10 @@
 #include <IMP/algebra/utility.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/ParabolicFit.h>
+#include <IMP/algebra/LinearFit.h>
 #include <IMP/constants.h>
 
 #include <boost/algorithm/string.hpp>
-//#include <boost/timer.hpp>
 #include <boost/random.hpp>
 
 #include <fstream>
@@ -144,10 +144,8 @@ bool Profile::is_uniform_sampling() const {
   return true;
 }
 
-void Profile::write_SAXS_file(const String& file_name)
-{
+void Profile::write_SAXS_file(const String& file_name) const {
   std::ofstream out_file(file_name.c_str());
-
   if (!out_file) {
     IMP_THROW("Can't open file " << file_name, IOException);
   }
@@ -185,16 +183,16 @@ void Profile::write_SAXS_file(const String& file_name)
 }
 
 void Profile::calculate_profile_real(const Particles& particles,
-                                     bool autocorrelation)
+                                     bool heavy_atoms)
 {
   IMP_LOG(TERSE, "start real profile calculation for "
           << particles.size() << " particles" << std::endl);
   RadialDistributionFunction r_dist;
-
-  // copy coordinates and form factors in advance, to avoid n^2 copy operations
-  std::vector < algebra::Vector3D > coordinates;
+  // prepare coordinates and form factors in advance, for faster access
+  std::vector<algebra::Vector3D> coordinates;
+  get_coordinates(particles, coordinates);
   Floats form_factors;
-  copy_data(particles, ff_table_, coordinates, form_factors);
+  get_form_factors(particles, ff_table_, form_factors, heavy_atoms);
 
   // iterate over pairs of atoms
   for (unsigned int i = 0; i < coordinates.size(); i++) {
@@ -203,26 +201,27 @@ void Profile::calculate_profile_real(const Particles& particles,
       r_dist.add_to_distribution(dist, 2.0* form_factors[i] * form_factors[j]);
     }
     // add autocorrelation part
-    if(autocorrelation) r_dist.add_to_distribution(0.0,square(form_factors[i]));
+    r_dist.add_to_distribution(0.0,square(form_factors[i]));
   }
   squared_distribution_2_profile(r_dist);
 }
 
 void Profile::calculate_profile_partial(const Particles& particles,
                                         const Floats& surface,
-                                        bool autocorrelation)
+                                        bool heavy_atoms)
 {
   IMP_LOG(TERSE, "start real partial profile calculation for "
           << particles.size() << " particles " <<  std::endl);
 
-  //boost::timer my_timer;
   // copy coordinates and form factors in advance, to avoid n^2 copy operations
-  std::vector < algebra::Vector3D > coordinates;
-  copy_coordinates(particles, coordinates);
+  std::vector<algebra::Vector3D> coordinates;
+  get_coordinates(particles, coordinates);
   Floats vacuum_ff(particles.size()), dummy_ff(particles.size()), water_ff;
+  FormFactorTable::FormFactorType ff_type = FormFactorTable::HEAVY_ATOMS;
+  if(!heavy_atoms) ff_type = FormFactorTable::ALL_ATOMS;
   for (unsigned int i=0; i<particles.size(); i++) {
-    vacuum_ff[i] = ff_table_->get_vacuum_form_factor(particles[i]);
-    dummy_ff[i] = ff_table_->get_dummy_form_factor(particles[i]);
+    vacuum_ff[i] = ff_table_->get_vacuum_form_factor(particles[i], ff_type);
+    dummy_ff[i] = ff_table_->get_dummy_form_factor(particles[i], ff_type);
   }
   if(surface.size() == particles.size()) {
     water_ff.resize(particles.size());
@@ -231,7 +230,6 @@ void Profile::calculate_profile_partial(const Particles& particles,
       water_ff[i] += surface[i]*ff_water;
     }
   }
-  //my_timer.restart();
 
   int r_size = 3;
   if(surface.size() == particles.size()) r_size = 6;
@@ -255,26 +253,20 @@ void Profile::calculate_profile_partial(const Particles& particles,
       }
     }
     // add autocorrelation part
-    if(autocorrelation) {
-      r_dist[0].add_to_distribution(0.0, square(vacuum_ff[i]));
-      r_dist[1].add_to_distribution(0.0, square(dummy_ff[i]));
-      r_dist[2].add_to_distribution(0.0, 2*vacuum_ff[i] * dummy_ff[i]);
-      if(r_size > 3) {
-        r_dist[3].add_to_distribution(0.0, square(water_ff[i]));
-        r_dist[4].add_to_distribution(0.0, 2*vacuum_ff[i] * water_ff[i]);
-        r_dist[5].add_to_distribution(0.0, 2*water_ff[i] * dummy_ff[i]);
-      }
+    r_dist[0].add_to_distribution(0.0, square(vacuum_ff[i]));
+    r_dist[1].add_to_distribution(0.0, square(dummy_ff[i]));
+    r_dist[2].add_to_distribution(0.0, 2*vacuum_ff[i] * dummy_ff[i]);
+    if(r_size > 3) {
+      r_dist[3].add_to_distribution(0.0, square(water_ff[i]));
+      r_dist[4].add_to_distribution(0.0, 2*vacuum_ff[i] * water_ff[i]);
+      r_dist[5].add_to_distribution(0.0, 2*water_ff[i] * dummy_ff[i]);
     }
   }
-  //std::cerr << "Distribution comp. time " << my_timer.elapsed() << std::endl;
-  //my_timer.restart();
 
   // convert to reciprocal space
   partial_profiles_.insert(partial_profiles_.begin(), r_size,
                            Profile(min_q_, max_q_, delta_q_));
   squared_distributions_2_partial_profiles(r_dist);
-  //std::cerr << "Conversion to reciprocal time " << my_timer.elapsed()
-  //<< std::endl;
 
   // compute default profile c1 = 1, c2 = 0
   sum_partial_profiles(1.0, 0.0, *this);
@@ -289,8 +281,8 @@ void Profile::calculate_profile_partial(const Particles& particles1,
 
   // store coordinates
   std::vector <algebra::Vector3D> coordinates1,coordinates2;
-  copy_coordinates(particles1, coordinates1);
-  copy_coordinates(particles2, coordinates2);
+  get_coordinates(particles1, coordinates1);
+  get_coordinates(particles2, coordinates2);
   // get form factors
   Floats vacuum_ff1(particles1.size()), dummy_ff1(particles1.size());
   for (unsigned int i=0; i<particles1.size(); i++) {
@@ -332,16 +324,17 @@ void Profile::calculate_profile_partial(const Particles& particles1,
 
 
 void Profile::sum_partial_profiles(Float c1, Float c2, Profile& out_profile) {
-  out_profile.init();
-  out_profile.add(partial_profiles_[0]);
-  Profile p1, p2;
-  p1.add(partial_profiles_[1]);
-  p2.add(partial_profiles_[2]);
-  p1.scale(c1*c1);
-  p2.scale(-c1);
-  out_profile.add(p1);
-  out_profile.add(p2);
-
+  if(partial_profiles_.size() > 0) {
+    out_profile.init();
+    out_profile.add(partial_profiles_[0]);
+    Profile p1, p2;
+    p1.add(partial_profiles_[1]);
+    p2.add(partial_profiles_[2]);
+    p1.scale(c1*c1);
+    p2.scale(-c1);
+    out_profile.add(p1);
+    out_profile.add(p2);
+  }
   if(partial_profiles_.size() > 3) {
     Profile p3, p4, p5;
     p3.add(partial_profiles_[3]);
@@ -405,13 +398,14 @@ void Profile::calculate_profile_real(const Particles& particles1,
           << particles1.size() << " + " << particles2.size()
           << " particles" << std::endl);
   RadialDistributionFunction r_dist;
-  //r_dist.calculate_squared_distribution(particles1, particles2);
 
   // copy coordinates and form factors in advance, to avoid n^2 copy operations
-  std::vector < algebra::Vector3D > coordinates1, coordinates2;
+  std::vector<algebra::Vector3D> coordinates1, coordinates2;
+  get_coordinates(particles1, coordinates1);
+  get_coordinates(particles2, coordinates2);
   Floats form_factors1, form_factors2;
-  copy_data(particles1, ff_table_, coordinates1, form_factors1);
-  copy_data(particles2, ff_table_, coordinates2, form_factors2);
+  get_form_factors(particles1, ff_table_, form_factors1, true);
+  get_form_factors(particles2, ff_table_, form_factors2, true);
 
   // iterate over pairs of atoms
   for (unsigned int i = 0; i < coordinates1.size(); i++) {
@@ -519,6 +513,40 @@ void Profile::add_partial_profiles(const Profile& other_profile) {
   }
 }
 
+double Profile::radius_of_gyration_fixed_q(double end_q) const {
+  std::vector<IMP::algebra::Vector2D> data; // x=q^2, y=logI(q))
+  for(unsigned int i=0; i<profile_.size(); i++) {
+    double q = profile_[i].q_;
+    double Iq = profile_[i].intensity_;
+    double logIq = log(Iq);
+    if(q > end_q) break;
+    algebra::Vector2D v(q*q,logIq);
+    data.push_back(v);
+    //std::cout << q << " " << Iq << " " <<  q*q << " " << logIq << std::endl;
+  }
+  algebra::LinearFit lf(data);
+  double a = lf.get_a();
+  //std::cerr  << "a = " << a <<  std::endl;
+  if(a >=0) return 0.0;
+  double rg = sqrt(-3*a);
+  return rg;
+}
+
+double Profile::radius_of_gyration(double end_q_rg) const {
+  double qlimit = min_q_ + delta_q_*5; // start after 5 points
+  for(double q = qlimit; q<max_q_; q+=delta_q_) {
+    double rg = radius_of_gyration_fixed_q(q);
+    //std::cerr << "Rg = " << rg << " q*Rg = " << q*rg << std::endl;
+    if(rg > 0.0) {
+      if(q*rg < end_q_rg) qlimit = q;
+      else break;
+    }
+  }
+  double rg = radius_of_gyration_fixed_q(qlimit);
+  std::cerr << "Rg = " << rg  << std::endl;
+  return rg;
+}
+
 void Profile::background_adjust(double start_q) {
   std::vector<algebra::Vector2D> data; // x=q^2, y=sum(q^2xI(q))
   double sum = 0.0;
@@ -597,20 +625,22 @@ void Profile::profile_2_distribution(RadialDistributionFunction& rd,
 }
 
 void Profile::calculate_profile_reciprocal(const Particles& particles,
-                                           bool autocorrelation) {
+                                           bool heavy_atoms) {
   IMP_LOG(TERSE, "start reciprocal profile calculation for "
           << particles.size() << " particles" << std::endl);
   init();
   std::vector<algebra::Vector3D> coordinates;
-  copy_coordinates(particles, coordinates);
+  get_coordinates(particles, coordinates);
+  FormFactorTable::FormFactorType ff_type = FormFactorTable::HEAVY_ATOMS;
+  if(!heavy_atoms) ff_type = FormFactorTable::ALL_ATOMS;
 
   // iterate over pairs of atoms
   // loop1
   for(unsigned int i = 0; i < coordinates.size(); i++) {
-    const Floats& factors1 = ff_table_->get_form_factors(particles[i]);
+    const Floats& factors1 = ff_table_->get_form_factors(particles[i], ff_type);
     // loop2
     for(unsigned int j = i+1; j < coordinates.size(); j++) {
-      const Floats& factors2 = ff_table_->get_form_factors(particles[j]);
+      const Floats& factors2=ff_table_->get_form_factors(particles[j], ff_type);
       Float dist = get_distance(coordinates[i], coordinates[j]);
       // loop 3
       // iterate over intensity profile
@@ -621,10 +651,8 @@ void Profile::calculate_profile_reciprocal(const Particles& particles,
       } // end of loop 3
     } // end of loop 2
     // add autocorrelation part
-    if(autocorrelation) {
-      for(unsigned int k = 0; k < profile_.size(); k++) {
-        profile_[k].intensity_ += factors1[k]*factors1[k];
-      }
+    for(unsigned int k = 0; k < profile_.size(); k++) {
+      profile_[k].intensity_ += factors1[k]*factors1[k];
     }
   } // end of loop1
 }

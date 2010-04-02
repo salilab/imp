@@ -31,8 +31,9 @@ int main(int argc, char **argv)
   float excluded_volume_c1 = 0.0;
   bool use_offset = false;
   bool fit = true;
-  bool hydration_layer = true;
-  bool autocorrelation = true;
+  bool water_layer = true;
+  bool heavy_atoms_only = true;
+  //float charge_weight = 1.0;
   po::options_description desc("Usage: <pdb_file1> <pdb_file2> \
 ... <profile_file1> <profile_file2> ...");
   desc.add_options()
@@ -47,7 +48,9 @@ Each PDB will be fitted against each profile.")
     ("parameter_fit,p",
      "fit by adjusting excluded volume and hydration layer density parameters \
 (default = true)")
-    ("hydration_layer,h", "compute hydration layer (default = true)")
+    ("water_layer,w", "compute hydration layer (default = true)")
+    ("hydrogens,h", "explicitly consider hydrogens in PDB files \
+(default = false)")
     ("excluded_volume,e",
      po::value<float>(&excluded_volume_c1)->default_value(0.0),
      "excluded volume parameter, enumerated by default. \
@@ -57,6 +60,9 @@ Valid range: 0.8 < c1 < 1.2")
      "background adjustment, not used by default. if enabled, \
 recommended q value is 0.2")
     ("offset,o", "use offset in fitting (default = false)")
+    // ("charge_weight,c",
+    //  po::value<float>(&charge_weight)->default_value(1.0),
+    //  "weight of charged residues in hydration layer, default = 1.0")
     ;
   po::positional_options_description p;
   p.add("input-files", -1);
@@ -74,7 +80,8 @@ recommended q value is 0.2")
     return 0;
   }
   if (vm.count("parameter_fit")) fit=false;
-  if (vm.count("hydration_layer")) hydration_layer=false;
+  if (vm.count("water_layer")) water_layer=false;
+  if (vm.count("hydrogens")) heavy_atoms_only=false;
   if (vm.count("offset")) use_offset=true;
 
   float delta_q = max_q / profile_size;
@@ -93,9 +100,13 @@ recommended q value is 0.2")
     }
     // A. try as pdb
     try {
-      IMP::atom::Hierarchy mhd =
-        IMP::atom::read_pdb(files[i], model,
-                            IMP::atom::NonWaterNonHydrogenPDBSelector());
+      IMP::atom::Hierarchy mhd;
+      if(heavy_atoms_only) // read without hydrogens
+        mhd = IMP::atom::read_pdb(files[i], model,
+                                  IMP::atom::NonWaterNonHydrogenPDBSelector());
+      else // read with hydrogens
+        mhd = IMP::atom::read_pdb(files[i], model,
+                                  IMP::atom::NonWaterPDBSelector());
       IMP::Particles particles = get_by_type(mhd, IMP::atom::ATOM_TYPE);
       if(particles.size() > 0) { // pdb file
         pdb_files.push_back(files[i]);
@@ -103,10 +114,13 @@ recommended q value is 0.2")
         std::cout << particles.size() << " atoms were read from PDB file "
                   << files[i] << std::endl;
       }
-      if(hydration_layer) { // add radius
+      if(water_layer) { // add radius
         IMP::saxs::FormFactorTable* ft = IMP::saxs::default_form_factor_table();
+        IMP::saxs::FormFactorTable::FormFactorType ff_type =
+          IMP::saxs::FormFactorTable::HEAVY_ATOMS;
+        if(!heavy_atoms_only) ff_type = IMP::saxs::FormFactorTable::ALL_ATOMS;
         for(unsigned int p_index=0; p_index<particles.size(); p_index++) {
-          float radius = ft->get_radius(particles[p_index]);
+          float radius = ft->get_radius(particles[p_index], ff_type);
           IMP::core::XYZR::setup_particle(particles[p_index], radius);
         }
       }
@@ -134,20 +148,36 @@ recommended q value is 0.2")
     // compute surface accessibility
     IMP::Floats surface_area;
     IMP::saxs::SolventAccessibleSurface s;
-    if(hydration_layer)
+    if(water_layer) {
       surface_area =
         s.get_solvent_accessibility(IMP::core::XYZRs(particles_vec[i]));
+      // double total = 0, el_total = 0;
+      // for(unsigned int j=0; j<particles_vec[i].size(); j++) {
+      //   IMP::atom::ResidueType residue_type =
+      //     IMP::atom::get_residue(
+      //       IMP::atom::Atom(particles_vec[i][j])).get_residue_type();
+      //   if(residue_type == IMP::atom::ARG || residue_type ==IMP::atom::LYS ||
+      //      residue_type == IMP::atom::ASP || residue_type ==IMP::atom::GLU) {
+      //     surface_area[j] *= charge_weight;
+      //     el_total += surface_area[j];
+      //   }
+      //   total += surface_area[j];
+      // }
+      // std::cerr << "Total = " << total << " el_total " << el_total
+      // << " ratio " << el_total/total << std::endl;
+    }
 
     // compute profile
     IMP::saxs::Profile *partial_profile = NULL;
     std::cerr << "Computing profile for " << pdb_files[i] << std::endl;
     partial_profile = new IMP::saxs::Profile(0.0, max_q, delta_q);
-    if(dat_files.size() > 0) {
-      partial_profile->calculate_profile_partial(particles_vec[i],
-                                                 surface_area, autocorrelation);
-    } else {
+    if(excluded_volume_c1 == 1.0 && !water_layer) fit = false;
+    if(dat_files.size() == 0 || !fit) { // regular profile, no fitting
       partial_profile->calculate_profile(particles_vec[i],
-                                         false, autocorrelation);
+                                         false, heavy_atoms_only);
+    } else {
+      partial_profile->calculate_profile_partial(particles_vec[i],
+                                                surface_area, heavy_atoms_only);
     }
     profiles.push_back(partial_profile);
     // write profile file
@@ -169,7 +199,7 @@ recommended q value is 0.2")
       if(fit) {
         float best_c1 = 1.0, best_c2 = 0.0;
         float best_chi = chi;
-        float min_c1 = 0.8, max_c1 = 1.2, delta_c2 = 0.1;
+        float min_c1 = 0.95, max_c1 = 1.12, delta_c2 = 0.1;
         if(excluded_volume_c1 > 0.0) {
           min_c1 = max_c1 = excluded_volume_c1;
           delta_c2 = 0.01; // finer enumeration
@@ -197,6 +227,10 @@ recommended q value is 0.2")
                   << " default chi = " << chi << std::endl;
         partial_profile->sum_partial_profiles(best_c1, best_c2,
                                               *partial_profile);
+      } else {
+        std::cout << pdb_files[i] << " " << dat_files[j] << " Chi = "
+                  << chi << " c1 = 1.00 c2 = 0.0 default chi = " << chi
+                  << std::endl;
       }
       std::string fit_file_name2 = trim_extension(pdb_files[i]) + "_" +
         trim_extension(basename(const_cast<char *>(dat_files[j].c_str())))
