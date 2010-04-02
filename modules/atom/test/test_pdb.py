@@ -102,6 +102,6 @@ class PDBReadWriteTest(IMP.test.TestCase):
         mp= IMP.atom.read_pdb(self.open_input_file("hydrogen.pdb"),
                               m, IMP.atom.HydrogenPDBSelector())
         a= IMP.atom.get_leaves(mp)
-        self.assertEqual(len(a), 19)
+        self.assertEqual(len(a), 22)
 if __name__ == '__main__':
     unittest.main()
