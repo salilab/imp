@@ -7,6 +7,7 @@ files = [
          'm_rigid_fitting.cpp',
          'fitting_solutions_reader_writer.cpp',
          'fitting_tools.cpp',
+         'SettingsData.cpp'
         ]
 # Build and install the shared library:
 env.IMPModuleLib(env.IMPModuleGetSources())
