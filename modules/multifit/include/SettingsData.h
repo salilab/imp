@@ -61,6 +61,7 @@ class IMPMULTIFITEXPORT AssemblyHeader {
       spacing_=0.;
       pdb_fine_ap_fn_="";
       pdb_coarse_ap_fn_="";
+      jt_fn_="";
       cmm_ap_fn_="";
     }
     void set_dens_fn(const std::string &dens_fn) {dens_fn_=dens_fn;}
@@ -79,6 +80,9 @@ class IMPMULTIFITEXPORT AssemblyHeader {
      pdb_coarse_ap_fn_=new_fn;}
     std::string get_cmm_ap_fn () const {return cmm_ap_fn_;}
     void set_cmm_ap_fn (const std::string &new_fn) {cmm_ap_fn_=new_fn;}
+    std::string get_junction_tree_fn () const {return jt_fn_;}
+    void set_junction_tree_fn (const std::string &new_fn) {jt_fn_=new_fn;}
+
   protected:
     std::string dens_fn_;
     float resolution_;
@@ -87,8 +91,8 @@ class IMPMULTIFITEXPORT AssemblyHeader {
     std::string pdb_fine_ap_fn_;
     std::string pdb_coarse_ap_fn_;
     std::string cmm_ap_fn_;
+    std::string jt_fn_;
   };
-
 
 //! Holds header data for optimization
 class IMPMULTIFITEXPORT SettingsData {

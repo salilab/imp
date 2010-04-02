@@ -9,6 +9,7 @@ namespace IMP::multifit {
 %include "IMP/multifit/FittingSolutionRecord.h"
 %include "IMP/multifit/m_rigid_fitting.h"
 %include "IMP/multifit/SettingsData.h"
+%include "IMP/multifit/DataContainer.h"
 namespace IMP {
  namespace multifit {
    %template(FittingSolutionRecords) ::std::vector< IMP::multifit::FittingSolutionRecord >;

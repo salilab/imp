@@ -8,6 +8,7 @@ files = [
          'fitting_solutions_reader_writer.h',
          'fitting_tools.h',
          'SettingsData.h'
+         'DataContainer.h'
         ]
 # Install the include files:
 env.IMPModuleInclude(env.IMPModuleGetHeaders())

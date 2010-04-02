@@ -1,0 +1,7 @@
+name|protein| pdb_anchor_points| transformations|ref filename|
+A|input/1z5s_A.pdb|1z5s_A_anchor_points.pdb|11|1z5s_A_fitting.output|1z5s_A_fitted.pdb|
+B|input/1z5s_B.pdb|1z5s_B_anchor_points.pdb|5|1z5s_B_fitting.output|1z5s_B_fitted.pdb|
+C|input/1z5s_C.pdb|1z5s_C_anchor_points.pdb|11|1z5s_C_fitting.output|1z5s_C_fitted.pdb|
+D|input/1z5s_D.pdb|1z5s_D_anchor_points.pdb|5|1z5s_D_fitting.output|1z5s_D_fitted.pdb|
+map| resolution| spacing| x-origin| y-origin| z-origin|pdb_fine_anchor_points|pdb_coarse_anchor_points|junction_tree|
+input/1z5s_20.mrc|20.0|3.0|-17|-41|-143|1z5s_20.fine.gmm.pdb|input/1z5s_anchor_points.pdb|input/1z5s.jt|

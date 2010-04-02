@@ -36,7 +36,7 @@ AssemblyHeader parse_assembly_line(const std::string &line) {
   IMP_LOG(VERBOSE,"going to parse:"<<line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
-  IMP_USAGE_CHECK(line_split.size() == 9,
+  IMP_USAGE_CHECK(line_split.size() == 10,
      "Wrong format of input line : not enough fields in line:"<<line);
   AssemblyHeader dens;
   dens.set_dens_fn(boost::lexical_cast<std::string>(line_split[0]));
@@ -48,6 +48,7 @@ AssemblyHeader parse_assembly_line(const std::string &line) {
     boost::lexical_cast<float>(line_split[5])));
   dens.set_pdb_fine_ap_fn(boost::lexical_cast<std::string>(line_split[6]));
   dens.set_pdb_coarse_ap_fn(boost::lexical_cast<std::string>(line_split[7]));
+  dens.set_junction_tree_fn(boost::lexical_cast<std::string>(line_split[8]));
   return dens;
 }
 
