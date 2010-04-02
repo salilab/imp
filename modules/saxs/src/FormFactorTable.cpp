@@ -31,8 +31,8 @@ Float FormFactorTable::zero_form_factors_[] = {
   //  Na      Mg     Al     Si      P        S       Cl     Ar
   15.984, 14.9965, 20.984, 21.984, 20.9946, 23.984,
   // K     Ca2+     Cr      Mn      Fe2+      Co
-  24.984, 25.984, 24.9936, 30.9825, 31.984, 49.16, 72.324,
-  // Ni   Cu      Zn2+       Se      Br      I       Au
+  24.984, 25.984, 24.9936, 30.9825, 31.984, 49.16, 70.35676, 71.35676, 72.324,
+  // Ni   Cu      Zn2+       Se      Br      I        Ir         Pt      Au
   -0.211907, -0.932054, -1.6522, 5.44279, 4.72265,4.0025,4.22983,3.50968,8.64641
   //  CH        CH2        CH3     NH       NH2       NH3     OH       OH2   SH
 };
@@ -44,8 +44,8 @@ Float FormFactorTable::vacuum_zero_form_factors_[] = {
   //  Na      Mg     Al     Si      P        S       Cl     Ar
   18.99, 18.0025,  23.99, 24.99,  24.0006, 26.99,
   // K     Ca2+     Cr     Mn      Fe2+      Co
-  27.99, 28.99, 27.9996, 33.99, 34.99, 52.99, 78.9572,
-  // Ni   Cu      Zn2+    Se     Br     I        Au
+  27.99, 28.99, 27.9996, 33.99, 34.99, 52.99, 76.99, 77.99, 78.9572,
+  // Ni   Cu      Zn2+    Se     Br     I       Ir     Pt      Au
   6.99915, 7.99911, 8.99906, 7.99455, 8.99451, 9.99446, 8.99935, 9.9993, 16.9998
   //  CH      CH2     CH3     NH       NH2       NH3     OH      OH2      SH
 };
@@ -57,8 +57,8 @@ Float FormFactorTable::dummy_zero_form_factors_[] = {
   // Na     Mg    Al?    Si?      P        S      Cl?    Ar?
   3.006, 3.006, 3.006, 3.006, 3.006, 3.006,
   // K?   Ca2+    Cr?    Mn?   Fe2+   Co?
-  3.006, 3.006, 3.006, 3.006, 3.006, 3.83, 6.63324,
-  // Ni?   Cu?   Zn2+    Se     Br?     I?    Au
+  3.006, 3.006, 3.006, 3.006, 3.006, 3.83, 6.63324, 6.63324, 6.63324,
+  // Ni?   Cu?   Zn2+    Se     Br?     I?   Ir?      Pt?       Au
   7.21106, 8.93116, 10.6513, 2.55176, 4.27186, 5.99196, 4.76952, 6.48962,8.35334
   //  CH       CH2      CH3     NH       NH2       NH3     OH       OH2   SH
 };
@@ -163,6 +163,8 @@ void FormFactorTable::init_element_form_factor_map() {
   element_ff_type_map_[atom::Se] = Se;
   element_ff_type_map_[atom::Br] = Br;
   element_ff_type_map_[atom::I] = I;
+  element_ff_type_map_[atom::Ir] = Ir;
+  element_ff_type_map_[atom::Pt] = Pt;
   element_ff_type_map_[atom::Au] = Au;
 }
 
@@ -347,17 +349,20 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_carbon_atom_type(
                        const atom::AtomType& atom_type,
                        const atom::ResidueType& residue_type) const {
   // protein atoms
+  // CH
+  if (atom_type == atom::AT_CH) return CH;
+  // CH2
+  if (atom_type == atom::AT_CH2) return CH2;
+  // CH3
+  if (atom_type == atom::AT_CH3) return CH3;
+  // C
+  if (atom_type == atom::AT_C) return C;
+
   // CA
   if (atom_type == atom::AT_CA) {
     if (residue_type == atom::GLY) return CH2; // Glycine has 2 hydrogens
     return CH;
   }
-  // CH3 at C-term
-  //if(atom_type == atom::AT_CT) return CH3;
-  // CH2
-  if (atom_type == atom::AT_CH2) return CH2;
-  // C
-  if (atom_type == atom::AT_C) return C;
   // CB
   if (atom_type == atom::AT_CB) {
     if (residue_type == atom::ILE || residue_type == atom::THR ||
@@ -457,6 +462,8 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_carbon_atom_type(
        residue_type == atom::DTHY || residue_type == atom::THY) return CH;
     return C;
   }
+  // C7
+  if (atom_type == atom::AT_C7) return CH3;
   // C8
   if (atom_type == atom::AT_C8) return CH;
 

@@ -54,22 +54,15 @@ private:
 public:
   //! computes theoretical profile
   void calculate_profile(const Particles& particles,
-                         bool reciprocal=false, bool autocorrelation = true) {
-    if(!reciprocal) calculate_profile_real(particles, autocorrelation);
-    else calculate_profile_reciprocal(particles);
-  }
-
-  //! computes theoretical profile faster for cyclically symmetric particles
-  //! assumes that the units particles are ordered one after another in the
-  //! input particles vector (n - symmetry order)
-  void calculate_profile(const Particles& particles, unsigned int n) {
-    calculate_profile_real(particles, n);
+                         bool reciprocal=false, bool heavy_atoms=true) {
+    if(!reciprocal) calculate_profile_real(particles, heavy_atoms);
+    else calculate_profile_reciprocal(particles, heavy_atoms);
   }
 
   //! compute profile for fitting with hydration layer and excluded volume
   void calculate_profile_partial(const Particles& particles,
                                  const Floats& surface = Floats(),
-                                 bool autocorrelation = true);
+                                 bool heavy_atoms=true);
 
   void calculate_profile_partial(const Particles& particles1,
                                  const Particles& particles2);
@@ -79,6 +72,13 @@ public:
   void calculate_profile(const Particles& particles1,
                          const Particles& particles2) {
     calculate_profile_real(particles1, particles2);
+  }
+
+  // computes theoretical profile faster for cyclically symmetric particles
+  // assumes that the units particles are ordered one after another in the
+  // input particles vector (n - symmetry order)
+  void calculate_profile(const Particles& particles, unsigned int n) {
+    calculate_profile_real(particles, n);
   }
 
   //! convert to real space P(r) function P(r) = 1/2PI^2 Sum(I(q)*qr*sin(qr))
@@ -107,7 +107,13 @@ public:
   void read_SAXS_file(const String& file_name);
 
   //! print to file
-  void write_SAXS_file(const String& file_name);
+  void write_SAXS_file(const String& file_name) const;
+
+  // compute radius of gyration with Guinier approximation
+  // ln[I(q)]=ln[I(0)] - (q^2*rg^2)/3
+  // end_q_rg determines the range of profile used for approximation:
+  // i.e. q*rg < end_q_rg. Use 1.3 for globular proteins, 0.8 for elongated
+  double radius_of_gyration(double end_q_rg = 1.3) const;
 
   //! return sampling resolution
   Float get_delta_q() const { return delta_q_; }
@@ -149,13 +155,13 @@ public:
   void init();
 
   void calculate_profile_reciprocal(const Particles& particles,
-                                    bool autocorrelation = true);
+                                    bool heavy_atoms = true);
 
   void calculate_profile_reciprocal(const Particles& particles1,
                                     const Particles& particles2);
 
   void calculate_profile_real(const Particles& particles,
-                              bool autocorrelation = true);
+                              bool heavy_atoms = true);
 
   void calculate_profile_real(const Particles& particles1,
                               const Particles& particles2);
@@ -168,6 +174,8 @@ public:
   void squared_distribution_2_profile(const RadialDistributionFunction& r_dist);
   void squared_distributions_2_partial_profiles(
                          const std::vector<RadialDistributionFunction>& r_dist);
+
+  double radius_of_gyration_fixed_q(double end_q) const;
 
  protected:
   std::vector<IntensityEntry> profile_; // the profile
