@@ -8,6 +8,7 @@
 #include <IMP/atom/internal/pdb.h>
 
 #include <IMP/atom/Atom.h>
+#include <IMP/atom/Mass.h>
 #include <IMP/atom/Residue.h>
 #include <IMP/atom/Chain.h>
 #include <IMP/atom/element.h>
@@ -35,40 +36,85 @@ namespace {
     return out;
   }
 
+Element get_element_from_pdb_line(const std::string& pdb_line) {
+  // 1. determine element from element column
+  std::string elem = internal::atom_element(pdb_line);
+  boost::trim(elem);
+  Element e = get_element_table().get_element(elem);
+  if (e != UNKNOWN_ELEMENT) return e;
+
+  // 2. determine element from the atom name
+  std::string atom_name = internal::atom_type(pdb_line);
+  IMP_USAGE_CHECK(atom_name.length() == 4, "Invalid atom name.");
+
+  if (internal::is_ATOM_rec(pdb_line)) {
+    char c0=atom_name[0];
+    // if we have space/digit followed by character, try character
+    if ((isdigit(atom_name[0]) || isspace(atom_name[0])) &&
+        isalpha(atom_name[1])) c0=atom_name[1];
+    // H, C, N, O, S, P - most likely to occur
+    // we don't want to get Ne element for NE AtomType
+    switch (c0) {
+     case 'H': return H;
+     case 'C': return C;
+     case 'N': return N;
+     case 'O': return O;
+     case 'S': return S;
+     case 'P': return P;
+     default: break;
+    }
+  }
+
+  if (internal::is_HETATM_rec(pdb_line)) {
+    // if we have a character in position 0 try the first two characters
+    // in order to handle cases below correctly
+    // HETATM 2209 MG    MG D 392      12.055 -14.213 -59.777  1.00 10.93
+    // HETATM    1 CL    CL E 393     -24.319  -2.178 -56.585  0.40  2.37
+    // HETATM    2  O   HOH E   1     -25.636  -4.048 -37.445  1.00  4.32
+    std::string elem_string;
+    if (isalpha(atom_name[0])) elem_string.push_back(atom_name[0]);
+    if (isalpha(atom_name[1])) elem_string.push_back(atom_name[1]);
+    e = get_element_table().get_element(elem_string);
+    if (e != UNKNOWN_ELEMENT) return e;
+  }
+
+  IMP_LOG(VERBOSE,"Unable to parse element from line: " << pdb_line << "\n");
+  return UNKNOWN_ELEMENT;
+}
+
 Particle* atom_particle(Model *m, const std::string& pdb_line)
 {
   AtomType atom_name;
   std::string string_name = internal::atom_type(pdb_line);
+  // determine element
+  Element e = get_element_from_pdb_line(pdb_line);
+  // determine AtomType
   if (internal::is_HETATM_rec(pdb_line)){
     string_name= "HET:"+string_name;
     if (!get_atom_type_exists(string_name)) {
-      std::string elem= internal::atom_element(pdb_line);
-      boost::trim(elem);
-      Element e= get_element_table().get_element(elem);
-      if (e == UNKNOWN_ELEMENT) {
-        IMP_LOG(VERBOSE,"Unable to parse element from line: "
-                <<pdb_line << ": got \"" << elem << "\"\nSkipping.");
-        return NULL;
-      }
       atom_name=add_atom_type(string_name, e);
     } else {
       atom_name=AtomType(string_name);
     }
-  } else {
+  } else { // ATOM line
     boost::trim(string_name);
     if (!AtomType::get_key_exists(string_name)) {
       string_name= try_rename(string_name);
       if (!AtomType::get_key_exists(string_name)) {
-        IMP_LOG(VERBOSE, "ATOM record type not found: \"" << string_name
+       IMP_LOG(VERBOSE, "ATOM record type not found: \"" << string_name
                 << "\" from " << pdb_line << std::endl);
-        return NULL;
+        // return NULL; // never skip ATOMs!!!
+        atom_name=add_atom_type(string_name, e);
+      } else {
+        atom_name = AtomType(string_name);
       }
+    } else {
+      atom_name = AtomType(string_name);
     }
-    atom_name = AtomType(string_name);
   }
+  // new particle
   Particle* p = new Particle(m);
-
-  algebra::VectorD<3> v(internal::atom_xcoord(pdb_line),
+  algebra::Vector3D v(internal::atom_xcoord(pdb_line),
                       internal::atom_ycoord(pdb_line),
                       internal::atom_zcoord(pdb_line));
   // atom decorator
@@ -76,19 +122,15 @@ Particle* atom_particle(Model *m, const std::string& pdb_line)
   p->set_name(std::string("Atom "+ atom_name.get_string()));
   core::XYZ::setup_particle(p, v).set_coordinates_are_optimized(true);
   d.set_input_index(internal::atom_number(pdb_line));
-  IMP_IF_CHECK(USAGE) {
-    std::string name= internal::atom_element(pdb_line);
-    boost::trim(name);
-    if (!name.empty()) {
-      Element e= get_element_table().get_element(name);
-      if (e != UNKNOWN_ELEMENT) {
-        if (e != d.get_element()) {
-          IMP_WARN("Read and computed elements don't match. Read " << e
-                   << " Computed " << d.get_element()
-                   << " from line " << pdb_line << std::endl);
-        }
-      }
-    }
+  d.set_element(e);
+  Mass(p).set_mass(get_element_table().get_mass(e));
+
+  // check if the element matches
+  Element e2 = get_element_for_atom_type(atom_name);
+  if (e != e2) {
+    IMP_WARN("AtomType element and PDB line elements don't match. AtomType "
+             << e2 << " determined from PDB line " << e
+             << " line " << pdb_line << std::endl);
   }
   return p;
 }
