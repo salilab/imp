@@ -24,15 +24,14 @@
 #include <map>
 #include "multifit_config.h"
 #include "FittingSolutionRecord.h"
+#include "DataContainer.h"
 
 IMPMULTIFIT_BEGIN_NAMESPACE
-
-typedef std::map<Particle*,Particle*> AnchorPointToComponentMapping;
-typedef std::pair<Particle *,
-                  std::vector<algebra::Transformation3D> >
-   CompTransformationsPair;
-typedef std::vector<CompTransformationsPair> CompTransformationsPairs;
+typedef std::map<Particle *,Particle *> ParticleParticleMapping;
+typedef std::pair<Particle *,FittingSolutionRecords> CompFitRecordsPair;
+typedef std::vector<CompFitRecordsPair> CompFitRecordsPairs;
 typedef std::map<std::string,Particle *> NameToAnchorPointMapping;
+typedef std::map<Particle *,std::string> AnchorPointToNameMapping;
 
 
 //! Contains fitting solutions of all of the components of the system
@@ -68,35 +67,38 @@ class IMPMULTIFITEXPORT SingleDominoRun {
 public:
   //! Constructor
   /**
-   \param[in] anchor_comp_pairs pairs of
-              an anchor point and its mapped components
-   \param[in] components the components
-   \param[in] jt the system junction tree (on the anchor points)
-   \param[in] dmap the assembly density map
+   \param[in] dc a container holding all data structures
+              needed for a MultiFit run
   */
   SingleDominoRun(
-         const ParticlePairs &anchor_comp_pairs,
-         atom::Hierarchies &components,
-         domino::JunctionTree &jt,
-         em::DensityMap *dmap);
+         const DataContainer &dc);
   //! Optimize
-  ConfigurationSet* optimize();
-  //! Set tranformations for each component
-  /**
-   \param[in] comp_trans components and their transformations
- */
-  void set_sampling_space(CompTransformationsPairs &comp_trans);
-  //! Set Single and pairwise restraints according to
-  //! the junction tree configuration
-  void set_restraints();
+  domino::DominoOptimizer* optimize();
+
   //! Get pairs of interacting anchor points according to the junction
   //! tree configuration
-  ParticlePairs get_pairs_of_interacting_components() const;
+  ParticlePairs get_pairs_of_interacting_components(
+    const ParticlePairs &anchor_comp_pairs) const;
+  //! Run optimization
+  domino::DominoOptimizer* run(const ParticlePairs &anchor_comp_pairs,
+                               Float distance);
 protected:
+  void setup();
+  //! Set tranformations for each component
+  /**
+   \param[in] distance only consider transformations that are close
+                       to the anchor point
+ */
+  void set_sampling_space(const ParticlePairs &anchor_comp_pairs,
+                          Float distance);
+  //! Set Single and pairwise restraints according to
+  //! the junction tree configuration
+  void set_restraints(const ParticlePairs &anchor_comp_pairs);
   atom::Hierarchies components_;
-  Particles components_ps_;
-  AnchorPointToComponentMapping anchor_comp_map_;
-  NameToAnchorPointMapping name_anchor_map_;
+  //Particles components_ps_;
+  //  ParticleParticleMapping anchor_comp_map_;
+  //ParticleParticleMapping comp_anchor_map_;
+  AnchorPointToNameMapping anchor_name_map_;
   domino::JunctionTree jt_;
   Model *mdl_;
   //managments stuff
@@ -108,7 +110,9 @@ protected:
   domino::DominoOptimizer *d_opt_;
   //restraints
   bool restraints_initialized_;
+  bool is_setup_;
   em::DensityMap *dmap_;
+  DataContainer dc_;
 };
 
 IMPMULTIFIT_END_NAMESPACE

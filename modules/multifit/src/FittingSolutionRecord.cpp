@@ -78,5 +78,16 @@ void FittingSolutionRecord::show(std::ostream& out) const {
   //if (is_initialized(rmsd_to_ref_)) out<<rmsd_to_ref_;
   if (true) out<<rmsd_to_ref_;
 }
+FittingSolutionRecords generate_fitting_records(
+  const em::FittingSolutions &sols) {
+  FittingSolutionRecords fit_records;
+  for(int i=0;i<sols.get_number_of_solutions();i++) {
+    FittingSolutionRecord rec;
+    rec.set_transformation(sols.get_transformation(i));
+    rec.set_fitting_score(sols.get_score(i));
+    fit_records.push_back(rec);
+  }
+  return fit_records;
+}
 
 IMPMULTIFIT_END_NAMESPACE

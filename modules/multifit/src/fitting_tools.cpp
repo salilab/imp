@@ -26,5 +26,6 @@ FittingSolutionRecords get_close_to_point(
       pruned_fit_sols.push_back(*it);
     }
   }
+  return pruned_fit_sols;
 }
 IMPMULTIFIT_END_NAMESPACE

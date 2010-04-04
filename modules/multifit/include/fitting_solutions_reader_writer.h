@@ -24,7 +24,6 @@ IMPMULTIFIT_BEGIN_NAMESPACE
  */
 IMPMULTIFITEXPORT FittingSolutionRecords read_fitting_solutions(
   const char *fitting_fn);
-
 IMPMULTIFITEXPORT void  write_fitting_solutions(
    const char *fitting_fn,
    const FittingSolutionRecords &fit_sols);
