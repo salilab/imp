@@ -22,7 +22,8 @@ FittingSolutionRecord parse_fitting_line(const std::string &line) {
   std::vector<std::string> line_split,rotation_split,translation_split;
   boost::split(line_split, line, boost::is_any_of("|"));
   IMP_USAGE_CHECK(line_split.size() == 8,
-           "Wrong format of input line : not enough fields"<<std::endl);
+     "FittingSolutionRecord::parse_fitting_line Wrong format of input line : "<<
+      "not enough fields:"<<line);
   boost::split(rotation_split, line_split[2], boost::is_any_of(" "));
   IMP_USAGE_CHECK(rotation_split.size() == 4,
      "Wrong format of input line: wrong rotation format "<<
