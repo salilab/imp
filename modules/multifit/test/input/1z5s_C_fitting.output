@@ -1,0 +1,5 @@
+solution index | solution filename | rotation | translation  | match size | match average distance | cluster size | fitting score | RMSD to reference
+0|fits/1z5s_C_fit_sol_0.pdb|1. 0. 0. 0.|0. 0. 0.|7|9.26542|-59.5375|24.0229
+1|fits/1z5s_C_fit_sol_1.pdb|1. 0. 0. 0.|0. 10. 0.|7|9.26542|-59.5375|24.0229
+2|fits/1z5s_C_fit_sol_2.pdb|1. 0. 0. 0.|10. 0. 10.|7|9.26542|-59.5375|24.0229
+3|fits/1z5s_C_fit_sol_3.pdb|1. 0. 0. 0.|0. 10. 10.|7|9.26542|-59.5375|24.0229
