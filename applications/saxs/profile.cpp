@@ -45,16 +45,16 @@ Each PDB will be fitted against each profile.")
      "maximal q value (default = 0.5)")
     ("profile_size,s", po::value<int>(&profile_size)->default_value(500),
      "number of points in the profile (default = 500)")
-    ("parameter_fit,p",
-     "fit by adjusting excluded volume and hydration layer density parameters \
-(default = true)")
+    /*     ("parameter_fit,p",
+      "fit by adjusting excluded volume and hydration layer density parameters \
+      (default = true)") */
     ("water_layer,w", "compute hydration layer (default = true)")
     ("hydrogens,h", "explicitly consider hydrogens in PDB files \
 (default = false)")
     ("excluded_volume,e",
      po::value<float>(&excluded_volume_c1)->default_value(0.0),
      "excluded volume parameter, enumerated by default. \
-Valid range: 0.8 < c1 < 1.2")
+Valid range: 0.95 < c1 < 1.12")
     ("background_q,b",
      po::value<float>(&background_adjustment_q)->default_value(0.0),
      "background adjustment, not used by default. if enabled, \
@@ -79,7 +79,7 @@ recommended q value is 0.2")
     std::cout << desc << "\n";
     return 0;
   }
-  if (vm.count("parameter_fit")) fit=false;
+  //  if (vm.count("parameter_fit")) fit=false;
   if (vm.count("water_layer")) water_layer=false;
   if (vm.count("hydrogens")) heavy_atoms_only=false;
   if (vm.count("offset")) use_offset=true;
