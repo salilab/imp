@@ -105,7 +105,7 @@ public:
   void set_assembly_header(AssemblyHeader h) {
     dens_data_=h;
   }
-  ComponentHeader get_component_header(int i) const {
+  ComponentHeader get_component_header(unsigned int i) const {
     IMP_USAGE_CHECK(i<comp_data_.size(),"index out of range\n");
     return comp_data_[i];
   }
