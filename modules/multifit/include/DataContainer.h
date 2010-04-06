@@ -21,7 +21,7 @@ class IMPMULTIFITEXPORT DataContainer {
   public:
   DataContainer(){}
     DataContainer(const SettingsData &settings);
-    atom::Hierarchy get_component(int i) const {
+    atom::Hierarchy get_component(unsigned int i) const {
       IMP_USAGE_CHECK(i<mhs_.size(),"index out of range \n");
       return mhs_[i];
     }
