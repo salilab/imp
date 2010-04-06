@@ -63,13 +63,14 @@ void Gnuplot::print_fit_script(const std::string pdb,
   plt_file.precision(3);
   if(!interactive) plt_file << "set terminal png;set output \""
                             << png_file_name << "\";" << std::endl;
-  plt_file << "set title \"" << pdb_name
+  plt_file << "set title \"" << pdb_name << " " << profile_name
            <<"\";set xlabel \"q\";set ylabel \"I(q) log-scale\"\n";
   plt_file <<  "plot '" << fit_file_name
            << "' u 1:2 thru log(y) t \"experimental\", '" << fit_file_name
-           << "' u 1:3 thru log(y) t \"theoretical\" w lines lw 2 lt " << color;
-  //std::string crysol_file_name = trim_extension(pdb) + "00.fit";
-  //        << ", '" << crysol_file_name << "' u 1:3 thru log(y) t \"crysol\""
+           << "' u 1:3 thru log(y) t \"FoXS\" w lines lw 2 lt " << color;
+  // std::string crysol_file_name = trim_extension(pdb) + "00.fit";
+  // plt_file << ", '" << crysol_file_name
+  // << "' u 1:3 thru log(y) t \"Crysol\" w lines lw 2";
   plt_file  << std::endl;
   plt_file.close();
   color++;
