@@ -10,8 +10,7 @@
  - \salilabssl{imp/bugs/,Bug Tracker}
  - \ref recent "Change history"
  - \salilab{imp/nightly/tests.html,Nightly build status}
- - \salilab{imp/archives/imp-dev/,imp-dev list archive}
-
+ - \ref maillists "Mailing lists"
 
  Welcome to the \imp library documentation.
  Throughout the documentation we refer to two, overlapping sets of people.
