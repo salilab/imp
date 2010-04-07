@@ -206,6 +206,29 @@ void Profile::calculate_profile_real(const Particles& particles,
   squared_distribution_2_profile(r_dist);
 }
 
+void Profile::calculate_profile_constant_form_factor(const Particles& particles,
+                                                     Float form_factor)
+{
+  IMP_LOG(TERSE, "start real profile calculation for "
+          << particles.size() << " particles" << std::endl);
+  RadialDistributionFunction r_dist;
+  // prepare coordinates and form factors in advance, for faster access
+  std::vector<algebra::Vector3D> coordinates;
+  get_coordinates(particles, coordinates);
+  Float ff = square(form_factor);
+
+  // iterate over pairs of atoms
+  for (unsigned int i = 0; i < coordinates.size(); i++) {
+    for (unsigned int j = i + 1; j < coordinates.size(); j++) {
+      Float dist = get_squared_distance(coordinates[i], coordinates[j]);
+      r_dist.add_to_distribution(dist, 2*ff);
+    }
+    // add autocorrelation part
+    r_dist.add_to_distribution(0.0, ff);
+  }
+  squared_distribution_2_profile(r_dist);
+}
+
 void Profile::calculate_profile_partial(const Particles& particles,
                                         const Floats& surface,
                                         bool heavy_atoms)
