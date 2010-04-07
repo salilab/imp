@@ -85,14 +85,14 @@ SimpleConnectivity create_simple_connectivity_on_molecules(
   return SimpleConnectivity(cr, h, sdps);
 }
 
-SimpleDistance create_simple_distance(Particles *ps)
+SimpleDistance create_simple_distance(const Particles &ps)
 {
-  IMP_USAGE_CHECK(ps->size() == 2, "Two particles should be given");
+  IMP_USAGE_CHECK(ps.size() == 2, "Two particles should be given");
 
   /****** Set the restraint ******/
 
   IMP_NEW(core::HarmonicUpperBound, h, (0, 1));
-  IMP_NEW(core::DistanceRestraint, dr, (h, (*ps)[0], (*ps)[1]));
+  IMP_NEW(core::DistanceRestraint, dr, (h, ps[0], ps[1]));
 
   /****** Add restraint to the model ******/
 
@@ -104,15 +104,14 @@ SimpleDistance create_simple_distance(Particles *ps)
   return SimpleDistance(dr, h);
 }
 
-SimpleDiameter create_simple_diameter(Particles *ps, Float diameter)
+SimpleDiameter create_simple_diameter(const Particles &ps, Float diameter)
 {
-  IMP_USAGE_CHECK(ps->size() >= 2, "At least two particles should be given");
+  IMP_USAGE_CHECK(ps.size() >= 2, "At least two particles should be given");
 
   /****** Set the restraint ******/
 
   IMP_NEW(core::HarmonicUpperBound, h, (0, 1));
-  IMP_NEW(container::ListSingletonContainer, lsc, ());
-  lsc->add_particles(*ps);
+  IMP_NEW(container::ListSingletonContainer, lsc, (ps));
   IMP_NEW(core::DiameterRestraint, dr, (h, lsc, diameter));
 
   /****** Add restraint to the model ******/
@@ -133,8 +132,7 @@ SimpleExcludedVolume create_simple_excluded_volume_on_rigid_bodies(
 
   /****** Set the restraint ******/
 
-  IMP_NEW(container::ListSingletonContainer, lsc, ());
-  lsc->add_particles(rbs);
+  IMP_NEW(container::ListSingletonContainer, lsc, (rbs));
 
   IMP_NEW(core::ExcludedVolumeRestraint, evr, (lsc, ref));
 
@@ -164,8 +162,7 @@ SimpleExcludedVolume create_simple_excluded_volume_on_molecules(
 
   /****** Set the restraint ******/
 
-  IMP_NEW(container::ListSingletonContainer, lsc, ());
-  lsc->add_particles(ps);
+  IMP_NEW(container::ListSingletonContainer, lsc, (ps));
 
   IMP_NEW(core::LeavesRefiner, lr, (atom::Hierarchy::get_traits()));
   IMP_NEW(core::ExcludedVolumeRestraint, evr, (lsc, lr));

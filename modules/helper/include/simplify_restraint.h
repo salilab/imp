@@ -58,7 +58,7 @@ IMPHELPEREXPORT SimpleConnectivity create_simple_connectivity_on_molecules(
     \param[in] ps Pointer to two particles in distance restraint.
     \relates SimpleDistance
 */
-IMPHELPEREXPORT SimpleDistance create_simple_distance(Particles *ps);
+IMPHELPEREXPORT SimpleDistance create_simple_distance(const Particles &ps);
 
 
 
@@ -70,7 +70,7 @@ IMPHELPEREXPORT SimpleDistance create_simple_distance(Particles *ps);
     \relates SimpleDiameter
   */
 IMPHELPEREXPORT SimpleDiameter create_simple_diameter(
-                Particles *ps, Float diameter);
+                const Particles &ps, Float diameter);
 
 
 /* Having the default be RigidMembersRefiner is most likely a bad
@@ -226,7 +226,7 @@ private:
 class IMPHELPEREXPORT SimpleDistance
 {
   IMP_NO_SWIG(friend IMPHELPEREXPORT SimpleDistance
-  create_simple_distance(Particles *ps));
+  create_simple_distance(const Particles &ps));
  public:
   core::DistanceRestraint *get_restraint()
   {
@@ -298,7 +298,7 @@ private:
 class IMPHELPEREXPORT SimpleDiameter
 {
   IMP_NO_SWIG(friend IMPHELPEREXPORT SimpleDiameter
-  create_simple_diameter(Particles *ps,
+  create_simple_diameter(const Particles &ps,
                                                            Float diameter));
  public:
 
