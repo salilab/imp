@@ -74,6 +74,10 @@ public:
     calculate_profile_real(particles1, particles2);
   }
 
+  //! calculate profile for any type of Particles that have coordinates
+  void calculate_profile_constant_form_factor(const Particles& particles,
+                                              Float form_factor = 1.0);
+
   // computes theoretical profile faster for cyclically symmetric particles
   // assumes that the units particles are ordered one after another in the
   // input particles vector (n - symmetry order)
