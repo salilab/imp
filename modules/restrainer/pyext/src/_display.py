@@ -81,12 +81,13 @@ class _DisplayNode(object):
             for atomh in atoms:
                 for atom in atomh.get_leaves():
                     atom_list.append(atom)
-        c = IMP.container.ListSingletonContainer(atom_list)
-        geometry = IMP.display.XYZRsGeometry(c,
-            IMP.core.XYZR.get_default_radius_key())
-        geometry.set_name(self.id)
-        geometry.set_color(IMP.display.Color(r, g, b))
-        log.add_geometry(geometry)
+        if len(atom_list) >0:
+            c = IMP.container.ListSingletonContainer(atom_list)
+            geometry = IMP.display.XYZRsGeometry(c,
+                                                 IMP.core.XYZR.get_default_radius_key())
+            geometry.set_name(self.id)
+            geometry.set_color(IMP.display.Color(r, g, b))
+            log.add_geometry(geometry)
         for child in self._children:
             child.create_xyz(r, g, b, log)
 
