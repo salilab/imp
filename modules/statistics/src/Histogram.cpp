@@ -38,7 +38,7 @@ double Histogram::get_top(double percentage) const {
                      "The input number is not a percentage\n");
   float stop_count = get_total_count()*percentage;
   int partial_count=0;
-  for(int i=0;i<freq_.size();i++) {
+  for(unsigned int i=0;i<freq_.size();i++) {
     partial_count += freq_[i];
     if (partial_count > stop_count) {
       return start_+i*interval_size_;
