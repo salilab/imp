@@ -119,6 +119,8 @@ inline Color operator*(Color c, double d) {
 
 #endif // SWIG
 
+IMP_VALUES(Color, Colors);
+
 IMPDISPLAY_END_NAMESPACE
 
 #endif  /* IMPDISPLAY_COLOR_H */
