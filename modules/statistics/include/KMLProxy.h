@@ -46,7 +46,7 @@ public:
   \param[in] num_centers  The number of clusters
    */
   void initialize(Model *m,const Particles &ps,
-       const std::vector<FloatKey> &atts,unsigned int num_centers);
+                  const FloatKeys &atts, unsigned int num_centers);
   //! Run the k-means algorithm
   /**
   \param[in] ps a set of particles which are the initial k-means.
