@@ -34,6 +34,8 @@ class IMPSTATISTICSEXPORT Histogram {
   //! Get the lowest value for which X% of the histogram data is lower from
   /**
 \param percentage the percenrage (between 0 to 1)
+The name of this function will change to be more accurate.
+\unstable{get_top}
    */
   double get_top(double percentage)const;
   private:
