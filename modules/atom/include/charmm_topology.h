@@ -79,12 +79,12 @@ public:
                                Hierarchy> &resmap) const {
     if (residue_) {
       return IMP::atom::get_atom(resmap.find(residue_)->second.get_as_residue(),
-                                 atom_name_);
+                                 AtomType(atom_name_));
     } else if (atom_name_[0] == '+') {
       if (next_residue) {
         return IMP::atom::get_atom(resmap.find(next_residue)->second.
                                                          get_as_residue(),
-                                   atom_name_.substr(1));
+                                   AtomType(atom_name_.substr(1)));
       } else {
         return Atom();
       }
@@ -92,14 +92,14 @@ public:
       if (previous_residue) {
         return IMP::atom::get_atom(resmap.find(previous_residue)->second.
                                                            get_as_residue(),
-                                   atom_name_.substr(1));
+                                   AtomType(atom_name_.substr(1)));
       } else {
         return Atom();
       }
     } else {
       return IMP::atom::get_atom(resmap.find(current_residue)->second.
                                                           get_as_residue(),
-                                 atom_name_);
+                                 AtomType(atom_name_));
     }
   }
 };
@@ -110,7 +110,7 @@ class CHARMMBond
 {
   std::vector<CHARMMBondEndpoint> endpoints_;
 public:
-  CHARMMBond(std::vector<std::string> atoms) {
+  CHARMMBond(const Strings &atoms) {
     IMP_INTERNAL_CHECK(atoms.size() == D, "wrong number of bond endpoints");
     for (std::vector<std::string>::const_iterator it = atoms.begin();
          it != atoms.end(); ++it) {
