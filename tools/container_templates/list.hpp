@@ -28,14 +28,15 @@ public core::internal::CoreListGroupnameContainer
 {
   typedef core::internal::CoreListGroupnameContainer P;
   // for the change versions
-  ListGroupnameContainer(bool);
+  ListGroupnameContainer();
 public:
   //! construct and pass an initial set of classnames
   ListGroupnameContainer(const Classnames &ps,
                          std::string name= "ListGroupnameContainer %1%");
 
-  ListGroupnameContainer(std::string name= "ListGroupnameContainer %1%");
-  ListGroupnameContainer(const char *name);
+  ListGroupnameContainer(Model *m,
+                         std::string name= "ListGroupnameContainer %1%");
+  ListGroupnameContainer(Model *m, const char *name);
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
  /** @name Methods to control the contained objects

@@ -26,18 +26,22 @@ namespace {
 IMP_ACTIVE_CONTAINER_DEF(CoreListGroupnameContainer);
 
 CoreListGroupnameContainer
-::CoreListGroupnameContainer(bool):
+::CoreListGroupnameContainer():
   internal::ListLikeGroupnameContainer(){}
 
 
 CoreListGroupnameContainer
-::CoreListGroupnameContainer(std::string name):
-  internal::ListLikeGroupnameContainer(name){}
+::CoreListGroupnameContainer(Model *m, std::string name):
+  internal::ListLikeGroupnameContainer(m, name){
+  initialize_active_container(m);
+}
 
 
 CoreListGroupnameContainer
-::CoreListGroupnameContainer(const char *name):
-  internal::ListLikeGroupnameContainer(name){}
+::CoreListGroupnameContainer(Model *m, const char *name):
+  internal::ListLikeGroupnameContainer(m, name){
+  initialize_active_container(m);
+}
 
 
 void CoreListGroupnameContainer::do_show(std::ostream &out) const {
@@ -49,10 +53,6 @@ void CoreListGroupnameContainer::do_show(std::ostream &out) const {
 
 
 void CoreListGroupnameContainer::set_classnames(ClassnamesTemp sc) {
-  if (!get_has_model() && !get_is_added_or_removed_container()
-      && !sc.empty()) {
-    set_model(IMP::internal::get_model(sc[0]));
-  }
   update_list(sc);
 }
 
@@ -66,10 +66,6 @@ void CoreListGroupnameContainer::clear_classnames() {
 void CoreListGroupnameContainer::add_classname(PassValue vt) {
   IMP_USAGE_CHECK(IMP::internal::is_valid(vt),
                   "Passed Classname cannot be NULL (or None)");
-
-  if (!get_has_model() && !get_is_added_or_removed_container()) {
-    set_model(IMP::internal::get_model(vt));
-  }
   add_to_list(vt);
   IMP_USAGE_CHECK(get_is_added_or_removed_container()
                   || !get_removed_groupnames_container()
@@ -80,9 +76,6 @@ void CoreListGroupnameContainer::add_classname(PassValue vt) {
 void
 CoreListGroupnameContainer::add_classnames(const ClassnamesTemp &c) {
   if (c.empty()) return;
-  if (!get_has_model() && !get_is_added_or_removed_container()) {
-    set_model(IMP::internal::get_model(c[0]));
-  }
   ClassnamesTemp cp= c;
   add_to_list(cp);
   IMP_IF_CHECK(USAGE) {

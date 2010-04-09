@@ -26,18 +26,22 @@ namespace {
 IMP_ACTIVE_CONTAINER_DEF(CoreListPairContainer);
 
 CoreListPairContainer
-::CoreListPairContainer(bool):
+::CoreListPairContainer():
   internal::ListLikePairContainer(){}
 
 
 CoreListPairContainer
-::CoreListPairContainer(std::string name):
-  internal::ListLikePairContainer(name){}
+::CoreListPairContainer(Model *m, std::string name):
+  internal::ListLikePairContainer(m, name){
+  initialize_active_container(m);
+}
 
 
 CoreListPairContainer
-::CoreListPairContainer(const char *name):
-  internal::ListLikePairContainer(name){}
+::CoreListPairContainer(Model *m, const char *name):
+  internal::ListLikePairContainer(m, name){
+  initialize_active_container(m);
+}
 
 
 void CoreListPairContainer::do_show(std::ostream &out) const {
@@ -49,10 +53,6 @@ void CoreListPairContainer::do_show(std::ostream &out) const {
 
 
 void CoreListPairContainer::set_particle_pairs(ParticlePairsTemp sc) {
-  if (!get_has_model() && !get_is_added_or_removed_container()
-      && !sc.empty()) {
-    set_model(IMP::internal::get_model(sc[0]));
-  }
   update_list(sc);
 }
 
@@ -66,10 +66,6 @@ void CoreListPairContainer::clear_particle_pairs() {
 void CoreListPairContainer::add_particle_pair(const ParticlePair& vt) {
   IMP_USAGE_CHECK(IMP::internal::is_valid(vt),
                   "Passed ParticlePair cannot be NULL (or None)");
-
-  if (!get_has_model() && !get_is_added_or_removed_container()) {
-    set_model(IMP::internal::get_model(vt));
-  }
   add_to_list(vt);
   IMP_USAGE_CHECK(get_is_added_or_removed_container()
                   || !get_removed_pairs_container()
@@ -80,9 +76,6 @@ void CoreListPairContainer::add_particle_pair(const ParticlePair& vt) {
 void
 CoreListPairContainer::add_particle_pairs(const ParticlePairsTemp &c) {
   if (c.empty()) return;
-  if (!get_has_model() && !get_is_added_or_removed_container()) {
-    set_model(IMP::internal::get_model(c[0]));
-  }
   ParticlePairsTemp cp= c;
   add_to_list(cp);
   IMP_IF_CHECK(USAGE) {

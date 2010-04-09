@@ -18,35 +18,27 @@
 IMPCONTAINER_BEGIN_NAMESPACE
 
 ListPairContainer
-::ListPairContainer(bool):
-  P(true){}
+::ListPairContainer():
+  P(){}
 
 ListPairContainer
 ::ListPairContainer(const ParticlePairs &ps,
                          std::string name):
-  P(name)
+  P(P::get_model(ps.begin(), ps.end()), name)
 {
-  if (ps.empty()) return;
-  for (unsigned int i=0; i< ps.size(); ++i) {
-    IMP_USAGE_CHECK(IMP::internal::is_valid(ps[i]),
-                    "Passed ParticlePair cannot be NULL (or None)");
-    IMP_USAGE_CHECK(IMP::internal::get_model(ps[i])
-                    == IMP::internal::get_model(ps[0]),
-                    "All particles in container must have the same model. "
-                    << "Particle " << IMP::internal::get_name(ps[i])
-                    << " does not.");
-  }
+  IMP_USAGE_CHECK(is_ok(ps.begin(), ps.end()),
+                  "All particles must belong to the same model.");
   set_particle_pairs(ps);
 }
 
 ListPairContainer
-::ListPairContainer(std::string name):
-  P(name){
+::ListPairContainer(Model *m, std::string name):
+  P(m, name){
 }
 
 ListPairContainer
-::ListPairContainer(const char *name):
-  P(name){
+::ListPairContainer(Model *m, const char *name):
+  P(m, name){
 }
 
 void ListPairContainer::do_show(std::ostream &out) const {

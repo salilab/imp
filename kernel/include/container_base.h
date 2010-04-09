@@ -12,11 +12,15 @@
 #include "kernel_config.h"
 #include "Object.h"
 #include "macros.h"
+#include "WeakPointer.h"
 
 IMP_BEGIN_NAMESPACE
-
+class Model;
 class Particle;
 IMP_OBJECTS(Particle,Particles);
+
+template <unsigned int D>
+class ParticleTuple;
 
 class Container;
 IMP_OBJECTS(Container,Containers);
@@ -44,9 +48,47 @@ IMP_OBJECTS(Container,Containers);
  */
 class IMPEXPORT Container : public Object
 {
-public:
-  Container(std::string name="Container %1%");
+  friend class Model;
+  friend class Particle;
+  WeakPointer<Model> m_;
 
+ protected:
+  bool is_ok(Particle *p);
+  template <unsigned int D>
+    bool is_ok(const ParticleTuple<D> &p) {
+    for (unsigned int i=0; i< D; ++i) {
+      if (!is_ok(p[i])) return false;
+    }
+    return true;
+  }
+  template <class It>
+    bool is_ok(It b, It e) {
+    for (; b!= e; ++b) {
+      if (!is_ok(*b)) return false;
+    }
+    return true;
+  }
+  static Model *get_model(Particle *p);
+  template <unsigned int D>
+   static  Model *get_model(const ParticleTuple<D> &p) {
+    return p[0]->get_model();
+  }
+  template <class It>
+  static Model *get_model(It b, It e) {
+    IMP_USAGE_CHECK(b != e,
+                    "Cannot pass empty range to container constructor.");
+    return get_model(*b);
+  }
+  bool get_is_added_or_removed_container() {
+    return !m_;
+  }
+  bool get_has_model() const {
+    return m_;
+  }
+  Container(Model *m, std::string name="Container %1%");
+  // added or removed containers
+  Container(std::string name="added or removed container"): Object(name) {};
+ public:
   //! Get the set of containers read by this one
   virtual ContainersTemp get_input_containers() const=0;
   //! Get whether the set of particles changed since last evaluation
@@ -56,6 +98,8 @@ public:
       given that the input containers are up to date.
   */
   virtual ParticlesTemp get_contained_particles() const=0;
+
+  Model *get_model() const {return m_;}
 
   IMP_REF_COUNTED_DESTRUCTOR(Container);
 };

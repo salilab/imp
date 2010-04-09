@@ -26,18 +26,22 @@ namespace {
 IMP_ACTIVE_CONTAINER_DEF(CoreListTripletContainer);
 
 CoreListTripletContainer
-::CoreListTripletContainer(bool):
+::CoreListTripletContainer():
   internal::ListLikeTripletContainer(){}
 
 
 CoreListTripletContainer
-::CoreListTripletContainer(std::string name):
-  internal::ListLikeTripletContainer(name){}
+::CoreListTripletContainer(Model *m, std::string name):
+  internal::ListLikeTripletContainer(m, name){
+  initialize_active_container(m);
+}
 
 
 CoreListTripletContainer
-::CoreListTripletContainer(const char *name):
-  internal::ListLikeTripletContainer(name){}
+::CoreListTripletContainer(Model *m, const char *name):
+  internal::ListLikeTripletContainer(m, name){
+  initialize_active_container(m);
+}
 
 
 void CoreListTripletContainer::do_show(std::ostream &out) const {
@@ -49,10 +53,6 @@ void CoreListTripletContainer::do_show(std::ostream &out) const {
 
 
 void CoreListTripletContainer::set_particle_triplets(ParticleTripletsTemp sc) {
-  if (!get_has_model() && !get_is_added_or_removed_container()
-      && !sc.empty()) {
-    set_model(IMP::internal::get_model(sc[0]));
-  }
   update_list(sc);
 }
 
@@ -66,10 +66,6 @@ void CoreListTripletContainer::clear_particle_triplets() {
 void CoreListTripletContainer::add_particle_triplet(const ParticleTriplet& vt) {
   IMP_USAGE_CHECK(IMP::internal::is_valid(vt),
                   "Passed ParticleTriplet cannot be NULL (or None)");
-
-  if (!get_has_model() && !get_is_added_or_removed_container()) {
-    set_model(IMP::internal::get_model(vt));
-  }
   add_to_list(vt);
   IMP_USAGE_CHECK(get_is_added_or_removed_container()
                   || !get_removed_triplets_container()
@@ -80,9 +76,6 @@ void CoreListTripletContainer::add_particle_triplet(const ParticleTriplet& vt) {
 void
 CoreListTripletContainer::add_particle_triplets(const ParticleTripletsTemp &c) {
   if (c.empty()) return;
-  if (!get_has_model() && !get_is_added_or_removed_container()) {
-    set_model(IMP::internal::get_model(c[0]));
-  }
   ParticleTripletsTemp cp= c;
   add_to_list(cp);
   IMP_IF_CHECK(USAGE) {

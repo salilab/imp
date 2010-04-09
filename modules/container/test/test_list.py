@@ -6,7 +6,8 @@ import IMP.core
 class RefCountTests(IMP.test.TestCase):
     """Test refcounting of particles"""
     def test_name(self):
-        l= IMP.container.ListSingletonContainer("hi")
+        m= IMP.Model()
+        l= IMP.container.ListSingletonContainer(m, "hi")
     def test_refcount_container(self):
         """Check that List containers keep track of changes"""
         m= IMP.Model()

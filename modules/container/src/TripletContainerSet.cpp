@@ -22,27 +22,30 @@ namespace {
 }
 
 TripletContainerSet
-::TripletContainerSet(bool): TripletContainer("added or removed for set") {
+::TripletContainerSet() {
 }
 
 TripletContainerSet
-::TripletContainerSet(std::string name):
-  TripletContainer(name) {
+::TripletContainerSet(Model *m, std::string name):
+  TripletContainer(m, name) {
   set_added_and_removed_containers( create_untracked_container(),
                                     create_untracked_container());
 }
 
-TripletContainerSet
-::TripletContainerSet(const char *name):
-  TripletContainer(name) {
-  set_added_and_removed_containers( create_untracked_container(),
-                                    create_untracked_container());
+namespace {
+  Model *my_get_model(const TripletContainersTemp &in) {
+    if (in.empty()) {
+      IMP_THROW("Cannot initialize from empty list of containers.",
+                IndexException);
+    }
+    return in[0]->get_model();
+  }
 }
 
 TripletContainerSet
-::TripletContainerSet(const TripletContainers& in,
+::TripletContainerSet(const TripletContainersTemp& in,
                         std::string name):
-  TripletContainer(name) {
+  TripletContainer(my_get_model(in), name) {
   set_triplet_containers(in);
   set_added_and_removed_containers( create_untracked_container(),
                                     create_untracked_container());

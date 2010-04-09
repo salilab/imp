@@ -33,8 +33,8 @@ CloseBipartitePairContainer
                               SingletonContainer *b,
                               double distance,
                               double slack):
-  P("CloseBipartitePairContainer") {
-  initialize(a,b, distance, slack, a->get_particle(0)->get_model(),
+  P(a->get_model(), "CloseBipartitePairContainer") {
+  initialize(a,b, distance, slack,
              core::internal::default_cpf());
 }
 CloseBipartitePairContainer
@@ -42,8 +42,8 @@ CloseBipartitePairContainer
                               SingletonContainer *b,
                               Model *m, double distance,
                               double slack):
-  P("CloseBipartitePairContainer") {
-  initialize(a,b, distance, slack, m,
+  P(m, "CloseBipartitePairContainer") {
+  initialize(a,b, distance, slack,
              core::internal::default_cpf());
 }
 
@@ -53,8 +53,8 @@ CloseBipartitePairContainer
                               double distance,
                               core::ClosePairsFinder *cpf,
                               double slack):
-  P("CloseBipartitePairContainer") {
-  initialize(a,b, distance, slack, a->get_particle(0)->get_model(),
+  P(a->get_model(), "CloseBipartitePairContainer") {
+  initialize(a,b, distance, slack,
              cpf);
 }
 CloseBipartitePairContainer
@@ -63,25 +63,25 @@ CloseBipartitePairContainer
                               Model *m, double distance,
                               core::ClosePairsFinder *cpf,
                               double slack):
-  P("CloseBipartitePairContainer") {
-  initialize(a,b, distance, slack, m,
+  P(a->get_model(), "CloseBipartitePairContainer") {
+  initialize(a,b, distance, slack,
              cpf);
 }
 
 void CloseBipartitePairContainer::initialize(SingletonContainer *a,
                                              SingletonContainer *b,
                                              double distance,
-                                             double slack, Model *m,
+                                             double slack,
                                              core::ClosePairsFinder *cpf) {
-  set_model(m);
+  initialize_active_container(get_model());
   slack_=slack;
   distance_=distance;
   a_=a; b_=b;
   cpf_=cpf;
   cpf_->set_distance(distance_+2*slack_);
   first_call_=true;
-  moveda_= cpf_->get_moved_singleton_container(a_, m, slack_);
-  movedb_= cpf_->get_moved_singleton_container(b_, m, slack_);
+  moveda_= cpf_->get_moved_singleton_container(a_, get_model(), slack_);
+  movedb_= cpf_->get_moved_singleton_container(b_, get_model(), slack_);
 }
 
 IMP_ACTIVE_CONTAINER_DEF(CloseBipartitePairContainer)

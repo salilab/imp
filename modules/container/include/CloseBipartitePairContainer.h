@@ -18,7 +18,6 @@
 #include <IMP/PairFilter.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/container/ListPairContainer.h>
-#include <IMP/container/PairContainerSet.h>
 #include <IMP/core/internal/pair_helpers.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
@@ -49,7 +48,7 @@ public IMP::core::internal::ListLikePairContainer
   IMP_ACTIVE_CONTAINER_DECL(CloseBipartitePairContainer);
   void initialize(SingletonContainer *a,
                   SingletonContainer *b, double distance,
-                  double slack, Model *m, core::ClosePairsFinder *cpf);
+                  double slack, core::ClosePairsFinder *cpf);
 public:
   //! Get the individual particles from the passed SingletonContainer
   CloseBipartitePairContainer(SingletonContainer *a,

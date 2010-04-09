@@ -33,8 +33,7 @@ private:
   }
   Classnames data_;
 protected:
-  ListLikeGroupnameContainer():
-    GroupnameContainer("Added or removed container"){}
+  ListLikeGroupnameContainer(){}
   const Classnames &access() const {return data_;}
   void update_list(ClassnamesTemp &cur) {
     IMP_IF_CHECK(USAGE) {
@@ -80,7 +79,8 @@ protected:
       ac->data_.push_back(cur);
     }
   }
-  ListLikeGroupnameContainer(std::string name): GroupnameContainer(name){
+  ListLikeGroupnameContainer(Model *m, std::string name):
+    GroupnameContainer(m,name){
     GroupnameContainer::
       set_added_and_removed_containers( new ListLikeGroupnameContainer(),
                                         new ListLikeGroupnameContainer());

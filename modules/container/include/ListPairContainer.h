@@ -28,14 +28,15 @@ public core::internal::CoreListPairContainer
 {
   typedef core::internal::CoreListPairContainer P;
   // for the change versions
-  ListPairContainer(bool);
+  ListPairContainer();
 public:
   //! construct and pass an initial set of particle_pairs
   ListPairContainer(const ParticlePairs &ps,
                          std::string name= "ListPairContainer %1%");
 
-  ListPairContainer(std::string name= "ListPairContainer %1%");
-  ListPairContainer(const char *name);
+  ListPairContainer(Model *m,
+                         std::string name= "ListPairContainer %1%");
+  ListPairContainer(Model *m, const char *name);
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
  /** @name Methods to control the contained objects

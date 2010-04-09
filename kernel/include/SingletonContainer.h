@@ -66,16 +66,10 @@ class IMPEXPORT SingletonContainer : public Container
     added_=added;
     removed_=removed;
   }
-
+  SingletonContainer(){}
+  SingletonContainer(Model *m,
+                     std::string name="SingletonContainer %1%");
 public:
-#ifndef IMP_DOXYGEN
-  bool get_is_added_or_removed_container() {
-    return !added_;
-  }
-#endif
-
-  SingletonContainer(std::string name="SingletonContainer %1%");
-
   /** \note This function may be linear. Be aware of the complexity
       bounds of your particular container.
    */

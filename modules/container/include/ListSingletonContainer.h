@@ -28,14 +28,15 @@ public core::internal::CoreListSingletonContainer
 {
   typedef core::internal::CoreListSingletonContainer P;
   // for the change versions
-  ListSingletonContainer(bool);
+  ListSingletonContainer();
 public:
   //! construct and pass an initial set of particles
   ListSingletonContainer(const Particles &ps,
                          std::string name= "ListSingletonContainer %1%");
 
-  ListSingletonContainer(std::string name= "ListSingletonContainer %1%");
-  ListSingletonContainer(const char *name);
+  ListSingletonContainer(Model *m,
+                         std::string name= "ListSingletonContainer %1%");
+  ListSingletonContainer(Model *m, const char *name);
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
  /** @name Methods to control the contained objects

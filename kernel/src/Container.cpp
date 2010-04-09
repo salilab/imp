@@ -7,6 +7,7 @@
 
 #include "IMP/container_base.h"
 #include "IMP/internal/utility.h"
+#include "IMP/Particle.h"
 
 IMP_BEGIN_NAMESPACE
 
@@ -14,9 +15,17 @@ namespace {
   unsigned int restraint_index=0;
 }
 
-Container::Container(std::string name):
-  Object(internal::make_object_name(name, restraint_index++))
+Container::Container(Model *m, std::string name):
+  Object(internal::make_object_name(name, restraint_index++)),
+  m_(m)
 {
 }
+
+bool Container::is_ok(Particle *p) {
+  return p && p->get_model()==m_;
+}
+
+
+Model *Container::get_model(Particle *p) {return p->get_model();}
 
 IMP_END_NAMESPACE

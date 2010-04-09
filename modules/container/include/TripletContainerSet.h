@@ -22,29 +22,25 @@ IMPCONTAINER_BEGIN_NAMESPACE
     demand for it.
 
     \usesconstraint
- */
+*/
 class IMPCONTAINEREXPORT TripletContainerSet
   : public TripletContainer
 {
- // to not have added and removed
- TripletContainerSet(bool);
-public:
+  // to not have added and removed
+  TripletContainerSet();
+ public:
   //! Construct and empty set
-  TripletContainerSet(std::string name="TripletContainerSet %1%");
-
-  TripletContainerSet(const TripletContainers &in,
+  TripletContainerSet(Model *m,
                         std::string name="TripletContainerSet %1%");
 
-#if !defined(SWIG) && !defined(IMP_DOXYGEN)
-  // otherwise the bool overload catches it
-  TripletContainerSet(const char *name);
-#endif
+  TripletContainerSet(const TripletContainersTemp &pc,
+                        std::string name="TripletContainerSet %1%");
 
   IMP_TRIPLET_CONTAINER(TripletContainerSet);
- /** @name Methods to control the nested container
+  /** @name Methods to control the nested container
 
-     This container merges a set of nested containers. To add
-     or remove nested containers, use the methods below.
+      This container merges a set of nested containers. To add
+      or remove nested containers, use the methods below.
   */
   /**@{*/
   IMP_LIST(public, TripletContainer, triplet_container,
@@ -52,7 +48,7 @@ public:
   /**@}*/
 
   static TripletContainerSet *create_untracked_container() {
-    TripletContainerSet *lsc = new TripletContainerSet(false);
+    TripletContainerSet *lsc = new TripletContainerSet();
     return lsc;
   }
 };

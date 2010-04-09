@@ -24,9 +24,9 @@ public internal::ListLikeSingletonContainer
 {
   IMP_ACTIVE_CONTAINER_DECL(CoreListSingletonContainer);
 public:
-  CoreListSingletonContainer(std::string name);
-  CoreListSingletonContainer(const char *name);
-  CoreListSingletonContainer(bool);
+  CoreListSingletonContainer(Model *m, std::string name);
+  CoreListSingletonContainer(Model *m, const char *name);
+  CoreListSingletonContainer();
   void add_particle(Particle* vt);
   void add_particles(const ParticlesTemp &c);
   void set_particles(ParticlesTemp c);

@@ -65,9 +65,6 @@ private:
     p->set_was_used(true);
     particles_.push_back(p);
     p->ps_->iterator_= --particles_.end();
-    IMP_USAGE_CHECK(!p->ps_->model_, "Particle " << p->get_name()
-                    << " is already in model.");
-    p->ps_->model_= this;
     internal::ref(p);
     // particles will not be backed up properly, so don't do incremental
     first_incremental_=true;
@@ -115,7 +112,7 @@ private:
   virtual ~Model();
 public:
   /** Construct an empty model */
-  Model();
+  Model(std::string name="The Model");
 
 
   /** @name States
@@ -169,7 +166,7 @@ public:
     IMP_INTERNAL_CHECK(get_stage() == Model::NOT_EVALUATING,
                "Particles cannot be removed from the model during evaluation");
     particles_.erase(p->ps_->iterator_);
-    p->ps_->model_=NULL;
+    p->m_=NULL;
     internal::unref(p);
   }
 

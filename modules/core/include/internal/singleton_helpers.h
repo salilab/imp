@@ -33,8 +33,7 @@ private:
   }
   Particles data_;
 protected:
-  ListLikeSingletonContainer():
-    SingletonContainer("Added or removed container"){}
+  ListLikeSingletonContainer(){}
   const Particles &access() const {return data_;}
   void update_list(ParticlesTemp &cur) {
     IMP_IF_CHECK(USAGE) {
@@ -80,7 +79,8 @@ protected:
       ac->data_.push_back(cur);
     }
   }
-  ListLikeSingletonContainer(std::string name): SingletonContainer(name){
+  ListLikeSingletonContainer(Model *m, std::string name):
+    SingletonContainer(m,name){
     SingletonContainer::
       set_added_and_removed_containers( new ListLikeSingletonContainer(),
                                         new ListLikeSingletonContainer());

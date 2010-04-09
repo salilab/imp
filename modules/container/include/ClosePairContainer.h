@@ -54,16 +54,9 @@ public:
   //! Get the individual particles from the passed SingletonContainer
   ClosePairContainer(SingletonContainer *c, double distance,
                      double slack=1);
-  //! If the container is empty, you can pass the model explicitly
-  ClosePairContainer(SingletonContainer *c, Model *m, double distance,
-                     double slack=1);
 
   //! Get the individual particles from the passed SingletonContainer
   ClosePairContainer(SingletonContainer *c, double distance,
-                     core::ClosePairsFinder *cpf,
-                     double slack=1);
-  //! If the container is empty, you can pass the model explicitly
-  ClosePairContainer(SingletonContainer *c, Model *m, double distance,
                      core::ClosePairsFinder *cpf,
                      double slack=1);
 #if defined(SWIG) || defined(IMP_DOXYGEN)

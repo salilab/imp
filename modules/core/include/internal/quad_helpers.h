@@ -33,8 +33,7 @@ private:
   }
   ParticleQuads data_;
 protected:
-  ListLikeQuadContainer():
-    QuadContainer("Added or removed container"){}
+  ListLikeQuadContainer(){}
   const ParticleQuads &access() const {return data_;}
   void update_list(ParticleQuadsTemp &cur) {
     IMP_IF_CHECK(USAGE) {
@@ -80,7 +79,8 @@ protected:
       ac->data_.push_back(cur);
     }
   }
-  ListLikeQuadContainer(std::string name): QuadContainer(name){
+  ListLikeQuadContainer(Model *m, std::string name):
+    QuadContainer(m,name){
     QuadContainer::
       set_added_and_removed_containers( new ListLikeQuadContainer(),
                                         new ListLikeQuadContainer());

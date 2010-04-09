@@ -292,13 +292,6 @@ class IMPEXPORT Particle : public Container
   //! Construct a particle and add it to the Model
   Particle(Model *m, std::string name="P%1%");
 
-  /** Get pointer to Model containing this particle.
-      \throw InvalidStateException if no Model contains this particle.
-  */
-  Model* get_model() const {
-    return ps_->model_;
-  }
-
 #ifdef IMP_DOXYGEN
   /** @name Attribute manipulation
       For each type of attribute and their corresponding key type,
@@ -422,10 +415,8 @@ class IMPEXPORT Particle : public Container
       \return true it the particle is active.
   */
   bool get_is_active() const {
-    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-      IMP_INTERNAL_CHECK(get_is_valid(), "Particle has been previously freed.");
-    }
-    return ps_->model_;
+    IMP_CHECK_OBJECT(this);
+    return get_has_model();
   }
 
    /** \name Incremental Updates

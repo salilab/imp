@@ -22,27 +22,30 @@ namespace {
 }
 
 QuadContainerSet
-::QuadContainerSet(bool): QuadContainer("added or removed for set") {
+::QuadContainerSet() {
 }
 
 QuadContainerSet
-::QuadContainerSet(std::string name):
-  QuadContainer(name) {
+::QuadContainerSet(Model *m, std::string name):
+  QuadContainer(m, name) {
   set_added_and_removed_containers( create_untracked_container(),
                                     create_untracked_container());
 }
 
-QuadContainerSet
-::QuadContainerSet(const char *name):
-  QuadContainer(name) {
-  set_added_and_removed_containers( create_untracked_container(),
-                                    create_untracked_container());
+namespace {
+  Model *my_get_model(const QuadContainersTemp &in) {
+    if (in.empty()) {
+      IMP_THROW("Cannot initialize from empty list of containers.",
+                IndexException);
+    }
+    return in[0]->get_model();
+  }
 }
 
 QuadContainerSet
-::QuadContainerSet(const QuadContainers& in,
+::QuadContainerSet(const QuadContainersTemp& in,
                         std::string name):
-  QuadContainer(name) {
+  QuadContainer(my_get_model(in), name) {
   set_quad_containers(in);
   set_added_and_removed_containers( create_untracked_container(),
                                     create_untracked_container());

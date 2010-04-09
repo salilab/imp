@@ -22,29 +22,25 @@ IMPCONTAINER_BEGIN_NAMESPACE
     demand for it.
 
     \usesconstraint
- */
+*/
 class IMPCONTAINEREXPORT PairContainerSet
   : public PairContainer
 {
- // to not have added and removed
- PairContainerSet(bool);
-public:
+  // to not have added and removed
+  PairContainerSet();
+ public:
   //! Construct and empty set
-  PairContainerSet(std::string name="PairContainerSet %1%");
-
-  PairContainerSet(const PairContainers &in,
+  PairContainerSet(Model *m,
                         std::string name="PairContainerSet %1%");
 
-#if !defined(SWIG) && !defined(IMP_DOXYGEN)
-  // otherwise the bool overload catches it
-  PairContainerSet(const char *name);
-#endif
+  PairContainerSet(const PairContainersTemp &pc,
+                        std::string name="PairContainerSet %1%");
 
   IMP_PAIR_CONTAINER(PairContainerSet);
- /** @name Methods to control the nested container
+  /** @name Methods to control the nested container
 
-     This container merges a set of nested containers. To add
-     or remove nested containers, use the methods below.
+      This container merges a set of nested containers. To add
+      or remove nested containers, use the methods below.
   */
   /**@{*/
   IMP_LIST(public, PairContainer, pair_container,
@@ -52,7 +48,7 @@ public:
   /**@}*/
 
   static PairContainerSet *create_untracked_container() {
-    PairContainerSet *lsc = new PairContainerSet(false);
+    PairContainerSet *lsc = new PairContainerSet();
     return lsc;
   }
 };
