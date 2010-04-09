@@ -33,7 +33,6 @@ class SampleTests(IMP.test.TestCase):
             p.add_attribute(IMP.IntKey("protein"), 1)
             self.particles.append(p)
         self.particle_indexes = IMP.Ints()
-        self.particle_indexes.clear()
         for i in range(npart):
             self.particle_indexes.push_back(i)
         print "initialization done ..."
