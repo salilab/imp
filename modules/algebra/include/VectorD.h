@@ -454,13 +454,15 @@ CommasIO<D> commas_io(const VectorD<D> &v) {
 }
 #endif // doxygen
 
+#endif  //swig
+
 typedef VectorD<2> Vector2D;
 typedef std::vector<VectorD<2> > Vector2Ds;
 typedef VectorD<3> Vector3D;
 typedef std::vector<VectorD<3> > Vector3Ds;
 typedef VectorD<4> Vector4D;
 typedef std::vector<VectorD<4> > Vector4Ds;
-#endif  //swig
+
 
 IMPALGEBRA_END_NAMESPACE
 
