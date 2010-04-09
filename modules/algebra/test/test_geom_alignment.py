@@ -11,7 +11,9 @@ class RigidTransformationTests(IMP.test.TestCase):
         vsr= IMP.algebra.Vector3Ds()
         for i in range(0, 20):
             vs.append(IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d()))
+            print vs[-1]
             vsr.append(tr.get_transformed(vs.back()))
+            print vsr[-1]
         return (vs, vsr)
 
     def test_align(self):
@@ -32,18 +34,20 @@ class RigidTransformationTests(IMP.test.TestCase):
         print "t"
         t.show()
         for i in range(0, len(vs)):
+            print i
             vsr[i].show()
             print
             tr.get_transformed(vs[i]).show()
             print
             print
+        print "getting quaternion"
         q0=tr.get_rotation().get_quaternion()
-        q0.show()
+        print "it is ", q0
         print
         q1=r.get_quaternion()
-        q1.show()
+        print "other is ", q1
         print
-        self.assertInTolerance((q0 - q1).get_squared_magnitude(), 0, .1)
+        self.assertInTolerance(IMP.algebra.get_distance(tr.get_rotation(), r), 0, .1)
 
     def test_full_align(self):
         """Testing rigid alignment of point sets"""
@@ -68,8 +72,8 @@ class RigidTransformationTests(IMP.test.TestCase):
         #    tr.get_transformed(vs[i]).show()
         #    print
         #    print
-        self.assertInTolerance((tr.get_rotation().get_quaternion()
-                                - r.get_quaternion()).get_squared_magnitude(), 0, .1)
+        self.assertInTolerance(IMP.algebra.get_distance(tr.get_rotation()
+                                , r), 0, .1)
 
 
 if __name__ == '__main__':
