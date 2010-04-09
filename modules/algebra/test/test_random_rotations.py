@@ -8,11 +8,19 @@ import math
 class RotationTests(IMP.test.TestCase):
     """Test rotations"""
     def test_uniform_random(self):
+        """Test uniform random rotation"""
         if not IMP.has_cgal: return
+        print "Getting them"
         rots= IMP.algebra.get_uniform_cover_rotations_3d(100);
+        print "got them"
         pts= [IMP.algebra.Vector3D(1,0,0),
               IMP.algebra.Vector3D(0,1,0)]
+        print type(rots)
+        print rots
         for r in rots:
+            print r
+            print type(r)
+            print str(r)
             r0= r.get_rotated(pts[0])
             r1= r.get_rotated(pts[1])
             print ".color red"
