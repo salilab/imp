@@ -71,16 +71,5 @@ class AngleRestraintTests(IMP.test.TestCase):
         # no reason to check the show value
         #self.assertEqual(s.getvalue().split('\n')[0], "angle restraint:")
 
-    def test_interacting_particles(self):
-        """Check Restraint::get_interacting_particles() method"""
-        model, rsr, ps = self._setup_particles(math.pi / 2.0, math.pi / 2.0)
-        # Default should yield 1 set of 3 particles:
-        ipar = rsr.get_interacting_particles()
-        self.assertEqual(len(ipar), 1)
-        self.assertEqual(len(ipar[0]), 3)
-        ps = model.get_particles()
-        for (mp, ipp) in zip(ps, ipar[0]):
-            self.assertEqual(mp, ipp)
-
 if __name__ == '__main__':
     unittest.main()
