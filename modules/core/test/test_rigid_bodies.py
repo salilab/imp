@@ -23,26 +23,35 @@ class RBDTests(IMP.test.TestCase):
             dt= IMP.core.DistanceToSingletonScore(IMP.core.Harmonic(0,1), lct)
             r= IMP.core.SingletonRestraint(dt, mb.get_particle())
             m.add_restraint(r)
-    def _create_hierarchy(self, m, htr, n=10):
+    def _create_hierarchy(self, m, n=10):
         rd= IMP.core.XYZ.setup_particle(IMP.Particle(m),
                                          IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d()))
-        hd= IMP.core.Hierarchy.setup_particle(rd.get_particle(), htr)
+        hd= IMP.core.Hierarchy.setup_particle(rd.get_particle())
         for i in range(0,n):
             crd= IMP.core.XYZ.setup_particle(IMP.Particle(m),
                                               IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d()))
-            chd= IMP.core.Hierarchy.setup_particle(crd.get_particle(), htr)
+            chd= IMP.core.Hierarchy.setup_particle(crd.get_particle())
             hd.add_child(chd)
         return rd.get_particle()
 
-    def _test_create_one(self, htr):
+    def _test_create_one(self):
         count=1
         success=0
         for i in range(0, count):
             m= IMP.Model()
             IMP.set_log_level(IMP.SILENT)
-            p= self._create_hierarchy(m,  htr)
-            rbd=IMP.core.RigidBody.setup_particle(p,
-                                            IMP.core.XYZs(IMP.core.Hierarchy(p, htr).get_children()))
+            print "creating"
+            p= self._create_hierarchy(m)
+            print "created", p
+            print "wrapping"
+            h=IMP.core.Hierarchy(p)
+            print "getting children"
+            children=h.get_children()
+            print "wrapping children"
+            cs=IMP.core.XYZs(children)
+            print "setting up"
+            rbd=IMP.core.RigidBody.setup_particle(p, cs)
+            print "set up"
             p.show()
             rbd.set_coordinates_are_optimized(True)
             self. _add_rb_restraints(rbd)
@@ -54,7 +63,7 @@ class RBDTests(IMP.test.TestCase):
                 success=success+1
         self.assert_(success > count/2)
 
-    def _test_create_many(self, htr):
+    def _test_create_many(self):
         count=10
         success=0
         for i in range(0, count):
@@ -62,9 +71,9 @@ class RBDTests(IMP.test.TestCase):
             IMP.set_log_level(IMP.SILENT)
             l= IMP.container.ListSingletonContainer()
             for i in range(0,2):
-                p= self._create_hierarchy(m, htr)
+                p= self._create_hierarchy(m)
                 l.add_particle(p)
-            ss=IMP.helper.create_rigid_bodies(l, IMP.core.ChildrenRefiner(htr))
+            ss=IMP.helper.create_rigid_bodies(l, IMP.core.ChildrenRefiner())
             m.add_score_state(ss)
             for p in l.get_particles():
                 rbd= IMP.core.RigidBody(p)
@@ -80,10 +89,8 @@ class RBDTests(IMP.test.TestCase):
 
     def test_create_one(self):
         """Testing create_rigid_body"""
-        htr= IMP.core.Hierarchy.get_default_traits()
-        self._test_create_one(htr)
-        htr= IMP.atom.Hierarchy.get_traits()
-        self._test_create_one(htr)
+        print "1"
+        self._test_create_one()
 
     def _test_create_one_from_pdb(self):
         """Testing create_rigid_bodies"""
