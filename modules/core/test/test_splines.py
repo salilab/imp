@@ -58,7 +58,7 @@ class CubicSplineTests(IMP.test.TestCase):
             val = minrange + test_spacing * i
             scoreonly = spline.evaluate(val)
             score, deriv = spline.evaluate_with_derivative(val)
-            self.assertEqual(score, scoreonly)
+            self.assertInTolerance(score, scoreonly, .01)
             expscore, expderiv = test_func(val)
             self.assertInTolerance(score, expscore, 0.1)
             self.assertInTolerance(deriv, expderiv, 0.6)
