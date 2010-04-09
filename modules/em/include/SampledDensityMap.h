@@ -71,7 +71,7 @@ public:
   virtual void resample();
 
   //!setting particles in case they were not set by the constructor
-  void set_particles(IMP::Particles &ps,
+  void set_particles(const IMP::Particles &ps,
      IMP::FloatKey radius_key = IMP::core::XYZR::get_default_radius_key(),
      IMP::FloatKey mass_key = IMP::atom::Mass::get_mass_key());
   void calc_sampling_bounding_box(const emreal &x,const emreal &y,
