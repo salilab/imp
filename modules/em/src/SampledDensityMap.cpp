@@ -190,7 +190,7 @@ void SampledDensityMap::calc_sampling_bounding_box(
   imaxy = upper_voxel_shift(y, kdist, header_.get_yorigin(), header_.get_ny());
   imaxz = upper_voxel_shift(z, kdist, header_.get_zorigin(), header_.get_nz());
 }
-void SampledDensityMap::set_particles(IMP::Particles &ps,
+void SampledDensityMap::set_particles(const IMP::Particles &ps,
                      IMP::FloatKey radius_key,IMP::FloatKey mass_key) {
   IMP_INTERNAL_CHECK(ps_.size()==0,"Particles have already been set");
   IMP_INTERNAL_CHECK(xyzr_.size()==0,"data inconsistency in SampledDensityMap");
