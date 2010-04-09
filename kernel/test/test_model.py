@@ -17,6 +17,8 @@ class DummyRestraint(IMP.Restraint):
         return IMP.ParticlesTemp()
     def get_input_containers(self):
         return IMP.ContainersTemp()
+    def get_interacting_particles(self):
+        return IMP.ParticlesList()
 
 
 class CustomError(Exception):
