@@ -61,7 +61,7 @@ Each such particle should be have xyz radius and weight attributes
 \relatesalso SampledDensityMap
  */
 IMPEMEXPORT SampledDensityMap * particles2density(
-   Particles &ps,
+   const Particles &ps,
    Float resolution, Float apix,
    int sig_cutoff=3,
    const FloatKey &rad_key=IMP::core::XYZR::get_default_radius_key(),

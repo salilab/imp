@@ -62,7 +62,7 @@ Particles density2particles(DensityMap &dmap, Float threshold,
 
 
 IMPEMEXPORT SampledDensityMap * particles2density(
-   Particles &ps,
+   const Particles &ps,
    Float resolution, Float apix,
    int sig_cuttoff,
    const FloatKey &rad_key,
