@@ -177,7 +177,8 @@ void CHARMMParameters::read_topology_file(std::ifstream& input_file) {
         add_patch(*patch.release());
       }
       curr_res_type = parse_residue_line(line);
-      residue.reset(new CHARMMIdealResidueTopology(curr_res_type.get_string()));
+      ResidueType rt(curr_res_type.get_string());
+      residue.reset(new CHARMMIdealResidueTopology(rt));
       residue->set_default_first_patch(first_patch);
       residue->set_default_last_patch(last_patch);
 
@@ -489,7 +490,7 @@ CHARMMTopology *CHARMMParameters::create_topology(Hierarchy hierarchy) const
         IMP_WARN_ONCE("Residue type " << restyp << " was not found in "
                       "topology library; using empty topology for this residue"
                       << std::endl, warn_context_);
-        IMP_NEW(CHARMMResidueTopology, residue, (restyp));
+        IMP_NEW(CHARMMResidueTopology, residue, (ResidueType(restyp)));
         segment->add_residue(residue);
       }
     }
