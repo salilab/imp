@@ -35,7 +35,7 @@ class ToParticlesTest(IMP.test.TestCase):
         m = IMP.Model()
         self.scene1.get_header().show()
         ps=IMP.em.density2particles(self.scene2,9.0,m)
-        self.assert_(ps.size() > 0)
+        self.assert_(len(ps) > 0)
 
 if __name__ == '__main__':
     unittest.main()
