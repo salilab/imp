@@ -17,6 +17,8 @@ files = [
          'particle.h',
          'particle_save.h',
          'ref_counting.h',
+         'swig.h',
+         'swig_helpers.h',
          'units.h',
          'utility.h',
         ]

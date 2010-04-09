@@ -190,10 +190,10 @@ inline std::string get_name(const ParticleTuple<D>& p) {
   ScoreStatePointer ticker_;                                    \
   void do_before_evaluate();                                    \
   void do_after_evaluate();                                     \
-  void set_model(Model *m);                                     \
   bool get_has_model() const { return ticker_.get_is_set();}    \
   ParticlesTemp get_state_input_particles() const;              \
   ContainersTemp get_state_input_containers() const;            \
+  void initialize_active_container(Model *m);                   \
 
 #define IMP_ACTIVE_CONTAINER_DEF(Name)                                  \
   void Name::Ticker::do_before_evaluate() {                             \
@@ -220,7 +220,7 @@ inline std::string get_name(const ParticleTuple<D>& p) {
   void Name::Ticker::do_show(std::ostream &out) const {                 \
     out << "back is " << *back_ << std::endl;                           \
   }                                                                     \
-  void Name::set_model(Model *m) {                                      \
+  void Name::initialize_active_container(Model *m) {                    \
     IMP_INTERNAL_CHECK(!get_has_model(),                                \
                        "Can only set the model once.");                 \
     IMP_LOG(TERSE, "Setting up score state for container "              \

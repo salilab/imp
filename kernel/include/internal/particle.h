@@ -14,9 +14,6 @@
 #include <boost/iterator/counting_iterator.hpp>
 #include <list>
 
-IMP_BEGIN_NAMESPACE
-class Model;
-IMP_END_NAMESPACE
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 
@@ -103,8 +100,6 @@ struct IMPEXPORT ParticleStorage {
     ObjectTable;
   typedef ArrayStorage<DoubleAttributeTableTraits>
     DerivativeTable;
-
-  WeakPointer<Model> model_;
 
   FloatTable floats_;
   DerivativeTable derivatives_;
