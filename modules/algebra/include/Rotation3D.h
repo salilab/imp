@@ -163,17 +163,11 @@ class IMPALGEBRAEXPORT Rotation3D {
 
 
   //! return the quaterion so that it can be stored
+  /** Note that there is no guarantee on which of the two
+      equivalent quaternions is returned.
+  */
   const VectorD<4>& get_quaternion() const {
     return v_;
-  }
-
-  //! return the quaterion so that it can be stored
-  /** This quaternion has it sign chosen so as to be interoperable
-      with q (that is, they are in the same hemisphere). Use this
-      when writing code to average or clustering rotations.*/
-  const VectorD<4> get_quaternion(const VectorD<4> &q) const {
-    if (v_*q < 0) return -v_;
-    else return v_;
   }
 
   //! multiply two rotations
@@ -446,7 +440,9 @@ IMPALGEBRAEXPORT FixedXYZ get_fixed_xyz_from_rotation(const Rotation3D &r);
 inline Rotation3D get_interpolated(const Rotation3D &a,
                                    const Rotation3D &b,
                                    double f) {
-  return f*a.get_quaternion()+(1-f)*b.get_quaternion(a.get_quaternion());
+  VectorD<4> bq= b.get_quaternion(), aq= a.get_quaternion();
+  if (bq*aq < 0) bq=-bq;
+  return f*aq+(1-f)*bq;
 }
 
 /** Return the rotation which takes the x and y axes to the given x and y axes.
