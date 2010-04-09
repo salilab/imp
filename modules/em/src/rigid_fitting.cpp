@@ -129,7 +129,7 @@ void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
 
 
 FittingSolutions local_rigid_fitting_around_point(
-   core::RigidBody &rb,
+   core::RigidBody rb,
    const FloatKey &rad_key, const FloatKey &wei_key,
    DensityMap *dmap, const algebra::VectorD<3> &anchor_centroid,
    OptimizerState *display_log,
@@ -176,7 +176,7 @@ FittingSolutions local_rigid_fitting_around_point(
 }
 
 FittingSolutions local_rigid_fitting_around_points(
-   core::RigidBody &rb,
+   core::RigidBody rb,
    const FloatKey &rad_key, const FloatKey &wei_key,
    DensityMap *dmap, const std::vector<algebra::VectorD<3> > &anchor_centroids,
    OptimizerState *display_log,
@@ -212,7 +212,7 @@ FittingSolutions local_rigid_fitting_around_points(
 }
 
 FittingSolutions local_rigid_fitting_grid_search(
-   Particles &ps, const FloatKey &rad_key,
+   const Particles &ps, const FloatKey &rad_key,
    const FloatKey &wei_key,
    DensityMap *dmap,
    Int max_voxels_translation,
@@ -289,7 +289,7 @@ FittingSolutions local_rigid_fitting_grid_search(
    return fr;
 }
 
-FittingSolutions compute_fitting_scores(Particles &ps,
+FittingSolutions compute_fitting_scores(const Particles &ps,
   DensityMap *em_map,
   const FloatKey &rad_key, const FloatKey &wei_key,
   const std::vector<IMP::algebra::Transformation3D>& transformations,
@@ -360,7 +360,7 @@ FittingSolutions compute_fitting_scores(Particles &ps,
     return fr;
 }
 
-Float compute_fitting_score(Particles &ps,
+Float compute_fitting_score(const Particles &ps,
                             DensityMap *em_map,
                             FloatKey rad_key, FloatKey wei_key) {
     std::vector<float> dvx;
