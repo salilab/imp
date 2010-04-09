@@ -27,6 +27,7 @@ typedef double Float;
 
 //! A pair representing a function value with its first derivative
 typedef std::pair<double, double> DerivativePair;
+typedef std::vector<DerivativePair> DerivativePairs;
 
 //! A pair representing the allowed range for a Float attribute
 typedef std::pair<Float, Float> FloatRange;
