@@ -91,8 +91,8 @@ public:
 
   //! Create a rigid body based on members of another one
   /** This function creates a rigid body that is part of another
-      one. The member particles passed must be part of the
-      same rigid body and the created rigid body is added
+      one. The member particles passed must be part of the other
+      rigid body and the created rigid body is added
       to that one as a member. The purpose of this method
       is to, for example, define a rigid body for part of
       a large molecule that is also rigid.
@@ -101,6 +101,7 @@ public:
       body, as there would be no point.
   */
   static RigidBody setup_particle(Particle *p,
+                                  RigidBody other,
                                 const RigidMembers &members);
 
   ~RigidBody();
