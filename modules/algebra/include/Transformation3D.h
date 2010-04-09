@@ -88,6 +88,7 @@ private:
 };
 
 IMP_OUTPUT_OPERATOR(Transformation3D);
+IMP_VALUES(Transformation3D, Transformation3Ds);
 
 
 //! Return a transformation that does not do anything

@@ -122,7 +122,7 @@ inline Rotation2D compose(const Rotation2D &a,const Rotation2D &b) {
   return R;
 };
 
-
+IMP_VALUES(Rotation2D, Rotation2Ds);
 
 IMPALGEBRA_END_NAMESPACE
 #endif  /* IMPALGEBRA_ROTATION_2D_H */
