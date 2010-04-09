@@ -37,7 +37,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
 
     def test_add_get_atom(self):
         """Check add/get atom from CHARMM residues"""
-        res = IMP.atom.CHARMMIdealResidueTopology('FOO')
+        res = IMP.atom.CHARMMIdealResidueTopology(IMP.atom.ResidueType('FOO'))
         self.assertEqual(res.get_type(), 'FOO')
         self.assertRaises(IMP.ValueException, res.get_atom, 'CA')
         at = _make_test_atom()
@@ -53,7 +53,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
 
     def test_delete_atom(self):
         """Check delete atom from CHARMM residues"""
-        res = IMP.atom.CHARMMIdealResidueTopology('FOO')
+        res = IMP.atom.CHARMMIdealResidueTopology(IMP.atom.ResidueType('FOO'))
         at = _make_test_atom()
         res.add_atom(at)
         self.assertRaises(IMP.ValueException, res.delete_atom, 'CB')
@@ -62,7 +62,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
 
     def test_default_patches(self):
         """Check default patches of CHARMM residues"""
-        res = IMP.atom.CHARMMIdealResidueTopology('FOO')
+        res = IMP.atom.CHARMMIdealResidueTopology(IMP.atom.ResidueType('FOO'))
         self.assertEqual(res.get_default_first_patch(), '')
         self.assertEqual(res.get_default_last_patch(), '')
         res.set_default_first_patch('NTER')
@@ -84,12 +84,10 @@ class CHARMMTopologyTests(IMP.test.TestCase):
 
     def test_add_bond(self):
         """Check addition of bonds/angles/dihedrals/impropers"""
-        res = IMP.atom.CHARMMIdealResidueTopology('FOO')
+        res = IMP.atom.CHARMMIdealResidueTopology(IMP.atom.ResidueType('FOO'))
         atoms = IMP.Strings(['CA', 'CB'])
-        # Test construction from strings or from CHARMMBond object
-        res.add_bond(atoms)
         res.add_bond(IMP.atom.CHARMMBond2(atoms))
-        self.assertEqual(res.get_number_of_bonds(), 2)
+        self.assertEqual(res.get_number_of_bonds(), 1)
         atoms = IMP.Strings(['CA', 'CB', 'N'])
         res.add_angle(IMP.atom.CHARMMBond3(atoms))
         self.assertEqual(res.get_number_of_angles(), 1)
@@ -112,19 +110,19 @@ class CHARMMTopologyTests(IMP.test.TestCase):
     def test_forcefield_add_get(self):
         """Test adding/getting patches and residues to/from forcefields"""
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"))
-        self.assertRaises(IMP.ValueException, ff.get_residue_topology, 'FOO')
+        self.assertRaises(IMP.ValueException, ff.get_residue_topology, IMP.atom.ResidueType('FOO'))
         self.assertRaises(IMP.ValueException, ff.get_patch, 'PFOO')
         patch = IMP.atom.CHARMMPatch('PFOO')
-        res = IMP.atom.CHARMMIdealResidueTopology('FOO')
+        res = IMP.atom.CHARMMIdealResidueTopology(IMP.atom.ResidueType('FOO'))
         ff.add_patch(patch)
         ff.add_residue_topology(res)
-        ff.get_residue_topology('FOO')
+        ff.get_residue_topology(IMP.atom.ResidueType('FOO'))
         ff.get_patch('PFOO')
 
     def test_forcefield_read(self):
         """Test read of topology from files"""
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"))
-        self.assertRaises(ValueError, ff.get_residue_topology, 'CTER')
+        self.assertRaises(ValueError, ff.get_residue_topology, IMP.atom.ResidueType('CTER'))
         res = ff.get_residue_topology(IMP.atom.CYS)
         self.assertEqual(res.get_number_of_bonds(), 11)
         self.assertEqual(res.get_number_of_angles(), 0)
@@ -154,13 +152,13 @@ class CHARMMTopologyTests(IMP.test.TestCase):
                                     ('PRO', 'PROP', 'CTER'),
                                     ('TIP3', '', ''),
                                     ('SOD', '', '')]:
-            res = ff.get_residue_topology(name)
+            res = ff.get_residue_topology(IMP.atom.ResidueType(name))
             self.assertEqual(res.get_default_first_patch(), first)
             self.assertEqual(res.get_default_last_patch(), last)
 
     def test_residue_topology(self):
         """Test CHARMM residue topology objects"""
-        ideal = IMP.atom.CHARMMIdealResidueTopology('ALA')
+        ideal = IMP.atom.CHARMMIdealResidueTopology(IMP.atom.ResidueType('ALA'))
         at = _make_test_atom()
         ideal.add_atom(at)
         res = IMP.atom.CHARMMResidueTopology(ideal)
@@ -202,8 +200,8 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         """Test application of two-residue patches"""
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"))
         patch = ff.get_patch('DISU')
-        res1 = IMP.atom.CHARMMResidueTopology(ff.get_residue_topology('CYS'))
-        res2 = IMP.atom.CHARMMResidueTopology(ff.get_residue_topology('CYS'))
+        res1 = IMP.atom.CHARMMResidueTopology(ff.get_residue_topology(IMP.atom.ResidueType('CYS')))
+        res2 = IMP.atom.CHARMMResidueTopology(ff.get_residue_topology(IMP.atom.ResidueType('CYS')))
         self.assertEqual(res1.get_atom('HG').get_charmm_type(), 'HS')
         self.assertEqual(res1.get_number_of_bonds(), 11)
         self.assertEqual(res1.get_number_of_impropers(), 3)
@@ -239,7 +237,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         segment = IMP.atom.CHARMMSegmentTopology()
         model.add_segment(segment)
 
-        ideal = IMP.atom.CHARMMIdealResidueTopology('ALA')
+        ideal = IMP.atom.CHARMMIdealResidueTopology(IMP.atom.ResidueType('ALA'))
         at = _make_test_atom()
         ideal.add_atom(at)
         res = IMP.atom.CHARMMResidueTopology(ideal)
@@ -278,8 +276,8 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         topology = IMP.atom.CHARMMTopology()
         seg = IMP.atom.CHARMMSegmentTopology()
         topology.add_segment(seg)
-        r1 = IMP.atom.CHARMMResidueTopology(ff.get_residue_topology('PRO'))
-        r2 = IMP.atom.CHARMMResidueTopology(ff.get_residue_topology('ALA'))
+        r1 = IMP.atom.CHARMMResidueTopology(ff.get_residue_topology(IMP.atom.ResidueType('PRO')))
+        r2 = IMP.atom.CHARMMResidueTopology(ff.get_residue_topology(IMP.atom.ResidueType('ALA')))
         seg.add_residue(r1)
         seg.add_residue(r2)
         h = topology.create_hierarchy(m)
@@ -367,7 +365,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         topology.add_segment(segment)
         for res in ('ALA', 'CYS', 'TYR'):
             restop = IMP.atom.CHARMMResidueTopology(
-                                     ff.get_residue_topology(res))
+                                     ff.get_residue_topology(IMP.atom.ResidueType(res)))
             segment.add_residue(restop)
         m = IMP.Model()
         hierarchy = topology.create_hierarchy(m)
