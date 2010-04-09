@@ -1,5 +1,6 @@
 /**
- *  \file Particle.h     \brief Classes to handle individual model particles.
+ *  \file ParticleTuple.h
+ *  \brief Classes to handle individual model particles.
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  *
