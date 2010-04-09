@@ -128,6 +128,7 @@ private:
 
 
 IMP_OUTPUT_OPERATOR(Transformation2D);
+IMP_VALUES(Transformation2D, Transformation2Ds);
 
 //! Returns a transformation that does not do anything
 /**
