@@ -264,8 +264,20 @@ FixedZYZ get_fixed_zyz_from_rotation(const Rotation3D &r) {
   //double d20 = (-1.0) * c1 * s2;
   double cos_rot_sin_tilt = -r.get_rotated(VectorD<3>(1,0,0))[2];
   double psi= std::atan2(sin_tilt_sin_psi, cos_psi_sin_tilt);
+  if (std::abs(sin(psi)) < .01) {
+    IMP_THROW("Attempting to divide by 0 in get_fixed_zyz_from_rotation"
+              << " bug Daniel about getting a more stable implementation"
+              << " or restructure your code to stay with quaternions.",
+              ValueException);
+  }
   double sin_tilt= sin_tilt_sin_psi/std::sin(psi);
   double tilt= std::atan2(sin_tilt, cos_tilt);
+  if (std::abs(sin_tilt) < .01) {
+    IMP_THROW("Attempting to divide by 0 in get_fixed_zyz_from_rotation"
+              << " bug Daniel about getting a more stable implementation"
+              << " or restructure your code to stay with quaternions.",
+              ValueException);
+  }
   double cos_rot= cos_rot_sin_tilt/sin_tilt;
   double sin_rot= sin_rot_sin_tilt/sin_tilt;
   double rot= std::atan2(sin_rot, cos_rot);
@@ -278,8 +290,7 @@ FixedZYZ get_fixed_zyz_from_rotation(const Rotation3D &r) {
     Rotation3D rrot= get_rotation_from_fixed_zyz(rot, tilt, psi);
     IMP_LOG(VERBOSE,
             "Input is " << r << " output results in " << rrot << std::endl);
-    IMP_INTERNAL_CHECK((rrot.get_quaternion()
-                -r.get_quaternion()).get_squared_magnitude() < .1,
+    IMP_INTERNAL_CHECK(get_distance(r, rrot) < .1,
                "The input and output rotations are far apart " << r
                << " and " << rrot << std::endl);
   }
