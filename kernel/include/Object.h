@@ -50,12 +50,17 @@ class IMPEXPORT Object: public RefCounted
 {
   // hide the inheritance from RefCounted as it is a detail
   std::string name_;
+  int compare(const Object &o) const {
+    if (&o < this) return 1;
+    else if (&o > this) return -1;
+    else return 0;
+  }
 protected:
   IMP_NO_DOXYGEN(Object(std::string name="Nameless"));
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Object);
-
 public:
 #ifndef IMP_DOXYGEN
+  typedef Object This;
   // Return whether the object already been freed
   bool get_is_valid() const {
 #if IMP_BUILD >= IMP_FAST
@@ -105,7 +110,15 @@ public:
     do_show(out);
   }
 
+  IMP_COMPARISONS;
+
 #ifndef IMP_DOXYGEN
+  std::string __str__() const {
+    std::ostringstream oss;
+    show(oss);
+    return oss.str();
+  }
+
   void debugger_show() const {
     show(std::cout);
   }
