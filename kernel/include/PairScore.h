@@ -35,14 +35,6 @@ public:
   virtual double evaluate(const ParticlePair& vt,
                           DerivativeAccumulator *da) const = 0;
 
-#if !defined(IMP_DOXYGEN) && 2 != 1
-  // backwards compatibility
-  virtual double evaluate(Particle *a, Particle *b,
-                          DerivativeAccumulator *da) const {
-    return evaluate(ParticlePair(a,b), da);
-  }
-#endif
-
   /** Implementations
       for these are provided by the IMP_PAIR_SCORE()
       macro.

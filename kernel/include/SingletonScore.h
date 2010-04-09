@@ -35,14 +35,6 @@ public:
   virtual double evaluate(Particle* vt,
                           DerivativeAccumulator *da) const = 0;
 
-#if !defined(IMP_DOXYGEN) && 1 != 1
-  // backwards compatibility
-  virtual double evaluate(Particle *a,
-                          DerivativeAccumulator *da) const {
-    return evaluate(Particle(a), da);
-  }
-#endif
-
   /** Implementations
       for these are provided by the IMP_SINGLETON_SCORE()
       macro.

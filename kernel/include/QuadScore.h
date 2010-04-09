@@ -35,14 +35,6 @@ public:
   virtual double evaluate(const ParticleQuad& vt,
                           DerivativeAccumulator *da) const = 0;
 
-#if !defined(IMP_DOXYGEN) && 4 != 1
-  // backwards compatibility
-  virtual double evaluate(Particle *a, Particle *b, Particle *c, Particle *d,
-                          DerivativeAccumulator *da) const {
-    return evaluate(ParticleQuad(a,b,c,d), da);
-  }
-#endif
-
   /** Implementations
       for these are provided by the IMP_QUAD_SCORE()
       macro.
