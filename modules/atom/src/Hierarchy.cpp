@@ -128,6 +128,9 @@ struct MatchResidueIndex
           Domain dd= mhd.get_as_domain();
           return  dd.get_begin_index() <= index_
             && dd.get_end_index()> index_;
+        } else if (mhd.get_as_fragment()) {
+          Fragment fd= mhd.get_as_fragment();
+          return fd.get_contains_residue(index_);
         } else {
           return false;
         }
@@ -304,7 +307,7 @@ core::RigidBody setup_as_rigid_body(Hierarchy h) {
   for (unsigned int i=0; i< internal.size(); ++i) {
     if (internal[i] != h) {
       core::RigidMembers leaves(get_leaves(Hierarchy(internal[i])));
-      core::RigidBody::setup_particle(internal[i], leaves);
+      core::RigidBody::setup_particle(internal[i], rbd, leaves);
     }
   }
   return rbd;

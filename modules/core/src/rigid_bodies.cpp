@@ -247,6 +247,7 @@ RigidBody RigidBody::internal_setup_particle(Particle *p,
 }
 
 RigidBody RigidBody::setup_particle(Particle *p,
+                                    RigidBody other,
                                     const RigidMembers &rms) {
   RigidBody ret=internal_setup_particle(p, rms);
   rms[0].get_rigid_body().add_member(ret);
