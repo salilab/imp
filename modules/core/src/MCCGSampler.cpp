@@ -78,7 +78,8 @@ MCCGSampler::set_up_movers(const Parameters &pms,
       ps.push_back(*pit);
     }
   }
-  IMP_NEW(internal::CoreListSingletonContainer, sc, ("mccg particles"));
+  IMP_NEW(internal::CoreListSingletonContainer, sc, (mc->get_model(),
+                                                     "mccg particles"));
   sc->set_particles(ps);
   IMP_NEW(IncrementalBallMover, bm,
           (sc, 2, pms.ball_sizes_.find(XK)->second));

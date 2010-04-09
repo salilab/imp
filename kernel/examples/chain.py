@@ -15,7 +15,7 @@ chain= IMP.container.ListSingletonContainer(IMP.core.create_xyzr_particles(m, 2,
 
 # create a bond between successive particles
 IMP.atom.Bonded.setup_particle(chain.get_particle(0))
-bonds= IMP.container.ListSingletonContainer("particles")
+bonds= IMP.container.ListSingletonContainer(m, "particles")
 for i in range(1, chain.get_number_of_particles()):
     bp= IMP.atom.Bonded(chain.get_particle(i-1))
     bpr= IMP.atom.Bonded.setup_particle(chain.get_particle(i))
@@ -41,7 +41,7 @@ m.add_restraint(IMP.container.SingletonsRestraint(bss, bonds))
 # Tie the ends of the chain
 p= IMP.ParticlePair(chain.get_particle(0),
                     chain.get_particle(chain.get_number_of_particles()-1))
-pps= IMP.container.ListPairContainer()
+pps= IMP.container.ListPairContainer(m)
 pps.add_particle_pair(p)
 m.add_restraint(IMP.container.PairsRestraint(
            IMP.core.SphereDistancePairScore(IMP.core.Harmonic(3,1)), pps))

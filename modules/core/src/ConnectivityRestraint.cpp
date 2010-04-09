@@ -34,7 +34,6 @@ ConnectivityRestraint::ConnectivityRestraint(PairScore *ps,
   if (sc) {
     sc_= sc;
   } else {
-    sc_= new internal::CoreListSingletonContainer("connectivity list");
   }
 }
 
@@ -52,14 +51,26 @@ namespace {
 }
 
 void ConnectivityRestraint::set_particles(const Particles &ps) {
+  if (!sc_ && !ps.empty()) {
+    sc_= new internal::CoreListSingletonContainer(ps[0]->get_model(),
+                                                  "connectivity list");
+  }
   get_list(sc_)->set_particles(ps);
 }
 
 void ConnectivityRestraint::add_particles(const Particles &ps) {
+  if (!sc_&& !ps.empty()) {
+    sc_= new internal::CoreListSingletonContainer(ps[0]->get_model(),
+                                                  "connectivity list");
+  }
   get_list(sc_)->add_particles(ps);
 }
 
 void ConnectivityRestraint::add_particle(Particle *ps) {
+  if (!sc_) {
+    sc_= new internal::CoreListSingletonContainer(ps->get_model(),
+                                                  "connectivity list");
+  }
   get_list(sc_)->add_particle(ps);
 }
 
@@ -116,7 +127,7 @@ ConnectivityRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
   IMP_CHECK_OBJECT(ps_.get());
   std::vector<Edge> mst;
-
+  if (!sc_) return 0;
   Graph g(sc_->get_number_of_particles());
   compute_mst(sc_, ps_, g, mst);
   double sum=0;
@@ -164,6 +175,7 @@ ParticlesList ConnectivityRestraint::get_interacting_particles() const {
 }
 
 ParticlesTemp ConnectivityRestraint::get_input_particles() const {
+  if (!sc_) return ParticlesTemp();
   ParticlesTemp ret;
   for (unsigned int i=0; i< sc_->get_number_of_particles(); ++i) {
     for (unsigned int j=0; j<i; ++j) {
@@ -179,6 +191,7 @@ ParticlesTemp ConnectivityRestraint::get_input_particles() const {
 }
 
 ContainersTemp ConnectivityRestraint::get_input_containers() const {
+  if (!sc_) return ContainersTemp();
   ContainersTemp ret;
   for (unsigned int i=0; i< sc_->get_number_of_particles(); ++i) {
     for (unsigned int j=0; j<i; ++j) {
@@ -194,7 +207,11 @@ ContainersTemp ConnectivityRestraint::get_input_containers() const {
 
 void ConnectivityRestraint::do_show(std::ostream& out) const
 {
-  out << "container is " << *sc_ << std::endl;
+  if (!sc_) {
+    out << "container is NULL" << std::endl;
+  } else {
+    out << "container is " << *sc_ << std::endl;
+  }
 }
 
 IMPCORE_END_NAMESPACE

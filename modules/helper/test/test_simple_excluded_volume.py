@@ -30,7 +30,7 @@ class SimpleExclusionVolumeTests(IMP.test.TestCase):
             d= IMP.core.XYZR.setup_particle(p.get_particle())
             d.set_radius(1)
         print "add ss"
-        sc= IMP.container.ListSingletonContainer()
+        sc= IMP.container.ListSingletonContainer(m)
         fps=IMP.core.XYZRs()
         for i in range(0,10):
             p= IMP.Particle(m)

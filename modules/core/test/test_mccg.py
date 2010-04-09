@@ -30,7 +30,7 @@ class CGOptimizerTests(IMP.test.TestCase):
         n=10
         print 1
         ds= IMP.core.create_xyzr_particles(m, n, 2)
-        lsc= IMP.container.ListSingletonContainer(ds.get_particles())
+        lsc= IMP.container.ListSingletonContainer(ds)
         print 2
         cpf=IMP.core.QuadraticClosePairsFinder()
         print 2.1
@@ -41,11 +41,21 @@ class CGOptimizerTests(IMP.test.TestCase):
         m.add_restraint(evr)
         evr.set_log_level(IMP.WARNING)
         print 4
-        lpc= IMP.container.ListPairContainer()
+        lpc= IMP.container.ListPairContainer(m)
         print "finding pairs"
         for i in range(0,n/2):
-            lpc.add_particle_pair(IMP.ParticlePair(lsc.get_particle(2*i),
-                                                  lsc.get_particle(2*i+1)))
+            print lsc.get_particle(2*i)
+            qp=lsc.get_particle(2*i)
+            print qp.get_name()
+            print qp
+            pp=IMP.ParticlePair(lsc.get_particle(2*i),
+                                lsc.get_particle(2*i+1))
+            print pp
+            pp2=(lsc.get_particle(2*i),
+                 lsc.get_particle(2*i+1))
+            print pp2
+            print str(pp2[0])
+            lpc.add_particle_pair(pp2)
         d= IMP.core.SphereDistancePairScore(IMP.core.HarmonicUpperBound(0,1))
         pr= IMP.container.PairsRestraint(d, lpc)
         pr.set_log_level(IMP.WARNING)

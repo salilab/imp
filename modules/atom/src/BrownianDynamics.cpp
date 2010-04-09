@@ -65,7 +65,8 @@ SingletonContainer *BrownianDynamics::setup_particles()
     return sc_;
   } else {
     container::ListSingletonContainer *lsc
-      = new container::ListSingletonContainer("Brownian dynamics particles");
+      = new container::ListSingletonContainer(get_model(),
+                                              "Brownian dynamics particles");
     for (Model::ParticleIterator it = get_model()->particles_begin();
          it != get_model()->particles_end(); ++it) {
       Particle *p = *it;

@@ -22,7 +22,7 @@ class Test(IMP.test.TestCase):
             hpp.add_child(hp)
             c.append(p)
         pr= IMP.core.ChildrenRefiner(IMP.core.Hierarchy.get_default_traits())
-        cps= IMP.test.ConstPairScore(1)
+        cps= IMP._ConstPairScore(1)
         rps= IMP.core.RefinedPairsPairScore(pr, cps)
         ppp=IMP.ParticlePair(pp, pp)
         print type(rps)
@@ -30,7 +30,7 @@ class Test(IMP.test.TestCase):
         da=IMP.DerivativeAccumulator();
         print type(pp)
         print type(ppp)
-        self.assertEqual(rps.evaluate(pp, pp, da), 100)
+        self.assertEqual(rps.evaluate(ppp, da), 100)
 
 
 
