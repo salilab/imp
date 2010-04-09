@@ -84,12 +84,12 @@
   }                                                                     \
   IMP_OUTPUT_OPERATOR_D(Name##D)                                        \
   IMPALGEBRA_EXPORT_TEMPLATE(Name##D<3>);                               \
-  IMP_NO_SWIG(typedef Name##D<2> Name##2D);                             \
-  IMP_NO_SWIG(IMP_VALUES(Name##2D, Name##2Ds));                         \
-  IMP_NO_SWIG(typedef Name##D<3> Name##3D);                             \
-  IMP_NO_SWIG(IMP_VALUES(Name##3D, Name##3Ds));                         \
-  IMP_NO_SWIG(typedef Name##D<4> Name##4D);                             \
-  IMP_NO_SWIG(IMP_VALUES(Name##4D, Name##4Ds))
+  typedef Name##D<2> Name##2D;                                          \
+  IMP_VALUES(Name##2D, Name##2Ds);                                      \
+  typedef Name##D<3> Name##3D;                                          \
+  IMP_VALUES(Name##3D, Name##3Ds);                                      \
+  typedef Name##D<4> Name##4D;                                          \
+  IMP_VALUES(Name##4D, Name##4Ds)
 
 
 #define IMP_LINEAR_GEOMETRY_METHODS(Name, bounding_box)                \
