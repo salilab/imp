@@ -273,7 +273,7 @@ IMPEXPORT void set_print_exceptions(bool tf);
       throw IMP::InternalException(oss.str().c_str());          \
     }                                                           \
   } while(false)
-#define IMP_USAGE_CHECK(expr, message)           \
+#define IMP_USAGE_CHECK(expr, message)                          \
   do {                                                          \
     if (IMP::get_check_level() >= IMP::USAGE && !(expr)) {      \
       std::ostringstream oss;                                   \
