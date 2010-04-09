@@ -14,7 +14,6 @@
 #include <IMP/Decorator.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/Transformation3D.h>
-
 #include <vector>
 #include <limits>
 
@@ -155,9 +154,7 @@ inline double get_distance(XYZ a, XYZ b) {
 /** \relatesalso XYZ
     \relatesalso algebra::Transformation3D
 */
-inline void transform(XYZ a, const algebra::Transformation3D &tr) {
-  a.set_coordinates(tr.get_transformed(a.get_coordinates()));
-}
+IMPCOREEXPORT void transform(XYZ a, const algebra::Transformation3D &tr);
 
 /** \genericgeometry */
 inline const algebra::VectorD<3> get_geometry(XYZ d) {
