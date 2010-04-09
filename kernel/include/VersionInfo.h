@@ -25,8 +25,8 @@ IMP_BEGIN_NAMESPACE
  */
 class IMPEXPORT VersionInfo
 {
-  typedef VersionInfo This;
 public:
+  IMP_NO_DOXYGEN(typedef VersionInfo This);
   //! Create a VersionInfo object with the given module and version.
   VersionInfo(std::string module, std::string version);
 
@@ -41,7 +41,7 @@ public:
       out << module_ << " " << version_;
     }
     );
-    IMP_COMPARISONS_2(module_, version_);
+  IMP_COMPARISONS_2(module_, version_);
 private:
   std::string module_, version_;
 };
