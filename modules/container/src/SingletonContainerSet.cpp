@@ -22,27 +22,30 @@ namespace {
 }
 
 SingletonContainerSet
-::SingletonContainerSet(bool): SingletonContainer("added or removed for set") {
+::SingletonContainerSet() {
 }
 
 SingletonContainerSet
-::SingletonContainerSet(std::string name):
-  SingletonContainer(name) {
+::SingletonContainerSet(Model *m, std::string name):
+  SingletonContainer(m, name) {
   set_added_and_removed_containers( create_untracked_container(),
                                     create_untracked_container());
 }
 
-SingletonContainerSet
-::SingletonContainerSet(const char *name):
-  SingletonContainer(name) {
-  set_added_and_removed_containers( create_untracked_container(),
-                                    create_untracked_container());
+namespace {
+  Model *my_get_model(const SingletonContainersTemp &in) {
+    if (in.empty()) {
+      IMP_THROW("Cannot initialize from empty list of containers.",
+                IndexException);
+    }
+    return in[0]->get_model();
+  }
 }
 
 SingletonContainerSet
-::SingletonContainerSet(const SingletonContainers& in,
+::SingletonContainerSet(const SingletonContainersTemp& in,
                         std::string name):
-  SingletonContainer(name) {
+  SingletonContainer(my_get_model(in), name) {
   set_singleton_containers(in);
   set_added_and_removed_containers( create_untracked_container(),
                                     create_untracked_container());

@@ -19,8 +19,8 @@ namespace {
 }
 
 
-QuadContainer::QuadContainer(std::string name):
-  Container(internal::make_object_name(name, next_index++)){
+QuadContainer::QuadContainer(Model *m, std::string name):
+  Container(m, internal::make_object_name(name, next_index++)){
 }
 
 // here for gcc

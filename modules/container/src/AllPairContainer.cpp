@@ -11,6 +11,7 @@
 #include "IMP/container/AllPairContainer.h"
 #include <IMP/core/internal/DifferenceSingletonContainer.h>
 #include <IMP/container/AllBipartitePairContainer.h>
+#include <IMP/container/PairContainerSet.h>
 #include <IMP/PairModifier.h>
 #include <algorithm>
 

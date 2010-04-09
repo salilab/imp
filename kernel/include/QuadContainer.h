@@ -66,16 +66,10 @@ class IMPEXPORT QuadContainer : public Container
     added_=added;
     removed_=removed;
   }
-
+  QuadContainer(){}
+  QuadContainer(Model *m,
+                     std::string name="QuadContainer %1%");
 public:
-#ifndef IMP_DOXYGEN
-  bool get_is_added_or_removed_container() {
-    return !added_;
-  }
-#endif
-
-  QuadContainer(std::string name="QuadContainer %1%");
-
   /** \note This function may be linear. Be aware of the complexity
       bounds of your particular container.
    */

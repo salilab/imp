@@ -66,16 +66,10 @@ class IMPEXPORT TripletContainer : public Container
     added_=added;
     removed_=removed;
   }
-
+  TripletContainer(){}
+  TripletContainer(Model *m,
+                     std::string name="TripletContainer %1%");
 public:
-#ifndef IMP_DOXYGEN
-  bool get_is_added_or_removed_container() {
-    return !added_;
-  }
-#endif
-
-  TripletContainer(std::string name="TripletContainer %1%");
-
   /** \note This function may be linear. Be aware of the complexity
       bounds of your particular container.
    */

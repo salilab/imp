@@ -33,8 +33,7 @@ private:
   }
   ParticlePairs data_;
 protected:
-  ListLikePairContainer():
-    PairContainer("Added or removed container"){}
+  ListLikePairContainer(){}
   const ParticlePairs &access() const {return data_;}
   void update_list(ParticlePairsTemp &cur) {
     IMP_IF_CHECK(USAGE) {
@@ -80,7 +79,8 @@ protected:
       ac->data_.push_back(cur);
     }
   }
-  ListLikePairContainer(std::string name): PairContainer(name){
+  ListLikePairContainer(Model *m, std::string name):
+    PairContainer(m,name){
     PairContainer::
       set_added_and_removed_containers( new ListLikePairContainer(),
                                         new ListLikePairContainer());

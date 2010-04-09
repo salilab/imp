@@ -16,7 +16,6 @@
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/container/ListPairContainer.h>
-#include <IMP/container/PairContainerSet.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 

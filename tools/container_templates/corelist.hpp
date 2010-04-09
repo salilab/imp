@@ -24,9 +24,9 @@ public internal::ListLikeGroupnameContainer
 {
   IMP_ACTIVE_CONTAINER_DECL(CoreListGroupnameContainer);
 public:
-  CoreListGroupnameContainer(std::string name);
-  CoreListGroupnameContainer(const char *name);
-  CoreListGroupnameContainer(bool);
+  CoreListGroupnameContainer(Model *m, std::string name);
+  CoreListGroupnameContainer(Model *m, const char *name);
+  CoreListGroupnameContainer();
   void add_classname(PassValue vt);
   void add_classnames(const ClassnamesTemp &c);
   void set_classnames(ClassnamesTemp c);

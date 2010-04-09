@@ -30,14 +30,14 @@ namespace {
 MovedSingletonContainer::MovedSingletonContainer(Model *m,
                                                  SingletonContainer *pc,
                                                  double threshold):
-  internal::ListLikeSingletonContainer("MovedSingletonContainer"),
+  internal::ListLikeSingletonContainer(m, "MovedSingletonContainer"),
   threshold_(threshold),
   pc_(pc)
 {
   IMP_USAGE_CHECK(pc->get_number_of_particles() != 0,
                   "Cannot initialize from empty"
                   << " container.");
-  set_model(pc->get_particle(0)->get_model());
+  initialize_active_container(m);
   first_call_=true;
 }
 

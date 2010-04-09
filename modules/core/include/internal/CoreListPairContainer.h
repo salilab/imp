@@ -24,9 +24,9 @@ public internal::ListLikePairContainer
 {
   IMP_ACTIVE_CONTAINER_DECL(CoreListPairContainer);
 public:
-  CoreListPairContainer(std::string name);
-  CoreListPairContainer(const char *name);
-  CoreListPairContainer(bool);
+  CoreListPairContainer(Model *m, std::string name);
+  CoreListPairContainer(Model *m, const char *name);
+  CoreListPairContainer();
   void add_particle_pair(const ParticlePair& vt);
   void add_particle_pairs(const ParticlePairsTemp &c);
   void set_particle_pairs(ParticlePairsTemp c);

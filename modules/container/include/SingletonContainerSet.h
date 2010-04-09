@@ -22,29 +22,25 @@ IMPCONTAINER_BEGIN_NAMESPACE
     demand for it.
 
     \usesconstraint
- */
+*/
 class IMPCONTAINEREXPORT SingletonContainerSet
   : public SingletonContainer
 {
- // to not have added and removed
- SingletonContainerSet(bool);
-public:
+  // to not have added and removed
+  SingletonContainerSet();
+ public:
   //! Construct and empty set
-  SingletonContainerSet(std::string name="SingletonContainerSet %1%");
-
-  SingletonContainerSet(const SingletonContainers &in,
+  SingletonContainerSet(Model *m,
                         std::string name="SingletonContainerSet %1%");
 
-#if !defined(SWIG) && !defined(IMP_DOXYGEN)
-  // otherwise the bool overload catches it
-  SingletonContainerSet(const char *name);
-#endif
+  SingletonContainerSet(const SingletonContainersTemp &pc,
+                        std::string name="SingletonContainerSet %1%");
 
   IMP_SINGLETON_CONTAINER(SingletonContainerSet);
- /** @name Methods to control the nested container
+  /** @name Methods to control the nested container
 
-     This container merges a set of nested containers. To add
-     or remove nested containers, use the methods below.
+      This container merges a set of nested containers. To add
+      or remove nested containers, use the methods below.
   */
   /**@{*/
   IMP_LIST(public, SingletonContainer, singleton_container,
@@ -52,7 +48,7 @@ public:
   /**@}*/
 
   static SingletonContainerSet *create_untracked_container() {
-    SingletonContainerSet *lsc = new SingletonContainerSet(false);
+    SingletonContainerSet *lsc = new SingletonContainerSet();
     return lsc;
   }
 };

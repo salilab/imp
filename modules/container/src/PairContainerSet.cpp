@@ -22,27 +22,30 @@ namespace {
 }
 
 PairContainerSet
-::PairContainerSet(bool): PairContainer("added or removed for set") {
+::PairContainerSet() {
 }
 
 PairContainerSet
-::PairContainerSet(std::string name):
-  PairContainer(name) {
+::PairContainerSet(Model *m, std::string name):
+  PairContainer(m, name) {
   set_added_and_removed_containers( create_untracked_container(),
                                     create_untracked_container());
 }
 
-PairContainerSet
-::PairContainerSet(const char *name):
-  PairContainer(name) {
-  set_added_and_removed_containers( create_untracked_container(),
-                                    create_untracked_container());
+namespace {
+  Model *my_get_model(const PairContainersTemp &in) {
+    if (in.empty()) {
+      IMP_THROW("Cannot initialize from empty list of containers.",
+                IndexException);
+    }
+    return in[0]->get_model();
+  }
 }
 
 PairContainerSet
-::PairContainerSet(const PairContainers& in,
+::PairContainerSet(const PairContainersTemp& in,
                         std::string name):
-  PairContainer(name) {
+  PairContainer(my_get_model(in), name) {
   set_pair_containers(in);
   set_added_and_removed_containers( create_untracked_container(),
                                     create_untracked_container());

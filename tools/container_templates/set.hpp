@@ -22,29 +22,25 @@ IMPCONTAINER_BEGIN_NAMESPACE
     demand for it.
 
     \usesconstraint
- */
+*/
 class IMPCONTAINEREXPORT GroupnameContainerSet
   : public GroupnameContainer
 {
- // to not have added and removed
- GroupnameContainerSet(bool);
-public:
+  // to not have added and removed
+  GroupnameContainerSet();
+ public:
   //! Construct and empty set
-  GroupnameContainerSet(std::string name="GroupnameContainerSet %1%");
-
-  GroupnameContainerSet(const GroupnameContainers &in,
+  GroupnameContainerSet(Model *m,
                         std::string name="GroupnameContainerSet %1%");
 
-#if !defined(SWIG) && !defined(IMP_DOXYGEN)
-  // otherwise the bool overload catches it
-  GroupnameContainerSet(const char *name);
-#endif
+  GroupnameContainerSet(const GroupnameContainersTemp &pc,
+                        std::string name="GroupnameContainerSet %1%");
 
   IMP_GROUPNAME_CONTAINER(GroupnameContainerSet);
- /** @name Methods to control the nested container
+  /** @name Methods to control the nested container
 
-     This container merges a set of nested containers. To add
-     or remove nested containers, use the methods below.
+      This container merges a set of nested containers. To add
+      or remove nested containers, use the methods below.
   */
   /**@{*/
   IMP_LIST(public, GroupnameContainer, groupname_container,
@@ -52,7 +48,7 @@ public:
   /**@}*/
 
   static GroupnameContainerSet *create_untracked_container() {
-    GroupnameContainerSet *lsc = new GroupnameContainerSet(false);
+    GroupnameContainerSet *lsc = new GroupnameContainerSet();
     return lsc;
   }
 };

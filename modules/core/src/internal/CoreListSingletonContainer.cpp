@@ -26,18 +26,22 @@ namespace {
 IMP_ACTIVE_CONTAINER_DEF(CoreListSingletonContainer);
 
 CoreListSingletonContainer
-::CoreListSingletonContainer(bool):
+::CoreListSingletonContainer():
   internal::ListLikeSingletonContainer(){}
 
 
 CoreListSingletonContainer
-::CoreListSingletonContainer(std::string name):
-  internal::ListLikeSingletonContainer(name){}
+::CoreListSingletonContainer(Model *m, std::string name):
+  internal::ListLikeSingletonContainer(m, name){
+  initialize_active_container(m);
+}
 
 
 CoreListSingletonContainer
-::CoreListSingletonContainer(const char *name):
-  internal::ListLikeSingletonContainer(name){}
+::CoreListSingletonContainer(Model *m, const char *name):
+  internal::ListLikeSingletonContainer(m, name){
+  initialize_active_container(m);
+}
 
 
 void CoreListSingletonContainer::do_show(std::ostream &out) const {
@@ -49,10 +53,6 @@ void CoreListSingletonContainer::do_show(std::ostream &out) const {
 
 
 void CoreListSingletonContainer::set_particles(ParticlesTemp sc) {
-  if (!get_has_model() && !get_is_added_or_removed_container()
-      && !sc.empty()) {
-    set_model(IMP::internal::get_model(sc[0]));
-  }
   update_list(sc);
 }
 
@@ -66,10 +66,6 @@ void CoreListSingletonContainer::clear_particles() {
 void CoreListSingletonContainer::add_particle(Particle* vt) {
   IMP_USAGE_CHECK(IMP::internal::is_valid(vt),
                   "Passed Particle cannot be NULL (or None)");
-
-  if (!get_has_model() && !get_is_added_or_removed_container()) {
-    set_model(IMP::internal::get_model(vt));
-  }
   add_to_list(vt);
   IMP_USAGE_CHECK(get_is_added_or_removed_container()
                   || !get_removed_singletons_container()
@@ -80,9 +76,6 @@ void CoreListSingletonContainer::add_particle(Particle* vt) {
 void
 CoreListSingletonContainer::add_particles(const ParticlesTemp &c) {
   if (c.empty()) return;
-  if (!get_has_model() && !get_is_added_or_removed_container()) {
-    set_model(IMP::internal::get_model(c[0]));
-  }
   ParticlesTemp cp= c;
   add_to_list(cp);
   IMP_IF_CHECK(USAGE) {

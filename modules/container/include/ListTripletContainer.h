@@ -28,14 +28,15 @@ public core::internal::CoreListTripletContainer
 {
   typedef core::internal::CoreListTripletContainer P;
   // for the change versions
-  ListTripletContainer(bool);
+  ListTripletContainer();
 public:
   //! construct and pass an initial set of particle_triplets
   ListTripletContainer(const ParticleTriplets &ps,
                          std::string name= "ListTripletContainer %1%");
 
-  ListTripletContainer(std::string name= "ListTripletContainer %1%");
-  ListTripletContainer(const char *name);
+  ListTripletContainer(Model *m,
+                         std::string name= "ListTripletContainer %1%");
+  ListTripletContainer(Model *m, const char *name);
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
  /** @name Methods to control the contained objects

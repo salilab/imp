@@ -40,7 +40,7 @@ class TunnelTest(IMP.test.TestCase):
         cg.set_threshold(.00001)
         cg.optimize(1000)
         for pp in cpc.get_particle_pairs():
-            pp.show()
+            print pp
             print
         for p0 in ps:
             for p1 in ps:

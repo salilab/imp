@@ -22,27 +22,30 @@ namespace {
 }
 
 GroupnameContainerSet
-::GroupnameContainerSet(bool): GroupnameContainer("added or removed for set") {
+::GroupnameContainerSet() {
 }
 
 GroupnameContainerSet
-::GroupnameContainerSet(std::string name):
-  GroupnameContainer(name) {
+::GroupnameContainerSet(Model *m, std::string name):
+  GroupnameContainer(m, name) {
   set_added_and_removed_containers( create_untracked_container(),
                                     create_untracked_container());
 }
 
-GroupnameContainerSet
-::GroupnameContainerSet(const char *name):
-  GroupnameContainer(name) {
-  set_added_and_removed_containers( create_untracked_container(),
-                                    create_untracked_container());
+namespace {
+  Model *my_get_model(const GroupnameContainersTemp &in) {
+    if (in.empty()) {
+      IMP_THROW("Cannot initialize from empty list of containers.",
+                IndexException);
+    }
+    return in[0]->get_model();
+  }
 }
 
 GroupnameContainerSet
-::GroupnameContainerSet(const GroupnameContainers& in,
+::GroupnameContainerSet(const GroupnameContainersTemp& in,
                         std::string name):
-  GroupnameContainer(name) {
+  GroupnameContainer(my_get_model(in), name) {
   set_groupname_containers(in);
   set_added_and_removed_containers( create_untracked_container(),
                                     create_untracked_container());

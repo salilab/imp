@@ -1,4 +1,44 @@
-
+IMP_SWIG_OBJECT(IMP::container, AllBipartitePairContainer, AllBipartitePairContainers);
+IMP_SWIG_OBJECT(IMP::container, AllPairContainer, AllPairContainers);
+IMP_SWIG_OBJECT(IMP::container, CloseBipartitePairContainer, CloseBipartitePairContainers);
+IMP_SWIG_OBJECT(IMP::container, ClosePairContainer, ClosePairContainers);
+IMP_SWIG_OBJECT(IMP::container, ConnectingPairContainer, ConnectingPairContainers);
+IMP_SWIG_OBJECT(IMP::container, ListPairContainer, ListPairContainers);
+IMP_SWIG_OBJECT(IMP::container, ListQuadContainer, ListQuadContainers);
+IMP_SWIG_OBJECT(IMP::container, ListSingletonContainer, ListSingletonContainers);
+IMP_SWIG_OBJECT(IMP::container, ListTripletContainer, ListTripletContainers);
+IMP_SWIG_OBJECT(IMP::container, MaximumPairRestraint, MaximumPairRestraints);
+IMP_SWIG_OBJECT(IMP::container, MaximumPairScore, MaximumPairScores);
+IMP_SWIG_OBJECT(IMP::container, MaximumQuadRestraint, MaximumQuadRestraints);
+IMP_SWIG_OBJECT(IMP::container, MaximumQuadScore, MaximumQuadScores);
+IMP_SWIG_OBJECT(IMP::container, MaximumSingletonRestraint, MaximumSingletonRestraints);
+IMP_SWIG_OBJECT(IMP::container, MaximumSingletonScore, MaximumSingletonScores);
+IMP_SWIG_OBJECT(IMP::container, MaximumTripletRestraint, MaximumTripletRestraints);
+IMP_SWIG_OBJECT(IMP::container, MaximumTripletScore, MaximumTripletScores);
+IMP_SWIG_OBJECT(IMP::container, MinimumPairRestraint, MinimumPairRestraints);
+IMP_SWIG_OBJECT(IMP::container, MinimumPairScore, MinimumPairScores);
+IMP_SWIG_OBJECT(IMP::container, MinimumQuadRestraint, MinimumQuadRestraints);
+IMP_SWIG_OBJECT(IMP::container, MinimumQuadScore, MinimumQuadScores);
+IMP_SWIG_OBJECT(IMP::container, MinimumSingletonRestraint, MinimumSingletonRestraints);
+IMP_SWIG_OBJECT(IMP::container, MinimumSingletonScore, MinimumSingletonScores);
+IMP_SWIG_OBJECT(IMP::container, MinimumTripletRestraint, MinimumTripletRestraints);
+IMP_SWIG_OBJECT(IMP::container, MinimumTripletScore, MinimumTripletScores);
+IMP_SWIG_OBJECT(IMP::container, PairContainerSet, PairContainerSets);
+IMP_SWIG_OBJECT(IMP::container, PairsConstraint, PairsConstraints);
+IMP_SWIG_OBJECT(IMP::container, PairsOptimizerState, PairsOptimizerStates);
+IMP_SWIG_OBJECT(IMP::container, PairsRestraint, PairsRestraints);
+IMP_SWIG_OBJECT(IMP::container, QuadContainerSet, QuadContainerSets);
+IMP_SWIG_OBJECT(IMP::container, QuadsConstraint, QuadsConstraints);
+IMP_SWIG_OBJECT(IMP::container, QuadsOptimizerState, QuadsOptimizerStates);
+IMP_SWIG_OBJECT(IMP::container, QuadsRestraint, QuadsRestraints);
+IMP_SWIG_OBJECT(IMP::container, SingletonContainerSet, SingletonContainerSets);
+IMP_SWIG_OBJECT(IMP::container, SingletonsConstraint, SingletonsConstraints);
+IMP_SWIG_OBJECT(IMP::container, SingletonsOptimizerState, SingletonsOptimizerStates);
+IMP_SWIG_OBJECT(IMP::container, SingletonsRestraint, SingletonsRestraints);
+IMP_SWIG_OBJECT(IMP::container, TripletContainerSet, TripletContainerSets);
+IMP_SWIG_OBJECT(IMP::container, TripletsConstraint, TripletsConstraints);
+IMP_SWIG_OBJECT(IMP::container, TripletsOptimizerState, TripletsOptimizerStates);
+IMP_SWIG_OBJECT(IMP::container, TripletsRestraint, TripletsRestraints);
 
 /* Wrap our own classes */
 %include "IMP/container/AllBipartitePairContainer.h"
@@ -42,49 +82,3 @@
 %include "IMP/container/TripletsConstraint.h"
 %include "IMP/container/TripletsOptimizerState.h"
 %include "IMP/container/TripletsRestraint.h"
-
-namespace IMP {
-namespace container {
-IMP_SWIG_OBJECTS( IMP::container::AllBipartitePairContainer, AllBipartitePairContainers);
-IMP_SWIG_OBJECTS( IMP::container::AllPairContainer, AllPairContainers);
-IMP_SWIG_OBJECTS( IMP::container::CloseBipartitePairContainer, CloseBipartitePairContainers);
-IMP_SWIG_OBJECTS( IMP::container::ClosePairContainer, ClosePairContainers);
-//IMP_SWIG_OBJECTS( IMP::container::ConnectingPairContainer, ConnectingPairContainers);
-IMP_SWIG_OBJECTS( IMP::container::ListPairContainer, ListPairContainers);
-IMP_SWIG_OBJECTS( IMP::container::ListQuadContainer, ListQuadContainers);
-IMP_SWIG_OBJECTS( IMP::container::ListSingletonContainer, ListSingletonContainers);
-IMP_SWIG_OBJECTS( IMP::container::ListTripletContainer, ListTripletContainers);
-IMP_SWIG_OBJECTS( IMP::container::MaximumPairRestraint, MaximumPairRestraints);
-IMP_SWIG_OBJECTS( IMP::container::MaximumPairScore, MaximumPairScores);
-IMP_SWIG_OBJECTS( IMP::container::MaximumQuadRestraint, MaximumQuadRestraints);
-IMP_SWIG_OBJECTS( IMP::container::MaximumQuadScore, MaximumQuadScores);
-IMP_SWIG_OBJECTS( IMP::container::MaximumSingletonRestraint, MaximumSingletonRestraints);
-IMP_SWIG_OBJECTS( IMP::container::MaximumSingletonScore, MaximumSingletonScores);
-IMP_SWIG_OBJECTS( IMP::container::MaximumTripletRestraint, MaximumTripletRestraints);
-IMP_SWIG_OBJECTS( IMP::container::MaximumTripletScore, MaximumTripletScores);
-IMP_SWIG_OBJECTS( IMP::container::MinimumPairRestraint, MinimumPairRestraints);
-IMP_SWIG_OBJECTS( IMP::container::MinimumPairScore, MinimumPairScores);
-IMP_SWIG_OBJECTS( IMP::container::MinimumQuadRestraint, MinimumQuadRestraints);
-IMP_SWIG_OBJECTS( IMP::container::MinimumQuadScore, MinimumQuadScores);
-IMP_SWIG_OBJECTS( IMP::container::MinimumSingletonRestraint, MinimumSingletonRestraints);
-IMP_SWIG_OBJECTS( IMP::container::MinimumSingletonScore, MinimumSingletonScores);
-IMP_SWIG_OBJECTS( IMP::container::MinimumTripletRestraint, MinimumTripletRestraints);
-IMP_SWIG_OBJECTS( IMP::container::MinimumTripletScore, MinimumTripletScores);
-IMP_SWIG_OBJECTS( IMP::container::PairContainerSet, PairContainerSets);
-IMP_SWIG_OBJECTS( IMP::container::PairsConstraint, PairsConstraints);
-IMP_SWIG_OBJECTS( IMP::container::PairsOptimizerState, PairsOptimizerStates);
-IMP_SWIG_OBJECTS( IMP::container::PairsRestraint, PairsRestraints);
-IMP_SWIG_OBJECTS( IMP::container::QuadContainerSet, QuadContainerSets);
-IMP_SWIG_OBJECTS( IMP::container::QuadsConstraint, QuadsConstraints);
-IMP_SWIG_OBJECTS( IMP::container::QuadsOptimizerState, QuadsOptimizerStates);
-IMP_SWIG_OBJECTS( IMP::container::QuadsRestraint, QuadsRestraints);
-IMP_SWIG_OBJECTS( IMP::container::SingletonContainerSet, SingletonContainerSets);
-IMP_SWIG_OBJECTS( IMP::container::SingletonsConstraint, SingletonsConstraints);
-IMP_SWIG_OBJECTS( IMP::container::SingletonsOptimizerState, SingletonsOptimizerStates);
-IMP_SWIG_OBJECTS( IMP::container::SingletonsRestraint, SingletonsRestraints);
-IMP_SWIG_OBJECTS( IMP::container::TripletContainerSet, TripletContainerSets);
-IMP_SWIG_OBJECTS( IMP::container::TripletsConstraint, TripletsConstraints);
-IMP_SWIG_OBJECTS( IMP::container::TripletsOptimizerState, TripletsOptimizerStates);
-IMP_SWIG_OBJECTS( IMP::container::TripletsRestraint, TripletsRestraints);
-}
-}

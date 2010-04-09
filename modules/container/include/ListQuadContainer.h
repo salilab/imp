@@ -28,14 +28,15 @@ public core::internal::CoreListQuadContainer
 {
   typedef core::internal::CoreListQuadContainer P;
   // for the change versions
-  ListQuadContainer(bool);
+  ListQuadContainer();
 public:
   //! construct and pass an initial set of particle_quads
   ListQuadContainer(const ParticleQuads &ps,
                          std::string name= "ListQuadContainer %1%");
 
-  ListQuadContainer(std::string name= "ListQuadContainer %1%");
-  ListQuadContainer(const char *name);
+  ListQuadContainer(Model *m,
+                         std::string name= "ListQuadContainer %1%");
+  ListQuadContainer(Model *m, const char *name);
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
  /** @name Methods to control the contained objects

@@ -126,7 +126,8 @@ namespace {
 
 ConnectingPairContainer::ConnectingPairContainer(SingletonContainer *c,
                                                  double error, bool mst):
-  IMP::core::internal::ListLikePairContainer("ConnectingPairContainer"),
+  IMP::core::internal::ListLikePairContainer(c->get_model(),
+                                             "ConnectingPairContainer"),
   error_(error),
   mst_(mst) {
   initialize(c);
@@ -140,7 +141,7 @@ void ConnectingPairContainer::initialize(SingletonContainer *sc) {
     core::internal::SaveXYZRValues,
     core::internal::SaveMovedValues<core::internal::SaveXYZRValues>,
     core::internal::ListXYZRMovedParticles>(m, sc, error_);
-  set_model(m);
+  initialize_active_container(m);
 }
 
 IMP_ACTIVE_CONTAINER_DEF(ConnectingPairContainer)

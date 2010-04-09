@@ -19,27 +19,15 @@ IMPCONTAINER_BEGIN_NAMESPACE
 ClosePairContainer::ClosePairContainer(SingletonContainer *c,
                                        double distance,
                                        double slack):
-  P(c, c->get_particle(0)->get_model(), distance,
+  P(c, distance,
     core::internal::default_cpf(), slack){
-}
-ClosePairContainer::ClosePairContainer(SingletonContainer *c,
-                                       Model *m, double distance,
-                                       double slack):P(c, m, distance,
-                                        core::internal::default_cpf(),
-                                                       slack) {
 }
 
 ClosePairContainer::ClosePairContainer(SingletonContainer *c,
                                        double distance,
                                        core::ClosePairsFinder *cpf,
                                        double slack):
-  P(c, c->get_particle(0)->get_model(), distance, cpf, slack) {
-}
-ClosePairContainer::ClosePairContainer(SingletonContainer *c,
-                                       Model *m, double distance,
-                                       core::ClosePairsFinder *cpf,
-                                       double slack):
-  P(c, m, distance, cpf, slack) {
+  P(c, distance, cpf, slack) {
 }
 
 void ClosePairContainer::do_show(std::ostream &out) const {

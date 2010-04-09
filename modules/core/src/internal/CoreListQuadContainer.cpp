@@ -26,18 +26,22 @@ namespace {
 IMP_ACTIVE_CONTAINER_DEF(CoreListQuadContainer);
 
 CoreListQuadContainer
-::CoreListQuadContainer(bool):
+::CoreListQuadContainer():
   internal::ListLikeQuadContainer(){}
 
 
 CoreListQuadContainer
-::CoreListQuadContainer(std::string name):
-  internal::ListLikeQuadContainer(name){}
+::CoreListQuadContainer(Model *m, std::string name):
+  internal::ListLikeQuadContainer(m, name){
+  initialize_active_container(m);
+}
 
 
 CoreListQuadContainer
-::CoreListQuadContainer(const char *name):
-  internal::ListLikeQuadContainer(name){}
+::CoreListQuadContainer(Model *m, const char *name):
+  internal::ListLikeQuadContainer(m, name){
+  initialize_active_container(m);
+}
 
 
 void CoreListQuadContainer::do_show(std::ostream &out) const {
@@ -49,10 +53,6 @@ void CoreListQuadContainer::do_show(std::ostream &out) const {
 
 
 void CoreListQuadContainer::set_particle_quads(ParticleQuadsTemp sc) {
-  if (!get_has_model() && !get_is_added_or_removed_container()
-      && !sc.empty()) {
-    set_model(IMP::internal::get_model(sc[0]));
-  }
   update_list(sc);
 }
 
@@ -66,10 +66,6 @@ void CoreListQuadContainer::clear_particle_quads() {
 void CoreListQuadContainer::add_particle_quad(const ParticleQuad& vt) {
   IMP_USAGE_CHECK(IMP::internal::is_valid(vt),
                   "Passed ParticleQuad cannot be NULL (or None)");
-
-  if (!get_has_model() && !get_is_added_or_removed_container()) {
-    set_model(IMP::internal::get_model(vt));
-  }
   add_to_list(vt);
   IMP_USAGE_CHECK(get_is_added_or_removed_container()
                   || !get_removed_quads_container()
@@ -80,9 +76,6 @@ void CoreListQuadContainer::add_particle_quad(const ParticleQuad& vt) {
 void
 CoreListQuadContainer::add_particle_quads(const ParticleQuadsTemp &c) {
   if (c.empty()) return;
-  if (!get_has_model() && !get_is_added_or_removed_container()) {
-    set_model(IMP::internal::get_model(c[0]));
-  }
   ParticleQuadsTemp cp= c;
   add_to_list(cp);
   IMP_IF_CHECK(USAGE) {

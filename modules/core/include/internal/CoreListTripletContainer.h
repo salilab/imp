@@ -24,9 +24,9 @@ public internal::ListLikeTripletContainer
 {
   IMP_ACTIVE_CONTAINER_DECL(CoreListTripletContainer);
 public:
-  CoreListTripletContainer(std::string name);
-  CoreListTripletContainer(const char *name);
-  CoreListTripletContainer(bool);
+  CoreListTripletContainer(Model *m, std::string name);
+  CoreListTripletContainer(Model *m, const char *name);
+  CoreListTripletContainer();
   void add_particle_triplet(const ParticleTriplet& vt);
   void add_particle_triplets(const ParticleTripletsTemp &c);
   void set_particle_triplets(ParticleTripletsTemp c);

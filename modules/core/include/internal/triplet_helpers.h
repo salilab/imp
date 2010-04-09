@@ -33,8 +33,7 @@ private:
   }
   ParticleTriplets data_;
 protected:
-  ListLikeTripletContainer():
-    TripletContainer("Added or removed container"){}
+  ListLikeTripletContainer(){}
   const ParticleTriplets &access() const {return data_;}
   void update_list(ParticleTripletsTemp &cur) {
     IMP_IF_CHECK(USAGE) {
@@ -80,7 +79,8 @@ protected:
       ac->data_.push_back(cur);
     }
   }
-  ListLikeTripletContainer(std::string name): TripletContainer(name){
+  ListLikeTripletContainer(Model *m, std::string name):
+    TripletContainer(m,name){
     TripletContainer::
       set_added_and_removed_containers( new ListLikeTripletContainer(),
                                         new ListLikeTripletContainer());

@@ -33,9 +33,9 @@ public internal::ListLikePairContainer
   ParticlePairsTemp data_;
   IMP_ACTIVE_CONTAINER_DECL(CoreClosePairContainer);
   void initialize(SingletonContainer *c, double distance,
-                  double slack, Model *m, ClosePairsFinder *cpf);
+                  double slack, ClosePairsFinder *cpf);
 public:
-  CoreClosePairContainer(SingletonContainer *c, Model *m, double distance,
+  CoreClosePairContainer(SingletonContainer *c, double distance,
                          ClosePairsFinder *cpf,
                          double slack=1);
 

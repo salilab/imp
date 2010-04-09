@@ -19,8 +19,8 @@ namespace {
 }
 
 
-GroupnameContainer::GroupnameContainer(std::string name):
-  Container(internal::make_object_name(name, next_index++)){
+GroupnameContainer::GroupnameContainer(Model *m, std::string name):
+  Container(m, internal::make_object_name(name, next_index++)){
 }
 
 // here for gcc

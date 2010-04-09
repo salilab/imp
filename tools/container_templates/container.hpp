@@ -66,16 +66,10 @@ class IMPEXPORT GroupnameContainer : public Container
     added_=added;
     removed_=removed;
   }
-
+  GroupnameContainer(){}
+  GroupnameContainer(Model *m,
+                     std::string name="GroupnameContainer %1%");
 public:
-#ifndef IMP_DOXYGEN
-  bool get_is_added_or_removed_container() {
-    return !added_;
-  }
-#endif
-
-  GroupnameContainer(std::string name="GroupnameContainer %1%");
-
   /** \note This function may be linear. Be aware of the complexity
       bounds of your particular container.
    */

@@ -24,9 +24,9 @@ public internal::ListLikeQuadContainer
 {
   IMP_ACTIVE_CONTAINER_DECL(CoreListQuadContainer);
 public:
-  CoreListQuadContainer(std::string name);
-  CoreListQuadContainer(const char *name);
-  CoreListQuadContainer(bool);
+  CoreListQuadContainer(Model *m, std::string name);
+  CoreListQuadContainer(Model *m, const char *name);
+  CoreListQuadContainer();
   void add_particle_quad(const ParticleQuad& vt);
   void add_particle_quads(const ParticleQuadsTemp &c);
   void set_particle_quads(ParticleQuadsTemp c);

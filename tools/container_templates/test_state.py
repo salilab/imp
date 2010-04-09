@@ -10,8 +10,6 @@ import IMP.container
 import math
 
 
-def compare(a,b):
-    return cmp(a.get_name(), b.get_name())
 
 
 class SingletonTestModifier(IMP.SingletonModifier):
@@ -29,9 +27,9 @@ class SingletonTestModifier(IMP.SingletonModifier):
     def get_version_info(self):
         return 1
     def get_input_particles(self, p):
-        return IMP.ParticlesTemp(1,p)
+        return IMP.ParticlesTemp([p])
     def get_output_particles(self, p):
-        return IMP.ParticlesTemp(1,p)
+        return IMP.ParticlesTemp([p])
 
 
 class PairTestModifier(IMP.PairModifier):
@@ -41,12 +39,12 @@ class PairTestModifier(IMP.PairModifier):
     def do_show(self, fh):
         fh.write("Test Particle")
     def apply(self, a0, a2=None):
-        if type(a0) == type(IMP.ParticlePair()):
-            a0[0].add_attribute(self.k, 1)
-            a0[1].add_attribute(self.k, 1)
-        else:
-            for p in a0:
-                self.apply(p, a2)
+        for p in a0:
+            if type(p) == tuple:
+                for q in p:
+                    q.add_attribute(self.k, 1)
+            else:
+                p.add_attribute(self.k, 1)
     def get_version_info(self):
         return 1
     def get_input_particles(self, p):
@@ -108,7 +106,7 @@ class ClassnameContainerTest(IMP.test.TestCase):
         print "start"
         m= IMP.Model()
         print "hi"
-        c= IMP.container.ListGroupnameContainer()
+        c= IMP.container.ListGroupnameContainer(m)
         cs=[]
         for i in range(0,30):
             t=self.create_classname(m)

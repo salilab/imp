@@ -29,25 +29,25 @@ IMP_LIST_IMPL(CoreClosePairContainer,
 
 
 CoreClosePairContainer::CoreClosePairContainer(SingletonContainer *c,
-                                                 Model *m, double distance,
+                                                 double distance,
                                                  ClosePairsFinder *cpf,
                                        double slack):
-  internal::ListLikePairContainer("ClosePairContainer") {
- initialize(c, distance, slack, m,
+  internal::ListLikePairContainer(c->get_model(), "ClosePairContainer") {
+ initialize(c, distance, slack,
              cpf);
 }
 
 void CoreClosePairContainer::initialize(SingletonContainer *c, double distance,
-                                         double slack, Model *m,
+                                         double slack,
                                          ClosePairsFinder *cpf) {
-  set_model(m);
+  initialize_active_container(get_model());
   slack_=slack;
   distance_=distance;
   c_=c;
   cpf_=cpf;
   cpf_->set_distance(distance_+2*slack_);
   first_call_=true;
-  moved_= cpf_->get_moved_singleton_container(c_, m, slack_);
+  moved_= cpf_->get_moved_singleton_container(c_, get_model(), slack_);
 }
 
 IMP_ACTIVE_CONTAINER_DEF(CoreClosePairContainer)

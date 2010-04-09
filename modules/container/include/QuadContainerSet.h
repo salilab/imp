@@ -22,29 +22,25 @@ IMPCONTAINER_BEGIN_NAMESPACE
     demand for it.
 
     \usesconstraint
- */
+*/
 class IMPCONTAINEREXPORT QuadContainerSet
   : public QuadContainer
 {
- // to not have added and removed
- QuadContainerSet(bool);
-public:
+  // to not have added and removed
+  QuadContainerSet();
+ public:
   //! Construct and empty set
-  QuadContainerSet(std::string name="QuadContainerSet %1%");
-
-  QuadContainerSet(const QuadContainers &in,
+  QuadContainerSet(Model *m,
                         std::string name="QuadContainerSet %1%");
 
-#if !defined(SWIG) && !defined(IMP_DOXYGEN)
-  // otherwise the bool overload catches it
-  QuadContainerSet(const char *name);
-#endif
+  QuadContainerSet(const QuadContainersTemp &pc,
+                        std::string name="QuadContainerSet %1%");
 
   IMP_QUAD_CONTAINER(QuadContainerSet);
- /** @name Methods to control the nested container
+  /** @name Methods to control the nested container
 
-     This container merges a set of nested containers. To add
-     or remove nested containers, use the methods below.
+      This container merges a set of nested containers. To add
+      or remove nested containers, use the methods below.
   */
   /**@{*/
   IMP_LIST(public, QuadContainer, quad_container,
@@ -52,7 +48,7 @@ public:
   /**@}*/
 
   static QuadContainerSet *create_untracked_container() {
-    QuadContainerSet *lsc = new QuadContainerSet(false);
+    QuadContainerSet *lsc = new QuadContainerSet();
     return lsc;
   }
 };
