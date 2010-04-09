@@ -340,7 +340,7 @@ void write_pdb(const Particles& ps, TextOutput out)
       }
       out.get_stream() << pdb_string(core::XYZ(ps[i]).get_coordinates(),
                                      use_input_index? ad.get_input_index(): i,
-                                     ad.get_atom_type().get_string(),
+                                     ad.get_atom_type(),
                                      rd.get_residue_type(),
                                      chain,
                                      rd.get_index(),
