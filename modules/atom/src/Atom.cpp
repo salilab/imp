@@ -283,7 +283,7 @@ AtomType add_atom_type(std::string name, Element e) {
   IMP_USAGE_CHECK(!AtomType::get_key_exists(name),
             "An AtomType with that name already exists: "
             << name);
-  AtomType ret= AtomType::add_key(name.c_str());
+  AtomType ret(AtomType::add_key(name.c_str()));
   added_atom_names.resize(std::max(added_atom_names.size(),
                                    static_cast<std::size_t>(ret.get_index()+1)),
                           UNKNOWN_ELEMENT);
