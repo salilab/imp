@@ -35,14 +35,6 @@ public:
   virtual double evaluate(const ParticleTriplet& vt,
                           DerivativeAccumulator *da) const = 0;
 
-#if !defined(IMP_DOXYGEN) && 3 != 1
-  // backwards compatibility
-  virtual double evaluate(Particle *a, Particle *b, Particle *c,
-                          DerivativeAccumulator *da) const {
-    return evaluate(ParticleTriplet(a,b,c), da);
-  }
-#endif
-
   /** Implementations
       for these are provided by the IMP_TRIPLET_SCORE()
       macro.

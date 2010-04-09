@@ -35,14 +35,6 @@ public:
   virtual double evaluate(PassValue vt,
                           DerivativeAccumulator *da) const = 0;
 
-#if !defined(IMP_DOXYGEN) && Arity != 1
-  // backwards compatibility
-  virtual double evaluate(ClassnameArguments,
-                          DerivativeAccumulator *da) const {
-    return evaluate(Classname(ClassnameArgumentsAsArguments), da);
-  }
-#endif
-
   /** Implementations
       for these are provided by the IMP_GROUPNAME_SCORE()
       macro.
