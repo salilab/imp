@@ -44,9 +44,9 @@ void ExcludedVolumeRestraint::set_model(Model *m) {
     // should do something more clever to pick parameters
     if (r_) {
       IMP_NEW(RigidClosePairsFinder, rcpf, (r_));
-      ss_= new internal::CoreClosePairContainer(sc_,m, 0.0, rcpf, 1.0);
+      ss_= new internal::CoreClosePairContainer(sc_, 0.0, rcpf, 1.0);
     } else {
-      ss_= new internal::CoreClosePairContainer(sc_,m, 0.0,
+      ss_= new internal::CoreClosePairContainer(sc_, 0.0,
                                                 internal::default_cpf(), 1.0);
     }
     ss_->set_name("close pairs for excluded volume");

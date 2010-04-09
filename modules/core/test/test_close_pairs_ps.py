@@ -22,7 +22,7 @@ class Test(IMP.test.TestCase):
             #cps= [x.get_particle() for x in children]
             d= IMP.core.XYZR.setup_particle(p)
             print children
-            IMP.core.set_enclosing_sphere(d, IMP.core.XYZsTemp(children))
+            IMP.core.set_enclosing_sphere(d, children)
             for c in children:
                 h.add_child(c)
         return h
@@ -42,7 +42,7 @@ class Test(IMP.test.TestCase):
         cpps.evaluate(IMP.ParticlePair(r0.get_particle(), r1.get_particle()), None)
         print str(len(lps.get_particle_pairs())) +" pairs"
         for pp in lps.get_particle_pairs():
-            pp.show()
+            print pp
             print
         for l0 in ls0:
             for l1 in ls1:

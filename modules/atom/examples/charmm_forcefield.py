@@ -49,7 +49,7 @@ impropers = topology.add_impropers(prot, ff)
 #   bond lengths are harmonically restrained.
 # - A SingletonsRestraint simply goes through each of the bonds in the
 #   container and scores each one in turn.
-cont = IMP.container.ListSingletonContainer("bonds")
+cont = IMP.container.ListSingletonContainer(m, "bonds")
 cont.add_particles(bonds)
 bss = IMP.atom.BondSingletonScore(IMP.core.Harmonic(0, 1))
 m.add_restraint(IMP.container.SingletonsRestraint(bss, cont))
@@ -57,17 +57,17 @@ m.add_restraint(IMP.container.SingletonsRestraint(bss, cont))
 # Score angles, dihedrals, and impropers. In the CHARMM forcefield, angles and
 # impropers are harmonically restrained, so this is the same as for bonds.
 # Dihedrals are scored internally by a periodic (cosine) function.
-cont = IMP.container.ListSingletonContainer("angles")
+cont = IMP.container.ListSingletonContainer(m, "angles")
 cont.add_particles(angles)
 bss = IMP.atom.AngleSingletonScore(IMP.core.Harmonic(0,1))
 m.add_restraint(IMP.container.SingletonsRestraint(bss, cont))
 
-cont = IMP.container.ListSingletonContainer("dihedrals")
+cont = IMP.container.ListSingletonContainer(m, "dihedrals")
 cont.add_particles(dihedrals)
 bss = IMP.atom.DihedralSingletonScore()
 m.add_restraint(IMP.container.SingletonsRestraint(bss, cont))
 
-cont = IMP.container.ListSingletonContainer("impropers")
+cont = IMP.container.ListSingletonContainer(m, "impropers")
 cont.add_particles(impropers)
 bss = IMP.atom.ImproperSingletonScore(IMP.core.Harmonic(0,1))
 m.add_restraint(IMP.container.SingletonsRestraint(bss, cont))
