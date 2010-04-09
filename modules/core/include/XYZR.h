@@ -22,10 +22,11 @@ IMPCORE_BEGIN_NAMESPACE
     A simple example illustrating some of the functionality.
     \htmlinclude XYZR_Decorator.py.html
  */
-class IMPCOREEXPORT XYZR: public DecoratorWithTraits<XYZ, FloatKey>
+class IMPCOREEXPORT XYZR:
+  public XYZ
 {
 public:
-  IMP_DECORATOR_TRAITS(XYZR, XYZ, FloatKey,
+  IMP_DECORATOR_WITH_TRAITS(XYZR, XYZ, FloatKey,
                        radius_key, get_default_radius_key());
 
   /** Create a decorator using radius_key to store the FloatKey.
@@ -92,6 +93,10 @@ public:
   //! Get the default radius key.
   static FloatKey get_default_radius_key() {
     return IMP::internal::xyzr_keys[3];
+  }
+  //! Get default radius key by another name
+  static FloatKey get_default_decorator_traits() {
+    return get_default_radius_key();
   }
   void add_to_radius_derivative(double v,
                                 DerivativeAccumulator &d) {

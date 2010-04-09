@@ -30,7 +30,7 @@
 #define IMP_NO_SWIG(x) x
 #endif
 
-#if defined(SWIG) || defined(IMP_DOXYGEN)
+#if defined(IMP_DOXYGEN)
 //! Implement comparison in a class using a compare function
 /** The macro requires that This be defined as the type of the current class.
     The compare function should take a const This & and return -1, 0, 1 as
@@ -53,9 +53,51 @@
  */
 #define IMP_COMPARISONS_3(f0, f1, f2)
 
-#else
+#elif defined(SWIG)
+#define IMP_SWIG_COMPARISONS                                            \
+  bool __eq__(const This &o) const;                                     \
+  bool __ne__(const This &o) const;                                     \
+  bool __lt__(const This &o) const;                                     \
+  bool __gt__(const This &o) const;                                     \
+  bool __ge__(const This &o) const;                                     \
+  bool __le__(const This &o) const;
+
+
+#define IMP_COMPARISONS                         \
+  IMP_SWIG_COMPARISONS;
+
+#define IMP_COMPARISONS_1(field)                \
+  IMP_SWIG_COMPARISONS;
+
+#define IMP_COMPARISONS_2(f0, f1)               \
+  IMP_SWIG_COMPARISONS;
+
+#define IMP_COMPARISONS_3(f0, f1, f2)           \
+  IMP_SWIG_COMPARISONS;
+
+#else // not doxygen
+#define IMP_SWIG_COMPARISONS                                            \
+  bool __eq__(const This &o) const {                                    \
+    return operator==(o);                                               \
+  }                                                                     \
+  bool __ne__(const This &o) const {                                    \
+    return operator!=(o);                                               \
+  }                                                                     \
+  bool __lt__(const This &o) const {                                    \
+    return operator<(o);                                                \
+  }                                                                     \
+  bool __gt__(const This &o) const {                                    \
+    return operator>(o);                                                \
+  }                                                                     \
+  bool __ge__(const This &o) const {                                    \
+    return operator>=(o);                                               \
+  }                                                                     \
+  bool __le__(const This &o) const {                                    \
+    return operator<=(o);                                               \
+  }
 
 #define IMP_COMPARISONS                                                 \
+  IMP_SWIG_COMPARISONS;                                                 \
   bool operator==(const This &o) const {                                \
     return (compare(o) == 0);                                           \
   }                                                                     \
@@ -74,9 +116,10 @@
   bool operator<=(const This &o) const {                                \
     return !(compare(o) > 0);                                           \
   }                                                                     \
-  IMP_NO_SWIG(template <class T> friend int compare(const T&a, const T&b));
+  template <class T> friend int compare(const T&a, const T&b);
 
 #define IMP_COMPARISONS_1(field)                \
+  IMP_SWIG_COMPARISONS;                         \
   bool operator==(const This &o) const {        \
     return (field== o.field);                   \
   }                                             \
@@ -105,6 +148,7 @@
 /** The macro requires that This be defined as the type of the current class.
  */
 #define IMP_COMPARISONS_2(f0, f1)               \
+  IMP_SWIG_COMPARISONS;                         \
   bool operator==(const This &o) const {        \
     return (f0== o.f0 && f1==o.f1);             \
   }                                             \
@@ -134,6 +178,7 @@
   }
 
 #define IMP_COMPARISONS_3(f0, f1, f2)                   \
+  IMP_SWIG_COMPARISONS;                                 \
   bool operator==(const This &o) const {                \
     return (f0== o.f0 && f1==o.f1 && f2 == o.f2);       \
   }                                                     \
@@ -381,13 +426,14 @@
     \param[in] Parent The class name for the parent of this class,
     typically Decorator
 
-    \see IMP_DECORATOR_TRAITS()
+    \see IMP_DECORATOR_WITH_TRAITS()
 */
 #define IMP_DECORATOR(Name, Parent)                                     \
   public:                                                               \
   /* Should be private but SWIG accesses it through the comparison
      macros*/                                                           \
 IMP_NO_DOXYGEN(typedef Name This);                                      \
+IMP_NO_DOXYGEN(typedef Parent ParentDecorator);                         \
 Name(): Parent(){}                                                     \
 explicit Name(::IMP::Particle *p): Parent(p) {                          \
   IMP_INTERNAL_CHECK(particle_is_instance(p),                           \
@@ -409,23 +455,24 @@ IMP_SHOWABLE;
     of type TraitsType is passed after the particle to
     - IMP::Decorator::particle_is_instance()
     - IMP::Decorator::setup_particle()
-    - IMP::Decorator::decorate_particle()
-
     As in the IMP::core::XYZR or IMP::core::Hierarchy,
     this object can be used to parameterize the Decorator. The traits
     object is stored in the decorator and made accessible through
     the get_traits() method.
 */
-#define IMP_DECORATOR_TRAITS(Name, Parent, TraitsType, traits_name,     \
+#define IMP_DECORATOR_WITH_TRAITS(Name, Parent, TraitsType, traits_name, \
                              default_traits)                            \
+  private:                                                              \
+  TraitsType traits_;                                                   \
 public:                                                                 \
  IMP_NO_DOXYGEN(typedef Name This;)                                     \
- Name(): DecoratorWithTraits<Parent, TraitsType>(){}                    \
+ IMP_NO_DOXYGEN(typedef Parent ParentDecorator);                        \
+ Name(){}                                                               \
  Name(const TraitsType &tr):                                            \
-   DecoratorWithTraits<Parent, TraitsType>(tr) {}                       \
+   traits_(tr) {}                                                       \
  Name(::IMP::Particle *p,                                               \
       const TraitsType &tr=default_traits):                             \
-   DecoratorWithTraits<Parent, TraitsType>(p, tr) {                     \
+   Parent(p), traits_(tr) {                                             \
    IMP_INTERNAL_CHECK(particle_is_instance(p, tr),                      \
                       "Particle missing required attributes "           \
                       << " for decorator "                              \
@@ -439,7 +486,12 @@ public:                                                                 \
  IMP_SHOWABLE;                                                          \
  const TraitsType &get_##traits_name() const {                          \
    return get_decorator_traits();                                       \
- }
+ }                                                                      \
+ typedef Parent DecoratorTraitsBase;                                    \
+ typedef TraitsType DecoratorTraits;                                    \
+ const DecoratorTraits& get_decorator_traits() const {return traits_;}  \
+ IMP_NO_DOXYGEN(typedef boost::true_type DecoratorHasTraits);
+
 
 //! Perform actions dependent on whether a particle has an attribute.
 /** A common pattern is to check if a particle has a particular attribute,
@@ -531,6 +583,19 @@ public:                                                                 \
   typedef IMP::Decorators<Name, Parent##Temp> PluralName##Temp
 #endif
 
+#ifdef IMP_DOXYGEN
+//! Define the types for storing sets of decorators
+/** The macro defines the types PluralName and PluralNameTemp.
+ */
+#define IMP_DECORATORS_WITH_TRAITS(Name, PluralName, Parent)
+
+#else
+#define IMP_DECORATORS_WITH_TRAITS(Name, PluralName, Parent)  \
+  typedef IMP::Decorators<Name, Parent> PluralName;           \
+  typedef IMP::Decorators<Name, Parent##Temp> PluralName##Temp
+
+#endif
+
 //! Create a decorator that computes some sort of summary info on a set
 /** Examples include a centroid or a cover for a set of particles.
 
@@ -538,26 +603,27 @@ public:                                                                 \
     \param[in] Parent the parent decorator type
     \param[in] Members the way to pass a set of particles in
 */
-#define IMP_SUMMARY_DECORATOR_DECL(Name, Parent, Members)       \
-  class IMPCOREEXPORT Name: public Parent {                     \
-    IMP_CONSTRAINT_DECORATOR_DECL(Name);                        \
-  public:                                                       \
-    IMP_DECORATOR(Name, Parent);                                \
-    static Name setup_particle(Particle *p,                     \
-                               const Members &members);         \
-    static Name setup_particle(Particle *p,                     \
-                               Refiner *ref);                   \
-    ~Name();                                                    \
-    static bool particle_is_instance(Particle *p) {             \
-      return p->has_attribute(get_constraint_key());            \
-    }                                                           \
-  private:                                                      \
-    /* hide set methods*/                                       \
-    void set_coordinates() {};                                  \
-    void set_coordinates_are_optimized()const{}                 \
-    void set_coordinate() const {}                              \
-    void set_radius()const{}                                    \
-  };                                                            \
+#define IMP_SUMMARY_DECORATOR_DECL(Name, Parent, Members)               \
+  class IMPCOREEXPORT Name: public Parent {                             \
+    IMP_CONSTRAINT_DECORATOR_DECL(Name);                                \
+  public:                                                               \
+    IMP_DECORATOR(Name, Parent);                                        \
+    static Name setup_particle(Particle *p,                             \
+                               const Members &members);                 \
+    static Name setup_particle(Particle *p,                             \
+                               Refiner *ref);                           \
+    ~Name();                                                            \
+    static bool particle_is_instance(Particle *p) {                     \
+      return p->has_attribute(get_constraint_key());                    \
+    }                                                                   \
+    IMP_NO_DOXYGEN(typedef boost::false_type DecoratorHasTraits);       \
+  private:                                                              \
+    /* hide set methods*/                                               \
+    void set_coordinates() {};                                          \
+    void set_coordinates_are_optimized()const{}                         \
+    void set_coordinate() const {}                                      \
+    void set_radius()const{}                                            \
+  };                                                                    \
   IMP_DECORATORS(Name, Name##s, Parent##s)
 
 
@@ -1150,10 +1216,6 @@ protected:                                      \
 #define IMP_PAIR_SCORE_BASE(Name)                                       \
   double evaluate(const ParticlePair &p,                                \
                   DerivativeAccumulator *da) const;                     \
-  IMP_NO_DOXYGEN(double evaluate(Particle *a, Particle *b,              \
-                                 DerivativeAccumulator *da) const {     \
-                   return evaluate(ParticlePair(a,b), da);              \
-                 })                                                     \
   double evaluate(const ParticlePairsTemp &ps,                          \
                   DerivativeAccumulator *da) const {                    \
     double ret=0;                                                       \
@@ -1260,10 +1322,6 @@ protected:                                      \
     }                                                                   \
     return ret;                                                         \
   }                                                                     \
-  IMP_NO_DOXYGEN(double evaluate(Particle *a, Particle *b, Particle *c, \
-                                 DerivativeAccumulator *da) const {     \
-                   return evaluate(ParticleTriplet(a,b,c), da);         \
-                 })                                                     \
   double evaluate_change(const ParticleTriplet &p,                      \
                          DerivativeAccumulator *da) const {             \
     if (get_is_changed(p)) {                                            \
@@ -1925,7 +1983,6 @@ protected:                                      \
 #define IMP_NEW(Typename, varname, args)        \
   IMP::Pointer<Typename> varname(new Typename args)
 
-#ifdef IMP_DOXYGEN
 /** Define a new key type.
 
     It defines two public types: Name, which is an instantiation of KeyBase, and
@@ -1942,61 +1999,20 @@ protected:                                      \
     could be used out of the IMP namespace.
 */
 #define IMP_DECLARE_KEY_TYPE(Name, Tag)         \
-  class Name {                                  \
-  public:                                       \
-  Name(std::string nm);                         \
-  };                                            \
+  typedef Key<Tag, true> Name;                  \
   IMP_VALUES(Name, Name##s)
 
-#else
-#define IMP_DECLARE_KEY_TYPE(Name, Tag)                         \
-  struct Name: public ::IMP::KeyBase<Tag, true> {               \
-    typedef ::IMP::KeyBase<Tag, true> P;                        \
-    typedef Name This;                                          \
-    Name(){};                                                   \
-    explicit Name(unsigned int i): P(i){}                       \
-    Name(std::string nm): P(nm){}                               \
-    static Name add_alias(Name nm, std::string new_name) {      \
-      ::IMP::KeyBase<Tag, true>:: add_alias(nm, new_name);      \
-      IMP_INTERNAL_CHECK(Name(new_name) == nm,                  \
-                         "Keys don't match after alias.");      \
-      return Name(new_name);                                    \
-    }                                                           \
-    std::string __str__() const {return get_string();}          \
-  };                                                            \
-  IMP_VALUES(Name, Name##s)
-#endif
 
-#ifdef IMP_DOXYGEN
 /** Define a new key non lazy type where new types have to be created
     explicitly.
 
     \see IMP_DECLARE_KEY_TYPE
 */
 #define IMP_DECLARE_CONTROLLED_KEY_TYPE(Name, Tag)      \
-  class Name {                                          \
-  public:                                               \
-  Name(std::string nm);                                 \
-  };                                                    \
+  typedef Key<Tag, false> Name;                         \
   IMP_VALUES(Name, Name##s)
 
-#else
-#define IMP_DECLARE_CONTROLLED_KEY_TYPE(Name, Tag)              \
-  struct Name: public ::IMP::KeyBase<Tag, false> {              \
-    typedef ::IMP::KeyBase<Tag, false> P;                       \
-    typedef Name This;                                          \
-    Name(){};                                                   \
-    Name(unsigned int i): P(i){}                                \
-    Name(std::string nm): P(nm){}                               \
-    static Name add_alias(Name nm, std::string new_name) {      \
-      ::IMP::KeyBase<Tag, false>:: add_alias(nm, new_name);     \
-      IMP_INTERNAL_CHECK(Name(new_name) == nm,                  \
-                         "Keys don't match after alias.");      \
-      return Name(nm.get_index());                              \
-    }                                                           \
-  };                                                            \
-  IMP_VALUES(Name, Name##s)
-#endif
+
 
 #ifndef IMP_DOXYGEN
 //! Use this to label a function with no side effects

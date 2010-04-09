@@ -126,9 +126,8 @@ class GenericHierarchies: public GenericHierarchiesTemp {};
 class GenericHierarchiesTemp: public IMP::ParticlesTemp {};
 
 #else
-typedef DecoratorsWithTraits<Hierarchy, Particles,
-                             HierarchyTraits> GenericHierarchies;
-typedef DecoratorsWithTraits<Hierarchy, ParticlesTemp, HierarchyTraits>
+typedef Decorators<Hierarchy, Particles> GenericHierarchies;
+typedef Decorators<Hierarchy, ParticlesTemp>
 GenericHierarchiesTemp;
 #endif
 
@@ -139,18 +138,14 @@ GenericHierarchiesTemp;
     \ingroup hierarchy
     \see HierarchyTraits
  */
-class IMPCOREEXPORT Hierarchy:
-  public DecoratorWithTraits<Decorator,
-                             HierarchyTraits>
+class IMPCOREEXPORT Hierarchy: public Decorator
 {
-  typedef DecoratorWithTraits<Decorator,
-    HierarchyTraits> P;
 
   IMP_DECORATOR_ARRAY_DECL(public, Hierarchy, Child, child, children,
                            get_decorator_traits(),
                            Hierarchy, GenericHierarchies);
 public:
-  IMP_DECORATOR_TRAITS(Hierarchy, Decorator,
+  IMP_DECORATOR_WITH_TRAITS(Hierarchy, Decorator,
                        HierarchyTraits, traits,
                        get_default_traits());
 
@@ -240,7 +235,9 @@ public:
 
   //! Get the default hierarchy traits
   static const HierarchyTraits& get_default_traits();
-
+  static const HierarchyTraits& get_default_decorator_traits() {
+    return get_default_traits();
+  }
 #ifndef IMP_DOXYGEN
   const ParticlesTemp& get_leaves() const;
 #endif
