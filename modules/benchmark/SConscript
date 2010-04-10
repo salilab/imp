@@ -2,7 +2,7 @@ Import('env')
 
 
 module_env=env.IMPModuleBuild(version="SVN",
-                   required_modules=['atom', 'core', 'algebra'],
+                   required_modules=['atom', 'em', 'core', 'algebra'],
                    optional_dependencies=['CGAL'])
 
 
