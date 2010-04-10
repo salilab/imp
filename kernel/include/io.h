@@ -39,7 +39,7 @@ IMPEXPORT void write_model(Model *m,
 IMPEXPORT void read_model(TextInput in,
                           const ParticlesTemp &particles,
                           Model *m);
-#ifndef IMP_DOXYGEN
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
 IMPEXPORT void write_model(Model *m,
                            TextOutput out);
 
