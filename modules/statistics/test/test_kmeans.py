@@ -36,7 +36,7 @@ class KMeansTests(IMP.test.TestCase):
         self.atts.append(IMP.FloatKey("y"))
         self.atts.append(IMP.FloatKey("z"))
 
-    def test_kmeans(self):
+    def _test_kmeans(self):
         km = IMP.statistics.KMLProxy()
         km.initialize(self.m,self.ps,self.atts,len(self.centers))
         km.run()
