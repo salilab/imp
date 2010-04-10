@@ -31,10 +31,7 @@ def _check(context):
             context.Result(ret34)
             context.Message('Checking if we need to disable Boost tr1 ...')
             rett = context.TryCompile("""#include <CGAL/tuple.h>
-#if BOOST_VERSION > 103700
-  #include "boost/math/distributions/students_t.hpp"
-#endif
-
+#include <boost/tr1/tuple.hpp>
 
         int main()
         {
