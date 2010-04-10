@@ -26,7 +26,7 @@ class ModellerRestraintsTests(IMP.test.TestCase):
         protein = IMP.modeller.ModelLoader(modmodel).load_atoms(m)
         atoms = IMP.atom.get_by_type(protein, IMP.atom.ATOM_TYPE)
         m.add_restraint(IMP.modeller.ModellerRestraints(modmodel,
-                                                        atoms.get_particles()))
+                                                        atoms))
 
         assertSimilarModellerIMPScores(self, modmodel, protein)
         self.assertInTolerance(m.evaluate(False), 5.7837, 1e-3)
