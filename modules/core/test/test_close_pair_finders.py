@@ -87,7 +87,7 @@ class TestCPFL(IMP.test.TestCase):
                 if d <= .95*dist:
                     self.assert_(out.get_contains_particle_pair(IMP.ParticlePair(ps[i],
                                                                                  ps2[j])),
-                                  "Pair " +str(ps[i].get_name()) + " " +ps2[j].get_name()
+                                  "Pair " +str(ps[i]) + " " +str(ps2[j])
                                  + " not found " + str(d) + " " + str(dist))
         print "done with bipartite test"
     def _check_abiclose_pairs(self, ps, ps2, dist, rk, out):
