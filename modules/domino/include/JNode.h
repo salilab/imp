@@ -16,6 +16,7 @@
 #include <vector>
 #include <sstream>
 #include <algorithm>
+#include <IMP/container/ListSingletonContainer.h>
 
 IMPDOMINO_BEGIN_NAMESPACE
 
@@ -31,9 +32,6 @@ public:
       \param [in] node_ind  The index of the JNode
    */
   JNode(const Particles &p, int node_ind);
-  ~JNode() {
-    //    free(opt_state);
-  }
   void set_restraint_evaluator(RestraintEvaluatorI *rstr_eval) {
     rstr_eval_=rstr_eval;
   }
@@ -44,22 +42,23 @@ public:
 
   //! Get the set of intersecting particles between two nodes
   /** \param [in] other   the second node
-      \param[out] in      the intersection set
+      \return the intersecting particles
    */
-  void get_intersection(const JNode &other, Particles &in) const;
+  Particles get_intersection(const JNode &other) const;
   void get_intersection2(const JNode &other, Particles in) const {}
 
   //! checks if the input set of particles is part of the node
   /** \param [in] p   a set of particles
       \return True if the node contains the input set of nodes, False otherwise
    */
-  bool is_part(const Particles &p) const;
+  bool is_part(const ParticlesTemp &p) const;
 
   //! Fill states as encoded in the node for the input subset of particles
   /** \param[in] particles   a set of particles
       \param[in] states      the dataset to be filled with states.
    */
-  void populate_states_of_particles(Particles *particles,
+  void populate_states_of_particles(
+          container::ListSingletonContainer *particles,
           Combinations *states);
   //! Adds the restraint values to all combinations
   /**\param[in] r      the  restraint
@@ -67,7 +66,9 @@ public:
                         hierarhcy level encoded in the graph
       \param[in] weight the weight of the restraint
    */
-  void realize(Restraint *r, Particles *ps, Float weight);
+  void realize(Restraint *r,
+               container::ListSingletonContainer *ps,
+               Float weight);
   //! Finds the minimum combination in the node.
   /** \param[in]   move_to_state     true if the model should move to the new
                                      state
@@ -84,8 +85,8 @@ public:
   unsigned int get_node_index() const {
     return node_ind_;
   }
-  const Particles *get_particles() const {
-    return &particles_;
+  ParticlesTemp get_particles() const {
+    return particles_->get_particles();
   }
   //! Return the optimal score for the separator, for the given separator
   //! find the optimal combination of the rest of the components.
@@ -117,8 +118,8 @@ public:
   Float get_score(const CombState &comb);
 
 protected:
-
-  Particles particles_; //a sorted list of particles that are part of the node
+  //a sorted list of particles that are part of the node
+  container::ListSingletonContainer *particles_;
   unsigned int node_ind_;
   Combinations comb_states_;
   std::vector<std::string> comb_states_keys_;

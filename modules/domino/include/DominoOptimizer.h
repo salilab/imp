@@ -16,6 +16,7 @@
 
 #include <IMP/Optimizer.h>
 #include <IMP/Restraint.h>
+#include <IMP/container/ListSingletonContainer.h>
 #include <IMP/Model.h>
 
 IMPDOMINO_BEGIN_NAMESPACE
@@ -25,7 +26,9 @@ IMPDOMINO_BEGIN_NAMESPACE
  */
 class IMPDOMINOEXPORT DominoOptimizer : public Optimizer
 {
-  typedef boost::tuple<Restraint *,Particles,Float> OptTuple;
+  typedef boost::tuple<Restraint *,
+                       container::ListSingletonContainer *,
+                       Float> OptTuple;
 public:
   //! Constructor
   /**

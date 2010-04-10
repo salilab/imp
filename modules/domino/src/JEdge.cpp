@@ -43,9 +43,11 @@ const std::map<std::string, float> * JEdge::get_new_separators(JNode *n) const
 void JEdge::init_separators()
 {
   //get the set of interacing particles
-  Particles *intersection_set = new Particles();
-  source_->get_intersection(*target_, *intersection_set);
-  source_->populate_states_of_particles(intersection_set, &separators_);
+  Particles intersection_set = source_->get_intersection(*target_);
+  IMP_NEW(container::ListSingletonContainer,
+          temp_lsc_inter_set,
+          (intersection_set));
+  source_->populate_states_of_particles(temp_lsc_inter_set, &separators_);
   source_old_score_separators_ = std::map<std::string, float>();
   target_old_score_separators_ = std::map<std::string, float>();
   source_new_score_separators_ = std::map<std::string, float>();
@@ -57,7 +59,7 @@ void JEdge::init_separators()
     source_new_score_separators_[e->first] = 0.0;
     target_new_score_separators_[e->first] = 0.0;
   }
-  delete intersection_set;
+  //delete(temp_lsc_inter_set); - TODO - need to delete this object !
 }
 
 void JEdge::min_marginalize(JNode *from_node, JNode *to_node)
@@ -121,10 +123,8 @@ CombState * JEdge::get_separator(const CombState &other_comb) const
 
 const std::string JEdge::generate_key(const CombState &other_comb) const
 {
-  Particles *intersection_set = new Particles();
-  source_->get_intersection(*target_, *intersection_set);
-  std::string key = other_comb.partial_key(intersection_set);
-  delete (intersection_set);
+  ParticlesTemp intersection_set = source_->get_intersection(*target_);
+  std::string key = other_comb.get_partial_key(intersection_set);
   return key;
 }
 

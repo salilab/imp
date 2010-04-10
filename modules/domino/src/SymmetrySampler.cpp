@@ -16,55 +16,57 @@ IMPDOMINO_BEGIN_NAMESPACE
 //   //! Show the sampling space of a single particle
 //   virtual void show_space(Particle *p,
 //                       std::ostream& out = std::cout) const {}
-SymmetrySampler::SymmetrySampler(Particles *ps,
-                                 TransformationDiscreteSet *ts,
-                                 const algebra::Cylinder3D &c) : cyl_(c) {
+SymmetrySampler::SymmetrySampler(
+  container::ListSingletonContainer *ps,
+  TransformationDiscreteSet *ts,
+  const algebra::Cylinder3D &c) : cyl_(c) {
   ps_=ps;
   ts_=ts;
-  for(unsigned int i=0;i<ps_->size();i++){
-    symm_deg_[(*ps_)[i]]=i;
+  for(unsigned int i=0;i<ps_->get_number_of_particles();i++){
+    symm_deg_[ps_->get_particle(i)]=i;
   }
   //superpose the particles on the first one and use that as reference
-  ref_[(*ps_)[0]]=algebra::get_identity_transformation_3d();
+  ref_[ps_->get_particle(0)]=algebra::get_identity_transformation_3d();
   std::vector<algebra::VectorD<3> > ref_positions;
   Particles ps1 =
-    atom::get_by_type(atom::Hierarchy((*ps_)[0]), atom::ATOM_TYPE);
+    atom::get_by_type(atom::Hierarchy(ps_->get_particle(0)), atom::ATOM_TYPE);
 
   for(Particles::iterator it=ps1.begin();it!=ps1.end();it++) {
    ref_positions.push_back(core::XYZ::decorate_particle(*it).get_coordinates());
   }
 
-  for(unsigned int i=1;i<ps_->size();i++) {
+  for(unsigned int i=1;i<ps_->get_number_of_particles();i++) {
     std::vector<algebra::VectorD<3> > other_positions;
     Particles ps2 =
-      atom::get_by_type(atom::Hierarchy((*ps_)[i]), atom::ATOM_TYPE);
+      atom::get_by_type(atom::Hierarchy(ps_->get_particle(i)), atom::ATOM_TYPE);
     for(Particles::iterator it=ps2.begin();it!=ps2.end();it++) {
       other_positions.push_back(
          core::XYZ::decorate_particle(*it).get_coordinates());
     }
-    ref_[(*ps_)[i]]=
+    ref_[ps_->get_particle(i)]=
       algebra::get_transformation_aligning_first_to_second(other_positions,
                                                            ref_positions);
   }
 }
 
-void SymmetrySampler::populate_states_of_particles(Particles *particles,
-                                                   Combinations *states) const {
+void SymmetrySampler::populate_states_of_particles(
+   container::ListSingletonContainer* particles,
+   Combinations *states) const {
   IMP_INTERNAL_CHECK(states != NULL,"the states should be initialized");
   IMP_LOG(VERBOSE,"SymmetrySampler:: start populaing states of particles");
   //std::cout<<"SymmetrySampler:: start populaing states of particles"
   // <<std::endl;
   //CombState *calc_state;
-  int comb_size = particles->size();
+  int comb_size = particles->get_number_of_particles();
   std::vector<int> v_int(ts_->get_number_of_states());
   IMP_LOG(VERBOSE, "Combination size: " << comb_size <<
           " number of states: " << ts_->get_number_of_states());
   for (int i = 0; i < ts_->get_number_of_states(); ++i) {
     CombState *calc_state = new CombState();
     for (int j = 0; j < comb_size; j++) {
-      calc_state->add_data_item((*particles)[j],i);
+      calc_state->add_data_item(particles->get_particle(j),i);
     }
-    (*states)[calc_state->partial_key(particles)]=calc_state;
+    (*states)[calc_state->get_partial_key(particles)]=calc_state;
   }
   IMP_LOG(VERBOSE,
           "SymmetrySampler:: end populaing states of particles"<<std::endl);
@@ -96,7 +98,7 @@ void SymmetrySampler::move2state(const CombState *cs) {
          it = cs->get_data()->begin();it != cs->get_data()->end(); it++) {
     p = it->first;
     t = ts_->get_transformation(it->second);
-    double angle = 2.*PI/ps_->size()*symm_deg_[p];
+    double angle = 2.*PI/ps_->get_number_of_particles()*symm_deg_[p];
     // was algebra:.get_rotated(cyl_,angle).compose(t)
     algebra::Transformation3D tr
       =compose(algebra::get_rotation_about_axis(

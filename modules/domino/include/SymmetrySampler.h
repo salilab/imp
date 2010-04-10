@@ -18,7 +18,7 @@
 #include "TransformationDiscreteSet.h"
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/algebra/Cylinder3D.h>
-
+#include <IMP/container/ListSingletonContainer.h>
 IMPDOMINO_BEGIN_NAMESPACE
 //! SymmetrySampler
 /**
@@ -41,10 +41,12 @@ public:
         input transformations rotated by (360/N)*i around the symmetry axis.
   /todo consider calculating the cylinder in construction
    */
-  SymmetrySampler(Particles *ps, TransformationDiscreteSet *ts,
+  SymmetrySampler(container::ListSingletonContainer *ps,
+                  TransformationDiscreteSet *ts,
                   const algebra::Cylinder3D &c);
   void move2state(const CombState *cs);
-  void populate_states_of_particles(Particles *particles,
+  void populate_states_of_particles(
+               container::ListSingletonContainer* particles,
                std::map<std::string, CombState *> *states) const;
   void show(std::ostream& out = std::cout) const {out<<"SymmetrySampler";}
   DiscreteSet* get_space(Particle *p) const{return ts_;}
@@ -54,7 +56,7 @@ public:
 
   algebra::Cylinder3D cyl_;
   std::map<Particle*,int> symm_deg_;
-  Particles *ps_;
+  container::ListSingletonContainer *ps_;
   TransformationDiscreteSet *ts_;
   std::map<Particle*,algebra::Transformation3D> ref_;
 };

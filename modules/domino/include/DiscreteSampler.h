@@ -13,7 +13,7 @@
 #include "CombState.h"
 #include <vector>
 #include "DiscreteSet.h"
-
+#include <IMP/container/ListSingletonContainer.h>
 IMPDOMINO_BEGIN_NAMESPACE
 
 //! Holds the states of a single or a set of particles
@@ -38,7 +38,8 @@ public:
                              of states should be generated.
       \param[in] states      the dataset to be filled with states.
    */
-  virtual void populate_states_of_particles(Particles *particles,
+  virtual void populate_states_of_particles(
+              container::ListSingletonContainer *particles,
               Combinations *states) const{}
 
   IMP_NO_SWIG(

@@ -30,8 +30,8 @@ class DOMINOTests(IMP.test.TestCase):
         self.particles.append(p2)
         self.particles.append(p3)
         self.particles.append(p4)
-
-        self.m_discrete_set = IMP.domino.MappedDiscreteSet(self.particles,atts)
+        self.ps_cont = IMP.container.ListSingletonContainer(self.particles)
+        self.m_discrete_set = IMP.domino.MappedDiscreteSet(self.ps_cont,atts)
         for j in range(4):
             for i in range(4):
                 new_p=IMP.Particle(self.imp_model)
@@ -70,7 +70,6 @@ class DOMINOTests(IMP.test.TestCase):
             self.imp_model.add_restraint(r)
         self.sampler = IMP.domino.CartesianProductSampler(self.m_discrete_set,
                                                           self.particles)
-
     def test_global_min(self):
         """
         Test that the global minimum is achived
@@ -80,10 +79,11 @@ class DOMINOTests(IMP.test.TestCase):
         IMP.domino.read_junction_tree(jt_filename,self.jt)
         re = IMP.domino.RestraintEvaluator(self.sampler)
         d_opt = IMP.domino.DominoOptimizer(self.jt,self.imp_model,re)
+
         for r in self.rsrs:
             d_opt.add_restraint(r)
-
         d_opt.set_sampling_space(self.sampler)
+        print "==========start adding restraints"
         num_sol=5
         d_opt.set_number_of_solutions(num_sol)
         print d_opt.optimize(1)

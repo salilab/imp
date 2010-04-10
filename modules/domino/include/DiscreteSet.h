@@ -23,12 +23,12 @@ public:
   //! Create the discrete set
   /** \param[in] atts the attributes for the states held in the set
    */
-  DiscreteSet(const std::vector<FloatKey> &atts);
+  DiscreteSet(FloatKeys atts);
 
   //! Get all attributes sampled in the set
   /**
    */
-  const std::vector<FloatKey> * get_att_keys() const {return &atts_;}
+  FloatKeys get_att_keys() const {return atts_;}
   //! Get the number of types attributes each state holds
   inline unsigned int  get_number_of_attributes()const {
     return atts_.size();
@@ -55,7 +55,7 @@ public:
     \exception if the state_ind is out of range
    */
   Particle  * get_state(long state_ind) const;
-  const Particles * get_states() const{return &states_;};
+  Particles get_states() const{return states_;};
 
   //! Get the number of states held in the set
   inline long get_number_of_states() const { return states_.size();}

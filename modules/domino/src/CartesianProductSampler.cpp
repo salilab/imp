@@ -24,13 +24,14 @@ void CartesianProductSampler::show(std::ostream& out) const
   out<<std::endl;
 }
 void CartesianProductSampler::populate_states_of_particles(
-   Particles *particles,
+   container::ListSingletonContainer *particles,
    std::map<std::string,CombState *> *states) const
 {
   IMP_LOG(IMP::VERBOSE,
     "start CartesianProductSampler::populate_states_of_particles"<<std::endl);
   //CombState *calc_state;
-  unsigned int comb_size = particles->size();//the size of the combination
+  //the size of the combination:
+  unsigned int comb_size = particles->get_number_of_particles();
   IMP_LOG(IMP::VERBOSE,
           "number of particles: "<<comb_size<<std::endl);
   std::vector<int> v_int(comb_size);//
@@ -38,22 +39,23 @@ void CartesianProductSampler::populate_states_of_particles(
   unsigned int i;
   for(i=0;i<comb_size;i++){
     IMP_LOG(IMP::VERBOSE,"i:"<<i<<" number of mapped states: " <<
-            ds_->get_number_of_mapped_states((*particles)[i])<<std::endl);
+            ds_->get_number_of_mapped_states(particles->get_particle(i))
+            <<std::endl);
 
     //TODO - return!
     // IMP_check(ds_->get_number_of_mapped_states((*particles)[i])>0,
     //"CartesianProductSampler::populate_states_of_particles the "
     //<< i <<"'th particle has no state",
     //ValueException);
-    v_int[i] = ds_->get_number_of_mapped_states((*particles)[i]);
+    v_int[i] = ds_->get_number_of_mapped_states(particles->get_particle(i));
     c_int[i] = 0;
   }
   while(c_int[0] != v_int[0]) {
     CombState *calc_state = new CombState();
     for (i = 0; i < c_int.size(); i++) {
-      calc_state->add_data_item((*particles)[i], c_int[i]);
+      calc_state->add_data_item(particles->get_particle(i), c_int[i]);
     }
-    (*states)[calc_state->partial_key(particles)]=calc_state;
+    (*states)[calc_state->get_partial_key(particles)]=calc_state;
     //update the indexes
     i=c_int.size()-1;
     if(c_int[i]!=v_int[i]) {
@@ -71,12 +73,12 @@ void CartesianProductSampler::populate_states_of_particles(
 
 void CartesianProductSampler::move2state(const CombState *cs){
   Particle *p;
-  const std::vector<FloatKey> *atts = ds_->get_att_keys();
+  FloatKeys atts = ds_->get_att_keys();
   for (std::map<Particle *,unsigned int>::const_iterator
          it = cs->get_data()->begin();it != cs->get_data()->end(); it++) {
     p = it->first;
-    for (std::vector<FloatKey>::const_iterator k_iter = atts->begin();
-         k_iter != atts->end(); k_iter++) {
+    for (FloatKeys::const_iterator k_iter = atts.begin();
+         k_iter != atts.end(); k_iter++) {
       p->set_value(*k_iter,
                    ds_->get_mapped_state_val(p,it->second, *k_iter));
     }
@@ -84,7 +86,7 @@ void CartesianProductSampler::move2state(const CombState *cs){
 }
 
 DiscreteSet* CartesianProductSampler::get_space(Particle *p) const {
-  DiscreteSet *ds = new DiscreteSet(*(ds_->get_att_keys()));
+  DiscreteSet *ds = new DiscreteSet(ds_->get_att_keys());
   for (int i=0;i<ds_->get_number_of_mapped_states(p);i++) {
     ds->add_state(ds_->get_mapped_state(p,i));
   }

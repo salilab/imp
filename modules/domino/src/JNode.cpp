@@ -29,11 +29,10 @@ JNode::JNode(const Particles &ps, int node_ind): ds_(NULL)
     IMP_LOG(VERBOSE,std::endl);
   }
   node_ind_ = node_ind;
-  particles_ = Particles();
-  for (Particles::const_iterator it = ps.begin(); it != ps.end(); it++) {
-    particles_.push_back(*it);
-  }
-  std::sort(particles_.begin(), particles_.end());
+  //create a sorted list of particles
+  Particles temp = ps;
+  std::sort(temp.begin(), temp.end());
+  particles_ = new container::ListSingletonContainer(temp);
   comb_states_ = std::map<std::string, CombState *>();
   rstr_eval_=NULL;
 }
@@ -41,9 +40,10 @@ JNode::JNode(const Particles &ps, int node_ind): ds_(NULL)
 void JNode::init_sampling(DiscreteSampler &ds)
 {
   IMP_LOG(VERBOSE,"Start sampling initialization for node number: "
-                  << node_ind_ <<std::endl);
+          << node_ind_ << " with: " << comb_states_.size()<<" states"
+          <<std::endl);
   ds_ = &ds;
-  populate_states_of_particles(&particles_, &comb_states_);
+  populate_states_of_particles(particles_, &comb_states_);
 
   //create a vector of the keys, needed for fast
   //implementation of get_state function
@@ -63,22 +63,22 @@ CombState* JNode::get_state(unsigned int index, bool move2state_){
   return cs;
 }
 
-void JNode::populate_states_of_particles(Particles *particles,
+void JNode::populate_states_of_particles(container::ListSingletonContainer *ps,
                                          std::map<std::string,
                                          CombState *> *states)
 {
-  ds_->populate_states_of_particles(particles, states);
+  ds_->populate_states_of_particles(ps, states);
   IMP_USAGE_CHECK(comb_states_.size()>0,"no state added to node: "
             << node_ind_ << std::endl);
 }
 void JNode::show_sampling_space(std::ostream& out) const
 {
   out << std::endl << " sampling space of JNode with index: " << node_ind_;
-  for (Particles::const_iterator pi = particles_.begin();
-       pi != particles_.end(); pi++) {
+  for (int i=0;i<particles_->get_number_of_particles();i++){
+    Particle *pi = particles_->get_particle(i);
     out << std::endl << " states for particle name : " <<
-      (*pi)->get_value(node_name_key()) << ":" << std::endl;
-    ds_->show_space(*pi, out);
+      pi->get_value(node_name_key()) << ":" << std::endl;
+    ds_->show_space(pi, out);
   }
 }
 
@@ -87,9 +87,9 @@ void JNode::show(std::ostream& out) const
   out << "=========================JNode  " <<  " node_index: " << node_ind_
       << std::endl;
   out << "particle_indices: " << std::endl;
-  for (Particles::const_iterator it = particles_.begin(); it !=
-       particles_.end(); it++) {
-    out << (*it)->get_value(node_name_key()) << " || " ;
+  for (int i=0;i<particles_->get_number_of_particles();i++){
+    Particle *p=particles_->get_particle(i);
+    out << p->get_value(node_name_key()) << " || " ;
   }
   out << std::endl << "==combinations ( " << comb_states_.size();
   out << " ): " << std::endl;
@@ -99,12 +99,11 @@ void JNode::show(std::ostream& out) const
   }
   out << std::endl;
 }
-bool JNode::is_part(const Particles &ps) const
+bool JNode::is_part(const ParticlesTemp &ps) const
 {
-  typedef std::vector<Particle*>  P;
-  P intersection, other_sorted_particle_indexes;
-  for (Particles::const_iterator it = ps.begin(); it != ps.end(); it++) {
-    other_sorted_particle_indexes.push_back(*it);
+  ParticlesTemp intersection, other_sorted_particle;
+  for (ParticlesTemp::const_iterator it = ps.begin(); it != ps.end(); it++) {
+    other_sorted_particle.push_back(*it);
   }
   IMP_IF_LOG(VERBOSE) {
     IMP_LOG(VERBOSE,"check if particles : " << std::endl);
@@ -112,45 +111,52 @@ bool JNode::is_part(const Particles &ps) const
       IMP_LOG(VERBOSE,(*it)->get_value(node_name_key()) << " : ");
     }
     IMP_LOG(VERBOSE,"are part of  : " << std::endl);
-    for (Particles::const_iterator it = particles_.begin();
-       it != particles_.end(); it++) {
-      IMP_LOG(VERBOSE,(*it)->get_value(node_name_key()) << " : ");
+    for (int i=0;i<particles_->get_number_of_particles();i++){
+      IMP_LOG(VERBOSE,
+              particles_->get_particle(i)->get_value(node_name_key())<< " : ");
     }
     IMP_LOG(VERBOSE,std::endl);
   }
-  sort(other_sorted_particle_indexes.begin(),
-       other_sorted_particle_indexes.end());
-  set_intersection(particles_.begin(),
-                   particles_.end(),
-                   other_sorted_particle_indexes.begin(),
-                   other_sorted_particle_indexes.end(),
+  sort(other_sorted_particle.begin(),
+       other_sorted_particle.end());
+  ParticlesTemp my_ps = particles_->get_particles();
+  set_intersection(my_ps.begin(),
+                   my_ps.end(),
+                   other_sorted_particle.begin(),
+                   other_sorted_particle.end(),
                    std::inserter(intersection, intersection.begin()));
   if (intersection.size() == ps.size()) {
+    IMP_LOG(VERBOSE,"return true\n");
     return true;
   }
+    IMP_LOG(VERBOSE,"return false\n");
   return false;
 }
 
-void JNode::get_intersection(const JNode &other, Particles &in) const
+Particles JNode::get_intersection(const JNode &other) const
 {
+  Particles in;
   // since the list should be sorted we use the indexes and not the pointers,
   // as we can not predict the order of the pointers.
-  std::vector<Particle*> inter_indexes;
-  set_intersection(particles_.begin(),
-                   particles_.end(),
-                   other.particles_.begin(),
-                   other.particles_.end(),
+  ParticlesTemp inter_indexes;
+  ParticlesTemp my_ps = particles_->get_particles();
+  ParticlesTemp other_ps = other.particles_->get_particles();
+  set_intersection(my_ps.begin(),
+                   my_ps.end(),
+                   other_ps.begin(),
+                   other_ps.end(),
                    std::inserter(inter_indexes, inter_indexes.begin()));
   //TODO - do this more efficient
-  for (std::vector<Particle*>::const_iterator it = inter_indexes.begin();
+  for (Particles::const_iterator it = inter_indexes.begin();
        it != inter_indexes.end(); it++) {
-    for (Particles::const_iterator pi = particles_.begin();
-         pi != particles_.end(); pi++) {
+    for (ParticlesTemp::const_iterator pi = my_ps.begin();
+         pi != my_ps.end(); pi++) {
       if (*it == *pi) {
         in.push_back(*pi);
       }
     }
   }
+  return in;
 }
 
 void JNode::move2state(CombState *cs)
@@ -158,7 +164,8 @@ void JNode::move2state(CombState *cs)
   ds_->move2state(cs);
 }
 
-void JNode::realize(Restraint *r, Particles *ps, Float weight)
+void JNode::realize(Restraint *r, container::ListSingletonContainer *ps,
+                    Float weight)
 {
   IMP_IF_LOG(VERBOSE) {
     IMP_LOG(VERBOSE,"start realize node: " << node_ind_ << " with restraint: ");
@@ -175,12 +182,12 @@ void JNode::realize(Restraint *r, Particles *ps, Float weight)
                                              // of the same configuration.
   IMP_INTERNAL_CHECK(rstr_eval_!=NULL,
                      "restraint evaluator was not initialized"<<std::endl);
-  rstr_eval_->calc_scores(comb_states_,result_cache,r,*ps);
+  rstr_eval_->calc_scores(comb_states_,result_cache,r,ps);
   std::string partial_key;
   Float score;
   for (std::map<std::string, CombState *>::iterator it =  comb_states_.begin();
        it != comb_states_.end(); it++) {
-    partial_key = it->second->partial_key(ps);
+    partial_key = it->second->get_partial_key(ps);
     score = result_cache.find(partial_key)->second;
     it->second->update_total_score(0.0, weight*score);
     //rethink how to handle weights.
@@ -242,7 +249,7 @@ void JNode::update_potentials(
 {
   for (std::map<std::string, CombState *>::iterator it = comb_states_.begin();
        it != comb_states_.end(); it++) {
-    std::string s_key = it->second->partial_key(&intersection_particles);
+    std::string s_key = it->second->get_partial_key(intersection_particles);
     //separator_comb=v.comb_key.intersection_by_feature_key(edge_data.s_ij)
     // s_key=separator_comb.key()
     //TODO - add validation tests
@@ -305,7 +312,7 @@ Float JNode::get_score(const CombState &comb) {
     IMP_LOG(VERBOSE,std::endl);
   }
 
-  std::string key = comb.partial_key(&particles_);
+  std::string key = comb.get_partial_key(particles_);
   IMP_USAGE_CHECK(comb_states_.find(key) != comb_states_.end(),
        "The combination was not realized by the node"<<std::endl);
   IMP_LOG(VERBOSE,"JNode::get_score partial key: " <<

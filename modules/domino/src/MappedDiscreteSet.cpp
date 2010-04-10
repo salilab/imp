@@ -8,18 +8,21 @@
 #include "IMP/domino/MappedDiscreteSet.h"
 
 IMPDOMINO_BEGIN_NAMESPACE
-MappedDiscreteSet::MappedDiscreteSet(const Particles &ps_target)
+MappedDiscreteSet::MappedDiscreteSet(){}
+
+MappedDiscreteSet::MappedDiscreteSet(
+  container::ListSingletonContainer *ps_target)
 {
-  for (Particles::const_iterator it = ps_target.begin();
-       it != ps_target.end();it++) {
-    states_map_[*it] = Particles();
+  for(int i=0;i<ps_target->get_number_of_particles();i++){
+    states_map_[ps_target->get_particle(i)] = Particles();
   }
 }
-MappedDiscreteSet::MappedDiscreteSet(Particles *ps_target,
-        const std::vector<FloatKey> &atts) : DiscreteSet(atts){
-  for (Particles::const_iterator it = ps_target->begin();
-       it != ps_target->end();it++) {
-    states_map_[*it] = Particles();
+
+MappedDiscreteSet::MappedDiscreteSet(
+        container::ListSingletonContainer *ps_target,
+        FloatKeys atts) : DiscreteSet(atts){
+  for(int i=0;i<ps_target->get_number_of_particles();i++){
+    states_map_[ps_target->get_particle(i)] = Particles();
   }
 }
 void MappedDiscreteSet::add_mapped_state(Particle* sampled_p,Particle *state)

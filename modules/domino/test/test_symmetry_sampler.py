@@ -77,8 +77,8 @@ class DOMINOTests(IMP.test.TestCase):
 #                                           IMP.algebra.Vector3D(0.0,0.0,-90.0),5.0)
         self.cyl = IMP.algebra.Cylinder3D(IMP.algebra.Segment3D(IMP.algebra.Vector3D(0.0,0.0,0.0),
                                           IMP.algebra.Vector3D(0.0,0.0,1.0)),5.0)
-
-        self.sampler = IMP.domino.SymmetrySampler(self.ps,self.rt,self.cyl)
+        self.ps_cont = IMP.container.ListSingletonContainer(self.ps)
+        self.sampler = IMP.domino.SymmetrySampler(self.ps_cont,self.rt,self.cyl)
     def set_restraint_graph(self):
         jt_filename = self.get_input_file_name("simple_jt3.txt")
         self.jt = IMP.domino.JunctionTree()
@@ -100,7 +100,7 @@ class DOMINOTests(IMP.test.TestCase):
         Test that the sampler created symmetric sampling space
         """
         r = self.d_opt.get_graph()
-        n = r.get_node(self.ps)
+        n = r.get_node(self.ps_cont)
         cendtroids=[IMP.algebra.Vector3D(0.0,0.0,0.0),
                     IMP.algebra.Vector3D(0.0,0.0,0.0),
                     IMP.algebra.Vector3D(0.0,0.0,0.0),]

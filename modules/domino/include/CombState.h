@@ -14,6 +14,7 @@
 #include <sstream>
 #include <algorithm>
 #include "IMP/base_types.h"
+#include <IMP/container/ListSingletonContainer.h>
 IMPDOMINO_BEGIN_INTERNAL_NAMESPACE
 
 // backwards compatibility functions
@@ -95,8 +96,10 @@ public:
   return s.str();
 
   }
-  const std::string partial_key(const Particles *ps) const;
-  CombState *get_partial(const Particles &ps) const;
+  std::string get_partial_key(container::ListSingletonContainer *ps) const;
+  std::string get_partial_key(ParticlesTemp ps) const;
+  CombState *get_partial(container::ListSingletonContainer *ps) const;
+  CombState *get_partial(ParticlesTemp ps) const;
   //  void add_term(Restraint *r);
 
   //Update the total score

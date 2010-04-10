@@ -15,6 +15,7 @@
 #include <IMP/base_types.h>
 #include <vector>
 #include <IMP/ScoreState.h>
+#include <IMP/container/ListSingletonContainer.h>
 
 IMPDOMINO_BEGIN_NAMESPACE
 
@@ -35,7 +36,7 @@ public:
    */
   virtual void calc_scores(const Combinations &comb_states,
                          CombinationValues &comb_values,
-                         Restraint *r, const Particles &ps){}
+                         Restraint *r, container::ListSingletonContainer *ps){}
   virtual void show(std::ostream& out = std::cout) const{}
 };
 

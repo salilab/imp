@@ -81,17 +81,19 @@ void read_combinations(const std::string &filename, Combinations *combs,
     }
     calc_state->update_total_score(0.,
                                    atof(split_vec[split_vec.size()-2].c_str()));
-    (*combs)[calc_state->partial_key(&ps)]=calc_state;
+    (*combs)[calc_state->get_partial_key(ps)]=calc_state;
   }
   IMP_LOG(IMP::VERBOSE,"read " << combs->size() << " combinations"<<std::endl);
 }
 void RestraintEvaluatorFromFile::calc_scores(const Combinations &comb_states,
                  CombinationValues &comb_values,
-                 Restraint *r, const Particles &ps) {
+                 Restraint *r,
+                 container::ListSingletonContainer *ps) {
   //sort the particles by their names
   std::map<std::string,Particle*> to_sort_ps;
-  for(Particles::const_iterator it = ps.begin(); it != ps.end(); it++) {
-    to_sort_ps[(*it)->get_value(node_name_key())]=*it;
+  for(int i=0;i<ps->get_number_of_particles();i++){
+    Particle *p = ps->get_particle(i);
+    to_sort_ps[p->get_value(node_name_key())]=p;
   }
   Particles sorted_ps;
   for(std::map<std::string,Particle *>::const_iterator it = to_sort_ps.begin();
@@ -108,7 +110,7 @@ void RestraintEvaluatorFromFile::calc_scores(const Combinations &comb_states,
   for(Combinations::const_iterator it = comb_states.begin();
       it != comb_states.end(); it++) {
     const CombState *cs = it->second;
-    key=cs->partial_key(&sorted_ps);
+    key=cs->get_partial_key(sorted_ps);
     IMP_INTERNAL_CHECK(read_combs.find(key) != read_combs.end(),
               "read_combs does not have a key:"<<key<<std::endl);
     IMP_INTERNAL_CHECK(read_combs.find(key)->second != NULL,

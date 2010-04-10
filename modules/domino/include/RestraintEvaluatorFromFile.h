@@ -59,7 +59,7 @@ public:
    */
   void calc_scores(const Combinations &comb_states,
                    CombinationValues &comb_values,Restraint *r,
-                   const Particles &ps);
+                   container::ListSingletonContainer *ps);
 
   void show(std::ostream& out = std::cout) const{
     out<<"RestraintEvaluatorFromFile"<<std::endl;
