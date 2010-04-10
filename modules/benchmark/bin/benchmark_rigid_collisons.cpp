@@ -73,7 +73,7 @@ Model * setup(bool rpcpf,RigidBodiesTemp &rbs) {
   for (unsigned int i=0; i< atoms.size(); ++i) {
     XYZR::setup_particle(atoms[i], 1);
   }
-  IMP_NEW(ListSingletonContainer, lsc, ());
+  IMP_NEW(ListSingletonContainer, lsc, (m));
 
   PairContainer *cpc;
   if (rpcpf) {

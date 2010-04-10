@@ -48,7 +48,7 @@ void test(int n) {
   set_log_level(SILENT);
   IMP_NEW(Model, m, ());
   Particles ps= create_xyzr_particles(m, n, .1);
-  IMP_NEW(ListPairContainer, lpc, ());
+  IMP_NEW(ListPairContainer, lpc, (m));
   for (unsigned int i=0; i< ps.size(); ++i) {
     for (unsigned int j=0; j< i; ++j) {
       lpc->add_particle_pair(ParticlePair(ps[i], ps[j]));
@@ -62,20 +62,20 @@ void test_set(int n) {
   set_log_level(SILENT);
   IMP_NEW(Model, m, ());
   Particles ps= create_xyzr_particles(m, n, .1);
-  IMP_NEW(ListPairContainer, lpc0, ());
+  IMP_NEW(ListPairContainer, lpc0, (m));
   for (unsigned int i=0; i< ps.size()/2; ++i) {
     for (unsigned int j=0; j< i; ++j) {
       lpc0->add_particle_pair(ParticlePair(ps[i], ps[j]));
     }
   }
 
-  IMP_NEW(ListPairContainer, lpc1, ());
+  IMP_NEW(ListPairContainer, lpc1, (m));
   for (unsigned int i=ps.size()/2; i< ps.size(); ++i) {
     for (unsigned int j=ps.size()/2; j< i; ++j) {
       lpc1->add_particle_pair(ParticlePair(ps[i], ps[j]));
     }
   }
-  IMP_NEW(PairContainerSet, pcs, ());
+  IMP_NEW(PairContainerSet, pcs, (m));
   pcs->add_pair_container(lpc0);
   pcs->add_pair_container(lpc1);
 

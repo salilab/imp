@@ -29,7 +29,7 @@ void test_one(std::string name,
     XYZR(ps[i]).set_radius(rand(random_number_generator));
   }
   IMP_NEW(ListSingletonContainer, lsc, (ps));
-  IMP_NEW(ListPairContainer, out, ());
+  IMP_NEW(ListPairContainer, out, (m));
   cpf->set_distance(0);
   double result=0;
   double runtime;
