@@ -17,7 +17,7 @@ int main(){
   core::XYZ d1= core::XYZ::setup_particle(p1);
   core::DistancePairScore *dps
     = new core::DistancePairScore(new core::Linear(0,1));
-  container::ListPairContainer *pc= new container::ListPairContainer();
+  container::ListPairContainer *pc= new container::ListPairContainer(m);
   pc->add_particle_pair(ParticlePair(p0, p1));
   example::ExampleRestraint *r= new example::ExampleRestraint(dps, pc);
   d0.set_coordinates(algebra::VectorD<3>(0,0,0));
