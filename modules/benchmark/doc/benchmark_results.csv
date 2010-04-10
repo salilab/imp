@@ -5768,3 +5768,55 @@ mode,release
 date,  04/10/10
 mode,fast
 mode,release
+date,  04/10/10
+mode,fast
+bd 100,0.000034,0.000000e+00
+bd 1000,15.120000,0.000000e+00
+cpf quadratic 1000 0.1,0.005855,1.281000e+03
+cpf quadratic 1000 0.5,0.006812,1.332210e+05
+cpf quadratic 10000 0.1,0.584000,1.640000e+03
+cpf quadratic 10000 0.5,0.687500,1.468080e+05
+cpf grid 1000 0.1,0.006925,7.220000e+02
+cpf grid 1000 0.5,0.006614,1.262520e+05
+cpf grid 10000 0.1,0.098077,8.268000e+03
+cpf grid 100000 0.01,1.415000,6.400000e+01
+connectivity slow,0.825000,2.788220e-02
+connectivity fast,0.038769,1.201027e+05
+connectivity fast mst,0.022500,8.077819e-01
+uncached density loop,0.018333,5.346000e+08
+cached density loop,0.055000,5.400000e+08
+container list in 4950,0.000145,0.000000e+00
+container list out 4950,0.000201,0.000000e+00
+container list in 499500,0.014793,0.000000e+00
+container list out 499500,0.020492,0.000000e+00
+container set in 2450,0.000077,0.000000e+00
+container set out 2450,0.000152,0.000000e+00
+container set in 249500,0.007692,0.000000e+00
+container set out 249500,0.015337,0.000000e+00
+changing nonincremental,0.000005,6.984230e+08
+changing incremental,0.000009,6.984230e+08
+changing nonincremental score,0.000009,1.126771e+09
+changing incremental score,0.000018,5.565972e+08
+col quadratic 10000 0.1,1.649875,3.041439e+06
+col quadratic 10000 0.5,2.129875,4.912085e+06
+col grid 10000 0.1,1.979875,3.016708e+06
+refiner children,0.005459,2.696246e+08
+refiner leaves,0.001194,1.232738e+09
+rotation (cache),0.000083,-4.308843e+04
+rotation (nocache),0.000151,1.206667e+06
+WARNING  AtomType element and PDB line elements don't match. AtomType 8 determined from PDB line 0 line ATOM    828   OH TYR   103      24.462   3.049  16.379  1.00 22.91         O    
+WARNING  AtomType element and PDB line elements don't match. AtomType 8 determined from PDB line 0 line ATOM   1165   OH TYR   146      29.207   0.309   6.636  1.00 20.90         O    
+WARNING  AtomType element and PDB line elements don't match. AtomType 8 determined from PDB line 0 line ATOM   1207   OH TYR   151      25.362  -2.543   9.964  1.00 39.21         O    
+xyz decorator small,0.040000,3.001647e+07
+xyz particle small,0.040000,3.001647e+07
+xyz vector small,0.030000,3.001647e+07
+xyz vector space small,0.040000,3.001647e+07
+xyz decorator large,1.140000,1.693901e+09
+xyz particle large,1.140000,1.693901e+09
+xyz vector large,1.150000,1.693901e+09
+xyz vector space large,1.150000,1.693901e+09
+xyz decorator huge,88.070000,3.126383e+11
+xyz particle huge,88.070000,3.126383e+11
+xyz vector huge,85.220000,3.126383e+11
+xyz vector space huge,85.210000,3.126383e+11
+mode,release
