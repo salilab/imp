@@ -1,28 +1,82 @@
 %include "IMP/core/core_macros.h"
 
 
-/* Add additional IMPCORE_CONTAINER methods for scripting languages
-   when the plural container is in the core namespace. */
-%define IMPCORE_CONTAINER_SWIG(type, Ucname, lcname)
-%extend type {
-  IMP::core::Ucname##s get_##lcname##s() const {
-    IMP::core::Ucname##s ret(self->lcname##s_begin(), self->lcname##s_end());
-    return ret;
-  }
-}
-%enddef
+IMP_SWIG_CONTAINER(IMP::core, IMP::core, MonteCarlo, Mover, mover);
 
+IMP_SWIG_OBJECT( IMP::core, AngleRestraint, AngleRestraints);
+IMP_SWIG_OBJECT( IMP::core, AngleTripletScore, AngleTripletScores);
+IMP_SWIG_OBJECT( IMP::core, AttributeSingletonScore, AttributeSingletonScores);
+IMP_SWIG_OBJECT( IMP::core, BallMover, BallMovers);
+IMP_SWIG_OBJECT( IMP::core, BoundingBox3DSingletonScore, BoundingBox3DSingletonScores);
+#ifdef IMP_USE_CGAL
+IMP_SWIG_OBJECT( IMP::core, BoxSweepClosePairsFinder, BoxSweepClosePairsFinders);
+#endif
+IMP_SWIG_OBJECT( IMP::core, CentroidOfRefined, CentroidOfRefineds);
+IMP_SWIG_OBJECT( IMP::core, ChecksScoreState, ChecksScoreStates);
+IMP_SWIG_OBJECT( IMP::core, ChildrenRefiner, ChildrenRefiners);
+IMP_SWIG_OBJECT( IMP::core, ClosePairsFinder, ClosePairsFinders);
+IMP_SWIG_OBJECT( IMP::core, ClosePairsPairScore, ClosePairsPairScores);
+IMP_SWIG_OBJECT( IMP::core, ClosedCubicSpline, ClosedCubicSplines);
+IMP_SWIG_OBJECT( IMP::core, ConnectivityRestraint, ConnectivityRestraints);
+IMP_SWIG_OBJECT( IMP::core, ConstantRestraint, ConstantRestraints);
+IMP_SWIG_OBJECT( IMP::core, Cosine, Cosines);
+IMP_SWIG_OBJECT( IMP::core, CoverRefined, CoverRefineds);
+IMP_SWIG_OBJECT( IMP::core, DerivativesFromRefined, DerivativesFromRefineds);
+IMP_SWIG_OBJECT( IMP::core, DerivativesToRefined, DerivativesToRefineds);
+IMP_SWIG_OBJECT( IMP::core, DiameterRestraint, DiameterRestraints);
+IMP_SWIG_OBJECT( IMP::core, DihedralRestraint, DihedralRestraints);
+IMP_SWIG_OBJECT( IMP::core, DistancePairScore, DistancePairScores);
+IMP_SWIG_OBJECT( IMP::core, DistanceRestraint, DistanceRestraints);
+IMP_SWIG_OBJECT( IMP::core, DistanceToSingletonScore, DistanceToSingletonScores);
+IMP_SWIG_OBJECT( IMP::core, ExcludedVolumeRestraint, ExcludedVolumeRestraints);
+IMP_SWIG_OBJECT( IMP::core, FixedRefiner, FixedRefiners);
+IMP_SWIG_OBJECT( IMP::core, GridClosePairsFinder, GridClosePairsFinders);
+IMP_SWIG_OBJECT( IMP::core, Harmonic, Harmonics);
+IMP_SWIG_OBJECT( IMP::core, HarmonicLowerBound, HarmonicLowerBounds);
+IMP_SWIG_OBJECT( IMP::core, HarmonicUpperBound, HarmonicUpperBounds);
+IMP_SWIG_OBJECT( IMP::core, IncrementalBallMover, IncrementalBallMovers);
+IMP_SWIG_OBJECT( IMP::core, LeavesRefiner, LeavesRefiners);
+IMP_SWIG_OBJECT( IMP::core, Linear, Linears);
+IMP_SWIG_OBJECT( IMP::core, MonteCarlo, MonteCarlos);
+IMP_SWIG_OBJECT( IMP::core, NormalMover, NormalMovers);
+IMP_SWIG_OBJECT( IMP::core, NormalizedSphereDistancePairScore, NormalizedSphereDistancePairScores);
+IMP_SWIG_OBJECT( IMP::core, OpenCubicSpline, OpenCubicSplines);
+IMP_SWIG_OBJECT( IMP::core, PairConstraint, PairConstraints);
+IMP_SWIG_OBJECT( IMP::core, PairRestraint, PairRestraints);
+IMP_SWIG_OBJECT( IMP::core, QuadConstraint, QuadConstraints);
+IMP_SWIG_OBJECT( IMP::core, QuadRestraint, QuadRestraints);
+IMP_SWIG_OBJECT( IMP::core, QuadraticClosePairsFinder, QuadraticClosePairsFinders);
+IMP_SWIG_OBJECT( IMP::core, RefinedPairsPairScore, RefinedPairsPairScores);
+IMP_SWIG_OBJECT( IMP::core, RigidBodyDistancePairScore, RigidBodyDistancePairScores);
+IMP_SWIG_OBJECT( IMP::core, RigidBodyMover, RigidBodyMovers);
+IMP_SWIG_OBJECT( IMP::core, RigidClosePairsFinder, RigidClosePairsFinders);
+IMP_SWIG_OBJECT( IMP::core, RigidMembersRefiner, RigidMembersRefiners);
+IMP_SWIG_OBJECT( IMP::core, SingletonConstraint, SingletonConstraints);
+IMP_SWIG_OBJECT( IMP::core, SingletonRestraint, SingletonRestraints);
+IMP_SWIG_OBJECT( IMP::core, SphereDistancePairScore, SphereDistancePairScores);
+IMP_SWIG_OBJECT( IMP::core, SphereDistanceToSingletonScore, SphereDistanceToSingletonScores);
+IMP_SWIG_OBJECT( IMP::core, SteepestDescent, SteepestDescents);
+IMP_SWIG_OBJECT( IMP::core, TableRefiner, TableRefiners);
+IMP_SWIG_OBJECT( IMP::core, Transform, Transforms);
+IMP_SWIG_OBJECT( IMP::core, TransformedDistancePairScore, TransformedDistancePairScores);
+IMP_SWIG_OBJECT( IMP::core, TripletConstraint, TripletConstraints);
+IMP_SWIG_OBJECT( IMP::core, TripletRestraint, TripletRestraints);
+IMP_SWIG_OBJECT( IMP::core, TruncatedHarmonicBound, TruncatedHarmonicBounds);
+IMP_SWIG_OBJECT( IMP::core, TruncatedHarmonicLowerBound, TruncatedHarmonicLowerBounds);
+IMP_SWIG_OBJECT( IMP::core, TruncatedHarmonicUpperBound, TruncatedHarmonicUpperBounds);
+IMP_SWIG_OBJECT( IMP::core, TypedPairScore, TypedPairScores);
+IMP_SWIG_OBJECT( IMP::core, VolumeRestraint, VolumeRestraints);
+IMP_SWIG_OBJECT( IMP::core, WeightedSphereDistancePairScore, WeightedSphereDistancePairScores);
 
-namespace IMP {
-  namespace core {
-    IMPCORE_CONTAINER_SWIG(MonteCarlo, Mover, mover)
-    //IMP_CONTAINER_SWIG(FilteredListSingletonContainer, Particle, singleton)
-    //IMP_CONTAINER_SWIG(ListSingletonContainer, Particle, singleton)
-  }
-}
+IMP_SWIG_OBJECT( IMP::core, Mover, Movers);
+IMP_SWIG_DECORATOR( IMP::core, XYZ, XYZs);
+IMP_SWIG_DECORATOR_WITH_TRAITS( IMP::core, XYZR, XYZRs);
+IMP_SWIG_DECORATOR( IMP::core, RigidBody, RigidBodies);
+IMP_SWIG_DECORATOR( IMP::core, RigidMember, RigidMembers);
+IMP_SWIG_DECORATOR( IMP::core, Centroid, Centroids);
+IMP_SWIG_DECORATOR( IMP::core, Cover, Covers);
+IMP_SWIG_DECORATOR_WITH_TRAITS( IMP::core, Hierarchy, GenericHierarchies);
 
-
-IMP_REFCOUNT_RETURN_SINGLE(IMP::core::Mover)
 
 /* Don't wrap internal classes */
 %ignore IMP::core::internal::ChildArrayTraits;
@@ -33,7 +87,7 @@ IMP_REFCOUNT_RETURN_SINGLE(IMP::core::Mover)
 %include "IMP/core/MoverBase.h"
 
 %include "IMP/core/XYZ.h"
-%template(XYZRBase) ::IMP::DecoratorWithTraits< IMP::core::XYZ, IMP::FloatKey>;
+
 %include "IMP/core/XYZR.h"
 
 
@@ -75,7 +129,6 @@ class HierarchyTraits;
 }
 }
 %}
-%template(HierarchyBase) ::IMP::DecoratorWithTraits< IMP::Decorator, IMP::core::HierarchyTraits>;
 %include "IMP/core/Hierarchy.h"
 %inline %{
 namespace IMP {
@@ -152,88 +205,9 @@ void depth_first_traversal(Hierarchy d, HierarchyVisitor *f)
 
 namespace IMP {
   namespace core {
-     IMP_SWIG_OBJECTS( IMP::core::AngleRestraint, AngleRestraints);
-     IMP_SWIG_OBJECTS( IMP::core::AngleTripletScore, AngleTripletScores);
-     IMP_SWIG_OBJECTS( IMP::core::AttributeSingletonScore, AttributeSingletonScores);
-     IMP_SWIG_OBJECTS( IMP::core::BallMover, BallMovers);
-     IMP_SWIG_OBJECTS( IMP::core::BoundingBox3DSingletonScore, BoundingBox3DSingletonScores);
-#ifdef IMP_USE_CGAL
-     IMP_SWIG_OBJECTS( IMP::core::BoxSweepClosePairsFinder, BoxSweepClosePairsFinders);
-#endif
-     IMP_SWIG_OBJECTS( IMP::core::CentroidOfRefined, CentroidOfRefineds);
-     IMP_SWIG_OBJECTS( IMP::core::ChecksScoreState, ChecksScoreStates);
-     IMP_SWIG_OBJECTS( IMP::core::ChildrenRefiner, ChildrenRefiners);
-     IMP_SWIG_OBJECTS( IMP::core::ClosePairsFinder, ClosePairsFinders);
-     IMP_SWIG_OBJECTS( IMP::core::ClosePairsPairScore, ClosePairsPairScores);
-     IMP_SWIG_OBJECTS( IMP::core::ClosedCubicSpline, ClosedCubicSplines);
-     IMP_SWIG_OBJECTS( IMP::core::ConnectivityRestraint, ConnectivityRestraints);
-     IMP_SWIG_OBJECTS( IMP::core::ConstantRestraint, ConstantRestraints);
-     IMP_SWIG_OBJECTS( IMP::core::Cosine, Cosines);
-     IMP_SWIG_OBJECTS( IMP::core::CoverRefined, CoverRefineds);
-     IMP_SWIG_OBJECTS( IMP::core::DerivativesFromRefined, DerivativesFromRefineds);
-     IMP_SWIG_OBJECTS( IMP::core::DerivativesToRefined, DerivativesToRefineds);
-     IMP_SWIG_OBJECTS( IMP::core::DiameterRestraint, DiameterRestraints);
-     IMP_SWIG_OBJECTS( IMP::core::DihedralRestraint, DihedralRestraints);
-     IMP_SWIG_OBJECTS( IMP::core::DistancePairScore, DistancePairScores);
-     IMP_SWIG_OBJECTS( IMP::core::DistanceRestraint, DistanceRestraints);
-     IMP_SWIG_OBJECTS( IMP::core::DistanceToSingletonScore, DistanceToSingletonScores);
-     IMP_SWIG_OBJECTS( IMP::core::ExcludedVolumeRestraint, ExcludedVolumeRestraints);
-     IMP_SWIG_OBJECTS( IMP::core::FixedRefiner, FixedRefiners);
-     IMP_SWIG_OBJECTS( IMP::core::GridClosePairsFinder, GridClosePairsFinders);
-     IMP_SWIG_OBJECTS( IMP::core::Harmonic, Harmonics);
-     IMP_SWIG_OBJECTS( IMP::core::HarmonicLowerBound, HarmonicLowerBounds);
-     IMP_SWIG_OBJECTS( IMP::core::HarmonicUpperBound, HarmonicUpperBounds);
-     IMP_SWIG_OBJECTS( IMP::core::IncrementalBallMover, IncrementalBallMovers);
-     IMP_SWIG_OBJECTS( IMP::core::LeavesRefiner, LeavesRefiners);
-     IMP_SWIG_OBJECTS( IMP::core::Linear, Linears);
-     IMP_SWIG_OBJECTS( IMP::core::MonteCarlo, MonteCarlos);
-     IMP_SWIG_OBJECTS( IMP::core::NormalMover, NormalMovers);
-     IMP_SWIG_OBJECTS( IMP::core::NormalizedSphereDistancePairScore, NormalizedSphereDistancePairScores);
-     IMP_SWIG_OBJECTS( IMP::core::OpenCubicSpline, OpenCubicSplines);
-     IMP_SWIG_OBJECTS( IMP::core::PairConstraint, PairConstraints);
-     IMP_SWIG_OBJECTS( IMP::core::PairRestraint, PairRestraints);
-     IMP_SWIG_OBJECTS( IMP::core::QuadConstraint, QuadConstraints);
-     IMP_SWIG_OBJECTS( IMP::core::QuadRestraint, QuadRestraints);
-     IMP_SWIG_OBJECTS( IMP::core::QuadraticClosePairsFinder, QuadraticClosePairsFinders);
-     IMP_SWIG_OBJECTS( IMP::core::RefinedPairsPairScore, RefinedPairsPairScores);
-     IMP_SWIG_OBJECTS( IMP::core::RigidBodyDistancePairScore, RigidBodyDistancePairScores);
-     IMP_SWIG_OBJECTS( IMP::core::RigidBodyMover, RigidBodyMovers);
-     IMP_SWIG_OBJECTS( IMP::core::RigidClosePairsFinder, RigidClosePairsFinders);
-     IMP_SWIG_OBJECTS( IMP::core::RigidMembersRefiner, RigidMembersRefiners);
-     IMP_SWIG_OBJECTS( IMP::core::SingletonConstraint, SingletonConstraints);
-     IMP_SWIG_OBJECTS( IMP::core::SingletonRestraint, SingletonRestraints);
-     IMP_SWIG_OBJECTS( IMP::core::SphereDistancePairScore, SphereDistancePairScores);
-     IMP_SWIG_OBJECTS( IMP::core::SphereDistanceToSingletonScore, SphereDistanceToSingletonScores);
-     IMP_SWIG_OBJECTS( IMP::core::SteepestDescent, SteepestDescents);
-     IMP_SWIG_OBJECTS( IMP::core::TableRefiner, TableRefiners);
-     IMP_SWIG_OBJECTS( IMP::core::Transform, Transforms);
-     IMP_SWIG_OBJECTS( IMP::core::TransformedDistancePairScore, TransformedDistancePairScores);
-     IMP_SWIG_OBJECTS( IMP::core::TripletConstraint, TripletConstraints);
-     IMP_SWIG_OBJECTS( IMP::core::TripletRestraint, TripletRestraints);
-     IMP_SWIG_OBJECTS( IMP::core::TruncatedHarmonicBound, TruncatedHarmonicBounds);
-     IMP_SWIG_OBJECTS( IMP::core::TruncatedHarmonicLowerBound, TruncatedHarmonicLowerBounds);
-     IMP_SWIG_OBJECTS( IMP::core::TruncatedHarmonicUpperBound, TruncatedHarmonicUpperBounds);
-     IMP_SWIG_OBJECTS( IMP::core::TypedPairScore, TypedPairScores);
-     IMP_SWIG_OBJECTS( IMP::core::VolumeRestraint, VolumeRestraints);
-     IMP_SWIG_OBJECTS( IMP::core::WeightedSphereDistancePairScore, WeightedSphereDistancePairScores);
-
-    IMP_SWIG_OBJECTS( IMP::core::Mover, Movers);
     %template(TruncatedHarmonicLowerBound) ::IMP::core::TruncatedHarmonic<LOWER>;
     %template(TruncatedHarmonicUpperBound) ::IMP::core::TruncatedHarmonic<UPPER>;
     %template(TruncatedHarmonicBound) ::IMP::core::TruncatedHarmonic<BOTH>;
-    IMP_SWIG_DECORATORS(XYZ, XYZs, Particles)
-    IMP_SWIG_DECORATORS(XYZR, XYZRs, XYZs)
-    IMP_SWIG_DECORATORS(RigidBody, RigidBodies, XYZs)
-    IMP_SWIG_DECORATORS(RigidMember, RigidMembers, XYZs)
-    //IMP_SWIG_DECORATORS( Centroid, Centroids, XYZs);
-    //IMP_SWIG_DECORATORS( Cover, Covers, XYZRs);
-
-    /* Swig bitches about it having "the same name" as IMP.atom.Hierarchies
-       even though it doesn't. */
-    %template(GenericHierarchies) ::IMP::DecoratorsWithTraits<IMP::core::Hierarchy,
-                                                       IMP::Particles,
-                                                       IMP::core::HierarchyTraits>;
-    %template(GenericHierarchiesTemp) ::IMP::DecoratorsWithTraits<IMP::core::Hierarchy, IMP::ParticlesTemp, IMP::core::HierarchyTraits>;
     // swig screws up on scopes, I can't be bothered to fix it
     //%template(show_named_hierarchy) show<::IMP::core::Name>;
   }

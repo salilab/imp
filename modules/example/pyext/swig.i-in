@@ -1,9 +1,15 @@
+/* Tell swig how to treat various types when moving them to and from pyton */
+IMP_SWIG_OBJECT(IMP::example, ExampleRestraint, ExampleRestraints);
+IMP_SWIG_DECORATOR(IMP::example, ExampleDecorator, ExampleDecorators);
+IMP_SWIG_OBJECT(IMP::example, ExampleUnaryFunction, ExampleUnaryFunctions);
+IMP_SWIG_OBJECT(IMP::example, ExampleSingletonModifier, ExampleSingletonModifiers);
+
 /* One can add python methods to your module by putting code in %pythoncode blocks
    This function can be called as IMP.examples.say_hello(). */
 %pythoncode %{
 def create_model_and_particles():
   m= IMP.Model()
-  sc= IMP.container.ListSingletonContainer()
+  sc= IMP.container.ListSingletonContainer(m)
   b= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
                                IMP.algebra.Vector3D(10,10,10))
   for i in range(0,100):

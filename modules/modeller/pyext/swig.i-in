@@ -1,3 +1,5 @@
+IMP_SWIG_OBJECT(IMP::modeller, MultipleBinormalRestraint, MultipleBinormalRestraints);
+
 /* Include top-level Python interface */
 %include "IMP_modeller_init.i"
 

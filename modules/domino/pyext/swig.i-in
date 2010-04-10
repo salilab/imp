@@ -1,8 +1,8 @@
-IMP_DIRECTOR_MODULE_CLASS(domino, DiscreteSampler);
-IMP_DIRECTOR_MODULE_CLASS(domino, DiscreteSet);
-IMP_DIRECTOR_MODULE_CLASS(domino, RestraintEvaluatorI);
-
-//%include "std_map.i"
+//IMP_SWIG_BASE_OBJECT(IMP::domino, DiscreteSampler, DiscreteSamplers);
+//IMP_SWIG_BASE_OBJECT(IMP::domino, DiscreteSet, DiscreteSets);
+//IMP_SWIG_BASE_OBJECT(IMP::domino, RestraintEvaluatorI, RestraintEvaluatorIs);
+IMP_SWIG_OBJECT(IMP::domino, DominoOptimizer, DominoOptimizers);
+IMP_SWIG_OBJECT(IMP::domino, SimpleDiscreteRestraint, SimpleDiscreteRestraints);
 
 /* Wrap our own classes */
 %include "IMP/domino/CombState.h"

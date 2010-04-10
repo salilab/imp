@@ -1,6 +1,13 @@
-IMP_DIRECTOR_MODULE_CLASS(display, Writer);
-IMP_DIRECTOR_MODULE_CLASS(display, Geometry);
-IMP_DIRECTOR_MODULE_CLASS(display, CompoundGeometry);
+IMP_SWIG_BASE_OBJECT(IMP::display, Writer, Writers);
+IMP_SWIG_BASE_OBJECT(IMP::display, Geometry, Geometries);
+IMP_SWIG_OBJECT(IMP::display, BildWriter, BildWriters);
+IMP_SWIG_OBJECT(IMP::display, ChimeraWriter, ChimeraWriters);
+IMP_SWIG_OBJECT(IMP::display, CMMWriter, CMMWriters);
+IMP_SWIG_OBJECT(IMP::display, PymolWriter, PymolWriters);
+IMP_SWIG_DECORATOR(IMP::display, Colored, Coloreds);
+IMP_SWIG_VALUE(IMP::display, Color, Colors);
+IMP_SWIG_OBJECT(IMP::display, FilterGeometry, FilterGeometries);
+IMP_SWIG_OBJECT(IMP::display, LogOptimizerState, LogOptimizerStates);
 
 %warnfilter(403) Geometry;
 %warnfilter(403) Writer;
@@ -25,9 +32,3 @@ IMP_DIRECTOR_MODULE_CLASS(display, CompoundGeometry);
 %include "IMP/display/particle_geometry.h"
 %include "IMP/display/PDBOptimizerState.h"
 %include "IMP/display/PymolWriter.h"
-
-namespace IMP {
-namespace display {
-  %template(Geometries) ::IMP::VectorOfRefCounted< ::IMP::display::Geometry*>;
- }
-}

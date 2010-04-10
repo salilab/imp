@@ -1,25 +1,43 @@
 %include "IMP/algebra/algebra_macros.h"
 
-namespace IMP {
-  namespace algebra {
-    typedef BoundingBoxD<3> BoundingBox3D;
-    typedef VectorD<2> Vector2D;
-    typedef VectorD<3> Vector3D;
-    typedef VectorD<4> Vector4D;
+%pythoncode %{
+def get_vector(v):
+   try:
+      return v.get_coordinates()
+   except:
+      return v
+def get_sphere(v):
+   try:
+      return v.get_sphere()
+   except:
+      return v
+%}
 
-    /* Copy returned references to non-refcounted classes */
-    %apply REFCOPY & { const Rotation2D & };
-    %apply REFCOPY & { const Rotation3D & };
-    %apply REFCOPY & { const VectorD<2> & };
-    %apply REFCOPY & { const Vector2D & };
-    %apply REFCOPY & { const VectorD<3> & };
-    %apply REFCOPY & { const Vector3D & };
-    %apply REFCOPY & { const VectorD<4> & };
-    %apply REFCOPY & { const Vector4D & };
-    %apply REFCOPY & { const BoundingBoxD<3> & };
-    %apply REFCOPY & { const BoundingBox3D & };
-  }
-}
+IMP_SWIG_VALUE(IMP::algebra,  Rotation2D, Rotation2Ds);
+IMP_SWIG_VALUE(IMP::algebra,  Rotation3D, Rotation3Ds);
+IMP_SWIG_VALUE(IMP::algebra,  Transformation2D, Transformation2Ds);
+IMP_SWIG_VALUE(IMP::algebra,  Transformation3D, Transformation3Ds);
+IMP_SWIG_VALUE(IMP::algebra,  SphericalVector3D, SphericalVector3Ds);
+
+IMP_SWIG_VALUE(IMP::algebra,  AxisAnglePair, AxisAnglePairs);
+IMP_SWIG_VALUE(IMP::algebra,  Cone3D, Cone3Ds);
+IMP_SWIG_VALUE(IMP::algebra,  Cylinder3D, Cylinder3Ds);
+IMP_SWIG_VALUE(IMP::algebra,  Ellipsoid3D, Ellipsoid3Ds);
+IMP_SWIG_VALUE(IMP::algebra,  Plane3D, Plane3Ds);
+IMP_SWIG_VALUE(IMP::algebra,  Segment3D, Segment3Ds);
+IMP_SWIG_VALUE(IMP::algebra,  SpherePatch3D, SpherePatch3Ds);
+
+// we seem to need the non-typedefed name, at least for the first argument
+IMP_SWIG_VALUE(IMP::algebra,  VectorD<2>, Vector2Ds);
+IMP_SWIG_VALUE(IMP::algebra,  VectorD<3>, Vector3Ds);
+IMP_SWIG_VALUE(IMP::algebra,  VectorD<4>, Vector4Ds);
+IMP_SWIG_VALUE(IMP::algebra,  SphereD<2>, Sphere2Ds);
+IMP_SWIG_VALUE(IMP::algebra,  SphereD<3>, Sphere3Ds);
+IMP_SWIG_VALUE(IMP::algebra,  SphereD<4>, Sphere4Ds);
+IMP_SWIG_VALUE(IMP::algebra,  BoundingBoxD<2>, BoundingBox2Ds);
+IMP_SWIG_VALUE(IMP::algebra,  BoundingBoxD<3>, BoundingBox3Ds);
+IMP_SWIG_VALUE(IMP::algebra,  BoundingBoxD<4>, BoundingBox4Ds);
+IMP_SWIG_VALUE(IMP::algebra,  ReferenceFrame3D, ReferenceFrame3Ds);
 
 namespace boost {
 template <class T, int D> class multi_array{};
@@ -98,19 +116,7 @@ namespace IMP {
    %template(AxisAnglePair) ::std::pair<IMP::algebra::VectorD<3>,double>;
    %template(get_transformation_taking_first_to_second) get_transformation_aligning_first_to_second<std::vector<IMP::algebra::VectorD<3> >, std::vector<IMP::algebra::VectorD<3> > >;
    // rotation operations
-   IMP_SWIG_VALUES(Rotation2D, Rotation2Ds);
-   IMP_SWIG_VALUES(Rotation3D, Rotation3Ds);
-   IMP_SWIG_VALUES(Transformation2D, Transformation2Ds);
-   IMP_SWIG_VALUES(Transformation3D, Transformation3Ds);
-   IMP_SWIG_VALUES(SphericalVector3D, SphericalVector3Ds);
 
-   IMP_SWIG_VALUES(AxisAnglePair, AxisAnglePairs);
-   IMP_SWIG_VALUES(Cone3D, Cone3Ds);
-   IMP_SWIG_VALUES(Cylinder3D, Cylinder3Ds);
-   IMP_SWIG_VALUES(Ellipsoid3D, Ellipsoid3Ds);
-   IMP_SWIG_VALUES(Plane3D, Plane3Ds);
-   IMP_SWIG_VALUES(Segment3D, Segment3Ds);
-   IMP_SWIG_VALUES(SpherePatch3D, SpherePatch3Ds);
    IMP_SWIG_VALUES(ReferenceFrame3D, ReferenceFrame3Ds);
  }
 }
