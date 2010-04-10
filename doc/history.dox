@@ -1,4 +1,15 @@
 /** \page recent Change History
+
+\par Week of April 1, 2010
+
+- All plural objects in python are now simply python lists rather than C++ recreations of python lists. This makes compilation of the wrappers much, much, much faster. The visible changes are
+   - types are not checked until the lists are passed to C++
+   - passing std::vector types by pointer and storing passed std::vector types by pointer will not work (but should never have been done anyway from code exposed to python)
+   - swig has issues with some overloads (not always for obvious reasons). These are being sorted out. None are commonly used.
+   - get_particles() on a plural object doesn't work in python (and is not needed in C++). Implicit conversions will always work.
+
+- All containers need to know the model at time of construction. If, after updating, you get an error on a container constructor, just add the model as the first argument. This also means that emtpy lists of particles in the constructors cause check failures. We can figure out a work around if this is too annoying.
+
 \par Week of March 13, 2010
 - function get_rotation_in_radians_about_axis() was renamed to get_rotation_about_axis() as it didn't parse and we don't have the "in radians" elsewhere.
 
