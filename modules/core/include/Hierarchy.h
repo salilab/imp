@@ -235,9 +235,6 @@ public:
 
   //! Get the default hierarchy traits
   static const HierarchyTraits& get_default_traits();
-  static const HierarchyTraits& get_default_decorator_traits() {
-    return get_default_traits();
-  }
 #ifndef IMP_DOXYGEN
   const ParticlesTemp& get_leaves() const;
 #endif
