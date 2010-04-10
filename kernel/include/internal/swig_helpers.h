@@ -564,10 +564,6 @@ namespace swig {
 
 }
 
-inline IMP::Particle *get_particle(IMP::Particle *p) {
-   return p;
-}
-
 IMP_END_INTERNAL_NAMESPACE
 
 #endif  /* IMP_INTERNAL_SWIG_HELPERS_H */
