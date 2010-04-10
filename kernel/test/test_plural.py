@@ -7,9 +7,9 @@ plural_exceptions=['Decorator', 'WarningContext', "SetLogTarget", "RefCounted",
             "IntKeyBase", "StringKeyBase","ParticleKeyBase", "ObjectKeyBase",
             "ParticlesList", "FailureHandlerBase", "IncreaseIndent",
             "ScoreStatePointer", "SingletonFunctor", "PairFunctor",
-            "TripletFunctor", "QuadFunctor"]
+            "TripletFunctor", "QuadFunctor", 'IntPair', 'Object']
 
-show_exceptions=["IntRange", "DerivativeAccumulator", "TextInput", "TextOutput",'Decorator', 'IncreaseIndent', 'PairFunctor', 'ParticlesList', 'QuadFunctor', 'RandomNumberGenerator', 'RefCounted', 'ScopedFailureHandler', 'ScoreStatePointer', 'SetLogTarget', 'SingletonFunctor', 'TripletFunctor', 'WarningContext']
+show_exceptions=["IntRange", "DerivativeAccumulator", "TextInput", "TextOutput",'Decorator', 'IncreaseIndent', 'PairFunctor', 'ParticlesList', 'QuadFunctor', 'RandomNumberGenerator', 'RefCounted', 'ScopedFailureHandler', 'ScoreStatePointer', 'SetLogTarget', 'SingletonFunctor', 'TripletFunctor', 'WarningContext', 'DerivativePair', 'FloatPair', 'IntPair', 'ParticlePair', 'ParticleQuad', 'ParticleTriplet']
 
 class DirectoriesTests(IMP.test.TestCase):
 
