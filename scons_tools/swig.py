@@ -10,11 +10,10 @@ import re
 base_includes= ["IMP_macros.i",
                 "IMP_exceptions.i",
                 "IMP_directors.i",
+                "IMP_types.i",
                 "IMP_refcount.i",
                 "IMP_streams_kernel.i",
-                "IMP_streams.i",
-                "IMP_decorators.i",
-                "IMP_typemaps.i"]
+                "IMP_streams.i",]
 
 
 # 1. Workaround for SWIG bug #1863647: Ensure that the PySwigIterator class
@@ -60,7 +59,11 @@ def _action_swig_file(target, source, env):
 
 %%module(directors="1") "%s"
 %%{
+#include <boost/type_traits/is_convertible.hpp>
+#include <boost/utility/enable_if.hpp>
 #include "IMP.h"
+#include "IMP/internal/swig_helpers.h"
+#include "IMP/internal/swig.h"
 """%vars['module_include_path'].replace("/", ".")]
     for d in deps:
         if d != "kernel":
@@ -78,12 +81,6 @@ def _action_swig_file(target, source, env):
         preface.append('%include "'+ i + '"')
     preface.append("""
 %%include "typemaps.i"
-
-/* Don't wrap classes that provide no methods usable in Python */
-%%ignore IMP::ValidDefault;
-%%ignore IMP::NullDefault;
-%%ignore IMP::UninitializedDefault;
-%%ignore IMP::Comparable;
 """%vars)
     preface.append(warning)
 
