@@ -4,6 +4,7 @@ files = [
          'deprecation.cpp',
          'directories.cpp',
          'particle_save.cpp',
+         'swig.cpp',
         ]
 
 files = [File(x) for x in files]
