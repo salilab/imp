@@ -715,9 +715,8 @@ namespace {
 
 
 //! Constructor
-Model::Model()
+Model::Model(std::string name): Object(name)
 {
-  set_name("Model");
   cur_stage_=NOT_EVALUATING;
   incremental_update_=false;
   first_incremental_=true;
@@ -733,7 +732,7 @@ Model::~Model()
   IMP_CHECK_OBJECT(this);
   for (ParticleIterator it= particles_begin();
        it != particles_end(); ++it) {
-    (*it)->ps_->model_ = NULL;
+    (*it)->m_ = NULL;
     internal::unref(*it);
   }
 }
