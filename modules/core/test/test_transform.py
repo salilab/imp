@@ -74,7 +74,7 @@ class DistanceTests(IMP.test.TestCase):
         t= IMP.algebra.Vector3D(0,1,0)
         tps= IMP.core.TransformedDistancePairScore(IMP.core.Harmonic(0,1),
                                            IMP.algebra.Transformation3D(r,t))
-        pl= IMP.container.ListPairContainer()
+        pl= IMP.container.ListPairContainer(m)
         pr= IMP.container.PairsRestraint(tps, pl)
         pl.add_particle_pair(IMP.ParticlePair(p0, p1))
         m.add_restraint(pr)
