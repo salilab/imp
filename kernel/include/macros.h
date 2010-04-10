@@ -490,6 +490,10 @@ public:                                                                 \
  typedef Parent DecoratorTraitsBase;                                    \
  typedef TraitsType DecoratorTraits;                                    \
  const DecoratorTraits& get_decorator_traits() const {return traits_;}  \
+ static const DecoratorTraits& get_default_decorator_traits() {         \
+   static TraitsType dt= default_traits;                                \
+   return dt;                                                           \
+ }                                                                      \
  IMP_NO_DOXYGEN(typedef boost::true_type DecoratorHasTraits);
 
 
@@ -2015,21 +2019,19 @@ protected:                                      \
 
 
 #ifndef IMP_DOXYGEN
+#ifdef __GNU__
 //! Use this to label a function with no side effects
 /** \advanced */
-#ifdef __GNU__
 #define IMP_NO_SIDEEFFECTS __attribute__ ((pure))
-#else
-#define IMP_NO_SIDEEFFECTS
-#endif
-
-
 //! Use this to make the compiler (possibly) warn if the result is not used
 /** \advanced */
-#ifdef __GNU__
 #define IMP_WARN_UNUSED_RESULT __attribute__ ((warn_unused_result))
+//! restrict means that a variable is not aliased with this function
+#define IMP_RESTRICT __restrict__
 #else
+#define IMP_NO_SIDEEFFECTS
 #define IMP_WARN_UNUSED_RESULT
+#define IMP_RESTRICT
 #endif
 
 #endif
