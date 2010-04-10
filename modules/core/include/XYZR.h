@@ -94,10 +94,6 @@ public:
   static FloatKey get_default_radius_key() {
     return IMP::internal::xyzr_keys[3];
   }
-  //! Get default radius key by another name
-  static FloatKey get_default_decorator_traits() {
-    return get_default_radius_key();
-  }
   void add_to_radius_derivative(double v,
                                 DerivativeAccumulator &d) {
     get_particle()->add_to_derivative(get_radius_key(), v, d);
