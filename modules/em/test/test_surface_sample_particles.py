@@ -34,7 +34,7 @@ class SampleTests(IMP.test.TestCase):
             self.particles.append(p)
         self.particle_indexes = IMP.Ints()
         for i in range(npart):
-            self.particle_indexes.push_back(i)
+            self.particle_indexes.append(i)
         print "initialization done ..."
 
     def test_sample_map(self):
