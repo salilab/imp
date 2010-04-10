@@ -23,7 +23,7 @@ class DummyRestraint(IMP.Restraint):
     def get_version_info(self):
         return IMP.VersionInfo("Me", "0.5")
     def get_input_particles(self):
-        return IMP.ParticlesTemp(1,self.p)
+        return IMP.ParticlesTemp([self.p])
     def get_input_containers(self):
         return IMP.ContainersTemp()
 
@@ -61,7 +61,7 @@ class DummyIncrementalRestraint(IMP.Restraint):
     def get_version_info(self):
         return IMP.VersionInfo("Me", "0.5")
     def get_input_particles(self):
-        return IMP.ParticlesTemp(1,self.p)
+        return IMP.ParticlesTemp([self.p])
     def get_input_containers(self):
         return IMP.ContainersTemp()
 
