@@ -153,7 +153,7 @@ void RestraintGraph::show(std::ostream& out) const
 void RestraintGraph::set_sampling_space(DiscreteSampler &ds_)
 {
   for (unsigned int vi = 0; vi < num_vertices(g_); vi++) {
-    IMP_LOG(VERBOSE,"Initializing node number " << vi <<std::endl);
+    IMP_LOG(TERSE,"Initializing node number " << vi <<std::endl);
     JNode *j = node_data_[vi];
     IMP_USAGE_CHECK(j != NULL,
              "the nodes of the restraint graph have not been initialized");
@@ -163,8 +163,10 @@ void RestraintGraph::set_sampling_space(DiscreteSampler &ds_)
        it != edge_data_.end(); it++) {
     it->second->init_separators();
   }
+  IMP_LOG(TERSE,"going to clear inference data"<<std::endl);
   clear_infered_data();
   sampling_space_set_=true;
+  IMP_LOG(TERSE,"finish setting sampling space"<<std::endl);
 }
 void RestraintGraph::clear_infered_data() {
   infered_=false;
@@ -181,31 +183,34 @@ void RestraintGraph::show_sampling_space(std::ostream& out) const
     j->show_sampling_space(out);
   }
 }
-JNode * RestraintGraph::get_node(const Particles &ps)
+JNode * RestraintGraph::get_node(container::ListSingletonContainer *ps)
 {
   std::vector<int> inter;
   for (unsigned int vi = 0; vi < num_vertices(g_); vi++) {
     JNode *j = node_data_[vi];
-    if (j->is_part(ps)) {
+    if (j->is_part(ps->get_particles())) {
       return j;
     }
   }
-  IMP_INTERNAL_CHECK(true,
+  IMP_INTERNAL_CHECK(false,
     "RestraintGraph::get_node the input set of particles"
      << " is not part of any of the nodes in the graph"<<std::endl);
   return NULL;
 }
 
-void RestraintGraph::initialize_potentials(Restraint *r, Particles *ps,
-                                           Float weight) {
+void RestraintGraph::initialize_potentials(
+    Restraint *r,
+    container::ListSingletonContainer *ps,
+    Float weight) {
   JNode *jn = NULL;
-  jn = get_node(*ps);
+  jn = get_node(ps);
   if (jn == NULL) { // TODO - should use IMP_INTERNAL_CHECK
     IMP_WARN(" no node - the restraint : " << *r
              << " between particles: ");
-    for (Particles::const_iterator ii = ps->begin();ii < ps->end();ii++) {
-      IMP_WARN( (*ii)->get_value(node_name_key()) << " ("
-                <<(*ii)->get_value(node_name_key()) <<"):: ");
+    for (int i=0;i<ps->get_number_of_particles();i++){
+      Particle *p = ps->get_particle(i);
+      IMP_WARN( p->get_value(node_name_key()) << " ("
+                <<p->get_value(node_name_key()) <<"):: ");
     }
     IMP_WARN( " has not been realized." << std::endl);
   }
@@ -380,8 +385,7 @@ void RestraintGraph::update(unsigned int w, unsigned int v)
   IMP_LOG(VERBOSE,"RestraintGraph::update before min_marginalize"<< std::endl);
   e->min_marginalize(v_data, w_data);
   //now update the to_node according to the new separators
-  Particles intersection_set;
-  v_data->get_intersection(*w_data, intersection_set);
+  Particles intersection_set = v_data->get_intersection(*w_data);
   IMP_LOG(VERBOSE,"RestraintGraph::update before update potentials"
                   << std::endl);
   w_data->update_potentials(*(e->get_old_separators(w_data)),
@@ -412,7 +416,7 @@ Float RestraintGraph::move_to_configuration(const CombState &comb) const {
   Float score=0.0;
   for (std::vector<JNode *>::const_iterator it = node_data_.begin();
        it != node_data_.end(); it++) {
-    CombState *node_state = comb.get_partial(*((*it)->get_particles()));
+    CombState *node_state = comb.get_partial((*it)->get_particles());
     (*it)->move2state(node_state);
     score += (*it)->get_score(comb);
     delete(node_state);
@@ -462,16 +466,16 @@ const CombState *RestraintGraph::get_opt_combination(unsigned int i) const {
   return (*min_combs_)[i];
 }
 
-Particles RestraintGraph::get_particles() const {
-  Particles ps;
-  std::map<std::string,Particle *> build_ps;
+ParticlesTemp RestraintGraph::get_particles() const {
+  ParticlesTemp ps;
+  std::map<Particle *,Particle *> build_ps;
   for (unsigned int vi = 0;vi < num_vertices(g_);vi++) {
     JNode *j = node_data_[vi];
-    const Particles *node_particles = j->get_particles();
-    for(Particles::const_iterator it = node_particles->begin();
-        it != node_particles->end();it++) {
-      if (build_ps.find((*it)->get_name()) == build_ps.end()) {
-        build_ps[(*it)->get_name()]=*it;
+    ParticlesTemp node_particles = j->get_particles();
+    for(ParticlesTemp::const_iterator it = node_particles.begin();
+        it != node_particles.end();it++) {
+      if (build_ps.find(*it) == build_ps.end()) {
+        build_ps[*it]=*it;
         ps.push_back(*it);
       }
     }

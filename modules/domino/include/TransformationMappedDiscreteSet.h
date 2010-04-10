@@ -27,10 +27,12 @@ class IMPDOMINOEXPORT TransformationMappedDiscreteSet : public MappedDiscreteSet
 {
 public:
   //! Constructor
+  TransformationMappedDiscreteSet();
+  //! Constructor
   /**
   /param[in] ps_target particles to be mapped on a discrete set
    */
-  TransformationMappedDiscreteSet(const Particles &ps_target);
+  TransformationMappedDiscreteSet(container::ListSingletonContainer *ps_target);
 };
 
 IMPDOMINO_END_NAMESPACE

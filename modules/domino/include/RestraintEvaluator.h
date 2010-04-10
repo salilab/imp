@@ -16,6 +16,7 @@
 #include <IMP/base_types.h>
 #include <vector>
 #include <IMP/ScoreState.h>
+#include <IMP/container/ListSingletonContainer.h>
 
 IMPDOMINO_BEGIN_NAMESPACE
 
@@ -31,7 +32,7 @@ but a score state that work on :
 [A,D] will not be returned.
  */
 IMPDOMINOEXPORT ScoreStates get_used_score_states(
-       const IMP::Particles &ps, Model *m);
+   container::ListSingletonContainer *ps);
 //! A direct restraint evaluator
 /**
  */
@@ -55,20 +56,19 @@ public:
    */
   void calc_scores(const Combinations &comb_states,
                    CombinationValues &comb_values,
-                   Restraint *r, const Particles &ps);
+                   Restraint *r, container::ListSingletonContainer *ps);
   void show(std::ostream& out = std::cout) const{
     out<<"RestraintEvaluator"<<std::endl;
   }
 protected:
   //TODO - this function should be changed once we will have the
   //new kernel functionalities.
-  void update_score_states(const IMP::Particles &ps) {
-    if (ps.size() == 0) {
+  void update_score_states(container::ListSingletonContainer *ps) {
+    if (ps->get_number_of_particles() == 0) {
       IMP_WARN("calling update score states with no particles" << std::endl);
       return;
     }
-    Model *m = ps[0]->get_model();
-    ScoreStates score_states = get_used_score_states(ps,m);
+    ScoreStates score_states = get_used_score_states(ps);
     IMP_LOG(VERBOSE,"there are " << score_states.size() <<
                     " score states"<<std::endl);
     for(ScoreStates::const_iterator it = score_states.begin();

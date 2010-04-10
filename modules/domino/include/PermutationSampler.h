@@ -35,7 +35,8 @@ public:
   */
   PermutationSampler(DiscreteSet *ds, const Particles &ps);
   void show(std::ostream& out = std::cout) const;
-  void populate_states_of_particles(Particles *particles,
+  void populate_states_of_particles(
+               container::ListSingletonContainer *particles,
                std::map<std::string, CombState *> *states) const;
   void move2state(const CombState *cs);
   //! Show the sampling space of a single particle

@@ -14,6 +14,7 @@
 #include "IMP/base_types.h"
 #include "domino_config.h"
 #include "DiscreteSet.h"
+#include <IMP/container/ListSingletonContainer.h>
 
 IMPDOMINO_BEGIN_NAMESPACE
 
@@ -28,17 +29,19 @@ class IMPDOMINOEXPORT MappedDiscreteSet : public DiscreteSet
 {
 public:
   //! Constructor
+  MappedDiscreteSet();
+  //! Constructor
   /**
   /param[in] ps_target particles to be mapped on a discrete set
    */
-  MappedDiscreteSet(const Particles &ps_target);
+  MappedDiscreteSet(container::ListSingletonContainer *ps_target);
   //! Create the discrete set
   /** \param[in] ps_target the set of particles to be mapped on a
       discrete set
       \param[in] atts the attributes for the states held in the set
    */
-  MappedDiscreteSet(Particles *ps_target,
-                    const std::vector<FloatKey> &atts);
+  MappedDiscreteSet(container::ListSingletonContainer *ps_target,
+                    FloatKeys atts);
 
   //! Add a new state to the set.
   /** \exception if the new state does not have values for all of the

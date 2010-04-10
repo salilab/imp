@@ -39,12 +39,19 @@ void DominoOptimizer::set_sampling_space(DiscreteSampler *ds)
 {
   ds_ = ds;
   g_->set_sampling_space(*ds_);
-  Restraint *r; Particles ps; Float w;
+  Restraint *r; container::ListSingletonContainer *ps; Float w;
   for(std::vector<OptTuple>::iterator it = rs_.begin(); it != rs_.end();it++) {
     r = boost::get<0>(*it);
     ps = boost::get<1>(*it);
     w = boost::get<2>(*it);
-    g_->initialize_potentials(r,&ps,w);
+    std::cout<<"=========="<<std::endl;
+    r->show();
+    std::cout<<"=========="<<std::endl;
+    boost::get<1>(*it)->show();
+    std::cout<<"=========="<<std::endl;
+    ps->show();
+    std::cout<<"======||||===="<<std::endl;
+    g_->initialize_potentials(r,ps,w);
   }
   IMP_LOG(VERBOSE,"DominoOptimizer::set_sampling_space after potential"
           << " initialization"<<std::endl);
@@ -152,7 +159,8 @@ void DominoOptimizer::score_combinations(const CombStates &states,
      score=0.;
      scores.push_back(Floats());
      for (unsigned int i=0;i<rs_.size();i++) {
-       std::string partial_key = (*it)->partial_key(&(boost::get<1>(rs_[i])));
+       std::string partial_key =
+           (*it)->get_partial_key(boost::get<1>(rs_[i]));
        scores[scores.size()-1].push_back(comb_values[i][partial_key]);
      }
    }
@@ -225,7 +233,11 @@ void DominoOptimizer::add_restraint_recursive(Restraint *rs, Float weight)
                <<" lists with more than one set of particles for a single "
                <<"restraint: "
                << rs->get_interacting_particles().size());
-     rs_.push_back(OptTuple(rs,rs->get_interacting_particles()[0],weight));
+     rs_.push_back(OptTuple(
+         rs,
+         new container::ListSingletonContainer(
+           rs->get_interacting_particles()[0]),
+           weight));
    }
 }
 
@@ -233,6 +245,8 @@ void DominoOptimizer::add_restraint(Restraint *r) {
   add_restraint_recursive(r,1.0);
 }
 void DominoOptimizer::add_restraint(Restraint *r,Particles ps,float weight) {
-  rs_.push_back(OptTuple(r,ps,weight));
+  rs_.push_back(OptTuple(r,
+                         new container::ListSingletonContainer(ps),
+                         weight));
 }
 IMPDOMINO_END_NAMESPACE

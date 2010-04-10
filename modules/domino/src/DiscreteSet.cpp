@@ -9,7 +9,7 @@
 
 IMPDOMINO_BEGIN_NAMESPACE
 
-DiscreteSet::DiscreteSet(const std::vector<FloatKey> &atts) {
+DiscreteSet::DiscreteSet(FloatKeys atts) {
   atts_.insert(atts_.begin(),atts.begin(),atts.end());
 }
 void DiscreteSet::add_state(Particle* p) {

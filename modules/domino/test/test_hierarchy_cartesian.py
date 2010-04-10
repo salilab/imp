@@ -56,7 +56,8 @@ class DOMINOTests(IMP.test.TestCase):
         self.d_opt = IMP.domino.DominoOptimizer(self.jt,self.imp_model,self.re)
 
     def __set_discrete_sampling_space__(self):
-        self.m_discrete_set = IMP.domino.TransformationMappedDiscreteSet(self.particles)
+        self.ps_cont = IMP.container.ListSingletonContainer(self.particles)
+        self.m_discrete_set = IMP.domino.TransformationMappedDiscreteSet(self.ps_cont)
         #set 4 optinal centroids for each of the particles
         for j,p in enumerate(self.particles):
             for i in range(3):

@@ -74,7 +74,10 @@ sel=IMP.atom.CAlphaPDBSelector()
 #1. set up the particles
 mhs_ps=IMP.Particles()
 mhs=IMP.atom.Hierarchies()
-for prot_name,chain_id in [["1z5s_A.pdb","A"],["1z5s_B.pdb","B"],["1z5s_C.pdb","C"],["1z5s_D.pdb","D"]]:
+for prot_name,chain_id in [[IMP.domino.get_example_path("1z5s_A.pdb"),"A"],
+                           [IMP.domino.get_example_path("1z5s_B.pdb"),"B"],
+                           [IMP.domino.get_example_path("1z5s_C.pdb"),"C"],
+                           [IMP.domino.get_example_path("1z5s_D.pdb"),"D"]]:
     mhs.append(IMP.atom.read_pdb(IMP.domino.get_example_path(prot_name),
                                  mdl,sel))
     mhs[-1].get_particle().add_attribute(IMP.domino.node_name_key(),chain_id)

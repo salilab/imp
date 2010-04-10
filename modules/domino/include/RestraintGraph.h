@@ -108,7 +108,9 @@ public:
                         hierarhcy level encoded in the graph
       \param[in] weight the weight of the restraint
    */
-  void initialize_potentials(Restraint *r, Particles *ps, Float weight);
+  void initialize_potentials(Restraint *r,
+                             container::ListSingletonContainer *ps,
+                             Float weight);
   unsigned int number_of_nodes() const {
     return  num_vertices(g_);
   }
@@ -117,7 +119,7 @@ public:
   }
   //! Find the top solutions
   /**
-     /param[in] num_of_solutions the number of top solutions to report
+   /param[in] num_of_solutions the number of top solutions to report
    */
   void infer(unsigned int num_of_solutions=1);
 
@@ -154,18 +156,18 @@ public:
   //! \return a node that contains the input set of particles.
   /** It might be that there is more than one such one. The function returns
       the first it finds.
-     \param[in] p the set of particles
+     \param[in] ps the set of particles
      \return a node that contains the input set of particles
      \exception IMP exception if none of the graph nodes contain the given
                 set of particles.
    */
-  JNode * get_node(const Particles &p);
+  JNode * get_node(container::ListSingletonContainer *ps);
   inline bool is_sampling_space_set() const {return sampling_space_set_;}
   //! Get the particles that are associated to the graph nodes
   /**
   \note The function does not consider hierarchies.
    */
-  Particles get_particles() const;
+  ParticlesTemp get_particles() const;
 protected:
   //! Load junction tree and set the restraint graph
   /**
