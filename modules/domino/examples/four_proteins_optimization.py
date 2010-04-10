@@ -19,7 +19,8 @@ def create_random_transformation(angle_step=30.,translation_step=4.):
 def setup_discrete_sampling_space(ps):
     mdl=ps[0].get_model()
     atts=IMP.core.XYZ.get_xyz_keys()
-    discrete_set = IMP.domino.MappedDiscreteSet(ps,atts)
+    ps_cont = IMP.container.ListSingletonContainer(ps)
+    discrete_set = IMP.domino.MappedDiscreteSet(ps_cont,atts)
     for p in ps:
         for i in range(NUM_STATES):
             #create a new state
