@@ -1,8 +1,9 @@
 import IMP.atom
 m= IMP.Model()
 prot= IMP.atom.read_pdb(IMP.atom.get_example_path("example_protein.pdb"), m)
+IMP.atom.add_bonds(prot)
 bds= IMP.atom.get_internal_bonds(prot)
-bl= IMP.container.ListSingletonContainer(bds.get_particles())
+bl= IMP.container.ListSingletonContainer(bds)
 h= IMP.core.Harmonic(0,1)
 bs= IMP.atom.BondSingletonScore(h)
 br= IMP.container.SingletonsRestraint(bs, bl)
