@@ -42,7 +42,7 @@ IMP_BEGIN_NAMESPACE
     otherwise this is an error.
  */
 template <unsigned int ID, bool LazyAdd>
-class KeyBase
+class Key
 {
   int str_;
 
@@ -84,21 +84,21 @@ public:
     }
   }
 
-  typedef KeyBase<ID, LazyAdd> This;
+  typedef Key<ID, LazyAdd> This;
 #endif
 
   //! make a default key in a well-defined null state
-  KeyBase(): str_(-1) {}
+  Key(): str_(-1) {}
 
   //! Generate a key from the given string
   /** This operation can be expensive, so please cache the result.*/
-  explicit KeyBase(std::string c) {
+  explicit Key(std::string c) {
     str_= find_index(c);
   }
 
 
 #if !defined(IMP_DOXYGEN)
-  explicit KeyBase(unsigned int i): str_(i) {
+  explicit Key(unsigned int i): str_(i) {
     IMP_INTERNAL_CHECK(str_ >= 0, "Invalid initializer " << i);
     // cannot check here as we need a past end iterator
   }
@@ -122,22 +122,20 @@ public:
 
   IMP_COMPARISONS_1(str_);
 
-  void show(std::ostream &out = std::cout) const {
-    out << "\"" << get_string() << "\"";
-  }
+  IMP_SHOWABLE_INLINE(out << "\"" << get_string() << "\"";);
 
   //! Make new_name an alias for old_key
   /** Afterwards
       \code
-      KeyBase<ID>(old_key.get_string()) == KeyBase<ID>(new_name)
+      Key<ID>(old_key.get_string()) == Key<ID>(new_name)
       \endcode
    */
-  static KeyBase<ID, LazyAdd> add_alias(KeyBase<ID, LazyAdd> old_key,
+  static Key<ID, LazyAdd> add_alias(Key<ID, LazyAdd> old_key,
                                         std::string new_name) {
     IMP_INTERNAL_CHECK(get_map().find(new_name) == get_map().end(),
                "The name is already taken with an existing key or alias");
     IMP::internal::get_key_data(ID).add_alias(new_name, old_key.get_index());
-    return KeyBase<ID, LazyAdd>(new_name.c_str());
+    return Key<ID, LazyAdd>(new_name.c_str());
   }
 
 #ifndef DOXYGEN
@@ -188,26 +186,26 @@ public:
 #ifndef IMP_DOXYGEN
 
 template <unsigned int ID, bool LA>
-std::ostream &operator<<(std::ostream &out, KeyBase<ID, LA> k) {
+std::ostream &operator<<(std::ostream &out, Key<ID, LA> k) {
   k.show(out);
   return out;
 }
 
 template <unsigned int ID, bool LA>
-inline bool KeyBase<ID, LA>::is_default() const
+inline bool Key<ID, LA>::is_default() const
 {
   return str_==-1;
 }
 
 
 template <unsigned int ID, bool LA>
-inline void KeyBase<ID, LA>::show_all(std::ostream &out)
+inline void Key<ID, LA>::show_all(std::ostream &out)
 {
   internal::get_key_data(ID).show(out);
 }
 
 template <unsigned int ID, bool LA>
-std::vector<std::string> KeyBase<ID, LA>::get_all_strings()
+std::vector<std::string> Key<ID, LA>::get_all_strings()
 {
   std::vector<std::string> str;
   for (internal::KeyData::Map::const_iterator it= get_map().begin();
