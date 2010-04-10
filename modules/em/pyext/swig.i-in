@@ -8,7 +8,8 @@ namespace IMP::em {
 
 
 /* Make selected classes extensible in Python */
-IMP_REFCOUNT_RETURN_SINGLE(IMP::em::DensityMap)
+IMP_SWIG_OBJECT(IMP::em, DensityMap, DensityMaps);
+IMP_SWIG_OBJECT(IMP::em, FitRestraint, FitRestraints);
 
 
 

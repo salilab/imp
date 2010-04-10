@@ -1,9 +1,11 @@
 /* Wrap our own classes */
 
-IMP_REFCOUNT_RETURN_SINGLE(IMP::statistics::PartitionalClustering)
-IMP_REFCOUNT_RETURN_SINGLE(IMP::statistics::KMeansClustering)
+IMP_SWIG_OBJECT(IMP::statistics, PartitionalClustering, PartitionalClusterings);
+IMP_SWIG_OBJECT(IMP::statistics, KMeansClustering, KMeansClusterings);
+IMP_SWIG_OBJECT(IMP::statistics, Embedding, Embeddings);
+
 %include "IMP/statistics/statistics_macros.h"
-%include "IMP/statistics/KMLProxy.h"
+//%include "IMP/statistics/KMLProxy.h"
 
 %include "IMP/statistics/PartitionalClustering.h"
 %include "IMP/statistics/point_clustering.h"

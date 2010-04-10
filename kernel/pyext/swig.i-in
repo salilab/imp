@@ -1,21 +1,5 @@
 %include "IMP_config.i"
 
-
-%pythoncode %{
-class DecoratorIterator:
-    def __init__(self, ht):
-        self.i=0
-        self.ht=ht
-    def next(self):
-        if self.i == len(self.ht):
-            raise StopIteration
-        r= self.ht.__getitem__(self.i)
-        self.i= self.i+1
-        return r
-    def __iter__(self):
-        return self
-%}
-
 namespace IMP {
 %warnfilter(403) FailureHandlerBase;
 %warnfilter(473) Refiner;
@@ -25,13 +9,64 @@ namespace IMP {
 %warnfilter(473) Sampler;
 }
 
-// Make sure that Python refcounts any returned pointers to IMP types
-IMP_REFCOUNT_RETURN_SINGLE(IMP::Particle)
-IMP_REFCOUNT_RETURN_SINGLE(IMP::Restraint)
-IMP_REFCOUNT_RETURN_SINGLE(IMP::ScoreState)
-IMP_REFCOUNT_RETURN_SINGLE(IMP::OptimizerState)
-IMP_REFCOUNT_RETURN_SINGLE(IMP::ConfigurationSet)
+IMP_SWIG_BASE_OBJECT(IMP,Constraint, Constraints);
+IMP_SWIG_BASE_OBJECT(IMP,Container, Containers);
+IMP_SWIG_BASE_OBJECT(IMP,FailureHandler, FailureHandlers);
+IMP_SWIG_BASE_OBJECT(IMP,Optimizer, Optimizers);
+IMP_SWIG_BASE_OBJECT(IMP,OptimizerState, OptimizerStates);
+IMP_SWIG_BASE_OBJECT(IMP,PairContainer, PairContainers);
+IMP_SWIG_BASE_OBJECT(IMP,PairFilter, PairFilters);
+IMP_SWIG_BASE_OBJECT(IMP,PairModifier, PairModifiers);
+IMP_SWIG_BASE_OBJECT(IMP,PairScore, PairScores);
+IMP_SWIG_BASE_OBJECT(IMP,QuadContainer, QuadContainers);
+IMP_SWIG_BASE_OBJECT(IMP,QuadFilter, QuadFilters);
+IMP_SWIG_BASE_OBJECT(IMP,QuadModifier, QuadModifiers);
+IMP_SWIG_BASE_OBJECT(IMP,QuadScore, QuadScores);
+IMP_SWIG_BASE_OBJECT(IMP,Refiner, Refiners);
+IMP_SWIG_BASE_OBJECT(IMP,Restraint, Restraints);
+IMP_SWIG_BASE_OBJECT(IMP,Sampler, Samplers);
+IMP_SWIG_BASE_OBJECT(IMP,ScoreState, ScoreStates);
+IMP_SWIG_BASE_OBJECT(IMP,SingletonContainer, SingletonContainers);
+IMP_SWIG_BASE_OBJECT(IMP,SingletonFilter, SingletonFilters);
+IMP_SWIG_BASE_OBJECT(IMP,SingletonModifier, SingletonModifiers);
+IMP_SWIG_BASE_OBJECT(IMP,SingletonScore, SingletonScores);
+IMP_SWIG_BASE_OBJECT(IMP,TripletContainer, TripletContainers);
+IMP_SWIG_BASE_OBJECT(IMP,TripletFilter, TripletFilters);
+IMP_SWIG_BASE_OBJECT(IMP,TripletModifier, TripletModifiers);
+IMP_SWIG_BASE_OBJECT(IMP,TripletScore, TripletScores);
+IMP_SWIG_BASE_OBJECT(IMP,UnaryFunction, UnaryFunctions);
+IMP_SWIG_OBJECT(IMP,ConfigurationSet, ConfigurationSets);
+IMP_SWIG_OBJECT(IMP,DumpModelOnFailure, DumpModelOnFailures);
+IMP_SWIG_OBJECT(IMP,Model, Models);
+//IMP_SWIG_OBJECT(IMP,Object, Objects);
+IMP_SWIG_OBJECT(IMP,Particle, Particles);
+IMP_SWIG_OBJECT(IMP,RestraintSet, RestraintSets);
 
+IMP_SWIG_OBJECT_TUPLE(IMP, ParticlePair, ParticlePairs);
+IMP_SWIG_OBJECT_TUPLE(IMP, ParticleTriplet, ParticleTriplets);
+IMP_SWIG_OBJECT_TUPLE(IMP, ParticleQuad, ParticleQuads);
+
+IMP_SWIG_PAIR(IMP, Float, FloatPair, FloatPairs);
+IMP_SWIG_PAIR(IMP, Double, DerivativePair, DerivativePairs);
+IMP_SWIG_PAIR(IMP, Int, IntPair, Ints);
+
+IMP_SWIG_VALUE(IMP, VersionInfo, VersionInfos);
+IMP_SWIG_VALUE(IMP, TextOutput, TextOutputs);
+IMP_SWIG_VALUE(IMP, TextInput, TextInputs);
+IMP_SWIG_VALUE(IMP, DerivativeAccumulator, DerivativeAccumulators);
+IMP_SWIG_VALUE(IMP, FloatKey, FloatKeys);
+IMP_SWIG_VALUE(IMP, IntKey, IntKeys);
+IMP_SWIG_VALUE(IMP, StringKey, StringKeys);
+IMP_SWIG_VALUE(IMP, ParticleKey, ParticleKeys);
+IMP_SWIG_VALUE(IMP, ObjectKey, ObjectKeys);
+IMP_SWIG_VALUE(IMP, Float, Floats);
+IMP_SWIG_VALUE(IMP, Int, Ints);
+IMP_SWIG_VALUE(IMP, String, Strings);
+
+IMP_SWIG_DECORATOR(IMP::internal, _TrivialDecorator, _TrivialDecorators);
+IMP_SWIG_DECORATOR(IMP::internal, _TrivialDerivedDecorator, _TrivialDerivedDecorators);
+IMP_SWIG_DECORATOR_WITH_TRAITS(IMP::internal, _TrivialTraitsDecorator, _TrivialTraitsDecorators);
+IMP_SWIG_OBJECT(IMP::internal, _ConstRestraint, _ConstRestraints);
 
 namespace IMP {
   %typemap(out) std::pair<double,double> {
@@ -48,78 +83,59 @@ namespace IMP {
   }
 }
 
-%extend IMP::KeyBase {
-   bool __eq__(KeyBase<ID, LazyAdd> o) {
-      return *self == o;
-   }
-   std::string __str__() const {
-      return self->get_string();
-   }
-}
-
-
-%define IMP_SWIG_OBJECTS(Name, PluralName)
-%template(PluralName) ::IMP::VectorOfRefCounted< Name*, IMP::RefCounted::Policy >;
-%template(PluralName##Temp) ::std::vector< Name* >;
-%implicitconv Name ;
-%enddef
-
-%define IMP_SWIG_VALUES(Name, PluralName)
-%template(PluralName) ::std::vector< Name >;
-%enddef
-
-
-namespace IMP {
-  // special case since particles are ref counted
-  %extend Model {
-    Particles get_particles() const {
-      IMP::Particles ret(self->particles_begin(), self->particles_end());
-      return ret;
-    }
-  }
-  IMP_CONTAINER_SWIG(RestraintSet, Restraint, restraint)
-  IMP_CONTAINER_SWIG(Model, ScoreState, score_state)
-  IMP_CONTAINER_SWIG(Model, Restraint, restraint)
-  IMP_CONTAINER_SWIG(Optimizer, OptimizerState, optimizer_state)
-}
-
 %feature("ref")   IMP::RefCounted "IMP::internal::ref($this);"
 %feature("unref") IMP::RefCounted "IMP::internal::unref($this);"
 
-/* Make selected classes extensible in Python */
-IMP_DIRECTOR_KERNEL_CLASS(UnaryFunction);
-IMP_DIRECTOR_KERNEL_CLASS(Restraint);
-IMP_DIRECTOR_KERNEL_CLASS(ScoreState);
-IMP_DIRECTOR_KERNEL_CLASS(OptimizerState);
-IMP_DIRECTOR_KERNEL_CLASS(SingletonScore);
-IMP_DIRECTOR_KERNEL_CLASS(PairScore);
-IMP_DIRECTOR_KERNEL_CLASS(TripletScore);
-IMP_DIRECTOR_KERNEL_CLASS(QuadScore);
-IMP_DIRECTOR_KERNEL_CLASS(Optimizer);
-IMP_DIRECTOR_KERNEL_CLASS(Refiner);
-IMP_DIRECTOR_KERNEL_CLASS(SingletonContainer);
-IMP_DIRECTOR_KERNEL_CLASS(PairContainer);
-IMP_DIRECTOR_KERNEL_CLASS(SingletonModifier);
-IMP_DIRECTOR_KERNEL_CLASS(PairModifier);
-IMP_DIRECTOR_KERNEL_CLASS(PairFilter);
-IMP_DIRECTOR_KERNEL_CLASS(SingletonFilter);
-IMP_DIRECTOR_KERNEL_CLASS(Sampler);
-IMP_DIRECTOR_KERNEL_CLASS(ConfigurationSet);
+IMP_SWIG_CONTAINER(IMP, IMP, RestraintSet, Restraint, restraint)
+IMP_SWIG_CONTAINER(IMP, IMP, Model, ScoreState, score_state)
+IMP_SWIG_CONTAINER(IMP, IMP, Model, Restraint, restraint)
+IMP_SWIG_CONTAINER(IMP, IMP, Model, Particle, particle)
+IMP_SWIG_CONTAINER(IMP, IMP, Optimizer, OptimizerState, optimizer_state)
 
 %include "IMP/utility.h"
 %include "IMP/Key.h"
 
 namespace IMP {
-  %template(FloatKeyBase) ::IMP::KeyBase<0, true>;
-  %template(IntKeyBase) ::IMP::KeyBase<1, true>;
-  %template(StringKeyBase) ::IMP::KeyBase<2, true>;
-  %template(ParticleKeyBase) ::IMP::KeyBase<3, true>;
-  %template(ObjectKeyBase) ::IMP::KeyBase<4, true>;
-  %implicitconv Particles;
-  %implicitconv ParticlesTemp;
+  %template(FloatKey) ::IMP::Key<0, true>;
+  %template(IntKey) ::IMP::Key<1, true>;
+  %template(StringKey) ::IMP::Key<2, true>;
+  %template(ParticleKey) ::IMP::Key<3, true>;
+  %template(ObjectKey) ::IMP::Key<4, true>;
   %implicitconv InputFile;
   %implicitconv OutputFile;
 }
+
+%inline %{
+namespace IMP {
+template <class T, class P>
+class VectorOfRefCounted;
+template <class T, class P, class E>
+class Decorators;
+template <unsigned int D>
+class ParticleTuple;
+// just let swig know which namespace they are in
+#ifdef SWIG
+class ParticlePair;
+class ParticleTriplet;
+class ParticleQuad;
+class ParticlePairs;
+class ParticleTriplets;
+class ParticleQuads;
+class ParticlePairsTemp;
+class ParticleTripletsTemp;
+class ParticleQuadsTemp;
+#endif
+}
+%}
+
+%pythoncode %{
+  def ParticlePair(a, b):
+    return (a,b)
+  def ParticleTriplet(a, b, c):
+    return (a,b,c)
+  def ParticleQuad(a, b, c, d):
+    return (a,b,c,d)
+%}
 
 %include "IMP/log.h"
 %include "IMP/base_types.h"
@@ -129,8 +145,8 @@ namespace IMP {
 %include "IMP/deprecation.h"
 %include "IMP/VersionInfo.h"
 %include "IMP/RefCounted.h"
-%include "IMP/VectorOfRefCounted.h"
-%include "IMP_object.i"
+//%include "IMP/VectorOfRefCounted.h"
+%include "IMP/Object.h"
 %include "IMP/FailureHandler.h"
 %include "IMP/DerivativeAccumulator.h"
 %include "IMP/container_base.h"
@@ -166,97 +182,15 @@ namespace IMP {
 %include "IMP/TripletFilter.h"
 %include "IMP/QuadFilter.h"
 %include "IMP/io.h"
+%include "IMP/internal/swig.h"
 
 
 namespace IMP {
-  %template(ParticlePair) ::IMP::ParticleTuple<2>;
-  %template(ParticleTriplet) ::IMP::ParticleTuple<3>;
-  %template(ParticleQuad) ::IMP::ParticleTuple<4>;
-  IMP_SWIG_OBJECTS(Particle, Particles);
-  IMP_SWIG_OBJECTS(Object, Objects);
-  IMP_SWIG_OBJECTS(Restraint, Restraints);
-  IMP_SWIG_OBJECTS(RestraintSet, RestraintSets);
-  IMP_SWIG_OBJECTS(ScoreState, ScoreStates);
-  IMP_SWIG_OBJECTS(OptimizerState, OptimizerStates);
-  IMP_SWIG_OBJECTS(Refiner, Refiners);
-  IMP_SWIG_OBJECTS(SingletonContainer, SingletonContainers);
-  IMP_SWIG_OBJECTS(PairContainer, PairContainers);
-  IMP_SWIG_OBJECTS(TripletContainer, TripletContainers);
-  IMP_SWIG_OBJECTS(QuadContainer, QuadContainers);
-  IMP_SWIG_OBJECTS(Container, Containers);
-  IMP_SWIG_OBJECTS(SingletonScore, SingletonScores);
-  IMP_SWIG_OBJECTS(PairScore, PairScores);
-  IMP_SWIG_OBJECTS(TripletScore, TripletScores);
-  IMP_SWIG_OBJECTS(QuadScore, QuadScores);
-  IMP_SWIG_OBJECTS(ConfigurationSet, ConfigurationSets);
-
-  IMP_SWIG_OBJECTS(UnaryFunction, UnaryFunctions);
-  IMP_SWIG_VALUES(VersionInfo, VersionInfos);
-  IMP_SWIG_OBJECTS(SingletonModifier, SingletonModifiers);
-  IMP_SWIG_OBJECTS(SingletonFilter, SingletonFilters);
-  IMP_SWIG_OBJECTS(PairModifier, PairModifiers);
-  IMP_SWIG_OBJECTS(PairFilter, PairFilters);
-  IMP_SWIG_OBJECTS(TripletModifier, TripletModifiers);
-  IMP_SWIG_OBJECTS(TripletFilter, TripletFilters);
-  IMP_SWIG_OBJECTS(QuadModifier, QuadModifiers);
-  IMP_SWIG_OBJECTS(QuadFilter, QuadFilters);
-  IMP_SWIG_VALUES(TextOutput, TextOutputs);
-  IMP_SWIG_VALUES(TextInput, TextInputs);
-  IMP_SWIG_OBJECTS(Sampler, Samplers);
-  IMP_SWIG_OBJECTS(Model, Models);
-  IMP_SWIG_OBJECTS(FailureHandler, FailureHandlers);
-  IMP_SWIG_OBJECTS(DumpModelOnFailure, DumpModelOnFailures);
-  IMP_SWIG_VALUES(DerivativeAccumulator, DerivativeAccumulators);
-  IMP_SWIG_OBJECTS(Constraint, Constraints);
-  IMP_SWIG_OBJECTS(Optimizer, Optimizers);
-
-  %template(ParticlePairs) ::IMP::VectorOfRefCounted< ParticlePair, IMP::RefCountParticleTuple<2> >;
-  %template(ParticlePairsTemp) ::std::vector<ParticlePair >;
-  %template(ParticleTriplets) ::IMP::VectorOfRefCounted< ParticleTriplet, IMP::RefCountParticleTuple<3> >;
-  %template(ParticleTripletsTemp) ::std::vector<ParticleTriplet >;
-  %template(ParticleQuads) ::IMP::VectorOfRefCounted< ParticleQuad, IMP::RefCountParticleTuple<4> >;
-  %template(ParticleQuadsTemp) ::std::vector<ParticleQuad >;
-  %template(ParticlesList) ::std::vector< ParticlesTemp >;
-  IMP_SWIG_VALUES(FloatKey, FloatKeys);
-  IMP_SWIG_VALUES(IntKey, IntKeys);
-  IMP_SWIG_VALUES(StringKey, StringKeys);
-  IMP_SWIG_VALUES(ParticleKey, ParticleKeys);
-  IMP_SWIG_VALUES(ObjectKey, ObjectKeys);
-  IMP_SWIG_VALUES(Float, Floats);
-  IMP_SWIG_VALUES(Int, Ints);
-  IMP_SWIG_VALUES(String, Strings);
   %template(float_pair) ::std::pair<float,float>;
   %template(double_pair) ::std::pair<double, double>;
   %template(IntRange) ::std::pair<Int, Int>;
   %template(IntRanges) ::std::vector< IntRange >;
+  //%template(ParticlesList) ::std::vector< ParticlesTemp >;
+  %template(DirectorParticlesTemp) ::std::vector< Particle* >;
+  %template(DirectorContainersTemp) ::std::vector< Container* >;
 }
-
-
-%inline %{
-namespace IMP {
-
-inline std::string _test_ifile(TextInput a) {
-  std::string read;
-  while (true) {
-    std::string cur;
-    a.get_stream() >> cur;
-    if (!a) break;
-    read= read+cur;
-  }
-  std::cout << read;
-  return read;
-}
-inline std::string _test_ofile(TextOutput a) {
-  static_cast<std::ostream &>(a) << "hi\n" 
-  << " there, how are things"<< std::endl;
-  return "hi\n";
-}
-/*class _TestDecorator: public Decorator {
-public:
-   _TestDecorator(Particle *p): Decorator(p){}
-};*/
-inline void _decorator_test(Particle*p) {
-   std::cout << "hi " << p->get_name() << std::endl;
-}
-}
-%}

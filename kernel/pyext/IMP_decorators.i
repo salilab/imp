@@ -111,11 +111,3 @@ def __iter__(self):
   }
 }
 
-
-%define IMP_SWIG_DECORATORS(Name, PluralName, Parent)
-%template(PluralName) ::IMP::Decorators< Name, Parent>;
-%template(PluralName##Temp) ::IMP::Decorators<Name, Parent##Temp>;
-%implicitconv Name ;
-%enddef
-%implicitconv Decorator;
-

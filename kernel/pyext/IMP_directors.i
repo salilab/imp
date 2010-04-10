@@ -1,20 +1,12 @@
 // Set up directors for an IMP kernel class
-%define IMP_DIRECTOR_KERNEL_CLASS(TYPE)
-%feature("director") IMP::TYPE;
-%pythonappend IMP::TYPE::TYPE %{
+%define IMP_SWIG_DIRECTOR(Namespace, TYPE)
+%feature("director") Namespace::TYPE;
+%pythonappend Namespace::TYPE::TYPE %{
         if self.__class__ != TYPE:
             _director_objects.register(self)
 %}
 %enddef
 
-// Set up directors for an IMP module class
-%define IMP_DIRECTOR_MODULE_CLASS(MODULE, TYPE)
-%feature("director") IMP::MODULE::TYPE;
-%pythonappend IMP::MODULE::TYPE::TYPE %{
-        if self.__class__ != TYPE:
-            IMP._director_objects.register(self)
-%}
-%enddef
 
 /* Notes on directors and reference counting:
 

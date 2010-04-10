@@ -4,6 +4,37 @@ namespace atom {
 }
 }
 
+
+IMP_SWIG_DECORATOR(IMP::atom, Atom, Atoms);
+IMP_SWIG_DECORATOR(IMP::atom, Residue, Residues);
+IMP_SWIG_DECORATOR(IMP::atom, Fragment, Fragments);
+IMP_SWIG_DECORATOR(IMP::atom, Domain, Domains);
+IMP_SWIG_DECORATOR(IMP::atom, Chain, Chains);
+IMP_SWIG_DECORATOR(IMP::atom, Bond, Bonds);
+IMP_SWIG_DECORATOR(IMP::atom, Bonded, Bondeds);
+IMP_SWIG_DECORATOR(IMP::atom, Diffusion, Diffusions);
+IMP_SWIG_DECORATOR(IMP::atom, Hierarchy, Hierarchies);
+IMP_SWIG_DECORATOR(IMP::atom, SimulationParameters, SimulationParameterss);
+
+IMP_SWIG_OBJECT(IMP::atom, VelocityScalingOptimizerState, VelocityScalingOptimizerStates);
+IMP_SWIG_VALUE(IMP::atom, AtomType, AtomTypes);
+IMP_SWIG_OBJECT(IMP::atom, BondEndpointsRefiner, BondEndpointsRefiners);
+IMP_SWIG_OBJECT(IMP::atom, AngleSingletonScore, AngleSingletonScores);
+IMP_SWIG_OBJECT(IMP::atom, BondPairContainer, BondPairContainers);
+IMP_SWIG_OBJECT(IMP::atom, BondSingletonScore, BondSingletonScores);
+IMP_SWIG_OBJECT(IMP::atom, BondedPairFilter, BondedPairFilters);
+IMP_SWIG_DECORATOR(IMP::atom, Charged, Chargeds);
+IMP_SWIG_OBJECT(IMP::atom, CoulombPairScore, CoulombPairScores);
+IMP_SWIG_OBJECT(IMP::atom, CoverBond, CoverBonds);
+IMP_SWIG_DECORATOR(IMP::atom, Dihedral, Dihedrals);
+IMP_SWIG_DECORATOR(IMP::atom, Angle, Angles);
+IMP_SWIG_OBJECT(IMP::atom, DihedralSingletonScore, DihedralSingletonScores);
+IMP_SWIG_OBJECT(IMP::atom, ImproperSingletonScore, ImproperSingletonScores);
+IMP_SWIG_OBJECT(IMP::atom, LennardJonesPairScore, LennardJonesPairScores);
+IMP_SWIG_OBJECT(IMP::atom, ProteinLigandAtomPairScore, ProteinLigandAtomPairScores);
+IMP_SWIG_OBJECT(IMP::atom, ProteinLigandRestraint, ProteinLigandRestraints);
+
+
 %include "IMP/atom/atom_macros.h"
 
 // must be before hierarchy
@@ -11,116 +42,6 @@ namespace atom {
 
 // it is used as a base class
 %include "IMP/atom/Hierarchy.h"
-
-// since we have to fake it
-
-
-%feature("shadow") IMP::atom::Hierarchies::__iter__ %{
-def __iter__(self):
-    return IMP.DecoratorIterator(self)
-%}
-
-
-%extend IMP::atom::Hierarchies {
-  IMP::atom::Hierarchy __getitem__(int index) const {
-    if (index < 0) index= index+self->size();
-    if (index >= static_cast<int>(self->size())) {
-       IMP_THROW("Index out of range in getitem" << index
-       << self->size(), IMP::IndexException);
-    }
-    return self->operator[](index);
-  }
-  void __setitem__(int index, IMP::atom::Hierarchy val) {
-    if (index < 0) index= index+self->size();
-    if (index >= static_cast<int>(self->size())) {
-       IMP_THROW("Index out of range in setitem" << index
-       << self->size(), IMP::IndexException);
-    }
-    self->set(index, val);
-  }
-  int __len__() const {
-    return self->size();
-  }
-  void append(IMP::atom::Hierarchy d) {
-    self->push_back(d);
-  }
-  IMP::atom::Hierarchies
-   __add__(const IMP::atom::Hierarchies &o) const {
-    IMP::atom::Hierarchies ret(*self);
-    ret.insert(ret.end(), o.begin(), o.end());
-    return ret;
-  }
-  std::vector<IMP::atom::Hierarchy> __list__() const {
-    std::vector<IMP::atom::Hierarchy> ret(self->begin(), self->end());
-    return ret;
-  }
-  IMP::atom::Hierarchies __getslice__(int b, int e) const {
-    if (e < 0) e= self->size()+e;
-    if (b < 0) b= self->size()+b;
-    IMP::atom::Hierarchies ret;
-    ret.insert(ret.end(), self->begin()+b, self->begin()+e);
-    //for ( int c=b; c!= e; ++c) {
-    //   ret.push_back(self->operator[](c));
-    //}
-    return ret;
-  }
-}
-
-
-%feature("shadow") IMP::atom::HierarchiesTemp::__iter__ %{
-def __iter__(self):
-    return IMP.DecoratorIterator(self)
-%}
-
-%extend IMP::atom::HierarchiesTemp {
-  IMP::atom::Hierarchy __getitem__(int index) const {
-    if (index < 0) index= index+self->size();
-    if (index >= static_cast<int>(self->size())) {
-       IMP_THROW("Index out of range in getitem" << index
-       << self->size(), IMP::IndexException);
-    }
-    return self->operator[](index);
-  }
-  void __setitem__(int index, IMP::atom::Hierarchy val) {
-    if (index < 0) index= index+self->size();
-    if (index >= static_cast<int>(self->size())) {
-       IMP_THROW("Index out of range in setitem" << index
-       << self->size(), IMP::IndexException);
-    }
-    self->set(index, val);
-  }
-  int __len__() const {
-    return self->size();
-  }
-  void __iter__() const {
-     //PyErr_SetString(PyExc_NotImplementedError, const_cast<char*>("No such method"));
-  }
-  void append(IMP::atom::Hierarchy d) {
-    self->push_back(d);
-  }
-  IMP::atom::Hierarchies
-   __add__(const IMP::atom::HierarchiesTemp &o) const {
-    IMP::atom::Hierarchies ret(*self);
-    ret.insert(ret.end(), o.begin(), o.end());
-    return ret;
-  }
-  std::vector<IMP::atom::Hierarchy> __list__() const {
-    std::vector<IMP::atom::Hierarchy> ret(self->begin(), self->end());
-    return ret;
-  }
-  IMP::atom::HierarchiesTemp __getslice__(int b, int e) const {
-    if (e < 0) e= self->size()+e;
-    if (b < 0) b= self->size()+b;
-    IMP::atom::HierarchiesTemp ret;
-    ret.insert(ret.end(), self->begin()+b, self->begin()+e);
-    //for ( int c=b; c!= e; ++c) {
-    //   ret.push_back(self->operator[](c));
-    //}
-    return ret;
-  }
-}
-
-
 
 
 /* Wrap our own classes */
@@ -157,8 +78,8 @@ def __iter__(self):
 namespace IMP {
   namespace atom {
    // swig has random, perplexing issues if these are higher in the file
-   %template(AtomTypeBase) ::IMP::KeyBase<IMP_ATOM_TYPE_INDEX, false>;
-   %template(ResidueTypeBase) ::IMP::KeyBase<IMP_RESIDUE_TYPE_INDEX, true>;
+   %template(AtomType) ::IMP::Key<IMP_ATOM_TYPE_INDEX, false>;
+   %template(ResidueType) ::IMP::Key<IMP_RESIDUE_TYPE_INDEX, true>;
   }
 }
 %include "IMP/atom/element.h"
@@ -181,48 +102,18 @@ namespace IMP {
    %template(CHARMMDihedralParametersVector) ::std::vector<IMP::atom::CHARMMDihedralParameters>;
    // must go after the above headers
    %template(HierarchyVector) ::std::vector<IMP::atom::Hierarchy>;
-   %template(get_rmsd) get_rmsd<std::vector<algebra::VectorD<3> >, std::vector<algebra::VectorD<3> > >;
-   %template(get_rmsd) get_rmsd<core::XYZs, std::vector<algebra::VectorD<3> > >;
-   %template(get_rmsd) get_rmsd<core::XYZs, core::XYZs>;
-   %template(get_rmsd) get_rmsd<std::vector<algebra::VectorD<3> >, core::XYZs>;
-   %template(get_native_overlap) get_native_overlap<std::vector<algebra::VectorD<3> >, std::vector<algebra::VectorD<3> > >;
-   %template(get_native_overlap) get_native_overlap<core::XYZs, std::vector<algebra::VectorD<3> > >;
-   %template(get_native_overlap) get_native_overlap<core::XYZs, core::XYZs>;
-   %template(get_native_overlap) get_native_overlap<std::vector<algebra::VectorD<3> >, core::XYZs>;
-   %template(get_rmsd) get_rmsd<core::XYZsTemp, std::vector<algebra::VectorD<3> > >;
-   %template(get_rmsd) get_rmsd<core::XYZsTemp, core::XYZsTemp>;
-   %template(get_rmsd) get_rmsd<std::vector<algebra::VectorD<3> >, core::XYZsTemp>;
-   %template(get_native_overlap) get_native_overlap<core::XYZsTemp, std::vector<algebra::VectorD<3> > >;
-   %template(get_native_overlap) get_native_overlap<core::XYZsTemp, core::XYZsTemp>;
-   %template(get_native_overlap) get_native_overlap<std::vector<algebra::VectorD<3> >, core::XYZsTemp>;
-
-   //%implicitconv(Hierarchies)
-   IMP_SWIG_DECORATORS(Atom, Atoms, Hierarchies)
-   IMP_SWIG_DECORATORS(Residue, Residues, Hierarchies)
-   IMP_SWIG_DECORATORS(Fragment, Fragments, Hierarchies)
-   IMP_SWIG_DECORATORS(Domain, Domains, Hierarchies)
-   IMP_SWIG_DECORATORS(Chain, Chains, Hierarchies)
-   IMP_SWIG_DECORATORS(Bond, Bonds, Particles)
-   IMP_SWIG_DECORATORS(Bonded, Bondeds, Particles)
-   IMP_SWIG_DECORATORS(Diffusion, Diffusions, core::XYZs)
-   IMP_SWIG_DECORATORS(SimulationParameters, SimulationParameterss, Particles)
-
-   IMP_SWIG_OBJECTS( IMP::atom::VelocityScalingOptimizerState, VelocityScalingOptimizerStates);
-   IMP_SWIG_VALUES(AtomType, AtomTypes);
-   IMP_SWIG_OBJECTS( BondEndpointsRefiner, BondEndpointsRefiners);
-   IMP_SWIG_OBJECTS( AngleSingletonScore, AngleSingletonScores);
-   IMP_SWIG_OBJECTS( BondPairContainer, BondPairContainers);
-   IMP_SWIG_OBJECTS( BondSingletonScore, BondSingletonScores);
-   IMP_SWIG_OBJECTS( IMP::atom::BondedPairFilter, BondedPairFilters);
-   IMP_SWIG_DECORATORS(Charged, Chargeds, core::XYZs);
-   IMP_SWIG_OBJECTS( IMP::atom::CoulombPairScore, CoulombPairScores);
-   IMP_SWIG_OBJECTS( IMP::atom::CoverBond, CoverBonds);
-   IMP_SWIG_DECORATORS(Dihedral, Dihedrals, Particles);
-   IMP_SWIG_DECORATORS(Angle, Angles, Particles);
-   IMP_SWIG_OBJECTS( IMP::atom::DihedralSingletonScore, DihedralSingletonScores);
-   IMP_SWIG_OBJECTS( IMP::atom::ImproperSingletonScore, ImproperSingletonScores);
-   IMP_SWIG_OBJECTS( IMP::atom::LennardJonesPairScore, LennardJonesPairScores);
-   IMP_SWIG_OBJECTS( IMP::atom::ProteinLigandAtomPairScore, ProteinLigandAtomPairScores);
-   IMP_SWIG_OBJECTS( IMP::atom::ProteinLigandRestraint, ProteinLigandRestraints);
+   %template(get_rmsd_cpp) get_rmsd<std::vector<algebra::VectorD<3> >, std::vector<algebra::VectorD<3> > >;
+   %template(get_native_overlap_cpp) get_native_overlap<std::vector<algebra::VectorD<3> >, std::vector<algebra::VectorD<3> > >;
   }
 }
+
+%pythoncode %{
+def get_rmsd(a, b):
+   va= [IMP.algebra.get_vector(x) for x in a]
+   vb= [IMP.algebra.get_vector(x) for x in b]
+   return get_rmsd_cpp(va, vb)
+def get_native_overlap(a, b, d):
+   va= [IMP.algebra.get_vector(x) for x in a]
+   vb= [IMP.algebra.get_vector(x) for x in b]
+   return get_native_overlap_cpp(va, vb, d)
+%}
