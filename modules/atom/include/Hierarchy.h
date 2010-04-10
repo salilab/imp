@@ -64,7 +64,7 @@ class Mass;
 
 class Hierarchy;
 
-#ifndef SWIG
+
 #ifdef IMP_DOXYGEN
 
 #else
@@ -72,33 +72,6 @@ typedef IMP::Decorators< Hierarchy,
                          IMP::core::GenericHierarchies> Hierarchies;
 typedef IMP::Decorators< Hierarchy,
                          IMP::core::GenericHierarchiesTemp> HierarchiesTemp;
-#endif
-
-#else
-class Hierarchies: public core::GenericHierarchies
-{
-public:
-  Hierarchies(Hierarchy h);
-  Hierarchies();
-  Hierarchies(const Particles &ps);
-  const Particles &get_particles() const;
-  void push_back(Hierarchy d);
-  void push_back(Particle *p);
-  Hierarchy back() const;
-  Hierarchy front() const;
-};
-class HierarchiesTemp: public core::GenericHierarchiesTemp {
-public:
-  HierarchiesTemp(Hierarchy h);
-  HierarchiesTemp(Hierarchies h);
-  HierarchiesTemp();
-  HierarchiesTemp(const Particles &ps);
-  const Particles &get_particles() const;
-  void push_back(Hierarchy d);
-  void push_back(Particle *p);
-  Hierarchy back() const;
-  Hierarchy front() const;
-};
 #endif
 
 //! The standard decorator for manipulating molecular structures.
@@ -208,20 +181,16 @@ class IMPATOMEXPORT Hierarchy: public core::Hierarchy
 {
   typedef core::Hierarchy H;
 public:
-
-  explicit Hierarchy(Particle *p):
-    H(p,get_traits()){
-    IMP_INTERNAL_CHECK(particle_is_instance(p),
-                       "Missing required attributes for "
-               << "Hierarchy" << *p);
+  IMP_NO_DOXYGEN(typedef boost::false_type DecoratorHasTraits);
+  explicit Hierarchy(Particle *p): H(p, get_traits()) {
   }
 
   //! null constructor
-  Hierarchy() :H(get_traits()) {}
+  Hierarchy() {}
 
   //! cast a particle which has the needed attributes
   static Hierarchy decorate_particle(Particle *p) {
-    core::Hierarchy::decorate_particle(p, get_traits());
+    H::decorate_particle(p, get_traits());
     return Hierarchy(p);
   }
 
@@ -251,17 +220,12 @@ public:
       \note Returning true only means that no problems were
       found, it can't check everything.*/
   bool get_is_valid(bool print_info) const;
-
   //! Add a child and check that the types are appropriate
   /** A child must have a type that is listed before the parent in the
       Type enum list.
    */
   unsigned int add_child(Hierarchy o) {
-    IMP_USAGE_CHECK(o.get_particle()->get_model()
-                    == get_particle()->get_model(),
-                    "All particles in hierarchy must have same Model");
-    unsigned int ret= H::add_child(o);
-    return ret;
+    return H::add_child(o);
   }
 
   //! Add a child and check that the types are appropriate
@@ -269,44 +233,52 @@ public:
       Type enum list.
    */
   void add_child_at(Hierarchy o, unsigned int i) {
-    IMP_USAGE_CHECK(o.get_particle()->get_model()
-                    == get_particle()->get_model(),
-                    "All particles in hierarchy must have same Model");
     H::add_child_at(o, i);
   }
+#if 0
+
+  unsigned int get_number_of_children() const {
+    return H(get_particle(), get_traits()).get_number_of_children();
+  }
+  unsigned int get_parent_index() const {
+    return H(get_particle(), get_traits()).get_parent_index();
+  }
+
+  bool get_has_parent() const {
+    return H(get_particle(), get_traits()).get_has_parent();
+  }
+  void remove_child(Hierarchy h) {
+    H(get_particle(), get_traits()).remove_child(h);
+  }
+#ifndef IMP_DOXYGEN
+  const ParticlesTemp& get_leaves() const {
+    return H(get_particle(), get_traits()).get_leaves();
+  }
+#endif
+#endif
 
   /** Get the ith child */
   Hierarchy get_child(unsigned int i) const {
-    H hd= H::get_child(i);
-    return decorate_particle(hd.get_particle());
+    H hd=  H::get_child(i);
+    return Hierarchy(hd);
   }
   HierarchiesTemp get_children() const {
-    return HierarchiesTemp(H::get_children());
+    HierarchiesTemp ret(get_number_of_children());
+    for (unsigned int i=0; i< get_number_of_children(); ++i) {
+      ret[i]= get_child(i);
+    }
+    return ret;
   }
-  unsigned int get_number_of_children() const {
-    return H::get_number_of_children();
-  }
+
 
   /** Get the parent particle. */
   Hierarchy get_parent() const {
     H hd= H::get_parent();
-    if (hd == Hierarchy()) {
+    if (hd == H()) {
       return Hierarchy();
     } else {
-      return decorate_particle(hd.get_particle());
+      return Hierarchy(hd);
     }
-  }
-
-  unsigned int get_parent_index() const {
-    return H::get_parent_index();
-  }
-
-  bool get_has_parent() const {
-    return H::get_has_parent();
-  }
-
-  void remove_child(Hierarchy h) {
-    H::remove_child(h);
   }
 
   void show(std::ostream &out=std::cout) const;
