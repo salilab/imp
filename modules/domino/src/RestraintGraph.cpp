@@ -86,7 +86,7 @@ void RestraintGraph::initialize_graph(int number_of_nodes)
 }
 
 void RestraintGraph::add_node(unsigned int node_index,
-                              Particles &particles,
+                              const Particles &particles,
                               RestraintEvaluatorI *rstr_eval)
 {
   std::stringstream error_message;
