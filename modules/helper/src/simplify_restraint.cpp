@@ -220,9 +220,15 @@ SimpleEMFit create_simple_em_fit(atom::Hierarchies const &mhs,
   Particles ps;
   for ( size_t i=0; i<mhs_size; ++i )
   {
-    Particles pss = core::get_leaves(mhs[i]);
-    for ( size_t j=0; j<pss.size(); ++j )
-      ps.push_back(pss[j]);
+    if (core::RigidBody::particle_is_instance(mhs[i])) {
+      ps.push_back(mhs[i].get_particle());
+    }
+    else {
+      Particles pss = core::get_leaves(mhs[i]);
+      for ( size_t j=0; j<pss.size(); ++j ){
+        ps.push_back(pss[j]);
+      }
+    }
   }
   IMP_NEW(em::FitRestraint, fit_rs, (ps, dmap,
         core::XYZR::get_default_radius_key(),
