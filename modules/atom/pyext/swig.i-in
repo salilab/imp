@@ -100,8 +100,6 @@ namespace IMP {
    %template(CHARMMBond4) CHARMMBond<4>;
    %template(show_molecular_hierarchy) IMP::core::show<IMP::atom::Hierarchy>;
    %template(CHARMMDihedralParametersVector) ::std::vector<IMP::atom::CHARMMDihedralParameters>;
-   // must go after the above headers
-   %template(HierarchyVector) ::std::vector<IMP::atom::Hierarchy>;
    %template(get_rmsd_cpp) get_rmsd<std::vector<algebra::VectorD<3> >, std::vector<algebra::VectorD<3> > >;
    %template(get_native_overlap_cpp) get_native_overlap<std::vector<algebra::VectorD<3> >, std::vector<algebra::VectorD<3> > >;
   }
