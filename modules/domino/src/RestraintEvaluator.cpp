@@ -13,6 +13,10 @@ IMPDOMINO_BEGIN_NAMESPACE
 void RestraintEvaluator::calc_scores(const Combinations &comb_states,
            CombinationValues &comb_values,
            Restraint *r, container::ListSingletonContainer *ps) {
+  //we only need to calculate the scores for the intersection between
+  //comb_states and ps
+  IMP_LOG(VERBOSE,"calculating scores for:"<<comb_states.size()
+                  <<" combinations\n");
   for(Combinations::const_iterator it = comb_states.begin();
       it != comb_states.end(); it++) {
     const CombState *cs = it->second;
