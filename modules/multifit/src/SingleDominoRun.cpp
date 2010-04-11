@@ -126,7 +126,8 @@ void SingleDominoRun::setup() {
   dmap_=dc_.get_density_map();
   //setup for sampling space
   tu_=domino::TransformationUtils(components_,true);
-  discrete_set_ = new domino::TransformationMappedDiscreteSet(components_);
+  discrete_set_ = new domino::TransformationMappedDiscreteSet
+    (new container::ListSingletonContainer(components_));
   sampling_space_initialized_=false;
   restraints_initialized_=false;
   //set the name to anchor mapping
