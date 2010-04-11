@@ -1,11 +1,11 @@
 
 %{
 #define IMP_SWIG_CPP_WARNING(string) IMP_WARN_PREPROCESS(string)
-%}
+  %}
 
 /*%pythonprepend Namespace::Name::~Name %{
-        print "bye"
-%}*/
+  print "bye"
+  %}*/
 
 /* SWIG's default behavior for functions that return a reference to an object
    is to create a Python object that points to that object. This doesn't work
@@ -32,7 +32,7 @@
 
 /* Add additional IMP_CONTAINER methods for scripting languages */
 %define IMP_SWIG_CONTAINER(Namespace, ContainedNamespace, type, Ucname, lcname)
-     %extend Namespace::type {
+  %extend Namespace::type {
   ContainedNamespace::Ucname##s get_##lcname##s() const {
     ContainedNamespace::Ucname##s ret(self->lcname##s_begin(), self->lcname##s_end());
     return ret;
@@ -41,9 +41,13 @@
 %enddef
 
 
+
+
+
+
 %typemap(in) IMP::Particle* {
   try {
-  $1 = IMP::internal::swig::Convert<IMP::Particle >::get_cpp_object($input, $descriptor(IMP::Particle*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*));
+    $1 = IMP::internal::swig::Convert<IMP::Particle >::get_cpp_object($input, $descriptor(IMP::Particle*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*));
   } catch (const IMP::Exception &e) {
     //PyErr_SetString(PyExc_ValueError,"Wrong type in sequence");
     PyErr_SetString(PyExc_TypeError, e.what());
@@ -51,18 +55,24 @@
   }
  }
 %typecheck(SWIG_TYPECHECK_POINTER) IMP::Particle* {
-                                   try {
-  IMP::internal::swig::Convert<IMP::Particle >::get_cpp_object($input, $descriptor(IMP::Particle*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*));
-  $1=1;
-} catch (...) {
-$1=0;
-}
+  try {
+    IMP::internal::swig::Convert<IMP::Particle >::get_cpp_object($input, $descriptor(IMP::Particle*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*));
+    $1=1;
+  } catch (...) {
+    $1=0;
+  }
  }
+%{
+  BOOST_STATIC_ASSERT(IMP::internal::swig::Convert<IMP::Particle>::converter ==2);
+  BOOST_STATIC_ASSERT(IMP::internal::swig::Convert<IMP::internal::_TrivialDecorator>::converter ==3);
+  %}
+
+
 
 
 
 %define IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName, CONSTREF)
-%typemap(in) Namespace::PluralName CONSTREF {
+  %typemap(in) Namespace::PluralName CONSTREF {
   try {
     // hack to get around swig's value wrapper being randomly used
     IMP::internal::swig::assign($1, IMP::internal::swig::Convert<Namespace::PluralName >::get_cpp_object($input, $descriptor(Namespace::Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
@@ -82,66 +92,66 @@ $1=0;
   $result = IMP::internal::swig::Convert<Namespace::PluralName >::create_python_object(IMP::internal::swig::ValueOrObject<Namespace::PluralName >::get($1), $descriptor(Namespace::Name*), SWIG_POINTER_OWN);
  }
 %typemap(directorout) Namespace::PluralName CONSTREF {
-    // hack to get around swig's evil value wrapper being randomly used
-    IMP::internal::swig::assign($result, IMP::internal::swig::Convert<Namespace::PluralName >::get_cpp_object($input, $descriptor(Namespace::Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
+  // hack to get around swig's evil value wrapper being randomly used
+  IMP::internal::swig::assign($result, IMP::internal::swig::Convert<Namespace::PluralName >::get_cpp_object($input, $descriptor(Namespace::Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
  }
 %typemap(directorin) Namespace::PluralName CONSTREF {
   $input = IMP::internal::swig::Convert<Namespace::PluralName >::create_python_object($1_name, $descriptor(Namespace::Name*), SWIG_POINTER_OWN);
  }
 %typemap(in) Namespace::PluralName* {
-   BOOST_STATIC_ASSERT(0&&"Collections must be passed by value or const ref");
-}
+  BOOST_STATIC_ASSERT(0&&"Collections must be passed by value or const ref");
+ }
 %typemap(out) Namespace::PluralName* {
-   BOOST_STATIC_ASSERT(0&&"Collections must be returned by value or by const ret");
-}
+  BOOST_STATIC_ASSERT(0&&"Collections must be returned by value or by const ret");
+ }
 %typemap(in) Namespace::PluralName& {
-   BOOST_STATIC_ASSERT(0&&"Collections must be passed by value or by const ret");
-}
+  BOOST_STATIC_ASSERT(0&&"Collections must be passed by value or by const ret");
+ }
 %typemap(out) Namespace::PluralName& {
-   BOOST_STATIC_ASSERT(0&&"Collections must be returned by value or by const ret");
-}
+  BOOST_STATIC_ASSERT(0&&"Collections must be returned by value or by const ret");
+ }
 %enddef
 
 %define IMP_SWIG_VALUE_CHECKS(Namespace, Name)
 %typemap(out) Namespace::Name& {
-   BOOST_STATIC_ASSERT(0&&"Values must be returned by value or const ref");
-}
+  BOOST_STATIC_ASSERT(0&&"Values must be returned by value or const ref");
+ }
 // for some reason swig generates garbage code when either of the below is defined
 /*%typemap(in) Namespace::Name& {
-   IMP_SWIG_CPP_WARNING("Values should be passed by value or const ref");
-   try {
-     IMP::internal::swig::assign($1, IMP::internal::swig::Convert<Namespace::Name >::get_cpp_object($input, $descriptor(Namespace::Name), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
+  IMP_SWIG_CPP_WARNING("Values should be passed by value or const ref");
+  try {
+  IMP::internal::swig::assign($1, IMP::internal::swig::Convert<Namespace::Name >::get_cpp_object($input, $descriptor(Namespace::Name), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
   } catch (const IMP::Exception &e) {
-    //PyErr_SetString(PyExc_ValueError,"Wrong type in sequence");
-    PyErr_SetString(PyExc_TypeError, e.what());
-    return NULL;
+  //PyErr_SetString(PyExc_ValueError,"Wrong type in sequence");
+  PyErr_SetString(PyExc_TypeError, e.what());
+  return NULL;
   }
-}
-%typemap(in) Namespace::Name* {
-   BOOST_STATIC_ASSERT($argnum==1 && "Values must be returned by value or const ref");
-   try {
-     IMP::internal::swig::assign($1, IMP::internal::swig::Convert<Namespace::Name >::get_cpp_object($input, $descriptor(Namespace::Name), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
+  }
+  %typemap(in) Namespace::Name* {
+  BOOST_STATIC_ASSERT($argnum==1 && "Values must be returned by value or const ref");
+  try {
+  IMP::internal::swig::assign($1, IMP::internal::swig::Convert<Namespace::Name >::get_cpp_object($input, $descriptor(Namespace::Name), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
   } catch (const IMP::Exception &e) {
-    //PyErr_SetString(PyExc_ValueError,"Wrong type in sequence");
-    PyErr_SetString(PyExc_TypeError, e.what());
-    return NULL;
+  //PyErr_SetString(PyExc_ValueError,"Wrong type in sequence");
+  PyErr_SetString(PyExc_TypeError, e.what());
+  return NULL;
   }
-}*/
+  }*/
 %enddef
 
 
 %define IMP_SWIG_OBJECT(Namespace,Name, PluralName)
 %typemap(out) Namespace::Name* {
-   if (!($owner & SWIG_POINTER_NEW)) {
-     // out typemaps are also called for constructors, which already use %ref
-     // to increase the reference count. So don't do it twice.
-     IMP::internal::ref($1);
-   }
-   %set_output(SWIG_NewPointerObj(%as_voidptr($1), $descriptor(Namespace::Name *), $owner | SWIG_POINTER_OWN));
-}
+  if (!($owner & SWIG_POINTER_NEW)) {
+    // out typemaps are also called for constructors, which already use %ref
+    // to increase the reference count. So don't do it twice.
+    IMP::internal::ref($1);
+  }
+  %set_output(SWIG_NewPointerObj(%as_voidptr($1), $descriptor(Namespace::Name *), $owner | SWIG_POINTER_OWN));
+ }
 /*%typemap(in) const Namespace::Name& {
-   IMP_COMPILE_WARNING("Objects should be passed by pointer.");
-}*/
+  IMP_COMPILE_WARNING("Objects should be passed by pointer.");
+  }*/
 IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName, const&);
 IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName,);
 IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName##Temp, const&);
@@ -177,7 +187,7 @@ IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName##Temp, const&);
 IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName##Temp,);
 %pythoncode %{
   def PluralName(l=[]):
-      return [Name(x) for x in l]
+    return [Name(x) for x in l]
   PluralName##Temp=PluralName
 %}
 IMP_SWIG_VALUE_CHECKS(Namespace, Name);
@@ -201,7 +211,7 @@ IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName##Temp,);
 IMP_SWIG_VALUE_CHECKS(Namespace, Name);
 %{
   BOOST_STATIC_ASSERT(IMP::internal::swig::Convert<Namespace::Name>::converter==4);
-%}
+  %}
 %feature("valuewrapper") PluralName;
 %feature("valuewrapper") PluralName##Temp;
 %enddef
@@ -245,17 +255,17 @@ IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName, const&);
 IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName,);
 %typemap(out) Namespace::Name const& {
   $result=SWIG_NewPointerObj(new Namespace::Name(*$1), $descriptor(Namespace::Name*), SWIG_POINTER_OWN | %newpointer_flags);
-}
+ }
 IMP_SWIG_VALUE_CHECKS(Namespace, Name);
 %pythoncode %{
   PluralName=list
 %}
 %feature("valuewrapper") PluralName;
 %{
-void test_##PluralName() {
-   Namespace::PluralName nm;
-}
-%}
+  void test_##PluralName() {
+    Namespace::PluralName nm;
+  }
+  %}
 %enddef
 
 
@@ -266,11 +276,11 @@ IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName, const&);
 IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName,);
 %feature("valuewrapper") PluralName;
 /*%typemap(in) Namespace::Name* {
-   BOOST_STATIC_ASSERT(0&& "Values must be passed by value or const ref");
-}
-%typemap(out) Namespace::Name* {
-   BOOST_STATIC_ASSERT(0&&"Values must be returned by value or const ref");
-}*/
+  BOOST_STATIC_ASSERT(0&& "Values must be passed by value or const ref");
+  }
+  %typemap(out) Namespace::Name* {
+  BOOST_STATIC_ASSERT(0&&"Values must be returned by value or const ref");
+  }*/
 %pythoncode %{
   def PairName(a,b):
     return (a,b)
