@@ -2028,10 +2028,12 @@ protected:                                      \
 #define IMP_WARN_UNUSED_RESULT __attribute__ ((warn_unused_result))
 //! restrict means that a variable is not aliased with this function
 #define IMP_RESTRICT __restrict__
+#define IMP_WARN_PREPROCESS(message) #warning message
 #else
 #define IMP_NO_SIDEEFFECTS
 #define IMP_WARN_UNUSED_RESULT
 #define IMP_RESTRICT
+#define IMP_WARN_PREPROCESS(message)
 #endif
 
 #endif
