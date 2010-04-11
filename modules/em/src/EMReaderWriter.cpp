@@ -46,7 +46,7 @@ EMHeader::EMHeader(const DensityHeader &header) {
 
 void EMHeader::generate_common_header(DensityHeader &header) {
   header.Objectpixelsize_=Objectpixelsize;
-  header.update_map_dimensions(nx,ny,ny);
+  header.update_map_dimensions(nx,ny,nz);
   header.magic=magic;
   header.set_data_type(type);
   for (short i=0;i < DensityHeader::COMMENT_FIELD_SINGLE_SIZE; i++) {
