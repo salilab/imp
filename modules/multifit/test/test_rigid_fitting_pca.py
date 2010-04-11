@@ -32,7 +32,7 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
     def setUp(self):
         """Build test model and optimizer"""
         IMP.test.TestCase.setUp(self)
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.set_log_level(IMP.SILENT)
         self.imp_model = IMP.Model()
         self.load_density_map()
         self.load_protein("1f7dA00.pdb")
@@ -52,7 +52,8 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
             x.set_coordinates(rand_t.get_transformed(x.get_coordinates()))
         xyz_ref=IMP.core.XYZsTemp(IMP.core.get_leaves(self.mp_ref))
         #fit protein
-        fs = IMP.multifit.pca_based_rigid_fitting(self.ps,self.scene,0.15)
+        fs = IMP.multifit.pca_based_rigid_fitting(
+               IMP.container.ListSingletonContainer(self.ps),self.scene,0.15)
         #check that the rmsd to the reference is low
         self.assert_(fs.get_number_of_solutions()>0)
         for i in range(fs.get_number_of_solutions()):
