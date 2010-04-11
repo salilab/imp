@@ -171,7 +171,6 @@ void JNode::realize(Restraint *r, container::ListSingletonContainer *ps,
     IMP_LOG(VERBOSE,"start realize node: " << node_ind_ << " with restraint: ");
     IMP_LOG_WRITE(VERBOSE,r->show());
     IMP_LOG(VERBOSE," , weight : " << weight);
-    IMP_LOG(VERBOSE, " and number of states : " << comb_states_.size());
     IMP_LOG(VERBOSE,std::endl);
   }
   std::map<std::string, float> temp_calculations;
@@ -182,7 +181,11 @@ void JNode::realize(Restraint *r, container::ListSingletonContainer *ps,
                                              // of the same configuration.
   IMP_INTERNAL_CHECK(rstr_eval_!=NULL,
                      "restraint evaluator was not initialized"<<std::endl);
-  rstr_eval_->calc_scores(comb_states_,result_cache,r,ps);
+  Combinations restraint_states;
+  populate_states_of_particles(ps,&restraint_states);
+  IMP_LOG(VERBOSE, "going to calculate restraint for "<<
+                    restraint_states.size() <<" combinations"<<std::endl);
+  rstr_eval_->calc_scores(restraint_states,result_cache,r,ps);
   std::string partial_key;
   Float score;
   for (std::map<std::string, CombState *>::iterator it =  comb_states_.begin();
