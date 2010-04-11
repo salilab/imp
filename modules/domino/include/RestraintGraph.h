@@ -92,7 +92,7 @@ public:
       \param[in] particles  the particles that are part of the node
       \param[in] rstr_eval  evaluator used to evaluate the restraints
    */
-  void add_node(unsigned int node_index, Particles &particles,
+  void add_node(unsigned int node_index, const Particles &particles,
                 RestraintEvaluatorI *rstr_eval);
 
   //! Creates an undirected edge between two nodes
