@@ -35,7 +35,7 @@ class HeaderTest(IMP.test.TestCase):
        #os.unlink(out_filename)
 
     def test_write_read_em(self):
-        """test mrc format read/write """
+        """test em format read/write """
         out_filename =  "input1.em"
         mrw=IMP.em.EMReaderWriter()
         IMP.em.write_map(self.dmap,out_filename,mrw)
