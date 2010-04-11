@@ -44,13 +44,6 @@ void DominoOptimizer::set_sampling_space(DiscreteSampler *ds)
     r = boost::get<0>(*it);
     ps = boost::get<1>(*it);
     w = boost::get<2>(*it);
-    std::cout<<"=========="<<std::endl;
-    r->show();
-    std::cout<<"=========="<<std::endl;
-    boost::get<1>(*it)->show();
-    std::cout<<"=========="<<std::endl;
-    ps->show();
-    std::cout<<"======||||===="<<std::endl;
     g_->initialize_potentials(r,ps,w);
   }
   IMP_LOG(VERBOSE,"DominoOptimizer::set_sampling_space after potential"
