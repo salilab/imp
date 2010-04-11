@@ -91,7 +91,7 @@ void RestraintEvaluatorFromFile::calc_scores(const Combinations &comb_states,
                  container::ListSingletonContainer *ps) {
   //sort the particles by their names
   std::map<std::string,Particle*> to_sort_ps;
-  for(int i=0;i<ps->get_number_of_particles();i++){
+  for(unsigned int i=0;i<ps->get_number_of_particles();i++){
     Particle *p = ps->get_particle(i);
     to_sort_ps[p->get_value(node_name_key())]=p;
   }
