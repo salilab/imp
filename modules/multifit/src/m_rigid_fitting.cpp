@@ -20,7 +20,8 @@
 IMPMULTIFIT_BEGIN_NAMESPACE
 
 em::FittingSolutions pca_based_rigid_fitting(
-    Particles &ps, em::DensityMap *em_map,
+    container::ListSingletonContainer *ps,
+    em::DensityMap *em_map,
     Float threshold, bool refine_fit,
     FloatKey rad_key, FloatKey wei_key) {
   //find the pca of the density
@@ -29,7 +30,7 @@ em::FittingSolutions pca_based_rigid_fitting(
      algebra::get_principal_components(dens_vecs);
   //find the pca of the protein
   algebra::Vector3Ds ps_vecs;
-  core::XYZs ps_xyz =  core::XYZs(ps);
+  core::XYZs ps_xyz =  core::XYZs(ps->get_particles());
   for (core::XYZs::iterator it = ps_xyz.begin(); it != ps_xyz.end(); it++) {
     ps_vecs.push_back(it->get_coordinates());
   }
@@ -66,7 +67,8 @@ em::FittingSolutions pca_based_rigid_fitting(
                   ps2dens.get_transformed(ps_xyz[xyz_i].get_coordinates()));
               }
               Float fit_score =
-                em::compute_fitting_score(ps,em_map,rad_key,wei_key);
+                em::compute_fitting_score(ps->get_particles(),
+                                          em_map,rad_key,wei_key);
               for(unsigned int xyz_i=0;xyz_i<ps_xyz.size();xyz_i++){
                 ps_xyz[xyz_i].set_coordinates(
                   ps2dens_inv.get_transformed(ps_xyz[xyz_i].get_coordinates()));

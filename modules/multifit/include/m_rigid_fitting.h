@@ -17,6 +17,7 @@
 #include "multifit_config.h"
 #include <IMP/atom/Mass.h>
 #include <IMP/ScoreState.h>
+#include <IMP/container/ListSingletonContainer.h>
 #include <algorithm>
 IMPMULTIFIT_BEGIN_NAMESPACE
 
@@ -32,7 +33,8 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 \note the function assumes the density map holds its density
 */
 IMPMULTIFITEXPORT em::FittingSolutions pca_based_rigid_fitting(
-  Particles &ps,em::DensityMap *em_map,Float threshold,
+  container::ListSingletonContainer *ps,
+  em::DensityMap *em_map,Float threshold,
   bool refine_fit=false,
   FloatKey rad_key=core::XYZR::get_default_radius_key(),
   FloatKey wei_key=atom::Mass::get_mass_key());
