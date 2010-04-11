@@ -20,7 +20,8 @@ domino::TransformationMappedDiscreteSet*
 
   Particles ps = full_smpl_space->get_particles();
   domino::TransformationMappedDiscreteSet *discrete_set =
-    new domino::TransformationMappedDiscreteSet(components);
+    new domino::TransformationMappedDiscreteSet
+    (new container::ListSingletonContainer(components));
   //add valid transformations for each particle
   Float dist;
   for(unsigned int i=0;i<components.size();i++) {
