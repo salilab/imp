@@ -38,7 +38,13 @@
 
 
 %typemap(in) IMP::Particle* {
+  try {
   $1 = IMP::internal::swig::Convert<IMP::Particle >::get_cpp_object($input, $descriptor(IMP::Particle*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*));
+  } catch (const IMP::Exception &e) {
+    //PyErr_SetString(PyExc_ValueError,"Wrong type in sequence");
+    PyErr_SetString(PyExc_TypeError, e.what());
+    return NULL;
+  }
  }
 %typecheck(SWIG_TYPECHECK_POINTER) IMP::Particle* {
                                    try {
@@ -58,7 +64,8 @@ $1=0;
     IMP::internal::swig::assign($1, IMP::internal::swig::Convert<Namespace::PluralName >::get_cpp_object($input, $descriptor(Namespace::Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
   } catch (const IMP::Exception &e) {
     //PyErr_SetString(PyExc_ValueError,"Wrong type in sequence");
-    SWIG_exception(SWIG_TypeError, e.what());
+    PyErr_SetString(PyExc_TypeError, e.what());
+    return NULL;
   }
  }
 %typemap(freearg) Namespace::PluralName CONSTREF {
