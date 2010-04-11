@@ -74,7 +74,7 @@ void JNode::populate_states_of_particles(container::ListSingletonContainer *ps,
 void JNode::show_sampling_space(std::ostream& out) const
 {
   out << std::endl << " sampling space of JNode with index: " << node_ind_;
-  for (int i=0;i<particles_->get_number_of_particles();i++){
+  for (unsigned int i=0;i<particles_->get_number_of_particles();i++){
     Particle *pi = particles_->get_particle(i);
     out << std::endl << " states for particle name : " <<
       pi->get_value(node_name_key()) << ":" << std::endl;
@@ -87,7 +87,7 @@ void JNode::show(std::ostream& out) const
   out << "=========================JNode  " <<  " node_index: " << node_ind_
       << std::endl;
   out << "particle_indices: " << std::endl;
-  for (int i=0;i<particles_->get_number_of_particles();i++){
+  for (unsigned int i=0;i<particles_->get_number_of_particles();i++){
     Particle *p=particles_->get_particle(i);
     out << p->get_value(node_name_key()) << " || " ;
   }
@@ -111,7 +111,7 @@ bool JNode::is_part(const ParticlesTemp &ps) const
       IMP_LOG(VERBOSE,(*it)->get_value(node_name_key()) << " : ");
     }
     IMP_LOG(VERBOSE,"are part of  : " << std::endl);
-    for (int i=0;i<particles_->get_number_of_particles();i++){
+    for (unsigned int i=0;i<particles_->get_number_of_particles();i++){
       IMP_LOG(VERBOSE,
               particles_->get_particle(i)->get_value(node_name_key())<< " : ");
     }

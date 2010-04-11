@@ -207,7 +207,7 @@ void RestraintGraph::initialize_potentials(
   if (jn == NULL) { // TODO - should use IMP_INTERNAL_CHECK
     IMP_WARN(" no node - the restraint : " << *r
              << " between particles: ");
-    for (int i=0;i<ps->get_number_of_particles();i++){
+    for (unsigned int i=0;i<ps->get_number_of_particles();i++){
       Particle *p = ps->get_particle(i);
       IMP_WARN( p->get_value(node_name_key()) << " ("
                 <<p->get_value(node_name_key()) <<"):: ");
