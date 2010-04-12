@@ -102,7 +102,7 @@ class NPDBSelector: public NonAlternativePDBSelector {
 //! Defines a selector that will pick every ATOM and HETATM record
 class AllPDBSelector : public PDBSelector {
  public:
-  bool operator()(const std::string& pdb_line) const { return true; }
+  bool operator()(const std::string&) const { return true; }
 };
 
 //! Select all ATOM and HETATMrecords with the given chain ids

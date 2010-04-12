@@ -40,7 +40,7 @@ Hierarchy create_protein(Model *m,
                          int number_of_residues,
                          int first_residue_index,
                          double volume,
-                         double spring_strength) {
+                         double /*spring strength*/) {
   double mass= atom::get_mass_from_number_of_residues(number_of_residues)/1000;
   if (volume < 0) {
     volume= atom::get_volume_from_mass(mass*1000);

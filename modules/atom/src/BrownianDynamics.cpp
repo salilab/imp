@@ -48,7 +48,7 @@ BrownianDynamics::BrownianDynamics(SimulationParameters si,
 }
 
 
-void BrownianDynamics::do_show(std::ostream &out) const {
+void BrownianDynamics::do_show(std::ostream &) const {
 }
 
 SingletonContainer *BrownianDynamics::setup_particles()
@@ -159,7 +159,7 @@ void BrownianDynamics::take_step(SingletonContainer *sc,
           Float one=1;*/
         Float mx= std::numeric_limits<Float>::max();
         Float c= d.get_coordinate(j);
-        bool ba= (c != c);
+        bool ba= is_nan(c);
         bool bb = (c >= mx);
         bool bc= -d.get_coordinate(j) >= std::numeric_limits<Float>::max();
         if (ba || bb || bc ) {

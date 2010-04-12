@@ -64,7 +64,7 @@ struct NestedTraits {
   };
   struct Make_value {
     typedef EdgeDescriptor result_type;
-    result_type operator()(Outer out, Inner in) const {
+    result_type operator()(Outer, Inner in) const {
       return std::make_pair(in->get_bonded(0),
                             in->get_bonded(1));
     }
