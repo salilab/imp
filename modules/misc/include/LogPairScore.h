@@ -46,7 +46,7 @@ class LogPairScore : public PairScore
 
 // doxygen spits out warnings
 #ifndef IMP_DOXYGEN
-inline void LogPairScore::do_show(std::ostream &out) const {
+inline void LogPairScore::do_show(std::ostream &) const {
 }
 
 inline Float LogPairScore::evaluate(const ParticlePair &pp,

@@ -39,27 +39,27 @@ public:
   GroupnameModifier(std::string name="GroupnameModifier %1%");
 
   /** Apply the function to a single value*/
-  virtual void apply(PassValue vt,
-                     DerivativeAccumulator &da) const {
+  virtual void apply(PassValue,
+                     DerivativeAccumulator &) const {
     IMP_FAILURE("This GroupnameModifier must be called without a"
                 << " DerivativeAccumulator.");
   }
 
   /** Apply the function to a single value*/
-  virtual void apply(PassValue vt) const {
+  virtual void apply(PassValue) const {
     IMP_FAILURE("This GroupnameModifier must be called with a"
                 << " DerivativeAccumulator.");
   }
 
   /** Apply the function to a collection of Classnames */
-  virtual void apply(const ClassnamesTemp &o) const {
+  virtual void apply(const ClassnamesTemp &) const {
     IMP_FAILURE("This GroupnameModifier must be called with a"
                 << " DerivativeAccumulator.");
   }
 
   /** Apply the function to a collection of Classnames */
-  virtual void apply(const ClassnamesTemp &o,
-                     DerivativeAccumulator &da) const {
+  virtual void apply(const ClassnamesTemp &,
+                     DerivativeAccumulator &) const {
     IMP_FAILURE("This GroupnameModifier must be called without a"
                 << " DerivativeAccumulator.");
   }

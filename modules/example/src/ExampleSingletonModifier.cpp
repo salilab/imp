@@ -49,12 +49,12 @@ ExampleSingletonModifier::get_output_particles(Particle *p) const {
 }
 
 ContainersTemp
-ExampleSingletonModifier::get_input_containers(Particle *p) const {
+ExampleSingletonModifier::get_input_containers(Particle *) const {
   return ContainersTemp();
 }
 
 ContainersTemp
-ExampleSingletonModifier::get_output_containers(Particle *p) const {
+ExampleSingletonModifier::get_output_containers(Particle *) const {
   return ContainersTemp();
 }
 
