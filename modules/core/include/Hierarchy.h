@@ -63,7 +63,7 @@ class IMPCOREEXPORT HierarchyTraits
     d.get_particle()->add_attribute(P::get_data().parent_index_key_, i);
     clear_caches(d);
   }
-  void on_change(Particle *, Particle* p, unsigned int oi,
+  void on_change(Particle *, Particle* p, unsigned int,
                         unsigned int ni) const {
     p->set_value(P::get_data().parent_index_key_, ni);
   }

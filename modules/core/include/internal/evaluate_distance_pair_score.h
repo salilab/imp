@@ -21,7 +21,7 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 class IMPCOREEXPORT RawOpenCubicSpline {
   Floats values_, second_derivs_;
-  size_t get_start_bin(double v, double spacing, double inverse_spacing) const {
+  size_t get_start_bin(double v, double, double inverse_spacing) const {
     return  static_cast<size_t>(v *inverse_spacing);
   }
   template <bool derivative>

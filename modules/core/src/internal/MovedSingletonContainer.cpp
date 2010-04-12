@@ -42,7 +42,7 @@ MovedSingletonContainer::MovedSingletonContainer(Model *m,
 }
 
 
-void MovedSingletonContainer::do_show(std::ostream &out) const
+void MovedSingletonContainer::do_show(std::ostream &) const
 {
 }
 

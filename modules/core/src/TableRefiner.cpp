@@ -67,7 +67,7 @@ ParticlesTemp TableRefiner::get_input_particles(Particle *p) const {
   return ret;
 }
 
-ContainersTemp TableRefiner::get_input_containers(Particle *p) const {
+ContainersTemp TableRefiner::get_input_containers(Particle *) const {
   return ContainersTemp();
 }
 

@@ -53,7 +53,7 @@ namespace {
 
   double grid_side_from_r(double r)
   {
-    if (r==0) return 1;
+    if (r<=.0001) return 1;
     else return r*1.6;
   }
 

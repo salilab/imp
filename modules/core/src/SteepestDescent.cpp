@@ -17,7 +17,7 @@ SteepestDescent::SteepestDescent(Model *m) : step_size_(0.01), threshold_(0.)
 {
   if (m) set_model(m);
 }
-void SteepestDescent::do_show(std::ostream &out) const {
+void SteepestDescent::do_show(std::ostream &) const {
 }
 
 
@@ -106,7 +106,7 @@ Float SteepestDescent::optimize(unsigned int max_steps)
       }
 
       // if the score is the same, keep going one more time
-      else if (new_score == last_score) {
+      else if (std::abs(new_score- last_score) < .0000001) {
         if (not_changing)
           done = true;
 
@@ -122,7 +122,7 @@ Float SteepestDescent::optimize(unsigned int max_steps)
         current_step_size *= 0.71;
       }
 
-      if (current_step_size == 0.0) {
+      if (current_step_size <.00000001) {
         update_states();
         return new_score;
       }

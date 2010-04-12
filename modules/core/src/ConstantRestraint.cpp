@@ -14,7 +14,7 @@ ConstantRestraint::ConstantRestraint(Float v) : v_(v){}
 
 
 double
-ConstantRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
+ConstantRestraint::unprotected_evaluate(DerivativeAccumulator *) const
 {
   return v_;
 }

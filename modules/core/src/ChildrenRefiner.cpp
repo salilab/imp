@@ -49,7 +49,7 @@ const ParticlesTemp ChildrenRefiner::get_refined(Particle *p) const {
 }
 
 
-ParticlesTemp ChildrenRefiner::get_input_particles(Particle *p) const {
+ParticlesTemp ChildrenRefiner::get_input_particles(Particle *) const {
   return ParticlesTemp();
 }
 
@@ -57,7 +57,7 @@ ContainersTemp ChildrenRefiner::get_input_containers(Particle *p) const {
   return ContainersTemp(1, p);
 }
 
-void ChildrenRefiner::do_show(std::ostream &out) const
+void ChildrenRefiner::do_show(std::ostream &) const
 {
 }
 
