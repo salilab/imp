@@ -16,7 +16,7 @@ Transform::Transform(
      bool ignore_non_xyz)
 {
   t_=t;
-  ignore_non_xyz_=ignore_non_xyz_;
+  ignore_non_xyz_=ignore_non_xyz;
 }
 
 void Transform::apply(Particle *p) const
@@ -42,11 +42,11 @@ ParticlesTemp Transform::get_output_particles(Particle *p) const {
   return ParticlesTemp(1,p);
 }
 
-ContainersTemp Transform::get_input_containers(Particle *p) const {
+ContainersTemp Transform::get_input_containers(Particle *) const {
   return ContainersTemp();
 }
 
-ContainersTemp Transform::get_output_containers(Particle *p) const {
+ContainersTemp Transform::get_output_containers(Particle *) const {
   return ContainersTemp();
 }
 
