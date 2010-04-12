@@ -144,7 +144,7 @@ IMP_PARTICLE_GEOMETRY(RigidBodyDerivative, core::RigidBody, {
     IMP_LOG(TERSE, "Old rotation was " << rot << std::endl);
     Float scale=.1;
     algebra::VectorD<4> dv=rderiv;
-    if (dv.get_squared_magnitude() != 0) {
+    if (dv.get_squared_magnitude() > 0.00001) {
       dv= scale*dv.get_unit_vector();
     }
     rot+= dv;
