@@ -13,12 +13,12 @@
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 ReadLockedParticleException
-::ReadLockedParticleException(const Particle *p): p_(p){};
+::ReadLockedParticleException(const Particle *p): p_(p){}
 ReadLockedParticleException
 ::~ReadLockedParticleException() throw(){}
 
 WriteLockedParticleException
-::WriteLockedParticleException(const Particle *p): p_(p){};
+::WriteLockedParticleException(const Particle *p): p_(p){}
 WriteLockedParticleException
 ::~WriteLockedParticleException() throw(){}
 

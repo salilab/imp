@@ -16,11 +16,11 @@
   Name(TextOutput of): Writer(of, #Name)                                \
   {}                                                                    \
   Name(): Writer(#Name){}                                               \
-  IMP_OBJECT_INLINE(Name,,close());                                     \
+  IMP_OBJECT_INLINE(Name,{},close());                                   \
 protected:                                                              \
  using Writer::process;                                                 \
  virtual void on_open();                                                \
- virtual void on_close();                                               \
+ virtual void on_close()
 
 
 //! Define information for an Geometry object
@@ -38,8 +38,8 @@ protected:                                                              \
     Name(const Type &v, const Color &c);                                \
     Name(const Type &v, const std::string n);                           \
     Name(const Type &v, const Color &c, std::string n);                 \
-    IMP_GEOMETRY(Name);                      \
-  };                                                                    \
+    IMP_GEOMETRY(Name);                                                 \
+  }                                                                     \
 
 
 #define IMP_DISPLAY_GEOMETRY_DEF(Name, Type)                            \
@@ -56,6 +56,7 @@ protected:                                                              \
   void Name::do_show(std::ostream &out) const {                         \
     out << #Name << "Geometry: " << static_cast<Type >(*this);          \
   }                                                                     \
+  IMP_REQUIRE_SEMICOLON_NAMESPACE
 
 
 #define IMP_DISPLAY_GEOMETRY_DECOMPOSABLE_DECL(Name, Type)      \
@@ -67,7 +68,7 @@ protected:                                                              \
     Name(const Type &v, const std::string n);                   \
     Name(const Type &v, const Color &c, std::string n);         \
     IMP_GEOMETRY(Name);                                         \
-  };                                                            \
+  }
 
 
 #define IMP_DISPLAY_GEOMETRY_DECOMPOSABLE_DEF(Name, Type, decomp)       \
@@ -86,7 +87,8 @@ protected:                                                              \
     Geometries ret;                                                     \
     decomp;                                                             \
     return ret;                                                         \
-  }
+  }                                                                     \
+  IMP_REQUIRE_SEMICOLON_NAMESPACE
 
 #define IMP_PARTICLE_GEOMETRY(Name, Decorator, action)                  \
   class Name##Geometry: public SingletonGeometry {                      \
@@ -99,7 +101,7 @@ protected:                                                              \
     return ret;                                                         \
   }                                                                     \
   IMP_OBJECT_INLINE(Name##Geometry,                                     \
-                    out <<  Decorator(get_particle())<< std::endl;,)    \
+                    out <<  Decorator(get_particle())<< std::endl;,{}); \
   };                                                                    \
   class Name##sGeometry: public SingletonsGeometry {                    \
   public:                                                               \
@@ -115,8 +117,8 @@ protected:                                                              \
     return ret;                                                         \
   }                                                                     \
   IMP_OBJECT_INLINE(Name##sGeometry,                                    \
-                    out <<  get_container() << std::endl;,)             \
-  };                                                                    \
+                    out <<  get_container() << std::endl;,{});          \
+  }
 
 
 #define IMP_PARTICLE_TRAITS_GEOMETRY(Name, Decorator, TraitsName,       \
@@ -134,7 +136,7 @@ protected:                                                              \
   }                                                                     \
   IMP_OBJECT_INLINE(Name##Geometry,                                     \
                     out <<  Decorator(get_particle(), traits_)          \
-                    << std::endl;,)                                     \
+                    << std::endl;,{});                                  \
   };                                                                    \
   class Name##sGeometry: public SingletonsGeometry {                    \
     TraitsName traits_;                                                 \
@@ -152,8 +154,8 @@ protected:                                                              \
     return ret;                                                         \
   }                                                                     \
   IMP_OBJECT_INLINE(Name##sGeometry,                                    \
-                    out <<  get_container() << std::endl;,)             \
-  };                                                                    \
+                    out <<  get_container() << std::endl;,{});          \
+  }
 
 
 #define IMP_PARTICLE_PAIR_GEOMETRY(Name, Decorator, action)             \
@@ -171,7 +173,7 @@ protected:                                                              \
   IMP_OBJECT_INLINE(Name##Geometry,          \
                     out <<  Decorator(get_particle_pair()[0])           \
                     << " " << Decorator(get_particle_pair()[1])         \
-                    << std::endl;,);                                    \
+                    << std::endl;,{});                                  \
   };                                                                    \
   class Name##sGeometry: public PairsGeometry {                         \
   public:                                                               \
@@ -188,7 +190,7 @@ protected:                                                              \
     return ret;                                                         \
   }                                                                     \
   IMP_OBJECT_INLINE(Name##sGeometry,                                    \
-                    out <<  get_container() << std::endl;,)             \
-  };
+                    out <<  get_container() << std::endl;,{});          \
+  }
 
 #endif /* IMPDISPLAY_MACROS_H */

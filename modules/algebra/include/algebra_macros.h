@@ -68,7 +68,7 @@
   inline BoundingBoxD<3> get_bounding_box(const Name &g) {             \
     bounding_box;                                                      \
   }                                                                    \
-  IMP_OUTPUT_OPERATOR(Name)                                            \
+  IMP_OUTPUT_OPERATOR(Name);                                           \
   IMP_VALUES(Name, Name##s)
 
 #define IMP_VOLUME_GEOMETRY_METHODS_D(Name, area, volume, bounding_box) \
@@ -82,7 +82,7 @@
   inline BoundingBoxD<D> get_bounding_box(const Name##D<D> &g) {        \
     bounding_box;                                                       \
   }                                                                     \
-  IMP_OUTPUT_OPERATOR_D(Name##D)                                        \
+  IMP_OUTPUT_OPERATOR_D(Name##D);                                       \
   IMPALGEBRA_EXPORT_TEMPLATE(Name##D<3>);                               \
   typedef Name##D<2> Name##2D;                                          \
   IMP_VALUES(Name##2D, Name##2Ds);                                      \
@@ -96,7 +96,7 @@
   inline BoundingBoxD<3> get_bounding_box(const Name &g) {             \
     bounding_box;                                                      \
   }                                                                    \
-  IMP_OUTPUT_OPERATOR(Name)                                            \
+  IMP_OUTPUT_OPERATOR(Name);                                           \
   IMP_VALUES(Name, Name##s)
 
 #define IMP_AREA_GEOMETRY_METHODS(Name, area, bounding_box)            \
@@ -106,7 +106,7 @@
   inline BoundingBoxD<3> get_bounding_box(const Name &g) {             \
     bounding_box;                                                      \
   }                                                                    \
-  IMP_OUTPUT_OPERATOR(Name)                                            \
+  IMP_OUTPUT_OPERATOR(Name);                                           \
   IMP_VALUES(Name, Name##s)
 
 #endif

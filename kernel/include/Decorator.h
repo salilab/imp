@@ -191,7 +191,7 @@ public:
   }
   // here just to make the docs symmetric
 private:
-  IMP_ONLY_DOXYGEN(int blah_;);
+  IMP_ONLY_DOXYGEN(int blah_);
   //! @}
 public:
 #ifdef IMP_DOXYGEN
@@ -330,7 +330,8 @@ public:                                                                 \
  Constraint *get_constraint() const {                                   \
    return dynamic_cast<Constraint*>(get_particle()                      \
                                     ->get_value(get_constraint_key())); \
- }
+ }                                                                      \
+ IMP_REQUIRE_SEMICOLON_CLASS(constraint)
 
 
 #define IMP_CONSTRAINT_DECORATOR_DEF(Name)                              \
@@ -347,6 +348,7 @@ public:                                                                 \
     p->add_attribute(get_constraint_key(), ss);                         \
     p->get_model()->add_score_state(ss);                                \
   }                                                                     \
+  IMP_REQUIRE_SEMICOLON_NAMESPACE
 
 #endif
 

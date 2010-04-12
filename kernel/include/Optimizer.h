@@ -290,7 +290,7 @@ class SaveOptimizeds: public RAII {
   ParticlesTemp pt_;
   std::vector<internal::ParticleStorage::OptimizedTable> saved_;
 public:
-  IMP_RAII(SaveOptimizeds, (const ParticlesTemp &pt),,
+  IMP_RAII(SaveOptimizeds, (const ParticlesTemp &pt),{},
            {
              pt_=pt;
              saved_= std::vector<internal::ParticleStorage::OptimizedTable>

@@ -75,7 +75,7 @@ public:
              if (fh_) remove_failure_handler(fh_);
              fh_=NULL;
            }
-           )
+           );
 };
 
 IMP_OBJECTS(FailureHandler,FailureHandlers);

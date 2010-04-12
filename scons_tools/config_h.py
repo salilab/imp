@@ -82,7 +82,7 @@ template class __declspec(dllimport) name
 #endif
 
 #else
-#define %(PREPROC)s_EXPORT_TEMPLATE(name)
+#define %(PREPROC)s_EXPORT_TEMPLATE(name) IMP_REQUIRE_SEMICOLON_NAMESPACE
 
 #endif
 

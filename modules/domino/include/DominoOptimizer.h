@@ -41,8 +41,6 @@ public:
   DominoOptimizer(const JunctionTree &jt, Model *m,
                   RestraintEvaluatorI *r_eval);
 
-  IMP_OPTIMIZER(DominoOptimizer);
-
   void set_sampling_space(DiscreteSampler *ds);
   //TODO : set a discrete sampling space for one node
   //void set_sampling_space(int node_ind, DiscreteSampler *ds);
@@ -102,6 +100,8 @@ public:
    */
   void score_combinations(const CombStates &states,
                           std::vector<Floats> &scores);
+
+  IMP_OPTIMIZER(DominoOptimizer);
 
 protected:
   //! Recursivly add restraints

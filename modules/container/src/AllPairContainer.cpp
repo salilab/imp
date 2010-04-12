@@ -120,7 +120,7 @@ bool AllPairContainer::get_contained_particles_changed() const {
   return c_->get_contained_particles_changed();
 }
 
-IMP_PAIR_CONTAINER_METHODS_FROM_FOREACH(AllPairContainer)
+IMP_PAIR_CONTAINER_METHODS_FROM_FOREACH(AllPairContainer);
 
 
 IMPCONTAINER_END_NAMESPACE

@@ -90,7 +90,7 @@ struct MHDMatchingType
   bool operator()(Particle *p) const {
     Hierarchy h= Hierarchy::decorate_particle(p);
     switch(t_) {
-      IMP_FOREACH_HIERARCHY_TYPE(IMP_IMPL_MATCH_TYPE)
+      IMP_FOREACH_HIERARCHY_TYPE_STATEMENTS(IMP_IMPL_MATCH_TYPE);
     }
     IMP_FAILURE("Unhandled type in get_by_type.");
     return false;
@@ -474,6 +474,6 @@ algebra::SphereD<3> get_bounding_sphere(const Hierarchy &h) {
 }
 
 
-IMP_FOREACH_HIERARCHY_TYPE(IMP_GET_AS_DEF)
+IMP_FOREACH_HIERARCHY_TYPE_FUNCTIONS(IMP_GET_AS_DEF);
 
 IMPATOM_END_NAMESPACE

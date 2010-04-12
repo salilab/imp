@@ -75,7 +75,7 @@ bool DifferenceSingletonContainer::get_contained_particles_changed() const {
     || b_->get_contained_particles_changed();
 }
 
-IMP_SINGLETON_CONTAINER_METHODS_FROM_FOREACH(DifferenceSingletonContainer)
+IMP_SINGLETON_CONTAINER_METHODS_FROM_FOREACH(DifferenceSingletonContainer);
 
 
 IMPCORE_END_INTERNAL_NAMESPACE

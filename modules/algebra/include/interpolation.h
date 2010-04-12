@@ -23,7 +23,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 
 //! Simple interpolation that is only valid for values of a ranging from 0 to 1.
 /**
-  \return The returned value is lower+diff*(upper-lower).  (0 < diff < 1)
+  \return The returned value is (1-diff) *lower+diff*upper.  (0 < diff < 1)
 **/
 template<typename T>
 T get_linearly_interpolated(double diff,T lower,T upper) {

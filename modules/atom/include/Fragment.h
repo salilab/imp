@@ -28,10 +28,10 @@ class IMPATOMEXPORT Fragment: public Hierarchy
   };
   IMP_DECORATOR_ARRAY_DECL(private, Fragment, ResidueBegin,
                            residue_begin,
-                           residue_begins, btraits_, int, Ints)
+                           residue_begins, btraits_, int, Ints);
   IMP_DECORATOR_ARRAY_DECL(private, Fragment, ResidueEnd,
                            residue_end,
-                           residue_ends, etraits_, int, Ints)
+                           residue_ends, etraits_, int, Ints);
     static Traits btraits_;
     static Traits etraits_;
   //! Add a set of residues to this Fragment

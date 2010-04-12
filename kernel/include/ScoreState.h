@@ -117,7 +117,7 @@ class ScoreStatePointer: public RAII {
   /* keep the model alive so unregister doesn't crash */
   Pointer<Model> model_;
 public:
-  IMP_RAII(ScoreStatePointer, (ScoreState *ss, Model *m),, {
+  IMP_RAII(ScoreStatePointer, (ScoreState *ss, Model *m),{}, {
       ss_=ss;
       model_=m;
       m->add_score_state(ss);

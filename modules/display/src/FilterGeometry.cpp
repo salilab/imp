@@ -37,7 +37,8 @@ void FilterGeometry::add_geometry(const Geometries& g) {
       g->set_color(color);                                      \
     }                                                           \
     return true;                                                \
-  }
+  }                                                             \
+  IMP_REQUIRE_SEMICOLON_NAMESPACE
 
 PROCESS(Sphere, !p_.get_is_below(g->get_center()));
 PROCESS(Cylinder, !p_.get_is_below(g->get_segment().get_point(0))

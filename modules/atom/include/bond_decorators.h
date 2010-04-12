@@ -51,7 +51,7 @@ public:
   enum Type {UNKNOWN=-1,
              NONBIOLOGICAL, SINGLE=1, DOUBLE=2, TRIPLE=3, HYDROGEN,
              SALT, PEPTIDE,
-             AMIDE, AROMATIC,
+             AMIDE, AROMATIC
             };
 
   //! Get the atom i of the bond

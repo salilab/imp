@@ -105,12 +105,12 @@ IMP_LIST_IMPL(QuadContainerSet,
                            ->get_added_quads_container());
                 }
                 obj->set_was_used(true);
-              },,
+              },{},
               if (!get_is_added_or_removed_container()) {
                 get_set(get_removed_quads_container())
                   ->add_quad_container(obj
                        ->get_removed_quads_container());
-              })
+              });
 
 
 void QuadContainerSet::apply(const QuadModifier *sm) {

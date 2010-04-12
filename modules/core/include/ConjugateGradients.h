@@ -33,13 +33,13 @@ class IMPCOREEXPORT ConjugateGradients : public Optimizer
 public:
   ConjugateGradients(Model *m=NULL);
 
-  IMP_OPTIMIZER(ConjugateGradients);
-
   //! Set the threshold for the minimum gradient
   void set_threshold(Float t){ threshold_=t;}
 
   //! Limit how far anything can change each time step
   void set_max_change(Float t) { max_change_ = t; }
+
+  IMP_OPTIMIZER(ConjugateGradients);
 private:
 
   typedef double NT;

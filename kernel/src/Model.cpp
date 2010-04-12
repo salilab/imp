@@ -748,7 +748,7 @@ IMP_LIST_IMPL(Model, Restraint, restraint, Restraint*,
                 obj->set_model(this);
                 obj->set_was_used(true);
                 first_incremental_=true;
-                reset_dependencies();},,
+                reset_dependencies();},{},
               {
                 obj->set_model(NULL);
                 reset_dependencies();
@@ -771,7 +771,7 @@ IMP_LIST_IMPL(Model, ScoreState, score_state, ScoreState*,
                                   "Score state already in model "
                                   << obj->get_name());
                 }
-              },,
+              },{},
               {obj->set_model(NULL);});
 
 

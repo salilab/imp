@@ -128,7 +128,7 @@ IMPCORE_END_INTERNAL_NAMESPACE
 
 #define IMP_LISTLIKE_GROUPNAME_CONTAINER(Name)               \
   ContainersTemp get_input_containers() const;               \
-  IMP_OBJECT(Name);
+  IMP_OBJECT(Name)
 
 
 #endif  /* IMPCORE_INTERNAL_GROUPNAME_HELPERS_H */

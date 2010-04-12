@@ -144,7 +144,7 @@ void ConnectingPairContainer::initialize(SingletonContainer *sc) {
   initialize_active_container(m);
 }
 
-IMP_ACTIVE_CONTAINER_DEF(ConnectingPairContainer)
+IMP_ACTIVE_CONTAINER_DEF(ConnectingPairContainer);
 
 ParticlesTemp ConnectingPairContainer::get_state_input_particles() const {
   return sc_->get_particles();

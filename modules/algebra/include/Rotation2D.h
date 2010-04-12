@@ -98,19 +98,19 @@ private:
 //! Builds an identity rotation in 2D
 inline Rotation2D get_identity_rotation_2d() {
   return Rotation2D(0.0);
-};
+}
 
 //! Builds an identity rotation in 2D
 inline Rotation2D get_random_rotation_2d() {
   return Rotation2D(2*PI*((double)rand() /((double)RAND_MAX+1)));
-};
+}
 
 
 //! Builds the rotation that transforms the vector X of the origin
 //! of coordinates into the given vector
 inline Rotation2D get_rotation_to_x_axis(const VectorD<2> &v) {
   return Rotation2D(atan2(v[1],v[0]));
-};
+}
 
 //! compose two rotations a and b
 /**
@@ -120,7 +120,7 @@ inline Rotation2D compose(const Rotation2D &a,const Rotation2D &b) {
   double new_angle = a.get_angle()+b.get_angle();
   Rotation2D R(new_angle);
   return R;
-};
+}
 
 IMP_VALUES(Rotation2D, Rotation2Ds);
 

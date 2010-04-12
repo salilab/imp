@@ -119,7 +119,7 @@ IMP_LIST_IMPL(FitRestraint, Particle, particle,Particle*, Particles,
                          == (*particles_begin())->get_model(),
                          "All particles in FitRestraint must belong to the "
                          "same Model.");
-              },,);
+              },{},{});
 
 //! Calculate the em coarse restraint score.
 /** \param[in] calc_deriv If true, partial first derivatives should be

@@ -105,12 +105,12 @@ IMP_LIST_IMPL(GroupnameContainerSet,
                            ->get_added_groupnames_container());
                 }
                 obj->set_was_used(true);
-              },,
+              },{},
               if (!get_is_added_or_removed_container()) {
                 get_set(get_removed_groupnames_container())
                   ->add_groupname_container(obj
                        ->get_removed_groupnames_container());
-              })
+              });
 
 
 void GroupnameContainerSet::apply(const GroupnameModifier *sm) {

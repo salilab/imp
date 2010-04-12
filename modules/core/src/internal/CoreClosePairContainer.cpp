@@ -22,10 +22,10 @@
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 IMP_LIST_IMPL(CoreClosePairContainer,
-             PairFilter,
-             pair_filter,
-             PairFilter*,
-             PairFilters, obj->set_was_used(true);,,)
+              PairFilter,
+              pair_filter,
+              PairFilter*,
+              PairFilters, obj->set_was_used(true);,{},{});
 
 
 CoreClosePairContainer::CoreClosePairContainer(SingletonContainer *c,
@@ -50,7 +50,7 @@ void CoreClosePairContainer::initialize(SingletonContainer *c, double distance,
   moved_= cpf_->get_moved_singleton_container(c_, get_model(), slack_);
 }
 
-IMP_ACTIVE_CONTAINER_DEF(CoreClosePairContainer)
+IMP_ACTIVE_CONTAINER_DEF(CoreClosePairContainer);
 
 
 ContainersTemp CoreClosePairContainer

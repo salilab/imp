@@ -105,12 +105,12 @@ IMP_LIST_IMPL(TripletContainerSet,
                            ->get_added_triplets_container());
                 }
                 obj->set_was_used(true);
-              },,
+              },{},
               if (!get_is_added_or_removed_container()) {
                 get_set(get_removed_triplets_container())
                   ->add_triplet_container(obj
                        ->get_removed_triplets_container());
-              })
+              });
 
 
 void TripletContainerSet::apply(const TripletModifier *sm) {

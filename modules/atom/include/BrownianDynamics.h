@@ -59,8 +59,6 @@ public:
   BrownianDynamics(SimulationParameters si,
                    SingletonContainer *sc=NULL);
 
-  IMP_OPTIMIZER(BrownianDynamics);
-
   //! Simulate until the given time in fs
   double simulate(float time_in_fs);
 
@@ -79,6 +77,7 @@ public:
   }
 #endif
 
+  IMP_OPTIMIZER(BrownianDynamics);
 private:
   void copy_coordinates(SingletonContainer *sc,
                         std::vector<algebra::VectorD<3> > &v) const;

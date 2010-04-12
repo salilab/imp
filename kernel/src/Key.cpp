@@ -39,7 +39,7 @@ namespace {
       operator[](fk).add_key("radius");
     }
   };
-};
+}
 
 IMPEXPORT KeyData& get_key_data(unsigned int index) {
   static KeyTable key_data;

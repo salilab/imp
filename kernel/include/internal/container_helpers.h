@@ -193,7 +193,7 @@ inline std::string get_name(const ParticleTuple<D>& p) {
   bool get_has_model() const { return ticker_.get_is_set();}    \
   ParticlesTemp get_state_input_particles() const;              \
   ContainersTemp get_state_input_containers() const;            \
-  void initialize_active_container(Model *m);                   \
+  void initialize_active_container(Model *m)
 
 #define IMP_ACTIVE_CONTAINER_DEF(Name)                                  \
   void Name::Ticker::do_before_evaluate() {                             \
@@ -228,7 +228,8 @@ inline std::string get_name(const ParticleTuple<D>& p) {
     IMP_INTERNAL_CHECK(!get_is_added_or_removed_container(),            \
                        "No active updating of add/remove containers."); \
     ticker_.set(new Ticker(this), m);                                   \
-  }
+  }                                                                     \
+  IMP_REQUIRE_SEMICOLON_NAMESPACE
 
 
 
@@ -263,6 +264,7 @@ inline std::string get_name(const ParticleTuple<D>& p) {
     FOREACH(score+=s->evaluate_prechange(p, da));                       \
     return score;                                                       \
   }                                                                     \
+  IMP_REQUIRE_SEMICOLON_NAMESPACE
 
 
 #define IMP_SINGLETON_CONTAINER_METHODS_FROM_FOREACH(Name)              \
@@ -291,7 +293,7 @@ inline std::string get_name(const ParticleTuple<D>& p) {
     FOREACH(score+=s->evaluate_prechange(a, da));                       \
     return score;                                                       \
   }                                                                     \
-
+  IMP_REQUIRE_SEMICOLON_NAMESPACE
 
 
 

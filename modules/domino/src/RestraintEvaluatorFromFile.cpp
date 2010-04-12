@@ -10,7 +10,7 @@
 IMPDOMINO_BEGIN_NAMESPACE
 
 void write_combinations(const std::string &filename,
-                        const Combinations *combs,Particles &ps) {
+                        const Combinations *combs,const Particles &ps) {
   //write the combinations
    std::ofstream out_file(filename.c_str());
   if (!out_file) {
