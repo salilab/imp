@@ -950,17 +950,17 @@ protection:                                                             \
     and declares
     - IMP::Object::do_show()
 */
-#define IMP_OBJECT_INLINE(Name, show, destructor)               \
-  public:                                                       \
-  virtual std::string get_type_name() const {return #Name;}     \
-  virtual ::IMP::VersionInfo get_version_info() const {         \
-    return get_module_version_info();                           \
-  }                                                             \
+#define IMP_OBJECT_INLINE(Name, show, destructor)                       \
+  public:                                                               \
+  virtual std::string get_type_name() const {return #Name;}             \
+  virtual ::IMP::VersionInfo get_version_info() const {                 \
+    return get_module_version_info();                                   \
+  }                                                                     \
   IMP_NO_DOXYGEN (virtual void do_show(std::ostream &out) const {       \
-    show;                                                       \
-    });                                                         \
-  ~Name() {destructor;}                                         \
-public:                                                         \
+      show;                                                             \
+    });                                                                 \
+  ~Name() {destructor;}                                                 \
+public:                                                                 \
  IMP_REQUIRE_SEMICOLON_CLASS(object)
 
 
@@ -977,7 +977,7 @@ public:                                                         \
     return #Name;                                               \
   }                                                             \
 private:                                                        \
- virtual void do_show(std::ostream &out=std::cout) const {      \
+ virtual void do_show(std::ostream & =std::cout) const {        \
  }                                                              \
  IMP_REF_COUNTED_DESTRUCTOR(Name)
 
@@ -1357,7 +1357,7 @@ protected:                                      \
     ParticlesTemp r(2); r[0]=p[0]; r[1]=p[1];                           \
     return r;                                                           \
   }                                                                     \
-  ContainersTemp get_input_containers(const ParticlePair &p) const {    \
+  ContainersTemp get_input_containers(const ParticlePair &) const {    \
     return ContainersTemp();                                            \
   }                                                                     \
   IMP_PAIR_SCORE_BASE(Name)
@@ -1457,7 +1457,7 @@ protected:                                      \
     ParticlesTemp r(3); r[0]=p[0]; r[1]=p[1]; r[2]=p[2];                \
     return r;                                                           \
   }                                                                     \
-  ContainersTemp get_input_containers(const ParticleTriplet &p) const { \
+  ContainersTemp get_input_containers(const ParticleTriplet &) const {  \
     return ContainersTemp();                                            \
   }                                                                     \
   IMP_TRIPLET_SCORE_BASE(Name)
@@ -1610,7 +1610,7 @@ protected:                                      \
     IMP_LOG(VERBOSE, "This modifier requires a derivative accumulator " \
             << *this << std::endl);                                     \
   }                                                                     \
-  void apply(const ParticlesTemp &ps) const {                           \
+  void apply(const ParticlesTemp &) const {                             \
     IMP_LOG(VERBOSE, "This modifier requires a derivative accumulator " \
             << *this << std::endl);                                     \
   }                                                                     \
@@ -1656,7 +1656,7 @@ protected:                                      \
   ContainersTemp Name::get_input_containers(Particle *p) const {        \
     return refiner->get_input_containers(p);                            \
   }                                                                     \
-  ContainersTemp Name::get_output_containers(Particle *p) const {       \
+  ContainersTemp Name::get_output_containers(Particle *) const {       \
     return ContainersTemp();                                            \
   }                                                                     \
   IMP_NO_DOXYGEN(void Name::do_show(std::ostream &out) const {          \
@@ -1696,7 +1696,7 @@ protected:                                      \
   ContainersTemp Name::get_input_containers(Particle *p) const {        \
     return refiner->get_input_containers(p);                            \
   }                                                                     \
-  ContainersTemp Name::get_output_containers(Particle *p) const {       \
+  ContainersTemp Name::get_output_containers(Particle *) const {       \
     return ContainersTemp();                                            \
   }                                                                     \
   IMP_NO_DOXYGEN(void Name::do_show(std::ostream &out) const {          \
@@ -1776,10 +1776,10 @@ protected:                                      \
   ParticlesTemp get_output_particles(Particle*p) const {                \
     return ParticlesTemp(1,p);                                          \
   }                                                                     \
-  ContainersTemp get_input_containers(Particle*p) const {               \
+  ContainersTemp get_input_containers(Particle*) const {                \
     return ContainersTemp();                                            \
   }                                                                     \
-  ContainersTemp get_output_containers(Particle*p) const {              \
+  ContainersTemp get_output_containers(Particle*) const {               \
     return ContainersTemp();                                            \
   }                                                                     \
   IMP_INTERNAL_OBJECT(Name)

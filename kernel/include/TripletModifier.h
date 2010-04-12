@@ -39,27 +39,27 @@ public:
   TripletModifier(std::string name="TripletModifier %1%");
 
   /** Apply the function to a single value*/
-  virtual void apply(const ParticleTriplet& vt,
-                     DerivativeAccumulator &da) const {
+  virtual void apply(const ParticleTriplet&,
+                     DerivativeAccumulator &) const {
     IMP_FAILURE("This TripletModifier must be called without a"
                 << " DerivativeAccumulator.");
   }
 
   /** Apply the function to a single value*/
-  virtual void apply(const ParticleTriplet& vt) const {
+  virtual void apply(const ParticleTriplet&) const {
     IMP_FAILURE("This TripletModifier must be called with a"
                 << " DerivativeAccumulator.");
   }
 
   /** Apply the function to a collection of ParticleTriplets */
-  virtual void apply(const ParticleTripletsTemp &o) const {
+  virtual void apply(const ParticleTripletsTemp &) const {
     IMP_FAILURE("This TripletModifier must be called with a"
                 << " DerivativeAccumulator.");
   }
 
   /** Apply the function to a collection of ParticleTriplets */
-  virtual void apply(const ParticleTripletsTemp &o,
-                     DerivativeAccumulator &da) const {
+  virtual void apply(const ParticleTripletsTemp &,
+                     DerivativeAccumulator &) const {
     IMP_FAILURE("This TripletModifier must be called without a"
                 << " DerivativeAccumulator.");
   }

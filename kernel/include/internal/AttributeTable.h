@@ -51,9 +51,8 @@ struct FloatAttributeTableTraits: public DefaultTraits<float, FloatKey>
   static bool get_is_valid(float f) {
     /*if (std::numeric_limits<float>::has_quiet_NaN) {
       return !is_nan(f);
-      } else*/ {
-      return f != get_invalid();
-    }
+      } else*/
+    return f< std::numeric_limits<float>::max();
   }
 };
 
@@ -101,7 +100,7 @@ struct DoubleAttributeTableTraits: public DefaultTraits<double, FloatKey>
     /*if (std::numeric_limits<double>::has_quiet_NaN) {
       return !is_nan(f);
       } else*/ {
-      return f != get_invalid();
+      return f < std::numeric_limits<double>::max();
     }
   }
 };

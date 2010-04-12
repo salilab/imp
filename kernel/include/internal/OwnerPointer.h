@@ -47,7 +47,7 @@ class OwnerPointer: public WeakPointer<O>
 
 public:
   /** copy constructor */
-  OwnerPointer(const OwnerPointer &o) {
+  OwnerPointer(const OwnerPointer &o): P() {
     set_pointer(o.o_);
   }
   /** copy from another */

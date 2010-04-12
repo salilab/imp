@@ -18,7 +18,7 @@ namespace {
   }
 
   template <class T, class It>
-  void clear(T &t, It b, It e, Particle *p) {
+  void clear(T &, It b, It e, Particle *p) {
     std::vector<typename std::iterator_traits<It>::value_type >
       ks(b,e);
     for (unsigned int i=0; i< ks.size(); ++i) {
@@ -28,7 +28,8 @@ namespace {
   }
   template <class T>
   bool contains(const T &t, int i) {
-    return t.fits(i) && t.get(i) != T::Traits::get_invalid();
+    return t.fits(i) && T::Traits::get_is_valid(t.get(i));
+    //!= T::Traits::get_invalid();
   }
   template <class Key, class T>
   void restore(const T &t, Particle *p) {

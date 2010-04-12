@@ -27,8 +27,8 @@ ParticlesTemp _ConstRestraint::get_input_particles() const {
 }
 
 
-double _ConstSingletonScore::evaluate(Particle *p,
-                                      IMP::DerivativeAccumulator *da) const {
+double _ConstSingletonScore::evaluate(Particle *,
+                                      IMP::DerivativeAccumulator *) const {
   return v_;
 }
 void _ConstSingletonScore::do_show(std::ostream &out) const {
@@ -50,8 +50,8 @@ bool _ConstSingletonScore::get_is_changed(Particle *) const {return false;}
 
 
 
-double _ConstPairScore::evaluate(const ParticlePair &p,
-                                 IMP::DerivativeAccumulator *da) const {
+double _ConstPairScore::evaluate(const ParticlePair &,
+                                 IMP::DerivativeAccumulator *) const {
   return v_;
 }
 void _ConstPairScore::do_show(std::ostream &out) const {
@@ -90,10 +90,10 @@ void _TrivialTraitsDecorator::show(std::ostream &out) const {
 
 
 
-int _overloaded_decorator(_TrivialDecorator a) {
+int _overloaded_decorator(_TrivialDecorator) {
   return 0;
 }
-int _overloaded_decorator(_TrivialDerivedDecorator a) {
+int _overloaded_decorator(_TrivialDerivedDecorator) {
   return 1;
 }
 
@@ -127,14 +127,14 @@ unsigned int _take_particles(const Particles &ps) {
   return ps.size();
 }
 
-unsigned int _take_particles(Model *m, const Particles &ps) {
+unsigned int _take_particles(Model *, const Particles &ps) {
   for (unsigned int i=0; i< ps.size(); ++i) {
     IMP_CHECK_OBJECT(ps[i]);
   }
   return ps.size();
 }
 
-unsigned int _take_particles(Model *m, const Particles &ps, TextOutput out) {
+unsigned int _take_particles(Model *, const Particles &ps, TextOutput) {
   for (unsigned int i=0; i< ps.size(); ++i) {
     IMP_CHECK_OBJECT(ps[i]);
   }
@@ -240,11 +240,11 @@ _pass_pair(const DerivativePair &p) {
 }
 
 
-int _test_overload(const Particles &ps) {
+int _test_overload(const Particles &) {
   return 0;
 }
 
-int _test_overload(const Restraints &ps) {
+int _test_overload(const Restraints &) {
   return 1;
 }
 

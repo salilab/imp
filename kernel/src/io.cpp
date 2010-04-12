@@ -13,7 +13,7 @@ IMP_BEGIN_NAMESPACE
 
 
 
-IMPEXPORT void write_model(Model *m,
+IMPEXPORT void write_model(Model *,
                            const ParticlesTemp &particles,
                            TextOutput out) {
   std::map<Particle*, unsigned int> to;
@@ -39,7 +39,7 @@ IMPEXPORT void write_model(Model *m,
 }
 IMPEXPORT void read_model(TextInput in,
                           const ParticlesTemp &particles,
-                          Model *m) {
+                          Model *) {
   internal::LineStream ls(in);
   std::map<unsigned int, Particle *> from;
   for (unsigned int i=0; i< particles.size(); ++i) {
@@ -102,7 +102,7 @@ void DumpModelOnFailure::handle_failure() {
 
 
 
-void DumpModelOnFailure::do_show(std::ostream &out) const {
+void DumpModelOnFailure::do_show(std::ostream &) const {
 }
 
 

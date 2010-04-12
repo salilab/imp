@@ -252,7 +252,7 @@ void *Particle::operator new(std::size_t sz) {
   return address(i, slot);
 }
 
-void *Particle::operator new(std::size_t sz, void*p) {
+void *Particle::operator new(std::size_t, void*p) {
   return p;
 }
 

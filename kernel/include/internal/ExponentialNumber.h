@@ -48,11 +48,16 @@ class ExponentialNumber
     v_*=factor;
   }
   bool is_default() const {
-    return v_== std::numeric_limits<double>::infinity();
+    return v_>= std::numeric_limits<double>::infinity();
   }
 
   template <int E>
   friend class ExponentialNumber;
+  int compare(const This &o) const {
+    if (v_ < o.v_) return -1;
+    else if (v_ > o.v_) return 1;
+    else return 0;
+  }
 public:
 
 
@@ -110,7 +115,7 @@ public:
      */
   }
 
-  IMP_COMPARISONS_1(v_);
+  IMP_COMPARISONS;
 };
 
 template <int E>
