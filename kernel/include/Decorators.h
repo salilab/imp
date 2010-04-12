@@ -123,7 +123,7 @@ class Decorators: public ParentDecorators {
       WrappedDecorator::operator=(v);
       d_=v;
     }
-#ifdef _MSC_VER
+#if 0
     // for VC, it can't otherwise figure out the conversion chain
     operator Particle*() {
       if (WrappedDecorator()==*this) return NULL;
@@ -206,7 +206,7 @@ typename boost::enable_if<typename WrappedDecorator::DecoratorHasTraits>::type >
       }
       d_=v;
     }
-#ifdef _MSC_VER
+#if 0
     // for VC, it can't otherwise figure out the conversion chain
     operator Particle*() {
       if (WrappedDecorator()==*this) return NULL;
@@ -238,6 +238,10 @@ typename boost::enable_if<typename WrappedDecorator::DecoratorHasTraits>::type >
       std::swap(tr_, o.tr_);
       std::swap(has_traits_, o.has_traits_);
     });
+    static typename WrappedDecorator::DecoratorTraits
+    get_default_traits() {
+       return WrappedDecorator::get_default_decorator_traits();
+    }
   public:
   explicit Decorators(typename WrappedDecorator::DecoratorTraits tr):
     tr_(tr), has_traits_(true){}
@@ -260,14 +264,21 @@ typename boost::enable_if<typename WrappedDecorator::DecoratorHasTraits>::type >
     check(b,e);
   }
   Decorators(const Particles &ps,
-             typename WrappedDecorator::DecoratorTraits tr
-             =WrappedDecorator::get_default_decorator_traits()):
+             typename WrappedDecorator::DecoratorTraits tr):
     tr_(tr), has_traits_(true) {
     ParentDecorators::resize(ps.size());
     for (unsigned int i=0; i< ps.size(); ++i) {
       ParentDecorators::operator[](i)=WrappedDecorator(ps[i], tr);
     }
   }
+  Decorators(const Particles &ps):
+    tr_(get_default_traits()), has_traits_(true) {
+      ParentDecorators::resize(ps.size());
+      for (unsigned int i=0; i< ps.size(); ++i) {
+         ParentDecorators::operator[](i)=WrappedDecorator(ps[i],
+              tr_);
+      }
+    }
   Decorators(unsigned int i,
                        typename WrappedDecorator::DecoratorTraits tr):
     ParentDecorators(i), tr_(tr),
