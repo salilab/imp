@@ -160,7 +160,7 @@ namespace {
     return p;
   }
 
-  void bond_particle(Model *m, const String& mol2_bondline,
+  void bond_particle(Model *, const String& mol2_bondline,
                      const std::map<Int, Particle*>& molecule_atoms)
   {
     //  Particle* p = new Particle(m);
@@ -313,7 +313,7 @@ namespace {
   }
 
   void read_bond_mol2(Model *m, std::istream &mol2_file,
-                      Hierarchy& molecule_d,
+                      Hierarchy& /*molecule_d*/,
                       const std::map<Int, Particle*>& molecule_atoms)
   {
     std::string line;

@@ -25,7 +25,7 @@ double DihedralSingletonScore::evaluate(Particle *b,
   Dihedral ad(b);
   Float ideal = ad.get_ideal();
   Float s = ad.get_stiffness();
-  if (s == 0.) {
+  if (s <= 0.) {
     return 0.;
   }
   Int m = ad.get_multiplicity();
@@ -83,7 +83,7 @@ bool DihedralSingletonScore::get_is_changed(Particle *p) const {
     || b.get_particle(3)->get_is_changed();
 }
 
-void DihedralSingletonScore::do_show(std::ostream &out) const
+void DihedralSingletonScore::do_show(std::ostream &) const
 {
 }
 
