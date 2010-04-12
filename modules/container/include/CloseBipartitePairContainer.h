@@ -55,22 +55,11 @@ public:
                               SingletonContainer *b,
                               double distance,
                               double slack=1);
-  //! If the container is empty, you can pass the model explicitly
-  CloseBipartitePairContainer(SingletonContainer *a,
-                              SingletonContainer *b,
-                              Model *m, double distance,
-                              double slack=1);
 
   //! Get the individual particles from the passed SingletonContainer
   CloseBipartitePairContainer(SingletonContainer *a,
                               SingletonContainer *b,
                               double distance,
-                              core::ClosePairsFinder *cpf,
-                              double slack=1);
-  //! If the container is empty, you can pass the model explicitly
-  CloseBipartitePairContainer(SingletonContainer *a,
-                              SingletonContainer *b,
-                              Model *m, double distance,
                               core::ClosePairsFinder *cpf,
                               double slack=1);
 

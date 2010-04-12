@@ -37,30 +37,11 @@ CloseBipartitePairContainer
   initialize(a,b, distance, slack,
              core::internal::default_cpf());
 }
-CloseBipartitePairContainer
-::CloseBipartitePairContainer(SingletonContainer *a,
-                              SingletonContainer *b,
-                              Model *m, double distance,
-                              double slack):
-  P(m, "CloseBipartitePairContainer") {
-  initialize(a,b, distance, slack,
-             core::internal::default_cpf());
-}
 
 CloseBipartitePairContainer
 ::CloseBipartitePairContainer(SingletonContainer *a,
                               SingletonContainer *b,
                               double distance,
-                              core::ClosePairsFinder *cpf,
-                              double slack):
-  P(a->get_model(), "CloseBipartitePairContainer") {
-  initialize(a,b, distance, slack,
-             cpf);
-}
-CloseBipartitePairContainer
-::CloseBipartitePairContainer(SingletonContainer *a,
-                              SingletonContainer *b,
-                              Model *m, double distance,
                               core::ClosePairsFinder *cpf,
                               double slack):
   P(a->get_model(), "CloseBipartitePairContainer") {
