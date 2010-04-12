@@ -61,7 +61,9 @@ private:
   std::vector<VT> data_;
   int d_[3];
   BoundingBoxD<3> bbox_;
-  double edge_size_[3];
+  VectorD<3> unit_cell_;
+  // inverse
+  VectorD<3> inverse_unit_cell_;
 
   struct GetVoxel {
     mutable Grid3D<VT> *home_;
@@ -91,6 +93,13 @@ private:
     return ii;
   }
 
+  void set_unit_cell(const VectorD<3> &c) {
+    unit_cell_=c;
+    inverse_unit_cell_= VectorD<3>(1.0/unit_cell_[0],
+                                   1.0/unit_cell_[1],
+                                   1.0/unit_cell_[2]);
+  }
+
   int snap(unsigned int dim, int v) const {
     IMP_INTERNAL_CHECK(dim <3, "Invalid dim");
     if (v < 0) return 0;
@@ -117,7 +126,6 @@ private:
     }
     return std::make_pair(snap(l), snap(u));
   }
-
 public:
 
   //! Initialize the grid
@@ -136,11 +144,13 @@ public:
     d_[0]=xd;
     d_[1]=yd;
     d_[2]=zd;
+    VectorD<3> nuc;
     for (unsigned int i=0; i< 3; ++i) {
       double side= bbox_.get_corner(1)[i]- bbox_.get_corner(0)[i];
       IMP_USAGE_CHECK(side>0, "Can't have flat grid");
-      edge_size_[i]= 1.01*side/d_[i];
+      nuc[i]= 1.01*side/d_[i];
     }
+    set_unit_cell(nuc);
   }
 
   //! Initialize the grid
@@ -154,15 +164,17 @@ public:
          const BoundingBoxD<3> &bb,
          Voxel def=Voxel()) {
     IMP_USAGE_CHECK(side>0, "Side cannot be 0");
+    VectorD<3> nuc;
     for (unsigned int i=0; i< 3; ++i ) {
       double bside= bb.get_corner(1)[i]- bb.get_corner(0)[i];
       d_[i]= static_cast<int>(std::ceil(bside / side))+1;
-      edge_size_[i]= side;
+      nuc[i]= side;
     }
+    set_unit_cell(nuc);
     bbox_=BoundingBoxD<3>(bb.get_corner(0), bb.get_corner(0)
-                        +VectorD<3>(d_[0]*edge_size_[0],
-                                  d_[1]*edge_size_[1],
-                                  d_[2]*edge_size_[2]));
+                        +VectorD<3>(d_[0]*unit_cell_[0],
+                                    d_[1]*unit_cell_[1],
+                                    d_[2]*unit_cell_[2]));
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {
       for (unsigned int i=0; i< 3; ++i) {
         IMP_INTERNAL_CHECK(bbox_.get_corner(1)[i] >= bb.get_corner(1)[i],
@@ -186,15 +198,17 @@ public:
   //! Change the bounding box but not the grid or contents
   void set_bounding_box(const BoundingBoxD<3> &bb3) {
     bbox_ =bb3;
+    VectorD<3> nuc;
     for (unsigned int i=0; i< 3; ++i) {
       double el= (bb3.get_corner(1)[i]- bb3.get_corner(0)[i])/d_[i];
-      edge_size_[i]=el;
+      nuc[i]=el;
     }
+    set_unit_cell(nuc);
   }
 
   //! Return the unit cell
-  VectorD<3> get_unit_cell() const {
-    return VectorD<3>(edge_size_[0], edge_size_[1], edge_size_[2]);
+  const VectorD<3>& get_unit_cell() const {
+    return unit_cell_;
   }
 
   //! Return the number of voxels in a certain direction
@@ -226,6 +240,10 @@ public:
 
 
 #ifndef IMP_DOXYGEN
+  const VectorD<3>& get_inverse_unit_cell() const {
+    return inverse_unit_cell_;
+  }
+
   //! Return the index of the voxel containing the point.
   Index get_index(VectorD<3> pt) const {
     IMP_USAGE_CHECK(bbox_.get_contains(pt),
@@ -235,7 +253,7 @@ public:
     for (unsigned int i=0; i< 3; ++i ) {
       IMP_INTERNAL_CHECK(d_[i] != 0, "Invalid grid in Index");
       double d = pt[i] - bbox_.get_corner(0)[i];
-      double fi= d/edge_size_[i];
+      double fi= d*inverse_unit_cell_[i];
       index[i]= std::min(static_cast<int>(std::floor(fi)),
                          d_[i]-1);
     }
@@ -253,14 +271,14 @@ public:
     for (unsigned int i=0; i< 3; ++i ) {
       IMP_INTERNAL_CHECK(d_[i] != 0, "Invalid grid in Index");
       float d = pt[i] - bbox_.get_corner(0)[i];
-      float fi= d/edge_size_[i];
+      float fi= d*inverse_unit_cell_[i];
       index[i]= static_cast<int>(std::floor(fi));
 
       IMP_INTERNAL_CHECK(std::abs(index[i]) < 200000000,
                  "Something is probably wrong " << d
                  << " " << pt[i]
                  << " " << bbox_
-                 << " " << edge_size_[i]);
+                 << " " << unit_cell_[i]);
     }
     return ExtendedIndex(index[0], index[1], index[2]);
   }
@@ -313,9 +331,10 @@ public:
 
   //! Return the coordinates of the center of the voxel
   VectorD<3> get_center(ExtendedIndex gi) const {
-    return VectorD<3>(edge_size_[0]*(.5+ gi[0]) + bbox_.get_corner(0)[0],
-                    edge_size_[1]*(.5+ gi[1]) + bbox_.get_corner(0)[1],
-                    edge_size_[2]*(.5+ gi[2]) + bbox_.get_corner(0)[2]);
+    return VectorD<3>(unit_cell_[0]*(.5+ gi[0]),
+                      unit_cell_[1]*(.5+ gi[1]),
+                      unit_cell_[2]*(.5+ gi[2]))
+      + bbox_.get_corner(0);
   }
 
   /** \name Index Iterators
@@ -427,7 +446,56 @@ public:
   /** @} */
 };
 
+//! Use trilinear interpolation to compute a smoothed value at v
+/** The voxel values are assumed to be at the center of the voxel
+    and the passed outside value is used for voxels outside the
+    grid. The type Voxel must support get_linearly_interpolated().
+*/
+template <class Voxel>
+const Voxel &get_trilinearly_interpolated(const Grid3D<Voxel> &g,
+                                          const VectorD<3> &v,
+                                          const Voxel& outside=0);
 
 IMPALGEBRA_END_NAMESPACE
+
+#include "internal/grid_3d_impl.h"
+
+
+/** Iterate over each voxel in grid. The voxel index is
+    unsigned int voxel_index[3] and the coordinates of the center is
+    VectorD<3> voxel_center and the index of the voxel is
+    loop_voxel_index.
+ */
+#define IMP_GRID3D_FOREACH_VOXEL(grid, action)                          \
+  {                                                                     \
+    unsigned int next_loop_voxel_index=0;                               \
+    const algebra::Vector3D macro_map_unit_cell=g.get_unit_cell();      \
+    const unsigned int macro_map_nx=g.get_number_of_voxels(0);          \
+    const unsigned int macro_map_ny=g.get_number_of_voxels(1);          \
+    const unsigned int macro_map_nz=g.get_number_of_voxels(2);          \
+    const algebra::Vector3D macro_map_origin                            \
+      =g.get_bounding_box().get_corner(0);                              \
+    unsigned int voxel_index[3];                                        \
+    IMP::algebra::VectorD<3> voxel_center;                              \
+    for (voxel_index[0]=0; voxel_index[0]< macro_map_nx;                \
+         ++voxel_index[0]) {                                            \
+      voxel_center[0]= macro_map_origin[0]                              \
+        +(ix+.5)*macro_map_unit_cell[0];                                \
+      for (voxel_index[1]=0; voxel_index[1]< macro_map_ny;              \
+           ++voxel_index[1]) {                                          \
+        voxel_center[1]= macro_map_origin[1]                            \
+          +(iy+.5)*macro_map_unit_cell[1];                              \
+        for (voxel_index[2]=0; voxel_index[2]< macro_map_nz;            \
+             ++voxel_index[2]) {                                        \
+          voxel_center[2]= macro_map_origin[2]                          \
+          +(iz+.5)*macro_map_unit_cell[2];                              \
+        unsigned int loop_voxel_index=next_loop_voxel_index;            \
+        ++next_loop_voxel_index;                                        \
+        {action};                                                       \
+      }                                                                 \
+    }                                                                   \
+  }                                                                     \
+  }                                                                     \
+
 
 #endif  /* IMPALGEBRA_GRID_3D_H */
