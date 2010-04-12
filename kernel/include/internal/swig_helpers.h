@@ -199,12 +199,12 @@ namespace swig {
     static const int converter=1;
   };
 
-  template <class T>
-  struct Convert<T, typename enable_if< is_base_of<Particle, T> >::type >:
-    public ConvertObjectBase<T> {
+  template<>
+  struct Convert<Particle >:
+    public ConvertObjectBase<Particle> {
     static const int converter=2;
     template <class SwigData>
-    static T* get_cpp_object(PyObject *o, SwigData st,
+    static Particle* get_cpp_object(PyObject *o, SwigData st,
                              SwigData particle_st, SwigData decorator_st) {
       void *vp;
       int res=SWIG_ConvertPtr(o, &vp,particle_st, 0 );
