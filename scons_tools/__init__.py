@@ -77,7 +77,7 @@ def _add_build_flags(env):
     env.Append(LINKFLAGS=[])
     env.Append(LIBPATH=[])
     if env['CC'] == 'gcc':
-        env.Append(CXXFLAGS=["-Wall", "-pedantic", "-ansi"])
+        env.Append(CXXFLAGS=["-Wall"])
     if env['CXX'] == 'g++':
         env.Append(CXXFLAGS=["-Woverloaded-virtual"])
         env['use_pch']=env['precompiledheader']
