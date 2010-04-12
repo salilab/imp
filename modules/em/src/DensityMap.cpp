@@ -19,15 +19,15 @@ namespace {
   template <class T>
    bool is_initialize(const T &t) {
      if (std::numeric_limits<T>::has_signaling_NaN) {
-       return (t == std::numeric_limits<T>::signaling_NaN());
+       return (is_nan(t));
      } else if (std::numeric_limits<T>::has_quiet_NaN) {
-       return (t == std::numeric_limits<T>::quiet_NaN());
+       return (is_nan(t));
      } else if (std::numeric_limits<T>::has_infinity) {
-       return (t== std::numeric_limits<T>::infinity());
+       return t > std::numeric_limits<T>::max();
      } else {
        // numerical limits for int and double have completely
        // different meanings of max/min
-       return (t == -std::numeric_limits<T>::max());
+       return (t <= -std::numeric_limits<T>::max());
      }
   }
 }
@@ -50,7 +50,7 @@ DensityMap::DensityMap(const DensityHeader &header){
   calc_all_voxel2loc();
 }
 //TODO - update the copy cons
-DensityMap::DensityMap(const DensityMap &other)
+DensityMap::DensityMap(const DensityMap &other): Object(other.get_name())
 {
   header_ = other.header_;
   long size = get_number_of_voxels();

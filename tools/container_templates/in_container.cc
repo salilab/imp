@@ -23,12 +23,12 @@ bool InContainerGroupnameFilter
 }
 
 ParticlesTemp InContainerGroupnameFilter
-::get_input_particles(PassValue p) const {
+::get_input_particles(PassValue) const {
   // not quite right, but...
   return ParticlesTemp();
 }
 ContainersTemp InContainerGroupnameFilter
-::get_input_containers(PassValue p) const {
+::get_input_containers(PassValue) const {
   return ContainersTemp(1,c_);
 }
 

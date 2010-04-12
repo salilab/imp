@@ -17,7 +17,7 @@ ConjugateGradients::ConjugateGradients(Model *m): GSLOptimizer(m){
   min_gradient_=.001;
 }
 
-void ConjugateGradients::do_show(std::ostream &out) const {
+void ConjugateGradients::do_show(std::ostream &) const {
 }
 
 
