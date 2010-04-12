@@ -21,6 +21,18 @@ IMPDISPLAY_BEGIN_NAMESPACE
 class IMPDISPLAYEXPORT Color
 {
   float c_[3];
+  int compare(float a, float b) const {
+    if (a< b) return -1;
+    else if (a > b) return 1;
+    else return 0;
+  }
+  int compare(const Color &o) const {
+    for (unsigned int i=0; i< 3; ++i) {
+      int c= compare(c_[i], o.c_[i]);
+      if (c != 0) return c;
+    }
+    return 0;
+  }
 public:
   typedef Color This;
 
@@ -50,7 +62,7 @@ public:
     out << get_red() << delim << get_green() << delim << get_blue();
   }
 
-  IMP_COMPARISONS_3(c_[0],c_[1], c_[2]);
+  IMP_COMPARISONS;
 };
 
 IMP_OUTPUT_OPERATOR(Color);

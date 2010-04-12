@@ -19,7 +19,7 @@ namespace {
     out << "mark=s.place_marker(("
                  << commas_io(p) << "), ("
                  << commas_io(c) << ")";
-    if (r != 0) {
+    if (r > 0) {
       out << ", " << r;
     } else {
       out << ", " << .1;
@@ -126,7 +126,7 @@ bool ChimeraWriter::process(TriangleGeometry *g,
   return true;
 }
 bool ChimeraWriter::process(EllipsoidGeometry *g,
-                            Color color, std::string name) {
+                            Color , std::string name) {
   cleanup(name, false, false);
   get_stream() << "try:\n";
   algebra::VectorD<4> q=g->get_rotation().get_quaternion();

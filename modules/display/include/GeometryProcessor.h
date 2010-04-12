@@ -22,46 +22,46 @@ class IMPDISPLAYEXPORT GeometryProcessor
 protected:
   virtual ~GeometryProcessor() {}
 
-  virtual bool process(SphereGeometry *g,
-                       Color color, std::string name) {
+  virtual bool process(SphereGeometry *,
+                       Color, std::string) {
     return false;
   }
-  virtual bool process(CylinderGeometry *g,
-                       Color color, std::string name) {
+  virtual bool process(CylinderGeometry *,
+                       Color, std::string) {
     return false;
   }
-  virtual bool process(PointGeometry *g,
-                       Color color, std::string name) {
+  virtual bool process(PointGeometry *,
+                       Color, std::string) {
     return false;
   }
-  virtual bool process(SegmentGeometry *g,
-                       Color color, std::string name) {
+  virtual bool process(SegmentGeometry *,
+                       Color, std::string) {
     return false;
   }
-  virtual bool process(PolygonGeometry *g,
-                       Color color, std::string name) {
+  virtual bool process(PolygonGeometry *,
+                       Color, std::string) {
     return false;
   }
-  virtual bool process(TriangleGeometry *g,
-                       Color color, std::string name) {
+  virtual bool process(TriangleGeometry *,
+                       Color, std::string) {
     return false;
   }
-  virtual bool process(EllipsoidGeometry *g,
-                       Color color, std::string name) {
+  virtual bool process(EllipsoidGeometry *,
+                       Color, std::string) {
     return false;
   }
-  virtual bool process(BoundingBoxGeometry *g, Color color,
-                       std::string name) {
+  virtual bool process(BoundingBoxGeometry *, Color,
+                       std::string) {
     return false;
   }
-  virtual bool process(Geometry *g, Color color, std::string name) {
+  virtual bool process(Geometry *, Color, std::string) {
     return false;
   }
   void process_geometry(Geometry* g);
 private:
   void process_geometry_internal(Geometry* g, bool has_color,
                                  Color c,
-                                 std::string name);
+                                 std::string);
 };
 
 

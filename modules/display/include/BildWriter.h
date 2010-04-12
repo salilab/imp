@@ -31,13 +31,13 @@ class IMPDISPLAYEXPORT BildWriter: public Writer
   void process(Color color) {
     get_stream() << ".color " << color << "\n";
   }
-  bool process(PointGeometry *g, Color color, std::string name) {
+  bool process(PointGeometry *g, Color color, std::string) {
     process(color);
     get_stream() << ".dotat " <<  algebra::spaces_io(*g)
                  << "\n";
     return true;
   }
-  bool process(SegmentGeometry *g, Color color, std::string name) {
+  bool process(SegmentGeometry *g, Color color, std::string) {
     process(color);
     get_stream() << ".move "
                  << algebra::spaces_io(g->get_point(0)) << "\n";
@@ -46,7 +46,7 @@ class IMPDISPLAYEXPORT BildWriter: public Writer
                  << "\n";
     return true;
   }
-  bool process(PolygonGeometry *g, Color color, std::string name) {
+  bool process(PolygonGeometry *g, Color color, std::string) {
     process(color);
     get_stream() << ".polygon ";
     for (unsigned int i=0; i< g->size(); ++i) {
@@ -55,7 +55,7 @@ class IMPDISPLAYEXPORT BildWriter: public Writer
     get_stream() << "\n";
     return true;
   }
-  bool process(TriangleGeometry *g, Color color, std::string name) {
+  bool process(TriangleGeometry *g, Color color, std::string) {
     process(color);
     get_stream() << ".polygon ";
     for (unsigned int i=0; i< 3; ++i) {
@@ -64,14 +64,14 @@ class IMPDISPLAYEXPORT BildWriter: public Writer
     get_stream() << "\n";
     return true;
   }
-  bool process(SphereGeometry *g, Color color, std::string name) {
+  bool process(SphereGeometry *g, Color color, std::string) {
     process(color);
     get_stream() << ".sphere "
                  << algebra::spaces_io(g->get_center()) << " "
                  << g->get_radius() << "\n";
     return true;
   }
-  bool process(CylinderGeometry *g, Color color, std::string name) {
+  bool process(CylinderGeometry *g, Color color, std::string) {
     process(color);
     get_stream() << ".cylinder "
                  << algebra::spaces_io(g->get_segment().get_point(0))

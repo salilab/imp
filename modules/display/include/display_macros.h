@@ -16,7 +16,7 @@
   Name(TextOutput of): Writer(of, #Name)                                \
   {}                                                                    \
   Name(): Writer(#Name){}                                               \
-  IMP_OBJECT_INLINE(Name,{},close());                                   \
+  IMP_OBJECT_INLINE(Name,if (0) out << "Hi",close());                   \
 protected:                                                              \
  using Writer::process;                                                 \
  virtual void on_open();                                                \

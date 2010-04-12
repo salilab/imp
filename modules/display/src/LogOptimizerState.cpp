@@ -64,7 +64,7 @@ void DisplayModelOnFailure::handle_failure() {
   s_->write(file_name_);
 }
 
-void DisplayModelOnFailure::do_show(std::ostream &out) const {
+void DisplayModelOnFailure::do_show(std::ostream &) const {
 }
 
 IMPDISPLAY_END_NAMESPACE
