@@ -325,7 +325,7 @@ public:
    */
   void calc_all_voxel2loc();
 
-  IMP_OBJECT_INLINE(DensityMap, header_.show(out),);
+  IMP_OBJECT_INLINE(DensityMap, header_.show(out),{});
   //! copy map into this map
   void copy_map(const DensityMap &other);
 protected:

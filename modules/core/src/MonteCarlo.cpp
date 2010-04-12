@@ -22,7 +22,7 @@ Mover::Mover(std::string name):Object(name) {}
 IMP_LIST_IMPL(MonteCarlo, Mover, mover, Mover*, Movers,
               {obj->set_optimizer(this);
                 obj->set_was_used(true);
-              },,);
+              },{},{});
 
 MonteCarlo::MonteCarlo(Model *m): Optimizer(m, "MonteCarlo"),
                                   temp_(1),

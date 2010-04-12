@@ -146,7 +146,8 @@
   UCName##Keys get_##lcname##_attributes() const {                      \
     return UCName##Keys(lcname##_keys_begin(),                          \
                         lcname##_keys_end());                           \
-  }
+  }                                                                     \
+  IMP_REQUIRE_SEMICOLON_CLASS(lcname)
 
 
 
@@ -333,13 +334,13 @@ class IMPEXPORT Particle : public Container
                                                     ps_->floats_.get_length());
   }
   IMP_PARTICLE_ATTRIBUTE_TYPE(Int, int, Int,
-                              true, ps_->ints_,ps_->ints_,,);
+                              true, ps_->ints_,ps_->ints_,{},{});
   IMP_PARTICLE_ATTRIBUTE_TYPE(String, string, String,
-                              true,ps_->strings_,ps_->strings_,,)
-    IMP_PARTICLE_ATTRIBUTE_TYPE(Particle, particle, Particle*,
-                                true,ps_->particles_,ps_->particles_,,)
-    IMP_PARTICLE_ATTRIBUTE_TYPE(Object, object, Object*,
-                                true,ps_->objects_,ps_->objects_,,);
+                              true,ps_->strings_,ps_->strings_,{},{});
+  IMP_PARTICLE_ATTRIBUTE_TYPE(Particle, particle, Particle*,
+                              true,ps_->particles_,ps_->particles_,{},{});
+  IMP_PARTICLE_ATTRIBUTE_TYPE(Object, object, Object*,
+                              true,ps_->objects_,ps_->objects_,{},{});
 
 #endif
 

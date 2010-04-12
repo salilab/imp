@@ -49,7 +49,7 @@ public:
   Vector3D get_local_coordinates(const Vector3D &v) const {
     return get_inverse().get_transformed(v);
   }
-  IMP_SHOWABLE_INLINE({out << tr_;})
+  IMP_SHOWABLE_INLINE({out << tr_;});
 };
 
 

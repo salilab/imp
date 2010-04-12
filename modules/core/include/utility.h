@@ -47,7 +47,7 @@ template <class Container>
 class EditGuard: public RAII {
   IMP::internal::OwnerPointer<Container> c_;
 public:
-  IMP_RAII(EditGuard, (Container *c),,
+  IMP_RAII(EditGuard, (Container *c),{},
            {
              if (!c->get_is_editing()) {
                c_= IMP::internal::OwnerPointer<Container>(c);
@@ -55,7 +55,7 @@ public:
              }
            },
            if (c_) c_->set_is_editing(false);
-           )
+           );
 };
 
 IMPCORE_END_NAMESPACE

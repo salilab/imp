@@ -20,7 +20,7 @@
 IMPDOMINO_BEGIN_NAMESPACE
 
 IMPDOMINOEXPORT void write_combinations(const std::string &filename,
-                       const Combinations *combs,Particles &ps);
+                       const Combinations *combs,const Particles &ps);
 //! Read a file containing values of a restraint
 /**
 /param[in] filename the name of the restraint file
@@ -36,6 +36,7 @@ A|B| (the header line, contains the names of the particles)
  */
 IMPDOMINOEXPORT void read_combinations(const std::string &filename,
                                        Combinations *combs,const Particles &ps);
+
 //! A read restraint values from precalculated files
 /**
  */

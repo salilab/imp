@@ -25,7 +25,7 @@ IMP_LIST_IMPL(CloseBipartitePairContainer,
               PairFilter,
               pair_filter,
               PairFilter*,
-              PairFilters, obj->set_was_used(true);,,)
+              PairFilters, obj->set_was_used(true);,{},{});
 
 
 CloseBipartitePairContainer
@@ -84,7 +84,7 @@ void CloseBipartitePairContainer::initialize(SingletonContainer *a,
   movedb_= cpf_->get_moved_singleton_container(b_, get_model(), slack_);
 }
 
-IMP_ACTIVE_CONTAINER_DEF(CloseBipartitePairContainer)
+IMP_ACTIVE_CONTAINER_DEF(CloseBipartitePairContainer);
 
 ParticlesTemp CloseBipartitePairContainer
 ::get_state_input_particles() const {

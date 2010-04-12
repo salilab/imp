@@ -43,7 +43,7 @@ IMP_LIST_IMPL(MolecularDynamics, Particle, particle, Particle*,
                     obj->add_attribute(vs_[i], 0.0, false);
                   }
                 }
-              },,);
+              },{},{});
 
 
 void MolecularDynamics::setup_particles()

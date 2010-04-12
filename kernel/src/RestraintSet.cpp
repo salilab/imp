@@ -37,7 +37,7 @@ IMP_LIST_IMPL(RestraintSet, Restraint, restraint, Restraint*,
                   get_model()->reset_dependencies();
                 }
                 obj->set_was_used(true);
-              },,{
+              },{},{
                 if (get_is_part_of_model()) {
                   get_model()->reset_dependencies();
                 }

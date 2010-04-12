@@ -23,7 +23,7 @@ CoverRefined
   refiner_=ref;
 }
 
-IMP_SINGLETON_MODIFIER_FROM_REFINED(CoverRefined, refiner_)
+IMP_SINGLETON_MODIFIER_FROM_REFINED(CoverRefined, refiner_);
 
 
 void CoverRefined::apply(Particle *p) const
@@ -37,5 +37,5 @@ void CoverRefined::apply(Particle *p) const
 IMP_SUMMARY_DECORATOR_DEF(Cover, XYZR, XYZs,
                           SingletonModifier * mod
                           = new CoverRefined(ref,
-                                             XYZR::get_default_radius_key(), 0))
+                          XYZR::get_default_radius_key(), 0));
 IMPCORE_END_NAMESPACE

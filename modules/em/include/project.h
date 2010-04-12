@@ -270,7 +270,7 @@ void project_given_direction1(IMP::algebra::Matrix3D<T>& m3,
   algebra::Rotation3D angles
     = algebra::get_rotation_from_fixed_zyz(sph[2],sph[1],0.0);
   project_given_rotation1(m3,m2,Ydim,Xdim,angles,shift,equality_tolerance);
-};
+}
 
 
 

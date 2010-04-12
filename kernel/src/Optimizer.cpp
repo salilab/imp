@@ -40,7 +40,7 @@ IMP_LIST_IMPL(Optimizer, OptimizerState, optimizer_state,
               OptimizerState*, OptimizerStates, {
                 obj->set_optimizer(this);
                 obj->set_was_used(true);
-              },,
+              },{},
               obj->set_optimizer(NULL));
 
 IMP_END_NAMESPACE

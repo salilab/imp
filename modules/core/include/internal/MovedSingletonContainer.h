@@ -48,7 +48,7 @@ namespace {
       i_=0;
     }
     IMP_INTERNAL_SINGLETON_MODIFIER(SaveXYZRRotValues,
-                                    do_apply(p);)
+                                    do_apply(p););
   };
 
   class SaveXYZRValues:public SingletonModifier {
@@ -72,7 +72,7 @@ namespace {
     IMP_INTERNAL_SINGLETON_MODIFIER(SaveXYZRValues,
                                     {
                                       do_apply(p);
-                                    })
+                                    });
   };
 
   template <class P>
@@ -93,7 +93,7 @@ namespace {
       moved_(moved){
     }
     IMP_INTERNAL_SINGLETON_MODIFIER(SaveMovedValues,
-                                    do_apply(p);)
+                                    do_apply(p););
   };
 
   inline bool moved_threshold(Particle *p, const algebra::SphereD<3> &old,

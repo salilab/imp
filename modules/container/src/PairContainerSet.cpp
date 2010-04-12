@@ -105,12 +105,12 @@ IMP_LIST_IMPL(PairContainerSet,
                            ->get_added_pairs_container());
                 }
                 obj->set_was_used(true);
-              },,
+              },{},
               if (!get_is_added_or_removed_container()) {
                 get_set(get_removed_pairs_container())
                   ->add_pair_container(obj
                        ->get_removed_pairs_container());
-              })
+              });
 
 
 void PairContainerSet::apply(const PairModifier *sm) {

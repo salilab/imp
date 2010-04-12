@@ -34,13 +34,13 @@ public:
   /**
   /param[in] ps_target particles to be mapped on a discrete set
    */
-  MappedDiscreteSet(container::ListSingletonContainer *ps_target);
+  MappedDiscreteSet(SingletonContainer *ps_target);
   //! Create the discrete set
   /** \param[in] ps_target the set of particles to be mapped on a
       discrete set
       \param[in] atts the attributes for the states held in the set
    */
-  MappedDiscreteSet(container::ListSingletonContainer *ps_target,
+  MappedDiscreteSet(SingletonContainer *ps_target,
                     FloatKeys atts);
 
   //! Add a new state to the set.

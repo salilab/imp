@@ -32,7 +32,7 @@ public:
   /**
   /param[in] ps_target particles to be mapped on a discrete set
    */
-  TransformationMappedDiscreteSet(container::ListSingletonContainer *ps_target);
+  TransformationMappedDiscreteSet(SingletonContainer *ps_target);
 };
 
 IMPDOMINO_END_NAMESPACE

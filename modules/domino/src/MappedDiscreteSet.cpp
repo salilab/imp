@@ -11,17 +11,17 @@ IMPDOMINO_BEGIN_NAMESPACE
 MappedDiscreteSet::MappedDiscreteSet(){}
 
 MappedDiscreteSet::MappedDiscreteSet(
-  container::ListSingletonContainer *ps_target)
+  SingletonContainer *ps_target)
 {
-  for(int i=0;i<ps_target->get_number_of_particles();i++){
+  for(unsigned int i=0;i<ps_target->get_number_of_particles();i++){
     states_map_[ps_target->get_particle(i)] = Particles();
   }
 }
 
 MappedDiscreteSet::MappedDiscreteSet(
-        container::ListSingletonContainer *ps_target,
+        SingletonContainer *ps_target,
         FloatKeys atts) : DiscreteSet(atts){
-  for(int i=0;i<ps_target->get_number_of_particles();i++){
+  for(unsigned int i=0;i<ps_target->get_number_of_particles();i++){
     states_map_[ps_target->get_particle(i)] = Particles();
   }
 }

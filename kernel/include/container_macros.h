@@ -26,10 +26,11 @@
 #ifndef SWIG
 /** Internal use only. */
 #define IMP_EXPOSE_ITERATORS(ContainerType, container_name, Ucname, lcname) \
-  IMP_NO_DOXYGEN(typedef ContainerType::iterator Ucname##Iterator;)     \
-  IMP_NO_DOXYGEN(typedef ContainerType::const_iterator                  \
-                 Ucname##ConstIterator;)                                \
-  IMP_ONLY_DOXYGEN(class Ucname##Iterator; class Ucname##ConstIterator;) \
+  IMP_SWITCH_DOXYGEN(class Ucname##Iterator;                            \
+                     class Ucname##ConstIterator,                       \
+                     typedef ContainerType::iterator Ucname##Iterator;  \
+                     typedef ContainerType::const_iterator              \
+                     Ucname##ConstIterator);                            \
   Ucname##Iterator lcname##s_begin() {return container_name.begin();}   \
   Ucname##Iterator lcname##s_end() {return container_name.end();}       \
   Ucname##ConstIterator lcname##s_begin() const {                       \
@@ -133,6 +134,7 @@ const PluralData &access_##lcname##s() const {return lcname##_vector_;} \
 void handle_remove(Data d);                                             \
 IMP_NO_DOXYGEN(PluralData lcname##_vector_;)                            \
 IMP_PROTECTION(protection)                                              \
+IMP_REQUIRE_SEMICOLON_CLASS(list##lcname)
 
 
 
@@ -202,5 +204,6 @@ IMP_PROTECTION(protection)                                              \
     }                                                                   \
     OnChanged;                                                          \
   }                                                                     \
+  IMP_REQUIRE_SEMICOLON_NAMESPACE
 
 #endif  /* IMP_CONTAINER_MACROS_H */

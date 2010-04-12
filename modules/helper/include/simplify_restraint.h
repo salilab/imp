@@ -369,11 +369,11 @@ class IMPHELPEREXPORT SimpleExcludedVolume
 {
   IMP_NO_SWIG(friend IMPHELPEREXPORT SimpleExcludedVolume
               create_simple_excluded_volume_on_rigid_bodies(
-                    const core::RigidBodies &rbs, Refiner*ref);
+                    const core::RigidBodies &rbs, Refiner*ref)
               );
   IMP_NO_SWIG(friend IMPHELPEREXPORT SimpleExcludedVolume
               create_simple_excluded_volume_on_molecules(
-              atom::Hierarchies const &mhs);
+              atom::Hierarchies const &mhs)
               );
  public:
 

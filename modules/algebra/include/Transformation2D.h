@@ -136,7 +136,7 @@ IMP_VALUES(Transformation2D, Transformation2Ds);
 **/
 inline Transformation2D get_identity_transformation_2d() {
   return Transformation2D(get_identity_rotation_2d(),VectorD<2>(0.0,0.0));
-};
+}
 
 //! Generates a Transformation2D object from a rotation around a point
 /**
@@ -149,7 +149,7 @@ inline Transformation2D get_identity_transformation_2d() {
 inline Transformation2D get_rotation_about_point(const VectorD<2> &point,
                      const Rotation2D &rotation) {
   return Transformation2D(rotation, (rotation.get_rotated(-point)+point));
-};
+}
 
 //! compose two transformations
   /** For any vector v (a*b)*v = a*(b*v).
@@ -159,7 +159,7 @@ inline Transformation2D compose(const Transformation2D &a,
                                 const Transformation2D &b){
   Rotation2D R= compose(a.get_rotation(),b.get_rotation());
   return Transformation2D(R,a.get_transformed(b.get_translation()));
-};
+}
 
 
 

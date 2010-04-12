@@ -72,7 +72,7 @@ IMP_LIST_IMPL(SimpleDiscreteRestraint, Particle, particle,Particle*,
                          == (*particles_begin())->get_model(),
                          "All particles in Restraint must belong to the "
                          "same Model.");
-  },,);
+              },{},{});
 
 
 ParticlesList SimpleDiscreteRestraint::get_interacting_particles() const

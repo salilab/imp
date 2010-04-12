@@ -1,5 +1,5 @@
 /**
- *  \file decorators.h    \brief The base class for decorators.
+ *  \file Decorators.h    \brief The base class for decorators.
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  *
@@ -139,7 +139,7 @@ class Decorators: public ParentDecorators {
     }
   }
 
-  IMP_DECORATORS_METHODS(WrappedDecorator::particle_is_instance(p),,,);
+  IMP_DECORATORS_METHODS(WrappedDecorator::particle_is_instance(p),{},{},{});
   public:
   explicit Decorators(const Particles &ps) {
     check(ps.begin(), ps.end());

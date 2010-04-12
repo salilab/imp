@@ -9,16 +9,28 @@
 #define IMP_MACROS_H
 
 #ifdef IMP_DOXYGEN
+#define IMP_REQUIRE_SEMICOLON_CLASS(Name)
+#define IMP_REQUIRE_SEMICOLON_NAMESPACE
+#elif defined(SWIG)
+#define IMP_REQUIRE_SEMICOLON_CLASS(Name)
+#define IMP_REQUIRE_SEMICOLON_NAMESPACE
+#else
+#define IMP_REQUIRE_SEMICOLON_CLASS(Name)                       \
+  IMP_NO_DOXYGEN(IMP_NO_SWIG(friend void dummy_f_##Name()))
+#define IMP_REQUIRE_SEMICOLON_NAMESPACE void dummy_f()
+#endif
+
+#ifdef IMP_DOXYGEN
 //! Hide something from doxygen
 /** */
 #define IMP_NO_DOXYGEN(x)
 //! Only show something to doxygen
 /** */
-#define IMP_ONLY_DOXYGEN(x) x
+#define IMP_ONLY_DOXYGEN(x) x IMP_REQUIRE_SEMICOLON_CLASS(only_doxy)
 #define IMP_SWITCH_DOXYGEN(x,y) x
 #else
 #define IMP_NO_DOXYGEN(x) x
-#define IMP_ONLY_DOXYGEN(x)
+#define IMP_ONLY_DOXYGEN(x) IMP_REQUIRE_SEMICOLON_CLASS(only_doxy)
 #define IMP_SWITCH_DOXYGEN(x,y) y
 #endif
 
@@ -60,20 +72,20 @@
   bool __lt__(const This &o) const;                                     \
   bool __gt__(const This &o) const;                                     \
   bool __ge__(const This &o) const;                                     \
-  bool __le__(const This &o) const;
+  bool __le__(const This &o) const
 
 
 #define IMP_COMPARISONS                         \
-  IMP_SWIG_COMPARISONS;
+  IMP_SWIG_COMPARISONS
 
 #define IMP_COMPARISONS_1(field)                \
-  IMP_SWIG_COMPARISONS;
+  IMP_SWIG_COMPARISONS
 
 #define IMP_COMPARISONS_2(f0, f1)               \
-  IMP_SWIG_COMPARISONS;
+  IMP_SWIG_COMPARISONS
 
 #define IMP_COMPARISONS_3(f0, f1, f2)           \
-  IMP_SWIG_COMPARISONS;
+  IMP_SWIG_COMPARISONS
 
 #else // not doxygen
 #define IMP_SWIG_COMPARISONS                                            \
@@ -94,7 +106,8 @@
   }                                                                     \
   bool __le__(const This &o) const {                                    \
     return operator<=(o);                                               \
-  }
+  }                                                                     \
+  IMP_REQUIRE_SEMICOLON_CLASS(comparisons)
 
 #define IMP_COMPARISONS                                                 \
   IMP_SWIG_COMPARISONS;                                                 \
@@ -116,10 +129,9 @@
   bool operator<=(const This &o) const {                                \
     return !(compare(o) > 0);                                           \
   }                                                                     \
-  template <class T> friend int compare(const T&a, const T&b);
+  template <class T> friend int compare(const T&a, const T&b)
 
 #define IMP_COMPARISONS_1(field)                \
-  IMP_SWIG_COMPARISONS;                         \
   bool operator==(const This &o) const {        \
     return (field== o.field);                   \
   }                                             \
@@ -142,13 +154,13 @@
     if (operator<(o)) return -1;                \
     else if (operator>(o)) return 1;            \
     else return 0;                              \
-  }
+  }                                             \
+  IMP_SWIG_COMPARISONS
 
 //! Implement comparison in a class using field as the variable to compare
 /** The macro requires that This be defined as the type of the current class.
  */
 #define IMP_COMPARISONS_2(f0, f1)               \
-  IMP_SWIG_COMPARISONS;                         \
   bool operator==(const This &o) const {        \
     return (f0== o.f0 && f1==o.f1);             \
   }                                             \
@@ -175,10 +187,10 @@
     if (operator<(o)) return -1;                \
     else if (operator>(o)) return 1;            \
     else return 0;                              \
-  }
+  }                                             \
+  IMP_SWIG_COMPARISONS
 
 #define IMP_COMPARISONS_3(f0, f1, f2)                   \
-  IMP_SWIG_COMPARISONS;                                 \
   bool operator==(const This &o) const {                \
     return (f0== o.f0 && f1==o.f1 && f2 == o.f2);       \
   }                                                     \
@@ -209,7 +221,8 @@
     if (operator<(o)) return -1;                        \
     else if (operator>(o)) return 1;                    \
     else return 0;                                      \
-  }
+  }                                                     \
+  IMP_SWIG_COMPARISONS
 #endif
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
@@ -244,7 +257,8 @@
   template <class L>                                                    \
   inline void show(std::ostream &out, const name<L, M> &i)              \
     i.show(out);                                                        \
-  }
+  }                                                                     \
+  IMP_REQUIRE_SEMICOLON_NAMESPACE
 
 #define IMP_OUTPUT_OPERATOR_2(name)                                     \
   template <class L, class M>                                           \
@@ -256,7 +270,9 @@
   template <class L, class M>                                           \
   inline void show(std::ostream &out, const name<L, M> &i)              \
     i.show(out);                                                        \
-  }
+  }                                                                     \
+  IMP_REQUIRE_SEMICOLON_NAMESPACE
+
 
 #define IMP_OUTPUT_OPERATOR(name)                                       \
   inline std::ostream &operator<<(std::ostream &out, const name &i)     \
@@ -266,7 +282,9 @@
   }                                                                     \
   inline void show(std::ostream &out, const name &i) {                  \
     i.show(out);                                                        \
-  }
+  }                                                                     \
+  IMP_REQUIRE_SEMICOLON_NAMESPACE
+
 
 #define IMP_OUTPUT_OPERATOR_D(name)                                     \
   template <unsigned int D>                                             \
@@ -278,7 +296,8 @@
   template <unsigned int D>                                             \
   void show(std::ostream &out, const name<D> &i) {                      \
     i.show(out);                                                        \
-  }
+  }                                                                     \
+  IMP_REQUIRE_SEMICOLON_NAMESPACE
 #endif
 
 
@@ -292,24 +311,32 @@
     @{
 */
 #define IMP_SWAP(Name)                                  \
-  inline void swap(Name &a, Name &b) {a.swap_with(b);}
+  inline void swap(Name &a, Name &b) {a.swap_with(b);}  \
+  IMP_REQUIRE_SEMICOLON_NAMESPACE
+
 
 #define IMP_SWAP_1(Name)                                        \
   template <class A>                                            \
-  inline void swap(Name<A> &a, Name<A> &b) {a.swap_with(b);}
+  inline void swap(Name<A> &a, Name<A> &b) {a.swap_with(b);}    \
+  IMP_REQUIRE_SEMICOLON_NAMESPACE
+
 
 
 #define IMP_SWAP_2(Name)                                \
   template <class A, class B>                           \
   inline void swap(Name<A,B> &a, Name<A,B> &b) {        \
     a.swap_with(b);                                     \
-  }
+  }                                                     \
+  IMP_REQUIRE_SEMICOLON_NAMESPACE
+
 
 #define IMP_SWAP_3(Name)                                \
   template <class A, class B, class C>                  \
   inline void swap(Name<A,B,C> &a, Name<A,B,C> &b) {    \
     a.swap_with(b);                                     \
-  }
+  }                                                     \
+  IMP_REQUIRE_SEMICOLON_NAMESPACE
+
 /** @} */
 
 
@@ -317,7 +344,7 @@
 /** Swap the member \c var_name of the two objects (this and o).
  */
 #define IMP_SWAP_MEMBER(var_name)               \
-  std::swap(var_name, o.var_name);
+  std::swap(var_name, o.var_name)
 
 
 
@@ -333,7 +360,9 @@
     wikipedia entry}).
 */
 #define IMP_COPY_CONSTRUCTOR(TC) TC(const TC &o){copy_from(o);} \
-  TC& operator=(const TC &o) {copy_from(o); return *this;}
+  TC& operator=(const TC &o) {copy_from(o); return *this;}      \
+  IMP_REQUIRE_SEMICOLON_CLASS(copy)
+
 
 
 
@@ -342,19 +371,22 @@
 // VC doesn't understand friends properly
 #define IMP_REF_COUNTED_DESTRUCTOR(Name)        \
   public:                                       \
-  virtual ~Name(){}
+  virtual ~Name(){}                             \
+  IMP_REQUIRE_SEMICOLON_CLASS(destructor)
+
 
 #define IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Name)     \
   public:                                               \
   virtual ~Name()
-
 #else
 
 #if defined(SWIG) || defined(IMP_SWIG_WRAPPER)
 // SWIG doesn't do friends right either, but we don't care as much
 #define IMP_REF_COUNTED_DESTRUCTOR(Name)        \
   public:                                       \
-  virtual ~Name(){}
+  virtual ~Name(){}                                     \
+  IMP_REQUIRE_SEMICOLON_CLASS(destructor)
+
 #define IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Name)     \
   public:                                               \
   virtual ~Name()
@@ -378,7 +410,9 @@
 #define IMP_REF_COUNTED_DESTRUCTOR(Name)                        \
   protected:                                                    \
   template <class T> friend void IMP::internal::unref(T*);      \
-  virtual ~Name(){}
+  virtual ~Name(){}                                             \
+  IMP_REQUIRE_SEMICOLON_CLASS(destructor)
+
 
 /** Like IMP_REF_COUNTED_DESTRUCTOR(), but the destructor is only
     declared, not defined.
@@ -447,7 +481,7 @@ static Name decorate_particle(::IMP::Particle *p) {                     \
   }                                                                     \
   return Name(p);                                                       \
 }                                                                       \
-IMP_SHOWABLE;
+IMP_SHOWABLE
 
 
 //! Define the basic things needed by a Decorator which has a traits object.
@@ -494,7 +528,7 @@ public:                                                                 \
    static TraitsType dt= default_traits;                                \
    return dt;                                                           \
  }                                                                      \
- IMP_NO_DOXYGEN(typedef boost::true_type DecoratorHasTraits);
+ IMP_NO_DOXYGEN(typedef boost::true_type DecoratorHasTraits)
 
 
 //! Perform actions dependent on whether a particle has an attribute.
@@ -514,12 +548,15 @@ public:                                                                 \
 
 */
 #define IMP_DECORATOR_GET(AttributeKey, Type, has_action, not_has_action) \
-  if (get_particle()->has_attribute(AttributeKey)) {                    \
-    Type VALUE =  get_particle()->get_value(AttributeKey);              \
-    has_action;                                                         \
-  } else {                                                              \
-    not_has_action;                                                     \
-  }
+  do {                                                                  \
+    if (get_particle()->has_attribute(AttributeKey)) {                  \
+      Type VALUE =  get_particle()->get_value(AttributeKey);            \
+      has_action;                                                       \
+    } else {                                                            \
+      not_has_action;                                                   \
+    }                                                                   \
+  } while (false)
+
 
 
 //! Set an attribute, creating it if it does not already exist.
@@ -529,12 +566,15 @@ public:                                                                 \
     \see IMP_DECORATOR_GET()
     \see IMP_DECORATOR_GET_SET()
 */
-#define IMP_DECORATOR_SET(AttributeKey, value)          \
-  if (get_particle()->has_attribute(AttributeKey)) {    \
-    get_particle()->set_value(AttributeKey, value)  ;   \
-  } else {                                              \
-    get_particle()->add_attribute(AttributeKey, value); \
-  }
+#define IMP_DECORATOR_SET(AttributeKey, value)           \
+  do {                                                   \
+  if (get_particle()->has_attribute(AttributeKey)) {     \
+    get_particle()->set_value(AttributeKey, value)  ;    \
+  } else {                                               \
+    get_particle()->add_attribute(AttributeKey, value);  \
+  }                                                      \
+  } while (false)
+
 
 //! Define methods for getting and setting a particular simple field
 /** This macro defines methods to get and set a particular attribute.
@@ -553,7 +593,9 @@ public:                                                                 \
   }                                                                     \
   void set_##name(ReturnType t) {                                       \
     get_particle()->set_value(AttributeKey, t);                         \
-  }
+  }                                                                     \
+  IMP_REQUIRE_SEMICOLON_CLASS(getset##name)
+
 
 //! Define methods for getting and setting an optional simple field.
 /** See IMP_DECORATOR_GET_SET(). The difference is that here you can provide
@@ -574,7 +616,9 @@ public:                                                                 \
   }                                                             \
   void set_##name(ReturnType t) {                               \
     IMP_DECORATOR_SET(AttributeKey, t);                         \
-  }
+  }                                                             \
+  IMP_REQUIRE_SEMICOLON_CLASS(getset_##name)
+
 
 #ifdef IMP_DOXYGEN
 //! Define the types for storing sets of decorators
@@ -639,7 +683,6 @@ public:                                                                 \
     which computes the summary info. It should be called mod.
 */
 #define IMP_SUMMARY_DECORATOR_DEF(Name, Parent, Members, create_modifier) \
-  IMP_CONSTRAINT_DECORATOR_DEF(Name)                                    \
   Name Name::setup_particle(Particle *p, const Members &ps) {           \
     Refiner *ref=new FixedRefiner(ps);                                  \
     create_modifier;                                                    \
@@ -656,7 +699,9 @@ public:                                                                 \
   Name::~Name(){}                                                       \
   IMP_NO_DOXYGEN(void Name::show(std::ostream &out) const {             \
       out << #Name << " at " << static_cast<Parent>(*this);             \
-    })
+    })                                                                  \
+  IMP_CONSTRAINT_DECORATOR_DEF(Name)
+
 
 
 //! Define a set of attributes which form an array
@@ -773,7 +818,8 @@ protection:                                                             \
  }                                                                      \
  void clear_##plural() {                                                \
    instance_traits.clear(get_particle());                               \
- }
+ }                                                                      \
+ IMP_REQUIRE_SEMICOLON_CLASS(array##Name)
 
 //! @}
 
@@ -799,7 +845,7 @@ protection:                                                             \
 #define IMP_VALUES(Name, PluralName)
 #else
 #define IMP_VALUES(Name, PluralName)            \
-  typedef std::vector<Name> PluralName;
+  typedef std::vector<Name> PluralName
 #endif
 
 #ifdef IMP_DOXYGEN
@@ -824,7 +870,8 @@ protection:                                                             \
     std::ostringstream out;                     \
     show(out);                                  \
     return out.str();                           \
-  }
+  }                                             \
+  IMP_REQUIRE_SEMICOLON_CLASS(showable)
 #endif
 
 #ifdef IMP_DOXYGEN
@@ -848,7 +895,8 @@ protection:                                                             \
     std::ostringstream out;                     \
     show(out);                                  \
     return out.str();                           \
-  }
+  }                                             \
+  IMP_REQUIRE_SEMICOLON_CLASS(showable)
 #endif
 
 
@@ -885,15 +933,14 @@ protection:                                                             \
     and declares
     - IMP::Object::do_show()
 */
-#define IMP_OBJECT(Name)                                        \
-  public:                                                       \
-  virtual std::string get_type_name() const {return #Name;}     \
-  virtual ::IMP::VersionInfo get_version_info() const {         \
-    return get_module_version_info();                           \
-  }                                                             \
-  IMP_REF_COUNTED_DESTRUCTOR(Name)                              \
+#define IMP_OBJECT(Name)                                                \
+  public:                                                               \
+  virtual std::string get_type_name() const {return #Name;}             \
+  virtual ::IMP::VersionInfo get_version_info() const {                 \
+    return get_module_version_info();                                   \
+  }                                                                     \
   IMP_NO_DOXYGEN(virtual void do_show(std::ostream &out) const);        \
-public:
+  IMP_REF_COUNTED_DESTRUCTOR(Name)
 
 
 //! Define the basic things needed by any Object
@@ -913,7 +960,9 @@ public:
     show;                                                       \
     });                                                         \
   ~Name() {destructor;}                                         \
-public:
+public:                                                         \
+ IMP_REQUIRE_SEMICOLON_CLASS(object)
+
 
 //! Define the basic things needed by any internal Object
 /** \see IMP_OBJECT
@@ -927,11 +976,11 @@ public:
   virtual std::string get_type_name() const {                   \
     return #Name;                                               \
   }                                                             \
-  IMP_REF_COUNTED_DESTRUCTOR(Name);                             \
 private:                                                        \
  virtual void do_show(std::ostream &out=std::cout) const {      \
  }                                                              \
-public:
+ IMP_REF_COUNTED_DESTRUCTOR(Name)
+
 
 
 //! Define the basic things you need for a Restraint.
@@ -951,7 +1000,7 @@ public:
   ContainersTemp get_input_containers() const;                          \
   ParticlesList get_interacting_particles() const;                      \
   ParticlesTemp get_input_particles() const;                            \
-  IMP_OBJECT(Name);
+  IMP_OBJECT(Name)
 
 //! Define the basic things you need for a Restraint.
 /** In addition to the methods done by IMP_OBJECT, it declares
@@ -972,7 +1021,7 @@ public:
   ContainersTemp get_input_containers() const;                          \
   ParticlesList get_interacting_particles() const;                      \
   ParticlesTemp get_input_particles() const;                            \
-  IMP_OBJECT(Name);
+  IMP_OBJECT(Name)
 
 //! Define the basic things you need for an Optimizer.
 /** In addition to the methods done by IMP_OBJECT, it declares
@@ -982,7 +1031,7 @@ public:
 */
 #define IMP_OPTIMIZER(Name)                             \
   virtual Float optimize(unsigned int max_steps);       \
-  IMP_OBJECT(Name);
+  IMP_OBJECT(Name)
 
 //! Define the basic things you need for a Sampler.
 /** In addition to the methods done by IMP_OBJECT, it declares
@@ -993,7 +1042,7 @@ public:
 #define IMP_SAMPLER(Name)                       \
   IMP_OBJECT(Name);                             \
 protected:                                      \
- ConfigurationSet* do_sample() const;
+ ConfigurationSet* do_sample() const
 
 
 
@@ -1003,7 +1052,7 @@ protected:                                      \
 */
 #define IMP_OPTIMIZER_STATE(Name)               \
   virtual void update();                        \
-  IMP_OBJECT(Name);
+  IMP_OBJECT(Name)
 
 
 //! Define the basics needed for an OptimizerState which acts every n steps
@@ -1029,11 +1078,10 @@ protected:                                      \
     skip_steps_=k;                                                      \
     call_number_=0;                                                     \
   }                                                                     \
-  IMP_OBJECT(Name)                                                      \
+  IMP_OBJECT(Name);                                                     \
   private:                                                              \
-  ::IMP::internal::Counter skip_steps_, call_number_, update_number_;   \
-                                                                        \
-                                                                        \
+  ::IMP::internal::Counter skip_steps_, call_number_, update_number_    \
+
 //! Define the basics needed for a ScoreState
 /** In addition to the methods done by IMP_OBJECT, it declares
     - IMP::ScoreState::do_before_evaluate()
@@ -1090,7 +1138,7 @@ protected:                                      \
   virtual unsigned int get_number_of_refined(Particle *) const;         \
   virtual ParticlesTemp get_input_particles(Particle *p) const;         \
   virtual ContainersTemp get_input_containers(Particle *p) const;       \
-  IMP_OBJECT(Name);
+  IMP_OBJECT(Name)
 
 
 //! Define the basics needed for a particle refiner
@@ -1114,7 +1162,7 @@ protected:                                      \
   virtual unsigned int get_number_of_refined(Particle *) const;         \
   virtual ParticlesTemp get_input_particles(Particle *p) const;         \
   virtual ContainersTemp get_input_containers(Particle *p) const;       \
-  IMP_OBJECT(Name);
+  IMP_OBJECT(Name)
 
 
 #ifndef IMP_DOXYGEN
@@ -1162,7 +1210,7 @@ protected:                                      \
     }                                                                   \
     return ret;                                                         \
   }                                                                     \
-  IMP_OBJECT(Name);
+  IMP_OBJECT(Name)
 #endif
 
 
@@ -1188,7 +1236,7 @@ protected:                                      \
   ParticlesList get_interacting_particles(Particle*) const;     \
   ParticlesTemp get_input_particles(Particle*) const;           \
   ContainersTemp get_input_containers(Particle *) const;        \
-  IMP_SINGLETON_SCORE_BASE(Name);
+  IMP_SINGLETON_SCORE_BASE(Name)
 
 //! Declare the functions needed for a SingletonScore
 /** In addition to the methods declared and defined by IMP_SINGLETON_SCORE,
@@ -1262,7 +1310,7 @@ protected:                                      \
     }                                                                   \
     return ret;                                                         \
   }                                                                     \
-  IMP_OBJECT(Name);
+  IMP_OBJECT(Name)
 #endif
 
 //! Declare the functions needed for a PairScore
@@ -1297,13 +1345,13 @@ protected:                                      \
     which assume that only the 2 passed particles serve as inputs to the
     score.
 */
-#define IMP_SIMPLE_PAIR_SCORE(Name)               \
-  bool get_is_changed(const ParticlePair &p) const {            \
-    return p[0]->get_is_changed() || p[1]->get_is_changed();    \
-  }                                                             \
+#define IMP_SIMPLE_PAIR_SCORE(Name)                                     \
+  bool get_is_changed(const ParticlePair &p) const {                    \
+    return p[0]->get_is_changed() || p[1]->get_is_changed();            \
+  }                                                                     \
   ParticlesList get_interacting_particles(const ParticlePair &p) const { \
     ParticlesTemp r(2); r[0]=p[0]; r[1]=p[1];                           \
-    return ParticlesList(1, r);                                           \
+    return ParticlesList(1, r);                                         \
   }                                                                     \
   ParticlesTemp get_input_particles(const ParticlePair &p) const {      \
     ParticlesTemp r(2); r[0]=p[0]; r[1]=p[1];                           \
@@ -1312,7 +1360,7 @@ protected:                                      \
   ContainersTemp get_input_containers(const ParticlePair &p) const {    \
     return ContainersTemp();                                            \
   }                                                                     \
-  IMP_PAIR_SCORE_BASE(Name);                      \
+  IMP_PAIR_SCORE_BASE(Name)
 
 #ifndef IMP_DOXYGEN
 #define IMP_TRIPLET_SCORE_BASE(Name)                                    \
@@ -1412,9 +1460,8 @@ protected:                                      \
   ContainersTemp get_input_containers(const ParticleTriplet &p) const { \
     return ContainersTemp();                                            \
   }                                                                     \
-  IMP_TRIPLET_SCORE_BASE(Name);                                         \
-                                                                        \
-                                                                        \
+  IMP_TRIPLET_SCORE_BASE(Name)
+
 //! Declare the functions needed for a QuadScore
 /** In addition to the methods done by IMP_OBJECT(), it declares
     - IMP::QuadScore::evaluate()
@@ -1479,7 +1526,7 @@ protected:                                      \
   ParticlesList get_interacting_particles(const ParticleQuad &p) const; \
   ParticlesTemp get_input_particles(const ParticleQuad &p) const;       \
   ContainersTemp get_input_containers(const ParticleQuad &p) const;     \
-  IMP_OBJECT(Name);
+  IMP_OBJECT(Name)
 
 
 
@@ -1511,7 +1558,7 @@ protected:                                      \
   ParticlesTemp get_output_particles(Particle*) const;                  \
   ContainersTemp get_input_containers(Particle*) const;                 \
   ContainersTemp get_output_containers(Particle*) const;                \
-  IMP_OBJECT(Name);
+  IMP_OBJECT(Name)
 
 
 
@@ -1544,7 +1591,7 @@ protected:                                      \
   ParticlesTemp get_output_particles(const ParticlePair &p) const;      \
   ContainersTemp get_input_containers(const ParticlePair &p) const;     \
   ContainersTemp get_output_containers(const ParticlePair &p) const;    \
-  IMP_OBJECT(Name);
+  IMP_OBJECT(Name)
 
 
 //! Declare the functions needed for a SingletonModifier
@@ -1578,7 +1625,7 @@ protected:                                      \
   ParticlesTemp get_output_particles(Particle*) const;                  \
   ContainersTemp get_input_containers(Particle*) const;                 \
   ContainersTemp get_output_containers(Particle*) const;                \
-  IMP_OBJECT(Name);
+  IMP_OBJECT(Name)
 
 
 //! Add interaction methods to a SingletonModifer
@@ -1615,8 +1662,8 @@ protected:                                      \
   IMP_NO_DOXYGEN(void Name::do_show(std::ostream &out) const {          \
     out <<"refiner " << *refiner << std::endl;                          \
     })                                                                  \
-                                                                        \
-                                                                        \
+  IMP_REQUIRE_SEMICOLON_NAMESPACE
+
 //! Add interaction methods to a SingletonModifer
 /** This macro is designed to be used in conjunction with
     IMP_SINGLETON_MODIFIER or IMP_SINGLETON_MODIFIER_DA. It adds
@@ -1655,8 +1702,8 @@ protected:                                      \
   IMP_NO_DOXYGEN(void Name::do_show(std::ostream &out) const {          \
     out << "refiner " << *refiner << std::endl;                         \
     })                                                                  \
-                                                                        \
-                                                                        \
+  IMP_REQUIRE_SEMICOLON_NAMESPACE
+
 //! Declare the functions needed for a PairModifier
 /** In addition to the methods done by IMP_OBJECT, it declares
     - IMP::PairModifier::apply(Particle*,Particle*,DerivativeAccumulator&)
@@ -1735,7 +1782,7 @@ protected:                                      \
   ContainersTemp get_output_containers(Particle*p) const {              \
     return ContainersTemp();                                            \
   }                                                                     \
-  IMP_INTERNAL_OBJECT(Name);
+  IMP_INTERNAL_OBJECT(Name)
 
 
 
@@ -1764,7 +1811,7 @@ protected:                                      \
   ParticlesTemp get_contained_particles() const;                \
   bool get_contained_particles_changed() const;                 \
   ContainersTemp get_input_containers() const;                  \
-  IMP_OBJECT(Name);
+  IMP_OBJECT(Name)
 
 
 //! Declare the needed functions for a PairContainer
@@ -1860,9 +1907,9 @@ protected:                                      \
     - IMP::SingletonFilter::get_contains_particle()
     - IMP::SingletonFilter::get_input_particles()
 */
-#define IMP_SINGLETON_FILTER(Name)                      \
-  bool get_contains_particle(Particle* p) const;        \
-  ParticlesTemp get_input_particles(Particle*t) const;  \
+#define IMP_SINGLETON_FILTER(Name)                              \
+  bool get_contains_particle(Particle* p) const;                \
+  ParticlesTemp get_input_particles(Particle*t) const;          \
   ContainersTemp get_input_containers(Particle*t) const;        \
   IMP_OBJECT(Name)
 
@@ -1876,7 +1923,7 @@ protected:                                      \
   bool get_contains_particle_pair(const ParticlePair& p) const;         \
   ParticlesTemp get_input_particles(const ParticlePair& t) const;       \
   ContainersTemp get_input_containers(const ParticlePair& t) const;     \
-  IMP_OBJECT(Name);
+  IMP_OBJECT(Name)
 
 
 
@@ -1889,7 +1936,7 @@ protected:                                      \
   bool get_contains_particle_triplet(const ParticleTriplet& p) const;  \
   ParticlesTemp get_input_particles(const ParticleTriplet& t) const;   \
   ContainersTemp get_input_containers(const ParticleTriplet& t) const; \
-  IMP_OBJECT(Name);
+  IMP_OBJECT(Name)
 
 
 
@@ -1902,7 +1949,7 @@ protected:                                      \
   bool get_contains_particle_quad(const ParticleQuad& p) const;        \
   ParticlesTemp get_input_particles(const ParticleQuad& t) const;      \
   ContainersTemp get_input_containers(const ParticleQuad& t) const;    \
-  IMP_OBJECT(Name);
+  IMP_OBJECT(Name)
 
 
 
@@ -1939,7 +1986,7 @@ protected:                                      \
   virtual double evaluate(double feature) const {                       \
     return (value_expression);                                          \
   }                                                                     \
-  IMP_OBJECT_INLINE(Name, out << show_expression, )
+  IMP_OBJECT_INLINE(Name, out << show_expression, {})
 
 
 
@@ -1970,7 +2017,8 @@ protected:                                      \
   void set args {reset();                               \
     Set;}                                               \
   void reset() {Reset;}                                 \
-  ~Name () {reset();}
+  ~Name () {reset();}                                   \
+  IMP_REQUIRE_SEMICOLON_CLASS(raii)
 
 //! @}
 

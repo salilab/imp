@@ -80,7 +80,7 @@ public:
       rot_.show(out);
       out<<" || "<<trans_;
     }
-    )
+    );
   Transformation3D get_inverse() const;
 private:
   VectorD<3> trans_; //tranlation

@@ -12,7 +12,7 @@ IMPDOMINO_BEGIN_NAMESPACE
 TransformationMappedDiscreteSet::TransformationMappedDiscreteSet
    (): MappedDiscreteSet(){}
 TransformationMappedDiscreteSet::TransformationMappedDiscreteSet
-(container::ListSingletonContainer *ps_target): MappedDiscreteSet(ps_target)
+(SingletonContainer *ps_target): MappedDiscreteSet(ps_target)
 {
   //translation attributes
   FloatKeys xyz = IMP::domino::Transformation::get_translation_keys();

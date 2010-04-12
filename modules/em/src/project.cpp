@@ -20,7 +20,7 @@ void project_given_direction(DensityMap& map,
   algebra::Rotation3D angles
     = algebra::get_rotation_from_fixed_zyz(sph[2],sph[1],0.0);
   project_given_rotation(map,m2,Ydim,Xdim,angles,shift,equality_tolerance);
-};
+}
 
 
 void project_given_rotation(DensityMap& map,
@@ -289,7 +289,7 @@ void project_given_rotation(DensityMap& map,
   // Restore the map parameters
   map.update_voxel_size(voxelsize);
   map.set_origin(orig3D[0],orig3D[1],orig3D[2]);
-};
+}
 
 
 IMPEM_END_NAMESPACE
