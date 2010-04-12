@@ -53,7 +53,7 @@ private:
 };
 
 IMP_VOLUME_GEOMETRY_METHODS(Ellipsoid3D,
-                            IMP_NOT_IMPLEMENTED,
+                            if (0) std::cout << g; IMP_NOT_IMPLEMENTED,
                             return 4.0/3.0 * PI *g.get_radius(0)
                             *g.get_radius(1)*g.get_radius(2),
                             {

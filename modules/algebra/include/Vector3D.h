@@ -41,14 +41,16 @@ inline VectorD<3> get_vector_product(const VectorD<3>& p1,
     \relatesalso VectorD<3>
 */
 inline VectorD<3> get_orthogonal_vector(const VectorD<3> &v) {
-  if (v[0] != 0) {
-    return VectorD<3>((-v[1]-v[2])/v[0],1,1);
-  } else if (v[1] != 0.0) {
-    return VectorD<3>(1,(-v[0]-v[2])/v[1],1);
-  } else if (v[2] != 0.0) {
-    return VectorD<3>(1,1,(-v[0]-v[1])/v[2]);
-  } else {
+  unsigned int maxi=0;
+  if (std::abs(v[1]) > std::abs(v[0])) maxi=1;
+  if (std::abs(v[2]) > std::abs(v[maxi])) maxi=2;
+  if (std::abs(v[maxi]) < .0001) {
     return VectorD<3>(0.0,0.0,0.0);
+  } else {
+    VectorD<3> ret= get_ones_vector_d<3>();
+    ret[maxi]=(-v[(maxi+1)%3]-v[(maxi+2)%3])/v[maxi];
+    IMP_INTERNAL_CHECK(ret*v < .0001, "Vectors are not perpendicular");
+    return ret;
   }
 }
 

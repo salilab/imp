@@ -84,7 +84,7 @@ public:
   }
 
   //! Prints the angle
-  void show(std::ostream& out = std::cout, std::string delim=" ") const {
+  void show(std::ostream& out = std::cout) const {
     out << "Rotation2D (radians): " << angle_;
   }
 

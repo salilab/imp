@@ -341,7 +341,7 @@ Rotation3D get_rotation_taking_first_to_second(const VectorD<3> &v1,
   dot = ( dot < -1.0 ? -1.0 : ( dot > 1.0 ? 1.0 : dot ) );
   double angle = std::acos(dot);
   //check a special case: the input vectors are parallel / antiparallel
-  if (std::abs(dot) == 1.0) {
+  if (std::abs(dot) >.99) {
     IMP_LOG(VERBOSE," the input vectors are (anti)parallel "<<std::endl);
     return get_rotation_about_axis(get_orthogonal_vector(v1),
                                               angle);

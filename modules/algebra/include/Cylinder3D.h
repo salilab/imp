@@ -41,7 +41,7 @@ IMP_VOLUME_GEOMETRY_METHODS(Cylinder3D,
                             + 2.0*PI *square(g.get_radius()),
                             return PI *square(g.get_radius())
                             * g.get_segment().get_length(),
-                            IMP_NOT_IMPLEMENTED);
+                            if (0) std::cout << g; IMP_NOT_IMPLEMENTED);
 
 IMPALGEBRA_END_NAMESPACE
 

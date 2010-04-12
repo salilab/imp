@@ -41,11 +41,11 @@ public:
     centroid_.show(out);
   }
   VectorD<3> get_principal_component(unsigned int i) const {
-    IMP_INTERNAL_CHECK(i>=0 && i<3, "index is not between 0, 1 or 2");
+    IMP_INTERNAL_CHECK(i<3, "index is not between 0, 1 or 2");
     return eigen_vecs_[i];
   }
   double get_principal_value(unsigned int i) const {
-    IMP_INTERNAL_CHECK(i>=0 && i<3, "index is not between 0, 1 or 2");
+    IMP_INTERNAL_CHECK(i<3, "index is not between 0, 1 or 2");
     return eigen_values_[i];
   }
   inline Vector3D get_centroid() const {return centroid_;}
