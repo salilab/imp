@@ -161,10 +161,6 @@ Particle* chain_particle(Model *m, char chain_id)
   return p;
 }
 
-void set_chain_name(const Hierarchy& hrd, Hierarchy& hcd)
-{
-}
-
 }
 
 
@@ -251,7 +247,6 @@ Hierarchies read_pdb(std::istream &in, Model *model,
         // set chain name (protein/nucleotide/other) according to residue name
         if (!chain_name_set) {
           Chain cd(cp);
-          set_chain_name(Residue(rp), cd);
           chain_name_set = true;
         }
 
