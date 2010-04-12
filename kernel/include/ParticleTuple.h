@@ -40,7 +40,7 @@ class ParticleTuple
     return 0;
   }
 public:
-  static const unsigned int get_dimension() {return D;};
+  static unsigned int get_dimension() {return D;};
   typedef ParticleTuple<D> This;
   ParticleTuple(){
     for (unsigned int i=0; i< D; ++i) {P::operator[](i)=NULL;}

@@ -38,7 +38,7 @@ struct AtomsPerMol {};
 struct MDEnergyTag;
 
 template <>
-inline std::string get_unit_name<MDEnergyTag>(int o) {
+inline std::string get_unit_name<MDEnergyTag>(int) {
   std::string os[]= {"Cal/Mol"};
   return os[0];
 }
@@ -47,7 +47,7 @@ inline std::string get_unit_name<MDEnergyTag>(int o) {
 struct MDDerivativeTag;
 
 template <>
-inline std::string get_unit_name<MDDerivativeTag>(int o) {
+inline std::string get_unit_name<MDDerivativeTag>(int) {
   std::string os[]= {"Cal/(A Mol)"};
   return os[0];
 }
@@ -65,7 +65,7 @@ inline std::string get_unit_name<MKSTag>(int o) {
   struct DaltonTag{};
 
 template <>
-inline std::string get_unit_name<DaltonTag>(int o) {
+inline std::string get_unit_name<DaltonTag>(int) {
   std::string os[]= {"Da"};
   return os[0];
 }
@@ -73,7 +73,7 @@ inline std::string get_unit_name<DaltonTag>(int o) {
   struct MolarTag{};
 
 template <>
-inline std::string get_unit_name<MolarTag>(int o) {
+inline std::string get_unit_name<MolarTag>(int) {
   std::string os[]= {"Mol"};
   return os[0];
 }

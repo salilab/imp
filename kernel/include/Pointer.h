@@ -82,7 +82,7 @@ class Pointer: public WeakPointer<O>
 
 public:
   /** copy constructor */
-  Pointer(const Pointer &o) {
+  Pointer(const Pointer &o): WeakPointer<O>() {
     set_pointer(o.o_);
   }
   /** copy from another */

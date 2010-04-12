@@ -66,7 +66,7 @@ public:
 #if IMP_BUILD >= IMP_FAST
     return true;
 #else
-    return check_value_==111111111;
+    return static_cast<int>(check_value_)==111111111;
 #endif
   }
 #endif
@@ -157,7 +157,7 @@ public:
   */
   void set_was_used(bool tf) const {
 #if IMP_BUILD < IMP_FAST
-    was_owned_=true;
+    was_owned_=tf;
 #endif
   }
 
@@ -166,8 +166,8 @@ public:
   virtual void do_show(std::ostream &out) const =0;
 #endif
  private:
-  Object(const Object &o) {}
-  const Object& operator=(const Object &o) {return *this;}
+  Object(const Object &): RefCounted() {}
+  const Object& operator=(const Object &) {return *this;}
 
 #if IMP_BUILD < IMP_FAST
   LogLevel log_level_;

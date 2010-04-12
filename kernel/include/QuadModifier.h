@@ -39,27 +39,27 @@ public:
   QuadModifier(std::string name="QuadModifier %1%");
 
   /** Apply the function to a single value*/
-  virtual void apply(const ParticleQuad& vt,
-                     DerivativeAccumulator &da) const {
+  virtual void apply(const ParticleQuad&,
+                     DerivativeAccumulator &) const {
     IMP_FAILURE("This QuadModifier must be called without a"
                 << " DerivativeAccumulator.");
   }
 
   /** Apply the function to a single value*/
-  virtual void apply(const ParticleQuad& vt) const {
+  virtual void apply(const ParticleQuad&) const {
     IMP_FAILURE("This QuadModifier must be called with a"
                 << " DerivativeAccumulator.");
   }
 
   /** Apply the function to a collection of ParticleQuads */
-  virtual void apply(const ParticleQuadsTemp &o) const {
+  virtual void apply(const ParticleQuadsTemp &) const {
     IMP_FAILURE("This QuadModifier must be called with a"
                 << " DerivativeAccumulator.");
   }
 
   /** Apply the function to a collection of ParticleQuads */
-  virtual void apply(const ParticleQuadsTemp &o,
-                     DerivativeAccumulator &da) const {
+  virtual void apply(const ParticleQuadsTemp &,
+                     DerivativeAccumulator &) const {
     IMP_FAILURE("This QuadModifier must be called without a"
                 << " DerivativeAccumulator.");
   }

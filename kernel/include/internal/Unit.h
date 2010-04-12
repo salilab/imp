@@ -192,7 +192,7 @@ struct PrintUnits
 template <class Tag, int O, class Units>
 struct PrintUnits<Tag, O, O, Units >
 {
-  void operator()(std::ostream &out) const{};
+  void operator()(std::ostream &) const{};
 };
 
 

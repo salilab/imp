@@ -13,6 +13,7 @@
 
 #ifdef IMP_USE_BOOST_LIBS
 #include <boost/filesystem/path.hpp>
+#include <boost/version.hpp>
 #endif
 
 #include <cstdlib>

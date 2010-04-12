@@ -39,27 +39,27 @@ public:
   PairModifier(std::string name="PairModifier %1%");
 
   /** Apply the function to a single value*/
-  virtual void apply(const ParticlePair& vt,
-                     DerivativeAccumulator &da) const {
+  virtual void apply(const ParticlePair&,
+                     DerivativeAccumulator &) const {
     IMP_FAILURE("This PairModifier must be called without a"
                 << " DerivativeAccumulator.");
   }
 
   /** Apply the function to a single value*/
-  virtual void apply(const ParticlePair& vt) const {
+  virtual void apply(const ParticlePair&) const {
     IMP_FAILURE("This PairModifier must be called with a"
                 << " DerivativeAccumulator.");
   }
 
   /** Apply the function to a collection of ParticlePairs */
-  virtual void apply(const ParticlePairsTemp &o) const {
+  virtual void apply(const ParticlePairsTemp &) const {
     IMP_FAILURE("This PairModifier must be called with a"
                 << " DerivativeAccumulator.");
   }
 
   /** Apply the function to a collection of ParticlePairs */
-  virtual void apply(const ParticlePairsTemp &o,
-                     DerivativeAccumulator &da) const {
+  virtual void apply(const ParticlePairsTemp &,
+                     DerivativeAccumulator &) const {
     IMP_FAILURE("This PairModifier must be called without a"
                 << " DerivativeAccumulator.");
   }

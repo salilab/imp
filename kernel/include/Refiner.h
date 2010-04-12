@@ -33,7 +33,7 @@ public:
   //! Return true if this refiner can refine that particle
   /** This should not throw, so be careful what fields are touched.
    */
-  virtual bool get_can_refine(Particle *a) const {return false;}
+  virtual bool get_can_refine(Particle *) const {return false;}
 
   //! Refine the passed particle into a set of particles.
   /** As a precondition can_refine_particle(a) should be true.

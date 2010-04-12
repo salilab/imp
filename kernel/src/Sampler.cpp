@@ -37,7 +37,7 @@ ConfigurationSet *Sampler::get_sample() const {
 
 bool Sampler::get_is_good_configuration() const {
   bool ret=true;
-  if (max_score_ != std::numeric_limits<double>::max()) {
+  if (max_score_ < std::numeric_limits<double>::max()) {
     double e= get_model()->evaluate(false);
     if (e > max_score_) {
       ret=false;

@@ -39,27 +39,27 @@ public:
   SingletonModifier(std::string name="SingletonModifier %1%");
 
   /** Apply the function to a single value*/
-  virtual void apply(Particle* vt,
-                     DerivativeAccumulator &da) const {
+  virtual void apply(Particle*,
+                     DerivativeAccumulator &) const {
     IMP_FAILURE("This SingletonModifier must be called without a"
                 << " DerivativeAccumulator.");
   }
 
   /** Apply the function to a single value*/
-  virtual void apply(Particle* vt) const {
+  virtual void apply(Particle*) const {
     IMP_FAILURE("This SingletonModifier must be called with a"
                 << " DerivativeAccumulator.");
   }
 
   /** Apply the function to a collection of Particles */
-  virtual void apply(const ParticlesTemp &o) const {
+  virtual void apply(const ParticlesTemp &) const {
     IMP_FAILURE("This SingletonModifier must be called with a"
                 << " DerivativeAccumulator.");
   }
 
   /** Apply the function to a collection of Particles */
-  virtual void apply(const ParticlesTemp &o,
-                     DerivativeAccumulator &da) const {
+  virtual void apply(const ParticlesTemp &,
+                     DerivativeAccumulator &) const {
     IMP_FAILURE("This SingletonModifier must be called without a"
                 << " DerivativeAccumulator.");
   }

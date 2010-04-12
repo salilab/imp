@@ -52,7 +52,7 @@ void RestraintSet::set_weight(double w) {
 }
 
 double
-RestraintSet::unprotected_evaluate(DerivativeAccumulator *accum) const
+RestraintSet::unprotected_evaluate(DerivativeAccumulator *) const
 {
   IMP_FAILURE("RestraintSets are special cased in the Model");
 }

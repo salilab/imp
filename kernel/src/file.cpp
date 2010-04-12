@@ -110,7 +110,7 @@ TextInput::TextInput(double) {
 
 
 namespace {
-  void testf(TextInput in) {
+  void testf(TextInput) {
   }
   void testcall() {
     testf(std::string("filename"));
