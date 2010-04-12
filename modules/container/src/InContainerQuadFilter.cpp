@@ -23,12 +23,12 @@ bool InContainerQuadFilter
 }
 
 ParticlesTemp InContainerQuadFilter
-::get_input_particles(const ParticleQuad& p) const {
+::get_input_particles(const ParticleQuad&) const {
   // not quite right, but...
   return ParticlesTemp();
 }
 ContainersTemp InContainerQuadFilter
-::get_input_containers(const ParticleQuad& p) const {
+::get_input_containers(const ParticleQuad&) const {
   return ContainersTemp(1,c_);
 }
 
