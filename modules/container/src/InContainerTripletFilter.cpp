@@ -23,12 +23,12 @@ bool InContainerTripletFilter
 }
 
 ParticlesTemp InContainerTripletFilter
-::get_input_particles(const ParticleTriplet& p) const {
+::get_input_particles(const ParticleTriplet&) const {
   // not quite right, but...
   return ParticlesTemp();
 }
 ContainersTemp InContainerTripletFilter
-::get_input_containers(const ParticleTriplet& p) const {
+::get_input_containers(const ParticleTriplet&) const {
   return ContainersTemp(1,c_);
 }
 

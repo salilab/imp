@@ -30,7 +30,7 @@ ClosePairContainer::ClosePairContainer(SingletonContainer *c,
   P(c, distance, cpf, slack) {
 }
 
-void ClosePairContainer::do_show(std::ostream &out) const {
+void ClosePairContainer::do_show(std::ostream &) const {
 }
 
 

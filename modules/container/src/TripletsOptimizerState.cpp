@@ -41,7 +41,7 @@ void TripletsOptimizerState::update()
 
 
 
-void TripletsOptimizerState::do_show(std::ostream &out) const {
+void TripletsOptimizerState::do_show(std::ostream &) const {
 }
 
 IMPCONTAINER_END_NAMESPACE

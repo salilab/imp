@@ -23,12 +23,12 @@ bool InContainerPairFilter
 }
 
 ParticlesTemp InContainerPairFilter
-::get_input_particles(const ParticlePair& p) const {
+::get_input_particles(const ParticlePair&) const {
   // not quite right, but...
   return ParticlesTemp();
 }
 ContainersTemp InContainerPairFilter
-::get_input_containers(const ParticlePair& p) const {
+::get_input_containers(const ParticlePair&) const {
   return ContainersTemp(1,c_);
 }
 

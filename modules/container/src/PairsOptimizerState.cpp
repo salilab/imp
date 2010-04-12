@@ -41,7 +41,7 @@ void PairsOptimizerState::update()
 
 
 
-void PairsOptimizerState::do_show(std::ostream &out) const {
+void PairsOptimizerState::do_show(std::ostream &) const {
 }
 
 IMPCONTAINER_END_NAMESPACE
