@@ -51,7 +51,7 @@ namespace {
 template <class Voxel>
 const Voxel &get_trilinearly_interpolated(const Grid3D<Voxel> &g,
                                           const VectorD<3> &v,
-                                          const Voxel& outside=0) {
+                                          const Voxel& outside) {
   // trilirp in z, y, x
   const VectorD<3> halfside= g.get_unit_cell()*.5;
   const VectorD<3> bottom_sample= g.get_bounding_box().get_corner(0)+halfside;
