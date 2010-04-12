@@ -122,7 +122,8 @@ private:
   VectorD<D> b_[2];
 };
 
-IMP_VOLUME_GEOMETRY_METHODS_D(BoundingBox, IMP_NOT_IMPLEMENTED,
+IMP_VOLUME_GEOMETRY_METHODS_D(BoundingBox,
+                              if (0) std::cout << g; IMP_NOT_IMPLEMENTED,
                               return (g.get_corner(1)[0]- g.get_corner(0)[0])
                               *(g.get_corner(1)[1]- g.get_corner(0)[1])
                               *(g.get_corner(1)[2]- g.get_corner(0)[2]),

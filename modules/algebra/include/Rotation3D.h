@@ -155,7 +155,7 @@ class IMPALGEBRAEXPORT Rotation3D {
 
   //! Return the rotation which undoes this rotation.
   inline Rotation3D get_inverse() const {
-    IMP_USAGE_CHECK(v_.get_squared_magnitude() != 0,
+    IMP_USAGE_CHECK(v_.get_squared_magnitude() > 0,
                     "Attempting to invert uninitialized rotation");
     Rotation3D ret(v_[0], -v_[1], -v_[2], -v_[3]);
     return ret;

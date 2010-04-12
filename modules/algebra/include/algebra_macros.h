@@ -59,6 +59,7 @@
 
 #else
 #define IMP_VOLUME_GEOMETRY_METHODS(Name, area, volume, bounding_box)  \
+  IMP_OUTPUT_OPERATOR(Name);                                           \
   inline double get_surface_area(const Name &g) {                      \
     area;                                                              \
   }                                                                    \
@@ -68,10 +69,10 @@
   inline BoundingBoxD<3> get_bounding_box(const Name &g) {             \
     bounding_box;                                                      \
   }                                                                    \
-  IMP_OUTPUT_OPERATOR(Name);                                           \
   IMP_VALUES(Name, Name##s)
 
 #define IMP_VOLUME_GEOMETRY_METHODS_D(Name, area, volume, bounding_box) \
+  IMP_OUTPUT_OPERATOR_D(Name##D);                                       \
   inline double get_surface_area(const Name##D<3> &g) {                 \
     area;                                                               \
   }                                                                     \
@@ -82,7 +83,6 @@
   inline BoundingBoxD<D> get_bounding_box(const Name##D<D> &g) {        \
     bounding_box;                                                       \
   }                                                                     \
-  IMP_OUTPUT_OPERATOR_D(Name##D);                                       \
   IMPALGEBRA_EXPORT_TEMPLATE(Name##D<3>);                               \
   typedef Name##D<2> Name##2D;                                          \
   IMP_VALUES(Name##2D, Name##2Ds);                                      \
@@ -93,20 +93,20 @@
 
 
 #define IMP_LINEAR_GEOMETRY_METHODS(Name, bounding_box)                \
+  IMP_OUTPUT_OPERATOR(Name);                                           \
   inline BoundingBoxD<3> get_bounding_box(const Name &g) {             \
     bounding_box;                                                      \
   }                                                                    \
-  IMP_OUTPUT_OPERATOR(Name);                                           \
   IMP_VALUES(Name, Name##s)
 
 #define IMP_AREA_GEOMETRY_METHODS(Name, area, bounding_box)            \
+  IMP_OUTPUT_OPERATOR(Name);                                           \
   inline double get_area(const Name &g) {                              \
     area;                                                              \
   }                                                                    \
   inline BoundingBoxD<3> get_bounding_box(const Name &g) {             \
     bounding_box;                                                      \
   }                                                                    \
-  IMP_OUTPUT_OPERATOR(Name);                                           \
   IMP_VALUES(Name, Name##s)
 
 #endif

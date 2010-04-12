@@ -34,8 +34,8 @@ public:
   Plane3D  get_plane() const {return crossing_plane_;}
   SphereD<3> get_sphere() const {return SphereD<3>(sph_);}
   void show(std::ostream &out=std::cout) const {
-    sph_.show();
-    crossing_plane_.show();
+    sph_.show(out);
+    crossing_plane_.show(out);
   }
   //! Get a point which is on the boundary of the patch
   VectorD<3> get_boundary_point() const;
@@ -45,7 +45,7 @@ protected:
 };
 
 IMP_AREA_GEOMETRY_METHODS(SpherePatch3D,
-                          IMP_NOT_IMPLEMENTED;,
+                          if (0) std::cout << g; IMP_NOT_IMPLEMENTED;,
                           {
                             return get_bounding_box(g.get_sphere());
                           });

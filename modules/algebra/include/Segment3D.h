@@ -25,7 +25,7 @@ class IMPALGEBRAEXPORT Segment3D
   Segment3D(const VectorD<3> &start,const VectorD<3> &end);
   //! Get the start=0/end=1 point of the segment
   const VectorD<3>& get_point(unsigned int i) const {
-#if IMP_SWIG_WRAPPER
+#if defined(IMP_SWIG_WRAPPER)
     IMP_USAGE_CHECK(i<2,"invalid point index");
 #else
     IMP_INTERNAL_CHECK(i<2, "Invalid point index");

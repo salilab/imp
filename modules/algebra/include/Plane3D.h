@@ -54,8 +54,10 @@ inline double get_distance(const Plane3D& pln, const VectorD<3> &p) {
 }
 
 IMP_AREA_GEOMETRY_METHODS(Plane3D,
+                          if (0) std::cout << g;
                           return std::numeric_limits<double>::infinity(),
                           {
+                            if (0) std::cout << g;
                             VectorD<3> ip
                               = get_ones_vector_d<3>(
                                    std::numeric_limits<double>::infinity());

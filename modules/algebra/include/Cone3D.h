@@ -58,9 +58,9 @@ class IMPALGEBRAEXPORT Cone3D
   double radius_;
 };
 
-IMP_VOLUME_GEOMETRY_METHODS(Cone3D, IMP_NOT_IMPLEMENTED,
-                            IMP_NOT_IMPLEMENTED,
-                            IMP_NOT_IMPLEMENTED);
+IMP_VOLUME_GEOMETRY_METHODS(Cone3D, if (0) std::cout << g;IMP_NOT_IMPLEMENTED,
+                            if (0) std::cout << g;IMP_NOT_IMPLEMENTED,
+                            if (0) std::cout << g;IMP_NOT_IMPLEMENTED);
 IMPALGEBRA_END_NAMESPACE
 
 #endif  /* IMPALGEBRA_CONE_3D_H */
