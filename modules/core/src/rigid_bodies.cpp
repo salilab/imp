@@ -247,7 +247,7 @@ RigidBody RigidBody::internal_setup_particle(Particle *p,
 }
 
 RigidBody RigidBody::setup_particle(Particle *p,
-                                    RigidBody other,
+                                    RigidBody,
                                     const RigidMembers &rms) {
   RigidBody ret=internal_setup_particle(p, rms);
   rms[0].get_rigid_body().add_member(ret);
@@ -508,7 +508,7 @@ Particle* RigidMembersRefiner::get_refined(Particle *p, unsigned int i) const {
   return RigidBody(p).get_member(i);
 }
 
-ParticlesTemp RigidMembersRefiner::get_input_particles(Particle *p) const {
+ParticlesTemp RigidMembersRefiner::get_input_particles(Particle *) const {
   return ParticlesTemp();
 }
 
@@ -516,7 +516,7 @@ ContainersTemp RigidMembersRefiner::get_input_containers(Particle *p) const {
   return ContainersTemp(1, p);
 }
 
-void RigidMembersRefiner::do_show(std::ostream &out) const {
+void RigidMembersRefiner::do_show(std::ostream &) const {
 }
 
 

@@ -42,7 +42,7 @@ const ParticlesTemp LeavesRefiner::get_refined(Particle *p) const{
   return core::Hierarchy(p, traits_).get_leaves();
 }
 
-ParticlesTemp LeavesRefiner::get_input_particles(Particle *p) const {
+ParticlesTemp LeavesRefiner::get_input_particles(Particle *) const {
   return ParticlesTemp();
 }
 
@@ -52,7 +52,7 @@ ContainersTemp LeavesRefiner::get_input_containers(Particle *p) const {
 }
 
 
-void LeavesRefiner::do_show(std::ostream &out) const
+void LeavesRefiner::do_show(std::ostream &) const
 {
 }
 

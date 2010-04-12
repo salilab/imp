@@ -44,7 +44,7 @@ void ConjugateGradients::failure() {
 }
 
 
-void ConjugateGradients::do_show(std::ostream &out) const {
+void ConjugateGradients::do_show(std::ostream &) const {
 }
 
 //! Get the score for a given model state.
@@ -294,8 +294,8 @@ Float ConjugateGradients::optimize(unsigned int max_steps)
 #else
     x[i] = get_value(float_indices[i]); //scaled
 #endif
-    IMP_USAGE_CHECK(x[i] == x[i] && x[i] != std::numeric_limits<NT>::infinity()
-              && x[i] != - std::numeric_limits<NT>::infinity(),
+    IMP_USAGE_CHECK(!is_nan(x[i])
+                    && std::abs(x[i]) < std::numeric_limits<NT>::max(),
               "Bad input to CG");
   }
 

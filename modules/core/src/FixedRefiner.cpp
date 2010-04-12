@@ -39,15 +39,15 @@ unsigned int FixedRefiner::get_number_of_refined(Particle *) const {
   return get_number_of_particles();
 }
 
-const ParticlesTemp FixedRefiner::get_refined(Particle *p) const {
+const ParticlesTemp FixedRefiner::get_refined(Particle *) const {
   return ParticlesTemp(particles_begin(), particles_end());
 }
 
-ParticlesTemp FixedRefiner::get_input_particles(Particle *p) const {
+ParticlesTemp FixedRefiner::get_input_particles(Particle *) const {
   return ParticlesTemp();
 }
 
-ContainersTemp FixedRefiner::get_input_containers(Particle *p) const {
+ContainersTemp FixedRefiner::get_input_containers(Particle *) const {
   return ContainersTemp();
 }
 

@@ -68,7 +68,7 @@ ParticlesTemp TypedPairScore::get_input_particles(const ParticlePair &p) const {
 }
 
 ContainersTemp
-TypedPairScore::get_input_containers(const ParticlePair &p) const {
+TypedPairScore::get_input_containers(const ParticlePair &) const {
   return ContainersTemp();
 }
 

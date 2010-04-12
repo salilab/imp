@@ -141,7 +141,7 @@ ContainersTemp ClosePairsPairScore
 }
 
 
-bool ClosePairsPairScore::get_is_changed(const ParticlePair &p) const {
+bool ClosePairsPairScore::get_is_changed(const ParticlePair &) const {
   return true;
 }
 
