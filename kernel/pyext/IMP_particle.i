@@ -8,6 +8,19 @@ def _check_particle(p, a):
       raise IndexError("Particle does not have attribute")
 %}
 
+%ignore IMP::Particle::float_keys_begin;
+%ignore IMP::Particle::float_keys_end;
+%ignore IMP::Particle::int_keys_begin;
+%ignore IMP::Particle::int_keys_end;
+%ignore IMP::Particle::string_keys_begin;
+%ignore IMP::Particle::string_keys_end;
+%ignore IMP::Particle::particle_keys_begin;
+%ignore IMP::Particle::particle_keys_end;
+%ignore IMP::Particle::optimized_keys_begin;
+%ignore IMP::Particle::optimized_keys_end;
+%ignore IMP::Particle::object_keys_begin;
+%ignore IMP::Particle::object_keys_end;
+
 namespace IMP {
   // need to special case particle so can't add this to macro
   %pythonprepend Particle::get_value %{
@@ -82,5 +95,6 @@ namespace IMP {
   %}
 
 }
+
 
 %include "IMP/Particle.h"

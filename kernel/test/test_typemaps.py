@@ -183,7 +183,8 @@ class ParticleTests(IMP.test.TestCase):
             return [self.ps[0], self.ps[1]]
         def get_interacting_particles(self):
             return [[self.ps[0], self.ps[1]]]
-    def test_dir_tms(self):
+    def test_dir_tms_0(self):
+        """Test director methods in restraint"""
         m= IMP.Model()
         p0= IMP.Particle(m)
         p1= IMP.Particle(m)
@@ -191,6 +192,38 @@ class ParticleTests(IMP.test.TestCase):
         m.add_restraint(r)
         m.evaluate(False)
         r.evaluate(False)
+    def test_dir_tms(self):
+        """Test that decorator particle methods can be called"""
+        m= IMP.Model()
+        p0= IMP.Particle(m)
+        d= IMP._TrivialDecorator.setup_particle(p0)
+        d.add_attribute(IMP.IntKey("Hi"), 1)
+    def test_particle_methods(self):
+        """Test that decorators provide particle methods"""
+        exclusions=["__disown__",
+                    "debugger_show",
+                    "do_show",
+                    "get_contained_particles",
+                    "get_contained_particles_changed",
+                    "get_input_containers",
+                    "get_is_active",
+                    "get_is_changed",
+                    "get_is_valid",
+                    "get_log_level",
+                    "get_number_of_live_objects",
+                    "get_prechange_particle",
+                    "get_ref_count",
+                    "get_string",
+                    "get_type_name",
+                    "get_version_info",
+                    "set_log_level",
+                    "set_was_used"
+                    ]
+        md= dir(IMP._TrivialDecorator)
+        for m in dir(IMP.Particle):
+            if not m in md and m not in exclusions:
+                print m
+                self.assert_(false, m+" not found")
 
 if __name__ == '__main__':
     unittest.main()

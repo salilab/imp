@@ -1,5 +1,17 @@
 %include "IMP_config.i"
 
+%pythoncode %{
+def _forward_add_attribute(self, name, value, opt=None):
+    if opt is not None:
+        self.get_particle().add_attribute(name, value, opt)
+    else:
+        self.get_particle().add_attribute(name, value)
+def _forward_get_value(self, name):
+    self.get_particle().get_value(name)
+def _forward_set_value(self, name, value):
+    self.get_particle().set_value(name, value)
+%}
+
 namespace IMP {
 %warnfilter(403) FailureHandlerBase;
 %warnfilter(473) Refiner;
