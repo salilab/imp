@@ -653,6 +653,11 @@ def process_dependencies(env, dependencies):
                 m_libs=m_libs+env['CGAL_LIBS']
             else:
                 found=False
+        elif d== "ANN":
+            if env['ANN_LIBS']:
+                m_libs=m_libs+env['ANN_LIBS']
+            else:
+                found=False
         elif d== "boost_file_system":
             if env['BOOST_LIBS']:
                 m_libs=m_libs+env['BOOST_FILESYSTEM_LIBS']
