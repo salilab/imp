@@ -25,7 +25,7 @@ m.add_restraint(r)
 # Use the IMPRestraints class to add all of the IMP restraints to the
 # Modeller scoring function
 t = modmodel.env.edat.energy_terms
-t.append(IMP.modeller.IMPRestraints(atoms.get_particles()))
+t.append(IMP.modeller.IMPRestraints(atoms))
 
 # Calculate the Modeller energy (score) for the whole protein
 sel = modeller.selection(modmodel)
