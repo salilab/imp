@@ -295,6 +295,10 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
             cxxs.remove(x)
         elif x=='-Wall':
             cxxs.remove(x)
+        elif x=='-Wextra':
+            cxxs.remove(x)
+        elif x.startswith("-Wformat"):
+            cxxs.remove(x)
         elif x=='-O3' or  x=='-O2':
             cxxs.remove(x)
     e.Replace(CXXFLAGS=cxxs)

@@ -68,7 +68,7 @@ def _action_config_h(target, source, env):
 #endif
 #endif
 
-#if _MSC_VER && !defined(SWIG) && !defined(IMP_DOXYGEN)
+#if defined(_MSC_VER) && !defined(SWIG) && !defined(IMP_DOXYGEN)
 #ifdef %(PREPROC)s_EXPORTS
 
 #define %(PREPROC)s_EXPORT_TEMPLATE(name)       \

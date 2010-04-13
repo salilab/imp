@@ -2,6 +2,7 @@
 import scons_tools
 import scons_tools.boost
 import scons_tools.cgal
+import scons_tools.ann
 import scons_tools.swig
 import scons_tools.standards
 import scons_tools.endian
@@ -39,6 +40,7 @@ env.Append(BUILDERS={'IMPApplicationRunTest': scons_tools.test.UnitTest})
 env['IMP_MODULES_ALL']=[]
 scons_tools.boost.configure_check(env, '1.33')
 scons_tools.cgal.configure_check(env)
+scons_tools.ann.configure_check(env)
 scons_tools.swig.configure_check(env)
 scons_tools.modeller_test.configure_check(env)
 scons_tools.endian.configure_check(env)
