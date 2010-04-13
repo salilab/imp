@@ -174,13 +174,67 @@ IMP_SWIG_DIRECTOR(Namespace, Name);
 %enddef
 
 
+%define IMP_SWIG_FORWARD_0(name, ret)
+ret name() {
+   return self->get_particle()->name();
+}
+%enddef
+
+%define IMP_SWIG_VOID_FORWARD_0(name)
+void name() {
+   self->get_particle()->name();
+}
+%enddef
+
+
+%define IMP_SWIG_FORWARD_1(name, ret, type0)
+ret name(type0 a0) {
+   return self->get_particle()->name(a0);
+}
+%enddef
+
+%define IMP_SWIG_VOID_FORWARD_1(name, type0)
+void name(type0 a0) {
+   self->get_particle()->name(a0);
+}
+%enddef
+
+%define IMP_SWIG_FORWARD_2(name, ret, type0, type1)
+ret name(type0 a0, type1 a1) {
+   return self->get_particle()->name(a0, a1);
+}
+%enddef
+
+%define IMP_SWIG_VOID_FORWARD_2(name, type0, type1)
+void name(type0 a0, type1 a1) {
+   self->get_particle()->name(a0, a1);
+}
+%enddef
+
+%define IMP_SWIG_FORWARD_3(name, ret, type0, type1, type2)
+ret name(type0 a0, type1 a1, type2 a2) {
+   return self->get_particle()->name(a0, a1, a2);
+}
+%enddef
+
+%define IMP_SWIG_VOID_FORWARD_3(name, type0, type1, type2)
+void name(type0 a0, type1 a1, type2 a2) {
+   self->get_particle()->name(a0, a1, a2);
+}
+%enddef
+
+%define IMP_SWIG_DECORATOR_ATTRIBUTE(Type, Key)
+IMP_SWIG_VOID_FORWARD_2(add_attribute, IMP::Key, IMP::Type);
+IMP_SWIG_FORWARD_1(get_value, IMP::Type, IMP::Key);
+IMP_SWIG_VOID_FORWARD_2(set_value, IMP::Key, IMP::Type);
+IMP_SWIG_VOID_FORWARD_1(remove_attribute, IMP::Key);
+IMP_SWIG_FORWARD_1(has_attribute, bool, IMP::Key);
+%enddef
 
 
 
 
-
-
-%define IMP_SWIG_DECORATOR(Namespace, Name, PluralName)
+%define IMP_SWIG_DECORATOR_BASE(Namespace, Name, PluralName)
 IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName, const&);
 IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName,);
 IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName##Temp, const&);
@@ -190,30 +244,52 @@ IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName##Temp,);
     return [Name(x) for x in l]
   PluralName##Temp=PluralName
 %}
+%extend Namespace::Name {
+void add_attribute(IMP::FloatKey k, IMP::Float v, bool opt) {
+   self->get_particle()->add_attribute(k, v, opt);
+}
+IMP_SWIG_DECORATOR_ATTRIBUTE(Float, FloatKey);
+IMP_SWIG_DECORATOR_ATTRIBUTE(Int, IntKey);
+IMP_SWIG_DECORATOR_ATTRIBUTE(String, StringKey);
+IMP_SWIG_DECORATOR_ATTRIBUTE(Particle*, ParticleKey);
+IMP_SWIG_DECORATOR_ATTRIBUTE(Object*, ObjectKey);
+IMP_SWIG_VOID_FORWARD_2(add_cache_attribute, IMP::IntKey, int);
+IMP_SWIG_VOID_FORWARD_2(add_cache_attribute, IMP::ObjectKey, IMP::Object*);
+IMP_SWIG_VOID_FORWARD_0(clear_caches);
+IMP_SWIG_FORWARD_1(get_derivative, double, IMP::FloatKey);
+IMP_SWIG_FORWARD_0(get_name, std::string);
+IMP_SWIG_VOID_FORWARD_1(set_name, std::string);
+IMP_SWIG_VOID_FORWARD_3(add_to_derivative, IMP::FloatKey, double, IMP::DerivativeAccumulator);
+IMP_SWIG_FORWARD_0(get_float_attributes, IMP::FloatKeys);
+IMP_SWIG_FORWARD_0(get_int_attributes, IMP::IntKeys);
+IMP_SWIG_FORWARD_0(get_string_attributes, IMP::StringKeys);
+IMP_SWIG_FORWARD_0(get_particle_attributes, IMP::ParticleKeys);
+IMP_SWIG_FORWARD_0(get_object_attributes, IMP::ObjectKeys);
+IMP_SWIG_VOID_FORWARD_2(set_is_optimized, IMP::FloatKey, bool);
+IMP_SWIG_FORWARD_1(get_is_optimized, bool, IMP::FloatKey);
+}
+%pythonprepend Namespace::Name {
+
+}
 IMP_SWIG_VALUE_CHECKS(Namespace, Name);
-%{
-  BOOST_STATIC_ASSERT(IMP::internal::swig::Convert<Namespace::Name>::converter==3);
-%}
 %feature("valuewrapper") PluralName;
 %feature("valuewrapper") PluralName##Temp;
 %enddef
 
 
-%define IMP_SWIG_DECORATOR_WITH_TRAITS(Namespace, Name, PluralName)
-IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName, const&);
-IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName,);
-IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName##Temp, const&);
-IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName##Temp,);
-%pythoncode %{
-  PluralName=list
-  PluralName##Temp=list
+%define IMP_SWIG_DECORATOR(Namespace, Name, PluralName)
+IMP_SWIG_DECORATOR_BASE(Namespace, Name, PluralName);
+%{
+  BOOST_STATIC_ASSERT(IMP::internal::swig::Convert<Namespace::Name>::converter==3);
 %}
-IMP_SWIG_VALUE_CHECKS(Namespace, Name);
+%enddef
+
+
+%define IMP_SWIG_DECORATOR_WITH_TRAITS(Namespace, Name, PluralName)
+IMP_SWIG_DECORATOR_BASE(Namespace, Name, PluralName);
 %{
   BOOST_STATIC_ASSERT(IMP::internal::swig::Convert<Namespace::Name>::converter==4);
-  %}
-%feature("valuewrapper") PluralName;
-%feature("valuewrapper") PluralName##Temp;
+%}
 %enddef
 
 
