@@ -23,6 +23,9 @@ files = [
          'tnt_subscript.h',
          'tnt_version.h',
          'utility.h',
+         'linear_knn.h',
+         'cgal_knn.h',
+         'ann.h'
         ]
 
 files = [File(x) for x in files]

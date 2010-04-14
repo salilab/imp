@@ -22,6 +22,7 @@ files = [
          'io.cpp',
          'shortest_segment.cpp',
          'vector_generators.cpp',
+         'vector_search.cpp'
         ] \
         + SConscript('internal/SConscript')
 
