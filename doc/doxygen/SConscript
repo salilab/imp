@@ -146,10 +146,10 @@ env.Append(BUILDERS = {'GenerateDoxygenHeader': Builder(action=env.Action(genera
 
 env.Append(BUILDERS = {'GenerateExamples': Builder(action=generate_example_index)})
 
-modexamples = Glob("#/modules/*/examples/.generated/examples.dox",
+modexamples = Glob("#/modules/*/examples/generated/examples.dox",
                    ondisk=False) \
-              + ['#/kernel/examples/.generated/examples.dox']
-example_index = env.GenerateExamples(".generated/all_examples.dox", modexamples)
+              + ['#/kernel/examples/generated/examples.dox']
+example_index = env.GenerateExamples("generated/all_examples.dox", modexamples)
 
 rawheaders=[]
 for h in Glob("#/build/include/*.h", ondisk=False) \
@@ -172,7 +172,7 @@ for h in rawheaders:
 headers= config+macros+headers
 macrodef=[]
 for m in macros:
-    nm='.generated/' + m.abspath[m.abspath.rfind("/")+1:]+".def"
+    nm='generated/' + m.abspath[m.abspath.rfind("/")+1:]+".def"
     #print nm
     macrodef.append(env.MakeDefs(source=m, target=nm))
 sources = headers + macrodef+ Glob("#/kernel/doc/*.dox") + [example_index] \
@@ -180,8 +180,8 @@ sources = headers + macrodef+ Glob("#/kernel/doc/*.dox") + [example_index] \
           + Glob("#/modules/*/doc/*.dox") \
           + Glob("#/modules/*/examples/*.xml") \
           + Glob("#/modules/*/examples/*/*.xml") \
-          + Glob("#/kernel/doc/.generated/*.dox") \
-          + Glob("#/modules/*/doc/.generated/*.dox") + modexamples \
+          + Glob("#/kernel/doc/generated/*.dox") \
+          + Glob("#/modules/*/doc/generated/*.dox") + modexamples \
           + Glob("#/modules/*/doc/*.dot") + Glob("#/kernel/doc/*.dot")
 
 if env['python']:
@@ -190,12 +190,12 @@ if env['python']:
 examples= Glob("#/modules/example/src/*.cpp") + Glob("#/build/include/IMP/example/*.h")\
     + Glob("#/modules/*/examples/*.py") + Glob("#/modules/*/examples/*/*.py")\
     + Glob("#/modules/*/examples/*.cpp") + Glob("#/modules/*/examples/*/*.cpp")\
-    + Glob("#/modules/*/examples/.generated/*.html") \
-    + Glob("#/modules/*/examples/*/.generated/*.html")\
+    + Glob("#/modules/*/examples/generated/*.html") \
+    + Glob("#/modules/*/examples/*/generated/*.html")\
     + Glob("#/kernel/examples/*.py") + Glob("#/kernel/examples/*/*.py")\
     + Glob("#/kernel/examples/*.cpp") + Glob("#/kernel/examples/*/*.cpp")\
-    + Glob("#/kernel/examples/.generated/*.html") \
-    + Glob("#/kernel/examples/*/.generated/*.html")\
+    + Glob("#/kernel/examples/generated/*.html") \
+    + Glob("#/kernel/examples/*/generated/*.html")\
     + Glob("#/modules/*/doc/*.dox") + Glob("#/modules/*/doc/*/*.dox")\
     + Glob("#/modules/*/doc/*.png") + Glob("#/modules/*/doc/*/*.png")\
     + Glob("#/modules/*/doc/*.html") + Glob("#/modules/*/doc/*/*.html")\
@@ -206,7 +206,7 @@ examples= Glob("#/modules/example/src/*.cpp") + Glob("#/build/include/IMP/exampl
 #sources.sort()
 examples.sort()
 
-doxyheader= env.GenerateDoxygenHeader(target=["#/doc/doxygen/.generated/header.txt"],
+doxyheader= env.GenerateDoxygenHeader(target=["#/doc/doxygen/generated/header.txt"],
                                       source=["#/website/header.txt"])
 env.Alias('doxygen-header', doxyheader)
 doxconf=env.GenerateDoxygen("doxygen.conf", ["doxygen.conf-in", env.Value(env['dot'])] +sources+examples)

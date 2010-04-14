@@ -62,7 +62,7 @@ def handle_example_dir(env, inputpath, name, prefix, example_files, data_files):
         if str(f).endswith(".py"):
             c= env._IMPColorizePython(str(inputpath) + '/' \
                                       + os.path.dirname(str(f)) \
-                                      + '/.generated/' \
+                                      + '/generated/' \
                                       + os.path.basename(str(f))+".html",
                                       f.abspath)
             dox.append(c)
@@ -76,6 +76,6 @@ def handle_example_dir(env, inputpath, name, prefix, example_files, data_files):
                                  +[x for x in example_files
                                    if str(x).endswith(".py") and str(x).find("fragment")==-1])
     env.AlwaysBuild("tests.passed")
-    doxpage= env._IMPExamplesDox(File(str(inputpath)+"/.generated/examples.dox"), example_files)
+    doxpage= env._IMPExamplesDox(File(str(inputpath)+"/generated/examples.dox"), example_files)
     dox.append(doxpage)
     return (dox, build, install, test)
