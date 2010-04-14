@@ -12,6 +12,8 @@ def print_doxygen(target, source, env):
     print "running doxygen"
 def print_generate_doxygen(target, source, env):
     print "generating doxygen configuration"
+def print_generate_doxygen_header(target, source, env):
+    print "generating doxygen header ", target[0].path
 
 def make_defs(target, source, env):
     os.environ['PATH']=env['ENV']['PATH']
@@ -22,6 +24,18 @@ def print_make_defs(target, source, env):
 
 def make_output(nodes):
     return "     "+"\\\n     ".join(['"'+x.abspath+'"' for x in nodes])
+
+def generate_doxygen_header(target, source, env):
+    print "generate header from ", source[0].path
+    infile = file(source[0].path, 'r')
+    outfile= file(target[0].path, 'w')
+    for l in infile:
+        if l.find("DOXYGEN STUFF GOES HERE") != -1:
+            outfile.write("""<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javaScript" src="search/search.js"></script>""");
+        else:
+            outfile.write(l)
 
 # Generate doxygen.conf from doxygen.conf.in
 def generate_doxygen(target, source, env):
@@ -56,8 +70,10 @@ def generate_doxygen(target, source, env):
                     inputs.append(s)
             elif ss.endswith(".dot"):
                 dots.append(s)
-                put=True
+                put = True
             elif ss.endswith(".def"):
+                put = True
+            elif ss.endswith("header.txt"):
                 put = True
             if not put:
                 print >> sys.stderr, "Warning, do not know what to do with the file "+ ss
@@ -123,6 +139,8 @@ input_files=Glob("#/examples/README") +Glob("#/examples/*/README")\
 
 env.Append(BUILDERS = {'GenerateDoxygen': Builder(action=env.Action(generate_doxygen,
                                                                     print_generate_doxygen))})
+env.Append(BUILDERS = {'GenerateDoxygenHeader': Builder(action=env.Action(generate_doxygen_header,
+                                                                          print_generate_doxygen_header))})
 
 
 
@@ -188,10 +206,13 @@ examples= Glob("#/modules/example/src/*.cpp") + Glob("#/build/include/IMP/exampl
 #sources.sort()
 examples.sort()
 
+doxyheader= env.GenerateDoxygenHeader(target=["#/doc/doxygen/.generated/header.txt"],
+                                      source=["#/website/header.txt"])
+env.Alias('doxygen-header', doxyheader)
 doxconf=env.GenerateDoxygen("doxygen.conf", ["doxygen.conf-in", env.Value(env['dot'])] +sources+examples)
 env.Depends(doxconf, ['#/build/include'])
 
-dox = env.RunDoxygen("#/build/doc/html/index.html", ["doxygen.conf"]+sources)
+dox = env.RunDoxygen("#/build/doc/html/index.html", ["doxygen.conf"]+sources+[doxyheader])
 env.Depends(dox, '#/doc/doxygen/doxypy.py')
 env.Requires(dox, env.Alias("doc-files"))
 
