@@ -69,6 +69,8 @@
   inline BoundingBoxD<3> get_bounding_box(const Name &g) {             \
     bounding_box;                                                      \
   }                                                                    \
+  inline const Name &get_geometry(const Name &g) {return g;}           \
+  inline void set_geometry(Name &g, const Name &v) {g=v;}              \
   IMP_VALUES(Name, Name##s)
 
 #define IMP_VOLUME_GEOMETRY_METHODS_D(Name, area, volume, bounding_box) \
@@ -83,6 +85,10 @@
   inline BoundingBoxD<D> get_bounding_box(const Name##D<D> &g) {        \
     bounding_box;                                                       \
   }                                                                     \
+  template <unsigned int D>                                             \
+  const Name##D<D> &get_geometry(const Name##D<D> &g) {return g;}       \
+  template <unsigned int D>                                             \
+  inline void set_geometry(Name##D<D> &g, const Name##D<D> &v) {g=v;}   \
   IMPALGEBRA_EXPORT_TEMPLATE(Name##D<3>);                               \
   typedef Name##D<2> Name##2D;                                          \
   IMP_VALUES(Name##2D, Name##2Ds);                                      \
@@ -97,6 +103,7 @@
   inline BoundingBoxD<3> get_bounding_box(const Name &g) {             \
     bounding_box;                                                      \
   }                                                                    \
+  inline const Name &get_geometry(const Name &g) {return g;}           \
   IMP_VALUES(Name, Name##s)
 
 #define IMP_AREA_GEOMETRY_METHODS(Name, area, bounding_box)            \
@@ -107,6 +114,8 @@
   inline BoundingBoxD<3> get_bounding_box(const Name &g) {             \
     bounding_box;                                                      \
   }                                                                    \
+  inline const Name &get_geometry(const Name &g) {return g;}           \
+  inline void set_geometry(Name &g, const Name &v) {g=v;}              \
   IMP_VALUES(Name, Name##s)
 
 #endif

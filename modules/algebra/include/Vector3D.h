@@ -63,10 +63,6 @@ inline VectorD<3> get_centroid(const std::vector<VectorD<3> > &ps) {
 }
 
 /** @} */
-/** \genericgeometry */
-inline const VectorD<3> &get_geometry(const VectorD<3> &v) {
-  return v;
-}
 
 IMPALGEBRA_END_NAMESPACE
 
