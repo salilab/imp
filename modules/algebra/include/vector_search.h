@@ -9,15 +9,19 @@
 #define IMPALGEBRA_VECTOR_SEARCH_H
 
 #include "VectorD.h"
+#include "internal/ann.h"
+#include "internal/cgal_knn.h"
+#include "internal/linear_knn.h"
+#include <fstream>
 
-
-#ifdef IMP_USE_CGAL
-#include <CGAL/basic.h>
-#include <CGAL/Search_traits.h>
-#include <CGAL/Orthogonal_k_neighbor_search.h>
-#include <CGAL/K_neighbor_search.h>
-#include <boost/static_assert.hpp>
+#ifdef IMP_USE_ANN
+#define IMP_KNN_DATA internal::ANNData
+#elif defined(IMP_USE_CGAL)
+#define IMP_KNN_DATA internal::CGALKNNData
+#else
+#define IMP_KNN_DATA internal::LinearKNNData
 #endif
+
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -25,9 +29,9 @@ IMPALGEBRA_BEGIN_NAMESPACE
 
     These functions classes create various search structures
     over sets of vectors. Most of them benefit a great deal
-    from having CGAL available.
+    from having CGAL or ANN available.
     @{
- */
+*/
 
 /** Build a structure for finding nearest neighbors. This is quite slow
     without CGAL.
@@ -35,160 +39,84 @@ IMPALGEBRA_BEGIN_NAMESPACE
 */
 template <unsigned int D>
 class NearestNeighborD {
-
-  template <bool SKIP>
-  Ints linear_nearest_neighbor(const VectorD<D> &q, int skip,
-                               unsigned int k) const {
-    Ints ret;
-    std::vector<double> retds;
-    for (unsigned int i=0; i< data_.size(); ++i) {
-      if (SKIP && i==static_cast<unsigned int>(skip)) continue;
-      double cd=(data_[i]-q).get_squared_magnitude();
-      if (ret.size() < k || cd < retds.back()) {
-        std::vector<double>::iterator it= std::lower_bound(retds.begin(),
-                                                           retds.end(), cd);
-        ret.insert(ret.begin()+(it-retds.begin()), i);
-        retds.insert(it, cd);
-        if (ret.size() > k) {
-          ret.pop_back();
-          retds.pop_back();
-        }
-      }
-    }
-    return ret;
-  }
-
-#ifdef IMP_USE_CGAL
-  struct VectorWithIndex: public VectorD<D> {
-    int index;
-    VectorWithIndex(unsigned int i, const VectorD<D>& p): VectorD<D>(p),
-                                                          index(i){}
-    VectorWithIndex(): index(-1){}
-  };
-  struct Construct_coord_iterator {
-    const double* operator()(const VectorD<D>& p) const
-    { return p.get_data(); }
-    const double* operator()(const VectorD<D>& p, int)  const
-    { return p.get_data()+D; }
-  };
-  struct Distance {
-    typedef VectorD<D> Query_item;
-
-    double transformed_distance(const VectorD<D>& p1,
-                                const VectorD<D>& p2) const {
-      return (p1-p2).get_squared_magnitude();
-    }
-
-    template <class TreeTraits>
-    double min_distance_to_rectangle(const VectorD<D>& p,
-                        const CGAL::Kd_tree_rectangle<TreeTraits>& b) const {
-      double distance(0.0);
-      for (unsigned int i=0; i< D; ++i) {
-        double h = p[i];
-        if (h < b.min_coord(i)) distance += square(b.min_coord(i)-h);
-        if (h > b.max_coord(i)) distance += square(h-b.max_coord(i));
-      }
-      return distance;
-    }
-
-    template <class TreeTraits>
-    double max_distance_to_rectangle(const VectorD<D>& p,
-                         const CGAL::Kd_tree_rectangle<TreeTraits>& b) const {
-      double d=0.0;
-      for (unsigned int i=0; i< D; ++i) {
-        double h = p[i];
-        double di = (h >= (b.min_coord(i)+b.max_coord(i))/2.0) ?
-          square(h-b.min_coord(i)) : square(b.max_coord(i)-h);
-        d+=di;
-      }
-      return d;
-    }
-    double new_distance(double dist, double old_off, double new_off,
-                        int /* cutting_dimension */)  const {
-      return dist + new_off*new_off - old_off*old_off;
-    }
-    double transformed_distance(double d) const { return d*d; }
-    double inverse_of_transformed_distance(double d) { return std::sqrt(d); }
-  }; // end of struct Distance
-
-  typedef typename CGAL::Search_traits<double, VectorWithIndex,
-                              const double*, Construct_coord_iterator> Traits;
-  typedef typename CGAL::K_neighbor_search<Traits,
-                                                  Distance> K_neighbor_search;
-  typedef typename K_neighbor_search::Tree Tree;
-
-  struct RCTree: public Tree, public RefCounted {
-    template <class It>
-    RCTree(It b, It e): Tree(b,e){}
-    virtual ~RCTree(){}
-  };
-  mutable Pointer<RCTree> tree_;
-#endif
-  std::vector<VectorD<D> > data_;
+  IMP_KNN_DATA<D> data_;
   double eps_;
+#if IMP_BUILD < IMP_FAST
+  mutable std::ofstream query_log_;
+#endif
+  template <class It>
+  void instantiate(It b, It e) {
+    if (0) {
+      // compile all of them
+      internal::ANNData<D> ann(b,e);
+      internal::CGALKNNData<D> cgal(b,e);
+      internal::LinearKNNData<D> linear(b,e);
+      Ints ret;
+      ann.fill_nearest_neighbors(*b, 3U, eps_, ret);
+      cgal.fill_nearest_neighbors(*b, 3U, eps_, ret);
+      linear.fill_nearest_neighbors(*b, 3U, eps_, ret);
+    }
+  }
 public:
+  template <class It>
+  NearestNeighborD(It b, It e, double epsilon):
+    data_(b,e), eps_(epsilon){
+    instantiate(b,e);
+  }
   NearestNeighborD(const std::vector<VectorD<D> > &vs,
                    double epsilon=0):
-    data_(vs),
-    eps_(epsilon)
- {
-#ifdef IMP_USE_CGAL
-    std::vector<VectorWithIndex> vsi(vs.size());
-    for (unsigned int i=0; i< vs.size(); ++i) {
-      vsi[i]= VectorWithIndex(i, vs[i]);
+    data_(vs.begin(), vs.end()),
+    eps_(epsilon) {
+    instantiate(vs.begin(), vs.end());
+  }
+    //! Log the points and queries to a file for performance studies
+    void set_query_log(std::string fname) {
+#if IMP_BUILD < IMP_FAST
+      query_log_.open(fname.c_str());
+      for (unsigned int i=0; i< data_.get_number_of_points(); ++i) {
+        query_log_ << spaces_io(data_.get_point(i)) << std::endl;
+      }
+      query_log_ << std::endl;
+#endif
     }
-    tree_= new RCTree(vsi.begin(), vsi.end());
-#endif
-  }
 
-  unsigned int get_nearest_neighbor(const VectorD<D> &q) const {
-#ifdef IMP_USE_CGAL
-    K_neighbor_search search(*tree_, VectorWithIndex(-1, q), 1, eps_);
-    return search.begin()->first.index;
-#else
-    return linear_nearest_neighbor<false>(q, -1, 1)[0];
+    unsigned int get_nearest_neighbor(const VectorD<D> &q) const {
+#if IMP_BUILD < IMP_FAST
+      if (query_log_) {
+        query_log_ << spaces_io(q) << " " << 1 << std::endl;
+      }
 #endif
-  }
-  /** Search using the ith point in the input set. */
-  unsigned int get_nearest_neighbor(unsigned int i) const {
-#ifdef IMP_USE_CGAL
-    K_neighbor_search search(*tree_, data_[i], 2, eps_);
-    IMP_INTERNAL_CHECK(std::distance(search.begin(), search.end()) >=2,
-                       "Wrong number of points returned "
-                       << std::distance(search.begin(), search.end()));
-    if (search.begin()->first.index != i) return search.begin()->first.index;
-    else return (++search.begin())->first.index;
-#else
-    return linear_nearest_neighbor<true>(data_[i], i, 1)[0];
-#endif
-  }
-  /** Search using the ith point in the input set. Return the k
-      nearest neighbors.*/
-  Ints get_nearest_neighbors(unsigned int i, unsigned int k) const {
-    Ints ret(std::min(k, static_cast<unsigned int>(data_.size())));
-#ifdef IMP_USE_CGAL
-    K_neighbor_search search(*tree_, data_[i], k+1, eps_);
-    typename K_neighbor_search::iterator it =search.begin();
-    IMP_INTERNAL_CHECK(std::distance(search.begin(), search.end())
-                       == static_cast<int>(ret.size()+1),
-                       "Got the wrong number of points out from CGAL neighbor"
-                       << " search. Expected " << ret.size()+1
-                       << " got "
-                       << std::distance(search.begin(), search.end()));
-    ++it;
-    for (unsigned int j=0; j< k; ++j) {
-      ret[j]=it->first.index;
-      ++it;
+      Ints ret(2);
+      data_.fill_nearest_neighbors(q, 1U, eps_, ret);
+      return ret[1];
     }
-#else
-    ret= linear_nearest_neighbor<true>(data_[i], i, k);
+    /** Search using the ith point in the input set. */
+    unsigned int get_nearest_neighbor(unsigned int i) const {
+#if IMP_BUILD < IMP_FAST
+      if (query_log_) {
+        query_log_ << i << " " << 1 << std::endl;
+      }
 #endif
-    return ret;
-  }
-};
+      Ints ret(2);
+      data_.fill_nearest_neighbors(data_.get_point(i), 2U, eps_, ret);
+      return ret[1];
+    }
+    /** Search using the ith point in the input set. Return the k
+        nearest neighbors.*/
+    Ints get_nearest_neighbors(unsigned int i, unsigned int k) const {
+#if IMP_BUILD < IMP_FAST
+      if (query_log_) {
+        query_log_ << i << " " << k << std::endl;
+      }
+#endif
+      Ints ret(k+1);
+      data_.fill_nearest_neighbors(data_.get_point(i), k+1, eps_, ret);
+      return Ints(++ret.begin(), ret.end());
+    }
+  };
 
-/** @} */
+  /** @} */
 
-IMPALGEBRA_END_NAMESPACE
+  IMPALGEBRA_END_NAMESPACE
 
 #endif  /* IMPALGEBRA_VECTOR_SEARCH_H */
