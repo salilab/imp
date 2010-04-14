@@ -48,12 +48,16 @@ class NearestNeighborD {
   void instantiate(It b, It e) {
     if (0) {
       // compile all of them
-      internal::ANNData<D> ann(b,e);
-      internal::CGALKNNData<D> cgal(b,e);
-      internal::LinearKNNData<D> linear(b,e);
       Ints ret;
+#ifdef IMP_USE_ANN
+      internal::ANNData<D> ann(b,e);
       ann.fill_nearest_neighbors(*b, 3U, eps_, ret);
+#endif
+#ifdef IMP_USE_CGAL
+      internal::CGALKNNData<D> cgal(b,e);
       cgal.fill_nearest_neighbors(*b, 3U, eps_, ret);
+#endif
+      internal::LinearKNNData<D> linear(b,e);
       linear.fill_nearest_neighbors(*b, 3U, eps_, ret);
     }
   }
