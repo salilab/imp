@@ -123,13 +123,6 @@ class Decorators: public ParentDecorators {
       WrappedDecorator::operator=(v);
       d_=v;
     }
-#if 0
-    // for VC, it can't otherwise figure out the conversion chain
-    operator Particle*() {
-      if (WrappedDecorator()==*this) return NULL;
-      else return WrappedDecorator::get_particle();
-    }
-#endif
   };
   Proxy get_proxy(unsigned int i) {
     if (ParentDecorators::operator[](i)) {
@@ -140,8 +133,24 @@ class Decorators: public ParentDecorators {
   }
 
   IMP_DECORATORS_METHODS(WrappedDecorator::particle_is_instance(p),{},{},{});
+  template <class PV, class TEnabled=void>
+  struct DefaultTraits{
+    static void set_parent_traits(const ParentDecorators &){}
+  };
+  template <class PV>
+  struct DefaultTraits<PV,
+            typename boost::enable_if<typename PV::HasDecoratorTraits>::type>{
+    static void set_parent_traits(const ParentDecorators &pd){
+      pd.set_traits(WrappedDecorator::get_traits());
+    }
+  };
+  void set_parent_traits() {
+    DefaultTraits<typename ParentDecorators::value_type>
+      ::set_parent_traits(*this);
+  }
   public:
   explicit Decorators(const Particles &ps) {
+    set_parent_traits();
     check(ps.begin(), ps.end());
     ParentDecorators::reserve(ps.size());
     for (unsigned int i=0; i< ps.size(); ++i) {
@@ -149,27 +158,36 @@ class Decorators: public ParentDecorators {
     }
   }
   explicit Decorators(const ParticlesTemp &ds) {
+    set_parent_traits();
     check(ds.begin(), ds.end());
     ParentDecorators::reserve(ds.size());
     for (unsigned int i=0; i< ds.size(); ++i) {
       push_back(ds[i]);
     }
   }
-  explicit Decorators(unsigned int i): ParentDecorators(i, WrappedDecorator()){}
-  explicit Decorators(WrappedDecorator d): ParentDecorators(1, d){}
+  explicit Decorators(unsigned int i): ParentDecorators(i, WrappedDecorator()){
+    set_parent_traits();
+  }
+  explicit Decorators(WrappedDecorator d): ParentDecorators(1, d){
+    set_parent_traits();
+  }
   explicit Decorators(unsigned int n,
-                      WrappedDecorator d): ParentDecorators(n, d){}
+                      WrappedDecorator d): ParentDecorators(n, d){
+    set_parent_traits();
+  }
   template <class It>
-  Decorators(It b, It e): ParentDecorators(b,e){check(b,e);}
-  Decorators(){}
+  Decorators(It b, It e): ParentDecorators(b,e){
+    set_parent_traits();
+    check(b,e);
+  }
+  Decorators(){
+    set_parent_traits();
+  }
 #ifndef SWIG
   Proxy
   operator[](unsigned int i) {
     return get_proxy(i);
   }
-#endif
-
-#ifndef SWIG
   WrappedDecorator operator[](unsigned int i) const {
     return WrappedDecorator(ParentDecorators::operator[](i));
   }
@@ -206,13 +224,6 @@ typename boost::enable_if<typename WrappedDecorator::DecoratorHasTraits>::type >
       }
       d_=v;
     }
-#if 0
-    // for VC, it can't otherwise figure out the conversion chain
-    operator Particle*() {
-      if (WrappedDecorator()==*this) return NULL;
-      else return WrappedDecorator::get_particle();
-    }
-#endif
   };
   Proxy get_proxy(unsigned int i) {
     if (ParentDecorators::operator[](i)) {
@@ -242,7 +253,11 @@ typename boost::enable_if<typename WrappedDecorator::DecoratorHasTraits>::type >
     get_default_traits() {
        return WrappedDecorator::get_default_decorator_traits();
     }
-  public:
+public:
+  void set_traits(typename WrappedDecorator::DecoratorTraits tr) {
+    tr_=tr;
+    has_traits_=true;
+  }
   explicit Decorators(typename WrappedDecorator::DecoratorTraits tr):
     tr_(tr), has_traits_(true){}
   explicit Decorators(WrappedDecorator d): ParentDecorators(1,d){
