@@ -22,7 +22,7 @@ IMP_BEGIN_NAMESPACE
 //! A class to store a set of configurations of a model
 /** The class maintains a set of structures found by a Sampler
     protocol and allows them to be queried and loaded and saved.
-    \htmlinclude basic_optimization.py
+    \htmlinclude basic_optimization.py.html
 */
 class IMPEXPORT ConfigurationSet: public Object
 {
