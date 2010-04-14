@@ -11,6 +11,7 @@ def _check(context):
     ret= checks.check_lib(context, lib='ANN', header=['ANN/ANN.h'],
                           body='',
                           extra_libs=[])
+    context.env['ANN_LIBS']=ret[1]
     context.Message('Checking for ANN ...')
     context.Result(ret[0])
 
