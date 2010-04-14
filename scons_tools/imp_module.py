@@ -544,7 +544,7 @@ def IMPModuleDoc(env, files, authors,
                                              env.Value(overview),
                                              env.Value(publications),
                                              env.Value(license)],
-                                     target='.generated/overview.dox'))
+                                     target='generated/overview.dox'))
     for f in files:
         #print "file", str(f)
         if str(f).endswith(".dox") or str(f).endswith(".dot"):
