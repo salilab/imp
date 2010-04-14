@@ -160,18 +160,10 @@ IMPCOREEXPORT void transform(XYZ a, const algebra::Transformation3D &tr);
 inline const algebra::VectorD<3> get_geometry(XYZ d) {
   return d.get_coordinates();
 }
-
-/** \genericgeometry */
-inline const algebra::VectorD<3>& get_geometry(const algebra::VectorD<3> &v) {
-  return v;
-}
 /** \genericgeometry */
 inline void set_geometry(XYZ d, const algebra::VectorD<3> &v) {
   d.set_coordinates(v);
 }
-/** \genericgeometry */
-inline void set_geometry(algebra::VectorD<3> &vbase,
-                         const algebra::VectorD<3> &v) {vbase=v;}
 
 IMP_DECORATORS(XYZ,XYZs, Particles);
 
