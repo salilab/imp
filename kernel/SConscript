@@ -10,7 +10,7 @@ if env['CGAL_LIBS'] != ['']:
 else:
     config.append('IMP_NO_CGAL')
 
-if env['CGAL_LIBS'] != ['']:
+if env['ANN_LIBS'] is not None:
     config.append('IMP_USE_ANN')
 else:
     config.append('IMP_NO_ANN')
