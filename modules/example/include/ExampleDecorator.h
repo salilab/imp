@@ -55,11 +55,6 @@ public:
   static bool particle_is_instance(Particle *p) {
     return p->has_attribute(get_name_key());
   }
-  //! Set the name of the particle
-  void set_name(std::string name) {
-    IMP_USAGE_CHECK(!name.empty(), "The name cannot be empty.");
-    get_particle()->set_value(get_name_key(), name);
-  }
 
   //! Get the name of the particle
   std::string get_name() const {
