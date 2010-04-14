@@ -98,6 +98,9 @@ public:
                                 DerivativeAccumulator &d) {
     get_particle()->add_to_derivative(get_radius_key(), v, d);
   }
+  static FloatKey get_traits() {
+    return get_default_radius_key();
+  }
 };
 
 IMP_OUTPUT_OPERATOR(XYZR);
@@ -167,17 +170,11 @@ IMPCOREEXPORT XYZRs create_xyzr_particles(Model *m,
 
 /** \genericgeometry */
 inline const algebra::SphereD<3> get_geometry(XYZR d) {return d.get_sphere();}
-/** \genericgeometry */
-inline const algebra::SphereD<3>& get_geometry(const algebra::SphereD<3> &v) {
-  return v;
-}
+
 /** \genericgeometry */
 inline void set_geometry(XYZR d, const algebra::SphereD<3> &v) {
   d.set_sphere(v);
 }
-/** \genericgeometry */
-inline void set_geometry(algebra::SphereD<3> &vbase,
-                         const algebra::SphereD<3> &v) {vbase=v;}
 
 IMPCORE_END_NAMESPACE
 
