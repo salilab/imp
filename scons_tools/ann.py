@@ -2,23 +2,19 @@
 import checks
 
 def _check(context):
-    cgal = context.env['cgal']
-    if cgal is False or cgal is 0:
-        context.Message('Checking for CGAL ...')
-        context.Result("disabled")
-        return False
-
     ret= checks.check_lib(context, lib='ANN', header=['ANN/ANN.h'],
                           body='',
                           extra_libs=[])
     context.env['ANN_LIBS']=ret[1]
     context.Message('Checking for ANN ...')
-    context.Result(ret[0])
-
+    if ret[0]:
+        context.Result(" ".join(ret[1]))
+    else:
+        context.Result(False)
     return ret[0]
 
 def configure_check(env):
-    env['ANN_LIBS'] = ['']
+    env['ANN_LIBS'] = None
     custom_tests = {'CheckANN':_check}
     conf = env.Configure(custom_tests=custom_tests)
     #if not env.GetOption('clean') and not env.GetOption('help'):

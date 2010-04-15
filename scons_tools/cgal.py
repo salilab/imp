@@ -12,7 +12,10 @@ def _check(context):
                           body='CGAL_assertion(1); CGAL::Lazy_exact_nt<CGAL::Gmpq> q;',
                           extra_libs=['gmp', 'mpfr', 'm','boost_thread-mt', 'boost_thread', 'pthread'])
     context.Message('Checking for CGAL ...')
-    context.Result(ret[0])
+    if ret[0]:
+        context.Result(" ".join(ret[1]))
+    else:
+        context.Result(ret[0])
     if ret[0]:
         context.env['CGAL_LIBS'] = ret[1]
         #context.env.Append(CPPDEFINES=['IMP_USE_CGAL'])
