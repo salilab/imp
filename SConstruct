@@ -76,14 +76,7 @@ example is provided in tools/example-config.py.
 Export('env')
 #, 'get_pyext_environment', 'get_sharedlib_environment')
 
-env.Append(BUILDERS = {'CheckStandards':scons_tools.standards.CheckStandards})
-# Check code for coding standards:
-standards = env.CheckStandards(target='standards.passed',
-                               source=scons_tools.standards.get_standards_files(env))
-
-
-env.Alias('standards', standards)
-env.AlwaysBuild(standards)
+scons_tools.standards.setup_standards(env)
 
 SConscript('kernel/SConscript')
 
