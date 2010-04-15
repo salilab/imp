@@ -141,6 +141,7 @@ class Decorators: public ParentDecorators {
   struct DefaultTraits<PV,
             typename boost::enable_if<typename PV::HasDecoratorTraits>::type>{
     static void set_parent_traits(const ParentDecorators &pd){
+      //std::cout << "setting parent traits" << std::endl;
       pd.set_traits(WrappedDecorator::get_traits());
     }
   };
@@ -255,49 +256,49 @@ typename boost::enable_if<typename WrappedDecorator::DecoratorHasTraits>::type >
     }
 public:
   void set_traits(typename WrappedDecorator::DecoratorTraits tr) {
+    IMP_INTERNAL_CHECK(tr != typename WrappedDecorator::DecoratorTraits(),
+                       "Traits must not be default");
     tr_=tr;
     has_traits_=true;
   }
   explicit Decorators(typename WrappedDecorator::DecoratorTraits tr):
-    tr_(tr), has_traits_(true){}
-  explicit Decorators(WrappedDecorator d): ParentDecorators(1,d){
-    if (d) {
-      tr_=d.get_decorator_traits();
-      has_traits_=true;
-    }
+    has_traits_(false){
+    set_traits(tr);
   }
   explicit Decorators(unsigned int n, WrappedDecorator d):
-    ParentDecorators(n, d)
-     {
-       if (d) {
-         tr_=d.get_decorator_traits();
-         has_traits_=true;
-       }
-     }
+    ParentDecorators(n, d),
+    has_traits_(false)
+  {
+    if (d) {
+      set_traits(d.get_decorator_traits());
+    }
+  }
   template <class It>
   Decorators(It b, It e): ParentDecorators(b,e), has_traits_(false) {
     check(b,e);
   }
   Decorators(const Particles &ps,
              typename WrappedDecorator::DecoratorTraits tr):
-    tr_(tr), has_traits_(true) {
+    has_traits_(false) {
+    set_traits(get_default_traits());
     ParentDecorators::resize(ps.size());
     for (unsigned int i=0; i< ps.size(); ++i) {
       ParentDecorators::operator[](i)=WrappedDecorator(ps[i], tr);
     }
   }
-  Decorators(const Particles &ps):
-    tr_(get_default_traits()), has_traits_(true) {
-      ParentDecorators::resize(ps.size());
-      for (unsigned int i=0; i< ps.size(); ++i) {
-         ParentDecorators::operator[](i)=WrappedDecorator(ps[i],
-              tr_);
-      }
+  Decorators(const Particles &ps): has_traits_(false){
+    set_traits(get_default_traits());
+    ParentDecorators::resize(ps.size());
+    for (unsigned int i=0; i< ps.size(); ++i) {
+      ParentDecorators::operator[](i)=WrappedDecorator(ps[i],
+                                                       tr_);
     }
+  }
   Decorators(unsigned int i,
-                       typename WrappedDecorator::DecoratorTraits tr):
-    ParentDecorators(i), tr_(tr),
-    has_traits_(true){}
+             typename WrappedDecorator::DecoratorTraits tr):
+    ParentDecorators(i){
+    set_traits(tr);
+  }
   Decorators(unsigned int i):
     ParentDecorators(i),
     has_traits_(false){}
