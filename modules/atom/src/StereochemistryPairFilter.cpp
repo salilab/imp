@@ -60,11 +60,11 @@ void StereochemistryPairFilter::rebuild_map() {
 }
 
 ContainersTemp
-StereochemistryPairFilter::get_input_containers(const ParticlePair& pt) const {
+StereochemistryPairFilter::get_input_containers(const ParticlePair& ) const {
   return ContainersTemp();
 }
 
-void StereochemistryPairFilter::do_show(std::ostream &out) const {
+void StereochemistryPairFilter::do_show(std::ostream &) const {
 }
 
 IMPATOM_END_NAMESPACE

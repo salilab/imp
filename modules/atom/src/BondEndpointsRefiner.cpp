@@ -27,7 +27,7 @@ Particle* BondEndpointsRefiner::get_refined(Particle *p, unsigned int i) const
   return d.get_bonded(i).get_particle();
 }
 
-unsigned int BondEndpointsRefiner::get_number_of_refined(Particle *p) const {
+unsigned int BondEndpointsRefiner::get_number_of_refined(Particle *) const {
   return 2;
 }
 
@@ -51,7 +51,7 @@ ContainersTemp BondEndpointsRefiner::get_input_containers(Particle *p) const {
   return ContainersTemp(1,p);
 }
 
-void BondEndpointsRefiner::do_show(std::ostream &out) const
+void BondEndpointsRefiner::do_show(std::ostream &) const
 {
 }
 

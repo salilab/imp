@@ -453,7 +453,7 @@ void CHARMMParameters::read_parameter_file(std::ifstream& input_file) {
 }
 
 
-void CHARMMParameters::do_show(std::ostream &out) const {
+void CHARMMParameters::do_show(std::ostream &) const {
 }
 
 String CHARMMParameters::get_force_field_atom_type(Atom atom) const
