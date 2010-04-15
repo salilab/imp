@@ -42,12 +42,12 @@ struct LinearKNNData {
   }
   template <class G>
   void fill_nearest_neighbors(const G &g, unsigned int k,
-                              double eps, Ints &ret) const {
+                              double , Ints &ret) const {
     linear_nearest_neighbor(get_geometry(g), k, ret);
   }
   template <class G>
   void fill_nearest_neighbors(const G &g, double distance,
-                              double eps, Ints &ret) const {
+                              double , Ints &ret) const {
     double d2= square(distance);
     VectorD<D> v= get_geometry(g);
     for (unsigned int i=0; i< data_.size(); ++i) {
