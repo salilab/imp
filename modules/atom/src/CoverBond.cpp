@@ -44,13 +44,13 @@ ContainersTemp CoverBond::get_input_containers(Particle *p) const {
   return ContainersTemp(1, p);
 }
 
-ContainersTemp CoverBond::get_output_containers(Particle *p) const {
+ContainersTemp CoverBond::get_output_containers(Particle *) const {
   return ContainersTemp();
 }
 
 
 
-void CoverBond::do_show(std::ostream &out) const {
+void CoverBond::do_show(std::ostream &) const {
 }
 
 IMPATOM_END_NAMESPACE

@@ -45,10 +45,10 @@ ParticlesTemp BondedPairFilter
 
 
 ContainersTemp
-BondedPairFilter::get_input_containers(const ParticlePair& pt) const {
+BondedPairFilter::get_input_containers(const ParticlePair&) const {
   return ContainersTemp();
 }
-void BondedPairFilter::do_show(std::ostream &out) const {
+void BondedPairFilter::do_show(std::ostream &) const {
 }
 
 IMPATOM_END_NAMESPACE
