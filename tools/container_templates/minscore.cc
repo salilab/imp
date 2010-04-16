@@ -8,7 +8,7 @@
  */
 
 #include <IMP/container/MinMaxGroupnameScore.h>
-#include "IMP/core/internal/MinimalSet.h"
+#include "IMP/algebra/internal/MinimalSet.h"
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -27,7 +27,7 @@ MinMaxGroupnameScore::MinMaxGroupnameScore(const GroupnameScoresTemp &scores,
 
 
 namespace {
-  typedef core::internal::MinimalSet<double,
+  typedef algebra::internal::MinimalSet<double,
           GroupnameScore*, std::COMPARATOR<double> > MS;
   template <class It>
   MS find_minimal_set(It b, It e, PassValue v, unsigned int n) {

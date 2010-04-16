@@ -8,6 +8,7 @@
 #define IMPALGEBRA_INTERNAL_LINEAR_KNN_H
 
 #include "../algebra_config.h"
+#include "MinimalSet.h"
 
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
@@ -16,19 +17,15 @@ template <unsigned int D>
 struct LinearKNNData {
   void linear_nearest_neighbor(IMP_RESTRICT const VectorD<D> &q,
                                unsigned int k, Ints &ret) const {
-    std::vector<double> retds;
+    MinimalSet<double, int > retds(k);
     for (unsigned int i=0; i< data_.size(); ++i) {
       double cd=(data_[i]-q).get_squared_magnitude();
-      if (ret.size() < k || cd < retds.back()) {
-        std::vector<double>::iterator it= std::lower_bound(retds.begin(),
-                                                           retds.end(), cd);
-        ret.insert(ret.begin()+(it-retds.begin()), i);
-        retds.insert(it, cd);
-        if (ret.size() > k) {
-          ret.pop_back();
-          retds.pop_back();
-        }
+      if (retds.can_insert(cd)) {
+        retds.insert(cd, i);
       }
+    }
+    for (unsigned int i=0; i< k; ++i) {
+      ret[i]=retds[i].second;
     }
   }
 
