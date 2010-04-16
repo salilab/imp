@@ -56,10 +56,6 @@ public:
     return p->has_attribute(get_name_key());
   }
 
-  //! Get the name of the particle
-  std::string get_name() const {
-    return get_particle()->get_value(get_name_key());
-  }
   /* Declare the basic constructors and the cast function.*/
   IMP_DECORATOR(ExampleDecorator, Decorator);
 };
