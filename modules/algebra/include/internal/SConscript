@@ -1,4 +1,5 @@
 files = [
+         'MinimalSet.h',
          'cgal_predicates.h',
          'grid_3d.h',
          'grid_3d_impl.h',

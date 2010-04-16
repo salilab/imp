@@ -8,7 +8,7 @@
  */
 
 #include <IMP/container/MaximumQuadScore.h>
-#include "IMP/core/internal/MinimalSet.h"
+#include "IMP/algebra/internal/MinimalSet.h"
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -27,7 +27,7 @@ MaximumQuadScore::MaximumQuadScore(const QuadScoresTemp &scores,
 
 
 namespace {
-  typedef core::internal::MinimalSet<double,
+  typedef algebra::internal::MinimalSet<double,
           QuadScore*, std::greater<double> > MS;
   template <class It>
   MS find_minimal_set(It b, It e, const ParticleQuad& v, unsigned int n) {

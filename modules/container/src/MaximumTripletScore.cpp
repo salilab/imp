@@ -8,7 +8,7 @@
  */
 
 #include <IMP/container/MaximumTripletScore.h>
-#include "IMP/core/internal/MinimalSet.h"
+#include "IMP/algebra/internal/MinimalSet.h"
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -27,7 +27,7 @@ MaximumTripletScore::MaximumTripletScore(const TripletScoresTemp &scores,
 
 
 namespace {
-  typedef core::internal::MinimalSet<double,
+  typedef algebra::internal::MinimalSet<double,
           TripletScore*, std::greater<double> > MS;
   template <class It>
   MS find_minimal_set(It b, It e, const ParticleTriplet& v, unsigned int n) {

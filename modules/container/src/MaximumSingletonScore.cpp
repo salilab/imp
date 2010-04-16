@@ -8,7 +8,7 @@
  */
 
 #include <IMP/container/MaximumSingletonScore.h>
-#include "IMP/core/internal/MinimalSet.h"
+#include "IMP/algebra/internal/MinimalSet.h"
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -27,7 +27,7 @@ MaximumSingletonScore::MaximumSingletonScore(const SingletonScoresTemp &scores,
 
 
 namespace {
-  typedef core::internal::MinimalSet<double,
+  typedef algebra::internal::MinimalSet<double,
           SingletonScore*, std::greater<double> > MS;
   template <class It>
   MS find_minimal_set(It b, It e, Particle* v, unsigned int n) {

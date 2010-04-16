@@ -5,17 +5,16 @@
  *
  */
 
-#ifndef IMPCORE_INTERNAL_MINIMAL_SET_H
-#define IMPCORE_INTERNAL_MINIMAL_SET_H
+#ifndef IMPALGEBRA_INTERNAL_MINIMAL_SET_H
+#define IMPALGEBRA_INTERNAL_MINIMAL_SET_H
 
-#include "../core_config.h"
-#include "../core_macros.h"
+#include "../algebra_config.h"
 
 #include <utility>
 #include <algorithm>
 #include <limits>
 
-IMPCORE_BEGIN_INTERNAL_NAMESPACE
+IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 
 /** Store the lowest n items seen so far.
  */
@@ -72,6 +71,6 @@ public:
   }
 };
 
-IMPCORE_END_INTERNAL_NAMESPACE
+IMPALGEBRA_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPCORE_INTERNAL_MINIMAL_SET_H */
+#endif  /* IMPALGEBRA_INTERNAL_MINIMAL_SET_H */

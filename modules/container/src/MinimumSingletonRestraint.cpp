@@ -10,7 +10,7 @@
  */
 
 #include "IMP/container/MinimumSingletonRestraint.h"
-#include "IMP/core/internal/MinimalSet.h"
+#include "IMP/algebra/internal/MinimalSet.h"
 #include <IMP/internal/container_helpers.h>
 
 
@@ -26,7 +26,7 @@ MinimumSingletonRestraint
 }
 
 namespace {
-  typedef core::internal::MinimalSet<double,
+  typedef algebra::internal::MinimalSet<double,
           Particle*, std::less<double> > MS;
   template <class It, class F>
   MS find_minimal_set(It b, It e, F *f, unsigned int n) {
