@@ -58,12 +58,12 @@ public:
 
   //! Get the name added to the particle
   std::string get_decorator_name() const {
-    return p->get_value(get_name_key());
+    return get_particle()->get_value(get_name_key());
   }
 
   //! Set the name added to the particle
   void set_decorator_name(std::string nm) {
-    p->set_value(get_name_key(), nm);
+    get_particle()->set_value(get_name_key(), nm);
   }
 
 
