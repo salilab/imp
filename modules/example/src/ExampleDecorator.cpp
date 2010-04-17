@@ -18,7 +18,7 @@ StringKey ExampleDecorator::get_name_key() {
 }
 
 void ExampleDecorator::show(std::ostream &out) const {
-  out << get_name();
+  out << get_decorator_name();
 }
 
 IMPEXAMPLE_END_NAMESPACE
