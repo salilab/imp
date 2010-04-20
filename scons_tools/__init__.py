@@ -125,6 +125,12 @@ def MyEnvironment(variables=None, *args, **kw):
     if env['wine']:
         env = WineEnvironment(variables=variables, ENV = {'PATH': newpath},
                               *args, **kw)
+    elif env.get('cxxcompiler', None):
+        env = Environment(variables=variables, ENV = {'PATH': newpath},
+                          CXX=env['cxxcompiler'],
+                          *args, **kw)
+        env['PYTHON'] = 'python'
+        env['PATHSEP'] = os.path.pathsep
     else:
         env = Environment(variables=variables, ENV = {'PATH': newpath},
                           *args, **kw)
@@ -315,6 +321,8 @@ def add_common_variables(vars, package):
        and os.uname()[-1] == 'x86_64':
         # Install in /usr/lib64 rather than /usr/lib on x86_64 Linux boxes
         libdir += '64'
+    vars.Add(PathVariable('cxxcompiler', 'The C++ compiler to use (eg g++).', None,
+                          PathVariable.PathExists))
     vars.Add(PathVariable('prefix', 'Top-level installation directory', '/usr',
                           PathVariable.PathAccept))
     vars.Add(PathVariable('datadir', 'Data file installation directory',
