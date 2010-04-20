@@ -35,6 +35,9 @@ namespace {
 
   std::string path_cat(std::string base, std::string module,
                        std::string file_name) {
+    IMP_USAGE_CHECK(!file_name.empty() && file_name[0] != '/',
+                    "File name should be relative to the IMP directory and"
+                    << " non-empty, not " << file_name);
 #ifdef IMP_USE_BOOST_LIBS
     boost::filesystem::path basep(base);
 #endif
