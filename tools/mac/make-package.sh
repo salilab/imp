@@ -14,7 +14,7 @@ DESTDIR=/tmp/imp-${VER}
 SOURCE=/Users/ben/imp-${VER}
 PREFIX=/usr/local
 PYTHON=2.3
-TARGET_OSX_VER=10v4
+TARGET_OSX_VER=10.4
 
 mkdir -p ${DESTDIR}/Library/Python/${PYTHON}/site-packages/
 echo "${PREFIX}/lib/python${PYTHON}/site-packages/" > ${DESTDIR}/Library/Python/${PYTHON}/site-packages/IMP.pth
