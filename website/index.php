@@ -31,13 +31,10 @@
 
      exit;
    }
+
+   print_page_header();
 ?>
 
-<?PHP PrintFile("header.txt"); ?>
-  <div id="container">
-   <table class="tcon">
-  <tr>
-         <td class="twel" colspan="3">
             <?PHP
                if ($page == "home") {
                   echo "<h1>Welcome</h1>
@@ -93,13 +90,6 @@
                </td>
             </tr>";
       }
+
+   print_page_footer();
    ?>
-   </table>
-     </div>
-
-<div id="footer">
-   <?PHP PrintFile("footer.txt"); ?>
-</div>
-
-</body>
-</html>
