@@ -42,15 +42,22 @@ def _check_doxygen(context):
         # unfortunately this outputs a newline to stderr
         # I don't know how to avoid that
         ret= os.popen("doxygen --version").read()
-    except:
+        try:
+            version = tuple([int(x) for x in ret.split('.')])
+            context.Result('version %s found' \
+                           % '.'.join([str(x) for x in version]))
+        except ValueError:
+            context.Result('unknown version %s found' % ret.strip())
+            version = None
+    except Exception:
         context.Result("not found")
         context.env['doxygen']=False
         return False
-    if ret.find("1.6.1")!= -1:
+    context.env['DOXYGEN_VERSION'] = version
+    if version == (1,6,1):
         context.Result("disabled. Doxygen 1.6.1 does not work with IMP. Sorry.")
         context.env['doxygen']=False
         return False
-    context.Result(ret)
     context.Message('Checking for cpp (needed for docs)...')
     try:
         os.system("cpp --version >/dev/null")

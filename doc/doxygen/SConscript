@@ -31,8 +31,10 @@ def generate_doxygen_header(target, source, env):
     outfile= file(target[0].path, 'w')
     for l in infile:
         if l.find("DOXYGEN STUFF GOES HERE") != -1:
-            outfile.write("""<link href="tabs.css" rel="stylesheet" type="text/css"/>
-<link href="search/search.css" rel="stylesheet" type="text/css"/>
+            outfile.write('<link href="tabs.css" rel="stylesheet" type="text/css"/>\n')
+            # Older doxygen versions use a PHP search engine instead of JS
+            if env['DOXYGEN_VERSION'] >= (1,6,0):
+                outfile.write("""<link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javaScript" src="search/search.js"></script>""");
         else:
             outfile.write(l)
