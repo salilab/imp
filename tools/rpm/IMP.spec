@@ -1,4 +1,4 @@
-Name:          imp
+Name:          IMP
 Version:       1.0
 Release:       1%{?dist}
 License:       LGPLv2+ and GPLv3
@@ -6,7 +6,7 @@ Summary:       The Integrative Modeling Platform
 Group:         Applications/Engineering
 Packager:      Ben Webb <ben@salilab.org>
 URL:           http://www.integrativemodeling.org/
-Source0:       %{name}-%{version}.tar.gz
+Source0:       imp-%{version}.tar.gz
 BuildRoot:     %{_tmppath}/%{name}-%{version}-root
 BuildRequires: scons >= 0.98, boost-devel, swig, python-devel
 BuildRequires: modeller
@@ -67,7 +67,7 @@ This package contains Python bindings for IMP, to allow IMP functionality to
 be used from Python.
 
 %prep
-%setup
+%setup -n imp-%{version}
 
 %build
 
