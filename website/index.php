@@ -33,51 +33,6 @@
    }
 ?>
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-        "http://www.w3.org/TR/html4/loose.dtd">
-
-<head>
-<title>IMP Community</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="description" content="IMP Community site for the development of an Integrative Modeling Platform">
-<meta name="keywords" content="IMP, Integrative, Modeling, Platform">
-<link href="imp.css" rel="stylesheet" type="text/css">
-<link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
-
-<script type="text/javascript"><!--
-/* e-mail obfuscation adapted from code by Jason Johnston:
-   http://lojjic.net/blog/20030828-142754.rdf.html
-*/
-function linkEmail() {
-  if(!document.getElementsByTagName) return;
-  var allElts = document.getElementsByTagName("*");
-  if(allElts.length == 0 && document.all) 
-    allElts = document.all; //hack for IE5
-  for(var i=0; i<allElts.length; i++) {
-    var elt = allElts[i];
-    var className = elt.className || elt.getAttribute("class") 
-      || elt.getAttribute("className");
-    if(className && className.match(/\be-mail\b/)
-        && elt.firstChild.nodeType == 3) {
-      var alls = elt.firstChild.nodeValue;
-      fs= alls.split("|")
-      addr = fs[0].replace(/\ at\ /i, "@")
-        .replace(/\ (dot|period)\ /gi, ".");
-      var lnk = document.createElement("a");
-      lnk.setAttribute("href","mailto:"+addr);
-      lnk.appendChild(document.createTextNode(fs[1]));
-      elt.replaceChild(lnk, elt.firstChild);
-    }
-  }
-}
-window.onload = linkEmail;
--->
-</script>
-</head>
-
-<body>
-
-
 <?PHP PrintFile("header.txt"); ?>
   <div id="container">
    <table class="tcon">

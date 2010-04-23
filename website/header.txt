@@ -3,6 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+<meta name="description" content="IMP Community site for the development of an Integrative Modeling Platform">
+<meta name="keywords" content="IMP, Integrative, Modeling, Platform">
 <title>$title</title>
 <link href="imp.css" rel="stylesheet" type="text/css"/>
 <!-- DOXYGEN STUFF GOES HERE-->
@@ -33,6 +35,7 @@ function linkEmail() {
     }
   }
 }
+window.onload = linkEmail;
 -->
 </script>
 </head><body>
