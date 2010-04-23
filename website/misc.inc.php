@@ -57,4 +57,27 @@
       return($co);
    }
 
+   function print_page_header() {
+      PrintFile("header.txt");
+      print <<<END
+  <div id="container">
+   <table class="tcon">
+  <tr>
+         <td class="twel" colspan="3">
+END;
+   }
+
+   function print_page_footer() {
+      print "   </table>\n";
+      print "     </div>\n\n";
+      print "<div id=\"footer\">\n";
+      PrintFile("footer.txt");
+      print <<<END
+</div>
+
+</body>
+</html>
+END;
+   }
+
 ?>
