@@ -3,8 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
-<meta name="description" content="IMP Community site for the development of an Integrative Modeling Platform">
-<meta name="keywords" content="IMP, Integrative, Modeling, Platform">
+<meta name="description" content="IMP Community site for the development of an Integrative Modeling Platform" />
+<meta name="keywords" content="IMP, Integrative, Modeling, Platform" />
 <title>$title</title>
 <link href="imp.css" rel="stylesheet" type="text/css"/>
 <!-- DOXYGEN STUFF GOES HERE-->
@@ -43,7 +43,7 @@ window.onload = linkEmail;
    <table class="imptnav">
       <tr>
          <td><a href="http://www.integrativemodeling.org/">
-             <img src="http://www.integrativemodeling.org/images/the_imp.png" height=60 alt="IMP logo" border="0"/></a></td>
+             <img src="http://www.integrativemodeling.org/images/the_imp.png" height="60" alt="IMP logo" border="0"/></a></td>
          <td>
             <div id="implinks">
              <ul>

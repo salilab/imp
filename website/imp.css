@@ -33,7 +33,7 @@ h3 {
 
 h4 {
    margin-top:20px;
-   font-weight: italic;
+   font-style: italic;
    font-size: 100%;
    color: #FF7C02;
 }
@@ -736,3 +736,6 @@ address {
 	color: #333;
 }
 
+a.directdownload {
+	font-size: small;
+}
