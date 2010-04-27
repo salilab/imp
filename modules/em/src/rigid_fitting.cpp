@@ -341,20 +341,21 @@ FittingSolutions compute_fitting_scores(const Particles &ps,
               "running fast version of compute_fitting_scores"<<std::endl);
       for (std::vector<IMP::algebra::Transformation3D>::const_iterator it =
          transformations.begin(); it != transformations.end();it++) {
-        DensityMap transformed_sampled_map;
-        get_transformed_into(model_dens_map,*it,&transformed_sampled_map);
+            DensityMap *transformed_sampled_map = get_transformed(
+              model_dens_map,*it,model_dens_map->get_header()->dmin-EPS);
         IMP_INTERNAL_CHECK(
-           transformed_sampled_map.same_dimensions(*model_dens_map),
+           transformed_sampled_map->same_dimensions(*model_dens_map),
            "sampled density map changed dimensions after transformation"
            <<std::endl);
-        IMP_INTERNAL_CHECK(transformed_sampled_map.same_dimensions(*em_map),
+        IMP_INTERNAL_CHECK(transformed_sampled_map->same_dimensions(*em_map),
                  "sampled density map is of wrong dimensions"<<std::endl);
-        float threshold = transformed_sampled_map.get_header()->dmin;
+        float threshold = transformed_sampled_map->get_header()->dmin;
         score  = 1.-
           CoarseCC::cross_correlation_coefficient(*em_map,
-             transformed_sampled_map,threshold,true);
+             *transformed_sampled_map,threshold,true);
         IMP_LOG(VERBOSE,"adding score:"<<score<<std::endl);
         fr.add_solution(*it,score);
+        delete transformed_sampled_map;
       }
     }
     return fr;

@@ -70,10 +70,18 @@ class RigidBodyCorrelationByGridRotation(IMP.test.TestCase):
         #they are more accurate
         mp_xyz=IMP.core.XYZs(IMP.core.get_leaves(self.mp))
         mp_ref_xyz=IMP.core.XYZs(IMP.core.get_leaves(self.mp_ref))
+        for xyz in mp_xyz:
+            xyz.set_coordinates(ts[0].get_transformed(xyz.get_coordinates()))
         best_score=[0,scores_slow.get_score(0),
-                    IMP.atom.get_rmsd(mp_xyz,mp_ref_xyz,ts[0])]
+                    IMP.atom.get_rmsd(mp_ref_xyz,mp_xyz)]#,ts[0])]
+        for xyz in mp_xyz:
+            xyz.set_coordinates(ts[0].get_inverse().get_transformed(xyz.get_coordinates()))
         for i in range(1,scores_slow.get_number_of_solutions()):
-            rmsd=IMP.atom.get_rmsd(mp_xyz,mp_ref_xyz,ts[i])
+            for xyz in mp_xyz:
+                xyz.set_coordinates(ts[i].get_transformed(xyz.get_coordinates()))
+            rmsd=IMP.atom.get_rmsd(mp_xyz,mp_ref_xyz)#,ts[i])
+            for xyz in mp_xyz:
+                xyz.set_coordinates(ts[i].get_inverse().get_transformed(xyz.get_coordinates()))
             score = scores_slow.get_score(i)
             print "rmsd:",rmsd," score:",score
             if score<best_score[1]:
