@@ -2,6 +2,7 @@ import unittest
 import IMP
 import IMP.test
 import IMP.core
+import IMP.container
 
 class RefCountTests(IMP.test.TestCase):
     """Test refcounting of particles"""
