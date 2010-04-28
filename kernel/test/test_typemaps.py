@@ -217,13 +217,14 @@ class ParticleTests(IMP.test.TestCase):
                     "get_type_name",
                     "get_version_info",
                     "set_log_level",
-                    "set_was_used"
+                    "set_was_used",
+                    "get_is_up_to_date"
                     ]
         md= dir(IMP._TrivialDecorator)
         for m in dir(IMP.Particle):
             if not m in md and m not in exclusions:
                 print m
-                self.assert_(false, m+" not found")
+                self.assert_(False, m+" not found")
 
 if __name__ == '__main__':
     unittest.main()
