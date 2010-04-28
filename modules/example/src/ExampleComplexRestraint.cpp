@@ -49,12 +49,14 @@ void ExampleComplexRestraint::set_model(Model *m) {
   } else {
     IMP_LOG(TERSE, "Removing components of ExampleComplexRestraint"
             << std::endl);
-    IMP_CHECK_OBJECT(ss_.get());
-    IMP_CHECK_OBJECT(p_.get());
-    m->remove_score_state(ss_);
-    m->remove_particle(p_);
-    ss_=NULL;
-    p_=NULL;
+    if (ss_) {
+      IMP_CHECK_OBJECT(ss_.get());
+      IMP_CHECK_OBJECT(p_.get());
+      get_model()->remove_score_state(ss_);
+      get_model()->remove_particle(p_);
+      ss_=NULL;
+      p_=NULL;
+    }
   }
   Restraint::set_model(m);
 }
