@@ -56,7 +56,7 @@ CommonEndpointPairFilter::get_input_particles(const ParticlePair& pt)
 }
 
 ContainersTemp
-CommonEndpointPairFilter::get_input_containers(const ParticlePair& pt) const {
+CommonEndpointPairFilter::get_input_containers(const ParticlePair&) const {
   return ContainersTemp();
 }
 
