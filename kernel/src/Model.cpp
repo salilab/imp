@@ -32,6 +32,16 @@
 
 #include <boost/dynamic_bitset.hpp>
 
+namespace {
+  template <class T, int V>
+  struct SetIt {
+    T *t_;
+    SetIt(T *t): t_(t){}
+    ~SetIt() {
+      *t_= T(V);
+    }
+  };
+}
 
 #if IMP_BUILD < IMP_FAST
 #define WRAP_UPDATE_CALL(restraint, expr, exchange)                     \
@@ -288,10 +298,11 @@ namespace {
     em[edge]= et;
   }
 
-  void build_rsc_dependency_graph(Dependencies &deps) {
+
+
+  void build_r_dependency_graph(Dependencies &deps) {
     ObjectMap om= boost::get(boost::vertex_name, deps.graph);
     EdgeMap em= boost::get(boost::edge_name, deps.graph);
-    ContainersTemp new_containers;
     for (std::map<Restraint*, DependencyVertex>::iterator it
            = deps.restraints.begin();
          it != deps.restraints.end(); ++it) {
@@ -302,12 +313,16 @@ namespace {
       it->second=vertex;
       ContainersTemp ct= filter(it->first->get_input_containers());
       IMP_LOG(VERBOSE, "Found input containers " << Containers(ct) <<std::endl);
-      new_containers.insert(new_containers.end(), ct.begin(), ct.end());
       for (unsigned int j=0; j < ct.size(); ++j) {
         DependencyVertex cv= get_vertex(deps.graph, ct[j], om, deps.containers);
         add_edge(deps.graph, em, cv, vertex, CR);
       }
     }
+  }
+
+  void build_s_dependency_graph(Dependencies &deps) {
+    ObjectMap om= boost::get(boost::vertex_name, deps.graph);
+    EdgeMap em= boost::get(boost::edge_name, deps.graph);
     for (std::map<ScoreState*, DependencyVertex> ::iterator
            it= deps.score_states.begin();
          it != deps.score_states.end(); ++it) {
@@ -320,7 +335,7 @@ namespace {
       ContainersTemp ict= filter(it->first->get_input_containers());
       IMP_LOG(VERBOSE, "Found input containers "
               << Containers(ict) <<std::endl);
-      new_containers.insert(new_containers.end(), ict.begin(), ict.end());
+      //new_containers.insert(new_containers.end(), ict.begin(), ict.end());
       for (unsigned int j=0; j < ict.size(); ++j) {
         DependencyVertex cv= get_vertex(deps.graph, ict[j],
                                         om, deps.containers);
@@ -329,7 +344,7 @@ namespace {
       ContainersTemp oct= filter(it->first->get_output_containers());
       IMP_LOG(VERBOSE, "Found output containers "
               << Containers(oct) <<std::endl);
-      new_containers.insert(new_containers.end(), oct.begin(), oct.end());
+      //new_containers.insert(new_containers.end(), oct.begin(), oct.end());
       for (unsigned int j=0; j < oct.size(); ++j) {
         DependencyVertex cv= get_vertex(deps.graph, oct[j],
                                         om, deps.containers);
@@ -348,23 +363,6 @@ namespace {
         add_edge(deps.graph, em, vertex, cv, SC);
       }
       //write_graph(deps.graph, om, "intermediate.%d.dot");
-    }
-    while (!new_containers.empty()) {
-      IMP_LOG(VERBOSE, "New containers are " << Containers(new_containers)
-              << std::endl);
-      ContainersTemp cct;
-      std::swap(new_containers, cct);
-      cct= filter(cct);
-      for (unsigned int i=0; i< cct.size(); ++i) {
-        DependencyVertex ccv= deps.containers[cct[i]];
-        ContainersTemp ct= filter(cct[i]->get_input_containers());
-        new_containers.insert(new_containers.end(), ct.begin(), ct.end());
-        for (unsigned int j=0; j < ct.size(); ++j) {
-          DependencyVertex cv= get_vertex(deps.graph, ct[j],
-                                          om, deps.containers);
-          add_edge(deps.graph, em, cv, ccv, CC);
-        }
-      }
     }
   }
 
@@ -468,30 +466,30 @@ namespace {
 
   void get_upstream_sc(Dependencies &deps,
                        const std::vector<DependencyVertex> &starts,
-                       ScoreStatesTemp &ssout, ContainersTemp &cout) {
+                       ScoreStatesTemp &ssout) {
     ObjectMap om= boost::get(boost::vertex_name, deps.graph);
     std::vector<DependencyVertex> front=starts;
     std::vector<char> visited(boost::num_vertices(deps.graph), false);
 
+    for (unsigned int i=0; i< front.size(); ++i) {
+      visited[front[i]]= true;
+    }
     while (!front.empty()) {
       DependencyVertex v= front.back();
       front.pop_back();
       Object *o= om[v];
-      //std::cout << "Visiting " << o->get_name() << std::endl;
-      Container *c= dynamic_cast<Container*>(o);
-      if (c) {
-        cout.push_back(c);
-      } else {
-        ScoreState *s= dynamic_cast<ScoreState*>(o);
-        if (s) {
-          ssout.push_back(s);
-        }
+      std::cout << "Visiting " << o->get_name() << std::endl;
+      ScoreState *s= dynamic_cast<ScoreState*>(o);
+      if (s) {
+        std::cout << "grabbed." << std::endl;
+        ssout.push_back(s);
       }
       DependencyTraits::in_edge_iterator ic, ie;
       for (boost::tie(ic, ie) = boost::in_edges(v, deps.graph);
            ic != ie; ++ic) {
         DependencyVertex tv= boost::source(*ic, deps.graph);
         if (!visited[tv]) {
+          IMP_INTERNAL_CHECK(tv < visited.size(), "Not enough vertices " << tv);
           visited[tv]=true;
           front.push_back(tv);
         }
@@ -523,51 +521,13 @@ namespace {
   }
 
 
-  Dependencies make_graph(const RestraintsTemp &rs,
-                          const ScoreStatesTemp &ss,
-                          const ParticlesTemp &ps) {
-    IMP_LOG(VERBOSE, "Making dependency graph on " << rs.size()
-            << " restraints " << ss.size() << " score states "
-            << " and " << ps.size() << " particles." << std::endl);
-    Dependencies deps;
-    gather_restraints(rs.begin(), rs.end(), 1.0, deps.weighted);
-    for (unsigned int i=0; i< deps.weighted.size(); ++i) {
-      deps.restraints.insert(std::make_pair(deps.weighted[i].second,
-                                            DependencyVertex()));
-    }
-    for (unsigned int i=0; i< ss.size(); ++i) {
-      deps.score_states.insert(std::make_pair(ss[i], DependencyVertex()));
-    }
-    ObjectMap om= boost::get(boost::vertex_name, deps.graph);
-    build_rsc_dependency_graph(deps);
-    for (unsigned int i=0; i< ps.size(); ++i) {
-      DependencyVertex v= boost::add_vertex(deps.graph);
-      deps.particles.insert(std::make_pair(ps[i], v));
-      om[v]=ps[i];
-    }
-    for (unsigned int i=0; i< deps.weighted.size(); ++i) {
-      update_graph(deps, deps.weighted[i].second,
-                   deps.restraints[deps.weighted[i].second]);
-    }
-    for (unsigned int i=0; i< ss.size(); ++i) {
-      update_graph(deps, ss[i], deps.score_states[ss[i]]);
-    }
-    IMP_LOG(VERBOSE, "The graph has " << boost::num_vertices(deps.graph)
-            << " vertices" << std::endl);
-    IMP_IF_LOG(VERBOSE) {
-      write_graph(deps.graph, om, "dependency_graph.dot");
-    }
-    return deps;
-  }
-
   void make_dependencies(Dependencies &deps, const ScoreStatesTemp &ss) {
     for (std::map<Restraint*, DependencyVertex>::const_iterator
            it= deps.restraints.begin();
          it != deps.restraints.end(); ++it) {
       ScoreStatesTemp sss;
-      ContainersTemp css;
       DependencyVertex v= it->second;
-      get_upstream_sc(deps, std::vector<DependencyVertex>(1,v), sss, css);
+      get_upstream_sc(deps, std::vector<DependencyVertex>(1,v), sss);
       std::set<ScoreState*> sset(sss.begin(), sss.end());
       boost::dynamic_bitset<> bs(ss.size(), false);
       for (unsigned int i=0; i< ss.size(); ++i) {
@@ -722,6 +682,7 @@ Model::Model(std::string name): Object(name)
   first_incremental_=true;
   gather_statistics_=false;
   score_states_ordered_=false;
+  eval_count_=0;
   set_was_used(true);
 }
 
@@ -744,23 +705,20 @@ void Model::reset_dependencies() {
 IMP_LIST_IMPL(Model, Restraint, restraint, Restraint*,
               Restraints,
               {IMP_INTERNAL_CHECK(cur_stage_== NOT_EVALUATING,
-    "The set of restraints cannot be changed during evaluation.");
+          "The set of restraints cannot be changed during evaluation.");
                 obj->set_model(this);
                 obj->set_was_used(true);
-                first_incremental_=true;
-                reset_dependencies();},{},
+                first_incremental_=true;}, reset_dependencies();,
               {
                 obj->set_model(NULL);
-                reset_dependencies();
               });
 
 IMP_LIST_IMPL(Model, ScoreState, score_state, ScoreState*,
               ScoreStates,
               {IMP_INTERNAL_CHECK(cur_stage_== NOT_EVALUATING,
-              "The set of score states cannot be changed during"
+                     "The set of score states cannot be changed during"
                                   << "evaluation.");
                 obj->set_model(this);
-                reset_dependencies();
                 obj->set_was_used(true);
                 IMP_LOG(VERBOSE, "Added score state " << obj->get_name()
                         << std::endl);
@@ -771,34 +729,87 @@ IMP_LIST_IMPL(Model, ScoreState, score_state, ScoreState*,
                                   "Score state already in model "
                                   << obj->get_name());
                 }
-              },{},
+              },{reset_dependencies();},
               {obj->set_model(NULL);});
 
 
 void Model::order_score_states() {
-  if (!score_states_ordered_ || graphs_.find(this) == graphs_.end()) {
-    IMP_LOG(VERBOSE, "Ordering score states. Input list is: ");
-    IMP_IF_LOG(VERBOSE) {
-      for (unsigned int i=0; i< access_score_states().size(); ++i) {
-        IMP_LOG(VERBOSE, "\"" << access_score_states()[i]->get_name()
-                << "\" ");
-      }
-      IMP_LOG(VERBOSE, std::endl);
+  IMP_LOG(VERBOSE, "Ordering score states. Input list is: ");
+  IMP_IF_LOG(VERBOSE) {
+    for (unsigned int i=0; i< access_score_states().size(); ++i) {
+      IMP_LOG(VERBOSE, "\"" << access_score_states()[i]->get_name()
+              << "\" ");
     }
-    graphs_[this]= make_graph(access_restraints(), access_score_states(),
-                              ParticlesTemp(particles_.begin(),
-                                            particles_.end()));
-    ScoreStatesTemp sst=sort_score_states(graphs_[this]);
-    make_dependencies(graphs_[this], access_score_states());
-    set_score_states(sst);
-    IMP_LOG(VERBOSE, "Ordering is: ");
-    IMP_IF_LOG(VERBOSE) {
-      for (unsigned int i=0; i< access_score_states().size(); ++i) {
-        IMP_LOG(VERBOSE, "\"" << access_score_states()[i]->get_name()
-                << "\" ");
-      }
-      IMP_LOG(VERBOSE, std::endl);
+    IMP_LOG(VERBOSE, std::endl);
+  }
+  //before_evaluate(access_score_states());
+  //cur_stage_= NOT_EVALUATING;
+  graphs_[this]= Dependencies();
+  Dependencies &deps= graphs_[this];
+  IMP_LOG(VERBOSE, "Making dependency graph on " << get_number_of_restraints()
+          << " restraints " << get_number_of_score_states() << " score states "
+          << " and " << get_number_of_particles()
+          << " particles." << std::endl);
+  for (ScoreStateIterator it= score_states_begin();
+       it != score_states_end(); ++it) {
+    deps.score_states.insert(std::make_pair(*it, DependencyVertex()));
+  }
+  ObjectMap om= boost::get(boost::vertex_name, deps.graph);
+  build_s_dependency_graph(deps);
+  IMP_IF_LOG(VERBOSE) {
+    write_graph(deps.graph, om, "s_dependency_graph.dot");
+  }
+  SetIt<Stage, NOT_EVALUATING> reset(&cur_stage_);
+  {
+    // make sure they are up to date
+    ScoreStatesTemp sst=sort_score_states(deps);
+    before_evaluate(sst);
+    //cur_stage_= NOT_EVALUATING;
+  }
+  gather_restraints(restraints_begin(), restraints_end(), 1.0, deps.weighted);
+  for (unsigned int i=0; i< deps.weighted.size(); ++i) {
+    deps.restraints.insert(std::make_pair(deps.weighted[i].second,
+                                          DependencyVertex()));
+  }
+  build_r_dependency_graph(deps);
+  IMP_IF_LOG(VERBOSE) {
+    write_graph(deps.graph, om, "r_dependency_graph.dot");
+  }
+  for (ParticleIterator pit = particles_begin();
+       pit != particles_end(); ++pit) {
+    DependencyVertex v= boost::add_vertex(deps.graph);
+    deps.particles.insert(std::make_pair(*pit, v));
+    om[v]=*pit;
+  }
+  for (unsigned int i=0; i< deps.weighted.size(); ++i) {
+    update_graph(deps, deps.weighted[i].second,
+                 deps.restraints[deps.weighted[i].second]);
+  }
+  for (ScoreStateIterator it= score_states_begin();
+       it != score_states_end(); ++it) {
+    update_graph(deps, *it, deps.score_states[*it]);
+  }
+  IMP_LOG(VERBOSE, "The graph has " << boost::num_vertices(deps.graph)
+          << " vertices" << std::endl);
+  IMP_IF_LOG(VERBOSE) {
+    write_graph(deps.graph, om, "dependency_graph.dot");
+  }
+
+  ScoreStatesTemp sst=sort_score_states(deps);
+  // must go before make_dependencies
+  set_score_states_order(sst);
+  make_dependencies(deps, access_score_states());
+
+
+
+
+  IMP_LOG(VERBOSE, "Ordering is: ");
+  IMP_IF_LOG(VERBOSE) {
+    for (unsigned int i=0; i< access_score_states().size(); ++i) {
+      IMP_LOG(VERBOSE, "\"" << access_score_states()[i]->get_name()
+              << "\" ");
     }
+    IMP_LOG(VERBOSE, std::endl);
   }
   IMP_IF_CHECK(USAGE) {
     std::set<Object*> read_objects;
@@ -822,6 +833,17 @@ void Model::order_score_states() {
       read_objects.insert(rp.begin(), rp.end());
       ParticlesTemp rpp= (*it)->get_input_particles();
       read_objects.insert(rpp.begin(), rpp.end());
+    }
+    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+      for (unsigned int i=0; i< get_number_of_score_states(); ++i) {
+        IMP_INTERNAL_CHECK(get_score_state(i)
+                           ->get_output_particles().size() ==0
+                           || get_score_state(i)
+                           ->get_output_containers().size() ==0,
+                           "A score state can only write particles or "
+                           << "containers, not both: "
+                           << get_score_state(i));
+      }
     }
   }
   score_states_ordered_=true;
@@ -931,14 +953,16 @@ double Model::do_evaluate_restraints(const WeightedRestraints &restraints,
       if (incremental_evaluation) {
         DerivativeAccumulator accum(it->first);
         WRAP_EVALUATE_CALL(it->second,
-     value=it->first*it->second->unprotected_incremental_evaluate(calc_derivs?
+                           value=it->first*it->second
+                           ->unprotected_incremental_evaluate(calc_derivs?
                                                               &accum:NULL));
         IMP_LOG(TERSE, it->second->get_name() << " score is "
                 << value << std::endl);
       } else {
         DerivativeAccumulator accum(it->first);
         WRAP_EVALUATE_CALL(it->second,
-            value=it->first*it->second->unprotected_evaluate(calc_derivs?
+                           value=it->first
+                           *it->second->unprotected_evaluate(calc_derivs?
                                                              &accum:NULL));
         IMP_LOG(TERSE, it->second->get_name() << " score is "
                 << value << std::endl);
@@ -951,7 +975,8 @@ double Model::do_evaluate_restraints(const WeightedRestraints &restraints,
                && incremental_restraints != INCREMENTAL) {
       DerivativeAccumulator accum(it->first);
       WRAP_EVALUATE_CALL(it->second,
-             value=it->first*it->second->unprotected_evaluate(calc_derivs?
+                         value=it->first
+                         *it->second->unprotected_evaluate(calc_derivs?
                                                            &accum:NULL));
       IMP_LOG(TERSE, it->second->get_name()<<  " score is "
               << value << std::endl);
@@ -1076,16 +1101,6 @@ void Model::validate_computed_derivatives() const {
 
 
 
-namespace {
-  template <class T, int V>
-  struct SetIt {
-    T *t_;
-    SetIt(T *t): t_(t){}
-    ~SetIt() {
-      *t_= T(V);
-    }
-  };
-}
 
 
 
@@ -1147,19 +1162,20 @@ double Model::do_evaluate(const WeightedRestraints &restraints,
 
   after_evaluate(states, calc_derivs);
 
-  if (get_is_incremental()) {
-    IMP_LOG(TERSE, "Backing up changed particles" << std::endl);
-    for (ParticleConstIterator pit = particles_begin();
-         pit != particles_end(); ++pit) {
-      (*pit)->set_is_not_changed();
-    }
-  }
+
 
   // validate derivatives
   validate_computed_derivatives();
-
+  //if (get_is_incremental()) {
+  IMP_LOG(TERSE, "Backing up changed particles" << std::endl);
+  for (ParticleConstIterator pit = particles_begin();
+       pit != particles_end(); ++pit) {
+    (*pit)->set_is_not_changed();
+  }
+  //}
   IMP_LOG(TERSE, "End Model::evaluate. Final score: " << score << std::endl);
   cur_stage_=NOT_EVALUATING;
+  ++eval_count_;
   return score;
 }
 

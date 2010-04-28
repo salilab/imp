@@ -36,6 +36,10 @@ IMP_OBJECTS(ScoreState,ScoreStates);
  */
 class IMPEXPORT Model: public Object
 {
+ public:
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+  enum Stage {NOT_EVALUATING, BEFORE_EVALUATE, EVALUATE, AFTER_EVALUATE};
+#endif
 private:
   friend class Restraint;
   friend class Particle;
@@ -50,12 +54,8 @@ private:
   bool gather_statistics_;
   bool score_states_ordered_;
   std::map<FloatKey, FloatRange> ranges_;
-  enum Stage {NOT_EVALUATING, BEFORE_EVALUATE, EVALUATE, AFTER_EVALUATE};
   mutable Stage cur_stage_;
-
-  Stage get_stage() const {
-    return cur_stage_;
-  }
+  unsigned int eval_count_;
 
   void order_score_states();
 
@@ -111,6 +111,17 @@ private:
 
   virtual ~Model();
 public:
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+  Stage get_stage() const {
+    return cur_stage_;
+  }
+  unsigned int get_evaluation() const {
+    IMP_USAGE_CHECK(get_stage() != NOT_EVALUATING,
+                    "Can only call get_evaluation() during evaluation");
+    return eval_count_;
+  }
+#endif
+
   /** Construct an empty model */
   Model(std::string name="The Model");
 
