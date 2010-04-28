@@ -20,9 +20,9 @@ class IMPEMEXPORT MapReaderWriter
 {
 public:
   virtual void Read(const char *filename, float **data, DensityHeader &header)
-  {}
+    =0;
   virtual void Write(const char *filename, const float *data,
-                     const DensityHeader &header) {}
+                     const DensityHeader &header) =0;
   virtual ~MapReaderWriter() {}
 
 };
