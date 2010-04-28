@@ -45,7 +45,7 @@ public:
       \return the intersecting particles
    */
   Particles get_intersection(const JNode &other) const;
-  void get_intersection2(const JNode &other, Particles in) const {}
+  void get_intersection2(const JNode &/*other*/, Particles /*in*/) const {}
 
   //! checks if the input set of particles is part of the node
   /** \param [in] p   a set of particles

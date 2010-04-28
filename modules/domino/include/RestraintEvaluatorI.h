@@ -35,9 +35,10 @@ public:
                                particles are in a combination defined by cs.
    */
   virtual void calc_scores(const Combinations &comb_states,
-                         CombinationValues &comb_values,
-                         Restraint *r, container::ListSingletonContainer *ps){}
-  virtual void show(std::ostream& out = std::cout) const{}
+                           CombinationValues &comb_values,
+                           Restraint *r,
+                           container::ListSingletonContainer *ps)=0;
+  virtual void show(std::ostream& out = std::cout) const=0;
 };
 
 
