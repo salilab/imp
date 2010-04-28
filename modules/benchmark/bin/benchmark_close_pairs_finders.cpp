@@ -20,53 +20,108 @@ void test_one(std::string name,
               float rmin, float rmax) {
   set_log_level(SILENT);
   set_check_level(IMP::NONE);
-  VectorD<3> minc(0,0,0), maxc(10,10,10);
-  IMP_NEW(Model, m, ());
-  Particles ps = create_xyzr_particles(m, n, rmin);
-  ::boost::uniform_real<> rand(rmin, rmax);
-  for (unsigned int i=0; i< ps.size(); ++i) {
-    XYZ(ps[i]).set_coordinates(get_random_vector_in(BoundingBox3D(minc, maxc)));
-    XYZR(ps[i]).set_radius(rand(random_number_generator));
+  {
+    VectorD<3> minc(0,0,0), maxc(10,10,10);
+    IMP_NEW(Model, m, ());
+    Particles ps = create_xyzr_particles(m, n, rmin);
+    ::boost::uniform_real<> rand(rmin, rmax);
+    for (unsigned int i=0; i< ps.size(); ++i) {
+      XYZ(ps[i])
+        .set_coordinates(get_random_vector_in(BoundingBox3D(minc, maxc)));
+      XYZR(ps[i]).set_radius(rand(random_number_generator));
+    }
+    IMP_NEW(ListSingletonContainer, lsc, (ps));
+    cpf->set_distance(0);
+    double result=0;
+    double runtime;
+    IMP_TIME({
+        result+=cpf->get_close_pairs(lsc).size();
+      }, runtime);
+    std::ostringstream oss;
+    oss << "cpf " << name << " " << n << " " << rmax;
+    report(oss.str(), runtime, result);
   }
-  IMP_NEW(ListSingletonContainer, lsc, (ps));
-  IMP_NEW(ListPairContainer, out, (m));
-  cpf->set_distance(0);
-  double result=0;
-  double runtime;
-  IMP_TIME({
-      result+=cpf->get_close_pairs(lsc).size();
-    }, runtime);
-  std::ostringstream oss;
-  oss << "cpf " << name << " " << n << " " << rmax;
-  report(oss.str(), runtime, result);
+  {
+    VectorD<3> minc(0,0,0), maxc(10,10,10);
+    IMP_NEW(Model, m, ());
+    Particles ps0 = create_xyzr_particles(m, n, rmin);
+    Particles ps1 = create_xyzr_particles(m, n, rmin);
+    ::boost::uniform_real<> rand(rmin, rmax);
+    for (unsigned int i=0; i< ps0.size(); ++i) {
+      XYZ(ps0[i])
+        .set_coordinates(get_random_vector_in(BoundingBox3D(minc, maxc)));
+      XYZR(ps0[i]).set_radius(rand(random_number_generator));
+    }
+    for (unsigned int i=0; i< ps1.size(); ++i) {
+      XYZ(ps1[i])
+        .set_coordinates(get_random_vector_in(BoundingBox3D(minc, maxc)));
+      XYZR(ps1[i]).set_radius(rand(random_number_generator));
+    }
+    IMP_NEW(ListSingletonContainer, lsc0, (ps0));
+    IMP_NEW(ListSingletonContainer, lsc1, (ps1));
+    cpf->set_distance(0);
+    double result=0;
+    double runtime;
+    IMP_TIME({
+        result+=cpf->get_close_pairs(lsc0, lsc1).size();
+      }, runtime);
+    std::ostringstream oss;
+    oss << "bcpf " << name << " " << n << " " << rmax;
+    report(oss.str(), runtime, result);
+  }
 }
 
 int main() {
+  {
+    IMP_NEW(NearestNeighborsClosePairsFinder, cpf, ());
+    std::string name="nn";
+    test_one(name, cpf, 1000, 0, .1);
+    test_one(name, cpf, 1000, 0, .5);
+    test_one(name, cpf, 1000, 0, 5);
+    test_one(name, cpf, 10000, 0, .1);
+    test_one(name, cpf, 10000, 0, .5);
+    test_one(name, cpf, 10000, 0, 5);
+    test_one(name, cpf, 100000, 0, .01);
+    test_one(name, cpf, 100000, 0, .1);
+    test_one(name, cpf, 100000, 0, 1);
+  }
   {
     IMP_NEW(QuadraticClosePairsFinder, cpf, ());
     //std::cout << "Quadratic:" << std::endl;
     test_one("quadratic", cpf, 1000, 0, .1);
     test_one("quadratic", cpf, 1000, 0, .5);
+    test_one("quadratic", cpf, 1000, 0, 5);
     test_one("quadratic", cpf, 10000, 0, .1);
     test_one("quadratic", cpf, 10000, 0, .5);
+    test_one("quadratic", cpf, 10000, 0, 5);
   }
 #ifdef IMP_USE_CGAL
   {
     IMP_NEW(BoxSweepClosePairsFinder, cpf, ());
-    //std::cout << "Box:" << std::endl;
-    test_one("box", cpf, 1000, 0, .1);
-    test_one("box", cpf, 1000, 0, .5);
-    test_one("box", cpf, 10000, 0, .1);
-    test_one("box", cpf, 100000, 0, .01);
+    std::string name="box";
+    test_one(name, cpf, 1000, 0, .1);
+    test_one(name, cpf, 1000, 0, .5);
+    test_one(name, cpf, 1000, 0, 5);
+    test_one(name, cpf, 10000, 0, .1);
+    test_one(name, cpf, 10000, 0, .5);
+    test_one(name, cpf, 10000, 0, 5);
+    test_one(name, cpf, 100000, 0, .01);
+    test_one(name, cpf, 100000, 0, .1);
+    test_one(name, cpf, 100000, 0, 1);
   }
 #endif
   {
     IMP_NEW(GridClosePairsFinder, cpf, ());
-    //std::cout << "Grid:" << std::endl;
-    test_one("grid", cpf, 1000, 0, .1);
-    test_one("grid", cpf, 1000, 0, .5);
-    test_one("grid", cpf, 10000, 0, .1);
-    test_one("grid", cpf, 100000, 0, .01);
+    std::string name="grid";
+    test_one(name, cpf, 1000, 0, .1);
+    test_one(name, cpf, 1000, 0, .5);
+    test_one(name, cpf, 1000, 0, 5);
+    test_one(name, cpf, 10000, 0, .1);
+    test_one(name, cpf, 10000, 0, .5);
+    test_one(name, cpf, 10000, 0, 5);
+    test_one(name, cpf, 100000, 0, .01);
+    test_one(name, cpf, 100000, 0, .1);
+    test_one(name, cpf, 100000, 0, 1);
   }
   return 0;
 }

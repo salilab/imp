@@ -85,7 +85,7 @@ void test_set(int n) {
 
 
 
-int main(int argc, char **argv) {
+int main(int , char **) {
   test(100);
   test(1000);
   test_set(100);

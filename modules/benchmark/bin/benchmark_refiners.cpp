@@ -23,7 +23,7 @@ using namespace IMP::atom;
 #endif
 
 template <class PT>
-void do_benchmark(std::string name, Model *m,
+void do_benchmark(std::string name, Model *,
                   const PT &ps, Refiner *r) {
  // measure time
   double runtime;
