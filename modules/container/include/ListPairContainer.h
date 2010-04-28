@@ -56,10 +56,11 @@ public:
     })
   void clear_particle_pairs();
   /**@}*/
+  IMP_NO_DOXYGEN(bool get_is_up_to_date() const);
   IMP_PAIR_CONTAINER(ListPairContainer);
 #else
   static ListPairContainer *create_untracked_container() {
-    ListPairContainer *lsc = new ListPairContainer(false);
+    ListPairContainer *lsc = new ListPairContainer();
     return lsc;
   }
   IMP_OBJECT(ListPairContainer);

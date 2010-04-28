@@ -29,6 +29,11 @@ class IMPCONTAINEREXPORT AllBipartitePairContainer : public PairContainer
 {
   IMP::internal::OwnerPointer<SingletonContainer> a_, b_;
   friend class AllPairContainer;
+  IMP_CONTAINER_DEPENDENCIES(AllBipartitePairContainer,
+                             {
+                               ret.push_back(back_->a_);
+                               ret.push_back(back_->b_);
+                             });
   AllBipartitePairContainer(SingletonContainer *a,
                                  SingletonContainer *b, bool);
 public:
@@ -42,7 +47,12 @@ public:
       = new AllBipartitePairContainer(a,b, false);
     return lsc;
   }
-
+#ifndef IMP_DOXYGEN
+  bool get_is_up_to_date() const {
+    return a_->get_is_up_to_date()
+      && b_->get_is_up_to_date();
+  }
+#endif
   IMP_PAIR_CONTAINER(AllBipartitePairContainer);
 };
 

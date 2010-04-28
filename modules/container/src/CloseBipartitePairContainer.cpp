@@ -90,7 +90,12 @@ ParticlesTemp CloseBipartitePairContainer
 
 ContainersTemp CloseBipartitePairContainer
 ::get_state_input_containers() const {
-  return cpf_->get_input_containers(a_, b_);
+  ContainersTemp ret= cpf_->get_input_containers(a_, b_);
+  ret.push_back(a_);
+  ret.push_back(b_);
+  ret.push_back(moveda_);
+  ret.push_back(movedb_);
+  return ret;
 }
 
 void CloseBipartitePairContainer::do_before_evaluate() {
@@ -107,9 +112,6 @@ void CloseBipartitePairContainer::do_before_evaluate() {
     update_list(t);
     first_call_=false;
   } else {
-    // hack until we have the dependency graph
-    moveda_->update();
-    movedb_->update();
     if (moveda_->get_number_of_particles() != 0
         || movedb_->get_number_of_particles() != 0) {
       if ((moveda_->get_number_of_particles()
@@ -151,11 +153,5 @@ void CloseBipartitePairContainer::do_show(std::ostream &out) const {
       << *a_ << " and " << *b_ << std::endl;
 }
 
-ContainersTemp CloseBipartitePairContainer::get_input_containers() const {
-  ContainersTemp ret= cpf_->get_input_containers(a_, b_);
-  ret.push_back(moveda_);
-  ret.push_back(movedb_);
-  return ret;
-}
 
 IMPCONTAINER_END_NAMESPACE

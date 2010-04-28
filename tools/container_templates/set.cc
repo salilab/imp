@@ -27,7 +27,8 @@ GroupnameContainerSet
 
 GroupnameContainerSet
 ::GroupnameContainerSet(Model *m, std::string name):
-  GroupnameContainer(m, name) {
+  GroupnameContainer(m, name),
+  deps_(new DependenciesScoreState(this), m){
   set_added_and_removed_containers( create_untracked_container(),
                                     create_untracked_container());
 }
@@ -45,7 +46,8 @@ namespace {
 GroupnameContainerSet
 ::GroupnameContainerSet(const GroupnameContainersTemp& in,
                         std::string name):
-  GroupnameContainer(my_get_model(in), name) {
+  GroupnameContainer(my_get_model(in), name),
+  deps_(new DependenciesScoreState(this), my_get_model(in)){
   set_groupname_containers(in);
   set_added_and_removed_containers( create_untracked_container(),
                                     create_untracked_container());
@@ -106,8 +108,9 @@ IMP_LIST_IMPL(GroupnameContainerSet,
                 }
                 obj->set_was_used(true);
               },{},
-              if (!get_is_added_or_removed_container()) {
-                get_set(get_removed_groupnames_container())
+              if (container
+                  && !container->get_is_added_or_removed_container()) {
+                get_set(container->get_removed_groupnames_container())
                   ->add_groupname_container(obj
                        ->get_removed_groupnames_container());
               });
@@ -154,11 +157,6 @@ double GroupnameContainerSet::evaluate_prechange(const GroupnameScore *s,
   return score;
 }
 
-
-ContainersTemp GroupnameContainerSet::get_input_containers() const {
-  return ContainersTemp(groupname_containers_begin(),
-                        groupname_containers_end());
-}
 
 ParticlesTemp GroupnameContainerSet::get_contained_particles() const {
   ParticlesTemp ret;

@@ -74,7 +74,25 @@ public:
   IMP_LIST(public, PairFilter, pair_filter,
            PairFilter*, PairFilters);
    /**@}*/
-
+#ifndef IMP_DOXYGEN
+  bool get_is_up_to_date() const {
+    if (get_model()->get_stage() != Model::NOT_EVALUATING) {
+      return get_last_update_evaluation() == get_model()->get_evaluation();
+    } else {
+      if (!a_->get_is_up_to_date()
+          || !b_->get_is_up_to_date()) return false;
+      bool ret=true;
+      IMP_FOREACH_SINGLETON(a_,
+                            ret= !(imp_foreach_break
+                                   =_1->get_is_changed()););
+      if (!ret) return ret;
+      IMP_FOREACH_SINGLETON(b_,
+                            ret= !(imp_foreach_break
+                                   =_1->get_is_changed()););
+      return ret;;
+    }
+  }
+#endif
 #if defined(IMP_DOXYGEN) || defined(SWIG)
   IMP_PAIR_CONTAINER(CloseBipartitePairContainer);
 #else

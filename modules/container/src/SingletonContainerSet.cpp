@@ -27,7 +27,8 @@ SingletonContainerSet
 
 SingletonContainerSet
 ::SingletonContainerSet(Model *m, std::string name):
-  SingletonContainer(m, name) {
+  SingletonContainer(m, name),
+  deps_(new DependenciesScoreState(this), m){
   set_added_and_removed_containers( create_untracked_container(),
                                     create_untracked_container());
 }
@@ -45,7 +46,8 @@ namespace {
 SingletonContainerSet
 ::SingletonContainerSet(const SingletonContainersTemp& in,
                         std::string name):
-  SingletonContainer(my_get_model(in), name) {
+  SingletonContainer(my_get_model(in), name),
+  deps_(new DependenciesScoreState(this), my_get_model(in)){
   set_singleton_containers(in);
   set_added_and_removed_containers( create_untracked_container(),
                                     create_untracked_container());
@@ -106,8 +108,9 @@ IMP_LIST_IMPL(SingletonContainerSet,
                 }
                 obj->set_was_used(true);
               },{},
-              if (!get_is_added_or_removed_container()) {
-                get_set(get_removed_singletons_container())
+              if (container
+                  && !container->get_is_added_or_removed_container()) {
+                get_set(container->get_removed_singletons_container())
                   ->add_singleton_container(obj
                        ->get_removed_singletons_container());
               });
@@ -154,11 +157,6 @@ double SingletonContainerSet::evaluate_prechange(const SingletonScore *s,
   return score;
 }
 
-
-ContainersTemp SingletonContainerSet::get_input_containers() const {
-  return ContainersTemp(singleton_containers_begin(),
-                        singleton_containers_end());
-}
 
 ParticlesTemp SingletonContainerSet::get_contained_particles() const {
   ParticlesTemp ret;

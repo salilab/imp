@@ -45,9 +45,8 @@ namespace {
   typedef boost::disjoint_sets<Index,Parent> UF;
   void build_graph(SingletonContainer *sc, ParticlePairsTemp &out, UF &uf) {
     std::vector<algebra::VectorD<3> > vs(sc->get_number_of_particles());
-    for (unsigned int i=0; i< vs.size(); ++i) {
-      vs[i]= core::XYZ(sc->get_particle(i)).get_coordinates();
-    }
+    IMP_FOREACH_SINGLETON(sc,
+                          vs[_2]= core::XYZ(_1).get_coordinates(););
     algebra::NearestNeighborD<3> nn(vs);
     unsigned int nnn=static_cast<unsigned int>(
                                 std::sqrt(static_cast<double>(vs.size()))+1);
@@ -93,9 +92,8 @@ namespace {
     static unsigned int nnn=10;
 
     std::vector<algebra::VectorD<3> > vs(sc->get_number_of_particles());
-    for (unsigned int i=0; i< vs.size(); ++i) {
-      vs[i]= core::XYZ(sc->get_particle(i)).get_coordinates();
-    }
+    IMP_FOREACH_SINGLETON(sc,
+                          vs[_2]= core::XYZ(_1).get_coordinates(););
     algebra::NearestNeighborD<3> nn(vs);
     ///unsigned int nnn=static_cast<unsigned int>(std::sqrt(vs.size())+1);
     Graph g(vs.size());
@@ -152,11 +150,14 @@ ParticlesTemp ConnectingPairContainer::get_state_input_particles() const {
 
 
 ContainersTemp ConnectingPairContainer::get_state_input_containers() const {
-  return ContainersTemp(1, sc_);
+  ContainersTemp ret(2);
+  ret[0]=sc_;
+  ret[1]=mv_;
+  return ret;
 }
 
 
-void ConnectingPairContainer::fill_list(bool first) {
+void ConnectingPairContainer::fill_list(bool /*first*/) {
   // if we have a list and nothing moved further than error do nothing
   // otherwise rebuild
   ParticlePairsTemp new_list;
@@ -176,7 +177,6 @@ void ConnectingPairContainer::fill_list(bool first) {
 }
 
 void ConnectingPairContainer::do_before_evaluate() {
-  mv_->update();
   if (mv_->get_number_of_particles() != 0) {
     fill_list(false);
     mv_->reset();
@@ -194,8 +194,5 @@ void ConnectingPairContainer::do_show(std::ostream &out) const {
   out << "container " << *sc_ << std::endl;
 }
 
-ContainersTemp ConnectingPairContainer::get_input_containers() const {
-  return ContainersTemp(1, sc_);
-}
 
 IMPCONTAINER_END_NAMESPACE

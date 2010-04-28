@@ -27,7 +27,8 @@ TripletContainerSet
 
 TripletContainerSet
 ::TripletContainerSet(Model *m, std::string name):
-  TripletContainer(m, name) {
+  TripletContainer(m, name),
+  deps_(new DependenciesScoreState(this), m){
   set_added_and_removed_containers( create_untracked_container(),
                                     create_untracked_container());
 }
@@ -45,7 +46,8 @@ namespace {
 TripletContainerSet
 ::TripletContainerSet(const TripletContainersTemp& in,
                         std::string name):
-  TripletContainer(my_get_model(in), name) {
+  TripletContainer(my_get_model(in), name),
+  deps_(new DependenciesScoreState(this), my_get_model(in)){
   set_triplet_containers(in);
   set_added_and_removed_containers( create_untracked_container(),
                                     create_untracked_container());
@@ -106,8 +108,9 @@ IMP_LIST_IMPL(TripletContainerSet,
                 }
                 obj->set_was_used(true);
               },{},
-              if (!get_is_added_or_removed_container()) {
-                get_set(get_removed_triplets_container())
+              if (container
+                  && !container->get_is_added_or_removed_container()) {
+                get_set(container->get_removed_triplets_container())
                   ->add_triplet_container(obj
                        ->get_removed_triplets_container());
               });
@@ -154,11 +157,6 @@ double TripletContainerSet::evaluate_prechange(const TripletScore *s,
   return score;
 }
 
-
-ContainersTemp TripletContainerSet::get_input_containers() const {
-  return ContainersTemp(triplet_containers_begin(),
-                        triplet_containers_end());
-}
 
 ParticlesTemp TripletContainerSet::get_contained_particles() const {
   ParticlesTemp ret;

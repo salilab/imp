@@ -29,13 +29,16 @@
 IMPCONTAINER_BEGIN_NAMESPACE
 
 AllPairContainer::AllPairContainer(SingletonContainer *c,
-                                             bool): c_(c) {
+                                             bool):
+  c_(c){
   a_=1;
   b_=0;
   i_=0;
 }
 
-AllPairContainer::AllPairContainer(SingletonContainer *c): c_(c) {
+AllPairContainer::AllPairContainer(SingletonContainer *c):
+  c_(c),
+  deps_(new DependenciesScoreState(this), c->get_model()){
   a_=1;
   b_=0;
   i_=0;
@@ -106,10 +109,6 @@ AllPairContainer::get_contains_particle_pair(const ParticlePair &p) const {
 void AllPairContainer::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
   out << "container " << *c_ << std::endl;
-}
-
-ContainersTemp AllPairContainer::get_input_containers() const {
-  return ContainersTemp(1,c_);
 }
 
 ParticlesTemp AllPairContainer::get_contained_particles() const {

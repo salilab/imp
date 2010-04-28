@@ -14,6 +14,7 @@
 #include "container_config.h"
 #include <IMP/SingletonContainer.h>
 #include <IMP/container_macros.h>
+#include <IMP/internal/container_helpers.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -26,6 +27,12 @@ IMPCONTAINER_BEGIN_NAMESPACE
 class IMPCONTAINEREXPORT SingletonContainerSet
   : public SingletonContainer
 {
+  IMP_CONTAINER_DEPENDENCIES(SingletonContainerSet,
+                             {
+                               ret.insert(ret.end(),
+                                          back_->singleton_containers_begin(),
+                                          back_->singleton_containers_end());
+                             });
   // to not have added and removed
   SingletonContainerSet();
  public:
@@ -51,6 +58,15 @@ class IMPCONTAINEREXPORT SingletonContainerSet
     SingletonContainerSet *lsc = new SingletonContainerSet();
     return lsc;
   }
+#ifndef IMP_DOXYGEN
+  bool get_is_up_to_date() const {
+    for (unsigned int i=0;
+         i< get_number_of_singleton_containers(); ++i) {
+      if (!get_singleton_container(i)->get_is_up_to_date()) return false;
+    }
+    return true;
+  }
+#endif
 };
 
 

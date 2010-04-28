@@ -33,13 +33,16 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 AllBipartitePairContainer
 ::AllBipartitePairContainer( SingletonContainer *a,
-                                  SingletonContainer *b,
-                                  bool): a_(a), b_(b) {
+                             SingletonContainer *b,
+                             bool):
+  a_(a), b_(b){
 }
 
 AllBipartitePairContainer
 ::AllBipartitePairContainer( SingletonContainer *a,
-                                  SingletonContainer *b): a_(a), b_(b) {
+                             SingletonContainer *b):
+  a_(a), b_(b),
+  deps_(new DependenciesScoreState(this), a->get_model()){
   IMP_NEW(IMP::core::internal::DifferenceSingletonContainer, olda,
           (a_,
            a_->get_removed_singletons_container()));
@@ -109,14 +112,6 @@ AllBipartitePairContainer
 void AllBipartitePairContainer::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
   out << "container " << *a_ << " and " << *b_ << std::endl;
-}
-
-
-ContainersTemp AllBipartitePairContainer::get_input_containers() const {
-  ContainersTemp ret(2);
-  ret[0]=a_;
-  ret[1]=b_;
-  return ret;
 }
 
 

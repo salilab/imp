@@ -31,6 +31,11 @@ public:
   void add_classnames(const ClassnamesTemp &c);
   void set_classnames(ClassnamesTemp c);
   void clear_classnames();
+#ifndef IMP_DOXYGEN
+  bool get_is_up_to_date() const {
+    return true;
+  }
+#endif
   IMP_LISTLIKE_GROUPNAME_CONTAINER(CoreListGroupnameContainer);
 };
 

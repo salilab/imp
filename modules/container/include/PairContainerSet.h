@@ -14,6 +14,7 @@
 #include "container_config.h"
 #include <IMP/PairContainer.h>
 #include <IMP/container_macros.h>
+#include <IMP/internal/container_helpers.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -26,6 +27,12 @@ IMPCONTAINER_BEGIN_NAMESPACE
 class IMPCONTAINEREXPORT PairContainerSet
   : public PairContainer
 {
+  IMP_CONTAINER_DEPENDENCIES(PairContainerSet,
+                             {
+                               ret.insert(ret.end(),
+                                          back_->pair_containers_begin(),
+                                          back_->pair_containers_end());
+                             });
   // to not have added and removed
   PairContainerSet();
  public:
@@ -51,6 +58,15 @@ class IMPCONTAINEREXPORT PairContainerSet
     PairContainerSet *lsc = new PairContainerSet();
     return lsc;
   }
+#ifndef IMP_DOXYGEN
+  bool get_is_up_to_date() const {
+    for (unsigned int i=0;
+         i< get_number_of_pair_containers(); ++i) {
+      if (!get_pair_container(i)->get_is_up_to_date()) return false;
+    }
+    return true;
+  }
+#endif
 };
 
 

@@ -56,10 +56,11 @@ public:
     })
   void clear_classnames();
   /**@}*/
+  IMP_NO_DOXYGEN(bool get_is_up_to_date() const);
   IMP_GROUPNAME_CONTAINER(ListGroupnameContainer);
 #else
   static ListGroupnameContainer *create_untracked_container() {
-    ListGroupnameContainer *lsc = new ListGroupnameContainer(false);
+    ListGroupnameContainer *lsc = new ListGroupnameContainer();
     return lsc;
   }
   IMP_OBJECT(ListGroupnameContainer);

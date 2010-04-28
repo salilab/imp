@@ -72,6 +72,7 @@ public:
            PairFilter*, PairFilters);
    /**@}*/
   IMP_PAIR_CONTAINER(ClosePairContainer);
+  bool get_is_up_to_date() const;
 #else
   IMP_OBJECT(ClosePairContainer);
 #endif
