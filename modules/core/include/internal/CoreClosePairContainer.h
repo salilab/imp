@@ -31,6 +31,11 @@ public internal::ListLikePairContainer
   bool first_call_;
   double distance_, slack_;
   ParticlePairsTemp data_;
+  IMP_CONTAINER_DEPENDENCIES(CoreClosePairContainer,
+                             {
+                             ret= back_->cpf_->get_input_containers(back_->c_);
+                             ret.push_back(back_->moved_);
+    });
   IMP_ACTIVE_CONTAINER_DECL(CoreClosePairContainer);
   void initialize(SingletonContainer *c, double distance,
                   double slack, ClosePairsFinder *cpf);
@@ -41,7 +46,20 @@ public:
 
   IMP_LIST(public, PairFilter, pair_filter,
            PairFilter*, PairFilters);
-
+#ifndef IMP_DOXYGEN
+  bool get_is_up_to_date() const {
+    if (get_model()->get_stage() != Model::NOT_EVALUATING) {
+      return get_last_update_evaluation() == get_model()->get_evaluation();
+    } else {
+      if (!c_->get_is_up_to_date()) return false;
+      bool ret=true;
+      IMP_FOREACH_SINGLETON(c_,
+                            ret= !(imp_foreach_break
+                                   =_1->get_is_changed()););
+      return ret;
+    }
+  }
+#endif
   IMP_LISTLIKE_PAIR_CONTAINER(CoreClosePairContainer);
 };
 

@@ -156,11 +156,16 @@ public:
   /** @} */
 
 #ifndef IMP_DOXYGEN
+  typedef ParticleQuad value_type;
   ParticleQuad get(unsigned int i) const {return get_particle_quad(i);}
   bool get_contains(const ParticleQuad& v) const {
     return get_contains_particle_quad(v);
   }
   unsigned int get_number() const {return get_number_of_particle_quads();}
+  virtual bool get_provides_access() const {return false;}
+  virtual const ParticleQuadsTemp& get_access() const {
+    IMP_THROW("Object not implemented properly.", IndexException);
+  }
 #endif
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(QuadContainer);

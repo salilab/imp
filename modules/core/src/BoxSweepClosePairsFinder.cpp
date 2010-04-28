@@ -21,6 +21,7 @@
 
 #include <CGAL/box_intersection_d.h>
 #include <vector>
+#include <IMP/macros.h>
 
 
 IMPCORE_BEGIN_NAMESPACE
@@ -54,13 +55,12 @@ static void copy_particles_to_boxes(const SingletonContainer *ps,
                                     std::vector<NBLBbox> &boxes)
 {
   boxes.resize(ps->get_number_of_particles());
-  for (unsigned int i=0; i< ps->get_number_of_particles(); ++i) {
-    Particle *p= ps->get_particle(i);
-
-    Float r= distance/2.0;
-    r+= p->get_value(XYZR::get_default_radius_key());
-    boxes[i]=NBLBbox(p, r);
-  }
+  IMP_FOREACH_SINGLETON(ps, {
+      Float r= distance/2.0;
+      r+= _1->get_value(XYZR::get_default_radius_key());
+      IMP_INTERNAL_CHECK(_2 < boxes.size(), "Off the end");
+      boxes[_2]=NBLBbox(_1, r);
+    });
 }
 
 struct AddToList {
@@ -82,8 +82,8 @@ BoxSweepClosePairsFinder::BoxSweepClosePairsFinder():
   ClosePairsFinder("BoxSweepCPF") {}
 
 ParticlePairsTemp BoxSweepClosePairsFinder
-::get_close_pairs(SingletonContainer *ca,
-                  SingletonContainer *cb) const {
+::get_close_pairs(IMP_RESTRICT SingletonContainer *ca,
+                  IMP_RESTRICT SingletonContainer *cb) const {
   std::vector<NBLBbox> boxes0, boxes1;
   copy_particles_to_boxes(ca, get_distance(), boxes0);
   copy_particles_to_boxes(cb, get_distance(), boxes1);
@@ -96,7 +96,7 @@ ParticlePairsTemp BoxSweepClosePairsFinder
 }
 
 ParticlePairsTemp BoxSweepClosePairsFinder
-::get_close_pairs(SingletonContainer *c) const {
+::get_close_pairs(IMP_RESTRICT SingletonContainer *c) const {
   ParticlePairsTemp out;
   std::vector<NBLBbox> boxes;
   copy_particles_to_boxes(c, get_distance(), boxes);

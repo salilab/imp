@@ -48,6 +48,10 @@ double ListLikePairContainer
 unsigned int ListLikePairContainer
 ::get_number_of_particle_pairs() const {
   IMP_CHECK_OBJECT(this);
+  IMP_USAGE_CHECK(get_is_up_to_date(),
+                  "Attempting to use container "
+                  << get_name() << " that is not up to date."
+                  << " Call Model::evaluate() first, or something is broken.");
   return data_.size();
 }
 bool ListLikePairContainer

@@ -32,7 +32,8 @@ CoreClosePairContainer::CoreClosePairContainer(SingletonContainer *c,
                                                  double distance,
                                                  ClosePairsFinder *cpf,
                                        double slack):
-  internal::ListLikePairContainer(c->get_model(), "ClosePairContainer") {
+  internal::ListLikePairContainer(c->get_model(), "ClosePairContainer"),
+  deps_(new DependenciesScoreState(this), c->get_model()){
  initialize(c, distance, slack,
              cpf);
 }
@@ -47,7 +48,7 @@ void CoreClosePairContainer::initialize(SingletonContainer *c, double distance,
   cpf_=cpf;
   cpf_->set_distance(distance_+2*slack_);
   first_call_=true;
-  moved_= cpf_->get_moved_singleton_container(c_, get_model(), slack_);
+  moved_=cpf_->get_moved_singleton_container(c_, get_model(), slack_);
 }
 
 IMP_ACTIVE_CONTAINER_DEF(CoreClosePairContainer);
@@ -55,7 +56,10 @@ IMP_ACTIVE_CONTAINER_DEF(CoreClosePairContainer);
 
 ContainersTemp CoreClosePairContainer
 ::get_state_input_containers() const {
-  return cpf_->get_input_containers(c_);
+  ContainersTemp ret= cpf_->get_input_containers(c_);
+  ret.push_back(c_);
+  ret.push_back(moved_);
+  return ret;
 }
 
 
@@ -84,39 +88,46 @@ void CoreClosePairContainer::do_before_evaluate() {
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(c_);
   IMP_CHECK_OBJECT(cpf_);
-  if (first_call_) {
-    IMP_LOG(TERSE, "Handling first call of ClosePairContainer." << std::endl);
-    ParticlePairsTemp c= cpf_->get_close_pairs(c_);
-    internal::filter_close_pairs(this, c);
-    moved_->reset();
-    IMP_LOG(TERSE, "Found " << c.size() << " pairs." << std::endl);
-    update_list(c);
-    first_call_=false;
-  } else {
-    // hack until we have the dependency graph
-    moved_->update();
-    if (moved_->get_number_of_particles() != 0) {
-      if (moved_->get_particles().size() < c_->get_number_of_particles()*.1) {
-        IMP_LOG(TERSE, "Handling incremental update of ClosePairContainer."
-                << std::endl);
-        ParticlePairsTemp ret= cpf_->get_close_pairs(c_, moved_);
-        internal::filter_close_pairs(this, ret);
-        internal::filter_same(ret);
-        IMP_LOG(TERSE, "Found " << ret.size() << " pairs." << std::endl);
-        add_to_list(ret);
-        moved_->reset_moved();
-      } else {
-        IMP_LOG(TERSE, "Handling full update of ClosePairContainer."
-                << std::endl);
-        ParticlePairsTemp ret= cpf_->get_close_pairs(c_);
-        internal::filter_close_pairs(this, ret);
-        IMP_LOG(TERSE, "Found " << ret.size() << " pairs." << std::endl);
-        update_list(ret);
-        moved_->reset();
-      }
+  IMP_INTERNAL_CHECK(c_->get_is_up_to_date(),
+                     "Input container is not up to date.");
+  try {
+    if (first_call_) {
+      IMP_LOG(TERSE, "Handling first call of ClosePairContainer." << std::endl);
+      ParticlePairsTemp c= cpf_->get_close_pairs(c_);
+      internal::filter_close_pairs(this, c);
+      moved_->reset();
+      IMP_LOG(TERSE, "Found " << c.size() << " pairs." << std::endl);
+      update_list(c);
+      first_call_=false;
     } else {
-      IMP_LOG(TERSE, "No particles moved more than " << slack_ << std::endl);
+      IMP_INTERNAL_CHECK(moved_->get_is_up_to_date(),
+                         "Moved container is not up to date.");
+      if (moved_->get_number_of_particles() != 0) {
+        if (moved_->get_particles().size() < c_->get_number_of_particles()*.1) {
+          IMP_LOG(TERSE, "Handling incremental update of ClosePairContainer."
+                  << std::endl);
+          ParticlePairsTemp ret= cpf_->get_close_pairs(c_, moved_);
+          internal::filter_close_pairs(this, ret);
+          internal::filter_same(ret);
+          IMP_LOG(TERSE, "Found " << ret.size() << " pairs." << std::endl);
+          add_to_list(ret);
+          moved_->reset_moved();
+        } else {
+          IMP_LOG(TERSE, "Handling full update of ClosePairContainer."
+                  << std::endl);
+          ParticlePairsTemp ret= cpf_->get_close_pairs(c_);
+          internal::filter_close_pairs(this, ret);
+          IMP_LOG(TERSE, "Found " << ret.size() << " pairs." << std::endl);
+          update_list(ret);
+          moved_->reset();
+        }
+      } else {
+        IMP_LOG(TERSE, "No particles moved more than " << slack_ << std::endl);
+      }
     }
+  } catch (std::bad_alloc&) {
+    IMP_THROW("Ran out of memory when computing close pairs. Try to reduce the "
+              << "slack or reformulate the problem.", ValueException);
   }
 }
 
@@ -131,10 +142,5 @@ void CoreClosePairContainer::do_show(std::ostream &out) const {
   out << "container " << *c_ << std::endl;
 }
 
-ContainersTemp CoreClosePairContainer::get_input_containers() const {
-  ContainersTemp ret= cpf_->get_input_containers(c_);
-  ret.push_back(moved_);
-  return ret;
-}
 
 IMPCORE_END_INTERNAL_NAMESPACE

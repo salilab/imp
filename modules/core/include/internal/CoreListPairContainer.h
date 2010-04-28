@@ -31,6 +31,11 @@ public:
   void add_particle_pairs(const ParticlePairsTemp &c);
   void set_particle_pairs(ParticlePairsTemp c);
   void clear_particle_pairs();
+#ifndef IMP_DOXYGEN
+  bool get_is_up_to_date() const {
+    return true;
+  }
+#endif
   IMP_LISTLIKE_PAIR_CONTAINER(CoreListPairContainer);
 };
 

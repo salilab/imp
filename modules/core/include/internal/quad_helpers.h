@@ -34,7 +34,6 @@ private:
   ParticleQuads data_;
 protected:
   ListLikeQuadContainer(){}
-  const ParticleQuads &access() const {return data_;}
   void update_list(ParticleQuadsTemp &cur) {
     IMP_IF_CHECK(USAGE) {
       for (unsigned int i=0; i< cur.size(); ++i) {
@@ -114,20 +113,22 @@ public:
     std::remove_if(data_.begin(), data_.end(),
          IMP::internal::IsInactive());
   }
+  bool get_is_up_to_date() const {return true;}
   IMP_OBJECT(ListLikeQuadContainer);
   bool get_contained_particles_changed() const;
   ParticlesTemp get_contained_particles() const;
-  ContainersTemp get_input_containers() const {
-    return ContainersTemp();
+  bool get_provides_access() const {return true;}
+  const ParticleQuadsTemp& get_access() const {
+    IMP_INTERNAL_CHECK(get_is_up_to_date(),
+                       "Container is out of date");
+    return data_;
   }
 };
 
 
 IMPCORE_END_INTERNAL_NAMESPACE
 
-
 #define IMP_LISTLIKE_QUAD_CONTAINER(Name)               \
-  ContainersTemp get_input_containers() const;               \
   IMP_OBJECT(Name)
 
 

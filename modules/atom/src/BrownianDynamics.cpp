@@ -82,18 +82,18 @@ SingletonContainer *BrownianDynamics::setup_particles()
 void BrownianDynamics::copy_coordinates(SingletonContainer *sc,
                                  std::vector<algebra::VectorD<3> > &v) const {
   v.resize(sc->get_number_of_particles());
-  for (unsigned int i=0; i< sc->get_number_of_particles(); ++i) {
-    core::XYZ d(sc->get_particle(i));
-    v[i]= d.get_coordinates();
-  }
+  IMP_FOREACH_SINGLETON(sc, {
+      core::XYZ d(_1);
+      v[_2]= d.get_coordinates();
+    });
 }
 
 void BrownianDynamics::revert_coordinates(SingletonContainer *sc,
                                       std::vector<algebra::VectorD<3> > &v) {
-  for (unsigned int i=0; i< sc->get_number_of_particles(); ++i) {
-    core::XYZ d(sc->get_particle(i));
-    d.set_coordinates(v[i]);
-  }
+  IMP_FOREACH_SINGLETON(sc, {
+      core::XYZ d(_1);
+      d.set_coordinates(v[_2]);
+    });
 }
 
 
@@ -147,9 +147,10 @@ void BrownianDynamics::take_step(SingletonContainer *sc,
                                  unit::Femtosecond dt) {
   unit::Divide<unit::Femtosecond,
     unit::Femtojoule>::type dtikt=dt/si_.get_kT();
-  for (unsigned int i=0; i< sc->get_number_of_particles(); ++i) {
-    Particle *p= sc->get_particle(i);
-    Diffusion d(p);
+  typedef boost::variate_generator<RandomNumberGenerator&,
+    boost::normal_distribution<double> > RNG;
+  IMP_FOREACH_SINGLETON(sc, {
+      Diffusion d(_1);
 
     IMP_IF_CHECK(USAGE) {
       for (unsigned int j=0; j< 3; ++j) {
@@ -164,7 +165,7 @@ void BrownianDynamics::take_step(SingletonContainer *sc,
         bool bc= -d.get_coordinate(j) >= std::numeric_limits<Float>::max();
         if (ba || bb || bc ) {
           IMP_WARN("Bad value for coordinate in Brownian Dynamics on "
-                   << "particle " << p->get_name() << std::endl);
+                   << "particle " << _1->get_name() << std::endl);
           throw ValueException("Bad coordinate value");
         }
       }
@@ -173,16 +174,13 @@ void BrownianDynamics::take_step(SingletonContainer *sc,
     IMP_USAGE_CHECK(unit::strip_units(d.get_D()) > 0
               && unit::strip_units(d.get_D())
               < std::numeric_limits<Float>::max(),
-              "Bad diffusion coefficient on particle " << p->get_name());
+              "Bad diffusion coefficient on particle " << _1->get_name());
     unit::Angstrom sigma= d.get_sigma(dt);
 
-    IMP_LOG(VERBOSE, p->get_name() << ": sigma is "
+    IMP_LOG(VERBOSE, _1->get_name() << ": sigma is "
             << sigma << std::endl);
     boost::normal_distribution<double> mrng(0, sigma.get_value());
-    boost::variate_generator<RandomNumberGenerator&,
-      boost::normal_distribution<double> >
-      sampler(random_number_generator, mrng);
-
+    RNG sampler(random_number_generator, mrng);
     //std::cout << p->get_name() << std::endl;
 
     unit::Angstrom delta[3];
@@ -209,18 +207,18 @@ void BrownianDynamics::take_step(SingletonContainer *sc,
     /*std::cout << "delta is " << delta << " mag is "
       << delta.get_magnitude() << " sigma " << sigma << std::endl;*/
 
-    IMP_LOG(VERBOSE, "For particle " << p->get_name()
+    IMP_LOG(VERBOSE, "For particle " << _1->get_name()
             << " delta is " << delta[0] << " " << delta[1] << " " << delta[2]
             << " from a force of "
             << "[" << d.get_derivatives() << "]" << std::endl);
 
     if (square(delta[0])+square(delta[1])+square(delta[2]) > feature_size_2_) {
-      throw BadStepException(p);
+      throw BadStepException(_1);
     }
     for (unsigned int j=0; j< 3; ++j) {
       d.set_coordinate(j, d.get_coordinate(j) + unit::strip_units(delta[j]));
     }
-  }
+    });
 }
 
 double BrownianDynamics::simulate(float max_time_nu)

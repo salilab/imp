@@ -91,9 +91,10 @@
   void remove_##lcname##s_if(const F &f) {                              \
     for (Ucname##Iterator it= lcname##s_begin(); it != lcname##s_end(); \
          ++it) {                                                        \
-      if (f(*it)) handle_remove(*it);                                   \
+      if (f(*it)) lcname##_handle_remove(*it);                          \
     }                                                                   \
     IMP::internal::remove_if(lcname##_vector_, f);                      \
+    lcname##_handle_change();                                          \
   }                                                                     \
   /** \brief Remove any occurences of each item in d. */                \
   void remove_##lcname##s(const PluralData& d);                         \
@@ -105,6 +106,8 @@ void set_##lcname##s(const PluralData &ps) {                            \
     clear_##lcname##s();                                                \
     add_##lcname##s(ps);                                                \
   }                                                                     \
+/** Must be the same set, just in a different order. */                 \
+void set_##lcname##s_order(const PluralData &ps);                       \
 /** \return index of object within the object
 */                                                                      \
 unsigned int add_##lcname(Data obj);                                    \
@@ -131,8 +134,19 @@ IMP_EXPOSE_ITERATORS(IMP::VectorOfRefCounted<Data>,                     \
                      lcname##_vector_, Ucname, lcname);                 \
 private:                                                                \
 const PluralData &access_##lcname##s() const {return lcname##_vector_;} \
-void handle_remove(Data d);                                             \
-IMP_NO_DOXYGEN(PluralData lcname##_vector_;)                            \
+void lcname##_handle_remove( Data d);                                   \
+void lcname##_handle_change();                                          \
+struct Ucname##DataWrapper: public PluralData {                         \
+  template <class F>                                                    \
+  void remove_if(const F &f) {                                          \
+    IMP::internal::remove_if(*static_cast<PluralData*>(this), f);        \
+  }                                                                     \
+  template <class TT>                                                   \
+  static void do_handle_remove( Data d, TT *container);                 \
+  ~Ucname##DataWrapper();                                               \
+};                                                                      \
+friend struct Ucname##DataWrapper;                                      \
+IMP_NO_DOXYGEN(Ucname##DataWrapper lcname##_vector_;)                   \
 IMP_PROTECTION(protection)                                              \
 IMP_REQUIRE_SEMICOLON_CLASS(list##lcname)
 
@@ -153,19 +167,40 @@ IMP_REQUIRE_SEMICOLON_CLASS(list##lcname)
  \param[in] OnChanged Code to get executed when the container changes.
  \param[in] OnRemoved Code to get executed when the an object is removed.
 
- For all of these the current object is called obj.
+ For all of these the current object is called obj and is of type Data.
 */
 #define IMP_LIST_IMPL(Class, Ucname, lcname, Data, PluralData, OnAdd,   \
                       OnChanged, OnRemoved)                             \
-  void Class::handle_remove( Data obj){                                 \
+  template <class TT>                                                   \
+  void Class::Ucname##DataWrapper::do_handle_remove(Data obj,           \
+                                                    TT *container) {    \
+    if (0) std::cout << *container;                                     \
     if (0) std::cout << obj;                                            \
     OnRemoved;                                                          \
+  }                                                                     \
+  Class::Ucname##DataWrapper::~Ucname##DataWrapper() {                  \
+    for (unsigned int i=0; i< size(); ++i) {                            \
+      do_handle_remove(operator[](i), static_cast<Class*>(0));          \
+    }                                                                   \
+  }                                                                     \
+  void Class::set_##lcname##s_order(const PluralData &ps) {              \
+    IMP_USAGE_CHECK(ps.size() == lcname##_vector_.size(),               \
+                    "Reordered elements don't match.");                 \
+    lcname##_vector_.clear();                                           \
+    lcname##_vector_.insert(lcname##_vector_.end(),                     \
+                            ps.begin(), ps.end());                      \
+  }                                                                     \
+  void Class::lcname##_handle_remove( Data obj){                        \
+    Ucname##DataWrapper::do_handle_remove(obj, static_cast<Class*>(this)); \
+  }                                                                     \
+  void Class::lcname##_handle_change(){                                 \
+    OnChanged;                                                          \
   }                                                                     \
   unsigned int Class::add_##lcname(Data obj) {                          \
     unsigned int index= lcname##_vector_.size();                        \
     lcname##_vector_.push_back(obj);                                    \
     OnAdd;                                                              \
-    OnChanged;                                                          \
+    lcname##_handle_change();                                           \
     if (false) {index=index; obj=obj;};                                 \
     return index;                                                       \
   }                                                                     \
@@ -179,30 +214,29 @@ IMP_REQUIRE_SEMICOLON_CLASS(list##lcname)
       OnAdd;                                                            \
       if (false) {obj=obj; index=index;}                                \
     }                                                                   \
-    OnChanged;                                                          \
+    lcname##_handle_change();                                           \
   }                                                                     \
   void Class::remove_##lcname##s(const PluralData& d) {                 \
     std::vector<Data> ds(d.begin(), d.end());                           \
     std::sort(ds.begin(), ds.end());                                    \
     for (unsigned int i=0; i< ds.size(); ++i) {                         \
-      handle_remove(ds[i]);                                             \
+      lcname##_handle_remove(ds[i]);                                    \
     }                                                                   \
-    IMP::internal::remove_if(lcname##_vector_,                          \
-                             ::IMP::internal::list_contains(ds));       \
+    lcname##_vector_.remove_if(::IMP::internal::list_contains(ds));     \
   }                                                                     \
   void Class::clear_##lcname##s(){                                      \
     lcname##_vector_.clear();                                           \
-    OnChanged;                                                          \
+    lcname##_handle_change();                                           \
   }                                                                     \
   void Class::remove_##lcname(Data d) {                                 \
     for (Ucname##Iterator it= lcname##s_begin();                        \
          it != lcname##s_end(); ++it) {                                 \
       if (*it == d) {                                                   \
-        handle_remove(*it);                                             \
+        lcname##_handle_remove(*it);                                    \
         lcname##_vector_.erase(it); break;                              \
       }                                                                 \
     }                                                                   \
-    OnChanged;                                                          \
+    lcname##_handle_change();                                           \
   }                                                                     \
   IMP_REQUIRE_SEMICOLON_NAMESPACE
 

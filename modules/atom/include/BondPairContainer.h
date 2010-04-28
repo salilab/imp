@@ -13,6 +13,7 @@
 
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
+#include <IMP/internal/container_helpers.h>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -26,6 +27,7 @@ class IMPATOMEXPORT BondPairContainer :
   public PairContainer
 {
   IMP::internal::OwnerPointer<SingletonContainer> sc_;
+  IMP_CONTAINER_DEPENDENCIES(BondPairContainer, ret.push_back(back_->sc_););
   BondPairContainer(SingletonContainer *sc, bool);
 public:
   //! The container containing the bonds
@@ -36,6 +38,11 @@ public:
     return lsc;
   }
 
+#ifndef IMP_DOXYGEN
+  bool get_is_up_to_date() const {
+    return sc_->get_is_up_to_date();
+  }
+#endif
   IMP_PAIR_CONTAINER(BondPairContainer);
 };
 

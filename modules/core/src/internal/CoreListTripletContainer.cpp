@@ -92,11 +92,6 @@ CoreListTripletContainer::add_particle_triplets(const ParticleTripletsTemp &c) {
 }
 
 
-ContainersTemp CoreListTripletContainer::get_input_containers() const {
-  return ContainersTemp();
-}
-
-
 void CoreListTripletContainer::do_before_evaluate() {
   internal::ListLikeTripletContainer::do_before_evaluate();
 }

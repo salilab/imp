@@ -15,6 +15,7 @@
 #include "../PairScore.h"
 #include "../SingletonContainer.h"
 #include "../PairContainer.h"
+#include "../ScoreState.h"
 #include "utility.h"
 
 #include <boost/tuple/tuple.hpp>
@@ -179,15 +180,21 @@ inline std::string get_name(const ParticleTuple<D>& p) {
 
 #define IMP_ACTIVE_CONTAINER_DECL(Name)                         \
   private:                                                      \
+  unsigned int eval_update_;                                    \
   class Ticker: public ScoreState {                             \
     Name *back_;                                                \
   public:                                                       \
   Ticker(Name *n): ScoreState(n->get_name()+" updater"),        \
-                   back_(n){}                                   \
+                   back_(n){                                    \
+    n->eval_update_=std::numeric_limits<unsigned int>::max();   \
+  }                                                             \
   IMP_SCORE_STATE(Ticker);                                      \
   };                                                            \
   friend class Ticker;                                          \
-  ScoreStatePointer ticker_;                                    \
+  ScoreStatePointer<Ticker> ticker_;                            \
+  unsigned int get_last_update_evaluation() const {             \
+  return eval_update_;                                          \
+  }                                                             \
   void do_before_evaluate();                                    \
   void do_after_evaluate();                                     \
   bool get_has_model() const { return ticker_.get_is_set();}    \
@@ -198,6 +205,7 @@ inline std::string get_name(const ParticleTuple<D>& p) {
 #define IMP_ACTIVE_CONTAINER_DEF(Name)                                  \
   void Name::Ticker::do_before_evaluate() {                             \
     back_->do_before_evaluate();                                        \
+    back_->eval_update_= back_->get_model()->get_evaluation();          \
   }                                                                     \
   void Name::Ticker::do_after_evaluate(DerivativeAccumulator*) {        \
     back_->do_after_evaluate();                                         \
@@ -294,8 +302,6 @@ inline std::string get_name(const ParticleTuple<D>& p) {
     return score;                                                       \
   }                                                                     \
   IMP_REQUIRE_SEMICOLON_NAMESPACE
-
-
 
 
 IMP_END_INTERNAL_NAMESPACE

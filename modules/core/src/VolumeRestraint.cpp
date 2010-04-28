@@ -8,6 +8,7 @@
 
 #include "IMP/core/VolumeRestraint.h"
 #include <IMP/core/XYZR.h>
+#include <IMP/core/internal/singleton_helpers.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -29,10 +30,10 @@ VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
   IMP_OBJECT_LOG;
   IMP_LOG(VERBOSE, "Begin volume restraint." << std::endl);
   algebra::BoundingBox3D bb3;
-  for (unsigned int i=0; i< sc_->get_number_of_particles(); ++i) {
-    XYZR d(sc_->get_particle(i));
-    bb3+= algebra::get_bounding_box(d.get_sphere());
-  }
+  IMP_FOREACH_SINGLETON(sc_, {
+      XYZR d(_1);
+      bb3+= algebra::get_bounding_box(d.get_sphere());
+    });
   algebra::VectorD<3> diag= bb3.get_corner(1)-bb3.get_corner(0);
   double ms= std::max(diag[0], std::max(diag[1], diag[2]));
   std::vector<int> volumes(sc_->get_number_of_particles(), 0),
@@ -45,36 +46,38 @@ VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
     IMP_LOG(VERBOSE, "Bounding box is " << bb3 << std::endl);
     grid_.set_bounding_box(bb3);
     std::fill(grid_.voxels_begin(), grid_.voxels_end(), -1);
-    for (unsigned int i=0; i< sc_->get_number_of_particles(); ++i) {
-      XYZR d(sc_->get_particle(i));
-      algebra::SphereD<3> s= d.get_sphere();
-      algebra::BoundingBox3D bb= algebra::get_bounding_box(d.get_sphere());
-      Grid::ExtendedIndex vl= grid_.get_extended_index(bb.get_corner(0));
-      Grid::ExtendedIndex vu= grid_.get_extended_index(bb.get_corner(1));
-      //std::cout << vl << " " << vu << std::endl;
-      for (Grid::IndexIterator it= grid_.indexes_begin(vl, vu);
-           it != grid_.indexes_end(vl, vu); ++it) {
-        //std::cout << "Inspecting " << *it << std::endl;
-        algebra::VectorD<3> c= grid_.get_center(*it);
-        if (s.get_contains(c)) {
-          grid_[*it]= i;
-          ++volumes[i];
-          Grid::ExtendedIndex vs[]={grid_.get_offset(*it, 1,0,0),
-                                   grid_.get_offset(*it, -1,0,0),
-                                   grid_.get_offset(*it, 0,1,0),
-                                   grid_.get_offset(*it, 0,-1,0),
-                                   grid_.get_offset(*it, 0,0,1),
-                                   grid_.get_offset(*it, 0,0,-1)};
-          for (unsigned int j=0; j< 6; ++j) {
-            if (!s.get_contains(grid_.get_center(vs[j]))) {
-              ++areas[i];
-              break;
+    const int offsets[][3]={{1,0,0},
+                            {-1,0,0},
+                            {0,1,0},
+                            {0,-1,0},
+                            {0,0,1},
+                            {0,0,-1}};
+    IMP_FOREACH_SINGLETON(sc_, {
+        XYZR d(_1);
+        algebra::SphereD<3> s= d.get_sphere();
+        algebra::BoundingBox3D bb= algebra::get_bounding_box(d.get_sphere());
+        Grid::ExtendedIndex vl= grid_.get_extended_index(bb.get_corner(0));
+        Grid::ExtendedIndex vu= grid_.get_extended_index(bb.get_corner(1));
+        //std::cout << vl << " " << vu << std::endl;
+        for (Grid::IndexIterator it= grid_.indexes_begin(vl, vu);
+             it != grid_.indexes_end(vl, vu); ++it) {
+          //std::cout << "Inspecting " << *it << std::endl;
+          algebra::VectorD<3> c= grid_.get_center(*it);
+          if (s.get_contains(c)) {
+            grid_[*it]= _2;
+            ++volumes[_2];
+            for (unsigned int j=0; j< 6; ++j) {
+              Grid::ExtendedIndex ci(grid_.get_offset(*it, offsets[j][0],
+                                                      offsets[j][1],
+                                                      offsets[j][2]));
+              if (!s.get_contains(grid_.get_center(ci))) {
+                ++areas[_2];
+                break;
+              }
             }
           }
         }
-      }
-    }
-
+      });
   } else {
     is_zero=true;
   }
@@ -143,29 +146,29 @@ VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
     IMP_LOG(VERBOSE, "Unary values are "
             << rv.first << " " << rv.second
             << std::endl);
-    for (unsigned int i=0; i < sc_->get_number_of_particles(); ++i) {
-      IMP_LOG(VERBOSE, "For particle " << sc_->get_particle(i)->get_name()
-              << " at " << XYZR(sc_->get_particle(i))
-              << " sums are " << os[0][i] << " "
-              << os[1][i] << " " << os[2][i]
-              << " " << rs[i] << std::endl);
+    IMP_FOREACH_SINGLETON(sc_, {
+      IMP_LOG(VERBOSE, "For particle " << _1->get_name()
+              << " at " << XYZR(_1)
+              << " sums are " << os[0][_2] << " "
+              << os[1][_2] << " " << os[2][_2]
+              << " " << rs[_2] << std::endl);
       // os[c] is how many cells will be filled if x shifts up
-      XYZR dec(sc_->get_particle(i));
+      XYZR dec(_1);
       for (unsigned int j=0; j< 3; ++j) {
-        double af= os[j][i]/static_cast<double>(areas[i]);
+        double af= os[j][_2]/static_cast<double>(areas[_2]);
         double d= rv.second*af*4*PI*square(dec.get_radius());
         dec.add_to_derivative(j, d,*da);
         IMP_LOG(VERBOSE, "Adding " << d << " to coordinate "
                 << j << " derivative"
                 << std::endl);
       }
-      double rf=rs[i]/static_cast<double>(areas[i]);
+      double rf=rs[_2]/static_cast<double>(areas[_2]);
       double dr=rv.second*rf*4*PI*square(dec.get_radius());
       IMP_LOG(VERBOSE, "Adding " << dr
               << " to radius derivative from "
               << rf << std::endl);
       dec.add_to_radius_derivative(dr, *da);
-    }
+      });
     return rv.first;
   }
 }
