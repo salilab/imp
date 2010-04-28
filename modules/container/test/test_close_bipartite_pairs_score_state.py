@@ -3,6 +3,7 @@ import IMP
 import IMP.test
 import IMP.core
 import IMP.algebra
+import IMP.container
 import random
 
 class TestBL(IMP.test.TestCase):
@@ -17,6 +18,7 @@ class TestBL(IMP.test.TestCase):
 
     def _compare_lists(self, m, pc0, pc1, out, d):
         print "comparing"
+        IMP.set_log_level(IMP.VERBOSE)
         m.evaluate(False)
         print "list is " + str(out.get_number_of_particle_pairs())
         for a in pc0:
