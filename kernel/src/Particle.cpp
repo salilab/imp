@@ -37,7 +37,8 @@ namespace {
 
 Particle::Particle(Model *m, std::string name):
   Container(m, internal::make_object_name(name, particle_index++)),
-  ps_(new internal::ParticleStorage())
+  ps_(new internal::ParticleStorage()),
+  dirty_(false)
 {
   m->add_particle_internal(this);
 }
@@ -52,7 +53,7 @@ void Particle::do_show(std::ostream& out) const
   internal::PrefixStream preout(&out);
   preout << (get_is_active()? " (active)":" (dead)");
   if (get_is_active() && get_model()->get_is_incremental()) {
-    if (ps_->dirty_) preout << " (changed)";
+    if (dirty_) preout << " (changed)";
     else preout << " (unchanged)";
   }
   preout << std::endl;
@@ -148,7 +149,8 @@ void Particle::accumulate_derivatives_from_shadow() {
 }
 
 Particle::Particle():
-  ps_(new internal::ParticleStorage()) {
+  ps_(new internal::ParticleStorage()),
+  dirty_(false){
 }
 
 void Particle::setup_incremental() {
@@ -159,7 +161,7 @@ void Particle::setup_incremental() {
     ps_->shadow_->set_name(get_name()+" history");
     ps_->shadow_->m_= m_;
   }
-  ps_->dirty_=true;
+  dirty_=true;
   ps_->shadow_->ps_->derivatives_
     = internal::ParticleStorage::
     DerivativeTable(ps_->derivatives_.get_length());
