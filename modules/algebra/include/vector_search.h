@@ -73,54 +73,66 @@ public:
     eps_(epsilon) {
     instantiate(vs.begin(), vs.end());
   }
-    //! Log the points and queries to a file for performance studies
-    void set_query_log(std::string fname) {
+  //! Log the points and queries to a file for performance studies
+  void set_query_log(std::string fname) {
 #if IMP_BUILD < IMP_FAST
-      query_log_.open(fname.c_str());
-      for (unsigned int i=0; i< data_.get_number_of_points(); ++i) {
-        query_log_ << spaces_io(data_.get_point(i)) << std::endl;
-      }
-      query_log_ << std::endl;
-#endif
+    query_log_.open(fname.c_str());
+    for (unsigned int i=0; i< data_.get_number_of_points(); ++i) {
+      query_log_ << spaces_io(data_.get_point(i)) << std::endl;
     }
+    query_log_ << std::endl;
+#endif
+  }
 
-    unsigned int get_nearest_neighbor(const VectorD<D> &q) const {
+  unsigned int get_nearest_neighbor(const VectorD<D> &q) const {
 #if IMP_BUILD < IMP_FAST
-      if (query_log_) {
-        query_log_ << spaces_io(q) << " " << 1 << std::endl;
-      }
-#endif
-      Ints ret(2);
-      data_.fill_nearest_neighbors(q, 1U, eps_, ret);
-      return ret[1];
+    if (query_log_) {
+      query_log_ << spaces_io(q) << " " << 1 << std::endl;
     }
-    /** Search using the ith point in the input set. */
-    unsigned int get_nearest_neighbor(unsigned int i) const {
+#endif
+    Ints ret(2);
+    data_.fill_nearest_neighbors(q, 1U, eps_, ret);
+    return ret[1];
+  }
+  /** Search using the ith point in the input set. */
+  unsigned int get_nearest_neighbor(unsigned int i) const {
 #if IMP_BUILD < IMP_FAST
-      if (query_log_) {
-        query_log_ << i << " " << 1 << std::endl;
-      }
-#endif
-      Ints ret(2);
-      data_.fill_nearest_neighbors(data_.get_point(i), 2U, eps_, ret);
-      return ret[1];
+    if (query_log_) {
+      query_log_ << i << " " << 1 << std::endl;
     }
-    /** Search using the ith point in the input set. Return the k
-        nearest neighbors.*/
-    Ints get_nearest_neighbors(unsigned int i, unsigned int k) const {
+#endif
+    Ints ret(2);
+    data_.fill_nearest_neighbors(data_.get_point(i), 2U, eps_, ret);
+    return ret[1];
+  }
+  /** Search using the ith point in the input set. Return the k
+      nearest neighbors.*/
+  Ints get_nearest_neighbors(unsigned int i, unsigned int k) const {
 #if IMP_BUILD < IMP_FAST
-      if (query_log_) {
-        query_log_ << i << " " << k << std::endl;
-      }
-#endif
-      Ints ret(k+1);
-      data_.fill_nearest_neighbors(data_.get_point(i), k+1, eps_, ret);
-      return Ints(++ret.begin(), ret.end());
+    if (query_log_) {
+      query_log_ << i << " " << k << std::endl;
     }
-  };
+#endif
+    Ints ret(k+1);
+    data_.fill_nearest_neighbors(data_.get_point(i), k+1, eps_, ret);
+    return Ints(++ret.begin(), ret.end());
+  }
+  /** Find all points within the provided distance. */
+  Ints get_in_ball(unsigned int i, double distance) const {
+    Ints ret;
+    data_.fill_nearest_neighbors(data_.get_point(i), distance, eps_, ret);
+    return Ints(++ret.begin(), ret.end());
+  }
+  /** Find all points within the provided distance. */
+  Ints get_in_ball(const VectorD<D> &pt, double distance) const {
+    Ints ret;
+    data_.fill_nearest_neighbors(pt, distance, eps_, ret);
+    return ret;
+  }
+};
 
-  /** @} */
+/** @} */
 
-  IMPALGEBRA_END_NAMESPACE
+IMPALGEBRA_END_NAMESPACE
 
 #endif  /* IMPALGEBRA_VECTOR_SEARCH_H */

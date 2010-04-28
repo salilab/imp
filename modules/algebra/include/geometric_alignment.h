@@ -42,8 +42,9 @@ IMPALGEBRA_BEGIN_NAMESPACE
 template <class Vector3DsOrXYZs0,
           class Vector3DsOrXYZs1>
 IMP::algebra::Transformation3D
-get_transformation_aligning_first_to_second(const Vector3DsOrXYZs0 &from,
-                                         const Vector3DsOrXYZs1 &to) {
+get_transformation_aligning_first_to_second(
+IMP_RESTRICT const Vector3DsOrXYZs0 &from,
+IMP_RESTRICT const Vector3DsOrXYZs1 &to) {
   IMP_INTERNAL_CHECK(from.size() == to.size(), "sizes don't match");
   IMP_INTERNAL_CHECK(from.size() >0, "Points are needed");
   // compute the centroid of the points and transform
@@ -52,10 +53,10 @@ get_transformation_aligning_first_to_second(const Vector3DsOrXYZs0 &from,
   VectorD<3> center_from(0,0,0), center_to(0,0,0);
   for (unsigned int i=0; i< from.size(); ++i) {
     //double x= p_it->x();
-    center_from+= get_geometry(from[i]);
-    center_to += get_geometry(to[i]);
-    IMP_LOG(VERBOSE, i << ": (" << get_geometry(from[i])
-            << ") (" << get_geometry(to[i]) << ")\n");
+    center_from+= get_vector_d_geometry(from[i]);
+    center_to += get_vector_d_geometry(to[i]);
+    IMP_LOG(VERBOSE, i << ": (" << get_vector_d_geometry(from[i])
+            << ") (" << get_vector_d_geometry(to[i]) << ")\n");
   }
   center_from = center_from/from.size();
   center_to = center_to/to.size();
@@ -64,8 +65,8 @@ get_transformation_aligning_first_to_second(const Vector3DsOrXYZs0 &from,
           << ")\n");
   std::vector<VectorD<3> > shifted_from(from.size()), shifted_to(to.size());
   for (unsigned int i=0; i< from.size(); ++i) {
-    shifted_from[i]=get_geometry(from[i])-center_from;
-    shifted_to[i]= get_geometry(to[i])-center_to;
+    shifted_from[i]=get_vector_d_geometry(from[i])-center_from;
+    shifted_to[i]= get_vector_d_geometry(to[i])-center_to;
   }
 
   // covariance matrix

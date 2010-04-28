@@ -419,7 +419,7 @@ public:
     ExtendedIndex ub= get_extended_index(bb.get_corner(1));
     return VoxelIterator(indexes_begin(lb, ub), GetVoxel(this));
   }
-  VoxelIterator voxels_end(const BoundingBoxD<3> &bb) {
+  VoxelIterator voxels_end(const BoundingBoxD<3> &) {
     //ExtendedIndex lb= get_extended_index(bb.get_corner(0));
     //ExtendedIndex ub= get_extended_index(bb.get_corner(1));
     return VoxelIterator(indexes_end(ExtendedIndex(),

@@ -464,9 +464,9 @@ typedef VectorD<4> Vector4D;
 typedef std::vector<VectorD<4> > Vector4Ds;
 
 template <unsigned int D>
-const VectorD<D> &get_geometry(const VectorD<D> &g) {return g;}
+const VectorD<D> &get_vector_d_geometry(const VectorD<D> &g) {return g;}
 template <unsigned int D>
-inline void set_geometry(VectorD<D> &g, const VectorD<D> &v) {g=v;}
+inline void set_vector_d_geometry(VectorD<D> &g, const VectorD<D> &v) {g=v;}
 
 
 

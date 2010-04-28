@@ -169,13 +169,31 @@ IMPCOREEXPORT XYZRs create_xyzr_particles(Model *m,
                                           Float box_side=10);
 
 /** \genericgeometry */
-inline const algebra::SphereD<3> get_geometry(XYZR d) {return d.get_sphere();}
+inline const algebra::SphereD<3> get_sphere_d_geometry(XYZR d) {
+  return d.get_sphere();
+}
 
 /** \genericgeometry */
-inline void set_geometry(XYZR d, const algebra::SphereD<3> &v) {
+inline void set_sphere_d_geometry(XYZR d, const algebra::SphereD<3> &v) {
   d.set_sphere(v);
 }
 
 IMPCORE_END_NAMESPACE
+
+#ifndef SWIG
+// swig doesn't like having the overloads in different namespaces
+// it will do the conversion implicitly anyway
+IMP_BEGIN_NAMESPACE
+/** \genericgeometry */
+inline const algebra::SphereD<3> get_sphere_d_geometry(Particle *p) {
+  return core::XYZR(p).get_sphere();
+}
+
+/** \genericgeometry */
+inline void set_sphere_d_geometry(Particle *p, const algebra::SphereD<3> &v) {
+  core::XYZR(p).set_sphere(v);
+}
+IMP_END_NAMESPACE
+#endif
 
 #endif  /* IMPCORE_XYZ_R_H */

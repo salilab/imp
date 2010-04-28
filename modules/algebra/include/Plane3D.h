@@ -53,7 +53,7 @@ inline double get_distance(const Plane3D& pln, const VectorD<3> &p) {
   return (pln.get_projection(p)-p).get_magnitude();
 }
 
-IMP_AREA_GEOMETRY_METHODS(Plane3D,
+IMP_AREA_GEOMETRY_METHODS(Plane3D, plane_3d,
                           if (0) std::cout << g;
                           return std::numeric_limits<double>::infinity(),
                           {

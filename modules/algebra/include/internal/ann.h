@@ -8,11 +8,11 @@
 #define IMPALGEBRA_INTERNAL_ANN_H
 
 #include "../algebra_config.h"
-#include <IMP/base_types.h>
-#include <boost/scoped_array.hpp>
 #ifdef IMP_USE_ANN
 #include <ANN/ANN.h>
-
+#include <IMP/base_types.h>
+#include <IMP/log.h>
+#include <boost/scoped_array.hpp>
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 
@@ -29,7 +29,7 @@ struct ANNData {
     ANNcoord** ret = new ANNcoord*[std::distance(b,e)];
     for (It c=b; c != e; ++c) {
       ANNcoord *pt= new ANNcoord[D];
-      VectorD<D> v= get_geometry(*c);
+      VectorD<D> v= get_vector_d_geometry(*c);
       std::copy(v.coordinates_begin(), v.coordinates_end(), pt);
       ret[i++]=pt;
     }
@@ -42,7 +42,7 @@ struct ANNData {
   template <class G>
   void fill_nearest_neighbors(const G &g, unsigned int k,
                               double eps, Ints&ret) const {
-    VectorD<D> v= get_geometry(g);
+    VectorD<D> v= get_vector_d_geometry(g);
     ANNcoord pt[D];
     std::copy(v.coordinates_begin(), v.coordinates_end(), pt);
     boost::scoped_array<ANNdist> dists(new ANNdist[k]);
@@ -52,15 +52,21 @@ struct ANNData {
   template <class G>
   void fill_nearest_neighbors(const G &g, double distance,
                               double eps, Ints&ret) const {
-    VectorD<D> v= get_geometry(g);
+    static const unsigned int guess=20;
+    static double guess_dists[guess];
+    ret.resize(guess);
+    VectorD<D> v= get_vector_d_geometry(g);
     ANNcoord pt[D];
     std::copy(v.coordinates_begin(), v.coordinates_end(), pt);
     unsigned int k=tree_.annkFRSearch(pt, square(fix_distance(distance, eps)),
-                                      0, NULL, NULL, eps);
-    boost::scoped_array<ANNdist> dists(new ANNdist[k]);
+                                      guess, &ret[0], guess_dists, eps);
     ret.resize(k);
-    tree_.annkFRSearch(pt, square(fix_distance(distance, eps)), k,
-                       &ret[0], dists.get(), eps);
+    if (k >= guess) {
+      IMP_LOG(VERBOSE, "falling back on second nn search " << k << std::endl);
+      boost::scoped_array<ANNdist> dists(new ANNdist[k]);
+      tree_.annkFRSearch(pt, square(fix_distance(distance, eps)), k,
+                         &ret[0], dists.get(), eps);
+    }
   }
   VectorD<D> get_point(unsigned int i) const {
     return VectorD<D>(tree_.thePoints()[i], tree_.thePoints()[i]+D);
