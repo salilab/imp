@@ -34,6 +34,7 @@ files = [
          'MCCGSampler.cpp',
          'MonteCarlo.cpp',
          'MoverBase.cpp',
+         'NearestNeighborsClosePairsFinder.cpp',
          'NormalMover.cpp',
          'OpenCubicSpline.cpp',
          'PairConstraint.cpp',
