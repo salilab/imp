@@ -92,11 +92,6 @@ CoreListPairContainer::add_particle_pairs(const ParticlePairsTemp &c) {
 }
 
 
-ContainersTemp CoreListPairContainer::get_input_containers() const {
-  return ContainersTemp();
-}
-
-
 void CoreListPairContainer::do_before_evaluate() {
   internal::ListLikePairContainer::do_before_evaluate();
 }

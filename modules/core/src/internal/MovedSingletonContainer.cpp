@@ -47,11 +47,6 @@ void MovedSingletonContainer::do_show(std::ostream &) const
 }
 
 
-
-ContainersTemp MovedSingletonContainer::get_input_containers() const {
-  return ContainersTemp(1,pc_);
-}
-
 void MovedSingletonContainer::do_after_evaluate() {
   internal::ListLikeSingletonContainer::do_after_evaluate();
 }

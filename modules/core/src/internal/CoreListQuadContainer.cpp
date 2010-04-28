@@ -92,11 +92,6 @@ CoreListQuadContainer::add_particle_quads(const ParticleQuadsTemp &c) {
 }
 
 
-ContainersTemp CoreListQuadContainer::get_input_containers() const {
-  return ContainersTemp();
-}
-
-
 void CoreListQuadContainer::do_before_evaluate() {
   internal::ListLikeQuadContainer::do_before_evaluate();
 }

@@ -25,8 +25,10 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 DifferenceSingletonContainer
 ::DifferenceSingletonContainer(SingletonContainer *a,
-                               SingletonContainer *b): a_(a),
-                                                       b_(b){
+                               SingletonContainer *b):
+  a_(a),
+  b_(b),
+  deps_(new DependenciesScoreState(this), a_->get_model()){
 }
 
 unsigned int DifferenceSingletonContainer::get_number_of_particles() const {
@@ -54,13 +56,6 @@ DifferenceSingletonContainer::get_contains_particle(Particle* vt) const {
 void DifferenceSingletonContainer::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
   out << "containers " << a_ << " and " << *b_;
-}
-
-ContainersTemp DifferenceSingletonContainer::get_input_containers() const {
-  ContainersTemp ret(2);
-  ret[0]=a_;
-  ret[1]=b_;
-  return ret;
 }
 
 ParticlesTemp DifferenceSingletonContainer::get_contained_particles() const {

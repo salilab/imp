@@ -68,6 +68,10 @@ public:
     return model_.get();
   }
 
+  bool get_has_model() const {
+    return model_;
+  }
+
   /** \name Interactions
       Certain sorts of operations, such as evaluation of restraints in
       isolation, benefit from being able to determine which containers
@@ -110,32 +114,29 @@ protected:
   WeakPointer<Model> model_;
 };
 
+#ifndef SWIG
 
 //! Removes the ScoreState when the RAII object is destroyed
+template <class SS>
 class ScoreStatePointer: public RAII {
-  Pointer<ScoreState> ss_;
-  /* keep the model alive so unregister doesn't crash */
-  Pointer<Model> model_;
+  Pointer<SS> ss_;
 public:
-  IMP_RAII(ScoreStatePointer, (ScoreState *ss, Model *m),{}, {
+  IMP_RAII(ScoreStatePointer, (SS *ss, Model *m),{}, {
       ss_=ss;
-      model_=m;
       m->add_score_state(ss);
     }, {
-      if (ss_) {
+      if (ss_ && ss_->get_has_model()) {
+        IMP_CHECK_OBJECT(ss_);
+        IMP_CHECK_OBJECT(ss_->get_model());
         ss_->get_model()->remove_score_state(ss_);
         ss_=NULL;
-        model_=NULL;
       }
     });
   bool get_is_set() const {return ss_;}
-  Model * get_model() const {
-    return model_;
-  }
-  ScoreState* get_score_state() const {
-    return ss_;
-  }
+  SS* operator->() const {return ss_;}
+  SS& operator*() const {return *ss_;}
 };
+#endif
 
 IMP_END_NAMESPACE
 

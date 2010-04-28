@@ -92,11 +92,6 @@ CoreListSingletonContainer::add_particles(const ParticlesTemp &c) {
 }
 
 
-ContainersTemp CoreListSingletonContainer::get_input_containers() const {
-  return ContainersTemp();
-}
-
-
 void CoreListSingletonContainer::do_before_evaluate() {
   internal::ListLikeSingletonContainer::do_before_evaluate();
 }

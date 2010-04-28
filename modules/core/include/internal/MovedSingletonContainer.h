@@ -219,15 +219,25 @@ public:
   //! Reset the positions for the moved particles
   void reset_moved();
 
-  void update() {
-    ticker_.get_score_state()->before_evaluate();
-  }
-
   //! Return the container storing the particles
   SingletonContainer *get_singleton_container() const {
     return pc_;
   }
   void set_threshold(double d);
+
+#ifndef IMP_DOXYGEN
+  bool get_is_up_to_date() const {
+    if (get_model()->get_stage() != Model::NOT_EVALUATING) {
+      return get_last_update_evaluation() == get_model()->get_evaluation();
+    } else {
+      bool ret=true;
+      IMP_FOREACH_SINGLETON(pc_,
+                            ret= !(imp_foreach_break
+                                   =_1->get_is_changed()););
+      return ret;
+    }
+  }
+#endif
 
   IMP_LISTLIKE_SINGLETON_CONTAINER(MovedSingletonContainer);
 };
@@ -248,7 +258,7 @@ class MovedSingletonContainerImpl:
   }
   virtual void save_moved() {
     if (MovedSingletonContainer::pc_->get_number_of_particles() != 0) {
-      IMP_NEW(SaveMoved,  cv, (backup_, access()));
+      IMP_NEW(SaveMoved,  cv, (backup_, get_access()));
       cv->set_was_used(true);
       MovedSingletonContainer::pc_->apply(cv);
     }

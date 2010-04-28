@@ -89,8 +89,6 @@ class IMPEXPORT Container : public Object
   // added or removed containers
   Container(std::string name="added or removed container"): Object(name) {};
  public:
-  //! Get the set of containers read by this one
-  virtual ContainersTemp get_input_containers() const=0;
   //! Get whether the set of particles changed since last evaluation
   virtual bool get_contained_particles_changed() const=0;
   //! Get contained particles
@@ -100,6 +98,10 @@ class IMPEXPORT Container : public Object
   virtual ParticlesTemp get_contained_particles() const=0;
 
   Model *get_model() const {return m_;}
+
+#ifndef IMP_DOXYGEN
+  virtual bool get_is_up_to_date() const=0;
+#endif
 
   IMP_REF_COUNTED_DESTRUCTOR(Container);
 };

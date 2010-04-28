@@ -31,6 +31,11 @@ public:
   void add_particle_triplets(const ParticleTripletsTemp &c);
   void set_particle_triplets(ParticleTripletsTemp c);
   void clear_particle_triplets();
+#ifndef IMP_DOXYGEN
+  bool get_is_up_to_date() const {
+    return true;
+  }
+#endif
   IMP_LISTLIKE_TRIPLET_CONTAINER(CoreListTripletContainer);
 };
 

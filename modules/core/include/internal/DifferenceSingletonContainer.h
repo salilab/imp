@@ -12,6 +12,7 @@
 #define IMPCORE_DIFFERENCE_SINGLETON_CONTAINER_H
 
 #include "../core_config.h"
+#include <IMP/internal/container_helpers.h>
 
 #include <IMP/SingletonContainer.h>
 
@@ -28,8 +29,19 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 class IMPCOREEXPORT DifferenceSingletonContainer : public SingletonContainer
 {
   IMP::internal::OwnerPointer<SingletonContainer> a_, b_;
+  IMP_CONTAINER_DEPENDENCIES(DifferenceSingletonContainer,
+                             { ret.resize(2);
+                               ret[0]=back_->a_;
+                               ret[1]=back_->b_;
+                             });
  public:
   DifferenceSingletonContainer(SingletonContainer *a, SingletonContainer *b);
+
+#ifndef IMP_DOXYGEN
+  bool get_is_up_to_date() const {
+    return a_->get_is_up_to_date() && b_->get_is_up_to_date();
+  }
+#endif
 
   IMP_SINGLETON_CONTAINER(DifferenceSingletonContainer);
 };

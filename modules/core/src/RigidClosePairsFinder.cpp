@@ -14,6 +14,7 @@
 #include "IMP/core/XYZ.h"
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/SingletonContainer.h>
+#include <IMP/macros.h>
 #include <IMP/algebra/eigen_analysis.h>
 #include <cmath>
 
@@ -163,12 +164,12 @@ namespace {
 
   ContainersTemp fill_containers(Refiner *r, SingletonContainer *sc) {
     ContainersTemp ret(1, sc);
-    for (unsigned int i=0; i< sc->get_number_of_particles(); ++i) {
-      if (RigidBody::particle_is_instance(sc->get_particle(i))) {
-        ContainersTemp m= r->get_input_containers(sc->get_particle(i));
-        ret.insert(ret.end(), m.begin(), m.end());
-      }
-    }
+    IMP_FOREACH_SINGLETON(sc, {
+        if (RigidBody::particle_is_instance(_1)) {
+          ContainersTemp m= r->get_input_containers(_1);
+          ret.insert(ret.end(), m.begin(), m.end());
+        }
+      });
     IMP_LOG(VERBOSE, "Input containers are " << Containers(ret) << std::endl);
     return ret;
   }

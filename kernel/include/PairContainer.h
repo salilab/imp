@@ -156,11 +156,16 @@ public:
   /** @} */
 
 #ifndef IMP_DOXYGEN
+  typedef ParticlePair value_type;
   ParticlePair get(unsigned int i) const {return get_particle_pair(i);}
   bool get_contains(const ParticlePair& v) const {
     return get_contains_particle_pair(v);
   }
   unsigned int get_number() const {return get_number_of_particle_pairs();}
+  virtual bool get_provides_access() const {return false;}
+  virtual const ParticlePairsTemp& get_access() const {
+    IMP_THROW("Object not implemented properly.", IndexException);
+  }
 #endif
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(PairContainer);

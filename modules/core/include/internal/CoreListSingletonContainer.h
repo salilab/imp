@@ -31,6 +31,11 @@ public:
   void add_particles(const ParticlesTemp &c);
   void set_particles(ParticlesTemp c);
   void clear_particles();
+#ifndef IMP_DOXYGEN
+  bool get_is_up_to_date() const {
+    return true;
+  }
+#endif
   IMP_LISTLIKE_SINGLETON_CONTAINER(CoreListSingletonContainer);
 };
 

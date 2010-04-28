@@ -1810,7 +1810,6 @@ protected:                                      \
                             DerivativeAccumulator *da) const;   \
   ParticlesTemp get_contained_particles() const;                \
   bool get_contained_particles_changed() const;                 \
-  ContainersTemp get_input_containers() const;                  \
   IMP_OBJECT(Name)
 
 
@@ -1838,7 +1837,6 @@ protected:                                      \
                             DerivativeAccumulator *da) const;   \
   ParticlesTemp get_contained_particles() const;                \
   bool get_contained_particles_changed() const;                 \
-  ContainersTemp get_input_containers() const;                  \
   IMP_OBJECT(Name)
 
 
@@ -1867,7 +1865,6 @@ protected:                                      \
                             DerivativeAccumulator *da) const;           \
   ParticlesTemp get_contained_particles() const;                        \
   bool get_contained_particles_changed() const;                         \
-  ContainersTemp get_input_containers() const;                          \
   IMP_OBJECT(Name)
 
 
@@ -1896,7 +1893,6 @@ protected:                                      \
                             DerivativeAccumulator *da) const;   \
   ParticlesTemp get_contained_particles() const;                \
   bool get_contained_particles_changed() const;                 \
-  ContainersTemp get_input_containers() const;                  \
   IMP_OBJECT(Name)
 
 
@@ -2035,6 +2031,97 @@ protected:                                      \
 #define IMP_NEW(Typename, varname, args)        \
   IMP::Pointer<Typename> varname(new Typename args)
 
+
+/** \name Perform an operation on a set of particles
+
+    These macros avoid various inefficiencies.
+
+    The macros take the name of the sequence and the operation to
+    peform. The item in the sequence is called _1.
+    Use it like
+    \code
+    IMP_FOREACH_PARTICLE(sc, std::cout << _1->get_name());
+    \endcode
+    @{
+*/
+#define IMP_FOREACH_SINGLETON(sequence, operation)                      \
+  do {                                                                  \
+    if (sequence->get_provides_access()) {                              \
+      const ParticlesTemp &imp_foreach_access=sequence->get_access();   \
+      for (unsigned int  _2=0; _2< imp_foreach_access.size(); ++_2) {   \
+        IMP::Particle* _1= imp_foreach_access[_2];                      \
+        bool imp_foreach_break=false;                                   \
+        operation                                                       \
+          if (imp_foreach_break)  break;                                \
+      }                                                                 \
+      IMP_INTERNAL_CHECK(imp_foreach_access.size()                      \
+                         == sequence->get_number_of_particles(),        \
+                         "Sizes do not match");                         \
+    } else {                                                            \
+      unsigned int imp_foreach_size= sequence->get_number_of_particles(); \
+      for (unsigned int _2=0;                                           \
+           _2 != imp_foreach_size;                                      \
+           ++_2) {                                                      \
+        IMP::Particle* _1= sequence->get_particle(_2);                  \
+        bool imp_foreach_break=false;                                   \
+        operation                                                       \
+          if (imp_foreach_break) break;                                 \
+      }                                                                 \
+      }                                                                 \
+  } while (false)
+
+#define IMP_FOREACH_PAIR(sequence, operation)                           \
+  do {                                                                  \
+    if (sequence->get_provides_access()) {                              \
+      const ParticlePairsTemp &imp_foreach_access=sequence->get_access(); \
+      for (unsigned int _2=0; _2< imp_foreach_access.size(); ++_2) {    \
+        IMP::ParticlePair _1= imp_foreach_access[_2];                   \
+        bool imp_foreach_break=false;                                   \
+        operation                                                       \
+          if (imp_foreach_break) { broken=true; break;}                 \
+      }                                                                 \
+    } else {                                                            \
+      unsigned int imp_foreach_size= sequence->get_number_of_particle_pairs(); \
+      for (unsigned int _2=0;                                           \
+           _2 != imp_foreach_size;                                      \
+           ++_2) {                                                      \
+        IMP::ParticlePair _1= sequence->get_particle_pair(_2);          \
+        bool imp_foreach_break=false;                                   \
+        operation                                                       \
+          if (imp_foreach_break) break;                                 \
+      }                                                                 \
+    }                                                                   \
+  } while (false)
+
+#define IMP_FOREACH_TRIPLET(sequence, operation)                        \
+  do {                                                                  \
+    unsigned int imp_foreach_size= IMP::internal::get_size(sequence);   \
+    for (unsigned int _2=0;                                             \
+         _2 != imp_foreach_size;                                        \
+         ++_2) {                                                        \
+      IMP::ParticleTriplet _1= IMP::internal::get(sequence,             \
+                                                  _2);                  \
+      bool imp_foreach_break=false;                                     \
+      operation                                                         \
+        if (imp_foreach_break) break;                                   \
+    }                                                                   \
+  } while (false)
+
+#define IMP_FOREACH_QUAD(sequence, operation)                           \
+  do {                                                                  \
+    unsigned int imp_foreach_size= IMP::internal::get_size(sequence);   \
+    for (unsigned int _2=0;                                             \
+         _2 != imp_foreach_size;                                        \
+         ++_2) {                                                        \
+      IMP::ParticleQuad _1= IMP::internal::get(sequence,                \
+                                               _2);                     \
+      bool imp_foreach_break=false;                                     \
+      operation                                                         \
+        if (imp_foreach_break) break;                                   \
+    }                                                                   \
+  } while (false)
+/** @} */
+
 /** Define a new key type.
 
     It defines two public types: Name, which is an instantiation of KeyBase, and
@@ -2064,7 +2151,46 @@ protected:                                      \
   typedef Key<Tag, false> Name;                         \
   IMP_VALUES(Name, Name##s)
 
+#ifndef SWIG
+/** Report dependencies of the container Name. Add the line
+    deps_(new DependenciesScoreState(this), model) to the constructor
+    initializer list. The input_deps argument should add the input
+    containers to a variable ret.
+*/
+#define IMP_CONTAINER_DEPENDENCIES(Name, input_deps)                    \
+  class DependenciesScoreState: public ScoreState {                     \
+    Name* back_;                                                        \
+  public:                                                               \
+  DependenciesScoreState(Name *n):                                      \
+    ScoreState(n->get_name()+" dependencies"),                          \
+    back_(n){}                                                          \
+  ContainersTemp get_input_containers() const{                          \
+    ContainersTemp ret;                                                 \
+    input_deps                                                          \
+    return ret;                                                         \
+  }                                                                     \
+  ContainersTemp get_output_containers() const{                         \
+    return ContainersTemp(1, back_);                                    \
+  }                                                                     \
+  ParticlesTemp get_input_particles() const {                           \
+    return ParticlesTemp();                                             \
+  }                                                                     \
+  ParticlesTemp get_output_particles() const{                           \
+    return ParticlesTemp();                                             \
+  }                                                                     \
+  ParticlesList get_interacting_particles() const {                     \
+    return ParticlesList();                                             \
+  }                                                                     \
+  void do_before_evaluate() {}                                          \
+  void do_after_evaluate(DerivativeAccumulator *) {}                    \
+  IMP_OBJECT_INLINE(DependenciesScoreState, {if (0) out<<1;}, {});      \
+  };                                                                    \
+  friend class DependenciesScoreState;                                  \
+  ScoreStatePointer<DependenciesScoreState> deps_
 
+#else
+#define IMP_CONTAINER_DEPENDENCIES(Name, input_deps)
+#endif
 
 #ifndef IMP_DOXYGEN
 #ifdef __GNU__

@@ -156,11 +156,16 @@ public:
   /** @} */
 
 #ifndef IMP_DOXYGEN
+  typedef ParticleTriplet value_type;
   ParticleTriplet get(unsigned int i) const {return get_particle_triplet(i);}
   bool get_contains(const ParticleTriplet& v) const {
     return get_contains_particle_triplet(v);
   }
   unsigned int get_number() const {return get_number_of_particle_triplets();}
+  virtual bool get_provides_access() const {return false;}
+  virtual const ParticleTripletsTemp& get_access() const {
+    IMP_THROW("Object not implemented properly.", IndexException);
+  }
 #endif
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(TripletContainer);

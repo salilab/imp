@@ -6,6 +6,8 @@
  */
 
 #include <IMP/core/MoverBase.h>
+#include <IMP/macros.h>
+#include <IMP/core/internal/singleton_helpers.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -36,15 +38,14 @@ void MoverBase::propose_move(Float f)
 
 void MoverBase::reject_move()
 {
-  for (unsigned int i=0; i< pc_->get_number_of_particles(); ++i) {
-    Particle *p = pc_->get_particle(i);
-    for (unsigned int j=0; j< get_number_of_float_keys(); ++j) {
-      p->set_value(get_float_key(j), floats_[i][j]);
-    }
-    for (unsigned int j=0; j< get_number_of_int_keys(); ++j) {
-      p->set_value(get_int_key(j), ints_[i][j]);
-    }
-  }
+  IMP_FOREACH_SINGLETON(pc_, {
+      for (unsigned int j=0; j< get_number_of_float_keys(); ++j) {
+        _1->set_value(get_float_key(j), floats_[_2][j]);
+      }
+      for (unsigned int j=0; j< get_number_of_int_keys(); ++j) {
+        _1->set_value(get_int_key(j), ints_[_2][j]);
+      }
+    });
 }
 
 IMPCORE_END_NAMESPACE
