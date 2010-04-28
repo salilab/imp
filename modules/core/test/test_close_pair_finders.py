@@ -112,6 +112,10 @@ class TestCPFL(IMP.test.TestCase):
         """Testing QuadraticClosePairsFinder"""
         print "quadratic"
         self.do_test_one(IMP.core.QuadraticClosePairsFinder())
+    def _test_quadratic(self):
+        """Testing NearestNeighborsClosePairsFinder"""
+        print "quadratic"
+        self.do_test_one(IMP.core.NearestNeighborsClosePairsFinder())
     def _test_sweep(self):
         """Testing BoxSweepClosePairsFinder"""
         if hasattr(IMP.core, 'BoxSweepClosePairsFinder'):
