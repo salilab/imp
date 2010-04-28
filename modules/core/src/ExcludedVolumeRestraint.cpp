@@ -69,10 +69,13 @@ void ExcludedVolumeRestraint::set_model(Model *m) {
   } else {
     IMP_LOG(TERSE, "Removing components of ExcludedVolumeRestraint"
             << std::endl);
-    IMP_CHECK_OBJECT(ss_.get());
-    IMP_CHECK_OBJECT(pr_.get());
-    ss_=NULL;
-    pr_=NULL;
+    if (ss_) {
+      IMP_CHECK_OBJECT(ss_.get());
+      IMP_CHECK_OBJECT(pr_.get());
+      get_model()->remove_restraint(pr_);
+      ss_=NULL;
+      pr_=NULL;
+    }
   }
   Restraint::set_model(m);
 }

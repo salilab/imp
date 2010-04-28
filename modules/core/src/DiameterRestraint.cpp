@@ -48,12 +48,15 @@ void DiameterRestraint::set_model(Model *m) {
     ss_= new core::SingletonConstraint(cr, NULL, p_);
 
     m->add_score_state(ss_);
+    // make sure model hasn't been cleanup up already
   } else {
-    IMP_LOG(TERSE, "Removing components of DiameterRestraint" << std::endl);
-    IMP_CHECK_OBJECT(ss_.get());
-    IMP_CHECK_OBJECT(p_.get());
-    m->remove_score_state(ss_);
-    m->remove_particle(p_);
+    if (ss_ && p_->get_is_active()) {
+      IMP_LOG(TERSE, "Removing components of DiameterRestraint" << std::endl);
+      IMP_CHECK_OBJECT(ss_.get());
+      IMP_CHECK_OBJECT(p_.get());
+      get_model()->remove_score_state(ss_);
+      get_model()->remove_particle(p_);
+    }
     ss_=NULL;
     p_=NULL;
   }
