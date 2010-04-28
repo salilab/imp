@@ -39,6 +39,7 @@ files = [
          'MonteCarlo.h',
          'Mover.h',
          'MoverBase.h',
+         'NearestNeighborsClosePairsFinder.h',
          'NormalMover.h',
          'OpenCubicSpline.h',
          'PairConstraint.h',
