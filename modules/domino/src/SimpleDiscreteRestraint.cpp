@@ -92,7 +92,7 @@ ContainersTemp SimpleDiscreteRestraint::get_input_containers() const
 
 
 double SimpleDiscreteRestraint::
-unprotected_evaluate(DerivativeAccumulator *accum) const
+unprotected_evaluate(DerivativeAccumulator */*accum*/) const
 {
   //build state key
   int a1 = int(p1->get_value(SimpleDiscreteSpace::get_optimization_key()));

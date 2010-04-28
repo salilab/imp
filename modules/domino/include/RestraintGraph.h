@@ -42,11 +42,11 @@ public:
       :  m_dtimemap(dmap), m_ftimemap(fmap), m_time(t) {
   }
   template < typename Vertex, typename Graph >
-  void discover_vertex(Vertex u, const Graph & g) const {
+  void discover_vertex(Vertex u, const Graph & /*g*/) const {
     put(m_dtimemap, u, m_time++);
   }
   template < typename Vertex, typename Graph >
-  void finish_vertex(Vertex u, const Graph & g) const {
+  void finish_vertex(Vertex u, const Graph & /*g*/) const {
     put(m_ftimemap, u, m_time++);
   }
   TimeMap m_dtimemap;

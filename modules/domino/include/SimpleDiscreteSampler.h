@@ -25,8 +25,8 @@ public:
   void populate_states_of_particles(
          container::ListSingletonContainer *particles,
          std::map<std::string, CombState *> *states) const;
-  void show_space(Particle *p,
-                  std::ostream& out = std::cout) const{}
+  void show_space(Particle */*p*/,
+                  std::ostream& /*out*/ = std::cout) const{}
 
   void show(std::ostream& out=std::cout) const;
 

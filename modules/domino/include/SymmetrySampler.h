@@ -49,7 +49,7 @@ public:
                container::ListSingletonContainer* particles,
                std::map<std::string, CombState *> *states) const;
   void show(std::ostream& out = std::cout) const {out<<"SymmetrySampler";}
-  DiscreteSet* get_space(Particle *p) const{return ts_;}
+  DiscreteSet* get_space(Particle */*p*/) const{return ts_;}
  protected:
 
   void reset_placement(const CombState *cs);
