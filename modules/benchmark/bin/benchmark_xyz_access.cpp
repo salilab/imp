@@ -40,7 +40,7 @@ public:
   IMP_SINGLETON_MODIFIER(DistanceScore);
 };
 
-void DistanceScore::do_show(std::ostream &out) const {}
+void DistanceScore::do_show(std::ostream &) const {}
 
 void DistanceScore::apply(Particle *p) const {
   XYZ d(p);
@@ -94,23 +94,23 @@ double compute_distances_particle_access(
 
 // TEST 5
 
-ParticlesList DistanceScore::get_interacting_particles(Particle *p) const {
+ParticlesList DistanceScore::get_interacting_particles(Particle *) const {
   return ParticlesList();
 }
 
-ParticlesTemp DistanceScore::get_input_particles(Particle *p) const {
+ParticlesTemp DistanceScore::get_input_particles(Particle *) const {
   return ParticlesTemp();
 }
 
-ParticlesTemp DistanceScore::get_output_particles(Particle *p) const {
+ParticlesTemp DistanceScore::get_output_particles(Particle *) const {
   return ParticlesTemp();
 }
 
-ContainersTemp DistanceScore::get_input_containers(Particle *p) const {
+ContainersTemp DistanceScore::get_input_containers(Particle *) const {
   return ContainersTemp();
 }
 
-ContainersTemp DistanceScore::get_output_containers(Particle *p) const {
+ContainersTemp DistanceScore::get_output_containers(Particle *) const {
   return ContainersTemp();
 }
 
