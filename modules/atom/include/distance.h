@@ -34,8 +34,8 @@ double get_rmsd(const Vecto3DsOrXYZs0& m1 ,const Vecto3DsOrXYZs1& m2,
   typename Vecto3DsOrXYZs1::const_iterator it1= m2.begin();
   for(; it0!= m1.end(); ++it0, ++it1) {
     algebra::VectorD<3> tred
-      =tr_for_second.get_transformed(get_geometry(*it1));
-    rmsd += algebra::get_squared_distance(get_geometry(*it0),
+      =tr_for_second.get_transformed(get_vector_d_geometry(*it1));
+    rmsd += algebra::get_squared_distance(get_vector_d_geometry(*it0),
                                       tred);
   }
   return std::sqrt(rmsd / m1.size());
@@ -60,8 +60,8 @@ double get_native_overlap(const Vecto3DsOrXYZs0& m1,
             <<"should be of the same size");
   unsigned int distances=0;
   for(unsigned int i=0;i<m1.size();i++) {
-    double d = algebra::get_distance(get_geometry(m1[i]),
-                                     get_geometry(m2[i]));
+    double d = algebra::get_distance(get_vector_d_geometry(m1[i]),
+                                     get_vector_d_geometry(m2[i]));
     if(d<=threshold) distances++;
   }
   return 100.0*distances/m1.size();

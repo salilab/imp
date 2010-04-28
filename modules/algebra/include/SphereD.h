@@ -57,7 +57,7 @@ private:
 };
 
 
-IMP_VOLUME_GEOMETRY_METHODS_D(Sphere,
+IMP_VOLUME_GEOMETRY_METHODS_D(Sphere, sphere,
                               {
                                 return PI * 4.0 * square(g.get_radius());
                               },

@@ -94,7 +94,7 @@ struct CGALKNNData {
   CGALKNNData(It b, It e): vsi_(std::distance(b,e)) {
     It c=b;
     for (unsigned int i=0; i< vsi_.size(); ++i) {
-      vsi_[i]= VectorWithIndex(i, get_geometry(*c));
+      vsi_[i]= VectorWithIndex(i, get_vector_d_geometry(*c));
       ++c;
     }
     tree_= new RCTree(vsi_.begin(), vsi_.end());
@@ -102,7 +102,7 @@ struct CGALKNNData {
   template <class G>
   void fill_nearest_neighbors(const G &g, unsigned int k,
                               double eps, Ints &ret) const {
-    VectorWithIndex d(-1, get_geometry(g));
+    VectorWithIndex d(-1, get_vector_d_geometry(g));
     K_neighbor_search search(*tree_, d, k, eps);
     IMP_INTERNAL_CHECK(std::distance(search.begin(), search.end())
                        == static_cast<int>(k),

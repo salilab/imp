@@ -157,11 +157,11 @@ inline double get_distance(XYZ a, XYZ b) {
 IMPCOREEXPORT void transform(XYZ a, const algebra::Transformation3D &tr);
 
 /** \genericgeometry */
-inline const algebra::VectorD<3> get_geometry(XYZ d) {
+inline const algebra::VectorD<3> get_vector_d_geometry(XYZ d) {
   return d.get_coordinates();
 }
 /** \genericgeometry */
-inline void set_geometry(XYZ d, const algebra::VectorD<3> &v) {
+inline void set_vector_d_geometry(XYZ d, const algebra::VectorD<3> &v) {
   d.set_coordinates(v);
 }
 
@@ -169,5 +169,22 @@ IMP_DECORATORS(XYZ,XYZs, Particles);
 
 
 IMPCORE_END_NAMESPACE
+
+
+#ifndef SWIG
+// use koenig lookup
+// swig doesn't like having the overloads in different namespaces
+// it will do the conversion implicitly anyway
+IMP_BEGIN_NAMESPACE
+/** \genericgeometry */
+inline const algebra::VectorD<3> get_vector_d_geometry(Particle *p) {
+  return core::XYZ(p).get_coordinates();
+}
+/** \genericgeometry */
+inline void set_vector_d_geometry(Particle *p, const algebra::VectorD<3> &v) {
+  core::XYZ(p).set_coordinates(v);
+}
+IMP_END_NAMESPACE
+#endif
 
 #endif  /* IMPCORE_XY_Z_H */

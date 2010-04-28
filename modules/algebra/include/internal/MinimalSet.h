@@ -13,6 +13,7 @@
 #include <utility>
 #include <algorithm>
 #include <limits>
+#include <vector>
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 

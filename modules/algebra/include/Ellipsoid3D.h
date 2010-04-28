@@ -52,7 +52,7 @@ private:
   Rotation3D rot_;
 };
 
-IMP_VOLUME_GEOMETRY_METHODS(Ellipsoid3D,
+IMP_VOLUME_GEOMETRY_METHODS(Ellipsoid3D, ellipsoid_3d,
                             if (0) std::cout << g; IMP_NOT_IMPLEMENTED,
                             return 4.0/3.0 * PI *g.get_radius(0)
                             *g.get_radius(1)*g.get_radius(2),

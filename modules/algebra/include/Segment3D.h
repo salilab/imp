@@ -45,7 +45,7 @@ class IMPALGEBRAEXPORT Segment3D
   VectorD<3> p_[2];
 };
 
-IMP_LINEAR_GEOMETRY_METHODS(Segment3D,
+IMP_LINEAR_GEOMETRY_METHODS(Segment3D, segment_3d,
                             return BoundingBoxD<3>(g.get_point(0))
                             +BoundingBoxD<3>(g.get_point(1)));
 

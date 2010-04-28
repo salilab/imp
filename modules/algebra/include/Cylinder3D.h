@@ -35,7 +35,7 @@ class IMPALGEBRAEXPORT Cylinder3D {
   double radius_;
 };
 
-IMP_VOLUME_GEOMETRY_METHODS(Cylinder3D,
+IMP_VOLUME_GEOMETRY_METHODS(Cylinder3D, cylinder_3d,
                             return 2.0*PI*g.get_radius()
                             * g.get_segment().get_length()
                             + 2.0*PI *square(g.get_radius()),
