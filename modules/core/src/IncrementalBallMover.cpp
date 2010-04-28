@@ -22,7 +22,7 @@ IncrementalBallMover::IncrementalBallMover(SingletonContainer *sc,
 {
 }
 
-void IncrementalBallMover::propose_move(Float size) {
+void IncrementalBallMover::propose_move(Float /*size*/) {
   // damnit, why didn't these functions make it into the standard
   /*std::random_sample(sc_->particles_begin(), sc_->particles_end(),
     moved_.begin(), moved_.end());*/
