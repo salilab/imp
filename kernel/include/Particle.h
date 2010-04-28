@@ -226,11 +226,11 @@ class IMPEXPORT Particle : public Container
 
  // begin incremental
   void on_changed() {
-    ps_->dirty_=true;
+    dirty_=true;
   }
 
   void set_is_not_changed() {
-    if (ps_->dirty_) {
+    if (dirty_ && ps_->shadow_) {
       ps_->shadow_->floats_= floats_;
       ps_->shadow_->ps_->floats_= ps_->floats_;
       ps_->shadow_->ps_->strings_= ps_->strings_;
@@ -243,7 +243,7 @@ class IMPEXPORT Particle : public Container
                                           get_value(*it)->ps_->shadow_);
       }
     }
-    ps_->dirty_=false;
+    dirty_=false;
   }
 
   void setup_incremental();
@@ -285,6 +285,7 @@ class IMPEXPORT Particle : public Container
  private:
   FloatTable floats_;
   std::auto_ptr<internal::ParticleStorage> ps_;
+  bool dirty_;
 #endif
 
   IMP_OBJECT(Particle);
@@ -429,7 +430,7 @@ class IMPEXPORT Particle : public Container
   */
   //! Return true if this particle has been changed since the last evaluate call
   bool get_is_changed() const {
-    return ps_->dirty_;
+    return dirty_;
   }
   /** \brief Return the shadow particle having attribute values from the last
       evaluation
@@ -449,6 +450,7 @@ class IMPEXPORT Particle : public Container
   ContainersTemp get_input_containers() const;
   bool get_contained_particles_changed() const;
   ParticlesTemp get_contained_particles() const;
+  bool get_is_up_to_date() const { return true;}
 #endif
 };
 
