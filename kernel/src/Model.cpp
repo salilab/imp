@@ -756,9 +756,9 @@ void Model::order_score_states() {
   }
   ObjectMap om= boost::get(boost::vertex_name, deps.graph);
   build_s_dependency_graph(deps);
-  IMP_IF_LOG(VERBOSE) {
+  /*IMP_IF_LOG(VERBOSE) {
     write_graph(deps.graph, om, "s_dependency_graph.dot");
-  }
+    }*/
   SetIt<Stage, NOT_EVALUATING> reset(&cur_stage_);
   {
     // make sure they are up to date
@@ -772,9 +772,9 @@ void Model::order_score_states() {
                                           DependencyVertex()));
   }
   build_r_dependency_graph(deps);
-  IMP_IF_LOG(VERBOSE) {
+  /*IMP_IF_LOG(VERBOSE) {
     write_graph(deps.graph, om, "r_dependency_graph.dot");
-  }
+    }*/
   for (ParticleIterator pit = particles_begin();
        pit != particles_end(); ++pit) {
     DependencyVertex v= boost::add_vertex(deps.graph);
@@ -791,9 +791,9 @@ void Model::order_score_states() {
   }
   IMP_LOG(VERBOSE, "The graph has " << boost::num_vertices(deps.graph)
           << " vertices" << std::endl);
-  IMP_IF_LOG(VERBOSE) {
+  /*IMP_IF_LOG(VERBOSE) {
     write_graph(deps.graph, om, "dependency_graph.dot");
-  }
+    }*/
 
   ScoreStatesTemp sst=sort_score_states(deps);
   // must go before make_dependencies
