@@ -20,7 +20,10 @@ class SingletonTestModifier(IMP.SingletonModifier):
         fh.write("Test Particle")
     def apply(self, a0, a1=None):
         if str(type(a0)) == "<class 'IMP.Particle'>":
-            a0.add_attribute(self.k, 1)
+            if a0.has_attribute(self.k):
+                pass
+            else:
+                a0.add_attribute(self.k, 1)
         else:
             for p in a0:
                 self.apply(p, a1)
@@ -42,9 +45,11 @@ class PairTestModifier(IMP.PairModifier):
         for p in a0:
             if type(p) == tuple:
                 for q in p:
-                    q.add_attribute(self.k, 1)
+                    if not q.has_attribute(self.k):
+                        q.add_attribute(self.k, 1)
             else:
-                p.add_attribute(self.k, 1)
+                if not p.has_attribute(self.k):
+                    p.add_attribute(self.k, 1)
     def get_version_info(self):
         return 1
     def get_input_particles(self, p):

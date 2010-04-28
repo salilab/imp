@@ -58,6 +58,21 @@ public:
    the set of edges is updated.*/
   ConnectingPairContainer(SingletonContainer *sc, double error, bool mst);
 
+#ifndef IMP_DOXYGEN
+  bool get_is_up_to_date() const {
+    if (get_model()->get_stage() != Model::NOT_EVALUATING) {
+      return get_last_update_evaluation() == get_model()->get_evaluation();
+    } else {
+      if (!sc_->get_is_up_to_date()) return false;
+      bool ret=true;
+      IMP_FOREACH_SINGLETON(sc_,
+                            ret= !(imp_foreach_break
+                                   =_1->get_is_changed()););
+      return ret;
+    }
+  }
+#endif
+
 #if defined(IMP_DOXYGEN) || defined(SWIG)
   IMP_PAIR_CONTAINER(ConnectingPairContainer);
 #else

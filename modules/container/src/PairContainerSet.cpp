@@ -27,7 +27,8 @@ PairContainerSet
 
 PairContainerSet
 ::PairContainerSet(Model *m, std::string name):
-  PairContainer(m, name) {
+  PairContainer(m, name),
+  deps_(new DependenciesScoreState(this), m){
   set_added_and_removed_containers( create_untracked_container(),
                                     create_untracked_container());
 }
@@ -45,7 +46,8 @@ namespace {
 PairContainerSet
 ::PairContainerSet(const PairContainersTemp& in,
                         std::string name):
-  PairContainer(my_get_model(in), name) {
+  PairContainer(my_get_model(in), name),
+  deps_(new DependenciesScoreState(this), my_get_model(in)){
   set_pair_containers(in);
   set_added_and_removed_containers( create_untracked_container(),
                                     create_untracked_container());
@@ -106,8 +108,9 @@ IMP_LIST_IMPL(PairContainerSet,
                 }
                 obj->set_was_used(true);
               },{},
-              if (!get_is_added_or_removed_container()) {
-                get_set(get_removed_pairs_container())
+              if (container
+                  && !container->get_is_added_or_removed_container()) {
+                get_set(container->get_removed_pairs_container())
                   ->add_pair_container(obj
                        ->get_removed_pairs_container());
               });
@@ -154,11 +157,6 @@ double PairContainerSet::evaluate_prechange(const PairScore *s,
   return score;
 }
 
-
-ContainersTemp PairContainerSet::get_input_containers() const {
-  return ContainersTemp(pair_containers_begin(),
-                        pair_containers_end());
-}
 
 ParticlesTemp PairContainerSet::get_contained_particles() const {
   ParticlesTemp ret;

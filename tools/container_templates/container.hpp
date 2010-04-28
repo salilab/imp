@@ -156,11 +156,16 @@ public:
   /** @} */
 
 #ifndef IMP_DOXYGEN
+  typedef Value value_type;
   Value get(unsigned int i) const {return get_classname(i);}
   bool get_contains(PassValue v) const {
     return get_contains_classname(v);
   }
   unsigned int get_number() const {return get_number_of_classnames();}
+  virtual bool get_provides_access() const {return false;}
+  virtual const ClassnamesTemp& get_access() const {
+    IMP_THROW("Object not implemented properly.", IndexException);
+  }
 #endif
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(GroupnameContainer);

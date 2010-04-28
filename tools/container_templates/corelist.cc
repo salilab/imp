@@ -92,11 +92,6 @@ CoreListGroupnameContainer::add_classnames(const ClassnamesTemp &c) {
 }
 
 
-ContainersTemp CoreListGroupnameContainer::get_input_containers() const {
-  return ContainersTemp();
-}
-
-
 void CoreListGroupnameContainer::do_before_evaluate() {
   internal::ListLikeGroupnameContainer::do_before_evaluate();
 }

@@ -14,6 +14,7 @@
 #include "container_config.h"
 #include <IMP/GroupnameContainer.h>
 #include <IMP/container_macros.h>
+#include <IMP/internal/container_helpers.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -26,6 +27,12 @@ IMPCONTAINER_BEGIN_NAMESPACE
 class IMPCONTAINEREXPORT GroupnameContainerSet
   : public GroupnameContainer
 {
+  IMP_CONTAINER_DEPENDENCIES(GroupnameContainerSet,
+                             {
+                               ret.insert(ret.end(),
+                                          back_->groupname_containers_begin(),
+                                          back_->groupname_containers_end());
+                             });
   // to not have added and removed
   GroupnameContainerSet();
  public:
@@ -51,6 +58,15 @@ class IMPCONTAINEREXPORT GroupnameContainerSet
     GroupnameContainerSet *lsc = new GroupnameContainerSet();
     return lsc;
   }
+#ifndef IMP_DOXYGEN
+  bool get_is_up_to_date() const {
+    for (unsigned int i=0;
+         i< get_number_of_groupname_containers(); ++i) {
+      if (!get_groupname_container(i)->get_is_up_to_date()) return false;
+    }
+    return true;
+  }
+#endif
 };
 
 

@@ -48,6 +48,10 @@ double ListLikeGroupnameContainer
 unsigned int ListLikeGroupnameContainer
 ::get_number_of_classnames() const {
   IMP_CHECK_OBJECT(this);
+  IMP_USAGE_CHECK(get_is_up_to_date(),
+                  "Attempting to use container "
+                  << get_name() << " that is not up to date."
+                  << " Call Model::evaluate() first, or something is broken.");
   return data_.size();
 }
 bool ListLikeGroupnameContainer

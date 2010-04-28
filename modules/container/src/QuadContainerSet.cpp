@@ -27,7 +27,8 @@ QuadContainerSet
 
 QuadContainerSet
 ::QuadContainerSet(Model *m, std::string name):
-  QuadContainer(m, name) {
+  QuadContainer(m, name),
+  deps_(new DependenciesScoreState(this), m){
   set_added_and_removed_containers( create_untracked_container(),
                                     create_untracked_container());
 }
@@ -45,7 +46,8 @@ namespace {
 QuadContainerSet
 ::QuadContainerSet(const QuadContainersTemp& in,
                         std::string name):
-  QuadContainer(my_get_model(in), name) {
+  QuadContainer(my_get_model(in), name),
+  deps_(new DependenciesScoreState(this), my_get_model(in)){
   set_quad_containers(in);
   set_added_and_removed_containers( create_untracked_container(),
                                     create_untracked_container());
@@ -106,8 +108,9 @@ IMP_LIST_IMPL(QuadContainerSet,
                 }
                 obj->set_was_used(true);
               },{},
-              if (!get_is_added_or_removed_container()) {
-                get_set(get_removed_quads_container())
+              if (container
+                  && !container->get_is_added_or_removed_container()) {
+                get_set(container->get_removed_quads_container())
                   ->add_quad_container(obj
                        ->get_removed_quads_container());
               });
@@ -154,11 +157,6 @@ double QuadContainerSet::evaluate_prechange(const QuadScore *s,
   return score;
 }
 
-
-ContainersTemp QuadContainerSet::get_input_containers() const {
-  return ContainersTemp(quad_containers_begin(),
-                        quad_containers_end());
-}
 
 ParticlesTemp QuadContainerSet::get_contained_particles() const {
   ParticlesTemp ret;
