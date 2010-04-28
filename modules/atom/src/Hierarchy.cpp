@@ -307,7 +307,9 @@ core::RigidBody setup_as_rigid_body(Hierarchy h) {
   for (unsigned int i=0; i< internal.size(); ++i) {
     if (internal[i] != h) {
       core::RigidMembers leaves(get_leaves(Hierarchy(internal[i])));
-      core::RigidBody::setup_particle(internal[i], rbd, leaves);
+      if (!leaves.empty()) {
+        core::RigidBody::setup_particle(internal[i], rbd, leaves);
+      }
     }
   }
   return rbd;
