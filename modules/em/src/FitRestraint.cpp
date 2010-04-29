@@ -65,9 +65,13 @@ void FitRestraint::initialize_model_density_map(
   none_rb_model_dens_map_->reset_data(0.0);
   for(ParticleIterator it = particles_begin(); it != particles_end();it++) {
     if (core::RigidBody::particle_is_instance(*it)) {
-      rbs_.push_back(core::RigidBody(*it));
-      rbs_orig_trans_.push_back(
-        core::RigidBody(*it).get_transformation().get_inverse());
+      IMP_INTERNAL_CHECK(use_fast_version_,
+         "Some of the particles are rigid bodies. You should use the fast " <<
+         "version or provide the rigid body members as input "<<
+         "instead of the rigid body \n");
+      core::RigidBody rb = core::RigidBody(*it);
+      rbs_.push_back(rb);
+      rbs_orig_trans_.push_back(rb.get_transformation().get_inverse());
       rb_model_dens_map_.push_back(
         new SampledDensityMap(*(target_dens_map_->get_header())));
       Particles rb_ps=Particles(core::get_leaves(atom::Hierarchy(*it)));
