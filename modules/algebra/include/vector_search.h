@@ -9,6 +9,7 @@
 #define IMPALGEBRA_VECTOR_SEARCH_H
 
 #include "VectorD.h"
+#include <IMP/base_types.h>
 #include "internal/ann.h"
 #include "internal/cgal_knn.h"
 #include "internal/linear_knn.h"
