@@ -133,6 +133,14 @@ def _display_build_summary(target, source, env):
         print "  Boost libraries enabled."
     else:
         print "  Boost libraries disabled."
+    disabledm=[]
+    for m in env['IMP_MODULES_ALL']:
+        if not env.get(m+"_ok", False):
+            disabledm.append(m)
+    if len(disabledm) >1:
+        print "  "+ ", ".join(["IMP."+x for x in disabledm]) + " were missing dependencies and disabled"
+    elif len(disabledm) ==1:
+        print "  IMP."+disabledm[0] + " was missing dependencies and disabled"
     open(target[0].abspath, "w").write("done")
 def _print_config_cpp(target, source, env):
     pass
@@ -153,7 +161,11 @@ for p in BUILD_TARGETS:
         if len(Glob(tp)) >0:
             env.Depends(buildsummary, tp)
         else:
-            env.Depends(buildsummary, env.Alias(p))
+            a= Alias(p)
+            if len(a[0].get_contents())==0:
+                print "Do not know how to build target", p
+                Exit(1)
+            env.Depends(buildsummary, Alias(p))
 if len(BUILD_TARGETS) ==0:
     env.Depends(buildsummary, "all")
     BUILD_TARGETS.append("all")
