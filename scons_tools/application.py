@@ -13,12 +13,13 @@ def IMPCPPApplication(envi, target, source, required_modules=[],
     env.Prepend(LIBS=dependencies_to_libs(env, required_modules))
     env.Prepend(CPPPATH=["#/build/include"])
     env.Prepend(LIBPATH=["#/build/lib"])
-    rp= process_dependencies(env, required_dependencies)
-    op= process_dependencies(env, optional_dependencies)
-    if not rp[0]:
+    try:
+        rp= process_dependencies(env, required_dependencies, True)
+    except EnvironmentError as e:
         print "Application", str(target), "cannot be built due to missing dependencies."
         return
-    env.Append(LIBS=rp[1]+op[1])
+    op= process_dependencies(env, optional_dependencies)
+    env.Append(LIBS=rp+op)
     if len(required_libraries)+len(required_headers) > 0:
         check_libraries_and_headers(env, required_libraries, required_headers)
     prog= env.Program(target=target, source=source)
