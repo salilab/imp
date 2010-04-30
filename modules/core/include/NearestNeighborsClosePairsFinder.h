@@ -13,7 +13,6 @@
 #include "core_config.h"
 
 
-#ifdef IMP_USE_CGAL
 IMPCORE_BEGIN_NAMESPACE
 
 //! Find all nearby pairs using the algebra::NearestNeighbor code
@@ -29,7 +28,5 @@ class IMPCOREEXPORT NearestNeighborsClosePairsFinder : public ClosePairsFinder
 };
 
 IMPCORE_END_NAMESPACE
-
-#endif /* IMP_USE_CGAL */
 
 #endif  /* IMPCORE_NEAREST_NEIGHBORS_CLOSE_PAIRS_FINDER_H */
