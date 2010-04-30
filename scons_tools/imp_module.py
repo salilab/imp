@@ -139,7 +139,10 @@ def dependencies_to_libs(env, deps, is_kernel=False):
             libs.append("imp_"+d)
     for d in ed:
         #print "libs for " + d + " are " + str(env[d+"_libs"])
-        libs= libs+env[d+"_libs"]
+        try:
+            libs= libs+env[d+"_libs"]
+        except:
+            pass
     return libs
 
 
@@ -571,10 +574,7 @@ def IMPModuleTest(env, python_tests, cpp_tests, cpp_required_modules=[],
        generally a simple output file, e.g. 'test.passed', while the single
        source is a Python script to run (usually run-all-tests.py).
        Right now, the assumption is made that run-all-tests.py executes
-       all files called test_*.py in the current directory and subdirectories.
-       If the TEST_ENVSCRIPT construction variable is set, it is a shell
-       script to run to set up the environment to run the test script.
-       A convenience alias for the tests is added, and they are always run."""
+       all files called test_*.py in the current directory and subdirectories."""
     files= ["#/tools/imppy.sh", "#/scons_tools/run-all-tests.py"]+\
         [x.abspath for x in python_tests]
     files.append(env.Alias(env['IMP_MODULE']+"-python"))
@@ -614,63 +614,47 @@ def check_libraries_and_headers(env, libraries, headers):
     for l in rlibraries:
         r= eval("conf.Check"+l+"()")
         if not r:
-            def fail(env, target, source):
-                print "The library " +l +" is required by module but could "\
-                    + "not be linked."
-                return 1
-            env.invalidate(fail)
-            return
+            raise EnvironmentError("the library " +l +" is required by module but could "\
+                                       + "not be linked.")
     for h in headers:
         r= eval("conf.Check"+hname(h)+"()")
         if not r:
-            def fail(env, target, source):
-                print "The header "+ h +" is required by module but could "\
-                    + "not be found."
-                return 1
-            env.invalidate(fail)
-            return
+            raise EnvironmentError("The header "+ h +" is required by module but could "\
+                                       + "not be found.")
 
-def invalidate(env, fail_action):
-    """'Break' an environment, so that any builds with it use the fail_action
-       function (which should be an Action which terminates the build)"""
-    for var in ('SHLINKCOM', 'CCCOM', 'CXXCOM', 'SHCCCOM', 'SHCXXCOM',
-                'SWIGCOM'):
-        env[var] = fail_action
-    #env.Append(BUILDERS={'_IMPModuleTest': Builder(action=fail_action)})
-    env['VALIDATED'] = False
-
-def validate(env):
-    """Confirm that a module's environment is OK for builds."""
-    module = env['IMP_MODULE']
-    env['VALIDATED'] = True
-
-def process_dependencies(env, dependencies):
+def process_dependencies(env, dependencies, required=False):
     m_libs=[]
-    found=True
+    missing=[]
     for d in dependencies:
         if d== "CGAL":
             if env['CGAL_LIBS']:
                 m_libs=m_libs+env['CGAL_LIBS']
             else:
-                found=False
+                missing.append(d)
         elif d== "ANN":
             if env['ANN_LIBS']:
                 m_libs=m_libs+env['ANN_LIBS']
             else:
-                found=False
+                missing.append(d)
         elif d== "boost_file_system":
             if env['BOOST_LIBS']:
                 m_libs=m_libs+env['BOOST_FILESYSTEM_LIBS']
             else:
-                found=False
+                missing.append(d)
         elif d== "boost_program_options":
             if env['BOOST_LIBS']:
                 m_libs=m_libs+env['BOOST_PROGRAM_OPTIONS_LIBS']
             else:
-                found=False
+                missing.append(d)
+        elif d== "modeller":
+            if not env.get('HAS_MODELLER', False):
+                missing.append(d)
         else:
             raise ValueError("Do not understand optional dependency: " +d)
-    return (found,m_libs)
+    if required and len(missing)>0:
+        #print "  (missing "+ ", ".join(missing)+", disabled)"
+        raise EnvironmentError("missing dependency "+", ".join(missing))
+    return m_libs
 
 def IMPModuleBuild(env, version, required_modules=[],
                    optional_dependencies=[], config_macros=[],
@@ -712,18 +696,27 @@ def IMPModuleBuild(env, version, required_modules=[],
     #print module_include_path
     #print module_preproc
     #print module_namespace
-    m_libs=process_dependencies(env, optional_dependencies)[1]
-    env[module+"_libs"]=m_libs
     env[module+"_required_modules"]=required_modules
     env[module+"_optional_dependencies"]= optional_dependencies
     env['IMP_MODULES_ALL'].append(module)
 
-
+    preclone=env
     env.Prepend(SCANNERS = [swig.scanner, swig.inscanner])
     env['all_modules'].append(module)
-    env = bug_fixes.clone_env(env)
+    try:
+        m_libs=process_dependencies(env, optional_dependencies)\
+            + process_dependencies(env, required_dependencies, True)
+    except EnvironmentError as e:
+        env[module+"_libs"]=[]
+        env = bug_fixes.clone_env(env)
+        env['MODULE_FAILED']=str(e)
+    else:
+        env[module+"_libs"]=m_libs
+        env = bug_fixes.clone_env(env)
     env['IMP_REQUIRED_MODULES']= required_modules
-
+    for m in required_modules:
+        if not env[m+"_ok"]:
+            env['MODULE_FAILED']="Module "+m+" not supported"
     env.Append(BUILDERS = {'IMPModuleConfigH': config_h.ConfigH,
                            'IMPModuleConfigCPP': config_h.ConfigCPP,
                            'IMPModuleLinkTest': link_test.LinkTest,
@@ -777,10 +770,6 @@ def IMPModuleBuild(env, version, required_modules=[],
     env.Append(BUILDERS={'_IMPSWIGPreface': swig.SwigPreface})
     env.Append(BUILDERS={'_IMPMakeModPage': modpage.MakeModPage})
     env.Append(BUILDERS={'IMPRun': run.Run})
-    env.AddMethod(validate)
-    env.AddMethod(invalidate)
-    env['TEST_ENVSCRIPT'] = None
-    env['VALIDATED'] = None
 
     if version == "SVN" and env['svn'] and env['SVNVERSION']:
         if env.get('repository'):
@@ -800,23 +789,21 @@ def IMPModuleBuild(env, version, required_modules=[],
     env['IMP_MODULE_VERSION'] = version
 
     #if not env.GetOption('clean') and not env.GetOption('help'):
-    if True:
-        if len(required_libraries)+len(required_headers) > 0:
+    if len(required_libraries)+len(required_headers) > 0:
+        try:
             check_libraries_and_headers(env, required_libraries, required_headers)
-        for x in required_dependencies:
-            if x== "modeller":
-                if not env.get('HAS_MODELLER', False):
-                    print "  (modeller missing, disabled)"
-                    env.invalidate(modeller_test.fail)
-            else:
-                raise ValueError("Do not know dependency "+x)
+        except EnvironmentError as e:
+            env['MODULE_FAILED']=str(e)
 
-    if env['VALIDATED'] is not None:
-        print "IMP."+env['IMP_MODULE']+" is disabled"
+
+    if env.get('MODULE_FAILED', None) is not None:
+        print "IMP."+env['IMP_MODULE']+" is disabled because", env['MODULE_FAILED']
+        #preclone.Append(IMP_BUILD_SUMMARY=["IMP."+module+" disabled"])
+        preclone[module+"_ok"]=False
         Return()
     else:
-        print "Configuring module IMP." + env['IMP_MODULE']+" version "+env['IMP_MODULE_VERSION'],
-    print
+        print "Configuring module IMP." + env['IMP_MODULE']+" version "+env['IMP_MODULE_VERSION']
+        preclone[module+"_ok"]=True
 
 
 
@@ -830,7 +817,6 @@ def IMPModuleBuild(env, version, required_modules=[],
     env['IMP_MODULE_CONFIG']=config_macros
 
     vars=make_vars(env)
-    env.validate()
     env.SConscript('doc/SConscript', exports='env')
     env.SConscript('examples/SConscript', exports='env')
     env.SConscript('data/SConscript', exports='env')
