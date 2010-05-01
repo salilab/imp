@@ -162,9 +162,9 @@ for p in BUILD_TARGETS:
             env.Depends(buildsummary, tp)
         else:
             a= Alias(p)
-            if len(a[0].get_contents())==0:
-                print "Do not know how to build target", p
-                Exit(1)
+            #if len(a[0].get_contents())==0:
+            #    print "Do not know how to build target", p
+            #    Exit(1)
             env.Depends(buildsummary, Alias(p))
 if len(BUILD_TARGETS) ==0:
     env.Depends(buildsummary, "all")
