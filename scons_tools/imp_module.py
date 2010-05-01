@@ -706,7 +706,7 @@ def IMPModuleBuild(env, version, required_modules=[],
     try:
         m_libs=process_dependencies(env, optional_dependencies)\
             + process_dependencies(env, required_dependencies, True)
-    except EnvironmentError as e:
+    except EnvironmentError, e:
         env[module+"_libs"]=[]
         env = bug_fixes.clone_env(env)
         env['MODULE_FAILED']=str(e)
@@ -792,7 +792,7 @@ def IMPModuleBuild(env, version, required_modules=[],
     if len(required_libraries)+len(required_headers) > 0:
         try:
             check_libraries_and_headers(env, required_libraries, required_headers)
-        except EnvironmentError as e:
+        except EnvironmentError, e:
             env['MODULE_FAILED']=str(e)
 
 
