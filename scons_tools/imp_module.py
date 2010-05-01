@@ -716,7 +716,7 @@ def IMPModuleBuild(env, version, required_modules=[],
     env['IMP_REQUIRED_MODULES']= required_modules
     for m in required_modules:
         if not env[m+"_ok"]:
-            env['MODULE_FAILED']="Module "+m+" not supported"
+            env['MODULE_FAILED']="module "+m+" not supported"
     env.Append(BUILDERS = {'IMPModuleConfigH': config_h.ConfigH,
                            'IMPModuleConfigCPP': config_h.ConfigCPP,
                            'IMPModuleLinkTest': link_test.LinkTest,
