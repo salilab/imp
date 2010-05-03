@@ -15,7 +15,7 @@ def IMPCPPApplication(envi, target, source, required_modules=[],
     env.Prepend(LIBPATH=["#/build/lib"])
     try:
         rp= process_dependencies(env, required_dependencies, True)
-    except EnvironmentError as e:
+    except EnvironmentError, e:
         print "Application", str(target), "cannot be built due to missing dependencies."
         return
     op= process_dependencies(env, optional_dependencies)
