@@ -47,7 +47,11 @@ class Model;
 class IMPEXPORT ScoreState : public Object
 {
   friend class Model;
+#ifndef _MSC_VER
  protected:
+#else
+ public:
+#endif
   /** Override this method to take action when the score stated is added to
       a model. */
   virtual void set_model(Model* model);
