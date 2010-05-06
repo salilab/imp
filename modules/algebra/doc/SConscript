@@ -34,15 +34,15 @@ IMP::algebra::Vector2Ds style names.
  IMP::core::XYZ particle. It is often useful to be able to write
  algorithms that work on sets of points without worring how they are
  stored, the Generic Geometry layer provides that. It works using a
- set of functions IMP::core::get_geometry() and
- IMP::core::set_geometry() which manipulate the geometetry in terms of the IMP::algebra
- representation of the geometry in question. That is, IMP::core::get_geometry()
+ set of functions get_vector_3d() and
+ set_vector_3d() which manipulate the geometetry in terms of the IMP::algebra
+ representation of the geometry in question. That is, get_vector_3d()
  returns a IMP::algebra::VectorD<3> for both an IMP::algebra::Vector3D and
  a IMP::core::XYZ. Algorithms take their arguments as C++
  templates and use the generic geometry methods to manipulate the
  geometry. And versions of the function for both types of storage are
  exported to python, so one could also write generic functions in python.\\n\\n
- For %example, IMP::atom::rmsd() takes any combination of IMP::algebra::Vector3Ds
+ For %example, IMP::atom::get_rmsd() takes any combination of IMP::algebra::Vector3Ds
  or IMP::core::XYZs or IMP::core::XYZsTemp as arguments. Versions for all combinations
  of those are exported to python.
 
