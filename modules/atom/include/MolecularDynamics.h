@@ -57,10 +57,11 @@ public:
 
   IMP_LIST(private, Particle, particle, Particle*, Particles);
 
-private:
+protected:
   //! Perform a single dynamics step.
   virtual void step();
 
+private:
   //! Get the set of particles to use in this optimization.
   /** Scans for particles which have the necessary attributes to be
       optimized. Particles without optimized x,y,z and nonoptimized
