@@ -35,10 +35,12 @@ FitRestraint::FitRestraint(
                 "Particle " << ps[i]->get_name()
                 << " is missing the radius "<< radius_key
                 << std::endl);
+      if (!core::RigidBody::particle_is_instance(ps[i])) {
       IMP_USAGE_CHECK(ps[i]->has_attribute(weight_key),
                 "Particle " << ps[i]->get_name()
                 << " is missing the mass "<< weight_key
                 << std::endl);
+      }
     }
   }
   scalefac_ = scale;
