@@ -35,7 +35,7 @@ FitRestraint::FitRestraint(
                 "Particle " << ps[i]->get_name()
                 << " is missing the radius "<< radius_key
                 << std::endl);
-      IMP_USAGE_CHECK(ps[i]->has_attribute(radius_key),
+      IMP_USAGE_CHECK(ps[i]->has_attribute(weight_key),
                 "Particle " << ps[i]->get_name()
                 << " is missing the mass "<< weight_key
                 << std::endl);
@@ -47,7 +47,7 @@ FitRestraint::FitRestraint(
   initialize_model_density_map(radius_key,weight_key);
   IMP_LOG(VERBOSE,"after initialize_model_density_map"<<std::endl);
   model_dens_map_ = new SampledDensityMap(*em_map->get_header());
-  model_dens_map_->set_particles(ps);
+  model_dens_map_->set_particles(ps,radius_key,weight_key);
    // initialize the derivatives
   dx_.resize(get_number_of_particles(), 0.0);
   dy_.resize(get_number_of_particles(), 0.0);
@@ -75,7 +75,8 @@ void FitRestraint::initialize_model_density_map(
       rb_model_dens_map_.push_back(
         new SampledDensityMap(*(target_dens_map_->get_header())));
       Particles rb_ps=Particles(core::get_leaves(atom::Hierarchy(*it)));
-      rb_model_dens_map_[rb_model_dens_map_.size()-1]->set_particles(rb_ps);
+      rb_model_dens_map_[rb_model_dens_map_.size()-1]->
+        set_particles(rb_ps,radius_key,weight_key);
       rb_model_dens_map_[rb_model_dens_map_.size()-1]->resample();
     }
     else {
@@ -85,7 +86,7 @@ void FitRestraint::initialize_model_density_map(
   IMP_LOG(IMP::VERBOSE,"in initialize_model_density_map the number of"
           <<" particles that are not rigid bodies is:"
           <<not_rb_.size()<<std::endl);
-  none_rb_model_dens_map_->set_particles(not_rb_);
+  none_rb_model_dens_map_->set_particles(not_rb_,radius_key,weight_key);
 }
 void FitRestraint::resample() const {
   //resample the map containing all non rigid body particles
