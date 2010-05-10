@@ -78,13 +78,6 @@ public:
   //! Construct a density map as intructed in the input header
   DensityMap(const DensityHeader &header);
   DensityMap&  operator=(const DensityMap &other );
-  //! Creates a new map with the given dimension
-  /**
-    param[in] nx x-dimension (voxels)
-    param[in] ny y-dimension (voxels)
-    param[in] nz z-dimension (voxels)
-   */
-  void CreateVoidMap(const int &nx,const int &ny,const int &nz);
 
 #ifndef IMP_DOXYGEN
 #ifndef IMP_DEPRECATED
@@ -290,6 +283,17 @@ public:
 
   long get_number_of_voxels() const;
 
+
+  //! Set the map dimension and reset all voxels to 0
+  /**
+    \param[in] nx x-dimension (voxels)
+    \param[in] ny y-dimension (voxels)
+    \param[in] nz z-dimension (voxels)
+    \note the origin and spacing remain unchanged
+   */
+  void set_void_map(int nx,int ny,int nz);
+
+
   //! Increase the dimension of the map
   //! The function pads zeros to the  right-upper section on the map.
   //! The original content of the map will be in the lower XYZ part of the map
@@ -301,6 +305,23 @@ public:
                  currently in the map
    */
   void pad(int nx, int ny, int nz,float val=0.0);
+
+  //! Create a new padded map
+  /** \brief Given this map of size [nx,ny,nz],
+   the new map is of size [2*mrg_x+nx,2*mrg_y+ny,2*mrg_z+nz].
+   The new map will consist of the values of the old map,
+   padded margin on all sides.
+   \param[in] mrg_x
+      number of margin voxels to add on both right and left on the X axis
+   \param[in] mrg_y
+      number of margin voxels to add on both right and left on the Y axis
+   \param[in] mrg_z
+      number of margin voxels to add on both right and left on the Z axis
+   \param[in] val   all additional voxels will have this value
+   \exception if the input  x/y/z voxels is smaller than the one
+              currently in the map
+   */
+  DensityMap* pad_margin(int mrg_x, int mrg_y, int mrg_z,float val=0.0);
 
   //! Multiply each voxel in the map by the input factor
   //! The result is kept in the map.
@@ -408,6 +429,7 @@ IMPEMEXPORT void get_transformed_into(const DensityMap *from,
                                       const algebra::Transformation3D &tr,
                                       DensityMap *into,
                                        bool calc_rms=true);
+
 
 IMPEM_END_NAMESPACE
 

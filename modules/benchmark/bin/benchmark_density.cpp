@@ -21,7 +21,7 @@ void do_benchmark() {
     for (unsigned int j=0; j< 3; ++j) {
       n[j]= static_cast<int>(std::ceil(wid[j]/spacing));
     }
-    m[i]->CreateVoidMap(n[0], n[1], n[2]);
+    m[i]->set_void_map(n[0], n[1], n[2]);
     m[i]->set_origin(algebra::Vector3D(0,0,0));
     m[i]->update_voxel_size(spacing);
   }
