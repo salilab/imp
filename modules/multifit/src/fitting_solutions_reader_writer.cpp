@@ -60,11 +60,15 @@ FittingSolutionRecord parse_fitting_line(const std::string &line) {
 
 FittingSolutionRecords read_fitting_solutions(const char *fitting_fn) {
   std::fstream in;
-  in.open(fitting_fn, std::fstream::in);
-  IMP_USAGE_CHECK(in.good(), "Problem openning file " << fitting_fn <<
-                  " for reading " << std::endl);
-  std::string line;
   FittingSolutionRecords sols;
+  in.open(fitting_fn, std::fstream::in);
+  if (! in.good()) {
+    IMP_WARN("Problem openning file " << fitting_fn <<
+                  " for reading; returning 0 solutions" << std::endl);
+    in.close();
+    return sols;
+  }
+  std::string line;
   getline(in, line); //skip header line
   while (!in.eof()) {
     if (!getline(in, line)) break;
@@ -75,7 +79,11 @@ FittingSolutionRecords read_fitting_solutions(const char *fitting_fn) {
 }
 
 void write_fitting_solutions(const char *fitting_fn,
-                       const FittingSolutionRecords &fit_sols) {
+                             const FittingSolutionRecords &fit_sols,
+                             int num_sols) {
+  if (num_sols==-1) {
+    num_sols = fit_sols.size();
+  }
   std::fstream out;
   out.open(fitting_fn, std::fstream::out);
   IMP_USAGE_CHECK(out.good(), "Problem openning file " <<
@@ -84,10 +92,8 @@ void write_fitting_solutions(const char *fitting_fn,
   out<<"solution index | solution filename | rotation | translation  |"
      <<" match size | match average distance | cluster size |"
      <<" fitting score | RMSD to reference"<<std::endl;
-  std::string line;
-  for(FittingSolutionRecords::const_iterator it = fit_sols.begin();
-      it != fit_sols.end();it++) {
-    it->show(out);
+  for(int i=0;i<num_sols;i++) {
+    fit_sols[i].show(out);
     out<<std::endl;
   }
   out.close();

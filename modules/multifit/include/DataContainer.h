@@ -22,8 +22,14 @@ class IMPMULTIFITEXPORT DataContainer {
   DataContainer(){}
     DataContainer(const SettingsData &settings);
     atom::Hierarchy get_component(unsigned int i) const {
-      IMP_USAGE_CHECK(i<mhs_.size(),"index out of range \n");
+      IMP_USAGE_CHECK(i<mhs_.size(),"index "<<i<<" is out of range "
+                      << "[0,"<<mhs_.size()<<"]\n");
       return mhs_[i];
+    }
+    atom::Hierarchy get_component_reference(unsigned int i) const {
+      IMP_USAGE_CHECK(i<mhs_ref_.size(),"index of ref "<< i
+                      <<" is out of range [0,"<<mhs_.size()<<"]\n");
+      return mhs_ref_[i];
     }
     int get_number_of_components() const {
       return mhs_.size();}
@@ -31,7 +37,7 @@ class IMPMULTIFITEXPORT DataContainer {
       return dens_;}
     domino::JunctionTree get_junction_tree() const {
       return jt_;}
-    FittingSolutionRecords get_fitting_solutions(Particle *p) {
+    FittingSolutionRecords get_fitting_solutions(Particle *p) const {
       IMP_INTERNAL_CHECK(recs_.find(p) != recs_.end(),
        "no fitting records found for particle:"<<p->get_name()<<" \n");
       return recs_.find(p)->second;
@@ -44,13 +50,16 @@ class IMPMULTIFITEXPORT DataContainer {
     inline int get_number_of_density_anchor_points() const {
       return dens_ap_.size();}
     Model *get_model() { return mdl_;}
+    SettingsData get_settings() const { return set_;}
   protected:
     Model *mdl_;
     atom::Hierarchies mhs_;
+    atom::Hierarchies mhs_ref_;
     std::map<Particle *,FittingSolutionRecords> recs_;
     em::DensityMap *dens_;
     IMP::Particles dens_ap_;
     domino::JunctionTree jt_;
+    SettingsData set_;
 };
 IMPMULTIFIT_END_NAMESPACE
 #endif  /* IMPMULTIFIT_DATA_CONTAINER_H */

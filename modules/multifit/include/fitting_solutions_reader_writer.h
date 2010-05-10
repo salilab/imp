@@ -24,8 +24,15 @@ IMPMULTIFIT_BEGIN_NAMESPACE
  */
 IMPMULTIFITEXPORT FittingSolutionRecords read_fitting_solutions(
   const char *fitting_fn);
+//! Write fitting solutions to a file
+/**
+\param[in] fitting_fn the fitting filename
+\param[in] fit_sols the fitting solutions to write to file
+\param[in] num_sols optional, only write the first num_sols fits.
+ */
 IMPMULTIFITEXPORT void  write_fitting_solutions(
    const char *fitting_fn,
-   const FittingSolutionRecords &fit_sols);
+   const FittingSolutionRecords &fit_sols,
+   int num_sols=-1);
 IMPMULTIFIT_END_NAMESPACE
 #endif /* IMPMULTIFIT_FITTING_SOLUTIONS_READER_WRITER_H */

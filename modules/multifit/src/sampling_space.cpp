@@ -5,11 +5,12 @@
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  */
 
-#include "IMP/multifit/sampling_space.h"
-#include "IMP/core/utility.h"
-#include "IMP/core/XYZ.h"
-#include "IMP/core/Hierarchy.h"
-#include "IMP/atom/Hierarchy.h"
+#include <IMP/multifit/sampling_space.h>
+#include <IMP/core/utility.h>
+#include <IMP/core/XYZ.h>
+#include <IMP/core/Hierarchy.h>
+#include <IMP/atom/Hierarchy.h>
+#include <IMP/container/ListSingletonContainer.h>
 IMPMULTIFIT_BEGIN_NAMESPACE
 
 domino::TransformationMappedDiscreteSet*

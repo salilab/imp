@@ -43,6 +43,11 @@ class IMPMULTIFITEXPORT ComponentHeader {
     std::string get_cmm_ap_fn() const {return cmm_ap_fn_;}
     void set_reference_fn(const std::string &ref_fn){reference_fn_=ref_fn;}
     std::string get_reference_fn() const {return reference_fn_;}
+    void show(std::ostream& out = std::cout) const {
+      out<<name_<<"|"<<filename_<<"|"<<pdb_ap_fn_<<"|";
+      out<<num_ap_<<"|"<<transformations_fn_<<"|"<<reference_fn_
+         <<"|"<<std::endl;
+    }
   protected:
     std::string name_;
     std::string filename_;
@@ -82,7 +87,11 @@ class IMPMULTIFITEXPORT AssemblyHeader {
     void set_cmm_ap_fn (const std::string &new_fn) {cmm_ap_fn_=new_fn;}
     std::string get_junction_tree_fn () const {return jt_fn_;}
     void set_junction_tree_fn (const std::string &new_fn) {jt_fn_=new_fn;}
-
+    void show(std::ostream& out = std::cout) const {
+      out<<dens_fn_<<"|"<<resolution_<<"|"<<spacing_<<"|"<<origin_[0]<<"|";
+      out<<origin_[1]<<"|"<<origin_[2]<<"|"<<pdb_fine_ap_fn_<<"|";
+      out<<pdb_coarse_ap_fn_<<"|"<<jt_fn_<<"|"<<std::endl;
+    }
   protected:
     std::string dens_fn_;
     float resolution_;
@@ -97,8 +106,22 @@ class IMPMULTIFITEXPORT AssemblyHeader {
 //! Holds header data for optimization
 class IMPMULTIFITEXPORT SettingsData {
 public:
-public:
-  SettingsData(){}
+  SettingsData(){
+    data_path_="./";}
+  void show_component_header_line(std::ostream& out = std::cout) const {
+    out<<"name|protein|pdb_anchor_points|number of anchor points|"<<
+         "transformations|ref filename|"<<std::endl;
+  }
+  void show_density_header_line(std::ostream& out = std::cout) const {
+    out <<"map| resolution| spacing| x-origin| y-origin| z-origin|";
+    out<<"fine anchor points |coarse anchor_points|junction tree|"<<std::endl;
+  }
+  void set_asmb_fn(const std::string  &fn) {
+    asmb_fn_ = fn;
+  }
+  const char * get_asmb_fn() const {
+    return asmb_fn_.c_str();
+  }
   void add_component_header(ComponentHeader ch) {
     comp_data_.push_back(ch);
   }
@@ -115,11 +138,21 @@ public:
   AssemblyHeader get_assembly_header() const {
     return dens_data_;
   }
+  void set_data_path(const char *fn) {
+    data_path_=std::string(fn);
+  }
+  std::string get_data_path() const {return data_path_;}
+
 protected:
   std::vector<ComponentHeader> comp_data_;
   AssemblyHeader dens_data_;
+  std::string asmb_fn_;
+  std::string data_path_;
 };
 
-IMPMULTIFITEXPORT SettingsData read_settings(const char *filename);
+IMPMULTIFITEXPORT SettingsData read_settings(
+   const char *filename,const char *data_path);
+IMPMULTIFITEXPORT void write_settings(
+   const char *filename, const SettingsData &sd);
 IMPMULTIFIT_END_NAMESPACE
 #endif /* IMPMULTIFIT_SETTINGS_DATA_H */

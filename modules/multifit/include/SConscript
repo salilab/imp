@@ -8,7 +8,10 @@ files = [
          'fitting_solutions_reader_writer.h',
          'fitting_tools.h',
          'SettingsData.h'
-         'DataContainer.h'
+         'DataContainer.h',
+         'restraints_utils.h',
+         'sampling_space_utils.h',
+#         'mc_cg_refinement.h'
         ]
 # Install the include files:
 env.IMPModuleInclude(env.IMPModuleGetHeaders())
