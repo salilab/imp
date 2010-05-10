@@ -9,6 +9,9 @@ files = [
          'fitting_tools.cpp',
          'SettingsData.cpp',
          'DataContainer.cpp',
+         'restraints_utils.cpp',
+         'sampling_space_utils.cpp',
+#         'mc_cg_refinement.cpp'
         ]
 # Build and install the shared library:
 env.IMPModuleLib(env.IMPModuleGetSources())

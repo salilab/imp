@@ -25,6 +25,7 @@
 #include "multifit_config.h"
 #include "FittingSolutionRecord.h"
 #include "DataContainer.h"
+#include <IMP/domino/RestraintEvaluatorFromFile.h>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 typedef std::map<Particle *,Particle *> ParticleParticleMapping;
@@ -73,16 +74,42 @@ public:
   SingleDominoRun(
          const DataContainer &dc);
   //! Optimize
-  domino::DominoOptimizer* optimize();
+  domino::DominoOptimizer* optimize(int num_solutions);
 
   //! Get pairs of interacting anchor points according to the junction
   //! tree configuration
   ParticlePairs get_pairs_of_interacting_components(
     const ParticlePairs &anchor_comp_pairs) const;
   //! Run optimization
-  domino::DominoOptimizer* run(const ParticlePairs &anchor_comp_pairs,
-                               Float distance);
+  /**
+  \param[in] anchor_comp_pairs mapping from components to anchor points
+  \param[in] distance only consider fitting solutions that are at most
+                      distance from the mapped anchor point
+   \param[in] num_solutions the number of models to keep
+   \param[in] init_restraint_values_from_files if True the restraints values
+               have been precalculated and kept in files
+   */
+  domino::DominoOptimizer* run(ParticlePairs anchor_comp_pairs,
+     Float distance,
+     int num_solutions,
+     bool init_restraint_values_from_files = false);
+  //! Set the path of the restraint score directory
+  void set_restraint_score_directory_path(const std::string &fn) {
+    path_=fn;
+  }
+  void set_ev_restraint_weight(Float w) {
+    ev_weight_ = w;
+  }
+  void set_em_restraint_weight(Float w) {
+    em_weight_ = w;
+  }
+  std::vector<algebra::Transformation3D>
+   get_solution_as_transformations(int sol) {
+     return sampler_.get_transformations_of_state(
+             d_opt_->get_optimum_configuration(sol));
+  }
 protected:
+  void clear_optimization_data();
   void setup();
   //! Set tranformations for each component
   /**
@@ -93,7 +120,8 @@ protected:
                           Float distance);
   //! Set Single and pairwise restraints according to
   //! the junction tree configuration
-  void set_restraints(const ParticlePairs &anchor_comp_pairs);
+  void set_restraints(const ParticlePairs &anchor_comp_pairs,
+                      domino::RestraintEvaluatorFromFile *re=NULL);
   atom::Hierarchies components_;
   //Particles components_ps_;
   //  ParticleParticleMapping anchor_comp_map_;
@@ -113,6 +141,8 @@ protected:
   bool is_setup_;
   em::DensityMap *dmap_;
   DataContainer dc_;
+  std::string path_;
+  Float ev_weight_ , em_weight_;
 };
 
 IMPMULTIFIT_END_NAMESPACE
