@@ -17,7 +17,9 @@ IMPEM_BEGIN_NAMESPACE
 /note the function assumes that all of the particles have XYZ coordinates
  */
 IMPEMEXPORT long get_number_of_particles_outside_of_the_density(
-    DensityMap *dmap,const Particles &ps);
+     DensityMap *dmap,const Particles &ps,
+     const IMP::algebra::Transformation3D &t=
+         IMP::algebra::get_identity_transformation_3d(),float thr=0.0);
 IMPEM_END_NAMESPACE
 
 #endif  /* IMPEM_ENVELOPE_PENETRATION_H */
