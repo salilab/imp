@@ -10,19 +10,15 @@
 
 IMPEM_BEGIN_NAMESPACE
 
-SampledDensityMap::SampledDensityMap(const DensityHeader &header)
+SampledDensityMap::SampledDensityMap(const DensityHeader &header):
+  DensityMap(header)
 {
   x_key_=IMP::core::XYZ::get_coordinate_key(0);
   y_key_=IMP::core::XYZ::get_coordinate_key(1);
   z_key_=IMP::core::XYZ::get_coordinate_key(2);
-  header_ = header;
-  header_.compute_xyz_top();
   kernel_params_ = KernelParameters(header_.get_resolution());
-  //allocate the data
-  long nvox = get_number_of_voxels();
-  data_.reset(new emreal[nvox]);
-  calc_all_voxel2loc();
 }
+
 IMP::algebra::BoundingBox3D
   SampledDensityMap::calculate_particles_bounding_box(const Particles &ps) {
   IMP_INTERNAL_CHECK(ps.size()>0,
@@ -52,9 +48,12 @@ void SampledDensityMap::set_header(const algebra::VectorD<3> &lower_bound,
       2.*sig_cutoff*(resolution+maxradius))/voxel_size)),
     int(ceil((1.0*(upper_bound[2]-lower_bound[2]) +
       2.*sig_cutoff*(resolution+maxradius))/voxel_size)));
-  header_.set_xorigin(lower_bound[0]-sig_cutoff*(resolution + maxradius));
-  header_.set_yorigin(lower_bound[1]-sig_cutoff*(resolution + maxradius));
-  header_.set_zorigin(lower_bound[2]-sig_cutoff*(resolution + maxradius));
+  header_.set_xorigin(
+    floor(lower_bound[0]-sig_cutoff*(resolution + maxradius)));
+  header_.set_yorigin(
+    floor(lower_bound[1]-sig_cutoff*(resolution + maxradius)));
+  header_.set_zorigin(
+    floor(lower_bound[2]-sig_cutoff*(resolution + maxradius)));
   header_.alpha = header_.beta = header_.gamma = 90.0;
   // TODO : in MRC format mx equals Grid size in X
   // ( http://bio3d.colorado.edu/imod/doc/mrc_format.txt)
@@ -124,6 +123,7 @@ void SampledDensityMap::resample()
     }
   }
   reset_data();
+  min_resampled_value_=999;
   calc_all_voxel2loc();
   int  ivox, ivoxx, ivoxy, ivoxz, iminx, imaxx, iminy, imaxy, iminz, imaxz;
   // actual sampling
@@ -148,6 +148,9 @@ void SampledDensityMap::resample()
          ps_[ii]->get_value(x_key_), ps_[ii]->get_value(y_key_),
          ps_[ii]->get_value(z_key_), params->get_kdist(),
          iminx, iminy, iminz, imaxx, imaxy, imaxz);
+    IMP_LOG(IMP::VERBOSE,"Calculated bounding box for voxel: " << ii <<
+       " is :"<<iminx<<","<< iminy<<","<< iminz<<","<<
+       imaxx<<","<< imaxy<<","<<  imaxz <<std::endl);
     for (ivoxz=iminz;ivoxz<=imaxz;ivoxz++) {
       znxny=ivoxz * nxny;
       for (ivoxy=iminy;ivoxy<=imaxy;ivoxy++)  {
@@ -167,6 +170,39 @@ void SampledDensityMap::resample()
               params->get_normfac() * ps_[ii]->get_value(weight_key_) * tmp;
           }
           ivox++;
+        }
+      }
+    }
+  }
+  for (unsigned int ii=0; ii<ps_.size(); ii++) {
+    // If the kernel parameters for the particles have not been
+    // precomputed, do it
+    params = kernel_params_.get_params(ps_[ii]->get_value(radius_key_));
+    if (!params) {
+      IMP_LOG(TERSE, "EM map is using default params" << std::endl);
+      kernel_params_.set_params(xyzr_[ii].get_radius());
+      params = kernel_params_.get_params(ps_[ii]->get_value(radius_key_));
+    }
+    IMP_USAGE_CHECK(params, "Parameters shouldn't be NULL");
+    // compute the box affected by each particle
+    calc_sampling_bounding_box(
+         ps_[ii]->get_value(x_key_), ps_[ii]->get_value(y_key_),
+         ps_[ii]->get_value(z_key_), params->get_kdist(),
+         iminx, iminy, iminz, imaxx, imaxy, imaxz);
+    IMP_LOG(IMP::VERBOSE,"Calculated bounding box for voxel: " << ii <<
+           " is :"<<iminx<<","<< iminy<<","<< iminz<<","<<
+            imaxx<<","<< imaxy<<","<<  imaxz <<std::endl);
+    //update minimum resampled voxel
+    for (ivoxz=iminz;ivoxz<=imaxz;ivoxz++) {
+      znxny=ivoxz * nxny;
+      for (ivoxy=iminy;ivoxy<=imaxy;ivoxy++)  {
+        // we increment ivox this way to avoid unneceessary multiplication
+        // operations.
+        ivox = znxny + ivoxy * header_.get_nx() + iminx;
+        for (ivoxx=iminx;ivoxx<=imaxx;ivoxx++) {
+          if ((data_[ivox] < min_resampled_value_) && (data_[ivox] > 0.3)) {
+            min_resampled_value_ = data_[ivox];
+          }
         }
       }
     }
@@ -199,5 +235,93 @@ void SampledDensityMap::set_particles(const IMP::Particles &ps,
   weight_key_=mass_key;
   radius_key_=radius_key;
 }
+
+
+void SampledDensityMap::project (const Particles &ps,
+       int x_margin,int y_margin,int z_margin,
+       algebra::Vector3D shift,FloatKey mass_key){
+
+  int lower_margin[3];
+  int upper_margin[3];
+
+  ///set lower margins
+  lower_margin[0]=x_margin;
+  lower_margin[1]=y_margin;
+  lower_margin[2]=z_margin;
+  for(int i=0;i<3;i++) {
+    if (lower_margin[i]==0) lower_margin[i] = 1;
+  }
+
+  //set upper margin
+  upper_margin[0]=header_.get_nx()-lower_margin[0];
+  upper_margin[1]=header_.get_ny()-lower_margin[1];
+  upper_margin[2]=header_.get_nz()-lower_margin[2];
+
+  reset_data();
+
+  float x_loc,y_loc,z_loc;
+  int nx_half=header_.get_nx()/2;
+  int ny_half=header_.get_ny()/2;
+  int nz_half=header_.get_nz()/2;
+  core::XYZsTemp ps_xyz(ps);
+  float spacing = header_.get_spacing();
+  int x0,y0,z0,x1,y1,z1;
+  double a, b, c;
+  double ab, ab1, a1b, a1b1;
+
+  for (core::XYZsTemp::const_iterator it = ps_xyz.begin();
+            it != ps_xyz.end(); it++) {
+    //find the position of the protein in the density
+    //assuming it is in the center
+    x_loc = nx_half + (it->get_x()+shift[0]) / spacing;
+    y_loc = ny_half + (it->get_y()+shift[1]) / spacing;
+    z_loc = nz_half + (it->get_z()+shift[2]) / spacing;
+    x0=floor(x_loc);
+    y0=floor(y_loc);
+    z0=floor(z_loc);
+    x1=x0+1;
+    y1=y0+1;
+    z1=z0+1;
+    //check that the point is within the boundaries
+    bool is_valid=true;
+    is_valid = is_valid & (x0<upper_margin[0]) & (x1 >= lower_margin[0]);
+    is_valid = is_valid & (y0<upper_margin[1]) & (y1 >= lower_margin[1]);
+    is_valid = is_valid & (z0<upper_margin[2]) & (z1 >= lower_margin[2]);
+    if (!is_valid) {
+      IMP_WARN("particle:"<<it->get_particle()->get_name()
+                          <<" is not interpolated \n");
+      continue;
+    }
+    //interpolate
+    a = x1-x_loc;
+    b = y1-y_loc;
+    c = z1-z_loc;
+    ab= a*b;
+    ab1=a * (1-b);
+    a1b=(1-a) * b;
+    a1b1=(1-a) * (1-b);
+    a=(1-c);
+    float mass = (it->get_particle())->get_value(mass_key);
+    long ind;
+    ind=xyz_ind2voxel(x0,y0,z0);
+    set_value(ind,get_value(ind)+ab*c*mass);
+    ind=xyz_ind2voxel(x0,y0,z1);
+    set_value(ind,get_value(ind)+ab*a*mass);
+    ind=xyz_ind2voxel(x0,y1,z0);
+    set_value(ind,get_value(ind)+ab1*c*mass);
+    ind=xyz_ind2voxel(x0,y1,z1);
+    set_value(ind,get_value(ind)+ab1*a*mass);
+    ind=xyz_ind2voxel(x1,y0,z0);
+    set_value(ind,get_value(ind)+a1b*c*mass);
+    ind=xyz_ind2voxel(x1,y0,z1);
+    set_value(ind,get_value(ind)+a1b*a*mass);
+    ind=xyz_ind2voxel(x1,y1,z0);
+    set_value(ind,get_value(ind)+a1b1*c*mass);
+    ind=xyz_ind2voxel(x1,y1,z1);
+    set_value(ind,get_value(ind)+a1b1*a*mass);
+
+    }
+}
+
 
 IMPEM_END_NAMESPACE
