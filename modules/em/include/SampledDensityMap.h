@@ -70,9 +70,6 @@ public:
    */
   virtual void resample();
 
-/*====================================================================*/
-/* projects PDB to lattice using mass-weighting for colores and colacor */
-/* assumes both structure and map are centered (before any shifting) */
 //! Project particles on the grid by their mass value
 /**
 \note the function assumes that the particles are centered with
