@@ -353,13 +353,15 @@ emreal DensityMap::get_value(float x, float y, float z) const {
 
 emreal DensityMap::get_value(long index) const {
   IMP_USAGE_CHECK(index >= 0 && index < get_number_of_voxels(),
-            "The index " << index << " is not part of the grid");
+            "The index " << index << " is not part of the grid"
+            <<"[0,"<<get_number_of_voxels()<<"]\n");
   return data_[index];
 }
 
 void DensityMap::set_value(long index,emreal value) {
   IMP_USAGE_CHECK(index >= 0 && index < get_number_of_voxels(),
-            "The index " << index << " is not part of the grid");
+            "The index " << index << " is not part of the grid"
+            <<"[0,"<<get_number_of_voxels()<<"]\n");
   data_[index]=value;
   normalized_ = false;
   rms_calculated_ = false;
@@ -890,7 +892,8 @@ void get_transformed_into(const DensityMap *from,
 }
 
 DensityMap* DensityMap::pad_margin(int mrg_x, int mrg_y, int mrg_z,float val) {
-  IMP_NEW(DensityMap,new_dmap,(header_));
+  DensityMap *new_dmap = new DensityMap(header_);
+  //  IMP_NEW(DensityMap,new_dmap,(header_));
   //calculate the new extent
   int new_ext[3];
   new_ext[0]=header_.get_nx()+mrg_x*2;
@@ -910,7 +913,7 @@ DensityMap* DensityMap::pad_margin(int mrg_x, int mrg_y, int mrg_z,float val) {
       for(int ix=0;ix<header_.get_nx();ix++){
         curr_ind = zy_term_curr+ix;
         new_ind = zy_term_new+ix+mrg_x;
-        new_dmap->set_value(new_ind,get_value(new_ind));
+        new_dmap->set_value(new_ind,get_value(curr_ind));
       }
     }
   }
