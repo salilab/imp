@@ -21,8 +21,6 @@
 
 IMP_BEGIN_NAMESPACE
 
-class Model;
-
 //! Shared score state.
 /** ScoreStates allow code to be injected before and after the restraint
     evaluation process. Such code can be used to, for example:
