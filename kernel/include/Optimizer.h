@@ -278,6 +278,8 @@ class IMPEXPORT Optimizer: public Object
   //!@}
 
  private:
+  static void set_optimizer_state_optimizer(OptimizerState *os, Optimizer *o);
+
   typedef internal::VectorStorage<internal::FloatAttributeTableTraits>
     FloatTable;
   mutable FloatTable widths_;

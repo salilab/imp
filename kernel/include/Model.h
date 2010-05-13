@@ -59,6 +59,11 @@ private:
 
   void order_score_states();
 
+  /* Allow Model::ScoreStateDataWrapper class to call the private
+     ScoreState::set_model() function (older g++ and MSVC do not support
+     member classes as friends) */
+  static void set_score_state_model(ScoreState *ss, Model *model);
+
   void add_particle_internal(Particle *p) {
     IMP_CHECK_OBJECT(this);
     IMP_CHECK_OBJECT(p);

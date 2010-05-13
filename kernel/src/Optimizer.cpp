@@ -38,9 +38,14 @@ void Optimizer::update_states() const
 
 IMP_LIST_IMPL(Optimizer, OptimizerState, optimizer_state,
               OptimizerState*, OptimizerStates, {
-                obj->set_optimizer(this);
+                Optimizer::set_optimizer_state_optimizer(obj, this);
                 obj->set_was_used(true);
               },{},
-              obj->set_optimizer(NULL));
+              {Optimizer::set_optimizer_state_optimizer(obj, NULL);});
+
+void Optimizer::set_optimizer_state_optimizer(OptimizerState *os, Optimizer *o)
+{
+  os->set_optimizer(o);
+}
 
 IMP_END_NAMESPACE

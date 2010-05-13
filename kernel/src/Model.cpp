@@ -718,7 +718,7 @@ IMP_LIST_IMPL(Model, ScoreState, score_state, ScoreState*,
               {IMP_INTERNAL_CHECK(cur_stage_== NOT_EVALUATING,
                      "The set of score states cannot be changed during"
                                   << "evaluation.");
-                obj->set_model(this);
+                Model::set_score_state_model(obj, this);
                 obj->set_was_used(true);
                 IMP_LOG(VERBOSE, "Added score state " << obj->get_name()
                         << std::endl);
@@ -730,8 +730,11 @@ IMP_LIST_IMPL(Model, ScoreState, score_state, ScoreState*,
                                   << obj->get_name());
                 }
               },{reset_dependencies();},
-              {obj->set_model(NULL);});
+              {Model::set_score_state_model(obj, NULL);});
 
+void Model::set_score_state_model(ScoreState *ss, Model *model) {
+  ss->set_model(model);
+}
 
 void Model::order_score_states() {
   IMP_LOG(VERBOSE, "Ordering score states. Input list is: ");
