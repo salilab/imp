@@ -90,7 +90,7 @@ class IMPEXPORT Optimizer: public Object
   /**@}*/
 
 
-  IMP_REF_COUNTED_DESTRUCTOR(Optimizer);
+  IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Optimizer);
 
  protected:
   //! Update optimizer state, should be called at each successful step

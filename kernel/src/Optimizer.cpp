@@ -23,6 +23,10 @@ Optimizer::Optimizer(Model *m, std::string name)
   set_was_used(true);
 }
 
+Optimizer::~Optimizer()
+{
+}
+
 void Optimizer::update_states() const
 {
   IMP_LOG(VERBOSE,
