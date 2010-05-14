@@ -38,6 +38,10 @@ CoreClosePairContainer::CoreClosePairContainer(SingletonContainer *c,
              cpf);
 }
 
+CoreClosePairContainer::~CoreClosePairContainer()
+{
+}
+
 void CoreClosePairContainer::initialize(SingletonContainer *c, double distance,
                                          double slack,
                                          ClosePairsFinder *cpf) {

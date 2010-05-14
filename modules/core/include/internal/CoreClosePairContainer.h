@@ -60,7 +60,13 @@ public:
     }
   }
 #endif
-  IMP_LISTLIKE_PAIR_CONTAINER(CoreClosePairContainer);
+public:
+  virtual std::string get_type_name() const {return "CoreClosePairContainer";}
+  virtual ::IMP::VersionInfo get_version_info() const {
+    return get_module_version_info();
+  }
+  IMP_NO_DOXYGEN(virtual void do_show(std::ostream &out) const);
+  IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(CoreClosePairContainer);
 };
 
 
