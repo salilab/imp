@@ -12,14 +12,12 @@ namespace IMP::multifit {
 %include "IMP/multifit/DataContainer.h"
 %include "IMP/multifit/sampling_space_utils.h"
 %include "IMP/multifit/restraints_utils.h"
-%include "IMP/multifit/mc_cg_refinement.h"
 namespace IMP {
  namespace multifit {
    %template(FittingSolutionRecords) ::std::vector< IMP::multifit::FittingSolutionRecord >;
   }
 }
 %include "IMP/multifit/SingleDominoRun.h"
-%include "IMP/multifit/MultipleDominoRun.h"
 %include "IMP/multifit/fitting_solutions_reader_writer.h"
 %include "IMP/multifit/fitting_tools.h"
 
