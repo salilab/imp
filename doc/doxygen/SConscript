@@ -223,5 +223,4 @@ install=env.Command(Dir(env.subst(docdir)), dox,
 env.Alias('doc-install', install)
 env.Alias('doc', dox)
 env.Requires(install, env.Alias('doc'))
-env.Depends(env.Alias('all'), [env.Alias('doc')])
 Clean(dox, Glob("#/build/doc/html/*"))
