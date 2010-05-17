@@ -165,6 +165,10 @@ public:
 IMP_VALUES(TextInput,TextInputs);
 IMP_VALUES(TextOutput,TextOutputs);
 
+/** Create a temporary file. The path can be extracted from the TextOutput.*/
+IMPEXPORT TextOutput create_temporary_file();
+
+
 IMP_END_NAMESPACE
 
 #endif /* IMP_FILE_H */

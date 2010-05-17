@@ -7,6 +7,7 @@
  */
 
 #include <IMP/file.h>
+#include <cstdlib>
 
 IMP_BEGIN_NAMESPACE
 
@@ -118,6 +119,18 @@ namespace {
     std::ifstream inf("infile");
     testf(inf);
   }
+}
+
+
+TextOutput create_temporary_file() {
+  char filename[] = "/tmp/imptmp.XXXXXX";
+  int fd = mkstemp(filename);
+  if (fd == -1) {
+    IMP_THROW("Unable to create temporary file",
+              IOException);
+  }
+  close(fd);
+  return TextOutput(filename);
 }
 
 IMP_END_NAMESPACE
