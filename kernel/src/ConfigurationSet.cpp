@@ -77,7 +77,7 @@ void ConfigurationSet::set_base() {
   }
 }
 
-void ConfigurationSet::set_configuration(int i) {
+void ConfigurationSet::load_configuration(int i) {
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(this);
   IMP_USAGE_CHECK(i < static_cast<int>(get_number_of_configurations())

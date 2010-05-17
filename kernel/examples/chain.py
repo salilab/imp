@@ -50,7 +50,7 @@ s= IMP.core.MCCGSampler(m) # sample using MC and CG
 s.set_number_of_attempts(10)
 confs= s.get_sample()
 for i in range(0, confs.get_number_of_configurations()):
-    confs.set_configuration(i)
+    confs.load_configuration(i)
     d=IMP.display.ChimeraWriter("solution"+str(i)+".py")
     for p in chain.get_particles():
         d.add_geometry(IMP.display.XYZRGeometry(p))
