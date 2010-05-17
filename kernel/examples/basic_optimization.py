@@ -19,7 +19,7 @@ s.set_log_level(IMP.TERSE)
 # find some configurations which move the particles far apart
 configs= s.get_sample();
 for i in range(0, configs.get_number_of_configurations()):
-    configs.set_configuration(i)
+    configs.load_configuration(i)
     # print out the sphere containing the point set
     # - Why? - Why not?
     sphere= IMP.core.get_enclosing_sphere(xyzrs)
@@ -33,6 +33,6 @@ e= IMP.statistics.ConfigurationSetXYZEmbedding(configs, c)
 clustering = IMP.statistics.get_lloyds_kmeans(e, 3, 1000)
 for i in range(0,clustering.get_number_of_clusters()):
     # load the configuration for a central point
-    configs.set_configuration(clustering.get_cluster_representative(i))
+    configs.load_configuration(clustering.get_cluster_representative(i))
     sphere= IMP.core.get_enclosing_sphere(xyzrs)
     print sphere

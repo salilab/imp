@@ -22,7 +22,7 @@ ConfigurationSetXYZEmbedding
   cs_(cs), sc_(sc){}
 
 Floats ConfigurationSetXYZEmbedding::get_point(unsigned int a) const {
-  cs_->set_configuration(a);
+  cs_->load_configuration(a);
   Floats ret(sc_->get_number_of_particles()*3);
   for (unsigned int i=0; i< sc_->get_number_of_particles(); ++i) {
     ret[3*i]= core::XYZ(sc_->get_particle(i)).get_coordinates()[0];

@@ -49,7 +49,7 @@ class SingleDominoRunTests(IMP.test.TestCase):
             print "rmsd:",IMP.atom.get_rmsd(mhs_xyz,mhs_ref_xyz)," score:",opt_comb.get_total_score()
             #check that the components did not move ( because the transformations are identity)
         #for i in range(5):
-        #    aa.set_configuration(i)
+        #    aa.load_configuration(i)
     def _test_run_from_file(self):
         """Check that the correct answer is returned when reading restraint data from file"""
         anchor2comp1 = IMP.ParticlePairs()

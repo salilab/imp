@@ -149,7 +149,7 @@ ConfigurationSet *MCCGSampler::do_sample() const {
   IMP_CHECK_OBJECT(sc);
   int failures=0;
   for (unsigned int i=0; i< pms.attempts_; ++i) {
-    ret->set_configuration(-1);
+    ret->load_configuration(-1);
     randomize(pms,sc);
     IMP_LOG(TERSE, "Randomized configuration" << std::endl);
     try {
@@ -165,8 +165,8 @@ ConfigurationSet *MCCGSampler::do_sample() const {
       ret->save_configuration();
       IMP_IF_CHECK(USAGE_AND_INTERNAL) {
         double oe= get_model()->evaluate(false);
-        ret->set_configuration(-1);
-        ret->set_configuration(ret->get_number_of_configurations()-1);
+        ret->load_configuration(-1);
+        ret->load_configuration(ret->get_number_of_configurations()-1);
         double ne= get_model()->evaluate(false);
         IMP_INTERNAL_CHECK(std::abs(ne-oe) < (ne+oe)*.1+.1,
                            "Energies to not match before and after save."

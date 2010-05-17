@@ -144,7 +144,7 @@ Float MonteCarlo::optimize(unsigned int max_steps)
   }
   IMP_LOG(TERSE, "MC Final energy is " << prior_energy << std::endl);
   if (return_best_ && best_state) {
-    best_state->set_configuration(-1);
+    best_state->load_configuration(-1);
     IMP_LOG(TERSE, "MC Returning energy " << best_energy << std::endl);
     IMP_IF_CHECK(USAGE) {
       IMP_CHECK_CODE(double e=) get_model()->evaluate(false);

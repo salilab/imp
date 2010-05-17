@@ -97,7 +97,7 @@ class ParticleTests(IMP.test.TestCase):
         self._test_base(ps[0], 0, ps[1])
         self._test_base(ps[1], 1, ps[2])
         #no-op
-        cs.set_configuration(-1)
+        cs.load_configuration(-1)
         self._test_base(ps[0], 0, ps[1])
         self._test_base(ps[1], 1, ps[2])
     def test_scramble(self):
@@ -107,7 +107,7 @@ class ParticleTests(IMP.test.TestCase):
         #self._test_base(ps[2], 2, ps[0])
         self._scramble(ps[0])
         self._scramble(ps[1])
-        cs.set_configuration(-1)
+        cs.load_configuration(-1)
         self._test_base(ps[0], 0, ps[1])
         self._test_base(ps[1], 1, ps[2])
     def test_diff(self):
@@ -120,10 +120,10 @@ class ParticleTests(IMP.test.TestCase):
         cs.save_configuration()
         self._scramble(ps[0])
         self._scramble(ps[1])
-        cs.set_configuration(0)
+        cs.load_configuration(0)
         self._test_set(ps[0], 0, ps[2])
         self._test_set(ps[1], 1, ps[0])
-        cs.set_configuration(-1)
+        cs.load_configuration(-1)
         self._test_base(ps[0], 0, ps[1])
         self._test_base(ps[1], 1, ps[2])
         for p in m.get_particles():

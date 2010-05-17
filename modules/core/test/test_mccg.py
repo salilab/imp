@@ -70,7 +70,7 @@ class CGOptimizerTests(IMP.test.TestCase):
         cs=s.get_sample()
         print "found ", cs.get_number_of_configurations(), cs.get_name()
         for i in range(0, cs.get_number_of_configurations()):
-            cs.set_configuration(i)
+            cs.load_configuration(i)
             nm= "config"+str(i)+".pym"
             w= IMP.display.ChimeraWriter(nm)
             for p in lsc.get_particles():
