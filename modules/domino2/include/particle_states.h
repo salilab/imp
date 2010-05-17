@@ -15,6 +15,7 @@
 #include <IMP/macros.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/algebra/Vector3D.h>
+#include <IMP/internal/OwnerPointer.h>
 #include <map>
 
 IMPDOMINO2_BEGIN_NAMESPACE
@@ -52,7 +53,7 @@ IMP_OBJECTS(ParticleStates, ParticleStatesList);
     in the DominoSampler
  */
 class IMPDOMINO2EXPORT ParticleStatesTable: public Object {
-  typedef std::map<Particle*, internal::OwnerPointer<ParticleStates> > Map;
+  typedef std::map<Particle*, IMP::internal::OwnerPointer<ParticleStates> > Map;
   Map enumerators_;
   friend class DominoSampler;
   void set_enumerator(Particle *p, ParticleStates *e) {

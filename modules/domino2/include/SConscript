@@ -6,7 +6,9 @@ files = [
          'particle_states.h',
          'subset_evaluators.h',
          'subset_states.h',
-        ]
+         'utility.h',
+        ] \
+        + SConscript('internal/SConscript')
 
 # Install the include files:
 env.IMPModuleInclude(files)

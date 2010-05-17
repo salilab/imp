@@ -1,5 +1,10 @@
 files = [
-
+         'CombState.cpp',
+         'DominoOptimizer.cpp',
+         'JEdge.cpp',
+         'JNode.cpp',
+         'JunctionTree.cpp',
+         'RestraintGraph.cpp',
         ]
 
 files = [File(x) for x in files]
