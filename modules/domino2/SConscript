@@ -1,0 +1,4 @@
+Import('env')
+
+env.IMPModuleBuild(version='SVN',
+                   required_modules=['domino', 'container', 'core'])

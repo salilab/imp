@@ -1,0 +1,19 @@
+%include "IMP/domino2/domino2_macros.h"
+
+/* Tell swig how to treat various types when moving them to and from pyton */
+IMP_SWIG_OBJECT(IMP::domino2, DominoSampler, DominoSamplers);
+IMP_SWIG_OBJECT(IMP::domino2, ParticleStates, ParticleStatesList);
+IMP_SWIG_OBJECT(IMP::domino2, ParticleStatesTable, ParticleStatesTables);
+IMP_SWIG_OBJECT(IMP::domino2, SubsetEvaluator, SubsetEvaluators);
+IMP_SWIG_OBJECT(IMP::domino2, SubsetEvaluatorTable, SubsetEvaluatorTables);
+IMP_SWIG_OBJECT(IMP::domino2, ModelSubsetEvaluatorTable, ModelSubsetEvaluatorTables);
+IMP_SWIG_OBJECT(IMP::domino2, XYZsParticleStates, XYZsParticleStatesList);
+IMP_SWIG_OBJECT(IMP::domino2, SubsetStates, SubsetStatesList);
+IMP_SWIG_OBJECT(IMP::domino2, SubsetStatesTable, SubsetStatesTables);
+IMP_SWIG_OBJECT(IMP::domino2, DefaultSubsetStatesTable, DefaultSubsetStatesTables);
+
+
+%include "IMP/domino2/particle_states.h"
+%include "IMP/domino2/subset_evaluators.h"
+%include "IMP/domino2/subset_states.h"
+%include "IMP/domino2/DominoSampler.h"
