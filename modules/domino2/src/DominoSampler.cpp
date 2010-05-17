@@ -39,6 +39,16 @@ ConfigurationSet *DominoSampler::do_sample() const {
   Pointer<ConfigurationSet> ret= new ConfigurationSet(get_model());
   set_was_used(true);
   ParticlesTemp known_particles= enumerators_->get_particles();
+  StringKey k=internal::node_name_key();
+  for (unsigned int i=0; i< known_particles.size(); ++i) {
+    std::ostringstream oss;
+    oss << i;
+    if (known_particles[i]->has_attribute(k)) {
+      known_particles[i]->set_value(k, oss.str());
+    } else {
+      known_particles[i]->add_attribute(k, oss.str());
+    }
+  }
 
   InteractionGraph ig= get_interaction_graph(get_model());
   TextOutput dgraph= IMP::create_temporary_file();
