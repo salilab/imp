@@ -7,7 +7,11 @@
 
 #include <IMP/domino2/DominoSampler.h>
 #include <IMP/container/ListSingletonContainer.h>
-
+#include <IMP/domino2/utility.h>
+#include <IMP/domino2/internal/JunctionTree.h>
+#include <IMP/domino2/internal/RestraintEvaluator.h>
+#include <IMP/domino2/internal/DominoOptimizer.h>
+#include <IMP/file.h>
 
 IMPDOMINO2_BEGIN_NAMESPACE
 
@@ -35,11 +39,43 @@ ConfigurationSet *DominoSampler::do_sample() const {
   Pointer<ConfigurationSet> ret= new ConfigurationSet(get_model());
   set_was_used(true);
   ParticlesTemp known_particles= enumerators_->get_particles();
-  // extract dependency graph from the model
-  // write out the graph to a file
-  // run the junction tree python app on the file
-  // read in results to define the Subsets
-  container::ListSingletonContainers subsets;
+
+  InteractionGraph ig= get_interaction_graph(get_model());
+  TextOutput dgraph= IMP::create_temporary_file();
+  // dgraph.get_name()
+  std::string jtreename;
+  {
+    TextOutput jtree= IMP::create_temporary_file();
+    jtreename= jtree.get_name();
+  }
+  // call script to build jtree
+  internal::JunctionTree jt;
+  internal::read_junction_tree(jtreename,&jt);
+  internal::RestraintEvaluator re;
+  IMP_NEW(internal::DominoOptimizer, opt, (jt, get_model(), &re));
+  internal::DiscreteSampler ds(get_particle_states_table(),
+                               get_subset_states_table());
+  opt->set_sampling_space(&ds);
+  unsigned int numsol=5;
+  do {
+    // search for right number of solutions
+    opt->set_number_of_solutions(numsol);
+    opt->optimize(numsol);
+    // check that last energy is greater than cutoff
+    double score=-std::numeric_limits<double>::max();
+    for (unsigned int i=0; i< numsol; ++i) {
+      const internal::CombState *cs= opt->get_graph()->get_opt_combination(i);
+      score= std::max(score,
+                      static_cast<double>(opt->get_graph()
+                                          ->move_to_configuration(*cs)));
+    }
+    if (score > get_maximum_score()) {
+      break;
+    } else {
+      numsol*=2;
+    }
+  } while (true);
+  /*container::ListSingletonContainers subsets;
   typedef std::map<Ints, double, IntsLess> Table;
   std::map<Subset*, Table> tables;
   for (unsigned int i=0; i< subsets.size(); ++i) {
@@ -51,12 +87,19 @@ ConfigurationSet *DominoSampler::do_sample() const {
       double score= eval->get_score(state);
       tables[subsets[i]][state]=score;
     }
-  }
-  /*  propagate up tree making sure sets of states overlap
-      build final solutions into configuration set using StateEnumeratorTable
-   */
-  // assume filled
+    }*/
   std::vector<Ints> final_solutions;
+
+  for (unsigned int i=0; i< numsol; ++i) {
+    const internal::CombState *cs= opt->get_graph()->get_opt_combination(i);
+    internal::CombData cd= *cs->get_data();
+    Ints sol(known_particles.size());
+    for (unsigned int i=0; i< sol.size(); ++i) {
+      sol[i]= cd[known_particles[i]];
+    }
+    final_solutions.push_back(sol);
+  }
+
   for (unsigned int i=0; i< final_solutions.size(); ++i) {
     IMP_INTERNAL_CHECK(final_solutions[i].size() == known_particles.size(),
                        "Number of particles doesn't match");
@@ -66,7 +109,9 @@ ConfigurationSet *DominoSampler::do_sample() const {
       Pointer<ParticleStates> ps=enumerators_->get_particle_states(p);
       ps->load_state(final_solutions[i][j], p);
     }
-    ret->save_configuration();
+    if (get_is_good_configuration()) {
+      ret->save_configuration();
+    }
   }
   return ret.release();
 }

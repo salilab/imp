@@ -27,6 +27,15 @@ class IMPDOMINO2EXPORT DominoSampler : public Sampler
   internal::OwnerPointer<ParticleStatesTable> enumerators_;
   internal::OwnerPointer<SubsetStatesTable> node_enumerators_;
   internal::OwnerPointer<SubsetEvaluatorTable> evaluators_;
+  SubsetEvaluatorTable* get_subset_evaluator_table() const {
+    return evaluators_;
+  }
+  SubsetStatesTable* get_subset_states_table() const {
+    return node_enumerators_;
+  }
+  ParticleStatesTable* get_particle_states_table() const {
+    return enumerators_;
+  }
 public:
   DominoSampler(Model *m);
   // use these functions to set up the state space for the particles
