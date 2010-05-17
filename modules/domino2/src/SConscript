@@ -1,0 +1,11 @@
+Import('env')
+
+files = [
+         'DominoSampler.cpp',
+         'particle_states.cpp',
+         'subset_evaluators.cpp',
+         'subset_states.cpp',
+        ]
+
+# Build and install the shared library:
+env.IMPModuleLib(files)

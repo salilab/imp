@@ -1,0 +1,12 @@
+Import('env')
+
+files = [
+         'DominoSampler.h',
+         'domino2_macros.h',
+         'particle_states.h',
+         'subset_evaluators.h',
+         'subset_states.h',
+        ]
+
+# Install the include files:
+env.IMPModuleInclude(files)
