@@ -27,13 +27,15 @@ public:
   }
   inline Float get_value(Int first_ind, Int second_ind) const {
     Int ind = first_ind*second_len_+second_ind;
-    IMP_INTERNAL_CHECK(ind<values_.size(),"index out of range \n");
+    IMP_INTERNAL_CHECK(static_cast<unsigned int>(ind)<values_.size(),
+                       "index out of range \n");
     IMP_INTERNAL_CHECK(first_ind<first_len_,"first index out of range \n");
     return values_[ind];
   }
   void set_value(Int first_ind, Int second_ind,Float val)  {
     Int ind = first_ind*second_len_+second_ind;
-    IMP_INTERNAL_CHECK(ind<values_.size(),"index out of range \n");
+    IMP_INTERNAL_CHECK(static_cast<unsigned int>(ind)<values_.size(),
+                       "index out of range \n");
     IMP_INTERNAL_CHECK(first_ind<first_len_,"first index out of range \n");
     values_[ind] = val;
   }
