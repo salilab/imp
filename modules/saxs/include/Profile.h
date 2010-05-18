@@ -74,6 +74,9 @@ public:
     calculate_profile_real(particles1, particles2);
   }
 
+  //! calculate Intensity at zero (= squared number of electrons)
+  Float calculate_I0(const Particles& particles, bool heavy_atoms=true);
+
   //! calculate profile for any type of Particles that have coordinates
   void calculate_profile_constant_form_factor(const Particles& particles,
                                               Float form_factor = 1.0);
@@ -81,9 +84,7 @@ public:
   // computes theoretical profile faster for cyclically symmetric particles
   // assumes that the units particles are ordered one after another in the
   // input particles vector (n - symmetry order)
-  void calculate_profile(const Particles& particles, unsigned int n) {
-    calculate_profile_real(particles, n);
-  }
+  void calculate_profile_symmetric(const Particles& particles, unsigned int n);
 
   //! convert to real space P(r) function P(r) = 1/2PI^2 Sum(I(q)*qr*sin(qr))
   void profile_2_distribution(RadialDistributionFunction& rd,
@@ -169,11 +170,6 @@ public:
 
   void calculate_profile_real(const Particles& particles1,
                               const Particles& particles2);
-
-  // // for symmetry
-  // void calculate_profile_real(const Particles& particles,
-  //                             unsigned int n);
-
 
   void squared_distribution_2_profile(const RadialDistributionFunction& r_dist);
   void squared_distributions_2_partial_profiles(

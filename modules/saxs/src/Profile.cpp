@@ -206,6 +206,21 @@ void Profile::calculate_profile_real(const Particles& particles,
   squared_distribution_2_profile(r_dist);
 }
 
+Float Profile::calculate_I0(const Particles& particles, bool heavy_atoms)
+{
+  //Floats form_factors;
+  Float I0=0;
+  Floats vacuum_ff(particles.size());
+  FormFactorTable::FormFactorType ff_type = FormFactorTable::HEAVY_ATOMS;
+  if(!heavy_atoms) ff_type = FormFactorTable::ALL_ATOMS;
+  for (unsigned int i=0; i<particles.size(); i++) {
+    vacuum_ff[i] = ff_table_->get_vacuum_form_factor(particles[i], ff_type);
+  }
+  //get_form_factors(particles, ff_table_, form_factors, heavy_atoms);
+  for(unsigned int i=0; i<particles.size(); i++) I0+= vacuum_ff[i];
+  return square(I0);
+}
+
 void Profile::calculate_profile_constant_form_factor(const Particles& particles,
                                                      Float form_factor)
 {
@@ -344,8 +359,6 @@ void Profile::calculate_profile_partial(const Particles& particles1,
   sum_partial_profiles(1.0, 0.0, *this);
 }
 
-
-
 void Profile::sum_partial_profiles(Float c1, Float c2, Profile& out_profile) {
   if(partial_profiles_.size() > 0) {
     out_profile.init();
@@ -372,38 +385,65 @@ void Profile::sum_partial_profiles(Float c1, Float c2, Profile& out_profile) {
   }
 }
 
-/*
-void Profile::calculate_profile_real(const Particles& particles,
-                                     unsigned int n)
+
+void Profile::calculate_profile_symmetric(const Particles& particles,
+                                          unsigned int n)
 {
   IMP_USAGE_CHECK(n > 1,
                   "Attempting to use symmetric computation, symmetry order"
-            << " should be > 1. Got: " << n, ValueException);
+                  << " should be > 1. Got: " << n);
   IMP_LOG(TERSE, "start real profile calculation for " << particles.size()
           << " particles with symmetry = " << n << std::endl);
   // split units, only number_of_distances units is needed
   unsigned int number_of_distances = n/2;
   unsigned int unit_size = particles.size()/n;
-  std::vector<Particles> units(number_of_distances+1, Particles(unit_size));
+  // coordinates
+  std::vector<std::vector<algebra::Vector3D> > units(number_of_distances+1,
+                                 std::vector<algebra::Vector3D>(unit_size));
   for(unsigned int i=0; i<=number_of_distances; i++) {
     for(unsigned int j=0; j<unit_size; j++) {
-      units[i].set(j, particles[i*unit_size+j]);
+      units[i][j] = core::XYZ(particles[i*unit_size+j]).get_coordinates();
     }
   }
+  Floats form_factors(unit_size);
+  FormFactorTable::FormFactorType ff_type = FormFactorTable::HEAVY_ATOMS;
+  //if(!heavy_atoms) ff_type = FormFactorTable::ALL_ATOMS;
+  for (unsigned int i=0; i<unit_size; i++) {
+    form_factors[i] = ff_table_->get_form_factor(particles[i], ff_type);
+  }
+
 
   RadialDistributionFunction r_dist;
   // distribution within unit
-  r_dist.calculate_squared_distribution(units[0]);
+  for (unsigned int i=0; i<unit_size; i++) {
+    for (unsigned int j=i+1; j<unit_size; j++) {
+      Float dist2 = get_squared_distance(units[0][i], units[0][j]);
+      r_dist.add_to_distribution(dist2, 2*form_factors[i]*form_factors[j]);
+    }
+    r_dist.add_to_distribution(0.0, square(form_factors[i]));
+  }
 
   // distributions between units separated by distance i
-  for(unsigned int i=1; i<number_of_distances; i++) {
-    r_dist.calculate_squared_distribution(units[0], units[i]);
+  for(unsigned int in=1; in<number_of_distances; in++) {
+    for (unsigned int i=0; i<unit_size; i++) {
+      for (unsigned int j=0; j<unit_size; j++) {
+        Float dist2 = get_squared_distance(units[0][i], units[in][j]);
+        r_dist.add_to_distribution(dist2, 2*form_factors[i]*form_factors[j]);
+      }
+    }
   }
   r_dist.scale(n);
 
   // distribution between units separated by distance n/2
   RadialDistributionFunction r_dist2;
-  r_dist2.calculate_squared_distribution(units[0], units[number_of_distances]);
+  for (unsigned int i=0; i<unit_size; i++) {
+    for (unsigned int j=0; j<unit_size; j++) {
+      Float dist2 = get_squared_distance(units[0][i],
+                                         units[number_of_distances][j]);
+      r_dist2.add_to_distribution(dist2, 2*form_factors[i]*form_factors[j]);
+    }
+  }
+
   // if n is even, the scale is by n/2
   // if n is odd the scale is by n
   if(n & 1) r_dist2.scale(n); //odd
@@ -412,7 +452,9 @@ void Profile::calculate_profile_real(const Particles& particles,
 
   squared_distribution_2_profile(r_dist2);
 }
-*/
+
+
+
 
 void Profile::calculate_profile_real(const Particles& particles1,
                                      const Particles& particles2)
