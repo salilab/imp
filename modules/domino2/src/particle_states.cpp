@@ -16,14 +16,14 @@ ParticleStates::~ParticleStates(){}
 void ParticleStatesTable::do_show(std::ostream &out) const{}
 
 
-unsigned int XYZsParticleStates::get_number_of_states() const {
+unsigned int XYZsStates::get_number_of_states() const {
   return states_.size();
 }
-void XYZsParticleStates::load_state(unsigned int i, Particle *p) const {
+void XYZsStates::load_state(unsigned int i, Particle *p) const {
   IMP_USAGE_CHECK(i < states_.size(), "Out of range " << i);
   core::XYZ(p).set_coordinates(states_[i]);
 }
 
-void XYZsParticleStates::do_show(std::ostream &out) const{}
+void XYZsStates::do_show(std::ostream &out) const{}
 
 IMPDOMINO2_END_NAMESPACE

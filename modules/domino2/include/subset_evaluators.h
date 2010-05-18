@@ -14,7 +14,7 @@
 #include "particle_states.h"
 #include <IMP/Object.h>
 #include <IMP/Pointer.h>
-#include <IMP/ConfigurationSet.h>
+#include <IMP/Configuration.h>
 #include <IMP/Model.h>
 #include <IMP/macros.h>
 
@@ -64,9 +64,12 @@ IMP_OBJECTS(SubsetEvaluatorTable, SubsetEvaluatorFactories);
 */
 class IMPDOMINO2EXPORT ModelSubsetEvaluatorTable: public SubsetEvaluatorTable {
   mutable Pointer<Model> model_;
-  Pointer<ConfigurationSet> cs_;
+  Pointer<Configuration> cs_;
+  double cs_score_;
 public:
-  ModelSubsetEvaluatorTable(Model *m): model_(m), cs_(new ConfigurationSet(m)) {
+  ModelSubsetEvaluatorTable(Model *m): model_(m),
+    cs_(new Configuration(m, "evaluator")),
+    cs_score_(m->evaluate(false)){
   }
   IMP_SUBSET_EVALUATOR_TABLE(ModelSubsetEvaluatorTable);
 };

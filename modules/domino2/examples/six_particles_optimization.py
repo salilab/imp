@@ -12,8 +12,9 @@ def setup_restraints(m, ps):
         r=IMP.core.DistanceRestraint(sf, ps[pair[0]], ps[pair[1]])
         m.add_restraint(r)
 
-
+IMP.set_log_level(IMP.MEMORY)
 m=IMP.Model()
+print "create sampler"
 s=IMP.domino2.DominoSampler(m)
 #1. set up the particles
 print "setting up particles"
@@ -30,9 +31,12 @@ ub=IMP.algebra.Vector3D(10.,10.,10.)
 bb=IMP.algebra.BoundingBox3D(lb,ub)
 vs=[]
 for i in range(NUM_STATES):
-    vs.append(IMP.algebra.random_vector_in(bb))
+    vs.append(IMP.algebra.get_random_vector_in(bb))
+
+print "create states"
 states= IMP.domino2.XYZsStates(vs)
 for p in ps:
+    print p.get_name()
     s.set_particle_states(p, states)
 
 #3. add restraints (defining the scoring function)
@@ -40,8 +44,8 @@ print "setting up restraints"
 setup_restraints(m, ps)
 
 #5. optimize
-print "optimizing"
 s.set_maximum_score(1)
+print "sampling"
 cs=s.get_sample()
 
 print "Found ", cs.get_number_of_configurations(), "solutions"

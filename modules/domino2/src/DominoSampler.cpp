@@ -9,11 +9,13 @@
 #include <IMP/container/ListSingletonContainer.h>
 #include <IMP/domino2/utility.h>
 #include <IMP/domino2/internal/JunctionTree.h>
+
 #include <IMP/domino2/internal/RestraintEvaluator.h>
 #include <IMP/domino2/internal/DominoOptimizer.h>
 #include <IMP/file.h>
 
 IMPDOMINO2_BEGIN_NAMESPACE
+
 
 DominoSampler::DominoSampler(Model *m):
   Sampler(m, "Domino Sampler %1"),
@@ -36,33 +38,75 @@ struct IntsLess {
 
 ConfigurationSet *DominoSampler::do_sample() const {
   IMP_OBJECT_LOG;
+
   Pointer<ConfigurationSet> ret= new ConfigurationSet(get_model());
   set_was_used(true);
-  ParticlesTemp known_particles= enumerators_->get_particles();
+  IMP_NEW(container::ListSingletonContainer, known_particles,
+          (enumerators_->get_particles()));
   StringKey k=internal::node_name_key();
-  for (unsigned int i=0; i< known_particles.size(); ++i) {
+  std::map<Particle*, unsigned int> index;
+  for (unsigned int i=0; i< known_particles->get_number_of_particles(); ++i) {
     std::ostringstream oss;
     oss << i;
-    if (known_particles[i]->has_attribute(k)) {
-      known_particles[i]->set_value(k, oss.str());
+    Particle *p= known_particles->get_particle(i);
+    index[p]=i;
+    if (p->has_attribute(k)) {
+      p->set_value(k, oss.str());
     } else {
-      known_particles[i]->add_attribute(k, oss.str());
+      p->add_attribute(k, oss.str());
     }
   }
-
+  IMP_LOG(TERSE, "Sampling with " << known_particles->get_number_of_particles()
+          << " particles" << std::endl);
   InteractionGraph ig= get_interaction_graph(get_model());
-  TextOutput dgraph= IMP::create_temporary_file();
-  // dgraph.get_name()
+  std::string graphname;
+  {
+    TextOutput dgraph= IMP::create_temporary_file();
+    graphname=dgraph.get_name();
+    typedef boost::property_map<InteractionGraph,
+      boost::vertex_name_t>::type ParticleMap;
+
+    ParticleMap pm= boost::get(boost::vertex_name, ig);
+    typedef boost::graph_traits<InteractionGraph>::edge_iterator EIT;
+    typedef boost::graph_traits<InteractionGraph>::vertex_descriptor V;
+    EIT b,e;
+    boost::tie(b,e)= boost::edges(ig);
+    for (; b!= e; ++b) {
+      V f=boost::source(*b, ig);
+      V t=boost::target(*b, ig);
+      std::cout << "Writing edge " << boost::get(pm, f)->get_name()
+                << " " << boost::get(pm, t)->get_name() << std::endl;
+      dgraph.get_stream() << index[boost::get(pm, f)] << " "
+                          << index[boost::get(pm, t)]
+                          << "\n";
+    }
+  }
   std::string jtreename;
   {
     TextOutput jtree= IMP::create_temporary_file();
     jtreename= jtree.get_name();
   }
-  // call script to build jtree
+  std::string scriptname;
+  {
+    TextOutput script= IMP::create_temporary_file("py");
+    scriptname = script.get_name();
+    script.get_stream() << "import IMP.domino2\n";
+    script.get_stream() << "IMP.domino2._compute_junction_tree_from_file(\""
+                        << graphname << "\", \""
+                        << jtreename << "\")\n";
+  }
+  std::ostringstream oss;
+  oss << "python " << scriptname;
+  IMP_LOG(TERSE, "Calling external script for jtree " << std::endl);
+  int ev=system(oss.str().c_str());
+  if (ev != 0) {
+    IMP_THROW("Error running junction tree script", IOException);
+  }
   internal::JunctionTree jt;
   internal::read_junction_tree(jtreename,&jt);
   internal::RestraintEvaluator re;
-  IMP_NEW(internal::DominoOptimizer, opt, (jt, get_model(), &re));
+  IMP_NEW(internal::DominoOptimizer, opt, (known_particles, jt,
+                                           get_model(), &re));
   internal::DiscreteSampler ds(get_particle_states_table(),
                                get_subset_states_table());
   opt->set_sampling_space(&ds);
@@ -103,19 +147,20 @@ ConfigurationSet *DominoSampler::do_sample() const {
   for (unsigned int i=0; i< numsol; ++i) {
     const internal::CombState *cs= opt->get_graph()->get_opt_combination(i);
     internal::CombData cd= *cs->get_data();
-    Ints sol(known_particles.size());
+    Ints sol(known_particles->get_number_of_particles());
     for (unsigned int i=0; i< sol.size(); ++i) {
-      sol[i]= cd[known_particles[i]];
+      sol[i]= cd[known_particles->get_particle(i)];
     }
     final_solutions.push_back(sol);
   }
 
   for (unsigned int i=0; i< final_solutions.size(); ++i) {
-    IMP_INTERNAL_CHECK(final_solutions[i].size() == known_particles.size(),
+    IMP_INTERNAL_CHECK(final_solutions[i].size()
+                       == known_particles->get_number_of_particles(),
                        "Number of particles doesn't match");
     ret->load_configuration(-1);
-    for (unsigned int j=0; j< known_particles.size(); ++j) {
-      Particle *p=known_particles[j];
+    for (unsigned int j=0; j< known_particles->get_number_of_particles(); ++j) {
+      Particle *p=known_particles->get_particle(j);
       Pointer<ParticleStates> ps=enumerators_->get_particle_states(p);
       ps->load_state(final_solutions[i][j], p);
     }
@@ -127,7 +172,14 @@ ConfigurationSet *DominoSampler::do_sample() const {
 }
 
 void DominoSampler::set_particle_states(Particle *p, ParticleStates *se) {
+  std::cout << "Setting enumerator for " << p->get_name() << std::endl;
   enumerators_->set_enumerator(p, se);
+  std::cout << "particles are " << std::endl;
+  ParticlesTemp pt=enumerators_->get_particles();
+  for (unsigned int i=0; i< pt.size(); ++i) {
+    std::cout << pt[i]->get_name() << std::endl;
+  }
+  std::cout << "done" << std::endl;
 }
 void DominoSampler::set_subset_evaluator_table(SubsetEvaluatorTable *eval) {
   evaluators_= eval;

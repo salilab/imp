@@ -38,7 +38,8 @@ public:
   \param[in] r_eval evaluator used to evaluate the restraints
    */
   //TODO - add here much more!
-  DominoOptimizer(const JunctionTree &jt, Model *m,
+  DominoOptimizer(container::ListSingletonContainer *ps,
+                  const JunctionTree &jt, Model *m,
                   RestraintEvaluator *r_eval);
 
   void set_sampling_space(DiscreteSampler *ds);
@@ -133,6 +134,7 @@ protected:
   unsigned int num_of_solutions_;
   std::vector<OptTuple> rs_;
   RestraintEvaluator *rstr_eval_;
+  Pointer<container::ListSingletonContainer> all_particles_;
 };
 IMPDOMINO2_END_INTERNAL_NAMESPACE
 

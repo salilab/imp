@@ -9,24 +9,14 @@
 
 IMPDOMINO2_BEGIN_INTERNAL_NAMESPACE
 
-namespace {
-  Particle* get_particle(Model *m, unsigned int i) {
-    IMP_INTERNAL_CHECK(i>=1, "Out of range index in hacked function");
-    --i;
-    Model::ParticleIterator pit= m->particles_begin();
-    while (i != 0) {
-      ++pit;
-      --i;
-    }
-    return *pit;
-  }
-}
-
 void DominoOptimizer::do_show(std::ostream &out) const {
 }
 
-DominoOptimizer::DominoOptimizer(const JunctionTree &jt, Model *m,
-                                 RestraintEvaluator *r_eval)
+DominoOptimizer
+::DominoOptimizer(container::ListSingletonContainer* all_particles,
+                  const JunctionTree &jt, Model *m,
+                  RestraintEvaluator *r_eval):
+  all_particles_(all_particles)
 {
   ds_ = NULL;
   g_ = new RestraintGraph(jt, m,r_eval);
@@ -192,7 +182,8 @@ void DominoOptimizer::add_jt_node(int node_index,
   Particles particles = Particles();
   for  (std::vector<Int>::const_iterator it =particles_ind.begin();
    it != particles_ind.end(); it++) {
-    particles.push_back(get_particle(&m, *it));
+    // may be missing a -1 after *it
+    particles.push_back(all_particles_->get_particle(*it));
   }
   g_->add_node(node_index,particles,rstr_eval_);
 }
