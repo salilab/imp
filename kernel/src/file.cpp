@@ -8,6 +8,7 @@
 
 #include <IMP/file.h>
 #include <cstdlib>
+#include <unistd.h>
 #include <boost/scoped_array.hpp>
 
 IMP_BEGIN_NAMESPACE
