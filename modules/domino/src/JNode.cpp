@@ -89,7 +89,7 @@ void JNode::show(std::ostream& out) const
   out << "particle_indices: " << std::endl;
   for (unsigned int i=0;i<particles_->get_number_of_particles();i++){
     Particle *p=particles_->get_particle(i);
-    out << p->get_value(node_name_key()) << " || " ;
+    out << p->get_value(node_name_key()) << ","<<p->get_name()<<" || " ;
   }
   out << std::endl << "==combinations ( " << comb_states_.size();
   out << " ): " << std::endl;
@@ -167,11 +167,11 @@ void JNode::move2state(CombState *cs)
 void JNode::realize(Restraint *r, container::ListSingletonContainer *ps,
                     Float weight)
 {
-  IMP_IF_LOG(VERBOSE) {
-    IMP_LOG(VERBOSE,"start realize node: " << node_ind_ << " with restraint: ");
-    IMP_LOG_WRITE(VERBOSE,r->show());
-    IMP_LOG(VERBOSE," , weight : " << weight);
-    IMP_LOG(VERBOSE,std::endl);
+  IMP_IF_LOG(TERSE) {
+    IMP_LOG(TERSE,"start realize node: " << node_ind_ << " with restraint: ");
+    IMP_LOG_WRITE(TERSE,r->show());
+    IMP_LOG(TERSE," , weight : " << weight);
+    IMP_LOG(TERSE,std::endl);
   }
   std::map<std::string, float> temp_calculations;
   // stores calculated discrete values. It might be that each appears more
@@ -280,7 +280,7 @@ std::vector<CombState *>* JNode::find_minimum(bool move_to_state,
   }
   std::sort(all_states.begin(),all_states.end());
   std::vector<CombState *>* min_combs = new std::vector<CombState *>;
-  IMP_INTERNAL_CHECK(all_states.size()>num_of_solutions,
+  IMP_INTERNAL_CHECK(all_states.size()>=num_of_solutions,
              "JNode::find_minimum for node: " << node_ind_
              <<" the number of requested solutions ("
              <<num_of_solutions << ")is larger than the enumerated solution "
