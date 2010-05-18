@@ -15,7 +15,10 @@
 #include "domino_config.h"
 
 IMPDOMINO_BEGIN_NAMESPACE
-
+//! A base discrete set class
+/**
+\todo should this be an Object class ?
+ */
 class IMPDOMINOEXPORT DiscreteSet
 {
 public:

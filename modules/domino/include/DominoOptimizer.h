@@ -48,10 +48,9 @@ public:
   void show_restraint_graph(std::ostream& out = std::cout) const {
     g_->show(out);
   }
-  void show_optimum_configuration(unsigned int conf_ind,
-                                   std::ostream& out = std::cout) const {
-    out<<"OPT_CONF:";
-    g_->get_opt_combination(conf_ind)->show(out);
+  const CombState* get_optimum_configuration(unsigned int conf_ind) const {
+    IMP_INTERNAL_CHECK(conf_ind < num_of_solutions_,"index is out of range \n");
+    return g_->get_opt_combination(conf_ind);
   }
   DiscreteSampler *get_sampling_space() const {return ds_;}
   RestraintGraph  *get_graph() const {return g_;}
