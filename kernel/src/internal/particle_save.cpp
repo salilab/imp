@@ -26,6 +26,29 @@ namespace {
                           ::value_type(ks[i]));
     }
   }
+  template <class T, class It>
+  void synchronize(const T &t, It b, It e, Particle *p) {
+    typedef typename std::iterator_traits<It>::value_type Key;
+    std::vector<Key >
+      ks(b,e);
+    for (unsigned int i=0; i< ks.size(); ++i) {
+      if (!contains(t, ks[i].get_index())) {
+        p->remove_attribute(typename std::iterator_traits<It>
+                            ::value_type(ks[i]));
+      }
+    }
+    for (unsigned int i=0; i< t.get_length(); ++i) {
+      if (contains(t, i)) {
+        if (p->has_attribute(Key(i))) {
+          if (p->get_value(Key(i)) != t.get(i)) {
+            p->set_value(Key(i), t.get(i));
+          }
+        } else {
+          p->add_attribute(Key(i), t.get(i));
+        }
+      }
+    }
+  }
   template <class T>
   bool contains(const T &t, int i) {
     return t.fits(i) && T::Traits::get_is_valid(t.get(i));
@@ -33,6 +56,14 @@ namespace {
   }
   template <class Key, class T>
   void restore(const T &t, Particle *p) {
+    for (unsigned int i=0; i< t.get_length(); ++i) {
+      if (contains(t, i)) {
+        p->add_attribute(Key(i), t.get(i));
+      }
+    }
+  }
+  template <class Key, class T>
+  void add(const T &t, Particle *p) {
     for (unsigned int i=0; i< t.get_length(); ++i) {
       if (contains(t, i)) {
         p->add_attribute(Key(i), t.get(i));
@@ -180,26 +211,23 @@ ParticleData::ParticleData(Particle *p) {
 }
 
 void ParticleData::apply(Particle *p) const {
-  clear(floats_, p->float_keys_begin(), p->float_keys_end(), p);
-  restore<FloatKey>(floats_, p);
+  synchronize(floats_, p->float_keys_begin(), p->float_keys_end(), p);
 
   for (Particle::FloatKeyIterator it= p->float_keys_begin();
        it != p->float_keys_end(); ++it) {
     bool opt=contains(optimizeds_, it->get_index());
-    p->set_is_optimized(*it, opt);
+    if (opt != p->get_is_optimized(*it)) {
+      p->set_is_optimized(*it, opt);
+    }
   }
 
-  clear(ints_, p->int_keys_begin(), p->int_keys_end(), p);
-  restore<IntKey>(ints_, p);
+  synchronize(ints_, p->int_keys_begin(), p->int_keys_end(), p);
 
-  clear(strings_, p->string_keys_begin(), p->string_keys_end(), p);
-  restore<StringKey>(strings_, p);
+  synchronize(strings_, p->string_keys_begin(), p->string_keys_end(), p);
 
-  clear(particles_, p->particle_keys_begin(), p->particle_keys_end(), p);
-  restore<ParticleKey>(particles_, p);
+  synchronize(particles_, p->particle_keys_begin(), p->particle_keys_end(), p);
 
-  clear(objects_, p->object_keys_begin(), p->object_keys_end(), p);
-  restore<ObjectKey>(objects_, p);
+  synchronize(objects_, p->object_keys_begin(), p->object_keys_end(), p);
 }
 
 void ParticleData::show(std::ostream &out) const {
@@ -318,7 +346,9 @@ namespace {
   void add(Particle *p, const A &a) {
     for (unsigned int i=0; i< a.size(); ++i) {
       if (p->has_attribute(a[i].first)) {
-        p->set_value(a[i].first, a[i].second);
+        if (p->get_value(a[i].first) != a[i].second) {
+          p->set_value(a[i].first, a[i].second);
+        }
       } else {
         p->add_attribute(a[i].first, a[i].second);
       }
@@ -366,10 +396,13 @@ void ParticleDiff::apply(Particle *p) const {
   subtract(p, floats_r_);
   add(p, floats_a_);
   for (unsigned int i=0; i< optimizeds_a_.size(); ++i) {
-    p->set_is_optimized(optimizeds_a_[i], true);
+    if (!p->get_is_optimized(optimizeds_a_[i])) {
+      p->set_is_optimized(optimizeds_a_[i], true);
+    }
   }
   for (unsigned int i=0; i< optimizeds_r_.size(); ++i) {
-    if (p->has_attribute(optimizeds_r_[i])) {
+    if (p->has_attribute(optimizeds_r_[i])
+        && p->get_is_optimized(optimizeds_r_[i])) {
       p->set_is_optimized(optimizeds_r_[i], false);
     }
   }

@@ -19,12 +19,7 @@ namespace {
 ConfigurationSet::ConfigurationSet(Model *m,
                                    std::string nm):
   Object(internal::make_object_name(nm, restraint_index++)),
-  model_(m){
-  for (Model::ParticleIterator it= model_->particles_begin();
-       it != model_->particles_end(); ++it) {
-    PP pp(*it);
-    base_[pp]= internal::ParticleData(*it);
-  }
+  model_(m), base_(new Configuration(m, nm +" base")){
 }
 
 
@@ -36,14 +31,14 @@ void ConfigurationSet::save_configuration() {
   for (Model::ParticleIterator it= model_->particles_begin();
        it != model_->particles_end(); ++it) {
     PP pp(*it);
-    if (base_.find(pp) != base_.end()) {
+    if (base_->get_has_particle(pp)) {
       configurations_.back().diffs_[pp]
-        = internal::ParticleDiff(base_[pp], pp);
+        = internal::ParticleDiff(base_->get_data(pp), pp);
     } else {
       configurations_.back().added_[pp]= internal::ParticleData(pp);
     }
   }
-  for (DataMap::iterator it= base_.begin(); it != base_.end(); ++it) {
+  for (Configuration::iterator it= base_->begin(); it != base_->end(); ++it) {
     PP pp(it->first);
     if (configurations_.back().diffs_.find(pp)
         == configurations_.back().diffs_.end()) {
@@ -57,33 +52,13 @@ unsigned int ConfigurationSet::get_number_of_configurations() const {
   return configurations_.size();
 }
 
-void ConfigurationSet::set_base() {
-  IMP_OBJECT_LOG;
-  for (Model::ParticleIterator it= model_->particles_begin();
-       it != model_->particles_end(); ++it) {
-    PP pp(*it);
-    if (base_.find(pp) == base_.end()) {
-      model_->remove_particle(*it);
-    }
-  }
-  std::set<Particle*> active(model_->particles_begin(),
-                             model_->particles_end());
-  for (DataMap::iterator it= base_.begin(); it != base_.end(); ++it) {
-    PP pp(it->first);
-    if (active.find(pp) == active.end()) {
-      model_->restore_particle(it->first);
-    }
-    it->second.apply(it->first);
-  }
-}
-
-void ConfigurationSet::load_configuration(int i) {
+void ConfigurationSet::load_configuration(int i) const {
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(this);
   IMP_USAGE_CHECK(i < static_cast<int>(get_number_of_configurations())
                   && i >= -1,
                   "Invalid configuration requested.");
-  set_base();
+  base_->load_configuration();
   if (i == -1) return;
   const Diff &d= configurations_[i];
   // do something
