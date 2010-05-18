@@ -31,7 +31,7 @@ mapped to one particle for a specific mapping. For example, for anchor points
 class  IMPDOMINOEXPORT CartesianProductSampler :  public DiscreteSampler
 {
 public:
-  CartesianProductSampler(){}
+  CartesianProductSampler(){ds_=NULL;}
   //! Create a combination sampler.
   /**
     \param[in] ds           the discrete sampling space
@@ -44,6 +44,12 @@ public:
                std::map<std::string, CombState *> *states) const;
   virtual void move2state(const CombState *cs);
   DiscreteSet* get_space(Particle *p) const;
+  void clear() {
+    if (ds_ != NULL) {
+    ds_->clear();
+    }
+    ps_.clear();
+  }
 protected:
   MappedDiscreteSet *ds_;
   Particles ps_;

@@ -170,6 +170,11 @@ public:
   const CombData * get_data() const {
     return &data_;
   }
+  unsigned int get_state(Particle *p) const {
+    IMP_INTERNAL_CHECK(data_.find(p) != data_.end(),
+                       " particle:"<<p->get_name()<<" not found"<<std::endl);
+    return data_.find(p)->second;
+  }
 protected:
   CombData data_; //data[p] = for particle p
   // the state is state number  data[p] from the assigned states.
