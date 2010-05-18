@@ -111,6 +111,8 @@ IMPATOMEXPORT extern const ResidueType DCYT;
 IMPATOMEXPORT extern const ResidueType DGUA;
 /** thymine (DNA) */
 IMPATOMEXPORT extern const ResidueType DTHY;
+/** water molecule */
+IMPATOMEXPORT extern const ResidueType HOH;
 #endif
 /*@}*/
 
