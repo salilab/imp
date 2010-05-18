@@ -9,6 +9,13 @@
 #include <IMP/log.h>
 IMPDOMINO_BEGIN_NAMESPACE
 
+struct sort_by_name {
+  bool operator() (Particle *p1,Particle *p2) {
+    return (p1->get_name()<p2->get_name());}
+} p_sort;
+
+
+
 void write_combinations(const std::string &filename,
                         const Combinations *combs,const Particles &ps) {
   //write the combinations
@@ -31,7 +38,7 @@ void write_combinations(const std::string &filename,
 }
 
 void RestraintEvaluatorFromFile::set_restraint_file(Restraint *r,
-                                                    char *filename) {
+                                                    const char *filename) {
   IMP_INTERNAL_CHECK(restraint_data_.find(r)== restraint_data_.end(),
                      "file: "<<filename
                      <<" was already assigned to the restraint"<<std::endl);
@@ -42,6 +49,11 @@ void RestraintEvaluatorFromFile::set_restraint_file(Restraint *r,
 }
 
 std::string RestraintEvaluatorFromFile::get_restraint_file(Restraint *r) const {
+  IMP_IF_LOG(VERBOSE) {
+    IMP_LOG(VERBOSE,"get restraint file for restraint:");
+    IMP_LOG_WRITE(VERBOSE,r->show());
+    IMP_LOG(VERBOSE,std::endl);
+  }
   IMP_INTERNAL_CHECK(restraint_data_.find(r) != restraint_data_.end(),
                      "no file assigned to the restraint"<<std::endl);
   IMP_LOG(VERBOSE,"getting restraint file(check):"
@@ -51,6 +63,9 @@ std::string RestraintEvaluatorFromFile::get_restraint_file(Restraint *r) const {
 
 void read_combinations(const std::string &filename, Combinations *combs,
                        const Particles &ps) {
+  //sort particles by their names
+  Particles ps_sorted = ps;
+  sort(ps_sorted.begin(),ps_sorted.end(),p_sort);
   std::ifstream scores_file(filename.c_str());
   IMP_INTERNAL_CHECK(scores_file,"No such scores file " << filename<<std::endl);
   IMP_LOG(VERBOSE,"reading combinations from file: " << filename<<std::endl);
@@ -63,12 +78,12 @@ void read_combinations(const std::string &filename, Combinations *combs,
   typedef std::vector<std::string> split_vector_type;
   split_vector_type split_vec;
   boost::split(split_vec, line, boost::is_any_of("|"));
-  IMP_INTERNAL_CHECK(ps.size()==split_vec.size()-1,
+  IMP_INTERNAL_CHECK(ps_sorted.size()==split_vec.size()-1,
       "the number of particles in the file does not corresponde to the "
       <<"number of input particles"<<std::endl);
-  for(unsigned int i=0;i<ps.size();i++){
-    IMP_INTERNAL_CHECK(ps[i]->get_value(node_name_key())==split_vec[i],
-          "wrong particle name:"<<ps[i]->get_value(node_name_key())
+  for(unsigned int i=0;i<ps_sorted.size();i++){
+    IMP_INTERNAL_CHECK(ps_sorted[i]->get_name()==split_vec[i],
+                       "wrong particle name:"<<ps_sorted[i]->get_name()
            <<":"<<split_vec[i]<<":"<<std::endl);
   }
   CombState* calc_state;
@@ -76,12 +91,12 @@ void read_combinations(const std::string &filename, Combinations *combs,
     if (!getline(scores_file, line)) break;
     boost::split(split_vec, line, boost::is_any_of("|"));
     calc_state = new CombState();
-    for(unsigned int i=0;i<ps.size();i++){
-      calc_state->add_data_item(ps[i],atoi(split_vec[i].c_str()));
+    for(unsigned int i=0;i<ps_sorted.size();i++){
+      calc_state->add_data_item(ps_sorted[i],atoi(split_vec[i].c_str()));
     }
     calc_state->update_total_score(0.,
                                    atof(split_vec[split_vec.size()-2].c_str()));
-    (*combs)[calc_state->get_partial_key(ps)]=calc_state;
+    (*combs)[calc_state->get_partial_key(ps_sorted)]=calc_state;
   }
   IMP_LOG(IMP::VERBOSE,"read " << combs->size() << " combinations"<<std::endl);
 }
@@ -102,8 +117,15 @@ void RestraintEvaluatorFromFile::calc_scores(const Combinations &comb_states,
   }
 
   Combinations read_combs;
-  IMP_LOG(VERBOSE,"start calculating scores from file:"
+  IMP_IF_LOG(TERSE) {
+    IMP_LOG(TERSE,"start calculating scores from file:"
                    <<get_restraint_file(r)<<std::endl);
+    IMP_LOG(TERSE,"between particles:");
+    for (int i=0;i<ps->get_number_of_particles();i++) {
+      IMP_LOG(TERSE,ps->get_particle(i)->get_name()<<",");
+      }
+    IMP_LOG(TERSE,std::endl);
+  }
   std::string r_fn=get_restraint_file(r);
   read_combinations(r_fn,&read_combs,sorted_ps);
   std::string key;
