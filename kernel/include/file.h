@@ -170,25 +170,6 @@ IMP_VALUES(TextOutput,TextOutputs);
 IMPEXPORT TextOutput create_temporary_file();
 
 
-/** Create a temporary file. The path can be extracted from the TextOutput.*/
-IMPEXPORT TextOutput create_temporary_file(std::string suffix);
-
-
-
-//#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-#if 0
-template <class O>
-TextOutput operator<<(TextOutput s, const O &o) {
-  s.get_stream() << o;
-  return s;
-}
-template <class O>
-TextInput operator>>(TextInput s, const O &o) {
-  s.get_stream() >> o;
-  return s;
-}
-#endif
-
 IMP_END_NAMESPACE
 
 #endif /* IMP_FILE_H */

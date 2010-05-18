@@ -8,7 +8,7 @@
 
 #include <IMP/file.h>
 #include <cstdlib>
-#include <unistd.h>
+//#include <unistd.h>
 #include <boost/scoped_array.hpp>
 
 IMP_BEGIN_NAMESPACE
@@ -135,21 +135,5 @@ TextOutput create_temporary_file() {
   return TextOutput(filename);
 }
 
-
-TextOutput create_temporary_file(std::string suffix) {
-  std::string base="/tmp/imptmp.XXXXXX.";
-  unsigned int sz=suffix.size()+1+base.size();
-  boost::scoped_array<char> buf(new char[sz]);
-  std::copy(base.begin(), base.end(), &buf[0]);
-  std::copy(suffix.begin(), suffix.end(), &buf[base.size()]);
-  buf[sz-1]='\0';
-  int fd = mkstemps(buf.get(), suffix.size()+1);
-  if (fd == -1) {
-    IMP_THROW("Unable to create temporary file",
-              IOException);
-  }
-  close(fd);
-  return TextOutput(std::string(&buf[0], &buf[0]+sz-1));
-}
 
 IMP_END_NAMESPACE
