@@ -41,6 +41,15 @@ public:
                                         bool trans_from_orig = false);
   void move2state(const CombState *cs) ;
   void show(std::ostream& out=std::cout) const;
+  algebra::Transformation3Ds get_transformations_of_state(const CombState *cs) {
+    algebra::Transformation3Ds trans;
+    Particle *state;
+    for(Particles::const_iterator it = ps_.begin(); it != ps_.end(); it++) {
+      state = ds_->get_mapped_state(*it,cs->get_state(*it));
+      trans.push_back(Transformation(state).get_transformation());
+    }
+    return trans;
+  }
 protected:
   TransformationUtils tu_;
 };
