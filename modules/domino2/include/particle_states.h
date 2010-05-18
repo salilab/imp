@@ -64,7 +64,7 @@ class IMPDOMINO2EXPORT ParticleStatesTable: public Object {
   // This defines the ordering of particles used
   ParticlesTemp get_particles() const {
     ParticlesTemp ret;
-    ret.resize(enumerators_.size());
+    ret.reserve(enumerators_.size());
     for (Map::const_iterator it= enumerators_.begin();
          it != enumerators_.end(); ++it) {
       ret.push_back(it->first);
@@ -87,13 +87,13 @@ IMP_OBJECTS(ParticleStatesTable, ParticleStatesTables);
 /** Store a set of states which explicitly define the XYZ coordinates of
     the particle in question.
 */
-class IMPDOMINO2EXPORT XYZsParticleStates: public ParticleStates {
+class IMPDOMINO2EXPORT XYZsStates: public ParticleStates {
   algebra::Vector3Ds states_;
 public:
-  XYZsParticleStates(const algebra::Vector3Ds &states): states_(states){}
-  IMP_PARTICLE_STATES(XYZsParticleStates);
+  XYZsStates(const algebra::Vector3Ds &states): states_(states){}
+  IMP_PARTICLE_STATES(XYZsStates);
 };
-IMP_OBJECTS(XYZsParticleStates, XYZsParticleStatesList);
+IMP_OBJECTS(XYZsStates, XYZsStatesList);
 
 
 IMPDOMINO2_END_NAMESPACE

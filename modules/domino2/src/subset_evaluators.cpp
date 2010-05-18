@@ -20,25 +20,28 @@ SubsetEvaluator::SubsetEvaluator(Subset *s,
 namespace {
   class ModelSubsetEvaluator: public SubsetEvaluator {
     mutable Pointer<Model> model_;
-    Pointer<ConfigurationSet> cs_;
+    Pointer<Configuration> cs_;
     Pointer<Subset> s_;
+    double base_score_;
   public:
     ModelSubsetEvaluator(Subset *s, ParticleStatesTable*t,
-                         Model *m, ConfigurationSet *cs): SubsetEvaluator(s, t),
-                                                          model_(m), cs_(cs){
-        cs_->load_configuration(-1);
-        model_->set_is_incremental(true);
+                         Model *m, Configuration *cs,
+                         double base_score): SubsetEvaluator(s, t),
+                                             model_(m), cs_(cs),
+                                             base_score_(base_score) {
     }
     IMP_SUBSET_EVALUATOR(ModelSubsetEvaluator);
   };
   double ModelSubsetEvaluator::get_score(const Ints &state) const{
+    cs_->load_configuration();
+    model_->set_is_incremental(true);
     for (unsigned int i=0; i< state.size(); ++i) {
       Particle *p= get_subset()->get_particle(i);
       Pointer<ParticleStates> ps
         =get_particle_states_table()->get_particle_states(p);
       ps->load_state(state[i], p);
     }
-    return model_->evaluate(false);
+    return model_->evaluate(false)- base_score_;
   }
   void ModelSubsetEvaluator::do_show(std::ostream &) const {
   }
@@ -47,7 +50,7 @@ namespace {
 SubsetEvaluator *
 ModelSubsetEvaluatorTable::get_subset_evaluator(Subset *s) const {
   return new ModelSubsetEvaluator(s, get_particle_states_table(),
-                                  model_, cs_);
+                                  model_, cs_, cs_score_);
 }
 
 void ModelSubsetEvaluatorTable::do_show(std::ostream &out) const{}
