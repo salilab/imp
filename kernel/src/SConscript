@@ -1,6 +1,7 @@
 Import('env')
 
 files = [
+         'Configuration.cpp',
          'ConfigurationSet.cpp',
          'Constraint.cpp',
          'Container.cpp',
