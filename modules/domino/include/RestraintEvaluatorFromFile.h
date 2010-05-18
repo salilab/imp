@@ -50,7 +50,7 @@ public:
   /**\param [in] r A restraint
      \param [in] filename The restraint scores filename
    */
-  void set_restraint_file(Restraint *r,char *filename);
+  void set_restraint_file(Restraint *r,const char *filename);
   std::string get_restraint_file(Restraint *r) const;
  //! Score restraint with combinations of states
   /** \param [in] comb_states the combination of states
@@ -64,6 +64,10 @@ public:
 
   void show(std::ostream& out = std::cout) const{
     out<<"RestraintEvaluatorFromFile"<<std::endl;
+    for(std::map<Restraint*,std::string>::const_iterator
+         it = restraint_data_.begin();it != restraint_data_.end();it++) {
+      out<<it->second<<std::endl;
+    }
   }
 protected:
   //TODO - this function should be changed once we will have the
