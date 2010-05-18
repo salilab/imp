@@ -81,6 +81,7 @@ class IMPEXPORT TextOutput
 };
 
 
+
 /** A TextInput can be implicitly constructed from a C++ stream, a
     Python filelike object or a path to a file. As a result, those can be
     passed directly to functions which take a TextInput as an
@@ -168,6 +169,25 @@ IMP_VALUES(TextOutput,TextOutputs);
 /** Create a temporary file. The path can be extracted from the TextOutput.*/
 IMPEXPORT TextOutput create_temporary_file();
 
+
+/** Create a temporary file. The path can be extracted from the TextOutput.*/
+IMPEXPORT TextOutput create_temporary_file(std::string suffix);
+
+
+
+//#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+#if 0
+template <class O>
+TextOutput operator<<(TextOutput s, const O &o) {
+  s.get_stream() << o;
+  return s;
+}
+template <class O>
+TextInput operator>>(TextInput s, const O &o) {
+  s.get_stream() >> o;
+  return s;
+}
+#endif
 
 IMP_END_NAMESPACE
 
