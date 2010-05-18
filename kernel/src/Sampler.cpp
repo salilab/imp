@@ -28,10 +28,10 @@ ConfigurationSet *Sampler::get_sample() const {
     if (d > 0) ++num_opt;
   }
   IMP_LOG(TERSE, "Sampling " << num_opt << " particles."<<std::endl);
-  if (num_opt == 0) {
+  /*if (num_opt == 0) {
     IMP_WARN("There are no particles to optimize."<<std::endl);
     return NULL;
-  }
+    }*/
   return do_sample();
 }
 
