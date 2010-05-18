@@ -576,16 +576,18 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_oxygen_atom_type(
   }
 
   // DNA/RNA atoms
-  // O1P, O3',O4',05', O2,O4,O6
+  // O1P, O3', O2P, O2',O4',05', O2,O4,O6
   if (atom_type == atom::AT_OP1 || atom_type == atom::AT_O3p ||
+      atom_type == atom::AT_OP2 || //atom_type == atom::AT_O2p ||
       atom_type == atom::AT_O4p || atom_type == atom::AT_O5p ||
       atom_type == atom::AT_O2 || atom_type == atom::AT_O4 ||
       atom_type == atom::AT_O6) return O;
-  // O2P, O2'
-  if (atom_type == atom::AT_OP2 || atom_type == atom::AT_O2p) {
-    if(residue_type == atom::DADE || residue_type == atom::ADE) return OH;
-    return O;
-  }
+  //  O2'
+  if (atom_type == atom::AT_O2p)  return OH;
+
+  // water molecule
+  if(residue_type == atom::HOH) return OH2;
+
   IMP_WARN_ONCE("Oxygen atom not found, using default O form factor for "
                 << atom_type << " " << residue_type << std::endl,
                 warn_context_);
