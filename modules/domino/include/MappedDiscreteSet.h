@@ -85,6 +85,8 @@ public:
     }
     return ps;
   }
+  void clear();
+
 protected:
   std::map<Particle *, Particles> states_map_;
 };

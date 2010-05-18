@@ -25,6 +25,12 @@ MappedDiscreteSet::MappedDiscreteSet(
     states_map_[ps_target->get_particle(i)] = Particles();
   }
 }
+void MappedDiscreteSet::clear() {
+  for(std::map<Particle *, Particles>::iterator it = states_map_.begin();
+                                          it != states_map_.end(); it++) {
+    it->second.clear();
+  }
+}
 void MappedDiscreteSet::add_mapped_state(Particle* sampled_p,Particle *state)
 {
   IMP_INTERNAL_CHECK(states_map_.find(sampled_p) != states_map_.end(),
