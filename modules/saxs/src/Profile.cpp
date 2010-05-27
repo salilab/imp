@@ -20,6 +20,8 @@
 #include <fstream>
 #include <string>
 
+#define IMP_SAXS_DELTA_LIMIT  1.0e-15
+
 IMPSAXS_BEGIN_NAMESPACE
 
 const Float Profile::modulation_function_parameter_ = 0.23;
@@ -55,8 +57,7 @@ void Profile::read_SAXS_file(const String& file_name)
 {
   std::ifstream in_file(file_name.c_str());
   if (!in_file) {
-    IMP_THROW("Can't open file " << file_name,
-              IOException);
+    IMP_THROW("Can't open file " << file_name, IOException);
   }
 
   bool with_error = false;
@@ -73,8 +74,21 @@ void Profile::read_SAXS_file(const String& file_name)
     if (split_results.size() < 2 || split_results.size() > 5) continue;
     entry.q_ = atof(split_results[0].c_str());
     entry.intensity_ = atof(split_results[1].c_str());
+
+    // validity checks
+    if(fabs(entry.intensity_) < IMP_SAXS_DELTA_LIMIT)
+      continue;// skip zero intensities
+    if(entry.intensity_ < 0.0) { // negative intensity
+      IMP_WARN("Negative intensity value: " << line
+               << " skipping remaining profile points" << std::endl);
+      break;
+    }
     if (split_results.size() >= 3) {
       entry.error_ = atof(split_results[2].c_str());
+      if(fabs(entry.error_) < IMP_SAXS_DELTA_LIMIT) {
+        entry.error_ = 0.05 * entry.intensity_;
+        if(fabs(entry.error_) < IMP_SAXS_DELTA_LIMIT) continue; //skip entry
+      }
       with_error = true;
     }
     profile_.push_back(entry);
@@ -102,11 +116,11 @@ void Profile::read_SAXS_file(const String& file_name)
           << " size= " << profile_.size() << " delta= " << delta_q_
           << " min_q= " << min_q_ << " max_q= " << max_q_ << std::endl);
 
-  // saxs_read: No experimental error specified, error=0.3*I(q_max)
+  // saxs_read: No experimental error specified, add errors
   if (!with_error) {
     add_errors();
     IMP_LOG(TERSE, "read_SAXS_file: No experimental error specified"
-            << " -> error set to 0.3 I(q_max) = " << std::endl);
+            << " -> error added " << std::endl);
   }
 }
 
