@@ -18,7 +18,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
       if (process(sg, c, name)) {                       \
         IMP_LOG(VERBOSE, "Geometry \"" << g->get_name() \
                 << "\" of type " << #Name               \
-                << " handed." << std::endl);            \
+                << " handled." << std::endl);           \
         return;                                         \
       } else {                                          \
         IMP_LOG(VERBOSE, "Geometry \"" << g->get_name() \
