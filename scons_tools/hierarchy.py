@@ -23,9 +23,10 @@ def _build_header(target, source, env):
     #= len(os.path.commonprefix([f.path for f in source]))
     for f in source[0].get_contents().split(" "):
         #print src
-        if not f.startswith('internal'):
+        if not f.startswith('internal') and len(f) > 0:
             vars['header']= f
             print >> fh, '#include <%(module_include_path)s/%(header)s>' %vars
+    print >> fh, "#include <%(module_include_path)s/%(module)s_config.h>"%vars
     print >> fh, "\n#endif  /* %(PREPROC)s_H */" % vars
 
 def _make_nodes(files):

@@ -14,6 +14,7 @@ def _forward_set_value(self, name, value):
 
 namespace IMP {
 %warnfilter(403) FailureHandlerBase;
+%warnfilter(403) DecomposableRestraint;
 %warnfilter(473) Refiner;
 %warnfilter(473) SingletonContainer;
 %warnfilter(473) PairContainer;
@@ -36,6 +37,7 @@ IMP_SWIG_BASE_OBJECT(IMP,QuadModifier, QuadModifiers);
 IMP_SWIG_BASE_OBJECT(IMP,QuadScore, QuadScores);
 IMP_SWIG_BASE_OBJECT(IMP,Refiner, Refiners);
 IMP_SWIG_BASE_OBJECT(IMP,Restraint, Restraints);
+IMP_SWIG_BASE_OBJECT(IMP,DecomposableRestraint, DecomposableRestraints);
 IMP_SWIG_BASE_OBJECT(IMP,Sampler, Samplers);
 IMP_SWIG_BASE_OBJECT(IMP,ScoreState, ScoreStates);
 IMP_SWIG_BASE_OBJECT(IMP,SingletonContainer, SingletonContainers);
@@ -92,6 +94,40 @@ namespace IMP {
      PyTuple_SetItem(tup, 0, PyFloat_FromFloat($1.first));
      PyTuple_SetItem(tup, 1, PyFloat_FromFloat($1.second));
      $result= tup;
+  }
+}
+
+%typemap(out) IMP::internal::BoostDigraph<IMP::Model::DependencyGraph, IMP::Object*>* {
+  if (!($owner & SWIG_POINTER_NEW)) {
+    // out typemaps are also called for constructors, which already use %ref
+    // to increase the reference count. So don't do it twice.
+    IMP::internal::ref($1);
+  }
+  %set_output(SWIG_NewPointerObj(%as_voidptr($1), $descriptor(IMP::internal::BoostDigraph<IMP::Model::DependencyGraph, IMP::Object*>*), $owner | SWIG_POINTER_OWN));
+ }
+
+%ignore IMP::Model::get_dependency_graph;
+%extend IMP::Model {
+  internal::BoostDigraph<Model::DepenencyGraph, Object*>* get_dependency_graph() const {
+    return new internal::BoostDigraph<Model::DepenencyGraph, Object*> (self->get_dependency_graph());
+  }
+};
+
+%extend IMP::Object {
+  bool __eq__(const IMP::Decorator &d) const {
+     return self == d.get_particle();
+  }
+  bool __le__(const IMP::Decorator &d) const {
+     return self <= d.get_particle();
+  }
+  bool __lt__(const IMP::Decorator &d) const {
+     return self < d.get_particle();
+  }
+  bool __ge__(const IMP::Decorator &d) const {
+     return self >= d.get_particle();
+  }
+  bool __gt__(const IMP::Decorator &d) const {
+     return self > d.get_particle();
   }
 }
 
@@ -167,6 +203,7 @@ class ParticleQuadsTemp;
 
 %include "IMP/UnaryFunction.h"
 %include "IMP/Restraint.h"
+%include "IMP/DecomposableRestraint.h"
 %include "IMP/ScoreState.h"
 %include "IMP/Constraint.h"
 %include "IMP/OptimizerState.h"
@@ -205,4 +242,5 @@ namespace IMP {
   //%template(ParticlesList) ::std::vector< ParticlesTemp >;
   %template(DirectorParticlesTemp) ::std::vector< Particle* >;
   %template(DirectorContainersTemp) ::std::vector< Container* >;
+  %template(DependencyGraph) ::IMP::internal::BoostDigraph< IMP::Model::DependencyGraph, IMP::Object*>;
 }
