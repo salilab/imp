@@ -286,6 +286,7 @@ class IMPEXPORT Particle : public Container
   FloatTable floats_;
   std::auto_ptr<internal::ParticleStorage> ps_;
   bool dirty_;
+  bool evaluate_;
 #endif
 
   IMP_OBJECT(Particle);
@@ -293,6 +294,16 @@ class IMPEXPORT Particle : public Container
 
   //! Construct a particle and add it to the Model
   Particle(Model *m, std::string name="P%1%");
+
+  /** @name Subset evaluation
+      Sometimes it is useful to be able to only score a subset of the particles.
+      In such a case, some of the particles will be marked as scored and others
+      not.
+      @{
+  */
+  bool get_is_scored() const {return evaluate_;}
+  void set_is_scored(bool tf) {evaluate_=tf;}
+  /** @} */
 
 #ifdef IMP_DOXYGEN
   /** @name Attribute manipulation

@@ -37,7 +37,6 @@ IMP_SWIG_BASE_OBJECT(IMP,QuadModifier, QuadModifiers);
 IMP_SWIG_BASE_OBJECT(IMP,QuadScore, QuadScores);
 IMP_SWIG_BASE_OBJECT(IMP,Refiner, Refiners);
 IMP_SWIG_BASE_OBJECT(IMP,Restraint, Restraints);
-IMP_SWIG_BASE_OBJECT(IMP,DecomposableRestraint, DecomposableRestraints);
 IMP_SWIG_BASE_OBJECT(IMP,Sampler, Samplers);
 IMP_SWIG_BASE_OBJECT(IMP,ScoreState, ScoreStates);
 IMP_SWIG_BASE_OBJECT(IMP,SingletonContainer, SingletonContainers);
@@ -55,7 +54,7 @@ IMP_SWIG_OBJECT(IMP,Model, Models);
 //IMP_SWIG_OBJECT(IMP,Object, Objects);
 IMP_SWIG_OBJECT(IMP,Particle, Particles);
 IMP_SWIG_OBJECT(IMP,RestraintSet, RestraintSets);
-
+IMP_SWIG_OBJECT(IMP,DecomposableRestraint, DecomposableRestraints);
 IMP_SWIG_OBJECT_TUPLE(IMP, ParticlePair, ParticlePairs);
 IMP_SWIG_OBJECT_TUPLE(IMP, ParticleTriplet, ParticleTriplets);
 IMP_SWIG_OBJECT_TUPLE(IMP, ParticleQuad, ParticleQuads);

@@ -205,28 +205,22 @@ IMP_BEGIN_NAMESPACE
 namespace {
   typedef std::pair<double, Restraint*> WeightedRestraint;
   typedef std::vector<WeightedRestraint> WeightedRestraints;
-
-
-  typedef boost::adjacency_list<boost::vecS, boost::vecS,
-                                boost::bidirectionalS,
-                                boost::property<boost::vertex_name_t, Object*>,
-                                boost::property<boost::edge_name_t,
-                                                int> > DependencyGraph;
 }
 // emacs indentations have problems
 namespace {
 
-  typedef boost::graph_traits<DependencyGraph>::edge_descriptor DependencyEdge;
-  typedef boost::graph_traits<DependencyGraph>
+  typedef boost::graph_traits<Model::DependencyGraph>::edge_descriptor
+  DependencyEdge;
+  typedef boost::graph_traits<Model::DependencyGraph>
   ::vertex_descriptor DependencyVertex;
-  typedef boost::graph_traits<DependencyGraph> DependencyTraits;
-  typedef boost::property_map<DependencyGraph,
+  typedef boost::graph_traits<Model::DependencyGraph> DependencyTraits;
+  typedef boost::property_map<Model::DependencyGraph,
                               boost::vertex_name_t>::type ObjectMap;
-  typedef boost::property_map<DependencyGraph,
+  typedef boost::property_map<Model::DependencyGraph,
                               boost::edge_name_t>::type EdgeMap;
   typedef boost::dynamic_bitset<>  BitSet;
   struct Dependencies {
-    DependencyGraph graph;
+    Model::DependencyGraph graph;
     std::map<Restraint*, DependencyVertex> restraints;
     std::map<ScoreState*, DependencyVertex> score_states;
     std::map<Container*, DependencyVertex> containers;
@@ -258,7 +252,8 @@ namespace {
   // put it here to keep it out of the header for now
   std::map<Model*, Dependencies> graphs_;
 
-  void write_graph(DependencyGraph &graph, ObjectMap &om, std::string name) {
+  void write_graph(Model::DependencyGraph &graph,
+                   ObjectMap &om, std::string name) {
     static unsigned int num=0;
     char buf[1000];
     sprintf(buf, name.c_str(), num);
@@ -268,7 +263,7 @@ namespace {
   }
 
   template <class T>
-  DependencyVertex get_vertex(DependencyGraph &graph,
+  DependencyVertex get_vertex(Model::DependencyGraph &graph,
                               T* v,
                               ObjectMap &om,
                               std::map<T*, DependencyVertex> &map) {
@@ -287,7 +282,7 @@ namespace {
     }
   }
 
-  void add_edge(DependencyGraph &graph,
+  void add_edge(Model::DependencyGraph &graph,
                 EdgeMap &em,
                 DependencyVertex va,
                 DependencyVertex vb,
@@ -753,7 +748,7 @@ void Model::order_score_states() {
           << " restraints " << get_number_of_score_states() << " score states "
           << " and " << get_number_of_particles()
           << " particles." << std::endl);
-  for (ScoreStateIterator it= score_states_begin();
+  for (ScoreStateConstIterator it= score_states_begin();
        it != score_states_end(); ++it) {
     deps.score_states.insert(std::make_pair(*it, DependencyVertex()));
   }
@@ -778,7 +773,7 @@ void Model::order_score_states() {
   /*IMP_IF_LOG(VERBOSE) {
     write_graph(deps.graph, om, "r_dependency_graph.dot");
     }*/
-  for (ParticleIterator pit = particles_begin();
+  for (ParticleConstIterator pit = particles_begin();
        pit != particles_end(); ++pit) {
     DependencyVertex v= boost::add_vertex(deps.graph);
     deps.particles.insert(std::make_pair(*pit, v));
@@ -932,7 +927,8 @@ void Model::zero_derivatives(bool st) const {
 double Model::do_evaluate_restraints(const WeightedRestraints &restraints,
                                      bool calc_derivs,
                                      WhichRestraints incremental_restraints,
-                                     bool incremental_evaluation) const {
+                                     bool incremental_evaluation,
+                                     bool all_particles) const {
   IMP_IF_LOG(TERSE) {
     std::string which;
     if (incremental_restraints== ALL) which="all";
@@ -963,10 +959,17 @@ double Model::do_evaluate_restraints(const WeightedRestraints &restraints,
                 << value << std::endl);
       } else {
         DerivativeAccumulator accum(it->first);
-        WRAP_EVALUATE_CALL(it->second,
-                           value=it->first
-                           *it->second->unprotected_evaluate(calc_derivs?
-                                                             &accum:NULL));
+        if (all_particles) {
+          WRAP_EVALUATE_CALL(it->second,
+                             value=it->first
+                             *it->second->unprotected_evaluate(calc_derivs?
+                                                               &accum:NULL));
+        } else {
+           WRAP_EVALUATE_CALL(it->second,
+                             value=it->first
+                      *it->second->unprotected_evaluate_subset(calc_derivs?
+                                                               &accum:NULL));
+        }
         IMP_LOG(TERSE, it->second->get_name() << " score is "
                 << value << std::endl);
       }
@@ -1037,7 +1040,7 @@ void Model::validate_incremental_evaluate(const WeightedRestraints &restraints,
     }
     IMP_CHECK_CODE(double nscore=)
       do_evaluate_restraints(restraints,
-                             calc_derivs, ALL, false);
+                             calc_derivs, ALL, false, true);
     IMP_INTERNAL_CHECK(std::abs(nscore -score)
                        < .001+.1*std::abs(nscore+score),
                        "Incremental and non-incremental evaluation "
@@ -1109,7 +1112,8 @@ void Model::validate_computed_derivatives() const {
 
 double Model::do_evaluate(const WeightedRestraints &restraints,
                           const ScoreStatesTemp &states,
-                          bool calc_derivs) {
+                          bool calc_derivs,
+                          bool all_particles) {
   // validate values
   validate_attribute_values();
 
@@ -1138,7 +1142,7 @@ double Model::do_evaluate(const WeightedRestraints &restraints,
     if (calc_derivs) zero_derivatives(first_incremental_);
     score+= do_evaluate_restraints(restraints,
                                    calc_derivs, INCREMENTAL,
-                                   !first_incremental_);
+                                   !first_incremental_, true);
     if (calc_derivs) {
       for (ParticleConstIterator pit = particles_begin();
            pit != particles_end(); ++pit) {
@@ -1146,7 +1150,8 @@ double Model::do_evaluate(const WeightedRestraints &restraints,
       }
     }
     score+=do_evaluate_restraints(restraints,
-                                  calc_derivs, NONINCREMENTAL, false);
+                                  calc_derivs, NONINCREMENTAL, false,
+                                  all_particles);
     for (ParticleConstIterator pit = particles_begin();
          pit != particles_end(); ++pit) {
       if (calc_derivs) (*pit)->accumulate_derivatives_from_shadow();
@@ -1160,7 +1165,7 @@ double Model::do_evaluate(const WeightedRestraints &restraints,
       zero_derivatives();
     }
     score= do_evaluate_restraints(restraints,
-                                  calc_derivs, ALL, false);
+                                  calc_derivs, ALL, false, true);
   }
 
   after_evaluate(states, calc_derivs);
@@ -1183,19 +1188,24 @@ double Model::do_evaluate(const WeightedRestraints &restraints,
 }
 
 
+const Model::DependencyGraph& Model::get_dependency_graph() const {
+  Model *m=const_cast<Model*>(this);
+  m->evaluate(false);
+  return graphs_[m].graph;
+}
 
 
-Float Model::evaluate(bool calc_derivs) {
+double Model::evaluate(bool calc_derivs) {
   IMP_CHECK_OBJECT(this);
   if (!score_states_ordered_) order_score_states();
   IMP_INTERNAL_CHECK(graphs_.find(this) != graphs_.end(),
                      "Dependency graph missing");
   return do_evaluate(graphs_[this].weighted, access_score_states(),
-                     calc_derivs);
+                     calc_derivs, true);
 }
 
 
-Float Model::evaluate(const RestraintsTemp &restraints, bool calc_derivs)
+double Model::evaluate(const RestraintsTemp &restraints, bool calc_derivs)
 {
   IMP_CHECK_OBJECT(this);
   IMP_OBJECT_LOG;
@@ -1242,9 +1252,42 @@ Float Model::evaluate(const RestraintsTemp &restraints, bool calc_derivs)
   for (unsigned int i=0; i< get_number_of_score_states(); ++i) {
     if (bs[i]) ss.push_back(get_score_state(i));
   }
-  return do_evaluate(wr, ss, calc_derivs);
+  return do_evaluate(wr, ss, calc_derivs, true);
 }
 
+
+namespace {
+  class ScoreGuard {
+    ParticlesTemp ps_;
+  public:
+    template <class It>
+    ScoreGuard(const ParticlesTemp &pt, It b, It e): ps_(b, e) {
+      for (It c = b; c != e; ++c) {
+        (*c)->set_is_scored(false);
+      }
+      for (unsigned int i=0; i< pt.size(); ++i) {
+       pt[i]->set_is_scored(true);
+      }
+    }
+    ~ScoreGuard() {
+      for (unsigned int i=0; i< ps_.size(); ++i) {
+        ps_[i]->set_is_scored(true);
+      }
+    }
+  };
+}
+
+double Model::evaluate(const ParticlesTemp &particles, bool calc_derivs) {
+  IMP_CHECK_OBJECT(this);
+  IMP_OBJECT_LOG;
+  if (!score_states_ordered_) order_score_states();
+  IMP_USAGE_CHECK(!get_is_incremental(),
+                  "Can't do incremental partial evaluation");
+  ScoreGuard sg(particles, particles_begin(), particles_end());
+  double v= do_evaluate(graphs_[this].weighted, access_score_states(),
+                     calc_derivs, false);
+  return v;
+}
 
 void Model::set_is_incremental(bool tf) {
   DerivativeAccumulator da;

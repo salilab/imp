@@ -32,6 +32,13 @@ double ListLikeQuadContainer
   return s->evaluate(data_, da);
 }
 double ListLikeQuadContainer
+::evaluate_subset(const QuadScore *s,
+           DerivativeAccumulator *da) const {
+  IMP_CHECK_OBJECT(this);
+  IMP_CHECK_OBJECT(s);
+  return s->evaluate_subset(data_, da);
+}
+double ListLikeQuadContainer
 ::evaluate_change(const QuadScore *s,
                   DerivativeAccumulator *da) const {
   IMP_CHECK_OBJECT(this);

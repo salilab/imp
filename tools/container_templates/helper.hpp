@@ -91,6 +91,8 @@ public:
              DerivativeAccumulator &da);
   double evaluate(const GroupnameScore *s,
                   DerivativeAccumulator *da) const;
+  double evaluate_subset(const GroupnameScore *s,
+                         DerivativeAccumulator *da) const;
   double evaluate_change(const GroupnameScore *s,
                          DerivativeAccumulator *da) const;
   double evaluate_prechange(const GroupnameScore *s,

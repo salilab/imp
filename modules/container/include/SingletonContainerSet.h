@@ -44,6 +44,7 @@ class IMPCONTAINEREXPORT SingletonContainerSet
                         std::string name="SingletonContainerSet %1%");
 
   IMP_SINGLETON_CONTAINER(SingletonContainerSet);
+
   /** @name Methods to control the nested container
 
       This container merges a set of nested containers. To add

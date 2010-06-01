@@ -115,6 +115,11 @@ public:
   virtual double evaluate(const GroupnameScore *s,
                           DerivativeAccumulator *da) const=0;
 
+  //! Avaluate a score on the contents
+  virtual double evaluate_subset(const GroupnameScore *s,
+                                 DerivativeAccumulator *da) const=0;
+
+
   /** \name Incremental Scoring
       When incremental scoring is used, the container keeps track of
       changes to it since the last Model::evaluate() call.

@@ -4,6 +4,7 @@ files = [
          'Configuration.h',
          'ConfigurationSet.h',
          'Constraint.h',
+         'DecomposableRestraint.h',
          'Decorator.h',
          'Decorators.h',
          'DerivativeAccumulator.h',

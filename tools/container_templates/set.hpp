@@ -44,6 +44,7 @@ class IMPCONTAINEREXPORT GroupnameContainerSet
                         std::string name="GroupnameContainerSet %1%");
 
   IMP_GROUPNAME_CONTAINER(GroupnameContainerSet);
+
   /** @name Methods to control the nested container
 
       This container merges a set of nested containers. To add

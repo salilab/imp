@@ -91,6 +91,8 @@ public:
              DerivativeAccumulator &da);
   double evaluate(const QuadScore *s,
                   DerivativeAccumulator *da) const;
+  double evaluate_subset(const QuadScore *s,
+                         DerivativeAccumulator *da) const;
   double evaluate_change(const QuadScore *s,
                          DerivativeAccumulator *da) const;
   double evaluate_prechange(const QuadScore *s,

@@ -91,6 +91,8 @@ public:
              DerivativeAccumulator &da);
   double evaluate(const TripletScore *s,
                   DerivativeAccumulator *da) const;
+  double evaluate_subset(const TripletScore *s,
+                         DerivativeAccumulator *da) const;
   double evaluate_change(const TripletScore *s,
                          DerivativeAccumulator *da) const;
   double evaluate_prechange(const TripletScore *s,

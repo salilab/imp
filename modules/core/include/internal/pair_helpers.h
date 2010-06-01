@@ -91,6 +91,8 @@ public:
              DerivativeAccumulator &da);
   double evaluate(const PairScore *s,
                   DerivativeAccumulator *da) const;
+  double evaluate_subset(const PairScore *s,
+                         DerivativeAccumulator *da) const;
   double evaluate_change(const PairScore *s,
                          DerivativeAccumulator *da) const;
   double evaluate_prechange(const PairScore *s,

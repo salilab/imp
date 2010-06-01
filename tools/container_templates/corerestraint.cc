@@ -21,8 +21,9 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 CoreGroupnamesRestraint
 ::CoreGroupnamesRestraint(GroupnameScore *ss,
                       GroupnameContainer *pc,
-                      std::string name): Restraint(name),
-                                         ss_(ss), pc_(pc) {
+                      std::string name):
+  DecomposableRestraint(name),
+  ss_(ss), pc_(pc) {
 
 }
 
@@ -34,6 +35,17 @@ double CoreGroupnamesRestraint
   IMP_CHECK_OBJECT(pc_);
 
   score_= pc_->evaluate(ss_, accum);
+  return score_;
+}
+
+double CoreGroupnamesRestraint
+::unprotected_evaluate_subset(DerivativeAccumulator *accum) const
+{
+  IMP_OBJECT_LOG;
+  IMP_CHECK_OBJECT(ss_);
+  IMP_CHECK_OBJECT(pc_);
+
+  score_= pc_->evaluate_subset(ss_, accum);
   return score_;
 }
 

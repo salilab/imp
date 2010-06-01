@@ -42,6 +42,9 @@ public:
   virtual double evaluate(const ClassnamesTemp &o,
                           DerivativeAccumulator *da) const = 0;
 
+  virtual double evaluate_subset(const ClassnamesTemp &o,
+                                 DerivativeAccumulator *da) const = 0;
+
   /** \name Incremental evaluation
       Compute how much the score has changed since the last evaluate
       (and writing derivatives if they have changed). Implementations

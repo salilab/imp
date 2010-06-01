@@ -44,6 +44,7 @@ class IMPCONTAINEREXPORT PairContainerSet
                         std::string name="PairContainerSet %1%");
 
   IMP_PAIR_CONTAINER(PairContainerSet);
+
   /** @name Methods to control the nested container
 
       This container merges a set of nested containers. To add

@@ -138,6 +138,15 @@ double GroupnameContainerSet::evaluate(const GroupnameScore *s,
   return score;
 }
 
+double GroupnameContainerSet::evaluate_subset(const GroupnameScore *s,
+                                              DerivativeAccumulator *da) const {
+  double score=0;
+  for (unsigned int i=0; i< get_number_of_groupname_containers(); ++i) {
+    score+=get_groupname_container(i)->evaluate_subset(s, da);
+  }
+  return score;
+}
+
 
 double GroupnameContainerSet::evaluate_change(const GroupnameScore *s,
                                               DerivativeAccumulator *da) const {

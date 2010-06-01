@@ -14,7 +14,7 @@
 
 #include "../core_config.h"
 
-#include <IMP/Restraint.h>
+#include <IMP/DecomposableRestraint.h>
 #include <IMP/Pointer.h>
 #include <IMP/TripletScore.h>
 #include <IMP/TripletContainer.h>
@@ -32,7 +32,8 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
     \see TripletRestraint
  */
-class IMPCOREEXPORT CoreTripletsRestraint : public Restraint
+class IMPCOREEXPORT CoreTripletsRestraint :
+  public DecomposableRestraint
 {
   IMP::internal::OwnerPointer<TripletScore> ss_;
   IMP::internal::OwnerPointer<TripletContainer> pc_;
@@ -55,6 +56,8 @@ public:
   TripletContainer* get_triplet_container() {
     return pc_;
   }
+
+  double unprotected_evaluate_subset(DerivativeAccumulator *accum) const;
 
   TripletScore* get_triplet_score() const {
     return ss_;

@@ -91,6 +91,8 @@ public:
              DerivativeAccumulator &da);
   double evaluate(const SingletonScore *s,
                   DerivativeAccumulator *da) const;
+  double evaluate_subset(const SingletonScore *s,
+                         DerivativeAccumulator *da) const;
   double evaluate_change(const SingletonScore *s,
                          DerivativeAccumulator *da) const;
   double evaluate_prechange(const SingletonScore *s,

@@ -138,6 +138,15 @@ double QuadContainerSet::evaluate(const QuadScore *s,
   return score;
 }
 
+double QuadContainerSet::evaluate_subset(const QuadScore *s,
+                                              DerivativeAccumulator *da) const {
+  double score=0;
+  for (unsigned int i=0; i< get_number_of_quad_containers(); ++i) {
+    score+=get_quad_container(i)->evaluate_subset(s, da);
+  }
+  return score;
+}
+
 
 double QuadContainerSet::evaluate_change(const QuadScore *s,
                                               DerivativeAccumulator *da) const {

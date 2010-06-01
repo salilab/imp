@@ -138,6 +138,15 @@ double PairContainerSet::evaluate(const PairScore *s,
   return score;
 }
 
+double PairContainerSet::evaluate_subset(const PairScore *s,
+                                              DerivativeAccumulator *da) const {
+  double score=0;
+  for (unsigned int i=0; i< get_number_of_pair_containers(); ++i) {
+    score+=get_pair_container(i)->evaluate_subset(s, da);
+  }
+  return score;
+}
+
 
 double PairContainerSet::evaluate_change(const PairScore *s,
                                               DerivativeAccumulator *da) const {
