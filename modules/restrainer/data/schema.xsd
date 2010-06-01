@@ -135,6 +135,13 @@
         </xs:restriction>
       </xs:simpleType>
     </xs:attribute>
+    <xs:attribute default="1" name="weight">
+      <xs:simpleType>
+        <xs:restriction base="xs:float">
+          <xs:minInclusive value="0" />
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
   </xs:complexType>
   <xs:complexType name="ParticleType">
     <xs:attribute name="id" type="xs:string" use="required" />
@@ -269,6 +276,13 @@
             </xs:restriction>
           </xs:simpleType>
         </xs:attribute>
+        <xs:attribute default="1" name="weight">
+          <xs:simpleType>
+            <xs:restriction base="xs:float">
+              <xs:minInclusive value="0" />
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -279,6 +293,13 @@
           <xs:simpleType>
             <xs:restriction base="xs:string">
               <xs:maxLength value="50" />
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute default="1" name="weight">
+          <xs:simpleType>
+            <xs:restriction base="xs:float">
+              <xs:minInclusive value="0" />
             </xs:restriction>
           </xs:simpleType>
         </xs:attribute>
@@ -325,6 +346,13 @@
         </xs:restriction>
       </xs:simpleType>
     </xs:attribute>
+    <xs:attribute default="1" name="weight">
+      <xs:simpleType>
+        <xs:restriction base="xs:float">
+          <xs:minInclusive value="0" />
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
   </xs:complexType>
   <xs:complexType name="PulldownRestraint">
     <xs:complexContent mixed="false">
@@ -333,6 +361,13 @@
           <xs:simpleType>
             <xs:restriction base="xs:string">
               <xs:maxLength value="50" />
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute default="1" name="weight">
+          <xs:simpleType>
+            <xs:restriction base="xs:float">
+              <xs:minInclusive value="0" />
             </xs:restriction>
           </xs:simpleType>
         </xs:attribute>
@@ -349,6 +384,13 @@
             </xs:restriction>
           </xs:simpleType>
         </xs:attribute>
+        <xs:attribute default="1" name="weight">
+          <xs:simpleType>
+            <xs:restriction base="xs:float">
+              <xs:minInclusive value="0" />
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -359,6 +401,13 @@
           <xs:simpleType>
             <xs:restriction base="xs:string">
               <xs:maxLength value="50" />
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute default="1" name="weight">
+          <xs:simpleType>
+            <xs:restriction base="xs:float">
+              <xs:minInclusive value="0" />
             </xs:restriction>
           </xs:simpleType>
         </xs:attribute>
@@ -375,6 +424,13 @@
             </xs:restriction>
           </xs:simpleType>
         </xs:attribute>
+        <xs:attribute default="1" name="weight">
+          <xs:simpleType>
+            <xs:restriction base="xs:float">
+              <xs:minInclusive value="0" />
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -385,6 +441,13 @@
           <xs:simpleType>
             <xs:restriction base="xs:string">
               <xs:maxLength value="50" />
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute default="1" name="weight">
+          <xs:simpleType>
+            <xs:restriction base="xs:float">
+              <xs:minInclusive value="0" />
             </xs:restriction>
           </xs:simpleType>
         </xs:attribute>
@@ -401,6 +464,13 @@
             </xs:restriction>
           </xs:simpleType>
         </xs:attribute>
+        <xs:attribute default="1" name="weight">
+          <xs:simpleType>
+            <xs:restriction base="xs:float">
+              <xs:minInclusive value="0" />
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -411,6 +481,13 @@
           <xs:simpleType>
             <xs:restriction base="xs:string">
               <xs:maxLength value="50" />
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute default="1" name="weight">
+          <xs:simpleType>
+            <xs:restriction base="xs:float">
+              <xs:minInclusive value="0" />
             </xs:restriction>
           </xs:simpleType>
         </xs:attribute>
@@ -473,6 +550,13 @@
         </xs:restriction>
       </xs:simpleType>
     </xs:attribute>
+    <xs:attribute default="1" name="weight">
+      <xs:simpleType>
+        <xs:restriction base="xs:float">
+          <xs:minInclusive value="0" />
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
   </xs:complexType>
   <xs:complexType name="DiameterRestraint">
     <xs:sequence>
@@ -508,6 +592,13 @@
       </xs:element>
     </xs:sequence>
     <xs:attribute name="name" type="xs:string" />
+    <xs:attribute default="1" name="weight">
+      <xs:simpleType>
+        <xs:restriction base="xs:float">
+          <xs:minInclusive value="0" />
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
   </xs:complexType>
   <xs:complexType xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="AuthorType">
     <xsd:attributeGroup ref="AuthorType" />
@@ -1166,8 +1257,8 @@
     </xs:attribute>
   </xs:complexType>
   <xs:attributeGroup name="ColorType">
-    <xs:attribute name="r" type="xs:int" use="required" />
-    <xs:attribute name="g" type="xs:int" use="required" />
-    <xs:attribute name="b" type="xs:int" use="required" />
+    <xs:attribute name="r" type="xs:float" use="required" />
+    <xs:attribute name="g" type="xs:float" use="required" />
+    <xs:attribute name="b" type="xs:float" use="required" />
   </xs:attributeGroup>
 </xs:schema>
