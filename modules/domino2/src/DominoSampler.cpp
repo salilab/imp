@@ -36,6 +36,129 @@ struct IntsLess {
   }
 };
 
+namespace {
+  void index_particles(container::ListSingletonContainer *known_particles,
+                       std::map<Particle*, unsigned int>&index) {
+    StringKey k= internal::node_name_key();
+    for (unsigned int i=0; i< known_particles->get_number_of_particles(); ++i) {
+      std::ostringstream oss;
+      oss << i;
+      Particle *p= known_particles->get_particle(i);
+      index[p]=i;
+      if (p->has_attribute(k)) {
+        p->set_value(k, oss.str());
+      } else {
+        p->add_attribute(k, oss.str());
+      }
+    }
+  }
+  void create_junction_tree(const InteractionGraph &ig,
+                            const std::map<Particle*, unsigned int>&index) {
+    std::string graphname;
+    {
+      TextOutput dgraph= IMP::create_temporary_file();
+      graphname=dgraph.get_name();
+      typedef boost::property_map< InteractionGraph,
+        boost::vertex_name_t>::const_type ParticleConstMap;
+
+      ParticleConstMap pm= boost::get(boost::vertex_name, ig);
+      typedef boost::graph_traits<InteractionGraph>::edge_iterator EIT;
+      typedef boost::graph_traits<InteractionGraph>::vertex_descriptor V;
+      EIT b,e;
+      boost::tie(b,e)= boost::edges(ig);
+      for (; b!= e; ++b) {
+        V f=boost::source(*b, ig);
+        V t=boost::target(*b, ig);
+        std::cout << "Writing edge " << boost::get(pm, f)->get_name()
+                  << " " << boost::get(pm, t)->get_name() << std::endl;
+        dgraph.get_stream() << index.find(boost::get(pm, f))->second << " "
+                            << index.find(boost::get(pm, t))->second
+                            << "\n";
+      }
+    }
+    std::string jtreename;
+    {
+      TextOutput jtree= IMP::create_temporary_file();
+      jtreename= jtree.get_name();
+    }
+    std::string scriptname;
+    {
+      TextOutput script= IMP::create_temporary_file();
+      scriptname = script.get_name();
+      script.get_stream() << "import IMP.domino2\n";
+      script.get_stream() << "IMP.domino2._compute_junction_tree_from_file(\""
+                          << graphname << "\", \""
+                          << jtreename << "\")\n";
+    }
+    std::ostringstream oss;
+    oss << "python " << scriptname;
+    IMP_LOG(TERSE, "Calling external script for jtree " << std::endl);
+    int ev=system(oss.str().c_str());
+    if (ev != 0) {
+      IMP_THROW("Error running junction tree script", IOException);
+    }
+    internal::JunctionTree jt;
+    internal::read_junction_tree(jtreename,&jt);
+  }
+
+  std::vector<Ints> get_solutions(const internal::JunctionTree &jt,
+                     container::ListSingletonContainer *known_particles,
+                                  Model *model,
+                                  ParticleStatesTable *pst,
+                                  SubsetStatesTable *sst,
+                                  double max_score) {
+    internal::RestraintEvaluator re(model, pst);
+    IMP_NEW(internal::DominoOptimizer, opt, (known_particles, jt,
+                                             model, &re));
+    internal::DiscreteSampler ds(pst, sst);
+    opt->set_sampling_space(&ds);
+    unsigned int numsol=5;
+    do {
+      // search for right number of solutions
+      opt->set_number_of_solutions(numsol);
+      opt->optimize(numsol);
+      // check that last energy is greater than cutoff
+      double score=-std::numeric_limits<double>::max();
+      for (unsigned int i=0; i< numsol; ++i) {
+        const internal::CombState *cs= opt->get_graph()->get_opt_combination(i);
+        score= std::max(score,
+                        static_cast<double>(opt->get_graph()
+                                            ->move_to_configuration(*cs)));
+      }
+      if (score > max_score) {
+        break;
+      } else {
+        numsol*=2;
+      }
+    } while (true);
+    /*container::ListSingletonContainers subsets;
+      typedef std::map<Ints, double, IntsLess> Table;
+      std::map<Subset*, Table> tables;
+      for (unsigned int i=0; i< subsets.size(); ++i) {
+      Pointer<SubsetStates> e= node_enumerators_->get_subset_states(subsets[i]);
+      Pointer<SubsetEvaluator> eval
+      =evaluators_->get_subset_evaluator(subsets[i]);
+      unsigned int nstates=e->get_number_of_states();
+      for (unsigned int j=0; j< nstates; ++j) {
+      Ints state= e->get_state(j);
+      double score= eval->get_score(state);
+      tables[subsets[i]][state]=score;
+      }
+      }*/
+    std::vector<Ints> final_solutions;
+    for (unsigned int i=0; i< numsol; ++i) {
+      const internal::CombState *cs= opt->get_graph()->get_opt_combination(i);
+      internal::CombData cd= *cs->get_data();
+      Ints sol(known_particles->get_number_of_particles());
+      for (unsigned int i=0; i< sol.size(); ++i) {
+        sol[i]= cd[known_particles->get_particle(i)];
+      }
+      final_solutions.push_back(sol);
+    }
+    return final_solutions;
+  }
+}
+
 ConfigurationSet *DominoSampler::do_sample() const {
   IMP_OBJECT_LOG;
 
@@ -45,114 +168,18 @@ ConfigurationSet *DominoSampler::do_sample() const {
           (enumerators_->get_particles()));
   StringKey k=internal::node_name_key();
   std::map<Particle*, unsigned int> index;
-  for (unsigned int i=0; i< known_particles->get_number_of_particles(); ++i) {
-    std::ostringstream oss;
-    oss << i;
-    Particle *p= known_particles->get_particle(i);
-    index[p]=i;
-    if (p->has_attribute(k)) {
-      p->set_value(k, oss.str());
-    } else {
-      p->add_attribute(k, oss.str());
-    }
-  }
+  index_particles(known_particles, index);
   IMP_LOG(TERSE, "Sampling with " << known_particles->get_number_of_particles()
           << " particles" << std::endl);
-  InteractionGraph ig= get_interaction_graph(get_model());
-  std::string graphname;
-  {
-    TextOutput dgraph= IMP::create_temporary_file();
-    graphname=dgraph.get_name();
-    typedef boost::property_map<InteractionGraph,
-      boost::vertex_name_t>::type ParticleMap;
-
-    ParticleMap pm= boost::get(boost::vertex_name, ig);
-    typedef boost::graph_traits<InteractionGraph>::edge_iterator EIT;
-    typedef boost::graph_traits<InteractionGraph>::vertex_descriptor V;
-    EIT b,e;
-    boost::tie(b,e)= boost::edges(ig);
-    for (; b!= e; ++b) {
-      V f=boost::source(*b, ig);
-      V t=boost::target(*b, ig);
-      std::cout << "Writing edge " << boost::get(pm, f)->get_name()
-                << " " << boost::get(pm, t)->get_name() << std::endl;
-      dgraph.get_stream() << index[boost::get(pm, f)] << " "
-                          << index[boost::get(pm, t)]
-                          << "\n";
-    }
-  }
-  std::string jtreename;
-  {
-    TextOutput jtree= IMP::create_temporary_file();
-    jtreename= jtree.get_name();
-  }
-  std::string scriptname;
-  {
-    TextOutput script= IMP::create_temporary_file("py");
-    scriptname = script.get_name();
-    script.get_stream() << "import IMP.domino2\n";
-    script.get_stream() << "IMP.domino2._compute_junction_tree_from_file(\""
-                        << graphname << "\", \""
-                        << jtreename << "\")\n";
-  }
-  std::ostringstream oss;
-  oss << "python " << scriptname;
-  IMP_LOG(TERSE, "Calling external script for jtree " << std::endl);
-  int ev=system(oss.str().c_str());
-  if (ev != 0) {
-    IMP_THROW("Error running junction tree script", IOException);
-  }
+  InteractionGraph ig= get_interaction_graph(get_model(),
+                                             known_particles->get_particles());
   internal::JunctionTree jt;
-  internal::read_junction_tree(jtreename,&jt);
-  internal::RestraintEvaluator re;
-  IMP_NEW(internal::DominoOptimizer, opt, (known_particles, jt,
-                                           get_model(), &re));
-  internal::DiscreteSampler ds(get_particle_states_table(),
-                               get_subset_states_table());
-  opt->set_sampling_space(&ds);
-  unsigned int numsol=5;
-  do {
-    // search for right number of solutions
-    opt->set_number_of_solutions(numsol);
-    opt->optimize(numsol);
-    // check that last energy is greater than cutoff
-    double score=-std::numeric_limits<double>::max();
-    for (unsigned int i=0; i< numsol; ++i) {
-      const internal::CombState *cs= opt->get_graph()->get_opt_combination(i);
-      score= std::max(score,
-                      static_cast<double>(opt->get_graph()
-                                          ->move_to_configuration(*cs)));
-    }
-    if (score > get_maximum_score()) {
-      break;
-    } else {
-      numsol*=2;
-    }
-  } while (true);
-  /*container::ListSingletonContainers subsets;
-  typedef std::map<Ints, double, IntsLess> Table;
-  std::map<Subset*, Table> tables;
-  for (unsigned int i=0; i< subsets.size(); ++i) {
-    Pointer<SubsetStates> e= node_enumerators_->get_subset_states(subsets[i]);
-    Pointer<SubsetEvaluator> eval=evaluators_->get_subset_evaluator(subsets[i]);
-    unsigned int nstates=e->get_number_of_states();
-    for (unsigned int j=0; j< nstates; ++j) {
-      Ints state= e->get_state(j);
-      double score= eval->get_score(state);
-      tables[subsets[i]][state]=score;
-    }
-    }*/
-  std::vector<Ints> final_solutions;
-
-  for (unsigned int i=0; i< numsol; ++i) {
-    const internal::CombState *cs= opt->get_graph()->get_opt_combination(i);
-    internal::CombData cd= *cs->get_data();
-    Ints sol(known_particles->get_number_of_particles());
-    for (unsigned int i=0; i< sol.size(); ++i) {
-      sol[i]= cd[known_particles->get_particle(i)];
-    }
-    final_solutions.push_back(sol);
-  }
+  create_junction_tree(ig, index);
+  std::vector<Ints> final_solutions= get_solutions(jt, known_particles,
+                                                   get_model(),
+                                                   get_particle_states_table(),
+                                                   get_subset_states_table(),
+                                                   get_maximum_score());
 
   for (unsigned int i=0; i< final_solutions.size(); ++i) {
     IMP_INTERNAL_CHECK(final_solutions[i].size()

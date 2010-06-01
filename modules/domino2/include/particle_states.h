@@ -61,6 +61,14 @@ class IMPDOMINO2EXPORT ParticleStatesTable: public Object {
                     "Enumerator already set for particle " << p->get_name());
     enumerators_[p]=e;
   }
+
+public:
+  // implementation methods use this to get the enumerator
+  ParticleStates* get_particle_states(Particle *p) const {
+    IMP_USAGE_CHECK(enumerators_.find(p) != enumerators_.end(),
+                    "I don't know about particle " << p->get_name());
+    return enumerators_.find(p)->second;
+  }
   // This defines the ordering of particles used
   ParticlesTemp get_particles() const {
     ParticlesTemp ret;
@@ -71,14 +79,6 @@ class IMPDOMINO2EXPORT ParticleStatesTable: public Object {
     }
     return ret;
   }
-public:
-  // implementation methods use this to get the enumerator
-  ParticleStates* get_particle_states(Particle *p) const {
-    IMP_USAGE_CHECK(enumerators_.find(p) != enumerators_.end(),
-                    "I don't know about particle " << p->get_name());
-    return enumerators_.find(p)->second;
-  }
-
   IMP_OBJECT(ParticleStatesTable);
 };
 

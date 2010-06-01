@@ -15,6 +15,34 @@
 
 IMPDOMINO2_BEGIN_INTERNAL_NAMESPACE
 
+RestraintEvaluator::RestraintEvaluator(Model *m,
+                                       ParticleStatesTable *pst): pst_(pst) {
+  mevt_= new ModelSubsetEvaluatorTable(m);
+}
+
+void RestraintEvaluator::calc_scores(const Combinations &comb_states,
+                                     CombinationValues &comb_values,
+                                     container::ListSingletonContainer *all) {
+  IMP::internal::OwnerPointer<SubsetEvaluator> se;
+  const Particles allps= all->get_particles();
+  for (Combinations::const_iterator it= comb_states.begin();
+       it != comb_states.end(); ++it) {
+    const CombData cd= *it->second->get_data();
+    std::string key= it->first;
+    ParticlesTemp pt;
+    Ints st;
+    for (CombData::const_iterator iti= cd.begin(); iti != cd.end(); ++iti) {
+      st.push_back(iti->second);
+      pt.push_back(iti->first);
+    }
+    IMP::internal::OwnerPointer<container::ListSingletonContainer> lsc
+      = new container::ListSingletonContainer(pt);
+    se= mevt_->get_subset_evaluator(lsc);
+    double e= se->get_score(st);
+    comb_values[key]=e;
+  }
+}
+
 StringKey node_name_key() {
   static StringKey k("name");
   return k;
@@ -198,30 +226,9 @@ JNode * RestraintGraph::get_node(container::ListSingletonContainer *ps)
   return NULL;
 }
 
-void RestraintGraph::initialize_potentials(
-    Restraint *r,
-    container::ListSingletonContainer *ps,
-    Float weight) {
-  JNode *jn = NULL;
-  jn = get_node(ps);
-  if (jn == NULL) { // TODO - should use IMP_INTERNAL_CHECK
-    IMP_WARN(" no node - the restraint : " << *r
-             << " between particles: ");
-    for (unsigned int i=0;i<ps->get_number_of_particles();i++){
-      Particle *p = ps->get_particle(i);
-      IMP_WARN( p->get_value(node_name_key()) << " ("
-                <<p->get_value(node_name_key()) <<"):: ");
-    }
-    IMP_WARN( " has not been realized." << std::endl);
-  }
-  else {
-    IMP_IF_LOG(TERSE) {
-      IMP_LOG(TERSE,"restraint : " );
-      IMP_LOG_WRITE(TERSE,r->show());
-      IMP_LOG(TERSE,"is realized by node with index : "<<
-                     jn->get_node_index()<<std::endl);
-    }
-    jn->realize(r, ps, weight);
+void RestraintGraph::initialize_potentials() {
+  for (unsigned int i=0; i< node_data_.size(); ++i) {
+    node_data_[i]->realize();
   }
 }
 

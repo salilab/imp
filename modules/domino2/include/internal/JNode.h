@@ -61,14 +61,8 @@ public:
           container::ListSingletonContainer *particles,
           Combinations *states);
   //! Adds the restraint values to all combinations
-  /**\param[in] r      the  restraint
-      \param[in] ps     the particles participate in the restraint at the
-                        hierarhcy level encoded in the graph
-      \param[in] weight the weight of the restraint
-   */
-  void realize(Restraint *r,
-               container::ListSingletonContainer *ps,
-               Float weight);
+  void realize();
+
   //! Finds the minimum combination in the node.
   /** \param[in]   move_to_state     true if the model should move to the new
                                      state

@@ -164,15 +164,8 @@ void JNode::move2state(CombState *cs)
   ds_->move2state(cs);
 }
 
-void JNode::realize(Restraint *r, container::ListSingletonContainer *ps,
-                    Float weight)
+void JNode::realize()
 {
-  IMP_IF_LOG(VERBOSE) {
-    IMP_LOG(VERBOSE,"start realize node: " << node_ind_ << " with restraint: ");
-    IMP_LOG_WRITE(VERBOSE,r->show());
-    IMP_LOG(VERBOSE," , weight : " << weight);
-    IMP_LOG(VERBOSE,std::endl);
-  }
   std::map<std::string, float> temp_calculations;
   // stores calculated discrete values. It might be that each appears more
   // than once, since the node may contain more particles than the ones
@@ -181,18 +174,16 @@ void JNode::realize(Restraint *r, container::ListSingletonContainer *ps,
                                              // of the same configuration.
   IMP_INTERNAL_CHECK(rstr_eval_!=NULL,
                      "restraint evaluator was not initialized"<<std::endl);
-  Combinations restraint_states;
-  populate_states_of_particles(ps,&restraint_states);
   IMP_LOG(VERBOSE, "going to calculate restraint for "<<
-                    restraint_states.size() <<" combinations"<<std::endl);
-  rstr_eval_->calc_scores(restraint_states,result_cache,r,ps);
+                    comb_states_.size() <<" combinations"<<std::endl);
+  rstr_eval_->calc_scores(comb_states_,result_cache,particles_);
   std::string partial_key;
   Float score;
   for (std::map<std::string, CombState *>::iterator it =  comb_states_.begin();
        it != comb_states_.end(); it++) {
-    partial_key = it->second->get_partial_key(ps);
+    partial_key = it->second->get_partial_key(particles_);
     score = result_cache.find(partial_key)->second;
-    it->second->update_total_score(0.0, weight*score);
+    it->second->update_total_score(0.0, score);
     //rethink how to handle weights.
     //should be part of reading restraints directly from the model
   }
