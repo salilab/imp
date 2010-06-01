@@ -14,7 +14,7 @@
 
 #include "../core_config.h"
 
-#include <IMP/Restraint.h>
+#include <IMP/DecomposableRestraint.h>
 #include <IMP/Pointer.h>
 #include <IMP/GroupnameScore.h>
 #include <IMP/GroupnameContainer.h>
@@ -32,7 +32,8 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
     \see GroupnameRestraint
  */
-class IMPCOREEXPORT CoreGroupnamesRestraint : public Restraint
+class IMPCOREEXPORT CoreGroupnamesRestraint :
+  public DecomposableRestraint
 {
   IMP::internal::OwnerPointer<GroupnameScore> ss_;
   IMP::internal::OwnerPointer<GroupnameContainer> pc_;
@@ -55,6 +56,8 @@ public:
   GroupnameContainer* get_groupname_container() {
     return pc_;
   }
+
+  double unprotected_evaluate_subset(DerivativeAccumulator *accum) const;
 
   GroupnameScore* get_groupname_score() const {
     return ss_;

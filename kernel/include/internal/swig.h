@@ -16,6 +16,10 @@
 #include "../macros.h"
 #include "../Decorator.h"
 #include "../file.h"
+#include <boost/graph/graphviz.hpp>
+#include <boost/graph/topological_sort.hpp>
+#include <boost/graph/copy.hpp>
+
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 
@@ -166,6 +170,86 @@ IMPEXPORT int _test_overload(const Particles &ps);
 
 IMPEXPORT int _test_overload(const Restraints &ps);
 
+
+template <class BG, class Label>
+class BoostDigraph: public Object {
+  BG bg_;
+  typedef typename boost::graph_traits<BG> Traits;
+  typedef typename boost::property_map<BG,
+                              boost::vertex_name_t>::type VertexMap;
+  VertexMap vm_;
+  class ObjectNameWriter {
+     VertexMap om_;
+  public:
+    ObjectNameWriter( VertexMap om): om_(om){}
+    void operator()(std::ostream& out, int v) const {
+      out << "[label=\"" << boost::get(om_, v)->get_name() << "\"]";
+    }
+  };
+  template <class It>
+  int distance(std::pair<It, It> r) const {
+    return std::distance(r.first, r.second);
+  }
+public:
+  BoostDigraph(const BG& bg){
+    boost::copy_graph(bg, bg_);
+    vm_= boost::get(boost::vertex_name, bg_);
+    IMP_INTERNAL_CHECK(get_vertices().size() == distance(boost::vertices(bg_)),
+                       "Vertices don't match " << get_vertices().size()
+                       << " vs " << distance(boost::vertices(bg_)));
+    for (int i=0; i< boost::num_vertices(bg_); ++i) {
+      //IMP_INTERNAL_CHECK(distance(boost::out_edges(i, bg_))
+      //                   == dist
+      IMP_NOT_IMPLEMENTED;
+    }
+  }
+  typedef int Vertex;
+  typedef Ints Vertexes;
+  Vertexes get_vertices() const {
+    IMP_CHECK_OBJECT(this);
+    std::pair<typename Traits::vertex_iterator,
+      typename Traits::vertex_iterator> be= boost::vertices(bg_);
+    return Ints(be.first, be.second);
+  }
+
+  Label get_label(Vertex i) const {
+    return boost::get(vm_, i);
+  }
+  Vertexes get_in_neighbors(Vertex v) const {
+    typedef typename Traits::in_edge_iterator IEIt;
+    std::pair<IEIt, IEIt> be= boost::in_edges(v, bg_);
+    Ints ret;
+    for (; be.first != be.second; ++be.first) {
+      ret.push_back(boost::source(*be.first, bg_));
+    }
+    return ret;
+  }
+  Vertexes get_out_neighbors(Vertex v) const {
+    typedef typename Traits::out_edge_iterator IEIt;
+    std::pair<IEIt, IEIt> be= boost::out_edges(v, bg_);
+    IMP_INTERNAL_CHECK(std::distance(be.first, be.second)< 10000,
+                       "Insane number of neighbors "
+                       << std::distance(be.first, be.second));
+    Ints ret;
+    for (; be.first != be.second; ++be.first) {
+      ret.push_back(boost::target(*be.first, bg_));
+    }
+    return ret;
+  }
+  void do_show(std::ostream &out) const {
+    show_graphviz(out);
+  }
+  void show_graphviz(std::ostream &out=std::cout) const {
+    IMP_CHECK_OBJECT(this);
+    ObjectNameWriter onw(vm_);
+    boost::write_graphviz(out, bg_,
+                          onw);
+  }
+  std::string get_type_name() const {return "Graph";}
+  ::IMP::VersionInfo get_version_info() const {
+    return get_module_version_info();
+  }
+};
 
 IMP_END_INTERNAL_NAMESPACE
 

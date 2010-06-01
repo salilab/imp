@@ -14,7 +14,7 @@
 
 #include "../core_config.h"
 
-#include <IMP/Restraint.h>
+#include <IMP/DecomposableRestraint.h>
 #include <IMP/Pointer.h>
 #include <IMP/QuadScore.h>
 #include <IMP/QuadContainer.h>
@@ -32,7 +32,8 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
     \see QuadRestraint
  */
-class IMPCOREEXPORT CoreQuadsRestraint : public Restraint
+class IMPCOREEXPORT CoreQuadsRestraint :
+  public DecomposableRestraint
 {
   IMP::internal::OwnerPointer<QuadScore> ss_;
   IMP::internal::OwnerPointer<QuadContainer> pc_;
@@ -55,6 +56,8 @@ public:
   QuadContainer* get_quad_container() {
     return pc_;
   }
+
+  double unprotected_evaluate_subset(DerivativeAccumulator *accum) const;
 
   QuadScore* get_quad_score() const {
     return ss_;

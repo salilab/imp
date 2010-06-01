@@ -130,16 +130,9 @@ public:
   }
   virtual double unprotected_evaluate(DerivativeAccumulator *) const=0;
 
-#endif
+  virtual double unprotected_evaluate_subset(DerivativeAccumulator *) const;
 
-  //! Restraints cannot update other objects
-  ObjectsTemp get_output_objects() const {
-    return ObjectsTemp();
-  }
-  //! Restraints cannot update other particles
-  ParticlesTemp get_output_particles() const {
-    return ParticlesTemp();
-  }
+#endif
 
   /** \name Interactions
       Certain sorts of operations, such as evaluation of restraints in

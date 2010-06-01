@@ -14,7 +14,7 @@
 
 #include "../core_config.h"
 
-#include <IMP/Restraint.h>
+#include <IMP/DecomposableRestraint.h>
 #include <IMP/Pointer.h>
 #include <IMP/PairScore.h>
 #include <IMP/PairContainer.h>
@@ -32,7 +32,8 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
     \see PairRestraint
  */
-class IMPCOREEXPORT CorePairsRestraint : public Restraint
+class IMPCOREEXPORT CorePairsRestraint :
+  public DecomposableRestraint
 {
   IMP::internal::OwnerPointer<PairScore> ss_;
   IMP::internal::OwnerPointer<PairContainer> pc_;
@@ -55,6 +56,8 @@ public:
   PairContainer* get_pair_container() {
     return pc_;
   }
+
+  double unprotected_evaluate_subset(DerivativeAccumulator *accum) const;
 
   PairScore* get_pair_score() const {
     return ss_;

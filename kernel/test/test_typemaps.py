@@ -218,7 +218,9 @@ class ParticleTests(IMP.test.TestCase):
                     "get_version_info",
                     "set_log_level",
                     "set_was_used",
-                    "get_is_up_to_date"
+                    "get_is_up_to_date",
+                    "get_is_scored",
+                    "set_is_scored"
                     ]
         md= dir(IMP._TrivialDecorator)
         for m in dir(IMP.Particle):

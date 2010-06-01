@@ -44,6 +44,7 @@ class IMPCONTAINEREXPORT QuadContainerSet
                         std::string name="QuadContainerSet %1%");
 
   IMP_QUAD_CONTAINER(QuadContainerSet);
+
   /** @name Methods to control the nested container
 
       This container merges a set of nested containers. To add

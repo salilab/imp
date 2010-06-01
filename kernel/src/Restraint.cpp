@@ -45,4 +45,12 @@ double Restraint::evaluate(bool calc_derivs) const {
   return get_model()->evaluate(rr, calc_derivs);
 }
 
+double Restraint::unprotected_evaluate_subset(DerivativeAccumulator *da) const {
+  ParticlesTemp ip= get_input_particles();
+  for (unsigned int i=0; i< ip.size(); ++i) {
+    if (!ip[i]->get_is_scored()) return 0;
+  }
+  return unprotected_evaluate(da);
+}
+
 IMP_END_NAMESPACE

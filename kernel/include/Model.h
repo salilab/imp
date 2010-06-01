@@ -15,6 +15,8 @@
 #include "container_macros.h"
 #include "base_types.h"
 #include "VersionInfo.h"
+#include <boost/graph/adjacency_list.hpp>
+
 
 #include <limits>
 
@@ -52,7 +54,7 @@ private:
   bool first_incremental_;
   bool last_had_derivatives_;
   bool gather_statistics_;
-  bool score_states_ordered_;
+  mutable bool score_states_ordered_;
   std::map<FloatKey, FloatRange> ranges_;
   mutable Stage cur_stage_;
   unsigned int eval_count_;
@@ -95,13 +97,15 @@ private:
   void zero_derivatives(bool shadow_too=false) const;
 
   double do_evaluate(const WeightedRestraints &restraints,
-                     const ScoreStatesTemp &states, bool calc_derivs);
+                     const ScoreStatesTemp &states, bool calc_derivs,
+                     bool all_particles);
 
   enum WhichRestraints {ALL, INCREMENTAL, NONINCREMENTAL};
   double do_evaluate_restraints(const WeightedRestraints &restraints,
                                 bool calc_derivs,
                                 WhichRestraints incremental_restraints,
-                                bool incremental_evaluation) const;
+                                bool incremental_evaluation,
+                                bool all_particles) const;
 
   void reset_dependencies();
 
@@ -264,7 +268,7 @@ public:
       \throw ModelException if a Particle attribute value becomes
       invalid (NaN, infinite etc.)
    */
- virtual Float evaluate(bool calc_derivs);
+ virtual double evaluate(bool calc_derivs);
 
  //! Evaluate a subset of the restraints
  /** The passed restraints must have been added to this model already.
@@ -279,7 +283,13 @@ public:
      \throw ModelException if a Particle attribute value becomes
      invalid (NaN, infinite, etc.)
   */
- virtual Float evaluate(const RestraintsTemp &restraints, bool calc_derivs);
+ virtual double evaluate(const RestraintsTemp &restraints, bool calc_derivs);
+
+
+ //! Evaluate all restraints on only a subset of the particles
+ /** All terms which involve particles not in the subset are skipped.
+  */
+ virtual double evaluate(const ParticlesTemp &particles, bool calc_derivs);
 
 #ifndef IMP_DOXYGEN
   VersionInfo get_version_info() const {
@@ -321,6 +331,29 @@ public:
   void set_gather_statistics(bool tf);
   void show_statistics_summary(std::ostream &out=std::cout) const;
   /** @} */
+
+#ifndef SWIG
+  /** \name Dependency graph
+      The dependency graph captures the interactions between Restraint,
+      ScoreState and Particle objects. The graph has an edge if the source
+      of the edge is an input for the target of the edge. eg, there
+      is an edge connecting a container to the restraint which gets
+      its particles from the container.
+
+      Each vertex has a name which is a pointer to the corresponding
+      Object. See
+      \external{www.boost.org/doc/libs/1_43_0/libs/graph/doc/index.html,
+      Boost.Graph} for more details.
+      @{
+   */
+  typedef boost::adjacency_list<boost::vecS, boost::vecS,
+                                boost::bidirectionalS,
+                                boost::property<boost::vertex_name_t, Object*>,
+                                boost::property<boost::edge_name_t,
+                                                int> > DependencyGraph;
+  const DependencyGraph& get_dependency_graph() const;
+  /** @} */
+#endif
 };
 
 IMP_OUTPUT_OPERATOR(Model);

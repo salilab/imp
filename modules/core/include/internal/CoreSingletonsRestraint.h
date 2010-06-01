@@ -14,7 +14,7 @@
 
 #include "../core_config.h"
 
-#include <IMP/Restraint.h>
+#include <IMP/DecomposableRestraint.h>
 #include <IMP/Pointer.h>
 #include <IMP/SingletonScore.h>
 #include <IMP/SingletonContainer.h>
@@ -32,7 +32,8 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
     \see SingletonRestraint
  */
-class IMPCOREEXPORT CoreSingletonsRestraint : public Restraint
+class IMPCOREEXPORT CoreSingletonsRestraint :
+  public DecomposableRestraint
 {
   IMP::internal::OwnerPointer<SingletonScore> ss_;
   IMP::internal::OwnerPointer<SingletonContainer> pc_;
@@ -55,6 +56,8 @@ public:
   SingletonContainer* get_singleton_container() {
     return pc_;
   }
+
+  double unprotected_evaluate_subset(DerivativeAccumulator *accum) const;
 
   SingletonScore* get_singleton_score() const {
     return ss_;

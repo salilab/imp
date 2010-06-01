@@ -22,6 +22,7 @@
   unsigned int szb=b_->get_number_of_particles();                       \
   for (unsigned int i=0; i< sza; ++i) {                                 \
     Particle *a= a_->get_particle(i);                                   \
+    if (subset && !a->get_is_scored()) continue;                        \
     for (unsigned int j=0; j< szb; ++j) {                               \
       ParticlePair p(a, b_->get_particle(j));                           \
       expr;                                                             \
