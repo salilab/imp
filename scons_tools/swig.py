@@ -1,6 +1,6 @@
 
 import imp_module
-from SCons.Script import Glob, Dir, File, Builder, Action, Exit, Scanner
+from SCons.Script import Glob, Dir, File, Builder, Action, Exit, Scanner, Move
 import SCons
 import os
 import sys
@@ -162,7 +162,8 @@ def _action_simple_swig(target, source, env):
     command=command+[" -Ibuild/swig"]+ ["-I"+str(Dir(x)) for x in env.get('CPPPATH', [])]
     command.append("-DIMP_SWIG")
     command.append(source[0].abspath)
-    return env.Execute(" ".join(command) %vars)
+    ret= env.Execute(" ".join(command) %vars)
+    return ret
 
 def _print_simple_swig(target, source, env):
     print "Running swig on file "+str(source[0].path)

@@ -17,7 +17,7 @@ import checks
 import modpage
 import pch
 
-from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir
+from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir, Move
 
 #def module_depends(env, target, source):
 #    env.Depends(target, [env.Alias(env['IMP_MODULE']+"-"+source)])
@@ -382,10 +382,13 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     for i in swigfiles:
         if str(i).find('/')==-1:
             swiglink.append( env.LinkInstallAs("#/build/swig/"+str(i), i) )
-    gen_pymod = File('IMP%s.py' % module_suffix.replace("_","."))
-    swig=penv._IMPSWIG(target=[gen_pymod, '#/build/src/%(module)s_wrap.cpp-in'%vars,
+    dest = File('#/build/lib/%(module_include_path)s/__init__.py' % vars)
+    produced=File("#/build/src/"+vars['module_include_path'].replace("/",".")+".py")
+    swig=penv._IMPSWIG(target=[produced, '#/build/src/%(module)s_wrap.cpp-in'%vars,
                                '#/build/src/%(module)s_wrap.h-in'%vars],
                        source=swigfile)
+    print "Moving", produced.path, "to", dest.path
+    gen_pymod= env.Command(dest, produced, Move(dest, produced))
     # this appears to be needed for some reason
     env.Requires(swig, swiglink)
     module_deps_requires(env, swig, "swig", [])
@@ -411,18 +414,6 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     #print "Environment", env['CXXFLAGS']
     if env['use_pch']:
         env.Depends(patched, env.Alias('pch'))
-    # Place the generated Python wrapper in lib directory:
-    buildinit = penv.LinkInstallAs('#/build/lib/%s/__init__.py'
-                                   % vars['module_include_path'],
-                                   gen_pymod)
-    # Make sure we have example/data files installed, in case someone says
-    # import IMP.foo; IMP.foo.get_example_file('foo'); IMP.get_data_path('')
-    if module != 'kernel':
-        penv.Requires(buildinit, '#/build/doc/examples/%s' \
-                          % module)
-        penv.Requires(buildinit, '#/build/data/%s' % module)
-    else:
-        penv.Requires(buildinit, '#/build/data')
     installinit = penv.InstallAs(penv.GetInstallDirectory('pythondir',
                                                           vars['module_include_path'],
                                                           '__init__.py'),
@@ -430,7 +421,7 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     installlib = penv.Install(penv.GetInstallDirectory('pyextdir'), buildlib)
     postprocess_lib(penv, buildlib)
     #build.append(buildlib)
-    pybuild.append(buildinit)
+    pybuild.append(gen_pymod)
     pybuild.append(buildlib)
     install.append(installinit)
     install.append(installlib)
