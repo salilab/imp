@@ -121,7 +121,7 @@ void RestraintEvaluatorFromFile::calc_scores(const Combinations &comb_states,
     IMP_LOG(TERSE,"start calculating scores from file:"
                    <<get_restraint_file(r)<<std::endl);
     IMP_LOG(TERSE,"between particles:");
-    for (int i=0;i<ps->get_number_of_particles();i++) {
+    for (unsigned int i=0;i<ps->get_number_of_particles();i++) {
       IMP_LOG(TERSE,ps->get_particle(i)->get_name()<<",");
       }
     IMP_LOG(TERSE,std::endl);
