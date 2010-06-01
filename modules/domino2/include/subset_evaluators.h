@@ -65,15 +65,11 @@ IMP_OBJECTS(SubsetEvaluatorTable, SubsetEvaluatorFactories);
 class IMPDOMINO2EXPORT ModelSubsetEvaluatorTable: public SubsetEvaluatorTable {
   mutable Pointer<Model> model_;
   Pointer<Configuration> cs_;
-  double cs_score_;
+  mutable std::map<Particle*, ParticlesTemp> dependents_;
 public:
-  ModelSubsetEvaluatorTable(Model *m): model_(m),
-    cs_(new Configuration(m, "evaluator")),
-    cs_score_(m->evaluate(false)){
-  }
+  ModelSubsetEvaluatorTable(Model *m);
   IMP_SUBSET_EVALUATOR_TABLE(ModelSubsetEvaluatorTable);
 };
-
 
 IMP_OBJECTS(ModelSubsetEvaluatorTable, ModelSubsetEvaluatorFactories);
 

@@ -108,9 +108,7 @@ public:
                         hierarhcy level encoded in the graph
       \param[in] weight the weight of the restraint
    */
-  void initialize_potentials(Restraint *r,
-                             container::ListSingletonContainer *ps,
-                             Float weight);
+  void initialize_potentials();
   unsigned int number_of_nodes() const {
     return  num_vertices(g_);
   }
