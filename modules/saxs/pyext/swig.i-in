@@ -1,4 +1,7 @@
+namespace std {
+%template(DistBase) std::vector<double>;
 
+}
 /* Ignore some stuff to quell SWIG warnings */
 %ignore operator>>(std::istream& s,
                    AtomFactorCoefficients& atom_factor_coefficients);
