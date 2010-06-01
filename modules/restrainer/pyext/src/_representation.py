@@ -226,11 +226,15 @@ class _RepFragment(_RepresentationNode):
                     decorator.add_child(res_part)
         else:
             if not particle.has_attribute(IMP.FloatKey('x')):
-                particle.add_attribute(IMP.FloatKey('x'), random.random())
+                particle.add_attribute(IMP.FloatKey('x'), random.uniform(-300, 300))
+                particle.set_is_optimized(IMP.FloatKey('x'), True)
             if not particle.has_attribute(IMP.FloatKey('y')):
-                particle.add_attribute(IMP.FloatKey('y'), random.random())
+                particle.add_attribute(IMP.FloatKey('y'), random.uniform(-300, 300))
+                particle.set_is_optimized(IMP.FloatKey('y'), True)
             if not particle.has_attribute(IMP.FloatKey('z')):
-                particle.add_attribute(IMP.FloatKey('z'), random.random())
+                particle.add_attribute(IMP.FloatKey('z'), random.uniform(-300, 300))
+                particle.set_is_optimized(IMP.FloatKey('z'), True)
+
             if particle.get_value(IMP.FloatKey('radius')) < 0:
                 particle.set_value(IMP.FloatKey('radius'),
                 particle.get_value(IMP.FloatKey('calc_radius')))
