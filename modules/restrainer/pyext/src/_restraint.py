@@ -370,7 +370,7 @@ class _RestraintRestraint(_RestraintNode):
         _RestraintNode.__init__(self, attributes)
         self.imp_restraint = None
         self.std_dev = float(attributes.get('std_dev', 1))
-        self.distance = float(attributes.get('distance', -1))
+        self.distance = float(attributes.get('distance', 0))
         self.max_diameter = float(attributes.get('max_diameter', -1))
         self.profile_filename = attributes.get('profile_filename', '')
         self.density_filename = attributes.get('density_filename', '')
@@ -479,11 +479,13 @@ class _RestraintRestraint(_RestraintNode):
 
     def create_distance_restraint(self, repr, restraint_sets):
         _RestraintNode.create_restraint(self, repr, restraint_sets)
-        ps = IMP.Particles()
-        for child in self.child_restraints:
-            ps.append(child.get_particle())
-        self.distance_restraint = IMP.helper.create_simple_distance(ps)
-        self.imp_restraint = self.distance_restraint.get_restraint()
+        if self.std_dev > 0:
+            k = 1.0/(2.0*self.std_dev*self.std_dev)
+        else:
+            k = 1.0
+        h = IMP.core.Harmonic(self.distance, k)
+        self.imp_restraint = IMP.core.DistanceRestraint(h, self.child_restraints[0],
+            self.child_restraints[1])
         return self.imp_restraint
 
     def create_diameter_restraint(self, repr, restraint_sets):
