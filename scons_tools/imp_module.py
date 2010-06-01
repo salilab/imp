@@ -222,9 +222,9 @@ def IMPModuleLib(envi, files):
     module_suffix = env['IMP_MODULE_SUFFIX']
     vars= make_vars(env)
     if env['build']=="debug" and env['linktest']:
-        link= env.IMPModuleLinkTest(target=['internal/link_0.cpp', 'internal/link_1.cpp'], source=[])
+        link= env.IMPModuleLinkTest(target=['#/build/src/%(module)s_link_0.cpp'%vars, '#/build/src/%(module)s_link_1.cpp'%vars], source=[])
         files= files+link
-    config= env.IMPModuleConfigCPP(target=['%(module)s_config.cpp'%vars],
+    config= env.IMPModuleConfigCPP(target=["#/build/src/%(module)s_config.cpp"%vars],
                                    source=[env.Value(env['IMP_MODULE_VERSION'])])
     #env.AlwaysBuild(version)
     files =files+ config
@@ -261,13 +261,13 @@ def IMPModuleInclude(env, files):
     includedir = env.GetInstallDirectory('includedir')
 
     # Generate config header and SWIG equivalent
-    config=env.IMPModuleConfigH(target=['%(module)s_config.h'%vars],
+    config=env.IMPModuleConfigH(target=['#/build/include/%(module_include_path)s/%(module)s_config.h'%vars],
     source=[env.Value(env['IMP_MODULE_CONFIG'])])
-    files=files+config
+    configinstall=env.Install(includedir+"/"+vars['module_include_path'],config)
     install = hierarchy.InstallHierarchy(env, includedir+"/"+vars['module_include_path'],
                                          list(files))
     build=hierarchy.InstallHierarchy(env, "#/build/include/"+vars['module_include_path'],
-                                     list(files), True)
+                                     list(files), True)+[config]
     env['IMP_MODULE_HEADERS']= [str(x) for x in files if str(x).find("internal") == -1]
     module_alias(env, 'include', build)
     add_to_global_alias(env, 'all', 'include')
@@ -325,14 +325,20 @@ def _make_programs(envi, required_modules, extra_libs, install, files):
     bindir = env.GetInstallDirectory('bindir')
     allprogs=[]
     for f in files:
-        prog= env.Program(f)
-        allprogs.append(prog)
-        cb= env.Install("#/build/bin", prog)
-        build.append(cb)
-        if install:
-            ci= env.Install(bindir, prog)
-            install_list.append(ci)
-        build.append(prog)
+        if str(f).endswith(".cpp"):
+            prog= env.Program(f)
+            allprogs.append(prog)
+            cb= env.Install("#/build/bin", prog)
+            build.append(cb)
+            if install:
+                ci= env.Install(bindir, prog)
+                install_list.append(ci)
+        else:
+            cb= env.Install("#/build/bin", f)
+            build.append(cb)
+            if install:
+                ci= env.Install(bindir, f)
+                install_list.append(ci)
     return (build, install_list)
 
 def IMPModuleBin(env, files, required_modules=[], extra_libs=[], install=True):
@@ -368,29 +374,27 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
                                                env['IMP_MODULE'] == 'kernel')\
                          +env[env['IMP_MODULE']+"_libs"])
     penv.Prepend(LIBS=['imp%s' % module_suffix])
-    #penv.Append(CPPPATH=[Dir('#').abspath])
-    #penv.Append(SWIGFLAGS='-python -c++ -naturalvar')
     swigfile= penv._IMPSWIGPreface(target=[File("#/build/swig/IMP_%(module)s.i"%vars)],
                                    source=[File("swig.i-in"),
                                            env.Value(env['IMP_REQUIRED_MODULES']),
                                            env.Value(env['IMP_MODULE_VERSION'])])
     swiglink=[]
-    #print [str(x) for x in interfaces]
     for i in swigfiles:
-        swiglink.append( env.LinkInstallAs("#/build/swig/"+str(i), i) )
+        if str(i).find('/')==-1:
+            swiglink.append( env.LinkInstallAs("#/build/swig/"+str(i), i) )
     gen_pymod = File('IMP%s.py' % module_suffix.replace("_","."))
-    swig=penv._IMPSWIG(target=[gen_pymod, 'wrap.cpp-in',
-                               'wrap.h-in'],
+    swig=penv._IMPSWIG(target=[gen_pymod, '#/build/src/%(module)s_wrap.cpp-in'%vars,
+                               '#/build/src/%(module)s_wrap.h-in'%vars],
                        source=swigfile)
     # this appears to be needed for some reason
     env.Requires(swig, swiglink)
     module_deps_requires(env, swig, "swig", [])
     module_deps_requires(env, swig, "include", [])
     module_requires(env, swig, 'include')
-    patched=penv._IMPPatchSWIG(target=['wrap.cpp'],
-                               source=['wrap.cpp-in'])
-    penv._IMPPatchSWIG(target=['wrap.h'],
-                       source=['wrap.h-in'])
+    patched=penv._IMPPatchSWIG(target=['#/build/src/%(module)s_wrap.cpp'%vars],
+                               source=['#/build/src/%(module)s_wrap.cpp-in'%vars])
+    penv._IMPPatchSWIG(target=['#/build/src/%(module)s_wrap.h'%vars],
+                       source=['#/build/src/%(module)s_wrap.h-in'%vars])
     lpenv= bug_fixes.clone_env(penv)
     if env['use_pch']:
         if module=='kernel':
@@ -406,7 +410,6 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
                                     patched)
     #print "Environment", env['CXXFLAGS']
     if env['use_pch']:
-        # a hack to get them close to right without making building the docs expensive
         env.Depends(patched, env.Alias('pch'))
     # Place the generated Python wrapper in lib directory:
     buildinit = penv.LinkInstallAs('#/build/lib/%s/__init__.py'
@@ -526,7 +529,7 @@ def IMPModuleGetData(env):
 
 def IMPModuleGetBins(env):
     vars = make_vars(env)
-    raw_files= module_glob(["*.cpp"])
+    raw_files= module_glob(["*.cpp", "*.py"])
     return raw_files
 
 def IMPModuleGetDocs(env):

@@ -14,10 +14,10 @@ def builder_config(target, source, env):
     write_config_item(fh, 'has_tests', 'NDEBUG' not in env['CPPDEFINES'])
 
 e.Append(BUILDERS = {'MakeConfig': Builder(action=builder_config)})
-config = e.MakeConfig("IMP_config.i",
+config = e.MakeConfig("#/build/swig/IMP_config.i",
                       [env.Value(env['CGAL_LIBS']),
                        env.Value(env['HAS_MODELLER']),
                        env.Value(env['CPPDEFINES'])])
 #
 # Build the Python extension from SWIG interface file:
-env.IMPModulePython(swigfiles=env.IMPModuleGetSwigFiles(), pythonfiles=env.IMPModuleGetPython())
+env.IMPModulePython(swigfiles=env.IMPModuleGetSwigFiles()+["#/build/swig/IMP_config.i"], pythonfiles=env.IMPModuleGetPython())
