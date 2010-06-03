@@ -16,7 +16,7 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 DataContainer::DataContainer(const SettingsData &settings) {
   set_=settings;
   mdl_= new IMP::Model();
-  IMP::atom::NonWaterPDBSelector sel;
+  IMP::atom::NonWaterNonHydrogenPDBSelector sel;
   for(int i=0;i<settings.get_number_of_component_headers();i++) {
     ComponentHeader comp = settings.get_component_header(i);
     atom::Hierarchy mh = atom::read_pdb(
