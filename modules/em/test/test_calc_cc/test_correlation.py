@@ -7,7 +7,7 @@ class CrossCorrelationTests(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.set_log_level(IMP.SILENT)
         # Initial values and names of files
         self.fn_in = self.get_input_file_name('1tdx_sampled.mrc')
         self.resolution=6.0
@@ -32,6 +32,10 @@ class CrossCorrelationTests(IMP.test.TestCase):
         self.zo=self.model_map.get_header().get_zorigin()
 
 
+        self.EM_map = IMP.em.SampledDensityMap(self.atoms, self.resolution,                                                                                                 self.pixel_size)
+        self.EM_map.std_normalize()
+        self.EM_map.get_header_writable().compute_xyz_top()
+
         self.ccc = IMP.em.CoarseCC()
         self.ccc_intervals = IMP.em.CoarseCCatIntervals()
 
@@ -39,7 +43,7 @@ class CrossCorrelationTests(IMP.test.TestCase):
     def calc_simple_correlation(self):
 
         self.model_map.calcRMS();
-        threshold=self.model_map.get_header().dmin
+        threshold=self.model_map.get_header().dmin-0.1
         return self.ccc.cross_correlation_coefficient(self.EM_map,self.model_map,threshold,True)
 
     def test_simple_correlation(self):
