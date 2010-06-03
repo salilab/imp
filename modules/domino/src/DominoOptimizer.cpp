@@ -174,6 +174,10 @@ Float DominoOptimizer::optimize(unsigned int max_steps)
   IMP_LOG(VERBOSE,"DominoOptimizer::optimize going to infer solutions"
                   <<std::endl);
   g_->infer(num_of_solutions_);
+  IMP_IF_LOG(TERSE) {
+    IMP_LOG(TERSE,"Infered graph:"<<std::endl);
+    IMP_LOG_WRITE(TERSE,g_->show());
+  }
   //move the model to the states that reach the global minimum
   g_->move_to_global_minimum_configuration();
   IMP_IF_LOG(TERSE) {
