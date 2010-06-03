@@ -1,5 +1,5 @@
 name|protein| pdb_anchor_points| transformations|ref filename|
-A|/1z5s_A_fitted.pdb|1z5s_A_anchor_points.pdb|11|1z5s_A_fitting.output|1z5s_A_fitted.pdb|
+A|1z5s_A_fitted.pdb|1z5s_A_anchor_points.pdb|11|1z5s_A_fitting.output|1z5s_A_fitted.pdb|
 B|1z5s_B_fitted.pdb|1z5s_B_anchor_points.pdb|5|1z5s_B_fitting.output|1z5s_B_fitted.pdb|
 C|1z5s_C_fitted.pdb|1z5s_C_anchor_points.pdb|11|1z5s_C_fitting.output|1z5s_C_fitted.pdb|
 D|1z5s_D_fitted.pdb|1z5s_D_anchor_points.pdb|5|1z5s_D_fitting.output|1z5s_D_fitted.pdb|
