@@ -29,18 +29,29 @@ void RestraintGraph::load_data(const JunctionTree &jt,Model *mdl,
   std::map<std::string, Particle*> p_map;
   //a mapping between names and particles. Notice that the name
   // is not the default particle one, but a string name attribute
-  IMP_LOG(VERBOSE,"RestraintGraph::load_data from model with : " <<
-                  mdl->get_number_of_particles() << " particles "<<std::endl);
+  IMP_IF_LOG(TERSE){
+    IMP_LOG(TERSE,"RestraintGraph::load_data from model with : " <<
+           mdl->get_number_of_particles() << " particles with JT:"<<std::endl);
+    IMP_LOG_WRITE(TERSE,jt.show());
+  }
   for (Model::ParticleIterator it = mdl->particles_begin();
          it != mdl->particles_end(); it++ ) {
     if ((*it)->has_attribute(node_name_key())) {
-      IMP_LOG(VERBOSE,"adding particle " << **it << " with key: " <<
+      IMP_LOG(VERBOSE,"adding particle " << (*it)->get_name()
+              << " with key: " <<
               (*it)->get_value(node_name_key())<<std::endl);
       p_map[(*it)->get_value(node_name_key())] = *it;
     }
   }
   IMP_INTERNAL_CHECK(p_map.size()>0,
              "no node was assigned with name attribute" << std::endl);
+  IMP_IF_LOG(VERBOSE){
+      IMP_LOG(VERBOSE,"particle mapping (key,particle):\n");
+    for (std::map<std::string, Particle*>::const_iterator it =  p_map.begin();
+         it != p_map.end(); it++) {
+      IMP_LOG(VERBOSE,it->first<<"|"<<it->second->get_name()<<std::endl);
+    }
+  }
   // load nodes
   for(int i=0;i<jt.get_number_of_nodes();i++) {
     Particles ps;
@@ -48,7 +59,7 @@ void RestraintGraph::load_data(const JunctionTree &jt,Model *mdl,
       std::string comp_name = jt.get_component_name(i,j);
       //TODO - talk with Ben about problems with this assert check!
       IMP_INTERNAL_CHECK(p_map.find(comp_name) != p_map.end(),
-                 "node with key : " <<
+                 "particle with key:" <<
                  comp_name << " was not found" << std::endl);
       IMP_LOG(VERBOSE,"comp: " << comp_name << " is mapped to : " <<
               p_map[comp_name]->get_name()<<std::endl);
