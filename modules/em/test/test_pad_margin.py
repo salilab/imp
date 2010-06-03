@@ -10,7 +10,7 @@ class PadMarginTest(IMP.test.TestCase):
 
     def load_density_maps(self):
         mrw = IMP.em.MRCReaderWriter()
-        self.scene= IMP.em.read_map("1z5s_20.mrc", mrw)
+        self.scene= IMP.em.read_map(self.get_input_file_name("1z5s_20.imp.mrc"), mrw)
         self.scene.get_header_writable().set_resolution(20.)
         self.scene.update_voxel_size(3.)
         self.scene.calcRMS()
