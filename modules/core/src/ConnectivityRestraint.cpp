@@ -126,6 +126,7 @@ double
 ConnectivityRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
   IMP_CHECK_OBJECT(ps_.get());
+  IMP_OBJECT_LOG;
   std::vector<Edge> mst;
   if (!sc_) return 0;
   Graph g(sc_->get_number_of_particles());
