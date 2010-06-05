@@ -32,7 +32,7 @@ JNode::JNode(const Particles &ps, int node_ind): ds_(NULL)
   //create a sorted list of particles
   Particles temp = ps;
   std::sort(temp.begin(), temp.end());
-  particles_ = new container::ListSingletonContainer(temp);
+  particles_ = new container::ListSingletonContainer(temp, "JNode");
   comb_states_ = std::map<std::string, CombState *>();
   rstr_eval_=NULL;
 }

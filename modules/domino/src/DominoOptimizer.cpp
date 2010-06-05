@@ -233,7 +233,7 @@ void DominoOptimizer::add_restraint_recursive(Restraint *rs, Float weight)
      rs_.push_back(OptTuple(
          rs,
          new container::ListSingletonContainer(
-           rs->get_interacting_particles()[0]),
+           rs->get_interacting_particles()[0], "domino r auto"),
            weight));
    }
 }
@@ -243,7 +243,7 @@ void DominoOptimizer::add_restraint(Restraint *r) {
 }
 void DominoOptimizer::add_restraint(Restraint *r,Particles ps,float weight) {
   rs_.push_back(OptTuple(r,
-                         new container::ListSingletonContainer(ps),
+                         new container::ListSingletonContainer(ps, "domino r"),
                          weight));
 }
 IMPDOMINO_END_NAMESPACE

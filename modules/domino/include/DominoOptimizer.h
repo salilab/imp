@@ -26,8 +26,8 @@ IMPDOMINO_BEGIN_NAMESPACE
  */
 class IMPDOMINOEXPORT DominoOptimizer : public Optimizer
 {
-  typedef boost::tuple<Restraint *,
-                       container::ListSingletonContainer *,
+  typedef boost::tuple<Pointer<Restraint>,
+                       Pointer<container::ListSingletonContainer>,
                        Float> OptTuple;
 public:
   //! Constructor

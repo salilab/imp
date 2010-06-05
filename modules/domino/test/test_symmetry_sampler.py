@@ -77,7 +77,8 @@ class DOMINOTests(IMP.test.TestCase):
 #                                           IMP.algebra.Vector3D(0.0,0.0,-90.0),5.0)
         self.cyl = IMP.algebra.Cylinder3D(IMP.algebra.Segment3D(IMP.algebra.Vector3D(0.0,0.0,0.0),
                                           IMP.algebra.Vector3D(0.0,0.0,1.0)),5.0)
-        self.ps_cont = IMP.container.ListSingletonContainer(self.ps)
+        print "Creating list in smmetry"
+        self.ps_cont = IMP.container.ListSingletonContainer(self.ps,"symmetry")
         self.sampler = IMP.domino.SymmetrySampler(self.ps_cont,self.rt,self.cyl)
     def set_restraint_graph(self):
         jt_filename = self.get_input_file_name("simple_jt3.txt")
