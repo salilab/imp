@@ -706,6 +706,7 @@ IMP_LIST_IMPL(Model, Restraint, restraint, Restraint*,
                 first_incremental_=true;}, reset_dependencies();,
               {
                 obj->set_model(NULL);
+                if(container) container->reset_dependencies();
               });
 
 IMP_LIST_IMPL(Model, ScoreState, score_state, ScoreState*,
@@ -725,7 +726,8 @@ IMP_LIST_IMPL(Model, ScoreState, score_state, ScoreState*,
                                   << obj->get_name());
                 }
               },{reset_dependencies();},
-              {Model::set_score_state_model(obj, NULL);});
+              {Model::set_score_state_model(obj, NULL);
+               if(container) container->reset_dependencies(); });
 
 void Model::set_score_state_model(ScoreState *ss, Model *model) {
   ss->set_model(model);
