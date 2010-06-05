@@ -32,6 +32,7 @@ class DOMINOTests(IMP.test.TestCase):
             ub = IMP.core.HarmonicUpperBound(1.0, 0.1)
             ss= IMP.core.DistancePairScore(ub)
             r= IMP.core.ConnectivityRestraint(ss)
+            r.set_log_level(IMP.SILENT)
             ps = IMP.Particles()
             ps_refined=[]
             for j in range(2):
@@ -56,7 +57,7 @@ class DOMINOTests(IMP.test.TestCase):
         self.d_opt = IMP.domino.DominoOptimizer(self.jt,self.imp_model,self.re)
 
     def __set_discrete_sampling_space__(self):
-        self.ps_cont = IMP.container.ListSingletonContainer(self.particles)
+        self.ps_cont = IMP.container.ListSingletonContainer(self.particles,"space")
         self.m_discrete_set = IMP.domino.TransformationMappedDiscreteSet(self.ps_cont)
         #set 4 optinal centroids for each of the particles
         for j,p in enumerate(self.particles):

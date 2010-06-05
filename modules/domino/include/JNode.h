@@ -119,7 +119,7 @@ public:
 
 protected:
   //a sorted list of particles that are part of the node
-  container::ListSingletonContainer *particles_;
+  Pointer<container::ListSingletonContainer> particles_;
   unsigned int node_ind_;
   Combinations comb_states_;
   std::vector<std::string> comb_states_keys_;

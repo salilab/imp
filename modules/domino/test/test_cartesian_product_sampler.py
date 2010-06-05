@@ -30,6 +30,7 @@ class DOMINOTests(IMP.test.TestCase):
         self.particles.append(p2)
         self.particles.append(p3)
         self.particles.append(p4)
+        print "Creating lsc in cartesian"
         self.ps_cont = IMP.container.ListSingletonContainer(self.particles)
         self.m_discrete_set = IMP.domino.MappedDiscreteSet(self.ps_cont,atts)
         for j in range(4):

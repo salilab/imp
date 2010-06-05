@@ -56,7 +56,7 @@ public:
 
   algebra::Cylinder3D cyl_;
   std::map<Particle*,int> symm_deg_;
-  container::ListSingletonContainer *ps_;
+  Pointer<container::ListSingletonContainer> ps_;
   TransformationDiscreteSet *ts_;
   std::map<Particle*,algebra::Transformation3D> ref_;
 };
