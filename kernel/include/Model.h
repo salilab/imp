@@ -291,6 +291,17 @@ public:
   */
  virtual double evaluate(const ParticlesTemp &particles, bool calc_derivs);
 
+
+ //! Sometimes it is useful to be able to make sure the model is up to date
+ /** This method updates all the state but does not necessarily compute the
+     score. If a set of particles is provided, the model may only update
+     those particles.
+     @{
+ */
+ void update();
+ void update(const ParticlesTemp &particles);
+ /** @} */
+
 #ifndef IMP_DOXYGEN
   VersionInfo get_version_info() const {
     IMP_CHECK_OBJECT(this);

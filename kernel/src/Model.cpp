@@ -282,16 +282,34 @@ namespace {
     }
   }
 
+bool get_has_edge(Model::DependencyGraph &graph,
+                DependencyVertex va,
+                DependencyVertex vb) {
+    std::pair<DependencyTraits::out_edge_iterator,
+    DependencyTraits::out_edge_iterator> edges= boost::out_edges(va, graph);
+    for (; edges.first != edges.second;++edges.first) {
+      if (boost::target(*edges.first, graph) == vb) return true;
+    }
+    return false;
+  }
+
   void add_edge(Model::DependencyGraph &graph,
                 EdgeMap &em,
                 DependencyVertex va,
                 DependencyVertex vb,
                 EdgeType et) {
+    IMP_INTERNAL_CHECK(va != vb, "Can't dependend on itself " << va);
+    IMP_INTERNAL_CHECK(!get_has_edge(graph, va, vb),
+                       "Already has edge between " << va << " and " << vb);
     bool inserted;
     DependencyEdge edge;
     boost::tie(edge, inserted) =boost::add_edge(va, vb, graph);
     em[edge]= et;
+    IMP_INTERNAL_CHECK(get_has_edge(graph, va, vb),
+                       "No has edge between " << va << " and " << vb);
+
   }
+
 
 
 
@@ -337,6 +355,15 @@ namespace {
         add_edge(deps.graph, em, cv, vertex, CS);
       }
       ContainersTemp oct= filter(it->first->get_output_containers());
+      IMP_IF_CHECK(USAGE) {
+        for (unsigned int j=0; j < oct.size(); ++j) {
+          // produce better error messages for unowned containers
+          {
+            Pointer<Container> ct(oct[i]);
+          }
+          IMP_CHECK_OBJECT(oct[i]);
+        }
+      }
       IMP_LOG(VERBOSE, "Found output containers "
               << Containers(oct) <<std::endl);
       //new_containers.insert(new_containers.end(), oct.begin(), oct.end());
@@ -379,10 +406,7 @@ namespace {
     ParticlesTemp pt= filter(r->get_input_particles());
     for (unsigned int i=0; i< pt.size(); ++i) {
       DependencyVertex pv= deps.particles.find(pt[i])->second;
-      bool inserted;
-      DependencyEdge edge;
-      boost::tie(edge, inserted) =boost::add_edge(pv, dv, deps.graph);
-      em[edge]= PR;
+      add_edge(deps.graph, em, pv, dv, PR);
     }
   }
 
@@ -404,10 +428,7 @@ namespace {
     std::set<Particle*> output(opt.begin(), opt.end());
     for (unsigned int i=0; i< opt.size(); ++i) {
       DependencyVertex pv= deps.particles.find(opt[i])->second;
-      bool inserted;
-      DependencyEdge edge;
-      boost::tie(edge, inserted) =boost::add_edge(dv, pv, deps.graph);
-      em[edge]= SP;
+      add_edge(deps.graph, em, dv, pv, SP);
     }
     IMP_LOG(VERBOSE, "Outputs are " << Particles(opt) << std::endl);
     ParticlesTemp ipt= filter(r->get_input_particles());
@@ -1192,7 +1213,7 @@ double Model::do_evaluate(const WeightedRestraints &restraints,
 
 const Model::DependencyGraph& Model::get_dependency_graph() const {
   Model *m=const_cast<Model*>(this);
-  m->evaluate(false);
+  m->update();
   return graphs_[m].graph;
 }
 
@@ -1282,6 +1303,13 @@ namespace {
 double Model::evaluate(const ParticlesTemp &particles, bool calc_derivs) {
   IMP_CHECK_OBJECT(this);
   IMP_OBJECT_LOG;
+  IMP_IF_LOG(TERSE) {
+    IMP_LOG(TERSE, "Evaluating on particles ");
+    for (unsigned int i=0; i< particles.size(); ++i) {
+      IMP_LOG(TERSE, particles[i]->get_name() << " ");
+    }
+    IMP_LOG(TERSE, std::endl);
+  }
   if (!score_states_ordered_) order_score_states();
   IMP_USAGE_CHECK(!get_is_incremental(),
                   "Can't do incremental partial evaluation");
@@ -1289,6 +1317,22 @@ double Model::evaluate(const ParticlesTemp &particles, bool calc_derivs) {
   double v= do_evaluate(graphs_[this].weighted, access_score_states(),
                      calc_derivs, false);
   return v;
+}
+
+
+void Model::update() {
+  /*SetIt<Stage, NOT_EVALUATING> reset(&cur_stage_);
+  if (!score_states_ordered_) {
+    order_score_states();
+  } else {
+    ScoreStatesTemp st(score_states_begin(), score_states_end());
+    before_evaluate(st);
+  }
+  ++eval_count_;*/
+  evaluate(false);
+}
+void Model::update(const ParticlesTemp &particles) {
+  update();
 }
 
 void Model::set_is_incremental(bool tf) {
