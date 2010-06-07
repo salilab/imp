@@ -387,7 +387,7 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     swig=penv._IMPSWIG(target=[produced, '#/build/src/%(module)s_wrap.cpp-in'%vars,
                                '#/build/src/%(module)s_wrap.h-in'%vars],
                        source=swigfile)
-    print "Moving", produced.path, "to", dest.path
+    #print "Moving", produced.path, "to", dest.path
     gen_pymod= env.Command(dest, produced, Move(dest, produced))
     # this appears to be needed for some reason
     env.Requires(swig, swiglink)
