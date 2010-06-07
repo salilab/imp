@@ -96,21 +96,7 @@ namespace IMP {
   }
 }
 
-%typemap(out) IMP::internal::BoostDigraph<IMP::Model::DependencyGraph, IMP::Object*>* {
-  if (!($owner & SWIG_POINTER_NEW)) {
-    // out typemaps are also called for constructors, which already use %ref
-    // to increase the reference count. So don't do it twice.
-    IMP::internal::ref($1);
-  }
-  %set_output(SWIG_NewPointerObj(%as_voidptr($1), $descriptor(IMP::internal::BoostDigraph<IMP::Model::DependencyGraph, IMP::Object*>*), $owner | SWIG_POINTER_OWN));
- }
-
-%ignore IMP::Model::get_dependency_graph;
-%extend IMP::Model {
-  internal::BoostDigraph<Model::DepenencyGraph, Object*>* get_dependency_graph() const {
-    return new internal::BoostDigraph<Model::DepenencyGraph, Object*> (self->get_dependency_graph());
-  }
-};
+IMP_SWIG_GRAPH(IMP, DependencyGraph, Model::DependencyGraph, IMP::Object*);
 
 %extend IMP::Object {
   bool __eq__(const IMP::Decorator &d) const {
@@ -241,5 +227,4 @@ namespace IMP {
   //%template(ParticlesList) ::std::vector< ParticlesTemp >;
   %template(DirectorParticlesTemp) ::std::vector< Particle* >;
   %template(DirectorContainersTemp) ::std::vector< Container* >;
-  %template(DependencyGraph) ::IMP::internal::BoostDigraph< IMP::Model::DependencyGraph, IMP::Object*>;
 }

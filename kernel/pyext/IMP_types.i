@@ -167,7 +167,6 @@ IMP_SWIG_VALUE_CHECKS(Namespace, PluralName);
 
 
 
-
 %define IMP_SWIG_BASE_OBJECT(Namespace, Name, PluralName)
 IMP_SWIG_OBJECT(Namespace, Name, PluralName);
 IMP_SWIG_DIRECTOR(Namespace, Name);
@@ -362,4 +361,23 @@ IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName,);
     return (a,b)
   PluralName= list
 %}
+%enddef
+
+
+%define IMP_SWIG_GRAPH(Namespace, Name, Type, Label)
+%inline %{
+namespace IMP {
+namespace internal {
+template <class G, class L>
+class BoostDigraph;
+}
+}
+%}
+%typemap(out) Namespace::Type {
+  typedef IMP::internal::BoostDigraph<Namespace::Type, Label> GT;
+  IMP_NEW(GT, ret, ($1));
+  IMP::internal::ref(ret.get());
+  %set_output(SWIG_NewPointerObj(%as_voidptr(ret), $descriptor(IMP::internal::BoostDigraph<Namespace::Type, Label>*), $owner | SWIG_POINTER_OWN));
+ }
+%template(DependencyGraph) ::IMP::internal::BoostDigraph< Namespace::Type, Label>;
 %enddef
