@@ -48,6 +48,7 @@ public:
    */
   virtual unsigned int get_number_of_refined(Particle *a) const =0;
 
+#ifndef SWIG
   /** @name Iterating through the set of refined particles
 
       Using iterators can be more efficient than using the bulk
@@ -58,6 +59,7 @@ public:
   RefinedIterator refined_begin(Particle *a) const;
   RefinedIterator refined_end(Particle *a) const;
   /** @} */
+#endif
 
   //! Print information about the refiner
   /** It should end in a new line. */
