@@ -359,9 +359,9 @@ bool get_has_edge(Model::DependencyGraph &graph,
         for (unsigned int j=0; j < oct.size(); ++j) {
           // produce better error messages for unowned containers
           {
-            Pointer<Container> ct(oct[i]);
+            Pointer<Container> ct(oct[j]);
           }
-          IMP_CHECK_OBJECT(oct[i]);
+          IMP_CHECK_OBJECT(oct[j]);
         }
       }
       IMP_LOG(VERBOSE, "Found output containers "
