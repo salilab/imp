@@ -17,8 +17,22 @@
 #include <fstream>
 #include <iomanip>
 
+#ifdef IMP_USE_BOOST_LIBS
+#include <boost/filesystem/path.hpp>
+#endif
+
 IMPATOM_BEGIN_NAMESPACE
 
+namespace {
+  std::string nicename(std::string name) {
+#ifdef IMP_USE_BOOST_LIBS
+    boost::filesystem::path path(name);
+    return path.filename();
+#else
+    return name;
+#endif
+  }
+}
 
 PDBSelector::~PDBSelector(){}
 
@@ -166,10 +180,11 @@ Particle* chain_particle(Model *m, char chain_id)
 
 namespace {
 
-Hierarchies read_pdb(std::istream &in, Model *model,
-                   const PDBSelector& selector,
-                   bool select_first_model,
-                   bool split_models)
+  Hierarchies read_pdb(std::istream &in, std::string name,
+                       Model *model,
+                       const PDBSelector& selector,
+                       bool select_first_model,
+                       bool split_models)
 {
   // hierarchy decorator
   Hierarchies ret;
@@ -220,8 +235,8 @@ Hierarchies read_pdb(std::istream &in, Model *model,
         if (root_p== NULL) {
           root_p = new Particle(model);
           ret.push_back(Hierarchy::setup_particle(root_p));
-          if (!root_name.empty()) {
-            root_p->set_name(root_name);
+          if (!root_name.empty() || !name.empty()) {
+            root_p->set_name(name+root_name);
           }
         }
 
@@ -275,7 +290,8 @@ Hierarchies read_pdb(std::istream &in, Model *model,
 }
 
 Hierarchy read_pdb(TextInput in, Model *model) {
-  return read_pdb(in, model, NonWaterPDBSelector(), true, false)[0];
+  return read_pdb(in,nicename(in.get_name()), model,
+                  NonWaterPDBSelector(), true, false)[0];
 }
 
 
@@ -284,7 +300,8 @@ Hierarchy read_pdb(TextInput in, Model *model,
                    const PDBSelector& selector,
                    bool select_first_model)
 {
-  return read_pdb(in, model, selector, select_first_model, false)[0];
+  return read_pdb(in, nicename(in.get_name()), model, selector,
+                  select_first_model, false)[0];
 }
 
 
@@ -292,7 +309,7 @@ Hierarchy read_pdb(TextInput in, Model *model,
 Hierarchies read_multimodel_pdb(TextInput in, Model *model,
                    const PDBSelector& selector)
 {
-  return read_pdb(in, model, selector, false, true);
+  return read_pdb(in, nicename(in.get_name()), model, selector, false, true);
 }
 
 // mol2.cpp
