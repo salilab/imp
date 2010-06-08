@@ -19,13 +19,14 @@
 
 #ifdef IMP_USE_BOOST_LIBS
 #include <boost/filesystem/path.hpp>
+#include <boost/version.hpp>
 #endif
 
 IMPATOM_BEGIN_NAMESPACE
 
 namespace {
   std::string nicename(std::string name) {
-#ifdef IMP_USE_BOOST_LIBS
+#if defined(IMP_USE_BOOST_LIBS) && BOOST_VERSION > 103600
     boost::filesystem::path path(name);
     return path.filename();
 #else
