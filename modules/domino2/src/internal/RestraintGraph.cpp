@@ -17,7 +17,7 @@ IMPDOMINO2_BEGIN_INTERNAL_NAMESPACE
 
 RestraintEvaluator::RestraintEvaluator(Model *m,
                                        ParticleStatesTable *pst): pst_(pst) {
-  mevt_= new ModelSubsetEvaluatorTable(m);
+  mevt_= new ModelSubsetEvaluatorTable(m, pst);
 }
 
 void RestraintEvaluator::calc_scores(const Combinations &comb_states,

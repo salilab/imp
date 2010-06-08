@@ -14,18 +14,23 @@
 #include <IMP/Sampler.h>
 #include <IMP/macros.h>
 #include <IMP/SingletonContainer.h>
+#include <IMP/container/ListSingletonContainer.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/internal/OwnerPointer.h>
 #include <map>
 
 IMPDOMINO2_BEGIN_NAMESPACE
+#ifdef IMP_DOXYGEN
 /** The set of particles defining a node in the junction tree. A
     SingletonContainer is used so that the pointer value uniquely
     identifies a node (and the container has a name so that
     it can be nicely written for display).
  */
 typedef SingletonContainer Subset;
-
+#else
+typedef container::ListSingletonContainer Subset;
+typedef Pointer<Subset> SubsetPointer;
+#endif
 
 
 
@@ -56,12 +61,6 @@ class IMPDOMINO2EXPORT ParticleStatesTable: public Object {
   typedef std::map<Particle*, IMP::internal::OwnerPointer<ParticleStates> > Map;
   Map enumerators_;
   friend class DominoSampler;
-  void set_enumerator(Particle *p, ParticleStates *e) {
-    IMP_USAGE_CHECK(enumerators_.find(p) == enumerators_.end(),
-                    "Enumerator already set for particle " << p->get_name());
-    enumerators_[p]=e;
-  }
-
 public:
   // implementation methods use this to get the enumerator
   ParticleStates* get_particle_states(Particle *p) const {
@@ -79,6 +78,13 @@ public:
     }
     return ret;
   }
+#ifndef IMP_DOXYGEN
+  void set_particle_states(Particle *p, ParticleStates *e) {
+    IMP_USAGE_CHECK(enumerators_.find(p) == enumerators_.end(),
+                    "Enumerator already set for particle " << p->get_name());
+    enumerators_[p]=e;
+  }
+#endif
   IMP_OBJECT(ParticleStatesTable);
 };
 

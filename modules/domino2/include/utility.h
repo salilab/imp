@@ -10,6 +10,8 @@
 
 #include "domino2_config.h"
 #include <IMP/Particle.h>
+#include <IMP/SingletonContainer.h>
+#include <IMP/domino2/DominoSampler.h>
 
 #include <boost/graph/kruskal_min_spanning_tree.hpp>
 #include <boost/graph/prim_minimum_spanning_tree.hpp>
@@ -23,14 +25,10 @@ IMP_END_NAMESPACE
 
 IMPDOMINO2_BEGIN_NAMESPACE
 
-#ifndef SWIG
-typedef boost::adjacency_list<boost::vecS, boost::vecS,
-                              boost::undirectedS,
-                              boost::property<boost::vertex_name_t, Particle*>,
-                              boost::property<boost::edge_name_t,
-                                              Object*> > InteractionGraph;
 
-/** Compute the interaction graph of the restraints and the specified
+/** \name Interaction Graph
+
+    Compute the interaction graph of the restraints and the specified
     particles.  The dependency graph in the model is traversed to
     determine how the passed particles relate to the actual particles
     read as input by the model. For example, if particles contains a
@@ -40,12 +38,24 @@ typedef boost::adjacency_list<boost::vecS, boost::vecS,
     \note This function is here to aid in debugging of optimization
     protocols that use Domino2. As a result, its signature and
     functionality may change without notice.
+    @{
  */
+#ifndef SWIG
+typedef boost::adjacency_list<boost::vecS, boost::vecS,
+                              boost::undirectedS,
+                              boost::property<boost::vertex_name_t, Particle*>,
+                              boost::property<boost::edge_name_t,
+                                              Object*> > InteractionGraph;
+#else
+class InteractionGraph;
+#endif
+
 IMPDOMINO2EXPORT InteractionGraph
 get_interaction_graph(Model *m,
                       const ParticlesTemp &particles);
 
-#endif
+/** @} */
+
 
 
 /** \name Dependent particles
@@ -63,6 +73,23 @@ IMPDOMINO2EXPORT ParticlesTemp get_dependent_particles(Particle *p);
 IMPDOMINO2EXPORT ParticlesTemp
 get_dependent_particles(Particle *p,
                         Model::DependencyGraph &dg);
+/** @} */
+
+
+/** \name Junction Tree
+    Compute the exact junction tree for an interaction graph.
+    @{
+*/
+#ifndef SWIG
+typedef boost::adjacency_list<boost::vecS, boost::vecS,
+                              boost::bidirectionalS,
+                              boost::property<boost::vertex_name_t,
+                      Pointer<Subset> > > JunctionTree;
+#else
+class JunctionTree;
+#endif
+IMPDOMINO2EXPORT JunctionTree
+get_junction_tree(const InteractionGraph &ig);
 /** @} */
 
 IMPDOMINO2_END_NAMESPACE

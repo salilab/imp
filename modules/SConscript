@@ -17,7 +17,8 @@ modules=['algebra',
          'gsl',
          'benchmark',
          'modeller',
-         'restrainer']
+         'restrainer',
+         'domino2']
 
 for p in modules:
     SConscript(p+"/SConscript")

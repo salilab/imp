@@ -2,44 +2,24 @@
 
 /* Tell swig how to treat various types when moving them to and from pyton */
 IMP_SWIG_OBJECT(IMP::domino2, DominoSampler, DominoSamplers);
-IMP_SWIG_OBJECT(IMP::domino2, ParticleStates, ParticleStatesList);
+IMP_SWIG_BASE_OBJECT(IMP::domino2, ParticleStates, ParticleStatesList);
 IMP_SWIG_OBJECT(IMP::domino2, ParticleStatesTable, ParticleStatesTables);
-IMP_SWIG_OBJECT(IMP::domino2, SubsetEvaluator, SubsetEvaluators);
-IMP_SWIG_OBJECT(IMP::domino2, SubsetEvaluatorTable, SubsetEvaluatorTables);
+IMP_SWIG_BASE_OBJECT(IMP::domino2, SubsetEvaluator, SubsetEvaluators);
+IMP_SWIG_BASE_OBJECT(IMP::domino2, SubsetEvaluatorTable, SubsetEvaluatorTables);
 IMP_SWIG_OBJECT(IMP::domino2, ModelSubsetEvaluatorTable, ModelSubsetEvaluatorTables);
 IMP_SWIG_OBJECT(IMP::domino2, XYZsParticleStates, XYZsParticleStatesList);
-IMP_SWIG_OBJECT(IMP::domino2, SubsetStates, SubsetStatesList);
-IMP_SWIG_OBJECT(IMP::domino2, SubsetStatesTable, SubsetStatesTables);
+IMP_SWIG_BASE_OBJECT(IMP::domino2, SubsetStates, SubsetStatesList);
+IMP_SWIG_BASE_OBJECT(IMP::domino2, SubsetStatesTable, SubsetStatesTables);
 IMP_SWIG_OBJECT(IMP::domino2, DefaultSubsetStatesTable, DefaultSubsetStatesTables);
-%typemap(out) IMP::internal::BoostDigraph<IMP::domino2::InteractionGraph, IMP::Particle*>* {
-  if (!($owner & SWIG_POINTER_NEW)) {
-    // out typemaps are also called for constructors, which already use %ref
-    // to increase the reference count. So don't do it twice.
-    IMP::internal::ref($1);
-  }
-  %set_output(SWIG_NewPointerObj(%as_voidptr($1), $descriptor(IMP::internal::BoostDigraph<IMP::domino2::InteractionGraph, IMP::Particle*>*), $owner | SWIG_POINTER_OWN));
- }
-
+IMP_SWIG_GRAPH(IMP::domino2, InteractionGraph, InteractionGraph, IMP::Particle*);
+IMP_SWIG_GRAPH(IMP::domino2, JunctionTree, JunctionTree, IMP::domino2::Subset* );
 
 %include "IMP/domino2/particle_states.h"
 %include "IMP/domino2/subset_evaluators.h"
 %include "IMP/domino2/subset_states.h"
 %include "IMP/domino2/DominoSampler.h"
+%include "IMP/domino2/utility.h"
 
-
-%inline %{
-IMP::internal::BoostDigraph<IMP::domino2::InteractionGraph, IMP::Particle*>*
-get_interaction_graph(IMP::Model *m,
-                            const IMP::ParticlesTemp &ps) {
-  return new IMP::internal::BoostDigraph<IMP::domino2::InteractionGraph, IMP::Particle*>(IMP::domino2::get_interaction_graph(m, ps));
-}
-%}
-
-namespace IMP {
-namespace domino2 {
-%template(InteractionGraph) IMP::internal::BoostDigraph<IMP::domino2::InteractionGraph, Particle*>;
-}
-}
 
 
 %pythoncode %{
