@@ -357,11 +357,15 @@ public:
       Boost.Graph} for more details.
       @{
    */
+#ifndef SWIG
   typedef boost::adjacency_list<boost::vecS, boost::vecS,
                                 boost::bidirectionalS,
                                 boost::property<boost::vertex_name_t, Object*>,
                                 boost::property<boost::edge_name_t,
                                                 int> > DependencyGraph;
+#else
+  class DependencyGraph;
+#endif
   const DependencyGraph& get_dependency_graph() const;
   /** @} */
 #endif

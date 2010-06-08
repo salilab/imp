@@ -190,7 +190,9 @@ class BoostDigraph: public Object {
   int distance(std::pair<It, It> r) const {
     return std::distance(r.first, r.second);
   }
+  BoostDigraph(){}
 public:
+#ifndef SWIG
   BoostDigraph(const BG& bg): Object("Graph"){
     {
       ObjectNameWriter onw(boost::get(boost::vertex_name, const_cast<BG&>(bg)));
@@ -214,6 +216,13 @@ public:
     show();
     //std::cout << "Done creation" << std::endl;
   }
+#endif
+  BG &access_graph() {
+    return bg_;
+  }
+  const BG &get_graph() const {
+    return bg_;
+  }
   typedef int Vertex;
   typedef Ints Vertexes;
   Vertexes get_vertices() const {
@@ -226,10 +235,10 @@ public:
 
   Label get_label(Vertex i) const {
     set_was_used(true);
-        IMP_USAGE_CHECK(i < boost::num_vertices(bg_),
+    IMP_USAGE_CHECK(i < boost::num_vertices(bg_),
                     "Out of range vertex " << i
                     << " " << boost::num_vertices(bg_));
-    return boost::get(vm_, i);
+    return boost::get(vm_, boost::vertex(i, bg_));
   }
   Vertexes get_in_neighbors(Vertex v) const {
     set_was_used(true);
@@ -237,7 +246,7 @@ public:
                     "Out of range vertex " << v
                     << " " << boost::num_vertices(bg_));
     typedef typename Traits::in_edge_iterator IEIt;
-    std::pair<IEIt, IEIt> be= boost::in_edges(v, bg_);
+    std::pair<IEIt, IEIt> be= boost::in_edges(boost::vertex(v, bg_), bg_);
     Ints ret;
     for (; be.first != be.second; ++be.first) {
       ret.push_back(boost::source(*be.first, bg_));
@@ -250,7 +259,7 @@ public:
                     "Out of range vertex " << v
                     << " " << boost::num_vertices(bg_));
     typedef typename Traits::out_edge_iterator IEIt;
-    std::pair<IEIt, IEIt> be= boost::out_edges(v, bg_);
+    std::pair<IEIt, IEIt> be= boost::out_edges(boost::vertex(v, bg_), bg_);
     IMP_INTERNAL_CHECK(std::distance(be.first, be.second)< 10000,
                        "Insane number of neighbors "
                        << std::distance(be.first, be.second));
