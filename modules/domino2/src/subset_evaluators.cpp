@@ -14,9 +14,8 @@ IMPDOMINO2_BEGIN_NAMESPACE
 
 SubsetEvaluator::~SubsetEvaluator(){}
 SubsetEvaluatorTable::~SubsetEvaluatorTable(){}
-SubsetEvaluator::SubsetEvaluator(Subset *s,
-                                 ParticleStatesTable *t):
-  table_(t), subset_(s) {
+SubsetEvaluator::SubsetEvaluator(Subset *s):
+  subset_(s) {
 }
 
 
@@ -38,12 +37,14 @@ namespace {
     Pointer<Configuration> cs_;
     Pointer<Subset> s_;
     Restraints restraints_;
+    Pointer<ParticleStatesTable> pst_;
   public:
     ModelSubsetEvaluator(Subset *s,
                          const ParticlesTemp &sorted_dependents,
                          ParticleStatesTable*t,
-                         Model *m, Configuration *cs): SubsetEvaluator(s, t),
-                                             model_(m), cs_(cs) {
+                         Model *m, Configuration *cs): SubsetEvaluator(s),
+                                                       model_(m), cs_(cs),
+                                                       pst_(t) {
       for (Model::RestraintIterator rit= model_->restraints_begin();
            rit != model_->restraints_end(); ++rit) {
         ParticlesTemp in= (*rit)->get_input_particles();
@@ -65,7 +66,7 @@ namespace {
     for (unsigned int i=0; i< state.size(); ++i) {
       Particle *p= get_subset()->get_particle(i);
       Pointer<ParticleStates> ps
-        =get_particle_states_table()->get_particle_states(p);
+        =pst_->get_particle_states(p);
       ps->load_state(state[i], p);
     }
     return model_->evaluate(restraints_, false);
@@ -74,15 +75,18 @@ namespace {
   }
 }
 
-ModelSubsetEvaluatorTable::ModelSubsetEvaluatorTable(Model *m): model_(m),
-    cs_(new Configuration(m, "evaluator")){
+ModelSubsetEvaluatorTable::ModelSubsetEvaluatorTable(Model *m,
+                                                     ParticleStatesTable *pst):
+  model_(m),
+  cs_(new Configuration(m, "evaluator")),
+  pst_(pst){
   }
 
 SubsetEvaluator *
 ModelSubsetEvaluatorTable::get_subset_evaluator(Subset *s) const {
   if (dependents_.empty()) {
     Model::DependencyGraph dg= s->get_model()->get_dependency_graph();
-    ParticlesTemp kp= get_particle_states_table()->get_particles();
+    ParticlesTemp kp= pst_->get_particles();
     for (unsigned int i=0; i< kp.size(); ++i) {
       dependents_[kp[i]]= get_dependent_particles(kp[i], dg);
     }
@@ -96,7 +100,7 @@ ModelSubsetEvaluatorTable::get_subset_evaluator(Subset *s) const {
   }
   std::sort(sorted.begin(), sorted.end());
   sorted.erase(std::unique(sorted.begin(), sorted.end()), sorted.end());
-  return new ModelSubsetEvaluator(s, sorted, get_particle_states_table(),
+  return new ModelSubsetEvaluator(s, sorted, pst_,
                                   model_, cs_);
 }
 

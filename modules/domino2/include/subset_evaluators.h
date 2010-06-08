@@ -25,15 +25,11 @@ IMPDOMINO2_BEGIN_NAMESPACE
     be calculated if they are not pre-computed.
 */
 class IMPDOMINO2EXPORT SubsetEvaluator: public Object {
-  Pointer<ParticleStatesTable> table_;
   Pointer<Subset> subset_;
 public:
-  SubsetEvaluator(Subset *s, ParticleStatesTable *t);
+  SubsetEvaluator(Subset *s);
   Subset *get_subset() const {
     return subset_;
-  }
-  ParticleStatesTable* get_particle_states_table() const {
-    return table_;
   }
   virtual double get_score(const Ints& state) const=0;
   virtual ~SubsetEvaluator();
@@ -42,15 +38,8 @@ public:
 IMP_OBJECTS(SubsetEvaluator, SubsetEvaluators);
 
 class IMPDOMINO2EXPORT SubsetEvaluatorTable: public Object {
-  Pointer<ParticleStatesTable> table_;
  public:
   virtual SubsetEvaluator* get_subset_evaluator(Subset *s) const=0;
-  void set_particle_states_table(ParticleStatesTable*t) {
-    table_=t;
-  }
-  ParticleStatesTable* get_particle_states_table() const {
-    return table_;
-  }
   virtual ~SubsetEvaluatorTable();
 };
 
@@ -65,9 +54,10 @@ IMP_OBJECTS(SubsetEvaluatorTable, SubsetEvaluatorFactories);
 class IMPDOMINO2EXPORT ModelSubsetEvaluatorTable: public SubsetEvaluatorTable {
   mutable Pointer<Model> model_;
   Pointer<Configuration> cs_;
+  Pointer<ParticleStatesTable> pst_;
   mutable std::map<Particle*, ParticlesTemp> dependents_;
 public:
-  ModelSubsetEvaluatorTable(Model *m);
+  ModelSubsetEvaluatorTable(Model *m, ParticleStatesTable *pst);
   IMP_SUBSET_EVALUATOR_TABLE(ModelSubsetEvaluatorTable);
 };
 

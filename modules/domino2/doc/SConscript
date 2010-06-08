@@ -27,4 +27,6 @@ Implementation todo list:
 - pass map from particles to/from ints directly to/from jt read/write code
 """,
                  publications=env.StandardPublications(),
-                 license=env.StandardLicense())
+                 license="Being worked out (currently have some code from Afra)"
+#env.StandardLicense()
+)

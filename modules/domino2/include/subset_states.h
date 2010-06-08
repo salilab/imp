@@ -15,6 +15,11 @@
 #include <IMP/Sampler.h>
 #include <IMP/macros.h>
 #include <boost/pending/disjoint_sets.hpp>
+#if BOOST_VERSION > 103900
+#include <boost/property_map/property_map.hpp>
+#else
+#include <boost/property_map.hpp>
+#endif
 
 IMPDOMINO2_BEGIN_NAMESPACE
 
@@ -25,18 +30,12 @@ IMPDOMINO2_BEGIN_NAMESPACE
     based one would have methods to define equivalency sets and only return
     permutations of the states of these sets.
 */
-class SubsetStates: public Object {
-  Pointer<ParticleStatesTable> table_;
+class IMPDOMINO2EXPORT SubsetStates: public Object {
   Pointer<Subset> subset_;
 public:
-  SubsetStates(Subset *subset, ParticleStatesTable *table): table_(table),
-                                                            subset_(subset){}
-  ParticleStatesTable* get_enumerator_table() const {return table_;}
+  SubsetStates(Subset *subset): subset_(subset){}
   Subset *get_subset() const {
     return subset_;
-  }
-  ParticleStatesTable* get_particle_states_table() const {
-    return table_;
   }
   virtual unsigned int get_number_of_states() const=0;
   virtual Ints get_state(unsigned int i) const=0;
@@ -47,11 +46,8 @@ public:
     subset. The sampler calls set_particle_states_table() when the
     factory is added to the sampler.
 */
-class SubsetStatesTable: public Object {
-  Pointer<ParticleStatesTable> table_;
+class IMPDOMINO2EXPORT SubsetStatesTable: public Object {
 public:
-  void set_particle_states_table(ParticleStatesTable *table){ table_=table;}
-  ParticleStatesTable* get_particle_states_table() const {return table_;}
   virtual SubsetStates *get_subset_states(Subset *s) const=0;
   ~SubsetStatesTable();
 };
@@ -67,12 +63,20 @@ public:
 */
 class IMPDOMINO2EXPORT DefaultSubsetStatesTable: public SubsetStatesTable {
   friend class DefaultSubsetStates;
-  typedef std::map<Particle*, Particle*> Parent;
-  typedef std::map<Particle*, int> Rank;
+  typedef std::map<Particle*, Particle*> IParent;
+  typedef std::map<Particle*, int> IRank;
+  typedef boost::associative_property_map<IParent> Parent;
+  typedef boost::associative_property_map<IRank > Rank;
   typedef boost::disjoint_sets<Rank, Parent> UF;
+  Pointer<ParticleStatesTable> pst_;
+  IParent parent_;
+  IRank rank_;
   mutable UF equivalencies_;
+  // for some reason boost disjoint sets doesn't provide a way to see
+  // if an item is a set
+  std::set<Particle*> seen_;
  public:
-  DefaultSubsetStatesTable();
+  DefaultSubsetStatesTable(ParticleStatesTable* pst);
   /** The two passed particles are treated as having equivalent
       and exclusive states. That is, particle a and particle b
       are not allowed to both be in state i, for any i. As a

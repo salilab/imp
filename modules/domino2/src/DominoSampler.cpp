@@ -20,8 +20,8 @@ IMPDOMINO2_BEGIN_NAMESPACE
 DominoSampler::DominoSampler(Model *m):
   Sampler(m, "Domino Sampler %1"),
   enumerators_(new ParticleStatesTable()),
-  node_enumerators_(new DefaultSubsetStatesTable()),
-  evaluators_(new ModelSubsetEvaluatorTable(m)){
+  node_enumerators_(new DefaultSubsetStatesTable(enumerators_)),
+  evaluators_(new ModelSubsetEvaluatorTable(m, enumerators_)){
 }
 
 struct IntsLess {
@@ -53,7 +53,8 @@ namespace {
     }
   }
   void create_junction_tree(const InteractionGraph &ig,
-                            const std::map<Particle*, unsigned int>&index) {
+                            const std::map<Particle*, unsigned int>&index,
+                            internal::JunctionTree &jt) {
     std::string graphname;
     {
       TextOutput dgraph= IMP::create_temporary_file();
@@ -97,7 +98,6 @@ namespace {
     if (ev != 0) {
       IMP_THROW("Error running junction tree script", IOException);
     }
-    internal::JunctionTree jt;
     internal::read_junction_tree(jtreename,&jt);
   }
 
@@ -174,7 +174,7 @@ ConfigurationSet *DominoSampler::do_sample() const {
   InteractionGraph ig= get_interaction_graph(get_model(),
                                              known_particles->get_particles());
   internal::JunctionTree jt;
-  create_junction_tree(ig, index);
+  create_junction_tree(ig, index, jt);
   std::vector<Ints> final_solutions= get_solutions(jt, known_particles,
                                                    get_model(),
                                                    get_particle_states_table(),
@@ -200,7 +200,7 @@ ConfigurationSet *DominoSampler::do_sample() const {
 
 void DominoSampler::set_particle_states(Particle *p, ParticleStates *se) {
   std::cout << "Setting enumerator for " << p->get_name() << std::endl;
-  enumerators_->set_enumerator(p, se);
+  enumerators_->set_particle_states(p, se);
   std::cout << "particles are " << std::endl;
   ParticlesTemp pt=enumerators_->get_particles();
   for (unsigned int i=0; i< pt.size(); ++i) {
@@ -210,11 +210,9 @@ void DominoSampler::set_particle_states(Particle *p, ParticleStates *se) {
 }
 void DominoSampler::set_subset_evaluator_table(SubsetEvaluatorTable *eval) {
   evaluators_= eval;
-  evaluators_->set_particle_states_table(enumerators_);
 }
 void DominoSampler::set_subset_states_table(SubsetStatesTable *cse) {
   node_enumerators_= cse;
-  node_enumerators_->set_particle_states_table(enumerators_);
 }
 
 void DominoSampler::do_show(std::ostream &out) const {

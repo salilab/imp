@@ -12,7 +12,7 @@ def setup_restraints(m, ps):
         r=IMP.core.DistanceRestraint(sf, ps[pair[0]], ps[pair[1]])
         m.add_restraint(r)
 
-IMP.set_log_level(IMP.MEMORY)
+IMP.set_log_level(IMP.TERSE)
 m=IMP.Model()
 print "create sampler"
 s=IMP.domino2.DominoSampler(m)
