@@ -374,10 +374,22 @@ class BoostDigraph;
 }
 %}
 %typemap(out) Namespace::Type {
-  typedef IMP::internal::BoostDigraph<Namespace::Type, Label> GT;
+  typedef IMP::internal::BoostDigraph<Namespace::Type, Label > GT;
   IMP_NEW(GT, ret, ($1));
   IMP::internal::ref(ret.get());
-  %set_output(SWIG_NewPointerObj(%as_voidptr(ret), $descriptor(IMP::internal::BoostDigraph<Namespace::Type, Label>*), $owner | SWIG_POINTER_OWN));
+  %set_output(SWIG_NewPointerObj(%as_voidptr(ret), $descriptor(IMP::internal::BoostDigraph<Namespace::Type, Label >*), $owner | SWIG_POINTER_OWN));
  }
-%template(DependencyGraph) ::IMP::internal::BoostDigraph< Namespace::Type, Label>;
+%typemap(in) const Namespace::Type& {
+      void *vp;
+      int res=SWIG_ConvertPtr($input, &vp, $descriptor(IMP::internal::BoostDigraph<Namespace::Type, Label >*), 0 );
+      if (!SWIG_IsOK(res)) {
+        IMP_THROW( "Wrong type.", IMP::ValueException);
+      }
+      if (!vp) {
+        IMP_THROW( "Wrong type.", IMP::ValueException);
+      }
+      IMP::internal::BoostDigraph<Namespace::Type, Label >* p= reinterpret_cast< IMP::internal::BoostDigraph<Namespace::Type, Label >*>(vp);
+      $1= &p->access_graph();
+ }
+%template(Name) ::IMP::internal::BoostDigraph< Namespace::Type, Label>;
 %enddef
