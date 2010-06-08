@@ -11,6 +11,9 @@
 //#include <unistd.h>
 #include <boost/scoped_array.hpp>
 
+#ifdef _MSC_VER
+#include <windows.h>
+#endif
 IMP_BEGIN_NAMESPACE
 
 namespace {
@@ -125,6 +128,7 @@ namespace {
 
 
 TextOutput create_temporary_file() {
+#ifndef _MSC_VER
   char filename[] = "/tmp/imptmp.XXXXXX";
   int fd = mkstemp(filename);
   if (fd == -1) {
@@ -132,6 +136,17 @@ TextOutput create_temporary_file() {
               IOException);
   }
   close(fd);
+#else
+  TCHAR tpath[MAX_PATH];
+  DWORD dwRetVal = GetTempPath(MAX_PATH,tpath);
+  if (dwRetVal > MAX_PATH || (dwRetVal == 0)) {
+     IMP_THROW("Unable to find temporary path", IOException);
+  }
+  char filename[MAX_PATH];
+  if (GetTempFileName(tpath, "imptmp", 0, filename)==0) {
+     IMP_THROW("Unable to create temp file in " << tpath, IOException);
+  }
+#endif
   return TextOutput(filename);
 }
 
