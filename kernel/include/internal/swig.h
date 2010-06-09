@@ -16,7 +16,7 @@
 #include "../macros.h"
 #include "../Decorator.h"
 #include "../file.h"
-#include <boost/graph/graphviz.hpp>
+#include "graph_utility.h"
 #include <boost/graph/topological_sort.hpp>
 #include <boost/graph/copy.hpp>
 
@@ -178,28 +178,16 @@ class BoostDigraph: public Object {
   typedef typename boost::property_map<BG,
                               boost::vertex_name_t>::type VertexMap;
   VertexMap vm_;
-  class ObjectNameWriter {
-     VertexMap om_;
-  public:
-    ObjectNameWriter( VertexMap om): om_(om){}
-    void operator()(std::ostream& out, int v) const {
-      out << "[label=\"" << boost::get(om_, v)->get_name() << "\"]";
-    }
-  };
   template <class It>
   int distance(std::pair<It, It> r) const {
     return std::distance(r.first, r.second);
   }
-  BoostDigraph(){}
 public:
+  BoostDigraph(){
+    vm_= boost::get(boost::vertex_name, bg_);
+  }
 #ifndef SWIG
   BoostDigraph(const BG& bg): Object("Graph"){
-    {
-      ObjectNameWriter onw(boost::get(boost::vertex_name, const_cast<BG&>(bg)));
-      /*boost::write_graphviz(std::cout, bg,
-                            onw);
-                            std::cout << "Done with input" << std::endl;*/
-    }
     boost::copy_graph(bg, bg_);
     vm_= boost::get(boost::vertex_name, bg_);
     IMP_INTERNAL_CHECK(get_vertices().size() == distance(boost::vertices(bg_)),
@@ -213,8 +201,6 @@ public:
                          << " vs "
                          << distance(boost::out_edges(i, bg)));
     }
-    show();
-    //std::cout << "Done creation" << std::endl;
   }
 #endif
   BG &access_graph() {
@@ -276,13 +262,20 @@ public:
   void show_graphviz(std::ostream &out=std::cout) const {
     set_was_used(true);
     IMP_CHECK_OBJECT(this);
-    ObjectNameWriter onw(vm_);
-    boost::write_graphviz(out, bg_,
-                          onw);
+    show_as_graphviz(bg_, out);
   }
   std::string get_type_name() const {return "Graph";}
   ::IMP::VersionInfo get_version_info() const {
     return get_module_version_info();
+  }
+
+  void add_edge(Vertex v0, Vertex v1) {
+    boost::add_edge(v0, v1, bg_);
+  }
+  Vertex add_vertex(Label l) {
+    Vertex v=boost::add_vertex(bg_);
+    boost::put(vm_, v, l);
+    return v;
   }
 };
 
