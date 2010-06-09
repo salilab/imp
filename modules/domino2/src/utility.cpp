@@ -15,6 +15,7 @@
 #include <boost/graph/graphviz.hpp>
 #include <boost/graph/copy.hpp>
 #include <IMP/domino2/internal/maximal_cliques.h>
+#include <IMP/internal/graph_utility.h>
 
 IMPDOMINO2_BEGIN_NAMESPACE
 
@@ -198,38 +199,91 @@ namespace {
     }
   };
   void triangulate(InteractionGraph &ig) {
-    std::pair<IGTraits::vertex_iterator, IGTraits::vertex_iterator> be
-      = boost::vertices(ig);
-    std::vector<int> vertices(be.first, be.second);
-    std::sort(vertices.begin(), vertices.end(), LessDegree(ig));
-    for (unsigned int i=0; i< vertices.size(); ++i) {
-      std::pair<IGTraits::out_edge_iterator, IGTraits::out_edge_iterator> be0
-        = boost::out_edges(vertices[i], ig);
-      for (; be0.first != be0.second; ++be0.first) {
-        Vertex o0 = boost::target(*be0.first, ig);
-        std::pair<IGTraits::out_edge_iterator, IGTraits::out_edge_iterator> be1
-          = boost::out_edges(vertices[i], ig);
-        for (; be1.first != be1.second; ++be1.first) {
-          Vertex o1 = boost::target(*be1.first, ig);
-          if (o0 == o1) continue;
-          std::pair<IGTraits::out_edge_iterator,
-            IGTraits::out_edge_iterator> be01
-            = boost::out_edges(o0, ig);
-          for (; be01.first != be01.second; ++be01.first) {
-            if (boost::target(*be01.first, ig) == o1) break;
+    typedef std::pair<IGTraits::adjacency_iterator,
+      IGTraits::adjacency_iterator>
+      AdjacencyRange;
+    typedef std::pair<IGTraits::vertex_iterator, IGTraits::vertex_iterator>
+      VertexRange;
+    typedef std::pair<IGTraits::out_edge_iterator, IGTraits::out_edge_iterator>
+      EdgeRange;
+    InteractionGraph mig;
+    boost::copy_graph(ig, mig);
+    std::map<Particle*, int> vmap;
+    ParticleMap mpm= boost::get(boost::vertex_name, mig);
+    for(VertexRange be = boost::vertices(ig);
+        be.first != be.second; ++be.first) {
+      /*std::cout << "Vertex " << *be.first
+        << " is particle " << boost::get(mpm, *be.first)->get_name()
+        << std::endl;*/
+      vmap[boost::get(mpm, *be.first)]=*be.first;
+    }
+    while (boost::num_vertices(mig) >0) {
+      int maxv=-1;
+      int maxd=std::numeric_limits<int>::max();
+      for ( VertexRange be = boost::vertices(mig);
+            be.first != be.second; ++be.first) {
+        int d= boost::degree(*be.first, mig);
+        if (d < maxd) {
+          maxd=d;
+          maxv=*be.first;
+        }
+      }
+      //unsigned int v= vmap.find(mpm[maxv])->second;
+      /*std::cout << "Triangulating vertex "
+        << vmap.find(mpm[maxv])->second
+                << " with degree " << maxd << std::endl;
+                std::cout << boost::num_vertices(mig)
+                << " remaining" << std::endl;*/
+      AdjacencyRange be  = boost::adjacent_vertices(maxv, mig);
+      const std::vector<unsigned int> neighbors(be.first, be.second);
+      /*std::cout << "Neighbors are ";
+      for (unsigned int i=0; i < neighbors.size(); ++i) {
+        std::cout << neighbors[i] << " ";
+      }
+      std::cout << std::endl;*/
+      for (unsigned int i=1; i< neighbors.size(); ++i) {
+        //std::cout << "neighbor 0 is "
+        // << boost::get(mpm, neighbors[i])->get_name() << std::endl;
+        Vertex o0 =  vmap.find(boost::get(mpm, neighbors[i]))->second;
+        for (unsigned int j=0; j<i; ++j) {
+          /*std::cout << "neighbor 1 is "
+            << boost::get(mpm, neighbors[j])->get_name() << std::endl;*/
+          Vertex o1 = vmap.find(boost::get(mpm, neighbors[j]))->second;
+          // check for adjacency in ig, ick. painful
+          AdjacencyRange be01 = boost::adjacent_vertices(o0, ig);
+          for (;be01.first != be01.second; ++be01.first) {
+            if (*be01.first == o1) break;
           }
+          // connect if not adjacent
           if (be01.first == be01.second) {
+            //std::cout << "Connecting " << o0 << " " << o1 << std::endl;
+            //std::cout << "and " << neighbors[i] << " "
+            //<< neighbors[j] << std::endl;
+            boost::add_edge(neighbors[i], neighbors[j], mig);
             boost::add_edge(o0, o1, ig);
+          } else {
+            //std::cout << "Already connected " << o0
+            //<< " " << o1 << std::endl;
           }
         }
       }
+      EdgeRange er=boost::out_edges(maxv, mig);
+      while (er.first != er.second) {
+        boost::remove_edge(*er.first, mig);
+        er= boost::out_edges(maxv, mig);
+      }
+      boost::remove_vertex(maxv, mig);
+      /*std::cout << "MIG graph is " << std::endl;
+      IMP::internal::show_as_graphviz(mig, std::cout);
+      std::cout << "Output graph is " << std::endl;
+      IMP::internal::show_as_graphviz(ig, std::cout);*/
     }
   }
 
   typedef boost::adjacency_list<boost::vecS, boost::vecS,
                               boost::undirectedS,
                                 boost::property<boost::vertex_name_t,
-                                                unsigned int>,
+                                                std::string>,
                                 boost::property<boost::edge_weight_t,
                                                 double> > CliqueGraph;
   typedef boost::graph_traits<CliqueGraph> CliqueTraits;
@@ -246,11 +300,19 @@ JunctionTree get_junction_tree(const InteractionGraph &ig) {
   InteractionGraph cig;
   ParticleMap pm= boost::get(boost::vertex_name, cig);
   boost::copy_graph(ig, cig);
+  /*std::cout << "Input graph is " << std::endl;
+    IMP::internal::show_as_graphviz(ig, std::cout);*/
   triangulate(cig);
+  /* std::cout << "Triangulated graph is " << std::endl;
+     IMP::internal::show_as_graphviz(cig, std::cout);*/
   typedef std::vector<Vertex> Clique;
   std::vector<Clique> cliques;
   internal::maximal_cliques(cig, std::back_inserter(cliques));
   for (unsigned int i=0; i< cliques.size(); ++i) {
+    /*std::cout << "Clique is ";
+    for (unsigned int j=0; j< cliques[i].size(); ++j) {
+      std::cout << cliques[i][j] << " ";
+      }*/
     std::sort(cliques[i].begin(), cliques[i].end());
   }
   CliqueGraph cg(cliques.size());
@@ -263,8 +325,12 @@ JunctionTree get_junction_tree(const InteractionGraph &ig) {
                             cliques[j].end(),
                             std::back_inserter(intersection));
       if (!intersection.empty()) {
+        double minus_weight=intersection.size();
+        /*std::cout << "edge " << i << " " << j
+                  << " has weight "
+                  << -static_cast<int>(intersection.size()) << std::endl;*/
         boost::add_edge(i, j,
-                        CliqueGraph::edge_property_type(-intersection.size()),
+                        CliqueGraph::edge_property_type(-minus_weight),
                         cg);
       }
     }
@@ -279,12 +345,30 @@ JunctionTree get_junction_tree(const InteractionGraph &ig) {
       ps.push_back(boost::get(pm, cliques[i][j]));
     }
     IMP_NEW(Subset, lsc, (ps));
+    lsc->set_was_used(true);
+    std::ostringstream oss;
+    for (unsigned int j=0; j< ps.size(); ++j) {
+      oss << ps[j]->get_name();
+      if (j != ps.size()-1) {
+        oss << ", ";
+      }
+    }
+    lsc->set_name(oss.str());
     boost::put(cm, i, lsc);
   }
   for (unsigned int i=0; i< mst.size(); ++i) {
     boost::add_edge(boost::source(mst[i], cg),
                     boost::target(mst[i], cg), jt);
   }
+  /*std::cout << "JT graph is " << std::endl;
+  IMP::internal::show_as_graphviz(jt, std::cout);
+  {
+    JunctionTree njt=jt;
+    std::cout << "JT graph is " << std::endl;
+    IMP::internal::show_as_graphviz(njt, std::cout);
+  }
+  std::cout << "JT graph is " << std::endl;
+  IMP::internal::show_as_graphviz(jt, std::cout);*/
   return jt;
 }
 
