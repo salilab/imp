@@ -21,7 +21,7 @@ class TrivialParticleStates(IMP.domino2.ParticleStates):
 
 class DOMINOTests(IMP.test.TestCase):
 
-    def test_global_min2(self):
+    def test_global_min1(self):
         """Testing default subset states"""
         m= IMP.Model()
         ps=[]

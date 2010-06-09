@@ -82,9 +82,9 @@ get_dependent_particles(Particle *p,
 */
 #ifndef SWIG
 typedef boost::adjacency_list<boost::vecS, boost::vecS,
-                              boost::bidirectionalS,
+                              boost::undirectedS,
                               boost::property<boost::vertex_name_t,
-                      Pointer<Subset> > > JunctionTree;
+                                     Pointer<Subset> > > JunctionTree;
 #else
 class JunctionTree;
 #endif

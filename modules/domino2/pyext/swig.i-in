@@ -1,4 +1,10 @@
 %include "IMP/domino2/domino2_macros.h"
+namespace IMP {
+namespace domino2 {
+%warnfilter(473) SubsetEvaluatorTable;
+%warnfilter(473) SubsetStatesTable;
+}
+}
 
 /* Tell swig how to treat various types when moving them to and from pyton */
 IMP_SWIG_OBJECT(IMP::domino2, DominoSampler, DominoSamplers);
