@@ -342,7 +342,6 @@ bool get_has_edge(Model::DependencyGraph &graph,
       IMP_LOG(VERBOSE, "Adding node for score state \"" << it->first->get_name()
               << "\" from " << boost::num_vertices(deps.graph) << std::endl);
       DependencyVertex vertex= boost::add_vertex(deps.graph);
-      IMP_LOG(VERBOSE, "Now " << boost::num_vertices(deps.graph) << std::endl);
       om[vertex]=it->first;
       it->second=vertex;
       ContainersTemp ict= filter(it->first->get_input_containers());
@@ -494,10 +493,8 @@ bool get_has_edge(Model::DependencyGraph &graph,
       DependencyVertex v= front.back();
       front.pop_back();
       Object *o= om[v];
-      std::cout << "Visiting " << o->get_name() << std::endl;
       ScoreState *s= dynamic_cast<ScoreState*>(o);
       if (s) {
-        std::cout << "grabbed." << std::endl;
         ssout.push_back(s);
       }
       DependencyTraits::in_edge_iterator ic, ie;
@@ -1142,7 +1139,6 @@ double Model::do_evaluate(const WeightedRestraints &restraints,
 
   // make sure stage is restored on an exception
   SetIt<Stage, NOT_EVALUATING> reset(&cur_stage_);
-  IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(this);
   IMP_LOG(TERSE,
           "Begin Model::evaluate "
@@ -1212,6 +1208,7 @@ double Model::do_evaluate(const WeightedRestraints &restraints,
 
 
 const Model::DependencyGraph& Model::get_dependency_graph() const {
+  IMP_OBJECT_LOG;
   Model *m=const_cast<Model*>(this);
   m->update();
   return graphs_[m].graph;
@@ -1219,6 +1216,7 @@ const Model::DependencyGraph& Model::get_dependency_graph() const {
 
 
 double Model::evaluate(bool calc_derivs) {
+  IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(this);
   if (!score_states_ordered_) order_score_states();
   IMP_INTERNAL_CHECK(graphs_.find(this) != graphs_.end(),
