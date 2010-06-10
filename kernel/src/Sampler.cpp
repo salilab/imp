@@ -20,7 +20,9 @@ Sampler::Sampler(Model *m,
 }
 
 ConfigurationSet *Sampler::get_sample() const {
+  IMP_OBJECT_LOG;
   unsigned int num_opt=0;
+  set_was_used(true);
   for (Model::ParticleConstIterator pit= model_->particles_begin();
        pit != model_->particles_end(); ++pit) {
     unsigned int d=std::distance((*pit)->optimized_keys_begin(),
