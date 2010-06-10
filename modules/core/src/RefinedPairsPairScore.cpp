@@ -21,6 +21,10 @@ namespace {
     ParticlesTemp ret;
     if (r->get_can_refine(a)) {
       ret= r->get_refined(a);
+      IMP_USAGE_CHECK(ret.size() > 0,
+                      "The refiner did not return any particles for "
+                      << a->get_name() << ". The refiner is "
+                      << *r);
     } else {
       ret.push_back(a);
     }
@@ -42,7 +46,7 @@ Float RefinedPairsPairScore::evaluate(const ParticlePair &p,
                                     DerivativeAccumulator *da) const
 {
   ParticlesTemp ps[2]={get_set(p[0], r_), get_set(p[1], r_)};
-  Float ret=0;
+  double ret=0;
   for (unsigned int i=0; i< ps[0].size(); ++i) {
     for (unsigned int j=0; j< ps[1].size(); ++j) {
       ret+=f_->evaluate(ParticlePair(ps[0][i], ps[1][j]), da);
