@@ -77,9 +77,9 @@ namespace {
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {
       unsigned int ct=0;
       while (!done()) {
-        for (unsigned int i=0; i< k_; ++i) {
+        /*for (unsigned int i=0; i< k_; ++i) {
           std::cout << get_value(i) << " ";
-        }
+          }*/
         //std::cout << std::endl;
         ++ct;
         advance();
@@ -150,7 +150,8 @@ namespace {
                                            const std::set<Particle*>& seen,
                                            Subset *s,
                                            ParticleStatesTable *table):
-    SubsetStates(s), n_(s->get_number_of_particles()), pst_(table) {
+    SubsetStates("DefaultSubsetStates on "+s->get_name()),
+    n_(s->get_number_of_particles()), pst_(table) {
     IMP_CHECK_OBJECT(table);
     IMP_CHECK_OBJECT(s);
     std::map<Particle*, int> indexes;
@@ -194,14 +195,14 @@ namespace {
       classes_[i].value.initialize(classes_[i].n,
                                    classes_[i].indexes.size());
     }
-    IMP_IF_LOG(TERSE) {
+    /*IMP_IF_LOG(TERSE) {
       for (unsigned int i=0; i< classes_.size(); ++i) {
         IMP_LOG(TERSE, "Class " << i << " is " << classes_[i].n
                 << " states for " << classes_[i].indexes.size()
                 << " particles for "
                 << classes_[i].value.get_number());
       }
-    }
+      }*/
     reset_state();
   }
 
@@ -230,14 +231,14 @@ namespace {
     }
     return ret;
   }
-  Ints DefaultSubsetStates::get_state(unsigned int i) const {
+  SubsetState DefaultSubsetStates::get_state(unsigned int i) const {
     if (cur_index_ > i) {
       reset_state();
     }
     while (cur_index_ < i) {
       advance_state();
     }
-    Ints ret(n_);
+    SubsetState ret(n_);
     for (unsigned int i=0; i< classes_.size(); ++i) {
       for (unsigned int j=0; j< classes_[i].indexes.size(); ++j) {
         ret[classes_[i].indexes[j]] = classes_[i].value.get_value(j);

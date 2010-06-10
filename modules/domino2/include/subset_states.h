@@ -22,6 +22,53 @@
 #endif
 
 IMPDOMINO2_BEGIN_NAMESPACE
+/** Store the configuration of a subset.*/
+class SubsetState {
+  std::vector<int> v_;
+  int compare(const SubsetState &o) const {
+    IMP_USAGE_CHECK(o.size() == size(), "Sizes don't match");
+    for (unsigned int i=0; i< size(); ++i) {
+      if (v_[i] < o[i]) return -1;
+      else if (v_[i] > o[i]) return 1;
+    }
+    return 0;
+  }
+public:
+typedef SubsetState This;
+  SubsetState(){}
+  SubsetState(unsigned int sz): v_(sz, -1){}
+  IMP_COMPARISONS;
+#ifndef SWIG
+  int operator[](unsigned int i) const {
+    IMP_USAGE_CHECK(i < v_.size(), "Out of range");
+    IMP_USAGE_CHECK(v_[i] >=0, "Not initialized properly");
+    return v_[i];
+  }
+  int& operator[](unsigned int i) {
+    IMP_USAGE_CHECK(i < v_.size(), "Out of range");
+    return v_[i];
+  }
+#endif
+#ifndef IMP_DOXYGEN
+  int __get__(unsigned int i) const {return operator[](i);}
+  void __set__(unsigned int i, unsigned int v) {operator[](i)=v;}
+#endif
+  unsigned int size() const {
+    return v_.size();
+  }
+  IMP_SHOWABLE_INLINE({
+      out << "[";
+      for (unsigned int i=0; i< size(); ++i) {
+        out << v_[i];
+        if (i != size()-1) out << " ";
+      }
+      out << "]";
+    });
+};
+
+IMP_VALUES(SubsetState, SubsetStatesList);
+
+IMP_OUTPUT_OPERATOR(SubsetState);
 
 /** Allow enumeration of the states of a particular subset.
     Straight forward examples
@@ -31,14 +78,10 @@ IMPDOMINO2_BEGIN_NAMESPACE
     permutations of the states of these sets.
 */
 class IMPDOMINO2EXPORT SubsetStates: public Object {
-  Pointer<Subset> subset_;
 public:
-  SubsetStates(Subset *subset): subset_(subset){}
-  Subset *get_subset() const {
-    return subset_;
-  }
+  SubsetStates(std::string name="SubsetStates"): Object(name){}
   virtual unsigned int get_number_of_states() const=0;
-  virtual Ints get_state(unsigned int i) const=0;
+  virtual SubsetState get_state(unsigned int i) const=0;
   virtual ~SubsetStates();
 };
 
@@ -48,6 +91,7 @@ public:
 */
 class IMPDOMINO2EXPORT SubsetStatesTable: public Object {
 public:
+  SubsetStatesTable(std::string name= "SubsetStatesTable"): Object(name){}
   virtual SubsetStates *get_subset_states(Subset *s) const=0;
   ~SubsetStatesTable();
 };

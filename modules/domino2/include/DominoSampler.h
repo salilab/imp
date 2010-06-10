@@ -16,19 +16,28 @@
 #include "subset_evaluators.h"
 #include <IMP/Sampler.h>
 #include <IMP/macros.h>
+#include <IMP/internal/OwnerPointer.h>
 
 IMPDOMINO2_BEGIN_NAMESPACE
 
 
 
-//! A simple sampler.
+//! Sample best solutions using Domino
+/** Possible improvements:
+    - add restraint-based filtering in the message passing stage
+    - avoid rebuilding indexes repeatedly
+    - use vectors instead of maps to score scores
+    - perhaps do something more clever for score evaluation on merge
+
+ */
 class IMPDOMINO2EXPORT DominoSampler : public Sampler
 {
-  internal::OwnerPointer<ParticleStatesTable> enumerators_;
-  internal::OwnerPointer<SubsetStatesTable> node_enumerators_;
-  internal::OwnerPointer<SubsetEvaluatorTable> evaluators_;
+  IMP::internal::OwnerPointer<ParticleStatesTable> enumerators_;
+  IMP::internal::OwnerPointer<SubsetStatesTable> node_enumerators_;
+  IMP::internal::OwnerPointer<SubsetEvaluatorTable> evaluators_;
 public:
   DominoSampler(Model *m);
+  DominoSampler(Model*m, ParticleStatesTable *pst);
   // use these functions to set up the state space for the particles
   void set_particle_states(Particle *p, ParticleStates *se);
   /** \name Advanced
@@ -38,6 +47,9 @@ public:
    */
   void set_subset_evaluator_table(SubsetEvaluatorTable *eval);
   void set_subset_states_table(SubsetStatesTable *cse);
+  void set_particle_states_table(ParticleStatesTable *cse) {
+    enumerators_= cse;
+  }
   SubsetEvaluatorTable* get_subset_evaluator_table() const {
     return evaluators_;
   }
