@@ -85,6 +85,7 @@ RigidBodyHierarchy::divide_spheres(const std::vector<algebra::SphereD<3> > &ss,
 */
 RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
                                        Refiner *r): rb_(d), r_(r) {
+  set_was_used(true);
   IMP_LOG(TERSE, "Building rigid body hierarchy for particle "
           << d.get_particle()->get_name() << " with refiner "
           << r->get_name() << " and particles " << Particles(r->get_refined(d))
