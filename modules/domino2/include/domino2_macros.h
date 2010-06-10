@@ -26,36 +26,36 @@ public:                                                         \
     - IMP::domino2::SubsetStates::get_state()
 */
 #define IMP_SUBSET_STATES(Name)                         \
-public:                                                 \
+  public:                                               \
  virtual unsigned int get_number_of_states() const;     \
- virtual Ints get_state(unsigned int i) const;          \
+ virtual SubsetState get_state(unsigned int i) const;   \
  IMP_OBJECT(Name)
 
 /** This macro declares
     - IMP::domino2::SubsetStateEnumerator::get_number_of_states()
     - IMP::domino2::SubsetStateEnumerator::get_state()
 */
-#define IMP_SUBSET_STATES_TABLE(Name)                         \
-  public:                                                       \
- virtual SubsetStates* get_subset_states(Subset*s) const;       \
+#define IMP_SUBSET_STATES_TABLE(Name)                                   \
+  public:                                                               \
+  virtual SubsetStates* get_subset_states(Subset*s) const;        \
  IMP_OBJECT(Name)
 
 
 /** This macro declares
     - IMP::domino2::SubsetEvaluatorTable::get_subset_evaluator()
 */
-#define IMP_SUBSET_EVALUATOR_TABLE(Name)                      \
-  public:                                                       \
-  virtual SubsetEvaluator* get_subset_evaluator(Subset*s) const;        \
+#define IMP_SUBSET_EVALUATOR_TABLE(Name)                                \
+  public:                                                               \
+  virtual SubsetEvaluator* get_subset_evaluator(Subset*s) const;  \
   IMP_OBJECT(Name)
 
 
 /** This macro declares
     - IMP::domino2::Evaluator::get_score()
 */
-#define IMP_SUBSET_EVALUATOR(Name)                      \
-public:                                                 \
- virtual double get_score(const Ints& state) const;     \
+#define IMP_SUBSET_EVALUATOR(Name)                             \
+  public:                                                      \
+ virtual double get_score(const SubsetState& state) const;     \
  IMP_OBJECT(Name)
 
 

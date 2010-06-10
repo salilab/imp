@@ -11,12 +11,9 @@
 #include <IMP/Restraint.h>
 
 IMPDOMINO2_BEGIN_NAMESPACE
-
+SubsetEvaluator::SubsetEvaluator(std::string name): Object(name){}
 SubsetEvaluator::~SubsetEvaluator(){}
 SubsetEvaluatorTable::~SubsetEvaluatorTable(){}
-SubsetEvaluator::SubsetEvaluator(Subset *s):
-  subset_(s) {
-}
 
 
 /**
@@ -42,9 +39,11 @@ namespace {
     ModelSubsetEvaluator(Subset *s,
                          const ParticlesTemp &sorted_dependents,
                          ParticleStatesTable*t,
-                         Model *m, Configuration *cs): SubsetEvaluator(s),
-                                                       model_(m), cs_(cs),
-                                                       pst_(t) {
+                         Model *m, Configuration *cs):
+      SubsetEvaluator("ModelSubsetEvaluator on "+s->get_name()),
+      model_(m), cs_(cs),
+      s_(s),
+      pst_(t) {
       for (Model::RestraintIterator rit= model_->restraints_begin();
            rit != model_->restraints_end(); ++rit) {
         ParticlesTemp in= (*rit)->get_input_particles();
@@ -61,10 +60,10 @@ namespace {
     }
     IMP_SUBSET_EVALUATOR(ModelSubsetEvaluator);
   };
-  double ModelSubsetEvaluator::get_score(const Ints &state) const{
+  double ModelSubsetEvaluator::get_score(const SubsetState &state) const{
     cs_->load_configuration();
     for (unsigned int i=0; i< state.size(); ++i) {
-      Particle *p= get_subset()->get_particle(i);
+      Particle *p= s_->get_particle(i);
       Pointer<ParticleStates> ps
         =pst_->get_particle_states(p);
       ps->load_state(state[i], p);
@@ -78,7 +77,7 @@ namespace {
 ModelSubsetEvaluatorTable::ModelSubsetEvaluatorTable(Model *m,
                                                      ParticleStatesTable *pst):
   model_(m),
-  cs_(new Configuration(m, "evaluator")),
+  cs_(new Configuration(m, "evaluator base configuation")),
   pst_(pst){
   }
 
@@ -87,6 +86,8 @@ ModelSubsetEvaluatorTable::get_subset_evaluator(Subset *s) const {
   if (dependents_.empty()) {
     Model::DependencyGraph dg= s->get_model()->get_dependency_graph();
     ParticlesTemp kp= pst_->get_particles();
+    IMP_USAGE_CHECK(!kp.empty(),
+                    "No particles in particles table");
     for (unsigned int i=0; i< kp.size(); ++i) {
       dependents_[kp[i]]= get_dependent_particles(kp[i], dg);
     }

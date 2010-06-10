@@ -1,12 +1,5 @@
 files = [
-         'CombState.h',
-         'DiscreteSampler.h',
-         'DominoOptimizer.h',
-         'JEdge.h',
-         'JNode.h',
-         'JunctionTree.h',
-         'RestraintEvaluator.h',
-         'RestraintGraph.h',
+         'inference.h',
          'maximal_cliques.h',
         ]
 

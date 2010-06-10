@@ -144,6 +144,10 @@ InteractionGraph get_interaction_graph(Model *m,
     ParticlesList pl= (*it)->get_interacting_particles();
     add_edges(pl, map, *it, ret);
   }
+  IMP_INTERNAL_CHECK(boost::num_vertices(ret) == ps.size(),
+                     "Wrong number of vertices "
+                     << boost::num_vertices(ret)
+                     << " vs " << ps.size());
   return ret;
 }
 
@@ -291,12 +295,12 @@ namespace {
   typedef CliqueTraits::edge_descriptor CliqueEdge;
   typedef boost::property_map<CliqueGraph,
                               boost::vertex_name_t>::type CliqueMap;
-  typedef boost::property_map<JunctionTree,
+  typedef boost::property_map<SubsetGraph,
                               boost::vertex_name_t>::type JTMap;
 
 }
 
-JunctionTree get_junction_tree(const InteractionGraph &ig) {
+SubsetGraph get_junction_tree(const InteractionGraph &ig) {
   InteractionGraph cig;
   ParticleMap pm= boost::get(boost::vertex_name, cig);
   boost::copy_graph(ig, cig);
@@ -337,7 +341,7 @@ JunctionTree get_junction_tree(const InteractionGraph &ig) {
   }
   std::vector<CliqueEdge> mst(cliques.size()-1);
   boost::kruskal_minimum_spanning_tree(cg, mst.begin());
-  JunctionTree jt(cliques.size());
+  SubsetGraph jt(cliques.size());
   JTMap cm= boost::get(boost::vertex_name, jt);
   for (unsigned int i=0; i< cliques.size(); ++i) {
     ParticlesTemp ps;
@@ -363,7 +367,7 @@ JunctionTree get_junction_tree(const InteractionGraph &ig) {
   /*std::cout << "JT graph is " << std::endl;
   IMP::internal::show_as_graphviz(jt, std::cout);
   {
-    JunctionTree njt=jt;
+    SubsetGraph njt=jt;
     std::cout << "JT graph is " << std::endl;
     IMP::internal::show_as_graphviz(njt, std::cout);
   }

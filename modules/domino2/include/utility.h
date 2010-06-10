@@ -84,11 +84,11 @@ get_dependent_particles(Particle *p,
 typedef boost::adjacency_list<boost::vecS, boost::vecS,
                               boost::undirectedS,
                               boost::property<boost::vertex_name_t,
-                                     Pointer<Subset> > > JunctionTree;
+                                     Pointer<Subset> > > SubsetGraph;
 #else
-class JunctionTree;
+class SubsetGraph;
 #endif
-IMPDOMINO2EXPORT JunctionTree
+IMPDOMINO2EXPORT SubsetGraph
 get_junction_tree(const InteractionGraph &ig);
 /** @} */
 

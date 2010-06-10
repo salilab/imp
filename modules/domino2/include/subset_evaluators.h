@@ -12,6 +12,7 @@
 #include "domino2_config.h"
 #include "domino2_macros.h"
 #include "particle_states.h"
+#include "subset_states.h"
 #include <IMP/Object.h>
 #include <IMP/Pointer.h>
 #include <IMP/Configuration.h>
@@ -25,13 +26,9 @@ IMPDOMINO2_BEGIN_NAMESPACE
     be calculated if they are not pre-computed.
 */
 class IMPDOMINO2EXPORT SubsetEvaluator: public Object {
-  Pointer<Subset> subset_;
 public:
-  SubsetEvaluator(Subset *s);
-  Subset *get_subset() const {
-    return subset_;
-  }
-  virtual double get_score(const Ints& state) const=0;
+  SubsetEvaluator(std::string name= "SubsetEvaluator");
+  virtual double get_score(const SubsetState& state) const=0;
   virtual ~SubsetEvaluator();
 };
 
@@ -53,7 +50,7 @@ IMP_OBJECTS(SubsetEvaluatorTable, SubsetEvaluatorFactories);
 */
 class IMPDOMINO2EXPORT ModelSubsetEvaluatorTable: public SubsetEvaluatorTable {
   mutable Pointer<Model> model_;
-  Pointer<Configuration> cs_;
+  IMP::internal::OwnerPointer<Configuration> cs_;
   Pointer<ParticleStatesTable> pst_;
   mutable std::map<Particle*, ParticlesTemp> dependents_;
 public:
