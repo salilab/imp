@@ -211,6 +211,14 @@ inline std::string get_name(const ParticleTuple<D>& p) {
     back_->do_after_evaluate();                                         \
   }                                                                     \
   ContainersTemp Name::Ticker::get_input_containers() const {           \
+    IMP_IF_CHECK(USAGE) {                                               \
+      std::string name= back_->get_name();                              \
+      {Pointer<Name> rc(back_);}                                        \
+      IMP_INTERNAL_CHECK((back_)->get_is_valid(),                       \
+                         "Container " << name                           \
+                         << " is not ref counted properly"              \
+                         << " bad things will happen.");                \
+    }                                                                   \
     return back_->get_state_input_containers();                         \
   }                                                                     \
   ContainersTemp Name::Ticker::get_output_containers() const {          \
