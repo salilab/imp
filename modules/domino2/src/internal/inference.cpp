@@ -45,6 +45,27 @@ Subset* get_intersection(Subset *a, Subset *b) {
     return ret;
 }
 
+Subset* get_union(Subset *a, Subset *b) {
+  ParticlesTemp pa= a->get_particles();
+  ParticlesTemp pb= b->get_particles();
+  std::sort(pa.begin(), pa.end());
+  std::sort(pb.begin(), pb.end());
+  ParticlesTemp rs;
+  std::set_union(pa.begin(), pa.end(),
+                 pb.begin(), pb.end(),
+                 std::back_inserter(rs));
+   Subset *ret= new Subset(rs);
+   std::ostringstream oss;
+   for (unsigned int j=0; j< rs.size(); ++j) {
+     oss << rs[j]->get_name();
+     if (j != rs.size()-1) {
+       oss << ", ";
+     }
+    }
+    ret->set_name(oss.str());
+    return ret;
+}
+
 NodeData get_node_data(Subset *s,
                        const SubsetEvaluatorTable *eval,
                        const SubsetStatesTable *states,
@@ -59,6 +80,9 @@ NodeData get_node_data(Subset *s,
     double score= se->get_score(state);
     if (score < max_score) {
       ret.scores[state]= score;
+    } else {
+      //IMP_LOG(VERBOSE, "State " << state <<
+      // " rejected with score " << score << std::endl);
     }
   }
   return ret;
@@ -80,7 +104,9 @@ SubsetState get_subset_state(const IncompleteStates &is,
 }
 
 
-PropagatedData get_merged(const PropagatedData &da,
+PropagatedData get_merged(Subset* subset,
+                          const SubsetStates *states,
+                          const PropagatedData &da,
                           const PropagatedData &db,
                           const ParticleIndex &all_index,
                           const EdgeData &ed,
@@ -105,9 +131,14 @@ PropagatedData get_merged(const PropagatedData &da,
         double nscore= ita->second+itb->second-edge_score;
         if (nscore < max_score) {
           IncompleteStates merged= get_merged(ita->first, itb->first);
+          SubsetState union_state= get_subset_state(merged, subset, all_index);
+          if (!states->get_is_state(union_state)) {
+
+          } else {
           /*IMP_LOG(VERBOSE, " ok " << merged << " with score "
             << nscore <<std::endl);*/
-          ret.scores[merged]= nscore;
+            ret.scores[merged]= nscore;
+          }
         } else {
           //IMP_LOG(VERBOSE, " Rejected" << std::endl);
         }
@@ -185,11 +216,11 @@ EdgeData get_edge_data(const ParticleIndex &all,
                                      max_score);
     IMP_LOG(VERBOSE, "For node " << root
             << " local data is:\n" << nd << std::endl);
-    double local_max_score=0;
+    /*double local_min_score=0;
     for (NodeData::Scores::const_iterator it= nd.scores.begin();
          it != nd.scores.end(); ++it) {
       local_max_score= std::max(it->second, local_max_score);
-    }
+      }*/
     PropagatedData pd= get_propagated_data(all_index, subset_map[root], nd);
     ParticleIndex root_index= get_index(subset_map[root]);
     typedef boost::graph_traits<SubsetGraph>::adjacency_iterator
@@ -200,7 +231,11 @@ EdgeData get_edge_data(const ParticleIndex &all,
       if (*be.first == parent) continue;
       EdgeData ed= get_edge_data(all_index, eval, boost::get(subset_map, root),
                                  boost::get(subset_map, *be.first), nd);
-
+      IMP::internal::OwnerPointer<Subset> edge_union
+        = get_union(boost::get(subset_map, root),
+                    boost::get(subset_map, *be.first));
+      IMP::internal::OwnerPointer<SubsetStates> edge_states
+        = states->get_subset_states(edge_union);
       // compute intersection set and index map in one direction
       // for each pattern of that in me, compute subset score
       // subtract the min of mine (assume scores positive)
@@ -208,10 +243,11 @@ EdgeData get_edge_data(const ParticleIndex &all,
       const PropagatedData cpd
         = get_best_conformations_internal(jt, *be.first, root,
                                           all_index, eval, states,
-                                          max_score-local_max_score);
+                                          max_score);
       IMP_LOG(VERBOSE, "For child " << *be.first
               << " returned data is:\n" << cpd << std::endl);
-      pd= get_merged(pd, cpd, all_index, ed, max_score);
+      pd= get_merged(edge_union, edge_states, pd, cpd,
+                     all_index, ed, max_score);
       IMP_LOG(VERBOSE, "For child " << *be.first
               << " merged data is:\n" << pd << std::endl);
     }

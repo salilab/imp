@@ -27,8 +27,9 @@ public:                                                         \
 */
 #define IMP_SUBSET_STATES(Name)                         \
   public:                                               \
- virtual unsigned int get_number_of_states() const;     \
- virtual SubsetState get_state(unsigned int i) const;   \
+  unsigned int get_number_of_states() const;            \
+  SubsetState get_state(unsigned int i) const;          \
+  bool get_is_state(const SubsetState &s) const;        \
  IMP_OBJECT(Name)
 
 /** This macro declares

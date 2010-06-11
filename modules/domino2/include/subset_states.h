@@ -82,6 +82,7 @@ public:
   SubsetStates(std::string name="SubsetStates"): Object(name){}
   virtual unsigned int get_number_of_states() const=0;
   virtual SubsetState get_state(unsigned int i) const=0;
+  virtual bool get_is_state(const SubsetState &s) const=0;
   virtual ~SubsetStates();
 };
 
@@ -103,30 +104,14 @@ public:
     with the result that no two particles in the same class can be
     assigned the same state. That allows cheap avoidance of states
     where particles are assigned the same coordinates (in certain
-    circumstances).
+    circumstances). Equivalency classes are automatically determined
+    from the ParticleStates objects in the passed table.
 */
 class IMPDOMINO2EXPORT DefaultSubsetStatesTable: public SubsetStatesTable {
   friend class DefaultSubsetStates;
-  typedef std::map<Particle*, Particle*> IParent;
-  typedef std::map<Particle*, int> IRank;
-  typedef boost::associative_property_map<IParent> Parent;
-  typedef boost::associative_property_map<IRank > Rank;
-  typedef boost::disjoint_sets<Rank, Parent> UF;
   Pointer<ParticleStatesTable> pst_;
-  IParent parent_;
-  IRank rank_;
-  mutable UF equivalencies_;
-  // for some reason boost disjoint sets doesn't provide a way to see
-  // if an item is a set
-  std::set<Particle*> seen_;
  public:
   DefaultSubsetStatesTable(ParticleStatesTable* pst);
-  /** The two passed particles are treated as having equivalent
-      and exclusive states. That is, particle a and particle b
-      are not allowed to both be in state i, for any i. As a
-      precondition, they must have the same StateEnumerator.
-  */
-  void add_equivalency(Particle *a, Particle* b);
   IMP_SUBSET_STATES_TABLE(DefaultSubsetStatesTable);
 };
 

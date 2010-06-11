@@ -247,33 +247,61 @@ namespace {
     return ret;
   }
 
+  bool DefaultSubsetStates::get_is_state(const SubsetState &state) const {
+    for (unsigned int i=0; i<classes_.size(); ++i) {
+      for (unsigned int j=0; j< classes_[i].indexes.size(); ++j) {
+        for (unsigned int k=0; k< j; ++k) {
+          if (state[classes_[i].indexes[j]] == state[classes_[i].indexes[k]]) {
+            return false;
+          }
+        }
+      }
+    }
+    return true;
+  }
+
   void DefaultSubsetStates::do_show(std::ostream &out) const{}
 
 }
 
 
 DefaultSubsetStatesTable::DefaultSubsetStatesTable(ParticleStatesTable *pst):
-  pst_(pst), equivalencies_(Rank(rank_), Parent(parent_)){}
+  pst_(pst){}
 
-void DefaultSubsetStatesTable::add_equivalency(Particle *a, Particle* b) {
-  IMP_USAGE_CHECK(pst_
-                  ->get_particle_states(a)->get_number_of_states()
-                  == pst_
-                  ->get_particle_states(b)->get_number_of_states(),
-            "The number of states for the two particles does not match");
-  if (seen_.find(a) == seen_.end()) {
-    equivalencies_.make_set(a);
-    seen_.insert(a);
-  }
-  if (seen_.find(b) == seen_.end()) {
-    equivalencies_.make_set(b);
-    seen_.insert(b);
-  }
-  equivalencies_.union_set(a,b);
-}
 
 SubsetStates* DefaultSubsetStatesTable::get_subset_states(Subset*s) const {
-  return new DefaultSubsetStates(equivalencies_, seen_, s,
+  typedef std::map<Particle*, Particle*> IParent;
+  typedef std::map<Particle*, int> IRank;
+  typedef boost::associative_property_map<IParent> Parent;
+  typedef boost::associative_property_map<IRank > Rank;
+  typedef boost::disjoint_sets<Rank, Parent> UF;
+  IParent parent;
+  IRank rank;
+  Rank rrank(rank);
+  Parent rparent(parent);
+  UF equivalencies(rrank, rparent);
+  // for some reason boost disjoint sets doesn't provide a way to see
+  // if an item is a set
+  std::set<Particle*> seen;
+  for (unsigned int i=0; i< s->get_number_of_particles(); ++i) {
+    Particle *a= s->get_particle(i);
+    for (unsigned int j=0; j< i; ++j) {
+      Particle *b= s->get_particle(j);
+      if (pst_->get_particle_states(a)
+          == pst_->get_particle_states(b)) {
+        if (seen.find(a) == seen.end()) {
+          equivalencies.make_set(a);
+          seen.insert(a);
+        }
+        if (seen.find(b) == seen.end()) {
+          equivalencies.make_set(b);
+          seen.insert(b);
+        }
+        equivalencies.union_set(a,b);
+      }
+    }
+  }
+  return new DefaultSubsetStates(equivalencies, seen, s,
                                  pst_);
 }
 
