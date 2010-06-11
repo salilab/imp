@@ -28,8 +28,11 @@ IMP_BEGIN_INTERNAL_NAMESPACE
 // probably not legal C++, but for python
 class IMPEXPORT _ConstRestraint: public IMP::Restraint {
   double v_;
+  const ParticlesTemp ps_;
 public:
-  _ConstRestraint(double v): v_(v){}
+  _ConstRestraint(double v,
+                  const ParticlesTemp ps= ParticlesTemp()): v_(v),
+    ps_(ps){}
   IMP_RESTRAINT(_ConstRestraint);
 };
 
