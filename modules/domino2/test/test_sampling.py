@@ -36,8 +36,8 @@ class DOMINOTests(IMP.test.TestCase):
         sampler.set_subset_states_table(sst)
         sampler.set_maximum_score(.1)
         cs= sampler.get_sample()
-        self.assert_((IMP.core.distance(IMP.core.XYZ(ps[0]),IMP.core.XYZ(ps[1]))-1)**2 < .1)
-        self.assert_((IMP.core.distance(IMP.core.XYZ(ps[1]),IMP.core.XYZ(ps[2]))-1)**2 < .1)
+        self.assert_((IMP.core.get_distance(IMP.core.XYZ(ps[0]),IMP.core.XYZ(ps[1]))-1)**2 < .1)
+        self.assert_((IMP.core.get_distance(IMP.core.XYZ(ps[1]),IMP.core.XYZ(ps[2]))-1)**2 < .1)
         # test that they are the right distance
 if __name__ == '__main__':
     unittest.main()
