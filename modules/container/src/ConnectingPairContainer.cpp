@@ -15,18 +15,12 @@
 #include <IMP/core/internal/close_pairs_helpers.h>
 #include <IMP/PairModifier.h>
 #include <IMP/algebra/vector_search.h>
-
-
-namespace boost {
-  unsigned int get(const std::vector<unsigned int> &v,
-                   unsigned int i) {
-    return v[i];
-  }
-  void put(std::vector<unsigned int> &v,
-           unsigned int i, unsigned int j) {
-    v[i]=j;
-  }
-}
+#if BOOST_VERSION > 103900
+#include <boost/property_map/property_map.hpp>
+#else
+#include <boost/property_map.hpp>
+#include <boost/vector_property_map.hpp>
+#endif
 #include <boost/pending/disjoint_sets.hpp>
 #include <algorithm>
 
@@ -37,10 +31,11 @@ namespace boost {
 #include <boost/graph/adjacency_matrix.hpp>
 
 
+
 IMPCONTAINER_BEGIN_NAMESPACE
 
 namespace {
-  typedef std::vector<unsigned int> Index;
+  typedef boost::vector_property_map<unsigned int> Index;
   typedef Index Parent;
   typedef boost::disjoint_sets<Index,Parent> UF;
   void build_graph(SingletonContainer *sc, ParticlePairsTemp &out, UF &uf) {
@@ -107,8 +102,7 @@ namespace {
       }
     }
     // count sets as we go along
-    std::vector<Edge> mst;
-    mst.resize(vs.size()-1);
+    std::vector<Edge> mst(vs.size()-1);
     boost::kruskal_minimum_spanning_tree(g, mst.begin());
 
     for (unsigned int index=0; index< mst.size(); ++index) {
@@ -165,12 +159,13 @@ void ConnectingPairContainer::fill_list(bool /*first*/) {
   if (mst_) {
     compute_mst(sc_, new_list);
   } else {
-    Index index(sc_->get_number_of_particles());
-    for (unsigned int i=0; i< index.size(); ++i) {
-      index[i]=i;
-    }
-    Parent parent=index;
+    Index index;
+    Parent parent;
     UF uf(index, parent);
+    unsigned int sz= sc_->get_number_of_particles();
+    for (unsigned int i=0; i< sz; ++i) {
+      uf.make_set(i);
+    }
     build_graph(sc_, new_list, uf);
   }
   update_list(new_list);
