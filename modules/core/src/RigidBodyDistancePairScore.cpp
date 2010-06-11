@@ -62,6 +62,11 @@ namespace {
 double RigidBodyDistancePairScore::evaluate(const ParticlePair &p,
                                             DerivativeAccumulator *dera) const {
   ParticlePair pp= get_closest_pair(p[0], p[1], r0_, r1_, k0_, k1_);
+  IMP_LOG(VERBOSE, "Closest rigid body pair for bodies "
+          << p[0]->get_name() << " and " << p[1]->get_name()
+          << " is " << pp[0]->get_name() << " and " << pp[1]->get_name()
+          << " with coordinates " << XYZ(pp[0]) << " and " << XYZ(pp[1])
+          << std::endl);
   return ps_->evaluate(pp, dera);
 }
 
