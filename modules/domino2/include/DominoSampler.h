@@ -23,12 +23,10 @@ IMPDOMINO2_BEGIN_NAMESPACE
 
 
 //! Sample best solutions using Domino
-/** Possible improvements:
-    - add restraint-based filtering in the message passing stage
-    - avoid rebuilding indexes repeatedly
-    - use vectors instead of maps to score scores
-    - perhaps do something more clever for score evaluation on merge
-
+/** \note the restraint scores must be non-negative for domino.
+    If you are using restraints which can produce negative values,
+    we can provide a restraint which wraps another and makes
+    it non-negative.
  */
 class IMPDOMINO2EXPORT DominoSampler : public Sampler
 {

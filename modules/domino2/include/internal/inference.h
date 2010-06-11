@@ -91,35 +91,80 @@ ParticleIndex get_index(Subset *s);
 
 
 
-struct NodeData {
+class NodeData {
   // already have subset
   typedef std::map<SubsetState, double> Scores;
-  Scores scores;
+  Scores scores_;
+public:
+  void set_score(const SubsetState &state,
+                 double score) {
+    scores_[state]=score;
+  }
+  typedef std::map<SubsetState, double>::const_iterator
+  ScoresIterator;
+  ScoresIterator scores_begin() const {return scores_.begin();}
+  ScoresIterator scores_end() const {return scores_.end();}
 };
 
 inline std::ostream &operator<<(std::ostream &out, const NodeData &nd) {
-  for (NodeData::Scores::const_iterator it = nd.scores.begin();
-       it != nd.scores.end(); ++it) {
+  for (NodeData::ScoresIterator it = nd.scores_begin();
+       it != nd.scores_end(); ++it) {
     out << "(" << it->first << " = " << it->second << ")"
         << std::endl;;
   }
   return out;
 }
 
-struct EdgeData: public NodeData {
-  Pointer<Subset> subset;
-  Ints global_index;
+class EdgeData {
+  typedef std::map<SubsetState, double> Scores;
+  Scores scores_;
+  IMP::internal::OwnerPointer<Subset> subset_;
+public:
+  void set_subset(Subset*s) {subset_=s;}
+  Subset* get_subset() const {return subset_;}
+  void set_score(const SubsetState &state,
+                 double score) {
+    scores_[state]=score;
+  }
+  double get_score(const SubsetState &state) const {
+    return scores_.find(state)->second;
+  }
+  bool get_has_score(const SubsetState &state) const {
+    return scores_.find(state) != scores_.end();
+  }
+  typedef std::map<SubsetState, double>::const_iterator
+  ScoresIterator;
+  ScoresIterator scores_begin() const {return scores_.begin();}
+  ScoresIterator scores_end() const {return scores_.end();}
 };
 
-struct PropagatedData {
-  // already have subset
+inline std::ostream &operator<<(std::ostream &out, const EdgeData &nd) {
+  for (EdgeData::ScoresIterator it = nd.scores_begin();
+       it != nd.scores_end(); ++it) {
+    out << "(" << it->first << " = " << it->second << ")"
+        << std::endl;;
+  }
+  return out;
+}
+
+
+class PropagatedData {
   typedef std::map<IncompleteStates, double> Scores;
-  Scores scores;
+  Scores scores_;
+public:
+  void set_score(const IncompleteStates &state,
+                 double score) {
+    scores_[state]=score;
+  }
+  typedef std::map<IncompleteStates, double>::const_iterator
+  ScoresIterator;
+  ScoresIterator scores_begin() const {return scores_.begin();}
+  ScoresIterator scores_end() const {return scores_.end();}
 };
 
 inline std::ostream &operator<<(std::ostream &out, const PropagatedData &nd) {
-  for (PropagatedData::Scores::const_iterator it = nd.scores.begin();
-       it != nd.scores.end(); ++it) {
+  for (PropagatedData::ScoresIterator it = nd.scores_begin();
+       it != nd.scores_end(); ++it) {
     out << "(" << it->first << " = " << it->second << ")"
         << std::endl;;
   }

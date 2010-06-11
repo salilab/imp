@@ -15,16 +15,16 @@ API todo list:
 - nothing currently, it looks pretty good
 
 Implementation todo list:
-- provide some test cases (move the IMP::domino test and examples
-- figure out the call to generate the junction tree
-- figure out how to map the restraint evaluation
-- remove particle identifier attributes
-- identify subsets using the Subset type rather than strings
-- search for unused functions and strip them out
-- clean up restraint stuff
-- check that things are deallocated appropriately
-- look at storing jnode/jedge pointers directly in the graph
-- pass map from particles to/from ints directly to/from jt read/write code
+- avoid rebuilding indexes repeatedly
+- use vectors instead of maps to store scores
+- better filtering of states based on
+   - scores of individual restraints
+   - lower bounds on the score of the rest of the model
+- perhaps compact represetnation of incomplete states
+- better model evaluator which does not re-evaluate restraints
+- reduce looping through lists for reconciliation
+- avoid the SingletonContainer interface (use the macros, for example)
+
 """,
                  publications=env.StandardPublications(),
                  license="Being worked out (currently have some code from Afra)"

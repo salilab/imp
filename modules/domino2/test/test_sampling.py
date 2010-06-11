@@ -11,7 +11,7 @@ import time
 
 class DOMINOTests(IMP.test.TestCase):
 
-    def test_global_min2(self):
+    def _test_global_min2(self):
         """Test sampling"""
         m= IMP.Model()
         m.set_log_level(IMP.SILENT)
@@ -37,8 +37,11 @@ class DOMINOTests(IMP.test.TestCase):
         sampler.set_subset_states_table(sst)
         sampler.set_maximum_score(.1)
         cs= sampler.get_sample()
-        self.assert_((IMP.core.get_distance(IMP.core.XYZ(ps[0]),IMP.core.XYZ(ps[1]))-1)**2 < .1)
-        self.assert_((IMP.core.get_distance(IMP.core.XYZ(ps[1]),IMP.core.XYZ(ps[2]))-1)**2 < .1)
+        self.assert_(cs.get_number_of_configurations() > 0)
+        for i in range(0, cs.get_number_of_configurations()):
+            cs.load_configuration(i)
+            self.assert_((IMP.core.get_distance(IMP.core.XYZ(ps[0]),IMP.core.XYZ(ps[1]))-1)**2 < .1)
+            self.assert_((IMP.core.get_distance(IMP.core.XYZ(ps[1]),IMP.core.XYZ(ps[2]))-1)**2 < .1)
 
     def test_global_min3(self):
         """Test sampling with edge scores"""
@@ -67,8 +70,11 @@ class DOMINOTests(IMP.test.TestCase):
         sampler.set_subset_states_table(sst)
         sampler.set_maximum_score(3.1)
         cs= sampler.get_sample()
-        self.assert_((IMP.core.get_distance(IMP.core.XYZ(ps[0]),IMP.core.XYZ(ps[1]))-1)**2 < .1)
-        self.assert_((IMP.core.get_distance(IMP.core.XYZ(ps[1]),IMP.core.XYZ(ps[2]))-1)**2 < .1)
+        self.assert_(cs.get_number_of_configurations() > 0)
+        for i in range(0, cs.get_number_of_configurations()):
+            cs.load_configuration(i)
+            self.assert_((IMP.core.get_distance(IMP.core.XYZ(ps[0]),IMP.core.XYZ(ps[1]))-1)**2 < .1)
+            self.assert_((IMP.core.get_distance(IMP.core.XYZ(ps[1]),IMP.core.XYZ(ps[2]))-1)**2 < .1)
 
         # test that they are the right distance
 if __name__ == '__main__':

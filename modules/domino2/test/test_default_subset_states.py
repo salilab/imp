@@ -54,8 +54,8 @@ class DOMINOTests(IMP.test.TestCase):
             ps.append(IMP.Particle(m))
         pst= IMP.domino2.ParticleStatesTable()
         tps=TrivialParticleStates(ns)
-        pst.set_particle_states(ps[0], tps(ns))
-        pst.set_particle_states(ps[1], tps(ns))
+        pst.set_particle_states(ps[0], tps)
+        pst.set_particle_states(ps[1], tps)
         for p in ps[2:]:
             pst.set_particle_states(p, TrivialParticleStates(ns))
         dsst= IMP.domino2.DefaultSubsetStatesTable(pst)
