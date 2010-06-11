@@ -85,7 +85,7 @@ uniform_cover_sphere(unsigned int n,
         P p(D, nr.coordinates_begin(),
             nr.coordinates_end());
         typename CH::Vertex_handle vh=ch.insert(p);
-        indexes[vh]= -i-1;
+        indexes[vh]= -static_cast<int>(i)-1;
       }
     }
     std::vector<VectorD<D> > sums(n, get_zero_vector_d<D>());
@@ -119,7 +119,7 @@ uniform_cover_sphere(unsigned int n,
           if (vj > 0) {
             pj= ret[vj-1];
           } else {
-            pj= ret[-vj+1];
+            pj= ret[-vj-1];
           }
           double d=(pj-pi).get_magnitude();
           if (counts[vi-1] < d) {
@@ -156,7 +156,7 @@ uniform_cover_sphere(unsigned int n,
     }
   }
 
-  return ret;
+  return std::vector<VectorD<D> >(ret.begin(), ret.end());
 }
 
 
