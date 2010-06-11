@@ -105,19 +105,19 @@ namespace {
     RigidBody rb(p);
     algebra::Rotation3D rot= rb.get_reference_frame()
       .get_transformation_to().get_rotation();
-    IMP_LOG(TERSE, "Accumulating rigid body derivatives" << std::endl);
+    //IMP_LOG(TERSE, "Accumulating rigid body derivatives" << std::endl);
     algebra::VectorD<3> v(0,0,0);
     algebra::VectorD<4> q(0,0,0,0);
     for (unsigned int i=0; i< rb.get_number_of_members(); ++i) {
       RigidMember d= rb.get_member(i);
       algebra::VectorD<3> dv= d.get_derivatives();
       v+=dv;
-      IMP_LOG(TERSE, "Adding " << dv << " to derivative" << std::endl);
+      //IMP_LOG(TERSE, "Adding " << dv << " to derivative" << std::endl);
       for (unsigned int j=0; j< 4; ++j) {
         algebra::VectorD<3> v= rot.get_derivative(d.get_internal_coordinates(),
                                                 j);
-        IMP_LOG(VERBOSE, "Adding " << dv*v << " to quaternion deriv " << j
-                << std::endl);
+        /*IMP_LOG(VERBOSE, "Adding " << dv*v << " to quaternion deriv " << j
+          << std::endl);*/
         q[j]+= dv*v;
       }
     }
@@ -127,7 +127,7 @@ namespace {
                                            .quaternion_[j], q[j],da);
     }
 
-    IMP_LOG(TERSE, "Derivative is "
+    IMP_LOG(TERSE, "Rigid body derivative is "
             << p->get_derivative(internal::rigid_body_data().quaternion_[0])
             << " "
             << p->get_derivative(internal::rigid_body_data().quaternion_[1])
@@ -135,7 +135,7 @@ namespace {
             << p->get_derivative(internal::rigid_body_data().quaternion_[2])
             << " "
             << p->get_derivative(internal::rigid_body_data().quaternion_[3])
-            << std::endl);
+            << " and ");
 
     IMP_LOG(TERSE, "Translation deriv is "
             << static_cast<XYZ>(rb).get_derivatives()
@@ -290,13 +290,13 @@ RigidBody::normalize_rotation() {
       get_particle()->get_value(internal::rigid_body_data().quaternion_[1]),
       get_particle()->get_value(internal::rigid_body_data().quaternion_[2]),
       get_particle()->get_value(internal::rigid_body_data().quaternion_[3]));
-  IMP_LOG(TERSE, "Rotation was " << v << std::endl);
+  //IMP_LOG(TERSE, "Rotation was " << v << std::endl);
   if (v.get_squared_magnitude() >0){
     v= v.get_unit_vector();
   } else {
     v= algebra::VectorD<4>(1,0,0,0);
   }
-  IMP_LOG(TERSE, "Rotation is " << v << std::endl);
+  //IMP_LOG(TERSE, "Rotation is " << v << std::endl);
   get_particle()->set_value(internal::rigid_body_data().quaternion_[0], v[0]);
   get_particle()->set_value(internal::rigid_body_data().quaternion_[1], v[1]);
   get_particle()->set_value(internal::rigid_body_data().quaternion_[2], v[2]);
