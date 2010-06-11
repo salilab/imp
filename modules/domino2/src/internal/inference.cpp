@@ -78,8 +78,9 @@ NodeData get_node_data(Subset *s,
   for (unsigned int i=0; i< ss->get_number_of_states(); ++i) {
     SubsetState state(ss->get_state(i));
     double score= se->get_score(state);
+    IMP_USAGE_CHECK(score >=0, "Domino needs non-negative scores.");
     if (score < max_score) {
-      ret.scores[state]= score;
+      ret.set_score(state, score);
     } else {
       //IMP_LOG(VERBOSE, "State " << state <<
       // " rejected with score " << score << std::endl);
@@ -112,16 +113,16 @@ PropagatedData get_merged(Subset* subset,
                           const EdgeData &ed,
                           double max_score) {
   PropagatedData ret;
-  for (PropagatedData::Scores::const_iterator ita = da.scores.begin();
-       ita != da.scores.end(); ++ita) {
-    SubsetState edge_state_a= get_subset_state(ita->first, ed.subset,
+  for (PropagatedData::ScoresIterator ita = da.scores_begin();
+       ita != da.scores_end(); ++ita) {
+    SubsetState edge_state_a= get_subset_state(ita->first, ed.get_subset(),
                                                all_index);
-    double edge_score=ed.scores.find(edge_state_a)->second;
-    for (PropagatedData::Scores::const_iterator itb = db.scores.begin();
-         itb != db.scores.end(); ++itb) {
+    double edge_score=ed.get_score(edge_state_a);
+    for (PropagatedData::ScoresIterator itb = db.scores_begin();
+         itb != db.scores_end(); ++itb) {
       /*IMP_LOG(VERBOSE, "Lists are " << ita->first << "(" << ita->second << ")"
         << " " << itb->first << " (" << itb->second << ")");*/
-      SubsetState edge_state_b= get_subset_state(itb->first, ed.subset,
+      SubsetState edge_state_b= get_subset_state(itb->first, ed.get_subset(),
                                                  all_index);
       if (edge_state_b != edge_state_a) {
         //IMP_LOG(VERBOSE, " Rejected" << std::endl);
@@ -137,7 +138,7 @@ PropagatedData get_merged(Subset* subset,
           } else {
           /*IMP_LOG(VERBOSE, " ok " << merged << " with score "
             << nscore <<std::endl);*/
-            ret.scores[merged]= nscore;
+            ret.set_score(merged, nscore);
           }
         } else {
           //IMP_LOG(VERBOSE, " Rejected" << std::endl);
@@ -152,11 +153,11 @@ PropagatedData get_propagated_data(const ParticleIndex& all_particles,
                                    Subset* subset,
                                    const NodeData &nd) {
   PropagatedData ret;
-  for (NodeData::Scores::const_iterator it= nd.scores.begin();
-       it != nd.scores.end(); ++it) {
+  for (NodeData::ScoresIterator it= nd.scores_begin();
+       it != nd.scores_end(); ++it) {
     IncompleteStates is= get_incomplete_states(all_particles,
                                                subset, it->first);
-    ret.scores[is]= it->second;
+    ret.set_score(is, it->second);
   }
   return ret;
 }
@@ -171,30 +172,30 @@ EdgeData get_edge_data(const ParticleIndex &all,
                        Subset *b,
                        const NodeData &nda) {
   EdgeData ret;
-  ret.subset= get_intersection(a,b);
-  ret.subset->set_was_used(true);
+  ret.set_subset(get_intersection(a,b));
   IMP::internal::OwnerPointer<SubsetEvaluator> edge_eval
-    = eval->get_subset_evaluator(ret.subset);
+    = eval->get_subset_evaluator(ret.get_subset());
   IMP_IF_LOG(VERBOSE) {
     IMP_LOG(VERBOSE, "Edge from node " << a->get_name()
             << " to " << b->get_name()
-            << " is " << ret.subset->get_name() << std::endl);
+            << " is " << ret.get_subset()->get_name() << std::endl);
   }
   ParticleIndex a_index= get_index(a);
   // could be done better
-  for (NodeData::Scores::const_iterator it = nda.scores.begin();
-       it != nda.scores.end(); ++it) {
-    SubsetState es(ret.subset->get_number_of_particles());
+  for (NodeData::ScoresIterator it = nda.scores_begin();
+       it != nda.scores_end(); ++it) {
+    SubsetState es(ret.get_subset()->get_number_of_particles());
     for (unsigned int i=0; i< es.size(); ++i) {
-      Particle *p=ret.subset->get_particle(i);
+      Particle *p=ret.get_subset()->get_particle(i);
       int v= it->first[a_index[p]];
       es[i]=v;
     }
-    if (ret.scores.find(es) == ret.scores.end()) {
+    if (!ret.get_has_score(es)) {
       //std::cout << "Found state " << es << " with score std::endl;
       // compute score and store it
       double score= edge_eval->get_score(es);
-      ret.scores[es]=score;
+      IMP_USAGE_CHECK(score >=0, "Domino needs non-negative scores.");
+      ret.set_score(es, score);
     }
   }
   IMP_LOG(VERBOSE,"Data is:\n" << ret << std::endl);
@@ -217,7 +218,7 @@ EdgeData get_edge_data(const ParticleIndex &all,
     IMP_LOG(VERBOSE, "For node " << root
             << " local data is:\n" << nd << std::endl);
     /*double local_min_score=0;
-    for (NodeData::Scores::const_iterator it= nd.scores.begin();
+    for (NodeData::ScoresIterator it= nd.scores.begin();
          it != nd.scores.end(); ++it) {
       local_max_score= std::max(it->second, local_max_score);
       }*/
@@ -268,8 +269,8 @@ PropagatedData get_best_conformations(const SubsetGraph &jt,
                                                            max_score);
   // check if is tree
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-    for (PropagatedData::Scores::const_iterator it =pd.scores.begin();
-         it != pd.scores.end(); ++it) {
+    for (PropagatedData::ScoresIterator it =pd.scores_begin();
+         it != pd.scores_end(); ++it) {
       IncompleteStates is= it->first;
       for (unsigned int i=0; i< is.size(); ++i) {
         IMP_INTERNAL_CHECK(is[i] >= 0, "Entry " << i << " is still unknown");

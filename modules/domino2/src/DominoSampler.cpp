@@ -42,8 +42,8 @@ namespace {
                                          eval, sst,
                                          max_score);
     std::vector<SubsetState> final_solutions;
-    for (internal::PropagatedData::Scores::const_iterator it= pd.scores.begin();
-         it != pd.scores.end(); ++it) {
+    for (internal::PropagatedData::ScoresIterator it= pd.scores_begin();
+         it != pd.scores_end(); ++it) {
       final_solutions.push_back(it->first);
     }
     return final_solutions;
