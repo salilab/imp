@@ -16,6 +16,7 @@
 #include <IMP/SingletonContainer.h>
 #include <IMP/container/ListSingletonContainer.h>
 #include <IMP/algebra/Vector3D.h>
+#include <IMP/algebra/Transformation3D.h>
 #include <IMP/internal/OwnerPointer.h>
 #include <map>
 
@@ -93,13 +94,24 @@ IMP_OBJECTS(ParticleStatesTable, ParticleStatesTables);
 /** Store a set of states which explicitly define the XYZ coordinates of
     the particle in question.
 */
-class IMPDOMINO2EXPORT XYZsStates: public ParticleStates {
+class IMPDOMINO2EXPORT XYZStates: public ParticleStates {
   algebra::Vector3Ds states_;
 public:
-  XYZsStates(const algebra::Vector3Ds &states): states_(states){}
-  IMP_PARTICLE_STATES(XYZsStates);
+  XYZStates(const algebra::Vector3Ds &states): states_(states){}
+  IMP_PARTICLE_STATES(XYZStates);
 };
-IMP_OBJECTS(XYZsStates, XYZsStatesList);
+IMP_OBJECTS(XYZStates, XYZStatesList);
+
+/** Store a set of states which explicitly define the
+    transformation coordinates of the particle in question.
+*/
+class IMPDOMINO2EXPORT RigidBodyStates: public ParticleStates {
+  algebra::Transformation3Ds states_;
+public:
+  RigidBodyStates(const algebra::Transformation3Ds &states): states_(states){}
+  IMP_PARTICLE_STATES(RigidBodyStates);
+};
+IMP_OBJECTS(RigidBodyStates, RigidBodyStatesList);
 
 
 IMPDOMINO2_END_NAMESPACE

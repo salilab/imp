@@ -24,7 +24,7 @@ class DOMINOTests(IMP.test.TestCase):
              IMP.algebra.Vector3D(1,0,0),
              IMP.algebra.Vector3D(2,0,0),
              IMP.algebra.Vector3D(3,0,0)]
-        particle_state= IMP.domino2.XYZsStates(pts)
+        particle_state= IMP.domino2.XYZStates(pts)
         pst= IMP.domino2.ParticleStatesTable()
         for p in ps:
             pst.set_particle_states(p, particle_state)
@@ -56,7 +56,7 @@ class DOMINOTests(IMP.test.TestCase):
              IMP.algebra.Vector3D(1,0,0),
              IMP.algebra.Vector3D(2,0,0),
              IMP.algebra.Vector3D(3,0,0)]
-        particle_state= IMP.domino2.XYZsStates(pts)
+        particle_state= IMP.domino2.XYZStates(pts)
         pst= IMP.domino2.ParticleStatesTable()
         for p in ps:
             pst.set_particle_states(p, particle_state)

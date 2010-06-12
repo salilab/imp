@@ -31,7 +31,7 @@ for i in range(0,4):
     vs.append(IMP.algebra.Vector3D(i,1,0))
 
 print "create states"
-states= IMP.domino2.XYZsStates(vs)
+states= IMP.domino2.XYZStates(vs)
 for p in ps:
     print p.get_name()
     s.set_particle_states(p, states)
