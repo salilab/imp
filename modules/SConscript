@@ -15,10 +15,10 @@ modules=['algebra',
          'multifit',
          'statistics',
          'gsl',
-         'benchmark',
          'modeller',
          'restrainer',
-         'domino2']
+         'domino2',
+         'benchmark']
 
 for p in modules:
     SConscript(p+"/SConscript")
