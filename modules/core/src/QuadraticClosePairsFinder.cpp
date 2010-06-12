@@ -20,6 +20,7 @@ QuadraticClosePairsFinder::QuadraticClosePairsFinder():
 ParticlePairsTemp QuadraticClosePairsFinder
 ::get_close_pairs(SingletonContainer *ca,
                   SingletonContainer *cb) const {
+  set_was_used(true);
   IMP_OBJECT_LOG;
   IMP_LOG(TERSE, "Quadratic add_close_pairs called with "
           << ca->get_number_of_particles() << " and "
@@ -39,6 +40,7 @@ ParticlePairsTemp QuadraticClosePairsFinder
 
 ParticlePairsTemp QuadraticClosePairsFinder
 ::get_close_pairs(SingletonContainer *c) const {
+  set_was_used(true);
   IMP_OBJECT_LOG;
   IMP_LOG(TERSE, "Adding close pairs from "
           << c->get_number_of_particles() << " particles with threshold "

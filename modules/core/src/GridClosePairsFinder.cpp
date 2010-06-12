@@ -147,6 +147,7 @@ GridClosePairsFinder::GridClosePairsFinder(): ClosePairsFinder("GridCPF"){}
 ParticlePairsTemp GridClosePairsFinder
 ::get_close_pairs(SingletonContainer *ca,
                   SingletonContainer *cb) const {
+  set_was_used(true);
   IMP_NEW(QuadraticClosePairsFinder, qp, ());
   qp->set_distance(get_distance());
   qp->set_was_used(true);
@@ -155,6 +156,7 @@ ParticlePairsTemp GridClosePairsFinder
 
 ParticlePairsTemp GridClosePairsFinder
 ::get_close_pairs(SingletonContainer *c) const {
+  set_was_used(true);
   IMP_LOG(TERSE, "Rebuilding NBL with Grid and cutoff "
           << get_distance() << std::endl );
 
