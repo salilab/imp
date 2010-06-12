@@ -93,14 +93,18 @@ ParticleIndex get_index(Subset *s);
 
 class NodeData {
   // already have subset
-  typedef std::map<SubsetState, double> Scores;
+  typedef std::pair<SubsetState, double> ScorePair;
+  typedef std::vector<ScorePair> Scores;
   Scores scores_;
 public:
   void set_score(const SubsetState &state,
                  double score) {
-    scores_[state]=score;
+    scores_.push_back(ScorePair(state, score));
   }
-  typedef std::map<SubsetState, double>::const_iterator
+  unsigned int get_number_of_scores() const {
+    return scores_.size();
+  }
+  typedef Scores::const_iterator
   ScoresIterator;
   ScoresIterator scores_begin() const {return scores_.begin();}
   ScoresIterator scores_end() const {return scores_.end();}
@@ -132,7 +136,7 @@ public:
   bool get_has_score(const SubsetState &state) const {
     return scores_.find(state) != scores_.end();
   }
-  typedef std::map<SubsetState, double>::const_iterator
+  typedef Scores::const_iterator
   ScoresIterator;
   ScoresIterator scores_begin() const {return scores_.begin();}
   ScoresIterator scores_end() const {return scores_.end();}
@@ -149,14 +153,18 @@ inline std::ostream &operator<<(std::ostream &out, const EdgeData &nd) {
 
 
 class PropagatedData {
-  typedef std::map<IncompleteStates, double> Scores;
+  typedef std::pair<IncompleteStates, double> ScorePair;
+  typedef std::vector<ScorePair> Scores;
   Scores scores_;
 public:
   void set_score(const IncompleteStates &state,
                  double score) {
-    scores_[state]=score;
+    scores_.push_back(ScorePair(state,score));
   }
-  typedef std::map<IncompleteStates, double>::const_iterator
+  void reserve(unsigned int i) {
+    scores_.reserve(i);
+  }
+  typedef Scores::const_iterator
   ScoresIterator;
   ScoresIterator scores_begin() const {return scores_.begin();}
   ScoresIterator scores_end() const {return scores_.end();}

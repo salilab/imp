@@ -153,6 +153,7 @@ PropagatedData get_propagated_data(const ParticleIndex& all_particles,
                                    Subset* subset,
                                    const NodeData &nd) {
   PropagatedData ret;
+  ret.reserve(nd.get_number_of_scores());
   for (NodeData::ScoresIterator it= nd.scores_begin();
        it != nd.scores_end(); ++it) {
     IncompleteStates is= get_incomplete_states(all_particles,
