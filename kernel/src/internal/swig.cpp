@@ -17,13 +17,13 @@ void _ConstRestraint::do_show(std::ostream &out) const {
   out << "value: " << v_ << std::endl;
 }
 ParticlesList _ConstRestraint::get_interacting_particles() const {
-  return ParticlesList();
+  return ParticlesList(1,ps_);
 }
 ContainersTemp _ConstRestraint::get_input_containers() const {
   return ContainersTemp();
 }
 ParticlesTemp _ConstRestraint::get_input_particles() const {
-  return ParticlesTemp();
+  return ps_;
 }
 
 
