@@ -133,29 +133,68 @@ namespace {
       Ints indexes;
       Permutation value;
     };
-    mutable std::vector<Class> classes_;
-    mutable unsigned int cur_index_;
-    const unsigned int n_;
-    Pointer<ParticleStatesTable> pst_;
+    void setup_classes(UF &equivalencies,
+                       const std::set<Particle*>& seen,
+                       Subset *s,
+                       ParticleStatesTable *table,
+                       std::vector<Class> &classes);
     void reset_state() const;
     void advance_state() const;
+    std::vector<SubsetState> states_;
     DefaultSubsetStates(UF &equivalencies,
                         const std::set<Particle*> &seen,
                         Subset *s,
-                        ParticleStatesTable *table);
+                        ParticleStatesTable *table,
+                        SubsetEvaluatorTable *set);
     IMP_SUBSET_STATES(DefaultSubsetStates);
   };
 
   DefaultSubsetStates::DefaultSubsetStates(UF &equivalencies,
                                            const std::set<Particle*>& seen,
                                            Subset *s,
-                                           ParticleStatesTable *table):
-    SubsetStates("DefaultSubsetStates on "+s->get_name()),
-    n_(s->get_number_of_particles()), pst_(table) {
+                                           ParticleStatesTable *table,
+                                           SubsetEvaluatorTable *set):
+    SubsetStates("DefaultSubsetStates on "+s->get_name()) {
+    std::vector<Class> classes;
     IMP_CHECK_OBJECT(table);
     IMP_CHECK_OBJECT(s);
+    setup_classes(equivalencies, seen, s, table, classes);
+
+    for (unsigned int i=0; i< classes.size(); ++i) {
+      classes[i].value.reset();
+    }
+    const unsigned int sz=s->get_number_of_particles();
+    SubsetState ret(sz);
+    while (true) {
+      {
+        for (unsigned int i=0; i< classes.size(); ++i) {
+          for (unsigned int j=0; j< classes[i].indexes.size(); ++j) {
+            ret[classes[i].indexes[j]] = classes[i].value.get_value(j);
+          }
+        }
+        states_.push_back(ret);
+      }
+      unsigned int i=0;
+      for (; i < classes.size(); ++i) {
+        classes[i].value.advance();
+        if (classes[i].value.done()) {
+          classes[i].value.reset();
+        } else {
+          break;
+        }
+      }
+      if (i==classes.size()) break;
+    }
+    std::sort(states_.begin(), states_.end());
+  }
+
+  void DefaultSubsetStates::setup_classes(UF &equivalencies,
+                                          const std::set<Particle*>& seen,
+                                          Subset *s,
+                                          ParticleStatesTable *table,
+                                          std::vector<Class> &classes) {
     std::map<Particle*, int> indexes;
-    unsigned int sz=n_;
+    unsigned int sz=s->get_number_of_particles();
     for (unsigned int i=0; i< sz; ++i) {
       indexes[s->get_particle(i)]=i;
     }
@@ -169,11 +208,11 @@ namespace {
         set= equivalencies.find_set(t);
       }
       if (set ==t) {
-        classes_.push_back(Class());
-        sets[t]=classes_.size()-1;
+        classes.push_back(Class());
+        sets[t]=classes.size()-1;
         ParticleStates *e;
-        e=pst_->get_particle_states(t);
-        classes_.back().n= e->get_number_of_states();
+        e=table->get_particle_states(t);
+        classes.back().n= e->get_number_of_states();
       }
     }
     for (unsigned int i=0; i< sz; ++i) {
@@ -185,79 +224,27 @@ namespace {
         set= equivalencies.find_set(t);
       }
       unsigned int thisclass= sets.find(set)->second;
-      IMP_INTERNAL_CHECK(classes_.size() > thisclass,
+      IMP_INTERNAL_CHECK(classes.size() > thisclass,
                          "Can't deal with class " << thisclass
                          << " because it is larger than "
-                         << classes_.size());
-      classes_[thisclass].indexes.push_back(indexes[t]);
+                         << classes.size());
+      classes[thisclass].indexes.push_back(indexes[t]);
     }
-    for (unsigned int i=0; i< classes_.size(); ++i) {
-      classes_[i].value.initialize(classes_[i].n,
-                                   classes_[i].indexes.size());
-    }
-    /*IMP_IF_LOG(TERSE) {
-      for (unsigned int i=0; i< classes_.size(); ++i) {
-        IMP_LOG(TERSE, "Class " << i << " is " << classes_[i].n
-                << " states for " << classes_[i].indexes.size()
-                << " particles for "
-                << classes_[i].value.get_number());
-      }
-      }*/
-    reset_state();
-  }
-
-  void DefaultSubsetStates::reset_state() const {
-    cur_index_=0;
-    for (unsigned int i=0; i< classes_.size(); ++i) {
-      classes_[i].value.reset();
-    }
-  }
-  void DefaultSubsetStates::advance_state() const {
-    ++cur_index_;
-    for (unsigned int i=0; i < classes_.size(); ++i) {
-      classes_[i].value.advance();
-      if (classes_[i].value.done()) {
-        classes_[i].value.reset();
-      } else {
-        break;
-      }
+    for (unsigned int i=0; i< classes.size(); ++i) {
+      classes[i].value.initialize(classes[i].n,
+                                  classes[i].indexes.size());
     }
   }
 
   unsigned int DefaultSubsetStates::get_number_of_states() const {
-    unsigned int ret=1;
-    for (unsigned int i=0; i< classes_.size(); ++i) {
-      ret*= classes_[i].value.get_number();
-    }
-    return ret;
+    return states_.size();
   }
   SubsetState DefaultSubsetStates::get_state(unsigned int i) const {
-    if (cur_index_ > i) {
-      reset_state();
-    }
-    while (cur_index_ < i) {
-      advance_state();
-    }
-    SubsetState ret(n_);
-    for (unsigned int i=0; i< classes_.size(); ++i) {
-      for (unsigned int j=0; j< classes_[i].indexes.size(); ++j) {
-        ret[classes_[i].indexes[j]] = classes_[i].value.get_value(j);
-      }
-    }
-    return ret;
+    return states_[i];
   }
 
   bool DefaultSubsetStates::get_is_state(const SubsetState &state) const {
-    for (unsigned int i=0; i<classes_.size(); ++i) {
-      for (unsigned int j=0; j< classes_[i].indexes.size(); ++j) {
-        for (unsigned int k=0; k< j; ++k) {
-          if (state[classes_[i].indexes[j]] == state[classes_[i].indexes[k]]) {
-            return false;
-          }
-        }
-      }
-    }
-    return true;
+    return std::binary_search(states_.begin(), states_.end(), state);
   }
 
   void DefaultSubsetStates::do_show(std::ostream &out) const{}
@@ -302,7 +289,7 @@ SubsetStates* DefaultSubsetStatesTable::get_subset_states(Subset*s) const {
     }
   }
   return new DefaultSubsetStates(equivalencies, seen, s,
-                                 pst_);
+                                 pst_, set_);
 }
 
 void DefaultSubsetStatesTable::do_show(std::ostream &out) const {

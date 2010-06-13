@@ -2,6 +2,7 @@ Import('env')
 
 files = [
          'DominoSampler.h',
+         'SubsetState.h',
          'domino2_macros.h',
          'particle_states.h',
          'subset_evaluators.h',

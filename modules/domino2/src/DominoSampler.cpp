@@ -77,20 +77,20 @@ ConfigurationSet *DominoSampler::do_sample() const {
     //IMP_LOG(TERSE, oss.str() << std::endl);
   }
 
-  Pointer<SubsetStatesTable> sst;
-  Pointer<SubsetEvaluatorTable> set;
+  IMP::internal::OwnerPointer<SubsetStatesTable> sst;
+  IMP::internal::OwnerPointer<SubsetEvaluatorTable> set;
   if (evaluators_) {
     set= evaluators_;
   } else {
     set= new ModelSubsetEvaluatorTable(get_model(),
                                        get_particle_states_table());
-    set->set_was_used(true);
+    set->set_sampler(this);
   }
   if (node_enumerators_) {
     sst= node_enumerators_;
   } else {
     sst= new DefaultSubsetStatesTable(get_particle_states_table());
-    sst->set_was_used(true);
+    sst->set_sampler(this);
   }
 
   std::vector<SubsetState> final_solutions= get_solutions(jt, known_particles,
