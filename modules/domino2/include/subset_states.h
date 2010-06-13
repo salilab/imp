@@ -12,6 +12,8 @@
 #include "domino2_config.h"
 #include "domino2_macros.h"
 #include "particle_states.h"
+#include "subset_evaluators.h"
+#include "SubsetState.h"
 #include <IMP/Sampler.h>
 #include <IMP/macros.h>
 #include <boost/pending/disjoint_sets.hpp>
@@ -22,53 +24,8 @@
 #endif
 
 IMPDOMINO2_BEGIN_NAMESPACE
-/** Store the configuration of a subset.*/
-class SubsetState {
-  std::vector<int> v_;
-  int compare(const SubsetState &o) const {
-    IMP_USAGE_CHECK(o.size() == size(), "Sizes don't match");
-    for (unsigned int i=0; i< size(); ++i) {
-      if (v_[i] < o[i]) return -1;
-      else if (v_[i] > o[i]) return 1;
-    }
-    return 0;
-  }
-public:
-typedef SubsetState This;
-  SubsetState(){}
-  SubsetState(unsigned int sz): v_(sz, -1){}
-  IMP_COMPARISONS;
-#ifndef SWIG
-  int operator[](unsigned int i) const {
-    IMP_USAGE_CHECK(i < v_.size(), "Out of range");
-    IMP_USAGE_CHECK(v_[i] >=0, "Not initialized properly");
-    return v_[i];
-  }
-  int& operator[](unsigned int i) {
-    IMP_USAGE_CHECK(i < v_.size(), "Out of range");
-    return v_[i];
-  }
-#endif
-#ifndef IMP_DOXYGEN
-  int __get__(unsigned int i) const {return operator[](i);}
-  void __set__(unsigned int i, unsigned int v) {operator[](i)=v;}
-#endif
-  unsigned int size() const {
-    return v_.size();
-  }
-  IMP_SHOWABLE_INLINE({
-      out << "[";
-      for (unsigned int i=0; i< size(); ++i) {
-        out << v_[i];
-        if (i != size()-1) out << " ";
-      }
-      out << "]";
-    });
-};
+class DominoSampler;
 
-IMP_VALUES(SubsetState, SubsetStatesList);
-
-IMP_OUTPUT_OPERATOR(SubsetState);
 
 /** Allow enumeration of the states of a particular subset.
     Straight forward examples
@@ -91,6 +48,13 @@ public:
     factory is added to the sampler.
 */
 class IMPDOMINO2EXPORT SubsetStatesTable: public Object {
+  WeakPointer<const DominoSampler> sampler_;
+  friend class DominoSampler;
+  void set_sampler(const DominoSampler *sampler) {
+    sampler_=sampler;
+  }
+ protected:
+  const DominoSampler *get_sampler() const {return sampler_;}
 public:
   SubsetStatesTable(std::string name= "SubsetStatesTable"): Object(name){}
   virtual SubsetStates *get_subset_states(Subset *s) const=0;
@@ -106,12 +70,20 @@ public:
     where particles are assigned the same coordinates (in certain
     circumstances). Equivalency classes are automatically determined
     from the ParticleStates objects in the passed table.
+
+    An (optional) subset evaluator can be provided, which will be
+    used to filter subsets based on their score and the bounds
+    provided in the sampler.
 */
 class IMPDOMINO2EXPORT DefaultSubsetStatesTable: public SubsetStatesTable {
   friend class DefaultSubsetStates;
   Pointer<ParticleStatesTable> pst_;
+  Pointer<SubsetEvaluatorTable> set_;
  public:
   DefaultSubsetStatesTable(ParticleStatesTable* pst);
+  void set_subset_evaluator_table(SubsetEvaluatorTable *set) {
+    set_=set;
+  }
   IMP_SUBSET_STATES_TABLE(DefaultSubsetStatesTable);
 };
 
