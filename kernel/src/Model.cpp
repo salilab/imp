@@ -250,7 +250,7 @@ namespace {
   enum EdgeType {PS, SP, CS, SC, CR, PR, CC, CP};
 
   // put it here to keep it out of the header for now
-  std::map<Model*, Dependencies> graphs_;
+  std::map<const Model*, Dependencies> graphs_;
 
   void write_graph(Model::DependencyGraph &graph,
                    ObjectMap &om, std::string name) {
@@ -942,6 +942,18 @@ void Model::zero_derivatives(bool st) const {
       (*pit)->get_prechange_particle()->zero_derivatives();
     }
   }
+}
+
+double Model::get_weight(Restraint *r) const {
+  if (!score_states_ordered_) {
+    Model *m= const_cast<Model*>(this);
+    m->order_score_states();
+  }
+  const Dependencies &deps= graphs_.find(this)->second;
+  for (unsigned int i=0; i< deps.weighted.size(); ++i) {
+    if (deps.weighted[i].second==r) return deps.weighted[i].first;
+  }
+  IMP_THROW("Unknown restraint " << r->get_name(), ValueException);
 }
 
 double Model::do_evaluate_restraints(const WeightedRestraints &restraints,

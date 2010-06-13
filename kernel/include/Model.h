@@ -161,6 +161,7 @@ public:
    */
   /**@{*/
   IMP_LIST(public, Restraint, restraint, Restraint*, Restraints);
+  double get_weight(Restraint *r) const;
   /**@}*/
  public:
 
