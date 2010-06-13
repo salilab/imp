@@ -359,8 +359,8 @@
     (\external{en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization,
     wikipedia entry}).
 */
-#define IMP_COPY_CONSTRUCTOR(TC) TC(const TC &o){copy_from(o);} \
-  TC& operator=(const TC &o) {copy_from(o); return *this;}      \
+#define IMP_COPY_CONSTRUCTOR(Name) Name(const Name &o){copy_from(o);} \
+  IMP_NO_SWIG(Name& operator=(const Name &o) {copy_from(o); return *this;}) \
   IMP_REQUIRE_SEMICOLON_CLASS(copy)
 
 
