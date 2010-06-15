@@ -9,9 +9,9 @@
 #define IMPDOMINO2_UTILITY_H
 
 #include "domino2_config.h"
+#include "SubsetState.h"
 #include <IMP/Particle.h>
 #include <IMP/SingletonContainer.h>
-#include <IMP/domino2/DominoSampler.h>
 
 #include <boost/graph/kruskal_min_spanning_tree.hpp>
 #include <boost/graph/prim_minimum_spanning_tree.hpp>
@@ -72,7 +72,7 @@ IMPDOMINO2EXPORT ParticlesTemp get_dependent_particles(Particle *p);
 
 IMPDOMINO2EXPORT ParticlesTemp
 get_dependent_particles(Particle *p,
-                        Model::DependencyGraph &dg);
+                        const Model::DependencyGraph &dg);
 /** @} */
 
 

@@ -11,12 +11,29 @@
 
 #include "domino2_config.h"
 #include "IMP/macros.h"
+#include <IMP/container/ListSingletonContainer.h>
+#include <IMP/Pointer.h>
 #include <boost/scoped_array.hpp>
 #include <algorithm>
 
 IMPDOMINO2_BEGIN_NAMESPACE
 
-/** Store the configuration of a subset.*/
+#ifdef IMP_DOXYGEN
+/** The set of particles defining a node in the junction tree. A
+    SingletonContainer is used so that the pointer value uniquely
+    identifies a node (and the container has a name so that
+    it can be nicely written for display).
+ */
+typedef SingletonContainer Subset;
+#else
+typedef container::ListSingletonContainer Subset;
+typedef Pointer<Subset> SubsetPointer;
+#endif
+
+
+
+/** Store the configuration of a subset. The indexes match those
+    of the particles in the corresponding Subset object.*/
 class SubsetState {
   boost::scoped_array<int> v_;
   unsigned int sz_;

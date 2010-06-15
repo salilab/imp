@@ -13,11 +13,13 @@
 #include "domino2_macros.h"
 #include "particle_states.h"
 #include "SubsetState.h"
+#include "internal/restraint_evaluator.h"
 #include <IMP/Object.h>
 #include <IMP/Pointer.h>
 #include <IMP/Configuration.h>
 #include <IMP/Model.h>
 #include <IMP/macros.h>
+
 
 IMPDOMINO2_BEGIN_NAMESPACE
 class DominoSampler;
@@ -67,12 +69,11 @@ public:
 
 IMP_OBJECTS(ModelSubsetEvaluatorTable, ModelSubsetEvaluatorFactories);
 
-#if 0
+
 //! This one evaluates the restraints one at a time and caches the result
 class IMPDOMINO2EXPORT CachingModelSubsetEvaluatorTable:
   public SubsetEvaluatorTable {
-  mutable std::map<Particle*, ParticlesTemp> dependents_;
-  Pointer<internal::CachingEvaluatorData> data_;
+  internal::ModelData data_;
 public:
   CachingModelSubsetEvaluatorTable(Model *m, ParticleStatesTable *pst);
   IMP_SUBSET_EVALUATOR_TABLE(CachingModelSubsetEvaluatorTable);
@@ -80,7 +81,6 @@ public:
 
 IMP_OBJECTS(CachingModelSubsetEvaluatorTable,
             CachingModelSubsetEvaluatorTableFactories);
-#endif
 
 IMPDOMINO2_END_NAMESPACE
 

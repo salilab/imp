@@ -1,6 +1,7 @@
 files = [
          'inference.h',
          'maximal_cliques.h',
+         'restraint_evaluator.h',
         ]
 
 files = [File(x) for x in files]

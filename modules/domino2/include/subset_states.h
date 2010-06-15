@@ -55,6 +55,7 @@ class IMPDOMINO2EXPORT SubsetStatesTable: public Object {
   }
  protected:
   const DominoSampler *get_sampler() const {return sampler_;}
+  const bool get_has_sampler() const {return sampler_;}
 public:
   SubsetStatesTable(std::string name= "SubsetStatesTable"): Object(name){}
   virtual SubsetStates *get_subset_states(Subset *s) const=0;

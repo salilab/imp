@@ -20,6 +20,12 @@
 #include <debug/vector>
 #include <map>
 #include <sstream>
+
+IMPDOMINO2_BEGIN_NAMESPACE
+class SubsetEvaluatorTable;
+class SubsetStatesTable;
+IMPDOMINO2_END_NAMESPACE
+
 IMPDOMINO2_BEGIN_INTERNAL_NAMESPACE
 
 class IncompleteStates {
@@ -87,7 +93,7 @@ inline IncompleteStates get_merged(const IncompleteStates &a,
 }
 
 typedef std::map<Particle*, int> ParticleIndex;
-ParticleIndex get_index(Subset *s);
+ParticleIndex get_index(const Subset *s);
 
 
 
