@@ -7,7 +7,8 @@
  */
 
 #include <IMP/domino2/internal/inference.h>
-
+#include <IMP/domino2/subset_states.h>
+#include <IMP/domino2/subset_evaluators.h>
 #include <algorithm>
 #include <boost/graph/copy.hpp>
 #include <boost/pending/indirect_cmp.hpp>
@@ -15,7 +16,7 @@
 
 IMPDOMINO2_BEGIN_INTERNAL_NAMESPACE
 
-ParticleIndex get_index(Subset *s) {
+ParticleIndex get_index(const Subset *s) {
   ParticleIndex ret;
   for (unsigned int i=0; i< s->get_number_of_particles(); ++i) {
     ret[s->get_particle(i)]=i;

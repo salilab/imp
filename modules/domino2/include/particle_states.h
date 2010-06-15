@@ -21,20 +21,6 @@
 #include <map>
 
 IMPDOMINO2_BEGIN_NAMESPACE
-#ifdef IMP_DOXYGEN
-/** The set of particles defining a node in the junction tree. A
-    SingletonContainer is used so that the pointer value uniquely
-    identifies a node (and the container has a name so that
-    it can be nicely written for display).
- */
-typedef SingletonContainer Subset;
-#else
-typedef container::ListSingletonContainer Subset;
-typedef Pointer<Subset> SubsetPointer;
-#endif
-
-
-
 /** Handle the states for a particular particle (or "class" of
     particles. For example a state enumerator class could take
     a bounding box and a number,n, and generate n points in the

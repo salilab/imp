@@ -72,12 +72,12 @@ bool get_has_edge(InteractionGraph &graph,
 
   Ints find_parents(const std::map<Particle*, Ints>  &map,
                     DVertex v,
-                    Model::DependencyGraph &dg) {
+                    const Model::DependencyGraph &dg) {
     std::vector<DVertex> front;
     front.push_back(v);
     Ints ret;
     typedef boost::property_map<Model::DependencyGraph,
-      boost::vertex_name_t>::type DParticleMap;
+      boost::vertex_name_t>::const_type DParticleMap;
     DParticleMap dpm= boost::get(boost::vertex_name, dg);
     do {
       DVertex v= front.back();
@@ -152,10 +152,10 @@ InteractionGraph get_interaction_graph(Model *m,
 }
 
 ParticlesTemp get_dependent_particles(Particle *p,
-                                      Model::DependencyGraph &dg) {
+                                      const Model::DependencyGraph &dg) {
   // find p in graph, ick
   typedef boost::property_map<Model::DependencyGraph,
-    boost::vertex_name_t>::type DParticleMap;
+    boost::vertex_name_t>::const_type DParticleMap;
   DParticleMap dpm= boost::get(boost::vertex_name, dg);
   typedef DTraits::vertex_iterator InIt;
   std::pair<InIt, InIt> be= boost::vertices(dg);

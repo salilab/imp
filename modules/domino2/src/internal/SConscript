@@ -1,5 +1,6 @@
 files = [
          'inference.cpp',
+         'restraint_evaluator.cpp',
         ]
 
 files = [File(x) for x in files]
