@@ -292,8 +292,8 @@ namespace internal {
      algebra::Transformation3D
 */
 inline void transform(RigidBody a, const algebra::Transformation3D&tr) {
-  a.set_reference_frame(get_transformed(a.get_reference_frame()
-                                        .get_transformation_to(), tr));
+  a.set_reference_frame(get_transformed(tr, a.get_reference_frame()
+                                        .get_transformation_to()));
 }
 
 IMPCORE_END_NAMESPACE
