@@ -225,6 +225,10 @@ EdgeData get_edge_data(const ParticleIndex &all,
       local_max_score= std::max(it->second, local_max_score);
       }*/
     PropagatedData pd= get_propagated_data(all_index, subset_map[root], nd);
+    if (root==parent) {
+      IMP_LOG(VERBOSE, "For root " <<root
+              << " data is:\n" << pd << std::endl);
+    }
     ParticleIndex root_index= get_index(subset_map[root]);
     typedef boost::graph_traits<SubsetGraph>::adjacency_iterator
       NeighborIterator;

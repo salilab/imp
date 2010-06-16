@@ -123,9 +123,11 @@ void DominoSampler::set_particle_states(Particle *p, ParticleStates *se) {
 }
 void DominoSampler::set_subset_evaluator_table(SubsetEvaluatorTable *eval) {
   evaluators_= eval;
+  evaluators_->set_sampler(this);
 }
 void DominoSampler::set_subset_states_table(SubsetStatesTable *cse) {
   node_enumerators_= cse;
+  node_enumerators_->set_sampler(this);
 }
 
 void DominoSampler::do_show(std::ostream &out) const {

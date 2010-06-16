@@ -38,7 +38,7 @@ public:
     Scores::const_iterator it= scores_.find(state);
     if (it != scores_.end()) {
       std::cout << "Found cached score for " << r_->get_name()
-                << " on " << state << std::endl;
+        << " on " << state << "= " << it->second << std::endl;
       return it->second;
     } else {
       for (unsigned int i=0; i< ps.size(); ++i) {
@@ -47,7 +47,7 @@ public:
       double score= r_->evaluate(false)*weight_;
       scores_[state]=score;
       std::cout << "Computed score for " << r_->get_name()
-                << " on " << state << std::endl;
+        << " on " << state << "= " << score << std::endl;
       return score;
     }
   }
@@ -66,7 +66,7 @@ public:
              const Ints &ris,
              std::vector<Ints> indices,
              const Subset *s): md_(md), ris_(ris), indices_(indices), s_(s){}
-  double get_score(const SubsetState &state) const;
+  double get_score(const SubsetState &state, double max) const;
 };
 
 class IMPDOMINO2EXPORT ModelData {

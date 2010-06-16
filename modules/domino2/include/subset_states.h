@@ -50,13 +50,15 @@ public:
 class IMPDOMINO2EXPORT SubsetStatesTable: public Object {
   WeakPointer<const DominoSampler> sampler_;
   friend class DominoSampler;
-  void set_sampler(const DominoSampler *sampler) {
-    sampler_=sampler;
-  }
  protected:
   const DominoSampler *get_sampler() const {return sampler_;}
   const bool get_has_sampler() const {return sampler_;}
 public:
+#ifndef IMP_DOXYGEN
+  void set_sampler(const DominoSampler *sampler) {
+    sampler_=sampler;
+  }
+#endif
   SubsetStatesTable(std::string name= "SubsetStatesTable"): Object(name){}
   virtual SubsetStates *get_subset_states(Subset *s) const=0;
   ~SubsetStatesTable();

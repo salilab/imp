@@ -6,6 +6,8 @@ namespace domino2 {
 }
 }
 
+
+
 /* Tell swig how to treat various types when moving them to and from pyton */
 IMP_SWIG_OBJECT(IMP::domino2, DominoSampler, DominoSamplers);
 IMP_SWIG_BASE_OBJECT(IMP::domino2, ParticleStates, ParticleStatesList);

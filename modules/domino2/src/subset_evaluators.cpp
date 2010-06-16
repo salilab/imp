@@ -8,6 +8,7 @@
 
 #include <IMP/domino2/subset_evaluators.h>
 #include <IMP/domino2/utility.h>
+#include <IMP/domino2/DominoSampler.h>
 #include <IMP/Restraint.h>
 
 IMPDOMINO2_BEGIN_NAMESPACE
@@ -107,17 +108,19 @@ namespace {
   class CachingModelSubsetEvaluator: public SubsetEvaluator {
     Pointer<const CachingModelSubsetEvaluatorTable> keepalive_;
     const internal::SubsetData &data_;
+    double max_;
   public:
     CachingModelSubsetEvaluator(const CachingModelSubsetEvaluatorTable *t,
-                                const internal::SubsetData &data):
+                                const internal::SubsetData &data,
+                                double max):
       SubsetEvaluator("CachingModelSubsetEvaluator on "),
       keepalive_(t),
-      data_(data) {
+      data_(data), max_(max) {
     }
     IMP_SUBSET_EVALUATOR(CachingModelSubsetEvaluator);
   };
   double CachingModelSubsetEvaluator::get_score(const SubsetState &state) const{
-    return data_.get_score(state);
+    return data_.get_score(state, max_);
   }
   void CachingModelSubsetEvaluator::do_show(std::ostream &) const {
   }
@@ -130,7 +133,8 @@ CachingModelSubsetEvaluatorTable::CachingModelSubsetEvaluatorTable(Model *m,
 
 SubsetEvaluator *
 CachingModelSubsetEvaluatorTable::get_subset_evaluator(Subset *s) const {
-  return new CachingModelSubsetEvaluator(this, data_.get_subset_data(s));
+  return new CachingModelSubsetEvaluator(this, data_.get_subset_data(s),
+                                         get_sampler()->get_maximum_score());
 }
 
 void CachingModelSubsetEvaluatorTable::do_show(std::ostream &out) const{}
