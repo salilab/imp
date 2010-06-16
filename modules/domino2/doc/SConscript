@@ -16,16 +16,11 @@ API todo list:
 
 Implementation todo list:
 - avoid rebuilding indexes repeatedly
-- use vectors instead of maps to store scores
 - better filtering of states based on
-   - scores of individual restraints
    - lower bounds on the score of the rest of the model
 - perhaps compact represetnation of incomplete states
-- better model evaluator which does not re-evaluate restraints
 - reduce looping through lists for reconciliation
 - avoid the SingletonContainer interface (use the macros, for example)
-- need a way of filtering the set of states for large nodes as their space gets huge quickly.
-  for example, could use the score of subsets to reject all states with that subset
 """,
                  publications=env.StandardPublications(),
                  license="Being worked out (currently have some code from Afra)"
