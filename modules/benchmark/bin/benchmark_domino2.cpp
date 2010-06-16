@@ -21,7 +21,16 @@ int main(int, char *[]) {
   add_radii(h);
   Transformation3Ds vs;
   HierarchiesTemp residues= get_by_type(h, RESIDUE_TYPE);
-  HierarchiesTemp leaves= get_leaves(h);
+  while (residues.size() > 10) {
+    residues.pop_back();
+  }
+  HierarchiesTemp leaves;
+  for (unsigned int i=0; i< residues.size(); ++i) {
+    HierarchiesTemp l= get_leaves(residues[i]);
+    for (unsigned int j=0; j< l.size(); ++j) {
+      leaves.push_back(l[j].get_particle());
+    }
+  }
   for (unsigned int i=0; i< residues.size(); ++i) {
     RigidBody r= setup_as_rigid_body(residues[i]);
     vs.push_back(r.get_transformation());
@@ -35,9 +44,16 @@ int main(int, char *[]) {
   cpf->set_distance(3);
   ParticlePairsTemp ppt= cpf->get_close_pairs(lsc);
   for (unsigned int i=0; i < ppt.size(); ++i) {
+    if (get_residue(Atom(ppt[i][0])) == get_residue(Atom(ppt[i][1])))
+      continue;
     double d= get_distance(XYZ(ppt[i][0]), XYZ(ppt[i][1]));
-    m->add_restraint(new DistanceRestraint(new Harmonic(d, 1),
-                                           ppt[i][0], ppt[i][1]));
+    Restraint *r=new DistanceRestraint(new Harmonic(d, 1),
+                                       ppt[i][0], ppt[i][1]);
+    std::ostringstream oss;
+    oss << "Edge " << ppt[i][0]->get_name()
+        << "-" << ppt[i][1]->get_name();
+    r->set_name(oss.str());
+    m->add_restraint(r);
   }
   IMP_NEW(RigidBodyStates, pstates, (vs));
   IMP_NEW(ParticleStatesTable, pst, ());

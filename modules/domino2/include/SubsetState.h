@@ -70,8 +70,8 @@ public:
   }
 #endif
 #ifndef IMP_DOXYGEN
-  int __get__(unsigned int i) const {return operator[](i);}
-  void __set__(unsigned int i, unsigned int v) {operator[](i)=v;}
+  int __getitem__(unsigned int i) const {return operator[](i);}
+  void __setitem__(unsigned int i, unsigned int v) {operator[](i)=v;}
 #endif
   unsigned int size() const {
     return sz_;

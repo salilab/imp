@@ -41,10 +41,16 @@ IMP_OBJECTS(SubsetEvaluator, SubsetEvaluators);
 class IMPDOMINO2EXPORT SubsetEvaluatorTable: public Object {
   WeakPointer<const DominoSampler> sampler_;
   friend class DominoSampler;
+ protected:
+  const DominoSampler *get_sampler() const {
+    return sampler_;
+  }
+ public:
+#ifndef IMP_DOXYGEN
   void set_sampler(const DominoSampler *sampler) {
     sampler_=sampler;
   }
- public:
+#endif
   virtual SubsetEvaluator* get_subset_evaluator(Subset *s) const=0;
   virtual ~SubsetEvaluatorTable();
 };

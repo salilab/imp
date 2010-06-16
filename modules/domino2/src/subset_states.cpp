@@ -55,8 +55,8 @@ namespace {
 
   template <class It>
   bool permutation_get_is_permutation(It b, It e,
-                          typename std::iterator_traits<It>::value_type beg,
-                          typename std::iterator_traits<It>::value_type end) {
+                        typename std::iterator_traits<It>::value_type beg,
+                        typename std::iterator_traits<It>::value_type end) {
     for (It c0= b; c0 != e; ++c0) {
       for (It c1= b; c1 != c0; ++c1) {
         if (*c0 == *c1) return false;
@@ -67,8 +67,9 @@ namespace {
 
   template <class It>
   bool permutation_increment(It b, It e,
-                           typename std::iterator_traits<It>::value_type beg,
-                           typename std::iterator_traits<It>::value_type end) {
+                             typename std::iterator_traits<It>::value_type beg,
+                             typename std::iterator_traits<It>::value_type end)
+  {
     It c=b;
     for (; c != e; ++c) {
       ++*c;
@@ -111,254 +112,170 @@ namespace {
 
 
   template <class It>
-bool permutation_get_is_end(It b, It e,
-                            typename std::iterator_traits<It>::value_type beg,
-                            typename std::iterator_traits<It>::value_type end) {
+  bool permutation_get_is_end(It b, It e,
+                              typename std::iterator_traits<It>::value_type beg,
+                              typename std::iterator_traits<It>::value_type end)
+  {
     return *b==-1;
   }
 
 
   class  DefaultSubsetStates: public SubsetStates {
   public:
-    struct Class {
-      Class(): n(0), k(0){}
-      template <class It>
-      Class(unsigned int ni,
-            It b, It e): n(ni), k(std::distance(b,e)),
-                         indexes(new int[k]),
-                         permutation(new int[k]){
-        std::copy(b,e,indexes.get());
-        permutation_initialize(permutation.get(),
-                               permutation.get()+k,
-                               0, n);
-      }
-      unsigned int n;
-      unsigned int k;
-      boost::scoped_array<int> indexes;
-      boost::scoped_array<int> permutation;
-      void copy_from(const Class &o) {
-        n=o.n;
-        k=o.k;
-        if (k > 0) {
-          indexes.reset(new int[k]);
-          permutation.reset(new int[k]);
-          for (unsigned int i=0; i< k; ++i) {
-            indexes[i]= o.indexes[i];
-            permutation[i]= o.permutation[i];
-          }
-        }
-      }
-      IMP_COPY_CONSTRUCTOR(Class);
-    };
-    void setup_classes(UF &equivalencies,
-                       const std::set<Particle*>& seen,
-                       Subset *s,
-                       ParticleStatesTable *table,
-                       std::vector<Class> &classes);
-    void reset_state() const;
-    void advance_state() const;
+    typedef std::pair<int,
+                      Pointer<SubsetEvaluator> > EvaluatorPair;
+    typedef std::vector<EvaluatorPair > EvaluatorPairs;
+    typedef std::vector<EvaluatorPairs> EvaluatorPairsList;
+    void setup_permutations(UF &equivalencies,
+                            const std::set<Particle*>& seen,
+                            Subset *s,
+                            ParticleStatesTable *table,
+                            std::vector<Ints> &classes);
+    void setup_scores(Subset *s, SubsetEvaluatorTable *set,
+                      EvaluatorPairsList &pairs);
     std::vector<SubsetState> states_;
-    double max_;
     DefaultSubsetStates(UF &equivalencies,
                         const std::set<Particle*> &seen,
                         double max,
                         Subset *s,
                         ParticleStatesTable *table,
                         SubsetEvaluatorTable *set);
-    typedef std::pair<boost::array<int, 2>,
-                      Pointer<SubsetEvaluator> > EvaluatorPair;
-    typedef std::vector< std::vector<EvaluatorPair> > PrefixEvaluators;
-    typedef std::vector<PrefixEvaluators> PrefixEvaluatorsList;
-    void fill_prefix_evaluators(const std::vector<Class> &classes,
-                                Subset *s,
-                                SubsetEvaluatorTable *set,
-                                PrefixEvaluatorsList &pre);
-    bool filter(const SubsetState &is,
-                const std::vector<EvaluatorPair> &ses);
-    IMP_SUBSET_STATES(DefaultSubsetStates);
-  };
+  IMP_SUBSET_STATES(DefaultSubsetStates);
+};
 
- void DefaultSubsetStates::
- fill_prefix_evaluators(const std::vector<Class> &classes,
-                        Subset *s,
-                        SubsetEvaluatorTable *set,
-                        PrefixEvaluatorsList &ses) {
-   ses.resize(classes.size());
-    SubsetState is(s->get_number_of_particles());
-    Ints prior;
-    for (unsigned int i=0; i< classes.size(); ++i) {
-      for (unsigned int j=0; j< classes[i].k; ++j) {
-        ses[j].resize(classes[i].k);
-        for (unsigned int k=0; k < classes[i].k; ++k) {
-          for (unsigned int l=0; l < k; ++l) {
-            boost::array<int,2> ids;
-            ids[0]=classes[i].indexes[k];
-            ids[1]=classes[i].indexes[l];
-            ParticlesTemp ps(2);
-            ps[0]=s->get_particle(ids[0]);
-            ps[1]=s->get_particle(ids[1]);
-            IMP_NEW(Subset, cus, (ps));
-            std::cout << "creating in class evaluator for " << ids[0] << " "
-                      << ids[1] << std::endl;
-            ses[i][j].push_back(EvaluatorPair(ids,
-                              set->get_subset_evaluator(cus)));
-          }
-          for (unsigned int l=0; l < prior.size(); ++l) {
-            boost::array<int,2> ids;
-            ids[0]=prior[l];
-            ids[1]=classes[i].indexes[k];
-            ParticlesTemp ps(2);
-            ps[0]=s->get_particle(ids[0]);
-            ps[1]=s->get_particle(ids[1]);
-            IMP_NEW(Subset, cus, (ps));
-            std::cout << "creating evaluator for " << ids[0] << " "
-                      << ids[1] << std::endl;
-            ses[i][j].push_back(EvaluatorPair(ids,
-                            set->get_subset_evaluator(cus)));
-          }
-        }
-      }
-      for (unsigned int j=0; j< classes[i].k; ++j) {
-        prior.push_back(classes[i].indexes[j]);
-      }
-    }
-  }
-
-  bool DefaultSubsetStates::filter(const SubsetState &is,
-                                   const std::vector<EvaluatorPair> &ses) {
-    for (unsigned int j=0; j< ses.size(); ++j) {
-      SubsetState ss(2);
-      ss[0]= is[ses[j].first[0]];
-      ss[1]= is[ses[j].first[1]];
-      double score= ses[j].second->get_score(ss);
-      if (score > max_) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  DefaultSubsetStates::DefaultSubsetStates(UF &equivalencies,
-                                           const std::set<Particle*>& seen,
-                                           double max,
-                                           Subset *s,
-                                           ParticleStatesTable *table,
-                                           SubsetEvaluatorTable *set):
-    SubsetStates("DefaultSubsetStates on "+s->get_name()), max_(max) {
-    std::vector<Class> classes;
-    IMP_CHECK_OBJECT(table);
-    IMP_CHECK_OBJECT(s);
-    setup_classes(equivalencies, seen, s, table, classes);
-
-    for (unsigned int i=0; i< classes.size(); ++i) {
-      permutation_initialize(classes[i].permutation.get(),
-                             classes[i].permutation.get()+classes[i].k,
-                             0, classes[i].n);
-    }
-    const unsigned int sz=s->get_number_of_particles();
-    PrefixEvaluatorsList ses;
-    if (set) {
-      fill_prefix_evaluators(classes, s, set, ses);
-    }
-    SubsetState ret(sz);
+  void DefaultSubsetStates::setup_permutations(UF &equivalencies,
+                                               const std::set<Particle*>& seen,
+                                               Subset *s,
+                                               ParticleStatesTable *table,
+                                               std::vector<Ints> &classes) {
+    ParticlesTemp ps= s->get_particles();
+    classes.resize(ps.size());
     for (unsigned int i=0; i < classes.size(); ++i) {
-      for (unsigned int j=0; j< classes[i].k; ++j) {
-        ret[classes[i].indexes[j]] = classes[i].permutation[j];
-      }
-    }
-    states_.push_back(ret);
-    while (true) {
-      bool overflow=true;
-      for (int i=0; i < static_cast<int>(classes.size()) && overflow; ++i) {
-        overflow=permutation_advance(classes[i].permutation.get(),
-                                     classes[i].permutation.get()+classes[i].k,
-                                     0, classes[i].n);
-        for (unsigned int j=0; j< classes[i].k; ++j) {
-          ret[classes[i].indexes[j]] = classes[i].permutation[j];
-          if (set) {
-            bool ok= filter(ret, ses[i][j]);
-            if (!ok) {
-              permutation_advance_i(classes[i].permutation.get(),
-                                    classes[i].permutation.get()+classes[i].k,
-                                    0, classes[i].n, j);
-              std::cout << "Filtered " << ret << std::endl;
-              --i;
-              overflow=true;
-              break;
-            }
-          }
+      if (seen.find(ps[i]) == seen.end()) continue;
+      Particle *ri= equivalencies.find_set(ps[i]);
+      for (unsigned int j=i+1; j< classes.size(); ++j) {
+        if (seen.find(ps[j]) == seen.end()) continue;
+        Particle *rj= equivalencies.find_set(ps[j]);
+        if (ri==rj) {
+          classes[i].push_back(j);
         }
       }
-      if (overflow) break;
-      else {
-        std::cout << "pushing " << ret << std::endl;
-        states_.push_back(ret);
-      }
-    }
-    std::sort(states_.begin(), states_.end());
-  }
-
-  void DefaultSubsetStates::setup_classes(UF &equivalencies,
-                                          const std::set<Particle*>& seen,
-                                          Subset *s,
-                                          ParticleStatesTable *table,
-                                          std::vector<Class> &classes) {
-    std::map<Particle*, int> indexes;
-    unsigned int sz=s->get_number_of_particles();
-    for (unsigned int i=0; i< sz; ++i) {
-      indexes[s->get_particle(i)]=i;
-    }
-    std::map<Particle*, int> sets;
-    std::vector<Ints> values;
-    for (unsigned int i=0; i< sz; ++i) {
-      Particle*t=s->get_particle(i);
-      Particle*set;
-      if (seen.find(t) == seen.end()) {
-        set= t;
-      } else {
-        set= equivalencies.find_set(t);
-      }
-      if (set ==t) {
-        classes.push_back(Class());
-        sets[t]=classes.size()-1;
-        ParticleStates *e;
-        e=table->get_particle_states(t);
-        classes.back().n= e->get_number_of_states();
-        values.push_back(Ints());
-      }
-    }
-    for (unsigned int i=0; i< sz; ++i) {
-      Particle*t=s->get_particle(i);
-      Particle*set;
-      if (seen.find(t) == seen.end()) {
-        set= t;
-      } else {
-        set= equivalencies.find_set(t);
-      }
-      unsigned int thisclass= sets.find(set)->second;
-      IMP_INTERNAL_CHECK(classes.size() > thisclass,
-                         "Can't deal with class " << thisclass
-                         << " because it is larger than "
-                         << classes.size());
-      values[thisclass].push_back(indexes[t]);
-    }
-    for (unsigned int i=0; i< classes.size(); ++i) {
-      classes[i]= Class(classes[i].n, values[i].begin(), values[i].end());
     }
   }
 
-  unsigned int DefaultSubsetStates::get_number_of_states() const {
-    return states_.size();
-  }
-  SubsetState DefaultSubsetStates::get_state(unsigned int i) const {
-    return states_[i];
+  void DefaultSubsetStates::setup_scores(Subset *s, SubsetEvaluatorTable *set,
+                                         EvaluatorPairsList &pairs) {
+    ParticlesTemp ps= s->get_particles();
+    pairs.resize(ps.size());
+    for (unsigned int i=0; i < pairs.size(); ++i) {
+      for (unsigned int j=i+1; j< pairs.size(); ++j) {
+        ParticlesTemp cps(2);
+        cps[0]= ps[i];
+        cps[1]= ps[j];
+        IMP_NEW(Subset, s, (cps));
+        s->set_was_used(true);
+        SubsetEvaluator* se= set->get_subset_evaluator(s);
+        if (se) {
+          pairs[i].push_back(EvaluatorPair(j, se));
+        }
+      }
+    }
   }
 
-  bool DefaultSubsetStates::get_is_state(const SubsetState &state) const {
-    return std::binary_search(states_.begin(), states_.end(), state);
-  }
 
-  void DefaultSubsetStates::do_show(std::ostream &out) const{}
+DefaultSubsetStates::DefaultSubsetStates(UF &equivalencies,
+                                         const std::set<Particle*>& seen,
+                                         double max,
+                                         Subset *s,
+                                         ParticleStatesTable *table,
+                                         SubsetEvaluatorTable *set):
+  SubsetStates("DefaultSubsetStates on "+s->get_name()) {
+  IMP_LOG(VERBOSE, "Computing states for " << s->get_name() << std::endl);
+  std::vector<Ints> permutations;
+  setup_permutations(equivalencies, seen, s, table, permutations);
+  EvaluatorPairsList evaluators;
+  if (set) {
+    setup_scores(s, set, evaluators);
+  }
+  IMP_CHECK_OBJECT(table);
+  IMP_CHECK_OBJECT(s);
+  // create lists
+
+  unsigned int sz=s->get_number_of_particles();
+  Ints maxs(sz);
+  ParticlesTemp ps= s->get_particles();
+  for (unsigned int i=0; i< sz; ++i) {
+    maxs[i]=table->get_particle_states(ps[i])->get_number_of_states();
+  }
+  SubsetState cur(sz);
+  unsigned int changed_digit=cur.size()-1;
+  unsigned int current_digit=0;
+  for (unsigned int i=0; i< cur.size(); ++i) {
+    cur[i]=0;
+  }
+  goto filter;
+
+ filter:
+  //std::cout << "Filtering " << cur << " on " << changed_digit << std::endl;
+  for (int i=changed_digit; i >=0; --i) {
+    for (unsigned int j=0; j < permutations[i].size(); ++j) {
+      if (cur[permutations[i][j]]== cur[j]) {
+        goto bad;
+      }
+    }
+    if (set) {
+      for (unsigned int j=0; j < evaluators[i].size(); ++j) {
+        SubsetState ss(2);
+        ss[0]= cur[i];
+        ss[1]= cur[evaluators[i][j].first];
+        double score= evaluators[i][j].second->get_score(ss);
+        if (score > max) {
+          goto bad;
+        }
+      }
+    }
+    continue;
+  bad:
+    //std::cout << "Failed at " << i << std::endl;
+    current_digit=i;
+    goto increment;
+  }
+  current_digit=0;
+  IMP_LOG(VERBOSE, "Found " << cur << std::endl);
+  states_.push_back(cur);
+  goto increment;
+ increment:
+  //std::cout << "Incrementing " << cur << " on " << current_digit << std::endl;
+  for (unsigned int i=0; i< current_digit; ++i) {
+    cur[i]=0;
+  }
+  for (unsigned int i=current_digit; i < cur.size(); ++i) {
+    ++cur[i];
+    if (cur[i]==maxs[i]) {
+      cur[i]=0;
+    } else {
+      changed_digit=i;
+      goto filter;
+    }
+  }
+ done:
+  std::sort(states_.begin(), states_.end());
+}
+
+
+
+unsigned int DefaultSubsetStates::get_number_of_states() const {
+  return states_.size();
+}
+SubsetState DefaultSubsetStates::get_state(unsigned int i) const {
+  return states_[i];
+}
+
+bool DefaultSubsetStates::get_is_state(const SubsetState &state) const {
+  return std::binary_search(states_.begin(), states_.end(), state);
+}
+
+void DefaultSubsetStates::do_show(std::ostream &out) const{}
 
 }
 

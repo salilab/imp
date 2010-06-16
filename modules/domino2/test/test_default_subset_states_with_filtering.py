@@ -24,7 +24,7 @@ class DOMINOTests(IMP.test.TestCase):
 
     def _get_positions(self):
         vs=[]
-        for i in range(0,10):
+        for i in range(0,6):
             vs.append(IMP.algebra.Vector3D(i,0,0))
         return vs
     def _get_stuff(self):
@@ -55,18 +55,24 @@ class DOMINOTests(IMP.test.TestCase):
         print "There are ", len(all_states), "states"
         m.add_restraint(r)
         ds= IMP.domino2.DominoSampler(m)
-        ds.set_maximum_score(1)
-        dsst= IMP.domino2.DefaultSubsetStateTable()
-        me= IMP.domono2.ModelSubsetEvaluatorTable(pst, m)
+        ds.set_maximum_score(.5)
+        dsst= IMP.domino2.DefaultSubsetStatesTable(pst)
+        me= IMP.domino2.ModelSubsetEvaluatorTable(m, pst)
+        me.set_sampler(ds)
         dsst.set_subset_evaluator_table(me)
         dsst.set_sampler(ds)
         ss= dsst.get_subset_states(lsc)
         print ss.get_number_of_states(), "states"
+        found_states=[]
         for i in range(0, ss.get_number_of_states()):
             s= ss.get_state(i)
             print s
+            found_states.append(s)
             self.assert_((s[0]-s[1])**2==1)
             self.assert_(s in all_states)
+        for s in all_states:
+            if (s[0]-s[1])**2==1:
+                self.assert_(s in found_states)
 
     def _test_global_min2(self):
         """Testing default subset states with equivalencies"""

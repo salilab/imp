@@ -63,7 +63,8 @@ const SubsetData &ModelData::get_subset_data(const Subset *s) const {
 }
 
 
-double SubsetData::get_score(const SubsetState &state) const {
+double SubsetData::get_score(const SubsetState &state,
+                             double max) const {
   double score=0;
   for (unsigned int i=0; i< ris_.size(); ++i) {
     SubsetState ss(indices_[i].size());
@@ -75,6 +76,9 @@ double SubsetData::get_score(const SubsetState &state) const {
     double ms=md_->rdata_[ris_[i]].get_score(md_->pst_,
                                              ps, ss);
     score+= ms;
+    if (score > max) {
+      return std::numeric_limits<double>::max();
+    }
   }
   return score;
 }
