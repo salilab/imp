@@ -29,7 +29,7 @@ class Alignment_Rigid_BodiesTests(IMP.test.TestCase):
         align_t=IMP.algebra.get_transformation_taking_first_to_second(vec1,vec2)
         for xyz in xyz1:
             xyz.set_coordinates(align_t.get_transformed(xyz.get_coordinates()))
-        #self.assertInTolerance(IMP.atom.get_rmsd(xyz1,xyz2),0.,.01)
+        self.assertInTolerance(IMP.atom.get_rmsd(xyz1,xyz2),0.,.01)
     def test_alignment_with_rigid_body(self):
         mdl=IMP.Model()
         mh1=IMP.atom.read_pdb(self.get_input_file_name("1z5s_A.pdb"),mdl)
