@@ -28,7 +28,7 @@ public:
   /** That is, the origin with x,y,z axis as the principle axes.*/
   ReferenceFrame3D(): tr_(get_identity_transformation_3d()),
     tri_(tr_){}
-  ReferenceFrame3D(const Transformation3D &tr): tr_(tr),
+  explicit ReferenceFrame3D(const Transformation3D &tr): tr_(tr),
     tri_(tr.get_inverse()){}
   ~ReferenceFrame3D();
   //! Get the transformation taking the global reference frame to this one.
