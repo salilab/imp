@@ -300,7 +300,7 @@ class RefCountingDecorator: public D {
 public:
   RefCountingDecorator(){}
   RefCountingDecorator(const D &d): D(d){internal::ref(D::get_particle());}
-  ~RefCountingDecorator(){ internal::unref(D::get_particle());}
+  ~RefCountingDecorator(){ if (*this) internal::unref(D::get_particle());}
 #ifndef SWIG
   void operator=(const D &d) {
     if (*this) {
