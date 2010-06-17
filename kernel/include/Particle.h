@@ -116,12 +116,10 @@
     IMP_USAGE_CHECK(name != UCName##Key(),                              \
                     "Cannot use attributes without "                    \
                     << "naming them.");                                 \
-    IMP_IF_CHECK(USAGE) {                                               \
-      if (!UCName##Table::Traits::get_is_valid(value)) {                \
-        IMP_THROW("Cannot set value of " << name                        \
-                  << " to " << value                                    \
-                  << " on particle " << get_name(), ModelException);    \
-      }                                                                 \
+    if (!UCName##Table::Traits::get_is_valid(value)) {                  \
+      IMP_THROW("Cannot set value of " << name                          \
+                << " to " << value                                      \
+                << " on particle " << get_name(), ModelException);      \
     }                                                                   \
     IMP_CHECK_ACTIVE;                                                   \
     IMP_CHECK_MUTABLE;                                                  \
@@ -224,6 +222,32 @@ class IMPEXPORT Particle : public Container
 
   void assert_valid_derivatives() const;
 
+  /*void validate_float_attributes() const {
+    for (unsigned int i=0; i< floats_.get_length(); ++i) {
+      if (FloatTable::Traits::get_is_valid(floats_.get(i))) {
+        if (! (floats_.get(i) <= std::numeric_limits<double>::max())) {
+          IMP_THROW("Bad attribute value", ModelException);
+        }
+      }
+    }
+    for (unsigned int i=floats_.get_length();
+    i< ps_->floats_.get_length(); ++i) {
+      if (FloatTable::Traits::get_is_valid(ps_->floats_.get(i))) {
+        if (! (ps_->floats_.get(i) <= std::numeric_limits<double>::max())) {
+          IMP_THROW("Bad attribute value", ModelException);
+        }
+      }
+    }
+  }*/
+  void validate_float_derivatives() const {
+    for (unsigned int i=0; i< ps_->derivatives_.get_length(); ++i) {
+      if (ps_->optimizeds_.get(i)) {
+        if (! (ps_->derivatives_.get(i) < std::numeric_limits<double>::max())) {
+          IMP_THROW("Bad attribute value", ModelException);
+        }
+      }
+    }
+  }
  // begin incremental
   void on_changed() {
     dirty_=true;
