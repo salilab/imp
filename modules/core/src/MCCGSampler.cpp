@@ -168,6 +168,7 @@ ConfigurationSet *MCCGSampler::do_sample() const {
         ret->load_configuration(-1);
         ret->load_configuration(ret->get_number_of_configurations()-1);
         double ne= get_model()->evaluate(false);
+        if (0) std::cout << oe<< ne;
         IMP_INTERNAL_CHECK(std::abs(ne-oe) < (ne+oe)*.1+.1,
                            "Energies to not match before and after save."
                            << "Expected " << oe << " got " << ne
