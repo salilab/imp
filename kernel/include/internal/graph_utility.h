@@ -23,11 +23,17 @@ class ObjectNameWriter {
   typedef typename boost::property_map<Graph,
                                        boost::vertex_name_t>::type VertexMap;
   VertexMap om_;
+  template <class T>
+  std::string get_name(const T&t) const {return t.get_name();}
+  template <class T>
+  std::string get_name(T* t) const { return t->get_name();}
+  template <class T>
+  std::string get_name(Pointer<T> t) const { return t->get_name();}
 public:
   ObjectNameWriter( const Graph&g): om_(boost::get(boost::vertex_name,
                                                    const_cast<Graph&>(g))){}
   void operator()(std::ostream& out, int v) const {
-    out << "[label=\"" << boost::get(om_, v)->get_name() << "\"]";
+    out << "[label=\"" << get_name(boost::get(om_, v)) << "\"]";
   }
 };
 
