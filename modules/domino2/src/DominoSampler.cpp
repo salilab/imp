@@ -53,9 +53,8 @@ namespace {
 ConfigurationSet *DominoSampler::do_sample() const {
   Pointer<ConfigurationSet> ret= new ConfigurationSet(get_model());
   set_was_used(true);
-  IMP_NEW(container::ListSingletonContainer, known_particles,
-          (enumerators_->get_particles()));
-  known_particles->set_was_used(true);
+  IMP_NEW(Subset, known_particles,
+          (enumerators_->get_particles(), true));
   IMP_LOG(TERSE, "Sampling with " << known_particles->get_number_of_particles()
           << " particles" << std::endl);
   InteractionGraph ig= get_interaction_graph(get_model(),

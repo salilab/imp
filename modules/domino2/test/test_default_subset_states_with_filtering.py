@@ -36,7 +36,7 @@ class DOMINOTests(IMP.test.TestCase):
             ps.append(IMP.Particle(m))
             IMP.core.XYZ.setup_particle(ps[-1])
         pst= IMP.domino2.ParticleStatesTable()
-        lsc= IMP.container.ListSingletonContainer(ps)
+        lsc= IMP.domino2.Subset(ps)
         return (m, pst, lsc)
 
 

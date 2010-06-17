@@ -9,7 +9,7 @@
 #ifndef IMPDOMINO2_INTERNAL_RESTRAINT_EVALUATOR_H
 #define IMPDOMINO2_INTERNAL_RESTRAINT_EVALUATOR_H
 
-#include "../domino2_config.h"
+#include "../Subset.h"
 #include "../utility.h"
 #include "../particle_states.h"
 //#include "inference.h"
@@ -37,8 +37,8 @@ public:
                    const SubsetState &state) const {
     Scores::const_iterator it= scores_.find(state);
     if (it != scores_.end()) {
-      std::cout << "Found cached score for " << r_->get_name()
-        << " on " << state << "= " << it->second << std::endl;
+      /*std::cout << "Found cached score for " << r_->get_name()
+        << " on " << state << "= " << it->second << std::endl;*/
       return it->second;
     } else {
       for (unsigned int i=0; i< ps.size(); ++i) {
@@ -46,8 +46,8 @@ public:
       }
       double score= r_->evaluate(false)*weight_;
       scores_[state]=score;
-      std::cout << "Computed score for " << r_->get_name()
-        << " on " << state << "= " << score << std::endl;
+      /*std::cout << "Computed score for " << r_->get_name()
+        << " on " << state << "= " << score << std::endl;*/
       return score;
     }
   }

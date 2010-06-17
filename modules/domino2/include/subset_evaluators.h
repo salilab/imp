@@ -9,11 +9,12 @@
 #ifndef IMPDOMINO2_SUBSET_EVALUATORS_H
 #define IMPDOMINO2_SUBSET_EVALUATORS_H
 
-#include "domino2_config.h"
-#include "domino2_macros.h"
 #include "particle_states.h"
 #include "SubsetState.h"
 #include "internal/restraint_evaluator.h"
+#include "Subset.h"
+#include "domino2_macros.h"
+#include "domino2_config.h"
 #include <IMP/Object.h>
 #include <IMP/Pointer.h>
 #include <IMP/Configuration.h>
@@ -77,6 +78,10 @@ IMP_OBJECTS(ModelSubsetEvaluatorTable, ModelSubsetEvaluatorFactories);
 
 
 //! This one evaluates the restraints one at a time and caches the result
+/** \note this class is likely to go away and have its functionality moved
+    in to ModelSubsetEvaluatorTable. The interfaces are the same, so such
+    a change will be easy to accomidate.
+ */
 class IMPDOMINO2EXPORT CachingModelSubsetEvaluatorTable:
   public SubsetEvaluatorTable {
   internal::ModelData data_;

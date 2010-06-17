@@ -1,5 +1,5 @@
 /**
- *  \file domino2/subset_state.h
+ *  \file domino2/SubsetState.h
  *  \brief A beyesian infererence-based sampler.
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
@@ -18,26 +18,21 @@
 
 IMPDOMINO2_BEGIN_NAMESPACE
 
-#ifdef IMP_DOXYGEN
-/** The set of particles defining a node in the junction tree. A
-    SingletonContainer is used so that the pointer value uniquely
-    identifies a node (and the container has a name so that
-    it can be nicely written for display).
- */
-typedef SingletonContainer Subset;
-#else
-typedef container::ListSingletonContainer Subset;
-typedef Pointer<Subset> SubsetPointer;
-#endif
-
-
 
 /** Store the configuration of a subset. The indexes match those
-    of the particles in the corresponding Subset object.*/
+    of the particles in the corresponding Subset object. The
+    SubsetState should not be copied until after it has been
+    completely initialized (all positions set).*/
 class SubsetState {
   boost::scoped_array<int> v_;
   unsigned int sz_;
   int compare(const SubsetState &o) const {
+    IMP_USAGE_CHECK(std::find(o.v_.get(), o.v_.get()+o.sz_, -1)
+                    ==  o.v_.get()+o.sz_,
+                    "SubsetState not initialize yet.");
+    IMP_USAGE_CHECK(std::find(v_.get(), v_.get()+sz_, -1)
+                    ==  v_.get()+sz_,
+                    "SubsetState not initialize yet.");
     IMP_USAGE_CHECK(o.size() == size(), "Sizes don't match");
     for (unsigned int i=0; i< size(); ++i) {
       if (v_[i] < o[i]) return -1;
@@ -48,6 +43,9 @@ class SubsetState {
   void copy_from(const SubsetState &o) {
     sz_= o.sz_;
     v_.reset(new int[sz_]);
+    IMP_USAGE_CHECK(std::find(o.v_.get(), o.v_.get()+o.sz_, -1)
+                    ==  o.v_.get()+o.sz_,
+                    "SubsetState not initialize yet.");
     std::copy(o.v_.get(), o.v_.get()+o.sz_, v_.get());
   }
 public:

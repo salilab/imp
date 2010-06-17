@@ -20,7 +20,22 @@ Implementation todo list:
    - lower bounds on the score of the rest of the model
 - perhaps compact represetnation of incomplete states
 - reduce looping through lists for reconciliation
-- avoid the SingletonContainer interface (use the macros, for example)
+- replace Subset with something that uses a memory pool if allocation becomes an issue
+
+Handling of compound restraints:
+- define a static container as one which does not depend on any particles
+- general case: if the input container is static, decompose the restraint
+- general case: if it is not static, I don't know what to do. Restraint needs to
+  get all possible particles from container and produce input over those. Throw
+  exception for now
+- special case 1: close pairs container, figure out a superset of all interactions
+
+changes to IMP:
+- remove get_interacting_particles()
+- add get_subrestraints() method to restraint
+- remove the partial evaluate support
+- fix evaluation of individual restraints: make sure not incremental
+- fix benchmarks
 """,
                  publications=env.StandardPublications(),
                  license="Being worked out (currently have some code from Afra)"

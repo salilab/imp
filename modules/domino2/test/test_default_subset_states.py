@@ -59,7 +59,7 @@ class DOMINOTests(IMP.test.TestCase):
         for p in ps[2:]:
             pst.set_particle_states(p, TrivialParticleStates(ns))
         dsst= IMP.domino2.DefaultSubsetStatesTable(pst)
-        lsc= IMP.container.ListSingletonContainer(ps)
+        lsc= IMP.domino2.Subset(ps)
         ss= dsst.get_subset_states(lsc)
         self.assertEqual(ss.get_number_of_states(), ns**(len(ps)-2)*(ns)*(ns-1))
         all_states=[]

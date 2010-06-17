@@ -128,7 +128,7 @@ inline std::ostream &operator<<(std::ostream &out, const NodeData &nd) {
 class EdgeData {
   typedef std::map<SubsetState, double> Scores;
   Scores scores_;
-  IMP::internal::OwnerPointer<Subset> subset_;
+  IMP::Pointer<Subset> subset_;
 public:
   void set_subset(Subset*s) {subset_=s;}
   Subset* get_subset() const {return subset_;}

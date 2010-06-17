@@ -348,16 +348,7 @@ SubsetGraph get_junction_tree(const InteractionGraph &ig) {
     for (unsigned int j=0; j< cliques[i].size(); ++j) {
       ps.push_back(boost::get(pm, cliques[i][j]));
     }
-    IMP_NEW(Subset, lsc, (ps));
-    lsc->set_was_used(true);
-    std::ostringstream oss;
-    for (unsigned int j=0; j< ps.size(); ++j) {
-      oss << ps[j]->get_name();
-      if (j != ps.size()-1) {
-        oss << ", ";
-      }
-    }
-    lsc->set_name(oss.str());
+    IMP_NEW(Subset, lsc, (ps, true));
     boost::put(cm, i, lsc);
   }
   for (unsigned int i=0; i< mst.size(); ++i) {

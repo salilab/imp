@@ -2,6 +2,7 @@ Import('env')
 
 files = [
          'DominoSampler.cpp',
+         'Subset.cpp',
          'particle_states.cpp',
          'subset_evaluators.cpp',
          'subset_states.cpp',
