@@ -59,13 +59,13 @@ class IMPDOMINO2EXPORT SubsetData {
   const ModelData *md_;
   Ints ris_;
   std::vector<Ints> indices_;
-  Pointer<const Subset> s_;
+  Subset s_;
 public:
   SubsetData(){}
   SubsetData(const ModelData *md,
              const Ints &ris,
              std::vector<Ints> indices,
-             const Subset *s): md_(md), ris_(ris), indices_(indices), s_(s){}
+             const Subset &s): md_(md), ris_(ris), indices_(indices), s_(s){}
   double get_score(const SubsetState &state, double max) const;
 };
 
@@ -75,11 +75,11 @@ class IMPDOMINO2EXPORT ModelData {
   std::vector<RestraintData> rdata_;
   Pointer<ParticleStatesTable> pst_;
   std::vector<ParticlesTemp> dependencies_;
-  mutable std::map<const Subset*, SubsetData> sdata_;
+  mutable std::map<const Subset, SubsetData> sdata_;
 public:
   ModelData(Model *m, const Model::DependencyGraph &dg,
             ParticleStatesTable* pst);
-  const SubsetData &get_subset_data(const Subset *s) const;
+  const SubsetData &get_subset_data(const Subset &s) const;
 };
 
 IMPDOMINO2_END_INTERNAL_NAMESPACE

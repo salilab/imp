@@ -13,7 +13,7 @@
 #include "IMP/macros.h"
 #include <IMP/container/ListSingletonContainer.h>
 #include <IMP/Pointer.h>
-#include <boost/scoped_array.hpp>
+#include <boost/shared_array.hpp>
 #include <algorithm>
 
 IMPDOMINO2_BEGIN_NAMESPACE
@@ -21,59 +21,80 @@ IMPDOMINO2_BEGIN_NAMESPACE
 /** Store a subset of the optimized particles. The particles are
     kept in sorted order. Subsets should be stored by pointer.
  */
-class IMPDOMINO2EXPORT Subset: public RefCounted {
-  const Particles ps_;
-  static Particles get_sorted(const Particles &in) {
-    Particles s(in);
-    std::sort(s.begin(), s.end());
-    return s;
+class IMPDOMINO2EXPORT Subset {
+  boost::shared_array<Particle*> ps_;
+  unsigned int sz_;
+  int compare(const Subset &o) const {
+    if (sz_ < o.sz_) return -1;
+    else if (sz_ > o.sz_) return 1;
+    for (unsigned int i=0; i< size(); ++i) {
+      if (ps_[i] < o[i]) return -1;
+      else if (ps_[i] > o[i]) return 1;
+    }
+    return 0;
   }
-public:
+ public:
+  typedef Subset This;
 #ifndef IMP_DOXYGEN
-  Subset(const ParticlesTemp &ps, bool are_sorted): ps_(ps) {
+  Subset(const ParticlesTemp &ps, bool are_sorted):
+    ps_(new Particle*[ps.size()]),
+    sz_(ps.size()){
+    std::copy(ps.begin(), ps.end(), ps_.get());
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+      for (unsigned int i=0; i< sz_; ++i) {
+        IMP_CHECK_OBJECT(ps_[i]);
+      }
       for (unsigned int i=1; i< ps.size(); ++i) {
         IMP_INTERNAL_CHECK(ps[i-1] < ps[i], "Particles not ordered");
       }
     }
   }
 #endif
-  Subset(const ParticlesTemp &ps): ps_(get_sorted(ps)) {
+  Subset(): sz_(0){}
+  Subset(ParticlesTemp ps):
+    ps_(new Particle*[ps.size()]),
+    sz_(ps.size()) {
+    std::sort(ps.begin(), ps.end());
+    std::copy(ps.begin(), ps.end(), ps_.get());
   }
-  unsigned int get_number_of_particles() const {
-    return ps_.size();
+  unsigned int size() const {
+    return sz_;
   }
-  Particle *get_particle(unsigned int i) const {
-    return ps_[i];
-  }
-#ifndef IMP_DOXYGEN
-  const Particles& get_particles() const {
-    return ps_;
-  }
-#endif
   Model *get_model() const {
     return ps_[0]->get_model();
   }
 #ifndef SWIG
-#ifndef IMP_DOXYGEN
-  typedef Particles::const_iterator ParticlesIterator;
-  ParticlesIterator particles_begin() const {
-    return ps_.begin();
+  Particle *operator[](unsigned int i) const {
+    IMP_USAGE_CHECK( i < sz_, "Out of range");
+    return ps_[i];
   }
-  ParticlesIterator particles_end() const {
-    return ps_.end();
+#ifndef IMP_DOXYGEN
+  typedef Particle** const_iterator;
+  const_iterator begin() const {
+    return ps_.get();
+  }
+  const_iterator end() const {
+    return ps_.get()+sz_;
   }
 #else
-  class ParticlesIterator;
-  ParticlesIterator particles_begin() const;
-  ParticlesIterator particles_end() const;
+  class const_iterator;
+  const_iterator begin() const;
+  const_iterator end() const;
 #endif
+#endif
+#ifndef IMP_DOXYGEN
+  Particle* __getitem__(unsigned int i) const {
+    if (i >= sz_) IMP_THROW("Out of bound", IndexException);
+    return ps_[i];}
+  unsigned int __len__() const {return sz_;}
 #endif
   void show(std::ostream &out=std::cout) const;
   std::string get_name() const;
+  IMP_COMPARISONS;
 };
 
-IMP_OBJECTS(Subset, Subsets);
+IMP_VALUES(Subset, Subsets);
+IMP_OUTPUT_OPERATOR(Subset);
 
 IMPDOMINO2_END_NAMESPACE
 

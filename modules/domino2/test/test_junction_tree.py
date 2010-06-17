@@ -30,17 +30,17 @@ class DOMINOTests(IMP.test.TestCase):
     def _check_jt_property(self, jt):
         print "vertices are", jt.get_vertices()
         for v0 in jt.get_vertices():
-            ps0= jt.get_label(v0).get_particles()
+            ps0= [p for p in jt.get_label(v0)]
             for v1 in jt.get_vertices():
                 if v0 == v1:
                     continue
-                ps1= jt.get_label(v1).get_particles()
-                intersection=[x for x in ps0 if x in ps1]
+                #ps1= jt.get_label(v1).get_particles()
+                intersection=[x for x in ps0 if x in jt.get_label(v1)]
                 path= self._get_path(jt, v0, v1)
                 for v in path:
                     print "node", v
-                    set= jt.get_label(v).get_particles()
-                    print [x.get_name() for x in set]
+                    set=[x for x in jt.get_label(v)]
+                    print [x.get_name() for x in jt.get_label(v)]
                     for i in intersection:
                         print i.get_name()
                         self.assert_(i in set)

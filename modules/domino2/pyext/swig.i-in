@@ -10,7 +10,7 @@ namespace domino2 {
 
 /* Tell swig how to treat various types when moving them to and from pyton */
 IMP_SWIG_OBJECT(IMP::domino2, DominoSampler, DominoSamplers);
-IMP_SWIG_OBJECT(IMP::domino2, Subset, Subsets);
+IMP_SWIG_VALUE(IMP::domino2, Subset, Subsets);
 IMP_SWIG_BASE_OBJECT(IMP::domino2, ParticleStates, ParticleStatesList);
 IMP_SWIG_OBJECT(IMP::domino2, ParticleStatesTable, ParticleStatesTables);
 IMP_SWIG_BASE_OBJECT(IMP::domino2, SubsetEvaluator, SubsetEvaluators);
@@ -21,7 +21,7 @@ IMP_SWIG_BASE_OBJECT(IMP::domino2, SubsetStates, SubsetStatesList);
 IMP_SWIG_BASE_OBJECT(IMP::domino2, SubsetStatesTable, SubsetStatesTables);
 IMP_SWIG_OBJECT(IMP::domino2, DefaultSubsetStatesTable, DefaultSubsetStatesTables);
 IMP_SWIG_GRAPH(IMP::domino2, InteractionGraph, InteractionGraph, IMP::Particle*);
-IMP_SWIG_GRAPH(IMP::domino2, SubsetGraph, SubsetGraph, IMP::domino2::Subset* );
+IMP_SWIG_GRAPH(IMP::domino2, SubsetGraph, SubsetGraph, IMP::domino2::Subset );
 IMP_SWIG_VALUE(IMP::domino2, SubsetState, SubsetStatesList);
 
 %include "IMP/domino2/Subset.h"

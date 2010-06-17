@@ -63,12 +63,12 @@ public:
       out << "]";
     });
   operator SubsetState() const {
-    SubsetState ret(size());
+    Ints iret(size(),-1);
     for (unsigned int i=0; i< size(); ++i) {
       IMP_USAGE_CHECK(v_[i] >=0, "Not a full state");
-      ret[i]=v_[i];
+      iret[i]=v_[i];
     }
-    return ret;
+    return SubsetState(iret);
   }
 };
 IMP_OUTPUT_OPERATOR(IncompleteStates);
@@ -93,7 +93,7 @@ inline IncompleteStates get_merged(const IncompleteStates &a,
 }
 
 typedef std::map<Particle*, int> ParticleIndex;
-ParticleIndex get_index(const Subset *s);
+ParticleIndex get_index(const Subset &s);
 
 
 
@@ -128,10 +128,10 @@ inline std::ostream &operator<<(std::ostream &out, const NodeData &nd) {
 class EdgeData {
   typedef std::map<SubsetState, double> Scores;
   Scores scores_;
-  IMP::Pointer<Subset> subset_;
+  Subset subset_;
 public:
-  void set_subset(Subset*s) {subset_=s;}
-  Subset* get_subset() const {return subset_;}
+  void set_subset(const Subset &s) {subset_=s;}
+  Subset get_subset() const {return subset_;}
   void set_score(const SubsetState &state,
                  double score) {
     scores_[state]=score;
@@ -187,11 +187,11 @@ inline std::ostream &operator<<(std::ostream &out, const PropagatedData &nd) {
 
 
 inline IncompleteStates get_incomplete_states(const ParticleIndex &pi,
-                                              Subset* subset,
+                                              const Subset& subset,
                                               const SubsetState &cs) {
   IncompleteStates ret(pi.size());
-  for (unsigned int i=0; i< subset->get_number_of_particles(); ++i) {
-    int j= pi.find(subset->get_particle(i))->second;
+  for (unsigned int i=0; i< subset.size(); ++i) {
+    int j= pi.find(subset[i])->second;
     ret[j]= cs[i];
   }
   return ret;
@@ -199,10 +199,10 @@ inline IncompleteStates get_incomplete_states(const ParticleIndex &pi,
 
 IMPDOMINO2EXPORT PropagatedData
 get_propagated_data(const ParticleIndex &all_particles,
-                    Subset* subset,
+                    const Subset& subset,
                     const NodeData &cs);
 
-IMPDOMINO2EXPORT NodeData get_node_data(Subset *s,
+IMPDOMINO2EXPORT NodeData get_node_data(const Subset &s,
                        const SubsetEvaluatorTable *eval,
                        const SubsetStatesTable *states);
 
@@ -212,7 +212,7 @@ IMPDOMINO2EXPORT NodeData get_node_data(Subset *s,
 
 IMPDOMINO2EXPORT PropagatedData get_best_conformations(const SubsetGraph &jt,
                                       int root,
-                                      Subset* all_particles,
+                                      const Subset& all_particles,
                                       const SubsetEvaluatorTable *eval,
                                       const SubsetStatesTable *states,
                                       double max_score);

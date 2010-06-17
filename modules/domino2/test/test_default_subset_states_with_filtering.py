@@ -44,13 +44,13 @@ class DOMINOTests(IMP.test.TestCase):
         """Testing default subset states with filtering"""
         (m, pst, lsc)= self._get_stuff()
         vs= self._get_positions()
-        for p in lsc.get_particles():
+        for p in lsc:
             pst.set_particle_states(p, IMP.domino2.XYZStates(vs))
-        print lsc.get_particle(0).get_name()
-        print lsc.get_particle(1).get_name()
+        print lsc[0].get_name()
+        print lsc[1].get_name()
         r= IMP.core.DistanceRestraint(IMP.core.Harmonic(1,2),
-                                      lsc.get_particle(0),
-                                      lsc.get_particle(1))
+                                      lsc[0],
+                                      lsc[1])
         all_states= self._get_full_list(pst, lsc)
         print "There are ", len(all_states), "states"
         m.add_restraint(r)

@@ -37,7 +37,7 @@ ModelData::ModelData(Model *m, const Model::DependencyGraph &dg,
     rdata_.push_back(RestraintData(*rit, m_->get_weight(*rit)));
   }
 }
-const SubsetData &ModelData::get_subset_data(const Subset *s) const {
+const SubsetData &ModelData::get_subset_data(const Subset &s) const {
   if (sdata_.find(s) == sdata_.end()) {
     unsigned int i=0;
     ParticleIndex pi= get_index(s);
@@ -45,7 +45,7 @@ const SubsetData &ModelData::get_subset_data(const Subset *s) const {
     std::vector<Ints> inds;
     for (Model::RestraintIterator rit= m_->restraints_begin();
          rit != m_->restraints_end(); ++rit) {
-      if (std::includes(s->particles_begin(), s->particles_end(),
+      if (std::includes(s.begin(), s.end(),
                         dependencies_[i].begin(), dependencies_[i].end())) {
         ris.push_back(i);
         inds.push_back(Ints());
@@ -65,11 +65,10 @@ double SubsetData::get_score(const SubsetState &state,
                              double max) const {
   double score=0;
   for (unsigned int i=0; i< ris_.size(); ++i) {
-    SubsetState ss(indices_[i].size());
+    SubsetState ss(indices_[i]);
     ParticlesTemp ps(ss.size());
     for (unsigned int j=0; j< ss.size(); ++j) {
-      ss[j]= state[indices_[i][j]];
-      ps[j]= s_->get_particle(indices_[i][j]);
+      ps[j]= s_[indices_[i][j]];
     }
     double ms=md_->rdata_[ris_[i]].get_score(md_->pst_,
                                              ps, ss);
