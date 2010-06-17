@@ -23,94 +23,37 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+namespace {
+  PairContainer* get_close_pairs_container(SingletonContainer *sc,
+                                           Refiner *r) {
+    if (r) {
+      IMP_NEW(RigidClosePairsFinder, rcpf, (r));
+      return new internal::CoreClosePairContainer(sc, 0.0, rcpf, 1.0);
+    } else {
+      return new internal::CoreClosePairContainer(sc, 0.0,
+                                                  internal::default_cpf(), 1.0);
+    }
+  }
+  PairScore* get_sphere_distance_pair_score(double k) {
+    return new SphereDistancePairScore(new HarmonicLowerBound(0,k));
+  }
+}
+
 ExcludedVolumeRestraint::ExcludedVolumeRestraint(SingletonContainer *sc,
                                                  Refiner *r,
                                                  double k):
-  Restraint("ExcludedVolumeRestraint %d"),
-  sc_(sc),r_(r), k_(k){
+  internal::CorePairsRestraint(get_sphere_distance_pair_score(k),
+                               get_close_pairs_container(sc, r),
+                               "ExcludedVolumeRestraint %d"){
 }
 
 ExcludedVolumeRestraint::ExcludedVolumeRestraint(SingletonContainer *sc,
                                                  double k):
-  sc_(sc), k_(k){
+  internal::CorePairsRestraint(get_sphere_distance_pair_score(k),
+                               get_close_pairs_container(sc, NULL),
+                               "ExcludedVolumeRestraint %d"){
 }
 
-
-void ExcludedVolumeRestraint::set_model(Model *m) {
-  if (m) {
-    IMP_LOG(TERSE, "Creating components of ExcludedVolumeRestraint"
-            << std::endl);
-    IMP_NEW(HarmonicLowerBound, hlb, (0,k_));
-    // should do something more clever to pick parameters
-    if (r_) {
-      IMP_NEW(RigidClosePairsFinder, rcpf, (r_));
-      ss_= new internal::CoreClosePairContainer(sc_, 0.0, rcpf, 1.0);
-    } else {
-      ss_= new internal::CoreClosePairContainer(sc_, 0.0,
-                                                internal::default_cpf(), 1.0);
-    }
-    ss_->set_name("close pairs for excluded volume");
-    IMP_NEW(SphereDistancePairScore, sdps, (hlb));
-    pr_= new internal::CorePairsRestraint(sdps, ss_);
-    pr_->set_name("excluded volume");
-    for (SingletonContainer::ParticleIterator it= sc_->particles_begin();
-         it != sc_->particles_end(); ++it) {
-      if (RigidBody::particle_is_instance(*it)) {
-        IMP_USAGE_CHECK(r_, "Rigid body found in excluded volume but "
-                        << "the refiner was not set.");
-        RigidBody rb(*it);
-        if (!XYZR::particle_is_instance(*it)) {
-          XYZR d= XYZR::setup_particle(*it);
-          set_enclosing_radius(d, core::XYZsTemp(rb.get_members()));
-        }
-      }
-    }
-    pr_->set_model(m);
-  } else {
-    IMP_LOG(TERSE, "Removing components of ExcludedVolumeRestraint"
-            << std::endl);
-    if (ss_) {
-      IMP_CHECK_OBJECT(ss_.get());
-      IMP_CHECK_OBJECT(pr_.get());
-      get_model()->remove_restraint(pr_);
-      ss_=NULL;
-      pr_=NULL;
-    }
-  }
-  Restraint::set_model(m);
-}
-
-double
-ExcludedVolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
-  IMP_OBJECT_LOG;
-  IMP_CHECK_OBJECT(pr_.get());
-  return pr_->unprotected_evaluate(da);
-}
-
-void ExcludedVolumeRestraint::do_show(std::ostream &out) const {
-  out << "on " << *ss_ << std::endl;
-  out << "using " << *pr_ << std::endl;
-}
-
-ParticlesList ExcludedVolumeRestraint::get_interacting_particles() const {
-  return pr_->get_interacting_particles();
-}
-
-ParticlesTemp ExcludedVolumeRestraint::get_input_particles() const {
-  for (unsigned int i=0; i< sc_->get_number_of_particles(); ++i) {
-    Particle* p= sc_->get_particle(i);
-    if (RigidBody::particle_is_instance(p) && !r_) {
-      IMP_THROW("RigidBodies cannot be used without a refiner in "
-                << "ExcludedVolumeRestraint.", ValueException);
-    }
-  }
-  return pr_->get_input_particles();
-}
-
-
-ContainersTemp ExcludedVolumeRestraint::get_input_containers() const {
-  return pr_->get_input_containers();
-}
 
 
 IMPCORE_END_NAMESPACE

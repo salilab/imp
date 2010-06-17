@@ -31,13 +31,13 @@ IMPCORE_BEGIN_NAMESPACE
     will be added. Note, to take advantage of this, the RigidBody
     must be in the container before the Restraint is added to the model.
  */
-class IMPCOREEXPORT ExcludedVolumeRestraint: public Restraint
+class IMPCOREEXPORT ExcludedVolumeRestraint:
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+  public internal::CorePairsRestraint
+#else
+  public Restraint
+#endif
 {
-  IMP::internal::OwnerPointer<internal::CoreClosePairContainer> ss_;
-  IMP::internal::OwnerPointer<SingletonContainer> sc_;
-  IMP::internal::OwnerPointer<internal::CorePairsRestraint> pr_;
-  IMP::internal::OwnerPointer<Refiner> r_;
-  double k_;
 public:
   /** The SingletonContainer contains a set of XYZR particles and RigidBody
       particles. The spring constant used is k.*/
@@ -52,9 +52,9 @@ public:
   ExcludedVolumeRestraint(SingletonContainer *sc,
                           double k=1);
 
+#ifdef SWIG
   IMP_RESTRAINT(ExcludedVolumeRestraint);
-
-  void set_model(Model *m);
+#endif
 };
 
 
