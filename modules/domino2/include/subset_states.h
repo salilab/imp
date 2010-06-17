@@ -9,11 +9,13 @@
 #ifndef IMPDOMINO2_SUBSET_SUBSET_STATES_H
 #define IMPDOMINO2_SUBSET_SUBSET_STATES_H
 
-#include "domino2_config.h"
-#include "domino2_macros.h"
+
 #include "particle_states.h"
 #include "subset_evaluators.h"
 #include "SubsetState.h"
+#include "Subset.h"
+#include "domino2_config.h"
+#include "domino2_macros.h"
 #include <IMP/Sampler.h>
 #include <IMP/macros.h>
 #include <boost/pending/disjoint_sets.hpp>
@@ -76,7 +78,16 @@ public:
 
     An (optional) subset evaluator can be provided, which will be
     used to filter subsets based on their score and the bounds
-    provided in the sampler.
+    provided in the sampler. To describe how this works, let
+    - possible state mean any ordered tuple of integers where the
+    ith value is one of the possible state indices for the ith particle
+    - the jth high state is the possible state consisting of all
+    values j and higher from a possible state, eg the 3rd high state
+    of (0,1,2,3,4,5) is (3,4,5)
+    Then,
+    - the SubsetStates object enumerates through the possible states
+    - a possible state is elimited if any of the high states (and corresponding
+    subset) has a score greater than the maximum allowed by the sampler.
 */
 class IMPDOMINO2EXPORT DefaultSubsetStatesTable: public SubsetStatesTable {
   friend class DefaultSubsetStates;

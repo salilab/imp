@@ -10,6 +10,7 @@
 
 #include "domino2_config.h"
 #include "SubsetState.h"
+#include "Subset.h"
 #include <IMP/Particle.h>
 #include <IMP/SingletonContainer.h>
 
@@ -91,7 +92,37 @@ class SubsetGraph;
 IMPDOMINO2EXPORT SubsetGraph
 get_junction_tree(const InteractionGraph &ig);
 /** @} */
+#if 0
+/** A static container is one such as a container::ListSingletonContainer, whose
+    contents will not change as optimized particles are moved around. More
+    technically, it is one which either is not written by any score state or,
+    any score state which writes it does not depend on optimized particles.
 
+    This function is here for debugging purposes and so may change without
+    notice.
+ */
+IMPDOMINO2EXPORT bool
+get_is_static_container(Container *c,
+                        const Model::DependencyGraph &dg,
+                        const ParticlesTemp &optimized_particles);
+
+class ParticleStatesTable;
+/** The function transforms the restraints, score states and
+    containers in a model to make it better suited for the
+    DominoSampler. Transformations include
+    - replacing certain container::PairsRestraint and
+      container::SingletonRestraint objects by a set a set of
+      core::PairRestraint/core::SingletonRestraint objects
+    - replacing container::ClosePairContainer and
+      core::ExcludedVolumeRestraint by a static interaction list based
+      on the ParticleStatesTable.
+    \throw ModelException if the model contains any non-static
+    containers other than container::ClosePairContainer and its
+    ilk. Examples include container::ConnectedPairContainer.
+*/
+IMPDOMINO2EXPORT void optimize_model(Model *m,
+                                     ParticleStatesTable *pst);
+#endif
 IMPDOMINO2_END_NAMESPACE
 
 #endif  /* IMPDOMINO2_UTILITY_H */

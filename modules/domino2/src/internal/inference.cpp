@@ -26,44 +26,20 @@ ParticleIndex get_index(const Subset *s) {
 
 
 Subset* get_intersection(Subset *a, Subset *b) {
-  ParticlesTemp pa= a->get_particles();
-  ParticlesTemp pb= b->get_particles();
-  std::sort(pa.begin(), pa.end());
-  std::sort(pb.begin(), pb.end());
   ParticlesTemp rs;
-  std::set_intersection(pa.begin(), pa.end(),
-                        pb.begin(), pb.end(),
+  std::set_intersection(a->particles_begin(), a->particles_end(),
+                        b->particles_begin(), b->particles_end(),
                         std::back_inserter(rs));
-   Subset *ret= new Subset(rs);
-   std::ostringstream oss;
-   for (unsigned int j=0; j< rs.size(); ++j) {
-     oss << rs[j]->get_name();
-     if (j != rs.size()-1) {
-       oss << ", ";
-     }
-    }
-    ret->set_name(oss.str());
-    return ret;
+  Subset *ret= new Subset(rs, true);
+   return ret;
 }
 
 Subset* get_union(Subset *a, Subset *b) {
-  ParticlesTemp pa= a->get_particles();
-  ParticlesTemp pb= b->get_particles();
-  std::sort(pa.begin(), pa.end());
-  std::sort(pb.begin(), pb.end());
   ParticlesTemp rs;
-  std::set_union(pa.begin(), pa.end(),
-                 pb.begin(), pb.end(),
+  std::set_union(a->particles_begin(), a->particles_end(),
+                 b->particles_begin(), b->particles_end(),
                  std::back_inserter(rs));
-   Subset *ret= new Subset(rs);
-   std::ostringstream oss;
-   for (unsigned int j=0; j< rs.size(); ++j) {
-     oss << rs[j]->get_name();
-     if (j != rs.size()-1) {
-       oss << ", ";
-     }
-    }
-    ret->set_name(oss.str());
+  Subset *ret= new Subset(rs, true);
     return ret;
 }
 
@@ -238,10 +214,10 @@ EdgeData get_edge_data(const ParticleIndex &all,
       if (*be.first == parent) continue;
       EdgeData ed= get_edge_data(all_index, eval, boost::get(subset_map, root),
                                  boost::get(subset_map, *be.first), nd);
-      IMP::internal::OwnerPointer<Subset> edge_union
+      IMP::Pointer<Subset> edge_union
         = get_union(boost::get(subset_map, root),
                     boost::get(subset_map, *be.first));
-      IMP::internal::OwnerPointer<SubsetStates> edge_states
+      IMP::Pointer<SubsetStates> edge_states
         = states->get_subset_states(edge_union);
       // compute intersection set and index map in one direction
       // for each pattern of that in me, compute subset score

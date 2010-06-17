@@ -122,17 +122,13 @@ namespace {
 
   class  DefaultSubsetStates: public SubsetStates {
   public:
-    typedef std::pair<int,
-                      Pointer<SubsetEvaluator> > EvaluatorPair;
-    typedef std::vector<EvaluatorPair > EvaluatorPairs;
-    typedef std::vector<EvaluatorPairs> EvaluatorPairsList;
     void setup_permutations(UF &equivalencies,
                             const std::set<Particle*>& seen,
                             Subset *s,
                             ParticleStatesTable *table,
                             std::vector<Ints> &classes);
     void setup_scores(Subset *s, SubsetEvaluatorTable *set,
-                      EvaluatorPairsList &pairs);
+                      SubsetEvaluators &ses);
     std::vector<SubsetState> states_;
     DefaultSubsetStates(UF &equivalencies,
                         const std::set<Particle*> &seen,
@@ -148,14 +144,13 @@ namespace {
                                                Subset *s,
                                                ParticleStatesTable *table,
                                                std::vector<Ints> &classes) {
-    ParticlesTemp ps= s->get_particles();
-    classes.resize(ps.size());
+    classes.resize(s->get_number_of_particles());
     for (unsigned int i=0; i < classes.size(); ++i) {
-      if (seen.find(ps[i]) == seen.end()) continue;
-      Particle *ri= equivalencies.find_set(ps[i]);
+      if (seen.find(s->get_particle(i)) == seen.end()) continue;
+      Particle *ri= equivalencies.find_set(s->get_particle(i));
       for (unsigned int j=i+1; j< classes.size(); ++j) {
-        if (seen.find(ps[j]) == seen.end()) continue;
-        Particle *rj= equivalencies.find_set(ps[j]);
+        if (seen.find(s->get_particle(j)) == seen.end()) continue;
+        Particle *rj= equivalencies.find_set(s->get_particle(j));
         if (ri==rj) {
           classes[i].push_back(j);
         }
@@ -164,20 +159,14 @@ namespace {
   }
 
   void DefaultSubsetStates::setup_scores(Subset *s, SubsetEvaluatorTable *set,
-                                         EvaluatorPairsList &pairs) {
-    ParticlesTemp ps= s->get_particles();
-    pairs.resize(ps.size());
-    for (unsigned int i=0; i < pairs.size(); ++i) {
-      for (unsigned int j=i+1; j< pairs.size(); ++j) {
-        ParticlesTemp cps(2);
-        cps[0]= ps[i];
-        cps[1]= ps[j];
-        IMP_NEW(Subset, s, (cps));
-        s->set_was_used(true);
-        SubsetEvaluator* se= set->get_subset_evaluator(s);
-        if (se) {
-          pairs[i].push_back(EvaluatorPair(j, se));
-        }
+                                         SubsetEvaluators &ses) {
+    ses.resize(s->get_number_of_particles());
+    for (unsigned int i=0; i < ses.size(); ++i) {
+      ParticlesTemp pt(s->particles_begin()+i, s->particles_end());
+      IMP_NEW(Subset, s, (pt, true));
+      SubsetEvaluator* se= set->get_subset_evaluator(s);
+      if (se) {
+        ses[i]=se;
       }
     }
   }
@@ -193,19 +182,18 @@ DefaultSubsetStates::DefaultSubsetStates(UF &equivalencies,
   IMP_LOG(VERBOSE, "Computing states for " << s->get_name() << std::endl);
   std::vector<Ints> permutations;
   setup_permutations(equivalencies, seen, s, table, permutations);
-  EvaluatorPairsList evaluators;
+  SubsetEvaluators evaluators;
   if (set) {
     setup_scores(s, set, evaluators);
   }
   IMP_CHECK_OBJECT(table);
-  IMP_CHECK_OBJECT(s);
   // create lists
 
   unsigned int sz=s->get_number_of_particles();
   Ints maxs(sz);
-  ParticlesTemp ps= s->get_particles();
   for (unsigned int i=0; i< sz; ++i) {
-    maxs[i]=table->get_particle_states(ps[i])->get_number_of_states();
+    maxs[i]=table->get_particle_states(s->get_particle(i))
+      ->get_number_of_states();
   }
   SubsetState cur(sz);
   unsigned int changed_digit=cur.size()-1;
@@ -224,14 +212,13 @@ DefaultSubsetStates::DefaultSubsetStates(UF &equivalencies,
       }
     }
     if (set) {
-      for (unsigned int j=0; j < evaluators[i].size(); ++j) {
-        SubsetState ss(2);
-        ss[0]= cur[i];
-        ss[1]= cur[evaluators[i][j].first];
-        double score= evaluators[i][j].second->get_score(ss);
-        if (score > max) {
-          goto bad;
-        }
+      SubsetState ss(sz-i);
+      for (unsigned int j=0; j < sz-i; ++j) {
+        ss[j]= cur[j+i];
+      }
+      double score= evaluators[i]->get_score(ss);
+      if (score > max) {
+        goto bad;
       }
     }
     continue;
@@ -258,7 +245,7 @@ DefaultSubsetStates::DefaultSubsetStates(UF &equivalencies,
       goto filter;
     }
   }
- done:
+  //done:
   std::sort(states_.begin(), states_.end());
 }
 

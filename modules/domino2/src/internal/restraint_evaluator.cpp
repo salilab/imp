@@ -40,14 +40,12 @@ ModelData::ModelData(Model *m, const Model::DependencyGraph &dg,
 const SubsetData &ModelData::get_subset_data(const Subset *s) const {
   if (sdata_.find(s) == sdata_.end()) {
     unsigned int i=0;
-    ParticlesTemp sps= s->get_particles();
     ParticleIndex pi= get_index(s);
-    std::sort(sps.begin(), sps.end());
     Ints ris;
     std::vector<Ints> inds;
     for (Model::RestraintIterator rit= m_->restraints_begin();
          rit != m_->restraints_end(); ++rit) {
-      if (std::includes(sps.begin(), sps.end(),
+      if (std::includes(s->particles_begin(), s->particles_end(),
                         dependencies_[i].begin(), dependencies_[i].end())) {
         ris.push_back(i);
         inds.push_back(Ints());
