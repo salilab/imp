@@ -62,7 +62,7 @@ public:
   }
 #endif
   SubsetStatesTable(std::string name= "SubsetStatesTable"): Object(name){}
-  virtual SubsetStates *get_subset_states(Subset *s) const=0;
+  virtual SubsetStates *get_subset_states(const Subset &s) const=0;
   ~SubsetStatesTable();
 };
 

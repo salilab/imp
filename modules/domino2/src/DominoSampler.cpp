@@ -30,7 +30,7 @@ DominoSampler::DominoSampler(Model *m):
 
 namespace {
   std::vector<SubsetState> get_solutions(const SubsetGraph &jt,
-                                  Subset *known_particles,
+                                  const Subset &known_particles,
                                   Model *model,
                                   ParticleStatesTable *pst,
                                   SubsetStatesTable *sst,
@@ -53,12 +53,12 @@ namespace {
 ConfigurationSet *DominoSampler::do_sample() const {
   Pointer<ConfigurationSet> ret= new ConfigurationSet(get_model());
   set_was_used(true);
-  IMP_NEW(Subset, known_particles,
-          (enumerators_->get_particles(), true));
-  IMP_LOG(TERSE, "Sampling with " << known_particles->get_number_of_particles()
+  Subset known_particles(enumerators_->get_particles(), true);
+  IMP_LOG(TERSE, "Sampling with " << known_particles.size()
           << " particles" << std::endl);
+  ParticlesTemp pt(known_particles.begin(), known_particles.end());
   InteractionGraph ig= get_interaction_graph(get_model(),
-                                             known_particles->get_particles());
+                                             pt);
   IMP_IF_LOG(TERSE) {
     IMP_LOG(TERSE, "Interaction graph is " << boost::num_vertices(ig));
     // for some reason output to the ostringstream doesn't work
@@ -102,11 +102,11 @@ ConfigurationSet *DominoSampler::do_sample() const {
   for (unsigned int i=0; i< final_solutions.size(); ++i) {
     IMP_LOG(TERSE, "Solutions is " << final_solutions[i] << std::endl);
     IMP_INTERNAL_CHECK(final_solutions[i].size()
-                       == known_particles->get_number_of_particles(),
+                       == known_particles.size(),
                        "Number of particles doesn't match");
     ret->load_configuration(-1);
-    for (unsigned int j=0; j< known_particles->get_number_of_particles(); ++j) {
-      Particle *p=known_particles->get_particle(j);
+    for (unsigned int j=0; j< known_particles.size(); ++j) {
+      Particle *p=known_particles[j];
       Pointer<ParticleStates> ps=enumerators_->get_particle_states(p);
       ps->load_state(final_solutions[i][j], p);
     }

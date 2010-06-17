@@ -21,15 +21,15 @@ namespace {
   class ModelSubsetEvaluator: public SubsetEvaluator {
     mutable Pointer<Model> model_;
     Pointer<Configuration> cs_;
-    Pointer<Subset> s_;
+    Subset s_;
     Restraints restraints_;
     Pointer<ParticleStatesTable> pst_;
   public:
-    ModelSubsetEvaluator(Subset *s,
+    ModelSubsetEvaluator(const Subset &s,
                          const ParticlesTemp &sorted_dependents,
                          ParticleStatesTable*t,
                          Model *m, Configuration *cs):
-      SubsetEvaluator("ModelSubsetEvaluator on "+s->get_name()),
+      SubsetEvaluator("ModelSubsetEvaluator on "+s.get_name()),
       model_(m), cs_(cs),
       s_(s),
       pst_(t) {
@@ -52,7 +52,7 @@ namespace {
   double ModelSubsetEvaluator::get_score(const SubsetState &state) const{
     cs_->load_configuration();
     for (unsigned int i=0; i< state.size(); ++i) {
-      Particle *p= s_->get_particle(i);
+      Particle *p= s_[i];
       Pointer<ParticleStates> ps
         =pst_->get_particle_states(p);
       ps->load_state(state[i], p);
@@ -71,9 +71,9 @@ ModelSubsetEvaluatorTable::ModelSubsetEvaluatorTable(Model *m,
   }
 
 SubsetEvaluator *
-ModelSubsetEvaluatorTable::get_subset_evaluator(Subset *s) const {
+ModelSubsetEvaluatorTable::get_subset_evaluator(const Subset &s) const {
   if (dependents_.empty()) {
-    Model::DependencyGraph dg= s->get_model()->get_dependency_graph();
+    Model::DependencyGraph dg= s.get_model()->get_dependency_graph();
     ParticlesTemp kp= pst_->get_particles();
     IMP_USAGE_CHECK(!kp.empty(),
                     "No particles in particles table");
@@ -83,10 +83,10 @@ ModelSubsetEvaluatorTable::get_subset_evaluator(Subset *s) const {
   }
 
   ParticlesTemp sorted;
-  for (unsigned int i=0; i< s->get_number_of_particles(); ++i) {
+  for (unsigned int i=0; i< s.size(); ++i) {
     sorted.insert(sorted.end(),
-                  dependents_.find(s->get_particle(i))->second.begin(),
-                  dependents_.find(s->get_particle(i))->second.end());
+                  dependents_.find(s[i])->second.begin(),
+                  dependents_.find(s[i])->second.end());
   }
   std::sort(sorted.begin(), sorted.end());
   sorted.erase(std::unique(sorted.begin(), sorted.end()), sorted.end());
@@ -132,7 +132,7 @@ CachingModelSubsetEvaluatorTable::CachingModelSubsetEvaluatorTable(Model *m,
 }
 
 SubsetEvaluator *
-CachingModelSubsetEvaluatorTable::get_subset_evaluator(Subset *s) const {
+CachingModelSubsetEvaluatorTable::get_subset_evaluator(const Subset &s) const {
   return new CachingModelSubsetEvaluator(this, data_.get_subset_data(s),
                                          get_sampler()->get_maximum_score());
 }

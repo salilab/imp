@@ -124,16 +124,16 @@ namespace {
   public:
     void setup_permutations(UF &equivalencies,
                             const std::set<Particle*>& seen,
-                            Subset *s,
+                            const Subset &s,
                             ParticleStatesTable *table,
                             std::vector<Ints> &classes);
-    void setup_scores(Subset *s, SubsetEvaluatorTable *set,
+    void setup_scores(const Subset &s, SubsetEvaluatorTable *set,
                       SubsetEvaluators &ses);
     std::vector<SubsetState> states_;
     DefaultSubsetStates(UF &equivalencies,
                         const std::set<Particle*> &seen,
                         double max,
-                        Subset *s,
+                        const Subset &s,
                         ParticleStatesTable *table,
                         SubsetEvaluatorTable *set);
   IMP_SUBSET_STATES(DefaultSubsetStates);
@@ -141,16 +141,16 @@ namespace {
 
   void DefaultSubsetStates::setup_permutations(UF &equivalencies,
                                                const std::set<Particle*>& seen,
-                                               Subset *s,
+                                               const Subset &s,
                                                ParticleStatesTable *table,
                                                std::vector<Ints> &classes) {
-    classes.resize(s->get_number_of_particles());
+    classes.resize(s.size());
     for (unsigned int i=0; i < classes.size(); ++i) {
-      if (seen.find(s->get_particle(i)) == seen.end()) continue;
-      Particle *ri= equivalencies.find_set(s->get_particle(i));
+      if (seen.find(s[i]) == seen.end()) continue;
+      Particle *ri= equivalencies.find_set(s[i]);
       for (unsigned int j=i+1; j< classes.size(); ++j) {
-        if (seen.find(s->get_particle(j)) == seen.end()) continue;
-        Particle *rj= equivalencies.find_set(s->get_particle(j));
+        if (seen.find(s[j]) == seen.end()) continue;
+        Particle *rj= equivalencies.find_set(s[j]);
         if (ri==rj) {
           classes[i].push_back(j);
         }
@@ -158,13 +158,15 @@ namespace {
     }
   }
 
-  void DefaultSubsetStates::setup_scores(Subset *s, SubsetEvaluatorTable *set,
+  void DefaultSubsetStates::setup_scores(const Subset &s,
+                                         SubsetEvaluatorTable *set,
                                          SubsetEvaluators &ses) {
-    ses.resize(s->get_number_of_particles());
+    ses.resize(s.size());
     for (unsigned int i=0; i < ses.size(); ++i) {
-      ParticlesTemp pt(s->particles_begin()+i, s->particles_end());
-      IMP_NEW(Subset, s, (pt, true));
+      ParticlesTemp pt(s.begin()+i, s.end());
+      Subset s(pt, true);
       SubsetEvaluator* se= set->get_subset_evaluator(s);
+      se->set_was_used(true);
       if (se) {
         ses[i]=se;
       }
@@ -175,11 +177,11 @@ namespace {
 DefaultSubsetStates::DefaultSubsetStates(UF &equivalencies,
                                          const std::set<Particle*>& seen,
                                          double max,
-                                         Subset *s,
+                                         const Subset &s,
                                          ParticleStatesTable *table,
                                          SubsetEvaluatorTable *set):
-  SubsetStates("DefaultSubsetStates on "+s->get_name()) {
-  IMP_LOG(VERBOSE, "Computing states for " << s->get_name() << std::endl);
+  SubsetStates("DefaultSubsetStates on "+s.get_name()) {
+  IMP_LOG(VERBOSE, "Computing states for " << s.get_name() << std::endl);
   std::vector<Ints> permutations;
   setup_permutations(equivalencies, seen, s, table, permutations);
   SubsetEvaluators evaluators;
@@ -189,13 +191,13 @@ DefaultSubsetStates::DefaultSubsetStates(UF &equivalencies,
   IMP_CHECK_OBJECT(table);
   // create lists
 
-  unsigned int sz=s->get_number_of_particles();
+  unsigned int sz=s.size();
   Ints maxs(sz);
   for (unsigned int i=0; i< sz; ++i) {
-    maxs[i]=table->get_particle_states(s->get_particle(i))
+    maxs[i]=table->get_particle_states(s[i])
       ->get_number_of_states();
   }
-  SubsetState cur(sz);
+  Ints cur(sz, -1);
   unsigned int changed_digit=cur.size()-1;
   unsigned int current_digit=0;
   for (unsigned int i=0; i< cur.size(); ++i) {
@@ -212,10 +214,7 @@ DefaultSubsetStates::DefaultSubsetStates(UF &equivalencies,
       }
     }
     if (set) {
-      SubsetState ss(sz-i);
-      for (unsigned int j=0; j < sz-i; ++j) {
-        ss[j]= cur[j+i];
-      }
+      SubsetState ss(cur.begin()+i, cur.end());
       double score= evaluators[i]->get_score(ss);
       if (score > max) {
         goto bad;
@@ -229,7 +228,7 @@ DefaultSubsetStates::DefaultSubsetStates(UF &equivalencies,
   }
   current_digit=0;
   IMP_LOG(VERBOSE, "Found " << cur << std::endl);
-  states_.push_back(cur);
+  states_.push_back(SubsetState(cur));
   goto increment;
  increment:
   //std::cout << "Incrementing " << cur << " on " << current_digit << std::endl;
@@ -271,7 +270,8 @@ DefaultSubsetStatesTable::DefaultSubsetStatesTable(ParticleStatesTable *pst):
   pst_(pst){}
 
 
-SubsetStates* DefaultSubsetStatesTable::get_subset_states(Subset*s) const {
+SubsetStates* DefaultSubsetStatesTable
+::get_subset_states(const Subset&s) const {
   typedef std::map<Particle*, Particle*> IParent;
   typedef std::map<Particle*, int> IRank;
   typedef boost::associative_property_map<IParent> Parent;
@@ -285,10 +285,10 @@ SubsetStates* DefaultSubsetStatesTable::get_subset_states(Subset*s) const {
   // for some reason boost disjoint sets doesn't provide a way to see
   // if an item is a set
   std::set<Particle*> seen;
-  for (unsigned int i=0; i< s->get_number_of_particles(); ++i) {
-    Particle *a= s->get_particle(i);
+  for (unsigned int i=0; i< s.size(); ++i) {
+    Particle *a= s[i];
     for (unsigned int j=0; j< i; ++j) {
-      Particle *b= s->get_particle(j);
+      Particle *b= s[j];
       if (pst_->get_particle_states(a)
           == pst_->get_particle_states(b)) {
         if (seen.find(a) == seen.end()) {

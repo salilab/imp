@@ -38,7 +38,7 @@ public:                                                         \
 */
 #define IMP_SUBSET_STATES_TABLE(Name)                                   \
   public:                                                               \
-  virtual SubsetStates* get_subset_states(Subset*s) const;        \
+  virtual SubsetStates* get_subset_states(const Subset&s) const;        \
  IMP_OBJECT(Name)
 
 
@@ -47,7 +47,7 @@ public:                                                         \
 */
 #define IMP_SUBSET_EVALUATOR_TABLE(Name)                                \
   public:                                                               \
-  virtual SubsetEvaluator* get_subset_evaluator(Subset*s) const;  \
+  virtual SubsetEvaluator* get_subset_evaluator(const Subset&s) const;  \
   IMP_OBJECT(Name)
 
 

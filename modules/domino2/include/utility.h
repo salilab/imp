@@ -85,7 +85,7 @@ get_dependent_particles(Particle *p,
 typedef boost::adjacency_list<boost::vecS, boost::vecS,
                               boost::undirectedS,
                               boost::property<boost::vertex_name_t,
-                                     Pointer<Subset> > > SubsetGraph;
+                                     Subset > > SubsetGraph;
 #else
 class SubsetGraph;
 #endif

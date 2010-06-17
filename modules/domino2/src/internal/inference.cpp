@@ -16,34 +16,34 @@
 
 IMPDOMINO2_BEGIN_INTERNAL_NAMESPACE
 
-ParticleIndex get_index(const Subset *s) {
+ParticleIndex get_index(const Subset &s) {
   ParticleIndex ret;
-  for (unsigned int i=0; i< s->get_number_of_particles(); ++i) {
-    ret[s->get_particle(i)]=i;
+  for (unsigned int i=0; i< s.size(); ++i) {
+    ret[s[i]]=i;
   }
   return ret;
 }
 
 
-Subset* get_intersection(Subset *a, Subset *b) {
+Subset get_intersection(const Subset &a, const Subset &b) {
   ParticlesTemp rs;
-  std::set_intersection(a->particles_begin(), a->particles_end(),
-                        b->particles_begin(), b->particles_end(),
+  std::set_intersection(a.begin(), a.end(),
+                        b.begin(), b.end(),
                         std::back_inserter(rs));
-  Subset *ret= new Subset(rs, true);
-   return ret;
+  Subset ret(rs, true);
+  return ret;
 }
 
-Subset* get_union(Subset *a, Subset *b) {
+Subset get_union(const Subset &a, const Subset &b) {
   ParticlesTemp rs;
-  std::set_union(a->particles_begin(), a->particles_end(),
-                 b->particles_begin(), b->particles_end(),
+  std::set_union(a.begin(), a.end(),
+                 b.begin(), b.end(),
                  std::back_inserter(rs));
-  Subset *ret= new Subset(rs, true);
-    return ret;
+  Subset ret(rs, true);
+  return ret;
 }
 
-NodeData get_node_data(Subset *s,
+NodeData get_node_data(const Subset &s,
                        const SubsetEvaluatorTable *eval,
                        const SubsetStatesTable *states,
                        double max_score) {
@@ -68,21 +68,21 @@ NodeData get_node_data(Subset *s,
 
 // indexes[i] is the index in is of the ith component
 SubsetState get_subset_state(const IncompleteStates &is,
-                             Subset *s,
+                             const Subset &s,
                              const ParticleIndex &index) {
-  SubsetState ret(s->get_number_of_particles());
-  for (unsigned int i=0; i< ret.size(); ++i) {
-    Particle *p= s->get_particle(i);
-    ret[i]= is[index.find(p)->second];
+  Ints iret(s.size(), -1);
+  for (unsigned int i=0; i< iret.size(); ++i) {
+    Particle *p= s[i];
+    iret[i]= is[index.find(p)->second];
   }
-  for (unsigned int i=0; i< ret.size(); ++i) {
-    IMP_USAGE_CHECK(ret[i] >=0, "not initialized " << ret);
+  for (unsigned int i=0; i< iret.size(); ++i) {
+    IMP_USAGE_CHECK(iret[i] >=0, "not initialized at " << i);
   }
-  return ret;
+  return SubsetState(iret);
 }
 
 
-PropagatedData get_merged(Subset* subset,
+PropagatedData get_merged(const Subset& subset,
                           const SubsetStates *states,
                           const PropagatedData &da,
                           const PropagatedData &db,
@@ -127,7 +127,7 @@ PropagatedData get_merged(Subset* subset,
 }
 
 PropagatedData get_propagated_data(const ParticleIndex& all_particles,
-                                   Subset* subset,
+                                   const Subset& subset,
                                    const NodeData &nd) {
   PropagatedData ret;
   ret.reserve(nd.get_number_of_scores());
@@ -146,25 +146,25 @@ namespace {
 
 EdgeData get_edge_data(const ParticleIndex &all,
                        const SubsetEvaluatorTable *eval,
-                       Subset *a,
-                       Subset *b,
+                       const Subset &a,
+                       const Subset &b,
                        const NodeData &nda) {
   EdgeData ret;
   ret.set_subset(get_intersection(a,b));
   IMP::internal::OwnerPointer<SubsetEvaluator> edge_eval
     = eval->get_subset_evaluator(ret.get_subset());
   IMP_IF_LOG(VERBOSE) {
-    IMP_LOG(VERBOSE, "Edge from node " << a->get_name()
-            << " to " << b->get_name()
-            << " is " << ret.get_subset()->get_name() << std::endl);
+    IMP_LOG(VERBOSE, "Edge from node " << a.get_name()
+            << " to " << b.get_name()
+            << " is " << ret.get_subset().get_name() << std::endl);
   }
   ParticleIndex a_index= get_index(a);
   // could be done better
   for (NodeData::ScoresIterator it = nda.scores_begin();
        it != nda.scores_end(); ++it) {
-    SubsetState es(ret.get_subset()->get_number_of_particles());
+    Ints es(ret.get_subset().size(), -1);
     for (unsigned int i=0; i< es.size(); ++i) {
-      Particle *p=ret.get_subset()->get_particle(i);
+      Particle *p=ret.get_subset()[i];
       int v= it->first[a_index[p]];
       es[i]=v;
     }
@@ -214,7 +214,7 @@ EdgeData get_edge_data(const ParticleIndex &all,
       if (*be.first == parent) continue;
       EdgeData ed= get_edge_data(all_index, eval, boost::get(subset_map, root),
                                  boost::get(subset_map, *be.first), nd);
-      IMP::Pointer<Subset> edge_union
+      Subset edge_union
         = get_union(boost::get(subset_map, root),
                     boost::get(subset_map, *be.first));
       IMP::Pointer<SubsetStates> edge_states
@@ -240,7 +240,7 @@ EdgeData get_edge_data(const ParticleIndex &all,
 
 PropagatedData get_best_conformations(const SubsetGraph &jt,
                                       int root,
-                                      Subset* all_particles,
+                                      const Subset& all_particles,
                                       const SubsetEvaluatorTable *eval,
                                       const SubsetStatesTable *states,
                                       double max_score) {

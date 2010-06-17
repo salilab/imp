@@ -52,7 +52,7 @@ class IMPDOMINO2EXPORT SubsetEvaluatorTable: public Object {
     sampler_=sampler;
   }
 #endif
-  virtual SubsetEvaluator* get_subset_evaluator(Subset *s) const=0;
+  virtual SubsetEvaluator* get_subset_evaluator(const Subset &s) const=0;
   virtual ~SubsetEvaluatorTable();
 };
 
