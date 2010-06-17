@@ -1028,32 +1028,6 @@ double Model::do_evaluate_restraints(const WeightedRestraints &restraints,
   return score;
 }
 
-void Model::validate_attribute_values() const {
-  std::string message;
-  for (ParticleConstIterator it= particles_begin();
-       it != particles_end(); ++it) {
-    Particle *p= *it;
-    for (Particle::FloatKeyIterator kit= p->float_keys_begin();
-         kit != p->float_keys_end(); ++kit) {
-      double d= p->get_value(*kit);
-      if (is_nan(d) || std::abs(d) > std::numeric_limits<double>::max()) {
-        IMP_IF_CHECK(NONE) {
-          message= "Bad particle value";
-        }
-        IMP_IF_CHECK(USAGE) {
-          std::ostringstream oss;
-          oss << message << "; Particle " << p->get_name()
-              << " attribute " << *kit << " has value of "
-              << d << std::endl;
-          message= oss.str();
-        }
-      }
-    }
-  }
-  if (!message.empty()) {
-    throw ModelException(message.c_str());
-  }
-}
 
 
 void Model::validate_incremental_evaluate(const WeightedRestraints &restraints,
@@ -1109,31 +1083,10 @@ void Model::validate_incremental_evaluate(const WeightedRestraints &restraints,
 }
 
 void Model::validate_computed_derivatives() const {
-  {
-    std::string message;
-    for (ParticleConstIterator it= particles_begin();
-         it != particles_end(); ++it) {
-      Particle *p= *it;
-      for (Particle::FloatKeyIterator kit= p->float_keys_begin();
-           kit != p->float_keys_end(); ++kit) {
-        double d= p->get_derivative(*kit);
-        if (is_nan(d) || std::abs(d) > std::numeric_limits<double>::max()) {
-          IMP_IF_CHECK(USAGE) {
-            std::ostringstream oss;
-            oss << message << "Particle " << p->get_name()
-                << " attribute " << *kit << " has derivative of "
-                << d << std::endl;
-            message= oss.str();
-          }
-          IMP_IF_CHECK(NONE) {
-            message= "Bad particle derivative";
-          }
-        }
-      }
-    }
-    if (!message.empty()) {
-      throw ModelException(message.c_str());
-    }
+  for (ParticleConstIterator it= particles_begin();
+       it != particles_end(); ++it) {
+    Particle *p= *it;
+    p->validate_float_derivatives();
   }
 }
 
@@ -1146,9 +1099,6 @@ double Model::do_evaluate(const WeightedRestraints &restraints,
                           const ScoreStatesTemp &states,
                           bool calc_derivs,
                           bool all_particles) {
-  // validate values
-  validate_attribute_values();
-
   // make sure stage is restored on an exception
   SetIt<Stage, NOT_EVALUATING> reset(&cur_stage_);
   IMP_CHECK_OBJECT(this);
@@ -1204,7 +1154,9 @@ double Model::do_evaluate(const WeightedRestraints &restraints,
 
 
   // validate derivatives
-  validate_computed_derivatives();
+  if (calc_derivs) {
+    validate_computed_derivatives();
+  }
   //if (get_is_incremental()) {
   IMP_LOG(TERSE, "Backing up changed particles" << std::endl);
   for (ParticleConstIterator pit = particles_begin();

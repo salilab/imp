@@ -84,7 +84,6 @@ private:
   typedef std::pair<double, Restraint*> WeightedRestraint;
   typedef std::vector<WeightedRestraint> WeightedRestraints;
 
-  void validate_attribute_values() const ;
   void validate_incremental_evaluate(const WeightedRestraints &restraints,
                                      bool calc_derivs,
                                      double score);
@@ -256,9 +255,7 @@ public:
   }
   /** @} */
 
-  //! Evaluate all of the restraints in the model and return the score.
-  /** \param[in] calc_derivs If true, also evaluate the first derivatives.
-      \return The score.
+  /** \name Evaluation
 
       Evaluation proceeds as follows:
       - ScoreState::before_evaluate() is called on all ScoreStates
@@ -266,32 +263,35 @@ public:
       - ScoreState::after_evaluate() is called on all ScoreStates
       The sum of the Restraint::evaluate() return values is returned.
 
-      \throw ModelException if a Particle attribute value becomes
-      invalid (NaN, infinite etc.)
-   */
- virtual double evaluate(bool calc_derivs);
+      All evaluate calls throw a ModelException if a Particle attribute
+      value becomes invalid (NaN, infinite etc.)
 
- //! Evaluate a subset of the restraints
- /** The passed restraints must have been added to this model already.
-
-     \note Not all ScoreStates are updated during this call, only the
-     ones which are needed to make sure the particles read by the
-     restraints are up-to-date. The list of ScoreStates that needs to
-     be updated for each restraint is currently recomputed when new
-     score states are added, but not when the dependencies of
-     Restraints or ScoreStates change. This can be fixed if requested.
-
-     \throw ModelException if a Particle attribute value becomes
-     invalid (NaN, infinite, etc.)
+      @{
   */
- virtual double evaluate(const RestraintsTemp &restraints, bool calc_derivs);
-
-
- //! Evaluate all restraints on only a subset of the particles
- /** All terms which involve particles not in the subset are skipped.
+  //! Evaluate all of the restraints in the model and return the score.
+  /** \param[in] calc_derivs If true, also evaluate the first derivatives.
+      \return The score.
   */
- virtual double evaluate(const ParticlesTemp &particles, bool calc_derivs);
+  virtual double evaluate(bool calc_derivs);
 
+  //! Evaluate a subset of the restraints
+  /** The passed restraints must have been added to this model already.
+
+      \note Not all ScoreStates are updated during this call, only the
+      ones which are needed to make sure the particles read by the
+      restraints are up-to-date. The list of ScoreStates that needs to
+      be updated for each restraint is currently recomputed when new
+      score states are added, but not when the dependencies of
+      Restraints or ScoreStates change. This can be fixed if requested.
+  */
+  virtual double evaluate(const RestraintsTemp &restraints, bool calc_derivs);
+
+  //! Evaluate all restraints on only a subset of the particles
+  /** All terms which involve particles not in the subset are skipped.
+      \note This methd may go away.
+  */
+  virtual double evaluate(const ParticlesTemp &particles, bool calc_derivs);
+  /** @} */
 
  //! Sometimes it is useful to be able to make sure the model is up to date
  /** This method updates all the state but does not necessarily compute the
