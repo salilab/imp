@@ -241,7 +241,7 @@ class IMPEXPORT Particle : public Container
   }*/
   void validate_float_derivatives() const {
     for (unsigned int i=0; i< ps_->derivatives_.get_length(); ++i) {
-      if (ps_->optimizeds_.get(i)) {
+      if (ps_->optimizeds_.fits(i) && ps_->optimizeds_.get(i)) {
         if (! (ps_->derivatives_.get(i) < std::numeric_limits<double>::max())) {
           IMP_THROW("Bad attribute value", ModelException);
         }
