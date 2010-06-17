@@ -17,7 +17,8 @@ using namespace IMP::container;
 
 void test_one(std::string name,
               ClosePairsFinder *cpf, unsigned int n,
-              float rmin, float rmax) {
+              float rmin, float rmax,
+              bool nobi=false) {
   set_log_level(SILENT);
   set_check_level(IMP::NONE);
   {
@@ -41,7 +42,7 @@ void test_one(std::string name,
     oss << "cpf " << name << " " << n << " " << rmax;
     report(oss.str(), runtime, result);
   }
-  {
+  if (!nobi) {
     VectorD<3> minc(0,0,0), maxc(10,10,10);
     IMP_NEW(Model, m, ());
     Particles ps0 = create_xyzr_particles(m, n, rmin);
@@ -80,10 +81,10 @@ int main() {
     test_one(name, cpf, 1000, 0, 5);
     test_one(name, cpf, 10000, 0, .1);
     test_one(name, cpf, 10000, 0, .5);
-    test_one(name, cpf, 10000, 0, 5);
+    //test_one(name, cpf, 10000, 0, 5);
     test_one(name, cpf, 100000, 0, .01);
     test_one(name, cpf, 100000, 0, .1);
-    test_one(name, cpf, 100000, 0, 1);
+    test_one(name, cpf, 100000, 0, .3);
   }
   {
     IMP_NEW(QuadraticClosePairsFinder, cpf, ());
@@ -107,21 +108,21 @@ int main() {
     test_one(name, cpf, 10000, 0, 5);
     test_one(name, cpf, 100000, 0, .01);
     test_one(name, cpf, 100000, 0, .1);
-    test_one(name, cpf, 100000, 0, 1);
+    test_one(name, cpf, 100000, 0, .3);
   }
 #endif
   {
     IMP_NEW(GridClosePairsFinder, cpf, ());
     std::string name="grid";
-    test_one(name, cpf, 1000, 0, .1);
-    test_one(name, cpf, 1000, 0, .5);
-    test_one(name, cpf, 1000, 0, 5);
-    test_one(name, cpf, 10000, 0, .1);
-    test_one(name, cpf, 10000, 0, .5);
-    test_one(name, cpf, 10000, 0, 5);
-    test_one(name, cpf, 100000, 0, .01);
-    test_one(name, cpf, 100000, 0, .1);
-    test_one(name, cpf, 100000, 0, 1);
+    test_one(name, cpf, 1000, 0, .1, true);
+    test_one(name, cpf, 1000, 0, .5, true);
+    test_one(name, cpf, 1000, 0, 5, true);
+    test_one(name, cpf, 10000, 0, .1, true);
+    test_one(name, cpf, 10000, 0, .5, true);
+    test_one(name, cpf, 10000, 0, 5, true);
+    test_one(name, cpf, 100000, 0, .01, true);
+    test_one(name, cpf, 100000, 0, .1, true);
+    test_one(name, cpf, 100000, 0, .3, true);
   }
   return 0;
 }
