@@ -220,7 +220,7 @@ IMPATOMEXPORT extern const AtomType AT_HB1;
 
 
 //! A decorator for a particle representing an atom.
-/**
+/** Atoms always are Mass particles.
    \ingroup hierarchy
    \see Hierarchy
  */
@@ -259,9 +259,7 @@ public:
     return Element(get_particle()->get_value(get_element_key()));
   }
 #ifndef IMP_DOXYGEN
-  void set_element(Element e) {
-   get_particle()->set_value(get_element_key(), e);
-  }
+  void set_element(Element e);
 #endif
 
   /** @name The atom index in the input file

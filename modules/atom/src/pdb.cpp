@@ -138,8 +138,6 @@ Particle* atom_particle(Model *m, const std::string& pdb_line)
   core::XYZ::setup_particle(p, v).set_coordinates_are_optimized(true);
   d.set_input_index(internal::atom_number(pdb_line));
   d.set_element(e);
-  Mass(p).set_mass(get_element_table().get_mass(e));
-
   // check if the element matches
   Element e2 = get_element_for_atom_type(atom_name);
   if (e != e2) {
