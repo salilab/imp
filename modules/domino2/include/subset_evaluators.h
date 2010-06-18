@@ -26,10 +26,12 @@ IMPDOMINO2_BEGIN_NAMESPACE
 class DominoSampler;
 
 
-/** Return the score for a state defined by the subset of particles in
-    the given enumerated states. The table is provided so that they can
-    be calculated if they are not pre-computed.
-*/
+/** An instance of this type is created by the
+    SubsetEvaluatorTable::get_subset_evaluator method().  It has one
+    method of interest, get_score() which returns the score for a
+    given of the Subset which was passed to the
+    SubsetEvaluatorTable::get_subset_evaluator method() call which
+    returned it.  */
 class IMPDOMINO2EXPORT SubsetEvaluator: public Object {
 public:
   SubsetEvaluator(std::string name= "SubsetEvaluator");
@@ -39,6 +41,9 @@ public:
 
 IMP_OBJECTS(SubsetEvaluator, SubsetEvaluators);
 
+
+/** A class which produces SubsetEvaluator objects upon
+    demand.*/
 class IMPDOMINO2EXPORT SubsetEvaluatorTable: public Object {
   WeakPointer<const DominoSampler> sampler_;
   friend class DominoSampler;
@@ -58,40 +63,22 @@ class IMPDOMINO2EXPORT SubsetEvaluatorTable: public Object {
 
 IMP_OBJECTS(SubsetEvaluatorTable, SubsetEvaluatorFactories);
 
-//! An evaluator which loads the state into the model and calls model evaluate
-/** When the object is created, the state of the model is saved. This saved
-    model state is used to initialize the particles which are not part of the
-    current state. Incremental evaluation is used to avoid spending too
-    much time computing scores for the irrelevant particles.
-*/
-class IMPDOMINO2EXPORT ModelSubsetEvaluatorTable: public SubsetEvaluatorTable {
-  mutable Pointer<Model> model_;
-  IMP::internal::OwnerPointer<Configuration> cs_;
-  Pointer<ParticleStatesTable> pst_;
-  mutable std::map<Particle*, ParticlesTemp> dependents_;
+
+//! Score a configuration of the subset using the Model
+/** A given Subset is scored using all the restraints
+    which do not have any optimized particles
+    as input except ones in the subset.
+ */
+class IMPDOMINO2EXPORT ModelSubsetEvaluatorTable:
+  public SubsetEvaluatorTable {
+  internal::ModelData data_;
 public:
   ModelSubsetEvaluatorTable(Model *m, ParticleStatesTable *pst);
   IMP_SUBSET_EVALUATOR_TABLE(ModelSubsetEvaluatorTable);
 };
 
-IMP_OBJECTS(ModelSubsetEvaluatorTable, ModelSubsetEvaluatorFactories);
-
-
-//! This one evaluates the restraints one at a time and caches the result
-/** \note this class is likely to go away and have its functionality moved
-    in to ModelSubsetEvaluatorTable. The interfaces are the same, so such
-    a change will be easy to accomidate.
- */
-class IMPDOMINO2EXPORT CachingModelSubsetEvaluatorTable:
-  public SubsetEvaluatorTable {
-  internal::ModelData data_;
-public:
-  CachingModelSubsetEvaluatorTable(Model *m, ParticleStatesTable *pst);
-  IMP_SUBSET_EVALUATOR_TABLE(CachingModelSubsetEvaluatorTable);
-};
-
-IMP_OBJECTS(CachingModelSubsetEvaluatorTable,
-            CachingModelSubsetEvaluatorTableFactories);
+IMP_OBJECTS(ModelSubsetEvaluatorTable,
+            ModelSubsetEvaluatorTableFactories);
 
 IMPDOMINO2_END_NAMESPACE
 

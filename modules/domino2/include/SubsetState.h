@@ -18,11 +18,16 @@
 
 IMPDOMINO2_BEGIN_NAMESPACE
 
+//! Store a configuration of a subset.
+/** This class stores a configuration of a Subset object. The
+    indices of the corresponding Subset/SubsetState objects
+    correspond. That is, the state of the ith particle in
+    a Subset is the ith value in the SubsetState.
 
-/** Store the configuration of a subset. The indexes match those
-    of the particles in the corresponding Subset object. The
-    SubsetState should not be copied until after it has been
-    completely initialized (all positions set).*/
+    Like Subset objects, SubsetState objects cannot be
+    modified and provide a std::vector/python list like
+    interface.
+*/
 class SubsetState {
   boost::shared_array<int> v_;
   unsigned int sz_;
@@ -71,10 +76,6 @@ public:
     if (i >= sz_) IMP_THROW("Out of bound", IndexException);
     return operator[](i);
   }
-  /*void __setitem__(unsigned int i, unsigned int v) {
-    if (i >= sz_) IMP_THROW("Out of bound", IndexException);
-    operator[](i)=v;
-    }*/
   unsigned int __len__() const {return sz_;}
 #endif
   unsigned int size() const {

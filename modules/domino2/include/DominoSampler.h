@@ -23,10 +23,21 @@ IMPDOMINO2_BEGIN_NAMESPACE
 
 
 //! Sample best solutions using Domino
-/** \note the restraint scores must be non-negative for domino.
+/** The process is paraemterized by
+    - a ParticleStatesTable which
+    stores the set of states for each particle
+    - a SubsetStatesTable which produces a list of states for
+    a given subset of the particles
+    - and a SubsetEvaluatorTable which scores a state of a
+    a given subset.
+    .
+    Defaults of DefaultSubsetStatesTable and CachingModelSubsetEvalauatorTable
+    are provided for the last two.
+
+    \note the restraint scores must be non-negative for domino.
     If you are using restraints which can produce negative values,
     we can provide a restraint which wraps another and makes
-    it non-negative.
+    it non-negative. Ping us.
  */
 class IMPDOMINO2EXPORT DominoSampler : public Sampler
 {
@@ -36,11 +47,17 @@ class IMPDOMINO2EXPORT DominoSampler : public Sampler
 public:
   DominoSampler(Model *m);
   DominoSampler(Model*m, ParticleStatesTable *pst);
-  // use these functions to set up the state space for the particles
+  /** Particle states can be set either using this method,
+      or equivalently, by accessing the table itself
+      using get_particle_states_table(). This method
+      is provided for users who want to use the default values
+      and want a simple inferface.*/
   void set_particle_states(Particle *p, ParticleStates *se);
+
   /** \name Advanced
       Default values are provided, you only need to replace these
-      if you want to do something special.
+      if you want to do something special. See the overview of
+      the module for a general description.
       @{
    */
   void set_subset_evaluator_table(SubsetEvaluatorTable *eval);

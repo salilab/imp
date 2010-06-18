@@ -367,4 +367,41 @@ SubsetGraph get_junction_tree(const InteractionGraph &ig) {
   return jt;
 }
 
+
+bool
+get_is_static_container(Container *c,
+                        const Model::DependencyGraph &dg,
+                        const ParticlesTemp &optimized_particles) {
+  typedef DTraits::in_edge_iterator IEIt;
+  typedef DTraits::vertex_iterator DVIt;
+  typedef boost::property_map<Model::DependencyGraph,
+    boost::vertex_name_t>::const_type DParticleMap;
+  DParticleMap pm=boost::get(boost::vertex_name, dg);
+  int cv;
+  for (std::pair<DVIt, DVIt> be= boost::vertices(dg);
+       be.first != be.second; ++be.first) {
+    if (boost::get(pm, *be.first)== c) {
+      cv=*be.first;
+      break;
+    }
+  }
+  std::set<Object*> dp(optimized_particles.begin(),
+                         optimized_particles.end());
+  std::vector<int> front(1, cv);
+  do {
+    int cur= front.back();
+    front.pop_back();
+    for (std::pair<IEIt, IEIt> be= boost::in_edges(cur, dg);
+         be.first != be.second; ++be.first) {
+      int n= boost::source(*be.first, dg);
+      if (dp.find(boost::get(pm, n)) != dp.end()) {
+        return false;
+      }
+      front.push_back(n);
+    }
+  } while (!front.empty());
+  return true;
+}
+
+
 IMPDOMINO2_END_NAMESPACE

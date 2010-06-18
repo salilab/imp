@@ -40,14 +40,19 @@ class IMPDOMINO2EXPORT SubsetStates: public Object {
 public:
   SubsetStates(std::string name="SubsetStates"): Object(name){}
   virtual unsigned int get_number_of_states() const=0;
+  /** i can be anything in [0, get_number_of_states())
+   */
   virtual SubsetState get_state(unsigned int i) const=0;
+  /** Return true if there is some i for which get_state()
+      returns s. */
   virtual bool get_is_state(const SubsetState &s) const=0;
   virtual ~SubsetStates();
 };
 
 /** The base class for classes that create SubsetStates, one per
-    subset. The sampler calls set_particle_states_table() when the
-    factory is added to the sampler.
+    subset. The main method of interest is get_subset_states()
+    which returns a SubsetStates object which can enumerate
+    the states of a provided subset.
 */
 class IMPDOMINO2EXPORT SubsetStatesTable: public Object {
   WeakPointer<const DominoSampler> sampler_;
@@ -69,25 +74,19 @@ public:
 
 
 /** Enumerate states based on provided ParticleStates
-    objects. "Equivalence classes" can be specified for particles,
-    with the result that no two particles in the same class can be
-    assigned the same state. That allows cheap avoidance of states
-    where particles are assigned the same coordinates (in certain
-    circumstances). Equivalency classes are automatically determined
-    from the ParticleStates objects in the passed table.
+    objects.
 
-    An (optional) subset evaluator can be provided, which will be
-    used to filter subsets based on their score and the bounds
-    provided in the sampler. To describe how this works, let
-    - possible state mean any ordered tuple of integers where the
-    ith value is one of the possible state indices for the ith particle
-    - the jth high state is the possible state consisting of all
-    values j and higher from a possible state, eg the 3rd high state
-    of (0,1,2,3,4,5) is (3,4,5)
-    Then,
-    - the SubsetStates object enumerates through the possible states
-    - a possible state is elimited if any of the high states (and corresponding
-    subset) has a score greater than the maximum allowed by the sampler.
+    The produced states are filtered using a variety of methods
+    - no two particles which have the same ParticleStates object
+    in the ParticleStatesTable can be assigned the same state.
+    That is for a given Subset s and SubsetState ss, if
+    ParticleStatesTable::get_particle_states(s[i])
+    ==ParticleStatesTable::get_particle_states(s[j])
+    then ss[i] != ss[j]
+
+    - If a SubsetEvaluatorTable is provided, the branch and bound
+    is used to eliminate states which score worse than the maximum
+    score set in the sampler.
 */
 class IMPDOMINO2EXPORT DefaultSubsetStatesTable: public SubsetStatesTable {
   friend class DefaultSubsetStates;
