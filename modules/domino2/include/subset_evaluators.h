@@ -45,15 +45,16 @@ IMP_OBJECTS(SubsetEvaluator, SubsetEvaluators);
 /** A class which produces SubsetEvaluator objects upon
     demand.*/
 class IMPDOMINO2EXPORT SubsetEvaluatorTable: public Object {
-  WeakPointer<const DominoSampler> sampler_;
+  WeakPointer<const Sampler> sampler_;
   friend class DominoSampler;
+  friend class BranchAndBoundSampler;
  protected:
-  const DominoSampler *get_sampler() const {
+  const Sampler *get_sampler() const {
     return sampler_;
   }
  public:
 #ifndef IMP_DOXYGEN
-  void set_sampler(const DominoSampler *sampler) {
+  void set_sampler(const Sampler *sampler) {
     sampler_=sampler;
   }
 #endif
@@ -79,6 +80,9 @@ public:
 
 IMP_OBJECTS(ModelSubsetEvaluatorTable,
             ModelSubsetEvaluatorTableFactories);
+
+
+typedef ModelSubsetEvaluatorTable DefaultSubsetEvaluatorTable;
 
 IMPDOMINO2_END_NAMESPACE
 

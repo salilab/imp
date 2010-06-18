@@ -1,6 +1,7 @@
 Import('env')
 
 files = [
+         'BranchAndBoundSampler.cpp',
          'DominoSampler.cpp',
          'Subset.cpp',
          'particle_states.cpp',

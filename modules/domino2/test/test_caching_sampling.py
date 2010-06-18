@@ -32,7 +32,7 @@ class DOMINOTests(IMP.test.TestCase):
         sst= IMP.domino2.DefaultSubsetStatesTable(pst)
         m.add_restraint(IMP.core.DistanceRestraint(IMP.core.Harmonic(1,1), ps[0], ps[1]))
         m.add_restraint(IMP.core.DistanceRestraint(IMP.core.Harmonic(1,1), ps[1], ps[2]))
-        sevt= IMP.domino2.CachingModelSubsetEvaluatorTable(m, pst)
+        sevt= IMP.domino2.ModelSubsetEvaluatorTable(m, pst)
         sampler= IMP.domino2.DominoSampler(m, pst)
         sampler.set_subset_evaluator_table(sevt);
         sampler.set_log_level(IMP.VERBOSE)

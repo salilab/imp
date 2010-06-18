@@ -30,6 +30,11 @@ IMP_SWIG_VALUE(IMP::domino2, SubsetState, SubsetStatesList);
 %include "IMP/domino2/subset_evaluators.h"
 %include "IMP/domino2/subset_states.h"
 %include "IMP/domino2/DominoSampler.h"
+%include "IMP/domino2/BranchAndBoundSampler.h"
 %include "IMP/domino2/utility.h"
 
 
+%pythoncode %{
+DefaultSubsetStatesTable=BranchAndBoundSubsetStatesTable;
+DefaultSubsetEnumeratorTable=ModelSubsetEvaluatorTable;
+%}

@@ -48,17 +48,20 @@ class DOMINOTests(IMP.test.TestCase):
             pst.set_particle_states(p, IMP.domino2.XYZStates(vs))
         print lsc[0].get_name()
         print lsc[1].get_name()
+        all_states= self._get_full_list(pst, lsc)
+        print "There are ", len(all_states), "states"
         r= IMP.core.DistanceRestraint(IMP.core.Harmonic(1,2),
                                       lsc[0],
                                       lsc[1])
-        all_states= self._get_full_list(pst, lsc)
-        print "There are ", len(all_states), "states"
+        r.set_name("0 1");
         m.add_restraint(r)
         ds= IMP.domino2.DominoSampler(m)
         ds.set_maximum_score(.5)
-        dsst= IMP.domino2.DefaultSubsetStatesTable(pst)
+        dsst= IMP.domino2.BranchAndBoundSubsetStatesTable(pst)
+        dsst.set_log_level(IMP.VERBOSE)
         me= IMP.domino2.ModelSubsetEvaluatorTable(m, pst)
         me.set_sampler(ds)
+        print "setting"
         dsst.set_subset_evaluator_table(me)
         dsst.set_sampler(ds)
         ss= dsst.get_subset_states(lsc)
@@ -68,37 +71,12 @@ class DOMINOTests(IMP.test.TestCase):
             s= ss.get_state(i)
             print s
             found_states.append(s)
-            self.assert_((s[0]-s[1])**2==1)
+            self.assertEqual((s[0]-s[1])**2, 1)
             self.assert_(s in all_states)
         for s in all_states:
             if (s[0]-s[1])**2==1:
+                print s
                 self.assert_(s in found_states)
-
-    def _test_global_min2(self):
-        """Testing default subset states with equivalencies"""
-        m= IMP.Model()
-        ps=[]
-        ns=5
-        np=4
-        for i in range(0,np):
-            ps.append(IMP.Particle(m))
-        pst= IMP.domino2.ParticleStatesTable()
-        tps=TrivialParticleStates(ns)
-        pst.set_particle_states(ps[0], tps)
-        pst.set_particle_states(ps[1], tps)
-        for p in ps[2:]:
-            pst.set_particle_states(p, TrivialParticleStates(ns))
-        dsst= IMP.domino2.DefaultSubsetStatesTable(pst)
-        lsc= IMP.container.ListSingletonContainer(ps)
-        ss= dsst.get_subset_states(lsc)
-        self.assertEqual(ss.get_number_of_states(), ns**(len(ps)-2)*(ns)*(ns-1))
-        all_states=[]
-        for i in range(0, ss.get_number_of_states()):
-            state= ss.get_state(i)
-            print state
-            #print all_states
-            self.assert_(state not in all_states)
-            all_states.append(state)
 
 if __name__ == '__main__':
     unittest.main()

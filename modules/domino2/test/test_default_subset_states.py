@@ -21,7 +21,7 @@ class TrivialParticleStates(IMP.domino2.ParticleStates):
 
 class DOMINOTests(IMP.test.TestCase):
 
-    def _test_global_min1(self):
+    def test_global_min1(self):
         """Testing default subset states"""
         m= IMP.Model()
         ps=[]
@@ -33,7 +33,7 @@ class DOMINOTests(IMP.test.TestCase):
         dsst= IMP.domino2.DefaultSubsetStatesTable(pst)
         for p in ps:
             pst.set_particle_states(p, TrivialParticleStates(ns))
-        lsc= IMP.container.ListSingletonContainer(ps)
+        lsc= IMP.domino2.Subset(ps)
         ss= dsst.get_subset_states(lsc)
         self.assertEqual(ss.get_number_of_states(), ns**len(ps))
         all_states=[]

@@ -1,6 +1,6 @@
 /**
- *  \file domino2/DominoSampler.h
- *  \brief A beyesian infererence-based sampler.
+ *  \file domino2/DominoSampler.h \brief A beyesian infererence-based
+ *  sampler.
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  *
@@ -120,7 +120,7 @@ namespace {
   }
 
 
-  class  DefaultSubsetStates: public SubsetStates {
+  class  BranchAndBoundSubsetStates: public SubsetStates {
   public:
     void setup_permutations(UF &equivalencies,
                             const std::set<Particle*>& seen,
@@ -130,16 +130,16 @@ namespace {
     void setup_scores(const Subset &s, SubsetEvaluatorTable *set,
                       SubsetEvaluators &ses);
     std::vector<SubsetState> states_;
-    DefaultSubsetStates(UF &equivalencies,
+    BranchAndBoundSubsetStates(UF &equivalencies,
                         const std::set<Particle*> &seen,
                         double max,
                         const Subset &s,
                         ParticleStatesTable *table,
                         SubsetEvaluatorTable *set);
-  IMP_SUBSET_STATES(DefaultSubsetStates);
+  IMP_SUBSET_STATES(BranchAndBoundSubsetStates);
 };
 
-  void DefaultSubsetStates::setup_permutations(UF &equivalencies,
+  void BranchAndBoundSubsetStates::setup_permutations(UF &equivalencies,
                                                const std::set<Particle*>& seen,
                                                const Subset &s,
                                                ParticleStatesTable *table,
@@ -158,11 +158,12 @@ namespace {
     }
   }
 
-  void DefaultSubsetStates::setup_scores(const Subset &s,
+  void BranchAndBoundSubsetStates::setup_scores(const Subset &s,
                                          SubsetEvaluatorTable *set,
                                          SubsetEvaluators &ses) {
     ses.resize(s.size());
     for (unsigned int i=0; i < ses.size(); ++i) {
+      //std::cout << "Getting evaluator for " << i << std::endl;
       ParticlesTemp pt(s.begin()+i, s.end());
       Subset s(pt, true);
       SubsetEvaluator* se= set->get_subset_evaluator(s);
@@ -174,14 +175,16 @@ namespace {
   }
 
 
-DefaultSubsetStates::DefaultSubsetStates(UF &equivalencies,
+BranchAndBoundSubsetStates::BranchAndBoundSubsetStates(UF &equivalencies,
                                          const std::set<Particle*>& seen,
                                          double max,
                                          const Subset &s,
                                          ParticleStatesTable *table,
                                          SubsetEvaluatorTable *set):
-  SubsetStates("DefaultSubsetStates on "+s.get_name()) {
-  IMP_LOG(VERBOSE, "Computing states for " << s.get_name() << std::endl);
+  SubsetStates("BranchAndBoundSubsetStates on "+s.get_name()) {
+  IMP_OBJECT_LOG;
+  IMP_LOG(VERBOSE, "Computing states for " << s.get_name()
+          << " " << (set?"with":"without") << " filtering" << std::endl);
   std::vector<Ints> permutations;
   setup_permutations(equivalencies, seen, s, table, permutations);
   SubsetEvaluators evaluators;
@@ -216,6 +219,7 @@ DefaultSubsetStates::DefaultSubsetStates(UF &equivalencies,
     if (set) {
       SubsetState ss(cur.begin()+i, cur.end());
       double score= evaluators[i]->get_score(ss);
+      //std::cout << "score " << i << " is " << score << std::endl;
       if (score > max) {
         goto bad;
       }
@@ -250,27 +254,28 @@ DefaultSubsetStates::DefaultSubsetStates(UF &equivalencies,
 
 
 
-unsigned int DefaultSubsetStates::get_number_of_states() const {
+unsigned int BranchAndBoundSubsetStates::get_number_of_states() const {
   return states_.size();
 }
-SubsetState DefaultSubsetStates::get_state(unsigned int i) const {
+SubsetState BranchAndBoundSubsetStates::get_state(unsigned int i) const {
   return states_[i];
 }
 
-bool DefaultSubsetStates::get_is_state(const SubsetState &state) const {
+bool BranchAndBoundSubsetStates::get_is_state(const SubsetState &state) const {
   return std::binary_search(states_.begin(), states_.end(), state);
 }
 
-void DefaultSubsetStates::do_show(std::ostream &out) const{}
+void BranchAndBoundSubsetStates::do_show(std::ostream &out) const{}
 
 }
 
 
-DefaultSubsetStatesTable::DefaultSubsetStatesTable(ParticleStatesTable *pst):
+BranchAndBoundSubsetStatesTable
+::BranchAndBoundSubsetStatesTable(ParticleStatesTable *pst):
   pst_(pst){}
 
 
-SubsetStates* DefaultSubsetStatesTable
+SubsetStates* BranchAndBoundSubsetStatesTable
 ::get_subset_states(const Subset&s) const {
   typedef std::map<Particle*, Particle*> IParent;
   typedef std::map<Particle*, int> IRank;
@@ -309,12 +314,12 @@ SubsetStates* DefaultSubsetStatesTable
   } else {
     max= std::numeric_limits<double>::max();
   }
-  return new DefaultSubsetStates(equivalencies, seen, max,
+  return new BranchAndBoundSubsetStates(equivalencies, seen, max,
                                  s,
                                  pst_, set_);
 }
 
-void DefaultSubsetStatesTable::do_show(std::ostream &out) const {
+void BranchAndBoundSubsetStatesTable::do_show(std::ostream &out) const {
 }
 
 

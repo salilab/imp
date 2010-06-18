@@ -43,10 +43,12 @@ const SubsetData &ModelData::get_subset_data(const Subset &s) const {
     ParticleIndex pi= get_index(s);
     Ints ris;
     std::vector<Ints> inds;
+    //std::cout << "Find data for subset " << s << std::endl;
     for (Model::RestraintIterator rit= m_->restraints_begin();
          rit != m_->restraints_end(); ++rit) {
       if (std::includes(s.begin(), s.end(),
                         dependencies_[i].begin(), dependencies_[i].end())) {
+        //std::cout << "Found restraint " << (*rit)->get_name() << std::endl;
         ris.push_back(i);
         inds.push_back(Ints());
         for (unsigned int j=0; j< dependencies_[i].size(); ++j) {
@@ -64,8 +66,14 @@ const SubsetData &ModelData::get_subset_data(const Subset &s) const {
 double SubsetData::get_score(const SubsetState &state,
                              double max) const {
   double score=0;
+  /*std::cout << "Scoring " << state << " on " << ris_.size()
+    << " restraints" << std::endl;*/
   for (unsigned int i=0; i< ris_.size(); ++i) {
-    SubsetState ss(indices_[i]);
+    Ints ssi(indices_[i].size());
+    for (unsigned int j=0; j< ssi.size();++j) {
+      ssi[j]= state[indices_[i][j]];
+    }
+    SubsetState ss(ssi);
     ParticlesTemp ps(ss.size());
     for (unsigned int j=0; j< ss.size(); ++j) {
       ps[j]= s_[indices_[i][j]];
@@ -73,6 +81,11 @@ double SubsetData::get_score(const SubsetState &state,
     double ms=md_->rdata_[ris_[i]].get_score(md_->pst_,
                                              ps, ss);
     score+= ms;
+    /*std::cout << "for " << ss << " on " << i << " got " << ms << std::endl;
+    for (unsigned int j=0; j< indices_[i].size(); ++j) {
+      std::cout << indices_[i][j] << " ";
+    }
+    std::cout << std::endl;*/
     if (score > max) {
       return std::numeric_limits<double>::max();
     }
