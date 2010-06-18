@@ -235,6 +235,10 @@ void Atom::show(std::ostream &out) const
 void Atom::set_atom_type(AtomType t)
 {
   get_particle()->set_value(get_atom_type_key(), t.get_index());
+  Element e= get_element_for_atom_type(t);
+  if (e != UNKNOWN_ELEMENT) {
+    set_element(e);
+  }
 }
 
 IntKey Atom::get_atom_type_key() {
@@ -276,6 +280,11 @@ Atom get_atom(Residue rd, AtomType at) {
   }
   IMP_LOG(VERBOSE, "Atom not found " << at << std::endl);
   return Atom();
+}
+
+void Atom::set_element(Element e) {
+  get_particle()->set_value(get_element_key(), e);
+  Mass(get_particle()).set_mass(get_element_table().get_mass(e));
 }
 
 
