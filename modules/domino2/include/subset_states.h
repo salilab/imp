@@ -88,18 +88,20 @@ public:
     is used to eliminate states which score worse than the maximum
     score set in the sampler.
 */
-class IMPDOMINO2EXPORT DefaultSubsetStatesTable: public SubsetStatesTable {
-  friend class DefaultSubsetStates;
+class IMPDOMINO2EXPORT BranchAndBoundSubsetStatesTable:
+  public SubsetStatesTable {
+  friend class BranchAndBoundSubsetStates;
   Pointer<ParticleStatesTable> pst_;
   Pointer<SubsetEvaluatorTable> set_;
  public:
-  DefaultSubsetStatesTable(ParticleStatesTable* pst);
+  BranchAndBoundSubsetStatesTable(ParticleStatesTable* pst);
   void set_subset_evaluator_table(SubsetEvaluatorTable *set) {
     set_=set;
   }
-  IMP_SUBSET_STATES_TABLE(DefaultSubsetStatesTable);
+  IMP_SUBSET_STATES_TABLE(BranchAndBoundSubsetStatesTable);
 };
 
+typedef BranchAndBoundSubsetStatesTable DefaultSubsetStatesTable;
 
 IMPDOMINO2_END_NAMESPACE
 

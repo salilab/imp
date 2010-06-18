@@ -23,7 +23,7 @@ class DOMINOTests(IMP.test.TestCase):
         cpc= IMP.container.ClosePairContainer(lsc, 5)
         dg= m.get_dependency_graph()
         self.assert_(IMP.domino2.get_is_static_container(lsc, dg, ps))
-        self.assert_(!IMP.domino2.get_is_static_container(cpc, dg, ps))
+        self.assert_(not IMP.domino2.get_is_static_container(cpc, dg, ps))
 
 
 if __name__ == '__main__':

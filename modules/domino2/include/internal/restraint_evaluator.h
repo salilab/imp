@@ -38,7 +38,8 @@ public:
     Scores::const_iterator it= scores_.find(state);
     if (it != scores_.end()) {
       /*std::cout << "Found cached score for " << r_->get_name()
-        << " on " << state << "= " << it->second << std::endl;*/
+        << " on " << state << "= " << it->second
+        << "(" << it->first << ")" << std::endl;*/
       return it->second;
     } else {
       for (unsigned int i=0; i< ps.size(); ++i) {
