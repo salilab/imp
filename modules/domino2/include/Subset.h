@@ -18,8 +18,15 @@
 
 IMPDOMINO2_BEGIN_NAMESPACE
 
-/** Store a subset of the optimized particles. The particles are
-    kept in sorted order. Subsets should be stored by pointer.
+//! Represent a subset of the particles being optimized.
+/** Domino acts by dividing the particles being changed
+    into subsets and optimizing the subsets independently.
+    Each subset is represented using a Subset class. These
+    classes, like the SubsetState classes simply store
+    a constant list (in this case of particles). The list
+    is stored in sorted order. Their interface is more or
+    less that of a constant std::vector in C++ or
+    a constant list in python.
  */
 class IMPDOMINO2EXPORT Subset {
   boost::shared_array<Particle*> ps_;

@@ -7,12 +7,23 @@ env.IMPModuleDoc(env.IMPModuleGetDocs(),
                  brief="MODULENAME provides a divide and conquer sampler. It provides a simpler interface and (hopefully) faster performance than the original IMP.domino module.",
                  # Provide a longer description of what the module does
                  # This description can have multiple paragraphs and all sorts of markup
-                 overview="""Currently the module does not do anything useful and simply provides prototypes for what it will look like when functional.
+                 overview="""This module provides a sampler which finds good solutions over a discrete sampling space. That is, given a scoring function encoded in the model and a list of possible states for each particle of the model that is allowed to change, encoded in a ParticleStates object, it finds all configurations of the model that have less than a certain score.
 
-The central class is the IMP::domino2::DominoSampler which computes the best configurations of a model given the restraints in the model and the sampling space provided. Each particle being optimized must have a corresponding IMP::domino2::ParticleStates object which describes a discrete sampling of the particle's domain.
+The process works by dividing the set of all particles of interest into subsets (represented using a Subset object). Good conformations for these subsets are found which are then combined together to produce the score for the whole model. A conformation is represented using a SubsetState object.
 
-API todo list:
-- nothing currently, it looks pretty good
+The central class is the DominoSampler which does the actual computation of good configruation. The computation is parameterized by a objects of several other types:
+- each particle which is allowed to change must have a corresponding ParticleStates stored in
+  the ParticleStatesTable made available to the DominoSampler.
+- a SubsetEvaluatorTable parameterizes how a given configuration of a subset is scored. By
+  default, the Model is used.
+- a SubsetStatesTable parameterizes how the set of states of a subset are generated from the states of the constituent particle. The default one skips conformations which assign two particles to the same state and conformations which do not score well.
+
+These classes are structured as tables which return the objects which act on
+a particle subset or particle when asked. For example, a SubsetEvaluatorTable
+has one main method SubsetEvaluatorTable::get_subset_evaluator() which takes
+a Subset and returns a SubsetEvaluator. The SubsetEvaluator has a method
+SubsetEvaluator::get_score() which can return the score for any conformation
+(SubsetState) of the previously provided subset.
 
 Implementation todo list:
 - avoid rebuilding indexes repeatedly

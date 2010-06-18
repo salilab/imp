@@ -92,7 +92,7 @@ class SubsetGraph;
 IMPDOMINO2EXPORT SubsetGraph
 get_junction_tree(const InteractionGraph &ig);
 /** @} */
-#if 0
+
 /** A static container is one such as a container::ListSingletonContainer, whose
     contents will not change as optimized particles are moved around. More
     technically, it is one which either is not written by any score state or,
@@ -105,7 +105,7 @@ IMPDOMINO2EXPORT bool
 get_is_static_container(Container *c,
                         const Model::DependencyGraph &dg,
                         const ParticlesTemp &optimized_particles);
-
+#if 0
 class ParticleStatesTable;
 /** The function transforms the restraints, score states and
     containers in a model to make it better suited for the

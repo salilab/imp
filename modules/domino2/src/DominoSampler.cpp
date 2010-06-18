@@ -90,6 +90,7 @@ ConfigurationSet *DominoSampler::do_sample() const {
   } else {
     sst= new DefaultSubsetStatesTable(get_particle_states_table());
     sst->set_sampler(this);
+    sst->set_subset_evaluator_table(set);
   }
 
   std::vector<SubsetState> final_solutions= get_solutions(jt, known_particles,
