@@ -283,6 +283,33 @@ RigidBody RigidBody::setup_particle(Particle *p,
   return d;
 }
 
+
+RigidBody RigidBody::setup_particle(Particle *p,
+                                    const RigidBodies &members){
+  IMP_LOG(VERBOSE, "Creating rigid body from other rigid bodies"<<std::endl);
+  IMP_USAGE_CHECK(members.size() > 0, "Must provide members");
+  XYZs xmember;
+  for (unsigned int i=0; i< members.size(); ++i) {
+    RigidMembers m= members[i].get_members();
+    for (unsigned int j=0; j< m.size(); ++j) {
+      xmember.push_back(m[j]);
+    }
+  }
+  RigidBody d=internal_setup_particle(p, xmember);
+  for (unsigned int i=0; i< members.size(); ++i) {
+    d.add_member(members[i]);
+    //IMP_LOG(VERBOSE, " " << cm << " | " << std::endl);
+  }
+  set_constraint(new UpdateRigidBodyMembers(),
+                 new AccumulateRigidBodyDerivatives(), p);
+  return d;
+}
+
+void RigidBody::teardown_particle(RigidBody rb) {
+  rb.set_constraint(NULL, NULL, rb.get_particle());
+  internal::remove_required_attributes_for_body(rb.get_particle());
+}
+
 void
 RigidBody::normalize_rotation() {
   algebra::VectorD<4>
@@ -316,7 +343,7 @@ void RigidBody::update_members() {
   for (unsigned int i=0; i< hdb.get_number_of_children(); ++i) {
     RigidMember rm(hdb.get_child(i));
     RigidBody rb(rm);
-    rb.set_reference_frame(algebra::ReferenceFrame3D(tr
+    rb.lazy_set_reference_frame(algebra::ReferenceFrame3D(tr
                                      *rm.get_internal_transformation()));
   }
 }
