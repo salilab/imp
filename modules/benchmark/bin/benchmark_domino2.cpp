@@ -16,12 +16,13 @@ typedef IMP::atom::Hierarchy Hierarchy;
 
 int main(int, char *[]) {
   IMP_NEW(Model, m, ());
+  set_log_level(SILENT);
   m->set_log_level(SILENT);
   ::Hierarchy h= read_pdb(IMP::benchmark::get_data_path("small_protein.pdb"),m);
   add_radii(h);
   Transformation3Ds vs;
   HierarchiesTemp residues= get_by_type(h, RESIDUE_TYPE);
-  while (residues.size() > 10) {
+  while (residues.size() > 80) {
     residues.pop_back();
   }
   HierarchiesTemp leaves;
@@ -69,8 +70,9 @@ int main(int, char *[]) {
 
   ds->set_maximum_score(1);
   double runtime, num=0;
-  m->set_log_level(SILENT);
+#ifndef NDEBUG
   ds->set_log_level(VERBOSE);
+#endif
   IMP_TIME(
              {
                Pointer<ConfigurationSet> cs= ds->get_sample();
