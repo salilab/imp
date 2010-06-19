@@ -24,8 +24,9 @@ IMPCORE_BEGIN_NAMESPACE
 
 
 class RigidMember;
-
+class RigidBody;
 IMP_DECORATORS(RigidMember,RigidMembers, XYZs);
+IMP_DECORATORS(RigidBody,RigidBodies, XYZs);
 
 //! A decorator for a rigid body
 /** A rigid body particle describes a set of particles, known
@@ -77,6 +78,12 @@ public:
 
   IMP_DECORATOR(RigidBody, XYZ);
 
+  /** Merge several rigid bodies into on.
+   */
+  static RigidBody setup_particle(Particle *p,
+                                  const RigidBodies &o);
+
+
   //! Create a new rigid body from a set of particles.
   /** \param[in] p The particle to make into a rigid body
       \param[in] members The particles to use as members of the rigid body
@@ -103,6 +110,9 @@ public:
   static RigidBody setup_particle(Particle *p,
                                   RigidBody other,
                                 const RigidMembers &members);
+
+  //! Make the rigid body no longer rigid.
+  static void teardown_particle(RigidBody rb);
 
   ~RigidBody();
 
@@ -175,7 +185,6 @@ public:
 
 IMP_OUTPUT_OPERATOR(RigidBody);
 
-IMP_DECORATORS(RigidBody,RigidBodies, XYZs);
 
 //! A decorator for a particle that is part of a rigid body
 /**

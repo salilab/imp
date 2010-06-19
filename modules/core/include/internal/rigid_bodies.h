@@ -101,6 +101,11 @@ inline void add_required_attributes_for_body(Particle *p) {
       XYZ::setup_particle(p);
   }
 }
+inline void remove_required_attributes_for_body(Particle *p) {
+  for (unsigned int i=0; i< 4; ++i) {
+    p->remove_attribute(rigid_body_data().quaternion_[i]);
+  }
+}
 
 inline void add_required_attributes_for_member(Particle *p) {
   for (unsigned int i=0; i< 3; ++i) {
