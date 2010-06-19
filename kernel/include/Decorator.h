@@ -342,11 +342,18 @@ public:                                                                 \
   void Name::set_constraint(SingletonModifier* before,                  \
                             SingletonModifier *after,                   \
                             Particle *p) {                              \
-    Constraint *ss= new SingletonConstraint(before,                     \
-                                            after, p,                   \
+    if (!after && !before ) {                                           \
+      if (p->has_attribute(get_constraint_key())) {                     \
+        p->get_model()->remove_score_state(dynamic_cast<ScoreState*>    \
+                                 (p->get_value(get_constraint_key()))); \
+      }                                                                 \
+    } else {                                                            \
+      Constraint *ss= new SingletonConstraint(before,                   \
+                                              after, p,                 \
                       std::string(#Name "updater for ")+p->get_name()); \
-    p->add_attribute(get_constraint_key(), ss);                         \
-    p->get_model()->add_score_state(ss);                                \
+      p->add_attribute(get_constraint_key(), ss);                       \
+      p->get_model()->add_score_state(ss);                              \
+    }                                                                   \
   }                                                                     \
   IMP_REQUIRE_SEMICOLON_NAMESPACE
 
