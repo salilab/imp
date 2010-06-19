@@ -9,7 +9,7 @@ env.IMPModuleDoc(env.IMPModuleGetDocs(),
                  # This description can have multiple paragraphs and all sorts of markup
                  overview="""This module provides a sampler which finds good solutions over a discrete sampling space. That is, given a scoring function encoded in the model and a list of possible states for each particle of the model that is allowed to change, encoded in a ParticleStates object, it finds all configurations of the model that have less than a certain score.
 
-The process works by dividing the set of all particles of interest into subsets (represented using a Subset object). Good conformations for these subsets are found which are then combined together to produce the score for the whole model. A conformation is represented using a SubsetState object.
+The process works by dividing the set of all optimized particles into subsets (represented using a Subset object). Good conformations for these subsets are found which are then combined together to produce the score for the whole model. A conformation is represented using a SubsetState object.
 
 The central class is the DominoSampler which does the actual computation of good configruation. The computation is parameterized by a objects of several other types:
 - each particle which is allowed to change must have a corresponding ParticleStates stored in
