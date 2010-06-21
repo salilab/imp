@@ -92,7 +92,7 @@ public:
   }
 
   template <class O>
-  const BoundingBoxD<D> operator+(const O &o) {
+  const BoundingBoxD<D> operator+(const O &o) const {
     BoundingBoxD<D> ret(*this);
     ret+= o;
     return ret;
@@ -154,6 +154,18 @@ inline BoundingBoxD<3> get_transformed(const BoundingBoxD<3> &bb,
     }
   }
   return nbb;
+}
+
+
+//! Return true if they intersect
+template <unsigned int D>
+inline bool get_interiors_intersect(const BoundingBoxD<D> &a,
+                          const BoundingBoxD<D> &b) {
+  for (unsigned int i=0; i< D; ++i) {
+    if (a.get_corner(0)[i] > b.get_corner(1)[i]) return false;
+    if (b.get_corner(0)[i] > a.get_corner(1)[i]) return false;
+  }
+  return true;
 }
 
 IMPALGEBRA_END_NAMESPACE

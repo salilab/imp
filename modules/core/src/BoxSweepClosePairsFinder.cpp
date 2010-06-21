@@ -114,7 +114,8 @@ namespace {
     IntPairs &out_;
     BoxAddToList(IntPairs &out): out_(out){}
     void operator()(const BoxNBLBbox &a, const BoxNBLBbox &b) {
-      if (algebra::get_intersect(static_cast<const algebra::BoundingBox3D&>(a),
+      if (algebra::get_interiors_intersect(
+                                 static_cast<const algebra::BoundingBox3D&>(a),
                                  static_cast<const algebra::BoundingBox3D&>(b)))
         {
           out_.push_back(IntPair(a.id(), b.id()));
