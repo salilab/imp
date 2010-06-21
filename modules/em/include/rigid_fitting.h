@@ -242,6 +242,7 @@ IMPEMEXPORT FittingSolutions compute_fitting_scores(const Particles &ps,
    const FloatKey &rad_key, const FloatKey &wei_key,
    const algebra::Transformation3Ds& transformations,
    bool fast_version=false);
+
 //! Compute fitting scores for a given set of rigid transformations
 /**
 \brief Scores how well a set of particles fit a map

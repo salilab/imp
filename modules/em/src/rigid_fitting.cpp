@@ -85,13 +85,12 @@ void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
   for (core::XYZsTemp::iterator it = xyz_t.begin(); it != xyz_t.end(); it++) {
     vecs_ref.push_back(it->get_coordinates());
   }
-  algebra::Transformation3D starting_trans
-    = rb.get_reference_frame().get_transformation_to();
+  algebra::Transformation3D starting_trans = rb.get_transformation();
   for(int i=0;i<number_of_optimization_runs;i++) {
     IMP_LOG(VERBOSE, "number of optimization run is : "<< i << std::endl);
     //set the centroid of the rigid body to be on the anchor centroid
     //make sure that all of the members are in the correct transformation
-    rb.set_reference_frame(algebra::ReferenceFrame3D(starting_trans));
+    rb.set_transformation(starting_trans);
     algebra::VectorD<3> ps_centroid = IMP::core::get_centroid(xyz_t);
     algebra::Transformation3D move2centroid(algebra::get_identity_rotation_3d(),
                                             anchor_centroid-ps_centroid);
@@ -124,7 +123,7 @@ void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
     }
   }
   //return the rigid body to the original position
-  rb.set_reference_frame(algebra::ReferenceFrame3D(starting_trans));
+  rb.set_transformation(starting_trans);
 }
 
 
