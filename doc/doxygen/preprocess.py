@@ -26,7 +26,7 @@ def handle_namespace(infile, outfile):
             mname= l[3:l.find("_")]
             outfile.write("namespace IMP {\n")
             if mname!="":
-                outfile.write("namespace"+ mname.lower()+ "{\n")
+                outfile.write("namespace "+ mname.lower()+ "{\n")
         elif end.match(l):
             #print "match 1"
             #print  >> outfile, "#4"
@@ -66,14 +66,22 @@ def main():
         print txt
     else:
         pns= StringIO.StringIO()
-        defs= glob.glob('doc/doxygen/*.def')
+        defs= glob.glob('doc/doxygen/generated/*.def')
         macros=[]
         for d in defs:
             macros.append("-imacros")
             macros.append(d)
         handle_namespace(txt, pns)
         open("/tmp/pns.h", "w").write(pns.getvalue())
-        os.system("cpp -C "+ " ".join(macros) +" /tmp/pns.h > /tmp/cppout")
+        command="cpp -C "+ " ".join(macros) +" /tmp/pns.h > /tmp/cppout"
+        #print >> sys.stderr, command
+        ret=os.system(command)
+        if ret != 0:
+            lns= pns.getvalue().split("\n")
+            for i in range(0, len(lns)):
+                print >>sys.stderr, i, lns[i]
+        else:
+            print "ok"
         cleanup(open("/tmp/cppout", "r"))
 
 if __name__ == '__main__':
