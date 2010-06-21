@@ -47,19 +47,14 @@ double GroupnameRestraint
   return score_;
 }
 
-ParticlesList GroupnameRestraint::get_interacting_particles() const
-{
-  return ss_->get_interacting_particles(v_);
-}
-
 ParticlesTemp GroupnameRestraint::get_input_particles() const
 {
-  return ss_->get_input_particles(v_);
+  return IMP::internal::get_input_particles(ss_.get(), v_);
 }
 
 ContainersTemp GroupnameRestraint::get_input_containers() const
 {
-  return ss_->get_input_containers(v_);
+  return IMP::internal::get_input_containers(ss_.get(), v_);
 }
 
 void GroupnameRestraint::do_show(std::ostream& out) const

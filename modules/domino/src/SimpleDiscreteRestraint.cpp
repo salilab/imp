@@ -75,11 +75,6 @@ IMP_LIST_IMPL(SimpleDiscreteRestraint, Particle, particle,Particle*,
               },{},{});
 
 
-ParticlesList SimpleDiscreteRestraint::get_interacting_particles() const
-{
-  return ParticlesList(1, ParticlesTemp(particles_begin(), particles_end()));
-}
-
 ParticlesTemp SimpleDiscreteRestraint::get_input_particles() const
 {
   return ParticlesTemp(particles_begin(), particles_end());

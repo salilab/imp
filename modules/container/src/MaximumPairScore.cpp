@@ -68,18 +68,8 @@ bool MaximumPairScore::get_is_changed(const ParticlePair& v) const {
 }
 
 
-ParticlesList MaximumPairScore
-::get_interacting_particles(const ParticlePair& p) const {
-  ParticlesList ret;
-  for (unsigned int i=0; i< scores_.size(); ++i) {
-    ParticlesList c= scores_[i]->get_interacting_particles(p);
-    ret.insert(ret.end(), c.begin(), c.end());
-  }
-  return ret;
-}
-
 ParticlesTemp MaximumPairScore
-::get_input_particles(const ParticlePair& p) const {
+::get_input_particles(Particle* p) const {
   ParticlesTemp ret;
   for (unsigned int i=0; i< scores_.size(); ++i) {
     ParticlesTemp c= scores_[i]->get_input_particles(p);
@@ -89,7 +79,7 @@ ParticlesTemp MaximumPairScore
 }
 
 ContainersTemp MaximumPairScore
-::get_input_containers(const ParticlePair& p) const {
+::get_input_containers(Particle* p) const {
   ContainersTemp ret;
   for (unsigned int i=0; i< scores_.size(); ++i) {
     ContainersTemp c= scores_[i]->get_input_containers(p);

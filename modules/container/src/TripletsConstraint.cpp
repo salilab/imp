@@ -48,14 +48,6 @@ void TripletsConstraint::do_update_derivatives(DerivativeAccumulator *da)
   IMP_LOG(TERSE, "End TripletsConstraint::after_evaluate" << std::endl);
 }
 
-ParticlesList TripletsConstraint::get_interacting_particles() const {
-  ParticlesList ret0, ret1;
-  if (f_) ret0 = IMP::internal::get_interacting_particles(c_.get(), f_.get());
-  if (af_) ret1= IMP::internal::get_interacting_particles(c_.get(), af_.get());
-  ret0.insert(ret0.end(), ret1.begin(), ret1.end());
-  return ret0;
-}
-
 
 ContainersTemp TripletsConstraint::get_input_containers() const {
   return ContainersTemp(1, c_);
@@ -68,13 +60,15 @@ ContainersTemp TripletsConstraint::get_output_containers() const {
 ParticlesTemp TripletsConstraint::get_input_particles() const {
   ParticlesTemp ret;
   if (f_) {
-    ret= IMP::internal::get_input_particles(c_.get(), f_.get());
-    ParticlesTemp o= IMP::internal::get_output_particles(c_.get(), f_.get());
+    ret= IMP::internal::get_input_particles(f_.get(),
+                                            c_->get_contained_particles());
+    ParticlesTemp o= IMP::internal::get_output_particles(f_.get(),
+                                            c_->get_contained_particles());
     ret.insert(ret.end(), o.begin(), o.end());
     IMP_IF_CHECK(USAGE) {
       if (af_) {
-        ParticlesTemp oret= IMP::internal::get_output_particles(c_.get(),
-                                                                af_.get());
+        ParticlesTemp oret= IMP::internal::get_output_particles(af_.get(),
+                                               c_->get_contained_particles());
         std::sort(ret.begin(), ret.end());
         std::sort(oret.begin(), oret.end());
         ParticlesTemp t;
@@ -88,7 +82,8 @@ ParticlesTemp TripletsConstraint::get_input_particles() const {
       }
     }
   } else {
-    ret= IMP::internal::get_output_particles(c_.get(), af_.get());
+    ret= IMP::internal::get_output_particles(af_.get(),
+                                          c_->get_contained_particles());
   }
   return ret;
 }
@@ -96,13 +91,14 @@ ParticlesTemp TripletsConstraint::get_input_particles() const {
 ParticlesTemp TripletsConstraint::get_output_particles() const {
   ParticlesTemp ret;
   if (f_) {
-    ret= IMP::internal::get_output_particles(c_.get(), f_.get());
+    ret= IMP::internal::get_output_particles(f_.get(),
+                                       c_->get_contained_particles());
     IMP_IF_CHECK(USAGE) {
       if (af_) {
-        ParticlesTemp oret= IMP::internal::get_input_particles(c_.get(),
-                                                               af_.get());
-        ParticlesTemp iret=IMP::internal::get_input_particles(c_.get(),
-                                                              f_.get());
+        ParticlesTemp oret= IMP::internal::get_input_particles(af_.get(),
+                                               c_->get_contained_particles());
+        ParticlesTemp iret=IMP::internal::get_input_particles(f_.get(),
+                                               c_->get_contained_particles());
         iret.insert(iret.end(), ret.begin(), ret.end());
         std::sort(iret.begin(), iret.end());
         std::sort(oret.begin(), oret.end());
@@ -116,7 +112,8 @@ ParticlesTemp TripletsConstraint::get_output_particles() const {
       }
     }
   } else {
-    ret= IMP::internal::get_input_particles(c_.get(), af_.get());
+    ret= IMP::internal::get_input_particles(af_.get(),
+                                           c_->get_contained_particles());
   }
   return ret;
 }
