@@ -68,16 +68,6 @@ bool MaximumSingletonScore::get_is_changed(Particle* v) const {
 }
 
 
-ParticlesList MaximumSingletonScore
-::get_interacting_particles(Particle* p) const {
-  ParticlesList ret;
-  for (unsigned int i=0; i< scores_.size(); ++i) {
-    ParticlesList c= scores_[i]->get_interacting_particles(p);
-    ret.insert(ret.end(), c.begin(), c.end());
-  }
-  return ret;
-}
-
 ParticlesTemp MaximumSingletonScore
 ::get_input_particles(Particle* p) const {
   ParticlesTemp ret;

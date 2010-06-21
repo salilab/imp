@@ -66,25 +66,10 @@ void MaximumTripletRestraint::do_show(std::ostream &out) const {
 }
 
 
-ParticlesList MaximumTripletRestraint::get_interacting_particles() const
-{
-  MS bestn= find_minimal_set(c_->particle_triplets_begin(),
-                             c_->particle_triplets_end(), f_.get(), n_);
-  ParticlesList ret;
-  for (unsigned int i=0; i< bestn.size(); ++i) {
-    ParticlesList pt=f_->get_interacting_particles(bestn[i].second);
-    if (!pt.empty()) {
-      ret.push_back(IMP::internal::get_union(pt));
-    }
-  }
-
-  return ret;
-}
-
-
 ParticlesTemp MaximumTripletRestraint::get_input_particles() const
 {
-  return IMP::internal::get_input_particles(c_.get(), f_.get());
+  return IMP::internal::get_input_particles(f_.get(),
+                                            c_->get_contained_particles());
 }
 
 ContainersTemp MaximumTripletRestraint::get_input_containers() const

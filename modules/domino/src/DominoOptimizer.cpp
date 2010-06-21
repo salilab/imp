@@ -224,16 +224,11 @@ void DominoOptimizer::add_restraint_recursive(Restraint *rs, Float weight)
    else {
      IMP_LOG(VERBOSE,"adding a single restraint " << std::endl);
      IMP_LOG(VERBOSE,"number of interacting particles is :"
-             <<rs->get_interacting_particles().size()<<std::endl);
-     IMP_USAGE_CHECK(rs->get_interacting_particles().size()==1,
-               "DominoOptimizer::add_restraint_recursive dose not support"
-               <<" lists with more than one set of particles for a single "
-               <<"restraint: "
-               << rs->get_interacting_particles().size());
+             <<rs->get_input_particles().size()<<std::endl);
      rs_.push_back(OptTuple(
          rs,
          new container::ListSingletonContainer(
-           rs->get_interacting_particles()[0], "domino r auto"),
+           rs->get_input_particles(), "domino r auto"),
            weight));
    }
 }

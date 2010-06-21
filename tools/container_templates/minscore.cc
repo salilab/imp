@@ -68,18 +68,8 @@ bool MinMaxGroupnameScore::get_is_changed(PassValue v) const {
 }
 
 
-ParticlesList MinMaxGroupnameScore
-::get_interacting_particles(PassValue p) const {
-  ParticlesList ret;
-  for (unsigned int i=0; i< scores_.size(); ++i) {
-    ParticlesList c= scores_[i]->get_interacting_particles(p);
-    ret.insert(ret.end(), c.begin(), c.end());
-  }
-  return ret;
-}
-
 ParticlesTemp MinMaxGroupnameScore
-::get_input_particles(PassValue p) const {
+::get_input_particles(Particle* p) const {
   ParticlesTemp ret;
   for (unsigned int i=0; i< scores_.size(); ++i) {
     ParticlesTemp c= scores_[i]->get_input_particles(p);
@@ -89,7 +79,7 @@ ParticlesTemp MinMaxGroupnameScore
 }
 
 ContainersTemp MinMaxGroupnameScore
-::get_input_containers(PassValue p) const {
+::get_input_containers(Particle* p) const {
   ContainersTemp ret;
   for (unsigned int i=0; i< scores_.size(); ++i) {
     ContainersTemp c= scores_[i]->get_input_containers(p);

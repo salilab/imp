@@ -53,9 +53,9 @@ class PairTestModifier(IMP.PairModifier):
     def get_version_info(self):
         return 1
     def get_input_particles(self, p):
-        return IMP.ParticlesTemp([p[0],p[1]])
+        return IMP.ParticlesTemp([p])
     def get_output_particles(self, p):
-        return IMP.ParticlesTemp([p[0],p[1]])
+        return IMP.ParticlesTemp([p])
 
 
 def particle_has_attribute(p, k):
