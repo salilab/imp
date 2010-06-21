@@ -220,11 +220,6 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   return score;
 }
 
-ParticlesList FitRestraint::get_interacting_particles() const
-{
-  return ParticlesList(1, get_input_particles());
-}
-
 ParticlesTemp FitRestraint::get_input_particles() const
 {
   return ParticlesTemp(particles_begin(), particles_end());

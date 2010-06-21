@@ -547,8 +547,6 @@ inline void Particle::add_to_derivative(FloatKey name, Float value,
 }
 
 
-typedef std::vector<ParticlesTemp> ParticlesList;
-
 IMP_END_NAMESPACE
 
 #undef IMP_CHECK_ACTIVE

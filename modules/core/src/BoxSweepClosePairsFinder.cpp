@@ -28,52 +28,99 @@ IMPCORE_BEGIN_NAMESPACE
 
 
 namespace {
-struct NBLBbox
-{
-  XYZ d_;
-  typedef Float NT;
-  typedef void * ID;
-  Float r_;
-  NBLBbox(){}
-  NBLBbox(Particle *p,
-                  Float r): d_(p),
-                            r_(r){}
-  static unsigned int dimension() {return 3;}
-  void *id() const {return d_.get_particle();}
-  NT min_coord(unsigned int i) const {
-    return d_.get_coordinate(i)-r_;
-  }
-  NT max_coord(unsigned int i) const {
-    return d_.get_coordinate(i)+r_;
-  }
-  // make it so I can reused the callback provide by NBLSS
-  operator Particle*() const {return d_.get_particle();}
-};
+  struct NBLBbox
+  {
+    XYZ d_;
+    typedef Float NT;
+    typedef void * ID;
+    Float r_;
+    NBLBbox(){}
+    NBLBbox(Particle *p,
+            Float r): d_(p),
+                      r_(r){}
+    static unsigned int dimension() {return 3;}
+    void *id() const {return d_.get_particle();}
+    NT min_coord(unsigned int i) const {
+      return d_.get_coordinate(i)-r_;
+    }
+    NT max_coord(unsigned int i) const {
+      return d_.get_coordinate(i)+r_;
+    }
+    // make it so I can reused the callback provide by NBLSS
+    operator Particle*() const {return d_.get_particle();}
+  };
 
-static void copy_particles_to_boxes(const SingletonContainer *ps,
-                                    Float distance,
-                                    std::vector<NBLBbox> &boxes)
-{
-  boxes.resize(ps->get_number_of_particles());
-  IMP_FOREACH_SINGLETON(ps, {
-      Float r= distance/2.0;
-      r+= _1->get_value(XYZR::get_default_radius_key());
-      IMP_INTERNAL_CHECK(_2 < boxes.size(), "Off the end");
-      boxes[_2]=NBLBbox(_1, r);
-    });
-}
+  void copy_particles_to_boxes(SingletonContainer *ps,
+                               Float distance,
+                               std::vector<NBLBbox> &boxes)
+  {
+    boxes.resize(ps->get_number_of_particles());
+    IMP_FOREACH_SINGLETON(ps, {
+        Float r= distance/2.0;
+        r+= _1->get_value(XYZR::get_default_radius_key());
+        IMP_INTERNAL_CHECK(_2 < boxes.size(), "Off the end");
+        boxes[_2]=NBLBbox(_1, r);
+      });
+  }
 
-struct AddToList {
-  ParticlePairsTemp &out_;
-  AddToList(ParticlePairsTemp &out): out_(out){}
-  void operator()(const NBLBbox &a, const NBLBbox &b) {
-    if (get_squared_distance(XYZ(a).get_coordinates(),
-                         XYZ(b).get_coordinates())
-        < square(a.r_ + b.r_)) {
-      out_.push_back(ParticlePair(a,b));
+  struct AddToList {
+    ParticlePairsTemp &out_;
+    AddToList(ParticlePairsTemp &out): out_(out){}
+    void operator()(const NBLBbox &a, const NBLBbox &b) {
+      if (get_squared_distance(XYZ(a).get_coordinates(),
+                               XYZ(b).get_coordinates())
+          < square(a.r_ + b.r_)) {
+        out_.push_back(ParticlePair(a,b));
+      }
+    }
+  };
+
+
+
+
+
+  struct BoxNBLBbox
+  {
+    algebra::BoundingBox3D box_;
+    int id_;
+    typedef Float NT;
+    typedef int ID;
+    BoxNBLBbox(){}
+    BoxNBLBbox(const algebra::BoundingBox3D &box, int i): box_(box), id_(i){}
+    static unsigned int dimension() {return 3;}
+    int id() const {return id_;}
+    NT min_coord(unsigned int i) const {
+      return box_.get_corner(0)[i];
+    }
+    NT max_coord(unsigned int i) const {
+      return box_.get_corner(1)[i];
+    }
+    // make it so I can reused the callback provide by NBLSS
+    operator const algebra::BoundingBox3D&() const {return box_;}
+  };
+
+  void box_copy_particles_to_boxes(const algebra::BoundingBox3Ds &bbx,
+                                   Float distance,
+                                   std::vector<BoxNBLBbox> &boxes)
+  {
+    boxes.resize(bbx.size());
+    double r= distance/2.0;
+    for (unsigned int i=0; i< bbx.size(); ++i) {
+      boxes[i]=BoxNBLBbox(bbx[i]+r, i);
     }
   }
-};
+
+  struct BoxAddToList {
+    IntPairs &out_;
+    BoxAddToList(IntPairs &out): out_(out){}
+    void operator()(const BoxNBLBbox &a, const BoxNBLBbox &b) {
+      if (algebra::get_intersect(static_cast<const algebra::BoundingBox3D&>(a),
+                                 static_cast<const algebra::BoundingBox3D&>(b)))
+        {
+          out_.push_back(IntPair(a.id(), b.id()));
+        }
+    }
+  };
 
 }
 
@@ -107,6 +154,34 @@ ParticlePairsTemp BoxSweepClosePairsFinder
   return out;
 }
 
+
+IntPairs BoxSweepClosePairsFinder::
+get_close_pairs(const algebra::BoundingBox3Ds &bas,
+                const algebra::BoundingBox3Ds &bbs) const {
+  set_was_used(true);
+  std::vector<BoxNBLBbox> boxes0, boxes1;
+  box_copy_particles_to_boxes(bas, get_distance(), boxes0);
+  box_copy_particles_to_boxes(bbs, get_distance(), boxes1);
+
+  IntPairs out;
+
+  CGAL::box_intersection_d( boxes0.begin(), boxes0.end(),
+                            boxes1.begin(), boxes1.end(), BoxAddToList(out));
+  return out;
+}
+
+IntPairs BoxSweepClosePairsFinder::
+get_close_pairs(const algebra::BoundingBox3Ds &bbs) const {
+  set_was_used(true);
+  IntPairs out;
+  std::vector<BoxNBLBbox> boxes;
+  box_copy_particles_to_boxes(bbs, get_distance(), boxes);
+
+  CGAL::box_self_intersection_d( boxes.begin(), boxes.end(), BoxAddToList(out));
+  return out;
+}
+
+
 void BoxSweepClosePairsFinder::do_show(std::ostream &out) const {
   out << "distance " << get_distance() << std::endl;
 }
@@ -120,7 +195,7 @@ BoxSweepClosePairsFinder::get_input_particles(SingletonContainer *sc) const {
 
 ParticlesTemp
 BoxSweepClosePairsFinder::get_input_particles(SingletonContainer *a,
-                                             SingletonContainer *b) const {
+                                              SingletonContainer *b) const {
   ParticlesTemp ret0= a->get_particles();
   ParticlesTemp ret1= b->get_particles();
   ret0.insert(ret0.end(), ret1.begin(), ret1.end());
@@ -135,7 +210,7 @@ BoxSweepClosePairsFinder::get_input_containers(SingletonContainer *sc) const {
 
 ContainersTemp
 BoxSweepClosePairsFinder::get_input_containers(SingletonContainer *a,
-                                              SingletonContainer *b) const {
+                                               SingletonContainer *b) const {
   ContainersTemp ret(2);
   ret[0]= a;
   ret[1]= b;

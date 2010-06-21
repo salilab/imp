@@ -193,6 +193,12 @@ inline const algebra::SphereD<3> get_sphere_d_geometry(Particle *p) {
 inline void set_sphere_d_geometry(Particle *p, const algebra::SphereD<3> &v) {
   core::XYZR(p).set_sphere(v);
 }
+
+/** \genericgeometry */
+inline const algebra::BoundingBoxD<3>
+get_bounding_box_d_geometry(Particle *p) {
+  return get_bounding_box(core::XYZR(p).get_sphere());
+}
 IMP_END_NAMESPACE
 #endif
 

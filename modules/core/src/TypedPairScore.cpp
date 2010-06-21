@@ -54,21 +54,14 @@ TypedPairScore::TypedPairScore(IntKey typekey, bool allow_invalid_types)
     allow_invalid_types_(allow_invalid_types) {}
 
 
-ParticlesList TypedPairScore
-::get_interacting_particles(const ParticlePair &p) const {
-  return ParticlesList(1, get_input_particles(p));
-}
-
 // should pass it off, fix later
-ParticlesTemp TypedPairScore::get_input_particles(const ParticlePair &p) const {
-  ParticlesTemp ret(2);
-  ret[0]=p[0];
-  ret[1]=p[1];
+ParticlesTemp TypedPairScore::get_input_particles(Particle *p) const {
+  ParticlesTemp ret(1, p);
   return ret;
 }
 
 ContainersTemp
-TypedPairScore::get_input_containers(const ParticlePair &) const {
+TypedPairScore::get_input_containers(Particle *) const {
   return ContainersTemp();
 }
 

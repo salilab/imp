@@ -37,10 +37,6 @@ void ChecksScoreState::do_before_evaluate()
 void ChecksScoreState::do_after_evaluate(DerivativeAccumulator*){
 }
 
-ParticlesList ChecksScoreState::get_interacting_particles() const {
-  return ParticlesList();
-}
-
 
 ContainersTemp ChecksScoreState::get_input_containers() const {
   return ContainersTemp();

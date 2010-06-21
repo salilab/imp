@@ -375,12 +375,7 @@ double ProteinLigandRestraint
 ContainersTemp ProteinLigandRestraint::get_input_containers() const {
   return ContainersTemp();
 }
-ParticlesList ProteinLigandRestraint::get_interacting_particles() const {
-  ParticlesTemp ret(get_by_type(protein_.get_decorator(), ATOM_TYPE));
-  ParticlesTemp retb(get_by_type(ligand_.get_decorator(), ATOM_TYPE));
-  ret.insert(ret.end(), retb.begin(), retb.end());
-  return ParticlesList(1, ret);
-}
+
 ParticlesTemp ProteinLigandRestraint::get_input_particles() const{
   ParticlesTemp ret(core::get_all_descendants(protein_.get_decorator()));
   ParticlesTemp retb(core::get_all_descendants(ligand_.get_decorator()));

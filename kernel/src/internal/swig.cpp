@@ -16,9 +16,6 @@ double _ConstRestraint
 void _ConstRestraint::do_show(std::ostream &out) const {
   out << "value: " << v_ << std::endl;
 }
-ParticlesList _ConstRestraint::get_interacting_particles() const {
-  return ParticlesList(1,ps_);
-}
 ContainersTemp _ConstRestraint::get_input_containers() const {
   return ContainersTemp();
 }
@@ -34,16 +31,12 @@ double _ConstSingletonScore::evaluate(Particle *,
 void _ConstSingletonScore::do_show(std::ostream &out) const {
   out << "value: " << v_ << std::endl;
 }
-ParticlesList
-_ConstSingletonScore::get_interacting_particles(Particle *) const {
-  return ParticlesList();
-}
 ContainersTemp
 _ConstSingletonScore::get_input_containers(Particle *) const {
   return ContainersTemp();
 }
-ParticlesTemp _ConstSingletonScore::get_input_particles(Particle *) const {
-  return ParticlesTemp();
+ParticlesTemp _ConstSingletonScore::get_input_particles(Particle *p) const {
+  return ParticlesTemp(1,p);
 }
 bool _ConstSingletonScore::get_is_changed(Particle *) const {return false;}
 
@@ -57,16 +50,12 @@ double _ConstPairScore::evaluate(const ParticlePair &,
 void _ConstPairScore::do_show(std::ostream &out) const {
   out << "value: " << v_ << std::endl;
 }
-ParticlesList
-_ConstPairScore::get_interacting_particles(const ParticlePair &) const {
-  return ParticlesList();
-}
 ContainersTemp
-_ConstPairScore::get_input_containers(const ParticlePair &) const {
-  return ContainersTemp();
+_ConstPairScore::get_input_containers(Particle*p) const {
+  return ContainersTemp(1,p);
 }
-ParticlesTemp _ConstPairScore::get_input_particles(const ParticlePair &) const {
-  return ParticlesTemp();
+ParticlesTemp _ConstPairScore::get_input_particles(Particle *p) const {
+  return ParticlesTemp(1,p);
 }
 bool _ConstPairScore::get_is_changed(const ParticlePair &) const {return false;}
 

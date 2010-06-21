@@ -32,22 +32,6 @@ ExampleRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   return score;
 }
 
-/* Return a list of interacting sets. The PairScore defines
-   the interactions so defer to it.*/
-ParticlesList ExampleRestraint::get_interacting_particles() const
-{
-  ParticlesList ret;
-  for (PairContainer::ParticlePairIterator it
-       = pc_->particle_pairs_begin();
-       it != pc_->particle_pairs_end(); ++it) {
-    ParticlePair pp= *it;
-    ParticlesList all=f_->get_interacting_particles(ParticlePair(pp[0],
-                                                                 pp[1]));
-    ret.insert(ret.end(), all.begin(), all.end());
-  }
-  return ret;
-}
-
 /* We also need to know which particles are used (as some are
    used, but don't create interactions). */
 ParticlesTemp ExampleRestraint::get_input_particles() const
@@ -57,8 +41,10 @@ ParticlesTemp ExampleRestraint::get_input_particles() const
        = pc_->particle_pairs_begin();
        it != pc_->particle_pairs_end(); ++it) {
     ParticlePair pp= *it;
-    ParticlesTemp t= f_->get_input_particles(pp);
+    ParticlesTemp t= f_->get_input_particles(pp[0]);
     ret.insert(ret.end(), t.begin(), t.end());
+    ParticlesTemp t2= f_->get_input_particles(pp[1]);
+    ret.insert(ret.end(), t2.begin(), t2.end());
   }
   return ret;
 }

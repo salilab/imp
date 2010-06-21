@@ -27,10 +27,6 @@ void StateAdaptor::do_after_evaluate(DerivativeAccumulator*) {
 }
 
 
-ParticlesList StateAdaptor::get_interacting_particles() const {
-  return ParticlesList();
-}
-
 ParticlesTemp StateAdaptor::get_input_particles() const {
   return ParticlesTemp(get_model()->particles_begin(),
                        get_model()->particles_end());

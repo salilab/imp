@@ -80,6 +80,7 @@ IMP_SWIG_DECORATOR(IMP::internal, _TrivialDecorator, _TrivialDecorators);
 IMP_SWIG_DECORATOR(IMP::internal, _TrivialDerivedDecorator, _TrivialDerivedDecorators);
 IMP_SWIG_DECORATOR_WITH_TRAITS(IMP::internal, _TrivialTraitsDecorator, _TrivialTraitsDecorators);
 IMP_SWIG_OBJECT(IMP::internal, _ConstRestraint, _ConstRestraints);
+IMP_SWIG_GRAPH(IMP, DependencyGraph, DependencyGraph, IMP::Object*);
 
 namespace IMP {
   %typemap(out) std::pair<double,double> {
@@ -95,8 +96,6 @@ namespace IMP {
      $result= tup;
   }
 }
-
-IMP_SWIG_GRAPH(IMP, DependencyGraph, Model::DependencyGraph, IMP::Object*);
 
 %extend IMP::Object {
   bool __eq__(const IMP::Decorator &d) const {
@@ -186,13 +185,14 @@ class ParticleQuadsTemp;
 %include "IMP_particle.i"
 %include "IMP/Decorator.h"
 
+
+%include "IMP/Model.h"
 %include "IMP/UnaryFunction.h"
 %include "IMP/Restraint.h"
 %include "IMP/DecomposableRestraint.h"
 %include "IMP/ScoreState.h"
 %include "IMP/Constraint.h"
 %include "IMP/OptimizerState.h"
-%include "IMP/Model.h"
 %include "IMP/Refiner.h"
 %include "IMP_random.i"
 %include "IMP/Optimizer.h"
@@ -224,7 +224,7 @@ namespace IMP {
   %template(double_pair) ::std::pair<double, double>;
   %template(IntRange) ::std::pair<Int, Int>;
   %template(IntRanges) ::std::vector< IntRange >;
-  //%template(ParticlesList) ::std::vector< ParticlesTemp >;
   %template(DirectorParticlesTemp) ::std::vector< Particle* >;
   %template(DirectorContainersTemp) ::std::vector< Container* >;
+  %template(DependencyGraph) ::IMP::internal::BoostDigraph< IMP::DependencyGraph, IMP::Object*>;
 }

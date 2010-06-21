@@ -62,6 +62,8 @@ public:
   QuadScore* get_quad_score() const {
     return ss_;
   }
+
+  Restraints get_decomposition() const;
 };
 
 IMPCORE_END_INTERNAL_NAMESPACE

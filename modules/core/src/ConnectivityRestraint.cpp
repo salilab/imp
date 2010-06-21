@@ -166,42 +166,25 @@ ParticlePairs ConnectivityRestraint::get_connected_pairs() const {
   return ret;
 }
 
-ParticlesList ConnectivityRestraint::get_interacting_particles() const {
-  ParticlePairs pps= get_connected_pairs();
-  ParticlesList pl(pps.size());
-  for (unsigned int i=0; i< pps.size(); ++i) {
-    pl[i]= IMP::internal::get_union(ps_->get_interacting_particles(pps[i]));
-  }
-  return pl;
-}
-
 ParticlesTemp ConnectivityRestraint::get_input_particles() const {
   if (!sc_) return ParticlesTemp();
   ParticlesTemp ret;
-  for (unsigned int i=0; i< sc_->get_number_of_particles(); ++i) {
-    for (unsigned int j=0; j<i; ++j) {
-      ParticlesTemp cs
-        = ps_->get_input_particles(ParticlePair(sc_->get_particle(i),
-                                                sc_->get_particle(j)));
+  IMP_FOREACH_SINGLETON(sc_, {
+      ParticlesTemp cs = ps_->get_input_particles(_1);
       ret.insert(ret.end(), cs.begin(), cs.end());
-      ret.push_back(sc_->get_particle(i));
-      ret.push_back(sc_->get_particle(j));
-    }
-  }
+      ret.push_back(_1);
+    });
   return ret;
 }
 
 ContainersTemp ConnectivityRestraint::get_input_containers() const {
   if (!sc_) return ContainersTemp();
   ContainersTemp ret;
-  for (unsigned int i=0; i< sc_->get_number_of_particles(); ++i) {
-    for (unsigned int j=0; j<i; ++j) {
+  IMP_FOREACH_SINGLETON(sc_, {
       ContainersTemp cs
-        = ps_->get_input_containers(ParticlePair(sc_->get_particle(i),
-                                                 sc_->get_particle(j)));
+        = ps_->get_input_containers(_1);
       ret.insert(ret.end(), cs.begin(), cs.end());
-    }
-  }
+    });
   return ret;
 }
 

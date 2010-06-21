@@ -64,25 +64,20 @@ public:
                 << " DerivativeAccumulator.");
   }
 
-  /** Get the set of interactions induced by applying to the
-      argument.*/
-  virtual ParticlesList
-    get_interacting_particles(const ParticlePair& vt) const =0;
-
   /** Get the set of particles read when applied to the arguments.*/
   virtual ParticlesTemp
-    get_input_particles(const ParticlePair& vt) const =0;
+    get_input_particles(Particle* p) const =0;
   /** Get the set of particles modifier when applied to the arguments.*/
   virtual ParticlesTemp
-    get_output_particles(const ParticlePair& vt) const =0;
+    get_output_particles(Particle *p) const =0;
   /** Get the set of input containers when this modifier is applied to
       the arguments. */
   virtual ContainersTemp
-    get_input_containers(const ParticlePair& vt) const =0;
+    get_input_containers(Particle *p) const =0;
   /** Get the set of output containers when this modifier is applied to
       the arguments. */
   virtual ContainersTemp
-    get_output_containers(const ParticlePair& vt) const =0;
+    get_output_containers(Particle *p) const =0;
 };
 
 IMP_OUTPUT_OPERATOR(PairModifier);

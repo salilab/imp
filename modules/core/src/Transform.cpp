@@ -30,10 +30,6 @@ void Transform::apply(Particle *p) const
   xyz.set_coordinates(t_.get_transformed(xyz.get_coordinates()));
 }
 
-ParticlesList Transform::get_interacting_particles(Particle *) const {
-  return ParticlesList();
-}
-
 ParticlesTemp Transform::get_input_particles(Particle *p) const {
   return ParticlesTemp(1,p);
 }

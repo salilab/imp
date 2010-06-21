@@ -11772,3 +11772,1500 @@ xyz decorator huge,876.630000,3.126383e+11
 xyz particle huge,803.330000,3.126383e+11
 xyz vector huge,223.700000,3.126383e+11
 xyz vector space huge,224.570000,3.126383e+11
+date,  06/18/10
+mode,fast
+bd 100,0.000023,0.000000e+00
+bd 1000,0.000299,0.000000e+00
+cpf nn 1000 0.1,0.001253,9.975000e+03
+bcpf nn 1000 0.1,0.001279,2.150500e+04
+cpf nn 1000 0.5,0.002379,1.941197e+06
+bcpf nn 1000 0.5,0.002370,1.818820e+06
+cpf nn 1000 5,0.256000,6.073270e+06
+bcpf nn 1000 5,0.281111,5.708484e+06
+cpf nn 10000 0.1,0.018519,1.922400e+05
+bcpf nn 10000 0.1,0.017801,2.222160e+05
+cpf nn 10000 0.5,0.108333,4.307328e+06
+bcpf nn 10000 0.5,0.106250,4.330704e+06
+cpf nn 100000 0.01,0.295556,1.422000e+03
+bcpf nn 100000 0.01,0.292222,1.485000e+03
+cpf nn 100000 0.1,0.790000,6.130800e+05
+bcpf nn 100000 0.1,0.772500,6.166040e+05
+cpf nn 100000 0.3,4.950000,4.007409e+06
+bcpf nn 100000 0.3,4.910000,3.998199e+06
+cpf quadratic 1000 0.1,0.006068,8.240000e+02
+bcpf quadratic 1000 0.1,0.014286,3.500000e+02
+cpf quadratic 1000 0.5,0.006983,1.313860e+05
+bcpf quadratic 1000 0.5,0.016299,1.188880e+05
+cpf quadratic 1000 5,0.019160,2.212721e+07
+bcpf quadratic 1000 5,0.041833,1.927830e+07
+cpf quadratic 10000 0.1,0.606000,1.480000e+03
+bcpf quadratic 10000 0.1,1.425000,1.204000e+03
+cpf quadratic 10000 0.5,0.705000,1.440720e+05
+bcpf quadratic 10000 0.5,1.625000,1.434340e+05
+cpf quadratic 10000 5,2.200000,3.138599e+07
+bcpf quadratic 10000 5,4.650000,3.149280e+07
+cpf box 1000 0.1,0.000578,1.298400e+04
+bcpf box 1000 0.1,0.001092,2.061000e+04
+cpf box 1000 0.5,0.001511,6.123500e+05
+bcpf box 1000 0.5,0.002934,5.819160e+05
+cpf box 1000 5,0.013867,2.796378e+07
+bcpf box 1000 5,0.029762,2.697828e+07
+cpf box 10000 0.1,0.019764,3.581400e+04
+bcpf box 10000 0.1,0.039062,4.025600e+04
+cpf box 10000 0.5,0.048846,1.883284e+06
+bcpf box 10000 0.5,0.098462,1.871246e+06
+cpf box 10000 5,1.120000,4.745098e+07
+bcpf box 10000 5,2.245000,6.262032e+07
+cpf box 100000 0.01,0.233636,3.850000e+02
+bcpf box 100000 0.01,0.486667,3.540000e+02
+cpf box 100000 0.1,0.514000,1.545750e+05
+bcpf box 100000 0.1,1.056667,1.839420e+05
+cpf box 100000 0.3,1.006667,2.418330e+06
+bcpf box 100000 0.3,2.080000,3.237462e+06
+cpf grid 1000 0.1,0.007267,1.720000e+03
+cpf grid 1000 0.5,0.006127,1.652400e+05
+cpf grid 1000 5,0.020080,2.041938e+07
+cpf grid 10000 0.1,0.091786,8.260000e+03
+cpf grid 10000 0.5,0.128000,7.187800e+05
+cpf grid 10000 5,2.110000,3.145730e+07
+cpf grid 100000 0.01,1.850000,4.800000e+01
+cpf grid 100000 0.1,1.465000,6.195400e+04
+cpf grid 100000 0.3,1.905000,1.619324e+06
+connectivity slow,0.760000,3.557077e-02
+connectivity fast,0.012563,1.865962e+02
+connectivity fast mst,0.015337,1.224842e+00
+uncached density loop,0.018333,5.346000e+08
+cached density loop,0.047667,5.400000e+08
+domino2 small ,5.570000,0.000000e+00
+container list in 4950,0.000146,0.000000e+00
+container list out 4950,0.000202,0.000000e+00
+container list in 499500,0.015120,0.000000e+00
+container list out 499500,0.020492,0.000000e+00
+container set in 2450,0.000072,0.000000e+00
+container set out 2450,0.000158,0.000000e+00
+container set in 249500,0.007463,0.000000e+00
+container set out 249500,0.015337,0.000000e+00
+changing nonincremental,0.000006,6.798650e+08
+changing incremental,0.000009,6.798650e+08
+changing nonincremental score,0.000009,1.098402e+09
+changing incremental score,0.000017,5.846236e+08
+knn ann uniform 10 0,0.000004,2.796994e+06
+knn ann uniform 10 0.1,0.000005,1.615789e+06
+knn ann uniform 10 0.5,0.000004,2.728284e+06
+knn ann uniform 100 0,0.000088,1.475471e+06
+knn ann uniform 100 0.1,0.000083,1.401771e+06
+knn ann uniform 100 0.5,0.000073,1.720913e+06
+knn ann uniform 1000 0,0.001261,9.938065e+05
+knn ann uniform 1000 0.1,0.001172,1.076714e+06
+knn ann uniform 1000 0.5,0.000960,1.283319e+06
+knn cgal uniform 10 0,0.000009,1.339773e+06
+knn cgal uniform 10 0.1,0.000014,8.132520e+05
+knn cgal uniform 10 0.5,0.000009,1.294281e+06
+knn cgal uniform 100 0,0.000312,3.784921e+05
+knn cgal uniform 100 0.1,0.000326,3.771831e+05
+knn cgal uniform 100 0.5,0.000255,4.463166e+05
+knn cgal uniform 1000 0,0.005241,2.373647e+05
+knn cgal uniform 1000 0.1,0.005020,2.459363e+05
+knn cgal uniform 1000 0.5,0.004355,2.842310e+05
+knn linear uniform 10 0,0.000004,2.920870e+06
+knn linear uniform 10 0.1,0.000004,2.898488e+06
+knn linear uniform 10 0.5,0.000004,2.359461e+06
+knn linear uniform 100 0,0.000107,1.070327e+06
+knn linear uniform 100 0.1,0.000107,1.169768e+06
+knn linear uniform 100 0.5,0.000107,1.143275e+06
+knn linear uniform 1000 0,0.006297,1.996704e+05
+knn linear uniform 1000 0.1,0.006281,1.950045e+05
+knn linear uniform 1000 0.5,0.006297,1.994687e+05
+col quadratic 10000 0.1,3.349616,1.516394e+06
+col quadratic 10000 0.5,4.329616,2.479093e+06
+col box 10000 0.1,1.269615,3.035314e+06
+refiner children,0.005423,2.713907e+08
+refiner leaves,0.001196,1.230972e+09
+rotation (cache),0.000083,6.672577e+05
+rotation (nocache),0.000151,-8.623662e+05
+xyz decorator small,0.030000,2.950017e+07
+xyz particle small,0.040000,2.950017e+07
+xyz vector small,0.040000,2.950017e+07
+xyz vector space small,0.030000,2.950017e+07
+xyz decorator large,1.140000,1.693901e+09
+xyz particle large,1.140000,1.693901e+09
+xyz vector large,1.140000,1.693901e+09
+xyz vector space large,1.140000,1.693901e+09
+xyz decorator huge,90.400000,3.126383e+11
+xyz particle huge,90.390000,3.126383e+11
+xyz vector huge,85.160000,3.126383e+11
+xyz vector space huge,85.120000,3.126383e+11
+mode,release
+bd 100,0.000165,0.000000e+00
+bd 1000,10.280000,0.000000e+00
+cpf nn 1000 0.1,0.001537,1.789700e+04
+bcpf nn 1000 0.1,0.001467,2.556000e+04
+cpf nn 1000 0.5,0.002621,1.727694e+06
+bcpf nn 1000 0.5,0.002637,1.729152e+06
+cpf nn 1000 5,0.267000,6.366040e+06
+bcpf nn 1000 5,0.269000,6.107860e+06
+cpf nn 10000 0.1,0.021008,1.892100e+05
+bcpf nn 10000 0.1,0.020833,1.832400e+05
+cpf nn 10000 0.5,0.127500,3.557740e+06
+bcpf nn 10000 0.5,0.133158,3.399518e+06
+cpf nn 100000 0.01,0.327500,1.336000e+03
+bcpf nn 100000 0.01,0.326250,1.240000e+03
+cpf nn 100000 0.1,1.043333,4.632420e+05
+bcpf nn 100000 0.1,1.096667,4.651920e+05
+cpf nn 100000 0.3,6.240000,4.009352e+06
+bcpf nn 100000 0.3,6.580000,4.026398e+06
+cpf quadratic 1000 0.1,0.073529,6.800000e+01
+bcpf quadratic 1000 0.1,0.152353,1.190000e+02
+cpf quadratic 1000 0.5,0.077576,1.277100e+04
+bcpf quadratic 1000 0.5,0.159375,1.180800e+04
+cpf quadratic 1000 5,0.188571,2.321312e+06
+bcpf quadratic 1000 5,0.385714,2.360274e+06
+cpf quadratic 10000 0.1,7.360000,3.150000e+02
+bcpf quadratic 10000 0.1,15.210000,5.970000e+02
+cpf quadratic 10000 0.5,7.750000,3.639700e+04
+bcpf quadratic 10000 0.5,15.980000,7.282100e+04
+cpf quadratic 10000 5,18.760000,1.596647e+07
+bcpf quadratic 10000 5,37.930000,3.165586e+07
+cpf box 1000 0.1,0.003704,6.750000e+02
+bcpf box 1000 0.1,0.007375,1.695000e+03
+cpf box 1000 0.5,0.010730,8.224900e+04
+bcpf box 1000 0.5,0.021453,8.435700e+04
+cpf box 1000 5,0.151176,2.699498e+06
+bcpf box 1000 5,0.298889,2.689119e+06
+cpf box 10000 0.1,0.137895,5.985000e+03
+bcpf box 10000 0.1,0.273000,6.090000e+03
+cpf box 10000 0.5,0.348750,2.894720e+05
+bcpf box 10000 0.5,0.702500,2.920560e+05
+cpf box 10000 5,10.150000,1.606100e+07
+bcpf box 10000 5,19.870000,3.129961e+07
+cpf box 100000 0.01,1.450000,7.000000e+01
+bcpf box 100000 0.01,3.000000,5.400000e+01
+cpf box 100000 0.1,3.160000,3.162300e+04
+bcpf box 100000 0.1,6.400000,6.157400e+04
+cpf box 100000 0.3,7.400000,8.092250e+05
+bcpf box 100000 0.3,14.980000,1.621977e+06
+cpf grid 1000 0.1,0.081290,1.860000e+02
+cpf grid 1000 0.5,0.082903,1.054000e+04
+cpf grid 1000 5,0.164375,2.510832e+06
+cpf grid 10000 0.1,1.425000,6.880000e+02
+cpf grid 10000 0.5,1.285000,7.237200e+04
+cpf grid 10000 5,16.080000,1.594862e+07
+cpf grid 100000 0.01,16.640000,3.100000e+01
+cpf grid 100000 0.1,16.430000,3.099900e+04
+cpf grid 100000 0.3,13.480000,8.108860e+05
+connectivity slow,1.086667,3.519364e-02
+connectivity fast,0.014181,2.178902e+02
+connectivity fast mst,0.022411,8.365283e-01
+uncached density loop,0.106667,5.346000e+08
+cached density loop,0.151667,5.400000e+08
+WARNING  Object "Nameless" was never used. See the IMP::Object documentation for an explanation.
+  WARNING  Object "Nameless" was never used. See the IMP::Object documentation for an explanation.
+  WARNING  Object "Nameless" was never used. See the IMP::Object documentation for an explanation.
+Sampling 657 particles.
+  Sampling with 80 particles
+  Interaction graph is 80graph G {
+0[label="MET"];
+1[label="VAL"];
+2[label="LEU"];
+3[label="SER"];
+4[label="GLU"];
+5[label="GLY"];
+6[label="GLU"];
+7[label="TRP"];
+8[label="GLN"];
+9[label="LEU"];
+10[label="VAL"];
+11[label="LEU"];
+12[label="HIS"];
+13[label="VAL"];
+14[label="TRP"];
+15[label="ALA"];
+16[label="LYS"];
+17[label="VAL"];
+18[label="GLU"];
+19[label="ALA"];
+20[label="ASP"];
+21[label="VAL"];
+22[label="ALA"];
+23[label="GLY"];
+24[label="HIS"];
+25[label="GLY"];
+26[label="GLN"];
+27[label="ASP"];
+28[label="ILE"];
+29[label="LEU"];
+30[label="ILE"];
+31[label="ARG"];
+32[label="LEU"];
+33[label="PHE"];
+34[label="LYS"];
+35[label="SER"];
+36[label="HIS"];
+37[label="PRO"];
+38[label="GLU"];
+39[label="THR"];
+40[label="LEU"];
+41[label="GLU"];
+42[label="LYS"];
+43[label="PHE"];
+44[label="ASP"];
+45[label="ARG"];
+46[label="VAL"];
+47[label="LYS"];
+48[label="HIS"];
+49[label="LEU"];
+50[label="LYS"];
+51[label="THR"];
+52[label="GLU"];
+53[label="ALA"];
+54[label="GLU"];
+55[label="MET"];
+56[label="LYS"];
+57[label="ALA"];
+58[label="SER"];
+59[label="GLU"];
+60[label="ASP"];
+61[label="LEU"];
+62[label="LYS"];
+63[label="LYS"];
+64[label="HIS"];
+65[label="GLY"];
+66[label="VAL"];
+67[label="THR"];
+68[label="VAL"];
+69[label="LEU"];
+70[label="THR"];
+71[label="ALA"];
+72[label="LEU"];
+73[label="GLY"];
+74[label="ALA"];
+75[label="ILE"];
+76[label="LEU"];
+77[label="LYS"];
+78[label="LYS"];
+79[label="LYS"];
+3--1 ;
+4--3 ;
+2--1 ;
+5--3 ;
+5--4 ;
+3--2 ;
+4--2 ;
+5--2 ;
+1--0 ;
+7--1 ;
+7--2 ;
+8--3 ;
+8--4 ;
+8--5 ;
+7--3 ;
+7--4 ;
+79--4 ;
+79--3 ;
+7--5 ;
+2--0 ;
+79--8 ;
+79--7 ;
+6--1 ;
+6--2 ;
+6--3 ;
+6--4 ;
+7--6 ;
+8--7 ;
+79--78 ;
+79--2 ;
+78--7 ;
+6--5 ;
+8--6 ;
+76--7 ;
+79--76 ;
+79--77 ;
+78--76 ;
+78--75 ;
+78--77 ;
+78--74 ;
+10--2 ;
+10--7 ;
+11--7 ;
+79--11 ;
+78--11 ;
+10--6 ;
+9--6 ;
+9--7 ;
+9--8 ;
+11--6 ;
+12--7 ;
+12--8 ;
+11--8 ;
+79--75 ;
+10--8 ;
+75--7 ;
+9--5 ;
+9--4 ;
+11--4 ;
+77--11 ;
+77--7 ;
+77--76 ;
+11--9 ;
+76--11 ;
+11--10 ;
+76--10 ;
+12--11 ;
+12--9 ;
+77--75 ;
+79--74 ;
+77--74 ;
+76--75 ;
+76--74 ;
+10--9 ;
+10--5 ;
+12--10 ;
+77--10 ;
+75--74 ;
+75--72 ;
+75--71 ;
+74--72 ;
+76--72 ;
+75--73 ;
+76--73 ;
+74--73 ;
+76--14 ;
+77--14 ;
+77--18 ;
+14--10 ;
+14--11 ;
+13--10 ;
+15--10 ;
+13--11 ;
+15--11 ;
+13--12 ;
+15--12 ;
+77--15 ;
+13--9 ;
+16--12 ;
+16--11 ;
+74--71 ;
+76--71 ;
+77--72 ;
+77--73 ;
+14--9 ;
+14--12 ;
+78--73 ;
+13--8 ;
+73--11 ;
+15--13 ;
+16--15 ;
+14--13 ;
+15--14 ;
+73--14 ;
+74--14 ;
+73--18 ;
+74--18 ;
+18--14 ;
+16--13 ;
+16--14 ;
+73--72 ;
+73--71 ;
+18--15 ;
+72--14 ;
+18--16 ;
+72--71 ;
+72--69 ;
+72--68 ;
+72--70 ;
+71--68 ;
+73--69 ;
+71--69 ;
+71--70 ;
+71--14 ;
+17--14 ;
+18--17 ;
+21--14 ;
+19--14 ;
+19--16 ;
+19--15 ;
+19--18 ;
+72--67 ;
+71--67 ;
+69--14 ;
+73--68 ;
+70--14 ;
+73--70 ;
+69--18 ;
+21--18 ;
+17--15 ;
+17--13 ;
+17--16 ;
+18--13 ;
+74--70 ;
+74--69 ;
+70--18 ;
+75--70 ;
+17--12 ;
+70--69 ;
+69--17 ;
+19--17 ;
+70--68 ;
+69--21 ;
+70--21 ;
+70--67 ;
+68--14 ;
+69--68 ;
+21--17 ;
+69--67 ;
+21--19 ;
+68--67 ;
+68--66 ;
+67--64 ;
+67--66 ;
+70--66 ;
+68--65 ;
+68--21 ;
+70--65 ;
+69--66 ;
+69--28 ;
+69--65 ;
+67--65 ;
+69--24 ;
+69--25 ;
+69--22 ;
+24--17 ;
+24--21 ;
+20--17 ;
+21--20 ;
+22--21 ;
+24--19 ;
+68--64 ;
+69--64 ;
+25--17 ;
+22--17 ;
+66--21 ;
+20--19 ;
+22--19 ;
+71--66 ;
+24--14 ;
+24--18 ;
+20--18 ;
+24--16 ;
+20--16 ;
+21--16 ;
+20--15 ;
+24--13 ;
+24--20 ;
+67--21 ;
+69--20 ;
+66--65 ;
+68--28 ;
+68--25 ;
+25--21 ;
+66--64 ;
+65--21 ;
+28--24 ;
+25--24 ;
+24--22 ;
+25--20 ;
+22--20 ;
+65--22 ;
+66--22 ;
+28--25 ;
+65--25 ;
+66--25 ;
+65--24 ;
+65--64 ;
+25--22 ;
+64--25 ;
+68--29 ;
+64--29 ;
+65--29 ;
+68--63 ;
+64--61 ;
+64--62 ;
+64--63 ;
+65--62 ;
+67--63 ;
+67--62 ;
+66--62 ;
+66--23 ;
+65--26 ;
+66--26 ;
+31--28 ;
+28--26 ;
+26--25 ;
+26--22 ;
+28--27 ;
+27--24 ;
+27--25 ;
+28--23 ;
+24--23 ;
+25--23 ;
+23--21 ;
+23--22 ;
+68--43 ;
+66--29 ;
+65--61 ;
+66--61 ;
+65--63 ;
+66--63 ;
+32--28 ;
+29--28 ;
+65--28 ;
+29--25 ;
+61--25 ;
+62--25 ;
+62--22 ;
+63--22 ;
+29--24 ;
+26--24 ;
+26--21 ;
+62--21 ;
+23--20 ;
+69--26 ;
+69--23 ;
+69--29 ;
+27--23 ;
+32--29 ;
+36--32 ;
+32--31 ;
+31--27 ;
+27--22 ;
+63--29 ;
+29--26 ;
+63--62 ;
+29--27 ;
+39--32 ;
+43--32 ;
+43--29 ;
+64--43 ;
+39--36 ;
+31--29 ;
+27--26 ;
+26--23 ;
+32--27 ;
+62--26 ;
+36--31 ;
+62--29 ;
+42--39 ;
+43--39 ;
+63--61 ;
+61--29 ;
+36--35 ;
+35--32 ;
+43--42 ;
+64--45 ;
+62--61 ;
+35--31 ;
+31--26 ;
+61--26 ;
+62--23 ;
+42--41 ;
+42--40 ;
+42--38 ;
+39--38 ;
+43--40 ;
+40--39 ;
+39--33 ;
+43--33 ;
+46--43 ;
+64--60 ;
+64--46 ;
+60--45 ;
+63--60 ;
+64--33 ;
+42--33 ;
+33--32 ;
+64--59 ;
+63--59 ;
+39--37 ;
+37--36 ;
+33--29 ;
+36--33 ;
+36--34 ;
+32--30 ;
+62--59 ;
+34--32 ;
+30--29 ;
+39--35 ;
+34--29 ;
+39--34 ;
+39--29 ;
+35--34 ;
+35--30 ;
+34--31 ;
+31--30 ;
+30--28 ;
+30--26 ;
+63--26 ;
+43--41 ;
+44--42 ;
+44--43 ;
+45--43 ;
+63--45 ;
+41--39 ;
+40--32 ;
+38--36 ;
+37--32 ;
+61--33 ;
+46--29 ;
+62--60 ;
+40--36 ;
+60--29 ;
+61--60 ;
+61--59 ;
+37--35 ;
+33--31 ;
+33--28 ;
+35--33 ;
+30--27 ;
+61--27 ;
+30--25 ;
+65--60 ;
+33--30 ;
+38--35 ;
+61--30 ;
+61--45 ;
+40--38 ;
+38--37 ;
+37--33 ;
+60--59 ;
+34--33 ;
+34--30 ;
+64--44 ;
+40--33 ;
+46--33 ;
+60--46 ;
+38--33 ;
+61--46 ;
+38--32 ;
+46--40 ;
+40--37 ;
+41--38 ;
+41--40 ;
+37--34 ;
+44--41 ;
+44--40 ;
+45--44 ;
+46--44 ;
+46--45 ;
+45--42 ;
+41--37 ;
+42--37 ;
+61--58 ;
+62--58 ;
+60--58 ;
+63--58 ;
+59--58 ;
+56--30 ;
+41--33 ;
+61--40 ;
+62--46 ;
+59--46 ;
+58--26 ;
+59--26 ;
+56--27 ;
+58--46 ;
+47--41 ;
+47--42 ;
+47--44 ;
+47--45 ;
+47--43 ;
+46--41 ;
+47--40 ;
+49--40 ;
+49--33 ;
+49--46 ;
+61--49 ;
+60--49 ;
+55--33 ;
+55--40 ;
+61--55 ;
+55--46 ;
+58--55 ;
+61--56 ;
+61--57 ;
+58--56 ;
+62--55 ;
+59--55 ;
+59--56 ;
+58--57 ;
+59--57 ;
+60--57 ;
+52--34 ;
+52--30 ;
+56--26 ;
+62--56 ;
+56--52 ;
+47--46 ;
+58--49 ;
+55--34 ;
+55--30 ;
+56--55 ;
+55--26 ;
+57--26 ;
+55--29 ;
+55--31 ;
+58--45 ;
+55--52 ;
+57--55 ;
+49--45 ;
+55--49 ;
+57--56 ;
+49--47 ;
+56--49 ;
+57--49 ;
+62--57 ;
+48--47 ;
+48--44 ;
+48--46 ;
+48--45 ;
+60--48 ;
+50--40 ;
+55--50 ;
+55--54 ;
+54--49 ;
+58--54 ;
+59--54 ;
+55--51 ;
+51--49 ;
+53--52 ;
+55--53 ;
+57--54 ;
+56--53 ;
+57--53 ;
+58--53 ;
+57--52 ;
+49--48 ;
+58--48 ;
+48--40 ;
+51--34 ;
+56--51 ;
+56--54 ;
+52--50 ;
+52--51 ;
+54--52 ;
+52--49 ;
+48--43 ;
+61--54 ;
+54--51 ;
+50--49 ;
+53--51 ;
+54--53 ;
+51--50 ;
+54--50 ;
+53--50 ;
+50--48 ;
+54--48 ;
+50--47 ;
+51--48 ;
+50--46 ;
+}
+Junction tree is graph G {
+0[label="[TRP LEU GLY ALA ILE LEU LYS LYS LYS ]"];
+1[label="[TRP LEU THR ALA LEU GLY ALA ILE LEU LYS LYS ]"];
+2[label="[TRP LEU TRP GLU LEU THR ALA LEU GLY ALA LEU LYS LYS ]"];
+3[label="[TRP LEU TRP GLU VAL LEU THR ALA LEU GLY LEU LYS LYS ]"];
+4[label="[TRP LEU TRP ALA LYS VAL GLU HIS VAL LEU THR ALA LEU LEU LYS LYS ]"];
+5[label="[TRP LEU VAL TRP ALA LYS VAL GLU HIS LEU LYS LYS ]"];
+6[label="[TRP LEU HIS VAL TRP ALA LYS VAL LEU LYS LYS ]"];
+7[label="[TRP VAL LEU HIS VAL TRP ALA LEU LYS LYS ]"];
+8[label="[TRP LEU VAL LEU HIS VAL TRP LYS ]"];
+9[label="[TRP GLN LEU VAL LEU HIS VAL LYS ]"];
+10[label="[GLU GLU TRP GLN LEU VAL LEU LYS ]"];
+11[label="[GLU GLY GLU TRP GLN LEU VAL LYS ]"];
+12[label="[SER GLU GLY GLU TRP GLN VAL LYS ]"];
+13[label="[LEU SER GLU GLY GLU TRP VAL LYS ]"];
+14[label="[VAL LYS LYS HIS GLY VAL THR VAL LEU THR ALA LEU ]"];
+15[label="[LYS THR GLU ALA GLU MET LYS ALA SER ]"];
+16[label="[LYS HIS LEU LYS THR GLU GLU MET LYS ALA SER ]"];
+17[label="[ILE LYS HIS LEU LYS GLU MET LYS ALA SER GLU LEU ]"];
+18[label="[ILE LYS HIS LEU LYS GLU GLU MET LYS ALA SER ]"];
+19[label="[LEU GLU LYS PHE ARG VAL LYS HIS LEU LYS HIS ]"];
+20[label="[LEU GLU LYS PHE ASP ARG VAL LYS HIS HIS ]"];
+21[label="[LEU GLU LYS PHE ARG VAL HIS LEU LYS SER ASP LEU LYS HIS ]"];
+22[label="[LEU ILE ARG LEU PHE LYS THR LEU GLU LYS PHE ]"];
+23[label="[ILE ARG LEU PHE LYS PRO GLU THR LEU GLU LYS ]"];
+24[label="[ILE ARG LEU PHE LYS HIS PRO GLU THR LEU ]"];
+25[label="[ILE ARG LEU PHE LYS SER HIS PRO GLU THR ]"];
+26[label="[ASP ILE LEU ILE ARG LEU PHE LYS LEU GLU LYS PHE ]"];
+27[label="[VAL HIS GLY GLN ASP ILE LYS LYS HIS GLY VAL VAL LEU THR ALA LEU ]"];
+28[label="[VAL ALA GLY HIS GLY GLN ASP ILE LYS VAL VAL LEU THR ALA LEU ]"];
+29[label="[VAL ALA HIS GLY GLN ASP ILE LYS LYS GLY VAL VAL LEU THR ALA LEU ]"];
+30[label="[HIS GLY GLN ASP ILE LEU LYS LYS HIS GLY VAL VAL LEU ]"];
+31[label="[GLY GLN ASP ILE LEU LEU LYS LYS HIS GLY VAL VAL ]"];
+32[label="[GLN ASP ILE LEU ILE ASP LEU LYS LYS HIS GLY VAL ]"];
+33[label="[GLY GLN ASP ILE LEU ILE LEU LYS LYS HIS GLY VAL ]"];
+34[label="[GLN ASP ILE LEU ILE PHE ASP LEU LYS LYS HIS VAL ]"];
+35[label="[GLN ASP ILE LYS VAL HIS LEU LYS MET SER GLU ASP LEU LYS LYS HIS ]"];
+36[label="[GLN ASP ILE LYS LEU GLU LYS PHE VAL HIS LEU LYS MET SER ASP LEU LYS LYS HIS ]"];
+37[label="[GLN ASP ILE LEU ILE LYS LEU GLU LYS PHE VAL LEU MET ASP LEU LYS LYS HIS ]"];
+38[label="[GLN ASP ILE LYS HIS LEU LYS MET ALA SER GLU ASP LEU LYS ]"];
+39[label="[GLN ASP ILE LYS HIS LEU LYS MET LYS ALA SER GLU LEU LYS ]"];
+40[label="[GLN ASP ILE LEU ILE PHE LYS LEU GLU LYS PHE VAL LEU MET LEU HIS ]"];
+41[label="[GLN ASP ILE LEU ILE ARG PHE LYS LEU GLU LYS PHE MET ]"];
+42[label="[TRP ALA LYS VAL GLU ASP VAL ALA GLY HIS GLY LEU ]"];
+43[label="[TRP ALA LYS VAL GLU ALA ASP VAL ALA HIS ]"];
+44[label="[TRP ALA LYS VAL GLU VAL ALA GLY HIS GLY VAL LEU THR ALA LEU ]"];
+45[label="[VAL LEU SER GLU TRP ]"];
+46[label="[MET VAL LEU ]"];
+37--36 ;
+40--37 ;
+29--27 ;
+36--35 ;
+29--28 ;
+38--35 ;
+39--38 ;
+36--21 ;
+41--40 ;
+30--27 ;
+3--2 ;
+4--3 ;
+33--31 ;
+33--32 ;
+44--4 ;
+44--42 ;
+31--30 ;
+41--26 ;
+5--4 ;
+39--17 ;
+27--14 ;
+37--34 ;
+34--32 ;
+2--1 ;
+21--19 ;
+44--28 ;
+18--16 ;
+18--17 ;
+6--5 ;
+26--22 ;
+7--6 ;
+43--42 ;
+20--19 ;
+25--24 ;
+24--23 ;
+23--22 ;
+1--0 ;
+16--15 ;
+9--8 ;
+13--12 ;
+12--11 ;
+8--7 ;
+11--10 ;
+10--9 ;
+45--13 ;
+46--45 ;
+}
+Computing states for [TRP LEU GLY ALA ILE LEU LYS LYS LYS ]
+  For node 0 local data is:
+
+  For root 0 data is:
+
+  Edge from node [TRP LEU GLY ALA ILE LEU LYS LYS LYS ] to [TRP LEU THR ALA LEU GLY ALA ILE LEU LYS LYS ] is [TRP LEU GLY ALA ILE LEU LYS LYS ]
+  Data is:
+
+  Computing states for [TRP LEU THR ALA LEU GLY ALA ILE LEU LYS LYS LYS ]
+  Computing states for [TRP LEU THR ALA LEU GLY ALA ILE LEU LYS LYS ]
+  For node 1 local data is:
+
+  Edge from node [TRP LEU THR ALA LEU GLY ALA ILE LEU LYS LYS ] to [TRP LEU TRP GLU LEU THR ALA LEU GLY ALA LEU LYS LYS ] is [TRP LEU THR ALA LEU GLY ALA LEU LYS LYS ]
+  Data is:
+
+  Computing states for [TRP LEU TRP GLU LEU THR ALA LEU GLY ALA ILE LEU LYS LYS ]
+  Computing states for [TRP LEU TRP GLU LEU THR ALA LEU GLY ALA LEU LYS LYS ]
+  For node 2 local data is:
+
+  Edge from node [TRP LEU TRP GLU LEU THR ALA LEU GLY ALA LEU LYS LYS ] to [TRP LEU TRP GLU VAL LEU THR ALA LEU GLY LEU LYS LYS ] is [TRP LEU TRP GLU LEU THR ALA LEU GLY LEU LYS LYS ]
+  Data is:
+
+  Computing states for [TRP LEU TRP GLU VAL LEU THR ALA LEU GLY ALA LEU LYS LYS ]
+  Computing states for [TRP LEU TRP GLU VAL LEU THR ALA LEU GLY LEU LYS LYS ]
+  For node 3 local data is:
+
+  Edge from node [TRP LEU TRP GLU VAL LEU THR ALA LEU GLY LEU LYS LYS ] to [TRP LEU TRP ALA LYS VAL GLU HIS VAL LEU THR ALA LEU LEU LYS LYS ] is [TRP LEU TRP GLU VAL LEU THR ALA LEU LEU LYS LYS ]
+  Data is:
+
+  Computing states for [TRP LEU TRP ALA LYS VAL GLU HIS VAL LEU THR ALA LEU GLY LEU LYS LYS ]
+  Computing states for [TRP LEU TRP ALA LYS VAL GLU HIS VAL LEU THR ALA LEU LEU LYS LYS ]
+  For node 4 local data is:
+
+  Edge from node [TRP LEU TRP ALA LYS VAL GLU HIS VAL LEU THR ALA LEU LEU LYS LYS ] to [TRP ALA LYS VAL GLU VAL ALA GLY HIS GLY VAL LEU THR ALA LEU ] is [TRP ALA LYS VAL GLU HIS VAL LEU THR ALA LEU ]
+  Data is:
+
+  Computing states for [TRP LEU TRP ALA LYS VAL GLU VAL ALA GLY HIS GLY VAL LEU THR ALA LEU LEU LYS LYS ]
+  Computing states for [TRP ALA LYS VAL GLU VAL ALA GLY HIS GLY VAL LEU THR ALA LEU ]
+  For node 44 local data is:
+
+  Edge from node [TRP ALA LYS VAL GLU VAL ALA GLY HIS GLY VAL LEU THR ALA LEU ] to [TRP ALA LYS VAL GLU ASP VAL ALA GLY HIS GLY LEU ] is [TRP ALA LYS VAL GLU VAL ALA GLY HIS GLY LEU ]
+  Data is:
+
+  Computing states for [TRP ALA LYS VAL GLU ASP VAL ALA GLY HIS GLY VAL LEU THR ALA LEU ]
+  Computing states for [TRP ALA LYS VAL GLU ASP VAL ALA GLY HIS GLY LEU ]
+  For node 42 local data is:
+
+  Edge from node [TRP ALA LYS VAL GLU ASP VAL ALA GLY HIS GLY LEU ] to [TRP ALA LYS VAL GLU ALA ASP VAL ALA HIS ] is [TRP ALA LYS VAL GLU ASP VAL ALA HIS ]
+  Data is:
+
+  Computing states for [TRP ALA LYS VAL GLU ALA ASP VAL ALA GLY HIS GLY LEU ]
+  Computing states for [TRP ALA LYS VAL GLU ALA ASP VAL ALA HIS ]
+  For node 43 local data is:
+
+  For child 43 returned data is:
+
+  For child 43 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [TRP ALA LYS VAL GLU ALA ASP VAL ALA GLY HIS GLY LEU ]" was never used. See the IMP::Object documentation for an explanation.
+  For child 42 returned data is:
+
+  For child 42 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [TRP ALA LYS VAL GLU ASP VAL ALA GLY HIS GLY VAL LEU THR ALA LEU ]" was never used. See the IMP::Object documentation for an explanation.
+  Edge from node [TRP ALA LYS VAL GLU VAL ALA GLY HIS GLY VAL LEU THR ALA LEU ] to [VAL ALA GLY HIS GLY GLN ASP ILE LYS VAL VAL LEU THR ALA LEU ] is [VAL ALA GLY HIS GLY VAL LEU THR ALA LEU ]
+  Data is:
+
+  Computing states for [TRP ALA LYS VAL GLU VAL ALA GLY HIS GLY GLN ASP ILE LYS VAL VAL LEU THR ALA LEU ]
+  Computing states for [VAL ALA GLY HIS GLY GLN ASP ILE LYS VAL VAL LEU THR ALA LEU ]
+  For node 28 local data is:
+
+  Edge from node [VAL ALA GLY HIS GLY GLN ASP ILE LYS VAL VAL LEU THR ALA LEU ] to [VAL ALA HIS GLY GLN ASP ILE LYS LYS GLY VAL VAL LEU THR ALA LEU ] is [VAL ALA HIS GLY GLN ASP ILE LYS VAL VAL LEU THR ALA LEU ]
+  Data is:
+
+  Computing states for [VAL ALA GLY HIS GLY GLN ASP ILE LYS LYS GLY VAL VAL LEU THR ALA LEU ]
+  Computing states for [VAL ALA HIS GLY GLN ASP ILE LYS LYS GLY VAL VAL LEU THR ALA LEU ]
+  For node 29 local data is:
+
+  Edge from node [VAL ALA HIS GLY GLN ASP ILE LYS LYS GLY VAL VAL LEU THR ALA LEU ] to [VAL HIS GLY GLN ASP ILE LYS LYS HIS GLY VAL VAL LEU THR ALA LEU ] is [VAL HIS GLY GLN ASP ILE LYS LYS GLY VAL VAL LEU THR ALA LEU ]
+  Data is:
+
+  Computing states for [VAL ALA HIS GLY GLN ASP ILE LYS LYS HIS GLY VAL VAL LEU THR ALA LEU ]
+  Computing states for [VAL HIS GLY GLN ASP ILE LYS LYS HIS GLY VAL VAL LEU THR ALA LEU ]
+  For node 27 local data is:
+
+  Edge from node [VAL HIS GLY GLN ASP ILE LYS LYS HIS GLY VAL VAL LEU THR ALA LEU ] to [HIS GLY GLN ASP ILE LEU LYS LYS HIS GLY VAL VAL LEU ] is [HIS GLY GLN ASP ILE LYS LYS HIS GLY VAL VAL LEU ]
+  Data is:
+
+  Computing states for [VAL HIS GLY GLN ASP ILE LEU LYS LYS HIS GLY VAL VAL LEU THR ALA LEU ]
+  Computing states for [HIS GLY GLN ASP ILE LEU LYS LYS HIS GLY VAL VAL LEU ]
+  For node 30 local data is:
+
+  Edge from node [HIS GLY GLN ASP ILE LEU LYS LYS HIS GLY VAL VAL LEU ] to [GLY GLN ASP ILE LEU LEU LYS LYS HIS GLY VAL VAL ] is [GLY GLN ASP ILE LEU LYS LYS HIS GLY VAL VAL ]
+  Data is:
+
+  Computing states for [HIS GLY GLN ASP ILE LEU LEU LYS LYS HIS GLY VAL VAL LEU ]
+  Computing states for [GLY GLN ASP ILE LEU LEU LYS LYS HIS GLY VAL VAL ]
+  For node 31 local data is:
+
+  Edge from node [GLY GLN ASP ILE LEU LEU LYS LYS HIS GLY VAL VAL ] to [GLY GLN ASP ILE LEU ILE LEU LYS LYS HIS GLY VAL ] is [GLY GLN ASP ILE LEU LEU LYS LYS HIS GLY VAL ]
+  Data is:
+
+  Computing states for [GLY GLN ASP ILE LEU ILE LEU LYS LYS HIS GLY VAL VAL ]
+  Computing states for [GLY GLN ASP ILE LEU ILE LEU LYS LYS HIS GLY VAL ]
+  For node 33 local data is:
+
+  Edge from node [GLY GLN ASP ILE LEU ILE LEU LYS LYS HIS GLY VAL ] to [GLN ASP ILE LEU ILE ASP LEU LYS LYS HIS GLY VAL ] is [GLN ASP ILE LEU ILE LEU LYS LYS HIS GLY VAL ]
+  Data is:
+
+  Computing states for [GLY GLN ASP ILE LEU ILE ASP LEU LYS LYS HIS GLY VAL ]
+  Computing states for [GLN ASP ILE LEU ILE ASP LEU LYS LYS HIS GLY VAL ]
+  For node 32 local data is:
+
+  Edge from node [GLN ASP ILE LEU ILE ASP LEU LYS LYS HIS GLY VAL ] to [GLN ASP ILE LEU ILE PHE ASP LEU LYS LYS HIS VAL ] is [GLN ASP ILE LEU ILE ASP LEU LYS LYS HIS VAL ]
+  Data is:
+
+  Computing states for [GLN ASP ILE LEU ILE PHE ASP LEU LYS LYS HIS GLY VAL ]
+  Computing states for [GLN ASP ILE LEU ILE PHE ASP LEU LYS LYS HIS VAL ]
+  For node 34 local data is:
+
+  Edge from node [GLN ASP ILE LEU ILE PHE ASP LEU LYS LYS HIS VAL ] to [GLN ASP ILE LEU ILE LYS LEU GLU LYS PHE VAL LEU MET ASP LEU LYS LYS HIS ] is [GLN ASP ILE LEU ILE PHE ASP LEU LYS LYS HIS ]
+  Data is:
+
+  Computing states for [GLN ASP ILE LEU ILE LYS LEU GLU LYS PHE VAL LEU MET ASP LEU LYS LYS HIS VAL ]
+  Computing states for [GLN ASP ILE LEU ILE LYS LEU GLU LYS PHE VAL LEU MET ASP LEU LYS LYS HIS ]
+  For node 37 local data is:
+
+  Edge from node [GLN ASP ILE LEU ILE LYS LEU GLU LYS PHE VAL LEU MET ASP LEU LYS LYS HIS ] to [GLN ASP ILE LYS LEU GLU LYS PHE VAL HIS LEU LYS MET SER ASP LEU LYS LYS HIS ] is [GLN ASP ILE LYS LEU GLU LYS PHE VAL LEU MET ASP LEU LYS LYS HIS ]
+  Data is:
+
+  Computing states for [GLN ASP ILE LEU ILE LYS LEU GLU LYS PHE VAL HIS LEU LYS MET SER ASP LEU LYS LYS HIS ]
+  Computing states for [GLN ASP ILE LYS LEU GLU LYS PHE VAL HIS LEU LYS MET SER ASP LEU LYS LYS HIS ]
+  For node 36 local data is:
+
+  Edge from node [GLN ASP ILE LYS LEU GLU LYS PHE VAL HIS LEU LYS MET SER ASP LEU LYS LYS HIS ] to [GLN ASP ILE LYS VAL HIS LEU LYS MET SER GLU ASP LEU LYS LYS HIS ] is [GLN ASP ILE LYS VAL HIS LEU LYS MET SER ASP LEU LYS LYS HIS ]
+  Data is:
+
+  Computing states for [GLN ASP ILE LYS LEU GLU LYS PHE VAL HIS LEU LYS MET SER GLU ASP LEU LYS LYS HIS ]
+  Computing states for [GLN ASP ILE LYS VAL HIS LEU LYS MET SER GLU ASP LEU LYS LYS HIS ]
+  For node 35 local data is:
+
+  Edge from node [GLN ASP ILE LYS VAL HIS LEU LYS MET SER GLU ASP LEU LYS LYS HIS ] to [GLN ASP ILE LYS HIS LEU LYS MET ALA SER GLU ASP LEU LYS ] is [GLN ASP ILE LYS HIS LEU LYS MET SER GLU ASP LEU LYS ]
+  Data is:
+
+  Computing states for [GLN ASP ILE LYS VAL HIS LEU LYS MET ALA SER GLU ASP LEU LYS LYS HIS ]
+  Computing states for [GLN ASP ILE LYS HIS LEU LYS MET ALA SER GLU ASP LEU LYS ]
+  For node 38 local data is:
+
+  Edge from node [GLN ASP ILE LYS HIS LEU LYS MET ALA SER GLU ASP LEU LYS ] to [GLN ASP ILE LYS HIS LEU LYS MET LYS ALA SER GLU LEU LYS ] is [GLN ASP ILE LYS HIS LEU LYS MET ALA SER GLU LEU LYS ]
+  Data is:
+
+  Computing states for [GLN ASP ILE LYS HIS LEU LYS MET LYS ALA SER GLU ASP LEU LYS ]
+  Computing states for [GLN ASP ILE LYS HIS LEU LYS MET LYS ALA SER GLU LEU LYS ]
+  For node 39 local data is:
+
+  Edge from node [GLN ASP ILE LYS HIS LEU LYS MET LYS ALA SER GLU LEU LYS ] to [ILE LYS HIS LEU LYS GLU MET LYS ALA SER GLU LEU ] is [ILE LYS HIS LEU LYS MET LYS ALA SER GLU LEU ]
+  Data is:
+
+  Computing states for [GLN ASP ILE LYS HIS LEU LYS GLU MET LYS ALA SER GLU LEU LYS ]
+  Computing states for [ILE LYS HIS LEU LYS GLU MET LYS ALA SER GLU LEU ]
+  For node 17 local data is:
+
+  Edge from node [ILE LYS HIS LEU LYS GLU MET LYS ALA SER GLU LEU ] to [ILE LYS HIS LEU LYS GLU GLU MET LYS ALA SER ] is [ILE LYS HIS LEU LYS GLU MET LYS ALA SER ]
+  Data is:
+
+  Computing states for [ILE LYS HIS LEU LYS GLU GLU MET LYS ALA SER GLU LEU ]
+  Computing states for [ILE LYS HIS LEU LYS GLU GLU MET LYS ALA SER ]
+  For node 18 local data is:
+
+  Edge from node [ILE LYS HIS LEU LYS GLU GLU MET LYS ALA SER ] to [LYS HIS LEU LYS THR GLU GLU MET LYS ALA SER ] is [LYS HIS LEU LYS GLU GLU MET LYS ALA SER ]
+  Data is:
+
+  Computing states for [ILE LYS HIS LEU LYS THR GLU GLU MET LYS ALA SER ]
+  Computing states for [LYS HIS LEU LYS THR GLU GLU MET LYS ALA SER ]
+  For node 16 local data is:
+
+  Edge from node [LYS HIS LEU LYS THR GLU GLU MET LYS ALA SER ] to [LYS THR GLU ALA GLU MET LYS ALA SER ] is [LYS THR GLU GLU MET LYS ALA SER ]
+  Data is:
+
+  Computing states for [LYS HIS LEU LYS THR GLU ALA GLU MET LYS ALA SER ]
+  Computing states for [LYS THR GLU ALA GLU MET LYS ALA SER ]
+  For node 15 local data is:
+
+  For child 15 returned data is:
+
+  For child 15 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [LYS HIS LEU LYS THR GLU ALA GLU MET LYS ALA SER ]" was never used. See the IMP::Object documentation for an explanation.
+  For child 16 returned data is:
+
+  For child 16 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [ILE LYS HIS LEU LYS THR GLU GLU MET LYS ALA SER ]" was never used. See the IMP::Object documentation for an explanation.
+  For child 18 returned data is:
+
+  For child 18 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [ILE LYS HIS LEU LYS GLU GLU MET LYS ALA SER GLU LEU ]" was never used. See the IMP::Object documentation for an explanation.
+  For child 17 returned data is:
+
+  For child 17 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [GLN ASP ILE LYS HIS LEU LYS GLU MET LYS ALA SER GLU LEU LYS ]" was never used. See the IMP::Object documentation for an explanation.
+  For child 39 returned data is:
+
+  For child 39 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [GLN ASP ILE LYS HIS LEU LYS MET LYS ALA SER GLU ASP LEU LYS ]" was never used. See the IMP::Object documentation for an explanation.
+  For child 38 returned data is:
+
+  For child 38 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [GLN ASP ILE LYS VAL HIS LEU LYS MET ALA SER GLU ASP LEU LYS LYS HIS ]" was never used. See the IMP::Object documentation for an explanation.
+  For child 35 returned data is:
+
+  For child 35 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [GLN ASP ILE LYS LEU GLU LYS PHE VAL HIS LEU LYS MET SER GLU ASP LEU LYS LYS HIS ]" was never used. See the IMP::Object documentation for an explanation.
+  Edge from node [GLN ASP ILE LYS LEU GLU LYS PHE VAL HIS LEU LYS MET SER ASP LEU LYS LYS HIS ] to [LEU GLU LYS PHE ARG VAL HIS LEU LYS SER ASP LEU LYS HIS ] is [LEU GLU LYS PHE VAL HIS LEU LYS SER ASP LEU LYS HIS ]
+  Data is:
+
+  Computing states for [GLN ASP ILE LYS LEU GLU LYS PHE ARG VAL HIS LEU LYS MET SER ASP LEU LYS LYS HIS ]
+  Computing states for [LEU GLU LYS PHE ARG VAL HIS LEU LYS SER ASP LEU LYS HIS ]
+  For node 21 local data is:
+
+  Edge from node [LEU GLU LYS PHE ARG VAL HIS LEU LYS SER ASP LEU LYS HIS ] to [LEU GLU LYS PHE ARG VAL LYS HIS LEU LYS HIS ] is [LEU GLU LYS PHE ARG VAL HIS LEU LYS HIS ]
+  Data is:
+
+  Computing states for [LEU GLU LYS PHE ARG VAL LYS HIS LEU LYS SER ASP LEU LYS HIS ]
+  Computing states for [LEU GLU LYS PHE ARG VAL LYS HIS LEU LYS HIS ]
+  For node 19 local data is:
+
+  Edge from node [LEU GLU LYS PHE ARG VAL LYS HIS LEU LYS HIS ] to [LEU GLU LYS PHE ASP ARG VAL LYS HIS HIS ] is [LEU GLU LYS PHE ARG VAL LYS HIS HIS ]
+  Data is:
+
+  Computing states for [LEU GLU LYS PHE ASP ARG VAL LYS HIS LEU LYS HIS ]
+  Computing states for [LEU GLU LYS PHE ASP ARG VAL LYS HIS HIS ]
+  For node 20 local data is:
+
+  For child 20 returned data is:
+
+  For child 20 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [LEU GLU LYS PHE ASP ARG VAL LYS HIS LEU LYS HIS ]" was never used. See the IMP::Object documentation for an explanation.
+  For child 19 returned data is:
+
+  For child 19 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [LEU GLU LYS PHE ARG VAL LYS HIS LEU LYS SER ASP LEU LYS HIS ]" was never used. See the IMP::Object documentation for an explanation.
+  For child 21 returned data is:
+
+  For child 21 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [GLN ASP ILE LYS LEU GLU LYS PHE ARG VAL HIS LEU LYS MET SER ASP LEU LYS LYS HIS ]" was never used. See the IMP::Object documentation for an explanation.
+  For child 36 returned data is:
+
+  For child 36 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [GLN ASP ILE LEU ILE LYS LEU GLU LYS PHE VAL HIS LEU LYS MET SER ASP LEU LYS LYS HIS ]" was never used. See the IMP::Object documentation for an explanation.
+  Edge from node [GLN ASP ILE LEU ILE LYS LEU GLU LYS PHE VAL LEU MET ASP LEU LYS LYS HIS ] to [GLN ASP ILE LEU ILE PHE LYS LEU GLU LYS PHE VAL LEU MET LEU HIS ] is [GLN ASP ILE LEU ILE LYS LEU GLU LYS PHE VAL LEU MET LEU HIS ]
+  Data is:
+
+  Computing states for [GLN ASP ILE LEU ILE PHE LYS LEU GLU LYS PHE VAL LEU MET ASP LEU LYS LYS HIS ]
+  Computing states for [GLN ASP ILE LEU ILE PHE LYS LEU GLU LYS PHE VAL LEU MET LEU HIS ]
+  For node 40 local data is:
+
+  Edge from node [GLN ASP ILE LEU ILE PHE LYS LEU GLU LYS PHE VAL LEU MET LEU HIS ] to [GLN ASP ILE LEU ILE ARG PHE LYS LEU GLU LYS PHE MET ] is [GLN ASP ILE LEU ILE PHE LYS LEU GLU LYS PHE MET ]
+  Data is:
+
+  Computing states for [GLN ASP ILE LEU ILE ARG PHE LYS LEU GLU LYS PHE VAL LEU MET LEU HIS ]
+  Computing states for [GLN ASP ILE LEU ILE ARG PHE LYS LEU GLU LYS PHE MET ]
+  For node 41 local data is:
+
+  Edge from node [GLN ASP ILE LEU ILE ARG PHE LYS LEU GLU LYS PHE MET ] to [ASP ILE LEU ILE ARG LEU PHE LYS LEU GLU LYS PHE ] is [ASP ILE LEU ILE ARG PHE LYS LEU GLU LYS PHE ]
+  Data is:
+
+  Computing states for [GLN ASP ILE LEU ILE ARG LEU PHE LYS LEU GLU LYS PHE MET ]
+  Computing states for [ASP ILE LEU ILE ARG LEU PHE LYS LEU GLU LYS PHE ]
+  For node 26 local data is:
+
+  Edge from node [ASP ILE LEU ILE ARG LEU PHE LYS LEU GLU LYS PHE ] to [LEU ILE ARG LEU PHE LYS THR LEU GLU LYS PHE ] is [LEU ILE ARG LEU PHE LYS LEU GLU LYS PHE ]
+  Data is:
+
+  Computing states for [ASP ILE LEU ILE ARG LEU PHE LYS THR LEU GLU LYS PHE ]
+  Computing states for [LEU ILE ARG LEU PHE LYS THR LEU GLU LYS PHE ]
+  For node 22 local data is:
+
+  Edge from node [LEU ILE ARG LEU PHE LYS THR LEU GLU LYS PHE ] to [ILE ARG LEU PHE LYS PRO GLU THR LEU GLU LYS ] is [ILE ARG LEU PHE LYS THR LEU GLU LYS ]
+  Data is:
+
+  Computing states for [LEU ILE ARG LEU PHE LYS PRO GLU THR LEU GLU LYS PHE ]
+  Computing states for [ILE ARG LEU PHE LYS PRO GLU THR LEU GLU LYS ]
+  For node 23 local data is:
+
+  Edge from node [ILE ARG LEU PHE LYS PRO GLU THR LEU GLU LYS ] to [ILE ARG LEU PHE LYS HIS PRO GLU THR LEU ] is [ILE ARG LEU PHE LYS PRO GLU THR LEU ]
+  Data is:
+
+  Computing states for [ILE ARG LEU PHE LYS HIS PRO GLU THR LEU GLU LYS ]
+  Computing states for [ILE ARG LEU PHE LYS HIS PRO GLU THR LEU ]
+  For node 24 local data is:
+
+  Edge from node [ILE ARG LEU PHE LYS HIS PRO GLU THR LEU ] to [ILE ARG LEU PHE LYS SER HIS PRO GLU THR ] is [ILE ARG LEU PHE LYS HIS PRO GLU THR ]
+  Data is:
+
+  Computing states for [ILE ARG LEU PHE LYS SER HIS PRO GLU THR LEU ]
+  Computing states for [ILE ARG LEU PHE LYS SER HIS PRO GLU THR ]
+  For node 25 local data is:
+
+  For child 25 returned data is:
+
+  For child 25 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [ILE ARG LEU PHE LYS SER HIS PRO GLU THR LEU ]" was never used. See the IMP::Object documentation for an explanation.
+  For child 24 returned data is:
+
+  For child 24 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [ILE ARG LEU PHE LYS HIS PRO GLU THR LEU GLU LYS ]" was never used. See the IMP::Object documentation for an explanation.
+  For child 23 returned data is:
+
+  For child 23 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [LEU ILE ARG LEU PHE LYS PRO GLU THR LEU GLU LYS PHE ]" was never used. See the IMP::Object documentation for an explanation.
+  For child 22 returned data is:
+
+  For child 22 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [ASP ILE LEU ILE ARG LEU PHE LYS THR LEU GLU LYS PHE ]" was never used. See the IMP::Object documentation for an explanation.
+  For child 26 returned data is:
+
+  For child 26 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [GLN ASP ILE LEU ILE ARG LEU PHE LYS LEU GLU LYS PHE MET ]" was never used. See the IMP::Object documentation for an explanation.
+  For child 41 returned data is:
+
+  For child 41 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [GLN ASP ILE LEU ILE ARG PHE LYS LEU GLU LYS PHE VAL LEU MET LEU HIS ]" was never used. See the IMP::Object documentation for an explanation.
+  For child 40 returned data is:
+
+  For child 40 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [GLN ASP ILE LEU ILE PHE LYS LEU GLU LYS PHE VAL LEU MET ASP LEU LYS LYS HIS ]" was never used. See the IMP::Object documentation for an explanation.
+  For child 37 returned data is:
+
+  For child 37 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [GLN ASP ILE LEU ILE LYS LEU GLU LYS PHE VAL LEU MET ASP LEU LYS LYS HIS VAL ]" was never used. See the IMP::Object documentation for an explanation.
+  For child 34 returned data is:
+
+  For child 34 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [GLN ASP ILE LEU ILE PHE ASP LEU LYS LYS HIS GLY VAL ]" was never used. See the IMP::Object documentation for an explanation.
+  For child 32 returned data is:
+
+  For child 32 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [GLY GLN ASP ILE LEU ILE ASP LEU LYS LYS HIS GLY VAL ]" was never used. See the IMP::Object documentation for an explanation.
+  For child 33 returned data is:
+
+  For child 33 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [GLY GLN ASP ILE LEU ILE LEU LYS LYS HIS GLY VAL VAL ]" was never used. See the IMP::Object documentation for an explanation.
+  For child 31 returned data is:
+
+  For child 31 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [HIS GLY GLN ASP ILE LEU LEU LYS LYS HIS GLY VAL VAL LEU ]" was never used. See the IMP::Object documentation for an explanation.
+  For child 30 returned data is:
+
+  For child 30 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [VAL HIS GLY GLN ASP ILE LEU LYS LYS HIS GLY VAL VAL LEU THR ALA LEU ]" was never used. See the IMP::Object documentation for an explanation.
+  Edge from node [VAL HIS GLY GLN ASP ILE LYS LYS HIS GLY VAL VAL LEU THR ALA LEU ] to [VAL LYS LYS HIS GLY VAL THR VAL LEU THR ALA LEU ] is [VAL LYS LYS HIS GLY VAL VAL LEU THR ALA LEU ]
+  Data is:
+
+  Computing states for [VAL HIS GLY GLN ASP ILE LYS LYS HIS GLY VAL THR VAL LEU THR ALA LEU ]
+  Computing states for [VAL LYS LYS HIS GLY VAL THR VAL LEU THR ALA LEU ]
+  For node 14 local data is:
+
+  For child 14 returned data is:
+
+  For child 14 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [VAL HIS GLY GLN ASP ILE LYS LYS HIS GLY VAL THR VAL LEU THR ALA LEU ]" was never used. See the IMP::Object documentation for an explanation.
+  For child 27 returned data is:
+
+  For child 27 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [VAL ALA HIS GLY GLN ASP ILE LYS LYS HIS GLY VAL VAL LEU THR ALA LEU ]" was never used. See the IMP::Object documentation for an explanation.
+  For child 29 returned data is:
+
+  For child 29 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [VAL ALA GLY HIS GLY GLN ASP ILE LYS LYS GLY VAL VAL LEU THR ALA LEU ]" was never used. See the IMP::Object documentation for an explanation.
+  For child 28 returned data is:
+
+  For child 28 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [TRP ALA LYS VAL GLU VAL ALA GLY HIS GLY GLN ASP ILE LYS VAL VAL LEU THR ALA LEU ]" was never used. See the IMP::Object documentation for an explanation.
+  For child 44 returned data is:
+
+  For child 44 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [TRP LEU TRP ALA LYS VAL GLU VAL ALA GLY HIS GLY VAL LEU THR ALA LEU LEU LYS LYS ]" was never used. See the IMP::Object documentation for an explanation.
+  Edge from node [TRP LEU TRP ALA LYS VAL GLU HIS VAL LEU THR ALA LEU LEU LYS LYS ] to [TRP LEU VAL TRP ALA LYS VAL GLU HIS LEU LYS LYS ] is [TRP LEU TRP ALA LYS VAL GLU HIS LEU LYS LYS ]
+  Data is:
+
+  Computing states for [TRP LEU VAL TRP ALA LYS VAL GLU HIS VAL LEU THR ALA LEU LEU LYS LYS ]
+  Computing states for [TRP LEU VAL TRP ALA LYS VAL GLU HIS LEU LYS LYS ]
+  For node 5 local data is:
+
+  Edge from node [TRP LEU VAL TRP ALA LYS VAL GLU HIS LEU LYS LYS ] to [TRP LEU HIS VAL TRP ALA LYS VAL LEU LYS LYS ] is [TRP LEU VAL TRP ALA LYS VAL LEU LYS LYS ]
+  Data is:
+
+  Computing states for [TRP LEU HIS VAL TRP ALA LYS VAL GLU HIS LEU LYS LYS ]
+  Computing states for [TRP LEU HIS VAL TRP ALA LYS VAL LEU LYS LYS ]
+  For node 6 local data is:
+
+  Edge from node [TRP LEU HIS VAL TRP ALA LYS VAL LEU LYS LYS ] to [TRP VAL LEU HIS VAL TRP ALA LEU LYS LYS ] is [TRP LEU HIS VAL TRP ALA LEU LYS LYS ]
+  Data is:
+
+  Computing states for [TRP VAL LEU HIS VAL TRP ALA LYS VAL LEU LYS LYS ]
+  Computing states for [TRP VAL LEU HIS VAL TRP ALA LEU LYS LYS ]
+  For node 7 local data is:
+
+  Edge from node [TRP VAL LEU HIS VAL TRP ALA LEU LYS LYS ] to [TRP LEU VAL LEU HIS VAL TRP LYS ] is [TRP VAL LEU HIS VAL TRP LYS ]
+  Data is:
+
+  Computing states for [TRP LEU VAL LEU HIS VAL TRP ALA LEU LYS LYS ]
+  Computing states for [TRP LEU VAL LEU HIS VAL TRP LYS ]
+  For node 8 local data is:
+
+  Edge from node [TRP LEU VAL LEU HIS VAL TRP LYS ] to [TRP GLN LEU VAL LEU HIS VAL LYS ] is [TRP LEU VAL LEU HIS VAL LYS ]
+  Data is:
+
+  Computing states for [TRP GLN LEU VAL LEU HIS VAL TRP LYS ]
+  Computing states for [TRP GLN LEU VAL LEU HIS VAL LYS ]
+  For node 9 local data is:
+
+  Edge from node [TRP GLN LEU VAL LEU HIS VAL LYS ] to [GLU GLU TRP GLN LEU VAL LEU LYS ] is [TRP GLN LEU VAL LEU LYS ]
+  Data is:
+
+  Computing states for [GLU GLU TRP GLN LEU VAL LEU HIS VAL LYS ]
+  Computing states for [GLU GLU TRP GLN LEU VAL LEU LYS ]
+  For node 10 local data is:
+
+  Edge from node [GLU GLU TRP GLN LEU VAL LEU LYS ] to [GLU GLY GLU TRP GLN LEU VAL LYS ] is [GLU GLU TRP GLN LEU VAL LYS ]
+  Data is:
+
+  Computing states for [GLU GLY GLU TRP GLN LEU VAL LEU LYS ]
+  Computing states for [GLU GLY GLU TRP GLN LEU VAL LYS ]
+  For node 11 local data is:
+
+  Edge from node [GLU GLY GLU TRP GLN LEU VAL LYS ] to [SER GLU GLY GLU TRP GLN VAL LYS ] is [GLU GLY GLU TRP GLN VAL LYS ]
+  Data is:
+
+  Computing states for [SER GLU GLY GLU TRP GLN LEU VAL LYS ]
+  Computing states for [SER GLU GLY GLU TRP GLN VAL LYS ]
+  For node 12 local data is:
+
+  Edge from node [SER GLU GLY GLU TRP GLN VAL LYS ] to [LEU SER GLU GLY GLU TRP VAL LYS ] is [SER GLU GLY GLU TRP VAL LYS ]
+  Data is:
+
+  Computing states for [LEU SER GLU GLY GLU TRP GLN VAL LYS ]
+  Computing states for [LEU SER GLU GLY GLU TRP VAL LYS ]
+  For node 13 local data is:
+
+  Edge from node [LEU SER GLU GLY GLU TRP VAL LYS ] to [VAL LEU SER GLU TRP ] is [LEU SER GLU TRP ]
+  Data is:
+
+  Computing states for [VAL LEU SER GLU GLY GLU TRP VAL LYS ]
+  Computing states for [VAL LEU SER GLU TRP ]
+  For node 45 local data is:
+
+  Edge from node [VAL LEU SER GLU TRP ] to [MET VAL LEU ] is [VAL LEU ]
+  Data is:
+
+  Computing states for [MET VAL LEU SER GLU TRP ]
+  Computing states for [MET VAL LEU ]
+  For node 46 local data is:
+
+  For child 46 returned data is:
+
+  For child 46 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [MET VAL LEU SER GLU TRP ]" was never used. See the IMP::Object documentation for an explanation.
+  For child 45 returned data is:
+
+  For child 45 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [VAL LEU SER GLU GLY GLU TRP VAL LYS ]" was never used. See the IMP::Object documentation for an explanation.
+  For child 13 returned data is:
+
+  For child 13 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [LEU SER GLU GLY GLU TRP GLN VAL LYS ]" was never used. See the IMP::Object documentation for an explanation.
+  For child 12 returned data is:
+
+  For child 12 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [SER GLU GLY GLU TRP GLN LEU VAL LYS ]" was never used. See the IMP::Object documentation for an explanation.
+  For child 11 returned data is:
+
+  For child 11 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [GLU GLY GLU TRP GLN LEU VAL LEU LYS ]" was never used. See the IMP::Object documentation for an explanation.
+  For child 10 returned data is:
+
+  For child 10 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [GLU GLU TRP GLN LEU VAL LEU HIS VAL LYS ]" was never used. See the IMP::Object documentation for an explanation.
+  For child 9 returned data is:
+
+  For child 9 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [TRP GLN LEU VAL LEU HIS VAL TRP LYS ]" was never used. See the IMP::Object documentation for an explanation.
+  For child 8 returned data is:
+
+  For child 8 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [TRP LEU VAL LEU HIS VAL TRP ALA LEU LYS LYS ]" was never used. See the IMP::Object documentation for an explanation.
+  For child 7 returned data is:
+
+  For child 7 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [TRP VAL LEU HIS VAL TRP ALA LYS VAL LEU LYS LYS ]" was never used. See the IMP::Object documentation for an explanation.
+  For child 6 returned data is:
+
+  For child 6 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [TRP LEU HIS VAL TRP ALA LYS VAL GLU HIS LEU LYS LYS ]" was never used. See the IMP::Object documentation for an explanation.
+  For child 5 returned data is:
+
+  For child 5 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [TRP LEU VAL TRP ALA LYS VAL GLU HIS VAL LEU THR ALA LEU LEU LYS LYS ]" was never used. See the IMP::Object documentation for an explanation.
+  For child 4 returned data is:
+
+  For child 4 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [TRP LEU TRP ALA LYS VAL GLU HIS VAL LEU THR ALA LEU GLY LEU LYS LYS ]" was never used. See the IMP::Object documentation for an explanation.
+  For child 3 returned data is:
+
+  For child 3 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [TRP LEU TRP GLU VAL LEU THR ALA LEU GLY ALA LEU LYS LYS ]" was never used. See the IMP::Object documentation for an explanation.
+  For child 2 returned data is:
+
+  For child 2 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [TRP LEU TRP GLU LEU THR ALA LEU GLY ALA ILE LEU LYS LYS ]" was never used. See the IMP::Object documentation for an explanation.
+  For child 1 returned data is:
+
+  For child 1 merged data is:
+
+    WARNING  Object "DefaultSubsetStates on [TRP LEU THR ALA LEU GLY ALA ILE LEU LYS LYS LYS ]" was never used. See the IMP::Object documentation for an explanation.
+domino2 small ,6.470000,0.000000e+00
+container list in 4950,0.002151,0.000000e+00
+container list out 4950,0.002222,0.000000e+00
+container list in 499500,0.217500,0.000000e+00
+container list out 499500,0.224167,0.000000e+00
+container set in 2450,0.001061,0.000000e+00
+container set out 2450,0.001164,0.000000e+00
+container set in 249500,0.107917,0.000000e+00
+container set out 249500,0.118636,0.000000e+00
+changing nonincremental,0.000053,7.049392e+07
+changing incremental,0.000059,7.049392e+07
+changing nonincremental score,0.000097,1.021964e+08
+changing incremental score,0.000146,6.794366e+07
+knn ann uniform 10 0,0.000005,2.489432e+06
+knn ann uniform 10 0.1,0.000006,2.385004e+06
+knn ann uniform 10 0.5,0.000004,2.768787e+06
+knn ann uniform 100 0,0.000088,1.402604e+06
+knn ann uniform 100 0.1,0.000084,1.531750e+06
+knn ann uniform 100 0.5,0.000072,1.741410e+06
+knn ann uniform 1000 0,0.001305,9.732111e+05
+knn ann uniform 1000 0.1,0.001190,1.013090e+06
+knn ann uniform 1000 0.5,0.000953,1.312908e+06
+knn cgal uniform 10 0,0.000013,6.643280e+05
+knn cgal uniform 10 0.1,0.000015,9.051185e+05
+knn cgal uniform 10 0.5,0.000014,5.752096e+05
+knn cgal uniform 100 0,0.000443,2.885580e+05
+knn cgal uniform 100 0.1,0.000381,3.457905e+05
+knn cgal uniform 100 0.5,0.000326,3.790886e+05
+knn cgal uniform 1000 0,0.006906,1.825030e+05
+knn cgal uniform 1000 0.1,0.006443,1.950503e+05
+knn cgal uniform 1000 0.5,0.005605,2.217436e+05
+knn linear uniform 10 0,0.000006,1.886921e+06
+knn linear uniform 10 0.1,0.000006,1.724866e+06
+knn linear uniform 10 0.5,0.000006,1.860558e+06
+knn linear uniform 100 0,0.000271,4.991266e+05
+knn linear uniform 100 0.1,0.000269,4.744860e+05
+knn linear uniform 100 0.5,0.000270,4.259168e+05
+knn linear uniform 1000 0,0.022613,5.516611e+04
+knn linear uniform 1000 0.1,0.022703,5.515979e+04
+knn linear uniform 1000 0.5,0.022613,5.551177e+04
+col quadratic 10000 0.1,21.218247,1.513251e+06
+col quadratic 10000 0.5,23.798247,2.466175e+06
+col box 10000 0.1,5.648248,1.504062e+06
+refiner children,0.061463,2.413670e+07
+refiner leaves,0.001189,1.237447e+09
+rotation (cache),0.000411,4.164050e+04
+rotation (nocache),0.007225,4.969893e+03
+xyz decorator small,0.370000,2.950017e+07
+xyz particle small,0.330000,2.950017e+07
+xyz vector small,0.090000,2.950017e+07
+xyz vector space small,0.090000,2.950017e+07
+xyz decorator large,11.580000,1.693901e+09
+xyz particle large,10.610000,1.693901e+09
+xyz vector large,3.000000,1.693901e+09
+xyz vector space large,3.020000,1.693901e+09
+xyz decorator huge,875.090000,3.126383e+11
+xyz particle huge,803.280000,3.126383e+11
+xyz vector huge,223.130000,3.126383e+11
+xyz vector space huge,223.930000,3.126383e+11

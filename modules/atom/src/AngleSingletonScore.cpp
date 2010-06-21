@@ -48,15 +48,6 @@ double AngleSingletonScore::evaluate(Particle *b,
   }
 }
 
-ParticlesList
-AngleSingletonScore::get_interacting_particles(Particle *p) const {
-  ParticlesList ret(1,ParticlesTemp(3));
-  Angle ad(p);
-  ret[0][0]= ad.get_particle(0);
-  ret[0][1]= ad.get_particle(1);
-  ret[0][2]= ad.get_particle(2);
-  return ret;
-}
 
 ContainersTemp AngleSingletonScore::get_input_containers(Particle *p) const {
   return ContainersTemp(1,p);

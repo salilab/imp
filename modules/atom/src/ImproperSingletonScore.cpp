@@ -50,16 +50,6 @@ double ImproperSingletonScore::evaluate(Particle *b,
   }
 }
 
-ParticlesList
-ImproperSingletonScore::get_interacting_particles(Particle *p) const {
-  ParticlesList ret(1,ParticlesTemp(4));
-  Dihedral bd(p);
-  ret[0][0]= bd.get_particle(0);
-  ret[0][1]= bd.get_particle(1);
-  ret[0][2]= bd.get_particle(2);
-  ret[0][3]= bd.get_particle(3);
-  return ret;
-}
 
 ContainersTemp ImproperSingletonScore::get_input_containers(Particle *p) const {
   return ContainersTemp(1,p);

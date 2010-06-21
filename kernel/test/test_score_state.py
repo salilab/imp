@@ -68,7 +68,7 @@ class TestScoreState(IMP.test.TestCase):
         ss = LoggingScoreState(log)
         model.add_score_state(ss)
         model.evaluate(False)
-        self.assertEqual(log, ['update', 'update', 'restraint-score', 'after_evaluate'])
+        self.assertEqual(log, ['update', 'restraint-score', 'after_evaluate'])
         log[:] = []
         model.evaluate(True)
         self.assertEqual(log, ['update', 'restraint-deriv', 'after_evaluate'])

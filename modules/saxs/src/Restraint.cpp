@@ -42,10 +42,6 @@ Restraint::Restraint(const Particles& particles, const Profile& exp_profile) :
           << " atom particles " << rigid_bodies_.size() << " rigid bodies\n");
 }
 
-ParticlesList Restraint::get_interacting_particles() const
-{
-  return ParticlesList(1, get_input_particles());
-}
 
 ParticlesTemp Restraint::get_input_particles() const
 {

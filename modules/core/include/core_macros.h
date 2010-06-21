@@ -36,6 +36,9 @@
   ContainersTemp get_input_containers(SingletonContainer *pc) const;    \
   ContainersTemp get_input_containers(SingletonContainer *a,            \
                                    SingletonContainer *b) const;        \
+  IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bbs) const;   \
+  IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bas,          \
+                           const algebra::BoundingBox3Ds &bbs) const;   \
   IMP_OBJECT(Name)
 
 #endif  /* IMPCORE_MACROS_H */

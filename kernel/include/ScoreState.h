@@ -84,11 +84,8 @@ public:
   */
   virtual ContainersTemp get_input_containers() const=0;
   virtual ContainersTemp get_output_containers() const=0;
-  /** Given that the containers are up to date.*/
   virtual ParticlesTemp get_input_particles() const=0;
-  /** Given that the containers are up to date.*/
   virtual ParticlesTemp get_output_particles() const=0;
-  virtual ParticlesList get_interacting_particles() const=0;
   /** @} */
 
 

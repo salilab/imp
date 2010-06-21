@@ -80,17 +80,6 @@ double ClosePairsPairScore::evaluate(const ParticlePair &p,
   return ret;
 }
 
-ParticlesList
-ClosePairsPairScore::get_interacting_particles(const ParticlePair &p) const {
-  ParticlePairsTemp ppt= get_close_pairs(p[0], p[1], th_, r_);
-  ParticlesList ret;
-  for (unsigned int i=0; i< ppt.size(); ++i) {
-    ret.push_back( IMP::internal::get_union(
-                         f_->get_interacting_particles(ppt[i])));
-  }
-  return ret;
-}
-
 namespace {
   ParticlesTemp expand(Particle* a, Refiner *r) {
     ParticlesTemp ret;
@@ -111,33 +100,25 @@ namespace {
 }
 
 ParticlesTemp ClosePairsPairScore
-::get_input_particles(const ParticlePair &p) const {
+::get_input_particles(Particle *p) const {
   ParticlesTemp ret;
-  ParticlesTemp ea=expand(p[0], r_);
-  ParticlesTemp eb=expand(p[1], r_);
+  ParticlesTemp ea=expand(p, r_);
   for (unsigned int i=0; i< ea.size(); ++i) {
-    for (unsigned int j=0; j< eb.size(); ++j) {
-      ParticlesTemp c= f_->get_input_particles(ParticlePair(ea[i], eb[j]));
-      ret.insert(ret.end(), c.begin(), c.end());
-    }
+    ParticlesTemp c= f_->get_input_particles(ea[i]);
+    ret.insert(ret.end(), c.begin(), c.end());
   }
   return ret;
 }
 
 ContainersTemp ClosePairsPairScore
-::get_input_containers(const ParticlePair &p) const {
-  ContainersTemp ret= r_->get_input_containers(p[0]);
-  ContainersTemp t= r_->get_input_containers(p[1]);
-  ret.insert(ret.end(), t.begin(), t.end());
-  ParticlesTemp ea=expand(p[0], r_);
-  ParticlesTemp eb=expand(p[1], r_);
+::get_input_containers(Particle *p) const {
+  ContainersTemp ret= r_->get_input_containers(p);
+  ParticlesTemp ea=expand(p, r_);
   for (unsigned int i=0; i< ea.size(); ++i) {
-    for (unsigned int j=0; j< eb.size(); ++j) {
-      ContainersTemp c= f_->get_input_containers(ParticlePair(ea[i], eb[j]));
-      ret.insert(ret.end(), c.begin(), c.end());
-    }
+    ContainersTemp c= f_->get_input_containers(ea[i]);
+    ret.insert(ret.end(), c.begin(), c.end());
   }
-  return t;
+  return ret;
 }
 
 

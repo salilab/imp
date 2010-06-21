@@ -94,10 +94,6 @@ double compute_distances_particle_access(
 
 // TEST 5
 
-ParticlesList DistanceScore::get_interacting_particles(Particle *) const {
-  return ParticlesList();
-}
-
 ParticlesTemp DistanceScore::get_input_particles(Particle *) const {
   return ParticlesTemp();
 }

@@ -209,18 +209,18 @@ namespace {
 // emacs indentations have problems
 namespace {
 
-  typedef boost::graph_traits<Model::DependencyGraph>::edge_descriptor
+  typedef boost::graph_traits<DependencyGraph>::edge_descriptor
   DependencyEdge;
-  typedef boost::graph_traits<Model::DependencyGraph>
+  typedef boost::graph_traits<DependencyGraph>
   ::vertex_descriptor DependencyVertex;
-  typedef boost::graph_traits<Model::DependencyGraph> DependencyTraits;
-  typedef boost::property_map<Model::DependencyGraph,
+  typedef boost::graph_traits<DependencyGraph> DependencyTraits;
+  typedef boost::property_map<DependencyGraph,
                               boost::vertex_name_t>::type ObjectMap;
-  typedef boost::property_map<Model::DependencyGraph,
+  typedef boost::property_map<DependencyGraph,
                               boost::edge_name_t>::type EdgeMap;
   typedef boost::dynamic_bitset<>  BitSet;
   struct Dependencies {
-    Model::DependencyGraph graph;
+    DependencyGraph graph;
     std::map<Restraint*, DependencyVertex> restraints;
     std::map<ScoreState*, DependencyVertex> score_states;
     std::map<Container*, DependencyVertex> containers;
@@ -252,7 +252,7 @@ namespace {
   // put it here to keep it out of the header for now
   std::map<const Model*, Dependencies> graphs_;
 
-  void write_graph(Model::DependencyGraph &graph,
+  void write_graph(DependencyGraph &graph,
                    ObjectMap &om, std::string name) {
     static unsigned int num=0;
     char buf[1000];
@@ -263,7 +263,7 @@ namespace {
   }
 
   template <class T>
-  DependencyVertex get_vertex(Model::DependencyGraph &graph,
+  DependencyVertex get_vertex(DependencyGraph &graph,
                               T* v,
                               ObjectMap &om,
                               std::map<T*, DependencyVertex> &map) {
@@ -282,7 +282,7 @@ namespace {
     }
   }
 
-bool get_has_edge(Model::DependencyGraph &graph,
+bool get_has_edge(DependencyGraph &graph,
                 DependencyVertex va,
                 DependencyVertex vb) {
     std::pair<DependencyTraits::out_edge_iterator,
@@ -293,7 +293,7 @@ bool get_has_edge(Model::DependencyGraph &graph,
     return false;
   }
 
-  void add_edge(Model::DependencyGraph &graph,
+  void add_edge(DependencyGraph &graph,
                 EdgeMap &em,
                 DependencyVertex va,
                 DependencyVertex vb,
@@ -777,13 +777,6 @@ void Model::order_score_states() {
   /*IMP_IF_LOG(VERBOSE) {
     write_graph(deps.graph, om, "s_dependency_graph.dot");
     }*/
-  SetIt<Stage, NOT_EVALUATING> reset(&cur_stage_);
-  {
-    // make sure they are up to date
-    ScoreStatesTemp sst=sort_score_states(deps);
-    before_evaluate(sst);
-    //cur_stage_= NOT_EVALUATING;
-  }
   gather_restraints(restraints_begin(), restraints_end(), 1.0, deps.weighted);
   for (unsigned int i=0; i< deps.weighted.size(); ++i) {
     deps.restraints.insert(std::make_pair(deps.weighted[i].second,
@@ -1171,10 +1164,12 @@ double Model::do_evaluate(const WeightedRestraints &restraints,
 }
 
 
-const Model::DependencyGraph& Model::get_dependency_graph() const {
+const DependencyGraph& Model::get_dependency_graph() const {
   IMP_OBJECT_LOG;
   Model *m=const_cast<Model*>(this);
-  m->update();
+  if (!score_states_ordered_) {
+    m->order_score_states();
+  }
   return graphs_[m].graph;
 }
 

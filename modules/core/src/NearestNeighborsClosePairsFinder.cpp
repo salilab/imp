@@ -69,6 +69,50 @@ ParticlePairsTemp NearestNeighborsClosePairsFinder
   return ret;
 }
 
+IntPairs NearestNeighborsClosePairsFinder::
+get_close_pairs(const algebra::BoundingBox3Ds &bas,
+                const algebra::BoundingBox3Ds &bbs) const {
+  set_was_used(true);
+  IMP_OBJECT_LOG;
+  IMP_LOG(TERSE, "Quadratic add_close_pairs called with "
+          << bas.size() << " and "
+          << bbs.size() << std::endl);
+  IntPairs ret;
+  const double d2= get_distance()/2.0;
+  for (unsigned int i=0; i< bas.size(); ++i) {
+    algebra::BoundingBox3D bi= bas[i]+d2;
+    for (unsigned int j=0; j < bbs.size(); ++j) {
+      algebra::BoundingBox3D bj= bbs[j]+d2;
+      if (get_intersect(bi, bj)) {
+        ret.push_back(IntPair(i,j));
+      }
+    }
+  }
+  return ret;
+}
+
+IntPairs NearestNeighborsClosePairsFinder::
+get_close_pairs(const algebra::BoundingBox3Ds &bbs) const {
+  set_was_used(true);
+  IMP_OBJECT_LOG;
+  IMP_LOG(TERSE, "Adding close pairs from "
+          << bbs.size() << " boxes with threshold "
+          << get_distance() << std::endl);
+  IntPairs ret;
+  const double d2= get_distance()/2.0;
+  for (unsigned int i=0; i< bbs.size(); ++i) {
+    algebra::BoundingBox3D bi= bbs[i]+d2;
+    for (unsigned int j=0; j < i; ++j) {
+      algebra::BoundingBox3D bj= bbs[j]+d2;
+      if (get_intersect(bi, bj)) {
+        ret.push_back(IntPair(i,j));
+      }
+    }
+  }
+  return ret;
+}
+
+
 void NearestNeighborsClosePairsFinder::do_show(std::ostream &out) const {
   out << "distance " << get_distance() << std::endl;
 }

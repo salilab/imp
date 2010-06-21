@@ -45,14 +45,6 @@ void PairConstraint::do_update_derivatives(DerivativeAccumulator *da)
   IMP_LOG(TERSE, "End PairsConstraint::after_evaluate" << std::endl);
 }
 
-ParticlesList PairConstraint::get_interacting_particles() const {
-  ParticlesList ret0, ret1;
-  if (f_) ret0= f_->get_interacting_particles(v_);
-  if (af_) ret1= af_->get_interacting_particles(v_);
-  ret0.insert(ret0.end(), ret1.begin(), ret1.end());
-  return ret0;
-}
-
 ContainersTemp PairConstraint::get_input_containers() const {
   return ContainersTemp();
 }
@@ -61,15 +53,16 @@ ContainersTemp PairConstraint::get_output_containers() const {
   return ContainersTemp();
 }
 
+
 ParticlesTemp PairConstraint::get_input_particles() const {
   ParticlesTemp ret;
   if (f_) {
-    ret= f_->get_input_particles(v_);
-    ParticlesTemp o= f_->get_output_particles(v_);
+    ret= IMP::internal::get_input_particles(f_.get(), v_);
+    ParticlesTemp o= IMP::internal::get_output_particles(f_.get(), v_);
     ret.insert(ret.end(), o.begin(), o.end());
     IMP_IF_CHECK(USAGE) {
       if (af_) {
-        ParticlesTemp oret= af_->get_input_particles(v_);
+        ParticlesTemp oret= IMP::internal::get_input_particles(af_.get(), v_);
         std::sort(ret.begin(), ret.end());
         std::sort(oret.begin(), oret.end());
         ParticlesTemp t;
@@ -84,7 +77,7 @@ ParticlesTemp PairConstraint::get_input_particles() const {
       }
     }
   } else {
-    ret= af_->get_output_particles(v_);
+    ret=IMP::internal::get_output_particles(af_.get(), v_);
   }
   return ret;
 }
@@ -92,11 +85,11 @@ ParticlesTemp PairConstraint::get_input_particles() const {
 ParticlesTemp PairConstraint::get_output_particles() const {
   ParticlesTemp ret;
   if (f_) {
-    ret= f_->get_output_particles(v_);
+    ret= IMP::internal::get_output_particles(f_.get(), v_);
     IMP_IF_CHECK(USAGE) {
       if (af_) {
-        ParticlesTemp oret= af_->get_input_particles(v_);
-        ParticlesTemp iret=f_->get_input_particles(v_);
+        ParticlesTemp oret= IMP::internal::get_input_particles(af_.get(), v_);
+        ParticlesTemp iret=IMP::internal::get_input_particles(f_.get(), v_);
         iret.insert(iret.end(), ret.begin(), ret.end());
         std::sort(iret.begin(), iret.end());
         std::sort(oret.begin(), oret.end());
@@ -110,7 +103,7 @@ ParticlesTemp PairConstraint::get_output_particles() const {
       }
     }
   } else {
-    ret= af_->get_input_particles(v_);
+    ret= IMP::internal::get_input_particles(af_.get(), v_);
   }
   return ret;
 }
