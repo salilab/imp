@@ -72,7 +72,7 @@ get_close_pairs(const algebra::BoundingBox3Ds &bas,
     algebra::BoundingBox3D bi= bas[i]+d2;
     for (unsigned int j=0; j < bbs.size(); ++j) {
       algebra::BoundingBox3D bj= bbs[j]+d2;
-      if (get_intersect(bi, bj)) {
+      if (get_interiors_intersect(bi, bj)) {
         ret.push_back(IntPair(i,j));
       }
     }
@@ -93,7 +93,7 @@ get_close_pairs(const algebra::BoundingBox3Ds &bbs) const {
     algebra::BoundingBox3D bi= bbs[i]+d2;
     for (unsigned int j=0; j < i; ++j) {
       algebra::BoundingBox3D bj= bbs[j]+d2;
-      if (get_intersect(bi, bj)) {
+      if (get_interiors_intersect(bi, bj)) {
         ret.push_back(IntPair(i,j));
       }
     }
