@@ -9,7 +9,6 @@ import IMP.helper
 import time
 
 class DOMINOTests(IMP.test.TestCase):
-
     def test_global_min2(self):
         """Test that more involved graphs are fine"""
         m= IMP.Model()
@@ -38,6 +37,8 @@ class DOMINOTests(IMP.test.TestCase):
         """Test that simple interaction graphs are fine"""
         m= IMP.Model()
         ps=[]
+        IMP.set_log_level(IMP.VERBOSE)
+        m.set_log_level(IMP.SILENT)
         for i in range(3):
             p = IMP.Particle(m)
             d= IMP.core.XYZ.setup_particle(p)
@@ -49,6 +50,7 @@ class DOMINOTests(IMP.test.TestCase):
             r= IMP.core.DistanceRestraint(h, p0, p1)
             m.add_restraint(r)
         g= IMP.domino2.get_interaction_graph(m, ps)
+        print g
         vs= g.get_vertices()
         for v in vs:
             print v

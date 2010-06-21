@@ -29,9 +29,13 @@ class RestraintData {
   mutable Scores scores_;
   Pointer<Restraint> r_;
   double weight_;
+  double max_;
 public:
   RestraintData(Restraint *r,
-                double weight): r_(r), weight_(weight){}
+                double weight): r_(r), weight_(weight),
+                                max_(std::numeric_limits<double>::max()){}
+  void set_max(double max) { max_=max;}
+  Restraint *get_restraint() const {return r_;}
   double get_score(ParticleStatesTable *pst,
                    const ParticlesTemp &ps,
                    const SubsetState &state) const {
@@ -46,6 +50,9 @@ public:
         pst->get_particle_states(ps[i])->load_state(state[i], ps[i]);
       }
       double score= r_->evaluate(false)*weight_;
+      if (score >max_) {
+        score=std::numeric_limits<double>::max();
+      }
       scores_[state]=score;
       /*std::cout << "Computed score for " << r_->get_name()
         << " on " << state << "= " << score << std::endl;*/
@@ -78,8 +85,9 @@ class IMPDOMINO2EXPORT ModelData {
   std::vector<ParticlesTemp> dependencies_;
   mutable std::map<const Subset, SubsetData> sdata_;
 public:
-  ModelData(Model *m, const Model::DependencyGraph &dg,
+  ModelData(Model *m, const DependencyGraph &dg,
             ParticleStatesTable* pst);
+  void set_sampler(const Sampler *s);
   const SubsetData &get_subset_data(const Subset &s) const;
 };
 

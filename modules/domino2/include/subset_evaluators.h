@@ -54,7 +54,7 @@ class IMPDOMINO2EXPORT SubsetEvaluatorTable: public Object {
   }
  public:
 #ifndef IMP_DOXYGEN
-  void set_sampler(const Sampler *sampler) {
+  virtual void set_sampler(const Sampler *sampler) {
     sampler_=sampler;
   }
 #endif
@@ -73,6 +73,7 @@ IMP_OBJECTS(SubsetEvaluatorTable, SubsetEvaluatorFactories);
 class IMPDOMINO2EXPORT ModelSubsetEvaluatorTable:
   public SubsetEvaluatorTable {
   internal::ModelData data_;
+  virtual void set_sampler(const Sampler *sampler);
 public:
   ModelSubsetEvaluatorTable(Model *m, ParticleStatesTable *pst);
   IMP_SUBSET_EVALUATOR_TABLE(ModelSubsetEvaluatorTable);
