@@ -55,6 +55,9 @@ public:
                     "I don't know about particle " << p->get_name());
     return enumerators_.find(p)->second;
   }
+  bool get_has_particle(Particle *p) const {
+    return enumerators_.find(p) != enumerators_.end();
+  }
   // This defines the ordering of particles used
   ParticlesTemp get_particles() const {
     ParticlesTemp ret;

@@ -13,7 +13,7 @@
 
 
 IMPDOMINO2_BEGIN_INTERNAL_NAMESPACE
-ModelData::ModelData(Model *m, const Model::DependencyGraph &dg,
+ModelData::ModelData(Model *m, const DependencyGraph &dg,
                      ParticleStatesTable* pst): m_(m), pst_(pst) {
   const ParticlesTemp all= pst->get_particles();
   std::map<Particle*, Particle*> idm;
@@ -37,6 +37,14 @@ ModelData::ModelData(Model *m, const Model::DependencyGraph &dg,
     rdata_.push_back(RestraintData(*rit, m_->get_weight(*rit)));
   }
 }
+
+void ModelData::set_sampler(const Sampler *s) {
+  for (unsigned int i=0; i< rdata_.size(); ++i) {
+    double max= s->get_maximum_score(rdata_[i].get_restraint());
+    rdata_[i].set_max(max);
+  }
+}
+
 const SubsetData &ModelData::get_subset_data(const Subset &s) const {
   if (sdata_.find(s) == sdata_.end()) {
     unsigned int i=0;

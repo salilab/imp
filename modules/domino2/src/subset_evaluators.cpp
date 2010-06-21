@@ -48,6 +48,11 @@ ModelSubsetEvaluatorTable::ModelSubsetEvaluatorTable(Model *m,
   data_(m, m->get_dependency_graph(), pst) {
 }
 
+void ModelSubsetEvaluatorTable::set_sampler(const Sampler *sampler) {
+  data_.set_sampler(sampler);
+  SubsetEvaluatorTable::set_sampler(sampler);
+}
+
 SubsetEvaluator *
 ModelSubsetEvaluatorTable::get_subset_evaluator(const Subset &s) const {
   return new ModelSubsetEvaluator(this, data_.get_subset_data(s),
