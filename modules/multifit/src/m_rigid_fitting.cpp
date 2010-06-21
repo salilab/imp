@@ -15,7 +15,6 @@
 #include <IMP/atom/pdb.h>
 #include <IMP/algebra/geometric_alignment.h>
 #include <IMP/em/converters.h>
-#include <IMP/algebra/eigen_analysis.h>
 #include <IMP/algebra/ReferenceFrame3D.h>
 IMPMULTIFIT_BEGIN_NAMESPACE
 
@@ -23,11 +22,17 @@ em::FittingSolutions pca_based_rigid_fitting(
     container::ListSingletonContainer *ps,
     em::DensityMap *em_map,
     Float threshold, bool refine_fit,
-    FloatKey rad_key, FloatKey wei_key) {
+    FloatKey rad_key, FloatKey wei_key,
+    algebra::PrincipalComponentAnalysis dens_pca_input) {
   //find the pca of the density
-  algebra::Vector3Ds dens_vecs = em::density2vectors(*em_map,threshold);
-  algebra::PrincipalComponentAnalysis dens_pca =
-     algebra::get_principal_components(dens_vecs);
+  algebra::PrincipalComponentAnalysis dens_pca;
+  if (dens_pca_input.is_initialized()){
+    dens_pca=dens_pca_input;
+  }
+  else{
+    algebra::Vector3Ds dens_vecs = em::density2vectors(*em_map,threshold);
+    dens_pca = algebra::get_principal_components(dens_vecs);
+  }
   //find the pca of the protein
   algebra::Vector3Ds ps_vecs;
   core::XYZs ps_xyz =  core::XYZs(ps->get_particles());
@@ -42,7 +47,7 @@ em::FittingSolutions pca_based_rigid_fitting(
     IMP_LOG(IMP::VERBOSE,"particles PCA:"<<std::endl);
     IMP_LOG_WRITE(IMP::VERBOSE,ps_pca.show());
   }
-  // orient the protein to the pca of the density (18 options)
+  // orient the protein to the pca of the density (6 options)
   em::FittingSolutions fs;
   for(int i1=0;i1<3;i1++) {
     for(int i2=i1+1;i2<3;i2++) {
@@ -51,9 +56,9 @@ em::FittingSolutions pca_based_rigid_fitting(
             ps_pca.get_principal_component(i1),
             ps_pca.get_principal_component(i2)),
             ps_pca.get_centroid()));
-        for(int j1=0;j1<3;j1++) {
-          for(int j2=0;j2<3;j2++) {
-            if(j1 != j2) {
+         int j1=0;
+         int j2=1;
+         if(j1 != j2) {
              algebra::ReferenceFrame3D dens_rf(algebra::Transformation3D(
                 algebra::get_rotation_from_x_y_axes(
                   dens_pca.get_principal_component(j1),
@@ -75,8 +80,6 @@ em::FittingSolutions pca_based_rigid_fitting(
               }
               fs.add_solution(ps2dens,fit_score);
             }//j1 != j2
-         }//j2
-       }//j1
     }//i2
   }//i1
   fs.sort();
