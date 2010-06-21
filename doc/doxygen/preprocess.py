@@ -9,9 +9,9 @@ def handle_namespace(infile, outfile):
     #print "filtering ", sys.argv[1]
     txt= infile.read()
     lines = txt.splitlines()
-    beg= re.compile("IMP[ABCDEFGHIJKLMNOPQRSTUVWXYZ]*_BEGIN_NAMESPACE")
-    end= re.compile("IMP[ABCDEFGHIJKLMNOPQRSTUVWXYZ]*_END_NAMESPACE")
-    export= re.compile("IMP[ABCDEFGHIJKLMNOPQRSTUVWXYZ_]*EXPORT")
+    beg= re.compile("IMP[ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789]*_BEGIN_NAMESPACE")
+    end= re.compile("IMP[ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789]*_END_NAMESPACE")
+    export= re.compile("IMP[ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_]*EXPORT")
     merge=re.compile("\\\\\\\\$")
     for l in lines:
         #if l=="IMP_BEGIN_NAMESPACE":
