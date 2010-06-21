@@ -46,16 +46,6 @@ struct Counter {
   }
 };
 
-
-inline
-ParticlesTemp get_union(const ParticlesList &pl) {
-  ParticlesTemp ret=pl[0];
-  for (unsigned int i=1; i < pl.size(); ++i) {
-    ret.insert(ret.end(), pl[i].begin(), pl[i].end());
-  }
-  return ret;
-}
-
 IMP_END_INTERNAL_NAMESPACE
 
 #endif  /* IMP_INTERNAL_UTILITY_H */

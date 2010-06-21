@@ -47,19 +47,14 @@ double QuadRestraint
   return score_;
 }
 
-ParticlesList QuadRestraint::get_interacting_particles() const
-{
-  return ss_->get_interacting_particles(v_);
-}
-
 ParticlesTemp QuadRestraint::get_input_particles() const
 {
-  return ss_->get_input_particles(v_);
+  return IMP::internal::get_input_particles(ss_.get(), v_);
 }
 
 ContainersTemp QuadRestraint::get_input_containers() const
 {
-  return ss_->get_input_containers(v_);
+  return IMP::internal::get_input_containers(ss_.get(), v_);
 }
 
 void QuadRestraint::do_show(std::ostream& out) const

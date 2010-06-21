@@ -50,16 +50,6 @@ double DihedralSingletonScore::evaluate(Particle *b,
   return 0.5 * std::abs(s) * s * (1.0 + std::cos(dih * m - ideal));
 }
 
-ParticlesList
-DihedralSingletonScore::get_interacting_particles(Particle *p) const {
-  ParticlesList ret(1,ParticlesTemp(4));
-  Dihedral dd(p);
-  ret[0][0]= dd.get_particle(0);
-  ret[0][1]= dd.get_particle(1);
-  ret[0][2]= dd.get_particle(2);
-  ret[0][3]= dd.get_particle(3);
-  return ret;
-}
 
 ContainersTemp DihedralSingletonScore::get_input_containers(Particle *p) const {
   return ContainersTemp(1,p);

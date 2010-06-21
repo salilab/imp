@@ -178,10 +178,6 @@ void VolumeRestraint::do_show(std::ostream &out) const {
   out << "container " << sc_ << std::endl;
 }
 
-ParticlesList VolumeRestraint::get_interacting_particles() const {
-  return ParticlesList(1,sc_->get_contained_particles());
-}
-
 ParticlesTemp VolumeRestraint::get_input_particles() const {
   return sc_->get_particles();
 }

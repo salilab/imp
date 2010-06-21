@@ -63,11 +63,6 @@ void RestraintSet::set_model(Model *m) {
   }
 }
 
-ParticlesList RestraintSet::get_interacting_particles() const
-{
-  IMP_FAILURE("RestraintSets are special cased in the Model");
-}
-
 ParticlesTemp RestraintSet::get_input_particles() const
 {
   IMP_FAILURE("RestraintSets are special cased in the Model");

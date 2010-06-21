@@ -17,8 +17,6 @@ class DummyRestraint(IMP.Restraint):
         return IMP.ParticlesTemp()
     def get_input_containers(self):
         return IMP.ContainersTemp()
-    def get_interacting_particles(self):
-        return IMP.ParticlesList()
 
 
 class CustomError(Exception):
@@ -133,9 +131,13 @@ class ModelTests(IMP.test.TestCase):
         m.add_score_state(s)
         # Since C++ now holds a reference to s, it should be safe to delete the
         # Python object (director objects should not be freed while C++ holds
-        # a reference)
+        # a reference
+        print "dir s is ", dir(s)
         del s
         news = m.get_score_state(0)
+        print "dir news is ", dir(news)
+        ip= news.get_input_particles()
+        print "news is ", news
         self.assertEqual(news.python_member, 'test string')
         # Make sure we kept a reference somewhere to this director object
         dirchk.assert_number(1)

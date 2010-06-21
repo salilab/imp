@@ -48,6 +48,13 @@ class IMPEXPORT Sampler: public Object
     max_scores_[r]=s;
   }
   double get_maximum_score() const {return max_score_;}
+  double get_maximum_score(Restraint*r) const {
+    if (max_scores_.find(r) == max_scores_.end()) {
+      return std::numeric_limits<double>::max();
+    } else {
+      return max_scores_.find(r)->second;
+    }
+  }
   /** @} */
 
   Model *get_model() const {return model_;}

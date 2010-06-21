@@ -20,12 +20,6 @@ ConstantRestraint::unprotected_evaluate(DerivativeAccumulator *) const
 }
 
 
-ParticlesList ConstantRestraint::get_interacting_particles() const
-{
-  return ParticlesList();
-}
-
-
 ParticlesTemp ConstantRestraint::get_input_particles() const
 {
   return ParticlesTemp();

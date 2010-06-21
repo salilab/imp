@@ -61,8 +61,8 @@ int main(int, char *[]) {
   for (unsigned int i=0; i< residues.size(); ++i) {
     pst->set_particle_states(residues[i], pstates);
   }
-  IMP_NEW(CachingModelSubsetEvaluatorTable, mset, (m, pst));
-  IMP_NEW(DefaultSubsetStatesTable, dsst, (pst));
+  IMP_NEW(ModelSubsetEvaluatorTable, mset, (m, pst));
+  IMP_NEW(BranchAndBoundSubsetStatesTable, dsst, (pst));
   dsst->set_subset_evaluator_table(mset);
   IMP_NEW(DominoSampler, ds, (m, pst));
   ds->set_subset_states_table(dsst);

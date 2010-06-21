@@ -20,6 +20,7 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT GridClosePairsFinder : public ClosePairsFinder
 {
+  mutable IMP::internal::OwnerPointer<ClosePairsFinder> qp_;
  public:
   GridClosePairsFinder();
 

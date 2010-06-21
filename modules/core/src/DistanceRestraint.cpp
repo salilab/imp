@@ -43,12 +43,11 @@ DistanceRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 }
 
 
-ParticlesList DistanceRestraint::get_interacting_particles() const {
-  return dp_->get_interacting_particles(ParticlePair(p_[0], p_[1]));
-}
-
 ParticlesTemp DistanceRestraint::get_input_particles() const {
-  return dp_->get_input_particles(ParticlePair(p_[0], p_[1]));
+  ParticlesTemp ret= dp_->get_input_particles(p_[0]);
+  ParticlesTemp ret2= dp_->get_input_particles(p_[1]);
+  ret.insert(ret.end(), ret2.begin(), ret2.end());
+  return ret;
 }
 
 

@@ -137,6 +137,23 @@ ParticlePairsTemp RigidClosePairsFinder::get_close_pairs(Particle *a,
   return out;
 }
 
+
+
+IntPairs RigidClosePairsFinder
+::get_close_pairs(const algebra::BoundingBox3Ds &bas,
+                  const algebra::BoundingBox3Ds &bbs) const {
+  set_was_used(true);
+  cpf_->set_distance(get_distance());
+  return cpf_->get_close_pairs(bas, bbs);
+}
+
+IntPairs RigidClosePairsFinder
+::get_close_pairs(const algebra::BoundingBox3Ds &bas) const {
+  set_was_used(true);
+  cpf_->set_distance(get_distance());
+  return cpf_->get_close_pairs(bas);
+}
+
 void RigidClosePairsFinder::do_show(std::ostream &out) const {
   out << "distance " << get_distance() << std::endl;
 }

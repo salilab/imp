@@ -142,16 +142,16 @@ void grid_generate_nbl(const internal::ParticleGrid *particle_bin,
 }
 }
 
-GridClosePairsFinder::GridClosePairsFinder(): ClosePairsFinder("GridCPF"){}
+GridClosePairsFinder::GridClosePairsFinder(): ClosePairsFinder("GridCPF"),
+                                  qp_(new QuadraticClosePairsFinder())
+{}
 
 ParticlePairsTemp GridClosePairsFinder
 ::get_close_pairs(SingletonContainer *ca,
                   SingletonContainer *cb) const {
   set_was_used(true);
-  IMP_NEW(QuadraticClosePairsFinder, qp, ());
-  qp->set_distance(get_distance());
-  qp->set_was_used(true);
-  return qp->get_close_pairs(ca, cb);
+  qp_->set_distance(get_distance());
+  return qp_->get_close_pairs(ca, cb);
 }
 
 ParticlePairsTemp GridClosePairsFinder
@@ -193,6 +193,21 @@ ParticlePairsTemp GridClosePairsFinder
     }
   }
   return out;
+}
+
+IntPairs GridClosePairsFinder
+::get_close_pairs(const algebra::BoundingBox3Ds &bas,
+                  const algebra::BoundingBox3Ds &bbs) const {
+  set_was_used(true);
+  qp_->set_distance(get_distance());
+  return qp_->get_close_pairs(bas, bbs);
+}
+
+IntPairs GridClosePairsFinder
+::get_close_pairs(const algebra::BoundingBox3Ds &bas) const {
+  set_was_used(true);
+  qp_->set_distance(get_distance());
+  return qp_->get_close_pairs(bas);
 }
 
 

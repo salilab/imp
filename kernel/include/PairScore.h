@@ -64,19 +64,14 @@ public:
   virtual bool get_is_changed(const ParticlePair& vt) const =0;
   /** @} */
 
-  /** Get the set of interaction induced by applying to the
-      argument. */
-  virtual ParticlesList
-    get_interacting_particles(const ParticlePair& vt) const =0;
-
   /** Get the set of particles read when applied to the arguments. */
   virtual ParticlesTemp
-    get_input_particles(const ParticlePair& vt) const =0;
+    get_input_particles(Particle *p) const =0;
 
   /** Get the set of input containers when this modifier is applied to
       the arguments. */
   virtual ContainersTemp
-    get_input_containers(const ParticlePair& vt) const =0;
+    get_input_containers(Particle *p) const =0;
 
   IMP_REF_COUNTED_DESTRUCTOR(PairScore);
 };

@@ -28,6 +28,16 @@ IMP_OBJECTS(Restraint,Restraints);
 class ScoreState;
 IMP_OBJECTS(ScoreState,ScoreStates);
 
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+  typedef boost::adjacency_list<boost::vecS, boost::vecS,
+                                boost::bidirectionalS,
+                                boost::property<boost::vertex_name_t, Object*>,
+                                boost::property<boost::edge_name_t,
+                                                int> > DependencyGraph;
+#else
+  class DependencyGraph;
+#endif
+
 //! Class for storing model, its restraints, constraints, and particles.
 /** The Model maintains a standard \imp container for each of Particle,
     ScoreState and Restraint object types.
@@ -344,7 +354,6 @@ public:
   void show_statistics_summary(std::ostream &out=std::cout) const;
   /** @} */
 
-#ifndef SWIG
   /** \name Dependency graph
       The dependency graph captures the interactions between Restraint,
       ScoreState and Particle objects. The graph has an edge if the source
@@ -358,18 +367,8 @@ public:
       Boost.Graph} for more details.
       @{
    */
-#ifndef SWIG
-  typedef boost::adjacency_list<boost::vecS, boost::vecS,
-                                boost::bidirectionalS,
-                                boost::property<boost::vertex_name_t, Object*>,
-                                boost::property<boost::edge_name_t,
-                                                int> > DependencyGraph;
-#else
-  class DependencyGraph;
-#endif
   const DependencyGraph& get_dependency_graph() const;
   /** @} */
-#endif
 };
 
 IMP_OUTPUT_OPERATOR(Model);

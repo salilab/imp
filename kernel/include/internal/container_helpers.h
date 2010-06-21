@@ -108,54 +108,67 @@ inline const ParticleTuple<D>& streamable(const ParticleTuple<D> &p) {
   return p;
 }
 
-template <class C, class F>
-ParticlesList get_interacting_particles(C *sc,
-                                        F *f) {
-  ParticlesList ret;
-  for (unsigned int i=0; i< sc->get_number(); ++i) {
-    ParticlesList t= f->get_interacting_particles(sc->get(i));
-    if (!t.empty()) {
-      ret.push_back(get_union(t));
-    }
-  }
-  return ret;
-}
 
 
-template <class C, class F>
-ParticlesTemp get_input_particles(C *sc,
-                                  F *f) {
+template <class Score, class C>
+ParticlesTemp get_output_particles(Score *s,
+                                   const C& p) {
   ParticlesTemp ret;
-  for (unsigned int i=0; i< sc->get_number(); ++i) {
-    ParticlesTemp t= f->get_input_particles(sc->get(i));
-    ret.insert(ret.end(), t.begin(), t.end());
+  for (unsigned int i=0; i< p.size(); ++i) {
+    ParticlesTemp c= s->get_output_particles(p[i]);
+    ret.insert(ret.end(), c.begin(), c.end());
   }
   return ret;
 }
-
-
-template <class C, class F>
-ContainersTemp get_input_containers(C *sc,
-                                  F *f) {
+template <class Score, class C>
+ParticlesTemp get_input_particles(Score *s,
+                                  const C& p) {
+  ParticlesTemp ret;
+  for (unsigned int i=0; i< p.size(); ++i) {
+    ParticlesTemp c= s->get_input_particles(p[i]);
+    ret.insert(ret.end(), c.begin(), c.end());
+  }
+  return ret;
+}
+template <class Score, class C>
+ContainersTemp get_input_containers(Score *s,
+                                   const C& p) {
   ContainersTemp ret;
-  for (unsigned int i=0; i< sc->get_number(); ++i) {
-    ContainersTemp t= f->get_input_containers(sc->get(i));
-    ret.insert(ret.end(), t.begin(), t.end());
+  for (unsigned int i=0; i< p.size(); ++i) {
+    ContainersTemp c= s->get_input_containers(p[i]);
+    ret.insert(ret.end(), c.begin(), c.end());
   }
   return ret;
 }
-
-
-
-template <class C, class F>
-ParticlesTemp get_output_particles(C *sc,
-                                   F *f) {
-  ParticlesTemp ret;
-  for (unsigned int i=0; i< sc->get_number(); ++i) {
-    ParticlesTemp t= f->get_output_particles(sc->get(i));
-    ret.insert(ret.end(), t.begin(), t.end());
-  }
-  return ret;
+template <class S>
+ParticlesTemp get_output_particles(S *s,
+                                   Particle *p) {
+  return s->get_output_particles(p);
+}
+template <class S>
+ParticlesTemp get_input_particles(S *s,
+                                     Particle *p) {
+  return s->get_input_particles(p);
+}
+template <class S>
+ContainersTemp get_input_containers(S *s,
+                                   Particle *p) {
+  return s->get_input_containers(p);
+}
+template <class S>
+ParticlesTemp get_output_particles(S *s,
+                                   Pointer<Particle> p) {
+  return s->get_output_particles(p);
+}
+template <class S>
+ParticlesTemp get_input_particles(S *s,
+                                  Pointer<Particle> p) {
+  return s->get_input_particles(p);
+}
+template <class S>
+ContainersTemp get_input_containers(S *s,
+                                   Pointer<Particle> p) {
+  return s->get_input_containers(p);
 }
 
 
@@ -229,9 +242,6 @@ inline std::string get_name(const ParticleTuple<D>& p) {
   }                                                                     \
   ParticlesTemp Name::Ticker::get_output_particles() const {            \
     return ParticlesTemp();                                             \
-  }                                                                     \
-  ParticlesList Name::Ticker::get_interacting_particles() const {       \
-    return ParticlesList();                                             \
   }                                                                     \
   void Name::Ticker::do_show(std::ostream &out) const {                 \
     out << "back is " << *back_ << std::endl;                           \

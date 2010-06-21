@@ -379,7 +379,13 @@ class BoostDigraph;
   IMP::internal::ref(ret.get());
   %set_output(SWIG_NewPointerObj(%as_voidptr(ret), $descriptor(IMP::internal::BoostDigraph<Namespace::Type, Label >*), $owner | SWIG_POINTER_OWN));
  }
-%typemap(in) const Namespace::Type& {
+%typemap(out) Namespace::Type const& {
+  typedef IMP::internal::BoostDigraph<Namespace::Type, Label > GT;
+  IMP_NEW(GT, ret, (*$1));
+  IMP::internal::ref(ret.get());
+  %set_output(SWIG_NewPointerObj(%as_voidptr(ret), $descriptor(IMP::internal::BoostDigraph<Namespace::Type, Label >*), $owner | SWIG_POINTER_OWN));
+ }
+%typemap(in) Namespace::Type const& {
       void *vp;
       int res=SWIG_ConvertPtr($input, &vp, $descriptor(IMP::internal::BoostDigraph<Namespace::Type, Label >*), 0 );
       if (!SWIG_IsOK(res)) {

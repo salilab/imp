@@ -83,10 +83,6 @@ void DiameterRestraint::do_show(std::ostream &out) const {
   out << "diameter " << diameter_ << std::endl;
 }
 
-ParticlesList DiameterRestraint::get_interacting_particles() const {
-  return ParticlesList(1, get_input_particles());
-}
-
 ParticlesTemp DiameterRestraint::get_input_particles() const {
   ParticlesTemp t(sc_->particles_begin(), sc_->particles_end());
   t.push_back(p_);

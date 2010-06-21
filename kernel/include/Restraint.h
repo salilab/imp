@@ -19,7 +19,7 @@
 #include "utility.h"
 #include "container_macros.h"
 #include "container_base.h"
-
+#include "Model.h"
 #include <vector>
 #include <iostream>
 #include <limits>
@@ -28,6 +28,7 @@ IMP_BEGIN_NAMESPACE
 
 
 class Model;
+
 
 //! Abstract class for representing restraints
 /** Restraints should take their score function or UnaryFunction
@@ -141,10 +142,17 @@ public:
       @{
   */
   virtual ContainersTemp get_input_containers() const=0;
-  /** Given that the containers are up to date.*/
   virtual ParticlesTemp get_input_particles() const=0;
-  virtual ParticlesList get_interacting_particles() const=0;
   /** @} */
+
+  //! Decompose this restraint into constituent terms
+  /** Given the set of input particles, decompose the restraint into as
+      simple parts as possible. For many restraints, the simplest
+      part is simply the restraint itself.
+   */
+  virtual Restraints get_decomposition() const {
+    return Restraints(1, const_cast<Restraint*>(this));
+  }
 
   IMP_REF_COUNTED_DESTRUCTOR(Restraint);
 private:
@@ -155,8 +163,5 @@ private:
 };
 
 IMP_END_NAMESPACE
-
-// for Restraints
-#include "Model.h"
 
 #endif  /* IMP_RESTRAINT_H */

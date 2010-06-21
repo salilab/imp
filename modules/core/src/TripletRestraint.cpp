@@ -47,19 +47,14 @@ double TripletRestraint
   return score_;
 }
 
-ParticlesList TripletRestraint::get_interacting_particles() const
-{
-  return ss_->get_interacting_particles(v_);
-}
-
 ParticlesTemp TripletRestraint::get_input_particles() const
 {
-  return ss_->get_input_particles(v_);
+  return IMP::internal::get_input_particles(ss_.get(), v_);
 }
 
 ContainersTemp TripletRestraint::get_input_containers() const
 {
-  return ss_->get_input_containers(v_);
+  return IMP::internal::get_input_containers(ss_.get(), v_);
 }
 
 void TripletRestraint::do_show(std::ostream& out) const

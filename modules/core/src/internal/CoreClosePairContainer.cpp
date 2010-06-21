@@ -33,7 +33,7 @@ CoreClosePairContainer::CoreClosePairContainer(SingletonContainer *c,
                                                  ClosePairsFinder *cpf,
                                        double slack):
   internal::ListLikePairContainer(c->get_model(), "ClosePairContainer"),
-  deps_(new DependenciesScoreState(this), c->get_model()){
+  is_static_(false) {
  initialize(c, distance, slack,
              cpf);
 }
@@ -58,8 +58,29 @@ void CoreClosePairContainer::initialize(SingletonContainer *c, double distance,
 IMP_ACTIVE_CONTAINER_DEF(CoreClosePairContainer);
 
 
+void CoreClosePairContainer::set_is_static(bool t,
+                                           const algebra::BoundingBox3Ds &bbs) {
+  if (t&& !is_static_) {
+    ParticlesTemp pt= c_->get_particles();
+    IntPairs ips= cpf_->get_close_pairs(bbs);
+    ParticlePairsTemp val(ips.size());
+    for (unsigned int i=0; i< ips.size(); ++i) {
+      val[i]= ParticlePair(pt[ips[i].first], pt[ips[i].second]);
+    }
+    update_list(val);
+  }
+  if (t != is_static_) {
+    // reset dependency graph
+    ticker_.reset();
+    ticker_.set(new Ticker(this), get_model());
+  }
+  is_static_=t;
+
+}
+
 ContainersTemp CoreClosePairContainer
 ::get_state_input_containers() const {
+  if (is_static_) return ContainersTemp();
   ContainersTemp ret= cpf_->get_input_containers(c_);
   ret.push_back(c_);
   ret.push_back(moved_);
@@ -68,6 +89,7 @@ ContainersTemp CoreClosePairContainer
 
 
 ParticlesTemp CoreClosePairContainer::get_state_input_particles() const {
+  if (is_static_) return ParticlesTemp();
   ParticlesTemp ret(cpf_->get_input_particles(c_));
   if (get_number_of_pair_filters() >0) {
     ParticlePairsTemp all_pairs;
@@ -94,6 +116,7 @@ void CoreClosePairContainer::do_before_evaluate() {
   IMP_CHECK_OBJECT(cpf_);
   IMP_INTERNAL_CHECK(c_->get_is_up_to_date(),
                      "Input container is not up to date.");
+  if (is_static_) return;
   try {
     if (first_call_) {
       IMP_LOG(TERSE, "Handling first call of ClosePairContainer." << std::endl);

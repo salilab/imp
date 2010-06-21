@@ -10,6 +10,7 @@
  */
 
 #include "IMP/core/internal/CoreQuadsRestraint.h"
+#include "IMP/core/QuadRestraint.h"
 #include <IMP/internal/container_helpers.h>
 
 #include <IMP/QuadScore.h>
@@ -74,30 +75,30 @@ double CoreQuadsRestraint
   return score_;
 }
 
-ParticlesList CoreQuadsRestraint::get_interacting_particles() const
-{
-  IMP_OBJECT_LOG;
-  ParticlesList ret0= IMP::internal::get_interacting_particles(pc_.get(),
-                                                               ss_.get());
-  return ret0;
-}
-
 ParticlesTemp CoreQuadsRestraint::get_input_particles() const
 {
   IMP_OBJECT_LOG;
-  ParticlesTemp ret0= IMP::internal::get_input_particles(pc_.get(),
-                                                         ss_.get());
-  return ret0;
+  ParticlesTemp ret= IMP::internal::get_input_particles(ss_.get(),
+                                      pc_->get_contained_particles());
+  return ret;
 }
 
 ContainersTemp CoreQuadsRestraint::get_input_containers() const
 {
-  ContainersTemp ret= IMP::internal::get_input_containers(pc_.get(),
-                                                          ss_.get());
+  ContainersTemp ret= IMP::internal::get_input_containers(ss_.get(),
+                                          pc_->get_contained_particles());
   ret.push_back(pc_);
   return ret;
 }
 
+
+Restraints CoreQuadsRestraint::get_decomposition() const {
+    Restraints ret(pc_->get_number());
+    for (unsigned int i=0; i< ret.size(); ++i) {
+      ret[i]= new QuadRestraint(ss_, pc_->get(i));
+    }
+    return ret;
+  }
 
 void CoreQuadsRestraint::do_show(std::ostream& out) const
 {

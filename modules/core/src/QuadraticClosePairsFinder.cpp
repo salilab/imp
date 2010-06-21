@@ -26,12 +26,12 @@ ParticlePairsTemp QuadraticClosePairsFinder
           << ca->get_number_of_particles() << " and "
           << cb->get_number_of_particles() << std::endl);
   ParticlePairsTemp ret;
-  for (SingletonContainer::ParticleIterator it = ca->particles_begin();
-       it != ca->particles_end(); ++it) {
-    for (SingletonContainer::ParticleIterator it2 = cb->particles_begin();
-         it2 != cb->particles_end(); ++it2) {
-      if (get_are_close(*it, *it2)) {
-        ret.push_back(ParticlePair(*it, *it2));
+  ParticlesTemp pta= ca->get_particles();
+  ParticlesTemp ptb= cb->get_particles();
+  for (unsigned int i=0; i < pta.size(); ++i) {
+    for (unsigned int j=0; j < ptb.size(); ++j) {
+      if (get_are_close(pta[i], ptb[j])) {
+        ret.push_back(ParticlePair(pta[i], ptb[j]));
       }
     }
   }
@@ -46,12 +46,55 @@ ParticlePairsTemp QuadraticClosePairsFinder
           << c->get_number_of_particles() << " particles with threshold "
           << get_distance() << std::endl);
   ParticlePairsTemp ret;
-  for (SingletonContainer::ParticleIterator it = c->particles_begin();
-       it != c->particles_end(); ++it) {
-    for (SingletonContainer::ParticleIterator it2 = c->particles_begin();
-       it2 != it; ++it2) {
-      if (get_are_close(*it, *it2)) {
-        ret.push_back(ParticlePair(*it, *it2));
+  ParticlesTemp pt= c->get_particles();
+  for (unsigned int i=0; i< pt.size(); ++i) {
+    for (unsigned int j=0; j < i; ++j) {
+      if (get_are_close(pt[i], pt[j])) {
+        ret.push_back(ParticlePair(pt[i], pt[j]));
+      }
+    }
+  }
+  return ret;
+}
+
+
+IntPairs QuadraticClosePairsFinder::
+get_close_pairs(const algebra::BoundingBox3Ds &bas,
+                const algebra::BoundingBox3Ds &bbs) const {
+  set_was_used(true);
+  IMP_OBJECT_LOG;
+  IMP_LOG(TERSE, "Quadratic add_close_pairs called with "
+          << bas.size() << " and "
+          << bbs.size() << std::endl);
+  IntPairs ret;
+  const double d2= get_distance()/2.0;
+  for (unsigned int i=0; i< bas.size(); ++i) {
+    algebra::BoundingBox3D bi= bas[i]+d2;
+    for (unsigned int j=0; j < bbs.size(); ++j) {
+      algebra::BoundingBox3D bj= bbs[j]+d2;
+      if (get_intersect(bi, bj)) {
+        ret.push_back(IntPair(i,j));
+      }
+    }
+  }
+  return ret;
+}
+
+IntPairs QuadraticClosePairsFinder::
+get_close_pairs(const algebra::BoundingBox3Ds &bbs) const {
+  set_was_used(true);
+  IMP_OBJECT_LOG;
+  IMP_LOG(TERSE, "Adding close pairs from "
+          << bbs.size() << " boxes with threshold "
+          << get_distance() << std::endl);
+  IntPairs ret;
+  const double d2= get_distance()/2.0;
+  for (unsigned int i=0; i< bbs.size(); ++i) {
+    algebra::BoundingBox3D bi= bbs[i]+d2;
+    for (unsigned int j=0; j < i; ++j) {
+      algebra::BoundingBox3D bj= bbs[j]+d2;
+      if (get_intersect(bi, bj)) {
+        ret.push_back(IntPair(i,j));
       }
     }
   }

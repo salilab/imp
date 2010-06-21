@@ -59,10 +59,6 @@ namespace {
     return ret;
   }
 
-  ParticlesList get_rigid_body_interacting_particles(Particle *p) {
-    return ParticlesList(1, get_rigid_body_used_particles(p));
-  }
-
   //! Accumulate the derivatives from the refined particles in the rigid body
   /** You can
       use the setup_rigid_bodies and setup_rigid_body methods instead of

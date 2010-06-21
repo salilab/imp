@@ -90,7 +90,8 @@ class IMPEXPORT Exception
 };
 
 //! Determine the level of runtime checks performed
-/** - NONE means that minimial checks are used.
+/** - NONE means that minimial checks are
+    used.
     - USAGE means that checks of input values to functions
     and classes are verified.
     - USAGE_AND_INTERNAL adds checks that \imp itself is

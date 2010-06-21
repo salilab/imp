@@ -17,6 +17,9 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+typedef std::pair<int,int> IntPair;
+typedef std::vector<IntPair> IntPairs;
+
 
 //! A base class for algorithms to find spatial proximities
 /** In general, the algorithm should make sure it returns all
@@ -43,13 +46,18 @@ class IMPCOREEXPORT ClosePairsFinder : public Object
   /** \name Methods to find close pairs
       The methods add apprioriately close pairs of particles from the
       input list (or lists, for the bipartite version) to the out
-      list.
+      list. The ones that take bounding boxes return pairs of ints
+      indexing the input list(s).
       @{
    */
   virtual ParticlePairsTemp get_close_pairs(SingletonContainer *pc) const =0;
 
   virtual ParticlePairsTemp get_close_pairs(SingletonContainer *pca,
                                             SingletonContainer *pcb) const =0;
+
+  virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bbs) const=0;
+  virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bas,
+                                   const algebra::BoundingBox3Ds &bbs) const=0;
   /** @} */
 
   /** \name The distance threshold

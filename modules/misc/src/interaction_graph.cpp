@@ -24,21 +24,19 @@ typedef boost::property_map<InteractionGraph,
                             boost::edge_name_t>::type ObjectMap;
 
 namespace {
-  void add_edges(const ParticlesList &pl, const std::map<Particle*, int> &map,
+  void add_edges(const ParticlesTemp &pl, const std::map<Particle*, int> &map,
                  Object *blame,
                  InteractionGraph &g) {
     ObjectMap om= boost::get(boost::edge_name, g);
     for (unsigned int i=0; i< pl.size(); ++i) {
-      for (unsigned int j=0; j< pl[i].size(); ++j) {
-        Vertex vj=map.find(pl[i][j])->second;
-        for (unsigned int k=0; k< j; ++k) {
-          Vertex vk=map.find(pl[i][k])->second;
-          Edge e;
-          bool inserted;
-          boost::tie(e, inserted)= boost::add_edge(vj, vk, g);
-          if (inserted) {
-            om[e]=blame;
-          }
+      Vertex vj=map.find(pl[i])->second;
+      for (unsigned int k=0; k< i; ++k) {
+        Vertex vk=map.find(pl[k])->second;
+        Edge e;
+        bool inserted;
+        boost::tie(e, inserted)= boost::add_edge(vj, vk, g);
+        if (inserted) {
+          om[e]=blame;
         }
       }
     }
@@ -57,12 +55,12 @@ InteractionGraph get_interaction_graph(Model *m) {
   }
   for (Model::RestraintIterator it= m->restraints_begin();
        it != m->restraints_end(); ++it) {
-    ParticlesList pl= (*it)->get_interacting_particles();
+    ParticlesTemp pl= (*it)->get_input_particles();
     add_edges(pl, map, *it, ret);
   }
   for (Model::ScoreStateIterator it= m->score_states_begin();
        it != m->score_states_end(); ++it) {
-    ParticlesList pl= (*it)->get_interacting_particles();
+    ParticlesTemp pl= (*it)->get_input_particles();
     add_edges(pl, map, *it, ret);
   }
   return ret;

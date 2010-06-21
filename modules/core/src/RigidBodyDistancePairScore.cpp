@@ -75,30 +75,17 @@ bool RigidBodyDistancePairScore::get_is_changed(const ParticlePair &p) const {
 }
 
 
-ParticlesList
-RigidBodyDistancePairScore
-::get_interacting_particles(const ParticlePair &p) const {
-  ParticlePair pp= get_closest_pair(p[0],p[1], r0_, r1_, k0_, k1_);
-  return ps_->get_interacting_particles(pp);
-}
-
 ParticlesTemp
-RigidBodyDistancePairScore::get_input_particles(const ParticlePair &p) const {
-  ParticlesTemp ret0= r0_->get_input_particles(p[0]);
-  ParticlesTemp ret1= r1_->get_input_particles(p[1]);
-  ret0.insert(ret0.end(), ret1.begin(), ret1.end());
-  ParticlesTemp ret2= r0_->get_refined(p[0]);
+RigidBodyDistancePairScore::get_input_particles(Particle *p) const {
+  ParticlesTemp ret0= r0_->get_input_particles(p);
+  ParticlesTemp ret2= r0_->get_refined(p);
   ret0.insert(ret0.end(), ret2.begin(), ret2.end());
-  ParticlesTemp ret3= r1_->get_refined(p[1]);
-  ret0.insert(ret0.end(), ret3.begin(), ret3.end());
   return ret0;
 }
 
 ContainersTemp
-RigidBodyDistancePairScore::get_input_containers(const ParticlePair &p) const {
-  ContainersTemp ret0= r0_->get_input_containers(p[0]);
-  ContainersTemp ret1= r1_->get_input_containers(p[1]);
-  ret0.insert(ret0.end(), ret1.begin(), ret1.end());
+RigidBodyDistancePairScore::get_input_containers(Particle *p) const {
+  ContainersTemp ret0= r0_->get_input_containers(p);
   return ret0;
 }
 

@@ -47,14 +47,6 @@ double BondSingletonScore::evaluate(Particle *b,
                                  s*(boost::lambda::_1-l), s);
 }
 
-ParticlesList BondSingletonScore::get_interacting_particles(Particle *p) const {
-  ParticlesList ret(1,ParticlesTemp(2));
-  Bond bd(p);
-  ret[0][0]= bd.get_bonded(0);
-  ret[0][1]= bd.get_bonded(1);
-  return ret;
-}
-
 ContainersTemp BondSingletonScore::get_input_containers(Particle *p) const {
   return ContainersTemp(1,p);
 }
