@@ -58,6 +58,39 @@ private:
   Float weight_;
 };
 
+/** \name Gathering restraints
+    It is sometimes useful to extract all the non-RestraintSet restraints
+    from a hierarchy involving RestraintSets mixed with Restraints.
+    @{
+ */
+typedef std::pair<RestraintsTemp, Floats> RestraintsAndWeights;
+
+IMPEXPORT RestraintsAndWeights get_restraints(const RestraintsTemp &rs,
+                                              double initial_weight=1);
+
+template <class It>
+RestraintsAndWeights get_restraints(It b, It e,
+                                    double initial_weight=1) {
+  RestraintsAndWeights ret;
+  for (It c=b; c!= e; ++c) {
+    RestraintSet *rs=dynamic_cast<RestraintSet*>(*c);
+    if (rs) {
+      IMP_LOG(TERSE, "Restraint set " << rs->get_name()
+              << " has weight " << rs->get_weight() << std::endl);
+      RestraintsAndWeights rw=get_restraints(rs->restraints_begin(),
+                                             rs->restraints_end(),
+                                             initial_weight*rs->get_weight());
+      ret.first.insert(ret.first.end(), rw.first.begin(), rw.first.end());
+      ret.second.insert(ret.second.end(), rw.second.begin(), rw.second.end());
+    } else {
+      ret.first.push_back(*c);
+      ret.second.push_back(initial_weight);
+    }
+  }
+  return ret;
+}
+
+          /** @} */
 IMP_END_NAMESPACE
 
 #endif  /* IMP_RESTRAINT_SET_H */
