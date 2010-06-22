@@ -472,6 +472,29 @@ generate the connection between the two languages. Key differences are
     - IMP::core::IncrementalBallMover
     - all the optimizers/samplers
 
+\section graphs Graphs
+
+Graphs in \imp are represented using the \external{www.boost.org/doc/libs/release/libs/graph, Boost Graph Library}. All graphs used in \imp are \external{www.boost.org/doc/libs/1_43_0/libs/graph/doc/VertexAndEdgeListGraph.html, VertexAndEdgeListGraphs}, have vertex_name properties,
+are either \external{www.boost.org/doc/libs/1_43_0/libs/graph/doc/BidirectionalGraph.html, and are BidirectionalGraphs}.
+
+The Boost.Graph interface cannot be easily exported to Python so we instead provide a simple wrapper which looks as follows
+\code
+class Graph {
+public:
+  class VertexDescriptor;
+  class VertexDescriptors;
+  class VertexName;
+  Vertices get_vertices();
+  VertexDescriptors get_in_neighbors(VertexDescriptor);
+  VertexDescriptors get_out_neighbors(VertexDescriptor);
+  void add_edge(VertexDescriptor, VertexDescriptor);
+  VertexDescriptor add_vertex(VertexName);
+};
+\endcode
+Each vertex has a descriptor which provides a unique identifier for the vertex as well as a name, which need not be unique.
+
+The python wrapper should be considered unstable. If there is a python graph library which users would like to use, we will adapt the python interface for that library.
+
 \section fixbug 8. Reporting bugs
 
 While we strive for perfection, we, lamentably, slip up from time to
