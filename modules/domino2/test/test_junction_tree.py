@@ -30,17 +30,17 @@ class DOMINOTests(IMP.test.TestCase):
     def _check_jt_property(self, jt):
         print "vertices are", jt.get_vertices()
         for v0 in jt.get_vertices():
-            ps0= [p for p in jt.get_label(v0)]
+            ps0= [p for p in jt.get_vertex_name(v0)]
             for v1 in jt.get_vertices():
                 if v0 == v1:
                     continue
                 #ps1= jt.get_label(v1).get_particles()
-                intersection=[x for x in ps0 if x in jt.get_label(v1)]
+                intersection=[x for x in ps0 if x in jt.get_vertex_name(v1)]
                 path= self._get_path(jt, v0, v1)
                 for v in path:
                     print "node", v
-                    set=[x for x in jt.get_label(v)]
-                    print [x.get_name() for x in jt.get_label(v)]
+                    set=[x for x in jt.get_vertex_name(v)]
+                    print [x.get_name() for x in jt.get_vertex_name(v)]
                     for i in intersection:
                         print i.get_name()
                         self.assert_(i in set)
@@ -68,7 +68,7 @@ class DOMINOTests(IMP.test.TestCase):
         self._check_jt_property(jt)
 
     def test_global_min0(self):
-        """Testing junction tree algorit"""
+        """Testing junction tree algoritm"""
         m= IMP.Model()
         ps=[]
         ig= IMP.domino2.InteractionGraph()

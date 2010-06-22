@@ -26,7 +26,7 @@ class DOMINOTests(IMP.test.TestCase):
         vs= g.get_vertices()
         for v in vs:
             print v
-            l= g.get_label(v)
+            l= g.get_vertex_name(v)
             print l.get_name()
             self.assert_(l in ps)
             self.assertEqual(len(g.get_out_neighbors(v)), 2)
@@ -54,7 +54,7 @@ class DOMINOTests(IMP.test.TestCase):
         vs= g.get_vertices()
         for v in vs:
             print v
-            l= g.get_label(v)
+            l= g.get_vertex_name(v)
             print l.get_name()
             self.assert_(l in ps)
             self.assertEqual(len(g.get_out_neighbors(v)), 2)
