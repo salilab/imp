@@ -350,16 +350,25 @@ IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PairName,);
 IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName, const&);
 IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName,);
 %feature("valuewrapper") PluralName;
-/*%typemap(in) Namespace::Name* {
-  BOOST_STATIC_ASSERT(0&& "Values must be passed by value or const ref");
-  }
-  %typemap(out) Namespace::Name* {
-  BOOST_STATIC_ASSERT(0&&"Values must be returned by value or const ref");
-  }*/
 %pythoncode %{
   def PairName(a,b):
     return (a,b)
   PluralName= list
+%}
+%enddef
+
+%define IMP_SWIG_SEQUENCE_PAIR(Namespace, Name0, Name1, PairName)
+%typemap(out) Namespace::PairName {
+  PyObject *first=IMP::internal::swig::Convert<Namespace::PairName::first_type >::create_python_object(IMP::internal::swig::ValueOrObject<Namespace::PairName::first_type >::get($1.first), $descriptor(Name0), SWIG_POINTER_OWN);
+  PyObject *second=IMP::internal::swig::Convert<Namespace::PairName::second_type >::create_python_object(IMP::internal::swig::ValueOrObject<Namespace::PairName::second_type >::get($1.second), $descriptor(Name1), SWIG_POINTER_OWN);
+
+  $result=PyTuple_New(2);
+  PyTuple_SetItem($result,0,first);
+  PyTuple_SetItem($result,1,second);
+ }
+%pythoncode %{
+  def PairName(a,b):
+    return (a,b)
 %}
 %enddef
 
