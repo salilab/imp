@@ -28,12 +28,16 @@ class DOMINOTests(IMP.test.TestCase):
     def test_global_min1(self):
         """Testing branch and bound sampler"""
         m= IMP.Model()
+        m.set_log_level(IMP.SILENT)
+        IMP.set_log_level(IMP.VERBOSE)
         ps=[]
         ns=5
         np=4
         for i in range(0,np):
             ps.append(IMP.Particle(m))
         pst= IMP.domino2.ParticleStatesTable()
+        print m.get_number_of_score_states()
+        print m.get_number_of_restraints()
         dsst= IMP.domino2.BranchAndBoundSampler(m, pst)
         for p in ps:
             pst.set_particle_states(p, TrivialParticleStates(ns))

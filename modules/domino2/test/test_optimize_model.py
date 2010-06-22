@@ -29,11 +29,13 @@ class DOMINOTests(IMP.test.TestCase):
         r=IMP.container.PairsRestraint(IMP.core.DistancePairScore(IMP.core.HarmonicLowerBound(0,1)), cp);
         m.add_restraint(r)
         print "getting graph"
-        dg= m.get_dependency_graph()
+        dg= IMP.get_dependency_graph(m.get_score_states(),
+                                     IMP.get_restraints(m.get_restraints())[0])
         dg.show()
         print "optimizing"
         IMP.domino2.optimize_model(m, pst)
-        dg= m.get_dependency_graph()
+        dg= IMP.get_dependency_graph(m.get_score_states(),
+                                     IMP.get_restraints(m.get_restraints())[0])
         dg.show()
         self.assert_(m.get_number_of_restraints() > 1)
 if __name__ == '__main__':

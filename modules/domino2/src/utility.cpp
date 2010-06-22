@@ -129,6 +129,24 @@ typedef boost::property_map<SubsetGraph,
 
 
 
+  template <class It>
+  RestraintsTemp get_restraints(It b, It e) {
+    RestraintsTemp ret;
+    for (It c=b; c!= e; ++c) {
+      RestraintSet *rs=dynamic_cast<RestraintSet*>(*c);
+      if (rs) {
+        IMP_LOG(TERSE, "Restraint set " << rs->get_name()
+                << std::endl);
+        RestraintsTemp o=get_restraints(rs->restraints_begin(),
+                                        rs->restraints_end(), 1.0);
+        ret.insert(ret.end(), o.begin(), o.end());
+      } else {
+        ret.push_back(*c);
+      }
+    }
+    return ret;
+  }
+
 bool get_has_edge(InteractionGraph &graph,
                   IGVertex va,
                   IGVertex vb) {
@@ -181,7 +199,12 @@ InteractionGraph get_interaction_graph(Model *m,
   InteractionGraph ret(ps.size());
   std::map<Particle*, int> map;
   IGVertexMap pm= boost::get(boost::vertex_name, ret);
-  DependencyGraph dg= m->get_dependency_graph();
+  DependencyGraph dg
+    = get_dependency_graph(ScoreStatesTemp(m->score_states_begin(),
+                                           m->score_states_end()),
+                           get_restraints(m->restraints_begin(),
+                                          m->restraints_end(),
+                                          1.0).first);
   for (unsigned int i=0; i< ps.size(); ++i) {
     ParticlesTemp t= get_dependent_particles(ps[i], dg);
     for (unsigned int j=0; j< t.size(); ++j) {
@@ -231,6 +254,9 @@ ParticlesTemp get_dependent_particles(Particle *p,
       break;
     }
   }
+  if (be.first == be.second) {
+    return ParticlesTemp();
+  }
   ParticlesTemp pt;
   DirectCollectVisitor<DependencyGraph> cv(dg, pt);
   boost::vector_property_map<int> color(boost::num_vertices(dg));
@@ -240,7 +266,12 @@ ParticlesTemp get_dependent_particles(Particle *p,
 
 ParticlesTemp get_dependent_particles(Particle *p) {
   Model *m= p->get_model();
-  DependencyGraph dg= m->get_dependency_graph();
+  DependencyGraph dg
+    = get_dependency_graph(ScoreStatesTemp(m->score_states_begin(),
+                                           m->score_states_end()),
+                           get_restraints(m->restraints_begin(),
+                                          m->restraints_end(),
+                                          1.0).first);
   return get_dependent_particles(p, dg);
 }
 
@@ -592,18 +623,29 @@ namespace {
 void optimize_model(Model *m,
                     ParticleStatesTable *pst) {
   ParticlesTemp optimized_particles= pst->get_particles();
-  optimize_container_parent(m, m->get_dependency_graph(),
+  optimize_container_parent(m,
+      get_dependency_graph(ScoreStatesTemp(m->score_states_begin(),
+                                           m->score_states_end()),
+                           get_restraints(m->restraints_begin(),
+                                          m->restraints_end(),
+                                          1.0).first),
                             optimized_particles, pst);
   std::map<Pointer<Object>, Restraints> added, removed;
   std::map<Object*, unsigned int> index;
-  DGConstVertexMap vm= boost::get(boost::vertex_name,m->get_dependency_graph());
   //std::cout << "new gra[j is \n";
   //IMP::internal::show_as_graphviz(m->get_dependency_graph(), std::cout);
-  unsigned int nv=boost::num_vertices(m->get_dependency_graph());
+  const DependencyGraph dg
+    =get_dependency_graph(ScoreStatesTemp(m->score_states_begin(),
+                                          m->score_states_end()),
+                          get_restraints(m->restraints_begin(),
+                                         m->restraints_end(),
+                                         1.0).first);
+  DGConstVertexMap vm= boost::get(boost::vertex_name,dg);
+  unsigned int nv=boost::num_vertices(dg);
   for (unsigned int i=0; i< nv; ++i) {
     index[vm[i]]= i;
   }
-  optimize_restraint_parent(m, m->get_dependency_graph(), index,
+  optimize_restraint_parent(m, dg, index,
                             pst, removed, added);
 }
 

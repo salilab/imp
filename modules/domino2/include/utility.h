@@ -25,11 +25,23 @@ class Object;
 IMP_END_NAMESPACE
 
 IMPDOMINO2_BEGIN_NAMESPACE
+/** \name Debug tools
 
+    We provide a number of different functions for helpering
+    optimize and understand domino-based sampling. These functions
+    are expose part of the implementation and are liable to change
+    without notice.
+    @{
+ */
+/** An undirected graph with one vertex per particle of interest.
+    Two particles are connected by an edge if a Restraint
+    or ScoreState creates and interaction between the two particles.
 
-/** \name Interaction Graph
+    See \ref graphs "Graphs in IMP" for more information.
+ */
+IMP_GRAPH(InteractionGraph, undirected, Particle*, Object*);
 
-    Compute the interaction graph of the restraints and the specified
+/** Compute the interaction graph of the restraints and the specified
     particles.  The dependency graph in the model is traversed to
     determine how the passed particles relate to the actual particles
     read as input by the model. For example, if particles contains a
@@ -41,57 +53,40 @@ IMPDOMINO2_BEGIN_NAMESPACE
     functionality may change without notice.
     @{
  */
-#ifndef SWIG
-typedef boost::adjacency_list<boost::vecS, boost::vecS,
-                              boost::undirectedS,
-                              boost::property<boost::vertex_name_t, Particle*>,
-                              boost::property<boost::edge_name_t,
-                                              Object*> > InteractionGraph;
-#else
-class InteractionGraph;
-#endif
-
 IMPDOMINO2EXPORT InteractionGraph
 get_interaction_graph(Model *m,
                       const ParticlesTemp &particles);
 
-/** @} */
-
-
-
-/** \name Dependent particles
-
-    Returns the subset of particles that depend on p as input. This
+/** Returns the subset of particles that depend on p as input. This
     will include p.
 
     \note This function is here to aid in debugging of optimization
     protocols that use Domino2. As a result, its signature and
     functionality may change without notice.
-    @{
  */
 IMPDOMINO2EXPORT ParticlesTemp get_dependent_particles(Particle *p);
 
+/** \copydoc{get_dependent_particles(Particle*)}
+ */
 IMPDOMINO2EXPORT ParticlesTemp
 get_dependent_particles(Particle *p,
                         const DependencyGraph &dg);
-/** @} */
 
 
-/** \name Junction Tree
-    Compute the exact junction tree for an interaction graph.
-    @{
+/** A directed graph on subsets of vertices. Each vertex is
+    named with an Subset.
+ */
+IMP_GRAPH(SubsetGraph, undirected, Subset, int);
+
+
+/** Compute the exact junction tree for an interaction graph. The resulting
+    graph has the junction tree properties
+    - it is a tree
+    - for any two vertices whose subsets both contain a vertex, that vertex
+    is contained in all subsets along the path connecting those two vertices.
 */
-#ifndef SWIG
-typedef boost::adjacency_list<boost::vecS, boost::vecS,
-                              boost::undirectedS,
-                              boost::property<boost::vertex_name_t,
-                                     Subset > > SubsetGraph;
-#else
-class SubsetGraph;
-#endif
 IMPDOMINO2EXPORT SubsetGraph
 get_junction_tree(const InteractionGraph &ig);
-/** @} */
 
 
 class ParticleStatesTable;
@@ -99,9 +94,6 @@ class ParticleStatesTable;
     contents will not change as optimized particles are moved around. More
     technically, it is one which either is not written by any score state or,
     any score state which writes it does not depend on optimized particles.
-
-    This function is here for debugging purposes and so may change without
-    notice.
  */
 IMPDOMINO2EXPORT bool
 get_is_static_container(Container *c,
@@ -125,6 +117,8 @@ get_is_static_container(Container *c,
 IMPDOMINO2EXPORT void optimize_model(Model *m,
                                      ParticleStatesTable *pst);
 
+
+/**@} */
 IMPDOMINO2_END_NAMESPACE
 
 #endif  /* IMPDOMINO2_UTILITY_H */
