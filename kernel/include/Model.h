@@ -15,6 +15,7 @@
 #include "container_macros.h"
 #include "base_types.h"
 #include "VersionInfo.h"
+#include <boost/dynamic_bitset.hpp>
 #include <boost/graph/adjacency_list.hpp>
 
 
@@ -28,15 +29,6 @@ IMP_OBJECTS(Restraint,Restraints);
 class ScoreState;
 IMP_OBJECTS(ScoreState,ScoreStates);
 
-#if !defined(SWIG) && !defined(IMP_DOXYGEN)
-  typedef boost::adjacency_list<boost::vecS, boost::vecS,
-                                boost::bidirectionalS,
-                                boost::property<boost::vertex_name_t, Object*>,
-                                boost::property<boost::edge_name_t,
-                                                int> > DependencyGraph;
-#else
-  class DependencyGraph;
-#endif
 
 //! Class for storing model, its restraints, constraints, and particles.
 /** The Model maintains a standard \imp container for each of Particle,
@@ -58,19 +50,65 @@ private:
   friend class RestraintSet;
   typedef Particle::Storage ParticleStorage;
 
+
+  // basic representation
   ParticleStorage particles_;
   bool incremental_update_;
   // true if a regular evaluate needs to be called first
   bool first_incremental_;
   bool last_had_derivatives_;
-  bool gather_statistics_;
-  mutable bool score_states_ordered_;
   std::map<FloatKey, FloatRange> ranges_;
   mutable Stage cur_stage_;
   unsigned int eval_count_;
 
-  void order_score_states();
 
+
+  // statistics
+  bool gather_statistics_;
+  void add_to_update_before_time(ScoreState *s, double t) const;
+  void add_to_update_after_time(ScoreState *s, double t) const;
+  void add_to_restraint_evaluate(Restraint *r, double t, double score) const;
+
+
+
+  // evaluation
+  void validate_incremental_evaluate(const RestraintsTemp &restraints,
+                                     const std::vector<double> &weights,
+                                     bool calc_derivs,
+                                     double score);
+  void validate_computed_derivatives() const;
+  void before_evaluate(const ScoreStatesTemp &states) const;
+  void after_evaluate(const ScoreStatesTemp &states, bool calc_derivs) const;
+  void zero_derivatives(bool shadow_too=false) const;
+  double do_evaluate(const RestraintsTemp &restraints,
+                     const std::vector<double> &weights,
+                     const ScoreStatesTemp &states, bool calc_derivs);
+  enum WhichRestraints {ALL, INCREMENTAL, NONINCREMENTAL};
+  double do_evaluate_restraints(const RestraintsTemp &restraints,
+                                const std::vector<double> &weights,
+                                bool calc_derivs,
+                                WhichRestraints incremental_restraints,
+                                bool incremental_evaluation) const;
+
+
+
+  // dependencies
+  mutable std::map<Restraint *, int> restraint_index_;
+  mutable RestraintsTemp ordered_restraints_;
+  mutable std::vector<boost::dynamic_bitset<> > restraint_dependencies_;
+  mutable std::vector<double> restraint_weights_;
+  mutable ScoreStatesTemp ordered_score_states_;
+  void compute_dependencies() const;
+  bool get_has_dependencies() const {
+    return (!ordered_restraints_.empty()
+            || get_number_of_restraints() ==0)
+      && ordered_score_states_.size()
+      == get_number_of_score_states();
+  }
+  void reset_dependencies();
+
+
+  // other
   /* Allow Model::ScoreStateDataWrapper class to call the private
      ScoreState::set_model() function (older g++ and MSVC do not support
      member classes as friends) */
@@ -90,33 +128,6 @@ private:
     }
   }
 
-
-  typedef std::pair<double, Restraint*> WeightedRestraint;
-  typedef std::vector<WeightedRestraint> WeightedRestraints;
-
-  void validate_incremental_evaluate(const WeightedRestraints &restraints,
-                                     bool calc_derivs,
-                                     double score);
-  void validate_computed_derivatives() const;
-
-  void before_evaluate(const ScoreStatesTemp &states) const;
-
-  void after_evaluate(const ScoreStatesTemp &states, bool calc_derivs) const;
-
-  void zero_derivatives(bool shadow_too=false) const;
-
-  double do_evaluate(const WeightedRestraints &restraints,
-                     const ScoreStatesTemp &states, bool calc_derivs,
-                     bool all_particles);
-
-  enum WhichRestraints {ALL, INCREMENTAL, NONINCREMENTAL};
-  double do_evaluate_restraints(const WeightedRestraints &restraints,
-                                bool calc_derivs,
-                                WhichRestraints incremental_restraints,
-                                bool incremental_evaluation,
-                                bool all_particles) const;
-
-  void reset_dependencies();
 
   void do_show(std::ostream& out) const;
 
@@ -284,6 +295,7 @@ public:
   */
   virtual double evaluate(bool calc_derivs);
 
+#ifndef IMP_DOXYGEN
   //! Evaluate a subset of the restraints
   /** The passed restraints must have been added to this model already.
 
@@ -294,24 +306,14 @@ public:
       score states are added, but not when the dependencies of
       Restraints or ScoreStates change. This can be fixed if requested.
   */
-  virtual double evaluate(const RestraintsTemp &restraints, bool calc_derivs);
-
-  //! Evaluate all restraints on only a subset of the particles
-  /** All terms which involve particles not in the subset are skipped.
-      \note This methd may go away.
-  */
-  virtual double evaluate(const ParticlesTemp &particles, bool calc_derivs);
-  /** @} */
+  double evaluate(const RestraintsTemp &restraints, bool calc_derivs);
+#endif
 
  //! Sometimes it is useful to be able to make sure the model is up to date
  /** This method updates all the state but does not necessarily compute the
-     score. If a set of particles is provided, the model may only update
-     those particles.
-     @{
+     score.
  */
  void update();
- void update(const ParticlesTemp &particles);
- /** @} */
 
 #ifndef IMP_DOXYGEN
   VersionInfo get_version_info() const {
@@ -352,22 +354,6 @@ public:
   */
   void set_gather_statistics(bool tf);
   void show_statistics_summary(std::ostream &out=std::cout) const;
-  /** @} */
-
-  /** \name Dependency graph
-      The dependency graph captures the interactions between Restraint,
-      ScoreState and Particle objects. The graph has an edge if the source
-      of the edge is an input for the target of the edge. eg, there
-      is an edge connecting a container to the restraint which gets
-      its particles from the container.
-
-      Each vertex has a name which is a pointer to the corresponding
-      Object. See
-      \external{www.boost.org/doc/libs/1_43_0/libs/graph/doc/index.html,
-      Boost.Graph} for more details.
-      @{
-   */
-  const DependencyGraph& get_dependency_graph() const;
   /** @} */
 };
 
@@ -421,6 +407,34 @@ inline void Particle::assert_valid_derivatives() const {
 #endif
 
 IMP_OBJECTS(Model,Models);
+
+
+
+
+/** \brief A directed graph on the interactions between the various objects in
+    the model.
+
+    The vertices are named by the associated Object*. There
+    is an edge from a to b, if a is an input to b. For example, there
+    is an edge from a particle to a restraint if the restraint directly
+    reads the particle.
+
+    See \ref graphs "Graphs in IMP" for more information.
+*/
+IMP_GRAPH(DependencyGraph, bidirectional, Object*, int);
+
+/** The dependency graph captures the interactions between Restraint,
+    ScoreState and Particle objects. The graph has an edge if the source
+    of the edge is an input for the target of the edge. eg, there
+    is an edge connecting a Container to the Restraint which gets
+    its particles from the Container. In order for a given
+    Restraint to be evaluated properly, all of the Particles connected
+    by a path to the Restraint must be up to date.
+*/
+IMPEXPORT DependencyGraph
+get_dependency_graph(const ScoreStatesTemp &ss,
+                     const RestraintsTemp &rs);
+
 
 IMP_END_NAMESPACE
 
