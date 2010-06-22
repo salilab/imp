@@ -81,4 +81,10 @@ void RestraintSet::do_show(std::ostream& out) const
   out << "... end restraint set " << get_name() << std::endl;
 }
 
+
+RestraintsAndWeights get_restraints(const RestraintsTemp &rs,
+                                    double initial_weight) {
+  return get_restraints(rs.begin(), rs.end(), initial_weight);
+}
+
 IMP_END_NAMESPACE
