@@ -173,6 +173,8 @@ IMPEXPORT int _test_overload(const Particles &ps);
 
 IMPEXPORT int _test_overload(const Restraints &ps);
 
+IMPEXPORT int _test_intranges(const IntRanges &ips);
+
 
 template <class BG, class Label>
 class BoostDigraph: public Object {
@@ -212,9 +214,10 @@ public:
   const BG &get_graph() const {
     return bg_;
   }
-  typedef int Vertex;
-  typedef Ints Vertexes;
-  Vertexes get_vertices() const {
+  typedef int VertexDescriptor;
+  typedef Ints VertexDescriptors;
+  typedef Label VertexName;
+  VertexDescriptors get_vertices() const {
     set_was_used(true);
     IMP_CHECK_OBJECT(this);
     std::pair<typename Traits::vertex_iterator,
@@ -222,14 +225,14 @@ public:
     return Ints(be.first, be.second);
   }
 
-  Label get_label(Vertex i) const {
+  VertexName get_vertex_name(VertexDescriptor i) const {
     set_was_used(true);
     IMP_USAGE_CHECK(i < boost::num_vertices(bg_),
                     "Out of range vertex " << i
                     << " " << boost::num_vertices(bg_));
     return boost::get(vm_, boost::vertex(i, bg_));
   }
-  Vertexes get_in_neighbors(Vertex v) const {
+  VertexDescriptors get_in_neighbors(VertexDescriptor v) const {
     set_was_used(true);
     IMP_USAGE_CHECK(v < boost::num_vertices(bg_),
                     "Out of range vertex " << v
@@ -242,7 +245,7 @@ public:
     }
     return ret;
   }
-  Vertexes get_out_neighbors(Vertex v) const {
+  VertexDescriptors get_out_neighbors(VertexDescriptor v) const {
     set_was_used(true);
     IMP_USAGE_CHECK(v < boost::num_vertices(bg_),
                     "Out of range vertex " << v
@@ -272,11 +275,11 @@ public:
     return get_module_version_info();
   }
 
-  void add_edge(Vertex v0, Vertex v1) {
+  void add_edge(VertexDescriptor v0, VertexDescriptor v1) {
     boost::add_edge(v0, v1, bg_);
   }
-  Vertex add_vertex(Label l) {
-    Vertex v=boost::add_vertex(bg_);
+  VertexDescriptor add_vertex(VertexName l) {
+    VertexDescriptor v=boost::add_vertex(bg_);
     boost::put(vm_, v, l);
     return v;
   }

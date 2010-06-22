@@ -49,6 +49,10 @@ class ParticleTests(IMP.test.TestCase):
         vs=IMP.Ints([1, 2, 3])
         vso= IMP._pass_ints(vs)
         self._equal_lists(vs, vso)
+    def test_intpairs(self):
+        """Check int pairs typemap"""
+        ips=[(1,2),(3,4)]
+        self.assertEqual(IMP._test_intranges(ips), 2)
     def test_c(self):
         """Check string typemaps"""
         vs=IMP.Strings(["1.0", "2.0", "3"])

@@ -237,5 +237,9 @@ int _test_overload(const Restraints &) {
   return 1;
 }
 
+int _test_intranges(const IntRanges &ips) {
+  return ips.size();
+}
+
 
 IMP_END_INTERNAL_NAMESPACE
