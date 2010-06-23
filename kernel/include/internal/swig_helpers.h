@@ -400,7 +400,7 @@ namespace swig {
       return ret;
     }
     template <class SwigData>
-    bool get_is_cpp_object(PyObject *in, SwigData st,
+    static bool get_is_cpp_object(PyObject *in, SwigData st,
                            SwigData particle_st, SwigData decorator_st) {
       if (!Helper::get_is_cpp_object(in, st, particle_st,
                                      decorator_st)) return false;
