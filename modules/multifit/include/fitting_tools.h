@@ -26,7 +26,7 @@ IMPMULTIFIT_BEGIN_NAMESPACE
               close to
 \param[in] dist all fits such that the distance between ap and the fit center
                 is smaller than dist will be included
-\param[out] the pruned fitting solutions
+\return the pruned fitting solutions
  */
 IMPMULTIFITEXPORT FittingSolutionRecords get_close_to_point(
   const FittingSolutionRecords &fit_sols,
