@@ -930,6 +930,22 @@ protection:                                                             \
     @{
 */
 
+#ifdef IMP_DOXYGEN
+//! Define a graph object in \imp
+/** The docs for the graph should appear before the macro
+    invocation.
+ */
+#define IMP_GRAPH(Name, type, VertexName, EdgeName) typedef boost::graph Name
+#elif defined(SWIG)
+#define IMP_GRAPH(Name, type, VertexName, EdgeName)  class Name
+#else
+#define IMP_GRAPH(Name, type, VertexName, EdgeName)                \
+  typedef boost::adjacency_list<boost::vecS, boost::vecS,               \
+  boost::type##S,                                                       \
+  boost::property<boost::vertex_name_t, VertexName>,                    \
+  boost::property<boost::edge_name_t,                                   \
+  EdgeName> > Name
+#endif
 
 //! Define the basic things needed by any Object
 /** This defines
@@ -1175,16 +1191,6 @@ protected:                                      \
     }                                                                   \
     return ret;                                                         \
   }                                                                     \
-  double evaluate_subset(const ParticlesTemp &ps,                       \
-                         DerivativeAccumulator *da) const {             \
-    double ret=0;                                                       \
-    for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      if (ps[i]->get_is_scored()) {                                     \
-        ret+=Name::evaluate(ps[i], da);                                 \
-      }                                                                 \
-    }                                                                   \
-    return ret;                                                         \
-  }                                                                     \
   double evaluate_change(Particle *a,                                   \
                          DerivativeAccumulator *da) const {             \
     if (get_is_changed(a)) {                                            \
@@ -1278,16 +1284,6 @@ protected:                                      \
     }                                                                   \
     return ret;                                                         \
   }                                                                     \
-  double evaluate_subset(const ParticlePairsTemp &ps,                   \
-                         DerivativeAccumulator *da) const {             \
-    double ret=0;                                                       \
-    for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      if (ps[i][0]->get_is_scored() && ps[i][1]->get_is_scored()) {     \
-        ret+=Name::evaluate(ps[i], da);                                 \
-      }                                                                 \
-    }                                                                   \
-    return ret;                                                         \
-  }                                                                     \
   double evaluate_change(const ParticlePair &p,                         \
                          DerivativeAccumulator *da) const {             \
     if (get_is_changed(p)){                                             \
@@ -1376,18 +1372,6 @@ protected:                                      \
     double ret=0;                                                       \
     for (unsigned int i=0; i< ps.size(); ++i) {                         \
       ret+=Name::evaluate(ps[i],da);                                    \
-    }                                                                   \
-    return ret;                                                         \
-  }                                                                     \
-  double evaluate_subset(const ParticleTripletsTemp &ps,                \
-                         DerivativeAccumulator *da) const {             \
-    double ret=0;                                                       \
-    for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      if (ps[i][0]->get_is_scored()                                     \
-          && ps[i][1]->get_is_scored()                                  \
-          && ps[i][2]->get_is_scored()) {                               \
-        ret+=Name::evaluate(ps[i],da);                                  \
-      }                                                                 \
     }                                                                   \
     return ret;                                                         \
   }                                                                     \
@@ -1494,19 +1478,6 @@ protected:                                      \
     double ret=0;                                                       \
     for (unsigned int i=0; i< ps.size(); ++i) {                         \
       ret+=Name::evaluate(ps[i], da);                                   \
-    }                                                                   \
-    return ret;                                                         \
-  }                                                                     \
-  double evaluate_subset(const ParticleQuadsTemp &ps,                   \
-                         DerivativeAccumulator *da) const {             \
-    double ret=0;                                                       \
-    for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      if (ps[i][0]->get_is_scored()                                     \
-          && ps[i][1]->get_is_scored()                                  \
-          && ps[i][2]->get_is_scored()                                  \
-          && ps[i][3]->get_is_scored()){                                \
-        ret+=Name::evaluate(ps[i], da);                                 \
-      }                                                                 \
     }                                                                   \
     return ret;                                                         \
   }                                                                     \
@@ -1803,8 +1774,6 @@ protected:                                      \
              DerivativeAccumulator &da);                        \
   double evaluate(const SingletonScore *s,                      \
                   DerivativeAccumulator *da) const;             \
-  double evaluate_subset(const SingletonScore *s,               \
-                         DerivativeAccumulator *da) const;      \
   double evaluate_change(const SingletonScore *s,               \
                          DerivativeAccumulator *da) const;      \
   double evaluate_prechange(const SingletonScore *s,            \
@@ -1832,8 +1801,6 @@ protected:                                      \
              DerivativeAccumulator &da);                        \
   double evaluate(const PairScore *s,                           \
                   DerivativeAccumulator *da) const;             \
-  double evaluate_subset(const PairScore *s,                    \
-                         DerivativeAccumulator *da) const;      \
   double evaluate_change(const PairScore *s,                    \
                          DerivativeAccumulator *da) const;      \
   double evaluate_prechange(const PairScore *s,                 \
@@ -1862,8 +1829,6 @@ protected:                                      \
              DerivativeAccumulator &da);                                \
   double evaluate(const TripletScore *s,                                \
                   DerivativeAccumulator *da) const;                     \
-  double evaluate_subset(const TripletScore *s,                         \
-                         DerivativeAccumulator *da) const;              \
   double evaluate_change(const TripletScore *s,                         \
                          DerivativeAccumulator *da) const;              \
   double evaluate_prechange(const TripletScore *s,                      \
@@ -1892,8 +1857,6 @@ protected:                                      \
              DerivativeAccumulator &da);                        \
   double evaluate(const QuadScore *s,                           \
                   DerivativeAccumulator *da) const;             \
-  double evaluate_subset(const QuadScore *s,                    \
-                         DerivativeAccumulator *da) const;      \
   double evaluate_change(const QuadScore *s,                    \
                          DerivativeAccumulator *da) const;      \
   double evaluate_prechange(const QuadScore *s,                 \

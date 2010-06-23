@@ -57,8 +57,6 @@ public:
     return pc_;
   }
 
-  double unprotected_evaluate_subset(DerivativeAccumulator *accum) const;
-
   SingletonScore* get_singleton_score() const {
     return ss_;
   }

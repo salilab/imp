@@ -39,16 +39,6 @@ double CoreTripletsRestraint
   return score_;
 }
 
-double CoreTripletsRestraint
-::unprotected_evaluate_subset(DerivativeAccumulator *accum) const
-{
-  IMP_OBJECT_LOG;
-  IMP_CHECK_OBJECT(ss_);
-  IMP_CHECK_OBJECT(pc_);
-
-  score_= pc_->evaluate_subset(ss_, accum);
-  return score_;
-}
 
 double CoreTripletsRestraint
 ::unprotected_incremental_evaluate(DerivativeAccumulator *accum) const

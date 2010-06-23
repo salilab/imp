@@ -111,13 +111,9 @@ public:
   //! Apply a SingletonModifier to the contents
   virtual void apply(const QuadModifier *sm, DerivativeAccumulator &da)=0;
 
-  //! Avaluate a score on the contents
+  //! Evaluate a score on the contents
   virtual double evaluate(const QuadScore *s,
                           DerivativeAccumulator *da) const=0;
-
-  //! Avaluate a score on the contents
-  virtual double evaluate_subset(const QuadScore *s,
-                                 DerivativeAccumulator *da) const=0;
 
 
   /** \name Incremental Scoring

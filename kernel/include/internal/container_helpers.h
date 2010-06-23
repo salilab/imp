@@ -266,40 +266,27 @@ inline std::string get_name(const ParticleTuple<D>& p) {
 
 #define IMP_PAIR_CONTAINER_METHODS_FROM_FOREACH(Name)                   \
   void Name::apply(const PairModifier *sm) {                            \
-    const bool subset=false; if(0) std::cout << subset;                 \
     FOREACH(sm->apply(p));                                              \
   }                                                                     \
   void Name::apply(const PairModifier *sm,                              \
                    DerivativeAccumulator &da) {                         \
-    const bool subset=false; if(0) std::cout << subset;                 \
     FOREACH(sm->apply(p, da));                                          \
   }                                                                     \
   double Name::evaluate(const PairScore *s,                             \
                         DerivativeAccumulator *da) const {              \
     double score=0;                                                     \
-    const bool subset=false; if(0) std::cout << subset;                 \
     FOREACH( score+=s->evaluate(p, da));                                \
-    return score;                                                       \
-  }                                                                     \
-  double Name::evaluate_subset(const PairScore *s,                      \
-                               DerivativeAccumulator *da) const {       \
-    double score=0;                                                     \
-    const bool subset=false; if(0) std::cout << subset;                 \
-    FOREACH( if (p[0]->get_is_scored() && p[1]->get_is_scored())        \
-               score+=s->evaluate(p, da));                              \
     return score;                                                       \
   }                                                                     \
   double Name::evaluate_change(const PairScore *s,                      \
                                DerivativeAccumulator *da) const {       \
     double score=0;                                                     \
-    const bool subset=false; if(0) std::cout << subset;                 \
     FOREACH(score+=s->evaluate_change(p, da));                          \
     return score;                                                       \
   }                                                                     \
   double Name::evaluate_prechange(const PairScore *s,                   \
                                   DerivativeAccumulator *da) const {    \
     double score=0;                                                     \
-    const bool subset=false; if(0) std::cout << subset;                 \
     FOREACH(score+=s->evaluate_prechange(p, da));                       \
     return score;                                                       \
   }                                                                     \
@@ -308,40 +295,27 @@ inline std::string get_name(const ParticleTuple<D>& p) {
 
 #define IMP_SINGLETON_CONTAINER_METHODS_FROM_FOREACH(Name)              \
   void Name::apply(const SingletonModifier *sm) {                       \
-    const bool subset=false; if(0) std::cout << subset;                 \
     FOREACH(sm->apply(a));                                              \
   }                                                                     \
   void Name::apply(const SingletonModifier *sm,                         \
                    DerivativeAccumulator &da) {                         \
-    const bool subset=false; if(0) std::cout << subset;                 \
     FOREACH(sm->apply(a, da));                                          \
   }                                                                     \
   double Name::evaluate(const SingletonScore *s,                        \
                         DerivativeAccumulator *da) const {              \
     double score=0;                                                     \
-    const bool subset=false; if(0) std::cout << subset;                 \
     FOREACH( score+=s->evaluate(a, da));                                \
-    return score;                                                       \
-  }                                                                     \
-  double Name::evaluate_subset(const SingletonScore *s,                 \
-                               DerivativeAccumulator *da) const {       \
-    double score=0;                                                     \
-    const bool subset=false; if(0) std::cout << subset;                 \
-    FOREACH( if (a->get_is_scored())                                    \
-               score+=s->evaluate(a, da));                              \
     return score;                                                       \
   }                                                                     \
   double Name::evaluate_change(const SingletonScore *s,                 \
                                DerivativeAccumulator *da) const {       \
     double score=0;                                                     \
-    const bool subset=false; if(0) std::cout << subset;                 \
     FOREACH(score+=s->evaluate_change(a, da));                          \
     return score;                                                       \
   }                                                                     \
   double Name::evaluate_prechange(const SingletonScore *s,              \
                                   DerivativeAccumulator *da) const {    \
     double score=0;                                                     \
-    const bool subset=false; if(0) std::cout << subset;                 \
     FOREACH(score+=s->evaluate_prechange(a, da));                       \
     return score;                                                       \
   }                                                                     \

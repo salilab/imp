@@ -111,13 +111,9 @@ public:
   //! Apply a SingletonModifier to the contents
   virtual void apply(const SingletonModifier *sm, DerivativeAccumulator &da)=0;
 
-  //! Avaluate a score on the contents
+  //! Evaluate a score on the contents
   virtual double evaluate(const SingletonScore *s,
                           DerivativeAccumulator *da) const=0;
-
-  //! Avaluate a score on the contents
-  virtual double evaluate_subset(const SingletonScore *s,
-                                 DerivativeAccumulator *da) const=0;
 
 
   /** \name Incremental Scoring
