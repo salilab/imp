@@ -8,7 +8,8 @@ class ModelTests(IMP.test.TestCase):
     def test_state_show(self):
         """Test dependency graph"""
         m = IMP.Model()
-        dg= m.get_dependency_graph()
+        dg= IMP.get_dependency_graph(m.get_score_states(),
+                                     IMP.get_restraints(m.get_restraints())[0])
         print dir(dg)
         dg.show()
 

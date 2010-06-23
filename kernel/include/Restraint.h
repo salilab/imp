@@ -130,9 +130,6 @@ public:
     return 0;
   }
   virtual double unprotected_evaluate(DerivativeAccumulator *) const=0;
-
-  virtual double unprotected_evaluate_subset(DerivativeAccumulator *) const;
-
 #endif
 
   /** \name Interactions

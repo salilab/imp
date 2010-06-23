@@ -32,13 +32,6 @@ double ListLikeGroupnameContainer
   return s->evaluate(data_, da);
 }
 double ListLikeGroupnameContainer
-::evaluate_subset(const GroupnameScore *s,
-           DerivativeAccumulator *da) const {
-  IMP_CHECK_OBJECT(this);
-  IMP_CHECK_OBJECT(s);
-  return s->evaluate_subset(data_, da);
-}
-double ListLikeGroupnameContainer
 ::evaluate_change(const GroupnameScore *s,
                   DerivativeAccumulator *da) const {
   IMP_CHECK_OBJECT(this);

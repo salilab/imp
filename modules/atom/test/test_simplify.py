@@ -43,12 +43,12 @@ class SimplifyTests(IMP.test.TestCase):
         chains= IMP.atom.get_by_type(mh, IMP.atom.CHAIN_TYPE)
         IMP.atom.add_radii(mh)
         #define the segments
-        segs = IMP.IntRanges()
+        segs = []
         num_res= len(IMP.atom.get_by_type(chains[0],IMP.atom.RESIDUE_TYPE))
         start=0
         step=30
         while start < num_res:
-            segs.append(IMP.IntRange(start,min(start+step,num_res-1)))
+            segs.append((start,min(start+step,num_res-1)))
             start=start+step
             print segs[-1]
         print start
