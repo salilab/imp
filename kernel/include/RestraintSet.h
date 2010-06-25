@@ -9,10 +9,8 @@
 #define IMP_RESTRAINT_SET_H
 
 #include "kernel_config.h"
-
 #include "Restraint.h"
-#include "Model.h"
-
+#include "container_macros.h"
 #include <string>
 
 IMP_BEGIN_NAMESPACE
@@ -53,6 +51,7 @@ public:
   void set_weight(Float weight);
   Float get_weight() const { return weight_; }
  protected:
+  friend class Model;
   void set_model(Model *m);
 private:
   Float weight_;

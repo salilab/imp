@@ -20,7 +20,8 @@ IMP_BEGIN_NAMESPACE
 
 
 //! Constructor
-Model::Model(std::string name): Object(name)
+Model::Model(std::string name): Object(name),
+                                rs_(new RestraintSet())
 {
   cur_stage_=NOT_EVALUATING;
   incremental_update_=false;
@@ -28,6 +29,7 @@ Model::Model(std::string name): Object(name)
   gather_statistics_=false;
   eval_count_=0;
   set_was_used(true);
+  rs_->set_model(this);
 }
 
 
@@ -42,18 +44,24 @@ Model::~Model()
   }
 }
 
-
-IMP_LIST_IMPL(Model, Restraint, restraint, Restraint*,
-              Restraints,
-              {IMP_INTERNAL_CHECK(cur_stage_== NOT_EVALUATING,
-          "The set of restraints cannot be changed during evaluation.");
-                obj->set_model(this);
-                obj->set_was_used(true);
-                first_incremental_=true;}, reset_dependencies();,
-              {
-                obj->set_model(NULL);
-                if(container) container->reset_dependencies();
-              });
+void Model::add_restraint(Restraint *r) {
+  rs_->add_restraint(r);
+}
+void Model::remove_restraint(Restraint *r) {
+  rs_->remove_restraint(r);
+}
+Model::RestraintIterator Model::restraints_begin() {
+  return rs_->restraints_begin();
+}
+Model::RestraintIterator Model::restraints_end() {
+  return rs_->restraints_end();
+}
+Model::RestraintConstIterator Model::restraints_begin() const {
+  return rs_->restraints_begin();
+}
+Model::RestraintConstIterator Model::restraints_end() const {
+  return rs_->restraints_end();
+}
 
 IMP_LIST_IMPL(Model, ScoreState, score_state, ScoreState*,
               ScoreStates,

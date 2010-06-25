@@ -2048,7 +2048,7 @@ protected:                                      \
         IMP::ParticlePair _1= imp_foreach_access[_2];                   \
         bool imp_foreach_break=false;                                   \
         operation                                                       \
-          if (imp_foreach_break) { broken=true; break;}                 \
+          if (imp_foreach_break) { break;}                              \
       }                                                                 \
     } else {                                                            \
       unsigned int imp_foreach_size= sequence->get_number_of_particle_pairs(); \

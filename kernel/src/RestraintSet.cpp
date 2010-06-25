@@ -7,7 +7,7 @@
 
 
 #include <IMP/RestraintSet.h>
-
+#include <IMP/Model.h>
 #include <IMP/log.h>
 
 #include <memory>
