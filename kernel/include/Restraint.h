@@ -10,8 +10,6 @@
 
 #include "kernel_config.h"
 #include "DerivativeAccumulator.h"
-#include "Model.h"
-#include "Particle.h"
 #include "VersionInfo.h"
 #include "Object.h"
 #include "Pointer.h"
@@ -19,7 +17,6 @@
 #include "utility.h"
 #include "container_macros.h"
 #include "container_base.h"
-#include "Model.h"
 #include <vector>
 #include <iostream>
 #include <limits>
@@ -28,6 +25,8 @@ IMP_BEGIN_NAMESPACE
 
 
 class Model;
+class Restraint;
+IMP_OBJECTS(Restraint,Restraints);
 
 
 //! Abstract class for representing restraints

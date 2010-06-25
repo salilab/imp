@@ -191,17 +191,17 @@ namespace IMP {
   class ScoreStates;
 }
 
-%include "IMP/UnaryFunction.h"
 %include "IMP/Restraint.h"
-%include "IMP/DecomposableRestraint.h"
+%include "IMP/RestraintSet.h"
 %include "IMP/ScoreState.h"
+%include "IMP/Model.h"
+%include "IMP/UnaryFunction.h"
+%include "IMP/DecomposableRestraint.h"
 %include "IMP/Constraint.h"
 %include "IMP/OptimizerState.h"
-%include "IMP/Model.h"
 %include "IMP/Refiner.h"
 %include "IMP_random.i"
 %include "IMP/Optimizer.h"
-%include "IMP/RestraintSet.h"
 %include "IMP/ConfigurationSet.h"
 %include "IMP/Sampler.h"
 %include "IMP/SingletonScore.h"

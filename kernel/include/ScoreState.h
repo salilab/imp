@@ -11,7 +11,6 @@
 #include "kernel_config.h"
 #include "RefCounted.h"
 #include "Pointer.h"
-#include "Model.h"
 #include "DerivativeAccumulator.h"
 #include "VersionInfo.h"
 #include "utility.h"
@@ -113,33 +112,11 @@ protected:
   WeakPointer<Model> model_;
 };
 
-#ifndef SWIG
+class ScoreState;
+IMP_OBJECTS(ScoreState,ScoreStates);
 
-//! Removes the ScoreState when the RAII object is destroyed
-template <class SS>
-class ScoreStatePointer: public RAII {
-  Pointer<SS> ss_;
-public:
-  IMP_RAII(ScoreStatePointer, (SS *ss, Model *m),{}, {
-      ss_=ss;
-      m->add_score_state(ss);
-    }, {
-      if (ss_ && ss_->get_has_model()) {
-        IMP_CHECK_OBJECT(ss_);
-        IMP_CHECK_OBJECT(ss_->get_model());
-        ss_->get_model()->remove_score_state(ss_);
-        ss_=NULL;
-      }
-    });
-  bool get_is_set() const {return ss_;}
-  SS* operator->() const {return ss_;}
-  SS& operator*() const {return *ss_;}
-};
-#endif
 
 IMP_END_NAMESPACE
 
-// for ScoreStates
-#include "Model.h"
 
 #endif  /* IMP_SCORE_STATE_H */

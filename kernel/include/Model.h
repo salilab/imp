@@ -12,6 +12,9 @@
 #include "kernel_config.h"
 #include "Object.h"
 #include "Particle.h"
+#include "Restraint.h"
+#include "RestraintSet.h"
+#include "ScoreState.h"
 #include "container_macros.h"
 #include "base_types.h"
 #include "VersionInfo.h"
@@ -24,10 +27,6 @@
 IMP_BEGIN_NAMESPACE
 
 class Particle;
-class Restraint;
-IMP_OBJECTS(Restraint,Restraints);
-class ScoreState;
-IMP_OBJECTS(ScoreState,ScoreStates);
 
 
 //! Class for storing model, its restraints, constraints, and particles.
@@ -60,6 +59,7 @@ private:
   std::map<FloatKey, FloatRange> ranges_;
   mutable Stage cur_stage_;
   unsigned int eval_count_;
+  internal::OwnerPointer<RestraintSet> rs_;
 
 
 
@@ -180,7 +180,22 @@ public:
       The value type for the iterators is a Restraint*.
    */
   /**@{*/
-  IMP_LIST(public, Restraint, restraint, Restraint*, Restraints);
+  void add_restraint(Restraint *r);
+  void remove_restraint(Restraint *r);
+  unsigned int get_number_of_restraints() const {
+    return rs_->get_number_of_restraints();
+  }
+  Restraint *get_restraint(unsigned int i) const {
+    return rs_->get_restraint(i);
+  }
+#ifndef SWIG
+  typedef RestraintSet::RestraintIterator RestraintIterator;
+  RestraintIterator restraints_begin();
+  RestraintIterator restraints_end();
+  typedef RestraintSet::RestraintConstIterator RestraintConstIterator;
+  RestraintConstIterator restraints_begin() const;
+  RestraintConstIterator restraints_end() const;
+#endif
   double get_weight(Restraint *r) const;
   /**@}*/
  public:
@@ -434,6 +449,33 @@ IMP_GRAPH(DependencyGraph, bidirectional, Object*, int);
 IMPEXPORT DependencyGraph
 get_dependency_graph(const ScoreStatesTemp &ss,
                      const RestraintsTemp &rs);
+
+
+
+
+#ifndef SWIG
+
+//! Removes the ScoreState when the RAII object is destroyed
+template <class SS>
+class ScoreStatePointer: public RAII {
+  Pointer<SS> ss_;
+public:
+  IMP_RAII(ScoreStatePointer, (SS *ss, Model *m),{}, {
+      ss_=ss;
+      m->add_score_state(ss);
+    }, {
+      if (ss_ && ss_->get_has_model()) {
+        IMP_CHECK_OBJECT(ss_);
+        IMP_CHECK_OBJECT(ss_->get_model());
+        ss_->get_model()->remove_score_state(ss_);
+        ss_=NULL;
+      }
+    });
+  bool get_is_set() const {return ss_;}
+  SS* operator->() const {return ss_;}
+  SS& operator*() const {return *ss_;}
+};
+#endif
 
 
 IMP_END_NAMESPACE
