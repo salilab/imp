@@ -186,14 +186,18 @@ class ParticleQuadsTemp;
 %include "IMP_particle.i"
 %include "IMP/Decorator.h"
 
+namespace IMP {
+  class Restraints;
+  class ScoreStates;
+}
 
-%include "IMP/Model.h"
 %include "IMP/UnaryFunction.h"
 %include "IMP/Restraint.h"
 %include "IMP/DecomposableRestraint.h"
 %include "IMP/ScoreState.h"
 %include "IMP/Constraint.h"
 %include "IMP/OptimizerState.h"
+%include "IMP/Model.h"
 %include "IMP/Refiner.h"
 %include "IMP_random.i"
 %include "IMP/Optimizer.h"
