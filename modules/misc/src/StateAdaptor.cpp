@@ -7,7 +7,7 @@
  */
 
 #include "IMP/misc/StateAdaptor.h"
-
+#include "IMP/Model.h"
 
 IMPMISC_BEGIN_NAMESPACE
 
