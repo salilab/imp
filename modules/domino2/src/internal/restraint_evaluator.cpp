@@ -45,8 +45,10 @@ void ModelData::set_sampler(const Sampler *s) {
   }
 }
 
-const SubsetData &ModelData::get_subset_data(const Subset &s) const {
-  if (sdata_.find(s) == sdata_.end()) {
+const SubsetData &ModelData::get_subset_data(const Subset &s,
+                                             const Subsets &exclusions) const {
+  SubsetID id(s, exclusions);
+  if (sdata_.find(id) == sdata_.end()) {
     unsigned int i=0;
     ParticleIndex pi= get_index(s);
     Ints ris;
@@ -56,23 +58,33 @@ const SubsetData &ModelData::get_subset_data(const Subset &s) const {
          rit != m_->restraints_end(); ++rit) {
       if (std::includes(s.begin(), s.end(),
                         dependencies_[i].begin(), dependencies_[i].end())) {
-        //std::cout << "Found restraint " << (*rit)->get_name() << std::endl;
-        ris.push_back(i);
-        inds.push_back(Ints());
-        for (unsigned int j=0; j< dependencies_[i].size(); ++j) {
-          inds.back().push_back(pi.find(dependencies_[i][j])->second);
+        bool exclude=false;
+        {for (unsigned int i=0; i< exclusions.size(); ++i) {
+            if (std::includes(exclusions[i].begin(),
+                              exclusions[i].end(),
+                              dependencies_[i].begin(),
+                              dependencies_[i].end())) {
+              exclude=true;
+            }
+          }}
+        if(!exclude) {
+          //std::cout << "Found restraint " << (*rit)->get_name() << std::endl;
+          ris.push_back(i);
+          inds.push_back(Ints());
+          for (unsigned int j=0; j< dependencies_[i].size(); ++j) {
+            inds.back().push_back(pi.find(dependencies_[i][j])->second);
+          }
         }
       }
       ++i;
     }
-    sdata_[s]= SubsetData(this, ris, inds, s);
+    sdata_[id]= SubsetData(this, ris, inds, s);
   }
-  return sdata_.find(s)->second;
+  return sdata_.find(id)->second;
 }
 
 
-double SubsetData::get_score(const SubsetState &state,
-                             double max) const {
+double SubsetData::get_score(const SubsetState &state) const {
   double score=0;
   /*std::cout << "Scoring " << state << " on " << ris_.size()
     << " restraints" << std::endl;*/
@@ -94,11 +106,15 @@ double SubsetData::get_score(const SubsetState &state,
       std::cout << indices_[i][j] << " ";
     }
     std::cout << std::endl;*/
-    if (score > max) {
+    if (score >= std::numeric_limits<double>::max()) {
       return std::numeric_limits<double>::max();
     }
   }
   return score;
+}
+
+bool SubsetData::get_is_ok(const SubsetState &state) const {
+  return get_score(state) < std::numeric_limits<double>::max();
 }
 
 IMPDOMINO2_END_INTERNAL_NAMESPACE

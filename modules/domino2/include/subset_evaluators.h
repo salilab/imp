@@ -45,24 +45,14 @@ IMP_OBJECTS(SubsetEvaluator, SubsetEvaluators);
 /** A class which produces SubsetEvaluator objects upon
     demand.*/
 class IMPDOMINO2EXPORT SubsetEvaluatorTable: public Object {
-  WeakPointer<const Sampler> sampler_;
   friend class DominoSampler;
   friend class BranchAndBoundSampler;
- protected:
-  const Sampler *get_sampler() const {
-    return sampler_;
-  }
  public:
-#ifndef IMP_DOXYGEN
-  virtual void set_sampler(const Sampler *sampler) {
-    sampler_=sampler;
-  }
-#endif
   virtual SubsetEvaluator* get_subset_evaluator(const Subset &s) const=0;
   virtual ~SubsetEvaluatorTable();
 };
 
-IMP_OBJECTS(SubsetEvaluatorTable, SubsetEvaluatorFactories);
+IMP_OBJECTS(SubsetEvaluatorTable, SubsetEvaluatorTables);
 
 
 //! Score a configuration of the subset using the Model
@@ -73,17 +63,31 @@ IMP_OBJECTS(SubsetEvaluatorTable, SubsetEvaluatorFactories);
 class IMPDOMINO2EXPORT ModelSubsetEvaluatorTable:
   public SubsetEvaluatorTable {
   internal::ModelData data_;
-  virtual void set_sampler(const Sampler *sampler);
+  friend class RestraintScoreSubsetFilterTable;
+  Pointer<ParticleStatesTable> pst_;
 public:
   ModelSubsetEvaluatorTable(Model *m, ParticleStatesTable *pst);
   IMP_SUBSET_EVALUATOR_TABLE(ModelSubsetEvaluatorTable);
 };
 
 IMP_OBJECTS(ModelSubsetEvaluatorTable,
-            ModelSubsetEvaluatorTableFactories);
+            ModelSubsetEvaluatorTables);
 
 
 typedef ModelSubsetEvaluatorTable DefaultSubsetEvaluatorTable;
+
+//! Return a score of 0 always.
+/** */
+class IMPDOMINO2EXPORT ZeroSubsetEvaluatorTable:
+  public SubsetEvaluatorTable {
+public:
+  ZeroSubsetEvaluatorTable();
+  IMP_SUBSET_EVALUATOR_TABLE(ZeroSubsetEvaluatorTable);
+};
+
+IMP_OBJECTS(ZeroSubsetEvaluatorTable,
+            ZeroSubsetEvaluatorTables);
+
 
 IMPDOMINO2_END_NAMESPACE
 

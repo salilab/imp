@@ -84,12 +84,22 @@ SubsetState get_subset_state(const IncompleteStates &is,
 
 PropagatedData get_merged(const Subset& subset,
                           const SubsetStates *states,
+                          const Subset &sa,
+                          const Subset &sb,
                           const PropagatedData &da,
                           const PropagatedData &db,
                           const ParticleIndex &all_index,
                           const EdgeData &ed,
+                          const SubsetFilterTables &filters,
                           double max_score) {
   PropagatedData ret;
+  SubsetFilters state_filters;
+  Subsets exclusions;
+  exclusions.push_back(sa);
+  exclusions.push_back(sb);
+  for (unsigned int i=0; i< filters.size(); ++i) {
+    state_filters.push_back(filters[i]->get_subset_filter(subset, exclusions));
+  }
   for (PropagatedData::ScoresIterator ita = da.scores_begin();
        ita != da.scores_end(); ++ita) {
     SubsetState edge_state_a= get_subset_state(ita->first, ed.get_subset(),
@@ -110,9 +120,14 @@ PropagatedData get_merged(const Subset& subset,
         if (nscore < max_score) {
           IncompleteStates merged= get_merged(ita->first, itb->first);
           SubsetState union_state= get_subset_state(merged, subset, all_index);
-          if (!states->get_is_state(union_state)) {
-
-          } else {
+          bool ok=true;
+          for (unsigned int i=0; i< state_filters.size(); ++i) {
+            if (!state_filters[i]->get_is_ok(union_state)) {
+              ok=false;
+              break;
+            }
+          }
+          if (ok) {
           /*IMP_LOG(VERBOSE, " ok " << merged << " with score "
             << nscore <<std::endl);*/
             ret.set_score(merged, nscore);
@@ -187,11 +202,13 @@ EdgeData get_edge_data(const ParticleIndex &all,
                                   unsigned int parent,
                                   const ParticleIndex &all_index,
                                   const SubsetEvaluatorTable *eval,
+                                  const SubsetFilterTables &filters,
                                   const SubsetStatesTable *states,
                                   double max_score) {
     boost::property_map< SubsetGraph, boost::vertex_name_t>::const_type
       subset_map= boost::get(boost::vertex_name, jt);
-    const NodeData nd= get_node_data(boost::get(subset_map, root), eval, states,
+    Subset s= boost::get(subset_map, root);
+    const NodeData nd= get_node_data(s, eval, states,
                                      max_score);
     IMP_LOG(VERBOSE, "For node " << root
             << " local data is:\n" << nd << std::endl);
@@ -212,8 +229,9 @@ EdgeData get_edge_data(const ParticleIndex &all,
            = boost::adjacent_vertices(root, jt);
          be.first != be.second; ++be.first) {
       if (*be.first == parent) continue;
-      EdgeData ed= get_edge_data(all_index, eval, boost::get(subset_map, root),
-                                 boost::get(subset_map, *be.first), nd);
+      Subset cs=boost::get(subset_map, *be.first);
+      EdgeData ed= get_edge_data(all_index, eval, s,
+                                 cs, nd);
       Subset edge_union
         = get_union(boost::get(subset_map, root),
                     boost::get(subset_map, *be.first));
@@ -225,12 +243,12 @@ EdgeData get_edge_data(const ParticleIndex &all,
       // for merged score, subtract off edge value
       const PropagatedData cpd
         = get_best_conformations_internal(jt, *be.first, root,
-                                          all_index, eval, states,
-                                          max_score);
+                                          all_index, eval, filters,
+                                          states, max_score);
       IMP_LOG(VERBOSE, "For child " << *be.first
               << " returned data is:\n" << cpd << std::endl);
-      pd= get_merged(edge_union, edge_states, pd, cpd,
-                     all_index, ed, max_score);
+      pd= get_merged(edge_union, edge_states, s, cs, pd, cpd,
+                     all_index, ed, filters, max_score);
       IMP_LOG(VERBOSE, "For child " << *be.first
               << " merged data is:\n" << pd << std::endl);
     }
@@ -242,11 +260,13 @@ PropagatedData get_best_conformations(const SubsetGraph &jt,
                                       int root,
                                       const Subset& all_particles,
                                       const SubsetEvaluatorTable *eval,
+                                      const SubsetFilterTables &filters,
                                       const SubsetStatesTable *states,
                                       double max_score) {
   ParticleIndex all_index=get_index(all_particles);
   const PropagatedData pd= get_best_conformations_internal(jt, root, root,
                                                            all_index, eval,
+                                                           filters,
                                                            states,
                                                            max_score);
   // check if is tree

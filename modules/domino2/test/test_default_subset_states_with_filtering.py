@@ -12,7 +12,7 @@ import time
 class DOMINOTests(IMP.test.TestCase):
 
     def _get_full_list(self, pst, lsc):
-        dsst= IMP.domino2.DefaultSubsetStatesTable(pst)
+        dsst= IMP.domino2.DefaultSubsetStatesTable(pst, [])
         ss= dsst.get_subset_states(lsc)
         all_states=[]
         for i in range(0, ss.get_number_of_states()):
@@ -57,13 +57,11 @@ class DOMINOTests(IMP.test.TestCase):
         m.add_restraint(r)
         ds= IMP.domino2.DominoSampler(m)
         ds.set_maximum_score(.5)
-        dsst= IMP.domino2.BranchAndBoundSubsetStatesTable(pst)
-        dsst.set_log_level(IMP.VERBOSE)
         me= IMP.domino2.ModelSubsetEvaluatorTable(m, pst)
-        me.set_sampler(ds)
+        rssft= IMP.domino2.RestraintScoreSubsetFilterTable(me, ds)
+        dsst= IMP.domino2.BranchAndBoundSubsetStatesTable(pst, [rssft])
+        dsst.set_log_level(IMP.VERBOSE)
         print "setting"
-        dsst.set_subset_evaluator_table(me)
-        dsst.set_sampler(ds)
         ss= dsst.get_subset_states(lsc)
         print ss.get_number_of_states(), "states"
         found_states=[]

@@ -20,7 +20,7 @@ SubsetEvaluatorTable::~SubsetEvaluatorTable(){}
 
 
 
-
+/*************************  MODEL ******************************/
 namespace {
 template <class It>
   RestraintsTemp get_restraints(It b, It e) {
@@ -44,19 +44,17 @@ template <class It>
   class ModelSubsetEvaluator: public SubsetEvaluator {
     Pointer<const ModelSubsetEvaluatorTable> keepalive_;
     const internal::SubsetData &data_;
-    double max_;
   public:
     ModelSubsetEvaluator(const ModelSubsetEvaluatorTable *t,
-                         const internal::SubsetData &data,
-                         double max):
+                         const internal::SubsetData &data):
       SubsetEvaluator("ModelSubsetEvaluator on "),
       keepalive_(t),
-      data_(data), max_(max) {
+      data_(data) {
     }
     IMP_SUBSET_EVALUATOR(ModelSubsetEvaluator);
   };
   double ModelSubsetEvaluator::get_score(const SubsetState &state) const{
-    return data_.get_score(state, max_);
+    return data_.get_score(state);
   }
   void ModelSubsetEvaluator::do_show(std::ostream &) const {
   }
@@ -72,17 +70,41 @@ ModelSubsetEvaluatorTable::ModelSubsetEvaluatorTable(Model *m,
         pst) {
 }
 
-void ModelSubsetEvaluatorTable::set_sampler(const Sampler *sampler) {
-  data_.set_sampler(sampler);
-  SubsetEvaluatorTable::set_sampler(sampler);
-}
-
 SubsetEvaluator *
 ModelSubsetEvaluatorTable::get_subset_evaluator(const Subset &s) const {
-  return new ModelSubsetEvaluator(this, data_.get_subset_data(s),
-                                         get_sampler()->get_maximum_score());
+  return new ModelSubsetEvaluator(this, data_.get_subset_data(s));
 }
 
 void ModelSubsetEvaluatorTable::do_show(std::ostream &out) const{}
+
+
+
+/*************************  ZERO ******************************/
+namespace {
+
+  class ZeroSubsetEvaluator: public SubsetEvaluator {
+  public:
+    ZeroSubsetEvaluator():
+      SubsetEvaluator("ZeroSubsetEvaluator"){
+    }
+    IMP_SUBSET_EVALUATOR(ZeroSubsetEvaluator);
+  };
+  double ZeroSubsetEvaluator::get_score(const SubsetState &) const{
+    return 0;
+  }
+  void ZeroSubsetEvaluator::do_show(std::ostream &) const {
+  }
+}
+
+ZeroSubsetEvaluatorTable::ZeroSubsetEvaluatorTable() {
+}
+
+
+SubsetEvaluator *
+ZeroSubsetEvaluatorTable::get_subset_evaluator(const Subset &s) const {
+  return new ZeroSubsetEvaluator();
+}
+
+void ZeroSubsetEvaluatorTable::do_show(std::ostream &out) const{}
 
 IMPDOMINO2_END_NAMESPACE

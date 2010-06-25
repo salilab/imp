@@ -17,13 +17,11 @@ IMPDOMINO2_BEGIN_NAMESPACE
 
 
 DominoSampler::DominoSampler(Model *m, ParticleStatesTable* pst):
-  Sampler(m, "Domino Sampler %1"),
-  enumerators_(pst){
+  DiscreteSampler(m, pst, "Domino Sampler %1"){
 }
 
 DominoSampler::DominoSampler(Model *m):
-  Sampler(m, "Domino Sampler %1"),
-  enumerators_(new ParticleStatesTable()){
+  DiscreteSampler(m, new ParticleStatesTable(), "Domino Sampler %1"){
 }
 
 
@@ -31,15 +29,15 @@ DominoSampler::DominoSampler(Model *m):
 namespace {
   std::vector<SubsetState> get_solutions(const SubsetGraph &jt,
                                   const Subset &known_particles,
-                                  Model *model,
                                   ParticleStatesTable *pst,
                                   SubsetStatesTable *sst,
                                   SubsetEvaluatorTable *eval,
+                                  const SubsetFilterTables &sfts,
                                   double max_score) {
     const internal::PropagatedData pd
       = internal::get_best_conformations(jt, 0,
                                          known_particles,
-                                         eval, sst,
+                                         eval, sfts, sst,
                                          max_score);
     std::vector<SubsetState> final_solutions;
     for (internal::PropagatedData::ScoresIterator it= pd.scores_begin();
@@ -52,8 +50,7 @@ namespace {
 
 ConfigurationSet *DominoSampler::do_sample() const {
   Pointer<ConfigurationSet> ret= new ConfigurationSet(get_model());
-  set_was_used(true);
-  Subset known_particles(enumerators_->get_particles(), true);
+  Subset known_particles(get_particle_states_table()->get_particles(), true);
   IMP_LOG(TERSE, "Sampling with " << known_particles.size()
           << " particles" << std::endl);
   ParticlesTemp pt(known_particles.begin(), known_particles.end());
@@ -75,31 +72,19 @@ ConfigurationSet *DominoSampler::do_sample() const {
     //oss << std::endl;
     //IMP_LOG(TERSE, oss.str() << std::endl);
   }
+  IMP::internal::OwnerPointer<SubsetEvaluatorTable> set
+    = get_subset_evaluator_table_to_use();
+  SubsetFilterTables sfts= get_subset_filter_tables_to_use(set);
+  IMP::internal::OwnerPointer<SubsetStatesTable> sst
+    = DiscreteSampler::get_subset_states_table_to_use(sfts);
 
-  IMP::internal::OwnerPointer<SubsetStatesTable> sst;
-  IMP::internal::OwnerPointer<SubsetEvaluatorTable> set;
-  if (evaluators_) {
-    set= evaluators_;
-  } else {
-    set= new ModelSubsetEvaluatorTable(get_model(),
-                                       get_particle_states_table());
-    set->set_sampler(this);
-  }
-  if (node_enumerators_) {
-    sst= node_enumerators_;
-  } else {
-    IMP_NEW(DefaultSubsetStatesTable, dsst, (get_particle_states_table()));
-    dsst->set_sampler(this);
-    dsst->set_subset_evaluator_table(set);
-    sst=dsst;
-  }
-
-  std::vector<SubsetState> final_solutions= get_solutions(jt, known_particles,
-                                                   get_model(),
-                                                   get_particle_states_table(),
-                                                   sst,
-                                                   set,
-                                                   get_maximum_score());
+  std::vector<SubsetState> final_solutions
+    = get_solutions(jt, known_particles,
+                    get_particle_states_table(),
+                    sst,
+                    set,
+                    sfts,
+                    get_maximum_score());
 
   for (unsigned int i=0; i< final_solutions.size(); ++i) {
     IMP_LOG(TERSE, "Solutions is " << final_solutions[i] << std::endl);
@@ -109,7 +94,8 @@ ConfigurationSet *DominoSampler::do_sample() const {
     ret->load_configuration(-1);
     for (unsigned int j=0; j< known_particles.size(); ++j) {
       Particle *p=known_particles[j];
-      Pointer<ParticleStates> ps=enumerators_->get_particle_states(p);
+      Pointer<ParticleStates> ps
+        =get_particle_states_table()->get_particle_states(p);
       ps->load_state(final_solutions[i][j], p);
     }
     if (get_is_good_configuration()) {
@@ -117,18 +103,6 @@ ConfigurationSet *DominoSampler::do_sample() const {
     }
   }
   return ret.release();
-}
-
-void DominoSampler::set_particle_states(Particle *p, ParticleStates *se) {
-  enumerators_->set_particle_states(p, se);
-}
-void DominoSampler::set_subset_evaluator_table(SubsetEvaluatorTable *eval) {
-  evaluators_= eval;
-  evaluators_->set_sampler(this);
-}
-void DominoSampler::set_subset_states_table(SubsetStatesTable *cse) {
-  node_enumerators_= cse;
-  node_enumerators_->set_sampler(this);
 }
 
 void DominoSampler::do_show(std::ostream &out) const {
