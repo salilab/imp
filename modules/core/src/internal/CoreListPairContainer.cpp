@@ -91,6 +91,19 @@ CoreListPairContainer::add_particle_pairs(const ParticlePairsTemp &c) {
   }
 }
 
+void CoreListPairContainer
+::remove_particle_pairs(const ParticlePairsTemp &c) {
+  if (c.empty()) return;
+  ParticlePairsTemp cp= c;
+  remove_from_list(cp);
+  IMP_IF_CHECK(USAGE) {
+    for (unsigned int i=0; i< c.size(); ++i) {
+      IMP_USAGE_CHECK(IMP::internal::is_valid(c[i]),
+                    "Passed ParticlePair cannot be NULL (or None)");
+    }
+  }
+}
+
 
 void CoreListPairContainer::do_before_evaluate() {
   internal::ListLikePairContainer::do_before_evaluate();

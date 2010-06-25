@@ -91,6 +91,19 @@ CoreListSingletonContainer::add_particles(const ParticlesTemp &c) {
   }
 }
 
+void CoreListSingletonContainer
+::remove_particles(const ParticlesTemp &c) {
+  if (c.empty()) return;
+  ParticlesTemp cp= c;
+  remove_from_list(cp);
+  IMP_IF_CHECK(USAGE) {
+    for (unsigned int i=0; i< c.size(); ++i) {
+      IMP_USAGE_CHECK(IMP::internal::is_valid(c[i]),
+                    "Passed Particle cannot be NULL (or None)");
+    }
+  }
+}
+
 
 void CoreListSingletonContainer::do_before_evaluate() {
   internal::ListLikeSingletonContainer::do_before_evaluate();

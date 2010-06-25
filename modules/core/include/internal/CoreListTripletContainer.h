@@ -29,6 +29,7 @@ public:
   CoreListTripletContainer();
   void add_particle_triplet(const ParticleTriplet& vt);
   void add_particle_triplets(const ParticleTripletsTemp &c);
+  void remove_particle_triplets(const ParticleTripletsTemp &c);
   void set_particle_triplets(ParticleTripletsTemp c);
   void clear_particle_triplets();
 #ifndef IMP_DOXYGEN

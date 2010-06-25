@@ -84,9 +84,9 @@ public:
   }
 };
 
-template <class SD, unsigned int D>
+template <class SD, unsigned int D, class UF>
 double compute_distance_pair_score(const algebra::VectorD<D> &delta,
-                                   const UnaryFunction *f,
+                                   const UF *f,
                                    algebra::VectorD<D> *d,
                                    SD sd,
                                    double deriv_multiplier = 1.0) {
@@ -110,14 +110,12 @@ double compute_distance_pair_score(const algebra::VectorD<D> &delta,
 }
 
 
-template <class W0, class W1, class SD>
+template <class W0, class W1, class SD, class UF>
 double evaluate_distance_pair_score(W0 d0, W1 d1,
                                     DerivativeAccumulator *da,
-                                    const UnaryFunction *f, SD sd,
+                                    const UF *f, SD sd,
                                     double deriv_multiplier = 1.0)
 {
-  IMP_CHECK_OBJECT(f);
-
   algebra::VectorD<3> delta;
 
   for (int i = 0; i < 3; ++i) {

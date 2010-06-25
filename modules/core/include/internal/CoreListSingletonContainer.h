@@ -29,6 +29,7 @@ public:
   CoreListSingletonContainer();
   void add_particle(Particle* vt);
   void add_particles(const ParticlesTemp &c);
+  void remove_particles(const ParticlesTemp &c);
   void set_particles(ParticlesTemp c);
   void clear_particles();
 #ifndef IMP_DOXYGEN
