@@ -91,6 +91,19 @@ CoreListGroupnameContainer::add_classnames(const ClassnamesTemp &c) {
   }
 }
 
+void CoreListGroupnameContainer
+::remove_classnames(const ClassnamesTemp &c) {
+  if (c.empty()) return;
+  ClassnamesTemp cp= c;
+  remove_from_list(cp);
+  IMP_IF_CHECK(USAGE) {
+    for (unsigned int i=0; i< c.size(); ++i) {
+      IMP_USAGE_CHECK(IMP::internal::is_valid(c[i]),
+                    "Passed Classname cannot be NULL (or None)");
+    }
+  }
+}
+
 
 void CoreListGroupnameContainer::do_before_evaluate() {
   internal::ListLikeGroupnameContainer::do_before_evaluate();

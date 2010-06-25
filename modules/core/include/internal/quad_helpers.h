@@ -70,6 +70,18 @@ protected:
       ac->data_.insert(ac->data_.end(), added.begin(), added.end());
     }
   }
+  void remove_from_list(ParticleQuadsTemp &cur) {
+    std::sort(cur.begin(), cur.end());
+    ParticleQuadsTemp newlist;
+    std::set_difference(data_.begin(), data_.end(),
+                        cur.begin(), cur.end(),
+                        std::back_inserter(newlist));
+    swap(data_, newlist);
+    if (!get_is_added_or_removed_container()) {
+      ListLikeQuadContainer* ac=get_removed();
+      ac->data_.insert(ac->data_.end(), cur.begin(), cur.end());
+    }
+  }
   void add_to_list(const ParticleQuad& cur) {
     data_.insert(std::lower_bound(data_.begin(),
                                   data_.end(), cur), cur);

@@ -29,6 +29,7 @@ public:
   CoreListQuadContainer();
   void add_particle_quad(const ParticleQuad& vt);
   void add_particle_quads(const ParticleQuadsTemp &c);
+  void remove_particle_quads(const ParticleQuadsTemp &c);
   void set_particle_quads(ParticleQuadsTemp c);
   void clear_particle_quads();
 #ifndef IMP_DOXYGEN

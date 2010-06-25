@@ -91,6 +91,19 @@ CoreListTripletContainer::add_particle_triplets(const ParticleTripletsTemp &c) {
   }
 }
 
+void CoreListTripletContainer
+::remove_particle_triplets(const ParticleTripletsTemp &c) {
+  if (c.empty()) return;
+  ParticleTripletsTemp cp= c;
+  remove_from_list(cp);
+  IMP_IF_CHECK(USAGE) {
+    for (unsigned int i=0; i< c.size(); ++i) {
+      IMP_USAGE_CHECK(IMP::internal::is_valid(c[i]),
+                    "Passed ParticleTriplet cannot be NULL (or None)");
+    }
+  }
+}
+
 
 void CoreListTripletContainer::do_before_evaluate() {
   internal::ListLikeTripletContainer::do_before_evaluate();

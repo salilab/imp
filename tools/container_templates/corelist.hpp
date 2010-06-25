@@ -29,6 +29,7 @@ public:
   CoreListGroupnameContainer();
   void add_classname(PassValue vt);
   void add_classnames(const ClassnamesTemp &c);
+  void remove_classnames(const ClassnamesTemp &c);
   void set_classnames(ClassnamesTemp c);
   void clear_classnames();
 #ifndef IMP_DOXYGEN

@@ -29,6 +29,7 @@ public:
   CoreListPairContainer();
   void add_particle_pair(const ParticlePair& vt);
   void add_particle_pairs(const ParticlePairsTemp &c);
+  void remove_particle_pairs(const ParticlePairsTemp &c);
   void set_particle_pairs(ParticlePairsTemp c);
   void clear_particle_pairs();
 #ifndef IMP_DOXYGEN
