@@ -41,7 +41,7 @@ double BoundingBox3DSingletonScore::evaluate(Particle *p,
   if (outside) {
     algebra::VectorD<3> deriv;
     double v= internal::compute_distance_pair_score(d.get_coordinates()-cp,
-                                                    f_,&deriv,
+                                                    f_.get(),&deriv,
                                                     boost::lambda::_1);
     if (da) {
       d.add_to_derivatives(deriv, *da);
