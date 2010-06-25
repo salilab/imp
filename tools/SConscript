@@ -12,7 +12,7 @@ def builder_script_file(target, source, env):
         varname= "LD_LIBRARY_PATH"
     elif env['PLATFORM'] == 'darwin':
         varname= "DYLIB_LIBRARY_PATH"
-    elif env['PLATFORM'] == 'win32':
+    elif env['PLATFORM'] == 'win32' and not env['wine']:
         sep=";"
 
     for line in infile:
