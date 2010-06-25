@@ -60,4 +60,24 @@ public:                                                         \
  IMP_OBJECT(Name)
 
 
+
+/** This macro declares
+    - IMP::domino2::SubsetFilterTable::get_subset_filter()
+*/
+#define IMP_SUBSET_FILTER_TABLE(Name)                                   \
+  public:                                                               \
+  virtual SubsetFilter* get_subset_filter(const Subset&s,               \
+                                          const Subsets &excluded) const; \
+  IMP_OBJECT(Name)
+
+
+/** This macro declares
+    - IMP::domino2::SubsetFilter::get_is_ok()
+*/
+#define IMP_SUBSET_FILTER(Name)                                \
+  public:                                                      \
+  virtual bool get_is_ok(const SubsetState& state) const;      \
+ IMP_OBJECT(Name)
+
+
 #endif  /* IMPDOMINO2_MACROS_H */

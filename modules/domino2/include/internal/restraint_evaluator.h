@@ -74,21 +74,42 @@ public:
              const Ints &ris,
              std::vector<Ints> indices,
              const Subset &s): md_(md), ris_(ris), indices_(indices), s_(s){}
-  double get_score(const SubsetState &state, double max) const;
+  double get_score(const SubsetState &state) const;
+  bool get_is_ok(const SubsetState &state) const;
 };
 
 class IMPDOMINO2EXPORT ModelData {
+  struct SubsetID {
+    const Subset s_;
+    const Subsets excluded_;
+    SubsetID(const Subset &s,
+             const Subsets &excluded): s_(s), excluded_(excluded){}
+    bool operator<(const SubsetID &o) const {
+      if (s_ < o.s_) return true;
+      else if (s_ > o.s_) return false;
+      else if (excluded_.size() < o.excluded_.size()) return true;
+      else if (excluded_.size() > o.excluded_.size()) return false;
+      else {
+        for (unsigned int i=0; i< excluded_.size(); ++i) {
+          if (excluded_[i] < o.excluded_[i]) return true;
+          else if (excluded_[i] > o.excluded_[i]) return false;
+        }
+        return false;
+      }
+    }
+  };
   friend class SubsetData;
   mutable Pointer<Model> m_;
   std::vector<RestraintData> rdata_;
-  Pointer<ParticleStatesTable> pst_;
   std::vector<ParticlesTemp> dependencies_;
-  mutable std::map<const Subset, SubsetData> sdata_;
+  Pointer<ParticleStatesTable> pst_;
+  mutable std::map<const SubsetID, SubsetData> sdata_;
 public:
   ModelData(Model *m, const DependencyGraph &dg,
             ParticleStatesTable* pst);
   void set_sampler(const Sampler *s);
-  const SubsetData &get_subset_data(const Subset &s) const;
+  const SubsetData &get_subset_data(const Subset &s,
+                                    const Subsets &exclude=Subsets()) const;
 };
 
 IMPDOMINO2_END_INTERNAL_NAMESPACE

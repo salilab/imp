@@ -11,6 +11,7 @@
 
 #include "../domino2_config.h"
 #include "../utility.h"
+#include "../subset_filters.h"
 
 #include <IMP/Model.h>
 #include <IMP/ScoreState.h>
@@ -214,6 +215,7 @@ IMPDOMINO2EXPORT PropagatedData get_best_conformations(const SubsetGraph &jt,
                                       int root,
                                       const Subset& all_particles,
                                       const SubsetEvaluatorTable *eval,
+                                      const SubsetFilterTables &filters,
                                       const SubsetStatesTable *states,
                                       double max_score);
 

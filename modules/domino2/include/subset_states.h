@@ -11,7 +11,7 @@
 
 
 #include "particle_states.h"
-#include "subset_evaluators.h"
+#include "subset_filters.h"
 #include "SubsetState.h"
 #include "Subset.h"
 #include "domino2_config.h"
@@ -84,25 +84,22 @@ public:
     ==ParticleStatesTable::get_particle_states(s[j])
     then ss[i] != ss[j]
 
-    - If a SubsetEvaluatorTable is provided, the branch and bound
-    is used to eliminate states which score worse than the maximum
-    score set in the sampler.
+    - If a SubsetFilterTable objects are provided, the branch and bound
+    is used to eliminate states using them.
 */
 class IMPDOMINO2EXPORT BranchAndBoundSubsetStatesTable:
   public SubsetStatesTable {
   friend class BranchAndBoundSubsetStates;
   Pointer<ParticleStatesTable> pst_;
-  Pointer<SubsetEvaluatorTable> set_;
+  SubsetFilterTables sft_;
  public:
-  BranchAndBoundSubsetStatesTable(ParticleStatesTable* pst);
-  void set_subset_evaluator_table(SubsetEvaluatorTable *set) {
-    set_=set;
-  }
+  BranchAndBoundSubsetStatesTable(ParticleStatesTable* pst,
+                                  const SubsetFilterTables &sft
+                                  = SubsetFilterTables());
   IMP_SUBSET_STATES_TABLE(BranchAndBoundSubsetStatesTable);
 };
 
 typedef BranchAndBoundSubsetStatesTable DefaultSubsetStatesTable;
-
 IMPDOMINO2_END_NAMESPACE
 
 #endif  /* IMPDOMINO2_SUBSET_SUBSET_STATES_H */

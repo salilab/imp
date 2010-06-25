@@ -30,7 +30,8 @@ class DOMINOTests(IMP.test.TestCase):
         for i in range(0,np):
             ps.append(IMP.Particle(m))
         pst= IMP.domino2.ParticleStatesTable()
-        dsst= IMP.domino2.DefaultSubsetStatesTable(pst)
+        pft= IMP.domino2.PermutationSubsetFilterTable(pst)
+        dsst= IMP.domino2.DefaultSubsetStatesTable(pst, [pft])
         for p in ps:
             pst.set_particle_states(p, TrivialParticleStates(ns))
         lsc= IMP.domino2.Subset(ps)
@@ -58,8 +59,10 @@ class DOMINOTests(IMP.test.TestCase):
         pst.set_particle_states(ps[1], tps)
         for p in ps[2:]:
             pst.set_particle_states(p, TrivialParticleStates(ns))
-        dsst= IMP.domino2.DefaultSubsetStatesTable(pst)
+        pft= IMP.domino2.PermutationSubsetFilterTable(pst)
+        dsst= IMP.domino2.DefaultSubsetStatesTable(pst, [pft])
         lsc= IMP.domino2.Subset(ps)
+        IMP.set_log_level(IMP.VERBOSE)
         ss= dsst.get_subset_states(lsc)
         self.assertEqual(ss.get_number_of_states(), ns**(len(ps)-2)*(ns)*(ns-1))
         all_states=[]
