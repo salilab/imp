@@ -168,6 +168,17 @@ inline bool get_interiors_intersect(const BoundingBoxD<D> &a,
   return true;
 }
 
+//! Return the maximum axis aligned extent
+template <unsigned int D>
+double get_maximum_length(const BoundingBoxD<D> &a) {
+  double e= a.get_corner(1)[0]-a.get_corner(0)[0];
+  for (unsigned int i=1; i< D; ++i) {
+    double ce= a.get_corner(1)[0]-a.get_corner(0)[0];
+    e= std::max(ce, e);
+  }
+  return e;
+}
+
 IMPALGEBRA_END_NAMESPACE
 
 #endif  /* IMPALGEBRA_BOUNDING_BOX_D_H */
