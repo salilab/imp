@@ -19,11 +19,10 @@ IMPALGEBRA_BEGIN_NAMESPACE
 namespace {
   template <unsigned int D>
   struct GridRangeData: public RefCounted {
-    VectorD<D> min,max;
+    const BoundingBoxD<D> bb;
     double step;
-    GridRangeData(const VectorD<D> &mn,
-         const VectorD<D> &mx,
-         double stp): min(mn), max(mx), step(stp){}
+    GridRangeData(const BoundingBoxD<D> &ibb,
+                  double stp): bb(ibb), step(stp){}
   };
 
   template <unsigned int D>
@@ -59,13 +58,13 @@ public:
   const This& operator++() {
     for (unsigned int i=0; i< D; ++i) {
       cur_[i]+= data_->step;
-      if (cur_[i] > data_->max[i]) {
-        cur_[i]= data_->min[i];
+      if (cur_[i] > data_->bb.get_corner(1)[i]) {
+        cur_[i]= data_->bb.get_corner(0)[i];
       } else {
         return *this;
       }
     }
-    cur_= data_->max;
+    cur_= data_->bb.get_corner(1);
     return *this;
   }
 
@@ -114,8 +113,8 @@ public:
   typedef GridIteratorD<D> iterator;
   typedef iterator const_iterator;
   //! Create a new range on the volume [min, max] with step step
-  GridRangeD(const VectorD<D>& min, const VectorD<D>& max, double step):
-    data_(new GridRangeData<D>(min, max, step)){}
+  GridRangeD(const BoundingBoxD<D>& bb, double step):
+    data_(new GridRangeData<D>(bb, step)){}
   const_iterator begin() const {
     return iterator(data_, data_->min);
   }
