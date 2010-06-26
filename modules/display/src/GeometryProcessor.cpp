@@ -37,7 +37,7 @@ void GeometryProcessor::process_geometry_internal(Geometry* g,
     c= g->get_color();
     has_color=true;
   }
-  if (name != std::string()) {
+  if (name == std::string()) {
     name= g->get_name();
   }
   HANDLE(SphereGeometry);
