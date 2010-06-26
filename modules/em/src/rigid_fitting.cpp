@@ -58,6 +58,7 @@ core::MonteCarlo* set_optimizer(Model *model, OptimizerState *display_log,
   core::MonteCarlo *opt = new core::MonteCarlo();
   opt->set_model(model);
   opt->add_mover(rb_mover);
+  opt->set_return_best(true);//return the lowest energy state visited
   IMP::set_print_exceptions(true);
 
   core::ConjugateGradients *lopt = new core::ConjugateGradients();
