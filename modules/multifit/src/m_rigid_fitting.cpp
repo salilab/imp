@@ -47,10 +47,6 @@ em::FittingSolutions pca_based_rigid_fitting(
     IMP_LOG(IMP::VERBOSE,"particles PCA:"<<std::endl);
     IMP_LOG_WRITE(IMP::VERBOSE,ps_pca.show());
   }
-  std::cout<<"in pca_based_rigid_fitting, density PCA:"<<std::endl;
- dens_pca.show();
-  std::cout<<"particles PCA:";
-  ps_pca.show();
   // orient the protein to the pca of the density (6 options)
   algebra::Transformation3Ds all_trans;
   for(int i1=0;i1<3;i1++) {

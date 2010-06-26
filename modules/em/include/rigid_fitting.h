@@ -155,7 +155,7 @@ inline FittingSolutions local_rigid_fitting(
    return local_rigid_fitting_around_point(
      rb, radius_key, weight_key,dmap, rb_cen,display_log,
      number_of_optimization_runs, number_of_mc_steps,
-     number_of_cg_steps, max_translation, max_rotation);
+     number_of_cg_steps, max_translation, max_rotation,fast);
 }
 
 
@@ -242,6 +242,8 @@ IMPEMEXPORT FittingSolutions compute_fitting_scores(const Particles &ps,
    const FloatKey &rad_key, const FloatKey &wei_key,
    const algebra::Transformation3Ds& transformations,
    bool fast_version=false);
+
+
 
 //! Compute fitting scores for a given set of rigid transformations
 /**
