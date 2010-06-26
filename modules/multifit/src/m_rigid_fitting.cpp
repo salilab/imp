@@ -47,8 +47,12 @@ em::FittingSolutions pca_based_rigid_fitting(
     IMP_LOG(IMP::VERBOSE,"particles PCA:"<<std::endl);
     IMP_LOG_WRITE(IMP::VERBOSE,ps_pca.show());
   }
+  std::cout<<"in pca_based_rigid_fitting, density PCA:"<<std::endl;
+ dens_pca.show();
+  std::cout<<"particles PCA:";
+  ps_pca.show();
   // orient the protein to the pca of the density (6 options)
-  em::FittingSolutions fs;
+  algebra::Transformation3Ds all_trans;
   for(int i1=0;i1<3;i1++) {
     for(int i2=i1+1;i2<3;i2++) {
          algebra::ReferenceFrame3D ps_rf(algebra::Transformation3D(
@@ -71,17 +75,17 @@ em::FittingSolutions pca_based_rigid_fitting(
                 ps_xyz[xyz_i].set_coordinates(
                   ps2dens.get_transformed(ps_xyz[xyz_i].get_coordinates()));
               }
-              Float fit_score =
-                em::compute_fitting_score(ps->get_particles(),
-                                          em_map,rad_key,wei_key);
               for(unsigned int xyz_i=0;xyz_i<ps_xyz.size();xyz_i++){
                 ps_xyz[xyz_i].set_coordinates(
                   ps2dens_inv.get_transformed(ps_xyz[xyz_i].get_coordinates()));
               }
-              fs.add_solution(ps2dens,fit_score);
+             all_trans.push_back(ps2dens);
             }//j1 != j2
     }//i2
   }//i1
+  em::FittingSolutions fs =
+    em::compute_fitting_scores(ps->get_particles(),em_map,
+                               rad_key,wei_key,all_trans,true);
   fs.sort();
   return fs;
 }
