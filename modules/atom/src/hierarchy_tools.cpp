@@ -178,14 +178,24 @@ create_simplified_along_backbone(Chain in,
     IMP_USAGE_CHECK(residue_segments[i].first < residue_segments[i].second,
                     "Residue intervals must be non-empty");
   }
+  IMP_IF_LOG(VERBOSE) {
+    for (unsigned int i=0; i < residue_segments.size(); ++i) {
+      IMP_LOG(VERBOSE, "[" << residue_segments[i].first
+              << "..." << residue_segments[i].second << ") ");
+    }
+    IMP_LOG(VERBOSE, std::endl);
+  }
   unsigned int cur_segment=0;
   HierarchiesTemp cur;
   Hierarchy root=create_clone_one(in);
   for (unsigned int i=0; i< in.get_number_of_children(); ++i) {
-    int index= Residue(in.get_child(i)).get_index();
+    Hierarchy child=in.get_child(i);
+    int index= Residue(child).get_index();
+    IMP_LOG(VERBOSE, "Processing residue " << index
+            << " with range " << residue_segments[cur_segment].first
+            << " " << residue_segments[cur_segment].second << std::endl);
     if (index >= residue_segments[cur_segment].first
         && index < residue_segments[cur_segment].second) {
-      cur.push_back(in.get_child(i));
     } else if (!cur.empty()) {
       IMP_LOG(TERSE, "Added particle for "
               << residue_segments[cur_segment].first
@@ -195,6 +205,7 @@ create_simplified_along_backbone(Chain in,
       cur.clear();
       ++cur_segment;
     }
+    cur.push_back(child);
   }
   if (!cur.empty()) {
     root.add_child(create_approximation(cur));
