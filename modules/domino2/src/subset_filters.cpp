@@ -121,14 +121,14 @@ PermutationSubsetFilterTable::get_subset_filter(const Subset &s,
         break;
       }
     }
-    if (found) {
+    /* if (found) {
       IMP_LOG(VERBOSE, s[i]->get_name() << " is excluded " << std::endl);
-    }
+      }*/
     isexcluded.push_back(found);
     for (unsigned int j=0; j< ps.size()-1; ++j) {
       if (ps.back() == ps[j] && (!isexcluded.back() || !isexcluded[j])) {
-        IMP_LOG(VERBOSE, "found " << s[i]->get_name()
-                << " " << s[j]->get_name() << std::endl);
+        /*IMP_LOG(VERBOSE, "found " << s[i]->get_name()
+          << " " << s[j]->get_name() << std::endl);*/
         if (!filters.empty() && filters.back().first == i) {
           filters.back().second.push_back(j);
         } else {
@@ -137,10 +137,10 @@ PermutationSubsetFilterTable::get_subset_filter(const Subset &s,
       }
     }
   }
-  IMP_IF_LOG(VERBOSE) {
+  /*IMP_IF_LOG(VERBOSE) {
     IMP_LOG(VERBOSE, "Subset " << s << " with exclusions ");
     for (unsigned int i=0; i< excluded.size(); ++i) {
-      IMP_LOG(VERBOSE, excluded[i] << "-");
+      IMP_LOG(VERBOSE, excluded[i] << " ");
     }
     IMP_LOG(VERBOSE, std::endl << " Got ");
     for (unsigned int i=0; i< filters.size(); ++i) {
@@ -151,7 +151,7 @@ PermutationSubsetFilterTable::get_subset_filter(const Subset &s,
       IMP_LOG(VERBOSE, " & ");
     }
     IMP_LOG(VERBOSE, std::endl);
-  }
+    }*/
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     for (unsigned int i=0; i< filters.size(); ++i) {
       for (unsigned int j=0; j< filters[i].second.size(); ++j) {
