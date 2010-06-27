@@ -47,6 +47,7 @@ NodeData get_node_data(const Subset &s,
                        const SubsetEvaluatorTable *eval,
                        const SubsetStatesTable *states,
                        double max_score) {
+  IMP_LOG(VERBOSE, "Generating data for node " << s << std::endl);
   NodeData ret;
   IMP::internal::OwnerPointer<SubsetStates> ss
     = states->get_subset_states(s);
@@ -63,6 +64,8 @@ NodeData get_node_data(const Subset &s,
       // " rejected with score " << score << std::endl);
     }
   }
+  IMP_LOG(VERBOSE, "Found " << ret.get_number_of_scores()
+          << " states" << std::endl);
   return ret;
 }
 
@@ -92,6 +95,8 @@ PropagatedData get_merged(const Subset& subset,
                           const EdgeData &ed,
                           const SubsetFilterTables &filters,
                           double max_score) {
+  IMP_LOG(VERBOSE, "Generating merged data for " << sa
+          << " and " << sb << std::endl);
   PropagatedData ret;
   SubsetFilters state_filters;
   Subsets exclusions;
@@ -138,6 +143,8 @@ PropagatedData get_merged(const Subset& subset,
       }
     }
   }
+  IMP_LOG(VERBOSE, "Found " << ret.get_number_of_scores()
+          << " states" << std::endl);
   return ret;
 }
 

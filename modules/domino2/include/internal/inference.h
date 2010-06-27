@@ -171,6 +171,9 @@ public:
   void reserve(unsigned int i) {
     scores_.reserve(i);
   }
+  unsigned int get_number_of_scores() const {
+    return scores_.size();
+  }
   typedef Scores::const_iterator
   ScoresIterator;
   ScoresIterator scores_begin() const {return scores_.begin();}
