@@ -347,11 +347,17 @@ void RigidBody::update_members() {
 
 IMP::algebra::ReferenceFrame3D
 RigidBody::get_reference_frame() const {
-  IMP::algebra::Rotation3D
-    rot(get_particle()->get_value(internal::rigid_body_data().quaternion_[0]),
+  algebra::VectorD<4>
+      v(get_particle()->get_value(internal::rigid_body_data().quaternion_[0]),
         get_particle()->get_value(internal::rigid_body_data().quaternion_[1]),
         get_particle()->get_value(internal::rigid_body_data().quaternion_[2]),
         get_particle()->get_value(internal::rigid_body_data().quaternion_[3]));
+  if (v.get_squared_magnitude() > 0){
+      v = v.get_unit_vector();
+  } else {
+      v = algebra::VectorD<4>(1,0,0,0);
+  }
+  IMP::algebra::Rotation3D rot(v[0], v[1], v[2], v[3]);
   return algebra::ReferenceFrame3D(algebra::Transformation3D(rot,
                                                            get_coordinates()));
 }
