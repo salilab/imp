@@ -28,7 +28,8 @@ MCCGSampler::Parameters::Parameters(){
   mc_steps_=10000;
 }
 
-MCCGSampler::MCCGSampler(Model *m): Sampler(m, "MCCG Sampler %1"){
+MCCGSampler::MCCGSampler(Model *m): Sampler(m, "MCCG Sampler %1"),
+                                    is_refining_(false){
 }
 
 void MCCGSampler::set_bounding_box(const algebra::BoundingBox3D &bb) {
@@ -59,6 +60,10 @@ void MCCGSampler::set_max_monte_carlo_step_size(double d) {
 
 void MCCGSampler::set_max_monte_carlo_step_size(FloatKey k, double d) {
   default_parameters_.ball_sizes_[k]=d;
+}
+
+void MCCGSampler::set_is_refining(bool tf) {
+  is_refining_=tf;
 }
 
 internal::CoreListSingletonContainer*
@@ -150,7 +155,7 @@ ConfigurationSet *MCCGSampler::do_sample() const {
   int failures=0;
   for (unsigned int i=0; i< pms.attempts_; ++i) {
     ret->load_configuration(-1);
-    randomize(pms,sc);
+    if (!is_refining_) randomize(pms,sc);
     IMP_LOG(TERSE, "Randomized configuration" << std::endl);
     try {
       mc->optimize(pms.mc_steps_);

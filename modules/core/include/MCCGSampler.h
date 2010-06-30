@@ -47,6 +47,7 @@ class IMPCOREEXPORT MCCGSampler : public Sampler
     Parameters();
   };
   Parameters default_parameters_;
+  bool is_refining_;
 
   Parameters fill_in_parameters() const;
   void randomize(const Parameters &pms,
@@ -76,6 +77,10 @@ public:
 
   //! Set the number of CG steps to take after each MC step
   void set_number_of_conjugate_gradient_steps(unsigned int cg);
+
+  //! if set to true, then do not randomize the configuration before
+  //! sampling.
+  void set_is_refining(bool tf);
 
   IMP_SAMPLER(MCCGSampler);
 };
