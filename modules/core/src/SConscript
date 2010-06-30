@@ -46,6 +46,7 @@ files = [
          'RigidBodyDistancePairScore.cpp',
          'RigidBodyMover.cpp',
          'RigidClosePairsFinder.cpp',
+         'SaveModelOptimizerState.cpp',
          'SingletonConstraint.cpp',
          'SingletonRestraint.cpp',
          'SphereDistancePairScore.cpp',

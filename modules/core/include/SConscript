@@ -51,6 +51,7 @@ files = [
          'RigidBodyDistancePairScore.h',
          'RigidBodyMover.h',
          'RigidClosePairsFinder.h',
+         'SaveModelOptimizerState.h',
          'SingletonConstraint.h',
          'SingletonRestraint.h',
          'SphereDistancePairScore.h',
