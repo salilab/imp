@@ -202,6 +202,7 @@ void depth_first_traversal(Hierarchy d, HierarchyVisitor *f)
 %include "IMP/core/RigidBodyMover.h"
 %include "IMP/core/VolumeRestraint.h"
 %include "IMP/core/utility.h"
+%include "IMP/core/SaveModelOptimizerState.h"
 
 
 
