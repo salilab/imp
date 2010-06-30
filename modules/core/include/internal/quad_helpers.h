@@ -128,7 +128,6 @@ public:
          IMP::internal::IsInactive());
   }
   bool get_is_up_to_date() const {return true;}
-  IMP_OBJECT(ListLikeQuadContainer);
   bool get_contained_particles_changed() const;
   ParticlesTemp get_contained_particles() const;
   bool get_provides_access() const {return true;}
@@ -137,6 +136,7 @@ public:
                        "Container is out of date");
     return data_;
   }
+  IMP_OBJECT(ListLikeQuadContainer);
 };
 
 
