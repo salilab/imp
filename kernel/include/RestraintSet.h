@@ -57,6 +57,8 @@ private:
   Float weight_;
 };
 
+IMP_OBJECTS(RestraintSet, RestraintSets);
+
 /** \name Gathering restraints
     It is sometimes useful to extract all the non-RestraintSet restraints
     from a hierarchy involving RestraintSets mixed with Restraints.
