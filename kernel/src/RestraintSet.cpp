@@ -40,7 +40,7 @@ IMP_LIST_IMPL(RestraintSet, Restraint, restraint, Restraint*,
               },if (get_is_part_of_model()) {
                   get_model()->reset_dependencies();
               },{
-                obj->get_model()->reset_dependencies();
+                if (container) obj->get_model()->reset_dependencies();
                 obj->set_model(NULL);
               });
 
