@@ -75,7 +75,8 @@ namespace {
         IMP_ERROR("Particle " << e.p_->get_name()                       \
                   << " is not in the read particles list of "           \
                   << (restraint)->get_name() << " but should be. "      \
-                  << "The list contains " << oss.str() );               \
+                  << "The list contains " << oss.str()                  \
+                  << std::endl);                                        \
         throw InternalException("Invalid particle used");               \
       } catch (internal::WriteLockedParticleException &e) {             \
         std::ostringstream oss;                                         \
@@ -85,7 +86,8 @@ namespace {
         IMP_ERROR("Particle " << e.p_->get_name()                       \
                   << " is not in the write particles list of "          \
                   << (restraint)->get_name() << " but should be."       \
-                  << "The list contains " << oss.str() );               \
+                  << "The list contains " << oss.str()                  \
+                  << std::endl);                                        \
         throw InternalException("Invalid particle used");               \
       }                                                                 \
     } else {                                                            \
@@ -112,12 +114,16 @@ namespace {
       } catch (internal::ReadLockedParticleException e) {               \
         IMP_ERROR("Particle " << e.p_->get_name()                       \
                   << " is not in the read particles list of "           \
-                  << (restraint)->get_name() << " but should be.");     \
+                  << (restraint)->get_name() << " but should be."       \
+                  << "The list contains " << Particles(rpl)             \
+                  << std::endl);                                        \
         throw InternalException("Invalid particle used");               \
       } catch (internal::WriteLockedParticleException e) {              \
         IMP_ERROR("Particle " << e.p_->get_name()                       \
                   << " is not in the write particles list of "          \
-                  << (restraint)->get_name() << " but should be.");     \
+                  << (restraint)->get_name() << " but should be."       \
+                  << "The list contains " << Particles(rpl)             \
+                  << std::endl);                                        \
         throw InternalException("Invalid particle used");               \
       }                                                                 \
     } else {                                                            \
