@@ -29,24 +29,13 @@ namespace {
     double total_value_;
     double min_value_;
     double max_value_;
+    double last_value_;
     Statistics(): total_time_(0), total_time_after_(0),
                   calls_(0), total_value_(0),
                   min_value_(std::numeric_limits<double>::max()),
-                  max_value_(-std::numeric_limits<double>::max())
+                  max_value_(-std::numeric_limits<double>::max()),
+                  last_value_(-1)
     {}
-    void update_state_before(double t) {
-      total_time_+=t;
-    }
-    void update_state_after(double t) {
-      total_time_after_+=t;
-      ++calls_;
-    }
-    void update_restraint(double t, double v) {
-      total_time_+= t;
-      min_value_= std::min(v, min_value_);
-      max_value_= std::max(v, max_value_);
-      ++calls_;
-    }
   };
 
   std::map<Object*, Statistics> stats_data_;
@@ -75,15 +64,19 @@ void Model::show_statistics_summary(std::ostream &out) const {
   }
 
   out << "Restraints: running_time min_value max_value average_value\n";
-  for (RestraintConstIterator it= restraints_begin();
-       it != restraints_end(); ++it) {
+  RestraintsTemp r= get_restraints(restraints_begin(), restraints_end()).first;
+  for (RestraintsTemp::const_iterator it= r.begin();
+       it != r.end(); ++it) {
     if (stats_data_.find(*it) != stats_data_.end()) {
       out << "  " << (*it)->get_name() << ": ";
       out << stats_data_[*it].total_time_/ stats_data_[*it].calls_
-          << "s "
-          << stats_data_[*it].min_value_ << " "
-          << stats_data_[*it].max_value_ << " "
+          << "s ["
+          << stats_data_[*it].min_value_ << ", "
+          << stats_data_[*it].max_value_ << "] "
+          << stats_data_[*it].last_value_ << " "
           << stats_data_[*it].total_value_/ stats_data_[*it].calls_ << "\n";
+    } else {
+      out << "  " << (*it)->get_name() << ":\n";
     }
   }
 }
@@ -102,6 +95,7 @@ void Model::add_to_restraint_evaluate(Restraint *r, double t,
   ++stats_data_[r].calls_;
   stats_data_[r].min_value_= std::min(score, stats_data_[r].min_value_);
   stats_data_[r].max_value_= std::max(score, stats_data_[r].max_value_);
+  stats_data_[r].last_value_=score;
   stats_data_[r].total_value_+=score;
 }
 
