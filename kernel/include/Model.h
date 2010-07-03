@@ -197,6 +197,9 @@ public:
   RestraintConstIterator restraints_end() const;
 #endif
   double get_weight(Restraint *r) const;
+  RestraintSet *get_root_restraint_set() const {
+    return rs_;
+  }
   /**@}*/
  public:
 
