@@ -171,7 +171,10 @@ void CoreClosePairContainer::do_show(std::ostream &out) const {
 
 
 ParticlesTemp CoreClosePairContainer::get_contained_particles() const {
-  return c_->get_contained_particles();
+  ParticlesTemp ret= c_->get_contained_particles();
+  ParticlesTemp nret =cpf_->get_input_particles(c_);
+  ret.insert(ret.end(), nret.begin(), nret.end());
+  return ret;
 }
 
 bool CoreClosePairContainer::get_contained_particles_changed() const {
