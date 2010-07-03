@@ -61,13 +61,7 @@ int main(int, char *[]) {
   for (unsigned int i=0; i< residues.size(); ++i) {
     pst->set_particle_states(residues[i], pstates);
   }
-  IMP_NEW(ModelSubsetEvaluatorTable, mset, (m, pst));
-  IMP_NEW(BranchAndBoundSubsetStatesTable, dsst, (pst));
-  dsst->set_subset_evaluator_table(mset);
   IMP_NEW(DominoSampler, ds, (m, pst));
-  ds->set_subset_states_table(dsst);
-  ds->set_subset_evaluator_table(mset);
-
   ds->set_maximum_score(1);
   double runtime, num=0;
 #ifndef NDEBUG
