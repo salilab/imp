@@ -32,6 +32,8 @@ Implementation todo list:
 - perhaps compact represetnation of incomplete states
 - reduce looping through lists for reconciliation
 - replace Subset with something that uses a memory pool if allocation becomes an issue
+- figure out a better way of ordering particles to try when enumerating them. Factors are: number of filters potentially acting on each particle
+- have a central table which lists dofs left for each particle, if any node can't find a state with the particle in a given state, it is removed from the list
 
 Handling of compound restraints:
 - define a static container as one which does not depend on any particles

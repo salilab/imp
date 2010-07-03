@@ -35,7 +35,7 @@ class CollectVisitor: public boost::default_dfs_visitor {
   const std::map<Particle*, Ints> *lu_;
   typename boost::property_map<Graph,
                       boost::vertex_name_t>::const_type vm_;
-  Ints vals_;
+  Ints &vals_;
 public:
   const Ints &get_collected() {
     std::sort(vals_.begin(), vals_.end());
@@ -444,19 +444,19 @@ struct AncestorException{
 // gcc 4.2 objects if this does not have external linkage
 template <class Graph>
 class AncestorVisitor: public boost::default_dfs_visitor {
-  const ParticleStatesTable* pst_;
+  std::set<Particle*> pst_;
   typename boost::property_map<Graph,
                                boost::vertex_name_t>::const_type vm_;
 public:
   AncestorVisitor(){}
-  AncestorVisitor(const ParticleStatesTable *pst,
-                  const Graph&g): pst_(pst),
+  AncestorVisitor(const ParticlesTemp& pst,
+                  const Graph&g): pst_(pst.begin(), pst.end()),
                                   vm_(boost::get(boost::vertex_name, g)){}
   void discover_vertex(typename boost::graph_traits<Graph>::vertex_descriptor u,
                        const Graph& g) {
     Object *o= vm_[u];
     std::cout << "Visiting " << o->get_name() << std::endl;
-    if (pst_->get_has_particle(dynamic_cast<Particle*>(o))) {
+    if (pst_.find(dynamic_cast<Particle*>(o)) != pst_.end()) {
       throw AncestorException(o);
     }
   }
@@ -475,7 +475,7 @@ namespace {
 
   bool get_has_ancestor(const DependencyGraph &g,
                         unsigned int v,
-                        const ParticleStatesTable *pst) {
+                        const ParticlesTemp &pst) {
     typedef boost::reverse_graph<DependencyGraph>  RG;
     RG rg(g);
     AncestorVisitor<RG> av(pst,g);
@@ -495,7 +495,7 @@ namespace {
 bool
 get_is_static_container(Container *c,
                         const DependencyGraph &dg,
-                        const ParticleStatesTable *pst) {
+                        const ParticlesTemp &pst) {
   typedef DGTraits::in_edge_iterator IEIt;
   typedef DGTraits::vertex_iterator DVIt;
   DGConstVertexMap pm=boost::get(boost::vertex_name, dg);
@@ -512,11 +512,10 @@ get_is_static_container(Container *c,
 
 
 namespace {
-  template <class Parent>
-  void optimize_restraint(Restraint *r, Parent *p,
+  void optimize_restraint(Restraint *r, RestraintSet *p,
                           const DependencyGraph &dg,
                           const std::map<Object*, unsigned int> &index,
-                          const ParticleStatesTable *pst,
+                          const ParticlesTemp &pst,
                           Restraints &removed,
                           Restraints &added) {
     ContainersTemp ic= r->get_input_containers();
@@ -546,35 +545,39 @@ namespace {
     }
   }
 
-  template <class Parent>
-  void optimize_restraint_parent(Parent *p,
+  void optimize_restraint_parent(RestraintSet *p,
                                  const DependencyGraph &dg,
                                  const std::map<Object*, unsigned int> &index,
-                                 const ParticleStatesTable *pst,
-                      std::map<Pointer<Object>, Restraints> &reverse_removed,
-                      std::map<Pointer<Object>, Restraints> &reverse_added) {
+                                 const ParticlesTemp &pst,
+                                 Restraints &removed,
+                                 RestraintSets &removed_parents,
+                                 Restraints &added,
+                                 RestraintSets &added_parents) {
     Restraints all(p->restraints_begin(), p->restraints_end());
     for (unsigned int i=0; i < all.size(); ++i) {
       Restraint *r=all[i];
       RestraintSet *rs= dynamic_cast<RestraintSet*>(r);
       if (rs) {
         optimize_restraint_parent(rs, dg, index, pst,
-                                  reverse_removed, reverse_added);
+                                  removed, removed_parents,
+                                  added, added_parents);
       } else {
-        Restraints added, removed;
         optimize_restraint(all[i], p, dg, index, pst,
                            removed, added);
-        reverse_removed[p].insert(reverse_removed[p].end(),
-                                  removed.begin(), removed.end());
-        reverse_added[p].insert(reverse_added[p].end(),
-                                added.begin(), added.end());
+        while (added_parents.size() < added.size()) {
+          added_parents.push_back(p);
+        }
+        while (removed_parents.size() < removed.size()) {
+          removed_parents.push_back(p);
+        }
       }
     }
   }
 
   void make_static_cpc(core::internal::CoreClosePairContainer *cpc,
                        const ParticlesTemp &optimized,
-                       ParticleStatesTable *pst) {
+                       const ParticleStatesTable *pst,
+                       core::internal::CoreClosePairContainers &staticed) {
     IMP_LOG(TERSE, "Making container " << cpc->get_name()
             << "static " << std::endl);
     ParticleStatesList psl(optimized.size());
@@ -597,40 +600,33 @@ namespace {
       }
     }
     cpc->set_is_static(true, bbs);
+    staticed.push_back(cpc);
     IMP_LOG(VERBOSE, cpc->get_number_of_particle_pairs()
             << "pairs" << std::endl);
   }
 
-  template <class Parent>
-  void optimize_container_parent(Parent *p,
+  void optimize_container_parent(RestraintSet *p,
                                  const DependencyGraph &dg,
                                  const ParticlesTemp &optimized,
-                                 ParticleStatesTable *pst) {
+                                 const ParticleStatesTable *pst,
+                   core::internal::CoreClosePairContainers &staticed) {
     DGConstVertexMap pm=boost::get(boost::vertex_name, dg);
-    for (std::pair<typename DGTraits::vertex_iterator,
-           typename DGTraits::vertex_iterator> be
+    ParticlesTemp particles=pst->get_particles();
+    for (std::pair< DGTraits::vertex_iterator,
+            DGTraits::vertex_iterator> be
            = boost::vertices(dg); be.first != be.second; ++be.first) {
       core::internal::CoreClosePairContainer *cpc
         = dynamic_cast<core::internal::CoreClosePairContainer*>(pm[*be.first]);
-      if (cpc && get_has_ancestor(dg, *be.first, pst)) {
-        make_static_cpc(cpc, optimized, pst);
+      if (cpc && get_has_ancestor(dg, *be.first, particles)) {
+        make_static_cpc(cpc, optimized,pst, staticed);
       }
     }
   }
 }
 
 
-void optimize_model(Model *m,
-                    ParticleStatesTable *pst) {
-  ParticlesTemp optimized_particles= pst->get_particles();
-  optimize_container_parent(m,
-      get_dependency_graph(ScoreStatesTemp(m->score_states_begin(),
-                                           m->score_states_end()),
-                           get_restraints(m->restraints_begin(),
-                                          m->restraints_end(),
-                                          1.0).first),
-                            optimized_particles, pst);
-  std::map<Pointer<Object>, Restraints> added, removed;
+void OptimizeRestraints::optimize_model(Model *m,
+                                        const ParticlesTemp &particles) {
   std::map<Object*, unsigned int> index;
   //std::cout << "new gra[j is \n";
   //IMP::internal::show_as_graphviz(m->get_dependency_graph(), std::cout);
@@ -645,9 +641,37 @@ void optimize_model(Model *m,
   for (unsigned int i=0; i< nv; ++i) {
     index[vm[i]]= i;
   }
-  optimize_restraint_parent(m, dg, index,
-                            pst, removed, added);
+  optimize_restraint_parent(m->get_root_restraint_set(),
+                            dg, index,
+                            particles, removed_, removed_parents_,
+                            added_, added_parents_);
 }
 
+void OptimizeRestraints::unoptimize_model() {
+  for (unsigned int i=0; i< removed_.size(); ++i) {
+    removed_parents_[i]->add_restraint(removed_[i]);
+  }
+  for (unsigned int i=0; i< added_.size(); ++i) {
+    added_parents_[i]->remove_restraint(added_[i]);
+  }
+}
+
+
+void OptimizeContainers::optimize_model(Model *m,
+                                        const ParticleStatesTable *pst) {
+  optimize_container_parent(m->get_root_restraint_set(),
+      get_dependency_graph(ScoreStatesTemp(m->score_states_begin(),
+                                           m->score_states_end()),
+                           get_restraints(m->restraints_begin(),
+                                          m->restraints_end(),
+                                          1.0).first),
+                            pst->get_particles(), pst, staticed_);
+}
+
+void OptimizeContainers::unoptimize_model() {
+  for (unsigned int i=0; i< staticed_.size(); ++i) {
+    staticed_[i]->set_is_static(false, algebra::BoundingBox3Ds());
+  }
+}
 
 IMPDOMINO2_END_NAMESPACE
