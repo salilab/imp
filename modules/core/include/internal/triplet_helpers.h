@@ -23,6 +23,8 @@ class IMPCOREEXPORT ListLikeTripletContainer: public TripletContainer {
 private:
   void set_added_and_removed_containers(TripletContainer *,
                                         TripletContainer *){}
+  ParticleTriplets data_;
+protected:
   ListLikeTripletContainer *get_added() const {
     return dynamic_cast<ListLikeTripletContainer*>
       (get_added_triplets_container());
@@ -31,8 +33,6 @@ private:
     return dynamic_cast<ListLikeTripletContainer*>
       (get_removed_triplets_container());
   }
-  ParticleTriplets data_;
-protected:
   ListLikeTripletContainer(){}
   void update_list(ParticleTripletsTemp &cur) {
     IMP_IF_CHECK(USAGE) {

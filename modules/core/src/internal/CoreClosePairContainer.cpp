@@ -170,4 +170,12 @@ void CoreClosePairContainer::do_show(std::ostream &out) const {
 }
 
 
+ParticlesTemp CoreClosePairContainer::get_contained_particles() const {
+  return c_->get_contained_particles();
+}
+
+bool CoreClosePairContainer::get_contained_particles_changed() const {
+  return c_->get_contained_particles_changed();
+}
+
 IMPCORE_END_INTERNAL_NAMESPACE

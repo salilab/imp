@@ -36,6 +36,8 @@ public:
   bool get_is_up_to_date() const {
     return true;
   }
+  bool get_contained_particles_changed() const;
+  ParticlesTemp get_contained_particles() const;
 #endif
   IMP_LISTLIKE_SINGLETON_CONTAINER(CoreListSingletonContainer);
 };

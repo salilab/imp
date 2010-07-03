@@ -75,6 +75,10 @@ public:
            PairFilter*, PairFilters);
    /**@}*/
 #ifndef IMP_DOXYGEN
+#ifndef SWIG
+  bool get_contained_particles_changed() const;
+  ParticlesTemp get_contained_particles() const;
+#endif
   bool get_is_up_to_date() const {
     if (get_model()->get_stage() != Model::NOT_EVALUATING) {
       return get_last_update_evaluation() == get_model()->get_evaluation();

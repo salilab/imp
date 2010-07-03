@@ -23,6 +23,8 @@ class IMPCOREEXPORT ListLikeSingletonContainer: public SingletonContainer {
 private:
   void set_added_and_removed_containers(SingletonContainer *,
                                         SingletonContainer *){}
+  Particles data_;
+protected:
   ListLikeSingletonContainer *get_added() const {
     return dynamic_cast<ListLikeSingletonContainer*>
       (get_added_singletons_container());
@@ -31,8 +33,6 @@ private:
     return dynamic_cast<ListLikeSingletonContainer*>
       (get_removed_singletons_container());
   }
-  Particles data_;
-protected:
   ListLikeSingletonContainer(){}
   void update_list(ParticlesTemp &cur) {
     IMP_IF_CHECK(USAGE) {
