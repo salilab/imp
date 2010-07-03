@@ -11,12 +11,192 @@
 #include <IMP/core/MonteCarlo.h>
 #include <IMP/core/BallMover.h>
 #include <IMP/core/XYZ.h>
+#include <IMP/utility.h>
 #include <IMP/core/internal/CoreListSingletonContainer.h>
-#include <IMP/core/IncrementalBallMover.h>
 #include <IMP/algebra/vector_generators.h>
-
+#include <boost/random/uniform_real.hpp>
+#include <boost/graph/depth_first_search.hpp>
+#include <IMP/core/core_macros.h>
+#include <boost/graph/reverse_graph.hpp>
+#if BOOST_VERSION > 103900
+#include <boost/property_map/property_map.hpp>
+#else
+#include <boost/property_map.hpp>
+#include <boost/vector_property_map.hpp>
+#endif
 
 IMPCORE_BEGIN_NAMESPACE
+
+namespace {
+class ScoreWeightedIncrementalBallMover :public Mover
+{
+public:
+  ScoreWeightedIncrementalBallMover(const Particles &ps,
+                                    unsigned int n,
+                                    Float radius);
+  IMP_MOVER(ScoreWeightedIncrementalBallMover);
+private:
+  const Particles ps_;
+  unsigned int n_;
+  Float radius_;
+  ParticlesTemp moved_;
+  std::vector<std::pair<Restraint*, Ints> > deps_;
+};
+
+
+class CollectVisitor: public boost::default_dfs_visitor {
+  const std::map<Particle*, int> &lu_;
+  boost::property_map<DependencyGraph,
+                      boost::vertex_name_t>::const_type vm_;
+  Ints &vals_;
+public:
+  const Ints &get_collected() {
+    std::sort(vals_.begin(), vals_.end());
+    vals_.erase(std::unique(vals_.begin(), vals_.end()), vals_.end());
+    return vals_;
+  }
+  CollectVisitor(const DependencyGraph &g,
+                 const std::map<Particle*, int>&lu,
+                 Ints &vals):
+    lu_(lu),
+    vm_(boost::get(boost::vertex_name, g)),
+    vals_(vals){
+  }
+  template <class G>
+  void discover_vertex( typename boost::graph_traits<G>::vertex_descriptor u,
+                       const G& g) {
+    Object *o= vm_[u];
+    Particle *p=dynamic_cast<Particle*>(o);
+    if (p) {
+      //std::cout << "Checking particle " << p->get_name() << std::endl;
+      typename std::map<Particle*, int>::const_iterator it= lu_.find(p);
+      if (it != lu_.end()) {
+        vals_.push_back(it->second);
+      }
+    }
+  }
+};
+
+ScoreWeightedIncrementalBallMover
+::ScoreWeightedIncrementalBallMover(const Particles& sc,
+                                    unsigned int n,
+                                    Float radius): ps_(sc),
+                                                   n_(n),
+                                                   radius_(radius),
+                                                   moved_(n_)
+{
+  Model *m= sc[0]->get_model();
+  const DependencyGraph dg
+    = get_dependency_graph(ScoreStatesTemp(m->score_states_begin(),
+                                           m->score_states_end()),
+                           get_restraints(m->restraints_begin(),
+                                          m->restraints_end()).first);
+  typedef boost::graph_traits<DependencyGraph> DGTraits;
+  typedef boost::property_map<DependencyGraph, boost::vertex_name_t>::const_type
+    DGVMap;
+  DGVMap vm= boost::get(boost::vertex_name, dg);
+  std::map<Particle*, int> index;
+  for (unsigned int i=0; i< ps_.size(); ++i) {
+    index[ps_[i]]=i;
+  }
+  for (std::pair<DGTraits::vertex_iterator, DGTraits::vertex_iterator>
+         be= boost::vertices(dg); be.first != be.second; ++be.first) {
+    Restraint *r= dynamic_cast<Restraint*>(vm[*be.first]);
+    if (r) {
+      boost::vector_property_map<int> color(boost::num_vertices(dg));
+      Ints out;
+      CollectVisitor cp(dg, index, out);
+      boost::depth_first_visit(boost::make_reverse_graph(dg),
+                               *be.first, cp, color);
+      deps_.push_back(std::make_pair(r, out));
+      /*std::cout << "Restraint " << r->get_name()
+                << " has particles ";
+      for (unsigned int i=0; i< out.size(); ++i) {
+        std::cout<< ps_[out[i]]->get_name() << " ";
+      }
+      std::cout << std::endl;*/
+    }
+  }
+}
+
+void ScoreWeightedIncrementalBallMover::propose_move(Float /*size*/) {
+  // damnit, why didn't these functions make it into the standard
+  /*std::random_sample(sc_->particles_begin(), sc_->particles_end(),
+    moved_.begin(), moved_.end());*/
+  IMP_CHECK_OBJECT(this);
+  IMP_OBJECT_LOG;
+  Floats weights(ps_.size(), 0);
+  for (unsigned int i=0; i< deps_.size(); ++i) {
+    double v= deps_[i].first->evaluate(false)/ deps_[i].second.size();
+    /*std::cout << "Restraint " << deps_[i].first->get_name()
+      << " contributes " << v << std::endl;*/
+    for (unsigned int j=0; j < deps_[i].second.size(); ++j) {
+      weights[deps_[i].second[j]]+= v;
+    }
+  }
+  double total=std::accumulate(weights.begin(), weights.end(), 0);
+  /*IMP_IF_LOG(SILENT) {
+    IMP_LOG(SILENT, "scores are ");
+    for (unsigned int i=0; i< weights.size(); ++i) {
+      IMP_LOG(SILENT, weights[i] << " ");
+    }
+    IMP_LOG(SILENT, std::endl);
+    };*/
+  // if the score is tiny, give up
+  moved_.clear();
+  if (total < .0001) return;
+  for (unsigned int i=0; i< weights.size(); ++i) {
+    weights[i]/=(total*n_);
+  }
+  /*IMP_IF_LOG(SILENT) {
+    IMP_LOG(SILENT, "Weights are ");
+    for (unsigned int i=0; i< weights.size(); ++i) {
+      IMP_LOG(SILENT, weights[i] << " ");
+    }
+    IMP_LOG(SILENT, std::endl);
+    };*/
+  ::boost::uniform_real<> rand(0,1);
+  for (unsigned int i=0; i< weights.size(); ++i) {
+    if (rand(random_number_generator) < weights[i]) {
+      moved_.push_back(ps_[i]);
+      XYZ d(ps_[i]);
+      IMP_USAGE_CHECK(d.get_coordinates_are_optimized(),
+                      "Particles passed to "
+                      << "ScoreWeightedIncrementalBallMover must have "
+                      << "optimized cartesian coordinates. "
+                      << moved_[i]->get_name() << " does not.");
+      d.set_coordinates(algebra::get_random_vector_in<3>
+                        (algebra::Sphere3D(d.get_coordinates(),
+                                           radius_)));
+      IMP_LOG(VERBOSE, "Proposing move of particle " << d->get_name()
+              << " to " << d.get_coordinates() << std::endl);
+    }
+  }
+  /*std::cout << "Moving ";
+  for (unsigned int i=0; i< moved_.size(); ++i) {
+    std::cout <<moved_[i]->get_name() << " ";
+  }
+  std::cout << std::endl;*/
+}
+
+
+void ScoreWeightedIncrementalBallMover::accept_move() {
+}
+
+void ScoreWeightedIncrementalBallMover::reject_move() {
+  for (unsigned int i=0; i< moved_.size(); ++i) {
+    XYZ od(moved_[i]->get_prechange_particle());
+    XYZ cd(moved_[i]);
+    cd.set_coordinates(od.get_coordinates());
+  }
+}
+
+
+void ScoreWeightedIncrementalBallMover::do_show(std::ostream &out) const {
+  out << "on " << ps_ << std::endl;
+}
+
+}
 
 #define XK XYZ::get_xyz_keys()[0]
 #define YK XYZ::get_xyz_keys()[1]
@@ -86,8 +266,8 @@ MCCGSampler::set_up_movers(const Parameters &pms,
   IMP_NEW(internal::CoreListSingletonContainer, sc, (mc->get_model(),
                                                      "mccg particles"));
   sc->set_particles(ps);
-  IMP_NEW(IncrementalBallMover, bm,
-          (sc, 2, pms.ball_sizes_.find(XK)->second));
+  IMP_NEW(ScoreWeightedIncrementalBallMover, bm,
+          (ps, 2, pms.ball_sizes_.find(XK)->second));
   mc->add_mover(bm);
   return sc.release();
 }
@@ -155,8 +335,10 @@ ConfigurationSet *MCCGSampler::do_sample() const {
   int failures=0;
   for (unsigned int i=0; i< pms.attempts_; ++i) {
     ret->load_configuration(-1);
-    if (!is_refining_) randomize(pms,sc);
-    IMP_LOG(TERSE, "Randomized configuration" << std::endl);
+    if (!is_refining_) {
+      randomize(pms,sc);
+      IMP_LOG(TERSE, "Randomized configuration" << std::endl);
+    }
     try {
       mc->optimize(pms.mc_steps_);
     } catch (ModelException) {
