@@ -225,8 +225,7 @@ void BrownianDynamics::take_step(SingletonContainer *sc,
     for (unsigned int j=0; j< 3; ++j) {
       d.set_coordinate(j, d.get_coordinate(j) + unit::strip_units(delta[j]));
     }
-    }
-    );
+    });
 }
 
 double BrownianDynamics::simulate(float max_time_nu)
