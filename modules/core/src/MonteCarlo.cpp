@@ -40,9 +40,10 @@ Float MonteCarlo::optimize(unsigned int max_steps)
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(this);
   double best_energy= std::numeric_limits<double>::max();
-  Pointer<ConfigurationSet> best_state;
-  double prior_energy=std::numeric_limits<Float>::max();
+  IMP::internal::OwnerPointer<Configuration> best_state
+    = new Configuration(get_model());
 
+  int failures=0;
   if (cg_) {
     IMP_CHECK_OBJECT(cg_.get());
     IMP_USAGE_CHECK(cg_->get_model() == get_model(),
@@ -50,8 +51,15 @@ Float MonteCarlo::optimize(unsigned int max_steps)
               " that used by the montecarlo optimizer");
   }
   update_states();
-  prior_energy =get_model()->evaluate(0);
-  IMP_LOG(VERBOSE, "MC Initial energy is " << prior_energy << std::endl);
+  double prior_energy =get_model()->evaluate(false);
+  if (prior_energy < stop_energy_) return prior_energy;
+
+  IMP_LOG(TERSE, "MC Initial energy is " << prior_energy << std::endl);
+
+  {
+    double check_prior= get_model()->evaluate(false);
+    IMP_LOG(TERSE, "MC Initial energy is now " << check_prior << std::endl);
+  }
   ::boost::uniform_real<> rand(0,1);
   for (unsigned int i=0; i< max_steps; ++i) {
     //make it a parameter
@@ -69,6 +77,7 @@ Float MonteCarlo::optimize(unsigned int max_steps)
         IncreaseIndent ii;
         IMP_CHECK_OBJECT(cg_.get());
 
+        bool has_changed=false;
         // if incremental, turn off non-dirty particles
         try {
           if (get_model()->get_is_incremental()) {
@@ -82,17 +91,24 @@ Float MonteCarlo::optimize(unsigned int max_steps)
                   (*it)->set_is_optimized(*oit, false);
                 }
               } else {
+                has_changed=true;
                 IMP_LOG(VERBOSE, "Particle " << (*it)->get_name()
                         << " was changed " << **it << std::endl);
               }
             }
-            next_energy =cg_->optimize(num_local_steps_);
+            if (has_changed) {
+              next_energy =cg_->optimize(num_local_steps_);
+            } else {
+              IMP_LOG(TERSE, "empty move" << std::endl);
+              next_energy=prior_energy;
+            }
           } else {
             next_energy =cg_->optimize(num_local_steps_);
           }
         } catch (const ModelException &e) {
           // make sure the move is rejected if the model gets in
           // an invalid state
+          ++failures;
           next_energy= std::numeric_limits<double>::infinity();
         }
       }
@@ -100,9 +116,21 @@ Float MonteCarlo::optimize(unsigned int max_steps)
     } else {
       next_energy =  get_model()->evaluate(false);
     }
-
-    bool accept= (next_energy < prior_energy);
-    if (!accept) {
+    bool accept=false;
+    if  (next_energy < prior_energy) {
+      accept=true;
+      if (return_best_ && next_energy < best_energy) {
+        best_energy= next_energy;
+        IMP_LOG(TERSE, "Saving state with energy " << best_energy << std::endl);
+        /*for (Model::ParticleIterator it = get_model()->particles_begin();
+             it != get_model()->particles_end(); ++it) {
+          if (XYZ::particle_is_instance(*it)) std::cout
+          << XYZ(*it) << std::endl;
+          }*/
+        best_state= new Configuration(get_model());
+      }
+      if (next_energy < stop_energy_) break;
+    } else {
       Float diff= next_energy- prior_energy;
       Float e= std::exp(-diff/temp_);
       Float r= rand(random_number_generator);
@@ -114,37 +142,40 @@ Float MonteCarlo::optimize(unsigned int max_steps)
       }
     }
     IMP_LOG(TERSE,  "MC Prior energy is " << prior_energy
-            << " and next is " << next_energy << " ");
+            << " and next is " << next_energy << " "
+            << "(" << stop_energy_ << ") ");
     if (accept) {
       IMP_LOG(TERSE,  " accept" << std::endl);
       for (MoverIterator it = movers_begin(); it != movers_end(); ++it) {
         (*it)->accept_move();
       }
-
-      if (return_best_ && next_energy < best_energy) {
-        best_energy= next_energy;
-        best_state= new ConfigurationSet(get_model());
-        best_state->set_was_used(true);
-      }
+      ++stat_forward_steps_taken_;
+      prior_energy= next_energy;
+      update_states();
     } else {
       IMP_LOG(TERSE,  " reject" << std::endl);
       for (MoverIterator it = movers_begin(); it != movers_end(); ++it) {
         (*it)->reject_move();
       }
-    }
-
-    if (accept) {
-      ++stat_forward_steps_taken_;
-      prior_energy= next_energy;
-      update_states();
-    } else {
       ++stat_num_failures_;
     }
-    if (prior_energy < stop_energy_) break;
   }
-  IMP_LOG(TERSE, "MC Final energy is " << prior_energy << std::endl);
-  if (return_best_ && best_state) {
-    best_state->load_configuration(-1);
+
+
+  IMP_LOG(TERSE, "MC Final energy is " << prior_energy
+          << " after " << failures << " failures" << std::endl);
+  if (return_best_) {
+    /*std::cout << "model was ";
+    for (Model::ParticleIterator it = get_model()->particles_begin();
+         it != get_model()->particles_end(); ++it) {
+      if (XYZ::particle_is_instance(*it)) std::cout << XYZ(*it) << std::endl;
+      }*/
+    best_state->load_configuration();
+    /*std::cout << "model is ";
+    for (Model::ParticleIterator it = get_model()->particles_begin();
+         it != get_model()->particles_end(); ++it) {
+      if (XYZ::particle_is_instance(*it)) std::cout << XYZ(*it) << std::endl;
+      }*/
     IMP_LOG(TERSE, "MC Returning energy " << best_energy << std::endl);
     IMP_IF_CHECK(USAGE) {
       IMP_CHECK_CODE(double e=) get_model()->evaluate(false);
