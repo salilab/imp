@@ -23,6 +23,8 @@ class IMPCOREEXPORT ListLikePairContainer: public PairContainer {
 private:
   void set_added_and_removed_containers(PairContainer *,
                                         PairContainer *){}
+  ParticlePairs data_;
+protected:
   ListLikePairContainer *get_added() const {
     return dynamic_cast<ListLikePairContainer*>
       (get_added_pairs_container());
@@ -31,8 +33,6 @@ private:
     return dynamic_cast<ListLikePairContainer*>
       (get_removed_pairs_container());
   }
-  ParticlePairs data_;
-protected:
   ListLikePairContainer(){}
   void update_list(ParticlePairsTemp &cur) {
     IMP_IF_CHECK(USAGE) {

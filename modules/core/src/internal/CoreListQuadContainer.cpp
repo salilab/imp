@@ -121,4 +121,13 @@ ContainersTemp CoreListQuadContainer::get_state_input_containers() const {
   return ContainersTemp();
 }
 
+bool CoreListQuadContainer::get_contained_particles_changed() const {
+  return !get_added()->get_access().empty()
+    || !get_removed()->get_access().empty();
+}
+ParticlesTemp CoreListQuadContainer::get_contained_particles() const {
+  return IMP::internal::flatten(get_access());
+}
+
+
 IMPCORE_END_INTERNAL_NAMESPACE

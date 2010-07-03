@@ -23,6 +23,8 @@ class IMPCOREEXPORT ListLikeQuadContainer: public QuadContainer {
 private:
   void set_added_and_removed_containers(QuadContainer *,
                                         QuadContainer *){}
+  ParticleQuads data_;
+protected:
   ListLikeQuadContainer *get_added() const {
     return dynamic_cast<ListLikeQuadContainer*>
       (get_added_quads_container());
@@ -31,8 +33,6 @@ private:
     return dynamic_cast<ListLikeQuadContainer*>
       (get_removed_quads_container());
   }
-  ParticleQuads data_;
-protected:
   ListLikeQuadContainer(){}
   void update_list(ParticleQuadsTemp &cur) {
     IMP_IF_CHECK(USAGE) {

@@ -64,11 +64,13 @@ public:
   }
   SingletonContainer*get_singleton_container() const {return c_;}
   void set_is_static(bool t, const algebra::BoundingBox3Ds &bbs);
-
+  bool get_contained_particles_changed() const;
+  ParticlesTemp get_contained_particles() const;
   IMP_NO_DOXYGEN(virtual void do_show(std::ostream &out) const);
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(CoreClosePairContainer);
 };
 
+IMP_OBJECTS(CoreClosePairContainer, CoreClosePairContainers);
 
 IMPCORE_END_INTERNAL_NAMESPACE
 

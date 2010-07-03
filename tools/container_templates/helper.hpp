@@ -23,6 +23,8 @@ class IMPCOREEXPORT ListLikeGroupnameContainer: public GroupnameContainer {
 private:
   void set_added_and_removed_containers(GroupnameContainer *,
                                         GroupnameContainer *){}
+  Classnames data_;
+protected:
   ListLikeGroupnameContainer *get_added() const {
     return dynamic_cast<ListLikeGroupnameContainer*>
       (get_added_groupnames_container());
@@ -31,8 +33,6 @@ private:
     return dynamic_cast<ListLikeGroupnameContainer*>
       (get_removed_groupnames_container());
   }
-  Classnames data_;
-protected:
   ListLikeGroupnameContainer(){}
   void update_list(ClassnamesTemp &cur) {
     IMP_IF_CHECK(USAGE) {
