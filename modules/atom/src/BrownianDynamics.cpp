@@ -45,6 +45,7 @@ BrownianDynamics::BrownianDynamics(SimulationParameters si,
 
   failed_steps_=0;
   successful_steps_=0;
+  dynamic_steps_=true;
 }
 
 
@@ -77,6 +78,10 @@ SingletonContainer *BrownianDynamics::setup_particles()
     }
     return lsc;
   }
+}
+
+void BrownianDynamics::set_adjust_step_size(bool tf) {
+  dynamic_steps_=tf;
 }
 
 void BrownianDynamics::copy_coordinates(SingletonContainer *sc,
@@ -211,14 +216,17 @@ void BrownianDynamics::take_step(SingletonContainer *sc,
             << " delta is " << delta[0] << " " << delta[1] << " " << delta[2]
             << " from a force of "
             << "[" << d.get_derivatives() << "]" << std::endl);
-
-    if (square(delta[0])+square(delta[1])+square(delta[2]) > feature_size_2_) {
-      throw BadStepException(_1);
+    if (dynamic_steps_) {
+      if (square(delta[0])+square(delta[1])+square(delta[2])
+          > feature_size_2_) {
+        throw BadStepException(_1);
+      }
     }
     for (unsigned int j=0; j< 3; ++j) {
       d.set_coordinate(j, d.get_coordinate(j) + unit::strip_units(delta[j]));
     }
-    });
+    }
+    );
 }
 
 double BrownianDynamics::simulate(float max_time_nu)

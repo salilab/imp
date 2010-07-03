@@ -77,6 +77,12 @@ public:
   }
 #endif
 
+ SimulationParameters get_simulation_parameters() const{
+    return si_;
+  }
+
+  void set_adjust_step_size(bool tf);
+
   IMP_OPTIMIZER(BrownianDynamics);
 private:
   void copy_coordinates(SingletonContainer *sc,
@@ -97,6 +103,7 @@ private:
   IMP::internal::OwnerPointer<SingletonContainer> sc_;
   unsigned int failed_steps_;
   unsigned int successful_steps_;
+  bool dynamic_steps_;
 };
 
 IMPATOM_END_NAMESPACE
