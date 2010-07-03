@@ -33,7 +33,7 @@ def module_glob(patterns):
     Otherwise changes in the ordering will cause scons to rebuild things."""
     ret=[]
     for x in patterns:
-        ret= ret+Glob(x)
+        ret= ret+Glob(x, ondisk=True)
     ret.sort()#cmp= file_compare)
     return ret
 
@@ -132,11 +132,12 @@ def dependencies_to_libs(env, deps, is_kernel=False):
     libs=[]
     deps = deps
     ed=expand_dependencies(env,deps, is_kernel)
-    for d in ed:
-        if d== 'kernel':
-            libs.append("imp")
-        else:
-            libs.append("imp_"+d)
+    if not env['fastlink']:
+        for d in ed:
+            if d== 'kernel':
+                libs.append("imp")
+            else:
+                libs.append("imp_"+d)
     for d in ed:
         #print "libs for " + d + " are " + str(env[d+"_libs"])
         try:
@@ -314,11 +315,14 @@ def _make_programs(envi, required_modules, extra_libs, install, files):
     from scons_tools import get_bin_environment
     env= get_bin_environment(envi)
     vars=make_vars(env)
-    env.Prepend(LIBS=(['imp%(module_suffix)s' % vars]\
-                          +dependencies_to_libs(env, env[env['IMP_MODULE']+"_required_modules"]\
+    if env['fastlink']:
+        env.Prepend(LINKFLAGS=['-limp_'+env['IMP_MODULE']])
+    env.Prepend(LIBS=(dependencies_to_libs(env, env[env['IMP_MODULE']+"_required_modules"]\
                                                     +required_modules,
                                                 env['IMP_MODULE'] == 'kernel')\
                           +env[env['IMP_MODULE']+"_libs"]))
+    if not env['fastlink']:
+        env.Prepend(LIBS=['imp%(module_suffix)s' % vars])
     env.Append(LIBS=extra_libs);
     build=[]
     install_list=[]
@@ -711,6 +715,13 @@ def IMPModuleBuild(env, version, required_modules=[],
     for m in required_modules:
         if not env.get(m+"_ok", False):
             env['MODULE_FAILED']="module "+m+" not supported"
+    if env['fastlink']:
+        ed= expand_dependencies(env,required_modules, module=='kernel')
+        for m in ed:
+            if m != 'kernel':
+                env.Append(LINKFLAGS=['-limp_'+m])
+            else:
+                env.Append(LINKFLAGS=['-limp'])
     env.Append(BUILDERS = {'IMPModuleConfigH': config_h.ConfigH,
                            'IMPModuleConfigCPP': config_h.ConfigCPP,
                            'IMPModuleLinkTest': link_test.LinkTest,

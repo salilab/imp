@@ -2,6 +2,7 @@ from scons_tools import get_bin_environment
 from imp_module import dependencies_to_libs
 from imp_module import check_libraries_and_headers
 from imp_module import process_dependencies
+from imp_module import expand_dependencies
 from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir
 
 
@@ -10,6 +11,12 @@ def IMPCPPApplication(envi, target, source, required_modules=[],
                       required_dependencies=[], required_libraries=[],
                       required_headers=[]):
     env= get_bin_environment(envi)
+    if env['fastlink']:
+        for l in expand_dependencies(env,required_modules, False):
+            if l != 'kernel':
+                env.Append(LINKFLAGS=['-limp_'+l])
+            else:
+                env.Append(LINKFLAGS=['-limp'])
     env.Prepend(LIBS=dependencies_to_libs(env, required_modules))
     env.Prepend(CPPPATH=["#/build/include"])
     env.Prepend(LIBPATH=["#/build/lib"])
