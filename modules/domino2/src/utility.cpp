@@ -533,12 +533,12 @@ namespace {
       IMP_LOG(TERSE, "Restraint " << r->get_name()
               << " is being decompsed into " << rs.size() << " restraints"
               << std::endl);
+      IMP_NEW(RestraintSet, rss, (r->get_name()));
+      rss->add_restraints(rs);
       removed.push_back(r);
       p->remove_restraint(r);
-      for (unsigned int i=0; i< rs.size(); ++i) {
-        p->add_restraint(rs[i]);
-      }
-      added.insert(added.end(), rs.begin(), rs.end());
+      p->add_restraint(rss);
+      added.push_back(rss);
     } else {
       IMP_LOG(TERSE, "Restraint " << r->get_name()
               << " cannot be decomposed" << std::endl);

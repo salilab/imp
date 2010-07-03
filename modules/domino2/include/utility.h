@@ -101,7 +101,7 @@ class ParticleStatesTable;
 IMPDOMINO2EXPORT bool
 get_is_static_container(Container *c,
                         const DependencyGraph &dg,
-                        const ParticleStatesTable *pst);
+                        const ParticlesTemp &particles);
 
 /** The class temporarily transforms the restraints,
     in a model to make it better suited for the
@@ -125,10 +125,14 @@ class IMPDOMINO2EXPORT OptimizeRestraints: public RAII {
 public:
   IMP_RAII(OptimizeRestraints, (Model *m, const ParticlesTemp &particles), {},
            {
+             m_=m;
              optimize_model(m, particles);
            },
            {
-             unoptimize_model();
+             if (m_) {
+               m_.reset();
+               unoptimize_model();
+             }
            });
 };
 
@@ -144,16 +148,21 @@ public:
 */
 class IMPDOMINO2EXPORT OptimizeContainers: public RAII {
   core::internal::CoreClosePairContainers staticed_;
+  Pointer<Model> m_;
 
   void optimize_model(Model *m, const ParticleStatesTable *pst);
   void unoptimize_model();
 public:
   IMP_RAII(OptimizeContainers, (Model *m, const ParticleStatesTable *pst), {},
            {
+             m_=m;
              optimize_model(m, pst);
            },
            {
-             unoptimize_model();
+             if (m_) {
+               m_.reset();
+               unoptimize_model();
+             }
            });
 };
 /**@} */

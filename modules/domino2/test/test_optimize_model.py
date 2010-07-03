@@ -37,12 +37,13 @@ class DOMINOTests(IMP.test.TestCase):
         dg= IMP.get_dependency_graph(m.get_score_states(),
                                      IMP.get_restraints(m.get_restraints())[0])
         dg.show()
-        dor= IMP.domino2.OptimizeRestraints(m, pst)
+        dor= IMP.domino2.OptimizeRestraints(m, pst.get_particles())
+        print "optimized restraints"
         dg= IMP.get_dependency_graph(m.get_score_states(),
                                      IMP.get_restraints(m.get_restraints())[0])
         dg.show()
-        self.assert_(m.get_number_of_restraints() > 1)
+        self.assert_(len(IMP.get_restraints(m.get_restraints())[0]) > 1)
         del dor
-        self.assert_(m.get_number_of_restraints() == 1)
+        self.assert_(len(IMP.get_restraints(m.get_restraints())[0]) == 1)
 if __name__ == '__main__':
     unittest.main()
