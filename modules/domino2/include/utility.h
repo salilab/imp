@@ -130,7 +130,7 @@ public:
            },
            {
              if (m_) {
-               m_.reset();
+               m_=NULL;
                unoptimize_model();
              }
            });
@@ -160,7 +160,7 @@ public:
            },
            {
              if (m_) {
-               m_.reset();
+               m_=NULL;
                unoptimize_model();
              }
            });
