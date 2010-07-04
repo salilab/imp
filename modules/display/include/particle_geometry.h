@@ -111,8 +111,11 @@ public:
 
 IMP_PARTICLE_TRAITS_GEOMETRY(XYZR, core::XYZR,FloatKey, radius_key,
  {
-    Geometry *g= new SphereGeometry(d.get_sphere());
-    ret.push_back(g);
+   SphereGeometry *g= new SphereGeometry(d.get_sphere());
+   if (Colored::particle_is_instance(d)) {
+     g->set_color(Colored(d).get_color());
+   }
+   ret.push_back(g);
   });
 
 IMP_PARTICLE_GEOMETRY(Bond, atom::Bond,{
