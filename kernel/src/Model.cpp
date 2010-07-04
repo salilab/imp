@@ -45,9 +45,11 @@ Model::~Model()
 }
 
 void Model::add_restraint(Restraint *r) {
+  IMP_USAGE_CHECK(r, "Cannot add null restraint.");
   rs_->add_restraint(r);
 }
 void Model::remove_restraint(Restraint *r) {
+  IMP_USAGE_CHECK(r, "Cannot remove null restraint.");
   rs_->remove_restraint(r);
 }
 Model::RestraintIterator Model::restraints_begin() {
