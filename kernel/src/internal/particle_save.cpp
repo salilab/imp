@@ -182,7 +182,7 @@ namespace {
       LineStream::LinePair lp = in.get_line();
       if (lp.first.empty()) break;
       Key k(lp.first);
-      IMP_LOG(TERSE, "Found key " << k << std::endl);
+      IMP_LOG(VERBOSE, "Found key " << k << std::endl);
       p.add(k.get_index(), read(lp.second));
     } while (true);
     IMP_LOG(VERBOSE, "Done reading attributes" << std::endl);
@@ -198,6 +198,7 @@ ParticleData::ParticleData(Particle *p) {
        it != p->optimized_keys_end(); ++it) {
     optimizeds_.add(it->get_index(), true);
   }
+  name_= p->get_name();
   save(floats_, p->float_keys_begin(),
        p->float_keys_end(), p);
   save(ints_, p->int_keys_begin(),
