@@ -61,7 +61,7 @@ public:
   typedef std::pair<std::string, std::string> LinePair;
   LineStream(std::istream &init): in_(init), indents_(1,0){}
   void pop_indent() {
-    IMP_INTERNAL_CHECK(indents_.size() >1,
+    IMP_INTERNAL_CHECK(indents_.size() >=1,
                            "Too many pops");
     indents_.pop_back();
     IMP_LOG(VERBOSE, "Indent is now " << indents_.back() << std::endl);
