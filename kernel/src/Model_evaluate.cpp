@@ -332,16 +332,28 @@ void Model::validate_incremental_evaluate(const RestraintsTemp &restraints,
       derivs.push_back((*it)->ps_->derivatives_);
       (*it)->zero_derivatives();
     }
-    IMP_CHECK_CODE(double nscore=)
+    bool ogather_stats=gather_statistics_;
+    gather_statistics_=false;
+    double nscore=
       do_evaluate_restraints(restraints, weights,
                              calc_derivs, ALL, false);
-    IMP_INTERNAL_CHECK(std::abs(nscore -score)
-                       < .001+.1*std::abs(nscore+score),
-                       "Incremental and non-incremental evaluation "
-                       << "do not agree."
-                       << " Incremental gets " << score
-                       << " but non-incremental "
-                       << "gets " << nscore);
+    gather_statistics_= ogather_stats;
+    if (std::abs(nscore -score)
+        > .001+.1*std::abs(nscore+score)) {
+      if (gather_statistics_) {
+        std::cerr << "Incremental:\n";
+        show_statistics_summary(std::cerr);
+        do_evaluate_restraints(restraints, weights,
+                               calc_derivs, ALL, false);
+        std::cerr << "Non-incremental:\n";
+        show_statistics_summary(std::cerr);
+      }
+      IMP_FAILURE("Incremental and non-incremental evaluation "
+                  << "do not agree."
+                  << " Incremental gets " << score
+                  << " but non-incremental "
+                  << "gets " << nscore);
+    }
     if (calc_derivs) {
       unsigned int i=0;
       for (ParticleIterator it= particles_begin();
@@ -359,7 +371,9 @@ void Model::validate_incremental_evaluate(const RestraintsTemp &restraints,
                              << FloatKey(j) << ". Incremental was "
                              << derivs[i].get(j)
                              << " where as regular was "
-                             << (*it)->ps_->derivatives_.get(j));
+                             << (*it)->ps_->derivatives_.get(j)
+                             << " particle is "
+                             << *(*it));
         }
         (*it)->ps_->derivatives_=derivs[i];
         ++i;
@@ -423,9 +437,11 @@ double Model::do_evaluate(const RestraintsTemp &restraints,
     }
     score+=do_evaluate_restraints(restraints, weights,
                                   calc_derivs, NONINCREMENTAL, false);
-    for (ParticleConstIterator pit = particles_begin();
-         pit != particles_end(); ++pit) {
-      if (calc_derivs) (*pit)->accumulate_derivatives_from_shadow();
+    if (calc_derivs) {
+      for (ParticleConstIterator pit = particles_begin();
+           pit != particles_end(); ++pit) {
+        (*pit)->accumulate_derivatives_from_shadow();
+      }
     }
     first_incremental_=false;
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {
@@ -440,8 +456,6 @@ double Model::do_evaluate(const RestraintsTemp &restraints,
   }
 
   after_evaluate(states, calc_derivs);
-
-
 
   // validate derivatives
   if (calc_derivs) {
