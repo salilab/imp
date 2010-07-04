@@ -11,100 +11,56 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-namespace {
-Transformation3D
-get_transformation_to_place_direction_on_Z(const Cylinder3D &c){
-  Vector3D main_dir = c.get_segment().get_direction();
-  Vector3D vertical_dir = get_orthogonal_vector(main_dir);
-  Transformation3D move2zero= Transformation3D(
-                   get_identity_rotation_3d(),
-                   -c.get_segment().get_middle_point());
-  //transformation_from_reference_frame(a,b,c) , sets the Z-axis to
-  //be prependicular to a and b. We want Z to be the main direction of
-  //the cylinder
-  Transformation3D
-    rigid_trans(get_rotation_from_x_y_axes(vertical_dir.get_unit_vector(),
-                    get_vector_product(main_dir,vertical_dir)
-                                           .get_unit_vector()),
-                               get_zero_vector_d<3>());
-  return rigid_trans.get_inverse();
-}
-}
-
 Vector3Ds get_uniform_surface_cover(const Cylinder3D &cyl,
-                                    int number_of_points) {
-  Vector3Ds points;
-  Vector3D starting_point,rotated_point;
-  Vector3D z_direction(0.0,0.0,1.0);
-  // move the cylinder to the base reference frame (center at (0,0,0)
-  // and its main direction to be on the Z axis)
-  Transformation3D cyl_rf_to_base_rf =
-    get_transformation_to_place_direction_on_Z(cyl);
-  Transformation3D move2zero =
-    Transformation3D(get_identity_rotation_3d(),
-                     -cyl.get_segment().get_middle_point());
-  for(int i=0;i<number_of_points;i++) {
-    ::boost::uniform_real<> rand(0,cyl.get_segment().get_length());
-    starting_point = cyl.get_segment().get_point(0);
-    starting_point = move2zero.get_transformed(starting_point);
-    starting_point = cyl_rf_to_base_rf.get_transformed(starting_point);
-    starting_point = starting_point +
-               Vector3D(cyl.get_radius(),0.0,rand(random_number_generator));
-   points.push_back(starting_point);
+                                    int n) {
+  double c= 2*PI*cyl.get_radius();
+  double h= cyl.get_segment().get_length();
+  // h*c= num_points*l*l
+  // l= sqrt(h*c/n)
+  double l= std::sqrt(h*c/n);
+  int cn= static_cast<int>(std::ceil(c/l));
+  int hn= static_cast<int>(std::ceil(h/l));
+  if ((cn-1)*hn >= n) {
+    --cn;
   }
-  for(int i=0;i<number_of_points;i++) {
-    ::boost::uniform_real<> rand(0,2*PI);
-    //generate a random rotation around the cycle
-    Rotation3D rot = get_rotation_about_axis(z_direction,
-                                rand(random_number_generator));
-    rotated_point =  rot.get_rotated(points[i]);
-    //back transformation of the rotated point back to the original cylinder
-    rotated_point =  cyl_rf_to_base_rf.get_inverse()
-      .get_transformed(rotated_point);
-    rotated_point =  move2zero.get_inverse().get_transformed(rotated_point);
-    points[i]=rotated_point;
+  if (cn*(hn-1) >= n) {
+    --hn;
   }
-  return points;
+  std::cout << "Asked for " << n << " got " << cn << "x"<< hn
+            << "= " << cn*hn << std::endl;
+  return get_grid_surface_cover(cyl, hn, cn);
 }
 
+namespace {
+  // from 0,0,0 to 0,0,1 with radius 1
+  Vector3Ds grid_unit_cylinder(unsigned int nc, unsigned int nh,
+                               const Vector3D &scaling,
+                               const Transformation3D &transform) {
+    Vector3Ds ret;
+    for (unsigned int i=0; i< nh; ++i) {
+      double h= static_cast<double>(i)/(nh-1);
+      for (unsigned int j=0; j< nc; ++j) {
+        double a= 2*PI*static_cast<double>(j)/nc;
+        Vector3D pt(scaling[0]*sin(a), scaling[1]*cos(a), scaling[2]*h);
+        Vector3D tpt= transform.get_transformed(pt);
+        ret.push_back(tpt);
+      }
+    }
+    return ret;
+  }
+}
 Vector3Ds get_grid_surface_cover(const Cylinder3D &cyl,
                                  int number_of_cycles,
                                  int number_of_points_on_cycle){
-  Vector3Ds points;
-  // move the cylinder to the base reference frame (center at (0,0,0)
-  // and its main direction to be on the Z axis)
-  Transformation3D cyl_rf_to_base_rf =
-    get_transformation_to_place_direction_on_Z(cyl);
-  Vector3D z_direction(0.0,0.0,1.0);
-  Float translation_step = cyl.get_segment().get_length()/number_of_cycles;
-  Float rotation_step = 2*PI/number_of_points_on_cycle;
-  std::vector<Rotation3D> rotations;
-  for(int angle_ind = 0; angle_ind<number_of_points_on_cycle;angle_ind++) {
-    rotations.push_back(
-         get_rotation_about_axis(z_direction,
-                                            angle_ind*rotation_step));
-  }
-  Vector3D starting_point,rotated_point;
-  Transformation3D move2zero =
-    Transformation3D(get_identity_rotation_3d(),
-                     -cyl.get_segment().get_middle_point());
-  for(int cycle_ind = 0; cycle_ind<number_of_cycles;cycle_ind++) {
-    starting_point = cyl.get_segment().get_point(0);
-    starting_point = move2zero.get_transformed(starting_point);
-    starting_point = cyl_rf_to_base_rf.get_transformed(starting_point);
-    starting_point = starting_point +
-              Vector3D(cyl.get_radius(),0.0,translation_step*cycle_ind);
-    for(std::vector<Rotation3D>::iterator i_rot = rotations.begin();
-        i_rot != rotations.end();i_rot++) {
-      rotated_point =  i_rot->get_rotated(starting_point);
-      //back transformation of the rotated point back to the original cylindar
-      rotated_point =  cyl_rf_to_base_rf.get_inverse()
-        .get_transformed(rotated_point);
-      rotated_point =  move2zero.get_inverse().get_transformed(rotated_point);
-      points.push_back(rotated_point);
-    }
-  }
-  return points;
+  Vector3D scale(cyl.get_radius(), cyl.get_radius(),
+                 cyl.get_segment().get_length());
+  Rotation3D rot
+    = get_rotation_taking_first_to_second(Vector3D(0,0,1),
+                                          cyl.get_segment().get_point(1)
+                                          - cyl.get_segment().get_point(0));
+  Transformation3D tr(rot, cyl.get_segment().get_point(0));
+  return grid_unit_cylinder(number_of_points_on_cycle, number_of_cycles,
+                            scale, tr);
 }
 
 
