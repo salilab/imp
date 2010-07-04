@@ -146,7 +146,7 @@ void ScoreWeightedIncrementalBallMover::propose_move(Float /*size*/) {
   moved_.clear();
   if (total < .0001) return;
   for (unsigned int i=0; i< weights.size(); ++i) {
-    weights[i]/=(total*n_);
+    weights[i]/=(total/n_);
   }
   /*IMP_IF_LOG(SILENT) {
     IMP_LOG(SILENT, "Weights are ");
@@ -155,21 +155,29 @@ void ScoreWeightedIncrementalBallMover::propose_move(Float /*size*/) {
     }
     IMP_LOG(SILENT, std::endl);
     };*/
-  ::boost::uniform_real<> rand(0,1);
-  for (unsigned int i=0; i< weights.size(); ++i) {
-    if (rand(random_number_generator) < weights[i]) {
-      moved_.push_back(ps_[i]);
-      XYZ d(ps_[i]);
-      IMP_USAGE_CHECK(d.get_coordinates_are_optimized(),
-                      "Particles passed to "
-                      << "ScoreWeightedIncrementalBallMover must have "
-                      << "optimized cartesian coordinates. "
-                      << moved_[i]->get_name() << " does not.");
-      d.set_coordinates(algebra::get_random_vector_in<3>
-                        (algebra::Sphere3D(d.get_coordinates(),
-                                           radius_)));
-      IMP_LOG(VERBOSE, "Proposing move of particle " << d->get_name()
-              << " to " << d.get_coordinates() << std::endl);
+  while (true) {
+    ::boost::uniform_real<> rand(0,1);
+    for (unsigned int i=0; i< weights.size(); ++i) {
+      if (rand(random_number_generator) < weights[i]) {
+        moved_.push_back(ps_[i]);
+        XYZ d(ps_[i]);
+        IMP_USAGE_CHECK(d.get_coordinates_are_optimized(),
+                        "Particles passed to "
+                        << "ScoreWeightedIncrementalBallMover must have "
+                        << "optimized cartesian coordinates. "
+                        << moved_[i]->get_name() << " does not.");
+        d.set_coordinates(algebra::get_random_vector_in<3>
+                          (algebra::Sphere3D(d.get_coordinates(),
+                                             radius_)));
+        IMP_LOG(VERBOSE, "Proposing move of particle " << d->get_name()
+                << " to " << d.get_coordinates() << std::endl);
+      }
+    }
+    if (moved_.empty()) {
+      IMP_LOG(TERSE, "trying again to find particles to move "
+              << total << std::endl);
+    } else {
+      break;
     }
   }
   /*std::cout << "Moving ";
