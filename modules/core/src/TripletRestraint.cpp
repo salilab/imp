@@ -41,7 +41,7 @@ double TripletRestraint
 double TripletRestraint
 ::unprotected_incremental_evaluate(DerivativeAccumulator *accum) const
 {
-  if (IMP::internal::is_dirty(v_)) {
+  if (ss_->get_is_changed(v_)) {
     score_+=ss_->evaluate_change(v_, accum);
   }
   return score_;

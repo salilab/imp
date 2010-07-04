@@ -36,16 +36,15 @@ bool is_valid(const ParticleTuple<D> &p) {
 }
 
 inline bool is_dirty(Particle *p) {
-  return !p->get_is_changed();
+  return p->get_is_changed();
 }
 template <unsigned int D>
-bool is_dirty(const ParticleTuple<D> &p) {
+bool is_dirty( const ParticleTuple<D> &p) {
   for (unsigned int i=0; i< D; ++i) {
     if (p[i]->get_is_changed()) return true;
   }
   return false;
 }
-
 inline Particle* prechange(Particle*p) {
   return p->get_prechange_particle();
 }
