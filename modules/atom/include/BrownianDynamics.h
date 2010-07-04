@@ -83,6 +83,12 @@ public:
 
   void set_adjust_step_size(bool tf);
 
+  /** If the score exceeds this, an error handler is kicked in which
+      attempts to relax the model before proceeding. A warning is
+      printed.
+  */
+  void set_maximum_score(double s);
+
   IMP_OPTIMIZER(BrownianDynamics);
 private:
   void copy_coordinates(SingletonContainer *sc,
@@ -104,6 +110,7 @@ private:
   unsigned int failed_steps_;
   unsigned int successful_steps_;
   bool dynamic_steps_;
+  double maximum_score_;
 };
 
 IMPATOM_END_NAMESPACE

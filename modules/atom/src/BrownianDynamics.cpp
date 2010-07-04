@@ -18,6 +18,8 @@
 #include <IMP/container/ListSingletonContainer.h>
 #include <IMP/atom/Diffusion.h>
 
+#include <IMP/core/ConjugateGradients.h>
+
 #include <cmath>
 #include <limits>
 
@@ -27,6 +29,24 @@ namespace {
     Particle *blamed;
     BadStepException(Particle *p): blamed(p){}
   };
+
+
+  void relax_model(Model *m, SingletonContainer *sc) {
+    //bool old= m->get_gather_statistics();
+    m->set_gather_statistics(true);
+    double oscore= m->evaluate(false);
+    IMP_WARN("Relaxing the model from a score of " << oscore << std::endl);
+    m->set_gather_statistics(false);
+    m->show_statistics_summary(std::cerr);
+    IMP_NEW(core::ConjugateGradients, cg, (m));
+    cg->optimize(10);
+    m->set_gather_statistics(true);
+    double nscore=m->evaluate(true);
+    IMP_WARN("Relaxed the model to a score of " << nscore << std::endl);
+    m->set_gather_statistics(false);
+    m->show_statistics_summary(std::cerr);
+  }
+
 }
 
 
@@ -38,6 +58,7 @@ unit::Shift<unit::Multiply<unit::Pascal,
 
 BrownianDynamics::BrownianDynamics(SimulationParameters si,
                                    SingletonContainer *sc) :
+  Optimizer(si->get_model()),
   feature_size_2_(std::numeric_limits<double>::max()),
   si_(si)
 {
@@ -46,10 +67,15 @@ BrownianDynamics::BrownianDynamics(SimulationParameters si,
   failed_steps_=0;
   successful_steps_=0;
   dynamic_steps_=true;
+  maximum_score_= std::numeric_limits<double>::max();
 }
 
 
 void BrownianDynamics::do_show(std::ostream &) const {
+}
+
+void BrownianDynamics::set_maximum_score(double d) {
+  maximum_score_=d;
 }
 
 SingletonContainer *BrownianDynamics::setup_particles()
@@ -154,6 +180,8 @@ void BrownianDynamics::take_step(SingletonContainer *sc,
     unit::Femtojoule>::type dtikt=dt/si_.get_kT();
   typedef boost::variate_generator<RandomNumberGenerator&,
     boost::normal_distribution<double> > RNG;
+  boost::normal_distribution<double> mrng(0, unit::strip_units(sqrt(dt)));
+  RNG sampler(random_number_generator, mrng);
   IMP_FOREACH_SINGLETON(sc, {
       Diffusion d(_1);
 
@@ -180,23 +208,14 @@ void BrownianDynamics::take_step(SingletonContainer *sc,
               && unit::strip_units(d.get_D())
               < std::numeric_limits<Float>::max(),
               "Bad diffusion coefficient on particle " << _1->get_name());
-    unit::Angstrom sigma= d.get_sigma(dt);
-
-    IMP_LOG(VERBOSE, _1->get_name() << ": sigma is "
-            << sigma << std::endl);
-    boost::normal_distribution<double> mrng(0, sigma.get_value());
-    RNG sampler(random_number_generator, mrng);
-    //std::cout << p->get_name() << std::endl;
-
     unit::Angstrom delta[3];
-
-    do {
-      for (unsigned j = 0; j < 3; ++j) {
-        delta[j]=unit::Angstrom(sampler());
-      }
-      // kill the tail
-    } while (square(delta[0])+square(delta[1])+square(delta[2])
-             > square(10.0*sigma));
+    unit::Angstrom sigma= sqrt(2.0*d.get_D()*dt);
+    for (unsigned j = 0; j < 3; ++j) {
+      double rv= sampler();
+      delta[j]=sqrt(2*d.get_D()*unit::Femtosecond(rv*rv));
+      if (rv < 0) delta[j]=-delta[j];
+      //delta[j]=unit::Angstrom(0);
+    }
 
     for (unsigned j = 0; j < 3; ++j) {
       unit::KilocaloriePerAngstromPerMol
@@ -205,6 +224,17 @@ void BrownianDynamics::take_step(SingletonContainer *sc,
         = unit::convert_Cal_to_J(force/unit::ATOMS_PER_MOL);
       unit::Angstrom R(sampler());
       unit::Angstrom force_term(nforce*d.get_D()*dtikt);
+      /*if (force_term > unit::Angstrom(.5)) {
+        std::cout << "Forces on " << _1->get_name() << " are "
+                  << force << " and " << nforce
+                  << " and " << force_term <<
+          " vs " << delta[j] << ", " << sigma << std::endl;
+          }*/
+      if (force_term > 3.0*sigma) {
+        force_term= 3.0*sigma;
+      } else if (force_term < -3.0*sigma) {
+        force_term= -3.0*sigma;
+      }
       delta[j]= delta[j]+force_term;
     }
 
@@ -225,7 +255,8 @@ void BrownianDynamics::take_step(SingletonContainer *sc,
     for (unsigned int j=0; j< 3; ++j) {
       d.set_coordinate(j, d.get_coordinate(j) + unit::strip_units(delta[j]));
     }
-    });
+    }
+    );
 }
 
 double BrownianDynamics::simulate(float max_time_nu)
@@ -242,14 +273,20 @@ double BrownianDynamics::simulate(float max_time_nu)
           << " until time " << max_time << std::endl);
   std::vector<algebra::VectorD<3> > old_forces, old_coordinates;
   unit::Femtosecond dt=si_.get_maximum_time_step();
-  get_model()->evaluate(true);
+  double score= get_model()->evaluate(true);
+  if (score > maximum_score_) {
+    relax_model(get_model(), sc);
+  }
   update_states();
   copy_coordinates(sc, old_coordinates);
   AddTime at(si_);
   bool success=false;
   while (at.get_current_time() < max_time){
     dt= std::min(dt, max_time-at.get_current_time());
-    get_model()->evaluate(true);
+    double score= get_model()->evaluate(true);
+    if (score > maximum_score_) {
+      relax_model(get_model(), sc);
+    }
     if (success) {
       update_states();
       copy_coordinates(sc, old_coordinates);
