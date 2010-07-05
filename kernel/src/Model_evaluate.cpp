@@ -342,11 +342,11 @@ void Model::validate_incremental_evaluate(const RestraintsTemp &restraints,
         > .001+.1*std::abs(nscore+score)) {
       if (gather_statistics_) {
         std::cerr << "Incremental:\n";
-        show_statistics_summary(std::cerr);
+        show_restraint_score_statistics(std::cerr);
         do_evaluate_restraints(restraints, weights,
                                calc_derivs, ALL, false);
         std::cerr << "Non-incremental:\n";
-        show_statistics_summary(std::cerr);
+        show_restraint_score_statistics(std::cerr);
       }
       IMP_FAILURE("Incremental and non-incremental evaluation "
                   << "do not agree."

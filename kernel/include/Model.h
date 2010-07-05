@@ -105,8 +105,6 @@ private:
       && ordered_score_states_.size()
       == get_number_of_score_states();
   }
-  void reset_dependencies();
-
 
   // other
   /* Allow Model::ScoreStateDataWrapper class to call the private
@@ -149,6 +147,8 @@ public:
                     "Can only call get_evaluation() during evaluation");
     return eval_count_;
   }
+  // It is annoying to get the friend call right for VC
+  void reset_dependencies();
 #endif
 
   /** Construct an empty model */
@@ -370,8 +370,12 @@ public:
       existing statistics.
       @{
   */
+  void clear_all_statistics();
   void set_gather_statistics(bool tf);
-  void show_statistics_summary(std::ostream &out=std::cout) const;
+  void show_all_statistics(std::ostream &out=std::cout) const;
+  void show_restraint_time_statistics(std::ostream &out=std::cout) const;
+  void show_restraint_score_statistics(std::ostream &out=std::cout) const;
+  void show_score_state_time_statistics(std::ostream &out=std::cout) const;
   /** @} */
 };
 
