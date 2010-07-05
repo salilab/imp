@@ -37,14 +37,14 @@ namespace {
     double oscore= m->evaluate(false);
     IMP_WARN("Relaxing the model from a score of " << oscore << std::endl);
     m->set_gather_statistics(false);
-    m->show_statistics_summary(std::cerr);
+    m->show_restraint_score_statistics(std::cerr);
     IMP_NEW(core::ConjugateGradients, cg, (m));
     cg->optimize(10);
     m->set_gather_statistics(true);
     double nscore=m->evaluate(true);
     IMP_WARN("Relaxed the model to a score of " << nscore << std::endl);
     m->set_gather_statistics(false);
-    m->show_statistics_summary(std::cerr);
+    m->show_restraint_score_statistics(std::cerr);
   }
 
 }
