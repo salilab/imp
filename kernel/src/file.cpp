@@ -148,8 +148,9 @@ TextOutput create_temporary_file(std::string prefix,
   }
   char filename[MAX_PATH];
   if (GetTempFileName(tpathstr.c_str(), prefix.c_str(), 0, filename)==0) {
-     IMP_THROW("Unable to create temp file in " << tpath, IOException);
+     IMP_THROW("Unable to create temp file in " << tpathstr, IOException);
   }
+  return TextOutput(std::string(filename)+suffix);
 #else
   std::string pathprefix;
   if (imp_tmp.empty()) {
@@ -182,8 +183,8 @@ TextOutput create_temporary_file(std::string prefix,
   std::copy(suffix.begin(), suffix.end(), filename.get()+templ.size());
   filename[templ.size()+ suffix.size()]='\0';
 #endif
-#endif
   return TextOutput(filename.get());
+#endif
 }
 
 

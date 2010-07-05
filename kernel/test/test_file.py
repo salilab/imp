@@ -40,12 +40,12 @@ class DirectoriesTests(IMP.test.TestCase):
         """Test temporary files"""
         simple = IMP.create_temporary_file()
         print simple.get_name()
-        prefix = IMP.create_temporary_file("imp_file_test")
+        prefix = IMP.create_temporary_file("imp")
         print prefix.get_name()
-        self.assert_("imp_file_test" in prefix.get_name())
-        suffix = IMP.create_temporary_file("imp_file_test", ".py")
+        self.assert_("imp" in prefix.get_name())
+        suffix = IMP.create_temporary_file("imp", ".py")
         print suffix.get_name()
-        self.assert_("imp_file_test" in suffix.get_name())
+        self.assert_("imp" in suffix.get_name())
         self.assert_(".py" in suffix.get_name())
 
 if __name__ == '__main__':
