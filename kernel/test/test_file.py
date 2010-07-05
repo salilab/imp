@@ -36,5 +36,17 @@ class DirectoriesTests(IMP.test.TestCase):
         os.unlink('ofile_test')
         os.unlink('hi')
 
+    def test_odata_directory(self):
+        """Test temporary files"""
+        simple = IMP.create_temporary_file()
+        print simple.get_name()
+        prefix = IMP.create_temporary_file("imp_file_test")
+        print prefix.get_name()
+        self.assert_("imp_file_test" in prefix.get_name())
+        suffix = IMP.create_temporary_file("imp_file_test", ".py")
+        print suffix.get_name()
+        self.assert_("imp_file_test" in suffix.get_name())
+        self.assert_(".py" in suffix.get_name())
+
 if __name__ == '__main__':
     unittest.main()
