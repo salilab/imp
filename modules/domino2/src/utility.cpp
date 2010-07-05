@@ -499,13 +499,17 @@ get_is_static_container(Container *c,
   typedef DGTraits::in_edge_iterator IEIt;
   typedef DGTraits::vertex_iterator DVIt;
   DGConstVertexMap pm=boost::get(boost::vertex_name, dg);
-  int cv;
+  int cv=-1;
   for (std::pair<DVIt, DVIt> be= boost::vertices(dg);
        be.first != be.second; ++be.first) {
     if (boost::get(pm, *be.first)== c) {
       cv=*be.first;
       break;
     }
+  }
+  if (cv==-1) {
+    IMP_THROW("Container " << c->get_name()
+              << " not in graph.", ValueException);
   }
   return get_has_ancestor(dg, cv, pst);
 }
