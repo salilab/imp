@@ -20,14 +20,12 @@ Vector3Ds get_uniform_surface_cover(const Cylinder3D &cyl,
   double l= std::sqrt(h*c/n);
   int cn= static_cast<int>(std::ceil(c/l));
   int hn= static_cast<int>(std::ceil(h/l));
-  if ((cn-1)*hn >= n) {
-    --cn;
+  while ((hn-1)*cn >= n || hn*(cn-1) >=n) {
+    if ((hn-1)*cn >= n && hn > cn) --hn;
+    else --cn;
   }
-  if (cn*(hn-1) >= n) {
-    --hn;
-  }
-  std::cout << "Asked for " << n << " got " << cn << "x"<< hn
-            << "= " << cn*hn << std::endl;
+  /*std::cout << "Asked for " << n << " got " << cn << "x"<< hn
+    << "= " << cn*hn << std::endl;*/
   return get_grid_surface_cover(cyl, hn, cn);
 }
 
