@@ -130,8 +130,8 @@ public:
            },
            {
              if (m_) {
-               m_=NULL;
                unoptimize_model();
+               m_=NULL;
              }
            });
 };
@@ -160,8 +160,8 @@ public:
            },
            {
              if (m_) {
-               m_=NULL;
                unoptimize_model();
+               m_=NULL;
              }
            });
 };
