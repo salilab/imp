@@ -28,6 +28,8 @@ namespace {
     return path.native_file_string();
 #endif
   }
+#else
+  const std::string& to_string(const std::string& s) {return s;}
 #endif
 }
 std::string get_concatenated_path(std::string part0,
