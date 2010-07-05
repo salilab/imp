@@ -18,7 +18,6 @@
 #include <IMP/Restraint.h>
 
 #include <vector>
-#include <debug/vector>
 #include <map>
 #include <sstream>
 
