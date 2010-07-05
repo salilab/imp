@@ -3,6 +3,9 @@ namespace IMP {
 namespace domino2 {
 %warnfilter(473) SubsetEvaluatorTable;
 %warnfilter(473) SubsetStatesTable;
+%warnfilter(473) SubsetFilterTable;
+%warnfilter(403) DiscreteSampler;
+%warnfilter(473) DiscreteSampler;
 }
 }
 
