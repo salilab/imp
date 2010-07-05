@@ -30,6 +30,10 @@ IMPEXPORT std::string get_example_path(std::string module_name,
  */
 IMPEXPORT void set_backup_data_path(std::string path) ;
 
+IMPEXPORT std::string get_concatenated_path(std::string part0,
+                                             std::string part1);
+
+
 IMP_END_INTERNAL_NAMESPACE
 
 #endif  /* IMP_INTERNAL_DIRECTORIES_H */

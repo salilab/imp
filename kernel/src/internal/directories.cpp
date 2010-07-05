@@ -19,10 +19,7 @@
 #include <cstdlib>
 
 IMP_BEGIN_INTERNAL_NAMESPACE
-
 namespace {
-  std::string backup_search_path;
-
 #ifdef IMP_USE_BOOST_LIBS
   std::string to_string(boost::filesystem::path path) {
 #if BOOST_VERSION >= 103400
@@ -32,29 +29,33 @@ namespace {
 #endif
   }
 #endif
+}
+std::string get_concatenated_path(std::string part0,
+                                   std::string part1) {
+#ifdef IMP_USE_BOOST_LIBS
+  boost::filesystem::path b0(part0), b1(part1);
+  return to_string(b0/b1);
+#else
+  return to_string(part0+"/"+part1);
+#endif
+}
+
+namespace {
+  std::string backup_search_path;
 
   std::string path_cat(std::string base, std::string module,
                        std::string file_name) {
     IMP_USAGE_CHECK(!file_name.empty() && file_name[0] != '/',
                     "File name should be relative to the IMP directory and"
                     << " non-empty, not " << file_name);
-#ifdef IMP_USE_BOOST_LIBS
-    boost::filesystem::path basep(base);
-#endif
     if (module != "kernel") {
-#ifdef IMP_USE_BOOST_LIBS
-      return to_string(basep/module/file_name);
-#else
-      return base+"/"+module+"/"+file_name;
-#endif
+      return get_concatenated_path(base,
+                                   get_concatenated_path(module, file_name));
     } else {
-#ifdef IMP_USE_BOOST_LIBS
-      return to_string(basep/file_name);
-#else
-      return base+"/"+file_name;
-#endif
+      return get_concatenated_path(base, file_name);
     }
   }
+
   std::string get_path(std::string envvar, std::string buildpath,
                        std::string def,
                        std::string module, std::string file_name) {

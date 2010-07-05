@@ -10,7 +10,7 @@
 #include <cstdlib>
 //#include <unistd.h>
 #include <boost/scoped_array.hpp>
-
+#include <IMP/internal/directories.h>
 #ifdef _MSC_VER
 #include <windows.h>
 #endif
@@ -127,27 +127,63 @@ namespace {
 }
 
 
-TextOutput create_temporary_file() {
-#ifndef _MSC_VER
-  char filename[] = "/tmp/imptmp.XXXXXX";
-  int fd = mkstemp(filename);
+TextOutput create_temporary_file(std::string prefix,
+                                 std::string suffix) {
+  char *env = getenv("IMP_BUILD_ROOT");
+  std::string imp_tmp;
+  if (env) {
+    imp_tmp= internal::get_concatenated_path(env, "build/tmp");
+  }
+#if defined _MSC_VER
+  std::string tpathstr;
+  if (imp_tmp.empty()) {
+    TCHAR tpath[MAX_PATH];
+    DWORD dwRetVal = GetTempPath(MAX_PATH,tpath);
+    if (dwRetVal > MAX_PATH || (dwRetVal == 0)) {
+      IMP_THROW("Unable to find temporary path", IOException);
+    }
+    tpathstr=tpath;
+  } else {
+    tpathstr= imp_tmp;
+  }
+  char filename[MAX_PATH];
+  if (GetTempFileName(tpathstr.c_str(), prefix.c_str(), 0, filename)==0) {
+     IMP_THROW("Unable to create temp file in " << tpath, IOException);
+  }
+#else
+  std::string pathprefix;
+  if (imp_tmp.empty()) {
+    pathprefix="/tmp";
+  } else {
+    pathprefix=imp_tmp;
+  }
+  std::string templ=internal::get_concatenated_path(pathprefix,
+                                                    prefix+".XXXXXX");
+  boost::scoped_array<char> filename;
+  filename.reset(new char[templ.size()+suffix.size()+1]);
+  std::copy(templ.begin(), templ.end(), filename.get());
+#ifdef __APPLE__
+  std::copy(suffix.begin(), suffix.end(), filename.get()+templ.size());
+  filename[templ.size()+ suffix.size()]='\0';
+  int fd = mkstemps(filename.get(), suffix.size());
   if (fd == -1) {
     IMP_THROW("Unable to create temporary file",
               IOException);
   }
   close(fd);
 #else
-  TCHAR tpath[MAX_PATH];
-  DWORD dwRetVal = GetTempPath(MAX_PATH,tpath);
-  if (dwRetVal > MAX_PATH || (dwRetVal == 0)) {
-     IMP_THROW("Unable to find temporary path", IOException);
+  filename[templ.size()]='\0';
+  int fd = mkstemp(filename.get());
+  if (fd == -1) {
+    IMP_THROW("Unable to create temporary file",
+              IOException);
   }
-  char filename[MAX_PATH];
-  if (GetTempFileName(tpath, "imptmp", 0, filename)==0) {
-     IMP_THROW("Unable to create temp file in " << tpath, IOException);
-  }
+  close(fd);
+  std::copy(suffix.begin(), suffix.end(), filename.get()+templ.size());
+  filename[templ.size()+ suffix.size()]='\0';
 #endif
-  return TextOutput(filename);
+#endif
+  return TextOutput(filename.get());
 }
 
 

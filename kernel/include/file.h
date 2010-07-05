@@ -166,9 +166,13 @@ public:
 IMP_VALUES(TextInput,TextInputs);
 IMP_VALUES(TextOutput,TextOutputs);
 
-/** Create a temporary file. The path can be extracted from the TextOutput.*/
-IMPEXPORT TextOutput create_temporary_file();
+/** Create a temporary file. The path can be extracted from the TextOutput.
 
+    If suffix is non-empty, there is some small chance of a collision on
+    non-BSD systems as a unique temporary file is first created, and then
+    a file with that suffix appended is created.*/
+IMPEXPORT TextOutput create_temporary_file(std::string prefix="imp_temp",
+                                           std::string suffix="");
 
 IMP_END_NAMESPACE
 
