@@ -75,7 +75,7 @@ void RestraintScoreSubsetFilterTable::do_show(std::ostream &out) const {
 /************************************ PERMUTATION *****************************/
 
 namespace {
-
+  template <bool EQ>
   class  PermutationSubsetFilter: public SubsetFilter {
     std::vector<std::pair<unsigned int, Ints> > exclusions_;
   public:
@@ -84,19 +84,110 @@ namespace {
     }
     IMP_SUBSET_FILTER(PermutationSubsetFilter);
   };
-
-  bool PermutationSubsetFilter::get_is_ok(const SubsetState &state) const{
+  template <bool EQ>
+  bool PermutationSubsetFilter<EQ>::get_is_ok(const SubsetState &state) const{
     for (unsigned int i=0; i< exclusions_.size(); ++i) {
       for (unsigned int j=0; j< exclusions_[i].second.size(); ++j) {
-        if (state[exclusions_[i].first]== state[exclusions_[i].second[j]]) {
+        int a=state[exclusions_[i].first], b= state[exclusions_[i].second[j]];
+        if ((EQ && a != b) || (!EQ && a==b)) {
           return false;
         }
       }
     }
     return true;
   }
+  template <bool EQ>
+  void PermutationSubsetFilter<EQ>::do_show(std::ostream &out) const{}
 
-  void PermutationSubsetFilter::do_show(std::ostream &out) const{}
+
+  bool is_excluded(int ia, int ib,
+                   const std::vector<std::vector<bool> > &ebv) {
+    for (unsigned int i=0; i< ebv.size(); ++i) {
+      if (ebv[i][ia] && ebv[i][ib]) return true;
+    }
+    return false;
+  }
+
+  bool get_is_same(int ia, int ib,
+               Particle *a, Particle *b,
+               const ParticleStatesList &pss,
+               const ParticlePairsTemp &pairs) {
+    IMP_USAGE_CHECK( a< b, "Out of order particles");
+    if (!pss.empty()) {
+      return pss[ia] == pss[ib];
+    } else {
+      // could accelerate this if needed
+      for (unsigned int i=0; i< pairs.size(); ++i) {
+        if (pairs[i][0] == a && pairs[i][1]==b) {
+          return true;
+        }
+      }
+      return false;
+    }
+  }
+
+  std::vector<std::pair<unsigned int, Ints> >
+  get_filters(const Subset &s,
+              const Subsets &excluded,
+              ParticleStatesTable *pst,
+              const ParticlePairsTemp &pairs) {
+    std::vector<std::pair<unsigned int, Ints> > filters;
+    ParticleStatesList pss;
+    if (pst) {
+      pss.resize(s.size());
+      for (unsigned int i=0; i< s.size(); ++i) {
+        pss[i]= pst->get_particle_states(s[i]);
+      }
+    }
+    std::vector<std::vector<bool> > ebv(excluded.size(),
+                                        std::vector<bool>(s.size(), false));
+    {
+      for (unsigned int i=0; i< s.size(); ++i) {
+        for (unsigned int j=0; j< excluded.size(); ++j) {
+          for (unsigned int k=0; k< excluded[j].size(); ++k) {
+            if (s[i] == excluded[j][k]) {
+              ebv[j][i]=true;
+              break;
+            }
+          }
+        }
+      }
+    }
+    for (unsigned int i=0; i< s.size(); ++i) {
+      for (unsigned int j=0; j<i; ++j) {
+        if (get_is_same(j, i, s[j], s[i], pss, pairs)
+            && !is_excluded(i,j, ebv)) {
+          if (!filters.empty() && filters.back().first == i) {
+            filters.back().second.push_back(j);
+          } else {
+            filters.push_back(std::make_pair(i, Ints(1, j)));
+          }
+        }
+      }
+    }
+    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+      if (pst) {
+        for (unsigned int i=0; i< filters.size(); ++i) {
+          for (unsigned int j=0; j< filters[i].second.size(); ++j) {
+            IMP_INTERNAL_CHECK(pst->get_particle_states(s[filters[i].first])
+                        == pst->get_particle_states(s[filters[i].second[j]]),
+                               "They don't match :-( ");
+          }
+        }
+      }
+    }
+    return filters;
+  }
+
+  ParticlePairsTemp fixup(ParticlePairsTemp ppt) {
+    for (unsigned int i=0; i< ppt.size(); ++i) {
+      if (ppt[i][0] > ppt[i][1]) {
+        ppt[i]= ParticlePair(ppt[i][1], ppt[i][0]);
+      }
+    }
+    return ppt;
+  }
+
 }
 
 
@@ -105,65 +196,48 @@ PermutationSubsetFilterTable
 {
 }
 
+PermutationSubsetFilterTable
+::PermutationSubsetFilterTable(const ParticlePairsTemp &pairs):
+  pairs_(fixup(pairs))
+{
+}
+
 SubsetFilter*
-PermutationSubsetFilterTable::get_subset_filter(const Subset &s,
-                                                const Subsets &excluded) const {
-  std::vector<ParticleStates*> ps;
-  std::vector<bool> isexcluded;
-  std::vector<std::pair<unsigned int, Ints> > filters;
-  for (unsigned int i=0; i< s.size(); ++i) {
-    ps.push_back(pst_->get_particle_states(s[i]));
-    bool found=false;
-    for (unsigned j=0; j< excluded.size() && !found; ++j) {
-      if (std::binary_search(excluded[j].begin(),
-                        excluded[j].end(), s[i])) {
-        found=true;
-        break;
-      }
-    }
-    /* if (found) {
-      IMP_LOG(VERBOSE, s[i]->get_name() << " is excluded " << std::endl);
-      }*/
-    isexcluded.push_back(found);
-    for (unsigned int j=0; j< ps.size()-1; ++j) {
-      if (ps.back() == ps[j] && (!isexcluded.back() || !isexcluded[j])) {
-        /*IMP_LOG(VERBOSE, "found " << s[i]->get_name()
-          << " " << s[j]->get_name() << std::endl);*/
-        if (!filters.empty() && filters.back().first == i) {
-          filters.back().second.push_back(j);
-        } else {
-          filters.push_back(std::make_pair(i, Ints(1, j)));
-        }
-      }
-    }
-  }
-  /*IMP_IF_LOG(VERBOSE) {
-    IMP_LOG(VERBOSE, "Subset " << s << " with exclusions ");
-    for (unsigned int i=0; i< excluded.size(); ++i) {
-      IMP_LOG(VERBOSE, excluded[i] << " ");
-    }
-    IMP_LOG(VERBOSE, std::endl << " Got ");
-    for (unsigned int i=0; i< filters.size(); ++i) {
-      IMP_LOG(VERBOSE, filters[i].first << ": ");
-      for (unsigned int j=0; j< filters[i].second.size(); ++j) {
-        IMP_LOG(VERBOSE, filters[i].second[j] << " ");
-      }
-      IMP_LOG(VERBOSE, " & ");
-    }
-    IMP_LOG(VERBOSE, std::endl);
-    }*/
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-    for (unsigned int i=0; i< filters.size(); ++i) {
-      for (unsigned int j=0; j< filters[i].second.size(); ++j) {
-      IMP_INTERNAL_CHECK(pst_->get_particle_states(s[filters[i].first])
-                         == pst_->get_particle_states(s[filters[i].second[j]]),
-                         "They don't match :-( ");
-      }
-    }
-  }
-  return new PermutationSubsetFilter(filters);
+PermutationSubsetFilterTable
+::get_subset_filter(const Subset &s,
+                    const Subsets &excluded) const {
+  std::vector<std::pair<unsigned int, Ints> > filters
+    = get_filters(s, excluded, pst_, pairs_);
+  return new PermutationSubsetFilter<false>(filters);
 }
 
 void PermutationSubsetFilterTable::do_show(std::ostream &out) const {
 }
+
+
+
+
+EqualitySubsetFilterTable
+::EqualitySubsetFilterTable(ParticleStatesTable *pst): pst_(pst)
+{
+}
+
+EqualitySubsetFilterTable
+::EqualitySubsetFilterTable(const ParticlePairsTemp &pairs):
+  pairs_(fixup(pairs))
+{
+}
+
+SubsetFilter*
+EqualitySubsetFilterTable::get_subset_filter(const Subset &s,
+                                             const Subsets &excluded) const {
+  std::vector<std::pair<unsigned int, Ints> > filters
+    = get_filters(s, excluded, pst_, pairs_);
+  return new PermutationSubsetFilter<true>(filters);
+}
+
+void EqualitySubsetFilterTable::do_show(std::ostream &out) const {
+}
+
+
 IMPDOMINO2_END_NAMESPACE

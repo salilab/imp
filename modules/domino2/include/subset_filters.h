@@ -73,19 +73,46 @@ class IMPDOMINO2EXPORT RestraintScoreSubsetFilterTable:
 IMP_OBJECTS(RestraintScoreSubsetFilterTable,
             RestraintScoreSubsetFilterTables);
 
-/** \brief Do not allow two particles with the same ParticleStates
-    to be in the same state.
+/** \brief Do not allow two particles to be in the same state.
+
+    If a ParticleStatesTable is passed, then two particles cannot
+    be in the same state if they have the same ParticleStates,
+    otherwise, if a ParticlePairs is passed then pairs found in the
+    list are excluded.
  */
 class IMPDOMINO2EXPORT PermutationSubsetFilterTable:
   public SubsetFilterTable {
   Pointer<ParticleStatesTable> pst_;
+  const ParticlePairsTemp pairs_;
 public:
   PermutationSubsetFilterTable(ParticleStatesTable *pst);
+  PermutationSubsetFilterTable(const ParticlePairsTemp &pairs);
   IMP_SUBSET_FILTER_TABLE(PermutationSubsetFilterTable);
 };
 
 IMP_OBJECTS(PermutationSubsetFilterTable,
             PermutationSubsetFilterTables);
+
+
+/** \brief Force two particles to be in the same state.
+
+    If a ParticleStatesTable is passed, then two particles must
+    be in the same state if they have the same ParticleStates,
+    otherwise, if a ParticlePairs is passed then pairs found in the
+    list are excluded.
+ */
+class IMPDOMINO2EXPORT EqualitySubsetFilterTable:
+  public SubsetFilterTable {
+  Pointer<ParticleStatesTable> pst_;
+  const ParticlePairsTemp pairs_;
+public:
+  EqualitySubsetFilterTable(ParticleStatesTable *pst);
+  EqualitySubsetFilterTable(const ParticlePairsTemp &pairs);
+  IMP_SUBSET_FILTER_TABLE(EqualitySubsetFilterTable);
+};
+
+IMP_OBJECTS(EqualitySubsetFilterTable,
+            EqualitySubsetFilterTables);
 
 
 IMPDOMINO2_END_NAMESPACE
