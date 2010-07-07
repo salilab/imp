@@ -10,4 +10,6 @@
 
 @PRECOMMAND@
 
+mkdir -p ${IMP_BUILD_ROOT}/build/tmp
+
 exec ${precommand} "$@"
