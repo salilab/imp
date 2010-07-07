@@ -110,7 +110,10 @@ class TestCase(unittest.TestCase):
     def get_tmp_file_name(self, filename):
         """Get the full name of an output file in the build/tmp directory."""
         basedir=os.environ['IMP_BUILD_ROOT']
-        return os.path.join(basedir, 'build', 'tmp', filename)
+        dirpath= os.path.join(basedir, 'build', 'tmp')
+        if not os.path.exists(dirpath):
+            os.mkdir(dirpath)
+        return os.path.join(dirpath, filename)
 
     def assertInTolerance(self, num1, num2, tolerance, msg=None):
         """Assert that the difference between num1 and num2 is less than
