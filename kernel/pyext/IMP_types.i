@@ -331,6 +331,9 @@ IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName,);
 %typemap(out) Namespace::Name const& {
   $result=SWIG_NewPointerObj(new Namespace::Name(*$1), $descriptor(Namespace::Name*), SWIG_POINTER_OWN | %newpointer_flags);
  }
+%typemap(out) Namespace::Name {
+  $result=SWIG_NewPointerObj(new Namespace::Name(*$1), $descriptor(Namespace::Name*), SWIG_POINTER_OWN | %newpointer_flags);
+ }
 IMP_SWIG_VALUE_CHECKS(Namespace, Name);
 %pythoncode %{
   PluralName=list
