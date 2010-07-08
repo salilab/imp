@@ -17,7 +17,7 @@ import checks
 import modpage
 import pch
 
-from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir, Move
+from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir, Move, Copy
 
 #def module_depends(env, target, source):
 #    env.Depends(target, [env.Alias(env['IMP_MODULE']+"-"+source)])
@@ -343,6 +343,10 @@ def _make_programs(envi, required_modules, extra_libs, install, files):
             if install:
                 ci= env.Install(bindir, f)
                 install_list.append(ci)
+    if env['fastlink']:
+        module_requires(env, build, 'lib')
+        for l in required_modules:
+            env.Requires(build, env.Alias(l+'-lib'))
     return (build, install_list)
 
 def IMPModuleBin(env, files, required_modules=[], extra_libs=[], install=True):
@@ -392,7 +396,7 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
                                '#/build/src/%(module)s_wrap.h-in'%vars],
                        source=swigfile)
     #print "Moving", produced.path, "to", dest.path
-    gen_pymod= env.Command(dest, produced, Move(dest, produced))
+    gen_pymod= env.Command(dest, produced, Copy(dest, produced))
     # this appears to be needed for some reason
     env.Requires(swig, swiglink)
     module_deps_requires(env, swig, "swig", [])
