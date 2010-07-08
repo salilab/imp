@@ -135,7 +135,7 @@ typedef boost::property_map<SubsetGraph,
     for (It c=b; c!= e; ++c) {
       RestraintSet *rs=dynamic_cast<RestraintSet*>(*c);
       if (rs) {
-        IMP_LOG(TERSE, "Restraint set " << rs->get_name()
+        IMP_LOG(TERSE, "Restraint set \"" << rs->get_name() << "\""
                 << std::endl);
         RestraintsTemp o=get_restraints(rs->restraints_begin(),
                                         rs->restraints_end(), 1.0);
@@ -172,9 +172,9 @@ bool get_has_edge(InteractionGraph &graph,
       if (map.find(pt[k]) == map.end()) continue;
       int vk= map.find(pt[k])->second;
       if (vj != vk && !get_has_edge(g, vj, vk)) {
-        IMP_LOG(VERBOSE, "Adding edge between " << ps[vj]->get_name()
-                << " and " << ps[vk]->get_name()
-                << " due to " << blame->get_name() << std::endl);
+        IMP_LOG(VERBOSE, "Adding edge between \"" << ps[vj]->get_name()
+                << "\" and \"" << ps[vk]->get_name()
+                << "\" due to \"" << blame->get_name() << "\"" << std::endl);
         IGEdge e;
         bool inserted;
         boost::tie(e, inserted)= boost::add_edge(vj, vk, g);
@@ -222,15 +222,16 @@ InteractionGraph get_interaction_graph(Model *m,
                       "Currently particles which depend on more "
                       << "than one particle "
                       << "from the input set are not supported."
-                      << "  Particle " << t[j]->get_name()
-                      << " depends on " << ps[i]->get_name()
-                      << " and " << ps[map.find(t[i])->second]->get_name());
+                      << "  Particle \"" << t[j]->get_name()
+                      << "\" depends on \"" << ps[i]->get_name()
+                      << "\" and \"" << ps[map.find(t[i])->second]->get_name()
+                      << "\"");
       map[t[j]]= i;
     }
     IMP_IF_LOG(VERBOSE) {
-      IMP_LOG(VERBOSE, "Particle " << ps[i]->get_name() << " controls ");
+      IMP_LOG(VERBOSE, "Particle \"" << ps[i]->get_name() << "\" controls ");
       for (unsigned int i=0; i< t.size(); ++i) {
-        IMP_LOG(VERBOSE, t[i]->get_name() << " ");
+        IMP_LOG(VERBOSE, "\""<< t[i]->get_name() << "\" ");
       }
       IMP_LOG(VERBOSE, std::endl);
     }
@@ -467,7 +468,7 @@ public:
   void discover_vertex(typename boost::graph_traits<Graph>::vertex_descriptor u,
                        const Graph& g) {
     Object *o= vm_[u];
-    std::cout << "Visiting " << o->get_name() << std::endl;
+    //std::cout << "Visiting " << o->get_name() << std::endl;
     if (pst_.find(dynamic_cast<Particle*>(o)) != pst_.end()) {
       throw AncestorException(o);
     }
@@ -478,8 +479,8 @@ public:
       = boost::source(e, g);
     typename boost::graph_traits<Graph>::vertex_descriptor t
       = boost::target(e, g);
-    std::cout << "Tree edge " << vm_[s]->get_name()
-              << "->" << vm_[t]->get_name() << std::endl;
+    /*std::cout << "Tree edge " << vm_[s]->get_name()
+      << "->" << vm_[t]->get_name() << std::endl;*/
   }
 };
 
@@ -497,7 +498,8 @@ namespace {
       boost::depth_first_visit(rg, v, av, color);
       return false;
     } catch (AncestorException e) {
-      IMP_LOG(VERBOSE, "Vertex has ancestor " << e.o->get_name() << std::endl);
+      IMP_LOG(VERBOSE, "Vertex has ancestor \"" << e.o->get_name()
+              << "\"" << std::endl);
       return true;
     }
   }
@@ -520,8 +522,8 @@ get_is_static_container(Container *c,
     }
   }
   if (cv==-1) {
-    IMP_THROW("Container " << c->get_name()
-              << " not in graph.", ValueException);
+    IMP_THROW("Container \"" << c->get_name()
+              << "\" not in graph.", ValueException);
   }
   return get_has_ancestor(dg, cv, pst);
 }
@@ -536,18 +538,19 @@ namespace {
                           Restraints &added) {
     ContainersTemp ic= r->get_input_containers();
     for (unsigned int i=0; i< ic.size(); ++i) {
-      IMP_LOG(TERSE, "Checking container " << ic[i]->get_name() << std::endl);
+      IMP_LOG(TERSE, "Checking container \"" << ic[i]->get_name()
+              << "\"" << std::endl);
       if (get_has_ancestor(dg, index.find(ic[i])->second, pst)) {
-        IMP_LOG(TERSE, "Restraint " << r->get_name()
-                << " depends on dynamic container " << ic[i]->get_name()
-                << " not decomposed." << std::endl);
+        IMP_LOG(TERSE, "Restraint \"" << r->get_name()
+                << "\" depends on dynamic container \"" << ic[i]->get_name()
+                << "\" not decomposed." << std::endl);
         return;
       }
     }
     Restraints rs= r->get_decomposition();
     if (rs.size()==0 || (rs.size() >=1 && rs[0] != r)) {
-      IMP_LOG(TERSE, "Restraint " << r->get_name()
-              << " is being decompsed into " << rs.size() << " restraints"
+      IMP_LOG(TERSE, "Restraint \"" << r->get_name()
+              << "\" is being decompsed into " << rs.size() << " restraints"
               << std::endl);
       IMP_NEW(RestraintSet, rss, (r->get_name()));
       rss->add_restraints(rs);
@@ -556,8 +559,8 @@ namespace {
       p->add_restraint(rss);
       added.push_back(rss);
     } else {
-      IMP_LOG(TERSE, "Restraint " << r->get_name()
-              << " cannot be decomposed" << std::endl);
+      IMP_LOG(TERSE, "Restraint \"" << r->get_name()
+              << "\" cannot be decomposed" << std::endl);
     }
   }
 
@@ -594,8 +597,8 @@ namespace {
                        const ParticlesTemp &optimized,
                        const ParticleStatesTable *pst,
                        core::internal::CoreClosePairContainers &staticed) {
-    IMP_LOG(TERSE, "Making container " << cpc->get_name()
-            << "static " << std::endl);
+    IMP_LOG(TERSE, "Making container \"" << cpc->get_name()
+            << "\" static " << std::endl);
     ParticleStatesList psl(optimized.size());
     unsigned int max=0;
     for (unsigned int i=0; i< optimized.size(); ++i) {

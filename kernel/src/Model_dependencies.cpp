@@ -98,8 +98,8 @@ namespace {
                           DGIndex &dgi) {
     for (It c= b; c != e; ++c) {
       DGTraits::vertex_descriptor rv= dgi.find(*c)->second;
-      IMP_LOG(VERBOSE, "Processing inputs for "
-              << (*c)->get_name() << std::endl);
+      IMP_LOG(VERBOSE, "Processing inputs for \""
+              << (*c)->get_name() << "\"" << std::endl);
       {
         ContainersTemp ct= filter((*c)->get_input_containers());
         IMP_LOG(VERBOSE, "Found input containers "
@@ -131,7 +131,7 @@ namespace {
     for (It c= b; c != e; ++c) {
       DGTraits::vertex_descriptor rv= dgi.find(*c)->second;
       IMP_LOG(VERBOSE, "Processing outputs for \""
-              << (*c)->get_name()  << std::endl);
+              << (*c)->get_name()  << "\"" << std::endl);
       {
         ContainersTemp ct= filter((*c)->get_output_containers());
         IMP_LOG(VERBOSE, "Found output containers "
@@ -211,7 +211,7 @@ namespace {
       TextOutput out=create_temporary_file();
       internal::show_as_graphviz(dg, out);
       IMP_THROW("Topological sort failed, probably due to loops in "
-                << " dependency graph. See " << out.get_name(),
+                << " dependency graph. See \"" << out.get_name() << "\"",
                 ValueException);
     }
     for (int i=sorted.size()-1; i > -1; --i) {
