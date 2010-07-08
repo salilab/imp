@@ -104,6 +104,7 @@ PropagatedData get_merged(const Subset& subset,
   exclusions.push_back(sb);
   for (unsigned int i=0; i< filters.size(); ++i) {
     state_filters.push_back(filters[i]->get_subset_filter(subset, exclusions));
+    state_filters.back()->set_was_used(true);
   }
   for (PropagatedData::ScoresIterator ita = da.scores_begin();
        ita != da.scores_end(); ++ita) {
@@ -242,7 +243,7 @@ EdgeData get_edge_data(const ParticleIndex &all,
       Subset edge_union
         = get_union(boost::get(subset_map, root),
                     boost::get(subset_map, *be.first));
-      IMP::Pointer<SubsetStates> edge_states
+      IMP::internal::OwnerPointer<SubsetStates> edge_states
         = states->get_subset_states(edge_union);
       // compute intersection set and index map in one direction
       // for each pattern of that in me, compute subset score
