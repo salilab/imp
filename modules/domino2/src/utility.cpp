@@ -80,7 +80,7 @@ public:
   void discover_vertex(typename boost::graph_traits<Graph>::vertex_descriptor u,
                        const Graph& g) {
     Object *o= vm_[u];
-    std::cout << "Visiting " << o->get_name() << std::endl;
+    //std::cout << "Visiting " << o->get_name() << std::endl;
     Particle *p=dynamic_cast<Particle*>(o);
     if (p) {
       vals_.push_back(p);
@@ -158,17 +158,23 @@ bool get_has_edge(InteractionGraph &graph,
   return false;
 }
 
-void add_edges( ParticlesTemp pt, const std::map<Particle*, int> &map,
+  void add_edges( const ParticlesTemp &ps,
+                  ParticlesTemp pt, const std::map<Particle*, int> &map,
                 Object *blame,
                 InteractionGraph &g) {
   IGEdgeMap om= boost::get(boost::edge_name, g);
   std::sort(pt.begin(), pt.end());
   pt.erase(std::unique(pt.begin(), pt.end()), pt.end());
   for (unsigned int i=0; i< pt.size(); ++i) {
+    if (map.find(pt[i]) == map.end()) continue;
     int vj=map.find(pt[i])->second;
     for (unsigned int k=0; k< i; ++k) {
+      if (map.find(pt[k]) == map.end()) continue;
       int vk= map.find(pt[k])->second;
       if (vj != vk && !get_has_edge(g, vj, vk)) {
+        IMP_LOG(VERBOSE, "Adding edge between " << ps[vj]->get_name()
+                << " and " << ps[vk]->get_name()
+                << " due to " << blame->get_name() << std::endl);
         IGEdge e;
         bool inserted;
         boost::tie(e, inserted)= boost::add_edge(vj, vk, g);
@@ -205,6 +211,10 @@ InteractionGraph get_interaction_graph(Model *m,
                            get_restraints(m->restraints_begin(),
                                           m->restraints_end(),
                                           1.0).first);
+  IMP_IF_LOG(VERBOSE) {
+    IMP_LOG(VERBOSE, "dependency graph is \n");
+    IMP::internal::show_as_graphviz(dg, std::cout);
+  }
   for (unsigned int i=0; i< ps.size(); ++i) {
     ParticlesTemp t= get_dependent_particles(ps[i], dg);
     for (unsigned int j=0; j< t.size(); ++j) {
@@ -229,12 +239,14 @@ InteractionGraph get_interaction_graph(Model *m,
   for (Model::RestraintIterator it= m->restraints_begin();
        it != m->restraints_end(); ++it) {
     ParticlesTemp pl= (*it)->get_input_particles();
-    add_edges(pl, map, *it, ret);
+    add_edges(ps, pl, map, *it, ret);
   }
   for (Model::ScoreStateIterator it= m->score_states_begin();
        it != m->score_states_end(); ++it) {
     ParticlesTemp pl= (*it)->get_input_particles();
-    add_edges(pl, map, *it, ret);
+    add_edges(ps, pl, map, *it, ret);
+    ParticlesTemp opl= (*it)->get_output_particles();
+    add_edges(ps, opl, map, *it, ret);
   }
   IMP_INTERNAL_CHECK(boost::num_vertices(ret) == ps.size(),
                      "Wrong number of vertices "
