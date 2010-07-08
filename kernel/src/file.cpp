@@ -168,7 +168,7 @@ TextOutput create_temporary_file(std::string prefix,
   filename[templ.size()+ suffix.size()]='\0';
   int fd = mkstemps(filename.get(), suffix.size());
   if (fd == -1) {
-    IMP_THROW("Unable to create temporary file",
+    IMP_THROW("Unable to create temporary file: " << filename.get(),
               IOException);
   }
   close(fd);
@@ -176,7 +176,7 @@ TextOutput create_temporary_file(std::string prefix,
   filename[templ.size()]='\0';
   int fd = mkstemp(filename.get());
   if (fd == -1) {
-    IMP_THROW("Unable to create temporary file",
+    IMP_THROW("Unable to create temporary file: " << filename.get(),
               IOException);
   }
   close(fd);
