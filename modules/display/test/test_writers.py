@@ -50,7 +50,7 @@ class TestBL(IMP.test.TestCase):
     def test_4(self):
         """Testing the chimera writer"""
         nm=self.get_tmp_file_name("test.chimera.py")
-        w=IMP.display.ChimeraWriter("hi.py")
+        w=IMP.display.ChimeraWriter()
         w.set_file_name(nm)
         e= IMP.algebra.Ellipsoid3D(IMP.algebra.Vector3D(10,10,10), 1,2,3, IMP.algebra.Rotation3D(1,0,0,0))
         w.add_geometry(IMP.display.EllipsoidGeometry(e))
