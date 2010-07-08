@@ -177,9 +177,10 @@ EdgeData get_edge_data(const ParticleIndex &all,
   IMP::internal::OwnerPointer<SubsetEvaluator> edge_eval
     = eval->get_subset_evaluator(ret.get_subset());
   IMP_IF_LOG(VERBOSE) {
-    IMP_LOG(VERBOSE, "Edge from node " << a.get_name()
-            << " to " << b.get_name()
-            << " is " << ret.get_subset().get_name() << std::endl);
+    IMP_LOG(VERBOSE, "Edge from node \"" << a.get_name()
+            << "\" to \"" << b.get_name()
+            << "\" is \"" << ret.get_subset().get_name()
+            << "\"" << std::endl);
   }
   ParticleIndex a_index= get_index(a);
   // could be done better

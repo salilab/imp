@@ -212,7 +212,7 @@ O* object_cast(I *o) {
 
 #ifndef IMP_DOXYGEN
 inline void show(std::ostream &out, Object *o) {
-  out << o->get_name();
+  out << "\"" << o->get_name() << "\"";
 }
 #endif
 

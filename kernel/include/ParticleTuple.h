@@ -72,14 +72,15 @@ public:
   IMP_COMPARISONS;
   std::string get_name() const {
     bool first=true;
-    std::string ret;
+    std::string ret="\"";
     for (unsigned int i=0; i< D; ++i) {
       if (!first) {
-        ret+= " and ";
+        ret+= "\" and \"";
         first=false;
       }
       ret+=P::operator[](i)->get_name();
     }
+    ret+="\"";
     return ret;
   }
   IMP_SHOWABLE_INLINE({
