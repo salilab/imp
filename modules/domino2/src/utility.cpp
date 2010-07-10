@@ -26,6 +26,8 @@
 #include <boost/property_map.hpp>
 #include <boost/vector_property_map.hpp>
 #endif
+#include <boost/pending/disjoint_sets.hpp>
+
 
 IMPDOMINO2_BEGIN_NAMESPACE
 
@@ -126,6 +128,7 @@ typedef boost::property_map<SubsetGraph,
                             boost::vertex_name_t>::type SGVertexMap;
 typedef boost::property_map<SubsetGraph,
                             boost::vertex_name_t>::const_type SGConstVertexMap;
+typedef boost::graph_traits<SubsetGraph> SGTraits;
 
 
 
@@ -211,10 +214,10 @@ InteractionGraph get_interaction_graph(Model *m,
                            get_restraints(m->restraints_begin(),
                                           m->restraints_end(),
                                           1.0).first);
-  IMP_IF_LOG(VERBOSE) {
+  /*IMP_IF_LOG(VERBOSE) {
     IMP_LOG(VERBOSE, "dependency graph is \n");
     IMP::internal::show_as_graphviz(dg, std::cout);
-  }
+    }*/
   for (unsigned int i=0; i< ps.size(); ++i) {
     ParticlesTemp t= get_dependent_particles(ps[i], dg);
     for (unsigned int j=0; j< t.size(); ++j) {
@@ -420,8 +423,8 @@ SubsetGraph get_junction_tree(const InteractionGraph &ig) {
       }
     }
   }
-  std::vector<CGEdge> mst(cliques.size()-1);
-  boost::kruskal_minimum_spanning_tree(cg, mst.begin());
+  std::vector<CGEdge> mst;
+  boost::kruskal_minimum_spanning_tree(cg, std::back_inserter(mst));
   SubsetGraph jt(cliques.size());
   SGVertexMap cm= boost::get(boost::vertex_name, jt);
   for (unsigned int i=0; i< cliques.size(); ++i) {
@@ -436,6 +439,31 @@ SubsetGraph get_junction_tree(const InteractionGraph &ig) {
     boost::add_edge(boost::source(mst[i], cg),
                     boost::target(mst[i], cg), jt);
   }
+  // find disjoint sets and connect them arbitrarily
+  {
+    typedef boost::vector_property_map<unsigned int> Index;
+    typedef Index Parent;
+    typedef boost::disjoint_sets<Index,Parent> UF;
+    Index index;
+    Parent parent;
+    UF uf(index, parent);
+    for (unsigned int i=0; i< cliques.size(); ++i) {
+      uf.make_set(i);
+    }
+    for (std::pair<SGTraits::edge_iterator,
+           SGTraits::edge_iterator> be= boost::edges(jt);
+         be.first != be.second; ++be.first) {
+      uf.union_set(boost::source(*be.first, jt),
+                   boost::target(*be.first, jt));
+    }
+    for (unsigned int i=1; i< cliques.size(); ++i) {
+      if (uf.find_set(i) != uf.find_set(i-1)) {
+        boost::add_edge(i,i-1, jt);
+        uf.union_set(i,i-1);
+      }
+    }
+  }
+
   /*std::cout << "JT graph is " << std::endl;
     IMP::internal::show_as_graphviz(jt, std::cout);
     {
@@ -473,15 +501,15 @@ public:
       throw AncestorException(o);
     }
   }
-  template <class Edge>
+  /*template <class Edge>
   void tree_edge(Edge e, const Graph &g) {
-    typename boost::graph_traits<Graph>::vertex_descriptor s
+    typename boost::graph_traits<Graph>::vertex_descriptor s=
       = boost::source(e, g);
     typename boost::graph_traits<Graph>::vertex_descriptor t
       = boost::target(e, g);
-    /*std::cout << "Tree edge " << vm_[s]->get_name()
-      << "->" << vm_[t]->get_name() << std::endl;*/
-  }
+    std::cout << "Tree edge " << vm_[s]->get_name()
+      << "->" << vm_[t]->get_name() << std::endl;
+      }*/
 };
 
 namespace {

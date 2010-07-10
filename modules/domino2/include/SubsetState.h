@@ -81,7 +81,7 @@ public:
   unsigned int size() const {
     return sz_;
   }
-  IMP_SHOWABLE_INLINE({
+  IMP_SHOWABLE_INLINE(SubsetState, {
       out << "[";
       for (unsigned int i=0; i< size(); ++i) {
         out << v_[i];

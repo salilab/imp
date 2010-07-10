@@ -167,6 +167,7 @@ namespace {
                                const SubsetFilterTables &sft):
     SubsetStates("BranchAndBoundSubsetStates on "+s.get_name()) {
     IMP_OBJECT_LOG;
+    IMP_LOG(TERSE, "Enumerating states for " << s << "..." << std::flush);
     std::vector<SubsetFilters> filters(s.size());
     setup_filters(s, sft, filters);
 
@@ -203,7 +204,7 @@ namespace {
       goto increment;
     }
     current_digit=0;
-    IMP_LOG(VERBOSE, "Found " << cur << std::endl);
+    //IMP_LOG(VERBOSE, "Found " << cur << std::endl);
     states_.push_back(SubsetState(cur));
     goto increment;
   increment:
@@ -223,6 +224,7 @@ namespace {
     }
     //done:
     std::sort(states_.begin(), states_.end());
+    IMP_LOG(TERSE, "found " << states_.size() << std::endl);
   }
 
 
