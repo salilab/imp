@@ -35,7 +35,7 @@ public:
   std::string get_module() const { return module_; }
 
   std::string get_version() const { return version_; }
-  IMP_SHOWABLE_INLINE({
+  IMP_SHOWABLE_INLINE(VersionInfo, {
       IMP_USAGE_CHECK(!module_.empty(),
                       "Attempting to use uninitialized version info");
       out << module_ << " " << version_;

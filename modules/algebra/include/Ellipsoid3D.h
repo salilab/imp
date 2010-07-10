@@ -41,7 +41,7 @@ public:
   const Transformation3D get_transformation() const  {
     return Transformation3D(rot_, center_);
   }
-  IMP_SHOWABLE_INLINE({
+  IMP_SHOWABLE_INLINE(Ellipsoid3D, {
       out << "(" << spaces_io(center_) << ": " << get_radius(0)
           << ", " << get_radius(1) << ", " << get_radius(2)
           << ")";

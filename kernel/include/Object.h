@@ -119,6 +119,10 @@ public:
     return oss.str();
   }
 
+  std::string __repr__() const {
+    return get_type_name() + "("+__str__()+")";
+  }
+
   void debugger_show() const {
     show(std::cout);
   }

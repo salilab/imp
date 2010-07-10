@@ -356,6 +356,9 @@ namespace swig {
     template <class SwigData>
     static T get_cpp_object(PyObject *o, SwigData st,
                             SwigData particle_st, SwigData decorator_st) {
+      if (!get_is_cpp_object(o, st, particle_st, decorator_st)) {
+        IMP_THROW("Argument not of correct type", ValueException);
+      }
       T ret;
       Helper::fill(o, st, particle_st, decorator_st, ret);
       return ret;
@@ -392,6 +395,9 @@ namespace swig {
                                          SwigData st,
                                          SwigData particle_st,
                                          SwigData decorator_st) {
+      if (!get_is_cpp_object(o, st, particle_st, decorator_st)) {
+        IMP_THROW("Argument not of correct type", ValueException);
+      }
       Intermediate im;
       Helper::fill(o, st, particle_st, decorator_st, im);
       std::pair<T,T> ret;
@@ -428,6 +434,9 @@ namespace swig {
     template <class SwigData>
     static T get_cpp_object(PyObject *o, SwigData st,
                             SwigData particle_st, SwigData decorator_st) {
+      if (!get_is_cpp_object(o, st, particle_st, decorator_st)) {
+        IMP_THROW("Argument not of correct type", ValueException);
+      }
       T ret(PySequence_Size(o));
       Helper::fill(o, st, particle_st, decorator_st, ret);
       return ret;

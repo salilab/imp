@@ -33,10 +33,10 @@ public:
   bool get_contains(const VectorD<3> &p) const;
   Plane3D  get_plane() const {return crossing_plane_;}
   SphereD<3> get_sphere() const {return SphereD<3>(sph_);}
-  void show(std::ostream &out=std::cout) const {
-    sph_.show(out);
-    crossing_plane_.show(out);
-  }
+  IMP_SHOWABLE_INLINE(SpherePatch3D,{
+      sph_.show(out);
+      crossing_plane_.show(out);
+    });
   //! Get a point which is on the boundary of the patch
   VectorD<3> get_boundary_point() const;
 protected:

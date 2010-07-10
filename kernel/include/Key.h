@@ -122,7 +122,7 @@ public:
 
   IMP_COMPARISONS_1(str_);
 
-  IMP_SHOWABLE_INLINE(out << "\"" << get_string() << "\"";);
+  IMP_SHOWABLE_INLINE(Key, out << "\"" << get_string() << "\"";);
 
   //! Make new_name an alias for old_key
   /** Afterwards
