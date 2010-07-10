@@ -6,6 +6,8 @@ files = [
          'DominoSampler.h',
          'Subset.h',
          'SubsetState.h',
+         'analysis.h',
+         'cluster_states.h',
          'domino2_macros.h',
          'particle_states.h',
          'subset_evaluators.h',
