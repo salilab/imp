@@ -225,5 +225,6 @@ namespace IMP {
 
 
 namespace IMP {
+  %template(double_pair) ::std::pair<double, double>;
   %template(DependencyGraph) ::IMP::internal::BoostDigraph< IMP::DependencyGraph, IMP::Object*>;
 }
