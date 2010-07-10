@@ -120,19 +120,36 @@ public:
 
 
 /** In addition to the information in the Clustering base class,
-    KMeansClustering stores a cluster center for each cluster.
+    PartitionalClusteringWithCenter stores a cluster center for
+    each cluster.
     The cluster center is a point in the space defined by the
     embedding.
 
     The representative for each cluster is the member whose
     location in the embedding is closest to the cluster center.
 */
-class IMPSTATISTICSEXPORT KMeansClustering: public PartitionalClustering {
+class IMPSTATISTICSEXPORT PartitionalClusteringWithCenter:
+  public PartitionalClustering {
   std::vector<Ints> clusters_;
   Ints reps_;
   std::vector<Floats> centers_;
 public:
-  KMeansClustering(const std::vector<Ints> &clusters,
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+  template <unsigned int D>
+    PartitionalClusteringWithCenter(const std::vector<Ints> &clusters,
+                     const std::vector< algebra::VectorD<D> > &centers,
+                     const Ints &reps):
+    PartitionalClustering("k-means"),
+    clusters_(clusters),
+    reps_(reps),
+    centers_(reps.size()){
+    for (unsigned int i=0; i< centers_.size(); ++i) {
+        centers_[i]= Floats(centers[i].coordinates_begin(),
+                            centers[i].coordinates_end());
+      }
+  }
+#endif
+  PartitionalClusteringWithCenter(const std::vector<Ints> &clusters,
                    const std::vector<Floats> &centers,
                    const Ints &reps): PartitionalClustering("k-means"),
                                       clusters_(clusters),
@@ -141,7 +158,7 @@ public:
   const Floats& get_cluster_center(unsigned int i) const {
     return centers_[i];
   }
-  IMP_CLUSTERING(KMeansClustering);
+  IMP_CLUSTERING(PartitionalClusteringWithCenter);
 };
 
 
@@ -150,9 +167,17 @@ public:
     These points are then clustered into k clusters. More iterations
     takes longer but produces a better clustering.
 */
-IMPSTATISTICSEXPORT KMeansClustering*
+IMPSTATISTICSEXPORT PartitionalClusteringWithCenter*
 get_lloyds_kmeans(Embedding *embedding,
                   unsigned int k, unsigned int iterations);
+
+/** Two points, \f$p_i\f$, \f$p_j\f$ are in the same cluster if
+    there is a sequence of points \f$\left(p^{ij}_{0}\dotsp^{ij}_k\right)\f$
+    such that \f$\forall l ||p^{ij}_l-p^{ij}_{l+1}|| < d\f$.
+ */
+IMPSTATISTICSEXPORT PartitionalClusteringWithCenter*
+get_connectivity_clustering(Embedding *embed,
+                            double dist);
 
 IMPSTATISTICS_END_NAMESPACE
 
