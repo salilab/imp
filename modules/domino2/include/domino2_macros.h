@@ -80,4 +80,12 @@ public:                                                         \
  IMP_OBJECT(Name)
 
 
+/** This macro declares
+    - IMP::domino2::DiscreteSampler::do_get_sample_states()
+*/
+#define IMP_DISCRETE_SAMPLER(Name)                              \
+  public:                                                       \
+  SubsetStatesList do_get_sample_states(const Subset &known) const; \
+  IMP_OBJECT(Name)
+
 #endif  /* IMPDOMINO2_MACROS_H */
