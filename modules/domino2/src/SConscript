@@ -5,6 +5,7 @@ files = [
          'DiscreteSampler.cpp',
          'DominoSampler.cpp',
          'Subset.cpp',
+         'analysis.cpp',
          'particle_states.cpp',
          'subset_evaluators.cpp',
          'subset_filters.cpp',

@@ -39,6 +39,7 @@ IMP_SWIG_VALUE(IMP::domino2, SubsetState, SubsetStatesList);
 %include "IMP/domino2/DominoSampler.h"
 %include "IMP/domino2/BranchAndBoundSampler.h"
 %include "IMP/domino2/utility.h"
+%include "IMP/domino2/analysis.h"
 
 
 %pythoncode %{
