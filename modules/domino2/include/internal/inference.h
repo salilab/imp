@@ -53,7 +53,7 @@ public:
   unsigned int size() const {
     return v_.size();
   }
-  IMP_SHOWABLE_INLINE({
+  IMP_SHOWABLE_INLINE(IncompleteStates, {
       out << "[";
       for (unsigned int i=0; i< size(); ++i) {
         if (v_[i] >= 0) out << v_[i];

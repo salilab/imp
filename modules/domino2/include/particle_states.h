@@ -72,6 +72,9 @@ public:
   void set_particle_states(Particle *p, ParticleStates *e) {
     IMP_USAGE_CHECK(enumerators_.find(p) == enumerators_.end(),
                     "Enumerator already set for particle " << p->get_name());
+    IMP_USAGE_CHECK(e->get_number_of_states() >0,
+                    "Cannot have 0 states for a particle: \""
+                    << p->get_name() << "\"\n");
     enumerators_[p]=e;
   }
 #endif

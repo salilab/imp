@@ -14,7 +14,7 @@ IMPDOMINO2_BEGIN_NAMESPACE
 void Subset::show(std::ostream &out) const {
   out << "[";
   for (unsigned int i=0; i< size(); ++i) {
-    out << ps_[i]->get_name() << " ";
+    out << "\"" <<  ps_[i]->get_name() << "\" ";
   }
   out << "]";
 }

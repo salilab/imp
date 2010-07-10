@@ -176,11 +176,11 @@ EdgeData get_edge_data(const ParticleIndex &all,
   ret.set_subset(get_intersection(a,b));
   IMP::internal::OwnerPointer<SubsetEvaluator> edge_eval
     = eval->get_subset_evaluator(ret.get_subset());
-  IMP_IF_LOG(VERBOSE) {
-    IMP_LOG(VERBOSE, "Edge from node \"" << a.get_name()
+  IMP_IF_LOG(TERSE) {
+    IMP_LOG(TERSE, "Edge from node \"" << a.get_name()
             << "\" to \"" << b.get_name()
             << "\" is \"" << ret.get_subset().get_name()
-            << "\"" << std::endl);
+            << "\"");
   }
   ParticleIndex a_index= get_index(a);
   // could be done better
@@ -200,7 +200,7 @@ EdgeData get_edge_data(const ParticleIndex &all,
       ret.set_score(es, score);
     }
   }
-  IMP_LOG(VERBOSE,"Data is:\n" << ret << std::endl);
+  IMP_LOG(VERBOSE," got is:\n" << ret << std::endl);
   return ret;
 }
 
@@ -219,8 +219,8 @@ EdgeData get_edge_data(const ParticleIndex &all,
     Subset s= boost::get(subset_map, root);
     const NodeData nd= get_node_data(s, eval, states,
                                      max_score);
-    IMP_LOG(VERBOSE, "For node " << root
-            << " local data is:\n" << nd << std::endl);
+    /*IMP_LOG(VERBOSE, "For node " << root
+      << " local data is:\n" << nd << std::endl);*/
     /*double local_min_score=0;
     for (NodeData::ScoresIterator it= nd.scores.begin();
          it != nd.scores.end(); ++it) {
@@ -228,7 +228,7 @@ EdgeData get_edge_data(const ParticleIndex &all,
       }*/
     PropagatedData pd= get_propagated_data(all_index, subset_map[root], nd);
     if (root==parent) {
-      IMP_LOG(VERBOSE, "For root " <<root
+      IMP_LOG(VERBOSE, "For root " <<boost::get(subset_map, root)
               << " data is:\n" << pd << std::endl);
     }
     ParticleIndex root_index= get_index(subset_map[root]);
@@ -254,11 +254,11 @@ EdgeData get_edge_data(const ParticleIndex &all,
         = get_best_conformations_internal(jt, *be.first, root,
                                           all_index, eval, filters,
                                           states, max_score);
-      IMP_LOG(VERBOSE, "For child " << *be.first
-              << " returned data is:\n" << cpd << std::endl);
+      /*IMP_LOG(VERBOSE, "For child " << *be.first
+        << " returned data is:\n" << cpd << std::endl);*/
       pd= get_merged(edge_union, edge_states, s, cs, pd, cpd,
                      all_index, ed, filters, max_score);
-      IMP_LOG(VERBOSE, "For child " << *be.first
+      IMP_LOG(VERBOSE, "For child " << boost::get(subset_map, *be.first)
               << " merged data is:\n" << pd << std::endl);
     }
     return pd;

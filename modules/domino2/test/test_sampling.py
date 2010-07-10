@@ -11,7 +11,7 @@ import time
 
 class DOMINOTests(IMP.test.TestCase):
 
-    def _test_global_min2(self):
+    def test_global_min2(self):
         """Test sampling"""
         m= IMP.Model()
         m.set_log_level(IMP.SILENT)
