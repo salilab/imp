@@ -29,7 +29,7 @@ class IMPDOMINO2EXPORT DominoSampler : public DiscreteSampler
  public:
   DominoSampler(Model *m);
   DominoSampler(Model*m, ParticleStatesTable *pst);
-  IMP_SAMPLER(DominoSampler);
+  IMP_DISCRETE_SAMPLER(DominoSampler);
 };
 
 

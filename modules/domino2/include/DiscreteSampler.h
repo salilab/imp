@@ -57,6 +57,9 @@ class IMPDOMINO2EXPORT DiscreteSampler : public Sampler
   SubsetStatesTable*
     get_subset_states_table_to_use(const SubsetFilterTables &sfts) const;
 #endif
+  ConfigurationSet* do_sample() const;
+ protected:
+  virtual SubsetStatesList do_get_sample_states(const Subset& all) const=0;
 public:
   DiscreteSampler(Model*m, ParticleStatesTable *pst, std::string name);
   /** Particle states can be set either using this method,
@@ -67,6 +70,14 @@ public:
   void set_particle_states(Particle *p, ParticleStates *se) {
     pst_->set_particle_states(p, se);
   }
+
+  /** Return the SubsetState objects describing the subsets fitting
+      the description.
+
+     \note At the moment, Subset must be equal to
+     ParticleStatesTable::get_particles().
+   */
+  SubsetStatesList get_sample_states(const Subset &s) const;
 
   /** \name Advanced
       Default values are provided, you only need to replace these

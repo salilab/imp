@@ -48,11 +48,10 @@ namespace {
   }
 }
 
-ConfigurationSet *DominoSampler::do_sample() const {
-  Pointer<ConfigurationSet> ret= new ConfigurationSet(get_model());
-  Subset known_particles(get_particle_states_table()->get_particles(), true);
+SubsetStatesList DominoSampler
+::do_get_sample_states(const Subset &known_particles) const {
   IMP_LOG(TERSE, "Sampling with " << known_particles.size()
-          << " particles" << std::endl);
+          << " particles as " << known_particles << std::endl);
   ParticlesTemp pt(known_particles.begin(), known_particles.end());
   InteractionGraph ig= get_interaction_graph(get_model(),
                                              pt);
@@ -78,31 +77,14 @@ ConfigurationSet *DominoSampler::do_sample() const {
   IMP::internal::OwnerPointer<SubsetStatesTable> sst
     = DiscreteSampler::get_subset_states_table_to_use(sfts);
 
-  std::vector<SubsetState> final_solutions
+  SubsetStatesList final_solutions
     = get_solutions(jt, known_particles,
                     get_particle_states_table(),
                     sst,
                     set,
                     sfts,
                     get_maximum_score());
-
-  for (unsigned int i=0; i< final_solutions.size(); ++i) {
-    IMP_LOG(TERSE, "Solutions is " << final_solutions[i] << std::endl);
-    IMP_INTERNAL_CHECK(final_solutions[i].size()
-                       == known_particles.size(),
-                       "Number of particles doesn't match");
-    ret->load_configuration(-1);
-    for (unsigned int j=0; j< known_particles.size(); ++j) {
-      Particle *p=known_particles[j];
-      Pointer<ParticleStates> ps
-        =get_particle_states_table()->get_particle_states(p);
-      ps->load_state(final_solutions[i][j], p);
-    }
-    if (get_is_good_configuration()) {
-      ret->save_configuration();
-    }
-  }
-  return ret.release();
+  return final_solutions;
 }
 
 void DominoSampler::do_show(std::ostream &out) const {

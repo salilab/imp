@@ -68,4 +68,38 @@ DiscreteSampler
 }
 
 
+SubsetStatesList DiscreteSampler
+::get_sample_states(const Subset &known_particles) const {
+  set_was_used(true);
+  return do_get_sample_states(known_particles);
+}
+
+ConfigurationSet *DiscreteSampler::do_sample() const {
+  Pointer<ConfigurationSet> ret= new ConfigurationSet(get_model());
+  ret->set_log_level(SILENT);
+  Subset known_particles(get_particle_states_table()->get_particles(), true);
+  SubsetStatesList final_solutions= do_get_sample_states(known_particles);
+  for (unsigned int i=0; i< final_solutions.size(); ++i) {
+    //IMP_LOG(TERSE, "Solution is " << final_solutions[i] << std::endl);
+    IMP_INTERNAL_CHECK(final_solutions[i].size()
+                       == known_particles.size(),
+                       "Number of particles doesn't match");
+    ret->load_configuration(-1);
+    for (unsigned int j=0; j< known_particles.size(); ++j) {
+      Particle *p=known_particles[j];
+      Pointer<ParticleStates> ps
+        =get_particle_states_table()->get_particle_states(p);
+      ps->load_state(final_solutions[i][j], p);
+    }
+    if (get_is_good_configuration()) {
+      ret->save_configuration();
+    } else {
+      IMP_LOG(TERSE, "Rejected " << final_solutions[i] << std::endl);
+    }
+  }
+  return ret.release();
+}
+
+
+
 IMPDOMINO2_END_NAMESPACE
