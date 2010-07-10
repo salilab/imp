@@ -10,6 +10,15 @@
 #include <IMP/statistics/KMData.h>
 #include <IMP/statistics/KMTerminationCondition.h>
 #include <IMP/statistics/KMLocalSearchLloyd.h>
+#include <IMP/algebra/vector_search.h>
+#if BOOST_VERSION > 103900
+#include <boost/property_map/property_map.hpp>
+#else
+#include <boost/property_map.hpp>
+#include <boost/vector_property_map.hpp>
+#endif
+#include <boost/pending/disjoint_sets.hpp>
+
 
 IMPSTATISTICS_BEGIN_NAMESPACE
 
@@ -112,25 +121,26 @@ void HighDensityEmbedding::do_show(std::ostream &out) const {
 
 
 
-unsigned int KMeansClustering::get_number_of_clusters() const {
+unsigned int PartitionalClusteringWithCenter::get_number_of_clusters() const {
   IMP_CHECK_OBJECT(this);
   return clusters_.size();
 }
-const Ints&KMeansClustering::get_cluster(unsigned int i) const {
+const Ints&PartitionalClusteringWithCenter::get_cluster(unsigned int i) const {
   IMP_CHECK_OBJECT(this);
   IMP_USAGE_CHECK(i < get_number_of_clusters(),
                       "There are only " << get_number_of_clusters()
                       << " clusters. Not " << i);
   return clusters_[i];
 }
-int KMeansClustering::get_cluster_representative(unsigned int i) const {
+int PartitionalClusteringWithCenter
+::get_cluster_representative(unsigned int i) const {
   IMP_CHECK_OBJECT(this);
   IMP_USAGE_CHECK(i < get_number_of_clusters(),
                       "There are only " << get_number_of_clusters()
                       << " clusters. Not " << i);
   return reps_[i];
 }
-void KMeansClustering::do_show(std::ostream &out) const {
+void PartitionalClusteringWithCenter::do_show(std::ostream &out) const {
   out << centers_.size() << " centers." << std::endl;
 }
 
@@ -148,8 +158,9 @@ namespace {
 
 
 
-KMeansClustering* get_lloyds_kmeans(const Ints &names, Embedding *metric,
-                                    unsigned int k, unsigned int iterations) {
+PartitionalClusteringWithCenter*
+get_lloyds_kmeans(const Ints &names, Embedding *metric,
+                  unsigned int k, unsigned int iterations) {
   metric->set_was_used(true);
   IMP_USAGE_CHECK(k < iterations,
                   "You probably switched the k and iterations parameters."
@@ -211,13 +222,14 @@ KMeansClustering* get_lloyds_kmeans(const Ints &names, Embedding *metric,
     reps[i]=names[c];
   }
 
-  KMeansClustering *cl= new KMeansClustering(clusters, centers, reps);
+  PartitionalClusteringWithCenter *cl
+    = new PartitionalClusteringWithCenter(clusters, centers, reps);
   cl->set_was_used(true);
   return cl;
 }
 
 
-KMeansClustering* get_lloyds_kmeans(Embedding *metric,
+PartitionalClusteringWithCenter* get_lloyds_kmeans(Embedding *metric,
                                     unsigned int k, unsigned int iterations) {
   Ints names(metric->get_number_of_points());
   for (unsigned int i=0; i< names.size(); ++i) {
@@ -226,5 +238,64 @@ KMeansClustering* get_lloyds_kmeans(Embedding *metric,
   return get_lloyds_kmeans(names, metric, k, iterations);
 }
 
+
+PartitionalClusteringWithCenter*
+get_connectivity_clustering(Embedding *embed,
+                            double dist) {
+  IMP_USAGE_CHECK(embed->get_number_of_points() >0,
+                  "There most be a point to clustering");
+  IMP_USAGE_CHECK(embed->get_point(0).size() ==3,
+                  "Can currently only use connectivity clustering in 3D.");
+  algebra::Vector3Ds vs(embed->get_number_of_points());
+  for (unsigned int i=0; i< vs.size(); ++i) {
+    Floats fs= embed->get_point(i);
+    vs[i]= algebra::Vector3D(fs.begin(), fs.end());
+  }
+  algebra::NearestNeighborD<3> nn(vs.begin(), vs.end(), .1);
+  typedef boost::vector_property_map<unsigned int> Index;
+  typedef Index Parent;
+  typedef boost::disjoint_sets<Index,Parent> UF;
+  Index id;
+  Parent pt;
+  UF uf(id, pt);
+  for (unsigned int i=0; i< vs.size(); ++i) {
+    uf.make_set(i);
+  }
+  for (unsigned int i=0; i< vs.size(); ++i) {
+    Ints ns= nn.get_in_ball(i, dist);
+    for (unsigned int j=0; j < ns.size(); ++j) {
+      //std::cout << "Unioning " << i << " and " << ns[j] << std::endl;
+      uf.union_set(static_cast<int>(i), ns[j]);
+    }
+  }
+  std::map<int,int> cluster_map;
+  Ints reps;
+  std::vector<Ints> clusters;
+  algebra::Vector3Ds centers;
+  for (unsigned int i=0; i < vs.size(); ++i) {
+    int p= uf.find_set(i);
+    if (cluster_map.find(p) == cluster_map.end()) {
+      cluster_map[p]= clusters.size();
+      clusters.push_back(Ints());
+      centers.push_back(algebra::get_zero_vector_d<3>());
+      reps.push_back(i);
+    }
+    int ci= cluster_map.find(p)->second;
+    clusters[ci].push_back(i);
+    centers[ci] += vs[i];
+  }
+  for (unsigned int i=0; i< clusters.size(); ++i) {
+    centers[i]/= clusters[i].size();
+    double md=std::numeric_limits<double>::max();
+    for (unsigned int j=0; j < clusters[i].size(); ++j) {
+      double d= get_distance(centers[i], vs[clusters[i][j]]);
+      if (d < md) {
+        md=d;
+        reps[i]=clusters[i][j];
+      }
+    }
+  }
+  return new PartitionalClusteringWithCenter(clusters, centers, reps);
+}
 
 IMPSTATISTICS_END_NAMESPACE

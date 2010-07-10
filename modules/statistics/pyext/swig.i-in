@@ -1,7 +1,7 @@
 /* Wrap our own classes */
 
 IMP_SWIG_OBJECT(IMP::statistics, PartitionalClustering, PartitionalClusterings);
-IMP_SWIG_OBJECT(IMP::statistics, KMeansClustering, KMeansClusterings);
+IMP_SWIG_OBJECT(IMP::statistics, PartitionalClusteringWithCenter, PartitionalClusteringWithCenters);
 IMP_SWIG_OBJECT(IMP::statistics, Embedding, Embeddings);
 
 %include "IMP/statistics/statistics_macros.h"
