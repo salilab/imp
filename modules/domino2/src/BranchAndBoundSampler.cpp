@@ -28,33 +28,21 @@ BranchAndBoundSampler::BranchAndBoundSampler(Model *m):
 
 
 
-ConfigurationSet *BranchAndBoundSampler::do_sample() const {
+SubsetStatesList BranchAndBoundSampler
+::do_get_sample_states(const Subset &s) const {
   IMP::internal::OwnerPointer<SubsetEvaluatorTable> set
     = DiscreteSampler::get_subset_evaluator_table_to_use();
   SubsetFilterTables sfts
     = DiscreteSampler::get_subset_filter_tables_to_use(set);
   IMP::internal::OwnerPointer<SubsetStatesTable> sst
     = DiscreteSampler::get_subset_states_table_to_use(sfts);
-
-  const ParticlesTemp pt= get_particle_states_table()->get_particles();
-  const Subset s(pt);
   IMP::internal::OwnerPointer<const SubsetStates> ss
     = sst->get_subset_states(s);
-  Pointer<ConfigurationSet> ret= new ConfigurationSet(get_model());
-  for (unsigned int i=0; i< ss->get_number_of_states(); ++i) {
-    SubsetState scur= ss->get_state(i);
-    ret->load_configuration(-1);
-    for (unsigned int j=0; j< pt.size(); ++j) {
-      Particle *p=pt[j];
-      Pointer<ParticleStates> ps
-        =get_particle_states_table()->get_particle_states(p);
-      ps->load_state(scur[j], p);
-    }
-    if (get_is_good_configuration()) {
-      ret->save_configuration();
-    }
+  SubsetStatesList ret(ss->get_number_of_states());
+  for (unsigned int i=0; i< ret.size(); ++i) {
+    ret[i]= ss->get_state(i);
   }
-  return ret.release();
+  return ret;
 }
 
 void BranchAndBoundSampler::do_show(std::ostream &out) const {

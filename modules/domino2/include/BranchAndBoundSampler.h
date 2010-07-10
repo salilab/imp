@@ -31,7 +31,7 @@ class IMPDOMINO2EXPORT BranchAndBoundSampler : public DiscreteSampler
 public:
   BranchAndBoundSampler(Model *m);
   BranchAndBoundSampler(Model*m, ParticleStatesTable *pst);
-  IMP_SAMPLER(BranchAndBoundSampler);
+  IMP_DISCRETE_SAMPLER(BranchAndBoundSampler);
 };
 
 
