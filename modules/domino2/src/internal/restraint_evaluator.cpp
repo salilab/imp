@@ -27,9 +27,11 @@ ModelData::ModelData(Model *m, const DependencyGraph &dg,
   for (Model::RestraintIterator rit= m_->restraints_begin();
        rit != m_->restraints_end(); ++rit) {
     ParticlesTemp ip= (*rit)->get_input_particles();
-    ParticlesTemp oip(ip.size());
+    ParticlesTemp oip;
     for (unsigned int i=0; i< ip.size(); ++i) {
-      oip[i]= idm[ip[i]];
+      if (idm.find(ip[i]) != idm.end()) {
+        oip.push_back(idm.find(ip[i])->second);
+      }
     }
     std::sort(oip.begin(), oip.end());
     oip.erase(std::unique(oip.begin(), oip.end()), oip.end());
@@ -98,23 +100,31 @@ double SubsetData::get_score(const SubsetState &state) const {
     for (unsigned int j=0; j< ss.size(); ++j) {
       ps[j]= s_[indices_[i][j]];
     }
-    double ms=md_->rdata_[ris_[i]].get_score(md_->pst_,
+    double ms=md_->rdata_[ris_[i]].get_score<false>(md_->pst_,
                                              ps, ss);
     score+= ms;
-    /*std::cout << "for " << ss << " on " << i << " got " << ms << std::endl;
-    for (unsigned int j=0; j< indices_[i].size(); ++j) {
-      std::cout << indices_[i][j] << " ";
-    }
-    std::cout << std::endl;*/
-    if (score >= std::numeric_limits<double>::max()) {
-      return std::numeric_limits<double>::max();
-    }
   }
   return score;
 }
 
 bool SubsetData::get_is_ok(const SubsetState &state) const {
-  return get_score(state) < std::numeric_limits<double>::max();
+  for (unsigned int i=0; i< ris_.size(); ++i) {
+    Ints ssi(indices_[i].size());
+    for (unsigned int j=0; j< ssi.size();++j) {
+      ssi[j]= state[indices_[i][j]];
+    }
+    SubsetState ss(ssi);
+    ParticlesTemp ps(ss.size());
+    for (unsigned int j=0; j< ss.size(); ++j) {
+      ps[j]= s_[indices_[i][j]];
+    }
+    double ms=md_->rdata_[ris_[i]].get_score<true>(md_->pst_,
+                                                   ps, ss);
+    if (ms >= std::numeric_limits<double>::max()) {
+      return false;
+    }
+  }
+  return true;
 }
 
 IMPDOMINO2_END_INTERNAL_NAMESPACE

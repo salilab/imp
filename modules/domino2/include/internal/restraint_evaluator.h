@@ -30,12 +30,18 @@ class RestraintData {
   Pointer<Restraint> r_;
   double weight_;
   double max_;
+  mutable int filter_attempts_;
+  mutable int filter_passes_;
 public:
   RestraintData(Restraint *r,
                 double weight): r_(r), weight_(weight),
-                                max_(std::numeric_limits<double>::max()){}
+                                max_(std::numeric_limits<double>::max()){
+    filter_attempts_=0;
+    filter_passes_=0;
+  }
   void set_max(double max) { max_=max;}
   Restraint *get_restraint() const {return r_;}
+  template <bool Filter>
   double get_score(ParticleStatesTable *pst,
                    const ParticlesTemp &ps,
                    const SubsetState &state) const {
@@ -50,14 +56,22 @@ public:
         pst->get_particle_states(ps[i])->load_state(state[i], ps[i]);
       }
       double score= r_->evaluate(false)*weight_;
-      if (score >max_) {
-        score=std::numeric_limits<double>::max();
-      }
       scores_[state]=score;
+      if (Filter) {
+        ++filter_attempts_;
+        if (score >max_) {
+          score=std::numeric_limits<double>::max();
+        } else {
+          ++filter_passes_;
+        }
+      }
       /*std::cout << "Computed score for " << r_->get_name()
         << " on " << state << "= " << score << std::endl;*/
       return score;
     }
+  }
+  std::pair<int,int> get_statistics() const {
+    return std::make_pair(filter_attempts_, filter_passes_);
   }
 };
 
@@ -78,7 +92,7 @@ public:
   bool get_is_ok(const SubsetState &state) const;
 };
 
-class IMPDOMINO2EXPORT ModelData {
+struct IMPDOMINO2EXPORT ModelData {
   struct SubsetID {
     const Subset s_;
     const Subsets excluded_;
@@ -98,13 +112,12 @@ class IMPDOMINO2EXPORT ModelData {
       }
     }
   };
-  friend class SubsetData;
   mutable Pointer<Model> m_;
   std::vector<RestraintData> rdata_;
   std::vector<ParticlesTemp> dependencies_;
   Pointer<ParticleStatesTable> pst_;
   mutable std::map<const SubsetID, SubsetData> sdata_;
-public:
+
   ModelData(Model *m, const DependencyGraph &dg,
             ParticleStatesTable* pst);
   void set_sampler(const Sampler *s);

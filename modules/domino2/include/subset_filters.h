@@ -62,7 +62,13 @@ IMP_OBJECTS(SubsetFilterTable, SubsetFilterTables);
  */
 class IMPDOMINO2EXPORT RestraintScoreSubsetFilterTable:
   public SubsetFilterTable {
-  Pointer<ModelSubsetEvaluatorTable> mset_;
+  struct StatsPrinter:public Pointer<ModelSubsetEvaluatorTable>{
+  public:
+    StatsPrinter(ModelSubsetEvaluatorTable *mset):
+      Pointer<ModelSubsetEvaluatorTable>(mset){}
+    ~StatsPrinter();
+  };
+  StatsPrinter mset_;
   double max_;
  public:
   RestraintScoreSubsetFilterTable(ModelSubsetEvaluatorTable *eval,

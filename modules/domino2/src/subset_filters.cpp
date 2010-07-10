@@ -48,6 +48,20 @@ namespace {
   void RestraintScoreSubsetFilter::do_show(std::ostream &out) const{}
 }
 
+RestraintScoreSubsetFilterTable::StatsPrinter::~StatsPrinter() {
+  IMP_IF_LOG(TERSE) {
+    IMP_LOG(TERSE, "Resraint filtration statistics (attempts, passes):\n");
+    for (unsigned int i=0; i< get()->data_.rdata_.size(); ++i) {
+      std::pair<int,int> stat= get()->data_.rdata_[i].get_statistics();
+      if (stat.first >0) {
+        IMP_LOG(TERSE, "  \""
+                << get()->data_.rdata_[i].get_restraint()->get_name()
+                << "\" " << stat.first << " " << stat.second << std::endl);
+      }
+    }
+  }
+}
+
 
 RestraintScoreSubsetFilterTable
 ::RestraintScoreSubsetFilterTable(ModelSubsetEvaluatorTable *eval,
