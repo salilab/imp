@@ -486,7 +486,7 @@ static Name decorate_particle(::IMP::Particle *p) {                     \
   }                                                                     \
   return Name(p);                                                       \
 }                                                                       \
-IMP_SHOWABLE
+IMP_SHOWABLE(Name)
 
 
 //! Define the basic things needed by a Decorator which has a traits object.
@@ -522,7 +522,7 @@ public:                                                                 \
    if (!particle_is_instance(p, tr)) return Name();                     \
    else return Name(p, tr);                                             \
  }                                                                      \
- IMP_SHOWABLE;                                                          \
+ IMP_SHOWABLE(Name);                                                    \
  const TraitsType &get_##traits_name() const {                          \
    return get_decorator_traits();                                       \
  }                                                                      \
@@ -867,15 +867,18 @@ protection:                                                             \
     Do not use with IMP::Object objects as they have their
     own show mechanism.
 */
-#define IMP_SHOWABLE
+#define IMP_SHOWABLE(Name)
 #else
-#define IMP_SHOWABLE                            \
-  void show(std::ostream &out=std::cout) const; \
-  std::string __str__() const {                 \
-    std::ostringstream out;                     \
-    show(out);                                  \
-    return out.str();                           \
-  }                                             \
+#define IMP_SHOWABLE(Name)                              \
+  void show(std::ostream &out=std::cout) const;         \
+  std::string __str__() const {                         \
+    std::ostringstream out;                             \
+    show(out);                                          \
+    return out.str();                                   \
+  }                                                     \
+  std::string __repr__() const {                        \
+    return std::string(#Name) + "("+__str__()+")";      \
+  }                                                     \
   IMP_REQUIRE_SEMICOLON_CLASS(showable)
 #endif
 
@@ -890,17 +893,20 @@ protection:                                                             \
 
     See also IMP_SHOWABLE_INLINE()
 */
-#define IMP_SHOWABLE_INLINE(how_to_show)
+#define IMP_SHOWABLE_INLINE(Name, how_to_show)
 #else
-#define IMP_SHOWABLE_INLINE(how_to_show)        \
-  void show(std::ostream &out=std::cout) const{ \
-    how_to_show;                                \
-  }                                             \
-  std::string __str__() const {                 \
-    std::ostringstream out;                     \
-    show(out);                                  \
-    return out.str();                           \
-  }                                             \
+#define IMP_SHOWABLE_INLINE(Name, how_to_show)          \
+  void show(std::ostream &out=std::cout) const{         \
+    how_to_show;                                        \
+  }                                                     \
+  std::string __str__() const {                         \
+    std::ostringstream out;                             \
+    show(out);                                          \
+    return out.str();                                   \
+  }                                                     \
+  std::string __repr__() const {                        \
+    return std::string(#Name) + "("+__str__()+")";      \
+  }                                                     \
   IMP_REQUIRE_SEMICOLON_CLASS(showable)
 #endif
 

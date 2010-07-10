@@ -76,7 +76,7 @@ public:
   }
   const VectorD<3>& get_translation()const{return trans_;}
 
-  IMP_SHOWABLE_INLINE({
+  IMP_SHOWABLE_INLINE(Transformation3D, {
       rot_.show(out);
       out<<" || "<<trans_;
     }

@@ -116,7 +116,7 @@ public:
     return get_contains(bb.get_corner(0)) && get_contains(bb.get_corner(1));
   }
 
-  IMP_SHOWABLE_INLINE(out << b_[0] << ": " << b_[1]);
+  IMP_SHOWABLE_INLINE(BoundingBoxD, out << b_[0] << ": " << b_[1]);
 
 private:
   VectorD<D> b_[2];

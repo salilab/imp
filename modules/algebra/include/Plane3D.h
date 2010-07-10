@@ -35,7 +35,7 @@ public:
    */
   bool get_is_below(const VectorD<3> &p) const;
   /** @} */
-  IMP_SHOWABLE;
+  IMP_SHOWABLE(Plane3D);
 
   //! Return the plane with the opposite normal
   Plane3D get_opposite() const {

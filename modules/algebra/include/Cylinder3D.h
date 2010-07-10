@@ -28,7 +28,8 @@ class IMPALGEBRAEXPORT Cylinder3D {
   const Segment3D& get_segment() const {
     return s_;
   }
-  IMP_SHOWABLE_INLINE({out << s_ << ": " << radius_;});
+  IMP_SHOWABLE_INLINE(Cylinder3D,
+                      {out << s_ << ": " << radius_;});
 
  private:
   Segment3D s_;

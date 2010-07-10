@@ -150,7 +150,7 @@ class IMPALGEBRAEXPORT Rotation3D {
     return get_rotated(v);
   }
 
-  IMP_SHOWABLE_INLINE({out << v_[0] << " " << v_[1]<< " " <<v_[2]
+  IMP_SHOWABLE_INLINE(Rotation3D, {out << v_[0] << " " << v_[1]<< " " <<v_[2]
                            << " " <<v_[3];});
 
   //! Return the rotation which undoes this rotation.
@@ -381,7 +381,8 @@ public:
   double get_psi() const {
     return v_[2];
   }
-  IMP_SHOWABLE_INLINE({out << v_[0] << " " << v_[1]
+  IMP_SHOWABLE_INLINE(FixedZYZ,
+                      {out << v_[0] << " " << v_[1]
                            << " " << v_[2];});
 };
 
@@ -406,7 +407,7 @@ public:
   double get_z() const {
     return v_[2];
   }
-  IMP_SHOWABLE_INLINE({
+  IMP_SHOWABLE_INLINE(FixedXYZ, {
       out << v_[0] << " " << v_[1] << " " << v_[2];
     });
 };

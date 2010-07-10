@@ -83,7 +83,7 @@ public:
     ret+="\"";
     return ret;
   }
-  IMP_SHOWABLE_INLINE({
+  IMP_SHOWABLE_INLINE(ParticleTuple, {
       out << get_name();
     });
 #if defined(IMP_DOXYGEN) || defined(SWIG)

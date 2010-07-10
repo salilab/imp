@@ -47,7 +47,7 @@ public:
   bool get_contains(const VectorD<D> &p) const {
     return ((p-center_).get_squared_magnitude() <= square(radius_));
   }
-  IMP_SHOWABLE_INLINE({
+  IMP_SHOWABLE_INLINE(SphereD, {
       out << "(" << spaces_io(center_) << ": " << get_radius()
           << ")";
     });
