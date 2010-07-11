@@ -47,13 +47,20 @@ class SimplifyTests(IMP.test.TestCase):
         num_res= len(IMP.atom.get_by_type(chains[0],IMP.atom.RESIDUE_TYPE))
         start=0
         step=30
-        while start < num_res:
-            segs.append((start,min(start+step,num_res-1)))
+        while start <= num_res:
+            segs.append((start,min(start+step,num_res+1)))
             start=start+step
             print segs[-1]
         print start
         mh_simp= IMP.atom.create_simplified_along_backbone(IMP.atom.Chain(chains[0].get_particle()),segs)
         IMP.atom.show_molecular_hierarchy(mh_simp)
+        print segs
+        IMP.atom.show_molecular_hierarchy(mh_simp)
+        #for l in IMP.core.get_leaves(mh_simp):
+        ##    print "leaf"
+        #    IMP.atom.show_molecular_hierarchy(l)
+        #    f= IMP.atom.Fragment(l)
+        #    print f.get_residue_indexes()
         self.assertEqual(len(segs),
                          len(IMP.core.get_leaves(mh_simp)))
 
