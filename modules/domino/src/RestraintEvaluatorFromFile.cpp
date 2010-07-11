@@ -11,7 +11,7 @@ IMPDOMINO_BEGIN_NAMESPACE
 
 struct sort_by_name {
   bool operator() (Particle *p1,Particle *p2) {
-    return (p1->get_name()<p2->get_name());}
+    return (p1->get_value(node_name_key())<p2->get_value(node_name_key()));}
 } p_sort;
 
 
@@ -82,8 +82,8 @@ void read_combinations(const std::string &filename, Combinations *combs,
       "the number of particles in the file does not corresponde to the "
       <<"number of input particles"<<std::endl);
   for(unsigned int i=0;i<ps_sorted.size();i++){
-    IMP_INTERNAL_CHECK(ps_sorted[i]->get_name()==split_vec[i],
-                       "wrong particle name:"<<ps_sorted[i]->get_name()
+    IMP_INTERNAL_CHECK(ps_sorted[i]->get_value(node_name_key())==split_vec[i],
+            "wrong particle name:"<<ps_sorted[i]->get_value(node_name_key())
            <<":"<<split_vec[i]<<":"<<std::endl);
   }
   CombState* calc_state;
@@ -115,7 +115,6 @@ void RestraintEvaluatorFromFile::calc_scores(const Combinations &comb_states,
                                              it != to_sort_ps.end(); it++) {
     sorted_ps.push_back(it->second);
   }
-
   Combinations read_combs;
   IMP_IF_LOG(TERSE) {
     IMP_LOG(TERSE,"start calculating scores from file:"
