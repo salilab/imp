@@ -103,6 +103,10 @@ class IMPDOMINO2EXPORT Subset {
 IMP_VALUES(Subset, Subsets);
 IMP_OUTPUT_OPERATOR(Subset);
 
+inline std::size_t hash_value(const Subset &s) {
+  return boost::hash_range(s.begin(), s.end());
+}
+
 IMPDOMINO2_END_NAMESPACE
 
 #endif  /* IMPDOMINO2_SUBSET_H */
