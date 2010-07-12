@@ -31,6 +31,7 @@ files = [
          'Harmonic.h',
          'HarmonicLowerBound.h',
          'HarmonicUpperBound.h',
+         'HarmonicWell.h',
          'Hierarchy.h',
          'IncrementalBallMover.h',
          'LeavesRefiner.h',
