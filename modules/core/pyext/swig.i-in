@@ -33,6 +33,7 @@ IMP_SWIG_OBJECT( IMP::core, ExcludedVolumeRestraint, ExcludedVolumeRestraints);
 IMP_SWIG_OBJECT( IMP::core, FixedRefiner, FixedRefiners);
 IMP_SWIG_OBJECT( IMP::core, GridClosePairsFinder, GridClosePairsFinders);
 IMP_SWIG_OBJECT( IMP::core, Harmonic, Harmonics);
+IMP_SWIG_OBJECT( IMP::core, HarmonicWell, HarmonicWells);
 IMP_SWIG_OBJECT( IMP::core, HarmonicLowerBound, HarmonicLowerBounds);
 IMP_SWIG_OBJECT( IMP::core, HarmonicUpperBound, HarmonicUpperBounds);
 IMP_SWIG_OBJECT( IMP::core, IncrementalBallMover, IncrementalBallMovers);
@@ -122,6 +123,7 @@ IMP_SWIG_DECORATOR_WITH_TRAITS( IMP::core, Hierarchy, GenericHierarchies);
 %include "IMP/core/FixedRefiner.h"
 %include "IMP/core/GridClosePairsFinder.h"
 %include "IMP/core/Harmonic.h"
+%include "IMP/core/HarmonicWell.h"
 %include "IMP/core/HarmonicLowerBound.h"
 %include "IMP/core/HarmonicUpperBound.h"
 %inline %{
