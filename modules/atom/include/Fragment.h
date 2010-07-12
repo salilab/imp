@@ -150,6 +150,10 @@ public:
   }
 #endif
 
+  Ints get_residues() const {
+    return Ints(residue_indexes_begin(), residue_indexes_end());
+  }
+
   IMP_DECORATOR(Fragment, Hierarchy);
 };
 
