@@ -77,7 +77,7 @@ namespace {
                   << (restraint)->get_name() << " but should be. "      \
                   << "The list contains " << oss.str()                  \
                   << std::endl);                                        \
-        throw InternalException("Invalid particle used");               \
+        throw InternalException("Invalid particle used ");              \
       } catch (internal::WriteLockedParticleException &e) {             \
         std::ostringstream oss;                                         \
         for (unsigned int i=0; i< wpl.size(); ++i) {                    \
@@ -138,7 +138,7 @@ namespace {
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 struct ReadLock{
-  ParticlesTemp p_;
+  Particles p_;
   std::set<Object *> allowed_;
 public:
   template <class It, class It1>
@@ -164,7 +164,7 @@ public:
 
 
 struct WriteLock{
-  ParticlesTemp p_;
+  Particles p_;
   std::set<Object *> allowed_;
 public:
   template <class It, class It1>
