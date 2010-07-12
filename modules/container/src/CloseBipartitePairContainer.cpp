@@ -162,8 +162,15 @@ ParticlesTemp CloseBipartitePairContainer::get_contained_particles() const {
 }
 
 bool CloseBipartitePairContainer::get_contained_particles_changed() const {
-  return a_->get_contained_particles_changed()
-    || b_->get_contained_particles_changed();
+  if( a_->get_contained_particles_changed()
+      || b_->get_contained_particles_changed()) return true;
+  else {
+    ParticlesTemp cp= get_contained_particles();
+    for (unsigned int i=0; i< cp.size(); ++i) {
+      if (cp[i]->get_is_changed()) return true;
+    }
+    return false;
+  }
 }
 
 IMPCONTAINER_END_NAMESPACE
