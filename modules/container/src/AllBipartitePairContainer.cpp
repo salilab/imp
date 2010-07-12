@@ -97,8 +97,8 @@ AllBipartitePairContainer::get_number_of_particle_pairs() const {
 
 ParticlePair AllBipartitePairContainer
 ::get_particle_pair(unsigned int i) const {
-  unsigned int a= i/ a_->get_number_of_particles();
-  unsigned int b= i% a_->get_number_of_particles();
+  unsigned int a= i%a_->get_number_of_particles();
+  unsigned int b= i/a_->get_number_of_particles();
   return ParticlePair(a_->get_particle(a), b_->get_particle(b));
 }
 
