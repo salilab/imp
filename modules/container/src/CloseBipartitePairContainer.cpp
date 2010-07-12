@@ -155,8 +155,8 @@ void CloseBipartitePairContainer::do_show(std::ostream &out) const {
 
 
 ParticlesTemp CloseBipartitePairContainer::get_contained_particles() const {
-  ParticlesTemp ret= a_->get_contained_particles();
-  ParticlesTemp ret0= b_->get_contained_particles();
+  ParticlesTemp ret =cpf_->get_input_particles(a_);
+  ParticlesTemp ret0 =cpf_->get_input_particles(b_);
   ret.insert(ret.end(), ret0.begin(), ret0.end());
   return ret;
 }
