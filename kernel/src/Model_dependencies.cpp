@@ -99,11 +99,13 @@ namespace {
     for (It c= b; c != e; ++c) {
       DGTraits::vertex_descriptor rv= dgi.find(*c)->second;
       IMP_LOG(VERBOSE, "Processing inputs for \""
-              << (*c)->get_name() << "\"" << std::endl);
+              << (*c)->get_name() << "\" ");
       {
         ContainersTemp ct= filter((*c)->get_input_containers());
-        IMP_LOG(VERBOSE, "Found input containers "
-                << Containers(ct) <<std::endl);
+        if (!ct.empty()) {
+          IMP_LOG(VERBOSE, ", containers are "
+                  << Containers(ct));
+        }
         for (unsigned int j=0; j < ct.size(); ++j) {
           DGTraits::vertex_descriptor cv= get_vertex(dg, dgi, ct[j]);
           if (!get_has_edge(dg, rv, cv)) {
@@ -113,7 +115,9 @@ namespace {
       }
       {
         ParticlesTemp pt= filter((*c)->get_input_particles());
-        IMP_LOG(VERBOSE, "Found input particles " << Particles(pt) <<std::endl);
+        if (!pt.empty()) {
+          IMP_LOG(VERBOSE, ", particles are " << Particles(pt));
+        }
         for (unsigned int j=0; j < pt.size(); ++j) {
           DGTraits::vertex_descriptor cv= get_vertex(dg, dgi, pt[j]);
           if (!get_has_edge(dg, rv, cv)) {
@@ -121,6 +125,7 @@ namespace {
           }
         }
       }
+      IMP_LOG(VERBOSE, std::endl);
     }
   }
 
@@ -134,8 +139,10 @@ namespace {
               << (*c)->get_name()  << "\"" << std::endl);
       {
         ContainersTemp ct= filter((*c)->get_output_containers());
-        IMP_LOG(VERBOSE, "Found output containers "
-                << Containers(ct) <<std::endl);
+        if (!ct.empty()) {
+          IMP_LOG(VERBOSE, ", containers are "
+                  << Containers(ct));
+        }
         for (unsigned int j=0; j < ct.size(); ++j) {
           DGTraits::vertex_descriptor cv= get_vertex(dg, dgi, ct[j]);
           add_edge(dg, rv, cv);
@@ -143,13 +150,16 @@ namespace {
       }
       {
         ParticlesTemp pt= filter((*c)->get_output_particles());
-        IMP_LOG(VERBOSE, "Found output particles "
-                << Particles(pt) <<std::endl);
+        if (!pt.empty()) {
+          IMP_LOG(VERBOSE, ", particles are "
+                  << Particles(pt));
+        }
         for (unsigned int j=0; j < pt.size(); ++j) {
           DGTraits::vertex_descriptor cv= get_vertex(dg, dgi, pt[j]);
            add_edge(dg, rv, cv);
         }
       }
+      IMP_LOG(VERBOSE, std::endl);
     }
   }
 }
