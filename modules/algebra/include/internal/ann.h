@@ -47,7 +47,8 @@ struct ANNData {
     std::copy(v.coordinates_begin(), v.coordinates_end(), pt);
     boost::scoped_array<ANNdist> dists(new ANNdist[k]);
     IMP_INTERNAL_CHECK(ret.size() >=k, "Not large enough array");
-    tree_.annkSearch(pt, k, &ret[0], dists.get(), eps);
+    tree_.annkSearch(pt, std::min(k, get_number_of_points()),
+                     &ret[0], dists.get(), eps);
   }
   template <class G>
   void fill_nearest_neighbors(const G &g, double distance,
