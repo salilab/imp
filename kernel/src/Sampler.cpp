@@ -29,7 +29,7 @@ ConfigurationSet *Sampler::get_sample() const {
                   (*pit)->optimized_keys_end());
     if (d > 0) ++num_opt;
   }
-  IMP_LOG(TERSE, "Sampling " << num_opt << " particles."<<std::endl);
+  //IMP_LOG(TERSE, "Sampling " << num_opt << " particles."<<std::endl);
   /*if (num_opt == 0) {
     IMP_WARN("There are no particles to optimize."<<std::endl);
     return NULL;
@@ -55,11 +55,11 @@ bool Sampler::get_is_good_configuration() const {
       }
     }
   }
-  if (ret) {
+  /*if (ret) {
     IMP_LOG(TERSE, "Configuration accepted."<< std::endl);
   } else {
     IMP_LOG(TERSE, "Configuration rejected."<< std::endl);
-  }
+    }*/
   return ret;
 }
 
