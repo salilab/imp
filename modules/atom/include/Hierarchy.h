@@ -306,8 +306,6 @@ public:
     }
   }
 
-  void show(std::ostream &out=std::cout) const;
-
   /** \name Methods to get associated decorators
 
       We provide a number of helper methods to get associated
@@ -322,6 +320,9 @@ public:
 
   //! Get the molecular hierarchy HierararchyTraits.
   static const IMP::core::HierarchyTraits& get_traits();
+
+  // swig overwrites __repr__ if it is inherited
+  IMP_SHOWABLE(Hierarchy);
 };
 
 IMP_OUTPUT_OPERATOR(Hierarchy);
