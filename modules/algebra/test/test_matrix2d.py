@@ -144,7 +144,7 @@ class Matrix2DTests(IMP.test.TestCase):
     def test_write(self):
         """Check writing an empty matrix"""
         m = IMP.algebra.Matrix2D(0,0)
-        name = 'nothing.txt'
+        name = self.get_tmp_file_name('matrix_nothing.txt')
         m.write(name)
         os.remove(name)
 
