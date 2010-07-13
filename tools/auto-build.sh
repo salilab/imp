@@ -37,6 +37,17 @@ perl -pi -e "s/version=[\"']SVN[\"']/version='SVN.${rev}'/" imp/kernel/SConscrip
 verfile="${MODINSTALL}/build/imp-version"
 echo "${rev}" > $verfile
 
+# Write out list of all modules
+modfile="${MODINSTALL}/build/imp-modules"
+python <<ENDdef Import(var): pass
+def SConscript(var): pass
+env = {}
+exec(open('imp/modules/SConscript').read())
+f = open('$modfile', 'w')
+for m in modules:
+    print >> f, m
+END
+
 # Write out a tarball:
 tar -czf ${IMPSRCTGZ} imp
 
