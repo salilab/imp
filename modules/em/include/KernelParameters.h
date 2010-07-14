@@ -28,13 +28,13 @@ class IMPEMEXPORT RadiusDependentKernelParameters {
        float sq2pi3,float inv_rsigsq, float rnormfac, float rkdist);
     //! Show
     void show(std::ostream& s=std::cout) const;
-    //! Gets the value of vsig parameter
+    //! Gets the value of the volume sigma
     inline float get_vsig() const { return vsig_;}
-    //! Gets the value of vsig square parameter
+    //! Gets the value of volume sigma squared
     inline float get_vsigsq() const { return vsigsq_;}
-    //! Gets the value of the inverse of the sigma square
+    //! Gets the inverse sigma squared
     inline float get_inv_sigsq() const { return inv_sigsq_;}
-    //! Gets the value of sig parameter
+    //! Gets the sigma value
     inline float get_sig() const { return sig_;}
     //! Gets the value of kdist parameter
     inline float get_kdist() const { return kdist_;}
@@ -93,19 +93,24 @@ public:
     return get_params(radius, eps) != NULL;
   }
 
-  //! Gets the value of rsig parameter
+  //! Get sigma as a function of the resolution according to th
+  //! Full width at half maximum criterion
   inline  float get_rsig() const  {return rsig_;}
-  //! Gets the value of rsig square parameter
+  //! Get squared sigma as a function of the resolution accroding to the
+  //! Full width at half maximum criterion
   inline float get_rsigsq() const {return rsigsq_;}
-  //! Gets the value of timessig parameter
-  inline float get_timessig() const {return timessig_;}
-  //! Gets the value of sq2pi3 parameter
-  inline float get_sq2pi3() const {return sq2pi3_;}
-  //! Gets the value of inv_rsigsq parameter
+  //! Get the inverse of sigma sqaured
   inline float get_inv_rsigsq() const {return inv_rsigsq_;}
-  //! Gets the value of rnormfac parameter
+  //! Gets the number of sigma used.
+  /**
+    \note We use 3, which means that 99% of the density is considered
+   */
+  inline float get_timessig() const {return timessig_;}
+  //! Get the non-sigma portion of the Gaussian normalization factor
+  inline float get_sq2pi3() const {return sq2pi3_;}
+  //! Get the Gaussian normalization factor
   inline float get_rnormfac() const {return rnormfac_;}
-  //! Gets the value of rkdist parameter
+  //! Get the lenght of the Gaussian (sigma*number_of_sigmas_used)
   inline float get_rkdist() const {return rkdist_;}
   //! Gets the value of lim parameter
   inline float get_lim() const {return lim_;}
