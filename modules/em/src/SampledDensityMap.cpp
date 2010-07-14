@@ -133,21 +133,23 @@ void SampledDensityMap::resample()
   emreal rsq,tmp;
   const RadiusDependentKernelParameters* params;
   IMP_LOG(VERBOSE,"sampling "<<ps_.size()<<" particles "<< std::endl);
-  for (unsigned int ii=0; ii<ps_.size(); ii++) {
+  for (unsigned int ii=0; ii<xyzr_.size(); ii++) {
     // If the kernel parameters for the particles have not been
     // precomputed, do it
-    params = kernel_params_.get_params(ps_[ii]->get_value(radius_key_));
+    params = kernel_params_.get_params(xyzr_[ii].get_radius());
     if (!params) {
       IMP_LOG(TERSE, "EM map is using default params" << std::endl);
       kernel_params_.set_params(xyzr_[ii].get_radius());
-      params = kernel_params_.get_params(ps_[ii]->get_value(radius_key_));
+      params = kernel_params_.get_params(xyzr_[ii].get_radius());
     }
     IMP_USAGE_CHECK(params, "Parameters shouldn't be NULL");
     // compute the box affected by each particle
-    calc_sampling_bounding_box(
-         ps_[ii]->get_value(x_key_), ps_[ii]->get_value(y_key_),
-         ps_[ii]->get_value(z_key_), params->get_kdist(),
-         iminx, iminy, iminz, imaxx, imaxy, imaxz);
+    calc_local_bounding_box(
+      *this,
+      algebra::Vector3D(xyzr_[ii].get_x(), xyzr_[ii].get_y(),
+                        xyzr_[ii].get_z()),
+      params->get_kdist(),
+      iminx, iminy, iminz, imaxx, imaxy, imaxz);
     IMP_LOG(IMP::VERBOSE,"Calculated bounding box for voxel: " << ii <<
        " is :"<<iminx<<","<< iminy<<","<< iminz<<","<<
        imaxx<<","<< imaxy<<","<<  imaxz <<std::endl);
@@ -174,20 +176,22 @@ void SampledDensityMap::resample()
       }
     }
   }
-  for (unsigned int ii=0; ii<ps_.size(); ii++) {
+  for (unsigned int ii=0; ii<xyzr_.size(); ii++) {
     // If the kernel parameters for the particles have not been
     // precomputed, do it
-    params = kernel_params_.get_params(ps_[ii]->get_value(radius_key_));
+    params = kernel_params_.get_params(xyzr_[ii].get_radius());
     if (!params) {
       IMP_LOG(TERSE, "EM map is using default params" << std::endl);
       kernel_params_.set_params(xyzr_[ii].get_radius());
-      params = kernel_params_.get_params(ps_[ii]->get_value(radius_key_));
+      params = kernel_params_.get_params(xyzr_[ii].get_radius());
     }
     IMP_USAGE_CHECK(params, "Parameters shouldn't be NULL");
     // compute the box affected by each particle
-    calc_sampling_bounding_box(
-         ps_[ii]->get_value(x_key_), ps_[ii]->get_value(y_key_),
-         ps_[ii]->get_value(z_key_), params->get_kdist(),
+    calc_local_bounding_box(
+         *this,
+         algebra::Vector3D(
+            xyzr_[ii].get_x(), xyzr_[ii].get_y(),xyzr_[ii].get_z()),
+         params->get_kdist(),
          iminx, iminy, iminz, imaxx, imaxy, imaxz);
     IMP_LOG(IMP::VERBOSE,"Calculated bounding box for voxel: " << ii <<
            " is :"<<iminx<<","<< iminy<<","<< iminz<<","<<
@@ -213,19 +217,6 @@ void SampledDensityMap::resample()
   IMP_LOG(VERBOSE,"finish resampling  particles " <<std::endl);
 }
 
-
-void SampledDensityMap::calc_sampling_bounding_box(
-    const emreal &x, const emreal &y, const emreal &z, const emreal &kdist,
-    int &iminx, int &iminy, int &iminz, int &imaxx,
-    int &imaxy, int &imaxz) const
-{
-  iminx = lower_voxel_shift(x, kdist, header_.get_xorigin(), header_.get_nx());
-  iminy = lower_voxel_shift(y, kdist, header_.get_yorigin(), header_.get_ny());
-  iminz = lower_voxel_shift(z, kdist, header_.get_zorigin(), header_.get_nz());
-  imaxx = upper_voxel_shift(x, kdist, header_.get_xorigin(), header_.get_nx());
-  imaxy = upper_voxel_shift(y, kdist, header_.get_yorigin(), header_.get_ny());
-  imaxz = upper_voxel_shift(z, kdist, header_.get_zorigin(), header_.get_nz());
-}
 void SampledDensityMap::set_particles(const IMP::Particles &ps,
                      IMP::FloatKey radius_key,IMP::FloatKey mass_key) {
   IMP_INTERNAL_CHECK(ps_.size()==0,"Particles have already been set");

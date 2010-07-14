@@ -919,5 +919,38 @@ DensityMap* DensityMap::pad_margin(int mrg_x, int mrg_y, int mrg_z,float val) {
   }
   return new_dmap;
 }
+// statistics::Histogram
+// get_density_histogram(const DensityMap *dmap, float threshold,
+//                       int num_bins) {
+//   statistics::Histogram hist(threshold-EPS,dmap->get_header()->dmax+.1,
+//                              num_bins);
+//   for(long v_ind=0;v_ind<dmap->get_number_of_voxels();v_ind++) {
+//     if (dmap->get_value(v_ind) > threshold) {
+//       hist.add(dmap->get_value(v_ind));
+//     }
+//   }
+//   return hist;
+// }
+int DensityMap::lower_voxel_shift(
+  emreal loc, emreal kdist, emreal orig, int ndim) const {
+  int imin;
+  imin = static_cast<int>(std::floor((loc-kdist-orig) / header_.get_spacing()));
+  //bookkeeping
+  if (imin < 0)
+    imin = 0;
+  if (imin > ndim-1)
+    imin = ndim-1;
+  return imin;
+}
+
+int DensityMap::upper_voxel_shift(emreal loc, emreal kdist,
+                                  emreal orig, int ndim) const {
+  int imax;
+  imax = static_cast<int>(std::floor((loc+kdist-orig)/ header_.get_spacing()));
+  //bookkeeping
+  if (imax < 0) imax = 0;
+  if (imax > ndim-1) imax = ndim-1;
+  return imax;
+}
 
 IMPEM_END_NAMESPACE

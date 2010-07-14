@@ -70,9 +70,10 @@ void SurfaceShellDensityMap::binaries(float scene_val) {
       params = kernel_params_.get_params(xyzr_[ii].get_radius());
     }
     // compute the box affected by each particle
-    calc_sampling_bounding_box(xyzr_[ii].get_x(),xyzr_[ii].get_y(),
-                               xyzr_[ii].get_z(),params->get_kdist(),
-                               iminx, iminy, iminz, imaxx, imaxy, imaxz);
+    calc_local_bounding_box(*this,
+     algebra::Vector3D(xyzr_[ii].get_x(),xyzr_[ii].get_y(),xyzr_[ii].get_z()),
+     params->get_kdist(),
+     iminx, iminy, iminz, imaxx, imaxy, imaxz);
     for (ivoxz=iminz;ivoxz<=imaxz;ivoxz++) {
       znxny=ivoxz * nxny;
       for (ivoxy=iminy;ivoxy<=imaxy;ivoxy++)  {

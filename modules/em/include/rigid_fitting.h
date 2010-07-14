@@ -135,7 +135,8 @@ IMPEMEXPORT FittingSolutions local_rigid_fitting_around_point(
 \param[in] number_of_cg_steps  number of Conjugate Gradients steps in
                                a Monte Carlo step
 \param[in] max_translation maximum translation step in a MC optimization step
-\param[in] max_rotation maximum rotation step in a single MC optimization step
+\param[in] max_rotation maximum rotation step in radians in a single
+                        MC optimization step
 \param[in] fast if true the density map of the rigid body is not resampled
                 but transformed at each iteration of the optimization
 \return the refined fitting solutions

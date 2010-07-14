@@ -38,11 +38,11 @@ RestraintSet * add_restraints(Model *model, DensityMap *dmap,
    //add fitting restraint
    FitRestraint *fit_rs;
    if (fast) {
-     fit_rs = new FitRestraint(rb.get_particle(),dmap,rad_key,wei_key,1.0);
+     fit_rs = new FitRestraint(rb.get_particle(),dmap,rad_key,wei_key,1.0,fast);
    }
    else {
      fit_rs = new FitRestraint(IMP::core::get_leaves(
-                 IMP::atom::Hierarchy(rb)),dmap,rad_key,wei_key,1.0);
+                IMP::atom::Hierarchy(rb)),dmap,rad_key,wei_key,1.0,fast);
    }
    rsrs->add_restraint(fit_rs);
    return rsrs;
@@ -119,9 +119,10 @@ void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
     } catch (ModelException err) {
       IMP_WARN("Optimization run " << i << " failed to converge."
                << std::endl);
-    } catch (UsageException err) {
-      IMP_WARN("Data walked out of bounding box"<< std::endl);
     }
+// catch (UsageException err) {
+//       IMP_WARN("Data walked out of bounding box"<< std::endl);
+//     }
   }
   //return the rigid body to the original position
   rb.set_transformation(starting_trans);
@@ -169,6 +170,11 @@ FittingSolutions local_rigid_fitting_around_point(
      }
      IMP_LOG(TERSE, std::endl);
    }
+   std::cout<< "Solutions are: ";
+     for (int i=0; i < fr.get_number_of_solutions(); ++i) {
+       std::cout<<fr.get_score(i) << " ||" << fr.get_transformation(i)
+                << " -- "<<std::endl;
+     }
     //remove restraints
     model->remove_restraint(rsrs);
     IMP_LOG(TERSE,"end rigid fitting " <<std::endl);
