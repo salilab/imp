@@ -14,6 +14,7 @@
 #include <IMP/log.h>
 #include <boost/lambda/lambda.hpp>
 
+
 IMPEM_BEGIN_NAMESPACE
 
 FitRestraint::FitRestraint(
@@ -23,12 +24,14 @@ FitRestraint::FitRestraint(
    FloatKey weight_key,
    float scale,
    bool special_treatment_of_particles_outside_of_density,
-   bool use_fast_version)
+   bool use_fast_version,
+   Refiner *refiner)
 {
   special_treatment_of_particles_outside_of_density_=
     special_treatment_of_particles_outside_of_density;
   use_fast_version_=use_fast_version;
   target_dens_map_ = em_map;
+  rb_refiner_=refiner;
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i=0; i< ps.size(); ++i) {
       IMP_USAGE_CHECK(ps[i]->has_attribute(radius_key),
@@ -44,12 +47,13 @@ FitRestraint::FitRestraint(
     }
   }
   scalefac_ = scale;
-  IMP_LOG(VERBOSE,"going to initialize_model_density_map"<<std::endl);
+  //we need the leaves of the particles for the derivaties
   add_particles(ps);
-  initialize_model_density_map(radius_key,weight_key);
   IMP_LOG(VERBOSE,"after initialize_model_density_map"<<std::endl);
   model_dens_map_ = new SampledDensityMap(*em_map->get_header());
   model_dens_map_->set_particles(ps,radius_key,weight_key);
+  IMP_LOG(VERBOSE,"going to initialize_model_density_map"<<std::endl);
+  initialize_model_density_map(radius_key,weight_key);
    // initialize the derivatives
   dx_.resize(get_number_of_particles(), 0.0);
   dy_.resize(get_number_of_particles(), 0.0);
@@ -80,6 +84,10 @@ void FitRestraint::initialize_model_density_map(
       rb_model_dens_map_[rb_model_dens_map_.size()-1]->
         set_particles(rb_ps,radius_key,weight_key);
       rb_model_dens_map_[rb_model_dens_map_.size()-1]->resample();
+      //calcualte the rsqs needed for derivaties calcualtions
+      rb_rsq_[*it]=CoarseCC::generate_rigid_body_rsq_cache(target_dens_map_,
+                                             model_dens_map_,
+                                             rb,rb_refiner_);
     }
     else {
       not_rb_.push_back(*it);
@@ -92,7 +100,10 @@ void FitRestraint::initialize_model_density_map(
 }
 void FitRestraint::resample() const {
   //resample the map containing all non rigid body particles
+  //this map has all of the non rigid body particles.
   if (not_rb_.size()>0) {
+    //note - writable_none_rb_model_dens_map points to
+    //none_rb_model_dens_map_
     SampledDensityMap *
       writable_none_rb_model_dens_map =
         const_cast <SampledDensityMap *>(none_rb_model_dens_map_);
@@ -128,12 +139,6 @@ IMP_LIST_IMPL(FitRestraint, Particle, particle,Particle*, Particles,
                          "same Model.");
               },{},{});
 
-//! Calculate the em coarse restraint score.
-/** \param[in] calc_deriv If true, partial first derivatives should be
-                          calculated.
-    \return score associated with this restraint for the given state of
-            the model.
- */
 double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
   Float percentage_outside_of_density =
@@ -155,7 +160,8 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
                              const_cast<FitRestraint*>(this)->dx_,
                              const_cast<FitRestraint*>(this)->dy_,
                              const_cast<FitRestraint*>(this)->dz_,
-                             scalefac_, calc_deriv,true,false);
+                             scalefac_, calc_deriv,true,false,
+                             &rb_rsq_,rb_refiner_);
   }
 
   //In many optimization senarios particles are can be found outside of
@@ -201,7 +207,10 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
     }
     IMP_LOG(IMP::TERSE,"Finish score and derivatives adjustments"<<std::endl);
   }
-
+  float deriv_sum=0.;
+    for (unsigned int ii = 0; ii < dx_.size(); ++ii) {
+      deriv_sum+=dx_[ii]+dy_[ii]+dz_[ii];
+    }
   // now update the derivatives
   FloatKeys xyz_keys=IMP::core::XYZR::get_xyz_keys ();
   if (calc_deriv) {

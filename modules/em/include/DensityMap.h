@@ -20,6 +20,7 @@
 #include <boost/scoped_array.hpp>
 #include <iostream>
 #include <iomanip>
+#include <IMP/statistics/Histogram.h>
 
 IMPEM_BEGIN_NAMESPACE
 
@@ -349,6 +350,41 @@ public:
   IMP_OBJECT_INLINE(DensityMap, header_.show(out),{});
   //! copy map into this map
   void copy_map(const DensityMap &other);
+  //! Convolution a kernel with the map
+  /**
+\param[in] kernel an array of kernel values. The data is in ZYX
+                   order, Z is the slowest.
+\param[in] lenght the array leght
+   */
+  void convolute_kernel(double *kernel, int dim_len){
+    //todo - add a test that lenght is even
+    int lenght = dim_len*dim_len*dim_len;
+    IMP_USAGE_CHECK(lenght>1,"The input lenght is wrong\n");
+    unsigned int margin=(dim_len-1)/2;
+    //smooth the density using the kernel
+    float val;
+    int kernel_ind,map_ind;
+  for (unsigned int iz=margin;iz<header_.get_nz()-margin;iz++) {
+    map_ind=iz*header_.get_ny()*header_.get_nx();
+    for (unsigned int iy=margin;iy<header_.get_ny()-margin;iy++) {
+      map_ind+=iy*header_.get_nx();
+      for (unsigned int ix=margin;ix<header_.get_nx()-margin;ix++) {
+        map_ind += ix;
+        val = data_[map_ind];
+        if (val>EPS) { //smooth this value
+         for (int iz2=-margin;iz2<=margin;iz2++) {
+            kernel_ind=iz2*dim_len*dim_len;
+            for (int iy2=-margin;iy2<=margin;iy2++){
+             kernel_ind+=iy2*dim_len;
+             for (int ix2=-margin;ix2<=margin;ix2++) {
+                kernel_ind+=ix2;
+                data_[map_ind]+=val*kernel[kernel_ind];
+             }}} // for iz2,iy2,ix2
+          }//if val>EPS
+      }}} // for iz,iy,ix
+}
+  int lower_voxel_shift(emreal loc, emreal kdist, emreal orig, int ndim) const;
+  int upper_voxel_shift(emreal loc, emreal kdist, emreal orig, int ndim) const;
 protected:
   //!update the header values  -- still in work
   void update_header();
@@ -377,6 +413,33 @@ inline algebra::BoundingBoxD<3> get_bounding_box(const DensityMap *m) {
   return algebra::BoundingBoxD<3>(m->get_origin(),
                        m->get_top());
 }
+
+ //! Calculate a bounding box around a 3D point within the EM grid
+ /**
+\param[in] d_map the density map
+\param[in] point (x,y,z) coordinates of the point to sample around
+\param[in] kdist the lenght of the box
+\param[out] iminx the minimum index on the X axis of the output bounding box
+\param[out] iminy the minimum index on the Y axis of the output bounding box
+\param[out] iminz the minimum index on the Z axis of the output bounding box
+\param[out] imaxx the maximum index on the X axis of the output bounding box
+\param[out] imaxy the maximum index on the Y axis of the output bounding box
+\param[out] imaxz the maximum index on the Z axis of the output bounding box
+  */
+inline void calc_local_bounding_box(
+                   const em::DensityMap &d_map,
+                   const algebra::Vector3D point,float kdist,
+                   int &iminx,int &iminy, int &iminz,
+                   int &imaxx,int &imaxy, int &imaxz) {
+  const DensityHeader *h=d_map.get_header();
+  iminx = d_map.lower_voxel_shift(point[0], kdist,h->get_xorigin(),h->get_nx());
+  iminy = d_map.lower_voxel_shift(point[1], kdist,h->get_yorigin(),h->get_ny());
+  iminz = d_map.lower_voxel_shift(point[2], kdist,h->get_zorigin(),h->get_nz());
+  imaxx = d_map.upper_voxel_shift(point[0], kdist,h->get_xorigin(),h->get_nx());
+  imaxy = d_map.upper_voxel_shift(point[1], kdist,h->get_yorigin(),h->get_ny());
+  imaxz = d_map.upper_voxel_shift(point[2], kdist,h->get_zorigin(),h->get_nz());
+}
+
 //! rotate a grid
 /**
 /param[in] orig_dens the density map to rotate
@@ -430,6 +493,16 @@ IMPEMEXPORT void get_transformed_into(const DensityMap *from,
                                       DensityMap *into,
                                        bool calc_rms=true);
 
+//! Get a histrogram of density values
+/**
+\param[in] dmap the density map to analyse
+\param[in] threshold only add voxels with value above this threshold
+                     to the histogram
+\param[in] num_bins the number of bins to have in the histogram
+ \relatesalso DensityMap
+*/
+// IMPEMEXPORT statistics::Histogram
+// get_density_histogram(const DensityMap *dmap, float threshold,int num_bins);
 
 IMPEM_END_NAMESPACE
 

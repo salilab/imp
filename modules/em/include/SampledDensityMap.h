@@ -88,11 +88,6 @@ void project (const Particles &ps,
  void set_particles(const IMP::Particles &ps,
      IMP::FloatKey radius_key = IMP::core::XYZR::get_default_radius_key(),
      IMP::FloatKey mass_key = IMP::atom::Mass::get_mass_key());
-  void calc_sampling_bounding_box(const emreal &x,const emreal &y,
-                                  const emreal &z,
-                                  const emreal &kdist,
-                                  int &iminx,int &iminy, int &iminz,
-                                  int &imaxx,int &imaxy, int &imaxz) const;
 
   KernelParameters *get_kernel_params()  { return &kernel_params_;}
 
@@ -118,31 +113,6 @@ protected:
                   emreal maxradius, emreal resolution, emreal voxel_size,
                   int sig_offset);
 
-  //bookkeeping functions
-  int lower_voxel_shift(const emreal &loc, const emreal &kdist,
-                        const emreal &orig, int ndim) const {
-    int imin;
-    imin = static_cast<int>(std::floor((loc-kdist-orig)
-                                        / header_.get_spacing()));
-    //bookkeeping
-    if (imin < 0)
-      imin = 0;
-    if (imin > ndim-1)
-      imin = ndim-1;
-    return imin;
-  }
-
-
-  int upper_voxel_shift(const emreal &loc, const emreal &kdist,
-                        const emreal &orig, int ndim) const {
-    int imax;
-    imax = static_cast<int>(std::floor((loc+kdist-orig)
-                                        / header_.get_spacing()));
-    //bookkeeping
-    if (imax < 0) imax = 0;
-    if (imax > ndim-1) imax = ndim-1;
-    return imax;
-  }
 protected:
   //! kernel handling
   KernelParameters kernel_params_;

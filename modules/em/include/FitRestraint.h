@@ -21,6 +21,7 @@
 #include <IMP/Model.h>
 #include <IMP/Restraint.h>
 #include <IMP/VersionInfo.h>
+#include <IMP/Refiner.h>
 
 IMPEM_BEGIN_NAMESPACE
 
@@ -44,6 +45,7 @@ public:
        push it back using upper-bound harmonic
     \param[in] use_fast_version if true densities of rigid-bodies are
                interpolated and not resampled.
+   \param[in] refiner rigid body refiner
     \note In many optimization senarios particles are can be found outside of
   the density. When all particles are outside of the density the
   cross-correlation score is zero and the derivatives are meaningless.
@@ -61,7 +63,9 @@ public:
                FloatKey weight_key= IMP::atom::Mass::get_mass_key(),
                float scale=1,
                bool special_treatment_of_particles_outside_of_density=true,
-               bool use_fast_version=true);
+               bool use_fast_version=true,
+               Refiner *refiner =
+                   IMP::core::internal::get_rigid_members_refiner());
 
   //! \return the predicted density map of the model
   SampledDensityMap *get_model_dens_map() {
@@ -85,6 +89,7 @@ private:
   IMP::internal::OwnerPointer<DensityMap> target_dens_map_;
   SampledDensityMap *model_dens_map_;
   std::vector<SampledDensityMap *> rb_model_dens_map_;
+  RigidBodiesDerivativesCache rb_rsq_;
   SampledDensityMap * none_rb_model_dens_map_;
   algebra::BoundingBoxD<3> target_bounding_box_;
   // reference to the IMP environment
@@ -98,6 +103,7 @@ private:
   IMP::Particles not_rb_; //all particles that are not part of a rigid body
   IMP::core::RigidBodies rbs_;
   std::vector<IMP::algebra::Transformation3D> rbs_orig_trans_;
+  Refiner *rb_refiner_;//refiner for rigid bodies
 };
 
 IMPEM_END_NAMESPACE
