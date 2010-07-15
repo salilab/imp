@@ -62,7 +62,10 @@ void CoreClosePairContainer::set_is_static(bool t,
                                            const algebra::BoundingBox3Ds &bbs) {
   if (t&& !is_static_) {
     ParticlesTemp pt= c_->get_particles();
+    // we don't want the slack any more
+    cpf_->set_distance(distance_);
     IntPairs ips= cpf_->get_close_pairs(bbs);
+    cpf_->set_distance(distance_+2*slack_);
     ParticlePairsTemp val(ips.size());
     for (unsigned int i=0; i< ips.size(); ++i) {
       val[i]= ParticlePair(pt[ips[i].first], pt[ips[i].second]);
