@@ -25,7 +25,7 @@ FitRestraint::FitRestraint(
    float scale,
    bool special_treatment_of_particles_outside_of_density,
    bool use_fast_version,
-   Refiner *refiner)
+   Refiner *refiner): Restraint("Fit restraint")
 {
   special_treatment_of_particles_outside_of_density_=
     special_treatment_of_particles_outside_of_density;
@@ -231,11 +231,32 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 
 ParticlesTemp FitRestraint::get_input_particles() const
 {
-  return ParticlesTemp(particles_begin(), particles_end());
+  ParticlesTemp pt;
+  for (ParticleConstIterator it= particles_begin();
+       it != particles_end(); ++it) {
+    if (core::RigidBody::particle_is_instance(*it)) {
+      ParticlesTemp cur= rb_refiner_->get_input_particles(*it);
+      pt.insert(pt.end(), cur.begin(), cur.end());
+      ParticlesTemp curr= rb_refiner_->get_refined(*it);
+      pt.insert(pt.end(), curr.begin(), curr.end());
+    } else {
+      pt.push_back(*it);
+    }
+  }
+  return pt;
 }
 
 ContainersTemp FitRestraint::get_input_containers() const {
-  return ContainersTemp();
+  ContainersTemp pt;
+  for (ParticleConstIterator it= particles_begin();
+       it != particles_end(); ++it) {
+    if (core::RigidBody::particle_is_instance(*it)) {
+      ContainersTemp cur= rb_refiner_->get_input_containers(*it);
+      pt.insert(pt.end(), cur.begin(), cur.end());
+    } else {
+    }
+  }
+  return pt;
 }
 
 void FitRestraint::do_show(std::ostream& out) const
