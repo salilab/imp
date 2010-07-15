@@ -14,6 +14,7 @@
 #include <IMP/container/ListSingletonContainer.h>
 #include <IMP/Pointer.h>
 #include <boost/shared_array.hpp>
+#include <boost/functional/hash.hpp>
 #include <algorithm>
 
 IMPDOMINO2_BEGIN_NAMESPACE
