@@ -28,4 +28,24 @@ Color::Color( float r, float g, float b){
 
 Color::~Color(){}
 
+Color get_display_color(unsigned int i) {
+  // from http://colorbrewer2.org/
+  static const Color all[]={
+    Color(166/255.,206./255.,227./255.),
+    Color(31./255., 120./255., 180./255.),
+    Color(178./255., 223./255., 138./255.),
+    Color(51./255., 160./255., 44./255.),
+    Color(251./255., 154./255., 153./255.),
+    Color(227./255., 26./255., 28./255.),
+    Color(253./255., 191./255., 111./255.),
+    Color(255./255., 127./255., 0./255.),
+    Color(202./255., 178./255., 214./255.),
+    Color(106./255., 61./255., 154./255.),
+    Color(255./255., 255./255., 153./255.)
+  };
+  static const int size=sizeof(all)/sizeof(Color);
+  return all[i%size];
+}
+
+
 IMPDISPLAY_END_NAMESPACE
