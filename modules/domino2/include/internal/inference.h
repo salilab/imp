@@ -137,7 +137,7 @@ class EdgeData {
 #if IMP_BOOST_VERSION > 103900
   typedef  boost::unordered_map<SubsetState, double> Scores;
 #else
-  std::map<SubsetState, double> Scores;
+  typedef std::map<SubsetState, double> Scores;
 #endif
   Scores scores_;
   Subset subset_;
