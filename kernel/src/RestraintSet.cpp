@@ -89,4 +89,10 @@ RestraintsAndWeights get_restraints(const RestraintsTemp &rs,
   return get_restraints(rs.begin(), rs.end(), initial_weight);
 }
 
+
+RestraintsAndWeights get_restraints(RestraintSet *rs) {
+  return get_restraints(rs->restraints_begin(), rs->restraints_end(),
+                        rs->get_weight());
+}
+
 IMP_END_NAMESPACE
