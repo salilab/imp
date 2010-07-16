@@ -13,7 +13,8 @@
 
 
 IMPDOMINO2_BEGIN_INTERNAL_NAMESPACE
-ModelData::ModelData(Model *m, const DependencyGraph &dg,
+ModelData::ModelData(Model *m, RestraintSet *rs,
+                     const DependencyGraph &dg,
                      ParticleStatesTable* pst): m_(m), pst_(pst) {
   const ParticlesTemp all= pst->get_particles();
   std::map<Particle*, Particle*> idm;
@@ -24,8 +25,10 @@ ModelData::ModelData(Model *m, const DependencyGraph &dg,
       idm[ps[j]]=p;
     }
   }
-  for (Model::RestraintIterator rit= m_->restraints_begin();
-       rit != m_->restraints_end(); ++rit) {
+  Restraints rss= get_restraints(rs->restraints_begin(),
+                                 rs->restraints_end(), 1.0).first;
+  for (Restraints::const_iterator rit= rss.begin();
+       rit != rss.end(); ++rit) {
     ParticlesTemp ip= (*rit)->get_input_particles();
     ParticlesTemp oip;
     for (unsigned int i=0; i< ip.size(); ++i) {
@@ -108,6 +111,8 @@ double SubsetData::get_score(const SubsetState &state) const {
 }
 
 bool SubsetData::get_is_ok(const SubsetState &state) const {
+  /*std::cout << "For subset " << s_ << " got state "
+    << state << std::endl;*/
   for (unsigned int i=0; i< ris_.size(); ++i) {
     Ints ssi(indices_[i].size());
     for (unsigned int j=0; j< ssi.size();++j) {

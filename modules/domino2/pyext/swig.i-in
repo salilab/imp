@@ -19,11 +19,13 @@ IMP_SWIG_BASE_OBJECT(IMP::domino2, SubsetEvaluator, SubsetEvaluators);
 IMP_SWIG_BASE_OBJECT(IMP::domino2, SubsetEvaluatorTable, SubsetEvaluatorTables);
 IMP_SWIG_OBJECT(IMP::domino2, ModelSubsetEvaluatorTable, ModelSubsetEvaluatorTables);
 IMP_SWIG_OBJECT(IMP::domino2, XYZsParticleStates, XYZsParticleStatesList);
+IMP_SWIG_OBJECT(IMP::domino2, JunctionTreeTable, JunctionTreeTables);
 IMP_SWIG_BASE_OBJECT(IMP::domino2, SubsetFilter, SubsetFilters);
 IMP_SWIG_BASE_OBJECT(IMP::domino2, SubsetFilterTable, SubsetFilterTables);
 IMP_SWIG_BASE_OBJECT(IMP::domino2, SubsetStates, SubsetStatesList);
 IMP_SWIG_BASE_OBJECT(IMP::domino2, SubsetStatesTable, SubsetStatesTables);
 IMP_SWIG_BASE_OBJECT(IMP::domino2, DiscreteSampler, DiscreteSamplers);
+IMP_SWIG_BASE_OBJECT(IMP::domino2, SubsetGraphTable, SubsetGraphTables);
 IMP_SWIG_OBJECT(IMP::domino2, DefaultSubsetStatesTable, DefaultSubsetStatesTables);
 IMP_SWIG_GRAPH(IMP::domino2, InteractionGraph, InteractionGraph, IMP::Particle*);
 IMP_SWIG_GRAPH(IMP::domino2, SubsetGraph, SubsetGraph, IMP::domino2::Subset );
@@ -35,6 +37,7 @@ IMP_SWIG_VALUE(IMP::domino2, SubsetState, SubsetStatesList);
 %include "IMP/domino2/subset_evaluators.h"
 %include "IMP/domino2/subset_filters.h"
 %include "IMP/domino2/subset_states.h"
+%include "IMP/domino2/subset_graphs.h"
 %include "IMP/domino2/DiscreteSampler.h"
 %include "IMP/domino2/DominoSampler.h"
 %include "IMP/domino2/BranchAndBoundSampler.h"

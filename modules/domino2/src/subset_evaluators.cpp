@@ -62,11 +62,23 @@ template <class It>
 
 ModelSubsetEvaluatorTable::ModelSubsetEvaluatorTable(Model *m,
                                                      ParticleStatesTable *pst):
-  data_(m, get_dependency_graph(ScoreStatesTemp(m->score_states_begin(),
-                                                m->score_states_end()),
-                                get_restraints(m->restraints_begin(),
-                                               m->restraints_end(),
-                                               1.0).first),
+  data_(m, m->get_root_restraint_set(),
+        get_dependency_graph(ScoreStatesTemp(m->score_states_begin(),
+                                             m->score_states_end()),
+                             get_restraints(m->restraints_begin(),
+                                            m->restraints_end(),
+                                            1.0).first),
+        pst) {
+}
+
+ModelSubsetEvaluatorTable::ModelSubsetEvaluatorTable(RestraintSet *rs,
+                                                     ParticleStatesTable *pst):
+  data_(rs->get_model(), rs,
+  get_dependency_graph(ScoreStatesTemp(rs->get_model()->score_states_begin(),
+                                       rs->get_model()->score_states_end()),
+                             get_restraints(rs->restraints_begin(),
+                                            rs->restraints_end(),
+                                            1.0).first),
         pst) {
 }
 

@@ -35,6 +35,11 @@ class IMPDOMINO2EXPORT SubsetFilter: public Object {
 public:
   SubsetFilter(std::string name= "SubsetFilter");
   virtual bool get_is_ok(const SubsetState& state) const=0;
+  //! The strength is a rough metric of how this filter restricts the subset
+  /** It is still kind of nebulous, but as a rough guide, it should be
+      the fraction of the states that are eliminated by the filter.
+   */
+  virtual double get_strength() const=0;
   virtual ~SubsetFilter();
 };
 

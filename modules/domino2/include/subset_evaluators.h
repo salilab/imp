@@ -67,6 +67,8 @@ class IMPDOMINO2EXPORT ModelSubsetEvaluatorTable:
   Pointer<ParticleStatesTable> pst_;
 public:
   ModelSubsetEvaluatorTable(Model *m, ParticleStatesTable *pst);
+  //! Only evaluate the restraints in rs
+  ModelSubsetEvaluatorTable(RestraintSet *rs, ParticleStatesTable *pst);
   IMP_SUBSET_EVALUATOR_TABLE(ModelSubsetEvaluatorTable);
 };
 

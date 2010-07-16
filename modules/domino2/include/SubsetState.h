@@ -16,6 +16,7 @@
 #include <boost/shared_array.hpp>
 #include <boost/functional/hash.hpp>
 #include <algorithm>
+#include <boost/functional/hash/hash.hpp>
 
 IMPDOMINO2_BEGIN_NAMESPACE
 
@@ -108,6 +109,7 @@ IMP_OUTPUT_OPERATOR(SubsetState);
 inline std::size_t hash_value(const SubsetState &s) {
   return boost::hash_range(s.begin(), s.end());
 }
+
 
 IMPDOMINO2_END_NAMESPACE
 
