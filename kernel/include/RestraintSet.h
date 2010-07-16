@@ -69,6 +69,9 @@ typedef std::pair<RestraintsTemp, Floats> RestraintsAndWeights;
 IMPEXPORT RestraintsAndWeights get_restraints(const RestraintsTemp &rs,
                                               double initial_weight=1);
 
+IMPEXPORT RestraintsAndWeights get_restraints(RestraintSet *rs);
+
+
 template <class It>
 RestraintsAndWeights get_restraints(It b, It e,
                                     double initial_weight=1) {
