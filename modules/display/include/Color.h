@@ -68,6 +68,12 @@ public:
 IMP_OUTPUT_OPERATOR(Color);
 
 
+/** Produce a color that is attempted to be contrasting with the
+    i-1 previous colors. Currently, they recycle after 11, but they
+    can be darkened instead. Just ask.
+ */
+IMPDISPLAYEXPORT Color get_display_color(unsigned int i);
+
 #ifndef SWIG
 #ifndef IMP_DOXYGEN
 struct SpacesIO
