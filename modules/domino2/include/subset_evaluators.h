@@ -62,10 +62,13 @@ IMP_OBJECTS(SubsetEvaluatorTable, SubsetEvaluatorTables);
  */
 class IMPDOMINO2EXPORT ModelSubsetEvaluatorTable:
   public SubsetEvaluatorTable {
-  internal::ModelData data_;
   friend class RestraintScoreSubsetFilterTable;
   Pointer<ParticleStatesTable> pst_;
-public:
+#if defined(SWIG) || defined(IMP_DOXYGEN)
+ public:
+#endif
+  internal::ModelData data_;
+ public:
   ModelSubsetEvaluatorTable(Model *m, ParticleStatesTable *pst);
   //! Only evaluate the restraints in rs
   ModelSubsetEvaluatorTable(RestraintSet *rs, ParticleStatesTable *pst);
