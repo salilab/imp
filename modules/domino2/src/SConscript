@@ -9,6 +9,7 @@ files = [
          'particle_states.cpp',
          'subset_evaluators.cpp',
          'subset_filters.cpp',
+         'subset_graphs.cpp',
          'subset_states.cpp',
          'utility.cpp',
         ] \

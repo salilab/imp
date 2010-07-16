@@ -5,6 +5,7 @@ import IMP.test
 import IMP.domino2
 import IMP.core
 import IMP.atom
+import IMP.display
 import IMP.helper
 import time
 
@@ -15,13 +16,19 @@ class DOMINOTests(IMP.test.TestCase):
         ps=[]
         for i in range(3):
             p= IMP.atom.read_pdb(self.get_input_file_name("small_protein.pdb"), m)
+            p.set_name("protein"+str(i))
             ps.append(p.get_particle())
             IMP.atom.setup_as_rigid_body(p)
-        cp= IMP.container.ClosePairContainer(IMP.container.ListSingletonContainer(ps), 1)
+        cp= IMP.container.ClosePairContainer(IMP.container.ListSingletonContainer(ps), 1, 0)
         r=IMP.container.PairsRestraint(IMP.core.DistancePairScore(IMP.core.HarmonicLowerBound(0,1)), cp);
         m.add_restraint(r)
         print "computing graph"
-        g= IMP.domino2.get_interaction_graph(m, ps)
+        g= IMP.domino2.get_interaction_graph(ps,
+                                             IMP.get_restraints(m.get_root_restraint_set())[0])
+        w= IMP.display.PymolWriter(self.get_tmp_file_name("ig0.pym"))
+        for gg in IMP.domino2.get_interaction_graph_geometry(g):
+            w.add_geometry(gg)
+        del w
         print "done"
         vs= g.get_vertices()
         for v in vs:
@@ -31,6 +38,35 @@ class DOMINOTests(IMP.test.TestCase):
             self.assert_(l in ps)
             self.assertEqual(len(g.get_out_neighbors(v)), 2)
         g.show()
+    def test_global_min3(self):
+        """Test that showing interaction graphs is fine"""
+        m= IMP.Model()
+        IMP.set_log_level(IMP.SILENT)
+        ps=[]
+        p= IMP.atom.read_pdb(self.get_input_file_name("small_protein.pdb"), m)
+        IMP.atom.add_radii(p)
+        p.show()
+        #print "radius is ", IMP.core.XYZR(IMP.atom.get_leaves(p)[0]).get_radius()
+        #exit(1)
+        #sp= IMP.atom.get_simplified_by_residue(p, 1)
+        cpf= IMP.core.QuadraticClosePairsFinder()
+        cpf.set_distance(0.0)
+        print len(IMP.atom.get_leaves(p)), "leaves"
+        lsc= IMP.container.ListSingletonContainer(IMP.atom.get_leaves(p))
+        cp= cpf.get_close_pairs(lsc)
+        for pr in cp:
+            r=IMP.core.PairRestraint(IMP.core.DistancePairScore(IMP.core.HarmonicLowerBound(0,1)), pr);
+            m.add_restraint(r)
+            r.set_name("pair")
+        print "computing graph"
+        g= IMP.domino2.get_interaction_graph(IMP.atom.get_leaves(p),
+                                             IMP.get_restraints(m.get_root_restraint_set())[0])
+        w= IMP.display.PymolWriter(self.get_tmp_file_name("ig-large.pym"))
+        gs=IMP.domino2.get_interaction_graph_geometry(g)
+        print "There are ", len(gs)
+        for gg in gs:
+            w.add_geometry(gg)
+        del w
 
 
     def test_global_min(self):
@@ -42,6 +78,7 @@ class DOMINOTests(IMP.test.TestCase):
         for i in range(3):
             p = IMP.Particle(m)
             d= IMP.core.XYZ.setup_particle(p)
+            d.set_coordinates(IMP.algebra.Vector3D(0,i,0))
             ps.append(p)
         h= IMP.core.Harmonic(0,1)
         for i in range(3):
@@ -49,7 +86,12 @@ class DOMINOTests(IMP.test.TestCase):
             p1= ps[i-1]
             r= IMP.core.DistanceRestraint(h, p0, p1)
             m.add_restraint(r)
-        g= IMP.domino2.get_interaction_graph(m, ps)
+        g= IMP.domino2.get_interaction_graph(ps,
+                                             IMP.get_restraints(m.get_root_restraint_set())[0])
+        w= IMP.display.PymolWriter(self.get_tmp_file_name("ig0.pym"))
+        for gg in IMP.domino2.get_interaction_graph_geometry(g):
+            w.add_geometry(gg)
+        del w
         print g
         vs= g.get_vertices()
         for v in vs:

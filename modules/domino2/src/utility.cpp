@@ -99,6 +99,11 @@ namespace {
                               boost::vertex_name_t>::type IGVertexMap;
   typedef boost::property_map<InteractionGraph,
                               boost::edge_name_t>::type IGEdgeMap;
+ typedef boost::property_map<InteractionGraph,
+                              boost::vertex_name_t>::const_type
+ IGVertexConstMap;
+  typedef boost::property_map<InteractionGraph,
+                              boost::edge_name_t>::const_type IGEdgeConstMap;
 
 
   typedef boost::graph_traits<DependencyGraph> DGTraits;
@@ -203,17 +208,16 @@ Ints find_parents(const std::map<Particle*, Ints>  &map,
 }
 }
 
-InteractionGraph get_interaction_graph(Model *m,
-                                       const ParticlesTemp &ps) {
+InteractionGraph get_interaction_graph(const ParticlesTemp &ps,
+                                       const RestraintsTemp &rs) {
   InteractionGraph ret(ps.size());
+  Model *m= ps[0]->get_model();
   std::map<Particle*, int> map;
   IGVertexMap pm= boost::get(boost::vertex_name, ret);
   DependencyGraph dg
     = get_dependency_graph(ScoreStatesTemp(m->score_states_begin(),
                                            m->score_states_end()),
-                           get_restraints(m->restraints_begin(),
-                                          m->restraints_end(),
-                                          1.0).first);
+                           rs);
   /*IMP_IF_LOG(VERBOSE) {
     IMP_LOG(VERBOSE, "dependency graph is \n");
     IMP::internal::show_as_graphviz(dg, std::cout);
@@ -258,6 +262,42 @@ InteractionGraph get_interaction_graph(Model *m,
                      << " vs " << ps.size());
   return ret;
 }
+
+
+display::Geometries
+get_interaction_graph_geometry(const InteractionGraph &ig) {
+  display::Geometries ret;
+  IGVertexConstMap vm= boost::get(boost::vertex_name, ig);
+  IGEdgeConstMap em= boost::get(boost::edge_name, ig);
+  std::map<std::string, display::Color> colors;
+  for (std::pair<IGTraits::vertex_iterator,
+         IGTraits::vertex_iterator> be= boost::vertices(ig);
+       be.first != be.second; ++be.first) {
+    Particle *p= dynamic_cast<Particle*>(vm[*be.first]);
+    core::XYZ pd(p);
+    for (std::pair<IGTraits::out_edge_iterator,
+           IGTraits::out_edge_iterator> ebe= boost::out_edges(*be.first, ig);
+         ebe.first != ebe.second; ++ebe.first) {
+      unsigned int target= boost::target(*ebe.first, ig);
+      if (target > *be.first) continue;
+      Particle *op= dynamic_cast<Particle*>(vm[target]);
+      core::XYZ od(op);
+      std::string on= em[*ebe.first]->get_name();
+      IMP_NEW(display::SegmentGeometry, cg,
+              (algebra::Segment3D(pd.get_coordinates(),
+                                  od.get_coordinates())));
+      if (colors.find(em[*ebe.first]->get_name()) == colors.end()) {
+        colors[em[*ebe.first]->get_name()]
+          = display::get_display_color(colors.size());
+      }
+      cg->set_color(colors[em[*ebe.first]->get_name()]);
+      cg->set_name(on);
+      ret.push_back(cg);
+    }
+  }
+  return ret;
+}
+
 
 ParticlesTemp get_dependent_particles(Particle *p,
                                       const DependencyGraph &dg) {

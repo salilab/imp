@@ -16,6 +16,7 @@
 #include <boost/shared_array.hpp>
 #include <boost/functional/hash.hpp>
 #include <algorithm>
+#include <boost/functional/hash/hash.hpp>
 
 IMPDOMINO2_BEGIN_NAMESPACE
 
@@ -64,6 +65,13 @@ class IMPDOMINO2EXPORT Subset {
     sz_(ps.size()) {
     std::sort(ps.begin(), ps.end());
     std::copy(ps.begin(), ps.end(), ps_.get());
+    IMP_USAGE_CHECK(std::unique(ps.begin(), ps.end()) == ps.end(),
+                    "Duplicate particles in set");
+    IMP_IF_CHECK(USAGE) {
+      for (unsigned int i=0; i< ps.size(); ++i) {
+        IMP_CHECK_OBJECT(ps[i]);
+      }
+    }
   }
   unsigned int size() const {
     return sz_;

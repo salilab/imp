@@ -77,6 +77,7 @@ public:                                                         \
 #define IMP_SUBSET_FILTER(Name)                                \
   public:                                                      \
   virtual bool get_is_ok(const SubsetState& state) const;      \
+  virtual double get_strength() const;                         \
  IMP_OBJECT(Name)
 
 
@@ -87,5 +88,15 @@ public:                                                         \
   public:                                                       \
   SubsetStatesList do_get_sample_states(const Subset &known) const; \
   IMP_OBJECT(Name)
+
+
+/** This macro declares:
+    - IMP::domino2::SubsetGraphTable::get_subset_graph()
+    - IMP::Object methods
+ */
+#define IMP_SUBSET_GRAPH_TABLE(Name)                            \
+  public:                                                       \
+SubsetGraph get_subset_graph(ParticleStatesTable *pst) const;   \
+IMP_OBJECT(Name)
 
 #endif  /* IMPDOMINO2_MACROS_H */

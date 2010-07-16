@@ -1,4 +1,4 @@
 Import('env')
 
 env.IMPModuleBuild(version='SVN',
-                   required_modules=['statistics', 'container', 'core'])
+                   required_modules=['statistics', 'display', 'container', 'core'])

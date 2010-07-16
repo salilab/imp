@@ -16,6 +16,8 @@
 #include <IMP/RestraintSet.h>
 #include <IMP/Model.h>
 #include <IMP/core/internal/CoreClosePairContainer.h>
+#include <IMP/display/Writer.h>
+#include <IMP/domino2/subset_graphs.h>
 
 #include <boost/graph/kruskal_min_spanning_tree.hpp>
 #include <boost/graph/prim_minimum_spanning_tree.hpp>
@@ -57,8 +59,15 @@ IMP_GRAPH(InteractionGraph, undirected, Particle*, Object*);
     @{
  */
 IMPDOMINO2EXPORT InteractionGraph
-get_interaction_graph(Model *m,
-                      const ParticlesTemp &particles);
+get_interaction_graph(const ParticlesTemp &particles,
+                      const RestraintsTemp &rs);
+
+/** Assuming that all the particles have Cartesian coordinates,
+    output edges corresponding to the edges in the interaction graph.
+    The edges are named by the restraint which induces them.
+*/
+IMPDOMINO2EXPORT display::Geometries
+get_interaction_graph_geometry(const InteractionGraph &ig);
 
 /** Returns the subset of particles that depend on p as input. This
     will include p.
@@ -75,11 +84,6 @@ IMPDOMINO2EXPORT ParticlesTemp
 get_dependent_particles(Particle *p,
                         const DependencyGraph &dg);
 
-
-/** A directed graph on subsets of vertices. Each vertex is
-    named with an Subset.
- */
-IMP_GRAPH(SubsetGraph, undirected, Subset, int);
 
 
 /** Compute the exact junction tree for an interaction graph. The resulting

@@ -51,9 +51,9 @@ class DOMINOTests(IMP.test.TestCase):
         all_states= self._get_full_list(pst, lsc)
         print "There are ", len(all_states), "states"
         r= IMP.core.DistanceRestraint(IMP.core.Harmonic(1,2),
-                                      lsc[0],
-                                      lsc[1])
-        r.set_name("0 1");
+                                      lsc[1],
+                                      lsc[2])
+        r.set_name("1 2");
         m.add_restraint(r)
         ds= IMP.domino2.DominoSampler(m)
         ds.set_maximum_score(.5)
@@ -69,10 +69,10 @@ class DOMINOTests(IMP.test.TestCase):
             s= ss.get_state(i)
             print s
             found_states.append(s)
-            self.assertEqual((s[0]-s[1])**2, 1)
+            self.assertEqual((s[1]-s[2])**2, 1)
             self.assert_(s in all_states)
         for s in all_states:
-            if (s[0]-s[1])**2==1:
+            if (s[1]-s[2])**2==1:
                 print s
                 self.assert_(s in found_states)
 

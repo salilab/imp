@@ -53,19 +53,15 @@ SubsetStatesList DominoSampler
   IMP_LOG(TERSE, "Sampling with " << known_particles.size()
           << " particles as " << known_particles << std::endl);
   ParticlesTemp pt(known_particles.begin(), known_particles.end());
-  InteractionGraph ig= get_interaction_graph(get_model(),
-                                             pt);
-  IMP_IF_LOG(TERSE) {
-    IMP_LOG(TERSE, "Interaction graph is " << boost::num_vertices(ig));
-    // for some reason output to the ostringstream doesn't work
-    //std::ostringstream oss;
-    IMP::internal::show_as_graphviz(ig, std::cout);
-    //oss << std::endl;
-    //IMP_LOG(TERSE, oss.str() << std::endl);
+  Pointer<SubsetGraphTable> sgt;
+  if (sgt_) {
+    sgt= sgt_;
+  } else {
+    sgt= new JunctionTreeTable(get_model()->get_root_restraint_set());
   }
-  SubsetGraph jt=get_junction_tree(ig);
+  SubsetGraph jt=sgt->get_subset_graph(get_particle_states_table());
   IMP_IF_LOG(TERSE) {
-    IMP_LOG(TERSE, "Junction tree is ");
+    IMP_LOG(TERSE, "Subset graph is ");
     //std::ostringstream oss;
     IMP::internal::show_as_graphviz(jt, std::cout);
     //oss << std::endl;
@@ -85,6 +81,10 @@ SubsetStatesList DominoSampler
                     sfts,
                     get_maximum_score());
   return final_solutions;
+}
+
+void DominoSampler::set_subset_graph_table(SubsetGraphTable *s) {
+  sgt_=s;
 }
 
 void DominoSampler::do_show(std::ostream &out) const {

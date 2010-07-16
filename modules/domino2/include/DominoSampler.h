@@ -26,10 +26,20 @@ IMPDOMINO2_BEGIN_NAMESPACE
 class IMPDOMINO2EXPORT DominoSampler : public DiscreteSampler
 {
   Pointer<SubsetStatesTable> sst_;
+  IMP::internal::OwnerPointer<SubsetGraphTable> sgt_;
  public:
   DominoSampler(Model *m);
   DominoSampler(Model*m, ParticleStatesTable *pst);
   IMP_DISCRETE_SAMPLER(DominoSampler);
+ public:
+  /** \name Advanced
+      Default values are provided, you only need to replace these
+      if you want to do something special. See the overview of
+      the module for a general description.
+      @{
+  */
+  void set_subset_graph_table(SubsetGraphTable *sgt);
+  /** @} */
 };
 
 

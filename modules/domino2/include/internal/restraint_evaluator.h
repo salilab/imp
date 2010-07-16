@@ -14,6 +14,11 @@
 #include "../particle_states.h"
 //#include "inference.h"
 #include <IMP/Restraint.h>
+#if IMP_BOOST_VERSION > 103900
+#include <boost/unordered_map.hpp>
+#else
+#include <map>
+#endif
 
 
 IMPDOMINO2_BEGIN_INTERNAL_NAMESPACE
@@ -25,7 +30,11 @@ IMPDOMINO2_BEGIN_INTERNAL_NAMESPACE
   - cache of scores for subset state
  */
 class RestraintData {
-  typedef  std::map<SubsetState, double> Scores;
+  //#if IMP_BOOST_VERSION > 103900
+//typedef  boost::unordered_map<SubsetState, double> Scores;
+//#else
+  typedef std::map<SubsetState, double> Scores;
+  //#endif
   mutable Scores scores_;
   Pointer<Restraint> r_;
   double weight_;
@@ -56,7 +65,6 @@ public:
         pst->get_particle_states(ps[i])->load_state(state[i], ps[i]);
       }
       double score= r_->evaluate(false)*weight_;
-      scores_[state]=score;
       if (Filter) {
         ++filter_attempts_;
         if (score >max_) {
@@ -65,6 +73,7 @@ public:
           ++filter_passes_;
         }
       }
+      scores_[state]=score;
       /*std::cout << "Computed score for " << r_->get_name()
         << " on " << state << "= " << score << std::endl;*/
       return score;
@@ -90,6 +99,9 @@ public:
              const Subset &s): md_(md), ris_(ris), indices_(indices), s_(s){}
   double get_score(const SubsetState &state) const;
   bool get_is_ok(const SubsetState &state) const;
+  unsigned int get_number_of_restraints() const {
+    return ris_.size();
+  }
 };
 
 struct IMPDOMINO2EXPORT ModelData {
@@ -118,7 +130,8 @@ struct IMPDOMINO2EXPORT ModelData {
   Pointer<ParticleStatesTable> pst_;
   mutable std::map<const SubsetID, SubsetData> sdata_;
 
-  ModelData(Model *m, const DependencyGraph &dg,
+  ModelData(Model *m, RestraintSet *rs,
+            const DependencyGraph &dg,
             ParticleStatesTable* pst);
   void set_sampler(const Sampler *s);
   const SubsetData &get_subset_data(const Subset &s,

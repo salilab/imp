@@ -37,6 +37,9 @@ namespace {
                                const internal::SubsetData &data,
                                double max): keepalive_(t), data_(data),
                                             max_(max) {
+      /*std::cout << "Found " << data_.get_number_of_restraints()\
+        << " restraints."
+        << std::endl;*/
     }
     IMP_SUBSET_FILTER(RestraintScoreSubsetFilter);
   };
@@ -46,6 +49,10 @@ namespace {
   }
 
   void RestraintScoreSubsetFilter::do_show(std::ostream &out) const{}
+}
+
+double RestraintScoreSubsetFilter::get_strength() const {
+  return 1-std::pow(.5, static_cast<int>(data_.get_number_of_restraints()));
 }
 
 RestraintScoreSubsetFilterTable::StatsPrinter::~StatsPrinter() {
@@ -98,6 +105,16 @@ namespace {
     }
     IMP_SUBSET_FILTER(PermutationSubsetFilter);
   };
+  template <bool EQ>
+  double PermutationSubsetFilter<EQ>::get_strength() const {
+    double r=1;
+    for (unsigned int i=0; i< exclusions_.size(); ++i) {
+      for (unsigned int j=0; j < exclusions_[i].second.size(); ++j) {
+        r*=(EQ?.1:.9);
+      }
+    }
+    return 1-r;
+  }
   template <bool EQ>
   bool PermutationSubsetFilter<EQ>::get_is_ok(const SubsetState &state) const{
     for (unsigned int i=0; i< exclusions_.size(); ++i) {

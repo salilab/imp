@@ -11,6 +11,7 @@ files = [
          'particle_states.h',
          'subset_evaluators.h',
          'subset_filters.h',
+         'subset_graphs.h',
          'subset_states.h',
          'utility.h',
         ] \
