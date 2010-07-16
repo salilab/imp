@@ -15,14 +15,13 @@
 #include <IMP/domino2/internal/inference.h>
 #include <IMP/core/XYZ.h>
 #include <boost/iterator/permutation_iterator.hpp>
-#include <debug/vector>
 
 
 IMPDOMINO2_BEGIN_NAMESPACE
 SubsetStates::~SubsetStates(){}
 SubsetStatesTable::~SubsetStatesTable(){}
 
-typedef __gnu_debug::vector<int> Ints;
+typedef std::vector<int> Ints;
 
 namespace {
   typedef std::map<Particle*, Particle*> IParent;
