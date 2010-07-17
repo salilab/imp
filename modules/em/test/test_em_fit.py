@@ -60,6 +60,7 @@ class FittingTest(IMP.test.TestCase):
     def setUp(self):
         """Build test model and optimizer"""
         IMP.test.TestCase.setUp(self)
+        IMP.set_log_level(IMP.VERBOSE)
         self.imp_model = IMP.Model()
 
         self.restraint_sets = []
@@ -69,7 +70,7 @@ class FittingTest(IMP.test.TestCase):
         self.load_particles()
 
         self.opt = IMP.core.ConjugateGradients()
-
+        self.rb_refiner=IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
     def test_load_nonexistent_file(self):
         """Check that load of nonexistent file is handled cleanly"""
 #        scene = EM.DensityMap()
@@ -78,7 +79,9 @@ class FittingTest(IMP.test.TestCase):
 
     def test_em_fit(self):
         """Check that correlation of particles with their own density is 1"""
-        r = IMP.em.FitRestraint(self.particles,self.scene,
+        for p in self.particles:
+            print "is rigid body?",IMP.core.RigidBody.particle_is_instance(p)
+        r = IMP.em.FitRestraint(self.particles,self.scene,self.rb_refiner,
                                 self.radius_key,
                                 self.weight_key, 1.0)
         self.imp_model.add_restraint(r)
@@ -89,7 +92,7 @@ class FittingTest(IMP.test.TestCase):
     def test_cast(self):
         """Make sure that we can cast Restraint* to FitRestraint*"""
         m = self.imp_model
-        r1 = IMP.em.FitRestraint(self.particles,self.scene,
+        r1 = IMP.em.FitRestraint(self.particles,self.scene,self.rb_refiner,
                                  self.radius_key,
                                  self.weight_key, 1.0)
         sf = IMP.core.Harmonic(10.0, 0.1)
@@ -104,7 +107,7 @@ class FittingTest(IMP.test.TestCase):
         self.assert_(IMP.em.FitRestraint.cast(r2) is None)
     def test_get_methods(self):
         """Check FitRestraint's get methods"""
-        r1 = IMP.em.FitRestraint(self.particles,self.scene,
+        r1 = IMP.em.FitRestraint(self.particles,self.scene,self.rb_refiner,
                                  self.radius_key,
                                  self.weight_key, 1.0)
         self.assert_(isinstance(r1.get_model_dens_map(),

@@ -20,12 +20,13 @@ IMPEM_BEGIN_NAMESPACE
 FitRestraint::FitRestraint(
    Particles ps,
    DensityMap *em_map,
+   Refiner *refiner,
    FloatKey radius_key,
    FloatKey weight_key,
    float scale,
    bool special_treatment_of_particles_outside_of_density,
-   bool use_fast_version,
-   Refiner *refiner): Restraint("Fit restraint")
+   bool use_fast_version
+   ): Restraint("Fit restraint")
 {
   special_treatment_of_particles_outside_of_density_=
     special_treatment_of_particles_outside_of_density;
@@ -64,8 +65,11 @@ FitRestraint::FitRestraint(
   resample();
   IMP_LOG(VERBOSE, "RSR_EM_Fit::RSR_EM_Fit after resample " << std::endl);
 }
+
 void FitRestraint::initialize_model_density_map(
   FloatKey radius_key,FloatKey weight_key) {
+  //none_rb_model_dens_map_ will include all particles
+  //that are not part of a rigid body
   none_rb_model_dens_map_ =
     new SampledDensityMap(*(target_dens_map_->get_header()));
   none_rb_model_dens_map_->reset_data(0.0);
@@ -80,7 +84,7 @@ void FitRestraint::initialize_model_density_map(
       rbs_orig_trans_.push_back(rb.get_transformation().get_inverse());
       rb_model_dens_map_.push_back(
         new SampledDensityMap(*(target_dens_map_->get_header())));
-      Particles rb_ps=Particles(core::get_leaves(atom::Hierarchy(*it)));
+      Particles rb_ps=rb_refiner_->get_refined(*it);
       rb_model_dens_map_[rb_model_dens_map_.size()-1]->
         set_particles(rb_ps,radius_key,weight_key);
       rb_model_dens_map_[rb_model_dens_map_.size()-1]->resample();

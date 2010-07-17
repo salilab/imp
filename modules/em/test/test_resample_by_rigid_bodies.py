@@ -41,6 +41,7 @@ class ResamplingTest(IMP.test.TestCase):
         IMP.set_log_level(IMP.SILENT)#VERBOSE)
         self.imp_model = IMP.Model()
         self.load_proteins()
+        self.rb_refiner=IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
     def test_resample(self):
         """test resampling with and without rigid bodies"""
         #load as lots of particles, generate EM map, use it to define restraint
@@ -49,8 +50,8 @@ class ResamplingTest(IMP.test.TestCase):
             self.ps_all+=self.pss[n]
         map=IMP.em.particles2density(self.ps_all,8,1.5)
         map.calcRMS()
-        self.restr_ps_all=IMP.em.FitRestraint(self.ps_all,map,self.radius_key,self.weight_key,1,False,True)
-        self.restr_rb_all_fast=IMP.em.FitRestraint(self.rbs_of_copy,map,self.radius_key,self.weight_key,1,False,True)
+        self.restr_ps_all=IMP.em.FitRestraint(self.ps_all,map,self.rb_refiner,self.radius_key,self.weight_key,1,False,True)
+        self.restr_rb_all_fast=IMP.em.FitRestraint(self.rbs_of_copy,map,self.rb_refiner,self.radius_key,self.weight_key,1,False,True)
         self.imp_model.add_restraint(self.restr_ps_all)
         self.imp_model.add_restraint(self.restr_rb_all_fast)
         score1=self.restr_ps_all.evaluate(False)
@@ -93,9 +94,9 @@ class ResamplingTest(IMP.test.TestCase):
             self.ps_all+=self.pss[n]
         map=IMP.em.particles2density(self.ps_all,8,1.5)
         map.calcRMS()
-        self.restr_ps_all=IMP.em.FitRestraint(self.ps_all,map,self.radius_key,self.weight_key,1,False,True)
-        self.restr_rb_all_fast=IMP.em.FitRestraint(self.rbs_of_copy,map,self.radius_key,self.weight_key,1,False,True)
-        self.restr_rb_all_slow=IMP.em.FitRestraint(self.rbs_of_copy,map,self.radius_key,self.weight_key,1,False,False)
+        self.restr_ps_all=IMP.em.FitRestraint(self.ps_all,map,self.rb_refiner,self.radius_key,self.weight_key,1,False,True)
+        self.restr_rb_all_fast=IMP.em.FitRestraint(self.rbs_of_copy,map,self.rb_refiner,self.radius_key,self.weight_key,1,False,True)
+        self.restr_rb_all_slow=IMP.em.FitRestraint(self.rbs_of_copy,map,self.rb_refiner,self.radius_key,self.weight_key,1,False,False)
         self.imp_model.add_restraint(self.restr_ps_all)
         self.imp_model.add_restraint(self.restr_rb_all_fast)
         self.imp_model.add_restraint(self.restr_rb_all_slow)

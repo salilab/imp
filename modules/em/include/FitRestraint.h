@@ -36,6 +36,7 @@ public:
   /**
     \param[in] ps The particles participating in the fitting score
     \param[in] em_map  The density map used in the fitting score
+    \param[in] refiner rigid body refiner
     \param[in] radius_key the name of the radius attribute of the particles
     \param[in] weight_key the name of the weight attribute of the particles
     \param[in] scale multiply the fitting restraint score and derivatives
@@ -45,7 +46,6 @@ public:
        push it back using upper-bound harmonic
     \param[in] use_fast_version if true densities of rigid-bodies are
                interpolated and not resampled.
-   \param[in] refiner rigid body refiner
     \note In many optimization senarios particles are can be found outside of
   the density. When all particles are outside of the density the
   cross-correlation score is zero and the derivatives are meaningless.
@@ -59,13 +59,12 @@ public:
    */
   FitRestraint(Particles ps,
                DensityMap *em_map,
+               Refiner *refiner,
                FloatKey radius_key= IMP::core::XYZR::get_default_radius_key(),
                FloatKey weight_key= IMP::atom::Mass::get_mass_key(),
                float scale=1,
                bool special_treatment_of_particles_outside_of_density=true,
-               bool use_fast_version=true,
-               Refiner *refiner =
-                   IMP::core::internal::get_rigid_members_refiner());
+               bool use_fast_version=true);
 
   //! \return the predicted density map of the model
   SampledDensityMap *get_model_dens_map() {
