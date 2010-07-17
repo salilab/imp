@@ -61,12 +61,6 @@ public:
   /** @} */
 #endif
 
-  //! Print information about the refiner
-  /** It should end in a new line. */
-  virtual void show(std::ostream &out=std::cout) const {
-    out << "Refiner base" << std::endl;
-  };
-
   //! Get information about the author and version
   virtual IMP::VersionInfo get_version_info() const =0;
 
