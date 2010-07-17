@@ -36,11 +36,10 @@ public:
   //! get c value (constant)
   double get_c() const { return c_; }
 
-  //! show equation
-  void show(std::ostream &out=std::cout) const {
-    out << "y = " << a_ << "x^2 + " << b_ << "x + " << c_ << std::endl;
-    out << "Error = " << error_ << std::endl;
-  }
+  IMP_SHOWABLE_INLINE(ParabolicFit,{
+      out << "y = " << a_ << "x^2 + " << b_ << "x + " << c_ << std::endl;
+      out << "Error = " << error_ << std::endl;
+    });
 
  private:
   void find_regression();

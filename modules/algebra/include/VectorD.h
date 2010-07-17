@@ -253,6 +253,9 @@ public:
     show(oss);
     return oss.str();
   }
+  std::string __repr__() const {
+    return __str__();
+  }
 #endif
 
   typedef double* CoordinateIterator;

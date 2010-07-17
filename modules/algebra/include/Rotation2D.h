@@ -84,9 +84,8 @@ public:
   }
 
   //! Prints the angle
-  void show(std::ostream& out = std::cout) const {
-    out << "Rotation2D (radians): " << angle_;
-  }
+  IMP_SHOWABLE_INLINE(Rotation2D,
+                      out << "Rotation2D (radians): " << angle_;);
 
 private:
   double angle_; // angle

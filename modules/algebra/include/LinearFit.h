@@ -34,10 +34,10 @@ public:
   double get_b() const { return b_; }
 
   //! show equation
-  void show(std::ostream &out=std::cout) const {
-    out << "y = " << a_ << "x + " << b_ << std::endl;
-    out << "Error = " << error_ << std::endl;
-  }
+  IMP_SHOWABLE_INLINE(LinearFit,
+                      {out << "y = " << a_ << "x + " << b_ << std::endl;
+                        out << "Error = " << error_ << std::endl;
+                      });
 
  private:
   void find_regression();

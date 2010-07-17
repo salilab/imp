@@ -112,11 +112,10 @@ public:
     trans_[1]=v[1];
   }
 
-  //! Prints the transformation
-  void show(std::ostream& out = std::cout) const {
-    rot_.show(out);
-    out << " || " << trans_;
-  }
+  IMP_SHOWABLE_INLINE(Transformation2D, {
+      rot_.show(out);
+      out << " || " << trans_;
+    });
 
   //! Returns the inverse transformation
   Transformation2D get_inverse() const;
