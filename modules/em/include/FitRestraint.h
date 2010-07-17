@@ -67,7 +67,7 @@ public:
                bool use_fast_version=true);
 
   //! \return the predicted density map of the model
-  SampledDensityMap *get_model_dens_map() {
+  SampledDensityMap * get_model_dens_map() {
     return model_dens_map_;
   }
 
@@ -86,10 +86,10 @@ private:
                                     FloatKey weight_key);
 
   IMP::internal::OwnerPointer<DensityMap> target_dens_map_;
-  SampledDensityMap *model_dens_map_;
-  std::vector<SampledDensityMap *> rb_model_dens_map_;
+  mutable internal::OwnerPointer<SampledDensityMap> model_dens_map_;
+  mutable SampledDensityMaps rb_model_dens_map_;
   RigidBodiesDerivativesCache rb_rsq_;
-  SampledDensityMap * none_rb_model_dens_map_;
+  mutable internal::OwnerPointer<SampledDensityMap> none_rb_model_dens_map_;
   algebra::BoundingBoxD<3> target_bounding_box_;
   // reference to the IMP environment
   float scalefac_;
@@ -102,7 +102,7 @@ private:
   IMP::Particles not_rb_; //all particles that are not part of a rigid body
   IMP::core::RigidBodies rbs_;
   std::vector<IMP::algebra::Transformation3D> rbs_orig_trans_;
-  Refiner *rb_refiner_;//refiner for rigid bodies
+  internal::OwnerPointer<Refiner> rb_refiner_;//refiner for rigid bodies
 };
 
 IMPEM_END_NAMESPACE

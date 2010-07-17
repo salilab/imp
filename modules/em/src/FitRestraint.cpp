@@ -106,30 +106,19 @@ void FitRestraint::resample() const {
   //resample the map containing all non rigid body particles
   //this map has all of the non rigid body particles.
   if (not_rb_.size()>0) {
-    //note - writable_none_rb_model_dens_map points to
-    //none_rb_model_dens_map_
-    SampledDensityMap *
-      writable_none_rb_model_dens_map =
-        const_cast <SampledDensityMap *>(none_rb_model_dens_map_);
-    IMP_LOG(VERBOSE,"in resample going to resample: "<<
-       "writable_none_rb_model_dens_map"<<std::endl);
-     writable_none_rb_model_dens_map->resample();
+    none_rb_model_dens_map_->resample();
   }
-  SampledDensityMap* writable_model_dens_map =
-    const_cast <SampledDensityMap* > (model_dens_map_);
-  IMP_LOG(VERBOSE,"in resample going to copy "<<
-          "writable_model_dens_map"<<std::endl);
-  writable_model_dens_map->copy_map(*none_rb_model_dens_map_);
+  model_dens_map_->copy_map(*none_rb_model_dens_map_);
   for(unsigned int rb_i=0;rb_i<rbs_.size();rb_i++) {
     if (use_fast_version_) {
       DensityMap *transformed = get_transformed(
          rb_model_dens_map_[rb_i],
          rbs_[rb_i].get_transformation()*rbs_orig_trans_[rb_i]);
-      writable_model_dens_map->add(*transformed);
+      model_dens_map_->add(*transformed);
     }
     else {
       rb_model_dens_map_[rb_i]->resample();
-      writable_model_dens_map->add(*(rb_model_dens_map_[rb_i]));
+      model_dens_map_->add(*(rb_model_dens_map_[rb_i]));
     }
   }
 }
