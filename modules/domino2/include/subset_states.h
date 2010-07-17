@@ -89,7 +89,12 @@ public:
 */
 class IMPDOMINO2EXPORT BranchAndBoundSubsetStatesTable:
   public SubsetStatesTable {
+#if _MSC_VER && !defined(SWIG) && !defined(IMP_DOXYGEN)
+/* MSVC appears confused by a friend class in the anonymous namespace */
+public:
+#else
   friend class BranchAndBoundSubsetStates;
+#endif
   Pointer<ParticleStatesTable> pst_;
   SubsetFilterTables sft_;
  public:
