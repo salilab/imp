@@ -18,6 +18,7 @@
 #include <IMP/em/converters.h>
 #include <IMP/algebra/eigen_analysis.h>
 #include <IMP/algebra/ReferenceFrame3D.h>
+#include <IMP/core/LeavesRefiner.h>
 IMPEM_BEGIN_NAMESPACE
 
 
@@ -37,12 +38,15 @@ RestraintSet * add_restraints(Model *model, DensityMap *dmap,
    model->add_restraint(rsrs);
    //add fitting restraint
    FitRestraint *fit_rs;
+   IMP_NEW(core::LeavesRefiner,leaves_ref,(atom::Hierarchy::get_traits()));
    if (fast) {
-     fit_rs = new FitRestraint(rb.get_particle(),dmap,rad_key,wei_key,1.0,fast);
+_ref->get_refined(rb).size()<<std::endl;
+     fit_rs = new FitRestraint(rb.get_particle(),dmap,leaves_ref,
+                               rad_key,wei_key,1.0,fast);
    }
    else {
-     fit_rs = new FitRestraint(IMP::core::get_leaves(
-                IMP::atom::Hierarchy(rb)),dmap,rad_key,wei_key,1.0,fast);
+     fit_rs = new FitRestraint(leaves_ref->get_refined(rb),
+                               dmap,leaves_ref,rad_key,wei_key,1.0,fast);
    }
    rsrs->add_restraint(fit_rs);
    return rsrs;
@@ -170,11 +174,6 @@ FittingSolutions local_rigid_fitting_around_point(
      }
      IMP_LOG(TERSE, std::endl);
    }
-   std::cout<< "Solutions are: ";
-     for (int i=0; i < fr.get_number_of_solutions(); ++i) {
-       std::cout<<fr.get_score(i) << " ||" << fr.get_transformation(i)
-                << " -- "<<std::endl;
-     }
     //remove restraints
     model->remove_restraint(rsrs);
     IMP_LOG(TERSE,"end rigid fitting " <<std::endl);

@@ -22,9 +22,7 @@ float CoarseCC::evaluate(DensityMap &em_map,
                          Refiner *rb_refiner )
 {
   //resample the map for the particle provided
-  std::cout<<"resample flag:"<<resample<<std::endl;
   if (resample) {
-    std::cout<<"going to resample internal"<<std::endl;
      model_map.resample();
   }
 
@@ -36,10 +34,8 @@ float CoarseCC::evaluate(DensityMap &em_map,
   }
   emreal voxel_data_threshold=model_map.get_header()->dmin-EPS;
   // here we ask not to recalculate the rms ( already calculated)
-  std::cout<<"before escore "<<std::endl;
   float escore = cross_correlation_coefficient(em_map, model_map,
                          voxel_data_threshold,false,divide_by_rms);
-  std::cout<<"after escore "<<std::endl;
   IMP_LOG(VERBOSE, "CoarseCC::evaluate parameters:  threshold:"
           << voxel_data_threshold << " divide_by_rms: " << divide_by_rms
           << std::endl);
@@ -159,7 +155,6 @@ float CoarseCC::cross_correlation_coefficient(const DensityMap &em_map,
                        "No voxels participated in the calculation"<<
                        " may be that the voxel_data_threshold:" <<
                        voxel_data_threshold <<" is off"<<std::endl);
-    std::cout<<"cCcc:"<<ccc<<std::endl;
     if (divide_by_rms) {
       ccc = (ccc-nvox*em_header->dmean*model_header->dmean)
             /(nvox*em_header->rms * model_header->rms);
@@ -320,7 +315,6 @@ void CoarseCC::calc_derivatives(
   FloatKey x_key=IMP::core::XYZ::get_coordinate_key(0);
   FloatKey y_key=IMP::core::XYZ::get_coordinate_key(1);
   FloatKey z_key=IMP::core::XYZ::get_coordinate_key(2);
-  std::cout<<"going to compute derivates for "<<ps.size()<<std::endl;
   for (unsigned int ii=0; ii<ps.size(); ii++) {
       if (!core::RigidBody::particle_is_instance(ps[ii])) {
     const RadiusDependentKernelParameters *params =
@@ -369,20 +363,15 @@ void CoarseCC::calc_derivatives(
       }//not rigid body
    else { //rigid body
      //TODO - here add mapping rb_rsq check
-     std::cout<<"calculating derivatives for a rigid body"<<std::endl;
      if (rb_rsq==NULL) {
        std::cout<<"found the problem"<<std::endl;
      }
      if (rb_rsq->find(ps[ii])==rb_rsq->end()) {
        std::cout<<"here is the problem"<<std::endl;
      }
-     std::cout<<"before for rigid body"<<std::endl;
      algebra::Vector3D rb_dvr =  CoarseCC::calc_derivatives_for_rigid_body(
        em_map,model_map,scalefac,
        core::RigidBody(ps[ii]),rb_rsq->find(ps[ii])->second,rb_refiner);
-     std::cout<<"after for rigid body"<<std::endl;
-     std::cout<<rb_dvr<<std::endl;
-     std::cout<<"AS"<<std::endl;
      dvx[ii] =  rb_dvr[0];
      dvy[ii] =  rb_dvr[1];
      dvz[ii] =  rb_dvr[2];
@@ -491,7 +480,6 @@ RigidBodyDerivativesCache CoarseCC::generate_rigid_body_rsq_cache(
             " the map centroid is " << em_map.get_centroid() <<std::endl);
   */
   Particles ps = refiner->get_refined(rb.get_particle());
-  std::cout<<"number of particles:"<<ps.size()<<std::endl;
   core::XYZRsTemp ps_xyzr(ps,model_map->get_radius_key());
   int ivox;
   float rsq;
