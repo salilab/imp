@@ -12,7 +12,7 @@ class ProteinFittingTest(IMP.test.TestCase):
         for fn,res in data:
             scene = IMP.em.read_map(self.get_input_file_name(fn), self.mrw)
             scene.get_header_writable().set_resolution(res)
-            r = IMP.em.FitRestraint(self.particles,scene,
+            r = IMP.em.FitRestraint(self.particles,scene,self.refiner,
                        IMP.core.XYZR.get_default_radius_key(),
                        IMP.atom.Mass.get_mass_key(),1)
             self.imp_model.add_restraint(r)
@@ -40,5 +40,6 @@ class ProteinFittingTest(IMP.test.TestCase):
                                     self.imp_model,IMP.atom.NonWaterPDBSelector())
         IMP.atom.add_radii(self.mh)
         self.particles = IMP.Particles(IMP.core.get_leaves(self.mh))
+        self.refiner=IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
 if __name__ == '__main__':
     unittest.main()
