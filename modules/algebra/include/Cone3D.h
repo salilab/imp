@@ -50,9 +50,7 @@ class IMPALGEBRAEXPORT Cone3D
   /** The cone is on the positive side of the plane.
    */
   Plane3D get_base_plane() const;
-  void show(std::ostream &out) const {
-    out << seg_ << ": " << radius_;
-  }
+  IMP_SHOWABLE_INLINE(Cone3D, out << seg_ << ": " << radius_;);
  private:
   Segment3D seg_;
   double radius_;
