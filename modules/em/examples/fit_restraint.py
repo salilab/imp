@@ -18,6 +18,7 @@ dmap.get_header_writable().set_resolution(resolution)
 #3. calculate the cross correlation between the density and the map
 print "The cross-correlation score is:",1.-IMP.em.compute_fitting_score(ps,dmap)
 #4. add a fitting restraint
-r= IMP.em.FitRestraint(ps, dmap)
+refiner=IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
+r= IMP.em.FitRestraint(ps, dmap,refiner)
 m.add_restraint(r)
 print "The fit of the particles in the density is:",r.evaluate(False)
