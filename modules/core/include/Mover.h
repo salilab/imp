@@ -58,9 +58,6 @@ public:
     IMP_CHECK_OBJECT(this);
     return opt_;
   }
-  virtual void show(std::ostream&out= std::cout) const {
-    out << "Mover doesn't implement show " << std::endl;
-  }
 
   IMP_REF_COUNTED_DESTRUCTOR(Mover);
 };
