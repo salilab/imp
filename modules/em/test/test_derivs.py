@@ -40,7 +40,7 @@ class DerivativesTest(IMP.test.TestCase):
         ## -  create a set of three particles in imp
         for i in range(3):
             self.particles.append(IMP.Particle(self.imp_model))
-
+        refiner=IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
         #add IMP Restraints into the modeller scoring function
         t = self.env.edat.energy_terms
         t.append(IMP.modeller.IMPRestraints(self.particles))
@@ -92,6 +92,7 @@ class DerivativesTest(IMP.test.TestCase):
         ind_emrsr = []
         ind_emrsr.append(IMP.em.FitRestraint(self.particles,
                                              em_map,
+                                             refiner,
                                              rad_key,wei_key,
                                              1.0))
         self.imp_model.add_restraint(ind_emrsr[0])
@@ -172,8 +173,10 @@ class DerivativesTest(IMP.test.TestCase):
         em_map.get_header_writable().compute_xyz_top()
         em_map.get_header_writable().set_resolution(resolution)
         ind_emrsr = []
+        refiner=IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
         ind_emrsr.append(IMP.em.FitRestraint(self.particles,
                                              em_map,
+                                             refiner,
                                              rad_key,wei_key,
                                              1.0))
         self.imp_model.add_restraint(ind_emrsr[0])
