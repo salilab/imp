@@ -24,6 +24,13 @@
 IMPEM_BEGIN_NAMESPACE
 
 
+//! A simple list of fitting solutions.
+/**
+   \see local_rigid_fitting_around_point
+   \see local_rigid_fitting_around_points
+   \see local_rigid_fitting_grid_search
+   \see compute_fitting_scores
+ */
 class IMPEMEXPORT FittingSolutions {
 typedef std::pair<algebra::Transformation3D,Float> FittingSolution;
 struct sort_by_cc
