@@ -56,9 +56,21 @@ FitRestraint::FitRestraint(
   IMP_LOG(VERBOSE,"going to initialize_model_density_map"<<std::endl);
   initialize_model_density_map(radius_key,weight_key);
    // initialize the derivatives
-  dx_.resize(get_number_of_particles(), 0.0);
-  dy_.resize(get_number_of_particles(), 0.0);
-  dz_.resize(get_number_of_particles(), 0.0);
+
+  //get all leaves particles for derivaties
+  Particles all_ps;
+  for(Particles::iterator it = ps.begin(); it != ps.end();it++) {
+    if (core::RigidBody::particle_is_instance(*it)) {
+      Particles rb_ps=rb_refiner_->get_refined(*it);
+      all_ps.insert(all_ps.end(),rb_ps.begin(),rb_ps.end());
+    }
+    else {
+      all_ps.push_back(*it);
+    }
+  }
+  dx_.resize(all_ps.size(), 0.0);
+  dy_.resize(all_ps.size(), 0.0);
+  dz_.resize(all_ps.size(), 0.0);
   // normalize the target density data
   //target_dens_map->std_normalize();
   IMP_LOG(VERBOSE, "RSR_EM_Fit::RSR_EM_Fit after std norm" << std::endl);
@@ -216,7 +228,6 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
                                           *accum);
     }
   }
-
   IMP_LOG(VERBOSE, "Finish calculating fit restraint with emscore of : "
          << score << std::endl);
   return score;

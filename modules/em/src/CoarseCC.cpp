@@ -284,6 +284,7 @@ void CoarseCC::calc_derivatives(
                              const RigidBodiesDerivativesCache *rb_rsq,
                              Refiner *rb_refiner)
 {
+
   float tdvx = 0., tdvy = 0., tdvz = 0., tmp,rsq;
   int iminx, iminy, iminz, imaxx, imaxy, imaxz;
 
@@ -302,7 +303,6 @@ void CoarseCC::calc_derivatives(
   //lim = 0.00000001;
   long nvox = em_header->get_number_of_voxels();
   long ivox;
-
   // validate that the model and em maps are not empty
   IMP_USAGE_CHECK(em_header->rms >= EPS,
             "EM map is empty ! em_header->rms = " << em_header->rms);
@@ -399,6 +399,7 @@ algebra::Vector3D CoarseCC::calc_derivatives_for_rigid_body(
   long  nvox = em_header->get_number_of_voxels();
   int ivox;
   core::XYZRsTemp ps_xyzr(ps,model_map.get_radius_key());
+
   for(int i=0;i<ps_xyzr.size();i++){
     const RadiusDependentKernelParameters *params =
       model_map.get_kernel_params()->get_params(ps_xyzr[i].get_radius());
