@@ -27,23 +27,6 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-namespace {
-class ScoreWeightedIncrementalBallMover :public Mover
-{
-public:
-  ScoreWeightedIncrementalBallMover(const Particles &ps,
-                                    unsigned int n,
-                                    Float radius);
-  IMP_MOVER(ScoreWeightedIncrementalBallMover);
-private:
-  const Particles ps_;
-  unsigned int n_;
-  Float radius_;
-  ParticlesTemp moved_;
-  std::vector<std::pair<Restraint*, Ints> > deps_;
-};
-
-
 class CollectVisitor: public boost::default_dfs_visitor {
   const std::map<Particle*, int> &lu_;
   boost::property_map<DependencyGraph,
@@ -76,6 +59,24 @@ public:
     }
   }
 };
+
+
+namespace {
+class ScoreWeightedIncrementalBallMover :public Mover
+{
+public:
+  ScoreWeightedIncrementalBallMover(const Particles &ps,
+                                    unsigned int n,
+                                    Float radius);
+  IMP_MOVER(ScoreWeightedIncrementalBallMover);
+private:
+  const Particles ps_;
+  unsigned int n_;
+  Float radius_;
+  ParticlesTemp moved_;
+  std::vector<std::pair<Restraint*, Ints> > deps_;
+};
+
 
 ScoreWeightedIncrementalBallMover
 ::ScoreWeightedIncrementalBallMover(const Particles& sc,
