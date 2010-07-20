@@ -103,5 +103,13 @@ class PDBReadWriteTest(IMP.test.TestCase):
                               m, IMP.atom.HydrogenPDBSelector())
         a= IMP.atom.get_leaves(mp)
         self.assertEqual(len(a), 22)
+    def test_read_non_prob(self):
+        """Check that problem lines are read properly"""
+        IMP.set_log_level(IMP.VERBOSE)
+        m= IMP.Model()
+        mp= IMP.atom.read_pdb(self.open_input_file("problem_lines.pdb"), m)
+        a= IMP.atom.get_leaves(mp)
+        self.assertEqual(len(a), 1)
+
 if __name__ == '__main__':
     unittest.main()
