@@ -187,21 +187,35 @@ class PPDBSelector : public NonAlternativePDBSelector {
   }
 };
 
-#if 0
-
-//! Only select lines liked by both selectors
-/** The two passed selectors are not deleted by this selector. */
-class AndPDBSelector: public NonAlternativePDBSelector {
-  const PDBSelector &a, &b;
+//! Select atoms which are selected by both selectors
+/** To use do something like
+    \code
+    read_pdb(name, m, AndPDBSelector(PPDBSelector(), WaterPDBSelector()));
+    \endcode
+ */
+class AndPDBSelector: public PDBSelector {
+  const PDBSelector &a_, &b_;
 public:
-  AndPDBSelector(const PDBSelector &a,
-                 const PDBSelector &b): a_(a), b_(b) {
-  }
-  bool operator()(const std::string& pdb_line) const {
-    return a_(pdb_line)&& b_(pdb_line);
+  AndPDBSelector(const PDBSelector &a, PDBSelector &b): a_(a), b_(b){}
+  bool operator()(const std::string &pdb_line) const {
+    return a_(pdb_line) && b_(pdb_line);
   }
 };
-#endif
+//! Select atoms which are selected by both selectors
+/** To use do something like
+    \code
+    read_pdb(name, m, OrPDBSelector(PPDBSelector(), WaterPDBSelector()));
+    \endcode
+ */
+class OrPDBSelector: public PDBSelector {
+  const PDBSelector &a_, &b_;
+public:
+  OrPDBSelector(const PDBSelector &a, PDBSelector &b): a_(a), b_(b){}
+  bool operator()(const std::string &pdb_line) const {
+    return a_(pdb_line) || b_(pdb_line);
+  }
+};
+
 
 /** @name PDB Reading
 
