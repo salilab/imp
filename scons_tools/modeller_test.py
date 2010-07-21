@@ -19,6 +19,26 @@ except ImportError:
         def wait(self):
             return 0
 
+def _check_default(context):
+    """Check for MODELLER in the default Python path"""
+    try:
+        import modeller
+    except ImportError, e:
+        context.Result("not found via Python import (specify installation "
+                       "path with 'modeller' scons option): %s" % str(e))
+        return False
+    try:
+        ver = modeller.info.version
+    except AttributeError, e:
+        context.Result("'import modeller' succeeded, but the package does "
+                       "not appear to be MODELLER; perhaps a 'modeller.py' "
+                       "file in the current directory?")
+        return False
+    context.Result("found via Python 'import modeller'")
+    # No need for the modpy.sh script in this case
+    context.env['MODELLER_MODPY'] = ''
+    return True
+
 def _check(context):
     """Find Modeller include and library directories"""
     context.Message('Checking for MODELLER...')
@@ -26,6 +46,9 @@ def _check(context):
     if modeller is False or modeller is 0:
         context.Result("not found")
         return False
+    if modeller is True:
+        return _check_default(context)
+
     # Find MODELLER script
     moddir = "%s/bin" % modeller
     try:
