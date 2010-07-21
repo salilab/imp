@@ -65,7 +65,7 @@ class IMPDOMINO2EXPORT ModelSubsetEvaluatorTable:
   friend class RestraintScoreSubsetFilterTable;
   Pointer<ParticleStatesTable> pst_;
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-public:
+ public:
 #endif
   internal::ModelData data_;
  public:

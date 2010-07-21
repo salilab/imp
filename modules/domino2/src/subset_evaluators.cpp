@@ -22,25 +22,6 @@ SubsetEvaluatorTable::~SubsetEvaluatorTable(){}
 
 /*************************  MODEL ******************************/
 namespace {
-template <class It>
-  RestraintsTemp get_restraints(It b, It e) {
-    RestraintsTemp ret;
-    for (It c=b; c!= e; ++c) {
-      RestraintSet *rs=dynamic_cast<RestraintSet*>(*c);
-      if (rs) {
-        IMP_LOG(TERSE, "Restraint set " << rs->get_name()
-                << std::endl);
-        RestraintsTemp o=get_restraints(rs->restraints_begin(),
-                                        rs->restraints_end(),
-                                        1.0).first;
-        ret.insert(ret.end(), o.begin(), o.end());
-      } else {
-        ret.push_back(*c);
-      }
-    }
-    return ret;
-  }
-
   class ModelSubsetEvaluator: public SubsetEvaluator {
     Pointer<const ModelSubsetEvaluatorTable> keepalive_;
     const internal::SubsetData &data_;
@@ -63,22 +44,14 @@ template <class It>
 ModelSubsetEvaluatorTable::ModelSubsetEvaluatorTable(Model *m,
                                                      ParticleStatesTable *pst):
   data_(m, m->get_root_restraint_set(),
-        get_dependency_graph(ScoreStatesTemp(m->score_states_begin(),
-                                             m->score_states_end()),
-                             get_restraints(m->restraints_begin(),
-                                            m->restraints_end(),
-                                            1.0).first),
+        get_dependency_graph(RestraintsTemp(1, m->get_root_restraint_set())),
         pst) {
 }
 
 ModelSubsetEvaluatorTable::ModelSubsetEvaluatorTable(RestraintSet *rs,
                                                      ParticleStatesTable *pst):
   data_(rs->get_model(), rs,
-  get_dependency_graph(ScoreStatesTemp(rs->get_model()->score_states_begin(),
-                                       rs->get_model()->score_states_end()),
-                             get_restraints(rs->restraints_begin(),
-                                            rs->restraints_end(),
-                                            1.0).first),
+        get_dependency_graph(RestraintsTemp(1, rs)),
         pst) {
 }
 
