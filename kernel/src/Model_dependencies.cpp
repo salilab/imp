@@ -98,14 +98,14 @@ namespace {
                           DGIndex &dgi) {
     for (It c= b; c != e; ++c) {
       DGTraits::vertex_descriptor rv= dgi.find(*c)->second;
-      IMP_LOG(VERBOSE, "Processing inputs for \""
-              << (*c)->get_name() << "\" ");
+      /*IMP_LOG(VERBOSE, "Processing inputs for \""
+        << (*c)->get_name() << "\" ");*/
       {
         ContainersTemp ct= filter((*c)->get_input_containers());
-        if (!ct.empty()) {
+        /*if (!ct.empty()) {
           IMP_LOG(VERBOSE, ", containers are "
                   << Containers(ct));
-        }
+                  }*/
         for (unsigned int j=0; j < ct.size(); ++j) {
           DGTraits::vertex_descriptor cv= get_vertex(dg, dgi, ct[j]);
           if (!get_has_edge(dg, rv, cv)) {
@@ -115,9 +115,9 @@ namespace {
       }
       {
         ParticlesTemp pt= filter((*c)->get_input_particles());
-        if (!pt.empty()) {
+        /*if (!pt.empty()) {
           IMP_LOG(VERBOSE, ", particles are " << Particles(pt));
-        }
+          }*/
         for (unsigned int j=0; j < pt.size(); ++j) {
           DGTraits::vertex_descriptor cv= get_vertex(dg, dgi, pt[j]);
           if (!get_has_edge(dg, rv, cv)) {
@@ -125,7 +125,7 @@ namespace {
           }
         }
       }
-      IMP_LOG(VERBOSE, std::endl);
+      //IMP_LOG(VERBOSE, std::endl);
     }
   }
 
