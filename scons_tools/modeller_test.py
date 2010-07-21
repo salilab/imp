@@ -61,37 +61,24 @@ def _check(context):
         else:
             context.Result("unknown error running MODELLER script %s" % modbin)
         return False
-    include = ['%s/src/include' % modeller,
-               '%s/src/include/%s' % (modeller, exetype)]
     platform = context.env['PLATFORM']
     if exetype == 'i386-w32':
-        libpath = ['%s/src/main' % modeller]
         if platform != 'win32':
             context.Result("MODELLER is built for Windows, but this is not " + \
                            "a Windows scons run (tip: can run on Linux " + \
                            "using Wine with 'scons wine=true'")
             return False
     else:
-        libpath = ['%s/lib/%s' % (modeller, exetype)]
         if platform == 'win32':
             context.Result("this is a Windows scons run, but this is not a " + \
                            "Windows MODELLER binary")
             return False
-    libs = ["modeller", "saxs"]
-    if exetype in ('mac10v4-xlf', 'mac10v4-gnu'):
-        libs += ["hdf5", "hdf5_hl"]
-    elif exetype == 'mac10v4-intel':
-        libs += ["hdf5", "hdf5_hl", "imf", "svml", "ifcore", "irc"]
     modpy = "%s/bin/modpy.sh" % modeller
     # If the modpy.sh script doesn't exist, assume that Modeller will work
     # without it (e.g. on Macs, using the binary .dmg install):
     if not os.path.exists(modpy):
         modpy = ''
     context.env['MODELLER_MODPY'] = modpy
-    context.env['MODELLER_EXETYPE'] = exetype
-    context.env['MODELLER_CPPPATH'] = include
-    context.env['MODELLER_LIBPATH'] = libpath
-    context.env['MODELLER_LIBS'] = libs
     context.Result(modeller)
     return True
 
