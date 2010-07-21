@@ -280,6 +280,28 @@ get_interaction_graph_geometry(const InteractionGraph &ig) {
 }
 
 
+display::Geometries
+get_subset_graph_geometry(const SubsetGraph &ig) {
+  display::Geometries ret;
+  SGConstVertexMap vm= boost::get(boost::vertex_name, ig);
+  for (std::pair<IGTraits::vertex_iterator,
+         IGTraits::vertex_iterator> be= boost::vertices(ig);
+       be.first != be.second; ++be.first) {
+    Subset s= vm[*be.first];
+    display::Color c= display::get_display_color(*be.first);
+    for (unsigned int i=0; i< s.size(); ++i) {
+      core::XYZ pi(s[i]);
+      IMP_NEW(display::SphereGeometry, cg,
+              (algebra::Sphere3D(pi.get_coordinates(), 1)));
+      cg->set_color(c);
+      cg->set_name(s.get_name());
+      ret.push_back(cg);
+    }
+  }
+  return ret;
+}
+
+
 ParticlesTemp get_dependent_particles(Particle *p,
                                       const DependencyGraph &dg) {
   // find p in graph, ick
