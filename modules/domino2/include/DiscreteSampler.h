@@ -62,6 +62,9 @@ class IMPDOMINO2EXPORT DiscreteSampler : public Sampler
   virtual SubsetStatesList do_get_sample_states(const Subset& all) const=0;
 public:
   DiscreteSampler(Model*m, ParticleStatesTable *pst, std::string name);
+
+  ~DiscreteSampler();
+
   /** Particle states can be set either using this method,
       or equivalently, by accessing the table itself
       using get_particle_states_table(). This method

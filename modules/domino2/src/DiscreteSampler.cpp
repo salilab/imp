@@ -16,6 +16,9 @@ DiscreteSampler::DiscreteSampler(Model *m, ParticleStatesTable* pst,
   pst_(pst){
 }
 
+DiscreteSampler::~DiscreteSampler()
+{
+}
 
 IMP_LIST_IMPL(DiscreteSampler, SubsetFilterTable,
               subset_filter_table, SubsetFilterTable*,
