@@ -201,7 +201,8 @@ public:
     return a_(pdb_line) && b_(pdb_line);
   }
 };
-//! Select atoms which are selected by both selectors
+
+//! Select atoms which are selected by either selector
 /** To use do something like
     \code
     read_pdb(name, m, OrPDBSelector(PPDBSelector(), WaterPDBSelector()));
