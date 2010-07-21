@@ -352,8 +352,16 @@ def add_common_variables(vars, package):
                              'Directory holding Python include files ' + \
                              '(if unspecified, distutils location is used)',
                              'no'))
-    vars.Add(PackageVariable('modeller', 'Location of the MODELLER package',
-                             'no'))
+    vars.Add(PackageVariable('modeller',
+                             "Set to 'yes' to use the MODELLER package, "
+                             "or 'no' to not use it (and to disable modules "
+                             "such as IMP.modeller that use it). 'yes' will "
+                             "only find MODELLER if it is in the system Python "
+                             "path (e.g. Windows, Mac .dmg or Linux .rpm "
+                             "binary installs); if you installed the .tar.gz "
+                             "version, or have a copy of the source code, set "
+                             "this variable to the top-level MODELLER "
+                             "directory.", 'no'))
     vars.Add(BoolVariable('wine',
                           'Build using MS Windows tools via Wine emulation',
                           False))
