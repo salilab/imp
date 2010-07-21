@@ -168,7 +168,7 @@ DependencyGraph
 get_dependency_graph(const ScoreStatesTemp &ss,
                      const RestraintsTemp &rs) {
   IMP_LOG(VERBOSE, "Making dependency graph on " << rs.size()
-          << " restraints " << ss.size() << " score states."
+          << " restraints."
           << std::endl);
   DGIndex index;
   DependencyGraph ret(ss.size()+rs.size());
@@ -186,6 +186,15 @@ get_dependency_graph(const ScoreStatesTemp &ss,
   build_inputs_graph(ss.begin(), ss.end(), ret, index);
   build_inputs_graph(rs.begin(), rs.end(), ret, index);
   return ret;
+}
+
+DependencyGraph
+get_dependency_graph(const RestraintsTemp &irs) {
+  if (irs.empty()) return DependencyGraph();
+  RestraintsTemp rs= get_restraints(irs.begin(), irs.end());
+  ScoreStatesTemp ss
+    = irs[0]->get_model()->get_score_states(rs);
+  return get_dependency_graph(ss, rs);
 }
 
 
@@ -274,8 +283,9 @@ void Model::reset_dependencies() {
 void Model::compute_dependencies() const {
   IMP_LOG(VERBOSE, "Ordering score states. Input list is: ");
   boost::tie(ordered_restraints_,
-             restraint_weights_) = get_restraints(restraints_begin(),
-                                                  restraints_end());
+             restraint_weights_)
+    = get_restraints_and_weights(restraints_begin(),
+                                 restraints_end());
   for (unsigned int i=0; i< ordered_restraints_.size(); ++i) {
     restraint_index_[ordered_restraints_[i]]= i;
   }
@@ -293,10 +303,53 @@ void Model::compute_dependencies() const {
                                  restraint_dependencies_);
   IMP_LOG(VERBOSE, "Ordered score states are "
           << ScoreStates(ordered_score_states_) << std::endl);
+  IMP_INTERNAL_CHECK(restraint_dependencies_.size()
+                     ==ordered_restraints_.size(),
+                     "Dependencies do not match ordered restraints "
+                     << restraint_dependencies_.size() << " "
+                     << ordered_restraints_.size());
+  IMP_INTERNAL_CHECK(restraint_index_.size() ==ordered_restraints_.size(),
+                     "Indexes do not match ordered restraints "
+                     << restraint_index_.size() << " "
+                     << ordered_restraints_.size());
 }
 
 
+ScoreStatesTemp
+Model::get_score_states(const RestraintsTemp &restraints) const {
+  if (!get_has_dependencies()) {
+    compute_dependencies();
+  }
+  IMP_IF_CHECK(USAGE) {
+    for (unsigned int i= 0; i< restraints.size(); ++i) {
+      Restraint *r=restraints[i];
+      IMP_USAGE_CHECK(!dynamic_cast<RestraintSet*>(r),
+                      "Cannot pass restraint sets to get_score_states()");
+    }
+  }
+  boost::dynamic_bitset<> bs(ordered_score_states_.size(), false);
+  for (unsigned int i=0; i< restraints.size(); ++i) {
+    IMP_INTERNAL_CHECK(restraint_index_.find(restraints[i])
+                       != restraint_index_.end(),
+                       "Restraint " << restraints[i]->get_name()
+                       << " not found.");
+    int index=restraint_index_.find(restraints[i])->second;
+    bs|= restraint_dependencies_[index];
+  }
+  ScoreStatesTemp ss;
+  for (unsigned int i=0; i< ordered_score_states_.size(); ++i) {
+    if (bs[i]) ss.push_back(ordered_score_states_[i]);
+  }
+  return ss;
+}
 
+
+ScoreStatesTemp get_required_score_states(const RestraintsTemp &irs) {
+  if (irs.empty()) return ScoreStatesTemp();
+  RestraintsTemp rs= get_restraints(irs.begin(),
+                                    irs.end());
+  return rs[0]->get_model()->get_score_states(rs);
+}
 
 
 IMP_END_NAMESPACE

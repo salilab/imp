@@ -37,6 +37,7 @@ Model::Model(std::string name): Object(name),
 Model::~Model()
 {
   IMP_CHECK_OBJECT(this);
+  rs_->set_model(NULL);
   for (ParticleIterator it= particles_begin();
        it != particles_end(); ++it) {
     (*it)->m_ = NULL;
@@ -138,7 +139,7 @@ double Model::evaluate(const RestraintsTemp &inrestraints, bool calc_derivs)
   RestraintsTemp restraints;
   std::vector<double> weights;
   boost::tie(restraints, weights)=
-    get_restraints(inrestraints.begin(), inrestraints.end());
+    get_restraints_and_weights(inrestraints.begin(), inrestraints.end());
   if (!get_has_dependencies()) {
     compute_dependencies();
   }
@@ -152,15 +153,7 @@ double Model::evaluate(const RestraintsTemp &inrestraints, bool calc_derivs)
                       << "asking it to evaluate them");
     }
   }
-  boost::dynamic_bitset<> bs(ordered_score_states_.size(), false);
-  for (unsigned int i=0; i< restraints.size(); ++i) {
-    int index=restraint_index_[restraints[i]];
-    bs|= restraint_dependencies_[index];
-  }
-  ScoreStatesTemp ss;
-  for (unsigned int i=0; i< ordered_score_states_.size(); ++i) {
-    if (bs[i]) ss.push_back(ordered_score_states_[i]);
-  }
+  ScoreStatesTemp ss= get_score_states(restraints);
   return do_evaluate(restraints, weights, ss, calc_derivs);
 }
 
