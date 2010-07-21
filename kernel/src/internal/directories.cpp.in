@@ -1,7 +1,7 @@
 /**
  *  \file directories.cpp
  *  \brief Get directories used by IMP.
- *  \note  Auto-generated from directories.cpp.in; do not edit.
+ *  \note @AUTOGEN@
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  *
@@ -82,7 +82,7 @@ std::string get_data_path(std::string module, std::string file_name)
 {
   std::string path= get_path("IMP_BUILD_ROOT",
                              "build/data",
-                             IMP_DATA_DIRECTORY,
+                             "@IMP_DATA_DIRECTORY@",
                              module, file_name);
   {
     std::ifstream in(path.c_str());
@@ -106,7 +106,7 @@ std::string get_data_path(std::string module, std::string file_name)
 std::string get_example_path(std::string module, std::string file_name)
 {
   std::string path= get_path("IMP_BUILD_ROOT", "build/doc/examples",
-                             IMP_EXAMPLE_DIRECTORY,
+                             "@IMP_EXAMPLE_DIRECTORY@",
                              module, file_name);
   std::ifstream in(path.c_str());
   if (!in) {

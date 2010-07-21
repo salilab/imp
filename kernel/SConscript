@@ -1,8 +1,4 @@
 Import('env')
-import os.path
-
-env.Append(CPPDEFINES=["IMP_DATA_DIRECTORY=\\\""+env['datadir']+"\\\""])
-env.Append(CPPDEFINES=["IMP_EXAMPLE_DIRECTORY=\\\""+os.path.join(env['docdir'],"examples")+"\\\""])
 
 config=[]
 if env['CGAL_LIBS'] != ['']:
