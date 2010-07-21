@@ -390,7 +390,7 @@ algebra::Vector3D CoarseCC::calc_derivatives_for_rigid_body(
   algebra::Vector3D rb_drv(0.,0.,0.);
   Particles ps = refiner->get_refined(rb.get_particle());
   int iminx, iminy, iminz, imaxx, imaxy, imaxz;
-  float tdvx = 0., tdvy = 0., tdvz = 0., tmp,rsq;
+  float tdvx = 0., tdvy = 0., tdvz = 0., tmp;
   FloatKey w_key=model_map.get_weight_key();
   float lim = (model_map.get_kernel_params())->get_lim();
   const DensityHeader *em_header = em_map.get_header();
@@ -400,7 +400,7 @@ algebra::Vector3D CoarseCC::calc_derivatives_for_rigid_body(
   int ivox;
   core::XYZRsTemp ps_xyzr(ps,model_map.get_radius_key());
 
-  for(int i=0;i<ps_xyzr.size();i++){
+  for(unsigned int i=0;i<ps_xyzr.size();i++){
     const RadiusDependentKernelParameters *params =
       model_map.get_kernel_params()->get_params(ps_xyzr[i].get_radius());
       algebra::Vector3Ds p_rsq=rb_rsq[i];
@@ -454,7 +454,6 @@ RigidBodyDerivativesCache CoarseCC::generate_rigid_body_rsq_cache(
 {
   RigidBodyDerivativesCache rb_rsq;
   int iminx, iminy, iminz, imaxx, imaxy, imaxz;
-  const DensityHeader *model_header = model_map->get_header();
   const DensityHeader *em_header = target_map->get_header();
   const float *x_loc = model_map->get_x_loc();
   const float *y_loc = model_map->get_y_loc();
