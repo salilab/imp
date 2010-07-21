@@ -54,9 +54,8 @@ class VolumeTest(IMP.test.TestCase):
                     p= m.get_value(indexes[0]+i, indexes[1]+j, indexes[2]+k)
                     if p < lb: lb=p
                     if p > ub: ub=p
-        print val, lb, ub
-        self.assert_(val <= ub)
-        self.assert_(val >=lb)
+        self.assert_(val <= ub and val >= lb,
+                     "Density %f is not within bounds %f to %f" % (val, lb, ub))
 
 if __name__ == '__main__':
     unittest.main()
