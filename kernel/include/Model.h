@@ -149,6 +149,7 @@ public:
   }
   // It is annoying to get the friend call right for VC
   void reset_dependencies();
+  ScoreStatesTemp get_score_states(const RestraintsTemp &rs) const;
 #endif
 
   /** Construct an empty model */
@@ -454,10 +455,13 @@ IMP_GRAPH(DependencyGraph, bidirectional, Object*, int);
     by a path to the Restraint must be up to date.
 */
 IMPEXPORT DependencyGraph
-get_dependency_graph(const ScoreStatesTemp &ss,
-                     const RestraintsTemp &rs);
+get_dependency_graph(const RestraintsTemp &rs);
 
 
+
+/** Get the score states required by the passed restraints.*/
+IMPEXPORT ScoreStatesTemp
+get_required_score_states(const RestraintsTemp &rs);
 
 
 #ifndef SWIG

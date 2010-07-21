@@ -53,7 +53,7 @@ void Model::set_gather_statistics(bool tf) {
 void Model::show_restraint_time_statistics(std::ostream &out) const {
   out << "Restraints: running_time [min_value max_value] "
       << "average_value last_value\n";
-  RestraintsTemp r= get_restraints(restraints_begin(), restraints_end()).first;
+  RestraintsTemp r= get_restraints(restraints_begin(), restraints_end());
   for (RestraintsTemp::const_iterator it= r.begin();
        it != r.end(); ++it) {
     if (stats_data_.find(*it) != stats_data_.end()) {
@@ -86,7 +86,7 @@ void Model::show_all_statistics(std::ostream &out) const {
 
 void Model::show_restraint_score_statistics(std::ostream &out) const {
   out << "Restraints: [min_value max_value] average_value last_value\n";
-  RestraintsTemp r= get_restraints(restraints_begin(), restraints_end()).first;
+  RestraintsTemp r= get_restraints(restraints_begin(), restraints_end());
   for (RestraintsTemp::const_iterator it= r.begin();
        it != r.end(); ++it) {
     if (stats_data_.find(*it) != stats_data_.end()) {
@@ -108,7 +108,7 @@ void Model::clear_all_statistics() {
        it != score_states_end(); ++it) {
     stats_data_.erase(*it);
   }
-  RestraintsTemp r= get_restraints(restraints_begin(), restraints_end()).first;
+  RestraintsTemp r= get_restraints(restraints_begin(), restraints_end());
   for (RestraintsTemp::const_iterator it= r.begin();
        it != r.end(); ++it) {
     stats_data_.erase(*it);

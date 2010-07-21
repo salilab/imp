@@ -27,10 +27,10 @@ IMP_BEGIN_NAMESPACE
     \advanceddoc
 
     Talk to Daniel if you want to inherit from RestraintSet.
- */
+*/
 class IMPEXPORT RestraintSet : public Restraint
 {
-public:
+ public:
   //! Create an empty set
   RestraintSet(double weight,
                const std::string& name="RestraintSet %1%");
@@ -39,13 +39,13 @@ public:
   RestraintSet(const std::string& name="RestraintSet %1%");
 
   IMP_RESTRAINT(RestraintSet);
- /** @name Methods to control the nested Restraint objects
+  /** @name Methods to control the nested Restraint objects
 
-     This container manages a set of Restraint objects. To
-     manipulate the stored set use the methods below.
+      This container manages a set of Restraint objects. To
+      manipulate the stored set use the methods below.
   */
   /**@{*/
-    IMP_LIST(public, Restraint, restraint, Restraint*, Restraints);
+  IMP_LIST(public, Restraint, restraint, Restraint*, Restraints);
   /**@}*/
  public:
   void set_weight(Float weight);
@@ -53,7 +53,7 @@ public:
  protected:
   friend class Model;
   void set_model(Model *m);
-private:
+ private:
   Float weight_;
 };
 
@@ -63,38 +63,81 @@ IMP_OBJECTS(RestraintSet, RestraintSets);
     It is sometimes useful to extract all the non-RestraintSet restraints
     from a hierarchy involving RestraintSets mixed with Restraints.
     @{
- */
+*/
 typedef std::pair<RestraintsTemp, Floats> RestraintsAndWeights;
 
-IMPEXPORT RestraintsAndWeights get_restraints(const RestraintsTemp &rs,
-                                              double initial_weight=1);
+IMPEXPORT RestraintsAndWeights
+get_restraints_and_weights(const RestraintsTemp &rs,
+                           double initial_weight=1);
 
-IMPEXPORT RestraintsAndWeights get_restraints(RestraintSet *rs);
+IMPEXPORT RestraintsAndWeights get_restraints_and_weights(RestraintSet *rs);
 
+IMPEXPORT RestraintsTemp get_restraints(const RestraintsTemp &rs);
 
-template <class It>
-RestraintsAndWeights get_restraints(It b, It e,
-                                    double initial_weight=1) {
-  RestraintsAndWeights ret;
-  for (It c=b; c!= e; ++c) {
-    RestraintSet *rs=dynamic_cast<RestraintSet*>(*c);
-    if (rs) {
-      IMP_LOG(TERSE, "Restraint set " << rs->get_name()
-              << " has weight " << rs->get_weight() << std::endl);
-      RestraintsAndWeights rw=get_restraints(rs->restraints_begin(),
+IMPEXPORT RestraintsTemp get_restraints(RestraintSet *rs);
+
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+namespace {
+  template <class It>
+  void get_restraints_and_weights_internal(It b, It e,
+                                           double initial_weight,
+                                           RestraintsAndWeights &ret,
+                                           std::map<Restraint*, int> &index) {
+    for (It c=b; c!= e; ++c) {
+      RestraintSet *rs=dynamic_cast<RestraintSet*>(*c);
+      if (rs) {
+        get_restraints_and_weights_internal(rs->restraints_begin(),
                                              rs->restraints_end(),
-                                             initial_weight*rs->get_weight());
-      ret.first.insert(ret.first.end(), rw.first.begin(), rw.first.end());
-      ret.second.insert(ret.second.end(), rw.second.begin(), rw.second.end());
-    } else {
-      ret.first.push_back(*c);
-      ret.second.push_back(initial_weight);
+                                             initial_weight*rs->get_weight(),
+                                             ret, index);
+      } else {
+        if (index.find(*c) == index.end()) {
+          index[*c]= ret.first.size();
+          ret.first.push_back(*c);
+          ret.second.push_back(initial_weight);
+        } else {
+          int i= index.find(*c)->second;
+          ret.second[i]+=initial_weight;
+        }
+      }
     }
   }
+
+  template <class It>
+  void get_restraints_internal(It b, It e,
+                               RestraintsTemp &ret) {
+    for (It c=b; c!= e; ++c) {
+      RestraintSet *rs=dynamic_cast<RestraintSet*>(*c);
+      if (rs) {
+        get_restraints_internal(rs->restraints_begin(),
+                                rs->restraints_end(), ret);
+      } else {
+        ret.push_back(*c);
+      }
+    }
+  }
+}
+#endif
+template <class It>
+RestraintsAndWeights get_restraints_and_weights(It b, It e,
+                                                double initial_weight=1) {
+  std::map<Restraint*, int> index;
+  RestraintsAndWeights ret;
+  get_restraints_and_weights_internal(b,e, initial_weight, ret,
+                                      index);
   return ret;
 }
 
-          /** @} */
+template <class It>
+RestraintsTemp get_restraints(It b, It e) {
+  RestraintsTemp ret;
+  get_restraints_internal(b,e, ret);
+  std::sort(ret.begin(), ret.end());
+  ret.erase(std::unique(ret.begin(), ret.end()), ret.end());
+  return ret;
+}
+
+/** @} */
 IMP_END_NAMESPACE
 
 #endif  /* IMP_RESTRAINT_SET_H */
