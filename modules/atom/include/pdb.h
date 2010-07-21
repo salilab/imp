@@ -187,6 +187,8 @@ class PPDBSelector : public NonAlternativePDBSelector {
   }
 };
 
+#if 0
+// these do not work in python as the wrapped selectors get cleaned up
 //! Select atoms which are selected by both selectors
 /** To use do something like
     \code
@@ -216,6 +218,22 @@ public:
     return a_(pdb_line) || b_(pdb_line);
   }
 };
+
+//! Select atoms which not selected by a given selector
+/** To use do something like
+    \code
+    read_pdb(name, m, NotPDBSelector(PPDBSelector()));
+    \endcode
+ */
+class NotPDBSelector: public PDBSelector {
+  const PDBSelector &a_;
+public:
+  NotPDBSelector(const PDBSelector &a): a_(a){}
+  bool operator()(const std::string &pdb_line) const {
+    return !a_(pdb_line);
+  }
+};
+#endif
 
 
 /** @name PDB Reading
