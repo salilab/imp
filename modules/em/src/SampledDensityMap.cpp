@@ -267,9 +267,9 @@ void SampledDensityMap::project (const Particles &ps,
     x_loc = nx_half + (it->get_x()+shift[0]) / spacing;
     y_loc = ny_half + (it->get_y()+shift[1]) / spacing;
     z_loc = nz_half + (it->get_z()+shift[2]) / spacing;
-    x0=floor(x_loc);
-    y0=floor(y_loc);
-    z0=floor(z_loc);
+    x0=static_cast<int>(floor(x_loc));
+    y0=static_cast<int>(floor(y_loc));
+    z0=static_cast<int>(floor(z_loc));
     x1=x0+1;
     y1=y0+1;
     z1=z0+1;

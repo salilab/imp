@@ -372,11 +372,11 @@ public:
         map_ind += ix;
         val = data_[map_ind];
         if (val>EPS) { //smooth this value
-         for (int iz2=-margin;iz2<=margin;iz2++) {
+         for (int iz2=-margin;iz2<=static_cast<int>(margin);iz2++) {
             kernel_ind=iz2*dim_len*dim_len;
-            for (int iy2=-margin;iy2<=margin;iy2++){
+            for (int iy2=-margin;iy2<=static_cast<int>(margin);iy2++){
              kernel_ind+=iy2*dim_len;
-             for (int ix2=-margin;ix2<=margin;ix2++) {
+             for (int ix2=-margin;ix2<=static_cast<int>(margin);ix2++) {
                 kernel_ind+=ix2;
                 data_[map_ind]+=val*kernel[kernel_ind];
              }}} // for iz2,iy2,ix2
