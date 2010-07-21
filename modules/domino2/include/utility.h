@@ -95,6 +95,12 @@ get_dependent_particles(Particle *p,
 IMPDOMINO2EXPORT SubsetGraph
 get_junction_tree(const InteractionGraph &ig);
 
+/** Display the subsets of a subset graph, superimposed on the 3D
+    coordinates of the particles.
+*/
+IMPDOMINO2EXPORT display::Geometries
+get_subset_graph_geometry(const SubsetGraph &ig);
+
 
 class ParticleStatesTable;
 /** A static container is one such as a container::ListSingletonContainer, whose
