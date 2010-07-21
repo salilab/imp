@@ -88,10 +88,8 @@ ScoreWeightedIncrementalBallMover
 {
   Model *m= sc[0]->get_model();
   const DependencyGraph dg
-    = get_dependency_graph(ScoreStatesTemp(m->score_states_begin(),
-                                           m->score_states_end()),
-                           get_restraints(m->restraints_begin(),
-                                          m->restraints_end()).first);
+    = get_dependency_graph(get_restraints(m->restraints_begin(),
+                                          m->restraints_end()));
   typedef boost::graph_traits<DependencyGraph> DGTraits;
   typedef boost::property_map<DependencyGraph, boost::vertex_name_t>::const_type
     DGVMap;
