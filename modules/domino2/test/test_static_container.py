@@ -21,7 +21,7 @@ class DOMINOTests(IMP.test.TestCase):
             ps.append(p)
         lsc= IMP.container.ListSingletonContainer(ps)
         cpc= IMP.container.ClosePairContainer(lsc, 5)
-        dg= m.get_dependency_graph()
+        dg= IMP.get_dependency_graph([m.get_root_restraint_set()])
         self.assert_(IMP.domino2.get_is_static_container(lsc, dg, ps))
         self.assert_(not IMP.domino2.get_is_static_container(cpc, dg, ps))
 

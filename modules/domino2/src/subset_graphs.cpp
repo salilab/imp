@@ -20,12 +20,12 @@ SubsetGraph
 JunctionTreeTable::get_subset_graph(ParticleStatesTable *pst) const {
   IMP_LOG(TERSE, "Computing junction tree\n");
   InteractionGraph ig= get_interaction_graph(pst->get_particles(),
-                                             get_restraints(rs_).first);
+                                             get_restraints(rs_));
   return get_junction_tree(ig);
 }
 
 void JunctionTreeTable::do_show(std::ostream &out) const {
-  RestraintsTemp rst=get_restraints(rs_).first;
+  RestraintsTemp rst=get_restraints(rs_);
   for (unsigned int i=0; i< rst.size(); ++i) {
     out << "\"" << rst[i]->get_name() << "\"\n";
   }

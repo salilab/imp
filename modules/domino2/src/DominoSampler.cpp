@@ -52,12 +52,15 @@ SubsetStatesList DominoSampler
 ::do_get_sample_states(const Subset &known_particles) const {
   IMP_LOG(TERSE, "Sampling with " << known_particles.size()
           << " particles as " << known_particles << std::endl);
+  Pointer<RestraintSet> rs= get_model()->get_root_restraint_set();
+  OptimizeContainers co(rs, get_particle_states_table());
+  OptimizeRestraints ro(rs, get_particle_states_table()->get_particles());
   ParticlesTemp pt(known_particles.begin(), known_particles.end());
   Pointer<SubsetGraphTable> sgt;
   if (sgt_) {
     sgt= sgt_;
   } else {
-    sgt= new JunctionTreeTable(get_model()->get_root_restraint_set());
+    sgt= new JunctionTreeTable(rs);
   }
   SubsetGraph jt=sgt->get_subset_graph(get_particle_states_table());
   IMP_IF_LOG(TERSE) {

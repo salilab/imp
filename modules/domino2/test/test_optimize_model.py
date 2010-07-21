@@ -29,21 +29,18 @@ class DOMINOTests(IMP.test.TestCase):
         r=IMP.container.PairsRestraint(IMP.core.DistancePairScore(IMP.core.HarmonicLowerBound(0,1)), cp);
         m.add_restraint(r)
         print "getting graph"
-        dg= IMP.get_dependency_graph(m.get_score_states(),
-                                     IMP.get_restraints(m.get_restraints())[0])
+        dg= IMP.get_dependency_graph([m.get_root_restraint_set()])
         dg.show()
         print "optimizing"
-        doc= IMP.domino2.OptimizeContainers(m, pst)
-        dg= IMP.get_dependency_graph(m.get_score_states(),
-                                     IMP.get_restraints(m.get_restraints())[0])
+        doc= IMP.domino2.OptimizeContainers(m.get_root_restraint_set(), pst)
+        dg= IMP.get_dependency_graph([m.get_root_restraint_set()])
         dg.show()
-        dor= IMP.domino2.OptimizeRestraints(m, pst.get_particles())
+        dor= IMP.domino2.OptimizeRestraints(m.get_root_restraint_set(), pst.get_particles())
         print "optimized restraints"
-        dg= IMP.get_dependency_graph(m.get_score_states(),
-                                     IMP.get_restraints(m.get_restraints())[0])
+        dg= IMP.get_dependency_graph([m.get_root_restraint_set()])
         dg.show()
-        self.assert_(len(IMP.get_restraints(m.get_restraints())[0]) > 1)
+        self.assert_(len(IMP.get_restraints(m.get_root_restraint_set())) > 1)
         del dor
-        self.assert_(len(IMP.get_restraints(m.get_restraints())[0]) == 1)
+        self.assert_(len(IMP.get_restraints(m.get_root_restraint_set())) == 1)
 if __name__ == '__main__':
     unittest.main()

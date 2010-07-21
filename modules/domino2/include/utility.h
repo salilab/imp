@@ -122,18 +122,19 @@ class IMPDOMINO2EXPORT OptimizeRestraints: public RAII {
   RestraintSets removed_parents_;
   Restraints added_;
   RestraintSets added_parents_;
-  Pointer<Model> m_;
+  Pointer<RestraintSet> m_;
 
-  void optimize_model(Model *m, const ParticlesTemp &particles);
+  void optimize_model(RestraintSet *m, const ParticlesTemp &particles);
   void unoptimize_model();
 public:
-  IMP_RAII(OptimizeRestraints, (Model *m, const ParticlesTemp &particles), {},
+  IMP_RAII(OptimizeRestraints, (RestraintSet *m,
+                                const ParticlesTemp &particles), {},
            {
              m_=m;
              optimize_model(m, particles);
            },
            {
-             if (m_) {
+             if (m_&& m_->get_is_part_of_model()) {
                unoptimize_model();
                m_=NULL;
              }
@@ -152,18 +153,19 @@ public:
 */
 class IMPDOMINO2EXPORT OptimizeContainers: public RAII {
   core::internal::CoreClosePairContainers staticed_;
-  Pointer<Model> m_;
+  Pointer<RestraintSet> m_;
 
-  void optimize_model(Model *m, const ParticleStatesTable *pst);
+  void optimize_model(RestraintSet *m, const ParticleStatesTable *pst);
   void unoptimize_model();
 public:
-  IMP_RAII(OptimizeContainers, (Model *m, const ParticleStatesTable *pst), {},
+  IMP_RAII(OptimizeContainers, (RestraintSet *m,
+                                const ParticleStatesTable *pst), {},
            {
              m_=m;
              optimize_model(m, pst);
            },
            {
-             if (m_) {
+             if (m_ && m_->get_is_part_of_model()) {
                unoptimize_model();
                m_=NULL;
              }

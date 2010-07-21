@@ -26,7 +26,7 @@ ModelData::ModelData(Model *m, RestraintSet *rs,
     }
   }
   Restraints rss= get_restraints(rs->restraints_begin(),
-                                 rs->restraints_end(), 1.0).first;
+                                 rs->restraints_end());
   for (Restraints::const_iterator rit= rss.begin();
        rit != rss.end(); ++rit) {
     ParticlesTemp ip= (*rit)->get_input_particles();

@@ -24,7 +24,7 @@ class DOMINOTests(IMP.test.TestCase):
         m.add_restraint(r)
         print "computing graph"
         g= IMP.domino2.get_interaction_graph(ps,
-                                             IMP.get_restraints(m.get_root_restraint_set())[0])
+                                             [m.get_root_restraint_set()])
         w= IMP.display.PymolWriter(self.get_tmp_file_name("ig0.pym"))
         for gg in IMP.domino2.get_interaction_graph_geometry(g):
             w.add_geometry(gg)
@@ -60,7 +60,7 @@ class DOMINOTests(IMP.test.TestCase):
             r.set_name("pair")
         print "computing graph"
         g= IMP.domino2.get_interaction_graph(IMP.atom.get_leaves(p),
-                                             IMP.get_restraints(m.get_root_restraint_set())[0])
+                                            [m.get_root_restraint_set()])
         w= IMP.display.PymolWriter(self.get_tmp_file_name("ig-large.pym"))
         gs=IMP.domino2.get_interaction_graph_geometry(g)
         print "There are ", len(gs)
@@ -87,7 +87,7 @@ class DOMINOTests(IMP.test.TestCase):
             r= IMP.core.DistanceRestraint(h, p0, p1)
             m.add_restraint(r)
         g= IMP.domino2.get_interaction_graph(ps,
-                                             IMP.get_restraints(m.get_root_restraint_set())[0])
+                                             [m.get_root_restraint_set()])
         w= IMP.display.PymolWriter(self.get_tmp_file_name("ig0.pym"))
         for gg in IMP.domino2.get_interaction_graph_geometry(g):
             w.add_geometry(gg)
