@@ -33,7 +33,11 @@ public:
   ObjectNameWriter( const Graph&g): om_(boost::get(boost::vertex_name,
                                                    const_cast<Graph&>(g))){}
   void operator()(std::ostream& out, int v) const {
-    out << "[label=\"" << get_name(boost::get(om_, v)) << "\"]";
+    std::string nm=get_name(boost::get(om_, v));
+    std::vector<char> vnm(nm.begin(), nm.end());
+    out << "[label=\""
+        << std::string(vnm.begin(), std::remove(vnm.begin(), vnm.end(),
+                                                '\"')) << "\"]";
   }
 };
 
