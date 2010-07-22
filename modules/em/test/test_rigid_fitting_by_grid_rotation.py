@@ -46,8 +46,8 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         sampled_density_map.set_particles(self.particles)
         sampled_density_map.resample()
         sampled_density_map.calcRMS()
-        IMP.em.write_map(sampled_density_map,"a1.mrc",mrw)
-        IMP.em.write_map(self.scene,"a2.mrc",mrw)
+        IMP.em.write_map(sampled_density_map,self.get_tmp_file_name("a1.mrc"),mrw)
+        IMP.em.write_map(self.scene,self.get_tmp_file_name("a2.mrc"),mrw)
         #calculate CC
         ccc = IMP.em.CoarseCC()
         threshold=sampled_density_map.get_header().dmin
@@ -74,8 +74,8 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         sampled_density_map1.calcRMS()
         transformed_density.calcRMS()
         threshold=sampled_density_map1.get_header().dmin
-        IMP.em.write_map(sampled_density_map1,"b1.mrc",mrw)
-        IMP.em.write_map(transformed_density,"b2.mrc",mrw)
+        IMP.em.write_map(sampled_density_map1,self.get_tmp_file_name("b1.mrc"),mrw)
+        IMP.em.write_map(transformed_density,self.get_tmp_file_name("b2.mrc"),mrw)
         score2 = ccc.cross_correlation_coefficient(transformed_density,
                                                    sampled_density_map1,
                                                    threshold,True)
