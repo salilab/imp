@@ -396,7 +396,7 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
                                '#/build/src/%(module)s_wrap.h-in'%vars],
                        source=swigfile)
     #print "Moving", produced.path, "to", dest.path
-    gen_pymod= env.Command(dest, produced, Copy(dest, produced))
+    gen_pymod= env.LinkInstallAs(dest, produced)
     # this appears to be needed for some reason
     env.Requires(swig, swiglink)
     module_deps_requires(env, swig, "swig", [])
