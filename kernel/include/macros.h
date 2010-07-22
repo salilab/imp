@@ -966,6 +966,11 @@ protection:                                                             \
   virtual ::IMP::VersionInfo get_version_info() const {                 \
     return get_module_version_info();                                   \
   }                                                                     \
+  /** \brief For python, cast a generic Object to this type. Return None
+      if object is not the right type.*/                                \
+  static Name* get_from(Object *o) {                                    \
+    return object_cast<Name>(o);                                       \
+  }                                                                     \
   IMP_NO_DOXYGEN(virtual void do_show(std::ostream &out) const);        \
   IMP_REF_COUNTED_DESTRUCTOR(Name)
 
@@ -2159,7 +2164,7 @@ protected:                                      \
   IMP_OBJECT_INLINE(DependenciesScoreState, {if (0) out<<1;}, {});      \
   };                                                                    \
   friend class DependenciesScoreState;                                  \
-  ScoreStatePointer<DependenciesScoreState> deps_
+  ScopedScoreState deps_
 
 #else
 #define IMP_CONTAINER_DEPENDENCIES(Name, input_deps)
