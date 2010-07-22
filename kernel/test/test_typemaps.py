@@ -125,6 +125,11 @@ class ParticleTests(IMP.test.TestCase):
         print op
         self.assertInTolerance(p[0], op[0], .01)
         self.assertInTolerance(p[1], op[1], .01)
+        op= IMP._pass_plain_pair(p)
+        print p
+        print op
+        self.assertInTolerance(p[0], op[0], .01)
+        self.assertInTolerance(p[1], op[1], .01)
     def test_overload(self):
         """Checking that overloading works"""
         m= IMP.Model()
@@ -202,6 +207,15 @@ class ParticleTests(IMP.test.TestCase):
         p0= IMP.Particle(m)
         d= IMP._TrivialDecorator.setup_particle(p0)
         d.add_attribute(IMP.IntKey("Hi"), 1)
+    def test_cast(self):
+        """Test that casting objects works"""
+        m=IMP.Model()
+        r= IMP._ConstRestraint(1)
+        m.add_restraint(r)
+        rb= m.get_restraints()[0]
+        #print rb.get_value()
+        rc= IMP._ConstRestraint.get_from(rb)
+        print rc.get_value()
     def test_particle_methods(self):
         """Test that decorators provide particle methods"""
         exclusions=["__disown__",
@@ -224,7 +238,8 @@ class ParticleTests(IMP.test.TestCase):
                     "set_was_used",
                     "get_is_up_to_date",
                     "get_is_scored",
-                    "set_is_scored"
+                    "set_is_scored",
+                    "get_from"
                     ]
         md= dir(IMP._TrivialDecorator)
         for m in dir(IMP.Particle):

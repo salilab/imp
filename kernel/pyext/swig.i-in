@@ -59,8 +59,9 @@ IMP_SWIG_OBJECT_TUPLE(IMP, ParticlePair, ParticlePairs);
 IMP_SWIG_OBJECT_TUPLE(IMP, ParticleTriplet, ParticleTriplets);
 IMP_SWIG_OBJECT_TUPLE(IMP, ParticleQuad, ParticleQuads);
 
-IMP_SWIG_PAIR(IMP, Float, FloatPair, FloatPairs);
 IMP_SWIG_PAIR(IMP, Double, DerivativePair, DerivativePairs);
+IMP_SWIG_PAIR(IMP, Double, FloatRange, FloatRanges);
+IMP_SWIG_PAIR(IMP, Double, FloatPair, FloatPairs);
 IMP_SWIG_PAIR(IMP, Int, IntRange, IntRanges);
 IMP_SWIG_SEQUENCE_PAIR(IMP, IMP::Restraint*, double, RestraintsAndWeights);
 
@@ -82,21 +83,6 @@ IMP_SWIG_DECORATOR(IMP::internal, _TrivialDerivedDecorator, _TrivialDerivedDecor
 IMP_SWIG_DECORATOR_WITH_TRAITS(IMP::internal, _TrivialTraitsDecorator, _TrivialTraitsDecorators);
 IMP_SWIG_OBJECT(IMP::internal, _ConstRestraint, _ConstRestraints);
 IMP_SWIG_GRAPH(IMP, DependencyGraph, DependencyGraph, IMP::Object*);
-
-namespace IMP {
-  %typemap(out) std::pair<double,double> {
-     PyObject *tup= PyTuple_New(2);
-     PyTuple_SetItem(tup, 0, PyFloat_FromDouble($1.first));
-     PyTuple_SetItem(tup, 1, PyFloat_FromDouble($1.second));
-     $result= tup;
-  }
-  %typemap(out) std::pair<float,float> {
-     PyObject *tup= PyTuple_New(2);
-     PyTuple_SetItem(tup, 0, PyFloat_FromFloat($1.first));
-     PyTuple_SetItem(tup, 1, PyFloat_FromFloat($1.second));
-     $result= tup;
-  }
-}
 
 %extend IMP::Object {
   bool __eq__(const IMP::Decorator &d) const {
@@ -225,6 +211,7 @@ namespace IMP {
 
 
 namespace IMP {
-  %template(double_pair) ::std::pair<double, double>;
   %template(DependencyGraph) ::IMP::internal::BoostDigraph< IMP::DependencyGraph, IMP::Object*>;
+  %template(ScopedScoreState) ::IMP::GenericScopedScoreState< IMP::ScoreState>;
+  %template(ScopedRestraint) ::IMP::GenericScopedRestraint< IMP::Restraint>;
 }

@@ -33,6 +33,7 @@ public:
   _ConstRestraint(double v,
                   const ParticlesTemp ps= ParticlesTemp()): v_(v),
     ps_(ps){}
+  double get_value() const {return v_;}
   IMP_RESTRAINT(_ConstRestraint);
 };
 
@@ -167,6 +168,9 @@ _pass_particle_pairs(const ParticlePairs &p);
 
 IMPEXPORT DerivativePair
 _pass_pair(const DerivativePair &p);
+
+IMPEXPORT FloatPair
+_pass_plain_pair( FloatPair p);
 
 
 IMPEXPORT int _test_overload(const Particles &ps);
