@@ -1,9 +1,8 @@
 <h2>IMP 1.0 binary installers</h2>
 
 <ul>
-<li><a href="http://salilab.org/imp/get.php?pkg=1.0/download/IMP-1.0.exe">Windows installer</a></li>
-<li><a href="http://salilab.org/imp/get.php?pkg=1.0/download/IMP-1.0-10v4.dmg">Intel Mac, OS X 10.4 (Tiger) installer (32-bit, Python 2.3)</a></li>
-<li><a href="http://salilab.org/imp/get.php?pkg=1.0/download/IMP-1.0-10v6.dmg">Intel Mac, OS X 10.6 (Snow Leopard) installer (64-bit, Python 2.6)</a></li>
+<li><a href="download-windows.html">Windows</a></li>
+<li><a href="download-mac.html">Mac</a></li>
 <li>RedHat Enterprise Linux 5 RPMs (Python 2.4)<ul>
   <li>Base IMP package (needed for all users):
 <a href="http://salilab.org/imp/get.php?pkg=1.0/download/imp-1.0-1.i386.rpm">32-bit</a>;
@@ -43,6 +42,7 @@ You can also <a href="http://salilab.org/imp/1.0/download/imp-doc-1.0.tar.gz">do
 <ul>
 </ul>
 
+<a name="source"></a>
 <h2>IMP 1.0 source code</h2>
 
 <ul>
