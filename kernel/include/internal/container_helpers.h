@@ -203,7 +203,7 @@ inline std::string get_name(const ParticleTuple<D>& p) {
   IMP_SCORE_STATE(Ticker);                                      \
   };                                                            \
   friend class Ticker;                                          \
-  ScoreStatePointer<Ticker> ticker_;                            \
+  GenericScopedScoreState<Ticker> ticker_;                      \
   unsigned int get_last_update_evaluation() const {             \
   return eval_update_;                                          \
   }                                                             \
