@@ -21,7 +21,6 @@ class DensityTransformTest(IMP.test.TestCase):
         mt= IMP.em.get_transformed(m, tr, .01)
         mrw= IMP.em.MRCReaderWriter()
         IMP.em.write_map(mt, self.get_tmp_file_name("transformed.mrc"), mrw)
-        IMP.em.write_map(mt, "transformed.mrc", mrw)
         print "coming from"
         mtit= IMP.em.get_transformed(mt, tr.get_inverse(), .01);
         IMP.em.write_map(mtit, self.get_tmp_file_name("backtransformed.mrc"), mrw)
