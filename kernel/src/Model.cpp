@@ -114,48 +114,12 @@ double Model::get_weight(Restraint *r) const {
   if (!get_has_dependencies()) {
     compute_dependencies();
   }
-  return restraint_weights_[restraint_index_[r]];
+  if (restraint_index_.find(r) == restraint_index_.end()) return 0;
+  else return restraint_weights_[restraint_index_.find(r)->second];
 }
 
 
 
-
-double Model::evaluate(bool calc_derivs) {
-  IMP_OBJECT_LOG;
-  IMP_CHECK_OBJECT(this);
-  if (!get_has_dependencies()) {
-    compute_dependencies();
-  }
-  return do_evaluate(ordered_restraints_,
-                     restraint_weights_,
-                     ordered_score_states_,
-                     calc_derivs);
-}
-
-double Model::evaluate(const RestraintsTemp &inrestraints, bool calc_derivs)
-{
-  IMP_CHECK_OBJECT(this);
-  IMP_OBJECT_LOG;
-  RestraintsTemp restraints;
-  std::vector<double> weights;
-  boost::tie(restraints, weights)=
-    get_restraints_and_weights(inrestraints.begin(), inrestraints.end());
-  if (!get_has_dependencies()) {
-    compute_dependencies();
-  }
-  IMP_IF_CHECK(USAGE) {
-    for (unsigned int i=0; i< restraints.size(); ++i) {
-      IMP_USAGE_CHECK(!dynamic_cast<RestraintSet*>(restraints[i]),
-                      "Cannot pass restraint sets to model to evaluate");
-      IMP_USAGE_CHECK(restraint_index_.find(restraints[i])
-                      != restraint_index_.end(),
-                      "You must add restraints to model before "
-                      << "asking it to evaluate them");
-    }
-  }
-  ScoreStatesTemp ss= get_score_states(restraints);
-  return do_evaluate(restraints, weights, ss, calc_derivs);
-}
 
 
 
