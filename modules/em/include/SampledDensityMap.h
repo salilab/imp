@@ -125,7 +125,8 @@ protected:
   Float min_resampled_value_;
      //keeps the minimum value of a resampled voxel (larger than a zero voxel)
 };
-typedef std::vector<SampledDensityMap *> SampledDensityMaps;
+IMP_OBJECTS(SampledDensityMap, SampledDensityMaps);
+
 IMPEM_END_NAMESPACE
 
 #endif  /* IMPEM_SAMPLED_DENSITY_MAP_H */
