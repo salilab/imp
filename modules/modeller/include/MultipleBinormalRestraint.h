@@ -19,6 +19,8 @@ IMPMODELLER_BEGIN_NAMESPACE
 
 class BinormalTerm;
 
+typedef std::pair<double,double> MeanPair;
+
 //! Modeller-style multiple binormal (phi/psi) restraint.
 /** This implements a multiple binormal restraint on the two dihedral angles
     between the two quads of Particles passed to the restraint, by implementing
@@ -60,8 +62,8 @@ public:
 
   void set_correlation(double correlation) { correlation_ = correlation; }
   void set_weight(double weight) { weight_ = weight; }
-  void set_means(std::pair<double, double> means) { means_ = means; }
-  void set_standard_deviations(std::pair<double, double> stdevs) {
+  void set_means(MeanPair means) { means_ = means; }
+  void set_standard_deviations(FloatPair stdevs) {
     stdevs_ = stdevs;
   }
 };

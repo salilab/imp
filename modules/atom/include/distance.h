@@ -82,7 +82,7 @@ double get_native_overlap(const Vecto3DsOrXYZs0& m1,
    the two placements
    \note see Lasker,Topf et al JMB, 2009 for details
  */
-IMPATOMEXPORT std::pair<double,double>
+IMPATOMEXPORT FloatPair
 get_placement_score(const core::XYZs& from,
                     const core::XYZs& to);
 
@@ -105,7 +105,7 @@ get_placement_score(const core::XYZs& from,
       scores are calculated for the second component using placement_score.
 \note see Topf, Lasker et al Structure, 2008 for details
  */
-IMPATOMEXPORT std::pair<double,double> get_component_placement_score(
+IMPATOMEXPORT FloatPair get_component_placement_score(
       const core::XYZs& ref1 ,const core::XYZs& ref2,
       const core::XYZs& mdl1 ,const core::XYZs& mdl2);
 

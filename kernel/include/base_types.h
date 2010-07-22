@@ -29,6 +29,10 @@ typedef double Float;
 typedef std::pair<double, double> DerivativePair;
 typedef std::vector<DerivativePair> DerivativePairs;
 
+//! A generic pair of floats
+typedef std::pair<double, double> FloatPair;
+typedef std::vector<FloatPair> FloatPairs;
+
 //! A pair representing the allowed range for a Float attribute
 typedef std::pair<Float, Float> FloatRange;
 

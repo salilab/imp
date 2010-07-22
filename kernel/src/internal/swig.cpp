@@ -228,6 +228,12 @@ _pass_pair(const DerivativePair &p) {
   return p;
 }
 
+std::pair<double, double>
+_pass_plain_pair(std::pair<double, double> p) {
+  std::cout << p.first << " " << p.second << std::endl;
+  return p;
+}
+
 
 int _test_overload(const Particles &) {
   return 0;
