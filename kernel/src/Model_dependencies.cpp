@@ -51,6 +51,16 @@ namespace {
     return c;
   }
 
+  void filter_restraints_and_weights(RestraintsTemp &restraints,
+                                     Floats &weights) {
+    for (int i=0; i< static_cast<int>(restraints.size()); ++i) {
+      if (weights[i]<=0) {
+        weights.erase(weights.begin()+i);
+        restraints.erase(restraints.begin()+i);
+      }
+    }
+  }
+
 
   bool get_has_edge(const DependencyGraph &graph,
                     DGTraits::vertex_descriptor va,
@@ -286,6 +296,8 @@ void Model::compute_dependencies() const {
              restraint_weights_)
     = get_restraints_and_weights(restraints_begin(),
                                  restraints_end());
+  filter_restraints_and_weights(ordered_restraints_,
+                                restraint_weights_);
   for (unsigned int i=0; i< ordered_restraints_.size(); ++i) {
     restraint_index_[ordered_restraints_[i]]= i;
   }
@@ -329,10 +341,9 @@ Model::get_score_states(const RestraintsTemp &restraints) const {
   }
   boost::dynamic_bitset<> bs(ordered_score_states_.size(), false);
   for (unsigned int i=0; i< restraints.size(); ++i) {
-    IMP_INTERNAL_CHECK(restraint_index_.find(restraints[i])
-                       != restraint_index_.end(),
-                       "Restraint " << restraints[i]->get_name()
-                       << " not found.");
+    // weight 0
+    if (restraint_index_.find(restraints[i])
+        == restraint_index_.end()) continue;
     int index=restraint_index_.find(restraints[i])->second;
     bs|= restraint_dependencies_[index];
   }
@@ -349,6 +360,45 @@ ScoreStatesTemp get_required_score_states(const RestraintsTemp &irs) {
   RestraintsTemp rs= get_restraints(irs.begin(),
                                     irs.end());
   return rs[0]->get_model()->get_score_states(rs);
+}
+
+
+double Model::evaluate(bool calc_derivs) {
+  IMP_OBJECT_LOG;
+  IMP_CHECK_OBJECT(this);
+  if (!get_has_dependencies()) {
+    compute_dependencies();
+  }
+  return do_evaluate(ordered_restraints_,
+                     restraint_weights_,
+                     ordered_score_states_,
+                     calc_derivs);
+}
+
+double Model::evaluate(const RestraintsTemp &inrestraints, bool calc_derivs)
+{
+  IMP_CHECK_OBJECT(this);
+  IMP_OBJECT_LOG;
+  RestraintsTemp restraints;
+  std::vector<double> weights;
+  boost::tie(restraints, weights)=
+    get_restraints_and_weights(inrestraints.begin(), inrestraints.end());
+  filter_restraints_and_weights(restraints, weights);
+  if (!get_has_dependencies()) {
+    compute_dependencies();
+  }
+  IMP_IF_CHECK(USAGE) {
+    for (unsigned int i=0; i< restraints.size(); ++i) {
+      IMP_USAGE_CHECK(!dynamic_cast<RestraintSet*>(restraints[i]),
+                      "Cannot pass restraint sets to model to evaluate");
+      IMP_USAGE_CHECK(restraint_index_.find(restraints[i])
+                      != restraint_index_.end(),
+                      "You must add restraints to model before "
+                      << "asking it to evaluate them");
+    }
+  }
+  ScoreStatesTemp ss= get_score_states(restraints);
+  return do_evaluate(restraints, weights, ss, calc_derivs);
 }
 
 
