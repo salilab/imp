@@ -19,4 +19,102 @@
    and hopefully contribute them back to \imp central
  Various pieces of documentation are marked as being intended for developers.
 
+An overview of the various modules currently available. Representative classes and functions are shown.
+<table border="1">
+<tr>
+<td><b>Module</b></td>
+<td><b>Representation</b></td>
+<td><b>Scoring</b></td>
+<td><b>Sampling</b></td>
+<td><b>Analysis</b></td>
+</tr>
+<tr>
+<td>IMP</td>
+<td>IMP::Particle</td>
+<td>IMP::Restraint</td>
+<td>IMP::Optimizer, IMP::Sampler</td>
+<td>\ref IMP::write_model(), IMP::read_model()</td>
+</tr>
+<tr>
+<td>IMP::core</td>
+<td>IMP::core::XYZ, IMP::core::XYZR, RigidBody</td>
+<td>IMP::core::DistancePairScore, IMP::core::ExcludedVolumeRestraint, IMP::core::AngleTripletScore and other scoring based on distances, angles, volume</td>
+<td>IMP::core::MCCGSampler, IMP::core::MonteCarlo, IMP::core::ConjugateGradients</td>
+<td></td>
+</tr>
+<tr>
+<td>IMP::atom</td>
+<td>IMP::atom::Hierarchy, IMP::atom::Atom, IMP::atom::Residue, IMP::atom::Chain, IMP::atom::Bond, IMP::atom::read_pdb()...</td>
+<td>Charmm force-field based scoring</td>
+<td>IMP::atom::BrownianDynamics, IMP::atom::MolecularDynamics</td>
+<td>IMP::atom::write_pdb()</td>
+</tr>
+<tr>
+<td>IMP::container</td>
+<td></td>
+<td>IMP::container::SingletonsRestraint, IMP::container::PairsRestraint, IMP::container::ListSingletonContainer, IMP::container::ClosePairContainer, IMP::container::AllPairContainer...</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>IMP::statistics</td>
+<td></td>
+<td></td>
+<td></td>
+<td>IMP::statistics::get_lloyds_kmeans(), IMP::statistics::get_connectivity_clustering()</td>
+</tr>
+<tr>
+<td>IMP::em</td>
+<td></td>
+<td>IMP::em::FitRestraint</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>IMP::saxs</td>
+<td></td>
+<td>IMP::saxs::Restraint</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>IMP::gsl</td>
+<td></td>
+<td></td>
+<td></td>
+<td>IMP::gsl::Simplex, IMP::gsl::QuasiNewton</td>
+</tr>
+<tr>
+<td>IMP::domino2</td>
+<td></td>
+<td></td>
+<td></td>
+<td>IMP::domino2::DominoSampler, IMP::domino2::BranchAndBoundSampler</td>
+</tr>
+<tr>
+<td>IMP::display</td>
+<td></td>
+<td></td>
+<td></td>
+<td>IMP::display::PymolWriter, IMP::display::ChimeraWriter, IMP::display::LogOptimizerState...</td>
+</tr>
+<tr>
+<td>IMP::restrainer</td>
+<td>proteins as rigid bodies or a collection of balls</td>
+<td>Yeast-2-hybrid, EM density maps</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>IMP::modeller</td>
+<td></td>
+<td>Access to the Modeller scoring functions</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+
+Not listed are
+ - IMP::algebra that provides basic geometric and mathematical types and operations
+ - IMP::benchmark that provides benchmarks of various usages of other modules
  */
