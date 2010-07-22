@@ -12,7 +12,7 @@
    } elseif ($page == "imp") {
    } elseif ($page == "groups") {
    } elseif ($page == "doc") {
-   } elseif ($page == "download") {
+   } elseif (substr($page, 0, 8) == "download") {
    } else {
      #ini_set('display_errors',1);
      #error_reporting(E_ALL|E_STRICT);
@@ -56,10 +56,10 @@
                         <div id=\"docs\">";
                   GetDocumentation();              
                   echo "</div>"; 
-               } elseif ($page == "download") {
+               } elseif (substr($page, 0, 8) == "download") {
                   echo "<h1>Download</h1>
                         <div id=\"download\">";
-                  PrintFile("download.txt");              
+                  PrintFile($page . ".txt");
                   echo "</div>"; 
                } else {
                   error_log("Invalid page snuck through"+$page);

@@ -3,7 +3,8 @@ WEB=~www/html/imp/
 .PHONY: all
 
 all: ${WEB}/groups.html ${WEB}/index.html ${WEB}/imp.css \
-     ${WEB}/images ${WEB}/doc.html  ${WEB}/download.html ${WEB}/get.php
+     ${WEB}/images ${WEB}/doc.html  ${WEB}/download.html ${WEB}/get.php \
+     ${WEB}/download-windows.html ${WEB}/download-mac.html
 
 ${WEB}/groups.html::
 	@if [ ! -d ${WEB} ]; then mkdir -p ${WEB}; fi
@@ -29,6 +30,16 @@ ${WEB}/doc.html::
 ${WEB}/download.html::
 	@if [ ! -d ${WEB} ]; then mkdir -p ${WEB}; fi
 	(cat make-get.php index.php | php -- page=download) > phpout
+	@grep -q "</html>" phpout && cp phpout $@ && rm phpout || (echo "Error occurred during production of $@: check phpout for errors"; exit 1)
+
+${WEB}/download-windows.html::
+	@if [ ! -d ${WEB} ]; then mkdir -p ${WEB}; fi
+	(cat make-get.php index.php | php -- page=download-windows) > phpout
+	@grep -q "</html>" phpout && cp phpout $@ && rm phpout || (echo "Error occurred during production of $@: check phpout for errors"; exit 1)
+
+${WEB}/download-mac.html::
+	@if [ ! -d ${WEB} ]; then mkdir -p ${WEB}; fi
+	(cat make-get.php index.php | php -- page=download-mac) > phpout
 	@grep -q "</html>" phpout && cp phpout $@ && rm phpout || (echo "Error occurred during production of $@: check phpout for errors"; exit 1)
 
 ${WEB}/get.php: get.php get.php.in misc.inc.php header.txt footer.txt
