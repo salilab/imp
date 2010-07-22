@@ -11,6 +11,14 @@
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
+namespace {
+  std::string strip_quotes(std::string in) {
+    std::vector<char> v(in.begin(), in.end());
+    return std::string(v.begin(),
+                       std::remove(v.begin(), v.end(), '\''));
+  }
+}
+
 void PymolWriter::on_open() {
   get_stream() << "from pymol.cgo import *\nfrom pymol import cmd\n";
   get_stream() << "data= {}\n";
@@ -23,13 +31,13 @@ void PymolWriter::on_close() {
 
 void PymolWriter::cleanup(std::string name){
   get_stream() << "]\n";
-  get_stream() << "k= '" << name << "'" << std::endl;
+  get_stream() << "k= '" << strip_quotes(name) << "'" << std::endl;
   get_stream() << "if k in data.keys():\n"
                << "  data[k]= data[k]+curdata\nelse:\n"
                << "  data[k]= curdata\n\n";
 }
 void PymolWriter::setup(std::string name){
-  get_stream() << "k= '" << name << "'\n";
+  get_stream() << "k= '" << strip_quotes(name) << "'\n";
   get_stream() << "if not k in data.keys():\n"
                << "   data[k]=[]\n";
   get_stream() << "curdata=[\n";
