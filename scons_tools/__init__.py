@@ -409,7 +409,7 @@ def add_common_variables(vars, package):
     vars.Add(BoolVariable('localmodules', 'Whether to build local modules that are not part of the IMP distribution', False))
     vars.Add(BoolVariable('linktest', 'Test for header defined functions which are not inline', True))
     vars.Add(PathVariable('repository', 'Where to find the source code to build. This is only needed if building in a different directory than the source.', None, PathVariable.PathIsDir))
-    vars.Add(BoolVariable('static', 'Whether to only build static libraries. This implies python=False ', False))
+    vars.Add(BoolVariable('static', 'Whether to only build static libraries.', False))
     vars.Add(BoolVariable('precompiledheader', 'Whether to use a precompiled header for swig libraries ', False))
     vars.Add(BoolVariable('fastlink', 'Scons does not handle shared libraries properly by default and relinks everything every time one changes. If fastlink it true, then we work around this. Fastlink can only be set to true when on linux or mac and when there is no static linking. These preconditions are not currently checked. ', False))
     #vars.Add(BoolVariable('noexternaldependencies', 'Do not check files in the provided includepath and libpath for changes.', False))
