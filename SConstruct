@@ -64,12 +64,11 @@ Type: 'scons' to build the IMP kernel and all configured modules (i.e. those
       'scons doc{-install}' to build (and optionally install) doc
 
 Other useful targets:
-      '[kernel,module-name]-test' to test all modules, the kernel, or a particular module
-      '[kernel, module-name]-test-examples' to test the examples for a particular module or the kernel
+      '[kernel,modulename]-test' to test all modules, the kernel, or a particular module
+      '[kernel, modulename]-test-examples' to test the examples for a particular module or the kernel
       'all' to build and test everything (and clean up everything in conjunction with '-c')
 
-Infrequently changing settings can be stored in a 'config.py' file in the build directory. An
-example is provided in tools/example-config.py.
+Infrequently changing settings can be stored in a 'config.py' file in the build directory. An example is provided in tools/example-config.py.
 """)
 
 # Make these objects available to SConscript files:
