@@ -21,6 +21,21 @@ IMPALGEBRA_BEGIN_NAMESPACE
 
 IMPALGEBRA_EXPORT_TEMPLATE(VectorD<3>);
 
+/* Microsoft compilers require that if a class is exported from a DLL,
+   all member objects are too. Thus, we make sure that we export the
+   Vector3Ds class here; otherwise, both the statistics and display modules
+   will attempt to export Vector3Ds (since they both contain exported classes
+   that have Vector3Ds members) and then any module that attempts to link
+   against both statistics and display (e.g. domino2) will fail to link with
+   LNK2005/LNK1169 errors (multiply defined symbols). See also
+   http://support.microsoft.com/kb/q168958/
+
+   Note that STL members other than std::vector may be impossible to export
+   on Windows systems, due to hidden nested classes.
+ */
+IMPALGEBRA_EXPORT_TEMPLATE(std::allocator<VectorD<3> >);
+IMPALGEBRA_EXPORT_TEMPLATE(std::vector<VectorD<3> >);
+
 /** \name 3D Vectors
     We provide a specialization of VectorD for 3-space and
     several additional functions on it.
