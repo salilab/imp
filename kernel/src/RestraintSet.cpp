@@ -37,6 +37,8 @@ IMP_LIST_IMPL(RestraintSet, Restraint, restraint, Restraint*,
                   get_model()->reset_dependencies();
                 }
                 obj->set_was_used(true);
+                IMP_USAGE_CHECK(obj != this,
+                                "Cannot add a restraint set to itself");
               },if (get_is_part_of_model()) {
                   get_model()->reset_dependencies();
               },{
