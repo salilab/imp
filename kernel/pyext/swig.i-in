@@ -208,6 +208,7 @@ namespace IMP {
 %include "IMP/QuadFilter.h"
 %include "IMP/io.h"
 %include "IMP/internal/swig.h"
+%include "IMP/scoped.h"
 
 
 namespace IMP {
