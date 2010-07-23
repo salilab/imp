@@ -15,7 +15,7 @@ def gen_file(target, source, env):
         line = line.replace('@IMP_EXAMPLE_DIRECTORY@', source[2].get_contents())
         outfile.write(line)
 direnv.Append(BUILDERS={'GenFile': Builder(action=gen_file)})
-dir=direnv.GenFile("build/src/directories.cpp",
+dir=direnv.GenFile("#/build/src/directories.cpp",
                ["directories.cpp.in",
                 env.Value(env.subst(env['datadir'])),
                 env.Value(env.subst(os.path.join(env['docdir'], "examples")))])
