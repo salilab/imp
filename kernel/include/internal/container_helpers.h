@@ -16,6 +16,7 @@
 #include "../SingletonContainer.h"
 #include "../PairContainer.h"
 #include "../ScoreState.h"
+#include "../scoped.h"
 #include "utility.h"
 
 #include <boost/tuple/tuple.hpp>

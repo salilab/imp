@@ -55,6 +55,7 @@ files = [
          'log.h',
          'macros.h',
          'random.h',
+         'scoped.h',
          'utility.h',
         ] \
         + SConscript('internal/SConscript')
