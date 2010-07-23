@@ -5,8 +5,23 @@ import IMP.statistics
 import IMP.core
 import IMP.algebra
 
-class KMeansTests(IMP.test.TestCase):
-    def test_kmeans(self):
+class ConnectivityClusteringTests(IMP.test.TestCase):
+    def test_connectivity_distance(self):
+        """Test connectivity clustering distance cutoff"""
+        vs = [IMP.algebra.Vector3D(0,0,0.0),
+              IMP.algebra.Vector3D(0,0,1.0),
+              IMP.algebra.Vector3D(0,0,1.9),
+              IMP.algebra.Vector3D(0,0,3.0)]
+        e = IMP.statistics.Vector3DEmbedding(vs)
+        # Distance between points must be *less than* 1.0, not equal to, so
+        # we should get exactly three clusters here
+        c = IMP.statistics.get_connectivity_clustering(e, 1.0)
+        self.assertEqual(c.get_number_of_clusters(), 3)
+        # First three points should fall into one cluster
+        c = IMP.statistics.get_connectivity_clustering(e, 1.01)
+        self.assertEqual(c.get_number_of_clusters(), 2)
+
+    def test_connectivity_clustering(self):
         """Connectivity clustering"""
         vs= IMP.algebra.Vector3Ds()
         centers=(IMP.algebra.Vector3D(0,0,0),
