@@ -41,9 +41,11 @@ class WineEnvironment(Environment):
         if sys.platform != 'linux2':
             print "ERROR: Wine is supported only on Linux systems"
             Exit(1)
+        self._fix_scons_msvc_detect()
+
         Environment.__init__(self, platform=platform, CC=CC, LINK=LINK, **kw)
         posix_env = Environment(platform='posix')
-        self['SHLIBPREFIX'] = self['LIBLINKPREFIX'] = 'lib'
+        self['SHLIBPREFIX'] = self['LIBLINKPREFIX'] = self['LIBPREFIX'] = 'lib'
         self['WINDOWSEXPPREFIX'] = 'lib'
         self['LIBSUFFIX'] = '.lib'
         self['PSPAWN'] = posix_env['PSPAWN']
@@ -58,6 +60,14 @@ class WineEnvironment(Environment):
         # enable C++ exception handling
         self.Append(CFLAGS="/MD")
         self.Append(CXXFLAGS="/MD /GR /GX")
+
+    def _fix_scons_msvc_detect(self):
+        """Ensure that MSVC auto-detection finds tools on Wine builds"""
+        def _wine_read_reg(value):
+            return '/usr/lib/w32comp/Program Files/' + \
+                   'Microsoft Visual Studio .NET 2003'
+        import SCons.Tool.MSCommon.common
+        SCons.Tool.MSCommon.common.read_reg = _wine_read_reg
 
 def _get_python_include(env):
     """Get the directory containing Python.h"""
