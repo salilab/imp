@@ -150,6 +150,8 @@ def MyEnvironment(variables=None, *args, **kw):
         env['SHLINKFLAGS'] = [ x.replace('-no_archive', '') for x in env['SHLINKFLAGS']]
     except ValueError:
         pass
+    if env.get("swigprogram", None):
+        env['SWIG']= env["swigprogram"]
     #col = colorizer.colorizer()
     #col.colorize(env)
     env['PYTHONPATH'] = '#/build/lib'
@@ -332,7 +334,9 @@ def add_common_variables(vars, package):
         # Install in /usr/lib64 rather than /usr/lib on x86_64 Linux boxes
         libdir += '64'
     vars.Add(PathVariable('cxxcompiler', 'The C++ compiler to use (eg g++).', None,
-                          PathVariable.PathExists))
+                          PathVariable.PathAccept))
+    vars.Add(PathVariable('swigprogram', 'The path to the swig command.', None,
+                          PathVariable.PathAccept))
     vars.Add(PathVariable('prefix', 'Top-level installation directory', '/usr',
                           PathVariable.PathAccept))
     vars.Add(PathVariable('datadir', 'Data file installation directory',
