@@ -703,6 +703,13 @@ def IMPModuleBuild(env, version, required_modules=[],
     env['IMP_MODULES_ALL'].append(module)
 
     preclone=env
+    #if not env.GetOption('clean') and not env.GetOption('help'):
+    if len(required_libraries)+len(required_headers) > 0:
+        try:
+            check_libraries_and_headers(env, required_libraries, required_headers)
+        except EnvironmentError, e:
+            env['MODULE_FAILED']=str(e)
+
     env.Prepend(SCANNERS = [swig.scanner, swig.inscanner])
     env['all_modules'].append(module)
     try:
@@ -796,13 +803,6 @@ def IMPModuleBuild(env, version, required_modules=[],
         except OSError, detail:
             print "Could not run svnversion: %s" % str(detail)
     env['IMP_MODULE_VERSION'] = version
-
-    #if not env.GetOption('clean') and not env.GetOption('help'):
-    if len(required_libraries)+len(required_headers) > 0:
-        try:
-            check_libraries_and_headers(env, required_libraries, required_headers)
-        except EnvironmentError, e:
-            env['MODULE_FAILED']=str(e)
 
 
     if env.get('MODULE_FAILED', None) is not None:
