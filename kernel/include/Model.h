@@ -60,6 +60,7 @@ private:
   mutable Stage cur_stage_;
   unsigned int eval_count_;
   internal::OwnerPointer<RestraintSet> rs_;
+  bool first_call_;
 
 
 

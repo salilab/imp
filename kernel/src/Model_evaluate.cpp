@@ -30,7 +30,7 @@ namespace {
 #if IMP_BUILD < IMP_FAST
 #define WRAP_UPDATE_CALL(restraint, expr, exchange)                     \
   {                                                                     \
-    IMP_IF_CHECK(USAGE_AND_INTERNAL) {                                  \
+    IMP_IF_CHECK(first_call_ && USAGE_AND_INTERNAL) {                   \
       ParticlesTemp rpl;                                                \
       if (!exchange) rpl= (restraint)->get_input_particles();           \
       else rpl= (restraint)->get_output_particles();                    \
@@ -97,7 +97,7 @@ namespace {
 
 #define WRAP_EVALUATE_CALL(restraint, expr)                             \
   {                                                                     \
-    IMP_IF_CHECK(USAGE_AND_INTERNAL) {                                  \
+    IMP_IF_CHECK(first_call_ && USAGE_AND_INTERNAL) {                   \
       ParticlesTemp rpl= (restraint)->get_input_particles();            \
       ContainersTemp cpl= (restraint)->get_input_containers();          \
       {for (unsigned int i=0; i < cpl.size(); ++i) {                    \
@@ -137,6 +137,7 @@ namespace {
 
 
 IMP_BEGIN_INTERNAL_NAMESPACE
+
 struct ReadLock{
   Particles p_;
   std::set<Object *> allowed_;
