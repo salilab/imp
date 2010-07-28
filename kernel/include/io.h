@@ -65,6 +65,7 @@ IMPEXPORT void read_model(TextInput in, Model *m);
 #endif
 /** @} */
 
+#ifdef IMP_USE_NETCDF
 /** \name Binary I/O
 
     When lots of data is being written, it can be useful to write the
@@ -83,6 +84,7 @@ IMPEXPORT void read_binary_model(std::string filename,
                                  const FloatKeys &keys,
                                  int frame=-1);
 /** @} */
+#endif
 
 /** \brief Dump the state of the model to a file on an error and then
     go on the the other handlers.

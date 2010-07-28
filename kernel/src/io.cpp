@@ -8,7 +8,9 @@
 
 #include <IMP/io.h>
 #include <IMP/internal/particle_save.h>
+#ifdef IMP_USE_NETCDF
 #include <netcdfcpp.h>
+#endif
 
 IMP_BEGIN_NAMESPACE
 
@@ -165,6 +167,7 @@ IMPEXPORT void read_model(TextInput in, Model *m) {
   read_model(in, ps, m);
 }
 
+#ifdef IMP_USE_NETCDF
 
 void write_binary_model(const ParticlesTemp &particles,
                         const FloatKeys &keys,
@@ -226,6 +229,7 @@ void read_binary_model(std::string filename,
     }
   }
 }
+#endif
 
 
 
