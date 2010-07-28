@@ -28,23 +28,60 @@ IMP_BEGIN_NAMESPACE
     not in the list, an IOException is thrown. This can change to
     silently ignoring such attributes if desired.
 
+    If a list of attributes is passed to read or write, only those
+    attributes are read.
+
     \note If you are just interested in saving the state of a model during
     runtime, use an IMP::ConfigurationSet instead. It should be
     substantially faster.
     @{
 */
+#ifndef IMP_DOXYGEN
 IMPEXPORT void write_model(Model *m,
                            const ParticlesTemp &particles,
                            TextOutput out);
+#endif
+IMPEXPORT void write_model(const ParticlesTemp &particles,
+                           TextOutput out);
+IMPEXPORT void read_model(TextInput in,
+                          const ParticlesTemp &particles
+#ifndef IMP_DOXYGEN
+                          ,Model *m=NULL
+#endif
+);
+
+IMPEXPORT void write_model(const ParticlesTemp &particles,
+                           const FloatKeys &keys,
+                           TextOutput out);
 IMPEXPORT void read_model(TextInput in,
                           const ParticlesTemp &particles,
-                          Model *m);
+                          const FloatKeys &keys);
+
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 IMPEXPORT void write_model(Model *m,
                            TextOutput out);
 
 IMPEXPORT void read_model(TextInput in, Model *m);
 #endif
+/** @} */
+
+/** \name Binary I/O
+
+    When lots of data is being written, it can be useful to write the
+    data as binary instead of text. Binary writing requires NetCDF.
+
+    For writing if the frame is a positive integer, then the data is
+    added to the file if it already exists.
+    @{
+*/
+IMPEXPORT void write_binary_model(const ParticlesTemp &particles,
+                                  const FloatKeys &keys,
+                                  std::string filename,
+                                  int frame=-1);
+IMPEXPORT void read_binary_model(std::string filename,
+                                 const ParticlesTemp &particles,
+                                 const FloatKeys &keys,
+                                 int frame=-1);
 /** @} */
 
 /** \brief Dump the state of the model to a file on an error and then
