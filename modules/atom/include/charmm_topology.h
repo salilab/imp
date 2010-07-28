@@ -226,7 +226,12 @@ public:
 #endif
 };
 
-//! The ideal topology of a single residue as read from a CHARMM topology file
+//! The ideal topology of a single residue
+/** These residue topologies can be constructed manually (by adding
+    CHARMMAtomTopology objects with add_atom()). However, they are more
+    commonly populated automatically by reading a CHARMM topology file
+    (CHARMMParameters::get_residue_topology()).
+ */
 class IMPATOMEXPORT CHARMMIdealResidueTopology
     : public CHARMMResidueTopologyBase {
   std::string default_first_patch_, default_last_patch_;
@@ -286,6 +291,12 @@ public:
 };
 
 //! The topology of a single residue in a model.
+/** Each CHARMMResidueTopology object can represent an 'unknown' residue
+    (containing no atoms or bonds) or is a copy of an existing
+    CHARMMIdealResidueTopology. Optionally, patches can be applied to
+    residues (see CHARMMPatch::apply()) to add N- or C-termini, disulfide
+    bridges, sidechain modifications, etc.
+ */
 class IMPATOMEXPORT CHARMMResidueTopology
      : public CHARMMIdealResidueTopology, public Object {
   bool patched_;
@@ -295,7 +306,7 @@ public:
   CHARMMResidueTopology(ResidueType type)
     : CHARMMIdealResidueTopology(type), patched_(false) {}
 
-  //! Construct residue topology from the ideal (library) topology.
+  //! Construct residue topology as a copy of an existing topology.
   CHARMMResidueTopology(const CHARMMIdealResidueTopology &ideal)
     : CHARMMIdealResidueTopology(ideal), patched_(false) {}
 
