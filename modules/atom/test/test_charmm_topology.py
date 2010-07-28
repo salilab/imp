@@ -376,5 +376,27 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         self.assertEqual(len(residues), 3)
         self.assertEqual(len(atoms), 42)
 
+    def test_empty_residue_make_hierarchy(self):
+        """Test construction of hierarchy from empty topology"""
+        ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
+                                       IMP.atom.get_data_path("par.lib"))
+        topology = IMP.atom.CHARMMTopology()
+        segment = IMP.atom.CHARMMSegmentTopology()
+        topology.add_segment(segment)
+        for res in ('ALA', 'CYS', 'TYR'):
+            # Note that here we construct each CHARMMResidueTopology using
+            # just a residue type, not an ideal residue topology from top.lib;
+            # thus it should contain no atoms
+            restop = IMP.atom.CHARMMResidueTopology(IMP.atom.ResidueType(res))
+            segment.add_residue(restop)
+        m = IMP.Model()
+        hierarchy = topology.create_hierarchy(m)
+        chains = IMP.atom.get_by_type(hierarchy, IMP.atom.CHAIN_TYPE)
+        residues = IMP.atom.get_by_type(hierarchy, IMP.atom.RESIDUE_TYPE)
+        atoms = IMP.atom.get_by_type(hierarchy, IMP.atom.ATOM_TYPE)
+        self.assertEqual(len(chains), 1)
+        self.assertEqual(len(residues), 3)
+        self.assertEqual(len(atoms), 0)
+
 if __name__ == '__main__':
     unittest.main()
