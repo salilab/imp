@@ -295,7 +295,7 @@ public:
   CHARMMResidueTopology(ResidueType type)
     : CHARMMIdealResidueTopology(type), patched_(false) {}
 
-  //! Construct residue topology from the ideal (libary) topology.
+  //! Construct residue topology from the ideal (library) topology.
   CHARMMResidueTopology(const CHARMMIdealResidueTopology &ideal)
     : CHARMMIdealResidueTopology(ideal), patched_(false) {}
 
