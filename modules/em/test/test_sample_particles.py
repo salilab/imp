@@ -55,5 +55,25 @@ class SampleTests(IMP.test.TestCase):
                      "standard deviations of maps differ")
         os.unlink("xxx.em")
 
+    def test_sample_pdb(self):
+        """Check that sampling particles works"""
+        erw=IMP.em.EMReaderWriter()
+        resolution=6.
+        voxel_size=1.
+        mh=IMP.atom.read_pdb(self.get_input_file_name("d1q3sa1.pdb"),self.imp_model,IMP.atom.CAlphaPDBSelector())
+        IMP.atom.add_radii(mh)
+        model_map = IMP.em.SampledDensityMap(IMP.atom.get_leaves(mh), resolution, voxel_size)
+        model_map.calcRMS()
+        IMP.em.write_map(model_map, "xxx.em",erw)
+        em_map = IMP.em.DensityMap()
+        em_map= IMP.em.read_map("xxx.em",erw)
+        em_map.calcRMS()
+        self.assert_(abs(em_map.get_header().rms - \
+                         model_map.get_header().rms) < .001,
+                     "standard deviations of maps differ")
+        os.unlink("xxx.em")
+
+
+
 if __name__ == '__main__':
     unittest.main()
