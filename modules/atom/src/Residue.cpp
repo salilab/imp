@@ -124,4 +124,42 @@ Hierarchy get_next_residue(Residue rd) {
   return r;
 }
 
+namespace {
+  struct RP: public std::pair<char, ResidueType> {
+    RP(ResidueType rt, char c): std::pair<char, ResidueType>(c, rt) {}
+  };
+}
+
+ResidueType get_residue_type(char c) {
+  static const RP names[]={RP(ALA, 'A'),
+                           RP(ARG, 'R'),
+                           RP(ASP, 'D'),
+                           RP(ASN, 'N'),
+                           RP(CYS, 'C'),
+                           RP(GLN, 'Q'),
+                           RP(GLU, 'E'),
+                           RP(GLY, 'G'),
+                           RP(HIS, 'H'),
+                           RP(ILE, 'I'),
+                           RP(LEU, 'L'),
+                           RP(LYS, 'K'),
+                           RP(MET, 'M'),
+                           RP(PHE, 'F'),
+                           RP(PRO, 'P'),
+                           RP(SER, 'S'),
+                           RP(THR, 'T'),
+                           RP(TYR, 'Y'),
+                           RP(TRP, 'W'),
+                           RP(VAL, 'V'),
+                           RP(UNK, 'X')};
+  static const std::map<char, ResidueType> map(names,
+                                               names+sizeof(names)/sizeof(RP));
+  if (map.find(c) == map.end()) {
+    IMP_THROW("Residue name not found " << c, ValueException);
+  } else {
+    return map.find(c)->second;
+  }
+}
+
+
 IMPATOM_END_NAMESPACE

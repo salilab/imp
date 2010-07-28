@@ -223,6 +223,11 @@ IMPATOMEXPORT Chain get_chain(Residue rd, bool nothrow=false);
  */
 IMPATOMEXPORT Hierarchy get_next_residue(Residue rd);
 
+/** Get the residue type from the 1-letter amino acid
+    code.
+*/
+IMPATOMEXPORT ResidueType get_residue_type(char c);
+
 IMPATOM_END_NAMESPACE
 
 #endif  /* IMPATOM_RESIDUE_H */
