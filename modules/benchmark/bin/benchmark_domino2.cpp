@@ -64,9 +64,9 @@ int main(int, char *[]) {
   IMP_NEW(DominoSampler, ds, (m, pst));
   ds->set_maximum_score(1);
   double runtime, num=0;
-#ifndef NDEBUG
+  /*#ifndef NDEBUG
   ds->set_log_level(VERBOSE);
-#endif
+  #endif*/
   IMP_TIME(
              {
                Pointer<ConfigurationSet> cs= ds->get_sample();
