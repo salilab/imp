@@ -54,6 +54,14 @@ class IMPEXPORT ConfigurationSet: public Object
 
 IMP_OBJECTS(ConfigurationSet,ConfigurationSets);
 
+#ifdef IMP_USE_NETCDF
+/** Read a set of configurations from a file created by write_binary_model().
+    NetCDF is required for this method to work.
+ */
+IMPEXPORT ConfigurationSet* read_configuration_set(std::string fname,
+                                                   const Particles &ps,
+                                                   const FloatKeys &keys);
+#endif
 IMP_END_NAMESPACE
 
 #endif  /* IMP_CONFIGURATION_SET_H */
