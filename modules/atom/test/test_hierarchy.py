@@ -77,15 +77,10 @@ class HierarchyTests(IMP.test.TestCase):
         self.assertEqual(len(IMP.atom.get_internal_bonds(r1)), 3)
 
     def test_equality(self):
-        """Check equality of AtomType and RestraintType types"""
+        """Check equality of AtomType types"""
         at0= IMP.atom.AtomType(0)
         at1= IMP.atom.AtomType(0)
         at2= IMP.atom.AtomType(1)
-        self.assertEqual(at0, at1)
-        self.assert_(at0!=at2)
-        at0= IMP.atom.ResidueType(0)
-        at1= IMP.atom.ResidueType(0)
-        at2= IMP.atom.ResidueType(1)
         self.assertEqual(at0, at1)
         self.assert_(at0!=at2)
 
