@@ -6,6 +6,11 @@ if env['CGAL_LIBS'] != ['']:
 else:
     config.append('IMP_NO_CGAL')
 
+if env['NETCDF_LIBS'] != ['']:
+    config.append('IMP_USE_NETCDF')
+else:
+    config.append('IMP_NO_NETCDF')
+
 if env['ANN_LIBS'] is not None:
     config.append('IMP_USE_ANN')
 else:
@@ -43,4 +48,4 @@ env.IMPModuleBuild(version='SVN', required_modules=None, config_macros=config,
                    module='kernel', module_suffix="", module_include_path="IMP",
                    module_src_path="kernel", module_preproc="IMP",
                    module_namespace="IMP",
-                   optional_dependencies=['boost_file_system'])
+                   optional_dependencies=['boost_file_system', 'netcdf'])
