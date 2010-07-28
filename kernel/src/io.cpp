@@ -174,28 +174,43 @@ void write_binary_model(const ParticlesTemp &particles,
                         std::string filename,
                         int frame) {
   NcFile::FileMode mode;
-  if (frame >=0) {
+  // replace on 0 also
+  if (frame >0) {
     mode=NcFile::Write;
   } else {
     mode=NcFile::Replace;
   }
-  NcFile f(filename.c_str(), mode);
+  NcFile f(filename.c_str(), mode, NULL, 0, NcFile::Netcdf4);
   if (!f.is_valid()) {
     IMP_THROW("Unable to open file " << filename << " for writing",
               IOException);
   }
   const NcDim* dims[2];
-  dims[0]= f.add_dim("particles", particles.size());
-  dims[1]= f.add_dim("values", keys.size());
+  if (frame > 0) {
+    dims[0]= f.get_dim("particles");
+    dims[1]= f.get_dim("values");
+    if (static_cast<unsigned int>(dims[0]->size()) != particles.size()) {
+      IMP_THROW("Number of particles (" << particles.size()
+                << ") does not match expected (" << dims[0]->size()
+                << ")", IOException);
+    }
+    if (static_cast<unsigned int>(dims[1]->size()) != keys.size()) {
+      IMP_THROW("Number of keys (" << keys.size()
+                << ") does not match expected (" << dims[1]->size()
+                << ")", IOException);
+    }
+  } else {
+    dims[0]= f.add_dim("particles", particles.size());
+    dims[1]= f.add_dim("values", keys.size());
+  }
   NcVar *cur=NULL;
   if (frame >=0) {
     std::ostringstream oss;
-    oss << "frame " << frame;
+    oss << frame;
     cur = f.add_var(oss.str().c_str(), ncDouble, 2, dims);
   } else {
     cur = f.add_var("data", ncDouble, 2, dims);
   }
-  // ick
   boost::scoped_array<double> values(new double[particles.size()*keys.size()]);
   for (unsigned int i=0; i< particles.size(); ++i) {
     for (unsigned int j=0; j< keys.size(); ++j) {
@@ -204,23 +219,16 @@ void write_binary_model(const ParticlesTemp &particles,
   }
   cur->put(values.get(), particles.size(), keys.size());
 }
-void read_binary_model(std::string filename,
+
+void read_binary_model(NcFile &f,
                        const ParticlesTemp &particles,
                        const FloatKeys &keys,
-                       int frame) {
-  NcFile f(filename.c_str(), NcFile::ReadOnly);
-  if (!f.is_valid()) {
-    IMP_THROW("Unable to open file " << filename << " for writing",
-              IOException);
+                       int var_index) {
+  if (var_index >= f.num_vars()) {
+    IMP_THROW("Illegal component of file requested " << var_index
+              << ">=" << f.num_vars(), IOException);
   }
-  NcVar *data=NULL;
-  if (frame >=0) {
-    std::ostringstream oss;
-    oss << "frame " << frame;
-    data = f.get_var(oss.str().c_str());
-  } else {
-    data = f.get_var("data");
-  }
+  NcVar *data=f.get_var(var_index);
   boost::scoped_array<double> values(new double[particles.size()*keys.size()]);
   data->get(values.get(), particles.size(), keys.size());
   for (unsigned int i=0; i< particles.size(); ++i) {
@@ -228,6 +236,42 @@ void read_binary_model(std::string filename,
       particles[i]->set_value(keys[j], values[i*keys.size()+j]);
     }
   }
+}
+
+void read_binary_model(std::string filename,
+                       const ParticlesTemp &particles,
+                       const FloatKeys &keys,
+                       int frame) {
+  NcFile f(filename.c_str(), NcFile::ReadOnly,
+           NULL, 0, NcFile::Netcdf4);
+  if (!f.is_valid()) {
+    IMP_THROW("Unable to open file " << filename << " for reading",
+              IOException);
+  }
+  int index=-1;
+  if (frame>=0) {
+    std::ostringstream oss;
+    oss << frame;\
+    for ( int i=0; i< f.num_vars(); ++i) {
+      NcVar *v= f.get_var(i);
+      if (std::string(v->name())== oss.str()) {
+        index=i;
+        break;
+      }
+    }
+    if (index==-1) {
+      std::string vars;
+      for ( int i=0; i< f.num_vars(); ++i) {
+        NcVar *v= f.get_var(i);
+        vars= vars+" "+std::string(v->name());
+      }
+      IMP_THROW("Unable to find " << oss.str()
+                << " found frames are " << vars, IOException);
+    }
+  } else {
+    index=0;
+  }
+  read_binary_model(f, particles, keys, frame);
 }
 #endif
 

@@ -9,6 +9,9 @@
 
 #include "IMP/ConfigurationSet.h"
 #include "IMP/internal/utility.h"
+#ifdef IMP_USE_NETCDF
+#include <netcdfcpp.h>
+#endif
 
 IMP_BEGIN_NAMESPACE
 namespace {
@@ -88,5 +91,33 @@ void ConfigurationSet::do_show(std::ostream &out) const {
   out <<  get_number_of_configurations()
       << " configurations." << std::endl;
 }
+
+#ifdef IMP_USE_NETCDF
+// in io.cpp
+void read_binary_model(NcFile &f,
+                       const ParticlesTemp &particles,
+                       const FloatKeys &keys,
+                       int var_index);
+
+ConfigurationSet* read_configuration_set(std::string filename,
+                                         const Particles &ps,
+                                         const FloatKeys &keys) {
+  if (ps.empty()) {
+    return NULL;
+  }
+  NcFile f(filename.c_str(), NcFile::ReadOnly,
+           NULL, 0, NcFile::Netcdf4);
+  if (!f.is_valid()) {
+    IMP_THROW("Unable to open file " << filename << " for reading",
+              IOException);
+  }
+  IMP_NEW(ConfigurationSet, ret, (ps[0]->get_model()));
+  for (int i=0; i< f.num_vars(); ++i) {
+    read_binary_model(f, ps, keys, i);
+    ret->save_configuration();
+  }
+  return ret.release();
+}
+#endif
 
 IMP_END_NAMESPACE
