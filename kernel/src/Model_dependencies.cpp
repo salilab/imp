@@ -32,7 +32,6 @@
 #include <boost/vector_property_map.hpp>
 #endif
 
-
 IMP_BEGIN_NAMESPACE
 typedef boost::graph_traits<DependencyGraph> DGTraits;
 typedef std::map<Object*, DGTraits::vertex_descriptor> DGIndex;
@@ -288,6 +287,7 @@ void Model::reset_dependencies() {
   restraint_weights_.clear();
   ordered_restraints_.clear();
   ordered_score_states_.clear();
+  first_call_=true;
 }
 
 void Model::compute_dependencies() const {
@@ -369,10 +369,12 @@ double Model::evaluate(bool calc_derivs) {
   if (!get_has_dependencies()) {
     compute_dependencies();
   }
-  return do_evaluate(ordered_restraints_,
+  double ret= do_evaluate(ordered_restraints_,
                      restraint_weights_,
                      ordered_score_states_,
                      calc_derivs);
+  first_call_=false;
+  return ret;
 }
 
 double Model::evaluate(const RestraintsTemp &inrestraints, bool calc_derivs)

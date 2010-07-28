@@ -30,6 +30,7 @@ Model::Model(std::string name): Object(name),
   eval_count_=0;
   set_was_used(true);
   rs_->set_model(this);
+  first_call_=true;
 }
 
 
