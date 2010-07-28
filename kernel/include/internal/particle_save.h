@@ -119,8 +119,11 @@ class IMPEXPORT ParticleData {
   ParticleData(){}
   //! Store the data from the particle
   ParticleData(Particle *p);
+  //! Store the data from the particle
+  ParticleData(Particle *p, const FloatKeys &keys);
   //! overwrite the particle
   void apply(Particle *p) const;
+  void apply(Particle *p,  const FloatKeys &keys) const;
   void show(std::ostream &out=std::cout) const;
   void write_yaml(std::ostream &out,
                   const std::map<Particle*,
