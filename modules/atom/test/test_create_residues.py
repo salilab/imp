@@ -9,13 +9,15 @@ class DecoratorTests(IMP.test.TestCase):
         """Check creating residues from CHARMM topology """
         m= IMP.Model()
         sequence= "FSFGAKSKENKAGATSKPAFSFG" #"GLFGQNNQQQGSGLFG"
+        ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top_heav.lib"),
+                                       IMP.atom.get_data_path("par.lib"))
         seg= IMP.atom.CHARMMSegmentTopology()
         for r in sequence:
             rt= IMP.atom.get_residue_type(r)
             seg.add_residue(IMP.atom.CHARMMResidueTopology(rt))
         top= IMP.atom.CHARMMTopology()
         top.add_segment(seg)
-        top.apply_default_patches()
+        top.apply_default_patches(ff)
         h= top.create_hierarchy(m)
         atoms= IMP.atom.get_by_type(h, IMP.atom.ATOM_TYPE)
         print atoms
