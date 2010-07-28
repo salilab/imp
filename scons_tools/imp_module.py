@@ -633,6 +633,11 @@ def process_dependencies(env, dependencies, required=False):
                 m_libs=m_libs+env['CGAL_LIBS']
             else:
                 missing.append(d)
+        elif d== "netcdf":
+            if env['NETCDF_LIBS']:
+                m_libs=m_libs+env['NETCDF_LIBS']
+            else:
+                missing.append(d)
         elif d== "ANN":
             if env['ANN_LIBS']:
                 m_libs=m_libs+env['ANN_LIBS']

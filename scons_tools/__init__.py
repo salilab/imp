@@ -395,6 +395,7 @@ def add_common_variables(vars, package):
     vars.Add('libs', 'Extra libs to add to link commands ' + \
              '(e.g. "efence:pthread")', None)
     vars.Add(BoolVariable('cgal', 'Whether to use the CGAL package', True))
+    vars.Add(BoolVariable('netcdf', 'Whether to use the NetCDF package', True))
     vars.Add(BoolVariable('rpath',
                           'Add any entries from libpath to library search ' + \
                           'path (rpath) on Linux systems', True))
