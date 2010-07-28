@@ -29,8 +29,7 @@ namespace {
   template <class T, class It>
   void synchronize(const T &t, It b, It e, Particle *p) {
     typedef typename std::iterator_traits<It>::value_type Key;
-    std::vector<Key >
-      ks(b,e);
+    std::vector<Key > ks(b,e);
     for (unsigned int i=0; i< ks.size(); ++i) {
       if (!contains(t, ks[i].get_index())) {
         p->remove_attribute(typename std::iterator_traits<It>
@@ -229,6 +228,18 @@ void ParticleData::apply(Particle *p) const {
   synchronize(particles_, p->particle_keys_begin(), p->particle_keys_end(), p);
 
   synchronize(objects_, p->object_keys_begin(), p->object_keys_end(), p);
+}
+
+
+
+ParticleData::ParticleData(Particle *p, const FloatKeys &keys) {
+  save(floats_, keys.begin(), keys.end(), p);
+}
+
+void ParticleData::apply(Particle *p, const FloatKeys &keys) const {
+  for (unsigned int i=0; i< keys.size(); ++i) {
+    p->set_value(keys[i], floats_.get(keys[i].get_index()));
+  }
 }
 
 void ParticleData::show(std::ostream &out) const {
