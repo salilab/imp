@@ -12,6 +12,7 @@ def builder_config(target, source, env):
     write_config_item(fh, 'has_cgal', env['CGAL_LIBS'] != [''])
     write_config_item(fh, 'has_modeller', env['HAS_MODELLER'])
     write_config_item(fh, 'has_tests', 'NDEBUG' not in env['CPPDEFINES'])
+    write_config_item(fh, 'has_netcdf', env['NETCDF_LIBS'] != [''])
 
 e.Append(BUILDERS = {'MakeConfig': Builder(action=builder_config)})
 config = e.MakeConfig("#/build/swig/IMP_config.i",
