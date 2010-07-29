@@ -707,13 +707,14 @@ def IMPModuleBuild(env, version, required_modules=[],
     env[module+"_optional_dependencies"]= optional_dependencies
     env['IMP_MODULES_ALL'].append(module)
 
+    module_failure = None
     preclone=env
     #if not env.GetOption('clean') and not env.GetOption('help'):
     if len(required_libraries)+len(required_headers) > 0:
         try:
             check_libraries_and_headers(env, required_libraries, required_headers)
         except EnvironmentError, e:
-            env['MODULE_FAILED']=str(e)
+            module_failure = e
 
     env.Prepend(SCANNERS = [swig.scanner, swig.inscanner])
     env['all_modules'].append(module)
@@ -723,14 +724,14 @@ def IMPModuleBuild(env, version, required_modules=[],
     except EnvironmentError, e:
         env[module+"_libs"]=[]
         env = bug_fixes.clone_env(env)
-        env['MODULE_FAILED']=str(e)
+        module_failure = e
     else:
         env[module+"_libs"]=m_libs
         env = bug_fixes.clone_env(env)
     env['IMP_REQUIRED_MODULES']= required_modules
     for m in required_modules:
         if not env.get(m+"_ok", False):
-            env['MODULE_FAILED']="module "+m+" not supported"
+            module_failure = "module "+m+" not supported"
     if env['fastlink']:
         ed= expand_dependencies(env,required_modules, module=='kernel')
         for m in ed:
@@ -810,8 +811,8 @@ def IMPModuleBuild(env, version, required_modules=[],
     env['IMP_MODULE_VERSION'] = version
 
 
-    if env.get('MODULE_FAILED', None) is not None:
-        print "IMP."+env['IMP_MODULE']+" is disabled because", env['MODULE_FAILED']
+    if module_failure is not None:
+        print "IMP."+env['IMP_MODULE']+" is disabled because", str(module_failure)
         #preclone.Append(IMP_BUILD_SUMMARY=["IMP."+module+" disabled"])
         preclone[module+"_ok"]=False
         Return()
