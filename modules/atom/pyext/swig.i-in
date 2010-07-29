@@ -33,6 +33,10 @@ IMP_SWIG_OBJECT(IMP::atom, ImproperSingletonScore, ImproperSingletonScores);
 IMP_SWIG_OBJECT(IMP::atom, LennardJonesPairScore, LennardJonesPairScores);
 IMP_SWIG_OBJECT(IMP::atom, ProteinLigandAtomPairScore, ProteinLigandAtomPairScores);
 IMP_SWIG_OBJECT(IMP::atom, ProteinLigandRestraint, ProteinLigandRestraints);
+IMP_SWIG_OBJECT(IMP::atom, CHARMMTopology, CHARMMTopologies);
+IMP_SWIG_OBJECT(IMP::atom, CHARMMSegmentTopology, CHARMMSegmentTopologies);
+IMP_SWIG_OBJECT(IMP::atom, CHARMMResidueTopology, CHARMMResidueTopologies);
+IMP_SWIG_OBJECT(IMP::atom, CHARMMParameters, CHARMMParametersList);
 IMP_SWIG_DIRECTOR(IMP::atom, PDBSelector);
 
 %include "IMP/atom/atom_macros.h"
