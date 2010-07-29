@@ -244,7 +244,7 @@ public:
 
       \see CHARMMTopology::add_bonds().
    */
-  Particles generate_angles(Particles bonds) const;
+  Particles create_angles(Particles bonds) const;
 
   //! Auto-generate Dihedral particles from the passed list of Bond particles.
   /** The dihedrals consist of all unique triples of bonds which form
@@ -261,7 +261,7 @@ public:
 
       \see CHARMMTopology::add_bonds().
    */
-  Particles generate_dihedrals(Particles bonds) const;
+  Particles create_dihedrals(Particles bonds) const;
 
   IMP_FORCE_FIELD_PARAMETERS(CHARMMParameters);
 private:
@@ -289,6 +289,15 @@ private:
                                        DihedralParameters &param);
   WarningContext warn_context_;
 };
+
+IMP_OBJECTS(CHARMMParameters, CHARMMParametersList);
+
+/** The default CHARMM parameters support normal amino acid
+    and nucleic acid residues and the atoms found in them.
+    To use CHARMM with heterogens or non-standard residues,
+    a different CHARMM parameters file must be used.
+*/
+IMPATOMEXPORT CHARMMParameters* get_default_CHARMM_parameters();
 
 IMPATOM_END_NAMESPACE
 

@@ -7,8 +7,7 @@ prot = IMP.atom.read_pdb(IMP.atom.get_example_path("example_protein.pdb"), m,
                          IMP.atom.NonWaterNonHydrogenPDBSelector())
 
 # Read in the CHARMM heavy atom topology and parameter files
-ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top_heav.lib"),
-                               IMP.atom.get_data_path("par.lib"))
+ff = IMP.atom.get_default_CHARMM_parameters()
 
 # Using the CHARMM libraries, determine the ideal topology (atoms and their
 # connectivity) for the PDB file's primary sequence
@@ -32,8 +31,8 @@ topology.add_atom_types(prot)
 # automatically from an existing set of bonds. These particles only define the
 # bonds, but do not score them or exclude them from the nonbonded list.
 bonds = topology.add_bonds(prot, ff)
-angles = ff.generate_angles(bonds)
-dihedrals = ff.generate_dihedrals(bonds)
+angles = ff.create_angles(bonds)
+dihedrals = ff.create_dihedrals(bonds)
 impropers = topology.add_impropers(prot, ff)
 
 # Maintain stereochemistry by scoring bonds, angles, dihedrals and impropers
@@ -49,26 +48,22 @@ impropers = topology.add_impropers(prot, ff)
 #   bond lengths are harmonically restrained.
 # - A SingletonsRestraint simply goes through each of the bonds in the
 #   container and scores each one in turn.
-cont = IMP.container.ListSingletonContainer(m, "bonds")
-cont.add_particles(bonds)
+cont = IMP.container.ListSingletonContainer(bonds, "bonds")
 bss = IMP.atom.BondSingletonScore(IMP.core.Harmonic(0, 1))
 m.add_restraint(IMP.container.SingletonsRestraint(bss, cont))
 
 # Score angles, dihedrals, and impropers. In the CHARMM forcefield, angles and
 # impropers are harmonically restrained, so this is the same as for bonds.
 # Dihedrals are scored internally by a periodic (cosine) function.
-cont = IMP.container.ListSingletonContainer(m, "angles")
-cont.add_particles(angles)
+cont = IMP.container.ListSingletonContainer(angles, "angles")
 bss = IMP.atom.AngleSingletonScore(IMP.core.Harmonic(0,1))
 m.add_restraint(IMP.container.SingletonsRestraint(bss, cont))
 
-cont = IMP.container.ListSingletonContainer(m, "dihedrals")
-cont.add_particles(dihedrals)
+cont = IMP.container.ListSingletonContainer(dihedrals, "dihedrals")
 bss = IMP.atom.DihedralSingletonScore()
 m.add_restraint(IMP.container.SingletonsRestraint(bss, cont))
 
-cont = IMP.container.ListSingletonContainer(m, "impropers")
-cont.add_particles(impropers)
+cont = IMP.container.ListSingletonContainer(impropers, "impropers")
 bss = IMP.atom.ImproperSingletonScore(IMP.core.Harmonic(0,1))
 m.add_restraint(IMP.container.SingletonsRestraint(bss, cont))
 

@@ -32,7 +32,7 @@ namespace {
 
     // Only DELE ATOM supported for now
     if (split_results[1] == "ATOM") {
-      patch.add_deleted_atom(split_results[2]);
+      patch.add_removed_atom(split_results[2]);
     }
   }
 
@@ -523,7 +523,7 @@ CHARMMParameters::find_dihedral(DihedralParameters::const_iterator begin,
   return best;
 }
 
-Particles CHARMMParameters::generate_angles(Particles bonds) const
+Particles CHARMMParameters::create_angles(Particles bonds) const
 {
   Particles ps;
   BondMap particle_bonds;
@@ -579,7 +579,7 @@ void CHARMMParameters::add_angle(Particle *p1, Particle *p2, Particle *p3,
   ps.push_back(ad);
 }
 
-Particles CHARMMParameters::generate_dihedrals(Particles bonds) const
+Particles CHARMMParameters::create_dihedrals(Particles bonds) const
 {
   Particles ps;
   BondMap particle_bonds;
@@ -647,6 +647,14 @@ void CHARMMParameters::add_dihedral(Particle *p1, Particle *p2, Particle *p3,
                                            core::XYZ(p3), core::XYZ(p4));
     ps.push_back(dd);
   }
+}
+
+
+CHARMMParameters* get_default_CHARMM_parameters() {
+  static Pointer<CHARMMParameters> cp
+    = new CHARMMParameters(get_data_path("top_heav.lib"),
+                           get_data_path("par.lib"));
+  return cp;
 }
 
 IMPATOM_END_NAMESPACE
