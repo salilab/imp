@@ -66,7 +66,10 @@ class WineEnvironment(Environment):
         def _wine_read_reg(value):
             return '/usr/lib/w32comp/Program Files/' + \
                    'Microsoft Visual Studio .NET 2003'
-        import SCons.Tool.MSCommon.common
+        try:
+            import SCons.Tool.MSCommon.common
+        except ImportError:
+            return # Older versions of scons don't have this module
         SCons.Tool.MSCommon.common.read_reg = _wine_read_reg
 
 def _get_python_include(env):
