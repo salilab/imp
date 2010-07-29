@@ -55,8 +55,10 @@ Float ForceFieldParameters::get_radius(
      force_field_2_vdW_.end()) {
     return force_field_2_vdW_.find(force_field_atom_type)->second.second;
   }
-  IMP_WARN_ONCE("Radius not found for type, default value is used \""
-                << force_field_atom_type << "\"" << std::endl, warn_context_);
+  if (!force_field_atom_type.empty()) {
+    IMP_WARN_ONCE("Radius not found for type, default value is used \""
+                  << force_field_atom_type << "\"" << std::endl, warn_context_);
+  }
   return 1.7; // SOME DEFAULT VALUE!!
 }
 
@@ -68,8 +70,10 @@ Float ForceFieldParameters::get_epsilon(
      force_field_2_vdW_.end()) {
     return force_field_2_vdW_.find(force_field_atom_type)->second.first;
   }
-  IMP_WARN("Epsilon not found \"" << force_field_atom_type << "\""
-           << std::endl);
+  if (!force_field_atom_type.empty()) {
+    IMP_WARN("Epsilon not found \"" << force_field_atom_type << "\""
+             << std::endl);
+  }
   return -0.1; // SOME DEFAULT VALUE!!
 }
 
