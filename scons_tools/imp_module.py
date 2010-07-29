@@ -583,7 +583,7 @@ def IMPModuleTest(env, python_tests, cpp_tests, cpp_required_modules=[],
     #print files
     if len(cpp_tests)>0:
         (build, install_list)= _make_programs(env, cpp_required_modules, cpp_extra_libs, False, cpp_tests)
-        cpptest= env._IMPModuleCPPTest(target="test_cpp_programs.py",
+        cpptest= env._IMPModuleCPPTest(target="cpp_test_programs.py",
                                        source= build)
         files.append(cpptest)
     test = env._IMPModuleTest(target="test.passed", source=files)
