@@ -217,7 +217,7 @@ const CHARMMAtomTopology & CHARMMResidueTopologyBase::get_atom(
   }
 }
 
-void CHARMMIdealResidueTopology::delete_atom(std::string name)
+void CHARMMIdealResidueTopology::remove_atom(std::string name)
 {
   std::vector<CHARMMAtomTopology>::iterator it
          = std::find_if(atoms_.begin(), atoms_.end(), atom_has_name(name));
@@ -259,7 +259,7 @@ void CHARMMPatch::apply(CHARMMResidueTopology &res) const
   for (std::vector<std::string>::const_iterator it = deleted_atoms_.begin();
        it != deleted_atoms_.end(); ++it) {
     try {
-      res.delete_atom(*it);
+      res.remove_atom(*it);
     } catch (ValueException &e) {
       // ignore atoms that don't exist to start with
     }
@@ -310,7 +310,7 @@ void CHARMMPatch::apply(CHARMMResidueTopology &res1,
     std::pair<CHARMMResidueTopology *, CHARMMAtomTopology> resatom =
                                 handle_two_patch_atom(*it, res1, res2);
     try {
-      resatom.first->delete_atom(resatom.second.get_name());
+      resatom.first->remove_atom(resatom.second.get_name());
     } catch (ValueException &e) {
       // ignore atoms that don't exist to start with
     }
@@ -519,11 +519,11 @@ Hierarchy CHARMMTopology::create_hierarchy(Model *model) const
 }
 
 IMP_LIST_IMPL(CHARMMSegmentTopology, CHARMMResidueTopology, residue,
-              CHARMMResidueTopology *, CHARMMResidueTopologys,
+              CHARMMResidueTopology *, CHARMMResidueTopologies,
               { obj->set_was_used(true); }, {}, {});
 
 IMP_LIST_IMPL(CHARMMTopology, CHARMMSegmentTopology, segment,
-              CHARMMSegmentTopology *, CHARMMSegmentTopologys,
+              CHARMMSegmentTopology *, CHARMMSegmentTopologies,
               { obj->set_was_used(true); }, {}, {});
 
 IMPATOM_END_NAMESPACE

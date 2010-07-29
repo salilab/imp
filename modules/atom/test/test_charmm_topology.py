@@ -56,8 +56,8 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         res = IMP.atom.CHARMMIdealResidueTopology(IMP.atom.ResidueType('FOO'))
         at = _make_test_atom()
         res.add_atom(at)
-        self.assertRaises(IMP.ValueException, res.delete_atom, 'CB')
-        res.delete_atom('CA')
+        self.assertRaises(IMP.ValueException, res.remove_atom, 'CB')
+        res.remove_atom('CA')
         self.assertRaises(IMP.ValueException, res.get_atom, 'CA')
 
     def test_default_patches(self):
@@ -105,7 +105,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         """Check the CHARMM patch class"""
         patch = IMP.atom.CHARMMPatch('PFOO')
         self.assertEqual(patch.get_type(), 'PFOO')
-        patch.add_deleted_atom('CA')
+        patch.add_removed_atom('CA')
 
     def test_forcefield_add_get(self):
         """Test adding/getting patches and residues to/from forcefields"""
@@ -286,7 +286,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
                                         IMP.algebra.Vector3D(0,0,0))
         topology.add_atom_types(h)
         bonds = topology.add_bonds(h, ff)
-        dihedrals = ff.generate_dihedrals(bonds)
+        dihedrals = ff.create_dihedrals(bonds)
         self.assertEqual(len(dihedrals), 67)
         d = IMP.atom.Dihedral(dihedrals[5])
         self.assertEqual([IMP.atom.CHARMMAtom(d.get_particle(x)).
@@ -324,9 +324,9 @@ class CHARMMTopologyTests(IMP.test.TestCase):
                                -0.67, 1e-3)
         bonds = topology.add_bonds(pdb, ff)
         self.assertEqual(len(bonds), 1215)
-        angles = ff.generate_angles(bonds)
+        angles = ff.create_angles(bonds)
         self.assertEqual(len(angles), 1651)
-        dihedrals = ff.generate_dihedrals(bonds)
+        dihedrals = ff.create_dihedrals(bonds)
         self.assertEqual(len(dihedrals), 2161)
         for (bondr1, bondr2, bonda1, bonda2, atyp1, atyp2, bondlen, fcon) in [
            # intraresidue bond

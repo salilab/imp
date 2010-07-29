@@ -18,6 +18,10 @@
 #include <vector>
 
 IMPATOM_BEGIN_NAMESPACE
+#ifndef SWIG
+class CHARMMParameters;
+CHARMMParameters* get_default_CHARMM_parameters();
+#endif
 
 //! A single atom in a CHARMM topology.
 /** Each atom has a name (unique to the residue), a CHARMM type (used to
@@ -239,10 +243,10 @@ public:
   CHARMMIdealResidueTopology(ResidueType type)
       : CHARMMResidueTopologyBase(type.get_string()) {}
 
-  //! Delete the named atom
-  /** Any bonds/angles that involve this atom are also deleted.
+  //! Remove the named atom
+  /** Any bonds/angles that involve this atom are also removed.
    */
-  void delete_atom(std::string name);
+  void remove_atom(std::string name);
 
   void set_default_first_patch(std::string patch) {
     default_first_patch_ = patch;
@@ -269,7 +273,7 @@ class IMPATOMEXPORT CHARMMPatch : public CHARMMResidueTopologyBase {
 public:
   CHARMMPatch(std::string type) : CHARMMResidueTopologyBase(type) {}
 
-  void add_deleted_atom(std::string name) { deleted_atoms_.push_back(name); }
+  void add_removed_atom(std::string name) { deleted_atoms_.push_back(name); }
 
   //! Apply the patch to the residue, modifying its topology accordingly.
   /** \note Most CHARMM patches are designed to be applied in isolation;
@@ -316,7 +320,7 @@ public:
   IMP_OBJECT(CHARMMResidueTopology);
 };
 
-IMP_OBJECTS(CHARMMResidueTopology,CHARMMResidueTopologys);
+IMP_OBJECTS(CHARMMResidueTopology,CHARMMResidueTopologies);
 
 class CHARMMParameters;
 
@@ -325,7 +329,7 @@ class CHARMMParameters;
  */
 class IMPATOMEXPORT CHARMMSegmentTopology : public Object {
   IMP_LIST(public, CHARMMResidueTopology, residue, CHARMMResidueTopology*,
-           CHARMMResidueTopologys);
+           CHARMMResidueTopologies);
 
   IMP_OBJECT(CHARMMSegmentTopology);
 public:
@@ -337,7 +341,7 @@ public:
   void apply_default_patches(const CHARMMParameters *ff);
 };
 
-IMP_OBJECTS(CHARMMSegmentTopology,CHARMMSegmentTopologys);
+IMP_OBJECTS(CHARMMSegmentTopology,CHARMMSegmentTopologies);
 
 //! The topology of a complete CHARMM model.
 /** This defines all of the segments (chains) in the model as
@@ -365,7 +369,7 @@ IMP_OBJECTS(CHARMMSegmentTopology,CHARMMSegmentTopologys);
  */
 class IMPATOMEXPORT CHARMMTopology : public Object {
   IMP_LIST(public, CHARMMSegmentTopology, segment, CHARMMSegmentTopology*,
-           CHARMMSegmentTopologys);
+           CHARMMSegmentTopologies);
 
   IMP_OBJECT(CHARMMTopology);
 private:
@@ -376,7 +380,8 @@ private:
                                          ResMap &resmap) const;
 public:
   //! Call CHARMMSegmentTopology::apply_default_patches() for all segments.
-  void apply_default_patches(const CHARMMParameters *ff) {
+  void apply_default_patches(const CHARMMParameters *ff
+                            = get_default_CHARMM_parameters() ) {
     for (unsigned int i = 0; i < get_number_of_segments(); ++i) {
       get_segment(i)->apply_default_patches(ff);
     }
@@ -423,7 +428,9 @@ public:
 
       \return a list of the generated Bond decorators.
    */
-  Particles add_bonds(Hierarchy hierarchy, const CHARMMParameters *ff) const;
+  Particles add_bonds(Hierarchy hierarchy,
+                      const CHARMMParameters *ff
+                      = get_default_CHARMM_parameters()) const;
 
   //! Add impropers to the given Hierarchy using this topology, and return them.
   /** The primary sequence of the Hierarchy must match that of the topology.
@@ -436,7 +443,8 @@ public:
       \see add_bonds().
    */
   Particles add_impropers(Hierarchy hierarchy,
-                          const CHARMMParameters *ff) const;
+                          const CHARMMParameters *ff
+                          = get_default_CHARMM_parameters()) const;
 };
 
 IMPATOM_END_NAMESPACE
