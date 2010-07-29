@@ -18,10 +18,6 @@
 #include <vector>
 
 IMPATOM_BEGIN_NAMESPACE
-#ifndef SWIG
-class CHARMMParameters;
-CHARMMParameters* get_default_CHARMM_parameters();
-#endif
 
 //! A single atom in a CHARMM topology.
 /** Each atom has a name (unique to the residue), a CHARMM type (used to
@@ -380,8 +376,7 @@ private:
                                          ResMap &resmap) const;
 public:
   //! Call CHARMMSegmentTopology::apply_default_patches() for all segments.
-  void apply_default_patches(const CHARMMParameters *ff
-                            = get_default_CHARMM_parameters() ) {
+  void apply_default_patches(const CHARMMParameters *ff) {
     for (unsigned int i = 0; i < get_number_of_segments(); ++i) {
       get_segment(i)->apply_default_patches(ff);
     }
@@ -429,8 +424,7 @@ public:
       \return a list of the generated Bond decorators.
    */
   Particles add_bonds(Hierarchy hierarchy,
-                      const CHARMMParameters *ff
-                      = get_default_CHARMM_parameters()) const;
+                      const CHARMMParameters *ff) const;
 
   //! Add impropers to the given Hierarchy using this topology, and return them.
   /** The primary sequence of the Hierarchy must match that of the topology.
@@ -443,8 +437,7 @@ public:
       \see add_bonds().
    */
   Particles add_impropers(Hierarchy hierarchy,
-                          const CHARMMParameters *ff
-                          = get_default_CHARMM_parameters()) const;
+                          const CHARMMParameters *ff) const;
 };
 
 IMPATOM_END_NAMESPACE
