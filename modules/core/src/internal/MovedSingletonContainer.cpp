@@ -34,9 +34,6 @@ MovedSingletonContainer::MovedSingletonContainer(Model *m,
   threshold_(threshold),
   pc_(pc)
 {
-  IMP_USAGE_CHECK(pc->get_number_of_particles() != 0,
-                  "Cannot initialize from empty"
-                  << " container.");
   initialize_active_container(m);
   first_call_=true;
 }
