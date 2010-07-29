@@ -65,7 +65,6 @@ void SampledDensityMap::set_header(const algebra::VectorD<3> &lower_bound,
   header_.compute_xyz_top();
   header_.update_cell_dimensions();
 }
-
 SampledDensityMap::SampledDensityMap(const IMP::Particles &ps,
                    emreal resolution, emreal voxel_size,
                    IMP::FloatKey radius_key,IMP::FloatKey mass_key,
@@ -75,31 +74,11 @@ SampledDensityMap::SampledDensityMap(const IMP::Particles &ps,
   x_key_=IMP::core::XYZ::get_coordinate_key(0);
   y_key_=IMP::core::XYZ::get_coordinate_key(1);
   z_key_=IMP::core::XYZ::get_coordinate_key(2);
-  ps_=ps;
-  for(Particles::iterator it=ps_.begin();it != ps_.end();it++) {
-    xyzr_.push_back(IMP::core::XYZR(*it,radius_key));
-  }
   weight_key_=mass_key;
   radius_key_=radius_key;
-  std::vector<algebra::VectorD<3> > all_points;
-  float max_radius = -1;
-  for(core::XYZRs::const_iterator it = xyzr_.begin(); it != xyzr_.end(); it++ ){
-    all_points.push_back(it->get_coordinates());
-    if (it->get_radius()>max_radius) {
-      max_radius = it->get_radius();
-    }
-  }
- IMP::algebra::BoundingBox3D bb = IMP::algebra::BoundingBox3D(all_points);
-  IMP_IF_LOG(VERBOSE) {
-    IMP_LOG(VERBOSE, "particles bounding box  is : ");
-    IMP_LOG_WRITE(VERBOSE,bb.show());
-    IMP_LOG(VERBOSE,std::endl);
-    IMP_LOG(VERBOSE,"max radius is: " << max_radius<<std::endl);
-  }
-  set_header(bb.get_corner(0),bb.get_corner(1), max_radius, resolution,
-             voxel_size,sig_cutoff);
-  data_.reset(new emreal[header_.get_number_of_voxels()]);
-
+  ps_=ps;
+  xyzr_=IMP::core::XYZRs(ps_,radius_key_);
+  determine_grid_size(resolution,voxel_size,sig_cutoff);
   //set up the sampling parameters
   kernel_params_ = KernelParameters(resolution);
   resample();
@@ -160,9 +139,9 @@ void SampledDensityMap::resample()
         // operations.
         ivox = znxny + ivoxy * header_.get_nx() + iminx;
         for (ivoxx=iminx;ivoxx<=imaxx;ivoxx++) {
-          tmpx=x_loc_[ivox] - ps_[ii]->get_value(x_key_);
-          tmpy=y_loc_[ivox] - ps_[ii]->get_value(y_key_);
-          tmpz=z_loc_[ivox] - ps_[ii]->get_value(z_key_);
+          tmpx=x_loc_[ivox] - xyzr_[ii].get_x();
+          tmpy=y_loc_[ivox] - xyzr_[ii].get_y();
+          tmpz=z_loc_[ivox] - xyzr_[ii].get_z();
           rsq = tmpx*tmpx+tmpy*tmpy+tmpz*tmpz;
           tmp = EXP(-rsq * params->get_inv_sigsq());
           //tmp = exp(-rsq * params->get_inv_sigsq());
@@ -222,9 +201,9 @@ void SampledDensityMap::set_particles(const IMP::Particles &ps,
   IMP_INTERNAL_CHECK(ps_.size()==0,"Particles have already been set");
   IMP_INTERNAL_CHECK(xyzr_.size()==0,"data inconsistency in SampledDensityMap");
   ps_=ps;
-  xyzr_=IMP::core::XYZRs(ps_);
   weight_key_=mass_key;
   radius_key_=radius_key;
+  xyzr_=IMP::core::XYZRs(ps_,radius_key_);
 }
 
 
@@ -314,5 +293,26 @@ void SampledDensityMap::project (const Particles &ps,
     }
 }
 
+void SampledDensityMap::determine_grid_size(emreal resolution,
+                        emreal voxel_size,int sig_cutoff) {
+  std::vector<algebra::VectorD<3> > all_points;
+  float max_radius = -1;
+  for(core::XYZRs::const_iterator it = xyzr_.begin(); it != xyzr_.end(); it++ ){
+    all_points.push_back(it->get_coordinates());
+    if (it->get_radius()>max_radius) {
+      max_radius = it->get_radius();
+    }
+  }
+ IMP::algebra::BoundingBox3D bb = IMP::algebra::BoundingBox3D(all_points);
+  IMP_IF_LOG(VERBOSE) {
+    IMP_LOG(VERBOSE, "particles bounding box  is : ");
+    IMP_LOG_WRITE(VERBOSE,bb.show());
+    IMP_LOG(VERBOSE,std::endl);
+    IMP_LOG(VERBOSE,"max radius is: " << max_radius<<std::endl);
+  }
+  set_header(bb.get_corner(0),bb.get_corner(1), max_radius, resolution,
+             voxel_size,sig_cutoff);
+  data_.reset(new emreal[header_.get_number_of_voxels()]);
+}
 
 IMPEM_END_NAMESPACE

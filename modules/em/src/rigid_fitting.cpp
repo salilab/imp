@@ -19,8 +19,9 @@
 #include <IMP/algebra/eigen_analysis.h>
 #include <IMP/algebra/ReferenceFrame3D.h>
 #include <IMP/core/LeavesRefiner.h>
-IMPEM_BEGIN_NAMESPACE
 
+
+IMPEM_BEGIN_NAMESPACE
 
 void FittingSolutions::add_solution(
   const algebra::Transformation3D &t,Float score) {
@@ -299,15 +300,14 @@ FittingSolutions compute_fitting_scores(const Particles &ps,
   const std::vector<IMP::algebra::Transformation3D>& transformations,
   bool fast_version) {
   FittingSolutions fr;
-    IMP::em::SampledDensityMap *model_dens_map =
-      new IMP::em::SampledDensityMap(*(em_map->get_header()));
-    model_dens_map->set_particles(ps,rad_key,wei_key);
+  IMP_NEW(IMP::em::SampledDensityMap,model_dens_map,
+         (*(em_map->get_header())));
+  model_dens_map->set_particles(ps,rad_key,wei_key);
     model_dens_map->resample();
+    model_dens_map->calcRMS();
     IMP_INTERNAL_CHECK(model_dens_map->same_dimensions(*em_map),
                        "sampled density map is of wrong dimensions"<<std::endl);
     float score;
-    //CoarseCC ccc;
-
     if (!fast_version) {
       IMP_LOG(IMP::VERBOSE,"running slow version of compute_fitting_scores"
               <<std::endl);

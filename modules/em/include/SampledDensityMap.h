@@ -100,6 +100,7 @@ void project (const Particles &ps,
   inline Float get_minimum_resampled_value() const {
     return min_resampled_value_;}
 
+
   IMP_REF_COUNTED_DESTRUCTOR(SampledDensityMap);
 protected:
   //! Calculate the parameters of the particles bounding box
@@ -108,6 +109,11 @@ protected:
    */
   IMP::algebra::BoundingBoxD<3>
      calculate_particles_bounding_box(const Particles &ps);
+
+
+  //! Determine the size of the grid as a function of the particles
+  //! and the resolution.
+  void determine_grid_size(emreal resolution, emreal voxel_size,int sig_cutoff);
   void set_header(const algebra::VectorD<3> &lower_bound,
                   const algebra::VectorD<3> &upper_bound,
                   emreal maxradius, emreal resolution, emreal voxel_size,

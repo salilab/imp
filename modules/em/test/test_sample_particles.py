@@ -33,7 +33,7 @@ class SampleTests(IMP.test.TestCase):
             self.particle_indexes.append(i)
         print "initialization done ..."
 
-    def test_sample_map(self):
+    def _test_sample_map(self):
         """Check that sampling particles works"""
         erw=IMP.em.EMReaderWriter()
         resolution=1.
@@ -42,7 +42,6 @@ class SampleTests(IMP.test.TestCase):
         IMP.em.write_map(model_map,"a.em",erw)
         for p in self.particles:
             v=IMP.core.XYZ(p).get_coordinates()
-            print model_map.get_value(v)
             self.assert_(model_map.get_value(v)>0.6,
                          "map was not sampled correctly")
         model_map.calcRMS()
@@ -57,22 +56,44 @@ class SampleTests(IMP.test.TestCase):
 
     def test_sample_pdb(self):
         """Check that sampling particles works"""
-        erw=IMP.em.EMReaderWriter()
+        mrw=IMP.em.MRCReaderWriter()
         resolution=6.
         voxel_size=1.
         mh=IMP.atom.read_pdb(self.get_input_file_name("d1q3sa1.pdb"),self.imp_model,IMP.atom.CAlphaPDBSelector())
         IMP.atom.add_radii(mh)
-        model_map = IMP.em.SampledDensityMap(IMP.atom.get_leaves(mh), resolution, voxel_size)
+        ps=IMP.atom.get_leaves(mh)
+        #sample through a constructor
+        model_map = IMP.em.SampledDensityMap(ps, resolution, voxel_size)
         model_map.calcRMS()
-        IMP.em.write_map(model_map, "xxx.em",erw)
-        em_map = IMP.em.DensityMap()
-        em_map= IMP.em.read_map("xxx.em",erw)
-        em_map.calcRMS()
-        self.assert_(abs(em_map.get_header().rms - \
+        IMP.em.write_map(model_map, "xxx.mrc",mrw)
+        reloaded_model_map = IMP.em.DensityMap()
+        reloaded_model_map= IMP.em.read_map("xxx.mrc",mrw)
+        reloaded_model_map.calcRMS()
+        self.assert_(IMP.algebra.get_distance(reloaded_model_map.get_origin(),
+                                          model_map.get_origin()) < .001,
+                     "the reloaded and the original map should have the same origin")
+        self.assert_(abs(reloaded_model_map.get_header().rms - \
                          model_map.get_header().rms) < .001,
                      "standard deviations of maps differ")
-        os.unlink("xxx.em")
 
+        #now test sampling in a different way
+        reloaded_model_map.get_header_writable().set_resolution(resolution)
+        model_map2 = IMP.em.SampledDensityMap(reloaded_model_map.get_header())
+        model_map2.set_particles(ps)
+        model_map2.resample()
+        model_map2.calcRMS()
+
+        #IMP.em.write_map(model_map2, "yyy.mrc",mrw)
+        reloaded_model_map.calcRMS()
+        print model_map.get_header().rms, ": " , \
+              reloaded_model_map.get_header().rms , " : " ,\
+              model_map2.get_header().rms
+
+        self.assert_(abs(reloaded_model_map.get_header().rms - \
+                         model_map2.get_header().rms) < .001,
+                     "standard deviations of maps differ")
+        os.unlink("xxx.mrc")
+        #os.unlink("yyy.mrc")
 
 
 if __name__ == '__main__':
