@@ -41,8 +41,11 @@ def _action_cpp_test(target, source, env):
 import unittest
 import IMP
 import IMP.test
-import os
-import os.path
+import sys
+try:
+    import subprocess
+except ImportError:
+    subprocess = None
 
 class DirectoriesTests(IMP.test.TestCase):
 """
@@ -51,8 +54,16 @@ class DirectoriesTests(IMP.test.TestCase):
         print >> out, """
     def test_%(name)s(self):
        \"\"\"Running C++ test %(name)s\"\"\"
-       self.assert_(os.system("%(path)s")==0)
-""" %{'name':nm, 'path':t.abspath}
+       if subprocess is None:
+           sys.stderr.write("test skipped: subprocess module unavailable: ")
+           return
+       # Note: Windows binaries look for needed DLLs in the current
+       # directory. So we need to change into the directory where the DLLs have
+       # been installed for the binary to load correctly.
+       p = subprocess.Popen(["%(path)s"],
+                            shell=False, cwd="%(libdir)s")
+       self.assertEqual(p.wait(), 0)
+""" %{'name':nm, 'path':t.abspath, 'libdir':env.Dir('#/build/lib').abspath}
     print >> out, """
 if __name__ == '__main__':
     unittest.main()
