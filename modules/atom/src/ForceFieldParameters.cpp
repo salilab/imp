@@ -181,7 +181,7 @@ String ForceFieldParameters::get_force_field_atom_type(Atom atom) const
 
 
 ForceFieldParameters *default_force_field_parameters() {
-  return get_default_CHARMM_parameters();
+  return get_all_atom_CHARMM_parameters();
 }
 
 IMPATOM_END_NAMESPACE

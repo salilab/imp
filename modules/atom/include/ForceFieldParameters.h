@@ -70,8 +70,9 @@ protected:
   WarningContext warn_context_;
 };
 
-
+#ifndef IMP_DOXYGEN
 IMPATOMEXPORT ForceFieldParameters* default_force_field_parameters();
+#endif
 
 IMPATOM_END_NAMESPACE
 

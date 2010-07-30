@@ -292,12 +292,28 @@ private:
 
 IMP_OBJECTS(CHARMMParameters, CHARMMParametersList);
 
+
+
 /** The default CHARMM parameters support normal amino acid
     and nucleic acid residues and the atoms found in them.
     To use CHARMM with heterogens or non-standard residues,
     a different CHARMM parameters file must be used.
+
+    No hydrogen parameters are read.
+
+    \see get_all_atom_CHARMM_parameters();
 */
-IMPATOMEXPORT CHARMMParameters* get_default_CHARMM_parameters();
+IMPATOMEXPORT CHARMMParameters* get_heavy_atom_CHARMM_parameters();
+
+
+/** The default CHARMM parameters support normal amino acid
+    and nucleic acid residues and the atoms found in them.
+    To use CHARMM with heterogens or non-standard residues,
+    a different CHARMM parameters file must be used.
+
+    \see get_heavy_atom_CHARMM_parameters()
+*/
+IMPATOMEXPORT CHARMMParameters* get_all_atom_CHARMM_parameters();
 
 IMPATOM_END_NAMESPACE
 
