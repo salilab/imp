@@ -237,7 +237,7 @@ public:
 
 
 /** @name PDB Reading
-
+    \anchor pdb_io
    The read PDB methods produce a hierarchy that looks as follows:
     - One Atom per ATOM or HETATM record in the PDB.
     - All Atom particles have a parent which is a Residue.

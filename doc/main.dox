@@ -33,7 +33,8 @@ An overview of the various modules currently available. Representative classes a
 <td>IMP::Particle</td>
 <td>IMP::Restraint</td>
 <td>IMP::Optimizer, IMP::Sampler</td>
-<td>\ref IMP::write_model(), IMP::read_model()</td>
+<td>\ref model_text_io "IMP::write_model(), IMP::read_model()",
+\ref model_binary_io "IMP::write_binary_model(), IMP::read_binary_model()"</td>
 </tr>
 <tr>
 <td>IMP::core</td>
@@ -44,10 +45,10 @@ An overview of the various modules currently available. Representative classes a
 </tr>
 <tr>
 <td>IMP::atom</td>
-<td>IMP::atom::Hierarchy, IMP::atom::Atom, IMP::atom::Residue, IMP::atom::Chain, IMP::atom::Bond, IMP::atom::read_pdb()...</td>
+<td>IMP::atom::Hierarchy, IMP::atom::Atom, IMP::atom::Residue, IMP::atom::Chain, IMP::atom::Bond, \ref pdb_io "IMP::atom::read_pdb()"...</td>
 <td>Charmm force-field based scoring</td>
 <td>IMP::atom::BrownianDynamics, IMP::atom::MolecularDynamics</td>
-<td>IMP::atom::write_pdb()</td>
+<td>\ref pdb_io "IMP::atom::write_pdb()"</td>
 </tr>
 <tr>
 <td>IMP::container</td>
