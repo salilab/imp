@@ -271,7 +271,7 @@ void read_binary_model(std::string filename,
   } else {
     index=0;
   }
-  read_binary_model(f, particles, keys, frame);
+  read_binary_model(f, particles, keys, index);
 }
 #endif
 
