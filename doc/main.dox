@@ -46,7 +46,7 @@ An overview of the various modules currently available. Representative classes a
 <tr>
 <td>IMP::atom</td>
 <td>IMP::atom::Hierarchy, IMP::atom::Atom, IMP::atom::Residue, IMP::atom::Chain, IMP::atom::Bond, \ref pdb_io "IMP::atom::read_pdb()"...</td>
-<td>Charmm force-field based scoring</td>
+<td>\ref charmm_forcefield "Charmm force-field based scoring"</td>
 <td>IMP::atom::BrownianDynamics, IMP::atom::MolecularDynamics</td>
 <td>\ref pdb_io "IMP::atom::write_pdb()"</td>
 </tr>
