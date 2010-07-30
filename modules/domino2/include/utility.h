@@ -78,7 +78,7 @@ get_interaction_graph_geometry(const InteractionGraph &ig);
  */
 IMPDOMINO2EXPORT ParticlesTemp get_dependent_particles(Particle *p);
 
-/** \copydoc{get_dependent_particles(Particle*)}
+/** \copydoc get_dependent_particles(Particle*)
  */
 IMPDOMINO2EXPORT ParticlesTemp
 get_dependent_particles(Particle *p,
