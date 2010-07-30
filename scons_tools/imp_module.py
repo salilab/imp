@@ -600,7 +600,8 @@ def check_libraries_and_headers(env, libraries, headers):
     for l in libraries:
         def libtest(context):
             ret = checks.check_lib(context, header= headers[0], lib=l)
-            env.Append(LIBS=[l])
+            if ret[0]:
+                env.Append(LIBS=[l])
             context.did_show_result=True
             context.Result(ret[0])
             return ret[0]
