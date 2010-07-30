@@ -10,6 +10,7 @@
 #include "atom_config.h"
 #include "Hierarchy.h"
 #include "ForceFieldParameters.h"
+#include "CHARMMParameters.h"
 
 #include <string>
 
@@ -25,7 +26,7 @@ IMPATOM_BEGIN_NAMESPACE
 */
 IMPATOMEXPORT void add_bonds(Hierarchy d,
                              const ForceFieldParameters* ffp
-                             =default_force_field_parameters());
+                             =get_all_atom_CHARMM_parameters());
 
 
 /**
@@ -36,7 +37,7 @@ IMPATOMEXPORT void add_bonds(Hierarchy d,
 */
 IMPATOMEXPORT void add_radii(Hierarchy d,
                              const ForceFieldParameters *ffp
-                             = default_force_field_parameters(),
+                             = get_all_atom_CHARMM_parameters(),
                              FloatKey radius_key= FloatKey("radius"));
 
 IMPATOM_END_NAMESPACE
