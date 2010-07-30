@@ -31,7 +31,7 @@ public:
   virtual void show(std::ostream& out = std::cout) const=0;
 
   //! Show the sampling space of a single particle
-  virtual void show_space(Particle */*p*/,
+  virtual void show_space(Particle * /*p*/,
                           std::ostream& /*out*/ = std::cout) const{};
 
   //! Fill states as encoded in the node for the input subset of particles
