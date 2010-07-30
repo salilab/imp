@@ -37,7 +37,7 @@ An overview of the various modules currently available. Representative classes a
 </tr>
 <tr>
 <td>IMP::core</td>
-<td>IMP::core::XYZ, IMP::core::XYZR, RigidBody</td>
+<td>IMP::core::XYZ, IMP::core::XYZR, IMP::core::RigidBody</td>
 <td>IMP::core::DistancePairScore, IMP::core::ExcludedVolumeRestraint, IMP::core::AngleTripletScore and other scoring based on distances, angles, volume</td>
 <td>IMP::core::MCCGSampler, IMP::core::MonteCarlo, IMP::core::ConjugateGradients</td>
 <td></td>
