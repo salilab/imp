@@ -651,8 +651,10 @@ void CHARMMParameters::add_dihedral(Particle *p1, Particle *p2, Particle *p3,
 
 
 CHARMMParameters* get_default_CHARMM_parameters() {
-  return new CHARMMParameters(get_data_path("top_heav.lib"),
-                              get_data_path("par.lib"));
+  static IMP::Pointer<CHARMMParameters> ret
+    =new CHARMMParameters(get_data_path("top_heav.lib"),
+                          get_data_path("par.lib"));
+  return ret;
 }
 
 IMPATOM_END_NAMESPACE
