@@ -237,7 +237,7 @@ public:
 
 
 /** @name PDB Reading
-    \anchor pdb_io
+    \anchor pdb_in
    The read PDB methods produce a hierarchy that looks as follows:
     - One Atom per ATOM or HETATM record in the PDB.
     - All Atom particles have a parent which is a Residue.
@@ -284,7 +284,7 @@ IMPATOMEXPORT Hierarchies read_multimodel_pdb(TextInput in,
 /** @} */
 
 /** @name PDB Writing
-
+    \anchor pdb_out
     The methods to write a PDBs expects a Hierarchy that looks as follows:
     - all leaves are Atom particles
     - all Atom particles have Residue particles as parents
