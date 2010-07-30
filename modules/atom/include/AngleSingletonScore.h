@@ -24,7 +24,7 @@ IMPATOM_BEGIN_NAMESPACE
     between -pi and +pi; it is the shortest distance from one angle to the
     other.
 
-    \see CHARMMParameters::generate_angles(), Angle.
+    \see CHARMMParameters::create_angles(), Angle.
  */
 class IMPATOMEXPORT AngleSingletonScore : public SingletonScore
 {

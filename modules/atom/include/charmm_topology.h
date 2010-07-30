@@ -414,8 +414,8 @@ public:
 
       Note that typically CHARMM defines bonds and impropers
       (see add_impropers()) but angles and dihedrals are auto-generated from
-      the existing bond graph (see CHARMMParameters::generate_angles() and
-      CHARMMParameters::generate_dihedrals()).
+      the existing bond graph (see CHARMMParameters::create_angles() and
+      CHARMMParameters::create_dihedrals()).
 
       The list of newly-created Bond particles can be passed to a
       StereochemistryPairFilter to exclude bonded particles from nonbonded
