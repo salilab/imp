@@ -24,7 +24,7 @@ IMPATOM_BEGIN_NAMESPACE
           other forcefields. The stiffness can be negative, which corresponds
           to CHARMM forcefield entries with negative force constants.
 
-    \see CHARMMParameters::generate_dihedrals(), Dihedral.
+    \see CHARMMParameters::create_dihedrals(), Dihedral.
  */
 class IMPATOMEXPORT DihedralSingletonScore : public SingletonScore
 {
