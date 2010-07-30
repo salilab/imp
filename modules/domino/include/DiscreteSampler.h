@@ -1,5 +1,6 @@
 /**
- *  \file DiscreteSampler.h   \brief Storage of a discrete sampling space
+ *  \file domino/DiscreteSampler.h
+ *  \brief Storage of a discrete sampling space
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  */
