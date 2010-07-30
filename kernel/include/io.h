@@ -16,7 +16,7 @@
 
 IMP_BEGIN_NAMESPACE
 /** \name Model IO
-
+    \anchor model_text_io
     Models can be written to files in an easy-to-read
     file format based on \quote{name: value} pairs on separate lines with
     indentation used to indicated nesting (as in Python). The functions
@@ -53,6 +53,7 @@ IMPEXPORT void read_model(TextInput in,
 IMPEXPORT void write_model(const ParticlesTemp &particles,
                            const FloatKeys &keys,
                            TextOutput out);
+
 IMPEXPORT void read_model(TextInput in,
                           const ParticlesTemp &particles,
                           const FloatKeys &keys);
@@ -65,9 +66,9 @@ IMPEXPORT void read_model(TextInput in, Model *m);
 #endif
 /** @} */
 
-#ifdef IMP_USE_NETCDF
+#if defined(IMP_USE_NETCDF) || defined(IMP_DOXYGEN)
 /** \name Binary I/O
-
+    \anchor model_binary_io
     When lots of data is being written, it can be useful to write the
     data as binary instead of text. Binary writing requires NetCDF.
 
