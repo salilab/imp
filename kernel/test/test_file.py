@@ -13,7 +13,7 @@ class DirectoriesTests(IMP.test.TestCase):
         self.assertEqual(v, "word")
         v= IMP._test_ifile(self.open_input_file("text"))
         self.assertEqual(v, "word")
-        self.assertRaises(TypeError, IMP._test_ifile, "notafile" )
+        self.assertRaises(IOError, IMP._test_ifile, "notafile" )
         s=StringIO("hi there")
         v= IMP._test_ifile(s)
         self.assertEqual(v, "hithere")
@@ -48,5 +48,11 @@ class DirectoriesTests(IMP.test.TestCase):
         self.assert_("imp" in suffix.get_name())
         self.assert_(".py" in suffix.get_name())
 
+    def test_bad(self):
+        """Test bad paths trigger IO exceptions with overloads"""
+        self.assertRaises(IOError, IMP._test_ifile_overloaded, "bad path", "hi")
+        s= StringIO()
+        # shouldn't raise
+        IMP._test_ifile_overloaded(s, "hi")
 if __name__ == '__main__':
     unittest.main()

@@ -97,9 +97,9 @@ TextOutput::TextOutput(double) {
 }
 
 TextInput::TextInput(const char *c):
-  in_(new FileStorage<std::istream, std::ifstream>(c)){}
+  in_(new LazyFileStorage<std::istream, std::ifstream>(c)){}
 TextInput::TextInput(std::string c):
-  in_(new FileStorage<std::istream, std::ifstream>(c)){}
+  in_(new LazyFileStorage<std::istream, std::ifstream>(c)){}
 TextInput::TextInput(std::istream &in, std::string name):
   in_(new StreamStorage<std::istream>(in, name)){}
 TextInput::TextInput(TextProxy<std::istream> out):
