@@ -133,6 +133,12 @@ inline IMP::Particle *get_particle(IMP::Particle *p) {
 
 IMPEXPORT std::string _test_ifile(TextInput a);
 IMPEXPORT std::string _test_ofile(TextOutput a);
+// overload
+IMPEXPORT std::string _test_ifile_overloaded(TextInput a, int i);
+IMPEXPORT std::string _test_ofile_overloaded(TextOutput a, int i);
+IMPEXPORT std::string _test_ifile_overloaded(TextInput a, std::string st);
+IMPEXPORT std::string _test_ofile_overloaded(TextOutput a, std::string st);
+
 
 IMPEXPORT void _decorator_test(Particle*p);
 IMPEXPORT int _overloaded_decorator(_TrivialDecorator a);

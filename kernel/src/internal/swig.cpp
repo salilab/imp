@@ -105,6 +105,23 @@ std::string _test_ofile(TextOutput a) {
   return "hi\n";
 }
 
+
+
+std::string _test_ifile_overloaded(TextInput a, std::string s) {
+  return _test_ifile(a);
+}
+std::string _test_ofile_overloaded(TextOutput a, std::string s) {
+  return _test_ofile(a);
+}
+std::string _test_ifile_overloaded(TextInput a, int s) {
+  return _test_ifile(a);
+}
+std::string _test_ofile_overloaded(TextOutput a, int s) {
+  return _test_ofile(a);
+}
+
+
+
 void _decorator_test(Particle*p) {
   std::cout << "hi " << p->get_name() << std::endl;
 }
