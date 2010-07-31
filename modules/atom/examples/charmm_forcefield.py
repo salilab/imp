@@ -7,7 +7,7 @@ prot = IMP.atom.read_pdb(IMP.atom.get_example_path("example_protein.pdb"), m,
                          IMP.atom.NonWaterNonHydrogenPDBSelector())
 
 # Read in the CHARMM heavy atom topology and parameter files
-ff = IMP.atom.get_default_CHARMM_parameters()
+ff = IMP.atom.get_heavy_atom_CHARMM_parameters()
 
 # Using the CHARMM libraries, determine the ideal topology (atoms and their
 # connectivity) for the PDB file's primary sequence
