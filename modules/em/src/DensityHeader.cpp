@@ -28,7 +28,7 @@ namespace {
   }
 }
 DensityHeader::DensityHeader() {
-  initialize(nx_);
+ initialize(nx_);
   initialize(ny_);
   initialize(nz_);
   initialize(data_type_);
@@ -133,6 +133,24 @@ void DensityHeader::update_cell_dimensions() {
   xlen=nx_*Objectpixelsize_;
   ylen=ny_*Objectpixelsize_;
   zlen=nz_*Objectpixelsize_;
+}
+
+DensityHeader create_density_header(const algebra::BoundingBoxD<3> &bb,
+                                    float spacing) {
+  DensityHeader header;
+  algebra::Vector3D origin=bb.get_corner(0);
+  algebra::Vector3D top=bb.get_corner(1);
+  header.set_xorigin(origin[0]);
+  header.set_yorigin(origin[1]);
+  header.set_zorigin(origin[2]);
+  header.Objectpixelsize_=spacing;
+  //calculate the extent of the map
+  int extent[3];
+  for(int i=0;i<3;i++) {
+    extent[i]=ceil((top[i]-origin[i])/spacing);
+  }
+  header.update_map_dimensions(extent[0],extent[1],extent[2]);
+  return header;
 }
 
 IMPEM_END_NAMESPACE
