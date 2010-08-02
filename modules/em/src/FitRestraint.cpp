@@ -50,13 +50,6 @@ FitRestraint::FitRestraint(
   scalefac_ = scale;
   //we need the leaves of the particles for the derivaties
   add_particles(ps);
-  IMP_LOG(VERBOSE,"after initialize_model_density_map"<<std::endl);
-  model_dens_map_ = new SampledDensityMap(*em_map->get_header());
-  model_dens_map_->set_particles(ps,radius_key,weight_key);
-  IMP_LOG(VERBOSE,"going to initialize_model_density_map"<<std::endl);
-  initialize_model_density_map(radius_key,weight_key);
-   // initialize the derivatives
-
   //get all leaves particles for derivaties
   Particles all_ps;
   for(Particles::iterator it = ps.begin(); it != ps.end();it++) {
@@ -68,6 +61,13 @@ FitRestraint::FitRestraint(
       all_ps.push_back(*it);
     }
   }
+  IMP_LOG(VERBOSE,"after initialize_model_density_map"<<std::endl);
+  model_dens_map_ = new SampledDensityMap(*em_map->get_header());
+  model_dens_map_->set_particles(all_ps,radius_key,weight_key);
+  IMP_LOG(VERBOSE,"going to initialize_model_density_map"<<std::endl);
+  initialize_model_density_map(radius_key,weight_key);
+   // initialize the derivatives
+
   dx_.resize(all_ps.size(), 0.0);
   dy_.resize(all_ps.size(), 0.0);
   dz_.resize(all_ps.size(), 0.0);
@@ -100,10 +100,6 @@ void FitRestraint::initialize_model_density_map(
       rb_model_dens_map_[rb_model_dens_map_.size()-1]->
         set_particles(rb_ps,radius_key,weight_key);
       rb_model_dens_map_[rb_model_dens_map_.size()-1]->resample();
-      //calcualte the rsqs needed for derivaties calcualtions
-      rb_rsq_[*it]=CoarseCC::generate_rigid_body_rsq_cache(target_dens_map_,
-                                             model_dens_map_,
-                                             rb,rb_refiner_);
     }
     else {
       not_rb_.push_back(*it);
@@ -165,8 +161,7 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
                              const_cast<FitRestraint*>(this)->dx_,
                              const_cast<FitRestraint*>(this)->dy_,
                              const_cast<FitRestraint*>(this)->dz_,
-                             scalefac_, calc_deriv,true,false,
-                             &rb_rsq_,rb_refiner_);
+                             scalefac_, calc_deriv,true,false);
   }
 
   //In many optimization senarios particles are can be found outside of
