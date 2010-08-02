@@ -88,7 +88,6 @@ private:
   IMP::internal::OwnerPointer<DensityMap> target_dens_map_;
   mutable internal::OwnerPointer<SampledDensityMap> model_dens_map_;
   mutable SampledDensityMaps rb_model_dens_map_;
-  RigidBodiesDerivativesCache rb_rsq_;
   mutable internal::OwnerPointer<SampledDensityMap> none_rb_model_dens_map_;
   algebra::BoundingBoxD<3> target_bounding_box_;
   // reference to the IMP environment

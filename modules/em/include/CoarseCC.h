@@ -19,10 +19,6 @@
 #include <IMP/Refiner.h>
 
 IMPEM_BEGIN_NAMESPACE
-//keeps RSQ values for all members of a rigid body
-typedef std::vector<algebra::Vector3Ds> RigidBodyDerivativesCache;
-typedef std::map<Particle*,RigidBodyDerivativesCache>
-  RigidBodiesDerivativesCache;
 
 //! Responsible for performing coarse fitting between two density objects.
 /** The pixels involved are derived from the positions of N particles.
@@ -58,9 +54,7 @@ public:
    DensityMap &data, SampledDensityMap &model_map,
    std::vector<float> &dvx, std::vector<float>&dvy,
    std::vector<float>&dvz, float scalefactor, bool lderiv,
-   bool divide_by_rms=true,bool resample=true,
-   const RigidBodiesDerivativesCache *rb_rsq=NULL,
-   Refiner *refiner = IMP::core::internal::get_rigid_members_refiner());
+   bool divide_by_rms=true,bool resample=true);
 
 /*!
  Computes the derivatives of the cross correlation term scalefac*(1-ccc) at each
@@ -77,8 +71,8 @@ public:
   static void calc_derivatives(
      const DensityMap &em_map, SampledDensityMap &model_map,
      const float &scalefac, std::vector<float> &dvx,
-     std::vector<float>&dvy,std::vector<float>&dvz,
-     const RigidBodiesDerivativesCache *rb_rsq,Refiner *refiner);
+     std::vector<float>&dvy,std::vector<float>&dvz);
+
 
   //!Calculates the cross correlation coefficient between two maps
   /** Cross correlation coefficient between the em density and the density of a
@@ -118,23 +112,7 @@ static float local_cross_correlation_coefficient(const DensityMap &em_map,
                                               float voxel_data_threshold,
                                               bool recalc_ccnormfac=true,
                                               bool divide_by_rms=true);
-//! calc_derivatives_for_rigid_body
-/**
-   \param[in] refiner rigid body refiner
-*/
- static algebra::Vector3D calc_derivatives_for_rigid_body(
-   const DensityMap &em_map,
-   SampledDensityMap &model_map,
-   const float &scalefac,
-   core::RigidBody rb,
-   const RigidBodyDerivativesCache &rb_rsq,
-   Refiner *refiner);
 
- static RigidBodyDerivativesCache generate_rigid_body_rsq_cache(
-  em::DensityMap *target_map,
-  em::SampledDensityMap *model_map,
-  core::RigidBody rb,
-  Refiner *refiner = IMP::core::internal::get_rigid_members_refiner());
 };
 
 IMPEM_END_NAMESPACE
