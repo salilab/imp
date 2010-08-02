@@ -16,8 +16,11 @@
 #include <fstream>
 #include <cstring>
 #include <limits>
-
+#include <IMP/algebra/BoundingBoxD.h>
+#include <IMP/VectorOfRefCounted.h>
 IMPEM_BEGIN_NAMESPACE
+
+class DensityHeader;
 
 /** \todo change so that the att will not be encoded but loaded from
     a conf file (Keren) */
@@ -26,27 +29,6 @@ class IMPEMEXPORT DensityHeader
 
 public:
   DensityHeader();
-    /*
-    is_resolution_set_= false;
-    top_calculated_ = false;
-    // Initialize some of the parameters of the header
-    nx=0;ny=0;nz=0;
-    data_type=5;
-    nxstart=1; nystart=1; nzstart=1;
-
-    mx = nxstart + nx - 1; my = nystart + ny - 1; mz = nzstart + nz - 1;
-    xorigin_ = yorigin_ = zorigin_ = 0.0;
-    alpha=90. ; beta=90. ; gamma=90.;
-    mapc =1; mapr=2; maps=3;
-    ispg=0;
-    nsymbt=0;
-    Objectpixelsize_=1.0;
-    machinestamp = 0;
-    nlabl=0;
-    strcpy(map,"MAP \0");
-    magic=6;
-  }
-    */
   // If a copy constructor is not defined in a class, the compiler itself
   // defines one. This will ensure a shallow copy.
   // If the class does not have pointer variables with dynamically allocated
@@ -265,6 +247,13 @@ protected:
   //! (used in MRC format)
   int data_type_;
 };
+
+//! Create a header from a bounding box 3D
+/**
+ \relatesalso DensityHeader
+*/
+IMPEMEXPORT DensityHeader create_density_header(
+   const algebra::BoundingBoxD<3> &bb, float spacing);
 
 IMPEM_END_NAMESPACE
 
