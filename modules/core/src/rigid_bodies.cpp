@@ -99,30 +99,20 @@ namespace {
   void AccumulateRigidBodyDerivatives::apply(Particle *p,
                                              DerivativeAccumulator &da) const {
     RigidBody rb(p);
-    algebra::Rotation3D rot= rb.get_reference_frame()
-      .get_transformation_to().get_rotation();
-    //IMP_LOG(TERSE, "Accumulating rigid body derivatives" << std::endl);
-    algebra::VectorD<3> v(0,0,0);
-    algebra::VectorD<4> q(0,0,0,0);
-    for (unsigned int i=0; i< rb.get_number_of_members(); ++i) {
+#if IMP_BUILD < IMP_FAST
+    algebra::Vector4D oldderiv;
+    algebra::Vector3D oldcartesian= rb.get_derivatives();
+    for (unsigned int j=0; j< 4; ++j) {
+      oldderiv[j]=rb.get_particle()->get_derivative(internal::rigid_body_data()
+                                                    .quaternion_[j]);
+    }
+#endif
+
+     for (unsigned int i=0; i< rb.get_number_of_members(); ++i) {
       RigidMember d= rb.get_member(i);
       algebra::VectorD<3> dv= d.get_derivatives();
-      v+=dv;
-      //IMP_LOG(TERSE, "Adding " << dv << " to derivative" << std::endl);
-      for (unsigned int j=0; j< 4; ++j) {
-        algebra::VectorD<3> v= rot.get_derivative(d.get_internal_coordinates(),
-                                                j);
-        /*IMP_LOG(VERBOSE, "Adding " << dv*v << " to quaternion deriv " << j
-          << std::endl);*/
-        q[j]+= dv*v;
-      }
+      rb.add_to_derivatives(dv, d.get_internal_coordinates(), da);
     }
-    static_cast<XYZ>(rb).add_to_derivatives(v, da);
-    for (unsigned int j=0; j< 4; ++j) {
-      rb.get_particle()->add_to_derivative(internal::rigid_body_data()
-                                           .quaternion_[j], q[j],da);
-    }
-
     IMP_LOG(TERSE, "Rigid body derivative is "
             << p->get_derivative(internal::rigid_body_data().quaternion_[0])
             << " "
@@ -136,6 +126,52 @@ namespace {
     IMP_LOG(TERSE, "Translation deriv is "
             << static_cast<XYZ>(rb).get_derivatives()
             << "" << std::endl);
+    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+      algebra::Rotation3D rot= rb.get_reference_frame()
+        .get_transformation_to().get_rotation();
+      //IMP_LOG(TERSE, "Accumulating rigid body derivatives" << std::endl);
+      algebra::VectorD<3> v(0,0,0);
+      algebra::VectorD<4> q(0,0,0,0);
+      for (unsigned int i=0; i< rb.get_number_of_members(); ++i) {
+        RigidMember d= rb.get_member(i);
+        algebra::VectorD<3> dv= d.get_derivatives();
+        v+=dv;
+        //IMP_LOG(TERSE, "Adding " << dv << " to derivative" << std::endl);
+        for (unsigned int j=0; j< 4; ++j) {
+          algebra::VectorD<3> v
+            = rot.get_derivative(d.get_internal_coordinates(),
+                                 j);
+          /*IMP_LOG(VERBOSE, "Adding " << dv*v << " to quaternion deriv " << j
+            << std::endl);*/
+          q[j]+= dv*v;
+        }
+      }
+      for (unsigned int j=0; j< 4; ++j) {
+        double d= rb.get_particle()->get_derivative(internal::rigid_body_data()
+                                                    .quaternion_[j])
+          - oldderiv[j];
+        IMP_INTERNAL_CHECK(std::abs(d-q[j])< .05*std::abs(d+q[j])+.05,
+                           "Derivatives do not match "
+                           << oldderiv << ": "
+                           << rb.get_particle()
+                           ->get_derivative(internal::rigid_body_data()
+                                            .quaternion_[0])
+                           << " " << rb.get_particle()
+                           ->get_derivative(internal::rigid_body_data()
+                                            .quaternion_[1])
+                           << " " << rb.get_particle()
+                           ->get_derivative(internal::rigid_body_data()
+                                            .quaternion_[1])
+                           << " " << rb.get_particle()
+                           ->get_derivative(internal::rigid_body_data()
+                                            .quaternion_[2])
+                           << ": " << q);
+      }
+      algebra::Vector3D deltacartesian= rb.get_derivatives()-oldcartesian;
+      IMP_INTERNAL_CHECK((deltacartesian-v).get_magnitude() < .1,
+                         "Cartesian derivatives don't match : "
+                         << deltacartesian << " vs " << v);
+    }
   }
 
 
@@ -479,6 +515,24 @@ void RigidBody
     get_member(i)
       .set_coordinates(tr.get_global_coordinates(get_member(i)
                                                  .get_internal_coordinates()));
+  }
+}
+
+void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv,
+                                   const algebra::Vector3D &local,
+                                   DerivativeAccumulator &da) {
+  algebra::Rotation3D rot= get_reference_frame()
+    .get_transformation_to().get_rotation();
+  //IMP_LOG(TERSE, "Accumulating rigid body derivatives" << std::endl);
+  algebra::VectorD<4> q(0,0,0,0);
+  for (unsigned int j=0; j< 4; ++j) {
+    algebra::VectorD<3> v= rot.get_derivative(local, j);
+    q[j]+= deriv*v;
+  }
+  XYZ::add_to_derivatives(deriv, da);
+  for (unsigned int j=0; j< 4; ++j) {
+    get_particle()->add_to_derivative(internal::rigid_body_data()
+                                         .quaternion_[j], q[j],da);
   }
 }
 
