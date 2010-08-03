@@ -153,6 +153,14 @@ public:
   algebra::Transformation3D get_transformation() {
     return get_reference_frame().get_transformation_to();
   }
+
+  /** This takes a cartesian derivative, and a location in internal coordinates.
+
+      It is currently hidden since the function signature is highly ambiguous.
+   */
+  void add_to_derivatives(const algebra::Vector3D &derivative,
+                          const algebra::Vector3D &local_location,
+                          DerivativeAccumulator &da);
 #endif
 
   bool get_coordinates_are_optimized() const;
