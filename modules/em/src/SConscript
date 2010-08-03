@@ -7,6 +7,7 @@ files = [
          'DensityHeader.cpp',
          'DensityMap.cpp',
          'EMReaderWriter.cpp',
+         'RigidBodiesFitRestraint.cpp',
          'FitRestraint.cpp',
          'ImageHeader.cpp',
          'KernelParameters.cpp',
