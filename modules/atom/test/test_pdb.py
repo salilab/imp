@@ -4,10 +4,6 @@ import IMP
 import IMP.test
 import IMP.atom
 
-class ATOMPDBSelector(IMP.atom.PDBSelector):
-    def __call__(self, ln):
-        return ln.startswith("ATOM")
-
 class PDBReadWriteTest(IMP.test.TestCase):
     def _test_round_trip(self, name, selector):
         m= IMP.Model()
@@ -119,12 +115,24 @@ class PDBReadWriteTest(IMP.test.TestCase):
                               m, IMP.atom.OrPDBSelector(IMP.atom.NotPDBSelector(IMP.atom.HydrogenPDBSelector()), IMP.atom.HydrogenPDBSelector()))
         ab= IMP.atom.get_leaves(mpb)
         self.assertEqual(len(ab), len(an)+len(a))
+
     def test_pyimpl(self):
+        """Test PDBSelectors implemented in Python"""
+        class my_selector(IMP.atom.PDBSelector):
+            def __call__(self, ln):
+                return ln.startswith("ATOM")
+
         m= IMP.Model()
         mp= IMP.atom.read_pdb(self.open_input_file("hydrogen.pdb"),
                               m, IMP.atom.ATOMPDBSelector())
+        mp_py = IMP.atom.read_pdb(self.open_input_file("hydrogen.pdb"),
+                                  m, my_selector())
+
         l= IMP.atom.get_leaves(mp)
         self.assertEqual(len(l), 24)
+        l_py = IMP.atom.get_leaves(mp_py)
+        self.assertEqual(len(l), len(l_py))
+
     def test_read_non_prob(self):
         """Check that problem lines are read properly"""
         IMP.set_log_level(IMP.VERBOSE)
