@@ -48,8 +48,6 @@ FitRestraint::FitRestraint(
     }
   }
   scalefac_ = scale;
-  //we need the leaves of the particles for the derivaties
-  add_particles(ps);
   //get all leaves particles for derivaties
   Particles all_ps;
   for(Particles::iterator it = ps.begin(); it != ps.end();it++) {
@@ -61,13 +59,14 @@ FitRestraint::FitRestraint(
       all_ps.push_back(*it);
     }
   }
+  //we need the leaves of the particles for the derivaties
+  add_particles(all_ps);
   IMP_LOG(VERBOSE,"after initialize_model_density_map"<<std::endl);
   model_dens_map_ = new SampledDensityMap(*em_map->get_header());
   model_dens_map_->set_particles(all_ps,radius_key,weight_key);
   IMP_LOG(VERBOSE,"going to initialize_model_density_map"<<std::endl);
-  initialize_model_density_map(radius_key,weight_key);
+  initialize_model_density_map(ps,radius_key,weight_key);
    // initialize the derivatives
-
   dx_.resize(all_ps.size(), 0.0);
   dy_.resize(all_ps.size(), 0.0);
   dz_.resize(all_ps.size(), 0.0);
@@ -79,13 +78,14 @@ FitRestraint::FitRestraint(
 }
 
 void FitRestraint::initialize_model_density_map(
+  Particles ps,
   FloatKey radius_key,FloatKey weight_key) {
   //none_rb_model_dens_map_ will include all particles
   //that are not part of a rigid body
   none_rb_model_dens_map_ =
     new SampledDensityMap(*(target_dens_map_->get_header()));
   none_rb_model_dens_map_->reset_data(0.0);
-  for(ParticleIterator it = particles_begin(); it != particles_end();it++) {
+  for(Particles::iterator it = ps.begin(); it != ps.end();it++) {
     if (core::RigidBody::particle_is_instance(*it)) {
       IMP_INTERNAL_CHECK(use_fast_version_,
          "Some of the particles are rigid bodies. You should use the fast " <<
@@ -148,7 +148,6 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
       target_dens_map_,
       model_dens_map_->get_sampled_particles()))/
     model_dens_map_->get_sampled_particles().size();
-
   Float escore;
   bool calc_deriv = accum? true: false;
   if (algebra::get_are_almost_equal(percentage_outside_of_density,1.,0.001)) {
@@ -163,7 +162,6 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
                              const_cast<FitRestraint*>(this)->dz_,
                              scalefac_, calc_deriv,true,false);
   }
-
   //In many optimization senarios particles are can be found outside of
   //the density. When all particles are outside of the density the
   //cross-correlation score is zero and the derivatives are meaningless.
