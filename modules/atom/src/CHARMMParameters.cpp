@@ -283,7 +283,9 @@ void CHARMMParameters::parse_atom_line(const String& line,
   } else {
      // assume charm is correct and this is a ATOM record
      // and it will be parsed right for elements
-     imp_atom_type= AtomType(AtomType::add_key(atom.get_name()));
+     // Note that we don't currently parse the MASS lines and so have
+     // no way to determine the element for this atom
+     imp_atom_type= add_atom_type(atom.get_name(), UNKNOWN_ELEMENT);
   }
   // save in map
   if(atom_res_type_2_force_field_atom_type_.find(curr_res_type) ==
