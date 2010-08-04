@@ -30,7 +30,6 @@ files = [
          'filters.h',
          'header_converters.h',
          'noise.h',
-         'project.h',
          'rigid_fitting.h',
         ]
 

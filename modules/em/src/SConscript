@@ -21,7 +21,6 @@ files = [
          'envelope_penetration.cpp',
          'filters.cpp',
          'header_converters.cpp',
-         'project.cpp',
          'rigid_fitting.cpp',
         ]
 
