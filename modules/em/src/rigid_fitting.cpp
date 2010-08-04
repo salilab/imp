@@ -42,11 +42,11 @@ RestraintSet * add_restraints(Model *model, DensityMap *dmap,
    IMP_NEW(core::LeavesRefiner,leaves_ref,(atom::Hierarchy::get_traits()));
    if (fast) {
      fit_rs = new FitRestraint(rb.get_particle(),dmap,leaves_ref,
-                               rad_key,wei_key,1.0,fast);
+                               rad_key,wei_key,1.0,false,fast);
    }
    else {
      fit_rs = new FitRestraint(leaves_ref->get_refined(rb),
-                               dmap,leaves_ref,rad_key,wei_key,1.0,fast);
+                               dmap,leaves_ref,rad_key,wei_key,1.0,false,fast);
    }
    rsrs->add_restraint(fit_rs);
    return rsrs;
