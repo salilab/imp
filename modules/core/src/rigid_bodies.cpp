@@ -167,7 +167,9 @@ namespace {
                                             .quaternion_[2])
                            << ": " << q);
       }
+#if IMP_BUILD < IMP_FAST
       algebra::Vector3D deltacartesian= rb.get_derivatives()-oldcartesian;
+#endif
       IMP_INTERNAL_CHECK((deltacartesian-v).get_magnitude() < .1,
                          "Cartesian derivatives don't match : "
                          << deltacartesian << " vs " << v);
