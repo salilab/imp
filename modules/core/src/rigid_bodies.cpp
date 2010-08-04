@@ -147,9 +147,11 @@ namespace {
         }
       }
       for (unsigned int j=0; j< 4; ++j) {
+#if IMP_BUILD < IMP_FAST
         double d= rb.get_particle()->get_derivative(internal::rigid_body_data()
                                                     .quaternion_[j])
           - oldderiv[j];
+#endif
         IMP_INTERNAL_CHECK(std::abs(d-q[j])< .05*std::abs(d+q[j])+.05,
                            "Derivatives do not match "
                            << oldderiv << ": "
