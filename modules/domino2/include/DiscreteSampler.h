@@ -43,6 +43,14 @@ IMPDOMINO2_BEGIN_NAMESPACE
     If you are using restraints which can produce negative values,
     we can provide a restraint which wraps another and makes
     it non-negative. Ping us.
+
+    \note The discrete samplers enumerate all acceptable
+    conformations. As a result, users should take care to
+    remove uninteresting degrees of freedom (for example,
+    remove rigid transformations of a complex). Techniques
+    to do this can involve pinning one or more particles (by
+    locking them to a single conformation or to a few
+    degrees of freedom).
  */
 class IMPDOMINO2EXPORT DiscreteSampler : public Sampler
 {
