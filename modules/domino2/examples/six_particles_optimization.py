@@ -9,8 +9,13 @@ def setup_restraints(m, ps):
     for pair in pairs:
         r=IMP.core.DistanceRestraint(sf, ps[pair[0]], ps[pair[1]])
         m.add_restraint(r)
+    d= IMP.core.DistanceToSingletonScore(IMP.core.HarmonicUpperBound(2,1),
+                                         IMP.algebra.Vector3D(2,0,0))
+    # force ps[1] to be on the positive side to remove flip degree of freedom
+    dr= IMP.core.SingletonRestraint(d, ps[1])
+    m.add_restraint(dr)
 
-IMP.set_log_level(IMP.TERSE)
+IMP.set_log_level(IMP.SILENT)
 m=IMP.Model()
 m.set_log_level(IMP.SILENT)
 print "create sampler"
@@ -26,13 +31,16 @@ for i in range(0,6):
 #2. set up the discrete set of states
 print "setting up a discrete set of states"
 vs=[]
-for i in range(0,4):
+for i in range(1,4):
     vs.append(IMP.algebra.Vector3D(i,0,0))
     vs.append(IMP.algebra.Vector3D(i,1,0))
+vs=vs+[IMP.algebra.Vector3D(-x[0], x[1], x[2]) for x in vs]
+
 
 print "create states"
 states= IMP.domino2.XYZStates(vs)
-for p in ps:
+# special case ps[0] to remove a sliding degree of freedom
+for p in ps[1:]:
     print p.get_name()
     s.set_particle_states(p, states)
 
@@ -42,7 +50,6 @@ setup_restraints(m, ps)
 
 #5. optimize
 s.set_maximum_score(.2)
-s.set_log_level(IMP.VERBOSE)
 print "sampling"
 cs=s.get_sample()
 
@@ -50,3 +57,5 @@ print "Found ", cs.get_number_of_configurations(), "solutions"
 for i in range(cs.get_number_of_configurations()):
     cs.load_configuration(i)
     print "solution number:",i," is:", m.evaluate(False)
+    for p in ps:
+        print IMP.core.XYZ(p).get_x(), IMP.core.XYZ(p).get_y()
