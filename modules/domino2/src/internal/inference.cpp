@@ -265,7 +265,6 @@ EdgeData get_edge_data(const ParticleIndex &all,
       IMP_LOG(VERBOSE, "For child " << cs
               << " merged data is:\n" << pd << std::endl);
       s= get_union(s, cs);
-      std::cout << "s is now " << s << std::endl;
     }
     return pd;
   }
