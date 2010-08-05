@@ -12,6 +12,7 @@ import scons_tools.modeller_test
 import scons_tools.doxygen
 import scons_tools.application
 import scons_tools.test
+import atexit
 from SCons import Script
 
 # We need scons 0.98 or later
@@ -118,8 +119,22 @@ includepath='/opt/local/include'
 You can see the produced config.log for more information as to why boost failed to be found.
 """)
 
-def _display_build_summary(target, source, env):
-    print "Build of",", ".join(["\""+str(x)+"\"" for x in BUILD_TARGETS if x != "summary"]),"completed."
+def _bf_to_str(bf):
+    """Convert an element of GetBuildFailures() to a string
+    in a useful way."""
+    import SCons.Errors
+    if bf is None: # unknown targets product None in list
+        return '(unknown tgt)'
+    elif isinstance(bf, SCons.Errors.StopError):
+        return str(bf)
+    elif bf.node:
+        return str(bf.node)
+    elif bf.filename:
+        return bf.filename
+    return 'unknown failure: ' + bf.errstr
+
+def _display_build_summary(env):
+    print "Dependencies:"
     for x in env['IMP_BUILD_SUMMARY']:
         print "  "+x
     if env['python']:
@@ -135,46 +150,36 @@ def _display_build_summary(target, source, env):
     else:
         print "  Boost libraries disabled."
     disabledm=[]
+    enabledm=[]
     for m in env['IMP_MODULES_ALL']:
         if not env.get(m+"_ok", False):
             disabledm.append(m)
-    if len(disabledm) >1:
-        print "  "+ ", ".join(["IMP."+x for x in disabledm]) + " were missing dependencies and disabled"
-    elif len(disabledm) ==1:
-        print "  IMP."+disabledm[0] + " was missing dependencies and disabled"
-    open(target[0].abspath, "w").write("done")
-def _print_config_cpp(target, source, env):
-    pass
-
-BuildSummary = Builder(action=Action( _display_build_summary,
-                                      _print_config_cpp))
-env.Append(BUILDERS={'_BuildSummary': BuildSummary})
-#print env.Alias("all")
-#for a in env.Alias("all"):
-#    print a.name
-buildsummary= env._BuildSummary(target="build/tmp/build_summary.passed", source=[])
-env.Alias("summary", [buildsummary])
-for p in BUILD_TARGETS:
-    if p != "summary":
-        tp=str(p)
-        if tp[-1]=='/':
-            tp= tp[:-1]
-        if len(Glob(tp)) >0:
-            env.Depends(buildsummary, tp)
         else:
-            a= Alias(p)
-            #if len(a[0].get_contents())==0:
-            #    print "Do not know how to build target", p
-            #    Exit(1)
-            env.Depends(buildsummary, Alias(p))
-if len(BUILD_TARGETS) ==0:
-    env.Depends(buildsummary, "all")
-    BUILD_TARGETS.append("all")
-#if "summary" not in COMMAND_LINE_TARGETS:
-#   COMMAND_LINE_TARGETS.append("summary")
-try:
-    Script._Add_Targets( [ 'summary' ] )
-except:
-    print "Unable to add summary target."
-    pass
+            enabledm.append(m)
+    print "Enabled modules:"
+    print "  ",
+    for x in enabledm:
+        print x,
+    print
+    if len(disabledm) >1:
+        print "Disabled modules (due to missing dependencies):"
+        print "  ",
+        for x in disabledm:
+            print x,
+        print
+    elif len(disabledm) ==1:
+        print "IMP."+disabledm[0] + " was missing dependencies and disabled."
+    from SCons.Script import GetBuildFailures
+    abf=GetBuildFailures()
+    if abf:
+        print "Errors building:"
+        for bf in abf:
+            print "  "+_bf_to_str(bf)
+    else:
+        pass
+        #print "Built:",", ".join(["\""+str(x)+"\"" for x in BUILD_TARGETS]),"completed."
+
+
+atexit.register(_display_build_summary, env)
+
 env.AlwaysBuild("build/tmp/build_summary.passed")
