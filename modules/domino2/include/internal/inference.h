@@ -169,6 +169,16 @@ inline std::ostream &operator<<(std::ostream &out, const EdgeData &nd) {
   return out;
 }
 
+inline Subset get_subset(const ParticlesTemp &ps,
+                         const IncompleteStates &is) {
+  ParticlesTemp ret;
+  for (unsigned int i=0; i< is.size(); ++i) {
+    if (is[i]==-1) continue;
+    ret.push_back(ps[i]);
+  }
+  return Subset(ret);
+}
+
 
 class PropagatedData {
   typedef std::pair<IncompleteStates, double> ScorePair;
@@ -189,6 +199,10 @@ public:
   ScoresIterator;
   ScoresIterator scores_begin() const {return scores_.begin();}
   ScoresIterator scores_end() const {return scores_.end();}
+  Subset get_subset(const ParticlesTemp &ps) const {
+    if (scores_.empty()) return Subset();
+    else return IMP::domino2::internal::get_subset(ps, scores_[0].first);
+  }
 };
 
 inline std::ostream &operator<<(std::ostream &out, const PropagatedData &nd) {
@@ -211,6 +225,8 @@ inline IncompleteStates get_incomplete_states(const ParticleIndex &pi,
   }
   return ret;
 }
+
+
 
 IMPDOMINO2EXPORT PropagatedData
 get_propagated_data(const ParticleIndex &all_particles,
