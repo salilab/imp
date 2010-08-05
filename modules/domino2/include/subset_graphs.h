@@ -21,6 +21,9 @@ IMPDOMINO2_BEGIN_NAMESPACE
 IMP_GRAPH(SubsetGraph, undirected, Subset, int);
 
 //! A base class for generating the subset graph from the restraints
+/** Currently, for DominoSampler, the returned graph must be a
+    tree which satisfies the junction tree property.
+**/
 class IMPDOMINO2EXPORT SubsetGraphTable: public Object {
  public:
   SubsetGraphTable();
@@ -30,7 +33,11 @@ class IMPDOMINO2EXPORT SubsetGraphTable: public Object {
 IMP_OBJECTS(SubsetGraphTable, SubsetGraphTables);
 
 //! Compute the junction tree
-/** The model is used to generate the junction tree.
+/** The passed restraint set implies the interaction
+    graph that is used to generate the junction tree. The
+    restraints in this set might be all of them
+    (eg Model::get_root_restraint_set()), but it could just be
+    a subset if you want to use some restraints for filtering only.
  */
 class IMPDOMINO2EXPORT JunctionTreeTable: public SubsetGraphTable {
   Pointer<RestraintSet> rs_;
