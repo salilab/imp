@@ -95,8 +95,8 @@ PropagatedData get_merged(const Subset& subset,
                           const EdgeData &ed,
                           const SubsetFilterTables &filters,
                           double max_score) {
-  IMP_LOG(VERBOSE, "Generating merged data for " << sa
-          << " and " << sb << std::endl);
+  IMP_LOG(TERSE, "Generating merged data for " << sa
+          << " and " << sb << "(" << subset << ")" << std::endl);
   PropagatedData ret;
   SubsetFilters state_filters;
   Subsets exclusions;
@@ -219,6 +219,11 @@ EdgeData get_edge_data(const ParticleIndex &all,
     Subset s= boost::get(subset_map, root);
     const NodeData nd= get_node_data(s, eval, states,
                                      max_score);
+    ParticlesTemp ps(all_index.size());
+    for (ParticleIndex::const_iterator it= all_index.begin();
+         it != all_index.end(); ++it) {
+      ps[it->second]= it->first;
+    }
     /*IMP_LOG(VERBOSE, "For node " << root
       << " local data is:\n" << nd << std::endl);*/
     /*double local_min_score=0;
@@ -238,14 +243,6 @@ EdgeData get_edge_data(const ParticleIndex &all,
            = boost::adjacent_vertices(root, jt);
          be.first != be.second; ++be.first) {
       if (*be.first == parent) continue;
-      Subset cs=boost::get(subset_map, *be.first);
-      EdgeData ed= get_edge_data(all_index, eval, s,
-                                 cs, nd);
-      Subset edge_union
-        = get_union(boost::get(subset_map, root),
-                    boost::get(subset_map, *be.first));
-      IMP::internal::OwnerPointer<SubsetStates> edge_states
-        = states->get_subset_states(edge_union);
       // compute intersection set and index map in one direction
       // for each pattern of that in me, compute subset score
       // subtract the min of mine (assume scores positive)
@@ -254,12 +251,21 @@ EdgeData get_edge_data(const ParticleIndex &all,
         = get_best_conformations_internal(jt, *be.first, root,
                                           all_index, eval, filters,
                                           states, max_score);
+      Subset cs=cpd.get_subset(ps);
+      EdgeData ed= get_edge_data(all_index, eval, s,
+                                 cs, nd);
+      Subset edge_union = get_union(s,cs);
+      IMP::internal::OwnerPointer<SubsetStates> edge_states
+        = states->get_subset_states(edge_union);
+
       /*IMP_LOG(VERBOSE, "For child " << *be.first
         << " returned data is:\n" << cpd << std::endl);*/
       pd= get_merged(edge_union, edge_states, s, cs, pd, cpd,
                      all_index, ed, filters, max_score);
-      IMP_LOG(VERBOSE, "For child " << boost::get(subset_map, *be.first)
+      IMP_LOG(VERBOSE, "For child " << cs
               << " merged data is:\n" << pd << std::endl);
+      s= get_union(s, cs);
+      std::cout << "s is now " << s << std::endl;
     }
     return pd;
   }
