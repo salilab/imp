@@ -29,7 +29,6 @@ IMP_SWIG_OBJECT(IMP::em, FitRestraint, FitRestraints);
 %include "IMP/em/SurfaceShellDensityMap.h"
 %include "IMP/em/FitRestraint.h"
 %include "IMP/em/converters.h"
-%include "IMP/em/project.h"
 %include "IMP/em/SpiderHeader.h"
 %include "IMP/em/ImageHeader.h"
 %include "IMP/em/ImageReaderWriter.h"
@@ -48,10 +47,6 @@ namespace IMP {
         return dynamic_cast<IMP::em::FitRestraint *>(r);
       }
     }
-    %template(project_given_rotation1) 
-                  ::IMP::em::project_given_rotation1<double>;
-    %template(project_given_direction1) 
-                  ::IMP::em::project_given_direction1<double>;
     %template(_ImageReaderWriter) ::IMP::em::ImageReaderWriter<double>;
     %template(_SpiderImageReaderWriter)
                           ::IMP::em::SpiderImageReaderWriter<double>;
