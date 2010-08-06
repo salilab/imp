@@ -15,7 +15,7 @@
 #include "Matrix2D.h"
 #include "IMP/constants.h"
 #include <cmath>
-#include <stdlib.h>
+//#include <stdlib.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
