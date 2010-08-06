@@ -9,7 +9,7 @@
 #include "IMP/FailureHandler.h"
 #include "IMP/log.h"
 #include "IMP/VectorOfRefCounted.h"
-
+#include <cstring>
 #include <boost/lambda/lambda.hpp>
 
 IMP_BEGIN_NAMESPACE
@@ -68,6 +68,15 @@ Exception::~Exception() throw()
 {
   destroy();
 }
+
+Exception::Exception(const char *message) {
+    str_= new (std::nothrow) refstring();
+    if (str_ != NULL) {
+      str_->ct_=1;
+      std::strncpy(str_->message_, message, 4095);
+      str_->message_[4095]='\0';
+    }
+  }
 
 InternalException::~InternalException() throw()
 {

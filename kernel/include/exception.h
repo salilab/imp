@@ -14,7 +14,6 @@
 #include <boost/type_traits.hpp>
 
 #include <cassert>
-#include <cstring>
 #include <string>
 #include <iostream>
 #include <new>
@@ -56,14 +55,7 @@ class IMPEXPORT Exception
   const char *what() const throw() {
     return str_? str_->message_: NULL;
   }
-  Exception(const char *message) {
-    str_= new (std::nothrow) refstring();
-    if (str_ != NULL) {
-      str_->ct_=1;
-      std::strncpy(str_->message_, message, 4095);
-      str_->message_[4095]='\0';
-    }
-  }
+  Exception(const char *message);
   /* \note By making the destructor virtual and providing an implementation in
       each derived class, we force a strong definition of the exception object
       in the kernel DSO. This allows exceptions to be passed between DSOs.
