@@ -1,16 +1,17 @@
 /**
  *  \file ImageHeader.h
  *  \brief Header for EM images. Compatible with Spider and Xmipp formats
- *  \author Javier Velazquez-Muriel
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
-*/
+**/
 
 #ifndef IMPEM_IMAGE_HEADER_H
 #define IMPEM_IMAGE_HEADER_H
 
-#include "em_config.h"
-#include "SpiderHeader.h"
+#include "IMP/em/em_config.h"
+#include "IMP/em/SpiderHeader.h"
 #include <IMP/algebra/Matrix2D.h>
+#include <IMP/algebra/Vector3D.h>
+#include <IMP/algebra/Vector2D.h>
 #include <IMP/algebra/utility.h>
 #include <IMP/algebra/endian.h>
 #include <cstdio>
@@ -22,7 +23,7 @@ IMPEM_BEGIN_NAMESPACE
 
 // Class to deal with the header of Electron Microscopy images in IMP.
 /**
- * (Compatible with Xmipp and Spider formats)
+ * (Compatible with SPIDER and Xmipp formats)
  */
 class IMPEMEXPORT ImageHeader
 {
@@ -156,8 +157,8 @@ public:
   //! Shows only the projection parameters
   inline void show_projection_params(std::ostream& out) const {
     out << "(Phi,Theta,Psi) = ( " << header_.fPhi << " , " << header_.fTheta
-        << " , " << header_.fPsi << " ) " << " (y,x) = ( " << header_.fYoff
-        << " , " << header_.fXoff << " ) " <<  std::endl;
+        << " , " << header_.fPsi << " ) " << " (x,y) = ( " << header_.fXoff
+        << " , " << header_.fYoff << " ) " <<  std::endl;
   }
 
   //! Reads the header of a EM image
@@ -182,49 +183,22 @@ public:
   void set_header();
 
   //! Interaction with data
-  bool get_reversed() const {
-    return reversed_;
-  }
-
-  //! Interaction with data
-  void set_reversed(bool value) {
-    reversed_=value;
-  }
+  bool get_reversed() const {return reversed_; }
+  void set_reversed(bool value) { reversed_=value; }
 
   //! get header size
   int get_header_size() const {
     return (int) header_.fNcol *(int) header_.fLabrec * sizeof(float);
   }
 
-  //! Get number of slices
-  float get_number_of_slices()  const {
-    return header_.fNslice;
-  }
+  float get_number_of_slices()  const { return header_.fNslice; }
+  void set_number_of_slices(float n) { header_.fNslice = n; }
 
-  //! Set number of slices
-  void set_number_of_slices(float n) {
-    header_.fNslice = n;
-  }
+  float get_number_of_rows() const { return header_.fNrow; }
+  void set_number_of_rows(float n) { header_.fNrow = n; }
 
-  //! Get number of rows
-  float get_number_of_rows() const {
-    return header_.fNrow;
-  }
-
-  //! Set number of rows
-  void set_number_of_rows(float n) {
-    header_.fNrow = n;
-  }
-
-  //! Get number columns
-  float get_number_of_columns() const {
-    return header_.fNcol;
-  }
-
-  //! Get number columns
-  void set_number_of_columns(float n) {
-    header_.fNcol = n;
-  }
+  float get_number_of_columns() const { return header_.fNcol; }
+  void set_number_of_columns(float n) { header_.fNcol = n; }
 
   //! get rotation angle. (Xmipp compatibility)
   float get_old_rot() const {
@@ -258,172 +232,68 @@ public:
   not currently used)
   */
 
-  float get_Flip() const {
-    return header_.Flip;
-  }
+  float get_Flip() const { return header_.Flip; }
 
   /* For Maximum-Likelihood refinement (Xmipp compatibility:
   not currently used)
   */
-  void set_Flip(float value) {
-    header_.Flip=value;
-  }
+  void set_Flip(float value) { header_.Flip=value; }
 
-  float get_Weight() const {
-    return header_.Weight;
-  }
+  float get_Weight() const { return header_.Weight; }
+  void set_Weight(float value) { header_.Weight=value; }
 
-  void set_Weight(float value) {
-    header_.Weight=value;
-  }
+  float get_fNrec() const { return header_.fNrec; }
+  void set_fNrec(float value) { header_.fNrec = value; }
 
-  float get_fNrec() const {
-    return header_.fNrec;
-  }
+  float get_fNlabel() const { return header_.fNlabel; }
+  void set_fNlabel(float value) { header_.fNlabel=value; }
 
-  void set_fNrec(float value) {
-    header_.fNrec = value;
-  }
+  float get_fIform() const { return header_.fIform; }
+  void set_fIform(float value) { header_.fIform = value; }
 
-  float get_fNlabel() const {
-    return header_.fNlabel;
-  }
+  float get_fImami() const { return header_.fImami; }
+  void set_fImami(float value) { header_.fImami=value; }
 
-  void set_fNlabel(float value) {
-    header_.fNlabel=value;
-  }
+  float get_fFmax() const { return header_.fFmax; }
+  void set_fFmax(float value) { header_.fFmax= value; }
 
-  float get_fIform() const {
-    return header_.fIform;
-  }
+  float get_fFmin() const { return header_.fFmin; }
+  void set_fFmin(float value) { header_.fFmin=value; }
 
-  void set_fIform(float value) {
-    header_.fIform = value;
-  }
+  float get_fAv() const { return header_.fAv; }
+  void set_fAv(float value) { header_.fAv=value; }
 
-  float get_fImami() const {
-    return header_.fImami;
-  }
+  float get_fSig() const { return header_.fSig; }
+  void set_fSig(float value) { header_.fSig=value; }
 
-  void set_fImami(float value) {
-    header_.fImami=value;
-  }
+  float get_fIhist()  const { return header_.fIhist; }
+  void set_fIhist(float value) { header_.fIhist=value; }
 
-  float get_fFmax() const {
-    return header_.fFmax;
-  }
+  float get_fLabrec() const { return header_.fLabrec; }
+  void set_fLabrec(float value) { header_.fLabrec=value; }
 
-  void set_fFmax(float value) {
-    header_.fFmax= value;
-  }
+  float get_fIangle() const { return header_.fIangle; }
+  void set_fIangle(float value) { header_.fIangle=value; }
 
-  float get_fFmin() const {
-    return header_.fFmin;
-  }
+  float get_xorigin() const { return header_.fXoff; }
+  void set_xorigin(float value) { header_.fXoff = value; }
 
-  void set_fFmin(float value) {
-    header_.fFmin=value;
-  }
+  float get_yorigin() const { return header_.fYoff; }
+  void set_yorigin(float value) { header_.fYoff = value; }
 
-  float get_fAv() const {
-    return header_.fAv;
-  }
+  float get_zorigin() const { return header_.fZoff; }
+  void set_zorigin(float value) { header_.fZoff = value; }
 
-  void set_fAv(float value) {
-    header_.fAv=value;
-  }
+  float get_object_pixel_size() const { return header_.fScale; }
+  void set_object_pixel_size(float value) { header_.fScale = value; }
 
-  float get_fSig() const {
-    return header_.fSig;
-  }
+  float get_fLabbyt() const { return header_.fLabbyt; }
+  void set_fLabbyt(float value) { header_.fLabbyt=value; }
 
-  void set_fSig(float value) {
-    header_.fSig=value;
-  }
-
-  float get_fIhist()  const {
-    return header_.fIhist;
-  }
-
-  void set_fIhist(float value) {
-    header_.fIhist=value;
-  }
-
-  float get_fLabrec() const {
-    return header_.fLabrec;
-  }
-
-  void set_fLabrec(float value) {
-    header_.fLabrec=value;
-  }
-
-  float get_fIangle() const {
-    return header_.fIangle;
-  }
-
-  void set_fIangle(float value) {
-    header_.fIangle=value;
-  }
-
-  float get_xorigin() const {
-    return header_.fXoff;
-  }
-
-  void set_xorigin(float value) {
-    header_.fXoff = value;
-  }
-
-  float get_yorigin() const {
-    return header_.fYoff;
-  }
-
-  void set_yorigin(float value) {
-    header_.fYoff = value;
-  }
-
-  float get_zorigin() const {
-    return header_.fZoff;
-  }
-
-  void set_zorigin(float value) {
-    header_.fZoff = value;
-  }
-
-  float get_object_pixel_size() const {
-    return header_.fScale;
-  }
-
-  void set_object_pixel_size(float value) {
-    header_.fScale = value;
-  }
-
-  float get_fLabbyt() const {
-    return header_.fLabbyt;
-  }
-
-  void set_fLabbyt(float value) {
-    header_.fLabbyt=value;
-  }
-
-  float get_fLenbyt() const {
-    return header_.fLenbyt;
-  }
-
-  void set_fLenbyt(float value) {
-    header_.fLenbyt=value;
-  }
+  float get_fLenbyt() const { return header_.fLenbyt; }
+  void set_fLenbyt(float value) { header_.fLenbyt=value; }
 
   IMP::algebra::Matrix2D< double > get_fGeo_matrix();
-
-  // Origin offsets
-  void set_origin_offsets(float Yoff, float Xoff);
-  void set_origin_offsets(float Zoff, float Yoff, float Xoff);
-
-  // Euler angles
-  void set_euler_angles(float Phi, float Theta, float Psi);
-  void set_euler_angles1(float Phi1, float Theta1, float Psi1);
-  void set_euler_angles2(float Phi2, float Theta2, float Psi2);
-
 
   //! Gets the fFlag.
   /** fFlag contains the number of triads of Euler angles stored
@@ -431,134 +301,80 @@ public:
       set_euler_angles2 makes fFlag=2, set_euler_angles1 makes
       fFlag=max(fFlag, 1), set_euler_angles does not change fFlag
   */
-  float get_fFlag() const {
-    return header_.fFlag;
+  float get_fFlag() const { return header_.fFlag; }
+  void set_fFlag(float value) { header_.fFlag = value; }
+
+
+  // Euler angles
+  template<typename T> void get_euler_angles(T& Phi, T& Theta, T& Psi) const {
+    Phi =(T)header_.fPhi; Theta =(T)header_.fTheta; Psi =(T)header_.fPsi;
   }
-
-
-  //! Sets the fFlag.
-  /** fFlag contains the number of triads of Euler angles stored
-      in the header (up to three).
-      set_euler_angles2 makes fFlag=2, set_euler_angles1 makes
-      fFlag=max(fFlag, 1), set_euler_angles does not change fFlag
-  */
-  void set_fFlag(float value) {
-    header_.fFlag = value;
+  template<typename T> void get_euler_angles1(T& Phi, T& Theta, T& Psi) const {
+   Phi=(T)header_.fPhi1; Theta=(T)header_.fTheta1; Psi=(T) header_.fPsi1;
   }
-
-  template<typename T>
-  void get_euler_angles(T& Phi, T& Theta, T& Psi) const {
-    Phi = (T) header_.fPhi;
-    Theta = (T) header_.fTheta;
-    Psi = (T) header_.fPsi;
+  template<typename T> void get_euler_angles2(T& Phi, T& Theta, T& Psi) const {
+   Phi=(T)header_.fPhi2; Theta=(T)header_.fTheta2; Psi=(T) header_.fPsi2;
   }
-
-  template<typename T>
-  void get_euler_angles1(T& Phi1, T& Theta1, T& Psi1) const {
-    Phi1 = (T) header_.fPhi1;
-    Theta1 = (T) header_.fTheta1;
-    Psi1 = (T) header_.fPsi1;
-  }
-
-  template<typename T>
-  void get_euler_angles2(T& Phi2, T& Theta2, T& Psi2) const {
-    Phi2 = (T) header_.fPhi2;
-    Theta2 = (T) header_.fTheta2;
-    Psi2 = (T) header_.fPsi2;
-  }
-
-  template<typename T>
-  void get_origin_offsets(T &Yoff, T &Xoff) const   {
-    Yoff =  (T) header_.fYoff;
-    Xoff =  (T) header_.fXoff;
-  }
-
-  template<typename T>
-  void get_origin_offsets(T &Zoff,T &Yoff,T &Xoff) const {
-    Zoff =  (T) header_.fZoff;
-    Yoff =  (T) header_.fYoff;
-    Xoff =  (T) header_.fXoff;
-  }
-
-  void set_Phi(float value) {
+  void set_euler_angles(float Phi, float Theta, float Psi) {
     header_.fIangle = 1;
-    header_.fPhi=value;
+    header_.fPhi = Phi; header_.fTheta = Theta; header_.fPsi = Psi;
   }
-
-  float get_Phi() const {
-    return header_.fPhi;
+  void set_euler_angles1(float Phi, float Theta, float Psi) {
+    if (header_.fFlag != 2.f) { header_.fFlag = 1.f; }
+    header_.fPhi1 = Phi; header_.fTheta1 = Theta; header_.fPsi1 = Psi;
   }
-
-  void set_Theta(float value) {
-    header_.fIangle = 1;
-    header_.fTheta=value;
+  void set_euler_angles2(float Phi, float Theta, float Psi) {
+    header_.fFlag = 2;
+    header_.fPhi2 = Phi; header_.fTheta2 = Theta; header_.fPsi2 = Psi;
   }
+  void set_Phi(float value) { header_.fIangle = 1; header_.fPhi=value; }
+  float get_Phi() const { return header_.fPhi; }
 
-  float get_Theta() const {
-    return header_.fTheta;
+  void set_Theta(float value) { header_.fIangle = 1; header_.fTheta=value; }
+  float get_Theta() const { return header_.fTheta; }
+
+  void set_Psi(float value) { header_.fIangle = 1; header_.fPsi=value; }
+  float get_Psi() const { return header_.fPsi; }
+
+  void set_Phi1(float value) { header_.fFlag = 1.f; header_.fPhi1=value; }
+  float get_Phi1() const { return header_.fPhi1; }
+
+  void set_Theta1(float value) { header_.fFlag = 1.f; header_.fTheta1=value; }
+  float get_Theta1() const { return header_.fTheta1; }
+
+  void set_Psi1(float value) { header_.fFlag = 1.f; header_.fPsi1=value; }
+  float get_Psi1() const { return header_.fPsi1; }
+
+  void set_Phi2(float value) { header_.fFlag = 2.f; header_.fPhi2=value; }
+  float get_Phi2() const { return header_.fPhi2; }
+
+  void set_Theta2(float value) { header_.fFlag = 2.f; header_.fTheta2=value; }
+  float get_Theta2() const { return header_.fTheta2; }
+
+  void set_Psi2(float value) { header_.fFlag = 2.f; header_.fPsi2=value; }
+  float get_Psi2() const { return header_.fPsi2; }
+
+
+  // Origin offsets
+  template<typename T> void get_origin_offsets(T &Xoff, T &Yoff) const   {
+    Yoff =  (T) header_.fYoff; Xoff =  (T) header_.fXoff;
   }
-
-  void set_Psi(float value) {
-    header_.fIangle = 1;
-    header_.fPsi=value;
+  template<typename T> void get_origin_offsets(T &Xoff,T &Yoff,T &Zoff) const {
+    Zoff=(T)header_.fZoff; Yoff=(T)header_.fYoff; Xoff=(T)header_.fXoff;
   }
-
-  float get_Psi() const {
-    return header_.fPsi;
+  void set_origin_offsets(float Xoff, float Yoff) {
+    header_.fXoff = Xoff; header_.fYoff = Yoff;
   }
-
-  void set_Phi1(float value) {
-    header_.fFlag = 1.f;
-    header_.fPhi1=value;
+  void set_origin_offsets(float Xoff, float Yoff, float Zoff) {
+    header_.fXoff = Xoff; header_.fYoff = Yoff; header_.fZoff = Zoff;
   }
-
-  float get_Phi1() const {
-    return header_.fPhi1;
+  void set_origin_offsets(algebra::Vector2D &v) {
+    header_.fXoff=(float)v[0]; header_.fYoff=(float)v[1]; header_.fZoff=0.0;
   }
-
-  void set_Theta1(float value) {
-    header_.fFlag = 1.f;
-    header_.fTheta1=value;
-  }
-
-  float get_Theta1() const {
-    return header_.fTheta1;
-  }
-
-  void set_Psi1(float value) {
-    header_.fFlag = 1.f;
-    header_.fPsi1=value;
-  }
-
-  float get_Psi1() const {
-    return header_.fPsi1;
-  }
-
-  void set_Phi2(float value) {
-    header_.fFlag = 2.f;
-    header_.fPhi2=value;
-  }
-
-  float get_Phi2() const {
-    return header_.fPhi2;
-  }
-
-  void set_Theta2(float value) {
-    header_.fFlag = 2.f;
-    header_.fTheta2=value;
-  }
-
-  float get_Theta2() const {
-    return header_.fTheta2;
-  }
-
-  void set_Psi2(float value) {
-    header_.fFlag = 2.f;
-    header_.fPsi2=value;
-  }
-
-  float get_Psi2() const {
-    return header_.fPsi2;
+  void set_origin_offsets(algebra::Vector3D &v) {
+    header_.fXoff=(float)v[0];
+    header_.fYoff=(float)v[1];
+    header_.fZoff=(float)v[2];
   }
 
   bool is_normalized() const {
@@ -575,14 +391,32 @@ public:
   void set_date();
   void set_time();
 
-  //! Set info about the image dimension in the header
-  void set_dimensions(float Ydim, float Xdim);
-  //! Get info about the image dimension from the header
-  void get_dimensions(float& Ydim, float& Xdim) const;
-  //! Set info about volume dimension in the header
-  void set_dimensions(float Zdim,float Ydim, float Xdim);
-  //! Get info about volume dimension from the header
-  void get_dimensions(float& Zdim,float& Ydim, float& Xdim) const;
+
+
+    //! Set and get info about image dimensions in the header
+  void set_dimensions(float Ydim, float Xdim) {
+    header_.fNrow = Ydim;
+    header_.fNcol = Xdim;
+  }
+
+  void set_dimensions(float Zdim, float Ydim, float Xdim) {
+    header_.fNslice = Zdim;
+    header_.fNrow = Ydim;
+    header_.fNcol = Xdim;
+  }
+
+    //! Get info about the image dimension from the header
+  void get_dimensions(float &Ydim, float &Xdim) const {
+    Ydim = header_.fNrow;
+    Xdim = header_.fNcol;
+  }
+
+  void get_dimensions(float& Zdim,float& Ydim, float& Xdim) const {
+    Zdim = header_.fNslice;
+    Ydim = header_.fNrow;
+    Xdim = header_.fNcol;
+  }
+
 
   // Title
   char* get_title() const;
@@ -593,7 +427,7 @@ public:
 private:
 
   // The header is directly in format Spider with a couple of additions
-  SpiderHeader header_;
+  em::SpiderHeader header_;
   bool reversed_;
 }; // ImageHeader
 

@@ -9,6 +9,7 @@ files = [
          'EMReaderWriter.cpp',
          'RigidBodiesFitRestraint.cpp',
          'FitRestraint.cpp',
+         'Image.cpp',
          'ImageHeader.cpp',
          'KernelParameters.cpp',
          'MRCReaderWriter.cpp',
