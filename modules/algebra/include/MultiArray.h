@@ -10,15 +10,13 @@
 
 #include "algebra_config.h"
 #include "endian.h"
-#include "IMP/base_types.h"
-#include "IMP/exception.h"
-#include "IMP/random.h"
+#include <IMP/base_types.h>
+#include <IMP/exception.h>
+#include <IMP/random.h>
 #include "internal/output_helpers.h"
-#include "IMP/algebra/utility.h"
-#include "IMP/algebra/endian.h"
-#include "IMP/algebra/internal/multi_array_helpers.h"
-#include "IMP/algebra/VectorD.h"
-#include <ctime>
+#include "utility.h"
+#include "internal/multi_array_helpers.h"
+#include "VectorD.h"
 #include "boost/version.hpp"
 
 IMPALGEBRA_BEGIN_NAMESPACE

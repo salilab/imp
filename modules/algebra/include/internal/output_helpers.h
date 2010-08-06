@@ -10,10 +10,8 @@
 #include "../algebra_config.h"
 #include "IMP/base_types.h"
 
-#include <cstdio>
-#include <string>
 #include <vector>
-#include <string.h>
+#include <string>
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 
