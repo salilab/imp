@@ -2,17 +2,17 @@
  *  \file ImageHeader.cpp
  *  \brief Header for EM images
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
-*/
+**/
 
-#include <IMP/em/ImageHeader.h>
+
+#include "IMP/em/ImageHeader.h"
 #include <ctime>
 #include <string.h>
 
 IMPEM_BEGIN_NAMESPACE
 
 
-void ImageHeader::print_hard(std::ostream &out) const
-{
+void ImageHeader::print_hard(std::ostream &out) const {
   out << "fNslice=" << header_.fNslice << std::endl;
   out << "fNrow=" <<   header_.fNrow << std::endl;
   out << "fNcol=" <<   header_.fNcol << std::endl;
@@ -39,7 +39,6 @@ void ImageHeader::print_hard(std::ostream &out) const
 }
 
 
-//#define DEBUG
 bool ImageHeader::read(std::ifstream& f, bool skip_type_check,
         bool force_reversed,bool skip_extra_checkings)
 {
@@ -238,7 +237,6 @@ bool ImageHeader::read(std::ifstream& f, bool skip_type_check,
   }
   return true;
 }
-//#undef DEBUG
 
 int ImageHeader::read(const String filename, bool skip_type_check,
                       bool force_reversed, bool skip_extra_checkings)
@@ -377,34 +375,6 @@ void ImageHeader::set_header()
 }
 
 
-void ImageHeader::set_dimensions(float Ydim, float Xdim)
-{
-  header_.fNrow = Ydim;
-  header_.fNcol = Xdim;
-}
-
-void ImageHeader::get_dimensions(float &Ydim, float &Xdim) const
-{
-  Ydim = header_.fNrow;
-  Xdim = header_.fNcol;
-}
-
-
-void ImageHeader::set_dimensions(float Zdim, float Ydim, float Xdim)
-{
-  header_.fNslice = Zdim;
-  header_.fNrow = Ydim;
-  header_.fNcol = Xdim;
-}
-
-void ImageHeader::get_dimensions(float& Zdim,float& Ydim, float& Xdim) const
-{
-  Zdim = header_.fNslice;
-  Ydim = header_.fNrow;
-  Xdim = header_.fNcol;
-}
-
-
 char* ImageHeader::get_date() const
 {
   return (char*) header_.szIDat;
@@ -422,8 +392,7 @@ void ImageHeader::set_date()
           tmTime->tm_mon, "-", tmTime->tm_year);
 }
 
-char* ImageHeader::get_time() const
-{
+char* ImageHeader::get_time() const {
   return (char*) header_.szITim;
 }
 
@@ -445,49 +414,6 @@ void ImageHeader::set_title(String newName)
 {
   strcpy(header_.szITit, newName.c_str());
 }
-
-void ImageHeader::set_origin_offsets(float Yoff, float Xoff)
-{
-  header_.fXoff = Xoff;
-  header_.fYoff = Yoff;
-}
-
-void ImageHeader::set_origin_offsets(float Zoff, float Yoff, float Xoff)
-{
-  header_.fXoff = Xoff;
-  header_.fYoff = Yoff;
-  header_.fZoff = Zoff;
-}
-
-void ImageHeader::set_euler_angles(float Phi, float Theta, float Psi)
-{
-  // sets flag and angles
-  header_.fIangle = 1;
-  header_.fPhi = Phi;
-  header_.fTheta = Theta;
-  header_.fPsi = Psi;
-}
-
-void ImageHeader::set_euler_angles1(float Phi1, float Theta1, float Psi1)
-{
-  // sets flag and angles
-  if (header_.fFlag != 2.f) {
-    header_.fFlag = 1.f;
-  }
-  header_.fPhi1 = Phi1;
-  header_.fTheta1 = Theta1;
-  header_.fPsi1 = Psi1;
-}
-
-void ImageHeader::set_euler_angles2(float Phi2, float Theta2, float Psi2)
-{
-  // sets flag
-  header_.fFlag = 2;
-  header_.fPhi2 = Phi2;
-  header_.fTheta2 = Theta2;
-  header_.fPsi2 = Psi2;
-}
-
 
 algebra::Matrix2D<double> ImageHeader::get_fGeo_matrix()
 {
