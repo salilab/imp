@@ -12,8 +12,6 @@
 #include <IMP/macros.h>
 #include <iostream>
 #include <fstream>
-#include <cstring>
-#include <cstdio>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
