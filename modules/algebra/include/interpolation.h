@@ -1,15 +1,11 @@
 /**
  *  \file interpolation.h
  *  \brief Classes and operations related with interpolation in 1D and 2D
- *  \author Javier Velazquez-Muriel
- *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
 */
 
 #ifndef IMPALGEBRA_INTERPOLATION_H
 #define IMPALGEBRA_INTERPOLATION_H
-
-// #define DEBUG
 
 #include "IMP/algebra/algebra_config.h"
 #include "IMP/algebra/utility.h"
@@ -23,30 +19,12 @@ IMPALGEBRA_BEGIN_NAMESPACE
 
 //! Simple interpolation that is only valid for values of a ranging from 0 to 1.
 /**
-  \return The returned value is (1-diff) *lower+diff*upper.  (0 < diff < 1)
+  \return The returned value is lower+diff*(upper-lower).  (0 < diff < 1)
 **/
 template<typename T>
-T get_linearly_interpolated(double diff,T lower,T upper) {
+T simple_interpolate(double diff,T lower,T upper) {
   return lower+diff*(upper-lower);
 }
-
-
-//! Linear interpolation for a point in a vector
-/**
-  \param[in] v any class similar to a vector accessed by []
-  \param[in] size number of elements in v
-  \param[in] idx index which value to interpolate
-**/
-template<typename T,typename H>
-T linear_interpolation(H &v,int size,double idx) {
-  int i = (int)floor(idx);
-
-  IMP_INTERNAL_CHECK(i>=0 && i<size,"linear_interpolation: Index out of range");
-  if(i=0 || i==(size-1)) return v[i]; // no interpolation is possible
-  return simple_interpolate(idx-i,v[i],v[i+1]);
-}
-
-
 
 //! Trilinear interpolation for a point using the 8 closest values in the matrix
 /**
@@ -57,11 +35,10 @@ T linear_interpolation(H &v,int size,double idx) {
               is done in other dimensions.
   \param[in] outside Value to apply if the requested idx falls outside the
               limits of the matrix. (It is never used if wrap is requested)
-  \relates Matrix3D
 **/
 template<typename T>
 T trilinear_interpolation(Matrix3D<T> &m,
-                  VectorD<3> &idx,
+                  Vector3D &idx,
                    bool wrap,
                    T outside) {
   // lower limits (xlow,ylow,zlow) are stored in lower,
@@ -113,11 +90,12 @@ T trilinear_interpolation(Matrix3D<T> &m,
  T c0  = simple_interpolate(diff[1],c00,c10);
  T c1  = simple_interpolate(diff[1],c01,c11);
  result= simple_interpolate(diff[2],c0,c1);
-#ifdef IMP_DEBUG_INTERPOLATION
- IMP_LOG(VERBOSE," lower " << lower[0] << " " << lower[1] << " " << lower[2]
-         << " upper " << upper[0] << " " << upper[1] << " " << upper[2]
-         << " diff "  << diff[0]  << " " << diff[1]  << " " << diff[2]
-         << std::endl);
+
+#ifdef DEBUG
+    std::cout << " lower " << lower[0] << " " << lower[1] << " " << lower[2]
+              << " upper " << upper[0] << " " << upper[1] << " " << upper[2]
+              << " diff "  << diff[0]  << " " << diff[1]  << " " << diff[2]
+              << std::endl;
 #endif
   return result;
 }
@@ -134,10 +112,9 @@ T trilinear_interpolation(Matrix3D<T> &m,
               limits of the matrix. (Never used if wrap is requested)
   \param[in] interp type of interpolation desired. Right now it is only
              bilinear interpolation
-  \relates Matrix2D
 **/
-double interpolate(algebra::Matrix2D<double> &m,
-                    VectorD<2>& idx,
+double interpolate(algebra::Matrix2D_d &m,
+                    Vector2D& idx,
                     bool wrap = false,
                     double outside = 0.0,
                     int interp=0);
@@ -145,7 +122,6 @@ double interpolate(algebra::Matrix2D<double> &m,
 
 //! General function to call in case of interpolation in 3D matrices
 /**
-  \param[in] m The matrix to interpolate within.
   \param[in] idx must be a class supporting access via [] and must have 2
               elements.
   \param[in] wrap If true, the matrix is wrapped: values from the right are
@@ -155,11 +131,10 @@ double interpolate(algebra::Matrix2D<double> &m,
               limits of the matrix. (Never used if wrap is requested)
   \param[in] interp Interpolation method desired. Right now it is only
              trilinear interpolation
-  \relates Matrix3D
 **/
 template<typename T>
 T interpolate(algebra::Matrix3D<T> &m,
-                    VectorD<3> &idx,
+                    Vector3D &idx,
                     bool wrap = false,
                     T outside = 0.0,
                     int interp=0) {
@@ -169,8 +144,7 @@ T interpolate(algebra::Matrix3D<T> &m,
       result=trilinear_interpolation(m,idx,wrap,(T)outside);
       break;
     case 1:
-  //TODO: Other interpolation schemes, (Bspline, gridding)
-//      result=Bspline_interpolation(m,idx,wrap,outside);
+    //TODO: Other interpolation schemes
       result = 0.0;
       break;
   }
@@ -190,20 +164,11 @@ T interpolate(algebra::Matrix3D<T> &m,
               is done between top and bottom.
   \param[in] outside Value to apply if the requested idx falls outside the
               limits of the matrix. (It is never used if wrap is requested)
-  \relates Matrix2D
 **/
-IMPALGEBRAEXPORT double bilinear_interpolation(Matrix2D<double>& m,
-                  VectorD<2>& idx,
+IMPALGEBRAEXPORT double bilinear_interpolation(Matrix2D_d& m,
+                  Vector2D& idx,
                   bool wrap = false,
                   double outside = 0.0);
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-/**   \relates Matrix2D
-*/
-IMPALGEBRAEXPORT double Bspline_interpolation(Matrix2D<double>& m,
-                  VectorD<2>& idx,
-                  bool wrap = false,
-                  double outside = 0.0);
-#endif
 
 // #undef DEBUG
 

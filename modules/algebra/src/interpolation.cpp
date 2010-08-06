@@ -1,8 +1,6 @@
 /**
  *  \file interpolation.cpp
- *  \brief Classes and operations related with interpolation in 1D and 2D
- *  \author Javier Velazquez-Muriel
- *
+ *  \brief Linear interpolation in 1D 2D and 3D
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
 */
 
@@ -10,8 +8,8 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-double interpolate(Matrix2D<double>&m,
-                   VectorD<2>&idx,
+double interpolate(Matrix2D_d&m,
+                   Vector2D&idx,
                    bool wrap,
                    double outside,
                    int interp) {
@@ -21,15 +19,14 @@ double interpolate(Matrix2D<double>&m,
       result=bilinear_interpolation(m,idx,wrap,outside);
       break;
     case 1:
-      result=Bspline_interpolation(m,idx,wrap,outside);
+      // TODO: Other interpolation schemes
       break;
   }
   return result;
 }
 
-
-double bilinear_interpolation(Matrix2D<double>& m,
-                  VectorD<2>& idx,
+double bilinear_interpolation(Matrix2D_d& m,
+                  Vector2D& idx,
                   bool wrap,
                   double outside) {
   // lower limits (xlow,ylow) are stored in v1, upper limits (xup,yup) in v2
@@ -75,24 +72,16 @@ double bilinear_interpolation(Matrix2D<double>& m,
           m(v1[0],v2[1])*(1-diff[0])*(diff[1])   +
           m(v2[0],v2[1])*(  diff[0])*(diff[1]);
 
+#ifdef DEBUG
   if(result>3) {
-    IMP_LOG(VERBOSE, " v1 " << v1[0] << " " << v1[1]
-            << " v2 " << v2[0] << " " << v2[1]
-            << " diff " << diff[0] << " " << diff[1]
-            << " dix " << idx[0] << " " << idx[1] << std::endl);
+    std::cout << " v1 " << v1[0] << " " << v1[1]
+              << " v2 " << v2[0] << " " << v2[1]
+              << " diff " << diff[0] << " " << diff[1]
+              << " dix " << idx[0] << " " << idx[1] << std::endl;
   }
+#endif
   return result;
 }
 
-double Bspline_interpolation(Matrix2D<double>& m,
-                  VectorD<2>& idx,
-                  bool wrap,
-                  double outside) {
-  // TODO: Implement B-spline interpolation
-  IMP_NOT_IMPLEMENTED;
-  return 0.0;
-}
-
-// #undef DEBUG
 
 IMPALGEBRA_END_NAMESPACE
