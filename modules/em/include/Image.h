@@ -173,7 +173,7 @@ typedef VectorOfRefCounted< Image_d *> Images_d;
   \param[in] names filenames of the images
   \param[in] rw  reader/writer to use
 **/
-Images_d read_images(Strings names,ImageReaderWriter<double> &rw);
+IMPEMEXPORT Images_d read_images(Strings names,ImageReaderWriter<double> &rw);
 
 
 //! Saves images to files
@@ -182,8 +182,8 @@ Images_d read_images(Strings names,ImageReaderWriter<double> &rw);
   \param[in] names filenames of the images
   \param[in] rw  reader/writer to use
 **/
-void save_images(Images_d images, Strings names,
-                 ImageReaderWriter<double> &rw);
+IMPEMEXPORT void save_images(Images_d images, Strings names,
+                             ImageReaderWriter<double> &rw);
 
 IMPEM_END_NAMESPACE
 
