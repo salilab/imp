@@ -52,6 +52,10 @@ public:
   ExcludedVolumeRestraint(SingletonContainer *sc,
                           double k=1);
 
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+  double unprotected_evaluate(DerivativeAccumulator *) const;
+#endif
+
 #ifdef SWIG
   IMP_RESTRAINT(ExcludedVolumeRestraint);
 #endif
