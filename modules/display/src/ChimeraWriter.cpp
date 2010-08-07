@@ -7,7 +7,7 @@
  */
 
 #include "IMP/display/ChimeraWriter.h"
-
+#include "IMP/display/internal/utility.h"
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
@@ -90,20 +90,24 @@ bool ChimeraWriter::process(SegmentGeometry *g,
 bool ChimeraWriter::process(PolygonGeometry *g,
                             Color color, std::string name) {
   cleanup(name, false, true);
-  get_stream() << "v=[";
-  for (unsigned int i=0; i< g->size(); ++i) {
-    get_stream() << "(" << commas_io(g->at(i)) << "), ";
+  std::pair<std::vector<algebra::Vector3Ds>, algebra::Vector3D> polys
+    = internal::get_convex_polygons(*g);
+  for (unsigned int i=0; i< polys.first.size(); ++i) {
+    get_stream() << "v=[";
+    for (unsigned int j=0; j< polys.first[i].size(); ++j) {
+      get_stream() << "(" << commas_io(polys.first[i][j]) << "), ";
+    }
+    get_stream() << "]\n";
+    get_stream() << "vi=[";
+    for (unsigned int j=2; j< polys.first[i].size(); ++j) {
+      get_stream() << "(";
+      get_stream() << "0" << ", " << j-1 << ", " << j;
+      get_stream() << "), ";
+    }
+    get_stream() << "]\n";
+    get_stream() << "m.addPiece(v, vi, (" << commas_io(color)
+                 << ", 1))\n";
   }
-  get_stream() << "]\n";
-  get_stream() << "vi=[";
-  for (unsigned int i=2; i< g->size(); ++i) {
-    get_stream() << "(";
-    get_stream() << "0" << ", " << i-1 << ", " << i;
-    get_stream() << "), ";
-  }
-  get_stream() << "]\n";
-  get_stream() << "m.addPiece(v, vi, (" << commas_io(color)
-               << ", 1))\n";
   return true;
 }
 bool ChimeraWriter::process(TriangleGeometry *g,
