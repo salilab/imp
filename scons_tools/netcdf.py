@@ -6,7 +6,6 @@ def _check(context):
     if cgal is False or cgal is 0:
         context.Message('Checking for NetCDF ...')
         context.Result("disabled")
-        env['NETCDF_LIBS'] = []
         return False
 
     ret= checks.check_lib(context, lib='netcdf_c++', header=['netcdfcpp.h'],
@@ -23,7 +22,7 @@ def _check(context):
     return ret[0]
 
 def configure_check(env):
-    env['NETCDF_LIBS'] = None
+    env['NETCDF_LIBS'] = []
     custom_tests = {'NetCDFCheck':_check}
     conf = env.Configure(custom_tests=custom_tests)
     #if not env.GetOption('clean') and not env.GetOption('help'):
