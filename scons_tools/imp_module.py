@@ -645,12 +645,12 @@ def process_dependencies(env, dependencies, required=False):
             else:
                 missing.append(d)
         elif d== "boost_file_system":
-            if env['BOOST_LIBS']:
+            if env['BOOST_FILESYSTEM_LIBS']:
                 m_libs=m_libs+env['BOOST_FILESYSTEM_LIBS']
             else:
                 missing.append(d)
         elif d== "boost_program_options":
-            if env['BOOST_LIBS']:
+            if env['BOOST_PROGRAM_OPTIONS_LIBS']:
                 m_libs=m_libs+env['BOOST_PROGRAM_OPTIONS_LIBS']
             else:
                 missing.append(d)

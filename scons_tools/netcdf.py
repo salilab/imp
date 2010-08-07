@@ -6,6 +6,7 @@ def _check(context):
     if cgal is False or cgal is 0:
         context.Message('Checking for NetCDF ...')
         context.Result("disabled")
+        context.env['NETCDF_LIBS']=False
         return False
 
     ret= checks.check_lib(context, lib='netcdf_c++', header=['netcdfcpp.h'],

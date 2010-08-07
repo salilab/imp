@@ -14,7 +14,6 @@ def _check(context):
     return ret[0]
 
 def configure_check(env):
-    env['ANN_LIBS'] = []
     custom_tests = {'CheckANN':_check}
     conf = env.Configure(custom_tests=custom_tests)
     #if not env.GetOption('clean') and not env.GetOption('help'):
