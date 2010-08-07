@@ -53,7 +53,7 @@ public:
   IMP_INCREMENTAL_RESTRAINT(CoreSingletonsRestraint);
 
   //! Get the container used to store Particles
-  SingletonContainer* get_singleton_container() {
+  SingletonContainer* get_singleton_container() const {
     return pc_;
   }
 

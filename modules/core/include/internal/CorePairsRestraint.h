@@ -53,7 +53,7 @@ public:
   IMP_INCREMENTAL_RESTRAINT(CorePairsRestraint);
 
   //! Get the container used to store Particles
-  PairContainer* get_pair_container() {
+  PairContainer* get_pair_container() const {
     return pc_;
   }
 

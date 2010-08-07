@@ -53,7 +53,7 @@ public:
   IMP_INCREMENTAL_RESTRAINT(CoreGroupnamesRestraint);
 
   //! Get the container used to store Particles
-  GroupnameContainer* get_groupname_container() {
+  GroupnameContainer* get_groupname_container() const {
     return pc_;
   }
 
