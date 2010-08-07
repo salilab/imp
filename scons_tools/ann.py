@@ -18,8 +18,5 @@ def configure_check(env):
     custom_tests = {'CheckANN':_check}
     conf = env.Configure(custom_tests=custom_tests)
     #if not env.GetOption('clean') and not env.GetOption('help'):
-    if conf.CheckANN():
-        env.Append(IMP_BUILD_SUMMARY=["ANN support enabled."])
-    else:
-        env.Append(IMP_BUILD_SUMMARY=["ANN support disabled."])
+    conf.CheckANN()
     conf.Finish()
