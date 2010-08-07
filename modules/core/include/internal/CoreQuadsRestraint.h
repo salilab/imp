@@ -53,7 +53,7 @@ public:
   IMP_INCREMENTAL_RESTRAINT(CoreQuadsRestraint);
 
   //! Get the container used to store Particles
-  QuadContainer* get_quad_container() {
+  QuadContainer* get_quad_container() const {
     return pc_;
   }
 

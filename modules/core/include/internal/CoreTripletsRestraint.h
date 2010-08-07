@@ -53,7 +53,7 @@ public:
   IMP_INCREMENTAL_RESTRAINT(CoreTripletsRestraint);
 
   //! Get the container used to store Particles
-  TripletContainer* get_triplet_container() {
+  TripletContainer* get_triplet_container() const {
     return pc_;
   }
 
