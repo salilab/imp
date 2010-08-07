@@ -7,6 +7,7 @@
  */
 
 #include "IMP/display/PymolWriter.h"
+#include "IMP/display/internal/utility.h"
 
 
 IMPDISPLAY_BEGIN_NAMESPACE
@@ -108,20 +109,22 @@ bool PymolWriter::process(SegmentGeometry *g,
   return true;
 }
 bool PymolWriter::process(PolygonGeometry *g,
-                            Color color, std::string name) {
+                          Color color, std::string name) {
   setup(name);
-  get_stream() << "BEGIN, TRIANGLE_FAN, ";
-  algebra::VectorD<3> n=
-    get_vector_product(g->at(1)-g->at(0),
-                   g->at(2)-g->at(0)).get_unit_vector();
-  write_color(get_stream(), color);
-  get_stream() << "NORMAL, " << algebra::commas_io(n)
-               << ",\n";
-  for (unsigned int i=0; i< g->size(); ++i) {
-    get_stream() << "VERTEX, " << algebra::commas_io(g->at(i))
-                 << ", ";
+  std::pair<std::vector<algebra::Vector3Ds>,
+    algebra::Vector3D> polys= internal::get_convex_polygons(*g);
+  for (unsigned int i=0; i< polys.first.size(); ++i) {
+    get_stream() << "BEGIN, TRIANGLE_FAN, ";
+    algebra::VectorD<3> n= polys.second;
+    write_color(get_stream(), color);
+    get_stream() << "NORMAL, " << algebra::commas_io(n)
+                 << ",\n";
+    for (unsigned int j=0; j< polys.first[i].size(); ++j) {
+      get_stream() << "VERTEX, " << algebra::commas_io(polys.first[i][j])
+                   << ", ";
+    }
+    get_stream() << "END,\n";
   }
-  get_stream() << "END,\n";
   cleanup(name);
   return true;
 }

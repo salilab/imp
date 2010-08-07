@@ -65,6 +65,9 @@ IMP_DISPLAY_GEOMETRY_DECL(EllipsoidGeometry, algebra::Ellipsoid3D);
 
 IMP_DISPLAY_GEOMETRY_DECL(PointGeometry, algebra::VectorD<3>);
 IMP_DISPLAY_GEOMETRY_DECL(SegmentGeometry, algebra::Segment3D);
+/** If CGAL is available, then any simple, planar polygon can be
+    used. Otherwise, the polygons should be simple, planar and convex.
+*/
 IMP_DISPLAY_GEOMETRY_DECL(PolygonGeometry,
                           std::vector<algebra::VectorD<3> >);
 IMP_DISPLAY_GEOMETRY_DECL(TriangleGeometry,
