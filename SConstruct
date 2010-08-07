@@ -145,13 +145,13 @@ def _display_build_summary(env):
     else:
         unfound_deps.append('python')
     if env["BOOST_FILESYSTEM_LIBS"]:
-        found_deps.append('Boost filesystem')
+        found_deps.append('Boost.Filesystem')
     else:
-        unfound_deps.append('Boost filesystem')
+        unfound_deps.append('Boost.Filesystem')
     if env["BOOST_PROGRAM_OPTIONS_LIBS"]:
-        found_deps.append('Boost program options')
+        found_deps.append('Boost.ProgramOptions')
     else:
-        unfound_deps.append('Boost program options')
+        unfound_deps.append('Boost.ProgramOptions')
     if len(env["CGAL_LIBS"]) > 0:
         found_deps.append('CGAL')
     else:
