@@ -11,7 +11,7 @@
 #include <IMP/exception.h>
 #include <fstream>
 
-#ifdef IMP_USE_BOOST_LIBS
+#ifdef IMP_USE_BOOST_FILESYSTEM
 #include <boost/filesystem/path.hpp>
 #include <boost/version.hpp>
 #endif
@@ -20,7 +20,7 @@
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 namespace {
-#ifdef IMP_USE_BOOST_LIBS
+#ifdef IMP_USE_BOOST_FILESYSTEM
   std::string to_string(boost::filesystem::path path) {
 #if BOOST_VERSION >= 103400
     return path.file_string();
@@ -34,7 +34,7 @@ namespace {
 }
 std::string get_concatenated_path(std::string part0,
                                    std::string part1) {
-#ifdef IMP_USE_BOOST_LIBS
+#ifdef IMP_USE_BOOST_FILESYSTEM
   boost::filesystem::path b0(part0), b1(part1);
   return to_string(b0/b1);
 #else
@@ -90,7 +90,7 @@ std::string get_data_path(std::string module, std::string file_name)
       return path;
     }
   }
-#ifdef IMP_USE_BOOST_LIBS
+#ifdef IMP_USE_BOOST_FILESYSTEM
   if (!backup_search_path.empty()) {
     boost::filesystem::path path
       = boost::filesystem::path(backup_search_path)/file_name;

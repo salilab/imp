@@ -38,24 +38,23 @@ def _check(context, version):
             ret1=checks.check_lib(context, lib=l[1][0]+"-mt",
                                   header=l[1][1],
                                   extra_libs=[x+"-mt" for x in l[1][2]])
-            if ret1[0]:
-                context.env[l[0]]=ret1[1]
-            else:
+            context.env[l[0]]=ret1[1]
+            if not ret1[0]:
                 ret2= checks.check_lib(context, lib=l[1][0], header=l[1][1], extra_libs=l[1][2])
-                if ret2[0]:
-                    context.env[l[0]]=ret2[1]
-                else:
-                    context.env['BOOST_LIBS']=False
+                context.env[l[0]]=ret2[1]
+            context.Message('Checking for '+l[1][0])
+            if context.env[l[0]]:
+                context.Result(" ".join(context.env[l[0]]))
+            else:
+                context.Result("No")
     else:
         context.Result("No")
-        context.env['BOOST_LIBS']=False
-    if not context.env['BOOST_LIBS']:
-        print "WARNING, boost libraries not found, some functionality may be missing."
+    if not context.env['BOOST_FILESYSTEM_LIBS'] or not context.env['BOOST_PROGRAM_OPTIONS_LIBS']:
+        print "WARNING, some boost libraries not found, some functionality may be missing."
     return ret[0]
 
 def configure_check(env, version):
     custom_tests = {'CheckBoost':_check}
     conf = env.Configure(custom_tests=custom_tests)
-    env["BOOST_LIBS"]=[]
     conf.CheckBoost(version)
     conf.Finish()
