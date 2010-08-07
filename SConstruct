@@ -134,21 +134,36 @@ def _bf_to_str(bf):
     return 'unknown failure: ' + bf.errstr
 
 def _display_build_summary(env):
-    print "Dependencies:"
+    print
+    print
+    found_deps=[]
+    unfound_deps=[]
     for x in env['IMP_BUILD_SUMMARY']:
-        print "  "+x
+        print x
     if env['python']:
-        print "  Python support enabled."
+        found_deps.append('python')
     else:
-        print "  Python support disabled."
-    if env['HAS_MODELLER']:
-        print "  Modeller support enabled."
-    else:
-        print "  Modeller support disabled."
+        unfound_deps.append('python')
     if env["BOOST_LIBS"]:
-        print "  Boost libraries enabled."
+        found_deps.append('Boost libraries')
     else:
-        print "  Boost libraries disabled."
+        unfound_deps.append('Boost libraries')
+    if len(env["CGAL_LIBS"]) > 0:
+        found_deps.append('CGAL')
+    else:
+        unfound_deps.append('CGAL')
+    if len(env["ANN_LIBS"]) > 0:
+        found_deps.append('ANN')
+    else:
+        unfound_deps.append('ANN')
+    if len(env["NETCDF_LIBS"]) > 0:
+        found_deps.append('NetCDF')
+    else:
+        unfound_deps.append('NetCDF')
+    print "Enabled dependencies: ",", ".join(found_deps)
+    print "Disabled/unfound optional dependencies: ",\
+        ", ".join(unfound_deps)
+    print
     disabledm=[]
     enabledm=[]
     for m in env['IMP_MODULES_ALL']:
@@ -156,28 +171,15 @@ def _display_build_summary(env):
             disabledm.append(m)
         else:
             enabledm.append(m)
-    print "Enabled modules:"
-    print "  ",
-    for x in enabledm:
-        print x,
-    print
-    if len(disabledm) >1:
-        print "Disabled modules (due to missing dependencies):"
-        print "  ",
-        for x in disabledm:
-            print x,
-        print
-    elif len(disabledm) ==1:
-        print "IMP."+disabledm[0] + " was missing dependencies and disabled."
+    print "Enabled modules: ", ", ".join(enabledm)
+    if len(disabledm) >0:
+        print "Disabled modules:", ", ".join(disabledm)
     from SCons.Script import GetBuildFailures
     abf=GetBuildFailures()
     if abf:
         print "Errors building:"
         for bf in abf:
             print "  "+_bf_to_str(bf)
-    else:
-        pass
-        #print "Built:",", ".join(["\""+str(x)+"\"" for x in BUILD_TARGETS]),"completed."
 
 
 atexit.register(_display_build_summary, env)
