@@ -56,6 +56,6 @@ def _check(context, version):
 def configure_check(env, version):
     custom_tests = {'CheckBoost':_check}
     conf = env.Configure(custom_tests=custom_tests)
-    env["BOOST_LIBS"]=True
+    env["BOOST_LIBS"]=[]
     conf.CheckBoost(version)
     conf.Finish()
