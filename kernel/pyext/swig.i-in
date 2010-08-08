@@ -1,4 +1,3 @@
-%include "IMP_config.i"
 
 %pythoncode %{
 def _forward_add_attribute(self, name, value, opt=None):
