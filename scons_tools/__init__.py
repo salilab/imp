@@ -100,7 +100,6 @@ def _add_build_flags(env):
         if env['CC'] == 'gcc':
             env.Append(CXXFLAGS=["-O3", "-fexpensive-optimizations",
                                 "-ffast-math"])
-            env.Append(CPPDEFINES=["NDEBUG"])
     elif env['build'] == 'release':
         if env['CC'] == 'gcc':
             env.Append(CXXFLAGS=["-O2"])
