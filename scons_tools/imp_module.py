@@ -385,7 +385,9 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     swigfile= penv._IMPSWIGPreface(target=[File("#/build/swig/IMP_%(module)s.i"%vars)],
                                    source=[File("swig.i-in"),
                                            env.Value(env['IMP_REQUIRED_MODULES']),
-                                           env.Value(env['IMP_MODULE_VERSION'])])
+                                           env.Value(env['IMP_MODULE_VERSION']),
+                                           #python supports serialization of object, why on earth do they just convert them to strings?
+                                           env.Value(" ".join(env[module+"_optional_dependencies"])),])
     swiglink=[]
     for i in swigfiles:
         if str(i).find('/')==-1:
@@ -662,7 +664,7 @@ def process_dependencies(env, dependencies, required=False):
     if required and len(missing)>0:
         #print "  (missing "+ ", ".join(missing)+", disabled)"
         raise EnvironmentError("missing dependency "+", ".join(missing))
-    return m_libs
+    return (m_libs, missing)
 
 def IMPModuleBuild(env, version, required_modules=[],
                    optional_dependencies=[], config_macros=[],
@@ -720,8 +722,8 @@ def IMPModuleBuild(env, version, required_modules=[],
     env.Prepend(SCANNERS = [swig.scanner, swig.inscanner])
     env['all_modules'].append(module)
     try:
-        m_libs=process_dependencies(env, optional_dependencies)\
-            + process_dependencies(env, required_dependencies, True)
+        m_libs=process_dependencies(env, optional_dependencies)[0]\
+            + process_dependencies(env, required_dependencies, True)[0]
     except EnvironmentError, e:
         env[module+"_libs"]=[]
         env = bug_fixes.clone_env(env)
