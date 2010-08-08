@@ -152,15 +152,15 @@ def _display_build_summary(env):
         found_deps.append('Boost.ProgramOptions')
     else:
         unfound_deps.append('Boost.ProgramOptions')
-    if len(env["CGAL_LIBS"]) > 0:
+    if env["CGAL_LIBS"]:
         found_deps.append('CGAL')
     else:
         unfound_deps.append('CGAL')
-    if len(env["ANN_LIBS"]) > 0:
+    if env["ANN_LIBS"]:
         found_deps.append('ANN')
     else:
         unfound_deps.append('ANN')
-    if len(env["NETCDF_LIBS"]) > 0:
+    if env["NETCDF_LIBS"]:
         found_deps.append('NetCDF')
     else:
         unfound_deps.append('NetCDF')
