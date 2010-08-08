@@ -116,7 +116,11 @@ inline void set_check_level(CheckLevel tf) {
 /**
  */
 inline CheckLevel get_check_level() {
+#if IMP_BUILD < IMP_FAST
   return internal::check_mode;
+#else
+  return NONE;
+#endif
 }
 
 
