@@ -126,7 +126,7 @@ std::string get_data_path(std::string fname);
 if get_module_version_info().get_version() != "%(version)s":
     sys.stderr.write("WARNING: expected version %(version)s, but got "+ get_module_version_info().get_version() +" when loading module %(module)s. Please make sure IMP is properly built and installed and that matching python and C++ libraries are used.\\n")
 }"""%vars)
-    optional_deps= source[3].get_contents().split(" ")
+    optional_deps= [x for x in source[3].get_contents().split(" ") if len(x) > 0]
     (found, notfound)= imp_module.process_dependencies(env, optional_deps)
     preface.append("%pythoncode {")
     for dep in optional_deps:
