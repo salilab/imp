@@ -1,27 +1,27 @@
 Import('env')
 
 config=[]
-if len(env['CGAL_LIBS'])>0:
+if env['CGAL_LIBS']:
     config.append('IMP_USE_CGAL')
 else:
     config.append('IMP_NO_CGAL')
 
-if len(env['NETCDF_LIBS'])>0:
+if env['NETCDF_LIBS']:
     config.append('IMP_USE_NETCDF')
 else:
     config.append('IMP_NO_NETCDF')
 
-if len(env['ANN_LIBS'])>0:
+if env['ANN_LIBS']:
     config.append('IMP_USE_ANN')
 else:
     config.append('IMP_NO_ANN')
 
-if len(env['BOOST_FILESYSTEM_LIBS']) > 0:
+if env['BOOST_FILESYSTEM_LIBS']:
     config.append('IMP_USE_BOOST_FILESYSTEM')
 else:
     config.append('IMP_NO_BOOST_FILESYSTEM')
 
-if len(env['BOOST_PROGRAM_OPTIONS_LIBS']) > 0:
+if env['BOOST_PROGRAM_OPTIONS_LIBS']:
     config.append('IMP_USE_BOOST_PROGRAM_OPTIONS')
 else:
     config.append('IMP_NO_BOOST_PROGRAM_OPTIONS')
