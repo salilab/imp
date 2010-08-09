@@ -631,36 +631,17 @@ def process_dependencies(env, dependencies, required=False):
     m_libs=[]
     missing=[]
     for d in dependencies:
-        if d== "CGAL":
-            if env['CGAL_LIBS']:
-                m_libs=m_libs+env['CGAL_LIBS']
-            else:
-                missing.append(d)
-        elif d== "netcdf":
-            if env['NETCDF_LIBS']:
-                m_libs=m_libs+env['NETCDF_LIBS']
-            else:
-                missing.append(d)
-        elif d== "ANN":
-            if env['ANN_LIBS']:
-                m_libs=m_libs+env['ANN_LIBS']
-            else:
-                missing.append(d)
-        elif d== "boost_file_system":
-            if env['BOOST_FILESYSTEM_LIBS']:
-                m_libs=m_libs+env['BOOST_FILESYSTEM_LIBS']
-            else:
-                missing.append(d)
-        elif d== "boost_program_options":
-            if env['BOOST_PROGRAM_OPTIONS_LIBS']:
-                m_libs=m_libs+env['BOOST_PROGRAM_OPTIONS_LIBS']
-            else:
-                missing.append(d)
-        elif d== "modeller":
+        nd= checks.nicename(d)
+        if d== "modeller":
             if not env.get('HAS_MODELLER', False):
                 missing.append(d)
         else:
-            raise ValueError("Do not understand optional dependency: " +d)
+            if env.get(nd.upper()+"_LIBS", "not found")=="not found":
+                raise ValueError("Do not understand optional dependency: " +d)
+            elif env[nd.upper()+"_LIBS"]:
+                m_libs=m_libs+env[nd.upper()+"_LIBS"]
+            else:
+                missing.append(d)
     if required and len(missing)>0:
         #print "  (missing "+ ", ".join(missing)+", disabled)"
         raise EnvironmentError("missing dependency "+", ".join(missing))
@@ -672,6 +653,7 @@ def IMPModuleBuild(env, version, required_modules=[],
                    module_include_path=None, module_src_path=None, module_preproc=None,
                    module_namespace=None, module_nicename=None,
                    required_dependencies=[],
+                   variabsle=None,
                    required_libraries=[], required_headers=[]):
     if module is None:
         module=Dir('.').abspath.split('/')[-1]
@@ -718,6 +700,9 @@ def IMPModuleBuild(env, version, required_modules=[],
             check_libraries_and_headers(env, required_libraries, required_headers)
         except EnvironmentError, e:
             module_failure = e
+
+    if env.GetOption('help'):
+        return
 
     env.Prepend(SCANNERS = [swig.scanner, swig.inscanner])
     env['all_modules'].append(module)

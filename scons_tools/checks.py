@@ -27,3 +27,66 @@ def check_lib(context, lib, header, body="", extra_libs=[]):
         else:
             return (False, None)
     return  (True, ret[1])
+
+def nicename(name):
+    lname= name.lower()
+    nname=lname.replace(".", "_")
+    return nname
+
+
+def handle_optional_lib(env, name, lib, header, vars, body="", extra_libs=[],
+                        alternate_name=None,
+                        liblist=[]):
+    lcname= nicename(name)
+    ucname= lcname.upper()
+    liblist.append(name)
+    def _check(context):
+        if context.env[lcname] is "no":
+            context.Message('Checking for '+name+' ...')
+            context.Result("disabled")
+            context.env[ucname+'_LIBS']=False
+            return False
+        elif context.env[lcname] is "yes":
+            context.Message('Checking for ANN ...')
+            if not context.env[lcname+'libs']:
+                context.Result("disabled, libs not specified")
+                context.env[ucname+'_LIBS']=False
+                return False
+            else:
+                context.Result(context.env[lcname+'libs'])
+                context.env[ucname+'_LIBS']=context.env[lcname+'libs']
+                return True
+        else:
+            ret= check_lib(context, lib=lib, header=header,
+                           body=body,
+                           extra_libs=extra_libs)
+            if ret[0]:
+                context.env[ucname+'_LIBS']=ret[1]
+                context.Message('Checking for '+name+' ...')
+                context.Result(" ".join(ret[1]))
+            elif alternate_name:
+                ret= check_lib(context, lib=alternate_name, header=header,
+                                  body=body,
+                                  extra_libs=extra_libs)
+                if ret[0]:
+                    context.env[ucname+'_LIBS']=ret[1]
+                    context.Message('Checking for '+name+' ...')
+                    context.Result(" ".join(ret[1]))
+                else:
+                    context.Result(False)
+                    context.env[ucname+'_LIBS']=False
+            else:
+                context.Message('Checking for '+name+' ...')
+                context.Result(False)
+                context.env[ucname+'_LIBS']=False
+            return ret[0]
+    from SCons.Script import EnumVariable
+    vars.Add(EnumVariable(lcname, 'Whether to use the '+name+' package', "auto", ["yes", "no", "auto"]))
+    vars.Add(lcname+'libs', 'Libs to link against when using '+name+'. Needed which "'+lcname+'" is "yes".', None)
+    vars.Update(env)
+    if not env.GetOption('help'):
+        custom_tests = {'CheckThisLib':_check}
+        conf = env.Configure(custom_tests=custom_tests)
+    #if not env.GetOption('clean') and not env.GetOption('help'):
+        conf.CheckThisLib()
+        conf.Finish()
