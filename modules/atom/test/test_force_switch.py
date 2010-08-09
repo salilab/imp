@@ -10,7 +10,7 @@ class ForceSwitchTests(IMP.test.TestCase):
     def test_create(self):
         """Check ForceSwitch creation"""
         s = IMP.atom.ForceSwitch(5.0, 6.0)
-        if IMP.has_tests:
+        if IMP.get_check_level() != IMP.NONE:
             self.assertRaises(IMP.UsageException, IMP.atom.ForceSwitch,
                               6.0, 5.0)
 

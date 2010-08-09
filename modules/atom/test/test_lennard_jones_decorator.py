@@ -27,7 +27,7 @@ class LennardJonesDecoratorTests(IMP.test.TestCase):
         IMP.core.XYZR.setup_particle(p, s)
         IMP.atom.LennardJones.setup_particle(p, 0.5)
         p = IMP.Particle(m)
-        if IMP.has_tests:
+        if IMP.get_check_level() != IMP.NONE:
             self.assertRaises(IMP.UsageException,
                               IMP.atom.LennardJones.setup_particle, p, 0.5)
 
