@@ -67,6 +67,8 @@ scons_tools.checks.handle_optional_lib(env, "ANN", "ANN",
                                        "ANN/ANN.h")
 scons_tools.checks.handle_optional_lib(env, "NetCDF", "netcdf_c++",
                                        "netcdfcpp.h", extra_libs=['netcdf'])
+scons_tools.checks.handle_optional_lib(env, "FFTW3", "fftw3",
+                                       "fftw3.h")
 scons_tools.checks.handle_optional_lib(env, "GSL", "gsl",
                                        "gsl/gsl_multimin.h", extra_libs=['gslcblas'])
 scons_tools.checks.handle_optional_lib(env, "CGAL", "CGAL",
