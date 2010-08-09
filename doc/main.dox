@@ -82,8 +82,8 @@ An overview of the various modules currently available. Representative classes a
 <td>IMP::gsl</td>
 <td></td>
 <td></td>
-<td></td>
 <td>IMP::gsl::Simplex, IMP::gsl::QuasiNewton</td>
+<td></td>
 </tr>
 <tr>
 <td>IMP::domino2</td>
