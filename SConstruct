@@ -153,7 +153,7 @@ if not env.GetOption('help'):
         else:
             unfound_deps.append('python')
         for l in external_libs:
-            if env[l.upper()+"_LIBS"]:
+            if env[scons_tools.checks.nicename(l).upper()+"_LIBS"]:
                 found_deps.append(l)
             else:
                 unfound_deps.append(l)
