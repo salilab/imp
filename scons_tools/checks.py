@@ -47,7 +47,7 @@ def handle_optional_lib(env, name, lib, header, vars, body="", extra_libs=[],
             context.env[ucname+'_LIBS']=False
             return False
         elif context.env[lcname] is "yes":
-            context.Message('Checking for ANN ...')
+            context.Message('Checking for '+name+' ...')
             if not context.env[lcname+'libs']:
                 context.Result("disabled, libs not specified")
                 context.env[ucname+'_LIBS']=False
@@ -88,5 +88,8 @@ def handle_optional_lib(env, name, lib, header, vars, body="", extra_libs=[],
         custom_tests = {'CheckThisLib':_check}
         conf = env.Configure(custom_tests=custom_tests)
     #if not env.GetOption('clean') and not env.GetOption('help'):
-        conf.CheckThisLib()
+        if conf.CheckThisLib():
+            env.Append(IMP_ENABLED=[ucname])
+        else:
+            env.Append(IMP_DISABLED=[ucname])
         conf.Finish()

@@ -24,6 +24,8 @@ external_libs=[]
 env = scons_tools.MyEnvironment(variables=vars,
                                 tools=["default", "swig"],
                                 toolpath=["scons_tools"])
+env['IMP_ENABLED']=[]
+env['IMP_DISABLED']=[]
 env['IMP_BUILD_SUMMARY']=""
 
 if not env.GetOption('help'):
