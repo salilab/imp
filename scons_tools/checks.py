@@ -17,7 +17,7 @@ def check_lib(context, lib, header, body="", extra_libs=[]):
     ret= _search_for_deps(context, lib, header, body, extra_libs)
     if not ret[0]:
         return ret
-    if context.env['static']:
+    if context.env['IMP_BUILD_STATIC']:
         imp_module.make_static_build(context.env)
         bret=_search_for_deps(context, lib, header, body, extra_libs)
         imp_module.unmake_static_build(context.env)
@@ -34,12 +34,12 @@ def nicename(name):
     return nname
 
 
-def handle_optional_lib(env, name, lib, header, vars, body="", extra_libs=[],
-                        alternate_name=None,
-                        liblist=[]):
+def handle_optional_lib(env, name, lib, header, body="", extra_libs=[],
+                        alternate_name=None):
     lcname= nicename(name)
     ucname= lcname.upper()
-    liblist.append(name)
+    vars= env['IMP_VARIABLES']
+    env.Append(IMP_EXTERNAL_LIBS=[name])
     def _check(context):
         if context.env[lcname] is "no":
             context.Message('Checking for '+name+' ...')
@@ -53,16 +53,16 @@ def handle_optional_lib(env, name, lib, header, vars, body="", extra_libs=[],
                 context.env[ucname+'_LIBS']=False
                 return False
             else:
-                context.Result(context.env[lcname+'libs'])
-                context.env[ucname+'_LIBS']=context.env[lcname+'libs']
+                context.Result(context.env[lcname+'libs'].split(":"))
+                context.env[ucname+'_LIBS']=context.env[lcname+'libs'].split(":")
                 return True
         else:
             ret= check_lib(context, lib=lib, header=header,
                            body=body,
                            extra_libs=extra_libs)
+            context.Message('Checking for '+name+' ...')
             if ret[0]:
                 context.env[ucname+'_LIBS']=ret[1]
-                context.Message('Checking for '+name+' ...')
                 context.Result(" ".join(ret[1]))
             elif alternate_name:
                 ret= check_lib(context, lib=alternate_name, header=header,
@@ -70,13 +70,11 @@ def handle_optional_lib(env, name, lib, header, vars, body="", extra_libs=[],
                                   extra_libs=extra_libs)
                 if ret[0]:
                     context.env[ucname+'_LIBS']=ret[1]
-                    context.Message('Checking for '+name+' ...')
                     context.Result(" ".join(ret[1]))
                 else:
                     context.Result(False)
                     context.env[ucname+'_LIBS']=False
             else:
-                context.Message('Checking for '+name+' ...')
                 context.Result(False)
                 context.env[ucname+'_LIBS']=False
             return ret[0]
@@ -90,6 +88,8 @@ def handle_optional_lib(env, name, lib, header, vars, body="", extra_libs=[],
     #if not env.GetOption('clean') and not env.GetOption('help'):
         if conf.CheckThisLib():
             env.Append(IMP_ENABLED=[ucname])
+            env.Append(IMP_CONFIGURATION=[lcname+"='yes'"])
+            env.Append(IMP_CONFIGURATION=[lcname+"libs='"+":".join(env[ucname+"_LIBS"])+"'"])
         else:
             env.Append(IMP_DISABLED=[ucname])
         conf.Finish()

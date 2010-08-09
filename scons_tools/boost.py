@@ -37,4 +37,6 @@ def configure_check(env, version):
         custom_tests = {'CheckBoost':_check}
         conf = env.Configure(custom_tests=custom_tests)
         conf.CheckBoost(version)
+        if env.get('BOOST_VERSION', None):
+            env.Append(IMP_CONFIGURATION=["boostversion='"+env['BOOST_VERSION']+"'"])
         conf.Finish()

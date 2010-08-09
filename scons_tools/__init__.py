@@ -18,13 +18,16 @@ import SCons
 
 def _reconcile_common_variables(env):
     """enforce dependencies between variables"""
+    env['IMP_BUILD_STATIC']= env['static']
+    env['IMP_PROVIDE_PYTHON']= env['python']
+    env['IMP_USE_PLATFORM_FLAGS']= env['platformflags']
+    env['IMP_USE_RPATH']= env['rpath']
     if env['wine']:
-        env['platformflags']=False
-        env['static']=False
-    if env['rpath']:
-        if env['PLATFORM']!= 'posix' and env['PLATFORM'] != 'darwin':
-            env['rpath']=False
-            print "WARNING rpath not supported on platform "+ env['PLATFORM']
+        env['IMP_USE_PLATFORM_FLAGS']=False
+        env['IMP_BUILD_STATIC']=False
+    if env['PLATFORM']!= 'posix' and env['PLATFORM'] != 'darwin':
+        env['IMP_USE_RPATH']=False
+        print "WARNING rpath not supported on platform "+ env['PLATFORM']
 
 
 def GetInstallDirectory(env, varname, *subdirs):
@@ -99,14 +102,14 @@ def _add_build_flags(env):
     env.Append(CXXFLAGS=[])
     env.Append(LINKFLAGS=[])
     env.Append(LIBPATH=[])
-    if env['CXX'] == 'g++' and env['platformflags']:
+    if env['CXX'] == 'g++' and env['IMP_USE_PLATFORM_FLAGS']:
         env.Append(CXXFLAGS=["-Wall"])
         env.Append(CXXFLAGS=["-Woverloaded-virtual"])
     if env['CXX'] == 'g++':
         env['use_pch']=env['precompiledheader']
     else:
         env['use_pch']=False
-    if env['CXX'] == 'g++' and  env['platformflags']:
+    if env['CXX'] == 'g++' and  env['IMP_USE_PLATFORM_FLAGS']:
         if env['build'] == 'fast':
             env.Append(CXXFLAGS=["-O3", "-fexpensive-optimizations",
                                  "-ffast-math"])
@@ -126,7 +129,7 @@ def _add_rpath(env):
         for p in env['LIBPATH']:
             if p[0] is not '#':
                 # append/prepend must match other uses
-                if  env['rpath']:
+                if  env['IMP_USE_RPATH']:
                     env.Prepend(LINKFLAGS=['-Wl,-rpath,'+p])
                 env.Prepend(LINKFLAGS=['-Wl,-rpath-link,'+p])
         env.Prepend(LINKFLAGS=['-Wl,-rpath-link,'+Dir("#/build/lib").abspath])
@@ -172,7 +175,8 @@ def MyEnvironment(variables=None, *args, **kw):
     env.AddMethod(symlinks.LinkInstallAs)
     env.AddMethod(hierarchy.InstallHierarchy)
     env.AddMethod(GetInstallDirectory)
-    if env['platformflags']:
+    env['IMP_PYTHON_SO']="so"
+    if env['IMP_USE_PLATFORM_FLAGS']:
         from distutils.sysconfig import get_config_vars
         # The compile and link programs used by python must both produce outputs
         # that are compatible with the compiler we are already using as well
@@ -264,8 +268,8 @@ def get_sharedlib_environment(env, cppdefine, cplusplus=False):
 
 def get_bin_environment(envi):
     env= bug_fixes.clone_env(envi)
-    if env['static']:
-        if env['CC'] == 'gcc':
+    if env['IMP_BUILD_STATIC']:
+        if env['CXX'] == 'g++':
             env.Append(LINKFLAGS=['-static'])
             return env
         else:
@@ -301,7 +305,7 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
         #    ldshared = ldshared.replace(' cc_r', ' g++')
         e.Replace(LDMODULESUFFIX=e['IMP_PYTHON_SO'])
         #e.Replace(CXX=cxx, LDMODULE=ldshared, SHLINK=ldshared)
-        if platform == 'darwin':
+        if platform == 'darwin' and env['IMP_USE_PLATFORM_FLAGS']:
             e.Replace(LDMODULEFLAGS= \
                       '$LINKFLAGS -bundle -flat_namespace -undefined suppress')
         # Don't set link flags on Linux, as that would negate our GNU_HASH check
@@ -393,6 +397,9 @@ def add_common_variables(vars, package):
                           +" or 'fast' to disable most runtime checks," \
                           +" but keep debugging information",
                           "release", ['release', 'debug', 'fast']))
+    vars.Add(EnumVariable('endian',
+                          "The endianness of the platform. \"auto\" will determine it automatically.",
+                          "auto", ['auto', 'big', 'little']))
     vars.Add(BoolVariable('linksysv',
                           'Link with old-style SysV, not GNU hash, for ' + \
                           'binary compatibility', False))
@@ -418,7 +425,7 @@ def add_common_variables(vars, package):
              'For example, "valgrind --db-attach=yes --suppressions=valgrind-python.supp"', "")
     vars.Add('pythonpath', 'Extra python path ' + \
              '(e.g. "/opt/local/lib/python-2.5/") to use for tests', None)
-    vars.Add('boostversion', 'The version of boost. If this is not none, the passed version is used and checks are not done.', None)
+    vars.Add('boostversion', 'The version of boost. If this is not none, the passed version is used and checks are not done. The version should look like "104200" for Boost "1.42".', None)
     vars.Add(BoolVariable('platformflags',
                           'If true, use compiler and linker flags from platform config files. If false, only used passed flags (eg only the values in "cxxflags", "linkflags" etc).',
                           True))
@@ -434,7 +441,7 @@ def add_common_variables(vars, package):
     vars.Add(BoolVariable('python', 'Whether to build the python libraries ', True))
     vars.Add(BoolVariable('localmodules', 'Whether to build local modules that are not part of the IMP distribution', False))
     vars.Add(BoolVariable('linktest', 'Test for header defined functions which are not inline', True))
-    vars.Add(PathVariable('repository', 'Where to find the source code to build. This is only needed if building in a different directory than the source.', None, PathVariable.PathIsDir))
+    vars.Add(PathVariable('repository', 'Where to find the source code to build. This is only needed if building in a different directory than the source.', None, PathVariable.PathAccept)) #PathIsDir
     vars.Add(BoolVariable('static', 'Whether to only build static libraries.', False))
     vars.Add(BoolVariable('precompiledheader', 'Whether to use a precompiled header for swig libraries ', False))
     vars.Add(BoolVariable('fastlink', 'Scons does not handle shared libraries properly by default and relinks everything every time one changes. If fastlink it true, then we work around this. Fastlink can only be set to true when on linux or mac and when there is no static linking. These preconditions are not currently checked. ', False))

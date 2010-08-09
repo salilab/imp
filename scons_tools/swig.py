@@ -245,8 +245,8 @@ def configure_check(env):
     #if not env.GetOption('clean') and not env.GetOption('help') \
     #   and conf.CheckSWIG() is False:
     if not conf.CheckSWIG():
-        env['python']=False
-        env.Append(IMP_BUILD_SUMMARY=["Swig was not found."])
+        env['IMP_PROVIDE_PYTHON']=False
+        #env.Append(IMP_BUILD_SUMMARY=["Swig was not found."])
     conf.Finish()
 
 

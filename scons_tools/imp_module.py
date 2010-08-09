@@ -233,7 +233,7 @@ def IMPModuleLib(envi, files):
                                           env['IMP_MODULE'] == 'kernel')\
                     +env[env['IMP_MODULE']+"_libs"])
     build=[]
-    if env['static'] and env['CC'] == 'gcc':
+    if env['IMP_BUILD_STATIC'] and env['CXX'] == 'g++':
         build.append( env.StaticLibrary('#/build/lib/imp%s' % module_suffix,
                                       list(files)))
     build.append(env.SharedLibrary('#/build/lib/imp%s' % module_suffix,
@@ -827,7 +827,7 @@ def IMPModuleBuild(env, version, required_modules=[],
     env.SConscript('include/SConscript', exports='env')
     env.SConscript('src/SConscript', exports='env')
     env.SConscript('bin/SConscript', exports='env')
-    if env['python']:
+    if env['IMP_PROVIDE_PYTHON']:
         env.SConscript('pyext/SConscript', exports='env')
         env.SConscript('test/SConscript', exports='env')
 
