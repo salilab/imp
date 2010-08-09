@@ -14,6 +14,7 @@
 #include "IMP/algebra/Matrix2D.h"
 #include "boost/random.hpp"
 #include "boost/version.hpp"
+#include "time.h"
 
 IMPEM_BEGIN_NAMESPACE
 
@@ -38,49 +39,6 @@ IMPEM_BEGIN_NAMESPACE
   * \endcode
   * \note Tested with MultiArray, Matrix2D and Matrix3D
   */
-//template<typename T>
-//void add_noise(T& data, double op1, double op2,
-//               const String& mode = "uniform", double df = 3)
-//{
-//  if (mode == "uniform") {
-//    // Distribution
-//    boost::uniform_real<> unif_dist(op1, op2);
-//    // Put generator and distribution together
-//    typedef boost::variate_generator < RandomNumberGenerator,
-//                      boost::uniform_real<> > rnd_unif_generator;
-//    rnd_unif_generator rnd_unif(random_number_generator, unif_dist);
-//
-//    Int D = data.dimensionality;
-//    // add noise
-//    std::vector<Int> idx(D); // access index
-//    while (IMP::algebra::internal::roll_inds(idx,
-//                                             data.shape(),
-//                                             data.index_bases())) {
-//      data(idx) += rnd_unif();
-//    }
-//  } else if (mode == "gaussian") {
-//    // Distribution
-//    boost::normal_distribution<> gauss_dist(op1, op2);
-//    // Put generator and distribution together
-//    typedef boost::variate_generator < RandomNumberGenerator,
-//    boost::normal_distribution<> > rnd_gauss_generator;
-//    rnd_gauss_generator rnd_gauss(random_number_generator, gauss_dist);
-//
-//    Int D = data.dimensionality;
-//    // add noise
-//    std::vector<Int> idx(D); // access index
-//    while (IMP::algebra::internal::roll_inds(idx,
-//                                             data.shape(),
-//                                             data.index_bases())) {
-//      data(idx) += rnd_gauss();
-//    }
-//  } else if (mode == "student") {
-//  } else {
-//    String msg = "MultiArray::add_noise: Mode " + mode + " not supported.";
-//    throw ErrorException(msg.c_str());
-//  }
-//}
-
 template<typename T>
 void add_noise(T& v, double op1, double op2,
                const String& mode = "uniform", double df = 3)
@@ -89,7 +47,7 @@ void add_noise(T& v, double op1, double op2,
 //  typedef boost::rand48 base_generator_type;
   typedef boost::mt19937 base_generator_type;
   base_generator_type generator;
-  generator.seed(static_cast<unsigned long>(std::time(NULL)));
+  generator.seed(static_cast<unsigned long>(time(NULL)));
   // Distribution types
   typedef boost::uniform_real<> unif_distribution;
   typedef boost::normal_distribution<> norm_distribution;

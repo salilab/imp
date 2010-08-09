@@ -1,9 +1,8 @@
 /**
  *  \file Image.cpp
  *  \brief Management of IMP images for Electron Microscopy
- *  \author Javier Velazquez-Muriel
- *  Copyright 2007-9 Sali Lab. All rights reserved.
-*/
+ *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+**/
 
 #include "IMP/em/Image.h"
 #include "IMP/Pointer.h"
