@@ -113,7 +113,7 @@ T trilinear_interpolation(Matrix3D<T> &m,
   \param[in] interp type of interpolation desired. Right now it is only
              bilinear interpolation
 **/
-double interpolate(algebra::Matrix2D_d &m,
+IMPALGEBRAEXPORT double interpolate(algebra::Matrix2D_d &m,
                     Vector2D& idx,
                     bool wrap = false,
                     double outside = 0.0,
