@@ -1,5 +1,4 @@
 Import('env')
-Import('vars')
 
 env.IMPModuleBuild(version='SVN',
                    required_modules=['algebra'],
