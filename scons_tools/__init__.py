@@ -418,8 +418,9 @@ def add_common_variables(vars, package):
              'For example, "valgrind --db-attach=yes --suppressions=valgrind-python.supp"', "")
     vars.Add('pythonpath', 'Extra python path ' + \
              '(e.g. "/opt/local/lib/python-2.5/") to use for tests', None)
+    vars.Add('boostversion', 'The version of boost. If this is not none, the passed version is used and checks are not done.', None)
     vars.Add(BoolVariable('platformflags',
-                          'If true, use compiler and linker flags from platform config files. If false, only used pass flags.',
+                          'If true, use compiler and linker flags from platform config files. If false, only used passed flags (eg only the values in "cxxflags", "linkflags" etc).',
                           True))
 
     vars.Add(BoolVariable('deprecated',

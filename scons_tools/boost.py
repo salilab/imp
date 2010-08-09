@@ -31,7 +31,10 @@ def _check(context, version):
     return ret[0]
 
 def configure_check(env, version):
-    custom_tests = {'CheckBoost':_check}
-    conf = env.Configure(custom_tests=custom_tests)
-    conf.CheckBoost(version)
-    conf.Finish()
+    if env.get('boostversion', None):
+        env['BOOST_VERSION']=env['boostversion']
+    else:
+        custom_tests = {'CheckBoost':_check}
+        conf = env.Configure(custom_tests=custom_tests)
+        conf.CheckBoost(version)
+        conf.Finish()
