@@ -16,6 +16,16 @@ __all__ = ["add_common_variables", "MyEnvironment", "get_pyext_environment",
 
 import SCons
 
+def _reconcile_common_variables(env):
+    """enforce dependencies between variables"""
+    if env['wine']:
+        env['platformflags']=False
+        env['static']=False
+    if env['rpath']:
+        if env['PLATFORM']!= 'posix' and env['PLATFORM'] != 'darwin':
+            env['rpath']=False
+            print "WARNING rpath not supported on platform "+ env['PLATFORM']
+
 
 def GetInstallDirectory(env, varname, *subdirs):
     """Get a directory to install files in. The top directory is env[varname],
@@ -89,22 +99,20 @@ def _add_build_flags(env):
     env.Append(CXXFLAGS=[])
     env.Append(LINKFLAGS=[])
     env.Append(LIBPATH=[])
-    if env['CC'] == 'gcc':
+    if env['CXX'] == 'g++' and env['platformflags']:
         env.Append(CXXFLAGS=["-Wall"])
-    if env['CXX'] == 'g++':
         env.Append(CXXFLAGS=["-Woverloaded-virtual"])
+    if env['CXX'] == 'g++':
         env['use_pch']=env['precompiledheader']
     else:
         env['use_pch']=False
-    if env['build'] == 'fast':
-        if env['CC'] == 'gcc':
+    if env['CXX'] == 'g++' and  env['platformflags']:
+        if env['build'] == 'fast':
             env.Append(CXXFLAGS=["-O3", "-fexpensive-optimizations",
-                                "-ffast-math"])
-    elif env['build'] == 'release':
-        if env['CC'] == 'gcc':
+                                 "-ffast-math"])
+        elif env['build'] == 'release':
             env.Append(CXXFLAGS=["-O2"])
-    elif env['build'] == 'debug':
-        if env['CC'] == 'gcc':
+        elif env['build'] == 'debug':
             env.Append(CXXFLAGS=["-g"])
 
 
@@ -148,6 +156,7 @@ def MyEnvironment(variables=None, *args, **kw):
                           *args, **kw)
         env['PYTHON'] = 'python'
         env['PATHSEP'] = os.path.pathsep
+    _reconcile_common_variables(env)
     try:
         env['SHLINKFLAGS'] = [ x.replace('-no_archive', '') for x in env['SHLINKFLAGS']]
     except ValueError:
@@ -158,16 +167,12 @@ def MyEnvironment(variables=None, *args, **kw):
     #col.colorize(env)
     env['PYTHONPATH'] = '#/build/lib'
     env['all_modules']=[]
-    if env['rpath']:
-        if env['PLATFORM']!= 'posix' and env['PLATFORM'] != 'darwin':
-            env['rpath']=False
-            print "WARNING rpath not supported on platform "+ env['PLATFORM']
     #env.Decider('MD5-timestamp')
     env.AddMethod(symlinks.LinkInstall)
     env.AddMethod(symlinks.LinkInstallAs)
     env.AddMethod(hierarchy.InstallHierarchy)
     env.AddMethod(GetInstallDirectory)
-    if not env['wine']:
+    if env['platformflags']:
         from distutils.sysconfig import get_config_vars
         # The compile and link programs used by python must both produce outputs
         # that are compatible with the compiler we are already using as well
@@ -330,6 +335,7 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
 
 def add_common_variables(vars, package):
     """Add common variables to an SCons Variables object."""
+    libenum=["yes", "no", "auto"]
     libdir = '${prefix}/lib'
     if hasattr(os, 'uname') and sys.platform == 'linux2' \
        and os.uname()[-1] == 'x86_64':
@@ -396,8 +402,6 @@ def add_common_variables(vars, package):
              '(e.g. "/usr/local/lib:/opt/local/lib")', None)
     vars.Add('libs', 'Extra libs to add to link commands ' + \
              '(e.g. "efence:pthread")', None)
-    vars.Add(BoolVariable('cgal', 'Whether to use the CGAL package', True))
-    vars.Add(BoolVariable('netcdf', 'Whether to use the NetCDF package', True))
     vars.Add(BoolVariable('rpath',
                           'Add any entries from libpath to library search ' + \
                           'path (rpath) on Linux systems', True))
@@ -414,6 +418,10 @@ def add_common_variables(vars, package):
              'For example, "valgrind --db-attach=yes --suppressions=valgrind-python.supp"', "")
     vars.Add('pythonpath', 'Extra python path ' + \
              '(e.g. "/opt/local/lib/python-2.5/") to use for tests', None)
+    vars.Add(BoolVariable('platformflags',
+                          'If true, use compiler and linker flags from platform config files. If false, only used pass flags.',
+                          True))
+
     vars.Add(BoolVariable('deprecated',
                           'Build deprecated classes and functions', True))
     vars.Add(BoolVariable('dot',

@@ -2,25 +2,9 @@
 import checks
 
 def _check(context):
-    cgal = context.env['cgal']
-    if cgal is False or cgal is 0:
-        context.Message('Checking for CGAL ...')
-        context.Result("disabled")
-        context.env['CGAL_LIBS']=False
-        return False
-
-    ret= checks.check_lib(context, lib='CGAL', header=['CGAL/Gmpq.h', 'CGAL/Lazy_exact_nt.h'],
-                          body='CGAL_assertion(1); CGAL::Lazy_exact_nt<CGAL::Gmpq> q;',
-                          extra_libs=['gmp', 'mpfr', 'm','boost_thread-mt', 'boost_thread', 'pthread'])
-    context.Message('Checking for CGAL ...')
-    if ret[0]:
-        context.Result(" ".join(ret[1]))
-    else:
-        context.Result(ret[0])
-    if ret[0]:
-        context.env['CGAL_LIBS'] = ret[1]
+    if context.env['CGAL_LIBS']:
         #context.env.Append(CPPDEFINES=['IMP_USE_CGAL'])
-        if context.env['CC'] == 'gcc':
+        if context.env['CXX'] == 'g++':
             context.Message('Checking if CGAL needs -frounding-math ...')
             ret34 = context.TryRun("""#include <CGAL/version.h>
 #include <cstdlib>
@@ -45,9 +29,7 @@ def _check(context):
             if rett:
                 context.env.Append(CPPDEFINES=['BOOST_HAS_GCC_TR1'])
             context.Result(ret34)
-    else:
-        context.env['CGAL_LIBS']=False
-    return ret[0]
+    return True
 
 def configure_check(env):
     custom_tests = {'CheckCGAL':_check}

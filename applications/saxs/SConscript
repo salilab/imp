@@ -1,4 +1,4 @@
 Import('env')
 env.IMPCPPApplication(target="foxs", source=["profile.cpp", "Gnuplot.cpp"],
                       required_modules=['saxs'],
-                      required_dependencies=['boost_program_options'])
+                      required_dependencies=['Boost.ProgramOptions'])
