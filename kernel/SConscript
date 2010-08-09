@@ -22,9 +22,9 @@ else:
     config.append('IMP_NO_BOOST_FILESYSTEM')
 
 if env['BOOST_PROGRAMOPTIONS_LIBS']:
-    config.append('IMP_USE_BOOSTPROGRAM_OPTIONS')
+    config.append('IMP_USE_BOOST_PROGRAM_OPTIONS')
 else:
-    config.append('IMP_NO_BOOSTPROGRAM_OPTIONS')
+    config.append('IMP_NO_BOOST_PROGRAM_OPTIONS')
 
 if not env.get('deprecated', True):
     config.append('IMP_NO_DEPRECATED')
