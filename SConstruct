@@ -43,7 +43,7 @@ if not env.GetOption('help'):
     env['IMP_MODULES_ALL']=[]
 
     if not env.GetOption('clean'):
-        if env.get('COMPILER_OK', None) == None:
+        if not env.get('COMPILER_OK', None):
             Exit("""
 No working compiler found. Please make sure that g++ or another
 compiler recognized by scons can be found in your path and that all
