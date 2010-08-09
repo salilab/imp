@@ -25,6 +25,10 @@ class ParticleTests(IMP.test.TestCase):
         pso= IMP._give_particles(m)
         self.assertEqual(len(pso), 10)
         print pso[0]
+        di={}
+        for p in ps:
+            di[p]=IMP._TrivialDecorator.setup_particle(p)
+        rps= IMP._take_particles(di.values())
     def _equal_lists(self, va, vb):
         print "testing"
         self.assertEqual(len(va), len(vb))
