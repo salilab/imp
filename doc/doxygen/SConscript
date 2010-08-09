@@ -186,7 +186,7 @@ sources = headers + macrodef+ Glob("#/kernel/doc/*.dox") + [example_index] \
           + Glob("#/modules/*/doc/generated/*.dox") + modexamples \
           + Glob("#/modules/*/doc/*.dot") + Glob("#/kernel/doc/*.dot")
 
-if env['python']:
+if env['IMP_PROVIDE_PYTHON']:
     sources += Glob("#/build/lib/IMP/*.py", ondisk=False) \
                + Glob("#/build/lib/IMP/*/*.py", ondisk=False)
 examples= Glob("#/modules/example/src/*.cpp") + Glob("#/build/include/IMP/example/*.h")\

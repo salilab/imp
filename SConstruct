@@ -10,6 +10,8 @@ import scons_tools.modeller_test
 import scons_tools.doxygen
 import scons_tools.application
 import scons_tools.test
+import scons_tools.config_py
+import scons_tools.build_summary
 import atexit
 from SCons import Script
 
@@ -19,13 +21,15 @@ EnsureSConsVersion(0, 98)
 # Set up build environment:
 vars = Variables('config.py')
 scons_tools.add_common_variables(vars, "imp")
-external_libs=[]
 env = scons_tools.MyEnvironment(variables=vars,
                                 tools=["default", "swig"],
                                 toolpath=["scons_tools"])
 env['IMP_ENABLED']=[]
 env['IMP_DISABLED']=[]
 env['IMP_BUILD_SUMMARY']=""
+env['IMP_CONFIGURATION']=[]
+env['IMP_VARIABLES']=vars
+env['IMP_EXTERNAL_LIBS']=[]
 
 if not env.GetOption('help'):
 
@@ -60,32 +64,23 @@ You can see the produced config.log for more information as to why boost failed 
 """)
 
 scons_tools.checks.handle_optional_lib(env, "ANN", "ANN",
-                                       "ANN/ANN.h", vars,
-                                       liblist=external_libs)
+                                       "ANN/ANN.h")
 scons_tools.checks.handle_optional_lib(env, "NetCDF", "netcdf_c++",
-                                       "netcdfcpp.h", vars, extra_libs=['netcdf'],
-                                       liblist=external_libs)
+                                       "netcdfcpp.h", extra_libs=['netcdf'])
 scons_tools.checks.handle_optional_lib(env, "GSL", "gsl",
-                                       "gsl/gsl_multimin.h", vars, extra_libs=['gslcblas'],
-                                       liblist=external_libs)
+                                       "gsl/gsl_multimin.h", extra_libs=['gslcblas'])
 scons_tools.checks.handle_optional_lib(env, "CGAL", "CGAL",
                                        ['CGAL/Gmpq.h', 'CGAL/Lazy_exact_nt.h'],
-                                       vars,
                                        body='CGAL_assertion(1); CGAL::Lazy_exact_nt<CGAL::Gmpq> q;',
-                                       extra_libs=['gmp', 'mpfr', 'm','boost_thread-mt', 'boost_thread', 'pthread'],
-                                       liblist=external_libs)
+                                       extra_libs=['gmp', 'mpfr', 'm','boost_thread-mt', 'boost_thread', 'pthread'])
 scons_tools.checks.handle_optional_lib(env, "Boost.FileSystem", "boost_filesystem",
                                        'boost/filesystem/path.hpp',
-                                       vars,
                                        extra_libs=['libboost_system'],
-                                       alternate_name=['boost_filesystem-mt'],
-                                       liblist=external_libs)
+                                       alternate_name=['boost_filesystem-mt'])
 scons_tools.checks.handle_optional_lib(env, "Boost.ProgramOptions", "boost_program_options",
                                        'boost/program_options.hpp',
-                                       vars,
                                        extra_libs=['libboost_system'],
-                                       alternate_name=['boost_program_options-mt'],
-                                       liblist=external_libs)
+                                       alternate_name=['boost_program_options-mt'])
 
 
 
@@ -102,10 +97,12 @@ if not env.GetOption('help'):
 
     # Make these objects available to SConscript files:
     Export('env')
-    Export('vars')
-#, 'get_pyext_environment', 'get_sharedlib_environment')
 
     scons_tools.standards.setup_standards(env)
+
+    env.Append(BUILDERS={'IMPConfigPY':scons_tools.config_py.ConfigPY})
+    config_py=env.IMPConfigPY(target=["#/config.py"],
+                              source=[env.Value("#".join(env['IMP_CONFIGURATION']))])
 
     SConscript('kernel/SConscript')
 
@@ -126,59 +123,7 @@ if not env.GetOption('help'):
     env.Alias(env.Alias('all'), 'tools')
     env.Default(env.Alias('all'))
 
-    def _bf_to_str(bf):
-        """Convert an element of GetBuildFailures() to a string
-        in a useful way."""
-        import SCons.Errors
-        if bf is None: # unknown targets product None in list
-            return '(unknown tgt)'
-        elif isinstance(bf, SCons.Errors.StopError):
-            return str(bf)
-        elif bf.node:
-            return str(bf.node)
-        elif bf.filename:
-            return bf.filename
-        return 'unknown failure: ' + bf.errstr
-
-    def _display_build_summary(env):
-        print
-        print
-        found_deps=[]
-        unfound_deps=[]
-        for x in env['IMP_BUILD_SUMMARY']:
-            print x
-        if env['python']:
-            found_deps.append('python')
-        else:
-            unfound_deps.append('python')
-        for l in external_libs:
-            if env[scons_tools.checks.nicename(l).upper()+"_LIBS"]:
-                found_deps.append(l)
-            else:
-                unfound_deps.append(l)
-        print "Enabled dependencies: ",", ".join(found_deps)
-        print "Disabled/unfound optional dependencies: ",\
-            ", ".join(unfound_deps)
-        print
-        disabledm=[]
-        enabledm=[]
-        for m in env['IMP_MODULES_ALL']:
-            if not env.get(m+"_ok", False):
-                disabledm.append(m)
-            else:
-                enabledm.append(m)
-        print "Enabled modules: ", ", ".join(enabledm)
-        if len(disabledm) >0:
-            print "Disabled modules:", ", ".join(disabledm)
-        from SCons.Script import GetBuildFailures
-        abf=GetBuildFailures()
-        if abf:
-            print "Errors building:"
-            for bf in abf:
-                print "  "+_bf_to_str(bf)
-
-
-    atexit.register(_display_build_summary, env)
+    scons_tools.build_summary.setup(env)
 
 
 unknown = vars.UnknownVariables()
