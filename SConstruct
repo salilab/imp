@@ -2,7 +2,6 @@
 import scons_tools
 import scons_tools.boost
 import scons_tools.cgal
-import scons_tools.netcdf
 import scons_tools.swig
 import scons_tools.standards
 import scons_tools.endian
