@@ -638,7 +638,7 @@ def process_dependencies(env, dependencies, required=False):
                 missing.append(d)
         else:
             if env.get(nd.upper()+"_LIBS", "not found")=="not found":
-                raise ValueError("Do not understand optional dependency: " +d)
+                raise ValueError("Do not understand dependency: " +d)
             elif env[nd.upper()+"_LIBS"]:
                 m_libs=m_libs+env[nd.upper()+"_LIBS"]
             else:

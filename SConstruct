@@ -31,17 +31,19 @@ env['IMP_CONFIGURATION']=[]
 env['IMP_VARIABLES']=vars
 env['IMP_EXTERNAL_LIBS']=[]
 
+Export('env')
+
+if env.get('repository', None) is not None:
+    Repository(env['repository'])
+
+env['IMP_MODULES_ALL']=[]
+env.AddMethod(scons_tools.imp_module.IMPModuleBuild)
+env.AddMethod(scons_tools.application.IMPCPPApplication)
+
 if not env.GetOption('help'):
 
-    if env.get('repository', None) is not None:
-        Repository(env['repository'])
-
-    env.AddMethod(scons_tools.imp_module.IMPModuleBuild)
-    env.AddMethod(scons_tools.application.IMPCPPApplication)
     env.AddMethod(scons_tools.application.IMPApplicationTest)
     env.Append(BUILDERS={'IMPApplicationRunTest': scons_tools.test.UnitTest})
-    env['IMP_MODULES_ALL']=[]
-
     if not env.GetOption('clean'):
         if not env.get('COMPILER_OK', None):
             Exit("""
@@ -96,20 +98,20 @@ if not env.GetOption('help'):
     scons_tools.doxygen.configure_check_dot(env)
     scons_tools.gcc.configure_check_visibility(env)
     scons_tools.gcc.configure_check_hash(env)
-
     # Make these objects available to SConscript files:
-    Export('env')
-
     scons_tools.standards.setup_standards(env)
 
     env.Append(BUILDERS={'IMPConfigPY':scons_tools.config_py.ConfigPY})
     config_py=env.IMPConfigPY(target=["#/config.py"],
                               source=[env.Value("#".join(env['IMP_CONFIGURATION']))])
 
-    SConscript('kernel/SConscript')
 
-    SConscript('modules/SConscript')
-    SConscript('applications/SConscript')
+SConscript('kernel/SConscript')
+SConscript('modules/SConscript')
+SConscript('applications/SConscript')
+
+
+if not env.GetOption('help'):
     # This must be after the other SConscipt calls so that it knows about all the generated files
     if env['doxygen']:
         SConscript('doc/SConscript')
@@ -124,14 +126,14 @@ if not env.GetOption('help'):
     env.Alias(env.Alias('all'), 'tools')
     env.Default(env.Alias('all'))
 
+
     scons_tools.build_summary.setup(env)
+    unknown = vars.UnknownVariables()
+    if unknown:
+        print "Unknown variables: ", unknown.keys()
+        print "Use 'scons -h' to get a list of the accepted variables."
+        Exit(1)
 
-
-unknown = vars.UnknownVariables()
-if unknown:
-    print "Unknown variables: ", unknown.keys()
-    print "Use 'scons -h' to get a list of the accepted variables."
-    Exit(1)
 Help("""
 Available command-line options:
 (These can also be specified in regular Python syntax by creating a file
