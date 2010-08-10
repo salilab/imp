@@ -19,6 +19,7 @@ import SCons
 def _reconcile_common_variables(env):
     """enforce dependencies between variables"""
     env['IMP_BUILD_STATIC']= env['static']
+    env['IMP_BUILD_DYNAMIC']= env['dynamic']
     env['IMP_PROVIDE_PYTHON']= env['python']
     env['IMP_USE_PLATFORM_FLAGS']= env['platformflags']
     env['IMP_USE_RPATH']= env['rpath']
@@ -28,7 +29,11 @@ def _reconcile_common_variables(env):
     if env['PLATFORM']!= 'posix' and env['PLATFORM'] != 'darwin':
         env['IMP_USE_RPATH']=False
         print "WARNING rpath not supported on platform "+ env['PLATFORM']
-
+    if not env['IMP_BUILD_DYNAMIC']:
+        env['IMP_PROVIDE_PYTHON']=False
+    if not env['IMP_BUILD_DYNAMIC'] and not env['IMP_BUILD_STATIC']:
+        print "One of dynamic or static libraries must be supported."
+        env.Exit(1)
 
 def GetInstallDirectory(env, varname, *subdirs):
     """Get a directory to install files in. The top directory is env[varname],
@@ -145,20 +150,21 @@ def MyEnvironment(variables=None, *args, **kw):
     newpath = env['ENV']['PATH']
     if env.get('path') is not None:
         newpath = env['path'] + os.path.pathsep + newpath
+    envargs={'PATH':newpath}
     if env['wine']:
-        env = WineEnvironment(variables=variables, ENV = {'PATH': newpath},
+        env = WineEnvironment(variables=variables, ENV = {'PATH':newpath},
                               *args, **kw)
-    elif env.get('cxxcompiler', None):
-        env = Environment(variables=variables, ENV = {'PATH': newpath},
-                          CXX=env['cxxcompiler'],
-                          *args, **kw)
-        env['PYTHON'] = 'python'
-        env['PATHSEP'] = os.path.pathsep
     else:
-        env = Environment(variables=variables, ENV = {'PATH': newpath},
+        env = Environment(variables=variables, ENV = {'PATH':newpath},
                           *args, **kw)
         env['PYTHON'] = 'python'
         env['PATHSEP'] = os.path.pathsep
+    if env.get('cxxcompiler', None):
+        env['CXX']=env['cxxcompiler']
+    if env.get('ar', None):
+        env['AR']= env['ar']
+    if env.get('ranlib', None):
+        env['RANLIB']= env['ranlib']
     _reconcile_common_variables(env)
     try:
         env['SHLINKFLAGS'] = [ x.replace('-no_archive', '') for x in env['SHLINKFLAGS']]
@@ -271,9 +277,8 @@ def get_bin_environment(envi):
     if env['IMP_BUILD_STATIC']:
         if env['CXX'] == 'g++':
             env.Append(LINKFLAGS=['-static'])
-            return env
         else:
-            print "Static builds only supported with GCC, ignored."
+            pass
     return env
 
 
@@ -346,6 +351,10 @@ def add_common_variables(vars, package):
         # Install in /usr/lib64 rather than /usr/lib on x86_64 Linux boxes
         libdir += '64'
     vars.Add(PathVariable('cxxcompiler', 'The C++ compiler to use (eg g++).', None,
+                          PathVariable.PathAccept))
+    vars.Add(PathVariable('ar', "The command to make a static library.", None,
+                          PathVariable.PathAccept))
+    vars.Add(PathVariable('ranlib', "The command to make an index of a static library.", None,
                           PathVariable.PathAccept))
     vars.Add(PathVariable('swigprogram', 'The path to the swig command.', None,
                           PathVariable.PathAccept))
@@ -442,7 +451,8 @@ def add_common_variables(vars, package):
     vars.Add(BoolVariable('localmodules', 'Whether to build local modules that are not part of the IMP distribution', False))
     vars.Add(BoolVariable('linktest', 'Test for header defined functions which are not inline', True))
     vars.Add(PathVariable('repository', 'Where to find the source code to build. This is only needed if building in a different directory than the source.', None, PathVariable.PathAccept)) #PathIsDir
-    vars.Add(BoolVariable('static', 'Whether to only build static libraries.', False))
+    vars.Add(BoolVariable('static', 'Whether to build static libraries.', False))
+    vars.Add(BoolVariable('dynamic', 'Whether to build dynamic libraries (needed for python support).', True))
     vars.Add(BoolVariable('precompiledheader', 'Whether to use a precompiled header for swig libraries ', False))
     vars.Add(BoolVariable('fastlink', 'Scons does not handle shared libraries properly by default and relinks everything every time one changes. If fastlink it true, then we work around this. Fastlink can only be set to true when on linux or mac and when there is no static linking. These preconditions are not currently checked. ', False))
     #vars.Add(BoolVariable('noexternaldependencies', 'Do not check files in the provided includepath and libpath for changes.', False))

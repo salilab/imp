@@ -233,12 +233,13 @@ def IMPModuleLib(envi, files):
                                           env['IMP_MODULE'] == 'kernel')\
                     +env[env['IMP_MODULE']+"_libs"])
     build=[]
-    if env['IMP_BUILD_STATIC'] and env['CXX'] == 'g++':
+    if env['IMP_BUILD_STATIC']:
         build.append( env.StaticLibrary('#/build/lib/imp%s' % module_suffix,
                                       list(files)))
-    build.append(env.SharedLibrary('#/build/lib/imp%s' % module_suffix,
-                                  list(files) ) )
-    postprocess_lib(env, build[-1])
+    if env['IMP_BUILD_DYNAMIC']:
+        build.append(env.SharedLibrary('#/build/lib/imp%s' % module_suffix,
+                                       list(files) ) )
+        postprocess_lib(env, build[-1])
     install=[]
     for b in build:
         install.append(env.Install(env.GetInstallDirectory('libdir'), b) )
