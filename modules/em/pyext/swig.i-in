@@ -49,11 +49,12 @@ namespace IMP {
     %template(_ImageReaderWriter) ::IMP::em::ImageReaderWriter<double>;
     %template(_SpiderImageReaderWriter)
                           ::IMP::em::SpiderImageReaderWriter<double>;
-    %template(_Image) ::IMP::em::Image<double>;
+    //%template(_Image) ::IMP::em::Image<double>;
+    %template(_Image) ::IMP::em::BaseImage<double>;
     %template(floats) ::std::vector<float>;
 
     %template(add_noise) ::IMP::em::add_noise<::IMP::algebra::Matrix2D<double> >;
-    %template(add_noise_d) 
+    %template(add_noise_d)
               ::IMP::em::add_noise<::IMP::algebra::Matrix2D<double> >;
 
     %template(FilterByThreshold2D) ::IMP::em::FilterByThreshold<double,2>;
