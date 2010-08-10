@@ -266,7 +266,7 @@ def get_sharedlib_environment(env, cppdefine, cplusplus=False):
     e = bug_fixes.clone_env(env)
     e.Append(CPPDEFINES=[cppdefine, '${VIS_CPPDEFINES}'],
              CXXFLAGS='${VIS_CXXFLAGS}')
-    if env['PLATFORM'] == 'darwin':
+    if env['PLATFORM'] == 'darwin' and env['IMP_USE_PLATFORM_FLAGS']:
         env.Append(LINKFLAGS=['-headerpad_max_install_names'])
     _fix_aix_cpp_link(e, cplusplus, 'SHLINKFLAGS')
     return e
