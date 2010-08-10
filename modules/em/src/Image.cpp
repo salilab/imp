@@ -9,11 +9,11 @@
 
 IMPEM_BEGIN_NAMESPACE
 
-Images_d read_images(Strings names,ImageReaderWriter<double> &rw) {
+Images read_images(Strings names,ImageReaderWriter<double> &rw) {
   unsigned long size = names.size();
-  Images_d v(size);
+  Images v(size);
   for(unsigned long i=0;i<size;++i) {
-    Pointer<Image_d> img(new Image_d());
+    Pointer<Image> img(new Image());
     img->read_from_floats(names[i],rw);
     v.set(i,img); //  v[i] = img; does not work
   }
@@ -21,7 +21,7 @@ Images_d read_images(Strings names,ImageReaderWriter<double> &rw) {
 }
 
 
-void save_images(Images_d images, Strings names,
+void save_images(Images images, Strings names,
                       ImageReaderWriter<double> &rw) {
   for(unsigned long i=0;i<images.size();++i) {
     images[i]->write_to_floats(names[i],rw);

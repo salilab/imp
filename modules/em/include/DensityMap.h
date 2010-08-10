@@ -358,8 +358,7 @@ public:
    */
   void convolute_kernel(double *kernel, int dim_len){
     //todo - add a test that lenght is even
-    int lenght = dim_len*dim_len*dim_len;
-    IMP_USAGE_CHECK(lenght>1,"The input lenght is wrong\n");
+    IMP_USAGE_CHECK((dim_len*dim_len*dim_len)>1,"The input lenght is wrong\n");
     unsigned int margin=(dim_len-1)/2;
     //smooth the density using the kernel
     float val;

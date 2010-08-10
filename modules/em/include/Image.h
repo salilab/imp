@@ -22,14 +22,14 @@ IMPEM_BEGIN_NAMESPACE
 
 //! Template class for managing 2D Electron Microscopy images in IMP
 template<typename T>
-class Image : public RefCounted
+class BaseImage : public RefCounted
 {
 public:
 
-typedef Image<T> This;
+typedef BaseImage<T> This;
 
   //! Empty constructor
-  Image() {
+  BaseImage() {
     name_ = "";
     if (typeid(T) == typeid(double)) {
       header_.set_image_type(ImageHeader::IMG_IMPEM);
@@ -40,7 +40,7 @@ typedef Image<T> This;
   }
 
   //! Constructor with size
-  Image(Int Ydim, Int Xdim) {
+  BaseImage(Int Ydim, Int Xdim) {
     data_.resize(Ydim, Xdim);
     header_.set_header();
     if (typeid(T) == typeid(double)) {
@@ -162,18 +162,18 @@ protected:
 
 
 //! An image of doubles. The most typical one
-typedef Image<double> Image_d;
+typedef BaseImage<double> Image;
 
 //! A vector of reference counted pointers to EM images of type double
-typedef VectorOfRefCounted< Image_d *> Images_d;
+typedef VectorOfRefCounted< Image *> Images;
 
 
-//! Reads images from files in a reference counted vector of Image_d
+//! Reads images from files in a reference counted vector of Image
 /**
   \param[in] names filenames of the images
   \param[in] rw  reader/writer to use
 **/
-IMPEMEXPORT Images_d read_images(Strings names,ImageReaderWriter<double> &rw);
+IMPEMEXPORT Images read_images(Strings names,ImageReaderWriter<double> &rw);
 
 
 //! Saves images to files
@@ -182,7 +182,7 @@ IMPEMEXPORT Images_d read_images(Strings names,ImageReaderWriter<double> &rw);
   \param[in] names filenames of the images
   \param[in] rw  reader/writer to use
 **/
-IMPEMEXPORT void save_images(Images_d images, Strings names,
+IMPEMEXPORT void save_images(Images images, Strings names,
                              ImageReaderWriter<double> &rw);
 
 IMPEM_END_NAMESPACE
