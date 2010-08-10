@@ -1,7 +1,7 @@
 Import('env')
 import scons_tools.checks
 
-scons_tools.checks.handle_optional_lib(env, "ExampleLib", "example_lib_name",
+scons_tools.checks.add_external_library(env, "ExampleLib", "example_lib_name",
                                        "example_lib_header.h", extra_libs=[])
 
 

@@ -34,7 +34,7 @@ def nicename(name):
     return nname
 
 
-def handle_optional_lib(env, name, lib, header, body="", extra_libs=[],
+def add_external_library(env, name, lib, header, body="", extra_libs=[],
                         alternate_name=None):
     lcname= nicename(name)
     ucname= lcname.upper()
