@@ -108,8 +108,7 @@ if not env.GetOption('help'):
 
     SConscript('kernel/SConscript')
 
-SConscript('modules/SConscript')
-if not env.GetOption('help'):
+    SConscript('modules/SConscript')
     SConscript('applications/SConscript')
     # This must be after the other SConscipt calls so that it knows about all the generated files
     if env['doxygen']:
