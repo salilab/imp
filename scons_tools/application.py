@@ -10,6 +10,8 @@ def IMPCPPApplication(envi, target, source, required_modules=[],
                       optional_dependencies=[],
                       required_dependencies=[], required_libraries=[],
                       required_headers=[]):
+    if envi.GetOption('help'):
+        return
     env= get_bin_environment(envi)
     if env['fastlink']:
         for l in expand_dependencies(env,required_modules, False):
