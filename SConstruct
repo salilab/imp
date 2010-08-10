@@ -63,23 +63,23 @@ includepath='/opt/local/include'
 You can see the produced config.log for more information as to why boost failed to be found.
 """)
 
-scons_tools.checks.handle_optional_lib(env, "ANN", "ANN",
+scons_tools.checks.add_external_library(env, "ANN", "ANN",
                                        "ANN/ANN.h")
-scons_tools.checks.handle_optional_lib(env, "NetCDF", "netcdf_c++",
+scons_tools.checks.add_external_library(env, "NetCDF", "netcdf_c++",
                                        "netcdfcpp.h", extra_libs=['netcdf'])
-scons_tools.checks.handle_optional_lib(env, "FFTW3", "fftw3",
+scons_tools.checks.add_external_library(env, "FFTW3", "fftw3",
                                        "fftw3.h")
-scons_tools.checks.handle_optional_lib(env, "GSL", "gsl",
+scons_tools.checks.add_external_library(env, "GSL", "gsl",
                                        "gsl/gsl_multimin.h", extra_libs=['gslcblas'])
-scons_tools.checks.handle_optional_lib(env, "CGAL", "CGAL",
+scons_tools.checks.add_external_library(env, "CGAL", "CGAL",
                                        ['CGAL/Gmpq.h', 'CGAL/Lazy_exact_nt.h'],
                                        body='CGAL_assertion(1); CGAL::Lazy_exact_nt<CGAL::Gmpq> q;',
                                        extra_libs=['gmp', 'mpfr', 'm','boost_thread-mt', 'boost_thread', 'pthread'])
-scons_tools.checks.handle_optional_lib(env, "Boost.FileSystem", "boost_filesystem",
+scons_tools.checks.add_external_library(env, "Boost.FileSystem", "boost_filesystem",
                                        'boost/filesystem/path.hpp',
                                        extra_libs=['libboost_system'],
                                        alternate_name=['boost_filesystem-mt'])
-scons_tools.checks.handle_optional_lib(env, "Boost.ProgramOptions", "boost_program_options",
+scons_tools.checks.add_external_library(env, "Boost.ProgramOptions", "boost_program_options",
                                        'boost/program_options.hpp',
                                        extra_libs=['libboost_system'],
                                        alternate_name=['boost_program_options-mt'])
