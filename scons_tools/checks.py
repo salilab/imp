@@ -53,8 +53,9 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
                 context.env[ucname+'_LIBS']=False
                 return False
             else:
-                context.Result(context.env[lcname+'libs'].split(":"))
-                context.env[ucname+'_LIBS']=context.env[lcname+'libs'].split(":")
+                val=context.env[lcname+'libs'].split(":")
+                context.Result(" ".join(val))
+                context.env[ucname+'_LIBS']=val
                 return True
         else:
             ret= check_lib(context, lib=lib, header=header,
