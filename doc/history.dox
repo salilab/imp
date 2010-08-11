@@ -1,5 +1,11 @@
 /** \page recent Change History
 
+\par Summer 2010
+- functions IMP::write_binary_model(), IMP::read_binary_model() and IMP::read_configurations() have been added to support space and filesystem efficient storage of model configurations. Multiple configuration can be written to a single file. This functionality requires NetCDF be installed (NetCDF is a standard library for reading and writing binary data).
+- domino2 has been added. It provides a simpler interface on Keren's domino optimize as well as a number of new optimization and hooks for customizing the optimization process
+- a better explaination of how to use reference counted pointers has been added to IMP::Pointer.
+- all simple, planar polygons are now supported for display when CGAL is present
+
 \par Week of April 1, 2010
 
 - All plural objects in python are now simply python lists rather than C++ recreations of python lists. This makes compilation of the wrappers much, much, much faster. The visible changes are
@@ -502,11 +508,7 @@ external code,
 
 - the long-deprecated Name(Decorator) was removed
 
-- The decorator suffix has been removed from decorator names. To
-  update your code do \command{sed -i.old
-  "s#\([a-zA-Z]\)Decorator#\1#g" **/*.h **/*.cpp **/*.py **/*.i} or
-  \command{sed -i.old "s#\([a-zA-Z]\)Decorator#\1#g" `find * -name
-  \*.h -or -name \*.cpp`} (and the various suffixes).
+- The decorator suffix has been removed from decorator names.
 
 - Unit conventions have been established and documented for distance,
   energy, force and angle.
