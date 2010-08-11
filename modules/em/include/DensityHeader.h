@@ -225,13 +225,6 @@ public:
   //! Get the number of voxels in the z dimension
   inline int get_nz() const {return nz_;}
   inline int get_number_of_voxels() const {return nx_*ny_*nz_;}
-  // Set the number of voxels in all dimensions
-  /**
-  \todo The function is problematic as changing this values effects others.
-   */
-  inline void set_number_of_voxels(int nx,int ny, int nz) {
-    nx_=nx;ny_=ny;nz_=nz;
-  }
   //! Get the number of bits that used to store the density of a single voxel
   inline int get_data_type() const {return data_type_;}
   inline void set_data_type(int data_type) {data_type_=data_type;}

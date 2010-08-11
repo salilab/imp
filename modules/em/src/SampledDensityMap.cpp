@@ -41,7 +41,7 @@ void SampledDensityMap::set_header(const algebra::VectorD<3> &lower_bound,
   header_ = DensityHeader();
   header_.set_resolution(resolution);
   header_.Objectpixelsize_=voxel_size;
-  header_.set_number_of_voxels(
+  header_.update_map_dimensions(
     int(ceil((1.0*(upper_bound[0]-lower_bound[0]) +
       2.*sig_cutoff*(resolution+maxradius))/voxel_size)),
     int(ceil((1.0*(upper_bound[1]-lower_bound[1]) +

@@ -152,5 +152,4 @@ DensityHeader create_density_header(const algebra::BoundingBoxD<3> &bb,
   header.update_map_dimensions(extent[0],extent[1],extent[2]);
   return header;
 }
-
 IMPEM_END_NAMESPACE

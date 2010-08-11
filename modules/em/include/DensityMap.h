@@ -20,7 +20,7 @@
 #include <boost/scoped_array.hpp>
 #include <iostream>
 #include <iomanip>
-#include <IMP/statistics/Histogram.h>
+//#include <IMP/statistics/Histogram.h>
 
 IMPEM_BEGIN_NAMESPACE
 
@@ -116,7 +116,7 @@ public:
               index is not part of the map, the function returns -1.
       \todo change to const and throw exception if loc_calculated == false
    */
-  float voxel2loc(const int &index,int dim) const;
+  float voxel2loc(long index,int dim) const;
 
 
   //! Calculate the voxel of a given xyz indexes
@@ -125,7 +125,11 @@ public:
       \param[in] z The voxel index on the z axis of the grid
       \return the voxel index.
    */
-  long xyz_ind2voxel(int x,int y,int z) const;
+  inline long xyz_ind2voxel(int x,int y,int z) const {
+  return z * header_.get_nx() * header_.get_ny() +
+         y * header_.get_nx() + x;
+
+  }
 
   //! Calculate the voxel of a given location
   /** \param[in] x The position ( in angstroms) of the x coordinate
@@ -138,6 +142,11 @@ public:
   long loc2voxel(float x, float y, float z) const;
   long loc2voxel(const algebra::VectorD<3> &v) const {
     return loc2voxel(v[0],v[1],v[2]);
+  }
+
+  algebra::VectorD<3> get_location_by_voxel(long index) const {
+    return algebra::Vector3D(voxel2loc(index,0),
+                             voxel2loc(index,1),voxel2loc(index,2));
   }
 
   bool is_xyz_ind_part_of_volume(int ix,int iy,int iz) const;
@@ -323,6 +332,21 @@ public:
               currently in the map
    */
   DensityMap* pad_margin(int mrg_x, int mrg_y, int mrg_z,float val=0.0);
+
+
+  //! Create a new cropped map
+  /** \brief Crop margin with density values below the input
+   \param[in] threshold used for cropping
+   */
+  DensityMap* get_cropped(float threshold);
+
+
+  //! Get the maximum value in a XY plane indicated by a Z index
+  float get_maximum_value_in_xy_plane(int z_ind);
+  //! Get the maximum value in a XZ plane indicated by a Y index
+ float get_maximum_value_in_xz_plane(int y_ind);
+  //! Get the maximum value in a YZ plane indicated by a X index
+ float get_maximum_value_in_yz_plane(int x_ind);
 
   //! Multiply each voxel in the map by the input factor
   //! The result is kept in the map.

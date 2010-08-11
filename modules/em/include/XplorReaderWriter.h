@@ -43,7 +43,7 @@ public:
   void GenerateCommonHeader(DensityHeader &m_header) {
     m_header.mx=grid[0];m_header.my=grid[1];m_header.mz=grid[2];
     m_header.nxstart=orig[0];m_header.nystart=orig[1];m_header.nzstart=orig[2];
-    m_header.set_number_of_voxels(extent[0],extent[1],extent[2]);
+    m_header.update_map_dimensions(extent[0],extent[1],extent[2]);
     m_header.xlen = cellsize[0];
     m_header.ylen = cellsize[1];
     m_header.zlen = cellsize[2];

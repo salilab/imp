@@ -42,7 +42,7 @@ DensityMap::DensityMap()
 
 DensityMap::DensityMap(const DensityHeader &header){
   header_ = header;
-  header_.compute_xyz_top();
+  header_.compute_xyz_top(true);
   //allocate the data
   long nvox = get_number_of_voxels();
   data_.reset(new emreal[nvox]);
@@ -91,7 +91,7 @@ void DensityMap::set_void_map(int nx,int ny,int nz) {
   for (long i=0;i<nvox;i++) {
     data_[i]=0.0;
   }
-  header_.set_number_of_voxels(nx,ny,nz);
+  header_.update_map_dimensions(nx,ny,nz);
 }
 
 #ifndef IMP_NO_DEPRECATED
@@ -288,7 +288,7 @@ long DensityMap::get_number_of_voxels() const {
   return header_.get_number_of_voxels();
 }
 
-float DensityMap::voxel2loc(const int &index, int dim) const
+float DensityMap::voxel2loc(long index, int dim) const
 {
   IMP_USAGE_CHECK(loc_calculated_,
             "locations should be calculated prior to calling this function");
@@ -305,15 +305,11 @@ float DensityMap::voxel2loc(const int &index, int dim) const
   return z_loc_[index];
 }
 
-long DensityMap::xyz_ind2voxel(int voxx,int voxy,int voxz) const{
-  return voxz * header_.get_nx() * header_.get_ny() +
-         voxy * header_.get_nx() + voxx;
-}
-
 long DensityMap::loc2voxel(float x,float y,float z) const
 {
   IMP_USAGE_CHECK(is_part_of_volume(x,y,z),
             "The point is not part of the grid");
+
   int ivoxx=static_cast<int>(std::floor((x-header_.get_xorigin())
                                         /header_.get_spacing()));
   int ivoxy=static_cast<int>(std::floor((y-header_.get_yorigin())
@@ -952,5 +948,154 @@ int DensityMap::upper_voxel_shift(emreal loc, emreal kdist,
   if (imax > ndim-1) imax = ndim-1;
   return imax;
 }
+
+float DensityMap::get_maximum_value_in_xy_plane(int z_ind) {
+  IMP_USAGE_CHECK(z_ind<header_.get_nz(),
+                  "Z index is out of range\n");
+  float max_val=-INT_MAX;
+  int temp_ind;
+  int z_val=z_ind*header_.get_ny()*header_.get_nx();
+  for(int iy=0;iy<header_.get_ny();iy++){
+    temp_ind = z_val+iy*header_.get_nx();
+    for(int ix=0;ix<header_.get_nx();ix++){
+      if (get_value(temp_ind+ix)>max_val) {
+        max_val = get_value(temp_ind+ix);
+      }
+    }
+  }
+  return max_val;
+}
+
+float DensityMap::get_maximum_value_in_xz_plane(int y_ind) {
+  IMP_USAGE_CHECK(y_ind<header_.get_ny(),
+                  "Y index is out of range\n");
+  float max_val=-INT_MAX;
+  int temp_ind;
+  int y_val=y_ind*header_.get_nx();
+  for(int iz=0;iz<header_.get_nz();iz++){
+    temp_ind = y_val+iz*header_.get_nx()*header_.get_ny();
+    for(int ix=0;ix<header_.get_nx();ix++){
+      if (get_value(temp_ind+ix)>max_val) {
+        max_val = get_value(temp_ind+ix);
+      }
+    }
+  }
+  return max_val;
+}
+
+
+float DensityMap::get_maximum_value_in_yz_plane(int x_ind) {
+  IMP_USAGE_CHECK(x_ind<header_.get_ny(),
+                  "X index is out of range\n");
+  float max_val=-INT_MAX;
+  int temp_ind;
+  for(int iz=0;iz<header_.get_nz();iz++){
+    temp_ind = iz*header_.get_nx()*header_.get_ny();
+    for(int iy=0;iy<header_.get_ny();iy++){
+      if (get_value(temp_ind+iy*header_.get_nx()+x_ind)>max_val) {
+        max_val = get_value(temp_ind+iy*header_.get_nx()+x_ind);
+      }
+    }
+  }
+  return max_val;
+}
+
+DensityMap* DensityMap::get_cropped(float threshold){
+  IMP_USAGE_CHECK(threshold>get_min_value(),
+                  "The input threshold is too small\n");
+  //calculate the new extent
+  //find Z start
+  bool found=false;
+  int iz=0;
+  int iy,ix;
+  int x_start,x_end,y_start,y_end,z_start,z_end;
+  while ((!found) && (iz<header_.get_nz())) {
+    if (get_maximum_value_in_xy_plane(iz) >threshold) {
+      found=true;
+      z_start=iz;
+    }
+    ++iz;
+  }//iz
+  //find Z end
+  found=false;
+  iz=header_.get_nz()-1;
+  while ((!found) && (iz>0)) {
+    if (get_maximum_value_in_xy_plane(iz) >threshold) {
+      found=true;
+      z_end=iz;
+    }
+    --iz;
+  }
+  //find Y start
+  found=false;
+  iy=0;
+  while ((!found) && (iy<header_.get_ny())) {
+    if (get_maximum_value_in_xz_plane(iy) >threshold) {
+      found=true;
+      y_start=iy;
+    }
+    ++iy;
+  }
+  //find Y end
+  found=false;
+  iy=header_.get_ny()-1;
+  while ((!found) && (iy>0)) {
+    if (get_maximum_value_in_xz_plane(iy) >threshold) {
+      found=true;
+      y_end=iy;
+    }
+    --iy;
+  }
+  //find X start
+  found=false;
+  ix=0;
+  while ((!found) && (ix<header_.get_nx())) {
+    if (get_maximum_value_in_yz_plane(ix) >threshold) {
+      found=true;
+      x_start=ix;
+    }
+    ++ix;
+  }
+  //find X end
+  found=false;
+  ix=header_.get_nx()-1;
+  while ((!found) && (ix>0)) {
+    if (get_maximum_value_in_yz_plane(ix) >threshold) {
+      found=true;
+      x_end=ix;
+    }
+    --ix;
+  }
+
+  int new_ext[3];
+  new_ext[0]=x_end-x_start+1;
+  new_ext[1]=y_end-y_start+1;
+  new_ext[2]=z_end-z_start+1;
+  DensityMap *new_dmap = new DensityMap(header_);
+//  IMP_NEW(DensityMap,new_dmap,(header_));
+  new_dmap->set_void_map(new_ext[0],new_ext[1],new_ext[2]);
+  new_dmap->set_origin(
+    get_origin()+
+    header_.get_spacing()*algebra::Vector3D(x_start,y_start,z_start));
+  new_dmap->update_voxel_size(header_.get_spacing());
+  //now fill the density
+  const DensityHeader *new_header = new_dmap->get_header();
+  long z_temp,zy_temp,new_z_temp,new_zy_temp;
+  for(int iz=z_start;iz<=z_end;iz++){ //z slowest
+    z_temp = iz*header_.get_nx()*header_.get_ny();
+    new_z_temp = (iz-z_start)*new_ext[0]*new_ext[1];
+    for(int iy=y_start;iy<=y_end;iy++){
+      zy_temp = z_temp+iy*header_.get_nx();
+      new_zy_temp = new_z_temp+(iy-y_start)*new_ext[0];
+      for(int ix=x_start;ix<=x_end;ix++){
+        new_dmap->set_value(new_zy_temp+(ix-x_start),
+                            get_value(zy_temp+ix));
+      }
+    }
+  }
+  return new_dmap;
+}
+
+
 
 IMPEM_END_NAMESPACE

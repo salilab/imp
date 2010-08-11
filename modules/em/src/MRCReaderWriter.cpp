@@ -294,7 +294,7 @@ void MRCHeader::FromDensityHeader(const DensityHeader &h)
 void MRCHeader::ToDensityHeader(DensityHeader &h)
 {
   std::string empty;
-  h.set_number_of_voxels(nx,ny,nz);
+  h.update_map_dimensions(nx,ny,nz);
   h.update_cell_dimensions();
   // mode
   if(mode==0)
