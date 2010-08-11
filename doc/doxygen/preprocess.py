@@ -62,8 +62,10 @@ def cleanup(infile):
 
 def main():
     txt= open(sys.argv[1])
+    #if sys.argv[1].endswith("/macros.h"):
+    #    open("/tmp/macros.h", "w").write(txt.read())
     if sys.argv[1].endswith("macros.h"):
-        print txt
+        print txt.read()
     else:
         pns= StringIO.StringIO()
         defs= glob.glob('doc/doxygen/generated/*.def')
