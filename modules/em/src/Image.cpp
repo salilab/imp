@@ -13,7 +13,7 @@ Images read_images(Strings names,ImageReaderWriter<double> &rw) {
   unsigned long size = names.size();
   Images v(size);
   for(unsigned long i=0;i<size;++i) {
-    Pointer<Image> img(new Image());
+    IMP_NEW(Image, img, ());
     img->read_from_floats(names[i],rw);
     v.set(i,img); //  v[i] = img; does not work
   }

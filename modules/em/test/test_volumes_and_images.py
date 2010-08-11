@@ -21,6 +21,21 @@ class VolumeTest(IMP.test.TestCase):
         # Cleanup
         os.unlink('test_image.spi')
 
+
+    def test_images(self):
+        """Check that em.Images is exported to Python"""
+        images = IMP.em.Images()
+        self.assertEqual(len(images),0,"Images size is not 0")
+
+        img1 = IMP.em.Image()
+        img2 = IMP.em.Image()
+        img3 = IMP.em.Image()
+        images.append(img1)
+        images.append(img2)
+        images.append(img3)
+        self.assertEqual(len(images),3,"Images size is not 3")
+
+
     def test_em_maps(self):
         """Check volume reading and writing"""
         # Read in Xmipp format
