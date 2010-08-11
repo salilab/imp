@@ -34,24 +34,39 @@ IMP_BEGIN_NAMESPACE
     \code
     Pointer<PairScore> ps_;
     \endcode
-    When setting up restraints you should write code like this:
+
+    When creating Object instances in C++, you should write code like:
     \code
-    IMP_NEW(IMP::core::Harmonic, h, (0,1));
-    IMP::Pointer<IMP::em::DensityMap> map= IMP::em::read_map("file_name.mrc");
-    IMP_NEW(IMP::core::DistancePairScore, dps, (h));
+    em::FitRestraint* create_fit_restraint(std::string mapname,
+                                           const ParticlesTemp &ps) {
+      IMP_NEW(core::LeavesRefiner, lr, (atom::Hierarchy::get_traits()));
+      IMP::Pointer<em::DensityMap> map= em::read_map("file_name.mrc");
+      IMP_NEW(em::FitRestraint, fr, (ps, map, lr));
+      return fr.release();
+    }
     \endcode
     which is equivalent to
     \code
-    IMP::Pointer<IMP::core::Harmonic> h= new IMP::core::Harmonic(0,1);
-    IMP::Pointer<IMP::em::DensityMap> map= IMP::em::read_map("file_name.mrc");
-    IMP::Pointer<IMP::core::DistancePairScore> dps
-            = new IMP::core::DistancePairScore(h);
+    IMP::em::FitRestraint* create_fit_restraint(std::string mapname,
+                                                const ParticlesTemp &ps) {
+      Pointer<core::LeavesRefiner> lr
+          = new core::LeavesRefiner(atom::Hierarchy::get_traits());
+      IMP::Pointer<IMP::em::DensityMap> map= em::read_map("file_name.mrc");
+      Pointer<em::FitRestraint> fr= new em::FitRestraint(ps, map, lr));
+      return fr.release();
+    }
     \endcode
-    If IMP::em::read_map() fails because the file is not found (and throws an
-    exception), \c h is deleted.
+    There are several important things to note in this code:
+    - the use of Pointer::release() on the return. Otherwise, when the
+      reference counted pointer goes out of scope, it will unref the
+      em::FitRestraint, notice the count is 0, and delete it, before
+      passing the (now invalid) pointer back to the calling function
+    - the use of reference counted pointers everywhere. This ensures that
+      if, for example, em::read_map() throws an exception since the
+      file name is invalid, the core::LeavesRefiner will be deleted
+      properly.
 
-    The object being pointed to must inherit from IMP::RefCountedObject.
-    Use an IMP::WeakPointer to break cycles or to point to
+    \note Use an IMP::WeakPointer to break cycles or to point to
     non-ref-counted objects.
 
     \param[in] O The type of IMP::RefCounted-derived object to point to
