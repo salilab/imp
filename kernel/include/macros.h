@@ -2004,10 +2004,7 @@ protected:                                      \
     \param[in] varname The name for the ref counted pointer
     \param[in] args The arguments to the constructor, or ()
     if there are none.
-    \see IMP::Pointer
-    \code
-    IMP_NEW(m, IMP::Model, ());
-    \endcode
+    Please read the documentation for IMP::Pointer before using.
 */
 #define IMP_NEW(Typename, varname, args)        \
   IMP::Pointer<Typename> varname(new Typename args)
