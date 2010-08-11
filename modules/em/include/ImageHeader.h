@@ -79,11 +79,9 @@ public:
     header_.fIform=im;
   }
 
-#ifndef SWIG
-  //! Output operator
-  friend std::ostream& operator<<(std::ostream& out, const ImageHeader& I) {
+  void show(std::ostream& out) const {
     out << "Image type   : ";
-    switch ((int) I.header_.fIform) {
+    switch ((int) this->header_.fIform) {
     case IMG_BYTE:
       out << "2D Byte image";
       break;
@@ -111,45 +109,44 @@ public:
     }
     out << std::endl;
     out << "Reversed     : ";
-    if (I.reversed_) {
+    if (this->reversed_) {
       out << "TRUE" << std::endl;
     } else {
       out << "FALSE" << std::endl;
     }
-    out << "dimensions   : " << I.header_.fNslice << " x "
-    << I.header_.fNrow   << " x "  << I.header_.fNcol
+    out << "dimensions   : " << this->header_.fNslice << " x "
+    << this->header_.fNrow   << " x "  << this->header_.fNcol
     << " (slices x rows x columns) " << std::endl;
 
     out << "Euler angles (ZYZ convention): " << std::endl;
     out << "  Phi   (rotation around Z axis) = " <<
-           I.header_.fPhi << std::endl;
+           this->header_.fPhi << std::endl;
     out << "  Theta (tilt, rotation around new Y axis) = " <<
-            I.header_.fTheta << std::endl;
+            this->header_.fTheta << std::endl;
     out << "  Psi   (third rotation around new Z axis) = " <<
-            I.header_.fPsi << std::endl;
+            this->header_.fPsi << std::endl;
     out << "Origin Offsets : " << std::endl;
     out << "  Xoff  (origin offset in X-direction) = " <<
-            I.header_.fXoff << std::endl;
+            this->header_.fXoff << std::endl;
     out << "  Yoff  (origin offset in Y-direction) = " <<
-            I.header_.fYoff << std::endl;
-    if (I.header_.fFlag == 1.0f || I.header_.fFlag == 2.0f) {
-      out << "  Phi1   = " << I.header_.fPhi1 ;
-      out << "  theta1 = " << I.header_.fTheta1 ;
-      out << "  Psi1   = " << I.header_.fPsi1 << std::endl;
+            this->header_.fYoff << std::endl;
+    if (this->header_.fFlag == 1.0f || this->header_.fFlag == 2.0f) {
+      out << "  Phi1   = " << this->header_.fPhi1 ;
+      out << "  theta1 = " << this->header_.fTheta1 ;
+      out << "  Psi1   = " << this->header_.fPsi1 << std::endl;
     }
-    if (I.header_.fFlag == 2.0f) {
-      out << "  Phi2   = " << I.header_.fPhi2 ;
-      out << "  theta2 = " << I.header_.fTheta2 ;
-      out << "  Psi2   = " << I.header_.fPsi2 << std::endl;
+    if (this->header_.fFlag == 2.0f) {
+      out << "  Phi2   = " << this->header_.fPhi2 ;
+      out << "  theta2 = " << this->header_.fTheta2 ;
+      out << "  Psi2   = " << this->header_.fPsi2 << std::endl;
     }
-    out << "Date         : " << I.get_date() << std::endl;
-    out << "Time         : " << I.get_time() << std::endl;
-    out << "Title        : " << I.get_title() << std::endl;
-    out << "Header size  : " << I.get_header_size() << std::endl;
-    out << "Weight  : " << I.get_Weight() << std::endl;
-    return out;
+    out << "Date         : " << this->get_date() << std::endl;
+    out << "Time         : " << this->get_time() << std::endl;
+    out << "Title        : " << this->get_title() << std::endl;
+    out << "Header size  : " << this->get_header_size() << std::endl;
+    out << "Weight  : " << this->get_Weight() << std::endl;
   }
-#endif
+
 
   //! Prints a reduced set of information (debugging purposes)
   void print_hard(std::ostream& out) const;
@@ -160,6 +157,8 @@ public:
         << " , " << header_.fPsi << " ) " << " (x,y) = ( " << header_.fXoff
         << " , " << header_.fYoff << " ) " <<  std::endl;
   }
+
+
 
   //! Reads the header of a EM image
   // \note reversed is only used in case that the type_check is skipped
@@ -430,6 +429,11 @@ private:
   em::SpiderHeader header_;
   bool reversed_;
 }; // ImageHeader
+
+
+IMP_OUTPUT_OPERATOR(ImageHeader);
+
+
 
 IMPEM_END_NAMESPACE
 
