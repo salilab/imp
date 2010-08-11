@@ -43,6 +43,14 @@
 #endif
 
 #if defined(IMP_DOXYGEN)
+/** \name Comparisons
+    Helper macros for implementing comparisons in terms of
+    either member variables or a member compare function.
+    All of the <,>,== etc are implemented for both C++
+    and Python.
+    @{
+*/
+
 //! Implement comparison in a class using a compare function
 /** The macro requires that This be defined as the type of the current class.
     The compare function should take a const This & and return -1, 0, 1 as
@@ -64,7 +72,7 @@
 /** The macro requires that This be defined as the type of the current class.
  */
 #define IMP_COMPARISONS_3(f0, f1, f2)
-
+/** @} */
 #elif defined(SWIG)
 #define IMP_SWIG_COMPARISONS                                            \
   bool __eq__(const This &o) const;                                     \
@@ -224,82 +232,6 @@
   }                                                     \
   IMP_SWIG_COMPARISONS
 #endif
-
-#if defined(IMP_DOXYGEN) || defined(SWIG)
-//! Implement operator<< on class name, assuming it has one template argument
-/** \copydetails IMP_OUTPUT_OPERATOR
- */
-#define IMP_OUTPUT_OPERATOR_1(name)
-//! Implement operator<< on class name, assuming it has two template arguments
-/** \copydetails IMP_OUTPUT_OPERATOR
- */
-#define IMP_OUTPUT_OPERATOR_2(name)
-//! Implement operator<< on class name
-/** The class named should define the method
-    \c void \c show(std::ostream&).
-*/
-#define IMP_OUTPUT_OPERATOR(name)
-
-//! Implement operator<< on class name templated by the dimension
-/** The class named should define the method
-    \c void \c show(std::ostream&).
-*/
-#define IMP_OUTPUT_OPERATOR_D(name)
-
-#else
-#define IMP_OUTPUT_OPERATOR_1(name)                                     \
-  template <class L>                                                    \
-  inline std::ostream& operator<<(std::ostream &out, const name<L> &i)  \
-  {                                                                     \
-    i.show(out);                                                        \
-    return out;                                                         \
-  }                                                                     \
-  template <class L>                                                    \
-  inline void show(std::ostream &out, const name<L, M> &i)              \
-    i.show(out);                                                        \
-  }                                                                     \
-  IMP_REQUIRE_SEMICOLON_NAMESPACE
-
-#define IMP_OUTPUT_OPERATOR_2(name)                                     \
-  template <class L, class M>                                           \
-  inline std::ostream& operator<<(std::ostream &out, const name<L, M> &i) \
-  {                                                                     \
-    i.show(out);                                                        \
-    return out;                                                         \
-  }                                                                     \
-  template <class L, class M>                                           \
-  inline void show(std::ostream &out, const name<L, M> &i)              \
-    i.show(out);                                                        \
-  }                                                                     \
-  IMP_REQUIRE_SEMICOLON_NAMESPACE
-
-
-#define IMP_OUTPUT_OPERATOR(name)                                       \
-  inline std::ostream &operator<<(std::ostream &out, const name &i)     \
-  {                                                                     \
-    i.show(out);                                                        \
-    return out;                                                         \
-  }                                                                     \
-  inline void show(std::ostream &out, const name &i) {                  \
-    i.show(out);                                                        \
-  }                                                                     \
-  IMP_REQUIRE_SEMICOLON_NAMESPACE
-
-
-#define IMP_OUTPUT_OPERATOR_D(name)                                     \
-  template <unsigned int D>                                             \
-  inline std::ostream &operator<<(std::ostream &out, const name<D> &i)  \
-  {                                                                     \
-    i.show(out);                                                        \
-    return out;                                                         \
-  }                                                                     \
-  template <unsigned int D>                                             \
-  void show(std::ostream &out, const name<D> &i) {                      \
-    i.show(out);                                                        \
-  }                                                                     \
-  IMP_REQUIRE_SEMICOLON_NAMESPACE
-#endif
-
 
 
 /** \name Swap helpers
@@ -828,18 +760,7 @@ protection:                                                             \
 
 //! @}
 
-#ifdef IMP_DOXYGEN
-//! Define the types for storing sets of objects
-/** The macro defines the types PluralName and PluralNameTemp.
-    PluralName should be Names unless the English spelling is
-    different.
- */
-#define IMP_OBJECTS(Name, PluralName)
-#else
-#define IMP_OBJECTS(Name, PluralName)                   \
-  typedef IMP::VectorOfRefCounted<Name*> PluralName;       \
-  typedef std::vector<Name*> PluralName##Temp
-#endif
+
 
 #ifdef IMP_DOXYGEN
 //! Define the type for storing sets of values
@@ -854,7 +775,18 @@ protection:                                                             \
 #endif
 
 #ifdef IMP_DOXYGEN
-//! Declare the methods needed by an object that can be printed
+/** \name Showable
+    Declare the methods needed by an object that can be printed,
+    both from C++ and Python. Each value-type class should have an
+    IMP_SHOWABLE() call internal to it and an IMP_OUTPUT_OPERATOR()
+    call external to it.
+
+    The suffixs are the number of template arguments that the
+    object has (eg _1 means one template argument). _D means
+    one integer template argument.
+    @{
+*/
+
 /** This macro declares the method
     - void show(std::ostream &out) const
     It also makes it so that the object can be printed
@@ -868,6 +800,42 @@ protection:                                                             \
     own show mechanism.
 */
 #define IMP_SHOWABLE(Name)
+
+//! Declare the methods needed by an object that can be printed
+/** This macro declares the method
+    - \c void \c show(std::ostream &out) const
+    It also makes it so that the object can be printed
+    in Python.
+
+    The \c ostream and \c sstream headers must be included.
+
+    See also IMP_SHOWABLE_INLINE()
+*/
+#define IMP_SHOWABLE_INLINE(Name, how_to_show)
+
+
+//! Implement operator<< on class name, assuming it has one template argument
+/** \copydetails IMP_OUTPUT_OPERATOR
+ */
+#define IMP_OUTPUT_OPERATOR_1(name)
+//! Implement operator<< on class name, assuming it has two template arguments
+/** \copydetails IMP_OUTPUT_OPERATOR
+ */
+#define IMP_OUTPUT_OPERATOR_2(name)
+//! Implement operator<< on class name
+/** The class named should define the method
+    \c void \c show(std::ostream&).
+*/
+#define IMP_OUTPUT_OPERATOR(name)
+
+//! Implement operator<< on class name templated by the dimension
+/** The class named should define the method
+    \c void \c show(std::ostream&).
+*/
+#define IMP_OUTPUT_OPERATOR_D(name)
+/** @} */
+
+
 #else
 #define IMP_SHOWABLE(Name)                              \
   void show(std::ostream &out=std::cout) const;         \
@@ -880,21 +848,7 @@ protection:                                                             \
     return std::string(#Name) + "("+__str__()+")";      \
   }                                                     \
   IMP_REQUIRE_SEMICOLON_CLASS(showable)
-#endif
 
-#ifdef IMP_DOXYGEN
-//! Declare the methods needed by an object that can be printed
-/** This macro declares the method
-    - \c void \c show(std::ostream &out) const
-    It also makes it so that the object can be printed
-    in Python.
-
-    The \c ostream and \c sstream headers must be included.
-
-    See also IMP_SHOWABLE_INLINE()
-*/
-#define IMP_SHOWABLE_INLINE(Name, how_to_show)
-#else
 #define IMP_SHOWABLE_INLINE(Name, how_to_show)          \
   void show(std::ostream &out=std::cout) const{         \
     how_to_show;                                        \
@@ -908,33 +862,69 @@ protection:                                                             \
     return std::string(#Name) + "("+__str__()+")";      \
   }                                                     \
   IMP_REQUIRE_SEMICOLON_CLASS(showable)
+
+#if !defined(SWIG)
+#define IMP_OUTPUT_OPERATOR_1(name)                                     \
+  template <class L>                                                    \
+  inline std::ostream& operator<<(std::ostream &out, const name<L> &i)  \
+  {                                                                     \
+    i.show(out);                                                        \
+    return out;                                                         \
+  }                                                                     \
+  template <class L>                                                    \
+  inline void show(std::ostream &out, const name<L, M> &i)              \
+    i.show(out);                                                        \
+  }                                                                     \
+  IMP_REQUIRE_SEMICOLON_NAMESPACE
+
+#define IMP_OUTPUT_OPERATOR_2(name)                                     \
+  template <class L, class M>                                           \
+  inline std::ostream& operator<<(std::ostream &out, const name<L, M> &i) \
+  {                                                                     \
+    i.show(out);                                                        \
+    return out;                                                         \
+  }                                                                     \
+  template <class L, class M>                                           \
+  inline void show(std::ostream &out, const name<L, M> &i)              \
+    i.show(out);                                                        \
+  }                                                                     \
+  IMP_REQUIRE_SEMICOLON_NAMESPACE
+
+
+#define IMP_OUTPUT_OPERATOR(name)                                       \
+  inline std::ostream &operator<<(std::ostream &out, const name &i)     \
+  {                                                                     \
+    i.show(out);                                                        \
+    return out;                                                         \
+  }                                                                     \
+  inline void show(std::ostream &out, const name &i) {                  \
+    i.show(out);                                                        \
+  }                                                                     \
+  IMP_REQUIRE_SEMICOLON_NAMESPACE
+
+
+#define IMP_OUTPUT_OPERATOR_D(name)                                     \
+  template <unsigned int D>                                             \
+  inline std::ostream &operator<<(std::ostream &out, const name<D> &i)  \
+  {                                                                     \
+    i.show(out);                                                        \
+    return out;                                                         \
+  }                                                                     \
+  template <unsigned int D>                                             \
+  void show(std::ostream &out, const name<D> &i) {                      \
+    i.show(out);                                                        \
+  }                                                                     \
+  IMP_REQUIRE_SEMICOLON_NAMESPACE
+#else
+#define IMP_OUTPUT_OPERATOR_1(name)
+#define IMP_OUTPUT_OPERATOR_2(name)
+#define IMP_OUTPUT_OPERATOR(name)
+#define IMP_OUTPUT_OPERATOR_D(name)
+#endif
 #endif
 
+/** @} */
 
-/** \defgroup object_helpers Macros to aid with implementation classes
-
-    These macros are here to aid with implementing classes that
-    inherit from the various abstract base classes in the kernel. Each
-    macro, which should be used in the body of the class,
-    declares/defines the set of needed functions. The declared
-    functions should be defined in the associated \c .cpp file. By
-    using the macros, you ensure that your class gets the names of the
-    functions correct and it makes it easier to update your class if
-    the functions should change.
-
-    All of the macros define the following methods:
-    - IMP::Object::get_version_info()
-    - an empty virtual destructor
-
-    In addition, they all declare:
-    - IMP::Object::do_show()
-
-    For all macros, the Name parameter is the name of the class being
-    implemented and the version_info parameter is the IMP::VersionInfo
-    to use (probably get_version_info()).
-
-    @{
-*/
 
 #ifdef IMP_DOXYGEN
 //! Define a graph object in \imp
@@ -952,6 +942,37 @@ protection:                                                             \
   boost::property<boost::edge_name_t,                                   \
   EdgeName> > Name
 #endif
+
+/** \name Macros to aid with implementing object classes
+
+    These macros are here to aid with implementing classes that
+    inherit from the various abstract base classes in the kernel. Each
+    \imp object class should use one of the IMP_OBJECT(), IMP_RESTRAINT()
+    etc. macros in the body of its declaration as well as an
+    IMP_OBJECTS() invocation on the namespace level (and an
+    IMP_SWIG_OBJECTS() call in the corresponding swig file).
+
+    Each  IMP_OBJECT()/IMP_RESTRAINT()-style macro
+    declares/defines the set of needed functions. The declared
+    functions should be defined in the associated \c .cpp file. By
+    using the macros, you ensure that your class gets the names of the
+    functions correct and it makes it easier to update your class if
+    the functions should change.
+
+    All of the IMP_OBJECT()/IMP_RESTRAINT()-style macros define the
+    following methods:
+    - IMP::Object::get_version_info()
+    - an empty virtual destructor
+
+    In addition, they all declare:
+    - IMP::Object::do_show()
+
+    For all macros, the Name parameter is the name of the class being
+    implemented and the version_info parameter is the IMP::VersionInfo
+    to use (probably get_version_info()).
+
+    @{
+*/
 
 //! Define the basic things needed by any Object
 /** This defines
@@ -996,6 +1017,7 @@ public:                                                                 \
  IMP_REQUIRE_SEMICOLON_CLASS(object)
 
 
+
 //! Define the basic things needed by any internal Object
 /** \see IMP_OBJECT
     This version also defines IMP::Object::do_show()
@@ -1014,6 +1036,18 @@ private:                                                        \
  IMP_REF_COUNTED_DESTRUCTOR(Name)
 
 
+#ifdef IMP_DOXYGEN
+//! Define the types for storing sets of objects
+/** The macro defines the types PluralName and PluralNameTemp.
+    PluralName should be Names unless the English spelling is
+    different.
+ */
+#define IMP_OBJECTS(Name, PluralName)
+#else
+#define IMP_OBJECTS(Name, PluralName)                   \
+  typedef IMP::VectorOfRefCounted<Name*> PluralName;    \
+  typedef std::vector<Name*> PluralName##Temp
+#endif
 
 //! Define the basic things you need for a Restraint.
 /** In addition to the methods defined by IMP::Object
