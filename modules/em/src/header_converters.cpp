@@ -14,7 +14,7 @@ IMPEM_BEGIN_NAMESPACE
 void  ImageHeader_to_DensityHeader(const ImageHeader &h,DensityHeader &dh) {
   std::string empty;
   // map size and voxel size
-  dh.set_number_of_voxels(
+  dh.update_map_dimensions(
      static_cast<int>(h.get_number_of_columns()),
      static_cast<int>(h.get_number_of_rows()),
      static_cast<int>(h.get_number_of_slices()));
