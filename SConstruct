@@ -12,6 +12,7 @@ import scons_tools.application
 import scons_tools.test
 import scons_tools.config_py
 import scons_tools.build_summary
+import sys
 import atexit
 from SCons import Script
 
@@ -127,12 +128,23 @@ if not env.GetOption('help'):
     env.Default(env.Alias('all'))
 
 
-    scons_tools.build_summary.setup(env)
     unknown = vars.UnknownVariables()
+    # scons has a bug with command line arguments that are added late
+    #reallyunknown=[]
+    # so we don't add vars to the real environment, just to a junk environment
+    tenv= Environment(variables=vars)
     if unknown:
-        print "Unknown variables: ", unknown.keys()
-        print "Use 'scons -h' to get a list of the accepted variables."
+        #for u in unknown.keys():
+        #    if u not in [scons_tools.checks.nicename(x) for x in env['IMP_EXTERNAL_LIBS']]:
+        #        really_unknown.append(u)
+        #    else:
+        #        print "skipping", u
+        #if len(really_unknown) >0:
+        print >> sys.stderr, "\n\nUnknown variables: ", " ".join(unknown.keys())
+        print >> sys.stderr, "Use 'scons -h' to get a list of the accepted variables."
         Exit(1)
+    scons_tools.build_summary.setup(env)
+
 
 Help("""
 Available command-line options:

@@ -179,7 +179,7 @@ def make_static_build(env):
     if env['CC'] == 'gcc':
         env.Append(LINKFLAGS=['-static'])
     else:
-        print "Static builds only supported with GCC, ignored."
+        print >> sys.stderr, "WARNING: Static builds only supported with GCC, ignored."
 
 def unmake_static_build(env):
     """Make the build static if appropriate"""
@@ -188,7 +188,7 @@ def unmake_static_build(env):
         lf.remove('-static')
         env.Replace(LINKFLAGS=lf)
     else:
-        print "Static builds only supported with GCC, ignored."
+        print >> sys.stderr, "WARNING: Static builds only supported with GCC, ignored."
 
 
 def make_vars(env):
@@ -674,13 +674,13 @@ def IMPModuleBuild(env, version, required_modules=[],
     if module != 'kernel':
         for x in required_modules:
             if x.startswith("imp_"):
-                print "Required modules should have the name of the module (eg 'algebra'), not the name of the library."
-                print required_modules
-                raise ValueError(x)
+                print >> sys.stderr, "Required modules should have the name of the module (eg 'algebra'), not the name of the library."
+                print >> sys.stderr, required_modules
+                env.Exit(1)
             if x=='kernel':
-                print "You do not need to list the kernel as a required module"
-                print required_modules
-                raise ValueError(x)
+                print >> sys.stderr, "You do not need to list the kernel as a required module"
+                print >> sys.stderr, required_modules
+                env.Exit(1)
         #required_modules.append('kernel')
     else:
         required_modules=[]
@@ -796,12 +796,12 @@ def IMPModuleBuild(env, version, required_modules=[],
             vr= os.popen(env['SVNVERSION'] + ' ' + path).read()
             version= "SVN "+vr.split("\n")[0]
         except OSError, detail:
-            print "Could not run svnversion: %s" % str(detail)
+            print >> sys.stderr, "WARNING: Could not run svnversion: %s" % str(detail)
     env['IMP_MODULE_VERSION'] = version
 
 
     if module_failure is not None:
-        print "IMP."+env['IMP_MODULE']+" is disabled because", str(module_failure)
+        print "IMP."+env['IMP_MODULE']+" is disabled due to", str(module_failure)
         #preclone.Append(IMP_BUILD_SUMMARY=["IMP."+module+" disabled"])
         preclone[module+"_ok"]=False
         Return()

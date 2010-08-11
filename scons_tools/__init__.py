@@ -28,11 +28,11 @@ def _reconcile_common_variables(env):
         env['IMP_BUILD_STATIC']=False
     if env['PLATFORM']!= 'posix' and env['PLATFORM'] != 'darwin':
         env['IMP_USE_RPATH']=False
-        print "WARNING rpath not supported on platform "+ env['PLATFORM']
+        print >> sys.stderr, "WARNING rpath not supported on platform "+ env['PLATFORM']
     if not env['IMP_BUILD_DYNAMIC']:
         env['IMP_PROVIDE_PYTHON']=False
     if not env['IMP_BUILD_DYNAMIC'] and not env['IMP_BUILD_STATIC']:
-        print "One of dynamic or static libraries must be supported."
+        print >> sys.stderr, "One of dynamic or static libraries must be supported."
         env.Exit(1)
 
 def GetInstallDirectory(env, varname, *subdirs):
@@ -42,7 +42,7 @@ def GetInstallDirectory(env, varname, *subdirs):
     destdir = env.subst(env['destdir'])
     installdir = env.subst(env[varname])
     if destdir != '' and not os.path.isabs(installdir):
-        print "Install directory %s (%s) must be an absolute path,\n" \
+        print >> sys.stderr, "Install directory %s (%s) must be an absolute path,\n" \
               "since you have set destdir." % (varname, installdir)
         env.Exit(1)
     installdir = destdir + installdir
@@ -57,7 +57,7 @@ class WineEnvironment(Environment):
        and w32link shell scripts"""
     def __init__(self, platform='win32', CC='w32cc', LINK='w32link', **kw):
         if sys.platform != 'linux2':
-            print "ERROR: Wine is supported only on Linux systems"
+            print >> sys.stderr, "ERROR: Wine is supported only on Linux systems"
             Exit(1)
         self._fix_scons_msvc_detect()
 
@@ -147,18 +147,22 @@ def MyEnvironment(variables=None, *args, **kw):
     # First make a dummy environment in order to evaluate all variables, since
     # env['wine'] will tell us which 'real' environment to create:
     env = Environment(tools=[], variables=variables)
+    variables.Update(env)
     newpath = env['ENV']['PATH']
     if env.get('path') is not None:
         newpath = env['path'] + os.path.pathsep + newpath
     envargs={'PATH':newpath}
     if env['wine']:
-        env = WineEnvironment(variables=variables, ENV = {'PATH':newpath},
+        env = WineEnvironment(#variables=variables,
+                              ENV = {'PATH':newpath},
                               *args, **kw)
     else:
-        env = Environment(variables=variables, ENV = {'PATH':newpath},
+        env = Environment(#variables=variables,
+                          ENV = {'PATH':newpath},
                           *args, **kw)
         env['PYTHON'] = 'python'
         env['PATHSEP'] = os.path.pathsep
+    variables.Update(env)
     if env.get('cxxcompiler', None):
         env['CXX']=env['cxxcompiler']
     if env.get('ar', None):
@@ -235,7 +239,7 @@ def MyEnvironment(variables=None, *args, **kw):
         env['MODELLER_' + mod] = []
     env['SVNVERSION'] = env.WhereIs('svnversion')
     if env['svn'] and not env['SVNVERSION']:
-        print "Warning: Could not find 'svnversion' binary in path"
+        print  >> sys.stderr,"Warning: Could not find 'svnversion' binary in path"
     compilation.configure_check(env)
     if platform == 'aix':
         # Make sure compilers are in the PATH, so that Python's script for
