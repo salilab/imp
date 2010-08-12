@@ -131,7 +131,7 @@ if not env.GetOption('help'):
     unknown = vars.UnknownVariables()
     # scons has a bug with command line arguments that are added late
     if unknown:
-        reallyunknown=[]
+        really_unknown=[]
         for u in unknown.keys():
             if u not in [scons_tools.checks.nicename(x) for x in env['IMP_EXTERNAL_LIBS']]:
                 really_unknown.append(u)
