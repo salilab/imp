@@ -153,11 +153,11 @@ def MyEnvironment(variables=None, *args, **kw):
         newpath = env['path'] + os.path.pathsep + newpath
     envargs={'PATH':newpath}
     if env['wine']:
-        env = WineEnvironment(#variables=variables,
+        env = WineEnvironment(variables=variables,
                               ENV = {'PATH':newpath},
                               *args, **kw)
     else:
-        env = Environment(#variables=variables,
+        env = Environment(variables=variables,
                           ENV = {'PATH':newpath},
                           *args, **kw)
         env['PYTHON'] = 'python'
