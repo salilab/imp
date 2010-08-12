@@ -1,4 +1,11 @@
-/* Tell swig how to treat various types when moving them to and from pyton */
+/* Tell swig how to treat various types when moving them to and from python. Among other
+   things, they tell swig how to convert collections of C++ objects (eg ExampleRestraints)
+   into python lists and back.
+
+   IMP_SWIG_OBJECT, IMP_SWIG_VALUE and IMP_SWIG_DECORATOR lines need to appear before any
+   %include lines as well as any inline C++ code (or at least any such code which uses
+   the types in question).
+  */
 IMP_SWIG_OBJECT(IMP::example, ExampleRestraint, ExampleRestraints);
 IMP_SWIG_DECORATOR(IMP::example, ExampleDecorator, ExampleDecorators);
 IMP_SWIG_OBJECT(IMP::example, ExampleUnaryFunction, ExampleUnaryFunctions);
@@ -32,7 +39,8 @@ namespace IMP {
   namespace example {
    // Tell swig to create a copy of the class with dimension 3
    %template(ExampleTemplateClass3D) ExampleTemplateClass<3>;
-   // This macro defines the ExampleDecorators and ExampleDecoratorsTemp types for python
+   /* This macro defines the ExampleDecorators and ExampleDecoratorsTemp types for python.
+      Any code which uses ExampleTemplateClass3D must appear after this line. */
    IMP_SWIG_DECORATORS(ExampleDecorator, ExampleDecorators, Particles);
 
   }
