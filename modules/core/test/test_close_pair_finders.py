@@ -24,58 +24,83 @@ class TestCPFL(IMP.test.TestCase):
         #print str(d1.get_x()) + " " + str(d1.get_y()) + " " + str(d1.get_z()) + " " + str(r1)
         return d-r0-r1
 
-    def do_test_one(self, cpf):
-        IMP.set_log_level(IMP.TERSE)
-        dist= random.uniform(0,2)
+    def do_test_points(self, cpf, num, rmin, rmax):
+        IMP.set_log_level(IMP.SILENT)
+        dist= random.uniform(rmin,rmax)
         #cpf.set_distance(dist)
         print 'Distance is ' + str(dist)
-        rk= IMP.FloatKey("boo")
+        rk= IMP.core.XYZR.get_default_radius_key()
         #cpf.set_radius_key(rk)
         cpf.set_distance(dist)
         m=IMP.Model()
-        ps= self.create_particles_in_box(m, 200)
+        ps= self.create_particles_in_box(m, num)
         for i in range(0, len(ps)):
-            ps[i].add_attribute(rk, random.uniform(0,1))
+            ps[i].add_attribute(rk, random.uniform(rmin, rmax))
         pc= IMP.container.ListSingletonContainer(ps)
-        pc.show()
-        out= IMP.container.ListPairContainer()
-        out.show()
+        #pc.show()
+        out= IMP.container.ListPairContainer(m)
+        #out.show()
+        print "searching"
         cps= cpf.get_close_pairs(pc)
         out.set_particle_pairs(IMP.ParticlePairs(cps))
         print "done " + str(out.get_number_of_particle_pairs())
         self._check_close_pairs(ps, dist, rk, out)
-
         print "Done with all test "+str(out.get_number_of_particle_pairs())
-        ps2= self.create_particles_in_box(m, 200)
-        for i in range(0, len(ps2)):
-            ps2[i].add_attribute(rk, random.uniform(0,2))
-        pc2= IMP.container.ListSingletonContainer(ps2)
-        out= IMP.container.ListPairContainer()
-
-        cps=cpf.get_close_pairs(pc, pc2)
+    def do_test_bi_points(self, cpf, num, rmin, rmax):
+        IMP.set_log_level(IMP.SILENT)
+        dist= random.uniform(0,2)
+        #cpf.set_distance(dist)
+        print 'Distance is ' + str(dist)
+        rk= IMP.core.XYZR.get_default_radius_key()
+        #cpf.set_radius_key(rk)
+        cpf.set_distance(dist)
+        m=IMP.Model()
+        ps= self.create_particles_in_box(m, num)
+        for i in range(0, len(ps)):
+            ps[i].add_attribute(rk, random.uniform(rmin, rmax))
+        pc= IMP.container.ListSingletonContainer(ps)
+        psp= self.create_particles_in_box(m, num)
+        for i in range(0, len(psp)):
+            psp[i].add_attribute(rk, random.uniform(rmin, rmax))
+        pcp= IMP.container.ListSingletonContainer(psp)
+        pc.show()
+        out= IMP.container.ListPairContainer(m)
+        out.show()
+        cps= cpf.get_close_pairs(pc, pcp)
         out.set_particle_pairs(IMP.ParticlePairs(cps))
-        print "done bipartite " + str(out.get_number_of_particle_pairs())
-        self._check_biclose_pairs(ps, ps2, dist, rk,out)
+        print "done " + str(out.get_number_of_particle_pairs())
+        self._check_biclose_pairs(ps, psp,dist, rk, out)
+        print "Done with all test "+str(out.get_number_of_particle_pairs())
+
+
+    def do_test_one(self, cpf):
+        cpf.set_log_level(IMP.SILENT);
+        self.do_test_bi_points(cpf, 100, .01,1)
+        #cpf.set_log_level(IMP.SILENT);
+        self.do_test_points(cpf, 100, 1,1)
+
 
     def _check_close_pairs(self, ps, dist, rk, out):
         print "testing results with "
-        out.show()
+        print " ".join([str((x[0].get_name(), x[1].get_name())) for x in out.get_particle_pairs()])
+        found= out.get_particle_pairs()
+        for f in found:
+            self.assert_(IMP.ParticlePair(f[1], f[0]) not in found)
+            self.assert_(f[0] != f[1])
         for i in range(0, len(ps)):
             for j in range(0,i):
                 d= self.get_distance(rk, ps[i], ps[j])
                 #d=1000
-                if d <= .95*dist:
+                if d <= .99*dist:
                     #print "searching for "+str(ps[i].get_name()) + " "\
                     #    + str(ps[j].get_name())
                     #XYZ(ps[
-                    self.assert_(out.get_contains_particle_pair(IMP.ParticlePair(ps[i],
-                                                                                 ps[j]))
+                    self.assert_(IMP.ParticlePair(ps[i],ps[j]) in found
                                  or
-                                 out.get_contains_particle_pair(IMP.ParticlePair(ps[j],
-                                                                                 ps[i])),
+                                 IMP.ParticlePair(ps[j],ps[i]) in found,
                                  "Pair " +str(ps[i].get_name()) + " " +ps[j].get_name()
                                  + " not found " + str(d) + " " + str(dist))
-                    print "found pair " +str(ps[i]) + " " + str(ps[j])
+                    print "found pair " +str(ps[i].get_name()) + " " + str(ps[j].get_name())
 
     def _check_biclose_pairs(self, ps, ps2, dist, rk, out):
         for i in range(0, len(ps)):
@@ -108,25 +133,24 @@ class TestCPFL(IMP.test.TestCase):
                     print "found pair " +str(ps[i].get_name()) + " " + str(ps2[j].get_name())
         print "done with bipartite test"
 
-    def _test_quadratic(self):
+    def test_quadratic(self):
         """Testing QuadraticClosePairsFinder"""
         print "quadratic"
         self.do_test_one(IMP.core.QuadraticClosePairsFinder())
-    def _test_quadratic(self):
+    def test_nn(self):
         """Testing NearestNeighborsClosePairsFinder"""
         print "quadratic"
         self.do_test_one(IMP.core.NearestNeighborsClosePairsFinder())
-    def _test_sweep(self):
+    def test_sweep(self):
         """Testing BoxSweepClosePairsFinder"""
         if hasattr(IMP.core, 'BoxSweepClosePairsFinder'):
             self.do_test_one(IMP.core.BoxSweepClosePairsFinder())
         else:
             sys.stderr.write("Test skipped: no CGAL support: ")
-    def _test_grid(self):
+    def test_grid(self):
         """Testing GridClosePairsFinder"""
         print "grid"
         self.do_test_one(IMP.core.GridClosePairsFinder())
-
 
     def test_rigid(self):
         "Testing RigidClosePairsFinder"""
