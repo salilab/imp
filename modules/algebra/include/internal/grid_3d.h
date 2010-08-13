@@ -36,6 +36,8 @@ public:
   //! Get the ith component (i=0,1,2)
   int operator[](unsigned int i) const {
     IMP_INTERNAL_CHECK(i <3, "Bad i");
+    IMP_USAGE_CHECK(d_[i] != std::numeric_limits<int>::max(),
+                    "Using uninitialized grid index");
     return d_[i];
   }
   void show(std::ostream &out=std::cout) const {
