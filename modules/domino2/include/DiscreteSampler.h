@@ -10,7 +10,6 @@
 #define IMPDOMINO2_DISCRETE_SAMPLER_H
 
 #include "domino2_config.h"
-//#include "Evaluator.h"
 #include "subset_states.h"
 #include "particle_states.h"
 #include "subset_evaluators.h"
