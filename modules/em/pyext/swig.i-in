@@ -37,6 +37,8 @@ IMP_SWIG_OBJECT(IMP::em, Image, Images);
 %include "IMP/em/filters.h"
 %include "IMP/em/rigid_fitting.h"
 %include "IMP/em/envelope_penetration.h"
+%include "IMP/em/image_transformations.h"
+
 /* Allow runtime casting of Restraint* objects to FitRestraint* */
 namespace IMP {
   namespace em {
