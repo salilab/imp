@@ -31,4 +31,13 @@ void JunctionTreeTable::do_show(std::ostream &out) const {
   }
 }
 
+Subsets get_subsets(const SubsetGraph &g){
+    boost::property_map< SubsetGraph, boost::vertex_name_t>::const_type
+      subset_map= boost::get(boost::vertex_name, g);
+    Subsets output;
+    for (unsigned int vi = 0;vi < boost::num_vertices(g);vi++) {
+      output.push_back(boost::get(subset_map,vi));
+  }
+    return output;
+  }
 IMPDOMINO2_END_NAMESPACE
