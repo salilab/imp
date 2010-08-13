@@ -21,8 +21,20 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT GridClosePairsFinder : public ClosePairsFinder
 {
   mutable IMP::internal::OwnerPointer<ClosePairsFinder> qp_;
+  algebra::BoundingBox3D bb_;
+  unsigned int merged_;
  public:
   GridClosePairsFinder();
+
+  enum {X=1, Y=2, Z=4} Boundary;
+  /** Find close pairs with periodic boundary conditions. The
+      bounding box is considered joined along X if
+      merged_boundaries&X. Any point outside the bounding box
+      in a periodic direction is considered to be at its
+      image in the bounding box.
+  */
+  GridClosePairsFinder(const algebra::BoundingBox3D &bb,
+                       unsigned int merged_boundaries= X|Y|Z);
 
   IMP_CLOSE_PAIRS_FINDER(GridClosePairsFinder);
 };
