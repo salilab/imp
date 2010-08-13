@@ -178,6 +178,11 @@ public:
            });
 };
 /**@} */
+
+/** Load the appropriate state for each particle in a Subset. */
+IMPDOMINO2EXPORT void load_particle_states(const Subset &s,
+                                           const SubsetState &ss,
+                                           const ParticleStatesTable *pst);
 IMPDOMINO2_END_NAMESPACE
 
 #endif  /* IMPDOMINO2_UTILITY_H */

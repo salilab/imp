@@ -15,6 +15,7 @@
 #include <boost/graph/copy.hpp>
 #include <IMP/domino2/internal/maximal_cliques.h>
 #include <IMP/internal/graph_utility.h>
+#include <IMP/domino2/internal/restraint_evaluator.h>
 #include <IMP/RestraintSet.h>
 #include <IMP/core/internal/CoreClosePairContainer.h>
 #include <IMP/domino2/particle_states.h>
@@ -744,6 +745,14 @@ void OptimizeContainers::unoptimize_model() {
   for (unsigned int i=0; i< staticed_.size(); ++i) {
     staticed_[i]->set_is_static(false, algebra::BoundingBox3Ds());
   }
+}
+
+
+
+void load_particle_states(const Subset &s,
+                          const SubsetState &ss,
+                          const ParticleStatesTable *pst) {
+  internal::load_particle_states(s.begin(), s.end(), ss, pst);
 }
 
 IMPDOMINO2_END_NAMESPACE
