@@ -160,7 +160,7 @@ public:
       must be divisible by the voxel side.
       \param[in] def The default value for the voxels
    */
-  Grid3D(float side,
+  Grid3D(double side,
          const BoundingBoxD<3> &bb,
          Voxel def=Voxel()) {
     IMP_USAGE_CHECK(side>0, "Side cannot be 0");
@@ -351,11 +351,6 @@ public:
       \f$l_y \leq i_y \leq u_y\f$
       and \f$l_z \leq i_z \leq u_z\f$.
 
-      Note that these
-      iterate through indexes, not extended indexes, so the
-      traversed volume is truncated to that of the grid. We can
-      add extended index iterators if requested.
-
       @{
   */
   typedef internal::GridIndexIterator<Index> IndexIterator;
@@ -376,18 +371,29 @@ public:
     //IMP_INTERNAL_CHECK(lb <= ub, "empty range");
     return IndexIterator();
   }
-
-  IndexIterator all_indexes_begin() const {
+  typedef IndexIterator AllIndexIterator;
+  AllIndexIterator all_indexes_begin() const {
     return indexes_begin(ExtendedIndex(0,0,0),
                          ExtendedIndex(d_[0],
                                       d_[1],
                                       d_[2]));
   }
-  IndexIterator all_indexes_end() const {
+  AllIndexIterator all_indexes_end() const {
     return indexes_end(ExtendedIndex(0,0,0),
                        ExtendedIndex(d_[0],
                                     d_[1],
                                     d_[2]));
+  }
+  typedef internal::GridIndexIterator<ExtendedIndex> ExtendedIndexIterator;
+  ExtendedIndexIterator extended_indexes_begin(ExtendedIndex lb,
+                                      ExtendedIndex ub) const {
+    ExtendedIndex eub=get_offset(ub, 1,1,1);
+    return ExtendedIndexIterator(lb, eub);
+  }
+  ExtendedIndexIterator extended_indexes_end(ExtendedIndex,
+                            ExtendedIndex) const {
+    //IMP_INTERNAL_CHECK(lb <= ub, "empty range");
+    return ExtendedIndexIterator();
   }
   /* @} */
 #endif
