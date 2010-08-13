@@ -1,14 +1,18 @@
 files = [
          'MinimalSet.h',
+         'ann.h',
+         'cgal_knn.h',
          'cgal_predicates.h',
          'grid_3d.h',
          'grid_3d_impl.h',
+         'grid_knn.h',
          'internal_vector_generators.h',
          'jama_cholesky.h',
          'jama_eig.h',
          'jama_lu.h',
          'jama_qr.h',
          'jama_svd.h',
+         'linear_knn.h',
          'multi_array_helpers.h',
          'output_helpers.h',
          'tnt_array1d.h',
@@ -24,9 +28,6 @@ files = [
          'tnt_subscript.h',
          'tnt_version.h',
          'utility.h',
-         'linear_knn.h',
-         'cgal_knn.h',
-         'ann.h'
         ]
 
 files = [File(x) for x in files]
