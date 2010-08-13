@@ -10,6 +10,7 @@
 #define IMPDOMINO2_INTERNAL_RESTRAINT_EVALUATOR_H
 
 #include "../Subset.h"
+#include "../SubsetState.h"
 #include "../utility.h"
 #include "../particle_states.h"
 //#include "inference.h"
@@ -22,6 +23,19 @@
 
 
 IMPDOMINO2_BEGIN_INTERNAL_NAMESPACE
+
+template <class It>
+void load_particle_states(It b, It e, const SubsetState &ss,
+                          const ParticleStatesTable *pst) {
+  IMP_USAGE_CHECK(std::distance(b,e) == ss.size(),
+                  "Sizes don't match in load particle states");
+  unsigned int i=0;
+  for (It c=b; c != e; ++c) {
+    pst->get_particle_states(*c)->load_state(ss[i], *c);
+    ++i;
+  }
+}
+
 /*
   data for a subset:
   - list f restraints
@@ -61,9 +75,7 @@ public:
         << "(" << it->first << ")" << std::endl;*/
       return it->second;
     } else {
-      for (unsigned int i=0; i< ps.size(); ++i) {
-        pst->get_particle_states(ps[i])->load_state(state[i], ps[i]);
-      }
+      load_particle_states(ps.begin(), ps.end(), state, pst);
       double score= r_->evaluate(false)*weight_;
       if (Filter) {
         ++filter_attempts_;
