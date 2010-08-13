@@ -1001,7 +1001,7 @@ float DensityMap::get_maximum_value_in_yz_plane(int x_ind) {
 }
 
 DensityMap* DensityMap::get_cropped(float threshold){
-  IMP_USAGE_CHECK(threshold>get_min_value(),
+  IMP_USAGE_CHECK(threshold>get_min_value()-EPS,
                   "The input threshold is too small\n");
   //calculate the new extent
   //find Z start
