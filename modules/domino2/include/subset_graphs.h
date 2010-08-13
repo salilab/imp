@@ -19,6 +19,9 @@ IMPDOMINO2_BEGIN_NAMESPACE
     named with an Subset.
  */
 IMP_GRAPH(SubsetGraph, undirected, Subset, int);
+//! Gets all of the Subsets of a SubsetGraph
+IMPDOMINO2EXPORT Subsets get_subsets(const SubsetGraph &g);
+
 
 //! A base class for generating the subset graph from the restraints
 /** Currently, for DominoSampler, the returned graph must be a
