@@ -499,7 +499,9 @@ IMPEMEXPORT DensityMap* get_transformed(DensityMap *in,
 
 
 /** Get a resampled version of the map. The spacing is multiplied by scaling.
-    That means, scaling values greater than 1 increase the voxel size.*/
+    That means, scaling values greater than 1 increase the voxel size.
+    \relatesalso DensityMap
+*/
 IMPEMEXPORT DensityMap* get_resampled(DensityMap *in, double scaling);
 
 
