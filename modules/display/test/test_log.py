@@ -31,7 +31,7 @@ class TestBL(IMP.test.TestCase):
         d1.set_z(1)
         d1.set_radius(1)
         IMP.set_log_level(IMP.VERBOSE)
-        a= IMP.display.LogOptimizerState(writer, nm)
+        a= IMP.display.WriteOptimizerState(writer, nm)
         g= IMP.display.XYZRGeometry(d0)
         #ge= IMP.display.XYZRGeometryExtractor(rk)
         ps= IMP.container.ListSingletonContainer(m)
