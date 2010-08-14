@@ -2010,6 +2010,79 @@ protected:                                      \
   IMP_OBJECT(Name)
 
 
+//! Define a pair of classes to handle saving the model
+/** This macro defines two classes:
+ - NameOptimizerState
+ - NameFailureHandler
+ to handling saving the model in the specified way during
+ optimization and on failures, respectively.
+ \param[in] Name The name to prefix the class names
+ \param[in] args The parentesized arguments to the constructor. The
+   last one should be a string called file_name.
+ \param[in] vars The needed member variables.
+ \param[in] constr The body of the constructor.
+ \param[in] functs Any functions (declaration and definition) to
+            go in the class bodies.
+ \param[in] save_action The action to take to perform the save. The
+            name to save to is know as file_name
+
+ The headers "IMP/OptimizerState.h", "IMP/FailureHandler.h", "boost/format.hpp"
+ and "IMP/internal/utility.h" must be included.
+ */
+#define IMP_MODEL_SAVE(Name, args, vars, constr, functs, save_action)   \
+/** Write to a file generated from the passed filename every
+skip_steps steps. The file_name constructor argument should contain
+"%1%".*/                                                                \
+  class Name##OptimizerState: public OptimizerState {                   \
+    ::IMP::internal::Counter skip_steps_, call_number_, update_number_; \
+    std::string file_name_;                                             \
+    vars                                                                \
+    virtual void update() {                                             \
+      if (call_number_%(skip_steps_+1) ==0) {                           \
+        std::ostringstream oss;                                         \
+        oss << boost::format(file_name_) % update_number_;              \
+        write(oss.str());                                               \
+        ++update_number_;                                               \
+      }                                                                 \
+      ++call_number_;                                                   \
+    }                                                                   \
+  public:                                                               \
+    Name##OptimizerState args :                                         \
+    OptimizerState(std::string("Writer to ")+file_name),                \
+      file_name_(file_name) {constr}                                    \
+    functs                                                              \
+    void set_skip_steps(unsigned int k) {                               \
+      skip_steps_=k;                                                    \
+      call_number_=0;                                                   \
+    }                                                                   \
+    void write(std::string file_name) const {                           \
+      save_action                                                       \
+        }                                                               \
+  private:                                                              \
+    void do_update(unsigned int call_number);                           \
+    IMP_OBJECT_INLINE(Name##OptimizerState,                             \
+                      out << "Write to " << file_name_ << std::endl;,); \
+  };                                                                    \
+IMP_OBJECTS(Name##OptimizerState, Name##OptimizerStates);               \
+/** Write to a file when a failure occurs.*/                            \
+class Name##FailureHandler: public FailureHandler {                     \
+  std::string file_name_;                                               \
+  vars                                                                  \
+  public:                                                               \
+  Name##FailureHandler args :                                           \
+  FailureHandler(std::string("Writer to ")+file_name),                  \
+    file_name_(file_name) {                                             \
+    constr}                                                             \
+  functs                                                                \
+  void handle_failure() {                                               \
+    const std::string file_name=file_name_;                             \
+    save_action                                                         \
+      }                                                                 \
+  IMP_OBJECT_INLINE(Name##FailureHandler,                               \
+                    out << "Write to " << file_name_ << std::endl;,);   \
+};                                                                      \
+IMP_OBJECTS(Name##FailureHandler, Name##FailureHandlers);
+
 
 //! Declare a RAII-style class
 /** Since such classes are typically quite small and simple, all
