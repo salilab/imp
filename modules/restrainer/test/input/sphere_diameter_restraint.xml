@@ -19,11 +19,7 @@
             <Particle id="Protein2"></Particle>
             <Particle id="Protein3"></Particle>
             <Particle id="Protein4"></Particle>
-            <Source>
-                <Author first_name="xxx" last_name="xxx"></Author>
-                <Journal>FEBS Lett</Journal>
-                <Year>2200</Year>
-            </Source>
+            <Source author="xxx" journal="FEBS Lett" year="2200"/>
         </Restraint>
     </Diameter>
 </RestraintSet>
