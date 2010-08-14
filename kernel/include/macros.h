@@ -661,8 +661,9 @@ public:                                                                 \
     \param[in] Name The capitalized name of the prefix to use
     \param[in] name the name prefix to use, see the above method names
     \param[in] plural the plural form of the name
-    \param[in] traits the traits object to use to manipulate things. This should
-    inherit from or implement the interface of internal::ArrayOnAttributesHelper
+    \param[in] instance_traits the traits object to use to manipulate things.
+    This should inherit from or implement the interface of
+    internal::ArrayOnAttributesHelper
     \param[in] ExternalType The name of the type to wrap the return type with.
     \param[in] ExternalTypes A vector of the return type.
 */
