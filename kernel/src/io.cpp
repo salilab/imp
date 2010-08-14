@@ -172,10 +172,10 @@ IMPEXPORT void read_model(TextInput in, Model *m) {
 void write_binary_model(const ParticlesTemp &particles,
                         const FloatKeys &keys,
                         std::string filename,
-                        int frame) {
+                        bool append) {
   NcFile::FileMode mode;
   // replace on 0 also
-  if (frame >0) {
+  if (append) {
     mode=NcFile::Write;
   } else {
     mode=NcFile::Replace;
@@ -186,7 +186,7 @@ void write_binary_model(const ParticlesTemp &particles,
               IOException);
   }
   const NcDim* dims[2];
-  if (frame > 0) {
+  if (append && f.num_vars() > 0) {
     dims[0]= f.get_dim("particles");
     dims[1]= f.get_dim("values");
     if (static_cast<unsigned int>(dims[0]->size()) != particles.size()) {
@@ -204,12 +204,12 @@ void write_binary_model(const ParticlesTemp &particles,
     dims[1]= f.add_dim("values", keys.size());
   }
   NcVar *cur=NULL;
-  if (frame >=0) {
+  if (append) {
     std::ostringstream oss;
-    oss << frame;
+    oss << f.num_vars()+1;
     cur = f.add_var(oss.str().c_str(), ncDouble, 2, dims);
   } else {
-    cur = f.add_var("data", ncDouble, 2, dims);
+    cur = f.add_var("0", ncDouble, 2, dims);
   }
   boost::scoped_array<double> values(new double[particles.size()*keys.size()]);
   for (unsigned int i=0; i< particles.size(); ++i) {
@@ -251,7 +251,7 @@ void read_binary_model(std::string filename,
   int index=-1;
   if (frame>=0) {
     std::ostringstream oss;
-    oss << frame;\
+    oss << frame;
     for ( int i=0; i< f.num_vars(); ++i) {
       NcVar *v= f.get_var(i);
       if (std::string(v->name())== oss.str()) {

@@ -75,14 +75,17 @@ IMPEXPORT void read_model(TextInput in, Model *m);
     When lots of data is being written, it can be useful to write the
     data as binary instead of text. Binary writing requires NetCDF.
 
-    For writing if the frame is a positive integer, then the data is
-    added to the file if it already exists.
+    For writing if the append is true is a positive integer, then
+    the data is added to the file if it already exists.
+
+    For reading, and IOException will be thrown if an invalid frame
+    is requested. Frames are always sequential.
     @{
 */
 IMPEXPORT void write_binary_model(const ParticlesTemp &particles,
                                   const FloatKeys &keys,
                                   std::string filename,
-                                  int frame=-1);
+                                  bool append=false);
 IMPEXPORT void read_binary_model(std::string filename,
                                  const ParticlesTemp &particles,
                                  const FloatKeys &keys,
@@ -100,23 +103,25 @@ IMP_MODEL_SAVE(Write, (const ParticlesTemp &ps, std::string file_name),
                          << file_name << std::endl);
                  write_model(ps_,file_name);
                });
+#ifdef IMP_USE_NETCDF
 /** \class WriteBinaryOptimizerState
     In contrast to other similar OptimizerStates, this one expectes to write
     all models to the same file. As a result, the file name should not contain
-    %1%.
+    %1% (if it does, then separate files will be written). The first call will
+    overwrite the file.
  */
 IMP_MODEL_SAVE(WriteBinary, (const ParticlesTemp &ps, const FloatKeys &fks,
                              std::string file_name),
-               Particles ps_; FloatKeys fks_; int last_index_;,
-               ps_=ps; fks_=fks;last_index_=-1;,
+               Particles ps_; FloatKeys fks_; mutable bool first_;,
+               ps_=ps; fks_=fks;first_=-1;,
                ,
                {
-                 ++last_index_;
                  IMP_LOG(TERSE, "Writing text model file "
                          << file_name << std::endl);
-                 write_binary_model(ps_,fks_,file_name, last_index_);
+                 write_binary_model(ps_,fks_,file_name, !first_);
+                 first_=false;
                });
-
+#endif
 
 
 
