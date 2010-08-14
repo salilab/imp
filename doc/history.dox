@@ -1,6 +1,7 @@
 /** \page recent Change History
 
 \par Summer 2010
+- all write functions now have associated IMP::OptimizerState and IMP::FailureHandler classes. For examples, see IMP::WriteOptimizerState, IMP::WriteBinaryOptimizerState, IMP::WriteFailureHandler, IMP::atom::WritePDBOptimizerState etc.
 - functions IMP::write_binary_model(), IMP::read_binary_model() and IMP::read_configurations() have been added to support space and filesystem efficient storage of model configurations. Multiple configuration can be written to a single file. This functionality requires NetCDF be installed (NetCDF is a standard library for reading and writing binary data).
 - domino2 has been added. It provides a simpler interface on Keren's domino optimize as well as a number of new optimization and hooks for customizing the optimization process
 - a better explaination of how to use reference counted pointers has been added to IMP::Pointer.
