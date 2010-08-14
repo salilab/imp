@@ -136,11 +136,14 @@ struct IMPDOMINO2EXPORT ModelData {
       }
     }
   };
-  mutable Pointer<Model> m_;
+  mutable Pointer<RestraintSet> rs_;
+
   std::vector<RestraintData> rdata_;
   std::vector<ParticlesTemp> dependencies_;
   Pointer<ParticleStatesTable> pst_;
   mutable std::map<const SubsetID, SubsetData> sdata_;
+
+  void validate() const;
 
   ModelData(Model *m, RestraintSet *rs,
             const DependencyGraph &dg,
