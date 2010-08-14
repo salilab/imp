@@ -15,7 +15,7 @@
 IMPDOMINO2_BEGIN_INTERNAL_NAMESPACE
 ModelData::ModelData(Model *m, RestraintSet *rs,
                      const DependencyGraph &dg,
-                     ParticleStatesTable* pst): m_(m), pst_(pst) {
+                     ParticleStatesTable* pst): rs_(rs), pst_(pst) {
   const ParticlesTemp all= pst->get_particles();
   std::map<Particle*, Particle*> idm;
   for (unsigned int i=0; i < all.size(); ++i) {
@@ -25,10 +25,10 @@ ModelData::ModelData(Model *m, RestraintSet *rs,
       idm[ps[j]]=p;
     }
   }
-  Restraints rss= get_restraints(rs->restraints_begin(),
+  Restraints restraints= get_restraints(rs->restraints_begin(),
                                  rs->restraints_end());
-  for (Restraints::const_iterator rit= rss.begin();
-       rit != rss.end(); ++rit) {
+  for (Restraints::const_iterator rit= restraints.begin();
+       rit != restraints.end(); ++rit) {
     ParticlesTemp ip= (*rit)->get_input_particles();
     ParticlesTemp oip;
     for (unsigned int i=0; i< ip.size(); ++i) {
@@ -39,8 +39,18 @@ ModelData::ModelData(Model *m, RestraintSet *rs,
     std::sort(oip.begin(), oip.end());
     oip.erase(std::unique(oip.begin(), oip.end()), oip.end());
     dependencies_.push_back(oip);
-    rdata_.push_back(RestraintData(*rit, m_->get_weight(*rit)));
+    rdata_.push_back(RestraintData(*rit, m->get_weight(*rit)));
   }
+}
+
+void ModelData::validate() const {
+  IMP_USAGE_CHECK(get_restraints(rs_->restraints_begin(),
+                                 rs_->restraints_end()).size()
+                  == dependencies_.size(),
+                     "The restraints changed after Domino2 was set up. "
+                    << "This is a bad thing.");
+  IMP_INTERNAL_CHECK(dependencies_.size()== rdata_.size(),
+                     "Inconsistent data in Restraint evaluator or Filter");
 }
 
 void ModelData::set_sampler(const Sampler *s) {
@@ -54,19 +64,18 @@ const SubsetData &ModelData::get_subset_data(const Subset &s,
                                              const Subsets &exclusions) const {
   SubsetID id(s, exclusions);
   if (sdata_.find(id) == sdata_.end()) {
-    unsigned int i=0;
     ParticleIndex pi= get_index(s);
     Ints ris;
     std::vector<Ints> inds;
     //std::cout << "Find data for subset " << s << std::endl;
-    for (Model::RestraintIterator rit= m_->restraints_begin();
-         rit != m_->restraints_end(); ++rit) {
+    validate();
+    for (unsigned int i=0; i< dependencies_.size(); ++i) {
       if (std::includes(s.begin(), s.end(),
                         dependencies_[i].begin(), dependencies_[i].end())) {
         bool exclude=false;
-        {for (unsigned int i=0; i< exclusions.size(); ++i) {
-            if (std::includes(exclusions[i].begin(),
-                              exclusions[i].end(),
+        {for (unsigned int j=0; j< exclusions.size(); ++j) {
+            if (std::includes(exclusions[j].begin(),
+                              exclusions[j].end(),
                               dependencies_[i].begin(),
                               dependencies_[i].end())) {
               exclude=true;
@@ -81,7 +90,6 @@ const SubsetData &ModelData::get_subset_data(const Subset &s,
           }
         }
       }
-      ++i;
     }
     sdata_[id]= SubsetData(this, ris, inds, s);
   }
