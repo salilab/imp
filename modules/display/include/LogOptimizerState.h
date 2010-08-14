@@ -20,49 +20,33 @@
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
-//! Write geometry to a container periodically
-/** The State writes a series of files generated from a
-    printf-style format string. The added geometry objects
-    are stored by reference internally.
-    \verbinclude display_log.py
-    \ingroup logging
- */
-class IMPDISPLAYEXPORT LogOptimizerState: public OptimizerState
-{
-  mutable IMP::internal::OwnerPointer<Writer> writer_;
-  std::string name_template_;
 
-  Geometries gdata_;
+IMP_MODEL_SAVE(Write, (Writer *writer, std::string file_name),
+               mutable IMP::internal::OwnerPointer<Writer> writer_;
+               Geometries gdata_;,
+                writer_=writer;,
+                void add_geometry(Geometry* g) {
+                  gdata_.push_back(g);
+                  g->set_was_used(true);
+                }
+                void add_geometry(const Geometries& g) {
+                  for (unsigned int i=0; i< g.size(); ++i) {
+                    add_geometry(g);
+                  }
+                },
+                {
+                  IMP_LOG(TERSE, "Writing log file " << file_name << std::endl);
+                  writer_->set_output(file_name);
+                  for (unsigned int i=0; i < gdata_.size(); ++i) {
+                    writer_->add_geometry(gdata_[i]);
+                  }
+                  writer_->close();
+                });
 
-public:
-  //! Write files using name_template as a template (must have a %d in it)
-  LogOptimizerState(Writer *writer, std::string name_template);
-  void add_geometry(Geometry* g);
-
-  void add_geometry(const Geometries& g);
-
-  //! Force writing the a file with the given name
-  void write(TextOutput file_name) const;
-
-  IMP_PERIODIC_OPTIMIZER_STATE(LogOptimizerState);
-};
-
-
-
-/** \brief Dump the state of the model to a file on an error and then
-    go on the the other handlers.
-
-    When an error (check or assertion failure) occurs, the model is
-    dumped to the specified using the geometry given in the
-    LogOptimizerState.
- */
-class IMPDISPLAYEXPORT DisplayModelOnFailure: public FailureHandler {
-  IMP::internal::OwnerPointer<LogOptimizerState> s_;
-  std::string file_name_;
- public:
-  DisplayModelOnFailure(LogOptimizerState *m, std::string file_name);
-  IMP_FAILURE_HANDLER(DisplayModelOnFailure);
-};
+#ifndef IMP_DOXYGEN
+typedef WriteOptimizerState LogOptimizerState;
+typedef WriteFailureHandler DisplayModelOnFailure;
+#endif
 
 IMPDISPLAY_END_NAMESPACE
 

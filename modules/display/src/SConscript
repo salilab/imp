@@ -8,8 +8,6 @@ files = [
          'Colored.cpp',
          'FilterGeometry.cpp',
          'GeometryProcessor.cpp',
-         'LogOptimizerState.cpp',
-         'PDBOptimizerState.cpp',
          'PymolWriter.cpp',
          'Writer.cpp',
          'geometry.cpp',

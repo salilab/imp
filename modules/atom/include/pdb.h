@@ -16,6 +16,10 @@
 #include <IMP/file.h>
 #include <IMP/Model.h>
 #include <IMP/Particle.h>
+#include <IMP/FailureHandler.h>
+#include <IMP/OptimizerState.h>
+#include <IMP/internal/utility.h>
+#include <boost/format.hpp>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -343,6 +347,15 @@ IMPATOMEXPORT std::string conect_record_string(int,int);
 
 
 
+
+IMP_MODEL_SAVE(WritePDB, (const atom::Hierarchies& mh, std::string file_name),
+               atom::Hierarchies mh_;,
+               mh_=mh;,
+               ,
+               {
+                 IMP_LOG(TERSE, "Writing pdb file " << file_name << std::endl);
+                 atom::write_pdb(mh_,file_name);
+               });
 
 
 IMPATOM_END_NAMESPACE

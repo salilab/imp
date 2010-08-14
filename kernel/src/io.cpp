@@ -277,19 +277,4 @@ void read_binary_model(std::string filename,
 
 
 
-DumpModelOnFailure
-::DumpModelOnFailure(Model *m,
-                     TextOutput out): m_(m),
-                                      file_name_(out){}
-
-void DumpModelOnFailure::handle_failure() {
-  write_model(m_, file_name_);
-}
-
-
-
-void DumpModelOnFailure::do_show(std::ostream &) const {
-}
-
-
 IMP_END_NAMESPACE

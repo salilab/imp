@@ -13,6 +13,9 @@
 #include "Model.h"
 #include "file.h"
 #include "FailureHandler.h"
+#include "OptimizerState.h"
+#include "internal/utility.h"
+#include <boost/format.hpp>
 
 IMP_BEGIN_NAMESPACE
 /** \name Model IO
@@ -87,23 +90,35 @@ IMPEXPORT void read_binary_model(std::string filename,
 /** @} */
 #endif
 
-/** \brief Dump the state of the model to a file on an error and then
-    go on the the other handlers.
 
-    When an error (check or assertion failure) occurs, the model is
-    dumped to the specified file.
-
-    \verbinclude dump_on_error.py
+IMP_MODEL_SAVE(Write, (const ParticlesTemp &ps, std::string file_name),
+               Particles ps_;,
+               ps_=ps;,
+               ,
+               {
+                 IMP_LOG(TERSE, "Writing text model file "
+                         << file_name << std::endl);
+                 write_model(ps_,file_name);
+               });
+/** \class WriteBinaryOptimizerState
+    In contrast to other similar OptimizerStates, this one expectes to write
+    all models to the same file. As a result, the file name should not contain
+    %1%.
  */
-class IMPEXPORT DumpModelOnFailure: public FailureHandler {
-  Model *m_;
-  TextOutput file_name_;
- public:
-  DumpModelOnFailure(Model *m, TextOutput out);
-  IMP_FAILURE_HANDLER(DumpModelOnFailure);
-};
+IMP_MODEL_SAVE(WriteBinary, (const ParticlesTemp &ps, const FloatKeys &fks,
+                             std::string file_name),
+               Particles ps_; FloatKeys fks_; int last_index_;,
+               ps_=ps; fks_=fks;last_index_=-1;,
+               ,
+               {
+                 ++last_index_;
+                 IMP_LOG(TERSE, "Writing text model file "
+                         << file_name << std::endl);
+                 write_binary_model(ps_,fks_,file_name, last_index_);
+               });
 
-IMP_OBJECTS(DumpModelOnFailure,DumpModelOnFailures);
+
+
 
 IMP_END_NAMESPACE
 

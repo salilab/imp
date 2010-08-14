@@ -16,6 +16,10 @@
 #include "internal/particle_save.h"
 #include "Configuration.h"
 #include "internal/OwnerPointer.h"
+#include "OptimizerState.h"
+#include "FailureHandler.h"
+#include "internal/utility.h"
+#include <boost/format.hpp>
 #include <map>
 #include <set>
 
@@ -62,6 +66,19 @@ IMPEXPORT ConfigurationSet* read_configuration_set(std::string fname,
                                                    const Particles &ps,
                                                    const FloatKeys &keys);
 #endif
+
+IMP_MODEL_SAVE(SaveToConfigurationSet,
+               (ConfigurationSet *cs, std::string file_name),
+               mutable internal::OwnerPointer<ConfigurationSet> cs_;,
+               cs_=cs;,
+               ,
+               {
+                 IMP_LOG(TERSE, "Saving to configuration set "
+                         << file_name << std::endl);
+                 cs_->save_configuration();
+               });
+
+
 IMP_END_NAMESPACE
 
 #endif  /* IMP_CONFIGURATION_SET_H */

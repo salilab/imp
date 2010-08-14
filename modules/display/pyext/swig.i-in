@@ -7,7 +7,8 @@ IMP_SWIG_OBJECT(IMP::display, PymolWriter, PymolWriters);
 IMP_SWIG_DECORATOR(IMP::display, Colored, Coloreds);
 IMP_SWIG_VALUE(IMP::display, Color, Colors);
 IMP_SWIG_OBJECT(IMP::display, FilterGeometry, FilterGeometries);
-IMP_SWIG_OBJECT(IMP::display, LogOptimizerState, LogOptimizerStates);
+IMP_SWIG_OBJECT(IMP::display, WriteOptimizerState, WriteOptimizerStates);
+IMP_SWIG_OBJECT(IMP::display, WriteFailureHandler, WriteFailureHandlers);
 
 %warnfilter(403) Geometry;
 %warnfilter(403) Writer;

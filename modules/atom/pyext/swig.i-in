@@ -37,6 +37,8 @@ IMP_SWIG_OBJECT(IMP::atom, CHARMMTopology, CHARMMTopologies);
 IMP_SWIG_OBJECT(IMP::atom, CHARMMSegmentTopology, CHARMMSegmentTopologies);
 IMP_SWIG_OBJECT(IMP::atom, CHARMMResidueTopology, CHARMMResidueTopologies);
 IMP_SWIG_OBJECT(IMP::atom, CHARMMParameters, CHARMMParametersList);
+IMP_SWIG_OBJECT(IMP::atom, WritePDBOptimizerState, WritePDBOptimizerStates);
+IMP_SWIG_OBJECT(IMP::atom, WritePDBFailureHandler, WritePDBFailureHandlers);
 IMP_SWIG_DIRECTOR(IMP::atom, PDBSelector);
 
 %include "IMP/atom/atom_macros.h"

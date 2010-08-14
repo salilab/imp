@@ -19,26 +19,9 @@
 #include <IMP/internal/utility.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
-
-//! Write molecules in pdb format periodically
-/** The State writes a series of files generated from a
-    printf-style format string.
-    \verbinclude display_log.py
-    \ingroup logging
- */
-class IMPDISPLAYEXPORT PDBOptimizerState: public OptimizerState
-{
-  std::string name_template_;
-
-  atom::Hierarchies mh_;
-public:
-  //! Write files using name_template as a template (must have a %d in it)
-  PDBOptimizerState(const atom::Hierarchies &mh,
-                    std::string name_template);
-
-  IMP_PERIODIC_OPTIMIZER_STATE(PDBOptimizerState);
-};
-
+#ifndef IMP_DOXYGEN
+typedef atom::WritePDBOptimizerState PDBOptimizerState;
+#endif
 
 IMPDISPLAY_END_NAMESPACE
 
