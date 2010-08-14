@@ -1,3 +1,7 @@
 Import('env')
 env.IMPModuleExamples(example_files=env.IMPModuleGetExamples(),
-                      data_files=env.IMPModuleGetExampleData())
+                      data_files=env.IMPModuleGetExampleData()\
+                        +Glob("input/*.input")\
+                        +Glob("input/*.output")\
+                        +Glob("input/*.txt")\
+                        +Glob("input/*.jt"))
