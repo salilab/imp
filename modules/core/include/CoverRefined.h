@@ -37,8 +37,7 @@ class XYZR;
  \htmlinclude cover_particles.py
 
  \note The particle passed must be an XYZR with the given radius key.
- \note This used the set_enclosing_sphere function and so produces
-  better results if the CGAL library is found.
+ \uses{class CoverRefined, CGAL}
  */
 class IMPCOREEXPORT CoverRefined: public SingletonModifier
 {
