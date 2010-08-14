@@ -80,6 +80,8 @@ IMPEXPORT void read_model(TextInput in, Model *m);
 
     For reading, and IOException will be thrown if an invalid frame
     is requested. Frames are always sequential.
+
+    \requires{binary I/O functions, NetCDF}
     @{
 */
 IMPEXPORT void write_binary_model(const ParticlesTemp &particles,
@@ -103,12 +105,18 @@ IMP_MODEL_SAVE(Write, (const ParticlesTemp &ps, std::string file_name),
                          << file_name << std::endl);
                  write_model(ps_,file_name);
                });
-#ifdef IMP_USE_NETCDF
+#if defined(IMP_USE_NETCDF) || defined(IMP_DOXYGEN)
 /** \class WriteBinaryOptimizerState
     In contrast to other similar OptimizerStates, this one expectes to write
     all models to the same file. As a result, the file name should not contain
     %1% (if it does, then separate files will be written). The first call will
     overwrite the file.
+
+    \requires{class WriteBinaryOptimizerState, NetCDF}
+
+    \class WriteBinaryFailureHandler
+
+    \requires{class WriteBinaryFailureHandler, NetCDF}
  */
 IMP_MODEL_SAVE(WriteBinary, (const ParticlesTemp &ps, const FloatKeys &fks,
                              std::string file_name),

@@ -58,9 +58,9 @@ class IMPEXPORT ConfigurationSet: public Object
 
 IMP_OBJECTS(ConfigurationSet,ConfigurationSets);
 
-#ifdef IMP_USE_NETCDF
+#if defined(IMP_USE_NETCDF) || defined(IMP_DOXYGEN)
 /** Read a set of configurations from a file created by write_binary_model().
-    NetCDF is required for this method to work.
+    \requires{function read_configuration_set(), NetCDF}
  */
 IMPEXPORT ConfigurationSet* read_configuration_set(std::string fname,
                                                    const Particles &ps,
