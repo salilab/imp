@@ -99,22 +99,22 @@
   $input = IMP::internal::swig::Convert<Namespace::PluralName >::create_python_object($1_name, $descriptor(Namespace::Name*), SWIG_POINTER_OWN);
  }
 %typemap(in) Namespace::PluralName* {
-  BOOST_STATIC_ASSERT(0&&"Collections must be passed by value or const ref");
+  BOOST_STATIC_ASSERT(0&&"Collections must be passed by value or const ref " #PluralName);
  }
 %typemap(out) Namespace::PluralName* {
-  BOOST_STATIC_ASSERT(0&&"Collections must be returned by value or by const ret");
+  BOOST_STATIC_ASSERT(0&&"Collections must be returned by value or by const ret" #PluralName);
  }
 %typemap(in) Namespace::PluralName& {
-  BOOST_STATIC_ASSERT(0&&"Collections must be passed by value or by const ret");
+  BOOST_STATIC_ASSERT(0&&"Collections must be passed by value or by const ret" #PluralName);
  }
 %typemap(out) Namespace::PluralName& {
-  BOOST_STATIC_ASSERT(0&&"Collections must be returned by value or by const ret");
+  BOOST_STATIC_ASSERT(0&&"Collections must be returned by value or by const ret" #PluralName);
  }
 %enddef
 
 %define IMP_SWIG_VALUE_CHECKS(Namespace, Name)
 %typemap(out) Namespace::Name& {
-  BOOST_STATIC_ASSERT(0&&"Values must be returned by value or const ref");
+  BOOST_STATIC_ASSERT(0&&"Values must be returned by value or const ref" #Name);
  }
 // for some reason swig generates garbage code when either of the below is defined
 /*%typemap(in) Namespace::Name& {
