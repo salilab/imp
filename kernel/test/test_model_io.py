@@ -99,13 +99,15 @@ class YamlTests(IMP.test.TestCase):
             return
         (m, ps)= self._create_homo_model()
         fks= [IMP.FloatKey("x"), IMP.FloatKey("y")]
-        for i in range(0,10):
+        IMP.write_binary_model(ps, fks, self.get_tmp_file_name("test1.imp"), False)
+        for i in range(1,10):
             ps[0].set_value(fks[0], i)
-            IMP.write_binary_model(ps, fks, self.get_tmp_file_name("test1.imp"), i)
+            IMP.write_binary_model(ps, fks, self.get_tmp_file_name("test1.imp"), True)
         print "reading"
         for i in range(0,10):
             IMP.read_binary_model(self.get_tmp_file_name("test1.imp"), ps, fks, i)
             self.assertEqual(i, ps[0].get_value(IMP.FloatKey("x")))
+        self.assertRaises(IOError, IMP.read_binary_model, self.get_tmp_file_name("test1.imp"), ps, fks, i)
     def test_cs(self):
         """Check reading a configuration set"""
         if not IMP.has_netcdf:
