@@ -22,7 +22,7 @@ IMP_BEGIN_NAMESPACE
  */
 class IMPEXPORT FailureHandler: public Object {
  public:
-  FailureHandler();
+  FailureHandler(std::string name="Falure Handler");
   virtual void handle_failure()=0;
   IMP_REF_COUNTED_DESTRUCTOR(FailureHandler);
 };

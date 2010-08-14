@@ -9,6 +9,6 @@
 
 IMP_BEGIN_NAMESPACE
 
-FailureHandler::FailureHandler(){}
+FailureHandler::FailureHandler(std::string name): Object(name){}
 
 IMP_END_NAMESPACE
