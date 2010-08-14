@@ -672,9 +672,11 @@ namespace {
     algebra::BoundingBox3Ds bbs(inputs.size());
     for (unsigned int i=0; i< max; ++i) {
       for (unsigned int j=0; j< optimized.size(); ++j) {
-        psl[j]->load_state(std::min(i, psl[j]->get_number_of_states()),
+        psl[j]->load_state(std::min(i, psl[j]->get_number_of_states()-1),
                            optimized[j]);
       }
+      // make sure invariants are updated
+      cpc->get_model()->update();
       for (unsigned int j=0; j< inputs.size(); ++j) {
         core::XYZ d(inputs[j]);
         bbs[j]+= d.get_coordinates();
