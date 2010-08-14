@@ -509,7 +509,7 @@ IMPEMEXPORT DensityMap* get_resampled(DensityMap *in, double scaling);
 /**
 \param[in] from the map to transform
 \param[in] tr transform the from density map by this transformation
-\param[out] the map to tranform into
+\param[out] into the map to tranform into
 \param[in] calc_rms if true RMS is calculated on the transformed map
  \relatesalso DensityMap
 */
