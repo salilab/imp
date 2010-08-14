@@ -29,15 +29,16 @@ IMPALGEBRA_BEGIN_NAMESPACE
 /** @name Vector Search
 
     These functions classes create various search structures
-    over sets of vectors. Most of them benefit a great deal
-    from having CGAL or ANN available.
+    over sets of vectors.
     @{
 */
 
-/** Build a structure for finding nearest neighbors. This is quite slow
-    without CGAL.
-    \ingroup{CGAL}
-*/
+/** Build a structure for finding nearest neighbors. Different
+    implementations are used depending on what optional dependencies
+    are available.
+    \uses{class NearestNeighborD, CGAL}
+    \uses{class NearestNeighborD, ANN}
+ */
 template <unsigned int D>
 class NearestNeighborD {
   IMP_KNN_DATA<D> data_;
