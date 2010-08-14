@@ -48,7 +48,6 @@ IMP_SWIG_BASE_OBJECT(IMP,TripletModifier, TripletModifiers);
 IMP_SWIG_BASE_OBJECT(IMP,TripletScore, TripletScores);
 IMP_SWIG_BASE_OBJECT(IMP,UnaryFunction, UnaryFunctions);
 IMP_SWIG_OBJECT(IMP,ConfigurationSet, ConfigurationSets);
-IMP_SWIG_OBJECT(IMP,DumpModelOnFailure, DumpModelOnFailures);
 IMP_SWIG_OBJECT(IMP,Model, Models);
 //IMP_SWIG_OBJECT(IMP,Object, Objects);
 IMP_SWIG_OBJECT(IMP,Particle, Particles);
@@ -57,6 +56,13 @@ IMP_SWIG_OBJECT(IMP,DecomposableRestraint, DecomposableRestraints);
 IMP_SWIG_OBJECT_TUPLE(IMP, ParticlePair, ParticlePairs);
 IMP_SWIG_OBJECT_TUPLE(IMP, ParticleTriplet, ParticleTriplets);
 IMP_SWIG_OBJECT_TUPLE(IMP, ParticleQuad, ParticleQuads);
+
+IMP_SWIG_OBJECT(IMP, WriteOptimizerState, WriteOptimizerStates);
+IMP_SWIG_OBJECT(IMP, WriteBinaryOptimizerState, WriteBinaryOptimizerStates);
+IMP_SWIG_OBJECT(IMP, WriteFailureHandler, WriteFailureHandlers);
+IMP_SWIG_OBJECT(IMP, WriteBinaryFailureHandler, WriteBinaryFailureHandlers);
+IMP_SWIG_OBJECT(IMP, SaveToConfigurationSetOptimizerState, SaveToConfigurationSetOptimizerStates);
+IMP_SWIG_OBJECT(IMP, SaveToConfigurationSetFailureHandler, SaveToConfigurationSetFailureHandlers);
 
 IMP_SWIG_PAIR(IMP, Double, DerivativePair, DerivativePairs);
 IMP_SWIG_PAIR(IMP, Double, FloatRange, FloatRanges);
