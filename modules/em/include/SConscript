@@ -7,7 +7,7 @@ files = [
     'DensityHeader.h',
     'DensityMap.h',
     'EMReaderWriter.h',
-    'RigidBodiesFitRestraint.h',
+#    'RigidBodiesFitRestraint.h',
     'FitRestraint.h',
     'Image.h',
     'ImageHeader.h',

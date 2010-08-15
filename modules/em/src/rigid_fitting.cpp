@@ -368,14 +368,11 @@ FittingSolutions compute_fitting_scores(const Particles &ps,
 Float compute_fitting_score(const Particles &ps,
                             DensityMap *em_map,
                             FloatKey rad_key, FloatKey wei_key) {
-    std::vector<float> dvx;
-    std::vector<float>dvy;
-    std::vector<float>dvz;
     IMP::em::SampledDensityMap *model_dens_map =
       new IMP::em::SampledDensityMap(*(em_map->get_header()));
    model_dens_map->set_particles(ps,rad_key,wei_key);
-   return em::CoarseCC::evaluate(*em_map, *model_dens_map,
-                                 dvx,dvy,dvz,1.0,false,true,true);
+   return em::CoarseCC::calc_score(*em_map, *model_dens_map,
+                                 1.0,true,true);
 }
 
 

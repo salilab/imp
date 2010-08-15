@@ -30,7 +30,6 @@ CoarseCCatIntervals::CoarseCCatIntervals()
   dv_memory_allocated_ = false;
 }
 
-
 void CoarseCCatIntervals::allocate_derivatives_array(int ncd)
 {
   if (dv_memory_allocated_)
@@ -61,8 +60,12 @@ float CoarseCCatIntervals::evaluate(DensityMap &em_map,
   // If the function requires to be evaluated
   if  (calls_counter_ % eval_interval == 0) {
     // The base evaluate function calculates the derivates of the EM term.
-    stored_cc_ = CoarseCC::evaluate(em_map, model_map, dvx, dvy, dvz,
-                                    scalefac, lderiv);
+    stored_cc_ = CoarseCC::calc_score(em_map, model_map,
+                                    scalefac);
+    if (lderiv) {
+      CoarseCC::calc_derivatives(em_map, model_map,
+                                 scalefac, dvx, dvy, dvz);
+    }
 
     calls_counter_ = 1;
     if (lderiv) {

@@ -63,7 +63,7 @@ public:
                FloatKey radius_key= IMP::core::XYZR::get_default_radius_key(),
                FloatKey weight_key= IMP::atom::Mass::get_mass_key(),
                float scale=1,
-               bool special_treatment_of_particles_outside_of_density=true,
+               bool special_treatment_of_particles_outside_of_density=false,
                bool use_fast_version=true);
 
   //! \return the predicted density map of the model
@@ -94,6 +94,8 @@ private:
   float scalefac_;
   IMP::core::XYZs xyz_;
   // derivatives
+  //  std::vector<float> not_rb_dx_, not_rb_dy_ , not_rb_dz_;
+  //  std::vector<float> rb_dx_, rb_dy_ , rb_dz_;
   std::vector<float> dx_, dy_ , dz_;
   bool special_treatment_of_particles_outside_of_density_;
   bool use_fast_version_;

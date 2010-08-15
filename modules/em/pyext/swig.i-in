@@ -26,6 +26,7 @@ IMP_SWIG_OBJECT(IMP::em, Image, Images);
 %include "IMP/em/CoarseConvolution.h"
 %include "IMP/em/CoarseCCatIntervals.h"
 %include "IMP/em/SurfaceShellDensityMap.h"
+/*%include "IMP/em/RigidBodiesFitRestraint.h"*/
 %include "IMP/em/FitRestraint.h"
 %include "IMP/em/converters.h"
 %include "IMP/em/SpiderHeader.h"
