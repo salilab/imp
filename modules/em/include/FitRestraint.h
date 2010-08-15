@@ -44,8 +44,10 @@ public:
     \param[in] special_treatment_of_particles_outside_of_density
        If more than 80% of the particles are outside of the density
        push it back using upper-bound harmonic
-    \param[in] use_fast_version if true densities of rigid-bodies are
-               interpolated and not resampled.
+    \note Particles that are rigid-bodies are interpolated and not resampled.
+          This significantly reduces the running time but is less accurate.
+          If the user prefers to get more accurate results, provide
+          its members as input particles and not the rigid body.
     \note In many optimization senarios particles are can be found outside of
   the density. When all particles are outside of the density the
   cross-correlation score is zero and the derivatives are meaningless.
@@ -62,9 +64,8 @@ public:
                Refiner *refiner,
                FloatKey radius_key= IMP::core::XYZR::get_default_radius_key(),
                FloatKey weight_key= IMP::atom::Mass::get_mass_key(),
-               float scale=1,
-               bool special_treatment_of_particles_outside_of_density=false,
-               bool use_fast_version=true);
+               float scale=1);
+//               bool special_treatment_of_particles_outside_of_density=false);
 
   //! \return the predicted density map of the model
   SampledDensityMap * get_model_dens_map() {
@@ -94,11 +95,10 @@ private:
   float scalefac_;
   IMP::core::XYZs xyz_;
   // derivatives
-  //  std::vector<float> not_rb_dx_, not_rb_dy_ , not_rb_dz_;
-  //  std::vector<float> rb_dx_, rb_dy_ , rb_dz_;
-  std::vector<float> dx_, dy_ , dz_;
-  bool special_treatment_of_particles_outside_of_density_;
-  bool use_fast_version_;
+  std::vector<float> not_rb_dx_, not_rb_dy_ , not_rb_dz_;
+  std::vector<std::vector<float> >rb_refined_dx_,
+                                  rb_refined_dy_ , rb_refined_dz_;
+  //  bool special_treatment_of_particles_outside_of_density_;
   //rigid bodies handling
   IMP::Particles not_rb_; //all particles that are not part of a rigid body
   IMP::core::RigidBodies rbs_;
