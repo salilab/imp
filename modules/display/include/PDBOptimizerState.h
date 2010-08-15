@@ -15,7 +15,7 @@
 #include <IMP/display/geometry.h>
 #include <IMP/Pointer.h>
 #include <vector>
-#include <IMP/atom/Hierarchy.h>
+#include <IMP/atom/pdb.h>
 #include <IMP/internal/utility.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
