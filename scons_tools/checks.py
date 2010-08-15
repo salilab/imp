@@ -1,4 +1,6 @@
 import imp_module
+import SCons
+from SCons.Script import Glob, Dir, File, Builder, Action, Exit, Scanner
 
 def _search_for_deps(context, libname, headers, body, possible_deps):
     for i in range(0,len(possible_deps)+1):
@@ -38,7 +40,6 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
                         alternate_name=None):
     lcname= nicename(name)
     ucname= lcname.upper()
-    vars= env['IMP_VARIABLES']
     env.Append(IMP_EXTERNAL_LIBS=[name])
     def _check(context):
         if context.env[lcname] is "no":
@@ -48,12 +49,13 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
             return False
         elif context.env[lcname] is "yes":
             context.Message('Checking for '+name+' ...')
-            if not context.env[lcname+'libs']:
+            if context.env[lcname+'libs'] is None:
                 context.Result("disabled, libs not specified")
                 context.env[ucname+'_LIBS']=False
                 return False
             else:
                 val=context.env[lcname+'libs'].split(":")
+                #print val
                 context.Result(" ".join(val))
                 context.env[ucname+'_LIBS']=val
                 return True
@@ -80,9 +82,15 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
                 context.env[ucname+'_LIBS']=False
             return ret[0]
     from SCons.Script import EnumVariable
-    vars.Add(EnumVariable(lcname, 'Whether to use the '+name+' package', "auto", ["yes", "no", "auto"]))
+    vars = SCons.Variables.Variables(files=[File('#/config.py').abspath])
+    vars.Add(SCons.Variables.EnumVariable(lcname, 'Whether to use the '+name+' package', "auto", ["yes", "no", "auto"]))
     vars.Add(lcname+'libs', 'Libs to link against when using '+name+'. Needed which "'+lcname+'" is "yes".', None)
-    vars.Update(env)
+    tenv= SCons.Environment.Environment(variables=vars)
+    env['IMP_VARIABLES'].Add(SCons.Variables.EnumVariable(lcname, 'Whether to use the '+name+' package', "auto", ["yes", "no", "auto"]))
+    env['IMP_VARIABLES'].Add(lcname+'libs', 'Libs to link against when using '+name+'. Needed which "'+lcname+'" is "yes".', None)
+    env[lcname]= tenv[lcname]
+    if tenv.get(lcname+"libs", None) is not None:
+        env[lcname+"libs"]= tenv[lcname+"libs"]
     if not env.GetOption('help'):
         custom_tests = {'CheckThisLib':_check}
         conf = env.Configure(custom_tests=custom_tests)

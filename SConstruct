@@ -20,7 +20,7 @@ from SCons import Script
 EnsureSConsVersion(0, 98)
 
 # Set up build environment:
-vars = Variables('config.py')
+vars = Variables(files=[File('#/config.py').abspath])
 scons_tools.add_common_variables(vars, "imp")
 env = scons_tools.MyEnvironment(variables=vars,
                                 tools=["default", "swig"],
@@ -140,26 +140,26 @@ if not env.GetOption('help'):
             print >> sys.stderr, "Use 'scons -h' to get a list of the accepted variables."
             Exit(1)
     scons_tools.build_summary.setup(env)
+else:
+    tenv= Environment(variables=vars)
+    Help("""
+    Available command-line options:
+    (These can also be specified in regular Python syntax by creating a file
+    called 'config.py' in this directory.)
+    """)
+    Help(vars.GenerateHelpText(tenv))
 
+    Help("""
+    Type: 'scons' to build the IMP kernel and all configured modules (i.e. those
+                  with no unmet dependencies);
+          'scons test' to run unit tests for the kernel and all configured modules;
+          'scons install' to install the kernel and all configured modules;
+          'scons doc{-install}' to build (and optionally install) doc
 
-Help("""
-Available command-line options:
-(These can also be specified in regular Python syntax by creating a file
-called 'config.py' in this directory.)
-""")
-Help(vars.GenerateHelpText(env))
+    Other useful targets:
+          '[kernel,modulename]-test' to test all modules, the kernel, or a particular module
+          '[kernel, modulename]-test-examples' to test the examples for a particular module or the kernel
+          'all' to build and test everything (and clean up everything in conjunction with '-c')
 
-Help("""
-Type: 'scons' to build the IMP kernel and all configured modules (i.e. those
-              with no unmet dependencies);
-      'scons test' to run unit tests for the kernel and all configured modules;
-      'scons install' to install the kernel and all configured modules;
-      'scons doc{-install}' to build (and optionally install) doc
-
-Other useful targets:
-      '[kernel,modulename]-test' to test all modules, the kernel, or a particular module
-      '[kernel, modulename]-test-examples' to test the examples for a particular module or the kernel
-      'all' to build and test everything (and clean up everything in conjunction with '-c')
-
-Infrequently changing settings can be stored in a 'config.py' file in the build directory. An example is provided in tools/example-config.py.
-""")
+    Infrequently changing settings can be stored in a 'config.py' file in the build directory. An example is provided in tools/example-config.py.
+    """)
