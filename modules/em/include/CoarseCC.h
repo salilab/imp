@@ -28,7 +28,7 @@ class IMPEMEXPORT CoarseCC
 
 public:
 
-  //! Evaluates the value of the EM fitting term.
+  //! Calculates the value of the EM fitting term.
   /** \note The function returns scalefac*(1-ccc)
             to support minimization optimization. The ccc value (cross
             correlation coefficient) is calculate by the
@@ -37,12 +37,8 @@ public:
              correct RMSD and mean MUST be in the header!
       \param[in] model_map SampledDensityMap class prepared to contain the
              simulated EM map for the model.
-      \param[in] dvx vector to contain the xpartial derivatives
-      \param[in] dvy vector to contain the y partial derivatives
-      \param[in] dvz vector to contain the z partial derivatives
       \param[in] scalefactor scale factor to apply to the value of the cross
              correlation term
-      \param[in] lderiv if true, the derivatives of the term are computed
       \param[in] divide_by_rms determines wheather the model_map should be
                  normalized prior to the correlation calculation. false is
                  faster, but potentially innacurate
@@ -50,11 +46,11 @@ public:
       \return the value of the cross correlation term: scalefac*(1-ccc)
       \relatesalso cross_correlation_coefficient
    */
-  static float evaluate(
+  static float calc_score(
    DensityMap &data, SampledDensityMap &model_map,
-   std::vector<float> &dvx, std::vector<float>&dvy,
-   std::vector<float>&dvz, float scalefactor, bool lderiv,
+   float scalefactor,
    bool divide_by_rms=true,bool resample=true);
+
 
 /*!
  Computes the derivatives of the cross correlation term scalefac*(1-ccc) at each

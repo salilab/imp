@@ -9,36 +9,38 @@ class CrossCorrelationTests(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         IMP.set_log_level(IMP.SILENT)
         # Initial values and names of files
+        print "===1"
         self.fn_in = self.get_input_file_name('1tdx_sampled.mrc')
         self.resolution=6.0
         self.fn_coords = self.get_input_file_name('1tdx.pdb')
         self.pixel_size=1.0
-
+        print "===2"
 
         self.mrc_rw = IMP.em.MRCReaderWriter()
         self.EM_map = IMP.em.read_map(self.fn_in,self.mrc_rw)
         self.EM_map.std_normalize()
         self.EM_map.get_header_writable().compute_xyz_top()
-
+        print "===3"
         self.mdl=IMP.Model()
-        mh=IMP.atom.read_pdb(self.fn_coords,self.mdl,IMP.atom.NonWaterNonHydrogenPDBSelector())
+        mh=IMP.atom.read_pdb(self.fn_coords,self.mdl,IMP.atom.CAlphaPDBSelector())
         IMP.atom.add_radii(mh)
         self.atoms=IMP.core.get_leaves(mh)
-
+        print "===4"
         self.model_map = IMP.em.SampledDensityMap(self.atoms, self.resolution,
                                                   self.pixel_size)
         self.xo=self.model_map.get_header().get_xorigin()
         self.yo=self.model_map.get_header().get_yorigin()
         self.zo=self.model_map.get_header().get_zorigin()
 
-
+        print "===5"
         self.EM_map = IMP.em.SampledDensityMap(self.atoms, self.resolution,                                                                                                 self.pixel_size)
         self.EM_map.std_normalize()
         self.EM_map.get_header_writable().compute_xyz_top()
 
         self.ccc = IMP.em.CoarseCC()
+        print "===6"
         self.ccc_intervals = IMP.em.CoarseCCatIntervals()
-
+        print "===7"
 
     def calc_simple_correlation(self):
 
@@ -70,14 +72,12 @@ class CrossCorrelationTests(IMP.test.TestCase):
         self.EM_map.get_header_writable().compute_xyz_top()
         score1 = self.ccc.cross_correlation_coefficient(self.EM_map,self.model_map,threshold,True)
 
-
         #compute correlation translating the particles
         self.model_map.set_origin(self.xo,self.yo,self.zo)
         for atom in self.atoms:
             IMP.core.XYZ(atom.get_particle()).set_coordinates(translation.get_transformed(IMP.core.XYZ(atom.get_particle()).get_coordinates()))
         interval=1
-        dvx = IMP.em.floats(); dvy= IMP.em.floats(); dvz= IMP.em.floats()
-        score= self.ccc.evaluate(self.EM_map,self.model_map,dvx,dvy,dvz,1.0,False)
+        score= self.ccc.calc_score(self.EM_map,self.model_map,1.0)
         score2 = 1.-score
         self.assertInTolerance(score1,score2,.05*(score1+score2))
 
@@ -92,35 +92,36 @@ class CrossCorrelationTests(IMP.test.TestCase):
 
         self.model_map.set_origin(self.xo-xm,self.yo-ym,self.zo-zm)
         interval=1
-        dvx = IMP.em.floats(); dvy= IMP.em.floats(); dvz= IMP.em.floats()
-        score= self.ccc.evaluate(self.EM_map,self.model_map,dvx,dvy,dvz,1.0,False)
-
+        score= self.ccc.calc_score(self.EM_map,self.model_map,1.0)
         score=1.-score
         self.assertAlmostEqual(simple_score,score,2)
 
     # Check that the function works at intervals
     def test_corr_at_intervals(self):
-
         """ test that the correlation at intervals functionality works"""
         self.model_map.set_origin(self.xo,self.yo,self.zo)
-        interval=5;         times=10;       scores_interval=[]
+        interval=5;         times=10;
+        scores_intervals=[]
+        scores_wo_intervals=[]
         dvx = IMP.em.floats(); dvy= IMP.em.floats(); dvz= IMP.em.floats()
-        translation=IMP.algebra.Transformation3D(IMP.algebra.get_identity_rotation_3d(),
-                                                 IMP.algebra.Vector3D(0.1,0.1,0.1))
-        for d in [dvx,dvy,dvz]:
-            for i in range(len(self.atoms)):
-                d.push_back(0.0)
-            for i in xrange(0,times):
-                score=self.ccc_intervals.evaluate(self.EM_map,self.model_map,dvx,dvy,dvz,1.0,False,interval)
-                scores_interval.append(score)
-                for atom in self.atoms:
-                    IMP.core.XYZ(atom.get_particle()).set_coordinates(translation.get_transformed(IMP.core.XYZ(atom.get_particle()).get_coordinates()))
-        # check that the scores are equal when they have to be due to the function skipping computations
+        translation=IMP.algebra.Transformation3D(
+            IMP.algebra.get_identity_rotation_3d(),
+            IMP.algebra.Vector3D(0.1,0.1,0.1))
+        #calculate correlation
+        for i in xrange(0,times):
+            print i
+            scores_wo_intervals.append(self.ccc.calc_score(self.EM_map,self.model_map,1.0))
+            scores_intervals.append(self.ccc_intervals.evaluate(self.EM_map,self.model_map,dvx,dvy,dvz,1.0,False,interval))
+
+            #transform the atoms
+            for xyz in IMP.core.XYZs(self.atoms):
+                xyz.set_coordinates(translation.get_transformed(xyz.get_coordinates()))
+            # check that the scores are equal when they have to be due to the function skipping computations
         for i in xrange(0,times):
             if(i%interval==0):
-                result=scores_interval[i]
-            self.assertEqual(result,scores_interval[i])
-
+                result=scores_intervals[i]
+                self.assertAlmostEqual(scores_wo_intervals[i],scores_intervals[i])
+            self.assertEqual(result,scores_intervals[i],2)
 
 if __name__=='__main__':
     unittest.main()

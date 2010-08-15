@@ -12,14 +12,12 @@
 
 IMPEM_BEGIN_NAMESPACE
 
-/*Correlation function  */
-float CoarseCC::evaluate(DensityMap &em_map,
+float CoarseCC::calc_score(DensityMap &em_map,
                          SampledDensityMap &model_map,
-                         std::vector<float> &dvx, std::vector<float>&dvy,
-                         std::vector<float>&dvz, float scalefac, bool lderiv,
+                         float scalefac,
                          bool divide_by_rms,bool resample)
 {
-  //resample the map for the particle provided
+  //resample the map for the particles provided
   if (resample) {
      model_map.resample();
   }
@@ -39,16 +37,6 @@ float CoarseCC::evaluate(DensityMap &em_map,
           << std::endl);
   IMP_LOG(VERBOSE, "CoarseCC::evaluate: the score is:" << escore << std::endl);
   escore = scalefac * (1. - escore);
-
-  //compute the derivatives if required
-  if (lderiv) {
-  IMP_LOG(VERBOSE, "CoarseCC::evaluate: before calc derivaties:"
-                   << escore << std::endl);
-    CoarseCC::calc_derivatives(em_map, model_map, scalefac,
-                               dvx, dvy, dvz);
-  IMP_LOG(VERBOSE, "CoarseCC::evaluate: after calc derivaties:"
-                    << escore << std::endl);
-  }
 
   return escore;
 }
@@ -162,6 +150,11 @@ float CoarseCC::cross_correlation_coefficient(const DensityMap &em_map,
           << " norm factors (map,model) " << em_header->rms
           << "  " <<  model_header->rms << " means(map,model) "
           << em_header->dmean << " " << model_header->dmean << std::endl);
+  std::cout<<" ccc : " << ccc << " voxel# " << nvox
+          << " norm factors (map,model) " << em_header->rms
+          << "  " <<  model_header->rms << " means(map,model) "
+          << em_header->dmean << " " << model_header->dmean << std::endl;
+
   return ccc;
 }
 
