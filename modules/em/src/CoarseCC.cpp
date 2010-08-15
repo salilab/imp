@@ -150,11 +150,6 @@ float CoarseCC::cross_correlation_coefficient(const DensityMap &em_map,
           << " norm factors (map,model) " << em_header->rms
           << "  " <<  model_header->rms << " means(map,model) "
           << em_header->dmean << " " << model_header->dmean << std::endl);
-  std::cout<<" ccc : " << ccc << " voxel# " << nvox
-          << " norm factors (map,model) " << em_header->rms
-          << "  " <<  model_header->rms << " means(map,model) "
-          << em_header->dmean << " " << model_header->dmean << std::endl;
-
   return ccc;
 }
 
