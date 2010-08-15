@@ -147,7 +147,7 @@ def MyEnvironment(variables=None, *args, **kw):
     # First make a dummy environment in order to evaluate all variables, since
     # env['wine'] will tell us which 'real' environment to create:
     env = Environment(tools=[], variables=variables)
-    variables.Update(env)
+    #variables.Update(env)
     newpath = env['ENV']['PATH']
     if env.get('path') is not None:
         newpath = env['path'] + os.path.pathsep + newpath
