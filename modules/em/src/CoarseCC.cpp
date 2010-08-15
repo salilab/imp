@@ -271,8 +271,7 @@ void CoarseCC::calc_derivatives(
                              SampledDensityMap &model_map,
                              const float &scalefac,
                              std::vector<float> &dvx, std::vector<float>&dvy,
-                             std::vector<float>&dvz)
-{
+                             std::vector<float>&dvz) {
 
   float tdvx = 0., tdvy = 0., tdvz = 0., tmp,rsq;
   int iminx, iminy, iminz, imaxx, imaxy, imaxz;
@@ -283,6 +282,9 @@ void CoarseCC::calc_derivatives(
   const float *y_loc = model_map.get_y_loc();
   const float *z_loc = model_map.get_z_loc();
   Particles model_ps=model_map.get_sampled_particles();
+  IMP_INTERNAL_CHECK(model_ps.size()==dvx.size(),
+    "input derivatives array size does not match "<<
+    "the number of particles in the model map\n");
   core::XYZRsTemp model_xyzr = core::XYZRsTemp(model_ps);
   //this would go away once we have XYZRW decorator
   FloatKey w_key=model_map.get_weight_key();

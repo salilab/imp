@@ -50,8 +50,8 @@ class ResamplingTest(IMP.test.TestCase):
             self.ps_all+=self.pss[n]
         map=IMP.em.particles2density(self.ps_all,8,1.5)
         map.calcRMS()
-        self.restr_ps_all=IMP.em.FitRestraint(self.ps_all,map,self.rb_refiner,self.radius_key,self.weight_key,1,False,True)
-        self.restr_rb_all_fast=IMP.em.FitRestraint(self.rbs_of_copy,map,self.rb_refiner,self.radius_key,self.weight_key,1,False,True)
+        self.restr_ps_all=IMP.em.FitRestraint(self.ps_all,map,self.rb_refiner,self.radius_key,self.weight_key,1)
+        self.restr_rb_all_fast=IMP.em.FitRestraint(self.rbs_of_copy,map,self.rb_refiner,self.radius_key,self.weight_key,1)
         self.imp_model.add_restraint(self.restr_ps_all)
         self.imp_model.add_restraint(self.restr_rb_all_fast)
         score1=self.restr_ps_all.evaluate(False)
@@ -94,9 +94,9 @@ class ResamplingTest(IMP.test.TestCase):
             self.ps_all+=self.pss[n]
         map=IMP.em.particles2density(self.ps_all,8,1.5)
         map.calcRMS()
-        self.restr_ps_all=IMP.em.FitRestraint(self.ps_all,map,self.rb_refiner,self.radius_key,self.weight_key,1,False,True)
-        self.restr_rb_all_fast=IMP.em.FitRestraint(self.rbs_of_copy,map,self.rb_refiner,self.radius_key,self.weight_key,1,False,True)
-        self.restr_rb_all_slow=IMP.em.FitRestraint(self.rbs_of_copy,map,self.rb_refiner,self.radius_key,self.weight_key,1,False,False)
+        self.restr_ps_all=IMP.em.FitRestraint(self.ps_all,map,self.rb_refiner,self.radius_key,self.weight_key,1)
+        self.restr_rb_all_fast=IMP.em.FitRestraint(self.rbs_of_copy,map,self.rb_refiner,self.radius_key,self.weight_key,1)
+        self.restr_rb_all_slow=IMP.em.FitRestraint(self.rbs_of_copy,map,self.rb_refiner,self.radius_key,self.weight_key,1)
         self.imp_model.add_restraint(self.restr_ps_all)
         self.imp_model.add_restraint(self.restr_rb_all_fast)
         self.imp_model.add_restraint(self.restr_rb_all_slow)
