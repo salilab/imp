@@ -67,7 +67,7 @@ FitRestraint::FitRestraint(
   IMP_LOG(VERBOSE,"going to initialize_model_density_map"<<std::endl);
   initialize_model_density_map(ps,radius_key,weight_key);
    // initialize the derivatives
-  int not_rb_size=0;int rb_size=0;
+  int not_rb_size=0;
   for(Particles::iterator it = ps.begin(); it != ps.end();it++) {
     if (core::RigidBody::particle_is_instance(*it)) {
       rb_refined_dx_.push_back(std::vector<float>());
@@ -212,7 +212,7 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
            const_cast<FitRestraint*>(this)->not_rb_dy_,
            const_cast<FitRestraint*>(this)->not_rb_dz_);
       }
-      for(int rb_i=0;rb_i<rbs_.size();rb_i++) {
+      for(unsigned int rb_i=0;rb_i<rbs_.size();rb_i++) {
       IMP_LOG(VERBOSE,
               "Going to calc derivatives for rigid body number "<<
               rb_i<<"\n");
