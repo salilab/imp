@@ -294,7 +294,8 @@ void CoarseCC::calc_derivatives(
             "Model map is empty ! model_header->rms = " << model_header->rms
             <<" the model centroid is : " <<
             core::get_centroid(core::XYZsTemp(model_ps))<<
-            " the map centroid is " << em_map.get_centroid() <<std::endl);
+            " the map centroid is " << em_map.get_centroid()<<
+                  "number of particles in model:"<<model_ps.size()<<std::endl);
   // Compute the derivatives
   for (unsigned int ii=0; ii<model_ps.size(); ii++) {
       const RadiusDependentKernelParameters *params =

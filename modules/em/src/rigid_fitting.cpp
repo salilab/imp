@@ -41,8 +41,8 @@ RestraintSet * add_restraints(Model *model, DensityMap *dmap,
    FitRestraint *fit_rs;
    IMP_NEW(core::LeavesRefiner,leaves_ref,(atom::Hierarchy::get_traits()));
    if (fast) {
-     fit_rs = new FitRestraint(rb.get_particle(),dmap,leaves_ref,
-                               rad_key,wei_key,1.0);
+     fit_rs = new FitRestraint(rb.get_particle(),
+                               dmap,leaves_ref,rad_key,wei_key,1.0);
    }
    else {
      fit_rs = new FitRestraint(leaves_ref->get_refined(rb),

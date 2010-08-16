@@ -157,9 +157,11 @@ inline FittingSolutions local_rigid_fitting(
    Int number_of_optimization_runs = 5, Int number_of_mc_steps = 10,
    Int number_of_cg_steps=100,
    Float max_translation=2., Float max_rotation=.3,
-   bool fast=false) {
+   bool fast=true) {
+  IMP_LOG(VERBOSE,"Start: local_rigid_fitting\n");
    algebra::Vector3D rb_cen=
  IMP::core::get_centroid(core::XYZsTemp(core::get_leaves(atom::Hierarchy(rb))));
+   IMP_LOG(VERBOSE,"centroid is:"<<rb_cen<<"\n");
    return local_rigid_fitting_around_point(
      rb, radius_key, weight_key,dmap, rb_cen,display_log,
      number_of_optimization_runs, number_of_mc_steps,
