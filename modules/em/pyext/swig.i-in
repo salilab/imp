@@ -9,6 +9,7 @@ namespace IMP::em {
 
 /* Make selected classes extensible in Python */
 IMP_SWIG_OBJECT(IMP::em, DensityMap, DensityMaps);
+IMP_SWIG_OBJECT(IMP::em, SampledDensityMap, SampledDensityMaps);
 IMP_SWIG_OBJECT(IMP::em, FitRestraint, FitRestraints);
 IMP_SWIG_OBJECT(IMP::em, Image, Images);
 
