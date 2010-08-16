@@ -163,9 +163,10 @@ void FitRestraint::resample() const {
       DensityMap *transformed = get_transformed(
          rb_model_dens_map_[rb_i],
          rbs_[rb_i].get_transformation()*rbs_orig_trans_[rb_i]);
-    IMP_LOG(VERBOSE,"transformed map size:"<<
+      IMP_LOG(VERBOSE,"transformed map size:"<<
                     get_bounding_box(transformed,-1000.)<<std::endl);
       model_dens_map_->add(*transformed);
+      delete transformed;
   }
 }
 
@@ -213,7 +214,7 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
       }
       for(int rb_i=0;rb_i<rbs_.size();rb_i++) {
       IMP_LOG(VERBOSE,
-              "Going to calc derivatives for rigid body number"<<
+              "Going to calc derivatives for rigid body number "<<
               rb_i<<"\n");
         CoarseCC::calc_derivatives(
            const_cast<DensityMap&>(*target_dens_map_),
