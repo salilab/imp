@@ -567,7 +567,7 @@ void Profile::squared_distributions_2_partial_profiles(
   }
 }
 
-void Profile::add(const Profile& other_profile) {
+void Profile::add(const Profile& other_profile, Float weight) {
   if(profile_.size() == 0 && other_profile.size() != 0) {
     min_q_ = other_profile.get_min_q();
     max_q_ = other_profile.get_max_q();
@@ -576,11 +576,17 @@ void Profile::add(const Profile& other_profile) {
   }
   // assumes same q values!!!
   for (unsigned int k = 0; k < profile_.size(); k++) {
-    profile_[k].intensity_ += other_profile.profile_[k].intensity_;
+    profile_[k].intensity_ += weight*other_profile.profile_[k].intensity_;
   }
 }
 
-void Profile::add_partial_profiles(const Profile& other_profile) {
+void Profile::add_partial_profiles(const Profile& other_profile, Float weight) {
+  if(other_profile.partial_profiles_.size() > 0 &&
+     partial_profiles_.size() == 0) {
+      partial_profiles_.insert(partial_profiles_.begin(),
+                               other_profile.partial_profiles_.size(),
+                               Profile(min_q_, max_q_, delta_q_));
+  }
   if(partial_profiles_.size() != other_profile.partial_profiles_.size()) {
     IMP_WARN("Can't add different partial profile sizes "
              << partial_profiles_.size() << "-"
@@ -588,7 +594,7 @@ void Profile::add_partial_profiles(const Profile& other_profile) {
     return;
   }
   for(unsigned int i=0; i<partial_profiles_.size(); i++) {
-    partial_profiles_[i].add(other_profile.partial_profiles_[i]);
+    partial_profiles_[i].add(other_profile.partial_profiles_[i], weight);
   }
 }
 

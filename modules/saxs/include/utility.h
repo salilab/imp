@@ -75,7 +75,7 @@ inline Float compute_max_distance(const Particles& particles1,
 
 //! compute radius_of_gyration
 inline Float radius_of_gyration(const Particles& particles) {
-  algebra::VectorD<3> centroid(0.0, 0.0, 0.0);
+  algebra::Vector3D centroid(0.0, 0.0, 0.0);
   std::vector<algebra::Vector3D> coordinates(particles.size());
   get_coordinates(particles, coordinates);
   for (unsigned int i = 0; i < particles.size(); i++) {

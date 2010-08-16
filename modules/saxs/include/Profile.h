@@ -94,10 +94,10 @@ public:
   void distribution_2_profile(const RadialDistributionFunction& r_dist);
 
   //! add another profile - useful for rigid bodies
-  void add(const Profile& other_profile);
+  void add(const Profile& other_profile, Float weight = 1.0);
 
   //! add partial profiles
-  void add_partial_profiles(const Profile& other_profile);
+  void add_partial_profiles(const Profile& other_profile, Float weight = 1.0);
 
   //! background adjustment option
   void background_adjust(double start_q);
