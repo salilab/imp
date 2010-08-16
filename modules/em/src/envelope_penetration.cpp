@@ -27,7 +27,7 @@ long get_number_of_particles_outside_of_the_density(DensityMap *dmap,
     }
   }
   IMP_LOG(IMP::VERBOSE,"the number of particles outside of the density is:"
-         << std::endl);
+          << out_of_dens << std::endl);
   return out_of_dens;
 }
 IMPEM_END_NAMESPACE
