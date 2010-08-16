@@ -64,7 +64,9 @@ public:
     IMP_INTERNAL_CHECK(indents_.size() >=1,
                            "Too many pops");
     indents_.pop_back();
-    IMP_LOG(VERBOSE, "Indent is now " << indents_.back() << std::endl);
+    if (!indents_.empty()) {
+      IMP_LOG(VERBOSE, "Indent is now " << indents_.back() << std::endl);
+    }
   }
   void push_indent() {
     fill_buffer();
