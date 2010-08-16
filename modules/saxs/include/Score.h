@@ -42,6 +42,29 @@ public:
                                          use_offset, fit_file_name));
   }
 
+  //! fit experimental profile through optimization of c1 and c2 parameters
+  /**
+     \param[in] model profile (partial profiles computed)
+     \param[in] c1, c2 - the optimal values will be returned in these parameters
+     c1 - adjusts the excluded volume, valid range [0.95 - 1.12]
+     c2 - adjusts the density of hydration layer, valid range [-4.0 - 4.0]
+     \return chi value
+  */
+  Float fit_profile(Profile& partial_profile, float& c1, float& c2,
+                    bool fixed_c1 = false, bool fixed_c2 = false,
+                    bool use_offset = false,
+                    const std::string fit_file_name = "") const;
+
+  //! fit experimental profile through optimization of c1 and c2 parameters
+  Float fit_profile(Profile& partial_profile,
+                    bool use_offset = false,
+                    const std::string fit_file_name = "") const {
+    // this function version is for python
+    float c1, c2;
+    return fit_profile(partial_profile, c1, c2, false, false,
+                       use_offset, fit_file_name);
+  }
+
   //! compute squared chi value
   Float compute_chi_square_score(const Profile& model_profile,
                                  bool use_offset = false,

@@ -88,6 +88,56 @@ Float Score::compute_offset(const Profile& model_profile) const {
   return offset;
 }
 
+
+Float Score::fit_profile(Profile& partial_profile, float& C1, float& C2,
+                         bool fixed_c1, bool fixed_c2, bool use_offset,
+                         const std::string fit_file_name) const {
+  // compute chi value for default c1/c1 (remove?)
+  float default_c1 = 1.0, default_c2 = 0.0;
+  partial_profile.sum_partial_profiles(default_c1, default_c2, partial_profile);
+  float default_chi = compute_chi_score(partial_profile, use_offset);
+
+  float best_c1(default_c1), best_c2(default_c2), best_chi(default_chi);
+  bool best_set = false;
+
+  // set up the range for c1 and c2
+  float min_c1 = 0.95, max_c1 = 1.12;
+  float min_c2 = -4.0, max_c2 = 4.0, delta_c2 = 0.1;
+  if(fixed_c1) {
+    min_c1 = max_c1 = C1;
+    delta_c2 = 0.01; // finer c2 enumeration
+  }
+  if(fixed_c2) {
+    min_c2 = max_c2 = C2;
+  }
+
+  // enumerate
+  for(float c1 = min_c1; c1<=max_c1; c1+= 0.005) {
+    for(float c2 = min_c2; c2<=max_c2; c2+= delta_c2) {
+      partial_profile.sum_partial_profiles(c1, c2, partial_profile);
+      float curr_chi = compute_chi_score(partial_profile, use_offset);
+      if(!best_set || curr_chi < best_chi) {
+        best_set = true;
+        best_chi = curr_chi;
+        best_c1 = c1;
+        best_c2 = c2;
+      }
+      //std::cerr << "c1 = " << c1 << " c2 = " << c2
+      //<< " chi = " << curr_chi << std::endl;
+    }
+  }
+
+  // compute a profile for best c1/c2 combination
+  partial_profile.sum_partial_profiles(best_c1, best_c2, partial_profile);
+  compute_chi_score(partial_profile, use_offset, fit_file_name);
+  if(!fixed_c1) C1 = best_c1;
+  if(!fixed_c2) C2 = best_c2;
+
+  std::cout << " Chi = " << best_chi << " c1 = " << best_c1 << " c2 = "
+            << best_c2 << " default chi = " << default_chi << std::endl;
+  return best_chi;
+}
+
 Float Score::compute_chi_square_score(const Profile& model_profile,
                                       bool use_offset,
                                       const std::string fit_file_name) const
