@@ -49,9 +49,6 @@ Written by Dina Schneidman.")
      "maximal q value (default = 0.5)")
     ("profile_size,s", po::value<int>(&profile_size)->default_value(500),
      "number of points in the profile (default = 500)")
-    /*     ("parameter_fit,p",
-      "fit by adjusting excluded volume and hydration layer density parameters \
-      (default = true)") */
     ("water_layer,w", "compute hydration layer (default = true)")
     ("hydrogens,h", "explicitly consider hydrogens in PDB files \
 (default = false)")
@@ -76,17 +73,16 @@ recommended q value is 0.2")
   po::notify(vm);
 
   std::vector<std::string> files, pdb_files, dat_files;
-  if (vm.count("input-files"))   {
+  if(vm.count("input-files")) {
     files = vm["input-files"].as< std::vector<std::string> >();
   }
   if(vm.count("help") || files.size() == 0) {
     std::cout << desc << "\n";
     return 0;
   }
-  //  if (vm.count("parameter_fit")) fit=false;
-  if (vm.count("water_layer")) water_layer=false;
-  if (vm.count("hydrogens")) heavy_atoms_only=false;
-  if (vm.count("offset")) use_offset=true;
+  if(vm.count("water_layer")) water_layer=false;
+  if(vm.count("hydrogens")) heavy_atoms_only=false;
+  if(vm.count("offset")) use_offset=true;
 
   float delta_q = max_q / profile_size;
   bool interactive_gnuplot = false; // for server
@@ -195,51 +191,20 @@ recommended q value is 0.2")
       IMP::saxs::Profile* exp_saxs_profile = exp_profiles[j];
       IMP::Pointer<IMP::saxs::Score> saxs_score =
         new IMP::saxs::Score(*exp_saxs_profile);
-      partial_profile->sum_partial_profiles(1.0, 0.0, *partial_profile);
-      float chi = saxs_score->compute_chi_score(*partial_profile, use_offset);
-      //std::cout << "Chi  = " << chi << std::endl;
 
-      // try to fit exp data with two parameters
-      if(fit) {
-        float best_c1 = 1.0, best_c2 = 0.0;
-        float best_chi = chi;
-        float min_c1 = 0.95, max_c1 = 1.12, delta_c2 = 0.1;
-        if(excluded_volume_c1 > 0.0) {
-          min_c1 = max_c1 = excluded_volume_c1;
-          delta_c2 = 0.01; // finer enumeration
-        }
-        for(float c1 = min_c1; c1<=max_c1; c1+= 0.005) {
-          for(float c2 = 0.0; c2<=4.0; c2+= delta_c2) {
-            IMP::saxs::Profile p(0.0, max_q, delta_q);
-            partial_profile->sum_partial_profiles(c1, c2, p);
-            float curr_chi = saxs_score->compute_chi_score(p, use_offset);
-            if(curr_chi < best_chi) {
-              best_chi = curr_chi;
-              best_c1 = c1;
-              best_c2 = c2;
-              saxs_score->compute_chi_score(p, use_offset);
-            }
-            //std::cerr << "c1 = " << c1 << " c2 = " << c2
-            // << " chi = " << curr_chi << std::endl;
-            if(surface_area.size() == 0) break;
-          }
-        }
-
-        // store best fit into partial_profile and print
-        std::cout << pdb_files[i] << " " << dat_files[j] << " Chi = "
-                  << best_chi << " c1 = " << best_c1 << " c2 = " << best_c2
-                  << " default chi = " << chi << std::endl;
-        partial_profile->sum_partial_profiles(best_c1, best_c2,
-                                              *partial_profile);
-      } else {
-        std::cout << pdb_files[i] << " " << dat_files[j] << " Chi = "
-                  << chi << " c1 = 1.00 c2 = 0.0 default chi = " << chi
-                  << std::endl;
-      }
       std::string fit_file_name2 = trim_extension(pdb_files[i]) + "_" +
         trim_extension(basename(const_cast<char *>(dat_files[j].c_str())))
         + ".dat";
-      saxs_score->compute_chi_score(*partial_profile,use_offset,fit_file_name2);
+
+      float C1, C2;
+      bool fixed_c1 = false;
+      bool fixed_c2 = false;
+      if(excluded_volume_c1 > 0.0) { C1 = excluded_volume_c1; fixed_c1 = true; }
+      if(!water_layer) { C2 = 0.0; fixed_c2 = true; }
+      std::cout << pdb_files[i] << " " << dat_files[j];
+      IMP::Float chi =
+        saxs_score->fit_profile(*partial_profile, C1, C2, fixed_c1, fixed_c2,
+                                use_offset, fit_file_name2);
       Gnuplot::print_fit_script(pdb_files[i], dat_files[j],interactive_gnuplot);
     }
   }
