@@ -56,8 +56,9 @@ void do_benchmark() {
                {for (unsigned int i=0; i< 3; ++i ) {
                    for (unsigned int j=0;
                         j< m[i]->get_number_of_voxels(); ++j) {
-                     dist+= m[i]->voxel2loc(j,0)
-                       + m[i]->voxel2loc(j,1) + m[i]->voxel2loc(j,2);
+                     dist+= m[i]->get_location_in_dim_by_voxel(j,0)
+                       + m[i]->get_location_in_dim_by_voxel(j,1)
+                       + m[i]->get_location_in_dim_by_voxel(j,2);
                    }
                  }
                }, runtime, N);

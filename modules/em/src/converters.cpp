@@ -21,9 +21,9 @@ std::vector<algebra::VectorD<3> > density2vectors(DensityMap &dmap,
         ind = dmap.xyz_ind2voxel(i,j,k);
         if(dmap.get_value(ind)>threshold) {
           vecs.push_back(algebra::Vector3D(
-                            dmap.voxel2loc(ind,0),
-                            dmap.voxel2loc(ind,1),
-                            dmap.voxel2loc(ind,2)));
+                            dmap.get_location_in_dim_by_voxel(ind,0),
+                            dmap.get_location_in_dim_by_voxel(ind,1),
+                            dmap.get_location_in_dim_by_voxel(ind,2)));
         }
       }
      }
@@ -48,9 +48,9 @@ Particles density2particles(DensityMap &dmap, Float threshold,
         val = dmap.get_value(ind);
         if (val > threshold) {
           Particle * p = new Particle(m);
-          x = dmap.voxel2loc(ind,0);
-          y = dmap.voxel2loc(ind,1);
-          z = dmap.voxel2loc(ind,2);
+          x = dmap.get_location_in_dim_by_voxel(ind,0);
+          y = dmap.get_location_in_dim_by_voxel(ind,1);
+          z = dmap.get_location_in_dim_by_voxel(ind,2);
           Voxel::setup_particle(p,IMP::algebra::VectorD<3>(x,y,z),r,val);
           ps.push_back(p);
         }

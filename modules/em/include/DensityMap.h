@@ -63,7 +63,8 @@ IMPEMEXPORT Float approximate_molecular_mass(DensityMap* m, Float threshold);
 
 //! Class for handling density maps.
 /** /note The location of a voxel is its center. That is important
-     for sampling function as well as for functions like voxel2loc.
+     for sampling function as well as for functions
+     like get_location_in_dim_by_voxel.
  */
 class IMPEMEXPORT DensityMap: public Object
 {
@@ -109,14 +110,13 @@ public:
 
   inline bool is_normalized() const {return normalized_;}
 
-  //! Calculate the location of a given voxel.
+  //! Calculate the location of a given voxel in a given dimension
   /** \param[in] index The voxel index
-      \param[in] dim   The dimesion of intereset ( between x:=0,y:=1,z:=2)
+      \param[in] dim   The dimesion of intereset (x:=0,y:=1,z:=2)
       \return the location (x,y,z) (in angstroms) of a given voxel. If the
               index is not part of the map, the function returns -1.
-      \todo change to const and throw exception if loc_calculated == false
    */
-  float voxel2loc(long index,int dim) const;
+  float get_location_in_dim_by_voxel(long index,int dim) const;
 
 
   //! Calculate the voxel of a given xyz indexes
@@ -132,21 +132,31 @@ public:
   }
 
   //! Calculate the voxel of a given location
-  /** \param[in] x The position ( in angstroms) of the x coordinate
-      \param[in] y The position ( in angstroms) of the y coordinate
-      \param[in] z The position ( in angstroms) of the z coordinate
-      \exception  IndexException  The point is not covered by the grid.
+  /** \param[in] x The position (in angstroms) of the x coordinate
+      \param[in] y The position (in angstroms) of the y coordinate
+      \param[in] z The position (in angstroms) of the z coordinate
       \return the voxel index of a given position. If the position is out of
               the boundaries of the map, the function returns -1.
    */
-  long loc2voxel(float x, float y, float z) const;
-  long loc2voxel(const algebra::VectorD<3> &v) const {
-    return loc2voxel(v[0],v[1],v[2]);
+  long get_voxel_by_location(float x, float y, float z) const {
+    return get_voxel_by_location(algebra::Vector3D(x,y,z));
   }
+  //! Calculate the voxel of a given location
+  /** \param[in] v The position (in angstroms)
+      \return the voxel index of a given position. If the position is out of
+              the boundaries of the map, the function returns -1.
+   */
+  long get_voxel_by_location(const algebra::VectorD<3> &v) const;
+  //! Calculate dimension index of a given location
+  /** \param[in] v The position (in angstroms)
+      \param[in] ind dimension index (X:0,Y:1 or Z:2)
+   */
+  int get_dim_index_by_location(const algebra::VectorD<3> &v,int ind) const;
 
   algebra::VectorD<3> get_location_by_voxel(long index) const {
-    return algebra::Vector3D(voxel2loc(index,0),
-                             voxel2loc(index,1),voxel2loc(index,2));
+    return algebra::Vector3D(get_location_in_dim_by_voxel(index,0),
+                             get_location_in_dim_by_voxel(index,1),
+                             get_location_in_dim_by_voxel(index,2));
   }
 
   bool is_xyz_ind_part_of_volume(int ix,int iy,int iz) const;
@@ -270,15 +280,6 @@ public:
    */
   bool same_dimensions(const DensityMap &other) const;
 
-
-  // //! Checks the two density maps are overlapping in at least one voxel
-  // /** \param[in] other the map to compare with
-  //     \return true if the two maps are intersecting
-  //  */
-  // bool is_intersecting(const DensityMap &other,float resolution) const;
-
-
-
   //! Checks if  two maps have the same voxel size
   /** \param[in] other the map to compare with
       \return true if the two maps have the same voxel size
@@ -344,11 +345,13 @@ public:
 
 
   //! Create a new cropped map
-  /** \brief Crop margin with density values below the input
+  /** \brief The margins are determined to be the bounding box
+             with density values below the input
    \param[in] threshold used for cropping
    */
   DensityMap* get_cropped(float threshold);
-
+  //! Create a new cropped map with the bounding box extent
+  DensityMap* get_cropped(const algebra::BoundingBox3D &bb);
 
   //! Get the maximum value in a XY plane indicated by a Z index
   float get_maximum_value_in_xy_plane(int z_ind);
@@ -375,9 +378,6 @@ public:
   */
   Float get_spacing() const {return header_.get_spacing();}
   //! Calculates the coordinates that correspond to all voxels.
-  /** Can be precomputed to make corr faster.
-      \todo which is a better design - have it public or call it from voxel2loc?
-   */
   void calc_all_voxel2loc();
 
   IMP_OBJECT_INLINE(DensityMap, header_.show(out),{});
@@ -420,7 +420,7 @@ public:
 protected:
   //!update the header values  -- still in work
   void update_header();
-  void reset_voxel2loc();
+  void reset_get_location_in_dim_by_voxel();
 
   void allocated_data();
   void float2real(float *f_data, boost::scoped_array<emreal> &r_data);

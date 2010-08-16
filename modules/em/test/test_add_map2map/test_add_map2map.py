@@ -37,9 +37,9 @@ class AddParticlesTest(IMP.test.TestCase):
         """ test that adding a map to each other works """
         self.scene1.add(self.scene2)
         for i in [4931,5391,5396,5477,5968]:
-            x = self.scene1.voxel2loc(i,0)
-            y = self.scene1.voxel2loc(i,1)
-            z = self.scene1.voxel2loc(i,2)
+            x = self.scene1.get_location_in_dim_by_voxel(i,0)
+            y = self.scene1.get_location_in_dim_by_voxel(i,1)
+            z = self.scene1.get_location_in_dim_by_voxel(i,2)
             self.assert_(self.scene1.get_value(x,y,z) == 2 * self.scene2.get_value(x,y,z), "unexpected value after addition")
 
 if __name__ == '__main__':

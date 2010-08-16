@@ -30,9 +30,9 @@ class DensityTransformTest(IMP.test.TestCase):
         print IMP.em.get_bounding_box(mtit)
         errors=0
         for v in range(m.get_number_of_voxels()):
-            pt= Vector3D(m.voxel2loc(v,0),
-                         m.voxel2loc(v,1),
-                         m.voxel2loc(v,2))
+            pt= Vector3D(m.get_location_in_dim_by_voxel(v,0),
+                         m.get_location_in_dim_by_voxel(v,1),
+                         m.get_location_in_dim_by_voxel(v,2))
             oval= IMP.em.get_density(m, pt)
             nval= IMP.em.get_density(mtit, pt)
             if abs(oval-nval)>(oval+nval+1)*.3:
@@ -55,9 +55,9 @@ class DensityTransformTest(IMP.test.TestCase):
         IMP.em.get_transformed_into(into_m, tr.get_inverse(),back_m)
         errors=0
         for v in range(from_m.get_number_of_voxels()):
-            pt= Vector3D(from_m.voxel2loc(v,0),
-                         from_m.voxel2loc(v,1),
-                         from_m.voxel2loc(v,2))
+            pt= Vector3D(from_m.get_location_in_dim_by_voxel(v,0),
+                         from_m.get_location_in_dim_by_voxel(v,1),
+                         from_m.get_location_in_dim_by_voxel(v,2))
             oval= IMP.em.get_density(from_m, pt)
             nval= IMP.em.get_density(back_m, pt)
             if abs(oval-nval)>(oval+nval+1)*.3:

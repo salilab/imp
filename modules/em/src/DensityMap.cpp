@@ -288,7 +288,7 @@ long DensityMap::get_number_of_voxels() const {
   return header_.get_number_of_voxels();
 }
 
-float DensityMap::voxel2loc(long index, int dim) const
+float DensityMap::get_location_in_dim_by_voxel(long index, int dim) const
 {
   IMP_USAGE_CHECK(loc_calculated_,
             "locations should be calculated prior to calling this function");
@@ -305,46 +305,33 @@ float DensityMap::voxel2loc(long index, int dim) const
   return z_loc_[index];
 }
 
-long DensityMap::loc2voxel(float x,float y,float z) const
+long DensityMap::get_voxel_by_location(const algebra::Vector3D &v) const
 {
-  IMP_USAGE_CHECK(is_part_of_volume(x,y,z),
+  IMP_USAGE_CHECK(is_part_of_volume(v),
             "The point is not part of the grid");
-
-  int ivoxx=static_cast<int>(std::floor((x-header_.get_xorigin())
-                                        /header_.get_spacing()));
-  int ivoxy=static_cast<int>(std::floor((y-header_.get_yorigin())
-                                        /header_.get_spacing()));
-  int ivoxz=static_cast<int>(std::floor((z-header_.get_zorigin())
-                                        /header_.get_spacing()));
+  int ivoxx=get_dim_index_by_location(v,0);
+  int ivoxy=get_dim_index_by_location(v,1);
+  int ivoxz=get_dim_index_by_location(v,2);
   return xyz_ind2voxel(ivoxx,ivoxy,ivoxz);
 }
 
 bool DensityMap::is_xyz_ind_part_of_volume(int ix,int iy,int iz) const
 {
-  if( ix>=0 && ix<header_.get_nx() &&
+  return ( ix>=0 && ix<header_.get_nx() &&
       iy>=0 && iy<header_.get_ny() &&
-      iz>=0 && iz<header_.get_nz() )
-    return true;
-  return false;
+           iz>=0 && iz<header_.get_nz() );
 }
 
 
 bool DensityMap::is_part_of_volume(float x,float y,float z) const
 {
-  if( x>=header_.get_xorigin() && x<=header_.get_top(0) &&
-      y>=header_.get_yorigin() && y<=header_.get_top(1) &&
-      z>=header_.get_zorigin() && z<=header_.get_top(2) ) {
-    return true;
-
-  }
-  else {
-    return false;
-
-  }
+  return( x>=header_.get_xorigin() && x<=header_.get_top(0) &&
+          y>=header_.get_yorigin() && y<=header_.get_top(1) &&
+          z>=header_.get_zorigin() && z<=header_.get_top(2) );
 }
 
 emreal DensityMap::get_value(float x, float y, float z) const {
-  return data_[loc2voxel(x,y,z)];
+  return data_[get_voxel_by_location(x,y,z)];
 }
 
 emreal DensityMap::get_value(long index) const {
@@ -364,13 +351,13 @@ void DensityMap::set_value(long index,emreal value) {
 }
 
 void DensityMap::set_value(float x, float y, float z,emreal value) {
-  data_[loc2voxel(x,y,z)]=value;
+  data_[get_voxel_by_location(x,y,z)]=value;
   normalized_ = false;
   rms_calculated_ = false;
 }
 
 
-void DensityMap::reset_voxel2loc() {
+void DensityMap::reset_get_location_in_dim_by_voxel() {
   loc_calculated_=false;
   x_loc_.reset();
   y_loc_.reset();
@@ -480,7 +467,7 @@ void DensityMap::set_origin(float x, float y, float z)
   // We have to compute the xmin,xmax, ... values again after
   // changing the origin
   header_.compute_xyz_top();
-  reset_voxel2loc();
+  reset_get_location_in_dim_by_voxel();
   calc_all_voxel2loc();
 }
 
@@ -525,9 +512,9 @@ algebra::VectorD<3> DensityMap::get_centroid(emreal threshold)  const{
     if (data_[i] <= threshold) {
       continue;
     }
-    x_centroid += voxel2loc(i,0);
-    y_centroid += voxel2loc(i,1);
-    z_centroid += voxel2loc(i,2);
+    x_centroid += get_location_in_dim_by_voxel(i,0);
+    y_centroid += get_location_in_dim_by_voxel(i,1);
+    z_centroid += get_location_in_dim_by_voxel(i,2);
     counter += 1;
   }
   //counter will not be 0 since we checked that threshold is within
@@ -565,9 +552,9 @@ std::string DensityMap::get_locations_string(float t)  {
   float x,y,z;
   for (long i=0;i<nvox;i++) {
     if (data_[i] > t) {
-      x=voxel2loc(i,0);
-      y=voxel2loc(i,1);
-      z=voxel2loc(i,2);
+      x=get_location_in_dim_by_voxel(i,0);
+      y=get_location_in_dim_by_voxel(i,1);
+      z=get_location_in_dim_by_voxel(i,2);
       out<<x << " " << y << " " << z << std::endl;
     }
   }
@@ -609,7 +596,7 @@ void DensityMap::pad(int nx, int ny, int nz,float val) {
 
   long new_size = nx*ny*nz;
   long cur_size = get_number_of_voxels();
-  reset_voxel2loc();
+  reset_get_location_in_dim_by_voxel();
   calc_all_voxel2loc();
   boost::scoped_array<emreal> new_data(new emreal[new_size]);
   for (long i = 0; i < new_size; i++) {
@@ -618,9 +605,9 @@ void DensityMap::pad(int nx, int ny, int nz,float val) {
   int new_vox_x,new_vox_y,new_vox_z;
   long new_vox;
   for (long i = 0; i <  cur_size; i++) {
-    float x = voxel2loc(i,0);
-    float y = voxel2loc(i,1);
-    float z = voxel2loc(i,2);
+    float x = get_location_in_dim_by_voxel(i,0);
+    float y = get_location_in_dim_by_voxel(i,1);
+    float z = get_location_in_dim_by_voxel(i,2);
     new_vox_x=(int)floor((x-header_.get_xorigin())/header_.get_spacing());
     new_vox_y=(int)floor((y-header_.get_yorigin())/header_.get_spacing());
     new_vox_z=(int)floor((z-header_.get_zorigin())/header_.get_spacing());
@@ -637,7 +624,7 @@ void DensityMap::update_voxel_size(float new_apix) {
   header_.Objectpixelsize_=new_apix;
   header_.update_cell_dimensions();
   header_.compute_xyz_top(true);
-  reset_voxel2loc();
+  reset_get_location_in_dim_by_voxel();
   calc_all_voxel2loc();
 }
 
@@ -658,9 +645,9 @@ Float approximate_molecular_mass(DensityMap* d, Float threshold) {
 namespace {
   inline algebra::VectorD<3> get_voxel_center(const DensityMap *map,
                                      unsigned int v) {
-    return algebra::VectorD<3>(map->voxel2loc(v,0),
-                             map->voxel2loc(v,1),
-                             map->voxel2loc(v,2));
+    return algebra::VectorD<3>(map->get_location_in_dim_by_voxel(v,0),
+                             map->get_location_in_dim_by_voxel(v,1),
+                             map->get_location_in_dim_by_voxel(v,2));
   }
 
   DensityMap *create_density_map(const algebra::BoundingBox3D &bb,
@@ -1015,101 +1002,52 @@ float DensityMap::get_maximum_value_in_yz_plane(int x_ind) {
   return max_val;
 }
 
-DensityMap* DensityMap::get_cropped(float threshold){
-  IMP_USAGE_CHECK(threshold>get_min_value()-EPS,
-                  "The input threshold is too small\n");
-  //calculate the new extent
-  //find Z start
-  bool found=false;
-  int iz=0;
-  int iy,ix;
-  int x_start,x_end,y_start,y_end,z_start,z_end;
-  while ((!found) && (iz<header_.get_nz())) {
-    if (get_maximum_value_in_xy_plane(iz) >threshold) {
-      found=true;
-      z_start=iz;
-    }
-    ++iz;
-  }//iz
-  //find Z end
-  found=false;
-  iz=header_.get_nz()-1;
-  while ((!found) && (iz>0)) {
-    if (get_maximum_value_in_xy_plane(iz) >threshold) {
-      found=true;
-      z_end=iz;
-    }
-    --iz;
-  }
-  //find Y start
-  found=false;
-  iy=0;
-  while ((!found) && (iy<header_.get_ny())) {
-    if (get_maximum_value_in_xz_plane(iy) >threshold) {
-      found=true;
-      y_start=iy;
-    }
-    ++iy;
-  }
-  //find Y end
-  found=false;
-  iy=header_.get_ny()-1;
-  while ((!found) && (iy>0)) {
-    if (get_maximum_value_in_xz_plane(iy) >threshold) {
-      found=true;
-      y_end=iy;
-    }
-    --iy;
-  }
-  //find X start
-  found=false;
-  ix=0;
-  while ((!found) && (ix<header_.get_nx())) {
-    if (get_maximum_value_in_yz_plane(ix) >threshold) {
-      found=true;
-      x_start=ix;
-    }
-    ++ix;
-  }
-  //find X end
-  found=false;
-  ix=header_.get_nx()-1;
-  while ((!found) && (ix>0)) {
-    if (get_maximum_value_in_yz_plane(ix) >threshold) {
-      found=true;
-      x_end=ix;
-    }
-    --ix;
-  }
-
-  int new_ext[3];
-  new_ext[0]=x_end-x_start+1;
-  new_ext[1]=y_end-y_start+1;
-  new_ext[2]=z_end-z_start+1;
-  DensityMap *new_dmap = new DensityMap(header_);
-//  IMP_NEW(DensityMap,new_dmap,(header_));
-  new_dmap->set_void_map(new_ext[0],new_ext[1],new_ext[2]);
-  new_dmap->set_origin(
-    get_origin()+
-    header_.get_spacing()*algebra::Vector3D(x_start,y_start,z_start));
-  new_dmap->update_voxel_size(header_.get_spacing());
+DensityMap* DensityMap::get_cropped(const algebra::BoundingBox3D &bb) {
+  IMP::Pointer<DensityMap> cropped_dmap = create_density_map(bb,get_spacing());
   //now fill the density
-  const DensityHeader *new_header = new_dmap->get_header();
-  long z_temp,zy_temp,new_z_temp,new_zy_temp;
-  for(int iz=z_start;iz<=z_end;iz++){ //z slowest
+  const DensityHeader *c_header = cropped_dmap->get_header();
+  long z_temp,zy_temp,c_z_temp,c_zy_temp;
+  int c_nx,c_ny,c_nz;
+  //the bounding box in the original map
+  int z_start,y_start,x_start;
+  int z_end,y_end,x_end;
+  x_start=get_dim_index_by_location(bb.get_corner(0),0);
+  y_start=get_dim_index_by_location(bb.get_corner(0),1);
+  z_start=get_dim_index_by_location(bb.get_corner(0),2);
+  x_end=get_dim_index_by_location(bb.get_corner(1),0);
+  y_end=get_dim_index_by_location(bb.get_corner(1),1);
+  z_end=get_dim_index_by_location(bb.get_corner(1),2);
+  c_nx=c_header->get_nx();c_ny=c_header->get_ny();c_nz=c_header->get_nz();
+
+  for(int iz=z_start;iz<z_end;iz++){ //z slowest
     z_temp = iz*header_.get_nx()*header_.get_ny();
-    new_z_temp = (iz-z_start)*new_ext[0]*new_ext[1];
-    for(int iy=y_start;iy<=y_end;iy++){
+    c_z_temp = (iz-z_start)*c_nx*c_ny;
+    for(int iy=y_start;iy<y_end;iy++){
       zy_temp = z_temp+iy*header_.get_nx();
-      new_zy_temp = new_z_temp+(iy-y_start)*new_ext[0];
-      for(int ix=x_start;ix<=x_end;ix++){
-        new_dmap->set_value(new_zy_temp+(ix-x_start),
+      c_zy_temp = c_z_temp+(iy-y_start)*c_nx;
+      for(int ix=x_start;ix<x_end;ix++){
+        cropped_dmap->set_value(c_zy_temp+(ix-x_start),
                             get_value(zy_temp+ix));
       }
     }
   }
-  return new_dmap;
+  return cropped_dmap.release();
 }
 
+DensityMap* DensityMap::get_cropped(float threshold){
+  IMP_USAGE_CHECK(threshold>get_min_value()-EPS,
+                  "The input threshold is too small\n");
+  algebra::BoundingBox3D bb = get_bounding_box(this,threshold);
+  return get_cropped(bb);
+}
+
+int DensityMap::get_dim_index_by_location(const algebra::VectorD<3> &v,
+                                          int ind) const {
+  IMP_INTERNAL_CHECK((ind>-1) && (ind<3),"index out of range\n");
+  IMP_INTERNAL_CHECK(is_part_of_volume(v),
+                     "location outside of map boundaries\n");
+  return static_cast<int>(std::floor((v[ind]-get_origin()[ind])
+                                     /header_.get_spacing()));
+}
 
 IMPEM_END_NAMESPACE
