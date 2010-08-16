@@ -27,7 +27,7 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
     def setUp(self):
         """Build test model and optimizer"""
         IMP.test.TestCase.setUp(self)
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.set_log_level(IMP.SILENT)
         self.mdl = IMP.Model()
         self.load_protein("1z5s_A.pdb")
         self.sample_density_map()
@@ -49,11 +49,14 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         #     print "==========number of restraints",self.mdl.get_number_of_restraints()
 
 
-        for spacing in spacings:
+        for ii,spacing in enumerate(spacings):
             print "================WORKING ON SPACING:",spacing
-            self.scene=IMP.em.particles2density(IMP.core.get_leaves(self.mh),
-                                              10.,2.)
             self.scene.update_voxel_size(spacing)
+            dd = IMP.em.SampledDensityMap(self.scene.get_header())
+            dd.set_particles(IMP.core.get_leaves(self.mh),self.radius_key,self.weight_key)
+            dd.resample()
+            print "score: ",IMP.em.compute_fitting_score(IMP.core.get_leaves(self.mh),self.scene)
+            #IMP.em.write_map(dd,"map_"+str(ii)+".mrc",IMP.em.MRCReaderWriter())
             fr=IMP.em.local_rigid_fitting(
                 IMP.core.RigidBody(self.mh),
                 self.radius_key, self.weight_key,
@@ -63,6 +66,7 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
             print "score for spacing:",spacings[i]," is:",score
         for ind in [0,1,2,4,5,6]:
             self.assert_(scores[i] > scores[3], "wrong spacing:"+str(spacings[ind])+" for better value than spacing=2.")
+            self.assert_(scores[i]<0.2, "scores should be close to 0. This tests for the numerical stability of get_transformed")
 
 if __name__ == '__main__':
     unittest.main()
