@@ -49,7 +49,7 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
             return False
         elif context.env[lcname] is "yes":
             context.Message('Checking for '+name+' ...')
-            if context.env[lcname+'libs'] is None:
+            if context.env.get(lcname+"libs", None) is None:
                 context.Result("disabled, libs not specified")
                 context.env[ucname+'_LIBS']=False
                 return False
@@ -89,6 +89,7 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
     env['IMP_VARIABLES'].Add(SCons.Variables.EnumVariable(lcname, 'Whether to use the '+name+' package', "auto", ["yes", "no", "auto"]))
     env['IMP_VARIABLES'].Add(lcname+'libs', 'Libs to link against when using '+name+'. Needed which "'+lcname+'" is "yes".', None)
     env[lcname]= tenv[lcname]
+    #env['IMP_VARIABLES'].Update(env)
     if tenv.get(lcname+"libs", None) is not None:
         env[lcname+"libs"]= tenv[lcname+"libs"]
     if not env.GetOption('help'):
