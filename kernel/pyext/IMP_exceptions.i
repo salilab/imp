@@ -115,6 +115,9 @@ static PyObject *imp_exception, *imp_internal_exception, *imp_model_exception,
       PyErr_SetString(imp_value_exception, e.what());
     } catch (std::ios::failure &e) {
       PyErr_SetString(imp_io_exception, e.what());
+    } catch (std::length_error &e) {
+      /* Internal error, such as attempt to resize a vector beyond max size */
+      PyErr_SetString(imp_internal_exception, e.what());
     /* Map IMP exceptions to Python objects */
     } catch (IMP::IndexException &e) {
       PyErr_SetString(imp_index_exception, e.what());
