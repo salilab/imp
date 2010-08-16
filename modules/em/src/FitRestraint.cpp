@@ -91,9 +91,9 @@ FitRestraint::FitRestraint(
 
   // normalize the target density data
   //target_dens_map->std_normalize();
-  IMP_LOG(VERBOSE, "RSR_EM_Fit::RSR_EM_Fit after std norm" << std::endl);
+  IMP_LOG(VERBOSE, "Going to resample" << std::endl);
   resample();
-  IMP_LOG(VERBOSE, "RSR_EM_Fit::RSR_EM_Fit after resample " << std::endl);
+  IMP_LOG(VERBOSE, "After resample" << std::endl);
 }
 void FitRestraint::initialize_model_density_map(
   Particles ps,
@@ -105,6 +105,8 @@ void FitRestraint::initialize_model_density_map(
   none_rb_model_dens_map_->reset_data(0.0);
   for(Particles::iterator it = ps.begin(); it != ps.end();it++) {
     if (core::RigidBody::particle_is_instance(*it)) {
+      IMP_LOG(VERBOSE,"Particle:"<<
+              (*it)->get_name()<<" is handeled as a rigid body\n");
       core::RigidBody rb = core::RigidBody(*it);
       rbs_.push_back(rb);
       //The rigid body may be outside of the density. This means
@@ -125,9 +127,12 @@ void FitRestraint::initialize_model_density_map(
       rb_model_dens_map_[rb_model_dens_map_.size()-1]->
         set_particles(rb_ps,radius_key,weight_key);
       rb_model_dens_map_[rb_model_dens_map_.size()-1]->resample();
+      rb_model_dens_map_[rb_model_dens_map_.size()-1]->calcRMS();
       core::transform(rb,move2map_center.get_inverse());
     }
     else {
+      IMP_LOG(VERBOSE,"Particle:"<<
+              (*it)->get_name()<<" is handeled as none rigid body particle\n");
       not_rb_.push_back(*it);
     }
   }
@@ -135,18 +140,31 @@ void FitRestraint::initialize_model_density_map(
           <<" particles that are not rigid bodies is:"
           <<not_rb_.size()<<std::endl);
   none_rb_model_dens_map_->set_particles(not_rb_,radius_key,weight_key);
+  if(not_rb_.size()>0){
+    none_rb_model_dens_map_->resample();
+    none_rb_model_dens_map_->calcRMS();
+  }
 }
 void FitRestraint::resample() const {
   //resample the map containing all non rigid body particles
   //this map has all of the non rigid body particles.
   if (not_rb_.size()>0) {
     none_rb_model_dens_map_->resample();
+    none_rb_model_dens_map_->calcRMS();
+    model_dens_map_->copy_map(*none_rb_model_dens_map_);
   }
-  model_dens_map_->copy_map(*none_rb_model_dens_map_);
+  else{
+    model_dens_map_->reset_data(0.);
+  }
   for(unsigned int rb_i=0;rb_i<rbs_.size();rb_i++) {
+    IMP_LOG(VERBOSE,"Rb model dens map size:"<<
+        get_bounding_box(rb_model_dens_map_[rb_i],-1000.)<<
+        "\n Target size:"<<get_bounding_box(target_dens_map_,-1000.)<<"\n");
       DensityMap *transformed = get_transformed(
          rb_model_dens_map_[rb_i],
          rbs_[rb_i].get_transformation()*rbs_orig_trans_[rb_i]);
+    IMP_LOG(VERBOSE,"transformed map size:"<<
+                    get_bounding_box(transformed,-1000.)<<std::endl);
       model_dens_map_->add(*transformed);
   }
 }
@@ -174,20 +192,29 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
     escore=1.;
   }
   else{
+    IMP_LOG(VERBOSE,"before resample\n");
     resample();
+    IMP_LOG(VERBOSE,"after resample\n");
     escore = CoarseCC::calc_score(const_cast<DensityMap&>(*target_dens_map_),
                              const_cast<SampledDensityMap&>(*model_dens_map_),
                              scalefac_, true,false);
     if (calc_deriv) {
       //calculate the derivatives for non rigid bodies
-      CoarseCC::calc_derivatives(
+      IMP_LOG(VERBOSE,
+              "Going to calc derivatives for none_rb_model_dens_map_\n");
+      if (not_rb_.size()>0) {
+        CoarseCC::calc_derivatives(
            const_cast<DensityMap&>(*target_dens_map_),
            const_cast<SampledDensityMap&>(*none_rb_model_dens_map_),
            scalefac_,
            const_cast<FitRestraint*>(this)->not_rb_dx_,
            const_cast<FitRestraint*>(this)->not_rb_dy_,
            const_cast<FitRestraint*>(this)->not_rb_dz_);
+      }
       for(int rb_i=0;rb_i<rbs_.size();rb_i++) {
+      IMP_LOG(VERBOSE,
+              "Going to calc derivatives for rigid body number"<<
+              rb_i<<"\n");
         CoarseCC::calc_derivatives(
            const_cast<DensityMap&>(*target_dens_map_),
            const_cast<SampledDensityMap&>(*(rb_model_dens_map_[rb_i])),
