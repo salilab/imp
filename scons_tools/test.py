@@ -11,8 +11,8 @@ def _action_unit_test(target, source, env):
     for x in source[2:]:
         if str(x).endswith(".py"):
             fsource.append(x.abspath)
-    app = "cd %s; %s %s %s %s > /dev/null" \
-          % (Dir("#/build/tmp").abspath, source[0].abspath, env['PYTHON'],
+    app = "mkdir -p %s; cd %s; %s %s %s %s > /dev/null" \
+          % (Dir("#/build/tmp").abspath, Dir("#/build/tmp").abspath, source[0].abspath, env['PYTHON'],
              source[1].abspath,
              " ".join(fsource))
     if env.Execute(app) == 0:
