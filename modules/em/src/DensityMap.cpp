@@ -498,11 +498,9 @@ bool DensityMap::same_origin(const DensityMap &other) const
 
 bool DensityMap::same_dimensions(const DensityMap &other) const
 {
-  if (get_header()->get_nx()==other.get_header()->get_nx() &&
-      get_header()->get_ny()==other.get_header()->get_ny() &&
-      get_header()->get_nz()==other.get_header()->get_nz())
-    return true;
-  return false;
+  return ((get_header()->get_nx()==other.get_header()->get_nx()) &&
+          (get_header()->get_ny()==other.get_header()->get_ny()) &&
+          (get_header()->get_nz()==other.get_header()->get_nz()));
 }
 
 bool DensityMap::same_voxel_size(const DensityMap &other) const
@@ -683,21 +681,33 @@ namespace {
     return ret.release();
   }
 
+  DensityMap *create_density_map(const algebra::Vector3D &origin,
+                                 int nx,int ny, int nz,
+                                 double spacing) {
+    Pointer<DensityMap> ret(new DensityMap());
+    ret->set_void_map(nx,ny,nz);
+    ret->set_origin(origin);
+    ret->update_voxel_size(spacing);
+    ret->get_header_writable()->compute_xyz_top();
+    IMP_LOG(TERSE, "Created map with dimensions " << nx << " " << ny
+            << " " << nz << " and spacing " << spacing()
+            << std::endl);
+    return ret.release();
+  }
+
+
   /* Surround the density map with an extra set of samples assumed to
      be 0.
   */
   inline double get_value(const DensityMap *m, int xi,
                           int yi, int zi) {
-    //std::cout << "getting " << xi << ' ' << yi << ' ' << zi << std::endl;
     if (xi < 0 || yi < 0 || zi < 0) return 0.0;
     else if (xi >= m->get_header()->get_nx()
              || yi >= m->get_header()->get_ny()
              || zi >= m->get_header()->get_nz()) return 0.0;
     else {
       unsigned int loc= m->xyz_ind2voxel(xi, yi, zi);
-      //std::cout << "got " << m->get_value(loc) << std::endl;
       double v= m->get_value(loc);
-      //std::cout << v << " " << " for " << loc << std::endl;
       return v;
     }
   }
@@ -705,7 +715,6 @@ namespace {
   inline void compute_voxel(const DensityMap *m, const algebra::VectorD<3> &v,
                             int *ivox, algebra::VectorD<3> &remainder) {
     const double iside= 1.0/m->get_spacing();
-    //std::cout << "getting " << v << std::endl;
     for (unsigned int i=0; i< 3; ++i) {
       double fvox= (v[i]- m->get_origin()[i])*iside;
       ivox[i]= static_cast<int>(std::floor(fvox));
@@ -778,11 +787,9 @@ double get_density(const DensityMap *m, const algebra::VectorD<3> &v) {
   return js[0]*(1-r[0]) + js[1]*(r[0]);
 }
 
-DensityMap *get_transformed_internal(const DensityMap *in,
+void get_transformed_internal(const DensityMap *in,
           const algebra::Transformation3D &tr,
-          const algebra::BoundingBox3D &nbb){
-  IMP::Pointer<DensityMap> ret(create_density_map(nbb,
-                                 in->get_header()->get_spacing()));
+          DensityMap *ret){
   const algebra::Transformation3D &tri= tr.get_inverse();
   unsigned int size=ret->get_number_of_voxels();
   for (unsigned int i=0; i< size; ++i) {
@@ -797,21 +804,28 @@ DensityMap *get_transformed_internal(const DensityMap *in,
       ->set_resolution(in->get_header()->get_resolution());
   }
   ret->calcRMS();
-  return ret.release();
 }
+
 DensityMap *get_transformed(const DensityMap *in,
                             const algebra::Transformation3D &tr,
                             double threshold) {
-  algebra::BoundingBox3D obb= get_bounding_box(in, threshold);
-  return get_transformed_internal(in,tr,obb);
+  algebra::BoundingBox3D nbb= get_bounding_box(in, threshold);
+  IMP::Pointer<DensityMap> ret(create_density_map(nbb,
+                                 in->get_header()->get_spacing()));
+  get_transformed_internal(in,tr,ret);
+  return ret.release();
 }
-
-
 
 DensityMap *get_transformed(DensityMap *in,
                            const algebra::Transformation3D &tr){
-  algebra::BoundingBox3D obb= get_bounding_box(in);
-  return get_transformed_internal(in,tr,obb);
+  IMP::Pointer<DensityMap> ret(create_density_map(
+        in->get_origin(),
+        in->get_header()->get_nx(),
+        in->get_header()->get_ny(),
+        in->get_header()->get_nz(),
+        in->get_header()->get_spacing()));
+  get_transformed_internal(in,tr,ret);
+  return ret.release();
 }
 
 DensityMap* get_resampled(DensityMap *in, double scaling) {
@@ -880,7 +894,8 @@ void get_transformed_into(const DensityMap *from,
    DensityMap *into,
    bool calc_rms) {
   algebra::BoundingBox3D obb(from->get_origin(),from->get_top());
-  *into = *(get_transformed_internal(from,tr,obb));
+  *into = *(create_density_map(obb,into->get_spacing()));
+  get_transformed_internal(from,tr,into);
   into->get_header_writable()->compute_xyz_top();
   if (calc_rms) {
     into->calcRMS();
@@ -1095,7 +1110,6 @@ DensityMap* DensityMap::get_cropped(float threshold){
   }
   return new_dmap;
 }
-
 
 
 IMPEM_END_NAMESPACE
