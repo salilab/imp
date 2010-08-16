@@ -107,7 +107,7 @@ class Display(_display.Display):
            @param repr <a href="classIMP_1_1restrainer_1_1representation_1_1Representation.html">
             Representation</a> object.
            @param log_name Log name
-           @return IMP::dispay::LogOptimizerState"""
+           @return IMP::dispay::WriteOptimizerState"""
        return _display.Display.create_log(self, repr, log_name)
 
 %}
