@@ -43,15 +43,10 @@ class LocalFittingTest(IMP.test.TestCase):
             IMP.core.RigidBody(self.mh),
             self.radius_key, self.weight_key,
             self.scene,None,2,3,20,2.,.3,True)
-        print "calculate slow"
-        #TODO - should work without the next line
-        self.sample_density_map()
-        self.scene.get_header().show()
         fr_slow=IMP.em.local_rigid_fitting(
              IMP.core.RigidBody(self.mh),
              self.radius_key, self.weight_key,
              self.scene,None,2,3,20,2.,.3,False)
-
         print "fast:",fr_fast.get_score(0)," slow:",fr_slow.get_score(0)
         self.assert_(abs(fr_fast.get_score(0)-fr_slow.get_score(0))<0.01)
 
