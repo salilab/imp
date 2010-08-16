@@ -95,9 +95,9 @@ HighDensityEmbedding::HighDensityEmbedding(em::DensityMap *dm,
   Embedding("HighDensityEmbedding of "+dm->get_name()) {
   for (int i=0; i< dm->get_number_of_voxels(); ++i) {
     if (dm->get_value(i) > threshold) {
-      algebra::VectorD<3> v(dm->voxel2loc(i, 0),
-                          dm->voxel2loc(i, 1),
-                          dm->voxel2loc(i, 2));
+      algebra::VectorD<3> v(dm->get_location_in_dim_by_voxel(i, 0),
+                          dm->get_location_in_dim_by_voxel(i, 1),
+                          dm->get_location_in_dim_by_voxel(i, 2));
       points_.push_back(v);
     }
   }
