@@ -270,6 +270,15 @@ public:
    */
   bool same_dimensions(const DensityMap &other) const;
 
+
+  // //! Checks the two density maps are overlapping in at least one voxel
+  // /** \param[in] other the map to compare with
+  //     \return true if the two maps are intersecting
+  //  */
+  // bool is_intersecting(const DensityMap &other,float resolution) const;
+
+
+
   //! Checks if  two maps have the same voxel size
   /** \param[in] other the map to compare with
       \return true if the two maps have the same voxel size
@@ -433,8 +442,12 @@ protected:
 };
 
 inline algebra::BoundingBoxD<3> get_bounding_box(const DensityMap *m) {
-  return algebra::BoundingBoxD<3>(m->get_origin(),
-                       m->get_top());
+  const DensityHeader *h=m->get_header();
+  return algebra::BoundingBoxD<3>(
+     m->get_origin(),
+     m->get_origin()+algebra::Vector3D(m->get_spacing()*h->get_nx(),
+                                       m->get_spacing()*h->get_ny(),
+                                       m->get_spacing()*h->get_nz()));
 }
 
  //! Calculate a bounding box around a 3D point within the EM grid
