@@ -10,10 +10,10 @@ class Display(object):
            @param repr <a href="classIMP_1_1restrainer_1_1representation_1_1Representation.html">
             Representation</a> object.
            @param log_name Log name
-           @return IMP::display::LogOptimizerState"""
+           @return IMP::display::WriteOptimizerState"""
 
         # Try to create Chimera log (like in display_log.py example)
-        log = IMP.display.LogOptimizerState(IMP.display.ChimeraWriter(), log_name)
+        log = IMP.display.WriteOptimizerState(IMP.display.ChimeraWriter(), log_name)
         # Find IMP particle that corresponds to a representation id
         for child in self._children:
             child.find_model_decorator(repr)
