@@ -68,9 +68,10 @@ IMPEMEXPORT SampledDensityMap * particles2density(
    const FloatKey &rad_key,
    const FloatKey &weight_key)
  {
-  SampledDensityMap * dmap = new SampledDensityMap(ps, resolution,
-         apix,rad_key,weight_key,sig_cuttoff);
-  return dmap;
+   IMP::Pointer<SampledDensityMap> dmap(new SampledDensityMap(
+                                     ps, resolution,
+                                     apix,rad_key,weight_key,sig_cuttoff));
+   return dmap.release();
 }
 
 
