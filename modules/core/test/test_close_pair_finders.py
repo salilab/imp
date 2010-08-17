@@ -2,7 +2,6 @@ import unittest
 import IMP
 import IMP.test
 import IMP.core
-import IMP.helper
 import IMP.container
 import sys
 import random
