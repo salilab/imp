@@ -351,6 +351,11 @@ public:
    */
   DensityMap* get_cropped(float threshold);
   //! Create a new cropped map with the bounding box extent
+  /**
+     \param[in] bb the bounding box
+     \note If the input bounding box is larger than the density box,
+           it is snapped to the right size.
+   */
   DensityMap* get_cropped(const algebra::BoundingBox3D &bb);
 
   //! Get the maximum value in a XY plane indicated by a Z index
