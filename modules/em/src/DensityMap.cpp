@@ -677,7 +677,7 @@ namespace {
     ret->update_voxel_size(spacing);
     ret->get_header_writable()->compute_xyz_top();
     IMP_LOG(TERSE, "Created map with dimensions " << nx << " " << ny
-            << " " << nz << " and spacing " << spacing()
+            << " " << nz << " and spacing " << spacing
             << std::endl);
     return ret.release();
   }

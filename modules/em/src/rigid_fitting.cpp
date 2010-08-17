@@ -371,8 +371,10 @@ Float compute_fitting_score(const Particles &ps,
     IMP::em::SampledDensityMap *model_dens_map =
       new IMP::em::SampledDensityMap(*(em_map->get_header()));
    model_dens_map->set_particles(ps,rad_key,wei_key);
+   model_dens_map->set_particles(ps,rad_key,wei_key);
+   model_dens_map->resample();
    return em::CoarseCC::calc_score(*em_map, *model_dens_map,
-                                 1.0,true,true);
+                                 1.0,true,false);
 }
 
 
