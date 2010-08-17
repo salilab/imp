@@ -38,8 +38,6 @@ class CropTest(IMP.test.TestCase):
         coarse_cc=IMP.em.CoarseCC()
         IMP.set_log_level(IMP.VERBOSE)
         #check that the center stays in the same place
-        print self.scene.get_centroid()
-        print cropped_scene.get_centroid()
         IMP.em.write_map(cropped_scene,"temp.mrc",IMP.em.MRCReaderWriter())
         self.assertAlmostEqual(IMP.algebra.get_distance(
             self.scene.get_centroid(),
@@ -56,8 +54,8 @@ class CropTest(IMP.test.TestCase):
         """Test the cropping functionality works when the input bb is larger than the density"""
         em_bb=IMP.em.get_bounding_box(self.scene)
         larger_bb=IMP.algebra.BoundingBox3D(
-            em_bb.get_corner(0)-IMP.algebra.Vector3D(10,10.10),
-            em_bb.get_corner(1)+IMP.algebra.Vector3D(10,10.10))
+            em_bb.get_corner(0)-IMP.algebra.Vector3D(10,10,10),
+            em_bb.get_corner(1)+IMP.algebra.Vector3D(10,10,10))
         cropped_scene=self.scene.get_cropped(larger_bb)
         IMP.em.write_map(cropped_scene,"temp.mrc",IMP.em.MRCReaderWriter())
         cropped_bb=IMP.em.get_bounding_box(cropped_scene)
@@ -67,5 +65,14 @@ class CropTest(IMP.test.TestCase):
             self.assertAlmostEqual(IMP.algebra.get_distance(
                 scene_bb.get_corner(i),
                 cropped_bb.get_corner(i)),0,2)
+
+
+    def test_crop_using_smaller_extent(self):
+        """Test the cropping functionality works when the input bb is larger than the density"""
+        mrw = IMP.em.MRCReaderWriter()
+        mh=IMP.atom.read_pdb(self.get_input_file_name("1z5s_A_fitted.pdb"),self.imp_model,IMP.atom.CAlphaPDBSelector())
+        mh_bb=IMP.atom.get_bounding_box(mh)
+        cropped_scene=self.scene.get_cropped(mh_bb)
+
 if __name__ == '__main__':
     unittest.main()

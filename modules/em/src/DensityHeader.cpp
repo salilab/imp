@@ -150,6 +150,7 @@ DensityHeader create_density_header(const algebra::BoundingBoxD<3> &bb,
     extent[i]=ceil((top[i]-origin[i])/spacing);
   }
   header.update_map_dimensions(extent[0],extent[1],extent[2]);
+  header.compute_xyz_top(true);
   return header;
 }
 IMPEM_END_NAMESPACE
