@@ -1003,7 +1003,20 @@ float DensityMap::get_maximum_value_in_yz_plane(int x_ind) {
 }
 
 DensityMap* DensityMap::get_cropped(const algebra::BoundingBox3D &bb) {
-  IMP::Pointer<DensityMap> cropped_dmap = create_density_map(bb,get_spacing());
+  //snap the input bb to the density dimensions
+  algebra::Vector3D ll,ur;
+  ll=bb.get_corner(0);ur=bb.get_corner(1);
+  if (!is_part_of_volume(ll)){
+    ll=get_origin();
+  }
+  if (!is_part_of_volume(ur)){
+    ur=get_top();
+  }
+  algebra::BoundingBox3D snapped_bb(ll,ur);
+  IMP::Pointer<DensityMap> cropped_dmap =
+    create_density_map(snapped_bb,get_spacing());
+  //copy resolution
+  cropped_dmap->get_header_writable()->set_resolution(header_.get_resolution());
   //now fill the density
   const DensityHeader *c_header = cropped_dmap->get_header();
   long z_temp,zy_temp,c_z_temp,c_zy_temp;
@@ -1011,14 +1024,13 @@ DensityMap* DensityMap::get_cropped(const algebra::BoundingBox3D &bb) {
   //the bounding box in the original map
   int z_start,y_start,x_start;
   int z_end,y_end,x_end;
-  x_start=get_dim_index_by_location(bb.get_corner(0),0);
-  y_start=get_dim_index_by_location(bb.get_corner(0),1);
-  z_start=get_dim_index_by_location(bb.get_corner(0),2);
-  x_end=get_dim_index_by_location(bb.get_corner(1),0);
-  y_end=get_dim_index_by_location(bb.get_corner(1),1);
-  z_end=get_dim_index_by_location(bb.get_corner(1),2);
+  x_start=get_dim_index_by_location(snapped_bb.get_corner(0),0);
+  y_start=get_dim_index_by_location(snapped_bb.get_corner(0),1);
+  z_start=get_dim_index_by_location(snapped_bb.get_corner(0),2);
+  x_end=get_dim_index_by_location(snapped_bb.get_corner(1),0);
+  y_end=get_dim_index_by_location(snapped_bb.get_corner(1),1);
+  z_end=get_dim_index_by_location(snapped_bb.get_corner(1),2);
   c_nx=c_header->get_nx();c_ny=c_header->get_ny();c_nz=c_header->get_nz();
-
   for(int iz=z_start;iz<z_end;iz++){ //z slowest
     z_temp = iz*header_.get_nx()*header_.get_ny();
     c_z_temp = (iz-z_start)*c_nx*c_ny;
@@ -1031,6 +1043,7 @@ DensityMap* DensityMap::get_cropped(const algebra::BoundingBox3D &bb) {
       }
     }
   }
+  cropped_dmap->calcRMS();
   return cropped_dmap.release();
 }
 
