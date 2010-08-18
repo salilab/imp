@@ -17,56 +17,58 @@ class MCOptimizerTest(IMP.test.TestCase):
                                     self.m,IMP.atom.NonWaterPDBSelector())
         #create rigid bodies
         IMP.core.RigidBody.setup_particle(self.m1.get_particle(),
-                                                     IMP.core.XYZs(IMP.core.get_leaves(self.m1)))
+                                          IMP.core.XYZs(IMP.core.get_leaves(self.m1))).set_coordinates_are_optimized(True)
         IMP.core.RigidBody.setup_particle(self.m2.get_particle(),
-                                                     IMP.core.XYZs(IMP.core.get_leaves(self.m2)))
+                                          IMP.core.XYZs(IMP.core.get_leaves(self.m2))).set_coordinates_are_optimized(True)
         #add restraints
-        self.rsrs=IMP.RestraintSet()
-        self.rsrs.set_model(self.m)
-        self.h = IMP.core.HarmonicUpperBound(IMP.algebra.get_distance(
-            IMP.core.XYZ.decorate_particle(self.m1.get_particle()).get_coordinates(),
-            IMP.core.XYZ.decorate_particle(self.m2.get_particle()).get_coordinates()),
-            3.)
+        self.h = IMP.core.HarmonicUpperBound(0,3.)
 
-        self.dr = IMP.core.DistanceRestraint(self.h,self.m1.get_particle(),
-                                          self.m2.get_particle())
-        self.rsrs.add_restraint(self.dr)
+        self.dr = IMP.core.DistanceRestraint(self.h,self.m1,
+                                             self.m2)
+        self.m.add_restraint(self.dr)
 
+    def randomize(self, mh):
+        point1 = IMP.algebra.get_random_vector_in(IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0.,0.,0.),
+                                                  IMP.algebra.Vector3D(5.,5.,5.)))
+        trans1 = IMP.algebra.Transformation3D(
+          IMP.algebra.get_random_rotation_3d(),
+          point1)
+        IMP.core.RigidBody(mh).set_transformation(trans1)
     def test_c1(self):
         """test monte carlo with rigid bodies"""
         #rigid transformation of the two molecules
         mhs = IMP.atom.Hierarchies()
         mhs.append(self.m1)
         mhs.append(self.m2)
-        rot1 = IMP.algebra.get_random_vector_on(IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0.,0.,0.),1.))
-        point1 = IMP.algebra.get_random_vector_in(IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0.,0.,0.),
-                                                  IMP.algebra.Vector3D(5.,5.,5.)))
-        trans1 = IMP.algebra.Transformation3D(
-          IMP.algebra.Rotation3D(rot1[0],rot1[1],rot1[2],0.),
-          point1)
-        rot2 = IMP.algebra.get_random_vector_on(IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0.,0.,0.),1.))
-        point2 = IMP.algebra.get_random_vector_in(IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0.,0.,0.),
-                                                  IMP.algebra.Vector3D(5.,5.,5.)))
-        trans2 = IMP.algebra.Transformation3D(
-          IMP.algebra.Rotation3D(rot2[0],rot2[1],rot2[2],0.),
-          point2)
-        IMP.core.RigidBody.decorate_particle(self.m1.get_particle()).set_transformation(trans1)
-        IMP.core.RigidBody.decorate_particle(self.m2.get_particle()).set_transformation(trans2)
-        self.m.evaluate(False) #to transform the children
+        for i in range(0,1000):
+            print "randomizing"
+            print IMP.core.XYZ(self.m1).get_coordinates()
+            print IMP.core.XYZ(self.m2).get_coordinates()
+            self.randomize(self.m1)
+            self.randomize(self.m2)
+            print IMP.core.XYZ(self.m1).get_coordinates()
+            print IMP.core.XYZ(self.m2).get_coordinates()
+            score= self.m.evaluate(False) #to transform the children
+            print score
+            if score >0:
+                break
         #optimize
         opt = IMP.core.MonteCarlo()
         opt.set_model(self.m)
-        mover1 = IMP.core.RigidBodyMover(IMP.core.RigidBody(self.m1.get_particle()),5.,15.)
+        mover1 = IMP.core.RigidBodyMover(IMP.core.RigidBody(self.m1),5.,15.)
         opt.add_mover(mover1)
-        mover2 = IMP.core.RigidBodyMover(IMP.core.RigidBody(self.m2.get_particle()),5.,15.)
+        mover2 = IMP.core.RigidBodyMover(IMP.core.RigidBody(self.m2),5.,15.)
         opt.add_mover(mover2)
         lopt= IMP.core.ConjugateGradients()
         lopt.set_model(self.m)
         opt.set_local_optimizer(lopt)
+        opt.set_score_threshold(.001)
         for i in range(0,5):
             print "run", i
             opt.optimize(20)
             e = self.m.evaluate(False)
+            if e<.001:
+                break
         self.assertAlmostEqual(e, 0.0, places=2)
         print "all done"
 
