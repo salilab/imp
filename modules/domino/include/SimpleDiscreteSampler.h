@@ -46,8 +46,8 @@ public:
     return data_.find(p)->second->get_number_of_attributes();
   }
 
-  void add_space(const Particle &p, SimpleDiscreteSpace &sds) {
-    data_[&p] = &sds;
+  void add_space(const Particle* p, SimpleDiscreteSpace &sds) {
+    data_[p] = &sds;
   }
   DiscreteSet* get_space(Particle *p) const {
   IMP_INTERNAL_CHECK(data_.find(p) != data_.end(),
