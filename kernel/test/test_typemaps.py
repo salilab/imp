@@ -114,7 +114,7 @@ class ParticleTests(IMP.test.TestCase):
             rps.append(ps[-1].get_particle())
         pso=IMP._pass_particles(ps)
         self._equal_lists(rps, pso)
-    def test_dec_to_part(self):
+    def test_dec_to_part_2(self):
         """Checking conversion of decorator to particle"""
         m= IMP.Model()
         d=IMP._TrivialDecorator.setup_particle(IMP.Particle(m))
