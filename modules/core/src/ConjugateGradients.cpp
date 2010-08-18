@@ -325,6 +325,9 @@ Float ConjugateGradients::optimize(unsigned int max_steps)
      iteration is a restart iteration. */
 g20:
   f = get_score(float_indices, x, dx);
+  if (f < get_score_threshold()) {
+    goto end;
+  }
   ifun++;
   nrst = n;
   // this is a gradient, not restart, direction:

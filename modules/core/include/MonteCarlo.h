@@ -84,18 +84,6 @@ public:
     return temp_;
   }
   /** @} */
-  /** \name Score threshold
-
-      Optimization will stop if the score falls below the threshold.
-      @{
-  */
-  void set_score_threshold(Float t) {
-    stop_energy_=t;
-  }
-  Float get_score_threshold() const {
-    return stop_energy_;
-  }
-  /** @} */
 
   //! Set the probability of each move being made
   /** Make this low if the space is rough and there are many particles.
@@ -131,7 +119,6 @@ public:
   /** @} */
 private:
   Float temp_;
-  Float stop_energy_;
   Float probability_;
   IMP::internal::OwnerPointer<Optimizer> cg_;
   unsigned int num_local_steps_;
