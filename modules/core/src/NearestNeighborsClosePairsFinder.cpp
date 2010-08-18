@@ -61,9 +61,11 @@ ParticlePairsTemp NearestNeighborsClosePairsFinder
     XYZR d(_1);
     Ints cur=nn.get_in_ball(d.get_coordinates(),
                             rm + get_distance()+ d.get_radius());
-    for (unsigned int j=1; j< cur.size(); ++j) {
-      ret.push_back(ParticlePair(c->get_particle(cur[j]),
-                                 d));
+    for (unsigned int j=0; j< cur.size(); ++j) {
+      if (d < c->get_particle(cur[j])) {
+        ret.push_back(ParticlePair(c->get_particle(cur[j]),
+                                   d));
+      }
     }
     });
   return ret;
