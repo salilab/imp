@@ -17,6 +17,9 @@
 
 #include <boost/static_assert.hpp>
 #include <boost/type_traits.hpp>
+#include <boost/utility/enable_if.hpp>
+#include <boost/mpl/not.hpp>
+#include <boost/mpl/and.hpp>
 
 IMP_BEGIN_NAMESPACE
 
@@ -41,10 +44,19 @@ class WeakPointer
     }
     o_=p;
   }
-
+  void audit(const void *t) const {
+    IMP_INTERNAL_CHECK(t != NULL, "Pointer is NULL");
+  }
+  void audit(const RefCounted*t) const {
+    IMP_INTERNAL_CHECK(t != NULL, "Pointer is NULL");
+    IMP_INTERNAL_CHECK(t->get_ref_count() >0, "Ref count is null");
+  }
+  void audit(const Object*t) const {
+    IMP_INTERNAL_CHECK(t != NULL, "Pointer is NULL");
+    IMP_CHECK_OBJECT(t);
+  }
   void audit() const {
-    IMP_INTERNAL_CHECK(o_ != NULL, "Pointer is NULL");
-    //IMP_CHECK_OBJECT(o_);
+    audit(o_);
   }
 protected:
   IMP_NO_DOXYGEN(O* o_);
@@ -56,22 +68,18 @@ public:
     IMP_INTERNAL_CHECK(o, "Can't initialize with NULL pointer");
     set_pointer(o);
   }
-  /** it's a pointer */
   const O& operator*() const {
     audit();
     return *o_;
   }
-  /** it's a pointer */
   O& operator*()  {
     audit();
     return *o_;
   }
-  /** it's a pointer */
   const O* operator->() const {
     audit();
     return o_;
   }
-  /** it's a pointer */
   O* operator->() {
     audit();
     return o_;

@@ -312,10 +312,10 @@
   virtual ~Name()
 
 
-#elif defined(SWIG) || defined(IMP_SWIG_WRAPPER)
+#elif defined(SWIG)
 // SWIG doesn't do friends right either, but we don't care as much
-#define IMP_REF_COUNTED_DESTRUCTOR(Name)        \
-  public:                                       \
+#define IMP_REF_COUNTED_DESTRUCTOR(Name)                \
+  public:                                               \
   virtual ~Name(){}                                     \
   IMP_REQUIRE_SEMICOLON_CLASS(destructor)
 
@@ -348,16 +348,20 @@
 #define IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Name)
 
 #else
-#define IMP_REF_COUNTED_DESTRUCTOR(Name)                        \
-  protected:                                                    \
-  template <class T> friend void IMP::internal::unref(T*);      \
-  virtual ~Name(){}                                             \
+#define IMP_REF_COUNTED_DESTRUCTOR(Name)                                \
+  protected:                                                            \
+  template <class T, class E> friend class IMP::internal::RefStuff;     \
+  virtual ~Name(){}                                                     \
+public:                                                                 \
   IMP_REQUIRE_SEMICOLON_CLASS(destructor)
 
-#define IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Name)             \
-  protected:                                                    \
-  template <class T> friend void IMP::internal::unref(T*);      \
-  virtual ~Name()
+#define IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Name)                     \
+  protected:                                                            \
+  template <class T, class E> friend class IMP::internal::RefStuff;     \
+  virtual ~Name();                                                      \
+public:                                                                 \
+  IMP_REQUIRE_SEMICOLON_CLASS(destructor)
+
 
 
 #endif
@@ -990,11 +994,11 @@ protection:                                                             \
   }                                                                     \
   /** \brief For python, cast a generic Object to this type. Return None
       if object is not the right type.*/                                \
-  static Name* get_from(Object *o) {                                    \
-    return object_cast<Name>(o);                                       \
+static Name* get_from(Object *o) {                                      \
+    return object_cast<Name>(o);                                        \
   }                                                                     \
-  IMP_NO_DOXYGEN(virtual void do_show(std::ostream &out) const);        \
-  IMP_REF_COUNTED_DESTRUCTOR(Name)
+IMP_NO_DOXYGEN(virtual void do_show(std::ostream &out) const);          \
+IMP_REF_COUNTED_DESTRUCTOR(Name)
 
 
 //! Define the basic things needed by any Object

@@ -11,9 +11,32 @@
 
 #include "RefCounted.h"
 #include "base_types.h"
+#include "Object.h"
+#include "internal/ref_counting.h"
 #include <vector>
 
 IMP_BEGIN_NAMESPACE
+
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+struct RefCountPolicy {
+  template <class O>
+  static void ref(O*o) {
+    IMP::internal::ref(o);
+  }
+  template <class O>
+  static void unref(O*o) {
+    IMP::internal::unref(o);
+  }
+};
+struct NoRefCountPolicy {
+  template <class O>
+  static void ref(O o) {
+  }
+  template <class O>
+  static void unref(O o) {
+  }
+};
+#endif
 
 class Object;
 
@@ -30,7 +53,7 @@ class Object;
 
     When used within Python, IMP::VectorOfRefCounted acts like a Python list.
  */
-template <class RC, class Policy= IMP::RefCounted::Policy>
+template <class RC, class Policy= RefCountPolicy>
 class VectorOfRefCounted {
   typedef std::vector<RC> Data;
   Data data_;
@@ -296,6 +319,18 @@ void remove_if(std::vector<T> &t, const F &f) {
 
 }
 #endif
+
+
+//! A class which is used for representing collections of Object objects
+typedef VectorOfRefCounted<Object*> Objects;
+
+//! A type to use when returning sets of objects so as to avoid refcounting
+/** Always store using Objects instead, but return ObjectsTemp. Objects
+    can be constructed from a ObjectsTemp and vice versa.
+ */
+typedef std::vector<Object*> ObjectsTemp;
+
+
 
 IMP_END_NAMESPACE
 

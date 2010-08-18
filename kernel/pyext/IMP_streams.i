@@ -211,7 +211,7 @@ public:
 
 
  private:
-  template <class T> friend void IMP::internal::unref(T*);
+  template <class T, class E> friend class IMP::internal::RefStuff;
   virtual ~PyOutFileAdapter() {
     try {
       if (stream_buf_.get()) pubsync();
@@ -379,7 +379,7 @@ protected:
 
 class PyInFileAdapter: public IMP::Object
 { 
-  template <class T> friend void IMP::internal::unref(T*);
+  template <class T, class E> friend class IMP::internal::RefStuff;
   virtual ~PyInFileAdapter(){
   }
   std::auto_ptr<InAdapter> streambuf_;

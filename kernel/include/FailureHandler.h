@@ -9,6 +9,7 @@
 #define IMP_FAILURE_HANDLER_H
 
 #include "Object.h"
+#include "VectorOfRefCounted.h"
 #include "exception.h"
 
 
