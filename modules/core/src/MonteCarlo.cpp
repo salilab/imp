@@ -32,13 +32,18 @@ MonteCarlo::MonteCarlo(Model *m): Optimizer(m, "MonteCarlo"),
                                   stat_forward_steps_taken_(0),
                                   stat_upward_steps_taken_(0),
                                   stat_num_failures_(0),
-                                  return_best_(false) {}
+                                  return_best_(true) {}
 
 
 Float MonteCarlo::optimize(unsigned int max_steps)
 {
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(this);
+  if (get_number_of_movers() ==0) {
+    IMP_THROW("Running MonteCarlo without providing any"
+              << " movers isn't very useful.",
+              ValueException);
+  }
   double best_energy= std::numeric_limits<double>::max();
   IMP::internal::OwnerPointer<Configuration> best_state
     = new Configuration(get_model());

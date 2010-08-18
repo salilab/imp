@@ -25,6 +25,8 @@ IMPCORE_BEGIN_NAMESPACE
     number of local optimization steps are taken before the MonteCarlo step
     is accepted or rejected.
 
+    By default, the lowest score state encountered is returned.
+
     \see Mover
  */
 class IMPCOREEXPORT MonteCarlo: public Optimizer
@@ -60,11 +62,9 @@ public:
   }
   /** @} */
 
-  /** By default the Monte Carlo optimizer simply returns the energy
-      of and leaves the Model in the state after the last accepted
-      move. This is not necessarily the lowest energy state visited.
-      If you wish to always return the lowest energy state, set
-      this to true.
+  /** By default, the optimizer returns the lowest score state
+      found so far. If, instead, you wish to return the last accepted
+      state, set return best to false.
   */
   void set_return_best(bool tf) {
     return_best_=tf;
