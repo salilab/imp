@@ -26,7 +26,6 @@ IMP_LIST_IMPL(MonteCarlo, Mover, mover, Mover*, Movers,
 
 MonteCarlo::MonteCarlo(Model *m): Optimizer(m, "MonteCarlo"),
                                   temp_(1),
-                     stop_energy_(-std::numeric_limits<Float>::max()),
                                   probability_(1),
                                   num_local_steps_(50),
                                   stat_forward_steps_taken_(0),
@@ -50,6 +49,7 @@ Float MonteCarlo::optimize(unsigned int max_steps)
 
   int failures=0;
   if (cg_) {
+    cg_->set_score_threshold(get_score_threshold());
     IMP_CHECK_OBJECT(cg_.get());
     IMP_USAGE_CHECK(cg_->get_model() == get_model(),
                "The model used by the local optimizer does not match "\
@@ -57,7 +57,7 @@ Float MonteCarlo::optimize(unsigned int max_steps)
   }
   update_states();
   double prior_energy =get_model()->evaluate(false);
-  if (prior_energy < stop_energy_) return prior_energy;
+  if (prior_energy < get_score_threshold()) return prior_energy;
 
   IMP_LOG(TERSE, "MC Initial energy is " << prior_energy << std::endl);
 
@@ -134,7 +134,7 @@ Float MonteCarlo::optimize(unsigned int max_steps)
           }*/
         best_state= new Configuration(get_model());
       }
-      if (next_energy < stop_energy_) break;
+      if (next_energy < get_score_threshold()) break;
     } else {
       Float diff= next_energy- prior_energy;
       Float e= std::exp(-diff/temp_);
@@ -148,7 +148,7 @@ Float MonteCarlo::optimize(unsigned int max_steps)
     }
     IMP_LOG(TERSE,  "MC Prior energy is " << prior_energy
             << " and next is " << next_energy << " "
-            << "(" << stop_energy_ << ") ");
+            << "(" << get_score_threshold() << ") ");
     if (accept) {
       IMP_LOG(TERSE,  " accept" << std::endl);
       for (MoverIterator it = movers_begin(); it != movers_end(); ++it) {

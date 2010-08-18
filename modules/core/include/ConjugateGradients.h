@@ -34,7 +34,12 @@ public:
   ConjugateGradients(Model *m=NULL);
 
   //! Set the threshold for the minimum gradient
-  void set_threshold(Float t){ threshold_=t;}
+  void set_gradient_threshold(Float t){ threshold_=t;}
+
+#ifndef IMP_DOXYGEN
+  void set_threshold(Float t) {set_gradient_threshold(t);}
+#endif
+
 
   //! Limit how far anything can change each time step
   void set_max_change(Float t) { max_change_ = t; }
