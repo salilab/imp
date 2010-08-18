@@ -267,16 +267,17 @@ class IMPCOREEXPORT RigidMember: public XYZ {
     return algebra::Transformation3D(rot, tr);
   }
 
-  //! set the coordinates of the body
+  //! XYZ::set_coordiantes()
   // this is here since swig does like using statements
   void set_coordinates(const algebra::VectorD<3> &center) {
     XYZ::set_coordinates(center);
   }
-
+#ifndef IMP_DOXYGEN
   //! Set the coordinates from the internal coordinates
   void set_coordinates(const algebra::Transformation3D &tr) {
     set_coordinates(tr.get_transformed(get_internal_coordinates()));
   }
+#endif
   ~RigidMember();
 
   //! return true if it is a rigid member
