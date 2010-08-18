@@ -61,11 +61,20 @@ def check_python_file(filename, errors):
     """Check each modified Python file to make sure it adheres to the
        standards"""
     temptest = re.compile('\s+def\s+temp_hide_test.*')
+    test= re.compile('\s+def\s+(test_[abcdefghijklmnpqrstuvwxyz0123456789_]*)')
+    tests=[]
     for (num, line) in enumerate(file(filename, "r")):
         _check_do_not_commit(line, filename, num, errors)
         if temptest.match(line):
             errors.append('%s:%d: Test case has the temp_hide_ prefix' \
                           % (filename, num+1))
+        m= test.match(line)
+        if m:
+            g= m.group(0)
+            if g in tests:
+                errors.append('%s:%d: Test case multiple tests with the same name' \
+                          % (filename, num+1))
+            tests.append(m.group(0))
     fh = file(filename, "r")
     r = Reindenter(fh)
     try:
