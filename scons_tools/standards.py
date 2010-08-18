@@ -25,12 +25,14 @@ def setup_standards(env):
               "#/modules/*/include/*/*.h",
               "#/modules/*/examples/*.py",
               "#/modules/*/examples/*/*.py",
+              "#/modules/*/test/*.py"
               "#/kernel/src/*.cpp",
               "#/kernel/src/*/*.cpp",
               "#/kernel/include/*.h",
               "#/kernel/include/*/*.h",
               "#/kernel/examples/*.py",
               "#/kernel/examples/*/*.py",
+              "#/kernel/test/*.py",
               "#/modules/*/bin/*.cpp",
               "#/kernel/bin/*.cpp"]
     outfiles=[]
@@ -41,8 +43,16 @@ def setup_standards(env):
                 pass
             else:
                 outfiles.append(f)
-    for i in range(0, len(outfiles)):
-        standards = env.CheckStandards(target='standards'+str(i)+'.passed',
-                                       source=["#/tools/check-standards.py"]+[outfiles[i]])
-        env.Alias('standards', standards)
+    #for o in outfiles:
+    #    print o.abspath
+    #print "chunking"
+    #for i in range(0, len(outfiles), 100):
+    #    chunk=outfiles[i:(i+100)]
+    #    for o in chunk:
+    #        print o.abspath
+    #standards = env.CheckStandards(target='standards'+str(i)+'.passed',
+    #                               source=["#/tools/check-standards.py"]+chunk)
+    standards = env.CheckStandards(target='standards.passed',
+                                   source=["#/tools/check-standards.py"]+outfiles)
+    env.Alias('standards', standards)
     env.AlwaysBuild(env.Alias('standards'))
