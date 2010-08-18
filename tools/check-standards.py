@@ -72,7 +72,7 @@ def check_python_file(filename, errors):
         if m:
             g= m.group(0)
             if g in tests:
-                errors.append('%s:%d: Test case multiple tests with the same name' \
+                errors.append('%s:%d: Test case has multiple tests with the same name' \
                           % (filename, num+1))
             tests.append(m.group(0))
     fh = file(filename, "r")
