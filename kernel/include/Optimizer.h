@@ -55,6 +55,16 @@ class IMPEXPORT Optimizer: public Object
   */
   virtual Float optimize(unsigned int max_steps) = 0;
 
+  /** \name Score threshold
+      Optimizers can be set to stop if they achieve a score below
+      a score threshold. This is useful so that they don't spend time
+      improving already very good solutions.
+      @{
+  */
+  void set_score_threshold(double s) {min_score_=s;}
+  double get_score_threshold() const {return min_score_;}
+  /** @} */
+
   //! \return version and authorship information.
   virtual VersionInfo get_version_info() const = 0;
 
@@ -284,6 +294,7 @@ class IMPEXPORT Optimizer: public Object
     FloatTable;
   mutable FloatTable widths_;
   WeakPointer<Model> model_;
+  double min_score_;
 };
 
 

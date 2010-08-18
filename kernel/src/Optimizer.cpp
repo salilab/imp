@@ -9,6 +9,7 @@
 #include "IMP/Optimizer.h"
 #include "IMP/OptimizerState.h"
 #include "IMP/internal/utility.h"
+#include <limits>
 
 IMP_BEGIN_NAMESPACE
 
@@ -21,6 +22,7 @@ Optimizer::Optimizer(Model *m, std::string name)
   if (m) set_model(m);
   set_name(internal::make_object_name(name, optimizer_index++));
   set_was_used(true);
+  min_score_= -std::numeric_limits<double>::max();
 }
 
 Optimizer::~Optimizer()
