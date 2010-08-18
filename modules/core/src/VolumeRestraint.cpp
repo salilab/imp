@@ -16,7 +16,7 @@ VolumeRestraint::VolumeRestraint(UnaryFunction *f,
                                  SingletonContainer *sc,
                                  double volume):
   sc_(sc), f_(f), volume_(volume),
-  grid_(100,100,100,
+  grid_(40,40,40,
         algebra::BoundingBox3D(algebra::VectorD<3>(0,0,0),
                                algebra::VectorD<3>(1,1,1)),
         -1)
