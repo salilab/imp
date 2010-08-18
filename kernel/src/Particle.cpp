@@ -209,12 +209,12 @@ namespace {
     unsigned int next_to_allocate;
     Chunk(): next_to_allocate(0){}
   };
-  std::vector<Chunk*> chunks(1, new Chunk());
+  std::vector<Chunk*> *chunks= new std::vector<Chunk*>(1, new Chunk());
   unsigned int block_size() {
     return sizeof(Particle);
   }
   unsigned int offset(unsigned int i, void *p) {
-    return static_cast<char*>(p)- chunks[i]->particles;
+    return static_cast<char*>(p)- (*chunks)[i]->particles;
   }
   unsigned int index(unsigned int i, void *p) {
     IMP_INTERNAL_CHECK(offset(i, p) % block_size() ==0,
@@ -222,7 +222,7 @@ namespace {
     return offset(i, p)/block_size();
   }
   void *address(unsigned int i, unsigned int j) {
-    return chunks[i]->particles+j*block_size();
+    return (*chunks)[i]->particles+j*block_size();
   }
 }
 
@@ -232,24 +232,24 @@ void *Particle::operator new(std::size_t sz) {
              "Expected request of size " << block_size()
              << " got request of size " << sz);
   unsigned int i=0;
-  for (; i< chunks.size(); ++i) {
-    if (chunks[i]->free_list.empty()
-        && chunks[i]->next_to_allocate==num_blocks) {
+  for (; i< chunks->size(); ++i) {
+    if ((*chunks)[i]->free_list.empty()
+        && (*chunks)[i]->next_to_allocate==num_blocks) {
       continue;
     } else {
       break;
     }
   }
-  if (i== chunks.size()) {
-    chunks.push_back(new Chunk());
+  if (i== chunks->size()) {
+    chunks->push_back(new Chunk());
   }
   unsigned int slot;
-  if (!chunks[i]->free_list.empty()) {
-    slot= chunks[i]->free_list.back();
-    chunks[i]->free_list.pop_back();
+  if (!(*chunks)[i]->free_list.empty()) {
+    slot= (*chunks)[i]->free_list.back();
+    (*chunks)[i]->free_list.pop_back();
   } else {
-    slot= chunks[i]->next_to_allocate;
-    ++chunks[i]->next_to_allocate;
+    slot= (*chunks)[i]->next_to_allocate;
+    ++(*chunks)[i]->next_to_allocate;
   }
   return address(i, slot);
 }
@@ -259,10 +259,10 @@ void *Particle::operator new(std::size_t, void*p) {
 }
 
 void Particle::operator delete(void *p) {
-  for (unsigned int i=0; i< chunks.size(); ++i) {
-    if (&chunks[i]->particles[0] <= p
-        && &chunks[i]->particles[(num_blocks-1)*sizeof(Particle)]>= p) {
-      chunks[i]->free_list.push_back(index(i, p));
+  for (unsigned int i=0; i< chunks->size(); ++i) {
+    if (&(*chunks)[i]->particles[0] <= p
+        && &(*chunks)[i]->particles[(num_blocks-1)*sizeof(Particle)]>= p) {
+      (*chunks)[i]->free_list.push_back(index(i, p));
       return;
     }
   }
@@ -274,23 +274,24 @@ namespace internal {
   Particle* create_particles(Model *m, unsigned int n) {
     IMP_USAGE_CHECK(n>0, "Can't create 0 particles");
     unsigned int i=0;
-    for (; i< chunks.size(); ++i) {
-      if (chunks[i]->next_to_allocate + n > num_blocks) {
+    for (; i< chunks->size(); ++i) {
+      if ((*chunks)[i]->next_to_allocate + n > num_blocks) {
         continue;
       } else {
         break;
       }
     }
-    if (i== chunks.size()) {
-      chunks.push_back(new Chunk());
+    if (i== chunks->size()) {
+      chunks->push_back(new Chunk());
     }
     for (unsigned int j=0; j< n; ++j) {
-      Particle *cur= new(address(i, chunks[i]->next_to_allocate+j)) Particle(m);
+      Particle *cur= new(address(i, (*chunks)[i]->next_to_allocate+j))
+        Particle(m);
       if (0) std::cout << cur;
     }
     Particle *ret
-      = static_cast<Particle*>(address(i, chunks[i]->next_to_allocate));
-    chunks[i]->next_to_allocate+=n;
+      = static_cast<Particle*>(address(i, (*chunks)[i]->next_to_allocate));
+    (*chunks)[i]->next_to_allocate+=n;
     return ret;
   }
 }
