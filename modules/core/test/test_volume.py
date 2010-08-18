@@ -11,7 +11,6 @@ class Volume(IMP.test.TestCase):
     """Tests for angle restraints"""
     def test_volume_1(self):
         """Testing that volume restraint can separate balls"""
-        print "hi"
         m= Model()
         ps= IMP.Particles()
         IMP.set_log_level(IMP.VERBOSE)
@@ -33,7 +32,6 @@ class Volume(IMP.test.TestCase):
         self.assert_(m.evaluate(False) < .2)
     def test_volume_2(self):
         """Testing that volume restraint can change radius"""
-        print "hi2"
         m= Model()
         IMP.set_log_level(IMP.VERBOSE)
         ps= IMP.Particles()
