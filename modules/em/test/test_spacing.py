@@ -36,36 +36,15 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         """Check that the correct spacing gets the highest CC"""
         spacings=[1.7,1.8,1.9,2.0,2.1,2.2,2.3]
         scores=[]
-        # for spacing in spacings:
-        #     print "================WORKING ON SPACING:",spacing
-        #     self.scene.show()
-        #     self.scene.update_voxel_size(spacing)
-        #     print "==1"
-        #     fr=IMP.em.local_rigid_fitting(
-        #         IMP.core.RigidBody(self.mh),
-        #         self.radius_key, self.weight_key,
-        #         self.scene,None,2,5,100)
-        #     scores.append(fr.get_score(0))
-        #     print "==========number of restraints",self.mdl.get_number_of_restraints()
-
-
         for ii,spacing in enumerate(spacings):
-            print "================WORKING ON SPACING:",spacing
             self.scene.update_voxel_size(spacing)
-            dd = IMP.em.SampledDensityMap(self.scene.get_header())
-            dd.set_particles(IMP.core.get_leaves(self.mh),self.radius_key,self.weight_key)
-            dd.resample()
-            print "score: ",IMP.em.compute_fitting_score(IMP.core.get_leaves(self.mh),self.scene)
-            fr=IMP.em.local_rigid_fitting(
-                IMP.core.RigidBody(self.mh),
-                self.radius_key, self.weight_key,
-                self.scene,None,1,1,5)
-            scores.append(fr.get_score(0))
+            scores.append(IMP.em.compute_fitting_score(IMP.core.get_leaves(self.mh),self.scene))
         for i,score in enumerate(scores):
             print "score for spacing:",spacings[i]," is:",score
         for ind in [0,1,2,4,5,6]:
-            self.assert_(scores[i] > scores[3], "wrong spacing:"+str(spacings[ind])+" for better value than spacing=2.")
-            self.assert_(scores[i]<0.2, "scores should be close to 0. This tests for the numerical stability of get_transformed")
+            self.assert_(scores[i] > scores[3], "wrong spacing:"+str(spacings[ind])+" has better value than spacing=2.")
+        for i in range(6):
+            self.assert_(abs(scores[i]-scores[i+1])<0.3, "scores should be similar")
 
 if __name__ == '__main__':
     unittest.main()
