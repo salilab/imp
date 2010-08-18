@@ -36,7 +36,7 @@ class DirectoriesTests(IMP.test.TestCase):
         os.unlink('ofile_test')
         os.unlink('hi')
 
-    def test_odata_directory(self):
+    def test_odata_directory_2(self):
         """Test temporary files"""
         simple = IMP.create_temporary_file()
         print simple.get_name()
