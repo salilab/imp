@@ -64,12 +64,12 @@ public:
   */
   ParticlePairs get_connected_pairs() const;
 
-  IMP_RESTRAINT(ConnectivityRestraint);
-
   //! Return the pair score used for scoring
   PairScore *get_pair_score() const {
     return ps_;
   }
+
+  IMP_RESTRAINT(ConnectivityRestraint);
 };
 
 IMPCORE_END_NAMESPACE

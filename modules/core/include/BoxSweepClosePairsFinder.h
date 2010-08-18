@@ -13,16 +13,15 @@
 #include "core_config.h"
 
 
-#ifdef IMP_USE_CGAL
+#if defined(IMP_USE_CGAL) || defined(IMP_DOXYGEN)
 IMPCORE_BEGIN_NAMESPACE
 
 //! Find all nearby pairs by sweeping the bounding boxes
 /** This method is much faster than the quadratic one when
     there are are large sets of points.
 
-    \note This method requires \ref cgal "CGAL" to work.
+    \requires{class BoxSweepClosePairsFinder, CGAL}
     \see IMP::container::ClosePairsScoreState
-    \ingroup cgal
 */
 class IMPCOREEXPORT BoxSweepClosePairsFinder : public ClosePairsFinder
 {
