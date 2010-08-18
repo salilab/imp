@@ -52,12 +52,12 @@ public:
                =XYZR::get_default_radius_key(),
                Float slack=0);
 
-  IMP_SINGLETON_MODIFIER(CoverRefined);
-
   //! Set how nmuch extra to add to the radius.
   void set_slack(Float slack) {
     slack_=slack;
   }
+
+  IMP_SINGLETON_MODIFIER(CoverRefined);
 };
 
 //! A particle which covers a set of other particles.
