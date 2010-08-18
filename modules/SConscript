@@ -12,12 +12,12 @@ modules=['algebra',
          'misc',
          'saxs',
          'helper',
-         'multifit',
          'statistics',
          'gsl',
          'modeller',
          'restrainer',
          'domino2',
+         'multifit',
          'benchmark']
 
 for p in modules:
