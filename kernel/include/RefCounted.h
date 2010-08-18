@@ -20,13 +20,10 @@
 #ifndef SWIG
 
 namespace IMP {
+  class Object;
   namespace internal {
-    template <class R>
-    void unref(R*);
-    template <class R>
-    void ref(R*);
-    template <class R>
-    void release(R*);
+    template <class R, class E>
+    class RefStuff;
   }
 }
 //IMP_END_INTERNAL_NAMESPACE
@@ -78,12 +75,8 @@ class IMPEXPORT RefCounted
   RefCounted& operator=(const RefCounted &){return *this;}
 
 #ifndef _MSC_VER
-  template <class R>
-    friend void internal::unref(R*);
-  template <class R>
-    friend void internal::ref(R*);
-  template <class R>
-    friend void internal::release(R*);
+  template <class R, class E>
+    friend class internal::RefStuff;
 #else
  public:
 #endif // _MSC_VER
@@ -104,32 +97,10 @@ protected:
     // for debugging purposes only
     return live_objects_;
   }
-#ifndef SWIG
-  struct Policy {
-    template <class O>
-    static void ref(O*o) {
-      IMP::internal::ref(o);
-    }
-    template <class O>
-    static void unref(O*o) {
-      IMP::internal::unref(o);
-    }
-  };
-  struct NoPolicy {
-    template <class O>
-    static void ref(O o) {
-    }
-    template <class O>
-    static void unref(O o) {
-    }
-  };
-#endif
 #endif // IMP_DOXYGEN
 
 };
 
 IMP_END_NAMESPACE
-
-#include "internal/ref_counting.h"
 
 #endif  /* IMP_REF_COUNTED_H */

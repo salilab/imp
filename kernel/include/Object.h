@@ -15,7 +15,6 @@
 #include "VersionInfo.h"
 #include "macros.h"
 #include "log.h"
-#include "VectorOfRefCounted.h"
 
 #include <vector>
 
@@ -110,7 +109,6 @@ public:
     do_show(out);
   }
 
-  IMP_COMPARISONS;
 
 #ifndef IMP_DOXYGEN
   std::string __str__() const {
@@ -190,16 +188,6 @@ inline std::ostream &operator<<(std::ostream &out, const Object& o) {
 
 
 
-//! A class which is used for representing collections of Object objects
-typedef VectorOfRefCounted<Object*> Objects;
-
-//! A type to use when returning sets of objects so as to avoid refcounting
-/** Always store using Objects instead, but return ObjectsTemp. Objects
-    can be constructed from a ObjectsTemp and vice versa.
- */
-typedef std::vector<Object*> ObjectsTemp;
-
-
 /** Up (or down) cast an \imp Object-derived class. If the cast
     does not succeed a ValueException will be thrown. Use a
     \c dynamic_cast if you prefer to have a NULL returned.
@@ -221,6 +209,7 @@ inline void show(std::ostream &out, Object *o) {
 #endif
 
 IMP_END_NAMESPACE
+
 
 //! Perform some basic validity checks on the object for memory debugging
 #define IMP_CHECK_OBJECT(obj) do {                                      \

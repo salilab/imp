@@ -9,8 +9,9 @@
 
 #include "kernel_config.h"
 #include "base_types.h"
-#include "RefCounted.h"
+#include "Object.h"
 #include "Pointer.h"
+#include "VectorOfRefCounted.h"
 
 IMP_BEGIN_NAMESPACE
 

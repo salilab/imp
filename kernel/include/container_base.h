@@ -11,6 +11,7 @@
 
 #include "kernel_config.h"
 #include "Object.h"
+#include "VectorOfRefCounted.h"
 #include "macros.h"
 #include "WeakPointer.h"
 

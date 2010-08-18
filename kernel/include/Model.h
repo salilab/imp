@@ -11,6 +11,7 @@
 
 #include "kernel_config.h"
 #include "Object.h"
+#include "VectorOfRefCounted.h"
 #include "Particle.h"
 #include "Restraint.h"
 #include "RestraintSet.h"
@@ -134,7 +135,9 @@ private:
  public:
 #else
  private:
-  IMP_NO_DOXYGEN(template <class T> friend void IMP::internal::unref(T*));
+#ifndef IMP_DOXYGEN
+  template <class T, class E> friend class internal::RefStuff;
+#endif
 #endif
 
   virtual ~Model();

@@ -15,7 +15,6 @@
 #include "Object.h"
 #include "internal/ref_counting.h"
 #include "internal/OwnerPointer.h"
-
 #include <boost/static_assert.hpp>
 #include <boost/type_traits.hpp>
 
