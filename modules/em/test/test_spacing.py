@@ -56,11 +56,10 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
             dd.set_particles(IMP.core.get_leaves(self.mh),self.radius_key,self.weight_key)
             dd.resample()
             print "score: ",IMP.em.compute_fitting_score(IMP.core.get_leaves(self.mh),self.scene)
-            #IMP.em.write_map(dd,"map_"+str(ii)+".mrc",IMP.em.MRCReaderWriter())
             fr=IMP.em.local_rigid_fitting(
                 IMP.core.RigidBody(self.mh),
                 self.radius_key, self.weight_key,
-                self.scene,None,2,5,50)
+                self.scene,None,1,1,5)
             scores.append(fr.get_score(0))
         for i,score in enumerate(scores):
             print "score for spacing:",spacings[i]," is:",score
