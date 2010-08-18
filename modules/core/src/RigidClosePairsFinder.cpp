@@ -154,6 +154,12 @@ IntPairs RigidClosePairsFinder
   return cpf_->get_close_pairs(bas);
 }
 
+/*
+std::pair<algebra::Sphere3D, algebra::Sphere3D>
+RigidClosePairsFinder::get_close_sphere_pair(Particle *a, Particle *b) const {
+
+}*/
+
 void RigidClosePairsFinder::do_show(std::ostream &out) const {
   out << "distance " << get_distance() << std::endl;
 }
@@ -235,6 +241,5 @@ RigidClosePairsFinder::get_input_containers(SingletonContainer *a,
   ret.insert(ret.end(), retp.begin(), retp.end());
   return ret;
 }
-
 
 IMPCORE_END_NAMESPACE

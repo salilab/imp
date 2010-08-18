@@ -36,8 +36,6 @@ IMPCORE_BEGIN_NAMESPACE
     the input list or lists are close. Your choice of this can be passed
     to the constructor.
 
-    \note Having CGAL makes the computations more efficient.
-
     \note The bounding spheres are kept in internal coordinates for
     the rigid body and transformed on the fly. It would probably be
     faster to cache the tranformed results.
@@ -48,10 +46,7 @@ IMPCORE_BEGIN_NAMESPACE
 
     \htmlinclude rigid_collisions.py.html
 
-    \note This class uses the IMP::core::BoxSweepClosePairsFinder by
-    default if \ref cgal "CGAL" is available.
-
-    \ingroup CGAL
+    \uses{class RigidClosePairsFinder, CGAL}
     \see ClosePairsScoreState
     \see RigidBody
     \see cover_members()
@@ -67,7 +62,6 @@ class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder
   RigidClosePairsFinder(Refiner *r);
   RigidClosePairsFinder(ClosePairsFinder *cpf,
                         Refiner *r);
-  IMP_CLOSE_PAIRS_FINDER(RigidClosePairsFinder);
 
   ParticlePairsTemp get_close_pairs(Particle *a, Particle *b) const;
 
@@ -75,11 +69,23 @@ class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder
     cpf_->set_distance(d);
     ClosePairsFinder::set_distance(d);
   }
+#if 0
+  /** Return a pair of spheres which captures the interaction between the two,
+      typically rigid (but not necessarily) particles. The spheres are the
+      lowest point down the trees which cover all interactions between the
+      two.
+   */
+  std::pair<algebra::Sphere3D, algebra::Sphere3D>
+    get_close_sphere_pair(Particle *a, Particle *b) const;
+#endif
+
 #ifndef IMP_SWIG
   internal::MovedSingletonContainer *
     get_moved_singleton_container(SingletonContainer *c,
                                   Model *m, double thresold) const;
 #endif
+  IMP_CLOSE_PAIRS_FINDER(RigidClosePairsFinder);
+
 };
 
 IMPCORE_END_NAMESPACE
