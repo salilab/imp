@@ -167,7 +167,12 @@ public:
     VectorD<3> nuc;
     for (unsigned int i=0; i< 3; ++i ) {
       double bside= bb.get_corner(1)[i]- bb.get_corner(0)[i];
-      d_[i]= static_cast<int>(std::ceil(bside / side))+1;
+      double d= bside/side;
+      double cd= std::ceil(d);
+      if (cd-d <.05) {
+        ++cd;
+      }
+      d_[i]= static_cast<int>(cd);
       nuc[i]= side;
     }
     set_unit_cell(nuc);
@@ -494,14 +499,46 @@ IMPALGEBRA_END_NAMESPACE
         for (voxel_index[2]=0; voxel_index[2]< macro_map_nz;            \
              ++voxel_index[2]) {                                        \
           voxel_center[2]= macro_map_origin[2]                          \
-          +(iz+.5)*macro_map_unit_cell[2];                              \
-        unsigned int loop_voxel_index=next_loop_voxel_index;            \
-        ++next_loop_voxel_index;                                        \
-        {action};                                                       \
+            +(iz+.5)*macro_map_unit_cell[2];                            \
+          unsigned int loop_voxel_index=next_loop_voxel_index;          \
+          ++next_loop_voxel_index;                                      \
+          {action};                                                     \
+        }                                                               \
       }                                                                 \
     }                                                                   \
   }                                                                     \
-  }                                                                     \
 
+
+/** Iterate over each voxel in a subset of the grid that are less than
+    center. The voxel index is unsigned int voxel_index[3]. Use this if,
+    for example you want to find nearby pairs of voxels once each.
+*/
+#define IMP_GRID3D_FOREACH_SMALLER_VOXEL_RANGE(grid, center,            \
+                                               lower_corner,            \
+                                               upper_corner,            \
+                                               action)                  \
+  { int voxel_index[3];                                                 \
+    IMP_USAGE_CHECK(lower_corner <= upper_corner, "Inverted range "     \
+                    << lower_corner << " " << upper_corner);            \
+    IMP_USAGE_CHECK(lower_corner <= center, "Center not in range "      \
+                    << lower_corner << " " << center);                  \
+    IMP_USAGE_CHECK(center <= upper_corner, "Center not in range "      \
+                    <<  center << upper_corner);                        \
+    for (voxel_index[0]=lower_corner[0];                                \
+         voxel_index[0] <= upper_corner[0]; ++voxel_index[0]) {         \
+      if (voxel_index[0] > center[0]) break;                            \
+      for (voxel_index[1]=lower_corner[1];                              \
+           voxel_index[1] <= upper_corner[1]; ++voxel_index[1]) {       \
+        if (voxel_index[0] == center[0]                                 \
+            && voxel_index[1] > center[1]) break;                       \
+        for (voxel_index[2]=lower_corner[2];                            \
+             voxel_index[2] <= upper_corner[2]; ++voxel_index[2]) {     \
+          if (voxel_index[0] == center[0] && voxel_index[1] == center[1]\
+              && voxel_index[2] >= center[2]) break;                    \
+          { action}                                                     \
+        }                                                               \
+      }                                                                 \
+    }                                                                   \
+  }
 
 #endif  /* IMPALGEBRA_GRID_3D_H */
