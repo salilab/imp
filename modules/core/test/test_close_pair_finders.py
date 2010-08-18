@@ -22,9 +22,61 @@ class TestCPFL(IMP.test.TestCase):
         #print str(d0.get_x()) + " " + str(d0.get_y()) + " " + str(d0.get_z()) + " " + str(r0)
         #print str(d1.get_x()) + " " + str(d1.get_y()) + " " + str(d1.get_z()) + " " + str(r1)
         return d-r0-r1
-
+    def do_test_periodic_points(self, cpf, bb, num, rmin, rmax):
+        #IMP.set_log_level(IMP.SILENT)
+        dist= random.uniform(rmin,rmax+1)
+        #cpf.set_distance(dist)
+        print 'Distance is ' + str(dist)
+        rk= IMP.core.XYZR.get_default_radius_key()
+        cpf.set_distance(dist)
+        m=IMP.Model()
+        ps= self.create_particles_in_box(m, num-2, bb.get_corner(0), bb.get_corner(1))
+        ps.append(IMP.core.XYZ.setup_particle(IMP.Particle(m), bb.get_corner(0)))
+        ps.append(IMP.core.XYZ.setup_particle(IMP.Particle(m), bb.get_corner(1)))
+        for p in ps:
+            print IMP.core.XYZ(p).get_coordinates()
+        for i in range(0, len(ps)):
+            ps[i].add_attribute(rk, random.uniform(rmin, rmax))
+        pc= IMP.container.ListSingletonContainer(ps)
+        #pc.show()
+        out= IMP.container.ListPairContainer(m)
+        #out.show()
+        print "searching"
+        cps= cpf.get_close_pairs(pc)
+        print "done " + str(out.get_number_of_particle_pairs())
+        print "testing results with "
+        print " ".join([str((x[0].get_name(), x[1].get_name())) for x in cps])
+        for f in cps:
+            self.assert_(IMP.ParticlePair(f[1], f[0]) not in cps)
+            self.assert_(f[0] != f[1])
+        sides=[bb.get_corner(1)[i]-bb.get_corner(0)[i] for i in [0,1,2]]
+        steps=[[-sides[i], 0, sides[i]] for i in [0,1,2]]
+        for i in range(0, len(ps)):
+            ri=IMP.core.XYZR(ps[i]).get_radius()
+            vi= IMP.core.XYZR(ps[i]).get_coordinates()
+            for j in range(0,i):
+                close=False
+                rj=IMP.core.XYZR(ps[j]).get_radius()
+                vj0= IMP.core.XYZR(ps[j]).get_coordinates()
+                for sx in steps[0]:
+                    for sy in steps[1]:
+                        for sz in steps[2]:
+                            vj= IMP.algebra.Vector3D(vj0[0]+sx, vj0[1]+sy, vj0[2]+sz)
+                            if (vj-vi).get_magnitude() < dist + ri+rj*1.01:
+                                close=True
+                #d=1000
+                if close:
+                    #print "searching for "+str(ps[i].get_name()) + " "\
+                    #    + str(ps[j].get_name())
+                    #XYZ(ps[
+                    self.assert_(IMP.ParticlePair(ps[i],ps[j]) in cps
+                                 or
+                                 IMP.ParticlePair(ps[j],ps[i]) in cps,
+                                 "Pair " +str(ps[i].get_name()) + " " +ps[j].get_name()
+                                 + " not found "+str(vi)+" " +str(vj0))
+                    print "found pair " +str(ps[i].get_name()) + " " + str(ps[j].get_name())
     def do_test_points(self, cpf, num, rmin, rmax):
-        IMP.set_log_level(IMP.SILENT)
+        #IMP.set_log_level(IMP.SILENT)
         dist= random.uniform(rmin,rmax)
         #cpf.set_distance(dist)
         print 'Distance is ' + str(dist)
@@ -46,7 +98,7 @@ class TestCPFL(IMP.test.TestCase):
         self._check_close_pairs(ps, dist, rk, out)
         print "Done with all test "+str(out.get_number_of_particle_pairs())
     def do_test_bi_points(self, cpf, num, rmin, rmax):
-        IMP.set_log_level(IMP.SILENT)
+        #IMP.set_log_level(IMP.SILENT)
         dist= random.uniform(0,2)
         #cpf.set_distance(dist)
         print 'Distance is ' + str(dist)
@@ -73,7 +125,7 @@ class TestCPFL(IMP.test.TestCase):
 
 
     def do_test_one(self, cpf):
-        cpf.set_log_level(IMP.SILENT);
+        #cpf.set_log_level(IMP.SILENT);
         self.do_test_bi_points(cpf, 100, .01,1)
         #cpf.set_log_level(IMP.SILENT);
         self.do_test_points(cpf, 100, 1,1)
@@ -131,7 +183,6 @@ class TestCPFL(IMP.test.TestCase):
                                  + " not found " + str(d) + " " + str(dist))
                     print "found pair " +str(ps[i].get_name()) + " " + str(ps2[j].get_name())
         print "done with bipartite test"
-
     def test_quadratic(self):
         """Testing QuadraticClosePairsFinder"""
         print "quadratic"
@@ -149,11 +200,16 @@ class TestCPFL(IMP.test.TestCase):
     def test_grid(self):
         """Testing GridClosePairsFinder"""
         print "grid"
+        #IMP.set_log_level(IMP.VERBOSE)
         self.do_test_one(IMP.core.GridClosePairsFinder())
-
+        bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
+                                      IMP.algebra.Vector3D(10,10,10))
+        cpf= IMP.core.GridClosePairsFinder(bb)
+        #cpf.set_log_level(IMP.VERBOSE)
+        self.do_test_periodic_points(cpf, bb, 10, 0,1)
     def test_rigid(self):
         "Testing RigidClosePairsFinder"""
-        IMP.set_log_level(IMP.VERBOSE)
+        IMP.set_log_level(IMP.SILENT)
         dist= random.uniform(0,2)
         nump=100
         #cpf.set_distance(dist)
