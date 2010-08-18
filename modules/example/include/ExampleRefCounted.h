@@ -11,6 +11,7 @@
 #include "example_config.h"
 
 #include <IMP/RefCounted.h>
+#include <IMP/macros.h>
 
 IMPEXAMPLE_BEGIN_NAMESPACE
 
