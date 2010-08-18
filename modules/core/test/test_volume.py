@@ -11,13 +11,14 @@ class Volume(IMP.test.TestCase):
     """Tests for angle restraints"""
     def test_volume_1(self):
         """Testing that volume restraint can separate balls"""
+        print "hi"
         m= Model()
         ps= IMP.Particles()
         IMP.set_log_level(IMP.VERBOSE)
         for i in range(0,3):
             p= Particle(m)
-            v= get_random_vector_in(Vector3D(0,0,0),
-                                    Vector3D(5,5,5))
+            v= get_random_vector_in(BoundingBox3D(Vector3D(0,0,0),
+                                                  Vector3D(5,5,5)))
             d=XYZR.setup_particle(p, Sphere3D(v, 4))
             ps.append(p)
             p.set_is_optimized(FloatKey("x"), True)
@@ -29,8 +30,10 @@ class Volume(IMP.test.TestCase):
         c= ConjugateGradients(m)
         c.set_score_threshold(.1)
         c.optimize(1000)
+        self.assert_(m.evaluate(False) < .2)
     def test_volume_2(self):
         """Testing that volume restraint can change radius"""
+        print "hi2"
         m= Model()
         IMP.set_log_level(IMP.VERBOSE)
         ps= IMP.Particles()
