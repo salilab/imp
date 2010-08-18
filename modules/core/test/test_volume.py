@@ -9,7 +9,7 @@ import math
 
 class Volume(IMP.test.TestCase):
     """Tests for angle restraints"""
-    def test_volume(self):
+    def test_volume_1(self):
         """Testing that volume restraint can separate balls"""
         m= Model()
         ps= IMP.Particles()
@@ -27,8 +27,9 @@ class Volume(IMP.test.TestCase):
         vr= VolumeRestraint(Harmonic(0,1), sc, 4**3*3.1415*4.0/3.0*len(ps))
         m.add_restraint(vr)
         c= ConjugateGradients(m)
+        c.set_score_threshold(.1)
         c.optimize(1000)
-    def test_volume(self):
+    def test_volume_2(self):
         """Testing that volume restraint can change radius"""
         m= Model()
         IMP.set_log_level(IMP.VERBOSE)
@@ -50,6 +51,7 @@ class Volume(IMP.test.TestCase):
         #c.set_step_size(.1)
         #c.set_threshold(1)
         c= ConjugateGradients(m)
+        c.set_score_threshold(.1)
         c.optimize(1000)
         print d
         self.assertInTolerance(d.get_radius(), 5, .1)
