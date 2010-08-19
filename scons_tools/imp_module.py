@@ -317,7 +317,10 @@ def _make_programs(envi, required_modules, extra_libs, install, files):
     env= get_bin_environment(envi)
     vars=make_vars(env)
     if env['fastlink']:
-        env.Prepend(LINKFLAGS=['-limp_'+env['IMP_MODULE']])
+        if env['IMP_MODULE'] != "kernel":
+            env.Prepend(LINKFLAGS=['-limp_'+env['IMP_MODULE']])
+        else:
+            env.Prepend(LINKFLAGS=['-limp'])
     env.Prepend(LIBS=(dependencies_to_libs(env, env[env['IMP_MODULE']+"_required_modules"]\
                                                     +required_modules,
                                                 env['IMP_MODULE'] == 'kernel')\
@@ -585,6 +588,7 @@ def IMPModuleTest(env, python_tests, cpp_tests, cpp_required_modules=[],
     files.append(env.Alias(env['IMP_MODULE']+"-python"))
     #print files
     if len(cpp_tests)>0:
+        #print "found cpp tests", " ".join([str(x) for x in cpp_tests])
         (build, install_list)= _make_programs(env, cpp_required_modules, cpp_extra_libs, False, cpp_tests)
         cpptest= env._IMPModuleCPPTest(target="cpp_test_programs.py",
                                        source= build)
