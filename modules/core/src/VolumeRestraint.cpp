@@ -45,7 +45,7 @@ VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
                                 bb3.get_corner(0)+1.2*vms);
     IMP_LOG(VERBOSE, "Bounding box is " << bb3 << std::endl);
     grid_.set_bounding_box(bb3);
-    std::fill(grid_.voxels_begin(), grid_.voxels_end(), -1);
+    std::fill(grid_.all_voxels_begin(), grid_.all_voxels_end(), -1);
     const int offsets[][3]={{1,0,0},
                             {-1,0,0},
                             {0,1,0},
