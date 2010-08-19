@@ -1,6 +1,24 @@
+#### NOT FULLY IMPLEMENTED YET!
 import IMP
 import IMP.domino2
 import IMP.core
+import sys
+
+def optimize_subsets(subsets):
+    pst= IMP.domino2.ParticleStatesTable()
+    for subset in subsets:
+        None
+        #TODO - do the actual sampling
+    #combine back to ParticleStatesTable
+    #there is now a write_binary_model (multiple states into one file)
+    return pst
+
+def get_subsets(ps):
+    mdl=ps[0].get_model()
+    inter_graph=IMP.domino2.get_interaction_graph(ps,[mdl.get_root_restraint_set()])
+    jt=IMP.domino2.get_junction_tree(inter_graph)
+    return IMP.domino2.get_subsets(jt)
+
 
 def setup_scoring_function(ps):
     m=ps[0].get_model()
@@ -25,17 +43,32 @@ def initiate_configuration(domino_smp,ps):
 
 #### REPRESENTATION
 #1. setting up the representation (6 particles)
-m=IMP.Model()
-m.set_log_level(IMP.SILENT)
+mdl=IMP.Model()
+mdl.set_log_level(IMP.SILENT)
 ps=IMP.Particles()
 for i in range(0,6):
-    p=IMP.Particle(m)
+    p=IMP.Particle(mdl)
     IMP.core.XYZ.setup_particle(p,IMP.algebra.Vector3D(0.,0.,0.))
     ps.append(p)
 
 ####SCORING
 #1. setting up the scoring function
 setup_scoring_function(ps)
+
+#1. get the subsets
+subsets=get_subsets(ps)
+
+#optimize each one (returning ParticleStatesTable)
+pst = optimize_subsets(subsets)
+sys.exit()
+
+#subsets=[]
+
+#jt.show()
+sys.exit()
+#2. sample each subset
+#3. gathering
+
 
 ####OPTIMIZATION
 #1. load domino sampler and set required properties
@@ -44,6 +77,7 @@ domino_smp.set_maximum_score(.2)
 
 #2. initiate configuration
 initiate_configuration(domino_smp,ps)
+
 
 #3. construct subset of variables AND
 #   optimize subsets of variables subject to the discrete sampling space AND
