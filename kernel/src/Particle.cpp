@@ -209,7 +209,7 @@ namespace {
     unsigned int next_to_allocate;
     Chunk(): next_to_allocate(0){}
   };
-  std::vector<Chunk*> *chunks= new std::vector<Chunk*>(1, new Chunk());
+  std::vector<Chunk*> *chunks=NULL;
   unsigned int block_size() {
     return sizeof(Particle);
   }
@@ -231,6 +231,10 @@ void *Particle::operator new(std::size_t sz) {
   IMP_INTERNAL_CHECK(sz <= block_size(),
              "Expected request of size " << block_size()
              << " got request of size " << sz);
+  if (!chunks) {
+    chunks=new std::vector<Chunk*>();
+    IMP_LOG(MEMORY, "Created particle chunks" << std::endl);
+  }
   unsigned int i=0;
   for (; i< chunks->size(); ++i) {
     if ((*chunks)[i]->free_list.empty()
@@ -242,6 +246,8 @@ void *Particle::operator new(std::size_t sz) {
   }
   if (i== chunks->size()) {
     chunks->push_back(new Chunk());
+    IMP_LOG(MEMORY, "Creating particle chunk "
+            << chunks->size()-1 << std::endl);
   }
   unsigned int slot;
   if (!(*chunks)[i]->free_list.empty()) {
@@ -263,6 +269,20 @@ void Particle::operator delete(void *p) {
     if (&(*chunks)[i]->particles[0] <= p
         && &(*chunks)[i]->particles[(num_blocks-1)*sizeof(Particle)]>= p) {
       (*chunks)[i]->free_list.push_back(index(i, p));
+      if ((*chunks)[i]->free_list.size() == (*chunks)[i]->next_to_allocate) {
+        IMP_LOG(MEMORY, "Deleting particle chunk " << i << std::endl);
+        delete (*chunks)[i];
+        chunks->erase(chunks->begin()+i);
+        if (chunks->empty()) {
+          delete chunks;
+          chunks=NULL;
+          IMP_LOG(MEMORY, "Deleted particle chunks" << std::endl);
+        }
+      } else {
+        IMP_LOG(MEMORY, "Chunk " << i << " has "
+                << (*chunks)[i]->next_to_allocate
+                - (*chunks)[i]->free_list.size()<< std::endl);
+      }
       return;
     }
   }
@@ -273,6 +293,9 @@ void Particle::operator delete(void *p) {
 namespace internal {
   Particle* create_particles(Model *m, unsigned int n) {
     IMP_USAGE_CHECK(n>0, "Can't create 0 particles");
+    if (!chunks) {
+      chunks=new std::vector<Chunk*>();
+    }
     unsigned int i=0;
     for (; i< chunks->size(); ++i) {
       if ((*chunks)[i]->next_to_allocate + n > num_blocks) {
@@ -283,6 +306,8 @@ namespace internal {
     }
     if (i== chunks->size()) {
       chunks->push_back(new Chunk());
+      IMP_LOG(MEMORY, "Creating particle chunk "
+              << chunks->size()-1 << std::endl);
     }
     for (unsigned int j=0; j< n; ++j) {
       Particle *cur= new(address(i, (*chunks)[i]->next_to_allocate+j))
