@@ -26,9 +26,11 @@ class Volume(IMP.test.TestCase):
         sc= ListSingletonContainer(ps)
         vr= VolumeRestraint(Harmonic(0,1), sc, 4**3*3.1415*4.0/3.0*len(ps))
         m.add_restraint(vr)
-        c= ConjugateGradients(m)
-        c.set_score_threshold(.1)
-        c.optimize(1000)
+        mc= MonteCarlo(m)
+        mc.add_mover(BallMover(sc, 4))
+        mv.set_local_optimizer( ConjugateGradients(m))
+        mc.set_score_threshold(.2)
+        mc.optimize(1000)
         self.assert_(m.evaluate(False) < .2)
     def test_volume_2(self):
         """Testing that volume restraint can change radius"""
