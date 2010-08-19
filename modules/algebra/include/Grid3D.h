@@ -15,10 +15,177 @@
 #include "BoundingBoxD.h"
 #include "internal/grid_3d.h"
 #include <boost/iterator/transform_iterator.hpp>
+#include <boost/unordered_map.hpp>
 
 #include <limits>
 
 IMPALGEBRA_BEGIN_NAMESPACE
+
+/** Store a grid as a densely packed set of voxels.
+    \see Grid3D
+ */
+template <class VT>
+class DenseGridStorage3D {
+  typedef std::vector<VT> Storage;
+  Storage data_;
+  VT default_;
+  int d_[3];
+  template <class I>
+  unsigned int index(const I &i) const {
+    unsigned int ii= i[2]*d_[0]*d_[1] + i[1]*d_[0]+i[0];
+    IMP_INTERNAL_CHECK(ii < data_.size(), "Invalid grid index "
+               << i[0] << " " << i[1] << " " << i[2]
+               << ": " << d_[0] << " " << d_[1] << " " << d_[2]);
+    return ii;
+  }
+  struct NonDefault {
+    VT default_;
+    NonDefault(const VT &def): default_(def){}
+    template <class P>
+    bool operator()(const P &def) const {
+      return def.second != default_;
+    }
+  };
+  typedef internal::GridIndexIterator<internal::GridIndex> GIt;
+public:
+  typedef internal::GridIndex Index;
+  typedef typename Storage::reference reference;
+  typedef typename Storage::const_reference const_reference;
+  DenseGridStorage3D(const VT &def): default_(def) {
+    d_[0]=0;
+    d_[1]=0;
+    d_[2]=0;
+  }
+  DenseGridStorage3D(int i, int j, int k, const VT &def): data_(i*j*k, def),
+                                                          default_(def) {
+    d_[0]=i;
+    d_[1]=j;
+    d_[2]=k;
+  }
+ reference operator[](Index gi) {
+    return data_[index(gi)];
+  }
+  const_reference operator[](Index gi) const  {
+    return data_[index(gi)];
+  }
+  void set_voxel(Index i, const VT& gi) {
+    data_[index(gi)]=gi;
+  }
+  const_reference get_voxel(Index gi) const {
+    return operator[](gi);
+  }
+  void set_size(int i, int j, int k) {
+    data_.resize(i*j*k, default_);
+    d_[0]=i;
+    d_[1]=j;
+    d_[2]=k;
+  }
+  //! Return the number of voxels in a certain direction
+  unsigned int get_number_of_voxels(unsigned int i) const {
+    IMP_INTERNAL_CHECK(i < 3, "Only 3D: "<< i);
+    return d_[i];
+  }
+  /** \name All voxel iterators
+      The value type is VT.
+      @{
+  */
+  typedef typename Storage::iterator AllVoxelIterator;
+  typedef typename Storage::const_iterator AllVoxelConstIterator;
+  AllVoxelIterator all_voxels_begin() {
+    return data_.begin();
+  }
+  AllVoxelIterator all_voxels_end() {
+    return data_.end();
+  }
+  AllVoxelConstIterator all_voxels_begin() const {
+    return data_.begin();
+  }
+  AllVoxelConstIterator all_voxels_end() const {
+    return data_.end();
+  }
+  /** @} */
+};
+
+
+/** Store a grid as a sparse set of voxels. Voxels are not part
+    of the representation until set_voxel() is called on them. As a
+    result, only a const version of operator[]() is provided.
+    \unstable{SparseGridStorage3D}
+    \see Grid3D
+*/
+template <class VT>
+class SparseGridStorage3D {
+  typedef typename boost::unordered_map<typename internal::GridIndex, VT>
+  Storage;
+  Storage data_;
+  VT default_;
+  int d_[3];
+public:
+  typedef internal::GridIndex Index;
+  typedef VT& reference;
+  typedef const VT& const_reference;
+  SparseGridStorage3D(const VT &def): default_(def) {
+    d_[0]=0;
+    d_[1]=0;
+    d_[2]=0;
+  }
+  SparseGridStorage3D(int i, int j, int k,
+                      const VT &def): default_(def) {
+    d_[0]=i;
+    d_[1]=j;
+    d_[2]=k;
+  }
+  void set_voxel(Index i, const VT& gi) {
+    data_[i]=gi;
+  }
+  bool get_is_non_empty(Index i) const {
+    return data_.find(i) != data_.end();
+  }
+  const_reference get_voxel(Index gi) const {
+    typename Storage::const_iterator it=data_.find(gi);
+    if (it == data_.end()) return default_;
+    else return it->second;
+  }
+  /** \name Operator []
+      Operator[] isn't very useful at the moment as it can only
+      be used with a cell which has already been set. This
+      behavior/the existence of these functions is likely to change.
+      @{
+  */
+  const_reference operator[](Index gi) const  {
+    return get_voxel(gi);
+  }
+  reference operator[](Index gi)  {
+    IMP_USAGE_CHECK(get_is_non_empty(gi),
+                    "Can only call operator[] on non-empty voxels.");
+    return data_[gi];
+  }
+  /** @} */
+  void set_size(int i, int j, int k) {
+    d_[0]=i;
+    d_[1]=j;
+    d_[2]=k;
+  }
+  //! Return the number of voxels in a certain direction
+  unsigned int get_number_of_voxels(unsigned int i) const {
+    IMP_INTERNAL_CHECK(i < 3, "Only 3D: "<< i);
+    return d_[i];
+  }
+  /** \name Non empty iterators
+      Iterate through the voxels which have been set. The value
+      type is a pair of Index and VT.
+      @{
+  */
+  typedef typename Storage::const_iterator AllNonEmptyConstIterator;
+  AllNonEmptyConstIterator all_non_empty_begin() const {
+    return data_.begin();
+  }
+  AllNonEmptyConstIterator all_non_empty_end() const {
+    return data_.end();
+  }
+  /** @} */
+};
+
 
 //! A voxel grid in 3D space.
 /** The VT is stored in each grid cell.
@@ -41,25 +208,31 @@ IMPALGEBRA_BEGIN_NAMESPACE
    }
    \endcode
 
+   The grid class is implemented in two parts, a lower storage level
+   which defines how voxels are stored and provides basic access and a
+   higher geometric level. The former is the Storage template parameter
+   for the latter, the Grid3D class itself.
+
+   \see DenseGridStorage3D
+   \see SparseGridStorage3D
+
    \note This class is not available in python.
  */
-template <class VT>
-class Grid3D
+template <class VT, class Storage=DenseGridStorage3D<VT> >
+class Grid3D: public Storage
 {
 public:
   //! The type stored in each voxel.
   typedef VT Voxel;
 
 #ifndef IMP_DOXYGEN
-  typedef internal::GridIndex Index;
+  typedef typename Storage::Index Index;
   typedef internal::VirtualGridIndex ExtendedIndex;
-  typedef typename std::vector<VT>::reference reference;
-  typedef typename std::vector<VT>::const_reference const_reference;
+  typedef typename Storage::reference reference;
+  typedef typename Storage::const_reference const_reference;
 #endif
 
 private:
-  std::vector<VT> data_;
-  int d_[3];
   BoundingBoxD<3> bbox_;
   VectorD<3> unit_cell_;
   // inverse
@@ -69,7 +242,7 @@ private:
     mutable Grid3D<VT> *home_;
     GetVoxel(Grid3D<VT> *home): home_(home) {}
     typedef reference result_type;
-    typedef const Index& argument_type;
+    typedef const typename Storage::Index& argument_type;
     result_type operator()(argument_type i) const {
       return home_->operator[](i);
     }
@@ -79,19 +252,11 @@ private:
     const Grid3D<VT> *home_;
     ConstGetVoxel(const Grid3D<VT> *home): home_(home) {}
     typedef reference result_type;
-    typedef const Index& argument_type;
+    typedef const typename Storage::Index& argument_type;
     result_type operator()(argument_type i) const {
-      return home_->operator[](i);
+      return home_->get_voxel(i);
     }
   };
-
-  unsigned int index(const Index &i) const {
-    unsigned int ii= i[2]*d_[0]*d_[1] + i[1]*d_[0]+i[0];
-    IMP_INTERNAL_CHECK(ii < data_.size(), "Invalid grid index "
-               << i[0] << " " << i[1] << " " << i[2]
-               << ": " << d_[0] << " " << d_[1] << " " << d_[2]);
-    return ii;
-  }
 
   void set_unit_cell(const VectorD<3> &c) {
     unit_cell_=c;
@@ -103,7 +268,9 @@ private:
   int snap(unsigned int dim, int v) const {
     IMP_INTERNAL_CHECK(dim <3, "Invalid dim");
     if (v < 0) return 0;
-    else if (v > d_[dim]) return d_[dim];
+    else if (v > static_cast<int>(Storage::get_number_of_voxels(dim))) {
+      return Storage::get_number_of_voxels(dim);
+    }
     else return v;
   }
 
@@ -122,7 +289,9 @@ private:
     ExtendedIndex rub;
     for (unsigned int i=0; i< 3; ++i) {
       if (u[i] <= 0) return empty_range();
-      if (l[i] >= d_[i]) return empty_range();
+      if (l[i] >= static_cast<int>(Storage::get_number_of_voxels(i))){
+        return empty_range();
+      }
     }
     return std::make_pair(snap(l), snap(u));
   }
@@ -137,18 +306,15 @@ public:
    */
   Grid3D(int xd, int yd, int zd,
          const BoundingBoxD<3> &bb,
-         Voxel def=Voxel()): data_(xd*yd*zd, def),
-                                     bbox_(bb) {
+         Voxel def=Voxel()): Storage(xd, yd, zd, def),
+                             bbox_(bb) {
     IMP_USAGE_CHECK(xd > 0 && yd>0 && zd>0,
                     "Can't have empty grid");
-    d_[0]=xd;
-    d_[1]=yd;
-    d_[2]=zd;
     VectorD<3> nuc;
     for (unsigned int i=0; i< 3; ++i) {
       double side= bbox_.get_corner(1)[i]- bbox_.get_corner(0)[i];
       IMP_USAGE_CHECK(side>0, "Can't have flat grid");
-      nuc[i]= 1.01*side/d_[i];
+      nuc[i]= 1.01*side/Storage::get_number_of_voxels(i);
     }
     set_unit_cell(nuc);
   }
@@ -162,9 +328,10 @@ public:
    */
   Grid3D(double side,
          const BoundingBoxD<3> &bb,
-         Voxel def=Voxel()) {
+         Voxel def=Voxel()): Storage(def) {
     IMP_USAGE_CHECK(side>0, "Side cannot be 0");
     VectorD<3> nuc;
+    int dd[3];
     for (unsigned int i=0; i< 3; ++i ) {
       double bside= bb.get_corner(1)[i]- bb.get_corner(0)[i];
       double d= bside/side;
@@ -172,28 +339,25 @@ public:
       if (cd-d <.05) {
         ++cd;
       }
-      d_[i]= static_cast<int>(cd);
+      dd[i]= static_cast<int>(cd);
       nuc[i]= side;
     }
     set_unit_cell(nuc);
     bbox_=BoundingBoxD<3>(bb.get_corner(0), bb.get_corner(0)
-                        +VectorD<3>(d_[0]*unit_cell_[0],
-                                    d_[1]*unit_cell_[1],
-                                    d_[2]*unit_cell_[2]));
+                        +VectorD<3>(dd[0]*unit_cell_[0],
+                                    dd[1]*unit_cell_[1],
+                                    dd[2]*unit_cell_[2]));
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {
       for (unsigned int i=0; i< 3; ++i) {
         IMP_INTERNAL_CHECK(bbox_.get_corner(1)[i] >= bb.get_corner(1)[i],
                            "Old bounding box not subsumed in new.");
       }
     }
-    data_.resize(d_[0]*d_[1]*d_[2], def);
+    Storage::set_size(dd[0], dd[1], dd[2]);
   }
 
   //! An empty grid.
-  Grid3D(){
-    d_[0]=0;
-    d_[1]=0;
-    d_[2]=0;
+  Grid3D(): Storage(VT()){
   }
 
   BoundingBoxD<3> get_bounding_box() const {
@@ -205,7 +369,8 @@ public:
     bbox_ =bb3;
     VectorD<3> nuc;
     for (unsigned int i=0; i< 3; ++i) {
-      double el= (bb3.get_corner(1)[i]- bb3.get_corner(0)[i])/d_[i];
+      double el= (bb3.get_corner(1)[i]- bb3.get_corner(0)[i])
+        /Storage::get_number_of_voxels(i);
       nuc[i]=el;
     }
     set_unit_cell(nuc);
@@ -216,12 +381,6 @@ public:
     return unit_cell_;
   }
 
-  //! Return the number of voxels in a certain direction
-  unsigned int get_number_of_voxels(unsigned int i) const {
-    IMP_INTERNAL_CHECK(i < 3, "Only 3D: "<< i);
-    return d_[i];
-  }
-
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
   //! Get the data in a particular cell
@@ -230,16 +389,21 @@ public:
   //! Get the data in a particular cell
   const Voxel operator[](const VectorD<3> &v) const;
   const Voxel& get_voxel(const VectorD<3> &v) const;
+  void set_voxel(const VectorD<3> &v, const Voxel &vv) const;
 #else
   reference operator[](const VectorD<3> &v) {
-    return data_[get_index(index(v))];
+    return Storage::get_voxel(get_index(v));
   }
   const_reference operator[](const VectorD<3> &v) const  {
-    return data_[get_index(index(v))];
+    return Storage::get_voxel(get_index(v));
   }
   const_reference get_voxel(const VectorD<3> &v) const {
     return operator[](v);
   }
+  void set_voxel(const VectorD<3> &v, const Voxel &vv) const {
+    Storage::set_voxel(get_index(v), vv);
+  }
+  using Storage::operator[];
 #endif
 
 
@@ -256,11 +420,12 @@ public:
                     << bbox_);
     int index[3];
     for (unsigned int i=0; i< 3; ++i ) {
-      IMP_INTERNAL_CHECK(d_[i] != 0, "Invalid grid in Index");
+      IMP_INTERNAL_CHECK(Storage::get_number_of_voxels(i) != 0,
+                         "Invalid grid in Index");
       double d = pt[i] - bbox_.get_corner(0)[i];
       double fi= d*inverse_unit_cell_[i];
-      index[i]= std::min(static_cast<int>(std::floor(fi)),
-                         d_[i]-1);
+      index[i]= std::min<int>(std::floor(fi),
+                         Storage::get_number_of_voxels(i)-1);
     }
     return Index(index[0], index[1], index[2]);
   }
@@ -274,7 +439,8 @@ public:
     if (bbox_.get_contains(pt)) return get_index(pt);
     int index[3];
     for (unsigned int i=0; i< 3; ++i ) {
-      IMP_INTERNAL_CHECK(d_[i] != 0, "Invalid grid in Index");
+      IMP_INTERNAL_CHECK(Storage::get_number_of_voxels(i) != 0,
+                         "Invalid grid in Index");
       float d = pt[i] - bbox_.get_corner(0)[i];
       float fi= d*inverse_unit_cell_[i];
       index[i]= static_cast<int>(std::floor(fi));
@@ -300,7 +466,10 @@ public:
   //! Return true if the ExtendedIndex is also a normal index value
   bool get_is_index(ExtendedIndex v) const {
     for (unsigned int i=0; i< 3; ++i) {
-      if (v[i] < 0 || v[i] >= d_[i]) return false;
+      if (v[i] < 0
+          || v[i] >= static_cast<int>(Storage::get_number_of_voxels(i))) {
+        return false;
+      }
     }
     return true;
   }
@@ -324,16 +493,8 @@ public:
     return BoundingBoxD<3>(l,u);
   }
 
-  reference operator[](Index gi) {
-    return data_[index(gi)];
-  }
-  const_reference operator[](Index gi) const  {
-    return data_[index(gi)];
-  }
-  const_reference get_voxel(Index gi) const {
-    return operator[](gi);
-  }
-
+  using Storage::get_voxel;
+  using Storage::set_voxel;
   //! Return the coordinates of the center of the voxel
   VectorD<3> get_center(ExtendedIndex gi) const {
     return VectorD<3>(unit_cell_[0]*(.5+ gi[0]),
@@ -379,15 +540,15 @@ public:
   typedef IndexIterator AllIndexIterator;
   AllIndexIterator all_indexes_begin() const {
     return indexes_begin(ExtendedIndex(0,0,0),
-                         ExtendedIndex(d_[0],
-                                      d_[1],
-                                      d_[2]));
+                         ExtendedIndex(Storage::get_number_of_voxels(0),
+                                       Storage::get_number_of_voxels(1),
+                                       Storage::get_number_of_voxels(2)));
   }
   AllIndexIterator all_indexes_end() const {
     return indexes_end(ExtendedIndex(0,0,0),
-                       ExtendedIndex(d_[0],
-                                    d_[1],
-                                    d_[2]));
+                       ExtendedIndex(Storage::get_number_of_voxels(0),
+                                     Storage::get_number_of_voxels(1),
+                                     Storage::get_number_of_voxels(2)));
   }
   typedef internal::GridIndexIterator<ExtendedIndex> ExtendedIndexIterator;
   ExtendedIndexIterator extended_indexes_begin(ExtendedIndex lb,
@@ -409,8 +570,6 @@ public:
       These iterators go through a range of voxels in the grid. These voxels
       include any that touch or are contained in the shape passed to the
       begin/end calls.
-
-      The value type is the contents of the voxel.
       @{
   */
 #ifdef IMP_DOXYGEN
@@ -418,12 +577,11 @@ public:
   class VoxelConstIterator;
   class AllVoxelIterator;
   class AllVoxelConstIterator;
+  class NonEmptyConstIterator;
 #else
   typedef boost::transform_iterator<GetVoxel, IndexIterator> VoxelIterator;
   typedef boost::transform_iterator<ConstGetVoxel,
                                     IndexIterator> VoxelConstIterator;
-  typedef typename std::vector<VT>::iterator AllVoxelIterator;
-  typedef typename std::vector<VT>::iterator AllVoxelConstIterator;
 #endif
   VoxelIterator voxels_begin(const BoundingBoxD<3> &bb) {
     ExtendedIndex lb= get_extended_index(bb.get_corner(0));
@@ -449,11 +607,6 @@ public:
                                           ExtendedIndex()),
                               ConstGetVoxel(this));
   }
-
-  AllVoxelIterator voxels_begin() { return data_.begin();}
-  AllVoxelIterator voxels_end() { return data_.end();}
-  AllVoxelConstIterator voxels_begin() const { return data_.begin();}
-  AllVoxelConstIterator voxels_end() const { return data_.end();}
   /** @} */
 };
 

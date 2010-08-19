@@ -9,6 +9,7 @@
 
 #include "../algebra_config.h"
 #include "../Vector3D.h"
+#include <boost/functional/hash.hpp>
 
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
@@ -46,7 +47,14 @@ public:
   bool strictly_larger_than(const VirtualGridIndex &o) const {
     return d_[0] > o.d_[0] && d_[1] > o.d_[1] && d_[2] > o.d_[2];
   }
+  typedef const int* iterator;
+  iterator begin() const {return d_;}
+  iterator end() const {return d_+3;}
 };
+
+inline std::size_t hash_value(const VirtualGridIndex &ind) {
+  return boost::hash_range(ind.begin(), ind.end());
+}
 
 IMP_OUTPUT_OPERATOR(VirtualGridIndex);
 
