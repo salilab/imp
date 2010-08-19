@@ -9,5 +9,5 @@ int main(int, char*[]) {
   for (unsigned int i=0; i< 10; ++i) {
     new IMP::Particle(m);
   }
-  return 1;
+  return 0;
 }
