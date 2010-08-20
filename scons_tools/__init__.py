@@ -117,7 +117,7 @@ def _add_build_flags(env):
     if env['CXX'] == 'g++' and  env['IMP_USE_PLATFORM_FLAGS']:
         if env['build'] == 'fast':
             env.Append(CXXFLAGS=["-O3", "-fexpensive-optimizations",
-                                 "-ffast-math"])
+                                 "-ffast-math", "-ftree-vectorize"])
         elif env['build'] == 'release':
             env.Append(CXXFLAGS=["-O2"])
         elif env['build'] == 'debug':
@@ -180,7 +180,7 @@ def MyEnvironment(variables=None, *args, **kw):
     #col.colorize(env)
     env['PYTHONPATH'] = '#/build/lib'
     env['all_modules']=[]
-    #env.Decider('MD5-timestamp')
+    env.Decider('MD5-timestamp')
     env.AddMethod(symlinks.LinkInstall)
     env.AddMethod(symlinks.LinkInstallAs)
     env.AddMethod(hierarchy.InstallHierarchy)
