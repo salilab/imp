@@ -309,12 +309,12 @@ FittingSolutions compute_fitting_scores(const Particles &ps,
                        "sampled density map is of wrong dimensions"<<std::endl);
     float score;
     if (!fast_version) {
+      core::XYZsTemp ps_xyz=core::XYZsTemp(ps);
       IMP_LOG(IMP::VERBOSE,"running slow version of compute_fitting_scores"
               <<std::endl);
       IMP::em::SampledDensityMap *model_dens_map =
          new IMP::em::SampledDensityMap(*(em_map->get_header()));
       model_dens_map->set_particles(ps,rad_key,wei_key);
-      core::XYZsTemp ps_xyz=core::XYZsTemp(ps);
       algebra::Vector3Ds original_cooridnates;
       for(core::XYZsTemp::const_iterator it = ps_xyz.begin();
           it != ps_xyz.end(); it++) {
@@ -328,7 +328,8 @@ FittingSolutions compute_fitting_scores(const Particles &ps,
              it->get_transformed(original_cooridnates[i]));
         }
         model_dens_map->resample();
-        float threshold = model_dens_map->get_header()->dmin;
+        model_dens_map->calcRMS();
+        float threshold = model_dens_map->get_header()->dmin-EPS;
         score  = 1.-
           CoarseCC::cross_correlation_coefficient(*em_map,
              *model_dens_map,threshold,true);

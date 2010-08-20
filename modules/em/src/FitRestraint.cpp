@@ -277,7 +277,7 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   // now update the derivatives
   FloatKeys xyz_keys=IMP::core::XYZR::get_xyz_keys();
   if (calc_deriv) {
-    for(int i=0;i<not_rb_.size();i++) {
+    for(unsigned int i=0;i<not_rb_.size();i++) {
       Particle *p=not_rb_[i];
       p->add_to_derivative(xyz_keys[0], not_rb_dx_[i],
                                           *accum);
@@ -286,11 +286,11 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
       p->add_to_derivative(xyz_keys[2], not_rb_dz_[i],
                                           *accum);
     }
-    for(int rb_i=0;rb_i<rbs_.size();rb_i++) {
+    for(unsigned int rb_i=0;rb_i<rbs_.size();rb_i++) {
       core::RigidBody rb=rbs_[rb_i];
       core::RigidMembers rb_mbrs=
          core::RigidMembers(rb_refiner_->get_refined(rb));
-      for(int mbr_i =0; mbr_i<rb_mbrs.size(); mbr_i++){
+      for(unsigned int mbr_i =0; mbr_i<rb_mbrs.size(); mbr_i++){
         rb.add_to_derivatives(algebra::Vector3D(rb_refined_dx_[rb_i][mbr_i],
                                                 rb_refined_dy_[rb_i][mbr_i],
                                                 rb_refined_dz_[rb_i][mbr_i]),

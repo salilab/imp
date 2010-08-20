@@ -44,14 +44,8 @@ public:
       /param[in] voxel_size   the voxel size.
       /note the voxel size and the number of shells determines
             the resolution/accuracy of the surface rasterization.
-      /param[in] sig_cutoff   Choose what should be the sigma cutoff for
-                 accurate sampling. It is used in two functions;
-                 (i)  to determine the size of the grid dimensions
-                 (ii) to determine the voxels around the coords participating
-                      in the sampling procedure.
    */
   SurfaceShellDensityMap(const Particles &ps,
-                         float resolution,
                          float voxel_size,
      IMP::FloatKey radius_key = IMP::core::XYZR::get_default_radius_key(),
      IMP::FloatKey mass_key = IMP::atom::Mass::get_mass_key(),
@@ -99,6 +93,7 @@ protected:
   int num_shells_;
 };
 
+IMP_OBJECTS(SurfaceShellDensityMap, SurfaceShellDensityMaps);
 IMPEM_END_NAMESPACE
 
 #endif  /* IMPEM_SURFACE_SHELL_DENSITY_MAP_H */
