@@ -17,16 +17,21 @@
 IMPCORE_BEGIN_NAMESPACE
 
 namespace {
-  static bool get_is_wrapped(unsigned int merged, unsigned int k) {
-    switch (k) {
-    case 0:
-      return merged & GridClosePairsFinder::X;
-    case 1:
-      return merged & GridClosePairsFinder::Y;
-    default:
-      IMP_USAGE_CHECK(k==2, "bad k");
-      return merged & GridClosePairsFinder::Z;
+  inline bool get_interiors_intersect(const algebra::Vector3D &v,
+                                      double ra, double rb) {
+    double sr= ra+rb;
+    double s=0;
+    for (unsigned int i=0; i< 3; ++i) {
+      double a=std::abs(v[i]);
+      if (a >= sr) return false;
+      s+=a*a;
     }
+    return s < square(sr);
+  }
+
+  inline bool get_is_wrapped(unsigned int merged, unsigned int k) {
+    IMP_USAGE_CHECK(k<=2, "bad k");
+    return merged& (1 << k);
   }
   struct ParticleID {
     typedef Particle* result_type;
@@ -46,7 +51,10 @@ namespace {
     double d_;
     ParticleClose(double d): d_(d){}
     double operator()(Particle *a, Particle *b) const {
-      return get_distance(XYZR(a), XYZR(b)) < d_;
+      return get_interiors_intersect(XYZR(a).get_coordinates()
+                                     -XYZR(b).get_coordinates(),
+                                     XYZR(b).get_radius()+d_,
+                                     XYZR(a).get_radius());
     }
   };
   struct PeriodicParticleClose {
@@ -67,8 +75,8 @@ namespace {
           else if (diff[i] < -.5*uc_[i]) diff[i]+=uc_[i];
         }
       }
-      return diff.get_magnitude() - XYZR(a).get_radius() - XYZR(b).get_radius()
-        < d_;
+      return get_interiors_intersect(diff, XYZR(a).get_radius(),
+                                     XYZR(b).get_radius()+d_);
     }
   };
   struct BBID {
