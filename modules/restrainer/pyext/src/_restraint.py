@@ -564,14 +564,23 @@ class _RestraintYear(_RestraintNode):
 class _RestraintParticle(_RestraintNode):
     def __init__(self, attributes):
         _RestraintNode.__init__(self, attributes)
-        self.id         = attributes.get('id', '')
+        self.id      = attributes.get('id', '')
+        self.residue = attributes.get('residue', '')
+        self.atom    = attributes.get('atom', '')
 
     def create_restraint(self, repr, restraint_sets):
 
         repr_particle = self.find_representation(repr)
         if not repr_particle:
             raise Exception, "Particle with id=%s not found" % (self.id)
-        return repr_particle.model_decorator
+        decorator = repr_particle.model_decorator
+        if self.residue:
+            decorator = IMP.atom.get_residue(decorator, int(self.residue))
+            if self.atom:
+                decorator = IMP.atom.Residue(decorator.get_particle())
+                atom_type = IMP.atom.AtomType(self.atom)
+                decorator = IMP.atom.get_atom(decorator, atom_type)
+        return decorator
 
     def find_representation(self, repr):
         return repr.find_by_id(self.id)
