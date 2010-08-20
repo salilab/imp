@@ -18,16 +18,16 @@ IMPCORE_BEGIN_NAMESPACE
 
 namespace {
   static bool get_is_wrapped(unsigned int merged, unsigned int k) {
-      switch (k) {
-      case 0:
-        return merged & GridClosePairsFinder::X;
-      case 1:
-        return merged & GridClosePairsFinder::Y;
-      default:
-        IMP_USAGE_CHECK(k==2, "bad k");
-        return merged & GridClosePairsFinder::Z;
-      }
+    switch (k) {
+    case 0:
+      return merged & GridClosePairsFinder::X;
+    case 1:
+      return merged & GridClosePairsFinder::Y;
+    default:
+      IMP_USAGE_CHECK(k==2, "bad k");
+      return merged & GridClosePairsFinder::Z;
     }
+  }
   struct ParticleID {
     typedef Particle* result_type;
     Particle* operator()(Particle *p) const {return p;}
@@ -43,18 +43,22 @@ namespace {
     }
   };
   struct ParticleClose {
-    double operator()(Particle *a, Particle *b, double d) const {
-      return get_distance(XYZR(a), XYZR(b)) < d;
+    double d_;
+    ParticleClose(double d): d_(d){}
+    double operator()(Particle *a, Particle *b) const {
+      return get_distance(XYZR(a), XYZR(b)) < d_;
     }
   };
   struct PeriodicParticleClose {
     algebra::Vector3D uc_;
     unsigned int merged_;
+    double d_;
     PeriodicParticleClose(const algebra::BoundingBox3D &bb,
-                          unsigned int merged):
+                          unsigned int merged,
+                          double d):
       uc_(bb.get_corner(1)- bb.get_corner(0)),
-      merged_(merged){}
-    double operator()(Particle *a, Particle *b, double distance) const {
+      merged_(merged), d_(d){}
+    double operator()(Particle *a, Particle *b) const {
       algebra::Vector3D diff
         = XYZR(a).get_coordinates()- XYZR(b).get_coordinates();
       for (unsigned int i=0; i< 3; ++i) {
@@ -64,7 +68,7 @@ namespace {
         }
       }
       return diff.get_magnitude() - XYZR(a).get_radius() - XYZR(b).get_radius()
-        < distance;
+        < d_;
     }
   };
   struct BBID {
@@ -91,24 +95,28 @@ namespace {
     }
   };
   struct PeriodicBBClose {
+    double d_;
     algebra::Vector3D uc_;
     unsigned int merged_;
     algebra::BoundingBox3Ds::const_iterator it0_, it1_;
     PeriodicBBClose(algebra::BoundingBox3Ds::const_iterator it0,
-            algebra::BoundingBox3Ds::const_iterator it1,
-            const algebra::BoundingBox3D &bb,
-            unsigned int merged): uc_(bb.get_corner(1)- bb.get_corner(0)),
-                                  merged_(merged), it0_(it0), it1_(it1){}
-    double operator()(unsigned int a, unsigned int b, double distance) const {
+                    algebra::BoundingBox3Ds::const_iterator it1,
+                    const algebra::BoundingBox3D &bb,
+                    unsigned int merged, double d): d_(d),
+                                                    uc_(bb.get_corner(1)
+                                                        - bb.get_corner(0)),
+                                          merged_(merged), it0_(it0),
+                                                    it1_(it1){}
+    double operator()(unsigned int a, unsigned int b) const {
       for (unsigned int i=0; i< 3; ++i) {
         if (get_is_wrapped(merged_, i)) {
           bool ok=false;
           for (int o=-1; o < 2; ++o) {
-            double ub0= uc_[i]*o + (it1_+b)->get_corner(1)[i]+distance;
+            double ub0= uc_[i]*o + (it1_+b)->get_corner(1)[i]+d_;
             if ((it0_+a)->get_corner(0)[i] > ub0) {
               continue;
             }
-            double ub1= uc_[i]*o + (it0_+1)->get_corner(1)[i]+distance;
+            double ub1= uc_[i]*o + (it0_+1)->get_corner(1)[i]+d_;
             if ((it1_+b)->get_corner(0)[i] > ub1) {
               continue;
             }
@@ -118,8 +126,8 @@ namespace {
           if (!ok) return false;
         } else {
           if ((it0_+a)->get_corner(0)[i]
-              > (it1_+b)->get_corner(1)[i]+distance) return false;
-          if ((it0_+a)->get_corner(1)[i]+distance
+              > (it1_+b)->get_corner(1)[i]+d_) return false;
+          if ((it0_+a)->get_corner(1)[i]+d_
               < (it1_+b)->get_corner(0)[i]) return false;
         }
       }
@@ -127,18 +135,20 @@ namespace {
     }
   };
   struct BBClose {
+    double d_;
     algebra::BoundingBox3Ds::const_iterator it0_, it1_;
     BBClose(algebra::BoundingBox3Ds::const_iterator it0,
-            algebra::BoundingBox3Ds::const_iterator it1): it0_(it0), it1_(it1){}
-    double operator()(unsigned int a, unsigned int b, double dist) const {
-      algebra::BoundingBox3D ag= *(it0_+a)+dist;
+            algebra::BoundingBox3Ds::const_iterator it1, double d):
+      d_(d), it0_(it0), it1_(it1){}
+    double operator()(unsigned int a, unsigned int b) const {
+      algebra::BoundingBox3D ag= *(it0_+a)+d_;
       return algebra::get_interiors_intersect(ag, *(it1_+b));
     }
   };
 
   double get_side(const algebra::BoundingBox3D &bb, unsigned int nump,
-                  double r, double d) {
-    return 1.1*(2*r+d);
+                  double r, double d, double maxr) {
+    return 1.1*(r+maxr+d);
   }
 
   std::string do_show(Particle*p) {
@@ -151,7 +161,7 @@ namespace {
     return i;
   }
 
-  template <bool PERIODIC, class IDF, class CenterF,
+  template <class IDF, class CenterF,
             class RadiusF, class CloseF, class Out>
   struct Helper {
     typedef typename IDF::result_type ID;
@@ -196,31 +206,16 @@ namespace {
       }
       return ii;
     }
-    static unsigned int get_bound(bool is_merged, int raw, int lb, int ub) {
-      if (!is_merged) return 1;
-      if (raw != lb && raw != ub) return 1;
-      return 2;
-    }
-    template <class Index>
-    static void fill_copies(const Grid &g,
-                            typename Grid::ExtendedIndex center,
-                            Index cur,
-                            std::vector<typename Grid::Index> &out) {
-      typename Grid::ExtendedIndex cei(cur[0], cur[1], cur[2]);
-      if (g.get_is_index(cei)&& cei != center
-          && !g.get_voxel(g.get_index(cei)).empty()) {
-        out.push_back(g.get_index(cei));
-      }
-    }
 
     template <class Index>
     static void fill_copies_periodic(const Grid &g,
-                                     typename Grid::ExtendedIndex center,
                                      Index cur,
                                      unsigned int merged,
                                      typename Grid::ExtendedIndex bblb,
                                      typename Grid::ExtendedIndex bbub,
+                                     bool half,
                                      std::vector<typename Grid::Index> &out) {
+      typename Grid::ExtendedIndex curei(cur[0], cur[1], cur[2]);
       for (int io=-1; io < 2; ++io) {
         if ((!(merged &GridClosePairsFinder::X)) && io != 0) continue;
         int ii=cur[0]+io*(bbub[0]-bblb[0]);
@@ -240,11 +235,9 @@ namespace {
             IMP_INTERNAL_CHECK(g.get_is_index(cei), "Not a voxel " << cei);
             typename Grid::Index ci= g.get_index(cei);
             // make sure equivalent voxels are only added once
-            if (cur[0] != center[0] || cur[1] != center[1]
-                || cur[2] != center[2] || ci < center) {
-              if (!g.get_voxel(ci).empty()) {
-                out.push_back(g.get_index(cei));
-              }
+            if (((half && ci < curei) || (!half && curei != ci))
+                && g.get_is_non_empty(ci)) {
+              out.push_back(ci);
             }
           }
         }
@@ -252,237 +245,151 @@ namespace {
     }
 
     static void fill_nearby(const Grid &g,
-                            typename Grid::ExtendedIndex center,
-                            int offset,
-                            double distance,
-                            double half,
-                            unsigned int merged,
-                            const algebra::BoundingBox3D &bb,
+                            typename Grid::Index center,
                             typename Grid::ExtendedIndex bblb,
                             typename Grid::ExtendedIndex bbub,
+                            unsigned int merged,
+                            bool half,
                             std::vector<typename Grid::Index> &out) {
-      IMP_INTERNAL_CHECK(distance <= offset * g.get_unit_cell()[0],
-                         "Offset is too small " << distance << " > "
-                         << offset << " * " << g.get_unit_cell()[0]
-                         << " all unit cell is " << g.get_unit_cell());
-      if (PERIODIC) {
-        IMP_LOG(VERBOSE, "Filling for " << center << " "
-                << offset << " " << half << " in " << bblb << " to " << bbub
-                << " distance " << distance << " "
-                << g.get_unit_cell() << std::endl);
-      } else {
-        IMP_LOG(VERBOSE, "Filling for " << center << " "
-                << offset << " " << half
-                << " distance " << distance << " " << g.get_unit_cell()
-                << std::endl);
-      }
       typename Grid::ExtendedIndex lb(g.get_offset(center,
-                                                   -offset, -offset, -offset)),
-        ub(g.get_offset(center, offset, offset, offset));
+                                                   -1, -1, -1)),
+        ub(g.get_offset(center, 1, 1, 1));
       if (half) {
-        IMP_GRID3D_FOREACH_SMALLER_VOXEL_RANGE(g, center, lb, ub,
-                                               if (PERIODIC) {
-                    fill_copies_periodic(g, center, voxel_index,
-                                         merged, bblb, bbub, out);
-                  } else {
-                    fill_copies(g, center, voxel_index, out);
-                    });
+        IMP_GRID3D_FOREACH_SMALLER_EXTENDED_INDEX_RANGE(g, center, lb, ub,
+                                               {
+                           fill_copies_periodic(g, voxel_index,
+                                                merged, bblb, bbub, true, out);
+                           typename Grid::ExtendedIndex ei(voxel_index[0],
+                                                           voxel_index[1],
+                                                           voxel_index[2]);
+                                                 if (g.get_is_index(ei)) {
+                                  out.push_back(g.get_index(ei));
+                                }
+                                               });
+        fill_copies_periodic(g, center,
+                             merged, bblb, bbub, true, out);
       } else {
         for (typename Grid::ExtendedIndexIterator it
                = g.extended_indexes_begin(lb, ub);
              it != g.extended_indexes_end(lb, ub); ++it) {
-          if (PERIODIC) {
-            fill_copies_periodic(g, center, *it,merged, bblb, bbub, out);
-          } else {
-            fill_copies(g, center, *it, out);
+          fill_copies_periodic(g, *it,merged, bblb, bbub, false, out);
+          if (g.get_is_index(*it)) {
+            out.push_back(g.get_index(*it));
           }
         }
       }
-      if (PERIODIC) {
-        fill_copies_periodic(g, center, center,merged, bblb, bbub, out);
+      // would be nice to not have duplicates
+      std::sort(out.begin(), out.end());
+      out.erase(std::unique(out.begin(), out.end()), out.end());
+    }
+
+
+
+    static void fill_nearby(const Grid &g,
+                            typename Grid::Index center,
+                            double half,
+                            std::vector<typename Grid::Index> &out) {
+      typename Grid::ExtendedIndex lb(g.get_offset(center,
+                                                   -1, -1, -1)),
+        ub(g.get_offset(center, 1, 1, 1));
+      if (half) {
+        IMP_GRID3D_FOREACH_SMALLER_EXTENDED_INDEX_RANGE(g, center, lb, ub,
+                                               {
+                                                 typename Grid::ExtendedIndex
+                                                   ei(voxel_index[0],
+                                                      voxel_index[1],
+                                                      voxel_index[2]);
+                                                 if (g.get_is_index(ei)) {
+                                                   typename Grid::Index i
+                                                     =g.get_index(ei);
+                                                   if (g.get_is_non_empty(i)) {
+                                                     out.push_back(i);
+                                                   }
+                                                 }
+                                               }
+                                               );
       } else {
-        fill_copies(g, center, center, out);
-      }
-      IMP_IF_LOG(VERBOSE) {
-        IMP_LOG(VERBOSE, "Unwrapped found ");
-        for (unsigned int i=0; i< out.size(); ++i) {
-          IMP_LOG(VERBOSE, out[i] << " ");
-        }
-        IMP_LOG(VERBOSE, std::endl);
-      }
-      if (merged) {
-        // would be nice to not have duplicates
-        std::sort(out.begin(), out.end());
-        out.erase(std::unique(out.begin(), out.end()), out.end());
-      }
-      IMP_IF_LOG(VERBOSE) {
-        if (merged) {
-          IMP_LOG(VERBOSE, "Wrapped found ");
-          for (unsigned int i=0; i< out.size(); ++i) {
-            IMP_LOG(VERBOSE, out[i] << " ");
-          }
-          IMP_LOG(VERBOSE, std::endl);
-        }
-      }
-      IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-        if (!half) {
-          std::vector<typename Grid::Index> check_out;
-          std::vector<algebra::BoundingBox3D> cbb;
-          if (merged) {
-            for (int i=-1; i< 2; ++i) {
-              for (int j=-1; j< 2; ++j) {
-                for (int k=-1; k< 2; ++k) {
-                  algebra::BoundingBox3D cell= g.get_bounding_box(center)
-                    +.99*distance;
-                  algebra::Vector3D lc(cell.get_corner(0)[0]
-                                       +i*(bb.get_corner(1)[0]
-                                           - bb.get_corner(0)[0]),
-                                       cell.get_corner(0)[1]
-                                       +j*(bb.get_corner(1)[1]
-                                           - bb.get_corner(0)[1]),
-                                       cell.get_corner(0)[2]
-                                       +k*(bb.get_corner(1)[2]
-                                           - bb.get_corner(0)[2]));
-                  algebra::Vector3D uc(cell.get_corner(1)[0]
-                                       +i*(bb.get_corner(1)[0]
-                                           - bb.get_corner(0)[0]),
-                                       cell.get_corner(1)[1]
-                                       +j*(bb.get_corner(1)[1]
-                                           - bb.get_corner(0)[1]),
-                                       cell.get_corner(1)[2]
-                                       +k*(bb.get_corner(1)[2]
-                                           - bb.get_corner(0)[2]));
-                  cbb.push_back(algebra::BoundingBox3D(lc, uc));
-                }
-              }
+        for (typename Grid::ExtendedIndexIterator it
+               = g.extended_indexes_begin(lb, ub);
+             it != g.extended_indexes_end(lb, ub); ++it) {
+          if (g.get_is_index(*it)) {
+            typename Grid::Index gi=g.get_index(*it);
+            if (g.get_is_non_empty(gi)) {
+              out.push_back(gi);
             }
-          } else {
-            cbb.push_back( g.get_bounding_box(center)+distance);
-          }
-          IMP_INTERNAL_CHECK(!PERIODIC || cbb.size()==27,
-                             "Huh, 3*3*3=27, not " << cbb.size());
-          for (typename Grid::AllNonEmptyConstIterator it
-                 = g.all_non_empty_begin();
-               it != g.all_non_empty_end(); ++it) {
-            algebra::BoundingBox3D curbb= g.get_bounding_box(it->first);
-            for (unsigned int i=0; i< cbb.size(); ++i) {
-              if (algebra::get_interiors_intersect(curbb, cbb[i])
-                  && it->first != center
-                  && (!half || it->first < center)
-                  && g.get_is_non_empty(it->first)) {
-                check_out.push_back(it->first);
-              }
-            }
-          }
-          std::sort(check_out.begin(), check_out.end());
-          check_out.erase(std::unique(check_out.begin(), check_out.end()),
-                          check_out.end());
-          std::sort(out.begin(), out.end());
-          IMP_IF_LOG(VERBOSE) {
-            IMP_LOG(VERBOSE, "Check found ");
-            for (unsigned int i=0; i< check_out.size(); ++i) {
-              IMP_LOG(VERBOSE, check_out[i] << " ");
-            }
-            IMP_LOG(VERBOSE, std::endl);
-          }
-          IMP_INTERNAL_CHECK(out.size() >= check_out.size(),
-                             "Sizes don't match " << out.size() << " vs "
-                             << check_out.size());
-          for (unsigned int i=0; i< check_out.size(); ++i) {
-            IMP_INTERNAL_CHECK(std::binary_search(out.begin(), out.end(),
-                                                  check_out[i]),
-                               "Entries not found " << i
-                               << " " <<  check_out[i]);
           }
         }
       }
     }
 
+    template <class It>
+    static double get_max_radius(const ParticleSet<It> &ps0) {
+      double maxr=0;
+      for (It c= ps0.b_; c != ps0.e_; ++c) {
+        maxr=std::max(ps0.r_(ps0.id_(*c))+0, maxr);
+      }
+      return maxr;
+    }
+
+    static algebra::BoundingBox3D get_bb(const IDs ids, CenterF cc) {
+      algebra::BoundingBox3D bb;
+      for (typename IDs::const_iterator c= ids.begin(); c != ids.end(); ++c) {
+        bb+=cc(*c);
+      }
+      return bb;
+    }
 
 
     template <class It>
-    static void create_grids(const ParticleSet<It> &ps,
-                             double distance,
-                             typename std::vector<Grid> &bins,
-                             typename std::vector<IDs > &bin_contents,
-                             typename std::vector<double> &bin_ubs) {
-      double maxr=0;
-
-      for (It c= ps.b_; c != ps.e_; ++c) {
-        maxr=std::max(ps.r_(ps.id_(*c))+0, maxr);
-      }
-      bin_ubs.push_back(maxr);
+    static void partition_points(const ParticleSet<It> &ps,
+                                 double distance,
+                                 typename std::vector<IDs > &bin_contents,
+                                 typename std::vector<double> &bin_ubs) {
       bin_contents.push_back(IDs());
       for (It c= ps.b_; c != ps.e_; ++c) {
         double cr= ps.r_(ps.id_(*c))+0;
         while (cr < std::max(.5*bin_ubs.back()-.5*distance, 0.0)) {
-          double v=std::max(.5*bin_ubs.back()-.5*distance, 0.0);
-          bin_ubs.push_back(v);
-          bin_contents.push_back(IDs());
+          double v=std::max(.5*bin_ubs.back()-.5*distance, 0.1);
+          if (v > .1) {
+            bin_ubs.push_back(v);
+          } else break;
         }
         for ( int i=bin_ubs.size()-1; i >=0; --i) {
-          if (cr <= bin_ubs[i]) {
+          if (cr <= bin_ubs[i] || i==0) {
+            while (static_cast<int>(bin_contents.size()) < i+1) {
+              bin_contents.push_back(IDs());
+            }
             bin_contents[i].push_back(ps.id_(*c));
             break;
           }
         }
       }
-      for (unsigned int i=0; i< bin_contents.size(); ++i) {
-        if (bin_contents[i].empty()) {
-          bin_contents.erase(bin_contents.begin()+i);
-          bin_ubs.erase(bin_ubs.begin()+i);
-        }
-      }
-      IMP_IF_LOG(VERBOSE) {
+      IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+        unsigned int total=0;
         for (unsigned int i=0; i< bin_contents.size(); ++i) {
-          IMP_LOG(VERBOSE, "  Grid " << i << " has ");
-          for (unsigned int j=0; j< bin_contents[i].size(); ++j) {
-            IMP_LOG(VERBOSE, do_show(bin_contents[i][j]) << " ");
-          }
-          IMP_LOG(VERBOSE, std::endl);
-        }
-      }
-      // compute split points int ubs
-      // split based on the points
-      // create grids using bounding box/number of points
-      for (unsigned int i=0; i< bin_contents.size(); ++i) {
-        algebra::BoundingBox3D cbb;
-        for (unsigned int j=0; j< bin_contents[i].size(); ++j) {
-          cbb+= ps.c_(bin_contents[i][j]);
-        }
-        double side= get_side(cbb, bin_contents[i].size(),
-                              distance, bin_ubs[i]);
-        //fix_grid(merged, bb, side, cbb);
-        bins.push_back(Grid(side,cbb));
-        IMP_LOG(TERSE, "  Grid " << i << " had box " << cbb
-                << " and side " << side << std::endl);
-        for (unsigned int j=0; j< bin_contents[i].size(); ++j) {
-          algebra::Vector3D v= ps.c_(bin_contents[i][j]);
-          typename Grid::Index ind=bins.back().get_index(v);
-          if (bins.back().get_is_non_empty(ind)) {
-            bins.back()[ind]
-              .push_back(bin_contents[i][j]);
-          } else {
-            bins.back().set_voxel(ind, IDs(1, bin_contents[i][j]));
-          }
-        }
-      }
-      IMP_IF_LOG(VERBOSE) {
-        for (unsigned int i=0; i< bins.size(); ++i) {
-          IMP_LOG(VERBOSE, "Grid level " << i << " with bounds "
-                  << bin_ubs[i] << std::endl);
-          for (typename Grid::AllNonEmptyConstIterator it
-                 = bins[i].all_non_empty_begin();
-               it != bins[i].all_non_empty_end(); ++it) {
-            IMP_LOG(VERBOSE, "Bin " << it->first << " contains ");
-            for (unsigned int j=0; j< it->second.size(); ++j) {
-              IMP_LOG(VERBOSE, do_show(it->second[j])<< " ");
-            }
-            IMP_LOG(VERBOSE, std::endl);
-          }
+          total+= bin_contents[i].size();
         }
       }
     }
+
+    static void create_grid(const IDs ids,
+                            CenterF cf,
+                            const algebra::BoundingBox3D &bb,
+                            double side,
+                            Grid &g) {
+      g=Grid(side, bb);
+      for (typename IDs::const_iterator c= ids.begin(); c != ids.end(); ++c) {
+        algebra::Vector3D v= cf(*c);
+        typename Grid::Index ind=g.get_index(v);
+        if (g.get_is_non_empty(ind)) {
+          g[ind].push_back(*c);
+        } else {
+          g.set_voxel(ind, IDs(1, *c));
+        }
+      }
+    }
+
+
 
 
 
@@ -491,11 +398,11 @@ namespace {
 
     template <class It>
     static void do_fill_close_pairs_from_list(It b, It e,
-                                              CloseF close, double distance,
+                                              CloseF close,
                                               Out &out) {
       for (It c= b; c != e; ++c) {
         for (It cp= b; cp != c; ++cp) {
-          if (close(*c, *cp, distance)) {
+          if (close(*c, *cp)) {
             IMP_LOG(VERBOSE, "Found pair " << do_show(*c) << " "
                     << do_show(*cp) << std::endl);
             out.push_back( typename Out::value_type(*c, *cp));
@@ -513,10 +420,10 @@ namespace {
     static void do_fill_close_pairs_from_lists(ItA ab, ItA ae,
                                                ItB bb, ItB be,
                                                CloseF close,
-                                               double distance, Out &out) {
+                                               Out &out) {
       for (ItA c= ab; c != ae; ++c) {
         for (ItB cp= bb; cp != be; ++cp) {
-          if (close(*c, *cp, distance)) {
+          if (close(*c, *cp)) {
             IMP_LOG(VERBOSE, "Found pair " << do_show(*c) << " "
                     << do_show(*cp) << std::endl);
             out.push_back( typename Out::value_type(*c, *cp));
@@ -528,117 +435,59 @@ namespace {
 
 
 
-
-
-
-    static void
-    do_fill_close_pairs_around_cell(const Grid &g,
-                                    typename Grid::ExtendedIndex center,
-                                    const IDs &in,
-                                    CloseF close,
-                                    int offset,
-                                    double distance,
-                                    bool half,
-                                    unsigned int merged,
-                                    const algebra::BoundingBox3D &bb,
-                                    typename Grid::ExtendedIndex bblb,
-                                    typename Grid::ExtendedIndex bbub,
-                                    Out &out) {
-      // C++ is dumb about unary minus on unsigned ints
-      // (or rather takes a bit manipulating
-      // view rather than an arithmetic one.
-      //std::cout << doffset << " " << offset << std::endl;
-      if (in.empty()) return;
-      IMP_IF_LOG(VERBOSE) {
-        IMP_LOG(VERBOSE, "Input vertices are ");
-        for (unsigned int i=0; i< in.size(); ++i) {
-          IMP_LOG(VERBOSE, do_show(in[i]) << ' ');
-        }
-        IMP_LOG(VERBOSE, std::endl);
-      }
-      if (g.get_is_index(center)) {
-        typename Grid::Index index=g.get_index(center);
-        IMP_LOG(VERBOSE, "  Searching "
-                << index << std::endl);
-        if (half) {
-          do_fill_close_pairs_from_list(g.get_voxel(index).begin(),
-                                        g.get_voxel(index).end(),
-                                        close, distance, out);
-        } else {
-          do_fill_close_pairs_from_lists(g.get_voxel(index).begin(),
-                                         g.get_voxel(index).end(),
-                                         in.begin(), in.end(),
-                                         close, distance, out);
-        }
-      } else {
-        IMP_LOG(VERBOSE, "  Skipped " << center << std::endl);
-      }
-      std::vector<typename Grid::Index> nearby;
-      if (PERIODIC) {
-        fill_nearby(g, center, offset, distance, half,
-                    merged, bb, bblb, bbub, nearby);
-      } else {
-        fill_nearby(g, center, offset, distance, half,
-                    0, algebra::BoundingBox3D(),
-                    typename Grid::ExtendedIndex(),
-                    typename Grid::ExtendedIndex(),
-                    nearby);
-      }
-      for (unsigned int i=0; i< nearby.size(); ++i) {
-        //IMP_LOG(VERBOSE, "  Visiting cell " << *eit << "..." << std::endl);
-        std::vector<typename Grid::Index> ind;
-        IMP_LOG(VERBOSE, "    Inspecting pair " << center << " " << nearby[i]
+    static void do_fill_close_pairs(const Grid &gg,
+                                    typename Grid::Index index,
+                                    const IDs &qps,
+                                    bool half, CloseF close, Out& out) {
+      std::vector<typename Grid::Index> ids;
+      fill_nearby(gg, index, half, ids);
+      for (unsigned int i=0; i< ids.size(); ++i) {
+        IMP_LOG(VERBOSE, "Checking pair " << ids[i] << " " << index
                 << std::endl);
-        do_fill_close_pairs_from_lists(g.get_voxel(nearby[i]).begin(),
-                                       g.get_voxel(nearby[i]).end(),
-                                       in.begin(), in.end(),
-                                       close, distance, out);
+        do_fill_close_pairs_from_lists(gg.get_voxel(ids[i]).begin(),
+                                       gg.get_voxel(ids[i]).end(),
+                                       qps.begin(), qps.end(),
+                                       close, out);
+      }
+      if (half) {
+        IMP_LOG(VERBOSE, "Checking pair " << index << " " << index
+                << std::endl);
+        do_fill_close_pairs_from_list(gg.get_voxel(index).begin(),
+                                      gg.get_voxel(index).end(),
+                                      close, out);
       }
     }
 
-
-
-
-    template <class ItQ>
-    static void do_fill_close_pairs(const Grid &g,
-                                    CloseF close,
-                                    double distance, double radius_ub,
-                                    const IDSet<ItQ> &ids,
+    static void do_fill_close_pairs(const Grid &gg,
+                                    typename Grid::Index index,
+                                    const IDs &qps,
                                     const algebra::BoundingBox3D &bb,
-                                    unsigned int merged, Out &out) {
-      typename Grid::ExtendedIndex bblb, bbub;
-      if (merged) {
-        bblb= g.get_extended_index(bb.get_corner(0));
-        bbub= g.get_extended_index(bb.get_corner(1));
+                                    unsigned int merged,
+                                    bool half, CloseF close,
+                                    Out& out) {
+      typename Grid::ExtendedIndex bblb
+        = gg.get_extended_index(bb.get_corner(0));
+      typename Grid::ExtendedIndex bbub
+        = gg.get_extended_index(bb.get_corner(1));
+      std::vector<typename Grid::Index> ids;
+      fill_nearby(gg, index, bblb, bbub, merged, half, ids);
+      for (unsigned int i=0; i< ids.size(); ++i) {
+        IMP_LOG(VERBOSE, "Checking pair " << ids[i] << " " << index
+                << std::endl);
+        do_fill_close_pairs_from_lists(gg.get_voxel(ids[i]).begin(),
+                                       gg.get_voxel(ids[i]).end(),
+                                       qps.begin(), qps.end(),
+                                       close, out);
       }
-      for (ItQ qc= ids.b_; qc != ids.e_; ++qc) {
-        const double doffset=(distance+radius_ub+ids.r_(*qc))
-          /g.get_unit_cell()[0];
-        const int offset= std::ceil(doffset);
-        //IMP_LOG(VERBOSE, "Offset is " << offset << std::endl);
-        if (PERIODIC) {
-          do_fill_close_pairs_around_cell(g,
-                                          g.get_extended_index(ids.c_(*qc)),
-                                          IDs(1, *qc),
-                                          close,
-                                          offset,
-                                          distance+radius_ub+ids.r_(*qc),
-                                          false, merged, bb, bblb, bbub, out);
-        } else {
-          do_fill_close_pairs_around_cell(g,
-                                          g.get_extended_index(ids.c_(*qc)),
-                                          IDs(1, *qc),
-                                          close,
-                                          offset,
-                                          distance+radius_ub+ids.r_(*qc),
-                                          false,
-                                          0, algebra::BoundingBox3D(),
-                                          typename Grid::ExtendedIndex(),
-                                          typename Grid::ExtendedIndex(),
-                                          out);
-        }
+      if (half) {
+        IMP_LOG(VERBOSE, "Checking pair " << index << " " << index
+                << std::endl);
+        do_fill_close_pairs_from_list(gg.get_voxel(index).begin(),
+                                      gg.get_voxel(index).end(),
+                                      close, out);
       }
     }
+
 
     template <class It>
     static void fill_close_pairs(const ParticleSet<It> &ps,
@@ -647,58 +496,67 @@ namespace {
                                  const algebra::BoundingBox3D& bb,
                                  unsigned int merged,
                                  Out &out) {
-      Grids bins;
-      std::vector<IDs > bin_contents;
+      double maxr=get_max_radius(ps);
+      std::vector<IDs > bin_contents_g;
       std::vector<double> bin_ubs;
-      create_grids(ps, distance,
-                   bins, bin_contents, bin_ubs);
-      for (unsigned int i=0; i< bins.size(); ++i) {
-        IMP_LOG(VERBOSE, "Handling bin " << i << std::endl);
-        typename Grid::ExtendedIndex bblb, bbub;
-        if (PERIODIC) {
-          IMP_LOG(VERBOSE, "Locating corners " << bb << std::endl);
-          bblb= bins[i].get_extended_index(bb.get_corner(0));
-          bbub= bins[i].get_extended_index(bb.get_corner(1));
-          IMP_LOG(VERBOSE, "Got " << bblb << " and " << bbub << std::endl);
+      bin_ubs.push_back(maxr);
+
+      partition_points(ps, distance, bin_contents_g, bin_ubs);
+
+      IMP_LOG(VERBOSE, "Divided points into " << bin_contents_g.size()
+              << " bins ("
+              << bin_ubs.size() << ") " << maxr << std::endl);
+      IMP_IF_LOG(VERBOSE) {
+        IMP_LOG(VERBOSE, "For G, contents are " << std::endl);
+        for (unsigned int i=0; i< bin_contents_g.size(); ++i) {
+          IMP_LOG(VERBOSE, i << " " << bin_ubs[i] << " "
+                  << bin_contents_g[i].size()
+                  << std::endl);
         }
-        for (unsigned int j=0; j < i; ++j) {
-          IMP_LOG(VERBOSE, "Against bin " << j << std::endl);
-          if (PERIODIC) {
-            do_fill_close_pairs(bins[i], close, distance, bin_ubs[i],
-                                get_id_set(bin_contents[j].begin(),
-                                           bin_contents[j].end(),
-                                           ps.c_, ps.r_), bb, merged, out);
-          } else {
-            do_fill_close_pairs(bins[i], close, distance, bin_ubs[i],
-                                get_id_set(bin_contents[j].begin(),
-                                           bin_contents[j].end(),
-                                           ps.c_, ps.r_),
-                                algebra::BoundingBox3D(), 0, out);
+      }
+      std::vector<algebra::BoundingBox3D> bbs(bin_contents_g.size());
+      for (unsigned int i=0; i< bin_contents_g.size(); ++i) {
+        bbs[i]= get_bb(bin_contents_g[i], ps.c_);
+      }
+      for (unsigned int i=0; i< bin_contents_g.size(); ++i) {
+        if (bin_contents_g[i].empty()) continue;
+        {
+          Grid gg;
+          create_grid(bin_contents_g[i], ps.c_, bbs[i],
+                      distance+2*bin_ubs[i], gg);
+          for (typename Grid::AllNonEmptyConstIterator it
+                 = gg.all_non_empty_begin();
+               it != gg.all_non_empty_end(); ++it) {
+            if (merged) {
+              do_fill_close_pairs(gg, it->first, it->second, bb,
+                                  merged, true, close, out);
+            } else {
+              do_fill_close_pairs(gg, it->first, it->second,true, close, out);
+            }
           }
         }
-        const double doffset=(distance+bin_ubs[i]+bin_ubs[i])
-          /bins[i].get_unit_cell()[0];
-        const int offset= std::ceil(doffset);
-        for (typename Grid::AllNonEmptyConstIterator it
-               = bins[i].all_non_empty_begin();
-             it != bins[i].all_non_empty_end(); ++it) {
-          //IMP_LOG(VERBOSE, "Offset is " << offset << std::endl);
-          if (PERIODIC) {
-            do_fill_close_pairs_around_cell(bins[i], it->first,
-                                            it->second, close, offset,
-                                            distance+bin_ubs[i]+bin_ubs[i],
-                                            true,
-                                            merged, bb, bblb, bbub,
-                                            out);
-          } else {
-            do_fill_close_pairs_around_cell(bins[i],it->first,
-                                            it->second, close, offset,
-                                            distance+bin_ubs[i]+bin_ubs[i],
-                                            true,
-                                            0, algebra::BoundingBox3D(),
-                                            typename Grid::ExtendedIndex(),
-                                            typename Grid::ExtendedIndex(),
-                                            out);
+        for (unsigned int j=0; j< i; ++j) {
+          if (bin_contents_g[j].empty()) continue;
+          Grid ggi, ggj;
+          algebra::BoundingBox3D bb= bbs[i]+bbs[j];
+          IMP_LOG(VERBOSE, "Building grids for " << i << " and " << j
+                  << " with bb " << bb << " and side "
+                  << distance+bin_ubs[i]+bin_ubs[j]
+                  << std::endl);
+          create_grid(bin_contents_g[i], ps.c_, bb,
+                      distance+bin_ubs[i]+bin_ubs[j], ggi);
+          create_grid(bin_contents_g[j], ps.c_, bb,
+                      distance+bin_ubs[i]+bin_ubs[j], ggj);
+          for (typename Grid::AllNonEmptyConstIterator it
+                 = ggj.all_non_empty_begin();
+               it != ggj.all_non_empty_end(); ++it) {
+            if (merged) {
+              do_fill_close_pairs(ggi, it->first, it->second, bb,
+                                  merged, false, close, out);
+            } else {
+              do_fill_close_pairs(ggi, it->first, it->second,
+                                  false, close, out);
+            }
           }
         }
       }
@@ -717,44 +575,84 @@ namespace {
                                  const algebra::BoundingBox3D& bb,
                                  unsigned int merged,
                                  Out &out) {
-      std::vector<Grid > bins;
-      std::vector<IDs > bin_contents;
+      double maxr=std::max(get_max_radius(psg), get_max_radius(psq));
+      std::vector<IDs > bin_contents_g, bin_contents_q;
       std::vector<double> bin_ubs;
-      create_grids(psg, distance,
-                   bins, bin_contents, bin_ubs);
-      for (unsigned int i=0; i< bins.size(); ++i) {
-        if (PERIODIC) {
-          do_fill_close_pairs(bins[i], close, distance, bin_ubs[i],
-                              get_id_set(
-                                         boost::make_transform_iterator(psq.b_,
-                                                                      psq.id_),
-                                         boost::make_transform_iterator(psq.e_,
-                                                                      psq.id_),
-                                         psq.c_, psq.r_),
-                              bb, merged,
-                              out);
-        } else {
-          do_fill_close_pairs(bins[i], close, distance, bin_ubs[i],
-                              get_id_set(
-                                         boost::make_transform_iterator(psq.b_,
-                                                                      psq.id_),
-                                         boost::make_transform_iterator(psq.e_,
-                                                                      psq.id_),
-                                         psq.c_, psq.r_),
-                              algebra::BoundingBox3D(), 0,
-                              out);
+      bin_ubs.push_back(maxr);
+
+      partition_points(psg, distance, bin_contents_g, bin_ubs);
+      partition_points(psq, distance, bin_contents_q, bin_ubs);
+      IMP_LOG(VERBOSE, "Divided pints into " << bin_contents_g.size()
+              << " and " << bin_contents_q.size() << " bins ("
+              << bin_ubs.size() << ") " << maxr << std::endl);
+      IMP_IF_LOG(VERBOSE) {
+        IMP_LOG(VERBOSE, "For G, contents are " << std::endl);
+        for (unsigned int i=0; i< bin_contents_g.size(); ++i) {
+          IMP_LOG(VERBOSE, i << " " << bin_ubs[i] << " "
+                  << bin_contents_g[i].size()
+                  << std::endl);
+        }
+        IMP_LOG(VERBOSE, "For Q, contents are " << std::endl);
+        for (unsigned int i=0; i< bin_contents_q.size(); ++i) {
+          IMP_LOG(VERBOSE, i << " " << bin_ubs[i] << " "
+                  << bin_contents_q[i].size()
+                  << std::endl);
+        }
+      }
+      std::vector<algebra::BoundingBox3D> bbs_g(bin_contents_g.size());
+      for (unsigned int i=0; i< bin_contents_g.size(); ++i) {
+        bbs_g[i]= get_bb(bin_contents_g[i], psg.c_);
+      }
+      std::vector<algebra::BoundingBox3D> bbs_q(bin_contents_q.size());
+      for (unsigned int i=0; i< bin_contents_q.size(); ++i) {
+        bbs_q[i]= get_bb(bin_contents_q[i], psq.c_);
+      }
+      for (unsigned int i=0; i< bin_contents_g.size(); ++i) {
+        if (bin_contents_g[i].empty()) continue;
+        for (unsigned int j=0; j< bin_contents_q.size(); ++j) {
+          if (bin_contents_q[j].empty()) continue;
+          Grid gg, gq;
+          algebra::BoundingBox3D bb= bbs_g[i]+bbs_q[j];
+          IMP_LOG(VERBOSE, "Building grids for " << i << " and " << j
+                  << " with bb " << bb << " and side "
+                  << distance+bin_ubs[i]+bin_ubs[j]
+                  << std::endl);
+          create_grid(bin_contents_g[i], psg.c_, bb,
+                      distance+bin_ubs[i]+bin_ubs[j], gg);
+          create_grid(bin_contents_q[i], psq.c_, bb,
+                      distance+bin_ubs[i]+bin_ubs[j], gq);
+          IMP_IF_CHECK(USAGE) {
+            for (unsigned int i=0; i< 3; ++i) {
+              IMP_USAGE_CHECK(gg.get_number_of_voxels(i)
+                              == gq.get_number_of_voxels(i),
+                              "Do not match on dimension i "
+                              << gg.get_number_of_voxels(i) << " vs "
+                              << gq.get_number_of_voxels(i));
+            }
+          }
+          for (typename Grid::AllNonEmptyConstIterator it
+                 = gq.all_non_empty_begin();
+               it != gq.all_non_empty_end(); ++it) {
+            if (merged) {
+              do_fill_close_pairs(gg, it->first, it->second, bb, merged,
+                                  false, close, out);
+            } else {
+              do_fill_close_pairs(gg, it->first, it->second,
+                                  false, close, out);
+            }
+          }
         }
       }
     }
   };
 
-  typedef Helper<false, ParticleID, ParticleCenter, ParticleRadius,
-                 ParticleClose, ParticlePairsTemp> ParticleHelper;
-  typedef Helper<false, BBID, BBCenter, BBRadius, BBClose, IntPairs> BBHelper;
-  typedef Helper<true, ParticleID, ParticleCenter, ParticleRadius,
-                 PeriodicParticleClose, ParticlePairsTemp> PParticleHelper;
-  typedef Helper<true, BBID, BBCenter, BBRadius, PeriodicBBClose,
-                 IntPairs> PBBHelper;
+typedef Helper<ParticleID, ParticleCenter, ParticleRadius,
+               ParticleClose, ParticlePairsTemp> ParticleHelper;
+typedef Helper<BBID, BBCenter, BBRadius, BBClose, IntPairs> BBHelper;
+typedef Helper<ParticleID, ParticleCenter, ParticleRadius,
+               PeriodicParticleClose, ParticlePairsTemp> PParticleHelper;
+typedef Helper<BBID, BBCenter, BBRadius, PeriodicBBClose,
+               IntPairs> PBBHelper;
 }
 
 GridClosePairsFinder::GridClosePairsFinder(): ClosePairsFinder("GridCPF"),
@@ -788,7 +686,8 @@ ParticlePairsTemp GridClosePairsFinder
                                             ParticleID(),
                                             ParticleCenter(),
                                             ParticleRadius()),
-                         PeriodicParticleClose(bb_, merged_),
+                         PeriodicParticleClose(bb_, merged_,
+                                               get_distance()),
                          get_distance(), bb_, merged_,
                          out);
   } else {
@@ -805,7 +704,7 @@ ParticlePairsTemp GridClosePairsFinder
                                             ParticleID(),
                                             ParticleCenter(),
                                             ParticleRadius()),
-                         ParticleClose(),
+                         ParticleClose(get_distance()),
                          get_distance(), bb_, merged_,
                          out);
   }
@@ -823,11 +722,11 @@ ParticlePairsTemp GridClosePairsFinder
   if (merged_) {
     PParticleHelper
       ::fill_close_pairs(PParticleHelper::get_particle_set(c->particles_begin(),
-                                                          c->particles_end(),
-                                                          ParticleID(),
-                                                          ParticleCenter(),
-                                                          ParticleRadius()),
-                         PeriodicParticleClose(bb_, merged_),
+                                                           c->particles_end(),
+                                                           ParticleID(),
+                                                           ParticleCenter(),
+                                                           ParticleRadius()),
+                         PeriodicParticleClose(bb_, merged_, get_distance()),
                          get_distance(), bb_, merged_,
                          out);
   } else {
@@ -837,7 +736,7 @@ ParticlePairsTemp GridClosePairsFinder
                                                           ParticleID(),
                                                           ParticleCenter(),
                                                           ParticleRadius()),
-                         ParticleClose(),
+                         ParticleClose(get_distance()),
                          get_distance(), bb_, merged_,
                          out);
   }
@@ -853,16 +752,17 @@ IntPairs GridClosePairsFinder
   if (merged_) {
     PBBHelper::
       fill_close_pairs(PBBHelper::get_particle_set(bas.begin(),
-                                                  bas.end(),
-                                                  BBID(bas.begin()),
-                                                  BBCenter(bas.begin()),
-                                                  BBRadius(bas.begin())),
+                                                   bas.end(),
+                                                   BBID(bas.begin()),
+                                                   BBCenter(bas.begin()),
+                                                   BBRadius(bas.begin())),
                        PBBHelper::get_particle_set(bbs.begin(),
-                                                  bbs.end(),
-                                                  BBID(bbs.begin()),
-                                                  BBCenter(bbs.begin()),
-                                                  BBRadius(bbs.begin())),
-                       PeriodicBBClose(bas.begin(), bbs.begin(), bb_, merged_),
+                                                   bbs.end(),
+                                                   BBID(bbs.begin()),
+                                                   BBCenter(bbs.begin()),
+                                                   BBRadius(bbs.begin())),
+                       PeriodicBBClose(bas.begin(), bbs.begin(), bb_, merged_,
+                                       get_distance()),
                        get_distance(), bb_, merged_, out);
   } else {
     BBHelper::
@@ -876,7 +776,7 @@ IntPairs GridClosePairsFinder
                                                   BBID(bbs.begin()),
                                                   BBCenter(bbs.begin()),
                                                   BBRadius(bbs.begin())),
-                       BBClose(bas.begin(), bbs.begin()),
+                       BBClose(bas.begin(), bbs.begin(), get_distance()),
                        get_distance(), bb_, merged_, out);
   }
   return out;
@@ -889,23 +789,23 @@ IntPairs GridClosePairsFinder
   IntPairs out;
   if (merged_) {
     PBBHelper
-    ::fill_close_pairs(PBBHelper::get_particle_set(bas.begin(),
-                                                  bas.end(),
-                                                  BBID(bas.begin()),
-                                                  BBCenter(bas.begin()),
-                                                  BBRadius(bas.begin())),
-                       PeriodicBBClose(bas.begin(), bas.begin(),
-                                bb_, merged_),
-                       get_distance(), bb_, merged_, out);
+      ::fill_close_pairs(PBBHelper::get_particle_set(bas.begin(),
+                                                     bas.end(),
+                                                     BBID(bas.begin()),
+                                                     BBCenter(bas.begin()),
+                                                     BBRadius(bas.begin())),
+                         PeriodicBBClose(bas.begin(), bas.begin(),
+                                         bb_, merged_, get_distance()),
+                         get_distance(), bb_, merged_, out);
   } else {
-  BBHelper
-    ::fill_close_pairs(BBHelper::get_particle_set(bas.begin(),
-                                                  bas.end(),
-                                                  BBID(bas.begin()),
-                                                  BBCenter(bas.begin()),
-                                                  BBRadius(bas.begin())),
-                       BBClose(bas.begin(), bas.begin()),
-                       get_distance(), bb_, merged_, out);
+    BBHelper
+      ::fill_close_pairs(BBHelper::get_particle_set(bas.begin(),
+                                                    bas.end(),
+                                                    BBID(bas.begin()),
+                                                    BBCenter(bas.begin()),
+                                                    BBRadius(bas.begin())),
+                         BBClose(bas.begin(), bas.begin(), get_distance()),
+                         get_distance(), bb_, merged_, out);
   }
   return out;
 }
