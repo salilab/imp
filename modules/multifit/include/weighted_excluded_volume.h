@@ -25,7 +25,7 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 /note we assume that the leaves are xyz particles
  */
 IMPMULTIFITEXPORT void add_surface_index(core::Hierarchy mhd,
-                Float resolution, Float apix,
+                Float apix,
                 FloatKey shell_key= FloatKey("surf_ind"),
                 FloatKey radius_key=core::XYZR::get_default_radius_key(),
                 FloatKey weight_key=atom::Mass::get_mass_key()) ;

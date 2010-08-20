@@ -19,11 +19,11 @@
 #include <IMP/em/SampledDensityMap.h>
 #include <IMP/em/MRCReaderWriter.h>
 IMPMULTIFIT_BEGIN_NAMESPACE
-void add_surface_index(core::Hierarchy mh, Float resolution, Float apix,
+void add_surface_index(core::Hierarchy mh,Float apix,
                 FloatKey shell_key,
                 FloatKey radius_key,FloatKey weight_key)  {
   Particles ps = core::get_leaves(mh);
-  em::SurfaceShellDensityMap shell_map(ps,resolution,apix);
+  em::SurfaceShellDensityMap shell_map(ps,apix);
 
   for(unsigned int i=0; i<ps.size(); i++) {
     IMP_INTERNAL_CHECK(! ps[i]->has_attribute(shell_key),
