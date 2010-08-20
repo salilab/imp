@@ -15,7 +15,11 @@
 #include "BoundingBoxD.h"
 #include "internal/grid_3d.h"
 #include <boost/iterator/transform_iterator.hpp>
+#if IMP_BOOST_VERSION > 103700
 #include <boost/unordered_map.hpp>
+#else
+#include <map>
+#endif
 
 #include <limits>
 
@@ -115,8 +119,12 @@ public:
 */
 template <class VT>
 class SparseGridStorage3D {
+#if IMP_BOOST_VERSION > 103700
   typedef typename boost::unordered_map<typename internal::GridIndex, VT>
   Storage;
+#else
+  typedef std::map<typename internal::GridIndex, VT> Storage;
+#endif
   Storage data_;
   VT default_;
   int d_[3];
