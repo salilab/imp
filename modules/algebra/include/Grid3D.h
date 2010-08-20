@@ -666,10 +666,10 @@ IMPALGEBRA_END_NAMESPACE
     center. The voxel index is unsigned int voxel_index[3]. Use this if,
     for example you want to find nearby pairs of voxels once each.
 */
-#define IMP_GRID3D_FOREACH_SMALLER_VOXEL_RANGE(grid, center,            \
-                                               lower_corner,            \
-                                               upper_corner,            \
-                                               action)                  \
+#define IMP_GRID3D_FOREACH_SMALLER_EXTENDED_INDEX_RANGE(grid, center,   \
+                                                        lower_corner,   \
+                                                        upper_corner,   \
+                                                        action)         \
   { int voxel_index[3];                                                 \
     IMP_USAGE_CHECK(lower_corner <= upper_corner, "Inverted range "     \
                     << lower_corner << " " << upper_corner);            \
