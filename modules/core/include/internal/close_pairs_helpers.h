@@ -16,11 +16,7 @@
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 inline ClosePairsFinder *default_cpf() {
-#ifdef IMP_USE_CGAL
-  return new BoxSweepClosePairsFinder();
-#else
   return new GridClosePairsFinder();
-#endif
 }
 
 struct IsInactive {
