@@ -10,6 +10,7 @@ namespace IMP::em {
 /* Make selected classes extensible in Python */
 IMP_SWIG_OBJECT(IMP::em, DensityMap, DensityMaps);
 IMP_SWIG_OBJECT(IMP::em, SampledDensityMap, SampledDensityMaps);
+IMP_SWIG_OBJECT(IMP::em, SurfaceShellDensityMap, SurfaceShellDensityMaps);
 IMP_SWIG_OBJECT(IMP::em, FitRestraint, FitRestraints);
 IMP_SWIG_OBJECT(IMP::em, Image, Images);
 
@@ -23,10 +24,10 @@ IMP_SWIG_OBJECT(IMP::em, Image, Images);
 %include "IMP/em/MRCReaderWriter.h"
 %include "IMP/em/KernelParameters.h"
 %include "IMP/em/SampledDensityMap.h"
+%include "IMP/em/SurfaceShellDensityMap.h"
 %include "IMP/em/CoarseCC.h"
 %include "IMP/em/CoarseConvolution.h"
 %include "IMP/em/CoarseCCatIntervals.h"
-%include "IMP/em/SurfaceShellDensityMap.h"
 /*%include "IMP/em/RigidBodiesFitRestraint.h"*/
 %include "IMP/em/FitRestraint.h"
 %include "IMP/em/converters.h"

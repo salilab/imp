@@ -21,10 +21,12 @@ SurfaceShellDensityMap::SurfaceShellDensityMap(const DensityHeader &header)
 
 SurfaceShellDensityMap::SurfaceShellDensityMap(
        const Particles &ps,
-       float resolution, float voxel_size,
+       float voxel_size,
        IMP::FloatKey radius_key, IMP::FloatKey mass_key,int num_shells)
-  :SampledDensityMap(ps,resolution,voxel_size,radius_key,mass_key)
+  :SampledDensityMap()
 {
+  set_particles(ps,radius_key,mass_key);
+  update_voxel_size(voxel_size);
   num_shells_=num_shells;
   set_neighbor_mask();
   resample();
@@ -192,6 +194,7 @@ void SurfaceShellDensityMap::resample() {
   //   data_[i]=shell_voxels[i];
   // }
 }
+
 
 
 IMPEM_END_NAMESPACE

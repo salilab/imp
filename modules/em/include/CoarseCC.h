@@ -13,6 +13,7 @@
 #include "exp.h"
 #include "DensityMap.h"
 #include "SampledDensityMap.h"
+#include "SurfaceShellDensityMap.h"
 #include "def.h"
 #include <vector>
 #include <IMP/core/rigid_bodies.h>
@@ -79,14 +80,12 @@ public:
       {N\sigma_{{td}}\sigma_{{md}}}\f$, such that \f$N\f$ is the number of
       voxels, \f${td}\f$ is the target density,
       \f${tm}\f$ is the model density,
-      \param[in] em_map               the target map (experimentally determined)
-      \param[in] model_map            the sampled density map of the model
-      \param[in] voxel_data_threshold voxels with value lower than threshold
-                 in model_map are not summed (avoid calculating correlation on
+      \param[in] grid1  The first 3D grid
+      \param[in] grid2  The second 3D grid
+      \param[in] grid2_voxel_data_threshold voxels with value lower
+                 than threshold
+                 in grid2 are not summed (avoid calculating correlation on
                  voxels below the threshold)
-      \param[in] recalc_ccnormfac determines wheather the model_map should be
-                 normalized prior to the correlation calculation. false is
-                 faster, but potentially innacurate
       \param[in] divide_by_rms determines wheather the model_map should be
                  normalized prior to the correlation calculation. false is
                  faster, but potentially innacurate
@@ -97,16 +96,16 @@ public:
          use voxel_data_threshold that does not consist of the entire map
          this would be wrong. Fix it.
    */
-  static float cross_correlation_coefficient(const DensityMap &em_map,
-                                             DensityMap &model_map,
-                                             float voxel_data_threshold,
-                                             bool recalc_ccnormfac = true,
+  static float cross_correlation_coefficient(const DensityMap &grid1,
+                                             const DensityMap &grid2,
+                                             float grid2_voxel_data_threshold,
                                              bool divide_by_rms=true);
+
 
 static float local_cross_correlation_coefficient(const DensityMap &em_map,
                                               DensityMap &model_map,
                                               float voxel_data_threshold,
-                                              bool recalc_ccnormfac=true,
+                                              bool recalc_ccnormfac,
                                               bool divide_by_rms=true);
 
 };
