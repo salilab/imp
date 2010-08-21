@@ -37,7 +37,7 @@ class IMPCOREEXPORT Mover: public Object
 
   WeakPointer<Optimizer> opt_;
 public:
-  Mover(std::string name=std::string("Mover"));
+  Mover(std::string name=std::string("Mover %1%"));
 
   //! propose a modification
   /** \param[in] size A number between 0 and 1 used to scale the proposed
