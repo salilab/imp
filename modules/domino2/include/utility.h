@@ -183,6 +183,15 @@ public:
 IMPDOMINO2EXPORT void load_particle_states(const Subset &s,
                                            const SubsetState &ss,
                                            const ParticleStatesTable *pst);
+
+
+
+/** Create a restraint set containing all the restraints do not depend on
+    particles in other but not in s. The restraint set is added to the model.*/
+IMPDOMINO2EXPORT RestraintSet* create_restraint_set(const Subset &s,
+                                                    ParticlesTemp other,
+                                                    const DependencyGraph &dg,
+                                                    RestraintSet *rs);
 IMPDOMINO2_END_NAMESPACE
 
 #endif  /* IMPDOMINO2_UTILITY_H */

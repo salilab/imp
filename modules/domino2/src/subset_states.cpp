@@ -146,6 +146,10 @@ namespace {
   }
 
 
+
+
+  // Branch and bound.....
+
   class  BranchAndBoundSubsetStates: public SubsetStates {
   public:
     void setup_filters(const Subset &s,
@@ -370,5 +374,47 @@ SubsetStates* BranchAndBoundSubsetStatesTable
 void BranchAndBoundSubsetStatesTable::do_show(std::ostream &out) const {
 }
 
+
+
+// List.....
+ListSubsetStates::ListSubsetStates(std::string name): SubsetStates(name) {
+}
+
+unsigned int ListSubsetStates::get_number_of_states() const {
+  return states_.size();
+}
+SubsetState ListSubsetStates::get_state(unsigned int i) const {
+  return states_[i];
+}
+
+bool
+ListSubsetStates::get_is_state(const SubsetState &state) const {
+  return std::binary_search(states_.begin(), states_.end(), state);
+}
+
+void ListSubsetStates::add_subset_state(const SubsetState& s) {
+  states_.insert(std::lower_bound(states_.begin(), states_.end(), s), s);
+  IMP_IF_CHECK(USAGE) {
+    for (unsigned int i=1; i< states_.size(); ++i) {
+      IMP_USAGE_CHECK(states_[i-1] < states_[i],
+                      "Not ordered properly");
+    }
+  }
+}
+
+void ListSubsetStates::do_show(std::ostream &out) const{}
+
+
+ListSubsetStatesTable
+::ListSubsetStatesTable(std::string name): SubsetStatesTable(name) {}
+
+
+SubsetStates* ListSubsetStatesTable
+::get_subset_states(const Subset&s) const {
+  return states_.find(s)->second;
+}
+
+void ListSubsetStatesTable::do_show(std::ostream &out) const {
+}
 
 IMPDOMINO2_END_NAMESPACE
