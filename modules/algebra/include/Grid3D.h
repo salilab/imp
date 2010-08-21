@@ -346,23 +346,22 @@ public:
          const BoundingBoxD<3> &bb,
          Voxel def=Voxel()): Storage(def) {
     IMP_USAGE_CHECK(side>0, "Side cannot be 0");
-    VectorD<3> nuc;
+    VectorD<3> nuc(side, side, side);
+    set_unit_cell(nuc);
     int dd[3];
+    VectorD<3> ubs;
     for (unsigned int i=0; i< 3; ++i ) {
       double bside= bb.get_corner(1)[i]- bb.get_corner(0)[i];
       double d= bside/side;
       double cd= std::ceil(d);
-      if (cd-d <.05) {
-        ++cd;
-      }
       dd[i]= static_cast<int>(cd);
-      nuc[i]= side;
+       do {
+        ubs[i]=bb.get_corner(0)[i]+dd[i]*unit_cell_[i];
+        if (ubs[i] >= bb.get_corner(1)[i]) break;
+        else ++dd[i];
+      } while (true);
     }
-    set_unit_cell(nuc);
-    bbox_=BoundingBoxD<3>(bb.get_corner(0), bb.get_corner(0)
-                        +VectorD<3>(dd[0]*unit_cell_[0],
-                                    dd[1]*unit_cell_[1],
-                                    dd[2]*unit_cell_[2]));
+    bbox_=BoundingBoxD<3>(bb.get_corner(0), ubs);
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {
       for (unsigned int i=0; i< 3; ++i) {
         IMP_INTERNAL_CHECK(bbox_.get_corner(1)[i] >= bb.get_corner(1)[i],
