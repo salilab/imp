@@ -12,14 +12,10 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-namespace {
-  unsigned int next_index=0;
-}
-
 MinimumPairScore::MinimumPairScore(const PairScoresTemp &scores,
                                            unsigned int n,
                                            std::string name):
-  PairScore(IMP::internal::make_object_name(name, next_index++)),
+  PairScore(name),
   scores_(scores),
   n_(n)
 {

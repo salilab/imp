@@ -12,14 +12,10 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-namespace {
-  unsigned int next_index=0;
-}
-
 MinimumTripletScore::MinimumTripletScore(const TripletScoresTemp &scores,
                                            unsigned int n,
                                            std::string name):
-  TripletScore(IMP::internal::make_object_name(name, next_index++)),
+  TripletScore(name),
   scores_(scores),
   n_(n)
 {

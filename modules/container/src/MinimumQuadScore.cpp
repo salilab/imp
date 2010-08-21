@@ -12,14 +12,10 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-namespace {
-  unsigned int next_index=0;
-}
-
 MinimumQuadScore::MinimumQuadScore(const QuadScoresTemp &scores,
                                            unsigned int n,
                                            std::string name):
-  QuadScore(IMP::internal::make_object_name(name, next_index++)),
+  QuadScore(name),
   scores_(scores),
   n_(n)
 {
