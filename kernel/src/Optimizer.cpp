@@ -13,14 +13,9 @@
 
 IMP_BEGIN_NAMESPACE
 
-namespace {
-  unsigned int optimizer_index=0;
-}
-
-Optimizer::Optimizer(Model *m, std::string name)
+Optimizer::Optimizer(Model *m, std::string name): Object(name)
 {
   if (m) set_model(m);
-  set_name(internal::make_object_name(name, optimizer_index++));
   set_was_used(true);
   min_score_= -std::numeric_limits<double>::max();
 }

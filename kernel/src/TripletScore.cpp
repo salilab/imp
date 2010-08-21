@@ -12,12 +12,8 @@
 
 IMP_BEGIN_NAMESPACE
 
-namespace {
-  unsigned int next_index=0;
-}
-
 TripletScore::TripletScore(std::string name):
-  Object(internal::make_object_name(name, next_index++))
+  Object(name)
 {
   /* Implemented here rather than in the header so that PairScore
      symbols are present in the kernel DSO */

@@ -54,7 +54,7 @@ class IMPEXPORT ScoreState : public Object
   virtual void set_model(Model* model);
 
 public:
-  ScoreState(std::string name=std::string());
+  ScoreState(std::string name="ScoreState %1%");
 
   // Force update of the structure.
   void before_evaluate();

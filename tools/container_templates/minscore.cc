@@ -12,14 +12,10 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-namespace {
-  unsigned int next_index=0;
-}
-
 MinMaxGroupnameScore::MinMaxGroupnameScore(const GroupnameScoresTemp &scores,
                                            unsigned int n,
                                            std::string name):
-  GroupnameScore(IMP::internal::make_object_name(name, next_index++)),
+  GroupnameScore(name),
   scores_(scores),
   n_(n)
 {

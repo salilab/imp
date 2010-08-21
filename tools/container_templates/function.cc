@@ -13,12 +13,8 @@
 
 IMP_BEGIN_NAMESPACE
 
-namespace {
-  unsigned int next_index=0;
-}
-
 GroupnameModifier::GroupnameModifier(std::string name):
-  Object(internal::make_object_name(name, next_index++)){
+  Object(name){
 }
 
 IMP_END_NAMESPACE

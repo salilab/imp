@@ -50,7 +50,7 @@ IMP_BEGIN_NAMESPACE
 class IMPEXPORT Constraint : public ScoreState
 {
 public:
-  Constraint(std::string name=std::string());
+  Constraint(std::string name="Constraint %1%");
 
   IMP_REF_COUNTED_DESTRUCTOR(Constraint);
 };

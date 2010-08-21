@@ -55,7 +55,7 @@ class IMPEXPORT Object: public RefCounted
     else return 0;
   }
 protected:
-  IMP_NO_DOXYGEN(Object(std::string name="Nameless"));
+  IMP_NO_DOXYGEN(Object(std::string name="Object %1%"));
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Object);
 public:
 #ifndef IMP_DOXYGEN

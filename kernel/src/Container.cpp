@@ -16,7 +16,7 @@ namespace {
 }
 
 Container::Container(Model *m, std::string name):
-  Object(internal::make_object_name(name, restraint_index++)),
+  Object(name),
   m_(m)
 {
 }
