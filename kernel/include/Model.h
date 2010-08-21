@@ -457,10 +457,16 @@ IMP_GRAPH(DependencyGraph, bidirectional, Object*, int);
     its particles from the Container. In order for a given
     Restraint to be evaluated properly, all of the Particles connected
     by a path to the Restraint must be up to date.
+    \see get_pruned_dependency_graph()
 */
 IMPEXPORT DependencyGraph
 get_dependency_graph(const RestraintsTemp &rs);
 
+/** The pruned dependency graph merges all particles which have the
+    same dependencies to produce a simpler graph.
+*/
+IMPEXPORT DependencyGraph
+get_pruned_dependency_graph(const RestraintsTemp &rs);
 
 
 /** Get the score states required by the passed restraints.*/
