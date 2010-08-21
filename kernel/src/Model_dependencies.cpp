@@ -207,6 +207,83 @@ get_dependency_graph(const RestraintsTemp &irs) {
 }
 
 
+namespace {
+  struct Connections {
+    Ints in, out;
+    Connections(int v, const DependencyGraph &g) {
+      typedef boost::graph_traits<DependencyGraph> T;
+      {
+        typedef T::in_edge_iterator IIT;
+        for (std::pair<IIT,IIT> be= boost::in_edges(v, g);
+             be.first != be.second; ++be.first) {
+          in.push_back(boost::source(*be.first, g));
+        }
+        std::sort(in.begin(), in.end());
+      }
+      {
+        typedef T::out_edge_iterator OIT;
+        for (std::pair<OIT,OIT> be= boost::out_edges(v, g);
+             be.first != be.second; ++be.first) {
+          out.push_back(boost::target(*be.first, g));
+        }
+        std::sort(out.begin(), out.end());
+      }
+      IMP_INTERNAL_CHECK(*this == *this, "Not equal");
+    }
+    int compare(const Connections &o) const {
+      if (in.size() < o.in.size()) return -1;
+      else if (in.size() > o.in.size()) return 1;
+      else if (out.size() < o.out.size()) return -1;
+      else if (out.size() > o.out.size()) return 1;
+      else {
+        for (unsigned int i=0; i< in.size(); ++i) {
+          if (in[i] < o.in[i]) return -1;
+          else if (in[i] > o.in[i]) return 1;
+        }
+        for (unsigned int i=0; i< out.size(); ++i) {
+          if (out[i] < o.out[i]) return -1;
+          else if (out[i] > o.out[i]) return 1;
+        }
+        return 0;
+      }
+    }
+    typedef Connections This;
+    IMP_COMPARISONS;
+  };
+}
+
+DependencyGraph
+get_pruned_dependency_graph(const RestraintsTemp &irs) {
+  DependencyGraph full= get_dependency_graph(irs);
+  typedef boost::graph_traits<DependencyGraph> T;
+  bool changed=true;
+  while (changed) {
+    changed=false;
+    IMP_LOG(VERBOSE, "Searching for vertices to prune" << std::endl);
+    std::set<Connections> connections;
+    for (unsigned int i=0; i< boost::num_vertices(full); ++i) {
+      Connections c(i, full);
+      if (connections.find(c) != connections.end()) {
+        boost::property_map<DependencyGraph, boost::vertex_name_t>::type
+          vm = boost::get(boost::vertex_name, full);
+        IMP_LOG(VERBOSE, "Removing object " << vm[i]->get_name() << std::endl);
+        for (unsigned int j=0; j< c.in.size(); ++j) {
+          for (unsigned int k=0; k< c.out.size(); ++k) {
+            boost::add_edge(c.in[j], c.out[k], full);
+          }
+        }
+        boost::clear_vertex(i, full);
+        boost::remove_vertex(i, full);
+        changed=true;
+      } else {
+        connections.insert(c);
+      }
+    }
+  }
+  return full;
+}
+
+
 class ScoreDependencies: public boost::default_dfs_visitor {
   boost::dynamic_bitset<> &bs_;
   const std::map<Object*, int> &ssindex_;
