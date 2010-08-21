@@ -28,7 +28,7 @@ class Volume(IMP.test.TestCase):
         m.add_restraint(vr)
         mc= MonteCarlo(m)
         mc.add_mover(BallMover(sc, 4))
-        mv.set_local_optimizer( ConjugateGradients(m))
+        mc.set_local_optimizer( ConjugateGradients(m))
         mc.set_score_threshold(.2)
         mc.optimize(1000)
         self.assert_(m.evaluate(False) < .2)
