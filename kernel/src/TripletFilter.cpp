@@ -14,13 +14,7 @@
 
 IMP_BEGIN_NAMESPACE
 
-namespace {
-  unsigned int next_index=0;
-}
-
-
-TripletFilter::TripletFilter(std::string name) {
-  set_name(internal::make_object_name(name, next_index++));
+TripletFilter::TripletFilter(std::string name): Object(name) {
 }
 
 IMP_END_NAMESPACE

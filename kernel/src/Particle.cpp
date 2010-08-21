@@ -30,13 +30,8 @@ IMP_END_INTERNAL_NAMESPACE
 
 IMP_BEGIN_NAMESPACE
 
-namespace {
-  unsigned int particle_index=0;
-}
-
-
 Particle::Particle(Model *m, std::string name):
-  Container(m, internal::make_object_name(name, particle_index++)),
+  Container(m, name),
   ps_(new internal::ParticleStorage()),
   dirty_(false)
 {

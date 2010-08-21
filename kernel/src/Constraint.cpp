@@ -10,12 +10,8 @@
 
 IMP_BEGIN_NAMESPACE
 
-namespace {
-  unsigned int scorestate_index=0;
-}
-
 Constraint::Constraint(std::string name) :
-  ScoreState(internal::make_object_name(name, scorestate_index++))
+  ScoreState(name)
 {
 }
 

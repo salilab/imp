@@ -88,7 +88,7 @@ class IMPEXPORT Container : public Object
   }
   Container(Model *m, std::string name="Container %1%");
   // added or removed containers
-  Container(std::string name="added or removed container"): Object(name) {};
+  Container(std::string name="added or removed container %1%"): Object(name) {};
  public:
   //! Get whether the set of particles changed since last evaluation
   virtual bool get_contained_particles_changed() const=0;

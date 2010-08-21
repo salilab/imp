@@ -14,14 +14,10 @@
 #endif
 
 IMP_BEGIN_NAMESPACE
-namespace {
-  unsigned int restraint_index=0;
-}
-
 
 ConfigurationSet::ConfigurationSet(Model *m,
                                    std::string nm):
-  Object(internal::make_object_name(nm, restraint_index++)),
+  Object(nm),
   model_(m), base_(new Configuration(m, nm +" base")){
 }
 

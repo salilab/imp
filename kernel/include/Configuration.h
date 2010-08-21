@@ -39,7 +39,7 @@ class IMPEXPORT Configuration: public Object
   iterator begin() const {return base_.begin();}
   iterator end() const {return base_.end();}
  public:
-  Configuration(Model *m, std::string name="config");
+  Configuration(Model *m, std::string name="Configuration %1%");
   void load_configuration() const;
   IMP_OBJECT(Configuration);
 };

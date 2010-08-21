@@ -14,13 +14,9 @@
 
 IMP_BEGIN_NAMESPACE
 
-namespace {
-  unsigned int next_index=0;
-}
-
 
 QuadContainer::QuadContainer(Model *m, std::string name):
-  Container(m, internal::make_object_name(name, next_index++)){
+  Container(m,name){
 }
 
 // here for gcc

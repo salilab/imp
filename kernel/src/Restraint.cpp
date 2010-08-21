@@ -15,12 +15,8 @@
 
 IMP_BEGIN_NAMESPACE
 
-namespace {
-  unsigned int restraint_index=0;
-}
-
 Restraint::Restraint(std::string name):
-  Object(internal::make_object_name(name, restraint_index++))
+  Object(name)
 {
 }
 
