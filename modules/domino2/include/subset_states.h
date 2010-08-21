@@ -38,7 +38,7 @@ class DominoSampler;
 */
 class IMPDOMINO2EXPORT SubsetStates: public Object {
 public:
-  SubsetStates(std::string name="SubsetStates"): Object(name){}
+  SubsetStates(std::string name="SubsetStates %1%"): Object(name){}
   virtual unsigned int get_number_of_states() const=0;
   /** i can be anything in [0, get_number_of_states())
    */
@@ -66,7 +66,7 @@ public:
     sampler_=sampler;
   }
 #endif
-  SubsetStatesTable(std::string name= "SubsetStatesTable"): Object(name){}
+  SubsetStatesTable(std::string name= "SubsetStatesTable %1%"): Object(name){}
   virtual SubsetStates *get_subset_states(const Subset &s) const=0;
   ~SubsetStatesTable();
 };
@@ -111,7 +111,7 @@ typedef BranchAndBoundSubsetStatesTable DefaultSubsetStatesTable;
 class IMPDOMINO2EXPORT ListSubsetStates: public SubsetStates {
   std::vector<SubsetState> states_;
  public:
-  ListSubsetStates(std::string name);
+  ListSubsetStates(std::string name="ListSubsetStates %1%");
   void add_subset_state(const SubsetState& s);
   IMP_SUBSET_STATES(ListSubsetStates);
 };
@@ -126,7 +126,7 @@ IMP_OBJECTS(ListSubsetStates, ListSubsetStatesList);
 class IMPDOMINO2EXPORT ListSubsetStatesTable: public SubsetStatesTable {
   std::map<Subset, Pointer<SubsetStates> > states_;
  public:
-  ListSubsetStatesTable(std::string name);
+  ListSubsetStatesTable(std::string name="ListSubsetStatesTable %1%");
   void set_subset_states(const Subset &s, SubsetStates *lsc) {
     states_[s]=lsc;
   }
