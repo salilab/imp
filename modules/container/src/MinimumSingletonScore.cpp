@@ -12,14 +12,10 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-namespace {
-  unsigned int next_index=0;
-}
-
 MinimumSingletonScore::MinimumSingletonScore(const SingletonScoresTemp &scores,
                                            unsigned int n,
                                            std::string name):
-  SingletonScore(IMP::internal::make_object_name(name, next_index++)),
+  SingletonScore(name),
   scores_(scores),
   n_(n)
 {
