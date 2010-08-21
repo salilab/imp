@@ -3,6 +3,7 @@ IMP_SWIG_OBJECT(IMP::container, AllPairContainer, AllPairContainers);
 IMP_SWIG_OBJECT(IMP::container, CloseBipartitePairContainer, CloseBipartitePairContainers);
 IMP_SWIG_OBJECT(IMP::container, ClosePairContainer, ClosePairContainers);
 IMP_SWIG_OBJECT(IMP::container, ConnectingPairContainer, ConnectingPairContainers);
+IMP_SWIG_OBJECT(IMP::container, ConsecutivePairContainer, ConsecutivePairContainers);
 IMP_SWIG_OBJECT(IMP::container, ListPairContainer, ListPairContainers);
 IMP_SWIG_OBJECT(IMP::container, ListQuadContainer, ListQuadContainers);
 IMP_SWIG_OBJECT(IMP::container, ListSingletonContainer, ListSingletonContainers);
@@ -46,6 +47,7 @@ IMP_SWIG_OBJECT(IMP::container, TripletsRestraint, TripletsRestraints);
 %include "IMP/container/CloseBipartitePairContainer.h"
 %include "IMP/container/ClosePairContainer.h"
 %include "IMP/container/ConnectingPairContainer.h"
+%include "IMP/container/ConsecutivePairContainer.h"
 %include "IMP/container/ListPairContainer.h"
 %include "IMP/container/ListQuadContainer.h"
 %include "IMP/container/ListSingletonContainer.h"
