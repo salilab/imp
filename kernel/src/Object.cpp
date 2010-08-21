@@ -8,6 +8,7 @@
 
 #include "IMP/Object.h"
 #include "IMP/RefCounted.h"
+#include <boost/format.hpp>
 
 IMP_BEGIN_NAMESPACE
 
@@ -19,13 +20,30 @@ RefCounted::~ RefCounted() {
   --live_objects_;
 }
 
-Object::Object(std::string name): name_(name)
+Object::Object(std::string name)
 {
 #if IMP_BUILD < IMP_FAST
   log_level_=DEFAULT;
   check_value_=111111111;
   was_owned_=false;
 #endif
+  if (std::find(name.begin(), name.end(), '%') != name.end()) {
+    static std::map<std::string, unsigned int> counts;
+    if (counts.find(name) == counts.end()) {
+      counts[name]=0;
+    }
+    std::ostringstream oss;
+    try {
+      oss << boost::format(name)% counts.find(name)->second;
+    } catch(...) {
+      IMP_THROW("Invalid format specified in name, should be %1%: "<< name,
+                ValueException);
+    }
+    name_= oss.str();
+    ++counts.find(name)->second;
+  } else {
+    name_=name;
+  }
   IMP_LOG(MEMORY, "Creating object \"" << name
           << "\" (" << this << ")" << std::endl);
 }
