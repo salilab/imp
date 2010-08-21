@@ -365,19 +365,24 @@ namespace {
         }
       }
       IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-        unsigned int total=0;
+        int total=0;
         for (unsigned int i=0; i< bin_contents.size(); ++i) {
           total+= bin_contents[i].size();
         }
+        IMP_INTERNAL_CHECK(total == std::distance(ps.b_, ps.e_),
+                           "Lost points " << total << " "
+                           << std::distance(ps.b_, ps.e_));
       }
     }
 
-    static void create_grid(const IDs &ids,
+    static Grid create_grid(const algebra::BoundingBox3D &bb,
+                            double side) {
+      return Grid(side, bb);
+    }
+
+    static void fill_grid(const IDs &ids,
                             CenterF cf,
-                            const algebra::BoundingBox3D &bb,
-                            double side,
                             Grid &g) {
-      g=Grid(side, bb);
       for (typename IDs::const_iterator c= ids.begin(); c != ids.end(); ++c) {
         algebra::Vector3D v= cf(*c);
         typename Grid::Index ind=g.get_index(v);
@@ -520,9 +525,8 @@ namespace {
       for (unsigned int i=0; i< bin_contents_g.size(); ++i) {
         if (bin_contents_g[i].empty()) continue;
         {
-          Grid gg;
-          create_grid(bin_contents_g[i], ps.c_, bbs[i],
-                      distance+2*bin_ubs[i], gg);
+          Grid gg = create_grid(bbs[i], distance+2*bin_ubs[i]);
+          fill_grid(bin_contents_g[i], ps.c_, gg);
           for (typename Grid::AllNonEmptyConstIterator it
                  = gg.all_non_empty_begin();
                it != gg.all_non_empty_end(); ++it) {
@@ -536,16 +540,16 @@ namespace {
         }
         for (unsigned int j=0; j< i; ++j) {
           if (bin_contents_g[j].empty()) continue;
-          Grid ggi, ggj;
           algebra::BoundingBox3D bb= bbs[i]+bbs[j];
           IMP_LOG(VERBOSE, "Building grids for " << i << " and " << j
                   << " with bb " << bb << " and side "
                   << distance+bin_ubs[i]+bin_ubs[j]
                   << std::endl);
-          create_grid(bin_contents_g[i], ps.c_, bb,
-                      distance+bin_ubs[i]+bin_ubs[j], ggi);
-          create_grid(bin_contents_g[j], ps.c_, bb,
-                      distance+bin_ubs[i]+bin_ubs[j], ggj);
+          Grid ggi, ggj;
+          ggi= create_grid(bb, distance+bin_ubs[i]+bin_ubs[j]);
+          ggj=ggi;
+          fill_grid(bin_contents_g[i], ps.c_, ggi);
+          fill_grid(bin_contents_g[j], ps.c_, ggj);
           for (typename Grid::AllNonEmptyConstIterator it
                  = ggj.all_non_empty_begin();
                it != ggj.all_non_empty_end(); ++it) {
@@ -610,16 +614,16 @@ namespace {
         if (bin_contents_g[i].empty()) continue;
         for (unsigned int j=0; j< bin_contents_q.size(); ++j) {
           if (bin_contents_q[j].empty()) continue;
-          Grid gg, gq;
           algebra::BoundingBox3D bb= bbs_g[i]+bbs_q[j];
           IMP_LOG(VERBOSE, "Building grids for " << i << " and " << j
                   << " with bb " << bb << " and side "
                   << distance+bin_ubs[i]+bin_ubs[j]
                   << std::endl);
-          create_grid(bin_contents_g[i], psg.c_, bb,
-                      distance+bin_ubs[i]+bin_ubs[j], gg);
-          create_grid(bin_contents_q[i], psq.c_, bb,
-                      distance+bin_ubs[i]+bin_ubs[j], gq);
+          Grid gg, gq;
+          gg= create_grid(bb, distance+bin_ubs[i]+bin_ubs[j]);
+          gq= gg;
+          fill_grid(bin_contents_g[i], psg.c_, gg);
+          fill_grid(bin_contents_q[j], psq.c_, gq);
           IMP_IF_CHECK(USAGE) {
             for (unsigned int i=0; i< 3; ++i) {
               IMP_USAGE_CHECK(gg.get_number_of_voxels(i)
