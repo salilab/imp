@@ -26,6 +26,7 @@ IMP_SWIG_BASE_OBJECT(IMP::domino2, SubsetStates, SubsetStatesList);
 IMP_SWIG_BASE_OBJECT(IMP::domino2, SubsetStatesTable, SubsetStatesTables);
 IMP_SWIG_BASE_OBJECT(IMP::domino2, DiscreteSampler, DiscreteSamplers);
 IMP_SWIG_BASE_OBJECT(IMP::domino2, SubsetGraphTable, SubsetGraphTables);
+IMP_SWIG_BASE_OBJECT(IMP::domino2, StoredSubsetGraphTable, StoredSubsetGraphTables);
 IMP_SWIG_OBJECT(IMP::domino2, BranchAndBoundSubsetStatesTable, BranchAndBoundSubsetStatesTables);
 IMP_SWIG_OBJECT(IMP::domino2, ListSubsetStatesTable, ListSubsetStatesTables);
 IMP_SWIG_OBJECT(IMP::domino2, ListSubsetStates, ListSubsetStatesList);
