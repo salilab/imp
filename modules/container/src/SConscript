@@ -6,6 +6,7 @@ files = [
          'CloseBipartitePairContainer.cpp',
          'ClosePairContainer.cpp',
          'ConnectingPairContainer.cpp',
+         'ConsecutivePairContainer.cpp',
          'InContainerPairFilter.cpp',
          'InContainerQuadFilter.cpp',
          'InContainerSingletonFilter.cpp',

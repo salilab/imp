@@ -6,6 +6,7 @@ files = [
          'CloseBipartitePairContainer.h',
          'ClosePairContainer.h',
          'ConnectingPairContainer.h',
+         'ConsecutivePairContainer.h',
          'InContainerPairFilter.h',
          'InContainerQuadFilter.h',
          'InContainerSingletonFilter.h',
