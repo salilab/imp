@@ -11,10 +11,6 @@
 
 IMP_BEGIN_NAMESPACE
 
-namespace {
-  unsigned int restraint_index=0;
-}
-
 Container::Container(Model *m, std::string name):
   Object(name),
   m_(m)
