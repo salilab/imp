@@ -757,4 +757,43 @@ void load_particle_states(const Subset &s,
   internal::load_particle_states(s.begin(), s.end(), ss, pst);
 }
 
+
+
+RestraintSet* create_restraint_set(const Subset &s,
+                                   ParticlesTemp other,
+                                   const DependencyGraph &dg,
+                                   RestraintSet *rs) {
+  std::sort(other.begin(), other.end());
+  ParticlesTemp oms;
+  std::set_difference(other.begin(), other.end(),
+                      s.begin(), s.end(),
+                      std::back_inserter(oms));
+  RestraintsTemp allr= get_restraints(rs);
+  std::sort(allr.begin(), allr.end());
+  DGConstVertexMap vm= boost::get(boost::vertex_name,dg);
+  IMP_NEW(RestraintSet, ret, (std::string("Restraints for ") +s.get_name()));
+  rs->get_model()->add_restraint(ret);
+  std::map<double, Pointer<RestraintSet> > rss;
+  for (unsigned int i=0; i< boost::num_vertices(dg); ++i) {
+    Restraint *r=dynamic_cast<Restraint*>(boost::get(vm, i));
+    if (r && std::binary_search(allr.begin(), allr.end(), r)) {
+      if (get_has_ancestor(dg, i, oms)) {
+        // pass
+      } else {
+        double w= rs->get_model()->get_weight(r);
+        if (rss.find(w)==rss.end()) {
+          rss[w]=new RestraintSet();
+          rss[w]->add_restraint(r);
+          rss[w]->set_weight(w);
+          ret->add_restraint(rss[w]);
+        } else {
+          rss.find(w)->second->add_restraint(r);
+        }
+      }
+    }
+  }
+  return ret.release();
+}
+
+
 IMPDOMINO2_END_NAMESPACE
