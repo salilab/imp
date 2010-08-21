@@ -20,13 +20,11 @@ namespace {
   inline bool get_interiors_intersect(const algebra::Vector3D &v,
                                       double ra, double rb) {
     double sr= ra+rb;
-    double s=0;
     for (unsigned int i=0; i< 3; ++i) {
       double a=std::abs(v[i]);
       if (a >= sr) return false;
-      s+=a*a;
     }
-    return s < square(sr);
+    return v*v < square(sr);
   }
 
   inline bool get_is_wrapped(unsigned int merged, unsigned int k) {
@@ -241,24 +239,23 @@ namespace {
                 || ik >= static_cast<int>(g.get_number_of_voxels(2))) continue;
             typename Grid::ExtendedIndex cei(ii, ij, ik);
             IMP_INTERNAL_CHECK(g.get_is_index(cei), "Not a voxel " << cei);
-            typename Grid::Index ci= g.get_index(cei);
             // make sure equivalent voxels are only added once
-            if (((half && ci < curei) || (!half && curei != ci))
-                && g.get_is_non_empty(ci)) {
-              out.push_back(ci);
+            if (((half && cei < curei) || (!half && curei != cei))
+                && g.get_is_non_empty(cei)) {
+              out.push_back(g.get_index(cei));
             }
           }
         }
       }
     }
 
-    static void fill_nearby(const Grid &g,
+    static std::vector<typename Grid::Index> get_nearby(const Grid &g,
                             typename Grid::Index center,
                             typename Grid::ExtendedIndex bblb,
                             typename Grid::ExtendedIndex bbub,
                             unsigned int merged,
-                            bool half,
-                            std::vector<typename Grid::Index> &out) {
+                            bool half) {
+      std::vector<typename Grid::Index> out;
       typename Grid::ExtendedIndex lb(g.get_offset(center,
                                                    -1, -1, -1)),
         ub(g.get_offset(center, 1, 1, 1));
@@ -289,14 +286,15 @@ namespace {
       // would be nice to not have duplicates
       std::sort(out.begin(), out.end());
       out.erase(std::unique(out.begin(), out.end()), out.end());
+      return out;
     }
 
 
 
-    static void fill_nearby(const Grid &g,
-                            typename Grid::Index center,
-                            double half,
-                            std::vector<typename Grid::Index> &out) {
+    static std::vector<typename Grid::Index> get_nearby(const Grid &g,
+                                             typename Grid::Index center,
+                                                        double half) {
+      std::vector<typename Grid::Index> out;
       typename Grid::ExtendedIndex lb(g.get_offset(center,
                                                    -1, -1, -1)),
         ub(g.get_offset(center, 1, 1, 1));
@@ -307,12 +305,8 @@ namespace {
                                                    ei(voxel_index[0],
                                                       voxel_index[1],
                                                       voxel_index[2]);
-                                                 if (g.get_is_index(ei)) {
-                                                   typename Grid::Index i
-                                                     =g.get_index(ei);
-                                                   if (g.get_is_non_empty(i)) {
-                                                     out.push_back(i);
-                                                   }
+                                                 if (g.get_is_non_empty(ei)) {
+                                            out.push_back(g.get_index(ei));
                                                  }
                                                }
                                                );
@@ -320,14 +314,12 @@ namespace {
         for (typename Grid::ExtendedIndexIterator it
                = g.extended_indexes_begin(lb, ub);
              it != g.extended_indexes_end(lb, ub); ++it) {
-          if (g.get_is_index(*it)) {
-            typename Grid::Index gi=g.get_index(*it);
-            if (g.get_is_non_empty(gi)) {
-              out.push_back(gi);
-            }
+          if (g.get_is_non_empty(*it)) {
+            out.push_back(g.get_index(*it));
           }
         }
       }
+      return out;
     }
 
     template <class It>
@@ -339,7 +331,7 @@ namespace {
       return maxr;
     }
 
-    static algebra::BoundingBox3D get_bb(const IDs ids, CenterF cc) {
+    static algebra::BoundingBox3D get_bb(const IDs& ids, CenterF cc) {
       algebra::BoundingBox3D bb;
       for (typename IDs::const_iterator c= ids.begin(); c != ids.end(); ++c) {
         bb+=cc(*c);
@@ -380,7 +372,7 @@ namespace {
       }
     }
 
-    static void create_grid(const IDs ids,
+    static void create_grid(const IDs &ids,
                             CenterF cf,
                             const algebra::BoundingBox3D &bb,
                             double side,
@@ -447,8 +439,7 @@ namespace {
                                     typename Grid::Index index,
                                     const IDs &qps,
                                     bool half, CloseF close, Out& out) {
-      std::vector<typename Grid::Index> ids;
-      fill_nearby(gg, index, half, ids);
+      const std::vector<typename Grid::Index> ids= get_nearby(gg, index, half);
       for (unsigned int i=0; i< ids.size(); ++i) {
         IMP_LOG(VERBOSE, "Checking pair " << ids[i] << " " << index
                 << std::endl);
@@ -477,8 +468,8 @@ namespace {
         = gg.get_extended_index(bb.get_corner(0));
       typename Grid::ExtendedIndex bbub
         = gg.get_extended_index(bb.get_corner(1));
-      std::vector<typename Grid::Index> ids;
-      fill_nearby(gg, index, bblb, bbub, merged, half, ids);
+      const std::vector<typename Grid::Index> ids
+        = get_nearby(gg, index, bblb, bbub, merged, half);
       for (unsigned int i=0; i< ids.size(); ++i) {
         IMP_LOG(VERBOSE, "Checking pair " << ids[i] << " " << index
                 << std::endl);
