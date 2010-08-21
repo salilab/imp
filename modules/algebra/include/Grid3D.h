@@ -146,6 +146,14 @@ public:
   void set_voxel(Index i, const VT& gi) {
     data_[i]=gi;
   }
+  template <class T>
+  bool get_is_non_empty(const T &t) const {
+    for (unsigned int i=0; i< 3; ++i) {
+      if (t[i] < 0) return false;
+      if (t[i] >= d_[i]) return false;
+    }
+    return data_.find(Index(t[0], t[1], t[2])) != data_.end();
+  }
   bool get_is_non_empty(Index i) const {
     return data_.find(i) != data_.end();
   }
