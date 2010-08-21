@@ -12,7 +12,7 @@
 
 
 IMPDOMINO2_BEGIN_NAMESPACE
-SubsetGraphTable::SubsetGraphTable(): Object("SubsetGraphTable"){}
+SubsetGraphTable::SubsetGraphTable(std::string name): Object(name){}
 
 JunctionTreeTable::JunctionTreeTable(RestraintSet *rs): rs_(rs){}
 
@@ -40,4 +40,20 @@ Subsets get_subsets(const SubsetGraph &g){
   }
     return output;
   }
+
+
+
+StoredSubsetGraphTable::StoredSubsetGraphTable(const SubsetGraph &sg,
+                                               std::string name):
+  SubsetGraphTable(name),
+  sg_(sg){}
+
+SubsetGraph
+StoredSubsetGraphTable::get_subset_graph(ParticleStatesTable *) const {
+  return sg_;
+}
+
+void StoredSubsetGraphTable::do_show(std::ostream &out) const {
+}
+
 IMPDOMINO2_END_NAMESPACE

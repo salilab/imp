@@ -29,7 +29,7 @@ IMPDOMINO2EXPORT Subsets get_subsets(const SubsetGraph &g);
 **/
 class IMPDOMINO2EXPORT SubsetGraphTable: public Object {
  public:
-  SubsetGraphTable();
+  SubsetGraphTable(std::string name="SubsetGraphTable %1%");
   virtual SubsetGraph get_subset_graph(ParticleStatesTable *pst) const=0;
 };
 
@@ -50,6 +50,18 @@ class IMPDOMINO2EXPORT JunctionTreeTable: public SubsetGraphTable {
 };
 
 IMP_OBJECTS(JunctionTreeTable, JunctionTreeTables);
+
+//! Return a stored subset graph
+/** \untested{StoredSubsetGraphTable} */
+class IMPDOMINO2EXPORT StoredSubsetGraphTable: public SubsetGraphTable {
+  SubsetGraph sg_;
+ public:
+  StoredSubsetGraphTable(const SubsetGraph& sg,
+                         std::string name="Stored graph %1%");
+  IMP_SUBSET_GRAPH_TABLE(StoredSubsetGraphTable);
+};
+
+IMP_OBJECTS(StoredSubsetGraphTable, StoredSubsetGraphTables);
 
 IMPDOMINO2_END_NAMESPACE
 

@@ -107,6 +107,7 @@ typedef BranchAndBoundSubsetStatesTable DefaultSubsetStatesTable;
 
 /** Store a list of SubsetState objects and return them on demand. To be
     used with the ListSubsetStatesTable.
+    \untested{ListSubsetStates}
 */
 class IMPDOMINO2EXPORT ListSubsetStates: public SubsetStates {
   std::vector<SubsetState> states_;
@@ -122,6 +123,7 @@ IMP_OBJECTS(ListSubsetStates, ListSubsetStatesList);
 
 /** Store a map of SubsetStates objects and return them on demand. To be
     used with the SubsetStatesTable.
+    \untested{ListSubsetStatesTable}
 */
 class IMPDOMINO2EXPORT ListSubsetStatesTable: public SubsetStatesTable {
   std::map<Subset, Pointer<SubsetStates> > states_;
