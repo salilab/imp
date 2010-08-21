@@ -33,7 +33,7 @@ IMPDOMINO2_BEGIN_NAMESPACE
     passes the filter.*/
 class IMPDOMINO2EXPORT SubsetFilter: public Object {
 public:
-  SubsetFilter(std::string name= "SubsetFilter");
+  SubsetFilter(std::string name= "SubsetFilter %1%");
   virtual bool get_is_ok(const SubsetState& state) const=0;
   //! The strength is a rough metric of how this filter restricts the subset
   /** It is still kind of nebulous, but as a rough guide, it should be

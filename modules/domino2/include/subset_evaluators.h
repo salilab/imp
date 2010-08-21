@@ -34,7 +34,7 @@ class DominoSampler;
     returned it.  */
 class IMPDOMINO2EXPORT SubsetEvaluator: public Object {
 public:
-  SubsetEvaluator(std::string name= "SubsetEvaluator");
+  SubsetEvaluator(std::string name= "SubsetEvaluator %1%");
   virtual double get_score(const SubsetState& state) const=0;
   virtual ~SubsetEvaluator();
 };
