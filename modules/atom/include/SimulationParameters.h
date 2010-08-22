@@ -59,29 +59,29 @@ public:
       && p->has_attribute(get_last_time_step_key());
   }
 
-  Float get_temperature_in_kelvin() const {
+  Float get_temperature() const {
     return get_particle()->get_value(get_temperature_key());
   }
-  Float get_current_time_in_femtoseconds() const {
+  Float get_current_time() const {
     return get_particle()->get_value(get_current_time_key());
   }
-  Float get_last_time_step_in_femtoseconds() const {
+  Float get_last_time_step() const {
     return get_particle()->get_value(get_last_time_step_key());
   }
-  Float get_maximum_time_step_in_femtoseconds() const {
+  Float get_maximum_time_step() const {
     return get_particle()->get_value(get_maximum_time_step_key());
   }
 
-  void set_current_time_in_femtoseconds(double t) {
+  void set_current_time(double t) {
     get_particle()->set_value(get_current_time_key(),
                               t);
   }
 
-  void set_last_time_step_in_femtoseconds(double t) {
+  void set_last_time_step(double t) {
     get_particle()->set_value(get_last_time_step_key(),
                               t);
   }
-  void set_maximum_time_step_in_femtoseconds(double t) {
+  void set_maximum_time_step(double t) {
     get_particle()->set_value(get_maximum_time_step_key(),
                               t);
   }
@@ -97,27 +97,28 @@ public:
 
 #ifndef IMP_DOXYGEN
 #ifndef SWIG
-  unit::Femtosecond get_current_time() const {
-    return unit::Femtosecond(get_current_time_in_femtoseconds());
+  unit::Femtosecond get_current_time_with_units() const {
+    return unit::Femtosecond(get_current_time());
   }
-  unit::Femtosecond get_last_time_step() const {
-    return unit::Femtosecond(get_last_time_step_in_femtoseconds());
+  unit::Femtosecond get_last_time_step_with_units() const {
+    return unit::Femtosecond(get_last_time_step());
   }
-  unit::Femtosecond get_maximum_time_step() const {
-    return unit::Femtosecond(get_maximum_time_step_in_femtoseconds());
+  unit::Femtosecond get_maximum_time_step_with_units() const {
+    return unit::Femtosecond(get_maximum_time_step());
   }
-  void set_maximum_time_step(unit::Femtosecond ts) {
-    if (get_last_time_step() == unit::Femtosecond(0)) set_last_time_step(ts);
-    set_maximum_time_step_in_femtoseconds(unit::strip_units(ts));
+  void set_maximum_time_step_with_units(unit::Femtosecond ts) {
+    if (get_last_time_step_with_units()
+        == unit::Femtosecond(0)) set_last_time_step_with_units(ts);
+    set_maximum_time_step(unit::strip_units(ts));
   }
-  void set_last_time_step(unit::Femtosecond ts) {
-    set_last_time_step_in_femtoseconds(unit::strip_units(ts));
+  void set_last_time_step_with_units(unit::Femtosecond ts) {
+    set_last_time_step(unit::strip_units(ts));
   }
-  unit::Kelvin get_temperature() const {
-    return unit::Kelvin(get_temperature_in_kelvin());
+  unit::Kelvin get_temperature_with_units() const {
+    return unit::Kelvin(get_temperature());
   }
-  void set_current_time(unit::Femtosecond t) {
-    set_current_time_in_femtoseconds(unit::strip_units(t));
+  void set_current_time_with_units(unit::Femtosecond t) {
+    set_current_time(unit::strip_units(t));
   }
 
   unit::Femtojoule get_kT() const;
