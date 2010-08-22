@@ -302,10 +302,10 @@ namespace {
         SubsetState state= get_sub_subset_state(cur,
                                                 order.begin()+i,
                                                 order.end());
-        std::cout << "filtering " << i << " " << j
+        /*std::cout << "filtering " << i << " " << j
                   << " on state " << state
                   << " got " << filters[i][j]->get_is_ok(state)
-                  << std::endl;
+                  << std::endl;*/
         if (!filters[i][j]->get_is_ok(state)) {
           goto bad;
         }
