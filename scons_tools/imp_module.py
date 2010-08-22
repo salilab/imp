@@ -461,9 +461,9 @@ def IMPModuleGetExamples(env):
     return module_glob(["*.py", "*/*.py","*.readme","*/*.readme"])
 
 def IMPModuleGetExampleData(env):
-    ret=  module_glob(["*.pdb", "*.mrc", "*.dat", "*.xml", "*.em",
-                         "*/*.pdb", "*/*.mrc", "*/*.dat", "*/*.xml", "*/*.em",
-                       "*/*/*.pdb", "*/*/*.mrc", "*/*/*.dat", "*/*/*.xml", "*/*/*.em"])
+    ret=  module_glob(["*.pdb", "*.mrc", "*.dat", "*.xml", "*.em", "*.imp", "*.impb",
+                         "*/*.pdb", "*/*.mrc", "*/*.dat", "*/*.xml", "*/*.em", "*/*.imp", "*/*.impb",
+                       "*/*/*.pdb", "*/*/*.mrc", "*/*/*.dat", "*/*/*.xml", "*/*/*.em","*/*/*.imp", "*/*/*.impb",])
     return ret
 
 def IMPModuleGetPythonTests(env):
