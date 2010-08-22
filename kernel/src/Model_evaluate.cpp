@@ -212,7 +212,7 @@ void Model::before_evaluate(const ScoreStatesTemp &states) const {
       if (gather_statistics_) {
         add_to_update_before_time(ss, timer.elapsed());
       }
-      IMP_LOG(VERBOSE, "." << std::flush);
+      //IMP_LOG(VERBOSE, "." << std::flush);
     }
   }
   IMP_LOG(TERSE, "End update ScoreStates." << std::endl);
@@ -236,7 +236,7 @@ void Model::after_evaluate(const ScoreStatesTemp &states,
       if (gather_statistics_) {
         add_to_update_after_time(ss, timer.elapsed());
       }
-      IMP_LOG(VERBOSE, "." << std::flush);
+      //IMP_LOG(VERBOSE, "." << std::flush);
     }
   }
   IMP_LOG(TERSE, "End after_evaluate of ScoreStates." << std::endl);
