@@ -354,7 +354,7 @@ public:
       double bside= bb.get_corner(1)[i]- bb.get_corner(0)[i];
       double d= bside/side;
       double cd= std::ceil(d);
-      dd[i]= std::min(1, static_cast<int>(cd));
+      dd[i]= std::min<int>(1, static_cast<int>(cd));
        do {
         ubs[i]=bb.get_corner(0)[i]+dd[i]*unit_cell_[i];
         if (ubs[i] > bb.get_corner(1)[i]) break;
@@ -439,7 +439,7 @@ public:
                          "Invalid grid in Index, no voxels");
       double d = pt[i] - bbox_.get_corner(0)[i];
       double fi= d*inverse_unit_cell_[i];
-      index[i]= std::min<int>(std::floor(fi),
+      index[i]= std::min<int>(static_cast<int>(std::floor(fi)),
                          Storage::get_number_of_voxels(i)-1);
     }
     return Index(index[0], index[1], index[2]);
