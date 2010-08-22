@@ -215,7 +215,7 @@ MCCGSampler::Parameters::Parameters(){
   mc_steps_=10000;
 }
 
-MCCGSampler::MCCGSampler(Model *m): Sampler(m, "MCCG Sampler %1"),
+MCCGSampler::MCCGSampler(Model *m, std::string name): Sampler(m, name),
                                     is_refining_(false){
 }
 

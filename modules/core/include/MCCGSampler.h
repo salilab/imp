@@ -55,7 +55,7 @@ class IMPCOREEXPORT MCCGSampler : public Sampler
   internal::CoreListSingletonContainer* set_up_movers(const Parameters &pms,
                                         MonteCarlo *mc) const;
 public:
-  MCCGSampler(Model *m);
+  MCCGSampler(Model *m, std::string name="MCCG Sampler %1%");
 
   //! Set the bounding box for randomizing the Cartesian coordinates
   void set_bounding_box(const algebra::BoundingBoxD<3> &bb);
