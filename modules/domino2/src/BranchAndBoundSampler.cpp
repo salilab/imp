@@ -17,12 +17,14 @@ IMPDOMINO2_BEGIN_NAMESPACE
 
 
 BranchAndBoundSampler::BranchAndBoundSampler(Model *m,
-                                             ParticleStatesTable* pst):
-  DiscreteSampler(m, pst, "BranchAndBound Sampler %1"){
+                                             ParticleStatesTable* pst,
+                                             std::string name):
+  DiscreteSampler(m, pst, name){
 }
 
-BranchAndBoundSampler::BranchAndBoundSampler(Model *m):
-  DiscreteSampler(m, new ParticleStatesTable(), "BranchAndBound Sampler %1")
+BranchAndBoundSampler::BranchAndBoundSampler(Model *m,
+                                             std::string name):
+  DiscreteSampler(m, new ParticleStatesTable(), name)
 {
 }
 

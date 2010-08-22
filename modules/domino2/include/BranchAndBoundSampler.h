@@ -29,8 +29,9 @@ IMPDOMINO2_BEGIN_NAMESPACE
 class IMPDOMINO2EXPORT BranchAndBoundSampler : public DiscreteSampler
 {
 public:
-  BranchAndBoundSampler(Model *m);
-  BranchAndBoundSampler(Model*m, ParticleStatesTable *pst);
+  BranchAndBoundSampler(Model *m, std::string name="BranchAndBoundSampler %1%");
+  BranchAndBoundSampler(Model*m, ParticleStatesTable *pst,
+                        std::string name="BranchAndBoundSampler %1%");
   IMP_DISCRETE_SAMPLER(BranchAndBoundSampler);
 };
 

@@ -28,8 +28,9 @@ class IMPDOMINO2EXPORT DominoSampler : public DiscreteSampler
   Pointer<SubsetStatesTable> sst_;
   IMP::internal::OwnerPointer<SubsetGraphTable> sgt_;
  public:
-  DominoSampler(Model *m);
-  DominoSampler(Model*m, ParticleStatesTable *pst);
+  DominoSampler(Model *m, std::string name= "DominoSampler %1%");
+  DominoSampler(Model*m, ParticleStatesTable *pst,
+                std::string name= "DominoSampler %1%");
   IMP_DISCRETE_SAMPLER(DominoSampler);
  public:
   /** \name Advanced
