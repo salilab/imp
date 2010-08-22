@@ -60,7 +60,7 @@ FloatKey SimulationParameters::get_maximum_time_step_key() {
 }
 
 unit::Femtojoule SimulationParameters::get_kT() const {
-  return IMP::unit::Femtojoule(IMP::internal::KB*get_temperature());
+  return IMP::unit::Femtojoule(IMP::internal::KB*get_temperature_with_units());
 }
 
 
