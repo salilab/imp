@@ -16,12 +16,13 @@
 IMPDOMINO2_BEGIN_NAMESPACE
 
 
-DominoSampler::DominoSampler(Model *m, ParticleStatesTable* pst):
-  DiscreteSampler(m, pst, "Domino Sampler %1"){
+DominoSampler::DominoSampler(Model *m, ParticleStatesTable* pst,
+                             std::string name):
+  DiscreteSampler(m, pst, name){
 }
 
-DominoSampler::DominoSampler(Model *m):
-  DiscreteSampler(m, new ParticleStatesTable(), "Domino Sampler %1"){
+DominoSampler::DominoSampler(Model *m, std::string name):
+  DiscreteSampler(m, new ParticleStatesTable(), name){
 }
 
 
