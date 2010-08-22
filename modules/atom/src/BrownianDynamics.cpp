@@ -33,18 +33,23 @@ namespace {
 
   void relax_model(Model *m, SingletonContainer *sc) {
     //bool old= m->get_gather_statistics();
-    m->set_gather_statistics(true);
-    double oscore= m->evaluate(false);
-    IMP_WARN("Relaxing the model from a score of " << oscore << std::endl);
-    m->set_gather_statistics(false);
-    m->show_restraint_score_statistics(std::cerr);
+    IMP_IF_LOG(TERSE) {
+      m->set_gather_statistics(true);
+      double oscore= m->evaluate(false);
+      IMP_WARN("Relaxing the model from a score of " << oscore << std::endl);
+      m->set_gather_statistics(false);
+      m->show_restraint_score_statistics(std::cerr);
+    }
+    std::cerr << "relaxing" << std::endl;
     IMP_NEW(core::ConjugateGradients, cg, (m));
     cg->optimize(10);
-    m->set_gather_statistics(true);
-    double nscore=m->evaluate(true);
-    IMP_WARN("Relaxed the model to a score of " << nscore << std::endl);
-    m->set_gather_statistics(false);
-    m->show_restraint_score_statistics(std::cerr);
+    IMP_IF_LOG(TERSE) {
+      m->set_gather_statistics(true);
+      double nscore=m->evaluate(true);
+      IMP_WARN("Relaxed the model to a score of " << nscore << std::endl);
+      m->set_gather_statistics(false);
+      m->show_restraint_score_statistics(std::cerr);
+    }
   }
 
 }
@@ -148,8 +153,8 @@ void BrownianDynamics::revert_coordinates(SingletonContainer *sc,
 Float BrownianDynamics::optimize(unsigned int max_steps)
 {
  IMP_USAGE_CHECK(get_model() != NULL, "Must set model before calling optimize");
- return simulate(si_.get_current_time().get_value()
-                 +max_steps*si_.get_maximum_time_step().get_value());
+ return simulate(si_.get_current_time_with_units().get_value()
+                 +max_steps*si_.get_maximum_time_step_with_units().get_value());
 }
 
 namespace {
@@ -162,10 +167,10 @@ namespace {
                                       accum_(0){}
     void add(unit::Femtosecond a) {
       accum_= accum_+a;
-      si_.set_current_time(orig_time_+accum_);
+      si_.set_current_time_with_units(orig_time_+accum_);
     }
     ~AddTime() {
-      si_.set_current_time(orig_time_+accum_);
+      si_.set_current_time_with_units(orig_time_+accum_);
     }
     unit::Femtosecond get_current_time() const {
       return orig_time_ + accum_;
@@ -208,20 +213,22 @@ void BrownianDynamics::take_step(SingletonContainer *sc,
               && unit::strip_units(d.get_D())
               < std::numeric_limits<Float>::max(),
               "Bad diffusion coefficient on particle " << _1->get_name());
-    unit::Angstrom delta[3];
+    double random[3];
     unit::Angstrom sigma= sqrt(2.0*d.get_D()*dt);
     for (unsigned j = 0; j < 3; ++j) {
       double rv= sampler();
-      delta[j]=sqrt(2*d.get_D()*unit::Femtosecond(rv*rv));
-      if (rv < 0) delta[j]=-delta[j];
+      random[j]=unit::Angstrom(sqrt(2*d.get_D()
+                                    *unit::Femtosecond(rv*rv))).get_value();
+      if (rv < 0) random[j]=-random[j];
       //delta[j]=unit::Angstrom(0);
     }
 
+    double force[3];
     for (unsigned j = 0; j < 3; ++j) {
       unit::KilocaloriePerAngstromPerMol
-        force( -d.get_derivative(j));
+        cforce( -d.get_derivative(j));
       unit::Femtonewton nforce
-        = unit::convert_Cal_to_J(force/unit::ATOMS_PER_MOL);
+        = unit::convert_Cal_to_J(cforce/unit::ATOMS_PER_MOL);
       unit::Angstrom R(sampler());
       unit::Angstrom force_term(nforce*d.get_D()*dtikt);
       /*if (force_term > unit::Angstrom(.5)) {
@@ -235,7 +242,7 @@ void BrownianDynamics::take_step(SingletonContainer *sc,
       } else if (force_term < -3.0*sigma) {
         force_term= -3.0*sigma;
       }
-      delta[j]= delta[j]+force_term;
+      force[j]= unit::strip_units(force_term);
     }
 
     //unit::Angstrom max_motion= unit::Scalar(4)*sigma;
@@ -243,17 +250,18 @@ void BrownianDynamics::take_step(SingletonContainer *sc,
       << delta.get_magnitude() << " sigma " << sigma << std::endl;*/
 
     IMP_LOG(VERBOSE, "For particle " << _1->get_name()
-            << " delta is " << delta[0] << " " << delta[1] << " " << delta[2]
+            << " random is " << random[0] << " "
+            << random[1] << " " << random[2]
             << " from a force of "
-            << "[" << d.get_derivatives() << "]" << std::endl);
+            << force[0]<< " " << force[1] << " " << force[2] << std::endl);
     if (dynamic_steps_) {
-      if (square(delta[0])+square(delta[1])+square(delta[2])
+      /*if (square(delta[0])+square(delta[1])+square(delta[2])
           > feature_size_2_) {
         throw BadStepException(_1);
-      }
+        }*/
     }
     for (unsigned int j=0; j< 3; ++j) {
-      d.set_coordinate(j, d.get_coordinate(j) + unit::strip_units(delta[j]));
+      d.set_coordinate(j, d.get_coordinate(j) + random[j]+force[j]);
     }
     }
     );
@@ -272,7 +280,7 @@ double BrownianDynamics::simulate(float max_time_nu)
           << " particles with a step of " << si_.get_maximum_time_step()
           << " until time " << max_time << std::endl);
   std::vector<algebra::VectorD<3> > old_forces, old_coordinates;
-  unit::Femtosecond dt=si_.get_maximum_time_step();
+  unit::Femtosecond dt=si_.get_maximum_time_step_with_units();
   double score= get_model()->evaluate(true);
   if (score > maximum_score_) {
     relax_model(get_model(), sc);
@@ -289,16 +297,17 @@ double BrownianDynamics::simulate(float max_time_nu)
     }
     if (success) {
       update_states();
-      copy_coordinates(sc, old_coordinates);
+      if (dynamic_steps_) copy_coordinates(sc, old_coordinates);
     }
     try {
       take_step(sc, unit::Femtosecond(dt));
       at.add( dt );
-      si_.set_last_time_step(dt);
-      dt= std::min(si_.get_maximum_time_step(),dt*1.1);
-      if (dt < si_.get_maximum_time_step()) {
+      si_.set_last_time_step_with_units(dt);
+      dt= std::min(si_.get_maximum_time_step_with_units(),dt*1.1);
+      if (dt < si_.get_maximum_time_step_with_units()) {
         IMP_LOG(TERSE, "Updating dt to " << dt
-                << " (" << si_.get_maximum_time_step() << ")" << std::endl);
+                << " (" << si_.get_maximum_time_step_with_units()
+                << ")" << std::endl);
       }
       ++successful_steps_;
       success=true;
