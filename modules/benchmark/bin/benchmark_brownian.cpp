@@ -5,48 +5,152 @@
 #include <IMP/core.h>
 #include <IMP/algebra.h>
 #include <IMP/atom.h>
+#include <IMP/display.h>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
 #include <IMP/container.h>
+#include <IMP/internal/graph_utility.h>
 
 using namespace IMP;
 using namespace IMP::core;
 using namespace IMP::algebra;
 using namespace IMP::atom;
 using namespace IMP::container;
+using namespace IMP::display;
 
+const double r=10;
+const double len=r;
+const double kk=1000;
+const double sigma=.1;
 
-void test(int n) {
-  set_log_level(SILENT);
-  IMP_NEW(Model, m, ());
-  Particles ps= create_xyzr_particles(m, n, .1);
-  IMP_NEW(ListSingletonContainer, lsc, (ps));
-  for (unsigned int i=0; i< ps.size(); ++i) {
-    Diffusion::setup_particle(ps[i], 1e-6);
+struct It {
+  Pointer<Model> m;
+  std::vector<ParticlesTemp> chains;
+  ParticlesTemp all;
+  Pointer<ListSingletonContainer> lsc;
+  SimulationParameters sp;
+};
+
+It create() {
+  It ret;
+  ret.m= new Model();
+  PairFilters pfs;
+  for (unsigned int i=0; i< 10; ++i) {
+    for (unsigned int j=0; j< 10; ++j) {
+      ret.chains.push_back(ParticlesTemp());
+      for (unsigned int k=0; k< 10; ++k) {
+        IMP_NEW(Particle, p, (ret.m));
+        ret.chains.back().push_back(p);
+        XYZR d= XYZR::setup_particle(p);
+        d.set_radius(r);
+        Diffusion dd= Diffusion::setup_particle(p);
+        dd.set_D_from_radius();
+        d.set_coordinates_are_optimized(true);
+        d.set_coordinates(Vector3D(i*30.0, j*30.0, k*len));
+      }
+      IMP_NEW(ConsecutivePairContainer, cpc,(ret.chains.back()));
+      pfs.push_back(new InContainerPairFilter(cpc));
+      IMP_NEW(PairsRestraint, pr, (new DistancePairScore(new Harmonic(len,kk)),
+                                   cpc));
+      ret.m->add_restraint(pr);
+      ret.all.insert(ret.all.end(),
+                     ret.chains.back().begin(), ret.chains.back().end());
+      XYZ(ret.chains.back()[0]).set_coordinates_are_optimized(false);
+    }
   }
-  IMP_NEW(ClosePairContainer, cpss, (lsc, 0.0, .1));
+  ret.lsc=new ListSingletonContainer(ret.all);
+  IMP_NEW(ClosePairContainer, cpc, (ret.lsc, 0, 10*.1));
+  cpc->add_pair_filters(pfs);
+  IMP_NEW(PairsRestraint, pr,
+          (new SphereDistancePairScore(new HarmonicLowerBound(0,kk)),
+           cpc));
+  ret.m->add_restraint(pr);
+  IMP_NEW(SingletonsRestraint, sr,
+          (new AttributeSingletonScore(new HarmonicLowerBound(0,kk),
+                                       XYZ::get_xyz_keys()[0]),
+                                    ret.lsc));
+  ret.m->add_restraint(sr);
+  ret.sp
+    = SimulationParameters::setup_particle(new Particle(ret.m));
+  double ts=Diffusion(ret.all[0]).get_time_step_from_sigma(sigma);
+  ret.sp.set_maximum_time_step(ts);
+  ret.all.push_back(ret.sp);
+  return ret;
+}
 
-  IMP_NEW(DistancePairScore, dps, (new HarmonicLowerBound(0, 1)));
-  IMP_NEW(PairsRestraint, pr, (dps, cpss));
-  m->add_restraint(pr);
-  SimulationParameters sp
-    = SimulationParameters::setup_particle(new Particle(m));
-  sp.set_maximum_time_step_in_femtoseconds(1e3);
-  IMP_NEW(BrownianDynamics, bd, (sp, lsc));
-  bd->set_model(m);
-  double runtime=0, total=0;
-  IMP_TIME(
-             {
-               total+=bd->simulate(1e6);
-             }, runtime);
-  std::ostringstream oss;
-  oss << "bd " << n;
-  IMP::benchmark::report(oss.str(), runtime, total);
+double simulate(const It& it, int ns, bool verbose=false) {
+  IMP_NEW(BrownianDynamics, bd, (it.sp));
+  if (!verbose) bd->set_log_level(SILENT);
+  return bd->optimize(ns);
+}
+
+void initialize(It it) {
+  //double e=simulate(it, 1e6,true);
+  std::cout << "Time step is " << it.sp.get_maximum_time_step() << std::endl;
+  std::ofstream out("deps.dot");
+  set_log_level(VERBOSE);
+  //DependencyGraph dg=get_pruned_dependency_graph(
+  //get_restraints(it.m->get_root_restraint_set()));
+  //IMP::internal::show_as_graphviz(dg, out);
+  simulate(it, 500);
+  std::cout << "Energy is " << it.m->evaluate(false) << std::endl;
 }
 
 
-int main(int , char **) {
-  test(100);
-  test(1000);
+void do_display(It it, std::string str) {
+  IMP_NEW(PymolWriter, pw, (str));
+  for (unsigned int i=0; i< it.chains.size(); ++i) {
+    Color c= get_display_color(i);
+    std::ostringstream oss;
+    oss << "chain " << i;
+    for (unsigned int j=0; j< it.chains[i].size(); ++j) {
+      IMP_NEW(SphereGeometry, sg, (XYZR(it.chains[i][j]).get_sphere()));
+      sg->set_name(oss.str());
+      sg->set_color(c);
+      pw->add_geometry(sg);
+    }
+  }
+}
+
+
+#define IMP_CATCH_AND_TERMINATE(expr)           \
+  try {                                         \
+    expr;                                       \
+  } catch (const IMP::Exception &e) {            \
+    IMP_ERROR(e.what());                         \
+  }
+
+int main(int argc , char **argv) {
+  if (argc>=3 && std::string(argv[1])=="-s") {
+    It it= create();
+    initialize(it);
+    write_model(it.all, argv[2]);
+  } else if (argc>=4 && std::string(argv[1])=="-d") {
+    It it= create();
+    IMP_CATCH_AND_TERMINATE(read_model(argv[2], it.all));
+    do_display(it, std::string(argv[3]));
+  } else {
+    It it= create();
+    std::string in;
+    if (argc >1) {
+      in =argv[1];
+    } else {
+      in=IMP::benchmark::get_data_path("brownian.yaml");
+    }
+    IMP_CATCH_AND_TERMINATE(read_model(in, it.all));
+    double total=0, runtime=0;
+    int ns=1e6;
+    if (argc >2) {
+      ns=atoi(argv[2]);
+    }
+    IMP_TIME(
+             {
+               total+=simulate(it, ns);
+             }, runtime);
+    IMP::benchmark::report("bd", runtime, total);
+    if (argc>3) {
+      IMP_CATCH_AND_TERMINATE(write_model(it.all, argv[3]));
+    }
+  }
   return 0;
 }
