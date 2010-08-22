@@ -66,8 +66,8 @@ FloatKey Diffusion::get_D_key() {
   static FloatKey k("D");
   return k;
 }
-void Diffusion::set_D_from_radius_in_angstroms(Float ir) {
-  return set_D_from_radius_in_angstroms(ir,
+void Diffusion::set_D_from_radius(Float ir) {
+  return set_D_from_radius(ir,
                             IMP::internal::DEFAULT_TEMPERATURE.get_value());
 }
 
@@ -81,8 +81,8 @@ unit::SquareCentimeterPerSecond Diffusion::D_from_r(unit::Angstrom radius,
 
 
 
-void Diffusion::set_D_from_radius_in_angstroms(Float ir,
-                                                        Float it) {
+void Diffusion::set_D_from_radius(Float ir,
+                                  Float it) {
   set_D(D_from_r(unit::Angstrom(ir),
                  unit::Kelvin(it)));
 }

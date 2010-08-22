@@ -11,7 +11,7 @@
 
 #include "atom_config.h"
 
-#include <IMP/core/XYZ.h>
+#include <IMP/core/XYZR.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/internal/constants.h>
 
@@ -60,12 +60,12 @@ class IMPATOMEXPORT Diffusion:
   //! Set D from the radius in angstroms
   /** Use default temperature.
    */
-  void set_D_from_radius_in_angstroms(Float r);
+  void set_D_from_radius(Float r);
 
   //! Set D from the radius in angstroms
   /** t is in kelvin
    */
-  void set_D_from_radius_in_angstroms(Float r, Float t);
+  void set_D_from_radius(Float r, Float t);
 
   //! Return true if the particle is an instance of an Diffusion
   static bool particle_is_instance(Particle *p) {
@@ -103,11 +103,21 @@ class IMPATOMEXPORT Diffusion:
                          = IMP::internal::DEFAULT_TEMPERATURE
 #endif
 ) {
-    set_D_from_radius_in_angstroms(unit::strip_units(radius),
+    set_D_from_radius(unit::strip_units(radius),
                                    unit::strip_units(t));
   }
 #endif
 #endif
+
+  double get_time_step_from_sigma(double sigma) {
+    //s^2= 2*dt*D;
+    unit::Femtosecond fs= square(unit::Angstrom(sigma))/2.0/get_D();
+    return unit::strip_units(fs);
+  }
+
+  void set_D_from_radius() {
+    set_D_from_radius(core::XYZR(get_particle()).get_radius());
+  }
 
   //! Get the D key
   static FloatKey get_D_key();
