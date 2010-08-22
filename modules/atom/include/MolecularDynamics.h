@@ -28,6 +28,12 @@ IMPATOM_BEGIN_NAMESPACE
 class IMPATOMEXPORT MolecularDynamics : public Optimizer
 {
 public:
+  /** Score based on the provided restraint set */
+  MolecularDynamics(RestraintSet *rs);
+
+  /** Score based on the provided model */
+  MolecularDynamics(Model *m);
+
   /** */
   MolecularDynamics();
 
@@ -62,6 +68,8 @@ protected:
   virtual void step();
 
 private:
+  void initialize();
+
   //! Get the set of particles to use in this optimization.
   /** Scans for particles which have the necessary attributes to be
       optimized. Particles without optimized x,y,z and nonoptimized
@@ -95,6 +103,8 @@ private:
 
   //! Maximum absolute value of a single velocity component
   Float velocity_cap_;
+
+  Pointer<RestraintSet> rs_;
 };
 
 IMPATOM_END_NAMESPACE
