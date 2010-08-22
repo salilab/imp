@@ -4,7 +4,8 @@ files = [
          'small_protein.pdb',
          'medium_protein.pdb',
          'large_protein.pdb',
-         'huge_protein.pdb'
+         'huge_protein.pdb',
+         'brownian.imp'
         ]
 
 # Install the data files:
