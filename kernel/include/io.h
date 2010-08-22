@@ -27,6 +27,8 @@ IMP_BEGIN_NAMESPACE
     need to be provided in the same order for reading and writing.
     This is not checked.
 
+    The files should have the suffix ".imp".
+
     If a passed particle has a particle attribute which is a particle
     not in the list, an IOException is thrown. This can change to
     silently ignoring such attributes if desired.
@@ -74,6 +76,8 @@ IMPEXPORT void read_model(TextInput in, Model *m);
     \anchor model_binary_io
     When lots of data is being written, it can be useful to write the
     data as binary instead of text. Binary writing requires NetCDF.
+
+    The files should have the suffix ".impb".
 
     For writing if the append is true is a positive integer, then
     the data is added to the file if it already exists.
