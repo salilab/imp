@@ -16,11 +16,28 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-//! Constructor
-MolecularDynamics::MolecularDynamics() :
-    time_step_(4.0), degrees_of_freedom_(0),
-    velocity_cap_(std::numeric_limits<Float>::max())
+MolecularDynamics::MolecularDynamics()
 {
+  initialize();
+}
+
+MolecularDynamics::MolecularDynamics(Model *m)
+{
+  initialize();
+  set_model(m);
+}
+
+MolecularDynamics::MolecularDynamics(RestraintSet *rs)
+{
+  initialize();
+  set_model(rs->get_model());
+  rs_= rs;
+}
+
+void MolecularDynamics::initialize() {
+  time_step_=4.0;
+  degrees_of_freedom_=0;
+  velocity_cap_=std::numeric_limits<Float>::max();
   cs_[0] = FloatKey("x");
   cs_[1] = FloatKey("y");
   cs_[2] = FloatKey("z");
@@ -29,7 +46,6 @@ MolecularDynamics::MolecularDynamics() :
   vs_[1] = FloatKey("vy");
   vs_[2] = FloatKey("vz");
 }
-
 
 void MolecularDynamics::do_show(std::ostream &) const {
 }
@@ -105,15 +121,21 @@ void MolecularDynamics::step()
 Float MolecularDynamics::optimize(unsigned int max_steps)
 {
   Model *model = get_model();
+  Pointer<RestraintSet> rs;
+  if (rs_) {
+    rs=rs_;
+  } else {
+    rs= model->get_root_restraint_set();
+  }
   setup_particles();
 
   // get initial system score
-  Float score = model->evaluate(true);
+  Float score = rs->evaluate(true);
 
   for (unsigned int i = 0; i < max_steps; ++i) {
     update_states();
     step();
-    score = model->evaluate(true);
+    score = rs->evaluate(true);
   }
   return score;
 }
