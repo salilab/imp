@@ -51,7 +51,7 @@ int main(int, char *[]) {
       *it=1;
     }
     if (!test_marked(g, qbb)) return EXIT_FAILURE;
-    std::fill(g.voxels_begin(), g.voxels_end(), 0);
+    std::fill(g.all_voxels_begin(), g.all_voxels_end(), 0);
   }
   return EXIT_SUCCESS;
 }
