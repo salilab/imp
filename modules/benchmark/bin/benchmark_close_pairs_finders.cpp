@@ -74,6 +74,22 @@ void test_one(std::string name,
 
 int main() {
   {
+    IMP_NEW(GridClosePairsFinder, cpf, ());
+#if IMP_BUILD == IMP_DEBUG
+    cpf->set_log_level(IMP::VERBOSE);
+#endif
+    std::string name="grid";
+    test_one(name, cpf, 1000, 0, .1, true);
+    test_one(name, cpf, 1000, 0, .5, true);
+    test_one(name, cpf, 1000, 0, 5, true);
+    test_one(name, cpf, 10000, 0, .1, true);
+    test_one(name, cpf, 10000, 0, .5, true);
+    test_one(name, cpf, 10000, 0, 5, true);
+    test_one(name, cpf, 100000, 0, .01, true);
+    test_one(name, cpf, 100000, 0, .1, true);
+    test_one(name, cpf, 100000, 0, .3, true);
+  }
+  {
     IMP_NEW(NearestNeighborsClosePairsFinder, cpf, ());
     std::string name="nn";
     test_one(name, cpf, 1000, 0, .1);
@@ -85,16 +101,6 @@ int main() {
     test_one(name, cpf, 100000, 0, .01);
     test_one(name, cpf, 100000, 0, .1);
     test_one(name, cpf, 100000, 0, .3);
-  }
-  {
-    IMP_NEW(QuadraticClosePairsFinder, cpf, ());
-    //std::cout << "Quadratic:" << std::endl;
-    test_one("quadratic", cpf, 1000, 0, .1);
-    test_one("quadratic", cpf, 1000, 0, .5);
-    test_one("quadratic", cpf, 1000, 0, 5);
-    test_one("quadratic", cpf, 10000, 0, .1);
-    test_one("quadratic", cpf, 10000, 0, .5);
-    test_one("quadratic", cpf, 10000, 0, 5);
   }
 #ifdef IMP_USE_CGAL
   {
@@ -112,17 +118,14 @@ int main() {
   }
 #endif
   {
-    IMP_NEW(GridClosePairsFinder, cpf, ());
-    std::string name="grid";
-    test_one(name, cpf, 1000, 0, .1, true);
-    test_one(name, cpf, 1000, 0, .5, true);
-    test_one(name, cpf, 1000, 0, 5, true);
-    test_one(name, cpf, 10000, 0, .1, true);
-    test_one(name, cpf, 10000, 0, .5, true);
-    test_one(name, cpf, 10000, 0, 5, true);
-    test_one(name, cpf, 100000, 0, .01, true);
-    test_one(name, cpf, 100000, 0, .1, true);
-    test_one(name, cpf, 100000, 0, .3, true);
+    IMP_NEW(QuadraticClosePairsFinder, cpf, ());
+    //std::cout << "Quadratic:" << std::endl;
+    test_one("quadratic", cpf, 1000, 0, .1);
+    test_one("quadratic", cpf, 1000, 0, .5);
+    test_one("quadratic", cpf, 1000, 0, 5);
+    test_one("quadratic", cpf, 10000, 0, .1);
+    test_one("quadratic", cpf, 10000, 0, .5);
+    test_one("quadratic", cpf, 10000, 0, 5);
   }
   return 0;
 }
