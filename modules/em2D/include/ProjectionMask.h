@@ -55,7 +55,7 @@ protected:
 
 
 // IMP_VALUES(ProjectionMask,ProjectionMasks);
-IMP_OBJECTS(ProjectionMask,ProjectionMasks);
+IMP_VALUES(ProjectionMask,ProjectionMasks);
 
 // typedef std::vector<ProjectionMask> ProjectionMasks;
 
