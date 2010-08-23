@@ -33,12 +33,15 @@ class CropTest(IMP.test.TestCase):
             self.assertAlmostEqual(IMP.algebra.get_distance(
                 scene_bb.get_corner(i),
                 cropped_bb.get_corner(i)),0,2)
-        IMP.em.write_map(cropped_scene,"test2.mrc",IMP.em.MRCReaderWriter())
+        cropped_scene.get_header().show()
+        mrw=IMP.em.MRCReaderWriter()
+        IMP.em.write_map(cropped_scene,"test2.mrc",mrw)
         dmap3=IMP.em.read_map("test2.mrc",IMP.em.MRCReaderWriter())
         coarse_cc=IMP.em.CoarseCC()
-        IMP.set_log_level(IMP.VERBOSE)
         #check that the center stays in the same place
-        IMP.em.write_map(cropped_scene,"temp.mrc",IMP.em.MRCReaderWriter())
+        self.assertAlmostEqual(IMP.algebra.get_distance(
+            dmap3.get_centroid(),
+            cropped_scene.get_centroid()),0,2)
         self.assertAlmostEqual(IMP.algebra.get_distance(
             self.scene.get_centroid(),
             cropped_scene.get_centroid()),0,2)
