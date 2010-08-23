@@ -85,10 +85,14 @@ public:
       \param[in] grid2_voxel_data_threshold voxels with value lower
                  than threshold
                  in grid2 are not summed (avoid calculating correlation on
-                 voxels below the threshold)
+                 voxels below the threshold
       \param[in] divide_by_rms determines wheather the model_map should be
                  normalized prior to the correlation calculation. false is
                  faster, but potentially innacurate
+      \param[in] allow_padding determines wheather the two maps should be padded
+                 to have the same size before the calcualtion is performed.
+                 If set to false  and the grids are not of the same size,
+                 the function will throw an exception.
       \return the cross correlation coefficient value between two density maps
       \note This is not the local CC function
       \todo check that the mean is always substracted from the em-density.
@@ -96,10 +100,11 @@ public:
          use voxel_data_threshold that does not consist of the entire map
          this would be wrong. Fix it.
    */
-  static float cross_correlation_coefficient(const DensityMap &grid1,
+  static double cross_correlation_coefficient(const DensityMap &grid1,
                                              const DensityMap &grid2,
                                              float grid2_voxel_data_threshold,
-                                             bool divide_by_rms=true);
+                                             bool divide_by_rms=true,
+                                             bool allow_padding=false);
 
 
 static float local_cross_correlation_coefficient(const DensityMap &em_map,

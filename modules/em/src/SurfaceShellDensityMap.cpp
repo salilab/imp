@@ -12,10 +12,12 @@
 IMPEM_BEGIN_NAMESPACE
 
 SurfaceShellDensityMap::SurfaceShellDensityMap() : SampledDensityMap() {
+  set_kernel();
 }
 
 SurfaceShellDensityMap::SurfaceShellDensityMap(const DensityHeader &header)
                            : SampledDensityMap(header) {
+  set_kernel();
   set_neighbor_mask();
 }
 
@@ -25,14 +27,25 @@ SurfaceShellDensityMap::SurfaceShellDensityMap(
        IMP::FloatKey radius_key, IMP::FloatKey mass_key,int num_shells)
   :SampledDensityMap()
 {
+  set_kernel();
   set_particles(ps,radius_key,mass_key);
+  //update the grid size to contain all of the particles
+  determine_grid_size(header_.get_resolution(),voxel_size,3.);
+  //to make
   update_voxel_size(voxel_size);
   num_shells_=num_shells;
   set_neighbor_mask();
+  IMP_LOG(TERSE,"going to resample\n");
   resample();
+  //update dmin and dmax
+  header_.dmin=get_min_value();
+  header_.dmax=get_max_value();
 }
 
-
+void SurfaceShellDensityMap::set_kernel() {
+  header_.set_resolution(3.);
+  kernel_params_=KernelParameters(header_.get_resolution());
+}
 //TODO : think about the values for delta as a function of resolution
 void SurfaceShellDensityMap::set_neighbor_mask() {
   for (int x = -1; x <= 1; x++) {
@@ -90,8 +103,9 @@ void SurfaceShellDensityMap::binaries(float scene_val) {
           tmp = EXP(-rsq * params->get_inv_sigsq());
           //tmp = exp(-rsq * params->get_inv_sigsq());
           // if statement to ensure even sampling within the box
-          if (tmp>kernel_params_.get_lim())
+          if (tmp>kernel_params_.get_lim()){
             data_[ivox]= scene_val;
+          }
           ivox++;
         }
       }
@@ -104,7 +118,7 @@ void SurfaceShellDensityMap::binaries(float scene_val) {
 }
 
 
-bool SurfaceShellDensityMap::has_background_neighbor(long voxel_ind) {
+bool SurfaceShellDensityMap::has_background_neighbor(long voxel_ind) const {
   long n_voxel_ind;
   long num_voxels = header_.get_number_of_voxels();
   for (unsigned int j = 0; j < neighbor_shift_.size(); j++) {
@@ -122,7 +136,7 @@ void SurfaceShellDensityMap::set_surface_shell(std::vector<long> *shell) {
   //a voxel is part of the outher shell if it has at least one
   //background nieghbor
   for(long i=0;i<get_number_of_voxels();i++) {
-    if (has_background_neighbor(i)) {
+    if ((data_[i]!=IMP_BACKGROUND_VAL) && (has_background_neighbor(i))) {
       data_[i] = IMP_SURFACE_VAL;
       shell->push_back(i);
     }
@@ -137,8 +151,9 @@ void SurfaceShellDensityMap::resample() {
   //(which is positive and larger than 0)
   //TODO - change here, the value of the inner voxels should note be
   //should not be ns*2 but the largest of the inner shell
+  IMP_LOG(VERBOSE,"going to binaries\n");
   binaries(num_shells_*2);
-
+  IMP_LOG(VERBOSE,"after binaries\n");
   //find the voxeles that are part of the surface, so we'll have
   //background, surface and interior voxels
   std::vector<long> curr_shell_voxels;
@@ -147,6 +162,7 @@ void SurfaceShellDensityMap::resample() {
   //all of the voxels that are part of the next shell
   std::vector<long> next_shell_voxels;
   //keeps the shell index for each of the data voxels
+  IMP_LOG(VERBOSE,"reseting shell voxels\n");
   std::vector<int> shell_voxels;
   shell_voxels.insert(shell_voxels.end(),get_number_of_voxels(),-1);
   for(long i=0;i<get_number_of_voxels();i++) {
@@ -161,6 +177,7 @@ void SurfaceShellDensityMap::resample() {
   std::vector<long> *next_p = &next_shell_voxels;
   std::vector<long> *tmp_p;
   long num_voxels = get_number_of_voxels();
+  IMP_LOG(VERBOSE,"sampling shells\n");
   for (int s_ind = 0; s_ind <num_shells_; s_ind++) {
     // update voxels with current layer distance and insert indexes
     //for next shell
@@ -187,6 +204,12 @@ void SurfaceShellDensityMap::resample() {
     }
     curr_p->clear();
     tmp_p = curr_p; curr_p = next_p; next_p = tmp_p;
+  }
+  //zero outside
+  for(long i=0;i<num_voxels;i++) {
+    if (data_[i]<1.) {
+      data_[i]=0.;
+    }
   }
   //incase we want to keep the shells and not the indexes
   // //now update the voxel data to be the shell index
