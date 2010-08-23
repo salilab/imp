@@ -29,7 +29,6 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 \param[in] em_map   The density map to fit to
 \param[in] threshold Use density voxels above this
                      threshold for PCA calculations
-\param[in] refine_fit should the fits be refined
 \param[in] rad_key  The raidus key of the particles in the rigid body
 \param[in] wei_key  The weight key of the particles in the rigid body
 \param[in] dens_pca_input provide precalculated em_map PCA is available
@@ -39,7 +38,6 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 IMPMULTIFITEXPORT em::FittingSolutions pca_based_rigid_fitting(
   container::ListSingletonContainer *ps,
   em::DensityMap *em_map,Float threshold,
-  bool refine_fit=false,
   FloatKey rad_key=core::XYZR::get_default_radius_key(),
   FloatKey wei_key=atom::Mass::get_mass_key(),
   algebra::PrincipalComponentAnalysis dens_pca_input=
