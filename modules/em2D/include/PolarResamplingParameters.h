@@ -114,6 +114,7 @@ protected:
 };
 
 IMP_OUTPUT_OPERATOR(PolarResamplingParameters);
+IMP_VALUES(PolarResamplingParameters, PolarResamplingParametersList);
 
 IMPEM2D_END_NAMESPACE
 
