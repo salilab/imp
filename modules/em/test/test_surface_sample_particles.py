@@ -39,9 +39,8 @@ class SampleTests(IMP.test.TestCase):
 
     def test_sample_map(self):
         """Check that surface sampling works"""
-        resolution=1.
         voxel_size=1.
-        model_map = IMP.em.SurfaceShellDensityMap(self.particles, resolution, voxel_size,self.radius_key,self.weight_key)
+        model_map = IMP.em.SurfaceShellDensityMap(self.particles, voxel_size,self.radius_key,self.weight_key)
         for p in self.particles:
             val=model_map.get_value(IMP.core.XYZ(p).get_coordinates())
             print val
