@@ -91,6 +91,18 @@ inline double get_next_larger_power_of_2(double x) {
   return p;
 }
 
+//! Closest power of 2 for a number, not necessarily higher
+inline double get_closer_power_of_2(double x) {
+  double p=1;
+  double q=1;
+  while(p<x) {
+    q=p;
+    p*=2;
+  }
+  if((x-q)<(p-x)) { return q; }
+  return p;
+}
+
 //! Compares two values (intended for doubles)
 /**
  * epsilon is the tolerance allowed to consider the values as equal
