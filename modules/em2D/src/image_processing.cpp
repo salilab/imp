@@ -440,7 +440,7 @@ void diffusion_filtering(const algebra::Matrix2D_d &I,
   double dx=pixelsize;
   double dy=pixelsize;
   double dt=0.5*(1/(dx*dx)+1/(dy*dy));
-  double ang = DEG_2_RAD(beta);
+  double ang = beta*PI/180.0;
   int init_y = I.get_start(0); int end_y = I.get_finish(0);
   int init_x = I.get_start(1); int end_x = I.get_finish(1);
 
