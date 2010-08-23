@@ -1,0 +1,27 @@
+Import('env')
+
+files = [
+
+  'align2D.cpp' ,
+  'labeling_algorithm.cpp' ,
+  'ProjectionFinder.cpp' ,
+  'model_interaction.cpp' ,
+  'project.cpp' ,
+  'image_processing.cpp' ,
+  'pca_features_extraction.cpp' ,
+  'RegistrationResult.cpp' ,
+  'FFToperations.cpp' ,
+  'ProjectionMask.cpp' ,
+  'Fine2DRegistrationRestraint.cpp' ,
+  'ProjectionParameters.cpp' ,
+  'scores2D.cpp' ,
+#  'ExampleRefCounted.cpp' ,
+#  'ExampleDecorator.cpp' ,
+#  'ExampleSingletonModifier.cpp' ,
+#  'ExampleRestraint.cpp' ,
+#  'ExampleComplexRestraint.cpp' ,
+        ]\
+        + SConscript('internal/SConscript')
+
+# Build and install the shared library:
+env.IMPModuleLib(files)
