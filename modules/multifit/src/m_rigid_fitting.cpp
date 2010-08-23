@@ -21,7 +21,7 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 em::FittingSolutions pca_based_rigid_fitting(
     container::ListSingletonContainer *ps,
     em::DensityMap *em_map,
-    Float threshold, bool refine_fit,
+    Float threshold,
     FloatKey rad_key, FloatKey wei_key,
     algebra::PrincipalComponentAnalysis dens_pca_input) {
   //find the pca of the density
