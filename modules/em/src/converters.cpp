@@ -6,7 +6,7 @@
 
 #include <IMP/em/converters.h>
 #include <IMP/em/Voxel.h>
-
+#include <IMP/em/CoarseCC.h>
 IMPEM_BEGIN_NAMESPACE
 
 
@@ -74,5 +74,23 @@ SampledDensityMap * particles2density(
    return dmap.release();
 }
 
+SurfaceShellDensityMap * particles2surface(
+   const Particles &ps,Float apix,
+   const FloatKey &rad_key,
+   const FloatKey &weight_key){
+  IMP::Pointer<SurfaceShellDensityMap> dmap(new SurfaceShellDensityMap(
+                                     ps,
+                                     apix,rad_key,weight_key));
+   return dmap.release();
+}
+//TODO - more this function to another file
+
+Float calculate_intersection_score(const SurfaceShellDensityMap *d1,
+                                   const SurfaceShellDensityMap *d2) {
+  //calculate the correlation between the maps
+  //voxels with value 1 are surface and higher values are internal voxels
+  //first check that the bounding boxes of the maps are intersecting
+  return CoarseCC::cross_correlation_coefficient(*d1,*d2,1.+EPS,false,true);
+}
 
 IMPEM_END_NAMESPACE

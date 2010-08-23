@@ -14,6 +14,7 @@
 #include <IMP/macros.h>
 #include "DensityMap.h"
 #include "SampledDensityMap.h"
+#include "SurfaceShellDensityMap.h"
 #include <IMP/Particle.h>
 #include "IMP/core/XYZ.h"
 #include "IMP/algebra/Vector3D.h"
@@ -66,5 +67,28 @@ IMPEMEXPORT SampledDensityMap * particles2density(
    int sig_cutoff=3,
    const FloatKey &rad_key=IMP::core::XYZR::get_default_radius_key(),
    const FloatKey &weight_key=IMP::atom::Mass::get_mass_key());
+
+//! Resample a set of particles into a density grid
+/**
+Each such particle should be have xyz radius and weight attributes
+\param[in] ps         the particles to sample
+\param[in] apix the voxel size of the surface map
+\param[in] rad_key   the radius attribute key of the particles
+\param[in] weight_key the weight attribute key of the particles
+\return the surface grid
+\relatesalso SampledDensityMap
+ */
+IMPEMEXPORT SurfaceShellDensityMap * particles2surface(
+   const Particles &ps,Float apix,
+   const FloatKey &rad_key=IMP::core::XYZR::get_default_radius_key(),
+   const FloatKey &weight_key=IMP::atom::Mass::get_mass_key());
+
+IMPEMEXPORT Float calculate_intersection_score(
+                         const SurfaceShellDensityMap *d1,
+                         const SurfaceShellDensityMap *d2);
+
+
+
+
 IMPEM_END_NAMESPACE
 #endif /* IMPEM_CONVERTERS_H */

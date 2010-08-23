@@ -20,14 +20,14 @@ IMPEM_BEGIN_NAMESPACE
 
 #define IMP_DEFAULT_NUM_SHELLS 5
 #define IMP_SIG_CUTOFF 3
-#define IMP_BACKGROUND_VAL 0.0
-#define IMP_SURFACE_VAL 1.0
 
 //! The class repersents a molecule as shells of distance from the surface
 /**
  */
 class IMPEMEXPORT SurfaceShellDensityMap: public SampledDensityMap
 {
+#define IMP_BACKGROUND_VAL 0.0
+#define IMP_SURFACE_VAL 1.0
 public:
 
   //! Creates a new density map.
@@ -43,7 +43,7 @@ public:
   /** /param[in] ps    particles with XYZ, radius and weight attributes
       /param[in] voxel_size   the voxel size.
       /note the voxel size and the number of shells determines
-            the resolution/accuracy of the surface rasterization.
+            the resolution/accuracy of the surface rasterization._
    */
   SurfaceShellDensityMap(const Particles &ps,
                          float voxel_size,
@@ -62,21 +62,22 @@ public:
   from the surface).
   */
 void resample();
-protected:
   //! Set the value of the map voxels as either scene or background
   /**
     /param[in] scene_val      all voxels corredponsing to particles will
                               be set to this value
    */
   void binaries(float scene_val);
-
   //! Checks if the one of the nieghbors of the voxel is a background voxel
   /**
     /param[in] voxel_ind      the index of the voxel
     /return true is the at least of the nieghbors of the voxel is
                  in the background
   */
-  bool has_background_neighbor(long voxel_ind);
+  bool has_background_neighbor(long voxel_ind) const;
+
+protected:
+
 
   //! Finds all of the voxels that are part of the surface
   //! (i.e, seperate background from scene)
@@ -85,7 +86,7 @@ protected:
                       will be stored here.
   */
   void set_surface_shell(std::vector<long> *shell);
-
+  void set_kernel();
   void set_neighbor_mask();
   float surface_val_;
   std::vector<long> neighbor_shift_;

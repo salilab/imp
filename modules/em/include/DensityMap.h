@@ -138,15 +138,16 @@ public:
       \return the voxel index of a given position. If the position is out of
               the boundaries of the map, the function returns -1.
    */
-  long get_voxel_by_location(float x, float y, float z) const {
-    return get_voxel_by_location(algebra::Vector3D(x,y,z));
-  }
+  long get_voxel_by_location(float x, float y, float z) const;
+
   //! Calculate the voxel of a given location
   /** \param[in] v The position (in angstroms)
       \return the voxel index of a given position. If the position is out of
               the boundaries of the map, the function returns -1.
    */
-  long get_voxel_by_location(const algebra::VectorD<3> &v) const;
+  long get_voxel_by_location(const algebra::VectorD<3> &v) const{
+    return get_voxel_by_location(v[0],v[1],v[2]);
+  }
   //! Calculate dimension index of a given location
   /** \param[in] v The position (in angstroms)
       \param[in] ind dimension index (X:0,Y:1 or Z:2)
@@ -296,13 +297,14 @@ public:
   emreal get_min_value() const;
   //! Sums two grids.
   //! The result is kept in the map.
-  //! The two maps should have the same dimensions and the same voxelsize
   /** \param[in] other the other map
+      \note The shared extend is sumed
+      \note The two maps should have the same voxelsize and other
+            should be contained within this map
    */
   void add(const DensityMap &other);
 
   long get_number_of_voxels() const;
-
 
   //! Set the map dimension and reset all voxels to 0
   /**
@@ -423,9 +425,11 @@ public:
   int lower_voxel_shift(emreal loc, emreal kdist, emreal orig, int ndim) const;
   int upper_voxel_shift(emreal loc, emreal kdist, emreal orig, int ndim) const;
 protected:
+  int get_dim_index_by_location(float loc_val,
+                              int ind) const;
   //!update the header values  -- still in work
   void update_header();
-  void reset_get_location_in_dim_by_voxel();
+  void reset_all_voxel2loc();
 
   void allocated_data();
   void float2real(float *f_data, boost::scoped_array<emreal> &r_data);
@@ -454,7 +458,10 @@ inline algebra::BoundingBoxD<3> get_bounding_box(const DensityMap *m) {
                                        m->get_spacing()*h->get_ny(),
                                        m->get_spacing()*h->get_nz()));
 }
-
+//! Create an empty density map from a boudning box
+IMPEMEXPORT DensityMap *create_density_map(
+                                           const algebra::BoundingBox3D &bb,
+                                           double spacing);
  //! Calculate a bounding box around a 3D point within the EM grid
  /**
 \param[in] d_map the density map
@@ -536,6 +543,11 @@ IMPEMEXPORT void get_transformed_into(const DensityMap *from,
                                       DensityMap *into,
                                        bool calc_rms=true);
 
+inline bool get_interiors_intersect(const DensityMap *d1,
+                                    const DensityMap *d2){
+  return get_interiors_intersect(get_bounding_box(d1),
+                                 get_bounding_box(d2));
+}
 //! Get a histrogram of density values
 /**
 \param[in] dmap the density map to analyse

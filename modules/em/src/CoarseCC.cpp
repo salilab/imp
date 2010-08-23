@@ -42,7 +42,9 @@ float CoarseCC::calc_score(DensityMap &em_map,
 }
 
 
-float CoarseCC::cross_correlation_coefficient(const DensityMap &grid1,
+
+namespace{
+double cross_correlation_coefficient_internal(const DensityMap &grid1,
                                               const DensityMap &grid2,
                                               float grid2_voxel_data_threshold,
                                               bool divide_by_rms)
@@ -50,30 +52,6 @@ float CoarseCC::cross_correlation_coefficient(const DensityMap &grid1,
 
   const DensityHeader *grid2_header = grid2.get_header();
   const DensityHeader *grid1_header = grid1.get_header();
-
-  IMP_INTERNAL_CHECK(grid2_header->dmax>grid2_voxel_data_threshold,
-                     "voxel_data_threshold: " << grid2_voxel_data_threshold <<
-                     " is not within the map range: " <<
-                     grid2_header->dmin<<"-"<<
-                     grid2_header->dmax<<std::endl);
-
-  IMP_INTERNAL_CHECK(grid1_header->is_top_calculated(),
-                     "Top should be calculated for grid1\n");
-
-  IMP_INTERNAL_CHECK(grid2_header->is_top_calculated(),
-                     "Top should be calculated for grid2\n");
-
-  //validity checks
-  IMP_USAGE_CHECK(grid1.same_dimensions(grid2),
-            "This function cannot handle density maps of different size. "
-      << "First map dimensions : " << grid1_header->get_nx() << " x "
-      << grid1_header->get_ny() << " x " << grid1_header->get_nz() << "; "
-      << "Second map dimensions: " << grid2_header->get_nx() << " x "
-      << grid2_header->get_ny() << " x " << grid2_header->get_nz());
-  IMP_USAGE_CHECK(grid1.same_voxel_size(grid2),
-            "This function cannot handle density maps of different pixelsize. "
-            << "First grid pixelsize : " << grid1_header->get_spacing() << "; "
-            << "Second grid pixelsize: " << grid2_header->get_spacing());
 
   const emreal *grid1_data = grid1.get_data();
   const emreal *grid2_data = grid2.get_data();
@@ -86,7 +64,8 @@ float CoarseCC::cross_correlation_coefficient(const DensityMap &grid1,
     IMP_LOG(IMP::VERBOSE,"calc CC with the same origin"<<std::endl);
     for (long i=0;i<nvox;i++) {
       if (grid2_data[i] > grid2_voxel_data_threshold) {
-        ccc += grid1_data[i]*grid2_data[i];
+        if (grid1_data[i] >EPS) {
+          ccc += grid1_data[i]*grid2_data[i];}
       }
     }
   }
@@ -110,7 +89,7 @@ float CoarseCC::cross_correlation_coefficient(const DensityMap &grid1,
                                  / voxel_size);
 
 
-    int j; // Index for em data
+    long j; // Index for em data
     long i; // Index for model data
     // calculate the shift in index of the origin of model_map in em_map
     // ( j can be negative)
@@ -144,6 +123,79 @@ float CoarseCC::cross_correlation_coefficient(const DensityMap &grid1,
           << grid1_header->dmean << " " << grid2_header->dmean << std::endl);
   return ccc;
 }
+}
+
+double CoarseCC::cross_correlation_coefficient(const DensityMap &grid1,
+                                              const DensityMap &grid2,
+                                              float grid2_voxel_data_threshold,
+                                              bool divide_by_rms,
+                                              bool allow_padding) {
+  IMP_LOG(VERBOSE,"Going to calcualte correlation score with values: "<<
+          "grid2_voxel_data_threshold:"<<
+          grid2_voxel_data_threshold<<" divide_by_rms:"<<divide_by_rms<<
+          " allow_padding:"<<allow_padding<<"\n");
+  //run vaildation checks
+  const DensityHeader *grid2_header = grid2.get_header();
+  const DensityHeader *grid1_header = grid1.get_header();
+
+  IMP_INTERNAL_CHECK(grid2_header->dmax>grid2_voxel_data_threshold,
+                     "voxel_data_threshold: " << grid2_voxel_data_threshold <<
+                     " is not within the map range: " <<
+                     grid2_header->dmin<<"-"<<
+                     grid2_header->dmax<<std::endl);
+
+  IMP_INTERNAL_CHECK(grid1_header->is_top_calculated(),
+                     "Top should be calculated for grid1\n");
+
+  IMP_INTERNAL_CHECK(grid2_header->is_top_calculated(),
+                     "Top should be calculated for grid2\n");
+
+  IMP_INTERNAL_CHECK(grid1.same_voxel_size(grid2),
+                     "Both grids should have the same spacing\n");
+  if (!allow_padding) {
+  //additional validity checks
+  IMP_USAGE_CHECK(grid1.same_dimensions(grid2),
+            "This function cannot handle density maps of different size. "
+      << "First map dimensions : " << grid1_header->get_nx() << " x "
+      << grid1_header->get_ny() << " x " << grid1_header->get_nz() << "; "
+      << "Second map dimensions: " << grid2_header->get_nx() << " x "
+      << grid2_header->get_ny() << " x " << grid2_header->get_nz());
+  IMP_USAGE_CHECK(grid1.same_voxel_size(grid2),
+            "This function cannot handle density maps of different pixelsize. "
+            << "First grid pixelsize : " << grid1_header->get_spacing() << "; "
+            << "Second grid pixelsize: " << grid2_header->get_spacing());
+    return cross_correlation_coefficient_internal(
+                                 grid1,grid2,
+                                 grid2_voxel_data_threshold,divide_by_rms);
+  }
+  else {
+    IMP_LOG(VERBOSE,"calculated correlation bewteen padded maps\n");
+    //create a padded version of the grids
+    //copy maps to contain the same extent
+    if (!get_interiors_intersect(
+             get_bounding_box(&grid1),
+             get_bounding_box(&grid2,grid2_voxel_data_threshold))){
+      return 0.;
+    }
+    algebra::BoundingBox3D merged_bb=
+      get_bounding_box(&grid1)+get_bounding_box(&grid2);
+    DensityMap* padded_grid1=
+      create_density_map(merged_bb,grid1_header->get_spacing());
+    padded_grid1->add(grid1);
+    DensityMap* padded_grid2=
+      create_density_map(merged_bb,grid2_header->get_spacing());
+    padded_grid2->add(grid2);
+    IMP_LOG(VERBOSE,"calcaulte correlation internal");
+    double score=cross_correlation_coefficient_internal(
+                                 *padded_grid1,*padded_grid2,
+                                 grid2_voxel_data_threshold,divide_by_rms);
+    //release the padded versions of the grids
+    delete (padded_grid1);
+    delete (padded_grid2);
+    return score;
+  }
+}
+
 
 float CoarseCC::local_cross_correlation_coefficient(const DensityMap &em_map,
                                               DensityMap &model_map,

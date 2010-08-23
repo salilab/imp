@@ -17,13 +17,14 @@ class ResamplingTest(IMP.test.TestCase):
 
     def load_proteins(self):
         fnames=["1atiB01.pdb","1arsA01.pdb","1ab4A02.pdb"]
+        print "start load proteins"
         self.radius_key = IMP.core.XYZR.get_default_radius_key()
         self.weight_key = IMP.atom.Mass.get_mass_key()
         self.mhs=[] #3 molecular hierarchies
         self.pss=[] #3 particles
         self.mhs_copy=[] #3 copies of the molecular hierarchies used later as rigid bodies
         self.rbs_of_copy=IMP.core.RigidBodies() #3 rigid bodies
-        sel=IMP.atom.NonWaterPDBSelector()
+        sel=IMP.atom.CAlphaPDBSelector()
         for n,fn in enumerate(fnames):
             self.mhs.append(IMP.atom.read_pdb(self.open_input_file(fn),
                                               self.imp_model,sel))
@@ -34,7 +35,7 @@ class ResamplingTest(IMP.test.TestCase):
             IMP.atom.add_radii(self.mhs_copy[n])
             self.pss.append(IMP.Particles(IMP.core.get_leaves(self.mhs[n])))
             self.rbs_of_copy.append(IMP.atom.setup_as_rigid_body(self.mhs_copy[n]))
-
+        print "end load proteins"
     def setUp(self):
         """Build test model and optimizer"""
         IMP.test.TestCase.setUp(self)
@@ -45,16 +46,24 @@ class ResamplingTest(IMP.test.TestCase):
     def test_resample(self):
         """test resampling with and without rigid bodies"""
         #load as lots of particles, generate EM map, use it to define restraint
+        print "start test resample"
         self.ps_all=IMP.Particles() #all the molecules together as one particle
         for n in xrange(3):
             self.ps_all+=self.pss[n]
+        print "start test resample ==1"
         map=IMP.em.particles2density(self.ps_all,8,1.5)
+        print "start test resample ==2"
         map.calcRMS()
+        print "start test resample ==3"
         self.restr_ps_all=IMP.em.FitRestraint(self.ps_all,map,self.rb_refiner,self.radius_key,self.weight_key,1)
+        print "start test resample ==4"
         self.restr_rb_all_fast=IMP.em.FitRestraint(self.rbs_of_copy,map,self.rb_refiner,self.radius_key,self.weight_key,1)
+        print "start test resample ==5"
         self.imp_model.add_restraint(self.restr_ps_all)
         self.imp_model.add_restraint(self.restr_rb_all_fast)
+        print "before eval1"
         score1=self.restr_ps_all.evaluate(False)
+        print "before eval2"
         score2=self.restr_rb_all_fast.evaluate(False)
         print "evaluate ps_all before transform: ",score1
         print "evaluate rb_all before transform fast: ",score2
