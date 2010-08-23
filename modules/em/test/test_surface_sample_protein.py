@@ -20,9 +20,8 @@ class SampleTests(IMP.test.TestCase):
 
     def test_sample_map(self):
         """Check that protein surface sampling works"""
-        resolution=1.
         voxel_size=1.
-        model_map = IMP.em.SurfaceShellDensityMap(self.particles, resolution, voxel_size)
+        model_map = IMP.em.SurfaceShellDensityMap(self.particles, voxel_size)
         for p in self.particles:
             self.assert_(model_map.get_value(IMP.core.XYZ(p.get_particle()).get_coordinates())>3.,"map was not sampled correctly")
 
