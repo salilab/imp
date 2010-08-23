@@ -19,11 +19,11 @@ class SurfaceTests(IMP.test.TestCase):
         self.bad_mh2=IMP.atom.read_pdb(bad_mh2_fn,self.mdl,sel)
         IMP.atom.add_radii(self.bad_mh2)
         self.mh1_shell_map = IMP.em.SurfaceShellDensityMap(IMP.core.get_leaves(self.mh1),
-                                                             2.0, 8)
+                                                             2.0)
         self.good_mh2_shell_map = IMP.em.SurfaceShellDensityMap(IMP.core.get_leaves(self.good_mh2),
-                                                             2.0, 8)
+                                                             2.0)
         self.bad_mh2_shell_map = IMP.em.SurfaceShellDensityMap(IMP.core.get_leaves(self.bad_mh2),
-                                                             2.0, 8)
+                                                             2.0)
         self.mh1_shell_map.calcRMS()
         self.good_mh2_shell_map.calcRMS()
         self.bad_mh2_shell_map.calcRMS()
