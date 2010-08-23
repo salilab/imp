@@ -1,30 +1,15 @@
-/*
-// Tell swig how to treat various types when moving them to and from pyton
-IMP_SWIG_OBJECT(IMP::em2D, ExampleRestraint, ExampleRestraints);
-IMP_SWIG_DECORATOR(IMP::em2D, ExampleDecorator, ExampleDecorators);
-IMP_SWIG_OBJECT(IMP::em2D, ExampleUnaryFunction, ExampleUnaryFunctions);
-IMP_SWIG_OBJECT(IMP::em2D, ExampleSingletonModifier, ExampleSingletonModifiers);
-
-*/
-
-/*
-%include "IMP/em2D/ExampleComplexRestraint.h"
-%include "IMP/em2D/ExampleUnaryFunction.h"
-%include "IMP/em2D/ExampleTemplateClass.h"
-%include "IMP/em2D/ExampleSingletonModifier.h"
-%include "IMP/em2D/ExampleRefCounted.h"
-%include "IMP/em2D/ExampleRestraint.h"
-%include "IMP/em2D/ExampleDecorator.h"
-*/
-
-
 ///* Make selected classes extensible in Python */
-IMP_SWIG_VALUE(IMP::em2D,  RegistrationResult, RegistrationResults);
-// IMP_SWIG_OBJECT(IMP::em2D, ProjectionMask, ProjectionMasks);
-IMP_SWIG_VALUE(IMP::em2D,  ProjectionFinder, ProjectionFinders);
+IMP_SWIG_OBJECT(IMP::em2D, Fine2DRegistrationRestraint, Fine2DRegistrationRestraints);
+IMP_SWIG_VALUE(IMP::em2D, PolarResamplingParameters, PolarResamplingParametersList);
+IMP_SWIG_VALUE(IMP::em2D, ProjectionFinder, ProjectionFinders);
+IMP_SWIG_VALUE(IMP::em2D, ProjectionMask, ProjectionMasks);
+IMP_SWIG_VALUE(IMP::em2D, MasksManager ,MasksManagers);
+IMP_SWIG_DECORATOR(IMP::em2D, ProjectionParameters, ProjectionParametersList);
+IMP_SWIG_OBJECT(IMP::em2D, ProjectionParametersSS, ProjectionParametersSSs);
+IMP_SWIG_VALUE(IMP::em2D, RegistrationResult, RegistrationResults);
 
 
-//%include "IMP/em2D/ProjectionParameters.h"
+%include "IMP/em2D/ProjectionParameters.h"
 //%include "IMP/em2D/Fine2DRegistrationRestraint.h"
 %include "IMP/em2D/FFToperations.h"
 %include "IMP/em2D/ProjectionMask.h"
