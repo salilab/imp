@@ -21,7 +21,7 @@ def setup_scoring_function(ps):
         restraints.append(ex_r)
     return restraints
 
-
+'''
 def display_scoring_function(ps):
     mdl=ps[0].get_model()
     inter_g  = IMP.domino2.get_interaction_graph(ps,[mdl.get_root_restraint_set()])
@@ -35,7 +35,7 @@ def display_scoring_function(ps):
     # jt_geo=IMP.domino2.get_subset_graph_geometry(jt)
     # w1.add_geometry(jt_geo)
     # del w1
-
+'''
 
 IMP.set_log_level(IMP.TERSE)
 settings = IMP.multifit.read_settings(IMP.multifit.get_example_path("input/assembly.input"),
@@ -87,10 +87,8 @@ print "here5"
 # print "here"
 # print "Found ", cs.get_number_of_configurations(), "solutions"
 # lsc= IMP.domino2.Subset(ps)
-# for i in range([0,0,0,0],[0,1,2,3],[1,2,3,4]):#10):#cs.get_number_of_configurations()):
-#     print "before"
-#     domino_smp.load_particle_states(lcs,IMP.domino2.SubsetState(state),pst)
-#     print "after"
-#     #print the configuration:
-#     print "solution number:",i," scored:", mdl.evaluate(False)
-#     IMP.atom.write_pdb(IMP.atom.Hierarchies(ps),"sol_"+str(i)+".pdb")
+for i,state in enumerate([0,0,0,0],[0,1,2,3],[1,2,3,4]):#10):#cs.get_number_of_configurations()):
+    domino_smp.load_particle_states(lcs,IMP.domino2.SubsetState(state),pst)
+    #print the configuration:
+    print "solution number:",i," scored:", mdl.evaluate(False)
+    IMP.atom.write_pdb(IMP.atom.Hierarchies(ps),"sol_"+str(i)+".pdb")

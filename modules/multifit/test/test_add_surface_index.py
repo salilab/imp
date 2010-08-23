@@ -23,14 +23,13 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         IMP.set_log_level(IMP.SILENT)
         self.imp_model = IMP.Model()
-        self.resolution=3.0
         self.apix=1.0
         self.surf_key=IMP.FloatKey("surf_ind")
         self.load_protein("1z5s_A.pdb")
 
     def test_add_surface_index(self):
         """Check that the surface indexes are added correctly"""
-        IMP.multifit.add_surface_index(self.mp,self.resolution,self.apix)
+        IMP.multifit.add_surface_index(self.mp,self.apix)
         ps=IMP.core.get_leaves(self.mp)
         ps_3=IMP.Particles()
         for ph in ps:

@@ -22,20 +22,27 @@ class SampleTests(IMP.test.TestCase):
                              self.mdl,self.sel))
         self.mhs.append(IMP.atom.read_pdb(self.get_input_file_name("1z5s_C1.pdb"),
                              self.mdl,self.sel))
-        self.resolution=2.
         self.voxel_size=1.
         for mh in self.mhs:
             IMP.atom.add_radii(mh)
-            IMP.multifit.add_surface_index(mh,self.resolution,self.voxel_size)
+            IMP.multifit.add_surface_index(mh,self.voxel_size)
         self.rbs=IMP.helper.set_rigid_bodies(self.mhs)
         #set the restraint
-        self.wev_r=IMP.multifit.create_weighted_excluded_volume_restraint(
-           self.rbs[0],self.rbs[1])
         sr=IMP.helper.create_simple_connectivity_on_rigid_bodies(self.rbs,
                                                                  IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits()))
+
+        print "going to evaluate 2"
+        self.mdl.evaluate(False)
+        self.wev_r=IMP.multifit.create_weighted_excluded_volume_restraint(
+           self.rbs[0],self.rbs[1])
+
+        print "going to evaluate 1"
+        self.mdl.evaluate(False)
         self.c_r=sr.get_restraint()
         self.mdl.add_restraint(self.c_r)
-
+        print "going to evaluate"
+        self.mdl.evaluate(False)
+        print "end setup"
     def test_weighted_excluded_volume_restraint(self):
 
         """Check that weighted excluded volume restraint works"""
