@@ -2,6 +2,7 @@
 namespace IMP::multifit {
 }
 /* Make selected classes extensible in Python */
+IMP_SWIG_OBJECT(IMP::em, WeightedExcludedVolumeRestraint, WeightedExcludedVolumeRestraints);
 
 /* Wrap our own classes */
 %include "IMP/multifit/weighted_excluded_volume.h"
@@ -12,6 +13,7 @@ namespace IMP::multifit {
 %include "IMP/multifit/DataContainer.h"
 %include "IMP/multifit/sampling_space_utils.h"
 %include "IMP/multifit/restraints_utils.h"
+%include "IMP/multifit/WeightedExcludedVolumeRestraint.h"
 namespace IMP {
  namespace multifit {
    %template(FittingSolutionRecords) ::std::vector< IMP::multifit::FittingSolutionRecord >;
