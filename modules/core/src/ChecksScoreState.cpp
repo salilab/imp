@@ -17,7 +17,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 ChecksScoreState::ChecksScoreState(double prob):
   ScoreState("ChecksScoreState %1%"),
-  probability_(prob), count_(0)
+  probability_(prob), num_checked_(0)
 {
   IMP_USAGE_CHECK(prob >=0 && prob <=1,
                   "Probability must be a number between 0 and 1.");
@@ -29,7 +29,7 @@ void ChecksScoreState::do_before_evaluate()
   ::boost::uniform_real<> rand(0,1);
   if (rand(random_number_generator) < probability_) {
     set_check_level(USAGE_AND_INTERNAL);
-    ++ count_;
+    ++ num_checked_;
   } else {
     set_check_level(NONE);
   }
