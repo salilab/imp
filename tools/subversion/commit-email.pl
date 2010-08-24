@@ -124,6 +124,7 @@ my $propname;
 
 my $mode = 'commit';
 my $diff_file;
+my $public_repo;
 
 # Use the reference to the first project to populate.
 my $current_project = $project_settings_list[0];
@@ -139,6 +140,8 @@ my %opt_to_hash_key = ('--from' => 'from_address',
                        '-m'     => '',
                        '-r'     => 'reply_to',
                        '-s'     => 'subject_prefix',
+                       '--max-diff-size' => 'max_diff_size',
+                       '--public-repo' => '',
                        '--diff' => '');
 
 while (@ARGV)
@@ -187,6 +190,15 @@ while (@ARGV)
                       . " can only be used once.\n";
                   }
                 $diff_file = $value;
+              }
+            elsif ($arg eq '--public-repo')
+              {
+                if ($public_repo)
+                  {
+                    die "$0: command line option `$arg'"
+                      . " can only be used once.\n";
+                  }
+                $public_repo = $value;
               }
             elsif ($arg eq '--revprop-change')
               {
@@ -514,6 +526,7 @@ foreach my $project (@project_settings_list)
     my $log_file        = $project->{log_file};
     my $reply_to        = $project->{reply_to};
     my $subject_prefix  = $project->{subject_prefix};
+    my $max_diff_size   = $project->{max_diff_size};
     my $subject         = $subject_base;
     my $diff_wanted     = ($project->{show_diff} and $mode eq 'commit');
 
@@ -582,6 +595,14 @@ foreach my $project (@project_settings_list)
                                         '-r', $rev, @no_diff_deleted,
                                         @no_diff_added);
         @difflines = map { /[\r\n]+$/ ? $_ : "$_\n" } @difflines;
+        if (message_too_long(\@body, \@difflines, $max_diff_size)) {
+          my $pr = '';
+          if ($public_repo) {
+            $pr = " " . $public_repo;
+          }
+          @difflines = ("(diff omitted due to length;\n",
+                        " use 'svn diff -c $rev$pr' to view it)\n");
+        }
       }
 
     if (defined $sendmail and @email_addresses)
@@ -660,6 +681,13 @@ sub usage
       "  -s subject_prefix     Subject line prefix\n",
       "  --diff y|n            Include diff in message (default: y)\n",
       "                        (applies to commit mode only)\n",
+      "  --max-diff-size SZ    Include diff only if the message body is\n",
+      "                        smaller than SZ bytes\n",
+      "                        (default=0=no limit; applies to ",
+      "commit mode only)\n",
+      "  --public_repo REPO    The publicly-available location of the\n",
+      "                        repository, if available, for inclusion\n",
+      "                        in emails\n",
       "\n",
       "This script supports a single repository with multiple projects,\n",
       "where each project receives email only for actions that affect that\n",
@@ -668,10 +696,10 @@ sub usage
       "contains modifications to a path that matches the regular\n",
       "expression, then the action applies to the project.\n",
       "\n",
-      "Any of the following -h, -l, -r, -s and --diff command line options\n",
-      "and following email addresses are associated with this project.  The\n",
-      "next -m resets the -h, -l, -r, -s and --diff command line options\n",
-      "and the list of email addresses.\n",
+      "Any of the following -h, -l, -r, -s, --diff and --max-diff-size\n",
+      "command line options and following email addresses are associated\n",
+      "with this project.  The next -m resets the -h, -l, -r, -s, --diff and\n",
+      "--max-diff-size command line options and the list of email addresses.\n",
       "\n",
       "To support a single project conveniently, the script initializes\n",
       "itself with an implicit -m . rule that matches any modifications\n",
@@ -699,6 +727,7 @@ sub new_project
           match_regex     => '.',
           reply_to        => '',
           subject_prefix  => '',
+          max_diff_size   => 0,
           show_diff       => 1};
 }
 
@@ -773,4 +802,25 @@ sub read_from_process
     {
       return @output;
     }
+}
+
+# Return true iff the message body (plus diff) is greater than the max size
+sub message_too_long
+{
+  my ($body, $difflines, $max_diff_size) = @_;
+
+  # Max size of zero corresponds to no limit, so always return false
+  if ($max_diff_size == 0) {
+    return 0;
+  }
+
+  my $len = 0;
+  for my $line (@$body) {
+    $len += length($line);
+  }
+  for my $line (@$difflines) {
+    $len += length($line);
+  }
+
+  return ($len > $max_diff_size);
 }
