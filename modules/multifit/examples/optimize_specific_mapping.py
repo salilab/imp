@@ -39,7 +39,7 @@ def display_scoring_function(ps):
 
 IMP.set_log_level(IMP.TERSE)
 settings = IMP.multifit.read_settings(IMP.multifit.get_example_path("input/assembly.input"),
-  IMP.multifit.get_example_path("input/"))
+  IMP.multifit.get_example_path("input"))
 data = IMP.multifit.DataContainer(settings)
 mdl=data.get_model()
 ps=IMP.Particles()
