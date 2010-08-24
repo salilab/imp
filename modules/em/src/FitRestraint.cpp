@@ -61,11 +61,12 @@ FitRestraint::FitRestraint(
     }
   }
   add_particles(ps);
-  IMP_LOG(VERBOSE,"after initialize_model_density_map"<<std::endl);
+  IMP_LOG(TERSE,"after adding particles"<<std::endl);
   model_dens_map_ = new SampledDensityMap(*em_map->get_header());
   model_dens_map_->set_particles(all_ps,radius_key,weight_key);
-  IMP_LOG(VERBOSE,"going to initialize_model_density_map"<<std::endl);
+  IMP_LOG(TERSE,"going to initialize_model_density_map"<<std::endl);
   initialize_model_density_map(ps,radius_key,weight_key);
+  IMP_LOG(TERSE,"going to initialize derivatives"<<std::endl);
    // initialize the derivatives
   int not_rb_size=0;
   for(Particles::iterator it = ps.begin(); it != ps.end();it++) {
@@ -91,9 +92,7 @@ FitRestraint::FitRestraint(
 
   // normalize the target density data
   //target_dens_map->std_normalize();
-  IMP_LOG(VERBOSE, "Going to resample" << std::endl);
-  resample();
-  IMP_LOG(VERBOSE, "After resample" << std::endl);
+  IMP_LOG(TERSE, "Finish initialization" << std::endl);
 }
 void FitRestraint::initialize_model_density_map(
   Particles ps,
@@ -136,13 +135,27 @@ void FitRestraint::initialize_model_density_map(
       not_rb_.push_back(*it);
     }
   }
-  IMP_LOG(IMP::VERBOSE,"in initialize_model_density_map the number of"
+  IMP_LOG(IMP::TERSE,"in initialize_model_density_map the number of"
           <<" particles that are not rigid bodies is:"
           <<not_rb_.size()<<std::endl);
   none_rb_model_dens_map_->set_particles(not_rb_,radius_key,weight_key);
   if(not_rb_.size()>0){
     none_rb_model_dens_map_->resample();
     none_rb_model_dens_map_->calcRMS();
+  }
+  //update the total model dens map
+  if (not_rb_.size()>0) {
+    model_dens_map_->copy_map(*none_rb_model_dens_map_);
+  }
+  else{
+    model_dens_map_->reset_data(0.);
+  }
+  for(unsigned int rb_i=0;rb_i<rbs_.size();rb_i++) {
+      DensityMap *transformed = get_transformed(
+         rb_model_dens_map_[rb_i],
+         rbs_[rb_i].get_transformation()*rbs_orig_trans_[rb_i]);
+      model_dens_map_->add(*transformed);
+      delete transformed;
   }
 }
 void FitRestraint::resample() const {
