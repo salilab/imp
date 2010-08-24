@@ -591,5 +591,29 @@ Below are a suggestions prompted by bugs found in code submitted to \imp.
           transparent convert an \c int into a \c double.
 
 
-\section next Where to go next
+\section swig Exporting code to python
+
+\imp uses SWIG to wrap code C++ code and export it to Python. Since swig is
+relatively complicated, we provide a number of helper macros and an example
+file (see modules/example/python/swig.i-in). The key bits are
+- the information goes into a file called swig.i-in in the module python directory
+- the first part should be one \c IMP_SWIG_VALUE(), \c IMP_SWIG_OBJECT() or
+  \c IMP_SWIG_DECORATOR() line per value type, object type or decorator object
+  the module exports to python. Each of these lines looks like
+  \code
+  IMP_SWIG_VALUE(IMP::module_namespace, ClassName, ClassNames);
+  \endcode
+- then there should be a number of \c %include lines, one per header file
+  in the module which exports a class or function to python. The header files
+  must be in order such that no class is used before a declaration for it
+  is encountered (swig does not search \c #include files for the \c %include headers)
+- finally, any templates that are to be exported to swig must have a
+  \c %template call. It should look something like
+  \code
+  namespace IMP {
+    namespace module_namespace {
+       %template(PythonName) CPPName<Restraint, 3>;
+    }
+  }
+  \endcode
 */
