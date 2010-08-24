@@ -772,6 +772,10 @@ protection:                                                             \
 /** The macro defines the type Names. PluralName should be
     Names unless the English spelling is
     different.
+
+    See
+    \ref values "Value and Objects" for a description of what
+    it means to be an object vs a value in \imp.
  */
 #define IMP_VALUES(Name, PluralName)
 #else
@@ -955,7 +959,9 @@ protection:                                                             \
     \imp object class should use one of the IMP_OBJECT(), IMP_RESTRAINT()
     etc. macros in the body of its declaration as well as an
     IMP_OBJECTS() invocation on the namespace level (and an
-    IMP_SWIG_OBJECTS() call in the corresponding swig file).
+    IMP_SWIG_OBJECTS() call in the corresponding swig file). See
+    \ref values "Value and Objects" for a description of what
+    it means to be an object vs a value in \imp.
 
     Each  IMP_OBJECT()/IMP_RESTRAINT()-style macro
     declares/defines the set of needed functions. The declared
