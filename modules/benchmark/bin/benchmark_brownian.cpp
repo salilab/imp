@@ -22,12 +22,23 @@ const double r=10;
 const double len=r;
 const double kk=1000;
 const double sigma=.1;
+const double slack=100*sigma;
+
+#define IMP_CATCH_AND_TERMINATE(expr)            \
+  try {                                          \
+    expr;                                        \
+  } catch (const IMP::Exception &e) {            \
+    std::cerr << e.what() << std::endl;          \
+    exit(1);                                     \
+  }
 
 struct It {
   Pointer<Model> m;
   std::vector<ParticlesTemp> chains;
   ParticlesTemp all;
   Pointer<ListSingletonContainer> lsc;
+  Pointer<ClosePairContainer> cpc;
+  Pointer<BrownianDynamics> bd;
   SimulationParameters sp;
 };
 
@@ -59,8 +70,9 @@ It create() {
     }
   }
   ret.lsc=new ListSingletonContainer(ret.all);
-  IMP_NEW(ClosePairContainer, cpc, (ret.lsc, 0, 10*.1));
+  IMP_NEW(ClosePairContainer, cpc, (ret.lsc, 0, slack));
   cpc->add_pair_filters(pfs);
+  ret.cpc=cpc;
   IMP_NEW(PairsRestraint, pr,
           (new SphereDistancePairScore(new HarmonicLowerBound(0,kk)),
            cpc));
@@ -72,16 +84,27 @@ It create() {
   ret.m->add_restraint(sr);
   ret.sp
     = SimulationParameters::setup_particle(new Particle(ret.m));
+  ret.bd= new BrownianDynamics(ret.sp);
+  double slack= get_slack_estimate(ret.all,0, 30, 1,
+                     Restraints(1, ret.m->get_root_restraint_set()),
+                                   true,
+                                   ret.bd,
+                                   ret.cpc);
+  ret.sp->add_attribute(FloatKey("slack"), slack, false);
   double ts=Diffusion(ret.all[0]).get_time_step_from_sigma(sigma);
   ret.sp.set_maximum_time_step(ts);
   ret.all.push_back(ret.sp);
   return ret;
 }
 
-double simulate(const It& it, int ns, bool verbose=false) {
-  IMP_NEW(BrownianDynamics, bd, (it.sp));
-  if (!verbose) bd->set_log_level(SILENT);
-  return bd->optimize(ns);
+void read(std::string name, It it) {
+  IMP_CATCH_AND_TERMINATE(read_model(name, it.all));
+  it.cpc->set_slack(it.sp->get_value(FloatKey("slack")));
+}
+
+double simulate(It it, int ns, bool verbose=false) {
+  if (!verbose) it.bd->set_log_level(SILENT);
+  return it.bd->optimize(ns);
 }
 
 void initialize(It it) {
@@ -113,12 +136,7 @@ void do_display(It it, std::string str) {
 }
 
 
-#define IMP_CATCH_AND_TERMINATE(expr)           \
-  try {                                         \
-    expr;                                       \
-  } catch (const IMP::Exception &e) {            \
-    IMP_ERROR(e.what());                         \
-  }
+
 
 int main(int argc , char **argv) {
   if (argc>=3 && std::string(argv[1])=="-s") {
@@ -127,7 +145,7 @@ int main(int argc , char **argv) {
     write_model(it.all, argv[2]);
   } else if (argc>=4 && std::string(argv[1])=="-d") {
     It it= create();
-    IMP_CATCH_AND_TERMINATE(read_model(argv[2], it.all));
+    read(argv[2], it);
     do_display(it, std::string(argv[3]));
   } else {
     It it= create();
@@ -135,9 +153,9 @@ int main(int argc , char **argv) {
     if (argc >1) {
       in =argv[1];
     } else {
-      in=IMP::benchmark::get_data_path("brownian.yaml");
+      IMP_CATCH_AND_TERMINATE(in=IMP::benchmark::get_data_path("brownian.imp"));
     }
-    IMP_CATCH_AND_TERMINATE(read_model(in, it.all));
+    read(in, it);
     double total=0, runtime=0;
     int ns=1e6;
     if (argc >2) {
