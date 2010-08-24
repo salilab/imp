@@ -18,12 +18,12 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT ChecksScoreState : public ScoreState
 {
   double probability_;
-  unsigned int count_;
+  unsigned int num_checked_;
  public:
   ChecksScoreState(double probability);
 
   unsigned int get_number_of_checked() const {
-    return count_;
+    return num_checked_;
   }
 
   IMP_SCORE_STATE(ChecksScoreState);
