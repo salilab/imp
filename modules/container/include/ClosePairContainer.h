@@ -13,6 +13,7 @@
 
 #include "container_config.h"
 #include <IMP/core/internal/CoreClosePairContainer.h>
+#include <IMP/Optimizer.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -59,6 +60,7 @@ public:
   ClosePairContainer(SingletonContainer *c, double distance,
                      core::ClosePairsFinder *cpf,
                      double slack=1);
+
 #if defined(SWIG) || defined(IMP_DOXYGEN)
   /** @name Methods to control the set of filters
 
@@ -71,14 +73,38 @@ public:
   IMP_LIST(public, PairFilter, pair_filter,
            PairFilter*, PairFilters);
    /**@}*/
-  IMP_PAIR_CONTAINER(ClosePairContainer);
+  void set_slack(double s);
   bool get_is_up_to_date() const;
+  IMP_PAIR_CONTAINER(ClosePairContainer);
 #else
   IMP_OBJECT(ClosePairContainer);
 #endif
 };
 
 IMP_OBJECTS(ClosePairContainer,ClosePairContainers);
+
+
+/** Estimate the proper slack based on
+    - the time taken to evaluate the passed restraints for a given
+    number of particles in the non-bonded list
+    - the number of pairs in the list as a function of slack size
+    - the amount the particles are moved by the optimizer
+    - the time taken to compute the close pairs as a function
+    of slack size
+
+    For best results, make the particles start in a
+    that is "typical" for the optimization.
+*/
+IMPCONTAINEREXPORT double
+get_slack_estimate(const ParticlesTemp& ps,
+                   double distance,
+                   double upper_bound,
+                   double step,
+                   const Restraints &restraints,
+                   bool derivatives,
+                   Optimizer *opt,
+                   ClosePairContainer *cpc);
+
 
 IMPCONTAINER_END_NAMESPACE
 
