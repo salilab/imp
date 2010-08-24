@@ -29,7 +29,7 @@ struct LazyFileStorage: public internal::IOStorage<BaseStream> {
     if (!open_) {
       stream_.open(P::get_name().c_str());
       if (!stream_) {
-        IMP_THROW("Unabe to open file " << P::get_name(),
+        IMP_THROW("Unable to open file " << P::get_name(),
                   IOException);
       }
       open_=true;
