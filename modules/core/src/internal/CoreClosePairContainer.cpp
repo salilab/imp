@@ -15,6 +15,7 @@
 #include <IMP/core/internal/CoreListPairContainer.h>
 #include <IMP/core/internal/pair_helpers.h>
 #include <IMP/core/internal/close_pairs_helpers.h>
+#include <IMP/algebra/internal/tnt_array2d.h>
 #include <IMP/PairModifier.h>
 #include <algorithm>
 
@@ -57,6 +58,14 @@ void CoreClosePairContainer::initialize(SingletonContainer *c, double distance,
 
 IMP_ACTIVE_CONTAINER_DEF(CoreClosePairContainer);
 
+
+void CoreClosePairContainer::set_slack(double s) {
+  slack_=s;
+  cpf_->set_distance(distance_+2*slack_);
+  ParticlePairsTemp et;
+  update_list(et);
+  first_call_=true;
+}
 
 void CoreClosePairContainer::set_is_static(bool t,
                                            const algebra::BoundingBox3Ds &bbs) {

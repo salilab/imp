@@ -62,10 +62,14 @@ public:
   virtual ::IMP::VersionInfo get_version_info() const {
     return get_module_version_info();
   }
+  void update() {
+    do_before_evaluate();
+  }
   SingletonContainer*get_singleton_container() const {return c_;}
   void set_is_static(bool t, const algebra::BoundingBox3Ds &bbs);
   bool get_contained_particles_changed() const;
   ParticlesTemp get_contained_particles() const;
+  void set_slack(double d);
   IMP_NO_DOXYGEN(virtual void do_show(std::ostream &out) const);
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(CoreClosePairContainer);
 };
