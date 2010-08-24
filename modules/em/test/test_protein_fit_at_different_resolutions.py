@@ -9,6 +9,7 @@ class ProteinFittingTest(IMP.test.TestCase):
     """Class to test EM correlation restraint"""
 
     def correaltion_test(self,data):
+
         for fn,res in data:
             scene = IMP.em.read_map(self.get_input_file_name(fn), self.mrw)
             scene.get_header_writable().set_resolution(res)
@@ -37,9 +38,12 @@ class ProteinFittingTest(IMP.test.TestCase):
         name=self.get_input_file_name("1z5s.pdb")
         print name
         self.mh = IMP.atom.read_pdb(name,
-                                    self.imp_model,IMP.atom.NonWaterPDBSelector())
+                                    self.imp_model,IMP.atom.CAlphaPDBSelector())
         IMP.atom.add_radii(self.mh)
-        self.particles = IMP.Particles(IMP.core.get_leaves(self.mh))
+        IMP.atom.setup_as_rigid_body(self.mh)
+        #self.particles = IMP.Particles(IMP.core.get_leaves(self.mh))
+        self.particles = IMP.Particles()
+        self.particles.append(self.mh)
         self.refiner=IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
 if __name__ == '__main__':
     unittest.main()
