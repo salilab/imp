@@ -30,8 +30,8 @@ IMPALGEBRA_BEGIN_NAMESPACE
  */
 template <class VT>
 class DenseGridStorage3D {
-  typedef std::vector<VT> Storage;
-  Storage data_;
+  typedef std::vector<VT> GridStorage;
+  GridStorage data_;
   VT default_;
   int d_[3];
   template <class I>
@@ -53,8 +53,8 @@ class DenseGridStorage3D {
   typedef internal::GridIndexIterator<internal::GridIndex> GIt;
 public:
   typedef internal::GridIndex Index;
-  typedef typename Storage::reference reference;
-  typedef typename Storage::const_reference const_reference;
+  typedef typename GridStorage::reference reference;
+  typedef typename GridStorage::const_reference const_reference;
   DenseGridStorage3D(const VT &def): default_(def) {
     d_[0]=0;
     d_[1]=0;
@@ -93,8 +93,8 @@ public:
       The value type is VT.
       @{
   */
-  typedef typename Storage::iterator AllVoxelIterator;
-  typedef typename Storage::const_iterator AllVoxelConstIterator;
+  typedef typename GridStorage::iterator AllVoxelIterator;
+  typedef typename GridStorage::const_iterator AllVoxelConstIterator;
   AllVoxelIterator all_voxels_begin() {
     return data_.begin();
   }
@@ -121,11 +121,11 @@ template <class VT>
 class SparseGridStorage3D {
 #if IMP_BOOST_VERSION > 103500
   typedef typename boost::unordered_map<typename internal::GridIndex, VT>
-  Storage;
+  GridStorage;
 #else
-  typedef std::map<typename internal::GridIndex, VT> Storage;
+  typedef std::map<typename internal::GridIndex, VT> GridStorage;
 #endif
-  Storage data_;
+  GridStorage data_;
   VT default_;
   int d_[3];
 public:
@@ -158,7 +158,7 @@ public:
     return data_.find(i) != data_.end();
   }
   const_reference get_voxel(Index gi) const {
-    typename Storage::const_iterator it=data_.find(gi);
+    typename GridStorage::const_iterator it=data_.find(gi);
     if (it == data_.end()) return default_;
     else return it->second;
   }
@@ -192,7 +192,7 @@ public:
       type is a pair of Index and VT.
       @{
   */
-  typedef typename Storage::const_iterator AllNonEmptyConstIterator;
+  typedef typename GridStorage::const_iterator AllNonEmptyConstIterator;
   AllNonEmptyConstIterator all_non_empty_begin() const {
     return data_.begin();
   }
