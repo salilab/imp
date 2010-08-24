@@ -7,7 +7,16 @@
  */
 
 #include <IMP/multifit/SettingsData.h>
+
 IMPMULTIFIT_BEGIN_NAMESPACE
+
+namespace {
+  std::string join_path(const std::string &path, const std::string &name)
+  {
+    return path + "/" + boost::lexical_cast<std::string>(name);
+  }
+}
+
 ComponentHeader parse_component_line(
    const std::string &path,const std::string &line) {
   try {
@@ -20,12 +29,11 @@ ComponentHeader parse_component_line(
            "Wrong format of input line : not enough fields in line:"<<line);
   ComponentHeader comp;
   comp.set_name(boost::lexical_cast<std::string>(line_split[0]));
-  comp.set_filename(path+boost::lexical_cast<std::string>(line_split[1]));
-  comp.set_pdb_ap_fn(path+boost::lexical_cast<std::string>(line_split[2]));
+  comp.set_filename(join_path(path, line_split[1]));
+  comp.set_pdb_ap_fn(join_path(path, line_split[2]));
   comp.set_num_ap(boost::lexical_cast<int>(line_split[3]));
-  comp.set_transformations_fn(
-    path+boost::lexical_cast<std::string>(line_split[4]));
-  comp.set_reference_fn(path+boost::lexical_cast<std::string>(line_split[5]));
+  comp.set_transformations_fn(join_path(path, line_split[4]));
+  comp.set_reference_fn(join_path(path, line_split[5]));
   return comp;
   }
   catch (IMP::Exception &e) {
@@ -43,19 +51,16 @@ AssemblyHeader parse_assembly_line(
      "Expecting 10 fileds in input line, got "<<
      line_split.size() << " : " <<line);
   AssemblyHeader dens;
-  dens.set_dens_fn(path+boost::lexical_cast<std::string>(line_split[0]));
+  dens.set_dens_fn(join_path(path, line_split[0]));
   dens.set_resolution(boost::lexical_cast<float>(line_split[1]));
   dens.set_spacing(boost::lexical_cast<float>(line_split[2]));
   dens.set_origin(algebra::Vector3D(
     boost::lexical_cast<float>(line_split[3]),
     boost::lexical_cast<float>(line_split[4]),
     boost::lexical_cast<float>(line_split[5])));
-  dens.set_pdb_fine_ap_fn(
-    path+boost::lexical_cast<std::string>(line_split[6]));
-  dens.set_pdb_coarse_ap_fn(
-    path+boost::lexical_cast<std::string>(line_split[7]));
-  dens.set_junction_tree_fn(
-    path+boost::lexical_cast<std::string>(line_split[8]));
+  dens.set_pdb_fine_ap_fn(join_path(path, line_split[6]));
+  dens.set_pdb_coarse_ap_fn(join_path(path, line_split[7]));
+  dens.set_junction_tree_fn(join_path(path, line_split[8]));
   return dens;
 }
 
