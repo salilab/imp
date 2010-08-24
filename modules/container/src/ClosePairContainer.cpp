@@ -10,7 +10,10 @@
 
 #include "IMP/container/ClosePairContainer.h"
 #include "IMP/core/internal/close_pairs_helpers.h"
+#include <IMP/SetLogState.h>
 #include <algorithm>
+#include <boost/timer.hpp>
+#include <IMP/algebra/internal/tnt_array2d.h>
 
 
 IMPCONTAINER_BEGIN_NAMESPACE
@@ -33,5 +36,124 @@ ClosePairContainer::ClosePairContainer(SingletonContainer *c,
 void ClosePairContainer::do_show(std::ostream &) const {
 }
 
+
+namespace {
+  struct Data {
+    double slack;
+    double lifetime;
+    double rcost;
+    double ccost;
+  };
+}
+
+double
+get_slack_estimate(const ParticlesTemp& ps,
+                   double distance,
+                   double upper_bound,
+                   double step,
+                   const Restraints &restraints,
+                   bool derivatives,
+                   Optimizer *opt,
+                   ClosePairContainer *cpc) {
+  std::vector<Data> datas;
+  for (double slack=0; slack< upper_bound; slack+= step) {
+    std::cout << "Computing for " << slack << std::endl;
+    datas.push_back(Data());
+    datas.back().slack=slack;
+    {
+      boost::timer imp_timer;
+      SetLogState sl(opt->get_model(), SILENT);
+      cpc->set_slack(slack);
+      cpc->update();
+      datas.back().ccost= imp_timer.elapsed();
+      std::cout << "ccost " << datas.back().ccost << std::endl;
+    }
+    {
+      boost::timer imp_timer;
+      double score=0;
+      SetLogState sl(opt->get_model(), SILENT);
+      for (unsigned int i=0; i< restraints.size(); ++i) {
+        score+=restraints[i]->evaluate(derivatives);
+        // should restore
+      }
+      datas.back().rcost= imp_timer.elapsed();
+      std::cout << "rcost " << datas.back().rcost << std::endl;
+    }
+  }
+  const int ns=100;
+  std::vector< std::vector<algebra::Vector3D> >
+    pos(ns, std::vector<algebra::Vector3D>(ps.size()));
+  SetLogState sl(opt->get_model(), SILENT);
+  for ( int i=0; i< ns; ++i) {
+    for (unsigned int j=0; j< ps.size(); ++j) {
+      pos[i][j]=core::XYZ(ps[j]).get_coordinates();
+    }
+    std::cout << "Step" << std::endl;
+    opt->optimize(1);
+  }
+  algebra::internal::TNT::Array2D<double> dists(ns,ns,0.0);
+  for ( int i=0; i< ns; ++i) {
+    for ( int j=i; j< ns; ++j) {
+      double md=0;
+      for (unsigned int k=0; k< ps.size(); ++k) {
+        md= std::max(md, algebra::get_distance(pos[i][k], pos[j][k]));
+      }
+      dists[i][j]=md;
+    }
+  }
+  // estimate lifetimes from slack
+  for (unsigned int i=0; i< datas.size(); ++i) {
+    Ints deaths;
+    for ( int j=0; j< ns; ++j) {
+      for ( int k=j+1; k < ns; ++k) {
+        if (dists[j][k]> datas[i].slack) {
+          deaths.push_back(k-j);
+          break;
+        }
+      }
+    }
+    std::sort(deaths.begin(), deaths.end());
+
+    double ml=0;
+    if (deaths.empty()) {
+      ml= ns;
+    } else {
+      double l=1;
+      for (unsigned int j=0; j< deaths.size(); ++j) {
+        double n= ns-j;
+        double t=(n-1.0)/n;
+        ml+=(l-t*l)*j;
+      }
+    }
+    datas[i].lifetime=ml;
+    std::cout << "expected life of " << datas[i].slack
+              << " is " << datas[i].lifetime << std::endl;
+  }
+
+  /**
+     C(s) is cost to compute
+     R(s) is const to eval restraints
+     L(s) is lifetime of slack
+     minimize C(s)/L(s)+R(s)
+   */
+  // smooth
+  for (unsigned int i=1; i< datas.size()-1; ++i) {
+    datas[i].rcost=(datas[i].rcost+ datas[i-1].rcost+datas[i+1].rcost)/3.0;
+    datas[i].ccost=(datas[i].ccost+ datas[i-1].ccost+datas[i+1].ccost)/3.0;
+    datas[i].rcost=(datas[i].lifetime
+                    + datas[i-1].lifetime+datas[i+1].lifetime)/3.0;
+  }
+  double min= std::numeric_limits<double>::max();
+  int mini=-1;
+  for (unsigned int i=0; i< datas.size(); ++i) {
+    double v= datas[i].rcost+ datas[i].ccost/datas[i].lifetime;
+    std::cout << "Cost of " << datas[i].slack << " is " << v << std::endl;
+    if (v < min) {
+      min=v;
+      mini=i;
+    }
+  }
+  return datas[mini].slack;
+}
 
 IMPCONTAINER_END_NAMESPACE
