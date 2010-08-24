@@ -76,7 +76,7 @@ public:
     audit();
     return *o_;
   }
-  const O* operator->() const {
+  O* operator->() const {
     audit();
     return o_;
   }
