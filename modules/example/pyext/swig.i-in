@@ -27,7 +27,8 @@ def create_model_and_particles():
   return (m, sc)
 %}
 
-/* Wrap our own classes */
+/* Wrap our own classes. Each header in the module should be listed here with a
+   %include line.*/
 %include "IMP/example/ExampleRestraint.h"
 %include "IMP/example/ExampleDecorator.h"
 %include "IMP/example/ExampleUnaryFunction.h"
@@ -37,11 +38,9 @@ def create_model_and_particles():
 
 namespace IMP {
   namespace example {
-   // Tell swig to create a copy of the class with dimension 3
+  /* Python doesn't natively support C++ templates, so you have to manually
+     choose which template parameters you want to intantiate a template with.
+   */
    %template(ExampleTemplateClass3D) ExampleTemplateClass<3>;
-   /* This macro defines the ExampleDecorators and ExampleDecoratorsTemp types for python.
-      Any code which uses ExampleTemplateClass3D must appear after this line. */
-   IMP_SWIG_DECORATORS(ExampleDecorator, ExampleDecorators, Particles);
-
   }
 }
