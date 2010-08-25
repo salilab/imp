@@ -101,8 +101,8 @@ ConfigurationSet* read_configuration_set(std::string filename,
   if (ps.empty()) {
     return NULL;
   }
-  NcFile f(filename.c_str(), NcFile::ReadOnly,
-           NULL, 0, NcFile::Netcdf4);
+  NcFile f(filename.c_str(), NcFile::ReadOnly/*,
+                    NULL, 0, NcFile::Netcdf4*/);
   if (!f.is_valid()) {
     IMP_THROW("Unable to open file " << filename << " for reading",
               IOException);
