@@ -132,6 +132,12 @@ inline CheckLevel get_check_level() {
 IMPEXPORT void set_print_exceptions(bool tf);
 
 #ifdef IMP_DOXYGEN
+/** Catch any IMP exception thrown by expr and terminate with an
+    error message. Use this for basic error handling in main functions
+    in C++. Do not use within the \imp library.
+*/
+#define IMP_CATCH_AND_TERMINATE(expr)
+
 //! Execute the code block if a certain level checks are on
 /**
    The next code block (delimited by { }) is executed if
@@ -231,6 +237,15 @@ IMPEXPORT void set_print_exceptions(bool tf);
 #define IMP_NOT_IMPLEMENTED
 
 #else // IMP_DOXYGEN
+
+#define IMP_CATCH_AND_TERMINATE(expr)                   \
+  try {                                                 \
+    expr;                                               \
+  } catch (const IMP::Exception &e) {                   \
+    std::cerr << "Application terminated with error :"  \
+              << e.what() << std::endl;                 \
+    exit(1);                                            \
+  }
 
 #define IMP_THROW(message, exception_name)do {                          \
   std::ostringstream oss;                                               \
