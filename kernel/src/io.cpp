@@ -180,7 +180,7 @@ void write_binary_model(const ParticlesTemp &particles,
   } else {
     mode=NcFile::Replace;
   }
-  NcFile f(filename.c_str(), mode, NULL, 0, NcFile::Netcdf4);
+  NcFile f(filename.c_str(), mode /*,NULL, 0, NcFile::Netcdf4*/);
   if (!f.is_valid()) {
     IMP_THROW("Unable to open file " << filename << " for writing",
               IOException);
@@ -206,7 +206,7 @@ void write_binary_model(const ParticlesTemp &particles,
   NcVar *cur=NULL;
   if (append) {
     std::ostringstream oss;
-    oss << f.num_vars()+1;
+    oss << f.num_vars();
     cur = f.add_var(oss.str().c_str(), ncDouble, 2, dims);
   } else {
     cur = f.add_var("0", ncDouble, 2, dims);
@@ -242,8 +242,8 @@ void read_binary_model(std::string filename,
                        const ParticlesTemp &particles,
                        const FloatKeys &keys,
                        int frame) {
-  NcFile f(filename.c_str(), NcFile::ReadOnly,
-           NULL, 0, NcFile::Netcdf4);
+  NcFile f(filename.c_str(), NcFile::ReadOnly
+           /*,NULL, 0, NcFile::Netcdf4*/);
   if (!f.is_valid()) {
     IMP_THROW("Unable to open file " << filename << " for reading",
               IOException);
@@ -265,8 +265,8 @@ void read_binary_model(std::string filename,
         NcVar *v= f.get_var(i);
         vars= vars+" "+std::string(v->name());
       }
-      IMP_THROW("Unable to find " << oss.str()
-                << " found frames are " << vars, IOException);
+      IMP_THROW("Unable to find frame \"" << oss.str()
+                << "\" found frames are " << vars, IOException);
     }
   } else {
     index=0;
