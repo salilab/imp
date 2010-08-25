@@ -4,6 +4,11 @@ import os
 import os.path
 
 
+def _get_name(env):
+    if env.has_key('IMP_APPLICATION'):
+        return env['IMP_APPLICATION']
+    else:
+        return "IMP." + env['IMP_MODULE']
 
 def _action_unit_test(target, source, env):
     #app = "cd %s; %s %s %s -v > /dev/null"
@@ -17,16 +22,14 @@ def _action_unit_test(target, source, env):
              " ".join(fsource))
     if env.Execute(app) == 0:
         file(str(target[0]), 'w').write('PASSED\n')
+        print "%s %ss succeeded" % (_get_name(env), env['TEST_TYPE'])
     else:
-        try:
-            print "IMP.%s unit tests FAILED" % env['IMP_MODULE']
-        except:
-            print "Tests FAILED"
+        print "%s %ss FAILED" % (_get_name(env), env['TEST_TYPE'])
         return 1
 
 
 def _print_unit_test(target, source, env):
-    print "Generating unit testing"
+    print "Running %s %ss" % (_get_name(env), env['TEST_TYPE'])
 
 UnitTest = Builder(action=Action(_action_unit_test,
                                 _print_unit_test),
