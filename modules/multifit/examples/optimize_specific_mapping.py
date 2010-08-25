@@ -87,7 +87,7 @@ print "here5"
 # print "here"
 # print "Found ", cs.get_number_of_configurations(), "solutions"
 # lsc= IMP.domino2.Subset(ps)
-for i,state in enumerate([0,0,0,0],[0,1,2,3],[1,2,3,4]):#10):#cs.get_number_of_configurations()):
+for i,state in enumerate([[0,0,0,0],[0,1,2,3],[1,2,3,4]]):#10):#cs.get_number_of_configurations()):
     domino_smp.load_particle_states(lcs,IMP.domino2.SubsetState(state),pst)
     #print the configuration:
     print "solution number:",i," scored:", mdl.evaluate(False)
