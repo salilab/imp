@@ -74,8 +74,10 @@ def handle_example_dir(env, inputpath, name, prefix, example_files, data_files):
     test= env._IMPModuleTest('tests.passed',
                              ["#/tools/imppy.sh",
                               "#/scons_tools/run-all-examples.py"]\
-                                 +[x for x in example_files
-                                   if str(x).endswith(".py") and str(x).find("fragment")==-1])
+                             +[x for x in example_files
+                               if str(x).endswith(".py") \
+                               and str(x).find("fragment")==-1],
+                             TEST_TYPE='example')
     env.AlwaysBuild("tests.passed")
     doxpage= env._IMPExamplesDox(File(str(inputpath)+"/generated/examples.dox"), example_files)
     dox.append(doxpage)

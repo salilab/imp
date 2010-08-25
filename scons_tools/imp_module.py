@@ -593,7 +593,8 @@ def IMPModuleTest(env, python_tests, cpp_tests, cpp_required_modules=[],
         cpptest= env._IMPModuleCPPTest(target="cpp_test_programs.py",
                                        source= build)
         files.append(cpptest)
-    test = env._IMPModuleTest(target="test.passed", source=files)
+    test = env._IMPModuleTest(target="test.passed", source=files,
+                              TEST_TYPE='unit test')
     env.AlwaysBuild("test.passed")
     module_alias(env, 'test', test)
     add_to_global_alias(env, 'test', 'test')

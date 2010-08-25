@@ -34,18 +34,19 @@ def IMPCPPApplication(envi, target, source, required_modules=[],
     prog= env.Program(target=target, source=source)
     bindir = env.GetInstallDirectory('bindir')
     build= env.Install("#/build/bin", prog)
-    env['application_name']=str(target)
+    env['IMP_APPLICATION']=str(target)
     install = env.Install(bindir, prog)
 
     env.SConscript('test/SConscript', exports=['env'])
-    env.Alias(env['application_name'], build)
-    env.Alias(env['application_name']+"-install", install)
+    env.Alias(env['IMP_APPLICATION'], build)
+    env.Alias(env['IMP_APPLICATION']+"-install", install)
     env.Alias("all", build)
     env.Alias("install", install)
 def IMPApplicationTest(env, python_tests=[]):
     files= ["#/tools/imppy.sh", "#/scons_tools/run-all-tests.py"]+\
         [File(x).abspath for x in python_tests]
-    test = env.IMPApplicationRunTest(target="test.passed", source=files)
+    test = env.IMPApplicationRunTest(target="test.passed", source=files,
+                                     TEST_TYPE='unit test')
     env.AlwaysBuild("test.passed")
-    env.Requires(test, env.Alias(env['application_name']))
+    env.Requires(test, env.Alias(env['IMP_APPLICATION']))
     env.Alias('test', test)
