@@ -130,9 +130,11 @@ if get_module_version_info().get_version() != "%(version)s":
     optional_deps\
     = [checks.nicename(x).lower() for x in source[3].get_contents().split(" ") if len(x) > 0]
     (found, notfound)= imp_module.process_dependencies(env, optional_deps)
+    print found
+    print notfound
     preface.append("%pythoncode {")
     for dep in optional_deps:
-        if dep in found:
+        if dep not in notfound:
             preface.append("has_"+dep +"=True")
         else:
             preface.append("has_"+dep +"=False")
