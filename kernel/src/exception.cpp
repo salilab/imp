@@ -33,11 +33,23 @@ CheckLevel get_maximum_check_level() {
 namespace internal {
 void assert_fail(const char *msg)
 {
+  static bool is_handling=false;
+  if (is_handling) {
+    return;
+  }
+  is_handling=true;
   for (int i=handlers.size()-1; i >=0; --i) {
     IMP_CHECK_OBJECT(handlers[i]);
-    handlers[i]->handle_failure();
+    try {
+      handlers[i]->handle_failure();
+    } catch (const Exception &e) {
+      IMP_WARN("Caught exception in failure handler \""
+               << handlers[i]->get_name() << "\": "
+               << e.what() << std::endl);
+    }
   }
   if (print_exceptions) IMP_ERROR(msg);
+  is_handling=false;
 }
 }
 
