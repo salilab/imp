@@ -86,11 +86,11 @@ class YamlTests(IMP.test.TestCase):
             return
         (m, ps)= self._create_homo_model()
         fks= [IMP.FloatKey("x"), IMP.FloatKey("y")]
-        IMP.write_binary_model(ps, fks, self.get_tmp_file_name("test0.imp"))
+        IMP.write_binary_model(ps, fks, self.get_tmp_file_name("test0.bimp"))
         first= ps[0].get_value(IMP.FloatKey("x"))
         print first
         ps[0].set_value(IMP.FloatKey("x"), 11)
-        IMP.read_binary_model(self.get_tmp_file_name("test0.imp"), ps, fks)
+        IMP.read_binary_model(self.get_tmp_file_name("test0.bimp"), ps, fks)
         self.assertEqual(first, ps[0].get_value(IMP.FloatKey("x")))
     def test_netcdf_multiple(self):
         """Check writing multiple to netcdf with attributes"""
@@ -99,15 +99,15 @@ class YamlTests(IMP.test.TestCase):
             return
         (m, ps)= self._create_homo_model()
         fks= [IMP.FloatKey("x"), IMP.FloatKey("y")]
-        IMP.write_binary_model(ps, fks, self.get_tmp_file_name("test1.imp"), False)
+        IMP.write_binary_model(ps, fks, self.get_tmp_file_name("test1.bimp"), False)
         for i in range(1,10):
             ps[0].set_value(fks[0], i)
-            IMP.write_binary_model(ps, fks, self.get_tmp_file_name("test1.imp"), True)
+            IMP.write_binary_model(ps, fks, self.get_tmp_file_name("test1.bimp"), True)
         print "reading"
         for i in range(0,10):
-            IMP.read_binary_model(self.get_tmp_file_name("test1.imp"), ps, fks, i)
+            IMP.read_binary_model(self.get_tmp_file_name("test1.bimp"), ps, fks, i)
             self.assertEqual(i, ps[0].get_value(IMP.FloatKey("x")))
-        self.assertRaises(IOError, IMP.read_binary_model, self.get_tmp_file_name("test1.imp"), ps, fks, i)
+        self.assertRaises(IOError, IMP.read_binary_model, self.get_tmp_file_name("test1.bimp"), ps, fks, 10)
     def test_cs(self):
         """Check reading a configuration set"""
         if not IMP.has_netcdf:
@@ -117,9 +117,9 @@ class YamlTests(IMP.test.TestCase):
         fks= [IMP.FloatKey("x"), IMP.FloatKey("y")]
         for i in range(0,10):
             ps[0].set_value(fks[0], i)
-            IMP.write_binary_model(ps, fks, self.get_tmp_file_name("test2.imp"), i)
+            IMP.write_binary_model(ps, fks, self.get_tmp_file_name("test2.bimp"), i)
         print "reading"
-        cs=IMP.read_configuration_set(self.get_tmp_file_name("test2.imp"),
+        cs=IMP.read_configuration_set(self.get_tmp_file_name("test2.bimp"),
                                       ps, fks)
         self.assertEqual(cs.get_number_of_configurations(), 10)
         for i in range(0,10):
