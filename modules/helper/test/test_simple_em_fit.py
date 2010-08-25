@@ -76,16 +76,16 @@ class SimpleEMFitTest(IMP.test.TestCase):
         self.imp_model.add_restraint(r1)
         self.imp_model.add_restraint(r2)
 
-        self.assert_(isinstance(IMP.em.FitRestraint.cast(r1),
+        self.assert_(isinstance(IMP.em.FitRestraint.get_from(r1),
                                 IMP.em.FitRestraint))
-        self.assert_(IMP.em.FitRestraint.cast(r2) is None)
+        self.assertRaises(IMP.ValueException, IMP.em.FitRestraint.get_from, r2)
 
         r1 = self.imp_model.get_restraint(0)
         r2 = self.imp_model.get_restraint(1)
 
-        self.assert_(isinstance(IMP.em.FitRestraint.cast(r1),
+        self.assert_(isinstance(IMP.em.FitRestraint.get_from(r1),
                                 IMP.em.FitRestraint))
-        self.assert_(IMP.em.FitRestraint.cast(r2) is None)
+        self.assertRaises(IMP.ValueException, IMP.em.FitRestraint.get_from, r2)
 
 
     def test_methods(self):
