@@ -22,7 +22,7 @@ RigidBodiesFitRestraint::RigidBodiesFitRestraint(
    Refiner *refiner,
    FloatKey radius_key,
    FloatKey weight_key,
-   float scale): Restraint("Fit restraint")
+   float scale): Restraint("Rigid fit restraint")
 {
   IMP_USAGE_CHECK(true,"This class is not usable yet!\n");
   target_dens_map_ = em_map;
@@ -65,7 +65,7 @@ void RigidBodiesFitRestraint::initialize_model_density_map(
   FloatKey radius_key,FloatKey weight_key) {
   //none_rb_model_dens_map_ will include all particles
   //that are not part of a rigid body
-  for(int i=0;i<rbs_.size();i++){
+  for(unsigned int i=0;i<rbs_.size();i++){
     core::RigidBody rb = rbs_[i];
     rbs_orig_trans_.push_back(rb.get_transformation().get_inverse());
       rb_model_dens_map_.push_back(
