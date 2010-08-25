@@ -15,6 +15,7 @@
 #include "BoundingBoxD.h"
 #include "internal/grid_3d.h"
 #include <boost/iterator/transform_iterator.hpp>
+#include <boost/functional/hash.hpp>
 #if IMP_BOOST_VERSION > 103500
 #include <boost/unordered_map.hpp>
 #else
@@ -25,61 +26,194 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-/** Store a grid as a densely packed set of voxels.
-    \see Grid3D
+
+
+/** \name Axis aligned grids
+    \anchor grids
+
+    \imp provides support for a variety of spatial grids. The grid support in
+    C++ is implemented by combining several different layers to specify
+    what capabilities are desired. These layers are:
+    - Data: any type of data can be stored in the grid
+    - Boundedness: By using UnboundedGridStorage3D or BoundedGridStorage3D,
+      one can choose whether you want a grid over a finite region of space
+      or over the whole space.
+    - Storage: by choosing SparseGridStorage3D or DenseGridStorage3D, you can
+      choose whether you want to store all voxels or only a subset of the
+      voxels. The former is faster and more compact when most of the voxels are
+      used, the latter when only a few are used (say <1/4).
+    - Geometry: The Grid3D class itself provides a geometric layer, mapping
+      Vector3D objects into voxels in the grid.
+
+    These are implemented as mix-ins, so each layer provides a set of accessible
+    functionality as methods/types in the final class.
+
+    In python, you have to make do with a few, predefined choices.
+    They currently are:
+    - FloatGrid3D: floats stored in a finite dense grid
+    - SparseIntGrid3D: integers stored in a finite sparse grid
+    - UnboundedSparseIntGrid3D: integers store in an infinite sparse grid
+    @{
  */
-template <class VT>
-class DenseGridStorage3D {
-  typedef std::vector<VT> GridStorage;
-  GridStorage data_;
-  VT default_;
+
+
+//! An index in an infinite grid on space
+/* The index entries can be positive or negative and do not need to correspond
+   directly to cells in the grid. They get mapped on to actual grid cells
+   by various functions.
+   \see Grid3D
+ */
+class ExtendedGridIndex3D {
   int d_[3];
-  template <class I>
-  unsigned int index(const I &i) const {
-    unsigned int ii= i[2]*d_[0]*d_[1] + i[1]*d_[0]+i[0];
-    IMP_INTERNAL_CHECK(ii < data_.size(), "Invalid grid index "
-               << i[0] << " " << i[1] << " " << i[2]
-               << ": " << d_[0] << " " << d_[1] << " " << d_[2]);
-    return ii;
-  }
-  struct NonDefault {
-    VT default_;
-    NonDefault(const VT &def): default_(def){}
-    template <class P>
-    bool operator()(const P &def) const {
-      return def.second != default_;
-    }
-  };
-  typedef internal::GridIndexIterator<internal::GridIndex> GIt;
 public:
-  typedef internal::GridIndex Index;
-  typedef typename GridStorage::reference reference;
-  typedef typename GridStorage::const_reference const_reference;
-  DenseGridStorage3D(const VT &def): default_(def) {
+#ifndef IMP_DOXYGEN
+  typedef ExtendedGridIndex3D This;
+#endif
+  //! Create a grid cell from three arbitrary indexes
+  ExtendedGridIndex3D(int x, int y, int z) {
+    d_[0]=x;
+    d_[1]=y;
+    d_[2]=z;
+  }
+  ExtendedGridIndex3D() {
+    d_[0]=d_[1]=d_[2]=std::numeric_limits<int>::max();
+  }
+  IMP_COMPARISONS_3(d_[0], d_[1], d_[2]);
+  //! Get the ith component (i=0,1,2)
+  IMP_CONST_BRACKET(int, unsigned int,
+                    i <3,
+                    IMP_USAGE_CHECK(d_[i] != std::numeric_limits<int>::max(),
+                                    "Using uninitialized grid index");
+                    return d_[i]);
+  IMP_SHOWABLE_INLINE(ExtendedGridIndex3D, out << "(" << d_[0] << ", "
+                      << d_[1] << ", " << d_[2] << ")");
+#ifndef IMP_DOXYGEN
+  bool strictly_larger_than(const ExtendedGridIndex3D &o) const {
+    return d_[0] > o.d_[0] && d_[1] > o.d_[1] && d_[2] > o.d_[2];
+  }
+#endif
+
+#ifndef SWIG
+  typedef const int* iterator;
+  iterator begin() const {return d_;}
+  iterator end() const {return d_+3;}
+#endif
+#ifndef IMP_DOXYGEN
+  unsigned int __len__() const { return 3;}
+#endif
+
+  ExtendedGridIndex3D get_offset(int i, int j, int k) const {
+    return ExtendedGridIndex3D(d_[0]+i, d_[1]+j, d_[2]+k);
+  }
+};
+
+
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+inline std::size_t hash_value(const ExtendedGridIndex3D &ind) {
+  return boost::hash_range(ind.begin(), ind.end());
+}
+#endif
+
+IMP_VALUES(ExtendedGridIndex3D, ExtendedGridIndex3Ds);
+IMP_OUTPUT_OPERATOR(ExtendedGridIndex3D);
+
+
+
+
+
+
+
+
+
+
+
+//! Represent a real cell in a grid (one within the bounding box)
+/* These indexes represent an actual cell in the grid.
+   They can only be constructed by the grid (since only it knows what
+   are the actual cells).
+   \see Grid3D
+ */
+class GridIndex3D
+{
+  int d_[3];
+public:
+  GridIndex3D() {
+    d_[0]=d_[1]=d_[2]=std::numeric_limits<int>::max();
+  }
+
+
+#ifndef IMP_DOXYGEN
+  //! Get the ith component (i=0,1,2)
+  IMP_CONST_BRACKET(int, unsigned int,
+                    i <3,
+                    IMP_USAGE_CHECK(d_[i] != std::numeric_limits<int>::max(),
+                                    "Using uninitialized grid index");
+                    return d_[i]);
+  IMP_SHOWABLE_INLINE(GridIndex3D, out << "(" << d_[0] << ", "
+                      << d_[1] << ", " << d_[2] << ")");
+  bool strictly_larger_than(const GridIndex3D &o) const {
+    return d_[0] > o.d_[0] && d_[1] > o.d_[1] && d_[2] > o.d_[2];
+  }
+
+#ifndef SWIG
+  typedef const int* iterator;
+  iterator begin() const {return d_;}
+  iterator end() const {return d_+3;}
+  GridIndex3D(int x, int y, int z) {
+    d_[0]=x;
+    d_[1]=y;
+    d_[2]=z;
+  }
+#endif
+  unsigned int __len__() const { return 3;}
+typedef GridIndex3D This;
+#endif
+  IMP_COMPARISONS_3(d_[0], d_[1], d_[2]);
+};
+
+
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+inline std::size_t hash_value(const GridIndex3D &ind) {
+  return boost::hash_range(ind.begin(), ind.end());
+}
+#endif
+IMP_VALUES(GridIndex3D, GridIndex3Ds);
+IMP_OUTPUT_OPERATOR(GridIndex3D);
+
+
+
+
+
+
+
+
+
+
+
+
+
+/** This is a base class for storage types which refer to a bounded number
+    of cells.
+*/
+class BoundedGridStorage3D {
+  int d_[3];
+public:
+#ifndef IMP_DOXYGEN
+  static bool get_is_bounded() {
+    return true;
+  }
+#endif
+  BoundedGridStorage3D() {
     d_[0]=0;
     d_[1]=0;
     d_[2]=0;
   }
-  DenseGridStorage3D(int i, int j, int k, const VT &def): data_(i*j*k, def),
-                                                          default_(def) {
+  BoundedGridStorage3D(int i, int j, int k) {
     d_[0]=i;
     d_[1]=j;
     d_[2]=k;
   }
- reference operator[](Index gi) {
-    return data_[index(gi)];
-  }
-  const_reference operator[](Index gi) const  {
-    return data_[index(gi)];
-  }
-  void set_voxel(Index i, const VT& gi) {
-    data_[index(gi)]=gi;
-  }
-  const_reference get_voxel(Index gi) const {
-    return operator[](gi);
-  }
   void set_size(int i, int j, int k) {
-    data_.resize(i*j*k, default_);
     d_[0]=i;
     d_[1]=j;
     d_[2]=k;
@@ -89,12 +223,284 @@ public:
     IMP_INTERNAL_CHECK(i < 3, "Only 3D: "<< i);
     return d_[i];
   }
+
+
+  /** \name All Index iterators
+      The value type is a GridIndex3D;
+      @{
+  */
+#ifndef SWIG
+#ifdef IMP_DOXYGEN
+  class AllIndexIterator;
+#else
+  typedef internal::GridIndexIterator<ExtendedGridIndex3D,
+                                      internal::AllItHelp<ExtendedGridIndex3D,
+                                                          GridIndex3D> >
+                                    AllIndexIterator;
+#endif
+  AllIndexIterator all_indexes_begin() const {
+    return indexes_begin(ExtendedGridIndex3D(0,0,0),
+                         ExtendedGridIndex3D(get_number_of_voxels(0),
+                                             get_number_of_voxels(1),
+                                             get_number_of_voxels(2)));
+  }
+  AllIndexIterator all_indexes_end() const {
+    return indexes_end(ExtendedGridIndex3D(0,0,0),
+                       ExtendedGridIndex3D(get_number_of_voxels(0),
+                                           get_number_of_voxels(1),
+                                           get_number_of_voxels(2)));
+  }
+#endif
+ GridIndex3Ds get_all_indexes() const {
+    GridIndex3Ds ret;
+    for ( int i=0; i< d_[0]; ++i) {
+      for ( int j=0; j< d_[1]; ++j) {
+        for ( int k=0; k< d_[2]; ++k) {
+          ret.push_back(GridIndex3D(i,j,k));
+        }
+      }
+    }
+    return ret;
+  }
+  /** @} */
+
+
+
+ /** \name Index Iterators
+
+      Iterate through a range of actual indexes. The value
+      type for the iterator is an GridIndex3D.
+
+      The range is defined by a pair of indexes. It includes
+      all indexes in the axis aligned box defined by lb
+      as the lower corner and the second as the ub. That is, if
+      lb is \f$(l_x, l_y, l_z)\f$ and ub is \f$(u_x, u_y, u_z)\f$,
+      then the range includes all
+      indexes \f$(i_x, i_y, i_z)\f$ such that \f$l_x \leq i_x \leq u_x\f$,
+      \f$l_y \leq i_y \leq u_y\f$
+      and \f$l_z \leq i_z \leq u_z\f$.
+
+      @{
+  */
+#ifndef SWIG
+#ifndef IMP_DOXYGEN
+
+  typedef internal::GridIndexIterator<ExtendedGridIndex3D,
+                                      internal::AllItHelp<ExtendedGridIndex3D,
+                                                          GridIndex3D> >
+  IndexIterator;
+  typedef internal::GridIndexIterator<ExtendedGridIndex3D,
+                                      internal::AllItHelp<ExtendedGridIndex3D,
+                                                          ExtendedGridIndex3D> >
+  ExtendedIndexIterator;
+
+#else
+  class IndexIterator;
+  class ExtendedIndexIterator;
+#endif
+  IndexIterator indexes_begin(const ExtendedGridIndex3D& lb,
+                              const ExtendedGridIndex3D& ub) const {
+    ExtendedGridIndex3D eub=ub.get_offset(1,1,1);
+    std::pair<ExtendedGridIndex3D, ExtendedGridIndex3D> bp
+      = internal::intersect<ExtendedGridIndex3D>(lb,eub, d_);
+    if (bp.first== bp.second) {
+      return IndexIterator();
+    } else {
+      IMP_INTERNAL_CHECK(bp.second.strictly_larger_than(bp.first),
+                         "empty range");
+      return IndexIterator(bp.first, bp.second);
+    }
+  }
+  IndexIterator indexes_end(const ExtendedGridIndex3D&,
+                            const ExtendedGridIndex3D&) const {
+    //IMP_INTERNAL_CHECK(lb <= ub, "empty range");
+    return IndexIterator();
+  }
+  ExtendedIndexIterator
+  extended_indexes_begin(const ExtendedGridIndex3D& lb,
+                         const ExtendedGridIndex3D& ub) const {
+    ExtendedGridIndex3D eub=ub.get_offset(1,1,1);
+    return ExtendedIndexIterator(lb, eub);
+  }
+  ExtendedIndexIterator
+  extended_indexes_end(const ExtendedGridIndex3D&,
+                       const ExtendedGridIndex3D&) const {
+    //IMP_INTERNAL_CHECK(lb <= ub, "empty range");
+    return ExtendedIndexIterator();
+  }
+#endif
+
+  GridIndex3Ds get_indexes(const ExtendedGridIndex3D& lb,
+                           const ExtendedGridIndex3D& ub) const {
+    return GridIndex3Ds(indexes_begin(lb, ub), indexes_end(lb, ub));
+  }
+  ExtendedGridIndex3Ds
+  get_extended_indexes(const ExtendedGridIndex3D& lb,
+                       const ExtendedGridIndex3D& ub) const {
+    return ExtendedGridIndex3Ds(extended_indexes_begin(lb, ub),
+                                extended_indexes_end(lb, ub));
+  }
+  /* @} */
+
+  //! Convert a ExtendedIndex into a real Index if possible
+  /** The passed index must be part of the grid
+   */
+  GridIndex3D get_index(const ExtendedGridIndex3D& v) const {
+    IMP_USAGE_CHECK(get_has_index(v), "Passed index not in grid "
+                    << v);
+    return GridIndex3D(v[0], v[1], v[2]);
+  }
+
+  //! Return true if the ExtendedIndex is also a normal index value
+  bool get_has_index(const ExtendedGridIndex3D& v) const {
+    for (unsigned int i=0; i< 3; ++i) {
+      if (v[i] < 0
+          || v[i] >= static_cast<int>(get_number_of_voxels(i))) {
+        return false;
+      }
+    }
+    return true;
+  }
+};
+
+
+
+/** The base for storing a grid on all of space (in 3D).
+ */
+class UnboundedGridStorage3D {
+public:
+  UnboundedGridStorage3D(){}
+#ifndef IMP_DOXYGEN
+  // for swig
+  UnboundedGridStorage3D(int, int, int){
+    IMP_USAGE_CHECK(false, "The method/constructor cannot be used"
+                    << " with unbounded storage.");
+  }
+  void set_size(int,int,int){
+   IMP_USAGE_CHECK(false, "The method/constructor cannot be used"
+                    << " with unbounded storage.");
+  }
+  unsigned int get_number_of_voxels(int) const {
+    IMP_USAGE_CHECK(false, "The method/constructor cannot be used"
+                    << " with unbounded storage.");
+    return std::numeric_limits<int>::max();
+  }
+  static bool get_is_bounded() {
+    return false;
+  }
+#endif
+
+  bool get_has_index(const ExtendedGridIndex3D& v) const {
+    return true;
+  }
+
+#ifndef SWIG
+#ifndef IMP_DOXYGEN
+  typedef internal::GridIndexIterator<ExtendedGridIndex3D,
+                                      internal::AllItHelp<ExtendedGridIndex3D,
+                                                          ExtendedGridIndex3D> >
+  ExtendedIndexIterator;
+#else
+  class ExtendedIndexIterator;
+#endif
+  ExtendedIndexIterator
+  extended_indexes_begin(const ExtendedGridIndex3D& lb,
+                         const ExtendedGridIndex3D& ub) const {
+    ExtendedGridIndex3D eub=ub.get_offset(1,1,1);
+    IMP_INTERNAL_CHECK(eub.strictly_larger_than(lb),
+                       "empty range");
+    return ExtendedIndexIterator(lb, eub);
+  }
+  ExtendedIndexIterator extended_indexes_end(const ExtendedGridIndex3D&,
+                                             const ExtendedGridIndex3D&) const {
+    return ExtendedIndexIterator();
+  }
+#endif
+  ExtendedGridIndex3Ds
+  get_extended_indexes(const ExtendedGridIndex3D& lb,
+                       const ExtendedGridIndex3D& ub) const {
+    return ExtendedGridIndex3Ds(extended_indexes_begin(lb, ub),
+                                extended_indexes_end(lb, ub));
+  }
+};
+
+
+
+
+
+/** Store a grid as a densely packed set of voxels.
+    \see Grid3D
+ */
+template <class VT>
+class DenseGridStorage3D: public BoundedGridStorage3D {
+  typedef std::vector<VT> Storage;
+  Storage data_;
+  VT default_;
+
+  template <class I>
+  unsigned int index(const I &i) const {
+    unsigned int ii= i[2]*BoundedGridStorage3D::get_number_of_voxels(0)
+      *BoundedGridStorage3D::get_number_of_voxels(1)
+      + i[1]*BoundedGridStorage3D::get_number_of_voxels(0)+i[0];
+    IMP_INTERNAL_CHECK(ii < data_.size(), "Invalid grid index "
+                       << i[0] << " " << i[1] << " " << i[2]
+                       << ": " << BoundedGridStorage3D::get_number_of_voxels(0)
+                       << " " << BoundedGridStorage3D::get_number_of_voxels(1)
+                       << " " << BoundedGridStorage3D::get_number_of_voxels(2));
+    return ii;
+  }
+#ifndef SWIG
+  struct NonDefault {
+    VT default_;
+    NonDefault(const VT &def): default_(def){}
+    template <class P>
+    bool operator()(const P &def) const {
+      return def.second != default_;
+    }
+  };
+#endif
+public:
+  DenseGridStorage3D(int i, int j, int k, const VT &def):
+    BoundedGridStorage3D(i,j,k),
+    data_(i*j*k, def),
+    default_(def) {
+  }
+  IMP_BRACKET(VT, GridIndex3D, true, return data_[index(i)]);
+#ifndef IMP_DOXYGEN
+  DenseGridStorage3D(const VT &def): default_(def) {
+  }
+  void set_size(int i, int j, int k) {
+    data_.resize(i*j*k, default_);
+    BoundedGridStorage3D::set_size(i,j,k);
+  }
+  static bool get_is_dense() {
+    return true;
+  }
+#endif
+  IMP_SHOWABLE_INLINE(DenseGridStorage3D,
+                      out << BoundedGridStorage3D::get_number_of_voxels(0)
+                      << " by "
+                      << BoundedGridStorage3D::get_number_of_voxels(1)
+                      << " by "
+                      << BoundedGridStorage3D::get_number_of_voxels(0)
+                      << " grid");
+  const VT* get_raw_data() const {
+    return &data_[0];
+  }
+
+#ifndef IMP_DOXYGEN
+  void add_voxel(const ExtendedGridIndex3D& i, const VT& gi) {
+    IMP_USAGE_CHECK(false, "Cannot add voxels to dense grid");
+  }
+#endif
+
   /** \name All voxel iterators
       The value type is VT.
       @{
   */
-  typedef typename GridStorage::iterator AllVoxelIterator;
-  typedef typename GridStorage::const_iterator AllVoxelConstIterator;
+#ifndef SWIG
+  typedef typename Storage::iterator AllVoxelIterator;
+  typedef typename Storage::const_iterator AllVoxelConstIterator;
   AllVoxelIterator all_voxels_begin() {
     return data_.begin();
   }
@@ -107,60 +513,94 @@ public:
   AllVoxelConstIterator all_voxels_end() const {
     return data_.end();
   }
+#endif
   /** @} */
 };
 
 
-/** Store a grid as a sparse set of voxels. Voxels are not part
-    of the representation until set_voxel() is called on them. As a
-    result, only a const version of operator[]() is provided.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/** Store a grid as a sparse set of voxels (only the voxels which have
+    been added are actually stored). The
+    get_has_voxel() functions allow one to tell if a voxel has been added.
     \unstable{SparseGridStorage3D}
+
+    Base should be one of BoundedGridStorage3D or UnboundedGridStorage3D.
     \see Grid3D
 */
-template <class VT>
-class SparseGridStorage3D {
+template <class VT, class Base>
+class SparseGridStorage3D: public Base {
 #if IMP_BOOST_VERSION > 103500
-  typedef typename boost::unordered_map<typename internal::GridIndex, VT>
-  GridStorage;
+  typedef typename boost::unordered_map<GridIndex3D, VT>
+  Storage;
 #else
-  typedef std::map<typename internal::GridIndex, VT> GridStorage;
+  typedef std::map<GridIndex3D, VT> Storage;
 #endif
-  GridStorage data_;
-  VT default_;
-  int d_[3];
-public:
-  typedef internal::GridIndex Index;
-  typedef VT& reference;
-  typedef const VT& const_reference;
-  SparseGridStorage3D(const VT &def): default_(def) {
-    d_[0]=0;
-    d_[1]=0;
-    d_[2]=0;
-  }
-  SparseGridStorage3D(int i, int j, int k,
-                      const VT &def): default_(def) {
-    d_[0]=i;
-    d_[1]=j;
-    d_[2]=k;
-  }
-  void set_voxel(Index i, const VT& gi) {
-    data_[i]=gi;
-  }
-  template <class T>
-  bool get_is_non_empty(const T &t) const {
-    for (unsigned int i=0; i< 3; ++i) {
-      if (t[i] < 0) return false;
-      if (t[i] >= d_[i]) return false;
+  struct GetIndex {
+    typedef GridIndex3D result_type;
+    typedef typename Storage::const_iterator::value_type argument_type;
+    template <class T>
+    GridIndex3D operator()(const T&t) const {
+      return t.first;
     }
-    return data_.find(Index(t[0], t[1], t[2])) != data_.end();
+  };
+  struct ItHelper {
+    const SparseGridStorage3D<VT, Base> *stor_;
+    ItHelper(const SparseGridStorage3D<VT, Base> *stor): stor_(stor){}
+    bool get_is_good(const ExtendedGridIndex3D &ei) {
+      return stor_->get_has_index(ei);
+    }
+    typedef GridIndex3D ReturnType;
+    ReturnType get_return(const ExtendedGridIndex3D &ei) const {
+      return stor_->get_index(ei);
+    }
+    ItHelper(): stor_(NULL){}
+  };
+
+  Storage data_;
+  VT default_;
+public:
+  SparseGridStorage3D(int i, int j, int k,
+                      const VT &def): Base(i,j,k),
+                                      default_(def) {
   }
-  bool get_is_non_empty(Index i) const {
-    return data_.find(i) != data_.end();
+  IMP_SHOWABLE_INLINE(SparseGridStorage3D, out << "Sparse grid with "
+                      << data_.size() << " cells set");
+
+  void add_voxel(const ExtendedGridIndex3D& i, const VT& gi) {
+    IMP_USAGE_CHECK(Base::get_has_index(i), "Out of grid domain "
+                    << i);
+    data_[GridIndex3D(i[0], i[1], i[2])]=gi;
   }
-  const_reference get_voxel(Index gi) const {
-    typename GridStorage::const_iterator it=data_.find(gi);
-    if (it == data_.end()) return default_;
-    else return it->second;
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+  SparseGridStorage3D(const VT &def): default_(def) {
+  }
+  static bool get_is_dense() {
+    return false;
+  }
+#endif
+  bool get_has_index(const ExtendedGridIndex3D&i) const {
+    return data_.find(GridIndex3D(i[0], i[1], i[2])) != data_.end();
+  }
+  GridIndex3D get_index(const ExtendedGridIndex3D &i) const {
+    IMP_USAGE_CHECK(get_has_index(i), "Index is not a valid "
+                    << "voxel " << i);
+    return GridIndex3D(i[0], i[1], i[2]);
   }
   /** \name Operator []
       Operator[] isn't very useful at the moment as it can only
@@ -168,39 +608,95 @@ public:
       behavior/the existence of these functions is likely to change.
       @{
   */
-  const_reference operator[](Index gi) const  {
-    return get_voxel(gi);
-  }
-  reference operator[](Index gi)  {
-    IMP_USAGE_CHECK(get_is_non_empty(gi),
-                    "Can only call operator[] on non-empty voxels.");
-    return data_[gi];
-  }
+  IMP_BRACKET(VT, GridIndex3D, true,
+              return data_.find(i)->second);
   /** @} */
-  void set_size(int i, int j, int k) {
-    d_[0]=i;
-    d_[1]=j;
-    d_[2]=k;
-  }
-  //! Return the number of voxels in a certain direction
-  unsigned int get_number_of_voxels(unsigned int i) const {
-    IMP_INTERNAL_CHECK(i < 3, "Only 3D: "<< i);
-    return d_[i];
-  }
-  /** \name Non empty iterators
+
+  /** \name Iterators through set cells
       Iterate through the voxels which have been set. The value
-      type is a pair of Index and VT.
+      type is a pair of GridIndex3D and VT.
       @{
   */
-  typedef typename GridStorage::const_iterator AllNonEmptyConstIterator;
-  AllNonEmptyConstIterator all_non_empty_begin() const {
+#ifndef SWIG
+  typedef typename Storage::const_iterator AllConstIterator;
+  AllConstIterator all_begin() const {
     return data_.begin();
   }
-  AllNonEmptyConstIterator all_non_empty_end() const {
+  AllConstIterator all_end() const {
     return data_.end();
+  }
+#endif
+
+  GridIndex3Ds get_all_indexes() const {
+    return GridIndex3Ds(boost::make_transform_iterator(all_begin(), GetIndex()),
+                        boost::make_transform_iterator(all_end(), GetIndex()));
+  }
+  /** @} */
+
+
+
+ /** \name Index Iterators
+
+      Iterate through a range of actual indexes. The value
+      type for the iterator is an GridIndex3D.
+
+      The range is defined by a pair of indexes. It includes
+      all indexes in the axis aligned box defined by lb
+      as the lower corner and the second as the ub. That is, if
+      lb is \f$(l_x, l_y, l_z)\f$ and ub is \f$(u_x, u_y, u_z)\f$,
+      then the range includes all
+      indexes \f$(i_x, i_y, i_z)\f$ such that \f$l_x \leq i_x \leq u_x\f$,
+      \f$l_y \leq i_y \leq u_y\f$
+      and \f$l_z \leq i_z \leq u_z\f$.
+
+      @{
+  */
+#ifndef SWIG
+#ifndef IMP_DOXYGEN
+
+  typedef internal::GridIndexIterator<ExtendedGridIndex3D,
+                                      ItHelper > IndexIterator;
+
+#else
+  class IndexIterator;
+#endif
+  IndexIterator indexes_begin(const ExtendedGridIndex3D& lb,
+                              const ExtendedGridIndex3D& ub) const {
+    ExtendedGridIndex3D eub=ub.get_offset(1,1,1);
+    if (lb == ub) {
+      return IndexIterator();
+    } else {
+      IMP_INTERNAL_CHECK(eub.strictly_larger_than(lb),
+                         "empty range");
+      return IndexIterator(lb, ub, ItHelper(this));
+    }
+  }
+  IndexIterator indexes_end(const ExtendedGridIndex3D&,
+                            const ExtendedGridIndex3D&) const {
+    //IMP_INTERNAL_CHECK(lb <= ub, "empty range");
+    return IndexIterator();
+  }
+#endif
+
+  GridIndex3Ds get_indexes(const ExtendedGridIndex3D& lb,
+                           const ExtendedGridIndex3D& ub) const {
+    return GridIndex3Ds(indexes_begin(lb, ub), indexes_end(lb, ub));
   }
   /** @} */
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //! A voxel grid in 3D space.
@@ -224,53 +720,37 @@ public:
    }
    \endcode
 
-   The grid class is implemented in two parts, a lower storage level
-   which defines how voxels are stored and provides basic access and a
-   higher geometric level. The former is the Storage template parameter
-   for the latter, the Grid3D class itself.
+   See \ref grids "Grids" for more information.
 
    \see DenseGridStorage3D
    \see SparseGridStorage3D
-
-   \note This class is not available in python.
  */
 template <class VT, class Storage=DenseGridStorage3D<VT> >
 class Grid3D: public Storage
 {
-public:
-  //! The type stored in each voxel.
-  typedef VT Voxel;
-
-#ifndef IMP_DOXYGEN
-  typedef typename Storage::Index Index;
-  typedef internal::VirtualGridIndex ExtendedIndex;
-  typedef typename Storage::reference reference;
-  typedef typename Storage::const_reference const_reference;
-#endif
-
 private:
-  BoundingBoxD<3> bbox_;
+  Vector3D origin_;
   VectorD<3> unit_cell_;
   // inverse
   VectorD<3> inverse_unit_cell_;
 
   struct GetVoxel {
-    mutable Grid3D<VT> *home_;
-    GetVoxel(Grid3D<VT> *home): home_(home) {}
-    typedef reference result_type;
-    typedef const typename Storage::Index& argument_type;
+    mutable Grid3D<VT, Storage> *home_;
+    GetVoxel(Grid3D<VT, Storage> *home): home_(home) {}
+    typedef VT& result_type;
+    typedef const GridIndex3D& argument_type;
     result_type operator()(argument_type i) const {
       return home_->operator[](i);
     }
   };
 
   struct ConstGetVoxel {
-    const Grid3D<VT> *home_;
-    ConstGetVoxel(const Grid3D<VT> *home): home_(home) {}
-    typedef reference result_type;
-    typedef const typename Storage::Index& argument_type;
+    const Grid3D<VT, Storage> *home_;
+    ConstGetVoxel(const Grid3D<VT, Storage> *home): home_(home) {}
+    typedef const VT& result_type;
+    typedef const GridIndex3D& argument_type;
     result_type operator()(argument_type i) const {
-      return home_->get_voxel(i);
+      return home_->operator[](i);
     }
   };
 
@@ -281,36 +761,6 @@ private:
                                    1.0/unit_cell_[2]);
   }
 
-  int snap(unsigned int dim, int v) const {
-    IMP_INTERNAL_CHECK(dim <3, "Invalid dim");
-    if (v < 0) return 0;
-    else if (v > static_cast<int>(Storage::get_number_of_voxels(dim))) {
-      return Storage::get_number_of_voxels(dim);
-    }
-    else return v;
-  }
-
-  Index snap(const ExtendedIndex &v) const {
-    return Index(snap(0, v[0]),
-                 snap(1, v[1]),
-                 snap(2, v[2]));
-  }
-  std::pair<Index, ExtendedIndex> empty_range() const {
-    return std::make_pair(Index(0,0,0), ExtendedIndex(0,0,0));
-  }
-
-  std::pair<Index, ExtendedIndex> intersect(ExtendedIndex l,
-                                            ExtendedIndex u) const {
-    Index rlb;
-    ExtendedIndex rub;
-    for (unsigned int i=0; i< 3; ++i) {
-      if (u[i] <= 0) return empty_range();
-      if (l[i] >= static_cast<int>(Storage::get_number_of_voxels(i))){
-        return empty_range();
-      }
-    }
-    return std::make_pair(snap(l), snap(u));
-  }
 public:
 
   //! Initialize the grid
@@ -319,20 +769,16 @@ public:
       \param[in] zd The number of voxels in the z direction
       \param[in] bb The bounding box.
       \param[in] def The default value for the voxels
+
+      The origin in the corner 0 of the bounding box.
    */
   Grid3D(int xd, int yd, int zd,
          const BoundingBoxD<3> &bb,
-         Voxel def=Voxel()): Storage(xd, yd, zd, def),
-                             bbox_(bb) {
+         VT def=VT()): Storage(xd, yd, zd, def),
+                       origin_(bb.get_corner(0)) {
     IMP_USAGE_CHECK(xd > 0 && yd>0 && zd>0,
                     "Can't have empty grid");
-    VectorD<3> nuc;
-    for (unsigned int i=0; i< 3; ++i) {
-      double side= bbox_.get_corner(1)[i]- bbox_.get_corner(0)[i];
-      IMP_USAGE_CHECK(side>0, "Can't have flat grid");
-      nuc[i]= 1.01*side/Storage::get_number_of_voxels(i);
-    }
-    set_unit_cell(nuc);
+    set_bounding_box(bb);
   }
 
   //! Initialize the grid
@@ -341,243 +787,210 @@ public:
       box might be slightly different as the actual grid size
       must be divisible by the voxel side.
       \param[in] def The default value for the voxels
+
+      The origin in the corner 0 of the bounding box.
    */
   Grid3D(double side,
          const BoundingBoxD<3> &bb,
-         Voxel def=Voxel()): Storage(def) {
+         const VT& def=VT()): Storage(def) {
+    IMP_USAGE_CHECK(Storage::get_is_bounded(),
+              "This grid constructor can only be used with bounded grids.");
     IMP_USAGE_CHECK(side>0, "Side cannot be 0");
     VectorD<3> nuc(side, side, side);
-    set_unit_cell(nuc);
     int dd[3];
-    VectorD<3> ubs;
     for (unsigned int i=0; i< 3; ++i ) {
       double bside= bb.get_corner(1)[i]- bb.get_corner(0)[i];
       double d= bside/side;
       double cd= std::ceil(d);
-      dd[i]= std::min<int>(1, static_cast<int>(cd));
-       do {
-        ubs[i]=bb.get_corner(0)[i]+dd[i]*unit_cell_[i];
-        if (ubs[i] > bb.get_corner(1)[i]) break;
-        else ++dd[i];
-      } while (true);
-    }
-    bbox_=BoundingBoxD<3>(bb.get_corner(0), ubs);
-    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-      for (unsigned int i=0; i< 3; ++i) {
-        IMP_INTERNAL_CHECK(bbox_.get_corner(1)[i] >= bb.get_corner(1)[i],
-                           "Old bounding box not subsumed in new.");
-      }
+      dd[i]= std::max<int>(1, static_cast<int>(cd));
     }
     Storage::set_size(dd[0], dd[1], dd[2]);
+    set_unit_cell(algebra::Vector3D(side, side, side));
+    origin_= bb.get_corner(0);
+    IMP_LOG(TERSE, "Constructing grid with side "
+            << unit_cell_[0] << " and box "
+            << algebra::BoundingBox3D(origin_,origin_+
+                                      algebra::Vector3D(unit_cell_[0]
+                                             *Storage::get_number_of_voxels(0),
+                                             unit_cell_[1]
+                                             *Storage::get_number_of_voxels(1),
+                                             unit_cell_[2]
+                                         *Storage::get_number_of_voxels(2)))
+            << " from request with " << side << " and " << bb << std::endl);
   }
 
+
+  //! Construct and infinite grid with the given origin and cell size
+  /** You had better use a sparse, unbounded storage (eg
+      \c SparseGridStorage3D<VT, UnboundedGridStorage3D>)
+  */
+  Grid3D(double side,
+         const Vector3D &origin, const VT& def= VT()):
+    Storage(def),
+    origin_(origin), unit_cell_(side, side, side),
+    inverse_unit_cell_(1/side, 1/side, 1/side){}
   //! An empty grid.
   Grid3D(): Storage(VT()){
   }
 
+  const Vector3D get_origin() const {
+    return origin_;
+  }
+
   BoundingBoxD<3> get_bounding_box() const {
-    return bbox_;
+    return BoundingBoxD<3>(origin_,
+                    Vector3D(unit_cell_[0]*Storage::get_number_of_voxels(0),
+                             unit_cell_[1]*Storage::get_number_of_voxels(1),
+                             unit_cell_[2]*Storage::get_number_of_voxels(2)));
   }
 
   //! Change the bounding box but not the grid or contents
+  /** The origin is set to corner 0 of the new bounding box.
+   */
   void set_bounding_box(const BoundingBoxD<3> &bb3) {
-    bbox_ =bb3;
     VectorD<3> nuc;
     for (unsigned int i=0; i< 3; ++i) {
-      double el= (bb3.get_corner(1)[i]- bb3.get_corner(0)[i])
-        /Storage::get_number_of_voxels(i);
-      nuc[i]=el;
+      double side= bb3.get_corner(1)[i]- bb3.get_corner(0)[i];
+      IMP_USAGE_CHECK(side>0, "Can't have flat grid");
+      nuc[i]= side/Storage::get_number_of_voxels(i);
     }
     set_unit_cell(nuc);
+    origin_= bb3.get_corner(0);
   }
 
-  //! Return the unit cell
+  //! Return the unit cell, relative to the origin
   const VectorD<3>& get_unit_cell() const {
     return unit_cell_;
   }
 
+  IMP_BRACKET(VT, VectorD<3>,
+              Storage::get_has_index(get_extended_index(i)),
+              Storage::operator[](get_index(i)));
 
-#if defined(IMP_DOXYGEN) || defined(SWIG)
-  //! Get the data in a particular cell
-  Voxel& operator[](const VectorD<3> &v);
-
-  //! Get the data in a particular cell
-  const Voxel operator[](const VectorD<3> &v) const;
-  const Voxel& get_voxel(const VectorD<3> &v) const;
-  void set_voxel(const VectorD<3> &v, const Voxel &vv) const;
+#ifdef SWIG
+  const VT& __getitem__(const GridIndex3D &i) const;
+  void __setitem__(const GridIndex3D &i, const VT &vt);
 #else
-  reference operator[](const VectorD<3> &v) {
-    return Storage::get_voxel(get_index(v));
-  }
-  const_reference operator[](const VectorD<3> &v) const  {
-    return Storage::get_voxel(get_index(v));
-  }
-  const_reference get_voxel(const VectorD<3> &v) const {
-    return operator[](v);
-  }
-  void set_voxel(const VectorD<3> &v, const Voxel &vv) const {
-    Storage::set_voxel(get_index(v), vv);
-  }
+  using Storage::__getitem__;
+  using Storage::__setitem__;
   using Storage::operator[];
 #endif
 
-
-
 #ifndef IMP_DOXYGEN
+  //! Return the vector (1/u[0], 1/u[1], 1/u[2])
   const VectorD<3>& get_inverse_unit_cell() const {
     return inverse_unit_cell_;
   }
+#endif
 
-  //! Return the index of the voxel containing the point.
-  Index get_index(VectorD<3> pt) const {
-    IMP_USAGE_CHECK(bbox_.get_contains(pt),
-                    "Point " << pt << " is not part of grid "
-                    << bbox_);
-    int index[3];
-    for (unsigned int i=0; i< 3; ++i ) {
-      IMP_INTERNAL_CHECK(Storage::get_number_of_voxels(i) != 0,
-                         "Invalid grid in Index, no voxels");
-      double d = pt[i] - bbox_.get_corner(0)[i];
-      double fi= d*inverse_unit_cell_[i];
-      index[i]= std::min<int>(static_cast<int>(std::floor(fi)),
-                         Storage::get_number_of_voxels(i)-1);
-    }
-    return Index(index[0], index[1], index[2]);
+  bool get_has_index(const VectorD<3>& pt) const {
+    ExtendedGridIndex3D ei= get_extended_index(pt);
+    return Storage::get_has_index(ei);
   }
+  //! Return the index of the voxel containing the point.
+  GridIndex3D get_index(const VectorD<3>& pt) const {
+    ExtendedGridIndex3D ei= get_extended_index(pt);
+    return Storage::get_index(ei);
+  }
+  //! Get the nearest index.
+  /** If the point is in the grid, this is the index, otherwise
+      it is the closest one. This can only be used
+      with dense, bounded grids, right now.
+   */
+  GridIndex3D get_nearest_index(const VectorD<3>& pt) const {
+    IMP_USAGE_CHECK(Storage::get_is_dense(), "get_nearest_index "
+                    << "only works on dense grids.");
+    ExtendedGridIndex3D ei= get_nearest_extended_index(pt);
+    return get_index(ei);
+  }
+  //! Get the nearest extended index in the volume.
+  /** If the point is in the grid, this is the index, otherwise
+      it is the closest one. This can only be used
+      with bounded grids, right now.
+   */
+  ExtendedGridIndex3D get_nearest_extended_index(const VectorD<3>& pt) const {
+    IMP_USAGE_CHECK(Storage::get_is_bounded(), "get_nearest_index "
+                    << "only works on bounded grids.");
+    ExtendedGridIndex3D ei= get_extended_index(pt);
+    int is[3];
+    for (unsigned int i=0; i< 3; ++i) {
+      is[i]= std::max(0, ei[i]);
+      is[i]= std::min<int>(Storage::get_number_of_voxels(i)-1, is[i]);
+    }
+    return ExtendedGridIndex3D(is[0], is[1], is[2]);
+  }
+  // ! Can only be used on sparse grids
+  void add_voxel(const VectorD<3>& pt, const VT &vt) {
+    IMP_USAGE_CHECK(!Storage::get_is_dense(),
+                    "add_voxel() only works on sparse grids.");
+    ExtendedGridIndex3D ei= get_extended_index(pt);
+    Storage::add_voxel(ei, vt);
+  }
+#ifndef SWIG
+  using Storage::get_has_index;
+  using Storage::get_index;
+  using Storage::add_voxel;
+#else
+  bool get_has_index(const ExtendedGridIndex3D&i) const;
+  GridIndex3D get_index(const ExtendedGridIndex3D &i) const;
+  void add_voxel(const ExtendedGridIndex3D &i, const VT &vt);
+#endif
+
 
   //! Return the index that would contain the voxel if the grid extended there
   /** For example vectors below the "lower left" corner of the grid have
       indexes with all negative components.
   */
-  ExtendedIndex get_extended_index(VectorD<3> pt) const {
-    // make sure they are consistent
-    if (bbox_.get_contains(pt)) return get_index(pt);
+  ExtendedGridIndex3D get_extended_index(const VectorD<3>& pt) const {
     int index[3];
     for (unsigned int i=0; i< 3; ++i ) {
-      IMP_INTERNAL_CHECK(Storage::get_number_of_voxels(i) != 0,
-                         "Invalid grid in Index");
-      float d = pt[i] - bbox_.get_corner(0)[i];
+      float d = pt[i] - origin_[i];
       float fi= d*inverse_unit_cell_[i];
       index[i]= static_cast<int>(std::floor(fi));
-
-      IMP_INTERNAL_CHECK(std::abs(index[i]) < 200000000,
-                 "Something is probably wrong " << d
-                 << " " << pt[i]
-                 << " " << bbox_
-                 << " " << unit_cell_[i]);
     }
-    return ExtendedIndex(index[0], index[1], index[2]);
+    return ExtendedGridIndex3D(index[0], index[1], index[2]);
   }
 
-  ExtendedIndex get_extended_index(int a, int b, int c) const {
-    return ExtendedIndex(a,b,c);
+  ExtendedGridIndex3D get_extended_index(const GridIndex3D &index) const {
+    return ExtendedGridIndex3D(index[0], index[1], index[2]);
   }
 
-  //! increment the index in one coordinate
-  ExtendedIndex get_offset(ExtendedIndex v, int xi, int yi, int zi) const {
-    return ExtendedIndex(v[0]+xi, v[1]+yi, v[2]+zi);
-  }
 
-  //! Return true if the ExtendedIndex is also a normal index value
-  bool get_is_index(ExtendedIndex v) const {
-    for (unsigned int i=0; i< 3; ++i) {
-      if (v[i] < 0
-          || v[i] >= static_cast<int>(Storage::get_number_of_voxels(i))) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  //! Convert a ExtendedIndex into a real Index if possible
-  /** The passed index must be part of the grid
-   */
-  Index get_index(ExtendedIndex v) const {
-    IMP_USAGE_CHECK(get_is_index(v), "Passed index not in grid "
-                    << v);
-    return Index(v[0], v[1], v[2]);
-  }
-
-  BoundingBoxD<3> get_bounding_box(ExtendedIndex v) const {
-    VectorD<3> l=bbox_.get_corner(0)+ VectorD<3>(get_unit_cell()[0]*v[0],
-                                             get_unit_cell()[1]*v[1],
-                                             get_unit_cell()[2]*v[2]);
-    VectorD<3> u=bbox_.get_corner(0)+ VectorD<3>(get_unit_cell()[0]*(v[0]+1),
-                                             get_unit_cell()[1]*(v[1]+1),
-                                             get_unit_cell()[2]*(v[2]+1));
+ BoundingBoxD<3> get_bounding_box(const GridIndex3D& v) const {
+    VectorD<3> l=origin_+ VectorD<3>(get_unit_cell()[0]*v[0],
+                                     get_unit_cell()[1]*v[1],
+                                     get_unit_cell()[2]*v[2]);
+    VectorD<3> u=origin_+ VectorD<3>(get_unit_cell()[0]*(v[0]+1),
+                                     get_unit_cell()[1]*(v[1]+1),
+                                     get_unit_cell()[2]*(v[2]+1));
     return BoundingBoxD<3>(l,u);
   }
 
-  using Storage::get_voxel;
-  using Storage::set_voxel;
+  BoundingBoxD<3> get_bounding_box(const ExtendedGridIndex3D& v) const {
+    VectorD<3> l=origin_+ VectorD<3>(get_unit_cell()[0]*v[0],
+                                     get_unit_cell()[1]*v[1],
+                                     get_unit_cell()[2]*v[2]);
+    VectorD<3> u=origin_+ VectorD<3>(get_unit_cell()[0]*(v[0]+1),
+                                     get_unit_cell()[1]*(v[1]+1),
+                                     get_unit_cell()[2]*(v[2]+1));
+    return BoundingBoxD<3>(l,u);
+  }
+
   //! Return the coordinates of the center of the voxel
-  VectorD<3> get_center(ExtendedIndex gi) const {
+  VectorD<3> get_center(const ExtendedGridIndex3D& gi) const {
     return VectorD<3>(unit_cell_[0]*(.5+ gi[0]),
                       unit_cell_[1]*(.5+ gi[1]),
                       unit_cell_[2]*(.5+ gi[2]))
-      + bbox_.get_corner(0);
+      + origin_;
   }
 
-  /** \name Index Iterators
+  VectorD<3> get_center(const GridIndex3D& gi) const {
+    return VectorD<3>(unit_cell_[0]*(.5+ gi[0]),
+                      unit_cell_[1]*(.5+ gi[1]),
+                      unit_cell_[2]*(.5+ gi[2]))
+      + origin_;
+  }
 
-      Iterate through a range of actual indexes. The value
-      type for the iterator is an Index.
-
-      The range is defined by a pair of indexes. It includes
-      all indexes in the axis aligned box defined by lb
-      as the lower corner and the second as the ub. That is, if
-      lb is \f$(l_x, l_y, l_z)\f$ and ub is \f$(u_x, u_y, u_z)\f$,
-      then the range includes all
-      indexes \f$(i_x, i_y, i_z)\f$ such that \f$l_x \leq i_x \leq u_x\f$,
-      \f$l_y \leq i_y \leq u_y\f$
-      and \f$l_z \leq i_z \leq u_z\f$.
-
-      @{
-  */
-  typedef internal::GridIndexIterator<Index> IndexIterator;
-  IndexIterator indexes_begin(ExtendedIndex lb,
-                              ExtendedIndex ub) const {
-    ExtendedIndex eub=get_offset(ub, 1,1,1);
-    std::pair<Index, ExtendedIndex> bp= intersect(lb,eub);
-    if (bp.first== bp.second) {
-      return IndexIterator();
-    } else {
-      IMP_INTERNAL_CHECK(bp.second.strictly_larger_than(bp.first),
-                         "empty range");
-      return IndexIterator(bp.first, bp.second);
-    }
-  }
-  IndexIterator indexes_end(ExtendedIndex,
-                            ExtendedIndex) const {
-    //IMP_INTERNAL_CHECK(lb <= ub, "empty range");
-    return IndexIterator();
-  }
-  typedef IndexIterator AllIndexIterator;
-  AllIndexIterator all_indexes_begin() const {
-    return indexes_begin(ExtendedIndex(0,0,0),
-                         ExtendedIndex(Storage::get_number_of_voxels(0),
-                                       Storage::get_number_of_voxels(1),
-                                       Storage::get_number_of_voxels(2)));
-  }
-  AllIndexIterator all_indexes_end() const {
-    return indexes_end(ExtendedIndex(0,0,0),
-                       ExtendedIndex(Storage::get_number_of_voxels(0),
-                                     Storage::get_number_of_voxels(1),
-                                     Storage::get_number_of_voxels(2)));
-  }
-  typedef internal::GridIndexIterator<ExtendedIndex> ExtendedIndexIterator;
-  ExtendedIndexIterator extended_indexes_begin(ExtendedIndex lb,
-                                      ExtendedIndex ub) const {
-    ExtendedIndex eub=get_offset(ub, 1,1,1);
-    return ExtendedIndexIterator(lb, eub);
-  }
-  ExtendedIndexIterator extended_indexes_end(ExtendedIndex,
-                            ExtendedIndex) const {
-    //IMP_INTERNAL_CHECK(lb <= ub, "empty range");
-    return ExtendedIndexIterator();
-  }
-  /* @} */
-#endif
 
 
   /** \name Voxel iterators
@@ -587,41 +1000,44 @@ public:
       begin/end calls.
       @{
   */
+#ifndef SWIG
 #ifdef IMP_DOXYGEN
   class VoxelIterator;
   class VoxelConstIterator;
-  class AllVoxelIterator;
-  class AllVoxelConstIterator;
-  class NonEmptyConstIterator;
 #else
-  typedef boost::transform_iterator<GetVoxel, IndexIterator> VoxelIterator;
+  typedef boost::transform_iterator<GetVoxel, typename Storage::IndexIterator>
+  VoxelIterator;
   typedef boost::transform_iterator<ConstGetVoxel,
-                                    IndexIterator> VoxelConstIterator;
+                                    typename Storage::IndexIterator>
+  VoxelConstIterator;
 #endif
   VoxelIterator voxels_begin(const BoundingBoxD<3> &bb) {
-    ExtendedIndex lb= get_extended_index(bb.get_corner(0));
-    ExtendedIndex ub= get_extended_index(bb.get_corner(1));
-    return VoxelIterator(indexes_begin(lb, ub), GetVoxel(this));
+    ExtendedGridIndex3D lb= get_extended_index(bb.get_corner(0));
+    ExtendedGridIndex3D ub= get_extended_index(bb.get_corner(1));
+    return VoxelIterator(Storage::indexes_begin(lb, ub), GetVoxel(this));
   }
   VoxelIterator voxels_end(const BoundingBoxD<3> &) {
     //ExtendedIndex lb= get_extended_index(bb.get_corner(0));
     //ExtendedIndex ub= get_extended_index(bb.get_corner(1));
-    return VoxelIterator(indexes_end(ExtendedIndex(),
-                                     ExtendedIndex()), GetVoxel(this));
+    return VoxelIterator(Storage::indexes_end(ExtendedGridIndex3D(),
+                                              ExtendedGridIndex3D()),
+                         GetVoxel(this));
   }
 
   VoxelConstIterator voxels_begin(const BoundingBoxD<3> &bb) const {
-    ExtendedIndex lb= get_extended_index(bb.get_corner(0));
-    ExtendedIndex ub= get_extended_index(bb.get_corner(1));
-    return VoxelConstIterator(indexes_begin(lb, ub), ConstGetVoxel(this));
-  }
-  VoxelConstIterator voxels_end(const BoundingBoxD<3> &bb) const {
-    ExtendedIndex lb= get_extended_index(bb.get_corner(0));
-    ExtendedIndex ub= get_extended_index(bb.get_corner(1));
-    return VoxelConstIterator(indexes_end(ExtendedIndex(),
-                                          ExtendedIndex()),
+    ExtendedGridIndex3D lb= get_extended_index(bb.get_corner(0));
+    ExtendedGridIndex3D ub= get_extended_index(bb.get_corner(1));
+    return VoxelConstIterator(Storage::indexes_begin(lb, ub),
                               ConstGetVoxel(this));
   }
+  VoxelConstIterator voxels_end(const BoundingBoxD<3> &bb) const {
+    ExtendedGridIndex3D lb= get_extended_index(bb.get_corner(0));
+    ExtendedGridIndex3D ub= get_extended_index(bb.get_corner(1));
+    return VoxelConstIterator(Storage::indexes_end(ExtendedGridIndex3D(),
+                                                   ExtendedGridIndex3D()),
+                              ConstGetVoxel(this));
+  }
+#endif
   /** @} */
 };
 
@@ -629,12 +1045,15 @@ public:
 /** The voxel values are assumed to be at the center of the voxel
     and the passed outside value is used for voxels outside the
     grid. The type Voxel must support get_linearly_interpolated().
+    \relatesalso Grid3D
 */
-template <class Voxel>
-const Voxel &get_trilinearly_interpolated(const Grid3D<Voxel> &g,
+template <class Voxel, class Storage>
+const Voxel &get_trilinearly_interpolated(const Grid3D<Voxel, Storage> &g,
                                           const VectorD<3> &v,
                                           const Voxel& outside=0);
 
+
+/** @} */
 IMPALGEBRA_END_NAMESPACE
 
 #include "internal/grid_3d_impl.h"
@@ -644,6 +1063,7 @@ IMPALGEBRA_END_NAMESPACE
     unsigned int voxel_index[3] and the coordinates of the center is
     VectorD<3> voxel_center and the index of the voxel is
     loop_voxel_index.
+    \relatesalso Grid3D
  */
 #define IMP_GRID3D_FOREACH_VOXEL(grid, action)                          \
   {                                                                     \
@@ -653,7 +1073,7 @@ IMPALGEBRA_END_NAMESPACE
     const unsigned int macro_map_ny=g.get_number_of_voxels(1);          \
     const unsigned int macro_map_nz=g.get_number_of_voxels(2);          \
     const algebra::Vector3D macro_map_origin                            \
-      =g.get_bounding_box().get_corner(0);                              \
+      =g.get_origin();                                                  \
     unsigned int voxel_index[3];                                        \
     IMP::algebra::VectorD<3> voxel_center;                              \
     for (voxel_index[0]=0; voxel_index[0]< macro_map_nx;                \
@@ -680,6 +1100,7 @@ IMPALGEBRA_END_NAMESPACE
 /** Iterate over each voxel in a subset of the grid that are less than
     center. The voxel index is unsigned int voxel_index[3]. Use this if,
     for example you want to find nearby pairs of voxels once each.
+    \relatesalso Grid3D
 */
 #define IMP_GRID3D_FOREACH_SMALLER_EXTENDED_INDEX_RANGE(grid, center,   \
                                                         lower_corner,   \

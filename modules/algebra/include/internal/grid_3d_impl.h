@@ -12,8 +12,8 @@
 IMPALGEBRA_BEGIN_NAMESPACE
 namespace {
   // trilerp helper
-  template <class Voxel>
-  void compute_voxel(const Grid3D<Voxel> &g,
+  template <class Voxel, class Storage>
+  void compute_voxel(const Grid3D<Voxel, Storage> &g,
                      const VectorD<3> &v,
                      int *ivox,
                      VectorD<3> &remainder) {
@@ -32,8 +32,8 @@ namespace {
                          << " " << fvox);
     }
   }
-  template <class Voxel>
-  Voxel get_value(const Grid3D<Voxel> &g,
+  template <class Voxel, class Storage>
+  Voxel get_value(const Grid3D<Voxel, Storage> &g,
                   int xi,
                   int yi, int zi,
                   const Voxel &outside) {
@@ -43,13 +43,13 @@ namespace {
              || yi >= g.get_number_of_voxels(1)
              || zi >= g.get_number_of_voxels(2)) return outside;
     else {
-      return operator[](typename Grid3D<Voxel>::Index(xi, yi, zi));
+      return g[GridIndex3D(xi, yi, zi)];
     }
   }
 }
 
-template <class Voxel>
-const Voxel &get_trilinearly_interpolated(const Grid3D<Voxel> &g,
+template <class Voxel, class Storage>
+const Voxel &get_trilinearly_interpolated(const Grid3D<Voxel, Storage> &g,
                                           const VectorD<3> &v,
                                           const Voxel& outside) {
   // trilirp in z, y, x

@@ -13,11 +13,13 @@ def get_sphere(v):
       return v
 %}
 
-IMP_SWIG_VALUE(IMP::algebra,  Rotation2D, Rotation2Ds);
-IMP_SWIG_VALUE(IMP::algebra,  Rotation3D, Rotation3Ds);
-IMP_SWIG_VALUE(IMP::algebra,  Transformation2D, Transformation2Ds);
-IMP_SWIG_VALUE(IMP::algebra,  Transformation3D, Transformation3Ds);
-IMP_SWIG_VALUE(IMP::algebra,  SphericalVector3D, SphericalVector3Ds);
+IMP_SWIG_VALUE(IMP::algebra, Rotation2D, Rotation2Ds);
+IMP_SWIG_VALUE(IMP::algebra, Rotation3D, Rotation3Ds);
+IMP_SWIG_VALUE(IMP::algebra, Transformation2D, Transformation2Ds);
+IMP_SWIG_VALUE(IMP::algebra, Transformation3D, Transformation3Ds);
+IMP_SWIG_VALUE(IMP::algebra, SphericalVector3D, SphericalVector3Ds);
+IMP_SWIG_VALUE(IMP::algebra, GridIndex3D, GridIndex3Ds);
+IMP_SWIG_VALUE(IMP::algebra, ExtendedGridIndex3D, ExtendedGridIndex3Ds);
 
 IMP_SWIG_VALUE(IMP::algebra,  AxisAnglePair, AxisAnglePairs);
 IMP_SWIG_VALUE(IMP::algebra,  Cone3D, Cone3Ds);
@@ -71,6 +73,7 @@ namespace multi_array_types {
 %include "IMP/algebra/Ellipsoid3D.h"
 %include "IMP/algebra/SphereD.h"
 %include "IMP/algebra/Sphere3D.h"
+%include "IMP/algebra/Grid3D.h"
 namespace IMP {
  namespace algebra {
    %template(Sphere2D) SphereD<2>;
@@ -109,6 +112,13 @@ namespace IMP {
    %template(get_unit_bounding_box_2d) get_unit_bounding_box_d<2>;
    %template(get_unit_bounding_box_3d) get_unit_bounding_box_d<3>;
    %template(get_unit_bounding_box_4d) get_unit_bounding_box_d<4>;
+   %template(_SparseIntStorage) SparseGridStorage3D<int, BoundedGridStorage3D>;
+   %template(_SparseUBIntStorage) SparseGridStorage3D<int, UnboundedGridStorage3D>;
+   %template(_DenseDoubleStorage) DenseGridStorage3D<double>;
+   %template(SparseIntGrid3D) Grid3D<int, SparseGridStorage3D<int, BoundedGridStorage3D> >;
+   %template(SparseUnboundedIntGrid3D) Grid3D<int, SparseGridStorage3D<int, UnboundedGridStorage3D> >;
+   %template(DenseDoubleGrid3D) Grid3D<double, DenseGridStorage3D<double> >;
+
    // for debugging
    //%template(SpherePair3D) ::std::pair<IMP::algebra::SphereD<3>,IMP::algebra::SphereD<3> >;
    //%template(SpherePair3Ds) ::std::vector< ::std::pair<IMP::algebra::SphereD<3>,IMP::algebra::SphereD<3> > >;
@@ -123,6 +133,7 @@ namespace IMP {
 %inline %{
 namespace IMP {
 namespace algebra {
+
 SphereD<2> get_unit_sphere_2d() { return SphereD<2>(get_zero_vector_d<2>(), 1);}
 SphereD<3> get_unit_sphere_3d() { return SphereD<3>(get_zero_vector_d<3>(), 1);}
 SphereD<4> get_unit_sphere_4d() { return SphereD<4>(get_zero_vector_d<4>(), 1);}
