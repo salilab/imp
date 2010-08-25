@@ -56,8 +56,10 @@ VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
         XYZR d(_1);
         algebra::SphereD<3> s= d.get_sphere();
         algebra::BoundingBox3D bb= algebra::get_bounding_box(d.get_sphere());
-        Grid::ExtendedIndex vl= grid_.get_extended_index(bb.get_corner(0));
-        Grid::ExtendedIndex vu= grid_.get_extended_index(bb.get_corner(1));
+        algebra::ExtendedGridIndex3D vl
+          = grid_.get_extended_index(bb.get_corner(0));
+        algebra::ExtendedGridIndex3D vu
+          = grid_.get_extended_index(bb.get_corner(1));
         //std::cout << vl << " " << vu << std::endl;
         for (Grid::IndexIterator it= grid_.indexes_begin(vl, vu);
              it != grid_.indexes_end(vl, vu); ++it) {
@@ -67,9 +69,10 @@ VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
             grid_[*it]= _2;
             ++volumes[_2];
             for (unsigned int j=0; j< 6; ++j) {
-              Grid::ExtendedIndex ci(grid_.get_offset(*it, offsets[j][0],
-                                                      offsets[j][1],
-                                                      offsets[j][2]));
+              algebra::ExtendedGridIndex3D ci
+                =grid_.get_extended_index(*it).get_offset(offsets[j][0],
+                                                          offsets[j][1],
+                                                          offsets[j][2]);
               if (!s.get_contains(grid_.get_center(ci))) {
                 ++areas[_2];
                 break;
@@ -87,9 +90,9 @@ VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
   if (!da) {
     if (is_zero) return f_->evaluate(0-volume_);
     else {
-      for (Grid::IndexIterator it= grid_.all_indexes_begin();
+      for (Grid::AllIndexIterator it= grid_.all_indexes_begin();
            it != grid_.all_indexes_end(); ++it) {
-        if (grid_.get_voxel(*it) != -1) ++filled;
+        if (grid_[*it] != -1) ++filled;
       }
       double volume= filled*vc;
       IMP_LOG(VERBOSE, "Volume is " << volume
@@ -110,21 +113,22 @@ VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
       for (unsigned int i=0; i< 3; ++i) {
         os[i].resize(sc_->get_number_of_particles(), 0);
       }
-      for (Grid::IndexIterator it= grid_.all_indexes_begin();
+      for (Grid::AllIndexIterator it= grid_.all_indexes_begin();
            it != grid_.all_indexes_end(); ++it) {
-        if (grid_.get_voxel(*it) != -1) {
+        if (grid_[*it] != -1) {
           ++filled;
-          Grid::ExtendedIndex vs[]={grid_.get_offset(*it, 1,0,0),
-                                   grid_.get_offset(*it, -1,0,0),
-                                   grid_.get_offset(*it, 0,1,0),
-                                   grid_.get_offset(*it, 0,-1,0),
-                                   grid_.get_offset(*it, 0,0,1),
-                                   grid_.get_offset(*it, 0,0,-1)};
-          unsigned int s= grid_.get_voxel(*it);
+          algebra::ExtendedGridIndex3D ei= grid_.get_extended_index(*it);
+          algebra::ExtendedGridIndex3D vs[]={ei.get_offset(1,0,0),
+                                             ei.get_offset(-1,0,0),
+                                             ei.get_offset(0,1,0),
+                                             ei.get_offset(0,-1,0),
+                                             ei.get_offset(0,0,1),
+                                             ei.get_offset(0,0,-1)};
+          unsigned int s= grid_[*it];
           bool ri=false;
           for (unsigned int j=0; j< 6; ++j) {
             //if (grid_.get_index(vs[j])!= Grid::Index()) {
-            if (grid_.get_voxel(grid_.get_index(vs[j])) ==-1) {
+            if (grid_[grid_.get_index(vs[j])] ==-1) {
               int dir= (j%2 ==0) ? 1:-1;
               int c= j/2;
               os[c][s]+=dir;
