@@ -9,9 +9,7 @@
 #include "IMP/core/GridClosePairsFinder.h"
 #include "IMP/core/QuadraticClosePairsFinder.h"
 #include "IMP/core/XYZR.h"
-
-#include "IMP/core/internal/ParticleGrid.h"
-#include <IMP/internal/Vector.h>
+#include <IMP/algebra/Grid3D.h>
 #include <IMP/core/utility.h>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -172,7 +170,9 @@ namespace {
   struct Helper {
     typedef typename IDF::result_type ID;
     typedef std::vector<ID> IDs;
-    typedef algebra::Grid3D<IDs, algebra::SparseGridStorage3D<IDs> > Grid;
+    typedef typename algebra::Grid3D<IDs,
+                            typename algebra::SparseGridStorage3D<IDs,
+                             typename algebra::BoundedGridStorage3D> > Grid;
     typedef std::vector<Grid> Grids;
 
     template <class It>
@@ -217,11 +217,11 @@ namespace {
     static void fill_copies_periodic(const Grid &g,
                                      Index cur,
                                      unsigned int merged,
-                                     typename Grid::ExtendedIndex bblb,
-                                     typename Grid::ExtendedIndex bbub,
+                                     typename algebra::ExtendedGridIndex3D bblb,
+                                     typename algebra::ExtendedGridIndex3D bbub,
                                      bool half,
-                                     std::vector<typename Grid::Index> &out) {
-      typename Grid::ExtendedIndex curei(cur[0], cur[1], cur[2]);
+                             std::vector<typename algebra::GridIndex3D> &out) {
+      typename algebra::ExtendedGridIndex3D curei(cur[0], cur[1], cur[2]);
       for (int io=-1; io < 2; ++io) {
         if ((!(merged &GridClosePairsFinder::X)) && io != 0) continue;
         int ii=cur[0]+io*(bbub[0]-bblb[0]);
@@ -237,11 +237,10 @@ namespace {
             int ik=cur[2]+ko*(bbub[2]-bblb[2]);
             if (ik < 0
                 || ik >= static_cast<int>(g.get_number_of_voxels(2))) continue;
-            typename Grid::ExtendedIndex cei(ii, ij, ik);
-            IMP_INTERNAL_CHECK(g.get_is_index(cei), "Not a voxel " << cei);
+            typename algebra::ExtendedGridIndex3D cei(ii, ij, ik);
+            if (!g.get_has_index(cei)) continue;
             // make sure equivalent voxels are only added once
-            if (((half && cei < curei) || (!half && curei != cei))
-                && g.get_is_non_empty(cei)) {
+            if ((half && cei < curei) || (!half && curei != cei)) {
               out.push_back(g.get_index(cei));
             }
           }
@@ -249,25 +248,24 @@ namespace {
       }
     }
 
-    static std::vector<typename Grid::Index> get_nearby(const Grid &g,
-                            typename Grid::Index center,
-                            typename Grid::ExtendedIndex bblb,
-                            typename Grid::ExtendedIndex bbub,
+    static std::vector<typename algebra::GridIndex3D> get_nearby(const Grid &g,
+                            typename algebra::ExtendedGridIndex3D center,
+                            typename algebra::ExtendedGridIndex3D bblb,
+                            typename algebra::ExtendedGridIndex3D bbub,
                             unsigned int merged,
                             bool half) {
-      std::vector<typename Grid::Index> out;
-      typename Grid::ExtendedIndex lb(g.get_offset(center,
-                                                   -1, -1, -1)),
-        ub(g.get_offset(center, 1, 1, 1));
+      std::vector<typename algebra::GridIndex3D> out;
+      typename algebra::ExtendedGridIndex3D lb(center.get_offset(-1, -1, -1)),
+        ub(center.get_offset(1, 1, 1));
       if (half) {
         IMP_GRID3D_FOREACH_SMALLER_EXTENDED_INDEX_RANGE(g, center, lb, ub,
                                                {
                            fill_copies_periodic(g, voxel_index,
                                                 merged, bblb, bbub, true, out);
-                           typename Grid::ExtendedIndex ei(voxel_index[0],
+                        typename algebra::ExtendedGridIndex3D ei(voxel_index[0],
                                                            voxel_index[1],
                                                            voxel_index[2]);
-                                                 if (g.get_is_index(ei)) {
+                                                 if (g.get_has_index(ei)) {
                                   out.push_back(g.get_index(ei));
                                 }
                                                });
@@ -278,7 +276,7 @@ namespace {
                = g.extended_indexes_begin(lb, ub);
              it != g.extended_indexes_end(lb, ub); ++it) {
           fill_copies_periodic(g, *it,merged, bblb, bbub, false, out);
-          if (g.get_is_index(*it)) {
+          if (g.get_has_index(*it)) {
             out.push_back(g.get_index(*it));
           }
         }
@@ -291,21 +289,20 @@ namespace {
 
 
 
-    static std::vector<typename Grid::Index> get_nearby(const Grid &g,
-                                             typename Grid::Index center,
+    static std::vector<typename algebra::GridIndex3D> get_nearby(const Grid &g,
+                                  typename algebra::ExtendedGridIndex3D center,
                                                         double half) {
-      std::vector<typename Grid::Index> out;
-      typename Grid::ExtendedIndex lb(g.get_offset(center,
-                                                   -1, -1, -1)),
-        ub(g.get_offset(center, 1, 1, 1));
+      std::vector<typename algebra::GridIndex3D> out;
+      typename algebra::ExtendedGridIndex3D lb(center.get_offset(-1, -1, -1)),
+        ub(center.get_offset(1, 1, 1));
       if (half) {
         IMP_GRID3D_FOREACH_SMALLER_EXTENDED_INDEX_RANGE(g, center, lb, ub,
                                                {
-                                                 typename Grid::ExtendedIndex
+                                         typename algebra::ExtendedGridIndex3D
                                                    ei(voxel_index[0],
                                                       voxel_index[1],
                                                       voxel_index[2]);
-                                                 if (g.get_is_non_empty(ei)) {
+                                                 if (g.get_has_index(ei)) {
                                             out.push_back(g.get_index(ei));
                                                  }
                                                }
@@ -314,7 +311,7 @@ namespace {
         for (typename Grid::ExtendedIndexIterator it
                = g.extended_indexes_begin(lb, ub);
              it != g.extended_indexes_end(lb, ub); ++it) {
-          if (g.get_is_non_empty(*it)) {
+          if (g.get_has_index(*it)) {
             out.push_back(g.get_index(*it));
           }
         }
@@ -385,11 +382,25 @@ namespace {
                             Grid &g) {
       for (typename IDs::const_iterator c= ids.begin(); c != ids.end(); ++c) {
         algebra::Vector3D v= cf(*c);
-        typename Grid::Index ind=g.get_index(v);
-        if (g.get_is_non_empty(ind)) {
-          g[ind].push_back(*c);
+        typename algebra::ExtendedGridIndex3D ind
+          =g.get_nearest_extended_index(v);
+        if (g.get_has_index(ind)) {
+          g[g.get_index(ind)].push_back(*c);
         } else {
-          g.set_voxel(ind, IDs(1, *c));
+          g.add_voxel(ind, IDs(1, *c));
+        }
+      }
+      IMP_IF_LOG(VERBOSE) {
+        IMP_LOG(VERBOSE, "Grid built" << std::endl);
+        for (typename Grid::AllConstIterator it= g.all_begin();
+             it != g.all_end(); ++it) {
+          IMP_INTERNAL_CHECK(it->second.size() >0,
+                             "Empty voxel");
+          IMP_LOG(VERBOSE, "Voxel " << it->first << " has ");
+          for (unsigned int i=0; i< it->second.size(); ++i) {
+            IMP_LOG(VERBOSE, do_show(it->second[i]) << " ");
+          }
+          IMP_LOG(VERBOSE, std::endl);
         }
       }
     }
@@ -441,53 +452,55 @@ namespace {
 
 
     static void do_fill_close_pairs(const Grid &gg,
-                                    typename Grid::Index index,
+                                    typename algebra::GridIndex3D index,
                                     const IDs &qps,
                                     bool half, CloseF close, Out& out) {
-      const std::vector<typename Grid::Index> ids= get_nearby(gg, index, half);
+      const std::vector<typename algebra::GridIndex3D> ids
+        = get_nearby(gg, gg.get_extended_index(index), half);
       for (unsigned int i=0; i< ids.size(); ++i) {
         IMP_LOG(VERBOSE, "Checking pair " << ids[i] << " " << index
                 << std::endl);
-        do_fill_close_pairs_from_lists(gg.get_voxel(ids[i]).begin(),
-                                       gg.get_voxel(ids[i]).end(),
+        do_fill_close_pairs_from_lists(gg[ids[i]].begin(),
+                                       gg[ids[i]].end(),
                                        qps.begin(), qps.end(),
                                        close, out);
       }
       if (half) {
         IMP_LOG(VERBOSE, "Checking pair " << index << " " << index
                 << std::endl);
-        do_fill_close_pairs_from_list(gg.get_voxel(index).begin(),
-                                      gg.get_voxel(index).end(),
+        do_fill_close_pairs_from_list(gg[index].begin(),
+                                      gg[index].end(),
                                       close, out);
       }
     }
 
     static void do_fill_close_pairs(const Grid &gg,
-                                    typename Grid::Index index,
+                                    typename algebra::GridIndex3D index,
                                     const IDs &qps,
                                     const algebra::BoundingBox3D &bb,
                                     unsigned int merged,
                                     bool half, CloseF close,
                                     Out& out) {
-      typename Grid::ExtendedIndex bblb
+      typename algebra::ExtendedGridIndex3D bblb
         = gg.get_extended_index(bb.get_corner(0));
-      typename Grid::ExtendedIndex bbub
+      typename algebra::ExtendedGridIndex3D bbub
         = gg.get_extended_index(bb.get_corner(1));
-      const std::vector<typename Grid::Index> ids
-        = get_nearby(gg, index, bblb, bbub, merged, half);
+      const std::vector<typename algebra::GridIndex3D> ids
+        = get_nearby(gg, gg.get_extended_index(index),
+                     bblb, bbub, merged, half);
       for (unsigned int i=0; i< ids.size(); ++i) {
         IMP_LOG(VERBOSE, "Checking pair " << ids[i] << " " << index
                 << std::endl);
-        do_fill_close_pairs_from_lists(gg.get_voxel(ids[i]).begin(),
-                                       gg.get_voxel(ids[i]).end(),
+        do_fill_close_pairs_from_lists(gg[ids[i]].begin(),
+                                       gg[ids[i]].end(),
                                        qps.begin(), qps.end(),
                                        close, out);
       }
       if (half) {
         IMP_LOG(VERBOSE, "Checking pair " << index << " " << index
                 << std::endl);
-        do_fill_close_pairs_from_list(gg.get_voxel(index).begin(),
-                                      gg.get_voxel(index).end(),
+        do_fill_close_pairs_from_list(gg[index].begin(),
+                                      gg[index].end(),
                                       close, out);
       }
     }
@@ -527,9 +540,9 @@ namespace {
         {
           Grid gg = create_grid(bbs[i], distance+2*bin_ubs[i]);
           fill_grid(bin_contents_g[i], ps.c_, gg);
-          for (typename Grid::AllNonEmptyConstIterator it
-                 = gg.all_non_empty_begin();
-               it != gg.all_non_empty_end(); ++it) {
+          for (typename Grid::AllConstIterator it
+                 = gg.all_begin();
+               it != gg.all_end(); ++it) {
             if (merged) {
               do_fill_close_pairs(gg, it->first, it->second, bb,
                                   merged, true, close, out);
@@ -550,9 +563,9 @@ namespace {
           ggj=ggi;
           fill_grid(bin_contents_g[i], ps.c_, ggi);
           fill_grid(bin_contents_g[j], ps.c_, ggj);
-          for (typename Grid::AllNonEmptyConstIterator it
-                 = ggj.all_non_empty_begin();
-               it != ggj.all_non_empty_end(); ++it) {
+          for (typename Grid::AllConstIterator it
+                 = ggj.all_begin();
+               it != ggj.all_end(); ++it) {
             if (merged) {
               do_fill_close_pairs(ggi, it->first, it->second, bb,
                                   merged, false, close, out);
@@ -633,9 +646,9 @@ namespace {
                               << gq.get_number_of_voxels(i));
             }
           }
-          for (typename Grid::AllNonEmptyConstIterator it
-                 = gq.all_non_empty_begin();
-               it != gq.all_non_empty_end(); ++it) {
+          for (typename Grid::AllConstIterator it
+                 = gq.all_begin();
+               it != gq.all_end(); ++it) {
             if (merged) {
               do_fill_close_pairs(gg, it->first, it->second, bb, merged,
                                   false, close, out);
