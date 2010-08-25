@@ -8,81 +8,16 @@
 #define IMPALGEBRA_INTERNAL_GRID_3D_H
 
 #include "../algebra_config.h"
-#include "../Vector3D.h"
-#include <boost/functional/hash.hpp>
 
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 
-// Represent an index into an infinite grid
-/* The index entries can be positive or negative and do not need to correspond
-   directly to cells in the grid. They get mapped on to actual grid cells
-   by various functions.
- */
-class VirtualGridIndex
-{
-  typedef VirtualGridIndex This;
-  int d_[3];
-public:
-  //! Create a grid cell from three arbitrary indexes
-  VirtualGridIndex(int x, int y, int z) {
-    d_[0]=x;
-    d_[1]=y;
-    d_[2]=z;
-  }
-  VirtualGridIndex() {
-    d_[0]=d_[1]=d_[2]=std::numeric_limits<int>::max();
-  }
-  IMP_COMPARISONS_3(d_[0], d_[1], d_[2]);
-  //! Get the ith component (i=0,1,2)
-  int operator[](unsigned int i) const {
-    IMP_INTERNAL_CHECK(i <3, "Bad i");
-    IMP_USAGE_CHECK(d_[i] != std::numeric_limits<int>::max(),
-                    "Using uninitialized grid index");
-    return d_[i];
-  }
-  void show(std::ostream &out=std::cout) const {
-    out << "Cell(" << d_[0] << ", " << d_[1] << ", " << d_[2] << ")";
-  }
-  bool strictly_larger_than(const VirtualGridIndex &o) const {
-    return d_[0] > o.d_[0] && d_[1] > o.d_[1] && d_[2] > o.d_[2];
-  }
-  typedef const int* iterator;
-  iterator begin() const {return d_;}
-  iterator end() const {return d_+3;}
-};
 
-inline std::size_t hash_value(const VirtualGridIndex &ind) {
-  return boost::hash_range(ind.begin(), ind.end());
-}
-
-IMP_OUTPUT_OPERATOR(VirtualGridIndex);
-
-template <class GI>
+template <class BI, class IsVI>
 class GridIndexIterator
 {
-public:
-  VirtualGridIndex lb_;
-  VirtualGridIndex ub_;
-  GI cur_;
-  typedef GridIndexIterator This;
-  GridIndexIterator(VirtualGridIndex lb,
-                    VirtualGridIndex ub): lb_(lb),
-                                          ub_(ub), cur_(lb[0], lb[1], lb[2]) {
-    IMP_INTERNAL_CHECK(ub_.strictly_larger_than(lb_),
-               "Invalid range in GridIndexIterator");
-  }
-  typedef const GI& reference;
-  typedef const GI* pointer;
-  typedef GI value_type;
-  typedef std::forward_iterator_tag iterator_category;
-  typedef unsigned int difference_type;
-
-  GridIndexIterator(){}
-
-  IMP_COMPARISONS_1(cur_);
-
-  This operator++() {
+  typedef typename IsVI::ReturnType VI;
+  void advance() {
     IMP_INTERNAL_CHECK(*this != GridIndexIterator(),
                        "Incrementing invalid iterator");
     IMP_INTERNAL_CHECK(cur_ >= lb_, "cur out of range");
@@ -99,18 +34,53 @@ public:
       }
     }
     if (carry==1) {
-      cur_= GI();
+      cur_= BI();
     } else {
-      GI nc= GI(r[0], r[1], r[2]);
+      BI nc= BI(r[0], r[1], r[2]);
       IMP_INTERNAL_CHECK(nc > cur_, "Nonfunctional increment");
       IMP_INTERNAL_CHECK(nc > lb_, "Problems advancing");
       IMP_INTERNAL_CHECK(ub_.strictly_larger_than(nc), "Problems advancing");
       cur_= nc;
     }
+  }
+  void check_and_advance() {
+    while (cur_ != BI() && !isvi_.get_is_good(cur_)) {
+      advance();
+    }
+  }
+public:
+  BI lb_;
+  BI ub_;
+  BI cur_;
+  IsVI isvi_;
+  typedef GridIndexIterator This;
+  GridIndexIterator(BI lb,
+                    BI ub,
+                    IsVI isvi=IsVI()): lb_(lb),
+                                ub_(ub), cur_(lb),
+                                isvi_(isvi) {
+    IMP_INTERNAL_CHECK(ub_.strictly_larger_than(lb_),
+               "Invalid range in GridIndexIterator");
+    check_and_advance();
+  }
+  typedef const VI reference;
+  typedef const VI* pointer;
+  typedef VI value_type;
+  typedef std::forward_iterator_tag iterator_category;
+  typedef unsigned int difference_type;
+
+  GridIndexIterator(){}
+
+  IMP_COMPARISONS_1(cur_);
+
+  This operator++() {
+    do {
+      advance();
+    } while (cur_ != BI() && !isvi_.get_is_good(cur_));
     return *this;
   }
   This operator++(int) {
-    IMP_INTERNAL_CHECK(*this != GI(), "Incrementing invalid iterator");
+    IMP_INTERNAL_CHECK(*this != VI(), "Incrementing invalid iterator");
     This o= *this;
     operator++;
     return o;
@@ -118,33 +88,63 @@ public:
   reference operator*() const {
     IMP_INTERNAL_CHECK(*this != GridIndexIterator(),
                        "Dereferencing invalid iterator");
-    return cur_;
+    return isvi_.get_return(cur_);
   }
   pointer operator->() const {
     IMP_INTERNAL_CHECK(*this != GridIndexIterator(),
                        "Dereferencing invalid iterator");
-    return &cur_;
+    static VI ret;
+    ret= isvi_.get_return(cur_);
+    return &ret;
   }
 };
 
-//! Represent a real cell in a grid
-/* These indexes represent an actual cell in the grid with no mapping.
-   They can only be constructed by the grid.
- */
-class GridIndex: public VirtualGridIndex
-{
-public:
-  GridIndex(): VirtualGridIndex() {
+
+inline int snap(unsigned int dim, int v, const int d[]) {
+  IMP_INTERNAL_CHECK(dim <3, "Invalid dim");
+  if (v < 0) return 0;
+  else if (v > d[dim]) {
+    return d[dim];
   }
-  template <class V>
-  friend class Grid3D;
-  template <class G>
-  friend class GridIndexIterator;
-  GridIndex(int x, int y, int z): VirtualGridIndex(x,y,z) {
-    IMP_USAGE_CHECK(x>=0 && y>=0 && z>=0, "Bad indexes in grid index");
+  else return v;
+}
+
+template <class EI>
+EI snap(const EI &v, const int d[]) {
+  return EI(snap(0, v[0], d),
+            snap(1, v[1], d),
+            snap(2, v[2], d));
+}
+template <class EI>
+std::pair<EI, EI> empty_range() {
+  return std::make_pair(EI(0,0,0), EI(0,0,0));
+}
+
+
+template <class EI>
+std::pair<EI, EI> intersect(EI l,
+                            EI u,
+                            const int d[]) {
+  EI rlb;
+  EI rub;
+  for (unsigned int i=0; i< 3; ++i) {
+    if (u[i] <= 0) return empty_range<EI>();
+    if (l[i] >= d[i])
+      return empty_range<EI>();
+  }
+  return std::make_pair(snap<EI>(l, d), snap<EI>(u, d));
+}
+
+template <class E, class R>
+struct AllItHelp {
+  typedef R ReturnType;
+  bool get_is_good(E) const {
+    return true;
+  }
+  R get_return(const E&v) const {
+    return R(v[0], v[1], v[2]);
   }
 };
-
 
 IMPALGEBRA_END_INTERNAL_NAMESPACE
 
