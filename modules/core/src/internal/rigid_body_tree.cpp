@@ -54,16 +54,19 @@ RigidBodyHierarchy::divide_spheres(const std::vector<algebra::SphereD<3> > &ss,
   for (unsigned int j=0; j< 3; ++j) {
     side= std::max(side, (maxc[j]-minc[j])/2.0);
   }
-  typedef algebra::Grid3D<SphereIndexes > Grid;
+  typedef algebra::Grid3D<SphereIndexes,
+    algebra::DenseGridStorage3D<SphereIndexes> > Grid;
   Grid grid(side, algebra::BoundingBox3D(minc, maxc), SphereIndexes());
   for (unsigned int i=0; i< s.size(); ++i) {
-    Grid::Index ix= grid.get_index(pts[i]);
+    algebra::GridIndex3D ix= grid.get_nearest_index(pts[i]);
+    IMP_LOG(TERSE, "Index is " << ix << " and extended is "
+            << grid.get_extended_index(pts[i]) << std::endl);
     grid[ix].push_back(s[i]);
     IMP_INTERNAL_CHECK(grid[ix].back() == s[i], "Failed to push");
   }
 
   SpheresSplit ret;
-  for (Grid::IndexIterator it= grid.all_indexes_begin();
+  for (Grid::AllIndexIterator it= grid.all_indexes_begin();
        it != grid.all_indexes_end(); ++it) {
     //std::cout << "Gathering from " << *it << std::endl;
     if (!grid[*it].empty()) {
