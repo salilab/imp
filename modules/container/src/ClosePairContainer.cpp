@@ -143,7 +143,8 @@ get_slack_estimate(const ParticlesTemp& ps,
         ml= ns;
       } else {
         //double l=1;
-        IMP_INTERNAL_CHECK(deaths.size() < ns, "Too much death");
+        IMP_INTERNAL_CHECK(deaths.size() < static_cast<unsigned int>(ns),
+                           "Too much death");
         for (unsigned int j=0; j< deaths.size(); ++j) {
           double n= ns-j;
           double t=(n-1.0)/n;
