@@ -9,49 +9,51 @@ class CrossCorrelationTests(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         IMP.set_log_level(IMP.SILENT)
         # Initial values and names of files
-        print "===1"
         self.fn_in = self.get_input_file_name('1tdx_sampled.mrc')
         self.resolution=6.0
         self.fn_coords = self.get_input_file_name('1tdx.pdb')
         self.pixel_size=1.0
-        print "===2"
 
         self.mrc_rw = IMP.em.MRCReaderWriter()
         self.EM_map = IMP.em.read_map(self.fn_in,self.mrc_rw)
         self.EM_map.std_normalize()
         self.EM_map.get_header_writable().compute_xyz_top()
-        print "===3"
         self.mdl=IMP.Model()
         mh=IMP.atom.read_pdb(self.fn_coords,self.mdl,IMP.atom.CAlphaPDBSelector())
         IMP.atom.add_radii(mh)
         self.atoms=IMP.core.get_leaves(mh)
-        print "===4"
         self.model_map = IMP.em.SampledDensityMap(self.atoms, self.resolution,
                                                   self.pixel_size)
         self.xo=self.model_map.get_header().get_xorigin()
         self.yo=self.model_map.get_header().get_yorigin()
         self.zo=self.model_map.get_header().get_zorigin()
 
-        print "===5"
         self.EM_map = IMP.em.SampledDensityMap(self.atoms, self.resolution,                                                                                                 self.pixel_size)
         self.EM_map.std_normalize()
         self.EM_map.get_header_writable().compute_xyz_top()
 
         self.ccc = IMP.em.CoarseCC()
-        print "===6"
         self.ccc_intervals = IMP.em.CoarseCCatIntervals()
-        print "===7"
 
     def calc_simple_correlation(self):
 
         self.model_map.calcRMS();
         threshold=self.model_map.get_header().dmin-0.1
-        return self.ccc.cross_correlation_coefficient(self.EM_map,self.model_map,threshold,True)
+        return self.ccc.cross_correlation_coefficient(self.EM_map,self.model_map,threshold,False)
 
     def test_simple_correlation(self):
         """ test that the simple fast ccc function works """
         score = self.calc_simple_correlation()
         self.assertAlmostEqual(1.000,score,2)
+
+
+    def test_correlation_with_padding(self):
+        """ test that padding option does not effect the CC score"""
+        self.model_map.calcRMS()
+        threshold=self.model_map.get_header().dmin-0.001
+        score1 = self.ccc.cross_correlation_coefficient(self.EM_map,self.model_map,threshold,False)
+        score2 = self.ccc.cross_correlation_coefficient(self.EM_map,self.model_map,threshold,True)
+        self.assertAlmostEqual(score1,score2,2)
 
 
     def test_origin_translation(self):
@@ -70,7 +72,7 @@ class CrossCorrelationTests(IMP.test.TestCase):
         threshold=self.model_map.get_header().dmin
 
         self.EM_map.get_header_writable().compute_xyz_top()
-        score1 = self.ccc.cross_correlation_coefficient(self.EM_map,self.model_map,threshold,True)
+        score1 = self.ccc.cross_correlation_coefficient(self.EM_map,self.model_map,threshold,False)
 
         #compute correlation translating the particles
         self.model_map.set_origin(self.xo,self.yo,self.zo)
@@ -109,7 +111,6 @@ class CrossCorrelationTests(IMP.test.TestCase):
             IMP.algebra.Vector3D(0.1,0.1,0.1))
         #calculate correlation
         for i in xrange(0,times):
-            print i
             scores_wo_intervals.append(self.ccc.calc_score(self.EM_map,self.model_map,1.0))
             scores_intervals.append(self.ccc_intervals.evaluate(self.EM_map,self.model_map,dvx,dvy,dvz,1.0,False,interval))
 

@@ -233,6 +233,7 @@ SimpleEMFit create_simple_em_fit(atom::Hierarchies const &mhs,
   //define the refiner for the rigid bodies
   IMP_NEW(core::LeavesRefiner,leaves_ref,(atom::Hierarchy::get_traits()));
   IMP_NEW(em::FitRestraint, fit_rs, (ps, dmap,leaves_ref,
+        FloatPair(0.,0.),
         core::XYZR::get_default_radius_key(),
         atom::Mass::get_mass_key(),
         1.0));

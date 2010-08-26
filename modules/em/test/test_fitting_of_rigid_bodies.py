@@ -60,11 +60,12 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         #see that the derivatives pull it back in place
         opt = IMP.core.ConjugateGradients()
         opt.set_model(self.imp_model)
-        print dir(opt)
-        opt.add_optimizer_state(self.pdb_opt_state)
+        #opt.add_optimizer_state(self.pdb_opt_state)
         start_score=self.imp_model.evaluate(False)
-        end_score=opt.optimize(100)
-        IMP.atom.write_pdb(self.mhs,"aa.pdb")
+        print "before optimization"
+        end_score=opt.optimize(10)
+        print "after optimization"
+        #IMP.atom.write_pdb(self.mhs,"aa.pdb")
         self.assert_(start_score>end_score)
 
 if __name__ == '__main__':

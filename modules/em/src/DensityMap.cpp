@@ -826,7 +826,7 @@ DensityMap *get_transformed(const DensityMap *in,
 }
 
 DensityMap *get_transformed(DensityMap *in,
-                           const algebra::Transformation3D &tr){
+                            const algebra::Transformation3D &tr){
   IMP::Pointer<DensityMap> ret(create_density_map(
         in->get_origin(),
         in->get_header()->get_nx(),
@@ -892,11 +892,9 @@ void DensityMap::copy_map(const DensityMap &other) {
     y_loc_.reset();
     z_loc_.reset();
   }
-
   data_allocated_ = other.data_allocated_;
   normalized_ = other.normalized_;
   rms_calculated_ = other.rms_calculated_;
-
 }
 void get_transformed_into(const DensityMap *from,
    const algebra::Transformation3D &tr,

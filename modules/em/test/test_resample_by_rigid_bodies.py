@@ -55,9 +55,9 @@ class ResamplingTest(IMP.test.TestCase):
         print "start test resample ==2"
         map.calcRMS()
         print "start test resample ==3"
-        self.restr_ps_all=IMP.em.FitRestraint(self.ps_all,map,self.rb_refiner,self.radius_key,self.weight_key,1)
+        self.restr_ps_all=IMP.em.FitRestraint(self.ps_all,map,self.rb_refiner)
         print "start test resample ==4"
-        self.restr_rb_all_fast=IMP.em.FitRestraint(self.rbs_of_copy,map,self.rb_refiner,self.radius_key,self.weight_key,1)
+        self.restr_rb_all_fast=IMP.em.FitRestraint(self.rbs_of_copy,map,self.rb_refiner)
         print "start test resample ==5"
         self.imp_model.add_restraint(self.restr_ps_all)
         self.imp_model.add_restraint(self.restr_rb_all_fast)

@@ -65,7 +65,7 @@ private:
   //  bool special_treatment_of_particles_outside_of_density_;
   //rigid bodies handling
   std::vector<IMP::algebra::Transformation3D> rbs_orig_trans_;
-  internal::OwnerPointer<Refiner> rb_refiner_;//refiner for rigid bodies
+  IMP::internal::OwnerPointer<Refiner> rb_refiner_;//refiner for rigid bodies
 };
 
 IMPEM_END_NAMESPACE

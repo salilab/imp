@@ -44,7 +44,7 @@ class SurfaceTests(IMP.test.TestCase):
         conv = IMP.em.CoarseCC()
         score = conv.cross_correlation_coefficient(self.mh1_shell_map,
                                                    self.good_mh2_shell_map,
-                                                   0.0,False,False)
+                                                   0.0,False)
         print "SCORE : " + str(score)
     def test_bad_geo_comp(self):
         """Check bad geometric complementarity score"""
@@ -65,7 +65,7 @@ class SurfaceTests(IMP.test.TestCase):
         conv = IMP.em.CoarseCC()
         score = conv.cross_correlation_coefficient(self.mh1_shell_map,
                                                    self.bad_mh2_shell_map,
-                                                   0.0,False,False)
+                                                   0.0,False)
         print "SCORE BAD : " + str(score)
 
 if __name__=='__main__':

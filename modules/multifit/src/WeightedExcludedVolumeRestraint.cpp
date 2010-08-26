@@ -43,7 +43,6 @@ double WeightedExcludedVolumeRestraint::unprotected_evaluate(
   IMP_LOG(VERBOSE,"before resample\n");
   // //generate the transformed maps
   // std::vector<DensityMap*> transformed_maps;
-  float spacing=rbs_surface_maps_[0]->get_header()->get_spacing();
   // for(int rb_i=0;rb_i<rbs_.size();rb_i++){
   //   DensityMap *dm=create_density_map(
   //       atom::get_bounding_box(atom::Hierarchy(rbs_[rb_i])),spacing);
@@ -73,17 +72,17 @@ double WeightedExcludedVolumeRestraint::unprotected_evaluate(
   //   }
   // }
   SurfaceShellDensityMaps resampled_surfaces;
-  for(int i=0;i<rbs_.size();i++){
+  for(unsigned int i=0;i<rbs_.size();i++){
     Particles rb_ps=rb_refiner_->get_refined(rbs_[i]);
     resampled_surfaces.push_back(new SurfaceShellDensityMap(rb_ps,1.));
   }
-  for(int i=0;i<rbs_.size();i++){
-    for(int j=i+1;j<rbs_.size();j++){
+  for(unsigned int i=0;i<rbs_.size();i++){
+    for(unsigned int j=i+1;j<rbs_.size();j++){
       if (get_interiors_intersect(resampled_surfaces[i],
                                   resampled_surfaces[j])){
       score += CoarseCC::cross_correlation_coefficient(
                                *resampled_surfaces[i],
-                               *resampled_surfaces[j],1.,false,true);
+                               *resampled_surfaces[j],1.,true,FloatPair(0.,0.));
       }
     }
   }

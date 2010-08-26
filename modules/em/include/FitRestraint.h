@@ -37,36 +37,26 @@ public:
     \param[in] ps The particles participating in the fitting score
     \param[in] em_map  The density map used in the fitting score
     \param[in] refiner rigid body refiner
+    \param[in] norm_factors if set, they are used as normalization factors
+       for the cross correlation calculations. This is relevant when the
+       cross-correlation score of the entire system is decomposed.
     \param[in] radius_key the name of the radius attribute of the particles
     \param[in] weight_key the name of the weight attribute of the particles
     \param[in] scale multiply the fitting restraint score and derivatives
                      by this value
-    \param[in] special_treatment_of_particles_outside_of_density
-       If more than 80% of the particles are outside of the density
-       push it back using upper-bound harmonic
     \note Particles that are rigid-bodies are interpolated and not resampled.
           This significantly reduces the running time but is less accurate.
           If the user prefers to get more accurate results, provide
           its members as input particles and not the rigid body.
-    \note In many optimization senarios particles are can be found outside of
-  the density. When all particles are outside of the density the
-  cross-correlation score is zero and the derivatives are meaningless.
-  To handle these cases we guide the particles back into the density by
-  using a simple distance restraint between the centroids of the density
-  and the particles. Once the particles are back (at least partly) in
-  the density, the CC score is back on. To smooth the score,
-  we start considering centroids distance once 80% of the particles. This
-  option is still experimental and should be used in caution.
     \todo we currently assume rigid bodies are also molecular hierarchies.
    */
   FitRestraint(Particles ps,
                DensityMap *em_map,
                Refiner *refiner,
+               FloatPair norm_factors=FloatPair(0.,0.),
                FloatKey radius_key= IMP::core::XYZR::get_default_radius_key(),
                FloatKey weight_key= IMP::atom::Mass::get_mass_key(),
                float scale=1);
-//               bool special_treatment_of_particles_outside_of_density=false);
-
   //! \return the predicted density map of the model
   SampledDensityMap * get_model_dens_map() {
     return model_dens_map_;
@@ -87,9 +77,10 @@ private:
                                     FloatKey weight_key);
 
   IMP::internal::OwnerPointer<DensityMap> target_dens_map_;
-  mutable internal::OwnerPointer<SampledDensityMap> model_dens_map_;
+  mutable IMP::internal::OwnerPointer<SampledDensityMap> model_dens_map_;
   mutable SampledDensityMaps rb_model_dens_map_;
-  mutable internal::OwnerPointer<SampledDensityMap> none_rb_model_dens_map_;
+  mutable IMP::internal::OwnerPointer<SampledDensityMap>
+    none_rb_model_dens_map_;
   algebra::BoundingBoxD<3> target_bounding_box_;
   // reference to the IMP environment
   float scalefac_;
@@ -103,7 +94,11 @@ private:
   IMP::Particles not_rb_; //all particles that are not part of a rigid body
   IMP::core::RigidBodies rbs_;
   std::vector<IMP::algebra::Transformation3D> rbs_orig_trans_;
-  internal::OwnerPointer<Refiner> rb_refiner_;//refiner for rigid bodies
+  IMP::internal::OwnerPointer<Refiner> rb_refiner_;//refiner for rigid bodies
+  FloatKey weight_key_;
+  KernelParameters *kernel_params_;
+  DistanceMask *dist_mask_;
+  FloatPair norm_factors_;
 };
 
 IMPEM_END_NAMESPACE

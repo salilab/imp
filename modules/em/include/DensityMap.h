@@ -476,16 +476,17 @@ IMPEMEXPORT DensityMap *create_density_map(
   */
 inline void calc_local_bounding_box(
                    const em::DensityMap &d_map,
-                   const algebra::Vector3D point,float kdist,
+                   double x,double y, double z,
+                   float kdist,
                    int &iminx,int &iminy, int &iminz,
                    int &imaxx,int &imaxy, int &imaxz) {
   const DensityHeader *h=d_map.get_header();
-  iminx = d_map.lower_voxel_shift(point[0], kdist,h->get_xorigin(),h->get_nx());
-  iminy = d_map.lower_voxel_shift(point[1], kdist,h->get_yorigin(),h->get_ny());
-  iminz = d_map.lower_voxel_shift(point[2], kdist,h->get_zorigin(),h->get_nz());
-  imaxx = d_map.upper_voxel_shift(point[0], kdist,h->get_xorigin(),h->get_nx());
-  imaxy = d_map.upper_voxel_shift(point[1], kdist,h->get_yorigin(),h->get_ny());
-  imaxz = d_map.upper_voxel_shift(point[2], kdist,h->get_zorigin(),h->get_nz());
+  iminx = d_map.lower_voxel_shift(x, kdist,h->get_xorigin(),h->get_nx());
+  iminy = d_map.lower_voxel_shift(y, kdist,h->get_yorigin(),h->get_ny());
+  iminz = d_map.lower_voxel_shift(z, kdist,h->get_zorigin(),h->get_nz());
+  imaxx = d_map.upper_voxel_shift(x, kdist,h->get_xorigin(),h->get_nx());
+  imaxy = d_map.upper_voxel_shift(y, kdist,h->get_yorigin(),h->get_ny());
+  imaxz = d_map.upper_voxel_shift(z, kdist,h->get_zorigin(),h->get_nz());
 }
 
 //! rotate a grid
