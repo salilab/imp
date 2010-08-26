@@ -17,6 +17,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 //! Apply a function to the distance between two particles.
 /** \see SphereDistancePairScore
+    \see HarmonicDistancePairScore
 */
 class IMPCOREEXPORT DistancePairScore : public PairScore
 {
@@ -25,6 +26,21 @@ public:
   DistancePairScore(UnaryFunction *f);
   IMP_SIMPLE_PAIR_SCORE(DistancePairScore);
 };
+
+IMP_OBJECTS(DistancePairScore, DistancePairScores);
+
+/** This class is significantly faster than using a DistancePairScore
+    with a Harmonic.
+*/
+class IMPCOREEXPORT HarmonicDistancePairScore: public PairScore
+{
+  const double x0_, k_;
+public:
+  HarmonicDistancePairScore(double x0, double k):  x0_(x0), k_(k){}
+  IMP_SIMPLE_PAIR_SCORE(HarmonicDistancePairScore);
+};
+
+IMP_OBJECTS(HarmonicDistancePairScore, HarmonicDistancePairScores);
 
 IMPCORE_END_NAMESPACE
 

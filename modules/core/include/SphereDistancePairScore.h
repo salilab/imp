@@ -18,6 +18,7 @@ IMPCORE_BEGIN_NAMESPACE
 //! A score on the distance between the surfaces of two spheres.
 /** \see XYZR
     \see DistancePairScore
+    \see SoftSpherePairScore
     \see NormalizedSphereDistancePairScore
  */
 class IMPCOREEXPORT SphereDistancePairScore : public PairScore
@@ -67,6 +68,20 @@ public:
                FloatKey radius=FloatKey("radius"));
   IMP_SIMPLE_PAIR_SCORE(WeightedSphereDistancePairScore);
 };
+
+
+/** This class is equivalent to, but faster than a
+    SphereDistancePairScore with a HarmonicLowerBound.
+*/
+class IMPCOREEXPORT SoftSpherePairScore: public PairScore {
+  double k_;
+public:
+  SoftSpherePairScore(double k): k_(k){}
+  IMP_SIMPLE_PAIR_SCORE(SoftSpherePairScore);
+};
+
+
+IMP_OBJECTS(SoftSpherePairScore, SoftSpherePairScores);
 
 
 IMPCORE_END_NAMESPACE
