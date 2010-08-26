@@ -14,6 +14,7 @@
 #include <algorithm>
 #include <boost/timer.hpp>
 #include <IMP/algebra/internal/tnt_array2d.h>
+#include <vector>
 
 
 IMPCONTAINER_BEGIN_NAMESPACE
@@ -57,103 +58,134 @@ get_slack_estimate(const ParticlesTemp& ps,
                    ClosePairContainer *cpc) {
   std::vector<Data> datas;
   for (double slack=0; slack< upper_bound; slack+= step) {
-    std::cout << "Computing for " << slack << std::endl;
+    IMP_LOG(VERBOSE, "Computing for " << slack << std::endl);
     datas.push_back(Data());
     datas.back().slack=slack;
     {
       boost::timer imp_timer;
+      int count=0;
       SetLogState sl(opt->get_model(), SILENT);
-      cpc->set_slack(slack);
-      cpc->update();
-      datas.back().ccost= imp_timer.elapsed();
-      std::cout << "ccost " << datas.back().ccost << std::endl;
+      do {
+        cpc->set_slack(slack);
+        cpc->update();
+        ++count;
+      } while (imp_timer.elapsed()==0);
+      datas.back().ccost= imp_timer.elapsed()/count;
+      IMP_LOG(VERBOSE, "Close pair finding cost "
+              << datas.back().ccost << std::endl);
     }
     {
       boost::timer imp_timer;
       double score=0;
+      int count=0;
       SetLogState sl(opt->get_model(), SILENT);
-      for (unsigned int i=0; i< restraints.size(); ++i) {
-        score+=restraints[i]->evaluate(derivatives);
-        // should restore
-      }
-      datas.back().rcost= imp_timer.elapsed();
-      std::cout << "rcost " << datas.back().rcost << std::endl;
+      do {
+        for (unsigned int i=0; i< restraints.size(); ++i) {
+          score+=restraints[i]->evaluate(derivatives);
+          // should restore
+        }
+        ++count;
+      } while (imp_timer.elapsed()==0);
+      datas.back().rcost= imp_timer.elapsed()/count;
+      IMP_LOG(VERBOSE, "Restraint evaluation cost "
+              << datas.back().rcost << std::endl);
     }
   }
-  const int ns=100;
+  int ns=100;
+  int last_ns=1;
+  int opt_i=-1;
+  std::vector<std::vector<double> > dists(1, std::vector<double>(1,0.0));
   std::vector< std::vector<algebra::Vector3D> >
-    pos(ns, std::vector<algebra::Vector3D>(ps.size()));
-  SetLogState sl(opt->get_model(), SILENT);
-  for ( int i=0; i< ns; ++i) {
-    for (unsigned int j=0; j< ps.size(); ++j) {
-      pos[i][j]=core::XYZ(ps[j]).get_coordinates();
-    }
-    std::cout << "Step" << std::endl;
-    opt->optimize(1);
+    pos(1, std::vector<algebra::Vector3D>(ps.size()));
+  for (unsigned int j=0; j< ps.size(); ++j) {
+    pos[0][j]=core::XYZ(ps[j]).get_coordinates();
   }
-  algebra::internal::TNT::Array2D<double> dists(ns,ns,0.0);
-  for ( int i=0; i< ns; ++i) {
-    for ( int j=i; j< ns; ++j) {
-      double md=0;
-      for (unsigned int k=0; k< ps.size(); ++k) {
-        md= std::max(md, algebra::get_distance(pos[i][k], pos[j][k]));
+  do {
+    IMP_LOG(VERBOSE, "Stepping from " << last_ns << " to " << ns << std::endl);
+    dists.resize(ns, std::vector<double>(ns, 0.0));
+    for ( int i=0; i< last_ns; ++i) {
+      dists[i].resize(ns, 0.0);
+    }
+    pos.resize(ns,  std::vector<algebra::Vector3D>(ps.size()));
+    SetLogState sl(opt->get_model(), SILENT);
+    for ( int i=last_ns; i< ns; ++i) {
+      opt->optimize(1);
+      for (unsigned int j=0; j< ps.size(); ++j) {
+        pos[i][j]=core::XYZ(ps[j]).get_coordinates();
       }
-      dists[i][j]=md;
     }
-  }
-  // estimate lifetimes from slack
-  for (unsigned int i=0; i< datas.size(); ++i) {
-    Ints deaths;
-    for ( int j=0; j< ns; ++j) {
-      for ( int k=j+1; k < ns; ++k) {
-        if (dists[j][k]> datas[i].slack) {
-          deaths.push_back(k-j);
-          break;
+    for ( int i=last_ns; i< ns; ++i) {
+      for ( int j=0; j< i; ++j) {
+        double md=0;
+        for (unsigned int k=0; k< ps.size(); ++k) {
+          md= std::max(md, algebra::get_distance(pos[i][k], pos[j][k]));
+        }
+        dists[i][j]=md;
+        dists[j][i]=md;
+      }
+    }
+    // estimate lifetimes from slack
+    for (unsigned int i=0; i< datas.size(); ++i) {
+      Ints deaths;
+      for ( int j=0; j< ns; ++j) {
+        for ( int k=j+1; k < ns; ++k) {
+          if (dists[j][k]> datas[i].slack) {
+            deaths.push_back(k-j);
+            break;
+          }
         }
       }
+      std::sort(deaths.begin(), deaths.end());
+      // kaplan meier estimator
+      double ml=0;
+      double S=1;
+      if (deaths.empty()) {
+        ml= ns;
+      } else {
+        //double l=1;
+        IMP_INTERNAL_CHECK(deaths.size() < ns, "Too much death");
+        for (unsigned int j=0; j< deaths.size(); ++j) {
+          double n= ns-j;
+          double t=(n-1.0)/n;
+          ml+=(S-t*S)*deaths[j];
+          S*=t;
+        }
+      }
+      datas[i].lifetime=ml;
+      IMP_LOG(VERBOSE, "Expected life of " << datas[i].slack
+              << " is " << datas[i].lifetime << std::endl);
     }
-    std::sort(deaths.begin(), deaths.end());
 
-    double ml=0;
-    if (deaths.empty()) {
-      ml= ns;
-    } else {
-      double l=1;
-      for (unsigned int j=0; j< deaths.size(); ++j) {
-        double n= ns-j;
-        double t=(n-1.0)/n;
-        ml+=(l-t*l)*j;
+    /**
+       C(s) is cost to compute
+       R(s) is const to eval restraints
+       L(s) is lifetime of slack
+       minimize C(s)/L(s)+R(s)
+    */
+    // smooth
+    for (unsigned int i=1; i< datas.size()-1; ++i) {
+      datas[i].rcost=(datas[i].rcost+ datas[i-1].rcost+datas[i+1].rcost)/3.0;
+      datas[i].ccost=(datas[i].ccost+ datas[i-1].ccost+datas[i+1].ccost)/3.0;
+      datas[i].lifetime=(datas[i].lifetime
+                      + datas[i-1].lifetime+datas[i+1].lifetime)/3.0;
+    }
+    double min= std::numeric_limits<double>::max();
+    for (unsigned int i=0; i< datas.size(); ++i) {
+      double v= datas[i].rcost+ datas[i].ccost/datas[i].lifetime;
+      IMP_LOG(VERBOSE, "Cost of " << datas[i].slack << " is " << v
+              << std::endl);
+      if (v < min) {
+        min=v;
+        opt_i=i;
       }
     }
-    datas[i].lifetime=ml;
-    std::cout << "expected life of " << datas[i].slack
-              << " is " << datas[i].lifetime << std::endl;
-  }
-
-  /**
-     C(s) is cost to compute
-     R(s) is const to eval restraints
-     L(s) is lifetime of slack
-     minimize C(s)/L(s)+R(s)
-   */
-  // smooth
-  for (unsigned int i=1; i< datas.size()-1; ++i) {
-    datas[i].rcost=(datas[i].rcost+ datas[i-1].rcost+datas[i+1].rcost)/3.0;
-    datas[i].ccost=(datas[i].ccost+ datas[i-1].ccost+datas[i+1].ccost)/3.0;
-    datas[i].rcost=(datas[i].lifetime
-                    + datas[i-1].lifetime+datas[i+1].lifetime)/3.0;
-  }
-  double min= std::numeric_limits<double>::max();
-  int mini=-1;
-  for (unsigned int i=0; i< datas.size(); ++i) {
-    double v= datas[i].rcost+ datas[i].ccost/datas[i].lifetime;
-    std::cout << "Cost of " << datas[i].slack << " is " << v << std::endl;
-    if (v < min) {
-      min=v;
-      mini=i;
-    }
-  }
-  return datas[mini].slack;
+    last_ns=ns;
+    ns*=2;
+    IMP_LOG(VERBOSE, "Opt is " << datas[opt_i].slack << std::endl);
+    std::cout << "Opt is " << datas[opt_i].slack << std::endl;
+    // 2 for the value, 2 for the doubling
+  } while (datas[opt_i].lifetime > ns/4.0);
+  return datas[opt_i].slack;
 }
 
 IMPCONTAINER_END_NAMESPACE
