@@ -178,6 +178,7 @@ class DerivativesTest(IMP.test.TestCase):
         ind_emrsr.append(IMP.em.FitRestraint(self.particles,
                                              em_map,
                                              refiner,
+                                             [0,0],
                                              rad_key,wei_key,
                                              1.0))
         self.imp_model.add_restraint(ind_emrsr[0])
