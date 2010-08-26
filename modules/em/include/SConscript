@@ -6,8 +6,8 @@ files = [
     'CoarseConvolution.h',
     'DensityHeader.h',
     'DensityMap.h',
+    'masking.h',
     'EMReaderWriter.h',
-#    'RigidBodiesFitRestraint.h',
     'FitRestraint.h',
     'Image.h',
     'ImageHeader.h',
@@ -30,7 +30,8 @@ files = [
     'noise.h',
     'rigid_fitting.h',
     'image_transformations.h' ,
-        ]
+        ]\
++SConscript('internal/SConscript')
 
 # Install the include files:
 env.IMPModuleInclude(files)

@@ -81,9 +81,7 @@ class FittingTest(IMP.test.TestCase):
         """Check that correlation of particles with their own density is 1"""
         for p in self.particles:
             print "is rigid body?",IMP.core.RigidBody.particle_is_instance(p)
-        r = IMP.em.FitRestraint(self.particles,self.scene,self.rb_refiner,
-                                self.radius_key,
-                                self.weight_key, 1.0)
+        r = IMP.em.FitRestraint(self.particles,self.scene,self.rb_refiner)
         self.imp_model.add_restraint(r)
         score = self.imp_model.evaluate(False)
         print "EM score (1-CC) = "+str(score)
@@ -92,9 +90,7 @@ class FittingTest(IMP.test.TestCase):
     def test_cast(self):
         """Make sure that we can cast Restraint* to FitRestraint*"""
         m = self.imp_model
-        r1 = IMP.em.FitRestraint(self.particles,self.scene,self.rb_refiner,
-                                 self.radius_key,
-                                 self.weight_key, 1.0)
+        r1 = IMP.em.FitRestraint(self.particles,self.scene,self.rb_refiner)
         sf = IMP.core.Harmonic(10.0, 0.1)
         r2 = IMP.core.DistanceRestraint(sf, self.particles[0],
                                         self.particles[1])
@@ -107,9 +103,7 @@ class FittingTest(IMP.test.TestCase):
         self.assert_(IMP.em.FitRestraint.cast(r2) is None)
     def test_get_methods(self):
         """Check FitRestraint's get methods"""
-        r1 = IMP.em.FitRestraint(self.particles,self.scene,self.rb_refiner,
-                                 self.radius_key,
-                                 self.weight_key, 1.0)
+        r1 = IMP.em.FitRestraint(self.particles,self.scene,self.rb_refiner)
         self.assert_(isinstance(r1.get_model_dens_map(),
                                 IMP.em.SampledDensityMap))
 

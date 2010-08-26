@@ -19,6 +19,7 @@
 #include "IMP/base_types.h"
 #include "IMP/core/XYZR.h"
 #include "IMP/atom/Mass.h"
+#include "masking.h"
 IMPEM_BEGIN_NAMESPACE
 
 // an advantage of using const double over define is that it limits the use
@@ -97,8 +98,8 @@ void project (const Particles &ps,
   inline const Particles & get_sampled_particles() const {return ps_;}
   inline FloatKey  get_weight_key() const {return weight_key_;}
   inline FloatKey  get_radius_key() const {return radius_key_;}
-  inline Float get_minimum_resampled_value() const {
-    return min_resampled_value_;}
+  // inline Float get_minimum_resampled_value() const {
+  //   return min_resampled_value_;}
 
 
   IMP_REF_COUNTED_DESTRUCTOR(SampledDensityMap);
@@ -118,17 +119,18 @@ protected:
                   const algebra::VectorD<3> &upper_bound,
                   emreal maxradius, emreal resolution, emreal voxel_size,
                   int sig_offset);
-
+ protected:
+  void set_neighbor_mask(float radius);
 protected:
   //! kernel handling
   KernelParameters kernel_params_;
+  DistanceMask distance_mask_;
   Particles ps_;
   core::XYZRs xyzr_; //each voxel decorator would contain X,Y,Z,R
-  // std::vector<atom::Mass> weight_;
   FloatKey weight_key_;
   FloatKey radius_key_;
   FloatKey x_key_,y_key_,z_key_;
-  Float min_resampled_value_;
+  //  Float min_resampled_value_;
      //keeps the minimum value of a resampled voxel (larger than a zero voxel)
 };
 IMP_OBJECTS(SampledDensityMap, SampledDensityMaps);

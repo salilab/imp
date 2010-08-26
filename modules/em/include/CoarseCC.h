@@ -18,6 +18,7 @@
 #include <vector>
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/Refiner.h>
+#include "masking.h"
 
 IMPEM_BEGIN_NAMESPACE
 
@@ -40,24 +41,29 @@ public:
              simulated EM map for the model.
       \param[in] scalefactor scale factor to apply to the value of the cross
              correlation term
-      \param[in] divide_by_rms determines wheather the model_map should be
-                 normalized prior to the correlation calculation. false is
-                 faster, but potentially innacurate
+      \param[in] recalc_rms determines wheather the RMS of both maps
+                 should be recalcualted prior to the correlation calculation.
+                 False is faster, but potentially innacurate
       \param[in] resample if true, the model density map is resampled
+      \param[in] norm_factors if set these precalcualted terms are used
+                            for normalization
       \return the value of the cross correlation term: scalefac*(1-ccc)
       \relatesalso cross_correlation_coefficient
    */
   static float calc_score(
    DensityMap &data, SampledDensityMap &model_map,
    float scalefactor,
-   bool divide_by_rms=true,bool resample=true);
+   bool recalc_rms=true,bool resample=true,
+   FloatPair norm_factors=FloatPair(0.,0.));
 
 
 /*!
  Computes the derivatives of the cross correlation term scalefac*(1-ccc) at each
  voxel of the map.
  \param[in] em_map the target density map.
- \param[in] model_map the sampled density map of the model
+ \param[in] model_map the density map of the model
+ \param[in] model_ps the particles sampled in model_map
+ \param[in] mass_key the key of the mass attribute of the particles
  \param[in] scalefac scale factor to apply to the value of the cross
                         correlation term
  \param[out] dvx vector to contain the x partial derivatives
@@ -66,7 +72,10 @@ public:
  \note: The function assumes that correct RMS are calculated for the densities
 */
   static void calc_derivatives(
-     const DensityMap &em_map, SampledDensityMap &model_map,
+     const DensityMap &em_map, const DensityMap &model_map,
+     const Particles &model_ps,const FloatKey &mass_key,
+     KernelParameters *kernel_params,
+     DistanceMask *dist_mask,
      const float &scalefac, std::vector<float> &dvx,
      std::vector<float>&dvy,std::vector<float>&dvz);
 
@@ -86,13 +95,12 @@ public:
                  than threshold
                  in grid2 are not summed (avoid calculating correlation on
                  voxels below the threshold
-      \param[in] divide_by_rms determines wheather the model_map should be
-                 normalized prior to the correlation calculation. false is
-                 faster, but potentially innacurate
       \param[in] allow_padding determines wheather the two maps should be padded
                  to have the same size before the calcualtion is performed.
                  If set to false  and the grids are not of the same size,
                  the function will throw an exception.
+      \param[in] norm_factors if set these precacluated terms are used
+                              for normalization
       \return the cross correlation coefficient value between two density maps
       \note This is not the local CC function
       \todo check that the mean is always substracted from the em-density.
@@ -100,11 +108,12 @@ public:
          use voxel_data_threshold that does not consist of the entire map
          this would be wrong. Fix it.
    */
-  static double cross_correlation_coefficient(const DensityMap &grid1,
-                                             const DensityMap &grid2,
-                                             float grid2_voxel_data_threshold,
-                                             bool divide_by_rms=true,
-                                             bool allow_padding=false);
+  static double cross_correlation_coefficient(
+     const DensityMap &grid1,
+     const DensityMap &grid2,
+     float grid2_voxel_data_threshold,
+     bool allow_padding=false,
+     FloatPair norm_factors=FloatPair(0.,0.));
 
 
 static float local_cross_correlation_coefficient(const DensityMap &em_map,

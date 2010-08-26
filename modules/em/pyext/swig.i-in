@@ -6,7 +6,6 @@ namespace IMP::em {
 %ignore operator<<(std::ostream&, const EMHeader &);
 %ignore operator<<(std::ostream&, const MRCHeader &);
 
-
 /* Make selected classes extensible in Python */
 IMP_SWIG_OBJECT(IMP::em, DensityMap, DensityMaps);
 IMP_SWIG_OBJECT(IMP::em, SampledDensityMap, SampledDensityMaps);
@@ -14,11 +13,13 @@ IMP_SWIG_OBJECT(IMP::em, SurfaceShellDensityMap, SurfaceShellDensityMaps);
 IMP_SWIG_OBJECT(IMP::em, FitRestraint, FitRestraints);
 IMP_SWIG_OBJECT(IMP::em, Image, Images);
 
+
 /* Wrap our own classes */
 %include "IMP/em/def.h"
 %include "IMP/em/DensityHeader.h"
 %include "IMP/em/MapReaderWriter.h"
 %include "IMP/em/DensityMap.h"
+%include "IMP/em/masking.h"
 %include "IMP/em/EMReaderWriter.h"
 %include "IMP/em/XplorReaderWriter.h"
 %include "IMP/em/MRCReaderWriter.h"
@@ -28,7 +29,6 @@ IMP_SWIG_OBJECT(IMP::em, Image, Images);
 %include "IMP/em/CoarseCC.h"
 %include "IMP/em/CoarseConvolution.h"
 %include "IMP/em/CoarseCCatIntervals.h"
-/*%include "IMP/em/RigidBodiesFitRestraint.h"*/
 %include "IMP/em/FitRestraint.h"
 %include "IMP/em/converters.h"
 %include "IMP/em/SpiderHeader.h"

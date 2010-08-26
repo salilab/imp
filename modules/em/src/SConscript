@@ -6,8 +6,8 @@ files = [
     'CoarseConvolution.cpp',
     'DensityHeader.cpp',
     'DensityMap.cpp',
+    'masking.cpp',
     'EMReaderWriter.cpp',
-#    'RigidBodiesFitRestraint.cpp',
     'FitRestraint.cpp',
     'Image.cpp',
     'ImageHeader.cpp',
@@ -24,7 +24,8 @@ files = [
     'header_converters.cpp',
     'rigid_fitting.cpp',
     'image_transformations.cpp' ,
-        ]
+        ]\
++SConscript('internal/SConscript')
 
 # Build and install the shared library:
 env.IMPModuleLib(files)

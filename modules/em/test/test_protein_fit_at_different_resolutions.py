@@ -13,9 +13,7 @@ class ProteinFittingTest(IMP.test.TestCase):
         for fn,res in data:
             scene = IMP.em.read_map(self.get_input_file_name(fn), self.mrw)
             scene.get_header_writable().set_resolution(res)
-            r = IMP.em.FitRestraint(self.particles,scene,self.refiner,
-                       IMP.core.XYZR.get_default_radius_key(),
-                       IMP.atom.Mass.get_mass_key(),1)
+            r = IMP.em.FitRestraint(self.particles,scene,self.refiner)
             self.imp_model.add_restraint(r)
             score = self.imp_model.evaluate(False)
             print "EM score (1-CC) = "+str(score), " filename:",fn," res:", res

@@ -14,17 +14,16 @@
 #include <IMP/log.h>
 #include <boost/lambda/lambda.hpp>
 
-
 IMPEM_BEGIN_NAMESPACE
 
 FitRestraint::FitRestraint(
    Particles ps,
    DensityMap *em_map,
    Refiner *refiner,
+   FloatPair norm_factors,
    FloatKey radius_key,
    FloatKey weight_key,
    float scale
-   //   bool special_treatment_of_particles_outside_of_density
    ): Restraint("Fit restraint")
 {
   IMP_LOG(TERSE,"Load fit restraint with the following input:"<<
@@ -34,6 +33,8 @@ FitRestraint::FitRestraint(
   //   special_treatment_of_particles_outside_of_density;
   target_dens_map_ = em_map;
   rb_refiner_=refiner;
+  weight_key_=weight_key;
+  norm_factors_=norm_factors;
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i=0; i< ps.size(); ++i) {
       IMP_USAGE_CHECK(ps[i]->has_attribute(radius_key),
@@ -64,6 +65,8 @@ FitRestraint::FitRestraint(
   IMP_LOG(TERSE,"after adding particles"<<std::endl);
   model_dens_map_ = new SampledDensityMap(*em_map->get_header());
   model_dens_map_->set_particles(all_ps,radius_key,weight_key);
+  kernel_params_=model_dens_map_->get_kernel_params();
+  dist_mask_=new DistanceMask(model_dens_map_->get_header());
   IMP_LOG(TERSE,"going to initialize_model_density_map"<<std::endl);
   initialize_model_density_map(ps,radius_key,weight_key);
   IMP_LOG(TERSE,"going to initialize derivatives"<<std::endl);
@@ -94,6 +97,7 @@ FitRestraint::FitRestraint(
   //target_dens_map->std_normalize();
   IMP_LOG(TERSE, "Finish initialization" << std::endl);
 }
+
 void FitRestraint::initialize_model_density_map(
   Particles ps,
   FloatKey radius_key,FloatKey weight_key) {
@@ -182,7 +186,6 @@ void FitRestraint::resample() const {
       delete transformed;
   }
 }
-
 IMP_LIST_IMPL(FitRestraint, Particle, particle,Particle*, Particles,
               {
               IMP_INTERNAL_CHECK(get_number_of_particles()==0
@@ -194,49 +197,49 @@ IMP_LIST_IMPL(FitRestraint, Particle, particle,Particle*, Particles,
 
 double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
-  Float percentage_outside_of_density =
-    (1.*
-    get_number_of_particles_outside_of_the_density(
-      target_dens_map_,
-      model_dens_map_->get_sampled_particles()))/
-    model_dens_map_->get_sampled_particles().size();
   Float escore;
   bool calc_deriv = accum? true: false;
-  if (algebra::get_are_almost_equal(percentage_outside_of_density,1.,0.001)) {
-    escore=1.;
-  }
-  else{
-    IMP_LOG(VERBOSE,"before resample\n");
-    resample();
-    IMP_LOG(VERBOSE,"after resample\n");
-    escore = CoarseCC::calc_score(const_cast<DensityMap&>(*target_dens_map_),
-                             const_cast<SampledDensityMap&>(*model_dens_map_),
-                             scalefac_, true,false);
-    if (calc_deriv) {
-      //calculate the derivatives for non rigid bodies
+  IMP_LOG(VERBOSE,"before resample\n");
+  resample();
+  IMP_LOG(VERBOSE,"after resample\n");
+  escore = CoarseCC::calc_score(
+               const_cast<DensityMap&>(*target_dens_map_),
+               const_cast<SampledDensityMap&>(*model_dens_map_),
+               scalefac_,true,false,norm_factors_);
+  if (calc_deriv) {
+    //calculate the derivatives for non rigid bodies
+    if (not_rb_.size()>0) {
       IMP_LOG(VERBOSE,
               "Going to calc derivatives for none_rb_model_dens_map_\n");
-      if (not_rb_.size()>0) {
-        CoarseCC::calc_derivatives(
-           const_cast<DensityMap&>(*target_dens_map_),
-           const_cast<SampledDensityMap&>(*none_rb_model_dens_map_),
-           scalefac_,
-           const_cast<FitRestraint*>(this)->not_rb_dx_,
-           const_cast<FitRestraint*>(this)->not_rb_dy_,
-           const_cast<FitRestraint*>(this)->not_rb_dz_);
-      }
-      for(unsigned int rb_i=0;rb_i<rbs_.size();rb_i++) {
+      CoarseCC::calc_derivatives(
+             *target_dens_map_,
+             *none_rb_model_dens_map_,
+             not_rb_,
+             weight_key_,kernel_params_,
+             dist_mask_,
+             scalefac_,
+             const_cast<FitRestraint*>(this)->not_rb_dx_,
+             const_cast<FitRestraint*>(this)->not_rb_dy_,
+             const_cast<FitRestraint*>(this)->not_rb_dz_);
+    }
+    for(unsigned int rb_i=0;rb_i<rbs_.size();rb_i++) {
       IMP_LOG(VERBOSE,
               "Going to calc derivatives for rigid body number "<<
               rb_i<<"\n");
-        CoarseCC::calc_derivatives(
-           const_cast<DensityMap&>(*target_dens_map_),
-           const_cast<SampledDensityMap&>(*(rb_model_dens_map_[rb_i])),
-           scalefac_,
-           const_cast<FitRestraint*>(this)->rb_refined_dx_[rb_i],
-           const_cast<FitRestraint*>(this)->rb_refined_dy_[rb_i],
-           const_cast<FitRestraint*>(this)->rb_refined_dz_[rb_i]);
-      }
+      DensityMap *transformed = get_transformed(
+              rb_model_dens_map_[rb_i],
+              rbs_[rb_i].get_transformation()*rbs_orig_trans_[rb_i]);
+      CoarseCC::calc_derivatives(
+              *target_dens_map_,
+              //*(rb_model_dens_map_[rb_i]),
+              *transformed,
+              rb_refiner_->get_refined(rbs_[rb_i]),
+              weight_key_,kernel_params_,dist_mask_,
+              scalefac_,
+              const_cast<FitRestraint*>(this)->rb_refined_dx_[rb_i],
+              const_cast<FitRestraint*>(this)->rb_refined_dy_[rb_i],
+              const_cast<FitRestraint*>(this)->rb_refined_dz_[rb_i]);
+      delete transformed;
     }
   }
   // //In many optimization senarios particles are can be found outside of
@@ -249,44 +252,6 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   // //we start considering centroids distance once 80% of the particles
   // //are outside of the density.
   Float score=escore;
-  // if (percentage_outside_of_density>0.8 &&
-  //     special_treatment_of_particles_outside_of_density_) {
-  //   IMP_LOG(IMP::TERSE,"More than 80% of the particles are outside "<<
-  //      "of the density. Pulling the particles back "<<
-  //      "to the density using a upper bound harmonic between the centroids "<<
-  //      " of the density and the map"<<std::endl);
-  //   algebra::Vector3D ps_centroid=
-  //     core::get_centroid(
-  //       core::XYZsTemp(model_dens_map_->get_sampled_particles()));
-  //   algebra::Vector3D map_centroid=target_dens_map_->get_centroid();
-  //   algebra::Vector3D dist_deriv;
-  //   algebra::Vector3D centroid_delta=map_centroid-ps_centroid;
-  //   core::HarmonicUpperBound hup(0,1.);
-  //   Float dist_score = core::internal::compute_distance_pair_score(
-  //       centroid_delta,
-  //       &hup,&dist_deriv,
-  //       boost::lambda::_1);
-  //   score=(1.-percentage_outside_of_density)*escore+
-  //          percentage_outside_of_density*dist_score;
-  //   //fix derivatives
-  //   for(unsigned int i=0;i<dx_.size();i++) {
-  //     (const_cast<FitRestraint*>(this)->dx_)[i]=
-  //      dx_[i]*(1.-percentage_outside_of_density)+
-  //       dist_deriv[0]*(percentage_outside_of_density);
-  //     (const_cast<FitRestraint*>(this)->dy_)[i]=
-  //      dy_[i]*(1.-percentage_outside_of_density)+
-  //        dist_deriv[1]*(percentage_outside_of_density);
-  //     (const_cast<FitRestraint*>(this)->dz_)[i]=
-  //      dz_[i]*(1.-percentage_outside_of_density)+
-  //        dist_deriv[2]*(percentage_outside_of_density);
-  //   }
-  //   IMP_LOG(IMP::TERSE,
-  //"Finish score and derivatives adjustments"<<std::endl);
-  // }
-  // float deriv_sum=0.;
-  //   for (unsigned int ii = 0; ii < dx_.size(); ++ii) {
-  //     deriv_sum+=dx_[ii]+dy_[ii]+dz_[ii];
-  //   }
   // now update the derivatives
   FloatKeys xyz_keys=IMP::core::XYZR::get_xyz_keys();
   if (calc_deriv) {

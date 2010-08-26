@@ -40,13 +40,16 @@ RestraintSet * add_restraints(Model *model, DensityMap *dmap,
    //add fitting restraint
    FitRestraint *fit_rs;
    IMP_NEW(core::LeavesRefiner,leaves_ref,(atom::Hierarchy::get_traits()));
+   FloatPair no_norm_factors(0.,0.);
    if (fast) {
      fit_rs = new FitRestraint(rb.get_particle(),
-                               dmap,leaves_ref,rad_key,wei_key,1.0);
+                               dmap,leaves_ref,no_norm_factors,
+                               rad_key,wei_key,1.0);
    }
    else {
      fit_rs = new FitRestraint(leaves_ref->get_refined(rb),
-                               dmap,leaves_ref,rad_key,wei_key,1.0);
+                               dmap,leaves_ref,no_norm_factors,
+                               rad_key,wei_key,1.0);
    }
    rsrs->add_restraint(fit_rs);
    return rsrs;
@@ -72,7 +75,7 @@ core::MonteCarlo* set_optimizer(Model *model, OptimizerState *display_log,
 
   //set the logging if provided
   if (display_log != NULL) {
-    opt->add_optimizer_state(display_log);
+    lopt->add_optimizer_state(display_log);
     display_log->update();
   }
   return opt;
@@ -246,7 +249,7 @@ FittingSolutions local_rigid_fitting_grid_search(
       "sampled density map is of wrong dimensions"<<std::endl);
    model_dens_map->set_particles(ps,rad_key,wei_key);
    model_dens_map->resample();
-
+   model_dens_map->calcRMS();
    algebra::Rotation3Ds rots;
    //algebra::get_uniform_cover_rotations_3d(number_of_rotations);
    for(int i=0;i<number_of_rotations;i++) {

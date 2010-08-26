@@ -17,6 +17,7 @@ SampledDensityMap::SampledDensityMap(const DensityHeader &header):
   y_key_=IMP::core::XYZ::get_coordinate_key(1);
   z_key_=IMP::core::XYZ::get_coordinate_key(2);
   kernel_params_ = KernelParameters(header_.get_resolution());
+  distance_mask_ = DistanceMask(&header_);
 }
 
 IMP::algebra::BoundingBox3D
@@ -81,120 +82,86 @@ SampledDensityMap::SampledDensityMap(const IMP::Particles &ps,
   determine_grid_size(resolution,voxel_size,sig_cutoff);
   //set up the sampling parameters
   kernel_params_ = KernelParameters(resolution);
+  distance_mask_ = DistanceMask(&header_);
   resample();
 }
 
 
-void SampledDensityMap::resample()
-{
-  IMP_LOG(VERBOSE,"going to resample  particles " <<std::endl);
-  //check that the particles bounding box is within the density bounding box
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-    IMP::algebra::BoundingBox3D particles_bb =
-        calculate_particles_bounding_box(ps_);
-    IMP::algebra::BoundingBox3D density_bb =
-       get_bounding_box(this);
-    if (!density_bb.get_contains(particles_bb)) {
-         IMP_WARN("The particles to sample are not contained within" <<
-                   " the sampled density map"
-                  << density_bb << " does not contain " << particles_bb
-                  << std::endl);
-    }
-  }
-  reset_data();
-  min_resampled_value_=999;
-  calc_all_voxel2loc();
-  int  ivox, ivoxx, ivoxy, ivoxz, iminx, imaxx, iminy, imaxy, iminz, imaxz;
-  // actual sampling
-  emreal tmpx,tmpy,tmpz;
-  // variables to avoid some multiplications
-  int nxny=header_.get_nx()*header_.get_ny(); int znxny;
-  emreal rsq,tmp;
-  const RadiusDependentKernelParameters* params;
-  IMP_LOG(VERBOSE,"sampling "<<ps_.size()<<" particles "<< std::endl);
-  for (unsigned int ii=0; ii<xyzr_.size(); ii++) {
-    // If the kernel parameters for the particles have not been
-    // precomputed, do it
-    params = kernel_params_.get_params(xyzr_[ii].get_radius());
-    if (!params) {
-      IMP_LOG(TERSE, "EM map is using default params" << std::endl);
-      kernel_params_.set_params(xyzr_[ii].get_radius());
-      params = kernel_params_.get_params(xyzr_[ii].get_radius());
-    }
-    IMP_USAGE_CHECK(params, "Parameters shouldn't be NULL");
-    // compute the box affected by each particle
-    calc_local_bounding_box(
-      *this,
-      algebra::Vector3D(xyzr_[ii].get_x(), xyzr_[ii].get_y(),
-                        xyzr_[ii].get_z()),
-      params->get_kdist(),
-      iminx, iminy, iminz, imaxx, imaxy, imaxz);
-    IMP_LOG(IMP::VERBOSE,"Calculated bounding box for voxel: " << ii <<
-       " is :"<<iminx<<","<< iminy<<","<< iminz<<","<<
-       imaxx<<","<< imaxy<<","<<  imaxz <<std::endl);
-    for (ivoxz=iminz;ivoxz<=imaxz;ivoxz++) {
-      znxny=ivoxz * nxny;
-      for (ivoxy=iminy;ivoxy<=imaxy;ivoxy++)  {
-        // we increment ivox this way to avoid unneceessary multiplication
-        // operations.
-        ivox = znxny + ivoxy * header_.get_nx() + iminx;
-        for (ivoxx=iminx;ivoxx<=imaxx;ivoxx++) {
-          tmpx=x_loc_[ivox] - xyzr_[ii].get_x();
-          tmpy=y_loc_[ivox] - xyzr_[ii].get_y();
-          tmpz=z_loc_[ivox] - xyzr_[ii].get_z();
-          rsq = tmpx*tmpx+tmpy*tmpy+tmpz*tmpz;
-          tmp = EXP(-rsq * params->get_inv_sigsq());
-          //tmp = exp(-rsq * params->get_inv_sigsq());
-          // if statement to ensure even sampling within the box
-          if (tmp>kernel_params_.get_lim()) {
-            data_[ivox]+=
-              params->get_normfac() * ps_[ii]->get_value(weight_key_) * tmp;
-          }
-          ivox++;
-        }
-      }
-    }
-  }
-  for (unsigned int ii=0; ii<xyzr_.size(); ii++) {
-    // If the kernel parameters for the particles have not been
-    // precomputed, do it
-    params = kernel_params_.get_params(xyzr_[ii].get_radius());
-    if (!params) {
-      IMP_LOG(TERSE, "EM map is using default params" << std::endl);
-      kernel_params_.set_params(xyzr_[ii].get_radius());
-      params = kernel_params_.get_params(xyzr_[ii].get_radius());
-    }
-    IMP_USAGE_CHECK(params, "Parameters shouldn't be NULL");
-    // compute the box affected by each particle
-    calc_local_bounding_box(
-         *this,
-         algebra::Vector3D(
-            xyzr_[ii].get_x(), xyzr_[ii].get_y(),xyzr_[ii].get_z()),
-         params->get_kdist(),
-         iminx, iminy, iminz, imaxx, imaxy, imaxz);
-    IMP_LOG(IMP::VERBOSE,"Calculated bounding box for voxel: " << ii <<
-           " is :"<<iminx<<","<< iminy<<","<< iminz<<","<<
-            imaxx<<","<< imaxy<<","<<  imaxz <<std::endl);
-    //update minimum resampled voxel
-    for (ivoxz=iminz;ivoxz<=imaxz;ivoxz++) {
-      znxny=ivoxz * nxny;
-      for (ivoxy=iminy;ivoxy<=imaxy;ivoxy++)  {
-        // we increment ivox this way to avoid unneceessary multiplication
-        // operations.
-        ivox = znxny + ivoxy * header_.get_nx() + iminx;
-        for (ivoxx=iminx;ivoxx<=imaxx;ivoxx++) {
-          if ((data_[ivox] < min_resampled_value_) && (data_[ivox] > 0.3)) {
-            min_resampled_value_ = data_[ivox];
-          }
-        }
-      }
-    }
-  }
-  // The values of dmean, dmin,dmax, and rms have changed
-  rms_calculated_ = false;
-  normalized_ = false;
-  IMP_LOG(VERBOSE,"finish resampling  particles " <<std::endl);
-}
+ void SampledDensityMap::resample()
+ {
+   IMP_LOG(VERBOSE,"going to resample  particles " <<std::endl);
+   //check that the particles bounding box is within the density bounding box
+   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+     IMP::algebra::BoundingBox3D particles_bb =
+         calculate_particles_bounding_box(ps_);
+     IMP::algebra::BoundingBox3D density_bb =
+        get_bounding_box(this);
+     if (!density_bb.get_contains(particles_bb)) {
+          IMP_WARN("The particles to sample are not contained within" <<
+                    " the sampled density map"
+                   << density_bb << " does not contain " << particles_bb
+                   << std::endl);
+     }
+   }
+   reset_data();
+   calc_all_voxel2loc();
+   int  ivox, ivoxx, ivoxy, ivoxz, iminx, imaxx, iminy, imaxy, iminz, imaxz;
+   // actual sampling
+   emreal tmpx,tmpy,tmpz;
+   // variables to avoid some multiplications
+   int nxny=header_.get_nx()*header_.get_ny(); int znxny;
+   emreal rsq,tmp;
+   const RadiusDependentKernelParameters* params;
+   IMP_LOG(VERBOSE,"sampling "<<ps_.size()<<" particles "<< std::endl);
+   for (unsigned int ii=0; ii<xyzr_.size(); ii++) {
+     float x,y,z;
+     x=xyzr_[ii].get_x();y=xyzr_[ii].get_y();z=xyzr_[ii].get_z();
+     // If the kernel parameters for the particles have not been
+     // precomputed, do it
+     params = kernel_params_.get_params(xyzr_[ii].get_radius());
+     if (!params) {
+       IMP_LOG(TERSE, "EM map is using default params" << std::endl);
+       kernel_params_.set_params(xyzr_[ii].get_radius());
+       params = kernel_params_.get_params(xyzr_[ii].get_radius());
+     }
+     IMP_USAGE_CHECK(params, "Parameters shouldn't be NULL");
+     // compute the box affected by each particle
+     calc_local_bounding_box(
+       *this,
+       x,y,z,
+       params->get_kdist(),
+       iminx, iminy, iminz, imaxx, imaxy, imaxz);
+     IMP_LOG(IMP::VERBOSE,"Calculated bounding box for voxel: " << ii <<
+        " is :"<<iminx<<","<< iminy<<","<< iminz<<","<<
+        imaxx<<","<< imaxy<<","<<  imaxz <<std::endl);
+     for (ivoxz=iminz;ivoxz<=imaxz;ivoxz++) {
+       znxny=ivoxz * nxny;
+       for (ivoxy=iminy;ivoxy<=imaxy;ivoxy++)  {
+         // we increment ivox this way to avoid unneceessary multiplication
+         // operations.
+         ivox = znxny + ivoxy * header_.get_nx() + iminx;
+         for (ivoxx=iminx;ivoxx<=imaxx;ivoxx++) {
+           tmpx=x_loc_[ivox] - x;
+           tmpy=y_loc_[ivox] - y;
+           tmpz=z_loc_[ivox] - z;
+           rsq = tmpx*tmpx+tmpy*tmpy+tmpz*tmpz;
+           tmp = EXP(-rsq * params->get_inv_sigsq());
+           //tmp = exp(-rsq * params->get_inv_sigsq());
+           // if statement to ensure even sampling within the box
+           if (tmp>kernel_params_.get_lim()) {
+             data_[ivox]+=
+               params->get_normfac() * ps_[ii]->get_value(weight_key_) * tmp;
+           }
+           ivox++;
+         }
+       }
+     }
+   }
+   // The values of dmean, dmin,dmax, and rms have changed
+   rms_calculated_ = false;
+   normalized_ = false;
+   IMP_LOG(VERBOSE,"finish resampling  particles " <<std::endl);
+ }
 
 void SampledDensityMap::set_particles(const IMP::Particles &ps,
                      IMP::FloatKey radius_key,IMP::FloatKey mass_key) {

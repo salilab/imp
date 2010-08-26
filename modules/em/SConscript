@@ -4,4 +4,5 @@ Import('env')
 env.Append(CPPDEFINES=['_USE_MATH_DEFINES'])
 
 env.IMPModuleBuild(version='SVN',
-                   required_modules=['atom', 'core', 'algebra'])
+                   required_modules=[#'statistics',
+'atom', 'core', 'algebra'])

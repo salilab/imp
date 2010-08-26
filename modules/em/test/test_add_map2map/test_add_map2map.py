@@ -59,7 +59,6 @@ class AddParticlesTest(IMP.test.TestCase):
         merged_grid=IMP.em.create_density_map(b1,1)
         merged_grid.add(grid1)
         merged_grid.add(grid2)
-
         for i in range(merged_grid.get_number_of_voxels()):
             loc=merged_grid.get_location_by_voxel(i)
             expected_val=0.
@@ -68,6 +67,5 @@ class AddParticlesTest(IMP.test.TestCase):
             if grid2.is_part_of_volume(loc):
                 expected_val+=grid2.get_value(loc)
             self.assertInTolerance(expected_val,merged_grid.get_value(i),0.001)
-
 if __name__ == '__main__':
     unittest.main()
