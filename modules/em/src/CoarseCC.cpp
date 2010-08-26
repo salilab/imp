@@ -340,12 +340,17 @@ void CoarseCC::calc_derivatives(
   // validate that the model and em maps are not empty
   IMP_USAGE_CHECK(em_header->rms >= EPS,
             "EM map is empty ! em_header->rms = " << em_header->rms);
-  IMP_USAGE_CHECK(model_header->rms >= EPS,
-            "Model map is empty ! model_header->rms = " << model_header->rms
-            <<" the model centroid is : " <<
-            core::get_centroid(core::XYZsTemp(model_ps))<<
-            " the map centroid is " << em_map.get_centroid()<<
-                  "number of particles in model:"<<model_ps.size()<<std::endl);
+  //it may be that CG takes a too large step, which causes the particles
+  //to go outside of the density
+  // if (model_header->rms <= EPS){
+  // IMP_WARN("Model map is empty ! model_header->rms = " << model_header->rms
+  //           <<" derivatives are not calculated. the model centroid is : " <<
+  //           core::get_centroid(core::XYZsTemp(model_ps))<<
+  //           " the map centroid is " << em_map.get_centroid()<<
+  //                 "number of particles in model:"<<model_ps.size()
+  //<<std::endl);
+  // return;
+  // }
   // Compute the derivatives
   for (unsigned int ii=0; ii<model_ps.size(); ii++) {
     float x,y,z;
