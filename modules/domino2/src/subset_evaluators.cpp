@@ -43,16 +43,13 @@ namespace {
 
 ModelSubsetEvaluatorTable::ModelSubsetEvaluatorTable(Model *m,
                                                      ParticleStatesTable *pst):
-  data_(m, m->get_root_restraint_set(),
-        get_dependency_graph(RestraintsTemp(1, m->get_root_restraint_set())),
+  data_(m->get_root_restraint_set(),
         pst) {
 }
 
 ModelSubsetEvaluatorTable::ModelSubsetEvaluatorTable(RestraintSet *rs,
                                                      ParticleStatesTable *pst):
-  data_(rs->get_model(), rs,
-        get_dependency_graph(RestraintsTemp(1, rs)),
-        pst) {
+  data_(rs,pst) {
 }
 
 SubsetEvaluator *

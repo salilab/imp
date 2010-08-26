@@ -13,10 +13,15 @@
 
 
 IMPDOMINO2_BEGIN_INTERNAL_NAMESPACE
-ModelData::ModelData(Model *m, RestraintSet *rs,
-                     const DependencyGraph &dg,
-                     ParticleStatesTable* pst): rs_(rs), pst_(pst) {
-  const ParticlesTemp all= pst->get_particles();
+ModelData::ModelData(RestraintSet *rs,
+                          ParticleStatesTable* pst) {
+  rs_=rs;
+  pst_=pst;
+  initialized_=false;
+}
+void ModelData::initialize() {
+  DependencyGraph dg= get_dependency_graph(RestraintsTemp(1, rs_));
+  const ParticlesTemp all= pst_->get_particles();
   std::map<Particle*, Particle*> idm;
   for (unsigned int i=0; i < all.size(); ++i) {
     Particle *p= all[i];
@@ -25,8 +30,8 @@ ModelData::ModelData(Model *m, RestraintSet *rs,
       idm[ps[j]]=p;
     }
   }
-  Restraints restraints= get_restraints(rs->restraints_begin(),
-                                 rs->restraints_end());
+  Restraints restraints= get_restraints(rs_->restraints_begin(),
+                                        rs_->restraints_end());
   for (Restraints::const_iterator rit= restraints.begin();
        rit != restraints.end(); ++rit) {
     ParticlesTemp ip= (*rit)->get_input_particles();
@@ -39,8 +44,9 @@ ModelData::ModelData(Model *m, RestraintSet *rs,
     std::sort(oip.begin(), oip.end());
     oip.erase(std::unique(oip.begin(), oip.end()), oip.end());
     dependencies_.push_back(oip);
-    rdata_.push_back(RestraintData(*rit, m->get_weight(*rit)));
+    rdata_.push_back(RestraintData(*rit, rs_->get_model()->get_weight(*rit)));
   }
+  initialized_=true;
 }
 
 void ModelData::validate() const {
@@ -54,6 +60,9 @@ void ModelData::validate() const {
 }
 
 void ModelData::set_sampler(const Sampler *s) {
+  if (!initialized_) {
+    initialize();
+  }
   for (unsigned int i=0; i< rdata_.size(); ++i) {
     double max= s->get_maximum_score(rdata_[i].get_restraint());
     rdata_[i].set_max(max);
@@ -62,6 +71,9 @@ void ModelData::set_sampler(const Sampler *s) {
 
 const SubsetData &ModelData::get_subset_data(const Subset &s,
                                              const Subsets &exclusions) const {
+  if (!initialized_) {
+    const_cast<ModelData*>(this)->initialize();
+  }
   SubsetID id(s, exclusions);
   if (sdata_.find(id) == sdata_.end()) {
     ParticleIndex pi= get_index(s);
