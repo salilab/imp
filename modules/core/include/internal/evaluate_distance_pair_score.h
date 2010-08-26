@@ -90,7 +90,7 @@ double compute_distance_pair_score(const algebra::VectorD<D> &delta,
                                    algebra::VectorD<D> *d,
                                    SD sd,
                                    double deriv_multiplier = 1.0) {
-  static const Float MIN_DISTANCE = .00001;
+  static const double MIN_DISTANCE = .00001;
   double distance= delta.get_magnitude();
   double shifted_distance = sd(distance);
 
