@@ -35,7 +35,7 @@ namespace {
     }
   }
   PairScore* get_sphere_distance_pair_score(double k) {
-    return new SphereDistancePairScore(new HarmonicLowerBound(0,k));
+    return new SoftSpherePairScore(k);
   }
 }
 
