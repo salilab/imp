@@ -433,8 +433,8 @@ public:
  */
 template <class VT>
 class DenseGridStorage3D: public BoundedGridStorage3D {
-  typedef std::vector<VT> Storage;
-  Storage data_;
+  typedef std::vector<VT> Data;
+  Data data_;
   VT default_;
 
   template <class I>
@@ -499,8 +499,8 @@ public:
       @{
   */
 #ifndef SWIG
-  typedef typename Storage::iterator AllVoxelIterator;
-  typedef typename Storage::const_iterator AllVoxelConstIterator;
+  typedef typename Data::iterator AllVoxelIterator;
+  typedef typename Data::const_iterator AllVoxelConstIterator;
   AllVoxelIterator all_voxels_begin() {
     return data_.begin();
   }
@@ -547,13 +547,13 @@ template <class VT, class Base>
 class SparseGridStorage3D: public Base {
 #if IMP_BOOST_VERSION > 103500
   typedef typename boost::unordered_map<GridIndex3D, VT>
-  Storage;
+  Data;
 #else
-  typedef std::map<GridIndex3D, VT> Storage;
+  typedef std::map<GridIndex3D, VT> Data;
 #endif
   struct GetIndex {
     typedef GridIndex3D result_type;
-    typedef typename Storage::const_iterator::value_type argument_type;
+    typedef typename Data::const_iterator::value_type argument_type;
     template <class T>
     GridIndex3D operator()(const T&t) const {
       return t.first;
@@ -572,7 +572,7 @@ class SparseGridStorage3D: public Base {
     ItHelper(): stor_(NULL){}
   };
 
-  Storage data_;
+  Data data_;
   VT default_;
 public:
   SparseGridStorage3D(int i, int j, int k,
@@ -618,7 +618,7 @@ public:
       @{
   */
 #ifndef SWIG
-  typedef typename Storage::const_iterator AllConstIterator;
+  typedef typename Data::const_iterator AllConstIterator;
   AllConstIterator all_begin() const {
     return data_.begin();
   }
