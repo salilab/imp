@@ -36,6 +36,7 @@ class Particle;
 class IMPEXPORT PairModifier : public Object
 {
 public:
+  typedef ParticlePair Argument;
   PairModifier(std::string name="PairModifier %1%");
 
   /** Apply the function to a single value*/

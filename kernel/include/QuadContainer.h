@@ -70,6 +70,7 @@ class IMPEXPORT QuadContainer : public Container
   QuadContainer(Model *m,
                      std::string name="QuadContainer %1%");
 public:
+  typedef ParticleQuad ContainedType;
   /** \note This function may be linear. Be aware of the complexity
       bounds of your particular container.
    */
@@ -119,23 +120,23 @@ public:
   /** \name Incremental Scoring
       When incremental scoring is used, the container keeps track of
       changes to it since the last Model::evaluate() call.
-      \unstable{ParticleQuadContainer::get_removed_quads_container()}
+      \unstable{ParticleQuadContainer::get_removed_container()}
       The address of the objects returned should not change over the lifetime
       of this container (but, of course, their contents will).
       @{
   */
-  QuadContainer* get_removed_quads_container() const {
+  QuadContainer* get_removed_container() const {
     IMP_USAGE_CHECK(added_, "The containers returned by "
-                    << " get_added_quads_container() do not "
+                    << " get_added_container() do not "
                     << " track their own added and removed contents.");
     QuadContainer *ret= dynamic_cast<QuadContainer*>(removed_.get());
     IMP_INTERNAL_CHECK(ret, "Cannot cast object " << removed_->get_name()
                        << " to a QuadContainer.");
     return ret;
   }
-  QuadContainer* get_added_quads_container() const {
+  QuadContainer* get_added_container() const {
     IMP_USAGE_CHECK(added_, "The containers returned by "
-                    << " get_added_quads_container() do not "
+                    << " get_added_container() do not "
                     << " track their own added and removed contents.");
     QuadContainer *ret= dynamic_cast<QuadContainer*>(added_.get());
     IMP_INTERNAL_CHECK(ret, "Cannot cast object " << added_->get_name()

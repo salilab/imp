@@ -29,7 +29,8 @@ IMP_BEGIN_NAMESPACE
 */
 class IMPEXPORT SingletonScore : public Object
 {
-public:
+ public:
+  typedef Particle* Argument;
   SingletonScore(std::string name="SingletonScore %1%");
   //! Compute the score and the derivative if needed.
   virtual double evaluate(Particle* vt,

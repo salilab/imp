@@ -36,6 +36,7 @@ class Particle;
 class IMPEXPORT SingletonModifier : public Object
 {
 public:
+  typedef Particle* Argument;
   SingletonModifier(std::string name="SingletonModifier %1%");
 
   /** Apply the function to a single value*/

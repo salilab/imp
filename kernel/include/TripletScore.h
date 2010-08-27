@@ -29,7 +29,8 @@ IMP_BEGIN_NAMESPACE
 */
 class IMPEXPORT TripletScore : public Object
 {
-public:
+ public:
+  typedef ParticleTriplet Argument;
   TripletScore(std::string name="TripletScore %1%");
   //! Compute the score and the derivative if needed.
   virtual double evaluate(const ParticleTriplet& vt,
