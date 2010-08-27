@@ -232,6 +232,7 @@ namespace IMP {
 %include "IMP/QuadContainer.h"
 %include "IMP/TripletFilter.h"
 %include "IMP/QuadFilter.h"
+%include "IMP/SetLogState.h"
 %include "IMP/io.h"
 %include "IMP/internal/swig.h"
 %include "IMP/scoped.h"
