@@ -4,6 +4,7 @@ import IMP.atom
 import random,math
 
 IMP.set_log_level(IMP.SILENT)
+IMP.set_check_level(IMP.NONE)
 m= IMP.Model()
 #1. setup the input protein
 ##1.1 select a selector.
@@ -42,7 +43,7 @@ print "The CC score of the native transformation is:",best_score
 ##4.1 define a local transformatione
 translation = IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d())
 axis = IMP.algebra.get_random_vector_on(IMP.algebra.get_unit_sphere_3d())
-rand_angle = random.uniform(-50./180*math.pi,50./180*math.pi)
+rand_angle = random.uniform(-70./180*math.pi,70./180*math.pi)
 r= IMP.algebra.get_rotation_about_axis(axis, rand_angle);
 local_trans=IMP.algebra.Transformation3D(r,translation)
 ##4.2 rotate the protein
@@ -57,14 +58,13 @@ m.evaluate(None)#to make sure the transformation was applied
 ##4.4 print the new correlation score, should be lower than before
 print len(IMP.core.get_leaves(mh))
 IMP.atom.write_pdb(mh,"input2.pdb")
-print "wrote input2"
 sampled_input_density.resample()
 sampled_input_density.calcRMS()
 IMP.em.write_map(sampled_input_density,"vv.mrc",IMP.em.MRCReaderWriter())
-score1=IMP.em.CoarseCC.cross_correlation_coefficient(
+start_score=IMP.em.CoarseCC.cross_correlation_coefficient(
     dmap,sampled_input_density,sampled_input_density.get_header().dmin)
-rmsd=IMP.atom.get_rmsd(IMP.core.XYZs(ps),IMP.core.XYZs(ps_ref))
-print "The start score is:",score1, "with rmsd of:",rmsd
+start_rmsd=IMP.atom.get_rmsd(IMP.core.XYZs(ps),IMP.core.XYZs(ps_ref))
+print "The start score is:",start_score, "with rmsd of:",start_rmsd
 ##5. apply local fitting
 ## 5.1 run local fitting
 print "preforming local refinement, may run for 3-4 minutes"
@@ -82,14 +82,15 @@ print "The score after centering is:",score2, "with rmsd of:",rmsd
 #    IMP.atom.Mass.get_mass_key(),
 #    dmap,fitting_sols)
 
-num_sol=5
+num_sol=3
 fitting_sols=IMP.em.local_rigid_fitting(
    prot_rb,IMP.core.XYZR.get_default_radius_key(),
    IMP.atom.Mass.get_mass_key(),
-   dmap,None,num_sol,10,50)
+   dmap,None,num_sol,3,100)
 
 ## 5.2 report best result
 ### 5.2.1 transform the protein to the preferred transformation
+print "The start score is:",start_score, "with rmsd of:",start_rmsd
 for i in range(fitting_sols.get_number_of_solutions()):
     #IMP.core.transform(prot_rb,fitting_sols.get_transformation(i))
     prot_rb.set_transformation(fitting_sols.get_transformation(i))
@@ -99,5 +100,4 @@ for i in range(fitting_sols.get_number_of_solutions()):
     IMP.atom.write_pdb(mh,"temp_"+str(i)+".pdb")
     print "Fit with index:",i," with cc: ",1.-fitting_sols.get_score(i), " and rmsd to native of:",rmsd
     IMP.atom.write_pdb(mh,"sol_"+str(i)+".pdb")
-    #IMP.core.transform(prot_rb,fitting_sols.get_transformation(i).get_inverse())
 print "done"
