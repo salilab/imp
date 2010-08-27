@@ -273,7 +273,6 @@ namespace {
   if (!has_atom) {
     IMP_WARN("Sorry, unable to read atoms from PDB file."
              " Thanks for the effort.");
-    model->remove_particle(ret);
     return Hierarchies();
   }
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
