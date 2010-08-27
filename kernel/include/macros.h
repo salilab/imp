@@ -1876,6 +1876,56 @@ protected:                                      \
 
 
 
+#define IMP_IMPLEMENT_CONTAINER(Name, Tuple)                            \
+  void apply(const Tuple##Modifier *sm) {                               \
+    foreach(IMP::internal::make_apply_it(sm));                          \
+  }                                                                     \
+  void apply(const Tuple##Modifier *sm,                                 \
+             DerivativeAccumulator &da) {                               \
+    foreach(IMP::internal::make_apply_it(sm, da));                      \
+  }                                                                     \
+  double evaluate(const Tuple##Score *s,                                \
+                  DerivativeAccumulator *da) const {                    \
+    return foreach(IMP::internal::make_evaluate_it(s, da));             \
+  }                                                                     \
+  double evaluate_change(const Tuple##Score *s,                         \
+                         DerivativeAccumulator *da) const {             \
+    return foreach(IMP::internal::make_evaluate_change(s, da));         \
+  }                                                                     \
+  double evaluate_prechange(const Tuple##Score *s,                      \
+                            DerivativeAccumulator *da) const {          \
+    return foreach(IMP::internal::make_evaluate_prechange(s, da));      \
+  }                                                                     \
+  template <class SM>                                                   \
+  void template_apply(const SM *sm) {                                   \
+    foreach(IMP::internal::make_apply_it_t(sm));                        \
+  }                                                                     \
+  template <class SM>                                                   \
+  void template_apply(const SM *sm,                                     \
+                      DerivativeAccumulator &da) {                      \
+    foreach(IMP::internal::make_apply_it_t(sm, da));                    \
+  }                                                                     \
+  template <class SS>                                                   \
+  double template_evaluate(const SS *s,                                 \
+                           DerivativeAccumulator *da) const {           \
+    return foreach(IMP::internal::make_evaluate_it_t(s, da));           \
+  }                                                                     \
+  template <class SS>                                                   \
+  double template_evaluate_change(const SS *s,                          \
+                                  DerivativeAccumulator *da) const {    \
+    return foreach(IMP::internal::make_evaluate_change_t(s, da));       \
+  }                                                                     \
+  template <class SS>                                                   \
+  double template_evaluate_prechange(const SS *s,                       \
+                                     DerivativeAccumulator *da) const { \
+    return foreach(IMP::internal::make_evaluate_prechange_t(s, da));    \
+  }                                                                     \
+  ParticlesTemp get_contained_particles() const;                        \
+  bool get_contained_particles_changed() const;                         \
+  IMP_OBJECT(Name)
+
+
+
 //! Declare the needed functions for a SingletonContainer
 /** In addition to the methods done by IMP_OBJECT, it declares
     - IMP::SingletonContainer::get_contains_particle()
@@ -1885,22 +1935,11 @@ protected:                                      \
     - IMP::SingletonContainer::evaluate()
     - IMP::Interaction::get_input_objects()
 */
-#define IMP_SINGLETON_CONTAINER(Name)                           \
-  bool get_contains_particle(Particle* p) const;                \
-  unsigned int get_number_of_particles() const;                 \
-  Particle* get_particle(unsigned int i) const;                 \
-  void apply(const SingletonModifier *sm);                      \
-  void apply(const SingletonModifier *sm,                       \
-             DerivativeAccumulator &da);                        \
-  double evaluate(const SingletonScore *s,                      \
-                  DerivativeAccumulator *da) const;             \
-  double evaluate_change(const SingletonScore *s,               \
-                         DerivativeAccumulator *da) const;      \
-  double evaluate_prechange(const SingletonScore *s,            \
-                            DerivativeAccumulator *da) const;   \
-  ParticlesTemp get_contained_particles() const;                \
-  bool get_contained_particles_changed() const;                 \
-  IMP_OBJECT(Name)
+#define IMP_SINGLETON_CONTAINER(Name)                                   \
+  bool get_contains_particle(Particle* p) const;                        \
+  unsigned int get_number_of_particles() const;                         \
+  Particle *get_particle(unsigned int i) const;                         \
+  IMP_IMPLEMENT_CONTAINER(Name, Singleton)
 
 
 //! Declare the needed functions for a PairContainer
@@ -1916,18 +1955,7 @@ protected:                                      \
   bool get_contains_particle_pair(const ParticlePair &p) const; \
   unsigned int get_number_of_particle_pairs() const;            \
   ParticlePair get_particle_pair(unsigned int i) const;         \
-  void apply(const PairModifier *sm);                           \
-  void apply(const PairModifier *sm,                            \
-             DerivativeAccumulator &da);                        \
-  double evaluate(const PairScore *s,                           \
-                  DerivativeAccumulator *da) const;             \
-  double evaluate_change(const PairScore *s,                    \
-                         DerivativeAccumulator *da) const;      \
-  double evaluate_prechange(const PairScore *s,                 \
-                            DerivativeAccumulator *da) const;   \
-  ParticlesTemp get_contained_particles() const;                \
-  bool get_contained_particles_changed() const;                 \
-  IMP_OBJECT(Name)
+  IMP_IMPLEMENT_CONTAINER(Name, Pair)
 
 
 
@@ -1944,18 +1972,7 @@ protected:                                      \
   bool get_contains_particle_triplet(const ParticleTriplet &p) const;   \
   unsigned int get_number_of_particle_triplets() const;                 \
   ParticleTriplet get_particle_triplet(unsigned int i) const;           \
-  void apply(const TripletModifier *sm);                                \
-  void apply(const TripletModifier *sm,                                 \
-             DerivativeAccumulator &da);                                \
-  double evaluate(const TripletScore *s,                                \
-                  DerivativeAccumulator *da) const;                     \
-  double evaluate_change(const TripletScore *s,                         \
-                         DerivativeAccumulator *da) const;              \
-  double evaluate_prechange(const TripletScore *s,                      \
-                            DerivativeAccumulator *da) const;           \
-  ParticlesTemp get_contained_particles() const;                        \
-  bool get_contained_particles_changed() const;                         \
-  IMP_OBJECT(Name)
+  IMP_IMPLEMENT_CONTAINER(Name, Triplet)
 
 
 
@@ -1972,18 +1989,7 @@ protected:                                      \
   bool get_contains_particle_quad(const ParticleQuad &p) const; \
   unsigned int get_number_of_particle_quads() const;            \
   ParticleQuad get_particle_quad(unsigned int i) const;         \
-  void apply(const QuadModifier *sm);                           \
-  void apply(const QuadModifier *sm,                            \
-             DerivativeAccumulator &da);                        \
-  double evaluate(const QuadScore *s,                           \
-                  DerivativeAccumulator *da) const;             \
-  double evaluate_change(const QuadScore *s,                    \
-                         DerivativeAccumulator *da) const;      \
-  double evaluate_prechange(const QuadScore *s,                 \
-                            DerivativeAccumulator *da) const;   \
-  ParticlesTemp get_contained_particles() const;                \
-  bool get_contained_particles_changed() const;                 \
-  IMP_OBJECT(Name)
+  IMP_IMPLEMENT_CONTAINER(Name, Quad)
 
 
 

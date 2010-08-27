@@ -37,6 +37,19 @@ class IMPCONTAINEREXPORT AllPairContainer : public PairContainer
   IMP_CONTAINER_DEPENDENCIES(AllPairContainer, ret.push_back(back_->c_););
   friend class AllBipartitePairContainer;
   AllPairContainer(SingletonContainer *c, bool);
+
+  template <class F>
+    F foreach(F f) const {
+    unsigned int szc=c_->get_number_of_particles();
+    for (unsigned int i=0; i< szc; ++i) {
+      Particle *a= c_->get_particle(i);
+      for (unsigned int j=0; j< i; ++j) {
+        ParticlePair p(a, c_->get_particle(j));
+        f(p);
+      }
+    }
+    return f;
+  }
 public:
   //! Get the individual particles from the passed SingletonContainer
   AllPairContainer(SingletonContainer *c);

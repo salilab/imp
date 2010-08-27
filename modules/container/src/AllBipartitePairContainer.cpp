@@ -17,18 +17,6 @@
 #include <algorithm>
 
 
-#define FOREACH(expr)                                                   \
-  unsigned int sza=a_->get_number_of_particles();                       \
-  unsigned int szb=b_->get_number_of_particles();                       \
-  for (unsigned int i=0; i< sza; ++i) {                                 \
-    Particle *a= a_->get_particle(i);                                   \
-    for (unsigned int j=0; j< szb; ++j) {                               \
-      ParticlePair p(a, b_->get_particle(j));                           \
-      expr;                                                             \
-    }                                                                   \
-  }
-
-
 IMPCONTAINER_BEGIN_NAMESPACE
 
 AllBipartitePairContainer
@@ -45,27 +33,27 @@ AllBipartitePairContainer
   deps_(new DependenciesScoreState(this), a->get_model()){
   IMP_NEW(IMP::core::internal::DifferenceSingletonContainer, olda,
           (a_,
-           a_->get_removed_singletons_container()));
+           a_->get_removed_container()));
   IMP_NEW(IMP::core::internal::DifferenceSingletonContainer, oldb,
           (b_,
-           b_->get_removed_singletons_container()));
+           b_->get_removed_container()));
 
   Pointer<PairContainerSet> removed
     = PairContainerSet::create_untracked_container();
   {
     Pointer<PairContainer> all
       = AllBipartitePairContainer
-      ::create_untracked_container(a_->get_removed_singletons_container(),
-                                   b_->get_removed_singletons_container());
+      ::create_untracked_container(a_->get_removed_container(),
+                                   b_->get_removed_container());
     removed->add_pair_container(all);
     Pointer<PairContainer> leftr
       = AllBipartitePairContainer
-      ::create_untracked_container(a_->get_removed_singletons_container(),
+      ::create_untracked_container(a_->get_removed_container(),
                                    oldb);
     removed->add_pair_container(leftr);
     Pointer<PairContainer> rightr
       = AllBipartitePairContainer::create_untracked_container(olda,
-                                   b_->get_removed_singletons_container());
+                                   b_->get_removed_container());
     removed->add_pair_container(rightr);
   }
   Pointer<PairContainerSet> added
@@ -73,18 +61,18 @@ AllBipartitePairContainer
   {
     Pointer<PairContainer> all
       =AllBipartitePairContainer
-      ::create_untracked_container(a_->get_added_singletons_container(),
-                                   b_->get_added_singletons_container());
+      ::create_untracked_container(a_->get_added_container(),
+                                   b_->get_added_container());
     added->add_pair_container(all);
     Pointer<PairContainer> leftr
       = AllBipartitePairContainer
-      ::create_untracked_container(a_->get_added_singletons_container(),
+      ::create_untracked_container(a_->get_added_container(),
                                    oldb);
     added->add_pair_container(leftr);
     Pointer<PairContainer> rightr
       = AllBipartitePairContainer
       ::create_untracked_container(olda,
-                                   b_->get_added_singletons_container());
+                                   b_->get_added_container());
     added->add_pair_container(rightr);
   }
   set_added_and_removed_containers(added, removed);
@@ -126,11 +114,6 @@ bool AllBipartitePairContainer::get_contained_particles_changed() const {
   return a_->get_contained_particles_changed()
     || b_->get_contained_particles_changed();
 }
-
-
-
-IMP_PAIR_CONTAINER_METHODS_FROM_FOREACH(AllBipartitePairContainer);
-
 
 
 IMPCONTAINER_END_NAMESPACE
