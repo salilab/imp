@@ -13,8 +13,8 @@
 
 #include "../core_config.h"
 #include <IMP/internal/container_helpers.h>
-
 #include <IMP/SingletonContainer.h>
+#include <IMP/SingletonModifier.h>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
@@ -34,6 +34,15 @@ class IMPCOREEXPORT DifferenceSingletonContainer : public SingletonContainer
                                ret[0]=back_->a_;
                                ret[1]=back_->b_;
                              });
+  template <class F>
+    F foreach(F f) const {
+    unsigned int szc=get_number_of_particles();
+    for (unsigned int i=0; i< szc; ++i) {
+      Particle *a= get_particle(i);
+      f(a);
+    }
+    return f;
+  }
  public:
   DifferenceSingletonContainer(SingletonContainer *a, SingletonContainer *b);
 

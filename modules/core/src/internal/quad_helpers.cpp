@@ -13,38 +13,7 @@
 #include <IMP/QuadScore.h>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
-void ListLikeQuadContainer::apply(const QuadModifier *sm) {
-  IMP_CHECK_OBJECT(this);
-  IMP_CHECK_OBJECT(sm);
-  sm->apply(data_);
-}
-void ListLikeQuadContainer::apply(const QuadModifier *sm,
-                                       DerivativeAccumulator &da) {
-  IMP_CHECK_OBJECT(this);
-  IMP_CHECK_OBJECT(sm);
-  sm->apply(data_, da);
-}
-double ListLikeQuadContainer
-::evaluate(const QuadScore *s,
-           DerivativeAccumulator *da) const {
-  IMP_CHECK_OBJECT(this);
-  IMP_CHECK_OBJECT(s);
-  return s->evaluate(data_, da);
-}
-double ListLikeQuadContainer
-::evaluate_change(const QuadScore *s,
-                  DerivativeAccumulator *da) const {
-  IMP_CHECK_OBJECT(this);
-  IMP_CHECK_OBJECT(s);
-  return s->evaluate_change(data_, da);
-}
-double ListLikeQuadContainer
-::evaluate_prechange(const QuadScore *s,
-                     DerivativeAccumulator *da) const {
-  IMP_CHECK_OBJECT(this);
-  IMP_CHECK_OBJECT(s);
-  return s->evaluate_prechange(data_, da);
-}
+
 unsigned int ListLikeQuadContainer
 ::get_number_of_particle_quads() const {
   IMP_CHECK_OBJECT(this);

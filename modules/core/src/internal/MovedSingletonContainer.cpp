@@ -57,8 +57,8 @@ void MovedSingletonContainer::do_before_evaluate()
     ParticlesTemp t=pc_->get_particles();
     update_list(t);
   }
-  if (pc_->get_added_singletons_container()->get_number_of_particles() != 0
-      || pc_->get_removed_singletons_container()->get_number_of_particles()
+  if (pc_->get_added_container()->get_number_of_particles() != 0
+      || pc_->get_removed_container()->get_number_of_particles()
       != 0) {
     reset();
     ParticlesTemp t=pc_->get_particles();

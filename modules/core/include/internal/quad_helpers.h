@@ -27,11 +27,11 @@ private:
 protected:
   ListLikeQuadContainer *get_added() const {
     return dynamic_cast<ListLikeQuadContainer*>
-      (get_added_quads_container());
+      (get_added_container());
   }
   ListLikeQuadContainer *get_removed() const {
     return dynamic_cast<ListLikeQuadContainer*>
-      (get_removed_quads_container());
+      (get_removed_container());
   }
   ListLikeQuadContainer(){}
   void update_list(ParticleQuadsTemp &cur) {
@@ -96,21 +96,12 @@ protected:
       set_added_and_removed_containers( new ListLikeQuadContainer(),
                                         new ListLikeQuadContainer());
   }
+  template <class F>
+    F foreach(F f) const {
+    return std::for_each(data_.begin(), data_.end(), f);
+  }
 public:
-  ParticleQuad get_particle_quad(unsigned int i) const;
-  void apply(const QuadModifier *sm);
-  void apply(const QuadModifier *sm,
-             DerivativeAccumulator &da);
-  double evaluate(const QuadScore *s,
-                  DerivativeAccumulator *da) const;
-  double evaluate_subset(const QuadScore *s,
-                         DerivativeAccumulator *da) const;
-  double evaluate_change(const QuadScore *s,
-                         DerivativeAccumulator *da) const;
-  double evaluate_prechange(const QuadScore *s,
-                            DerivativeAccumulator *da) const;
-  unsigned int get_number_of_particle_quads() const;
-  bool get_contains_particle_quad(const ParticleQuad& vt) const;
+  IMP_QUAD_CONTAINER(ListLikeQuadContainer);
   typedef ParticleQuads::const_iterator ParticleQuadIterator;
   ParticleQuadIterator particle_quads_begin() const {
     return data_.begin();
@@ -128,15 +119,12 @@ public:
          IMP::internal::IsInactive());
   }
   bool get_is_up_to_date() const {return true;}
-  bool get_contained_particles_changed() const;
-  ParticlesTemp get_contained_particles() const;
   bool get_provides_access() const {return true;}
   const ParticleQuadsTemp& get_access() const {
     IMP_INTERNAL_CHECK(get_is_up_to_date(),
                        "Container is out of date");
     return data_;
   }
-  IMP_OBJECT(ListLikeQuadContainer);
 };
 
 

@@ -13,38 +13,7 @@
 #include <IMP/PairScore.h>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
-void ListLikePairContainer::apply(const PairModifier *sm) {
-  IMP_CHECK_OBJECT(this);
-  IMP_CHECK_OBJECT(sm);
-  sm->apply(data_);
-}
-void ListLikePairContainer::apply(const PairModifier *sm,
-                                       DerivativeAccumulator &da) {
-  IMP_CHECK_OBJECT(this);
-  IMP_CHECK_OBJECT(sm);
-  sm->apply(data_, da);
-}
-double ListLikePairContainer
-::evaluate(const PairScore *s,
-           DerivativeAccumulator *da) const {
-  IMP_CHECK_OBJECT(this);
-  IMP_CHECK_OBJECT(s);
-  return s->evaluate(data_, da);
-}
-double ListLikePairContainer
-::evaluate_change(const PairScore *s,
-                  DerivativeAccumulator *da) const {
-  IMP_CHECK_OBJECT(this);
-  IMP_CHECK_OBJECT(s);
-  return s->evaluate_change(data_, da);
-}
-double ListLikePairContainer
-::evaluate_prechange(const PairScore *s,
-                     DerivativeAccumulator *da) const {
-  IMP_CHECK_OBJECT(this);
-  IMP_CHECK_OBJECT(s);
-  return s->evaluate_prechange(data_, da);
-}
+
 unsigned int ListLikePairContainer
 ::get_number_of_particle_pairs() const {
   IMP_CHECK_OBJECT(this);

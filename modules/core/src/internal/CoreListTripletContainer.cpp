@@ -68,7 +68,7 @@ void CoreListTripletContainer::add_particle_triplet(const ParticleTriplet& vt) {
                   "Passed ParticleTriplet cannot be NULL (or None)");
   add_to_list(vt);
   IMP_USAGE_CHECK(get_is_added_or_removed_container()
-                  || !get_removed_triplets_container()
+                  || !get_removed_container()
                   ->get_contains(vt),
                   "You cannot remove and add the same item in one time step.");
 }
@@ -83,7 +83,7 @@ CoreListTripletContainer::add_particle_triplets(const ParticleTripletsTemp &c) {
       IMP_USAGE_CHECK(IMP::internal::is_valid(c[i]),
                     "Passed ParticleTriplet cannot be NULL (or None)");
       IMP_USAGE_CHECK(get_is_added_or_removed_container()
-                      || !get_removed_triplets_container()
+                      || !get_removed_container()
                       ->get_contains(c[i]),
             "You cannot remove and add the same item in one time step.");
 

@@ -27,11 +27,11 @@ private:
 protected:
   ListLikeSingletonContainer *get_added() const {
     return dynamic_cast<ListLikeSingletonContainer*>
-      (get_added_singletons_container());
+      (get_added_container());
   }
   ListLikeSingletonContainer *get_removed() const {
     return dynamic_cast<ListLikeSingletonContainer*>
-      (get_removed_singletons_container());
+      (get_removed_container());
   }
   ListLikeSingletonContainer(){}
   void update_list(ParticlesTemp &cur) {
@@ -96,21 +96,12 @@ protected:
       set_added_and_removed_containers( new ListLikeSingletonContainer(),
                                         new ListLikeSingletonContainer());
   }
+  template <class F>
+    F foreach(F f) const {
+    return std::for_each(data_.begin(), data_.end(), f);
+  }
 public:
-  Particle* get_particle(unsigned int i) const;
-  void apply(const SingletonModifier *sm);
-  void apply(const SingletonModifier *sm,
-             DerivativeAccumulator &da);
-  double evaluate(const SingletonScore *s,
-                  DerivativeAccumulator *da) const;
-  double evaluate_subset(const SingletonScore *s,
-                         DerivativeAccumulator *da) const;
-  double evaluate_change(const SingletonScore *s,
-                         DerivativeAccumulator *da) const;
-  double evaluate_prechange(const SingletonScore *s,
-                            DerivativeAccumulator *da) const;
-  unsigned int get_number_of_particles() const;
-  bool get_contains_particle(Particle* vt) const;
+  IMP_SINGLETON_CONTAINER(ListLikeSingletonContainer);
   typedef Particles::const_iterator ParticleIterator;
   ParticleIterator particles_begin() const {
     return data_.begin();
@@ -128,15 +119,12 @@ public:
          IMP::internal::IsInactive());
   }
   bool get_is_up_to_date() const {return true;}
-  bool get_contained_particles_changed() const;
-  ParticlesTemp get_contained_particles() const;
   bool get_provides_access() const {return true;}
   const ParticlesTemp& get_access() const {
     IMP_INTERNAL_CHECK(get_is_up_to_date(),
                        "Container is out of date");
     return data_;
   }
-  IMP_OBJECT(ListLikeSingletonContainer);
 };
 
 

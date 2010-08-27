@@ -50,15 +50,15 @@ double CoreTripletsRestraint
   score_+=pc_->evaluate_change(ss_, accum);
   // compute the base for the added ones
   IMP_LOG(VERBOSE, " " << score_);
-  score_ +=pc_->get_added_triplets_container()
+  score_ +=pc_->get_added_container()
     ->evaluate_prechange(ss_, accum);
   IMP_LOG(VERBOSE," " << score_);
   if (accum) {
     DerivativeAccumulator nda(*accum, -1);
-    score_ -=pc_->get_removed_triplets_container()
+    score_ -=pc_->get_removed_container()
       ->evaluate_prechange(ss_, &nda);
   } else {
-    score_ -=pc_->get_removed_triplets_container()
+    score_ -=pc_->get_removed_container()
       ->evaluate_prechange(ss_, NULL);
   }
   IMP_LOG(VERBOSE," " << score_ << std::endl);
