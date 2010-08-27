@@ -29,7 +29,8 @@ IMP_BEGIN_NAMESPACE
 */
 class IMPEXPORT GroupnameScore : public Object
 {
-public:
+ public:
+  typedef Value Argument;
   GroupnameScore(std::string name="GroupnameScore %1%");
   //! Compute the score and the derivative if needed.
   virtual double evaluate(PassValue vt,

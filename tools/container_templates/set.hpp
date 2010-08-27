@@ -43,7 +43,21 @@ class IMPCONTAINEREXPORT GroupnameContainerSet
   GroupnameContainerSet(const GroupnameContainersTemp &pc,
                         std::string name="GroupnameContainerSet %1%");
 
-  IMP_GROUPNAME_CONTAINER(GroupnameContainerSet);
+  bool get_contains_classname(PassValue) const;
+  unsigned int get_number_of_classnames() const;
+  Value get_classname(unsigned int i) const;
+  void apply(const GroupnameModifier *sm);
+  void apply(const GroupnameModifier *sm,
+             DerivativeAccumulator &da);
+  double evaluate(const GroupnameScore *s,
+                  DerivativeAccumulator *da) const;
+  double evaluate_change(const GroupnameScore *s,
+                         DerivativeAccumulator *da) const;
+  double evaluate_prechange(const GroupnameScore *s,
+                            DerivativeAccumulator *da) const;
+  ParticlesTemp get_contained_particles() const;
+  bool get_contained_particles_changed() const;
+  IMP_OBJECT(GroupnameContainerSet);
 
   /** @name Methods to control the nested container
 

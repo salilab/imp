@@ -27,11 +27,11 @@ private:
 protected:
   ListLikeGroupnameContainer *get_added() const {
     return dynamic_cast<ListLikeGroupnameContainer*>
-      (get_added_groupnames_container());
+      (get_added_container());
   }
   ListLikeGroupnameContainer *get_removed() const {
     return dynamic_cast<ListLikeGroupnameContainer*>
-      (get_removed_groupnames_container());
+      (get_removed_container());
   }
   ListLikeGroupnameContainer(){}
   void update_list(ClassnamesTemp &cur) {
@@ -96,21 +96,12 @@ protected:
       set_added_and_removed_containers( new ListLikeGroupnameContainer(),
                                         new ListLikeGroupnameContainer());
   }
+  template <class F>
+    F foreach(F f) const {
+    return std::for_each(data_.begin(), data_.end(), f);
+  }
 public:
-  Value get_classname(unsigned int i) const;
-  void apply(const GroupnameModifier *sm);
-  void apply(const GroupnameModifier *sm,
-             DerivativeAccumulator &da);
-  double evaluate(const GroupnameScore *s,
-                  DerivativeAccumulator *da) const;
-  double evaluate_subset(const GroupnameScore *s,
-                         DerivativeAccumulator *da) const;
-  double evaluate_change(const GroupnameScore *s,
-                         DerivativeAccumulator *da) const;
-  double evaluate_prechange(const GroupnameScore *s,
-                            DerivativeAccumulator *da) const;
-  unsigned int get_number_of_classnames() const;
-  bool get_contains_classname(PassValue vt) const;
+  IMP_GROUPNAME_CONTAINER(ListLikeGroupnameContainer);
   typedef Classnames::const_iterator ClassnameIterator;
   ClassnameIterator classnames_begin() const {
     return data_.begin();
@@ -128,15 +119,12 @@ public:
          IMP::internal::IsInactive());
   }
   bool get_is_up_to_date() const {return true;}
-  bool get_contained_particles_changed() const;
-  ParticlesTemp get_contained_particles() const;
   bool get_provides_access() const {return true;}
   const ClassnamesTemp& get_access() const {
     IMP_INTERNAL_CHECK(get_is_up_to_date(),
                        "Container is out of date");
     return data_;
   }
-  IMP_OBJECT(ListLikeGroupnameContainer);
 };
 
 

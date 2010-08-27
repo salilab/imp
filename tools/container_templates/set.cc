@@ -102,17 +102,17 @@ IMP_LIST_IMPL(GroupnameContainerSet,
               GroupnameContainers,
               {
                 if (!get_is_added_or_removed_container()) {
-                  get_set(get_added_groupnames_container())
+                  get_set(get_added_container())
                     ->add_groupname_container(obj
-                           ->get_added_groupnames_container());
+                           ->get_added_container());
                 }
                 obj->set_was_used(true);
               },{},
               if (container
                   && !container->get_is_added_or_removed_container()) {
-                get_set(container->get_removed_groupnames_container())
+                get_set(container->get_removed_container())
                   ->add_groupname_container(obj
-                       ->get_removed_groupnames_container());
+                       ->get_removed_container());
               });
 
 

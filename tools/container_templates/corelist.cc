@@ -68,7 +68,7 @@ void CoreListGroupnameContainer::add_classname(PassValue vt) {
                   "Passed Classname cannot be NULL (or None)");
   add_to_list(vt);
   IMP_USAGE_CHECK(get_is_added_or_removed_container()
-                  || !get_removed_groupnames_container()
+                  || !get_removed_container()
                   ->get_contains(vt),
                   "You cannot remove and add the same item in one time step.");
 }
@@ -83,7 +83,7 @@ CoreListGroupnameContainer::add_classnames(const ClassnamesTemp &c) {
       IMP_USAGE_CHECK(IMP::internal::is_valid(c[i]),
                     "Passed Classname cannot be NULL (or None)");
       IMP_USAGE_CHECK(get_is_added_or_removed_container()
-                      || !get_removed_groupnames_container()
+                      || !get_removed_container()
                       ->get_contains(c[i]),
             "You cannot remove and add the same item in one time step.");
 
