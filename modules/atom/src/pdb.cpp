@@ -274,7 +274,7 @@ namespace {
     IMP_WARN("Sorry, unable to read atoms from PDB file."
              " Thanks for the effort.");
     model->remove_particle(ret);
-    return Hierarchy();
+    return Hierarchies();
   }
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     for (unsigned int i=0; i< ret.size(); ++i) {
@@ -291,8 +291,13 @@ namespace {
 }
 
 Hierarchy read_pdb(TextInput in, Model *model) {
-  return read_pdb(in,nicename(in.get_name()), model,
-                  NonWaterPDBSelector(), true, false)[0];
+  Hierarchies ret= read_pdb(in,nicename(in.get_name()), model,
+                            NonWaterPDBSelector(), true, false);
+  if (ret.empty()) {
+    IMP_THROW("No molecule read from file " << in.get_name(),
+              ValueException);
+  }
+  return ret[0];
 }
 
 
@@ -301,8 +306,13 @@ Hierarchy read_pdb(TextInput in, Model *model,
                    const PDBSelector& selector,
                    bool select_first_model)
 {
-  return read_pdb(in, nicename(in.get_name()), model, selector,
-                  select_first_model, false)[0];
+  Hierarchies ret= read_pdb(in, nicename(in.get_name()), model, selector,
+                            select_first_model, false);
+  if (ret.empty()) {
+    IMP_THROW("No molecule read from file " << in.get_name(),
+              ValueException);
+  }
+  return ret[0];
 }
 
 
