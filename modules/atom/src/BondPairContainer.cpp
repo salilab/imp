@@ -10,12 +10,6 @@
 #include "IMP/PairModifier.h"
 #include "IMP/PairScore.h"
 
-#define FOREACH(expr)\
-  unsigned int sz= BondPairContainer::get_number_of_particle_pairs();   \
-  for (unsigned int i=0; i< sz; ++i) {                                  \
-    ParticlePair p= BondPairContainer::get_particle_pair(i);           \
-    expr;                                                               \
-  }
 
 
 IMPATOM_BEGIN_NAMESPACE
@@ -27,8 +21,8 @@ BondPairContainer
 BondPairContainer
 ::BondPairContainer(SingletonContainer *sc): sc_(sc){
   set_added_and_removed_containers(
-       create_untracked_container(sc_->get_removed_singletons_container()),
-       create_untracked_container(sc_->get_added_singletons_container()));
+       create_untracked_container(sc_->get_removed_container()),
+       create_untracked_container(sc_->get_added_container()));
 }
 
 bool BondPairContainer
@@ -60,7 +54,6 @@ void BondPairContainer::do_show(std::ostream &out) const {
   out << "container " << *sc_ << std::endl;
 }
 
-IMP_PAIR_CONTAINER_METHODS_FROM_FOREACH(BondPairContainer);
 
 ParticlesTemp BondPairContainer::get_contained_particles() const {
   ParticlesTemp ret(3*sc_->get_number_of_particles());
