@@ -13,38 +13,7 @@
 #include <IMP/SingletonScore.h>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
-void ListLikeSingletonContainer::apply(const SingletonModifier *sm) {
-  IMP_CHECK_OBJECT(this);
-  IMP_CHECK_OBJECT(sm);
-  sm->apply(data_);
-}
-void ListLikeSingletonContainer::apply(const SingletonModifier *sm,
-                                       DerivativeAccumulator &da) {
-  IMP_CHECK_OBJECT(this);
-  IMP_CHECK_OBJECT(sm);
-  sm->apply(data_, da);
-}
-double ListLikeSingletonContainer
-::evaluate(const SingletonScore *s,
-           DerivativeAccumulator *da) const {
-  IMP_CHECK_OBJECT(this);
-  IMP_CHECK_OBJECT(s);
-  return s->evaluate(data_, da);
-}
-double ListLikeSingletonContainer
-::evaluate_change(const SingletonScore *s,
-                  DerivativeAccumulator *da) const {
-  IMP_CHECK_OBJECT(this);
-  IMP_CHECK_OBJECT(s);
-  return s->evaluate_change(data_, da);
-}
-double ListLikeSingletonContainer
-::evaluate_prechange(const SingletonScore *s,
-                     DerivativeAccumulator *da) const {
-  IMP_CHECK_OBJECT(this);
-  IMP_CHECK_OBJECT(s);
-  return s->evaluate_prechange(data_, da);
-}
+
 unsigned int ListLikeSingletonContainer
 ::get_number_of_particles() const {
   IMP_CHECK_OBJECT(this);

@@ -13,13 +13,6 @@
 #include <IMP/SingletonContainer.h>
 #include <IMP/Particle.h>
 
-#define FOREACH(expr)                                                   \
-  unsigned int szc=get_number_of_particles();                           \
-  for (unsigned int i=0; i< szc; ++i) {                                 \
-    Particle *a= get_particle(i);                                       \
-    expr;                                                               \
-  }
-
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
@@ -69,8 +62,6 @@ bool DifferenceSingletonContainer::get_contained_particles_changed() const {
   return a_->get_contained_particles_changed()
     || b_->get_contained_particles_changed();
 }
-
-IMP_SINGLETON_CONTAINER_METHODS_FROM_FOREACH(DifferenceSingletonContainer);
 
 
 IMPCORE_END_INTERNAL_NAMESPACE

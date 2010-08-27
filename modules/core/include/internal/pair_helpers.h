@@ -27,11 +27,11 @@ private:
 protected:
   ListLikePairContainer *get_added() const {
     return dynamic_cast<ListLikePairContainer*>
-      (get_added_pairs_container());
+      (get_added_container());
   }
   ListLikePairContainer *get_removed() const {
     return dynamic_cast<ListLikePairContainer*>
-      (get_removed_pairs_container());
+      (get_removed_container());
   }
   ListLikePairContainer(){}
   void update_list(ParticlePairsTemp &cur) {
@@ -96,21 +96,12 @@ protected:
       set_added_and_removed_containers( new ListLikePairContainer(),
                                         new ListLikePairContainer());
   }
+  template <class F>
+    F foreach(F f) const {
+    return std::for_each(data_.begin(), data_.end(), f);
+  }
 public:
-  ParticlePair get_particle_pair(unsigned int i) const;
-  void apply(const PairModifier *sm);
-  void apply(const PairModifier *sm,
-             DerivativeAccumulator &da);
-  double evaluate(const PairScore *s,
-                  DerivativeAccumulator *da) const;
-  double evaluate_subset(const PairScore *s,
-                         DerivativeAccumulator *da) const;
-  double evaluate_change(const PairScore *s,
-                         DerivativeAccumulator *da) const;
-  double evaluate_prechange(const PairScore *s,
-                            DerivativeAccumulator *da) const;
-  unsigned int get_number_of_particle_pairs() const;
-  bool get_contains_particle_pair(const ParticlePair& vt) const;
+  IMP_PAIR_CONTAINER(ListLikePairContainer);
   typedef ParticlePairs::const_iterator ParticlePairIterator;
   ParticlePairIterator particle_pairs_begin() const {
     return data_.begin();
@@ -128,15 +119,12 @@ public:
          IMP::internal::IsInactive());
   }
   bool get_is_up_to_date() const {return true;}
-  bool get_contained_particles_changed() const;
-  ParticlesTemp get_contained_particles() const;
   bool get_provides_access() const {return true;}
   const ParticlePairsTemp& get_access() const {
     IMP_INTERNAL_CHECK(get_is_up_to_date(),
                        "Container is out of date");
     return data_;
   }
-  IMP_OBJECT(ListLikePairContainer);
 };
 
 

@@ -13,38 +13,7 @@
 #include <IMP/TripletScore.h>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
-void ListLikeTripletContainer::apply(const TripletModifier *sm) {
-  IMP_CHECK_OBJECT(this);
-  IMP_CHECK_OBJECT(sm);
-  sm->apply(data_);
-}
-void ListLikeTripletContainer::apply(const TripletModifier *sm,
-                                       DerivativeAccumulator &da) {
-  IMP_CHECK_OBJECT(this);
-  IMP_CHECK_OBJECT(sm);
-  sm->apply(data_, da);
-}
-double ListLikeTripletContainer
-::evaluate(const TripletScore *s,
-           DerivativeAccumulator *da) const {
-  IMP_CHECK_OBJECT(this);
-  IMP_CHECK_OBJECT(s);
-  return s->evaluate(data_, da);
-}
-double ListLikeTripletContainer
-::evaluate_change(const TripletScore *s,
-                  DerivativeAccumulator *da) const {
-  IMP_CHECK_OBJECT(this);
-  IMP_CHECK_OBJECT(s);
-  return s->evaluate_change(data_, da);
-}
-double ListLikeTripletContainer
-::evaluate_prechange(const TripletScore *s,
-                     DerivativeAccumulator *da) const {
-  IMP_CHECK_OBJECT(this);
-  IMP_CHECK_OBJECT(s);
-  return s->evaluate_prechange(data_, da);
-}
+
 unsigned int ListLikeTripletContainer
 ::get_number_of_particle_triplets() const {
   IMP_CHECK_OBJECT(this);
