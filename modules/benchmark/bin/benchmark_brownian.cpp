@@ -24,6 +24,14 @@ const double kk=1000;
 const double sigma=.1;
 const double slack=100*sigma;
 
+namespace {
+  VersionInfo get_module_version_info() {
+    return benchmark::get_module_version_info();
+  }
+
+  void dummy_f_destructor(){}
+}
+
 
 struct It {
   Pointer<Model> m;
@@ -35,7 +43,8 @@ struct It {
   SimulationParameters sp;
 };
 
-It create(PairScore *link, PairScore *lb, SingletonScore *bottom) {
+template <class PR, class PS0, class PS1, class SS>
+It create(PS0 *link, PS1 *lb, SS *bottom) {
   It ret;
   ret.m= new Model();
   PairFilters pfs;
@@ -54,8 +63,7 @@ It create(PairScore *link, PairScore *lb, SingletonScore *bottom) {
       }
       IMP_NEW(ConsecutivePairContainer, cpc,(ret.chains.back()));
       pfs.push_back(new InContainerPairFilter(cpc));
-      IMP_NEW(PairsRestraint, pr, (link,
-                                   cpc));
+      IMP_NEW(PairsRestraint, pr, (link, cpc));
       ret.m->add_restraint(pr);
       ret.all.insert(ret.all.end(),
                      ret.chains.back().begin(), ret.chains.back().end());
@@ -66,9 +74,7 @@ It create(PairScore *link, PairScore *lb, SingletonScore *bottom) {
   IMP_NEW(ClosePairContainer, cpc, (ret.lsc, 0, slack));
   cpc->add_pair_filters(pfs);
   ret.cpc=cpc;
-  IMP_NEW(PairsRestraint, pr,
-          (lb,
-           cpc));
+  IMP_NEW(PR, pr, (lb, cpc));
   ret.m->add_restraint(pr);
   IMP_NEW(SingletonsRestraint, sr,
           (bottom, ret.lsc));
@@ -131,62 +137,71 @@ void do_display(It it, std::string str) {
   }
 }
 
-template <int I>
-void do_benchmark(std::string name, int argc, char *argv[], PairScore *link,
-               PairScore *lb, SingletonScore *bottom) {
-  It it= create(link, lb, bottom);
-      std::string in;
-      if (argc >1) {
-        in =argv[1];
-      } else {
-        IMP_CATCH_AND_TERMINATE(in
-                          =IMP::benchmark::get_data_path("brownian.imp"));
-      }
-      read(in, it);
-      double total=0, runtime=0;
-      int ns=1e3;
-      if (argc >2) {
-        ns=atoi(argv[2]);
-      }
-      IMP_TIME(
-               {
-                 total+=simulate(it, ns);
-               }, runtime);
-      IMP::benchmark::report(std::string("bd ")+name, runtime, total);
-      if (argc>3) {
-        IMP_CATCH_AND_TERMINATE(write_model(it.all, argv[3]));
-      }
+template <int I, class PR, class PS0, class PS1, class SS>
+void do_benchmark(std::string name, int argc, char *argv[], PS0 *link,
+                  PS1 *lb, SS *bottom) {
+  It it= create<PR>(link, lb, bottom);
+  std::string in;
+  if (argc >1) {
+    in =argv[1];
+  } else {
+    IMP_CATCH_AND_TERMINATE(in
+                            =IMP::benchmark::get_data_path("brownian.imp"));
+  }
+  read(in, it);
+  double total=0, runtime=0;
+  int ns=1e3;
+  if (argc >2) {
+    ns=atoi(argv[2]);
+  }
+  IMP_TIME(
+           {
+             total+=simulate(it, ns);
+           }, runtime);
+  IMP::benchmark::report(std::string("bd ")+name, runtime, total);
+  if (argc>3) {
+    IMP_CATCH_AND_TERMINATE(write_model(it.all, argv[3]));
+  }
 }
 
 //new LowerBound(kk)
 
 int main(int argc , char **argv) {
+  // shorten lines, ick
+  typedef HarmonicLowerBound HLB;
+  FloatKey xk=  XYZ::get_xyz_keys()[0];
   if (argc>=3 && std::string(argv[1])=="-s") {
-    It it= create(new DistancePairScore(new Harmonic(len,kk)),
-                  new SphereDistancePairScore(new HarmonicLowerBound(0,kk)),
-                  new AttributeSingletonScore(new HarmonicLowerBound(0,kk),
-                                              XYZ::get_xyz_keys()[0]));
+    It it= create<PairsRestraint>(new DistancePairScore(new Harmonic(len,kk)),
+                                  new SphereDistancePairScore(new HLB(0,kk)),
+                                  new AttributeSingletonScore(new HLB(0,kk),
+                                                             xk));
     initialize(it);
     write_model(it.all, argv[2]);
   } else if (argc>=4 && std::string(argv[1])=="-d") {
-    It it= create(new DistancePairScore(new Harmonic(len,kk)),
-                  new SphereDistancePairScore(new HarmonicLowerBound(0,kk)),
-                  new AttributeSingletonScore(new HarmonicLowerBound(0,kk),
-                                              XYZ::get_xyz_keys()[0]));
+    It it= create<PairsRestraint>(new DistancePairScore(new Harmonic(len,kk)),
+                                  new SphereDistancePairScore(new HLB(0,kk)),
+                                  new AttributeSingletonScore(new HLB(0,kk),
+                                                              xk));
     read(argv[2], it);
     do_display(it, std::string(argv[3]));
   } else {
     {
-      do_benchmark<1>("custom", argc, argv,
-                      new HarmonicDistancePairScore(len, kk),
-                      new SoftSpherePairScore(kk),
-                      new AttributeSingletonScore(new HarmonicLowerBound(0,kk),
-                                                  XYZ::get_xyz_keys()[0]));
-      do_benchmark<0>("generic", argc, argv,
-                      new DistancePairScore(new Harmonic(len,kk)),
-                      new SphereDistancePairScore(new HarmonicLowerBound(0,kk)),
-                      new AttributeSingletonScore(new HarmonicLowerBound(0,kk),
-                                                  XYZ::get_xyz_keys()[0]));
+      do_benchmark<1, PairsRestraint>("scores", argc, argv,
+                                      new HarmonicDistancePairScore(len, kk),
+                                      new SoftSpherePairScore(kk),
+                                      new AttributeSingletonScore(new HLB(0,kk),
+                                                                  xk));
+      typedef ContainerRestraint<SoftSpherePairScore, ClosePairContainer> PR;
+      do_benchmark<1, PR >("custom", argc, argv,
+                           new HarmonicDistancePairScore(len, kk),
+                           new SoftSpherePairScore(kk),
+                           new AttributeSingletonScore(new HLB(0,kk),
+                                                       XYZ::get_xyz_keys()[0]));
+      do_benchmark<0, PairsRestraint>("generic", argc, argv,
+                                  new DistancePairScore(new Harmonic(len,kk)),
+                                  new SphereDistancePairScore(new HLB(0,kk)),
+                                      new AttributeSingletonScore(new HLB(0,kk),
+                                                                  xk));
     }
   }
   return 0;
