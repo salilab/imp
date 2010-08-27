@@ -12,6 +12,8 @@
 #include "bond_decorators.h"
 
 #include <IMP/PairContainer.h>
+#include <IMP/PairModifier.h>
+#include <IMP/PairScore.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/internal/container_helpers.h>
 
@@ -29,6 +31,15 @@ class IMPATOMEXPORT BondPairContainer :
   IMP::internal::OwnerPointer<SingletonContainer> sc_;
   IMP_CONTAINER_DEPENDENCIES(BondPairContainer, ret.push_back(back_->sc_););
   BondPairContainer(SingletonContainer *sc, bool);
+  template <class F>
+    F foreach(F f) const {
+    unsigned int sz= BondPairContainer::get_number_of_particle_pairs();
+    for (unsigned int i=0; i< sz; ++i) {
+      ParticlePair p= BondPairContainer::get_particle_pair(i);
+      f(p);
+    }
+    return f;
+  }
 public:
   //! The container containing the bonds
   BondPairContainer(SingletonContainer *sc);
