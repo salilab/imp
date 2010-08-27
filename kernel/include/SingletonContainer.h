@@ -70,6 +70,7 @@ class IMPEXPORT SingletonContainer : public Container
   SingletonContainer(Model *m,
                      std::string name="SingletonContainer %1%");
 public:
+  typedef Particle* ContainedType;
   /** \note This function may be linear. Be aware of the complexity
       bounds of your particular container.
    */
@@ -119,23 +120,23 @@ public:
   /** \name Incremental Scoring
       When incremental scoring is used, the container keeps track of
       changes to it since the last Model::evaluate() call.
-      \unstable{ParticleContainer::get_removed_singletons_container()}
+      \unstable{ParticleContainer::get_removed_container()}
       The address of the objects returned should not change over the lifetime
       of this container (but, of course, their contents will).
       @{
   */
-  SingletonContainer* get_removed_singletons_container() const {
+  SingletonContainer* get_removed_container() const {
     IMP_USAGE_CHECK(added_, "The containers returned by "
-                    << " get_added_singletons_container() do not "
+                    << " get_added_container() do not "
                     << " track their own added and removed contents.");
     SingletonContainer *ret= dynamic_cast<SingletonContainer*>(removed_.get());
     IMP_INTERNAL_CHECK(ret, "Cannot cast object " << removed_->get_name()
                        << " to a SingletonContainer.");
     return ret;
   }
-  SingletonContainer* get_added_singletons_container() const {
+  SingletonContainer* get_added_container() const {
     IMP_USAGE_CHECK(added_, "The containers returned by "
-                    << " get_added_singletons_container() do not "
+                    << " get_added_container() do not "
                     << " track their own added and removed contents.");
     SingletonContainer *ret= dynamic_cast<SingletonContainer*>(added_.get());
     IMP_INTERNAL_CHECK(ret, "Cannot cast object " << added_->get_name()

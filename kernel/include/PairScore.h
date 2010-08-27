@@ -29,7 +29,8 @@ IMP_BEGIN_NAMESPACE
 */
 class IMPEXPORT PairScore : public Object
 {
-public:
+ public:
+  typedef ParticlePair Argument;
   PairScore(std::string name="PairScore %1%");
   //! Compute the score and the derivative if needed.
   virtual double evaluate(const ParticlePair& vt,

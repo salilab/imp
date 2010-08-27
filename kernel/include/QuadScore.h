@@ -29,7 +29,8 @@ IMP_BEGIN_NAMESPACE
 */
 class IMPEXPORT QuadScore : public Object
 {
-public:
+ public:
+  typedef ParticleQuad Argument;
   QuadScore(std::string name="QuadScore %1%");
   //! Compute the score and the derivative if needed.
   virtual double evaluate(const ParticleQuad& vt,

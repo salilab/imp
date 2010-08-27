@@ -70,6 +70,7 @@ class IMPEXPORT TripletContainer : public Container
   TripletContainer(Model *m,
                      std::string name="TripletContainer %1%");
 public:
+  typedef ParticleTriplet ContainedType;
   /** \note This function may be linear. Be aware of the complexity
       bounds of your particular container.
    */
@@ -119,23 +120,23 @@ public:
   /** \name Incremental Scoring
       When incremental scoring is used, the container keeps track of
       changes to it since the last Model::evaluate() call.
-      \unstable{ParticleTripletContainer::get_removed_triplets_container()}
+      \unstable{ParticleTripletContainer::get_removed_container()}
       The address of the objects returned should not change over the lifetime
       of this container (but, of course, their contents will).
       @{
   */
-  TripletContainer* get_removed_triplets_container() const {
+  TripletContainer* get_removed_container() const {
     IMP_USAGE_CHECK(added_, "The containers returned by "
-                    << " get_added_triplets_container() do not "
+                    << " get_added_container() do not "
                     << " track their own added and removed contents.");
     TripletContainer *ret= dynamic_cast<TripletContainer*>(removed_.get());
     IMP_INTERNAL_CHECK(ret, "Cannot cast object " << removed_->get_name()
                        << " to a TripletContainer.");
     return ret;
   }
-  TripletContainer* get_added_triplets_container() const {
+  TripletContainer* get_added_container() const {
     IMP_USAGE_CHECK(added_, "The containers returned by "
-                    << " get_added_triplets_container() do not "
+                    << " get_added_container() do not "
                     << " track their own added and removed contents.");
     TripletContainer *ret= dynamic_cast<TripletContainer*>(added_.get());
     IMP_INTERNAL_CHECK(ret, "Cannot cast object " << added_->get_name()
