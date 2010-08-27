@@ -28,12 +28,19 @@ Configuration::Configuration(Model *m, std::string name): Object(name),
 
 void Configuration::load_configuration() const {
   IMP_OBJECT_LOG;
+  Particles to_remove;
+  // do not invalidate my iterator
   for (Model::ParticleIterator it= model_->particles_begin();
        it != model_->particles_end(); ++it) {
     PP pp(*it);
     if (base_.find(pp) == base_.end()) {
-      model_->remove_particle(*it);
+      to_remove.push_back(*it);
     }
+  }
+  for (unsigned int i=0; i< to_remove.size(); ++i) {
+    IMP_LOG(VERBOSE, "Removing particle " << to_remove[i]->get_name()
+            << " from model." << std::endl);
+    model_->remove_particle(to_remove[i]);
   }
   std::set<Particle*> active(model_->particles_begin(),
                              model_->particles_end());
