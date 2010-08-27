@@ -49,7 +49,7 @@ If you cannot figure things out, feel free to post on the \impusers list.
 
 If you are likely to be building \imp repeatedly, it can be useful to
 put the arguments to \c scons into a config file. This is a file called \c config.py
-located in the \imp directory (the one containing the \c SConscript file).
+located in the top-level \imp directory (the one containing the \c SConstruct file).
 For %example one of ours looks like
 \verbatim
 import os
@@ -131,14 +131,14 @@ Notes on how to work around various platform issues can be found at
 \subsection mac Getting prerequisites on a Mac
 
 Mac users should use one of the available collections of Unix tools,
-either \external{www.macports.org/, MacPorts} or
+either \external{www.macports.org/, MacPorts} (recommended) or
 \external{www.finkproject.org/, Fink}. If you use MacPorts, you must
 add \c /opt/local/bin to your path (either by modifying your shell's
 config file or by making an \c environment.plist file-see the
 \salilab{imp/wiki/FAQ, FAQ}) and then do
 \command{sudo port install boost scons swig-python}
 to install the needed libraries and tools. Alternatively, you can build the
-packages yourself from source code, but really, why bother.
+packages yourself from source code.
 
 \note Mac OS X 10.5 and 10.6 include a 'swig' binary, but it is too old to use
 with IMP. If you install SWIG with MacPorts above, you will need to make sure
