@@ -68,6 +68,7 @@ files = [
          'XYZ.h',
          'XYZR.h',
          'core_macros.h',
+         'generic.h',
          'rigid_bodies.h',
          'utility.h',
         ] \
