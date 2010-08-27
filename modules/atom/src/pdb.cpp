@@ -271,8 +271,8 @@ namespace {
     }
   }
   if (!has_atom) {
-    throw IOException("Sorry, unable to read atoms from PDB file."
-                      " Thanks for the effort.");
+    IMP_WARN("Sorry, unable to read atoms from PDB file."
+             " Thanks for the effort.");
   }
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     for (unsigned int i=0; i< ret.size(); ++i) {
