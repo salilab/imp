@@ -43,7 +43,21 @@ class IMPCONTAINEREXPORT SingletonContainerSet
   SingletonContainerSet(const SingletonContainersTemp &pc,
                         std::string name="SingletonContainerSet %1%");
 
-  IMP_SINGLETON_CONTAINER(SingletonContainerSet);
+  bool get_contains_particle(Particle*) const;
+  unsigned int get_number_of_particles() const;
+  Particle* get_particle(unsigned int i) const;
+  void apply(const SingletonModifier *sm);
+  void apply(const SingletonModifier *sm,
+             DerivativeAccumulator &da);
+  double evaluate(const SingletonScore *s,
+                  DerivativeAccumulator *da) const;
+  double evaluate_change(const SingletonScore *s,
+                         DerivativeAccumulator *da) const;
+  double evaluate_prechange(const SingletonScore *s,
+                            DerivativeAccumulator *da) const;
+  ParticlesTemp get_contained_particles() const;
+  bool get_contained_particles_changed() const;
+  IMP_OBJECT(SingletonContainerSet);
 
   /** @name Methods to control the nested container
 

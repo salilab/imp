@@ -15,16 +15,6 @@
 #include <IMP/PairModifier.h>
 #include <algorithm>
 
-#define FOREACH(expr)                                                   \
-  unsigned int szc=c_->get_number_of_particles();                       \
-  for (unsigned int i=0; i< szc; ++i) {                                 \
-    Particle *a= c_->get_particle(i);                                   \
-    for (unsigned int j=0; j< i; ++j) {                                 \
-      ParticlePair p(a, c_->get_particle(j));                           \
-      expr;                                                             \
-    }                                                                   \
-  }
-
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -43,17 +33,17 @@ AllPairContainer::AllPairContainer(SingletonContainer *c):
   b_=0;
   i_=0;
   IMP_NEW(IMP::core::internal::DifferenceSingletonContainer, old,
-          (c_, c_->get_removed_singletons_container()));
+          (c_, c_->get_removed_container()));
 
   IMP::Pointer<PairContainerSet> removed
     = PairContainerSet::create_untracked_container();
   {
     IMP_NEW(AllPairContainer, all,
-            (c_->get_removed_singletons_container(),
+            (c_->get_removed_container(),
              false));
     removed->add_pair_container(all);
     IMP_NEW(AllBipartitePairContainer, leftr,
-            (c_->get_removed_singletons_container(),
+            (c_->get_removed_container(),
              old,
              false));
     removed->add_pair_container(leftr);
@@ -62,11 +52,11 @@ AllPairContainer::AllPairContainer(SingletonContainer *c):
     = PairContainerSet::create_untracked_container();
   {
     IMP_NEW(AllPairContainer,all,
-            (c_->get_added_singletons_container(),
+            (c_->get_added_container(),
              false));
     added->add_pair_container(all);
     IMP_NEW(AllBipartitePairContainer,leftr,
-            (c_->get_added_singletons_container(),
+            (c_->get_added_container(),
              old,
              false));
     added->add_pair_container(leftr);
@@ -118,8 +108,6 @@ ParticlesTemp AllPairContainer::get_contained_particles() const {
 bool AllPairContainer::get_contained_particles_changed() const {
   return c_->get_contained_particles_changed();
 }
-
-IMP_PAIR_CONTAINER_METHODS_FROM_FOREACH(AllPairContainer);
 
 
 IMPCONTAINER_END_NAMESPACE

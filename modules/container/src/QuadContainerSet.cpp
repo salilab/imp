@@ -102,17 +102,17 @@ IMP_LIST_IMPL(QuadContainerSet,
               QuadContainers,
               {
                 if (!get_is_added_or_removed_container()) {
-                  get_set(get_added_quads_container())
+                  get_set(get_added_container())
                     ->add_quad_container(obj
-                           ->get_added_quads_container());
+                           ->get_added_container());
                 }
                 obj->set_was_used(true);
               },{},
               if (container
                   && !container->get_is_added_or_removed_container()) {
-                get_set(container->get_removed_quads_container())
+                get_set(container->get_removed_container())
                   ->add_quad_container(obj
-                       ->get_removed_quads_container());
+                       ->get_removed_container());
               });
 
 

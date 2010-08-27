@@ -43,7 +43,21 @@ class IMPCONTAINEREXPORT TripletContainerSet
   TripletContainerSet(const TripletContainersTemp &pc,
                         std::string name="TripletContainerSet %1%");
 
-  IMP_TRIPLET_CONTAINER(TripletContainerSet);
+  bool get_contains_particle_triplet(const ParticleTriplet&) const;
+  unsigned int get_number_of_particle_triplets() const;
+  ParticleTriplet get_particle_triplet(unsigned int i) const;
+  void apply(const TripletModifier *sm);
+  void apply(const TripletModifier *sm,
+             DerivativeAccumulator &da);
+  double evaluate(const TripletScore *s,
+                  DerivativeAccumulator *da) const;
+  double evaluate_change(const TripletScore *s,
+                         DerivativeAccumulator *da) const;
+  double evaluate_prechange(const TripletScore *s,
+                            DerivativeAccumulator *da) const;
+  ParticlesTemp get_contained_particles() const;
+  bool get_contained_particles_changed() const;
+  IMP_OBJECT(TripletContainerSet);
 
   /** @name Methods to control the nested container
 

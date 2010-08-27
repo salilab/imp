@@ -43,7 +43,21 @@ class IMPCONTAINEREXPORT PairContainerSet
   PairContainerSet(const PairContainersTemp &pc,
                         std::string name="PairContainerSet %1%");
 
-  IMP_PAIR_CONTAINER(PairContainerSet);
+  bool get_contains_particle_pair(const ParticlePair&) const;
+  unsigned int get_number_of_particle_pairs() const;
+  ParticlePair get_particle_pair(unsigned int i) const;
+  void apply(const PairModifier *sm);
+  void apply(const PairModifier *sm,
+             DerivativeAccumulator &da);
+  double evaluate(const PairScore *s,
+                  DerivativeAccumulator *da) const;
+  double evaluate_change(const PairScore *s,
+                         DerivativeAccumulator *da) const;
+  double evaluate_prechange(const PairScore *s,
+                            DerivativeAccumulator *da) const;
+  ParticlesTemp get_contained_particles() const;
+  bool get_contained_particles_changed() const;
+  IMP_OBJECT(PairContainerSet);
 
   /** @name Methods to control the nested container
 

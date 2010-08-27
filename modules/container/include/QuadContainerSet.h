@@ -43,7 +43,21 @@ class IMPCONTAINEREXPORT QuadContainerSet
   QuadContainerSet(const QuadContainersTemp &pc,
                         std::string name="QuadContainerSet %1%");
 
-  IMP_QUAD_CONTAINER(QuadContainerSet);
+  bool get_contains_particle_quad(const ParticleQuad&) const;
+  unsigned int get_number_of_particle_quads() const;
+  ParticleQuad get_particle_quad(unsigned int i) const;
+  void apply(const QuadModifier *sm);
+  void apply(const QuadModifier *sm,
+             DerivativeAccumulator &da);
+  double evaluate(const QuadScore *s,
+                  DerivativeAccumulator *da) const;
+  double evaluate_change(const QuadScore *s,
+                         DerivativeAccumulator *da) const;
+  double evaluate_prechange(const QuadScore *s,
+                            DerivativeAccumulator *da) const;
+  ParticlesTemp get_contained_particles() const;
+  bool get_contained_particles_changed() const;
+  IMP_OBJECT(QuadContainerSet);
 
   /** @name Methods to control the nested container
 

@@ -9,13 +9,6 @@
 #include <IMP/PairModifier.h>
 #include <algorithm>
 
-#define FOREACH(expr)                                                   \
-  unsigned int szc=ps_.size();                                           \
-  for (unsigned int i=1; i< szc; ++i) {                                 \
-    ParticlePair p(ps_[i-1], ps_[i]);                                    \
-    expr;                                                               \
-  }
-
 
 IMPCONTAINER_BEGIN_NAMESPACE
 ConsecutivePairContainer::ConsecutivePairContainer(const ParticlesTemp &ps):
@@ -60,8 +53,5 @@ ParticlesTemp ConsecutivePairContainer::get_contained_particles() const {
 bool ConsecutivePairContainer::get_contained_particles_changed() const {
   return false;
 }
-
-IMP_PAIR_CONTAINER_METHODS_FROM_FOREACH(ConsecutivePairContainer);
-
 
 IMPCONTAINER_END_NAMESPACE

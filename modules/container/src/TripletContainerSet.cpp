@@ -102,17 +102,17 @@ IMP_LIST_IMPL(TripletContainerSet,
               TripletContainers,
               {
                 if (!get_is_added_or_removed_container()) {
-                  get_set(get_added_triplets_container())
+                  get_set(get_added_container())
                     ->add_triplet_container(obj
-                           ->get_added_triplets_container());
+                           ->get_added_container());
                 }
                 obj->set_was_used(true);
               },{},
               if (container
                   && !container->get_is_added_or_removed_container()) {
-                get_set(container->get_removed_triplets_container())
+                get_set(container->get_removed_container())
                   ->add_triplet_container(obj
-                       ->get_removed_triplets_container());
+                       ->get_removed_container());
               });
 
 
