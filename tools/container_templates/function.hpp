@@ -36,6 +36,7 @@ class Particle;
 class IMPEXPORT GroupnameModifier : public Object
 {
 public:
+  typedef Value Argument;
   GroupnameModifier(std::string name="GroupnameModifier %1%");
 
   /** Apply the function to a single value*/

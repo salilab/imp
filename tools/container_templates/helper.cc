@@ -13,38 +13,7 @@
 #include <IMP/GroupnameScore.h>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
-void ListLikeGroupnameContainer::apply(const GroupnameModifier *sm) {
-  IMP_CHECK_OBJECT(this);
-  IMP_CHECK_OBJECT(sm);
-  sm->apply(data_);
-}
-void ListLikeGroupnameContainer::apply(const GroupnameModifier *sm,
-                                       DerivativeAccumulator &da) {
-  IMP_CHECK_OBJECT(this);
-  IMP_CHECK_OBJECT(sm);
-  sm->apply(data_, da);
-}
-double ListLikeGroupnameContainer
-::evaluate(const GroupnameScore *s,
-           DerivativeAccumulator *da) const {
-  IMP_CHECK_OBJECT(this);
-  IMP_CHECK_OBJECT(s);
-  return s->evaluate(data_, da);
-}
-double ListLikeGroupnameContainer
-::evaluate_change(const GroupnameScore *s,
-                  DerivativeAccumulator *da) const {
-  IMP_CHECK_OBJECT(this);
-  IMP_CHECK_OBJECT(s);
-  return s->evaluate_change(data_, da);
-}
-double ListLikeGroupnameContainer
-::evaluate_prechange(const GroupnameScore *s,
-                     DerivativeAccumulator *da) const {
-  IMP_CHECK_OBJECT(this);
-  IMP_CHECK_OBJECT(s);
-  return s->evaluate_prechange(data_, da);
-}
+
 unsigned int ListLikeGroupnameContainer
 ::get_number_of_classnames() const {
   IMP_CHECK_OBJECT(this);
