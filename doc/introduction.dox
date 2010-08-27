@@ -378,7 +378,7 @@ generate the connection between the two languages. Key differences are
     As is conventional in C++, \imp classes are divided into two types
     - \e value \e classes which are be passed, stored, and returned by value
       (or, for speed, \c const&). Examples include IMP::algebra::VectorD,
-      collections such as IMP::Restraints or IMP::RestraintsTemp, or
+      collections such as IMP::RestraintsTemp, or
       decorators, such as IMP::core::XYZ. In fact, in \imp, anything
       that does not inherit from IMP::RefCounted is a value class.
 
@@ -494,6 +494,37 @@ public:
 Each vertex has a descriptor which provides a unique identifier for the vertex as well as a name, which need not be unique.
 
 The python wrapper should be considered unstable. If there is a python graph library which users would like to use, we will adapt the python interface for that library.
+
+\section fasterfaster Making \imp run faster
+
+Sampling can often be very computationally expensive, so we provide a number of facilities to speed up \imp computations. These include:
+
+\subsection parametertuning Parameter tuning
+
+Certain classes, such as IMP::container::ClosePairContainer, have parameters which influence how fast they perform. IMP::container::ClosePairContainer has a helper method, IMP::container::get_slack_estimate() which tries to figure out a good value for that slack.
+
+\subsection specializing Specializing for speed
+
+The usual pattern in \IMP is to plug various classes together via what is known as virtual function calls. Composing this way is very flexible, but is not necessarily very fast as the C++ compiler is not able to take advantage simplifications across function calls. To get around this, we provide some specialized classes which act as composits of other classes. For example:
+- IMP::core::SoftSpherePairScore which is equivalent to IMP::core::SphereDistancePairScore with a IMP::core::HarmonicLowerBound
+- IMP::core::HarmonicDistancePairScore which is equivalent to IMP::core::DistancePairScore with a IMP::core::Harmonic
+These can be twice or more faster than the classes they replace.
+
+\anchor cppspecialization
+C++ users can also take compose classes via templates at compile time. This is done using IMP::core::TupleRestraint, IMP::core::TupleConstraint, IMP::container::ContainerRestraint, IMP::container::ContainerConstraint. When using these, make sure you provide the actual types of the scores, modifiers and containers used (not the base classes). For example do
+\code
+m->add_restraint(core::make_tuple_restaint(new core::HarmonicDistancePairScore(3, 1), ParticlePair(p0, p1)))
+\endcode
+which is equivalent to
+ \code
+m->add_restraint(new core::TupleRestraint<HarmonicDistancePairScore>(new HarmonicDistancePairScore(3, 1), ParticlePair(p0, p1)))
+\endcode
+which, in turn, is equivalent to, but faster than
+\code
+m->add_restraint(new core::PairRestraint(new HarmonicDistancePairScore(3,1), ParticlePair(p0, p1)));
+\endcode
+
+
 
 \section fixbug 8. Reporting bugs
 

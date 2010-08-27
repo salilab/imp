@@ -21,18 +21,18 @@ class RefCountTests(IMP.test.TestCase):
         c= IMP.container.ListSingletonContainer(ps0)
         print "start"
         m.evaluate(False)
-        self.assertEqual(c.get_removed_singletons_container().get_number_of_particles(), 0)
-        self.assertEqual(c.get_added_singletons_container().get_number_of_particles(), 0)
+        self.assertEqual(c.get_removed_container().get_number_of_particles(), 0)
+        self.assertEqual(c.get_added_container().get_number_of_particles(), 0)
         print "add"
         m.evaluate(False)
         c.add_particles(ps1)
-        self.assertEqual(c.get_added_singletons_container().get_number_of_particles(), len(ps1))
-        self.assertEqual(c.get_removed_singletons_container().get_number_of_particles(), 0)
+        self.assertEqual(c.get_added_container().get_number_of_particles(), len(ps1))
+        self.assertEqual(c.get_removed_container().get_number_of_particles(), 0)
         print "set"
         m.evaluate(False)
         c.set_particles(ps1)
-        self.assertEqual(c.get_added_singletons_container().get_number_of_particles(), 0)
-        self.assertEqual(c.get_removed_singletons_container().get_number_of_particles(), len(ps0))
+        self.assertEqual(c.get_added_container().get_number_of_particles(), 0)
+        self.assertEqual(c.get_removed_container().get_number_of_particles(), len(ps0))
         c.set_was_used(True)
 
 

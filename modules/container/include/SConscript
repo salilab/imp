@@ -47,7 +47,9 @@ files = [
          'TripletsConstraint.h',
          'TripletsOptimizerState.h',
          'TripletsRestraint.h',
-        ]
+         'generic.h',
+        ] \
+        + SConscript('internal/SConscript')
 
 # Install the include files:
 env.IMPModuleInclude(files)

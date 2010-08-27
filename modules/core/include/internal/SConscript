@@ -15,6 +15,7 @@ files = [
          'close_pairs_helpers.h',
          'dihedral_helpers.h',
          'evaluate_distance_pair_score.h',
+         'generic_impl.h',
          'graph_base.h',
          'hierarchy_helpers.h',
          'pair_helpers.h',
