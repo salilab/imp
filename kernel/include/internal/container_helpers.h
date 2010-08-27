@@ -262,64 +262,101 @@ inline std::string get_name(const ParticleTuple<D>& p) {
 
 
 
+template <class M>
+struct ApplyIt {
+  const M *sm_;
+  ApplyIt(const M *sm): sm_(sm){}
+  template <class T>
+  void operator()(const T& t) const {
+    sm_->apply(t);
+  }
+};
+
+template <class M>
+ApplyIt<M> make_apply_it(const M* m) {
+  return ApplyIt<M>(m);
+}
+
+template <class M>
+struct ApplyItDa {
+  const M *sm_;
+  DerivativeAccumulator& da_;
+  ApplyItDa(const M *sm, DerivativeAccumulator &da): sm_(sm), da_(da){}
+  template <class T>
+  void operator()(const T& t) const {
+    sm_->apply(t);
+  }
+};
+
+template <class M>
+ApplyItDa<M> make_apply_it(const M* m, DerivativeAccumulator&da) {
+  return ApplyItDa<M>(m, da);
+}
 
 
-#define IMP_PAIR_CONTAINER_METHODS_FROM_FOREACH(Name)                   \
-  void Name::apply(const PairModifier *sm) {                            \
-    FOREACH(sm->apply(p));                                              \
+
+template <class M>
+struct ApplyItT {
+  const M *sm_;
+  ApplyItT(const M *sm): sm_(sm){}
+  template <class T>
+  void operator()(const T& t) const {
+    sm_->M::apply(t);
+  }
+};
+
+template <class M>
+ApplyItT<M> make_apply_it_t(const M* m) {
+  return ApplyItT<M>(m);
+}
+
+template <class M>
+struct ApplyItDaT {
+  const M *sm_;
+  DerivativeAccumulator& da_;
+  ApplyItDaT(const M *sm, DerivativeAccumulator &da): sm_(sm), da_(da){}
+  template <class T>
+  void operator()(const T& t) const {
+    sm_->M::apply(t, da_);
+  }
+};
+
+template <class M>
+ApplyItDaT<M> make_apply_it_t(const M* m, DerivativeAccumulator&da) {
+  return ApplyItDaT<M>(m, da);
+}
+
+#define IMP_EVALUATOR(Name, name, line)                                 \
+  template <class S>                                                    \
+  struct Evaluate##Name {                                               \
+    const S*s_;                                                         \
+  DerivativeAccumulator *da_;                                           \
+  double score_;                                                        \
+  Evaluate##Name(const S* s, DerivativeAccumulator *da): s_(s),         \
+    da_(da), score_(0){}                                                \
+  template <class T>                                                    \
+  void operator()(const T&t) {                                          \
+    line;                                                               \
   }                                                                     \
-  void Name::apply(const PairModifier *sm,                              \
-                   DerivativeAccumulator &da) {                         \
-    FOREACH(sm->apply(p, da));                                          \
+  operator double() const {                                             \
+    return score_;                                                      \
   }                                                                     \
-  double Name::evaluate(const PairScore *s,                             \
-                        DerivativeAccumulator *da) const {              \
-    double score=0;                                                     \
-    FOREACH( score+=s->evaluate(p, da));                                \
-    return score;                                                       \
+  };                                                                    \
+  template <class S>                                                    \
+  Evaluate##Name<S> make_evaluate_##name(const S*s,                     \
+                                         DerivativeAccumulator *da) {   \
+    return Evaluate##Name<S>(s, da);                                    \
   }                                                                     \
-  double Name::evaluate_change(const PairScore *s,                      \
-                               DerivativeAccumulator *da) const {       \
-    double score=0;                                                     \
-    FOREACH(score+=s->evaluate_change(p, da));                          \
-    return score;                                                       \
-  }                                                                     \
-  double Name::evaluate_prechange(const PairScore *s,                   \
-                                  DerivativeAccumulator *da) const {    \
-    double score=0;                                                     \
-    FOREACH(score+=s->evaluate_prechange(p, da));                       \
-    return score;                                                       \
-  }                                                                     \
-  IMP_REQUIRE_SEMICOLON_NAMESPACE
+
+IMP_EVALUATOR(It, it, score_+= s_->evaluate(t, da_));
+IMP_EVALUATOR(Change, change, score_+= s_->evaluate_change(t, da_));
+IMP_EVALUATOR(PreChange, prechange, score_+= s_->evaluate_prechange(t, da_));
 
 
-#define IMP_SINGLETON_CONTAINER_METHODS_FROM_FOREACH(Name)              \
-  void Name::apply(const SingletonModifier *sm) {                       \
-    FOREACH(sm->apply(a));                                              \
-  }                                                                     \
-  void Name::apply(const SingletonModifier *sm,                         \
-                   DerivativeAccumulator &da) {                         \
-    FOREACH(sm->apply(a, da));                                          \
-  }                                                                     \
-  double Name::evaluate(const SingletonScore *s,                        \
-                        DerivativeAccumulator *da) const {              \
-    double score=0;                                                     \
-    FOREACH( score+=s->evaluate(a, da));                                \
-    return score;                                                       \
-  }                                                                     \
-  double Name::evaluate_change(const SingletonScore *s,                 \
-                               DerivativeAccumulator *da) const {       \
-    double score=0;                                                     \
-    FOREACH(score+=s->evaluate_change(a, da));                          \
-    return score;                                                       \
-  }                                                                     \
-  double Name::evaluate_prechange(const SingletonScore *s,              \
-                                  DerivativeAccumulator *da) const {    \
-    double score=0;                                                     \
-    FOREACH(score+=s->evaluate_prechange(a, da));                       \
-    return score;                                                       \
-  }                                                                     \
-  IMP_REQUIRE_SEMICOLON_NAMESPACE
+IMP_EVALUATOR(ItT, it_t, score_+= s_->S::evaluate(t, da_));
+IMP_EVALUATOR(ChangeT, change_t, score_+= s_->S::evaluate_change(t, da_));
+IMP_EVALUATOR(PreChangeT, prechange_t,
+              score_+= s_->S::evaluate_prechange(t, da_));
 
 
 IMP_END_INTERNAL_NAMESPACE
