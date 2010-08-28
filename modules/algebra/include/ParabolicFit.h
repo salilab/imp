@@ -25,7 +25,7 @@ public:
   ParabolicFit(const std::vector<VectorD<2> >& data);
 
   //! fit error
-  double get_fit_error(double) const { return error_; }
+  double get_fit_error() const { return error_; }
 
   //! get a value (a*x^2)
   double get_a() const { return a_; }

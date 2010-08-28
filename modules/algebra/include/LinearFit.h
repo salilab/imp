@@ -25,7 +25,7 @@ public:
   LinearFit(const std::vector<algebra::VectorD<2> >& data);
 
   //! fit error
-  double get_fit_error(double) const { return error_; }
+  double get_fit_error() const { return error_; }
 
   //! get a value (a*x)
   double get_a() const { return a_; }
