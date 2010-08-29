@@ -82,6 +82,7 @@ IMP_SWIG_VALUE(IMP, ObjectKey, ObjectKeys);
 IMP_SWIG_VALUE(IMP, Float, Floats);
 IMP_SWIG_VALUE(IMP, Int, Ints);
 IMP_SWIG_VALUE(IMP, String, Strings);
+IMP_SWIG_VALUE(IMP, SetLogState, SetLogStates);
 
 IMP_SWIG_DECORATOR(IMP::internal, _TrivialDecorator, _TrivialDecorators);
 IMP_SWIG_DECORATOR(IMP::internal, _TrivialDerivedDecorator, _TrivialDerivedDecorators);

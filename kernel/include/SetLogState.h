@@ -64,8 +64,15 @@ public:
       level_=DEFAULT;
     }
   }
+  IMP_SHOWABLE_INLINE(SetLogState, out << "Setting from " << level_
+                      << " to "
+                      << (obj_? obj_->get_log_level() : get_log_level())
+                      << std::endl);
 };
 
+
+IMP_VALUES(SetLogState, SetLogStates);
+IMP_OUTPUT_OPERATOR(SetLogState);
 
 IMP_END_NAMESPACE
 
