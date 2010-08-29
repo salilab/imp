@@ -1875,7 +1875,7 @@ protected:                                      \
   IMP_INTERNAL_OBJECT(Name)
 
 
-
+#ifndef IMP_DOXYGEN
 #define IMP_IMPLEMENT_CONTAINER(Name, Tuple)                            \
   void apply(const Tuple##Modifier *sm) {                               \
     foreach(IMP::internal::make_apply_it(sm));                          \
@@ -1923,7 +1923,7 @@ protected:                                      \
   ParticlesTemp get_contained_particles() const;                        \
   bool get_contained_particles_changed() const;                         \
   IMP_OBJECT(Name)
-
+#endif
 
 
 //! Declare the needed functions for a SingletonContainer
@@ -1993,16 +1993,23 @@ protected:                                      \
 
 
 
-
+#ifndef SWIG
 //! Declare the needed functions for a SingletonFilter
 /** In addition to the methods done by all the macros, it declares
     - IMP::SingletonFilter::get_contains_particle()
     - IMP::SingletonFilter::get_input_particles()
 */
-#define IMP_SINGLETON_FILTER(Name)                              \
-  bool get_contains_particle(Particle* p) const;                \
-  ParticlesTemp get_input_particles(Particle*t) const;          \
-  ContainersTemp get_input_containers(Particle*t) const;        \
+#define IMP_SINGLETON_FILTER(Name)                                      \
+  bool get_contains_particle(Particle* p) const;                        \
+  ParticlesTemp get_input_particles(Particle*t) const;                  \
+  ContainersTemp get_input_containers(Particle*t) const;                \
+  void filter_in_place(ParticlesTemp &ps) const {                       \
+    ps.erase(std::remove_if(ps.begin(), ps.end(),                       \
+                            boost::lambda::bind(&Name::get_contains_particle, \
+                                        this,                           \
+                                        boost::lambda::_1)),            \
+             ps.end());                                                 \
+  }                                                                     \
   IMP_OBJECT(Name)
 
 
@@ -2015,6 +2022,14 @@ protected:                                      \
   bool get_contains_particle_pair(const ParticlePair& p) const;         \
   ParticlesTemp get_input_particles(const ParticlePair& t) const;       \
   ContainersTemp get_input_containers(const ParticlePair& t) const;     \
+  void filter_in_place(ParticlePairsTemp &ps) const {                  \
+    ps.erase(std::remove_if(ps.begin(), ps.end(),                       \
+                            boost::lambda::bind(                        \
+                                     &Name::get_contains_particle_pair, \
+                                        this,                           \
+                                        boost::lambda::_1)),            \
+             ps.end());                                                 \
+  }                                                                     \
   IMP_OBJECT(Name)
 
 
@@ -2028,6 +2043,14 @@ protected:                                      \
   bool get_contains_particle_triplet(const ParticleTriplet& p) const;  \
   ParticlesTemp get_input_particles(const ParticleTriplet& t) const;   \
   ContainersTemp get_input_containers(const ParticleTriplet& t) const; \
+  void filter_in_place(ParticleTripletsTemp &ps) const {                \
+    ps.erase(std::remove_if(ps.begin(), ps.end(),                       \
+                            boost::lambda::bind(                        \
+                                  &Name::get_contains_particle_triplet, \
+                                                this,                   \
+                                        boost::lambda::_1)),            \
+             ps.end());                                                 \
+  }                                                                     \
   IMP_OBJECT(Name)
 
 
@@ -2037,12 +2060,49 @@ protected:                                      \
     - IMP::QuadFilter::get_contains_particle_quad()
     - IMP::QuadFilter::get_input_particles()
 */
-#define IMP_QUAD_FILTER(Name)                                          \
-  bool get_contains_particle_quad(const ParticleQuad& p) const;        \
-  ParticlesTemp get_input_particles(const ParticleQuad& t) const;      \
-  ContainersTemp get_input_containers(const ParticleQuad& t) const;    \
+#define IMP_QUAD_FILTER(Name)                                           \
+  bool get_contains_particle_quad(const ParticleQuad& p) const;         \
+  ParticlesTemp get_input_particles(const ParticleQuad& t) const;       \
+  ContainersTemp get_input_containers(const ParticleQuad& t) const;     \
+  void filter_in_place(ParticleQuadsTemp &ps) const {                   \
+    ps.erase(std::remove_if(ps.begin(), ps.end(),                       \
+                            boost::lambda::bind(                        \
+                                  &Name::get_contains_particle_quad,    \
+                                                this,                   \
+                                        boost::lambda::_1)),            \
+             ps.end());                                                 \
+  }                                                                     \
+  IMP_OBJECT(Name)
+#else
+#define IMP_SINGLETON_FILTER(Name)                                      \
+  bool get_contains_particle(Particle* p) const;                        \
+  ParticlesTemp get_input_particles(Particle*t) const;                  \
+  ContainersTemp get_input_containers(Particle*t) const;                \
   IMP_OBJECT(Name)
 
+
+#define IMP_PAIR_FILTER(Name)                                           \
+  bool get_contains_particle_pair(const ParticlePair& p) const;         \
+  ParticlesTemp get_input_particles(const ParticlePair& t) const;       \
+  ContainersTemp get_input_containers(const ParticlePair& t) const;     \
+  IMP_OBJECT(Name)
+
+
+#define IMP_TRIPLET_FILTER(Name)                                       \
+  bool get_contains_particle_triplet(const ParticleTriplet& p) const;  \
+  ParticlesTemp get_input_particles(const ParticleTriplet& t) const;   \
+  ContainersTemp get_input_containers(const ParticleTriplet& t) const; \
+  IMP_OBJECT(Name)
+
+
+
+#define IMP_QUAD_FILTER(Name)                                           \
+  bool get_contains_particle_quad(const ParticleQuad& p) const;         \
+  ParticlesTemp get_input_particles(const ParticleQuad& t) const;       \
+  ContainersTemp get_input_containers(const ParticleQuad& t) const;     \
+  IMP_OBJECT(Name)
+
+#endif
 
 
 //! Declare the needed functions for a UnaryFunction

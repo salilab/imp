@@ -17,6 +17,9 @@
 #include "base_types.h"
 #include "VersionInfo.h"
 #include "ParticleTuple.h"
+#include <boost/lambda/lambda.hpp>
+#include <boost/lambda/bind.hpp>
+
 
 IMP_BEGIN_NAMESPACE
 
@@ -45,6 +48,11 @@ public:
   virtual ParticlesTemp get_input_particles(const ParticleQuad& p) const=0;
   virtual ContainersTemp get_input_containers(const ParticleQuad& p) const=0;
   /** @} */
+
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+  virtual void filter_in_place(ParticleQuadsTemp& ps) const {
+  }
+#endif
 
   IMP_REF_COUNTED_DESTRUCTOR(QuadFilter);
 };
