@@ -323,6 +323,14 @@ class ApplicationTestCase(TestCase):
         print "running ", filename
         return _SubprocessWrapper(filename, args)
 
+    def assertApplicationExitedCleanly(self, ret):
+        """Assert that the application exited cleanly, i.e. that the
+           return value is zero."""
+        if ret < 0:
+            raise OSError("Application exited with signal %d" % -ret)
+        else:
+            self.assertEqual(ret, 0,
+                       "Application exited uncleanly, with exit code %d" % ret)
 
 
 
