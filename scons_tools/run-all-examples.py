@@ -24,7 +24,11 @@ def main(files):
         print_error(e)
 
     print >> sys.stderr, "\n" + "-" * 70
-    print >> sys.stderr, "Ran %d examples in %.3fs" % (len(files), runtime)
+    suffix = ""
+    if len(files) != 1:
+        suffix = "s"
+    print >> sys.stderr, "Ran %d example%s in %.3fs" % (len(files), suffix,
+                                                        runtime)
     if len(errs) > 0:
         print >> sys.stderr, "\nFAILED (errors=%d)" % len(errs)
         sys.exit(1)
