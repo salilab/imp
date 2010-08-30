@@ -17,11 +17,6 @@ InContainerQuadFilter
 ::InContainerQuadFilter(QuadContainer *c,
                              std::string name): QuadFilter(name), c_(c){}
 
-bool InContainerQuadFilter
-::get_contains_particle_quad(const ParticleQuad& p) const {
-  return c_->get_contains_particle_quad(p);
-}
-
 ParticlesTemp InContainerQuadFilter
 ::get_input_particles(const ParticleQuad&) const {
   // not quite right, but...

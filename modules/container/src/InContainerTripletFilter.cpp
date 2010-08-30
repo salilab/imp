@@ -17,11 +17,6 @@ InContainerTripletFilter
 ::InContainerTripletFilter(TripletContainer *c,
                              std::string name): TripletFilter(name), c_(c){}
 
-bool InContainerTripletFilter
-::get_contains_particle_triplet(const ParticleTriplet& p) const {
-  return c_->get_contains_particle_triplet(p);
-}
-
 ParticlesTemp InContainerTripletFilter
 ::get_input_particles(const ParticleTriplet&) const {
   // not quite right, but...

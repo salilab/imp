@@ -17,11 +17,6 @@ InContainerPairFilter
 ::InContainerPairFilter(PairContainer *c,
                              std::string name): PairFilter(name), c_(c){}
 
-bool InContainerPairFilter
-::get_contains_particle_pair(const ParticlePair& p) const {
-  return c_->get_contains_particle_pair(p);
-}
-
 ParticlesTemp InContainerPairFilter
 ::get_input_particles(const ParticlePair&) const {
   // not quite right, but...
