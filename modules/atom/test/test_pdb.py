@@ -22,6 +22,13 @@ class PDBReadWriteTest(IMP.test.TestCase):
         m= IMP.Model()
         self.assertRaises(IOError,
                           IMP.atom.read_pdb,
+                          self.get_input_file_name("notafile.pdb"),
+                          m)
+        # we don't actually check if a file is a pdb or not
+        # and can't conclude it is not due to not reading any atoms
+        # as the selector may filter them all.
+        self.assertRaises(Error,
+                          IMP.atom.read_pdb,
                           self.open_input_file("notapdb.pdb"),
                           m)
     def test_round_trips(self):
