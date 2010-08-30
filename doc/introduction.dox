@@ -184,7 +184,7 @@ See the IMP::Decorator page for more details.
 IMP::Container (notice that IMP::Particle objects are containers and can contain lists
 of particles). A container could
 be as simple as an IMP::container::ListSingletonContainer which simply stores a list
-of particles. However, it could also be more involved, such as the IMP::container::ClosePairContainer which keeps track of all pairs of particles which close to one another in space. It can
+of particles. However, it could also be more involved, such as the IMP::container::ClosePairContainer which keeps track of all pairs of particles which are close to one another in space. It can
 be used to implemented non-bonded operations for example.
 
 Scoring is handled by a collection of IMP::Restraint objects. Each of these keeps a list
