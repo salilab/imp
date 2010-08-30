@@ -298,6 +298,33 @@ Constraint *create_constraint(Pointer<Container> c, Before* b,
   return create_constraint<Container, Before, After>(c, b, a, name);
 }
 
+
+
+
+template <class Container>
+bool GenericInContainerPairFilter<Container>
+::get_contains_particle_pair(const ParticlePair& p) const {
+  return c_->get_contains_particle_pair(p);
+}
+
+template <class Container>
+ParticlesTemp GenericInContainerPairFilter<Container>
+::get_input_particles(const ParticlePair&) const {
+  // not quite right
+  return ParticlesTemp();
+}
+template <class Container>
+ContainersTemp GenericInContainerPairFilter<Container>
+::get_input_containers(const ParticlePair&) const {
+  return ContainersTemp(1, c_);
+}
+
+template <class Container>
+void GenericInContainerPairFilter<Container>
+::do_show(std::ostream &out) const {
+  out << "Filtering from container " << c_->get_name() << std::endl;
+}
+
 IMPCONTAINER_END_NAMESPACE
 
 #endif  /* IMPCONTAINER_GENERIC_IMPL_H */
