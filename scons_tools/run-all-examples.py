@@ -54,7 +54,7 @@ def run_example(f, errs):
     # versions, so the only way to catch *all* exceptions on all Python versions
     # is to first catch SystemExit, then Exception.
     except SystemExit, e:
-        if e.code == 0:
+        if e.code == 0 or e.code is None:
             sys.stderr.write("ok\n")
             return
         else:
