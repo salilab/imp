@@ -25,7 +25,7 @@ typedef std::vector<IntPair> IntPairs;
 /** In general, the algorithm should make sure it returns all
     pairs of appropriate objects which are within the distance
     of one another (including their radius). They are free to
-    return more if it is conventient, but this is not
+    return more if it is convenient, but this is not
     recommended as the list can easily become very large.
     \see ClosePairsScoreState
     \see CloseBipartitlePairsScoreState
