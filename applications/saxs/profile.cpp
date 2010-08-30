@@ -124,7 +124,7 @@ recommended q value is 0.2")
           IMP::core::XYZR::setup_particle(particles[p_index], radius);
         }
       }
-    } catch(IMP::IOException e) { // not a pdb file
+    } catch(IMP::ValueException e) { // not a pdb file
       // B. try as dat file
       IMP::saxs::Profile *profile = new IMP::saxs::Profile(files[i]);
       if(profile->size() == 0) {
