@@ -24,6 +24,12 @@ const double kk=1000;
 const double sigma=.1;
 const double slack=100*sigma;
 
+#ifdef __GNUC__
+#define ATTRIBUTES __attribute ((__noinline__))
+#else
+#define ATTRIBUTES
+#endif
+
 namespace {
   VersionInfo get_module_version_info() {
     return benchmark::get_module_version_info();
@@ -48,6 +54,7 @@ It create(PS0 *link, PS1 *lb, SS *bottom) {
   It ret;
   ret.m= new Model();
   PairFilters pfs;
+  typedef GenericInContainerPairFilter<ConsecutivePairContainer> Filter;
   for (unsigned int i=0; i< 10; ++i) {
     for (unsigned int j=0; j< 10; ++j) {
       ret.chains.push_back(ParticlesTemp());
@@ -62,7 +69,7 @@ It create(PS0 *link, PS1 *lb, SS *bottom) {
         d.set_coordinates(Vector3D(i*30.0, j*30.0, k*len));
       }
       IMP_NEW(ConsecutivePairContainer, cpc,(ret.chains.back()));
-      pfs.push_back(new InContainerPairFilter(cpc));
+      pfs.push_back(new Filter(cpc));
       IMP_NEW(PairsRestraint, pr, (link, cpc));
       ret.m->add_restraint(pr);
       ret.all.insert(ret.all.end(),
@@ -100,7 +107,10 @@ double simulate(It it, int ns, bool verbose=false) {
 
 void initialize(It it) {
   //double e=simulate(it, 1e6,true);
-  std::cout << "Time step is " << it.sp.get_maximum_time_step() << std::endl;
+  //std::cout << "Time step is " << it.sp.get_maximum_time_step() << std::endl;
+  double ts= get_maximum_time_step_estimate(it.bd, it.sp);
+  std::cout << "Maximum time step is " << ts;
+  it.sp.set_maximum_time_step(ts);
   std::ofstream out("deps.dot");
   set_log_level(VERBOSE);
   double slack;
@@ -139,11 +149,15 @@ void do_display(It it, std::string str) {
 
 template <int I, class PR, class PS0, class PS1, class SS>
 void do_benchmark(std::string name, int argc, char *argv[], PS0 *link,
+                  PS1 *lb, SS *bottom) ATTRIBUTES;
+
+template <int I, class PR, class PS0, class PS1, class SS>
+void do_benchmark(std::string name, int argc, char *argv[], PS0 *link,
                   PS1 *lb, SS *bottom) {
   It it= create<PR>(link, lb, bottom);
   std::string in;
-  if (argc >1) {
-    in =argv[1];
+  if (argc >0) {
+    in =argv[0];
   } else {
     IMP_CATCH_AND_TERMINATE(in
                             =IMP::benchmark::get_data_path("brownian.imp"));
@@ -151,16 +165,16 @@ void do_benchmark(std::string name, int argc, char *argv[], PS0 *link,
   read(in, it);
   double total=0, runtime=0;
   int ns=1e3;
-  if (argc >2) {
-    ns=atoi(argv[2]);
+  if (argc >1) {
+    ns=atoi(argv[1]);
   }
   IMP_TIME(
            {
              total+=simulate(it, ns);
            }, runtime);
   IMP::benchmark::report(std::string("bd ")+name, runtime, total);
-  if (argc>3) {
-    IMP_CATCH_AND_TERMINATE(write_model(it.all, argv[3]));
+  if (argc>2) {
+    IMP_CATCH_AND_TERMINATE(write_model(it.all, argv[2]));
   }
 }
 
@@ -184,20 +198,27 @@ int main(int argc , char **argv) {
                                                               xk));
     read(argv[2], it);
     do_display(it, std::string(argv[3]));
+  } else if (argc >=2 && std::string(argv[1])=="-p") {
+      typedef ContainerRestraint<SoftSpherePairScore, ClosePairContainer> PR;
+      do_benchmark<1, PR >("custom", argc-2, argv+2,
+                           new HarmonicDistancePairScore(len, kk),
+                           new SoftSpherePairScore(kk),
+                           new AttributeSingletonScore(new HLB(0,kk),
+                                                       XYZ::get_xyz_keys()[0]));
   } else {
     {
-      do_benchmark<1, PairsRestraint>("scores", argc, argv,
+      do_benchmark<1, PairsRestraint>("scores", argc-1, argv+1,
                                       new HarmonicDistancePairScore(len, kk),
                                       new SoftSpherePairScore(kk),
                                       new AttributeSingletonScore(new HLB(0,kk),
                                                                   xk));
       typedef ContainerRestraint<SoftSpherePairScore, ClosePairContainer> PR;
-      do_benchmark<1, PR >("custom", argc, argv,
+      do_benchmark<1, PR >("custom", argc-1, argv+1,
                            new HarmonicDistancePairScore(len, kk),
                            new SoftSpherePairScore(kk),
                            new AttributeSingletonScore(new HLB(0,kk),
                                                        XYZ::get_xyz_keys()[0]));
-      do_benchmark<0, PairsRestraint>("generic", argc, argv,
+      do_benchmark<0, PairsRestraint>("generic", argc-1, argv+1,
                                   new DistancePairScore(new Harmonic(len,kk)),
                                   new SphereDistancePairScore(new HLB(0,kk)),
                                       new AttributeSingletonScore(new HLB(0,kk),
