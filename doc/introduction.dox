@@ -505,7 +505,7 @@ Certain classes, such as IMP::container::ClosePairContainer, have parameters whi
 
 \subsection specializing Specializing for speed
 
-The usual pattern in \IMP is to plug various classes together via what is known as virtual function calls. Composing this way is very flexible, but is not necessarily very fast as the C++ compiler is not able to take advantage simplifications across function calls. To get around this, we provide some specialized classes which act as composits of other classes. For example:
+The usual pattern in \imp is to plug various classes together via what is known as virtual function calls. Composing this way is very flexible, but is not necessarily very fast as the C++ compiler is not able to take advantage simplifications across function calls. To get around this, we provide some specialized classes which act as composits of other classes. For example:
 - IMP::core::SoftSpherePairScore which is equivalent to IMP::core::SphereDistancePairScore with a IMP::core::HarmonicLowerBound
 - IMP::core::HarmonicDistancePairScore which is equivalent to IMP::core::DistancePairScore with a IMP::core::Harmonic
 These can be twice or more faster than the classes they replace.
