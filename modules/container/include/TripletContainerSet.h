@@ -35,6 +35,17 @@ class IMPCONTAINEREXPORT TripletContainerSet
                              });
   // to not have added and removed
   TripletContainerSet();
+  TripletContainerPair get_added_and_removed_containers() const {
+    TripletContainerSet *added= create_untracked_container();
+    TripletContainerSet *removed=create_untracked_container();
+    for (unsigned int i=0; i< get_number_of_triplet_containers(); ++i) {
+      added->add_triplet_container(get_triplet_container(i)
+                                     ->get_added_container());
+      removed->add_triplet_container(get_triplet_container(i)
+                                       ->get_removed_container());
+    }
+    return TripletContainerPair(added, removed);
+  }
  public:
   //! Construct and empty set
   TripletContainerSet(Model *m,

@@ -29,8 +29,6 @@ QuadContainerSet
 ::QuadContainerSet(Model *m, std::string name):
   QuadContainer(m, name),
   deps_(new DependenciesScoreState(this), m){
-  set_added_and_removed_containers( create_untracked_container(),
-                                    create_untracked_container());
 }
 
 namespace {
@@ -49,8 +47,6 @@ QuadContainerSet
   QuadContainer(my_get_model(in), name),
   deps_(new DependenciesScoreState(this), my_get_model(in)){
   set_quad_containers(in);
-  set_added_and_removed_containers( create_untracked_container(),
-                                    create_untracked_container());
 }
 
 
@@ -101,7 +97,7 @@ IMP_LIST_IMPL(QuadContainerSet,
               QuadContainer*,
               QuadContainers,
               {
-                if (!get_is_added_or_removed_container()) {
+                if (get_has_added_and_removed_containers()) {
                   get_set(get_added_container())
                     ->add_quad_container(obj
                            ->get_added_container());
@@ -109,7 +105,7 @@ IMP_LIST_IMPL(QuadContainerSet,
                 obj->set_was_used(true);
               },{},
               if (container
-                  && !container->get_is_added_or_removed_container()) {
+                  && container->get_has_added_and_removed_containers()) {
                 get_set(container->get_removed_container())
                   ->add_quad_container(obj
                        ->get_removed_container());

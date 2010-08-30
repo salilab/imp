@@ -43,7 +43,7 @@ public:
 
 IMP_OBJECTS(HarmonicDistancePairScore, HarmonicDistancePairScores);
 
-
+#ifndef IMP_DOXYGEN
 inline double HarmonicDistancePairScore::evaluate(const ParticlePair &p,
                             DerivativeAccumulator *da) const {
   XYZ d0(p[0]), d1(p[1]);
@@ -66,6 +66,7 @@ inline double HarmonicDistancePairScore::evaluate(const ParticlePair &p,
 
   return score;
 }
+#endif
 
 IMPCORE_END_NAMESPACE
 

@@ -1936,6 +1936,7 @@ protected:                                      \
     - IMP::Interaction::get_input_objects()
 */
 #define IMP_SINGLETON_CONTAINER(Name)                                   \
+  SingletonContainerPair get_added_and_removed_containers() const;      \
   bool get_contains_particle(Particle* p) const;                        \
   unsigned int get_number_of_particles() const;                         \
   Particle *get_particle(unsigned int i) const;                         \
@@ -1951,10 +1952,11 @@ protected:                                      \
     - IMP::PairContainer::evaluate()
     - IMP::Interaction::get_input_objects()
 */
-#define IMP_PAIR_CONTAINER(Name)                                \
-  bool get_contains_particle_pair(const ParticlePair &p) const; \
-  unsigned int get_number_of_particle_pairs() const;            \
-  ParticlePair get_particle_pair(unsigned int i) const;         \
+#define IMP_PAIR_CONTAINER(Name)                                        \
+  PairContainerPair get_added_and_removed_containers() const;           \
+  bool get_contains_particle_pair(const ParticlePair &p) const;         \
+  unsigned int get_number_of_particle_pairs() const;                    \
+  ParticlePair get_particle_pair(unsigned int i) const;                 \
   IMP_IMPLEMENT_CONTAINER(Name, Pair)
 
 
@@ -1969,6 +1971,7 @@ protected:                                      \
     - IMP::Interaction::get_input_objects()
 */
 #define IMP_TRIPLET_CONTAINER(Name)                                     \
+  TripletContainerPair get_added_and_removed_containers() const;        \
   bool get_contains_particle_triplet(const ParticleTriplet &p) const;   \
   unsigned int get_number_of_particle_triplets() const;                 \
   ParticleTriplet get_particle_triplet(unsigned int i) const;           \
@@ -1986,6 +1989,7 @@ protected:                                      \
     - IMP::Interaction::get_input_objects()
 */
 #define IMP_QUAD_CONTAINER(Name)                                \
+  QuadContainerPair get_added_and_removed_containers() const;   \
   bool get_contains_particle_quad(const ParticleQuad &p) const; \
   unsigned int get_number_of_particle_quads() const;            \
   ParticleQuad get_particle_quad(unsigned int i) const;         \

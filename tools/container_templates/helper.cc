@@ -51,5 +51,10 @@ bool ListLikeGroupnameContainer
   return !get_added()->data_.empty() || !get_removed()->data_.empty();
 }
 
+GroupnameContainerPair ListLikeGroupnameContainer
+::get_added_and_removed_containers() const {
+  return GroupnameContainerPair(new ListLikeGroupnameContainer(),
+                                new ListLikeGroupnameContainer());
+}
 
 IMPCORE_END_INTERNAL_NAMESPACE

@@ -51,5 +51,10 @@ bool ListLikeQuadContainer
   return !get_added()->data_.empty() || !get_removed()->data_.empty();
 }
 
+QuadContainerPair ListLikeQuadContainer
+::get_added_and_removed_containers() const {
+  return QuadContainerPair(new ListLikeQuadContainer(),
+                                new ListLikeQuadContainer());
+}
 
 IMPCORE_END_INTERNAL_NAMESPACE

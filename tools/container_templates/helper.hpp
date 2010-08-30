@@ -21,13 +21,15 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 class IMPCOREEXPORT ListLikeGroupnameContainer: public GroupnameContainer {
 private:
-  void set_added_and_removed_containers(GroupnameContainer *,
-                                        GroupnameContainer *){}
   Classnames data_;
 protected:
   ListLikeGroupnameContainer *get_added() const {
-    return dynamic_cast<ListLikeGroupnameContainer*>
-      (get_added_container());
+    if (get_has_added_and_removed_containers()) {
+      return dynamic_cast<ListLikeGroupnameContainer*>
+        (get_added_container());
+    } else {
+      return NULL;
+    }
   }
   ListLikeGroupnameContainer *get_removed() const {
     return dynamic_cast<ListLikeGroupnameContainer*>
@@ -43,7 +45,7 @@ protected:
       }
     }
     std::sort(cur.begin(), cur.end());
-    if (!get_is_added_or_removed_container()) {
+    if (get_added()) {
       ClassnamesTemp added, removed;
       std::set_difference(cur.begin(), cur.end(),
                           data_.begin(), data_.end(),
@@ -65,7 +67,7 @@ protected:
     unsigned int osz= data_.size();
     data_.insert(data_.end(), added.begin(), added.end());
     std::inplace_merge(data_.begin(), data_.begin()+osz, data_.end());
-    if (!get_is_added_or_removed_container()) {
+    if (get_added()) {
       ListLikeGroupnameContainer* ac=get_added();
       ac->data_.insert(ac->data_.end(), added.begin(), added.end());
     }
@@ -77,7 +79,7 @@ protected:
                         cur.begin(), cur.end(),
                         std::back_inserter(newlist));
     swap(data_, newlist);
-    if (!get_is_added_or_removed_container()) {
+    if (get_has_added_and_removed_containers()) {
       ListLikeGroupnameContainer* ac=get_removed();
       ac->data_.insert(ac->data_.end(), cur.begin(), cur.end());
     }
@@ -85,16 +87,13 @@ protected:
   void add_to_list(PassValue cur) {
     data_.insert(std::lower_bound(data_.begin(),
                                   data_.end(), cur), cur);
-    if (!get_is_added_or_removed_container()) {
+    if (get_added()) {
       ListLikeGroupnameContainer* ac=get_added();
       ac->data_.push_back(cur);
     }
   }
   ListLikeGroupnameContainer(Model *m, std::string name):
     GroupnameContainer(m,name){
-    GroupnameContainer::
-      set_added_and_removed_containers( new ListLikeGroupnameContainer(),
-                                        new ListLikeGroupnameContainer());
   }
   template <class F>
     F foreach(F f) const {
@@ -111,8 +110,10 @@ public:
   }
   ObjectsTemp get_input_objects() const;
   void do_after_evaluate() {
-    get_added()->data_.clear();
-    get_removed()->data_.clear();
+    if (get_added()) {
+      get_added()->data_.clear();
+      get_removed()->data_.clear();
+    }
   }
   void do_before_evaluate() {
     std::remove_if(data_.begin(), data_.end(),
