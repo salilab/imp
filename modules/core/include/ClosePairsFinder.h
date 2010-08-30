@@ -27,8 +27,8 @@ typedef std::vector<IntPair> IntPairs;
     of one another (including their radius). They are free to
     return more if it is convenient, but this is not
     recommended as the list can easily become very large.
-    \see ClosePairsScoreState
-    \see CloseBipartitlePairsScoreState
+    \see ClosePairContainer
+    \see CloseBipartitePairContainer
  */
 class IMPCOREEXPORT ClosePairsFinder : public Object
 {
