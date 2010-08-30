@@ -112,6 +112,18 @@ Constraint *create_constraint(Container *c, Before *b, After *a,
 }
 
 
+
+/** A templated version of InContainerPairFilter.
+ */
+template <class Container>
+class GenericInContainerPairFilter: public PairFilter {
+  Pointer<Container> c_;
+public:
+  GenericInContainerPairFilter( Container* c): c_(c){}
+  IMP_PAIR_FILTER(GenericInContainerPairFilter);
+};
+
+
 IMPCONTAINER_END_NAMESPACE
 
 
