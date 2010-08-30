@@ -20,14 +20,14 @@ class PDBReadWriteTest(IMP.test.TestCase):
     def test_bad_read(self):
         """Check that read_pdb behaves OK on invalid files"""
         m= IMP.Model()
-        self.assertRaises(IOError,
+        self.assertRaises(IMP.IOException,
                           IMP.atom.read_pdb,
                           self.get_input_file_name("notafile.pdb"),
                           m)
         # we don't actually check if a file is a pdb or not
         # and can't conclude it is not due to not reading any atoms
         # as the selector may filter them all.
-        self.assertRaises(Error,
+        self.assertRaises(IMP.ValueException,
                           IMP.atom.read_pdb,
                           self.open_input_file("notapdb.pdb"),
                           m)
