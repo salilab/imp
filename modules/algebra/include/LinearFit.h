@@ -49,6 +49,9 @@ public:
   double error_;
 };
 
+IMP_OUTPUT_OPERATOR(LinearFit);
+IMP_VALUES(LinearFit, LinearFits);
+
 IMPALGEBRA_END_NAMESPACE
 
 #endif /* IMPALGEBRA_LINEAR_FIT_H */
