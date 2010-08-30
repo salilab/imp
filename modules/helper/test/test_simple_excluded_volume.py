@@ -6,16 +6,15 @@ import IMP.atom
 import IMP.helper
 import math
 
-class SimpleExclusionVolumeTests(IMP.test.TestCase):
-    """Tests for simple exclusion volume"""
-    def test_ev(self):
-        """Testing excluded volume restraint"""
+class SimpleExcludedVolumeTests(IMP.test.TestCase):
+    """Tests for simple excluded volume"""
+
+    def setup_system(self):
         m= IMP.Model()
-        print "read"
+        # Read in two chains
         sel = IMP.atom.CAlphaPDBSelector()
         p0= IMP.atom.read_pdb(self.get_input_file_name("input.pdb"), m, sel)
         p1= IMP.atom.read_pdb(self.get_input_file_name("input.pdb"), m, sel)
-        print 'create'
         mhs = IMP.atom.Hierarchies()
         mhs.append(p0)
         mhs.append(p1)
@@ -24,64 +23,54 @@ class SimpleExclusionVolumeTests(IMP.test.TestCase):
             ps.append(mh.get_particle())
 
         rbs = IMP.helper.set_rigid_bodies(mhs)
-
-        print "radius"
+        # Set radius of each atom for excluded volume
         for p in IMP.core.get_leaves(p0)+IMP.core.get_leaves(p1):
             d= IMP.core.XYZR.setup_particle(p.get_particle())
             d.set_radius(1)
-        print "add ss"
-        sc= IMP.container.ListSingletonContainer(m)
-        fps=IMP.core.XYZRs()
-        for i in range(0,10):
-            p= IMP.Particle(m)
-            d= IMP.core.XYZR.setup_particle(p)
-            d.set_radius(10)
-            sc.add_particle(p)
-            fps.append(d)
-            d.set_coordinates_are_optimized(True)
+
+        # Randomize the position of each chain
         for p in ps:
             d= IMP.core.XYZ(p)
             d.set_coordinates(IMP.algebra.get_random_vector_in(
                     IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
                                               IMP.algebra.Vector3D(20,20,20))))
+        return m, mhs, rbs
 
-        sev = IMP.helper.create_simple_excluded_volume_on_rigid_bodies(rbs)
-        test = IMP.helper.create_simple_excluded_volume_on_molecules(mhs)
-
-        r = sev.get_restraint()
-        r_test = test.get_restraint()
+    def optimize_system(self, m, mhs, simple_exvol):
+        r = simple_exvol.get_restraint()
 
         m.add_restraint(r)
-        m.add_restraint(r_test)
 
         # Make sure that refcounting is working correctly
         # refs from Python, the SimpleExcludedVolume object, and the Model
         self.assertEqual(r.get_ref_count(), 3)
 
-        r.set_log_level(IMP.SILENT)
-
-        print "mc"
-        o= IMP.core.MonteCarlo()
-
-        # very dumb op
-        sc.add_particles(ps)
-        bm= IMP.core.BallMover(sc, IMP.core.XYZ.get_xyz_keys(), 100)
-        o.add_mover(bm)
-        o.set_model(m)
-        IMP.set_log_level(IMP.VERBOSE)
-        print "opt"
+        o= IMP.core.ConjugateGradients(m)
         o.optimize(100)
-        print "inspect"
-        pas = fps+ IMP.core.XYZRs(IMP.core.get_leaves(p1))
-        pbs = fps+ IMP.core.XYZRs(IMP.core.get_leaves(p0))
-        for pa in pas:
-            for pb in pbs:
-                if pa == pb: continue
-                else:
-                    #print pa
-                    #print pb
-                    d= IMP.core.get_distance(pa, pb)
-                    self.assert_(d > -.1)
+
+        # Make sure that the excluded volume restraint separated the two chains
+        sas = IMP.core.XYZRs(IMP.core.get_leaves(mhs[1]))
+        sbs = IMP.core.XYZRs(IMP.core.get_leaves(mhs[0]))
+        for sa in sas:
+            for sb in sbs:
+                if sa != sb:
+                    d = IMP.core.get_distance(sa, sb)
+                    self.assert_(d > -.1,
+                                 "Excluded volume did not separate spheres "
+                                 "%s and %s (surface-surface distance = %f)" \
+                                 % (sa, sb, d))
+
+    def test_ev_on_molecules(self):
+        """Test excluded volume restraint on molecules"""
+        m, mhs, rbs = self.setup_system()
+        self.optimize_system(m, mhs,
+                IMP.helper.create_simple_excluded_volume_on_molecules(mhs))
+
+    def test_ev_on_rigid_bodies(self):
+        """Test excluded volume restraint on rigid bodies"""
+        m, mhs, rbs = self.setup_system()
+        self.optimize_system(m, mhs,
+                IMP.helper.create_simple_excluded_volume_on_rigid_bodies(rbs))
 
 if __name__ == '__main__':
     unittest.main()
