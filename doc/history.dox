@@ -1,6 +1,9 @@
 /** \page recent Change History
 
 \par Summer 2010
+- Javi added his 2D EM scoring functionality as IMP::em2D
+- some new ways to speed up scons have been added. See IMP::core::HarmonicDistancePairScore, IMP::core::SoftSpherePairScore and, for C++ users, the generic restraint support IMP::container::create_restraint() and IMP::core::create_restraint(). These each offer between 2x and 1.2x speedup when using simple scores (like harmonics on distances). In addition, a function IMP::container::get_slack_estimate() has been added which will estimate the correct slack to use with a IMP::container::ClosePairContainer. This will be extended to support IMP::core::ExcludedVolumeRestraint eventually.
+- support for dense and sparse grids have been added to IMP::algebra. See the IMP::algebra module page (I'm still working on how to make the docs clearer).
 - all write functions now have associated IMP::OptimizerState and IMP::FailureHandler classes. For examples, see IMP::WriteOptimizerState, IMP::WriteBinaryOptimizerState, IMP::WriteFailureHandler, IMP::atom::WritePDBOptimizerState etc.
 - functions IMP::write_binary_model(), IMP::read_binary_model() and IMP::read_configurations() have been added to support space and filesystem efficient storage of model configurations. Multiple configuration can be written to a single file. This functionality requires NetCDF be installed (NetCDF is a standard library for reading and writing binary data).
 - domino2 has been added. It provides a simpler interface on Keren's domino optimize as well as a number of new optimization and hooks for customizing the optimization process
