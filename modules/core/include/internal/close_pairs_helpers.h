@@ -27,29 +27,14 @@ struct IsInactive {
 inline CoreListPairContainer *get_list(PairContainer *pc) {
   return dynamic_cast<CoreListPairContainer *>(pc);
 }
-template <class C>
-class Found {
-  typedef typename C::PairFilterIterator It;
-  It b_,e_;
-public:
-  Found(It b,
-        It e):
-    b_(b), e_(e){}
-  bool operator()(ParticlePair vt) const {
-    if (vt[0]==vt[1]) return true;
-    for (It c=b_; c != e_; ++c) {
-      if ((*c)->get_contains_particle_pair(vt)) return true;
-    }
-    return false;
-  }
-};
+
 
 template <class C>
 void filter_close_pairs(C *c, ParticlePairsTemp &ps) {
-  ps.erase(std::remove_if(ps.begin(), ps.end(),
-                          Found<C>(c->pair_filters_begin(),
-                                   c->pair_filters_end())),
-           ps.end());
+  for (typename C::PairFilterIterator it=c->pair_filters_begin();
+       it != c->pair_filters_end(); ++it) {
+    (*it)->filter_in_place(ps);
+  }
 }
 
 
