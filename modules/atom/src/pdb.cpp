@@ -200,8 +200,11 @@ namespace {
 
   std::string line;
   while (!in.eof()) {
-    if (!getline(in, line)) break;
-
+    getline(in, line);
+    if (in.eof()) break;
+    if (in.bad() || in.fail()) {
+      IMP_THROW("Error reading from PDB file", IOException);
+    }
     // handle MODEL reading
     if (internal::is_MODEL_rec(line)) {
       if(first_model_read && select_first_model) break;
