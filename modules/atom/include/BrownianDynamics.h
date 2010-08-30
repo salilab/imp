@@ -113,6 +113,10 @@ private:
   double maximum_score_;
 };
 
+
+IMPATOMEXPORT double get_maximum_time_step_estimate(BrownianDynamics *bd,
+                                                    SimulationParameters sp);
+
 IMPATOM_END_NAMESPACE
 
 #endif  /* IMPATOM_BROWNIAN_DYNAMICS_H */
