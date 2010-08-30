@@ -91,7 +91,7 @@ To set this up
   -# make a directory for your debug build
     \command{mkdir imp-debug}
   -# setup the debug directory
-    \command{src/tools/setup-out-of-source-build imp-debug}
+    \command{src/tools/setup-out-of-source imp-debug}
   -# edit \c imp-debug/config.py as desired
   -# change into \c imp-debug
     \command{cd imp-debug}
