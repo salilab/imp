@@ -20,10 +20,17 @@ BondPairContainer
 
 BondPairContainer
 ::BondPairContainer(SingletonContainer *sc): sc_(sc){
-  set_added_and_removed_containers(
-       create_untracked_container(sc_->get_removed_container()),
-       create_untracked_container(sc_->get_added_container()));
 }
+
+
+PairContainerPair
+BondPairContainer::get_added_and_removed_containers() const {
+    return PairContainerPair(create_untracked_container(sc_
+                                       ->get_removed_container()),
+                             create_untracked_container(sc_
+                                       ->get_added_container()));
+}
+
 
 bool BondPairContainer
 ::get_contains_particle_pair(const ParticlePair& pp) const {
