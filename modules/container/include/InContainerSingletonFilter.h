@@ -33,6 +33,11 @@ public:
   IMP_SINGLETON_FILTER(InContainerSingletonFilter);
 };
 
+inline bool InContainerSingletonFilter
+::get_contains_particle(Particle* p) const {
+  return c_->get_contains_particle(p);
+}
+
 IMP_OBJECTS(InContainerSingletonFilter, InContainerSingletonFilters);
 
 IMPCONTAINER_END_NAMESPACE

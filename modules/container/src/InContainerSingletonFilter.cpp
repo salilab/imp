@@ -17,11 +17,6 @@ InContainerSingletonFilter
 ::InContainerSingletonFilter(SingletonContainer *c,
                              std::string name): SingletonFilter(name), c_(c){}
 
-bool InContainerSingletonFilter
-::get_contains_particle(Particle* p) const {
-  return c_->get_contains_particle(p);
-}
-
 ParticlesTemp InContainerSingletonFilter
 ::get_input_particles(Particle*) const {
   // not quite right, but...

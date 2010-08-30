@@ -33,6 +33,11 @@ public:
   IMP_QUAD_FILTER(InContainerQuadFilter);
 };
 
+inline bool InContainerQuadFilter
+::get_contains_particle_quad(const ParticleQuad& p) const {
+  return c_->get_contains_particle_quad(p);
+}
+
 IMP_OBJECTS(InContainerQuadFilter, InContainerQuadFilters);
 
 IMPCONTAINER_END_NAMESPACE

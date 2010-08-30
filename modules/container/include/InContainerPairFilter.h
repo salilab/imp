@@ -33,6 +33,11 @@ public:
   IMP_PAIR_FILTER(InContainerPairFilter);
 };
 
+inline bool InContainerPairFilter
+::get_contains_particle_pair(const ParticlePair& p) const {
+  return c_->get_contains_particle_pair(p);
+}
+
 IMP_OBJECTS(InContainerPairFilter, InContainerPairFilters);
 
 IMPCONTAINER_END_NAMESPACE

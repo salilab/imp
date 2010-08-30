@@ -33,6 +33,11 @@ public:
   IMP_TRIPLET_FILTER(InContainerTripletFilter);
 };
 
+inline bool InContainerTripletFilter
+::get_contains_particle_triplet(const ParticleTriplet& p) const {
+  return c_->get_contains_particle_triplet(p);
+}
+
 IMP_OBJECTS(InContainerTripletFilter, InContainerTripletFilters);
 
 IMPCONTAINER_END_NAMESPACE
