@@ -14,19 +14,6 @@ BondedPairFilter
 ::BondedPairFilter(){
 }
 
-bool BondedPairFilter
-::get_contains_particle_pair(const ParticlePair& pp) const {
-  if (!Bonded::particle_is_instance(pp[0])
-      || ! Bonded::particle_is_instance(pp[1])) {
-    return false;
-  }
-
-  Bonded ba(pp[0]);
-  Bonded bb(pp[1]);
-  Bond bd=get_bond(ba, bb);
-  return bd != Bond();
-}
-
 ParticlesTemp BondedPairFilter
 ::get_input_particles(const ParticlePair& t) const {
   ParticlesTemp ret;

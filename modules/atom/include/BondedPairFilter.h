@@ -29,6 +29,18 @@ public:
   IMP_PAIR_FILTER(BondedPairFilter);
 };
 
+inline bool BondedPairFilter
+::get_contains_particle_pair(const ParticlePair& pp) const {
+  if (!Bonded::particle_is_instance(pp[0])
+      || ! Bonded::particle_is_instance(pp[1])) {
+    return false;
+  }
+  Bonded ba(pp[0]);
+  Bonded bb(pp[1]);
+  Bond bd=get_bond(ba, bb);
+  return bd != Bond();
+}
+
 IMP_OBJECTS(BondedPairFilter,BondedPairFilters);
 
 IMPATOM_END_NAMESPACE
