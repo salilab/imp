@@ -17,6 +17,8 @@
 #include <boost/random/normal_distribution.hpp>
 #include <IMP/container/ListSingletonContainer.h>
 #include <IMP/atom/Diffusion.h>
+#include <IMP/Configuration.h>
+#include <IMP/algebra/LinearFit.h>
 
 #include <IMP/core/ConjugateGradients.h>
 
@@ -371,4 +373,66 @@ unit::KilocaloriePerAngstromPerMol BrownianDynamics
 }
 
 */
+
+namespace {
+  template <class It>
+  bool is_constant(It b, It e) {
+    // smooth some
+    for (It c= b+1 ; c<e-1; ++c) {
+      *c= 1/3.0*(*(c-1)+*(c)+*(c+1));
+    }
+    std::copy(b,e, std::ostream_iterator<double>(std::cout, " "));
+    std::cout << std::endl;
+    algebra::Vector2Ds pts;
+    for (It c= b; c< e; ++c) {
+      pts.push_back(algebra::Vector2D(std::distance(b,c),
+                                      *c));
+    }
+    algebra::LinearFit lf(pts);
+    if (lf.get_a() < std::sqrt(lf.get_fit_error())/square(std::distance(b,e))
+        +.01*lf.get_b()) {
+      return true;
+    } else {
+      std::cout << "Rejecting " << lf << std::endl;
+      return false;
+    }
+  }
+
+  bool is_ok_step(BrownianDynamics *bd, Configuration *c, double step,
+                  SimulationParameters sp) {
+    sp.set_maximum_time_step(step);
+    c->load_configuration();
+    std::cout << "Trying step " << step << std::endl;
+    std::vector<double> es;
+    unsigned int ns=100;
+    for (unsigned int i=0; i< ns; ++i) {
+      es.push_back(bd->optimize(1));
+    }
+    return is_constant(es.begin(), es.end());
+  }
+};
+
+
+IMPATOMEXPORT double get_maximum_time_step_estimate(BrownianDynamics *bd,
+                                                    SimulationParameters sp){
+  IMP_NEW(Configuration, c, (bd->get_model()));
+  double ots= sp.get_maximum_time_step();
+  double lb=10;
+  while (is_ok_step(bd, c, lb, sp)) {
+    lb*=2;
+  }
+  double ub=lb*2;
+  for (unsigned int i=0; i < 5; ++i) {
+    double cur= (ub+lb)*.5;
+    if (is_ok_step(bd, c, cur, sp)) {
+      lb=cur;
+    } else {
+      ub=cur;
+    }
+  }
+  sp.set_maximum_time_step(ots);
+  c->load_configuration();
+  return lb;
+}
+
 IMPATOM_END_NAMESPACE
