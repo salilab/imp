@@ -51,6 +51,7 @@ public:
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   virtual void filter_in_place(ParticleTripletsTemp& ps) const {
+    IMP_FAILURE("filter_in_place not overloaded properly.");
   }
 #endif
 
