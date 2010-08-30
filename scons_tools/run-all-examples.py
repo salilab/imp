@@ -3,6 +3,17 @@ import time
 import os
 import traceback
 
+def format_exc(limit=None):
+    # Note that the traceback module in Python 2.3 does not have the format_exc
+    # function. We thus provide our own (ported from Python 2.6) so that the
+    # build functions correctly on Python 2.3.
+    try:
+        etype, value, tb = sys.exc_info()
+        return ''.join(traceback.format_exception(etype, value, tb, limit))
+    finally:
+        etype = value = tb = None
+
+
 def main(files):
     starttime = time.time()
     errs = []
@@ -33,7 +44,7 @@ def run_example(f, errs):
     example_name = "example %s" % os.path.basename(f)
     def handle_error(e, errs):
         sys.stderr.write("ERROR\n")
-        errs.append((example_name, e, traceback.format_exc()))
+        errs.append((example_name, e, format_exc()))
     sys.stderr.write("Running %s ... " % example_name)
     try:
         exec open(f) in {}
