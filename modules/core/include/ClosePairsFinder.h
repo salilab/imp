@@ -44,7 +44,7 @@ class IMPCOREEXPORT ClosePairsFinder : public Object
   ~ClosePairsFinder();
 
   /** \name Methods to find close pairs
-      The methods add apprioriately close pairs of particles from the
+      The methods add appropriately close pairs of particles from the
       input list (or lists, for the bipartite version) to the out
       list. The ones that take bounding boxes return pairs of ints
       indexing the input list(s).
