@@ -9,7 +9,7 @@
 #include <algorithm>
 
 using namespace IMP::algebra;
-typedef Grid3D<int> Grid;
+typedef DenseGrid3D<int> Grid;
 
 bool intersects(BoundingBox3D a, BoundingBox3D b) {
   VectorD<3> mn(std::max(a.get_corner(0)[0], b.get_corner(0)[0]),

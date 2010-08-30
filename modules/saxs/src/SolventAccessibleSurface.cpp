@@ -24,12 +24,11 @@ IMP::Floats SolventAccessibleSurface::get_solvent_accessibility(
   }
 
   // init grid
-  typedef IMP::algebra::Grid3D<IMP::Ints,
-    IMP::algebra::DenseGridStorage3D<IMP::Ints> > Grid;
+  typedef IMP::algebra::DenseGrid3D<IMP::Ints> Grid;
   IMP::algebra::BoundingBox3D bb(coordinates);
   Grid grid(2.0, bb);
   for(unsigned int i=0; i<coordinates.size(); i++) {
-    algebra::GridIndex3D grid_index = grid.get_index(coordinates[i]);
+    Grid::Index grid_index = grid.get_index(coordinates[i]);
     grid[grid_index].push_back(i);
   }
 
@@ -41,7 +40,7 @@ IMP::Floats SolventAccessibleSurface::get_solvent_accessibility(
     // query
     IMP::algebra::BoundingBox3D bb(coordinates[i]);
     bb+=radius;
-    algebra::ExtendedGridIndex3D lb = grid.get_extended_index(bb.get_corner(0)),
+    Grid::ExtendedIndex lb = grid.get_extended_index(bb.get_corner(0)),
       ub = grid.get_extended_index(bb.get_corner(1));
     std::vector<int> neighbours1, neighbours2;
     for (Grid::IndexIterator it= grid.indexes_begin(lb, ub);

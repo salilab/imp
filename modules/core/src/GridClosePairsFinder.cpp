@@ -170,9 +170,7 @@ namespace {
   struct Helper {
     typedef typename IDF::result_type ID;
     typedef std::vector<ID> IDs;
-    typedef typename algebra::Grid3D<IDs,
-                            typename algebra::SparseGridStorage3D<IDs,
-                             typename algebra::BoundedGridStorage3D> > Grid;
+    typedef typename algebra::SparseGrid3D<IDs> Grid;
     typedef std::vector<Grid> Grids;
 
     template <class It>
@@ -217,11 +215,11 @@ namespace {
     static void fill_copies_periodic(const Grid &g,
                                      Index cur,
                                      unsigned int merged,
-                                     typename algebra::ExtendedGridIndex3D bblb,
-                                     typename algebra::ExtendedGridIndex3D bbub,
+                                     typename Grid::ExtendedIndex bblb,
+                                     typename Grid::ExtendedIndex bbub,
                                      bool half,
-                             std::vector<typename algebra::GridIndex3D> &out) {
-      typename algebra::ExtendedGridIndex3D curei(cur[0], cur[1], cur[2]);
+                             std::vector<typename Grid::Index> &out) {
+      typename Grid::ExtendedIndex curei(cur[0], cur[1], cur[2]);
       for (int io=-1; io < 2; ++io) {
         if ((!(merged &GridClosePairsFinder::X)) && io != 0) continue;
         int ii=cur[0]+io*(bbub[0]-bblb[0]);
@@ -237,7 +235,7 @@ namespace {
             int ik=cur[2]+ko*(bbub[2]-bblb[2]);
             if (ik < 0
                 || ik >= static_cast<int>(g.get_number_of_voxels(2))) continue;
-            typename algebra::ExtendedGridIndex3D cei(ii, ij, ik);
+            typename Grid::ExtendedIndex cei(ii, ij, ik);
             if (!g.get_has_index(cei)) continue;
             // make sure equivalent voxels are only added once
             if ((half && cei < curei) || (!half && curei != cei)) {
@@ -248,21 +246,21 @@ namespace {
       }
     }
 
-    static std::vector<typename algebra::GridIndex3D> get_nearby(const Grid &g,
-                            typename algebra::ExtendedGridIndex3D center,
-                            typename algebra::ExtendedGridIndex3D bblb,
-                            typename algebra::ExtendedGridIndex3D bbub,
+    static std::vector<typename Grid::Index> get_nearby(const Grid &g,
+                            typename Grid::ExtendedIndex center,
+                            typename Grid::ExtendedIndex bblb,
+                            typename Grid::ExtendedIndex bbub,
                             unsigned int merged,
                             bool half) {
-      std::vector<typename algebra::GridIndex3D> out;
-      typename algebra::ExtendedGridIndex3D lb(center.get_offset(-1, -1, -1)),
+      std::vector<typename Grid::Index> out;
+      typename Grid::ExtendedIndex lb(center.get_offset(-1, -1, -1)),
         ub(center.get_offset(1, 1, 1));
       if (half) {
         IMP_GRID3D_FOREACH_SMALLER_EXTENDED_INDEX_RANGE(g, center, lb, ub,
                                                {
                            fill_copies_periodic(g, voxel_index,
                                                 merged, bblb, bbub, true, out);
-                        typename algebra::ExtendedGridIndex3D ei(voxel_index[0],
+                        typename Grid::ExtendedIndex ei(voxel_index[0],
                                                            voxel_index[1],
                                                            voxel_index[2]);
                                                  if (g.get_has_index(ei)) {
@@ -289,16 +287,16 @@ namespace {
 
 
 
-    static std::vector<typename algebra::GridIndex3D> get_nearby(const Grid &g,
-                                  typename algebra::ExtendedGridIndex3D center,
+    static std::vector<typename Grid::Index> get_nearby(const Grid &g,
+                                  typename Grid::ExtendedIndex center,
                                                         double half) {
-      std::vector<typename algebra::GridIndex3D> out;
-      typename algebra::ExtendedGridIndex3D lb(center.get_offset(-1, -1, -1)),
+      std::vector<typename Grid::Index> out;
+      typename Grid::ExtendedIndex lb(center.get_offset(-1, -1, -1)),
         ub(center.get_offset(1, 1, 1));
       if (half) {
         IMP_GRID3D_FOREACH_SMALLER_EXTENDED_INDEX_RANGE(g, center, lb, ub,
                                                {
-                                         typename algebra::ExtendedGridIndex3D
+                                         typename Grid::ExtendedIndex
                                                    ei(voxel_index[0],
                                                       voxel_index[1],
                                                       voxel_index[2]);
@@ -382,7 +380,7 @@ namespace {
                             Grid &g) {
       for (typename IDs::const_iterator c= ids.begin(); c != ids.end(); ++c) {
         algebra::Vector3D v= cf(*c);
-        typename algebra::ExtendedGridIndex3D ind
+        typename Grid::ExtendedIndex ind
           =g.get_nearest_extended_index(v);
         if (g.get_has_index(ind)) {
           g[g.get_index(ind)].push_back(*c);
@@ -452,10 +450,10 @@ namespace {
 
 
     static void do_fill_close_pairs(const Grid &gg,
-                                    typename algebra::GridIndex3D index,
+                                    typename Grid::Index index,
                                     const IDs &qps,
                                     bool half, CloseF close, Out& out) {
-      const std::vector<typename algebra::GridIndex3D> ids
+      const std::vector<typename Grid::Index> ids
         = get_nearby(gg, gg.get_extended_index(index), half);
       for (unsigned int i=0; i< ids.size(); ++i) {
         IMP_LOG(VERBOSE, "Checking pair " << ids[i] << " " << index
@@ -475,17 +473,17 @@ namespace {
     }
 
     static void do_fill_close_pairs(const Grid &gg,
-                                    typename algebra::GridIndex3D index,
+                                    typename Grid::Index index,
                                     const IDs &qps,
                                     const algebra::BoundingBox3D &bb,
                                     unsigned int merged,
                                     bool half, CloseF close,
                                     Out& out) {
-      typename algebra::ExtendedGridIndex3D bblb
+      typename Grid::ExtendedIndex bblb
         = gg.get_extended_index(bb.get_corner(0));
-      typename algebra::ExtendedGridIndex3D bbub
+      typename Grid::ExtendedIndex bbub
         = gg.get_extended_index(bb.get_corner(1));
-      const std::vector<typename algebra::GridIndex3D> ids
+      const std::vector<typename Grid::Index> ids
         = get_nearby(gg, gg.get_extended_index(index),
                      bblb, bbub, merged, half);
       for (unsigned int i=0; i< ids.size(); ++i) {

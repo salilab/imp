@@ -23,13 +23,7 @@
 #endif
 
 #include <limits>
-
-IMPALGEBRA_BEGIN_NAMESPACE
-
-
-
-/** \name Axis aligned grids
-    \anchor grids
+/** \namespace IMP::algebra::grids
 
     \imp provides support for a variety of spatial grids. The grid support in
     C++ is implemented by combining several different layers to specify
@@ -48,14 +42,31 @@ IMPALGEBRA_BEGIN_NAMESPACE
     These are implemented as mix-ins, so each layer provides a set of accessible
     functionality as methods/types in the final class.
 
-    In python, you have to make do with a few, predefined choices.
-    They currently are:
-    - FloatGrid3D: floats stored in a finite dense grid
-    - SparseIntGrid3D: integers stored in a finite sparse grid
-    - UnboundedSparseIntGrid3D: integers store in an infinite sparse grid
-    @{
+   The VT is stored in each grid cell.
+
+   \par Basic operations
+   Creating a grid with a given cell size and upper and lower
+   bounds
+   \code
+   BoundinBox3D bb(VectorD<3>(10,10,10), VectorD<3>(100,100,100));
+   typdef Grid3D<Ints> Grid;
+   Grid grid(5, bb, 0.0);
+   \endcode
+
+   Iterate over the set of voxels incident on a bounding box:
+   \code
+   BoundingBoxD<3> bb(VectorD<3>(20.2,20.3,20.5), VectorD<3>(31.3,32.5,38.9));
+   for (Grid::IndexIterator it= grid.voxels_begin(bb);
+        it != grid.voxels_end(bb); ++it) {
+        it->push_back(1);
+   }
+   \endcode
  */
 
+IMPALGEBRA_BEGIN_NAMESPACE
+
+
+namespace grids {
 
 //! An index in an infinite grid on space
 /* The index entries can be positive or negative and do not need to correspond
@@ -198,6 +209,8 @@ IMP_OUTPUT_OPERATOR(GridIndex3D);
 class BoundedGridStorage3D {
   int d_[3];
 public:
+  typedef GridIndex3D Index;
+  typedef ExtendedGridIndex3D ExtendedIndex;
 #ifndef IMP_DOXYGEN
   static bool get_is_bounded() {
     return true;
@@ -369,6 +382,8 @@ public:
  */
 class UnboundedGridStorage3D {
 public:
+  typedef GridIndex3D Index;
+  typedef ExtendedGridIndex3D ExtendedIndex;
   UnboundedGridStorage3D(){}
 #ifndef IMP_DOXYGEN
   // for swig
@@ -581,7 +596,7 @@ public:
   }
   IMP_SHOWABLE_INLINE(SparseGridStorage3D, out << "Sparse grid with "
                       << data_.size() << " cells set");
-
+  //! Add a voxel to the storage, this voxel will now have a GridIndex3D
   void add_voxel(const ExtendedGridIndex3D& i, const VT& gi) {
     IMP_USAGE_CHECK(Base::get_has_index(i), "Out of grid domain "
                     << i);
@@ -594,9 +609,11 @@ public:
     return false;
   }
 #endif
+  //! Return true if the voxel has been added
   bool get_has_index(const ExtendedGridIndex3D&i) const {
     return data_.find(GridIndex3D(i[0], i[1], i[2])) != data_.end();
   }
+  //! requires get_has_index(i) is true.
   GridIndex3D get_index(const ExtendedGridIndex3D &i) const {
     IMP_USAGE_CHECK(get_has_index(i), "Index is not a valid "
                     << "voxel " << i);
@@ -700,27 +717,7 @@ public:
 
 
 //! A voxel grid in 3D space.
-/** The VT is stored in each grid cell.
-
-   \par Basic operations
-   Creating a grid with a given cell size and upper and lower
-   bounds
-   \code
-   BoundinBox3D bb(VectorD<3>(10,10,10), VectorD<3>(100,100,100));
-   typdef Grid3D<Ints> Grid;
-   Grid grid(5, bb, 0.0);
-   \endcode
-
-   Iterate over the set of voxels in incident on a bounding box:
-   \code
-   BoundingBoxD<3> bb(VectorD<3>(20.2,20.3,20.5), VectorD<3>(31.3,32.5,38.9));
-   for (Grid::IndexIterator it= grid.voxels_begin(bb);
-        it != grid.voxels_end(bb); ++it) {
-        it->push_back(1);
-   }
-   \endcode
-
-   See \ref grids "Grids" for more information.
+/** See \ref grids "Grids" for more information.
 
    \see DenseGridStorage3D
    \see SparseGridStorage3D
@@ -832,12 +829,14 @@ public:
   //! An empty grid.
   Grid3D(): Storage(VT()){
   }
-
   const Vector3D get_origin() const {
     return origin_;
   }
 
   BoundingBoxD<3> get_bounding_box() const {
+    IMP_USAGE_CHECK(Storage::get_is_bounded(),
+                    "Get_bounding_box() with no arguments only works on "
+                    << "bounded grids.");
     return BoundingBoxD<3>(origin_,
                     Vector3D(unit_cell_[0]*Storage::get_number_of_voxels(0),
                              unit_cell_[1]*Storage::get_number_of_voxels(1),
@@ -845,7 +844,8 @@ public:
   }
 
   //! Change the bounding box but not the grid or contents
-  /** The origin is set to corner 0 of the new bounding box.
+  /** The origin is set to corner 0 of the new bounding box and the grid
+      voxels are resized as needed.
    */
   void set_bounding_box(const BoundingBoxD<3> &bb3) {
     VectorD<3> nuc;
@@ -858,14 +858,24 @@ public:
     origin_= bb3.get_corner(0);
   }
 
-  //! Return the unit cell, relative to the origin
+  //! Return the unit cell, relative to the origin.
+  /** That is, the unit cell is
+      \code
+      BoundingBox3D(Vector3D(0,0,0),get_unit_cell());
+      \endcode
+  */
   const VectorD<3>& get_unit_cell() const {
     return unit_cell_;
   }
-
+  /* \name Indexing
+     The vector must fall in a valid voxel to get and must be within
+     the volume of the grid to set.
+     @{
+  */
   IMP_BRACKET(VT, VectorD<3>,
               Storage::get_has_index(get_extended_index(i)),
               Storage::operator[](get_index(i)));
+  /** @} */
 
 #ifdef SWIG
   const VT& __getitem__(const GridIndex3D &i) const;
@@ -882,20 +892,24 @@ public:
     return inverse_unit_cell_;
   }
 #endif
-
+  /** Return true if the point falls in a valid grid cell.*/
   bool get_has_index(const VectorD<3>& pt) const {
     ExtendedGridIndex3D ei= get_extended_index(pt);
     return Storage::get_has_index(ei);
   }
   //! Return the index of the voxel containing the point.
+  /** get_has_index() must be true.
+   */
   GridIndex3D get_index(const VectorD<3>& pt) const {
     ExtendedGridIndex3D ei= get_extended_index(pt);
     return Storage::get_index(ei);
   }
-  //! Get the nearest index.
-  /** If the point is in the grid, this is the index, otherwise
-      it is the closest one. This can only be used
-      with dense, bounded grids, right now.
+  /** \name Get nearest
+      If the point is in the bounding box of the grid, this is the index
+      of the voxel containing the point,
+      otherwise it is the closest one in the bounding box. This can only be
+      used with bounded grids, right now.
+      @{
    */
   GridIndex3D get_nearest_index(const VectorD<3>& pt) const {
     IMP_USAGE_CHECK(Storage::get_is_dense(), "get_nearest_index "
@@ -903,11 +917,6 @@ public:
     ExtendedGridIndex3D ei= get_nearest_extended_index(pt);
     return get_index(ei);
   }
-  //! Get the nearest extended index in the volume.
-  /** If the point is in the grid, this is the index, otherwise
-      it is the closest one. This can only be used
-      with bounded grids, right now.
-   */
   ExtendedGridIndex3D get_nearest_extended_index(const VectorD<3>& pt) const {
     IMP_USAGE_CHECK(Storage::get_is_bounded(), "get_nearest_index "
                     << "only works on bounded grids.");
@@ -919,7 +928,8 @@ public:
     }
     return ExtendedGridIndex3D(is[0], is[1], is[2]);
   }
-  // ! Can only be used on sparse grids
+  /** @} */
+  // ! Add a voxel to a sparse grid.
   void add_voxel(const VectorD<3>& pt, const VT &vt) {
     IMP_USAGE_CHECK(!Storage::get_is_dense(),
                     "add_voxel() only works on sparse grids.");
@@ -939,7 +949,8 @@ public:
 
   //! Return the index that would contain the voxel if the grid extended there
   /** For example vectors below the "lower left" corner of the grid have
-      indexes with all negative components.
+      indexes with all negative components. This operation will always
+      succeed.
   */
   ExtendedGridIndex3D get_extended_index(const VectorD<3>& pt) const {
     int index[3];
@@ -950,12 +961,16 @@ public:
     }
     return ExtendedGridIndex3D(index[0], index[1], index[2]);
   }
-
+  //! Convert an index back to an extended index
   ExtendedGridIndex3D get_extended_index(const GridIndex3D &index) const {
     return ExtendedGridIndex3D(index[0], index[1], index[2]);
   }
 
 
+  /** \name Bounding box
+      Return the bounding box of the voxel.
+      @{
+  */
  BoundingBoxD<3> get_bounding_box(const GridIndex3D& v) const {
     VectorD<3> l=origin_+ VectorD<3>(get_unit_cell()[0]*v[0],
                                      get_unit_cell()[1]*v[1],
@@ -965,7 +980,6 @@ public:
                                      get_unit_cell()[2]*(v[2]+1));
     return BoundingBoxD<3>(l,u);
   }
-
   BoundingBoxD<3> get_bounding_box(const ExtendedGridIndex3D& v) const {
     VectorD<3> l=origin_+ VectorD<3>(get_unit_cell()[0]*v[0],
                                      get_unit_cell()[1]*v[1],
@@ -975,21 +989,25 @@ public:
                                      get_unit_cell()[2]*(v[2]+1));
     return BoundingBoxD<3>(l,u);
   }
+  /** @} */
 
-  //! Return the coordinates of the center of the voxel
+  /** \name Center
+      Return the coordinates of the center of the voxel.
+      @{
+  */
   VectorD<3> get_center(const ExtendedGridIndex3D& gi) const {
     return VectorD<3>(unit_cell_[0]*(.5+ gi[0]),
                       unit_cell_[1]*(.5+ gi[1]),
                       unit_cell_[2]*(.5+ gi[2]))
       + origin_;
   }
-
   VectorD<3> get_center(const GridIndex3D& gi) const {
     return VectorD<3>(unit_cell_[0]*(.5+ gi[0]),
                       unit_cell_[1]*(.5+ gi[1]),
                       unit_cell_[2]*(.5+ gi[2]))
       + origin_;
   }
+  /** @} */
 
 
 
@@ -1041,6 +1059,8 @@ public:
   /** @} */
 };
 
+} // namespace grids
+
 //! Use trilinear interpolation to compute a smoothed value at v
 /** The voxel values are assumed to be at the center of the voxel
     and the passed outside value is used for voxels outside the
@@ -1048,12 +1068,61 @@ public:
     \relatesalso Grid3D
 */
 template <class Voxel, class Storage>
-const Voxel &get_trilinearly_interpolated(const Grid3D<Voxel, Storage> &g,
-                                          const VectorD<3> &v,
-                                          const Voxel& outside=0);
+const Voxel &
+get_trilinearly_interpolated(const grids::Grid3D<Voxel, Storage> &g,
+                             const VectorD<3> &v,
+                             const Voxel& outside=0);
 
+// They are created with %template in swig to get around inclusion order issues
+#ifndef SWIG
+/** A dense grid of values. In python DenseFloatGrid3D and DenseDoubleGrid3D are
+    provided.*/
+template <class VT>
+struct DenseGrid3D:
+  public grids::Grid3D<VT, grids::DenseGridStorage3D< VT> > {
+  typedef grids::Grid3D<VT, grids::DenseGridStorage3D< VT> > P;
+  DenseGrid3D(double side,
+                   const BoundingBoxD<3> &bb,
+                   VT def=VT()): P(side, bb, def) {}
+  DenseGrid3D(int xd, int yd, int zd,
+                   const BoundingBoxD<3> &bb,
+                   VT def=VT()): P(xd, yd, zd, bb, def) {}
+  DenseGrid3D(){}
 
-/** @} */
+};
+
+/** A sparse grid of values. In python SparseIntGrid3D is provided.*/
+template <class VT>
+struct SparseGrid3D:
+    public grids::Grid3D<VT, grids::SparseGridStorage3D<VT,
+                                       grids::BoundedGridStorage3D> > {
+  typedef grids::Grid3D<VT, grids::SparseGridStorage3D<VT,
+                                      grids::BoundedGridStorage3D> > P;
+  SparseGrid3D(double side,
+                  const BoundingBoxD<3> &bb,
+                  VT def=VT()): P(side, bb, def) {}
+  SparseGrid3D(int xd, int yd, int zd,
+                  const BoundingBoxD<3> &bb,
+                  VT def=VT()): P(xd, yd, zd, bb, def) {}
+  SparseGrid3D(){}
+};
+
+/** A sparse, infinite grid of values. In python SparseUnboundedIntGrid3D
+    is provided.*/
+template <class VT>
+struct SparseUnboundedGrid3D:
+  public grids::Grid3D<VT, grids::SparseGridStorage3D<int,
+                             grids::UnboundedGridStorage3D> >{
+  typedef grids::Grid3D<VT, grids::SparseGridStorage3D<int,
+                             grids::UnboundedGridStorage3D> > P;
+  SparseUnboundedGrid3D(double side,
+                           const Vector3D &origin,
+                           VT def=VT()): P(side, origin, def){}
+  SparseUnboundedGrid3D(){}
+
+};
+
+#endif
 IMPALGEBRA_END_NAMESPACE
 
 #include "internal/grid_3d_impl.h"

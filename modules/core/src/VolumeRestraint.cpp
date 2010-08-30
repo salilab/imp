@@ -56,9 +56,9 @@ VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
         XYZR d(_1);
         algebra::SphereD<3> s= d.get_sphere();
         algebra::BoundingBox3D bb= algebra::get_bounding_box(d.get_sphere());
-        algebra::ExtendedGridIndex3D vl
+        Grid::ExtendedIndex vl
           = grid_.get_extended_index(bb.get_corner(0));
-        algebra::ExtendedGridIndex3D vu
+        Grid::ExtendedIndex vu
           = grid_.get_extended_index(bb.get_corner(1));
         //std::cout << vl << " " << vu << std::endl;
         for (Grid::IndexIterator it= grid_.indexes_begin(vl, vu);
@@ -69,7 +69,7 @@ VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
             grid_[*it]= _2;
             ++volumes[_2];
             for (unsigned int j=0; j< 6; ++j) {
-              algebra::ExtendedGridIndex3D ci
+              Grid::ExtendedIndex ci
                 =grid_.get_extended_index(*it).get_offset(offsets[j][0],
                                                           offsets[j][1],
                                                           offsets[j][2]);
@@ -117,8 +117,8 @@ VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
            it != grid_.all_indexes_end(); ++it) {
         if (grid_[*it] != -1) {
           ++filled;
-          algebra::ExtendedGridIndex3D ei= grid_.get_extended_index(*it);
-          algebra::ExtendedGridIndex3D vs[]={ei.get_offset(1,0,0),
+          Grid::ExtendedIndex ei= grid_.get_extended_index(*it);
+          Grid::ExtendedIndex vs[]={ei.get_offset(1,0,0),
                                              ei.get_offset(-1,0,0),
                                              ei.get_offset(0,1,0),
                                              ei.get_offset(0,-1,0),
