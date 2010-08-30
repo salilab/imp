@@ -35,6 +35,17 @@ class IMPCONTAINEREXPORT PairContainerSet
                              });
   // to not have added and removed
   PairContainerSet();
+  PairContainerPair get_added_and_removed_containers() const {
+    PairContainerSet *added= create_untracked_container();
+    PairContainerSet *removed=create_untracked_container();
+    for (unsigned int i=0; i< get_number_of_pair_containers(); ++i) {
+      added->add_pair_container(get_pair_container(i)
+                                     ->get_added_container());
+      removed->add_pair_container(get_pair_container(i)
+                                       ->get_removed_container());
+    }
+    return PairContainerPair(added, removed);
+  }
  public:
   //! Construct and empty set
   PairContainerSet(Model *m,

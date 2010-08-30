@@ -33,6 +33,11 @@ public:
   IMP_GROUPNAME_FILTER(InContainerGroupnameFilter);
 };
 
+inline bool InContainerGroupnameFilter
+::get_contains_classname(PassValue p) const {
+  return c_->get_contains_classname(p);
+}
+
 IMP_OBJECTS(InContainerGroupnameFilter, InContainerGroupnameFilters);
 
 IMPCONTAINER_END_NAMESPACE

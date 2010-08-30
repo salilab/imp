@@ -32,9 +32,14 @@ AllPairContainer::AllPairContainer(SingletonContainer *c):
   a_=1;
   b_=0;
   i_=0;
+}
+
+
+
+PairContainerPair
+AllPairContainer::get_added_and_removed_containers() const {
   IMP_NEW(IMP::core::internal::DifferenceSingletonContainer, old,
           (c_, c_->get_removed_container()));
-
   IMP::Pointer<PairContainerSet> removed
     = PairContainerSet::create_untracked_container();
   {
@@ -61,8 +66,9 @@ AllPairContainer::AllPairContainer(SingletonContainer *c):
              false));
     added->add_pair_container(leftr);
   }
-  set_added_and_removed_containers(added, removed);
+  return PairContainerPair(added, removed);
 }
+
 
 unsigned int AllPairContainer::get_number_of_particle_pairs() const {
   unsigned int n= c_->get_number_of_particles();

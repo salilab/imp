@@ -45,6 +45,9 @@ IMP_OBJECTS(Container,Containers);
     - iterate through the tuples
     - determine if a tuple is contained in the set
 
+    \note If nothing uses the added and removed containers they may not
+    be updated.
+
     \note Containers store \em sets and so are fundamentally unordered.
  */
 class IMPEXPORT Container : public Object
@@ -79,9 +82,6 @@ class IMPEXPORT Container : public Object
     IMP_USAGE_CHECK(b != e,
                     "Cannot pass empty range to container constructor.");
     return get_model(*b);
-  }
-  bool get_is_added_or_removed_container() {
-    return !m_;
   }
   bool get_has_model() const {
     return m_;

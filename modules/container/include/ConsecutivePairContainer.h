@@ -43,6 +43,26 @@ public:
 
 IMP_OBJECTS(ConsecutivePairContainer,ConsecutivePairContainers);
 
+
+inline ParticlePair
+ConsecutivePairContainer::get_particle_pair(unsigned int i) const {
+  unsigned int ip1= i+1;
+  Particle *p0= ps_[i];
+  Particle *p1= ps_[ip1];
+  return ParticlePair(p0, p1);
+}
+
+inline bool
+ConsecutivePairContainer
+::get_contains_particle_pair(const ParticlePair &p) const {
+  for (unsigned int i=1; i< ps_.size(); ++i) {
+    if (ps_[i]== p[1] && ps_[i-1]==p[0]) {
+      return true;
+    }
+  }
+  return false;
+}
+
 IMPCONTAINER_END_NAMESPACE
 
 #endif  /* IMPCONTAINER_CONSECUTIVE_PAIR_CONTAINER_H */

@@ -85,7 +85,7 @@ public:
 IMP_OBJECTS(SoftSpherePairScore, SoftSpherePairScores);
 
 
-
+#ifndef IMP_DOXYGEN
 inline double SoftSpherePairScore::evaluate(const ParticlePair &p,
                                      DerivativeAccumulator *da) const {
   XYZR d0(p[0]), d1(p[1]);
@@ -109,6 +109,7 @@ inline double SoftSpherePairScore::evaluate(const ParticlePair &p,
 
   return score;
 }
+#endif
 
 
 IMPCORE_END_NAMESPACE

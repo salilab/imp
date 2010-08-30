@@ -17,11 +17,6 @@ InContainerGroupnameFilter
 ::InContainerGroupnameFilter(GroupnameContainer *c,
                              std::string name): GroupnameFilter(name), c_(c){}
 
-bool InContainerGroupnameFilter
-::get_contains_classname(PassValue p) const {
-  return c_->get_contains_classname(p);
-}
-
 ParticlesTemp InContainerGroupnameFilter
 ::get_input_particles(PassValue) const {
   // not quite right, but...

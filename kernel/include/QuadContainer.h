@@ -29,6 +29,9 @@ IMP_BEGIN_NAMESPACE
 class QuadModifier;
 class QuadScore;
 
+class QuadContainer;
+typedef std::pair<QuadContainer*,
+                  QuadContainer*> QuadContainerPair;
 
 //! A shared container for particle_quads
 /** Stores a searchable shared collection of particle_quads.
@@ -38,7 +41,7 @@ class QuadScore;
  */
 class IMPEXPORT QuadContainer : public Container
 {
-  internal::OwnerPointer<Container> added_, removed_;
+  mutable internal::OwnerPointer<Container> added_, removed_;
   struct Accessor {
     typedef Accessor This;
     typedef ParticleQuad result_type;
@@ -61,10 +64,10 @@ class IMPEXPORT QuadContainer : public Container
       Containers which are themselves returned by the get_added/removed
       functions do not have to register such containers.
   */
-  void set_added_and_removed_containers(QuadContainer* added,
-                                        QuadContainer* removed) {
-    added_=added;
-    removed_=removed;
+  virtual QuadContainerPair
+    get_added_and_removed_containers() const =0;
+  bool get_has_added_and_removed_containers() const {
+    return added_;
   }
   QuadContainer(){}
   QuadContainer(Model *m,
@@ -126,6 +129,14 @@ public:
       @{
   */
   QuadContainer* get_removed_container() const {
+    // must not be an added or removed container
+    get_model();
+    if (!added_) {
+      std::pair<QuadContainer*, QuadContainer*>
+        cp= get_added_and_removed_containers();
+      added_=cp.first;
+      removed_=cp.second;
+    }
     IMP_USAGE_CHECK(added_, "The containers returned by "
                     << " get_added_container() do not "
                     << " track their own added and removed contents.");
@@ -135,6 +146,13 @@ public:
     return ret;
   }
   QuadContainer* get_added_container() const {
+    // must not be an added or removed container
+    if (!added_) {
+      std::pair<QuadContainer*, QuadContainer*>
+        cp= get_added_and_removed_containers();
+      added_=cp.first;
+      removed_=cp.second;
+    }
     IMP_USAGE_CHECK(added_, "The containers returned by "
                     << " get_added_container() do not "
                     << " track their own added and removed contents.");

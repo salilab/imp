@@ -51,5 +51,10 @@ bool ListLikeSingletonContainer
   return !get_added()->data_.empty() || !get_removed()->data_.empty();
 }
 
+SingletonContainerPair ListLikeSingletonContainer
+::get_added_and_removed_containers() const {
+  return SingletonContainerPair(new ListLikeSingletonContainer(),
+                                new ListLikeSingletonContainer());
+}
 
 IMPCORE_END_INTERNAL_NAMESPACE

@@ -51,5 +51,10 @@ bool ListLikePairContainer
   return !get_added()->data_.empty() || !get_removed()->data_.empty();
 }
 
+PairContainerPair ListLikePairContainer
+::get_added_and_removed_containers() const {
+  return PairContainerPair(new ListLikePairContainer(),
+                                new ListLikePairContainer());
+}
 
 IMPCORE_END_INTERNAL_NAMESPACE

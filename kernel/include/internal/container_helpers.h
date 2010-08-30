@@ -251,7 +251,7 @@ inline std::string get_name(const ParticleTuple<D>& p) {
                        "Can only set the model once.");                 \
     IMP_LOG(TERSE, "Setting up score state for container "              \
             << get_name()<< std::endl);                                 \
-    IMP_INTERNAL_CHECK(!get_is_added_or_removed_container(),            \
+    IMP_INTERNAL_CHECK(get_model(),                                     \
                        "No active updating of add/remove containers."); \
     ticker_.set(new Ticker(this), m);                                   \
   }                                                                     \

@@ -31,7 +31,13 @@ AllBipartitePairContainer
                              SingletonContainer *b):
   a_(a), b_(b),
   deps_(new DependenciesScoreState(this), a->get_model()){
-  IMP_NEW(IMP::core::internal::DifferenceSingletonContainer, olda,
+}
+
+
+
+PairContainerPair
+AllBipartitePairContainer::get_added_and_removed_containers() const {
+IMP_NEW(IMP::core::internal::DifferenceSingletonContainer, olda,
           (a_,
            a_->get_removed_container()));
   IMP_NEW(IMP::core::internal::DifferenceSingletonContainer, oldb,
@@ -75,7 +81,7 @@ AllBipartitePairContainer
                                    b_->get_added_container());
     added->add_pair_container(rightr);
   }
-  set_added_and_removed_containers(added, removed);
+  return PairContainerPair(added, removed);
 }
 
 unsigned int

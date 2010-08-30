@@ -35,6 +35,17 @@ class IMPCONTAINEREXPORT SingletonContainerSet
                              });
   // to not have added and removed
   SingletonContainerSet();
+  SingletonContainerPair get_added_and_removed_containers() const {
+    SingletonContainerSet *added= create_untracked_container();
+    SingletonContainerSet *removed=create_untracked_container();
+    for (unsigned int i=0; i< get_number_of_singleton_containers(); ++i) {
+      added->add_singleton_container(get_singleton_container(i)
+                                     ->get_added_container());
+      removed->add_singleton_container(get_singleton_container(i)
+                                       ->get_removed_container());
+    }
+    return SingletonContainerPair(added, removed);
+  }
  public:
   //! Construct and empty set
   SingletonContainerSet(Model *m,

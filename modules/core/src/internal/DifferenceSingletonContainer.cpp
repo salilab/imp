@@ -39,7 +39,10 @@ Particle* DifferenceSingletonContainer::get_particle(unsigned int i) const {
   }
   return a_->get_particle(ai);
 }
-
+SingletonContainerPair
+DifferenceSingletonContainer::get_added_and_removed_containers() const {
+    return SingletonContainerPair(NULL, NULL);
+  }
 bool
 DifferenceSingletonContainer::get_contains_particle(Particle* vt) const {
   return a_->get_contains_particle(vt)
