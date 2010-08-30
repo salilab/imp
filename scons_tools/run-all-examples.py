@@ -50,8 +50,10 @@ def run_example(f, errs):
         exec open(f) in {}
         sys.stderr.write("ok\n")
         return
-    except SystemExit, e: # SystemExit is not a subclass of
-                          # Exception in newer Pythons
+    # SystemExit was moved in the Exception class hierarchy between Python
+    # versions, so the only way to catch *all* exceptions on all Python versions
+    # is to first catch SystemExit, then Exception.
+    except SystemExit, e:
         if e.code == 0:
             sys.stderr.write("ok\n")
             return
