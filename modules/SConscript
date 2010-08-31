@@ -16,7 +16,7 @@ modules=['algebra',
          'gsl',
          'modeller',
          'restrainer',
-         'em2D',
+         'em2d',
          'domino2',
          'multifit',
          'benchmark']
