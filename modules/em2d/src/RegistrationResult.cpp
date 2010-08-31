@@ -4,8 +4,8 @@
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
 **/
 
-#include "IMP/em2D/RegistrationResult.h"
-#include "IMP/em2D/internal/rotation_helper.h"
+#include "IMP/em2d/RegistrationResult.h"
+#include "IMP/em2d/internal/rotation_helper.h"
 
 IMPEM2D_BEGIN_NAMESPACE
 
@@ -31,11 +31,11 @@ RegistrationResults get_random_registration_results(unsigned long n,
 RegistrationResults evenly_distributed_registration_results(
                                           unsigned long n_projections) {
   algebra::SphericalVector3Ds vs;
-  em2D::internal::semispherical_even_distribution(n_projections,vs);
+  em2d::internal::semispherical_even_distribution(n_projections,vs);
   RegistrationResults results;
   for (unsigned long i=0;i<n_projections;++i) {
     algebra::Rotation3D R=
-         em2D::internal::get_rotation_from_projection_direction(vs[i]);
+         em2d::internal::get_rotation_from_projection_direction(vs[i]);
     algebra::Vector2D shift(0.0,0.0);
     results.push_back(RegistrationResult(R,shift,i) );
   }
@@ -88,7 +88,7 @@ void RegistrationResult::set_in_image(em::Image &im) {
   void RegistrationResult::set_rotation(algebra::Rotation3D &R){
     this->R_=R;
     algebra::Vector3D angles=
-                    em2D::internal::get_euler_angles_from_rotation(R,3,2);
+                    em2d::internal::get_euler_angles_from_rotation(R,3,2);
     this->phi_ = angles[0];
     this->theta_=angles[1];
     this->psi_=angles[2];

@@ -5,19 +5,19 @@
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
 **/
 
-#include "IMP/em2D/em2D_config.h"
-#include "IMP/em2D/project.h"
-#include "IMP/em2D/filenames_manipulation.h"
-#include "IMP/em2D/ProjectionFinder.h"
-#include "IMP/em2D/RegistrationResult.h"
-#include "IMP/em2D/model_interaction.h"
-#include "IMP/em2D/internal/rotation_helper.h"
+#include "IMP/em2d/em2d_config.h"
+#include "IMP/em2d/project.h"
+#include "IMP/em2d/filenames_manipulation.h"
+#include "IMP/em2d/ProjectionFinder.h"
+#include "IMP/em2d/RegistrationResult.h"
+#include "IMP/em2d/model_interaction.h"
+#include "IMP/em2d/internal/rotation_helper.h"
 #include "IMP/em/image_transformations.h"
 #include "IMP/em/Image.h"
 #include "IMP/em/SampledDensityMap.h"
 #include "IMP/em/SpiderReaderWriter.h"
 #include "IMP/em/MRCReaderWriter.h"
-#include "IMP/em2D/project.h"
+#include "IMP/em2d/project.h"
 #include "IMP/em/noise.h"
 #include "IMP/algebra/SphericalVector3D.h"
 #include "IMP/algebra/Vector2D.h"
@@ -34,7 +34,7 @@
 
 namespace po = boost::program_options;
 namespace em = IMP::em;
-namespace em2D = IMP::em2D;
+namespace em2d = IMP::em2d;
 namespace alg = IMP::algebra;
 namespace core = IMP::core;
 namespace atom = IMP::atom;
@@ -135,21 +135,21 @@ bool check_parameters(const po::variables_map &vm,
 
 //! process the options of the parameter --proj_dist and return a set of
 //! projection values. n_projections is the number of requested projections
-em2D::RegistrationResults get_registration_values(
+em2d::RegistrationResults get_registration_values(
                   const std::vector<str> &proj_dist_opt,
                   const unsigned int n_projections) {
-  em2D::RegistrationResults registration_values(n_projections);
+  em2d::RegistrationResults registration_values(n_projections);
   str distribution_type = proj_dist_opt[0];
   if(distribution_type == "unif" ) {
     // Generate uniform distribution of projection directions
     registration_values =
-        em2D::evenly_distributed_registration_results(n_projections);
+        em2d::evenly_distributed_registration_results(n_projections);
   } else if(distribution_type == "rand" ) {
     // Generate random distribution of projections
-    registration_values=em2D::get_random_registration_results(n_projections);
+    registration_values=em2d::get_random_registration_results(n_projections);
   } else if(distribution_type == "read") {
     // Read the file of with the parameters for the requested projections
-    registration_values=em2D::read_registration_results(proj_dist_opt[1]);
+    registration_values=em2d::read_registration_results(proj_dist_opt[1]);
   }
   return registration_values;
 }
@@ -203,9 +203,9 @@ int main(int argc, char **argv) {
     unsigned int cols = std::atoi(opt[0].c_str());
     unsigned int rows =std::atoi(opt[1].c_str());
     digest_parameter("proj_dist",vm,opt);
-    em2D::RegistrationResults registration_values=
+    em2d::RegistrationResults registration_values=
                             get_registration_values(opt,np);
-    em::Images projections = em2D::generate_projections(
+    em::Images projections = em2d::generate_projections(
                      sps,registration_values,rows,cols,resolution,apix,srw);
     // Normalize and add noise if requested
     np = registration_values.size(); // for the case when the values are read
@@ -221,15 +221,15 @@ int main(int argc, char **argv) {
     // Save projections and projection parameters
     IMP::Strings proj_names;
     if(digest_parameter("proj_names",vm,opt)) {
-      proj_names = em2D::read_selection_file(opt[0]);
+      proj_names = em2d::read_selection_file(opt[0]);
     } else {
-      proj_names = em2D::generate_filenames(np,"proj","spi");
+      proj_names = em2d::generate_filenames(np,"proj","spi");
     }
     for (unsigned int i=0;i<np;++i) {
       projections[i]->write_to_floats(proj_names[i],srw);
     }
     if(digest_parameter("proj_params",vm,opt)) {
-      em2D::write_registration_results(opt[0],registration_values);
+      em2d::write_registration_results(opt[0],registration_values);
     }
   }
 
@@ -246,19 +246,19 @@ int main(int argc, char **argv) {
     unsigned int cols = std::atoi(opt[0].c_str());
     unsigned int rows = std::atoi(opt[1].c_str());
     opt.resize(1);   opt[0]="unif";
-    em2D::RegistrationResults registration_values=
+    em2d::RegistrationResults registration_values=
                                           get_registration_values(opt,np);
-    em::Images projections = em2D::generate_projections(
+    em::Images projections = em2d::generate_projections(
                      sps,registration_values,rows,cols,resolution,apix,srw);
 
 
 
-    em::Images projections2 = em2D::generate_projections(
+    em::Images projections2 = em2d::generate_projections(
                      sps,registration_values,rows,cols,resolution,apix,srw);
     for (unsigned int i=0;i<np;++i) {
       em::normalize(*projections[i]);
     }
-    em2D::ProjectionFinder registration;
+    em2d::ProjectionFinder registration;
     registration.set_projections(projections);
     registration.all_vs_all_projections_ccc(fn_results);
   }
@@ -269,7 +269,7 @@ int main(int argc, char **argv) {
     // Parameters
     unsigned int np=vm["np"].as<unsigned int>();
     digest_parameter("proj_dist",vm,opt);
-    em2D::RegistrationResults registration_values=
+    em2d::RegistrationResults registration_values=
                       get_registration_values(opt,np);
     np = registration_values.size(); // for the case when the values are read
     // Get coordinates
@@ -283,22 +283,22 @@ int main(int argc, char **argv) {
     // Project
     IMP::Strings proj_names;
     if(vm.count("proj_names")) {
-      proj_names=em2D::read_selection_file(vm["proj_names"].as<IMP::String>());
+      proj_names=em2d::read_selection_file(vm["proj_names"].as<IMP::String>());
     } else {
-      proj_names = em2D::generate_filenames(np,"proj","pdb");
+      proj_names = em2d::generate_filenames(np,"proj","pdb");
     }
     for(unsigned int i=0;i<np;++i) {
       // To project vectors here, the shift is understood a as translation
       alg::Vector3D translation = registration_values[i].get_shift3D();
       alg::Rotation3D R = registration_values[i].get_rotation();
       alg::Vector2Ds projected_points=
-                em2D::project_vectors(pdb_atoms,R,translation,centroid);
+                em2d::project_vectors(pdb_atoms,R,translation,centroid);
       // Save projection
-      em2D::Vector2Ds_to_pdb(projected_points,proj_names[i]);
+      em2d::Vector2Ds_to_pdb(projected_points,proj_names[i]);
     }
     // Save projection parameters
     if(digest_parameter("proj_params",vm,opt)) {
-      em2D::write_registration_results(opt[0],registration_values);
+      em2d::write_registration_results(opt[0],registration_values);
     }
   }
 }

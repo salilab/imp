@@ -8,7 +8,7 @@
 #ifndef IMPEM2D_MODEL_INTERACTION_H
 #define IMPEM2D_MODEL_INTERACTION_H
 
-#include "IMP/em2D/em2D_config.h"
+#include "IMP/em2d/em2d_config.h"
 #include "IMP/em/DensityMap.h"
 #include "IMP/em/SampledDensityMap.h"
 #include "IMP/em/MapReaderWriter.h"

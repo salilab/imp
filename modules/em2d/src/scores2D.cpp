@@ -5,7 +5,7 @@
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
 */
 
-#include "IMP/em2D/scores2D.h"
+#include "IMP/em2d/scores2D.h"
 #include "IMP/em/image_transformations.h"
 #include "IMP/algebra/Vector2D.h"
 #include "IMP/algebra/Rotation2D.h"
@@ -41,14 +41,14 @@ double discrepancy_score(em::Image &subject,em::Image &projection,
 //    apply_Transformation2D(projection.get_data(),t,img_aux.get_data(),true);
     em::apply_Transformation2D(
                 projection.get_data(),t,img_aux->get_data(),true);
-//    em2D::normalize(img_aux,true);
+//    em2d::normalize(img_aux,true);
     em::normalize(*img_aux,true);
 //    ccc= subject.get_data().cross_correlation_coefficient(img_aux.get_data());
     ccc= subject.get_data().cross_correlation_coefficient(img_aux->get_data());
   } else {
     ccc=subject.get_data().cross_correlation_coefficient(projection.get_data());
   }
-  return ccc_to_em2D_score(ccc);
+  return ccc_to_em2d_score(ccc);
 }
 
 

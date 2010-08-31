@@ -4,22 +4,22 @@ import IMP.test
 import IMP.algebra
 import IMP.core
 import IMP.em
-import IMP.em2D
+import IMP.em2d
 
 
 class RegistrationResultTests(IMP.test.TestCase):
     def test_rotation_error(self):
         """ Test the rotation error between 2 RegistrationResults classes"""
-        rr1=IMP.em2D.RegistrationResult(0.5,0.2,0.1,-1,-3)
-        rr2=IMP.em2D.RegistrationResult(0.5,0.2,0.3,-1,-3)
-        angle = IMP.em2D.rotation_error(rr1,rr2)
+        rr1=IMP.em2d.RegistrationResult(0.5,0.2,0.1,-1,-3)
+        rr2=IMP.em2d.RegistrationResult(0.5,0.2,0.3,-1,-3)
+        angle = IMP.em2d.rotation_error(rr1,rr2)
         self.assertInTolerance(angle,0.2, 0.0001)
 
     def test_translation_error(self):
         """ test the shift error between 2 RegistrationResults classes"""
-        rr1=IMP.em2D.RegistrationResult(0.5,0.2,0.1,-1,-3)
-        rr2=IMP.em2D.RegistrationResult(0.5,0.2,0.3,-8,6)
-        dist = IMP.em2D.shift_error(rr1,rr2)
+        rr1=IMP.em2d.RegistrationResult(0.5,0.2,0.1,-1,-3)
+        rr2=IMP.em2d.RegistrationResult(0.5,0.2,0.3,-8,6)
+        dist = IMP.em2d.shift_error(rr1,rr2)
         self.assertInTolerance(dist,11.4017, 0.0001)
 
     def test_registration_quaternion(self):
@@ -28,7 +28,7 @@ class RegistrationResultTests(IMP.test.TestCase):
         import math
         random.seed()
         R1 = IMP.algebra.get_random_rotation_3d()
-        reg=IMP.em2D.RegistrationResult()
+        reg=IMP.em2d.RegistrationResult()
         reg.set_rotation(R1)
         phi=reg.get_Phi()
         theta=reg.get_Theta()
@@ -42,8 +42,8 @@ class RegistrationResultTests(IMP.test.TestCase):
 
     def test_even_registration_results(self):
         """ Test the generation of evenly distributed RegistrationResults"""
-        Regs1 = IMP.em2D.evenly_distributed_registration_results(3)
-        Regs2 = IMP.em2D.read_registration_results(
+        Regs1 = IMP.em2d.evenly_distributed_registration_results(3)
+        Regs2 = IMP.em2d.read_registration_results(
                       self.get_input_file_name("1z5s-projections.params"))
 
         for j in xrange(0,len(Regs1)):

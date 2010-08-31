@@ -5,14 +5,14 @@
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
 */
 
-#include "IMP/em2D/ProjectionFinder.h"
-#include "IMP/em2D/pca_features_extraction.h"
+#include "IMP/em2d/ProjectionFinder.h"
+#include "IMP/em2d/pca_features_extraction.h"
 #include "IMP/em/image_transformations.h"
-#include "IMP/em2D/scores2D.h"
-#include "IMP/em2D/filenames_manipulation.h"
-#include "IMP/em2D/FFToperations.h"
-#include "IMP/em2D/project.h"
-#include "IMP/em2D/Fine2DRegistrationRestraint.h"
+#include "IMP/em2d/scores2D.h"
+#include "IMP/em2d/filenames_manipulation.h"
+#include "IMP/em2d/FFToperations.h"
+#include "IMP/em2d/project.h"
+#include "IMP/em2d/Fine2DRegistrationRestraint.h"
 #include "IMP/em/SpiderReaderWriter.h"
 #include "IMP/gsl/Simplex.h"
 #include "IMP/log.h"
@@ -260,7 +260,7 @@ double ProjectionFinder::get_complete_registration(
       simplex_optimizer->optimize((double)optimization_steps_);
       // Update the registration parameters
       double score = fine2d->get_final_values(subject_RRs[k]);
-      subject_RRs[k].set_ccc(em2D_score_to_ccc(score));
+      subject_RRs[k].set_ccc(em2d_score_to_ccc(score));
       IMP_LOG(IMP::VERBOSE, "fine registration for subject " << k
           << ": " << subject_RRs[k] << std::endl);
       ++show_progress;
@@ -269,7 +269,7 @@ double ProjectionFinder::get_complete_registration(
                                             compare_registration_results);
     // Best fine registration
     registration_results_[i]=subject_RRs[0];
-    Score += ccc_to_em2D_score(registration_results_[i].get_ccc());
+    Score += ccc_to_em2d_score(registration_results_[i].get_ccc());
     // save if requested
     if(save_match_images) {
       if(!masks_computed) {
@@ -328,12 +328,12 @@ void ProjectionFinder::all_vs_all_projections_ccc(String &fn_out) {
       // Saves time if the image is saved, the transformation is not done twice.
       em::SpiderImageReaderWriter<double> srw;
       IMP_NEW(em::Image,match,());
-      em2D::apply_Transformation2D(projections_[j]->get_data(),t,
+      em2d::apply_Transformation2D(projections_[j]->get_data(),t,
                                                   match->get_data(),true);
       RegistrationResult rr;
       rr.add_in_plane_transformation(t);
       rr.set_in_image(*match);
-      em2D::normalize(*match,true);
+      em2d::normalize(*match,true);
       std::ostringstream strm;
       strm << "match-"  << i << "-" << j << ".spi";
       match->write_to_floats(strm.str(),srw);

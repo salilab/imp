@@ -3,7 +3,7 @@ import IMP
 import IMP.test
 import IMP.core
 import IMP.atom
-import IMP.em2D
+import IMP.em2d
 import IMP.em
 import os
 
@@ -31,9 +31,9 @@ class ProjectTests(IMP.test.TestCase):
         img=IMP.em.Image()
         img.resize(rows,cols)
         srw = IMP.em.SpiderImageReaderWriter()
-        rr=IMP.em2D.RegistrationResult()
+        rr=IMP.em2d.RegistrationResult()
         rr.set_random_registration(0,5)
-        IMP.em2D.generate_projection(img,particles,rr,resolution,apix,srw)
+        IMP.em2d.generate_projection(img,particles,rr,resolution,apix,srw)
         img.write_to_floats(testfile,srw)
         self.assertTrue(os.path.isfile(testfile),"Projection image not generated")
         os.remove(testfile)
@@ -51,12 +51,12 @@ class ProjectTests(IMP.test.TestCase):
         resolution = 1
         apix = 1.5
         srw = IMP.em.SpiderImageReaderWriter()
-        registration_values=IMP.em2D.evenly_distributed_registration_results(
+        registration_values=IMP.em2d.evenly_distributed_registration_results(
                                                                   n_projections)
-        projections = IMP.em2D.generate_projections(particles,registration_values,
+        projections = IMP.em2d.generate_projections(particles,registration_values,
                                rows,cols,resolution,apix,srw)
         # Read the stored projections
-        stored_projection_names= IMP.em2D.generate_filenames(
+        stored_projection_names= IMP.em2d.generate_filenames(
                                       n_projections,"1z5s-projection","spi")
         for n in xrange(0,n_projections):
             stored_projection_names[n]=self.get_input_file_name(
@@ -94,9 +94,9 @@ class ProjectTests(IMP.test.TestCase):
         stored_images=IMP.em.read_images(stored_names,srw)
 
         # Read registration parameters and generate new images
-        Regs =IMP.em2D.read_registration_results(
+        Regs =IMP.em2d.read_registration_results(
           self.get_input_file_name('1e6v-subjects-0.5.params') )
-        projections = IMP.em2D.generate_projections(particles,Regs,
+        projections = IMP.em2d.generate_projections(particles,Regs,
                                rows,cols,resolution,apix,srw)
 
         # Add noise

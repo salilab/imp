@@ -8,8 +8,8 @@
 #ifndef IMPEM2D_LABELING_ALGORITHM_H
 #define IMPEM2D_LABELING_ALGORITHM_H
 
-#include "IMP/em2D/image_processing.h"
-#include "IMP/em2D/Pixel.h"
+#include "IMP/em2d/image_processing.h"
+#include "IMP/em2d/Pixel.h"
 #include "IMP/algebra/Matrix2D.h"
 #include <vector>
 #include <algorithm>

@@ -1,4 +1,4 @@
-/** \namespace IMP::em2D
+/** \namespace IMP::em2d
 
 \author Daniel Russel
 
@@ -12,7 +12,7 @@ SVN exported
 Remember to escape characters to keep python happy.
 
 \par Examples
-Examples can be found on the \ref IMP_em2D_examples "IMP.em2D examples" page.
+Examples can be found on the \ref IMP_em2d_examples "IMP.em2d examples" page.
 
 
 \license \external{www.gnu.org/licenses/old-licenses/lgpl-2.1.html,LGPL}.

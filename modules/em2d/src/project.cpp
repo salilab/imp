@@ -4,8 +4,8 @@
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
 */
 
-#include "IMP/em2D/project.h"
-#include "IMP/em2D/internal/rotation_helper.h"
+#include "IMP/em2d/project.h"
+#include "IMP/em2d/internal/rotation_helper.h"
 #include "IMP/Pointer.h"
 #include "IMP/core/utility.h"
 #include "IMP/atom/Mass.h"
@@ -27,7 +27,7 @@ em::Images generate_projections(const Particles &ps,
   RegistrationResults registration_values(n_projs);
   for (unsigned long i=0;i<n_projs;++i) {
     algebra::Rotation3D R=
-        em2D::internal::get_rotation_from_projection_direction(vs[i]);
+        em2d::internal::get_rotation_from_projection_direction(vs[i]);
     algebra::Vector2D shift(0.0,0.0);
     RegistrationResult rr(R,shift);
     registration_values[i]=rr;
@@ -186,7 +186,7 @@ em::Images generate_projections(em::DensityMap &map,
     // shift in pixels (same as the translation when zero)
     algebra::Vector2D shift(0.0,0.0);
     algebra::Rotation3D R=
-      em2D::internal::get_rotation_from_projection_direction(vs[i]);
+      em2d::internal::get_rotation_from_projection_direction(vs[i]);
     RegistrationResult reg(R,shift);
     project_map(map,img->get_data(),rows,cols,reg,1e-6);
     // Write image

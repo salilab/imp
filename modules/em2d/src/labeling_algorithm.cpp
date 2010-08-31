@@ -5,7 +5,7 @@
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
 */
 
-#include "IMP/em2D/labeling_algorithm.h"
+#include "IMP/em2d/labeling_algorithm.h"
 #include "IMP/algebra/utility.h"
 #include <IMP/exception.h>
 

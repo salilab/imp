@@ -8,7 +8,7 @@
 #define IMPEM2D_SCORES_2D_H
 
 #include "IMP/em/Image.h"
-#include "IMP/em2D/RegistrationResult.h"
+#include "IMP/em2d/RegistrationResult.h"
 
 
 IMPEM2D_BEGIN_NAMESPACE
@@ -62,10 +62,10 @@ IMPEM2DEXPORT double average_rotation_error(RegistrationResults correct_RRs,
 IMPEM2DEXPORT double average_shift_error(RegistrationResults correct_RRs,
                                          RegistrationResults computed_RRs);
 
-//! Converts the cross-correlation coefficient in the em2D score that is
+//! Converts the cross-correlation coefficient in the em2d score that is
 //! used for the discrepancy and vice-versa
-inline double ccc_to_em2D_score(double ccc) {return 1-ccc;}
-inline double em2D_score_to_ccc(double em2D) {return 1-em2D;}
+inline double ccc_to_em2d_score(double ccc) {return 1-ccc;}
+inline double em2d_score_to_ccc(double em2d) {return 1-em2d;}
 
 
 IMPEM2D_END_NAMESPACE

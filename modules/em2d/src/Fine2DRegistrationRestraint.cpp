@@ -5,9 +5,9 @@
 **/
 
 
-#include "IMP/em2D/Fine2DRegistrationRestraint.h"
-#include "IMP/em2D/project.h"
-#include "IMP/em2D/scores2D.h"
+#include "IMP/em2d/Fine2DRegistrationRestraint.h"
+#include "IMP/em2d/project.h"
+#include "IMP/em2d/scores2D.h"
 #include "IMP/container_macros.h"
 #include "IMP/algebra/SphericalVector3D.h"
 #include "IMP/log.h"
@@ -67,10 +67,10 @@ double Fine2DRegistrationRestraint::unprotected_evaluate(
                            "provide derivatives ");
   algebra::Rotation3D R=PP_.get_rotation();
   algebra::Vector3D translation = PP_.get_translation();
-  em2D::project_particles(ps_,projection_->get_data(),
+  em2d::project_particles(ps_,projection_->get_data(),
                         R,translation,resolution_,pixelsize_,&masks_);
   em::normalize(*projection_,true);
-  score = em2D::discrepancy_score(*subject_,*projection_,false);
+  score = em2d::discrepancy_score(*subject_,*projection_,false);
   IMP_LOG(VERBOSE, "Fine2DRegistration. Score: " << score <<std::endl);
   return score;
 }
@@ -91,7 +91,7 @@ void Fine2DRegistrationRestraint::do_show(std::ostream& out) const {
   RegistrationResult rr(PP_.get_Phi(), PP_.get_Theta(),PP_.get_Psi(),
               PP_.get_translation_x()/pixelsize_,
               PP_.get_translation_y()/pixelsize_,
-              em2D_score_to_ccc(score));
+              em2d_score_to_ccc(score));
   rr.show(out);
   out << " Score: " << score;
 

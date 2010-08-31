@@ -4,7 +4,7 @@
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
 **/
 
-#include "IMP/em2D/ProjectionParameters.h"
+#include "IMP/em2d/ProjectionParameters.h"
 #include "IMP/Model.h" // ParticleIterator
 
 IMPEM2D_BEGIN_NAMESPACE
