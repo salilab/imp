@@ -334,6 +334,143 @@ or \c \\commandname if there are no arguments.
   and then hide the comparison functions from \doxygen (there are a lot of them and they
   aren't very interesting).
 
+
+\section scoring Scoring
+
+Restraints take the current conformation of the particles and return a score and, if requested, add to the derivatives of each of the particles used. Evaluation can be done each of two ways
+- whole model, where each of the particles is assumed to have changed and
+- incremental, where only a few of the particles are assumed to have changed.
+Efficiently supporting incremental evaluation requires extra work, but any restraint which implements Restraint::do_evaluate() will produce correct results.
+
+In whole model evaluation, each restraint is called one at a time and given a change to computes its score based on the current conformation of the particles and adds to each particles derivatives. That is, if \f$R(P_i)\f$ is the score of the restraint on particle conformation \f$i\f$ and \f$R'(P_i)\f$ and there are no other restraints:
+<table border="1">
+<tr>
+<td><b>Stage</b></td>
+<td><b>Score for R</b></td>
+<td><b>Particle attribute</b></td>
+<td><b>Particle derivative</b></td>
+</tr>
+<tr>
+<td>before model evaluation</td>
+<td>undefined</td>
+<td>\f$P_0\f$</td>
+<td>undefined</td>
+</tr>
+<tr>
+<td>before restraint evaluation</td>
+<td>0</td>
+<td>\f$P_0\f$</td>
+<td>0</td>
+</tr>
+<tr>
+<td>after restraint evaluation</td>
+<td>\f$R(P_0)\f$</td>
+<td>\f$P_0\f$</td>
+<td>\f$R'(P_0)\f$</td>
+</tr>
+</table>
+
+Incremental evaluation is more complicated. The model first sets up for incremental evaluation by creating a shadow particle for each real particle. The "prechange" particles have all the same attributes and values as the particle from the last time step. They are accessed using IMP::Particle::get_prechange_particle().
+
+    During incremental evaluation in the model
+    -# the derivatives are cleared on all the particles (but not the prechange particles)
+    -# incremental restraints are evaluated. They need to make sure that the the change in the sum of the particle and prechange particle derivatives is equal to the change in derivatives and that the actual score is returned.
+    -# derivatives are added to the prechange derivatives and then cleared
+    -# the non-incremental restraints are then evaluated
+    -# the derivatives of the prechange particles are added to the particle derivatives
+    -# after scoring, all the particles are marked as clean and prechange particles are updated to reflect the current attributes of the particles
+
+To put it another way
+<table border="1">
+<tr>
+<td><b>Stage</b></td>
+<td><b>Score for R</b></td>
+<td><b>Particle attribute</b></td>
+<td><b>Particle derivative</b></td>
+<td><b>Prechange particle attribute</b></td>
+<td><b>Prechange particle derivative</b></td>
+</tr>
+<tr>
+<td>at start of first incremental model evaluation</td>
+<td>0</td>
+<td>\f$P_0\f$</td>
+<td>undefined</td>
+<td>undefined</td>
+<td>undefined</td>
+</tr>
+<tr>
+<td>at start of first restraint evaluation (non-incremental function called)</td>
+<td>0</td>
+<td>\f$P_0\f$</td>
+<td>0</td>
+<td>undefined</td>
+<td>undefined</td>
+</tr>
+<tr>
+<td>at end of first restraint evaluation (non-incremental function called on incremental restraint)</td>
+<td>\f$R(P_0)\f$</td>
+<td>\f$P_0\f$</td>
+<td>\f$R'(P_0)\f$</td>
+<td>undefined</td>
+<td>undefined</td>
+</tr>
+<tr>
+<td>at end of first model evaluation</td>
+<td>\f$R(P_0)\f$</td>
+<td>\f$P_0\f$</td>
+<td>undefined</td>
+<td>\f$P_0\f$</td>
+<td>\f$R'(P_0)\f$</td>
+</tr>
+<tr>
+<td>at start of second model evaluation</td>
+<td>0</td>
+<td>\f$P_1\f$</td>
+<td>undefined</td>
+<td>\f$P_0\f$</td>
+<td>\f$R'(P_0)\f$</td>
+</tr>
+<tr>
+<td>at start of second restraint evaluation (incremental called)</td>
+<td>0</td>
+<td>\f$P_1\f$</td>
+<td>0</td>
+<td>\f$P_0\f$</td>
+<td>\f$R'(P_0)\f$</td>
+</tr>
+<tr>
+<td>at end of second restraint evaluation (incremental called)</td>
+<td>\f$R(P_1)\f$</td>
+<td>\f$P_1\f$</td>
+<td>\f$R'(P_1)\f$</td>
+<td>\f$P_0\f$</td>
+<td>0</td>
+</tr>
+<tr>
+<td>at end of second model evaluation</td>
+<td>\f$R(P_1)\f$</td>
+<td>\f$P_1\f$</td>
+<td>undefined</td>
+<td>\f$P_1\f$</td>
+<td>\f$R'(P_1)\f$</td>
+</tr>
+</table>
+Note that the restraints is free to put anything into to particle derivative and the prechange derivative as long as the sum is \f$R'(P_i)\f$. Particularly, if the derivative has not changed, it does not have to touch either of the derivatives.
+
+    A IMP::Restraint is an incremental restraint if IMP::Restraint::get_is_incremental() returns true. For such restraints,
+    IMP::Restraint::incremental_evaluate() is called instead of IMP::Restraint::evaluate(). \imp restraints which implement incremental evaluation tend to do it by:
+ - for each term in the restraint, check if the involved particles have changed by calling IMP::Particle::get_is_changed().
+ - if they have not, return a saved score from the last evaluate call
+ - if the particles have changed, compute the score on the particles with the provided IMP::DerivativeAccumulator. Then compute the score on the prechange particles (they are also IMP::Particle objects, return by IMP::Particle::get_prechange_particle()), using an IMP::DerivativeAccumulator with negative the weight of the passed accumulator.
+
+
+    Whenever a particle is changed is marked as dirty, so that returns true.
+
+    A (perhaps partial) list of classes which benefit from incremental evaluation is:
+    - IMP::core::IncrementalBallMover
+    - all the optimizers/samplers
+
+
 \section scripts Useful Scripts
 
 \imp provides a variety of scripts to aid the lives of developers.
