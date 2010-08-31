@@ -689,6 +689,10 @@ def IMPModuleBuild(env, version, required_modules=[],
         #required_modules.append('kernel')
     else:
         required_modules=[]
+    print module.lower(),module
+    if module.lower() != module:
+        print >> sys.stderr, "Module names must be all lower case. This can change if you complain, but might be complicated to fix. Failed on", module
+        env.Exit(1)
     #print module_suffix
     #print module_src_path
     #print module_include_path
