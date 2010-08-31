@@ -85,7 +85,7 @@ void BrownianDynamics::set_maximum_score(double d) {
   maximum_score_=d;
 }
 
-SingletonContainer *BrownianDynamics::setup_particles()
+SingletonContainer *BrownianDynamics::setup_particles() const
 {
   if (sc_) {
     // check them
@@ -187,7 +187,7 @@ void BrownianDynamics::take_step(SingletonContainer *sc,
     unit::Femtojoule>::type dtikt=dt/si_.get_kT();
   typedef boost::variate_generator<RandomNumberGenerator&,
     boost::normal_distribution<double> > RNG;
-  boost::normal_distribution<double> mrng(0, unit::strip_units(sqrt(dt)));
+  boost::normal_distribution<double> mrng(0, 1);
   RNG sampler(random_number_generator, mrng);
   IMP_FOREACH_SINGLETON(sc, {
       Diffusion d(_1);
@@ -219,8 +219,7 @@ void BrownianDynamics::take_step(SingletonContainer *sc,
     unit::Angstrom sigma= sqrt(2.0*d.get_D()*dt);
     for (unsigned j = 0; j < 3; ++j) {
       double rv= sampler();
-      random[j]=unit::Angstrom(sqrt(2*d.get_D()
-                                    *unit::Femtosecond(rv*rv))).get_value();
+      random[j]=unit::Angstrom(sqrt(2*d.get_D()*dt)*rv).get_value();
       if (rv < 0) random[j]=-random[j];
       //delta[j]=unit::Angstrom(0);
     }
@@ -292,7 +291,6 @@ double BrownianDynamics::simulate(float max_time_nu)
   AddTime at(si_);
   bool success=false;
   while (at.get_current_time() < max_time){
-    dt= std::min(dt, max_time-at.get_current_time());
     double score= get_model()->evaluate(true);
     if (score > maximum_score_) {
       relax_model(get_model(), sc);
@@ -338,6 +336,10 @@ double BrownianDynamics::simulate(float max_time_nu)
   return v;
 }
 
+SingletonContainer *BrownianDynamics::get_diffusing_particles() const {
+  return setup_particles();
+}
+
 /*
 unit::Angstrom
 BrownianDynamics
@@ -381,8 +383,9 @@ namespace {
     for (It c= b+1 ; c<e-1; ++c) {
       *c= 1/3.0*(*(c-1)+*(c)+*(c+1));
     }
-    std::copy(b,e, std::ostream_iterator<double>(std::cout, " "));
-    std::cout << std::endl;
+    IMP_LOG_WRITE(TERSE, std::copy(b,e,
+                       std::ostream_iterator<double>(IMP_STREAM, " ")));
+    IMP_LOG(TERSE, std::endl);
     algebra::Vector2Ds pts;
     for (It c= b; c< e; ++c) {
       pts.push_back(algebra::Vector2D(std::distance(b,c),
@@ -393,29 +396,47 @@ namespace {
         +.01*lf.get_b()) {
       return true;
     } else {
-      std::cout << "Rejecting " << lf << std::endl;
+      IMP_LOG(TERSE, "Rejecting " << lf << std::endl);
       return false;
     }
   }
 
   bool is_ok_step(BrownianDynamics *bd, Configuration *c, double step,
                   SimulationParameters sp) {
-    sp.set_maximum_time_step(step);
+    Pointer<SingletonContainer> sc= bd->get_diffusing_particles();
     c->load_configuration();
-    std::cout << "Trying step " << step << std::endl;
+    sp.set_maximum_time_step(step);
+    IMP_LOG(TERSE, "Trying step " << step << "("
+              << sp.get_maximum_time_step_with_units()
+            << ", " << sp.get_maximum_time_step() << ")" << std::endl);
+    IMP_USAGE_CHECK((step- sp.get_maximum_time_step()) < .001,
+                    "In and out don't match " << sp.get_maximum_time_step());
     std::vector<double> es;
     unsigned int ns=100;
+    std::vector<algebra::Vector3Ds>
+      coords(ns, algebra::Vector3Ds(sc->get_number_of_particles()));
     for (unsigned int i=0; i< ns; ++i) {
       es.push_back(bd->optimize(1));
+      for (unsigned int j=0; j< coords[i].size(); ++j) {
+        coords[i][j]= core::XYZ(sc->get_particle(j)).get_coordinates();
+      }
     }
-    return is_constant(es.begin(), es.end());
+    std::vector<double> max_dist(es.size()-1, 0);
+    for (unsigned int i=0; i< ns-1; ++i) {
+      for (unsigned int j=0; j< coords[i].size(); ++j) {
+        max_dist[i]= std::max(max_dist[i],
+                              (coords[i][j]-coords[i+1][j]).get_magnitude());
+      }
+    }
+    return is_constant(es.begin(), es.end())
+      && is_constant(max_dist.begin(), max_dist.end());
   }
 };
 
 
-IMPATOMEXPORT double get_maximum_time_step_estimate(BrownianDynamics *bd,
-                                                    SimulationParameters sp){
+IMPATOMEXPORT double get_maximum_time_step_estimate(BrownianDynamics *bd){
   IMP_NEW(Configuration, c, (bd->get_model()));
+  SimulationParameters sp= bd->get_simulation_parameters();
   double ots= sp.get_maximum_time_step();
   double lb=10;
   while (is_ok_step(bd, c, lb, sp)) {
