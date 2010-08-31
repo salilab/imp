@@ -89,6 +89,8 @@ public:
   */
   void set_maximum_score(double s);
 
+  SingletonContainer *get_diffusing_particles() const;
+
   IMP_OPTIMIZER(BrownianDynamics);
 private:
   void copy_coordinates(SingletonContainer *sc,
@@ -98,7 +100,7 @@ private:
 
   void take_step(SingletonContainer *sc, unit::Femtosecond dt);
 
-  SingletonContainer* setup_particles();
+  SingletonContainer* setup_particles() const;
 
   /* unit::KilocaloriePerAngstromPerMol
      get_force_scale_from_D(unit::SquareCentimeterPerSecond D) const;*/
@@ -114,8 +116,7 @@ private:
 };
 
 
-IMPATOMEXPORT double get_maximum_time_step_estimate(BrownianDynamics *bd,
-                                                    SimulationParameters sp);
+IMPATOMEXPORT double get_maximum_time_step_estimate(BrownianDynamics *bd);
 
 IMPATOM_END_NAMESPACE
 
