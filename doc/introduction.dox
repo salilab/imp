@@ -446,31 +446,13 @@ generate the connection between the two languages. Key differences are
       common than the unabreviated name.
 
 \section incremental 7. Incremental Scoring
-    Scoring in \imp can be performed in two different ways....
+    Scoring in \imp can be performed in two different ways, 
+    - whole model, where each restraint is evaluated each time the model is changed
+    - or incremental, where restraints are given the opportunity to update their scores after only a few of the particles change.
 
-    Incremental scoring  works as follows:
+    Whole model scoring is faster when more than approximately half of the particles change each time the Model::evaluate() is called. Either one will produce the correct (and same) answer in all instances.
 
-    To set it up call IMP::Model::set_is_incremental() with the value \c true. This
-    -# calls regular evaluate on all incremental restraints
-    -# a shadow particle is added to each particle. The shadow particles have all the same attributes. It is accessed using IMP::Particle::get_prechange_particle()
-    -# saves copies of their derivatives to the shadow particles
-
-    When evaluate is called during optimization
-    -# the derivatives are cleared on all the particles (but not the shadow particles)
-    -# incremental restraints are evaluated. They need to make sure that the the change in the sum of the particle and shadow particle derivatives is equal to the change in derivatives and that the actual score is returned.
-    -# derivatives are added to the shadow derivatives and then cleared
-    -# the non-incremental restraints are then evaluated
-    -# the derivatives of the shadow particles are added to the particle derivatives
-    -# after scoring, all the particles are marked as clean and shadow particles are updated to reflect the current attributes of the particles
-
-    A IMP::Restraint is an incremental restraint if IMP::Restraint::get_is_incremental() returns true. For such restraints,
-    IMP::Restraint::incremental_evaluate() is called instead of IMP::Restraint::evaluate().
-
-    Whenever a particle is changed is marked as dirty, so that IMP::Particle::get_is_changed() returns true.
-
-    A (perhaps partial) list of classes which benefit from incremental evaluation is:
-    - IMP::core::IncrementalBallMover
-    - all the optimizers/samplers
+    To set up incremental scoring call IMP::Model::set_is_incremental() with the value \c true. See \ref scoring "Scoring" for implementation information.
 
 \section graphs Graphs
 
