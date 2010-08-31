@@ -15,8 +15,8 @@
 #include <IMP/container/ListPairContainer.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
-
-//!
+#define IMP_CPC_PARTICLE_CACHE
+//! A container which contains all consecutive pairs from a list
 class IMPCONTAINEREXPORT ConsecutivePairContainer : public PairContainer
 {
   const Particles ps_;
@@ -29,6 +29,9 @@ class IMPCONTAINEREXPORT ConsecutivePairContainer : public PairContainer
     }
     return f;
   }
+#ifdef IMP_CPC_PARTICLE_CACHE
+  IntKey key_;
+#endif
 public:
   //! Get the individual particles from the passed SingletonContainer
   ConsecutivePairContainer(const ParticlesTemp &ps);
@@ -55,12 +58,20 @@ ConsecutivePairContainer::get_particle_pair(unsigned int i) const {
 inline bool
 ConsecutivePairContainer
 ::get_contains_particle_pair(const ParticlePair &p) const {
+#ifdef IMP_CPC_PARTICLE_CACHE
+  if (!p[0]->has_attribute(key_)) return false;
+  int ia= p[0]->get_value(key_);
+  if (ia!= 0 && ps_[ia-1]==p[1]) return true;
+  else if (ia != static_cast<int>(ps_.size())-1 && ps_[ia+1]==p[1]) return true;
+  else return false;
+#else
   for (unsigned int i=1; i< ps_.size(); ++i) {
     if (ps_[i]== p[1] && ps_[i-1]==p[0]) {
       return true;
     }
   }
   return false;
+#endif
 }
 
 IMPCONTAINER_END_NAMESPACE
