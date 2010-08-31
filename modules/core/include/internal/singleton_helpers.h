@@ -22,6 +22,14 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 class IMPCOREEXPORT ListLikeSingletonContainer: public SingletonContainer {
 private:
   Particles data_;
+  mutable Particles index_;
+  void update_index() const {
+    if (index_.size()==data_.size()) return;
+    unsigned int osize=index_.size();
+    index_.insert(index_.end(), data_.begin()+osize, data_.end());
+    std::sort(index_.begin()+osize, index_.end());
+    std::inplace_merge(index_.begin(), index_.begin()+osize, index_.end());
+  }
 protected:
   ListLikeSingletonContainer *get_added() const {
     if (get_has_added_and_removed_containers()) {
@@ -44,8 +52,8 @@ protected:
          "Passed Particle cannot be NULL (or None)");
       }
     }
-    std::sort(cur.begin(), cur.end());
     if (get_added()) {
+      std::sort(cur.begin(), cur.end());
       ParticlesTemp added, removed;
       std::set_difference(cur.begin(), cur.end(),
                           data_.begin(), data_.end(),
@@ -64,15 +72,14 @@ protected:
     std::set_difference(cur.begin(), cur.end(),
                         data_.begin(), data_.end(),
                         std::back_inserter(added));
-    unsigned int osz= data_.size();
     data_.insert(data_.end(), added.begin(), added.end());
-    std::inplace_merge(data_.begin(), data_.begin()+osz, data_.end());
     if (get_added()) {
       ListLikeSingletonContainer* ac=get_added();
       ac->data_.insert(ac->data_.end(), added.begin(), added.end());
     }
   }
   void remove_from_list(ParticlesTemp &cur) {
+    index_.clear();
     std::sort(cur.begin(), cur.end());
     ParticlesTemp newlist;
     std::set_difference(data_.begin(), data_.end(),
@@ -85,8 +92,7 @@ protected:
     }
   }
   void add_to_list(Particle* cur) {
-    data_.insert(std::lower_bound(data_.begin(),
-                                  data_.end(), cur), cur);
+    data_.push_back(cur);
     if (get_added()) {
       ListLikeSingletonContainer* ac=get_added();
       ac->data_.push_back(cur);
