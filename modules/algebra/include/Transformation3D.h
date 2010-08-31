@@ -22,7 +22,8 @@ Transformation3D compose(const Transformation3D &a,
 #endif
 
 //! Simple 3D transformation class
-/** \see IMP::core::Transform
+/** The rotation is applied first, and then the point is translated.
+    \see IMP::core::Transform
     \geometry
 */
 class IMPALGEBRAEXPORT Transformation3D
