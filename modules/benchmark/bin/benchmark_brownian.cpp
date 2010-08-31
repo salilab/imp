@@ -81,7 +81,7 @@ It create(PS0 *link, PS1 *lb, SS *bottom) {
   IMP_NEW(ClosePairContainer, cpc, (ret.lsc, 0, slack));
   cpc->add_pair_filters(pfs);
   ret.cpc=cpc;
-  IMP_NEW(PR, pr, (lb, cpc));
+  IMP_NEW(PR, pr, (lb, cpc, "close pairs"));
   ret.m->add_restraint(pr);
   IMP_NEW(SingletonsRestraint, sr,
           (bottom, ret.lsc));
@@ -90,7 +90,7 @@ It create(PS0 *link, PS1 *lb, SS *bottom) {
     = SimulationParameters::setup_particle(new Particle(ret.m));
   ret.bd= new BrownianDynamics(ret.sp);
   double ts=Diffusion(ret.all[0]).get_time_step_from_sigma(sigma);
-  ret.sp.set_maximum_time_step(ts);
+  ret.sp.set_maximum_time_step(640); // from test below
   ret.all.push_back(ret.sp);
   return ret;
 }
@@ -98,6 +98,11 @@ It create(PS0 *link, PS1 *lb, SS *bottom) {
 void read(std::string name, It it) {
   IMP_CATCH_AND_TERMINATE(read_model(name, it.all));
   it.cpc->set_slack(it.sp->get_value(FloatKey("slack")));
+  if (it.sp != it.bd->get_simulation_parameters()) {
+    std::cerr << "Parameters don't match " << it.sp
+              << " vs " << it.bd->get_simulation_parameters()
+              << std::endl;
+  }
 }
 
 double simulate(It it, int ns, bool verbose=false) {
@@ -108,9 +113,12 @@ double simulate(It it, int ns, bool verbose=false) {
 void initialize(It it) {
   //double e=simulate(it, 1e6,true);
   //std::cout << "Time step is " << it.sp.get_maximum_time_step() << std::endl;
-  double ts= get_maximum_time_step_estimate(it.bd, it.sp);
-  std::cout << "Maximum time step is " << ts;
-  it.sp.set_maximum_time_step(ts);
+  it.m->set_gather_statistics(true);
+  std::cout << "Relaxing from " << it.m->evaluate(false) << std::endl;
+  it.bd->optimize(10);
+  std::cout << "To ";
+  it.m->show_restraint_score_statistics();
+  it.m->set_gather_statistics(false);
   std::ofstream out("deps.dot");
   set_log_level(VERBOSE);
   double slack;
@@ -198,6 +206,19 @@ int main(int argc , char **argv) {
                                                               xk));
     read(argv[2], it);
     do_display(it, std::string(argv[3]));
+  } else if (argc >=2 && std::string(argv[1])=="-t") {
+      It it= create<PairsRestraint>(new DistancePairScore(new Harmonic(len,kk)),
+                                  new SphereDistancePairScore(new HLB(0,kk)),
+                                  new AttributeSingletonScore(new HLB(0,kk),
+                                                             xk));
+      if (argc <=2) {
+        read(IMP::benchmark::get_data_path("brownian.imp"), it);
+      } else {
+        read(argv[2], it);
+      }
+      double ts= get_maximum_time_step_estimate(it.bd);
+      std::cout << "Maximum time step is " << ts;
+      //it.sp.set_maximum_time_step(ts);
   } else if (argc >=2 && std::string(argv[1])=="-p") {
       typedef ContainerRestraint<SoftSpherePairScore, ClosePairContainer> PR;
       do_benchmark<1, PR >("custom", argc-2, argv+2,
