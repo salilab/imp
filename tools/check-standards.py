@@ -70,11 +70,11 @@ def check_python_file(filename, errors):
                           % (filename, num+1))
         m= test.match(line)
         if m:
-            g= m.group(0)
+            g= m.group(1)
             if g in tests:
                 errors.append('%s:%d: Test case has multiple tests with the same name %s' \
                           % (filename, num+1, g))
-            tests.append(m.group(0))
+            tests.append(m.group(1))
     fh = file(filename, "r")
     r = Reindenter(fh)
     try:
