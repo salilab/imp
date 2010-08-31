@@ -26,7 +26,8 @@ unsigned int ListLikeGroupnameContainer
 bool ListLikeGroupnameContainer
 ::get_contains_classname(PassValue vt) const {
   IMP_CHECK_OBJECT(this);
-  return std::binary_search(data_.begin(), data_.end(), vt);
+  update_index();
+  return std::binary_search(index_.begin(), index_.end(), vt);
 }
 
 Value ListLikeGroupnameContainer
