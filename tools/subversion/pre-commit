@@ -62,8 +62,9 @@ def check_python_file(filename, txn, repos, errors):
     tests = []
     for (num, line) in enumerate(Popen(cmd, shell=False, stdout=PIPE).stdout):
         _check_do_not_commit(line, filename, num, errors)
-        errors.append('%s:%d: Test case has the temp_hide_ prefix' \
-                      % (filename, num+1))
+        if temptest.match(line):
+            errors.append('%s:%d: Test case has the temp_hide_ prefix' \
+                          % (filename, num+1))
         m = test.match(line)
         if m:
             g = m.group(1)
