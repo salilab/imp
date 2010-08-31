@@ -8,9 +8,9 @@
 #ifndef IMPEM2D_PROJECTION_FINDER_H
 #define IMPEM2D_PROJECTION_FINDER_H
 
-#include "IMP/em2D/em2D_config.h"
-#include "IMP/em2D/RegistrationResult.h"
-#include "IMP/em2D/align2D.h"
+#include "IMP/em2d/em2d_config.h"
+#include "IMP/em2d/RegistrationResult.h"
+#include "IMP/em2d/align2D.h"
 #include "IMP/em/Image.h"
 #include "IMP/em/ImageReaderWriter.h"
 #include "IMP/em/SpiderReaderWriter.h"

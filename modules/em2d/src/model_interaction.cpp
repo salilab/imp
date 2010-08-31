@@ -5,7 +5,7 @@
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
 */
 
-#include "IMP/em2D/model_interaction.h"
+#include "IMP/em2d/model_interaction.h"
 #include "IMP/em/MRCReaderWriter.h"
 #include "IMP/atom/Atom.h"
 #include "IMP/atom/force_fields.h" // add_radii

@@ -4,7 +4,7 @@
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
 **/
 
-#include "IMP/em2D/image_processing.h"
+#include "IMP/em2d/image_processing.h"
 #include "IMP/em/Image.h"
 #include "IMP/em/SpiderReaderWriter.h"
 #include "IMP/em/filters.h"
@@ -83,7 +83,7 @@ void morphological_reconstruction(algebra::Matrix2D_d &mask,
 
   IMP_USAGE_CHECK((mask.get_number_of_rows()==marker.get_number_of_rows()) &&
             (mask.get_number_of_columns()==marker.get_number_of_columns()),
-        "em2D::morfological_reconstruction: Matrices have different size.");
+        "em2d::morfological_reconstruction: Matrices have different size.");
   unsigned int rows = mask.get_size(0);
   unsigned int cols = mask.get_size(1);
   int dims[2]; dims[0]=rows;dims[1]=cols;
@@ -251,7 +251,7 @@ void get_domes(algebra::Matrix2D_d &m,algebra::Matrix2D_d &result,double h) {
 }
 
 
-void preprocess_em2D(algebra::Matrix2D_d &m,
+void preprocess_em2d(algebra::Matrix2D_d &m,
                      algebra::Matrix2D_d &result,
                      double n_stddevs) {
   m.normalize();
@@ -324,7 +324,7 @@ void opening(const algebra::Matrix2D_d &m,
              algebra::Matrix2D_d &result) {
   IMP_USAGE_CHECK((m.get_number_of_rows()==result.get_number_of_rows()) &&
             (m.get_number_of_columns()==result.get_number_of_columns()),
-          "em2D::opening: Matrices have different size.");
+          "em2d::opening: Matrices have different size.");
 
   algebra::Matrix2D_d temp(m);
   erosion(m,kernel,temp);
@@ -338,7 +338,7 @@ void closing(const algebra::Matrix2D_d &m,
 
   IMP_USAGE_CHECK((m.get_number_of_rows()==result.get_number_of_rows()) &&
                   (m.get_number_of_columns()==result.get_number_of_columns()),
-                  "em2D::colsing: Matrices have different size.");
+                  "em2d::colsing: Matrices have different size.");
 
   algebra::Matrix2D_d temp(m);
   dilation(m,kernel,temp);
@@ -351,7 +351,7 @@ void thresholding(const algebra::Matrix2D_d &m,
              const double threshold,const int mode) {
   IMP_USAGE_CHECK((m.get_number_of_rows()==result.get_number_of_rows()) &&
                   (m.get_number_of_columns()==result.get_number_of_columns()),
-                  "em2D::thresholding: Matrices have different size.");
+                  "em2d::thresholding: Matrices have different size.");
 
 
   for(unsigned int i=0;i<m.num_elements();++i) {
@@ -368,7 +368,7 @@ void masking(const algebra::Matrix2D_d &m,algebra::Matrix2D_d &result,
           const algebra::Matrix2D<int> &mask,double value) {
   IMP_USAGE_CHECK((m.get_number_of_rows()==result.get_number_of_rows()) &&
                   (m.get_number_of_columns()==result.get_number_of_columns()),
-                  "em2D::masking: Matrices have different size.");
+                  "em2d::masking: Matrices have different size.");
 
   for (unsigned int i=0;i<m.num_elements();++i) {
     if(mask.data()[i]==1) {
@@ -465,7 +465,7 @@ void dilate_and_shrink_warp(algebra::Matrix2D_d &m,
 
   IMP_USAGE_CHECK((m.get_number_of_rows()==greyscale.get_number_of_rows()) &&
             (m.get_number_of_columns()==greyscale.get_number_of_columns()),
-            "em2D::dilate_an_shrink: Matrices have different size.");
+            "em2d::dilate_an_shrink: Matrices have different size.");
 
   int background = 0;
   int foreground = 1;

@@ -7,10 +7,10 @@
 #ifndef IMPEM2D_FINE_2DREGISTRATION_RESTRAINT_H
 #define IMPEM2D_FINE_2DREGISTRATION_RESTRAINT_H
 
-#include "IMP/em2D/em2D_config.h"
-#include "IMP/em2D/ProjectionMask.h"
-#include "IMP/em2D/RegistrationResult.h"
-#include "IMP/em2D/ProjectionParameters.h"
+#include "IMP/em2d/em2d_config.h"
+#include "IMP/em2d/ProjectionMask.h"
+#include "IMP/em2d/RegistrationResult.h"
+#include "IMP/em2d/ProjectionParameters.h"
 #include "IMP/em/Image.h"
 #include "IMP/algebra/Vector2D.h"
 #include "IMP/atom/Atom.h"

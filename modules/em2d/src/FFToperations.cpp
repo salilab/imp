@@ -4,7 +4,7 @@
  Copyright 2007-2010 IMP Inventors. All rights reserved.
 **/
 
-#include "IMP/em2D/FFToperations.h"
+#include "IMP/em2d/FFToperations.h"
 #include "IMP/em/Image.h"
 #include "IMP/em/SpiderReaderWriter.h"
 
@@ -18,7 +18,7 @@ void correlation2D(algebra::Matrix2D_d &m1,
 
   IMP_USAGE_CHECK((m1.get_number_of_rows()==m2.get_number_of_rows()) &&
                   (m1.get_number_of_columns()==m1.get_number_of_columns()),
-                  "em2D:correlation2D: Matrices have different size.");
+                  "em2d:correlation2D: Matrices have different size.");
   corr.resize(m1);
   algebra::Matrix2D_c M1,M2;
   FFT2D fft1(m1,M1); fft1.execute();
@@ -40,7 +40,7 @@ void correlation2D_no_preprocessing(
           "Computing 2D correlation with no preprocessing" << std::endl);
   IMP_USAGE_CHECK((M1.get_number_of_rows()==M2.get_number_of_rows()) &&
                   (M1.get_number_of_columns()==M2.get_number_of_columns()),
-        "em2D::correlation2D_no_preprocessing: Matrices have different size.");
+        "em2d::correlation2D_no_preprocessing: Matrices have different size.");
 
   algebra::Matrix2D_c CORR(M1.get_size(0),M1.get_size(1));
   for(unsigned long i=0;i<M1.num_elements();++i) {

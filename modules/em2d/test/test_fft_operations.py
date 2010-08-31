@@ -3,7 +3,7 @@ import IMP
 import IMP.test
 import IMP.core
 import IMP.atom
-import IMP.em2D
+import IMP.em2d
 import IMP.em
 import os
 
@@ -20,7 +20,7 @@ class FFToperationsTests(IMP.test.TestCase):
         image=IMP.em.Image()
         image.read(name,srw)
         corr=IMP.em.Image()
-        IMP.em2D.autocorrelation2D(image.get_data(),corr.get_data() )
+        IMP.em2d.autocorrelation2D(image.get_data(),corr.get_data() )
         IMP.em.normalize(corr)
         name=self.get_input_file_name("autocorrrelation_img.spi")
         stored_corr=IMP.em.Image()
@@ -44,7 +44,7 @@ class FFToperationsTests(IMP.test.TestCase):
         srw = IMP.em.SpiderImageReaderWriter()
         images=IMP.em.read_images(names,srw)
         corr=IMP.em.Image()
-        IMP.em2D.correlation2D(images[0].get_data(), images[1].get_data(),
+        IMP.em2d.correlation2D(images[0].get_data(), images[1].get_data(),
                                                corr.get_data() )
         IMP.em.normalize(corr)
         name=self.get_input_file_name("corrrelation_img.spi")

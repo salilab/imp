@@ -7,7 +7,7 @@
 #ifndef IMPEM2D_PCA_FEATURES_EXTRACTION_H
 #define IMPEM2D_PCA_FEATURES_EXTRACTION_H
 
-#include "IMP/em2D/em2D_config.h"
+#include "IMP/em2d/em2d_config.h"
 #include "IMP/em/Image.h"
 #include "IMP/algebra/Vector2D.h"
 #include "IMP/algebra/Vector3D.h"

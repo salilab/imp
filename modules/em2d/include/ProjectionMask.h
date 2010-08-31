@@ -7,7 +7,7 @@
 #ifndef IMPEM2D_PROJECTION_MASK_H
 #define IMPEM2D_PROJECTION_MASK_H
 
-#include "IMP/em2D/em2D_config.h"
+#include "IMP/em2d/em2d_config.h"
 #include "IMP/em/Image.h"
 #include "IMP/em/exp.h"
 #include "IMP/algebra/Matrix2D.h"

@@ -6,12 +6,12 @@
 */
 
 
-#include "IMP/em2D/em2D_config.h"
-#include "IMP/em2D/project.h"
-#include "IMP/em2D/ProjectionFinder.h"
-#include "IMP/em2D/filenames_manipulation.h"
-#include "IMP/em2D/model_interaction.h"
-#include "IMP/em2D/scores2D.h"
+#include "IMP/em2d/em2d_config.h"
+#include "IMP/em2d/project.h"
+#include "IMP/em2d/ProjectionFinder.h"
+#include "IMP/em2d/filenames_manipulation.h"
+#include "IMP/em2d/model_interaction.h"
+#include "IMP/em2d/scores2D.h"
 #include "IMP/em/image_transformations.h"
 #include "IMP/em/Image.h"
 #include "IMP/em/DensityMap.h"
@@ -33,7 +33,7 @@
 
 namespace po = boost::program_options;
 namespace em = IMP::em;
-namespace em2D = IMP::em2D;
+namespace em2d = IMP::em2d;
 namespace alg = IMP::algebra;
 namespace core = IMP::core;
 namespace atom = IMP::atom;
@@ -41,7 +41,7 @@ typedef std::string str;
 
 po::variables_map get_parameters(int argc,char **argv) {
   // Declare the supported options.
-  po::options_description desc("Score a model with em2D.");
+  po::options_description desc("Score a model with em2d.");
   desc.add_options()
     ("help", "This is the help. Variables with * are mandatory")
     ("mod", po::value<std::string>(), "* PDB file with model")
@@ -174,7 +174,7 @@ int main(int argc, char **argv) {
   fn_subjs = vm["subjs"].as<std::string>();
   IMP_LOG(IMP::TERSE,"Reading EM subject images from "
               << fn_subjs << std::endl);
-  subjs_names= em2D::read_selection_file(fn_subjs);
+  subjs_names= em2d::read_selection_file(fn_subjs);
   subjects = em::read_images(subjs_names,srw);
   int rows=subjects[0]->get_data().get_number_of_rows();
   int cols=subjects[0]->get_data().get_number_of_columns();
@@ -199,20 +199,20 @@ int main(int argc, char **argv) {
         << " projections using model " << fn_model << std::endl);
 
     // Generate evenly distributed projections
-    em2D::RegistrationResults evenly_regs=
-          em2D::evenly_distributed_registration_results(n_projections);
+    em2d::RegistrationResults evenly_regs=
+          em2d::evenly_distributed_registration_results(n_projections);
 
-    projections= em2D::generate_projections(ps,evenly_regs,rows,cols,
+    projections= em2d::generate_projections(ps,evenly_regs,rows,cols,
                                                 resolution,apix,srw);
     if(save_images) {
-      projs_names = em2D::generate_filenames(n_projections,"proj","spi");
+      projs_names = em2d::generate_filenames(n_projections,"proj","spi");
       em::save_images(projections,projs_names,srw);
     }
   } else if(opt[0]=="read") {
     // Read the projections selection file
     fn_projs = opt[1];
     IMP_LOG(IMP::TERSE,"Reading projections from: " << fn_projs << std::endl);
-    projs_names = em2D::read_selection_file(fn_projs);
+    projs_names = em2d::read_selection_file(fn_projs);
     projections = em::read_images(projs_names,srw);
   }
   double projection_time = project_timer.elapsed();
@@ -221,7 +221,7 @@ int main(int argc, char **argv) {
 
 
   // Projection registration
-  em2D::ProjectionFinder registration(ps,subjects,projections);
+  em2d::ProjectionFinder registration(ps,subjects,projections);
 
   boost::timer registration_timer;
   if(vm.count("pca")) {
@@ -235,7 +235,7 @@ int main(int argc, char **argv) {
     Score=registration.get_complete_registration(save_images,apix,
                 optimization_steps,simplex_minimum_size);
   }
-  em2D::RegistrationResults registration_results;
+  em2d::RegistrationResults registration_results;
   registration_results=registration.get_registration_results();
 
 
@@ -254,13 +254,13 @@ int main(int argc, char **argv) {
       <<c<< fn_subjs <<c<< Score <<c<< total_time <<c<< n_subjects;
   for (unsigned int i=0;i<n_subjects;++i) {
     *std::cin.tie() <<c<<
-            em2D::ccc_to_em2D_score(registration_results[i].get_ccc());
+            em2d::ccc_to_em2d_score(registration_results[i].get_ccc());
   }
   *std::cin.tie() << std::endl;
   // Benchmark
   if(vm.count("bm")) {
-    em2D::RegistrationResults correct_RRs=
-              em2D::read_registration_results(vm["bm"].as<std::string>());
+    em2d::RegistrationResults correct_RRs=
+              em2d::read_registration_results(vm["bm"].as<std::string>());
     *std::cin.tie() << "CORRECT REGISTRATION RESULTS " << std::endl;
     for (unsigned int i=0;i<correct_RRs.size();++i) {
       *std::cin.tie() << correct_RRs[i] << std::endl;

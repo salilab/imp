@@ -9,7 +9,7 @@
 #define IMPEM2D_PIXEL_H
 
 
-#include "IMP/em2D/em2D_config.h"
+#include "IMP/em2d/em2d_config.h"
 #include <IMP/macros.h>
 #include <IMP/exception.h>
 #include <vector>

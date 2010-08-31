@@ -7,7 +7,7 @@
 #ifndef IMPEM2D_PROJECTION_PARAMETERS_H
 #define IMPEM2D_PROJECTION_PARAMETERS_H
 
-#include "IMP/em2D/em2D_config.h"
+#include "IMP/em2d/em2d_config.h"
 #include "IMP/algebra/Vector3D.h"
 #include "IMP/algebra/Vector2D.h"
 #include "IMP/algebra/Rotation3D.h"

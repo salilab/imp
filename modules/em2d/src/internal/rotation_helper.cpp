@@ -1,11 +1,11 @@
 /**
  *  \file rotation_helper.cp
- *  \brief Funtions related with rotations in em2D
+ *  \brief Funtions related with rotations in em2d
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
 */
 
-#include "IMP/em2D/internal/rotation_helper.h"
+#include "IMP/em2d/internal/rotation_helper.h"
 
 IMPEM2D_BEGIN_INTERNAL_NAMESPACE
 

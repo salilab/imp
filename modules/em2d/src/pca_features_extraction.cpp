@@ -5,7 +5,7 @@
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
 */
 
-#include "IMP/em2D/pca_features_extraction.h"
+#include "IMP/em2d/pca_features_extraction.h"
 #include "IMP/em/Image.h"
 #include "IMP/algebra/eigen_analysis.h"
 #include "IMP/algebra/Matrix2D.h"

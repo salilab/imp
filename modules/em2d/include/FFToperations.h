@@ -7,8 +7,8 @@
 #ifndef IMPEM2D_FF_TOPERATIONS_H
 #define IMPEM2D_FF_TOPERATIONS_H
 
-#include "IMP/em2D/em2D_config.h"
-#include "IMP/em2D/FFTinterface.h"
+#include "IMP/em2d/em2d_config.h"
+#include "IMP/em2d/FFTinterface.h"
 #include "IMP/algebra/Matrix2D.h"
 
 IMPEM2D_BEGIN_NAMESPACE

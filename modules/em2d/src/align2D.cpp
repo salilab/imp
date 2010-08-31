@@ -5,7 +5,7 @@
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
 */
 
-#include "IMP/em2D/align2D.h"
+#include "IMP/em2d/align2D.h"
 #include "IMP/em/noise.h"
 #include "IMP/em/Image.h"
 #include "IMP/em/SpiderReaderWriter.h"
@@ -77,7 +77,7 @@ double align2D_rotational(algebra::Matrix2D_d &m1,
           "starting 2D rotational alignment" << std::endl);
   IMP_USAGE_CHECK((m1.get_number_of_rows()==m2.get_number_of_rows()) &&
                   (m1.get_number_of_columns()==m1.get_number_of_columns()),
-                  "em2D::align_rotational: Matrices have different size.");
+                  "em2d::align_rotational: Matrices have different size.");
 
   double_rings rings1,rings2;
   resample2D_polar(m1,rings1,true,interpolation_method);  // subject image
@@ -139,9 +139,9 @@ double align2D_translational(algebra::Matrix2D_d &m1,
   IMP_LOG(IMP::TERSE, "starting 2D translational alignment" << std::endl);
   IMP_USAGE_CHECK((m1.get_number_of_rows()==m2.get_number_of_rows()) &&
                   (m1.get_number_of_columns()==m1.get_number_of_columns()),
-                  "em2D::align_translational: Matrices have different size.");
+                  "em2d::align_translational: Matrices have different size.");
   algebra::Matrix2D_d cross_corr;
-  em2D::correlation2D(m1,m2,cross_corr);
+  em2d::correlation2D(m1,m2,cross_corr);
   double max_cc;
   v = peak_search(cross_corr,&max_cc);
   // Correct the shift applied for the fact that we are using the
@@ -302,7 +302,7 @@ double align2D_translational_no_preprocessing(
       "starting 2D translational alignment with no preprocessing" << std::endl);
   algebra::Matrix2D_d cross_corr;
   cross_corr.resize(original_rows,original_cols);
-  em2D::correlation2D_no_preprocessing(M1,M2,cross_corr);
+  em2d::correlation2D_no_preprocessing(M1,M2,cross_corr);
   // Find the peak of the cross_correlation
   double max_cc;
   v = peak_search(cross_corr,&max_cc);
@@ -454,7 +454,7 @@ double align2D_complete_with_centers(algebra::Matrix2D_d &m1,
 
     IMP_USAGE_CHECK((m1.get_number_of_rows()==m2.get_number_of_rows()) &&
                   (m1.get_number_of_columns()==m2.get_number_of_columns()),
-        "em2D::align2D_complete_with_cemters: Matrices have different size.");
+        "em2d::align2D_complete_with_cemters: Matrices have different size.");
   algebra::Matrix2D_d cm1,cm2; // centered versions of the matrices
     // Save the origin and center
   std::vector<int> orig1(2),orig2(2);

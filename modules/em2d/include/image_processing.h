@@ -8,8 +8,8 @@
 #ifndef IMPEM2D_IMAGE_PROCESSING_H
 #define IMPEM2D_IMAGE_PROCESSING_H
 
-#include "IMP/em2D/em2D_config.h"
-#include "IMP/em2D/Pixel.h"
+#include "IMP/em2d/em2d_config.h"
+#include "IMP/em2d/Pixel.h"
 #include "IMP/em/Image.h"
 #include "IMP/em/image_transformations.h"
 #include "IMP/algebra/Matrix2D.h"
@@ -78,10 +78,10 @@ IMPEM2DEXPORT void get_domes(
                   algebra::Matrix2D_d &m,algebra::Matrix2D_d &result,double h);
 
 
-IMPEM2DEXPORT void preprocess_em2D_image(
+IMPEM2DEXPORT void preprocess_em2d_image(
                         em::Image &img,em::Image &result,double n_stddevs);
 
-IMPEM2DEXPORT void preprocess_em2D(algebra::Matrix2D_d &m,
+IMPEM2DEXPORT void preprocess_em2d(algebra::Matrix2D_d &m,
                      algebra::Matrix2D_d &result,
                      double n_stddevs);
 

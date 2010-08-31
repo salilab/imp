@@ -8,7 +8,7 @@
 #ifndef IMPEM2D_FF_TINTERFACE_H
 #define IMPEM2D_FF_TINTERFACE_H
 
-#include "IMP/em2D/em2D_config.h"
+#include "IMP/em2d/em2d_config.h"
 #include "IMP/em/DensityMap.h"
 #include "IMP/algebra/Matrix2D.h"
 #include "IMP/algebra/Matrix3D.h"
