@@ -1,0 +1,12 @@
+Import('env')
+
+# See IMP.gsl for an example of how to add external dependencies to a module
+#env.IMPModuleBuild(version='SVN',
+#   required_modules=['container', 'core','atom','algebra','em','display','gsl'])
+#
+
+
+env.IMPModuleBuild(version='local',
+    required_modules=['container','core','atom','algebra','em','display','gsl'],
+    required_dependencies=['FFTW3','Boost.ProgramOptions']
+    )

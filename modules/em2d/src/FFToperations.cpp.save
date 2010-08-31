@@ -1,0 +1,115 @@
+/**
+ *  \file FFToperations.cpp
+ *  \brief operations involving FFT
+ Copyright 2007-2010 IMP Inventors. All rights reserved.
+**/
+
+#include "IMP/em2D/FFToperations.h"
+#include "IMP/em/Image.h"
+#include "IMP/em/SpiderReaderWriter.h"
+
+IMPEM2D_BEGIN_NAMESPACE
+
+
+void correlation2D(algebra::Matrix2D_d &m1,
+                          algebra::Matrix2D_d &m2,
+                          algebra::Matrix2D_d &corr) {
+  IMP_LOG(IMP::VERBOSE,"Computing 2D correlation " <<std::endl);
+
+  IMP_USAGE_CHECK((m1.get_number_of_rows()==m2.get_number_of_rows()) &&
+                  (m1.get_number_of_columns()==m1.get_number_of_columns()),
+                  "em2D:correlation2D: Matrices have different size.");
+  corr.resize(m1);
+  algebra::Matrix2D_c M1,M2;
+  FFT2D fft1(m1,M1); fft1.execute();
+  FFT2D fft2(m2,M2); fft2.execute();
+  for(unsigned long i=0;i<M1.num_elements();++i) {
+    std::complex<double> x1 = M1.data()[i];
+    std::complex<double> x2 = M2.data()[i];
+    M2.data()[i] = x1*std::conj(x2);
+  }
+  IFFT2D ifft(M2,corr); ifft.execute(); // corr contains the correlation matrix
+  matrix_to_image_interpretation(corr);
+
+  if(IMP::get_log_level()==IMP::VERBOSE) {
+        
+  }
+
+}
+
+void correlation2D_no_preprocessing(
+                   algebra::Matrix2D_c &M1,
+                   algebra::Matrix2D_c &M2,
+                   algebra::Matrix2D_d &corr) {
+  IMP_LOG(IMP::VERBOSE,"Computing 2D correlation with no preprocessing"
+              <<std::endl);
+  algebra::Matrix2D_c CORR(M1.get_size(0),M1.get_size(1));
+  for(unsigned long i=0;i<M1.num_elements();++i) {
+    std::complex<double> x1 = M1.data()[i];
+    std::complex<double> x2 = M2.data()[i];
+    CORR.data()[i] = x1*std::conj(x2);
+  }
+  IFFT2D ifft(CORR,corr);ifft.execute(); //corr contains the correlation matrix
+  matrix_to_image_interpretation(corr);
+}
+
+void autocorrelation2D(algebra::Matrix2D_d& m,
+                               algebra::Matrix2D_d& corr) {
+  IMP_LOG(IMP::VERBOSE,"Computing 2D autocorrelation" <<std::endl);
+  algebra::Matrix2D_c M;
+  corr.resize(m);
+  FFT2D fft(m,M); fft.execute();
+  autocorrelation2D_no_preprocessing(M,corr);
+};
+
+void autocorrelation2D_no_preprocessing(
+                    algebra::Matrix2D_c &M,
+                    algebra::Matrix2D_d &corr) {
+  IMP_LOG(IMP::VERBOSE,"Computing 2D autocorrelation with no preprocessing"
+              <<std::endl);
+  algebra::Matrix2D_c AUTOCORR(M.get_size(0),M.get_size(1));
+  for(unsigned long i=0;i<M.num_elements();++i) {
+    (AUTOCORR.data()[i]) = std::norm(M.data()[i]);
+  }
+  IFFT2D ifft(AUTOCORR,corr); ifft.execute();
+  matrix_to_image_interpretation(corr);
+ };
+
+
+void print_matrix(algebra::Matrix2D_c &m,
+                  std::ostream &out) {
+  for (int j = m.get_start(0);j <= m.get_finish(0);j++) {
+    for (int  i = m.get_start(1);i <= m.get_finish(1);++i) {
+      out << m(j,i) << " ";
+    }
+    out << std::endl;
+  }
+}
+
+void print_matrix(algebra::Matrix3D<std::complex<double> > &m,
+                  std::ostream &out) {
+  for (int k = m.get_start(0);k <= m.get_finish(0);k++) {
+    if (m.get_size(0) > 1) {
+      std::cout << "Slice No. " << k << std::endl;
+    }
+    for (int j = m.get_start(1);j <= m.get_finish(1);j++) {
+      for (int i = m.get_start(2);i <= m.get_finish(2);++i) {
+        out << m(k,j,i) << ' ';
+      }
+      out << std::endl;
+    }
+  }
+}
+
+void Matrix2D_c_to_img(algebra::Matrix2D_c &M,String name) {
+  em::SpiderImageReaderWriter<double> srw;
+  em::Image img;
+  img.resize(M.get_size(0),M.get_size(1));
+  for(unsigned long i=0;i<M.num_elements();++i) {
+      (img.get_data().data()[i]) = std::norm(M.data()[i]);
+  }
+  img.write_to_floats(name,srw);
+
+}
+
+IMPEM2D_END_NAMESPACE
