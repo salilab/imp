@@ -26,7 +26,7 @@ ConsecutivePairContainer::ConsecutivePairContainer(const ParticlesTemp &ps):
   ++count;
   key_= IntKey(oss.str());
   for (unsigned int i=0; i< ps.size(); ++i) {
-    IMP_USAGE_CHECK(!ps[i]->get_has_attribute(key_),
+    IMP_USAGE_CHECK(!ps[i]->has_attribute(key_),
                     "You must create containers before reading in the "
                     << "saved model");
     ps[i]->add_attribute(key_, i);
