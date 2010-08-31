@@ -57,8 +57,20 @@ def check_python_file(filename, txn, repos, errors):
        standards"""
     cmd = [svnlook, 'cat', '-t', txn, repos, filename]
     temptest = re.compile('\s+def\s+temp_hide_test.*')
+    test= re.compile('\s+def\s+(test_[abcdefghijklmnopqrstuvwxyz'
+                     '0123456789_]*)\(')
+    tests = []
     for (num, line) in enumerate(Popen(cmd, shell=False, stdout=PIPE).stdout):
         _check_do_not_commit(line, filename, num, errors)
+        errors.append('%s:%d: Test case has the temp_hide_ prefix' \
+                      % (filename, num+1))
+        m = test.match(line)
+        if m:
+            g = m.group(1)
+            if g in tests:
+                errors.append('%s:%d: Test case has multiple tests with '
+                              'the same name %s' % (filename, num+1, g))
+            tests.append(g)
 
     p1 = Popen(cmd, shell=False, stdout=PIPE).stdout
     r = Reindenter(p1)
