@@ -202,7 +202,7 @@ class TestCPFL(IMP.test.TestCase):
         print "grid"
         #IMP.set_log_level(IMP.VERBOSE)
         self.do_test_one(IMP.core.GridClosePairsFinder())
-    def test_grid(self):
+    def test_periodic_grid(self):
         """Testing periodic GridClosePairsFinder"""
         print "grid"
         bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
