@@ -228,18 +228,18 @@ int main(int argc , char **argv) {
                                                        XYZ::get_xyz_keys()[0]));
   } else {
     {
-      do_benchmark<1, PairsRestraint>("scores", argc-1, argv+1,
-                                      new HarmonicDistancePairScore(len, kk),
-                                      new SoftSpherePairScore(kk),
-                                      new AttributeSingletonScore(new HLB(0,kk),
-                                                                  xk));
       typedef ContainerRestraint<SoftSpherePairScore, ClosePairContainer> PR;
       do_benchmark<1, PR >("custom", argc-1, argv+1,
                            new HarmonicDistancePairScore(len, kk),
                            new SoftSpherePairScore(kk),
                            new AttributeSingletonScore(new HLB(0,kk),
                                                        XYZ::get_xyz_keys()[0]));
-      do_benchmark<0, PairsRestraint>("generic", argc-1, argv+1,
+       do_benchmark<1, PairsRestraint>("scores", argc-1, argv+1,
+                                      new HarmonicDistancePairScore(len, kk),
+                                      new SoftSpherePairScore(kk),
+                                      new AttributeSingletonScore(new HLB(0,kk),
+                                                                  xk));
+     do_benchmark<0, PairsRestraint>("generic", argc-1, argv+1,
                                   new DistancePairScore(new Harmonic(len,kk)),
                                   new SphereDistancePairScore(new HLB(0,kk)),
                                       new AttributeSingletonScore(new HLB(0,kk),
