@@ -22,6 +22,20 @@ RadiusDependentKernelParameters::RadiusDependentKernelParameters(
    float timessig, float sq2pi3,
    float inv_rsigsq, float rnormfac,
    float rkdist) {
+  IMP_USAGE_CHECK(std::abs(radii) < std::numeric_limits<float>::max(),
+                  "Radius out of range");
+  IMP_USAGE_CHECK(std::abs(rsigsq) < std::numeric_limits<float>::max(),
+                  "rsigsq out of range");
+  IMP_USAGE_CHECK(std::abs(timessig) < std::numeric_limits<float>::max(),
+                  "timessig out of range");
+  IMP_USAGE_CHECK(std::abs(sq2pi3) < std::numeric_limits<float>::max(),
+                  "sq2pi3 out of range");
+  IMP_USAGE_CHECK(std::abs(inv_rsigsq) < std::numeric_limits<float>::max(),
+                  "inv_rsigsq out of range");
+  IMP_USAGE_CHECK(std::abs(rnormfac) < std::numeric_limits<float>::max(),
+                  "rnormfac out of range");
+  IMP_USAGE_CHECK(std::abs(timessig) < std::numeric_limits<float>::max(),
+                  "rkdist outx of range");
   if (radii> EPS) {
     // to prevent calculation for particles with the same radius ( atoms)
     //    vsig = 1./(sqrt(2.*log(2.))) * radii_; // volume sigma
@@ -55,6 +69,20 @@ void KernelParameters::init(float resolution)
   rnormfac_ = sq2pi3_ * 1. / (rsig_ * rsig_ * rsig_);
   rkdist_   = timessig_ * rsig_;
   lim_ = exp(-0.5 * (timessig_ - EPS) * (timessig_ - EPS));
+  IMP_USAGE_CHECK(std::abs(rsig_) < std::numeric_limits<float>::max(),
+                  "rsig out of range");
+  IMP_USAGE_CHECK(std::abs(rsigsq_) < std::numeric_limits<float>::max(),
+                  "rsigsq out of range");
+  IMP_USAGE_CHECK(std::abs(inv_rsigsq_) < std::numeric_limits<float>::max(),
+                  "inv_rsigsq out of range");
+  IMP_USAGE_CHECK(std::abs(sq2pi3_) < std::numeric_limits<float>::max(),
+                  "sq2pi3 out of range");
+  IMP_USAGE_CHECK(std::abs(rnormfac_) < std::numeric_limits<float>::max(),
+                  "rnormfac_ out of range");
+  IMP_USAGE_CHECK(std::abs(rkdist_) < std::numeric_limits<float>::max(),
+                  "rkdist out of range");
+  IMP_USAGE_CHECK(std::abs(lim_) < std::numeric_limits<float>::max(),
+                  "lim out of range");
 }
 
 const RadiusDependentKernelParameters*
