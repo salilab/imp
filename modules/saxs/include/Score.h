@@ -44,7 +44,7 @@ public:
 
   //! fit experimental profile through optimization of c1 and c2 parameters
   /**
-     \param[in] model profile (partial profiles computed)
+     \param[in] partial_profile  partial profiles computed
      \param[in] c1, c2 - the optimal values will be returned in these parameters
      c1 - adjusts the excluded volume, valid range [0.95 - 1.12]
      c2 - adjusts the density of hydration layer, valid range [-4.0 - 4.0]
