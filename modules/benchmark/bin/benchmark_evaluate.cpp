@@ -16,7 +16,98 @@ using namespace IMP::algebra;
 using namespace IMP::atom;
 using namespace IMP::container;
 
+#define IMP_GET_EVALUATE(Class)\
+  static_cast<double (Class::*)(const ParticlePair&,                    \
+                                DerivativeAccumulator*)                 \
+              const>(&Class::evaluate)
+
+template <class It, class F>
+inline double my_accumulate(It b, It e, F f) {
+  double ret=0;
+  for (It c=b; c != e; ++c) {
+    ret+= f(*c);
+  }
+  return ret;
+}
+
 void time_both(PairContainer *pc, PairScore *ps, std::string name) {
+  {
+    const ParticlePairsTemp pps= pc->get_particle_pairs();
+    double runtime=0, total=0;
+    IMP_TIME(
+             {
+               for (unsigned int i=0; i< pps.size(); ++i) {
+                 total+=ps->evaluate(pps[i], NULL);
+               }
+             }, runtime);
+    std::ostringstream oss;
+    oss << "container direct " << name << " in "
+        << pc->get_number_of_particle_pairs();
+    IMP::benchmark::report(oss.str(), runtime, total);
+  }
+  {
+    SoftSpherePairScore *ssps= dynamic_cast<SoftSpherePairScore*>(ps);
+    const ParticlePairsTemp pps= pc->get_particle_pairs();
+    double runtime=0, total=0;
+    IMP_TIME(
+             {
+               for (unsigned int i=0; i< pps.size(); ++i) {
+                 total+=ssps->evaluate(pps[i], NULL);
+               }
+             }, runtime);
+    std::ostringstream oss;
+    oss << "container ssps direct " << name << " in "
+        << pc->get_number_of_particle_pairs();
+    IMP::benchmark::report(oss.str(), runtime, total);
+  }
+  {
+    SoftSpherePairScore *ssps= dynamic_cast<SoftSpherePairScore*>(ps);
+    const ParticlePairsTemp pps= pc->get_particle_pairs();
+    double runtime=0, total=0;
+    IMP_TIME(
+             {
+               for (unsigned int i=0; i< pps.size(); ++i) {
+                 total+=ssps->SoftSpherePairScore::evaluate(pps[i],
+                                   static_cast<DerivativeAccumulator*>(NULL));
+               }
+             }, runtime);
+    std::ostringstream oss;
+    oss << "container ssps direct call " << name << " in "
+        << pc->get_number_of_particle_pairs();
+    IMP::benchmark::report(oss.str(), runtime, total);
+  }
+  {
+    SoftSpherePairScore *ssps= dynamic_cast<SoftSpherePairScore*>(ps);
+    const ParticlePairsTemp pps= pc->get_particle_pairs();
+    double runtime=0, total=0;
+    IMP_TIME(
+             {
+               total+=my_accumulate(pps.begin(), pps.end(),
+                             boost::bind(IMP_GET_EVALUATE(SoftSpherePairScore),
+                                             ssps, _1,
+                                    static_cast<DerivativeAccumulator*>(NULL)));
+             }, runtime);
+    std::ostringstream oss;
+    oss << "container ssps direct bind " << name << " in "
+        << pc->get_number_of_particle_pairs();
+    IMP::benchmark::report(oss.str(), runtime, total);
+  }
+  {
+    SoftSpherePairScore *ssps= dynamic_cast<SoftSpherePairScore*>(ps);
+    const ParticlePairsTemp pps= pc->get_particle_pairs();
+    double runtime=0, total=0;
+    IMP_TIME(
+             {
+               total+=my_accumulate(pps.begin(), pps.end(),
+                                 boost::bind(IMP_GET_EVALUATE(PairScore),
+                                             ssps, _1,
+                            static_cast<DerivativeAccumulator*>(NULL)));
+             }, runtime);
+    std::ostringstream oss;
+    oss << "container direct bind " << name << " in "
+        << pc->get_number_of_particle_pairs();
+    IMP::benchmark::report(oss.str(), runtime, total);
+  }
   {
     double runtime=0, total=0;
     IMP_TIME(
@@ -54,7 +145,7 @@ void test(int n) {
       lpc->add_particle_pair(ParticlePair(ps[i], ps[j]));
     }
   }
-  IMP_NEW(DistancePairScore, dps, (new HarmonicLowerBound(0, 1)));
+  IMP_NEW(SoftSpherePairScore, dps, (1));
   time_both(lpc, dps, "list");
 }
 
@@ -79,7 +170,7 @@ void test_set(int n) {
   pcs->add_pair_container(lpc0);
   pcs->add_pair_container(lpc1);
 
-  IMP_NEW(DistancePairScore, dps, (new HarmonicLowerBound(0, 1)));
+  IMP_NEW(SoftSpherePairScore, dps, (1));
   time_both(pcs, dps, "set");
 }
 
