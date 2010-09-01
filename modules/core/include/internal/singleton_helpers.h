@@ -115,8 +115,70 @@ protected:
     }
     return ret;
   }
-public:
-  IMP_SINGLETON_CONTAINER(ListLikeSingletonContainer);
+ public:
+  template <class SM>
+  void template_apply(const SM *sm,
+                      DerivativeAccumulator &da) {
+     apply_to_contents(boost::bind(static_cast<void (SingletonModifier::*)
+                        (Particle*,DerivativeAccumulator&) const>
+                        (&SingletonModifier::apply), sm, _1, da));
+ }
+  template <class SM>
+  void template_apply(const SM *sm) {
+    apply_to_contents(boost::bind(static_cast<void (SingletonModifier::*)
+                    (Particle*) const>(&SingletonModifier::apply),
+                        sm, _1));
+  }
+  template <class SS>
+  double template_evaluate(const SS *s,
+                           DerivativeAccumulator *da) const {
+    return accumulate_over_contents(boost::bind(static_cast<double
+                                                (SingletonScore::*)
+                        (Particle*,DerivativeAccumulator*) const>
+                               (&SingletonScore::evaluate), s, _1, da));
+  }
+  template <class SS>
+  double template_evaluate_change(const SS *s,
+                                  DerivativeAccumulator *da) const {
+     return accumulate_over_contents(boost::bind(static_cast<double
+                                                (SingletonScore::*)
+                        (Particle*,DerivativeAccumulator*) const>
+                       (&SingletonScore::evaluate_change), s, _1, da));
+ }
+  template <class SS>
+  double template_evaluate_prechange(const SS *s,
+                                     DerivativeAccumulator *da) const {
+    return accumulate_over_contents(boost::bind(static_cast<double
+                                                (SingletonScore::*)
+                        (Particle*,DerivativeAccumulator*) const>
+                    (&SingletonScore::evaluate_prechange), s, _1, da));
+  }
+  void apply(const SingletonModifier *sm) {
+    sm->apply(data_);
+  }
+  void apply(const SingletonModifier *sm,
+             DerivativeAccumulator &da) {
+    sm->apply(data_, da);
+  }
+  double evaluate(const SingletonScore *s,
+                  DerivativeAccumulator *da) const {
+    return s->evaluate(data_, da);
+  }
+  double evaluate_change(const SingletonScore *s,
+                         DerivativeAccumulator *da) const {
+    return s->evaluate_change(data_, da);
+  }
+  double evaluate_prechange(const SingletonScore *s,
+                            DerivativeAccumulator *da) const {
+    return s->evaluate_prechange(data_, da);
+  }
+  ParticlesTemp get_contained_particles() const;
+  bool get_contained_particles_changed() const;
+  SingletonContainerPair get_added_and_removed_containers() const;
+  bool get_contains_particle(Particle* p) const;
+  unsigned int get_number_of_particles() const;
+  Particle* get_particle(unsigned int i) const;
+  IMP_OBJECT(ListLikeSingletonContainer);
   typedef Particles::const_iterator ParticleIterator;
   ParticleIterator particles_begin() const {
     return data_.begin();
