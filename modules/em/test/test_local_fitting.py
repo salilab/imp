@@ -40,14 +40,17 @@ class LocalFittingTest(IMP.test.TestCase):
         rand_translation = 15.*IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d())
         rt= IMP.algebra.Transformation3D(IMP.algebra.get_identity_rotation_3d(),rand_translation)
         IMP.core.transform(IMP.core.RigidBody(self.mh),rt)
+        refiner=IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
         print "calculate fast"
         fr_fast=IMP.em.local_rigid_fitting(
             IMP.core.RigidBody(self.mh),
+            refiner,
             self.radius_key, self.weight_key,
             self.scene,self.pdb_opt_state,1,2,50,2.,.3,True)
         print "calculate slow"
         fr_slow=IMP.em.local_rigid_fitting(
              IMP.core.RigidBody(self.mh),
+             refiner,
              self.radius_key, self.weight_key,
              self.scene,None,1,2,50,2.,.3,False)
         print "fast:",fr_fast.get_score(0)," slow:",fr_slow.get_score(0)
