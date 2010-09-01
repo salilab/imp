@@ -63,8 +63,7 @@ using boost::mpl::multiplies;
 using boost::mpl::int_;
 using boost::mpl::vector_c;
 using boost::mpl::at;
-using namespace boost::mpl::placeholders;
-
+namespace pl= boost::mpl::placeholders;
 
 /*
   These classes allow the Units part of a unit to be manipulated
@@ -72,32 +71,32 @@ using namespace boost::mpl::placeholders;
 template <class UA, class UB>
 struct Divide
 {
-  typedef typename transform<UA, UB, minus<_1, _2> >::type type;
+  typedef typename transform<UA, UB, minus<pl::_1, pl::_2> >::type type;
 };
 
 template <class UA>
 struct Inverse
 {
-  typedef typename transform<UA, minus<int_<0>, _1> >::type type;
+  typedef typename transform<UA, minus<int_<0>, pl::_1> >::type type;
 };
 
 template <class UA, class UB>
 struct Multiply
 {
-  typedef typename transform<UA, UB, plus<_1, _2> >::type type;
+  typedef typename transform<UA, UB, plus<pl::_1, pl::_2> >::type type;
 };
 
 template <class UA>
 struct Sqrt
 {
-  typedef typename transform<UA, divides<_1, int_<2> > >::type type;
+  typedef typename transform<UA, divides<pl::_1, int_<2> > >::type type;
 };
 
 
 template <class UA, class UB>
 struct Exponentiate
 {
-  typedef typename transform<UA, UB, multiplies<_1, _2> >::type type;
+  typedef typename transform<UA, UB, multiplies<pl::_1, pl::_2> >::type type;
 };
 
 template <class InputVector, int SZ>
