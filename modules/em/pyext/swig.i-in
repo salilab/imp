@@ -12,6 +12,8 @@ IMP_SWIG_OBJECT(IMP::em, SampledDensityMap, SampledDensityMaps);
 IMP_SWIG_OBJECT(IMP::em, SurfaceShellDensityMap, SurfaceShellDensityMaps);
 IMP_SWIG_OBJECT(IMP::em, FitRestraint, FitRestraints);
 IMP_SWIG_OBJECT(IMP::em, Image, Images);
+IMP_SWIG_VALUE(IMP::em, RadiusDependentKernelParameters, RadiusDependentKernelParametersList);
+IMP_SWIG_VALUE(IMP::em, KernelParameters, KernelParametersList);
 
 
 /* Wrap our own classes */
