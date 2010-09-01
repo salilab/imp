@@ -14,6 +14,7 @@
 #include "../core_config.h"
 #include <IMP/SingletonContainer.h>
 #include <IMP/SingletonModifier.h>
+#include <IMP/SingletonScore.h>
 #include <IMP/internal/container_helpers.h>
 #include <algorithm>
 
@@ -45,6 +46,7 @@ protected:
   }
   ListLikeSingletonContainer(){}
   void update_list(ParticlesTemp &cur) {
+    index_.clear();
     IMP_IF_CHECK(USAGE) {
       for (unsigned int i=0; i< cur.size(); ++i) {
         IMP_USAGE_CHECK(
@@ -102,8 +104,16 @@ protected:
     SingletonContainer(m,name){
   }
   template <class F>
-    F foreach(F f) const {
-    return std::for_each(data_.begin(), data_.end(), f);
+   void apply_to_contents(F f) const {
+    std::for_each(data_.begin(), data_.end(), f);
+  }
+  template <class F>
+    typename F::result_type accumulate_over_contents(F f) const {
+    typename F::result_type ret=0;
+    for (unsigned int i=0; i< data_.size(); ++i) {
+      ret+= f(data_[i]);
+    }
+    return ret;
   }
 public:
   IMP_SINGLETON_CONTAINER(ListLikeSingletonContainer);

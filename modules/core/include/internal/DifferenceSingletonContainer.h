@@ -35,13 +35,22 @@ class IMPCOREEXPORT DifferenceSingletonContainer : public SingletonContainer
                                ret[1]=back_->b_;
                              });
   template <class F>
-    F foreach(F f) const {
+    void apply_to_contents(F f) const {
     unsigned int szc=get_number_of_particles();
     for (unsigned int i=0; i< szc; ++i) {
       Particle *a= get_particle(i);
       f(a);
     }
-    return f;
+  }
+  template <class F>
+    double accumulate_over_contents(F f) const {
+    double ret=0;
+    unsigned int szc=get_number_of_particles();
+    for (unsigned int i=0; i< szc; ++i) {
+      Particle *a= get_particle(i);
+      ret+=f(a);
+    }
+    return ret;
   }
  public:
   DifferenceSingletonContainer(SingletonContainer *a, SingletonContainer *b);

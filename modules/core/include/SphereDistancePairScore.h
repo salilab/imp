@@ -98,9 +98,9 @@ inline double SoftSpherePairScore::evaluate(const ParticlePair &p,
   if (distance2 > square(d0.get_radius()+d1.get_radius())) return 0;
   double distance=std::sqrt(distance2);
   double shifted_distance = distance- d0.get_radius()-d1.get_radius();
-  double score= .5*k_*square(shifted_distance);
-  if (!da || distance < MIN_DISTANCE) return score;
   double deriv= k_*shifted_distance;
+  double score= .5*deriv*shifted_distance;
+  if (!da || distance < MIN_DISTANCE) return score;
   algebra::Vector3D uv= delta/distance;
   if (da) {
     d0.add_to_derivatives(uv*deriv, *da);

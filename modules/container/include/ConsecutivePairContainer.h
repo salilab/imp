@@ -21,13 +21,22 @@ class IMPCONTAINEREXPORT ConsecutivePairContainer : public PairContainer
 {
   const Particles ps_;
   template <class F>
-    F foreach(F f) const {
+    void apply_to_contents(F f) const {
     unsigned int szc=ps_.size();
     for (unsigned int i=1; i< szc; ++i) {
       ParticlePair p(ps_[i-1], ps_[i]);
       f(p);
     }
-    return f;
+  }
+  template <class F>
+    double accumulate_over_contents(F f) const {
+    double ret=0;
+    unsigned int szc=ps_.size();
+    for (unsigned int i=1; i< szc; ++i) {
+      ParticlePair p(ps_[i-1], ps_[i]);
+      ret+=f(p);
+    }
+    return ret;
   }
 #ifdef IMP_CPC_PARTICLE_CACHE
   IntKey key_;

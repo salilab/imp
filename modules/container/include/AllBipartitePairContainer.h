@@ -37,7 +37,7 @@ class IMPCONTAINEREXPORT AllBipartitePairContainer : public PairContainer
   AllBipartitePairContainer(SingletonContainer *a,
                                  SingletonContainer *b, bool);
   template <class F>
-    F foreach(F f) const {
+    void apply_to_contents(F f) const {
     unsigned int sza=a_->get_number_of_particles();
     unsigned int szb=b_->get_number_of_particles();
     for (unsigned int i=0; i< sza; ++i) {
@@ -47,7 +47,20 @@ class IMPCONTAINEREXPORT AllBipartitePairContainer : public PairContainer
         f(p);
       }
     }
-    return f;
+  }
+  template <class F>
+    double accumulate_over_contents(F f) const {
+    double ret=0;
+    unsigned int sza=a_->get_number_of_particles();
+    unsigned int szb=b_->get_number_of_particles();
+    for (unsigned int i=0; i< sza; ++i) {
+      Particle *a= a_->get_particle(i);
+      for (unsigned int j=0; j< szb; ++j) {
+        ParticlePair p(a, b_->get_particle(j));
+        ret+=f(p);
+      }
+    }
+    return ret;
   }
 public:
   AllBipartitePairContainer(SingletonContainer *a,
