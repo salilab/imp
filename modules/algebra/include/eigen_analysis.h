@@ -23,27 +23,12 @@ public:
     const VectorD<3> &pc1,const VectorD<3> &pc2,
     const VectorD<3> &pc3,VectorD<3> values,
     Vector3D centroid) : eigen_values_(values), centroid_(centroid){
-    eigen_vecs_.push_back(pc1);
-    eigen_vecs_.push_back(pc2);
-    eigen_vecs_.push_back(pc3);
+    eigen_vecs_.push_back(pc1.get_unit_vector());
+    eigen_vecs_.push_back(pc2.get_unit_vector());
+    eigen_vecs_.push_back(pc3.get_unit_vector());
     initialized_=true;
   }
   inline bool is_initialized() const {return initialized_;}
-  void show(std::ostream& out = std::cout) const {
-    out<<"initialized_:"<<initialized_<<std::endl;
-    out << "Eigen values: ";
-    eigen_values_.show(out);
-    out<<std::endl<<"First eigen vector : ";
-    eigen_vecs_[0].show(out);
-    out<<std::endl<<"Second eigen vector : ";
-    eigen_vecs_[1].show(out);
-    out<<std::endl<<"Third eigen vector : ";
-    eigen_vecs_[2].show(out);
-    out<<std::endl<<"eigen values : ";
-    eigen_values_.show(out);
-    out<<std::endl<<"centroid : ";
-    centroid_.show(out);
-  }
   VectorD<3> get_principal_component(unsigned int i) const {
     if (!initialized_){
       IMP_WARN("the PCA was not initialized"<<std::endl);}
@@ -60,6 +45,36 @@ public:
     if (!initialized_){
       IMP_WARN("the PCA was not initialized"<<std::endl);}
    return centroid_;}
+
+  //! Show eigen vectors in cmm format
+  void show(std::ostream& out=std::cout) const {
+    algebra::Vector3D v1,v2;
+    out << "<marker_set>" << std::endl;
+    int ind=1;
+    float radius=2.;
+    for (unsigned int i=0;i<3;i++) {
+      v1=centroid_-eigen_values_[i]*eigen_vecs_[i];
+      v2=centroid_+eigen_values_[i]*eigen_vecs_[i];
+      out << "<marker id=\"" << ind++ << "\""
+          << " x=\"" << v1[0] << "\""
+          << " y=\"" << v1[1] << "\""
+          << " z=\"" << v1[2] << "\""
+          << " radius=\"" << radius << "\"/>" << std::endl;
+      out << "<marker id=\"" << ind++ << "\""
+          << " x=\"" << v2[0] << "\""
+          << " y=\"" << v2[1] << "\""
+          << " z=\"" << v2[2] << "\""
+          << " radius=\"" << radius << "\"/>" << std::endl;
+    }
+    for (unsigned int i=1;i<4;i++) {
+      out << "<link id1= \"" << i*2-1
+          << "\" id2=\""     << i*2
+          << "\" radius=\""<<radius<<"\"/>" << std::endl;
+    }
+    out << "</marker_set>" << std::endl;
+  }
+
+
 protected:
   std::vector<VectorD<3> > eigen_vecs_;
   VectorD<3> eigen_values_;

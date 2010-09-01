@@ -28,11 +28,12 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         self.radius_key = IMP.core.XYZR.get_default_radius_key()
         self.weight_key = IMP.atom.Mass.get_mass_key()
         self.ps = IMP.Particles(IMP.core.get_leaves(self.mp))
-
+        self.rb=IMP.atom.setup_as_rigid_body(self.mp)
+        self.refiner=IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
     def setUp(self):
         """Build test model and optimizer"""
         IMP.test.TestCase.setUp(self)
-        IMP.set_log_level(IMP.SILENT)
+        IMP.set_log_level(IMP.VERBOSE)#SILENT)
         self.imp_model = IMP.Model()
         self.load_density_map()
         self.load_protein("1f7dA00.pdb")
@@ -45,28 +46,32 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
             IMP.algebra.get_random_rotation_3d(),
             IMP.algebra.get_random_vector_in(
               IMP.algebra.BoundingBox3D(
-                IMP.algebra.Vector3D(-10.,-10.,-10.),
-                IMP.algebra.Vector3D(10.,10.,10.))))
+                # IMP.algebra.Vector3D(-10.,-10.,-10.),
+                # IMP.algebra.Vector3D(10.,10.,10.))))
+            IMP.algebra.Vector3D(0.,0.,0.),
+            IMP.algebra.Vector3D(0.,0.,0.))))
+
         xyz=IMP.core.XYZsTemp(self.ps)
-        for x in xyz:
-            x.set_coordinates(rand_t.get_transformed(x.get_coordinates()))
+        IMP.core.transform(self.rb,rand_t)
+        IMP.atom.write_pdb(self.mp,"translated.pdb")
         xyz_ref=IMP.core.XYZsTemp(IMP.core.get_leaves(self.mp_ref))
         #fit protein
         fs = IMP.multifit.pca_based_rigid_fitting(
-               IMP.container.ListSingletonContainer(self.ps),self.scene,0.15)
+               self.rb,self.refiner,self.scene,0.15)
         #check that the rmsd to the reference is low
-        self.assert_(fs.get_number_of_solutions()>0)
+        self.assert_(fs.get_number_of_solutions()==24)
+        print "number of solutions:",fs.get_number_of_solutions()
+        best_rmsd=999.
         for i in range(fs.get_number_of_solutions()):
             fit_t = fs.get_transformation(i)
             fit_t_inv = fit_t.get_inverse()
-            for x in xyz:
-                x.set_coordinates(fit_t.get_transformed(x.get_coordinates()))
-            print "rmsd: ",IMP.atom.get_rmsd(xyz_ref,xyz), " score: ",fs.get_score(i)
-            # if i==0:
-            #     self.assertInTolerance(IMP.atom.get_rmsd(xyz_ref,xyz),0.,6.)
-            #     self.assertInTolerance(fs.get_score(i),1.,0.3)
-            for x in xyz:
-                x.set_coordinates(fit_t_inv.get_transformed(x.get_coordinates()))
+            IMP.core.transform(self.rb,fit_t)
+            rmsd=IMP.atom.get_rmsd(xyz_ref,xyz)
+            print "====rmsd: ",rmsd, " score: ",fs.get_score(i)
+            if best_rmsd>rmsd:
+                best_rmsd=rmsd
+            IMP.core.transform(self.rb,fit_t_inv)
+        self.assertInTolerance(best_rmsd,0.,1.)
 
 
 if __name__ == '__main__':
