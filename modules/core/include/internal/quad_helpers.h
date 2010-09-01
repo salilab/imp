@@ -115,8 +115,70 @@ protected:
     }
     return ret;
   }
-public:
-  IMP_QUAD_CONTAINER(ListLikeQuadContainer);
+ public:
+  template <class SM>
+  void template_apply(const SM *sm,
+                      DerivativeAccumulator &da) {
+     apply_to_contents(boost::bind(static_cast<void (QuadModifier::*)
+                        (const ParticleQuad&,DerivativeAccumulator&) const>
+                        (&QuadModifier::apply), sm, _1, da));
+ }
+  template <class SM>
+  void template_apply(const SM *sm) {
+    apply_to_contents(boost::bind(static_cast<void (QuadModifier::*)
+                    (const ParticleQuad&) const>(&QuadModifier::apply),
+                        sm, _1));
+  }
+  template <class SS>
+  double template_evaluate(const SS *s,
+                           DerivativeAccumulator *da) const {
+    return accumulate_over_contents(boost::bind(static_cast<double
+                                                (QuadScore::*)
+                        (const ParticleQuad&,DerivativeAccumulator*) const>
+                               (&QuadScore::evaluate), s, _1, da));
+  }
+  template <class SS>
+  double template_evaluate_change(const SS *s,
+                                  DerivativeAccumulator *da) const {
+     return accumulate_over_contents(boost::bind(static_cast<double
+                                                (QuadScore::*)
+                        (const ParticleQuad&,DerivativeAccumulator*) const>
+                       (&QuadScore::evaluate_change), s, _1, da));
+ }
+  template <class SS>
+  double template_evaluate_prechange(const SS *s,
+                                     DerivativeAccumulator *da) const {
+    return accumulate_over_contents(boost::bind(static_cast<double
+                                                (QuadScore::*)
+                        (const ParticleQuad&,DerivativeAccumulator*) const>
+                    (&QuadScore::evaluate_prechange), s, _1, da));
+  }
+  void apply(const QuadModifier *sm) {
+    sm->apply(data_);
+  }
+  void apply(const QuadModifier *sm,
+             DerivativeAccumulator &da) {
+    sm->apply(data_, da);
+  }
+  double evaluate(const QuadScore *s,
+                  DerivativeAccumulator *da) const {
+    return s->evaluate(data_, da);
+  }
+  double evaluate_change(const QuadScore *s,
+                         DerivativeAccumulator *da) const {
+    return s->evaluate_change(data_, da);
+  }
+  double evaluate_prechange(const QuadScore *s,
+                            DerivativeAccumulator *da) const {
+    return s->evaluate_prechange(data_, da);
+  }
+  ParticlesTemp get_contained_particles() const;
+  bool get_contained_particles_changed() const;
+  QuadContainerPair get_added_and_removed_containers() const;
+  bool get_contains_particle_quad(const ParticleQuad& p) const;
+  unsigned int get_number_of_particle_quads() const;
+  ParticleQuad get_particle_quad(unsigned int i) const;
+  IMP_OBJECT(ListLikeQuadContainer);
   typedef ParticleQuads::const_iterator ParticleQuadIterator;
   ParticleQuadIterator particle_quads_begin() const {
     return data_.begin();

@@ -115,8 +115,70 @@ protected:
     }
     return ret;
   }
-public:
-  IMP_PAIR_CONTAINER(ListLikePairContainer);
+ public:
+  template <class SM>
+  void template_apply(const SM *sm,
+                      DerivativeAccumulator &da) {
+     apply_to_contents(boost::bind(static_cast<void (PairModifier::*)
+                        (const ParticlePair&,DerivativeAccumulator&) const>
+                        (&PairModifier::apply), sm, _1, da));
+ }
+  template <class SM>
+  void template_apply(const SM *sm) {
+    apply_to_contents(boost::bind(static_cast<void (PairModifier::*)
+                    (const ParticlePair&) const>(&PairModifier::apply),
+                        sm, _1));
+  }
+  template <class SS>
+  double template_evaluate(const SS *s,
+                           DerivativeAccumulator *da) const {
+    return accumulate_over_contents(boost::bind(static_cast<double
+                                                (PairScore::*)
+                        (const ParticlePair&,DerivativeAccumulator*) const>
+                               (&PairScore::evaluate), s, _1, da));
+  }
+  template <class SS>
+  double template_evaluate_change(const SS *s,
+                                  DerivativeAccumulator *da) const {
+     return accumulate_over_contents(boost::bind(static_cast<double
+                                                (PairScore::*)
+                        (const ParticlePair&,DerivativeAccumulator*) const>
+                       (&PairScore::evaluate_change), s, _1, da));
+ }
+  template <class SS>
+  double template_evaluate_prechange(const SS *s,
+                                     DerivativeAccumulator *da) const {
+    return accumulate_over_contents(boost::bind(static_cast<double
+                                                (PairScore::*)
+                        (const ParticlePair&,DerivativeAccumulator*) const>
+                    (&PairScore::evaluate_prechange), s, _1, da));
+  }
+  void apply(const PairModifier *sm) {
+    sm->apply(data_);
+  }
+  void apply(const PairModifier *sm,
+             DerivativeAccumulator &da) {
+    sm->apply(data_, da);
+  }
+  double evaluate(const PairScore *s,
+                  DerivativeAccumulator *da) const {
+    return s->evaluate(data_, da);
+  }
+  double evaluate_change(const PairScore *s,
+                         DerivativeAccumulator *da) const {
+    return s->evaluate_change(data_, da);
+  }
+  double evaluate_prechange(const PairScore *s,
+                            DerivativeAccumulator *da) const {
+    return s->evaluate_prechange(data_, da);
+  }
+  ParticlesTemp get_contained_particles() const;
+  bool get_contained_particles_changed() const;
+  PairContainerPair get_added_and_removed_containers() const;
+  bool get_contains_particle_pair(const ParticlePair& p) const;
+  unsigned int get_number_of_particle_pairs() const;
+  ParticlePair get_particle_pair(unsigned int i) const;
+  IMP_OBJECT(ListLikePairContainer);
   typedef ParticlePairs::const_iterator ParticlePairIterator;
   ParticlePairIterator particle_pairs_begin() const {
     return data_.begin();

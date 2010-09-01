@@ -115,8 +115,70 @@ protected:
     }
     return ret;
   }
-public:
-  IMP_TRIPLET_CONTAINER(ListLikeTripletContainer);
+ public:
+  template <class SM>
+  void template_apply(const SM *sm,
+                      DerivativeAccumulator &da) {
+     apply_to_contents(boost::bind(static_cast<void (TripletModifier::*)
+                        (const ParticleTriplet&,DerivativeAccumulator&) const>
+                        (&TripletModifier::apply), sm, _1, da));
+ }
+  template <class SM>
+  void template_apply(const SM *sm) {
+    apply_to_contents(boost::bind(static_cast<void (TripletModifier::*)
+                    (const ParticleTriplet&) const>(&TripletModifier::apply),
+                        sm, _1));
+  }
+  template <class SS>
+  double template_evaluate(const SS *s,
+                           DerivativeAccumulator *da) const {
+    return accumulate_over_contents(boost::bind(static_cast<double
+                                                (TripletScore::*)
+                        (const ParticleTriplet&,DerivativeAccumulator*) const>
+                               (&TripletScore::evaluate), s, _1, da));
+  }
+  template <class SS>
+  double template_evaluate_change(const SS *s,
+                                  DerivativeAccumulator *da) const {
+     return accumulate_over_contents(boost::bind(static_cast<double
+                                                (TripletScore::*)
+                        (const ParticleTriplet&,DerivativeAccumulator*) const>
+                       (&TripletScore::evaluate_change), s, _1, da));
+ }
+  template <class SS>
+  double template_evaluate_prechange(const SS *s,
+                                     DerivativeAccumulator *da) const {
+    return accumulate_over_contents(boost::bind(static_cast<double
+                                                (TripletScore::*)
+                        (const ParticleTriplet&,DerivativeAccumulator*) const>
+                    (&TripletScore::evaluate_prechange), s, _1, da));
+  }
+  void apply(const TripletModifier *sm) {
+    sm->apply(data_);
+  }
+  void apply(const TripletModifier *sm,
+             DerivativeAccumulator &da) {
+    sm->apply(data_, da);
+  }
+  double evaluate(const TripletScore *s,
+                  DerivativeAccumulator *da) const {
+    return s->evaluate(data_, da);
+  }
+  double evaluate_change(const TripletScore *s,
+                         DerivativeAccumulator *da) const {
+    return s->evaluate_change(data_, da);
+  }
+  double evaluate_prechange(const TripletScore *s,
+                            DerivativeAccumulator *da) const {
+    return s->evaluate_prechange(data_, da);
+  }
+  ParticlesTemp get_contained_particles() const;
+  bool get_contained_particles_changed() const;
+  TripletContainerPair get_added_and_removed_containers() const;
+  bool get_contains_particle_triplet(const ParticleTriplet& p) const;
+  unsigned int get_number_of_particle_triplets() const;
+  ParticleTriplet get_particle_triplet(unsigned int i) const;
+  IMP_OBJECT(ListLikeTripletContainer);
   typedef ParticleTriplets::const_iterator ParticleTripletIterator;
   ParticleTripletIterator particle_triplets_begin() const {
     return data_.begin();
