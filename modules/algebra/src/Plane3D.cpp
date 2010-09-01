@@ -4,7 +4,7 @@
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  */
 #include <IMP/algebra/Plane3D.h>
-#include <IMP/algebra/internal/cgal_predicates.h>
+//#include <IMP/algebra/internal/cgal_predicates.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 Plane3D::Plane3D(const VectorD<3>& point_on_plane,
@@ -24,14 +24,14 @@ VectorD<3> Plane3D::get_projection(const VectorD<3> &p) const {
   return p-normal_*(normal_*p-distance_);
 }
 bool Plane3D::get_is_above(const VectorD<3> &p) const {
-#ifdef IMP_USE_CGAL
+#if 0
   return internal::cgal_plane_compare_above(*this, p) > 0;
 #else
   return normal_*p > distance_;
 #endif
 }
 bool Plane3D::get_is_below(const VectorD<3> &p) const {
-#ifdef IMP_USE_CGAL
+#if 0
   return internal::cgal_plane_compare_above(*this, p) < 0;
 #else
   return normal_*p < distance_;
