@@ -105,13 +105,25 @@ protected:
   }
   template <class F>
    void apply_to_contents(F f) const {
+#if BOOST_VERSION > 103500
     std::for_each(data_.begin(), data_.end(), f);
+#else
+    for (unsigned int i=0; i< data_.size(); ++i) {
+      ParticlePair v= data_[i];
+      f(v);
+    }
+#endif
   }
   template <class F>
     typename F::result_type accumulate_over_contents(F f) const {
     typename F::result_type ret=0;
     for (unsigned int i=0; i< data_.size(); ++i) {
+#if BOOST_VERSION > 103500
       ret+= f(data_[i]);
+#else
+      ParticlePair v= data_[i];
+      ret+=f(v);
+#endif
     }
     return ret;
   }

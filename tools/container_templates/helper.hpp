@@ -105,13 +105,25 @@ protected:
   }
   template <class F>
    void apply_to_contents(F f) const {
+#if BOOST_VERSION > 103500
     std::for_each(data_.begin(), data_.end(), f);
+#else
+    for (unsigned int i=0; i< data_.size(); ++i) {
+      Value v= data_[i];
+      f(v);
+    }
+#endif
   }
   template <class F>
     typename F::result_type accumulate_over_contents(F f) const {
     typename F::result_type ret=0;
     for (unsigned int i=0; i< data_.size(); ++i) {
+#if BOOST_VERSION > 103500
       ret+= f(data_[i]);
+#else
+      Value v= data_[i];
+      ret+=f(v);
+#endif
     }
     return ret;
   }
@@ -126,7 +138,7 @@ protected:
   template <class SM>
   void template_apply(const SM *sm) {
     apply_to_contents(boost::bind(static_cast<void (GroupnameModifier::*)
-                        (PassValue) const>(&GroupnameModifier::apply),
+                    (PassValue) const>(&GroupnameModifier::apply),
                         sm, _1));
   }
   template <class SS>
@@ -134,24 +146,24 @@ protected:
                            DerivativeAccumulator *da) const {
     return accumulate_over_contents(boost::bind(static_cast<double
                                                 (GroupnameScore::*)
-                              (PassValue,DerivativeAccumulator*) const>
-                                (&GroupnameScore::evaluate), s, _1, da));
+                        (PassValue,DerivativeAccumulator*) const>
+                               (&GroupnameScore::evaluate), s, _1, da));
   }
   template <class SS>
   double template_evaluate_change(const SS *s,
                                   DerivativeAccumulator *da) const {
      return accumulate_over_contents(boost::bind(static_cast<double
                                                 (GroupnameScore::*)
-                              (PassValue,DerivativeAccumulator*) const>
-                         (&GroupnameScore::evaluate_change), s, _1, da));
+                        (PassValue,DerivativeAccumulator*) const>
+                       (&GroupnameScore::evaluate_change), s, _1, da));
  }
   template <class SS>
   double template_evaluate_prechange(const SS *s,
                                      DerivativeAccumulator *da) const {
     return accumulate_over_contents(boost::bind(static_cast<double
                                                 (GroupnameScore::*)
-                              (PassValue,DerivativeAccumulator*) const>
-                      (&GroupnameScore::evaluate_prechange), s, _1, da));
+                        (PassValue,DerivativeAccumulator*) const>
+                    (&GroupnameScore::evaluate_prechange), s, _1, da));
   }
   void apply(const GroupnameModifier *sm) {
     sm->apply(data_);
