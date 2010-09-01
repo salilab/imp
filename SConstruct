@@ -73,7 +73,9 @@ scons_tools.checks.add_external_library(env, "NetCDF", "netcdf_c++",
 scons_tools.checks.add_external_library(env, "FFTW3", "fftw3",
                                        "fftw3.h")
 scons_tools.checks.add_external_library(env, "GSL", "gsl",
-                                       "gsl/gsl_multimin.h", extra_libs=['gslcblas'])
+                                        "gsl/gsl_sf_bessel.h",
+                                        body='gsl_sf_bessel_J0(1.0);',
+                                        extra_libs=['gslcblas'])
 scons_tools.checks.add_external_library(env, "CGAL", "CGAL",
                                        ['CGAL/Gmpq.h', 'CGAL/Lazy_exact_nt.h'],
                                        body='CGAL_assertion(1); CGAL::Lazy_exact_nt<CGAL::Gmpq> q;',
