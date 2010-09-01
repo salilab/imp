@@ -115,8 +115,70 @@ protected:
     }
     return ret;
   }
-public:
-  IMP_GROUPNAME_CONTAINER(ListLikeGroupnameContainer);
+ public:
+  template <class SM>
+  void template_apply(const SM *sm,
+                      DerivativeAccumulator &da) {
+     apply_to_contents(boost::bind(static_cast<void (GroupnameModifier::*)
+                        (PassValue,DerivativeAccumulator&) const>
+                        (&GroupnameModifier::apply), sm, _1, da));
+ }
+  template <class SM>
+  void template_apply(const SM *sm) {
+    apply_to_contents(boost::bind(static_cast<void (GroupnameModifier::*)
+                        (PassValue) const>(&GroupnameModifier::apply),
+                        sm, _1));
+  }
+  template <class SS>
+  double template_evaluate(const SS *s,
+                           DerivativeAccumulator *da) const {
+    return accumulate_over_contents(boost::bind(static_cast<double
+                                                (GroupnameScore::*)
+                              (PassValue,DerivativeAccumulator*) const>
+                                (&GroupnameScore::evaluate), s, _1, da));
+  }
+  template <class SS>
+  double template_evaluate_change(const SS *s,
+                                  DerivativeAccumulator *da) const {
+     return accumulate_over_contents(boost::bind(static_cast<double
+                                                (GroupnameScore::*)
+                              (PassValue,DerivativeAccumulator*) const>
+                         (&GroupnameScore::evaluate_change), s, _1, da));
+ }
+  template <class SS>
+  double template_evaluate_prechange(const SS *s,
+                                     DerivativeAccumulator *da) const {
+    return accumulate_over_contents(boost::bind(static_cast<double
+                                                (GroupnameScore::*)
+                              (PassValue,DerivativeAccumulator*) const>
+                      (&GroupnameScore::evaluate_prechange), s, _1, da));
+  }
+  void apply(const GroupnameModifier *sm) {
+    sm->apply(data_);
+  }
+  void apply(const GroupnameModifier *sm,
+             DerivativeAccumulator &da) {
+    sm->apply(data_, da);
+  }
+  double evaluate(const GroupnameScore *s,
+                  DerivativeAccumulator *da) const {
+    return s->evaluate(data_, da);
+  }
+  double evaluate_change(const GroupnameScore *s,
+                         DerivativeAccumulator *da) const {
+    return s->evaluate_change(data_, da);
+  }
+  double evaluate_prechange(const GroupnameScore *s,
+                            DerivativeAccumulator *da) const {
+    return s->evaluate_prechange(data_, da);
+  }
+  ParticlesTemp get_contained_particles() const;
+  bool get_contained_particles_changed() const;
+  GroupnameContainerPair get_added_and_removed_containers() const;
+  bool get_contains_classname(PassValue p) const;
+  unsigned int get_number_of_classnames() const;
+  Value get_classname(unsigned int i) const;
+  IMP_OBJECT(ListLikeGroupnameContainer);
   typedef Classnames::const_iterator ClassnameIterator;
   ClassnameIterator classnames_begin() const {
     return data_.begin();
