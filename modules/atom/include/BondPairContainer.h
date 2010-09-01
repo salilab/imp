@@ -32,13 +32,23 @@ class IMPATOMEXPORT BondPairContainer :
   IMP_CONTAINER_DEPENDENCIES(BondPairContainer, ret.push_back(back_->sc_););
   BondPairContainer(SingletonContainer *sc, bool);
   template <class F>
-    F foreach(F f) const {
+    void apply_to_contents(F f) const {
     unsigned int sz= BondPairContainer::get_number_of_particle_pairs();
     for (unsigned int i=0; i< sz; ++i) {
       ParticlePair p= BondPairContainer::get_particle_pair(i);
       f(p);
     }
-    return f;
+  }
+
+  template <class F>
+    double accumulate_over_contents(F f) const {
+    double ret=0;
+    unsigned int sz= BondPairContainer::get_number_of_particle_pairs();
+    for (unsigned int i=0; i< sz; ++i) {
+      ParticlePair p= BondPairContainer::get_particle_pair(i);
+      ret+=f(p);
+    }
+    return ret;
   }
 public:
   //! The container containing the bonds

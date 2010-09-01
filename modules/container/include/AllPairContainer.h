@@ -39,7 +39,7 @@ class IMPCONTAINEREXPORT AllPairContainer : public PairContainer
   AllPairContainer(SingletonContainer *c, bool);
 
   template <class F>
-    F foreach(F f) const {
+    void apply_to_contents(F f) const {
     unsigned int szc=c_->get_number_of_particles();
     for (unsigned int i=0; i< szc; ++i) {
       Particle *a= c_->get_particle(i);
@@ -48,8 +48,21 @@ class IMPCONTAINEREXPORT AllPairContainer : public PairContainer
         f(p);
       }
     }
-    return f;
   }
+  template <class F>
+    double accumulate_over_contents(F f) const {
+    double ret=0;
+    unsigned int szc=c_->get_number_of_particles();
+    for (unsigned int i=0; i< szc; ++i) {
+      Particle *a= c_->get_particle(i);
+      for (unsigned int j=0; j< i; ++j) {
+        ParticlePair p(a, c_->get_particle(j));
+        ret+=f(p);
+      }
+    }
+    return ret;
+  }
+
 public:
   //! Get the individual particles from the passed SingletonContainer
   AllPairContainer(SingletonContainer *c);

@@ -1876,49 +1876,62 @@ protected:                                      \
 
 
 #ifndef IMP_DOXYGEN
-#define IMP_IMPLEMENT_CONTAINER(Name, Tuple)                            \
-  void apply(const Tuple##Modifier *sm) {                               \
-    foreach(IMP::internal::make_apply_it(sm));                          \
-  }                                                                     \
-  void apply(const Tuple##Modifier *sm,                                 \
-             DerivativeAccumulator &da) {                               \
-    foreach(IMP::internal::make_apply_it(sm, da));                      \
-  }                                                                     \
-  double evaluate(const Tuple##Score *s,                                \
-                  DerivativeAccumulator *da) const {                    \
-    return foreach(IMP::internal::make_evaluate_it(s, da));             \
-  }                                                                     \
-  double evaluate_change(const Tuple##Score *s,                         \
-                         DerivativeAccumulator *da) const {             \
-    return foreach(IMP::internal::make_evaluate_change(s, da));         \
-  }                                                                     \
-  double evaluate_prechange(const Tuple##Score *s,                      \
-                            DerivativeAccumulator *da) const {          \
-    return foreach(IMP::internal::make_evaluate_prechange(s, da));      \
-  }                                                                     \
-  template <class SM>                                                   \
-  void template_apply(const SM *sm) {                                   \
-    foreach(IMP::internal::make_apply_it_t(sm));                        \
-  }                                                                     \
+#define IMP_IMPLEMENT_CONTAINER(Name, Tuple, PassValue)                 \
   template <class SM>                                                   \
   void template_apply(const SM *sm,                                     \
                       DerivativeAccumulator &da) {                      \
-    foreach(IMP::internal::make_apply_it_t(sm, da));                    \
+    apply_to_contents(boost::bind(static_cast<void (Tuple##Modifier::*) \
+                        (PassValue,DerivativeAccumulator&) const>       \
+                        (&Tuple##Modifier::apply), sm, _1, da));        \
   }                                                                     \
   template <class SS>                                                   \
   double template_evaluate(const SS *s,                                 \
                            DerivativeAccumulator *da) const {           \
-    return foreach(IMP::internal::make_evaluate_it_t(s, da));           \
+    return accumulate_over_contents(boost::bind(static_cast<double      \
+                                                (Tuple##Score::*)       \
+                              (PassValue,DerivativeAccumulator*) const> \
+                                (&Tuple##Score::evaluate), s, _1, da)); \
   }                                                                     \
   template <class SS>                                                   \
   double template_evaluate_change(const SS *s,                          \
                                   DerivativeAccumulator *da) const {    \
-    return foreach(IMP::internal::make_evaluate_change_t(s, da));       \
+    return accumulate_over_contents(boost::bind(static_cast<double      \
+                                                (Tuple##Score::*)       \
+                              (PassValue,DerivativeAccumulator*) const> \
+                         (&Tuple##Score::evaluate_change), s, _1, da)); \
   }                                                                     \
   template <class SS>                                                   \
   double template_evaluate_prechange(const SS *s,                       \
                                      DerivativeAccumulator *da) const { \
-    return foreach(IMP::internal::make_evaluate_prechange_t(s, da));    \
+    return accumulate_over_contents(boost::bind(static_cast<double      \
+                                                (Tuple##Score::*)       \
+                              (PassValue,DerivativeAccumulator*) const> \
+                      (&Tuple##Score::evaluate_prechange), s, _1, da)); \
+  }                                                                     \
+  void apply(const Tuple##Modifier *sm) {                               \
+    template_apply(sm);                                                 \
+  }                                                                     \
+  void apply(const Tuple##Modifier *sm,                                 \
+             DerivativeAccumulator &da) {                               \
+    template_apply(sm, da);                                             \
+  }                                                                     \
+  double evaluate(const Tuple##Score *s,                                \
+                  DerivativeAccumulator *da) const {                    \
+    return template_evaluate(s, da);                                    \
+  }                                                                     \
+  double evaluate_change(const Tuple##Score *s,                         \
+                         DerivativeAccumulator *da) const {             \
+    return template_evaluate_change(s, da);                             \
+  }                                                                     \
+  double evaluate_prechange(const Tuple##Score *s,                      \
+                            DerivativeAccumulator *da) const {          \
+    return template_evaluate_prechange(s, da);                          \
+  }                                                                     \
+  template <class SM>                                                   \
+  void template_apply(const SM *sm) {                                   \
+    apply_to_contents(boost::bind(static_cast<void (Tuple##Modifier::*) \
+                        (PassValue) const>(&Tuple##Modifier::apply),    \
+                        sm, _1));                                       \
   }                                                                     \
   ParticlesTemp get_contained_particles() const;                        \
   bool get_contained_particles_changed() const;                         \
@@ -1940,7 +1953,7 @@ protected:                                      \
   bool get_contains_particle(Particle* p) const;                        \
   unsigned int get_number_of_particles() const;                         \
   Particle *get_particle(unsigned int i) const;                         \
-  IMP_IMPLEMENT_CONTAINER(Name, Singleton)
+  IMP_IMPLEMENT_CONTAINER(Name, Singleton, Particle*)
 
 
 //! Declare the needed functions for a PairContainer
@@ -1957,7 +1970,7 @@ protected:                                      \
   bool get_contains_particle_pair(const ParticlePair &p) const;         \
   unsigned int get_number_of_particle_pairs() const;                    \
   ParticlePair get_particle_pair(unsigned int i) const;                 \
-  IMP_IMPLEMENT_CONTAINER(Name, Pair)
+  IMP_IMPLEMENT_CONTAINER(Name, Pair, const ParticlePair&)
 
 
 
@@ -1975,7 +1988,7 @@ protected:                                      \
   bool get_contains_particle_triplet(const ParticleTriplet &p) const;   \
   unsigned int get_number_of_particle_triplets() const;                 \
   ParticleTriplet get_particle_triplet(unsigned int i) const;           \
-  IMP_IMPLEMENT_CONTAINER(Name, Triplet)
+  IMP_IMPLEMENT_CONTAINER(Name, Triplet, const ParticleTriplet&)
 
 
 
@@ -1993,7 +2006,7 @@ protected:                                      \
   bool get_contains_particle_quad(const ParticleQuad &p) const; \
   unsigned int get_number_of_particle_quads() const;            \
   ParticleQuad get_particle_quad(unsigned int i) const;         \
-  IMP_IMPLEMENT_CONTAINER(Name, Quad)
+  IMP_IMPLEMENT_CONTAINER(Name, Quad, const ParticleQuad&)
 
 
 
