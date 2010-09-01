@@ -19,7 +19,7 @@ class ProjectTests(IMP.test.TestCase):
 
     def test_registration(self):
         """Test the registration of 3 subjects from 1gyt.pdb at 0.5 SNR"""
-        self.assertTrue(True)
+        self.assert_(True)
 
 #        # Get model from PDB file
 #        smodel = IMP.Model()
