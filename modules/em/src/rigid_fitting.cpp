@@ -17,7 +17,6 @@
 #include <IMP/algebra/geometric_alignment.h>
 #include <IMP/em/converters.h>
 #include <IMP/algebra/eigen_analysis.h>
-#include <IMP/algebra/ReferenceFrame3D.h>
 #include <IMP/core/LeavesRefiner.h>
 
 
@@ -32,23 +31,22 @@ void FittingSolutions::sort() {
 }
 
 RestraintSet * add_restraints(Model *model, DensityMap *dmap,
-                core::RigidBody &rb,
+                              core::RigidBody &rb,Refiner &leaves_ref,
                 const FloatKey &rad_key, const FloatKey &wei_key,
                 bool fast=false) {
   RestraintSet *rsrs = new RestraintSet();
    model->add_restraint(rsrs);
    //add fitting restraint
    FitRestraint *fit_rs;
-   IMP_NEW(core::LeavesRefiner,leaves_ref,(atom::Hierarchy::get_traits()));
    FloatPair no_norm_factors(0.,0.);
    if (fast) {
      fit_rs = new FitRestraint(rb.get_particle(),
-                               dmap,leaves_ref,no_norm_factors,
+                               dmap,&leaves_ref,no_norm_factors,
                                rad_key,wei_key,1.0);
    }
    else {
-     fit_rs = new FitRestraint(leaves_ref->get_refined(rb),
-                               dmap,leaves_ref,no_norm_factors,
+     fit_rs = new FitRestraint(leaves_ref.get_refined(rb),
+                               dmap,&leaves_ref,no_norm_factors,
                                rad_key,wei_key,1.0);
    }
    rsrs->add_restraint(fit_rs);
@@ -83,61 +81,37 @@ core::MonteCarlo* set_optimizer(Model *model, OptimizerState *display_log,
 
 void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
               const algebra::VectorD<3> &anchor_centroid,
-              core::RigidBody &rb, core::MonteCarlo *opt,
+              core::RigidBody &rb, Refiner &refiner, core::MonteCarlo *opt,
               FittingSolutions &fr, Model *mdl) {
   Float e;
-  core::XYZsTemp xyz_t=
-    core::XYZsTemp(IMP::core::get_leaves(IMP::atom::Hierarchy(rb)));
+  core::XYZsTemp xyz_t(refiner.get_refined(rb));
+    algebra::VectorD<3> ps_centroid = IMP::core::get_centroid(xyz_t);
   //save starting configuration
-  algebra::Vector3Ds vecs_ref;
-  for (core::XYZsTemp::iterator it = xyz_t.begin(); it != xyz_t.end(); it++) {
-    vecs_ref.push_back(it->get_coordinates());
-  }
   algebra::Transformation3D starting_trans = rb.get_transformation();
+  algebra::Transformation3D move2centroid(algebra::get_identity_rotation_3d(),
+                                          anchor_centroid-ps_centroid);
+
   for(int i=0;i<number_of_optimization_runs;i++) {
     IMP_LOG(VERBOSE, "number of optimization run is : "<< i << std::endl);
+    rb.set_transformation(starting_trans);
     //set the centroid of the rigid body to be on the anchor centroid
     //make sure that all of the members are in the correct transformation
-    rb.set_transformation(starting_trans);
-    algebra::VectorD<3> ps_centroid = IMP::core::get_centroid(xyz_t);
-    algebra::Transformation3D move2centroid(algebra::get_identity_rotation_3d(),
-                                            anchor_centroid-ps_centroid);
     core::transform(rb,move2centroid);
-    //rb.set_transformation(rb.get_transformation());
-    ps_centroid = IMP::core::get_centroid(xyz_t);
-    IMP_LOG(VERBOSE, "rigid body centroid before optimization : "
-                      << ps_centroid << std::endl);
     //optimize
     try {
       e = opt->optimize(number_of_mc_steps);
-      rb.set_reference_frame(rb.get_reference_frame());
-      ps_centroid =
-        IMP::core::get_centroid(xyz_t);
-      IMP_LOG(VERBOSE, "rigid body centroid after optimization : "
-                        << ps_centroid << std::endl);
-      algebra::Vector3Ds vecs_current;
-      for (core::XYZsTemp::iterator it = xyz_t.begin(); it != xyz_t.end(); it++)
-      {
-        vecs_current.push_back(it->get_coordinates());
-      }
-      //fr.add_solution(algebra::get_transformation_aligning_first_to_second(
-      //vecs_ref,vecs_current),e);
-      fr.add_solution(rb.get_reference_frame().get_transformation_to(),e);
+      fr.add_solution(rb.get_transformation()/starting_trans,e);
     } catch (ModelException err) {
       IMP_WARN("Optimization run " << i << " failed to converge."
                << std::endl);
     }
-// catch (UsageException err) {
-//       IMP_WARN("Data walked out of bounding box"<< std::endl);
-//     }
   }
   //return the rigid body to the original position
   rb.set_transformation(starting_trans);
 }
 
-
 FittingSolutions local_rigid_fitting_around_point(
-   core::RigidBody rb,
+   core::RigidBody rb,Refiner &refiner,
    const FloatKey &rad_key, const FloatKey &wei_key,
    DensityMap *dmap, const algebra::VectorD<3> &anchor_centroid,
    OptimizerState *display_log,
@@ -158,7 +132,7 @@ FittingSolutions local_rigid_fitting_around_point(
    }
    //add restraints
    Model *model = rb.get_members()[0].get_particle()->get_model();
-   RestraintSet *rsrs = add_restraints(model, dmap, rb,
+   RestraintSet *rsrs = add_restraints(model, dmap, rb,refiner,
                                        rad_key, wei_key,fast);
    //create a rigid body mover and set the optimizer
    core::MonteCarlo *opt = set_optimizer(model, display_log, rb,
@@ -167,7 +141,7 @@ FittingSolutions local_rigid_fitting_around_point(
    //optimize
    IMP_LOG(VERBOSE,"before optimizer"<<std::endl);
    optimize(number_of_optimization_runs, number_of_mc_steps,
-            anchor_centroid, rb, opt, fr, model);
+            anchor_centroid, rb, refiner,opt, fr, model);
    fr.sort();
    IMP_IF_LOG(TERSE) {
      IMP_LOG(TERSE, "Solutions are: ");
@@ -184,7 +158,7 @@ FittingSolutions local_rigid_fitting_around_point(
 }
 
 FittingSolutions local_rigid_fitting_around_points(
-   core::RigidBody rb,
+   core::RigidBody rb,Refiner &refiner,
    const FloatKey &rad_key, const FloatKey &wei_key,
    DensityMap *dmap, const std::vector<algebra::VectorD<3> > &anchor_centroids,
    OptimizerState *display_log,
@@ -199,7 +173,7 @@ FittingSolutions local_rigid_fitting_around_points(
            " Conjugate Gradients rounds. " << std::endl);
    Model *model = rb.get_members()[0].get_particle()->get_model();
 
-   RestraintSet *rsrs = add_restraints(model, dmap, rb,
+   RestraintSet *rsrs = add_restraints(model, dmap, rb,refiner,
                                        rad_key,wei_key);
    core::MonteCarlo *opt = set_optimizer(model, display_log, rb,
                            number_of_cg_steps,max_translation, max_rotation);
@@ -211,7 +185,7 @@ FittingSolutions local_rigid_fitting_around_points(
                 "The centroid is not part of the map");
      IMP_LOG(VERBOSE, "optimizing around anchor point " << *it << std::endl);
      optimize(number_of_optimization_runs,
-              number_of_mc_steps,*it,rb, opt,fr,model);
+              number_of_mc_steps,*it,rb,refiner,opt,fr,model);
    }
    fr.sort();
    model->remove_restraint(rsrs);

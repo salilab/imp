@@ -80,11 +80,6 @@ protected:
        The optimization is a standard MC/CG procedure.
        The function returns a list of solutions sortedo the cross-correlation
        score.
-\note The transformations are the rigid-body tranformation
-       (with respect to an internal coordinate system). To get the actual
-       delta transformation from the original placement of the rigid body,
-       use the operator/ with a reference trasnforamtion outside of this
-       function.
 \note The returned cross-correlation score is 1-cc, as we usually want to
       minimize a scroing function. Thus a score of 1 means no-correlation
       and a score of 0. is perfect correlation.
@@ -107,8 +102,8 @@ protected:
 \return the refined fitting solutions
 */
 IMPEMEXPORT FittingSolutions local_rigid_fitting_around_point(
-   core::RigidBody rb, const FloatKey &radius_key,
-   const FloatKey &weight_key,
+   core::RigidBody rb, Refiner &refiner,
+   const FloatKey &radius_key, const FloatKey &weight_key,
    DensityMap *dmap, const algebra::VectorD<3> &anchor_centroid,
    OptimizerState *display_log,
    Int number_of_optimization_runs = 5, Int number_of_mc_steps = 10,
@@ -122,11 +117,6 @@ IMPEMEXPORT FittingSolutions local_rigid_fitting_around_point(
        The optimization is a standard MC/CG procedure.
        The function returns a list of solutions sortedo the cross-correlation
        score.
-\note The transformations are the rigid-body tranformation
-       (with respect to an internal coordinate system). To get the actual
-       delta transformation from the original placement of the rigid body,
-       use the operator/ with a reference trasnforamtion outside of this
-       function.
 \note The returned cross-correlation score is 1-cc, as we usually want to
       minimize a scroing function. Thus a score of 1 means no-correlation
       and a score of 0. is perfect correlation.
@@ -150,7 +140,8 @@ IMPEMEXPORT FittingSolutions local_rigid_fitting_around_point(
 */
 
 inline FittingSolutions local_rigid_fitting(
-   core::RigidBody rb, const FloatKey &radius_key,
+   core::RigidBody rb, Refiner &refiner,
+   const FloatKey &radius_key,
    const FloatKey &weight_key,
    DensityMap *dmap,
    OptimizerState *display_log=NULL,
@@ -160,10 +151,11 @@ inline FittingSolutions local_rigid_fitting(
    bool fast=true) {
   IMP_LOG(VERBOSE,"Start: local_rigid_fitting\n");
    algebra::Vector3D rb_cen=
- IMP::core::get_centroid(core::XYZsTemp(core::get_leaves(atom::Hierarchy(rb))));
+     IMP::core::get_centroid(core::XYZsTemp(refiner.get_refined(rb)));
    IMP_LOG(VERBOSE,"centroid is:"<<rb_cen<<"\n");
    return local_rigid_fitting_around_point(
-     rb, radius_key, weight_key,dmap, rb_cen,display_log,
+     rb, refiner,radius_key, weight_key, dmap,
+     rb_cen,display_log,
      number_of_optimization_runs, number_of_mc_steps,
      number_of_cg_steps, max_translation, max_rotation,fast);
 }
@@ -190,7 +182,7 @@ inline FittingSolutions local_rigid_fitting(
 \return the refined fitting solutions
 */
 IMPEMEXPORT FittingSolutions local_rigid_fitting_around_points(
-   core::RigidBody rb,
+   core::RigidBody rb,Refiner &refiner,
    const FloatKey &rad_key, const FloatKey &wei_key,
    DensityMap *dmap, const std::vector<algebra::VectorD<3> > &anchor_centroids,
    OptimizerState *display_log,
@@ -252,6 +244,31 @@ IMPEMEXPORT FittingSolutions compute_fitting_scores(const Particles &ps,
    const FloatKey &rad_key, const FloatKey &wei_key,
    const algebra::Transformation3Ds& transformations,
    bool fast_version=false);
+
+
+
+//! Compute fitting scores for a given set of rigid transformations
+/**
+\brief Score how well a rigid body fits to the map
+\param[in] em_map   The density map to fit to
+\param[in] rb       The rigid body
+\param[in] refiner  The rigid body refiner
+\param[in] transformations   Transformations of the rigid body
+\param[in] rad_key  The raidus key of the particles in the rigid body
+\param[in] wei_key  The weight key of the particles in the rigid body
+\return The scored fitting solutions
+\note the function assumes the density map holds its density
+ */
+inline FittingSolutions compute_fitting_scores(
+   DensityMap *em_map,
+   core::RigidBody &rb,Refiner &refiner,
+   const algebra::Transformation3Ds& transformations,
+   const FloatKey &rad_key=core::XYZR::get_default_radius_key(),
+   const FloatKey &wei_key=atom::Mass::get_mass_key()) {
+
+  return compute_fitting_scores(refiner.get_refined(rb),em_map,
+                                rad_key,wei_key,transformations,true);
+}
 
 
 

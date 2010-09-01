@@ -13,7 +13,8 @@
 #include "IMP/container_macros.h"
 #include <IMP/log.h>
 #include <boost/lambda/lambda.hpp>
-
+//todo - revmoe
+#include <IMP/atom/pdb.h>
 IMPEM_BEGIN_NAMESPACE
 
 FitRestraint::FitRestraint(
@@ -202,6 +203,21 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   IMP_LOG(VERBOSE,"before resample\n");
   resample();
   IMP_LOG(VERBOSE,"after resample\n");
+
+  //In many optimization senarios particles are can be found outside of
+  //the density. When all particles are outside of the density the
+  //cross-correlation score is zero and the derivatives are meaningless.
+  //To handle these cases we return a huge score and do not calculate
+  //derivaties. The CG algorithm should adjust accordinely.
+  //Another option [CURRENTLY NOT IMPLEMENTED] is to guide the particles
+  //back into the
+  //density by using a simple distance restraint between the centroids
+  //of the density and the particles. Once the particles are back
+  //(at least partly) in the density, the CC score is back on.
+  // To smooth the score,
+  //we start considering centroids distance once 80% of the particles
+  //are outside of the density.
+
   escore = CoarseCC::calc_score(
                const_cast<DensityMap&>(*target_dens_map_),
                const_cast<SampledDensityMap&>(*model_dens_map_),
@@ -229,6 +245,7 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
       DensityMap *transformed = get_transformed(
               rb_model_dens_map_[rb_i],
               rbs_[rb_i].get_transformation()*rbs_orig_trans_[rb_i]);
+      write_pdb(atom::Hierarchy(rbs_[rb_i]),"temp_deriv.pdb");
       CoarseCC::calc_derivatives(
               *target_dens_map_,
               //*(rb_model_dens_map_[rb_i]),
@@ -242,15 +259,6 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
       delete transformed;
     }
   }
-  // //In many optimization senarios particles are can be found outside of
-  // //the density. When all particles are outside of the density the
-  // //cross-correlation score is zero and the derivatives are meaningless.
-  // //To handle these cases we guide the particles back into the density by
-  // //using a simple distance restraint between the centroids of the density
-  // //and the particles. Once the particles are back (at least partly) in
-  // //the density, the CC score is back on. To smooth the score,
-  // //we start considering centroids distance once 80% of the particles
-  // //are outside of the density.
   Float score=escore;
   // now update the derivatives
   FloatKeys xyz_keys=IMP::core::XYZR::get_xyz_keys();
