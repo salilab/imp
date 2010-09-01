@@ -17,6 +17,8 @@
 #include <algorithm>
 #include <iostream>
 #include <iomanip>
+#include <vector>
+#include <limits>
 
 IMPEM_BEGIN_NAMESPACE
 
@@ -40,6 +42,14 @@ class IMPEMEXPORT RadiusDependentKernelParameters {
     inline float get_kdist() const { return kdist_;}
     //! Gets the value of normfac parameter
     inline float get_normfac() const { return normfac_;}
+    ~RadiusDependentKernelParameters() {
+      vsig_= std::numeric_limits<float>::quiet_NaN();
+      vsigsq_= std::numeric_limits<float>::quiet_NaN();
+      inv_sigsq_= std::numeric_limits<float>::quiet_NaN();
+      sig_= std::numeric_limits<float>::quiet_NaN();
+      kdist_= std::numeric_limits<float>::quiet_NaN();
+      normfac_= std::numeric_limits<float>::quiet_NaN();
+    }
   protected:
     //! vsig
     float vsig_;
@@ -54,6 +64,9 @@ class IMPEMEXPORT RadiusDependentKernelParameters {
     //! normalization factor
     float normfac_;
 };
+
+IMP_VALUES(RadiusDependentKernelParameters,
+           RadiusDependentKernelParametersList);
 
 //! Calculates and stores Gaussian kernel parameters as a function
 //! of a specufuc radius.
@@ -120,6 +133,8 @@ protected:
   std::map <float,const RadiusDependentKernelParameters *> radii2params_;
   void init(float resolution);
 };
+
+IMP_VALUES(KernelParameters, KernelParametersList);
 
 IMPEM_END_NAMESPACE
 
