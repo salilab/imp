@@ -35,7 +35,7 @@ class ProjectTests(IMP.test.TestCase):
         rr.set_random_registration(0,5)
         IMP.em2d.generate_projection(img,particles,rr,resolution,apix,srw)
         img.write_to_floats(testfile,srw)
-        self.assertTrue(os.path.isfile(testfile),"Projection image not generated")
+        self.assert_(os.path.isfile(testfile),"Projection image not generated")
         os.remove(testfile)
 
     def test_generation_of_even_projections(self):
