@@ -222,17 +222,17 @@ namespace {
       typename Grid::ExtendedIndex curei(cur[0], cur[1], cur[2]);
       for (int io=-1; io < 2; ++io) {
         if ((!(merged &GridClosePairsFinder::X)) && io != 0) continue;
-        int ii=cur[0]+io*(bbub[0]-bblb[0]);
+        int ii=cur[0]+io*(bbub[0]-bblb[0]-1);
         if (ii < 0
             || ii >= static_cast<int>(g.get_number_of_voxels(0))) continue;
         for (int jo=-1; jo < 2; ++jo) {
           if ((!(merged &GridClosePairsFinder::Y)) && jo != 0) continue;
-          int ij=cur[1]+jo*(bbub[1]-bblb[1]);
+          int ij=cur[1]+jo*(bbub[1]-bblb[1]-1);
           if (ij < 0
               || ij >= static_cast<int>(g.get_number_of_voxels(1))) continue;
           for (int ko=-1; ko < 2; ++ko) {
             if ((!(merged &GridClosePairsFinder::Z)) && ko != 0) continue;
-            int ik=cur[2]+ko*(bbub[2]-bblb[2]);
+            int ik=cur[2]+ko*(bbub[2]-bblb[2]-1);
             if (ik < 0
                 || ik >= static_cast<int>(g.get_number_of_voxels(2))) continue;
             typename Grid::ExtendedIndex cei(ii, ij, ik);
@@ -278,6 +278,8 @@ namespace {
             out.push_back(g.get_index(*it));
           }
         }
+        // skipped in there
+        out.push_back(g.get_index(center));
       }
       // would be nice to not have duplicates
       std::sort(out.begin(), out.end());
