@@ -89,7 +89,7 @@ It create(PS0 *link, PS1 *lb, SS *bottom) {
   ret.sp
     = SimulationParameters::setup_particle(new Particle(ret.m));
   ret.bd= new BrownianDynamics(ret.sp);
-  double ts=Diffusion(ret.all[0]).get_time_step_from_sigma(sigma);
+  //double ts=Diffusion(ret.all[0]).get_time_step_from_sigma(sigma);
   ret.sp.set_maximum_time_step(640); // from test below
   ret.all.push_back(ret.sp);
   return ret;
