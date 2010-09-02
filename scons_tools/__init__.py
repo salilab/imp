@@ -123,7 +123,7 @@ def _add_build_flags(env):
                                  '-fno-trapping-math',
                                  '-fno-signaling-nans',
                                  '-ffloat-store'])
-            if scons_tools.gcc.get_version(env)>= 4.3:
+            if gcc.get_version(env)>= 4.3:
                 cxxflags==cxxflags+['-fno-signed-zeros',
                                     '-freciprocal-math',
                                     '-fassociative-math']
