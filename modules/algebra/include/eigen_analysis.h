@@ -10,6 +10,7 @@
 #define IMPALGEBRA_EIGEN_ANALYSIS_H
 
 #include "IMP/algebra/Vector3D.h"
+#include "IMP/algebra/Transformation3D.h"
 #include <IMP/log.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
@@ -90,6 +91,10 @@ IMP_OUTPUT_OPERATOR(algebra::PrincipalComponentAnalysis);
  */
 IMPALGEBRAEXPORT PrincipalComponentAnalysis get_principal_components(
                               const std::vector<VectorD<3> > &ps);
-
+//! Get all possible alignments of the first principle
+//! component system to the second one
+IMPALGEBRAEXPORT Transformation3Ds get_alignments_from_first_to_second(
+                           const PrincipalComponentAnalysis pca1,
+                           const PrincipalComponentAnalysis pca2);
 IMPALGEBRA_END_NAMESPACE
 #endif  /* IMPALGEBRA_EIGEN_ANALYSIS_H */
