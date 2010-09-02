@@ -324,7 +324,7 @@ FittingSolutions compute_fitting_scores(const Particles &ps,
       for (std::vector<IMP::algebra::Transformation3D>::const_iterator it =
          transformations.begin(); it != transformations.end();it++) {
             DensityMap *transformed_sampled_map = get_transformed(
-              model_dens_map,*it,model_dens_map->get_header()->dmin-EPS);
+              model_dens_map,*it);
         IMP_INTERNAL_CHECK(
            transformed_sampled_map->same_dimensions(*model_dens_map),
            "sampled density map changed dimensions after transformation"
