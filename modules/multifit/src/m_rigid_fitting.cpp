@@ -47,48 +47,8 @@ em::FittingSolutions pca_based_rigid_fitting(
     IMP_LOG(IMP::VERBOSE,"particles PCA:"<<std::endl);
     IMP_LOG_WRITE(IMP::VERBOSE,ps_pca.show());
   }
-  // orient the protein to the pca of the density (6 options)
-  algebra::Transformation3Ds all_trans;
-  //the rotation takes the native x-y axes to the given ones
-  algebra::Rotation3D dens_rot = algebra::get_rotation_from_x_y_axes(
-                    dens_pca.get_principal_component(0),
-                    dens_pca.get_principal_component(1));
-  algebra::ReferenceFrame3D dens_rf(algebra::Transformation3D(
-            dens_rot,
-            dens_pca.get_centroid()));
-  int sign[2];
-  sign[0]=1;
-  sign[1]=-1;
-  for(int i1=0;i1<3;i1++) {
-    for(int i2=0;i2<3;i2++) {
-      if (i1==i2) continue;
-      for(int j1=0;j1<2;j1++){
-      for(int j2=0;j2<2;j2++){
-      algebra::Rotation3D ps_rot = algebra::get_rotation_from_x_y_axes(
-        sign[j1]*ps_pca.get_principal_component(i1),
-        sign[j2]*ps_pca.get_principal_component(i2));
-      algebra::ReferenceFrame3D ps_rf(algebra::Transformation3D(
-        ps_rot,
-        ps_pca.get_centroid()));
-      //get the transformation from ps to density
-      algebra::Transformation3D ps2dens =
-        get_transformation_from_first_to_second(ps_rf,dens_rf);
-      IMP_IF_LOG(VERBOSE) {
-        IMP_LOG(VERBOSE,
-         "mapping: ("<<i1<<","<<i2<<") to (0,1) of the em map"<<std::endl);
-        IMP_LOG(VERBOSE,"Transforming protein reference frame:");
-        IMP_LOG_WRITE(VERBOSE,ps_rf.show());
-        IMP_LOG(VERBOSE,"\n to em reference frame:");
-        IMP_LOG_WRITE(VERBOSE,dens_rf.show());
-        IMP_LOG(VERBOSE,"\n resulted in transformation:");
-        IMP_LOG_WRITE(VERBOSE,ps2dens.show());
-        IMP_LOG(VERBOSE,"\n");
-      }
-      algebra::Transformation3D ps2dens_inv = ps2dens.get_inverse();
-      all_trans.push_back(ps2dens);
-      }}//j1,j2
-    }//i2
-  }//i1
+  algebra::Transformation3Ds all_trans =
+    algebra::get_alignments_from_first_to_second(ps_pca,dens_pca);
   em::FittingSolutions fs =
     em::compute_fitting_scores(em_map,rb,*rb_refiner,all_trans,
                                rad_key,wei_key);
