@@ -7,7 +7,6 @@
  */
 
 #include "IMP/core/RigidClosePairsFinder.h"
-#include "IMP/core/BoxSweepClosePairsFinder.h"
 #include "IMP/core/GridClosePairsFinder.h"
 #include "IMP/core/rigid_bodies.h"
 #include "IMP/core/internal/rigid_body_tree.h"
@@ -24,11 +23,7 @@ IMPCORE_BEGIN_NAMESPACE
 RigidClosePairsFinder::RigidClosePairsFinder(Refiner *r):
   ClosePairsFinder("RigidCPF"),
   r_(r){
-#ifdef IMP_USE_CGAL
-  cpf_=Pointer<ClosePairsFinder>(new BoxSweepClosePairsFinder());
-#else
   cpf_=Pointer<ClosePairsFinder>(new GridClosePairsFinder());
-#endif
   k_= internal::get_rigid_body_hierarchy_key(r_);
 }
 RigidClosePairsFinder
