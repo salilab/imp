@@ -1,7 +1,8 @@
 Import('env')
 
 # modules must be listed after modules that use them
-modules=['algebra',
+modules=['cgal',
+         'algebra',
          'core',
          'container',
          'atom',
