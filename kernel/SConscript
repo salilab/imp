@@ -30,7 +30,7 @@ if not env.GetOption('help'):
         config.append(["IMP_BUILD", "IMP_DEBUG"])
 
 
-env.IMPModuleBuild(version='SVN', required_modules=None, config_macros=config,
+env.IMPModuleBuild(version='SVN', config_macros=config,
                    module='kernel', module_suffix="", module_include_path="IMP",
                    module_src_path="kernel", module_preproc="IMP",
                    module_namespace="IMP",
