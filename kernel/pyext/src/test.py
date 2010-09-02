@@ -101,7 +101,9 @@ class TestCase(unittest.TestCase):
                 if os.path.isdir(input):
                     return os.path.join(input, filename)
         # If not found, default to the current working directory:
-        return os.path.join('input', filename)
+        ret= os.path.join('input', filename)
+        if not open(ret, "r"):
+            raise IOError("Test input file "+ret+" does not exist")
 
     def open_input_file(self, filename, mode='rb'):
         """Open and return an input file in the top-level test directory."""
