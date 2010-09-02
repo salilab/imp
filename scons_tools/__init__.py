@@ -117,7 +117,15 @@ def _add_build_flags(env):
     if env['CXX'] == 'g++' and  env['IMP_USE_PLATFORM_FLAGS']:
         if env['build'] == 'fast':
             env.Append(CXXFLAGS=["-O3", "-fexpensive-optimizations",
-                                 "-ffast-math", "-ftree-vectorize"])
+                                 "-ffast-math", "-ftree-vectorize",
+                                 '-ffinite-math-only',
+                                 '-fno-trapping-math',
+                                 '-fno-signaling-nans',
+                                 '-ffloat-store'])
+            if env['PLATFORM'] != 'darwin':
+                env.Append(CXXFLAGS=['-fno-signed-zeros',
+                                     '-freciprocal-math',
+                                     '-fassociative-math'])
         elif env['build'] == 'release':
             env.Append(CXXFLAGS=["-O2"])
         elif env['build'] == 'debug':
