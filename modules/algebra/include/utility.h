@@ -1,7 +1,7 @@
 /**
  *  \file algebra/utility.h
  *  \brief Functions to deal with very common math operations
- *  \author Javier Velazquez-Muriel
+ *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
 */
 

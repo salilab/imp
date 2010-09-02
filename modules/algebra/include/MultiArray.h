@@ -1,7 +1,7 @@
 /**
  *  \file MultiArray.h
  *  \brief Management of arrays of multiple dimensions
- *  \author Javier Velazquez-Muriel
+ *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  */
 

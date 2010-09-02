@@ -1,7 +1,6 @@
 /**
  *  \file Rotation2D.h
  *  \brief Classes and operations related with rotations
- *  \author Javier Velazquez-Muriel
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
 */

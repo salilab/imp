@@ -1,7 +1,7 @@
 /**
  *  \file Matrix3D.h
  *  \brief Management of 3D matrices (volumes) of data
- *  \author Javier Velazquez-Muriel
+ *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
 */
 

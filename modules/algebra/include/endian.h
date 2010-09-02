@@ -1,7 +1,7 @@
 /**
  *  \file endian.h
  *  \brief functions to deal with endian of EM images
- *  \author Javier Velazquez-Muriel
+ *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
 */
 

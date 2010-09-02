@@ -1,7 +1,7 @@
 /**
  *  \file Matrix2D.h
  *  \brief Management of 2D matrices.
- *  \author Javier Velazquez-Muriel
+ *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
 */
 

@@ -1,8 +1,6 @@
 /**
  *  \file Transformation2D.h
  *  \brief 2D transformations.
- *  \author Javier Velazquez-Muriel
- *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  *
 **/
