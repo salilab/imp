@@ -55,3 +55,9 @@ def configure_check_hash(env):
     conf = env.Configure(custom_tests=custom_tests)
     conf.CheckGNUHash()
     conf.Finish()
+
+
+def get_version(env):
+    vstr= env['CXXVERSION']
+    svstr= vstr.split(".")
+    return float(svstr[0])+.1*float(svstr[1])

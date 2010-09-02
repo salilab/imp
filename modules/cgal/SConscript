@@ -1,11 +1,12 @@
 Import('env')
+import scons_tools.gcc
 
 if env['CXX'] == 'g++':
     cxxflags=['-fno-finite-math-only',
               '-ftrapping-math',
               '-fsignaling-nans',
               '-fno-float-store']
-    if env['PLATFORM'] != 'darwin':
+    if scons_tools.gcc.get_version(env)>= 4.3:
         cxxflags==cxxflags+['-fsigned-zeros',
                             '-fno-reciprocal-math',
                             '-fno-associative-math']
