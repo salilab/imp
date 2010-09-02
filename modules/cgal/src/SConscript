@@ -1,0 +1,9 @@
+Import('env')
+
+files = [
+
+        ] \
+        + SConscript('internal/SConscript')
+
+# Build and install the shared library:
+env.IMPModuleLib(files)

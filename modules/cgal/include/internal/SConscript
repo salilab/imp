@@ -1,0 +1,8 @@
+files = [
+         'bounding_sphere.h',
+         'knn.h',
+         'polygons.h',
+        ]
+
+files = [File(x) for x in files]
+Return('files')

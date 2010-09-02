@@ -1,0 +1,16 @@
+Import('env')
+
+if env['CXX'] == 'g++':
+    cxxflags=['-fno-finite-math-only',
+              '-ftrapping-math',
+              '-fsignaling-nans',
+              '-fno-float-store']
+    if env['PLATFORM'] != 'darwin':
+        cxxflags==cxxflags+['-fsigned-zeros',
+                            '-fno-reciprocal-math',
+                            '-fno-associative-math']
+else:
+    cxxflags=[]
+env.IMPModuleBuild(version='SVN',
+                   required_dependencies=["CGAL"],
+                   cxxflags=cxxflags)
