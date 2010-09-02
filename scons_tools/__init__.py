@@ -9,6 +9,7 @@ import symlinks
 import bug_fixes
 import standards
 import compilation
+import gcc
 import swig
 
 __all__ = ["add_common_variables", "MyEnvironment", "get_pyext_environment",
@@ -122,6 +123,10 @@ def _add_build_flags(env):
                                  '-fno-trapping-math',
                                  '-fno-signaling-nans',
                                  '-ffloat-store'])
+            if scons_tools.gcc.get_version(env)>= 4.3:
+                cxxflags==cxxflags+['-fno-signed-zeros',
+                                    '-freciprocal-math',
+                                    '-fassociative-math']
         elif env['build'] == 'release':
             env.Append(CXXFLAGS=["-O2"])
         elif env['build'] == 'debug':
