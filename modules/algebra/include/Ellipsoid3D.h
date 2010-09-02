@@ -10,7 +10,6 @@
 #include "Cylinder3D.h"
 #include <cmath>
 #include <IMP/constants.h>
-#include "internal/cgal_predicates.h"
 #include "BoundingBoxD.h"
 #include "Transformation3D.h"
 

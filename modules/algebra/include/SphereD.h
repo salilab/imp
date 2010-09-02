@@ -9,7 +9,6 @@
 
 #include <cmath>
 #include <IMP/constants.h>
-#include "internal/cgal_predicates.h"
 #include "BoundingBoxD.h"
 #include "Vector3D.h"
 #include "algebra_macros.h"
