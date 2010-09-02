@@ -122,10 +122,6 @@ def _add_build_flags(env):
                                  '-fno-trapping-math',
                                  '-fno-signaling-nans',
                                  '-ffloat-store'])
-            if env['PLATFORM'] != 'darwin':
-                env.Append(CXXFLAGS=['-fno-signed-zeros',
-                                     '-freciprocal-math',
-                                     '-fassociative-math'])
         elif env['build'] == 'release':
             env.Append(CXXFLAGS=["-O2"])
         elif env['build'] == 'debug':
