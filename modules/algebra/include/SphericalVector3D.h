@@ -1,7 +1,7 @@
 /**
  *  \file  SphericalVector3D.h
  *  \brief Stores and converts spherical coordinates
- *  \author Javier Velazquez-Muriel
+ *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
 */
 #ifndef IMPALGEBRA_SPHERICAL_VECTOR_3D_H
