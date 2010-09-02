@@ -1,0 +1,10 @@
+Import('env')
+
+env.IMPModuleDoc(env.IMPModuleGetDocs(),
+                 authors=["Daniel Russel"],
+                 brief="MODULENAME provides \\imp wrappers for various algorithms implemented in CGAL.",
+                 # Provide a longer description of what the module does
+                 # This description can have multiple paragraphs and all sorts of markup
+                 overview="""The module should not be used directly by users. Instead IMP.algebra and IMP.core functionality will be improved when CGAL is available. The main purpose of this module is to allow certain CGAL code to be built with different build flags than the rest of \imp. Specifically, CGAL needs IEEE floating point specs to be followed exactly.""",
+                 publications=[],
+                 license=env.StandardLicense())
