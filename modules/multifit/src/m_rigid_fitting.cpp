@@ -85,8 +85,6 @@ em::FittingSolutions pca_based_rigid_fitting(
         IMP_LOG(VERBOSE,"\n");
       }
       algebra::Transformation3D ps2dens_inv = ps2dens.get_inverse();
-      core::transform(rb,ps2dens);
-      core::transform(rb,ps2dens_inv);
       all_trans.push_back(ps2dens);
       }}//j1,j2
     }//i2
