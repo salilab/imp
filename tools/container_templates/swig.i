@@ -2,10 +2,10 @@
 
 namespace IMP {
   namespace core {
-    %extend GroupnameContainerSet {
-       ::IMP::GroupnameContainers get_groupname_containers() const {
-         return IMP::GroupnameContainers(self->groupname_containers_begin(),
-         self->groupname_containers_end());
+    %extend CLASSNAMEContainerSet {
+       ::IMP::CLASSNAMEContainers get_FUNCTIONNAME_containers() const {
+         return IMP::CLASSNAMEContainers(self->FUNCTIONNAME_containers_begin(),
+         self->FUNCTIONNAME_containers_end());
        }
     }
   }
