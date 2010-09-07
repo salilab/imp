@@ -38,6 +38,12 @@ class IMPCOREEXPORT HarmonicDistancePairScore: public PairScore
   const double x0_, k_;
 public:
   HarmonicDistancePairScore(double x0, double k):  x0_(x0), k_(k){}
+  double get_rest_length() const {
+    return x0_;
+  }
+  double get_k() const {
+    return k_;
+  }
   IMP_SIMPLE_PAIR_SCORE(HarmonicDistancePairScore);
 };
 
