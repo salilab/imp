@@ -1,0 +1,31 @@
+Import('env')
+import scons_tools.checks
+
+scons_tools.checks.add_external_library(env, "Bullet", "BulletDynamics",
+                                       "btBulletDynamicsCommon.h",
+                                        body="""
+        btBroadphaseInterface* broadphase = new btDbvtBroadphase();
+        btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
+        btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);
+
+        btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
+
+        btDiscreteDynamicsWorld* dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher,broadphase,solver,collisionConfiguration);
+        btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0,1,0),1);
+        btCollisionShape* fallShape = new btSphereShape(1);
+        btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0,0,0,1),btVector3(0,-1,0)));
+        btRigidBody::btRigidBodyConstructionInfo
+                groundRigidBodyCI(0,groundMotionState,groundShape,btVector3(0,0,0));
+        new btRigidBody(groundRigidBodyCI);
+""",
+                                        extra_libs=["BulletCollision",
+                                                    "BulletSoftBody",
+                                                    "LinearMath"])
+
+
+# See IMP.gsl for an example of how to add external dependencies to a module
+env.IMPModuleBuild(version='SVN',
+                   # The required modules are the other IMP modules that must be built to use this one
+                   required_modules=['container', 'core', 'atom'],
+                   # the optional dependencies are external libraries that are needed
+                   required_dependencies=["Bullet"])
