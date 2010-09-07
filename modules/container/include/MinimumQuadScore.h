@@ -15,7 +15,7 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-//! Evaluate the minimum n quad scores of the passed set of QuadScores
+//! Evaluate the min or max n particle_quad scores of the passed set
 /** Each of the set of QuadScores is evaluated and the sum of the
     minimum n is returned.
 */

@@ -18,10 +18,10 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-//! Score based on the maximum singleton over a set of Singletons
-/** The score is evaluated for each of the Singletons in the container
-    and the value of the maximum n scores is used. That is,
-    if n is 1, the value of the restraint is the value of the maximum
+//! Score based on the min or max SingletonScore over a set
+/** The score is evaluated for each of the VALUETYPE in the container
+    and the value of the min or max n scores is used. That is,
+    if n is 1, the value of the restraint is the value of the min or max
     score over the container.
  */
 class IMPCONTAINEREXPORT MaximumSingletonRestraint
@@ -31,7 +31,7 @@ class IMPCONTAINEREXPORT MaximumSingletonRestraint
   IMP::internal::OwnerPointer<SingletonContainer> c_;
   unsigned int n_;
 public:
-  /** n is the number of maximum scores to use.
+  /** n is the number of LCMaximum scores to use.
    */
   MaximumSingletonRestraint(SingletonScore *f,
                                  SingletonContainer *c,

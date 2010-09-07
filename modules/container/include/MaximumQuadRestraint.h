@@ -18,10 +18,10 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-//! Score based on the maximum quad over a set of Quads
-/** The score is evaluated for each of the Quads in the container
-    and the value of the maximum n scores is used. That is,
-    if n is 1, the value of the restraint is the value of the maximum
+//! Score based on the min or max QuadScore over a set
+/** The score is evaluated for each of the VALUETYPE in the container
+    and the value of the min or max n scores is used. That is,
+    if n is 1, the value of the restraint is the value of the min or max
     score over the container.
  */
 class IMPCONTAINEREXPORT MaximumQuadRestraint
@@ -31,7 +31,7 @@ class IMPCONTAINEREXPORT MaximumQuadRestraint
   IMP::internal::OwnerPointer<QuadContainer> c_;
   unsigned int n_;
 public:
-  /** n is the number of maximum scores to use.
+  /** n is the number of LCMaximum scores to use.
    */
   MaximumQuadRestraint(QuadScore *f,
                                  QuadContainer *c,

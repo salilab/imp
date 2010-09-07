@@ -15,7 +15,7 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-//! Evaluate the maximum n singleton scores of the passed set of SingletonScores
+//! Evaluate the min or max n particle scores of the passed set
 /** Each of the set of SingletonScores is evaluated and the sum of the
     minimum n is returned.
 */
