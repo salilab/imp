@@ -18,10 +18,10 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-//! Score based on the LCMINORMAX FUNCTIONNAME over a set of CLASSNAMEs
-/** The score is evaluated for each of the CLASSNAMEs in the container
-    and the value of the LCMINORMAX n scores is used. That is,
-    if n is 1, the value of the restraint is the value of the LCMINORMAX
+//! Score based on the min or max CLASSNAMEScore over a set
+/** The score is evaluated for each of the VALUETYPE in the container
+    and the value of the min or max n scores is used. That is,
+    if n is 1, the value of the restraint is the value of the min or max
     score over the container.
  */
 class IMPCONTAINEREXPORT MINORMAXCLASSNAMERestraint
