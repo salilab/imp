@@ -1,0 +1,5 @@
+IMP_SWIG_OBJECT(IMP::bullet, ResolveCollisionsOptimizer, ResolveCollisionsOptimizers);
+
+/* Wrap our own classes. Each header in the module should be listed here with a
+   %include line.*/
+%include "IMP/bullet/ResolveCollisionsOptimizer.h"
