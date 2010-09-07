@@ -15,7 +15,7 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-//! Evaluate the minimum n pair scores of the passed set of PairScores
+//! Evaluate the min or max n particle_pair scores of the passed set
 /** Each of the set of PairScores is evaluated and the sum of the
     minimum n is returned.
 */

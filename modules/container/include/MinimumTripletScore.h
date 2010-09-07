@@ -15,7 +15,7 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-//! Evaluate the minimum n triplet scores of the passed set of TripletScores
+//! Evaluate the min or max n particle_triplet scores of the passed set
 /** Each of the set of TripletScores is evaluated and the sum of the
     minimum n is returned.
 */
