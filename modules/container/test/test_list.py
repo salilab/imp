@@ -19,6 +19,8 @@ class RefCountTests(IMP.test.TestCase):
         for i in range(0,10):
             ps1.append(IMP.Particle(m))
         c= IMP.container.ListSingletonContainer(ps0)
+        ac= c.get_added_container()
+        rc= c.get_removed_container()
         print "start"
         m.evaluate(False)
         self.assertEqual(c.get_removed_container().get_number_of_particles(), 0)
