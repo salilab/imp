@@ -15,7 +15,7 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-//! Evaluate the LCMINORMAX n FUNCTIONNAME scores of the passed set of CLASSNAMEScores
+//! Evaluate the min or max n FUNCTIONNAME scores of the passed set
 /** Each of the set of CLASSNAMEScores is evaluated and the sum of the
     minimum n is returned.
 */
