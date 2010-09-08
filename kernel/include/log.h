@@ -9,7 +9,6 @@
 #define IMP_LOG_H
 
 #include "kernel_config.h"
-#include "utility.h"
 #include "macros.h"
 
 #include <iostream>
@@ -290,13 +289,17 @@ public:
     calling a function to ensure that all the output of that
     function is nicely offset.
 */
-struct IncreaseIndent: public RAII {
+struct IncreaseIndent {
+  // can't use macro since there are no arguments
   IncreaseIndent(){
     internal::log_indent+=2;
   }
   ~IncreaseIndent() {
     internal::log_indent-=2;
   }
+private:
+  IncreaseIndent(const IncreaseIndent&){}
+  void operator=(const IncreaseIndent&){}
 };
 
 /** @} */

@@ -17,6 +17,7 @@
 #include "../Decorator.h"
 #include "../file.h"
 #include "graph_utility.h"
+#include "container_helpers.h"
 #include <boost/graph/topological_sort.hpp>
 #include <boost/graph/copy.hpp>
 

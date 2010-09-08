@@ -20,7 +20,7 @@ IMP_BEGIN_NAMESPACE
    want. When it goes out of scope, it will restore the old level.
    \ingroup logging
  */
-class IMPEXPORT SetLogState: public RAII
+class IMPEXPORT SetLogState
 {
   LogLevel level_;
   Object* obj_;

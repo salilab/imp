@@ -13,9 +13,9 @@
 #include "utility.h"
 #include "Particle.h"
 #include "Constraint.h"
-#include "Model.h"
 
 IMP_BEGIN_NAMESPACE
+class Model;
 
 /**
 Representation of the structure in \imp is via a collection of

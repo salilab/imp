@@ -9,6 +9,7 @@
 #define IMP_INTERNAL_KEY_HELPERS_H
 
 #include "../kernel_config.h"
+#include "map.h"
 #include <vector>
 #include <map>
 
@@ -17,7 +18,7 @@ IMP_BEGIN_INTERNAL_NAMESPACE
   */
 struct IMPEXPORT KeyData
 {
-  typedef std::map<std::string, int> Map;
+  typedef IMP::internal::Map<std::string, int> Map;
   typedef std::vector<std::string> RMap;
 
   void show(std::ostream &out= std::cout) const;

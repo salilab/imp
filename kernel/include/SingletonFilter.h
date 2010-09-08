@@ -11,10 +11,8 @@
 #define IMP_SINGLETON_FILTER_H
 
 #include "kernel_config.h"
-#include "Particle.h"
-#include "utility.h"
-#include "VersionInfo.h"
 #include "base_types.h"
+#include "macros.h"
 #include "VersionInfo.h"
 #include "ParticleTuple.h"
 #include <boost/lambda/lambda.hpp>

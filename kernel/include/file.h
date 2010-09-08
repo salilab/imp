@@ -147,7 +147,7 @@ IMPEXPORT TextOutput get_log_target();
     to set the target of logs.
     \ingroup logging
 */
-class SetLogTarget: public RAII {
+class SetLogTarget {
   /* Python deletes all Python objects before static
      destructors are called. As a result, having static
      C++ objects point to Python objects is problematic.

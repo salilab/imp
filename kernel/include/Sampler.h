@@ -13,6 +13,7 @@
 #include "macros.h"
 #include "Pointer.h"
 #include "ConfigurationSet.h"
+#include "internal/map.h"
 
 IMP_BEGIN_NAMESPACE
 
@@ -29,7 +30,7 @@ class IMPEXPORT Sampler: public Object
 {
   internal::OwnerPointer<Model> model_;
   double max_score_;
-  typedef std::map<Restraint*, double> Maxes;
+  typedef internal::Map<Restraint*, double> Maxes;
   Maxes max_scores_;
  public:
   Sampler(Model *m, std::string name="Sampler %1%");

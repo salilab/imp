@@ -9,10 +9,8 @@
 #ifndef IMP_WEAK_POINTER_H
 #define IMP_WEAK_POINTER_H
 
-#include "log.h"
 #include "Object.h"
 #include "macros.h"
-#include "utility.h"
 #include "exception.h"
 
 #include <boost/static_assert.hpp>
@@ -20,6 +18,8 @@
 #include <boost/utility/enable_if.hpp>
 #include <boost/mpl/not.hpp>
 #include <boost/mpl/and.hpp>
+#include <boost/functional/hash.hpp>
+#include <boost/functional/hash/hash.hpp>
 
 IMP_BEGIN_NAMESPACE
 
@@ -107,6 +107,13 @@ public:
     return o_;
   }
 };
+
+#ifndef IMP_DOXYGEN
+template <class T>
+inline std::size_t hash_value(WeakPointer<T> p) {
+  return boost::hash_value(p.get());
+}
+#endif
 
 IMP_END_NAMESPACE
 
