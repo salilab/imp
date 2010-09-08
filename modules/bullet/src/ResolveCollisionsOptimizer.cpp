@@ -13,17 +13,14 @@
 #include <IMP/atom/Mass.h>
 #include <IMP/core/PairRestraint.h>
 #include <IMP/core/DistancePairScore.h>
+#include <IMP/scoped.h>
 #include <map>
 
 #include <btBulletDynamicsCommon.h>
-#include <boost/shared_ptr.hpp>
+#include <boost/ptr_container/ptr_vector.hpp>
 IMPBULLET_BEGIN_NAMESPACE
 
 #define IMP_BNEW(Name, name, args) std::auto_ptr<Name> name(new Name args);
-template <class T>
-boost::shared_ptr<T> sp(T* foo) {
-  return boost::shared_ptr<T>(foo);
-}
 btVector3 tr(const algebra::VectorD<3> &v) {
   return btVector3(v[0], v[1], v[2]);
 }
@@ -40,6 +37,7 @@ const algebra::VectorD<3> tr(const btVector3 &v) {
 
 ResolveCollisionsOptimizer::ResolveCollisionsOptimizer(RestraintSet *rs,
                                                        const ParticlesTemp &ps):
+  Optimizer(rs->get_model(), "ResolveCollisionsOptimizer %1%"),
   rs_(rs), ps_(ps){
 }
 /*
@@ -55,18 +53,21 @@ const std::vector<boost::tuple<int,int,int> > &tris) {
  */
 
 namespace {
-  void handle_restraints(RestraintSet *rs,btDiscreteDynamicsWorld *world,
+  void handle_restraints(RestraintSet *rs,double weight,
+                         btDiscreteDynamicsWorld *world,
                          const std::map<Particle*, btRigidBody *> &map,
-                         std::vector<boost::shared_ptr<
-                           btGeneric6DofSpringConstraint> > &springs) {
-    RestraintsAndWeights rw= get_restraints_and_weights(rs);
-    for (unsigned int i=0; i < rw.first.size(); ++i) {
-      core::PairRestraint*pr= dynamic_cast<core::PairRestraint*>(rw.first[i]);
+                    boost::ptr_vector< btGeneric6DofSpringConstraint> &springs,
+                       boost::ptr_vector< ScopedRemoveRestraint> &restraints) {
+    Restraints rss(rs->restraints_begin(), rs->restraints_end());
+    for (unsigned int i=0; i < rss.size(); ++i) {
+      Restraint *r= rss[i];
+      core::PairRestraint*pr= dynamic_cast<core::PairRestraint*>(r);
       if (pr) {
         PairScore *ps= pr->get_pair_score();
         core::HarmonicDistancePairScore *hdps
           = dynamic_cast<core::HarmonicDistancePairScore*>(ps);
         if (hdps) {
+          IMP_LOG(TERSE, "Handling restraint " << pr->get_name() << std::endl);
           double x0= hdps->get_rest_length();
           Particle *p0= pr->get_particle_pair()[0];
           Particle *p1= pr->get_particle_pair()[1];
@@ -76,14 +77,22 @@ namespace {
           btTransform it; it.setIdentity();
           btTransform it1; it1.setIdentity();
           it1.setOrigin(btVector3(x0, 0,0));
-          springs.push_back(sp(new btGeneric6DofSpringConstraint(*r0, *r1,
+          springs.push_back(new btGeneric6DofSpringConstraint(*r0, *r1,
                                                                  it, it1,
-                                                                 true)));
+                                                                 true));
           for (unsigned int i=0; i< 3; ++i) {
-            springs.back()->enableSpring(i, true);
-            springs.back()->setStiffness(i, hdps->get_k());
+            springs.back().enableSpring(i, true);
+            springs.back().setStiffness(i, hdps->get_k());
           }
-          world->addConstraint(springs.back().get());
+          world->addConstraint(&springs.back());
+          restraints.push_back(new ScopedRemoveRestraint(pr,rs));
+        }
+      } else {
+        RestraintSet *rsc=
+          dynamic_cast<RestraintSet*>(r);
+        if (rsc) {
+          handle_restraints(rsc, weight*rsc->get_weight(),
+                            world, map, springs, restraints);
         }
       }
     }
@@ -126,12 +135,12 @@ double ResolveCollisionsOptimizer::optimize(unsigned int iter) {
            dynamicsWorld, (dispatcher.get(),broadphase.get(),
                            solver.get(),collisionConfiguration.get()));
 
-  std::vector<boost::shared_ptr<btCollisionShape> > shapes;
-  std::vector<boost::shared_ptr<btMotionState> > motion_states;
-  std::vector<boost::shared_ptr<btRigidBody> > rigid_bodies;
+  boost::ptr_vector<btCollisionShape > shapes;
+  boost::ptr_vector<btMotionState > motion_states;
+  boost::ptr_vector<btRigidBody > rigid_bodies;
   std::map<Particle*, btRigidBody *> map;
-  std::vector<boost::shared_ptr<
-    btGeneric6DofSpringConstraint> > springs;
+  boost::ptr_vector<btGeneric6DofSpringConstraint > springs;
+  boost::ptr_vector< ScopedRemoveRestraint> restraints;
   typedef std::map<double, btCollisionShape*> Spheres;
   Spheres spheres;
   for (unsigned int i=0; i< ps_.size(); ++i) {
@@ -152,13 +161,13 @@ double ResolveCollisionsOptimizer::optimize(unsigned int iter) {
       } else {
         shape= new btSphereShape(d.get_radius());
         spheres[d.get_radius()]= shape;
-        shapes.push_back(sp(shape));
+        shapes.push_back(shape);
       }
 
       btDefaultMotionState* fallMotionState
                = new btDefaultMotionState(btTransform(btQuaternion(0,0,0,1),
                                                       tr(d.get_coordinates())));
-      motion_states.push_back(sp(fallMotionState));
+      motion_states.push_back(fallMotionState);
       btVector3 fallInertia(0,0,0);
       shape->calculateLocalInertia(mass,fallInertia);
       btRigidBody::btRigidBodyConstructionInfo
@@ -166,19 +175,32 @@ double ResolveCollisionsOptimizer::optimize(unsigned int iter) {
       btRigidBody* fallRigidBody= new btRigidBody(fallRigidBodyCI);
       map[ps_[i]]= fallRigidBody;
       dynamicsWorld->addRigidBody(fallRigidBody);
-      rigid_bodies.push_back(sp(fallRigidBody));
+      rigid_bodies.push_back(fallRigidBody);
     }
   }
-  handle_restraints(rs_, dynamicsWorld.get(), map, springs);
+  handle_restraints(rs_, 1.0, dynamicsWorld.get(), map, springs, restraints);
+  IMP_LOG(TERSE, "Special cased " << restraints.size()
+          << " restraint." << std::endl);
+  unsigned int rrs=get_restraints(rs_).size();
+  IMP_LOG(TERSE, "Remaining " << rrs << " restraints." << std::endl);
   for (unsigned int i=0; i< iter; ++i) {
+    if (rrs >0) {
+      rs_->evaluate(true);
+      for (unsigned int j=0; j< ps_.size(); ++j) {
+        core::XYZ d(ps_[j]);
+        rigid_bodies[j].applyCentralForce(tr(d.get_derivatives()));
+      }
+    }
     dynamicsWorld->stepSimulation(1/60.f,10);
+    if (iter== i+1 || rrs >0) {
+      for (unsigned int j=0; j< ps_.size(); ++j) {
+        btTransform trans;
+        rigid_bodies[j].getMotionState()->getWorldTransform(trans);
+        core::XYZ(ps_[j]).set_coordinates(tr(trans.getOrigin()));
+      }
+    }
   }
-  for (unsigned int i=0; i< ps_.size(); ++i) {
-    btTransform trans;
-    rigid_bodies[i]->getMotionState()->getWorldTransform(trans);
-    core::XYZ(ps_[i]).set_coordinates(tr(trans.getOrigin()));
-  }
-  return 0;
+  return rs_->evaluate(false);
 }
 
 
