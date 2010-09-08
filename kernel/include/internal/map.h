@@ -11,10 +11,12 @@
 #include "../kernel_config.h"
 #if IMP_BOOST_VERSION > 103500
 #include <boost/unordered_map.hpp>
-#include <boost/functional/hash.hpp>
 #else
 #include <map>
 #endif
+
+#include <boost/functional/hash.hpp>
+
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 
