@@ -7,7 +7,7 @@
  */
 #include <IMP/domino2/domino2_config.h>
 #include <IMP/domino2/DominoSampler.h>
-#include <map>
+#include <IMP/internal/map.h>
 #include <set>
 #include <boost/version.hpp>
 #include <IMP/domino2/subset_states.h>
@@ -24,8 +24,8 @@ SubsetStatesTable::~SubsetStatesTable(){}
 typedef std::vector<int> Ints;
 
 namespace {
-  typedef std::map<Particle*, Particle*> IParent;
-  typedef std::map<Particle*, int> IRank;
+  typedef IMP::internal::Map<Particle*, Particle*> IParent;
+  typedef IMP::internal::Map<Particle*, int> IRank;
   typedef boost::associative_property_map<IParent> Parent;
   typedef boost::associative_property_map<IRank > Rank;
   typedef boost::disjoint_sets<Rank, Parent> UF;

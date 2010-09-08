@@ -152,7 +152,7 @@ ResidueType get_residue_type(char c) {
                            RP(TRP, 'W'),
                            RP(VAL, 'V'),
                            RP(UNK, 'X')};
-  static const std::map<char, ResidueType> map(names,
+  static const IMP::internal::Map<char, ResidueType> map(names,
                                                names+sizeof(names)/sizeof(RP));
   if (map.find(c) == map.end()) {
     IMP_THROW("Residue name not found " << c, ValueException);

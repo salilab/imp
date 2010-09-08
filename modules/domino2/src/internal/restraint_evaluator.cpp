@@ -9,6 +9,7 @@
 #include <IMP/domino2/internal/restraint_evaluator.h>
 #include <IMP/domino2/internal/inference.h>
 #include <IMP/domino2/utility.h>
+#include <IMP/internal/map.h>
 #include <algorithm>
 
 
@@ -22,7 +23,7 @@ ModelData::ModelData(RestraintSet *rs,
 void ModelData::initialize() {
   DependencyGraph dg= get_dependency_graph(RestraintsTemp(1, rs_));
   const ParticlesTemp all= pst_->get_particles();
-  std::map<Particle*, Particle*> idm;
+  IMP::internal::Map<Particle*, Particle*> idm;
   for (unsigned int i=0; i < all.size(); ++i) {
     Particle *p= all[i];
     ParticlesTemp ps= get_dependent_particles(p, dg);
