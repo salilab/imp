@@ -14,8 +14,7 @@
 #include "Pointer.h"
 #include "Model.h"
 #include "internal/particle_save.h"
-#include <map>
-#include <set>
+#include "internal/map.h"
 
 IMP_BEGIN_NAMESPACE
 
@@ -26,7 +25,7 @@ class IMPEXPORT Configuration: public Object
 {
   mutable Pointer<Model> model_;
   typedef Pointer<Particle> PP;
-  typedef std::map<PP, internal::ParticleData> DataMap;
+  typedef internal::Map<PP, internal::ParticleData> DataMap;
   DataMap base_;
   friend class ConfigurationSet;
   bool get_has_particle(Particle *p) const {

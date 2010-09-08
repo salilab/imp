@@ -10,7 +10,6 @@
 #define IMP_IO_H
 
 #include "kernel_config.h"
-#include "Model.h"
 #include "file.h"
 #include "FailureHandler.h"
 #include "OptimizerState.h"
@@ -18,6 +17,9 @@
 #include <boost/format.hpp>
 
 IMP_BEGIN_NAMESPACE
+
+class Model;
+
 /** \name Model IO
     \anchor model_text_io
     Models can be written to files in an easy-to-read

@@ -11,10 +11,8 @@
 #define IMP_SINGLETON_MODIFIER_H
 
 #include "kernel_config.h"
-#include "internal/container_helpers.h"
 #include "DerivativeAccumulator.h"
 #include "base_types.h"
-#include "VectorOfRefCounted.h"
 #include "ParticleTuple.h"
 
 IMP_BEGIN_NAMESPACE

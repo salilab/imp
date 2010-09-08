@@ -1409,7 +1409,8 @@ protected:                                      \
     if (get_is_changed(p)){                                             \
       DerivativeAccumulator nda;                                        \
       if (da) nda= DerivativeAccumulator(*da, -1);                      \
-      double v= Name::evaluate(IMP::internal::prechange(p),             \
+      double v= Name::evaluate(ParticlePair(p[0]->get_prechange_particle(), \
+                                            p[1]->get_prechange_particle()), \
                                da? &nda:NULL);                          \
       double rv= Name::evaluate(p, da)-v;                               \
       return rv;                                                        \
@@ -1427,7 +1428,8 @@ protected:                                      \
   }                                                                     \
   double evaluate_prechange(const ParticlePair &p,                      \
                             DerivativeAccumulator *da) const {          \
-    return Name::evaluate(IMP::internal::prechange(p),                  \
+    return Name::evaluate(ParticlePair(p[0]->get_prechange_particle(),  \
+                                       p[1]->get_prechange_particle()), \
                           da);                                          \
   }                                                                     \
   double evaluate_prechange(const ParticlePairsTemp &ps,                \
@@ -1500,7 +1502,10 @@ protected:                                      \
     if (get_is_changed(p)) {                                            \
       DerivativeAccumulator nda;                                        \
       if (da) nda= DerivativeAccumulator(*da, -1);                      \
-      double v= Name::evaluate(IMP::internal::prechange(p),             \
+      double v                                                          \
+        = Name::evaluate(ParticleTriplet(p[0]->get_prechange_particle(), \
+                                         p[1]->get_prechange_particle(), \
+                                         p[2]->get_prechange_particle()),\
                                da? &nda:NULL);                          \
       double rv= Name::evaluate(p, da)-v;                               \
       return rv;                                                        \
@@ -1518,7 +1523,9 @@ protected:                                      \
   }                                                                     \
   double evaluate_prechange(const ParticleTriplet &p,                   \
                             DerivativeAccumulator *da) const {          \
-    return Name::evaluate(p,                                            \
+    return Name::evaluate(ParticleTriplet(p[0]->get_prechange_particle(), \
+                                          p[1]->get_prechange_particle(), \
+                                          p[1]->get_prechange_particle()), \
                           da);                                          \
   }                                                                     \
   double evaluate_prechange(const ParticleTripletsTemp &ps,             \
@@ -1603,10 +1610,14 @@ protected:                                      \
   }                                                                     \
   double evaluate_change(const ParticleQuad &p,                         \
                          DerivativeAccumulator *da) const {             \
-    if (IMP::internal::is_dirty(p)) {                                   \
+    if (p[0]->get_is_changed() || p[1]->get_is_changed()                \
+        || p[2]->get_is_changed() || p[3]->get_is_changed()) {          \
       DerivativeAccumulator nda;                                        \
       if (da) nda= DerivativeAccumulator(*da, -1);                      \
-      double v= Name::evaluate(IMP::internal::prechange(p),             \
+      double v= Name::evaluate(ParticleQuad(p[0]->get_prechange_particle(), \
+                                            p[1]->get_prechange_particle(), \
+                                            p[2]->get_prechange_particle(), \
+                                            p[3]->get_prechange_particle()), \
                                da? &nda:NULL);                          \
       double rv= Name::evaluate(p, da)-v;                               \
       return rv;                                                        \
@@ -1624,7 +1635,10 @@ protected:                                      \
   }                                                                     \
   double evaluate_prechange(const ParticleQuad &p,                      \
                             DerivativeAccumulator *da) const {          \
-    return Name::evaluate(IMP::internal::prechange(p),                  \
+    return Name::evaluate(ParticleQuad(p[0]->get_prechange_particle(),  \
+                                       p[1]->get_prechange_particle(),  \
+                                       p[2]->get_prechange_particle(),  \
+                                       p[3]->get_prechange_particle()), \
                           da);                                          \
   }                                                                     \
   double evaluate_prechange(const ParticleQuadsTemp &ps,                \
@@ -2260,6 +2274,10 @@ IMP_OBJECTS(Name##FailureHandler, Name##FailureHandlers);
     Set;}                                               \
   void reset() {Reset;}                                 \
   ~Name () {reset();}                                   \
+private:                                                \
+ void operator=(const Name &){}                         \
+ Name(const Name &){}                                   \
+public:                                                 \
   IMP_REQUIRE_SEMICOLON_CLASS(raii)
 
 //! @}

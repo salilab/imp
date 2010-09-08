@@ -299,7 +299,7 @@ class IMPEXPORT Optimizer: public Object
 
 
 //! Save and restore the set of optimized attributes for a set of particles
-class SaveOptimizeds: public RAII {
+class SaveOptimizeds {
   ParticlesTemp pt_;
   std::vector<internal::ParticleStorage::OptimizedTable> saved_;
 public:
