@@ -34,13 +34,19 @@ class DOMINOTests(IMP.test.TestCase):
         print "optimizing"
         doc= IMP.domino2.OptimizeContainers(m.get_root_restraint_set(), pst)
         dg= IMP.get_dependency_graph([m.get_root_restraint_set()])
-        dg.show()
+        #dg.show()
+        print "before"
+        IMP.show_restraint_hierarchy(m.get_root_restraint_set())
         dor= IMP.domino2.OptimizeRestraints(m.get_root_restraint_set(), pst.get_particles())
+        print "after"
+        IMP.show_restraint_hierarchy(m.get_root_restraint_set())
         print "optimized restraints"
         dg= IMP.get_dependency_graph([m.get_root_restraint_set()])
-        dg.show()
+        #dg.show()
         self.assert_(len(IMP.get_restraints(m.get_root_restraint_set())) > 1)
         del dor
+        print "after delete"
+        IMP.show_restraint_hierarchy(m.get_root_restraint_set())
         self.assert_(len(IMP.get_restraints(m.get_root_restraint_set())) == 1)
 if __name__ == '__main__':
     unittest.main()

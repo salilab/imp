@@ -603,8 +603,8 @@ namespace {
                           const DependencyGraph &dg,
                           const std::map<Object*, unsigned int> &index,
                           const ParticlesTemp &pst,
-                          Restraints &removed,
-                          Restraints &added) {
+                          boost::ptr_vector<ScopedRemoveRestraint> &removed,
+                          boost::ptr_vector<ScopedRestraint> &added) {
     ContainersTemp ic= r->get_input_containers();
     for (unsigned int i=0; i< ic.size(); ++i) {
       if (get_has_ancestor(dg, index.find(ic[i])->second, pst)) {
@@ -618,10 +618,8 @@ namespace {
               << std::endl);
       IMP_NEW(RestraintSet, rss, (r->get_name()));
       rss->add_restraints(rs);
-      removed.push_back(r);
-      p->remove_restraint(r);
-      p->add_restraint(rss);
-      added.push_back(rss);
+      removed.push_back(new ScopedRemoveRestraint(r, p));
+      added.push_back(new ScopedRestraint(rss, p));
     } else {
     }
   }
@@ -630,27 +628,19 @@ namespace {
                                  const DependencyGraph &dg,
                                  const std::map<Object*, unsigned int> &index,
                                  const ParticlesTemp &pst,
-                                 Restraints &removed,
-                                 RestraintSets &removed_parents,
-                                 Restraints &added,
-                                 RestraintSets &added_parents) {
+                           boost::ptr_vector<ScopedRemoveRestraint> &removed,
+                                 boost::ptr_vector<ScopedRestraint> &added) {
     Restraints all(p->restraints_begin(), p->restraints_end());
     for (unsigned int i=0; i < all.size(); ++i) {
       Restraint *r=all[i];
       RestraintSet *rs= dynamic_cast<RestraintSet*>(r);
       if (rs) {
         optimize_restraint_parent(rs, dg, index, pst,
-                                  removed, removed_parents,
-                                  added, added_parents);
+                                  removed,
+                                  added);
       } else {
         optimize_restraint(all[i], p, dg, index, pst,
                            removed, added);
-        while (added_parents.size() < added.size()) {
-          added_parents.push_back(p);
-        }
-        while (removed_parents.size() < removed.size()) {
-          removed_parents.push_back(p);
-        }
       }
     }
   }
@@ -722,18 +712,9 @@ void OptimizeRestraints::optimize_model(RestraintSet *m,
   }
   optimize_restraint_parent(m,
                             dg, index,
-                            particles, removed_, removed_parents_,
-                            added_, added_parents_);
+                            particles, removed_,  added_);
 }
 
-void OptimizeRestraints::unoptimize_model() {
-  for (unsigned int i=0; i< removed_.size(); ++i) {
-    removed_parents_[i]->add_restraint(removed_[i]);
-  }
-  for (unsigned int i=0; i< added_.size(); ++i) {
-    added_parents_[i]->remove_restraint(added_[i]);
-  }
-}
 
 
 void OptimizeContainers::optimize_model(RestraintSet *m,

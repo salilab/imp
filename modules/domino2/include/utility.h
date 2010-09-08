@@ -22,6 +22,7 @@
 #include <boost/graph/kruskal_min_spanning_tree.hpp>
 #include <boost/graph/prim_minimum_spanning_tree.hpp>
 #include <boost/graph/adjacency_list.hpp>
+#include <boost/ptr_container/ptr_vector.hpp>
 
 IMP_BEGIN_NAMESPACE
 class Model;
@@ -123,15 +124,12 @@ get_is_static_container(Container *c,
     containers other than container::ClosePairContainer and its
     ilk. Examples include container::ConnectedPairContainer.
 */
-class IMPDOMINO2EXPORT OptimizeRestraints: public RAII {
-  Restraints removed_;
-  RestraintSets removed_parents_;
-  Restraints added_;
-  RestraintSets added_parents_;
+class IMPDOMINO2EXPORT OptimizeRestraints {
+  boost::ptr_vector<ScopedRemoveRestraint> removed_;
+  boost::ptr_vector<ScopedRestraint> added_;
   Pointer<RestraintSet> m_;
 
   void optimize_model(RestraintSet *m, const ParticlesTemp &particles);
-  void unoptimize_model();
 public:
   IMP_RAII(OptimizeRestraints, (RestraintSet *m,
                                 const ParticlesTemp &particles), {},
@@ -141,7 +139,8 @@ public:
            },
            {
              if (m_&& m_->get_is_part_of_model()) {
-               unoptimize_model();
+               removed_.clear();
+               added_.clear();
                m_=NULL;
              }
            });
@@ -157,7 +156,7 @@ public:
     containers other than container::ClosePairContainer and its
     ilk. Examples include container::ConnectedPairContainer.
 */
-class IMPDOMINO2EXPORT OptimizeContainers: public RAII {
+class IMPDOMINO2EXPORT OptimizeContainers {
   core::internal::CoreClosePairContainers staticed_;
   Pointer<RestraintSet> m_;
 
