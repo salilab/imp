@@ -27,7 +27,18 @@ class Map:
 #else
   public std::map<Key, Data>
 #endif
-{};
+{
+  #if IMP_BOOST_VERSION > 103500
+  typedef boost::unordered_map<Key, Data> P;
+#else
+  typedef std::map<Key, Data> P;
+#endif
+public:
+  Map(){}
+  template <class It>
+  Map(It b, It e): P(b,e){}
+
+};
 
 IMP_END_INTERNAL_NAMESPACE
 
