@@ -20,7 +20,9 @@ modules=['cgal',
          'em2d',
          'domino2',
          'multifit',
-         'benchmark']
+         'bullet']
+# always last
+modules.append('benchmark')
 
 for p in modules:
     SConscript(p+"/SConscript")
