@@ -17,7 +17,7 @@
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
 #include <IMP/Decorator.h>
-#include <IMP/internal/PrefixStream.h>
+#include <IMP/internal/utility.h>
 
 #include <limits>
 #include <vector>
@@ -440,54 +440,6 @@ F depth_first_traversal_with_data(HD d,  F f, typename F::result_type i)
 
 
 
-//! A simple visitor which pretty-prints the hierarchy
-/** The template argument NP is the decorator to use to print each node.
-    \ingroup hierarchy
-    \see Hierarchy
- */
-template <class PD>
-struct HierarchyPrinter
-{
-private:
-  struct RefCountedStream: public RefCounted,
-                           public IMP::internal::PrefixStream{
-    RefCountedStream(std::ostream *out): IMP::internal::PrefixStream(out){}
-  };
-  mutable Pointer<RefCountedStream> out_;
-public:
-  HierarchyPrinter(std::ostream &out,
-                   unsigned int max_depth):
-    out_(new RefCountedStream(&out)),
-    md_(max_depth)
-  {}
-
-  typedef unsigned int result_type;
-  int operator()(Hierarchy hd, unsigned int depth) const {
-    if (depth > md_) return depth+1;
-    std::string prefix;
-    for (unsigned int i=0; i< depth; ++i) {
-      prefix+=" ";
-    }
-    out_->set_prefix(prefix);
-    if (hd == Hierarchy() || hd.get_number_of_children()==0) {
-      *out_ << "-";
-    } else {
-      *out_ << "+";
-    }
-    *out_ << "Particle " << hd.get_particle()->get_name() << std::endl;
-    out_->set_prefix(prefix+" ");
-    PD nd= PD::decorate_particle(hd.get_particle());
-    if (nd != PD()) {
-      nd.show(*out_);
-    } else {
-      *out_ << "*******";
-    }
-    *out_ << std::endl;
-    return depth+1;
-  }
-  unsigned int md_;
-};
-
 
 //! Print the hierarchy using a given decorator as to display each node
 /** The last argument limits how deep will be printed out.
@@ -499,7 +451,8 @@ std::ostream &show(Hierarchy h, std::ostream &out=std::cout,
                    unsigned int max_depth
                    = std::numeric_limits<unsigned int>::max())
 {
-  depth_first_traversal_with_data(h, HierarchyPrinter<ND>(out, max_depth), 0);
+  IMP_PRINT_TREE(out, Hierarchy, h, n.get_number_of_children(),
+                 n.get_child, ND(n).show(out));
   return out;
 }
 
