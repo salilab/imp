@@ -12,10 +12,8 @@
 
 #include "kernel_config.h"
 #include "base_types.h"
-#include "Particle.h"
 #include "ParticleTuple.h"
 #include "DerivativeAccumulator.h"
-#include "internal/container_helpers.h"
 
 IMP_BEGIN_NAMESPACE
 
