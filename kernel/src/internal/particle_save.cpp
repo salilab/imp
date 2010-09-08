@@ -114,8 +114,8 @@ namespace {
     }
   };
   struct ParticleWrite {
-    std::map<Particle*, unsigned int> mapping_;
-    ParticleWrite(const std::map<Particle*, unsigned int> &mapping):
+    internal::Map<Particle*, unsigned int> mapping_;
+    ParticleWrite(const internal::Map<Particle*, unsigned int> &mapping):
       mapping_(mapping) {}
     unsigned int operator()(Particle *p) const {
       if (mapping_.find(p) == mapping_.end()) {
@@ -153,8 +153,8 @@ namespace {
 
 
   struct ParticleRead {
-    const std::map<unsigned int, Particle *>& mapping_;
-    ParticleRead(const std::map<unsigned int, Particle *> &map):
+    const internal::Map<unsigned int, Particle *>& mapping_;
+    ParticleRead(const internal::Map<unsigned int, Particle *> &map):
       mapping_(map){}
     Particle* operator()(std::string value) {
       std::istringstream iss(value);
@@ -257,7 +257,7 @@ void ParticleData::show(std::ostream &out) const {
 }
 
 void ParticleData::write_yaml(std::ostream &out,
-                              const std::map<Particle*,
+                              const internal::Map<Particle*,
                               unsigned int> &particles) const {
   std::ostringstream oss;
   std::string indent("  ");
@@ -292,7 +292,7 @@ void ParticleData::write_yaml(std::ostream &out,
 
 // assume particle already read
 void ParticleData::read_yaml(LineStream &in,
-                             const std::map<unsigned int,
+                             const internal::Map<unsigned int,
                              Particle*> &particles) {
   // should clear everything
   name_= std::string();

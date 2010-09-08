@@ -38,7 +38,7 @@ namespace {
     {}
   };
 
-  std::map<Object*, Statistics> stats_data_;
+  internal::Map<Object*, Statistics> stats_data_;
 }
 
 
