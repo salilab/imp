@@ -15,6 +15,7 @@
 #include "IMP/RestraintSet.h"
 #include "IMP/internal/graph_utility.h"
 #include "IMP/file.h"
+#include "IMP/internal/map.h"
 #include <boost/timer.hpp>
 #include <set>
 
@@ -34,7 +35,7 @@
 
 IMP_BEGIN_NAMESPACE
 typedef boost::graph_traits<DependencyGraph> DGTraits;
-typedef std::map<Object*, DGTraits::vertex_descriptor> DGIndex;
+typedef internal::Map<Object*, DGTraits::vertex_descriptor> DGIndex;
 typedef boost::property_map<DependencyGraph, boost::vertex_name_t>::const_type
 DGConstVertexMap;
 
@@ -286,18 +287,18 @@ get_pruned_dependency_graph(const RestraintsTemp &irs) {
 
 class ScoreDependencies: public boost::default_dfs_visitor {
   boost::dynamic_bitset<> &bs_;
-  const std::map<Object*, int> &ssindex_;
+  const internal::Map<Object*, int> &ssindex_;
   DGConstVertexMap vm_;
 public:
   ScoreDependencies(boost::dynamic_bitset<> &bs,
-                    const std::map<Object*, int> &ssindex,
+                    const internal::Map<Object*, int> &ssindex,
                     DGConstVertexMap vm): bs_(bs), ssindex_(ssindex),
                                           vm_(vm) {}
   template <class G>
   void discover_vertex(DGTraits::vertex_descriptor u,
                        const G& g) {
     Object *o= vm_[u];
-    std::map<Object*, int>::const_iterator it= ssindex_.find(o);
+    internal::Map<Object*, int>::const_iterator it= ssindex_.find(o);
     if (it != ssindex_.end()) {
       bs_.set(it->second);
     }
@@ -334,7 +335,7 @@ namespace {
                                  const RestraintsTemp &ordered_restraints,
                                  const ScoreStatesTemp &ordered_score_states,
                                  std::vector<boost::dynamic_bitset<> >&bs) {
-    std::map<Object *, int> ssindex;
+    internal::Map<Object *, int> ssindex;
     for (unsigned int i=0; i < ordered_score_states.size(); ++i) {
       ssindex[ordered_score_states[i]]=i;
     }

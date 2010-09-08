@@ -19,6 +19,7 @@
 #include "container_macros.h"
 #include "base_types.h"
 #include "VersionInfo.h"
+#include "internal/map.h"
 #include <boost/dynamic_bitset.hpp>
 #include <boost/graph/adjacency_list.hpp>
 
@@ -95,7 +96,7 @@ private:
 
 
   // dependencies
-  mutable std::map<Restraint *, int> restraint_index_;
+  mutable internal::Map<Restraint *, int> restraint_index_;
   mutable RestraintsTemp ordered_restraints_;
   mutable std::vector<boost::dynamic_bitset<> > restraint_dependencies_;
   mutable std::vector<double> restraint_weights_;

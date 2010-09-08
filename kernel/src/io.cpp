@@ -8,6 +8,7 @@
 
 #include <IMP/io.h>
 #include <IMP/internal/particle_save.h>
+#include <IMP/internal/map.h>
 #ifdef IMP_USE_NETCDF
 #include <netcdfcpp.h>
 #endif
@@ -22,16 +23,16 @@ IMPEXPORT void write_model(Model *,
 
 IMPEXPORT void write_model(const ParticlesTemp &particles,
                            TextOutput out) {
-  std::map<Particle*, unsigned int> to;
+  internal::Map<Particle*, unsigned int> to;
   for (unsigned int i=0; i< particles.size(); ++i) {
     to[particles[i]]=i;
   }
-  std::map<unsigned int, internal::ParticleData> data;
-  for (std::map<Particle*, unsigned int>::const_iterator it= to.begin();
+  internal::Map<unsigned int, internal::ParticleData> data;
+  for (internal::Map<Particle*, unsigned int>::const_iterator it= to.begin();
        it != to.end(); ++it) {
     data[it->second]= internal::ParticleData(it->first);
   }
-  for (std::map<unsigned int,
+  for (internal::Map<unsigned int,
          internal::ParticleData>::const_iterator it= data.begin();
        it != data.end(); ++it) {
     out.get_stream() << "particle: " << it->first << std::endl;
@@ -42,16 +43,16 @@ IMPEXPORT void write_model(const ParticlesTemp &particles,
 IMPEXPORT void write_model(const ParticlesTemp &particles,
                            const FloatKeys &keys,
                            TextOutput out) {
-  std::map<Particle*, unsigned int> to;
+  internal::Map<Particle*, unsigned int> to;
   for (unsigned int i=0; i< particles.size(); ++i) {
     to[particles[i]]=i;
   }
-  std::map<unsigned int, internal::ParticleData> data;
-  for (std::map<Particle*, unsigned int>::const_iterator it= to.begin();
+  internal::Map<unsigned int, internal::ParticleData> data;
+  for (internal::Map<Particle*, unsigned int>::const_iterator it= to.begin();
        it != to.end(); ++it) {
     data[it->second]= internal::ParticleData(it->first, keys);
   }
-  for (std::map<unsigned int,
+  for (internal::Map<unsigned int,
          internal::ParticleData>::const_iterator it= data.begin();
        it != data.end(); ++it) {
     out.get_stream() << "particle: " << it->first << std::endl;
@@ -68,11 +69,11 @@ IMPEXPORT void read_model(TextInput in,
                           const ParticlesTemp &particles,
                           Model *) {
   internal::LineStream ls(in);
-  std::map<unsigned int, Particle *> from;
+  internal::Map<unsigned int, Particle *> from;
   for (unsigned int i=0; i< particles.size(); ++i) {
     from[i]= particles[i];
   }
-  std::map<Particle*, internal::ParticleData> data;
+  internal::Map<Particle*, internal::ParticleData> data;
   do {
     internal::LineStream::LinePair lp= ls.get_line();
     if (lp.first.empty()) break;
@@ -106,7 +107,7 @@ IMPEXPORT void read_model(TextInput in,
               << from.size() << " got " << data.size(),
               IOException);
   }
-  for (std::map<Particle*, internal::ParticleData>::const_iterator
+  for (internal::Map<Particle*, internal::ParticleData>::const_iterator
          it= data.begin(); it != data.end(); ++it) {
     it->second.apply(it->first);
   }
@@ -117,11 +118,11 @@ IMPEXPORT void read_model(TextInput in,
                           const ParticlesTemp &particles,
                           const FloatKeys &keys) {
   internal::LineStream ls(in);
-  std::map<unsigned int, Particle *> from;
+  internal::Map<unsigned int, Particle *> from;
   for (unsigned int i=0; i< particles.size(); ++i) {
     from[i]= particles[i];
   }
-  std::map<Particle*, internal::ParticleData> data;
+  internal::Map<Particle*, internal::ParticleData> data;
   do {
     internal::LineStream::LinePair lp= ls.get_line();
     if (lp.first.empty()) break;
@@ -155,7 +156,7 @@ IMPEXPORT void read_model(TextInput in,
               << from.size() << " got " << data.size(),
               IOException);
   }
-  for (std::map<Particle*, internal::ParticleData>::const_iterator
+  for (internal::Map<Particle*, internal::ParticleData>::const_iterator
          it= data.begin(); it != data.end(); ++it) {
     it->second.apply(it->first, keys);
   }

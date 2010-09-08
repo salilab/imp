@@ -11,6 +11,7 @@
 #include "kernel_config.h"
 #include "Restraint.h"
 #include "container_macros.h"
+#include "internal/map.h"
 #include <string>
 
 IMP_BEGIN_NAMESPACE
@@ -82,7 +83,7 @@ namespace {
   void get_restraints_and_weights_internal(It b, It e,
                                            double initial_weight,
                                            RestraintsAndWeights &ret,
-                                           std::map<Restraint*, int> &index) {
+                                     internal::Map<Restraint*, int> &index) {
     for (It c=b; c!= e; ++c) {
       RestraintSet *rs=dynamic_cast<RestraintSet*>(*c);
       if (rs) {
@@ -120,8 +121,8 @@ namespace {
 #endif
 template <class It>
 RestraintsAndWeights get_restraints_and_weights(It b, It e,
-                                                double initial_weight=1) {
-  std::map<Restraint*, int> index;
+                                             double initial_weight=1) {
+  internal::Map<Restraint*, int> index;
   RestraintsAndWeights ret;
   get_restraints_and_weights_internal(b,e, initial_weight, ret,
                                       index);
@@ -141,7 +142,7 @@ RestraintsTemp get_restraints(It b, It e) {
 
 //! Print the hierarchy of restraints
 IMPEXPORT void show_restraint_hierarchy(RestraintSet *rs,
-                                        std::ostream &out=std::cout);
+                                     std::ostream &out=std::cout);
 
 IMP_END_NAMESPACE
 

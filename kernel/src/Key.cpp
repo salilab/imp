@@ -8,6 +8,7 @@
 #include "IMP/Key.h"
 #include "IMP/exception.h"
 #include "IMP/base_types.h"
+#include "IMP/internal/map.h"
 #include "IMP/internal/AttributeTable.h"
 
 IMP_BEGIN_INTERNAL_NAMESPACE
@@ -31,7 +32,7 @@ void KeyData::show(std::ostream &out) const
 }
 
 namespace {
-  struct KeyTable: public std::map<unsigned int, KeyData> {
+  struct KeyTable: public Map<unsigned int, KeyData> {
     KeyTable() {
       unsigned int fk= FloatKey::get_ID();
       operator[](fk).add_key("x");

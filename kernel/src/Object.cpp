@@ -8,6 +8,7 @@
 
 #include "IMP/Object.h"
 #include "IMP/RefCounted.h"
+#include "IMP/internal/map.h"
 #include <boost/format.hpp>
 
 IMP_BEGIN_NAMESPACE
@@ -28,7 +29,7 @@ Object::Object(std::string name)
   was_owned_=false;
 #endif
   if (std::find(name.begin(), name.end(), '%') != name.end()) {
-    static std::map<std::string, unsigned int> counts;
+    static internal::Map<std::string, unsigned int> counts;
     if (counts.find(name) == counts.end()) {
       counts[name]=0;
     }

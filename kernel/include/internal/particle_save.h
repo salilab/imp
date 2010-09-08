@@ -9,6 +9,7 @@
 #define IMP_INTERNAL_PARTICLE_SAVE_H
 
 #include "../Particle.h"
+#include "map.h"
 #include <iostream>
 #include <vector>
 
@@ -128,10 +129,10 @@ class IMPEXPORT ParticleData {
   void apply(Particle *p,  const FloatKeys &keys) const;
   void show(std::ostream &out=std::cout) const;
   void write_yaml(std::ostream &out,
-                  const std::map<Particle*,
+                  const internal::Map<Particle*,
                   unsigned int> &particles) const;
   void read_yaml(LineStream &in,
-                 const std::map<unsigned int, Particle*> &particles);
+                 const internal::Map<unsigned int, Particle*> &particles);
 };
 IMP_OUTPUT_OPERATOR(ParticleData);
 
