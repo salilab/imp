@@ -9,13 +9,10 @@ scons_tools.checks.add_external_library(env, "Bullet", "BulletDynamics",
         btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);
 
         btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
-
         btDiscreteDynamicsWorld* dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher,broadphase,solver,collisionConfiguration);
-        btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0,1,0),1);
-        btCollisionShape* fallShape = new btSphereShape(1);
         btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0,0,0,1),btVector3(0,-1,0)));
         btRigidBody::btRigidBodyConstructionInfo
-                groundRigidBodyCI(0,groundMotionState,groundShape,btVector3(0,0,0));
+                groundRigidBodyCI(0,groundMotionState,new btSphereShape(1),btVector3(0,0,0));
         new btRigidBody(groundRigidBodyCI);
 """,
                                         extra_libs=["BulletCollision",

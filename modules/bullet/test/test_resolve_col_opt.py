@@ -45,7 +45,7 @@ class AngleRestraintTests(IMP.test.TestCase):
         """Test basic ResolveCollision optimization"""
         (m, bb, ps)= self.create()
         print "intesections: ", self.count_hits(ps)
-        opt= IMP.bullet.ResolveCollisionsOptimizer(m.get_root_restraint_set(), ps)
+        opt= IMP.bullet.ResolveCollisionsOptimizer(m)
         for i in range(0,10):
             opt.optimize(100);
             print "intesections: ", self.count_hits(ps)
@@ -61,7 +61,7 @@ class AngleRestraintTests(IMP.test.TestCase):
             r.set_name(ps[i-1].get_name() + " " + ps[i].get_name())
             m.add_restraint(r)
         print "intesections:", self.count_hits(ps),"score:", m.evaluate(False)
-        opt= IMP.bullet.ResolveCollisionsOptimizer(m.get_root_restraint_set(), ps)
+        opt= IMP.bullet.ResolveCollisionsOptimizer(m)
         for i in range(0,10):
             opt.optimize(100);
             print "intesections:", self.count_hits(ps), "score:", m.evaluate(False)
@@ -75,7 +75,7 @@ class AngleRestraintTests(IMP.test.TestCase):
         outer= IMP.container.SingletonsRestraint(IMP.core.DistanceToSingletonScore(IMP.core.HarmonicLowerBound(6, 1), IMP.algebra.Vector3D(0,0,0)), l)
         m.add_restraint(outer)
         print "intesections:", self.count_hits(ps),"annulus:",self.count_annulus(ps)
-        opt= IMP.bullet.ResolveCollisionsOptimizer(m.get_root_restraint_set(), ps)
+        opt= IMP.bullet.ResolveCollisionsOptimizer(m)
         for i in range(0,10):
             opt.optimize(100);
             print "intesections:", self.count_hits(ps), "annulus:",self.count_annulus(ps)

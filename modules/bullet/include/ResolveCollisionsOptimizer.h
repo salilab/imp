@@ -37,14 +37,15 @@ IMPBULLET_BEGIN_NAMESPACE
  */
 class IMPBULLETEXPORT ResolveCollisionsOptimizer: public Optimizer
 {
-  RestraintSet *rs_;
+  RestraintSets rs_;
   Particles ps_;
   /*typedef std::pair<std::vector<boost::tuple<int,int,int> >,
                     algebra::Vector3Ds> Obstacle;
                     std::vector<Obstacle> obstacles_;*/
 public:
+  ResolveCollisionsOptimizer(Model *m);
   /** rs should not include collision detection terms.*/
-  ResolveCollisionsOptimizer(RestraintSet *rs,
+  ResolveCollisionsOptimizer(const RestraintSetsTemp &rs,
                              const ParticlesTemp &ps);
 
   /*void add_obstacle(const algebra::Vector3Ds &vertices,
