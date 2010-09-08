@@ -18,11 +18,7 @@
 #include <IMP/Restraint.h>
 
 #include <vector>
-#if IMP_BOOST_VERSION > 103900
-#include <boost/unordered_map.hpp>
-#else
-#include <map>
-#endif
+#include <IMP/internal/map.h>
 #include <sstream>
 
 IMPDOMINO2_BEGIN_NAMESPACE
@@ -96,11 +92,7 @@ inline IncompleteStates get_merged(const IncompleteStates &a,
   return ret;
 }
 
-#if IMP_BOOST_VERSION > 103900
-typedef boost::unordered_map<Particle*, int> ParticleIndex;
-#else
-typedef std::map<Particle*, int> ParticleIndex;
-#endif
+typedef IMP::internal::Map<Particle*, int> ParticleIndex;
 ParticleIndex get_index(const Subset &s);
 
 
@@ -134,11 +126,7 @@ inline std::ostream &operator<<(std::ostream &out, const NodeData &nd) {
 }
 
 class EdgeData {
-#if IMP_BOOST_VERSION > 103900
-  typedef  boost::unordered_map<SubsetState, double> Scores;
-#else
-  typedef std::map<SubsetState, double> Scores;
-#endif
+  typedef IMP::internal::Map<SubsetState, double> Scores;
   Scores scores_;
   Subset subset_;
 public:

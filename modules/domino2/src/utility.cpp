@@ -10,7 +10,7 @@
 #include <IMP/Model.h>
 #include <IMP/Restraint.h>
 #include <IMP/ScoreState.h>
-#include <map>
+#include <IMP/internal/map.h>
 #include <boost/graph/graphviz.hpp>
 #include <boost/graph/copy.hpp>
 #include <IMP/domino2/internal/maximal_cliques.h>
@@ -35,7 +35,7 @@ IMPDOMINO2_BEGIN_NAMESPACE
 
 template <class Graph>
 class CollectVisitor: public boost::default_dfs_visitor {
-  const std::map<Particle*, Ints> *lu_;
+  const IMP::internal::Map<Particle*, Ints> *lu_;
   typename boost::property_map<Graph,
                       boost::vertex_name_t>::const_type vm_;
   Ints &vals_;
@@ -46,7 +46,7 @@ public:
     return vals_;
   }
   CollectVisitor(const Graph &g,
-                 const std::map<Particle*, Ints>&lu,
+                 const IMP::internal::Map<Particle*, Ints>&lu,
                  Ints &vals):
     lu_(&lu),
     vm_(boost::get(boost::vertex_name, g)),
@@ -56,7 +56,7 @@ public:
     Object *o= vm_[u];
     Particle *p=dynamic_cast<Particle*>(o);
     if (p) {
-      std::map<Particle*, Ints>::const_iterator it= lu_->find(p);
+      IMP::internal::Map<Particle*, Ints>::const_iterator it= lu_->find(p);
       if (it != lu_->end()) {
         vals_.insert(vals_.end(),it->second.begin(),
                      it->second.end());
@@ -150,7 +150,8 @@ bool get_has_edge(InteractionGraph &graph,
 }
 
   void add_edges( const ParticlesTemp &ps,
-                  ParticlesTemp pt, const std::map<Particle*, int> &map,
+                  ParticlesTemp pt,
+                  const IMP::internal::Map<Particle*, int> &map,
                 Object *blame,
                 InteractionGraph &g) {
   IGEdgeMap om= boost::get(boost::edge_name, g);
@@ -178,7 +179,7 @@ bool get_has_edge(InteractionGraph &graph,
 }
 
 
-Ints find_parents(const std::map<Particle*, Ints>  &map,
+Ints find_parents(const IMP::internal::Map<Particle*, Ints>  &map,
                   DGVertex v,
                   const DependencyGraph &dg) {
   typedef boost::reverse_graph<DependencyGraph> RG;
@@ -196,7 +197,7 @@ InteractionGraph get_interaction_graph(const ParticlesTemp &ps,
   InteractionGraph ret(ps.size());
   RestraintsTemp rs= get_restraints(irs.begin(), irs.end());
   //Model *m= ps[0]->get_model();
-  std::map<Particle*, int> map;
+  IMP::internal::Map<Particle*, int> map;
   IGVertexMap pm= boost::get(boost::vertex_name, ret);
   DependencyGraph dg = get_dependency_graph(rs);
   /*IMP_IF_LOG(VERBOSE) {
@@ -251,7 +252,7 @@ get_interaction_graph_geometry(const InteractionGraph &ig) {
   display::Geometries ret;
   IGVertexConstMap vm= boost::get(boost::vertex_name, ig);
   IGEdgeConstMap em= boost::get(boost::edge_name, ig);
-  std::map<std::string, display::Color> colors;
+  IMP::internal::Map<std::string, display::Color> colors;
   for (std::pair<IGTraits::vertex_iterator,
          IGTraits::vertex_iterator> be= boost::vertices(ig);
        be.first != be.second; ++be.first) {
@@ -351,7 +352,7 @@ namespace {
       EdgeRange;
     InteractionGraph mig;
     boost::copy_graph(ig, mig);
-    std::map<Particle*, int> vmap;
+    IMP::internal::Map<Particle*, int> vmap;
     IGVertexMap mpm= boost::get(boost::vertex_name, mig);
     for(VertexRange be = boost::vertices(ig);
         be.first != be.second; ++be.first) {
@@ -601,7 +602,8 @@ get_is_static_container(Container *c,
 namespace {
   void optimize_restraint(Restraint *r, RestraintSet *p,
                           const DependencyGraph &dg,
-                          const std::map<Object*, unsigned int> &index,
+                          const IMP::internal::Map<Object*,
+                          unsigned int> &index,
                           const ParticlesTemp &pst,
                           boost::ptr_vector<ScopedRemoveRestraint> &removed,
                           boost::ptr_vector<ScopedRestraint> &added) {
@@ -626,7 +628,8 @@ namespace {
 
   void optimize_restraint_parent(RestraintSet *p,
                                  const DependencyGraph &dg,
-                                 const std::map<Object*, unsigned int> &index,
+                                 const IMP::internal::Map<Object*,
+                                 unsigned int> &index,
                                  const ParticlesTemp &pst,
                            boost::ptr_vector<ScopedRemoveRestraint> &removed,
                                  boost::ptr_vector<ScopedRestraint> &added) {
@@ -700,7 +703,7 @@ namespace {
 
 void OptimizeRestraints::optimize_model(RestraintSet *m,
                                         const ParticlesTemp &particles) {
-  std::map<Object*, unsigned int> index;
+  IMP::internal::Map<Object*, unsigned int> index;
   //std::cout << "new gra[j is \n";
   //IMP::internal::show_as_graphviz(m->get_dependency_graph(), std::cout);
   const DependencyGraph dg
@@ -754,7 +757,7 @@ RestraintSet* create_restraint_set(const Subset &s,
   DGConstVertexMap vm= boost::get(boost::vertex_name,dg);
   IMP_NEW(RestraintSet, ret, (std::string("Restraints for ") +s.get_name()));
   rs->get_model()->add_restraint(ret);
-  std::map<double, Pointer<RestraintSet> > rss;
+  IMP::internal::Map<double, Pointer<RestraintSet> > rss;
   for (unsigned int i=0; i< boost::num_vertices(dg); ++i) {
     Restraint *r=dynamic_cast<Restraint*>(boost::get(vm, i));
     if (r && std::binary_search(allr.begin(), allr.end(), r)) {
