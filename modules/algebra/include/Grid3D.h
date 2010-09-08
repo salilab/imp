@@ -15,12 +15,7 @@
 #include "BoundingBoxD.h"
 #include "internal/grid_3d.h"
 #include <boost/iterator/transform_iterator.hpp>
-#include <boost/functional/hash.hpp>
-#if IMP_BOOST_VERSION > 103500
-#include <boost/unordered_map.hpp>
-#else
-#include <map>
-#endif
+#include <IMP/internal/map.h>
 
 #include <limits>
 /** \namespace IMP::algebra::grids
@@ -560,12 +555,7 @@ public:
 */
 template <class VT, class Base>
 class SparseGridStorage3D: public Base {
-#if IMP_BOOST_VERSION > 103500
-  typedef typename boost::unordered_map<GridIndex3D, VT>
-  Data;
-#else
-  typedef std::map<GridIndex3D, VT> Data;
-#endif
+  typedef typename IMP::internal::Map<GridIndex3D, VT> Data;
   struct GetIndex {
     typedef GridIndex3D result_type;
     typedef typename Data::const_iterator::value_type argument_type;
