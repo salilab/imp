@@ -445,6 +445,14 @@ generate the connection between the two languages. Key differences are
     - Abbreviations are not used in names except when the abbreviation is more
       common than the unabreviated name.
 
+  \subsection raii RAII
+    RAII-style objects are a convenient way of controlling a resource. They
+    assume "ownership" of the resource on creation and then "free" it on
+    destruction. Examples include, setting the log level to a particular
+    value and restoring the old value when the object goes out of scope
+    (SetLogState) or incrementing and decrementing a ref-counted
+    pointer (Pointer).
+
 \section incremental 7. Incremental Scoring
     Scoring in \imp can be performed in two different ways, 
     - whole model, where each restraint is evaluated each time the model is changed
