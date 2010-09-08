@@ -9,7 +9,7 @@
 #include <IMP/RestraintSet.h>
 #include <IMP/Model.h>
 #include <IMP/log.h>
-
+#include <IMP/internal/utility.h>
 #include <memory>
 #include <utility>
 
@@ -105,6 +105,20 @@ RestraintsTemp get_restraints(const RestraintsTemp &rs) {
 
 RestraintsTemp get_restraints(RestraintSet *rs) {
   return get_restraints(rs->restraints_begin(), rs->restraints_end());
+}
+
+namespace {
+  unsigned int num_children(Restraint*r) {
+    RestraintSet *rs= dynamic_cast<RestraintSet*>(r);
+    if (rs) return rs->get_number_of_restraints();
+    else return 0;
+  }
+}
+
+IMPEXPORT void show_restraint_hierarchy(RestraintSet *rs, std::ostream &out) {
+  IMP_PRINT_TREE(out, Restraint*, rs, num_children(n),
+                 dynamic_cast<RestraintSet*>(n)->get_restraint,
+                 out << n->get_name());
 }
 
 IMP_END_NAMESPACE
