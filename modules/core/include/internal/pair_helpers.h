@@ -56,6 +56,7 @@ protected:
     }
     if (get_added()) {
       std::sort(cur.begin(), cur.end());
+      std::sort(data_.begin(), data_.end());
       ParticlePairsTemp added, removed;
       std::set_difference(cur.begin(), cur.end(),
                           data_.begin(), data_.end(),
