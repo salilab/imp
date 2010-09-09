@@ -137,7 +137,7 @@ algebra::Transformation2D
   algebra::Transformation2D t,best_transformation;
   /***** Computation ********/
   // Align with all projections
-  double ccc=0,max_ccc=0;
+  double max_ccc=0,ccc=0;
   // Save all the registration results for the subject
   subject_RRs.resize(n_projections_);
   for(unsigned long j=0;j<n_projections_;++j) {
@@ -146,10 +146,11 @@ algebra::Transformation2D
       !pca_features_match(subjects_pcas_[i],projections_pcas_[j],0.1)) {
       continue;
     }
+    ResultAlign2D RA;
     // Method without preprocessing
     if(coarse_registration_method_==0) {
-      ccc=align2D_complete(subjects_[i]->get_data(),
-                            projections_[j]->get_data(),t);
+      RA=align2D_complete(subjects_[i]->get_data(),
+                            projections_[j]->get_data());
     }
     // Methods with preprocessing and FFT alignment
     if(coarse_registration_method_==1 || coarse_registration_method_==2) {
@@ -173,9 +174,9 @@ algebra::Transformation2D
       ccc=subjects_[i]->get_data().cross_correlation_coefficient(aux);
     }
 
-    if(ccc> max_ccc) {
+    if(RA.second>max_ccc) {
         max_ccc=ccc;
-        best_transformation=t;
+        best_transformation=RA.first;
       }
 
     // Save projection parameters
@@ -192,8 +193,7 @@ algebra::Transformation2D
 
 
 double ProjectionFinder::get_complete_registration(
-    bool save_match_images,double apix,
-   unsigned int optimization_steps_, double simplex_minimum_size) {
+    bool save_match_images) {
   IMP_LOG(IMP::TERSE,
           "ProjectionFinder: get complete registration" << std::endl);
 
@@ -201,8 +201,11 @@ double ProjectionFinder::get_complete_registration(
         "get_complete_registration: subject images have not been set");
   IMP_USAGE_CHECK(projections_set_,
         "get_complete_registration: projection images have not been set");
- IMP_USAGE_CHECK(particles_set_,
-        "get_complete_registration: model particles have not been set\n");
+  IMP_USAGE_CHECK(particles_set_,
+        "get_complete_registration: model particles have not been set");
+  IMP_USAGE_CHECK(parameters_initialized_,
+        "get_complete_registration: the ProjectionFinder is not initialized");
+
   /********* Variables **********/
   em::SpiderImageReaderWriter<double> srw;
   algebra::Transformation2D t;
@@ -216,14 +219,14 @@ double ProjectionFinder::get_complete_registration(
   IMP_NEW(Model,scoring_model,());
   IMP_NEW(Fine2DRegistrationRestraint,fine2d,());
   IMP_NEW(IMP::gsl::Simplex,simplex_optimizer,());
-  fine2d->initialize(model_particles_,resolution_,apix,scoring_model);
+  fine2d->initialize(model_particles_,resolution_,apix_,scoring_model);
   simplex_optimizer->set_model(scoring_model);
   simplex_optimizer->set_initial_length(0.1);
-  simplex_optimizer->set_minimum_size(simplex_minimum_size);
+  simplex_optimizer->set_minimum_size(simplex_minimum_size_);
   IMP::SetLogState log_state(fine2d,IMP::TERSE);
   /***** Computation ********/
   preprocess_subjects_and_projections();
-  IMP_LOG(IMP::DEFAULT,"Registration .... " << std::endl);
+  IMP_LOG(IMP::TERSE,"Registration .... " << std::endl);
   boost::progress_display show_progress(n_subjects_*n_projections_);
   double Score=0;
   for(unsigned long i=0;i<n_subjects_;++i) {
@@ -273,14 +276,14 @@ double ProjectionFinder::get_complete_registration(
     // save if requested
     if(save_match_images) {
       if(!masks_computed) {
-        masks.init_kernel(resolution_,apix);
+        masks.init_kernel(resolution_,apix_);
         masks.generate_masks(model_particles_);
         masks_computed=true;
       }
       std::ostringstream strm;
       strm << "fine_match-" << i << ".spi";
       generate_projection(*match,model_particles_,registration_results_[i],
-                    resolution_,apix,srw,&masks,false,strm.str());
+                    resolution_,apix_,srw,&masks,false,strm.str());
       em::normalize(*match,true);
       registration_results_[i].set_in_image(*match);
       match->write_to_floats(strm.str(),srw);

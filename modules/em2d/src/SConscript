@@ -15,11 +15,7 @@ files = [
   'Fine2DRegistrationRestraint.cpp' ,
   'ProjectionParameters.cpp' ,
   'scores2D.cpp' ,
-#  'ExampleRefCounted.cpp' ,
-#  'ExampleDecorator.cpp' ,
-#  'ExampleSingletonModifier.cpp' ,
-#  'ExampleRestraint.cpp' ,
-#  'ExampleComplexRestraint.cpp' ,
+#  'Em2DRestraint.cpp',
         ]\
         + SConscript('internal/SConscript')
 

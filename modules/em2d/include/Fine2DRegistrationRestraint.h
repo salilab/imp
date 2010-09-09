@@ -35,13 +35,13 @@ public:
   //! Initialization function. To be called after setting the model for the
   //! restraint
   /**
-    \param[in] ps Particles
+    \param[in] ps ParticlesTemp
     \param[in] subjects The subject 2D-EM images to register
     \param[in] resolution
     \param[in] pixelsize
     \param[in] scoring_model model to associate to this restraint
   **/
-  void initialize(Particles &ps,
+  void initialize(ParticlesTemp &ps,
                  double resolution,
                  double pixelsize,
                  Model *scoring_model);
@@ -69,13 +69,12 @@ private:
   mutable Pointer<Particle> subj_params_particle_;
   // Decorator for the subject particle
   ProjectionParameters PP_;
-  // Access point for the particles of ps_vol
-  Particles ps_;
-  // Projection masks for the particles of ps_vol
+  // Access point for the particles
+  ParticlesTemp ps_;
+  // Projection masks for the particles
   mutable MasksManager masks_;
   double resolution_,pixelsize_;
   IMP::FloatKey Phi_, Theta_, Psi_, yorigin_, xorigin_;
-
 };
 
 

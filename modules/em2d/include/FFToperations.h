@@ -40,17 +40,16 @@ IMPEM2DEXPORT void correlation2D_no_preprocessing(
   \param[in] m matrix to autocorrelate
   \param[out] corr matrix of results
 **/
-void IMPEM2DEXPORT autocorrelation2D(algebra::Matrix2D_d &m,
+IMPEM2DEXPORT void autocorrelation2D(algebra::Matrix2D_d &m,
                                algebra::Matrix2D_d &corr);
-
-
 
 //! Returns the autocorrelation matrix using FFT
 /**
   \param[in] M FFT transform of the matrix to autocorrelate
   \param[out] corr matrix of results (IT MUST have the right size in advance)
 **/
-IMPEM2DEXPORT void autocorrelation2D_no_preprocessing(algebra::Matrix2D_c &M,
+IMPEM2DEXPORT void autocorrelation2D_no_preprocessing(
+                               algebra::Matrix2D_c &M,
                                algebra::Matrix2D_d &corr);
 
 

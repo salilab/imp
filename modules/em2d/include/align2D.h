@@ -9,22 +9,23 @@
 
 #include "IMP/em2d/PolarResamplingParameters.h"
 #include "IMP/em2d/em2d_config.h"
-#include "IMP/em2d/FFToperations.h"
 #include "IMP/em/image_transformations.h"
 #include "IMP/algebra/utility.h"
 #include "IMP/algebra/Matrix2D.h"
 #include "IMP/algebra/Transformation2D.h"
 #include "IMP/algebra/Vector2D.h"
-#include "IMP/constants.h"
 #include <IMP/VectorOfRefCounted.h>
 #include <algorithm>
 #include <vector>
 
 IMPEM2D_BEGIN_NAMESPACE
 
-
 typedef std::vector< std::vector<double> > double_rings;
-typedef std::vector< std::vector< std::complex<double> > > complex_rings;
+typedef std::vector< std::complex<double> > complex_ring;
+typedef std::vector< complex_ring > complex_rings;
+// typedef std::vector< std::vector< std::complex<double> > > complex_rings;
+typedef std::pair<algebra::Transformation2D,double> ResultAlign2D;
+
 
 //! Aligns completely two matrices (rotationally and translationally).
 //! Based on Frank, 2006, pg. 99, and Penczek, Ultram.,1992. Uses the
@@ -35,13 +36,12 @@ typedef std::vector< std::vector< std::complex<double> > > complex_rings;
   \param[out] t the resulting transformation to apply to m2 to align it with m1
   \param[out] The value of the maximum cross correlation coefficient
 **/
-IMPEM2DEXPORT double align2D_complete(algebra::Matrix2D_d &m1,
-          algebra::Matrix2D_d &m2,
-          algebra::Transformation2D &t,bool apply=false,
+IMPEM2DEXPORT ResultAlign2D align2D_complete(algebra::Matrix2D_d &m1,
+          algebra::Matrix2D_d &m2,bool apply=false,
           int interpolation_method=0);
 
 
-//! Aligns two matrices rotationally
+//! Aligns two matrices rotationally.
 //! Based on polar resampling.
 /**
   \param[in] m1 first matrix. Used as reference
@@ -49,28 +49,28 @@ IMPEM2DEXPORT double align2D_complete(algebra::Matrix2D_d &m1,
   \param[out] angle the resulting angle to apply to m2 to align it with m1
   \param[in] apply Set it to true if you want the rotation applied to m2
   \param[in] pad set it to false if the matrices are already padded
-  \param[out] The value of the maximum cross correlation
+  \param[out] Vector2D containing the tupe (angle,cross correlation)
+  \note: The cross correlation is not normalized
 **/
-IMPEM2DEXPORT double align2D_rotational(algebra::Matrix2D_d &m1,
-        algebra::Matrix2D_d &m2, double *angle,
-        bool apply=false,bool pad=false,int interpolation_method=0);
+IMPEM2DEXPORT ResultAlign2D align2D_rotational(algebra::Matrix2D_d &m1,
+        algebra::Matrix2D_d &m2, bool apply=false,
+        bool pad=false,int interpolation_method=0);
 
-
-//! Aligns two matrices (translationally) using the convolution theorem to
-//! compute the cross correlation function in Fourier space.
+//! Aligns two matrices (translationally)
 /**
-  \param[in] m1 first matrix. Used as reference
-  \param[in] m2 the matrix that is aligned with m1Vector2D(0.0,0.0));
-  \param[in] v Vector with the solution
+  \param[in] m1 first matrix.
+  \param[in] m2 the matrix that is aligned with the reference
   \param[in] apply Set it to true if you want the rotation applied to m2
   \param[in] pad set it to false if the matrices are already padded
-  \param[out] The value of the maximum cross correlation
+  \param[out] Vector3D containing the values (i,j,cross correlation), where i,j
+              are the pixels of peak value (they are double).
 **/
-IMPEM2DEXPORT double align2D_translational(algebra::Matrix2D_d &m1,
+IMPEM2DEXPORT ResultAlign2D align2D_translational(algebra::Matrix2D_d &m1,
                                        algebra::Matrix2D_d &m2,
-                                       algebra::Vector2D &v,
                                        bool apply=false,
                                        bool pad=false);
+
+
 
 
 
@@ -130,6 +130,11 @@ IMPEM2DEXPORT void resample2D_polar(algebra::Matrix2D_d &f,
                                     double_rings &rings,
                                     bool dealing_with_subjects=false,
                                     int interpolation_method=0);
+
+
+IMPEM2DEXPORT void resample2D_polar(algebra::Matrix2D_d &m,
+                      algebra::Matrix2D_d &result,
+                      int interpolation_method=0);
 
 //! Performs a peak search in a Matrix2D
 //! Useful for cross correlation peak search

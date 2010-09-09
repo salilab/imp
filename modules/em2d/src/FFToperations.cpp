@@ -10,9 +10,12 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
+// Forget about const in these functions. FFT1D and FFT2D when used with fftw3
+// can not be const.
+
 
 void correlation2D(algebra::Matrix2D_d &m1,
-                          algebra::Matrix2D_d &m2,
+                   algebra::Matrix2D_d &m2,
                           algebra::Matrix2D_d &corr) {
   IMP_LOG(IMP::VERBOSE,"Computing 2D correlation " <<std::endl);
 
@@ -59,7 +62,10 @@ void autocorrelation2D(algebra::Matrix2D_d& m,
   corr.resize(m);
   FFT2D fft(m,M); fft.execute();
   autocorrelation2D_no_preprocessing(M,corr);
-};
+}
+
+
+
 
 void autocorrelation2D_no_preprocessing(
                     algebra::Matrix2D_c &M,
