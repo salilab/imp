@@ -34,7 +34,7 @@ IMPEM_BEGIN_NAMESPACE
              algebra module for further help.
 **/
 IMPEMEXPORT void apply_Transformation2D(algebra::Matrix2D_d &m,
-              algebra::Transformation2D &t,
+              const algebra::Transformation2D &t,
               algebra::Matrix2D_d &result,
               bool wrap=false,double outside=0.0,int interp = 0);
 
@@ -44,16 +44,18 @@ IMPEMEXPORT void apply_Transformation2D(algebra::Matrix2D_d &m,
   \note The values are physically shifted. That is, the
   matrix will still output the same values for get_start() and get_size()
   but the values will be changed.
-  \param[in] v Any class able to be accessed with []
+  \param[in] m Matrix of the image to be shifted
+  \param[in] v Shift vector
   \param[in] result A matrix where to store the result. It cannot be the
-              same as this.
+              same as the input.
   \param[in] wrap If true, wrapping of the values is done in all dimensions
               when shifting. If false, outside value is used instead
   \param[in] outside Value to apply for the new pixels of the Matrix2D
               when shifting (It is never used if wrap is true)
+  \param[in] interp. Interpolation method used
 **/
 IMPEMEXPORT void shift(algebra::Matrix2D_d &m,
-          algebra::Vector2D &v,
+          const algebra::Vector2D &v,
            algebra::Matrix2D_d &result,
            bool wrap=true,double outside=0.0,int interp=0);
 

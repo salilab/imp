@@ -2,7 +2,6 @@
  *  \file SpiderReaderWriter.h
  *  \brief Management of Spider Headers Electron Microscopy. Compatible with
  *  Spider and Xmipp formats
- *  \author Javier Velazquez-Muriel
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
 */
 
@@ -19,6 +18,7 @@
 #include <IMP/algebra/utility.h>
 #include <IMP/algebra/endian.h>
 #include <IMP/exception.h>
+#include <IMP/log.h>
 #include <typeinfo>
 #include <complex>
 #include <string>
@@ -32,8 +32,10 @@ IMPEM_BEGIN_NAMESPACE
 //! Class to read EM images in Spider and Xmipp formats. They are stored in
 //! the header and data passed as arguments
 /**
- * \note Compatible with Xmipp and Spider formats (byte, int, float, complex)
- * \note An ImageHeader class is expected.
+   \note Compatible with Xmipp and Spider float images. Other types: byte, int,
+     double and complex are NOT compatible.
+   \note For compatibility with Xmipp and Spider, use functions:
+    read_from_floats() and write_from_floats(), even if your images are doubles
  */
 template <typename T>
 class SpiderImageReaderWriter: public ImageReaderWriter<T>
@@ -75,43 +77,43 @@ public:
   //! Reads a image file in Spider format and stores the content
   //! the header and data parameters
   /**
-    \note: It is assumed that the image is stored as a collection of floats
+    \note: If absolute compatibility with SPIDER format is required, use
+    read_from_floats instead
     \param[in] filename file to read
     \param[in] header header to store the info
     \param[in] data a matrix to store the grid of data of the image
   **/
-  void read(String filename, ImageHeader& header,
-            algebra::Matrix2D<T>& data) {
-#ifdef IMP_DEBUG_SPIDER
-    std::cout << "reading with SpiderImageReaderWriter" << std::endl;
-#endif
+  void read(String filename, ImageHeader &header,
+            algebra::Matrix2D<T> &data) {
+    IMP_LOG(IMP::VERBOSE,"reading with SpiderImageReaderWriter" << std::endl);
     std::ifstream in;
     in.open(filename.c_str(), std::ios::in | std::ios::binary);
+    if (in.bad() || in.fail()) {
+      IMP_THROW("Error reading from Spider Image " << filename,IOException);
+    }
     //! Take advantage that the header format is already in Spider format and
     //! just read it
     header.read(in,skip_type_check_,force_reversed_,skip_extra_checkings_);
-#ifdef IMP_DEBUG_SPIDER
-    std::cout << header << std::endl;
-#endif
     // Adjust size of the matrix according to the header
     data.resize((int)header.get_number_of_rows(),
                 (int)header.get_number_of_columns());
+
     data.read_binary(in,force_reversed_ ^ algebra::get_is_big_endian());
     in.close();
   }
 
   void read_from_floats(String filename, ImageHeader& header,
             algebra::Matrix2D<T>& data) {
+    IMP_LOG(IMP::VERBOSE,"reading with SpiderImageReaderWriter" << std::endl);
     std::ifstream in;
     in.open(filename.c_str(), std::ios::in | std::ios::binary);
-    IMP_USAGE_CHECK(!in.fail(),
-        "SpiderReaderWriter::read_from_floats: The file "+
-                                        filename+" could be found.");
+    if (in.bad() || in.fail()) {
+      IMP_THROW("Error reading from Spider Image " << filename,IOException);
+    }
     //! The header format is already in Spider format, just read it
     header.read(in,skip_type_check_,force_reversed_,skip_extra_checkings_);
-#ifdef IMP_DEBUG_SPIDER
-    std::cout << header << std::endl;
-#endif
+    IMP_LOG(IMP::VERBOSE,"Header of image " << filename << std::endl
+            << header << std::endl);
     // Adjust size of the matrix according to the header
     data.resize((int)header.get_number_of_rows(),
                 (int)header.get_number_of_columns());

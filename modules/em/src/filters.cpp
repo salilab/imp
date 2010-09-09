@@ -1,7 +1,7 @@
 /**
  *  \file filters.cpp
  *  \brief Classes to deal with filters
- *  \author Javier Velazquez-Muriel
+ *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
 */
 
