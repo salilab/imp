@@ -22,13 +22,24 @@
 IMPBULLET_BEGIN_NAMESPACE
 
 #define IMP_BNEW(Name, name, args) std::auto_ptr<Name> name(new Name args);
+namespace {
 btVector3 tr(const algebra::VectorD<3> &v) {
   return btVector3(v[0], v[1], v[2]);
 }
 const algebra::VectorD<3> tr(const btVector3 &v) {
   return algebra::VectorD<3>(v[0], v[1], v[2]);
 }
-
+  ParticlesTemp get_particles(const ParticlesTemp &in) {
+    ParticlesTemp ret;
+    for (unsigned int i=0; i< in.size(); ++i) {
+      if (core::XYZR::particle_is_instance(in[i])) {
+        ret.push_back(in[i]);
+      }
+    }
+    IMP_LOG(TERSE, "Found " << ret.size() << " particles." << std::endl);
+    return ret;
+  }
+}
 /**
    Target implementation:
    decompose restraints
@@ -41,12 +52,17 @@ ResolveCollisionsOptimizer
                              const ParticlesTemp &ps):
   Optimizer(rs[0]->get_model(), "ResolveCollisionsOptimizer %1%"),
   rs_(rs), ps_(ps){
+  IMP_IF_CHECK(USAGE) {
+    for (unsigned int i=0; i< ps.size(); ++i) {
+      IMP_USAGE_CHECK(core::XYZR::particle_is_instance(ps[i]),
+                      "All passed particles must be XYZR particles");
+    }
+  }
 }
 
 ResolveCollisionsOptimizer::ResolveCollisionsOptimizer(Model *m):
   Optimizer(m, "ResolveCollisionsOptimizer %1%"),
-  rs_(1, m->get_root_restraint_set()), ps_(m->particles_begin(),
-                                           m->particles_end()){
+  rs_(1, m->get_root_restraint_set()){
 }
 /*
 void ResolveCollisionsOptimizer::add_obstacle
@@ -169,6 +185,13 @@ double ResolveCollisionsOptimizer::optimize(unsigned int iter) {
   IMP_BNEW(btDiscreteDynamicsWorld,
            dynamicsWorld, (dispatcher.get(),broadphase.get(),
                            solver.get(),collisionConfiguration.get()));
+  ParticlesTemp ps;
+  if (ps_.empty()) {
+    ps= get_particles(ParticlesTemp(get_model()->particles_begin(),
+                                    get_model()->particles_end()));
+  } else {
+    ps= ps_;
+  }
 
   boost::ptr_vector<btCollisionShape > shapes;
   boost::ptr_vector<btMotionState > motion_states;
@@ -178,16 +201,16 @@ double ResolveCollisionsOptimizer::optimize(unsigned int iter) {
   boost::ptr_vector< ScopedRemoveRestraint> restraints;
   typedef IMP::internal::Map<double, btCollisionShape*> Spheres;
   Spheres spheres;
-  for (unsigned int i=0; i< ps_.size(); ++i) {
-    if (core::RigidBody::particle_is_instance(ps_[i])) {
-      core::RigidBody d(ps_[i]);
+  for (unsigned int i=0; i< ps.size(); ++i) {
+    if (core::RigidBody::particle_is_instance(ps[i])) {
+      core::RigidBody d(ps[i]);
       IMP_USAGE_CHECK(false, "Rigid bodies not yet supported");
       //http://www.bulletphysics.com/Bullet/BulletFull/classbtMultiSphereShape.html
-    } else if (core::XYZR::particle_is_instance(ps_[i])){
-      core::XYZR d(ps_[i]);
+    } else if (core::XYZR::particle_is_instance(ps[i])){
+      core::XYZR d(ps[i]);
       btScalar mass=1;
-      if (atom::Mass::particle_is_instance(ps_[i])) {
-        mass= atom::Mass(ps_[i]).get_mass();
+      if (atom::Mass::particle_is_instance(ps[i])) {
+        mass= atom::Mass(ps[i]).get_mass();
       }
       Spheres::const_iterator it= spheres.find(d.get_radius());
       btCollisionShape* shape;
@@ -208,7 +231,7 @@ double ResolveCollisionsOptimizer::optimize(unsigned int iter) {
       btRigidBody::btRigidBodyConstructionInfo
         fallRigidBodyCI(mass,fallMotionState,shape,fallInertia);
       btRigidBody* fallRigidBody= new btRigidBody(fallRigidBodyCI);
-      map[ps_[i]]= fallRigidBody;
+      map[ps[i]]= fallRigidBody;
       dynamicsWorld->addRigidBody(fallRigidBody);
       rigid_bodies.push_back(fallRigidBody);
     }
@@ -227,17 +250,17 @@ double ResolveCollisionsOptimizer::optimize(unsigned int iter) {
   for (unsigned int i=0; i< iter; ++i) {
     if (rrs >0) {
       get_model()->evaluate(RestraintsTemp(rs_.begin(), rs_.end()), true);
-      for (unsigned int j=0; j< ps_.size(); ++j) {
-        core::XYZ d(ps_[j]);
+      for (unsigned int j=0; j< ps.size(); ++j) {
+        core::XYZ d(ps[j]);
         rigid_bodies[j].applyCentralForce(tr(d.get_derivatives()));
       }
     }
     dynamicsWorld->stepSimulation(1/60.f,10);
     if (iter== i+1 || rrs >0) {
-      for (unsigned int j=0; j< ps_.size(); ++j) {
+      for (unsigned int j=0; j< ps.size(); ++j) {
         btTransform trans;
         rigid_bodies[j].getMotionState()->getWorldTransform(trans);
-        core::XYZ(ps_[j]).set_coordinates(tr(trans.getOrigin()));
+        core::XYZ(ps[j]).set_coordinates(tr(trans.getOrigin()));
       }
     }
     update_states();
