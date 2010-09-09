@@ -1,7 +1,7 @@
 /**
  *  \file header_converters.cpp
  *  \brief Functions to convert between ImageHeader and DensityHeader
- *  \author Javier Velazquez-Muriel
+ *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
 */
 

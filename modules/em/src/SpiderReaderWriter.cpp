@@ -1,7 +1,7 @@
 /**
  *  \file SpiderReaderWriter.cpp
  *  \brief Reader and Writer fro Spider and Xmipp Images and Volumes
- *  \author Javier Velazquez-Muriel
+ *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
 */
 
@@ -16,8 +16,9 @@ void SpiderMapReaderWriter::Read(const char *filename,
                                 float **data, DensityHeader& header) {
   std::ifstream in;
   in.open(filename, std::ios::in | std::ios::binary);
-  IMP_USAGE_CHECK(!in.fail(),"SpiderMapReaderWriter::Read: File "+
-                  std::string(filename)+" not found.");
+  if (in.bad() || in.fail()) {
+    IMP_THROW("Error reading from Spider Map file", IOException);
+  }
   ImageHeader h;
   // Read header in Spider format (ImageHeader is in Spider format)
   h.read(in,skip_type_check_,force_reversed_,skip_extra_checkings_);

@@ -10,10 +10,11 @@
 IMPEM_BEGIN_NAMESPACE
 
 void apply_Transformation2D(algebra::Matrix2D_d &m,
-              algebra::Transformation2D &t,
+              const algebra::Transformation2D &t,
               algebra::Matrix2D_d &result,
               bool wrap,double outside,int interp) {
   result.resize(m);
+  //result.set_zero();
   // Save the origin and center
   std::vector<int> orig(2);
   orig[0]=m.get_start(0);
@@ -41,7 +42,7 @@ void apply_Transformation2D(algebra::Matrix2D_d &m,
 }
 
 void shift(algebra::Matrix2D_d &m,
-          algebra::Vector2D &v,
+          const algebra::Vector2D &v,
            algebra::Matrix2D_d &result,
            bool wrap,double outside,int interp) {
   algebra::Transformation2D t(algebra::get_identity_rotation_2d(),v);

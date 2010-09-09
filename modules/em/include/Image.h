@@ -165,7 +165,8 @@ IMP_OBJECTS(Image,Images);
 IMP_OUTPUT_OPERATOR(Image);
 
 
-//! Reads images from files in a reference counted vector of Image
+//! Reads images from files (For compatibility with SPIDER format,
+//! the images are read from floats)
 /**
   \param[in] names filenames of the images
   \param[in] rw  reader/writer to use
@@ -173,7 +174,8 @@ IMP_OUTPUT_OPERATOR(Image);
 IMPEMEXPORT Images read_images(Strings names,ImageReaderWriter<double> &rw);
 
 
-//! Saves images to files
+//! Saves images to files (For compatibility with SPIDER format,
+//! the images are written to floats)
 /**
   \param[in] images Images to save
   \param[in] names filenames of the images
