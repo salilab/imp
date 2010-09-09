@@ -16,7 +16,7 @@ void SpiderMapReaderWriter::Read(const char *filename,
                                 float **data, DensityHeader& header) {
   std::ifstream in;
   in.open(filename, std::ios::in | std::ios::binary);
-  if (in.bad() || in.fail()) {
+  if (in.bad()) {
     IMP_THROW("Error reading from Spider Map file", IOException);
   }
   ImageHeader h;
