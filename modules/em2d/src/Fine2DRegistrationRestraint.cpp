@@ -15,7 +15,7 @@
 IMPEM2D_BEGIN_NAMESPACE
 
 void Fine2DRegistrationRestraint::initialize(
-                       Particles &ps,
+                       ParticlesTemp &ps,
                        double resolution,
                        double pixelsize,
                        Model *scoring_model) {

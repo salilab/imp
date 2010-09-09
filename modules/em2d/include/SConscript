@@ -17,14 +17,8 @@ files = [
     'ProjectionParameters.h' ,
     'PolarResamplingParameters.h',
     'RegistrationResult.h' ,
-    'scores2D.h' ,
-#    'ExampleTemplateClass.h' ,
-#    'ExampleSingletonModifier.h' ,
-#    'ExampleComplexRestraint.h' ,
-#    'ExampleUnaryFunction.h' ,
-#    'ExampleDecorator.h' ,
-#    'ExampleRefCounted.h' ,
-#    'ExampleRestraint.h' ,
+    'scores2D.h',
+    #'Em2DRestraint.h',
       ] + SConscript('internal/SConscript')
 
 # Install the include files:

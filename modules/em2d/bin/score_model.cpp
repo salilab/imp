@@ -220,33 +220,40 @@ int main(int argc, char **argv) {
              << " Time: " << projection_time <<std::endl);
 
 
-  // Projection registration
+
+  int coarse_method = 1;
+  if(vm.count("pca")) {
+    coarse_method= 2;
+  } else if(vm.count("fast_pca")) {
+    coarse_method= 3;
+  }
+
   em2d::ProjectionFinder registration(ps,subjects,projections);
+  registration.initialize(apix,resolution,
+                          coarse_method,
+                          optimization_steps,
+                          simplex_minimum_size);
 
   boost::timer registration_timer;
-  if(vm.count("pca")) {
-    registration.set_coarse_registration_method(2);
-    Score=registration.get_coarse_registration(save_images);
-  } else if(vm.count("fast_pca")) {
-    registration.set_coarse_registration_method(3);
-    Score=registration.get_coarse_registration(save_images);
+  if(coarse_method==1) {
+    Score=registration.get_complete_registration(save_images);
   } else {
-    registration.set_coarse_registration_method(1);
-    Score=registration.get_complete_registration(save_images,apix,
-                optimization_steps,simplex_minimum_size);
+    Score=registration.get_coarse_registration(save_images);
   }
-  em2d::RegistrationResults registration_results;
-  registration_results=registration.get_registration_results();
-
-
   double registration_time=registration_timer.elapsed();
-  *std::cin.tie() << "REGISTRATION RESULTS " << std::endl;
 
+
+  em2d::RegistrationResults registration_results=
+                      registration.get_registration_results();
+  double total_time=projection_time+registration_time;
+
+
+  *std::cin.tie() << "REGISTRATION RESULTS " << std::endl;
   for (unsigned int i=0;i<registration_results.size();++i) {
     *std::cin.tie() << "fine_reg>> ";
     registration_results[i].write(*std::cin.tie());
   }
-  double total_time=projection_time+registration_time;
+
   // parseable result
   char c='|';
   unsigned int n_subjects=subjects.size();

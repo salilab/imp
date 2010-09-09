@@ -12,6 +12,7 @@
 #include "IMP/em/DensityMap.h"
 #include "IMP/algebra/Matrix2D.h"
 #include "IMP/algebra/Matrix3D.h"
+#include "IMP/exception.h"
 #include <fftw3.h>
 #include <complex>
 
@@ -25,7 +26,7 @@ IMPEM2D_BEGIN_NAMESPACE
   The las dimension is only floor(n/2)+1, being n the size
   of the last dimension of the input (vector, matrix, etc..)
 **/
-inline unsigned int get_fast_fft_size(const unsigned int dim) {
+inline unsigned int get_fast_fft_size(unsigned int dim) {
   return floor(dim/2)+1;
 }
 
@@ -43,7 +44,9 @@ inline unsigned int get_fast_fft_size(const unsigned int dim) {
 class FFT2D {
 public:
   FFT2D() {};
-  FFT2D(algebra::Matrix2D_d &in,algebra::Matrix2D_c &out) { prepare(in,out); }
+  FFT2D(algebra::Matrix2D_d &in,algebra::Matrix2D_c &out) {
+    prepare(in,out);
+  }
 
   ~FFT2D() { fftw_destroy_plan(FFT_); }
 
@@ -83,10 +86,12 @@ private:
 class IFFT2D {
 public:
   IFFT2D() {};
-  IFFT2D(algebra::Matrix2D_c &in,algebra::Matrix2D_d &out) { prepare(in,out); }
+  IFFT2D(const algebra::Matrix2D_c &in,algebra::Matrix2D_d &out) {
+    prepare(in,out);
+  }
   ~IFFT2D() { fftw_destroy_plan(IFFT_); }
 
-  inline void prepare(algebra::Matrix2D_c &in,algebra::Matrix2D_d &out) {
+  inline void prepare(const algebra::Matrix2D_c &in,algebra::Matrix2D_d &out) {
     // Prepare plan
     IFFT_ = fftw_plan_dft_c2r_2d(out.get_number_of_rows(),
               out.get_number_of_columns(),
@@ -116,8 +121,12 @@ private:
 **/
 class FFT1D {
 public:
-  FFT1D() {};
-  FFT1D(std::vector<double> &in,std::vector<std::complex<double> > &out) {
+  FFT1D() {
+    prepared_=false;
+  }
+
+  FFT1D(std::vector<double> &in,
+                          std::vector<std::complex<double> > &out) {
     prepare(in,out);
   }
   ~FFT1D() { fftw_destroy_plan(FFT_); }
@@ -131,13 +140,19 @@ public:
           &in.front(),
           (fftw_complex *)(&out.front()),
           FFTW_ESTIMATE | FFTW_PRESERVE_INPUT);
+    prepared_=true;
   }
 
   inline void execute() {
+    if(!prepared_) {
+      IMP_THROW("Attempt to execute a FFT without preparing it before",
+                                                            IOException);
+    }
     fftw_execute(FFT_);
   }
 
 private:
+  bool prepared_;
   fftw_plan FFT_;
 };
 
@@ -155,7 +170,7 @@ private:
 **/
 class IFFT1D {
 public:
-  IFFT1D() {};
+  IFFT1D() {prepared_=false;};
   IFFT1D(std::vector<std::complex<double> > &in,std::vector<double> &out) {
     prepare(in,out);
   }
@@ -169,11 +184,19 @@ public:
               &out.front(),
               FFTW_ESTIMATE);
 //              FFTW_ESTIMATE | FFTW_PRESERVE_INPUT); // does not work
+    prepared_=true;
   }
 
-  inline void execute() { fftw_execute(IFFT_); }
+  inline void execute() {
+    if(!prepared_) {
+      IMP_THROW("Attempt to execute a IFFT without preparing it before",
+                                                            IOException);
+    }
+    fftw_execute(IFFT_);
+  }
 
 private:
+  bool prepared_;
   fftw_plan IFFT_;
 };
 
@@ -375,6 +398,101 @@ void desymmetrize_FFT3D(algebra::Matrix3D<T> &in) {
             in.get_number_of_rows(),
             get_fast_fft_size(in.get_number_of_columns()));
 }
+
+
+
+
+class FFT1D_slow {
+public:
+  FFT1D_slow() {prepared_=false;}
+
+  FFT1D_slow(std::vector<double> &in,std::vector<std::complex<double> > &out) {
+    prepare(in,out);
+  }
+  ~FFT1D_slow() { fftw_destroy_plan(FFT_); }
+
+  inline void prepare(std::vector<double> &in,
+        std::vector<std::complex<double> > &out) {
+
+    unsigned int in_size=in.size();
+    std::vector<std::complex<double> > complex_in(in_size);
+    for (unsigned int i=0;i<in_size;++i) {
+      std::complex<double> c(in[i],0);
+      complex_in[i] = c;
+    }
+
+    // Resize for fftw3
+    out.resize(in_size);
+    // Prepare plan
+    FFT_ = fftw_plan_dft_1d(in_size,
+        (fftw_complex *)(&complex_in.front()),
+        (fftw_complex *)(&out.front()),
+        FFTW_FORWARD,
+        FFTW_ESTIMATE | FFTW_PRESERVE_INPUT);
+    prepared_=true;
+  }
+
+  inline void execute() {
+    if(!prepared_) {
+      IMP_THROW("Attempt to execute a FFT without preparing it before",
+                                                            IOException);
+    }
+    fftw_execute(FFT_);
+  }
+
+private:
+  bool prepared_;
+  fftw_plan FFT_;
+};
+
+
+
+
+class IFFT1D_slow {
+public:
+  IFFT1D_slow() {prepared_=false;}
+
+  IFFT1D_slow(std::vector<std::complex<double> > &in,
+              std::vector<double> &out) {
+    prepare(in,out);
+  }
+
+  ~IFFT1D_slow() { fftw_destroy_plan(IFFT_); }
+
+  inline void prepare(std::vector<std::complex<double> > &in,
+               std::vector<double> &out) {
+    size_ = in.size();
+    out_ = &out; // store a pointer to the output
+    complex_out_.resize(size_);
+    IFFT_ = fftw_plan_dft_1d(size_,
+          (fftw_complex *)(&in.front()),
+          (fftw_complex *)(&complex_out_.front()),
+          FFTW_BACKWARD,
+          FFTW_ESTIMATE);
+    prepared_=true;
+  }
+
+  inline void execute() {
+    if(!prepared_) {
+      IMP_THROW("Attempt to execute a IFFT without preparing it before",
+                                                            IOException);
+    }
+    fftw_execute(IFFT_);
+    // transfer the output
+    (*out_).resize(size_);
+    for (unsigned int i=0;i<size_;++i) {
+      (*out_)[i] = complex_out_[i].real();
+    }
+  }
+
+private:
+  std::vector<std::complex<double> > complex_out_;
+  std::vector<double> *out_;
+  bool prepared_;
+  unsigned int size_;
+  fftw_plan IFFT_;
+};
+
 
 IMPEM2D_END_NAMESPACE
 

@@ -32,38 +32,60 @@ public:
     subjects_set_ = false;
     projections_set_ = false;
     particles_set_=false;
+    parameters_initialized_=false;
     registration_done_=false;
-    coarse_registration_method_ = 1;
-    resolution_ = 1;
-    interpolation_method_=0;
   }
 
   //! Inits the class with the particles of the model to score, the subject
   //! EM images, and the projections of the model to use for the registration
   /**
-    \param[in] subjects set of pointers to the images to register
-    \param[in] projections set of pointers to the images to register
-    \param[in] method Method for 2D alignment:
+    \param[in] particles particles to score
+    \param[in] subjects The EM images to match with optimal projections
+    \param[in] projections Projections employed to start the search for the
+                optimal ones
+  **/
+  ProjectionFinder(const ParticlesTemp &particles,
+                  const em::Images subjects,em::Images projections) {
+    set_model_particles(particles);
+    set_projections(projections);
+    set_subjects(subjects);
+    parameters_initialized_=false;
+    registration_done_=false;
+  }
+
+
+  //! Initializes the parameters to generate and match projections
+  /**
+    \param[in] resolution to employ to generate projections for matching with
+              the EM images. Default is the maximum possible, 1.
+    \param[in] coarse_registration_method Method for 1st step of projection
+              finding, the 2D alignment:
                 0 => FFT alignment no preprocessing.
-                1 => FFT alignment with preprocessing (faster).
+                1 => FFT alignment with preprocessing (Default and recommended).
                 2 => FFT and PCA alignment (fast, but only works for low noise)
                 3 => PCA alginment and centers of gravity (very fast, but
                      very low noise tolerated)
-    \param[in] interpolation_method Default is 0, linear
+    \param[in] interpolation_method Default is linear. Fast, enough accuracy
+                during testing.
+    \param[in] optimization steps
+    \param[in] simplex step size
   **/
-  ProjectionFinder(Particles model_particles,
-                         em::Images subjects,em::Images projections,
-                         const unsigned int coarse_registration_method = 1,
-                         const unsigned int interpolation_method=0) {
-    set_model_particles(model_particles);
-    set_projections(projections);
-    set_subjects(subjects);
-    set_coarse_registration_method(coarse_registration_method_);
-    set_interpolation_method(interpolation_method);
+  void initialize(double apix,double resolution =1,
+                 int coarse_registration_method = 1,
+                 int interpolation_method = 0,
+                 int optimization_steps = 10,
+                 double simplex_minimum_size =0.01) {
+    resolution_ = resolution;
+    apix_ = apix;
+    coarse_registration_method_ = coarse_registration_method;
+    interpolation_method_ = interpolation_method;
+    simplex_minimum_size_ = simplex_minimum_size;
+    optimization_steps_ = optimization_steps;
+    parameters_initialized_=true;
   }
 
-  //! Set EM subject images
-   void set_subjects(em::Images subjects) {
+  //! Set EM images
+   void set_subjects(const em::Images subjects) {
     subjects_=subjects;
     n_subjects_=subjects_.size();
     registration_results_.resize(n_subjects_);
@@ -77,26 +99,21 @@ public:
     projections_set_ = true;
   }
 
-  //! Select the method of coarse registration
-  void set_coarse_registration_method(const unsigned int method) {
-    coarse_registration_method_ = method;
-  }
-
   //! Set the model particles
-  void set_model_particles(Particles ps) {
+  void set_model_particles(const ParticlesTemp &ps) {
     model_particles_= ps;
     particles_set_=true;
   }
 
- void set_interpolation_method(const unsigned int interpolation_method) {
-   interpolation_method_ = interpolation_method;
- }
 
   //! Recover the registration results. Only works if a registration has been
   //! done previously
   RegistrationResults get_registration_results() {
-    IMP_USAGE_CHECK(registration_done_,
-        "get_registrations_results: no registration has been done yet");
+    if(!registration_done_) {
+      IMP_THROW(
+       "ProjectionFinder: trying to recover results before registration",
+        ValueException);
+    }
     RegistrationResults Regs(n_subjects_);
     for (unsigned int i=0;i<n_subjects_;++i) {
       Regs[i]=registration_results_[i];
@@ -122,9 +139,7 @@ public:
     \param[out] output the function returns the total discrepancy score after
       refining all the registratation parameters.
   **/
-  double get_complete_registration( bool save_match_images,
-                double apix,unsigned int optimization_steps=10,
-                double simplex_minimum_size=0.001);
+  double get_complete_registration( bool save_match_images);
 
   void all_vs_all_projections_ccc(String &fn_out);
 
@@ -140,16 +155,28 @@ protected:
   em::Images subjects_;
   em::Images projections_;
   RegistrationResults registration_results_;
-  Particles model_particles_;
-  bool save_match_images_;
+  ParticlesTemp model_particles_;
   unsigned int n_subjects_,n_projections_;
-  bool subjects_set_, projections_set_,registration_results_set_,
-        particles_set_,registration_done_;
-  unsigned int coarse_registration_method_;
-  // Parameters for rotational search
-  unsigned int interpolation_method_;
-  // resolution used to generate projections during the fine registration
+  bool save_match_images_,
+       subjects_set_,
+       projections_set_,
+       registration_results_set_,
+       particles_set_,
+       registration_done_,
+       parameters_initialized_;
+  //! resolution used to generate projections during the fine registration
   double resolution_;
+  //! Sampling of the images in Amstrong/pixel
+  double apix_;
+
+  //! Coarse registration method
+  unsigned int coarse_registration_method_;
+  //! Interpolation method for projection generation
+  unsigned int interpolation_method_;
+  //! Simplex optimization parameters
+  double simplex_minimum_size_;
+  unsigned int optimization_steps_;
+
   // FFT related variables
   std::vector< algebra::Matrix2D_c > SUBJECTS_;
   std::vector< algebra::Matrix2D_c > PROJECTIONS_;
