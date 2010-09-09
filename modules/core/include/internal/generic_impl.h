@@ -69,7 +69,7 @@ template <class Score>
 Restraint* create_restraint(Pointer<Score> s,
                             const typename Score::Argument &t,
                             std::string name= std::string()) {
-  return create_restraint<Score>(s, t, name);
+  return create_restraint<Score>(s.get(), t, name);
 }
 #endif
 
@@ -194,19 +194,19 @@ template <class Before, class After>
 Constraint* create_constraint(Pointer<Before> b, Pointer<After> a,
                               const typename Before::Argument &t,
                               std::string name=std::string()) {
-  return create_constraint<Before, After>(b, a, t, name);
+  return create_constraint<Before, After>(b.get(), a.get(), t, name);
 }
 template <class Before, class After>
 Constraint* create_constraint(Before* b, Pointer<After> a,
                               const typename Before::Argument &t,
                               std::string name=std::string()) {
-  return create_constraint<Before, After>(b, a, t, name);
+  return create_constraint<Before, After>(b, a.get(), t, name);
 }
 template <class Before, class After>
 Constraint* create_constraint(Pointer<Before> b, After* a,
                               const typename Before::Argument &t,
                               std::string name=std::string()) {
-  return create_constraint<Before, After>(b, a, t, name);
+  return create_constraint<Before, After>(b.get(), a, t, name);
 }
 #endif
 

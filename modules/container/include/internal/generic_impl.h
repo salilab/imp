@@ -102,17 +102,17 @@ void ContainerRestraint<Score, Container>::do_show(std::ostream& out) const
 template <class Score, class Container>
 Restraint *create_restraint(Pointer<Score> s, Pointer<Container> c,
                             std::string name=std::string()) {
-  return create_restraint<Score,Container>(s, c, name);
+  return create_restraint<Score,Container>(s.get(), c.get(), name);
 }
 template <class Score, class Container>
 Restraint *create_restraint(Score* s, Pointer<Container> c,
                             std::string name=std::string()) {
-  return create_restraint<Score,Container>(s, c, name);
+  return create_restraint<Score,Container>(s, c.get(), name);
 }
 template <class Score, class Container>
 Restraint *create_restraint(Pointer<Score> s, Container* c,
                             std::string name=std::string()) {
-  return create_restraint<Score,Container>(s, c, name);
+  return create_restraint<Score,Container>(s.get(), c, name);
 }
 
 
