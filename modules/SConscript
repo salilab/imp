@@ -24,14 +24,24 @@ modules=['cgal',
 # always last
 modules.append('benchmark')
 
+disabled=env['disabledmodules'].split(":")
+
+def skip(m):
+    env[m+"_ok"]=False
+    env[m+"_required_modules"]=[]
+
 for p in modules:
-    SConscript(p+"/SConscript")
+    if p in disabled:
+        skip(p)
+    else:
+        SConscript(p+"/SConscript")
 
 if env.get('localmodules', False):
-    import os.path
-
-    dirs= Glob("*/SConscript")
-
-    for m in [os.path.split(str(d))[0] for d in dirs]:
-        if m not in modules:
-            SConscript(m+"/SConscript")
+    for d in Glob("*/SConscript"):
+        p= str(d).split("/")[0]
+        if p in modules:
+            pass
+        elif p in disabled:
+            skip(p)
+        else:
+            SConscript(p+"/SConscript")

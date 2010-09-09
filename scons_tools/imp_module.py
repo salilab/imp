@@ -100,8 +100,9 @@ def expand_dependencies(env, deps, is_kernel=False):
             ndeps=env[c+"_required_modules"]
         except:
             print >> sys.stderr, "Modules can only depend on modules which are configured before them."
-            print >> sys.stderr, "Specifically, module "+str(env['IMP_MODULE']) + " cannot depenend on module " +d
-            raise ValueError("Bad bin depedency")
+            print >> sys.stderr, "Specifically, module "+str(env['IMP_MODULE']) \
+                  + " cannot depenend on module " +c
+            raise ValueError("Bad module depedency")
         ndeps.reverse()
         to_expand=to_expand[:-1]
         for i in ndeps:
@@ -677,6 +678,16 @@ def IMPModuleBuild(env, version, required_modules=[],
         module_namespace="IMP::"+module
     if module_nicename is None:
         module_nicename= "IMP."+module
+    env['IMP_MODULE'] = module
+    env['IMP_MODULE_SUFFIX'] = module_suffix
+    env['IMP_MODULE_INCLUDE_PATH'] = module_include_path
+    env['IMP_MODULE_SRC_PATH'] = module_src_path
+    env['IMP_MODULE_PREPROC'] = module_preproc
+    env['IMP_MODULE_NAMESPACE'] = module_namespace
+    env['IMP_MODULE_NICENAME'] = module_nicename
+    #env['IMP_MODULE_VERSION'] = "SVN"
+    env['IMP_MODULE_AUTHOR'] = "A. Biologist"
+
     # Check required modules and add kernel
     for x in required_modules+optional_modules:
         if x.startswith("imp_"):
@@ -744,15 +755,6 @@ def IMPModuleBuild(env, version, required_modules=[],
                            'IMPModuleLinkTest': link_test.LinkTest,
                            'IMPGeneratePCH': pch.GeneratePCH,
                            'IMPBuildPCH': pch.BuildPCH})
-    env['IMP_MODULE'] = module
-    env['IMP_MODULE_SUFFIX'] = module_suffix
-    env['IMP_MODULE_INCLUDE_PATH'] = module_include_path
-    env['IMP_MODULE_SRC_PATH'] = module_src_path
-    env['IMP_MODULE_PREPROC'] = module_preproc
-    env['IMP_MODULE_NAMESPACE'] = module_namespace
-    env['IMP_MODULE_NICENAME'] = module_nicename
-    #env['IMP_MODULE_VERSION'] = "SVN"
-    env['IMP_MODULE_AUTHOR'] = "A. Biologist"
     env.Prepend(CPPPATH=['#/build/include'])
     env.Prepend(LIBPATH=['#/build/lib'])
     if cxxflags:
