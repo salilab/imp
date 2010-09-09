@@ -7,7 +7,7 @@ IMP_SWIG_VALUE(IMP::em2d, MasksManager ,MasksManagers);
 IMP_SWIG_DECORATOR(IMP::em2d, ProjectionParameters, ProjectionParametersList);
 IMP_SWIG_OBJECT(IMP::em2d, ProjectionParametersSS, ProjectionParametersSSs);
 IMP_SWIG_VALUE(IMP::em2d, RegistrationResult, RegistrationResults);
-
+// IMP_SWIG_OBJECT(IMP::em2d, Em2DRestraint, Em2DRestraints);
 
 %include "IMP/em2d/ProjectionParameters.h"
 //%include "IMP/em2d/Fine2DRegistrationRestraint.h"
@@ -20,6 +20,7 @@ IMP_SWIG_VALUE(IMP::em2d, RegistrationResult, RegistrationResults);
 %include "IMP/em2d/PolarResamplingParameters.h"
 %include "IMP/em2d/align2D.h"
 %include "IMP/em2d/ProjectionFinder.h"
+//%include "IMP/em2d/Em2DRestraint.h"
 //%include "IMP/em2d/model_interaction.h"
 
 
@@ -30,7 +31,7 @@ IMP_SWIG_VALUE(IMP::em2d, RegistrationResult, RegistrationResults);
 
 namespace IMP {
   namespace em2d {
-
+    %template(ResultAlign2D) ::std::pair< IMP::algebra::Transformation2D,double >;
   }
 }
 
