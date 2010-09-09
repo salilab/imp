@@ -37,11 +37,11 @@ public:
 
   //! basic constructor from a Rotation2D and translation vector
   Transformation2D(const Rotation2D& r,
-                   const VectorD<2>& t=VectorD<2>(0.0,0.0)):
+                   const Vector2D& t=Vector2D(0.0,0.0)):
     trans_(t), rot_(r){}
 
   //! Constructor for a transformation with an identity rotation.
-  Transformation2D(const VectorD<2>& t):
+  Transformation2D(const Vector2D& t):
     trans_(t), rot_(get_identity_rotation_2d()){}
 
   ~Transformation2D();
@@ -52,7 +52,7 @@ public:
     \note: The transformation is done firstly applying the rotation and then
     the translation
   **/
-  VectorD<2> get_transformed(const VectorD<2> &o) const {
+  Vector2D get_transformed(const Vector2D &o) const {
     return rot_.get_rotated(o) + trans_;
   }
 
@@ -61,7 +61,7 @@ public:
     \note: The transformation is done firstly applying the rotation and then
     the translation
   **/
-  VectorD<2> operator*(const VectorD<2> &v) const {
+  Vector2D operator*(const Vector2D &v) const {
     return get_transformed(v);
   }
 
@@ -101,11 +101,10 @@ public:
   }
 
   //! Returns the translation
-  const VectorD<2> get_translation()const{return trans_;}
+  const Vector2D get_translation()const{return trans_;}
 
   //! Sets the translation
-  template<typename T1>
-  void set_translation(T1& v) {
+  void set_translation(Vector2D &v) {
     trans_[0]=v[0];
     trans_[1]=v[1];
   }
@@ -119,7 +118,7 @@ public:
   Transformation2D get_inverse() const;
 
 private:
-  VectorD<2> trans_; //tranlation
+  Vector2D trans_; //tranlation
   Rotation2D rot_;  //rotation
 };
 
@@ -132,7 +131,7 @@ IMP_VALUES(Transformation2D, Transformation2Ds);
   \relatesalso Transformation2D
 **/
 inline Transformation2D get_identity_transformation_2d() {
-  return Transformation2D(get_identity_rotation_2d(),VectorD<2>(0.0,0.0));
+  return Transformation2D(get_identity_rotation_2d(),Vector2D(0.0,0.0));
 }
 
 //! Generates a Transformation2D object from a rotation around a point
@@ -143,7 +142,7 @@ inline Transformation2D get_identity_transformation_2d() {
   reference, not the new point).
   \relatesalso Transformation2D
 */
-inline Transformation2D get_rotation_about_point(const VectorD<2> &point,
+inline Transformation2D get_rotation_about_point(const Vector2D &point,
                      const Rotation2D &rotation) {
   return Transformation2D(rotation, (rotation.get_rotated(-point)+point));
 }

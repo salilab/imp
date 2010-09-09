@@ -165,7 +165,7 @@ public:
     \param[out] padded the output MultiArray
     \param[in] val the value to pad with
   **/
-  void pad(This& padded,T val) {
+  void pad(This& padded,T val) const {
     padded.resize(2*this->get_size(0),2*this->get_size(1));
     // Copy values
     padded.fill_with_value(val);
@@ -183,7 +183,7 @@ public:
   /**
     \param[in] padded the MultiArray padded
   **/
-  void pad(This& padded) {
+  void pad(This& padded) const {
     double avg = this->compute_avg();
     this->pad(padded,avg);
   }
