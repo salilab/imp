@@ -88,7 +88,7 @@ public:
     IMP_LOG(IMP::VERBOSE,"reading with SpiderImageReaderWriter" << std::endl);
     std::ifstream in;
     in.open(filename.c_str(), std::ios::in | std::ios::binary);
-    if (in.bad() || in.fail()) {
+    if (in.bad()) {
       IMP_THROW("Error reading from Spider Image " << filename,IOException);
     }
     //! Take advantage that the header format is already in Spider format and
@@ -107,7 +107,7 @@ public:
     IMP_LOG(IMP::VERBOSE,"reading with SpiderImageReaderWriter" << std::endl);
     std::ifstream in;
     in.open(filename.c_str(), std::ios::in | std::ios::binary);
-    if (in.bad() || in.fail()) {
+    if (in.bad()) {
       IMP_THROW("Error reading from Spider Image " << filename,IOException);
     }
     //! The header format is already in Spider format, just read it
