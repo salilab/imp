@@ -62,7 +62,6 @@ class ProjectTests(IMP.test.TestCase):
             stored_projection_names[n]=self.get_input_file_name(
                                             stored_projection_names[n])
         stored_projections=IMP.em.read_images(stored_projection_names,srw)
-
         # check
         for n in xrange(0,n_projections):
             for i in xrange(0,rows):

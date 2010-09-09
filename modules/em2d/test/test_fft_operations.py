@@ -24,7 +24,7 @@ class FFToperationsTests(IMP.test.TestCase):
         IMP.em.normalize(corr)
         name=self.get_input_file_name("autocorrrelation_img.spi")
         stored_corr=IMP.em.Image()
-        stored_corr.read(name,srw)
+        stored_corr.read_from_floats(name,srw)
         rows=stored_corr.get_data().get_number_of_rows()
         cols=stored_corr.get_data().get_number_of_columns()
         for i in xrange(0,rows):
@@ -49,13 +49,19 @@ class FFToperationsTests(IMP.test.TestCase):
         IMP.em.normalize(corr)
         name=self.get_input_file_name("corrrelation_img.spi")
         stored_corr=IMP.em.Image()
-        stored_corr.read(name,srw)
+        stored_corr.read_from_floats(name,srw)
         rows=stored_corr.get_data().get_number_of_rows()
         cols=stored_corr.get_data().get_number_of_columns()
         for i in xrange(0,rows):
             for j in xrange(0,cols):
                 self.assertInTolerance(corr(i,j),stored_corr(i,j),0.001,
                                 "Correlation image is different than stored")
+
+
+
+
+
+
 
 if __name__ == '__main__':
     unittest.main()
