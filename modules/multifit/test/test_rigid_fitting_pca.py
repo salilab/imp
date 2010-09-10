@@ -46,14 +46,12 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
             IMP.algebra.get_random_rotation_3d(),
             IMP.algebra.get_random_vector_in(
               IMP.algebra.BoundingBox3D(
-                # IMP.algebra.Vector3D(-10.,-10.,-10.),
-                # IMP.algebra.Vector3D(10.,10.,10.))))
-            IMP.algebra.Vector3D(0.,0.,0.),
-            IMP.algebra.Vector3D(0.,0.,0.))))
+                IMP.algebra.Vector3D(-10.,-10.,-10.),
+                IMP.algebra.Vector3D(10.,10.,10.))))
 
         xyz=IMP.core.XYZsTemp(self.ps)
         IMP.core.transform(self.rb,rand_t)
-        IMP.atom.write_pdb(self.mp,"translated.pdb")
+        #IMP.atom.write_pdb(self.mp,"translated.pdb")
         xyz_ref=IMP.core.XYZsTemp(IMP.core.get_leaves(self.mp_ref))
         #fit protein
         fs = IMP.multifit.pca_based_rigid_fitting(
@@ -67,6 +65,7 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
             fit_t_inv = fit_t.get_inverse()
             IMP.core.transform(self.rb,fit_t)
             rmsd=IMP.atom.get_rmsd(xyz_ref,xyz)
+            #IMP.atom.write_pdb(self.mp,"fitted_"+str(i)+".pdb")
             print "====rmsd: ",rmsd, " score: ",fs.get_score(i)
             if best_rmsd>rmsd:
                 best_rmsd=rmsd

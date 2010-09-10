@@ -18,6 +18,15 @@
 #include <IMP/algebra/ReferenceFrame3D.h>
 IMPMULTIFIT_BEGIN_NAMESPACE
 
+/*
+em::FittingSolutions refine_fits(
+  core::RigidBody &rb, Refiner *rb_refiner,
+  em::DensityMap *em_map,
+  const em::FittingSolutions &fits
+  FloatKey rad_key = core::XYZR::get_default_radius_key(),
+  `FloatKey wei_key = atom::Mass::get_mass_key());
+*/
+
 em::FittingSolutions pca_based_rigid_fitting(
   core::RigidBody &rb, Refiner *rb_refiner,
     em::DensityMap *em_map,
@@ -33,10 +42,15 @@ em::FittingSolutions pca_based_rigid_fitting(
     algebra::Vector3Ds dens_vecs = em::density2vectors(*em_map,threshold);
     dens_pca = algebra::get_principal_components(dens_vecs);
   }
+  //move the rigid body to the center of the map
+  core::XYZsTemp ps_xyz =  core::XYZsTemp(rb_refiner->get_refined(rb));
+  algebra::Transformation3D move2center_trans = algebra::Transformation3D(
+     algebra::get_identity_rotation_3d(),
+     dens_pca.get_centroid()-core::get_centroid(ps_xyz));
+  core::transform(rb,move2center_trans);
   //find the pca of the protein
   algebra::Vector3Ds ps_vecs;
-  core::XYZs ps_xyz =  core::XYZs(rb_refiner->get_refined(rb));
-  for (core::XYZs::iterator it = ps_xyz.begin(); it != ps_xyz.end(); it++) {
+  for (core::XYZsTemp::iterator it = ps_xyz.begin(); it != ps_xyz.end(); it++) {
     ps_vecs.push_back(it->get_coordinates());
   }
   algebra::PrincipalComponentAnalysis ps_pca =
@@ -53,7 +67,16 @@ em::FittingSolutions pca_based_rigid_fitting(
     em::compute_fitting_scores(em_map,rb,*rb_refiner,all_trans,
                                rad_key,wei_key);
   fs.sort();
-  return fs;
+  //compose the center translation to the results
+  em::FittingSolutions returned_fits;
+  for (int i=0;i<fs.get_number_of_solutions();i++){
+    returned_fits.add_solution(
+         algebra::compose(fs.get_transformation(i),move2center_trans),
+         fs.get_score(i));
+  }
+  //move protein to the center of the map
+  core::transform(rb,move2center_trans.get_inverse());
+  return returned_fits;
 }
 
 
