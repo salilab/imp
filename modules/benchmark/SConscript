@@ -5,7 +5,7 @@ module_env=env.IMPModuleBuild(version="SVN",
                    required_modules=['misc', 'domino2', 'atom', 'em', 'core', 'algebra'],
                    optional_dependencies=['CGAL'])
 
-
-#module_env.Alias('benchmark-test', module_env.IMPRun(target="benchmarks.passed",
-#                                                      source=["#/tools/imppy.sh"]+module_env['IMP_MODULE_BINS']))
-#module_env.AlwaysBuild('benchmarks.passed')
+if env['build']=='fast':
+    module_env.Alias('benchmark-test', module_env.IMPRun(target="benchmarks.passed",
+                                                         source=["#/tools/imppy.sh"]+module_env['IMP_MODULE_BINS']))
+    module_env.AlwaysBuild('benchmarks.passed')
