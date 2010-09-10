@@ -16,7 +16,7 @@ get_convex_polygons(const std::vector<algebra::VectorD<3> > &poly) {
   if (poly.size() <3) {
     IMP_THROW("Polygon must at least be a triangle", ValueException);
   }
-  std::cout << "Splitting polygon " << poly.size() << std::endl;
+  //std::cout << "Splitting polygon " << poly.size() << std::endl;
   std::pair<std::vector<algebra::Vector3Ds>, algebra::Vector3D> ret;
   typedef CGAL::Exact_predicates_inexact_constructions_kernel Kernel;
   //Kernel k;
@@ -35,7 +35,6 @@ get_convex_polygons(const std::vector<algebra::VectorD<3> > &poly) {
   CGAL::linear_least_squares_fitting_3(poly_3.begin(), poly_3.end(),
                                        plane, centroid,// k,
                                        dt);
-  std::cout << "Plane is " << plane << std::endl;
   ret.second= algebra::Vector3D(plane.orthogonal_vector()[0],
                                 plane.orthogonal_vector()[1],
                                 plane.orthogonal_vector()[2]).get_unit_vector();
@@ -44,7 +43,7 @@ get_convex_polygons(const std::vector<algebra::VectorD<3> > &poly) {
   std::vector<Point_2> points_2(poly.size());
   for (unsigned int i=0; i< poly.size(); ++i) {
     points_2[i]= plane.to_2d(poly_3[i]);
-    std::cout << "Got point " << points_2[i] << std::endl;
+    //std::cout << "Got point " << points_2[i] << std::endl;
   }
   Polygon_2 poly2(points_2.begin(), points_2.end());
   if (!poly2.is_counterclockwise_oriented()) {
@@ -60,17 +59,17 @@ get_convex_polygons(const std::vector<algebra::VectorD<3> > &poly) {
   } catch(...) {
     IMP_THROW("Polygon is not simple", ValueException);
   }
-  std::cout << "Got " << polys2.size() << std::endl;
+  //std::cout << "Got " << polys2.size() << std::endl;
   // unproject decomposition
   for (unsigned int i=0; i< polys2.size(); ++i) {
     ret.first.push_back(algebra::Vector3Ds());
     for (Polygon_2::Vertex_iterator it = polys2[i].vertices_begin();
          it != polys2[i].vertices_end(); ++it) {
       Point_3 pt= plane.to_3d(*it);
-      std::cout << pt << ", ";
+      //std::cout << pt << ", ";
       ret.first.back().push_back(algebra::Vector3D(pt[0], pt[1], pt[2]));
     }
-    std::cout << std::endl;
+    //std::cout << std::endl;
   }
   return ret;
 }
