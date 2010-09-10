@@ -2,9 +2,9 @@ import imp_module
 import SCons
 from SCons.Script import Glob, Dir, File, Builder, Action, Exit, Scanner
 
-def _search_for_deps(context, libname, headers, body, possible_deps):
+def _search_for_deps(context, libname, extra_libs, headers, body, possible_deps):
     for i in range(0,len(possible_deps)+1):
-        lc= possible_deps[0:i]
+        lc= extra_libs+possible_deps[0:i]
         #print "Trying "+ str(i) +" with " +str(lc)
         olibs= context.env.get('LIBS', [])
         context.env.Append(LIBS=lc)
@@ -16,12 +16,18 @@ def _search_for_deps(context, libname, headers, body, possible_deps):
     return (False, None)
 
 def check_lib(context, lib, header, body="", extra_libs=[]):
-    ret= _search_for_deps(context, lib, header, body, extra_libs)
+    if type(lib) == list:
+        ret=_search_for_deps(context, lib[0], lib[1:], header, body, extra_libs)
+    else:
+        ret=_search_for_deps(context, lib, [], header, body, extra_libs)
     if not ret[0]:
         return ret
     if context.env['IMP_BUILD_STATIC']:
         imp_module.make_static_build(context.env)
-        bret=_search_for_deps(context, lib, header, body, extra_libs)
+        if type(lib) == list:
+            bret=_search_for_deps(context, lib[0], lib[1:], header, body, extra_libs)
+        else:
+            bret=_search_for_deps(context, lib, [], header, body, extra_libs)
         imp_module.unmake_static_build(context.env)
         # should be the sum of the two
         if bret[0]:
