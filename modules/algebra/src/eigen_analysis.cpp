@@ -54,8 +54,8 @@ Transformation3Ds get_alignments_from_first_to_second(
       for(int j1=0;j1<2;j1++){
       for(int j2=0;j2<2;j2++){
       algebra::Rotation3D rot1 = algebra::get_rotation_from_x_y_axes(
-        pca1.get_principal_component(i1),
-        pca1.get_principal_component(i2));
+        pca1.get_principal_component(i1)*sign[j1],
+        pca1.get_principal_component(i2)*sign[j2]);
       algebra::ReferenceFrame3D rf1(algebra::Transformation3D(
           rot1,pca1.get_centroid()));
       //get the transformation from pca1 to pca2
