@@ -77,10 +77,6 @@ Model * setup(bool rpcpf,RigidBodiesTemp &rbs) {
 
   PairContainer *cpc;
   if (rpcpf) {
-    RigidBodiesTemp rbs;
-    IMP::internal::OwnerPointer<Model> m
-      = setup(new QuadraticClosePairsFinder(), rbs);
-
     Particles rbsp(rbs.size());
     for (unsigned int i=0; i< rbs.size(); ++i){
       rbsp.set(i, rbs[i].get_particle());
@@ -106,8 +102,8 @@ int main() {
     IMP::internal::OwnerPointer<Model> m
       = setup(false, rbs);
     //std::cout << "Quadratic:" << std::endl;
-    test_one("quadratic", m, rbs, 100);
-    test_one("quadratic", m, rbs, 1000);
+    test_one("quadratic", m, rbs, 10);
+    test_one("quadratic", m, rbs, 30);
 
   }
   {
@@ -115,8 +111,8 @@ int main() {
     IMP::internal::OwnerPointer<Model> m
       = setup(true, rbs);
     //std::cout << "Hierarchy:" << std::endl;
-    test_one("hierarchy", m, rbs, 100);
-    test_one("hierarchy", m, rbs, 1000);
+    test_one("hierarchy", m, rbs, 10);
+    test_one("hierarchy", m, rbs, 30);
 
   }
   return 0;
