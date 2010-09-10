@@ -6512,3 +6512,151 @@ connectivity fast,0.014022,1.844764e+02
 connectivity fast mst,0.022124,8.842779e-01
 uncached density loop,0.102667,5.346000e+08
 cached density loop,0.136667,5.400000e+08
+date,  09/09/10
+mode,fast
+changing nonincremental,0.000007,5.029128e+08
+changing incremental,0.000011,5.029128e+08
+changing nonincremental score,0.000017,5.977212e+08
+changing incremental score,0.000028,3.599949e+08
+domino2 small ,11.070000,0.000000e+00
+cpf grid 1000 0.1,0.001371,1.823000e+03
+cpf grid 1000 0.5,0.005208,1.689600e+05
+cpf grid 1000 5,0.033467,1.097708e+07
+cpf grid 10000 0.1,0.016556,4.741400e+04
+cpf grid 10000 0.5,0.071429,1.279670e+06
+cpf grid 10000 5,3.040000,1.584002e+07
+cpf grid 100000 0.01,0.263000,2.400000e+02
+cpf grid 100000 0.1,0.345000,2.484480e+05
+cpf grid 100000 0.3,1.000000,2.419548e+06
+cpf nn 1000 0.1,0.003392,8.844000e+03
+bcpf nn 1000 0.1,0.003197,1.876800e+04
+cpf nn 1000 0.5,0.006545,3.415080e+05
+bcpf nn 1000 0.5,0.006266,7.134120e+05
+cpf nn 1000 5,0.076364,1.015285e+07
+bcpf nn 1000 5,0.097308,1.601226e+07
+cpf nn 10000 0.1,0.053191,3.487400e+04
+bcpf nn 10000 0.1,0.050000,7.920000e+04
+cpf nn 10000 0.5,0.185000,1.229158e+06
+bcpf nn 10000 0.5,0.187143,2.495220e+06
+cpf nn 100000 0.01,0.574000,3.900000e+02
+bcpf nn 100000 0.01,0.558000,8.800000e+02
+cpf nn 100000 0.1,1.150000,2.323770e+05
+bcpf nn 100000 0.1,1.143333,4.614480e+05
+cpf nn 100000 0.3,4.320000,1.997074e+06
+bcpf nn 100000 0.3,4.410000,4.013600e+06
+cpf box 1000 0.1,0.001073,4.660000e+03
+bcpf box 1000 0.1,0.002111,1.065600e+04
+cpf box 1000 0.5,0.003012,3.095900e+05
+bcpf box 1000 0.5,0.005910,3.290940e+05
+cpf box 1000 5,0.030361,1.307599e+07
+bcpf box 1000 5,0.062750,1.289504e+07
+cpf box 10000 0.1,0.039219,2.259200e+04
+bcpf box 10000 0.1,0.077879,1.963500e+04
+cpf box 10000 0.5,0.095556,9.469710e+05
+bcpf box 10000 0.5,0.195385,9.663030e+05
+cpf box 10000 5,2.015000,3.080485e+07
+bcpf box 10000 5,4.110000,3.122914e+07
+cpf box 100000 0.01,0.436667,1.800000e+02
+bcpf box 100000 0.01,0.893333,2.190000e+02
+cpf box 100000 0.1,0.940000,9.331200e+04
+bcpf box 100000 0.1,1.905000,1.235040e+05
+cpf box 100000 0.3,1.990000,1.612148e+06
+bcpf box 100000 0.3,4.050000,1.624681e+06
+cpf quadratic 1000 0.1,0.010121,1.235000e+03
+bcpf quadratic 1000 0.1,0.019841,7.560000e+02
+cpf quadratic 1000 0.5,0.011364,7.458000e+04
+bcpf quadratic 1000 0.5,0.022301,8.034300e+04
+cpf quadratic 1000 5,0.031250,1.246976e+07
+bcpf quadratic 1000 5,0.062500,1.217688e+07
+cpf quadratic 10000 0.1,1.010000,9.450000e+02
+bcpf quadratic 10000 0.1,1.980000,1.264000e+03
+cpf quadratic 10000 0.5,1.136667,1.094220e+05
+bcpf quadratic 10000 0.5,2.230000,1.441500e+05
+cpf quadratic 10000 5,3.330000,1.532309e+07
+bcpf quadratic 10000 5,6.720000,3.146009e+07
+rigid quadratic 100,0.025476,0.000000e+00
+rigid quadratic 1000,0.024327,0.000000e+00
+rotation (cache),0.000296,-8.043326e+05
+rotation (nocache),0.000615,1.132063e+04
+knn ann uniform 10 0,0.000006,1.534194e+06
+knn ann uniform 10 0.1,0.000006,1.826090e+06
+knn ann uniform 10 0.5,0.000005,2.346023e+06
+knn ann uniform 100 0,0.000095,1.369377e+06
+knn ann uniform 100 0.1,0.000087,1.546301e+06
+knn ann uniform 100 0.5,0.000070,1.619485e+06
+knn ann uniform 1000 0,0.001299,9.603478e+05
+knn ann uniform 1000 0.1,0.001203,1.043804e+06
+knn ann uniform 1000 0.5,0.000978,1.298601e+06
+knn cgal uniform 10 0,0.000011,8.084090e+05
+knn cgal uniform 10 0.1,0.000012,9.420620e+05
+knn cgal uniform 10 0.5,0.000011,7.801504e+05
+knn cgal uniform 100 0,0.000332,4.192796e+05
+knn cgal uniform 100 0.1,0.000346,3.598224e+05
+knn cgal uniform 100 0.5,0.000286,4.335245e+05
+knn cgal uniform 1000 0,0.006281,2.010919e+05
+knn cgal uniform 1000 0.1,0.005747,2.234900e+05
+knn cgal uniform 1000 0.5,0.005040,2.514323e+05
+knn linear uniform 10 0,0.000005,1.458513e+06
+knn linear uniform 10 0.1,0.000006,2.581137e+06
+knn linear uniform 10 0.5,0.000005,1.867218e+06
+knn linear uniform 100 0,0.000220,5.754469e+05
+knn linear uniform 100 0.1,0.000220,5.543678e+05
+knn linear uniform 100 0.5,0.000224,5.248525e+05
+knn linear uniform 1000 0,0.017075,7.078653e+04
+knn linear uniform 1000 0.1,0.017123,7.300540e+04
+knn linear uniform 1000 0.5,0.017123,7.387600e+04
+xyz decorator small,0.040000,2.950017e+07
+xyz particle small,0.050000,2.950017e+07
+xyz vector small,0.040000,2.950017e+07
+xyz vector space small,0.040000,2.950017e+07
+xyz decorator large,1.340000,1.693901e+09
+xyz particle large,1.340000,1.693901e+09
+xyz vector large,1.260000,1.693901e+09
+xyz vector space large,1.260000,1.693901e+09
+xyz decorator huge,114.080000,3.126383e+11
+xyz particle huge,113.730000,3.126383e+11
+xyz vector huge,93.530000,3.126383e+11
+xyz vector space huge,94.320000,3.126383e+11
+uncached density loop,0.041667,5.346000e+08
+cached density loop,0.066000,5.400000e+08
+col quadratic 10000 0.1,1.944528,3.010729e+06
+col quadratic 10000 0.5,2.189528,4.943695e+06
+col box 10000 0.1,0.486195,9.115191e+06
+col box 100000 0.01,24.174877,1.339746e+08
+col grid 10000 0.1,0.513528,7.582622e+06
+refiner children,0.005447,2.702133e+08
+refiner leaves,0.001213,1.213311e+09
+bd custom,6.970000,5.405705e+07
+bd scores,6.690000,1.913956e+08
+bd generic,16.660000,1.935762e+08
+container direct list in 4950,0.000196,0.000000e+00
+container ssps direct list in 4950,0.000195,0.000000e+00
+container ssps direct call list in 4950,0.000197,0.000000e+00
+container ssps direct bind list in 4950,0.000187,0.000000e+00
+container direct bind list in 4950,0.000187,0.000000e+00
+container list in 4950,0.000189,0.000000e+00
+container list out 4950,0.000221,0.000000e+00
+container direct list in 499500,0.020161,0.000000e+00
+container ssps direct list in 499500,0.020161,0.000000e+00
+container ssps direct call list in 499500,0.020325,0.000000e+00
+container ssps direct bind list in 499500,0.019457,0.000000e+00
+container direct bind list in 499500,0.019457,0.000000e+00
+container list in 499500,0.019685,0.000000e+00
+container list out 499500,0.022936,0.000000e+00
+container direct set in 2450,0.000099,0.000000e+00
+container ssps direct set in 2450,0.000098,0.000000e+00
+container ssps direct call set in 2450,0.000099,0.000000e+00
+container ssps direct bind set in 2450,0.000095,0.000000e+00
+container direct bind set in 2450,0.000094,0.000000e+00
+container set in 2450,0.000095,0.000000e+00
+container set out 2450,0.000150,0.000000e+00
+container direct set in 249500,0.010000,0.000000e+00
+container ssps direct set in 249500,0.009960,0.000000e+00
+container ssps direct call set in 249500,0.010081,0.000000e+00
+container ssps direct bind set in 249500,0.009653,0.000000e+00
+container direct bind set in 249500,0.009615,0.000000e+00
+container set in 249500,0.009690,0.000000e+00
+container set out 249500,0.015305,0.000000e+00
+connectivity slow,0.870000,3.495676e-02
+connectivity fast,0.030732,6.052975e+01
+connectivity fast mst,0.025612,7.466796e-01

@@ -226,7 +226,7 @@ void do_benchmark(std::string descr, std::string fname) {
   set_log_level(SILENT);
   // TEST 1
   {
-    double runtime, dist;
+    double runtime, dist=0;
     // measure time
     IMP_TIME_N(
              {
@@ -238,7 +238,7 @@ void do_benchmark(std::string descr, std::string fname) {
   }
   // TEST 1.5
   {
-    double runtime, dist;
+    double runtime, dist=0;
     // measure time
     IMP_TIME_N(
              {
@@ -279,7 +279,7 @@ void do_benchmark(std::string descr, std::string fname) {
         = IMP::core::XYZ::decorate_particle(particles[i]).get_coordinates();
       my_particles.push_back(p);
     }
-    double runtime, dist;
+    double runtime, dist=0;
     // measure time
     IMP_TIME_N(
              {
@@ -299,7 +299,7 @@ void do_benchmark(std::string descr, std::string fname) {
       coordinates.push_back(IMP::core::XYZ::decorate_particle(particles[i]).
                             get_coordinates());
     }
-    double runtime, dist;
+    double runtime, dist=0;
     // measure time
     IMP_TIME_N(
              {
@@ -317,7 +317,7 @@ void do_benchmark(std::string descr, std::string fname) {
       coordinates.back().c=IMP::core::XYZ::decorate_particle(particles[i]).
         get_coordinates();
     }
-    double runtime, dist;
+    double runtime, dist=0;
     // measure time
     IMP_TIME_N(
              {
@@ -330,7 +330,7 @@ void do_benchmark(std::string descr, std::string fname) {
 #if 0
   // TEST 5
   {
-    double runtime, dist;
+    double runtime, dist=0;
     IMP_NEW(PackedSingletonContainer, psc, (model, particles.size()));
     for (unsigned int i=0; i< particles.size(); ++i) {
       XYZ d0(particles[i]);
@@ -353,6 +353,8 @@ void do_benchmark(std::string descr, std::string fname) {
 }
 
 int main(int argc, char **argv) {
+  std::pair<double, double> dp= IMP::benchmark::get_baseline();
+  IMP::benchmark::report("baseline", dp.first, dp.second);
   if (argc >1) {
     switch (argv[1][0]) {
     case 's':
