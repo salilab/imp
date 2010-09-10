@@ -108,14 +108,14 @@ def _add_build_flags(env):
     env.Append(CXXFLAGS=[])
     env.Append(LINKFLAGS=[])
     env.Append(LIBPATH=[])
-    if env['CXX'] == 'g++' and env['IMP_USE_PLATFORM_FLAGS']:
+    if gcc.get_is_gcc(env) and env['IMP_USE_PLATFORM_FLAGS']:
         env.Append(CXXFLAGS=["-Wall"])
         env.Append(CXXFLAGS=["-Woverloaded-virtual"])
-    if env['CXX'] == 'g++':
+    if gcc.get_is_gcc(env):
         env['use_pch']=env['precompiledheader']
     else:
         env['use_pch']=False
-    if env['CXX'] == 'g++' and  env['IMP_USE_PLATFORM_FLAGS']:
+    if gcc.get_is_gcc(env) and  env['IMP_USE_PLATFORM_FLAGS']:
         if env['build'] == 'fast':
             env.Append(CXXFLAGS=["-O3", "-fexpensive-optimizations",
                                  "-ffast-math", "-ftree-vectorize",
@@ -288,7 +288,7 @@ def get_sharedlib_environment(env, cppdefine, cplusplus=False):
 def get_bin_environment(envi):
     env= bug_fixes.clone_env(envi)
     if env['IMP_BUILD_STATIC']:
-        if env['CXX'] == 'g++':
+        if gcc.get_is_gcc(env):
             env.Append(LINKFLAGS=['-static'])
         else:
             pass
