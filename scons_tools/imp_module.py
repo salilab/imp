@@ -356,7 +356,7 @@ def _make_programs(envi, required_modules, extra_libs, install, files):
 
 def IMPModuleBin(env, files, required_modules=[], extra_libs=[], install=True):
     (build, install_list)= _make_programs(env, required_modules, extra_libs, install, files)
-    #envi['IMP_MODULE_BINS']= allprogs
+    env['IMP_MODULE_BINS']= build
     module_alias(env, 'bin', build, True)
     add_to_global_alias(env, 'all', 'bin')
     if install:
