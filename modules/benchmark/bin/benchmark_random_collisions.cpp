@@ -84,14 +84,14 @@ int main() {
     BoxSweepClosePairsFinder *cpf= new BoxSweepClosePairsFinder();
     //std::cout << "Box:" << std::endl;
     test_one("col box", cpf, 10000, 0, .1);
-    test_one("col box", cpf, 100000, 0, .01);
+    test_one("col box", cpf, 100000, 0, .002);
   }
 #endif
   {
     GridClosePairsFinder *cpf= new GridClosePairsFinder();
     //std::cout << "Grid:" << std::endl;
     test_one("col grid", cpf, 10000, 0, .1);
-    test_one("col grid", cpf, 100000, 0, .01);
+    test_one("col grid", cpf, 100000, 0, .002);
   }
   return 0;
 }
