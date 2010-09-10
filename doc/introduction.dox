@@ -448,10 +448,45 @@ generate the connection between the two languages. Key differences are
   \subsection raii RAII
     RAII-style objects are a convenient way of controlling a resource. They
     assume "ownership" of the resource on creation and then "free" it on
-    destruction. Examples include, setting the log level to a particular
-    value and restoring the old value when the object goes out of scope
-    (SetLogState) or incrementing and decrementing a ref-counted
-    pointer (Pointer).
+    destruction. Examples include, using a reference counted pointer to
+    make sure an object is destroyed when it is no longer needed
+    \code
+    {
+      Pointer<PymolWriter> pw= new PymolWriter("afile.pym");
+      // write to pw
+    } // pw is deleted here
+    \endcode
+    Or temporarily removing a restraint from the model
+    \code
+    {
+      ScopedRemoveRestraint srr(new MyRestraint(), m->get_root_restraint_set());
+      // optimize the "relaxed" model without the restraint
+    } // restraint is automatically added back
+    \endcode
+    RAII objects also help with exception safety since they guarantee that
+    the cleanup code occurs when an exception occurs. Compare
+    \code
+    void transform_map(std::string in) {
+      DensityMap *map= read_map(in);
+      // transform the map
+      write_map(map, "/unwriteable/directory/map.mrc");
+      delete map;
+    }
+    \endcode
+    When write_map() throws an exception due to being unable to open the file
+    for writing, the (large) block of memory allocated in map is lost. Instead,
+    one should do:
+    \code
+    void transform_map(std::string in) {
+      Pointer<DensityMap> map= read_map(in);
+      // transform the map
+      write_map(map, "/unwriteable/directory/map.mrc");
+    }
+    \endcode
+    So that map is always destroyed.
+
+    As pretty much any operation can throw an exception any time, one can never
+    count on general cleanup code to excute.
 
 \section incremental 7. Incremental Scoring
     Scoring in \imp can be performed in two different ways, 
@@ -485,7 +520,7 @@ Each vertex has a descriptor which provides a unique identifier for the vertex a
 
 The python wrapper should be considered unstable. If there is a python graph library which users would like to use, we will adapt the python interface for that library.
 
-\section fasterfaster Making \imp run faster
+\section fasterfaster Making IMP run faster
 
 Sampling can often be very computationally expensive, so we provide a number of facilities to speed up \imp computations. These include:
 
