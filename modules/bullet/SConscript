@@ -1,23 +1,12 @@
 Import('env')
 import scons_tools.checks
 
-scons_tools.checks.add_external_library(env, "Bullet", "BulletDynamics",
+scons_tools.checks.add_external_library(env, "Bullet", ["BulletDynamics", "BulletCollision",
+                                                        "BulletSoftBody",
+                                                        "LinearMath"],
                                        "btBulletDynamicsCommon.h",
-                                        body="""
-        btBroadphaseInterface* broadphase = new btDbvtBroadphase();
-        btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
-        btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);
-
-        btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
-        btDiscreteDynamicsWorld* dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher,broadphase,solver,collisionConfiguration);
-        btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0,0,0,1),btVector3(0,-1,0)));
-        btRigidBody::btRigidBodyConstructionInfo
-                groundRigidBodyCI(0,groundMotionState,new btSphereShape(1),btVector3(0,0,0));
-        new btRigidBody(groundRigidBodyCI);
-""",
-                                        extra_libs=["BulletCollision",
-                                                    "BulletSoftBody",
-                                                    "LinearMath"])
+                                        body="""btBroadphaseInterface* broadphase = new btDbvtBroadphase();""",
+                                        extra_libs=[])
 
 
 # See IMP.gsl for an example of how to add external dependencies to a module
