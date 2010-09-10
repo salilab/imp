@@ -24,7 +24,7 @@ modules=['cgal',
 # always last
 modules.append('benchmark')
 
-disabled=env['disabledmodules'].split(":")
+disabled=env.get('disabledmodules', '').split(":")
 
 def skip(m):
     env[m+"_ok"]=False
