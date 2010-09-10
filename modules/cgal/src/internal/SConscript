@@ -2,6 +2,7 @@ files = [
          'bounding_sphere.cpp',
          'knn.cpp',
          'polygons.cpp',
+         'polyhedrons.cpp',
         ]
 
 files = [File(x) for x in files]
