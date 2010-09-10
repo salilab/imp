@@ -19,7 +19,13 @@
     boost::timer imp_timer;                     \
     unsigned int imp_reps=0;                    \
     do {                                        \
-      block;                                    \
+      try {                                     \
+        block;                                  \
+      } catch (const IMP::Exception &e) {       \
+        std::cerr<< "Cought exception "         \
+               << e.what() << std::endl;        \
+        break;                                  \
+      }                                         \
       ++imp_reps;                               \
     } while (imp_timer.elapsed() < 2.5);        \
     timev= imp_timer.elapsed()/imp_reps;        \
@@ -32,7 +38,13 @@
   {                                             \
     boost::timer imp_timer;                     \
     for (unsigned int i=0; i< (N); ++i) {       \
-      block;                                    \
+      try {                                     \
+        block;                                  \
+      } catch (const IMP::Exception &e) {       \
+        std::cerr<< "Cought exception "         \
+               << e.what() << std::endl;        \
+        break;                                  \
+      }                                         \
     }                                           \
     timev= imp_timer.elapsed()/(N);             \
   }
