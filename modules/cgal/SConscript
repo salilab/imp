@@ -2,7 +2,6 @@ Import('env')
 import scons_tools.gcc
 
 if scons_tools.gcc.get_is_gcc(env):
-    print "gcc found"
     cxxflags=['-fno-finite-math-only',
               '-ftrapping-math',
               '-fsignaling-nans',
