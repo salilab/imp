@@ -20,6 +20,8 @@ IMPBENCHMARK_BEGIN_NAMESPACE
 IMPBENCHMARKEXPORT void report(std::string name, double value,
                                double check);
 
+IMPBENCHMARKEXPORT std::pair<double,double> get_baseline();
+
 IMPBENCHMARK_END_NAMESPACE
 
 #endif  /* IMPBENCHMARK_UTILITY_H */

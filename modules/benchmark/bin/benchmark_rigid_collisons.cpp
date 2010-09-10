@@ -104,7 +104,6 @@ int main() {
     //std::cout << "Quadratic:" << std::endl;
     test_one("quadratic", m, rbs, 10);
     test_one("quadratic", m, rbs, 30);
-
   }
   {
     RigidBodiesTemp rbs;
@@ -113,7 +112,6 @@ int main() {
     //std::cout << "Hierarchy:" << std::endl;
     test_one("hierarchy", m, rbs, 10);
     test_one("hierarchy", m, rbs, 30);
-
   }
   return 0;
 }
