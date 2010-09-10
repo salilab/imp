@@ -83,11 +83,11 @@ scons_tools.checks.add_external_library(env, "CGAL", "CGAL",
 scons_tools.checks.add_external_library(env, "Boost.FileSystem", "boost_filesystem",
                                        'boost/filesystem/path.hpp',
                                        extra_libs=['libboost_system'],
-                                       alternate_name=['boost_filesystem-mt'])
+                                       alternate_name='boost_filesystem-mt')
 scons_tools.checks.add_external_library(env, "Boost.ProgramOptions", "boost_program_options",
                                        'boost/program_options.hpp',
                                        extra_libs=['libboost_system'],
-                                       alternate_name=['boost_program_options-mt'])
+                                       alternate_name='boost_program_options-mt')
 
 
 
