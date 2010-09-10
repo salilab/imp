@@ -6,7 +6,6 @@ files = [
          'Ellipsoid3D.cpp',
          'LinearFit.cpp',
          'ParabolicFit.cpp',
-         'Plane3D.cpp',
          'ReferenceFrame3D.cpp',
          'Rotation3D.cpp',
          'Segment3D.cpp',

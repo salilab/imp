@@ -15,31 +15,51 @@ IMPALGEBRA_BEGIN_NAMESPACE
 /** Represent a plane in 3D.
    \geometry
 */
-class IMPALGEBRAEXPORT Plane3D {
+class Plane3D {
 public:
   Plane3D(){}
-  Plane3D(const VectorD<3>& point_on_plane,const VectorD<3> &normal_to_plane);
-  Plane3D(double distance_to_plane ,const VectorD<3> &normal_to_plane);
+  Plane3D(const VectorD<3>& point_on_plane,const VectorD<3> &normal_to_plane) {
+    normal_ = normal_to_plane.get_unit_vector();
+    distance_= normal_*point_on_plane;
+  }
+  Plane3D(double distance_to_plane ,const VectorD<3> &normal_to_plane):
+    distance_(distance_to_plane),
+    normal_(normal_to_plane){
+    IMP_USAGE_CHECK(std::abs(normal_.get_squared_magnitude()-1) < .05,
+                    "The normal vector must be normalized");
+  }
   VectorD<3> get_point_on_plane() const {return normal_*distance_;}
   const VectorD<3> &get_normal() const {return normal_;}
   //! Project the point onto the plane
-  VectorD<3> get_projection(const VectorD<3> &p) const;
+  VectorD<3> get_projection(const VectorD<3> &p) const  {
+    return p-normal_*(normal_*p-distance_);
+  }
   /** @name Orientation
-       Up is the direction of the normal.
+       Up is the direction of the normal. You really shouldn't use
+       these as they aren't very reliable.
        @{
   */
-  /** \cgalpredicate
-   */
-  bool get_is_above(const VectorD<3> &p) const;
-  /** \cgalpredicate
-   */
-  bool get_is_below(const VectorD<3> &p) const;
+  bool get_is_above(const VectorD<3> &p) const {
+    return get_height(p) > 0;
+  }
+  bool get_is_below(const VectorD<3> &p) const {
+    return get_height(p) < 0;
+  }
   /** @} */
-  IMP_SHOWABLE(Plane3D);
+  double get_height(const VectorD<3> &p) const {
+    return normal_*p-distance_;
+  }
+  IMP_SHOWABLE_INLINE(Plane3D, {
+      out << "(" << distance_ << ": " << spaces_io(normal_)
+          << ")";
+    });
 
   //! Return the plane with the opposite normal
   Plane3D get_opposite() const {
     return Plane3D(-distance_, -normal_);
+  }
+  double get_distance_from_origin() const {
+    return distance_;
   }
 private:
   double distance_;
