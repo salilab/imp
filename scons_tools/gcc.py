@@ -61,3 +61,6 @@ def get_version(env):
     vstr= env['CXXVERSION']
     svstr= vstr.split(".")
     return float(svstr[0])+.1*float(svstr[1])
+
+def get_is_gcc(env):
+    return env['CXX'].find('g++') != -1
