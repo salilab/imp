@@ -15,8 +15,19 @@
 #include <IMP/CLASSNAMEContainer.h>
 #include <IMP/CLASSNAMEModifier.h>
 #include <IMP/CLASSNAMEScore.h>
+#include <IMP/DecomposableRestraint.h>
 #include <IMP/internal/container_helpers.h>
 #include <algorithm>
+
+IMP_BEGIN_INTERNAL_NAMESPACE
+template <class Score>
+struct SimpleRestraintParentTraits<Score,
+       typename boost::enable_if<
+         boost::is_base_of<CLASSNAMEScore, Score> >::type> {
+  typedef IMP::CLASSNAMEScoreRestraint SimpleRestraint;
+  typedef IMP::CLASSNAMEsScoreRestraint SimplesRestraint;
+};
+IMP_END_INTERNAL_NAMESPACE
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 

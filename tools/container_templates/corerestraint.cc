@@ -23,7 +23,7 @@ CoreCLASSNAMEsRestraint
 ::CoreCLASSNAMEsRestraint(CLASSNAMEScore *ss,
                       CLASSNAMEContainer *pc,
                       std::string name):
-  DecomposableRestraint(name),
+  CLASSNAMEsScoreRestraint(name),
   ss_(ss), pc_(pc) {
 
 }

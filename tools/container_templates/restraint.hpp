@@ -60,13 +60,9 @@ public:
   IMP_INCREMENTAL_RESTRAINT(CLASSNAMEsRestraint);
 
   //! Get the container used to store Particles
-  CLASSNAMEContainer* get_CLASSFUNCTIONNAME_container() {
-    return pc_;
-  }
+  PLURALVARIABLETYPE get_arguments() const;
 
-  CLASSNAMEScore* get_CLASSFUNCTIONNAME_score() const {
-    return ss_;
-  }
+  CLASSNAMEScore* get_score() const;
 #else
   IMP_OBJECT(CLASSNAMEsRestraint);
 #endif

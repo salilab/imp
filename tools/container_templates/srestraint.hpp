@@ -17,6 +17,7 @@
 #include <IMP/Restraint.h>
 #include <IMP/Pointer.h>
 #include <IMP/CLASSNAMEScore.h>
+#include "internal/HELPERNAME_helpers.h"
 
 #include <iostream>
 
@@ -26,7 +27,8 @@ IMPCORE_BEGIN_NAMESPACE
 /** This restraint stores a CLASSNAME.
     \see CLASSNAMERestraint
  */
-class IMPCOREEXPORT CLASSNAMERestraint : public Restraint
+class IMPCOREEXPORT CLASSNAMERestraint :
+  public CLASSNAMEScoreRestraint
 {
   IMP::internal::OwnerPointer<CLASSNAMEScore> ss_;
   STORAGETYPE v_;
@@ -40,10 +42,10 @@ public:
                      ARGUMENTTYPE vt,
                      std::string name="CLASSNAMERestraint %1%");
 
-  CLASSNAMEScore* get_CLASSFUNCTIONNAME_score() const {
+  CLASSNAMEScore* get_score() const {
     return ss_;
   }
-  RETURNTYPE get_FUNCTIONNAME() const {
+  VARIABLETYPE get_argument() const {
     return v_;
   }
 
