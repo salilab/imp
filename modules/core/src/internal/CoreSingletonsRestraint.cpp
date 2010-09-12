@@ -23,7 +23,7 @@ CoreSingletonsRestraint
 ::CoreSingletonsRestraint(SingletonScore *ss,
                       SingletonContainer *pc,
                       std::string name):
-  DecomposableRestraint(name),
+  SingletonsScoreRestraint(name),
   ss_(ss), pc_(pc) {
 
 }

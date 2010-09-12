@@ -21,7 +21,7 @@ SingletonRestraint
 ::SingletonRestraint(SingletonScore *ss,
                      Particle* vt,
                      std::string name):
-  Restraint(name),
+  SingletonScoreRestraint(name),
   ss_(ss),
   v_(vt),
   score_(std::numeric_limits<double>::quiet_NaN())

@@ -15,6 +15,10 @@
 #include <IMP/base_types.h>
 #include <IMP/algebra/Segment3D.h>
 #include <IMP/algebra/Transformation3D.h>
+#include <IMP/core/internal/singleton_helpers.h>
+#include <IMP/core/internal/pair_helpers.h>
+#include <IMP/core/internal/triplet_helpers.h>
+#include <IMP/core/internal/quad_helpers.h>
 #include <IMP/Model.h>
 #include <IMP/Particle.h>
 
@@ -28,7 +32,12 @@ IMPCORE_BEGIN_NAMESPACE
     information.
 */
 template <class Score>
-class TupleRestraint : public Restraint
+class TupleRestraint :
+#if defined(SWIG) || defined(IMP_DOXYGEN)
+public Restraint
+#else
+public IMP::internal::SimpleRestraintParentTraits<Score>::SimpleRestraint
+#endif
 {
   IMP::internal::OwnerPointer<Score> ss_;
   typename Score::Argument v_;
@@ -41,6 +50,11 @@ public:
   TupleRestraint(Score *ss,
                  const typename Score::Argument& vt,
                  std::string name="TupleRestraint %1%");
+
+#if !defined(IMP_DOXYGEN)
+  virtual Score* get_score() const {return ss_;}
+  virtual typename Score::Argument get_argument() const {return v_;}
+#endif
 
   IMP_INCREMENTAL_RESTRAINT(TupleRestraint);
 };

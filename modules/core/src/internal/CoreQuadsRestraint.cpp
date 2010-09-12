@@ -23,7 +23,7 @@ CoreQuadsRestraint
 ::CoreQuadsRestraint(QuadScore *ss,
                       QuadContainer *pc,
                       std::string name):
-  DecomposableRestraint(name),
+  QuadsScoreRestraint(name),
   ss_(ss), pc_(pc) {
 
 }

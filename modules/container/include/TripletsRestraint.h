@@ -60,13 +60,9 @@ public:
   IMP_INCREMENTAL_RESTRAINT(TripletsRestraint);
 
   //! Get the container used to store Particles
-  TripletContainer* get_triplet_container() {
-    return pc_;
-  }
+  ParticleTripletsTemp get_arguments() const;
 
-  TripletScore* get_triplet_score() const {
-    return ss_;
-  }
+  TripletScore* get_score() const;
 #else
   IMP_OBJECT(TripletsRestraint);
 #endif

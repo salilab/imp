@@ -16,7 +16,7 @@ ContainerRestraint<Score, Container>
 ::ContainerRestraint(Score *ss,
                      Container *pc,
                      std::string name):
-  DecomposableRestraint(name),
+  IMP::internal::SimpleRestraintParentTraits<Score>::SimplesRestraint(name),
   ss_(ss), pc_(pc) {
 
 }

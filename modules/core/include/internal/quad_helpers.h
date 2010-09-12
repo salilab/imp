@@ -15,8 +15,19 @@
 #include <IMP/QuadContainer.h>
 #include <IMP/QuadModifier.h>
 #include <IMP/QuadScore.h>
+#include <IMP/DecomposableRestraint.h>
 #include <IMP/internal/container_helpers.h>
 #include <algorithm>
+
+IMP_BEGIN_INTERNAL_NAMESPACE
+template <class Score>
+struct SimpleRestraintParentTraits<Score,
+       typename boost::enable_if<
+         boost::is_base_of<QuadScore, Score> >::type> {
+  typedef IMP::QuadScoreRestraint SimpleRestraint;
+  typedef IMP::QuadsScoreRestraint SimplesRestraint;
+};
+IMP_END_INTERNAL_NAMESPACE
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 

@@ -15,8 +15,19 @@
 #include <IMP/SingletonContainer.h>
 #include <IMP/SingletonModifier.h>
 #include <IMP/SingletonScore.h>
+#include <IMP/DecomposableRestraint.h>
 #include <IMP/internal/container_helpers.h>
 #include <algorithm>
+
+IMP_BEGIN_INTERNAL_NAMESPACE
+template <class Score>
+struct SimpleRestraintParentTraits<Score,
+       typename boost::enable_if<
+         boost::is_base_of<SingletonScore, Score> >::type> {
+  typedef IMP::SingletonScoreRestraint SimpleRestraint;
+  typedef IMP::SingletonsScoreRestraint SimplesRestraint;
+};
+IMP_END_INTERNAL_NAMESPACE
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 

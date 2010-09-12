@@ -23,7 +23,7 @@ CoreTripletsRestraint
 ::CoreTripletsRestraint(TripletScore *ss,
                       TripletContainer *pc,
                       std::string name):
-  DecomposableRestraint(name),
+  TripletsScoreRestraint(name),
   ss_(ss), pc_(pc) {
 
 }

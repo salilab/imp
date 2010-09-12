@@ -18,6 +18,7 @@
 #include <IMP/Pointer.h>
 #include <IMP/QuadScore.h>
 #include <IMP/QuadContainer.h>
+#include "quad_helpers.h"
 
 #include <iostream>
 
@@ -33,7 +34,7 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
     \see QuadRestraint
  */
 class IMPCOREEXPORT CoreQuadsRestraint :
-  public DecomposableRestraint
+  public QuadsScoreRestraint
 {
   IMP::internal::OwnerPointer<QuadScore> ss_;
   IMP::internal::OwnerPointer<QuadContainer> pc_;
@@ -52,12 +53,11 @@ public:
 
   IMP_INCREMENTAL_RESTRAINT(CoreQuadsRestraint);
 
-  //! Get the container used to store Particles
-  QuadContainer* get_quad_container() const {
-    return pc_;
+  ParticleQuadsTemp get_arguments() const {
+    return pc_->get();
   }
 
-  QuadScore* get_quad_score() const {
+  QuadScore* get_score() const {
     return ss_;
   }
 

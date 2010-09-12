@@ -17,6 +17,7 @@
 #include <IMP/Restraint.h>
 #include <IMP/Pointer.h>
 #include <IMP/QuadScore.h>
+#include "internal/quad_helpers.h"
 
 #include <iostream>
 
@@ -26,7 +27,8 @@ IMPCORE_BEGIN_NAMESPACE
 /** This restraint stores a Quad.
     \see QuadRestraint
  */
-class IMPCOREEXPORT QuadRestraint : public Restraint
+class IMPCOREEXPORT QuadRestraint :
+  public QuadScoreRestraint
 {
   IMP::internal::OwnerPointer<QuadScore> ss_;
   ParticleQuad v_;
@@ -40,10 +42,10 @@ public:
                      const ParticleQuad& vt,
                      std::string name="QuadRestraint %1%");
 
-  QuadScore* get_quad_score() const {
+  QuadScore* get_score() const {
     return ss_;
   }
-  const ParticleQuad get_particle_quad() const {
+  ParticleQuad get_argument() const {
     return v_;
   }
 

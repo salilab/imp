@@ -60,13 +60,9 @@ public:
   IMP_INCREMENTAL_RESTRAINT(SingletonsRestraint);
 
   //! Get the container used to store Particles
-  SingletonContainer* get_singleton_container() {
-    return pc_;
-  }
+  ParticlesTemp get_arguments() const;
 
-  SingletonScore* get_singleton_score() const {
-    return ss_;
-  }
+  SingletonScore* get_score() const;
 #else
   IMP_OBJECT(SingletonsRestraint);
 #endif

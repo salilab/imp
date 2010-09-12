@@ -23,7 +23,7 @@ CorePairsRestraint
 ::CorePairsRestraint(PairScore *ss,
                       PairContainer *pc,
                       std::string name):
-  DecomposableRestraint(name),
+  PairsScoreRestraint(name),
   ss_(ss), pc_(pc) {
 
 }

@@ -17,6 +17,7 @@
 #include <IMP/Restraint.h>
 #include <IMP/Pointer.h>
 #include <IMP/TripletScore.h>
+#include "internal/triplet_helpers.h"
 
 #include <iostream>
 
@@ -26,7 +27,8 @@ IMPCORE_BEGIN_NAMESPACE
 /** This restraint stores a Triplet.
     \see TripletRestraint
  */
-class IMPCOREEXPORT TripletRestraint : public Restraint
+class IMPCOREEXPORT TripletRestraint :
+  public TripletScoreRestraint
 {
   IMP::internal::OwnerPointer<TripletScore> ss_;
   ParticleTriplet v_;
@@ -40,10 +42,10 @@ public:
                      const ParticleTriplet& vt,
                      std::string name="TripletRestraint %1%");
 
-  TripletScore* get_triplet_score() const {
+  TripletScore* get_score() const {
     return ss_;
   }
-  const ParticleTriplet get_particle_triplet() const {
+  ParticleTriplet get_argument() const {
     return v_;
   }
 
