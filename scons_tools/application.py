@@ -13,6 +13,10 @@ def IMPCPPApplication(envi, target, source, required_modules=[],
     if envi.GetOption('help'):
         return
     env= get_bin_environment(envi)
+    for l in required_modules:
+        if not env.get(l+"_ok", False):
+            print "Module",l, "not found or disabled."
+            return
     if env['fastlink']:
         for l in expand_dependencies(env,required_modules, False):
             if l != 'kernel':
