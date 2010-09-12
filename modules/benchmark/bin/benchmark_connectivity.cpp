@@ -17,7 +17,8 @@ using namespace IMP::misc;
 using namespace IMP::algebra;
 using namespace IMP::container;
 
-void benchmark_it(std::string name, ListSingletonContainer *lsc, Model *m) {
+void benchmark_it(std::string name, ListSingletonContainer *lsc, Model *m,
+                  double target) {
   double runtime;
   double value=0;
   m->evaluate(false);
@@ -30,7 +31,7 @@ void benchmark_it(std::string name, ListSingletonContainer *lsc, Model *m) {
       }
       value+= m->evaluate(false);
     }, runtime);
-  IMP::benchmark::report(name, runtime, value);
+  IMP::benchmark::report(name, runtime, value, target);
 }
 
 int main() {
@@ -45,22 +46,22 @@ int main() {
   {
     ConnectivityRestraint* r= new ConnectivityRestraint(ss, lsc);
     m->add_restraint(r);
-    benchmark_it("connectivity slow", lsc, m);
+    benchmark_it("connectivity slow", lsc, m, 3611.894302);
     m->remove_restraint(r);
   }
   {
     IMP_NEW(ConnectingPairContainer, cpc,(lsc, .1, false));
     IMP_NEW(PairsRestraint, pr, (ss, cpc));
     m->add_restraint(pr);
-    benchmark_it("connectivity fast", lsc, m);
+    benchmark_it("connectivity fast", lsc, m, 0.026272);
     m->remove_restraint(pr);
   }
   {
     IMP_NEW(ConnectingPairContainer, cpc,(lsc, .1, true));
     IMP_NEW(PairsRestraint, pr, (ss, cpc));
     m->add_restraint(pr);
-    benchmark_it("connectivity fast mst", lsc, m);
+    benchmark_it("connectivity fast mst", lsc, m, 2.233425);
     m->remove_restraint(pr);
   }
-  return 0;
+  return IMP::benchmark::get_return_value();
 }

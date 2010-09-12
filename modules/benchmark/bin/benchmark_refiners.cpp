@@ -24,7 +24,7 @@ using namespace IMP::atom;
 
 template <class PT>
 void do_benchmark(std::string name, Model *,
-                  const PT &ps, Refiner *r) {
+                  const PT &ps, Refiner *r, double target) {
  // measure time
   double runtime;
   double total=0;
@@ -35,7 +35,7 @@ void do_benchmark(std::string name, Model *,
                  total+=nps.size();
                }
              }, runtime);
-  IMP::benchmark::report(std::string("refiner ")+name, runtime, total);
+  IMP::benchmark::report(std::string("refiner ")+name, runtime, target, total);
 }
 
 
@@ -63,10 +63,10 @@ int main(int argc, char **argv) {
     }
     IMP_NEW(ChildrenRefiner, cr, (tr));
     cr->set_was_used(true);
-    do_benchmark("children", m, ps, cr);
+    do_benchmark("children", m, ps, cr, 0.416667);
   }
   {
-    do_benchmark("leaves", m, hs, lr);
+    do_benchmark("leaves", m, hs, lr, 0.090692);
   }
-  return 0;
+  return IMP::benchmark::get_return_value();
 }
