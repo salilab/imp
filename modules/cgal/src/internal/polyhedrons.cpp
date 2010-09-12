@@ -6,14 +6,13 @@
 
 #include <IMP/cgal/internal/polyhedrons.h>
 #include <CGAL/Exact_predicates_exact_constructions_kernel.h>
-#include <CGAL/Gmpq.h>
-#include <CGAL/Polyhedron_3.h>
 #include <CGAL/Nef_polyhedron_3.h>
+#include <CGAL/Polyhedron_3.h>
+#include <CGAL/Handle_hash_function.h>
+#include <IMP/internal/map.h>
+#include <CGAL/IO/Polyhedron_iostream.h>
+#include <CGAL/Gmpq.h>
 
-
-IMPCGAL_BEGIN_INTERNAL_NAMESPACE
-// /Users/drussel/fs/include/CGAL/Nef_3/Halfedge.h:110:
-// error: 'ORIGIN' is not a member of 'CGAL'
 
 namespace {
   typedef CGAL::Exact_predicates_exact_constructions_kernel Kernel;
@@ -23,6 +22,20 @@ namespace {
 
   typedef CGAL::Polyhedron_3<Kernel> Polyhedron;
   typedef Kernel::Point_3 Point_3;
+}
+namespace CGAL {
+  namespace internal {
+    unsigned int hash_value(Polyhedron::Vertex_handle vh) {
+      return CGAL::Handle_hash_function()(vh);
+    }
+  }
+}
+
+IMPCGAL_BEGIN_INTERNAL_NAMESPACE
+// /Users/drussel/fs/include/CGAL/Nef_3/Halfedge.h:110:
+// error: 'ORIGIN' is not a member of 'CGAL'
+
+namespace {
 
   algebra::VectorD<3> tr(const Point_3 pt) {
     return algebra::VectorD<3>(CGAL::to_double(pt[0]),
@@ -33,7 +46,7 @@ namespace {
     return Plane_3(p.get_normal()[0],
                    p.get_normal()[1],
                    p.get_normal()[2],
-                   p.get_distance_from_origin());
+                   -p.get_distance_from_origin());
   }
   /*
 /Users/drussel/src/IMP/svn/svn/modules/cgal/src/internal/polyhedrons.cpp:41:
@@ -45,7 +58,7 @@ IMP::cgal::internal::<unnamed>::Kernel, Items_ =
 CGAL::SNC_indexed_items, Mark_ = bool]' discards qualifiers
    */
 std::vector<std::vector<algebra::VectorD<3> > >
-get_facets( Nef_polyhedron &np) {
+get_facets(  Nef_polyhedron &np) {
   Polyhedron p;
   np.convert_to_polyhedron(p);
   CGAL_postcondition( p.is_valid());
@@ -60,6 +73,32 @@ get_facets( Nef_polyhedron &np) {
     } while (c != it->facet_begin());
   }
   return ret;
+}
+
+
+std::pair<std::vector<algebra::VectorD<3> >,std::vector<Ints> >
+get_indexed_facets(  Nef_polyhedron &np) {
+  Polyhedron p;
+  np.convert_to_polyhedron(p);
+  CGAL_postcondition( p.is_valid());
+  std::vector<Ints> faces;
+  std::vector<algebra::VectorD<3> > coords;
+  IMP::internal::Map<Polyhedron::Vertex_handle, int> vertices;
+  for (Polyhedron::Face_iterator it= p.facets_begin();
+       it != p.facets_end(); ++it) {
+    faces.push_back(Ints());
+    Polyhedron::Facet::Halfedge_around_facet_circulator c= it->facet_begin();
+    do {
+      Polyhedron::Vertex_handle vh= c->vertex();
+      if (vertices.find(vh) == vertices.end()) {
+        vertices[vh]= coords.size();
+        coords.push_back(tr(vh->point()));
+      }
+      faces.back().push_back(vertices.find(vh)->second);
+      ++c;
+    } while (c != it->facet_begin());
+  }
+  return std::make_pair(coords, faces);
 }
 
   Nef_polyhedron create_cube(const algebra::BoundingBoxD<3> &bb) {
@@ -90,8 +129,9 @@ get_facets( Nef_polyhedron &np) {
                                               bb.get_corner(1)[1],
                                               bb.get_corner(1)[2]);
     g->opposite()->vertex()->point() = Point_3( bb.get_corner(1)[0],
-                                              bb.get_corner(1)[1],
-                                              bb.get_corner(0)[2]) // Fig. (c)
+                                                bb.get_corner(1)[1],
+                                                bb.get_corner(0)[2]);
+    // Fig. (c)
     Halfedge_handle f = p.split_facet( g->next(),
                                        g->next()->next()->next()); // Fig. (d)
     Halfedge_handle e = p.split_edge( f);
@@ -106,9 +146,19 @@ get_facets( Nef_polyhedron &np) {
   Nef_polyhedron create_nef(const algebra::BoundingBoxD<3> &bb,
                             const std::vector< algebra::Plane3D >&planes) {
     Nef_polyhedron cur(create_cube(bb));
+    IMP_INTERNAL_CHECK(cur.is_simple(), "Something wrong with cube ");
     for (unsigned int i=0; i< planes.size(); ++i) {
       cur= cur.intersection(tr(planes[i]), Nef_polyhedron::CLOSED_HALFSPACE);
+      Polyhedron p;
+      try {
+        cur.convert_to_polyhedron(p);
+        //std::cout << p << std::endl;
+      } catch(...){
+        IMP_INTERNAL_CHECK(false, "Error after intersection with " << i
+                           << " which is " << planes[i]);
+      }
     }
+    IMP_INTERNAL_CHECK(cur.is_simple(), "Something wrong with cut cube ");
     return cur;
   }
 }
@@ -121,6 +171,24 @@ get_polyhedron_facets(const algebra::BoundingBoxD<3> &bb,
   Nef_polyhedron phole= create_nef(bb, hole);
   Nef_polyhedron diff= pouter-phole;
   return get_facets(diff);
+}
+
+std::pair<std::vector<algebra::VectorD<3> >,std::vector<Ints> >
+get_polyhedron_indexed_facets(const algebra::BoundingBoxD<3> &bb,
+                      const std::vector< algebra::Plane3D > &outer,
+                      const std::vector< algebra::Plane3D > &hole) {
+  Nef_polyhedron pouter= create_nef(bb, outer);
+  Nef_polyhedron phole= create_nef(bb, hole);
+  Nef_polyhedron diff= pouter-phole;
+  return get_indexed_facets(diff);
+}
+
+
+std::vector<std::vector<algebra::VectorD<3> > >
+get_polyhedron_facets(const algebra::BoundingBoxD<3> &bb,
+                      const std::vector< algebra::Plane3D > &outer) {
+  Nef_polyhedron pouter= create_nef(bb, outer);
+  return get_facets(pouter);
 }
 
 
