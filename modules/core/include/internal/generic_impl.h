@@ -18,7 +18,7 @@ TupleRestraint<Score>
 ::TupleRestraint(Score *ss,
                  const typename Score::Argument& vt,
                  std::string name):
-  Restraint(name),
+  IMP::internal::SimpleRestraintParentTraits<Score>::SimpleRestraint(name),
   ss_(ss),
   v_(vt),
   score_(std::numeric_limits<double>::quiet_NaN())

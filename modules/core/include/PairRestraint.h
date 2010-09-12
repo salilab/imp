@@ -17,6 +17,7 @@
 #include <IMP/Restraint.h>
 #include <IMP/Pointer.h>
 #include <IMP/PairScore.h>
+#include "internal/pair_helpers.h"
 
 #include <iostream>
 
@@ -26,7 +27,8 @@ IMPCORE_BEGIN_NAMESPACE
 /** This restraint stores a Pair.
     \see PairRestraint
  */
-class IMPCOREEXPORT PairRestraint : public Restraint
+class IMPCOREEXPORT PairRestraint :
+  public PairScoreRestraint
 {
   IMP::internal::OwnerPointer<PairScore> ss_;
   ParticlePair v_;
@@ -40,10 +42,10 @@ public:
                      const ParticlePair& vt,
                      std::string name="PairRestraint %1%");
 
-  PairScore* get_pair_score() const {
+  PairScore* get_score() const {
     return ss_;
   }
-  const ParticlePair get_particle_pair() const {
+  ParticlePair get_argument() const {
     return v_;
   }
 

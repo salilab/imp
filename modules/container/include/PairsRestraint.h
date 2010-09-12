@@ -60,13 +60,9 @@ public:
   IMP_INCREMENTAL_RESTRAINT(PairsRestraint);
 
   //! Get the container used to store Particles
-  PairContainer* get_pair_container() {
-    return pc_;
-  }
+  ParticlePairsTemp get_arguments() const;
 
-  PairScore* get_pair_score() const {
-    return ss_;
-  }
+  PairScore* get_score() const;
 #else
   IMP_OBJECT(PairsRestraint);
 #endif

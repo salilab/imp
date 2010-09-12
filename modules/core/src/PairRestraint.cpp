@@ -21,7 +21,7 @@ PairRestraint
 ::PairRestraint(PairScore *ss,
                      const ParticlePair& vt,
                      std::string name):
-  Restraint(name),
+  PairScoreRestraint(name),
   ss_(ss),
   v_(vt),
   score_(std::numeric_limits<double>::quiet_NaN())

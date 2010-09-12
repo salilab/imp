@@ -15,8 +15,19 @@
 #include <IMP/PairContainer.h>
 #include <IMP/PairModifier.h>
 #include <IMP/PairScore.h>
+#include <IMP/DecomposableRestraint.h>
 #include <IMP/internal/container_helpers.h>
 #include <algorithm>
+
+IMP_BEGIN_INTERNAL_NAMESPACE
+template <class Score>
+struct SimpleRestraintParentTraits<Score,
+       typename boost::enable_if<
+         boost::is_base_of<PairScore, Score> >::type> {
+  typedef IMP::PairScoreRestraint SimpleRestraint;
+  typedef IMP::PairsScoreRestraint SimplesRestraint;
+};
+IMP_END_INTERNAL_NAMESPACE
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 

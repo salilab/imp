@@ -44,14 +44,14 @@ ExcludedVolumeRestraint::ExcludedVolumeRestraint(SingletonContainer *sc,
                                                  double k):
   internal::CorePairsRestraint(get_sphere_distance_pair_score(k),
                                get_close_pairs_container(sc, r),
-                               "ExcludedVolumeRestraint %d"){
+                               "ExcludedVolumeRestraint %d"), sc_(sc){
 }
 
 ExcludedVolumeRestraint::ExcludedVolumeRestraint(SingletonContainer *sc,
                                                  double k):
   internal::CorePairsRestraint(get_sphere_distance_pair_score(k),
                                get_close_pairs_container(sc, NULL),
-                               "ExcludedVolumeRestraint %d"){
+                               "ExcludedVolumeRestraint %d"), sc_(sc){
 }
 
 double ExcludedVolumeRestraint::
@@ -59,10 +59,7 @@ unprotected_evaluate(DerivativeAccumulator *da) const {
   IMP_IF_CHECK(USAGE) {
     static bool warned=false;
     if (!warned) {
-      PairContainer *pc= get_pair_container();
-      internal::CoreClosePairContainer*cpc
-        = dynamic_cast<internal::CoreClosePairContainer*>(pc);
-      if (cpc->get_singleton_container()->get_number_of_particles() <2) {
+      if (sc_->get_number_of_particles() <2) {
         IMP_WARN("Evaluating an ExcludedVolumeRestraint on "
                  << "less than 2 particles"
                  << " is generally not very useful.\n");

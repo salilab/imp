@@ -18,6 +18,7 @@
 #include <IMP/Pointer.h>
 #include <IMP/SingletonScore.h>
 #include <IMP/SingletonContainer.h>
+#include "singleton_helpers.h"
 
 #include <iostream>
 
@@ -33,7 +34,7 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
     \see SingletonRestraint
  */
 class IMPCOREEXPORT CoreSingletonsRestraint :
-  public DecomposableRestraint
+  public SingletonsScoreRestraint
 {
   IMP::internal::OwnerPointer<SingletonScore> ss_;
   IMP::internal::OwnerPointer<SingletonContainer> pc_;
@@ -52,12 +53,11 @@ public:
 
   IMP_INCREMENTAL_RESTRAINT(CoreSingletonsRestraint);
 
-  //! Get the container used to store Particles
-  SingletonContainer* get_singleton_container() const {
-    return pc_;
+  ParticlesTemp get_arguments() const {
+    return pc_->get();
   }
 
-  SingletonScore* get_singleton_score() const {
+  SingletonScore* get_score() const {
     return ss_;
   }
 

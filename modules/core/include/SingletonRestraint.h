@@ -17,6 +17,7 @@
 #include <IMP/Restraint.h>
 #include <IMP/Pointer.h>
 #include <IMP/SingletonScore.h>
+#include "internal/singleton_helpers.h"
 
 #include <iostream>
 
@@ -26,7 +27,8 @@ IMPCORE_BEGIN_NAMESPACE
 /** This restraint stores a Singleton.
     \see SingletonRestraint
  */
-class IMPCOREEXPORT SingletonRestraint : public Restraint
+class IMPCOREEXPORT SingletonRestraint :
+  public SingletonScoreRestraint
 {
   IMP::internal::OwnerPointer<SingletonScore> ss_;
   Pointer<Particle> v_;
@@ -40,10 +42,10 @@ public:
                      Particle* vt,
                      std::string name="SingletonRestraint %1%");
 
-  SingletonScore* get_singleton_score() const {
+  SingletonScore* get_score() const {
     return ss_;
   }
-  Particle* get_particle() const {
+  Particle* get_argument() const {
     return v_;
   }
 

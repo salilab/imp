@@ -10,6 +10,10 @@
 #define IMPCONTAINER_GENERIC_H
 
 #include "container_config.h"
+#include <IMP/core/internal/singleton_helpers.h>
+#include <IMP/core/internal/pair_helpers.h>
+#include <IMP/core/internal/triplet_helpers.h>
+#include <IMP/core/internal/quad_helpers.h>
 #include <IMP/base_types.h>
 #include <IMP/Object.h>
 
@@ -20,7 +24,11 @@ IMPCONTAINER_BEGIN_NAMESPACE
 */
 template <class Score, class Container>
 class ContainerRestraint :
-  public DecomposableRestraint
+#if defined(SWIG) || defined(IMP_DOXYGEN)
+public DecomposableRestraint
+#else
+public IMP::internal::SimpleRestraintParentTraits<Score>::SimplesRestraint
+#endif
 {
   IMP::internal::OwnerPointer<Score> ss_;
   IMP::internal::OwnerPointer<Container> pc_;
@@ -33,11 +41,11 @@ public:
   IMP_INCREMENTAL_RESTRAINT(ContainerRestraint);
 
   //! Get the container used to store Particles
-  Container* get_groupname_container() const {
-    return pc_;
+  std::vector<typename Score::Argument> get_arguments() const {
+    return pc_->get();
   }
 
-  Score* get_groupname_score() const {
+  Score* get_score() const {
     return ss_;
   }
 

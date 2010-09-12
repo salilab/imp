@@ -21,7 +21,7 @@ QuadRestraint
 ::QuadRestraint(QuadScore *ss,
                      const ParticleQuad& vt,
                      std::string name):
-  Restraint(name),
+  QuadScoreRestraint(name),
   ss_(ss),
   v_(vt),
   score_(std::numeric_limits<double>::quiet_NaN())

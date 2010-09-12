@@ -18,6 +18,7 @@
 #include <IMP/Pointer.h>
 #include <IMP/PairScore.h>
 #include <IMP/PairContainer.h>
+#include "pair_helpers.h"
 
 #include <iostream>
 
@@ -33,7 +34,7 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
     \see PairRestraint
  */
 class IMPCOREEXPORT CorePairsRestraint :
-  public DecomposableRestraint
+  public PairsScoreRestraint
 {
   IMP::internal::OwnerPointer<PairScore> ss_;
   IMP::internal::OwnerPointer<PairContainer> pc_;
@@ -52,12 +53,11 @@ public:
 
   IMP_INCREMENTAL_RESTRAINT(CorePairsRestraint);
 
-  //! Get the container used to store Particles
-  PairContainer* get_pair_container() const {
-    return pc_;
+  ParticlePairsTemp get_arguments() const {
+    return pc_->get();
   }
 
-  PairScore* get_pair_score() const {
+  PairScore* get_score() const {
     return ss_;
   }
 

@@ -15,8 +15,19 @@
 #include <IMP/TripletContainer.h>
 #include <IMP/TripletModifier.h>
 #include <IMP/TripletScore.h>
+#include <IMP/DecomposableRestraint.h>
 #include <IMP/internal/container_helpers.h>
 #include <algorithm>
+
+IMP_BEGIN_INTERNAL_NAMESPACE
+template <class Score>
+struct SimpleRestraintParentTraits<Score,
+       typename boost::enable_if<
+         boost::is_base_of<TripletScore, Score> >::type> {
+  typedef IMP::TripletScoreRestraint SimpleRestraint;
+  typedef IMP::TripletsScoreRestraint SimplesRestraint;
+};
+IMP_END_INTERNAL_NAMESPACE
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 

@@ -21,7 +21,7 @@ TripletRestraint
 ::TripletRestraint(TripletScore *ss,
                      const ParticleTriplet& vt,
                      std::string name):
-  Restraint(name),
+  TripletScoreRestraint(name),
   ss_(ss),
   v_(vt),
   score_(std::numeric_limits<double>::quiet_NaN())

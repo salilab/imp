@@ -38,6 +38,7 @@ class IMPCOREEXPORT ExcludedVolumeRestraint:
   public Restraint
 #endif
 {
+  Pointer<SingletonContainer> sc_;
 public:
   /** The SingletonContainer contains a set of XYZR particles and RigidBody
       particles. The spring constant used is k.*/

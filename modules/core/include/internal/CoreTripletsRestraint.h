@@ -18,6 +18,7 @@
 #include <IMP/Pointer.h>
 #include <IMP/TripletScore.h>
 #include <IMP/TripletContainer.h>
+#include "triplet_helpers.h"
 
 #include <iostream>
 
@@ -33,7 +34,7 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
     \see TripletRestraint
  */
 class IMPCOREEXPORT CoreTripletsRestraint :
-  public DecomposableRestraint
+  public TripletsScoreRestraint
 {
   IMP::internal::OwnerPointer<TripletScore> ss_;
   IMP::internal::OwnerPointer<TripletContainer> pc_;
@@ -52,12 +53,11 @@ public:
 
   IMP_INCREMENTAL_RESTRAINT(CoreTripletsRestraint);
 
-  //! Get the container used to store Particles
-  TripletContainer* get_triplet_container() const {
-    return pc_;
+  ParticleTripletsTemp get_arguments() const {
+    return pc_->get();
   }
 
-  TripletScore* get_triplet_score() const {
+  TripletScore* get_score() const {
     return ss_;
   }
 

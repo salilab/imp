@@ -60,13 +60,9 @@ public:
   IMP_INCREMENTAL_RESTRAINT(QuadsRestraint);
 
   //! Get the container used to store Particles
-  QuadContainer* get_quad_container() {
-    return pc_;
-  }
+  ParticleQuadsTemp get_arguments() const;
 
-  QuadScore* get_quad_score() const {
-    return ss_;
-  }
+  QuadScore* get_score() const;
 #else
   IMP_OBJECT(QuadsRestraint);
 #endif
