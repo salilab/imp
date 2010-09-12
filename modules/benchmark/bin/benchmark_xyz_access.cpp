@@ -16,7 +16,6 @@ using namespace IMP::algebra;
 using namespace IMP::atom;
 using namespace IMP::benchmark;
 
-#define N 1
 
 #ifdef __GNUC__
 #define ATTRIBUTES __attribute ((__noinline__))
@@ -228,10 +227,11 @@ void do_benchmark(std::string descr, std::string fname, double *targets) {
   {
     double runtime, dist=0;
     // measure time
-    IMP_TIME_N(
+    IMP_TIME(
              {
-               dist=compute_distances_decorator_access(particles);
-             }, runtime, N);
+               dist+=compute_distances_decorator_access(particles);
+               dist+=compute_distances_decorator_access(particles);
+             }, runtime);
     /*std::cout << "TEST1 (decorator_access)  took " << runtime
       << " (" << dist << ")"<< std::endl;*/
     IMP::benchmark::report("xyz decorator "+descr, runtime, targets[0], dist);
@@ -240,10 +240,11 @@ void do_benchmark(std::string descr, std::string fname, double *targets) {
   {
     double runtime, dist=0;
     // measure time
-    IMP_TIME_N(
+    IMP_TIME(
              {
-               dist=compute_distances_particle_access(particles);
-             }, runtime, N);
+               dist+=compute_distances_particle_access(particles);
+               dist+=compute_distances_particle_access(particles);
+             }, runtime);
     /*std::cout << "TEST1 (decorator_access)  took " << runtime
       << " (" << dist << ")"<< std::endl;*/
     IMP::benchmark::report("xyz particle "+descr, runtime, targets[1], dist);
@@ -300,10 +301,11 @@ void do_benchmark(std::string descr, std::string fname, double *targets) {
     }
     double runtime, dist=0;
     // measure time
-    IMP_TIME_N(
+    IMP_TIME(
              {
-               dist=compute_distances_direct_access(coordinates);
-             }, runtime, N);
+               dist+=compute_distances_direct_access(coordinates);
+               dist+=compute_distances_direct_access(coordinates);
+             }, runtime);
     /*std::cout << "TEST3 (direct access) took " << runtime
       << " (" << dist << ")"<< std::endl;*/
     IMP::benchmark::report("xyz vector "+descr, runtime, targets[2], dist);
@@ -318,10 +320,11 @@ void do_benchmark(std::string descr, std::string fname, double *targets) {
     }
     double runtime, dist=0;
     // measure time
-    IMP_TIME_N(
+    IMP_TIME(
              {
-               dist=compute_distances_direct_access_space(coordinates);
-             }, runtime, N);
+               dist+=compute_distances_direct_access_space(coordinates);
+               dist+=compute_distances_direct_access_space(coordinates);
+             }, runtime);
     /*std::cout << "TEST3 (direct access) took " << runtime
       << " (" << dist << ")"<< std::endl;*/
     IMP::benchmark::report("xyz vector space "+descr, runtime,
@@ -351,9 +354,10 @@ void do_benchmark(std::string descr, std::string fname, double *targets) {
 }
 
 int main(int argc, char **argv) {
-  double stargets[]={2.199203, 2.199203, 2.932271, 2.932271};
-  double ltargets[]={83.569721, 84.302789, 83.569721, 83.569721};
-  double htargets[]={6710.501992, 6711.968127, 6245.737052, 6242.804781};
+  double stargets[]={5.299032, 5.257143, 2*2.716663, 5.278088};
+  double ltargets[]={2*83.569721, 2*84.302789, 2*83.814077, 2*83.569721};
+  double htargets[]={2*6710.501992, 2*6711.968127, 2*6245.737052,
+                     2*6242.804781};
   if (argc >1) {
     switch (argv[1][0]) {
     case 's':
