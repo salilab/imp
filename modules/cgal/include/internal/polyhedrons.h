@@ -24,6 +24,18 @@ get_polyhedron_facets(const algebra::BoundingBoxD<3> &bb,
                       const std::vector< algebra::Plane3D > &outer,
                       const std::vector< algebra::Plane3D > &hole);
 
+
+IMPCGALEXPORT
+std::vector<std::vector<algebra::VectorD<3> > >
+get_polyhedron_facets(const algebra::BoundingBoxD<3> &bb,
+                      const std::vector< algebra::Plane3D > &outer);
+
+IMPCGALEXPORT
+std::pair<std::vector<algebra::VectorD<3> >,std::vector<Ints> >
+get_polyhedron_indexed_facets(const algebra::BoundingBoxD<3> &bb,
+                              const std::vector< algebra::Plane3D > &outer,
+                              const std::vector< algebra::Plane3D > &hole);
+
 IMPCGAL_END_INTERNAL_NAMESPACE
 
 #endif  /* IMPCGAL_INTERNAL_POLYHEDRONS_H */
