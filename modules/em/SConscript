@@ -1,11 +1,5 @@
 Import('env')
 
-# needed for M_LN2 on windows
-if env.get('MSVS', None) or env.get('wine', None):
-    cppdefines=['_USE_MATH_DEFINES']
-else:
-    cppdefines=[]
-
 env.IMPModuleBuild(version='SVN',
                    required_modules=['atom', 'core', 'algebra'],
                    cppdefines=cppdefines)

@@ -50,7 +50,10 @@ typedef union
   } n;
 } _eco;
 
-#define IMP_EXP_A (1048576/M_LN2)
+/* Originally was (1048576/M_LN2); M_LN2 expanded out so that this header
+   can be correctly #include'd in other code on Windows machines without having
+   to #define the non-standard _USE_MATH_DEFINES macro */
+#define IMP_EXP_A (1048576/0.693147180559945309417232121458176568)
 #define IMP_EXP_C 60801
 
 
