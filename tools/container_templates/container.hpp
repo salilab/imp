@@ -174,6 +174,9 @@ public:
 #ifndef IMP_DOXYGEN
   typedef VARIABLETYPE value_type;
   VARIABLETYPE get(unsigned int i) const {return get_FUNCTIONNAME(i);}
+  PLURALVARIABLETYPE get() const {
+    return get_FUNCTIONNAMEs();
+  }
   bool get_contains(ARGUMENTTYPE v) const {
     return get_contains_FUNCTIONNAME(v);
   }

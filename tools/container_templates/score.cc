@@ -19,4 +19,10 @@ CLASSNAMEScore::CLASSNAMEScore(std::string name):
      symbols are present in the kernel DSO */
 }
 
+CLASSNAMEScoreRestraint::CLASSNAMEScoreRestraint(std::string name):
+  Restraint(name){}
+
+CLASSNAMEsScoreRestraint::CLASSNAMEsScoreRestraint(std::string name):
+  DecomposableRestraint(name){}
+
 IMP_END_NAMESPACE

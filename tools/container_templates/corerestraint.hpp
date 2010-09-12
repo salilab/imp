@@ -18,6 +18,7 @@
 #include <IMP/Pointer.h>
 #include <IMP/CLASSNAMEScore.h>
 #include <IMP/CLASSNAMEContainer.h>
+#include "HELPERNAME_helpers.h"
 
 #include <iostream>
 
@@ -33,7 +34,7 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
     \see CLASSNAMERestraint
  */
 class IMPCOREEXPORT CoreCLASSNAMEsRestraint :
-  public DecomposableRestraint
+  public CLASSNAMEsScoreRestraint
 {
   IMP::internal::OwnerPointer<CLASSNAMEScore> ss_;
   IMP::internal::OwnerPointer<CLASSNAMEContainer> pc_;
@@ -52,12 +53,11 @@ public:
 
   IMP_INCREMENTAL_RESTRAINT(CoreCLASSNAMEsRestraint);
 
-  //! Get the container used to store Particles
-  CLASSNAMEContainer* get_CLASSFUNCTIONNAME_container() const {
-    return pc_;
+  PLURALVARIABLETYPE get_arguments() const {
+    return pc_->get();
   }
 
-  CLASSNAMEScore* get_CLASSFUNCTIONNAME_score() const {
+  CLASSNAMEScore* get_score() const {
     return ss_;
   }
 

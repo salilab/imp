@@ -21,7 +21,7 @@ CLASSNAMERestraint
 ::CLASSNAMERestraint(CLASSNAMEScore *ss,
                      ARGUMENTTYPE vt,
                      std::string name):
-  Restraint(name),
+  CLASSNAMEScoreRestraint(name),
   ss_(ss),
   v_(vt),
   score_(std::numeric_limits<double>::quiet_NaN())

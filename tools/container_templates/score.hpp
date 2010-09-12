@@ -14,6 +14,7 @@
 #include "base_types.h"
 #include "ParticleTuple.h"
 #include "DerivativeAccumulator.h"
+#include "DecomposableRestraint.h"
 
 IMP_BEGIN_NAMESPACE
 
@@ -73,6 +74,29 @@ class IMPEXPORT CLASSNAMEScore : public Object
 };
 
 IMP_OBJECTS(CLASSNAMEScore,CLASSNAMEScores);
+
+
+/** A CLASSNAMEScoreRestraint is a restraint where the score (and
+    derivative values) can be decomposed into an application
+    of a CLASSNAMEScore onto a VARIABLETYPE.
+*/
+class IMPEXPORT CLASSNAMEScoreRestraint: public Restraint {
+public:
+  CLASSNAMEScoreRestraint(std::string name);
+  virtual CLASSNAMEScore *get_score() const =0;
+  virtual VARIABLETYPE get_argument() const=0;
+};
+
+/** A CLASSNAMEsScoreRestraint is a restraint where the score (and
+    derivative values) can be decomposed into a series of applications
+    of a CLASSNAMEScore onto a VARIABLETYPE.
+*/
+class IMPEXPORT CLASSNAMEsScoreRestraint: public DecomposableRestraint {
+public:
+  CLASSNAMEsScoreRestraint(std::string name);
+  virtual CLASSNAMEScore *get_score() const =0;
+  virtual PLURALVARIABLETYPE get_arguments() const=0;
+};
 
 IMP_END_NAMESPACE
 
