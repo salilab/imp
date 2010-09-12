@@ -38,7 +38,7 @@ void ConstPairScore::do_show(std::ostream &out) const {
 }
 void test_one(std::string name,
               ClosePairsFinder *cpf, unsigned int n,
-              float rmin, float rmax) {
+              float rmin, float rmax, double target) {
   set_log_level(SILENT);
   set_check_level(IMP::NONE);
   VectorD<3> minc(0,0,0), maxc(10,10,10);
@@ -69,29 +69,29 @@ void test_one(std::string name,
     }, runtime);
   std::ostringstream oss;
   oss << name << " " << n << " " << rmax;
-  report(oss.str(), runtime-setuptime, result);
+  report(oss.str(), runtime-setuptime, target, result);
 }
 
 int main() {
   {
     QuadraticClosePairsFinder *cpf= new QuadraticClosePairsFinder();
     //std::cout << "Quadratic:" << std::endl;
-    test_one("col quadratic", cpf, 10000, 0, .1);
-    test_one("col quadratic", cpf, 10000, 0, .5);
+    test_one("col quadratic", cpf, 10000, 0, .1, 87.210356);
+    test_one("col quadratic", cpf, 10000, 0, .5, 99.562332);
   }
 #ifdef IMP_USE_CGAL
   {
     BoxSweepClosePairsFinder *cpf= new BoxSweepClosePairsFinder();
     //std::cout << "Box:" << std::endl;
-    test_one("col box", cpf, 10000, 0, .1);
-    test_one("col box", cpf, 100000, 0, .002);
+    test_one("col box", cpf, 10000, 0, .1, 23.306047);
+    test_one("col box", cpf, 100000, 0, .002, 1145.327934);
   }
 #endif
   {
     GridClosePairsFinder *cpf= new GridClosePairsFinder();
     //std::cout << "Grid:" << std::endl;
-    test_one("col grid", cpf, 10000, 0, .1);
-    test_one("col grid", cpf, 100000, 0, .002);
+    test_one("col grid", cpf, 10000, 0, .1, 23.649063);
+    test_one("col grid", cpf, 100000, 0, .002, 1145.327934);
   }
-  return 0;
+  return IMP::benchmark::get_return_value();
 }

@@ -35,7 +35,7 @@ int main(int argc, char **argv) {
                  sum+= vs[i][0]+vs[i][1]+vs[i][2];
                }
              }, runtime);
-    IMP::benchmark::report("rotation (cache)", runtime, sum);
+    IMP::benchmark::report("rotation (cache)", runtime, 0.006104, sum);
   }
   VectorD<3> sum(0,0,0);
   for (unsigned int i=0; i< vs.size(); ++i) {
@@ -55,8 +55,8 @@ int main(int argc, char **argv) {
                }
              }, runtime);
     IMP::benchmark::report("rotation (nocache)", runtime,
-                           sum);
+                           0.011078, sum);
   }
   //std::cout << "Sum is " << sum << std::endl;
-  return 0;
+  return IMP::benchmark::get_return_value();
 }

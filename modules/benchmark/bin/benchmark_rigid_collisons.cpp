@@ -22,7 +22,8 @@ using namespace IMP::container;
 void test_one(std::string name,
               Model *m,
               RigidBodiesTemp rbs,
-              float side) {
+              float side,
+              double target) {
   VectorD<3> minc(0,0,0), maxc(side, side, side);
   m->evaluate(false);
   double runtime, inittime;
@@ -51,7 +52,7 @@ void test_one(std::string name,
     << " and value " << value << std::endl;*/
   std::ostringstream oss;
   oss << "rigid " << name << " " << side;
-  IMP::benchmark::report(oss.str(), runtime-inittime, value);
+  IMP::benchmark::report(oss.str(), runtime-inittime, target, value);
 }
 
 
@@ -102,16 +103,16 @@ int main() {
     IMP::internal::OwnerPointer<Model> m
       = setup(false, rbs);
     //std::cout << "Quadratic:" << std::endl;
-    test_one("quadratic", m, rbs, 10);
-    test_one("quadratic", m, rbs, 30);
+    test_one("quadratic", m, rbs, 10, 2.578245);
+    test_one("quadratic", m, rbs, 30, 1.919732);
   }
   {
     RigidBodiesTemp rbs;
     IMP::internal::OwnerPointer<Model> m
       = setup(true, rbs);
     //std::cout << "Hierarchy:" << std::endl;
-    test_one("hierarchy", m, rbs, 10);
-    test_one("hierarchy", m, rbs, 30);
+    test_one("hierarchy", m, rbs, 10, 11.549620);
+    test_one("hierarchy", m, rbs, 30, 5.830277);
   }
-  return 0;
+  return IMP::benchmark::get_return_value();
 }

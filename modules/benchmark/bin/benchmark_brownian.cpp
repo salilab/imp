@@ -161,7 +161,7 @@ void do_benchmark(std::string name, int argc, char *argv[], PS0 *link,
 
 template <int I, class PR, class PS0, class PS1, class SS>
 void do_benchmark(std::string name, int argc, char *argv[], PS0 *link,
-                  PS1 *lb, SS *bottom) {
+                  PS1 *lb, SS *bottom, double target) {
   It it= create<PR>(link, lb, bottom);
   std::string in;
   if (argc >0) {
@@ -180,7 +180,7 @@ void do_benchmark(std::string name, int argc, char *argv[], PS0 *link,
            {
              total+=simulate(it, ns);
            }, runtime);
-  IMP::benchmark::report(std::string("bd ")+name, runtime, total);
+  IMP::benchmark::report(std::string("bd ")+name, runtime, target, total);
   if (argc>2) {
     IMP_CATCH_AND_TERMINATE(write_model(it.all, argv[2]));
   }
@@ -225,7 +225,8 @@ int main(int argc , char **argv) {
                            new HarmonicDistancePairScore(len, kk),
                            new SoftSpherePairScore(kk),
                            new AttributeSingletonScore(new HLB(0,kk),
-                                                       XYZ::get_xyz_keys()[0]));
+                                                       XYZ::get_xyz_keys()[0]),
+                           1.0);
   } else {
     {
       typedef ContainerRestraint<SoftSpherePairScore, ClosePairContainer> PR;
@@ -233,18 +234,21 @@ int main(int argc , char **argv) {
                            new HarmonicDistancePairScore(len, kk),
                            new SoftSpherePairScore(kk),
                            new AttributeSingletonScore(new HLB(0,kk),
-                                                       XYZ::get_xyz_keys()[0]));
-       do_benchmark<1, PairsRestraint>("scores", argc-1, argv+1,
+                                                       XYZ::get_xyz_keys()[0]),
+                           312.095618);
+      do_benchmark<1, PairsRestraint>("scores", argc-1, argv+1,
                                       new HarmonicDistancePairScore(len, kk),
                                       new SoftSpherePairScore(kk),
                                       new AttributeSingletonScore(new HLB(0,kk),
-                                                                  xk));
-     do_benchmark<0, PairsRestraint>("generic", argc-1, argv+1,
-                                  new DistancePairScore(new Harmonic(len,kk)),
-                                  new SphereDistancePairScore(new HLB(0,kk)),
+                                                                  xk),
+                                      301.386454);
+      do_benchmark<0, PairsRestraint>("generic", argc-1, argv+1,
+                                    new DistancePairScore(new Harmonic(len,kk)),
+                                     new SphereDistancePairScore(new HLB(0,kk)),
                                       new AttributeSingletonScore(new HLB(0,kk),
-                                                                  xk));
+                                                                  xk),
+                                      761.115538);
     }
   }
-  return 0;
+  return IMP::benchmark::get_return_value();
 }

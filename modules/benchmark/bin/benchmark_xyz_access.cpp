@@ -214,7 +214,7 @@ double compute_distances_direct_access_space(
 }
 
 
-void do_benchmark(std::string descr, std::string fname) {
+void do_benchmark(std::string descr, std::string fname, double *targets) {
   // read pdb, prepare particles
   Model *model = new IMP::Model();
   atom::Hierarchy mhd
@@ -234,7 +234,7 @@ void do_benchmark(std::string descr, std::string fname) {
              }, runtime, N);
     /*std::cout << "TEST1 (decorator_access)  took " << runtime
       << " (" << dist << ")"<< std::endl;*/
-    IMP::benchmark::report("xyz decorator "+descr, runtime, dist);
+    IMP::benchmark::report("xyz decorator "+descr, runtime, targets[0], dist);
   }
   // TEST 1.5
   {
@@ -246,9 +246,9 @@ void do_benchmark(std::string descr, std::string fname) {
              }, runtime, N);
     /*std::cout << "TEST1 (decorator_access)  took " << runtime
       << " (" << dist << ")"<< std::endl;*/
-    IMP::benchmark::report("xyz particle "+descr, runtime, dist);
+    IMP::benchmark::report("xyz particle "+descr, runtime, targets[1], dist);
   }
-  if (0) {
+  /*if (0) {
     // TEST 2
     std::vector < MyParticle * > my_particles;
     for (unsigned int i = 0; i < particles.size(); i++) {
@@ -262,15 +262,14 @@ void do_benchmark(std::string descr, std::string fname) {
              {
                dist=compute_distances_class_access(my_particles);
              }, runtime, N);
-    /*std::cout << "TEST2 (class access) took " << runtime
-      << " (" << dist << ")"<< std::endl;*/
-    IMP::benchmark::report("xyz internal "+descr, runtime, dist);
+    IMP::benchmark::report("xyz internal "+descr, runtime, targets[2], dist);
     for (unsigned int i = 0; i < particles.size(); i++) {
       model->remove_particle(my_particles[i]);
     }
-  }
+  }*/
 
   // TEST 2.5
+  /*
   if (0) {
     std::vector < MyParticle2 * > my_particles;
     for (unsigned int i = 0; i < particles.size(); i++) {
@@ -285,13 +284,13 @@ void do_benchmark(std::string descr, std::string fname) {
              {
                dist=compute_distances_class_access(my_particles);
              }, runtime, N);
-    /*std::cout << "TEST2.5 (class access) took " << runtime
-      << " (" << dist << ")"<< std::endl;*/
-    IMP::benchmark::report("xyz *internal "+descr, runtime, dist);
+    // out
+    IMP::benchmark::report("xyz *internal "+descr, runtime,
+    targets[10000], dist);
     for (unsigned int i = 0; i < my_particles.size(); i++) {
       model->remove_particle(my_particles[i]);
     }
-  }
+    }*/
   // TEST 3
   {
     std::vector<IMP::algebra::VectorD<3> > coordinates;
@@ -307,7 +306,7 @@ void do_benchmark(std::string descr, std::string fname) {
              }, runtime, N);
     /*std::cout << "TEST3 (direct access) took " << runtime
       << " (" << dist << ")"<< std::endl;*/
-    IMP::benchmark::report("xyz vector "+descr, runtime, dist);
+    IMP::benchmark::report("xyz vector "+descr, runtime, targets[2], dist);
   }
   // TEST 4
   {
@@ -325,9 +324,10 @@ void do_benchmark(std::string descr, std::string fname) {
              }, runtime, N);
     /*std::cout << "TEST3 (direct access) took " << runtime
       << " (" << dist << ")"<< std::endl;*/
-    IMP::benchmark::report("xyz vector space "+descr, runtime, dist);
+    IMP::benchmark::report("xyz vector space "+descr, runtime,
+                           targets[3], dist);
   }
-#if 0
+  /*
   // TEST 5
   {
     double runtime, dist=0;
@@ -342,41 +342,46 @@ void do_benchmark(std::string descr, std::string fname) {
              {
                dist=compute_distances_decorator_access(psc, ds);
              }, runtime, N);
-    /*std::cout << "TEST1 (decorator_access)  took " << runtime
-      << " (" << dist << ")"<< std::endl;*/
     IMP::benchmark::report("xyz decorator packed "+descr, runtime, dist);
     for (unsigned int i=0; i< particles.size(); ++i) {
       model->remove_particle(psc->get_particle(i));
     }
   }
-#endif
+  */
 }
 
 int main(int argc, char **argv) {
-  std::pair<double, double> dp= IMP::benchmark::get_baseline();
-  IMP::benchmark::report("baseline", dp.first, dp.second);
+  double stargets[]={2.199203, 2.199203, 2.932271, 2.932271};
+  double ltargets[]={83.569721, 84.302789, 83.569721, 83.569721};
+  double htargets[]={6710.501992, 6711.968127, 6245.737052, 6242.804781};
   if (argc >1) {
     switch (argv[1][0]) {
     case 's':
       do_benchmark("small",
-                   IMP::benchmark::get_data_path("small_protein.pdb"));
+                   IMP::benchmark::get_data_path("small_protein.pdb"),
+                   stargets);
       break;
     case 'l':
       do_benchmark("large",
-                   IMP::benchmark::get_data_path("large_protein.pdb"));
+                   IMP::benchmark::get_data_path("large_protein.pdb"),
+                   ltargets);
       break;
     case 'h':
       do_benchmark("huge",
-                   IMP::benchmark::get_data_path("huge_protein.pdb"));
+                   IMP::benchmark::get_data_path("huge_protein.pdb"),
+                   htargets);
       break;
     }
   } else {
     do_benchmark("small",
-                 IMP::benchmark::get_data_path("small_protein.pdb"));
+                 IMP::benchmark::get_data_path("small_protein.pdb"),
+                 stargets);
     do_benchmark("large",
-                 IMP::benchmark::get_data_path("large_protein.pdb"));
+                 IMP::benchmark::get_data_path("large_protein.pdb"),
+                 ltargets);
     do_benchmark("huge",
-                 IMP::benchmark::get_data_path("huge_protein.pdb"));
+                 IMP::benchmark::get_data_path("huge_protein.pdb"),
+                 htargets);
   }
-  return 0;
+  return IMP::benchmark::get_return_value();
 }

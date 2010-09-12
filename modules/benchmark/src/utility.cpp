@@ -11,13 +11,8 @@
 #include <IMP/benchmark/benchmark_macros.h>
 #include <IMP/log.h>
 IMPBENCHMARK_BEGIN_NAMESPACE
-
-void report(std::string name, double value, double check) {
-  if (value < 0) {
-    IMP_WARN("Negative value passed: " << value << std::endl);
-    value=0;
-  }
-  std::cout << boost::format("%s,%f,%e\n")%name % value % check;
+namespace {
+  int num_failures=0;
 }
 
 std::pair<double, double> get_baseline() {
@@ -36,5 +31,24 @@ std::pair<double, double> get_baseline() {
   return std::make_pair(timev, ret);
 }
 
+void report(std::string name, double value, double target, double check) {
+  static std::pair<double, double> baseline= get_baseline();
+  if (value < 0) {
+    IMP_WARN("Negative value passed: " << value << std::endl);
+    value=0;
+  }
+  double normtime= value/baseline.first;
+  double relnormtime= normtime/target;
+  std::cout << boost::format("%s, %f, %f, %f, %e\n")%name % value % normtime
+    % relnormtime % check;
+  if (relnormtime >1.1) {
+    ++num_failures;
+  }
+}
+
+
+int get_return_value() {
+  return num_failures;
+}
 
 IMPBENCHMARK_END_NAMESPACE

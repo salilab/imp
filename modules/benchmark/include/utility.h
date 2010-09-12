@@ -18,9 +18,12 @@ IMPBENCHMARK_BEGIN_NAMESPACE
 /** The last value is a check value which can be used to make
     sure the computations were semi-ok. */
 IMPBENCHMARKEXPORT void report(std::string name, double value,
+                               double target,
                                double check);
 
 IMPBENCHMARKEXPORT std::pair<double,double> get_baseline();
+
+IMPBENCHMARKEXPORT int get_return_value();
 
 IMPBENCHMARK_END_NAMESPACE
 

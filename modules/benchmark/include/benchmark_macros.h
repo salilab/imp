@@ -22,7 +22,7 @@
       try {                                     \
         block;                                  \
       } catch (const IMP::Exception &e) {       \
-        std::cerr<< "Cought exception "         \
+        std::cerr<< "Caught exception "         \
                << e.what() << std::endl;        \
         break;                                  \
       }                                         \
@@ -41,7 +41,7 @@
       try {                                     \
         block;                                  \
       } catch (const IMP::Exception &e) {       \
-        std::cerr<< "Cought exception "         \
+        std::cerr<< "Caught exception "         \
                << e.what() << std::endl;        \
         break;                                  \
       }                                         \
