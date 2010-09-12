@@ -174,6 +174,9 @@ public:
 #ifndef IMP_DOXYGEN
   typedef ParticleTriplet value_type;
   ParticleTriplet get(unsigned int i) const {return get_particle_triplet(i);}
+  ParticleTripletsTemp get() const {
+    return get_particle_triplets();
+  }
   bool get_contains(const ParticleTriplet& v) const {
     return get_contains_particle_triplet(v);
   }

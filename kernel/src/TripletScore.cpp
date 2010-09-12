@@ -19,4 +19,10 @@ TripletScore::TripletScore(std::string name):
      symbols are present in the kernel DSO */
 }
 
+TripletScoreRestraint::TripletScoreRestraint(std::string name):
+  Restraint(name){}
+
+TripletsScoreRestraint::TripletsScoreRestraint(std::string name):
+  DecomposableRestraint(name){}
+
 IMP_END_NAMESPACE
