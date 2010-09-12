@@ -10,6 +10,7 @@
 
 #include "../kernel_config.h"
 #include "../Particle.h"
+#include <cctype>
 #include <boost/format.hpp>
 #include <algorithm>
 #include <sstream>
