@@ -122,7 +122,7 @@ def _add_build_flags(env):
                                  '-ffinite-math-only',
                                  '-fno-trapping-math',
                                  '-fno-signaling-nans',
-                                 '-ffloat-store'])
+                                 '-fno-float-store'])
             if gcc.get_version(env)>= 4.3:
                 env.Append(CXXFLAGS=['-fno-signed-zeros',
                                      '-freciprocal-math',
