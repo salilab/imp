@@ -14,6 +14,7 @@
 #include <boost/tuple/tuple.hpp>
 #include <IMP/RestraintSet.h>
 #include <IMP/Optimizer.h>
+#include <btBulletDynamicsCommon.h>
 
 IMPBULLET_BEGIN_NAMESPACE
 
@@ -39,17 +40,16 @@ class IMPBULLETEXPORT ResolveCollisionsOptimizer: public Optimizer
 {
   RestraintSets rs_;
   Particles ps_;
-  /*typedef std::pair<std::vector<boost::tuple<int,int,int> >,
-                    algebra::Vector3Ds> Obstacle;
-                    std::vector<Obstacle> obstacles_;*/
+  typedef std::pair<std::vector<btScalar>, Ints > Obstacle;
+  mutable std::vector<Obstacle> obstacles_;
 public:
   ResolveCollisionsOptimizer(Model *m);
   /** rs should not include collision detection terms.*/
   ResolveCollisionsOptimizer(const RestraintSetsTemp &rs,
                              const ParticlesTemp &ps);
 
-  /*void add_obstacle(const algebra::Vector3Ds &vertices,
-    const std::vector<boost::tuple<int,int,int> > &tris);*/
+  void add_obstacle(const algebra::Vector3Ds &vertices,
+                    const std::vector<Ints > &tris);
 
   IMP_OPTIMIZER(ResolveCollisionsOptimizer);
 };
