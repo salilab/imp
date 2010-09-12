@@ -109,7 +109,7 @@ def _add_build_flags(env):
     env.Append(LINKFLAGS=[])
     env.Append(LIBPATH=[])
     if gcc.get_is_gcc(env) and env['IMP_USE_PLATFORM_FLAGS']:
-        env.Append(CXXFLAGS=["-Wall"])
+        env.Append(CXXFLAGS=["-Wall", "-Wno-deprecated"])
         env.Append(CXXFLAGS=["-Woverloaded-virtual"])
     if gcc.get_is_gcc(env):
         env['use_pch']=env['precompiledheader']
