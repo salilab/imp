@@ -19,4 +19,10 @@ PairScore::PairScore(std::string name):
      symbols are present in the kernel DSO */
 }
 
+PairScoreRestraint::PairScoreRestraint(std::string name):
+  Restraint(name){}
+
+PairsScoreRestraint::PairsScoreRestraint(std::string name):
+  DecomposableRestraint(name){}
+
 IMP_END_NAMESPACE

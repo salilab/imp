@@ -19,4 +19,10 @@ QuadScore::QuadScore(std::string name):
      symbols are present in the kernel DSO */
 }
 
+QuadScoreRestraint::QuadScoreRestraint(std::string name):
+  Restraint(name){}
+
+QuadsScoreRestraint::QuadsScoreRestraint(std::string name):
+  DecomposableRestraint(name){}
+
 IMP_END_NAMESPACE

@@ -174,6 +174,9 @@ public:
 #ifndef IMP_DOXYGEN
   typedef ParticleQuad value_type;
   ParticleQuad get(unsigned int i) const {return get_particle_quad(i);}
+  ParticleQuadsTemp get() const {
+    return get_particle_quads();
+  }
   bool get_contains(const ParticleQuad& v) const {
     return get_contains_particle_quad(v);
   }

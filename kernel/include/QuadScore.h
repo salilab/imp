@@ -14,6 +14,7 @@
 #include "base_types.h"
 #include "ParticleTuple.h"
 #include "DerivativeAccumulator.h"
+#include "DecomposableRestraint.h"
 
 IMP_BEGIN_NAMESPACE
 
@@ -73,6 +74,29 @@ class IMPEXPORT QuadScore : public Object
 };
 
 IMP_OBJECTS(QuadScore,QuadScores);
+
+
+/** A QuadScoreRestraint is a restraint where the score (and
+    derivative values) can be decomposed into an application
+    of a QuadScore onto a ParticleQuad.
+*/
+class IMPEXPORT QuadScoreRestraint: public Restraint {
+public:
+  QuadScoreRestraint(std::string name);
+  virtual QuadScore *get_score() const =0;
+  virtual ParticleQuad get_argument() const=0;
+};
+
+/** A QuadsScoreRestraint is a restraint where the score (and
+    derivative values) can be decomposed into a series of applications
+    of a QuadScore onto a ParticleQuad.
+*/
+class IMPEXPORT QuadsScoreRestraint: public DecomposableRestraint {
+public:
+  QuadsScoreRestraint(std::string name);
+  virtual QuadScore *get_score() const =0;
+  virtual ParticleQuadsTemp get_arguments() const=0;
+};
 
 IMP_END_NAMESPACE
 

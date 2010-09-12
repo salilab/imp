@@ -174,6 +174,9 @@ public:
 #ifndef IMP_DOXYGEN
   typedef Particle* value_type;
   Particle* get(unsigned int i) const {return get_particle(i);}
+  ParticlesTemp get() const {
+    return get_particles();
+  }
   bool get_contains(Particle* v) const {
     return get_contains_particle(v);
   }

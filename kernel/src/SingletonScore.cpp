@@ -19,4 +19,10 @@ SingletonScore::SingletonScore(std::string name):
      symbols are present in the kernel DSO */
 }
 
+SingletonScoreRestraint::SingletonScoreRestraint(std::string name):
+  Restraint(name){}
+
+SingletonsScoreRestraint::SingletonsScoreRestraint(std::string name):
+  DecomposableRestraint(name){}
+
 IMP_END_NAMESPACE
