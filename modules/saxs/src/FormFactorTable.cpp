@@ -1,6 +1,6 @@
 /**
  *  \file FormFactorTable.h   \brief A class for computation of
- * atomic form factors for SAXS calculations
+ * atomic and residue level form factors for SAXS calculations
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  *
@@ -21,6 +21,9 @@ IntKey FormFactorTable::form_factor_type_key_ = IntKey("form factor key");
 
 std::map<atom::Element, FormFactorTable::FormFactorAtomType>
 FormFactorTable::element_ff_type_map_;
+
+std::map<atom::ResidueType, FormFactorTable::FormFactor>
+FormFactorTable::residue_type_form_factor_map_;
 
 Float FormFactorTable::zero_form_factors_[] = {
   -0.720147, -0.720228,
@@ -84,7 +87,6 @@ std::istream & operator>>(std::istream & s,
   return s >> atom_factor_coefficients.excl_vol_;       // excluded volume
 }
 
-
 std::ostream & operator<<(std::ostream & s,
                           const FormFactorTable::AtomFactorCoefficients &
                           atom_factor_coefficients)
@@ -102,6 +104,7 @@ std::ostream & operator<<(std::ostream & s,
 
 FormFactorTable::FormFactorTable() {
   init_element_form_factor_map();
+  init_residue_type_form_factor_map();
 }
 
 FormFactorTable::FormFactorTable(const String& table_name, Float min_q,
@@ -109,6 +112,7 @@ FormFactorTable::FormFactorTable(const String& table_name, Float min_q,
   min_q_(min_q), max_q_(max_q), delta_q_(delta_q)
 {
   init_element_form_factor_map();
+  init_residue_type_form_factor_map();
 
   // read form factor coefficients from file
   int ffnum = read_form_factor_table(table_name);
@@ -166,6 +170,30 @@ void FormFactorTable::init_element_form_factor_map() {
   element_ff_type_map_[atom::Ir] = Ir;
   element_ff_type_map_[atom::Pt] = Pt;
   element_ff_type_map_[atom::Au] = Au;
+}
+
+void FormFactorTable::init_residue_type_form_factor_map() {
+  residue_type_form_factor_map_[atom::ALA] = FormFactor(9.037, 37.991, 28.954);
+  residue_type_form_factor_map_[atom::ARG] = FormFactor(23.289, 84.972, 61.683);
+  residue_type_form_factor_map_[atom::ASP] = FormFactor(20.165, 58.989, 38.824);
+  residue_type_form_factor_map_[atom::ASN] = FormFactor(19.938, 59.985, 40.047);
+  residue_type_form_factor_map_[atom::CYS] = FormFactor(18.403, 53.991, 35.588);
+  residue_type_form_factor_map_[atom::GLN] = FormFactor(19.006, 67.984, 48.978);
+  residue_type_form_factor_map_[atom::GLU] = FormFactor(19.233, 66.989, 47.755);
+  residue_type_form_factor_map_[atom::GLY] = FormFactor(10.689, 28.992, 18.303);
+  residue_type_form_factor_map_[atom::HIS] = FormFactor(21.235, 78.977, 57.742);
+  residue_type_form_factor_map_[atom::ILE] = FormFactor(6.241, 61.989, 55.748);
+  residue_type_form_factor_map_[atom::LEU] = FormFactor(6.241, 61.989, 55.748);
+  residue_type_form_factor_map_[atom::LYS] = FormFactor(10.963, 70.983, 60.020);
+  residue_type_form_factor_map_[atom::MET] = FormFactor(16.539, 69.989, 53.450);
+  residue_type_form_factor_map_[atom::PHE] = FormFactor(9.206, 77.986, 68.7806);
+  residue_type_form_factor_map_[atom::PRO] = FormFactor(8.613, 51.9897, 43.377);
+  residue_type_form_factor_map_[atom::SER] = FormFactor(13.987, 45.991, 32.004);
+  residue_type_form_factor_map_[atom::THR] = FormFactor(13.055, 53.99, 40.935);
+  residue_type_form_factor_map_[atom::TYR] = FormFactor(14.156, 85.986, 71.83);
+  residue_type_form_factor_map_[atom::TRP] = FormFactor(14.945, 98.979, 84.034);
+  residue_type_form_factor_map_[atom::VAL] = FormFactor(7.173, 53.9896, 46.817);
+  residue_type_form_factor_map_[atom::UNK] = FormFactor(9.037, 37.991, 28.954);
 }
 
 int FormFactorTable::read_form_factor_table(const String & table_name)
@@ -644,7 +672,6 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_form_factor_atom_type(
 
 FormFactorTable::FormFactorAtomType FormFactorTable::get_form_factor_atom_type(
                                                        atom::Element e) const {
-
   std::map<atom::Element, FormFactorAtomType>::const_iterator i =
     element_ff_type_map_.find(e);
   if(i != element_ff_type_map_.end())
@@ -653,13 +680,54 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_form_factor_atom_type(
     return UNK;
 }
 
+float FormFactorTable::get_form_factor(atom::ResidueType rt) const {
+  std::map<atom::ResidueType, FormFactor>::const_iterator i =
+    residue_type_form_factor_map_.find(rt);
+  if(i != residue_type_form_factor_map_.end())
+    return i->second.ff_;
+  else {
+    IMP_WARN("Can't find form factor for residue " << rt.get_string()
+             << " using default value of ALA " << std::endl);
+    return residue_type_form_factor_map_.find(atom::UNK)->second.ff_;
+  }
+}
+
+float FormFactorTable::get_vacuum_form_factor(atom::ResidueType rt) const {
+  std::map<atom::ResidueType, FormFactor>::const_iterator i =
+    residue_type_form_factor_map_.find(rt);
+  if(i != residue_type_form_factor_map_.end())
+    return i->second.vacuum_ff_;
+  else {
+    IMP_WARN("Can't find form factor for residue " << rt.get_string()
+             << " using default value of ALA " << std::endl);
+    return residue_type_form_factor_map_.find(atom::UNK)->second.vacuum_ff_;
+  }
+}
+
+float FormFactorTable::get_dummy_form_factor(atom::ResidueType rt) const {
+  std::map<atom::ResidueType, FormFactor>::const_iterator i =
+    residue_type_form_factor_map_.find(rt);
+  if(i != residue_type_form_factor_map_.end())
+    return i->second.dummy_ff_;
+  else {
+    IMP_WARN("Can't find form factor for residue " << rt.get_string()
+             << " using default value of ALA " << std::endl);
+    return residue_type_form_factor_map_.find(atom::UNK)->second.dummy_ff_;
+  }
+}
+
 Float FormFactorTable::get_form_factor(Particle *p,
                                        FormFactorType ff_type) const {
-  // initialization by request
+  if(ff_type == CA_ATOMS) { // residue level form factors
+    atom::ResidueType residue_type =
+      atom::get_residue(atom::Atom(p)).get_residue_type();
+    return get_form_factor(residue_type);
+  }
+
+  // atomic form factor, initialization by request
   if (p->has_attribute(form_factor_type_key_)) {
     return zero_form_factors_[p->get_value(form_factor_type_key_)];
   }
-
   FormFactorAtomType ff_atom_type = get_form_factor_atom_type(p, ff_type);
   if(ff_atom_type >= HEAVY_ATOM_SIZE) {
     IMP_WARN( "Can't find form factor for particle "
@@ -674,6 +742,11 @@ Float FormFactorTable::get_form_factor(Particle *p,
 
 Float FormFactorTable::get_vacuum_form_factor(Particle *p,
                                               FormFactorType ff_type) const {
+  if(ff_type == CA_ATOMS) { // residue level form factors
+    atom::ResidueType residue_type =
+      atom::get_residue(atom::Atom(p)).get_residue_type();
+    return get_vacuum_form_factor(residue_type);
+  }
 
   if (p->has_attribute(form_factor_type_key_)) {
     return vacuum_zero_form_factors_[p->get_value(form_factor_type_key_)];
@@ -693,6 +766,12 @@ Float FormFactorTable::get_vacuum_form_factor(Particle *p,
 
 Float FormFactorTable::get_dummy_form_factor(Particle *p,
                                              FormFactorType ff_type) const {
+  if(ff_type == CA_ATOMS) { // residue level form factors
+    atom::ResidueType residue_type =
+      atom::get_residue(atom::Atom(p)).get_residue_type();
+    return get_dummy_form_factor(residue_type);
+  }
+
   if (p->has_attribute(form_factor_type_key_)) {
     return dummy_zero_form_factors_[p->get_value(form_factor_type_key_)];
   }

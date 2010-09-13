@@ -1,6 +1,6 @@
 /**
  *  \file FormFactorTable.h   \brief A class for computation of
- * atomic form factors for SAXS calculations
+ * atomic and residue level form factors for SAXS calculations
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  *
@@ -22,6 +22,14 @@
 
 IMPSAXS_BEGIN_NAMESPACE
 
+//! type of the form factors for profile calculations
+/*
+ ALL_ATOMS - all atoms including hydrogens
+ HEAVY_ATOMS - no hydrogens, all other atoms included
+ CA_ATOMS - residue level, residue represented by CA
+*/
+enum FormFactorType { ALL_ATOMS, HEAVY_ATOMS, CA_ATOMS };
+
 /**
 class that deals with form factor computation
 */
@@ -34,8 +42,6 @@ public:
   FormFactorTable(const String& table_name, Float min_q, Float max_q,
                   Float delta_q);
 
-  //! type of the form factors for profile calculations
-  enum FormFactorType { ALL_ATOMS, HEAVY_ATOMS };
 
   //! get f(0), ie q=0 for real space profile calculation
   Float get_form_factor(Particle* p, FormFactorType ff_type=HEAVY_ATOMS) const;
@@ -80,6 +86,16 @@ private:
   // map between atom element and FormFactorAtomType
   static std::map<atom::Element, FormFactorAtomType> element_ff_type_map_;
 
+  struct FormFactor {
+    FormFactor() {}
+    FormFactor(double ff, double vacuum_ff, double dummy_ff) :
+      ff_(ff), vacuum_ff_(vacuum_ff), dummy_ff_(dummy_ff) {}
+    double ff_, vacuum_ff_, dummy_ff_;
+  };
+
+  // map between residue type and residue level form factors
+  static std::map<atom::ResidueType, FormFactor> residue_type_form_factor_map_;
+
   // form factors for q=0, the order as in the FormFactorAtomType enum
   static Float zero_form_factors_[];
 
@@ -113,9 +129,17 @@ private:
 
   void init_element_form_factor_map();
 
+  void init_residue_type_form_factor_map();
+
   void compute_form_factors_all_atoms();
 
   void compute_form_factors_heavy_atoms();
+
+  float get_form_factor(atom::ResidueType rt) const;
+
+  float get_vacuum_form_factor(atom::ResidueType rt) const;
+
+  float get_dummy_form_factor(atom::ResidueType rt) const;
 
   FormFactorAtomType get_form_factor_atom_type(atom::Element e) const;
 

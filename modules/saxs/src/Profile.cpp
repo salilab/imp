@@ -7,6 +7,8 @@
 #include <IMP/saxs/Profile.h>
 #include <IMP/saxs/Distribution.h>
 #include <IMP/saxs/utility.h>
+#include <IMP/saxs/internal/sinc_function.h>
+
 #include <IMP/core/XYZ.h>
 #include <IMP/algebra/utility.h>
 #include <IMP/algebra/Vector3D.h>
@@ -16,6 +18,7 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/random.hpp>
+#include <boost/math/special_functions/sinc.hpp>
 
 #include <fstream>
 #include <string>
@@ -197,7 +200,7 @@ void Profile::write_SAXS_file(const String& file_name) const {
 }
 
 void Profile::calculate_profile_real(const Particles& particles,
-                                     bool heavy_atoms)
+                                     FormFactorType ff_type)
 {
   IMP_LOG(TERSE, "start real profile calculation for "
           << particles.size() << " particles" << std::endl);
@@ -206,7 +209,7 @@ void Profile::calculate_profile_real(const Particles& particles,
   std::vector<algebra::Vector3D> coordinates;
   get_coordinates(particles, coordinates);
   Floats form_factors;
-  get_form_factors(particles, ff_table_, form_factors, heavy_atoms);
+  get_form_factors(particles, ff_table_, form_factors, ff_type);
 
   // iterate over pairs of atoms
   for (unsigned int i = 0; i < coordinates.size(); i++) {
@@ -220,18 +223,11 @@ void Profile::calculate_profile_real(const Particles& particles,
   squared_distribution_2_profile(r_dist);
 }
 
-Float Profile::calculate_I0(const Particles& particles, bool heavy_atoms)
+Float Profile::calculate_I0(const Particles& particles, FormFactorType ff_type)
 {
-  //Floats form_factors;
-  Float I0=0;
-  Floats vacuum_ff(particles.size());
-  FormFactorTable::FormFactorType ff_type = FormFactorTable::HEAVY_ATOMS;
-  if(!heavy_atoms) ff_type = FormFactorTable::ALL_ATOMS;
-  for (unsigned int i=0; i<particles.size(); i++) {
-    vacuum_ff[i] = ff_table_->get_vacuum_form_factor(particles[i], ff_type);
-  }
-  //get_form_factors(particles, ff_table_, form_factors, heavy_atoms);
-  for(unsigned int i=0; i<particles.size(); i++) I0+= vacuum_ff[i];
+  Float I0=0.0;
+  for(unsigned int i=0; i<particles.size(); i++)
+    I0+= ff_table_->get_vacuum_form_factor(particles[i], ff_type);
   return square(I0);
 }
 
@@ -260,7 +256,7 @@ void Profile::calculate_profile_constant_form_factor(const Particles& particles,
 
 void Profile::calculate_profile_partial(const Particles& particles,
                                         const Floats& surface,
-                                        bool heavy_atoms)
+                                        FormFactorType ff_type)
 {
   IMP_LOG(TERSE, "start real partial profile calculation for "
           << particles.size() << " particles " <<  std::endl);
@@ -269,8 +265,6 @@ void Profile::calculate_profile_partial(const Particles& particles,
   std::vector<algebra::Vector3D> coordinates;
   get_coordinates(particles, coordinates);
   Floats vacuum_ff(particles.size()), dummy_ff(particles.size()), water_ff;
-  FormFactorTable::FormFactorType ff_type = FormFactorTable::HEAVY_ATOMS;
-  if(!heavy_atoms) ff_type = FormFactorTable::ALL_ATOMS;
   for (unsigned int i=0; i<particles.size(); i++) {
     vacuum_ff[i] = ff_table_->get_vacuum_form_factor(particles[i], ff_type);
     dummy_ff[i] = ff_table_->get_dummy_form_factor(particles[i], ff_type);
@@ -325,7 +319,8 @@ void Profile::calculate_profile_partial(const Particles& particles,
 }
 
 void Profile::calculate_profile_partial(const Particles& particles1,
-                                        const Particles& particles2)
+                                        const Particles& particles2,
+                                        FormFactorType ff_type)
 {
   IMP_LOG(TERSE, "start real partial profile calculation for "
           << particles1.size() << " particles + "
@@ -338,13 +333,13 @@ void Profile::calculate_profile_partial(const Particles& particles1,
   // get form factors
   Floats vacuum_ff1(particles1.size()), dummy_ff1(particles1.size());
   for (unsigned int i=0; i<particles1.size(); i++) {
-    vacuum_ff1[i] = ff_table_->get_vacuum_form_factor(particles1[i]);
-    dummy_ff1[i] = ff_table_->get_dummy_form_factor(particles1[i]);
+    vacuum_ff1[i] = ff_table_->get_vacuum_form_factor(particles1[i], ff_type);
+    dummy_ff1[i] = ff_table_->get_dummy_form_factor(particles1[i], ff_type);
   }
   Floats vacuum_ff2(particles2.size()), dummy_ff2(particles2.size());
   for (unsigned int i=0; i<particles2.size(); i++) {
-    vacuum_ff2[i] = ff_table_->get_vacuum_form_factor(particles2[i]);
-    dummy_ff2[i] = ff_table_->get_dummy_form_factor(particles2[i]);
+    vacuum_ff2[i] = ff_table_->get_vacuum_form_factor(particles2[i], ff_type);
+    dummy_ff2[i] = ff_table_->get_dummy_form_factor(particles2[i], ff_type);
   }
 
   int r_size = 3;
@@ -401,7 +396,8 @@ void Profile::sum_partial_profiles(Float c1, Float c2, Profile& out_profile) {
 
 
 void Profile::calculate_profile_symmetric(const Particles& particles,
-                                          unsigned int n)
+                                          unsigned int n,
+                                          FormFactorType ff_type)
 {
   IMP_USAGE_CHECK(n > 1,
                   "Attempting to use symmetric computation, symmetry order"
@@ -420,12 +416,9 @@ void Profile::calculate_profile_symmetric(const Particles& particles,
     }
   }
   Floats form_factors(unit_size);
-  FormFactorTable::FormFactorType ff_type = FormFactorTable::HEAVY_ATOMS;
-  //if(!heavy_atoms) ff_type = FormFactorTable::ALL_ATOMS;
   for (unsigned int i=0; i<unit_size; i++) {
     form_factors[i] = ff_table_->get_form_factor(particles[i], ff_type);
   }
-
 
   RadialDistributionFunction r_dist;
   // distribution within unit
@@ -467,11 +460,9 @@ void Profile::calculate_profile_symmetric(const Particles& particles,
   squared_distribution_2_profile(r_dist2);
 }
 
-
-
-
 void Profile::calculate_profile_real(const Particles& particles1,
-                                     const Particles& particles2)
+                                     const Particles& particles2,
+                                     FormFactorType ff_type)
 {
   IMP_LOG(TERSE, "start real profile calculation for "
           << particles1.size() << " + " << particles2.size()
@@ -483,8 +474,8 @@ void Profile::calculate_profile_real(const Particles& particles1,
   get_coordinates(particles1, coordinates1);
   get_coordinates(particles2, coordinates2);
   Floats form_factors1, form_factors2;
-  get_form_factors(particles1, ff_table_, form_factors1, true);
-  get_form_factors(particles2, ff_table_, form_factors2, true);
+  get_form_factors(particles1, ff_table_, form_factors1, ff_type);
+  get_form_factors(particles2, ff_table_, form_factors2, ff_type);
 
   // iterate over pairs of atoms
   for (unsigned int i = 0; i < coordinates1.size(); i++) {
@@ -505,7 +496,7 @@ void Profile::distribution_2_profile(const RadialDistributionFunction& r_dist)
     for (unsigned int r = 0; r < r_dist.size(); r++) {
       Float dist = r_dist.index2dist(r);
       Float x = dist * profile_[k].q_;
-      x = sinc(x);
+      x = boost::math::sinc_pi(x);
       profile_[k].intensity_ += r_dist[r] * x;
     }
   }
@@ -515,16 +506,27 @@ void Profile::
 squared_distribution_2_profile(const RadialDistributionFunction& r_dist)
 {
   init();
+  // precomputed sin(x)/x function
+  static internal::SincFunction sf(sqrt(r_dist.get_max_distance())*get_max_q(),
+                                   0.0001);
+
+  // precompute square roots of distances
+  std::vector<float> distances(r_dist.size(), 0.0);
+  for (unsigned int r = 0; r < r_dist.size(); r++)
+    if(r_dist[r] != 0.0)  distances[r] = sqrt(r_dist.index2dist(r));
+
   // iterate over intensity profile
   for (unsigned int k = 0; k < profile_.size(); k++) {
     // iterate over radial distribution
     for (unsigned int r = 0; r < r_dist.size(); r++) {
-      // x = sin(dq)/dq
-      Float dist = sqrt(r_dist.index2dist(r));
-      Float x = dist * profile_[k].q_;
-      x = sinc(x);
-      // multiply by the value from distribution
-      profile_[k].intensity_ += r_dist[r] * x;
+      if(r_dist[r] != 0.0) {
+        // x = sin(dq)/dq
+        float dist = distances[r];
+        float x = dist * profile_[k].q_;
+        x = sf.sinc(x);
+        // multiply by the value from distribution
+        profile_[k].intensity_ += r_dist[r] * x;
+      }
     }
     // this correction is required since we approximate the form factor
     // as f(q) = f(0) * exp(-b*q^2)
@@ -541,14 +543,23 @@ void Profile::squared_distributions_2_partial_profiles(
   // init
   for(int i=0; i<r_size; i++) partial_profiles_[i].init();
 
+  // precomputed sin(x)/x function
+  static internal::SincFunction
+    sf(sqrt(r_dist[0].get_max_distance())*get_max_q(), 0.0001);
+
+  // precompute square roots of distances
+  std::vector<float> distances(r_dist[0].size(), 0.0);
+  for(unsigned int r = 0; r < r_dist[0].size(); r++)
+    if(r_dist[0][r] > 0.0)  distances[r] = sqrt(r_dist[0].index2dist(r));
+
   // iterate over intensity profile
   for(unsigned int k = 0; k < partial_profiles_[0].size(); k++) {
     // iterate over radial distribution
     for(unsigned int r = 0; r < r_dist[0].size(); r++) {
       // x = sin(dq)/dq
-      Float dist = sqrt(r_dist[0].index2dist(r));
+      Float dist = distances[r];
       Float x = dist * partial_profiles_[0].profile_[k].q_;
-      x = sinc(x);
+      x = sf.sinc(x);
       // iterate over partial profiles
       if(r_dist[0][r] > 0.0) {
         for(int i=0; i<r_size; i++) {
@@ -710,14 +721,18 @@ void Profile::profile_2_distribution(RadialDistributionFunction& rd,
 }
 
 void Profile::calculate_profile_reciprocal(const Particles& particles,
-                                           bool heavy_atoms) {
+                                           FormFactorType ff_type) {
+  if(ff_type == CA_ATOMS) {
+    IMP_WARN("Reciprocal space profile calculation is not suported for"
+             << "residue level" << std::endl);
+    return;
+  }
+
   IMP_LOG(TERSE, "start reciprocal profile calculation for "
           << particles.size() << " particles" << std::endl);
   init();
   std::vector<algebra::Vector3D> coordinates;
   get_coordinates(particles, coordinates);
-  FormFactorTable::FormFactorType ff_type = FormFactorTable::HEAVY_ATOMS;
-  if(!heavy_atoms) ff_type = FormFactorTable::ALL_ATOMS;
 
   // iterate over pairs of atoms
   // loop1
@@ -731,7 +746,7 @@ void Profile::calculate_profile_reciprocal(const Particles& particles,
       // iterate over intensity profile
       for(unsigned int k = 0; k < profile_.size(); k++) {
         Float x = dist * profile_[k].q_;
-        x = sinc(x);
+        x = boost::math::sinc_pi(x);
         profile_[k].intensity_ += 2*x*factors1[k]*factors2[k];
       } // end of loop 3
     } // end of loop 2

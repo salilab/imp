@@ -54,28 +54,32 @@ private:
 public:
   //! computes theoretical profile
   void calculate_profile(const Particles& particles,
-                         bool reciprocal=false, bool heavy_atoms=true) {
-    if(!reciprocal) calculate_profile_real(particles, heavy_atoms);
-    else calculate_profile_reciprocal(particles, heavy_atoms);
+                         FormFactorType ff_type = HEAVY_ATOMS,
+                         bool reciprocal=false) {
+    if(!reciprocal) calculate_profile_real(particles, ff_type);
+    else calculate_profile_reciprocal(particles, ff_type);
   }
 
   //! compute profile for fitting with hydration layer and excluded volume
   void calculate_profile_partial(const Particles& particles,
                                  const Floats& surface = Floats(),
-                                 bool heavy_atoms=true);
+                                 FormFactorType ff_type = HEAVY_ATOMS);
 
   void calculate_profile_partial(const Particles& particles1,
-                                 const Particles& particles2);
+                                 const Particles& particles2,
+                                 FormFactorType ff_type = HEAVY_ATOMS);
 
   //! computes theoretical profile contribution from iter-molecular
   //! interactions between the particles
   void calculate_profile(const Particles& particles1,
-                         const Particles& particles2) {
-    calculate_profile_real(particles1, particles2);
+                         const Particles& particles2,
+                         FormFactorType ff_type = HEAVY_ATOMS) {
+    calculate_profile_real(particles1, particles2, ff_type);
   }
 
   //! calculate Intensity at zero (= squared number of electrons)
-  Float calculate_I0(const Particles& particles, bool heavy_atoms=true);
+  Float calculate_I0(const Particles& particles,
+                     FormFactorType ff_type = HEAVY_ATOMS);
 
   //! calculate profile for any type of Particles that have coordinates
   void calculate_profile_constant_form_factor(const Particles& particles,
@@ -84,7 +88,8 @@ public:
   // computes theoretical profile faster for cyclically symmetric particles
   // assumes that the units particles are ordered one after another in the
   // input particles vector (n - symmetry order)
-  void calculate_profile_symmetric(const Particles& particles, unsigned int n);
+  void calculate_profile_symmetric(const Particles& particles, unsigned int n,
+                                   FormFactorType ff_type = HEAVY_ATOMS);
 
   //! convert to real space P(r) function P(r) = 1/2PI^2 Sum(I(q)*qr*sin(qr))
   void profile_2_distribution(RadialDistributionFunction& rd,
@@ -160,16 +165,18 @@ public:
   void init();
 
   void calculate_profile_reciprocal(const Particles& particles,
-                                    bool heavy_atoms = true);
+                                    FormFactorType ff_type = HEAVY_ATOMS);
 
   void calculate_profile_reciprocal(const Particles& particles1,
-                                    const Particles& particles2);
+                                    const Particles& particles2,
+                                    FormFactorType ff_type = HEAVY_ATOMS);
 
   void calculate_profile_real(const Particles& particles,
-                              bool heavy_atoms = true);
+                              FormFactorType ff_type = HEAVY_ATOMS);
 
   void calculate_profile_real(const Particles& particles1,
-                              const Particles& particles2);
+                              const Particles& particles2,
+                              FormFactorType ff_type = HEAVY_ATOMS);
 
   void squared_distribution_2_profile(const RadialDistributionFunction& r_dist);
   void squared_distributions_2_partial_profiles(

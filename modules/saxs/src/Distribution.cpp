@@ -184,7 +184,8 @@ DeltaDistributionFunction(const Particles& particles,
   : Distribution<algebra::Vector3D>(bin_size)
 {
   get_coordinates(particles, coordinates_);
-  get_form_factors(particles, default_form_factor_table(), form_factors_, true);
+  get_form_factors(particles, default_form_factor_table(),
+                   form_factors_, HEAVY_ATOMS);
   // compute max distance if not given
   max_distance_ = max_distance;
   if (max_distance_ <= 0.0) max_distance_ = compute_max_distance(particles);

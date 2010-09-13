@@ -7,7 +7,9 @@ files = [
          'Restraint.h',
          'Score.h',
          'SolventAccessibleSurface.h',
-         'utility.h']
+         'utility.h'
+         ] \
+         + SConscript('internal/SConscript')
 
 # Install the include files:
 env.IMPModuleInclude(files)

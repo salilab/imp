@@ -10,7 +10,7 @@ import time
 class SurfaceTest(IMP.test.TestCase):
 
     def test_surface_area(self):
-        """Check protein profile computation"""
+        """Check protein surface computation"""
         m = IMP.Model()
 
         #! read PDB

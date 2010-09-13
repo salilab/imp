@@ -8,6 +8,8 @@
 #include <IMP/algebra/utility.h>
 #include <IMP/saxs/utility.h>
 
+#include <boost/math/special_functions/sinc.hpp>
+
 #include <map>
 
 #define IMP_SAXS_DELTA_LIMIT  1.0e-15
@@ -216,7 +218,7 @@ void Score::compute_sinc_cos(Float pr_resolution, Float max_distance,
       if(fabs(qr) < 1.0e-16) {
         output_values[iq][ir] = 0;
       } else {
-        output_values[iq][ir] = (sinc(qr) - cos(qr)) / square(r);
+        output_values[iq][ir] = (boost::math::sinc_pi(qr) - cos(qr)) /square(r);
       }
     }
   }

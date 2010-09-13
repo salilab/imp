@@ -14,11 +14,6 @@
 
 IMPSAXS_BEGIN_NAMESPACE
 
-inline Float sinc(Float value) {
-  if(std::abs(value) < 1.0e-16) return 1.0;
-  return std::sin(value)/value;
-}
-
 inline void get_coordinates(const Particles& particles,
                             std::vector<algebra::Vector3D>& coordinates) {
   // copy everything in advance for fast access
@@ -30,9 +25,8 @@ inline void get_coordinates(const Particles& particles,
 
 inline void get_form_factors(const Particles& particles,
                              FormFactorTable* ff_table,
-                             Floats& form_factors, bool heavy_atoms) {
-  FormFactorTable::FormFactorType ff_type = FormFactorTable::HEAVY_ATOMS;
-  if(!heavy_atoms) ff_type = FormFactorTable::ALL_ATOMS;
+                             Floats& form_factors,
+                             FormFactorType ff_type) {
   form_factors.resize(particles.size());
   for (unsigned int i=0; i<particles.size(); i++) {
     form_factors[i] = ff_table->get_form_factor(particles[i], ff_type);
