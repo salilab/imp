@@ -35,10 +35,10 @@ public:
   Distribution(Float bin_size = pr_resolution) { init(bin_size); }
 
   //! returns maximal distance value of distribution
-  Float get_max_distance() { return max_distance_; }
+  Float get_max_distance() const { return max_distance_; }
 
   //! returns bin size
-  Float get_bin_size() { return bin_size_; }
+  Float get_bin_size() const { return bin_size_; }
 
 protected:
   void init(Float bin_size) {
