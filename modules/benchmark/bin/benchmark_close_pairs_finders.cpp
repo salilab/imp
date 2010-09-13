@@ -87,9 +87,9 @@ int main() {
     test_one(name, cpf, 10000, 0, .1, 1.156250, true);
     test_one(name, cpf, 10000, 0, .5, 4.353953, true);
     test_one(name, cpf, 10000, 0, 5, 141.340000, true);
-    test_one(name, cpf, 100000, 0, .01, 18.648000, true);
-    test_one(name, cpf, 100000, 0, .1, 23.217500, true);
-    test_one(name, cpf, 100000, 0, .3, 51.800000, true);
+    //test_one(name, cpf, 100000, 0, .01, 18.648000, true);
+    //test_one(name, cpf, 100000, 0, .1, 23.217500, true);
+    //test_one(name, cpf, 100000, 0, .3, 51.800000, true);
   }
   {
     IMP_NEW(NearestNeighborsClosePairsFinder, cpf, ());
@@ -100,9 +100,9 @@ int main() {
     test_one(name, cpf, 10000, 0, .1, 3.869583);
     test_one(name, cpf, 10000, 0, .5, 13.848571);
     //test_one(name, cpf, 10000, 0, 5);
-    test_one(name, cpf, 100000, 0, .01, 42.624000);
-    test_one(name, cpf, 100000, 0, .1, 85.593333);
-    test_one(name, cpf, 100000, 0, .3, 329.300000);
+    //test_one(name, cpf, 100000, 0, .01, 42.624000);
+    //test_one(name, cpf, 100000, 0, .1, 85.593333);
+    //test_one(name, cpf, 100000, 0, .3, 329.300000);
   }
 #ifdef IMP_USE_CGAL
   {
@@ -115,9 +115,9 @@ int main() {
     test_one(name, cpf, 10000, 0, .1, 3.805714);
     test_one(name, cpf, 10000, 0, .5, 9.324000);
     test_one(name, cpf, 10000, 0, 5, 190.920000);
-    test_one(name, cpf, 100000, 0, .01, 44.696000);
-    test_one(name, cpf, 100000, 0, .1, 95.830000);
-    test_one(name, cpf, 100000, 0, .3, 198.320000);
+    //test_one(name, cpf, 100000, 0, .01, 44.696000);
+    //test_one(name, cpf, 100000, 0, .1, 95.830000);
+    //test_one(name, cpf, 100000, 0, .3, 198.320000);
   }
 #endif
   {
