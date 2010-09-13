@@ -33,6 +33,7 @@ int main(int argc, char **argv)
   bool fit = true;
   bool water_layer = true;
   bool heavy_atoms_only = true;
+  bool residue_level = false;
   //float charge_weight = 1.0;
   po::options_description desc("Usage: <pdb_file1> <pdb_file2> \
 ... <profile_file1> <profile_file2> ...");
@@ -52,6 +53,8 @@ Written by Dina Schneidman.")
     ("water_layer,w", "compute hydration layer (default = true)")
     ("hydrogens,h", "explicitly consider hydrogens in PDB files \
 (default = false)")
+    ("residues,r", "perform fast coarse grained profile calculation using \
+CA atoms only (default = false)")
     ("excluded_volume,e",
      po::value<float>(&excluded_volume_c1)->default_value(0.0),
      "excluded volume parameter, enumerated by default. \
@@ -82,6 +85,7 @@ recommended q value is 0.2")
   }
   if(vm.count("water_layer")) water_layer=false;
   if(vm.count("hydrogens")) heavy_atoms_only=false;
+  if(vm.count("residues")) residue_level=true;
   if(vm.count("offset")) use_offset=true;
 
   float delta_q = max_q / profile_size;
@@ -101,12 +105,17 @@ recommended q value is 0.2")
     // A. try as pdb
     try {
       IMP::atom::Hierarchy mhd;
-      if(heavy_atoms_only) // read without hydrogens
+      if(residue_level) // read CA only
         mhd = IMP::atom::read_pdb(files[i], model,
-                                  IMP::atom::NonWaterNonHydrogenPDBSelector());
-      else // read with hydrogens
-        mhd = IMP::atom::read_pdb(files[i], model,
-                                  IMP::atom::NonWaterPDBSelector());
+                                  IMP::atom::CAlphaPDBSelector());
+      else
+        if(heavy_atoms_only) // read without hydrogens
+          mhd = IMP::atom::read_pdb(files[i], model,
+                                   IMP::atom::NonWaterNonHydrogenPDBSelector());
+        else
+          // read with hydrogens
+          mhd = IMP::atom::read_pdb(files[i], model,
+                                    IMP::atom::NonWaterPDBSelector());
       IMP::Particles particles = get_by_type(mhd, IMP::atom::ATOM_TYPE);
       if(particles.size() > 0) { // pdb file
         pdb_files.push_back(files[i]);
@@ -116,9 +125,9 @@ recommended q value is 0.2")
       }
       if(water_layer) { // add radius
         IMP::saxs::FormFactorTable* ft = IMP::saxs::default_form_factor_table();
-        IMP::saxs::FormFactorTable::FormFactorType ff_type =
-          IMP::saxs::FormFactorTable::HEAVY_ATOMS;
-        if(!heavy_atoms_only) ff_type = IMP::saxs::FormFactorTable::ALL_ATOMS;
+        IMP::saxs::FormFactorType ff_type = IMP::saxs::HEAVY_ATOMS;
+        if(residue_level) ff_type = IMP::saxs::CA_ATOMS;
+        if(!heavy_atoms_only) ff_type = IMP::saxs::ALL_ATOMS;
         for(unsigned int p_index=0; p_index<particles.size(); p_index++) {
           float radius = ft->get_radius(particles[p_index], ff_type);
           IMP::core::XYZR::setup_particle(particles[p_index], radius);
@@ -172,12 +181,14 @@ recommended q value is 0.2")
     std::cerr << "Computing profile for " << pdb_files[i] << std::endl;
     partial_profile = new IMP::saxs::Profile(0.0, max_q, delta_q);
     if(excluded_volume_c1 == 1.0 && !water_layer) fit = false;
+    IMP::saxs::FormFactorType ff_type = IMP::saxs::HEAVY_ATOMS;
+    if(!heavy_atoms_only) ff_type = IMP::saxs::ALL_ATOMS;
+    if(residue_level) ff_type = IMP::saxs::CA_ATOMS;
     if(dat_files.size() == 0 || !fit) { // regular profile, no fitting
-      partial_profile->calculate_profile(particles_vec[i],
-                                         false, heavy_atoms_only);
+      partial_profile->calculate_profile(particles_vec[i], ff_type);
     } else {
       partial_profile->calculate_profile_partial(particles_vec[i],
-                                                surface_area, heavy_atoms_only);
+                                                surface_area, ff_type);
     }
     profiles.push_back(partial_profile);
     // write profile file
@@ -202,9 +213,8 @@ recommended q value is 0.2")
       if(excluded_volume_c1 > 0.0) { C1 = excluded_volume_c1; fixed_c1 = true; }
       if(!water_layer) { C2 = 0.0; fixed_c2 = true; }
       std::cout << pdb_files[i] << " " << dat_files[j];
-      IMP::Float chi =
-        saxs_score->fit_profile(*partial_profile, C1, C2, fixed_c1, fixed_c2,
-                                use_offset, fit_file_name2);
+      saxs_score->fit_profile(*partial_profile, C1, C2, fixed_c1, fixed_c2,
+                              use_offset, fit_file_name2);
       Gnuplot::print_fit_script(pdb_files[i], dat_files[j],interactive_gnuplot);
     }
   }
