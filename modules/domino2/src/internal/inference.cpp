@@ -217,8 +217,11 @@ EdgeData get_edge_data(const ParticleIndex &all,
     boost::property_map< SubsetGraph, boost::vertex_name_t>::const_type
       subset_map= boost::get(boost::vertex_name, jt);
     Subset s= boost::get(subset_map, root);
+    IMP_LOG(VERBOSE, "Looking at subset " << s << std::endl);
+    IncreaseIndent ii;
     const NodeData nd= get_node_data(s, eval, states,
                                      max_score);
+    IMP_LOG(VERBOSE, "Subset data is " << nd << std::endl);
     ParticlesTemp ps(all_index.size());
     for (ParticleIndex::const_iterator it= all_index.begin();
          it != all_index.end(); ++it) {
