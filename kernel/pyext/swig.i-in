@@ -56,6 +56,14 @@ IMP_SWIG_OBJECT(IMP,DecomposableRestraint, DecomposableRestraints);
 IMP_SWIG_OBJECT_TUPLE(IMP, ParticlePair, ParticlePairs);
 IMP_SWIG_OBJECT_TUPLE(IMP, ParticleTriplet, ParticleTriplets);
 IMP_SWIG_OBJECT_TUPLE(IMP, ParticleQuad, ParticleQuads);
+IMP_SWIG_OBJECT(IMP, PairScoreRestraint,PairScoreRestraints);
+IMP_SWIG_OBJECT(IMP, PairsScoreRestraint,PairsScoreRestraints);
+IMP_SWIG_OBJECT(IMP, QuadScoreRestraint,QuadScoreRestraints);
+IMP_SWIG_OBJECT(IMP, QuadsScoreRestraint,QuadsScoreRestraints);
+IMP_SWIG_OBJECT(IMP, SingletonScoreRestraint,SingletonScoreRestraints);
+IMP_SWIG_OBJECT(IMP, SingletonsScoreRestraint,SingletonsScoreRestraints);
+IMP_SWIG_OBJECT(IMP, TripletScoreRestraint,TripletScoreRestraints);
+IMP_SWIG_OBJECT(IMP, TripletsScoreRestraint, TripletsScoreRestraints);
 
 IMP_SWIG_OBJECT(IMP, WriteOptimizerState, WriteOptimizerStates);
 IMP_SWIG_OBJECT(IMP, WriteBinaryOptimizerState, WriteBinaryOptimizerStates);

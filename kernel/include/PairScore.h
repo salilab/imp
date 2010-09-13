@@ -87,6 +87,8 @@ public:
   virtual ParticlePair get_argument() const=0;
 };
 
+IMP_OBJECTS(PairScoreRestraint, PairScoreRestraints);
+
 /** A PairsScoreRestraint is a restraint where the score (and
     derivative values) can be decomposed into a series of applications
     of a PairScore onto a ParticlePair.
@@ -97,6 +99,8 @@ public:
   virtual PairScore *get_score() const =0;
   virtual ParticlePairsTemp get_arguments() const=0;
 };
+
+IMP_OBJECTS(PairsScoreRestraint, PairsScoreRestraints);
 
 IMP_END_NAMESPACE
 
