@@ -87,6 +87,8 @@ public:
   virtual ParticleQuad get_argument() const=0;
 };
 
+IMP_OBJECTS(QuadScoreRestraint, QuadScoreRestraints);
+
 /** A QuadsScoreRestraint is a restraint where the score (and
     derivative values) can be decomposed into a series of applications
     of a QuadScore onto a ParticleQuad.
@@ -97,6 +99,8 @@ public:
   virtual QuadScore *get_score() const =0;
   virtual ParticleQuadsTemp get_arguments() const=0;
 };
+
+IMP_OBJECTS(QuadsScoreRestraint, QuadsScoreRestraints);
 
 IMP_END_NAMESPACE
 

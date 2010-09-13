@@ -87,6 +87,8 @@ public:
   virtual ParticleTriplet get_argument() const=0;
 };
 
+IMP_OBJECTS(TripletScoreRestraint, TripletScoreRestraints);
+
 /** A TripletsScoreRestraint is a restraint where the score (and
     derivative values) can be decomposed into a series of applications
     of a TripletScore onto a ParticleTriplet.
@@ -97,6 +99,8 @@ public:
   virtual TripletScore *get_score() const =0;
   virtual ParticleTripletsTemp get_arguments() const=0;
 };
+
+IMP_OBJECTS(TripletsScoreRestraint, TripletsScoreRestraints);
 
 IMP_END_NAMESPACE
 

@@ -87,6 +87,8 @@ public:
   virtual Particle* get_argument() const=0;
 };
 
+IMP_OBJECTS(SingletonScoreRestraint, SingletonScoreRestraints);
+
 /** A SingletonsScoreRestraint is a restraint where the score (and
     derivative values) can be decomposed into a series of applications
     of a SingletonScore onto a Particle*.
@@ -97,6 +99,8 @@ public:
   virtual SingletonScore *get_score() const =0;
   virtual ParticlesTemp get_arguments() const=0;
 };
+
+IMP_OBJECTS(SingletonsScoreRestraint, SingletonsScoreRestraints);
 
 IMP_END_NAMESPACE
 
