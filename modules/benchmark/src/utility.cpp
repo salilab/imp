@@ -39,7 +39,7 @@ void report(std::string name, double value, double target, double check) {
   }
   double normtime= value/baseline.first;
   double relnormtime= normtime/target;
-  std::cout << boost::format("%s, %30t%4.3f, %40t%.2f, %50t%1.3f, %60t%1.1f")
+  std::cout << boost::format("%s, %30t%.2e, %40t%.2e, %50t%1.2f, %60t%1.1e")
     %name % value % normtime % relnormtime % check;
   if (relnormtime >1.1) {
     ++num_failures;
