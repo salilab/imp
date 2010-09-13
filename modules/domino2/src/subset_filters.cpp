@@ -45,7 +45,12 @@ namespace {
   };
 
   bool RestraintScoreSubsetFilter::get_is_ok(const SubsetState &state) const{
-    return data_.get_is_ok(state);
+    IMP_OBJECT_LOG;
+    const bool ok=data_.get_is_ok(state);
+    IMP_LOG(VERBOSE, "For subset " << data_.get_subset()
+            << (ok?"accepted":"rejected")
+            << " state " << state << std::endl);
+    return ok;
   }
 
   void RestraintScoreSubsetFilter::do_show(std::ostream &out) const{}

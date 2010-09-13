@@ -114,6 +114,7 @@ public:
   unsigned int get_number_of_restraints() const {
     return ris_.size();
   }
+  Subset get_subset() const {return s_;}
 };
 
 struct IMPDOMINO2EXPORT ModelData {

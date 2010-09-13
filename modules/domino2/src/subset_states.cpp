@@ -195,6 +195,7 @@ namespace {
     //std::cout << "Searching order for " << s << std::endl;
     Ints order;
     std::vector<SubsetFilters> filters;
+    std::vector<Subset> filter_subsets;
     if (1) {
       Ints remaining;
       for (unsigned int i=0; i< s.size(); ++i) {
@@ -204,6 +205,7 @@ namespace {
         double max_restraint=-1;
         int max_j=-1;
         SubsetFilters max_filters;
+        Subset max_subset;
         Subset all_remaining=get_sub_subset(s, remaining.begin(),
                                             remaining.end());
         Ints before;
@@ -242,11 +244,13 @@ namespace {
             max_restraint=cur_restraint;
             max_j=j;
             max_filters=cur_filters;
+            max_subset=all_remaining;
           }
           before.push_back(cur);
         }
         order.push_back(remaining[max_j]);
         filters.push_back(max_filters);
+        filter_subsets.push_back(max_subset);
         remaining.erase(remaining.begin()+max_j);
         /*std::cout << "Order is ";
         for (unsigned int i=0; i< order.size(); ++i) {
@@ -306,6 +310,12 @@ namespace {
                   << " on state " << state
                   << " got " << filters[i][j]->get_is_ok(state)
                   << std::endl;*/
+        IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+          Subset check_subset= get_sub_subset(s, order.begin()+i, order.end());
+          IMP_INTERNAL_CHECK(check_subset== filter_subsets[i],
+                             "Expected and found subsets don't match "
+                             << filter_subsets[i] << " vs " << check_subset);
+        }
         if (!filters[i][j]->get_is_ok(state)) {
           goto bad;
         }
