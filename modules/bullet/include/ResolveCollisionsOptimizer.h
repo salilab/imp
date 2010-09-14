@@ -13,40 +13,36 @@
 #include <vector>
 #include <boost/tuple/tuple.hpp>
 #include <IMP/RestraintSet.h>
+#include <IMP/core/XYZR.h>
 #include <IMP/Optimizer.h>
 #include <btBulletDynamicsCommon.h>
 
 IMPBULLET_BEGIN_NAMESPACE
 
 /** It uses the Bullet physics engine to handle collisions between the
-    particles representing the model. Currently, only
-    IMP::core::PairRestraint restraints using
-    IMP::core::HarmonicDistancePairScore scores on IMP::core::XYZR
-    particles are used. However this can be expanded as there is
-    interest. Interesting ways to go include
+    particles representing the model. The optimizer makes several
+    assumptions about the model:
+    - all IMP::core::XYZR particles exclude all other IMP::core::XYZR
+      particles from the sphere they define. To only use a subset
+      use the set_xyzrs() method.
+    - any IMP::container::PairsRestraint using an
+      IMP::core::SoftSpherePairScore is an excluded volume term acting (only)
+      on all involved IMP::core::XYZRs
 
-    - supporting IMP::core::RigidBody particles
-    - using arbitrary scoring functions to provide forces in the
-      physics engine
-
-    Note that you can automatically reduce
-    IMP::container::PairsRestraint objects with
-    IMP::core::HarmonicDistancePairScore scores to
-    IMP::core::PairRestraints using IMP::domino2::OptimizeRestraints.
 
     \unstable{ResolveCollisionsOptimizer}
  */
 class IMPBULLETEXPORT ResolveCollisionsOptimizer: public Optimizer
 {
   RestraintSets rs_;
-  Particles ps_;
+  core::XYZRs ps_;
   typedef std::pair<std::vector<btScalar>, Ints > Obstacle;
   mutable std::vector<Obstacle> obstacles_;
 public:
   ResolveCollisionsOptimizer(Model *m);
-  /** rs should not include collision detection terms.*/
-  ResolveCollisionsOptimizer(const RestraintSetsTemp &rs,
-                             const ParticlesTemp &ps);
+  ResolveCollisionsOptimizer(const RestraintSetsTemp &rss);
+
+  void set_xyzrs(const core::XYZRsTemp &ps);
 
   void add_obstacle(const algebra::Vector3Ds &vertices,
                     const std::vector<Ints > &tris);
