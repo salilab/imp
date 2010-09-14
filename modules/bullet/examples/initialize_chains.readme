@@ -1,0 +1,1 @@
+The IMP.bullet.ResolveCollisionsOptimizer provides an excellect way to perform local optimization of conformations dominated by excluded volume and IMP.core.HarmonicDistancePairScore-based restraints. Unlike IMP.core.ConjugateGradients, IMP.bullet.ResolveCollisionsOptimizer is extemely stable and will converge to a reasonable minimum from almost any starting configuration.
