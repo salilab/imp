@@ -28,7 +28,9 @@ class DOMINOTests(IMP.test.TestCase):
             vs.append(IMP.algebra.Vector3D(i,0,0))
         return vs
     def _get_stuff(self):
+        IMP.set_log_level(IMP.SILENT)
         m= IMP.Model()
+        m.set_log_level(IMP.SILENT)
         ps=[]
         ns=5
         np=4
@@ -54,17 +56,19 @@ class DOMINOTests(IMP.test.TestCase):
                                       lsc[1],
                                       lsc[2])
         r.set_name("1 2");
+        r.set_log_level(IMP.VERBOSE)
         m.add_restraint(r)
         ds= IMP.domino2.DominoSampler(m)
         ds.set_maximum_score(.5)
         me= IMP.domino2.ModelSubsetEvaluatorTable(m, pst)
         rssft= IMP.domino2.RestraintScoreSubsetFilterTable(me, ds)
         dsst= IMP.domino2.BranchAndBoundSubsetStatesTable(pst, [rssft])
-        dsst.set_log_level(IMP.VERBOSE)
+        IMP.set_log_level(IMP.VERBOSE)
         print "setting"
         ss= dsst.get_subset_states(lsc)
         print ss.get_number_of_states(), "states"
         found_states=[]
+        print repr(lsc)
         for i in range(0, ss.get_number_of_states()):
             s= ss.get_state(i)
             print s
