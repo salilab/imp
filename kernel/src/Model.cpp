@@ -31,6 +31,7 @@ Model::Model(std::string name): Object(name),
   set_was_used(true);
   rs_->set_model(this);
   first_call_=true;
+  max_score_ =std::numeric_limits<double>::max();
 }
 
 
@@ -161,6 +162,27 @@ void Model::do_show(std::ostream& out) const
   IMP_CHECK_OBJECT(this);
 }
 
+
+
+bool Model::get_has_good_score() const {
+  if (max_score_ < std::numeric_limits<double>::max()) {
+    double e= const_cast<Model*>(this)->evaluate(false);
+    if (e > max_score_) {
+      return false;
+    }
+  }
+  RestraintsTemp rs= get_restraints(get_root_restraint_set());
+  for (unsigned int i=0; i< rs.size(); ++i) {
+    if (max_scores_.find(rs[i]) != max_scores_.end()) {
+      double e= const_cast<Model*>(this)->evaluate(RestraintsTemp(1, rs[i]),
+                                                   false);
+      if (e > max_scores_.find(rs[i])->second) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
 
 
 IMP_END_NAMESPACE

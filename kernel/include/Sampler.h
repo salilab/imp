@@ -13,7 +13,6 @@
 #include "macros.h"
 #include "Pointer.h"
 #include "ConfigurationSet.h"
-#include "internal/map.h"
 
 IMP_BEGIN_NAMESPACE
 
@@ -29,34 +28,22 @@ IMP_BEGIN_NAMESPACE
 class IMPEXPORT Sampler: public Object
 {
   internal::OwnerPointer<Model> model_;
-  double max_score_;
-  typedef internal::Map<Restraint*, double> Maxes;
-  Maxes max_scores_;
  public:
   Sampler(Model *m, std::string name="Sampler %1%");
 
   ConfigurationSet *get_sample() const;
 
-  /** \name Filtering
-     The set of returned configurations can be filtered on a variety
-     of criteria.
-      @{
-   */
-  //! Set the maximum allowable score for the whole model
-  void set_maximum_score(double s) {max_score_=s;}
+#ifndef IMP_DOXYGEN
+  void set_maximum_score(double s) {model_->set_maximum_score(s);}
   //! Set the maximum allowable score for a restraint
   void set_maximum_score(Restraint *r, double s) {
-    max_scores_[r]=s;
+    model_->set_maximum_score(r,s);
   }
-  double get_maximum_score() const {return max_score_;}
+  double get_maximum_score() const {return model_->get_maximum_score();}
   double get_maximum_score(Restraint*r) const {
-    if (max_scores_.find(r) == max_scores_.end()) {
-      return max_score_;
-    } else {
-      return max_scores_.find(r)->second;
-    }
+    return model_->get_maximum_score(r);
   }
-  /** @} */
+#endif
 
   Model *get_model() const {return model_;}
 
@@ -65,12 +52,6 @@ class IMPEXPORT Sampler: public Object
  protected:
   //! Subclasses should override this method
   virtual ConfigurationSet* do_sample() const=0;
-  /** The Sampler can contain a number of filters which limit
-      the set of configurations which are saved. The sampler
-      should check that a state passes the filters before adding
-      it to the returned ConfigurationSet.
-  */
-  bool get_is_good_configuration() const;
 };
 
 IMP_OBJECTS(Sampler,Samplers);

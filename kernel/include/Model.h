@@ -63,7 +63,9 @@ private:
   unsigned int eval_count_;
   internal::OwnerPointer<RestraintSet> rs_;
   bool first_call_;
-
+  double max_score_;
+  typedef internal::Map<Restraint*, double> Maxes;
+  Maxes max_scores_;
 
 
   // statistics
@@ -208,6 +210,33 @@ public:
   }
   /**@}*/
  public:
+
+  /** \name Filtering
+      We are typically only interested in "good" conformations of
+      the model. These are described by specifying maximum scores
+      per restraint and for the whole model. Samplers, optimizers
+      etc are free to ignore configurations they encounter which
+      go outside these bounds.
+      @{
+  */
+  double get_maximum_score(Restraint *r) const {
+    if (max_scores_.find(r) == max_scores_.end()) {
+      return max_score_;
+    } else {
+      return max_scores_.find(r)->second;
+    }
+  }
+  void set_maximum_score(Restraint *r, double s) {
+     max_scores_[r]=s;
+  }
+  void set_maximum_score(double s) {
+    max_score_=s;
+  }
+  double get_maximum_score() const {
+    return max_score_;
+  }
+  bool get_has_good_score() const;
+  /** @} */
 
   //! Remove the particle from this model
   /** Since particles are ref counted the object will still be valid
