@@ -229,16 +229,21 @@ int main(int argc, char **argv) {
   }
 
   em2d::ProjectionFinder registration(ps,subjects,projections);
+  unsigned interpolation_method = 0; // linear
+  double simplex_initial_length = 0.1;
   registration.initialize(apix,resolution,
                           coarse_method,
+                          save_images,
+                          interpolation_method,
                           optimization_steps,
+                          simplex_initial_length,
                           simplex_minimum_size);
 
   boost::timer registration_timer;
   if(coarse_method==1) {
-    Score=registration.get_complete_registration(save_images);
+    Score=registration.get_complete_registration();
   } else {
-    Score=registration.get_coarse_registration(save_images);
+    Score=registration.get_coarse_registration();
   }
   double registration_time=registration_timer.elapsed();
 

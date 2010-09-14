@@ -34,7 +34,7 @@ class ProjectTests(IMP.test.TestCase):
         fn_rotated = self.get_input_file_name("rotated.spi")
         # rotated.write_to_floats(fn_rotated,srw)
         result=IMP.em2d.align2D_rotational(
-                image.get_data(),rotated.get_data(),True,False,0)
+                image.get_data(),rotated.get_data(),True,0)
         fn_aligned = self.get_input_file_name("aligned.spi")
         # rotated.write_to_floats(fn_aligned,srw)
         determined_angle=result[0].get_rotation().get_angle()
@@ -60,7 +60,7 @@ class ProjectTests(IMP.test.TestCase):
         fn_translated = self.get_input_file_name("translated.spi")
         # translated.write_to_floats(fn_translated,srw)
         result=IMP.em2d.align2D_translational(
-                image.get_data(),translated.get_data(),True,False)
+                image.get_data(),translated.get_data(),True)
         fn_aligned = self.get_input_file_name("aligned.spi")
         # translated.write_to_floats(fn_aligned,srw)
         # -1 to get the translation applied to reference.

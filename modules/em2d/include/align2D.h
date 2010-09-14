@@ -31,169 +31,192 @@ typedef std::pair<algebra::Transformation2D,double> ResultAlign2D;
 //! Based on Frank, 2006, pg. 99, and Penczek, Ultram.,1992. Uses the
 //! autocorrelation function
 /**
-  \param[in] m1 first matrix. Used as reference
-  \param[in] m2 the matrix that is aligned with m1
-  \param[out] t the resulting transformation to apply to m2 to align it with m1
-  \param[out] The value of the maximum cross correlation coefficient
+  \param[in] m1 Reference matrix
+  \param[in] m2 Matrix to align to the reference
+  \param[in] apply if true, apply the transformation to m2 after alignment
+  \param[in] interpolation_method interpolation method during resamplings,
+              rotations and translations. Default:0, bilinear
+  \param[out] A pair with the transformation to align the matrix
+              to the reference and the value of the cross correlation
 **/
 IMPEM2DEXPORT ResultAlign2D align2D_complete(algebra::Matrix2D_d &m1,
           algebra::Matrix2D_d &m2,bool apply=false,
           int interpolation_method=0);
 
 
-//! Aligns two matrices rotationally.
-//! Based on polar resampling.
+//! Aligns two matrices rotationally. Based on polar resampling.
 /**
-  \param[in] m1 first matrix. Used as reference
-  \param[in] m2 the matrix that is aligned with m1
-  \param[out] angle the resulting angle to apply to m2 to align it with m1
-  \param[in] apply Set it to true if you want the rotation applied to m2
-  \param[in] pad set it to false if the matrices are already padded
-  \param[out] Vector2D containing the tupe (angle,cross correlation)
+  \param[in] m1 Reference matrix
+  \param[in] m2 Matrix to align to the reference
+  \param[in] apply if true, apply the transformation to m2 after alignment
+  \param[in] interpolation_method interpolation method during resamplings,
+              rotations and translations. Default:0, bilinear
+  \param[out] A pair with the transformation to align the matrix
+              to the reference and the value of the cross correlation
   \note: The cross correlation is not normalized
 **/
 IMPEM2DEXPORT ResultAlign2D align2D_rotational(algebra::Matrix2D_d &m1,
         algebra::Matrix2D_d &m2, bool apply=false,
-        bool pad=false,int interpolation_method=0);
+        int interpolation_method=0);
 
-//! Aligns two matrices (translationally)
+//! Aligns two matrices translationally
 /**
-  \param[in] m1 first matrix.
-  \param[in] m2 the matrix that is aligned with the reference
-  \param[in] apply Set it to true if you want the rotation applied to m2
+  \param[in] m1 Reference matrix
+  \param[in] m2 Matrix to align to the reference
+  \param[in] apply if true, apply the transformation to m2 after alignment
   \param[in] pad set it to false if the matrices are already padded
-  \param[out] Vector3D containing the values (i,j,cross correlation), where i,j
-              are the pixels of peak value (they are double).
+  \param[out] A pair with the transformation to align the matrix
+              to the reference and the value of the cross correlation
 **/
 IMPEM2DEXPORT ResultAlign2D align2D_translational(algebra::Matrix2D_d &m1,
                                        algebra::Matrix2D_d &m2,
-                                       bool apply=false,
-                                       bool pad=false);
+                                       bool apply=false);
 
 
+//! Aligns two matrices rotationally and translationally without
+//! performing preprocessing. Preprocessed data must be provided.
+/**
 
-
-
-
-
-IMPEM2DEXPORT double align2D_complete_no_preprocessing(algebra::Matrix2D_d &m1,
+  \param[in] m1 Reference matrix
+  \param[in] m2 Matrix to align to the reference
+  \param[in] M1 Fourier transform of m1
+  \param[in] AUTOC_POLAR1 Fourier transform of the autocorrelation function
+              of the reference matrix resampled to polar coordinates
+  \param[in] AUTOC_POLAR2 Same thing form the matrix to align
+  \param[in] apply if true, apply the transformation to m2 after alignment
+  \param[out] A pair with the transformation to align the matrix
+              to the reference and the value of the cross correlation
+**/
+IMPEM2DEXPORT ResultAlign2D align2D_complete_no_preprocessing(
+                      algebra::Matrix2D_d &m1,
                       algebra::Matrix2D_c &M1,
-                      complex_rings &fft_rings1,
+                      algebra::Matrix2D_c &AUTOC_POLAR1,
                       algebra::Matrix2D_d &m2,
-                      complex_rings &fft_rings2,
-                      algebra::Transformation2D &t,
-                      bool apply);
-
-//! Makes the computations for rotationally align in 2D, but does not do
-//! any preprocessing. Every input needed must be provided
-IMPEM2DEXPORT double align2D_rotational_no_preprocessing(
-                          complex_rings &fft_rings1,
-                          complex_rings &fft_rings2,
-                          double *angle,
-                          const PolarResamplingParameters polar_params);
+                      algebra::Matrix2D_c &AUTOC_POLAR2,
+                      bool apply=false);
 
 
-//! Aligns two matrices (translationally) using the convolution theorem to
-//! compute the cross correlation function in Fourier space.
+
+//! Aligns two matrices rotationally without performing preprocessing.
+//! Preprocessed data must be provided.
 /**
-  \param[in] M1 FFT transform of the first matrix
-  \param[in] M2 FFT transform of the second matrix
-  \param[in] v Vector with the solution
-  \param[out] The value of the maximum cross correlation
+  \param[in] AUTOC_POLAR1 Fourier transform of the autocorrelation function
+              of the reference matrix resampled to polar coordinates
+  \param[in] AUTOC_POLAR2 Same thing form the matrix to align
+  \param[in] n_rings number of rings used for the polar resamplings
+  \param[in] sampling_points number of points used per ring for the
+             polar resamplings
+  \param[out] A pair with the transformation to align the matrix
+              to the reference and the value of the cross correlation
 **/
-IMPEM2DEXPORT double align2D_translational_no_preprocessing(
-               algebra::Matrix2D_c &M1,
-               algebra::Matrix2D_c &M2,
-               algebra::Vector2D &v,
-               unsigned int original_rows,
-               unsigned int original_cols);
+IMPEM2DEXPORT ResultAlign2D align2D_rotational_no_preprocessing(
+              algebra::Matrix2D_c &AUTOC_POLAR1,
+              algebra::Matrix2D_c &AUTOC_POLAR2,
+              unsigned int n_rings, unsigned int sampling_points);
 
 
 
-IMPEM2DEXPORT complex_rings preprocess_for_align2D_rotational(
-      algebra::Matrix2D_d &m,bool dealing_with_subjects=false,
-      int interpolation_method=0);
-
-
-//! Resamples a matrix to polar coordinates. Allows for variable number of
-//! points
+//! Aligns two matrices translationally using the convolution theorem to
+//! compute the cross correlation function.
 /**
-  \param[in] f matrix to resample
-  \param[out] rings resampled rings, from inner to outer
-  \param[in] dealing_with_subjects if true, resamples the matrix as
-              radius*m(radius,angle). This is only useful for rotational
-              alignments. False (default) gives the regular polar resampling
-  \param[in] interp type of interpolation required. See interpolation.h in
-             algebra module for further help.
+  \param[in] M1 FFT transform of the first matrix m1
+  \param[in] M2 FFT transform of the second matrix m2
+  \param[in] m1_rows Rows of the original matrix m1 employed to get M1
+  \param[in] m1_cols Columns of the original matrix m1 employed to get M1
+  \param[out] A pair with the transformation to align the matrix
+              to the reference and the value of the cross correlation
 **/
-IMPEM2DEXPORT void resample2D_polar(algebra::Matrix2D_d &f,
-                                    double_rings &rings,
-                                    bool dealing_with_subjects=false,
-                                    int interpolation_method=0);
+IMPEM2DEXPORT ResultAlign2D align2D_translational_no_preprocessing(
+               algebra::Matrix2D_c &M1,algebra::Matrix2D_c &M2,
+               unsigned int m1_rows,unsigned int m1_cols);
 
 
+//! Resamples a matrix to polar coordinates.
+/**
+  \param[in] m matrix to resample
+  \param[out] result matrix to contain the resampling
+  \param[in] interpolation_method interpolation method during resamplings,
+              rotations and translations. Default:0, bilinear
+**/
 IMPEM2DEXPORT void resample2D_polar(algebra::Matrix2D_d &m,
                       algebra::Matrix2D_d &result,
                       int interpolation_method=0);
 
 //! Performs a peak search in a Matrix2D
-//! Useful for cross correlation peak search
+/**
+  \param[in] m matrix
+  \param[out] value the value at the peak
+  \param[out] the position of the peak. Doubles, obained with interpolation
+**/
 IMPEM2DEXPORT algebra::Vector2D peak_search(
                                       algebra::Matrix2D_d &m,double *value);
 
 
-
-//! Performs a peak search in a vector class
+//! Performs a peak search in a vector
 /**
-  \param[in] v the class where to perform the search
-  \param[in] len the length of the class (number of elements)
+  \param[in] v vector
+  \param[out] value the value at the peak
+  \param[out] the position of the peak. Is a double, obtained with interpolation
 **/
 IMPEM2DEXPORT double peak_search(std::vector<double> &v,double *value);
 
 
-//! computes the center of gravity for a subpart of the Matrix2D.
-//! The weights are the matrix values
+//! computes the center of gravity (c.o.g.) for a subpart of the Matrix2D.
+//! The weights for getting the c.o.g are the matrix values
 /**
- \param[out] c class to store the c.o.g. It must be a class
- admiting access via []
- \param[in] dims vector with the list of sizes for the subpart. If NULL,
- the entire matrix is taken
- \param[in] inds class with the list of starting indices for the subpart. If
- NULL, the beginning of the matrix is taken
+ \param[in] m Matrix
+ \param[in] dims sizes for the subpart. Default is taking the entire matrix
+ \param[in] bases starting indices for the subpart. Default is
+            using the beginning of the matrix.
+ \param[out] Vector2D containing the center of gravity
 **/
-
 IMPEM2DEXPORT algebra::Vector2D compute_center_of_gravity(
-                        algebra::Matrix2D_d &m,
-                        int *dims=NULL,int *bases=NULL);
-
-
+                   algebra::Matrix2D_d &m,int *dims=NULL,int *bases=NULL);
 
 IMPEM2DEXPORT void print_vector(std::vector< std::complex<double> > &v);
 
 
-//! Aligns completely two matrices (rotationally and translationally).
-//! Using centers
+
+//! Aligns two matrices (rotationally and translationally) using centers of
+//! gravity
 /**
-  \param[in] m1 first matrix. Used as reference
+  \param[in] m1 Reference matrix
   \param[in] m2 the matrix that is aligned with m1
-  \param[out] t the resulting transformation to apply to m2 to align it with m1
-  \param[out] The value of the maximum cross correlation coefficient
+  \param[in] apply if true, apply the transformation to m2 after alignment
+  \param[in] interpolation_method interpolation method during resamplings,
+              rotations and translations. Default:0, bilinear
+  \param[out] A pair with the transformation to align m2 to m1
+              and the value of the cross correlation
 **/
-IMPEM2DEXPORT double align2D_complete_with_centers(algebra::Matrix2D_d &m1,
+IMPEM2DEXPORT ResultAlign2D align2D_complete_with_centers(
+                      algebra::Matrix2D_d &m1,
                       algebra::Matrix2D_d &m2,
-                      algebra::Transformation2D &t, bool apply,
-                      int interpolation_method);
+                      bool apply,
+                      int interpolation_method=0);
 
 
 
-IMPEM2DEXPORT double align2D_complete_with_centers_no_preprocessing(
+//! Aligns two matrices (rotation and translation) using centers and
+//! no preprocessing. Preprocessed data must be provided.
+/**
+  \param[in] center1 Center of gravity of the reference matrix
+  \param[in] center2 Center of gravity of the matrix to align
+  \param[in] AUTOC_POLAR1 Fourier transform of the autocorrelation function
+              of the reference matrix resampled to polar coordinates
+  \param[in] AUTOC_POLAR2 Same thing form the matrix to align
+  \param[in] n_rings number of rings used for the polar resamplings
+  \param[in] sampling_points number of points used per ring for the
+             polar resamplings
+  \param[out] A pair with the transformation to align the matrix
+              to the reference and the value of the rotational
+              cross correlation (NOT the cross-correlation coefficient)
+**/
+IMPEM2DEXPORT ResultAlign2D align2D_complete_with_centers_no_preprocessing(
                       algebra::Vector2D &center1,
                       algebra::Vector2D &center2,
-                      complex_rings &fft_rings1,
-                      complex_rings &fft_rings2,
-                      algebra::Transformation2D &t,
-                      PolarResamplingParameters polar_params);
-
+                      algebra::Matrix2D_c &AUTOC_POLAR1,
+                      algebra::Matrix2D_c &AUTOC_POLAR2,
+                      unsigned int n_rings, unsigned int sampling_points);
 
 IMPEM2D_END_NAMESPACE
 

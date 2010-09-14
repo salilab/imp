@@ -7,16 +7,18 @@
 
 #include "IMP/em2d/ProjectionFinder.h"
 #include "IMP/em2d/pca_features_extraction.h"
-#include "IMP/em/image_transformations.h"
 #include "IMP/em2d/scores2D.h"
+#include "IMP/em2d/align2D.h"
 #include "IMP/em2d/filenames_manipulation.h"
 #include "IMP/em2d/FFToperations.h"
 #include "IMP/em2d/project.h"
 #include "IMP/em2d/Fine2DRegistrationRestraint.h"
+#include "IMP/em/image_transformations.h"
 #include "IMP/em/SpiderReaderWriter.h"
 #include "IMP/gsl/Simplex.h"
 #include "IMP/log.h"
 #include "IMP/Pointer.h"
+#include "IMP/exception.h"
 #include <boost/timer.hpp>
 #include <boost/progress.hpp>
 #include <algorithm>
@@ -27,37 +29,54 @@ IMPEM2D_BEGIN_NAMESPACE
 
 
 void ProjectionFinder::preprocess_subjects_and_projections() {
+
+  IMP_LOG(IMP::TERSE,
+       "ProjectionFinder: preprocessing subjects and projections" << std::endl);
+  IMP_USAGE_CHECK(subjects_set_,
+        "preprocess_subjects_and_projections: "
+        "subject images have not been set");
+  IMP_USAGE_CHECK(projections_set_,
+        "preprocess_subjects_and_projections: "
+        "projection images have not been set");
+
+  SUBJECTS_POLAR_AUTOC_.resize(n_subjects_);
+  SUBJECTS_.resize(n_subjects_);
+  PROJECTIONS_POLAR_AUTOC_.resize(n_projections_);
+  boost::progress_display show_progress(n_subjects_+n_projections_);
   // FFT PREPROCESSING
   if(coarse_registration_method_ ==1 ||coarse_registration_method_==2) {
-    IMP_LOG(IMP::TERSE,"ProjectionFinder: preprocessing subjects" << std::endl);
-    fft_rings_subjects_.resize(n_subjects_);
-    fft_rings_projections_.resize(n_projections_);
-    preprocess_for_coarse_registration(subjects_,SUBJECTS_,
-            fft_rings_subjects_,true,interpolation_method_);
-    // Storing the FFT of projections is not needed
-  IMP_LOG(IMP::TERSE,
-            "ProjectionFinder: preprocessing projections" << std::endl);
-    preprocess_for_coarse_registration(projections_,PROJECTIONS_,
-            fft_rings_projections_,false,interpolation_method_);
+    for (unsigned int i=0;i<n_subjects_;++i) {
+      // FFT
+      FFT2D fft(subjects_[i]->get_data(),SUBJECTS_[i]); fft.execute();
+      // autocorrelation, polar, FFT
+      fft_polar_autocorrelation2D(subjects_[i]->get_data(),
+                                    SUBJECTS_POLAR_AUTOC_[i]);
+      IMP_LOG(IMP::TERSE,"Subject " << i << " preprocessed." << std::endl);
+      ++show_progress;
+    }
+
+    for (unsigned int j=0;j<n_projections_;++j) {
+      fft_polar_autocorrelation2D(projections_[j]->get_data(),
+                                    PROJECTIONS_POLAR_AUTOC_[j]);
+      IMP_LOG(IMP::TERSE,"Projection " << j << " preprocessed." << std::endl);
+      ++show_progress;
+    }
   }
+
   // CENTERS OF GRAVITY AND ROTATIONAL FFT PREPROCESSING
   if(coarse_registration_method_==3) {
-
-    IMP_LOG(IMP::TERSE,"ProjectionFinder: preprocessing subjects" << std::endl);
-    fft_rings_subjects_.resize(n_subjects_);
-    fft_rings_projections_.resize(n_projections_);
-    preprocess_for_fast_coarse_registration(subjects_,
-                                      subjects_cog_,
-                                      fft_rings_subjects_,
-                                      true,
-                                      interpolation_method_);
-    IMP_LOG(IMP::TERSE,"ProjectionFinder: preprocessing projections"
-                                << std::endl);
-    preprocess_for_fast_coarse_registration(projections_,
-                                      projections_cog_,
-                                      fft_rings_projections_,
-                                      false,
-                                      interpolation_method_);
+    subjects_cog_.resize(n_subjects_);
+    projections_cog_.resize(n_projections_);
+    for (unsigned int i=0;i<n_subjects_;++i) {
+      preprocess_for_fast_coarse_registration(
+        subjects_[i]->get_data(),subjects_cog_[i],SUBJECTS_POLAR_AUTOC_[i]);
+      ++show_progress;
+    }
+    for (unsigned int j=0;j<n_projections_;++j) {
+      preprocess_for_fast_coarse_registration(projections_[j]->get_data(),
+                               projections_cog_[j],SUBJECTS_POLAR_AUTOC_[j]);
+      ++show_progress;
+    }
   }
   // PCA PREPROCESSING
   if(coarse_registration_method_ ==2 || coarse_registration_method_==3) {
@@ -68,9 +87,9 @@ void ProjectionFinder::preprocess_subjects_and_projections() {
   }
 }
 
-double ProjectionFinder::get_coarse_registration(
-                            bool save_match_images) {
-  IMP_LOG(IMP::TERSE,"ProjectionFinder: get coarse registration" << std::endl);
+
+double ProjectionFinder::get_coarse_registration() {
+  IMP_LOG(IMP::TERSE,"Coarse registration of subjects .... " << std::endl);
   IMP_USAGE_CHECK(subjects_set_,
         "get_coarse_registration: subject images have not been set");
   IMP_USAGE_CHECK(projections_set_,
@@ -94,18 +113,13 @@ double ProjectionFinder::get_coarse_registration(
     registration_results_[i]=subject_RRs[0];
     registration_results_[i].set_in_image(*subjects_[i]);
 
-/*********************************
-    std::cout << "COARSE REGISTRATIONS FOR SUBJECT " << i << std::endl;
-    std::ofstream f;
-    std::ostringstream fn;
-    fn << "all-subject-" << i << "-coarse_matches.sel";
-    f.open(fn.str().c_str(),std::ios::out);
+    IMP_LOG(IMP::VERBOSE,"Coarse registration results for subject : "
+                                                            << std::endl);
     for (unsigned int k=0;k<subject_RRs.size();++k) {
-      f << "proj-" << subject_RRs[k].get_index() << ".spi 1" << std::endl;
-      subject_RRs[k].write();
+      IMP_LOG(IMP::VERBOSE,"Projection " << k << " Registration result: "
+            << subject_RRs[k].get_index() << std::endl);
     }
-    f.close();
-*********************************/
+
     /**** Compute score and save image if requested *****/
     // Apply the transformation here and not in the discrepancy score.
     // Saves time if the image is saved, the transformation is not done twice.
@@ -117,7 +131,7 @@ double ProjectionFinder::get_coarse_registration(
     // Compute score
     bool apply_transformations=false;
     Score += discrepancy_score(*subjects_[i],*match,apply_transformations);
-    if(save_match_images) {
+    if(save_match_images_) {
       registration_results_[i].set_in_image(*match);
       std::ostringstream strm;
       strm << "coarse_match-" << i << ".spi";
@@ -130,17 +144,22 @@ double ProjectionFinder::get_coarse_registration(
 }
 
 
-
 algebra::Transformation2D
-              ProjectionFinder::get_coarse_registrations_for_subject(
+            ProjectionFinder::get_coarse_registrations_for_subject(
              unsigned int i,RegistrationResults &subject_RRs) {
+
   algebra::Transformation2D t,best_transformation;
-  /***** Computation ********/
-  // Align with all projections
   double max_ccc=0,ccc=0;
-  // Save all the registration results for the subject
+
+
   subject_RRs.resize(n_projections_);
+  IMP_LOG(IMP::VERBOSE," Size vector projections = " << projections_.size()
+          << std::endl);
+
   for(unsigned long j=0;j<n_projections_;++j) {
+    IMP_LOG(IMP::VERBOSE,"Registering subject " << i << " with projection "
+            << j << std::endl);
+
     // If method includes PCA check, do it
     if((coarse_registration_method_==2 || coarse_registration_method_==3) &&
       !pca_features_match(subjects_pcas_[i],projections_pcas_[j],0.1)) {
@@ -150,53 +169,67 @@ algebra::Transformation2D
     // Method without preprocessing
     if(coarse_registration_method_==0) {
       RA=align2D_complete(subjects_[i]->get_data(),
-                            projections_[j]->get_data());
+                          projections_[j]->get_data(),
+                          false,
+                          interpolation_method_);
     }
     // Methods with preprocessing and FFT alignment
     if(coarse_registration_method_==1 || coarse_registration_method_==2) {
-      ccc=align2D_complete_no_preprocessing(
-                             subjects_[i]->get_data(),
-                             SUBJECTS_[i],
-                             fft_rings_subjects_[i],
-                             projections_[j]->get_data(),
-                             fft_rings_projections_[j],t,false);
+      RA=align2D_complete_no_preprocessing(
+                      subjects_[i]->get_data(),
+                      SUBJECTS_[i],
+                      SUBJECTS_POLAR_AUTOC_[i],
+                      projections_[j]->get_data(),
+                      PROJECTIONS_POLAR_AUTOC_[j]);
     }
     // Method with centers of gravity alignment
     if(coarse_registration_method_==3) {
       PolarResamplingParameters polar_params(subjects_[i]->get_data());
-      align2D_complete_with_centers_no_preprocessing(
-                      subjects_cog_[i],projections_cog_[j],
-                      fft_rings_subjects_[i],
-                      fft_rings_projections_[j],
-                      t,polar_params);
+      unsigned int n_rings =  polar_params.get_number_of_rings();
+      unsigned int sampling_points = polar_params.get_sampling_points(n_rings);
+      RA=align2D_complete_with_centers_no_preprocessing(
+                      subjects_cog_[i],
+                      projections_cog_[j],
+                      SUBJECTS_POLAR_AUTOC_[i],
+                      PROJECTIONS_POLAR_AUTOC_[j],
+                      n_rings,sampling_points);
+      // align2D_complete_with_centers_no_preprocessing returns a value of cc
+      // from the rotational alignment, but not the ccc. compute the ccc here:
       algebra::Matrix2D_d aux;
-      em::apply_Transformation2D(projections_[j]->get_data(),t,aux,true);
+      em::apply_Transformation2D(projections_[j]->get_data(),
+                                 RA.first,aux,true,0.0,interpolation_method_);
       ccc=subjects_[i]->get_data().cross_correlation_coefficient(aux);
+      RA.second = ccc;
     }
 
     if(RA.second>max_ccc) {
-        max_ccc=ccc;
+        max_ccc=RA.second;
         best_transformation=RA.first;
       }
 
-    // Save projection parameters
-    subject_RRs[j]= RegistrationResult(
-                          projections_[j]->get_header().get_Phi(),
+    // Get the rotation values from the projection
+    IMP_LOG(IMP::VERBOSE," Setting registration subject " << i << " projection "
+            << j << std::endl);
+
+    RegistrationResult rr(projections_[j]->get_header().get_Phi(),
                           projections_[j]->get_header().get_Theta(),
                           projections_[j]->get_header().get_Psi(),
-                          0.0,0.0,j,ccc);
-    // add the 2D alignment transformation found
-    subject_RRs[j].add_in_plane_transformation(t);
+                          0.0,0.0,j,RA.second);
+    // add the 2D alignment transformation found to those values
+    rr.add_in_plane_transformation(RA.first);
+    IMP_LOG(IMP::VERBOSE," rr = " << rr << std::endl);
+    subject_RRs[j]=rr;
+    IMP_LOG(IMP::VERBOSE," Registration subject " << i << " projection "
+            << j << " " << subject_RRs[j] << std::endl);
   }
   return best_transformation;
 }
 
 
-double ProjectionFinder::get_complete_registration(
-    bool save_match_images) {
-  IMP_LOG(IMP::TERSE,
-          "ProjectionFinder: get complete registration" << std::endl);
 
+
+double ProjectionFinder::get_complete_registration() {
+  IMP_LOG(IMP::TERSE,"Complete registration of subjects .... " << std::endl);
   IMP_USAGE_CHECK(subjects_set_,
         "get_complete_registration: subject images have not been set");
   IMP_USAGE_CHECK(projections_set_,
@@ -210,51 +243,35 @@ double ProjectionFinder::get_complete_registration(
   em::SpiderImageReaderWriter<double> srw;
   algebra::Transformation2D t;
   bool masks_computed=false;
-  MasksManager masks;
-  IMP_NEW(em::Image,match,());
   unsigned int rows= subjects_[0]->get_data().get_number_of_rows();
   unsigned int cols= subjects_[0]->get_data().get_number_of_columns();
+  IMP_NEW(em::Image,match,());
   match->resize(rows,cols);
+  MasksManager masks;
+
   /***** Set optimizer ********/
   IMP_NEW(Model,scoring_model,());
   IMP_NEW(Fine2DRegistrationRestraint,fine2d,());
   IMP_NEW(IMP::gsl::Simplex,simplex_optimizer,());
   fine2d->initialize(model_particles_,resolution_,apix_,scoring_model);
   simplex_optimizer->set_model(scoring_model);
-  simplex_optimizer->set_initial_length(0.1);
+  simplex_optimizer->set_initial_length(simplex_initial_length_);
   simplex_optimizer->set_minimum_size(simplex_minimum_size_);
   IMP::SetLogState log_state(fine2d,IMP::TERSE);
   /***** Computation ********/
   preprocess_subjects_and_projections();
-  IMP_LOG(IMP::TERSE,"Registration .... " << std::endl);
   boost::progress_display show_progress(n_subjects_*n_projections_);
   double Score=0;
   for(unsigned long i=0;i<n_subjects_;++i) {
     RegistrationResults subject_RRs(n_projections_);
     get_coarse_registrations_for_subject(i,subject_RRs);
 
-     IMP_LOG(IMP::VERBOSE,
+    IMP_LOG(IMP::VERBOSE,
           "coarse registration of projections for subject " << i << std::endl);
     for (unsigned int k=0;k<subject_RRs.size();++k) {
      IMP_LOG(IMP::VERBOSE,
           "coarse registration " << k << ": " << subject_RRs[k] << std::endl);
     }
-/*********************************
-    // Show all the coarse scores for a subject:
-    std::sort(subject_RRs.begin(),subject_RRs.end(),
-              compare_registration_results);
-    std::cout << "COARSE REGISTRATIONS FOR SUBJECT " << i << std::endl;
-
-    std::ofstream f;
-    std::ostringstream sel_file_coarse;
-    sel_file_coarse << "all-subject-" << i << "-coarse_matches.sel";
-    f.open(sel_file_coarse.str().c_str(),std::ios::out);
-    for (unsigned int k=0;k<subject_RRs.size();++k) {
-      f << "proj-" << subject_RRs[k].get_index() << ".spi 1" << std::endl;
-      subject_RRs[k].write();
-    }
-    f.close();
-*********************************/
 
     for (unsigned int k=0;k<subject_RRs.size();++k) {
       // Fine registration of the subject using simplex
@@ -274,7 +291,7 @@ double ProjectionFinder::get_complete_registration(
     registration_results_[i]=subject_RRs[0];
     Score += ccc_to_em2d_score(registration_results_[i].get_ccc());
     // save if requested
-    if(save_match_images) {
+    if(save_match_images_) {
       if(!masks_computed) {
         masks.init_kernel(resolution_,apix_);
         masks.generate_masks(model_particles_);
@@ -289,131 +306,48 @@ double ProjectionFinder::get_complete_registration(
       match->write_to_floats(strm.str(),srw);
     }
   }
-        IMP_LOG(IMP::TERSE, "get_complete_registration: END" << std::endl);
-
   registration_done_=true;
   return Score/n_subjects_;
 }
 
 
 
-void ProjectionFinder::all_vs_all_projections_ccc(String &fn_out) {
-  IMP_USAGE_CHECK(projections_set_,
-          "all_vs_all_projections_ccc: projection images have not been set");
-  IMP_USAGE_CHECK(subjects_set_,
-          "all_vs_all_projections_ccc: subject images have not been set");
-  IMP_LOG(IMP::DEFAULT,"Preprocessing projections .... " << std::endl);
-  fft_rings_projections_.resize(n_projections_);
-  // First preprocess the projections as being subjects
-  preprocess_for_coarse_registration(projections_,PROJECTIONS_,
-         fft_rings_subjects_,true,interpolation_method_);
-  // Then as projections
-  preprocess_for_coarse_registration(projections_,PROJECTIONS_,
-         fft_rings_projections_,false,interpolation_method_);
 
-  IMP_LOG(IMP::TERSE,
-           "Starting all against all projection matching" << std::endl);
-  double correlations[n_projections_][n_projections_];
-  boost::progress_display show_progress(n_projections_*n_projections_/2.);
-  algebra::Transformation2D t;
-  PolarResamplingParameters polar_params(projections_[0]->get_data());
-  for(unsigned int i=0;i<n_projections_;++i) {
-    for(unsigned int j=i+1;j<n_projections_;++j) {
-      double ccc=align2D_complete_no_preprocessing(
-                             projections_[i]->get_data(),
-                             PROJECTIONS_[i],
-                             fft_rings_subjects_[i],
-                             projections_[j]->get_data(),
-                             fft_rings_projections_[j],t,false);
+void ProjectionFinder::preprocess_for_fast_coarse_registration(
+        algebra::Matrix2D_d &m,algebra::Vector2D &center,
+        algebra::Matrix2D_c &POLAR_AUTOC) {
+  // Make the matrix positive to compute the center of gravity
+  double min_value=m.compute_min();
+  algebra::Matrix2D_d result(m);
+  result -= min_value; // Now the matrix "result" is positive
+  // To compute the center of gravity the matrix has to be centered
+  result.centered_start();
+  center=compute_center_of_gravity(result);
+  // Center the image in the center of gravity
+  algebra::Vector2D minus_cent = (-1)*center;
+  em::shift(m,minus_cent,result,true);
+  fft_polar_autocorrelation2D(result,POLAR_AUTOC);
+}
 
-       correlations[i][j]=ccc;
-/*********************************
-      // Saves time if the image is saved, the transformation is not done twice.
-      em::SpiderImageReaderWriter<double> srw;
-      IMP_NEW(em::Image,match,());
-      em2d::apply_Transformation2D(projections_[j]->get_data(),t,
-                                                  match->get_data(),true);
-      RegistrationResult rr;
-      rr.add_in_plane_transformation(t);
-      rr.set_in_image(*match);
-      em2d::normalize(*match,true);
-      std::ostringstream strm;
-      strm << "match-"  << i << "-" << j << ".spi";
-      match->write_to_floats(strm.str(),srw);
-*********************************/
-      ++show_progress;
-    }
-  }
-  // Write to a file
-  std::ofstream f;
-  std::ostringstream fn;
-  fn << fn_out;
-  f.open(fn.str().c_str(),std::ios::out);
-  for(unsigned int i=0;i<n_projections_;++i) {
-    for(unsigned int j=i+1;j<n_projections_;++j) {
-      f << i <<" "<< j <<" "<<correlations[i][j] << std::endl;
-    }
-  }
-  f.close();
+void ProjectionFinder::fft_polar_autocorrelation2D(algebra::Matrix2D_d &m,
+                                      algebra::Matrix2D_c &POLAR_AUTOC) {
+  algebra::Matrix2D_d padded,autoc,polar_autoc;
+  m.pad(padded,0);
+  autocorrelation2D(padded,autoc);
+  resample2D_polar(autoc,polar_autoc,interpolation_method_);
+  FFT2D fft(polar_autoc,POLAR_AUTOC); fft.execute();
 }
 
 
 
-
-
-void preprocess_for_coarse_registration(em::Images input_set,
-        std::vector< algebra::Matrix2D_c > &MATRICES,
-        std::vector< complex_rings > &fft_rings_images,
-        bool dealing_with_subjects,int interpolation_method) {
-  unsigned long size = input_set.size();
-  boost::progress_display show_progress(size);
-  for(unsigned long i=0;i<input_set.size();++i) {
-    // Compute the autocorrelation
-    algebra::Matrix2D_d autoc;
-    autoc.resize(input_set[i]->get_data());
-    algebra::Matrix2D_c INPUT;
-    FFT2D fft(input_set[i]->get_data(),INPUT); fft.execute();
-    autocorrelation2D_no_preprocessing(INPUT,autoc);
-    // Preprocess for rotational alignment
-    complex_rings RINGS =preprocess_for_align2D_rotational(
-                                           autoc,dealing_with_subjects,
-                                           interpolation_method);
-    if(dealing_with_subjects) {
-      MATRICES.push_back(INPUT);
-    }
-    fft_rings_images[i]=RINGS;
-    ++show_progress;
-  }
+void ProjectionFinder::add_images(const em::Images &em_images) {
 }
 
-
-void preprocess_for_fast_coarse_registration(em::Images input_set,
-        algebra::Vector2Ds centers,
-        std::vector< complex_rings > &fft_rings_images,
-        bool dealing_with_subjects,
-        int interpolation_method) {
-  unsigned long size = input_set.size();
-  centers.resize(size);
-  boost::progress_display show_progress(size);
-  for(unsigned long i=0;i<size;++i) {
-    // Make the matrix positive to compute the center of gravity
-    double min_value=input_set[i]->get_data().compute_min();
-    algebra::Matrix2D_d result(input_set[i]->get_data());
-    result -= min_value; // Now the matrix "result" is positive
-    // To compute the center of gravity and FFT rings
-    //  the matrix has to be centered
-    result.centered_start();
-    centers[i]=compute_center_of_gravity(result);
-    // Center the image in the center of gravity
-    algebra::Vector2D minus_cent = (-1)*centers[i];
-    em::shift(input_set[i]->get_data(),minus_cent,result,true);
-    // Preprocess for rotational alignment
-    complex_rings RINGS=preprocess_for_align2D_rotational(
-                  result,dealing_with_subjects,interpolation_method);
-    fft_rings_images[i]=RINGS;
-    ++show_progress;
-  }
+void ProjectionFinder::remove_images(const Ints &indices){
 }
+
+void ProjectionFinder::set_not_used_images(const Ints &indices){}
+
 
 
 IMPEM2D_END_NAMESPACE

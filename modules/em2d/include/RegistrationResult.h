@@ -42,11 +42,14 @@ public:
 
   RegistrationResult(double phi,double theta,double psi,double shift_x,
                   double shift_y,long index=0,double ccc=0.0,String name="") {
+    IMP_LOG(IMP::VERBOSE," initialzing RegistrationResult " << std::endl);
     shift_[0]=shift_x; shift_[1]=shift_y;
     ccc_=ccc;
     name_=name;
     index_=index;
     set_rotation(phi,theta,psi);
+    IMP_LOG(IMP::VERBOSE," end init RegistrationResult " << std::endl);
+
   }
 
   RegistrationResult(algebra::Rotation3D &R,algebra::Vector2D &shift,

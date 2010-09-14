@@ -72,8 +72,10 @@ public:
   **/
   void initialize(double apix,double resolution =1,
                  int coarse_registration_method = 1,
+                 bool save_match_images =false,
                  int interpolation_method = 0,
                  int optimization_steps = 10,
+                 double simplex_initial_length =0.1,
                  double simplex_minimum_size =0.01) {
     resolution_ = resolution;
     apix_ = apix;
@@ -81,6 +83,8 @@ public:
     interpolation_method_ = interpolation_method;
     simplex_minimum_size_ = simplex_minimum_size;
     optimization_steps_ = optimization_steps;
+    save_match_images_ = save_match_images;
+    simplex_initial_length_ = simplex_initial_length;
     parameters_initialized_=true;
   }
 
@@ -105,6 +109,13 @@ public:
     particles_set_=true;
   }
 
+  void set_save_match_images(bool x) {
+    save_match_images_=x;
+  }
+
+  bool get_save_match_images() {
+     return save_match_images_;
+  }
 
   //! Recover the registration results. Only works if a registration has been
   //! done previously
@@ -122,34 +133,51 @@ public:
   }
 
   //! Coarse registration of projections by enumeration.
-  /**
-    \param[in] save_match_images saves the matches for the subjects obtained
-              transforming the projections. Their names are match-0.spi,
-              match-1.spi, and so on.
-  **/
-  double get_coarse_registration(bool save_match_images);
+  double get_coarse_registration();
 
 
   //! Performs complete registration of projections against subjects in 2D
-  /**
-    \param[in] save_match_images If true, saves the matched projections.
-    \param[in] apix. Amstrongs per pixel for the images
-    \param[in] optimization_steps needed for the Simplex algorithm
-    \param[in] simplex_minimum_size stop criteria for Simplex
-    \param[out] output the function returns the total discrepancy score after
-      refining all the registratation parameters.
-  **/
-  double get_complete_registration( bool save_match_images);
+  double get_complete_registration();
 
-  void all_vs_all_projections_ccc(String &fn_out);
+
+  //! Add images to those already stored in the restraint
+  /**
+    \param[in] em_images images to be added
+  **/
+  void add_images(const em::Images &em_images);
+
+  //! Remove images from those used by the restraint
+  /**
+    \param[in] indices indices of the images to be removed
+  **/
+  void remove_images(const Ints &indices);
+
+  //! Sets images to not be used by the finder, but does NOT delete them
+  /**
+    \param[in] indices indices of the images to be removed
+  **/
+  void set_not_used_images(const Ints &indices);
+
 
 protected:
 
    //! Coarse registration for one subject
   algebra::Transformation2D get_coarse_registrations_for_subject(
                         unsigned int i,RegistrationResults &subject_RRs);
-  //! Calls preprocessing routines
+
   void preprocess_subjects_and_projections();
+
+  //! Preprocess an matrix computing its center of gravity
+  //! and the FFT of the polar-resampled autocorrelation. Calls
+  //! preprocess_autocorrelation2D
+  void preprocess_for_fast_coarse_registration(
+          algebra::Matrix2D_d &m,algebra::Vector2D &center,
+          algebra::Matrix2D_c &POLAR_AUTOC);
+
+  //! Preprocess a matrix computing the autocorrelation,
+  //! resampling to polar, and then computing the FFT.
+  void fft_polar_autocorrelation2D(algebra::Matrix2D_d &m,
+                                    algebra::Matrix2D_c &POLAR_AUTOC);
 
   // Main parameters
   em::Images subjects_;
@@ -174,15 +202,14 @@ protected:
   //! Interpolation method for projection generation
   unsigned int interpolation_method_;
   //! Simplex optimization parameters
-  double simplex_minimum_size_;
+  double simplex_minimum_size_,simplex_initial_length_;
   unsigned int optimization_steps_;
 
-  // FFT related variables
+  // FFT of subjects (storing the FFT of projections is not neccessary
   std::vector< algebra::Matrix2D_c > SUBJECTS_;
-  std::vector< algebra::Matrix2D_c > PROJECTIONS_;
-  std::vector< complex_rings > fft_rings_subjects_; // need to be resized
-  std::vector< complex_rings > fft_rings_projections_; // need to be resized
-
+  // FFT of the autocorrelation resampled images
+  std::vector< algebra::Matrix2D_c > SUBJECTS_POLAR_AUTOC_;
+  std::vector< algebra::Matrix2D_c > PROJECTIONS_POLAR_AUTOC_;
   // PCA related variables
   algebra::Vector3Ds subjects_pcas_;
   algebra::Vector3Ds projections_pcas_;
@@ -192,24 +219,6 @@ protected:
 
 
 IMP_VALUES(ProjectionFinder,ProjectionFinders);
-
-
-//! Computes the autocorrelation functions and their polar resampling of the
-//! input set.
-IMPEM2DEXPORT void preprocess_for_coarse_registration(
-        em::Images input_set,
-        std::vector< algebra::Matrix2D_c > &MATRICES,
-        std::vector< complex_rings > &fft_rings_images,
-        bool dealing_with_subjects=false,
-        int interpolation_method=0 );
-
-
-IMPEM2DEXPORT void preprocess_for_fast_coarse_registration(
-        em::Images input_set,
-        algebra::Vector2Ds centers,
-        std::vector< complex_rings > &fft_rings_images,
-        bool dealing_with_subjects=false,
-        int interpolation_method=0);
 
 
 

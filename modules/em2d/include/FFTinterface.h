@@ -93,6 +93,12 @@ public:
 
   inline void prepare(const algebra::Matrix2D_c &in,algebra::Matrix2D_d &out) {
     // Prepare plan
+    unsigned int rows=out.get_number_of_rows();
+    unsigned int cols=out.get_number_of_columns();
+    if(rows==0 || cols==0) {
+      IMP_THROW("IFFT2D: output matrix has no rows or columns ",ValueException);
+    }
+
     IFFT_ = fftw_plan_dft_c2r_2d(out.get_number_of_rows(),
               out.get_number_of_columns(),
               (fftw_complex *)in.data(),
