@@ -40,6 +40,10 @@ IMP_SWIG_OBJECT(IMP::container, TripletContainerSet, TripletContainerSets);
 IMP_SWIG_OBJECT(IMP::container, TripletsConstraint, TripletsConstraints);
 IMP_SWIG_OBJECT(IMP::container, TripletsOptimizerState, TripletsOptimizerStates);
 IMP_SWIG_OBJECT(IMP::container, TripletsRestraint, TripletsRestraints);
+IMP_SWIG_OBJECT(IMP::container, InContainerSingletonFilter, InContainerSingletonFilters);
+IMP_SWIG_OBJECT(IMP::container, InContainerPairFilter, InContainerPairFilters);
+IMP_SWIG_OBJECT(IMP::container, InContainerTripletFilter, InContainerTripletFilters);
+IMP_SWIG_OBJECT(IMP::container, InContainerQuadFilter, InContainerQuadFilters);
 
 /* Wrap our own classes */
 %include "IMP/container/AllBipartitePairContainer.h"
@@ -84,3 +88,7 @@ IMP_SWIG_OBJECT(IMP::container, TripletsRestraint, TripletsRestraints);
 %include "IMP/container/TripletsConstraint.h"
 %include "IMP/container/TripletsOptimizerState.h"
 %include "IMP/container/TripletsRestraint.h"
+%include "IMP/container/InContainerSingletonFilter.h"
+%include "IMP/container/InContainerPairFilter.h"
+%include "IMP/container/InContainerTripletFilter.h"
+%include "IMP/container/InContainerQuadFilter.h"
