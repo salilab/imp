@@ -13,7 +13,9 @@
 #include <IMP/atom/Mass.h>
 #include <IMP/core/PairRestraint.h>
 #include <IMP/core/DistancePairScore.h>
+#include <IMP/core/SphereDistancePairScore.h>
 #include <IMP/container/PairsRestraint.h>
+#include <IMP/domino2/utility.h>
 #include <IMP/scoped.h>
 #include <IMP/internal/map.h>
 
@@ -50,22 +52,21 @@ const algebra::VectorD<3> tr(const btVector3 &v) {
  */
 
 ResolveCollisionsOptimizer
-::ResolveCollisionsOptimizer(const RestraintSetsTemp &rs,
-                             const ParticlesTemp &ps):
+::ResolveCollisionsOptimizer(const RestraintSetsTemp &rs):
   Optimizer(rs[0]->get_model(), "ResolveCollisionsOptimizer %1%"),
-  rs_(rs), ps_(ps){
-  IMP_IF_CHECK(USAGE) {
-    for (unsigned int i=0; i< ps.size(); ++i) {
-      IMP_USAGE_CHECK(core::XYZR::particle_is_instance(ps[i]),
-                      "All passed particles must be XYZR particles");
-    }
-  }
+  rs_(rs){
 }
 
 ResolveCollisionsOptimizer::ResolveCollisionsOptimizer(Model *m):
   Optimizer(m, "ResolveCollisionsOptimizer %1%"),
   rs_(1, m->get_root_restraint_set()){
 }
+
+
+void ResolveCollisionsOptimizer::set_xyzrs(const core::XYZRsTemp &ps) {
+  ps_=core::XYZRs(ps.begin(), ps.end());
+}
+
 /*
 void ResolveCollisionsOptimizer::add_obstacle
 (const algebra::Vector3Ds &vertices,
@@ -99,7 +100,9 @@ void ResolveCollisionsOptimizer
 
 
 namespace {
-  void handle_restraints(RestraintSet *rs,double weight,
+  void handle_restraints(const DependencyGraph &dg,
+                         const ParticlesTemp &ps,
+                         RestraintSet *rs,double weight,
                          btDiscreteDynamicsWorld *world,
                    const IMP::internal::Map<Particle*, btRigidBody *> &map,
                     boost::ptr_vector< btGeneric6DofSpringConstraint> &springs,
@@ -136,37 +139,45 @@ namespace {
       } else if (dynamic_cast<RestraintSet*>(r)){
         RestraintSet *rsc=
           dynamic_cast<RestraintSet*>(r);
-        handle_restraints(rsc, weight*rsc->get_weight(),
+        handle_restraints(dg, ps, rsc, weight*rsc->get_weight(),
                           world, map, springs, restraints);
       } else if (dynamic_cast<PairsScoreRestraint*>(r)) {
         PairsScoreRestraint*pr
           = dynamic_cast<PairsScoreRestraint*>(r);
-        PairScore *ps= pr->get_score();
-        core::HarmonicDistancePairScore *hdps
-          = dynamic_cast<core::HarmonicDistancePairScore*>(ps);
-        if (hdps) {
-          IMP_LOG(TERSE, "Handling restraint " << pr->get_name() << std::endl);
-          double x0= hdps->get_rest_length();
-          ParticlePairsTemp ppt= pr->get_arguments();
-          for (unsigned int i=0; i< ppt.size(); ++i) {
-            Particle *p0= ppt[i][0];
-            Particle *p1= ppt[i][1];
-            btRigidBody *r0= map.find(p0)->second;
-            btRigidBody *r1= map.find(p1)->second;
-            // assume center is coordinates of particle
-            btTransform it; it.setIdentity();
-            btTransform it1; it1.setIdentity();
-            it1.setOrigin(btVector3(x0, 0,0));
-            springs.push_back(new btGeneric6DofSpringConstraint(*r0, *r1,
-                                                                it, it1,
-                                                                true));
-            for (unsigned int i=0; i< 3; ++i) {
-              springs.back().enableSpring(i, true);
-              springs.back().setStiffness(i, hdps->get_k());
+        ContainersTemp ct= pr->get_input_containers();
+        if (ct.size()==1 && domino2::get_is_static_container(ct[0], dg, ps)) {
+          PairScore *ps= pr->get_score();
+          core::HarmonicDistancePairScore *hdps
+            = dynamic_cast<core::HarmonicDistancePairScore*>(ps);
+          if (hdps) {
+            IMP_LOG(TERSE, "Handling restraint " << pr->get_name()
+                    << std::endl);
+            double x0= hdps->get_rest_length();
+            ParticlePairsTemp ppt= pr->get_arguments();
+            for (unsigned int i=0; i< ppt.size(); ++i) {
+              Particle *p0= ppt[i][0];
+              Particle *p1= ppt[i][1];
+              btRigidBody *r0= map.find(p0)->second;
+              btRigidBody *r1= map.find(p1)->second;
+              // assume center is coordinates of particle
+              btTransform it; it.setIdentity();
+              btTransform it1; it1.setIdentity();
+              it1.setOrigin(btVector3(x0, 0,0));
+              springs.push_back(new btGeneric6DofSpringConstraint(*r0, *r1,
+                                                                  it, it1,
+                                                                  true));
+              for (unsigned int i=0; i< 3; ++i) {
+                springs.back().enableSpring(i, true);
+                springs.back().setStiffness(i, hdps->get_k());
+              }
+              world->addConstraint(&springs.back());
             }
-            world->addConstraint(&springs.back());
+            restraints.push_back(new ScopedRemoveRestraint(pr,rs));
+          } else {
+            if (dynamic_cast<core::SoftSpherePairScore*>(ps)) {
+              restraints.push_back(new ScopedRemoveRestraint(pr,rs));
+            }
           }
-          restraints.push_back(new ScopedRemoveRestraint(pr,rs));
         }
       }
     }
@@ -297,13 +308,19 @@ double ResolveCollisionsOptimizer::optimize(unsigned int iter) {
       IMP_USAGE_CHECK(false, "Rigid bodies not yet supported");
       //http://www.bulletphysics.com/Bullet/BulletFull/classbtMultiSphereShape.html
     } else if (core::XYZR::particle_is_instance(ps[i])){
-      handle_xyzr(ps_[i], shapes, spheres, motion_states, map,
+      handle_xyzr(ps[i], shapes, spheres, motion_states, map,
                   dynamicsWorld.get(), rigid_bodies);
     }
   }
-  for (unsigned int i=0; i< rs_.size(); ++i) {
-    handle_restraints(rs_[i], rs_[i]->get_weight(), dynamicsWorld.get(),
-                      map, springs, restraints);
+  {
+    DependencyGraph dg= get_dependency_graph(RestraintsTemp(rs_.begin(),
+                                                            rs_.end()));
+    ParticlesTemp ps(ps.begin(), ps.end());
+    for (unsigned int i=0; i< rs_.size(); ++i) {
+      handle_restraints(dg, ps, rs_[i], rs_[i]->get_weight(),
+                        dynamicsWorld.get(),
+                        map, springs, restraints);
+    }
   }
   for (unsigned int i=0; i< obstacles_.size(); ++i) {
     handle_obstacle(obstacles_[i].first, obstacles_[i].second,
