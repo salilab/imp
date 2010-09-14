@@ -3,6 +3,7 @@ files = [
          'knn.cpp',
          'polygons.cpp',
          'polyhedrons.cpp',
+         'sphere_cover.cpp',
         ]
 
 files = [File(x) for x in files]

@@ -3,6 +3,7 @@ files = [
          'knn.h',
          'polygons.h',
          'polyhedrons.h',
+         'sphere_cover.h',
         ]
 
 files = [File(x) for x in files]
