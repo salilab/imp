@@ -595,7 +595,7 @@ get_is_static_container(Container *c,
     IMP_THROW("Container \"" << c->get_name()
               << "\" not in graph.", ValueException);
   }
-  return get_has_ancestor(dg, cv, pst);
+  return !get_has_ancestor(dg, cv, pst);
 }
 
 
