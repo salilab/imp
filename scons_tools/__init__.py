@@ -120,6 +120,7 @@ def _add_build_flags(env):
             env.Append(CXXFLAGS=["-O3", "-fexpensive-optimizations",
                                  "-ffast-math", "-ftree-vectorize",
                                  '-ffinite-math-only',
+                                 '-fstrict-aliasing',
                                  '-fno-trapping-math',
                                  '-fno-signaling-nans',
                                  '-fno-float-store'])
@@ -131,6 +132,7 @@ def _add_build_flags(env):
             env.Append(CXXFLAGS=["-O2"])
         elif env['build'] == 'debug':
             env.Append(CXXFLAGS=["-g"])
+            env.Append(LINKFLAGS=["-g"])
 
 
 
