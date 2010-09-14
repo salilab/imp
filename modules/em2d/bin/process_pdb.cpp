@@ -54,9 +54,6 @@ po::variables_map get_parameters(int argc,char **argv) {
           "Optional: proj_params")
     ("proj_img","Project the PDB to generate IMAGES. Requires: np, res, apix, "
          "size_i, proj_dist. Optional: proj_params, SNR, mrc")
-    ("self_sim",po::value<str>()->default_value(""),
-      "(EXPERIMENTAL COMMAND) Self similarity correlation between "
-      "the projections of the PDB. Requires: np, res, apix")
     ("np", po::value<unsigned int>(),"number of projections requested")
     ("res", po::value<double>()->default_value(1),
                     "resolution for map and image generation, in A")
@@ -233,35 +230,6 @@ int main(int argc, char **argv) {
     }
   }
 
-
-  // Self similarity of the projections
-  if(digest_parameter("self_sim",vm,opt)) {
-    IMP::String param_error = "More parameters are required with --self_sim\n";
-    IMP_USAGE_CHECK(check_parameters(vm,"np,apix,size_i"),param_error);
-    IMP::String fn_results=opt[0];
-    // Parameters
-    unsigned int np=vm["np"].as<unsigned int>();
-    double apix       = vm["apix"].as<double>();
-    digest_parameter("size_i",vm,opt);
-    unsigned int cols = std::atoi(opt[0].c_str());
-    unsigned int rows = std::atoi(opt[1].c_str());
-    opt.resize(1);   opt[0]="unif";
-    em2d::RegistrationResults registration_values=
-                                          get_registration_values(opt,np);
-    em::Images projections = em2d::generate_projections(
-                     sps,registration_values,rows,cols,resolution,apix,srw);
-
-
-
-    em::Images projections2 = em2d::generate_projections(
-                     sps,registration_values,rows,cols,resolution,apix,srw);
-    for (unsigned int i=0;i<np;++i) {
-      em::normalize(*projections[i]);
-    }
-    em2d::ProjectionFinder registration;
-    registration.set_projections(projections);
-    registration.all_vs_all_projections_ccc(fn_results);
-  }
   // Project PDBs
   if(vm.count("proj_pdb")) {
     IMP::String param_error = "More parameters are required with --proj_pdb\n";

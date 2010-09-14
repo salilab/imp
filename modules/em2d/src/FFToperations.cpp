@@ -47,9 +47,7 @@ void correlation2D_no_preprocessing(
 
   algebra::Matrix2D_c CORR(M1.get_size(0),M1.get_size(1));
   for(unsigned long i=0;i<M1.num_elements();++i) {
-    std::complex<double> x1 = M1.data()[i];
-    std::complex<double> x2 = M2.data()[i];
-    CORR.data()[i] = x1*std::conj(x2);
+    CORR.data()[i] = M1.data()[i] * std::conj(M2.data()[i]);
   }
   IFFT2D ifft(CORR,corr);ifft.execute(); //corr contains the correlation matrix
   matrix_to_image_interpretation(corr);

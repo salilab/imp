@@ -27,27 +27,34 @@ public:
     parameters_set_=false;
   };
 
-  //! The initial and final radius for the polar resampling are computed
-  //! from the matrix dimensions. Also the number of rings to employ.
+  //! Compute the parameters for a polar resampling from the dimensions of
+  //! the matrix
+  PolarResamplingParameters(unsigned int rows, unsigned int cols) {
+    initialize(rows,cols);
+  }
+
+  //! Compute the parameters for a polar resampling getting the dimensions from
+  //! the matrix
   /**
       \params[in] matrix Matrix that is going to be resampled
   **/
   PolarResamplingParameters(algebra::Matrix2D_d &matrix) {
-    initialize(matrix);
+    initialize(matrix.get_number_of_rows(),matrix.get_number_of_columns());
   }
 
-  void initialize(algebra::Matrix2D_d &m) {
+  void initialize(unsigned int rows, unsigned int cols) {
     starting_radius_=5.0;
-    ending_radius_=std::min(m.get_number_of_rows(),m.get_number_of_columns());
+    ending_radius_=std::min(rows,cols);
     n_rings_ = (unsigned int)floor(ending_radius_/3); // quick
     radius_step_ = (ending_radius_-starting_radius_)/((double)(n_rings_));
     parameters_set_ = true;
     IMP_LOG(IMP::VERBOSE,
        "PolarResamplingParameters initialized. Input matrix: "
-      << m.get_number_of_rows() << " x " << m.get_number_of_columns()
+      << rows << " x " << cols
       << " Starting radius= "  <<  starting_radius_  << " Ending radius= "
       << ending_radius_ << " Rings= " << n_rings_ << std::endl);
    }
+
 
   double get_starting_radius() const {
     check_initalized();
