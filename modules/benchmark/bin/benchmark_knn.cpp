@@ -65,7 +65,7 @@ int main() {
 #ifdef IMP_USE_CGAL
   {
     std::string name("cgal");
-    typedef IMP::algebra::internal::CGALKNNData<3> Data;
+    typedef IMP::cgal::internal::KNNData<3> Data;
     test_uniform<Data>(name, 10, 0, 0.000673);
     test_uniform<Data>(name, 10, .1, 0.000817);
     test_uniform<Data>(name, 10, .5, 0.000691);
