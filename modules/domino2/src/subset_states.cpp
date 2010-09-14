@@ -326,9 +326,14 @@ namespace {
       current_digit=i;
       goto increment;
     }
-    current_digit=0;
-    //IMP_LOG(VERBOSE, "Found " << cur << std::endl);
-    states_.push_back(SubsetState(cur));
+    {
+      current_digit=0;
+      SubsetState to_push=get_sub_subset_state(cur,
+                                               order.begin(),
+                                               order.end());
+      //IMP_LOG(VERBOSE, "Found " << to_push << std::endl);
+      states_.push_back(to_push);
+    }
     goto increment;
   increment:
     //std::cout << "Incrementing " << cur << " on "
