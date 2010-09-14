@@ -52,7 +52,7 @@ DiscreteSampler
       mset=new ModelSubsetEvaluatorTable(get_model(),
                                          get_particle_states_table());
     }
-    sfts.push_back(new RestraintScoreSubsetFilterTable(mset,this));
+    sfts.push_back(new RestraintScoreSubsetFilterTable(mset));
     sfts.back()->set_was_used(true);
     sfts.push_back(new PermutationSubsetFilterTable
                    (get_particle_states_table()));
@@ -94,7 +94,7 @@ ConfigurationSet *DiscreteSampler::do_sample() const {
         =get_particle_states_table()->get_particle_states(p);
       ps->load_state(final_solutions[i][j], p);
     }
-    if (get_is_good_configuration()) {
+    if (get_model()->get_has_good_score()) {
       ret->save_configuration();
     } else {
       IMP_LOG(TERSE, "Rejected " << final_solutions[i] << std::endl);

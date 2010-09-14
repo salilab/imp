@@ -3,57 +3,84 @@ import IMP.domino2
 import IMP.core
 
 #set restraints
-def setup_restraints(m, ps):
-    pairs=[[0,1],[0,2],[1,2],[2,3],[3,4],[4,5],[3,5]]
-    sf = IMP.core.Harmonic(1.0, 1)
-    for pair in pairs:
-        r=IMP.core.DistanceRestraint(sf, ps[pair[0]], ps[pair[1]])
-        m.add_restraint(r)
+def create_scoring(m, ps):
+    pairs=[[0,1],[0,2],[1,3],[2,3],[3,4],[4,5],[1,5]]
+    score= IMP.core.HarmonicDistancePairScore(1, 1)
+    # the restraint will be broken apart during optimization
+    pc= IMP.container.ListPairContainer([(ps[p[0]], ps[p[1]]) for p in pairs],
+                                         "Restrained pairs")
+    pr= IMP.container.PairsRestraint(score, pc)
+    m.set_maximum_score(pr, .01)
+    m.add_restraint(pr)
     d= IMP.core.DistanceToSingletonScore(IMP.core.HarmonicUpperBound(2,1),
                                          IMP.algebra.Vector3D(2,0,0))
     # force ps[1] to be on the positive side to remove flip degree of freedom
     dr= IMP.core.SingletonRestraint(d, ps[1])
     m.add_restraint(dr)
+    # we are not interested in conformations which don't fit the distances
+    # exactly, but using 0 is tricky
+    m.set_maximum_score(dr, .01)
+    return m.get_restraints()
 
-IMP.set_log_level(IMP.SILENT)
+def create_representation(m):
+    ps=[]
+    for i in range(0,6):
+        p=IMP.Particle(m)
+        IMP.core.XYZ.setup_particle(p,IMP.algebra.Vector3D(0.,0.,0.))
+        ps.append(p)
+    return ps
+
+def create_discrete_states(ps):
+    pst= IMP.domino2.ParticleStatesTable()
+    vs=[IMP.algebra.Vector3D(1,0,0),
+        IMP.algebra.Vector3D(0,1,0),
+        IMP.algebra.Vector3D(1,1,0),
+        IMP.algebra.Vector3D(2,1,0),
+        IMP.algebra.Vector3D(2,0,0)]
+    vs= vs+[-v for v in vs]
+    print len(vs), "states for each particle"
+    states= IMP.domino2.XYZStates(vs)
+    # special case ps[0] to remove a sliding degree of freedom
+    for p in ps[1:]:
+        print p.get_name()
+        pst.set_particle_states(p, states)
+    return pst
+
+def create_sampler(m, pst):
+    s=IMP.domino2.DominoSampler(m, pst)
+    # the following lines recreate the defaults and so are optional
+    me= IMP.domino2.ModelSubsetEvaluatorTable(m, pst)
+    s.set_subset_evaluator_table(me)
+    filters=[]
+    # do not allow particles with the same ParticleStates object
+    # to have the same state index
+    filters.append(IMP.domino2.PermutationSubsetFilterTable(pst))
+    # filter states that score worse than the cutoffs in the sample
+    filters.append(IMP.domino2.RestraintScoreSubsetFilterTable(me))
+    filters[-1].set_log_level(IMP.SILENT)
+    states= IMP.domino2.BranchAndBoundSubsetStatesTable(pst, filters);
+    states.set_log_level(IMP.SILENT);
+    s.set_subset_states_table(states)
+
+    return s
+
+IMP.set_log_level(IMP.TERSE)
 m=IMP.Model()
 m.set_log_level(IMP.SILENT)
-print "create sampler"
-s=IMP.domino2.DominoSampler(m)
-#1. set up the particles
-print "setting up particles"
-ps=IMP.Particles()
-for i in range(0,6):
-    p=IMP.Particle(m)
-    IMP.core.XYZ.setup_particle(p,IMP.algebra.Vector3D(0.,0.,0.))
-    ps.append(p)
 
-#2. set up the discrete set of states
-print "setting up a discrete set of states"
-vs=[]
-for i in range(1,4):
-    vs.append(IMP.algebra.Vector3D(i,0,0))
-    vs.append(IMP.algebra.Vector3D(i,1,0))
-vs=vs+[IMP.algebra.Vector3D(-x[0], x[1], x[2]) for x in vs]
+print "creating representation"
+ps=create_representation(m)
+print "creating discrete states"
+pst=create_discrete_states(ps)
+print "creating sampler"
+s=create_sampler(m, pst)
+print "creating score function"
+rs=create_scoring(m, ps)
 
-
-print "create states"
-states= IMP.domino2.XYZStates(vs)
-# special case ps[0] to remove a sliding degree of freedom
-for p in ps[1:]:
-    print p.get_name()
-    s.set_particle_states(p, states)
-
-#3. add restraints (defining the scoring function)
-print "setting up restraints"
-setup_restraints(m, ps)
-
-#5. optimize
-s.set_maximum_score(.2)
 print "sampling"
 cs=s.get_sample()
 
-print "Found ", cs.get_number_of_configurations(), "solutions"
+print "found ", cs.get_number_of_configurations(), "solutions"
 for i in range(cs.get_number_of_configurations()):
     cs.load_configuration(i)
     print "solution number:",i," is:", m.evaluate(False)

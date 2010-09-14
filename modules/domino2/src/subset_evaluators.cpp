@@ -54,6 +54,7 @@ ModelSubsetEvaluatorTable::ModelSubsetEvaluatorTable(RestraintSet *rs,
 
 SubsetEvaluator *
 ModelSubsetEvaluatorTable::get_subset_evaluator(const Subset &s) const {
+  IMP_OBJECT_LOG;
   return new ModelSubsetEvaluator(this, data_.get_subset_data(s));
 }
 

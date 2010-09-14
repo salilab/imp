@@ -61,7 +61,7 @@ class DOMINOTests(IMP.test.TestCase):
         ds= IMP.domino2.DominoSampler(m)
         ds.set_maximum_score(.5)
         me= IMP.domino2.ModelSubsetEvaluatorTable(m, pst)
-        rssft= IMP.domino2.RestraintScoreSubsetFilterTable(me, ds)
+        rssft= IMP.domino2.RestraintScoreSubsetFilterTable(me)
         dsst= IMP.domino2.BranchAndBoundSubsetStatesTable(pst, [rssft])
         IMP.set_log_level(IMP.VERBOSE)
         print "setting"

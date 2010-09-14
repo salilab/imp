@@ -19,7 +19,6 @@
 #include "domino2_config.h"
 #include <IMP/Object.h>
 #include <IMP/Pointer.h>
-#include <IMP/Sampler.h>
 #include <IMP/Configuration.h>
 #include <IMP/Model.h>
 #include <IMP/macros.h>
@@ -62,9 +61,6 @@ IMP_OBJECTS(SubsetFilterTable, SubsetFilterTables);
 
 
 //! Filter a configuration of the subset using the Model
-/** The maximum scores allowed for each restraint are
-    taken from the Sampler.
- */
 class IMPDOMINO2EXPORT RestraintScoreSubsetFilterTable:
   public SubsetFilterTable {
   struct StatsPrinter:public Pointer<ModelSubsetEvaluatorTable>{
@@ -74,10 +70,8 @@ class IMPDOMINO2EXPORT RestraintScoreSubsetFilterTable:
     ~StatsPrinter();
   };
   StatsPrinter mset_;
-  double max_;
  public:
-  RestraintScoreSubsetFilterTable(ModelSubsetEvaluatorTable *eval,
-                                  const Sampler *s);
+  RestraintScoreSubsetFilterTable(ModelSubsetEvaluatorTable *eval);
   IMP_SUBSET_FILTER_TABLE(RestraintScoreSubsetFilterTable);
 };
 

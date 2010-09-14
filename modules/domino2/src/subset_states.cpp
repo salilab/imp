@@ -305,7 +305,7 @@ namespace {
       cur[i]=0;
     }
 
-    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    /*IMP_IF_CHECK(USAGE_AND_INTERNAL) {
       Ints state;
       std::map<Particle*, int> map;
       for (unsigned int i=0; i< s.size(); ++i) {
@@ -344,19 +344,15 @@ namespace {
                                << s << std::endl);
           }
         }
-      }
-    }
+        }
+        }*/
 
   filter:
     //std::cout << "Filtering " << cur << " on " << changed_digit << std::endl;
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-      for (unsigned int i=changed_digit+1; i < cur.size(); ++i) {
+      /*for (unsigned int i=changed_digit+1; i < cur.size(); ++i) {
         Subset subset= get_sub_subset(s, order.begin()+i, order.end());
         SubsetState sub_state= get_sub_subset_state(s, cur, subset);
-        /*std::cout << "filtering " << i << " " << j
-                  << " on state " << state
-                  << " got " << filters[i][j]->get_is_ok(state)
-                  << std::endl;*/
         IMP_IF_CHECK(USAGE_AND_INTERNAL) {
           IMP_INTERNAL_CHECK(subset== filter_subsets[i],
                              "Expected and found subsets don't match "
@@ -368,7 +364,7 @@ namespace {
                              << get_sub_subset(s, order.begin()+i, order.end())
                              << " with " << sub_state << std::endl);
         }
-      }
+        }*/
     }
     for (int i=changed_digit; i >=0; --i) {
       for (unsigned int j=0; j < filters[i].size(); ++j) {
@@ -448,8 +444,11 @@ BranchAndBoundSubsetStatesTable
 
 SubsetStates* BranchAndBoundSubsetStatesTable
 ::get_subset_states(const Subset&s) const {
-  return new BranchAndBoundSubsetStates(s,
-                                        pst_, sft_);
+  IMP_OBJECT_LOG;
+  SubsetStates*ret= new BranchAndBoundSubsetStates(s,
+                                                   pst_, sft_);
+  ret->set_log_level(get_log_level());
+  return ret;
 }
 
 void BranchAndBoundSubsetStatesTable::do_show(std::ostream &out) const {
