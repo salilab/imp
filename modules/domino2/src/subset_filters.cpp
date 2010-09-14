@@ -76,22 +76,23 @@ RestraintScoreSubsetFilterTable::StatsPrinter::~StatsPrinter() {
 
 
 RestraintScoreSubsetFilterTable
-::RestraintScoreSubsetFilterTable(ModelSubsetEvaluatorTable *eval,
-                                  const Sampler *s):
-  mset_(eval),
-  max_(s->get_maximum_score())
+::RestraintScoreSubsetFilterTable(ModelSubsetEvaluatorTable *eval):
+  mset_(eval)
 {
-  mset_->data_.set_sampler(s);
 }
 
 SubsetFilter*
 RestraintScoreSubsetFilterTable
 ::get_subset_filter(const Subset &s,
                     const Subsets &excluded) const {
-  return new RestraintScoreSubsetFilter(mset_,
-                                        mset_->data_.get_subset_data(s,
-                                                                     excluded),
-                                        max_);
+  SubsetFilter *ret
+    = new RestraintScoreSubsetFilter(mset_,
+                                     mset_->data_.get_subset_data(s,
+                                                                  excluded),
+                                     mset_->data_.get_model()
+                                     ->get_maximum_score());
+  ret->set_log_level(get_log_level());
+  return ret;
 }
 
 void RestraintScoreSubsetFilterTable::do_show(std::ostream &out) const {
@@ -122,6 +123,7 @@ namespace {
   }
   template <bool EQ>
   bool PermutationSubsetFilter<EQ>::get_is_ok(const SubsetState &state) const{
+    IMP_OBJECT_LOG;
     for (unsigned int i=0; i< exclusions_.size(); ++i) {
       for (unsigned int j=0; j< exclusions_[i].second.size(); ++j) {
         int a=state[exclusions_[i].first], b= state[exclusions_[i].second[j]];

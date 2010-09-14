@@ -21,6 +21,7 @@ ModelData::ModelData(RestraintSet *rs,
   initialized_=false;
 }
 void ModelData::initialize() {
+  IMP_LOG(SILENT, "Initializing model score data" << std::endl);
   DependencyGraph dg= get_dependency_graph(RestraintsTemp(1, rs_));
   const ParticlesTemp all= pst_->get_particles();
   IMP::internal::Map<Particle*, Particle*> idm;
@@ -47,6 +48,12 @@ void ModelData::initialize() {
     dependencies_.push_back(oip);
     rdata_.push_back(RestraintData(*rit, rs_->get_model()->get_weight(*rit)));
   }
+  for (unsigned int i=0; i< rdata_.size(); ++i) {
+    double max= rs_->get_model()->get_maximum_score(rdata_[i].get_restraint());
+    std::cout << "Restraint " << rdata_[i].get_restraint()->get_name()
+              << " has max of " << max << std::endl;
+    rdata_[i].set_max(max);
+  }
   initialized_=true;
 }
 
@@ -55,19 +62,12 @@ void ModelData::validate() const {
                                  rs_->restraints_end()).size()
                   == dependencies_.size(),
                      "The restraints changed after Domino2 was set up. "
-                    << "This is a bad thing.");
+                  << "This is a bad thing: "
+                  << get_restraints(rs_->restraints_begin(),
+                                    rs_->restraints_end()).size()
+                  << " vs " << dependencies_.size());
   IMP_INTERNAL_CHECK(dependencies_.size()== rdata_.size(),
                      "Inconsistent data in Restraint evaluator or Filter");
-}
-
-void ModelData::set_sampler(const Sampler *s) {
-  if (!initialized_) {
-    initialize();
-  }
-  for (unsigned int i=0; i< rdata_.size(); ++i) {
-    double max= s->get_maximum_score(rdata_[i].get_restraint());
-    rdata_[i].set_max(max);
-  }
 }
 
 const SubsetData &ModelData::get_subset_data(const Subset &s,
@@ -75,13 +75,13 @@ const SubsetData &ModelData::get_subset_data(const Subset &s,
   if (!initialized_) {
     const_cast<ModelData*>(this)->initialize();
   }
+  validate();
   SubsetID id(s, exclusions);
   if (sdata_.find(id) == sdata_.end()) {
     ParticleIndex pi= get_index(s);
     Ints ris;
     std::vector<Ints> inds;
     //std::cout << "Find data for subset " << s << std::endl;
-    validate();
     for (unsigned int i=0; i< dependencies_.size(); ++i) {
       if (std::includes(s.begin(), s.end(),
                         dependencies_[i].begin(), dependencies_[i].end())) {
@@ -108,6 +108,7 @@ const SubsetData &ModelData::get_subset_data(const Subset &s,
   }
   return sdata_.find(id)->second;
 }
+
 
 
 double SubsetData::get_score(const SubsetState &state) const {

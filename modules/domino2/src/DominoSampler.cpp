@@ -63,6 +63,7 @@ SubsetStatesList DominoSampler
   } else {
     sgt= new JunctionTreeTable(rs);
   }
+  sgt->set_was_used(true);
   SubsetGraph jt=sgt->get_subset_graph(get_particle_states_table());
   IMP_IF_LOG(TERSE) {
     IMP_LOG(TERSE, "Subset graph is ");

@@ -620,6 +620,12 @@ namespace {
               << std::endl);
       IMP_NEW(RestraintSet, rss, (r->get_name()));
       rss->add_restraints(rs);
+      double max= r->get_model()->get_maximum_score(r);
+      if (max < std::numeric_limits<double>::max()) {
+        for (unsigned int i=0; i< rs.size(); ++i) {
+          r->get_model()->set_maximum_score(rs[i], max);
+        }
+      }
       removed.push_back(new ScopedRemoveRestraint(r, p));
       added.push_back(new ScopedRestraint(rss, p));
     } else {

@@ -137,6 +137,7 @@ struct IMPDOMINO2EXPORT ModelData {
       }
     }
   };
+
   bool initialized_;
   mutable Pointer<RestraintSet> rs_;
 
@@ -151,7 +152,9 @@ struct IMPDOMINO2EXPORT ModelData {
 
   ModelData(RestraintSet *rs,
             ParticleStatesTable* pst);
-  void set_sampler(const Sampler *s);
+  Model *get_model() const {
+    return rs_->get_model();
+  }
   const SubsetData &get_subset_data(const Subset &s,
                                     const Subsets &exclude=Subsets()) const;
 };
