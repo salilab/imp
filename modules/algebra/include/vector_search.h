@@ -11,7 +11,9 @@
 #include "VectorD.h"
 #include <IMP/base_types.h>
 #include "internal/ann.h"
-#include "internal/cgal_knn.h"
+#ifdef IMP_USE_CGAL
+#include <IMP/cgal/internal/knn.h>
+#endif
 #include "internal/linear_knn.h"
 #include <fstream>
 
@@ -55,10 +57,6 @@ class NearestNeighborD {
 #ifdef IMP_USE_ANN
       internal::ANNData<D> ann(b,e);
       ann.fill_nearest_neighbors(*b, 3U, eps_, ret);
-#endif
-#ifdef IMP_USE_CGAL
-      internal::CGALKNNData<D> cgal(b,e);
-      cgal.fill_nearest_neighbors(*b, 3U, eps_, ret);
 #endif
       internal::LinearKNNData<D> linear(b,e);
       linear.fill_nearest_neighbors(*b, 3U, eps_, ret);
