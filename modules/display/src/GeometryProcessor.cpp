@@ -16,14 +16,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
     Name *sg= dynamic_cast<Name*>(g);                   \
     if (sg) {                                           \
       if (process(sg, c, name)) {                       \
-        IMP_LOG(VERBOSE, "Geometry \"" << g->get_name() \
-                << "\" of type " << #Name               \
-                << " handled." << std::endl);           \
         return;                                         \
-      } else {                                          \
-        IMP_LOG(VERBOSE, "Geometry \"" << g->get_name() \
-                << "\" of type " << #Name               \
-                << " not handled." << std::endl);       \
       }                                                 \
     }                                                   \
   }                                                     \
@@ -32,6 +25,7 @@ void GeometryProcessor::process_geometry_internal(Geometry* g,
                                                   bool has_color,
                                                   Color c,
                                                   std::string name) {
+  IMP_OBJECT_LOG;
   IMP::internal::OwnerPointer<Geometry> pg(g);
   if (!has_color && g->get_has_color()) {
     c= g->get_color();
