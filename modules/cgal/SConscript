@@ -7,7 +7,9 @@ if scons_tools.gcc.get_is_gcc(env):
               '-fsignaling-nans',
               '-fno-float-store',
               '-frounding-math',
-              '-fno-strict-aliasing']
+              '-fno-strict-aliasing',
+              #ensure it can be run in valgrind
+              '-DCGAL_DISABLE_ROUNDING_MATH_CHECK']
     if env['build']!= 'debug':
         cxxflag=cxxflags+['-O1', '-DNDEBUG']
     if scons_tools.gcc.get_version(env)>= 4.3:
