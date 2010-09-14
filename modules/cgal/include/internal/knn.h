@@ -11,10 +11,6 @@
 #include <IMP/base_types.h>
 #include <IMP/Pointer.h>
 #include <IMP/algebra/VectorD.h>
-#include <CGAL/basic.h>
-#include <CGAL/Search_traits.h>
-#include <CGAL/Orthogonal_k_neighbor_search.h>
-#include <CGAL/K_neighbor_search.h>
 #include <boost/static_assert.hpp>
 #include <IMP/RefCounted.h>
 
