@@ -522,7 +522,9 @@ The python wrapper should be considered unstable. If there is a python graph lib
 
 \section fasterfaster Making IMP run faster
 
-Sampling can often be very computationally expensive, so we provide a number of facilities to speed up \imp computations. These include:
+Sampling can often be very computationally expensive. If you computation is taking longer than you would like, the first thing you should do is to profile it. We find \external{developer.apple.com/tools/sharkoptimize.html,Shark} and \external{developer.apple.com/library/mac/#documentation/Performance/Conceptual/PerformanceOverview/InitialEvaluation/InitialEvaluation.html#//apple_ref/doc/uid/TP40001410-CH206-SW7, Instruments} which are part of the Macintosh developer tools to be the best free Mac/Linux options. \external{www.cs.utah.edu/dept/old/texinfo/as/gprof.html, gprof} is a free alternative on linux, but it requires a static build (and hence can't work with python) and is not so friendly to use.
+
+Once you know where your application is spending its time, we provide a number of facilities to speed up \imp computations. These include:
 
 \subsection parametertuning Parameter tuning
 
@@ -538,18 +540,19 @@ These can be twice or more faster than the classes they replace.
 \anchor cppspecialization
 C++ users can also take compose classes via templates at compile time. This is done using IMP::core::TupleRestraint, IMP::core::TupleConstraint, IMP::container::ContainerRestraint, IMP::container::ContainerConstraint. When using these, make sure you provide the actual types of the scores, modifiers and containers used (not the base classes). For example do
 \code
-m->add_restraint(core::make_tuple_restaint(new core::HarmonicDistancePairScore(3, 1), ParticlePair(p0, p1)))
+m->add_restraint(IMP::core::create_restraint(new IMP::core::HarmonicDistancePairScore(3, 1),
+                                            IMP::ParticlePair(p0, p1)))
 \endcode
 which is equivalent to
  \code
-m->add_restraint(new core::TupleRestraint<HarmonicDistancePairScore>(new HarmonicDistancePairScore(3, 1), ParticlePair(p0, p1)))
+m->add_restraint(new IMP::core::TupleRestraint<HarmonicDistancePairScore>(new IMP::core::HarmonicDistancePairScore(3, 1),
+                                                                          IMP::ParticlePair(p0, p1)))
 \endcode
 which, in turn, is equivalent to, but faster than
 \code
-m->add_restraint(new core::PairRestraint(new HarmonicDistancePairScore(3,1), ParticlePair(p0, p1)));
+m->add_restraint(new IMP::core::PairRestraint(new IMP::core::HarmonicDistancePairScore(3,1),
+                                              IMP::ParticlePair(p0, p1)));
 \endcode
-
-
 
 \section fixbug 8. Reporting bugs
 
