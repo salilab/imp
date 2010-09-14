@@ -30,11 +30,16 @@ public:
   SingletonGeometry(Particle *p);
 
   bool get_has_color() const {
-    return Colored::particle_is_instance(p_);
+    return Geometry::get_has_color()
+      || Colored::particle_is_instance(p_);
   }
 
   Color get_color() const {
-    return Colored(p_).get_color();
+    if (Geometry::get_has_color()) {
+      return Geometry::get_color();
+    } else {
+      return Colored(p_).get_color();
+    }
   }
 
   Particle *get_particle() const {
