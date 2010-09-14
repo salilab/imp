@@ -123,6 +123,14 @@ namespace {
     if (b==e) return Subset();
     ParticlesTemp pt(boost::make_permutation_iterator(s.begin(), b),
                      boost::make_permutation_iterator(s.begin(), e));
+    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+      for (unsigned int i=0; i< std::distance(b,e); ++i) {
+        IMP_INTERNAL_CHECK(pt[i]==s[*(b+i)],
+                           "Do not match at " << i
+                           << " got " << pt[i] << " expected "
+                           << s[*(b+i)] << " for " << s);
+      }
+    }
     Subset rs(pt);
     /*std::cout << "SubSubset " << s << " ";
     for (It c= b; c!= e; ++c) {
@@ -131,18 +139,18 @@ namespace {
     std::cout << " is " << rs << std::endl;*/
     return rs;
   }
- template <class It>
-  SubsetState get_sub_subset_state(const SubsetState &s, It b, It e) {
-    if (b==e) return SubsetState();
-    Ints pt(boost::make_permutation_iterator(s.begin(), b),
-            boost::make_permutation_iterator(s.begin(), e));
-    SubsetState rs(pt);
-    //std::cout << "SubSubsetState " << s << " ";
-    /*for (It c= b; c!= e; ++c) {
-      std::cout << *c << " ";
-    }
-    std::cout << " is " << rs << std::endl;*/
-    return rs;
+  template <class Ints>
+ SubsetState get_sub_subset_state(const Subset &s, const Ints &ss,
+                                  const Subset sub_s) {
+   Ints ret(sub_s.size());
+   for (unsigned int i=0; i< sub_s.size(); ++i) {
+     for (unsigned int j=0; j< s.size(); ++j) {
+       if (sub_s[i] == s[j]) {
+         ret[i]= ss[j];
+       }
+     }
+   }
+   return SubsetState(ret);
   }
 
 
@@ -186,17 +194,12 @@ namespace {
     }
   }
 
-
-  BranchAndBoundSubsetStates
-  ::BranchAndBoundSubsetStates(const Subset &s,
-                               ParticleStatesTable *table,
-                               const SubsetFilterTables &sft):
-    SubsetStates("BranchAndBoundSubsetStates on "+s.get_name()) {
-    //std::cout << "Searching order for " << s << std::endl;
-    Ints order;
-    std::vector<SubsetFilters> filters;
-    std::vector<Subset> filter_subsets;
-    if (1) {
+  namespace {
+    void initialize_order(const Subset &s,
+                          const SubsetFilterTables &sft,
+                          Ints &order,
+                          std::vector<SubsetFilters>& filters,
+                          std::vector<Subset>& filter_subsets) {
       Ints remaining;
       for (unsigned int i=0; i< s.size(); ++i) {
         remaining.push_back(i);
@@ -263,14 +266,20 @@ namespace {
         }
         std::cout << std::endl;*/
       }
-    } else {
-      order.resize(s.size());
-      for (unsigned int i=0; i< s.size(); ++i) {
-        order[i]=i;
-      }
-      filters.resize(s.size());
-      setup_filters(s, order, sft, filters);
     }
+  }
+  BranchAndBoundSubsetStates
+  ::BranchAndBoundSubsetStates(const Subset &s,
+                               ParticleStatesTable *table,
+                               const SubsetFilterTables &sft):
+    SubsetStates("BranchAndBoundSubsetStates on "+s.get_name()) {
+    //std::cout << "Searching order for " << s << std::endl;
+    Ints order;
+    std::vector<SubsetFilters> filters;
+    std::vector<Subset> filter_subsets;
+
+    initialize_order(s, sft, order, filters, filter_subsets);
+
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {
       std::set<int> taken(order.begin(), order.end());
       IMP_INTERNAL_CHECK(taken.size() == order.size(),
@@ -295,26 +304,86 @@ namespace {
     for (unsigned int i=0; i< cur.size(); ++i) {
       cur[i]=0;
     }
-    goto filter;
+
+    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+      Ints state;
+      std::map<Particle*, int> map;
+      for (unsigned int i=0; i< s.size(); ++i) {
+        state.push_back(i);
+        map[s[i]]=i;
+      }
+      IMP_LOG(VERBOSE,"Order is: ");
+      for (unsigned int i=0; i< order.size(); ++i) {
+        IMP_LOG(VERBOSE, order[i] << " ");
+      }
+      IMP_LOG(VERBOSE, std::endl);
+      for (unsigned int i=0; i< s.size(); ++i) {
+        {
+          //Ints pstate(state.begin(), state.begin()+i);
+          Subset csub= get_sub_subset(s, order.begin(),
+                                      order.begin()+i);
+          SubsetState cstate= get_sub_subset_state(s,
+                                                   state,
+                                                   csub);
+          for (unsigned int j=0; j < csub.size(); ++j) {
+            IMP_INTERNAL_CHECK(cstate[j] == map.find(csub[j])->second,
+                               "Wrong state found in " << cstate
+                               << " for " << csub << " from "
+                               << s << std::endl);
+          }
+        }
+        {
+          //Ints pstate(state.begin()+i, state.end());
+          Subset csub= get_sub_subset(s, order.begin()+i,
+                                      order.end());
+          SubsetState cstate= get_sub_subset_state(s, state, csub);
+          for (unsigned int j=0; j < csub.size(); ++j) {
+            IMP_INTERNAL_CHECK(cstate[j] == map.find(csub[j])->second,
+                               "Wrong state found in back " << cstate
+                               << " for " << csub << " from "
+                               << s << std::endl);
+          }
+        }
+      }
+    }
 
   filter:
     //std::cout << "Filtering " << cur << " on " << changed_digit << std::endl;
-    for (int i=changed_digit; i >=0; --i) {
-      for (unsigned int j=0; j < filters[i].size(); ++j) {
-        // use boost iterator wrapper TODO
-        // check +i is correct
-        SubsetState state= get_sub_subset_state(cur,
-                                                order.begin()+i,
-                                                order.end());
+    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+      for (unsigned int i=changed_digit+1; i < cur.size(); ++i) {
+        Subset subset= get_sub_subset(s, order.begin()+i, order.end());
+        SubsetState sub_state= get_sub_subset_state(s, cur, subset);
         /*std::cout << "filtering " << i << " " << j
                   << " on state " << state
                   << " got " << filters[i][j]->get_is_ok(state)
                   << std::endl;*/
         IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-          Subset check_subset= get_sub_subset(s, order.begin()+i, order.end());
-          IMP_INTERNAL_CHECK(check_subset== filter_subsets[i],
+          IMP_INTERNAL_CHECK(subset== filter_subsets[i],
                              "Expected and found subsets don't match "
-                             << filter_subsets[i] << " vs " << check_subset);
+                             << filter_subsets[i] << " vs " << subset);
+        }
+        for (unsigned int j=0; j< filters[i].size(); ++j) {
+          IMP_INTERNAL_CHECK(filters[i][j]->get_is_ok(sub_state),
+                             "Subset should have been passed before "
+                             << get_sub_subset(s, order.begin()+i, order.end())
+                             << " with " << sub_state << std::endl);
+        }
+      }
+    }
+    for (int i=changed_digit; i >=0; --i) {
+      for (unsigned int j=0; j < filters[i].size(); ++j) {
+        // use boost iterator wrapper TODO
+        // check +i is correct
+        Subset subset= get_sub_subset(s, order.begin()+i, order.end());
+        SubsetState state= get_sub_subset_state(s, cur, subset);
+        /*std::cout << "filtering " << i << " " << j
+                  << " on state " << state
+                  << " got " << filters[i][j]->get_is_ok(state)
+                  << std::endl;*/
+        IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+          IMP_INTERNAL_CHECK(subset== filter_subsets[i],
+                             "Expected and found subsets don't match "
+                             << filter_subsets[i] << " vs " << subset);
         }
         if (!filters[i][j]->get_is_ok(state)) {
           goto bad;
@@ -328,13 +397,10 @@ namespace {
     }
     {
       current_digit=0;
-      SubsetState to_push=get_sub_subset_state(cur,
-                                               order.begin(),
-                                               order.end());
-      //IMP_LOG(VERBOSE, "Found " << to_push << std::endl);
+      SubsetState to_push(cur);
+      IMP_LOG(VERBOSE, "Found " << to_push << std::endl);
       states_.push_back(to_push);
     }
-    goto increment;
   increment:
     //std::cout << "Incrementing " << cur << " on "
     //<< current_digit << std::endl;

@@ -48,7 +48,7 @@ namespace {
     IMP_OBJECT_LOG;
     const bool ok=data_.get_is_ok(state);
     IMP_LOG(VERBOSE, "For subset " << data_.get_subset()
-            << (ok?"accepted":"rejected")
+            << (ok?" accepted":" rejected")
             << " state " << state << std::endl);
     return ok;
   }
