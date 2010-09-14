@@ -87,6 +87,8 @@ public:
   virtual VARIABLETYPE get_argument() const=0;
 };
 
+IMP_OBJECTS(CLASSNAMEScoreRestraint, CLASSNAMEScoreRestraints);
+
 /** A CLASSNAMEsScoreRestraint is a restraint where the score (and
     derivative values) can be decomposed into a series of applications
     of a CLASSNAMEScore onto a VARIABLETYPE.
@@ -97,6 +99,8 @@ public:
   virtual CLASSNAMEScore *get_score() const =0;
   virtual PLURALVARIABLETYPE get_arguments() const=0;
 };
+
+IMP_OBJECTS(CLASSNAMEsScoreRestraint, CLASSNAMEsScoreRestraints);
 
 IMP_END_NAMESPACE
 
