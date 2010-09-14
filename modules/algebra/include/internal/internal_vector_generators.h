@@ -10,28 +10,9 @@
 #include <IMP/base_types.h>
 #include "../VectorD.h"
 #include "../SphericalVector3D.h"
-
-#ifdef IMP_USE_CGAL
-#ifndef NDEBUG
-//#define NDEBUG
-#define IMP_NO_HAD_NDEBUG
-#endif
+#include <IMP/cgal/internal/sphere_cover.h>
 
 
-#include <CGAL/Cartesian_d.h>
-#include <CGAL/Convex_hull_d.h>
-#include <CGAL/Gmpq.h>
-#include <CGAL/Optimisation_d_traits_d.h>
-#include <CGAL/Min_sphere_d.h>
-#include <CGAL/K_neighbor_search.h>
-#include <CGAL/Lazy_exact_nt.h>
-#include <CGAL/Search_traits_2.h>
-
-#ifdef IMP_NO_HAD_NDEBUG
-#undef NDEBUG
-#undef IMP_NO_HAD_NDEBUG
-#endif
-#endif
 
 IMPALGEBRA_BEGIN_NAMESPACE
 template <unsigned int D>
@@ -40,13 +21,10 @@ IMPALGEBRA_END_NAMESPACE
 
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
-/*If all is true, cover the whole sphere.
-*/
+
 template <unsigned int D>
 std::vector<VectorD<D> >
-uniform_cover_sphere(unsigned int n,
-                     const VectorD<D> &center,
-                     double radius, bool ALL) {
+native_uniform_cover_unit_sphere(unsigned int n,bool ALL) {
   BOOST_STATIC_ASSERT(D!=3);
   std::vector<VectorD<D> > ret(n);
   for (unsigned int i=0; i< D; ++i) {
@@ -60,94 +38,20 @@ uniform_cover_sphere(unsigned int n,
   }
   for (unsigned int i=(ALL?2*D:D); i< n; ++i) {
     VectorD<D> v= get_random_vector_on<D>(get_unit_sphere_d<D>());
-    if (!ALL && v[D-1]<= center[D-1]) v=-v;
+    if (!ALL && v[D-1]<= 0) v=-v;
     ret[i]=v;
   }
+  return ret;
+}
 
-
-#ifdef IMP_USE_CGAL
-  typedef typename ::CGAL::Cartesian_d< ::CGAL::Lazy_exact_nt<
-  ::CGAL::Gmpq> > K;
-  typedef typename K::Point_d P;
-  typedef ::CGAL::Convex_hull_d<K> CH;
-  typedef ::CGAL::Optimisation_d_traits_d<K>       Traits;
-  typedef ::CGAL::Min_sphere_d<Traits>             Min_sphere;
-  std::map<typename CH::Vertex_handle, int> indexes;
-  for (unsigned int rep=0; rep< 10*D; ++rep) {
-    CH ch(D);
-    for (unsigned int i=0; i< ret.size(); ++i) {
-      P p(D, ret[i].coordinates_begin(),
-          ret[i].coordinates_end());
-      typename CH::Vertex_handle vh=ch.insert(p);
-      indexes[vh]= i+1;
-      if (!ALL) {
-        VectorD<D> nr=-ret[i];
-        P p(D, nr.coordinates_begin(),
-            nr.coordinates_end());
-        typename CH::Vertex_handle vh=ch.insert(p);
-        indexes[vh]= -static_cast<int>(i)-1;
-      }
-    }
-    std::vector<VectorD<D> > sums(n, get_zero_vector_d<D>());
-    std::vector<double> counts(n, 0);
-    for (CH::Facet_iterator it= ch.facets_begin();
-         it != ch.facets_end(); ++it) {
-      for (unsigned int i=0; i< D; ++i ) {
-        int vi=indexes[ch.vertex_of_facet(it, i)];
-        VectorD<D> pi;
-        if (vi > 0) {
-          pi= ret[vi-1];
-        } else {
-          continue;
-        }
-        /*std::vector<VectorD<D> > simplex;
-        for (unsigned int j=0; i< D; ++i ) {
-          int vj=indexes[ch.vertex_of_facet(it, j)];
-          VectorD<D> pj;
-          if (vj > 0) {
-            pj= ret[vj-1];
-          } else {
-            pj= ret[-vj+1];
-          }
-          simplex.push_back((pj-pi).get_unit_vector());
-        }
-        double w= simplex_volume(simplex);*/
-        for (unsigned int j=0; i< D; ++i ) {
-          if (i==j) continue;
-          int vj=indexes[ch.vertex_of_facet(it, j)];
-          VectorD<D> pj;
-          if (vj > 0) {
-            pj= ret[vj-1];
-          } else {
-            pj= ret[-vj-1];
-          }
-          double d=(pj-pi).get_magnitude();
-          if (counts[vi-1] < d) {
-            counts[vi-1]=d;
-            sums[vi-1]=pj;
-          }
-        }
-      }
-    }
-    for (unsigned int i=0; i< (ALL?2*D:D); ++i) {
-      sums[i]=ret[i];
-    }
-    for (unsigned int i=(ALL?2*D:D); i<ret.size(); ++i) {
-      if (counts[i] != 0) {
-        sums[i]= (.1*sums[i]+.9*ret[i]);
-        sums[i]= sums[i].get_unit_vector();
-      } else {
-        // coincident points
-        /*IMP_WARN("Coincident points at " << ret[i] << " in iteration " << rep
-          << std::endl);*/
-        sums[i]= get_random_vector_on<D>(get_unit_sphere_d<D>());
-      }
-    }
-    std::swap(sums, ret);
-  }
-
-#endif
-
+/*If all is true, cover the whole sphere.
+*/
+template <unsigned int D>
+std::vector<VectorD<D> >
+uniform_cover_sphere(unsigned int n,
+                     const VectorD<D> &center,
+                     double radius, bool ALL) {
+  std::vector<VectorD<D> > ret= native_uniform_cover_unit_sphere<D>(n, ALL);
   for (unsigned int i=0; i< ret.size(); ++i) {
     if (!ALL && ret[i][D-1] < 0) {
       ret[i]= -radius*ret[i]+center;
@@ -155,8 +59,28 @@ uniform_cover_sphere(unsigned int n,
       ret[i]= radius*ret[i]+center;
     }
   }
+  return ret;
+}
 
-  return std::vector<VectorD<D> >(ret.begin(), ret.end());
+/*If all is true, cover the whole sphere.
+*/
+inline std::vector<VectorD<4> >
+uniform_cover_sphere(unsigned int n,
+                     const VectorD<4> &center,
+                     double radius, bool ALL) {
+  std::vector<VectorD<4> > ret= native_uniform_cover_unit_sphere<4>(n, ALL);
+#ifdef IMP_USE_CGAL
+  IMP::cgal::internal::refine_unit_sphere_cover_4d(ret, ALL);
+#endif
+  for (unsigned int i=0; i< ret.size(); ++i) {
+    if (!ALL && ret[i][4-1] < 0) {
+      ret[i]= -radius*ret[i]+center;
+    } else {
+      ret[i]= radius*ret[i]+center;
+    }
+  }
+
+  return ret;
 }
 
 
@@ -188,6 +112,24 @@ uniform_cover_sphere(unsigned int N,
     } else {
       ret[k-1]= v.get_cartesian_coordinates()+ center;
     }
+  }
+  return ret;
+}
+
+
+inline std::vector<VectorD<2> >
+uniform_cover_sphere(unsigned int N,
+                     const VectorD<2> &center,
+                     double r, bool ALL) {
+  std::vector<VectorD<2> > ret(N);
+  for (unsigned int i=0; i< N; ++i) {
+    double f;
+    if (ALL) {
+      f= static_cast<double>(i)/(N+1);
+    } else {
+      f= static_cast<double>(i)/(2*N+2);
+    }
+    ret[i]= center+r*VectorD<2>(sin(f), cos(f));
   }
   return ret;
 }
