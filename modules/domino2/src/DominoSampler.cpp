@@ -8,10 +8,17 @@
 #include <IMP/domino2/DominoSampler.h>
 #include <IMP/container/ListSingletonContainer.h>
 #include <IMP/domino2/utility.h>
-
 #include <IMP/domino2/internal/inference.h>
 #include <IMP/internal/graph_utility.h>
 #include <IMP/file.h>
+#include <boost/graph/connected_components.hpp>
+#if BOOST_VERSION > 103900
+#include <boost/property_map/property_map.hpp>
+#else
+#include <boost/property_map.hpp>
+#include <boost/vector_property_map.hpp>
+#endif
+
 
 IMPDOMINO2_BEGIN_NAMESPACE
 
@@ -28,13 +35,14 @@ DominoSampler::DominoSampler(Model *m, std::string name):
 
 
 namespace {
-  std::vector<SubsetState> get_solutions(const SubsetGraph &jt,
-                                  const Subset &known_particles,
-                                  ParticleStatesTable *pst,
-                                  SubsetStatesTable *sst,
-                                  SubsetEvaluatorTable *eval,
-                                  const SubsetFilterTables &sfts,
-                                  double max_score) {
+  std::vector<SubsetState>
+  get_solutions_from_tree(const SubsetGraph &jt,
+                          const Subset &known_particles,
+                          ParticleStatesTable *pst,
+                          SubsetStatesTable *sst,
+                          SubsetEvaluatorTable *eval,
+                          const SubsetFilterTables &sfts,
+                          double max_score) {
     const internal::PropagatedData pd
       = internal::get_best_conformations(jt, 0,
                                          known_particles,
@@ -46,6 +54,16 @@ namespace {
       final_solutions.push_back(it->first);
     }
     return final_solutions;
+  }
+
+  bool get_is_tree(const SubsetGraph &g) {
+    // check connected components too
+    if  (boost::num_edges(g)+1 != boost::num_vertices(g)) return false;
+    else {
+      boost::vector_property_map<int> comp(boost::num_vertices(g));
+      int cc= boost::connected_components(g, comp);
+      return cc==1;
+    }
   }
 }
 
@@ -65,26 +83,33 @@ SubsetStatesList DominoSampler
   }
   sgt->set_was_used(true);
   SubsetGraph jt=sgt->get_subset_graph(get_particle_states_table());
-  IMP_IF_LOG(TERSE) {
-    IMP_LOG(TERSE, "Subset graph is ");
+  IMP_IF_LOG(VERBOSE) {
+    IMP_LOG(VERBOSE, "Subset graph is ");
     //std::ostringstream oss;
     IMP::internal::show_as_graphviz(jt, std::cout);
     //oss << std::endl;
     //IMP_LOG(TERSE, oss.str() << std::endl);
   }
+  // we need a better check
   IMP::internal::OwnerPointer<SubsetEvaluatorTable> set
     = get_subset_evaluator_table_to_use();
   SubsetFilterTables sfts= get_subset_filter_tables_to_use(set);
   IMP::internal::OwnerPointer<SubsetStatesTable> sst
     = DiscreteSampler::get_subset_states_table_to_use(sfts);
 
-  SubsetStatesList final_solutions
-    = get_solutions(jt, known_particles,
-                    get_particle_states_table(),
-                    sst,
-                    set,
-                    sfts,
-                    get_maximum_score());
+  SubsetStatesList final_solutions;
+  if (get_is_tree(jt)) {
+    final_solutions
+      = get_solutions_from_tree(jt, known_particles,
+                                get_particle_states_table(),
+                                sst,
+                                set,
+                                sfts,
+                                get_maximum_score());
+  } else {
+    // loopy case
+    IMP_NOT_IMPLEMENTED;
+  }
   return final_solutions;
 }
 
