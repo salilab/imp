@@ -331,6 +331,13 @@ IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName,);
 %typemap(out) Namespace::Name const& {
   $result=SWIG_NewPointerObj(new Namespace::Name(*$1), $descriptor(Namespace::Name*), SWIG_POINTER_OWN | %newpointer_flags);
  }
+%typemap(directorout) Namespace::Name const& {
+  // hack to get around swig's evil value wrapper being randomly used
+  IMP::internal::swig::assign($result, SWIG_NewPointerObj(new Namespace::Name(*$input), $descriptor(Namespace::Name*), SWIG_POINTER_OWN | %newpointer_flags));
+ }
+%typemap(directorin) Namespace::Name const& {
+  $input = SWIG_NewPointerObj(new Namespace::Name($1_name), $descriptor(Namespace::Name*), SWIG_POINTER_OWN | %newpointer_flags);
+ }
 IMP_SWIG_VALUE_CHECKS(Namespace, Name);
 %pythoncode %{
   PluralName=list
