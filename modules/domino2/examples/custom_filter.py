@@ -44,12 +44,11 @@ def create_discrete_states(ps):
 # force particle p to be in state s
 class MyFilterTable(IMP.domino2.SubsetFilterTable):
     class MyFilter(IMP.domino2.SubsetFilter):
-        def __init__(self, subset, pos, value):
+        def __init__(self, pos, value):
             #print "Filtering with", pos, value
             IMP.domino2.SubsetFilter.__init__(self, "MF"+str(pos) + " " +str(value))
             self.pos=pos
             self.value=value
-            self.subset=subset
         def get_is_ok(self, state):
             ret= state[self.pos]==self.value
             return ret
@@ -61,9 +60,10 @@ class MyFilterTable(IMP.domino2.SubsetFilterTable):
         self.p=p
         self.s=s
     def get_subset_filter(self, subset, excluded):
-        #print "Subset filtered is", repr(subset)
+        # create a filter if self.p is in subset but not in excluded
         if self.p in subset and self.p not in sum([list(x) for x in excluded], []):
-            return self.MyFilter(subset, list(subset).index(self.p), self.s)
+            # pass the position of self.p and the value that it must have
+            return self.MyFilter(list(subset).index(self.p), self.s)
         else:
             return None
 
@@ -77,7 +77,7 @@ def create_sampler(m, ps, pst):
     # do not allow particles with the same ParticleStates object
     # to have the same state index
     filters.append(IMP.domino2.PermutationSubsetFilterTable(pst))
-    # filter states that score worse than the cutoffs in the sample
+    # filter states that score worse than the cutoffs in the Model
     filters.append(IMP.domino2.RestraintScoreSubsetFilterTable(me))
     filters[-1].set_log_level(IMP.SILENT)
     mf=MyFilterTable(ps[1], 0)
