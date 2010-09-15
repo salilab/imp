@@ -186,8 +186,8 @@ namespace {
           << " on " << cs << " and " << es << std::endl;*/
         SubsetFilter* se= sfts[i]->get_subset_filter(cs,
                                                      Subsets(1,es));
-        se->set_was_used(true);
         if (se) {
+          se->set_was_used(true);
           ses[j].push_back(se);
         }
       }
@@ -231,19 +231,25 @@ namespace {
             /*std::cout << "Creating filter on "
               << all_remaining << " " << excluded
               << std::endl;*/
-            Pointer<SubsetFilter> cur_filter
+            SubsetFilter *cur_filterp
               =sft[i]->get_subset_filter(all_remaining,
                                          Subsets(1,
                                                  excluded));
-            cur_filter->set_was_used(true);
-            double str=cur_filter->get_strength();
-            IMP_USAGE_CHECK(str >=0 && str <=1, "Strength is out of range "
-                            << str);
-            //std::cout << "strength is " << str << std::endl;
-            cur_restraint*= 1-str;
-            cur_filters.push_back(cur_filter);
+            if (cur_filterp) {
+              Pointer<SubsetFilter> cur_filter=cur_filterp;
+              cur_filter->set_was_used(true);
+              double str=cur_filter->get_strength();
+              IMP_USAGE_CHECK(str >=0 && str <=1, "Strength is out of range "
+                              << str);
+              std::cout << "strength is " << str << std::endl;
+              cur_restraint*= 1-str;
+              cur_filters.push_back(cur_filter);
+            }
           }
-          if (cur_restraint > max_restraint) {
+          std::cout << "Of " << s[remaining[j]]->get_name()
+                    << " plus " << excluded << " got strength " << cur_restraint
+                    << std::endl;
+          if (cur_restraint >= max_restraint) {
             max_restraint=cur_restraint;
             max_j=j;
             max_filters=cur_filters;
@@ -255,17 +261,17 @@ namespace {
         filters.push_back(max_filters);
         filter_subsets.push_back(max_subset);
         remaining.erase(remaining.begin()+max_j);
-        /*std::cout << "Order is ";
-        for (unsigned int i=0; i< order.size(); ++i) {
-          std::cout << order[i] << " ";
-        }
-        std::cout << std::endl;
-        std::cout << "Remaining is ";
+        /*std::cout << "Remaining is ";
         for (unsigned int i=0; i< remaining.size(); ++i) {
           std::cout << remaining[i] << " ";
         }
         std::cout << std::endl;*/
       }
+      IMP_LOG(TERSE, "Order for " << s << " is ");
+      for (unsigned int i=0; i< order.size(); ++i) {
+        IMP_LOG(TERSE,  order[i] << " ");
+      }
+      IMP_LOG(TERSE, std::endl);
     }
   }
   BranchAndBoundSubsetStates
@@ -381,6 +387,7 @@ namespace {
                              "Expected and found subsets don't match "
                              << filter_subsets[i] << " vs " << subset);
         }
+        IMP_CHECK_OBJECT(filters[i][j]);
         if (!filters[i][j]->get_is_ok(state)) {
           goto bad;
         }
