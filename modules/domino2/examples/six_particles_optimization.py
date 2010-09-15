@@ -55,7 +55,7 @@ def create_sampler(m, pst):
     # do not allow particles with the same ParticleStates object
     # to have the same state index
     filters.append(IMP.domino2.PermutationSubsetFilterTable(pst))
-    # filter states that score worse than the cutoffs in the sample
+    # filter states that score worse than the cutoffs in the Model
     filters.append(IMP.domino2.RestraintScoreSubsetFilterTable(me))
     filters[-1].set_log_level(IMP.SILENT)
     states= IMP.domino2.BranchAndBoundSubsetStatesTable(pst, filters);
