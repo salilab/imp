@@ -103,8 +103,12 @@ PropagatedData get_merged(const Subset& subset,
   exclusions.push_back(sa);
   exclusions.push_back(sb);
   for (unsigned int i=0; i< filters.size(); ++i) {
-    state_filters.push_back(filters[i]->get_subset_filter(subset, exclusions));
-    state_filters.back()->set_was_used(true);
+    SubsetFilter *f=filters[i]->get_subset_filter(subset, exclusions);
+    if (f) {
+      Pointer<SubsetFilter> fp=f;
+      state_filters.push_back(f);
+      state_filters.back()->set_was_used(true);
+    }
   }
   for (PropagatedData::ScoresIterator ita = da.scores_begin();
        ita != da.scores_end(); ++ita) {

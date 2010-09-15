@@ -52,6 +52,7 @@ IMP_OBJECTS(SubsetFilter, SubsetFilters);
     aren't good enough to be passed on to the final solution.*/
 class IMPDOMINO2EXPORT SubsetFilterTable: public Object {
  public:
+  SubsetFilterTable(std::string name="SubsetFilterTable%1%"): Object(name){}
   virtual SubsetFilter* get_subset_filter(const Subset &s,
                                           const Subsets &prior_subsets) const=0;
   virtual ~SubsetFilterTable();

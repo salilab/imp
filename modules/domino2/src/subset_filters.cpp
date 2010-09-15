@@ -85,7 +85,9 @@ SubsetFilter*
 RestraintScoreSubsetFilterTable
 ::get_subset_filter(const Subset &s,
                     const Subsets &excluded) const {
-  SubsetFilter *ret
+  if (mset_->data_.get_subset_data(s, excluded)
+      .get_number_of_restraints() ==0) return NULL;
+  SubsetFilter* ret
     = new RestraintScoreSubsetFilter(mset_,
                                      mset_->data_.get_subset_data(s,
                                                                   excluded),
@@ -246,6 +248,7 @@ PermutationSubsetFilterTable
                     const Subsets &excluded) const {
   std::vector<std::pair<unsigned int, Ints> > filters
     = get_filters(s, excluded, pst_, pairs_);
+  if (filters.empty()) return NULL;
   return new PermutationSubsetFilter<false>(filters);
 }
 
