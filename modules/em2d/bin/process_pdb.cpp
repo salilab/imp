@@ -8,7 +8,6 @@
 #include "IMP/em2d/em2d_config.h"
 #include "IMP/em2d/project.h"
 #include "IMP/em2d/filenames_manipulation.h"
-#include "IMP/em2d/ProjectionFinder.h"
 #include "IMP/em2d/RegistrationResult.h"
 #include "IMP/em2d/model_interaction.h"
 #include "IMP/em2d/internal/rotation_helper.h"

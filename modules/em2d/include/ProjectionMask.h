@@ -62,7 +62,9 @@ IMP_VALUES(ProjectionMask,ProjectionMasks);
 //! Manage of projection masks
 class IMPEM2DEXPORT MasksManager {
 public:
-  MasksManager() {};
+  MasksManager() {
+    is_initialized_ = false;
+  };
 
   MasksManager(double resolution,double pixelsize) {
     init_kernel(resolution,pixelsize);
@@ -72,11 +74,12 @@ public:
   inline void init_kernel(double resolution,double pixelsize) {
     kernel_params_= em::KernelParameters((float)resolution);
     pixelsize_=pixelsize;
+    is_initialized_ = true;
   }
 
   //! Generates all the masks for a set of particles. This is the function
   //! you typically want to use
-  void generate_masks(const Particles &ps);
+  void generate_masks(const ParticlesTemp &ps);
 
   //! Creates the adequate mask for a particle of given radius
   /**
@@ -95,6 +98,7 @@ protected:
   em::KernelParameters kernel_params_;
   // Pixel size for the masks
   double pixelsize_;
+  bool is_initialized_;
 };
 
 

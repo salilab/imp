@@ -11,6 +11,7 @@
 #include "IMP/em2d/em2d_config.h"
 #include "IMP/em2d/RegistrationResult.h"
 #include "IMP/em2d/align2D.h"
+#include "IMP/em2d/ProjectionMask.h"
 #include "IMP/em/Image.h"
 #include "IMP/em/ImageReaderWriter.h"
 #include "IMP/em/SpiderReaderWriter.h"
@@ -29,30 +30,9 @@ class IMPEM2DEXPORT ProjectionFinder
 public:
 
   ProjectionFinder() {
-    subjects_set_ = false;
-    projections_set_ = false;
-    particles_set_=false;
     parameters_initialized_=false;
     registration_done_=false;
   }
-
-  //! Inits the class with the particles of the model to score, the subject
-  //! EM images, and the projections of the model to use for the registration
-  /**
-    \param[in] particles particles to score
-    \param[in] subjects The EM images to match with optimal projections
-    \param[in] projections Projections employed to start the search for the
-                optimal ones
-  **/
-  ProjectionFinder(const ParticlesTemp &particles,
-                  const em::Images subjects,em::Images projections) {
-    set_model_particles(particles);
-    set_projections(projections);
-    set_subjects(subjects);
-    parameters_initialized_=false;
-    registration_done_=false;
-  }
-
 
   //! Initializes the parameters to generate and match projections
   /**
@@ -62,9 +42,8 @@ public:
               finding, the 2D alignment:
                 0 => FFT alignment no preprocessing.
                 1 => FFT alignment with preprocessing (Default and recommended).
-                2 => FFT and PCA alignment (fast, but only works for low noise)
-                3 => PCA alginment and centers of gravity (very fast, but
-                     very low noise tolerated)
+                2 => FFT alginment and centers of gravity
+                        (fast, but only works for low noise)
     \param[in] interpolation_method Default is linear. Fast, enough accuracy
                 during testing.
     \param[in] optimization steps
@@ -85,48 +64,37 @@ public:
     optimization_steps_ = optimization_steps;
     save_match_images_ = save_match_images;
     simplex_initial_length_ = simplex_initial_length;
+    masks_manager_.init_kernel(resolution_,apix_);
     parameters_initialized_=true;
   }
 
   //! Set EM images
-   void set_subjects(const em::Images subjects) {
-    subjects_=subjects;
-    n_subjects_=subjects_.size();
-    registration_results_.resize(n_subjects_);
-    subjects_set_ = true;
-  }
+   void set_subjects(const em::Images subjects);
 
   //! Set model projections
-  void set_projections(em::Images projections) {
-    projections_=projections;
-    n_projections_=projections_.size();
-    projections_set_ = true;
-  }
+  void set_projections(em::Images projections);
 
   //! Set the model particles
-  void set_model_particles(const ParticlesTemp &ps) {
-    model_particles_= ps;
-    particles_set_=true;
-  }
+  void set_model_particles(const ParticlesTemp &ps);
 
   void set_save_match_images(bool x) {
     save_match_images_=x;
   }
 
-  bool get_save_match_images() {
+  bool get_save_match_images() const {
      return save_match_images_;
   }
 
   //! Recover the registration results. Only works if a registration has been
   //! done previously
-  RegistrationResults get_registration_results() {
+  RegistrationResults get_registration_results()const {
     if(!registration_done_) {
       IMP_THROW(
        "ProjectionFinder: trying to recover results before registration",
         ValueException);
     }
-    RegistrationResults Regs(n_subjects_);
-    for (unsigned int i=0;i<n_subjects_;++i) {
+    RegistrationResults Regs(subjects_.size());
+    for (unsigned int i=0;i<subjects_.size();++i) {
       Regs[i]=registration_results_[i];
     }
     return Regs;
@@ -139,25 +107,7 @@ public:
   //! Performs complete registration of projections against subjects in 2D
   double get_complete_registration();
 
-
-  //! Add images to those already stored in the restraint
-  /**
-    \param[in] em_images images to be added
-  **/
-  void add_images(const em::Images &em_images);
-
-  //! Remove images from those used by the restraint
-  /**
-    \param[in] indices indices of the images to be removed
-  **/
-  void remove_images(const Ints &indices);
-
-  //! Sets images to not be used by the finder, but does NOT delete them
-  /**
-    \param[in] indices indices of the images to be removed
-  **/
-  void set_not_used_images(const Ints &indices);
-
+  void show(std::ostream &out) const;
 
 protected:
 
@@ -165,7 +115,8 @@ protected:
   algebra::Transformation2D get_coarse_registrations_for_subject(
                         unsigned int i,RegistrationResults &subject_RRs);
 
-  void preprocess_subjects_and_projections();
+  void preprocess_projection(unsigned int j);
+  void preprocess_subject(unsigned int i);
 
   //! Preprocess an matrix computing its center of gravity
   //! and the FFT of the polar-resampled autocorrelation. Calls
@@ -184,10 +135,7 @@ protected:
   em::Images projections_;
   RegistrationResults registration_results_;
   ParticlesTemp model_particles_;
-  unsigned int n_subjects_,n_projections_;
   bool save_match_images_,
-       subjects_set_,
-       projections_set_,
        registration_results_set_,
        particles_set_,
        registration_done_,
@@ -210,16 +158,15 @@ protected:
   // FFT of the autocorrelation resampled images
   std::vector< algebra::Matrix2D_c > SUBJECTS_POLAR_AUTOC_;
   std::vector< algebra::Matrix2D_c > PROJECTIONS_POLAR_AUTOC_;
-  // PCA related variables
-  algebra::Vector3Ds subjects_pcas_;
-  algebra::Vector3Ds projections_pcas_;
   algebra::Vector2Ds subjects_cog_;
   algebra::Vector2Ds projections_cog_;
+
+  MasksManager masks_manager_;
 };
 
 
 IMP_VALUES(ProjectionFinder,ProjectionFinders);
-
+IMP_OUTPUT_OPERATOR(ProjectionFinder);
 
 
 IMPEM2D_END_NAMESPACE

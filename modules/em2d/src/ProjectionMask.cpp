@@ -5,13 +5,14 @@
 **/
 
 #include "IMP/em2d/ProjectionMask.h"
+#include "IMP/exception.h"
 
 IMPEM2D_BEGIN_NAMESPACE
 
 ProjectionMask::ProjectionMask(const em::KernelParameters &KP,
-         const em::RadiusDependentKernelParameters *params,double voxelsize) {
-  sq_voxsize_ = voxelsize*voxelsize;
-  dim_ = 2*floor(params->get_kdist()/voxelsize)+1;
+         const em::RadiusDependentKernelParameters *params,double pixelsize) {
+  sq_voxsize_ = pixelsize*pixelsize;
+  dim_ = 2*floor(params->get_kdist()/pixelsize)+1;
   this->resize(dim_,dim_);
   this->centered_start();
   this->generate(KP,params);
@@ -57,7 +58,9 @@ void ProjectionMask::apply(algebra::Matrix2D_d &m,
 void MasksManager::create_mask(double radius) {
   IMP_LOG(IMP::VERBOSE,"Creating a projection mask for radius " <<
             radius <<std::endl);
-
+  if(is_initialized_ == false) {
+    IMP_THROW("MasksManager: kernel not initialized",ValueException);
+  }
   const  em::RadiusDependentKernelParameters *params;
   kernel_params_.set_params(radius);
   params = kernel_params_.get_params(radius);
@@ -75,13 +78,13 @@ ProjectionMask* MasksManager::find_mask(double radius) {
   }
 }
 
-void MasksManager::generate_masks(const Particles &ps) {
+void MasksManager::generate_masks(const ParticlesTemp &ps) {
   IMP_LOG(IMP::TERSE,"Genereating ProjectionMasks " << std::endl);
   ProjectionMask *mask;
   FloatKey radius_key = core::XYZR::get_default_radius_key();
   unsigned long n_particles = ps.size();
-  for (unsigned long ii=0; ii<n_particles; ii++) {
-    core::XYZR xyzr=core::XYZR(ps[ii],radius_key);
+  for (unsigned long i=0; i<n_particles; i++) {
+    core::XYZR xyzr=core::XYZR(ps[i],radius_key);
     double radius = xyzr.get_radius();
     mask = this->find_mask(radius);
     if (!mask) this->create_mask(radius);

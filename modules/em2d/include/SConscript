@@ -18,7 +18,7 @@ files = [
     'PolarResamplingParameters.h',
     'RegistrationResult.h' ,
     'scores2D.h',
-    #'Em2DRestraint.h',
+    'Em2DRestraint.h',
       ] + SConscript('internal/SConscript')
 
 # Install the include files:
