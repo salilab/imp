@@ -104,7 +104,7 @@ class IMPDOMINO2EXPORT Subset {
     return ps_[i];}
   unsigned int __len__() const {return sz_;}
 #endif
-  void show(std::ostream &out=std::cout) const;
+  IMP_SHOWABLE(Subset);
   std::string get_name() const;
   IMP_COMPARISONS;
 };
