@@ -40,11 +40,16 @@ public:
     \param[in] resolution
     \param[in] pixelsize
     \param[in] scoring_model model to associate to this restraint
+    \param[in] masks - Masks manager with the projection masks por the particles
+                of the model. If not given, it is generated
+
   **/
   void initialize(ParticlesTemp &ps,
                  double resolution,
                  double pixelsize,
-                 Model *scoring_model);
+                 Model *scoring_model,
+                 MasksManager *masks=NULL);
+
 
   //! Sets the images to use by the restraint
   void set_subject_image(em::Image &subject);
@@ -72,7 +77,7 @@ private:
   // Access point for the particles
   ParticlesTemp ps_;
   // Projection masks for the particles
-  mutable MasksManager masks_;
+  mutable MasksManager *masks_;
   double resolution_,pixelsize_;
   IMP::FloatKey Phi_, Theta_, Psi_, yorigin_, xorigin_;
 };

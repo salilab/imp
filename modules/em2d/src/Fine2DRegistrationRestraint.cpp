@@ -18,15 +18,21 @@ void Fine2DRegistrationRestraint::initialize(
                        ParticlesTemp &ps,
                        double resolution,
                        double pixelsize,
-                       Model *scoring_model) {
+                       Model *scoring_model,
+                       MasksManager *masks) {
 
   IMP_LOG(IMP::TERSE,"Initializing Fine2DRegistrationRestraint" <<std::endl);
   ps_ = ps;
   resolution_= resolution;
   pixelsize_ = pixelsize;
   // Generate all the projection masks for the structure
-  masks_.init_kernel(resolution_,pixelsize_);
-  masks_.generate_masks(ps_);
+  if(masks==NULL) {
+    // Create the masks
+    masks_ = new MasksManager(resolution,pixelsize);
+    masks_->generate_masks(ps);
+  } else {
+    masks_= masks;
+  }
   // Set the model
   this->set_model(scoring_model);
   // Create a particle for the projection parameters to be optimized
@@ -68,7 +74,7 @@ double Fine2DRegistrationRestraint::unprotected_evaluate(
   algebra::Rotation3D R=PP_.get_rotation();
   algebra::Vector3D translation = PP_.get_translation();
   em2d::project_particles(ps_,projection_->get_data(),
-                        R,translation,resolution_,pixelsize_,&masks_);
+                        R,translation,resolution_,pixelsize_,masks_);
   em::normalize(*projection_,true);
   score = em2d::discrepancy_score(*subject_,*projection_,false);
   IMP_LOG(VERBOSE, "Fine2DRegistration. Score: " << score <<std::endl);

@@ -56,10 +56,14 @@ class ProjectTests(IMP.test.TestCase):
         # IMP.em.save_images(projections,projnames,srw)
         # <====================================
         # Prepare registration
-        finder = IMP.em2d.ProjectionFinder(particles,subjects,projections)
         save_match_images=True
-        finder.initialize(pixel_size,resolution,
+        coarse_registration_method = 1
+        finder = IMP.em2d.ProjectionFinder();
+        finder.initialize(pixel_size,resolution,coarse_registration_method,
                           save_match_images,interpolation_method);
+        finder.set_model_particles(particles);
+        finder.set_subjects(subjects);
+        finder.set_projections(projections);
         # register
         score=finder.get_complete_registration()
         # Recover the registration results:

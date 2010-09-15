@@ -6,7 +6,6 @@
 */
 
 #include "IMP/em2d/ProjectionFinder.h"
-#include "IMP/em2d/pca_features_extraction.h"
 #include "IMP/em2d/scores2D.h"
 #include "IMP/em2d/align2D.h"
 #include "IMP/em2d/filenames_manipulation.h"
@@ -26,84 +25,100 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
+ void ProjectionFinder::set_subjects(const em::Images subjects) {
+  if(parameters_initialized_==false) {
+    IMP_THROW("get_complete_registration: "
+              "The ProjectionFinder is not initialized",ValueException);
+  }
+  if(subjects.size()==0) {
+    IMP_THROW("Passing empty set of subjects",ValueException);
+  }
+  subjects_=subjects;
+  unsigned int n_subjects = subjects_.size();
+  registration_results_.resize(n_subjects);
+  SUBJECTS_.resize(n_subjects);
+  SUBJECTS_POLAR_AUTOC_.resize(n_subjects);
+  subjects_cog_.resize(n_subjects);
+  for (unsigned int i=0;i<n_subjects;++i) {
+    preprocess_subject(i);
+  }
+}
 
 
-void ProjectionFinder::preprocess_subjects_and_projections() {
+void ProjectionFinder::set_projections(em::Images projections) {
+  if(parameters_initialized_==false) {
+    IMP_THROW("get_complete_registration: "
+              "The ProjectionFinder is not initialized",ValueException);
+  }
+  if(projections.size()==0) {
+    IMP_THROW("Passing empty set of projections",ValueException);
+  }
+  projections_=projections;
+  unsigned int n_projections = projections_.size();
+  PROJECTIONS_POLAR_AUTOC_.resize(n_projections);
+  projections_cog_.resize(n_projections);
+  for (unsigned int i=0;i<n_projections;++i) {
+    preprocess_projection(i);
+  }
+}
 
-  IMP_LOG(IMP::TERSE,
-       "ProjectionFinder: preprocessing subjects and projections" << std::endl);
-  IMP_USAGE_CHECK(subjects_set_,
-        "preprocess_subjects_and_projections: "
-        "subject images have not been set");
-  IMP_USAGE_CHECK(projections_set_,
-        "preprocess_subjects_and_projections: "
-        "projection images have not been set");
 
-  SUBJECTS_POLAR_AUTOC_.resize(n_subjects_);
-  SUBJECTS_.resize(n_subjects_);
-  PROJECTIONS_POLAR_AUTOC_.resize(n_projections_);
-  boost::progress_display show_progress(n_subjects_+n_projections_);
+  void ProjectionFinder::set_model_particles(const ParticlesTemp &ps) {
+    if(parameters_initialized_==false) {
+      IMP_THROW("The ProjectionFinder is not initialized",ValueException);
+    }
+    model_particles_= ps;
+    masks_manager_.generate_masks(model_particles_);
+    particles_set_=true;
+  }
+
+
+
+void ProjectionFinder::preprocess_projection(unsigned int j) {
   // FFT PREPROCESSING
-  if(coarse_registration_method_ ==1 ||coarse_registration_method_==2) {
-    for (unsigned int i=0;i<n_subjects_;++i) {
-      // FFT
-      FFT2D fft(subjects_[i]->get_data(),SUBJECTS_[i]); fft.execute();
-      // autocorrelation, polar, FFT
-      fft_polar_autocorrelation2D(subjects_[i]->get_data(),
-                                    SUBJECTS_POLAR_AUTOC_[i]);
-      IMP_LOG(IMP::TERSE,"Subject " << i << " preprocessed." << std::endl);
-      ++show_progress;
-    }
-
-    for (unsigned int j=0;j<n_projections_;++j) {
-      fft_polar_autocorrelation2D(projections_[j]->get_data(),
+  if(coarse_registration_method_ ==1) {
+    fft_polar_autocorrelation2D(projections_[j]->get_data(),
                                     PROJECTIONS_POLAR_AUTOC_[j]);
-      IMP_LOG(IMP::TERSE,"Projection " << j << " preprocessed." << std::endl);
-      ++show_progress;
-    }
   }
-
   // CENTERS OF GRAVITY AND ROTATIONAL FFT PREPROCESSING
-  if(coarse_registration_method_==3) {
-    subjects_cog_.resize(n_subjects_);
-    projections_cog_.resize(n_projections_);
-    for (unsigned int i=0;i<n_subjects_;++i) {
-      preprocess_for_fast_coarse_registration(
-        subjects_[i]->get_data(),subjects_cog_[i],SUBJECTS_POLAR_AUTOC_[i]);
-      ++show_progress;
-    }
-    for (unsigned int j=0;j<n_projections_;++j) {
-      preprocess_for_fast_coarse_registration(projections_[j]->get_data(),
+  if(coarse_registration_method_==2) {
+    preprocess_for_fast_coarse_registration(projections_[j]->get_data(),
                                projections_cog_[j],SUBJECTS_POLAR_AUTOC_[j]);
-      ++show_progress;
-    }
   }
-  // PCA PREPROCESSING
-  if(coarse_registration_method_ ==2 || coarse_registration_method_==3) {
-    double pca_threshold = 0.0;
-    IMP_LOG(IMP::TERSE,"PCA Preprocessing .... " << std::endl);
-    subjects_pcas_=pca_features(subjects_,pca_threshold);
-    projections_pcas_=pca_features(projections_,pca_threshold);
+}
+
+void ProjectionFinder::preprocess_subject(unsigned int i) {
+  // FFT PREPROCESSING
+  if(coarse_registration_method_ ==1 ) {
+    FFT2D fft(subjects_[i]->get_data(),SUBJECTS_[i]); fft.execute();
+    fft_polar_autocorrelation2D(subjects_[i]->get_data(),
+                                  SUBJECTS_POLAR_AUTOC_[i]);
+  }
+  // CENTERS OF GRAVITY AND ROTATIONAL FFT PREPROCESSING
+  if(coarse_registration_method_==2) {
+      preprocess_for_fast_coarse_registration(
+      subjects_[i]->get_data(),subjects_cog_[i],SUBJECTS_POLAR_AUTOC_[i]);
   }
 }
 
 
 double ProjectionFinder::get_coarse_registration() {
   IMP_LOG(IMP::TERSE,"Coarse registration of subjects .... " << std::endl);
-  IMP_USAGE_CHECK(subjects_set_,
-        "get_coarse_registration: subject images have not been set");
-  IMP_USAGE_CHECK(projections_set_,
-        "get_coarse_registration: projection images have not been set");
-
+  if(subjects_.size()==0) {
+    IMP_THROW("get_coarse_registration:There are not subject images",
+              ValueException);
+  }
+  if(projections_.size()==0) {
+    IMP_THROW("get_coarse_registration:There are not projection images",
+              ValueException);
+  }
   em::SpiderImageReaderWriter<double> srw;
   algebra::Transformation2D t,best_transformation;
   double Score=0;
-  /***** Preprocessing ********/
-  preprocess_subjects_and_projections();
   /***** Computation ********/
-  boost::progress_display show_progress(n_subjects_);
-  for(unsigned long i=0;i<n_subjects_;++i) {
-    RegistrationResults subject_RRs(n_projections_);
+  boost::progress_display show_progress(subjects_.size());
+  for(unsigned long i=0;i<subjects_.size();++i) {
+    RegistrationResults subject_RRs(projections_.size());
     algebra::Transformation2D best_transformation=
          get_coarse_registrations_for_subject(i,subject_RRs);
     // Sort projections scores
@@ -140,7 +155,7 @@ double ProjectionFinder::get_coarse_registration() {
     ++show_progress;
   }
   registration_done_=true;
-  return Score/n_subjects_;
+  return Score/subjects_.size();
 }
 
 
@@ -151,20 +166,12 @@ algebra::Transformation2D
   algebra::Transformation2D t,best_transformation;
   double max_ccc=0,ccc=0;
 
+  subject_RRs.resize(projections_.size());
 
-  subject_RRs.resize(n_projections_);
-  IMP_LOG(IMP::VERBOSE," Size vector projections = " << projections_.size()
-          << std::endl);
-
-  for(unsigned long j=0;j<n_projections_;++j) {
+  for(unsigned long j=0;j<projections_.size();++j) {
     IMP_LOG(IMP::VERBOSE,"Registering subject " << i << " with projection "
             << j << std::endl);
 
-    // If method includes PCA check, do it
-    if((coarse_registration_method_==2 || coarse_registration_method_==3) &&
-      !pca_features_match(subjects_pcas_[i],projections_pcas_[j],0.1)) {
-      continue;
-    }
     ResultAlign2D RA;
     // Method without preprocessing
     if(coarse_registration_method_==0) {
@@ -174,7 +181,7 @@ algebra::Transformation2D
                           interpolation_method_);
     }
     // Methods with preprocessing and FFT alignment
-    if(coarse_registration_method_==1 || coarse_registration_method_==2) {
+    if(coarse_registration_method_==1) {
       RA=align2D_complete_no_preprocessing(
                       subjects_[i]->get_data(),
                       SUBJECTS_[i],
@@ -183,7 +190,7 @@ algebra::Transformation2D
                       PROJECTIONS_POLAR_AUTOC_[j]);
     }
     // Method with centers of gravity alignment
-    if(coarse_registration_method_==3) {
+    if(coarse_registration_method_==2) {
       PolarResamplingParameters polar_params(subjects_[i]->get_data());
       unsigned int n_rings =  polar_params.get_number_of_rings();
       unsigned int sampling_points = polar_params.get_sampling_points(n_rings);
@@ -230,40 +237,45 @@ algebra::Transformation2D
 
 double ProjectionFinder::get_complete_registration() {
   IMP_LOG(IMP::TERSE,"Complete registration of subjects .... " << std::endl);
-  IMP_USAGE_CHECK(subjects_set_,
-        "get_complete_registration: subject images have not been set");
-  IMP_USAGE_CHECK(projections_set_,
-        "get_complete_registration: projection images have not been set");
-  IMP_USAGE_CHECK(particles_set_,
-        "get_complete_registration: model particles have not been set");
-  IMP_USAGE_CHECK(parameters_initialized_,
-        "get_complete_registration: the ProjectionFinder is not initialized");
+  if(subjects_.size()==0) {
+    IMP_THROW("get_complete_registration:There are not subject images",
+              ValueException);
+  }
+  if(projections_.size()==0) {
+    IMP_THROW("get_complete_registration:There are not projection images",
+              ValueException);
+  }
+  if(parameters_initialized_==false) {
+    IMP_THROW("get_complete_registration: "
+              "The ProjectionFinder is not initialized",ValueException);
+  }
+  if(parameters_initialized_==false) {
+    IMP_THROW("get_complete_registration: "
+              " model particles have not been set",ValueException);
+  }
 
   /********* Variables **********/
   em::SpiderImageReaderWriter<double> srw;
   algebra::Transformation2D t;
-  bool masks_computed=false;
   unsigned int rows= subjects_[0]->get_data().get_number_of_rows();
   unsigned int cols= subjects_[0]->get_data().get_number_of_columns();
   IMP_NEW(em::Image,match,());
   match->resize(rows,cols);
-  MasksManager masks;
-
   /***** Set optimizer ********/
   IMP_NEW(Model,scoring_model,());
   IMP_NEW(Fine2DRegistrationRestraint,fine2d,());
   IMP_NEW(IMP::gsl::Simplex,simplex_optimizer,());
-  fine2d->initialize(model_particles_,resolution_,apix_,scoring_model);
+  fine2d->initialize(model_particles_,resolution_,apix_,
+                     scoring_model,&masks_manager_);
   simplex_optimizer->set_model(scoring_model);
   simplex_optimizer->set_initial_length(simplex_initial_length_);
   simplex_optimizer->set_minimum_size(simplex_minimum_size_);
   IMP::SetLogState log_state(fine2d,IMP::TERSE);
   /***** Computation ********/
-  preprocess_subjects_and_projections();
-  boost::progress_display show_progress(n_subjects_*n_projections_);
+  boost::progress_display show_progress(subjects_.size()*projections_.size());
   double Score=0;
-  for(unsigned long i=0;i<n_subjects_;++i) {
-    RegistrationResults subject_RRs(n_projections_);
+  for(unsigned long i=0;i<subjects_.size();++i) {
+    RegistrationResults subject_RRs(projections_.size());
     get_coarse_registrations_for_subject(i,subject_RRs);
 
     IMP_LOG(IMP::VERBOSE,
@@ -292,22 +304,17 @@ double ProjectionFinder::get_complete_registration() {
     Score += ccc_to_em2d_score(registration_results_[i].get_ccc());
     // save if requested
     if(save_match_images_) {
-      if(!masks_computed) {
-        masks.init_kernel(resolution_,apix_);
-        masks.generate_masks(model_particles_);
-        masks_computed=true;
-      }
       std::ostringstream strm;
       strm << "fine_match-" << i << ".spi";
       generate_projection(*match,model_particles_,registration_results_[i],
-                    resolution_,apix_,srw,&masks,false,strm.str());
+                    resolution_,apix_,srw,&masks_manager_,false,strm.str());
       em::normalize(*match,true);
       registration_results_[i].set_in_image(*match);
       match->write_to_floats(strm.str(),srw);
     }
   }
   registration_done_=true;
-  return Score/n_subjects_;
+  return Score/subjects_.size();
 }
 
 
@@ -338,16 +345,20 @@ void ProjectionFinder::fft_polar_autocorrelation2D(algebra::Matrix2D_d &m,
   FFT2D fft(polar_autoc,POLAR_AUTOC); fft.execute();
 }
 
-
-
-void ProjectionFinder::add_images(const em::Images &em_images) {
+void ProjectionFinder::show(std::ostream &out) const {
+  out << "ProjectionFinder:" << std::endl
+  << "Number of projections = " << projections_.size()  << std::endl
+  << "Number of subject images = " << subjects_.size() << std::endl
+  << "Working parameters: " << std::endl
+  << "Resolution: " <<  resolution_  << std::endl
+  << "A/pixel: " << apix_ << std::endl
+  << "Coarse egistration method: " << coarse_registration_method_ << std::endl
+  << "Interpolation method: "<<  interpolation_method_ << std::endl
+  << "Simplex initial size: " <<  simplex_initial_length_ << std::endl
+  << "Simplex minimun size: " << simplex_minimum_size_ << std::endl
+  << "Simplex maximum optimization steps: " <<optimization_steps_ << std::endl
+  << "Save matching images: " << save_match_images_ << std::endl;
 }
-
-void ProjectionFinder::remove_images(const Ints &indices){
-}
-
-void ProjectionFinder::set_not_used_images(const Ints &indices){}
-
 
 
 IMPEM2D_END_NAMESPACE
