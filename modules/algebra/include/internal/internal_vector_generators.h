@@ -10,7 +10,9 @@
 #include <IMP/base_types.h>
 #include "../VectorD.h"
 #include "../SphericalVector3D.h"
+#ifdef IMP_USE_CGAL
 #include <IMP/cgal/internal/sphere_cover.h>
+#endif
 
 
 
