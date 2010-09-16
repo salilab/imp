@@ -112,6 +112,7 @@ struct EdgeData {
   Subset union_subset;
   SubsetFilters filters;
 };
+typedef std::vector<EdgeData> EdgeDatas;
 
 inline std::ostream &operator<<(std::ostream &out, const EdgeData &nd) {
   out << nd.intersection_subset << " " << nd.union_subset << std::endl;
@@ -141,7 +142,35 @@ inline EdgeData get_edge_data(const Subset&s0,
 
 
 
+typedef boost::property_map< SubsetGraph, boost::vertex_name_t>::const_type
+SubsetMap;
 
+typedef boost::graph_traits<SubsetGraph>::adjacency_iterator NeighborIterator;
+
+//! return true if the two states are equal on the entries in the lists
+inline bool get_are_equal(const SubsetState &ss0,
+                          const Ints &i0,
+                          const SubsetState &ss1,
+                          const Ints &i1) {
+  IMP_USAGE_CHECK(i0.size() == i1.size(), "Sizes don't match");
+  for (unsigned int i=0; i< i0.size(); ++i) {
+    if (ss0[i0[i]] != ss1[i1[i]]) return false;
+  }
+  return true;
+}
+
+
+IMPDOMINO2EXPORT
+SubsetState get_merged_subset_state(const Subset &s,
+                                      const SubsetState &ss0,
+                                      const Ints &i0,
+                                      const SubsetState &ss1,
+                                    const Ints &i1) ;
+
+IMPDOMINO2EXPORT NodeData
+get_union(const Subset &s0, const Subset &s1,
+          const NodeData &nd0, const NodeData &nd1,
+          const EdgeData &ed);
 
 IMPDOMINO2_END_INTERNAL_NAMESPACE
 

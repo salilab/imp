@@ -1,5 +1,6 @@
 files = [
          'inference_utility.h',
+         'loopy_inference.h',
          'maximal_cliques.h',
          'restraint_evaluator.h',
          'tree_inference.h',

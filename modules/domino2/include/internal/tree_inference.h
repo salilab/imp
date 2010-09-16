@@ -13,13 +13,6 @@
 #include "../utility.h"
 #include "../subset_filters.h"
 
-#include <IMP/Model.h>
-#include <IMP/ScoreState.h>
-#include <IMP/Restraint.h>
-
-#include <vector>
-#include <IMP/internal/map.h>
-#include <sstream>
 
 IMPDOMINO2_BEGIN_NAMESPACE
 class SubsetEvaluatorTable;
