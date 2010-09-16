@@ -51,7 +51,7 @@ PatchSwig = Builder(action=Action(_action_patch_swig_wrap,
 
 def _action_swig_file(target, source, env):
     vars= imp_module.make_vars(env)
-    deps=(imp_module.expand_dependencies(env, env['IMP_REQUIRED_MODULES']))
+    deps=(imp_module.expand_dependencies(env, env['IMP_REQUIRED_PYTHON_MODULES']))
     deps.reverse()
     #print "dependencies are " +str(deps)
     warning="// WARNING Generated file, do not edit, edit the swig.i-in instead."
@@ -275,7 +275,7 @@ def inswig_scanner(node, env, path):
     for i in base_includes:
         f= "#/build/swig/"+i
         ret.append(f)
-    for m in env['IMP_REQUIRED_MODULES']:
+    for m in env['IMP_REQUIRED_PYTHON_MODULES']:
         ret.append("#/build/swig/IMP_"+m+".i")
     return ret
 
