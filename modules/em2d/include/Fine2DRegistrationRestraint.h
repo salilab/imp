@@ -14,7 +14,6 @@
 #include "IMP/em/Image.h"
 #include "IMP/algebra/Vector2D.h"
 #include "IMP/atom/Atom.h"
-#include "IMP/core/XYZR.h"
 #include "IMP/Restraint.h"
 #include "IMP/macros.h"
 

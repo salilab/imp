@@ -6,14 +6,16 @@
 */
 
 #include "IMP/em2d/ProjectionFinder.h"
-#include "IMP/em2d/scores2D.h"
 #include "IMP/em2d/align2D.h"
 #include "IMP/em2d/filenames_manipulation.h"
 #include "IMP/em2d/FFToperations.h"
+#include "IMP/em2d/scores2D.h"
 #include "IMP/em2d/project.h"
 #include "IMP/em2d/Fine2DRegistrationRestraint.h"
 #include "IMP/em/image_transformations.h"
+#include "IMP/em/ImageReaderWriter.h"
 #include "IMP/em/SpiderReaderWriter.h"
+#include "IMP/atom/Mass.h"
 #include "IMP/gsl/Simplex.h"
 #include "IMP/log.h"
 #include "IMP/Pointer.h"
@@ -26,10 +28,6 @@
 IMPEM2D_BEGIN_NAMESPACE
 
  void ProjectionFinder::set_subjects(const em::Images subjects) {
-  if(parameters_initialized_==false) {
-    IMP_THROW("get_complete_registration: "
-              "The ProjectionFinder is not initialized",ValueException);
-  }
   if(subjects.size()==0) {
     IMP_THROW("Passing empty set of subjects",ValueException);
   }
@@ -46,10 +44,6 @@ IMPEM2D_BEGIN_NAMESPACE
 
 
 void ProjectionFinder::set_projections(em::Images projections) {
-  if(parameters_initialized_==false) {
-    IMP_THROW("get_complete_registration: "
-              "The ProjectionFinder is not initialized",ValueException);
-  }
   if(projections.size()==0) {
     IMP_THROW("Passing empty set of projections",ValueException);
   }
@@ -63,16 +57,21 @@ void ProjectionFinder::set_projections(em::Images projections) {
 }
 
 
-  void ProjectionFinder::set_model_particles(const ParticlesTemp &ps) {
-    if(parameters_initialized_==false) {
-      IMP_THROW("The ProjectionFinder is not initialized",ValueException);
-    }
-    model_particles_= ps;
-    masks_manager_.generate_masks(model_particles_);
-    particles_set_=true;
+void ProjectionFinder::set_model_particles(const ParticlesTemp &ps) {
+  if(parameters_initialized_==false) {
+    IMP_THROW("The ProjectionFinder is not initialized",ValueException);
   }
-
-
+  model_particles_= ps;
+  // Check the particles for coordinates, radius and mass
+  for (unsigned int i=0;i<model_particles_.size();++i) {
+    IMP_USAGE_CHECK((core::XYZR::particle_is_instance(model_particles_[i]) &&
+              atom::Mass::particle_is_instance(model_particles_[i])),
+       "Particle " << i
+       << " does not have the required attributes" << std::endl);
+  }
+  masks_manager_.generate_masks(model_particles_);
+  particles_set_=true;
+}
 
 void ProjectionFinder::preprocess_projection(unsigned int j) {
   // FFT PREPROCESSING
@@ -102,7 +101,7 @@ void ProjectionFinder::preprocess_subject(unsigned int i) {
 }
 
 
-double ProjectionFinder::get_coarse_registration() {
+void ProjectionFinder::get_coarse_registration() {
   IMP_LOG(IMP::TERSE,"Coarse registration of subjects .... " << std::endl);
   if(subjects_.size()==0) {
     IMP_THROW("get_coarse_registration:There are not subject images",
@@ -114,14 +113,13 @@ double ProjectionFinder::get_coarse_registration() {
   }
   em::SpiderImageReaderWriter<double> srw;
   algebra::Transformation2D t,best_transformation;
-  double Score=0;
   /***** Computation ********/
   boost::progress_display show_progress(subjects_.size());
   for(unsigned long i=0;i<subjects_.size();++i) {
     RegistrationResults subject_RRs(projections_.size());
     algebra::Transformation2D best_transformation=
          get_coarse_registrations_for_subject(i,subject_RRs);
-    // Sort projections scores
+    // Sort projections by ccc
     std::sort(subject_RRs.begin(),subject_RRs.end(),
               compare_registration_results);
     // Best result
@@ -135,18 +133,12 @@ double ProjectionFinder::get_coarse_registration() {
             << subject_RRs[k].get_index() << std::endl);
     }
 
-    /**** Compute score and save image if requested *****/
-    // Apply the transformation here and not in the discrepancy score.
-    // Saves time if the image is saved, the transformation is not done twice.
-    IMP_NEW(em::Image,match,());
-    int index=registration_results_[i].get_index();
-    em::apply_Transformation2D(projections_[index]->get_data(),
-                        best_transformation,match->get_data(),true);
-    em::normalize(*match,true);
-    // Compute score
-    bool apply_transformations=false;
-    Score += discrepancy_score(*subjects_[i],*match,apply_transformations);
     if(save_match_images_) {
+      IMP_NEW(em::Image,match,());
+      int index=registration_results_[i].get_index();
+      em::apply_Transformation2D(projections_[index]->get_data(),
+                          best_transformation,match->get_data(),true);
+      em::normalize(*match,true);
       registration_results_[i].set_in_image(*match);
       std::ostringstream strm;
       strm << "coarse_match-" << i << ".spi";
@@ -155,7 +147,6 @@ double ProjectionFinder::get_coarse_registration() {
     ++show_progress;
   }
   registration_done_=true;
-  return Score/subjects_.size();
 }
 
 
@@ -235,7 +226,7 @@ algebra::Transformation2D
 
 
 
-double ProjectionFinder::get_complete_registration() {
+void ProjectionFinder::get_complete_registration() {
   IMP_LOG(IMP::TERSE,"Complete registration of subjects .... " << std::endl);
   if(subjects_.size()==0) {
     IMP_THROW("get_complete_registration:There are not subject images",
@@ -245,13 +236,9 @@ double ProjectionFinder::get_complete_registration() {
     IMP_THROW("get_complete_registration:There are not projection images",
               ValueException);
   }
-  if(parameters_initialized_==false) {
+  if(particles_set_==false) {
     IMP_THROW("get_complete_registration: "
-              "The ProjectionFinder is not initialized",ValueException);
-  }
-  if(parameters_initialized_==false) {
-    IMP_THROW("get_complete_registration: "
-              " model particles have not been set",ValueException);
+              "Model particles have not been set",ValueException);
   }
 
   /********* Variables **********/
@@ -273,11 +260,9 @@ double ProjectionFinder::get_complete_registration() {
   IMP::SetLogState log_state(fine2d,IMP::TERSE);
   /***** Computation ********/
   boost::progress_display show_progress(subjects_.size()*projections_.size());
-  double Score=0;
   for(unsigned long i=0;i<subjects_.size();++i) {
     RegistrationResults subject_RRs(projections_.size());
     get_coarse_registrations_for_subject(i,subject_RRs);
-
     IMP_LOG(IMP::VERBOSE,
           "coarse registration of projections for subject " << i << std::endl);
     for (unsigned int k=0;k<subject_RRs.size();++k) {
@@ -291,17 +276,16 @@ double ProjectionFinder::get_complete_registration() {
       fine2d->set_subject_image(*subjects_[i]);
       simplex_optimizer->optimize((double)optimization_steps_);
       // Update the registration parameters
-      double score = fine2d->get_final_values(subject_RRs[k]);
-      subject_RRs[k].set_ccc(em2d_score_to_ccc(score));
+      double em2d = fine2d->get_final_values(subject_RRs[k]);
+      subject_RRs[k].set_ccc(em2d_to_ccc(em2d));
       IMP_LOG(IMP::VERBOSE, "fine registration for subject " << k
           << ": " << subject_RRs[k] << std::endl);
       ++show_progress;
     }
     std::sort(subject_RRs.begin(),subject_RRs.end(),
-                                            compare_registration_results);
+                                      compare_registration_results);
     // Best fine registration
     registration_results_[i]=subject_RRs[0];
-    Score += ccc_to_em2d_score(registration_results_[i].get_ccc());
     // save if requested
     if(save_match_images_) {
       std::ostringstream strm;
@@ -314,10 +298,34 @@ double ProjectionFinder::get_complete_registration() {
     }
   }
   registration_done_=true;
-  return Score/subjects_.size();
 }
 
 
+
+
+
+RegistrationResults ProjectionFinder::get_registration_results() const {
+  if(!registration_done_) {
+    IMP_THROW("ProjectionFinder: trying to recover results "
+     "before registration",ValueException);
+  }
+  RegistrationResults Regs(subjects_.size());
+  for (unsigned int i=0;i<subjects_.size();++i) {
+    Regs[i]=registration_results_[i];
+  }
+  return Regs;
+}
+
+double ProjectionFinder::get_em2d_score() const {
+  if(!registration_done_) {
+    IMP_THROW("get_em2d_score: registration not done ",ValueException);
+  }
+  double em2d = 0.0;
+  for (unsigned int i=0;i < subjects_.size();++i) {
+    em2d += ccc_to_em2d(registration_results_[i].get_ccc());
+  }
+  return em2d/subjects_.size();
+}
 
 
 void ProjectionFinder::preprocess_for_fast_coarse_registration(

@@ -7,17 +7,14 @@
 #ifndef IMPEM2D_REGISTRATION_RESULT_H
 #define IMPEM2D_REGISTRATION_RESULT_H
 
-#include "IMP/em2d/em2d_config.h"
-#include "IMP/em2d/align2D.h"
 #include "IMP/em2d/internal/rotation_helper.h"
+#include "IMP/em2d/em2d_config.h"
 #include "IMP/em/Image.h"
-#include "IMP/em/ImageReaderWriter.h"
-#include "IMP/em/SpiderReaderWriter.h"
 #include "IMP/algebra/Vector3D.h"
-#include "IMP/algebra/VectorD.h"
 #include "IMP/algebra/Vector2D.h"
 #include "IMP/algebra/Rotation3D.h"
 #include "IMP/algebra/Rotation2D.h"
+#include "IMP/algebra/Transformation2D.h"
 #include "IMP/Pointer.h"
 #include <string>
 
@@ -71,6 +68,7 @@ public:
   inline long get_index() const { return index_;}
   inline String get_name() const { return name_;}
   inline double get_ccc() const { return ccc_;}
+
   inline void set_rotation(double phi,double theta,double psi) {
     phi_=phi; theta_=theta; psi_=psi;
     R_=algebra::get_rotation_from_fixed_zyz(phi_,theta_,psi_);

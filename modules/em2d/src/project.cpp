@@ -6,17 +6,19 @@
 
 #include "IMP/em2d/project.h"
 #include "IMP/em2d/internal/rotation_helper.h"
+#include "IMP/em/image_transformations.h"
+#include "IMP/algebra/Vector2D.h"
+#include "IMP/atom/Mass.h"
+
 #include "IMP/Pointer.h"
 #include "IMP/core/utility.h"
-#include "IMP/atom/Mass.h"
-#include "IMP/algebra/Vector2D.h"
 #include <boost/timer.hpp>
 #include <boost/progress.hpp>
 
 IMPEM2D_BEGIN_NAMESPACE
 
 
-em::Images generate_projections(const Particles &ps,
+em::Images generate_projections(const ParticlesTemp &ps,
                     const algebra::SphericalVector3Ds vs,
                     int rows, int cols,
                     double resolution, double pixelsize,
@@ -37,7 +39,8 @@ em::Images generate_projections(const Particles &ps,
 }
 
 
-em::Images generate_projections(const Particles &ps,
+
+em::Images generate_projections(const ParticlesTemp &ps,
                     RegistrationResults registration_values,
                     int rows, int cols,
                     double resolution, double pixelsize,
@@ -62,7 +65,7 @@ em::Images generate_projections(const Particles &ps,
 }
 
 
-void generate_projection(em::Image &img,const Particles &ps,
+void generate_projection(em::Image &img,const ParticlesTemp &ps,
             RegistrationResult &reg,
             double resolution, double pixelsize,
            em::ImageReaderWriter<double> &srw,MasksManager *masks,
@@ -83,7 +86,7 @@ void generate_projection(em::Image &img,const Particles &ps,
 }
 
 // rotates respect the centroid of the particles and applies translation.
-void project_particles(const Particles &ps,
+void project_particles(const ParticlesTemp &ps,
              algebra::Matrix2D_d &m2,
              algebra::Rotation3D &R,
              algebra::Vector3D &translation,
@@ -102,32 +105,28 @@ void project_particles(const Particles &ps,
   orig2D[1]=m2.get_start(1);
   m2.centered_start();
   // Centroid
-  static FloatKeys fks(IMP::internal::xyzr_keys,IMP::internal::xyzr_keys+3);
-  FloatKey radius_key = core::XYZR::get_default_radius_key();
-  FloatKey mass_key   = atom::Mass::get_mass_key();
   unsigned long n_particles = ps.size();
   algebra::Vector3D centroid(0.0,0.0,0.0);
-  for (unsigned long ii=0; ii<n_particles; ii++) {
-    centroid[0] += ps[ii]->get_value(fks[0]);
-    centroid[1] += ps[ii]->get_value(fks[1]);
-    centroid[2] += ps[ii]->get_value(fks[2]);
+  for (unsigned long i=0; i<n_particles; i++) {
+    core::XYZ xyz(ps[i]);
+    centroid += xyz.get_coordinates();
   }
   centroid /= n_particles;
+
   // Project
-  algebra::Vector3D p;
-  for (unsigned long ii=0; ii<n_particles; ii++) {
+  for (unsigned long i=0; i<n_particles; i++) {
     // Coordinates respect to the centroid
-    p[0] = ps[ii]->get_value(fks[0]) - centroid[0];
-    p[1] = ps[ii]->get_value(fks[1]) - centroid[1];
-    p[2] = ps[ii]->get_value(fks[2]) - centroid[2];
+    core::XYZR xyzr(ps[i]);
+    atom::Mass mass(ps[i]);
+    algebra::Vector3D p=xyzr.get_coordinates()-centroid;
     // Pixel after trasformation to project in Z axis
     // Not necessary to compute pz, is going to be ignored
     double pix_x = (R.get_rotated_one_coordinate(p,0)+translation[0])/pixelsize;
     double pix_y = (R.get_rotated_one_coordinate(p,1)+translation[1])/pixelsize;
     // Apply mask
-    ProjectionMask* mask = masks->find_mask(ps[ii]->get_value(radius_key));
+    ProjectionMask* mask = masks->find_mask(xyzr.get_radius());
     algebra::Vector2D pix(pix_x,pix_y);
-    mask->apply(m2,pix,ps[ii]->get_value(mass_key));
+    mask->apply(m2,pix,mass.get_mass());
   }
   // Restore origin
   m2.set_start(0,orig2D[0]);

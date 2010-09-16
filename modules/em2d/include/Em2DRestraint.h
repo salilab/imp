@@ -34,10 +34,12 @@ class IMPEM2DEXPORT Em2DRestraint : public Restraint
 
   //! SingletonContainer to store the particles that are restrained
   Pointer<SingletonContainer> particles_container_;
-  ProjectionFinder finder_;
+  // mutable because it has to change to get projections while evaluating
+  mutable ProjectionFinder finder_;
   //! Projection Masks to fast model projection
-  MasksManager masks_;
   em::Images em_images_;
+  unsigned int n_projections_for_coarse_registration_;
+  double apix_,resolution_;
 
 public:
 
@@ -48,19 +50,24 @@ public:
   /**
     \param[in] apix Angstroms per pixel in the images
     \param[in] resolution resolution to use when generating projections
-    \param[in] number of projections to generate to perform the initial coarse
-                registration
+    \param[in] n_projections number of projections to generate to perform
+               the initial coarse registration
   **/
   void initialize(double apix,double resolution =1,
-                 int coarse_registration_method = 1,
+                  unsigned n_projections=20,
+                 unsigned int coarse_registration_method = 1,
                  bool save_match_images =false,
-                 int interpolation_method = 0,
-                 int optimization_steps = 10,
+                 unsigned int interpolation_method = 0,
+                 unsigned int optimization_steps = 10,
                  double simplex_initial_length =0.1,
                  double simplex_minimum_size =0.01) {
-    finder_.initialize(apix, resolution , coarse_registration_method,
-        save_match_images ,interpolation_method , optimization_steps,
-        simplex_initial_length,simplex_minimum_size);
+
+  apix_ =apix;
+  resolution_ = resolution;
+  finder_.initialize(apix_, resolution_ , coarse_registration_method,
+      save_match_images ,interpolation_method , optimization_steps,
+      simplex_initial_length,simplex_minimum_size);
+  n_projections_for_coarse_registration_ = n_projections;
 }
 
   void set_particles(SingletonContainer *particles_container);

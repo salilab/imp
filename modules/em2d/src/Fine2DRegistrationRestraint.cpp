@@ -67,7 +67,6 @@ void Fine2DRegistrationRestraint::set_subject_image(em::Image &subject) {
 
 double Fine2DRegistrationRestraint::unprotected_evaluate(
                                        DerivativeAccumulator *accum) const {
-  Float score;
   IMP_USAGE_CHECK(accum==NULL,
      "Fine2DRegistrationRestraint: This restraint does not "
                            "provide derivatives ");
@@ -75,10 +74,10 @@ double Fine2DRegistrationRestraint::unprotected_evaluate(
   algebra::Vector3D translation = PP_.get_translation();
   em2d::project_particles(ps_,projection_->get_data(),
                         R,translation,resolution_,pixelsize_,masks_);
-  em::normalize(*projection_,true);
-  score = em2d::discrepancy_score(*subject_,*projection_,false);
-  IMP_LOG(VERBOSE, "Fine2DRegistration. Score: " << score <<std::endl);
-  return score;
+  double ccc = subject_->get_data().cross_correlation_coefficient(
+                                              projection_->get_data());
+  IMP_LOG(VERBOSE, "Fine2DRegistration. Score: " << em2d <<std::endl);
+  return ccc_to_em2d(ccc);
 }
 
 ParticlesTemp Fine2DRegistrationRestraint::get_input_particles() const {
@@ -93,13 +92,13 @@ ObjectsTemp Fine2DRegistrationRestraint::get_input_objects() const {
 }
 
 void Fine2DRegistrationRestraint::do_show(std::ostream& out) const {
-  double score = unprotected_evaluate(NULL);
+  double em2d = unprotected_evaluate(NULL);
   RegistrationResult rr(PP_.get_Phi(), PP_.get_Theta(),PP_.get_Psi(),
               PP_.get_translation_x()/pixelsize_,
               PP_.get_translation_y()/pixelsize_,
-              em2d_score_to_ccc(score));
+              em2d_to_ccc(em2d));
   rr.show(out);
-  out << " Score: " << score;
+  out << " em2d: " << em2d;
 
 }
 
