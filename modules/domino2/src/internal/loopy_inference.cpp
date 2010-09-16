@@ -14,6 +14,12 @@
 #include <boost/pending/disjoint_sets.hpp>
 
 
+/** This should be sped up by tracking which neighbor states are used
+    to keep alive each state in a node and then removing the
+    node when these lists are empty. This would avoid rechecking
+    filters and make it purely a matter of pushing ints around.
+*/
+
 IMPDOMINO2_BEGIN_INTERNAL_NAMESPACE
 namespace {
 void fill_node_data(const SubsetGraph &sg,
@@ -83,9 +89,11 @@ void fill_edge_data(const SubsetGraph &sg,
       }
     }
     for (int i=to_erase.size()-1; i>=0; --i) {
+      IMP_LOG(VERBOSE, "Erasing " << nd0.subset_states[to_erase[i]]
+              << " from " << s0 << std::endl);
       nd0.subset_states.erase(nd0.subset_states.begin()+to_erase[i]);
     }
-    return to_erase.empty();
+    return !to_erase.empty();
   }
 
 bool filter_pass(const SubsetGraph &sg,
@@ -121,15 +129,45 @@ SubsetStatesList loopy_get_best_conformations(const SubsetGraph &sg,
                                           const Subset& all_particles,
                                           const SubsetFilterTables &filters,
                                           const SubsetStatesTable *sst) {
+  IMP_USAGE_CHECK(boost::num_vertices(sg) >0, "Must have a non-empty graph");
   std::vector<NodeData> nds;
   fill_node_data(sg, sst, nds);
   std::vector<EdgeDatas> eds;
   fill_edge_data(sg, filters, eds);
-  while (filter_pass(sg, eds, nds));
-
   boost::property_map< SubsetGraph, boost::vertex_name_t>::const_type
       subset_map= boost::get(boost::vertex_name, sg);
-
+  IMP_IF_LOG(TERSE) {
+    IMP_LOG(TERSE, "Before filtering states are:\n");
+    for (unsigned int i=0; i< nds.size(); ++i) {
+      IMP_LOG(TERSE, subset_map[i] << ": ");
+      for (unsigned int j=0; j< nds[i].subset_states.size(); ++j) {
+        IMP_LOG(TERSE, nds[i].subset_states[j] << " ");
+      }
+      IMP_LOG(TERSE, std::endl);
+    }
+  }
+  while (filter_pass(sg, eds, nds)) {
+    IMP_IF_LOG(VERBOSE) {
+    IMP_LOG(VERBOSE, "Now states are:\n");
+    for (unsigned int i=0; i< nds.size(); ++i) {
+      IMP_LOG(VERBOSE, subset_map[i] << ": ");
+      for (unsigned int j=0; j< nds[i].subset_states.size(); ++j) {
+        IMP_LOG(VERBOSE, nds[i].subset_states[j] << " ");
+      }
+      IMP_LOG(VERBOSE, std::endl);
+    }
+  }
+  }
+  IMP_IF_LOG(TERSE) {
+    IMP_LOG(TERSE, "After filtering states are:\n");
+    for (unsigned int i=0; i< nds.size(); ++i) {
+      IMP_LOG(TERSE, subset_map[i] << ": ");
+      for (unsigned int j=0; j< nds[i].subset_states.size(); ++j) {
+        IMP_LOG(TERSE, nds[i].subset_states[j] << " ");
+      }
+      IMP_LOG(TERSE, std::endl);
+    }
+  }
   NodeData curd=nds[0];
   Subset s= subset_map[0];
   for (unsigned int i=1; i< nds.size(); ++i) {
