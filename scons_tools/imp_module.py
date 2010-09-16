@@ -68,7 +68,7 @@ def module_deps_requires(env, target, source, dependencies):
     """For each of the module dependency make sure that 'moduledep-source'
     is built before 'target'"""
     #print "alldeps is " +str(dependencies + env['IMP_REQUIRED_MODULES'])
-    for d in dependencies + env['IMP_REQUIRED_MODULES']:
+    for d in dependencies + env['IMP_REQUIRED_LIB_MODULES']:
         #print str(target) + " requires " + d+'-'+source
         env.Requires(target, env.Alias(d+'-'+source))
     if env['IMP_MODULE'] != 'kernel':
@@ -80,7 +80,7 @@ def module_deps_depends(env, target, source, dependencies):
     """For each of the module dependency make sure that 'moduledep-source'
     is built before 'target'"""
     #print "alldeps is " +str(dependencies + env['IMP_REQUIRED_MODULES'])
-    for d in dependencies + env['IMP_REQUIRED_MODULES']:
+    for d in dependencies + env['IMP_REQUIRED_LIB_MODULES']:
         #print str(target) + " requires " + d+'-'+source
         env.Depends(target, env.Alias(d+'-'+source))
 
@@ -389,7 +389,7 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     penv.Prepend(LIBS=['imp%s' % module_suffix])
     swigfile= penv._IMPSWIGPreface(target=[File("#/build/swig/IMP_%(module)s.i"%vars)],
                                    source=[File("swig.i-in"),
-                                           env.Value(env['IMP_REQUIRED_MODULES']),
+                                           env.Value(env['IMP_REQUIRED_PYTHON_MODULES']),
                                            env.Value(env['IMP_MODULE_VERSION']),
                                            #python supports serialization of object, why on earth do they just convert them to strings?
                                            env.Value(" ".join(env[module+"_optional_dependencies"])),])
@@ -655,6 +655,7 @@ def process_dependencies(env, dependencies, required=False):
     return (m_libs, missing)
 
 def IMPModuleBuild(env, version, required_modules=[],
+                   lib_only_required_modules=[],
                    optional_modules=[],
                    optional_dependencies=[], config_macros=[],
                    module=None, module_suffix=None,
@@ -689,14 +690,14 @@ def IMPModuleBuild(env, version, required_modules=[],
     env['IMP_MODULE_AUTHOR'] = "A. Biologist"
 
     # Check required modules and add kernel
-    for x in required_modules+optional_modules:
+    for x in required_modules+optional_modules+lib_only_required_modules:
         if x.startswith("imp_"):
             print >> sys.stderr, "Required modules should have the name of the module (eg 'algebra'), not the name of the library."
-            print >> sys.stderr, required_modules
+            print >> sys.stderr, x
             env.Exit(1)
         if x=='kernel':
             print >> sys.stderr, "You do not need to list the kernel as a required module"
-            print >> sys.stderr, required_modules
+            print >> sys.stderr, x
             env.Exit(1)
         #required_modules.append('kernel')
     if module.lower() != module:
@@ -711,7 +712,8 @@ def IMPModuleBuild(env, version, required_modules=[],
     for x in optional_modules:
         if env.get(x+"_ok", False):
             found_optional_modules.append(x)
-    env[module+"_required_modules"]=required_modules+found_optional_modules
+    env[module+"_required_modules"]=required_modules+found_optional_modules\
+                                     +lib_only_required_modules
     env[module+"_optional_dependencies"]= optional_dependencies
     env['IMP_MODULES_ALL'].append(module)
 
@@ -739,12 +741,14 @@ def IMPModuleBuild(env, version, required_modules=[],
     else:
         env[module+"_libs"]=m_libs
         env = bug_fixes.clone_env(env)
-    for m in required_modules:
+    for m in required_modules+lib_only_required_modules:
         if not env.get(m+"_ok", False):
             module_failure = "module "+m+" not supported"
-    env['IMP_REQUIRED_MODULES']= required_modules+found_optional_modules
+    env['IMP_REQUIRED_PYTHON_MODULES']= required_modules+found_optional_modules
+    env['IMP_REQUIRED_LIB_MODULES']= lib_only_required_modules\
+                                     +required_modules+found_optional_modules
     if env['fastlink']:
-        ed= expand_dependencies(env,env['IMP_REQUIRED_MODULES'], module=='kernel')
+        ed= expand_dependencies(env,env['IMP_REQUIRED_LIB_MODULES'], module=='kernel')
         for m in ed:
             if m != 'kernel':
                 env.Append(LINKFLAGS=['-limp_'+m])
@@ -827,7 +831,7 @@ def IMPModuleBuild(env, version, required_modules=[],
 
 
 
-    nice_deps = expand_dependencies(env,env['IMP_REQUIRED_MODULES'], env['IMP_MODULE'] == 'kernel')
+    nice_deps = expand_dependencies(env,env['IMP_REQUIRED_LIB_MODULES'], env['IMP_MODULE'] == 'kernel')
     #print "nice is "+str(nice_deps)
     all_deps=["IMP."+x for x in nice_deps if x is not "kernel"]+required_libraries
     if len(all_deps) > 0:
