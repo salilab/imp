@@ -330,6 +330,8 @@ IMP_OUTPUT_OPERATOR(Hierarchy);
 
 
 #ifdef IMP_DOXYGEN
+/** The different types which can be passed to get_by_type()
+ */
 enum GetByType {ATOM_TYPE, RESIDUE_TYPE, CHAIN_TYPE, DOMAIN_TYPE, FRAGMENT_TYPE,
                 XYZ_TYPE,XYZR_TYPE,MASS_TYPE};
 #else
