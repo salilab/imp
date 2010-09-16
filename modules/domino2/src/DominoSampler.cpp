@@ -8,7 +8,7 @@
 #include <IMP/domino2/DominoSampler.h>
 #include <IMP/container/ListSingletonContainer.h>
 #include <IMP/domino2/utility.h>
-#include <IMP/domino2/internal/inference.h>
+#include <IMP/domino2/internal/tree_inference.h>
 #include <IMP/internal/graph_utility.h>
 #include <IMP/file.h>
 #include <boost/graph/connected_components.hpp>
@@ -35,25 +35,16 @@ DominoSampler::DominoSampler(Model *m, std::string name):
 
 
 namespace {
-  std::vector<SubsetState>
+  SubsetStatesList
   get_solutions_from_tree(const SubsetGraph &jt,
                           const Subset &known_particles,
-                          ParticleStatesTable *pst,
                           SubsetStatesTable *sst,
-                          SubsetEvaluatorTable *eval,
-                          const SubsetFilterTables &sfts,
-                          double max_score) {
-    const internal::PropagatedData pd
+                          const SubsetFilterTables &sfts) {
+    const SubsetStatesList pd
       = internal::get_best_conformations(jt, 0,
                                          known_particles,
-                                         eval, sfts, sst,
-                                         max_score);
-    std::vector<SubsetState> final_solutions;
-    for (internal::PropagatedData::ScoresIterator it= pd.scores_begin();
-         it != pd.scores_end(); ++it) {
-      final_solutions.push_back(it->first);
-    }
-    return final_solutions;
+                                         sfts, sst);
+    return pd;
   }
 
   bool get_is_tree(const SubsetGraph &g) {
@@ -90,7 +81,6 @@ SubsetStatesList DominoSampler
     //oss << std::endl;
     //IMP_LOG(TERSE, oss.str() << std::endl);
   }
-  // we need a better check
   IMP::internal::OwnerPointer<SubsetEvaluatorTable> set
     = get_subset_evaluator_table_to_use();
   SubsetFilterTables sfts= get_subset_filter_tables_to_use(set);
@@ -101,14 +91,18 @@ SubsetStatesList DominoSampler
   if (get_is_tree(jt)) {
     final_solutions
       = get_solutions_from_tree(jt, known_particles,
-                                get_particle_states_table(),
                                 sst,
-                                set,
-                                sfts,
-                                get_maximum_score());
+                                sfts);
   } else {
     // loopy case
     IMP_NOT_IMPLEMENTED;
+    /* - For each subset, keep a list of possibly valid conformations
+       - iterate for each node, n
+          - for each neighbor, m
+              - for each state in n, check if their is a compatible one
+              in my (which passes the filters), discard if not.
+       - when nothing changes on one run, stop
+     */
   }
   return final_solutions;
 }

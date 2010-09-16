@@ -12,7 +12,6 @@
 #include <boost/version.hpp>
 #include <IMP/domino2/subset_states.h>
 #include <IMP/domino2/particle_states.h>
-#include <IMP/domino2/internal/inference.h>
 #include <IMP/core/XYZ.h>
 #include <boost/iterator/permutation_iterator.hpp>
 
@@ -31,93 +30,12 @@ namespace {
   typedef boost::disjoint_sets<Rank, Parent> UF;
 
 
-  template <class It>
-  void permutation_initialize(It b, It e,
-                              typename std::iterator_traits<It>::value_type beg,
-                              typename std::iterator_traits<It>::value_type end)
-  {
-    for (It c= b; c!= e; ++c) {
-      *c=beg+std::distance(c,e)-1;
-    }
-  }
-
-  template <class It>
-  void permutation_size(It b, It e,
-                        typename std::iterator_traits<It>::value_type beg,
-                        typename std::iterator_traits<It>::value_type end) {
-    const unsigned int k= std::distance(b,e);
-    unsigned int ret=end;
-    for (unsigned int i=1; i< k; ++i) {
-      ret*= end-i;
-    }
-    return ret;
-  }
-
-  template <class It>
-  bool permutation_get_is_permutation(It b, It e,
-                       typename std::iterator_traits<It>::value_type beg,
-                       typename std::iterator_traits<It>::value_type end) {
-    for (It c0= b; c0 != e; ++c0) {
-      for (It c1= b; c1 != c0; ++c1) {
-        if (*c0 == *c1) return false;
-      }
-    }
-    return true;
-  }
-
-  template <class It>
-  bool permutation_increment(It b, It e,
-                             typename std::iterator_traits<It>::value_type beg,
-                             typename std::iterator_traits<It>::value_type end)
-  {
-    It c=b;
-    for (; c != e; ++c) {
-      ++*c;
-      if (*c==end) {
-        *c=beg;
-      } else {
-        break;
-      }
-    }
-    if (c==e) {
-      *b=-1;
-      return true;
-    }
-    return false;
-  }
-
-  template <class It>
-  bool permutation_advance(It b, It e,
-                           typename std::iterator_traits<It>::value_type beg,
-                           typename std::iterator_traits<It>::value_type end) {
-    do {
-      if (permutation_increment(b,e,beg,end)) {
-        permutation_initialize(b,e,beg,end);
-        return true;
-      }
-    } while (!permutation_get_is_permutation(b,e,beg, end));
-    return false;
-  }
-
-  template <class It>
-  bool permutation_advance_i(It b, It e,
-                             typename std::iterator_traits<It>::value_type beg,
-                             typename std::iterator_traits<It>::value_type end,
-                             unsigned int i) {
-    for (It c= b; c < b+i; ++c) {
-      *c= end-1;
-    }
-    return permutation_advance(b,e,beg,end);
-  }
 
 
-  template <class It>
-  bool permutation_get_is_end(It b, It e,
-                              typename std::iterator_traits<It>::value_type beg,
-                              typename std::iterator_traits<It>::value_type end)
-  {
-    return *b==-1;
-  }
+
+  namespace {
+
+
   template <class It>
   Subset get_sub_subset(const Subset &s, It b, It e) {
     if (b==e) return Subset();
@@ -154,28 +72,10 @@ namespace {
   }
 
 
-
-
-  // Branch and bound.....
-
-  class  BranchAndBoundSubsetStates: public SubsetStates {
-  public:
-    void setup_filters(const Subset &s,
-                       const Ints &order,
-                       const SubsetFilterTables &sfts,
-                       std::vector<SubsetFilters> &ses);
-    std::vector<SubsetState> states_;
-    BranchAndBoundSubsetStates(const Subset &s,
-                               ParticleStatesTable *table,
-                               const SubsetFilterTables &sft);
-    IMP_SUBSET_STATES(BranchAndBoundSubsetStates);
-  };
-
-
-  void BranchAndBoundSubsetStates::setup_filters(const Subset &s,
-                                                 const Ints &order,
-                                                 const SubsetFilterTables &sfts,
-                                              std::vector<SubsetFilters> &ses) {
+void setup_filters(const Subset &s,
+                     const Ints &order,
+                     const SubsetFilterTables &sfts,
+                     std::vector<SubsetFilters> &ses) {
     IMP_INTERNAL_CHECK(s.size()== ses.size(), "Sizes don't match");
     for (unsigned int j=0; j < ses.size(); ++j) {
       Subset cs= get_sub_subset(s, order.begin()+j, order.end());
@@ -194,7 +94,6 @@ namespace {
     }
   }
 
-  namespace {
     void initialize_order(const Subset &s,
                           const SubsetFilterTables &sft,
                           Ints &order,
@@ -241,14 +140,14 @@ namespace {
               double str=cur_filter->get_strength();
               IMP_USAGE_CHECK(str >=0 && str <=1, "Strength is out of range "
                               << str);
-              std::cout << "strength is " << str << std::endl;
+              //std::cout << "strength is " << str << std::endl;
               cur_restraint*= 1-str;
               cur_filters.push_back(cur_filter);
             }
           }
-          std::cout << "Of " << s[remaining[j]]->get_name()
+          /*std::cout << "Of " << s[remaining[j]]->get_name()
                     << " plus " << excluded << " got strength " << cur_restraint
-                    << std::endl;
+                    << std::endl;*/
           if (cur_restraint >= max_restraint) {
             max_restraint=cur_restraint;
             max_j=j;
@@ -274,11 +173,10 @@ namespace {
       IMP_LOG(TERSE, std::endl);
     }
   }
-  BranchAndBoundSubsetStates
-  ::BranchAndBoundSubsetStates(const Subset &s,
-                               ParticleStatesTable *table,
-                               const SubsetFilterTables &sft):
-    SubsetStates("BranchAndBoundSubsetStates on "+s.get_name()) {
+  void fill_states_list(const Subset &s,
+                        ParticleStatesTable *table,
+                        const SubsetFilterTables &sft,
+                        SubsetStatesList &states_) {
     //std::cout << "Searching order for " << s << std::endl;
     Ints order;
     std::vector<SubsetFilters> filters;
@@ -424,22 +322,6 @@ namespace {
     IMP_LOG(TERSE, "found " << states_.size() << std::endl);
   }
 
-
-
-  unsigned int BranchAndBoundSubsetStates::get_number_of_states() const {
-    return states_.size();
-  }
-  SubsetState BranchAndBoundSubsetStates::get_state(unsigned int i) const {
-    return states_[i];
-  }
-
-  bool
-  BranchAndBoundSubsetStates::get_is_state(const SubsetState &state) const {
-    return std::binary_search(states_.begin(), states_.end(), state);
-  }
-
-  void BranchAndBoundSubsetStates::do_show(std::ostream &out) const{}
-
 }
 
 
@@ -451,11 +333,14 @@ BranchAndBoundSubsetStatesTable
 
 SubsetStates* BranchAndBoundSubsetStatesTable
 ::get_subset_states(const Subset&s) const {
+  set_was_used(true);
   IMP_OBJECT_LOG;
-  SubsetStates*ret= new BranchAndBoundSubsetStates(s,
-                                                   pst_, sft_);
+  Pointer<ListSubsetStates> ret= new ListSubsetStates();
+  SubsetStatesList ssl;
+  fill_states_list(s, pst_, sft_, ssl);
   ret->set_log_level(get_log_level());
-  return ret;
+  ret->set_subset_states(ssl);
+  return ret.release();
 }
 
 void BranchAndBoundSubsetStatesTable::do_show(std::ostream &out) const {
@@ -464,29 +349,21 @@ void BranchAndBoundSubsetStatesTable::do_show(std::ostream &out) const {
 
 
 // List.....
-ListSubsetStates::ListSubsetStates(std::string name): SubsetStates(name) {
+ListSubsetStates::ListSubsetStates(const SubsetStatesList &states,
+                                   std::string name): SubsetStates(name),
+                                                      states_(states){
 }
 
-unsigned int ListSubsetStates::get_number_of_states() const {
+unsigned int ListSubsetStates::get_number_of_subset_states() const {
   return states_.size();
 }
-SubsetState ListSubsetStates::get_state(unsigned int i) const {
+SubsetState ListSubsetStates::get_subset_state(unsigned int i) const {
   return states_[i];
 }
 
-bool
-ListSubsetStates::get_is_state(const SubsetState &state) const {
-  return std::binary_search(states_.begin(), states_.end(), state);
-}
 
 void ListSubsetStates::add_subset_state(const SubsetState& s) {
-  states_.insert(std::lower_bound(states_.begin(), states_.end(), s), s);
-  IMP_IF_CHECK(USAGE) {
-    for (unsigned int i=1; i< states_.size(); ++i) {
-      IMP_USAGE_CHECK(states_[i-1] < states_[i],
-                      "Not ordered properly");
-    }
-  }
+  states_.push_back(s);
 }
 
 void ListSubsetStates::do_show(std::ostream &out) const{}
@@ -495,11 +372,12 @@ void ListSubsetStates::do_show(std::ostream &out) const{}
 ListSubsetStatesTable
 ::ListSubsetStatesTable(std::string name): SubsetStatesTable(name) {}
 
-
-SubsetStates* ListSubsetStatesTable
-::get_subset_states(const Subset&s) const {
+SubsetStates *ListSubsetStatesTable
+::get_subset_states(const Subset &s) const {
+  set_was_used(true);
   return states_.find(s)->second;
 }
+
 
 void ListSubsetStatesTable::do_show(std::ostream &out) const {
 }

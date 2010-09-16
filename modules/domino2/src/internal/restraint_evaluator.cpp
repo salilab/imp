@@ -7,8 +7,8 @@
  */
 
 #include <IMP/domino2/internal/restraint_evaluator.h>
-#include <IMP/domino2/internal/inference.h>
 #include <IMP/domino2/utility.h>
+#include <IMP/domino2/internal/inference_utility.h>
 #include <IMP/internal/map.h>
 #include <algorithm>
 
@@ -50,8 +50,8 @@ void ModelData::initialize() {
   }
   for (unsigned int i=0; i< rdata_.size(); ++i) {
     double max= rs_->get_model()->get_maximum_score(rdata_[i].get_restraint());
-    std::cout << "Restraint " << rdata_[i].get_restraint()->get_name()
-              << " has max of " << max << std::endl;
+    /*std::cout << "Restraint " << rdata_[i].get_restraint()->get_name()
+      << " has max of " << max << std::endl;*/
     rdata_[i].set_max(max);
   }
   initialized_=true;

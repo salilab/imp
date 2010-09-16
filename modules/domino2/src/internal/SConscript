@@ -1,6 +1,8 @@
 files = [
-         'inference.cpp',
+         'inference_utility.cpp',
+         'loopy_inference.cpp',
          'restraint_evaluator.cpp',
+         'tree_inference.cpp',
         ]
 
 files = [File(x) for x in files]

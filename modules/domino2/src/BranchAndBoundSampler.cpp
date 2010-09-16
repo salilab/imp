@@ -8,8 +8,6 @@
 #include <IMP/domino2/BranchAndBoundSampler.h>
 #include <IMP/domino2/subset_states.h>
 #include <IMP/domino2/utility.h>
-
-#include <IMP/domino2/internal/inference.h>
 #include <IMP/internal/graph_utility.h>
 #include <IMP/file.h>
 
@@ -40,10 +38,7 @@ SubsetStatesList BranchAndBoundSampler
     = DiscreteSampler::get_subset_states_table_to_use(sfts);
   IMP::internal::OwnerPointer<const SubsetStates> ss
     = sst->get_subset_states(s);
-  SubsetStatesList ret(ss->get_number_of_states());
-  for (unsigned int i=0; i< ret.size(); ++i) {
-    ret[i]= ss->get_state(i);
-  }
+  SubsetStatesList ret=ss->get_subset_states();
   return ret;
 }
 
