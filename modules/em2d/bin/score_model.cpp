@@ -7,8 +7,8 @@
 
 
 #include "IMP/em2d/em2d_config.h"
-#include "IMP/em2d/project.h"
 #include "IMP/em2d/ProjectionFinder.h"
+#include "IMP/em2d/project.h"
 #include "IMP/em2d/filenames_manipulation.h"
 #include "IMP/em2d/model_interaction.h"
 #include "IMP/em2d/scores2D.h"
@@ -60,8 +60,6 @@ po::variables_map get_parameters(int argc,char **argv) {
                                         "Simplex size to stop optimization")
     ("n_opt",po::value<unsigned int>()->default_value(10),"Optimization steps "
       "for  Simplex")
-//    ("pca", "Use fast coarse registration based on PCA and FFT")
-//    ("fast_pca", "Use fast coarse registration based on PCA and centers")
     ("bm", po::value<std::string>(),
          "file with solution parameters for the subjects (benchmark purposes)")
   ;
@@ -127,7 +125,6 @@ int main(int argc, char **argv) {
   em::MRCReaderWriter mrw;
   em::SpiderImageReaderWriter<double> srw;
   em::Images projections,subjects;
-  double Score=0.0;
   unsigned long n_projections=0;
   double apix=0.0;
   bool save_images=false;
@@ -181,7 +178,6 @@ int main(int argc, char **argv) {
   // Read model file
   fn_model = vm["mod"].as<std::string>();
   IMP_NEW(IMP::Model,model, ());
-//  atom::NonWaterNonHydrogenPDBSelector sel;
   atom::ATOMPDBSelector sel;
   atom::Hierarchy mh =atom::read_pdb(fn_model,model,sel);
   IMP::Particles ps = core::get_leaves(mh);
@@ -195,7 +191,7 @@ int main(int argc, char **argv) {
       std::exit(0);
     }
     n_projections= vm["np"].as<unsigned long>();
-  IMP_LOG(IMP::TERSE,"Generating " << n_projections
+    IMP_LOG(IMP::TERSE,"Generating " << n_projections
         << " projections using model " << fn_model << std::endl);
 
     // Generate evenly distributed projections
@@ -222,15 +218,11 @@ int main(int argc, char **argv) {
 
 
   int coarse_method = 1;
-  if(vm.count("pca")) {
-    coarse_method= 2;
-  } else if(vm.count("fast_pca")) {
-    coarse_method= 3;
-  }
-
-  em2d::ProjectionFinder finder();
   unsigned interpolation_method = 0; // linear
   double simplex_initial_length = 0.1;
+
+  em2d::ProjectionFinder finder;
+
   finder.initialize(apix,resolution,
                           coarse_method,
                           save_images,
@@ -238,16 +230,18 @@ int main(int argc, char **argv) {
                           optimization_steps,
                           simplex_initial_length,
                           simplex_minimum_size);
-  finder.set_particles(ps);
-  finder.set_subjets(subjects);
+  finder.set_model_particles(ps);
+  finder.set_subjects(subjects);
   finder.set_projections(projections);
 
   boost::timer registration_timer;
   if(coarse_method==1) {
-    Score=finder.get_complete_registration();
+    finder.get_complete_registration();
   } else {
-    Score=finder.get_coarse_registration();
+    finder.get_coarse_registration();
   }
+  double Score = finder.get_em2d_score();
+
   double registration_time=registration_timer.elapsed();
 
 
@@ -269,7 +263,7 @@ int main(int argc, char **argv) {
       <<c<< fn_subjs <<c<< Score <<c<< total_time <<c<< n_subjects;
   for (unsigned int i=0;i<n_subjects;++i) {
     *std::cin.tie() <<c<<
-            em2d::ccc_to_em2d_score(registration_results[i].get_ccc());
+            em2d::ccc_to_em2d(registration_results[i].get_ccc());
   }
   *std::cin.tie() << std::endl;
   // Benchmark

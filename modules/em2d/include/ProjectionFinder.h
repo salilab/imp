@@ -13,8 +13,6 @@
 #include "IMP/em2d/align2D.h"
 #include "IMP/em2d/ProjectionMask.h"
 #include "IMP/em/Image.h"
-#include "IMP/em/ImageReaderWriter.h"
-#include "IMP/em/SpiderReaderWriter.h"
 #include "IMP/algebra/Vector3D.h"
 #include "IMP/algebra/Vector2D.h"
 #include "IMP/algebra/Rotation3D.h"
@@ -69,7 +67,7 @@ public:
   }
 
   //! Set EM images
-   void set_subjects(const em::Images subjects);
+  void set_subjects(const em::Images subjects);
 
   //! Set model projections
   void set_projections(em::Images projections);
@@ -87,25 +85,16 @@ public:
 
   //! Recover the registration results. Only works if a registration has been
   //! done previously
-  RegistrationResults get_registration_results()const {
-    if(!registration_done_) {
-      IMP_THROW(
-       "ProjectionFinder: trying to recover results before registration",
-        ValueException);
-    }
-    RegistrationResults Regs(subjects_.size());
-    for (unsigned int i=0;i<subjects_.size();++i) {
-      Regs[i]=registration_results_[i];
-    }
-    return Regs;
-  }
+  RegistrationResults get_registration_results() const;
 
   //! Coarse registration of projections by enumeration.
-  double get_coarse_registration();
+  void get_coarse_registration();
 
 
   //! Performs complete registration of projections against subjects in 2D
-  double get_complete_registration();
+  void get_complete_registration();
+
+  double get_em2d_score() const;
 
   void show(std::ostream &out) const;
 

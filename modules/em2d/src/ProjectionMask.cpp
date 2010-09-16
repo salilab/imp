@@ -81,10 +81,9 @@ ProjectionMask* MasksManager::find_mask(double radius) {
 void MasksManager::generate_masks(const ParticlesTemp &ps) {
   IMP_LOG(IMP::TERSE,"Genereating ProjectionMasks " << std::endl);
   ProjectionMask *mask;
-  FloatKey radius_key = core::XYZR::get_default_radius_key();
   unsigned long n_particles = ps.size();
   for (unsigned long i=0; i<n_particles; i++) {
-    core::XYZR xyzr=core::XYZR(ps[i],radius_key);
+    core::XYZR xyzr(ps[i]);
     double radius = xyzr.get_radius();
     mask = this->find_mask(radius);
     if (!mask) this->create_mask(radius);

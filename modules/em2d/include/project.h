@@ -32,7 +32,7 @@ IMPEM2D_BEGIN_NAMESPACE
 
 
 //! Generates projectios using particles and precomputed MasksManager
- IMPEM2DEXPORT em::Images generate_projections(const Particles &ps,
+ IMPEM2DEXPORT em::Images generate_projections(const ParticlesTemp &ps,
         const algebra::SphericalVector3Ds vs,
         int rows, int cols,
         double resolution, double pixelsize,
@@ -41,7 +41,7 @@ IMPEM2D_BEGIN_NAMESPACE
         Strings names=Strings());
 
 //! Generates projectios using particles precomputed MasksManager
- IMPEM2DEXPORT em::Images generate_projections(const Particles &ps,
+ IMPEM2DEXPORT em::Images generate_projections(const ParticlesTemp &ps,
         RegistrationResults registration_values,
         int rows, int cols,
         double resolution, double pixelsize,
@@ -78,7 +78,7 @@ IMPEM2D_BEGIN_NAMESPACE
 
 
 
-IMPEM2DEXPORT void generate_projection(em::Image &img,const Particles &ps,
+IMPEM2DEXPORT void generate_projection(em::Image &img,const ParticlesTemp &ps,
         RegistrationResult &reg,double resolution,double pixelsize,
         em::ImageReaderWriter<double> &srw,
         MasksManager *masks=NULL,
@@ -98,7 +98,7 @@ IMPEM2DEXPORT void generate_projection(em::Image &img,const Particles &ps,
   \param[in] masks if NULL, they are computed. To avoid the computation, they
              must be provided
 **/
- IMPEM2DEXPORT void project_particles(const Particles &ps,
+ IMPEM2DEXPORT void project_particles(const ParticlesTemp &ps,
              algebra::Matrix2D_d& m2,
              algebra::Rotation3D& R,
              algebra::Vector3D &translation,

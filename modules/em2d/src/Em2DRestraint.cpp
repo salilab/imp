@@ -7,6 +7,9 @@
  */
 
 #include "IMP/em2d/Em2DRestraint.h"
+#include "IMP/em2d/RegistrationResult.h"
+#include "IMP/em2d/project.h"
+#include "IMP/em/SpiderReaderWriter.h"
 
 IMPEM2D_BEGIN_NAMESPACE
 
@@ -23,22 +26,26 @@ IMPEM2D_BEGIN_NAMESPACE
  void Em2DRestraint::set_particles(SingletonContainer *particles_container) {
   particles_container_ = particles_container;
   particles_container_->set_was_used(true);
+  finder_.set_model_particles(particles_container_->get_particles());
  }
 
 double
 Em2DRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
-// *** mirar si han cambiado las particulas
-// *** si han cambiado:
-//    projectar las particulas
-//*** poner las proyecciones en el ProjectionFinder
-//**** Darle al projection finder.
-//**** Devolver el resultado
-//
-
-
-  //=========================> IMPLEMENT ????
-  return 0.0;
+  IMP_NEW(Model,model,());
+  model=get_model();
+  // Project the model
+  RegistrationResults evenly_regs=evenly_distributed_registration_results(
+                                  n_projections_for_coarse_registration_);
+  unsigned int rows =  em_images_[0]->get_data().get_number_of_rows();
+  unsigned int cols =  em_images_[0]->get_data().get_number_of_columns();
+  em::SpiderImageReaderWriter<double> srw;
+  em::Images projections=generate_projections(
+          particles_container_->get_particles(),evenly_regs,rows,cols,
+                                resolution_,apix_,srw);
+  finder_.set_projections(projections);
+  finder_.get_complete_registration();
+  return finder_.get_em2d_score();
 }
 
 /* We also need to know which particles are used (as some are
