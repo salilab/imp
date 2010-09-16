@@ -17,7 +17,6 @@
 #include <IMP/Model.h>
 #include <IMP/core/internal/CoreClosePairContainer.h>
 #include <IMP/display/Writer.h>
-#include <IMP/domino2/subset_graphs.h>
 
 #include <boost/graph/kruskal_min_spanning_tree.hpp>
 #include <boost/graph/prim_minimum_spanning_tree.hpp>
@@ -31,6 +30,7 @@ class Object;
 IMP_END_NAMESPACE
 
 IMPDOMINO2_BEGIN_NAMESPACE
+
 /** \name Debug tools
 
     We provide a number of different functions for helpering
@@ -39,36 +39,6 @@ IMPDOMINO2_BEGIN_NAMESPACE
     without notice.
     @{
  */
-/** An undirected graph with one vertex per particle of interest.
-    Two particles are connected by an edge if a Restraint
-    or ScoreState creates and interaction between the two particles.
-
-    See \ref graphs "Graphs in IMP" for more information.
- */
-IMP_GRAPH(InteractionGraph, undirected, Particle*, Object*);
-
-/** Compute the interaction graph of the restraints and the specified
-    particles.  The dependency graph in the model is traversed to
-    determine how the passed particles relate to the actual particles
-    read as input by the model. For example, if particles contains a
-    rigid body, then an restraint which uses a member of the rigid
-    body will have an edge from the rigid body particle.
-
-    \note This function is here to aid in debugging of optimization
-    protocols that use Domino2. As a result, its signature and
-    functionality may change without notice.
-    @{
- */
-IMPDOMINO2EXPORT InteractionGraph
-get_interaction_graph(const ParticlesTemp &particles,
-                      const RestraintsTemp &rs);
-
-/** Assuming that all the particles have Cartesian coordinates,
-    output edges corresponding to the edges in the interaction graph.
-    The edges are named by the restraint which induces them.
-*/
-IMPDOMINO2EXPORT display::Geometries
-get_interaction_graph_geometry(const InteractionGraph &ig);
 
 /** Returns the subset of particles that depend on p as input. This
     will include p.
@@ -84,23 +54,6 @@ IMPDOMINO2EXPORT ParticlesTemp get_dependent_particles(Particle *p);
 IMPDOMINO2EXPORT ParticlesTemp
 get_dependent_particles(Particle *p,
                         const DependencyGraph &dg);
-
-
-
-/** Compute the exact junction tree for an interaction graph. The resulting
-    graph has the junction tree properties
-    - it is a tree
-    - for any two vertices whose subsets both contain a vertex, that vertex
-    is contained in all subsets along the path connecting those two vertices.
-*/
-IMPDOMINO2EXPORT SubsetGraph
-get_junction_tree(const InteractionGraph &ig);
-
-/** Display the subsets of a subset graph, superimposed on the 3D
-    coordinates of the particles.
-*/
-IMPDOMINO2EXPORT display::Geometries
-get_subset_graph_geometry(const SubsetGraph &ig);
 
 
 class ParticleStatesTable;

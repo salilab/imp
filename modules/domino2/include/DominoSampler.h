@@ -12,13 +12,15 @@
 #include "domino2_config.h"
 //#include "Evaluator.h"
 #include "DiscreteSampler.h"
+#include "subset_graphs.h"
 #include <IMP/Sampler.h>
 #include <IMP/macros.h>
 #include <IMP/internal/OwnerPointer.h>
 
 IMPDOMINO2_BEGIN_NAMESPACE
-
-
+#ifdef SWIG
+class SubsetGraph;
+#endif
 
 //! Sample best solutions using Domino
 /**
@@ -26,7 +28,8 @@ IMPDOMINO2_BEGIN_NAMESPACE
 class IMPDOMINO2EXPORT DominoSampler : public DiscreteSampler
 {
   Pointer<SubsetStatesTable> sst_;
-  IMP::internal::OwnerPointer<SubsetGraphTable> sgt_;
+  SubsetGraph sg_;
+  bool has_sg_;
  public:
   DominoSampler(Model *m, std::string name= "DominoSampler %1%");
   DominoSampler(Model*m, ParticleStatesTable *pst,
@@ -39,7 +42,7 @@ class IMPDOMINO2EXPORT DominoSampler : public DiscreteSampler
       the module for a general description.
       @{
   */
-  void set_subset_graph_table(SubsetGraphTable *sgt);
+  void set_subset_graph(const SubsetGraph &sg);
   /** @} */
 };
 

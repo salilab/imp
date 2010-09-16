@@ -26,7 +26,7 @@ def create_representation(m):
     ps=[]
     for i in range(0,6):
         p=IMP.Particle(m)
-        IMP.core.XYZ.setup_particle(p,IMP.algebra.Vector3D(0.,0.,0.))
+        IMP.core.XYZ.setup_particle(p,IMP.algebra.Vector3D(i,0.,0.))
         ps.append(p)
     return ps
 
@@ -42,7 +42,6 @@ def create_discrete_states(ps):
     states= IMP.domino2.XYZStates(vs)
     # special case ps[0] to remove a sliding degree of freedom
     for p in ps[1:]:
-        print p.get_name()
         pst.set_particle_states(p, states)
     return pst
 
@@ -73,10 +72,10 @@ print "creating representation"
 ps=create_representation(m)
 print "creating discrete states"
 pst=create_discrete_states(ps)
-print "creating sampler"
-s=create_sampler(m, pst)
 print "creating score function"
 rs=create_scoring(m, ps)
+print "creating sampler"
+s=create_sampler(m, pst)
 
 print "sampling"
 cs=s.get_sample()

@@ -44,11 +44,7 @@ void load_particle_states(It b, It e, const SubsetState &ss,
   - cache of scores for subset state
  */
 class RestraintData {
-  //#if IMP_BOOST_VERSION > 103900
-//typedef  boost::unordered_map<SubsetState, double> Scores;
-//#else
-  typedef std::map<SubsetState, double> Scores;
-  //#endif
+  typedef IMP::internal::Map<SubsetState, double> Scores;
   mutable Scores scores_;
   Pointer<Restraint> r_;
   double weight_;

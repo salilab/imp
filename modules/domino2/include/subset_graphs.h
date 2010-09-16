@@ -11,6 +11,7 @@
 
 #include "particle_states.h"
 #include "Subset.h"
+#include <IMP/display/geometry.h>
 
 
 IMPDOMINO2_BEGIN_NAMESPACE
@@ -19,49 +20,77 @@ IMPDOMINO2_BEGIN_NAMESPACE
     named with an Subset.
  */
 IMP_GRAPH(SubsetGraph, undirected, Subset, int);
+
+
+/** An undirected graph with one vertex per particle of interest.
+    Two particles are connected by an edge if a Restraint
+    or ScoreState creates and interaction between the two particles.
+
+    See \ref graphs "Graphs in IMP" for more information.
+ */
+IMP_GRAPH(InteractionGraph, undirected, Particle*, Object*);
+
+
 //! Gets all of the Subsets of a SubsetGraph
 IMPDOMINO2EXPORT Subsets get_subsets(const SubsetGraph &g);
 
 
-//! A base class for generating the subset graph from the restraints
-/** Currently, for DominoSampler, the returned graph must be a
-    tree which satisfies the junction tree property.
-**/
-class IMPDOMINO2EXPORT SubsetGraphTable: public Object {
- public:
-  SubsetGraphTable(std::string name="SubsetGraphTable %1%");
-  virtual SubsetGraph get_subset_graph(ParticleStatesTable *pst) const=0;
-};
+/** Compute the exact junction tree for an interaction graph. The resulting
+    graph has the junction tree properties
+    - it is a tree
+    - for any two vertices whose subsets both contain a vertex, that vertex
+    is contained in all subsets along the path connecting those two vertices.
+*/
+IMPDOMINO2EXPORT SubsetGraph
+get_junction_tree(const InteractionGraph &ig);
 
-IMP_OBJECTS(SubsetGraphTable, SubsetGraphTables);
 
-//! Compute the junction tree
-/** The passed restraint set implies the interaction
-    graph that is used to generate the junction tree. The
-    restraints in this set might be all of them
-    (eg Model::get_root_restraint_set()), but it could just be
-    a subset if you want to use some restraints for filtering only.
+
+
+/** The restraint graph is formed by having one node per restraint
+    and an edge connecting two restraints if they share input
+    particles. The associated Subsets are the set of input particles
+    for the restraint, projected onto ps. */
+IMPDOMINO2EXPORT
+SubsetGraph get_restraint_graph(const ParticlesTemp &ps,
+                                const RestraintsTemp &irs);
+
+
+
+
+
+/** Compute the interaction graph of the restraints and the specified
+    particles.  The dependency graph in the model is traversed to
+    determine how the passed particles relate to the actual particles
+    read as input by the model. For example, if particles contains a
+    rigid body, then an restraint which uses a member of the rigid
+    body will have an edge from the rigid body particle.
+
+    \note This function is here to aid in debugging of optimization
+    protocols that use Domino2. As a result, its signature and
+    functionality may change without notice.
+    @{
  */
-class IMPDOMINO2EXPORT JunctionTreeTable: public SubsetGraphTable {
-  Pointer<RestraintSet> rs_;
- public:
-  JunctionTreeTable(RestraintSet *rs);
-  IMP_SUBSET_GRAPH_TABLE(JunctionTreeTable);
-};
+IMPDOMINO2EXPORT InteractionGraph
+get_interaction_graph(const ParticlesTemp &particles,
+                      const RestraintsTemp &rs);
 
-IMP_OBJECTS(JunctionTreeTable, JunctionTreeTables);
+/** Assuming that all the particles have Cartesian coordinates,
+    output edges corresponding to the edges in the interaction graph.
+    The edges are named by the restraint which induces them.
+*/
+IMPDOMINO2EXPORT display::Geometries
+get_interaction_graph_geometry(const InteractionGraph &ig);
 
-//! Return a stored subset graph
-/** \untested{StoredSubsetGraphTable} */
-class IMPDOMINO2EXPORT StoredSubsetGraphTable: public SubsetGraphTable {
-  SubsetGraph sg_;
- public:
-  StoredSubsetGraphTable(const SubsetGraph& sg,
-                         std::string name="Stored graph %1%");
-  IMP_SUBSET_GRAPH_TABLE(StoredSubsetGraphTable);
-};
 
-IMP_OBJECTS(StoredSubsetGraphTable, StoredSubsetGraphTables);
+/** Display the subsets of a subset graph, superimposed on the 3D
+    coordinates of the particles.
+*/
+IMPDOMINO2EXPORT display::Geometries
+get_subset_graph_geometry(const SubsetGraph &ig);
+
+
+
 
 IMPDOMINO2_END_NAMESPACE
 

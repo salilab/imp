@@ -26,11 +26,11 @@ IMPDOMINO2_BEGIN_NAMESPACE
 
 DominoSampler::DominoSampler(Model *m, ParticleStatesTable* pst,
                              std::string name):
-  DiscreteSampler(m, pst, name){
+  DiscreteSampler(m, pst, name), has_sg_(false) {
 }
 
 DominoSampler::DominoSampler(Model *m, std::string name):
-  DiscreteSampler(m, new ParticleStatesTable(), name){
+  DiscreteSampler(m, new ParticleStatesTable(), name), has_sg_(false){
 }
 
 
@@ -56,14 +56,15 @@ SubsetStatesList DominoSampler
   OptimizeContainers co(rs, get_particle_states_table());
   OptimizeRestraints ro(rs, get_particle_states_table()->get_particles());
   ParticlesTemp pt(known_particles.begin(), known_particles.end());
-  Pointer<SubsetGraphTable> sgt;
-  if (sgt_) {
-    sgt= sgt_;
+  SubsetGraph jt;
+  if (has_sg_) {
+    jt= sg_;
   } else {
-    sgt= new JunctionTreeTable(rs);
+    ParticlesTemp kppt(known_particles.begin(),
+                       known_particles.end());
+    jt= get_junction_tree(get_interaction_graph(kppt,
+                                                Restraints(1, rs)));
   }
-  sgt->set_was_used(true);
-  SubsetGraph jt=sgt->get_subset_graph(get_particle_states_table());
   IMP_IF_LOG(VERBOSE) {
     IMP_LOG(VERBOSE, "Subset graph is ");
     //std::ostringstream oss;
@@ -91,8 +92,9 @@ SubsetStatesList DominoSampler
   return final_solutions;
 }
 
-void DominoSampler::set_subset_graph_table(SubsetGraphTable *s) {
-  sgt_=s;
+void DominoSampler::set_subset_graph(const SubsetGraph &sg) {
+  sg_=sg;
+  has_sg_=true;
 }
 
 void DominoSampler::do_show(std::ostream &out) const {

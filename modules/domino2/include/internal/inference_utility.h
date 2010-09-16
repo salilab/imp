@@ -13,6 +13,7 @@
 #include "../utility.h"
 #include "../subset_filters.h"
 #include "../subset_states.h"
+#include "../subset_graphs.h"
 
 #include <IMP/Model.h>
 #include <IMP/ScoreState.h>

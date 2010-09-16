@@ -14,6 +14,12 @@ def create_scoring(m, ps):
     m.add_restraint(pr)
     d= IMP.core.DistanceToSingletonScore(IMP.core.HarmonicUpperBound(2,1),
                                          IMP.algebra.Vector3D(2,0,0))
+    # force ps[1] to be on the positive side to remove flip degree of freedom
+    dr= IMP.core.SingletonRestraint(d, ps[1])
+    m.add_restraint(dr)
+    # we are not interested in conformations which don't fit the distances
+    # exactly, but using 0 is tricky
+    m.set_maximum_score(dr, .01)
     return m.get_restraints()
 
 def create_representation(m):
@@ -33,42 +39,21 @@ def create_discrete_states(ps):
         IMP.algebra.Vector3D(2,0,0)]
     vs= vs+[-v for v in vs]
     print len(vs), "states for each particle"
-    print vs[1]
     states= IMP.domino2.XYZStates(vs)
     # special case ps[0] to remove a sliding degree of freedom
     for p in ps[1:]:
         pst.set_particle_states(p, states)
     return pst
 
-# force particle p to be in state s
-class MyFilterTable(IMP.domino2.SubsetFilterTable):
-    class MyFilter(IMP.domino2.SubsetFilter):
-        def __init__(self, pos, value):
-            #print "Filtering with", pos, value
-            IMP.domino2.SubsetFilter.__init__(self, "MF"+str(pos) + " " +str(value))
-            self.pos=pos
-            self.value=value
-        def get_is_ok(self, state):
-            ret= state[self.pos]==self.value
-            return ret
-        def get_strength(self):
-            # return the maximum value since it dictates the position
-            return 1
-    def __init__(self, p, s):
-        IMP.domino2.SubsetFilterTable.__init__(self, "MFT"+p.get_name()+" at "+str(s))
-        self.p=p
-        self.s=s
-    def get_subset_filter(self, subset, excluded):
-        # create a filter if self.p is in subset but not in excluded
-        if self.p in subset and self.p not in sum([list(x) for x in excluded], []):
-            # pass the position of self.p and the value that it must have
-            return self.MyFilter(list(subset).index(self.p), self.s)
-        else:
-            return None
-
-def create_sampler(m, ps, pst):
+def create_sampler(m, pst):
     s=IMP.domino2.DominoSampler(m, pst)
     s.set_log_level(IMP.VERBOSE)
+    # instead of the default junction tree, use the restraint graph
+    IMP.set_log_level(IMP.VERBOSE)
+    sg= IMP.domino2.get_restraint_graph(pst.get_particles(), [m.get_root_restraint_set()])
+    IMP.set_log_level(IMP.TERSE)
+    print sg
+    s.set_subset_graph(sg)
     # the following lines recreate the defaults and so are optional
     me= IMP.domino2.ModelSubsetEvaluatorTable(m, pst)
     s.set_subset_evaluator_table(me)
@@ -79,13 +64,11 @@ def create_sampler(m, ps, pst):
     # filter states that score worse than the cutoffs in the Model
     filters.append(IMP.domino2.RestraintScoreSubsetFilterTable(me))
     filters[-1].set_log_level(IMP.SILENT)
-    mf=MyFilterTable(ps[1], 0)
-    # try with and without this line
-    filters.append(mf)
-    states= IMP.domino2.BranchAndBoundSubsetStatesTable(pst, filters)
-    #states.set_log_level(IMP.SILENT);
+    states= IMP.domino2.BranchAndBoundSubsetStatesTable(pst, filters);
+    states.set_log_level(IMP.SILENT);
     s.set_subset_states_table(states)
     s.set_subset_filter_tables(filters)
+
     return s
 
 IMP.set_log_level(IMP.TERSE)
@@ -98,10 +81,10 @@ print "creating discrete states"
 pst=create_discrete_states(ps)
 print "creating score function"
 rs=create_scoring(m, ps)
+oc= IMP.domino2.OptimizeContainers(m.get_root_restraint_set(), pst)
+ors= IMP.domino2.OptimizeRestraints(m.get_root_restraint_set(), pst.get_particles())
 print "creating sampler"
-s=create_sampler(m, ps, pst)
-print "creating score function"
-rs=create_scoring(m, ps)
+s=create_sampler(m, pst)
 
 print "sampling"
 cs=s.get_sample()
