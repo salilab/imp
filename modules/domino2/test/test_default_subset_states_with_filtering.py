@@ -15,8 +15,8 @@ class DOMINOTests(IMP.test.TestCase):
         dsst= IMP.domino2.DefaultSubsetStatesTable(pst, [])
         ss= dsst.get_subset_states(lsc)
         all_states=[]
-        for i in range(0, ss.get_number_of_states()):
-            state= ss.get_state(i)
+        for i in range(0, ss.get_number_of_subset_states()):
+            state= ss.get_subset_state(i)
             #print all_states
             self.assert_(state not in all_states)
             all_states.append(state)
@@ -66,11 +66,11 @@ class DOMINOTests(IMP.test.TestCase):
         IMP.set_log_level(IMP.VERBOSE)
         print "setting"
         ss= dsst.get_subset_states(lsc)
-        print ss.get_number_of_states(), "states"
+        print ss.get_number_of_subset_states(), "states"
         found_states=[]
         print repr(lsc)
-        for i in range(0, ss.get_number_of_states()):
-            s= ss.get_state(i)
+        for i in range(0, ss.get_number_of_subset_states()):
+            s= ss.get_subset_state(i)
             print s
             found_states.append(s)
             self.assertEqual((s[1]-s[2])**2, 1)

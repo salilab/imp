@@ -20,7 +20,7 @@ class DOMINOTests(IMP.test.TestCase):
                 r=IMP.core.DistanceRestraint(sf, ps[pair[0]], ps[pair[1]])
                 m.add_restraint(r)
 
-        IMP.set_log_level(IMP.TERSE)
+        IMP.set_log_level(IMP.VERBOSE)
         m=IMP.Model()
         m.set_log_level(IMP.SILENT)
         print "create sampler"
@@ -47,11 +47,10 @@ class DOMINOTests(IMP.test.TestCase):
         print "setting up restraints"
         setup_restraints(m, ps)
 
-        s.set_maximum_score(.2)
+        m.set_maximum_score(.2)
         s.set_log_level(IMP.VERBOSE)
 
         print "sampling"
-        s.set_log_level(IMP.TERSE)
         cs=s.get_sample()
 
         print "Found ", cs.get_number_of_configurations(), "solutions"

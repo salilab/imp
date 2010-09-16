@@ -25,11 +25,10 @@ public:                                                         \
     - IMP::domino2::SubsetStates::get_number_of_states()
     - IMP::domino2::SubsetStates::get_state()
 */
-#define IMP_SUBSET_STATES(Name)                         \
-  public:                                               \
-  unsigned int get_number_of_states() const;            \
-  SubsetState get_state(unsigned int i) const;          \
-  bool get_is_state(const SubsetState &s) const;        \
+#define IMP_SUBSET_STATES(Name)                                \
+  public:                                                      \
+  unsigned int get_number_of_subset_states() const;            \
+  SubsetState get_subset_state(unsigned int i) const;          \
  IMP_OBJECT(Name)
 
 /** This macro declares

@@ -18,6 +18,7 @@
 #include "domino2_macros.h"
 #include <IMP/Sampler.h>
 #include <IMP/macros.h>
+#include <IMP/internal/map.h>
 #include <boost/pending/disjoint_sets.hpp>
 #if BOOST_VERSION > 103900
 #include <boost/property_map/property_map.hpp>
@@ -39,13 +40,18 @@ class DominoSampler;
 class IMPDOMINO2EXPORT SubsetStates: public Object {
 public:
   SubsetStates(std::string name="SubsetStates %1%"): Object(name){}
-  virtual unsigned int get_number_of_states() const=0;
+  virtual unsigned int get_number_of_subset_states() const=0;
   /** i can be anything in [0, get_number_of_states())
    */
-  virtual SubsetState get_state(unsigned int i) const=0;
-  /** Return true if there is some i for which get_state()
-      returns s. */
-  virtual bool get_is_state(const SubsetState &s) const=0;
+  virtual SubsetState get_subset_state(unsigned int i) const=0;
+
+  virtual SubsetStatesList get_subset_states() const {
+    SubsetStatesList ret(get_number_of_subset_states());
+    for (unsigned int i=0; i< ret.size(); ++i) {
+      ret[i]= get_subset_state(i);
+    }
+    return ret;
+  }
   virtual ~SubsetStates();
 };
 
@@ -110,10 +116,15 @@ typedef BranchAndBoundSubsetStatesTable DefaultSubsetStatesTable;
     \untested{ListSubsetStates}
 */
 class IMPDOMINO2EXPORT ListSubsetStates: public SubsetStates {
-  std::vector<SubsetState> states_;
+  SubsetStatesList states_;
  public:
-  ListSubsetStates(std::string name="ListSubsetStates %1%");
+  ListSubsetStates(const SubsetStatesList &states=SubsetStatesList(),
+                   std::string name="ListSubsetStates %1%");
   void add_subset_state(const SubsetState& s);
+  void set_subset_states(const SubsetStatesList &s) {
+    states_=s;
+  }
+  SubsetStatesList get_subset_states() const {return states_;}
   IMP_SUBSET_STATES(ListSubsetStates);
 };
 
@@ -126,7 +137,7 @@ IMP_OBJECTS(ListSubsetStates, ListSubsetStatesList);
     \untested{ListSubsetStatesTable}
 */
 class IMPDOMINO2EXPORT ListSubsetStatesTable: public SubsetStatesTable {
-  std::map<Subset, Pointer<SubsetStates> > states_;
+  IMP::internal::Map<Subset, Pointer<SubsetStates> > states_;
  public:
   ListSubsetStatesTable(std::string name="ListSubsetStatesTable %1%");
   void set_subset_states(const Subset &s, SubsetStates *lsc) {

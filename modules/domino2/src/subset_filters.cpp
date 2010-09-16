@@ -12,7 +12,6 @@
 #include <boost/version.hpp>
 #include <IMP/domino2/subset_states.h>
 #include <IMP/domino2/particle_states.h>
-#include <IMP/domino2/internal/inference.h>
 #include <IMP/core/XYZ.h>
 
 
@@ -46,6 +45,7 @@ namespace {
 
   bool RestraintScoreSubsetFilter::get_is_ok(const SubsetState &state) const{
     IMP_OBJECT_LOG;
+    set_was_used(true);
     const bool ok=data_.get_is_ok(state);
     IMP_LOG(VERBOSE, "For subset " << data_.get_subset()
             << (ok?" accepted":" rejected")
@@ -85,6 +85,7 @@ SubsetFilter*
 RestraintScoreSubsetFilterTable
 ::get_subset_filter(const Subset &s,
                     const Subsets &excluded) const {
+  set_was_used(true);
   if (mset_->data_.get_subset_data(s, excluded)
       .get_number_of_restraints() ==0) return NULL;
   SubsetFilter* ret
@@ -126,6 +127,7 @@ namespace {
   template <bool EQ>
   bool PermutationSubsetFilter<EQ>::get_is_ok(const SubsetState &state) const{
     IMP_OBJECT_LOG;
+    set_was_used(true);
     for (unsigned int i=0; i< exclusions_.size(); ++i) {
       for (unsigned int j=0; j< exclusions_[i].second.size(); ++j) {
         int a=state[exclusions_[i].first], b= state[exclusions_[i].second[j]];
@@ -246,6 +248,7 @@ SubsetFilter*
 PermutationSubsetFilterTable
 ::get_subset_filter(const Subset &s,
                     const Subsets &excluded) const {
+  set_was_used(true);
   std::vector<std::pair<unsigned int, Ints> > filters
     = get_filters(s, excluded, pst_, pairs_);
   if (filters.empty()) return NULL;
