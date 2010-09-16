@@ -12,6 +12,7 @@ scons_tools.checks.add_external_library(env, "Bullet", ["BulletDynamics", "Bulle
 # See IMP.gsl for an example of how to add external dependencies to a module
 env.IMPModuleBuild(version='SVN',
                    # The required modules are the other IMP modules that must be built to use this one
-                   required_modules=['container', 'core', 'atom', 'domino2'],
+                   required_modules=['container'],
+                   lib_only_required_modules=['core', 'atom', 'domino2'],
                    # the optional dependencies are external libraries that are needed
                    required_dependencies=["Bullet"])
