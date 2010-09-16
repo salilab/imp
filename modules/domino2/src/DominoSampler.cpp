@@ -12,6 +12,7 @@
 #include <IMP/internal/graph_utility.h>
 #include <IMP/file.h>
 #include <boost/graph/connected_components.hpp>
+#include <IMP/domino2/internal/loopy_inference.h>
 #if BOOST_VERSION > 103900
 #include <boost/property_map/property_map.hpp>
 #else
@@ -35,17 +36,6 @@ DominoSampler::DominoSampler(Model *m, std::string name):
 
 
 namespace {
-  SubsetStatesList
-  get_solutions_from_tree(const SubsetGraph &jt,
-                          const Subset &known_particles,
-                          SubsetStatesTable *sst,
-                          const SubsetFilterTables &sfts) {
-    const SubsetStatesList pd
-      = internal::get_best_conformations(jt, 0,
-                                         known_particles,
-                                         sfts, sst);
-    return pd;
-  }
 
   bool get_is_tree(const SubsetGraph &g) {
     // check connected components too
@@ -90,19 +80,13 @@ SubsetStatesList DominoSampler
   SubsetStatesList final_solutions;
   if (get_is_tree(jt)) {
     final_solutions
-      = get_solutions_from_tree(jt, known_particles,
-                                sst,
-                                sfts);
+      = internal::get_best_conformations(jt, 0,
+                                         known_particles,
+                                         sfts, sst);
   } else {
-    // loopy case
-    IMP_NOT_IMPLEMENTED;
-    /* - For each subset, keep a list of possibly valid conformations
-       - iterate for each node, n
-          - for each neighbor, m
-              - for each state in n, check if their is a compatible one
-              in my (which passes the filters), discard if not.
-       - when nothing changes on one run, stop
-     */
+    final_solutions
+      = internal::loopy_get_best_conformations(jt, known_particles,
+                                               sfts, sst);
   }
   return final_solutions;
 }
