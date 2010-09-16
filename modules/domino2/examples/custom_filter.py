@@ -86,6 +86,7 @@ def create_sampler(m, ps, pst):
     states= IMP.domino2.BranchAndBoundSubsetStatesTable(pst, filters)
     #states.set_log_level(IMP.SILENT);
     s.set_subset_states_table(states)
+    s.set_subset_filter_tables(filters)
     return s
 
 IMP.set_log_level(IMP.TERSE)
