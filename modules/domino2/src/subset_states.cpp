@@ -200,7 +200,7 @@ void setup_filters(const Subset &s,
     Ints maxs(sz);
     for (unsigned int i=0; i< sz; ++i) {
       maxs[i]=table->get_particle_states(s[i])
-        ->get_number_of_states();
+        ->get_number_of_particle_states();
     }
     Ints cur(sz, -1);
     unsigned int changed_digit=cur.size()-1;

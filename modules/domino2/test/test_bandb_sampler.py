@@ -13,9 +13,9 @@ class TrivialParticleStates(IMP.domino2.ParticleStates):
         IMP.domino2.ParticleStates.__init__(self)
         self.key= IMP.IntKey("hi")
         self.n=n
-    def get_number_of_states(self):
+    def get_number_of_particle_states(self):
         return self.n
-    def load_state(self, i, p):
+    def load_particle_state(self, i, p):
         if p.has_attribute(self.key):
             p.set_value(self.key, i)
         else:

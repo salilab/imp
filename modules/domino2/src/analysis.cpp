@@ -30,7 +30,7 @@ namespace {
 
   }
   Floats ParticleStatesEmbedding::get_point(unsigned int i) const {
-    ps_->load_state(allowed_[i], p_);
+    ps_->load_particle_state(allowed_[i], p_);
     core::XYZ d(p_);
     Floats ret(3,0.0);
     ret[0]= d.get_coordinate(0);
@@ -51,7 +51,7 @@ namespace {
       = new ParticleStatesEmbedding(p, ps, allowed_states, "domino2 embedding");
     IMP::internal::OwnerPointer<statistics::PartitionalClusteringWithCenter> c
       = get_connectivity_clustering(pse, resolution);
-    Ints ret(ps->get_number_of_states(), -1);
+    Ints ret(ps->get_number_of_particle_states(), -1);
     IMP_LOG(TERSE, "For particle " << p->get_name()
             << " there are " << allowed_states.size()
             << " states which clustered to " << c->get_number_of_clusters()

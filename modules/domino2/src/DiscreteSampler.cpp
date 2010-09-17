@@ -92,7 +92,7 @@ ConfigurationSet *DiscreteSampler::do_sample() const {
       Particle *p=known_particles[j];
       Pointer<ParticleStates> ps
         =get_particle_states_table()->get_particle_states(p);
-      ps->load_state(final_solutions[i][j], p);
+      ps->load_particle_state(final_solutions[i][j], p);
     }
     if (get_model()->get_has_good_score()) {
       ret->save_configuration();

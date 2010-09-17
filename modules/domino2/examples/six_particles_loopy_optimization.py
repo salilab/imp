@@ -50,7 +50,7 @@ def create_sampler(m, pst):
     s.set_log_level(IMP.VERBOSE)
     # instead of the default junction tree, use the restraint graph
     IMP.set_log_level(IMP.VERBOSE)
-    sg= IMP.domino2.get_restraint_graph(pst.get_particles(), [m.get_root_restraint_set()])
+    sg= IMP.domino2.get_restraint_graph(m.get_root_restraint_set(), pst)
     IMP.set_log_level(IMP.TERSE)
     print sg
     s.set_subset_graph(sg)
@@ -81,8 +81,6 @@ print "creating discrete states"
 pst=create_discrete_states(ps)
 print "creating score function"
 rs=create_scoring(m, ps)
-oc= IMP.domino2.OptimizeContainers(m.get_root_restraint_set(), pst)
-ors= IMP.domino2.OptimizeRestraints(m.get_root_restraint_set(), pst.get_particles())
 print "creating sampler"
 s=create_sampler(m, pst)
 

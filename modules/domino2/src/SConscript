@@ -6,6 +6,7 @@ files = [
          'DominoSampler.cpp',
          'Subset.cpp',
          'analysis.cpp',
+         'optimize_restraints.cpp',
          'particle_states.cpp',
          'subset_evaluators.cpp',
          'subset_filters.cpp',

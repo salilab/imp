@@ -17,10 +17,10 @@ ParticleStates::~ParticleStates(){}
 void ParticleStatesTable::do_show(std::ostream &out) const{}
 
 
-unsigned int XYZStates::get_number_of_states() const {
+unsigned int XYZStates::get_number_of_particle_states() const {
   return states_.size();
 }
-void XYZStates::load_state(unsigned int i, Particle *p) const {
+void XYZStates::load_particle_state(unsigned int i, Particle *p) const {
   IMP_USAGE_CHECK(i < states_.size(), "Out of range " << i);
   core::XYZ(p).set_coordinates(states_[i]);
 }
@@ -28,10 +28,10 @@ void XYZStates::load_state(unsigned int i, Particle *p) const {
 void XYZStates::do_show(std::ostream &out) const{}
 
 
-unsigned int RigidBodyStates::get_number_of_states() const {
+unsigned int RigidBodyStates::get_number_of_particle_states() const {
   return states_.size();
 }
-void RigidBodyStates::load_state(unsigned int i, Particle *p) const {
+void RigidBodyStates::load_particle_state(unsigned int i, Particle *p) const {
   IMP_USAGE_CHECK(i < states_.size(), "Out of range " << i);
   core::RigidBody(p).set_transformation(states_[i]);
 }
