@@ -23,6 +23,8 @@ class RestraintSetTests(IMP.test.TestCase):
         self.assertEqual(m.evaluate(False), 2)
         rs.set_weight(1)
         self.assertEqual(m.evaluate(False), 3)
+        rsn= IMP.RestraintSet()
+        rsn.set_weight(2.0)
 
     def test_restraints(self):
         """Check access to RestraintSet's restraints"""
