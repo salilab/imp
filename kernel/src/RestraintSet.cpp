@@ -50,7 +50,9 @@ IMP_LIST_IMPL(RestraintSet, Restraint, restraint, Restraint*,
 
 void RestraintSet::set_weight(double w) {
   weight_=w;
-  get_model()->reset_dependencies();
+  if (get_is_part_of_model()) {
+    get_model()->reset_dependencies();
+  }
 }
 
 double
