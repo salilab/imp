@@ -38,8 +38,10 @@ class IMPEM2DEXPORT Em2DRestraint : public Restraint
   mutable ProjectionFinder finder_;
   //! Projection Masks to fast model projection
   em::Images em_images_;
-  unsigned int n_projections_for_coarse_registration_;
+  unsigned int n_projections_for_coarse_registration_,
+               number_of_optimized_projections_;
   double apix_,resolution_;
+  bool fast_optimization_mode_;
 
 public:
 
@@ -51,7 +53,7 @@ public:
     \param[in] apix Angstroms per pixel in the images
     \param[in] resolution resolution to use when generating projections
     \param[in] n_projections number of projections to generate to perform
-               the initial coarse registration
+               the initial coarse registration.
   **/
   void initialize(double apix,double resolution =1,
                   unsigned n_projections=20,
@@ -68,12 +70,18 @@ public:
       save_match_images ,interpolation_method , optimization_steps,
       simplex_initial_length,simplex_minimum_size);
   n_projections_for_coarse_registration_ = n_projections;
+  fast_optimization_mode_ = false;
 }
 
+
+  //! Sets the particles  that should correspond to the EM images.
   void set_particles(SingletonContainer *particles_container);
 
+  //! Sets the EM images to use as restraints
   void set_images(const em::Images em_images);
 
+  //! Sets fast mode for computing the restraint. See ProjectionFinder help
+  void set_fast_mode(unsigned int n);
 
   IMP_RESTRAINT(Em2DRestraint);
 };
