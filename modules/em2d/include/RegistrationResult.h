@@ -187,7 +187,7 @@ IMPEM2DEXPORT RegistrationResults
     evenly_distributed_registration_results(unsigned long n_projections);
 
 //! returns true if the ccc of the first is higher than the second
-IMPEM2DEXPORT bool compare_registration_results(const RegistrationResult &rr1,
+IMPEM2DEXPORT bool has_higher_ccc(const RegistrationResult &rr1,
                                   const RegistrationResult &rr2);
 
 

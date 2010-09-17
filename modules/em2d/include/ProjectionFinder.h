@@ -63,18 +63,25 @@ public:
     save_match_images_ = save_match_images;
     simplex_initial_length_ = simplex_initial_length;
     masks_manager_.init_kernel(resolution_,apix_);
+    fast_optimization_mode_ = false;
     parameters_initialized_=true;
   }
 
-  //! Set EM images
+  //! Set EM images to use as restraints
   void set_subjects(const em::Images subjects);
 
-  //! Set model projections
+  //! Set the projections of the model to use for initial coarse correlation
   void set_projections(em::Images projections);
 
-  //! Set the model particles
+  //! Set the particles where the em2D restraint is applied
   void set_model_particles(const ParticlesTemp &ps);
 
+  //! The projections of the model that best match the subject EM images
+  //! are saved.
+  /**
+    Their name will be: coarse-match-i.spi for coarse registration and
+    fine_match-i.spi for full registration.
+  **/
   void set_save_match_images(bool x) {
     save_match_images_=x;
   }
@@ -82,6 +89,11 @@ public:
   bool get_save_match_images() const {
      return save_match_images_;
   }
+
+  //! With this fast mode, only the first the number n of best scoring
+  //! projections are refined using Simplex optimization, saving time with
+  //! some loss in accuracy.
+  void set_fast_mode(unsigned int n);
 
   //! Recover the registration results. Only works if a registration has been
   //! done previously
@@ -128,7 +140,8 @@ protected:
        registration_results_set_,
        particles_set_,
        registration_done_,
-       parameters_initialized_;
+       parameters_initialized_,
+       fast_optimization_mode_;
   //! resolution used to generate projections during the fine registration
   double resolution_;
   //! Sampling of the images in Amstrong/pixel
@@ -141,7 +154,7 @@ protected:
   //! Simplex optimization parameters
   double simplex_minimum_size_,simplex_initial_length_;
   unsigned int optimization_steps_;
-
+  unsigned int number_of_optimized_projections_;
   // FFT of subjects (storing the FFT of projections is not neccessary
   std::vector< algebra::Matrix2D_c > SUBJECTS_;
   // FFT of the autocorrelation resampled images

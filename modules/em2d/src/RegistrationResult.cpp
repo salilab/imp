@@ -150,7 +150,7 @@ RegistrationResults read_registration_results(String filename) {
 
 
 
-bool compare_registration_results(const RegistrationResult &rr1,
+bool has_higher_ccc(const RegistrationResult &rr1,
                                   const RegistrationResult &rr2) {
   if(rr1.get_ccc() >= rr2.get_ccc()) return true;
   return false;

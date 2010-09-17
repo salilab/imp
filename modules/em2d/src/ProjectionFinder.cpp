@@ -73,6 +73,17 @@ void ProjectionFinder::set_model_particles(const ParticlesTemp &ps) {
   particles_set_=true;
 }
 
+
+void ProjectionFinder::set_fast_mode(unsigned int n) {
+  if(n>projections_.size() || n==0) {
+    IMP_THROW("ProjectionFinder fast mode: requested zero projections or "
+              "more than available",ValueException);
+  }
+  number_of_optimized_projections_ = n;
+  fast_optimization_mode_ = true;
+}
+
+
 void ProjectionFinder::preprocess_projection(unsigned int j) {
   // FFT PREPROCESSING
   if(coarse_registration_method_ ==1) {
@@ -121,7 +132,7 @@ void ProjectionFinder::get_coarse_registration() {
          get_coarse_registrations_for_subject(i,subject_RRs);
     // Sort projections by ccc
     std::sort(subject_RRs.begin(),subject_RRs.end(),
-              compare_registration_results);
+              has_higher_ccc);
     // Best result
     registration_results_[i]=subject_RRs[0];
     registration_results_[i].set_in_image(*subjects_[i]);
@@ -259,7 +270,8 @@ void ProjectionFinder::get_complete_registration() {
   simplex_optimizer->set_minimum_size(simplex_minimum_size_);
   IMP::SetLogState log_state(fine2d,IMP::TERSE);
   /***** Computation ********/
-  boost::progress_display show_progress(subjects_.size()*projections_.size());
+  // boost::progress_display show_progress(
+  //                  subjects_.size()*projections_.size());
   for(unsigned long i=0;i<subjects_.size();++i) {
     RegistrationResults subject_RRs(projections_.size());
     get_coarse_registrations_for_subject(i,subject_RRs);
@@ -270,7 +282,16 @@ void ProjectionFinder::get_complete_registration() {
           "coarse registration " << k << ": " << subject_RRs[k] << std::endl);
     }
 
-    for (unsigned int k=0;k<subject_RRs.size();++k) {
+    unsigned int n_optimized=projections_.size();
+    if(fast_optimization_mode_) {
+      // sort and set the number or optimized coarse registration values
+      std::sort(subject_RRs.begin(),subject_RRs.end(),
+                                      has_higher_ccc);
+      n_optimized = number_of_optimized_projections_;
+    }
+
+    registration_results_[i]=subject_RRs[0];
+    for (unsigned int k=0;k<n_optimized;++k) {
       // Fine registration of the subject using simplex
       subject_RRs[k].set_in_image(*subjects_[i]);
       fine2d->set_subject_image(*subjects_[i]);
@@ -280,12 +301,10 @@ void ProjectionFinder::get_complete_registration() {
       subject_RRs[k].set_ccc(em2d_to_ccc(em2d));
       IMP_LOG(IMP::VERBOSE, "fine registration for subject " << k
           << ": " << subject_RRs[k] << std::endl);
-      ++show_progress;
+      if(has_higher_ccc(subject_RRs[k],registration_results_[i])) {
+        registration_results_[i]=subject_RRs[k];
+      }
     }
-    std::sort(subject_RRs.begin(),subject_RRs.end(),
-                                      compare_registration_results);
-    // Best fine registration
-    registration_results_[i]=subject_RRs[0];
     // save if requested
     if(save_match_images_) {
       std::ostringstream strm;
@@ -296,6 +315,7 @@ void ProjectionFinder::get_complete_registration() {
       registration_results_[i].set_in_image(*match);
       match->write_to_floats(strm.str(),srw);
     }
+    // ++show_progress;
   }
   registration_done_=true;
 }

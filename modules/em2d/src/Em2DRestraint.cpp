@@ -16,8 +16,8 @@ IMPEM2D_BEGIN_NAMESPACE
 
 
  void Em2DRestraint::set_images(const em::Images em_images) {
-   finder_.set_subjects(em_images_);
    em_images_ = em_images;
+   finder_.set_subjects(em_images_);
    for (unsigned int i=0;i<em_images_.size();++i) {
      em_images_[i]->set_was_used(true);
    }
@@ -28,6 +28,13 @@ IMPEM2D_BEGIN_NAMESPACE
   particles_container_->set_was_used(true);
   finder_.set_model_particles(particles_container_->get_particles());
  }
+
+
+void Em2DRestraint::set_fast_mode(unsigned int n) {
+  fast_optimization_mode_=true;
+  number_of_optimized_projections_=n;
+}
+
 
 double
 Em2DRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
@@ -44,6 +51,9 @@ Em2DRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
           particles_container_->get_particles(),evenly_regs,rows,cols,
                                 resolution_,apix_,srw);
   finder_.set_projections(projections);
+  if(fast_optimization_mode_) {
+    finder_.set_fast_mode(number_of_optimized_projections_);
+  }
   finder_.get_complete_registration();
   return finder_.get_em2d_score();
 }
