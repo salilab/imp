@@ -21,6 +21,11 @@ RigidBodyMover::RigidBodyMover(RigidBody d,
 
 void RigidBodyMover::propose_move(Float f) {
   IMP_LOG(VERBOSE,"RigidBodyMover:: propose move f is  : " << f <<std::endl);
+  {
+    ::boost::uniform_real<> rand(0,1);
+    double fc =rand(random_number_generator);
+    if (fc > f) return;
+  }
   last_transformation_= d_.get_reference_frame().get_transformation_to();
   algebra::VectorD<3> translation
     = algebra::get_random_vector_in(algebra::Sphere3D(d_.get_coordinates(),
