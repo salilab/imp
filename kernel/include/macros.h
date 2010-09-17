@@ -2202,23 +2202,33 @@ protected:                                      \
  and "IMP/internal/utility.h" must be included.
  */
 #define IMP_MODEL_SAVE(Name, args, vars, constr, functs, save_action)   \
-/** Write to a file generated from the passed filename every
-skip_steps steps. The file_name constructor argument should contain
-"%1%".*/                                                                \
   class Name##OptimizerState: public OptimizerState {                   \
     ::IMP::internal::Counter skip_steps_, call_number_, update_number_; \
     std::string file_name_;                                             \
     vars                                                                \
     virtual void update() {                                             \
       if (call_number_%(skip_steps_+1) ==0) {                           \
-        std::ostringstream oss;                                         \
-        oss << boost::format(file_name_) % update_number_;              \
-        write(oss.str());                                               \
+        if (file_name_.find("%1%") != std::string::npos) {              \
+          std::ostringstream oss;                                       \
+          try {                                                         \
+            oss << boost::format(file_name_) % update_number_;          \
+          } catch(...){                                                 \
+            IMP_THROW( "Invalid format for file name: "                 \
+                       << file_name_, ValueException);                  \
+          }                                                             \
+           write(oss.str());                                            \
+        } else {                                                        \
+          write(file_name_);                                            \
+        }                                                               \
         ++update_number_;                                               \
       }                                                                 \
       ++call_number_;                                                   \
     }                                                                   \
   public:                                                               \
+/** Write to a file generated from the passed filename every
+skip_steps steps. The file_name constructor argument should contain
+"%1%" if you don't want to write the same file each time.
+*/                                                                      \
     Name##OptimizerState args :                                         \
     OptimizerState(std::string("Writer to ")+file_name),                \
       file_name_(file_name) {constr}                                    \
