@@ -75,9 +75,16 @@ void _TrivialTraitsDecorator::show(std::ostream &out) const {
 
 
 
+double _ConstOptimizer::optimize(unsigned int n) {
+  for (unsigned int i=0; i < n; ++i) {
+    get_model()->evaluate(false);
+    update_states();
+  }
+  return get_model()->evaluate(false);
+}
 
-
-
+void _ConstOptimizer::do_show(std::ostream &out) const {
+}
 
 int _overloaded_decorator(_TrivialDecorator) {
   return 0;
