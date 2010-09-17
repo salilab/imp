@@ -293,7 +293,7 @@ namespace {
       if (!nd.alive[i]) {
         nd.subset_states.erase(nd.subset_states.begin()+i);
       }
-33    }
+    }
   }
 
   void fast_write(boost::property_map< SubsetGraph,
