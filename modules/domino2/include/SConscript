@@ -8,6 +8,7 @@ files = [
          'SubsetState.h',
          'analysis.h',
          'domino2_macros.h',
+         'optimize_restraints.h',
          'particle_states.h',
          'subset_evaluators.h',
          'subset_filters.h',

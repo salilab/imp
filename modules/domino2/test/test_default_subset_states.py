@@ -12,7 +12,7 @@ class TrivialParticleStates(IMP.domino2.ParticleStates):
     def __init__(self, n):
         IMP.domino2.ParticleStates.__init__(self)
         self.n=n
-    def get_number_of_states(self):
+    def get_number_of_particle_states(self):
         return self.n
     def load_state(self, i, p):
         pass

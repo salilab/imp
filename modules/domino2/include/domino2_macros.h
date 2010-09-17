@@ -15,10 +15,10 @@
     and defines
     - IMP::domino2::after_set_current_particle() to be empty
 */
-#define IMP_PARTICLE_STATES(Name)                               \
-public:                                                         \
- virtual unsigned int get_number_of_states() const;             \
- virtual void load_state(unsigned int, Particle*) const;        \
+#define IMP_PARTICLE_STATES(Name)                                       \
+  public:                                                               \
+ virtual unsigned int get_number_of_particle_states() const;            \
+ virtual void load_particle_state(unsigned int, Particle*) const;       \
  IMP_OBJECT(Name)
 
 /** This macro declares

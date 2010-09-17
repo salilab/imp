@@ -30,8 +30,8 @@ IMPDOMINO2_BEGIN_NAMESPACE
  */
 class IMPDOMINO2EXPORT ParticleStates: public Object {
 public:
-  virtual unsigned int get_number_of_states() const=0;
-  virtual void load_state(unsigned int, Particle*) const=0;
+  virtual unsigned int get_number_of_particle_states() const=0;
+  virtual void load_particle_state(unsigned int, Particle*) const=0;
   virtual ~ParticleStates();
 };
 
@@ -72,7 +72,7 @@ public:
   void set_particle_states(Particle *p, ParticleStates *e) {
     IMP_USAGE_CHECK(enumerators_.find(p) == enumerators_.end(),
                     "Enumerator already set for particle " << p->get_name());
-    IMP_USAGE_CHECK(e->get_number_of_states() >0,
+    IMP_USAGE_CHECK(e->get_number_of_particle_states() >0,
                     "Cannot have 0 states for a particle: \""
                     << p->get_name() << "\"\n");
     enumerators_[p]=e;

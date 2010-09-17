@@ -50,10 +50,15 @@ get_junction_tree(const InteractionGraph &ig);
 /** The restraint graph is formed by having one node per restraint
     and an edge connecting two restraints if they share input
     particles. The associated Subsets are the set of input particles
-    for the restraint, projected onto ps. */
+    for the restraint, projected onto ps.
+
+    \note The graph for the optimized restraints (after temporary
+    application of OptimizeContainers and OptimizeRestraints) is
+    returned.
+*/
 IMPDOMINO2EXPORT
-SubsetGraph get_restraint_graph(const ParticlesTemp &ps,
-                                const RestraintsTemp &irs);
+SubsetGraph get_restraint_graph(RestraintSet *rs,
+                                const ParticleStatesTable *pst);
 
 
 
@@ -72,8 +77,8 @@ SubsetGraph get_restraint_graph(const ParticlesTemp &ps,
     @{
  */
 IMPDOMINO2EXPORT InteractionGraph
-get_interaction_graph(const ParticlesTemp &particles,
-                      const RestraintsTemp &rs);
+get_interaction_graph(RestraintSet *rs,
+                      const ParticleStatesTable *pst);
 
 /** Assuming that all the particles have Cartesian coordinates,
     output edges corresponding to the edges in the interaction graph.

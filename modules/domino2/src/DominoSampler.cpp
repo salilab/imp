@@ -9,6 +9,7 @@
 #include <IMP/container/ListSingletonContainer.h>
 #include <IMP/domino2/utility.h>
 #include <IMP/domino2/internal/tree_inference.h>
+#include <IMP/domino2/optimize_restraints.h>
 #include <IMP/internal/graph_utility.h>
 #include <IMP/file.h>
 #include <boost/graph/connected_components.hpp>
@@ -54,7 +55,7 @@ SubsetStatesList DominoSampler
           << " particles as " << known_particles << std::endl);
   Pointer<RestraintSet> rs= get_model()->get_root_restraint_set();
   OptimizeContainers co(rs, get_particle_states_table());
-  OptimizeRestraints ro(rs, get_particle_states_table()->get_particles());
+  OptimizeRestraints ro(rs, get_particle_states_table());
   ParticlesTemp pt(known_particles.begin(), known_particles.end());
   SubsetGraph jt;
   if (has_sg_) {
@@ -62,8 +63,8 @@ SubsetStatesList DominoSampler
   } else {
     ParticlesTemp kppt(known_particles.begin(),
                        known_particles.end());
-    jt= get_junction_tree(get_interaction_graph(kppt,
-                                                Restraints(1, rs)));
+    jt= get_junction_tree(get_interaction_graph(rs,
+                                                get_particle_states_table()));
   }
   IMP_IF_LOG(VERBOSE) {
     IMP_LOG(VERBOSE, "Subset graph is ");

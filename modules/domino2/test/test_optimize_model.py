@@ -37,7 +37,7 @@ class DOMINOTests(IMP.test.TestCase):
         #dg.show()
         print "before"
         IMP.show_restraint_hierarchy(m.get_root_restraint_set())
-        dor= IMP.domino2.OptimizeRestraints(m.get_root_restraint_set(), pst.get_particles())
+        dor= IMP.domino2.OptimizeRestraints(m.get_root_restraint_set(), pst)
         print "after"
         IMP.show_restraint_hierarchy(m.get_root_restraint_set())
         print "optimized restraints"

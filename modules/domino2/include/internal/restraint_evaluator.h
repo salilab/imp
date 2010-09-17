@@ -31,7 +31,7 @@ void load_particle_states(It b, It e, const SubsetState &ss,
                   "Sizes don't match in load particle states");
   unsigned int i=0;
   for (It c=b; c != e; ++c) {
-    pst->get_particle_states(*c)->load_state(ss[i], *c);
+    pst->get_particle_states(*c)->load_particle_state(ss[i], *c);
     ++i;
   }
 }

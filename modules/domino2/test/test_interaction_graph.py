@@ -9,6 +9,11 @@ import IMP.display
 import IMP.helper
 import time
 
+class NullStates(IMP.domino2.ParticleStates):
+    def __init__(self):
+        IMP.domino2.ParticleStates.__init__(self)
+    def get_number_of_particle_states(self):
+        return 1
 class DOMINOTests(IMP.test.TestCase):
     def test_global_min2(self):
         """Test that more involved graphs are fine"""
@@ -23,8 +28,11 @@ class DOMINOTests(IMP.test.TestCase):
         r=IMP.container.PairsRestraint(IMP.core.DistancePairScore(IMP.core.HarmonicLowerBound(0,1)), cp);
         m.add_restraint(r)
         print "computing graph"
-        g= IMP.domino2.get_interaction_graph(ps,
-                                             [m.get_root_restraint_set()])
+        pst= IMP.domino2.ParticleStatesTable()
+        for p in ps:
+            pst.set_particle_states(p, NullStates())
+        g= IMP.domino2.get_interaction_graph(m.get_root_restraint_set(),
+                                             pst)
         w= IMP.display.PymolWriter(self.get_tmp_file_name("ig0.pym"))
         for gg in IMP.domino2.get_interaction_graph_geometry(g):
             w.add_geometry(gg)
@@ -59,8 +67,11 @@ class DOMINOTests(IMP.test.TestCase):
             m.add_restraint(r)
             r.set_name("pair")
         print "computing graph"
-        g= IMP.domino2.get_interaction_graph(IMP.atom.get_leaves(p),
-                                            [m.get_root_restraint_set()])
+        pst= IMP.domino2.ParticleStatesTable()
+        for p in ps:
+            pst.set_particle_states(p, NullStates())
+        g= IMP.domino2.get_interaction_graph(m.get_root_restraint_set(),
+                                             pst)
         w= IMP.display.PymolWriter(self.get_tmp_file_name("ig-large.pym"))
         gs=IMP.domino2.get_interaction_graph_geometry(g)
         print "There are ", len(gs)
@@ -86,8 +97,11 @@ class DOMINOTests(IMP.test.TestCase):
             p1= ps[i-1]
             r= IMP.core.DistanceRestraint(h, p0, p1)
             m.add_restraint(r)
-        g= IMP.domino2.get_interaction_graph(ps,
-                                             [m.get_root_restraint_set()])
+        pst= IMP.domino2.ParticleStatesTable()
+        for p in ps:
+            pst.set_particle_states(p, NullStates())
+        g= IMP.domino2.get_interaction_graph(m.get_root_restraint_set(),
+                                             pst)
         w= IMP.display.PymolWriter(self.get_tmp_file_name("ig0.pym"))
         for gg in IMP.domino2.get_interaction_graph_geometry(g):
             w.add_geometry(gg)

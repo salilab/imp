@@ -9,6 +9,8 @@
 #include <IMP/domino2/subset_graphs.h>
 #include <IMP/domino2/internal/inference_utility.h>
 #include <IMP/domino2/utility.h>
+#include <IMP/domino2/optimize_restraints.h>
+#include <IMP/domino2/particle_states.h>
 #include <boost/graph/depth_first_search.hpp>
 #include <boost/graph/reverse_graph.hpp>
 #include <boost/graph/copy.hpp>
@@ -20,6 +22,7 @@
 #include <boost/vector_property_map.hpp>
 #endif
 #include <boost/pending/disjoint_sets.hpp>
+#include <boost/graph/kruskal_min_spanning_tree.hpp>
 
 
 
@@ -121,9 +124,11 @@ Subsets get_subsets(const SubsetGraph &g){
 
 
 
-SubsetGraph get_restraint_graph(const ParticlesTemp &ps,
-                                const RestraintsTemp &irs) {
-  RestraintsTemp rs= get_restraints(irs.begin(), irs.end());
+SubsetGraph get_restraint_graph(RestraintSet *irs,
+                                const ParticleStatesTable *pst) {
+  OptimizeContainers co(irs, pst);
+  OptimizeRestraints ro(irs, pst);
+  RestraintsTemp rs= get_restraints(irs);
   //ScoreStatesTemp ss= get_required_score_states(rs);
   SubsetGraph ret(rs.size());// + ss.size());
   IMP_LOG(TERSE, "Creating restraint graph on "
@@ -135,6 +140,7 @@ SubsetGraph get_restraint_graph(const ParticlesTemp &ps,
     IMP_LOG(VERBOSE, "dependency graph is \n");
     IMP::internal::show_as_graphviz(dg, std::cout);
     }*/
+  ParticlesTemp ps= pst->get_particles();
   for (unsigned int i=0; i< ps.size(); ++i) {
     ParticlesTemp t= get_dependent_particles(ps[i], dg);
     for (unsigned int j=0; j< t.size(); ++j) {
@@ -445,10 +451,11 @@ Ints find_parents(const IMP::internal::Map<Particle*, Ints>  &map,
 }
 }
 
-InteractionGraph get_interaction_graph(const ParticlesTemp &ps,
-                                       const RestraintsTemp &irs) {
+InteractionGraph get_interaction_graph(RestraintSet *irs,
+                                       const ParticleStatesTable* pst) {
+  ParticlesTemp ps = pst->get_particles();
   InteractionGraph ret(ps.size());
-  RestraintsTemp rs= get_restraints(irs.begin(), irs.end());
+  RestraintsTemp rs= get_restraints(irs);
   //Model *m= ps[0]->get_model();
   IMP::internal::Map<Particle*, int> map;
   IGVertexMap pm= boost::get(boost::vertex_name, ret);

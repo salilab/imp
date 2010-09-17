@@ -41,6 +41,7 @@ IMP_SWIG_VALUE(IMP::domino2, SubsetState, SubsetStatesList);
 %include "IMP/domino2/subset_filters.h"
 %include "IMP/domino2/subset_states.h"
 %include "IMP/domino2/subset_graphs.h"
+%include "IMP/domino2/optimize_restraints.h"
 %include "IMP/domino2/DiscreteSampler.h"
 %include "IMP/domino2/DominoSampler.h"
 %include "IMP/domino2/BranchAndBoundSampler.h"

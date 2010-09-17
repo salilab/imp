@@ -18,10 +18,6 @@
 #include <IMP/core/internal/CoreClosePairContainer.h>
 #include <IMP/display/Writer.h>
 
-#include <boost/graph/kruskal_min_spanning_tree.hpp>
-#include <boost/graph/prim_minimum_spanning_tree.hpp>
-#include <boost/graph/adjacency_list.hpp>
-#include <boost/ptr_container/ptr_vector.hpp>
 
 IMP_BEGIN_NAMESPACE
 class Model;
@@ -67,69 +63,6 @@ get_is_static_container(Container *c,
                         const DependencyGraph &dg,
                         const ParticlesTemp &particles);
 
-/** The class temporarily transforms the restraints,
-    in a model to make it better suited for the
-    DominoSampler. Transformations include
-    - replacing certain container::PairsRestraint and
-      container::SingletonRestraint objects by a set a set of
-      core::PairRestraint/core::SingletonRestraint objects
-    \throw ModelException if the model contains any non-static
-    containers other than container::ClosePairContainer and its
-    ilk. Examples include container::ConnectedPairContainer.
-*/
-class IMPDOMINO2EXPORT OptimizeRestraints {
-  boost::ptr_vector<ScopedRemoveRestraint> removed_;
-  boost::ptr_vector<ScopedRestraint> added_;
-  Pointer<RestraintSet> m_;
-
-  void optimize_model(RestraintSet *m, const ParticlesTemp &particles);
-public:
-  IMP_RAII(OptimizeRestraints, (RestraintSet *m,
-                                const ParticlesTemp &particles), {},
-           {
-             m_=m;
-             optimize_model(m, particles);
-           },
-           {
-             if (m_&& m_->get_is_part_of_model()) {
-               removed_.clear();
-               added_.clear();
-               m_=NULL;
-             }
-           });
-};
-
-/** The class temporarily transforms the
-    containers in a model to make it better suited for the
-    DominoSampler. Transformations include
-    - replacing container::ClosePairContainer and
-      core::ExcludedVolumeRestraint by a static interaction list based
-      on the ParticleStatesTable.
-    \throw ModelException if the model contains any non-static
-    containers other than container::ClosePairContainer and its
-    ilk. Examples include container::ConnectedPairContainer.
-*/
-class IMPDOMINO2EXPORT OptimizeContainers {
-  core::internal::CoreClosePairContainers staticed_;
-  Pointer<RestraintSet> m_;
-
-  void optimize_model(RestraintSet *m, const ParticleStatesTable *pst);
-  void unoptimize_model();
-public:
-  IMP_RAII(OptimizeContainers, (RestraintSet *m,
-                                const ParticleStatesTable *pst), {},
-           {
-             m_=m;
-             optimize_model(m, pst);
-           },
-           {
-             if (m_ && m_->get_is_part_of_model()) {
-               unoptimize_model();
-               m_=NULL;
-             }
-           });
-};
-/**@} */
 
 /** Load the appropriate state for each particle in a Subset. */
 IMPDOMINO2EXPORT void load_particle_states(const Subset &s,
@@ -141,9 +74,13 @@ IMPDOMINO2EXPORT void load_particle_states(const Subset &s,
 /** Create a restraint set containing all the restraints do not depend on
     particles in other but not in s. The restraint set is added to the model.*/
 IMPDOMINO2EXPORT RestraintSet* create_restraint_set(const Subset &s,
-                                                    ParticlesTemp other,
+                                               const ParticleStatesTable *pst,
                                                     const DependencyGraph &dg,
                                                     RestraintSet *rs);
+
+/** @} */
+
+
 IMPDOMINO2_END_NAMESPACE
 
 #endif  /* IMPDOMINO2_UTILITY_H */
