@@ -16,6 +16,7 @@
 #include "../macros.h"
 #include "../Decorator.h"
 #include "../file.h"
+#include "../Optimizer.h"
 #include "graph_utility.h"
 #include "container_helpers.h"
 #include <boost/graph/topological_sort.hpp>
@@ -118,7 +119,11 @@ IMP_OUTPUT_OPERATOR(_TrivialTraitsDecorator);
 
 
 
-
+class IMPEXPORT _ConstOptimizer: public Optimizer {
+ public:
+  _ConstOptimizer(Model *m): Optimizer(m, "ConstOptimizer%1%"){}
+  IMP_OPTIMIZER(_ConstOptimizer);
+};
 
 
 

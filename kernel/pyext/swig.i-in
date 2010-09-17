@@ -96,6 +96,7 @@ IMP_SWIG_DECORATOR(IMP::internal, _TrivialDecorator, _TrivialDecorators);
 IMP_SWIG_DECORATOR(IMP::internal, _TrivialDerivedDecorator, _TrivialDerivedDecorators);
 IMP_SWIG_DECORATOR_WITH_TRAITS(IMP::internal, _TrivialTraitsDecorator, _TrivialTraitsDecorators);
 IMP_SWIG_OBJECT(IMP::internal, _ConstRestraint, _ConstRestraints);
+IMP_SWIG_OBJECT(IMP::internal, _ConstOptimizer, _ConstOptimizer);
 IMP_SWIG_GRAPH(IMP, DependencyGraph, DependencyGraph, IMP::Object*);
 
 %extend IMP::Object {
