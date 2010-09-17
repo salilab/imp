@@ -76,8 +76,9 @@ double Fine2DRegistrationRestraint::unprotected_evaluate(
                         R,translation,resolution_,pixelsize_,masks_);
   double ccc = subject_->get_data().cross_correlation_coefficient(
                                               projection_->get_data());
-  IMP_LOG(VERBOSE, "Fine2DRegistration. Score: " << em2d <<std::endl);
-  return ccc_to_em2d(ccc);
+  double score = ccc_to_em2d(ccc);
+  IMP_LOG(VERBOSE, "Fine2DRegistration. Score: " << score <<std::endl);
+  return score;
 }
 
 ParticlesTemp Fine2DRegistrationRestraint::get_input_particles() const {
