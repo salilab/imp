@@ -347,7 +347,16 @@ IMPATOMEXPORT std::string conect_record_string(int,int);
 
 
 
+/** \class WritePDBOptimizerState
+    This writes a PDB file at the specified interval during optimization.
+    The file name should not contain
+    %1% (if it does not, the same file will be overwritten each time).
 
+    \class WritePDBFailureHandler
+    Write a PDB when an error occurs.
+
+    \requires{class WriteBinaryFailureHandler, NetCDF}
+*/
 IMP_MODEL_SAVE(WritePDB, (const atom::Hierarchies& mh, std::string file_name),
                atom::Hierarchies mh_;,
                mh_=mh;,
