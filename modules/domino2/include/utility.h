@@ -71,12 +71,14 @@ IMPDOMINO2EXPORT void load_particle_states(const Subset &s,
 
 
 
-/** Create a restraint set containing all the restraints do not depend on
-    particles in other but not in s. The restraint set is added to the model.*/
-IMPDOMINO2EXPORT RestraintSet* create_restraint_set(const Subset &s,
+/** Return a list of all restraints from rs that
+    - do not depend on any particle in pst->get_particles() that is not in s
+    The dependency graph is passed for efficiency.
+*/
+IMPDOMINO2EXPORT RestraintsTemp get_restraints(const Subset &s,
                                                const ParticleStatesTable *pst,
-                                                    const DependencyGraph &dg,
-                                                    RestraintSet *rs);
+                                               const DependencyGraph &dg,
+                                               RestraintSet *rs);
 
 /** @} */
 
