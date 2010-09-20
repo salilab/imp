@@ -2208,15 +2208,15 @@ protected:                                      \
     vars                                                                \
     virtual void update() {                                             \
       if (call_number_%(skip_steps_+1) ==0) {                           \
-        if (file_name_.find("%1%") != std::string::npos) {              \
-          std::ostringstream oss;                                       \
-          try {                                                         \
-            oss << boost::format(file_name_) % update_number_;          \
-          } catch(...){                                                 \
-            IMP_THROW( "Invalid format for file name: "                 \
-                       << file_name_, ValueException);                  \
-          }                                                             \
-           write(oss.str());                                            \
+        std::ostringstream oss;                                         \
+        bool formatted=false;                                           \
+        try {                                                           \
+          oss << boost::format(file_name_) % update_number_;            \
+          formatted=true;                                               \
+        } catch(...){                                                   \
+        }                                                               \
+        if (formatted) {                                                \
+          write(oss.str());                                             \
         } else {                                                        \
           write(file_name_);                                            \
         }                                                               \
