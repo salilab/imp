@@ -112,43 +112,42 @@ bool get_has_ancestor(const DependencyGraph &g,
                       unsigned int v,
                       const ParticlesTemp &pst);
 
-
-RestraintSet* create_restraint_set(const Subset &s,
-                                   const ParticleStatesTable *pst,
-                                   const DependencyGraph &dg,
-                                   RestraintSet *rs) {
+namespace {
+RestraintsAndWeights get_restraints_and_weights(const Subset &s,
+                              const ParticleStatesTable *pst,
+                              const DependencyGraph &dg,
+                              RestraintSet *rs) {
+  RestraintsAndWeights rw= get_restraints_and_weights(rs);
   ParticlesTemp other=pst->get_particles();
   std::sort(other.begin(), other.end());
   ParticlesTemp oms;
   std::set_difference(other.begin(), other.end(),
                       s.begin(), s.end(),
                       std::back_inserter(oms));
-  RestraintsTemp allr= get_restraints(rs);
-  std::sort(allr.begin(), allr.end());
-  DGConstVertexMap vm= boost::get(boost::vertex_name,dg);
-  IMP_NEW(RestraintSet, ret, (std::string("Restraints for ") +s.get_name()));
-  rs->get_model()->add_restraint(ret);
-  IMP::internal::Map<double, Pointer<RestraintSet> > rss;
-  for (unsigned int i=0; i< boost::num_vertices(dg); ++i) {
-    Restraint *r=dynamic_cast<Restraint*>(boost::get(vm, i));
-    if (r && std::binary_search(allr.begin(), allr.end(), r)) {
-      if (get_has_ancestor(dg, i, oms)) {
-        // pass
-      } else {
-        double w= rs->get_model()->get_weight(r);
-        if (rss.find(w)==rss.end()) {
-          rss[w]=new RestraintSet();
-          rss[w]->add_restraint(r);
-          rss[w]->set_weight(w);
-          ret->add_restraint(rss[w]);
-        } else {
-          rss.find(w)->second->add_restraint(r);
-        }
-      }
+  IMP::internal::Map<Restraint*, int> index
+    = IMP::internal::get_graph_index<Restraint>(dg);
+  Ints to_remove;
+  for (unsigned int i=0; i< rw.first.size(); ++i) {
+    if (get_has_ancestor(dg, index[rw.first[i]], oms)) {
+      to_remove.push_back(i);
     }
   }
-  return ret.release();
+  for (int i=to_remove.size(); i >=0; --i) {
+    rw.first.erase(rw.first.begin()+to_remove[i]);
+    rw.second.erase(rw.second.begin()+to_remove[i]);
+  }
+  return rw;
 }
+}
+
+RestraintsTemp get_restraints(const Subset &s,
+                              const ParticleStatesTable *pst,
+                              const DependencyGraph &dg,
+                              RestraintSet *rs) {
+  return get_restraints_and_weights(s, pst, dg, rs).first;
+}
+
+
 
 
 IMPDOMINO2_END_NAMESPACE
