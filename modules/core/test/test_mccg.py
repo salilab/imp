@@ -3,6 +3,7 @@ import IMP
 import IMP.test
 import IMP.core
 import IMP.display
+import os
 
 max_score=.02
 
@@ -61,6 +62,9 @@ class CGOptimizerTests(IMP.test.TestCase):
         pr.set_log_level(IMP.WARNING)
         m.add_restraint(pr)
         s= IMP.core.MCCGSampler(m)
+        wos=IMP.WriteOptimizerState(ds, self.get_tmp_file_name("mccg")+".%1%.imp")
+        wos.set_skip_steps(10)
+        s.add_optimizer_state(wos)
         s.set_maximum_score(max_score)
         s.set_number_of_monte_carlo_steps(1000)
         s.set_number_of_conjugate_gradient_steps(100)
@@ -78,7 +82,7 @@ class CGOptimizerTests(IMP.test.TestCase):
                 g= IMP.display.XYZRGeometry(d)
                 w.add_geometry(g)
             self.check_model(m, lsc, lpc)
-
+        os.unlink( self.get_tmp_file_name("mccg.0.imp"))
 
 
 

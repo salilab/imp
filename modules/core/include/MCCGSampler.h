@@ -82,6 +82,13 @@ public:
   //! sampling.
   void set_is_refining(bool tf);
 
+  /** \name Optimizer states
+      The optimizer states will be added to the MonteCarlo optimizer
+      used.
+  */
+  IMP_LIST(public, OptimizerState, optimizer_state, OptimizerState*,
+           OptimizerStates);
+
   IMP_SAMPLER(MCCGSampler);
 };
 
