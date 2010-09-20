@@ -5,8 +5,8 @@
 */
 
 #include <IMP/cgal/internal/polyhedrons.h>
-#include <CGAL/Exact_predicates_exact_constructions_kernel.h>
 #include <CGAL/Nef_polyhedron_3.h>
+#include <CGAL/Exact_predicates_exact_constructions_kernel.h>
 #include <CGAL/Polyhedron_3.h>
 #include <CGAL/Handle_hash_function.h>
 #include <IMP/internal/map.h>
@@ -25,6 +25,12 @@ namespace {
 }
 namespace CGAL {
   namespace internal {
+    unsigned int hash_value(Polyhedron::Vertex_handle vh) {
+      return CGAL::Handle_hash_function()(vh);
+    }
+  }
+  // older CGAL
+  namespace CGALi {
     unsigned int hash_value(Polyhedron::Vertex_handle vh) {
       return CGAL::Handle_hash_function()(vh);
     }
