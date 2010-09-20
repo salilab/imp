@@ -14,6 +14,7 @@
 #include "IMP/ScoreState.h"
 #include "IMP/RestraintSet.h"
 #include <boost/timer.hpp>
+#include <boost/format.hpp>
 #include <set>
 
 
@@ -85,17 +86,18 @@ void Model::show_all_statistics(std::ostream &out) const {
 }
 
 void Model::show_restraint_score_statistics(std::ostream &out) const {
-  out << "Restraints: [min_value max_value] average_value last_value\n";
+  boost::format format("%1%: [%15t%2% %30t%3%] %45t%4% %60t%5%\n");
+  out << format
+    % "Restraints" % "min_value" % "max_value" % "average_value" % "last_value";
   RestraintsTemp r= get_restraints(restraints_begin(), restraints_end());
   for (RestraintsTemp::const_iterator it= r.begin();
        it != r.end(); ++it) {
     if (stats_data_.find(*it) != stats_data_.end()) {
-      out << "  " << (*it)->get_name() << ": ";
-      out << "["
-          << stats_data_[*it].min_value_ << ", "
-          << stats_data_[*it].max_value_ << "] "
-          << stats_data_[*it].total_value_/ stats_data_[*it].calls_ << " "
-          << stats_data_[*it].last_value_ << "\n";
+      out << format % (std::string("  ")+ (*it)->get_name())
+        % stats_data_[*it].min_value_
+        % stats_data_[*it].max_value_
+        % (stats_data_[*it].total_value_/ stats_data_[*it].calls_)
+        % stats_data_[*it].last_value_;
     } else {
       out << "  " << (*it)->get_name() << ":\n";
     }
