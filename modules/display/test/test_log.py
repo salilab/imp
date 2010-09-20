@@ -15,7 +15,7 @@ class TestBL(IMP.test.TestCase):
         o= IMP.core.SteepestDescent()
         o.set_model(m)
         rk= IMP.FloatKey("my radius_key")
-        nm = self.get_tmp_file_name(pref + "test%03d."+suf)
+        nm = self.get_tmp_file_name(pref + ".%1%."+suf)
         print nm
         p0= IMP.Particle(m)
         d0= IMP.core.XYZR.setup_particle(p0, rk)
@@ -40,9 +40,6 @@ class TestBL(IMP.test.TestCase):
         a.add_geometry(g)
         o.add_optimizer_state(a)
         a.update()
-
-        print "name is "+(nm%0)
-        os.remove(nm%0)
 
     def _test_1(self):
         """Testing the VRML log"""
