@@ -327,6 +327,8 @@ ConfigurationSet *MCCGSampler::do_sample() const {
   Pointer<ConfigurationSet> ret= new ConfigurationSet(get_model());
   Parameters pms= fill_in_parameters();
   IMP_NEW(MonteCarlo, mc, (get_model()));
+  mc->add_optimizer_states(OptimizerStatesTemp(optimizer_states_begin(),
+                                               optimizer_states_end()));
   IMP_NEW(ConjugateGradients, cg, (get_model()));
   mc->set_local_optimizer(cg);
   mc->set_local_steps(pms.cg_steps_);
@@ -387,5 +389,12 @@ ConfigurationSet *MCCGSampler::do_sample() const {
 void MCCGSampler::do_show(std::ostream &out) const {
   out << "attempts " << default_parameters_.attempts_ << std::endl;
 }
+
+
+IMP_LIST_IMPL(MCCGSampler, OptimizerState, optimizer_state,
+              OptimizerState*, OptimizerStates, {},{},
+              {});
+
+
 
 IMPCORE_END_NAMESPACE
