@@ -10,15 +10,16 @@
 #include "IMP/RefCounted.h"
 #include "IMP/internal/map.h"
 #include <boost/format.hpp>
+#include "IMP/internal/static.h"
 
 IMP_BEGIN_NAMESPACE
-
-unsigned int RefCounted::live_objects_=0;
 
 RefCounted::~ RefCounted() {
   IMP_INTERNAL_CHECK(get_ref_count()== 0,
                      "Deleting object which still has references");
+#if IMP_BUILD < IMP_FAST
   --live_objects_;
+#endif
 }
 
 Object::Object(std::string name)
@@ -29,19 +30,20 @@ Object::Object(std::string name)
   was_owned_=false;
 #endif
   if (std::find(name.begin(), name.end(), '%') != name.end()) {
-    static internal::Map<std::string, unsigned int> counts;
-    if (counts.find(name) == counts.end()) {
-      counts[name]=0;
+    if (internal::object_type_counts.find(name)
+        == internal::object_type_counts.end()) {
+      internal::object_type_counts[name]=0;
     }
     std::ostringstream oss;
     try {
-      oss << boost::format(name)% counts.find(name)->second;
+      oss << boost::format(name)
+        % internal::object_type_counts.find(name)->second;
     } catch(...) {
       IMP_THROW("Invalid format specified in name, should be %1%: "<< name,
                 ValueException);
     }
     name_= oss.str();
-    ++counts.find(name)->second;
+    ++internal::object_type_counts.find(name)->second;
   } else {
     name_=name;
   }
@@ -67,5 +69,7 @@ Object::~Object()
   IMP_LOG(MEMORY, "Destroying object \"" << get_name() << "\" ("
           << this << ")" << std::endl);
 }
+
+
 
 IMP_END_NAMESPACE

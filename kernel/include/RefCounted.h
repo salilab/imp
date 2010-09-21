@@ -70,7 +70,9 @@ class IMPEXPORT RefCounted
 {
 #ifndef IMP_DOXYGEN
   typedef RefCounted This;
+#if IMP_BUILD < IMP_FAST
   static unsigned int live_objects_;
+#endif
   RefCounted(const RefCounted &){}
   RefCounted& operator=(const RefCounted &){return *this;}
 
@@ -83,7 +85,9 @@ class IMPEXPORT RefCounted
   mutable int count_;
 protected:
   RefCounted() {
+#if IMP_BUILD < IMP_FAST
      ++live_objects_;
+#endif
      count_=0;
   }
   ~RefCounted();
@@ -92,11 +96,12 @@ protected:
   unsigned int get_ref_count() const {
     return count_;
   }
-
+#if IMP_BUILD < IMP_FAST
   static unsigned int get_number_of_live_objects() {
     // for debugging purposes only
     return live_objects_;
   }
+#endif
 #endif // IMP_DOXYGEN
 
 };
