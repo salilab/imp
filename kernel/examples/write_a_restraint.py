@@ -26,6 +26,10 @@ class MyRestraint(IMP.Restraint):
         return self.ps
     def get_input_containers(self):
         return []
+    def get_version_info(self):
+        return IMP.VersionInfo("no module", "no version")
+    def get_type_name(self):
+        return "MyRestraint"
     def do_show(self, stream):
         print >> stream, ps
 
