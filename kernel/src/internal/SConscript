@@ -1,31 +1,10 @@
-Import('env')
-import os.path
-
-direnv = env.Clone()
-
-# Auto-generated files:
-def gen_file(target, source, env):
-    infile = open(source[0].abspath, 'r')
-    outfile = open(target[0].abspath, 'w')
-    for line in infile:
-        line = line.replace('@AUTOGEN@',
-                            'Auto-generated from %s; do not edit.' \
-                            % os.path.basename(source[0].path))
-        line = line.replace('@IMP_DATA_DIRECTORY@', source[1].get_contents())
-        line = line.replace('@IMP_EXAMPLE_DIRECTORY@', source[2].get_contents())
-        outfile.write(line)
-direnv.Append(BUILDERS={'GenFile': Builder(action=gen_file)})
-dir=direnv.GenFile("#/build/src/directories.cpp",
-               ["directories.cpp.in",
-                env.Value(env.subst(env['datadir'])),
-                env.Value(env.subst(os.path.join(env['docdir'], "examples")))])
-
 files = [
          'PrefixStream.cpp',
          'constants.cpp',
          'deprecation.cpp',
-         dir,
+         'directories.cpp',
          'particle_save.cpp',
+         'static.cpp',
          'swig.cpp',
         ]
 

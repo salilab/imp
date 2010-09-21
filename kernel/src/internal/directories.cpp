@@ -19,6 +19,10 @@
 #include <cstdlib>
 
 IMP_BEGIN_INTERNAL_NAMESPACE
+
+extern const char* imp_data_path;
+extern const char* imp_example_path;
+
 namespace {
 #ifdef IMP_USE_BOOST_FILESYSTEM
   std::string to_string(boost::filesystem::path path) {
@@ -82,7 +86,7 @@ std::string get_data_path(std::string module, std::string file_name)
 {
   std::string path= get_path("IMP_BUILD_ROOT",
                              "build/data",
-                             "@IMP_DATA_DIRECTORY@",
+                             imp_data_path,
                              module, file_name);
   {
     std::ifstream in(path.c_str());
@@ -106,7 +110,7 @@ std::string get_data_path(std::string module, std::string file_name)
 std::string get_example_path(std::string module, std::string file_name)
 {
   std::string path= get_path("IMP_BUILD_ROOT", "build/doc/examples",
-                             "@IMP_EXAMPLE_DIRECTORY@",
+                             imp_example_path,
                              module, file_name);
   std::ifstream in(path.c_str());
   if (!in) {
