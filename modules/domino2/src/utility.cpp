@@ -132,7 +132,7 @@ RestraintsAndWeights get_restraints_and_weights(const Subset &s,
       to_remove.push_back(i);
     }
   }
-  for (int i=to_remove.size(); i >=0; --i) {
+  for (int i=to_remove.size()-1; i >=0; --i) {
     rw.first.erase(rw.first.begin()+to_remove[i]);
     rw.second.erase(rw.second.begin()+to_remove[i]);
   }
