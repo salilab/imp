@@ -11,6 +11,23 @@ def _forward_set_value(self, name, value):
     self.get_particle().set_value(name, value)
 %}
 
+
+
+#if IMP_BUILD == IMP_FAST
+%pythoncode %{
+build="fast"
+%}
+#elif IMP_BUILD == IMP_RELEASE
+%pythoncode %{
+build="release"
+%}
+#else
+%pythoncode %{
+build="debug"
+%}
+#endif
+
+
 namespace IMP {
 %warnfilter(403) FailureHandlerBase;
 %warnfilter(403) DecomposableRestraint;
@@ -253,3 +270,11 @@ namespace IMP {
   %template(ScopedScoreState) ::IMP::GenericScopedScoreState< IMP::ScoreState>;
   %template(ScopedRestraint) ::IMP::GenericScopedRestraint< IMP::Restraint>;
 }
+
+
+%pythoncode %{
+used_modules=[]
+def show_used_modules():
+    for m in used_modules:
+        print "{0:<20}{1}".format(m.get_module(), m.get_version())
+%}

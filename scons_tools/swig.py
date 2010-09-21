@@ -137,7 +137,16 @@ if get_module_version_info().get_version() != "%(version)s":
         else:
             preface.append("has_"+dep +"=False")
     preface.append("}")
-
+    if vars['module'] != "kernel":
+        preface.append("""
+%pythoncode %{
+IMP.used_modules.append(get_module_version_info())
+%}""")
+    else:
+        preface.append("""
+%pythoncode %{
+used_modules.append(get_module_version_info())
+%}""")
     open(target[0].abspath, "w").write("\n".join(preface))
 
 def _print_swig_file(target, source, env):
