@@ -212,7 +212,7 @@ ConfigH = Builder(action=Action(_action_config_h,
 
 def _action_config_cpp(target, source, env):
     vars= imp_module.make_vars(env)
-
+    vars['version']= source[0].get_contents()
     cpp = file(target[0].abspath, 'w')
 
     print >> cpp, """/**
@@ -237,8 +237,14 @@ const VersionInfo& get_module_version_info() {
     static VersionInfo vi("%(module)s", "%(version)s");
     return vi;
 }
-""" \
-              %vars
+""" %vars
+    if vars['module']=="kernel":
+        print >> cpp, """
+namespace internal {
+ const char* imp_data_path="%s";
+ const char* imp_example_path="%s";
+}
+"""%(source[0].get_contents(), source[1].get_contents())
 
     print >> cpp, "\n%(PREPROC)s_END_NAMESPACE" % vars
 
