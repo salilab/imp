@@ -11,8 +11,10 @@
 #include "../kernel_config.h"
 #if IMP_BOOST_VERSION > 103500
 #include <boost/unordered_map.hpp>
+#include <boost/unordered_set.hpp>
 #else
 #include <map>
+#include <set>
 #endif
 
 #include <boost/functional/hash.hpp>
@@ -37,6 +39,26 @@ public:
   Map(){}
   template <class It>
   Map(It b, It e): P(b,e){}
+};
+
+
+template <class Key>
+class Set:
+#if IMP_BOOST_VERSION > 103500
+  public boost::unordered_set<Key>
+#else
+  public std::set<Key>
+#endif
+{
+  #if IMP_BOOST_VERSION > 103500
+  typedef boost::unordered_set<Key> P;
+#else
+  typedef std::set<Key> P;
+#endif
+public:
+  Set(){}
+  template <class It>
+  Set(It b, It e): P(b,e){}
 
 };
 
