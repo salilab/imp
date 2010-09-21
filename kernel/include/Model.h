@@ -52,6 +52,23 @@ private:
   typedef Particle::Storage ParticleStorage;
 
 
+  struct Statistics {
+    double total_time_;
+    double total_time_after_;
+    unsigned int calls_;
+    double total_value_;
+    double min_value_;
+    double max_value_;
+    double last_value_;
+    Statistics(): total_time_(0), total_time_after_(0),
+                  calls_(0), total_value_(0),
+                  min_value_(std::numeric_limits<double>::max()),
+                  max_value_(-std::numeric_limits<double>::max()),
+                  last_value_(-1)
+    {}
+  };
+  mutable internal::Map<Object*, Statistics> stats_data_;
+
   // basic representation
   ParticleStorage particles_;
   bool incremental_update_;
