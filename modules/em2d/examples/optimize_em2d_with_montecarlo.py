@@ -1,17 +1,11 @@
 import IMP
-import IMP.test
 import IMP.core as core
 import IMP.atom as atom
 import IMP.em2d as em2d
 import IMP.em as em
 import IMP.algebra as alg
 import IMP.container
-import IMP.statistics
-import os
-from math import *
 import random
-import sys
-
 
 
 # An Optimizer score to get the values of the statistics after a given set
@@ -42,7 +36,7 @@ class WriteStatisticsOptimizerScore(IMP.OptimizerState):
 IMP.set_log_level(IMP.TERSE)
 m = IMP.Model()
 ssel = atom.ATOMPDBSelector()
-prot =  atom.read_pdb("1z5s.pdb",m,ssel)
+prot =  atom.read_pdb(em2d.get_example_path("1z5s.pdb"),m,ssel)
 atom.add_radii(prot)
 
 # get the chains
@@ -91,7 +85,7 @@ r23.set_name("distance 2-3")
 d30 = alg.get_distance(chains_centers[3],chains_centers[0])
 r30 = core.DistanceRestraint(core.Harmonic(d30,1),chains[3],chains[0])
 r30.set_name("distance 3-0")
-print "Distances in the solution: d01 =",
+print "Distances in the solution: d01 =", \
     d01,"d12 =",d12,"d23 =",d23,"d30 =",d30
 
 # set distance restraints
@@ -164,7 +158,7 @@ atom.write_pdb(prot,"solution.pdb")
 print "*** End optimization ***"
 new_centers = []
 for rbd in rigid_bodies:
-    print "chain has",rbd.get_number_of_members(),
+    print "chain has",rbd.get_number_of_members(), \
         "atoms","coordinates: ",rbd.get_coordinates()
     new_centers.append(rbd.get_coordinates())
 
@@ -172,5 +166,5 @@ d01 = alg.get_distance(new_centers[0],new_centers[1])
 d12 = alg.get_distance(new_centers[1],new_centers[2])
 d23 = alg.get_distance(new_centers[2],new_centers[3])
 d30 = alg.get_distance(new_centers[3],new_centers[0])
-print "Distances at the end of the optimization: d01 =",
+print "Distances at the end of the optimization: d01 =", \
     d01,"d12 =",d12,"d23 =",d23,"d30 =",d30
