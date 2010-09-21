@@ -272,45 +272,36 @@ double Model::do_evaluate_restraints(const RestraintsTemp &restraints,
   double score=0;
   boost::timer timer;
   for (unsigned int i=0; i< restraints.size(); ++i) {
-    double value;
+    double value=0;
+    DerivativeAccumulator accum(weights[i]);
     if (gather_statistics_) timer.restart();
     if (restraints[i]->get_is_incremental()
         && incremental_restraints != NONINCREMENTAL) {
       if (incremental_evaluation) {
-        DerivativeAccumulator accum(weights[i]);
         WRAP_EVALUATE_CALL(restraints[i],
-                           value=weights[i]*restraints[i]
+                           value=restraints[i]
                            ->unprotected_incremental_evaluate(calc_derivs?
                                                               &accum:NULL));
-        IMP_LOG(TERSE, restraints[i]->get_name() << " score is "
-                << value << std::endl);
       } else {
-        DerivativeAccumulator accum(weights[i]);
         WRAP_EVALUATE_CALL(restraints[i],
-                           value=weights[i]
-                           *restraints[i]->unprotected_evaluate(calc_derivs?
+                           value=
+                           restraints[i]->unprotected_evaluate(calc_derivs?
                                                                 &accum:NULL));
-        IMP_LOG(TERSE, restraints[i]->get_name() << " score is "
-                << value << std::endl);
       }
-      if (gather_statistics_) {
-        add_to_restraint_evaluate(restraints[i], timer.elapsed(), value);
-      }
-      score+= value;
     } else if (!restraints[i]->get_is_incremental()
                && incremental_restraints != INCREMENTAL) {
-      DerivativeAccumulator accum(weights[i]);
       WRAP_EVALUATE_CALL(restraints[i],
-                         value=weights[i]
-                         *restraints[i]->unprotected_evaluate(calc_derivs?
-                                                           &accum:NULL));
-      IMP_LOG(TERSE, restraints[i]->get_name()<<  " score is "
-              << value << std::endl);
-      if (gather_statistics_) {
-        add_to_restraint_evaluate(restraints[i], timer.elapsed(), value);
-      }
-      score+= value;
+                         value=
+                         restraints[i]->unprotected_evaluate(calc_derivs?
+                                                             &accum:NULL));
     }
+    double wvalue= weights[i]*value;
+    IMP_LOG(TERSE, restraints[i]->get_name()<<  " score is "
+              << wvalue << std::endl);
+    if (gather_statistics_) {
+      add_to_restraint_evaluate(restraints[i], timer.elapsed(), wvalue);
+    }
+    score+= wvalue;
   }
   IMP_LOG(TERSE, "End evaluate restraints." << std::endl);
   return score;
