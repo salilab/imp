@@ -75,10 +75,10 @@ class SampleTests(IMP.test.TestCase):
         #test that score makes sense
         for i in range(2):
             self.assert_(scores[i]<scores[2],"Penetration should be scored badly")
-        self.assertAlmostEqual(scores[3],0.,2)
+        self.assertInTolerance(scores[3],0.,.1)
         #test that the restraint returns the same scores
         for i in range(4):
-            self.assertAlmostEqual(scores[i],scores_by_restraint[i],2)
+            self.assertInTolerance(scores[i],scores_by_restraint[i],.1)
 
 
 if __name__ == '__main__':
