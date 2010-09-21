@@ -47,7 +47,6 @@ IMP_BEGIN_NAMESPACE
  */
 class IMPEXPORT Object: public RefCounted
 {
-  // hide the inheritance from RefCounted as it is a detail
   std::string name_;
   int compare(const Object &o) const {
     if (&o < this) return 1;
@@ -55,7 +54,7 @@ class IMPEXPORT Object: public RefCounted
     else return 0;
   }
 protected:
-  IMP_NO_DOXYGEN(Object(std::string name="Object %1%"));
+  Object(std::string name="Object %1%");
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Object);
 public:
 #ifndef IMP_DOXYGEN
@@ -207,6 +206,7 @@ inline void show(std::ostream &out, Object *o) {
   out << "\"" << o->get_name() << "\"";
 }
 #endif
+
 
 IMP_END_NAMESPACE
 
