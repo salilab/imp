@@ -226,8 +226,14 @@ def IMPModuleLib(envi, files):
     if env['build']=="debug" and env['linktest']:
         link= env.IMPModuleLinkTest(target=['#/build/src/%(module)s_link_0.cpp'%vars, '#/build/src/%(module)s_link_1.cpp'%vars], source=[])
         files= files+link
+    version= env['IMP_MODULE_VERSION']
+    deps= ", ".join(env["%(module)s_optional_dependencies"%vars])
+    if len(deps)>0:
+        version=version+" with "+deps
     config= env.IMPModuleConfigCPP(target=["#/build/src/%(module)s_config.cpp"%vars],
-                                   source=[env.Value(env['IMP_MODULE_VERSION'])])
+                                   source=[env.Value(version),
+                                           env.Value(env.subst(env['datadir'])),
+                                           env.Value(env.subst(os.path.join(env['docdir'], "examples")))])
     #env.AlwaysBuild(version)
     files =files+ config
     env.Prepend(LIBS=dependencies_to_libs(env, env[env['IMP_MODULE']+"_required_modules"],
