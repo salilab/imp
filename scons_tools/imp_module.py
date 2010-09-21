@@ -227,9 +227,6 @@ def IMPModuleLib(envi, files):
         link= env.IMPModuleLinkTest(target=['#/build/src/%(module)s_link_0.cpp'%vars, '#/build/src/%(module)s_link_1.cpp'%vars], source=[])
         files= files+link
     version= env['IMP_MODULE_VERSION']
-    deps= ", ".join(env["%(module)s_optional_dependencies"%vars])
-    if len(deps)>0:
-        version=version+" with "+deps
     config= env.IMPModuleConfigCPP(target=["#/build/src/%(module)s_config.cpp"%vars],
                                    source=[env.Value(version),
                                            env.Value(env.subst(env['datadir'])),
@@ -737,8 +734,9 @@ def IMPModuleBuild(env, version, required_modules=[],
 
     env.Prepend(SCANNERS = [swig.scanner, swig.inscanner])
     env['all_modules'].append(module)
+    processed_optional_dependencies=process_dependencies(env, optional_dependencies)
     try:
-        m_libs=process_dependencies(env, optional_dependencies)[0]\
+        m_libs=processed_optional_dependencies[0]\
             + process_dependencies(env, required_dependencies, True)[0]
     except EnvironmentError, e:
         env[module+"_libs"]=[]
@@ -823,6 +821,10 @@ def IMPModuleBuild(env, version, required_modules=[],
             version= "SVN "+vr.split("\n")[0]
         except OSError, detail:
             print >> sys.stderr, "WARNING: Could not run svnversion: %s" % str(detail)
+
+    deps= ", ".join([x for x in optional_dependencies if env[checks.nicename(x).upper()+"_LIBS"]])
+    if len(deps)>0:
+        version=version+" with "+deps
     env['IMP_MODULE_VERSION'] = version
 
 
