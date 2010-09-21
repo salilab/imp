@@ -13,23 +13,9 @@
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 
+
+// keys
 static double heuristic_value=238471628;
-
-KeyData::KeyData(): heuristic_(heuristic_value){}
-
-void KeyData::assert_is_initialized() const
-{
-  IMP_INTERNAL_CHECK(static_cast<int>(heuristic_)
-                     == static_cast<int>(heuristic_value),
-             "Uninitialized KeyData. Do not initialize Keys statically.");
-}
-
-void KeyData::show(std::ostream &out) const
-{
-  for (unsigned int i=0; i< rmap_.size(); ++i) {
-    out << "\"" << rmap_[i] << "\" ";
-  }
-}
 
 namespace {
   struct KeyTable: public Map<unsigned int, KeyData> {
@@ -47,5 +33,23 @@ IMPEXPORT KeyData& get_key_data(unsigned int index) {
   static KeyTable key_data;
   return key_data[index];
 }
+
+
+KeyData::KeyData(): heuristic_(heuristic_value){}
+
+void KeyData::assert_is_initialized() const
+{
+  IMP_INTERNAL_CHECK(static_cast<int>(heuristic_)
+                     == static_cast<int>(heuristic_value),
+             "Uninitialized KeyData. Do not initialize Keys statically.");
+}
+
+void KeyData::show(std::ostream &out) const
+{
+  for (unsigned int i=0; i< rmap_.size(); ++i) {
+    out << "\"" << rmap_[i] << "\" ";
+  }
+}
+
 
 IMP_END_INTERNAL_NAMESPACE

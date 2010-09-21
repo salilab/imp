@@ -9,18 +9,12 @@
 #include "IMP/FailureHandler.h"
 #include "IMP/log.h"
 #include "IMP/VectorOfRefCounted.h"
+#include "IMP/internal/static.h"
 #include <cstring>
 #include <boost/lambda/lambda.hpp>
 
 IMP_BEGIN_NAMESPACE
 
-namespace {
-  // The error message is already in the exception
-  bool print_exceptions=true;
-
-  VectorOfRefCounted<FailureHandler*> handlers;
-
-}
 
 CheckLevel get_maximum_check_level() {
 #if IMP_BUILD == IMP_FAST
@@ -38,13 +32,13 @@ void assert_fail(const char *msg)
     return;
   }
   is_handling=true;
-  for (int i=handlers.size()-1; i >=0; --i) {
-    IMP_CHECK_OBJECT(handlers[i]);
+  for (int i=internal::handlers.size()-1; i >=0; --i) {
+    IMP_CHECK_OBJECT(internal::handlers[i]);
     try {
       handlers[i]->handle_failure();
     } catch (const Exception &e) {
       IMP_WARN("Caught exception in failure handler \""
-               << handlers[i]->get_name() << "\": "
+               << internal::handlers[i]->get_name() << "\": "
                << e.what() << std::endl);
     }
   }
@@ -54,26 +48,15 @@ void assert_fail(const char *msg)
 }
 
 void add_failure_handler(FailureHandler *fh) {
-  handlers.push_back(fh);
+  internal::handlers.push_back(fh);
   fh->set_was_used(true);
 }
 
 
 void remove_failure_handler(FailureHandler *fh) {
-  handlers.remove_if(boost::lambda::_1 == fh);
+  internal::handlers.remove_if(boost::lambda::_1 == fh);
 }
 
-
-namespace internal {
- CheckLevel check_mode =
-#if IMP_BUILD == IMP_FAST
-   NONE;
-#elif IMP_BUILD == IMP_RELEASE
-  USAGE;
-#else
-  USAGE_AND_INTERNAL;
-#endif
-}
 
 
 Exception::~Exception() throw()
@@ -115,7 +98,7 @@ IOException::~IOException() throw()
 }
 
 void set_print_exceptions(bool ft) {
-  print_exceptions=ft;
+  internal::print_exceptions=ft;
 }
 
 
