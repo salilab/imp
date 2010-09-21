@@ -373,13 +373,15 @@ class RefCountChecker(object):
         # live object count
         IMP._director_objects.cleanup()
         self.__testcase = testcase
-        self.__basenum = IMP.RefCounted.get_number_of_live_objects()
+        if IMP.build != "fast":
+            self.__basenum = IMP.RefCounted.get_number_of_live_objects()
 
     def assert_number(self, expected):
         "Make sure that the number of references matches the expected value."
         t = self.__testcase
-        t.assertEqual(IMP.RefCounted.get_number_of_live_objects() \
-                      - self.__basenum, expected)
+        if IMP.build != "fast":
+            t.assertEqual(IMP.RefCounted.get_number_of_live_objects() \
+                          - self.__basenum, expected)
 
 
 class DirectorObjectChecker(object):
