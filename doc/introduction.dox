@@ -176,7 +176,7 @@ provides tools to help monitor how things are performing.
 As has already been hinted at, \imp is organized around a number of core concepts.
 Representation is handled via a collection of IMP::Particle objects. Each has a
 set of arbitrary attributes (such as an x coordinate or a mass). In order to make
-particles more friendly, we provide decorators which, guess what, decorate, an existing
+particles more friendly, we provide IMP::Decorator classes which, guess what, decorate, an existing
 particle to provide a higher level interface to manipulate the attributes of a particle.
 See the IMP::Decorator page for more details.
 
@@ -188,15 +188,15 @@ of particles. However, it could also be more involved, such as the IMP::containe
 be used to implemented non-bonded operations for example.
 
 Scoring is handled by a collection of IMP::Restraint objects. Each of these keeps a list
-of particles and scores those particles based on how well they fit some sort of data.
+of particles and scores those particles based on how well they fit some sort of data. Some restraints are designed to see if a set of particles fit a particular experimental measurement (eg IMP::em::FitRestraint). Some other restraints are more general, allowing
+a particular sort of score function to an
+arbitrary container. For example, one can use an IMP::container::PairsRestraint,
+coupled with an IMP::container::ClosePairContainer and an IMP::core::SoftSpherePairScore,
+to make sure that a collection of balls don't overlap.
 
-The IMP::Model manages the set of all particles in the representation along with
-the set of all restraints scoring them and constraints acting on them. It provides
-one central function, IMP::Model::evaluate() which computes the score of the current
-conformation.
-
-One final representation concept is that of
-a constraint. These are implemented as IMP::Constraint objects. They maintain
+The IMP::Model ties together the representation and score. In addition to storing all the
+particles and restraints, it allows one to enforce invariant between particles (eg allows \imp to implement rigid bodies using IMP::core::RigidBody), allows one to specify maximum
+allowable scores for restraints and ranges for attributes. Invariants are enforced using  IMP::Constraint objects stored in the IMP::Model. They maintain
 some hard invariant of the representation. Examples include, keeping a rigid body
 rigid, or ensuring that the IMP::container::ClosePairContainer really contains all
 close pairs. Constraints are updated as part of the IMP::Model::evaluate().
@@ -204,12 +204,18 @@ close pairs. Constraints are updated as part of the IMP::Model::evaluate().
 score evaluation.</em> In order to ensure that all constraints hold, call
 IMP::Model::evaluate() before inspecting the particles.
 
-On the sampling side, there are two main concepts, that of an optimizer and that of
-a sampler. An optimizer (IMP::Optimizer), takes the current conformation of the
-IMP::Model and modifies it (typically in an attempt to make it score better). A
-sampler uses variety of optimizers and other methods to perform a non-local
-search for good scoring conformations, which are then stored as part of an
-IMP::ConfigurationSet.
+Once the representation and scoring are set up, one needs to find good conformations of
+the model. This is done via IMP::Optimizer and IMP::Sampler-derived classes. The former
+takes the current state of the model and tries to change it so that the score improves. The latter, run more involved sampling algorithms and return an IMP::ConfigurationSet which
+allows one to inspect the found conformations. The process of optimization or sampling
+can be observed and influenced via IMP::OptimizerState objects. The most generally useful
+of these write the optimization steps to files so that the process can be observed (eg
+IMP::atom::WritePDBOptimizerState).
+
+Finally, the found conformations should be analyzed. These conformations would typically be stored in an IMP::ConformationSet. The conformations can be clustered via the
+IMP::statistics::get_lloyds_kmeans() function coupled with an IMP::statistics::ConfigurationSetXYZEmbedding. Alternatively, they can be exported
+as PDB files (IMP::atom::write_pdb()), Pymol files (IMP::display::PymolWriter) or Chimera
+files (IMP::display::ChimeraWriter).
 
 
 \section i6 3. Examples
@@ -497,7 +503,7 @@ generate the connection between the two languages. Key differences are
 
     To set up incremental scoring call IMP::Model::set_is_incremental() with the value \c true. See \ref scoring "Scoring" for implementation information.
 
-\section graphs Graphs
+\section graphs 8. Graphs
 
 Graphs in \imp are represented using the \external{www.boost.org/doc/libs/release/libs/graph, Boost Graph Library}. All graphs used in \imp are \external{www.boost.org/doc/libs/1_43_0/libs/graph/doc/VertexAndEdgeListGraph.html, VertexAndEdgeListGraphs}, have vertex_name properties,
 are either \external{www.boost.org/doc/libs/1_43_0/libs/graph/doc/BidirectionalGraph.html, and are BidirectionalGraphs}.
@@ -520,7 +526,7 @@ Each vertex has a descriptor which provides a unique identifier for the vertex a
 
 The python wrapper should be considered unstable. If there is a python graph library which users would like to use, we will adapt the python interface for that library.
 
-\section fasterfaster Making IMP run faster
+\section fasterfaster 9. Making IMP run faster
 
 Sampling can often be very computationally expensive. If you computation is taking longer than you would like, the first thing you should do is to profile it. We find \external{developer.apple.com/tools/sharkoptimize.html,Shark} and \external{developer.apple.com/library/mac/#documentation/Performance/Conceptual/PerformanceOverview/InitialEvaluation/InitialEvaluation.html#//apple_ref/doc/uid/TP40001410-CH206-SW7, Instruments} which are part of the Macintosh developer tools to be the best free Mac/Linux options. \external{www.cs.utah.edu/dept/old/texinfo/as/gprof.html, gprof} is a free alternative on linux, but it requires a static build (and hence can't work with python) and is not so friendly to use.
 
@@ -554,7 +560,7 @@ m->add_restraint(new IMP::core::PairRestraint(new IMP::core::HarmonicDistancePai
                                               IMP::ParticlePair(p0, p1)));
 \endcode
 
-\section fixbug 8. Reporting bugs
+\section fixbug 10. Reporting bugs
 
 While we strive for perfection, we, lamentably, slip up from time to
 time. If you find a bug in \imp, please report it on the
@@ -564,7 +570,7 @@ that demonstrates the problem.
 
 
 
-\section next 9. Where to go next
+\section next 11. Where to go next
 Instructions on how to build and install \imp can be found in
 the \ref installation "installation instructions".
 
