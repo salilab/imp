@@ -67,8 +67,7 @@ class TestCppProgram(IMP.test.TestCase):"""
 """    def test_%(name)s(self):
         \"\"\"Running C++ test %(name)s\"\"\"
         if subprocess is None:
-            sys.stderr.write("test skipped: subprocess module unavailable: ")
-            return
+            self.skipTest("subprocess module unavailable")
         # Note: Windows binaries look for needed DLLs in the current
         # directory. So we need to change into the directory where the DLLs have
         # been installed for the binary to load correctly.

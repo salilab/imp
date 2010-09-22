@@ -29,7 +29,7 @@ class DOMINOTests(IMP.test.TestCase):
                              + str(self.infered_score) + " != " \
                              + str(min_score2))
         except NotImplementedError, detail:
-            print >> sys.stderr, detail
+            self.skipTest(detail)
 
 
     def test_inference_1(self):

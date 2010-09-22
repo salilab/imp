@@ -18,7 +18,7 @@ class DOMINOTests(IMP.test.TestCase):
             print "=min_score2 " + str(min_score2)
             self.assertLess(abs(self.infered_score - min_score2), 0.1 , "the score of the minimum configuration as calculated by the inference differs from the one calculated by the model " + str(self.infered_score) + " != " + str(min_score2))
         except NotImplementedError, detail:
-            print >> sys.stderr, detail
+            self.skipTest(detail)
 
     def test_inference_2(self):
         score = -13.7 #this is the value of the exhaustive search
